@@ -65,7 +65,7 @@ export const messages = defineMessages({
   pendingTransactions: {
     id: 'wallet.settings.utxos.pendingTransactions',
     defaultMessage:
-      '!!!Pending transactions may affect the accuracy of data presented here. <b /> You have 2 pending transactions.',
+      '!!!<b>Pending transactions</b> may affect the accuracy of data presented here. <br /> You have <b>2</b> pending transactions.',
     description:
       'Number of pending transactions for the "Wallet Utxos" screen.',
   },
@@ -94,6 +94,15 @@ export default class WalletUtxo extends Component<Props, State> {
   shouldComponentUpdate() {
     return !this.state.isHoveringChart;
   }
+
+  renderPendingTxns = () => {
+    const { intl } = this.context;
+    return (
+      <div className={styles.pendingTxnsWrapper}>
+        <p>{intl.formatMessage(messages.pendingTransactions)}</p>
+      </div>
+    );
+  };
 
   render() {
     const { intl } = this.context;
@@ -202,6 +211,7 @@ export default class WalletUtxo extends Component<Props, State> {
                       <Bar dataKey="walletUtxosAmount" className={styles.bar} />
                     </BarChart>
                   </ResponsiveContainer>
+                  {this.renderPendingTxns()}
                 </div>
               </Fragment>
             ) : (

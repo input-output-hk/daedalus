@@ -47,6 +47,25 @@
   margin: auto;
   max-width: 464px;
   padding: 20px 0;
+
+  .pendingTxnsWrapper {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    p {
+      color: var(--theme-utxo-title-description-color);
+      font-family: var(--font-light);
+      font-size: 16px;
+      line-height: 22px;
+
+      b {
+        color: var(--theme-utxo-title-text-color);
+        font-family: var(--font-regular);
+      }
+    }
+  }
 }
 
 .responsiveContainer {
