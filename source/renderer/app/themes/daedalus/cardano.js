@@ -141,7 +141,8 @@ export const CARDANO_THEME_OUTPUT = {
   dataMigration: {
     '--theme-data-migration-layer-background-color': 'rgba(32, 34, 37, 0.96)',
     '--theme-data-migration-layer-box-shadow-color': 'rgba(0, 0, 0, 0.25)',
-    '--theme-data-migration-layer-button-background-color': 'rgba(0, 0, 0, 0.1)',
+    '--theme-data-migration-layer-button-background-color':
+      'rgba(0, 0, 0, 0.1)',
     '--theme-data-migration-layer-button-background-color-hover': '#ffffff',
     '--theme-data-migration-layer-text-color': '#ffffff',
     '--theme-data-migration-layer-text-color-hover': '#202225',
