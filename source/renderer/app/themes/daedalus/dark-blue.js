@@ -118,7 +118,7 @@ export const DARK_BLUE_THEME_OUTPUT = {
   buttonFlat: {
     '--theme-button-flat-background-color': 'rgba(83, 99, 112, 0.3)',
     '--theme-button-flat-background-color-hover': 'rgba(102, 122, 138, 0.3)',
-    '--theme-button-flat-background-color-active': 'rgba(73, 88, 99, 0.3)',
+    '--theme-button-flat-background-color-active': 'rgba(74, 88, 99, 0.3)',
     '--theme-button-flat-background-color-disabled': 'rgba(83, 99, 112, 0.1)',
     '--theme-button-flat-text-color-disabled': 'rgba(233, 244, 254, 0.3)',
     '--theme-button-flat-text-color': '#e9f4fe',
