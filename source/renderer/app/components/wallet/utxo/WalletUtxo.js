@@ -41,16 +41,6 @@ export const messages = defineMessages({
       '!!!This wallet is empty so it does not contain any UTXOs (unspent transaction outputs).',
     description: 'Empty wallet description for the "Wallet Utxos" screen.',
   },
-  labelX: {
-    id: 'wallet.settings.utxos.labelX',
-    defaultMessage: '!!!amount',
-    description: 'Label X for the "Wallet Utxos" screen.',
-  },
-  labelY: {
-    id: 'wallet.settings.utxos.labelY',
-    defaultMessage: '!!!Nº UTXO',
-    description: 'Label Y for the "Wallet Utxos" screen.',
-  },
   findOutMoreLink: {
     id: 'wallet.settings.utxos.findOutMoreLink',
     defaultMessage: '!!!Find out more',
@@ -61,6 +51,23 @@ export const messages = defineMessages({
     defaultMessage:
       '!!!https://iohk.zendesk.com/hc/en-us/articles/360034118013',
     description: '"Find out more" link URL on the "Wallet Utxos" screen.',
+  },
+  labelX: {
+    id: 'wallet.settings.utxos.labelX',
+    defaultMessage: '!!!amount',
+    description: 'Label X for the "Wallet Utxos" screen.',
+  },
+  labelY: {
+    id: 'wallet.settings.utxos.labelY',
+    defaultMessage: '!!!Nº UTXO',
+    description: 'Label Y for the "Wallet Utxos" screen.',
+  },
+  pendingTransactions: {
+    id: 'wallet.settings.utxos.pendingTransactions',
+    defaultMessage:
+      '!!!Pending transactions may affect the accuracy of data presented here. <b /> You have 2 pending transactions.',
+    description:
+      'Number of pending transactions for the "Wallet Utxos" screen.',
   },
 });
 
