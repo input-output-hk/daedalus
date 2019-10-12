@@ -96,22 +96,19 @@ export default class WalletUtxo extends Component<Props, State> {
     return !this.state.isHoveringChart;
   }
 
-  renderPendingTxns = () => {
-    const { pendingTxnsCount } = this.props;
-    return (
-      <div className={styles.pendingTxnsWrapper}>
-        <div>
-          <p>
-            <b>Pending transactions</b> may affect the accuracy of data
-            presented here.
-            <br />
-            You have <b>{pendingTxnsCount}</b> pending transaction
-            {(!pendingTxnsCount || pendingTxnsCount > 1) && 's'}.
-          </p>
-        </div>
+  renderPendingTxns = (pendingTxnsCount: number) => (
+    <div className={styles.pendingTxnsWrapper}>
+      <div>
+        <p>
+          <b>Pending transactions</b> may affect the accuracy of data presented
+          here.
+          <br />
+          You have <b>{pendingTxnsCount}</b> pending transaction
+          {(!pendingTxnsCount || pendingTxnsCount > 1) && 's'}.
+        </p>
       </div>
-    );
-  };
+    </div>
+  );
 
   render() {
     const { intl } = this.context;
@@ -120,6 +117,7 @@ export default class WalletUtxo extends Component<Props, State> {
       walletUtxosAmount,
       chartData,
       onExternalLinkClick,
+      pendingTxnsCount,
     } = this.props;
     const formattedWalletAmount = walletAmount.toFormat(DECIMAL_PLACES_IN_ADA);
     const isEmpty = walletUtxosAmount === 0;
@@ -220,7 +218,7 @@ export default class WalletUtxo extends Component<Props, State> {
                       <Bar dataKey="walletUtxosAmount" className={styles.bar} />
                     </BarChart>
                   </ResponsiveContainer>
-                  {this.renderPendingTxns()}
+                  {this.renderPendingTxns(pendingTxnsCount)}
                 </div>
               </Fragment>
             ) : (
