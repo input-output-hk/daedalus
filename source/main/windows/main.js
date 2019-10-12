@@ -64,6 +64,7 @@ export const createMainWindow = (locale: string) => {
   const window = new BrowserWindow(windowOptions);
 
   window.setPosition(0, 0);
+  window.setSize(1280, 720 - 73);
 
   rendererErrorHandler.setup(window, createMainWindow);
 
