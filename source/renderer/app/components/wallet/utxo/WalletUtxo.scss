@@ -49,20 +49,19 @@
   padding: 20px 0;
 
   .pendingTxnsWrapper {
-    align-items: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    text-align: center;
+    margin: 35px 0 0 25px;
+    width: 100%;
 
     p {
       color: var(--theme-utxo-title-description-color);
       font-family: var(--font-light);
-      font-size: 16px;
-      line-height: 22px;
+      font-size: 14px;
+      line-height: 1.43;
 
       b {
         color: var(--theme-utxo-title-text-color);
-        font-family: var(--font-regular);
+        font-family: var(--font-medium);
       }
     }
   }

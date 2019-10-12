@@ -76,6 +76,7 @@ type Props = {
   walletUtxosAmount: number,
   chartData: Array<any>,
   onExternalLinkClick: Function,
+  pendingTxnsCount: number,
 };
 
 type State = {
@@ -96,10 +97,18 @@ export default class WalletUtxo extends Component<Props, State> {
   }
 
   renderPendingTxns = () => {
-    const { intl } = this.context;
+    const { pendingTxnsCount } = this.props;
     return (
       <div className={styles.pendingTxnsWrapper}>
-        <p>{intl.formatMessage(messages.pendingTransactions)}</p>
+        <div>
+          <p>
+            <b>Pending transactions</b> may affect the accuracy of data
+            presented here.
+            <br />
+            You have <b>{pendingTxnsCount}</b> pending transaction
+            {(!pendingTxnsCount || pendingTxnsCount > 1) && 's'}.
+          </p>
+        </div>
       </div>
     );
   };
