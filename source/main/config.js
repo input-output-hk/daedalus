@@ -65,8 +65,8 @@ type WindowOptionsType = {
   icon?: string,
 };
 
-export const WINDOW_WIDTH = 1150;
-export const WINDOW_HEIGHT = 870;
+export const WINDOW_WIDTH = 1280;
+export const WINDOW_HEIGHT = 720 - 23;
 export const MIN_WINDOW_CONTENT_WIDTH = 905;
 export const MIN_WINDOW_CONTENT_HEIGHT = 600;
 
