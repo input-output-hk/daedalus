@@ -32,7 +32,7 @@ export default class WalletSettingsPage extends Component<Props> {
       throw new Error('Active wallet required for WalletSummaryPage.');
     const chartData = getUtxoChartData(histogram);
     const walletUtxosAmount = getWalletUtxosTotalAmount(histogram);
-    const { pendingTxnsCount } = transactions;
+    const { pendingTransactionsCount: pendingTxnsCount } = transactions;
 
     return (
       <WalletUtxo

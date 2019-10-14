@@ -126,7 +126,7 @@ export default class TransactionsStore extends Store {
     return results ? results.transactions.length : 0;
   }
 
-  @computed get pendingTxnsCount(): number {
+  @computed get pendingTransactionsCount(): number {
     return this.recent.filter(({ state }) => state === 'pending').length;
   }
 
