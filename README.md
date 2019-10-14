@@ -117,7 +117,7 @@ So if you just start the default cardano node (which runs on localhost:8090) you
 2. `yarn install`
 3. `WALLET_HOST=xxx WALLET_PORT=xxx yarn js-launcher`
 
-This mode currently mocks TLS certs as this is not being used for v2 integrations.
+This mode currently mocks TLS certificates as this is not being used for V2 integrations.
 
 ## Notes:
 
