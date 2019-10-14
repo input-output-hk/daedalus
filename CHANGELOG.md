@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## vNext
+
+### Chores
+
+- Reorganized tests directories by domain and added flow support to all tests JS files ([PR 1540](https://github.com/input-output-hk/daedalus/pull/1540))
+
 ## 0.15.0
 
 ### Features
