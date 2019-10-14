@@ -65,7 +65,7 @@ export const messages = defineMessages({
   pendingTransactions: {
     id: 'wallet.settings.utxos.pendingTransactions',
     defaultMessage:
-      '!!!<b>Pending transactions</b> may affect the accuracy of data presented here. <br /> You have <b>2</b> pending transactions.',
+      '!!!<b>Pending transactions</b> may affect the accuracy of data presented here. <br /> You have <b>{pendingTxnsCount}</b> pending transaction{txnsPlural}.',
     description:
       'Number of pending transactions for the "Wallet Utxos" screen.',
   },
@@ -96,19 +96,24 @@ export default class WalletUtxo extends Component<Props, State> {
     return !this.state.isHoveringChart;
   }
 
-  renderPendingTxns = (pendingTxnsCount: number) => (
-    <div className={styles.pendingTxnsWrapper}>
-      <div>
-        <p>
-          <b>Pending transactions</b> may affect the accuracy of data presented
-          here.
-          <br />
-          You have <b>{pendingTxnsCount}</b> pending transaction
-          {(!pendingTxnsCount || pendingTxnsCount > 1) && 's'}.
-        </p>
+  renderPendingTxns = (pendingTxnsCount: number) => {
+    const txnsPlural = (!pendingTxnsCount || pendingTxnsCount > 1) && 's';
+    return (
+      <div className={styles.pendingTxnsWrapper}>
+        <div>
+          <p>
+            <FormattedHTMLMessage
+              {...messages.pendingTransactions}
+              values={{
+                pendingTxnsCount,
+                txnsPlural,
+              }}
+            />
+          </p>
+        </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   render() {
     const { intl } = this.context;
