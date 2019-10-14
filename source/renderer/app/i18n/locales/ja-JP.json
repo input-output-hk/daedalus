@@ -18,7 +18,7 @@
   "api.errors.WalletAlreadyRestoredError": "復元しようとしているウォレットは既に存在します",
   "api.errors.WalletFileImportError": "ウォレットをインポートできませんでした。有効なファイルを指定していることを確認してください",
   "automaticUpdate.accept.button.label": "Daedalusを再起動して更新する",
-  "automaticUpdate.description1": "現在実行中のDaedalus <b>v {currentAppVersion}</b> は <b>{nextUpdateVersion}</b> に更新できます。",
+  "automaticUpdate.description1": "現在実行中のDaedalus <b>{currentAppVersion}</b> は <b>{nextUpdateVersion}</b> に更新できます。",
   "automaticUpdate.description2": "今すぐ最新版をインストールしますか。更新を保留すると、Daedalusを次回起動する時に自動的にインストールされます。",
   "automaticUpdate.newerVersion.label": "最新バージョン",
   "automaticUpdate.postpone.button.label": "Daedalusの次回起動時まで保留する",
