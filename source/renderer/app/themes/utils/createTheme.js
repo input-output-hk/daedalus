@@ -908,6 +908,7 @@ export const createDaedalusComponentsTheme = (
         background.secondary.regular
       }`,
       '--theme-settings-theme-select-title-color': `${text.primary}`,
+      '--theme-settings-theme-select-border-color': `${border}`,
     },
     sidebar: {
       '--theme-sidebar-background-color': `${background.secondary.regular}`,
