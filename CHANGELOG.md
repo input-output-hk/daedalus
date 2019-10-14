@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## 0.14.AR
+
+### Features
+
+- Removed "Auto Update" feature
+
 ## 0.14.0
 
 ### Features
