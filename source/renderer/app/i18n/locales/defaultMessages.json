@@ -7152,7 +7152,7 @@
         }
       },
       {
-        "defaultMessage": "!!!<b>Pending transactions</b> may affect the accuracy of data presented here. <br /> You have <b>2</b> pending transactions.",
+        "defaultMessage": "!!!<b>Pending transactions</b> may affect the accuracy of data presented here. <br /> You have <b>{pendingTxnsCount}</b> pending transaction{txnsPlural}",
         "description": "Number of pending transactions for the \"Wallet Utxos\" screen.",
         "end": {
           "column": 3,
