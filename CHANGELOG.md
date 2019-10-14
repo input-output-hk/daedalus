@@ -5,7 +5,8 @@ Changelog
 
 ### Chores
 
-- Reorganized tests directories by domain and added flow support to all tests JS files ([PR 1540](https://github.com/input-output-hk/daedalus/pull/1540))
+- Reorganized Storybook by domain ([PR 1537](https://github.com/input-output-hk/daedalus/pull/1537))
+- Reorganized Tests by domain ([PR 1540](https://github.com/input-output-hk/daedalus/pull/1540))
 
 ## 0.15.0
 
