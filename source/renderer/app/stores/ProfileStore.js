@@ -9,7 +9,6 @@ import Request from './lib/LocalizedRequest';
 import { THEMES } from '../themes/index';
 import { ROUTES } from '../routes-config';
 import LocalizableError from '../i18n/LocalizableError';
-import globalMessages from '../i18n/global-messages';
 import { WalletSupportRequestLogsCompressError } from '../i18n/errors';
 import { generateFileNameWithTimestamp } from '../../../common/utils/files';
 import { formattedBytesToSize } from '../utils/formatters';
@@ -17,6 +16,7 @@ import { Logger } from '../utils/logging';
 import { setStateSnapshotLogChannel } from '../ipc/setStateSnapshotLogChannel';
 import { detectSystemLocaleChannel } from '../ipc/detect-system-locale';
 import { LOCALES } from '../../../common/types/locales.types';
+import { LANGUAGE_OPTIONS } from '../config/profileConfig';
 import {
   compressLogsChannel,
   downloadLogsChannel,
@@ -30,14 +30,7 @@ const { ipcRenderer } = global;
 
 @remotedev
 export default class ProfileStore extends Store {
-  LANGUAGE_OPTIONS = [
-    { value: 'en-US', label: globalMessages.languageEnglish },
-    { value: 'ja-JP', label: globalMessages.languageJapanese },
-    // { value: 'zh-CN', label: globalMessages.languageChinese },
-    // { value: 'ko-KR', label: globalMessages.languageKorean },
-    // { value: 'de-DE', label: globalMessages.languageGerman },
-    // { value: 'hr-HR', label: globalMessages.languageCroatian },
-  ];
+  LANGUAGE_OPTIONS = LANGUAGE_OPTIONS;
 
   @observable systemLocale: string = LOCALES.english;
   @observable bigNumberDecimalFormat = {
