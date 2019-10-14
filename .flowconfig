@@ -8,6 +8,7 @@
 <PROJECT_ROOT>/release/.*
 <PROJECT_ROOT>/git/.*
 <PROJECT_ROOT>/.cache-loader/.*
+<PROJECT_ROOT>/utils/js-launcher/.*
 
 [include]
 

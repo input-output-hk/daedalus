@@ -94,6 +94,7 @@ different each time you restart the cardano-sl demo cluster)
 The `frontendOnlyMode` makes it possible to connect to manually started instances of cardano-node for advanced debugging purposes.
 
 ### How to connect:
+#### Nix
 1. Within the [cardano-sl repository](https://github.com/input-output-hk/cardano-sl), build a script for a certain network. E.g. for testnet: `nix-build -A connectScripts.testnet.wallet -o launch_testnet`
 2. Launch this cluster + node with `./launch_testnet`
 3. You should now have a `state-wallet-testnet` folder inside the cardano-sl repo. Copy the full path to the sub folder `tls` in there.
@@ -101,7 +102,7 @@ The `frontendOnlyMode` makes it possible to connect to manually started instance
 
 Now you should have a pre-configured nix-shell session where you can `yarn dev` as usual and Daedalus connects itself to the manually started cardano node.
 
-### Parameters:
+##### Parameters:
 
 | Param              | Mandatory | Default     |
 |--------------------|-----------|-------------|
@@ -111,6 +112,12 @@ Now you should have a pre-configured nix-shell session where you can `yarn dev` 
 
 So if you just start the default cardano node (which runs on localhost:8090) you can also start nix-shell with `CARDANO_TLS_PATH=/path/to/tls nix-shell`
 
+#### Without Nix
+1. If you have previously used `nix-shell`, run `rm -rf node_modules` as it is likely some of the bindings won't match your local nodejs version
+2. `yarn install`
+3. `WALLET_HOST=xxx WALLET_PORT=xxx yarn js-launcher`
+
+This mode currently mocks TLS certificates as this is not being used for V2 integrations.
 
 ## Notes:
 
