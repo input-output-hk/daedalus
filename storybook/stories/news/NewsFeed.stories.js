@@ -119,22 +119,6 @@ storiesOf('News|NewsFeed', module)
 
   // ====== Stories ======
 
-  .add('Unreachable', () => (
-    <div>
-      <NewsFeed
-        onGoToRoute={action('onGoToRoute')}
-        isLoadingNews={false}
-        onMarkNewsAsRead={action('onMarkNewsAsRead')}
-        onNewsItemActionClick={action('onNewsItemActionClick')}
-        onClose={action('onClose')}
-        news={undefined}
-        isNewsFeedOpen={boolean('isNewsFeedOpen', true)}
-        onOpenExternalLink={() => {}}
-        onOpenAlert={() => {}}
-      />
-    </div>
-  ))
-
   .add('Empty', () => (
     <div>
       <NewsFeed
