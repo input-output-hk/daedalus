@@ -46,7 +46,9 @@ export default class NavDropdown extends Component<Props> {
               hasNotification={hasNotification}
             />
           }
-          onChange={({ value }) => onChange(value)}
+          onItemSelected={({ value }) => {
+            onChange(value);
+          }}
           items={options}
           activeItem={activeItem}
           noArrow

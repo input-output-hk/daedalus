@@ -24,13 +24,6 @@
   }
 
   :global {
-    .SimpleOptions_options {
-      left: auto !important;
-      position: absolute;
-      right: 0;
-      top: 57px !important;
-      width: 200px !important;
-    }
     .NavButton_component {
       cursor: default;
     }
@@ -39,7 +32,6 @@
         border: none;
         border-radius: 3px;
         box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.12);
-        right: 15px;
 
         .SimpleOptions_ul {
           background-color: var(--theme-nav-dropdown-item-background-color);
@@ -47,6 +39,9 @@
 
           .SimpleOptions_option {
             background: none;
+            padding: 5px 10px;
+            text-align: right;
+            font-size: 13px;
 
             &.SimpleOptions_highlightedOption:hover {
               background-color: var(
