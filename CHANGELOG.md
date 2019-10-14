@@ -5,7 +5,7 @@ Changelog
 
 ### Features
 
-- Removed "Auto Update" feature
+- Removed "Auto Update" feature ([PR 1588](https://github.com/input-output-hk/daedalus/pull/1588))
 
 ## 0.14.0
 
