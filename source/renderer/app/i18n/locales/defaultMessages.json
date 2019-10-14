@@ -1186,7 +1186,7 @@
         }
       },
       {
-        "defaultMessage": "!!!You are currently running Daedalus <b>v {currentAppVersion}</b> and <b>{nextAppVersion}</b> is available.",
+        "defaultMessage": "!!!You are currently running Daedalus <b>{currentAppVersion}</b> and <b>{nextAppVersion}</b> is available.",
         "description": "First description line of \"Automatic update\" overlay",
         "end": {
           "column": 3,
