@@ -6,7 +6,6 @@ import AddressesStore from './AddressesStore';
 import AppStore from './AppStore';
 import BlockConsolidationStore from './BlockConsolidationStore';
 import NetworkStatusStore from './NetworkStatusStore';
-import NodeUpdateStore from './NodeUpdateStore';
 import ProfileStore from './ProfileStore';
 import SidebarStore from './SidebarStore';
 import StakingStore from './StakingStore';
@@ -24,7 +23,6 @@ export const storeClasses = {
   app: AppStore,
   blockConsolidation: BlockConsolidationStore,
   networkStatus: NetworkStatusStore,
-  nodeUpdate: NodeUpdateStore,
   profile: ProfileStore,
   sidebar: SidebarStore,
   staking: StakingStore,
@@ -43,7 +41,6 @@ export type StoresMap = {
   app: AppStore,
   blockConsolidation: BlockConsolidationStore,
   networkStatus: NetworkStatusStore,
-  nodeUpdate: NodeUpdateStore,
   profile: ProfileStore,
   router: Object,
   sidebar: SidebarStore,
@@ -84,7 +81,6 @@ export default action(
       app: createStoreInstanceOf(AppStore),
       blockConsolidation: createStoreInstanceOf(BlockConsolidationStore),
       networkStatus: createStoreInstanceOf(NetworkStatusStore),
-      nodeUpdate: createStoreInstanceOf(NodeUpdateStore),
       profile: createStoreInstanceOf(ProfileStore),
       router,
       sidebar: createStoreInstanceOf(SidebarStore),

@@ -4,7 +4,6 @@ import { observer, inject } from 'mobx-react';
 import Sidebar from '../components/sidebar/Sidebar';
 import TopBarContainer from './TopBarContainer';
 import SidebarLayout from '../components/layout/SidebarLayout';
-import NodeUpdatePage from './notifications/NodeUpdatePage';
 import PaperWalletCreateCertificatePage from './wallet/PaperWalletCreateCertificatePage';
 import type { InjectedContainerProps } from '../types/injectedPropsType';
 import { ROUTES } from '../routes-config';
@@ -21,8 +20,7 @@ export default class MainLayout extends Component<InjectedContainerProps> {
 
   render() {
     const { actions, stores } = this.props;
-    const { nodeUpdate, sidebar, wallets, profile } = stores;
-    const { isUpdateAvailable, isUpdatePostponed } = nodeUpdate;
+    const { sidebar, wallets, profile } = stores;
     const activeWallet = wallets.active;
     const activeWalletId = activeWallet ? activeWallet.id : null;
     const { currentTheme } = profile;
@@ -64,14 +62,11 @@ export default class MainLayout extends Component<InjectedContainerProps> {
       />
     );
 
-    const addNodeUpdateNotification =
-      isUpdateAvailable && !isUpdatePostponed ? <NodeUpdatePage /> : null;
-
     return (
       <SidebarLayout
         sidebar={sidebarComponent}
         topbar={<TopBarContainer />}
-        notification={addNodeUpdateNotification}
+        notification={null}
         contentDialogs={[
           <PaperWalletCreateCertificatePage
             key="PaperWalletCreateCertificatePage"

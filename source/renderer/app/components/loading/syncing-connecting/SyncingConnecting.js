@@ -40,13 +40,9 @@ type Props = {
   isNodeSubscribed: boolean,
   isNodeSyncing: boolean,
   isNodeTimeCorrect: boolean,
-  isNewAppVersionAvailable: boolean,
-  isNewAppVersionLoading: boolean,
-  isNewAppVersionLoaded: boolean,
   disableDownloadLogs: boolean,
   onIssueClick: Function,
   onDownloadLogs: Function,
-  onGetAvailableVersions: Function,
   onStatusIconClick: Function,
 };
 
@@ -67,14 +63,7 @@ export default class SyncingConnecting extends Component<Props, State> {
   }
 
   componentDidUpdate() {
-    const { syncingTime, connectingTime } = this.state;
-    const {
-      isConnected,
-      isSynced,
-      onGetAvailableVersions,
-      isNewAppVersionLoading,
-      isNewAppVersionLoaded,
-    } = this.props;
+    const { isConnected, isSynced } = this.props;
     const canResetSyncing = this._syncingTimerShouldStop(isSynced);
     const canResetConnecting = this._connectingTimerShouldStop(isConnected);
     if (canResetSyncing) {
@@ -82,17 +71,6 @@ export default class SyncingConnecting extends Component<Props, State> {
     }
     if (canResetConnecting) {
       this._resetConnectingTime();
-    }
-    const isAppLoadingStuck =
-      (!isConnected && connectingTime >= REPORT_ISSUE_TIME_TRIGGER) ||
-      (isConnected && !isSynced && syncingTime >= REPORT_ISSUE_TIME_TRIGGER);
-    // If app loading is stuck, check if a newer version is available and set flag (state)
-    if (
-      isAppLoadingStuck &&
-      !isNewAppVersionLoaded &&
-      !isNewAppVersionLoading
-    ) {
-      onGetAvailableVersions();
     }
   }
 
@@ -166,8 +144,6 @@ export default class SyncingConnecting extends Component<Props, State> {
       isConnected,
       isSynced,
       cardanoNodeState,
-      isNewAppVersionLoaded,
-      isNewAppVersionAvailable,
       forceConnectivityIssue,
       forceSyncIssue,
     } = this.props;
@@ -180,11 +156,7 @@ export default class SyncingConnecting extends Component<Props, State> {
     const canReportSyncingIssue =
       forceSyncIssue ||
       (isConnected && !isSynced && syncingTime >= REPORT_ISSUE_TIME_TRIGGER);
-    return (
-      isNewAppVersionLoaded &&
-      !isNewAppVersionAvailable &&
-      (canReportConnectingIssue || canReportSyncingIssue)
-    );
+    return canReportConnectingIssue || canReportSyncingIssue;
   }
 
   render() {

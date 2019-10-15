@@ -30,12 +30,8 @@ export const DefaultSyncingConnectingStory = () => (
     isNodeSubscribed={boolean('isNodeSubscribed', false)}
     isNodeSyncing={boolean('isNodeSyncing', false)}
     isNodeTimeCorrect={boolean('isNodeTimeCorrect', true)}
-    isNewAppVersionAvailable={boolean('isNewAppVersionAvailable', false)}
-    isNewAppVersionLoading={boolean('isNewAppVersionLoading', false)}
-    isNewAppVersionLoaded={boolean('isNewAppVersionLoaded', false)}
     onIssueClick={action('onIssueClick')}
     onDownloadLogs={action('onDownloadLogs')}
-    onGetAvailableVersions={action('onGetAvailableVersions')}
     onStatusIconClick={linkTo('Diagnostics', () => 'default')}
     disableDownloadLogs={boolean('disableDownloadLogs', true)}
   />
@@ -61,12 +57,8 @@ export const ConnectivityIssuesSyncingConnectingStory = () => (
     isNodeSubscribed={false}
     isNodeSyncing={false}
     isNodeTimeCorrect
-    isNewAppVersionAvailable={false}
-    isNewAppVersionLoading={false}
-    isNewAppVersionLoaded
     onIssueClick={action('onIssueClick')}
     onDownloadLogs={action('onDownloadLogs')}
-    onGetAvailableVersions={action('onGetAvailableVersions')}
     onStatusIconClick={linkTo('Diagnostics', () => 'default')}
     disableDownloadLogs={boolean('disableDownloadLogs', false)}
   />
@@ -92,12 +84,8 @@ export const SyncIssuesSyncingConnectingStory = () => (
     isNodeSubscribed
     isNodeSyncing
     isNodeTimeCorrect
-    isNewAppVersionAvailable={false}
-    isNewAppVersionLoading={false}
-    isNewAppVersionLoaded
     onIssueClick={action('onIssueClick')}
     onDownloadLogs={action('onDownloadLogs')}
-    onGetAvailableVersions={action('onGetAvailableVersions')}
     onStatusIconClick={linkTo('Diagnostics', () => 'default')}
     disableDownloadLogs={boolean('disableDownloadLogs', false)}
   />

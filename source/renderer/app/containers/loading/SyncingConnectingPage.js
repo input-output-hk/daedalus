@@ -30,11 +30,6 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
       isNotEnoughDiskSpace,
       isTlsCertInvalid,
     } = stores.networkStatus;
-    const {
-      isNewAppVersionAvailable,
-      isNewAppVersionLoading,
-      isNewAppVersionLoaded,
-    } = stores.nodeUpdate;
     const { hasLoadedCurrentLocale, hasLoadedCurrentTheme } = stores.profile;
 
     return (
@@ -57,11 +52,7 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
         isNodeSubscribed={isNodeSubscribed}
         isNodeSyncing={isNodeSyncing}
         isNodeTimeCorrect={isNodeTimeCorrect}
-        isNewAppVersionAvailable={isNewAppVersionAvailable}
-        isNewAppVersionLoading={isNewAppVersionLoading}
-        isNewAppVersionLoaded={isNewAppVersionLoaded}
         onIssueClick={this.handleIssueClick}
-        onGetAvailableVersions={this.handleGetAvailableVersions}
         onStatusIconClick={this.openDaedalusDiagnosticsDialog}
         onDownloadLogs={this.handleDownloadLogs}
         disableDownloadLogs={stores.app.isDownloadNotificationVisible}
@@ -79,11 +70,6 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
     const { app } = this.props.actions;
     app.downloadLogs.trigger();
     app.setNotificationVisibility.trigger(true);
-  };
-
-  handleGetAvailableVersions = () => {
-    const { nodeUpdate } = this.props.actions;
-    nodeUpdate.getLatestAvailableAppVersion.trigger();
   };
 
   openDaedalusDiagnosticsDialog = () => {
