@@ -1,5 +1,5 @@
 @e2e @skip
-# @API TODO: We don't have api endpoint for fetching node info
+# @API TODO - We don't have api endpoint for fetching node info
 
 Feature: Trouble Syncing Notification
 

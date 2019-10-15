@@ -1,6 +1,6 @@
 @e2e @skip
-
 # @API TODO - We don't have API endpoint for NTP check
+
 Feature: Local Time Difference
 
   Scenario: Wrong local time
@@ -24,7 +24,7 @@ Feature: Local Time Difference
     And I have selected English language
     And I have accepted "Terms of use"
     Then the system time error overlay should be hidden
-  
+
   Scenario: Wrong local time in all three checks
     Given I set the local time difference to be 60 seconds
     And I set the local time difference to be 120 seconds
