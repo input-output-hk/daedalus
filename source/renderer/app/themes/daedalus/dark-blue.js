@@ -521,9 +521,9 @@ export const DARK_BLUE_THEME_OUTPUT = {
   },
   rpInput: {
     '--rp-input-bg-color': '#263345',
-    '--rp-input-bg-color-disabled': 'rgba(233, 244, 254, 0.1)',
+    '--rp-input-bg-color-disabled': 'rgba(233, 244, 254, 0.05)',
     '--rp-input-border-color': 'rgba(233, 244, 254, 0.3)',
-    '--rp-input-border-color-disabled': 'rgba(233, 244, 254, 0.1)',
+    '--rp-input-border-color-disabled': 'transparent',
     '--rp-input-border-color-errored': '#ea4c5b',
     '--rp-input-border-color-focus': 'rgba(233, 244, 254, 0.7)',
     '--rp-input-line-height': '22px',

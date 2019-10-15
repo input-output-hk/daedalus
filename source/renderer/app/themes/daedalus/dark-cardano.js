@@ -505,7 +505,7 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--rp-input-bg-color': '#1e1f31',
     '--rp-input-bg-color-disabled': 'rgba(255, 255, 255, 0.05)',
     '--rp-input-border-color': 'rgba(255, 255, 255, 0.3)',
-    '--rp-input-border-color-disabled': 'rgba(255, 255, 255, 0.05)',
+    '--rp-input-border-color-disabled': 'transparent',
     '--rp-input-border-color-errored': '#ea4c5b',
     '--rp-input-border-color-focus': 'rgba(255, 255, 255, 0.7)',
     '--rp-input-line-height': '22px',
@@ -513,7 +513,7 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--rp-input-placeholder-color': 'rgba(255, 255, 255, 0.5)',
     '--rp-input-placeholder-color-disabled': 'rgba(255, 255, 255, 0.5)',
     '--rp-input-text-color': '#ffffff',
-    '--rp-input-text-color-disabled': '#ffffff80',
+    '--rp-input-text-color-disabled': 'rgba(255, 255, 255, 0.5)',
   },
   rpModal: {
     '--rp-modal-bg-color': '#1e1f31',
