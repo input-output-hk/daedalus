@@ -71,13 +71,13 @@ export default class TransactionsStore extends Store {
     return this._getTransactionsAllRequest(wallet.id);
   }
 
-  @computed get searchOptions(): ?TransactionSearchOptionsStruct {
+  @computed.struct get searchOptions(): ?TransactionSearchOptionsStruct {
     const wallet = this.stores.wallets.active;
     if (!wallet) return null;
     return this._searchOptionsForWallets[wallet.id];
   }
 
-  @computed get filtered(): Array<WalletTransaction> {
+  @computed.struct get filtered(): Array<WalletTransaction> {
     const wallet = this.stores.wallets.active;
     if (!wallet || !this.searchOptions) return [];
     const { searchTerm } = this.searchOptions;
@@ -91,7 +91,7 @@ export default class TransactionsStore extends Store {
     return request.result ? request.result.transactions : [];
   }
 
-  @computed get recent(): Array<WalletTransaction> {
+  @computed.struct get recent(): Array<WalletTransaction> {
     const wallet = this.stores.wallets.active;
     if (!wallet) return [];
     const results = this._getTransactionsRecentRequest(wallet.id).result;

@@ -26,7 +26,7 @@ export default class SidebarStore extends Store {
     this._configureCategories();
   }
 
-  @computed get wallets(): Array<SidebarWalletType> {
+  @computed.struct get wallets(): Array<SidebarWalletType> {
     const { networkStatus, wallets } = this.stores;
     return wallets.all.map(wallet => {
       const {
