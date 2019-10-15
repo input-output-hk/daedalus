@@ -2,10 +2,10 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
-import StoryDecorator from '../support/StoryDecorator';
+import StoryDecorator from '../_support/StoryDecorator';
 import AlertsOverlay from '../../../source/renderer/app/components/news/AlertsOverlay';
 
-storiesOf('NewsFeed', module)
+storiesOf('News|Alerts', module)
   .addDecorator(story => (
     <StoryDecorator>
       {story([

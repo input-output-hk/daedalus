@@ -2,6 +2,12 @@
 import React, { Component } from 'react';
 import { set } from 'lodash';
 import styles from './DaedalusMenuStyles';
+import {
+  themeNames,
+  localeNames,
+  osNames,
+  getInitialState,
+} from '../../stories/_support/config';
 
 /* eslint-disable no-restricted-globals */
 
@@ -10,66 +16,62 @@ type Props = {
 };
 
 export type DaedalusMenuState = {
-  localeNames: Array<string>,
-  themeNames: Array<string>,
-  osNames: Array<string>,
   themeName?: string,
   localeName?: string,
   osName?: string,
 };
 
 class DaedalusMenu extends Component<Props, DaedalusMenuState> {
-  state = {
-    localeNames: [],
-    themeNames: [],
-    osNames: [],
-    themeName: '',
-    localeName: '',
-    osName: '',
-  };
+  constructor(props: Props) {
+    super(props);
+    const { themeName, localeName, osName } = getInitialState();
+    this.state = {
+      themeName,
+      localeName,
+      osName,
+    };
+    this.props.api.on('daedalusMenu/paramUpdated', this.handleUpdateParam);
+  }
 
-  componentDidMount() {
-    const { api } = this.props;
-    api.on('daedalusMenu/init', this.init);
-    api.on('daedalusMenu/updateParam', this.updateParam);
+  get params() {
+    const { hash, search } = parent.window.location;
+    const queries = hash || search;
+    return new URLSearchParams(queries.slice(1));
   }
 
   componentWillUnmount() {
-    const { api } = this.props;
-    api.on('daedalusMenu/init', this.init);
-    api.on('daedalusMenu/updateParam', this.updateParam);
+    this.props.api.off('daedalusMenu/paramUpdated', this.handleUpdateParam);
   }
 
-  init = (initialState: DaedalusMenuState) =>
-    this.setState(
-      currenState => ({
-        ...currenState,
-        ...initialState,
-      }),
-      () => {
-        const { themeName, localeName, osName } = this.state;
-        this.props.api.setQueryParams({ themeName, localeName, osName });
-      }
-    );
+  sendUpdateParam = (param: string, value: string) => {
+    this.props.api.emit('daedalusMenu/updateParam', { param, value });
+  };
 
-  updateParam = (newParamState: Object) => this.setState(newParamState);
+  handleUpdateParam = ({ param, value }: Object) => {
+    const query = set({}, param, value);
+    this.setState(query);
+    this.setHashParam(param, value);
+    sessionStorage.setItem(param, value);
+    this.props.api.setQueryParams(query);
+  };
+
+  setHashParam = (param: string, value: string) => {
+    const hash = this.params;
+    hash.delete('path');
+    hash.set(param, value);
+    parent.window.location.hash = hash;
+  };
 
   handleSetParam = (param: string, value: string) => {
-    const { api } = this.props;
     const query = set({}, param, value);
-    api.setQueryParams(query);
-    api.emit('daedalusMenu/receiveParam', { param, value });
+    this.setState(query);
+    this.setHashParam(param, value);
+    sessionStorage.setItem(param, value);
+    // updateParam(query);
   };
 
   render() {
-    const {
-      localeNames,
-      themeNames,
-      themeName,
-      localeName,
-      osNames,
-      osName,
-    } = this.state;
+    const { themeName, localeName, osName } = this.state;
 
     return (
       <div style={styles.component}>
@@ -78,7 +80,7 @@ class DaedalusMenu extends Component<Props, DaedalusMenuState> {
           {localeNames.map(localeItem => (
             <button
               key={localeItem}
-              onClick={() => this.handleSetParam('localeName', localeItem)}
+              onClick={() => this.sendUpdateParam('localeName', localeItem)}
               style={{
                 ...styles.button,
                 ...(localeName === localeItem ? styles.selected : {}),
@@ -93,7 +95,7 @@ class DaedalusMenu extends Component<Props, DaedalusMenuState> {
           {themeNames.map(themeItem => (
             <button
               key={themeItem}
-              onClick={() => this.handleSetParam('themeName', themeItem)}
+              onClick={() => this.sendUpdateParam('themeName', themeItem)}
               style={{
                 ...styles.button,
                 ...(themeName === themeItem ? styles.selected : {}),
@@ -108,7 +110,7 @@ class DaedalusMenu extends Component<Props, DaedalusMenuState> {
           {osNames.map(osItem => (
             <button
               key={osItem}
-              onClick={() => this.handleSetParam('osName', osItem)}
+              onClick={() => this.sendUpdateParam('osName', osItem)}
               style={{
                 ...styles.button,
                 ...(osName === osItem ? styles.selected : {}),

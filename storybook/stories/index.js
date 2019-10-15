@@ -1,42 +1,34 @@
 // @flow
 import '../../source/renderer/app/themes/index.global.scss';
-import './support/environment';
+import './_support/environment';
 
 // Wallets
-import './WalletScreens.stories';
-import './WalletSummary.stories';
-import './BlockConsolidationStatus.stories';
-import './AddWallet.stories';
-import './DeleteWalletConfirmationDialog.stories';
-import './WalletTransactionsList.stories';
-import './ExportWalletToFileDialog.stories';
-import './PaperWallets.stories';
+import './wallets';
+
+// Paper Wallets
+import './paper-wallets/PaperWallets.stories';
+
+// Transactions
+import './transactions';
+
+// Nodes
+import './nodes';
 
 // Staking
-import './Staking.stories';
+import './staking/Staking.stories';
 
 // Settings
-import './Settings.stories';
+import './settings';
 
-// Loading
-import './Loading.stories';
-
-// Diagnostics
-import './Diagnostics.stories';
-
-// Navigation
-import './Sidebar.stories';
-import './SidebarCategory.stories';
-import './SidebarWalletsMenu.stories';
-import './TopBar.stories';
-
-// Widgets
-import './Widgets.stories';
-
-// Notifications
-import './Notifications.stories';
-
-// Newsfeed
+// News
 import './news/NewsFeed.stories';
 import './news/IncidentOverlay.stories';
 import './news/AlertsOverlay.stories';
+
+// Navigation
+import './navigation/Sidebar.stories';
+import './navigation/SidebarCategory.stories';
+import './navigation/SidebarWalletsMenu.stories';
+
+// Common
+import './common/Widgets.stories';
