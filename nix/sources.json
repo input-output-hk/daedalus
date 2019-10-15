@@ -12,15 +12,15 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "cardano-wallet": {
-        "branch": "master",
+        "branch": "daedalus-bridge",
         "description": "Official Wallet Backend & API for Cardano decentralized",
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "cardano-wallet",
-        "rev": "b1da28896263ee2f237869109e5a6f8efdd554ea",
-        "sha256": "0rd0mhzlg32ajm7nyylbzq3r3q06p8lifagjkv5ifb0y89ncc86r",
+        "rev": "93e6b2b3671bdbe73d1dbf6ee9a693c1221ded99",
+        "sha256": "13adg70alw5pn6fhsm3ra2p994jqwwscl8rzc3zpslsfl16az88l",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-wallet/archive/b1da28896263ee2f237869109e5a6f8efdd554ea.tar.gz",
+        "url": "https://github.com/input-output-hk/cardano-wallet/archive/93e6b2b3671bdbe73d1dbf6ee9a693c1221ded99.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "gitignore": {

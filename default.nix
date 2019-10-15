@@ -14,6 +14,7 @@ in
 , signingKeys ? null
 , HSMServer ? null
 , fudgeConfig ? null
+, backend ? "jormungandr"
 }:
 
 let
@@ -26,9 +27,15 @@ let
   buildNumSuffix = if buildNum == null then "" else ("-${builtins.toString buildNum}");
   throwSystem = throw "Unsupported system: ${pkgs.stdenv.hostPlatform.system}";
   ghcWithCardano = cardanoSL.haskellPackages.ghcWithPackages (ps: [ ps.cardano-sl ps.cardano-sl-x509 ]);
+  bridges = {
+    cardano-sl = cardanoSL.daedalus-bridge;
+    cardano = (import localLib.sources.cardano-wallet { inherit backend target; }).daedalus-bridge;
+    jormungandr = (import localLib.sources.cardano-wallet { inherit backend target; }).daedalus-bridge;
+  };
   packages = self: {
     inherit cluster pkgs version;
-    inherit (cardanoSL) daedalus-bridge;
+
+    daedalus-bridge = bridges.${backend};
 
     # a cross-compiled fastlist for the ps-list package
     fastlist = pkgs.pkgsCross.mingwW64.callPackage ./fastlist.nix {};

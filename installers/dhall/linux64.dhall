@@ -17,7 +17,7 @@ in
 , pass      =
   { statePath           = dataDir
   , workingDir          = dataDir
-  , nodePath            = "\${NODE_EXE}"
+  , nodePath            = "cardano-wallet-jormungandr"
   , cliPath             = "\${CLI_EXE}"
   , nodeDbPath          = "${dataDir}/DB/"
   , nodeLogConfig       = "\${DAEDALUS_CONFIG}/log-config-prod.yaml"
