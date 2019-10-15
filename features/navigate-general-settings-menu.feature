@@ -5,7 +5,7 @@ Feature: General Settings
     Given I have completed the basic setup
     And I have the following wallets:
       | name        |
-      | Test wallet |
+      | Test Wallet |
 
   Scenario Outline: Navigating through General Settings secondary menu
     Given I am on the General Settings "<FROM>" screen

@@ -7,7 +7,7 @@ Feature: Import Wallet via Sidebar
     Given I have completed the basic setup
     And I have the following wallets:
       | name        |
-      | Test wallet |
+      | Test Wallet |
 
   Scenario: Successfully Importing a Wallet
     Given The sidebar shows the "wallets" category

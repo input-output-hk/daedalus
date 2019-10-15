@@ -7,7 +7,7 @@ import {
   getWalletByName,
   waitUntilWalletIsLoaded,
   addOrSetWalletsForScenario,
-  importWalletWithFunds,
+  restoreWalletWithFunds,
 } from '../helpers/wallets-helpers';
 import { waitUntilUrlEquals, navigateTo } from '../helpers/route-helpers';
 import { DECIMAL_PLACES_IN_ADA } from '../../../../source/renderer/app/config/numbersConfig';
@@ -21,7 +21,7 @@ import {
 } from '../helpers/notifications-helpers';
 
 Given(/^I have a "([^"]*)" wallet with funds$/, async function(walletName) {
-  await importWalletWithFunds(this.client, { walletName });
+  await restoreWalletWithFunds(this.client, { walletName });
   const wallet = await waitUntilWalletIsLoaded.call(this, walletName);
   addOrSetWalletsForScenario.call(this, wallet);
 });
