@@ -1,6 +1,5 @@
 import { Given, When, Then } from 'cucumber';
 import { expect } from 'chai';
-// import path from 'path';
 import BigNumber from 'bignumber.js';
 import {
   createWallets,
@@ -20,13 +19,6 @@ import {
   isActiveWalletBeingRestored,
   waitForActiveRestoreNotification,
 } from '../helpers/notifications-helpers';
-
-// const defaultWalletKeyFilePath = path.resolve(
-//   __dirname,
-//   '../documents/default-wallet.key'
-// );
-// const defaultWalletJSONFilePath = path.resolve(__dirname, '../support/default-wallet.json');
-// ^^ JSON wallet file import is currently not working due to missing JSON import V1 API endpoint
 
 Given(/^I have a "([^"]*)" wallet with funds$/, async function(walletName) {
   await importWalletWithFunds(this.client, { walletName });

@@ -389,9 +389,9 @@ export default class WalletSendForm extends Component<Props, State> {
         });
       }
     } catch (error) {
-      let errorMsg = error;
+      let errorMessage = error;
       if (error.message === 'INVALID_ADDRESS') {
-        errorMsg = messages.invalidAddress;
+        errorMessage = messages.invalidAddress;
       }
       const errorHasLink = !!get(error, ['values', 'linkLabel']);
       const transactionFeeError = errorHasLink ? (
@@ -400,7 +400,7 @@ export default class WalletSendForm extends Component<Props, State> {
           onExternalLinkClick={this.props.onExternalLinkClick}
         />
       ) : (
-        this.context.intl.formatMessage(errorMsg)
+        this.context.intl.formatMessage(errorMessage)
       );
       if (this._isMounted) {
         this._isCalculatingFee = false;
