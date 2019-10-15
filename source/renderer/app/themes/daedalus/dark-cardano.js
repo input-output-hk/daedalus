@@ -112,20 +112,19 @@ export const DARK_CARDANO_THEME_OUTPUT = {
       'rgba(250, 251, 252, .3)',
   },
   buttonFlat: {
-    '--theme-button-flat-background-color': '#414251',
-    '--theme-button-flat-background-color-hover': '#71717d',
-    '--theme-button-flat-background-color-active': '#31323D',
-    '--theme-button-flat-background-color-disabled': 'rgba(65, 66, 81, 0.3)',
+    '--theme-button-flat-background-color': 'rgba(255, 255, 255, 0.1)',
+    '--theme-button-flat-background-color-hover': 'rgba(255, 255, 255, 0.05)',
+    '--theme-button-flat-background-color-active': 'rgba(255, 255, 255, 0.12)',
+    '--theme-button-flat-background-color-disabled': 'rgba(255, 255, 255, 0.1)',
     '--theme-button-flat-text-color-disabled': '#ffffff',
-    '--theme-button-flat-text-color': '#ffffff',
-    '--theme-button-flat-outline-color': '#71717d',
+    '--theme-button-flat-text-color': '#fff',
+    '--theme-button-flat-outline-color': 'rgba(94, 96, 102, 0.3)',
   },
   buttonPrimary: {
     '--theme-button-primary-background-color': '#1fc1c3',
     '--theme-button-primary-background-color-hover': '#26e7eb',
     '--theme-button-primary-background-color-active': '#1cabad',
-    '--theme-button-primary-background-color-disabled':
-      'rgba(31, 193, 195, 0.3)',
+    '--theme-button-primary-background-color-disabled': '#1fc1c3',
     '--theme-button-primary-text-color-disabled': '#121326',
     '--theme-button-primary-text-color': '#121326',
     '--theme-button-primary-outline-color': 'rgba(255, 255, 255, 0.5)',
@@ -774,11 +773,6 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--theme-utxo-tooltip-text-color': '#fff',
   },
   recoveryPhrase: {
-    '--theme-recovery-phrase-normal-background-color':
-      'rgba(255, 255, 255, .1)',
-    '--theme-recovery-phrase-normal-border-color': 'transparent',
-    '--theme-recovery-phrase-warning-background-color':
-      'rgba(255, 255, 255, .1)',
     '--theme-recovery-phrase-attention-background-color':
       'rgba(234, 76, 91, .2)',
   },

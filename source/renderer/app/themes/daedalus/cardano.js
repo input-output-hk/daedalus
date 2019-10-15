@@ -128,11 +128,10 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-button-primary-background-color': '#2cbb69',
     '--theme-button-primary-background-color-hover': '#56c887',
     '--theme-button-primary-background-color-active': '#239554',
-    '--theme-button-primary-background-color-disabled':
-      'rgba(44, 187, 105, 0.3)',
-    '--theme-button-primary-text-color-disabled': '#fafbfc',
-    '--theme-button-primary-text-color': '#fafbfc',
-    '--theme-button-primary-outline-color': '#35de7e',
+    '--theme-button-primary-background-color-disabled': '#2cbb69',
+    '--theme-button-primary-text-color-disabled': '#fff',
+    '--theme-button-primary-text-color': '#fff',
+    '--theme-button-primary-outline-color': 'rgba(255, 255, 255, 0.3)',
   },
   connecting: {
     '--theme-connecting-background-color': '#202225',
@@ -783,10 +782,6 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-utxo-tooltip-text-color': '#fafbfc',
   },
   recoveryPhrase: {
-    '--theme-recovery-phrase-normal-background-color': 'transparent',
-    '--theme-recovery-phrase-normal-border-color': 'rgba(32, 34, 37, .07)',
-    '--theme-recovery-phrase-warning-background-color':
-      'rgba(32, 34, 37, 0.05)',
     '--theme-recovery-phrase-attention-background-color':
       'rgba(234, 76, 91, .1)',
   },
