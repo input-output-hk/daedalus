@@ -5,6 +5,7 @@ Changelog
 
 ### Chores
 
+- Added note to UTXO screen showing pending transactions ([1589](https://github.com/input-output-hk/daedalus/pull/1589))
 - Reorganized Storybook by domain ([PR 1537](https://github.com/input-output-hk/daedalus/pull/1537))
 - Reorganized Tests by domain ([PR 1540](https://github.com/input-output-hk/daedalus/pull/1540))
 
