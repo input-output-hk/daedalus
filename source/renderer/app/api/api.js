@@ -20,13 +20,9 @@ import { getAddress } from './addresses/requests/getAddress';
 import { createAddress } from './addresses/requests/createAddress';
 
 // Nodes requests
-import { applyNodeUpdate } from './nodes/requests/applyNodeUpdate';
 import { getNodeInfo } from './nodes/requests/getNodeInfo';
 import { getNodeSettings } from './nodes/requests/getNodeSettings';
 import { getCurrentEpoch } from './nodes/requests/getCurrentEpoch';
-import { getNextNodeUpdate } from './nodes/requests/getNextNodeUpdate';
-import { postponeNodeUpdate } from './nodes/requests/postponeNodeUpdate';
-import { getLatestAppVersion } from './nodes/requests/getLatestAppVersion';
 
 // Transactions requests
 import { getTransactionFee } from './transactions/requests/getTransactionFee';
@@ -49,10 +45,7 @@ import { updateWallet } from './wallets/requests/updateWallet';
 import { getWalletUtxos } from './wallets/requests/getWalletUtxos';
 
 // utility functions
-import {
-  awaitUpdateChannel,
-  cardanoFaultInjectionChannel,
-} from '../ipc/cardano.ipc';
+import { cardanoFaultInjectionChannel } from '../ipc/cardano.ipc';
 import patchAdaApi from './utils/patchAdaApi';
 import { isValidMnemonic } from '../../../common/crypto/decrypt';
 import { utcStringToDate, encryptPassphrase } from './utils';
@@ -99,14 +92,11 @@ import type { RequestConfig } from './common/types';
 // Nodes Types
 import type {
   CardanoExplorerResponse,
-  LatestAppVersionInfoResponse,
   NodeInfoResponse,
   NodeSettingsResponse,
-  NodeSoftware,
   GetNetworkStatusResponse,
   GetNodeSettingsResponse,
   GetCurrentEpochFallbackResponse,
-  GetLatestAppVersionResponse,
 } from './nodes/types';
 import type { NodeInfoQueryParams } from './nodes/requests/getNodeInfo';
 
@@ -820,45 +810,6 @@ export default class AdaApi {
     }
   };
 
-  nextUpdate = async (): Promise<NodeSoftware | null> => {
-    Logger.debug('AdaApi::nextUpdate called');
-    try {
-      const nodeUpdate = await getNextNodeUpdate(this.config);
-      if (nodeUpdate && nodeUpdate.version) {
-        Logger.debug('AdaApi::nextUpdate success', { nodeUpdate });
-        return nodeUpdate;
-      }
-      Logger.debug('AdaApi::nextUpdate success: No Update Available');
-    } catch (error) {
-      Logger.error('AdaApi::nextUpdate error', { error });
-      throw new GenericApiError();
-    }
-    return null;
-  };
-
-  postponeUpdate = async (): Promise<void> => {
-    Logger.debug('AdaApi::postponeUpdate called');
-    try {
-      const response: Promise<any> = await postponeNodeUpdate(this.config);
-      Logger.debug('AdaApi::postponeUpdate success', { response });
-    } catch (error) {
-      Logger.error('AdaApi::postponeUpdate error', { error });
-      throw new GenericApiError();
-    }
-  };
-
-  applyUpdate = async (): Promise<void> => {
-    Logger.debug('AdaApi::applyUpdate called');
-    try {
-      await awaitUpdateChannel.send();
-      const response: Promise<any> = await applyNodeUpdate(this.config);
-      Logger.debug('AdaApi::applyUpdate success', { response });
-    } catch (error) {
-      Logger.error('AdaApi::applyUpdate error', { error });
-      throw new GenericApiError();
-    }
-  };
-
   updateWallet = async (request: UpdateWalletRequest): Promise<Wallet> => {
     Logger.debug('AdaApi::updateWallet called', {
       parameters: filterLogData(request),
@@ -1038,30 +989,6 @@ export default class AdaApi {
     }
   };
 
-  getLatestAppVersion = async (): Promise<GetLatestAppVersionResponse> => {
-    Logger.debug('AdaApi::getLatestAppVersion called');
-    try {
-      const { isWindows, platform } = global.environment;
-      const latestAppVersionInfo: LatestAppVersionInfoResponse = await getLatestAppVersion();
-      const latestAppVersionPath = `platforms.${
-        isWindows ? 'windows' : platform
-      }.version`;
-      const latestAppVersion = get(
-        latestAppVersionInfo,
-        latestAppVersionPath,
-        null
-      );
-      Logger.debug('AdaApi::getLatestAppVersion success', {
-        latestAppVersion,
-        latestAppVersionInfo,
-      });
-      return { latestAppVersion };
-    } catch (error) {
-      Logger.error('AdaApi::getLatestAppVersion error', { error });
-      throw new GenericApiError();
-    }
-  };
-
   setCardanoNodeFault = async (fault: FaultInjectionIpcRequest) => {
     await cardanoFaultInjectionChannel.send(fault);
   };
@@ -1069,11 +996,9 @@ export default class AdaApi {
   // No implementation here but can be overwritten
   getLocalTimeDifference: Function;
   setLocalTimeDifference: Function;
-  setNextUpdate: Function;
   setSubscriptionStatus: Function;
   setLocalBlockHeight: Function;
   setNetworkBlockHeight: Function;
-  setLatestAppVersion: Function;
   setFaultyNodeSettingsApi: boolean;
 }
 

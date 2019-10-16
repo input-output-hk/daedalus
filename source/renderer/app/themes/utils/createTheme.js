@@ -623,34 +623,6 @@ export const createDaedalusComponentsTheme = (
       '--theme-loading-status-icons-tooltip-color': `${text.primary}`,
       '--theme-loading-spinner-color': `${text.primary}`,
     },
-    manualUpdate: {
-      '--theme-manual-update-overlay-background-color': `${chroma(
-        background.secondary.regular
-      ).alpha(0.96)}`,
-      '--theme-manual-update-overlay-button-background-color': `${
-        background.secondary.dark
-      }`,
-      '--theme-manual-update-overlay-button-background-color-hover': `${
-        text.secondary
-      }`,
-      '--theme-manual-update-overlay-button-icon-color': `${text.secondary}`,
-      '--theme-manual-update-overlay-button-icon-color-hover': `${
-        background.secondary.regular
-      }`,
-      '--theme-manual-update-overlay-button-text-color-hover': `${
-        background.secondary.regular
-      }`,
-      '--theme-manual-update-overlay-button-border-color': `${text.secondary}`,
-      '--theme-manual-update-overlay-text-color': `${chroma(
-        text.secondary
-      ).alpha(0.7)}`,
-      '--theme-manual-update-overlay-text-highlight-color': `${text.secondary}`,
-      '--theme-manual-update-overlay-title-text-color': `${text.secondary}`,
-      '--theme-manual-update-overlay-button-label-color': `${text.secondary}`,
-      '--theme-manual-update-overlay-button-label-color-hover': `${
-        text.secondary
-      }`,
-    },
     mnemonic: {
       '--theme-mnemonic-background-color': `${background.primary.regular}`,
       '--theme-mnemonic-background-color-hover': `${background.primary.dark}`,
@@ -709,31 +681,6 @@ export const createDaedalusComponentsTheme = (
     nodeUpdate: {
       '--theme-node-update-background-color': `${background.primary.regular}`,
       '--theme-node-update-title-color': `${text.primary}`,
-      '--theme-node-update-message-color': `${text.primary}`,
-      '--theme-node-sync-info-message-background-color': `${
-        background.primary.regular
-      }`,
-      '--theme-node-sync-info-message-text-color': `${text.primary}`,
-      '--theme-node-sync-icon-color': `${text.primary}`,
-      '--theme-node-update-accept-button-background-color': `${
-        background.secondary.regular
-      }`,
-      '--theme-node-update-accept-button-background-color-hover': `${
-        background.secondary.light
-      }`,
-      '--theme-node-update-accept-button-background-color-active': `${
-        background.secondary.darkest
-      }`,
-      '--theme-node-update-deny-button-background-color': `${
-        background.secondary.regular
-      }`,
-      '--theme-node-update-deny-button-background-color-hover': `${
-        background.secondary.light
-      }`,
-      '--theme-node-update-deny-button-background-color-active': `${
-        background.secondary.darkest
-      }`,
-      '--theme-node-update-button-text-color': `${text.secondary}`,
     },
     notification: {
       '--theme-notification-message-background-color': `${chroma(

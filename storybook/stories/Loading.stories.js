@@ -14,7 +14,6 @@ import {
 } from './Loading-SyncingConnecting.stories';
 import { NoDiskSpaceErrorStory } from './Loading-NoDiskSpaceError.stories';
 import { SystemTimeErrorStory } from './Loading-SystemTimeError.stories';
-import { ManualUpdateStory } from './Loading-ManualUpdate.stories';
 import { DataLayerMigrationStory } from './Loading-DataLayerMigration.stories';
 
 storiesOf('Loading', module)
@@ -32,5 +31,4 @@ storiesOf('Loading', module)
   .add('SyncingConnecting - Sync Issues', SyncIssuesSyncingConnectingStory)
   .add('NoDiskSpaceError', NoDiskSpaceErrorStory)
   .add('SystemTimeError', SystemTimeErrorStory)
-  .add('ManualUpdate', ManualUpdateStory)
   .add('DataLayerMigrationStory', DataLayerMigrationStory);
