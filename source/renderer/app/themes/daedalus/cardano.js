@@ -116,10 +116,10 @@ export const CARDANO_THEME_OUTPUT = {
       'rgba(255, 255, 255, .3)',
   },
   buttonFlat: {
-    '--theme-button-flat-background-color': '#f0f3f5',
-    '--theme-button-flat-background-color-hover': '#f3f5f7',
-    '--theme-button-flat-background-color-active': '#ebeef0',
-    '--theme-button-flat-background-color-disabled': 'rgba(240, 243, 245, 0.3)',
+    '--theme-button-flat-background-color': 'rgba(32, 34, 37, 0.1)',
+    '--theme-button-flat-background-color-hover': 'rgba(32, 34, 37, 0.05)',
+    '--theme-button-flat-background-color-active': 'rgba(32, 34, 37, 0.12)',
+    '--theme-button-flat-background-color-disabled': 'rgba(32, 34, 37, 0.1)',
     '--theme-button-flat-text-color-disabled': '#5e6066',
     '--theme-button-flat-text-color': '#5e6066',
     '--theme-button-flat-outline-color': '#e1e4e6',
@@ -128,11 +128,10 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-button-primary-background-color': '#2cbb69',
     '--theme-button-primary-background-color-hover': '#56c887',
     '--theme-button-primary-background-color-active': '#239554',
-    '--theme-button-primary-background-color-disabled':
-      'rgba(44, 187, 105, 0.3)',
-    '--theme-button-primary-text-color-disabled': '#ffffff',
-    '--theme-button-primary-text-color': '#ffffff',
-    '--theme-button-primary-outline-color': '#35de7e',
+    '--theme-button-primary-background-color-disabled': '#2cbb69',
+    '--theme-button-primary-text-color-disabled': '#fff',
+    '--theme-button-primary-text-color': '#fff',
+    '--theme-button-primary-outline-color': 'rgba(255, 255, 255, 0.3)',
   },
   connecting: {
     '--theme-connecting-background-color': '#202225',
@@ -785,10 +784,6 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-utxo-tooltip-text-color': '#ffffff',
   },
   recoveryPhrase: {
-    '--theme-recovery-phrase-normal-background-color': 'transparent',
-    '--theme-recovery-phrase-normal-border-color': 'rgba(32, 34, 37, .07)',
-    '--theme-recovery-phrase-warning-background-color':
-      'rgba(32, 34, 37, 0.05)',
     '--theme-recovery-phrase-attention-background-color':
       'rgba(234, 76, 91, .1)',
   },
