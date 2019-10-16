@@ -18,12 +18,7 @@ export default class SidebarLayout extends Component<Props> {
   };
 
   render() {
-    const {
-      children,
-      sidebar,
-      topbar,
-      contentDialogs,
-    } = this.props;
+    const { children, sidebar, topbar, contentDialogs } = this.props;
 
     return (
       <div className={styles.component}>
