@@ -8,6 +8,11 @@ Changelog
 - Reorganized Storybook by domain ([PR 1537](https://github.com/input-output-hk/daedalus/pull/1537))
 - Reorganized Tests by domain ([PR 1540](https://github.com/input-output-hk/daedalus/pull/1540))
 
+### Fixes
+
+- Fixed green Cardano theme white color and borders color ([PR 1584](https://github.com/input-output-hk/daedalus/pull/1584))
+- Fixed flat button color  ([PR 1586](https://github.com/input-output-hk/daedalus/pull/1586))
+
 ## 0.15.0
 
 ### Features
