@@ -8,7 +8,8 @@ export function buildJormungandrNodeOpts({ nodePort, stateDir }: WalletOpts) {
 
   return [
     'launch',
-    '--node-port', String(nodePort), // tell cardano-wallet to expect jormungandr on nodePort
+    '--node-port',
+    String(nodePort), // tell cardano-wallet to expect jormungandr on nodePort
     '--state-dir',
     stateDir,
     // NOTE: --random-port is the value we will use
@@ -17,11 +18,15 @@ export function buildJormungandrNodeOpts({ nodePort, stateDir }: WalletOpts) {
     // '--random-port',
     '--port',
     '8088',
-    '--genesis-block-hash', 'adbdd5ede31637f6c9bad5c271eec0bc3d0cb9efb86a5b913bb55cba549d0770', // TODO, daedalus should either get the hash from launcher-config.yaml, or the the entire nodeArgs array
+    '--genesis-block-hash',
+    'adbdd5ede31637f6c9bad5c271eec0bc3d0cb9efb86a5b913bb55cba549d0770', // TODO, daedalus should either get the hash from launcher-config.yaml, or the the entire nodeArgs array
     '--',
-    '--rest-listen', `127.0.0.1:${nodePort}`, // tell jormungandr to actually listen on nodePort
-    '--config',`${process.env.DAEDALUS_CONFIG}/jormungandr-config.yaml`, // TODO, get cardano-wallet to generate the right config (with trustedPeers)
-    '--storage',`${stateDir}/db` // TODO, cardano-wallet should specify this in the config, relative to the --state-dir
+    '--rest-listen',
+    `127.0.0.1:${nodePort}`, // tell jormungandr to actually listen on nodePort
+    '--config',
+    `${process.env.DAEDALUS_CONFIG}/jormungandr-config.yaml`, // TODO, get cardano-wallet to generate the right config (with trustedPeers)
+    '--storage',
+    `${stateDir}/db`, // TODO, cardano-wallet should specify this in the config, relative to the --state-dir
   ];
 }
 

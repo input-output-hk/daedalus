@@ -22,6 +22,7 @@ import type {
 } from '../../common/types/cardano-node.types';
 import { CardanoNodeStates } from '../../common/types/cardano-node.types';
 import { CardanoWalletLauncher } from './CardanoWalletLauncher';
+import { launcherConfig } from '../config';
 
 /* eslint-disable consistent-return */
 
@@ -509,13 +510,23 @@ export class CardanoNode {
   _handleCardanoReplyPortMessage = (port: number) => {
     const { _actions } = this;
     const { tlsPath } = this._config;
-    this._tlsConfig = {
-      ca: _actions.readFileSync(`${tlsPath}/client/ca.crt`),
-      key: _actions.readFileSync(`${tlsPath}/client/client.key`),
-      cert: _actions.readFileSync(`${tlsPath}/client/client.pem`),
-      hostname: 'localhost',
-      port,
-    };
+    this._tlsConfig =
+      launcherConfig.nodeImplementation === 'jormungandr'
+        ? {
+            ca: ('': any),
+            key: ('': any),
+            cert: ('': any),
+            hostname: 'localhost',
+            port,
+          }
+        : {
+            ca: _actions.readFileSync(`${tlsPath}/client/ca.crt`),
+            key: _actions.readFileSync(`${tlsPath}/client/client.key`),
+            cert: _actions.readFileSync(`${tlsPath}/client/client.pem`),
+            hostname: 'localhost',
+            port,
+          };
+
     if (this._state === CardanoNodeStates.STARTING) {
       this._changeToState(CardanoNodeStates.RUNNING);
       this.broadcastTlsConfig();
