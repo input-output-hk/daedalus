@@ -5,7 +5,6 @@ import AppActions from './app-actions';
 import BlockConsolidationActions from './block-consolidation-actions';
 import DialogsActions from './dialogs-actions';
 import NetworkStatusActions from './network-status-actions';
-import NodeUpdateActions from './node-update-actions';
 import NotificationsActions from './notifications-actions';
 import ProfileActions from './profile-actions';
 import RouterActions from './router-actions';
@@ -24,7 +23,6 @@ export type ActionsMap = {
   blockConsolidation: BlockConsolidationActions,
   dialogs: DialogsActions,
   networkStatus: NetworkStatusActions,
-  nodeUpdate: NodeUpdateActions,
   notifications: NotificationsActions,
   profile: ProfileActions,
   router: RouterActions,
@@ -44,7 +42,6 @@ const actionsMap: ActionsMap = {
   blockConsolidation: new BlockConsolidationActions(),
   dialogs: new DialogsActions(),
   networkStatus: new NetworkStatusActions(),
-  nodeUpdate: new NodeUpdateActions(),
   notifications: new NotificationsActions(),
   profile: new ProfileActions(),
   router: new RouterActions(),

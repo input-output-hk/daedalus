@@ -4,7 +4,6 @@ import { get } from 'lodash';
 import AdaApi from '../api';
 import { getNodeInfo } from '../nodes/requests/getNodeInfo';
 import { getNodeSettings } from '../nodes/requests/getNodeSettings';
-import { getLatestAppVersion } from '../nodes/requests/getLatestAppVersion';
 import { GenericApiError } from '../common/errors';
 import { Logger } from '../../utils/logging';
 import { RedeemAdaError } from '../transactions/errors';
@@ -12,19 +11,15 @@ import type { RedeemAdaParams } from '../transactions/requests/redeemAda';
 import type { RedeemPaperVendedAdaParams } from '../transactions/requests/redeemPaperVendedAda';
 import type { NodeInfoQueryParams } from '../nodes/requests/getNodeInfo';
 import type {
-  LatestAppVersionInfoResponse,
   NodeInfoResponse,
   GetNetworkStatusResponse,
   NodeSettingsResponse,
   GetNodeSettingsResponse,
-  GetLatestAppVersionResponse,
 } from '../nodes/types';
 
-let LATEST_APP_VERSION = null;
 let LOCAL_TIME_DIFFERENCE = 0;
 let LOCAL_BLOCK_HEIGHT = null;
 let NETWORK_BLOCK_HEIGHT = null;
-let NEXT_ADA_UPDATE = null;
 let SUBSCRIPTION_STATUS = null;
 
 export default (api: AdaApi) => {
@@ -162,40 +157,6 @@ export default (api: AdaApi) => {
 
   api.setLocalTimeDifference = async timeDifference => {
     LOCAL_TIME_DIFFERENCE = timeDifference;
-  };
-
-  api.nextUpdate = async () => Promise.resolve(NEXT_ADA_UPDATE);
-
-  api.setNextUpdate = async nextUpdate => {
-    NEXT_ADA_UPDATE = nextUpdate;
-  };
-
-  api.getLatestAppVersion = async (): Promise<GetLatestAppVersionResponse> => {
-    Logger.debug('AdaApi::getLatestAppVersion (PATCHED) called');
-    try {
-      const { isWindows, platform } = global.environment;
-      const latestAppVersionInfo: LatestAppVersionInfoResponse = await getLatestAppVersion();
-      const latestAppVersionPath = `platforms.${
-        isWindows ? 'windows' : platform
-      }.version`;
-      const latestAppVersion = get(
-        latestAppVersionInfo,
-        latestAppVersionPath,
-        null
-      );
-      Logger.debug('AdaApi::getLatestAppVersion success', {
-        latestAppVersion,
-        latestAppVersionInfo,
-      });
-      return { latestAppVersion: LATEST_APP_VERSION || latestAppVersion };
-    } catch (error) {
-      Logger.error('AdaApi::getLatestAppVersion (PATCHED) error', { error });
-      throw new GenericApiError();
-    }
-  };
-
-  api.setLatestAppVersion = async (latestAppVersion: ?string) => {
-    LATEST_APP_VERSION = latestAppVersion;
   };
 
   api.setSubscriptionStatus = async (subscriptionStatus: ?Object) => {

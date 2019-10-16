@@ -295,23 +295,6 @@ export const DARK_BLUE_THEME_CONFIG = {
     '--theme-loading-status-icons-tooltip-color': '#4b5a68',
     '--theme-loading-spinner-color': '#e9f4fe',
   },
-  manualUpdate: {
-    '--theme-manual-update-overlay-background-color': 'rgba(38, 51, 69, 0.96)',
-    '--theme-manual-update-overlay-button-background-color':
-      'rgba(0, 0, 0, 0.1)',
-    '--theme-manual-update-overlay-button-background-color-hover': '#fafbfc',
-    '--theme-manual-update-overlay-button-icon-color': 'rgba(250, 251, 252, 1)',
-    '--theme-manual-update-overlay-button-icon-color-hover':
-      'rgba(38, 51, 69, 1)',
-    '--theme-manual-update-overlay-button-label-color-hover':
-      'rgba(38, 51, 69, 1)',
-    '--theme-manual-update-overlay-button-text-color-hover': '#263345',
-    '--theme-manual-update-overlay-button-border-color': '#fafbfc',
-    '--theme-manual-update-overlay-text-color': 'rgba(250, 251, 252, 0.7)',
-    '--theme-manual-update-overlay-text-highlight-color': '#fafbfc',
-    '--theme-manual-update-overlay-title-text-color': '#fafbfc',
-    '--theme-manual-update-overlay-button-label-color': '#fafbfc',
-  },
   mnemonic: {
     '--theme-backup-mnemonic-background-color': 'rgba(233, 244, 254, 0.05)',
     '--theme-mnemonic-background-color': 'rgba(83, 99, 112, 0.3)',
@@ -354,19 +337,6 @@ export const DARK_BLUE_THEME_CONFIG = {
   nodeUpdate: {
     '--theme-node-update-background-color': '#536370',
     '--theme-node-update-title-color': '#e9f4fe',
-    '--theme-node-update-message-color': '#e9f4fe',
-    '--theme-node-sync-info-message-background-color': '#536370',
-    '--theme-node-sync-info-message-text-color': '#e9f4fe',
-    '--theme-node-sync-icon-color': '#fff',
-    '--theme-node-update-accept-button-background-color': '#263345',
-    '--theme-node-update-accept-button-background-color-hover': '#34465e',
-    '--theme-node-update-accept-button-background-color-active': '#18202b',
-    '--theme-node-update-deny-button-background-color': 'rgba(38, 51, 69, 0.3)',
-    '--theme-node-update-deny-button-background-color-hover':
-      'rgba(52, 70, 94, 0.3)',
-    '--theme-node-update-deny-button-background-color-active':
-      'rgba(24, 32, 43, 0.3)',
-    '--theme-node-update-button-text-color': '#fafbfc',
   },
   notification: {
     '--theme-notification-message-background-color': 'rgba(83, 99, 112, 0.95)',

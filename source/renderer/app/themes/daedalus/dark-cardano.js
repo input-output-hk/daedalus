@@ -418,20 +418,6 @@ export const DARK_CARDANO_THEME_CONFIG = {
     '--theme-loading-status-icons-tooltip-color': '#56576b',
     '--theme-loading-spinner-color': '#ffffff',
   },
-  manualUpdate: {
-    '--theme-manual-update-overlay-background-color': '#36374df5',
-    '--theme-manual-update-overlay-button-background-color': '#313245',
-    '--theme-manual-update-overlay-button-background-color-hover': '#ffffff',
-    '--theme-manual-update-overlay-button-icon-color': '#ffffff',
-    '--theme-manual-update-overlay-button-icon-color-hover': '#36374d',
-    '--theme-manual-update-overlay-button-text-color-hover': '#36374d',
-    '--theme-manual-update-overlay-button-border-color': '#ffffff',
-    '--theme-manual-update-overlay-text-color': '#ffffffb3',
-    '--theme-manual-update-overlay-text-highlight-color': '#ffffff',
-    '--theme-manual-update-overlay-title-text-color': '#ffffff',
-    '--theme-manual-update-overlay-button-label-color': '#ffffff',
-    '--theme-manual-update-overlay-button-label-color-hover': '#000000',
-  },
   mnemonic: {
     '--theme-mnemonic-background-color': 'rgba(255, 255, 255, 0.07)',
     '--theme-mnemonic-background-color-hover': '#101122',
@@ -471,19 +457,6 @@ export const DARK_CARDANO_THEME_CONFIG = {
   nodeUpdate: {
     '--theme-node-update-background-color': '#121326',
     '--theme-node-update-title-color': '#ffffff',
-    '--theme-node-update-message-color': '#ffffff',
-    '--theme-node-sync-info-message-background-color': '#121326',
-    '--theme-node-sync-info-message-text-color': '#ffffff',
-    '--theme-node-sync-icon-color': '#fff',
-    '--theme-node-update-accept-button-background-color': '#36374d',
-    '--theme-node-update-accept-button-background-color-hover': '#5e5f71',
-    '--theme-node-update-accept-button-background-color-active': '#262736',
-    '--theme-node-update-deny-button-background-color': 'rgba(54, 55, 77, 0.3)',
-    '--theme-node-update-deny-button-background-color-hover':
-      'rgba(94, 95, 113, 0.3)',
-    '--theme-node-update-deny-button-background-color-active':
-      'rgba(38, 39, 54, 0.3)',
-    '--theme-node-update-button-text-color': '#ffffff',
   },
   notification: {
     '--theme-notification-message-background-color': '#36374df2',

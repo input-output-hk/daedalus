@@ -90,16 +90,6 @@ function typedRequest<Response>(
               "status": "success",
               "data": "statusCode: ${statusCode} -- statusMessage: ${statusMessage}"
             }`;
-          } else if (
-            options.path === '/api/internal/next-update' &&
-            statusCode === 404
-          ) {
-            // when nextAdaUpdate receives a 404, it isn't an error
-            // it means no updates are available
-            body = `{
-              "status": "success",
-              "data": null
-            }`;
           }
 
           const parsedBody = JSON.parse(body);
