@@ -1,7 +1,7 @@
 { name         = "testnet"
 , keyPrefix    = "testnet_wallet"
 , relays       = "relays.cardano-testnet.iohkdev.io"
-, updateServer = "http://updates-cardano-testnet.s3.amazonaws.com"
+, updateServer = "https://disabled.iohkdev.io"
 , installDirectorySuffix = " Testnet"
 , macPackageSuffix       = "Testnet"
 , walletPort             = 8094
