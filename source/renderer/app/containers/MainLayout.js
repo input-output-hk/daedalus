@@ -66,7 +66,6 @@ export default class MainLayout extends Component<InjectedContainerProps> {
       <SidebarLayout
         sidebar={sidebarComponent}
         topbar={<TopBarContainer />}
-        notification={null}
         contentDialogs={[
           <PaperWalletCreateCertificatePage
             key="PaperWalletCreateCertificatePage"
