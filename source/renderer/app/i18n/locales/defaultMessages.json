@@ -215,6 +215,20 @@
           "column": 33,
           "line": 61
         }
+      },
+      {
+        "defaultMessage": "!!!Please enter a valid address.",
+        "description": "Error message shown when invalid address was entered.",
+        "end": {
+          "column": 3,
+          "line": 72
+        },
+        "file": "source/renderer/app/api/transactions/errors.js",
+        "id": "api.errors.invalidAddress",
+        "start": {
+          "column": 23,
+          "line": 68
+        }
       }
     ],
     "path": "source/renderer/app/api/transactions/errors.json"
@@ -8060,31 +8074,17 @@
         }
       },
       {
-        "defaultMessage": "!!!Please enter a valid address.",
-        "description": "Error message shown when invalid address was entered.",
+        "defaultMessage": "!!!Please enter a valid amount.",
+        "description": "Error message shown when invalid amount was entered.",
         "end": {
           "column": 3,
           "line": 80
         },
         "file": "source/renderer/app/components/wallet/WalletSendForm.js",
-        "id": "wallet.send.form.errors.invalidAddress",
-        "start": {
-          "column": 18,
-          "line": 76
-        }
-      },
-      {
-        "defaultMessage": "!!!Please enter a valid amount.",
-        "description": "Error message shown when invalid amount was entered.",
-        "end": {
-          "column": 3,
-          "line": 85
-        },
-        "file": "source/renderer/app/components/wallet/WalletSendForm.js",
         "id": "wallet.send.form.errors.invalidAmount",
         "start": {
           "column": 17,
-          "line": 81
+          "line": 76
         }
       },
       {
@@ -8092,13 +8092,13 @@
         "description": "Error message shown when invalid transaction title was entered.",
         "end": {
           "column": 3,
-          "line": 91
+          "line": 86
         },
         "file": "source/renderer/app/components/wallet/WalletSendForm.js",
         "id": "wallet.send.form.errors.invalidTitle",
         "start": {
           "column": 16,
-          "line": 86
+          "line": 81
         }
       },
       {
@@ -8106,13 +8106,13 @@
         "description": "Syncing transactions message shown during async wallet restore in the wallet send form.",
         "end": {
           "column": 3,
-          "line": 98
+          "line": 93
         },
         "file": "source/renderer/app/components/wallet/WalletSendForm.js",
         "id": "wallet.send.form.syncingTransactionsMessage",
         "start": {
           "column": 30,
-          "line": 92
+          "line": 87
         }
       }
     ],

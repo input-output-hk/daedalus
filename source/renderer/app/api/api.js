@@ -153,6 +153,7 @@ import {
   NotEnoughFundsForTransactionError,
   NotEnoughMoneyToSendError,
   TooBigTransactionError,
+  InvalidAddressError,
 } from './transactions/errors';
 import type { FaultInjectionIpcRequest } from '../../../common/types/cardano-node.types';
 import { TlsCertificateNotValidError } from './nodes/errors';
@@ -558,7 +559,7 @@ export default class AdaApi {
         error.code === 'bad_request' &&
         includes(error.message, 'Unable to decode Address')
       ) {
-        throw new Error('INVALID_ADDRESS');
+        throw new InvalidAddressError();
       } else {
         throw new GenericApiError();
       }
