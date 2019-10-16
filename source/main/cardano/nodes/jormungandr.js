@@ -22,7 +22,8 @@ export function buildJormungandrNodeOpts({ nodePort, stateDir }: WalletOpts) {
     'adbdd5ede31637f6c9bad5c271eec0bc3d0cb9efb86a5b913bb55cba549d0770',
     '--',
     '--log-output', 'stdout',
-    '--config',`${process.env.DAEDALUS_CONFIG}/jormungandr-config.yaml`
+    '--config',`${process.env.DAEDALUS_CONFIG}/jormungandr-config.yaml`,
+    '--storage',`${stateDir}/db`
   ];
 }
 
