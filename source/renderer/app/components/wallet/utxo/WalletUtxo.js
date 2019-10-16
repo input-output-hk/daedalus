@@ -223,8 +223,8 @@ export default class WalletUtxo extends Component<Props, State> {
                       <Bar dataKey="walletUtxosAmount" className={styles.bar} />
                     </BarChart>
                   </ResponsiveContainer>
-                  {this.renderPendingTxns(pendingTxnsCount)}
                 </div>
+                {this.renderPendingTxns(pendingTxnsCount)}
               </Fragment>
             ) : (
               <p>{intl.formatMessage(messages.emptyWallet)}</p>
