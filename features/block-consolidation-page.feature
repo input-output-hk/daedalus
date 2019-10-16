@@ -1,4 +1,5 @@
-@e2e
+@e2e @skip
+# @API TODO - Rust node stores block data in a different directory so this has to be handled first
 Feature: Display Block Consolidation Page
 
   Background:

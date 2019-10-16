@@ -5,7 +5,7 @@ Feature: Paper Wallets Certificate generation
 
   Background:
     Given I have completed the basic setup
-    And I have a "Test Wallet" wallet with funds
+    And I have a "Test wallet" wallet with funds
 
   Scenario: Paper wallets certificate success generation
     Given The sidebar shows the "wallets" category
@@ -27,8 +27,8 @@ Feature: Paper Wallets Certificate generation
     And Cardano explorer link and wallet address should be valid
     And I click on the finish button
     And I should not see the create paper wallet certificate dialog anymore
-    When I click on the "Test Wallet" wallet in the sidebar
-    And I am on the "Test Wallet" wallet "send" screen
+    When I click on the "Test wallet" wallet in the sidebar
+    And I am on the "Test wallet" wallet "send" screen
     And I fill out the send form:
       | amount   |
       | 0.000010 |
@@ -36,7 +36,7 @@ Feature: Paper Wallets Certificate generation
     And I click on the next button in the wallet send form
     And I see send money confirmation dialog
     And I submit the wallet send form
-    Then I should be on the "Test Wallet" wallet "summary" screen
+    Then I should be on the "Test wallet" wallet "summary" screen
     And the latest transaction should show:
       | title                   | amountWithoutFees |
       | wallet.transaction.sent | -0.000010         |
@@ -61,7 +61,7 @@ Feature: Paper Wallets Certificate generation
     When I click the wallet receive button
     Then I should be on the "Restored CERTIFICATE wallet" wallet "receive" screen
     And I should see that address was used
-  
+
   Scenario: Paper wallets certificate generation with wrong shielded recovery phrase
     Given The sidebar shows the "wallets" category
     And I click on the "paper-wallet-create-certificate" category in the sidebar

@@ -73,7 +73,7 @@ export const addOrSetWalletsForScenario = function(wallet) {
   }
 };
 
-export const importWalletWithFunds = async (client, { walletName }) =>
+export const restoreWalletWithFunds = async (client, { walletName }) =>
   client.executeAsync((name, done) => {
     daedalus.api.ada
       .restoreWallet({
