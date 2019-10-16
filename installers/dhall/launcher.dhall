@@ -13,10 +13,7 @@
 , x509ToolPath   = os.x509ToolPath
 , nodeImplementation = "jormungandr"
 , nodeArgs =
-    [ "--tlsca",               "${os.nodeArgs.tlsPath}/server/ca.crt"
-    , "--tlscert",             "${os.nodeArgs.tlsPath}/server/server.crt"
-    , "--tlskey",              "${os.nodeArgs.tlsPath}/server/server.key"
-    , "--no-client-auth"
+    [ "--no-client-auth"
     , "--log-console-off"
     , "--update-server",       cluster.updateServer
     , "--keyfile",             os.nodeArgs.keyfile

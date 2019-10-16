@@ -59,6 +59,7 @@ main = do
                     getAppName Mainnet = "Daedalus"
                     getAppName Staging = "DaedalusStaging"
                     getAppName Testnet = "DaedalusTestnet"
+                    getAppName JormungandrTestnet = "DaedalusJormungandrTestnet"
                     cluster = fromJust $ diagReadCaseInsensitive cluster'
                     opts'' = opts' {
                           oCluster = cluster

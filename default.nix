@@ -48,7 +48,7 @@ let
     # the native makensis binary, with cross-compiled windows stubs
     nsis = nsisNixPkgs.callPackage ./nsis.nix {};
 
-    unsignedUnpackedCardano = cardanoSL.daedalus-bridge;
+    unsignedUnpackedCardano = self.daedalus-bridge;
     unpackedCardano = if dummyInstaller then self.dummyUnpacked else (if needSignedBinaries then self.signedCardano else self.unsignedUnpackedCardano);
     signFile = file: let
       localSigningScript = pkgs.writeScript "signing-script" ''

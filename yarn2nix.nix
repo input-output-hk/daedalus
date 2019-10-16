@@ -11,6 +11,7 @@ let
     mainnet = 8090;
     staging = 8092;
     testnet = 8094;
+    jormungandr-testnet = 8190;
   };
   dotGitExists = builtins.pathExists ./.git;
   isNix2 = 0 <= builtins.compareVersions builtins.nixVersion "1.12";
@@ -20,6 +21,7 @@ let
     mainnet = "Daedalus";
     staging = "Daedalus Staging";
     testnet = "Daedalus Testnet";
+    jormungandr-testnet = "Daedalus Jormungandr Testnet";
   };
   newPackage = (origPackage // {
     productName = nameTable.${if cluster == null then "testnet" else cluster};

@@ -2,10 +2,10 @@
 {-# LANGUAGE NoImplicitPrelude   #-}
 {-# LANGUAGE OverloadedStrings   #-}
 {-# LANGUAGE RecordWildCards     #-}
-
 {-# LANGUAGE StandaloneDeriving  #-}
 {-# LANGUAGE TypeOperators     #-}
 {-# LANGUAGE DataKinds         #-}
+
 module Config
   ( checkAllConfigs
   , generateOSClusterConfigs
@@ -63,11 +63,13 @@ import           Types
 -- λ> fmap ((fmap toLower) . show) x
 -- ["bar","baz"]
 diagReadCaseInsensitive :: (Bounded a, Enum a, Read a, Show a) => String -> Maybe a
-diagReadCaseInsensitive str = diagRead $ T.toLower $ T.pack str
-  where mapping    = Map.fromList [ (lshowText x, x) | x <- enumFromTo minBound maxBound ]
-        diagRead x = Just $ flip fromMaybe (Map.lookup x mapping)
-                     (error $ format ("Couldn't parse '"%s%"' as one of: "%s)
-                              (T.pack str) (T.intercalate ", " $ Map.keys mapping))
+diagReadCaseInsensitive str = diagRead $ T.toLower $ T.pack strWithoutDash
+  where
+    strWithoutDash = filter (\x -> x /= '-') str
+    mapping = Map.fromList [ (lshowText x, x) | x <- enumFromTo minBound maxBound ]
+    diagRead x = Just $ flip fromMaybe (Map.lookup x mapping)
+                 (error $ format ("Couldn't parse '"%s%"' as one of: "%s)
+                          (T.pack str) (T.intercalate ", " $ Map.keys mapping))
 
 optReadLower :: (Bounded a, Enum a, Read a, Show a) => ArgName -> ShortName -> Optional HelpMessage -> Parser a
 optReadLower = opt (diagReadCaseInsensitive . T.unpack)
@@ -135,7 +137,6 @@ backendOptionParser = cardano <|> bool (Cardano "") Mantis <$> enableMantis
       "Use Cardano backend with given Daedalus bridge path"
     enableMantis = switch "mantis" 'M' "Use Mantis (ETC) backend"
 
-
 
 -- | Render a FilePath with POSIX-style forward slashes, which is the
 -- Dhall syntax.
@@ -144,9 +145,15 @@ dfp = makeFormat (\fpath -> either id id (FP.toText FP.posix fpath))
 
 dhallTopExpr :: Text -> Config -> OS -> Cluster -> Text
 dhallTopExpr dhallRoot cfg os cluster
-  | Launcher <- cfg = format (s%" "%s%" ("%s%" "%s%" )") (comp Launcher) (comp cluster) (comp os) (comp cluster)
-  | Topology <- cfg = format (s%" "%s)                   (comp Topology) (comp cluster)
-  where comp x = dhallRoot <>"/"<> lshowText x <>".dhall"
+  | Launcher <- cfg = format (configType%" "%clusterF%" ("%osF%" "%clusterF%" )") Launcher cluster os cluster
+  | Topology <- cfg = format (configType%" "%clusterF)                            Topology cluster
+  where
+    configType :: Format r (Config -> r)
+    configType = makeFormat (\x -> dhallRoot <>"/"<> lshowText x <> ".dhall")
+    clusterF :: Format r (Cluster -> r)
+    clusterF = makeFormat (\x -> dhallRoot <>"/"<> clusterNetwork x <> ".dhall")
+    osF :: Format r (OS -> r)
+    osF = makeFormat (\x -> dhallRoot <>"/"<> lshowText x <> ".dhall")
 
 getInstallerConfig :: Text -> OS -> Cluster -> IO InstallerConfig
 getInstallerConfig dhallRoot os cluster = Dhall.input Dhall.auto (LT.fromStrict topexpr)

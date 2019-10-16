@@ -58,6 +58,7 @@ data Cluster
   | Staging
   | Testnet
   | Demo
+  | JormungandrTestnet
   deriving (Bounded, Enum, Eq, Read, Show)
 
 -- | The wallet backend to include in the installer.
@@ -113,6 +114,7 @@ clusterNetwork :: Cluster -> Text
 clusterNetwork Mainnet = "mainnet"
 clusterNetwork Staging = "staging"
 clusterNetwork Testnet = "testnet"
+clusterNetwork JormungandrTestnet = "jormungandr-testnet"
 clusterNetwork Demo = "demo"
 
 packageFileName :: OS -> Cluster -> Version -> Backend -> Text -> Maybe BuildJob -> FilePath
