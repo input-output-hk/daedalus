@@ -18,10 +18,11 @@ export function buildJormungandrNodeOpts({ nodePort, stateDir }: WalletOpts) {
     // '--random-port',
     '--port',
     '8088',
-    '--genesis-block',
-    `${stateDir}/block0.bin`,
-    '--bft-leaders',
-    `${stateDir}/secret.yaml`,
+    '--genesis-block-hash',
+    'adbdd5ede31637f6c9bad5c271eec0bc3d0cb9efb86a5b913bb55cba549d0770',
+    '--',
+    '--log-output', 'stdout',
+    '--config',`${process.env.DAEDALUS_CONFIG}/jormungandr-config.yaml`
   ];
 }
 
