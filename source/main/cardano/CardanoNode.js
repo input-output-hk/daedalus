@@ -293,7 +293,7 @@ export class CardanoNode {
           nodeImplementation,
           cliPath,
           // TODO: Make this dynamic
-          nodePort: 8888,
+          nodePort: 3100,
           stateDir: config.workingDir,
         });
 

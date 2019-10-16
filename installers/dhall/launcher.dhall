@@ -11,8 +11,8 @@
 , logsPrefix     = os.nodeArgs.logsPrefix
 , tlsPath        = os.nodeArgs.tlsPath
 , x509ToolPath   = os.x509ToolPath
-, nodeImplementation = "jormungandr"
-, nodeArgs =
+, nodeImplementation = "jormungandr" # TODO, add an implementation.dhall into the mix?
+, nodeArgs = # TODO, use the correct args for the new codebase (daedalus currently ignores these)
     [ "--no-client-auth"
     , "--log-console-off"
     , "--update-server",       cluster.updateServer
