@@ -1,10 +1,10 @@
 // @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import StoryDecorator from '../support/StoryDecorator';
+import StoryDecorator from '../_support/StoryDecorator';
 import IncidentOverlay from '../../../source/renderer/app/components/news/IncidentOverlay';
 
-storiesOf('NewsFeed', module)
+storiesOf('News|Incidents', module)
   .addDecorator(story => (
     <StoryDecorator>
       {story({
