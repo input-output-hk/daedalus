@@ -10,7 +10,9 @@ import externalLinkIcon from '../../../assets/images/link-ic.inline.svg';
 import styles from './AdaRedemptionUpgradeOverlay.scss';
 
 type Props = {
+  onCloseOverlay: Function,
   onOpenExternalLink: Function,
+  showOverlay: boolean,
 };
 
 @observer
@@ -23,10 +25,6 @@ export default class AdaRedemptionUpgradeOverlay extends Component<Props> {
     }
   }
 
-  onClose = () => {
-    console.log('Should close overlay');
-  };
-
   renderInstructionsBtn = () => (
     <button
       className={styles.actionBtn}
@@ -38,12 +36,18 @@ export default class AdaRedemptionUpgradeOverlay extends Component<Props> {
   );
 
   render() {
+    const { onCloseOverlay, showOverlay } = this.props;
+
+    if (!showOverlay) {
+      return null;
+    }
+
     return (
       <div className={styles.component}>
         <DialogCloseButton
           className={styles.closeButton}
           icon={closeCrossThin}
-          onClose={this.onClose}
+          onClose={onCloseOverlay}
         />
         <SVGInline className={styles.attentionIcon} svg={attentionIcon} />
         <h1 className={styles.title}>Daedalus 0.14.0 for ada redemption</h1>
