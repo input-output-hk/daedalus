@@ -279,6 +279,10 @@ let
         small = ./installers/icons/testnet/64x64.png;
         large = ./installers/icons/testnet/1024x1024.png;
       };
+      jormungandr-testnet = {
+        small = ./installers/icons/testnet/64x64.png;
+        large = ./installers/icons/testnet/1024x1024.png;
+      };
     };
     namespaceHelper = pkgs.writeScriptBin "namespaceHelper" ''
       #!/usr/bin/env bash
