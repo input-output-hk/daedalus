@@ -73,25 +73,23 @@ export const addOrSetWalletsForScenario = function(wallet) {
   }
 };
 
-export const importWalletWithFunds = async (
-  client,
-  { keyFilePath, password }
-) =>
-  client.executeAsync(
-    (filePath, spendingPassword, done) => {
-      daedalus.api.ada
-        .importWalletFromKey({ filePath, spendingPassword })
-        .then(() =>
-          daedalus.stores.wallets
-            .refreshWalletsData()
-            .then(done)
-            .catch(error => done(error))
-        )
-        .catch(error => done(error));
-    },
-    keyFilePath,
-    password
-  );
+export const restoreWalletWithFunds = async (client, { walletName }) =>
+  client.executeAsync((name, done) => {
+    daedalus.api.ada
+      .restoreWallet({
+        walletName: name,
+        recoveryPhrase:
+          'pass proud clarify cargo control fancy question option bring recall dolphin meat comic version pitch',
+        spendingPassword: 'Secret1234',
+      })
+      .then(() =>
+        daedalus.stores.wallets
+          .refreshWalletsData()
+          .then(done)
+          .catch(error => done(error))
+      )
+      .catch(error => done(error));
+  }, walletName);
 
 const createWalletsAsync = async (table, context) => {
   const result = await context.client.executeAsync((wallets, done) => {

@@ -1,4 +1,5 @@
-@e2e @watch
+@e2e @skip
+# @API TODO - we don't have request for `getWalletIdAndBalance`
 Feature: Wallet Settings - Recovery Phrase Verification
 
   Background:

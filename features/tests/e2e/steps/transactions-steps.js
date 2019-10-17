@@ -18,7 +18,7 @@ Given(
       walletId: getWalletByName.call(this, t.source).id,
       destinationWalletId: getWalletByName.call(this, t.destination).id,
       amount: parseInt(new BigNumber(t.amount).times(LOVELACES_PER_ADA), 10),
-      spendingPassword: t.password || null,
+      passphrase: 'Secret1234',
     }));
     this.transactions = [];
     // Sequentially (and async) create transactions with for loop
