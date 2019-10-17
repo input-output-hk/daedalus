@@ -24,7 +24,7 @@ export default class WalletSettingsPage extends Component<Props> {
   }
 
   render() {
-    const { app, wallets, walletSettings } = this.props.stores;
+    const { app, wallets, walletSettings, transactions } = this.props.stores;
     const { walletUtxos } = walletSettings;
     const { histogram } = walletUtxos || { histogram: {} };
     const { active: activeWallet } = wallets;
@@ -32,12 +32,15 @@ export default class WalletSettingsPage extends Component<Props> {
       throw new Error('Active wallet required for WalletSummaryPage.');
     const chartData = getUtxoChartData(histogram);
     const walletUtxosAmount = getWalletUtxosTotalAmount(histogram);
+    const { pendingTransactionsCount: pendingTxnsCount } = transactions;
+
     return (
       <WalletUtxo
         walletAmount={activeWallet.amount}
         walletUtxosAmount={walletUtxosAmount}
         chartData={chartData}
         onExternalLinkClick={app.openExternalLink}
+        pendingTxnsCount={pendingTxnsCount}
       />
     );
   }
