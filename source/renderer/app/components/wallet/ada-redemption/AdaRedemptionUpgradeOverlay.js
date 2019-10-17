@@ -67,7 +67,7 @@ export default class AdaRedemptionUpgradeOverlay extends Component<Props> {
       className={styles.actionBtn}
       onClick={() => this.props.onOpenExternalLink('https://daedaluswallet.io')}
     >
-      Read the instructions
+      {this.context.intl.formatMessage(messages.button)}
       <SVGInline svg={externalLinkIcon} />
     </button>
   );
@@ -103,7 +103,7 @@ export default class AdaRedemptionUpgradeOverlay extends Component<Props> {
             <br />
             {intl.formatMessage(messages.upgrade)}{' '}
             <a href="https://daedaluswallet.io">
-              {intl.formatMessage(messages.button)}
+              daedaluswallet.io
               <SVGInline svg={externalLinkIcon} />
             </a>
             .
