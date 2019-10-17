@@ -20,6 +20,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Development vx',
     description: 'Label for development with version.',
   },
+  "jormungandr-testnet": {
+    id: 'test.environment.jormungandrTestnetLabel',
+    defaultMessage: '!!!Jormungandr Testnet vx',
+    description: 'Label for Jormungandr Testnet with version.',
+  },
 });
 
 type Props = {
