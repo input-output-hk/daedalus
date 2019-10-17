@@ -1,6 +1,5 @@
 @e2e @skip
 # @API TODO - We don't have app update endpoints
-
 Feature: Node Update Exit
 
   Background:

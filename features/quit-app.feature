@@ -13,6 +13,7 @@ Feature: Quitting Daedalus
     And Daedalus process is not running
 
   @slow @restartApp @skip
+  # @API TODO - New wallet backend doesn't support fault injection
   Scenario: Closing the main window, while cardano ignores exit request
     Given Daedalus is running
     And cardano-node is running

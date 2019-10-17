@@ -1,6 +1,5 @@
 @e2e @skip
 # @API TODO - We don't have API endpoint for paper wallets and whole feature existence needs to be discussed
-
 Feature: Paper Wallets Certificate generation
 
   Background:

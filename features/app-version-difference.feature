@@ -1,5 +1,4 @@
 @e2e @skip
-
 # @API TODO - we don't have API endpoint for app update check
 Feature: Manual Software Update Overlay
 
