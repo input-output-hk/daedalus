@@ -108,6 +108,18 @@
     }
   }
 
+  svg {
+    height: 13px;
+    margin: -1px 5px;
+    width: 13px;
+
+    g {
+      path {
+        stroke: #fff;
+      }
+    }
+  }
+
   h1,
   h2 {
     font-family: var(--font-medium);
@@ -164,6 +176,6 @@
 .title {
   font-size: 20px;
   line-height: 1.2;
-  margin-bottom: 0;
+  margin-bottom: 20px;
   margin-top: 22.5px;
 }

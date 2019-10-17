@@ -14,6 +14,7 @@ import AboutDialog from './containers/static/AboutDialog';
 import DaedalusDiagnosticsDialog from './containers/status/DaedalusDiagnosticsDialog';
 import BlockConsolidationStatusDialog from './containers/status/BlockConsolidationStatusDialog';
 import GenericNotificationContainer from './containers/notifications/GenericNotificationContainer';
+import AdaRedemptionUpgradeOverlay from './components/wallet/ada-redemption/AdaRedemptionUpgradeOverlay';
 import { DIALOGS } from '../../common/ipc/constants';
 import type { StoresMap } from './stores/index';
 import type { ActionsMap } from './actions/index';
@@ -31,7 +32,7 @@ export default class App extends Component<{
   render() {
     const { stores, actions, history } = this.props;
     const { app } = stores;
-    const { isActiveDialog } = app;
+    const { isActiveDialog, openExternalLink } = app;
     const locale = stores.profile.currentLocale;
     const mobxDevTools = global.environment.mobxDevTools ? <DevTools /> : null;
     const { currentTheme } = stores.profile;
@@ -48,6 +49,9 @@ export default class App extends Component<{
               <Fragment>
                 <Router history={history} routes={Routes} />
                 {mobxDevTools}
+                <AdaRedemptionUpgradeOverlay
+                  onOpenExternalLink={openExternalLink}
+                />
                 {isActiveDialog(ABOUT) && <AboutDialog />}
                 {isActiveDialog(BLOCK_CONSOLIDATION) && (
                   <BlockConsolidationStatusDialog />

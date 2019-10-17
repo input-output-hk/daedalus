@@ -36,7 +36,7 @@ export default class AdaRedemptionUpgradeOverlay extends Component<Props> {
   renderInstructionsBtn = () => (
     <button
       className={styles.actionBtn}
-      onClick={() => this.props.onOpenExternalLink('https://daedalus.io')}
+      onClick={() => this.props.onOpenExternalLink('https://daedaluswallet.io')}
     >
       Read the instructions
       <SVGInline svg={externalLinkIcon} />
@@ -62,15 +62,23 @@ export default class AdaRedemptionUpgradeOverlay extends Component<Props> {
             redemption. It will be available for a limited time. Daedalus
             0.14.AR is based on a legacy Daedalus 0.14.0 version which was
             released with Cardano 1.6.
+            <br />
+            <br />
             <strong>
               This version of Daedalus has been created specifically for users
               who purchased ada in the Japanese pre-sale and want to redeem
               their ada presale voucher.
             </strong>
+            <br />
+            <br />
             If you did not purchase ada in the presale, or if you do not have
             unredeemed pre-sale vouchers, do not use this version. Instead, use
-            the latest version available at daedaluswallet.io{' '}
-            <SVGInline svg={externalLinkIcon} />.
+            the latest version available at{' '}
+            <a href="https://daedaluswallet.io">
+              daedaluswallet.io
+              <SVGInline svg={externalLinkIcon} />
+            </a>
+            .
           </p>
         </div>
         {this.renderInstructionsBtn()}
