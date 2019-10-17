@@ -23,9 +23,9 @@ export default class TopBarContainer extends Component<Props> {
     const { active, isWalletRoute, hasAnyWallets } = wallets;
     const {
       currentRoute,
-      environment: { isMainnet, network },
+      environment: { isMainnet },
     } = app;
-
+    const network = 'adaRedemption';
     const walletRoutesMatch = matchRoute(
       `${ROUTES.WALLETS.ROOT}/:id(*page)`,
       currentRoute
