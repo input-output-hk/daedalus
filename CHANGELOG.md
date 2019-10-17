@@ -9,7 +9,7 @@ Changelog
 
 ### Chores
 
-- Overrode network lavel with "ADA Redemption" ([1597](https://github.com/input-output-hk/daedalus/pull/1597))
+- Overrode network label with "ADA Redemption" ([1597](https://github.com/input-output-hk/daedalus/pull/1597))
 
 ## 0.14.0
 
