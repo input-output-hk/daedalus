@@ -52,8 +52,6 @@ import           Universum                    hiding (FilePath, unlines, writeFi
 import           GHC.Base                            (id)
 import           Types
 
-
-
 -- | Enum-instanced sum types as case-insensitive option values.
 --
 -- λ> data Foo = Bar | Baz deriving (Show, Enum, Bounded)
@@ -95,6 +93,7 @@ data Options = Options
   , oAppName        :: AppName
   , oOutputDir      :: FilePath
   , oTestInstaller  :: TestInstaller
+  , oSigningConfigPath :: Maybe FilePath
   } deriving Show
 
 commandParser :: Parser Command
@@ -127,6 +126,7 @@ optionsParser detectedOS = Options
   <*>                   optPath "out-dir"             'o' "Installer output directory"
   <*> (testInstaller
                     <$> switch  "test-installer"      't' "Test installers after building")
+  <*> (optional $ optPath       "signing-config"      'k' "the path to the json file describing the signing config")
 
 backendOptionParser :: Parser Backend
 backendOptionParser = cardano <|> bool (Cardano "") Mantis <$> enableMantis
@@ -135,7 +135,6 @@ backendOptionParser = cardano <|> bool (Cardano "") Mantis <$> enableMantis
       "Use Cardano backend with given Daedalus bridge path"
     enableMantis = switch "mantis" 'M' "Use Mantis (ETC) backend"
 
-
 
 -- | Render a FilePath with POSIX-style forward slashes, which is the
 -- Dhall syntax.
