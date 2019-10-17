@@ -79,6 +79,7 @@ export default class ProfileStore extends Store {
   @observable compressedLogsFilePath: ?string = null;
   @observable compressedLogsStatus: CompressedLogStatus = {};
   @observable isSubmittingBugReport: boolean = false;
+  @observable showUpgradeOverlay: boolean = true;
   /* eslint-enable max-len */
 
   setup() {
@@ -191,6 +192,17 @@ export default class ProfileStore extends Store {
     const { currentRoute } = this.stores.app;
     return includes(ROUTES.SETTINGS, currentRoute);
   }
+
+  @computed get shouldShowUpgradeOverlay(): boolean {
+    const termsOfUseAccepted =
+      this.hasLoadedTermsOfUseAcceptance && this.areTermsOfUseAccepted;
+    const localeIsSet = this.hasLoadedCurrentLocale && this.isCurrentLocaleSet;
+    return this.showUpgradeOverlay && termsOfUseAccepted && localeIsSet;
+  }
+
+  @action closeUpgradeOverlay = () => {
+    this.showUpgradeOverlay = false;
+  };
 
   _getSystemLocale = async () => {
     this._onReceiveSystemLocale(await detectSystemLocaleChannel.request());
