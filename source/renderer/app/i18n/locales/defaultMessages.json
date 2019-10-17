@@ -5149,10 +5149,24 @@
           "line": 36
         },
         "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionUpgradeOverlay.js",
-        "id": "wallet.redeem.upgradeOverlay.upgrade",
+        "id": "wallet.redeem.upgradeOverlay.upgrade1",
         "start": {
-          "column": 11,
+          "column": 12,
           "line": 31
+        }
+      },
+      {
+        "defaultMessage": "!!!<a href=\"https://daedaluswallet.io\">daedaluswallet.io</a>.",
+        "description": "Suggestion to upgrade in Ada Redemption upgrade overlay",
+        "end": {
+          "column": 3,
+          "line": 42
+        },
+        "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionUpgradeOverlay.js",
+        "id": "wallet.redeem.upgradeOverlay.upgrade2",
+        "start": {
+          "column": 13,
+          "line": 37
         }
       },
       {
@@ -5160,13 +5174,13 @@
         "description": "Read the instructions button in Ada Redemption upgrade overlay",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 48
         },
         "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionUpgradeOverlay.js",
         "id": "wallet.redeem.upgradeOverlay.button",
         "start": {
           "column": 10,
-          "line": 37
+          "line": 43
         }
       }
     ],

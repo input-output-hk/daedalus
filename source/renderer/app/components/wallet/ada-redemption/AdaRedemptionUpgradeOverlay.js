@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { defineMessages, intlShape } from 'react-intl';
+import { defineMessages, FormattedHTMLMessage, intlShape } from 'react-intl';
 import { get } from 'lodash';
 import SVGInline from 'react-svg-inline';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
@@ -28,10 +28,16 @@ const messages = defineMessages({
       '!!!This version of Daedalus has been created specifically for users who purchased ada in the Japanese pre-sale and want to redeem their ada presale voucher.',
     description: 'Emphasized text in Ada Redemption upgrade overlay',
   },
-  upgrade: {
-    id: 'wallet.redeem.upgradeOverlay.upgrade',
+  upgrade1: {
+    id: 'wallet.redeem.upgradeOverlay.upgrade1',
     defaultMessage:
       '!!!If you did not purchase ada in the presale, or if you do not have unredeemed pre-sale vouchers, do not use this version. Instead, use the latest version available at',
+    description: 'Suggestion to upgrade in Ada Redemption upgrade overlay',
+  },
+  upgrade2: {
+    id: 'wallet.redeem.upgradeOverlay.upgrade2',
+    defaultMessage:
+      '!!!<a href="https://daedaluswallet.io">daedaluswallet.io</a>.',
     description: 'Suggestion to upgrade in Ada Redemption upgrade overlay',
   },
   button: {
@@ -101,12 +107,8 @@ export default class AdaRedemptionUpgradeOverlay extends Component<Props> {
             <strong>{intl.formatMessage(messages.emphasized)}</strong>
             <br />
             <br />
-            {intl.formatMessage(messages.upgrade)}{' '}
-            <a href="https://daedaluswallet.io">
-              daedaluswallet.io
-              <SVGInline svg={externalLinkIcon} />
-            </a>
-            .
+            {intl.formatMessage(messages.upgrade1)}{' '}
+            <FormattedHTMLMessage {...messages.upgrade2} />
           </p>
         </div>
         {this.renderInstructionsBtn()}
