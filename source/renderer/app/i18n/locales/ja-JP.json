@@ -586,6 +586,7 @@
   "wallet.settings.utxos.findOutMoreLinkUrl": "https://iohk.zendesk.com/hc/ja/articles/360034118013",
   "wallet.settings.utxos.labelX": "額",
   "wallet.settings.utxos.labelY": "UTXO数",
+  "wallet.settings.utxos.pendingTransactions": "<b>保留中のトランザクション</b>が表示されているデータの精度に影響する場合があります。 <br /> 保留中のトランザクションは<b>{pendingTxnsCount}</b>件です。",
   "wallet.settings.utxos.title": "ウォレットのUTXOディストリビューション",
   "wallet.settings.utxos.tooltip": "<b>{previousWalletAmount}</b>～<b>{walletAmount}</b>ADAを含む<br />UTXO数は<b>{walletUtxosAmount}</b>",
   "wallet.settings.utxos.tooltipFirst": "<b>{walletAmount}</b>ADAを含む<br />UTXO数は<b>{walletUtxosAmount}</b>",
