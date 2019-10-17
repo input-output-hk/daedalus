@@ -55,6 +55,7 @@ fast_impure=
 verbose=true
 build_id=0
 test_installer=
+signing_config=
 
 # Parallel build options for Buildkite agents only
 if [ -n "${BUILDKITE_JOB_ID:-}" ]; then
@@ -94,6 +95,10 @@ if test -n "${verbose}"
 then set -x
 fi
 
+if [ -f /var/lib/buildkite-agent/signing-config.json ]; then
+  signing_config="--signing-config /var/lib/buildkite-agent/signing-config.json"
+fi
+
 export daedalus_version="${1:-dev}"
 
 mkdir -p ~/.local/bin
@@ -131,6 +136,7 @@ pushd installers
 
           INSTALLER_CMD=("$INSTALLER/bin/make-installer"
                          "${test_installer}"
+                         "${signing_config}"
                          "  --cardano          ${DAEDALUS_BRIDGE}"
                          "  --build-job        ${build_id}"
                          "  --cluster          ${cluster}"
