@@ -37,6 +37,40 @@
   }
 }
 
+.closeButton {
+  cursor: pointer;
+  display: flex;
+  justify-content: flex-end;
+  position: fixed;
+  right: 10px;
+  top: 10px;
+  z-index: 4;
+
+  span {
+    border-radius: 50%;
+    height: 44px;
+    width: 44px;
+
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.16);
+      border-radius: 50%;
+    }
+  }
+
+  svg {
+    height: 12px;
+    margin-top: 16px;
+    width: 12px;
+
+    polygon {
+      fill: #fafbfc;
+    }
+    path {
+      stroke: #fafbfc;
+    }
+  }
+}
+
 .component {
   align-items: center;
   background-color: rgba(171, 23, 0, 0.98);
