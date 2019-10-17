@@ -3062,17 +3062,3 @@ initial:
   - fund:
     - address: ca1swl53wlqt5dnl63e0gnf8vpazgt6g5mq384dmz72329eh4m8z7e5un8q6lg
       value: 100000000000
-
-  # Funds & certificates for a single stake pool.
-  # https://input-output-hk.github.io/jormungandr/advanced/03_starting_genesis_praos_blockchain.html
-  #
-  # (The faucet-addresses above don't delegate.)
-  #
-  # An account address:
-  - fund:
-      - address: ca1s5nwh0ur9qj4tg5hx334ht9zvqwn9ddz8rv5acwdl997zmqpswdujuwqu9j
-        value: 1
-  # Stake pool registration certificate:
-  - cert: cert1qgqqqqqqqqqqqqqqqqqqq0p5avfqpwp63q30nxmgqvev59g6evy8a4ycxqzy499kvm843acyr54v59yd5m49e2gp6lj0x7u2pemh86wqva3wcch6zxncynmwremehyun442qzqzqtx9jhqgyz9889rzqehtdk7lwfk5pvspzc4098w5purwzt6kfvglzx5xq50lq8k9raslsz5cgq8jnpn5vkt5khc646ens4s8gsl2cvzcm00utd
-  # This certificate delegates the stake at the account address to the stake pool
-  - cert: cert1qynwh0ur9qj4tg5hx334ht9zvqwn9ddz8rv5acwdl997zmqpswdujlt5nm6zg5rlhq876rfz382nt220dpc2m5x03vm5elnv4crcxg8vqyqypgte4gh3nmvl6e5kt6t3pm5tsalp4lfrgahkpqwn6vwy3y55d9x7du3lxj4ytew8f6m22ldn6p7vdm0hxmw8kmze9dj590jk5qgym5zsthpvx3
