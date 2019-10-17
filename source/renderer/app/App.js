@@ -31,11 +31,15 @@ export default class App extends Component<{
   }
   render() {
     const { stores, actions, history } = this.props;
-    const { app } = stores;
+    const { app, profile } = stores;
     const { isActiveDialog, openExternalLink } = app;
-    const locale = stores.profile.currentLocale;
     const mobxDevTools = global.environment.mobxDevTools ? <DevTools /> : null;
-    const { currentTheme } = stores.profile;
+    const {
+      closeUpgradeOverlay,
+      currentLocale: locale,
+      currentTheme,
+      shouldShowUpgradeOverlay,
+    } = profile;
     const themeVars = require(`./themes/daedalus/${currentTheme}.js`).default;
     const { ABOUT, BLOCK_CONSOLIDATION, DAEDALUS_DIAGNOSTICS } = DIALOGS;
     return (
@@ -50,7 +54,9 @@ export default class App extends Component<{
                 <Router history={history} routes={Routes} />
                 {mobxDevTools}
                 <AdaRedemptionUpgradeOverlay
+                  onCloseOverlay={closeUpgradeOverlay}
                   onOpenExternalLink={openExternalLink}
+                  showOverlay={shouldShowUpgradeOverlay}
                 />
                 {isActiveDialog(ABOUT) && <AboutDialog />}
                 {isActiveDialog(BLOCK_CONSOLIDATION) && (
