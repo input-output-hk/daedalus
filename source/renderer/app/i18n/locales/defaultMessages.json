@@ -5100,6 +5100,109 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Daedalus 0.14.AR for ada redemption",
+        "description": "Title in Ada Redemption upgrade overlay",
+        "end": {
+          "column": 3,
+          "line": 18
+        },
+        "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionUpgradeOverlay.js",
+        "id": "wallet.redeem.upgradeOverlay.title",
+        "start": {
+          "column": 9,
+          "line": 14
+        }
+      },
+      {
+        "defaultMessage": "!!!This is a special Daedalus version intended to be used for ada redemption. It will be available for a limited time. Daedalus 0.14.AR is based on a legacy Daedalus 0.14.0 version which was released with Cardano 1.6.",
+        "description": "Explanation in Ada Redemption upgrade overlay",
+        "end": {
+          "column": 3,
+          "line": 24
+        },
+        "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionUpgradeOverlay.js",
+        "id": "wallet.redeem.upgradeOverlay.explanation",
+        "start": {
+          "column": 15,
+          "line": 19
+        }
+      },
+      {
+        "defaultMessage": "!!!This version of Daedalus has been created specifically for users who purchased ada in the Japanese pre-sale and want to redeem their ada presale voucher.",
+        "description": "Emphasized text in Ada Redemption upgrade overlay",
+        "end": {
+          "column": 3,
+          "line": 30
+        },
+        "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionUpgradeOverlay.js",
+        "id": "wallet.redeem.upgradeOverlay.emphasized",
+        "start": {
+          "column": 14,
+          "line": 25
+        }
+      },
+      {
+        "defaultMessage": "!!!If you did not purchase ada in the presale, or if you do not have unredeemed pre-sale vouchers, do not use this version. Instead, use the latest version available at",
+        "description": "Suggestion to upgrade in Ada Redemption upgrade overlay",
+        "end": {
+          "column": 3,
+          "line": 36
+        },
+        "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionUpgradeOverlay.js",
+        "id": "wallet.redeem.upgradeOverlay.upgrade1",
+        "start": {
+          "column": 12,
+          "line": 31
+        }
+      },
+      {
+        "defaultMessage": "!!!<a href=\"https://daedaluswallet.io\">daedaluswallet.io</a>.",
+        "description": "Suggestion to upgrade in Ada Redemption upgrade overlay",
+        "end": {
+          "column": 3,
+          "line": 42
+        },
+        "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionUpgradeOverlay.js",
+        "id": "wallet.redeem.upgradeOverlay.upgrade2",
+        "start": {
+          "column": 12,
+          "line": 37
+        }
+      },
+      {
+        "defaultMessage": "!!!Read the instructions",
+        "description": "Read the instructions button in Ada Redemption upgrade overlay",
+        "end": {
+          "column": 3,
+          "line": 48
+        },
+        "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionUpgradeOverlay.js",
+        "id": "wallet.redeem.upgradeOverlay.button",
+        "start": {
+          "column": 10,
+          "line": 43
+        }
+      },
+      {
+        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/articles/360036161714",
+        "description": "URL for \"Read the instructions\" button in Ada Redemption upgrade overlay",
+        "end": {
+          "column": 3,
+          "line": 55
+        },
+        "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionUpgradeOverlay.js",
+        "id": "wallet.redeem.upgradeOverlay.readInstructionsUrl",
+        "start": {
+          "column": 23,
+          "line": 49
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionUpgradeOverlay.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!On the following screen, you will see a set of X random words. This is\n    your wallet backup phrase. It can be entered in any version of Daedalus application in order\n    to back up or restore your wallet’s funds and private key.",
         "description": "Instructions for backing up wallet recovery phrase on dialog that displays wallet recovery phrase.",
         "end": {
