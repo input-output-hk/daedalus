@@ -37,6 +37,20 @@
   }
 }
 
+.attentionIcon {
+  width: 110px;
+  svg {
+    g {
+      path:nth-child(1) {
+        fill: rgba(250, 250, 250, 0.2);
+      }
+      path:nth-child(2) {
+        fill: rgba(250, 250, 250, 0.6);
+      }
+    }
+  }
+}
+
 .closeButton {
   cursor: pointer;
   display: flex;
@@ -177,5 +191,5 @@
   font-size: 20px;
   line-height: 1.2;
   margin-bottom: 20px;
-  margin-top: 22.5px;
+  margin-top: 30px;
 }
