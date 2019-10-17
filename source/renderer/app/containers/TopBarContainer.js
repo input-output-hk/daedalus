@@ -33,7 +33,7 @@ export default class TopBarContainer extends Component<Props> {
       ? menuIconOpened
       : menuIconClosed;
     const leftIcon = showSubMenuToggle ? leftIconSVG : null;
-    const testnetLabel = <WalletTestEnvironmentLabel network={network} />
+    const testnetLabel = <WalletTestEnvironmentLabel network={network} />;
 
     return (
       <TopBar
@@ -42,9 +42,7 @@ export default class TopBarContainer extends Component<Props> {
         activeWallet={activeWallet}
       >
         {testnetLabel}
-        <NodeSyncStatusIcon
-          networkStatus={networkStatus}
-        />
+        <NodeSyncStatusIcon networkStatus={networkStatus} />
       </TopBar>
     );
   }
