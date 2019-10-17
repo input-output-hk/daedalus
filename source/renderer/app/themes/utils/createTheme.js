@@ -955,7 +955,7 @@ export const createDaedalusComponentsTheme = (
       '--theme-choice-tabs-bottom-border-color-active': `${text.primary}`,
     },
     testEnvironment: {
-      '--theme-test-environment-label-background-color': '#ab1700',
+      '--theme-test-environment-label-background-color': '#00ab66',
       '--theme-test-environment-label-text-color': `${text.secondary}`,
     },
     topBar: {

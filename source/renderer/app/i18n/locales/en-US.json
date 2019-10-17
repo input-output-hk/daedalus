@@ -396,7 +396,7 @@
   "systemTime.error.overlayTitle": "Unable to sync - incorrect time",
   "systemTime.error.supportPortalLink": "Support Portal",
   "systemTime.error.supportPortalLinkUrl": "https://daedaluswallet.io/clock-sync/",
-  "test.environment.adaRedemptionLabel": "ADA Redemption",
+  "test.environment.adaRedemptionLabel": "Ada Redemption",
   "test.environment.developmentLabel": "Development",
   "test.environment.stagingLabel": "Staging",
   "test.environment.testnetLabel": "Testnet",

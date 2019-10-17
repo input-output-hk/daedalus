@@ -22,8 +22,8 @@ const messages = defineMessages({
   },
   adaRedemption: {
     id: 'test.environment.adaRedemptionLabel',
-    defaultMessage: '!!!ADA Redemption',
-    description: 'Label for ADA Redemption environment.',
+    defaultMessage: '!!!Ada Redemption',
+    description: 'Label for Ada Redemption environment.',
   },
 });
 

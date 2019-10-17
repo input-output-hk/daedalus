@@ -639,7 +639,7 @@ export const CARDANO_THEME_CONFIG = {
     '--theme-choice-tabs-bottom-border-color-active': '#5e6066',
   },
   testEnvironment: {
-    '--theme-test-environment-label-background-color': '#ab1700',
+    '--theme-test-environment-label-background-color': '#00ab66',
     '--theme-test-environment-label-text-color': '#fafbfc',
   },
   topBar: {

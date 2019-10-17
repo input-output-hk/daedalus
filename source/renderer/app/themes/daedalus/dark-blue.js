@@ -644,7 +644,7 @@ export const DARK_BLUE_THEME_CONFIG = {
     '--theme-choice-tabs-bottom-border-color-active': '#e9f4fe',
   },
   testEnvironment: {
-    '--theme-test-environment-label-background-color': '#ab1700',
+    '--theme-test-environment-label-background-color': '#00ab66',
     '--theme-test-environment-label-text-color': '#fafbfc',
   },
   topBar: {

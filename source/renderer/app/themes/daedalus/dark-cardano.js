@@ -633,7 +633,7 @@ export const DARK_CARDANO_THEME_CONFIG = {
     '--theme-choice-tabs-bottom-border-color-active': '#ffffff',
   },
   testEnvironment: {
-    '--theme-test-environment-label-background-color': '#ab1700',
+    '--theme-test-environment-label-background-color': '#00ab66',
     '--theme-test-environment-label-text-color': '#ffffff',
   },
   topBar: {
