@@ -55,5 +55,6 @@ export const UtxoDistributionStory = () => (
       '45000000000000000': number('17. 10K+ - 45B', 0, cfg),
     })}
     onExternalLinkClick={() => {}}
+    pendingTxnsCount={0}
   />
 );
