@@ -2,18 +2,10 @@
 {-# LANGUAGE LambdaCase        #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE RecordWildCards   #-}
-module MacInstaller
-    ( main
-    , SigningConfig(..)
-    , signingConfig
-    , signInstaller
-    , importCertificate
-    , deleteCertificate
-    , run
-    , run'
-    , readCardanoVersionFile
-    ) where
+{-# LANGUAGE NamedFieldPuns   #-}
+{-# LANGUAGE DeriveGeneric #-}
+
+module MacInstaller (main) where
 
 ---
 --- An overview of Mac .pkg internals:    http://www.peachpit.com/articles/article.aspx?p=605381&seqNum=2
@@ -25,6 +17,7 @@ import           Control.Exception         (handle)
 import           Control.Monad             (unless)
 import           Data.Text                 (Text)
 import qualified Data.Text                 as T
+import           Data.Aeson                (FromJSON(parseJSON), decodeFileStrict', genericParseJSON, defaultOptions)
 import           Filesystem.Path           (FilePath, dropExtension, (<.>),
                                             (</>))
 import           Filesystem.Path.CurrentOS (encodeString)
@@ -49,8 +42,14 @@ data DarwinConfig = DarwinConfig {
 
 -- | The contract of `main` is not to produce unsigned installer binaries.
 main :: Options -> IO ()
-main opts@Options{..} = do
+main opts@Options{oSigningConfigPath,oCluster,oBackend,oBuildJob,oOutputDir,oTestInstaller} = do
   hSetBuffering stdout NoBuffering
+
+  mSigningConfig <- case oSigningConfigPath of
+    Just path -> do
+      decodeFileStrict' $ encodeString path
+    Nothing -> do
+      pure Nothing
 
   generateOSClusterConfigs "./dhall" "." opts
   cp "launcher-config.yaml" "../launcher-config.yaml"
@@ -63,7 +62,6 @@ main opts@Options{..} = do
       , dcAppName = installDirectory installerConfig
       , dcPkgName = "org." <> (macPackageName installerConfig) <> ".pkg"
       }
-    signing = False
   print darwinConfig
 
   ver <- getBackendVersion oBackend
@@ -79,9 +77,9 @@ main opts@Options{..} = do
 
   tempInstaller <- makeInstaller opts darwinConfig appRoot pkg
 
-  case signing of
-    True -> signInstaller signingConfig tempInstaller opkg
-    False -> cp tempInstaller opkg
+  case mSigningConfig of
+    Just signingConfig -> signInstaller signingConfig tempInstaller opkg
+    Nothing -> cp tempInstaller opkg
 
   run "rm" [tt tempInstaller]
   printf ("Generated "%fp%"\n") opkg
@@ -90,13 +88,13 @@ main opts@Options{..} = do
     echo $ "--test-installer passed, will test the installer for installability"
     procs "sudo" ["installer", "-dumplog", "-verbose", "-target", "/", "-pkg", tt opkg] empty
 
-  case signing of
-    True -> do
+  case mSigningConfig of
+    Just _ -> do
       signed <- checkSignature opkg
       case signed of
         SignedOK -> pure ()
         NotSigned -> rm opkg
-    False -> pure ()
+    Nothing -> pure ()
 
 makePostInstall :: Format a (Text -> a)
 makePostInstall = "#!/usr/bin/env bash\n" %
@@ -107,7 +105,7 @@ makePostInstall = "#!/usr/bin/env bash\n" %
                   "./dockutil --add \"${dst_root}/" % s % "\" --allhomes\n"
 
 makeScriptsDir :: Options -> DarwinConfig -> Managed T.Text
-makeScriptsDir Options{..} DarwinConfig{..} = case oBackend of
+makeScriptsDir Options{oBackend} DarwinConfig{dcAppNameApp} = case oBackend of
   Cardano _ -> do
     tmp <- fromString <$> (liftIO $ getEnv "TMP")
     tempdir <- mktempdir tmp "scripts"
@@ -130,7 +128,7 @@ buildIcons cluster = do
 -- NB: If webpack scripts are changed then this function may need to
 -- be updated.
 buildElectronApp :: DarwinConfig -> InstallerConfig -> IO FilePath
-buildElectronApp darwinConfig@DarwinConfig{..} installerConfig = do
+buildElectronApp darwinConfig@DarwinConfig{dcAppNameApp,dcAppName} installerConfig = do
   withDir ".." . sh $ npmPackage darwinConfig
 
   let
@@ -141,7 +139,7 @@ buildElectronApp darwinConfig@DarwinConfig{..} installerConfig = do
   pure $ fromString $ T.unpack $ pathtoapp
 
 npmPackage :: DarwinConfig -> Shell ()
-npmPackage DarwinConfig{..} = do
+npmPackage DarwinConfig{dcAppName} = do
   mktree "release"
   echo "~~~ Installing nodejs dependencies..."
   procs "yarn" ["install"] empty
@@ -156,7 +154,7 @@ getBackendVersion (Cardano bridge) = readCardanoVersionFile bridge
 getBackendVersion Mantis = pure "DEVOPS-533"
 
 makeComponentRoot :: Options -> FilePath -> DarwinConfig -> IO ()
-makeComponentRoot Options{..} appRoot darwinConfig@DarwinConfig{..} = do
+makeComponentRoot Options{oBackend} appRoot darwinConfig@DarwinConfig{dcAppName} = do
   let dir     = appRoot </> "Contents/MacOS"
 
   echo "~~~ Preparing files ..."
@@ -195,7 +193,7 @@ makeComponentRoot Options{..} appRoot darwinConfig@DarwinConfig{..} = do
 
 
 makeInstaller :: Options -> DarwinConfig -> FilePath -> FilePath -> IO FilePath
-makeInstaller opts@Options{..} darwinConfig@DarwinConfig{..} componentRoot pkg = do
+makeInstaller opts@Options{oOutputDir} darwinConfig@DarwinConfig{dcPkgName} componentRoot pkg = do
   let tempPkg1 = format fp (oOutputDir </> pkg)
       tempPkg2 = oOutputDir </> (dropExtension pkg <.> "unsigned" <.> "pkg")
 
@@ -235,7 +233,7 @@ readCardanoVersionFile bridge = prefix <$> handle handler (readTextFile verFile)
               | otherwise = throwM e
 
 writeLauncherFile :: FilePath -> DarwinConfig -> IO FilePath
-writeLauncherFile dir DarwinConfig{..} = do
+writeLauncherFile dir DarwinConfig{dcAppName} = do
   writeTextFile path $ T.unlines contents
   run "chmod" ["+x", tt path]
   pure path
@@ -252,36 +250,14 @@ writeLauncherFile dir DarwinConfig{..} = do
 data SigningConfig = SigningConfig
   { signingIdentity         :: T.Text
   , signingKeyChain         :: Maybe T.Text
-  , signingKeyChainPassword :: Maybe T.Text
-  } deriving (Show, Eq)
+  } deriving (Show, Eq, Generic)
 
-signingConfig :: SigningConfig
-signingConfig = SigningConfig
-  { signingIdentity = "Developer ID Installer: Input Output HK Limited (89TW38X994)"
-  , signingKeyChain = Nothing
-  , signingKeyChainPassword = Nothing
-  }
-
--- | Runs "security import -x"
-importCertificate :: SigningConfig -> FilePath -> Maybe Text -> IO ExitCode
-importCertificate SigningConfig{..} cert password = do
-  let optArg s = maybe [] (\p -> [s, p])
-      certPass = optArg "-P" password
-      keyChain = optArg "-k" signingKeyChain
-  productSign <- optArg "-T" . fmap tt <$> which "productsign"
-  let args = ["import", tt cert, "-x"] ++ keyChain ++ certPass ++ productSign
-  proc "security" args mempty
-
---- | Remove our certificate from the keychain
-deleteCertificate :: SigningConfig -> IO ExitCode
-deleteCertificate SigningConfig{..} = run' "security" args
-  where
-    args = ["delete-certificate", "-c", signingIdentity] ++ keychain
-    keychain = maybe [] pure signingKeyChain
+instance FromJSON SigningConfig where
+  parseJSON = genericParseJSON defaultOptions
 
 -- | Creates a new installer package with signature added.
 signInstaller :: SigningConfig -> FilePath -> FilePath -> IO ()
-signInstaller SigningConfig{..} src dst =
+signInstaller SigningConfig{signingIdentity,signingKeyChain} src dst =
   run "productsign" $ sign ++ keychain ++ map tt [src, dst]
   where
     sign = [ "--sign", signingIdentity ]

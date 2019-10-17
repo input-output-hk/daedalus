@@ -45,8 +45,6 @@ import           Data.Aeson                          (FromJSON(..), withObject, 
 import qualified Data.ByteString.Lazy.Char8       as L8
 import qualified Dhall as Dhall
 
-
-
 data OS
   = Linux64
   | Macos64
@@ -91,21 +89,15 @@ newtype AppName      = AppName      { fromAppName      :: Text } deriving (Eq, I
 newtype BuildJob     = BuildJob     { fromBuildJob     :: Text } deriving (Eq, IsString, Show)
 newtype Version      = Version      { fromVer          :: Text } deriving (Eq, IsString, Show)
 
-
-
 data TestInstaller      = DontTestInstaller         | TestInstaller          deriving (Eq, Show)
 testInstaller    True   =                             TestInstaller
 testInstaller    False  = DontTestInstaller
-
-
 
 lshowText :: Show a => a -> Text
 lshowText = T.toLower . Universum.show
 
 tt :: FilePath -> Text
 tt = format fp
-
-
 
 -- | Value of the NETWORK variable used by the npm build.
 -- See also: the cluster argument in default.nix.
