@@ -21,6 +21,22 @@ When('I click the ShowUsed switch', async function() {
 Then('I should see {int} used addresses', { timeout: 60000 }, async function(
   numberOfAddresses
 ) {
+  await this.client.waitForVisible('.VirtualAddressesList_list');
+
+  await this.client.execute(() => {
+    const scrollableListContainer = window.document.getElementsByClassName(
+      'ReactVirtualized__Grid__innerScrollContainer'
+    );
+    const scrollableList = window.document.getElementsByClassName(
+      'VirtualAddressesList_list'
+    );
+    const listHeight = scrollableListContainer[0].getBoundingClientRect()
+      .height;
+
+    // Scroll to bottom
+    scrollableList[0].scroll(0, listHeight);
+  });
+
   const addressesFound = await getVisibleElementsCountForSelector(
     this.client,
     '.Address_usedWalletAddress',
@@ -31,11 +47,17 @@ Then('I should see {int} used addresses', { timeout: 60000 }, async function(
 });
 
 Then('I should see {int} addresses', async function(numberOfAddresses) {
-  const addressesFound = await getVisibleElementsCountForSelector(
-    this.client,
-    '.Address_component'
+  const addresses = await this.client.getAttribute(
+    '.Address_component',
+    'class'
   );
-  expect(addressesFound).to.equal(numberOfAddresses);
+  const lastAddressClass = addresses[addresses.length - 1];
+  const lastGeneratedAddressClasses = lastAddressClass.split(' ');
+  const lastGeneratedAddressNumber = lastGeneratedAddressClasses[0].split(
+    '-'
+  )[1];
+
+  expect(parseInt(lastGeneratedAddressNumber, 10)).to.equal(numberOfAddresses);
 });
 
 Then('I should see the following addresses:', async function(table) {

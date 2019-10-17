@@ -9,12 +9,14 @@ Feature: Newsfeed
   Background:
     Given I have completed the basic setup
 
-  @reconnectApp
+  @reconnectApp @skip
+  # @API TODO - We don't have network api endpoint
   Scenario: Newsfeed icon is visible on the connecting screen
     Given im on the connecting screen
     Then i should see the newsfeed icon
 
-  @reconnectApp
+  @reconnectApp @skip
+  # @API TODO - We don't have network api endpoint
   Scenario: Newsfeed icon is visible on the syncing screen
     Given im on the syncing screen
     Then i should see the newsfeed icon

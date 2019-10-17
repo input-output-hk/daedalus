@@ -1,6 +1,5 @@
 import { Given, When, Then } from 'cucumber';
 import { expect } from 'chai';
-import path from 'path';
 import BigNumber from 'bignumber.js';
 import {
   createWallets,
@@ -8,7 +7,7 @@ import {
   getWalletByName,
   waitUntilWalletIsLoaded,
   addOrSetWalletsForScenario,
-  importWalletWithFunds,
+  restoreWalletWithFunds,
 } from '../helpers/wallets-helpers';
 import { waitUntilUrlEquals, navigateTo } from '../helpers/route-helpers';
 import { DECIMAL_PLACES_IN_ADA } from '../../../../source/renderer/app/config/numbersConfig';
@@ -21,49 +20,10 @@ import {
   waitForActiveRestoreNotification,
 } from '../helpers/notifications-helpers';
 
-const defaultWalletKeyFilePath = path.resolve(
-  __dirname,
-  '../documents/default-wallet.key'
-);
-// const defaultWalletJSONFilePath = path.resolve(__dirname, '../support/default-wallet.json');
-// ^^ JSON wallet file import is currently not working due to missing JSON import V1 API endpoint
-
-Given(/^I have a "Imported Wallet" with funds$/, async function() {
-  await importWalletWithFunds(this.client, {
-    keyFilePath: defaultWalletKeyFilePath,
-    password: null,
-  });
-  const wallet = await waitUntilWalletIsLoaded.call(this, 'Imported Wallet');
+Given(/^I have a "([^"]*)" wallet with funds$/, async function(walletName) {
+  await restoreWalletWithFunds(this.client, { walletName });
+  const wallet = await waitUntilWalletIsLoaded.call(this, walletName);
   addOrSetWalletsForScenario.call(this, wallet);
-});
-
-// V1 API endpoint for importing a wallet with a spending-password is currently broken
-// As a temporary workaround we import the wallet without a spending-password
-// and then create a spending-password in a separate call
-Given(/^I have a "Imported Wallet" with funds and password$/, async function() {
-  await importWalletWithFunds(this.client, {
-    keyFilePath: defaultWalletKeyFilePath,
-    password: null, // 'Secret1234',
-  });
-  const wallet = await waitUntilWalletIsLoaded.call(this, 'Imported Wallet');
-  addOrSetWalletsForScenario.call(this, wallet);
-
-  // Create a spending-password in a separate call
-  await this.client.executeAsync((walletId, done) => {
-    daedalus.api.ada
-      .updateSpendingPassword({
-        walletId,
-        oldPassword: null,
-        newPassword: 'Secret1234',
-      })
-      .then(() =>
-        daedalus.stores.wallets
-          .refreshWalletsData()
-          .then(done)
-          .catch(error => done(error))
-      )
-      .catch(error => done(error));
-  }, wallet.id);
 });
 
 Given(/^I have the following wallets:$/, async function(table) {
@@ -169,10 +129,6 @@ When(/^I enter spending password "([^"]*)"$/, function(password) {
   );
 });
 
-When(/^I click on the "Generate new address" button$/, function() {
-  return this.client.click('.generateAddressButton');
-});
-
 When(
   /^I click on the restore wallet button on the add wallet page$/,
   function() {
@@ -235,7 +191,7 @@ When(
   /^I enter wallet spending password in confirmation dialog "([^"]*)"$/,
   async function(password) {
     await this.client.setValue(
-      '.WalletSendConfirmationDialog_spendingPassword input',
+      '.WalletSendConfirmationDialog_passphrase input',
       password
     );
   }
