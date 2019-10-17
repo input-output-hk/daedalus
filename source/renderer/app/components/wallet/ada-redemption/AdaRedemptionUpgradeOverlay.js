@@ -13,7 +13,7 @@ import styles from './AdaRedemptionUpgradeOverlay.scss';
 const messages = defineMessages({
   title: {
     id: 'wallet.redeem.upgradeOverlay.title',
-    defaultMessage: '!!!Daedalus 0.14.0 for ada redemption',
+    defaultMessage: '!!!Daedalus 0.14.AR for ada redemption',
     description: 'Title in Ada Redemption upgrade overlay',
   },
   explanation: {
@@ -46,6 +46,13 @@ const messages = defineMessages({
     description:
       'Read the instructions button in Ada Redemption upgrade overlay',
   },
+  readInstructionsUrl: {
+    id: 'wallet.redeem.upgradeOverlay.readInstructionsUrl',
+    defaultMessage:
+      '!!!https://iohk.zendesk.com/hc/en-us/articles/360036161714',
+    description:
+      'URL for "Read the instructions" button in Ada Redemption upgrade overlay',
+  },
 });
 
 type Props = {
@@ -71,7 +78,11 @@ export default class AdaRedemptionUpgradeOverlay extends Component<Props> {
   renderInstructionsBtn = () => (
     <button
       className={styles.actionBtn}
-      onClick={() => this.props.onOpenExternalLink('https://daedaluswallet.io')}
+      onClick={() =>
+        this.props.onOpenExternalLink(
+          this.context.intl.formatMessage(messages.readInstructionsUrl)
+        )
+      }
     >
       {this.context.intl.formatMessage(messages.button)}
       <SVGInline svg={externalLinkIcon} />

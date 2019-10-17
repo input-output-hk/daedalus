@@ -5100,7 +5100,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Daedalus 0.14.0 for ada redemption",
+        "defaultMessage": "!!!Daedalus 0.14.AR for ada redemption",
         "description": "Title in Ada Redemption upgrade overlay",
         "end": {
           "column": 3,
@@ -5181,6 +5181,20 @@
         "start": {
           "column": 10,
           "line": 43
+        }
+      },
+      {
+        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/articles/360036161714",
+        "description": "URL for \"Read the instructions\" button in Ada Redemption upgrade overlay",
+        "end": {
+          "column": 3,
+          "line": 55
+        },
+        "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionUpgradeOverlay.js",
+        "id": "wallet.redeem.upgradeOverlay.readInstructionsUrl",
+        "start": {
+          "column": 23,
+          "line": 49
         }
       }
     ],

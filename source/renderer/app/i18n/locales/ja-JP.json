@@ -510,6 +510,7 @@
   "wallet.redeem.upgradeOverlay.button": "案内を読む",
   "wallet.redeem.upgradeOverlay.emphasized": "本バージョンは、日本向けプレセールでADAを購入し、そのADAプレセールクーポンの還元を希望するユーザー向けに特別に配信されています。",
   "wallet.redeem.upgradeOverlay.explanation": "Daedalus 0.14.ARはADA還元に使用するための特別バージョンであり、限定された期間のみご利用いただけます。本バージョンはCardano 1.6リリースにともないリリースされた、旧Daedalus 0.14.0バージョンをベースにしています。",
+  "wallet.redeem.upgradeOverlay.readInstructionsUrl": "https://iohk.zendesk.com/hc/ja/articles/360036161714",
   "wallet.redeem.upgradeOverlay.title": "ADA還元用Daedalus 0.14.AR",
   "wallet.redeem.upgradeOverlay.upgrade1": "プレセールでADAを購入していない方、または還元していないプレセールクーポンをお持ちでない方は、このバージョンは使用せず、",
   "wallet.redeem.upgradeOverlay.upgrade2": "<a href=\"https://daedaluswallet.io\">daedaluswallet.io</a>に公開されている最新バージョンのDaedalusをご利用ください。",
