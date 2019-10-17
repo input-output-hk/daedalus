@@ -455,6 +455,9 @@ export const YELLOW_THEME_CONFIG = {
   nodeUpdate: {
     '--theme-node-update-background-color': '#f8f3ed',
     '--theme-node-update-title-color': '#2d2d2d',
+    '--theme-node-sync-info-message-background-color': '#f8f3ed',
+    '--theme-node-sync-info-message-text-color': '#2d2d2d',
+    '--theme-node-sync-icon-color': '#2d2d2d',
   },
   notification: {
     '--theme-notification-message-background-color': '#fdcd68f2',

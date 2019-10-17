@@ -457,6 +457,9 @@ export const DARK_CARDANO_THEME_CONFIG = {
   nodeUpdate: {
     '--theme-node-update-background-color': '#121326',
     '--theme-node-update-title-color': '#ffffff',
+    '--theme-node-sync-info-message-background-color': '#121326',
+    '--theme-node-sync-info-message-text-color': '#ffffff',
+    '--theme-node-sync-icon-color': '#fff',
   },
   notification: {
     '--theme-notification-message-background-color': '#36374df2',

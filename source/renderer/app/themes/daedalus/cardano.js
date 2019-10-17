@@ -334,6 +334,9 @@ export const CARDANO_THEME_CONFIG = {
   nodeUpdate: {
     '--theme-node-update-background-color': '#efefef',
     '--theme-node-update-title-color': '#5e6066',
+    '--theme-node-sync-icon-color': '#fff',
+    '--theme-node-sync-info-message-background-color': '#fff',
+    '--theme-node-sync-info-message-text-color': '#5e6066',
   },
   notification: {
     '--theme-notification-message-background-color': 'rgba(44, 187, 105, 0.95)',

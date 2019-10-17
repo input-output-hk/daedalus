@@ -337,6 +337,9 @@ export const DARK_BLUE_THEME_CONFIG = {
   nodeUpdate: {
     '--theme-node-update-background-color': '#536370',
     '--theme-node-update-title-color': '#e9f4fe',
+    '--theme-node-sync-info-message-background-color': '#536370',
+    '--theme-node-sync-info-message-text-color': '#e9f4fe',
+    '--theme-node-sync-icon-color': '#fff',
   },
   notification: {
     '--theme-notification-message-background-color': 'rgba(83, 99, 112, 0.95)',
