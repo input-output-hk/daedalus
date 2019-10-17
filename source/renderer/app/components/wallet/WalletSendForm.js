@@ -26,7 +26,10 @@ import {
 } from '../../utils/formatters';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
 import { FormattedHTMLMessageWithLink } from '../widgets/FormattedHTMLMessageWithLink';
-import { NotEnoughFundsForTransactionFeesError } from '../../api/transactions/errors';
+import {
+  NotEnoughFundsForTransactionFeesError,
+  InvalidAddressError,
+} from '../../api/transactions/errors';
 /* eslint-disable consistent-return */
 
 export const messages = defineMessages({
@@ -72,11 +75,6 @@ export const messages = defineMessages({
     id: 'wallet.send.form.next',
     defaultMessage: '!!!Next',
     description: 'Label for the next button on the wallet send form.',
-  },
-  invalidAddress: {
-    id: 'wallet.send.form.errors.invalidAddress',
-    defaultMessage: '!!!Please enter a valid address.',
-    description: 'Error message shown when invalid address was entered.',
   },
   invalidAmount: {
     id: 'wallet.send.form.errors.invalidAmount',
@@ -198,7 +196,7 @@ export default class WalletSendForm extends Component<Props, State> {
               }
               return [
                 isValidAddress,
-                this.context.intl.formatMessage(messages.invalidAddress),
+                this.context.intl.formatMessage(new InvalidAddressError()),
               ];
             },
           ],

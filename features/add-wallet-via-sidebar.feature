@@ -5,7 +5,7 @@ Feature: Add Wallet via Sidebar
     Given I have completed the basic setup
     And I have the following wallets:
       | name        |
-      | Test wallet |
+      | Test Wallet |
 
   Scenario: Successfully Adding a Wallet with spending password
     Given The sidebar shows the "wallets" category

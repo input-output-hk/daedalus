@@ -1,5 +1,5 @@
 // @flow
-import { split, get, size } from 'lodash';
+import { split, get, size, includes } from 'lodash';
 import { action } from 'mobx';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
@@ -153,6 +153,7 @@ import {
   NotEnoughFundsForTransactionError,
   NotEnoughMoneyToSendError,
   TooBigTransactionError,
+  InvalidAddressError,
 } from './transactions/errors';
 import type { FaultInjectionIpcRequest } from '../../../common/types/cardano-node.types';
 import { TlsCertificateNotValidError } from './nodes/errors';
@@ -554,6 +555,11 @@ export default class AdaApi {
         // @API TODO - Change error message when fee calculation fails regarding to not enough fragmented UTXO
         //           - Also check if error.code is correct
         throw new NotEnoughFundsForTransactionError();
+      } else if (
+        error.code === 'bad_request' &&
+        includes(error.message, 'Unable to decode Address')
+      ) {
+        throw new InvalidAddressError();
       } else {
         throw new GenericApiError();
       }
