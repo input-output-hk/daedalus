@@ -5,7 +5,8 @@ Changelog
 
 ### Features
 
-- Implemented full screen overlay to explain 0.14.AR version of Daedalus ([PR 1598](https://github.com/input-output-hk/daedalus/pull/1598))
+- Implemented "Ada Redemption" label ([PR 1597](https://github.com/input-output-hk/daedalus/pull/1597))
+- Implemented "Daedalus 0.14.AR for ada redemption" overlay ([PR 1598](https://github.com/input-output-hk/daedalus/pull/1598))
 - Removed "Manual and Auto Update" features ([PR 1588](https://github.com/input-output-hk/daedalus/pull/1588), [PR 1592](https://github.com/input-output-hk/daedalus/pull/1592))
 
 ## 0.14.0

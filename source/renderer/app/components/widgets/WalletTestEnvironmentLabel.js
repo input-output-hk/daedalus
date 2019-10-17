@@ -20,6 +20,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Development vx',
     description: 'Label for development with version.',
   },
+  adaRedemption: {
+    id: 'test.environment.adaRedemptionLabel',
+    defaultMessage: '!!!Ada Redemption',
+    description: 'Label for Ada Redemption environment.',
+  },
 });
 
 type Props = {

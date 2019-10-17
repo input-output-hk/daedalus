@@ -21,11 +21,8 @@ export default class TopBarContainer extends Component<Props> {
     const { actions, stores } = this.props;
     const { sidebar, app, networkStatus, wallets } = stores;
     const { active, isWalletRoute, hasAnyWallets } = wallets;
-    const {
-      currentRoute,
-      environment: { isMainnet, network },
-    } = app;
-
+    const { currentRoute } = app;
+    const network = 'adaRedemption';
     const walletRoutesMatch = matchRoute(
       `${ROUTES.WALLETS.ROOT}/:id(*page)`,
       currentRoute
@@ -36,9 +33,7 @@ export default class TopBarContainer extends Component<Props> {
       ? menuIconOpened
       : menuIconClosed;
     const leftIcon = showSubMenuToggle ? leftIconSVG : null;
-    const testnetLabel = !isMainnet ? (
-      <WalletTestEnvironmentLabel network={network} />
-    ) : null;
+    const testnetLabel = <WalletTestEnvironmentLabel network={network} />;
 
     return (
       <TopBar
@@ -47,10 +42,7 @@ export default class TopBarContainer extends Component<Props> {
         activeWallet={activeWallet}
       >
         {testnetLabel}
-        <NodeSyncStatusIcon
-          networkStatus={networkStatus}
-          isMainnet={isMainnet}
-        />
+        <NodeSyncStatusIcon networkStatus={networkStatus} />
       </TopBar>
     );
   }
