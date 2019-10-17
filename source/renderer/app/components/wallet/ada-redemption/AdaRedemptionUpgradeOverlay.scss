@@ -88,7 +88,6 @@
 .component {
   align-items: center;
   background-color: rgba(171, 23, 0, 0.98);
-  color: #fff;
   display: flex;
   flex-direction: column;
   font-family: var(--font-regular);
@@ -102,13 +101,13 @@
 
 .content {
   background-color: rgba(0, 0, 0, 0.1);
-  font-size: 16px;
-  line-height: 1.2;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 14px;
+  line-height: 1.43;
   margin-bottom: 30px;
   max-height: 464px;
   max-width: 600px;
   min-width: 600px;
-  opacity: 0.8;
   overflow-y: scroll;
   padding: 12px 20px;
   word-break: break-word;
@@ -188,6 +187,7 @@
 }
 
 .title {
+  color: rgba(250, 250, 250, 1);
   font-size: 20px;
   line-height: 1.2;
   margin-bottom: 20px;
