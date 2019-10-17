@@ -586,6 +586,7 @@
   "wallet.settings.utxos.findOutMoreLinkUrl": "!!!https://iohk.zendesk.com/hc/en-us/articles/360034118013",
   "wallet.settings.utxos.labelX": "!!!amount",
   "wallet.settings.utxos.labelY": "!!!Nº UTXO",
+  "wallet.settings.utxos.pendingTransactions": "!!!<b>Pending transactions</b> may affect the accuracy of data presented here. <br /> You have <b>{pendingTxnsCount}</b> pending transaction{txnsPlural}.",
   "wallet.settings.utxos.title": "!!!Wallet UTXO distribution",
   "wallet.settings.utxos.tooltip": "!!!<b>{walletUtxosAmount}</b> UTXOs containing <br /> <span> between <b>{prettyPreviousWalletAmount}</b> and </span> <b>{prettyWalletAmount}</b> ADA",
   "wallet.settings.utxos.tooltipFirst": "!!!<b>{walletUtxosAmount}</b> UTXOs containing <br /> <b>{walletAmount}</b> ADA",
