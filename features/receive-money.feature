@@ -15,4 +15,4 @@ Feature: Receive money
       | Test Wallet     | Target Wallet  | 1      |
     And I should see 1 used addresses
     When I click the ShowUsed switch
-    Then I should see 19 addresses
+    Then I should see 20 addresses
