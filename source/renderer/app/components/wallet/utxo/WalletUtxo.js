@@ -145,7 +145,7 @@ export default class WalletUtxo extends Component<Props, State> {
 
     return (
       <div className={componentStyles}>
-        <BorderedBox className={styles.bordered_box}>
+        <BorderedBox className={styles.borderedBox}>
           <div
             className={styles.container}
             onMouseEnter={() => this.setState({ isHoveringChart: true })}
