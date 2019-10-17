@@ -5165,7 +5165,7 @@
         "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionUpgradeOverlay.js",
         "id": "wallet.redeem.upgradeOverlay.upgrade2",
         "start": {
-          "column": 13,
+          "column": 12,
           "line": 37
         }
       },
