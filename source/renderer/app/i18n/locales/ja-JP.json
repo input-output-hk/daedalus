@@ -396,6 +396,7 @@
   "systemTime.error.overlayTitle": "同期できません - 時刻の不一致",
   "systemTime.error.supportPortalLink": "Support Portal",
   "systemTime.error.supportPortalLinkUrl": "https://daedaluswallet.io/ja/clock-sync/",
+  "test.environment.adaRedemptionLabel": "Adaの還元",
   "test.environment.developmentLabel": "開発",
   "test.environment.stagingLabel": "ステージング",
   "test.environment.testnetLabel": "テストネット",

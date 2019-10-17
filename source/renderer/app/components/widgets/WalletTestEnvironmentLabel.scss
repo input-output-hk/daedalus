@@ -1,22 +1,13 @@
 .component {
   background-color: var(--theme-test-environment-label-background-color);
+  border-radius: 4px 0 0 4px;
   box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.38);
   color: var(--theme-test-environment-label-text-color);
   font-family: var(--font-regular);
   font-size: 14px;
   height: 34px;
   line-height: 1.21;
-  padding: 8px 50px 0 0;
+  padding: 8px 50px 0 16px;
   position: absolute;
   right: 0;
-  &::before {
-    background: url('../../assets/images/top-bar/sticker.svg') 0 0 no-repeat;
-    background-size: auto 100%;
-    content: '';
-    height: 42px;
-    position: absolute;
-    right: 100%;
-    top: -3px;
-    width: 27.5px;
-  }
 }

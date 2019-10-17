@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 
+- Implemented "Ada Redemption" label ([PR 1597](https://github.com/input-output-hk/daedalus/pull/1597))
 - Removed "Manual and Auto Update" features ([PR 1588](https://github.com/input-output-hk/daedalus/pull/1588), [PR 1592](https://github.com/input-output-hk/daedalus/pull/1592))
 
 ## 0.14.0

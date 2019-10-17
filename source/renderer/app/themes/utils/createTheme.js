@@ -681,6 +681,11 @@ export const createDaedalusComponentsTheme = (
     nodeUpdate: {
       '--theme-node-update-background-color': `${background.primary.regular}`,
       '--theme-node-update-title-color': `${text.primary}`,
+      '--theme-node-sync-info-message-background-color': `${
+        background.primary.regular
+      }`,
+      '--theme-node-sync-info-message-text-color': `${text.primary}`,
+      '--theme-node-sync-icon-color': `${text.primary}`,
     },
     notification: {
       '--theme-notification-message-background-color': `${chroma(
@@ -955,7 +960,7 @@ export const createDaedalusComponentsTheme = (
       '--theme-choice-tabs-bottom-border-color-active': `${text.primary}`,
     },
     testEnvironment: {
-      '--theme-test-environment-label-background-color': '#ab1700',
+      '--theme-test-environment-label-background-color': '#00ab66',
       '--theme-test-environment-label-text-color': `${text.secondary}`,
     },
     topBar: {

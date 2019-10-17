@@ -8212,6 +8212,20 @@
           "column": 15,
           "line": 18
         }
+      },
+      {
+        "defaultMessage": "!!!Ada Redemption",
+        "description": "Label for Ada Redemption environment.",
+        "end": {
+          "column": 3,
+          "line": 27
+        },
+        "file": "source/renderer/app/components/widgets/WalletTestEnvironmentLabel.js",
+        "id": "test.environment.adaRedemptionLabel",
+        "start": {
+          "column": 17,
+          "line": 23
+        }
       }
     ],
     "path": "source/renderer/app/components/widgets/WalletTestEnvironmentLabel.json"

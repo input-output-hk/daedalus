@@ -457,6 +457,9 @@ export const DARK_CARDANO_THEME_CONFIG = {
   nodeUpdate: {
     '--theme-node-update-background-color': '#121326',
     '--theme-node-update-title-color': '#ffffff',
+    '--theme-node-sync-info-message-background-color': '#121326',
+    '--theme-node-sync-info-message-text-color': '#ffffff',
+    '--theme-node-sync-icon-color': '#fff',
   },
   notification: {
     '--theme-notification-message-background-color': '#36374df2',
@@ -633,7 +636,7 @@ export const DARK_CARDANO_THEME_CONFIG = {
     '--theme-choice-tabs-bottom-border-color-active': '#ffffff',
   },
   testEnvironment: {
-    '--theme-test-environment-label-background-color': '#ab1700',
+    '--theme-test-environment-label-background-color': '#00ab66',
     '--theme-test-environment-label-text-color': '#ffffff',
   },
   topBar: {

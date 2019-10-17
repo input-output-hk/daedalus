@@ -179,7 +179,7 @@ export default class AdaRedemptionStore extends Store {
     // PREPARATION
     const path = this.certificate.path; // eslint-disable-line
     Logger.debug(
-      'AdaRedemptionStore: Parsing ADA Redemption code from certificate',
+      'AdaRedemptionStore: Parsing Ada Redemption code from certificate',
       { path }
     );
     let decryptionKeyValue = null;
