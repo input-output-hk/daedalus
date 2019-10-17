@@ -20,7 +20,8 @@ export function buildJormungandrNodeOpts({ nodePort, stateDir }: WalletOpts) {
     '8088',
     '--genesis-block',
     `${stateDir}/block0.bin`,
-    '--bft-leaders',
+    '--',
+    '--secret',
     `${stateDir}/secret.yaml`,
   ];
 }
