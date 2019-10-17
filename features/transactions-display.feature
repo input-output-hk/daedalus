@@ -21,6 +21,8 @@ Feature: Display wallet transactions
     Then I should not see any transactions
     And I should see the no recent transactions message
 
+  @skip
+  # @API TODO - we don't have all required data params from API endpoint
   Scenario: More than five transactions
     Given I have made the following transactions:
       | source      | destination    | amount |

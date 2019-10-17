@@ -35,7 +35,7 @@ Feature: Send Money to Receiver
       | invalid | 0.000010  |
     Then I should see the following error messages on the wallet send form:
       | message                                |
-      | wallet.send.form.errors.invalidAddress |
+      | api.errors.invalidAddress |
 
   Scenario Outline: User Enters Wrong Amount
     Given I am on the "first" wallet "send" screen
