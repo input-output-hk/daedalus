@@ -14,6 +14,10 @@
   }
 }
 
+.borderedBox {
+  padding: 30px;
+}
+
 .container {
   h1 {
     color: var(--theme-utxo-title-text-color);
@@ -37,6 +41,25 @@
   :global {
     .recharts-cartesian-grid-bg {
       fill: var(--theme-utxo-background-color);
+    }
+  }
+}
+
+.pendingTxnsWrapper {
+  margin: 20px 0 0 30px;
+  text-align: center;
+  width: 100%;
+
+  p {
+    color: var(--theme-utxo-title-description-color);
+    font-family: var(--font-light);
+    font-size: 14px;
+    line-height: 1.43;
+    white-space: nowrap;
+
+    b {
+      color: var(--theme-utxo-title-text-color);
+      font-family: var(--font-medium);
     }
   }
 }
