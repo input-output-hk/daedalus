@@ -732,8 +732,6 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-transactions-list-border-color': 'transparent',
     '--theme-transactions-list-group-date-color': '#2d2d2d',
     '--theme-transactions-list-item-details-color': '#2d2d2d',
-    '--theme-transactions-state-failed-background-color':
-      'rgba(189, 196, 206, 0.8)',
     '--theme-transactions-state-ok-background-color': 'rgba(0, 118, 0, 1);',
     '--theme-transactions-state-pending-background-color': '#e0e0e0',
     '--theme-transactions-state-pending-stripes-color': '#c7c7c7',
@@ -742,10 +740,7 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-transactions-icon-type-expend-background-color': '#84a2d2',
     '--theme-transactions-icon-type-income-background-color': '#2dc06c',
     '--theme-transactions-icon-type-exchange-background-color': '#10aca4',
-    '--theme-transactions-icon-type-failed-background-color': '#ee707c',
     '--theme-transactions-arrow-stroke-color': '#2d2d2d',
-    '--theme-transactions-state-failed-text-color': 'rgba(45, 45, 45, 0.4)',
-    '--theme-transactions-state-failed-text-secondary-color': '#fafbfc',
   },
   uploader: {
     '--theme-uploader-text-color': '#2d2d2d',

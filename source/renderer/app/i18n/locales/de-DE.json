@@ -603,7 +603,6 @@
   "wallet.transaction.received": "!!!{currency} received",
   "wallet.transaction.sent": "!!!{currency} sent",
   "wallet.transaction.state.confirmed": "!!!Transaction confirmed",
-  "wallet.transaction.state.failed": "!!!Transaction failed",
   "wallet.transaction.state.pending": "!!!Transaction pending",
   "wallet.transaction.transactionAmount": "!!!Transaction amount",
   "wallet.transaction.transactionId": "!!!Transaction ID",

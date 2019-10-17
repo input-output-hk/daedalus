@@ -1111,10 +1111,6 @@ export const createDaedalusComponentsTheme = (
       '--theme-transactions-list-border-color': `${border}`,
       '--theme-transactions-list-group-date-color': `${text.primary}`,
       '--theme-transactions-list-item-details-color': `${text.primary}`,
-      '--theme-transactions-state-failed-background-color': `${
-        background.primary.dark
-      }`,
-      '--theme-transactions-state-failed-text-color': `${text.primary}`,
       '--theme-transactions-state-ok-background-color': '#007600',
       '--theme-transactions-state-pending-background-color': `${
         background.primary.dark
@@ -1129,13 +1125,7 @@ export const createDaedalusComponentsTheme = (
       '--theme-transactions-icon-type-expend-background-color': '#84a2d2',
       '--theme-transactions-icon-type-income-background-color': '#2dc06c',
       '--theme-transactions-icon-type-exchange-background-color': '#10aca4',
-      '--theme-transactions-icon-type-failed-background-color': `${
-        error.light
-      }`,
       '--theme-transactions-arrow-stroke-color': `${text.primary}`,
-      '--theme-transactions-state-failed-text-secondary-color': `${chroma(
-        text.secondary
-      ).alpha(0.8)}`,
     },
     uploader: {
       '--theme-uploader-text-color': `${text.primary}`,

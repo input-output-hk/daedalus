@@ -64,7 +64,7 @@ storiesOf('WalletTransactionsList', module)
     />
   ))
 
-  .add('failed and pending transactions', () => (
+  .add('confirmed and pending transactions', () => (
     <WalletTransactionsList
       transactions={[
         generateTransaction(
@@ -78,12 +78,6 @@ storiesOf('WalletTransactionsList', module)
           new Date(),
           new BigNumber(1),
           TransactionStates.PENDING
-        ),
-        generateTransaction(
-          TransactionTypes.INCOME,
-          new Date(),
-          new BigNumber(1),
-          TransactionStates.FAILED
         ),
       ]}
       isRestoreActive={false}

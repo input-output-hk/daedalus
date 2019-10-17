@@ -749,8 +749,6 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-transactions-list-border-color': '#c6cdd6',
     '--theme-transactions-list-group-date-color': '#5e6066',
     '--theme-transactions-list-item-details-color': '#5e6066',
-    '--theme-transactions-state-failed-background-color':
-      'rgba(189, 197, 206, 0.8)',
     '--theme-transactions-state-ok-background-color': '#007600',
     '--theme-transactions-state-pending-background-color': '#bdc5ce',
     '--theme-transactions-state-pending-stripes-color': '#b2bac2',
@@ -759,10 +757,7 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-transactions-icon-type-expend-background-color': '#84a2d2',
     '--theme-transactions-icon-type-income-background-color': '#2dc06c',
     '--theme-transactions-icon-type-exchange-background-color': '#10aca4',
-    '--theme-transactions-icon-type-failed-background-color': '#ea4c5b',
     '--theme-transactions-arrow-stroke-color': '#5e6066',
-    '--theme-transactions-state-failed-text-color': 'rgba(94, 96, 102, 0.4)',
-    '--theme-transactions-state-failed-text-secondary-color': '#fafbfc',
   },
   uploader: {
     '--theme-uploader-text-color': '#5e6066',

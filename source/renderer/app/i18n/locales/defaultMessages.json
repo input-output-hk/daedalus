@@ -6916,20 +6916,6 @@
           "column": 31,
           "line": 93
         }
-      },
-      {
-        "defaultMessage": "!!!Transaction failed",
-        "description": "Transaction state \"failed\"",
-        "end": {
-          "column": 3,
-          "line": 102
-        },
-        "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
-        "id": "wallet.transaction.state.failed",
-        "start": {
-          "column": 30,
-          "line": 98
-        }
       }
     ],
     "path": "source/renderer/app/components/wallet/transactions/Transaction.json"

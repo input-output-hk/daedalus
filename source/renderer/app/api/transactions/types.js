@@ -23,6 +23,10 @@ export type Transaction = {
     time: Date,
     block: TransactionInsertionBlock,
   },
+  pending_since?: {
+    time: Date,
+    block: TransactionInsertionBlock,
+  },
   depth: TransactionDepth,
   direction: 'outgoing' | 'incoming',
   inputs: Array<TransactionInputs>,
@@ -33,8 +37,8 @@ export type Transaction = {
 export type Transactions = Array<Transaction>;
 
 export type TransactionInputs = {
-  address: string,
-  amount: TransactionAmount,
+  address?: string,
+  amount?: TransactionAmount,
   id: string,
   index: number,
 };
