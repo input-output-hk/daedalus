@@ -5,6 +5,7 @@ Changelog
 
 ### Chores
 
+- Fixed build mode of webpack auto dll plugin ([PR 1606](https://github.com/input-output-hk/daedalus/pull/1606))
 - Added note to UTXO screen showing pending transactions ([PR 1589](https://github.com/input-output-hk/daedalus/pull/1589))
 - Fixed broken source maps ([PR 1594](https://github.com/input-output-hk/daedalus/pull/1594))
 - Reorganized Storybook by domain ([PR 1537](https://github.com/input-output-hk/daedalus/pull/1537))
