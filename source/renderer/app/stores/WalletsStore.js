@@ -358,11 +358,11 @@ export default class WalletsStore extends Store {
     return this.all.length >= MAX_ADA_WALLETS_COUNT;
   }
 
-  @computed.struct get all(): Array<Wallet> {
+  @computed get all(): Array<Wallet> {
     return this.walletsRequest.result ? this.walletsRequest.result : [];
   }
 
-  @computed.struct get first(): ?Wallet {
+  @computed get first(): ?Wallet {
     return this.all.length > 0 ? this.all[0] : null;
   }
 
