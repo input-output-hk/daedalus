@@ -61,7 +61,7 @@ module.exports = async ({ config }) => {
   }
   return {
     ...config,
-    cache: false,
+    cache: !isCi,
     devtool: isCi ? 'none' : config.devtool,
     optimization: {
       minimize: false,
