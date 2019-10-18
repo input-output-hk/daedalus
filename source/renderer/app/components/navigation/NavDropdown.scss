@@ -32,11 +32,10 @@
         border: none;
         border-radius: 3px;
         box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.12);
-        max-width: 172px;
-        min-width: 172px;
         right: 15px;
         top: -5px;
         white-space: nowrap;
+        width: auto !important;
 
         .SimpleOptions_ul {
           background-color: var(--theme-nav-dropdown-item-background-color);
