@@ -9,7 +9,7 @@
 , nodeTimeoutSec = 60
 , walletArgs     = [] : List Text
 , logsPrefix     = os.nodeArgs.logsPrefix
-, tlsPath        = os.nodeArgs.tlsPath
+-- , tlsPath        = os.nodeArgs.tlsPath
 , x509ToolPath   = os.x509ToolPath
 , nodeImplementation = "jormungandr" -- TODO, add an implementation.dhall into the mix?
 , nodeArgs = -- TODO, use the correct args for the new codebase (daedalus currently ignores these)
