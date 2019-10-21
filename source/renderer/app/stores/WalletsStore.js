@@ -6,7 +6,7 @@ import moment from 'moment';
 import { BigNumber } from 'bignumber.js';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
-import Wallet from '../domains/Wallet';
+import Wallet, { WalletSyncStateTags } from '../domains/Wallet';
 import type {
   WalletLocalData,
   WalletsLocalData,
@@ -380,6 +380,31 @@ export default class WalletsStore extends Store {
   @computed get isWalletRoute(): boolean {
     const { currentRoute } = this.stores.app;
     return matchRoute(`${ROUTES.WALLETS.ROOT}(/*rest)`, currentRoute);
+  }
+
+  @computed get isActiveWalletRestoring(): boolean {
+    return get(this.active, 'syncState.tag') === WalletSyncStateTags.RESTORING;
+  }
+
+  @computed get restoreProgress(): number {
+    return get(this.active, 'syncState.data.percentage.quantity', 0);
+  }
+
+  @computed get restoreETA(): number {
+    return get(
+      this.active,
+      'syncState.data.estimatedCompletionTime.quantity',
+      0
+    );
+  }
+
+  @computed get hasActiveWalletNotification(): boolean {
+    const { active } = this;
+    if (!active) return false;
+    return (
+      this.getWalletRecoveryPhraseVerification(active.id) ===
+      WalletRecoveryPhraseVerificationStatuses.NOTIFICATION
+    );
   }
 
   getWalletById = (id: string): ?Wallet => this.all.find(w => w.id === id);
