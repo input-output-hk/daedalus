@@ -73,7 +73,6 @@ export default class WalletsStore extends Store {
   };
 
   // REQUESTS
-  /* eslint-disable max-len */
   @observable active: ?Wallet = null;
   @observable activeValue: ?BigNumber = null;
   @observable isRestoreActive: boolean = false;
@@ -125,7 +124,6 @@ export default class WalletsStore extends Store {
   @observable unsetWalletLocalDataRequest: Request<any> = new Request(
     this.api.localStorage.unsetWalletLocalData
   );
-  /* eslint-enable max-len */
 
   @observable walletExportType: walletExportTypeChoices = 'paperWallet';
   @observable walletExportMnemonic =

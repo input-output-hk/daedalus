@@ -16,9 +16,11 @@ import WalletAddress from '../domains/WalletAddress';
 // Addresses requests
 import { getAddresses } from './addresses/requests/getAddresses';
 
+// Network requests
+import { getNetworkInfo } from './network/requests/getNetworkInfo';
+
 // Nodes requests
 import { applyNodeUpdate } from './nodes/requests/applyNodeUpdate';
-// import { getNodeInfo } from './nodes/requests/getNodeInfo';
 // import { getNextNodeUpdate } from './nodes/requests/getNextNodeUpdate';
 import { postponeNodeUpdate } from './nodes/requests/postponeNodeUpdate';
 import { getLatestAppVersion } from './nodes/requests/getLatestAppVersion';
@@ -80,15 +82,19 @@ import type {
 // Common Types
 import type { RequestConfig } from './common/types';
 
+// Network Types
+import type {
+  GetNetworkInfoResponse,
+  NetworkInfoResponse,
+} from './network/types';
+import type { NetworkInfoQueryParams } from './network/requests/getNetworkInfo';
+
 // Nodes Types
 import type {
   LatestAppVersionInfoResponse,
-  // NodeInfoResponse,
   NodeSoftware,
-  GetNetworkStatusResponse,
   GetLatestAppVersionResponse,
 } from './nodes/types';
-import type { NodeInfoQueryParams } from './nodes/requests/getNodeInfo';
 
 // Transactions Types
 import type {
@@ -888,55 +894,46 @@ export default class AdaApi {
     }
   };
 
-  getNetworkStatus = async (
-    queryInfoParams?: NodeInfoQueryParams
-  ): Promise<GetNetworkStatusResponse> => {
+  getNetworkInfo = async (
+    queryInfoParams?: NetworkInfoQueryParams
+  ): Promise<GetNetworkInfoResponse> => {
     const isForceNTPCheck = !!queryInfoParams;
-    const loggerText = `AdaApi::getNetworkStatus${
+    const loggerText = `AdaApi::getNetworkInfo${
       isForceNTPCheck ? ' (FORCE-NTP-CHECK)' : ''
     }`;
-    Logger.debug(`${loggerText} called`);
     try {
-      /* @API TODO: Uncomment once implemented
-
-      const nodeInfo: NodeInfoResponse = await getNodeInfo(
+      const networkInfo: NetworkInfoResponse = await getNetworkInfo(
         this.config,
         queryInfoParams
       );
-      Logger.debug(`${loggerText} success`, { nodeInfo });
+      Logger.debug(`${loggerText} success`, { networkInfo });
 
-      const {
-        blockchainHeight,
-        subscriptionStatus,
-        syncProgress,
-        localBlockchainHeight,
-        localTimeInformation,
-      } = nodeInfo;
-      */
-
-      const blockchainHeight = { quantity: 100 };
-      const subscriptionStatus = 'subscribed';
-      const syncProgress = { quantity: 1 };
-      const localTimeInformation = { status: 'available' };
-      const localBlockchainHeight = { quantity: 100 };
+      /* eslint-disable-next-line camelcase */
+      const { sync_progress, node_tip, network_tip } = networkInfo;
+      const syncProgress =
+        get(sync_progress, 'status') === 'ready'
+          ? 100
+          : get(sync_progress, 'quantity', 0);
 
       // extract relevant data before sending to NetworkStatusStore
       return {
-        subscriptionStatus,
-        syncProgress: syncProgress.quantity,
-        blockchainHeight: get(blockchainHeight, 'quantity', 0),
-        localBlockchainHeight: localBlockchainHeight.quantity,
+        syncProgress,
+        localTip: {
+          epoch: get(node_tip, 'epoch_number', 0),
+          slot: get(node_tip, 'slot_number', 0),
+        },
+        networkTip: {
+          epoch: get(network_tip, 'epoch_number', 0),
+          slot: get(network_tip, 'slot_number', 0),
+        },
         localTimeInformation: {
-          status: localTimeInformation.status,
-          difference: get(
-            localTimeInformation,
-            'localTimeDifference.quantity',
-            null
-          ),
+          status: 'available',
+          difference: 0,
         },
       };
     } catch (error) {
       Logger.error(`${loggerText} error`, { error });
+      // @API TODO - Inspect this implementation once TLS support is implemented on the BE
       if (error.code === TlsCertificateNotValidError.API_ERROR) {
         throw new TlsCertificateNotValidError();
       }
@@ -1024,10 +1021,8 @@ export default class AdaApi {
   // No implementation here but can be overwritten
   getLocalTimeDifference: Function;
   setLocalTimeDifference: Function;
+  setSyncProgress: Function;
   setNextUpdate: Function;
-  setSubscriptionStatus: Function;
-  setLocalBlockHeight: Function;
-  setNetworkBlockHeight: Function;
   setLatestAppVersion: Function;
   setApplicationVersion: Function;
   resetTestOverrides: Function;
@@ -1043,7 +1038,7 @@ const _createWalletFromServerData = action(
   (data: AdaWallet) => {
     const {
       id,
-      address_pool_gap, // eslint-disable-line
+      address_pool_gap, // eslint-disable-line camelcase
       balance,
       name,
       state,
@@ -1099,8 +1094,8 @@ const _createTransactionFromServerData = action(
     const {
       id,
       amount,
-      inserted_at, // eslint-disable-line
-      pending_since, // eslint-disable-line
+      inserted_at, // eslint-disable-line camelcase
+      pending_since, // eslint-disable-line camelcase
       depth,
       direction,
       inputs,

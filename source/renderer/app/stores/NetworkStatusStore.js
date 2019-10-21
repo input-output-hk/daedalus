@@ -28,14 +28,14 @@ import {
 import { CardanoNodeStates } from '../../../common/types/cardano-node.types';
 import { getDiskSpaceStatusChannel } from '../ipc/getDiskSpaceChannel.js';
 import { getStateDirectoryPathChannel } from '../ipc/getStateDirectoryPathChannel';
-import type { GetNetworkStatusResponse } from '../api/nodes/types';
+import type { GetNetworkInfoResponse } from '../api/network/types';
 import type {
   CardanoNodeState,
   CardanoStatus,
   TlsConfig,
   CardanoNodeImplementation,
 } from '../../../common/types/cardano-node.types';
-import type { NodeInfoQueryParams } from '../api/nodes/requests/getNodeInfo';
+import type { NetworkInfoQueryParams } from '../api/network/requests/getNetworkInfo';
 import type { CheckDiskSpaceResponse } from '../../../common/types/no-disk-space.types';
 import { TlsCertificateNotValidError } from '../api/nodes/errors';
 import { openLocalDirectoryChannel } from '../ipc/open-local-directory';
@@ -101,12 +101,12 @@ export default class NetworkStatusStore extends Store {
   @observable latestNetworkBlockTimestamp = 0; // milliseconds
   @observable localTimeDifference: ?number = 0; // microseconds
   @observable
-  getNetworkStatusRequest: Request<GetNetworkStatusResponse> = new Request(
-    this.api.ada.getNetworkStatus
+  getNetworkInfoRequest: Request<GetNetworkInfoResponse> = new Request(
+    this.api.ada.getNetworkInfo
   );
   @observable
-  forceCheckTimeDifferenceRequest: Request<GetNetworkStatusResponse> = new Request(
-    this.api.ada.getNetworkStatus
+  forceCheckTimeDifferenceRequest: Request<GetNetworkInfoResponse> = new Request(
+    this.api.ada.getNetworkInfo
   );
 
   @observable isNotEnoughDiskSpace: boolean = false;
@@ -365,7 +365,7 @@ export default class NetworkStatusStore extends Store {
   // DEFINE ACTIONS
 
   @action _updateNetworkStatus = async (
-    queryInfoParams?: NodeInfoQueryParams
+    queryInfoParams?: NetworkInfoQueryParams
   ) => {
     // In case we haven't received TLS config we shouldn't trigger any API calls
     if (!this.tlsConfig) return;
@@ -397,10 +397,16 @@ export default class NetworkStatusStore extends Store {
     const wasConnected = this.isConnected;
 
     try {
-      const networkStatus: GetNetworkStatusResponse = isForcedTimeDifferenceCheck
+      const networkStatus: GetNetworkInfoResponse = isForcedTimeDifferenceCheck
         ? await this.forceCheckTimeDifferenceRequest.execute(queryInfoParams)
             .promise
-        : await this.getNetworkStatusRequest.execute().promise;
+        : await this.getNetworkInfoRequest.execute().promise;
+
+      // eslint-disable-next-line
+      console.debug(
+        'NetworkStatusStore::_updateNetworkStatus',
+        networkStatus.syncProgress
+      );
 
       // In case we no longer have TLS config we ignore all API call responses
       // as this means we are in the Cardano shutdown (stopping|exiting|updating) sequence

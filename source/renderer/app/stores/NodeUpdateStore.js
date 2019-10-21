@@ -19,7 +19,6 @@ export default class NodeUpdateStore extends Store {
   @observable applicationVersion: ?number = null;
 
   // REQUESTS
-  /* eslint-disable max-len */
   @observable nextUpdateRequest: Request<NodeSoftware> = new Request(
     this.api.ada.nextUpdate
   );
@@ -33,7 +32,6 @@ export default class NodeUpdateStore extends Store {
   getLatestAppVersionRequest: Request<GetLatestAppVersionResponse> = new Request(
     this.api.ada.getLatestAppVersion
   );
-  /* eslint-disable max-len */
 
   setup() {
     const actions = this.actions.nodeUpdate;

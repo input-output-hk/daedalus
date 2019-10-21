@@ -15,9 +15,7 @@ Given(/^Daedalus is running$/, function() {
 Given('im on the syncing screen', async function() {
   this.client.executeAsync(done => {
     // Simulate that syncing is necessary
-    const adaApi = daedalus.api.ada;
-    adaApi.setNetworkBlockHeight(10);
-    adaApi.setLocalBlockHeight(1);
+    daedalus.api.ada.setSyncProgress(10);
     daedalus.stores.networkStatus._updateNetworkStatus().then(done);
   });
   await this.client.waitForVisible('.SyncingConnecting_is-syncing');
