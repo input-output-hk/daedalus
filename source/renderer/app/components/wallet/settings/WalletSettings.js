@@ -241,6 +241,12 @@ export default class WalletSettings extends Component<Props> {
           </div>
         </BorderedBox>
 
+        <BorderedBox className={styles.deleteWalletBox}>
+          <div>
+            <h1>Delete Wallet Button Goes Here</h1>
+          </div>
+        </BorderedBox>
+
         {isDialogOpen(ChangeSpendingPasswordDialog)
           ? changeSpendingPasswordDialog
           : false}
