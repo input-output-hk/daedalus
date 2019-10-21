@@ -10894,9 +10894,9 @@ react-number-format@3.0.3:
   dependencies:
     prop-types "^15.6.0"
 
-react-polymorph@0.9.0-rc.17:
-  version "0.9.0-rc.17"
-  resolved "https://registry.yarnpkg.com/react-polymorph/-/react-polymorph-0.9.0-rc.17.tgz#c8b429ff6737ae1333808f0934addcb29c65b73f"
+react-polymorph@0.9.0-rc.18:
+  version "0.9.0-rc.18"
+  resolved "https://registry.yarnpkg.com/react-polymorph/-/react-polymorph-0.9.0-rc.18.tgz#3c0fd8a538fb74c710945ba0fa954da30730e8fb"
   dependencies:
     create-react-context "0.2.2"
     create-react-ref "0.1.0"
