@@ -603,7 +603,6 @@
   "wallet.transaction.received": "{currency}受取済み",
   "wallet.transaction.sent": "{currency}送金済み",
   "wallet.transaction.state.confirmed": "トランザクション承認済み",
-  "wallet.transaction.state.failed": "トランザクション失敗",
   "wallet.transaction.state.pending": "トランザクション保留中",
   "wallet.transaction.transactionAmount": "取引手数料",
   "wallet.transaction.transactionId": "トランザクションID",

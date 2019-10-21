@@ -1153,16 +1153,8 @@ const _createAddressFromServerData = action(
   }
 );
 
-const _conditionToTxState = (condition: string) => {
-  switch (condition) {
-    case 'pending':
-      return TransactionStates.PENDING;
-    case 'invalidated':
-      return TransactionStates.FAILED;
-    default:
-      return TransactionStates.OK;
-  }
-};
+const _conditionToTxState = (condition: string) =>
+  TransactionStates[condition === 'pending' ? 'PENDING' : 'OK'];
 
 const _createTransactionFromServerData = action(
   'AdaApi::_createTransactionFromServerData',
@@ -1171,16 +1163,19 @@ const _createTransactionFromServerData = action(
       id,
       amount,
       inserted_at, // eslint-disable-line
+      pending_since, // eslint-disable-line
       depth,
       direction,
       inputs,
       outputs,
       status,
     } = data;
-    const insertedAt = get(inserted_at, 'time');
-    const slotNumber = get(inserted_at, ['block', 'slot_number'], null);
-    const epochNumber = get(inserted_at, ['block', 'epoch_number'], null);
-
+    const state = _conditionToTxState(status);
+    const stateInfo =
+      state === TransactionStates.PENDING ? pending_since : inserted_at; // eslint-disable-line
+    const date = get(stateInfo, 'time');
+    const slotNumber = get(stateInfo, ['block', 'slot_number'], null);
+    const epochNumber = get(stateInfo, ['block', 'epoch_number'], null);
     return new WalletTransaction({
       id,
       depth,
@@ -1194,15 +1189,13 @@ const _createTransactionFromServerData = action(
       amount: new BigNumber(
         direction === 'outgoing' ? amount.quantity * -1 : amount.quantity
       ).dividedBy(LOVELACES_PER_ADA),
-      date: insertedAt
-        ? utcStringToDate(insertedAt)
-        : utcStringToDate(moment().utc()),
+      date: utcStringToDate(date),
       description: '',
       addresses: {
         from: inputs.map(({ address, id: inputId }) => address || inputId), // @API TODO: id is faked due to lack of informations
         to: outputs.map(({ address }) => address),
       },
-      state: _conditionToTxState(status),
+      state,
     });
   }
 );

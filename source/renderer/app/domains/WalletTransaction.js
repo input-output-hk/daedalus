@@ -7,15 +7,13 @@ import type {
   TransactionDepth,
 } from '../api/transactions/types';
 
-export type TransactionState = 'pending' | 'failed' | 'ok';
+export type TransactionState = 'pending' | 'ok';
 
 export const TransactionStates: {
   PENDING: TransactionState,
-  FAILED: TransactionState,
   OK: TransactionState,
 } = {
   PENDING: 'pending',
-  FAILED: 'failed',
   OK: 'ok',
 };
 

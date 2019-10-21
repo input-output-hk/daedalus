@@ -22,7 +22,7 @@ Feature: Display wallet transactions
     And I should see the no recent transactions message
 
   @skip
-  # @API TODO - we don't have all required data params from API endpoint
+  # @API TODO - all transactions get included in the same block and have the same timestamp
   Scenario: More than five transactions
     Given I have made the following transactions:
       | source      | destination    | amount |

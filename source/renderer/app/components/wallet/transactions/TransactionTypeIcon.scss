@@ -19,14 +19,6 @@
   &.exchange {
     background: var(--theme-transactions-icon-type-exchange-background-color);
   }
-
-  &.failed {
-    background: var(--theme-transactions-icon-type-failed-background-color);
-    .transactionTypeIcon > svg {
-      height: 16px;
-      width: 22px;
-    }
-  }
 }
 
 .transactionTypeIcon {

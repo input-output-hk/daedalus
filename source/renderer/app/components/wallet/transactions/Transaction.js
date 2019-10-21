@@ -95,11 +95,6 @@ const stateTranslations = defineMessages({
     defaultMessage: '!!!Transaction pending',
     description: 'Transaction state "pending"',
   },
-  [TransactionStates.FAILED]: {
-    id: 'wallet.transaction.state.failed',
-    defaultMessage: '!!!Transaction failed',
-    description: 'Transaction state "failed"',
-  },
 });
 
 type Props = {
@@ -147,7 +142,6 @@ export default class Transaction extends Component<Props> {
 
     const canOpenExplorer = onOpenExternalLink;
 
-    const isFailedTransaction = state === TransactionStates.FAILED;
     const isPendingTransaction = state === TransactionStates.PENDING;
 
     const transactionState = isPendingTransaction
@@ -156,7 +150,6 @@ export default class Transaction extends Component<Props> {
 
     const componentStyles = classNames([
       styles.component,
-      isFailedTransaction ? styles.failed : null,
       isExpanded ? 'Transaction_expanded' : null,
     ]);
 
@@ -198,11 +191,7 @@ export default class Transaction extends Component<Props> {
         aria-hidden
       >
         <div className={styles.toggler}>
-          <TransactionTypeIcon
-            iconType={
-              isFailedTransaction ? TransactionStates.FAILED : data.type
-            }
-          />
+          <TransactionTypeIcon iconType={data.type} />
 
           <div className={styles.togglerContent}>
             <div className={styles.header}>

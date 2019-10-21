@@ -4,19 +4,6 @@
   color: var(--theme-transactions-list-item-details-color);
   cursor: pointer;
   position: relative;
-
-  &.failed {
-    .title,
-    .amount,
-    .details {
-      color: var(--theme-transactions-state-failed-text-color);
-    }
-    .currencySymbol {
-      & > svg > g > g {
-        stroke: var(--theme-transactions-state-failed-text-color);
-      }
-    }
-  }
 }
 
 // ========= TOGGLER =========
@@ -92,7 +79,6 @@
 }
 
 .pendingLabel,
-.failedLabel,
 .okLabel {
   border-radius: 3px;
   color: var(--theme-transactions-state-text-color);
@@ -132,11 +118,6 @@
   );
   background-size: 50px 50px;
   overflow: hidden;
-}
-
-.failedLabel {
-  background-color: var(--theme-transactions-state-failed-background-color);
-  color: var(--theme-transactions-state-failed-text-secondary-color);
 }
 
 .okLabel {

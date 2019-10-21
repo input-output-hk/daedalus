@@ -76,7 +76,7 @@ Then(/^I should see the following transactions:$/, async function(table) {
           throw new Error('unknown transaction type');
       }
       return {
-        title: await this.intl(title, { currency: 'ADA' }),
+        title: await this.intl(title, { currency: 'Ada' }),
         amount: new BigNumber(tx.amount).toFormat(DECIMAL_PLACES_IN_ADA),
       };
     })
