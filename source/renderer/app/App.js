@@ -12,7 +12,6 @@ import translations from './i18n/translations';
 import ThemeManager from './ThemeManager';
 import AboutDialog from './containers/static/AboutDialog';
 import DaedalusDiagnosticsDialog from './containers/status/DaedalusDiagnosticsDialog';
-import BlockConsolidationStatusDialog from './containers/status/BlockConsolidationStatusDialog';
 import GenericNotificationContainer from './containers/notifications/GenericNotificationContainer';
 import AutomaticUpdateNotificationDialog from './containers/notifications/AutomaticUpdateNotificationDialog';
 import NewsOverlayContainer from './containers/news/NewsOverlayContainer';
@@ -46,7 +45,7 @@ export default class App extends Component<{
     const mobxDevTools = global.environment.mobxDevTools ? <DevTools /> : null;
     const { currentTheme } = stores.profile;
     const themeVars = require(`./themes/daedalus/${currentTheme}.js`).default;
-    const { ABOUT, BLOCK_CONSOLIDATION, DAEDALUS_DIAGNOSTICS } = DIALOGS;
+    const { ABOUT, DAEDALUS_DIAGNOSTICS } = DIALOGS;
 
     const isManualUpdateAvailable =
       isNewAppVersionAvailable &&
@@ -78,9 +77,6 @@ export default class App extends Component<{
                 ) : (
                   [
                     isActiveDialog(ABOUT) && <AboutDialog />,
-                    isActiveDialog(BLOCK_CONSOLIDATION) && (
-                      <BlockConsolidationStatusDialog />
-                    ),
                     isActiveDialog(DAEDALUS_DIAGNOSTICS) && (
                       <DaedalusDiagnosticsDialog />
                     ),

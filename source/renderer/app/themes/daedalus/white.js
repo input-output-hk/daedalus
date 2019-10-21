@@ -43,35 +43,6 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-automatic-update-overlay-close-button-hover-background':
       'rgba(41, 181, 149, 0.1)',
   },
-  blockConsolidation: {
-    '--theme-block-consolidation-background-color': '#ffffff',
-    '--theme-block-consolidation-title-text-color': '#2d2d2d',
-    '--theme-block-consolidation-text-color': 'rgba(45, 45, 45, 0.7)',
-    '--theme-block-consolidation-text-highlight-color': '#2d2d2d',
-    '--theme-block-consolidation-epochs-text-color': '#ffffff',
-    '--theme-block-consolidation-indicator-text-color': '#2d2d2d',
-    '--theme-block-consolidation-indicator-container-background-color':
-      'rgba(105, 203, 180, 0.1)',
-    '--theme-block-consolidation-indicator-epochs-behind-background-color-1':
-      '#2d2d2d',
-    '--theme-block-consolidation-indicator-epochs-behind-background-color-2':
-      '#2d2d2d00',
-    '--theme-block-consolidation-stripe-dark-1-background-color': '#B4E5DA',
-    '--theme-block-consolidation-stripe-dark-2-background-color': '#C1E9E1',
-    '--theme-block-consolidation-stripe-light-1-background-color': '#29b595',
-    '--theme-block-consolidation-stripe-light-2-background-color': '#53C3AA',
-    '--theme-block-consolidation-button-background-color':
-      'rgba(41, 181, 149, 0.1)',
-    '--theme-block-consolidation-button-background-color-active': '#25a386',
-    '--theme-block-consolidation-button-background-color-hover': '#29b595',
-    '--theme-block-consolidation-button-icon-color': '#29b595',
-    '--theme-block-consolidation-button-icon-color-hover': '#ffffff',
-    '--theme-block-consolidation-button-text-color': '#29b595',
-    '--theme-block-consolidation-button-text-color-hover': '#ffffff',
-    '--theme-block-consolidation-button-border-color': '#29b595',
-    '--theme-block-consolidation-button-border-color-hover': 'transparent',
-    '--theme-block-consolidation-epochs-image-color': 'rgba(41, 181, 149, 0.9)',
-  },
   body: {
     '--theme-main-body-background-color': '#f9f9f9',
     '--theme-main-body-messages-color': '#2d2d2d',

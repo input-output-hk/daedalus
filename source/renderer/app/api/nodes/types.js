@@ -27,24 +27,6 @@ export type NodeInfoResponse = {
   subscriptionStatus: Object,
 };
 
-export type NodeSettingsResponse = {
-  slotDuration: {
-    quantity: number,
-    unit: ?'milliseconds',
-  },
-  softwareInfo: NodeSoftware,
-  projectVersion: string,
-  gitRevision: string,
-  slotId: {
-    slot: number,
-    epoch: number,
-  },
-};
-
-export type CardanoExplorerResponse = {
-  Right: Array<number | Object>,
-};
-
 export type NodeSoftware = {
   applicationName: string,
   version: number,
@@ -61,16 +43,6 @@ export type GetNetworkStatusResponse = {
     status: LocalTimeInformationStatus,
     difference: ?number,
   },
-};
-
-export type GetNodeSettingsResponse = {
-  slotId?: {
-    epoch: number,
-  },
-};
-
-export type GetCurrentEpochFallbackResponse = {
-  currentEpoch: number,
 };
 
 export type GetLatestAppVersionResponse = {

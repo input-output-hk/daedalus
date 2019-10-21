@@ -174,14 +174,6 @@ export const winLinuxMenu = (
       },
       { type: 'separator' },
       {
-        label: translation('helpSupport.blockConsolidationStatus'),
-        accelerator: 'Ctrl+B',
-        click() {
-          actions.openBlockConsolidationStatusDialog();
-        },
-        enabled: !isUpdateAvailable,
-      },
-      {
         label: translation('helpSupport.daedalusDiagnostics'),
         accelerator: 'Ctrl+D',
         click() {

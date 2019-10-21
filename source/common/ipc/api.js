@@ -122,14 +122,6 @@ export type RebuildAppMenuRendererRequest = { isUpdateAvailable: boolean };
 export type RebuildAppMenuMainResponse = void;
 
 /**
- * Channel to get the number of epochs consolidated
- */
-export const GET_CONSOLIDATED_EPOCHS_COUNT_CHANNEL =
-  'GET_CONSOLIDATED_EPOCHS_COUNT_CHANNEL';
-export type GetConsolidatedEpochsCountRendererRequest = void;
-export type GetConsolidatedEpochsCountMainResponse = number;
-
-/**
  * Channel to generate file blob
  */
 export const GENERATE_FILE_META_CHANNEL = 'GENERATE_FILE_META_CHANNEL';

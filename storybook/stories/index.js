@@ -5,7 +5,6 @@ import './support/environment';
 // Wallets
 import './WalletScreens.stories';
 import './WalletSummary.stories';
-import './BlockConsolidationStatus.stories';
 import './AddWallet.stories';
 import './DeleteWalletConfirmationDialog.stories';
 import './WalletTransactionsList.stories';

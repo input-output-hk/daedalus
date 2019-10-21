@@ -14,10 +14,6 @@ export default class AppActions {
   closeAboutDialog: Action<any> = new Action();
   openAboutDialog: Action<any> = new Action();
 
-  // Block Consolidation dialog actions
-  closeBlockConsolidationStatusDialog: Action<any> = new Action();
-  openBlockConsolidationStatusDialog: Action<any> = new Action();
-
   // Daedalus Diagnostics dialog actions
   closeDaedalusDiagnosticsDialog: Action<any> = new Action();
   openDaedalusDiagnosticsDialog: Action<any> = new Action();

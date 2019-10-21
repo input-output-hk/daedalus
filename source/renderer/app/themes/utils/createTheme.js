@@ -290,62 +290,6 @@ export const createDaedalusComponentsTheme = (
         background.secondary.dark
       }`,
     },
-    blockConsolidation: {
-      '--theme-block-consolidation-background-color': `${
-        background.secondary.regular
-      }`,
-      '--theme-block-consolidation-title-text-color': `${text.secondary}`,
-      '--theme-block-consolidation-text-color': `${text.secondary}`,
-      '--theme-block-consolidation-text-highlight-color': `${text.secondary}`,
-      '--theme-block-consolidation-epochs-text-color': `${
-        background.secondary.regular
-      }`,
-      '--theme-block-consolidation-indicator-text-color': `${text.secondary}`,
-      '--theme-block-consolidation-indicator-container-background-color':
-        'rgba(0, 0, 0, 0.1)',
-      '--theme-block-consolidation-indicator-epochs-behind-background-color-1': `${
-        background.primary.lightest
-      }`,
-      '--theme-block-consolidation-indicator-epochs-behind-background-color-2': `${
-        background.secondary.regular
-      }`,
-      '--theme-block-consolidation-stripe-dark-1-background-color': `${
-        background.primary.regular
-      }`,
-      '--theme-block-consolidation-stripe-dark-2-background-color': `${
-        background.primary.dark
-      }`,
-      '--theme-block-consolidation-stripe-light-1-background-color': `${
-        background.secondary.lightest
-      }`,
-      '--theme-block-consolidation-stripe-light-2-background-color': `${
-        background.primary.light
-      }`,
-      '--theme-block-consolidation-button-background-color': `${
-        background.secondary.dark
-      }`,
-      '--theme-block-consolidation-button-background-color-active': `${
-        background.secondary.darkest
-      }`,
-      '--theme-block-consolidation-button-background-color-hover': `${
-        background.primary.lightest
-      }`,
-      '--theme-block-consolidation-button-icon-color': `${text.secondary}`,
-      '--theme-block-consolidation-button-icon-color-hover': `${
-        background.secondary.regular
-      }`,
-      '--theme-block-consolidation-button-text-color': `${text.secondary}`,
-      '--theme-block-consolidation-button-text-color-hover': `${
-        background.secondary.regular
-      }`,
-      '--theme-block-consolidation-button-border-color': `${
-        background.primary.lightest
-      }`,
-      '--theme-block-consolidation-button-border-color-hover': 'transparent',
-      '--theme-block-consolidation-epochs-image-color': `${chroma(
-        text.secondary
-      ).alpha(0.6)}`,
-    },
     body: {
       '--theme-main-body-background-color': `${background.primary.regular}`,
       '--theme-main-body-messages-color': `${text.primary}`,
