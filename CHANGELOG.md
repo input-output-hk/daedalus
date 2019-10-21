@@ -3,6 +3,10 @@ Changelog
 
 ## vNext
 
+### Features
+
+- Implemented date, time and number format user options ([PR 1611](https://github.com/input-output-hk/daedalus/pull/1611))
+
 ### Chores
 
 - Speedup storybook builds in development ([PR 1607](https://github.com/input-output-hk/daedalus/pull/1607))
