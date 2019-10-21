@@ -3,7 +3,7 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import StoryDecorator from '../../_support/StoryDecorator';
-import LanguageSelectionForm from '../../../../source/renderer/app/components/profile/language-selection/LanguageSelectionForm';
+import InitialSettings from '../../../../source/renderer/app/components/profile/initial-settings/InitialSettings';
 import globalMessages from '../../../../source/renderer/app/i18n/global-messages';
 
 const LANGUAGES = [
@@ -22,7 +22,7 @@ storiesOf('Settings|Language', module)
 
   .add('Select Language - initial', () => (
     <div>
-      <LanguageSelectionForm
+      <InitialSettings
         onSubmit={action('submit')}
         languages={LANGUAGES}
         preselectedLanguage={LANGUAGES[0].value}
@@ -33,7 +33,7 @@ storiesOf('Settings|Language', module)
 
   .add('Select Language - submitting', () => (
     <div>
-      <LanguageSelectionForm
+      <InitialSettings
         onSubmit={action('submit')}
         languages={LANGUAGES}
         preselectedLanguage={LANGUAGES[0].value}

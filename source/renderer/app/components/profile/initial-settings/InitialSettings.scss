@@ -15,18 +15,3 @@
   padding: 30px 30px 20px;
   width: 620px;
 }
-
-.languageSelect {
-  margin-bottom: 30px;
-}
-
-.submitButton {
-  display: block !important;
-  margin: 0 auto;
-}
-
-.error {
-  @include error-message;
-  margin-bottom: 1rem;
-  text-align: center;
-}

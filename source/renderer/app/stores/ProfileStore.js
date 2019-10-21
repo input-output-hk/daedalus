@@ -90,7 +90,7 @@ export default class ProfileStore extends Store {
       this._setBigNumberFormat,
       this._updateMomentJsLocaleAfterLocaleChange,
       this._reloadAboutWindowOnLocaleChange,
-      this._redirectToLanguageSelectionIfNoLocaleSet,
+      this._redirectToInitialSettingsIfNoLocaleSet,
       this._redirectToTermsOfUseScreenIfTermsNotAccepted,
       this._redirectToDataLayerMigrationScreenIfMigrationHasNotAccepted,
       this._redirectToMainUiAfterTermsAreAccepted,
@@ -234,10 +234,11 @@ export default class ProfileStore extends Store {
     this.getDataLayerMigrationAcceptanceRequest.execute();
   };
 
-  _redirectToLanguageSelectionIfNoLocaleSet = () => {
+  _redirectToInitialSettingsIfNoLocaleSet = () => {
     if (this.hasLoadedCurrentLocale && !this.isCurrentLocaleSet) {
+      console.log('_redirectToInitialSettingsIfNoLocaleSet');
       this.actions.router.goToRoute.trigger({
-        route: ROUTES.PROFILE.LANGUAGE_SELECTION,
+        route: ROUTES.PROFILE.INITIAL_SETTINGS,
       });
     }
   };
@@ -246,6 +247,7 @@ export default class ProfileStore extends Store {
     const termsOfUseNotAccepted =
       this.hasLoadedTermsOfUseAcceptance && !this.areTermsOfUseAccepted;
     if (this.isCurrentLocaleSet && termsOfUseNotAccepted) {
+      console.log('_redirectToTermsOfUseScreenIfTermsNotAccepted');
       this.actions.router.goToRoute.trigger({
         route: ROUTES.PROFILE.TERMS_OF_USE,
       });
@@ -271,8 +273,12 @@ export default class ProfileStore extends Store {
         // There are no wallets to migrate so we just need
         // to set the data layer migration acceptance to true
         // in order to prevent future data migration checks
+        console.log('_redirectToDataLayerMigration acceptance');
         this._acceptDataLayerMigration();
       } else {
+        console.log(
+          '_redirectToDataLayerMigrationScreenIfMigrationHasNotAccepted'
+        );
         this.actions.router.goToRoute.trigger({
           route: ROUTES.PROFILE.DATA_LAYER_MIGRATION,
         });

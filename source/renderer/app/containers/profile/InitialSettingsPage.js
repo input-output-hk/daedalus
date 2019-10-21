@@ -3,14 +3,13 @@ import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import TopBar from '../../components/layout/TopBar';
 import TopBarLayout from '../../components/layout/TopBarLayout';
-import LanguageSelectionForm from '../../components/profile/language-selection/LanguageSelectionForm';
+import InitialSettings from '../../components/profile/initial-settings/InitialSettings';
 import { rebuildApplicationMenu } from '../../ipc/rebuild-application-menu';
 import type { InjectedProps } from '../../types/injectedPropsType';
-import { LANGUAGE_OPTIONS } from '../../config/profileConfig';
 
 @inject('stores', 'actions')
 @observer
-export default class LanguageSelectionPage extends Component<InjectedProps> {
+export default class InitialSettingsPage extends Component<InjectedProps> {
   static defaultProps = { actions: null, stores: null };
 
   onSubmit = async (values: { locale: string }) => {
@@ -23,22 +22,28 @@ export default class LanguageSelectionPage extends Component<InjectedProps> {
 
   render() {
     const { currentRoute } = this.props.stores.app;
-    const { setProfileLocaleRequest, systemLocale } = this.props.stores.profile;
+    const {
+      setProfileLocaleRequest,
+      currentLocale,
+      currentNumberFormat,
+      currentDateEnglishFormat,
+      currentDateJapaneseFormat,
+      currentTimeFormat,
+    } = this.props.stores.profile;
     const isSubmitting = setProfileLocaleRequest.isExecuting;
-    const preselectedIndex = LANGUAGE_OPTIONS.findIndex(
-      ({ value }) => value === systemLocale
-    );
-    const preselectedLanguage = LANGUAGE_OPTIONS[preselectedIndex].value;
     const topbar = (
       <TopBar currentRoute={currentRoute} showSubMenuToggle={false} />
     );
     return (
       <TopBarLayout topbar={topbar}>
-        <LanguageSelectionForm
+        <InitialSettings
+          currentLocale={currentLocale}
+          currentNumberFormat={currentNumberFormat}
+          currentDateEnglishFormat={currentDateEnglishFormat}
+          currentDateJapaneseFormat={currentDateJapaneseFormat}
+          currentTimeFormat={currentTimeFormat}
           onSubmit={this.onSubmit}
           isSubmitting={isSubmitting}
-          languages={LANGUAGE_OPTIONS}
-          preselectedLanguage={preselectedLanguage}
           error={setProfileLocaleRequest.error}
         />
       </TopBarLayout>

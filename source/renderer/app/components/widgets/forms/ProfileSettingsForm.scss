@@ -1,0 +1,19 @@
+@import '../../../themes/mixins/error-message';
+
+.component {
+  margin-bottom: 20px;
+}
+
+.select {
+  margin-bottom: 20px;
+}
+
+.submitButton {
+  display: block !important;
+  margin: 0 auto;
+}
+
+.error {
+  @include error-message;
+  text-align: center;
+}
