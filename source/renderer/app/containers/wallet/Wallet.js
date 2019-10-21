@@ -1,17 +1,14 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
-import { get } from 'lodash';
 import MainLayout from '../MainLayout';
 import WalletWithNavigation from '../../components/wallet/layouts/WalletWithNavigation';
 import LoadingSpinner from '../../components/widgets/LoadingSpinner';
 import RestoreNotification from '../../components/notifications/RestoreNotification';
 import { buildRoute } from '../../utils/routing';
 import { ROUTES } from '../../routes-config';
-import { WalletSyncStateTags } from '../../domains/Wallet';
 import type { InjectedContainerProps } from '../../types/injectedPropsType';
 import type { NavDropdownProps } from '../../components/navigation/Navigation';
-import { WalletRecoveryPhraseVerificationStatuses } from '../../stores/WalletsStore';
 
 type Props = InjectedContainerProps;
 
@@ -54,38 +51,24 @@ export default class Wallet extends Component<Props> {
     const { wallets, profile, app } = this.props.stores;
     const { currentLocale } = profile;
 
-    const { active: activeWallet } = wallets;
-
-    if (!activeWallet)
+    if (!wallets.active) {
       return (
         <MainLayout>
           <LoadingSpinner />
         </MainLayout>
       );
-
-    const isRestoreActive =
-      get(activeWallet, 'syncState.tag') === WalletSyncStateTags.RESTORING;
-    const restoreProgress = get(
-      activeWallet,
-      'syncState.data.percentage.quantity',
-      0
-    );
-    const restoreETA = get(
-      activeWallet,
-      'syncState.data.estimatedCompletionTime.quantity',
-      0
-    );
+    }
 
     const {
-      recoveryPhraseVerificationStatus,
-    } = wallets.getWalletRecoveryPhraseVerification(activeWallet.id);
-    const hasNotification =
-      recoveryPhraseVerificationStatus ===
-      WalletRecoveryPhraseVerificationStatuses.NOTIFICATION;
+      hasActiveWalletNotification,
+      isActiveWalletRestoring,
+      restoreETA,
+      restoreProgress,
+    } = wallets;
 
     return (
       <MainLayout>
-        {isRestoreActive ? (
+        {isActiveWalletRestoring ? (
           <RestoreNotification
             currentLocale={currentLocale}
             restoreProgress={restoreProgress}
@@ -97,7 +80,7 @@ export default class Wallet extends Component<Props> {
           isActiveScreen={this.isActiveScreen}
           onWalletNavItemClick={this.handleWalletNavItemClick}
           activeItem={app.currentPage}
-          hasNotification={hasNotification}
+          hasNotification={hasActiveWalletNotification}
         >
           {this.props.children}
         </WalletWithNavigation>
