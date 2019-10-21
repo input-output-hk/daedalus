@@ -3,6 +3,7 @@ import { observable, action, computed, runInAction, flow } from 'mobx';
 import { get, chunk, find, isEqual } from 'lodash';
 import moment from 'moment';
 import { BigNumber } from 'bignumber.js';
+import { Util } from 'cardano-js';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import Wallet, { WalletSyncStateStatuses } from '../domains/Wallet';
@@ -453,7 +454,14 @@ export default class WalletsStore extends Store {
     });
   };
 
-  isValidAddress = (address: string) => this.api.ada.isValidAddress(address);
+  isValidAddress = (address: string) => {
+    try {
+      Util.introspectAddress(address);
+      return true;
+    } catch (error) {
+      return false;
+    }
+  };
 
   isValidMnemonic = (mnemonic: string) =>
     this.api.ada.isValidMnemonic(mnemonic);
