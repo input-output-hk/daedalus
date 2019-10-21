@@ -566,25 +566,6 @@ export default class AdaApi {
     }
   };
 
-  async isValidAddress(address: string): Promise<boolean> {
-    Logger.debug('AdaApi::isValidAdaAddress called', {
-      parameters: { address },
-    });
-
-    // @API TODO: Not yet available in the API
-    return new Promise(resolve => resolve(true));
-
-    // @API TODO: Uncomment once API available
-    // try {
-    //   const response: Address = await getAddress(this.config, { address });
-    //   Logger.debug('AdaApi::isValidAdaAddress success', { response });
-    //   return true;
-    // } catch (error) {
-    //   Logger.error('AdaApi::isValidAdaAddress error', { error });
-    //   return false;
-    // }
-  }
-
   isValidMnemonic = (mnemonic: string): boolean =>
     isValidMnemonic(mnemonic, WALLET_RECOVERY_PHRASE_WORD_COUNT);
 
