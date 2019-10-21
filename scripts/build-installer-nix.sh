@@ -17,6 +17,7 @@ rm -rf dist || true
 CLUSTERS="$(xargs echo -n < "$(dirname "$0")/../installer-clusters.cfg")"
 
 echo '~~~ Pre-building node_modules with nix'
+nix-collect-garbage --max-freed 35433480192
 nix-build default.nix -A rawapp.deps -o node_modules.root -Q
 
 for cluster in ${CLUSTERS}
