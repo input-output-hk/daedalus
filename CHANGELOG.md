@@ -9,6 +9,7 @@ Changelog
 
 ### Chores
 
+- Speedup storybook builds in development ([PR 1607](https://github.com/input-output-hk/daedalus/pull/1607))
 - Added note to UTXO screen showing pending transactions ([PR 1589](https://github.com/input-output-hk/daedalus/pull/1589))
 - Fixed broken source maps ([PR 1594](https://github.com/input-output-hk/daedalus/pull/1594))
 - Reorganized Storybook by domain ([PR 1537](https://github.com/input-output-hk/daedalus/pull/1537))
