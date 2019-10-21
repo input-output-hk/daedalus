@@ -41,40 +41,6 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--theme-automatic-update-overlay-close-button-hover-background':
       'rgba(0, 0, 0, 0.1)',
   },
-  blockConsolidation: {
-    '--theme-block-consolidation-background-color': '#36374df5',
-    '--theme-block-consolidation-title-text-color': '#fafbfc',
-    '--theme-block-consolidation-text-color': 'rgba(250, 251, 252, 0.7)',
-    '--theme-block-consolidation-text-highlight-color':
-      'rgba(250, 251, 252, 1)',
-    '--theme-block-consolidation-epochs-text-color': '#2a2b3c',
-    '--theme-block-consolidation-indicator-text-color': '#ffffff',
-    '--theme-block-consolidation-indicator-container-background-color':
-      'rgba(0, 0, 0, 0.1)',
-    '--theme-block-consolidation-indicator-epochs-behind-background-color-1':
-      '#a0a1a8',
-    '--theme-block-consolidation-indicator-epochs-behind-background-color-2':
-      '#36374d',
-    '--theme-block-consolidation-stripe-dark-1-background-color':
-      'rgba(224, 229, 234, 0.3)',
-    '--theme-block-consolidation-stripe-dark-2-background-color':
-      'rgba(250, 251, 252, 0.3)',
-    '--theme-block-consolidation-stripe-light-1-background-color':
-      'rgba(224, 229, 234, 1)',
-    '--theme-block-consolidation-stripe-light-2-background-color':
-      'rgba(250, 251, 252, 1)',
-    '--theme-block-consolidation-button-background-color': 'rgba(0, 0, 0, 0.1)',
-    '--theme-block-consolidation-button-background-color-active': '#e9e9ea',
-    '--theme-block-consolidation-button-background-color-hover': '#fafbfc',
-    '--theme-block-consolidation-button-icon-color': '#fafbfc',
-    '--theme-block-consolidation-button-icon-color-hover': '#2a2b3c',
-    '--theme-block-consolidation-button-text-color': '#fafbfc',
-    '--theme-block-consolidation-button-text-color-hover': '#2a2b3c',
-    '--theme-block-consolidation-button-border-color': '#fafbfc',
-    '--theme-block-consolidation-button-border-color-hover': 'transparent',
-    '--theme-block-consolidation-epochs-image-color':
-      'rgba(255, 255, 255, 0.9)',
-  },
   body: {
     '--theme-main-body-background-color': '#121326',
     '--theme-main-body-messages-color': '#ffffff',

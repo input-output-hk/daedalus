@@ -19,8 +19,6 @@ import { getAddresses } from './addresses/requests/getAddresses';
 // Nodes requests
 import { applyNodeUpdate } from './nodes/requests/applyNodeUpdate';
 // import { getNodeInfo } from './nodes/requests/getNodeInfo';
-import { getNodeSettings } from './nodes/requests/getNodeSettings';
-import { getCurrentEpoch } from './nodes/requests/getCurrentEpoch';
 // import { getNextNodeUpdate } from './nodes/requests/getNextNodeUpdate';
 import { postponeNodeUpdate } from './nodes/requests/postponeNodeUpdate';
 import { getLatestAppVersion } from './nodes/requests/getLatestAppVersion';
@@ -84,14 +82,10 @@ import type { RequestConfig } from './common/types';
 
 // Nodes Types
 import type {
-  CardanoExplorerResponse,
   LatestAppVersionInfoResponse,
   // NodeInfoResponse,
-  NodeSettingsResponse,
   NodeSoftware,
   GetNetworkStatusResponse,
-  GetNodeSettingsResponse,
-  GetCurrentEpochFallbackResponse,
   GetLatestAppVersionResponse,
 } from './nodes/types';
 import type { NodeInfoQueryParams } from './nodes/requests/getNodeInfo';
@@ -969,43 +963,6 @@ export default class AdaApi {
     }
   };
 
-  getNodeSettings = async (): Promise<GetNodeSettingsResponse> => {
-    Logger.debug('AdaApi::getNodeSettings called');
-    try {
-      const nodeSettings: NodeSettingsResponse = await getNodeSettings(
-        this.config
-      );
-      Logger.debug('AdaApi::getNodeSettings success', {
-        nodeSettings,
-      });
-      const { slotId } = nodeSettings;
-      return { slotId };
-    } catch (error) {
-      Logger.error('AdaApi::getNodeSettings error', { error });
-      if (error.code === TlsCertificateNotValidError.API_ERROR) {
-        throw new TlsCertificateNotValidError();
-      }
-      throw new GenericApiError(error);
-    }
-  };
-
-  getCurrentEpochFallback = async (): Promise<GetCurrentEpochFallbackResponse> => {
-    Logger.debug('AdaApi::getCurrentEpochFallback called');
-    try {
-      const currentEpochInfo: CardanoExplorerResponse = await getCurrentEpoch();
-      const currentEpochPath = 'Right[1][0].cbeEpoch';
-      const currentEpoch = get(currentEpochInfo, currentEpochPath, null);
-      Logger.debug('AdaApi::getCurrentEpochFallback success', {
-        currentEpoch,
-        currentEpochInfo,
-      });
-      return { currentEpoch };
-    } catch (error) {
-      Logger.error('AdaApi::getCurrentEpochFallback error', { error });
-      throw new GenericApiError();
-    }
-  };
-
   getLatestAppVersion = async (): Promise<GetLatestAppVersionResponse> => {
     Logger.debug('AdaApi::getLatestAppVersion called');
     try {
@@ -1092,7 +1049,6 @@ export default class AdaApi {
   setNetworkBlockHeight: Function;
   setLatestAppVersion: Function;
   setApplicationVersion: Function;
-  setFaultyNodeSettingsApi: boolean;
   resetTestOverrides: Function;
 
   // Newsfeed testing utility

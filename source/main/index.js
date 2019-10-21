@@ -9,7 +9,6 @@ import {
   logSystemInfo,
   logStateSnapshot,
 } from './utils/setupLogging';
-import { getNumberOfEpochsConsolidated } from './utils/getNumberOfEpochsConsolidated';
 import { handleDiskSpace } from './utils/handleDiskSpace';
 import { createMainWindow } from './windows/main';
 import { installChromeExtensions } from './utils/installChromeExtensions';
@@ -156,8 +155,6 @@ const onAppReady = async () => {
   }
 
   detectSystemLocaleChannel.onRequest(() => Promise.resolve(systemLocale));
-
-  getNumberOfEpochsConsolidated();
 
   setStateSnapshotLogChannel.onReceive(data => {
     return Promise.resolve(logStateSnapshot(data));

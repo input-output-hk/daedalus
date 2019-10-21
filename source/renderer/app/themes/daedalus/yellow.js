@@ -46,39 +46,6 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-automatic-update-overlay-close-button-hover-background':
       'rgba(0, 0, 0, 0.1)',
   },
-  blockConsolidation: {
-    '--theme-block-consolidation-background-color': 'rgba(255, 185, 35, 0.96)',
-    '--theme-block-consolidation-title-text-color': 'rgba(45, 45, 45, 1)',
-    '--theme-block-consolidation-text-color': 'rgba(45, 45, 45, 0.7)',
-    '--theme-block-consolidation-text-highlight-color': 'rgba(45, 45, 45, 1)',
-    '--theme-block-consolidation-epochs-text-color': '#ffffff',
-    '--theme-block-consolidation-indicator-text-color': 'rgba(45, 45, 45, 1)',
-    '--theme-block-consolidation-indicator-container-background-color':
-      'rgba(0, 0, 0, 0.1)',
-    '--theme-block-consolidation-indicator-epochs-behind-background-color-1':
-      '#2d2d2d',
-    '--theme-block-consolidation-indicator-epochs-behind-background-color-2':
-      'rgba(45, 45, 45, 0)',
-    '--theme-block-consolidation-stripe-dark-1-background-color':
-      'rgba(63, 62, 62, 0.3)',
-    '--theme-block-consolidation-stripe-dark-2-background-color':
-      'rgba(45, 45, 45, 0.3)',
-    '--theme-block-consolidation-stripe-light-1-background-color':
-      'rgba(63, 62, 62, 1)',
-    '--theme-block-consolidation-stripe-light-2-background-color':
-      'rgba(45, 45, 45, 1)',
-    '--theme-block-consolidation-button-background-color': 'rgba(0, 0, 0, 0.1)',
-    '--theme-block-consolidation-button-background-color-active':
-      'rgba(28, 28, 28, 0.96)',
-    '--theme-block-consolidation-button-background-color-hover': '#2d2d2d',
-    '--theme-block-consolidation-button-icon-color': '#2d2d2d',
-    '--theme-block-consolidation-button-icon-color-hover': '#ffffff',
-    '--theme-block-consolidation-button-text-color': '#2d2d2d',
-    '--theme-block-consolidation-button-text-color-hover': '#ffffff',
-    '--theme-block-consolidation-button-border-color': '#2d2d2d',
-    '--theme-block-consolidation-button-border-color-hover': 'transparent',
-    '--theme-block-consolidation-epochs-image-color': 'rgba(45, 45, 45, 0.9)',
-  },
   body: {
     '--theme-main-body-background-color': '#f8f3ed',
     '--theme-main-body-messages-color': '#2d2d2d',

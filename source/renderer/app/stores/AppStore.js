@@ -19,7 +19,6 @@ export default class AppStore extends Store {
   @observable error: ?LocalizableError = null;
   @observable isDownloadNotificationVisible = false;
   @observable gpuStatus: ?GpuStatus = null;
-  @observable numberOfEpochsConsolidated: number = 0;
   @observable previousRoute: string = ROUTES.ROOT;
   @observable activeDialog: ApplicationDialog = null;
   @observable newsFeedIsOpen: boolean = false;
@@ -34,14 +33,6 @@ export default class AppStore extends Store {
     });
     this.actions.app.openAboutDialog.listen(() => {
       this._updateActiveDialog(DIALOGS.ABOUT);
-    });
-
-    // Block Consolidation dialog actions
-    this.actions.app.closeBlockConsolidationStatusDialog.listen(() => {
-      this._closeActiveDialog();
-    });
-    this.actions.app.openBlockConsolidationStatusDialog.listen(() => {
-      this._updateActiveDialog(DIALOGS.BLOCK_CONSOLIDATION);
     });
 
     // Daedalus Diagnostics dialog actions
@@ -101,9 +92,6 @@ export default class AppStore extends Store {
     switch (uiPart) {
       case DIALOGS.ABOUT:
         this._updateActiveDialog(DIALOGS.ABOUT);
-        break;
-      case DIALOGS.BLOCK_CONSOLIDATION:
-        this._updateActiveDialog(DIALOGS.BLOCK_CONSOLIDATION);
         break;
       case DIALOGS.DAEDALUS_DIAGNOSTICS:
         this._updateActiveDialog(DIALOGS.DAEDALUS_DIAGNOSTICS);

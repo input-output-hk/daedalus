@@ -18,7 +18,7 @@ export const buildAppMenus = async (
     isUpdateAvailable: boolean,
   }
 ) => {
-  const { ABOUT, BLOCK_CONSOLIDATION, DAEDALUS_DIAGNOSTICS } = DIALOGS;
+  const { ABOUT, DAEDALUS_DIAGNOSTICS } = DIALOGS;
   const { isUpdateAvailable } = data;
 
   const { isMacOS, isBlankScreenFixActive } = environment;
@@ -26,10 +26,6 @@ export const buildAppMenus = async (
 
   const openAboutDialog = () => {
     if (mainWindow) showUiPartChannel.send(ABOUT, mainWindow);
-  };
-
-  const openBlockConsolidationStatusDialog = () => {
-    if (mainWindow) showUiPartChannel.send(BLOCK_CONSOLIDATION, mainWindow);
   };
 
   const openDaedalusDiagnosticsDialog = () => {
@@ -83,7 +79,6 @@ export const buildAppMenus = async (
   const menuActions = {
     openAboutDialog,
     openDaedalusDiagnosticsDialog,
-    openBlockConsolidationStatusDialog,
     toggleBlankScreenFix,
   };
 
