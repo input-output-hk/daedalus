@@ -1622,13 +1622,55 @@
         "description": "Label for the language select.",
         "end": {
           "column": 3,
-          "line": 18
+          "line": 24
         },
         "file": "source/renderer/app/components/settings/categories/GeneralSettings.js",
         "id": "settings.general.languageSelect.label",
         "start": {
           "column": 23,
-          "line": 14
+          "line": 20
+        }
+      },
+      {
+        "defaultMessage": "!!!Number format",
+        "description": "Label for the number select.",
+        "end": {
+          "column": 3,
+          "line": 29
+        },
+        "file": "source/renderer/app/components/settings/categories/GeneralSettings.js",
+        "id": "settings.general.numberSelect.label",
+        "start": {
+          "column": 21,
+          "line": 25
+        }
+      },
+      {
+        "defaultMessage": "!!!Date format",
+        "description": "Label for the date select.",
+        "end": {
+          "column": 3,
+          "line": 34
+        },
+        "file": "source/renderer/app/components/settings/categories/GeneralSettings.js",
+        "id": "settings.general.dateSelect.label",
+        "start": {
+          "column": 19,
+          "line": 30
+        }
+      },
+      {
+        "defaultMessage": "!!!Time format",
+        "description": "Label for the time select.",
+        "end": {
+          "column": 3,
+          "line": 39
+        },
+        "file": "source/renderer/app/components/settings/categories/GeneralSettings.js",
+        "id": "settings.general.timeSelect.label",
+        "start": {
+          "column": 19,
+          "line": 35
         }
       }
     ],

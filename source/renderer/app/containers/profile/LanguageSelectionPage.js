@@ -6,6 +6,7 @@ import TopBarLayout from '../../components/layout/TopBarLayout';
 import LanguageSelectionForm from '../../components/profile/language-selection/LanguageSelectionForm';
 import { rebuildApplicationMenu } from '../../ipc/rebuild-application-menu';
 import type { InjectedProps } from '../../types/injectedPropsType';
+import { LANGUAGE_OPTIONS } from '../../config/profileConfig';
 
 @inject('stores', 'actions')
 @observer
@@ -22,11 +23,7 @@ export default class LanguageSelectionPage extends Component<InjectedProps> {
 
   render() {
     const { currentRoute } = this.props.stores.app;
-    const {
-      setProfileLocaleRequest,
-      LANGUAGE_OPTIONS,
-      systemLocale,
-    } = this.props.stores.profile;
+    const { setProfileLocaleRequest, systemLocale } = this.props.stores.profile;
     const isSubmitting = setProfileLocaleRequest.isExecuting;
     const preselectedIndex = LANGUAGE_OPTIONS.findIndex(
       ({ value }) => value === systemLocale

@@ -15,7 +15,6 @@ import { Logger } from '../utils/logging';
 import { setStateSnapshotLogChannel } from '../ipc/setStateSnapshotLogChannel';
 import { detectSystemLocaleChannel } from '../ipc/detect-system-locale';
 import { LOCALES } from '../../../common/types/locales.types';
-import { LANGUAGE_OPTIONS } from '../config/profileConfig';
 import {
   compressLogsChannel,
   downloadLogsChannel,
@@ -28,8 +27,6 @@ import type { StateSnapshotLogParams } from '../../../common/types/logging.types
 const { ipcRenderer } = global;
 
 export default class ProfileStore extends Store {
-  LANGUAGE_OPTIONS = LANGUAGE_OPTIONS;
-
   @observable systemLocale: string = LOCALES.english;
   @observable bigNumberDecimalFormat = {
     decimalSeparator: '.',
@@ -144,6 +141,22 @@ export default class ProfileStore extends Store {
     return (
       this.getThemeRequest.wasExecuted && this.getThemeRequest.result !== null
     );
+  }
+
+  @computed get currentNumberFormat(): string {
+    return 'comma-dot';
+  }
+
+  @computed get currentDateEnglishFormat(): string {
+    return 'mm/dd/yyyy';
+  }
+
+  @computed get currentDateJapaneseFormat(): string {
+    return 'yyyy年mm月dd日';
+  }
+
+  @computed get currentTimeFormat(): string {
+    return '12-hour';
   }
 
   @computed get termsOfUse(): string {
