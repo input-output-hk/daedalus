@@ -157,7 +157,7 @@
     "lodash": "4.17.14",
     "mime-types": "2.1.24",
     "mkdirp": "0.5.1",
-    "mobx": "5.6.0",
+    "mobx": "5.14.0",
     "mobx-react": "5.4.2",
     "mobx-react-form": "1.35.1",
     "mobx-react-router": "3.1.2",
