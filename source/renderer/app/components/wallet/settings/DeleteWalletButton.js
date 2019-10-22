@@ -24,11 +24,12 @@ export default class DeleteWalletButton extends Component<Props> {
 
   render() {
     const { onClick } = this.props;
+    const label = this.context.intl.formatMessage(messages.label);
     return (
       <Button
         className="flat"
         disabled={false}
-        label={this.context.intl.formatMessage(messages.label)}
+        label={label}
         onClick={onClick}
         skin={ButtonSkin}
         themeOverrides={styles}
