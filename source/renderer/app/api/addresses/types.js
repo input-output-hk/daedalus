@@ -1,6 +1,4 @@
 // @flow
-import WalletAddress from '../../domains/WalletAddress';
-
 export type AddressState = 'used' | 'unused';
 
 export type GetAddressesRequestQueryParams = {
@@ -17,8 +15,4 @@ export type Addresses = Array<Address>;
 export type GetAddressesRequest = {
   walletId: string,
   queryParams?: GetAddressesRequestQueryParams,
-};
-
-export type GetAddressesResponse = {
-  addresses: Array<WalletAddress>,
 };

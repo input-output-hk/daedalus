@@ -7,6 +7,7 @@ import { Util } from 'cardano-js';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import Wallet, { WalletSyncStateStatuses } from '../domains/Wallet';
+import WalletAddress from '../domains/WalletAddress';
 import { WalletTransaction } from '../domains/WalletTransaction';
 import { MAX_ADA_WALLETS_COUNT } from '../config/numbersConfig';
 import { i18nContext } from '../utils/i18nContext';
@@ -21,7 +22,6 @@ import {
   RECOVERY_PHRASE_VERIFICATION_NOTIFICATION,
   RECOVERY_PHRASE_VERIFICATION_WARNING,
 } from '../config/walletsConfig';
-import type { GetAddressesResponse } from '../api/addresses/types';
 import type { walletExportTypeChoices } from '../types/walletExportTypes';
 import type { WalletImportFromFileParams } from '../actions/wallets-actions';
 import type LocalizableError from '../i18n/LocalizableError';
@@ -87,7 +87,7 @@ export default class WalletsStore extends Store {
     this.api.ada.createWallet
   );
   @observable
-  getWalletAddressesRequest: Request<GetAddressesResponse> = new Request(
+  getWalletAddressesRequest: Request<Array<WalletAddress>> = new Request(
     this.api.ada.getAddresses
   );
   @observable deleteWalletRequest: Request<boolean> = new Request(

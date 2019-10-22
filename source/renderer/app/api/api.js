@@ -74,7 +74,6 @@ import type {
   Address,
   Addresses,
   GetAddressesRequest,
-  GetAddressesResponse,
 } from './addresses/types';
 
 // Common Types
@@ -195,7 +194,7 @@ export default class AdaApi {
 
   getAddresses = async (
     request: GetAddressesRequest
-  ): Promise<GetAddressesResponse> => {
+  ): Promise<Array<WalletAddress>> => {
     Logger.debug('AdaApi::getAddresses called', {
       parameters: filterLogData(request),
     });
@@ -206,10 +205,8 @@ export default class AdaApi {
         walletId,
         queryParams
       );
-
       Logger.debug('AdaApi::getAddresses success', { addresses: response });
-      const addresses = response.map(_createAddressFromServerData);
-      return new Promise(resolve => resolve({ addresses }));
+      return response.map(_createAddressFromServerData);
     } catch (error) {
       Logger.error('AdaApi::getAddresses error', { error });
       throw new GenericApiError();
