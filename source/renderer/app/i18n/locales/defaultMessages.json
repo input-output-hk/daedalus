@@ -5985,13 +5985,13 @@
         "description": "Label for the delete button on wallet settings",
         "end": {
           "column": 3,
-          "line": 11
+          "line": 13
         },
         "file": "source/renderer/app/components/wallet/settings/DeleteWalletButton.js",
         "id": "wallet.settings.deleteWalletButtonLabel",
         "start": {
           "column": 9,
-          "line": 7
+          "line": 9
         }
       }
     ],
@@ -6567,31 +6567,59 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Name",
-        "description": "Label for the \"Name\" text input on the wallet settings page.",
-        "end": {
-          "column": 3,
-          "line": 26
-        },
-        "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
-        "id": "wallet.settings.name.label",
-        "start": {
-          "column": 8,
-          "line": 22
-        }
-      },
-      {
         "defaultMessage": "!!!Transaction assurance security level",
         "description": "Label for the \"Transaction assurance security level\" dropdown.",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 27
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.assurance",
         "start": {
           "column": 23,
-          "line": 27
+          "line": 22
+        }
+      },
+      {
+        "defaultMessage": "!!!Delete wallet",
+        "description": "Delete wallet header on the wallet settings page.",
+        "end": {
+          "column": 3,
+          "line": 32
+        },
+        "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
+        "id": "wallet.settings.deleteWallet.header",
+        "start": {
+          "column": 22,
+          "line": 28
+        }
+      },
+      {
+        "defaultMessage": "!!!Once you delete a wallet, there is no going back. The only way to restore your wallet is to use your recovery phrase.",
+        "description": "Delete wallet warning explaining the consequences.",
+        "end": {
+          "column": 3,
+          "line": 37
+        },
+        "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
+        "id": "wallet.settings.deleteWallet.warning",
+        "start": {
+          "column": 23,
+          "line": 33
+        }
+      },
+      {
+        "defaultMessage": "!!!Name",
+        "description": "Label for the \"Name\" text input on the wallet settings page.",
+        "end": {
+          "column": 3,
+          "line": 42
+        },
+        "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
+        "id": "wallet.settings.name.label",
+        "start": {
+          "column": 8,
+          "line": 38
         }
       },
       {
@@ -6599,13 +6627,13 @@
         "description": "Label for the \"Password\" field.",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 47
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.password",
         "start": {
           "column": 17,
-          "line": 33
+          "line": 43
         }
       },
       {
@@ -6613,13 +6641,13 @@
         "description": "Last updated X time ago message.",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 52
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.passwordLastUpdated",
         "start": {
           "column": 23,
-          "line": 38
+          "line": 48
         }
       },
       {
@@ -6627,27 +6655,13 @@
         "description": "You still don't have password set message.",
         "end": {
           "column": 3,
-          "line": 47
+          "line": 57
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.passwordNotSet",
         "start": {
           "column": 18,
-          "line": 43
-        }
-      },
-      {
-        "defaultMessage": "!!!Export wallet",
-        "description": "Label for the export button on wallet settings.",
-        "end": {
-          "column": 3,
-          "line": 52
-        },
-        "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
-        "id": "wallet.settings.exportWalletButtonLabel",
-        "start": {
-          "column": 21,
-          "line": 48
+          "line": 53
         }
       }
     ],
