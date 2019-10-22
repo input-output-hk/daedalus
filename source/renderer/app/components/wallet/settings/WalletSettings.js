@@ -19,16 +19,27 @@ import styles from './WalletSettings.scss';
 import WalletRecoveryPhrase from './WalletRecoveryPhrase';
 
 export const messages = defineMessages({
-  name: {
-    id: 'wallet.settings.name.label',
-    defaultMessage: '!!!Name',
-    description: 'Label for the "Name" text input on the wallet settings page.',
-  },
   assuranceLevelLabel: {
     id: 'wallet.settings.assurance',
     defaultMessage: '!!!Transaction assurance security level',
     description:
       'Label for the "Transaction assurance security level" dropdown.',
+  },
+  deleteWalletHeader: {
+    id: 'wallet.settings.deleteWallet.header',
+    defaultMessage: '!!!Delete wallet',
+    description: 'Delete wallet header on the wallet settings page.',
+  },
+  deleteWalletWarning: {
+    id: 'wallet.settings.deleteWallet.warning',
+    defaultMessage:
+      '!!!Once you delete a wallet, there is no going back. The only way to restore your wallet is to use your recovery phrase.',
+    description: 'Delete wallet warning explaining the consequences.',
+  },
+  name: {
+    id: 'wallet.settings.name.label',
+    defaultMessage: '!!!Name',
+    description: 'Label for the "Name" text input on the wallet settings page.',
   },
   passwordLabel: {
     id: 'wallet.settings.password',
@@ -45,11 +56,11 @@ export const messages = defineMessages({
     defaultMessage: "!!!You still don't have password",
     description: "You still don't have password set message.",
   },
-  exportButtonLabel: {
-    id: 'wallet.settings.exportWalletButtonLabel',
-    defaultMessage: '!!!Export wallet',
-    description: 'Label for the export button on wallet settings.',
-  },
+  // exportButtonLabel: {
+  //   id: 'wallet.settings.exportWalletButtonLabel',
+  //   defaultMessage: '!!!Export wallet',
+  //   description: 'Label for the export button on wallet settings.',
+  // },
 });
 
 type Props = {
@@ -234,12 +245,9 @@ export default class WalletSettings extends Component<Props> {
         </BorderedBox>
 
         <BorderedBox className={styles.deleteWalletBox}>
-          <span>Delete Wallet</span>
+          <span>{intl.formatMessage(messages.deleteWalletHeader)}</span>
           <div className={styles.contentBox}>
-            <p>
-              Once you delete a wallet, there is no going back. The only way to
-              restore your wallet is to use your recovery phrase.
-            </p>
+            <p>{intl.formatMessage(messages.deleteWalletWarning)}</p>
             <DeleteWalletButton
               onClick={() =>
                 openDialogAction({
