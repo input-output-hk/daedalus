@@ -20,6 +20,13 @@ export default class InitialSettingsPage extends Component<InjectedProps> {
     await rebuildApplicationMenu.send({ isUpdateAvailable });
   };
 
+  handleSelectItem = async (param: string, values: string) => {
+    if (param === 'language') {
+      const { updateLocale } = this.props.actions.profile;
+      updateLocale.trigger({ locale: values });
+    }
+  };
+
   render() {
     const { currentRoute } = this.props.stores.app;
     const {
@@ -37,13 +44,14 @@ export default class InitialSettingsPage extends Component<InjectedProps> {
     return (
       <TopBarLayout topbar={topbar}>
         <InitialSettings
+          onChangeItem={this.handleSelectItem}
+          onSubmit={this.onSubmit}
+          isSubmitting={isSubmitting}
           currentLocale={currentLocale}
           currentNumberFormat={currentNumberFormat}
           currentDateEnglishFormat={currentDateEnglishFormat}
           currentDateJapaneseFormat={currentDateJapaneseFormat}
           currentTimeFormat={currentTimeFormat}
-          onSubmit={this.onSubmit}
-          isSubmitting={isSubmitting}
           error={setProfileLocaleRequest.error}
         />
       </TopBarLayout>

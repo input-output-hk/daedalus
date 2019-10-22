@@ -72,12 +72,15 @@ export default class ProfileSettingsForm extends Component<ProfileSettingsFormPr
     this.form.submit({
       onSuccess: form => {
         const { languageId, numberId, dateId, timeId } = form.values();
-        this.props.onSubmit({
-          locale: languageId,
-          number: numberId,
-          date: dateId,
-          time: timeId,
-        });
+        const { onSubmit } = this.props;
+        if (onSubmit) {
+          onSubmit({
+            locale: languageId,
+            number: numberId,
+            date: dateId,
+            time: timeId,
+          });
+        }
       },
       onError: () => {},
     });
