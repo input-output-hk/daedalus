@@ -1,14 +1,9 @@
-.button {
-  background-color: rgba(68, 91, 124, 0.1);
-  border-radius: 5px;
-  color: var(--theme-color-error);
-  font-size: 14px;
-  font-weight: 500;
-  height: 36px;
-  line-height: 1.36;
+.root {
+  color: var(--theme-color-error) !important;
+  font-weight: 500 !important;
+  height: 36px !important;
+  line-height: 1.36 !important;
   margin-left: 20px;
-  min-width: 160px;
-  &:hover {
-    cursor: pointer;
-  }
+  min-width: 160px !important;
+  width: 160px !important;
 }

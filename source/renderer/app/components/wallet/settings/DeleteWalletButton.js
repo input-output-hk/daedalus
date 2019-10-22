@@ -1,6 +1,8 @@
 // @flow
 import React, { Component } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
+import { Button } from 'react-polymorph/lib/components/Button';
+import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import styles from './DeleteWalletButton.scss';
 
 const messages = defineMessages({
@@ -23,9 +25,14 @@ export default class DeleteWalletButton extends Component<Props> {
   render() {
     const { onClick } = this.props;
     return (
-      <button onClick={onClick} className={styles.button}>
-        {this.context.intl.formatMessage(messages.label)}
-      </button>
+      <Button
+        className="flat"
+        disabled={false}
+        label={this.context.intl.formatMessage(messages.label)}
+        onClick={onClick}
+        skin={ButtonSkin}
+        themeOverrides={styles}
+      />
     );
   }
 }
