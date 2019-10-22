@@ -23,30 +23,18 @@ Given(
     this.transactions = [];
     // Sequentially (and async) create transactions with for loop
     for (const tx of txData) {
-      const txResponse = await this.client.executeAsync(
-        (transaction, done) =>
-          new window.Promise(resolve =>
-            // Need to fetch the wallets data async and wait for all results
-            window.Promise.all([
-              daedalus.stores.addresses.getAccountIndexByWalletId(
-                transaction.walletId
-              ),
-              daedalus.stores.addresses.getAddressesByWalletId(
-                transaction.destinationWalletId
-              ),
-            ]).then(results =>
-              daedalus.api.ada
-                .createTransaction(
-                  window.Object.assign(transaction, {
-                    accountIndex: results[0], // Account index of sender wallet
-                    address: results[1][0].id, // First address of receiving wallet
-                  })
-                )
-                .then(resolve)
+      const txResponse = await this.client.executeAsync((transaction, done) => {
+        daedalus.stores.addresses
+          .getAddressesByWalletId(transaction.destinationWalletId)
+          .then(addresses =>
+            daedalus.api.ada.createTransaction(
+              window.Object.assign(transaction, {
+                address: addresses[0].id, // First address of receiving wallet
+              })
             )
-          ).then(done),
-        tx
-      );
+          )
+          .then(done);
+      }, tx);
       this.transactions.push(txResponse);
     }
   }
