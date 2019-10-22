@@ -70,7 +70,7 @@ type Props = {
   activeField: ?string,
   isSubmitting: boolean,
   isInvalid: boolean,
-  showExportLink: boolean,
+  // showExportLink: boolean,
   lastUpdatedField: ?string,
   changeSpendingPasswordDialog: Node,
   deleteWalletDialogContainer: Node,
@@ -120,7 +120,7 @@ export default class WalletSettings extends Component<Props> {
       isSubmitting,
       isInvalid,
       lastUpdatedField,
-      showExportLink,
+      // showExportLink,
       changeSpendingPasswordDialog,
       deleteWalletDialogContainer,
       exportWalletDialogContainer,
@@ -215,7 +215,7 @@ export default class WalletSettings extends Component<Props> {
 
           {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
 
-          <div className={styles.actionButtons}>
+          {/* <div className={styles.actionButtons}>
             {showExportLink ? (
               <button
                 className={styles.exportLink}
@@ -230,7 +230,16 @@ export default class WalletSettings extends Component<Props> {
             ) : (
               false
             )}
+          </div> */}
+        </BorderedBox>
 
+        <BorderedBox className={styles.deleteWalletBox}>
+          <span>Delete Wallet</span>
+          <div className={styles.contentBox}>
+            <p>
+              Once you delete a wallet, there is no going back. The only way to
+              restore your wallet is to use your recovery phrase.
+            </p>
             <DeleteWalletButton
               onClick={() =>
                 openDialogAction({
@@ -238,12 +247,6 @@ export default class WalletSettings extends Component<Props> {
                 })
               }
             />
-          </div>
-        </BorderedBox>
-
-        <BorderedBox className={styles.deleteWalletBox}>
-          <div>
-            <h1>Delete Wallet Button Goes Here</h1>
           </div>
         </BorderedBox>
 

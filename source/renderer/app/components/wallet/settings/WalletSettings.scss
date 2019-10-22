@@ -15,9 +15,28 @@
   }
 
   .deleteWalletBox {
-    height: 140px;
+    margin-bottom: 37px;
     margin-top: 20px;
-    padding: 30px;
+    padding-bottom: 30px;
+    padding-top: 30px;
+
+    span {
+      color: var(--theme-input-label-color);
+      font-family: var(--font-medium);
+      font-size: 16px;
+      margin-bottom: 14px;
+    }
+
+    .contentBox {
+      align-items: center;
+      color: var(--theme-bordered-box-text-color);
+      display: flex;
+      font-family: var(--font-light);
+      flex-direction: row;
+      justify-content: space-between;
+      line-height: 1.38;
+      padding-top: 14px;
+    }
   }
 }
 
