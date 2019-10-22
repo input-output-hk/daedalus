@@ -54,8 +54,7 @@ type RecoveryPhraseVerificationData = {
 };
 
 /**
- * The base wallet store that contains the shared logic
- * dealing with wallets / accounts.
+ * The base wallet store that contains logic for dealing with wallets
  */
 
 export default class WalletsStore extends Store {
@@ -321,15 +320,10 @@ export default class WalletsStore extends Store {
   }) => {
     const wallet = this.active;
     if (!wallet) throw new Error('Active wallet required before sending.');
-    const accountIndex = await this.stores.addresses.getAccountIndexByWalletId(
-      wallet.id
-    );
-
     await this.sendMoneyRequest.execute({
       address: receiver,
       amount: parseInt(amount, 10),
       passphrase,
-      accountIndex,
       walletId: wallet.id,
     });
     this.refreshWalletsData();

@@ -28,9 +28,6 @@ Given(
           new window.Promise(resolve =>
             // Need to fetch the wallets data async and wait for all results
             window.Promise.all([
-              daedalus.stores.addresses.getAccountIndexByWalletId(
-                transaction.walletId
-              ),
               daedalus.stores.addresses.getAddressesByWalletId(
                 transaction.destinationWalletId
               ),
@@ -38,8 +35,7 @@ Given(
               daedalus.api.ada
                 .createTransaction(
                   window.Object.assign(transaction, {
-                    accountIndex: results[0], // Account index of sender wallet
-                    address: results[1][0].id, // First address of receiving wallet
+                    address: results[0][0].id, // First address of receiving wallet
                   })
                 )
                 .then(resolve)

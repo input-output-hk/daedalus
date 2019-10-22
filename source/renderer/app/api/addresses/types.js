@@ -20,6 +20,5 @@ export type GetAddressesRequest = {
 };
 
 export type GetAddressesResponse = {
-  accountIndex: ?number,
   addresses: Array<WalletAddress>,
 };

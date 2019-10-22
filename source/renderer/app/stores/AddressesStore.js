@@ -51,11 +51,6 @@ export default class AddressesStore extends Store {
     }
   };
 
-  getAccountIndexByWalletId = async (walletId: string): Promise<?number> => {
-    const result = await this.api.ada.getAddresses({ walletId });
-    return result ? result.accountIndex : null;
-  };
-
   getAddressesByWalletId = async (
     walletId: string
   ): Promise<Array<WalletAddress>> => {
