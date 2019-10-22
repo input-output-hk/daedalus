@@ -158,7 +158,7 @@ When(
     const walletAddress = await this.client.executeAsync((id, done) => {
       daedalus.api.ada
         .getAddresses({ walletId: id })
-        .then(response => done(response.addresses[0].id))
+        .then(response => done(response[0].id))
         .catch(error => done(error));
     }, walletId);
     values.address = walletAddress.value;

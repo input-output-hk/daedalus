@@ -76,7 +76,6 @@ import type {
   Address,
   Addresses,
   GetAddressesRequest,
-  GetAddressesResponse,
 } from './addresses/types';
 
 // Common Types
@@ -201,7 +200,7 @@ export default class AdaApi {
 
   getAddresses = async (
     request: GetAddressesRequest
-  ): Promise<GetAddressesResponse> => {
+  ): Promise<Array<WalletAddress>> => {
     Logger.debug('AdaApi::getAddresses called', {
       parameters: filterLogData(request),
     });
@@ -212,10 +211,8 @@ export default class AdaApi {
         walletId,
         queryParams
       );
-
       Logger.debug('AdaApi::getAddresses success', { addresses: response });
-      const addresses = response.map(_createAddressFromServerData);
-      return new Promise(resolve => resolve({ accountIndex: 0, addresses }));
+      return response.map(_createAddressFromServerData);
     } catch (error) {
       Logger.error('AdaApi::getAddresses error', { error });
       throw new GenericApiError();
@@ -265,7 +262,6 @@ export default class AdaApi {
     // const requestTimestamp = moment();
     // const params = {
     //   wallet_id: walletId,
-    //   account_index: accounts[0].index,
     //   page: skip === 0 ? 1 : skip + 1,
     //   per_page: perPage,
     //   sort_by: 'DES[created_at]',
@@ -286,14 +282,6 @@ export default class AdaApi {
     // } , unionBy= request;
     //
     //
-    // TODO: Uncomment once API available
-    //
-    // const accounts: Accounts = await getAccounts(this.config, { walletId });
-    //
-    // if (!accounts.length || !accounts[0].index) {
-    //   return new Promise(resolve => resolve({ transactions: [], total: 0 }));
-    // }
-    //
     // let perPage = limit;
     // const shouldLoadAll = limit === null;
     // if (shouldLoadAll || limit > MAX_TRANSACTIONS_PER_PAGE) {
@@ -302,7 +290,6 @@ export default class AdaApi {
     //
     // const params = {
     //   wallet_id: walletId,
-    //   account_index: accounts[0].index,
     //   page: skip === 0 ? 1 : skip + 1,
     //   per_page: perPage,
     //   sort_by: 'DES[created_at]',
