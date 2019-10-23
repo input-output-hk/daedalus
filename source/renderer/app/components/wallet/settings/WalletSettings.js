@@ -11,7 +11,6 @@ import InlineEditingDropdown from '../../widgets/forms/InlineEditingDropdown';
 import ReadOnlyInput from '../../widgets/forms/ReadOnlyInput';
 import DeleteWalletButton from './DeleteWalletButton';
 import DeleteWalletConfirmationDialog from './DeleteWalletConfirmationDialog';
-import ExportWalletToFileDialog from './ExportWalletToFileDialog';
 import type { ReactIntlMessage } from '../../../types/i18nTypes';
 import ChangeSpendingPasswordDialog from './ChangeSpendingPasswordDialog';
 import globalMessages from '../../../i18n/global-messages';
@@ -79,7 +78,6 @@ type Props = {
   lastUpdatedField: ?string,
   changeSpendingPasswordDialog: Node,
   deleteWalletDialogContainer: Node,
-  exportWalletDialogContainer: Node,
   walletRecoveryPhraseStep1Container: Node,
   walletRecoveryPhraseStep2Container: Node,
   walletRecoveryPhraseStep3Container: Node,
@@ -93,10 +91,6 @@ type Props = {
 export default class WalletSettings extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
-  };
-
-  static defaultProps = {
-    showExportLink: false,
   };
 
   componentWillUnmount() {
@@ -127,7 +121,6 @@ export default class WalletSettings extends Component<Props> {
       lastUpdatedField,
       changeSpendingPasswordDialog,
       deleteWalletDialogContainer,
-      exportWalletDialogContainer,
       walletRecoveryPhraseStep1Container,
       walletRecoveryPhraseStep2Container,
       walletRecoveryPhraseStep3Container,
@@ -240,10 +233,6 @@ export default class WalletSettings extends Component<Props> {
 
         {isDialogOpen(DeleteWalletConfirmationDialog)
           ? deleteWalletDialogContainer
-          : false}
-
-        {isDialogOpen(ExportWalletToFileDialog)
-          ? exportWalletDialogContainer
           : false}
       </div>
     );
