@@ -19,6 +19,7 @@ type Props = {
   onGoToRoute: Function,
   expandWithoutTransition?: boolean,
   isNewsFeedOpen: boolean,
+  currentDateFormat: string,
 };
 
 type State = {
@@ -32,8 +33,6 @@ export default class NewsItem extends Component<Props, State> {
     onNewsItemActionClick: null,
     expandWithoutTransition: false,
   };
-
-  localizedDateFormat: 'MM/DD/YYYY';
 
   state = {
     newsItemExpanded: false,
@@ -49,10 +48,6 @@ export default class NewsItem extends Component<Props, State> {
     ) {
       this.setState({ newsItemExpanded: false });
     }
-  }
-
-  componentWillMount() {
-    this.localizedDateFormat = moment.localeData().longDateFormat('L');
   }
 
   newsItemClickHandler(event: SyntheticMouseEvent<HTMLElement>) {
@@ -114,7 +109,7 @@ export default class NewsItem extends Component<Props, State> {
   };
 
   render() {
-    const { newsItem, expandWithoutTransition } = this.props;
+    const { newsItem, expandWithoutTransition, currentDateFormat } = this.props;
     const componentClasses = classNames([
       styles.component,
       newsItem.type ? styles[newsItem.type] : null,
@@ -132,7 +127,7 @@ export default class NewsItem extends Component<Props, State> {
       >
         {title}
         <div className={styles.newsItemDate}>
-          {moment(newsItem.date).format(this.localizedDateFormat)}
+          {moment(newsItem.date).format(currentDateFormat)}
         </div>
         <div className={styles.newsItemContentWrapper}>
           <AnimateHeight

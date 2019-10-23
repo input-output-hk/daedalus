@@ -16,27 +16,15 @@ import {
   transactionTypes,
 } from '../../../source/renderer/app/domains/WalletTransaction';
 import WalletsWrapper from '../wallets/utils/WalletsWrapper';
+import { timeOptions, dateOptions } from '../_support/profileSettings';
 import {
   DATE_ENGLISH_OPTIONS,
-  DATE_JAPANESE_OPTIONS,
   TIME_OPTIONS,
 } from '../../../source/renderer/app/config/profileConfig';
 
 // Screens
 import WalletTransactionsList from '../../../source/renderer/app/components/wallet/transactions/WalletTransactionsList';
 import { UtxoDistributionStory } from './Utxo.stories';
-
-const timeOptions = TIME_OPTIONS.reduce((obj, { label, value }) => {
-  obj[label] = value;
-  return obj;
-}, {});
-const dateOptions = [...DATE_ENGLISH_OPTIONS, ...DATE_JAPANESE_OPTIONS].reduce(
-  (obj, { label, value }) => {
-    obj[label] = value;
-    return obj;
-  },
-  {}
-);
 
 /* eslint-disable consistent-return */
 storiesOf('Transactions|Transactions', module)

@@ -23,8 +23,10 @@ export default class NewsFeedContainer extends Component<InjectedProps> {
   render() {
     const { stores, actions } = this.props;
     const { newsFeedData, isLoadingNews } = stores.newsFeed;
+    const { app, profile } = stores;
     const { toggleNewsFeed } = actions.app;
-    const { openExternalLink, newsFeedIsOpen } = stores.app;
+    const { openExternalLink, newsFeedIsOpen } = app;
+    const { currentDateFormat } = profile;
 
     return (
       <NewsFeed
@@ -37,6 +39,7 @@ export default class NewsFeedContainer extends Component<InjectedProps> {
         onMarkNewsAsRead={this.handleMarkNewsAsRead}
         openWithoutTransition={stores.networkStatus.environment.isTest}
         onGoToRoute={this.handleGoToRoute}
+        currentDateFormat={currentDateFormat}
       />
     );
   }

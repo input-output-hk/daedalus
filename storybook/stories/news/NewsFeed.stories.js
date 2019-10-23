@@ -3,10 +3,12 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
-import { boolean } from '@storybook/addon-knobs';
+import { boolean, select, withKnobs } from '@storybook/addon-knobs';
 import StoryDecorator from '../_support/StoryDecorator';
 import NewsFeed from '../../../source/renderer/app/components/news/NewsFeed';
 import News from '../../../source/renderer/app/domains/News';
+import { dateOptions } from '../_support/profileSettings';
+import { DATE_ENGLISH_OPTIONS } from '../../../source/renderer/app/config/profileConfig';
 
 const news = [
   new News.News({
@@ -113,8 +115,8 @@ const news = [
 const newsCollection = new News.NewsCollection(news);
 
 storiesOf('News|NewsFeed', module)
-  .addDecorator(story => (
-    <StoryDecorator>{story(newsCollection)}</StoryDecorator>
+  .addDecorator((story, context) => (
+    <StoryDecorator>{withKnobs(story, context)}</StoryDecorator>
   ))
 
   // ====== Stories ======
@@ -131,6 +133,7 @@ storiesOf('News|NewsFeed', module)
         isNewsFeedOpen={boolean('isNewsFeedOpen2', true)}
         onOpenExternalLink={() => {}}
         onOpenAlert={() => {}}
+        currentDateFormat=" "
       />
     </div>
   ))
@@ -147,6 +150,7 @@ storiesOf('News|NewsFeed', module)
         isNewsFeedOpen={boolean('isNewsFeedOpen2', true)}
         onOpenExternalLink={() => {}}
         onOpenAlert={() => {}}
+        currentDateFormat=" "
       />
     </div>
   ))
@@ -163,6 +167,11 @@ storiesOf('News|NewsFeed', module)
         isNewsFeedOpen={boolean('isNewsFeedOpen3', true)}
         onOpenExternalLink={() => {}}
         onOpenAlert={() => {}}
+        currentDateFormat={select(
+          'currentDateFormat',
+          dateOptions,
+          DATE_ENGLISH_OPTIONS[0].value
+        )}
       />
     </div>
   ));

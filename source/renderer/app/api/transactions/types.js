@@ -20,7 +20,7 @@ export type Transaction = {
     tag: 'applying' | 'inNewestBlocks' | 'persisted' | 'wontApply' | 'creating',
     data: {},
   },
-  currentTimeFormar: string,
+  currentTimeFormat: string,
 };
 
 export type PaymentDistribution = {
