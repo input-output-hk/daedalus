@@ -43,7 +43,7 @@ The result can be found at `./result/daedalus-*.bin`.
 ## V2 API Integration Guide [Jormungandr]
 
 1. Run `yarn nix:dev` from `daedalus`. The systemStart argument no longer applies.
-2. Run `yarn dev` from the `nix-shell`
+2. Run `yarn dev:selfnode` or `yarn dev:testnet` from the `nix-shell`, depending on whether you want to connect to the testnet, or run a selfnode
 3. Once Daedalus has started, and has gotten past the loading screen, run `yarn v2-api-importer` from a new terminal window. This is only required if you wish to import some funded wallets
 
 API docs for pinned cardano-wallet version: https://input-output-hk.github.io/cardano-wallet/api/v2019-09-13/

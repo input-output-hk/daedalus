@@ -37,7 +37,9 @@
     "nix:dev": "nix-shell --arg autoStartBackend true --arg allowFaultInjection true",
     "nix:staging": "nix-shell --arg autoStartBackend true --argstr cluster staging",
     "v2-api-importer": "node utils/v2-api-importer/index.js",
-    "js-launcher": "node utils/js-launcher/index.js"
+    "js-launcher": "node utils/js-launcher/index.js",
+    "dev:selfnode": "yarn dev",
+    "dev:testnet": "JORMUNGANDR_TESTNET=true yarn dev"
   },
   "bin": {
     "electron": "./node_modules/.bin/electron"

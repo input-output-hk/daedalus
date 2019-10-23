@@ -23,6 +23,10 @@ export async function CardanoWalletLauncher(
   const { logStream, nodeImplementation, cliPath, stateDir, path } = walletOpts;
 
   let nodeOpts: string[] = [];
+
+  // Temp solution to enable development
+  const isJormungandrTestnet = !!process.env.JORMUNGANDR_TESTNET;
+
   switch (nodeImplementation) {
     case 'cardano-http-bridge':
       nodeOpts = buildHttpBridgeNodeOpts(walletOpts);
@@ -31,7 +35,7 @@ export async function CardanoWalletLauncher(
       break;
     case 'jormungandr':
       await configureJormungandrDeps(cliPath, stateDir);
-      nodeOpts = buildJormungandrNodeOpts(walletOpts);
+      nodeOpts = buildJormungandrNodeOpts(walletOpts, isJormungandrTestnet);
       break;
     default:
       break;
