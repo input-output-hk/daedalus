@@ -26,6 +26,7 @@ import {
   hasLoadedRequest,
   isRequestSet,
   requestGetter,
+  getRequestKeys,
 } from '../utils/storesUtils';
 import {
   NUMBER_OPTIONS,
@@ -257,33 +258,33 @@ export default class ProfileStore extends Store {
     value: string,
   }) => {
     // LONG VERSION - No Flow Errors
-    let setRequest: Request<string>;
-    let getRequest: Request<string>;
-    if (param === 'numberFormat') {
-      setRequest = this.setProfileNumberFormatRequest;
-      getRequest = this.getProfileNumberFormatRequest;
-    } else if (param === 'dateFormat') {
-      if (this.currentLocale === 'en-US') {
-        setRequest = this.setProfileDateFormatEnglishRequest;
-        getRequest = this.getProfileDateFormatEnglishRequest;
-      } else {
-        setRequest = this.setProfileDateFormatJapaneseRequest;
-        getRequest = this.getProfileDateFormatJapaneseRequest;
-      }
-    } else if (param === 'timeFormat') {
-      setRequest = this.setProfileTimeFormatRequest;
-      getRequest = this.getProfileTimeFormatRequest;
-    } else {
-      setRequest = this.setProfileLocaleRequest;
-      getRequest = this.getProfileLocaleRequest;
-    }
-    setRequest.execute(value);
-    getRequest.execute();
+    // let setRequest: Request<string>;
+    // let getRequest: Request<string>;
+    // if (param === 'numberFormat') {
+    //   setRequest = this.setProfileNumberFormatRequest;
+    //   getRequest = this.getProfileNumberFormatRequest;
+    // } else if (param === 'dateFormat') {
+    //   if (this.currentLocale === 'en-US') {
+    //     setRequest = this.setProfileDateFormatEnglishRequest;
+    //     getRequest = this.getProfileDateFormatEnglishRequest;
+    //   } else {
+    //     setRequest = this.setProfileDateFormatJapaneseRequest;
+    //     getRequest = this.getProfileDateFormatJapaneseRequest;
+    //   }
+    // } else if (param === 'timeFormat') {
+    //   setRequest = this.setProfileTimeFormatRequest;
+    //   getRequest = this.getProfileTimeFormatRequest;
+    // } else {
+    //   setRequest = this.setProfileLocaleRequest;
+    //   getRequest = this.getProfileLocaleRequest;
+    // }
+    // setRequest.execute(value);
+    // getRequest.execute();
 
     // SHORT VERSION - Flow Errors
-    // const { set, get } = getRequestKeys(param, this.currentLocale);
-    // await this[set].execute(value);
-    // await this[get].execute();
+    const { set, get } = getRequestKeys(param, this.currentLocale);
+    await (this: any)[set].execute(value);
+    await (this: any)[get].execute();
   };
 
   _updateUserLocalSettings = async (settings: { [key: string]: string }) => {
