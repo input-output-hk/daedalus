@@ -20,27 +20,27 @@ import {
 
 const messages = defineMessages({
   languageSelectLabel: {
-    id: 'settings.general.languageSelect.label',
+    id: 'profile.settings.languageSelect.label',
     defaultMessage: '!!!Language',
     description: 'Label for the language select.',
   },
   numberSelectLabel: {
-    id: 'settings.general.numberSelect.label',
+    id: 'profile.settings.numberSelect.label',
     defaultMessage: '!!!Number format',
     description: 'Label for the number select.',
   },
   dateSelectLabel: {
-    id: 'settings.general.dateSelect.label',
+    id: 'profile.settings.dateSelect.label',
     defaultMessage: '!!!Date format',
     description: 'Label for the date select.',
   },
   timeSelectLabel: {
-    id: 'settings.general.timeSelect.label',
+    id: 'profile.settings.timeSelect.label',
     defaultMessage: '!!!Time format',
     description: 'Label for the time select.',
   },
   submitLabel: {
-    id: 'profile.languageSelect.form.submitLabel',
+    id: 'profile.settings.submitLabel',
     defaultMessage: '!!!Continue',
     description: 'Label for the "Language select" form submit button.',
   },

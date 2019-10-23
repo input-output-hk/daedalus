@@ -1435,39 +1435,6 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Select your language",
-        "description": "Label for the language select.",
-        "end": {
-          "column": 3,
-          "line": 20
-        },
-        "file": "source/renderer/app/components/profile/language-selection/LanguageSelectionForm.js",
-        "id": "profile.languageSelect.form.languageSelectLabel",
-        "start": {
-          "column": 23,
-          "line": 16
-        }
-      },
-      {
-        "defaultMessage": "!!!Continue",
-        "description": "Label for the \"Language select\" form submit button.",
-        "end": {
-          "column": 3,
-          "line": 25
-        },
-        "file": "source/renderer/app/components/profile/language-selection/LanguageSelectionForm.js",
-        "id": "profile.languageSelect.form.submitLabel",
-        "start": {
-          "column": 15,
-          "line": 21
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/profile/language-selection/LanguageSelectionForm.json"
-  },
-  {
-    "descriptors": [
-      {
         "defaultMessage": "!!!I agree with terms of use",
         "description": "Label for the \"I agree with terms of use\" checkbox.",
         "end": {
@@ -1614,67 +1581,6 @@
       }
     ],
     "path": "source/renderer/app/components/settings/categories/DisplaySettings.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Language",
-        "description": "Label for the language select.",
-        "end": {
-          "column": 3,
-          "line": 24
-        },
-        "file": "source/renderer/app/components/settings/categories/GeneralSettings.js",
-        "id": "settings.general.languageSelect.label",
-        "start": {
-          "column": 23,
-          "line": 20
-        }
-      },
-      {
-        "defaultMessage": "!!!Number format",
-        "description": "Label for the number select.",
-        "end": {
-          "column": 3,
-          "line": 29
-        },
-        "file": "source/renderer/app/components/settings/categories/GeneralSettings.js",
-        "id": "settings.general.numberSelect.label",
-        "start": {
-          "column": 21,
-          "line": 25
-        }
-      },
-      {
-        "defaultMessage": "!!!Date format",
-        "description": "Label for the date select.",
-        "end": {
-          "column": 3,
-          "line": 34
-        },
-        "file": "source/renderer/app/components/settings/categories/GeneralSettings.js",
-        "id": "settings.general.dateSelect.label",
-        "start": {
-          "column": 19,
-          "line": 30
-        }
-      },
-      {
-        "defaultMessage": "!!!Time format",
-        "description": "Label for the time select.",
-        "end": {
-          "column": 3,
-          "line": 39
-        },
-        "file": "source/renderer/app/components/settings/categories/GeneralSettings.js",
-        "id": "settings.general.timeSelect.label",
-        "start": {
-          "column": 19,
-          "line": 35
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/settings/categories/GeneralSettings.json"
   },
   {
     "descriptors": [
@@ -8417,6 +8323,81 @@
       }
     ],
     "path": "source/renderer/app/components/widgets/forms/InlineEditingInput.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Language",
+        "description": "Label for the language select.",
+        "end": {
+          "column": 3,
+          "line": 26
+        },
+        "file": "source/renderer/app/components/widgets/forms/ProfileSettingsForm.js",
+        "id": "profile.settings.languageSelect.label",
+        "start": {
+          "column": 23,
+          "line": 22
+        }
+      },
+      {
+        "defaultMessage": "!!!Number format",
+        "description": "Label for the number select.",
+        "end": {
+          "column": 3,
+          "line": 31
+        },
+        "file": "source/renderer/app/components/widgets/forms/ProfileSettingsForm.js",
+        "id": "profile.settings.numberSelect.label",
+        "start": {
+          "column": 21,
+          "line": 27
+        }
+      },
+      {
+        "defaultMessage": "!!!Date format",
+        "description": "Label for the date select.",
+        "end": {
+          "column": 3,
+          "line": 36
+        },
+        "file": "source/renderer/app/components/widgets/forms/ProfileSettingsForm.js",
+        "id": "profile.settings.dateSelect.label",
+        "start": {
+          "column": 19,
+          "line": 32
+        }
+      },
+      {
+        "defaultMessage": "!!!Time format",
+        "description": "Label for the time select.",
+        "end": {
+          "column": 3,
+          "line": 41
+        },
+        "file": "source/renderer/app/components/widgets/forms/ProfileSettingsForm.js",
+        "id": "profile.settings.timeSelect.label",
+        "start": {
+          "column": 19,
+          "line": 37
+        }
+      },
+      {
+        "defaultMessage": "!!!Continue",
+        "description": "Label for the \"Language select\" form submit button.",
+        "end": {
+          "column": 3,
+          "line": 46
+        },
+        "file": "source/renderer/app/components/widgets/forms/ProfileSettingsForm.js",
+        "id": "profile.settings.submitLabel",
+        "start": {
+          "column": 15,
+          "line": 42
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/widgets/forms/ProfileSettingsForm.json"
   },
   {
     "descriptors": [
