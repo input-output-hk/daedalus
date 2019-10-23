@@ -9,7 +9,7 @@ import { dateOptions } from '../_support/profileSettings';
 import { DATE_ENGLISH_OPTIONS } from '../../../source/renderer/app/config/profileConfig';
 
 storiesOf('News|Alerts', module)
-  .addDecorator((story, context) => (
+  .addDecorator(story => (
     <StoryDecorator>
       {story([
         {
