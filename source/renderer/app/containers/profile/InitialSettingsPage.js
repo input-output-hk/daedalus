@@ -15,16 +15,14 @@ export default class InitialSettingsPage extends Component<InjectedProps> {
   onSubmit = async (values: { locale: string }) => {
     const { actions, stores } = this.props;
     const { isUpdateAvailable } = stores.nodeUpdate;
-    const { updateLocale } = actions.profile;
-    updateLocale.trigger(values);
+    const { updateUserLocalSettings } = actions.profile;
+    updateUserLocalSettings.trigger(values);
     await rebuildApplicationMenu.send({ isUpdateAvailable });
   };
 
-  handleSelectItem = async (param: string, values: string) => {
-    if (param === 'language') {
-      const { updateLocale } = this.props.actions.profile;
-      updateLocale.trigger({ locale: values });
-    }
+  handleSelectItem = async (param: string, value: string) => {
+    const { updateUserLocalSetting } = this.props.actions.profile;
+    updateUserLocalSetting.trigger({ param, value });
   };
 
   render() {

@@ -35,8 +35,8 @@ export const i18nHelpers = {
     client: WebdriverClient,
     { language }: { language: string } = {}
   ) =>
-    client.execute(locale => {
-      daedalus.actions.profile.updateLocale.trigger({ locale });
+    client.execute(value => {
+      daedalus.actions.profile.updateUserLocalSetting.trigger({ param: 'locale', value });
     }, language || DEFAULT_LANGUAGE),
 };
 

@@ -1,7 +1,6 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
-// import startCase from 'lodash/startCase';
 import ProfileSettingsForm from '../../../components/widgets/forms/ProfileSettingsForm';
 import { rebuildApplicationMenu } from '../../../ipc/rebuild-application-menu.js';
 import type { InjectedProps } from '../../../types/injectedPropsType';
@@ -11,13 +10,12 @@ import type { InjectedProps } from '../../../types/injectedPropsType';
 export default class GeneralSettingsPage extends Component<InjectedProps> {
   static defaultProps = { actions: null, stores: null };
 
-  handleSelectItem = async (param: string, values: string) => {
+  handleSelectItem = async (param: string, value: string) => {
     const { actions, stores } = this.props;
     const { isUpdateAvailable } = stores.nodeUpdate;
-    const { updateLocale } = actions.profile;
-
-    if (param === 'language') {
-      updateLocale.trigger({ locale: values });
+    const { updateUserLocalSetting } = actions.profile;
+    updateUserLocalSetting.trigger({ param, value });
+    if (param === 'locale') {
       await rebuildApplicationMenu.send({ isUpdateAvailable });
     }
   };

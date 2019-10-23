@@ -22,12 +22,27 @@ import {
 } from '../ipc/logs.ipc';
 import type { LogFiles, CompressedLogStatus } from '../types/LogTypes';
 import type { StateSnapshotLogParams } from '../../../common/types/logging.types';
+import {
+  hasLoadedRequest,
+  isRequestSet,
+  requestGetter,
+} from '../utils/storesUtils';
+import {
+  NUMBER_OPTIONS,
+  DATE_ENGLISH_OPTIONS,
+  DATE_JAPANESE_OPTIONS,
+  TIME_OPTIONS,
+} from '../config/profileConfig';
 
 // TODO: refactor all parts that rely on this to ipc channels!
 const { ipcRenderer } = global;
 
 export default class ProfileStore extends Store {
   @observable systemLocale: string = LOCALES.english;
+  @observable systemNumberFormat: string = NUMBER_OPTIONS[0].value;
+  @observable systemDateFormatEnglish: string = DATE_ENGLISH_OPTIONS[0].value;
+  @observable systemDateFormatJapanese: string = DATE_JAPANESE_OPTIONS[0].value;
+  @observable systemTimeFormat: string = TIME_OPTIONS[0].value;
   @observable bigNumberDecimalFormat = {
     decimalSeparator: '.',
     groupSeparator: ',',
@@ -43,6 +58,32 @@ export default class ProfileStore extends Store {
   );
   @observable setProfileLocaleRequest: Request<string> = new Request(
     this.api.localStorage.setUserLocale
+  );
+  @observable getProfileNumberFormatRequest: Request<string> = new Request(
+    this.api.localStorage.getUserNumberFormat
+  );
+  @observable setProfileNumberFormatRequest: Request<string> = new Request(
+    this.api.localStorage.setUserNumberFormat
+  );
+  @observable getProfileDateFormatEnglishRequest: Request<string> = new Request(
+    this.api.localStorage.getUserDateFormatEnglish
+  );
+  @observable setProfileDateFormatEnglishRequest: Request<string> = new Request(
+    this.api.localStorage.setUserDateFormatEnglish
+  );
+  @observable
+  getProfileDateFormatJapaneseRequest: Request<string> = new Request(
+    this.api.localStorage.getUserDateFormatJapanese
+  );
+  @observable
+  setProfileDateFormatJapaneseRequest: Request<string> = new Request(
+    this.api.localStorage.setUserDateFormatJapanese
+  );
+  @observable getProfileTimeFormatRequest: Request<string> = new Request(
+    this.api.localStorage.getUserTimeFormat
+  );
+  @observable setProfileTimeFormatRequest: Request<string> = new Request(
+    this.api.localStorage.setUserTimeFormat
   );
   @observable getTermsOfUseAcceptanceRequest: Request<string> = new Request(
     this.api.localStorage.getTermsOfUseAcceptance
@@ -72,7 +113,12 @@ export default class ProfileStore extends Store {
   /* eslint-enable max-len */
 
   setup() {
-    this.actions.profile.updateLocale.listen(this._updateLocale);
+    this.actions.profile.updateUserLocalSetting.listen(
+      this._updateUserLocalSetting
+    );
+    this.actions.profile.updateUserLocalSettings.listen(
+      this._updateUserLocalSettings
+    );
     this.actions.profile.acceptTermsOfUse.listen(this._acceptTermsOfUse);
     this.actions.profile.acceptDataLayerMigration.listen(
       this._acceptDataLayerMigration
@@ -106,57 +152,58 @@ export default class ProfileStore extends Store {
   };
 
   @computed get currentLocale(): string {
-    const { result } = this.getProfileLocaleRequest.execute();
-    if (this.isCurrentLocaleSet) return result;
-    return this.systemLocale;
+    return requestGetter(this.getProfileLocaleRequest, this.systemLocale);
   }
 
   @computed get hasLoadedCurrentLocale(): boolean {
-    return (
-      this.getProfileLocaleRequest.wasExecuted &&
-      this.getProfileLocaleRequest.result !== null
-    );
+    return hasLoadedRequest(this.getProfileLocaleRequest);
   }
 
   @computed get isCurrentLocaleSet(): boolean {
-    return (
-      this.getProfileLocaleRequest.result !== null &&
-      this.getProfileLocaleRequest.result !== ''
-    );
+    return isRequestSet(this.getProfileLocaleRequest);
   }
 
   @computed get currentTheme(): string {
-    const { result } = this.getThemeRequest.execute();
-    if (this.isCurrentThemeSet) return result;
-    return this.environment.isMainnet ? THEMES.DARK_BLUE : THEMES.LIGHT_BLUE; // defaults
+    const systemValue = this.environment.isMainnet
+      ? THEMES.DARK_BLUE
+      : THEMES.LIGHT_BLUE; // defaults
+    return requestGetter(this.getThemeRequest, systemValue);
   }
 
   @computed get isCurrentThemeSet(): boolean {
-    return (
-      this.getThemeRequest.result !== null && this.getThemeRequest.result !== ''
-    );
+    return isRequestSet(this.getThemeRequest);
   }
 
   @computed get hasLoadedCurrentTheme(): boolean {
-    return (
-      this.getThemeRequest.wasExecuted && this.getThemeRequest.result !== null
-    );
+    return hasLoadedRequest(this.getThemeRequest);
   }
 
   @computed get currentNumberFormat(): string {
-    return 'comma-dot';
+    return requestGetter(
+      this.getProfileNumberFormatRequest,
+      this.systemNumberFormat
+    );
   }
 
   @computed get currentDateEnglishFormat(): string {
-    return 'mm/dd/yyyy';
+    return requestGetter(
+      this.getProfileDateFormatEnglishRequest,
+      this.systemDateFormatEnglish
+    );
   }
 
   @computed get currentDateJapaneseFormat(): string {
-    return 'yyyy年mm月dd日';
+    return requestGetter(
+      this.getProfileDateFormatJapaneseRequest,
+      this.systemDateFormatJapanese
+    );
   }
 
   @computed get currentTimeFormat(): string {
-    return '12-hour';
+    return requestGetter(
+      this.getProfileTimeFormatRequest,
+      this.systemTimeFormat
+    );
   }
 
   @computed get termsOfUse(): string {
@@ -202,9 +249,48 @@ export default class ProfileStore extends Store {
     this._onReceiveSystemLocale(await detectSystemLocaleChannel.request());
   };
 
-  _updateLocale = async ({ locale }: { locale: string }) => {
-    await this.setProfileLocaleRequest.execute(locale);
-    await this.getProfileLocaleRequest.execute();
+  _updateUserLocalSetting = async ({
+    param,
+    value,
+  }: {
+    param: string,
+    value: string,
+  }) => {
+    // LONG VERSION - No Flow Errors
+    let setRequest: Request<string>;
+    let getRequest: Request<string>;
+    if (param === 'numberFormat') {
+      setRequest = this.setProfileNumberFormatRequest;
+      getRequest = this.getProfileNumberFormatRequest;
+    } else if (param === 'dateFormat') {
+      if (this.currentLocale === 'en-US') {
+        setRequest = this.setProfileDateFormatEnglishRequest;
+        getRequest = this.getProfileDateFormatEnglishRequest;
+      } else {
+        setRequest = this.setProfileDateFormatJapaneseRequest;
+        getRequest = this.getProfileDateFormatJapaneseRequest;
+      }
+    } else if (param === 'timeFormat') {
+      setRequest = this.setProfileTimeFormatRequest;
+      getRequest = this.getProfileTimeFormatRequest;
+    } else {
+      setRequest = this.setProfileLocaleRequest;
+      getRequest = this.getProfileLocaleRequest;
+    }
+    setRequest.execute(value);
+    getRequest.execute();
+
+    // SHORT VERSION - Flow Errors
+    // const { set, get } = getRequestKeys(param, this.currentLocale);
+    // await this[set].execute(value);
+    // await this[get].execute();
+  };
+
+  _updateUserLocalSettings = async (settings: { [key: string]: string }) => {
+    Object.entries(settings).forEach(([param, value]) => {
+      if (value && typeof value === 'string')
+        this._updateUserLocalSetting({ param, value });
+    });
   };
 
   _updateTheme = async ({ theme }: { theme: string }) => {
@@ -236,7 +322,6 @@ export default class ProfileStore extends Store {
 
   _redirectToInitialSettingsIfNoLocaleSet = () => {
     if (this.hasLoadedCurrentLocale && !this.isCurrentLocaleSet) {
-      console.log('_redirectToInitialSettingsIfNoLocaleSet');
       this.actions.router.goToRoute.trigger({
         route: ROUTES.PROFILE.INITIAL_SETTINGS,
       });
@@ -247,7 +332,6 @@ export default class ProfileStore extends Store {
     const termsOfUseNotAccepted =
       this.hasLoadedTermsOfUseAcceptance && !this.areTermsOfUseAccepted;
     if (this.isCurrentLocaleSet && termsOfUseNotAccepted) {
-      console.log('_redirectToTermsOfUseScreenIfTermsNotAccepted');
       this.actions.router.goToRoute.trigger({
         route: ROUTES.PROFILE.TERMS_OF_USE,
       });
@@ -273,12 +357,8 @@ export default class ProfileStore extends Store {
         // There are no wallets to migrate so we just need
         // to set the data layer migration acceptance to true
         // in order to prevent future data migration checks
-        console.log('_redirectToDataLayerMigration acceptance');
         this._acceptDataLayerMigration();
       } else {
-        console.log(
-          '_redirectToDataLayerMigrationScreenIfMigrationHasNotAccepted'
-        );
         this.actions.router.goToRoute.trigger({
           route: ROUTES.PROFILE.DATA_LAYER_MIGRATION,
         });

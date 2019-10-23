@@ -27,7 +27,7 @@ type StorageKeys = {
  */
 
 export default class LocalStorageApi {
-  static Getter = (key: string, fallbackValue: any): Promise<string> =>
+  static Getter = (key: string, fallbackValue: any): Promise<any> =>
     new Promise((resolve, reject) => {
       try {
         const value = store.get(key);
@@ -38,7 +38,7 @@ export default class LocalStorageApi {
       }
     });
 
-  static Setter = (key: string, value: string): Promise<void> =>
+  static Setter = (key: string, value: any): Promise<void> =>
     new Promise((resolve, reject) => {
       try {
         store.set(key, value);
@@ -48,7 +48,7 @@ export default class LocalStorageApi {
       }
     });
 
-  static Unsetter = (key): Promise<void> =>
+  static Unsetter = (key: string): Promise<void> =>
     new Promise(resolve => {
       try {
         store.delete(key);
@@ -61,6 +61,10 @@ export default class LocalStorageApi {
   constructor(NETWORK: string) {
     const storageKeysRaw = [
       'USER_LOCALE',
+      'USER_NUMBER_FORMAT',
+      'USER_DATE_FORMAT_ENGLISH',
+      'USER_DATE_FORMAT_JAPANESE',
+      'USER_TIME_FORMAT',
       'TERMS_OF_USE_ACCEPTANCE',
       'THEME',
       'DATA_LAYER_MIGRATION_ACCEPTANCE',
@@ -69,7 +73,8 @@ export default class LocalStorageApi {
     ];
     this.storageKeys = {};
     storageKeysRaw.forEach(key => {
-      this.storageKeys[key] = `${NETWORK}-${key}`;
+      const keyStr = key.replace(new RegExp('_', 'g'), '-');
+      this.storageKeys[key] = `${NETWORK}-${keyStr}`;
     });
   }
 
@@ -81,6 +86,51 @@ export default class LocalStorageApi {
 
   unsetUserLocale = (): Promise<void> =>
     new LocalStorageApi.Unsetter(this.storageKeys.USER_LOCALE);
+
+  getUserNumberFormat = (): Promise<string> =>
+    new LocalStorageApi.Getter(this.storageKeys.USER_NUMBER_FORMAT, '');
+
+  setUserNumberFormat = (numberFormat: string): Promise<void> =>
+    new LocalStorageApi.Setter(
+      this.storageKeys.USER_NUMBER_FORMAT,
+      numberFormat
+    );
+
+  unsetUserNumberFormat = (): Promise<void> =>
+    new LocalStorageApi.Unsetter(this.storageKeys.USER_NUMBER_FORMAT);
+
+  getUserDateFormatEnglish = (): Promise<string> =>
+    new LocalStorageApi.Getter(this.storageKeys.USER_DATE_FORMAT_ENGLISH, '');
+
+  setUserDateFormatEnglish = (dateFormat: string): Promise<void> =>
+    new LocalStorageApi.Setter(
+      this.storageKeys.USER_DATE_FORMAT_ENGLISH,
+      dateFormat
+    );
+
+  unsetUserDateFormatEnglish = (): Promise<void> =>
+    new LocalStorageApi.Unsetter(this.storageKeys.USER_DATE_FORMAT_ENGLISH);
+
+  getUserDateFormatJapanese = (): Promise<string> =>
+    new LocalStorageApi.Getter(this.storageKeys.USER_DATE_FORMAT_JAPANESE, '');
+
+  setUserDateFormatJapanese = (dateFormat: string): Promise<void> =>
+    new LocalStorageApi.Setter(
+      this.storageKeys.USER_DATE_FORMAT_JAPANESE,
+      dateFormat
+    );
+
+  unsetUserDateFormatJapanese = (): Promise<void> =>
+    new LocalStorageApi.Unsetter(this.storageKeys.USER_DATE_FORMAT_JAPANESE);
+
+  getUserTimeFormat = (): Promise<string> =>
+    new LocalStorageApi.Getter(this.storageKeys.USER_TIME_FORMAT, '');
+
+  setUserTimeFormat = (timeFormat: string): Promise<void> =>
+    new LocalStorageApi.Setter(this.storageKeys.USER_TIME_FORMAT, timeFormat);
+
+  unsetUserTimeFormat = (): Promise<void> =>
+    new LocalStorageApi.Unsetter(this.storageKeys.USER_TIME_FORMAT);
 
   getTermsOfUseAcceptance = (): Promise<boolean> =>
     new LocalStorageApi.Getter(this.storageKeys.TERMS_OF_USE_ACCEPTANCE, false);
@@ -179,6 +229,10 @@ export default class LocalStorageApi {
 
   reset = async () => {
     await this.unsetUserLocale();
+    await this.unsetUserNumberFormat();
+    await this.unsetUserDateFormatEnglish();
+    await this.unsetUserDateFormatJapanese();
+    await this.unsetUserTimeFormat();
     await this.unsetTermsOfUseAcceptance();
     await this.unsetUserTheme();
     await this.unsetDataLayerMigrationAcceptance();

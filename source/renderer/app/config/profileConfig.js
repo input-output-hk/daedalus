@@ -10,21 +10,21 @@ export const LANGUAGE_OPTIONS = [
 ];
 
 export const NUMBER_OPTIONS = [
-  { value: 'comma-dot', label: '8,638,301,639.283542' },
-  { value: 'dot-comma', label: '8.638.301.639,283542' },
-  { value: 'space-dot', label: '8 638 301 639.283542' },
+  { value: 'number-1', label: '8,638,301,639.283542' },
+  { value: 'number-2', label: '8.638.301.639,283542' },
+  { value: 'number-3', label: '8 638 301 639.283542' },
 ];
 
 export const DATE_ENGLISH_OPTIONS = [
-  { value: 'mm/dd/yyyy', label: 'mm/dd/yyyy' },
-  { value: 'dd/mm/yyyy', label: 'dd/mm/yyyy' },
-  { value: 'yyyy/mm/dd', label: 'yyyy/mm/dd' },
+  { value: 'date-english-1', label: 'mm/dd/yyyy' },
+  { value: 'date-english-2', label: 'dd/mm/yyyy' },
+  { value: 'date-english-3', label: 'yyyy/mm/dd' },
 ];
 
 export const DATE_JAPANESE_OPTIONS = [
-  { value: 'yyyy年mm月dd日', label: 'yyyy年mm月dd日' },
-  { value: 'yy/mm/dd', label: 'yy/mm/dd' },
-  { value: 'yyyy/mm/dd', label: 'yyyy/mm/dd' },
+  { value: 'date-japanese-1', label: 'yyyy年mm月dd日' },
+  { value: 'date-japanese-2', label: 'yy/mm/dd' },
+  { value: 'date-japanese-3', label: 'yyyy/mm/dd' },
 ];
 
 export const TIME_OPTIONS = [

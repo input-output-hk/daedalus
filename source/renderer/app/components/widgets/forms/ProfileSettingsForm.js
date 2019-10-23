@@ -76,9 +76,9 @@ export default class ProfileSettingsForm extends Component<ProfileSettingsFormPr
         if (onSubmit) {
           onSubmit({
             locale: languageId,
-            number: numberId,
-            date: dateId,
-            time: timeId,
+            numberFormat: numberId,
+            dateFormat: dateId,
+            timeFormat: timeId,
           });
         }
       },
@@ -120,10 +120,14 @@ export default class ProfileSettingsForm extends Component<ProfileSettingsFormPr
   render() {
     const {
       error,
-      currentLocale,
       onChangeItem,
       onSubmit,
       isSubmitting,
+      currentLocale,
+      currentNumberFormat,
+      currentDateEnglishFormat,
+      currentDateJapaneseFormat,
+      currentTimeFormat,
     } = this.props;
     const { intl } = this.context;
     const { form } = this;
@@ -141,6 +145,10 @@ export default class ProfileSettingsForm extends Component<ProfileSettingsFormPr
     const dateOptions =
       currentLocale === 'en-US' ? dateEnglishOptions : dateJapaneseOptions;
     const timeOptions = TIME_OPTIONS;
+    const currentDateFormat =
+      currentLocale === 'en-US'
+        ? currentDateEnglishFormat
+        : currentDateJapaneseFormat;
     const componentClassNames = classNames([styles.component, 'general']);
     return (
       <div className={componentClassNames}>
@@ -148,28 +156,31 @@ export default class ProfileSettingsForm extends Component<ProfileSettingsFormPr
           className={styles.select}
           options={languageOptions}
           {...languageId.bind()}
-          onChange={(value: string) => onChangeItem('language', value)}
+          onChange={(value: string) => onChangeItem('locale', value)}
           skin={SelectSkin}
         />
         <Select
           className={styles.select}
           options={numberOptions}
           {...numberId.bind()}
-          onChange={(value: string) => onChangeItem('number', value)}
+          value={currentNumberFormat}
+          onChange={(value: string) => onChangeItem('numberFormat', value)}
           skin={SelectSkin}
         />
         <Select
           className={styles.select}
           options={dateOptions}
           {...dateId.bind()}
-          onChange={(value: string) => onChangeItem('date', value)}
+          value={currentDateFormat}
+          onChange={(value: string) => onChangeItem('dateFormat', value)}
           skin={SelectSkin}
         />
         <Select
           className={styles.select}
           options={timeOptions}
           {...timeId.bind()}
-          onChange={(value: string) => onChangeItem('time', value)}
+          value={currentTimeFormat}
+          onChange={(value: string) => onChangeItem('timeFormat', value)}
           skin={SelectSkin}
         />
 
