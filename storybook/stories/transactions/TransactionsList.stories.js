@@ -8,12 +8,6 @@ import BigNumber from 'bignumber.js';
 import moment from 'moment';
 import faker from 'faker';
 
-import {
-  DATE_ENGLISH_OPTIONS,
-  DATE_JAPANESE_OPTIONS,
-  TIME_OPTIONS,
-} from '../../../source/renderer/app/config/profileConfig';
-
 // Assets and helpers
 import { generateTransaction } from '../_support/utils';
 import { formattedWalletAmount } from '../../../source/renderer/app/utils/formatters';
@@ -22,6 +16,11 @@ import {
   transactionTypes,
 } from '../../../source/renderer/app/domains/WalletTransaction';
 import WalletsWrapper from '../wallets/utils/WalletsWrapper';
+import {
+  DATE_ENGLISH_OPTIONS,
+  DATE_JAPANESE_OPTIONS,
+  TIME_OPTIONS,
+} from '../../../source/renderer/app/config/profileConfig';
 
 // Screens
 import WalletTransactionsList from '../../../source/renderer/app/components/wallet/transactions/WalletTransactionsList';
