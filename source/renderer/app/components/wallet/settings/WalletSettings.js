@@ -56,11 +56,6 @@ export const messages = defineMessages({
     defaultMessage: "!!!You still don't have password",
     description: "You still don't have password set message.",
   },
-  // exportButtonLabel: {
-  //   id: 'wallet.settings.exportWalletButtonLabel',
-  //   defaultMessage: '!!!Export wallet',
-  //   description: 'Label for the export button on wallet settings.',
-  // },
 });
 
 type Props = {
@@ -81,7 +76,6 @@ type Props = {
   activeField: ?string,
   isSubmitting: boolean,
   isInvalid: boolean,
-  // showExportLink: boolean,
   lastUpdatedField: ?string,
   changeSpendingPasswordDialog: Node,
   deleteWalletDialogContainer: Node,
@@ -131,7 +125,6 @@ export default class WalletSettings extends Component<Props> {
       isSubmitting,
       isInvalid,
       lastUpdatedField,
-      // showExportLink,
       changeSpendingPasswordDialog,
       deleteWalletDialogContainer,
       exportWalletDialogContainer,
@@ -225,23 +218,6 @@ export default class WalletSettings extends Component<Props> {
           />
 
           {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
-
-          {/* <div className={styles.actionButtons}>
-            {showExportLink ? (
-              <button
-                className={styles.exportLink}
-                onClick={() =>
-                  openDialogAction({
-                    dialog: ExportWalletToFileDialog,
-                  })
-                }
-              >
-                {intl.formatMessage(messages.exportButtonLabel)}
-              </button>
-            ) : (
-              false
-            )}
-          </div> */}
         </BorderedBox>
 
         <BorderedBox className={styles.deleteWalletBox}>
