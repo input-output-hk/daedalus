@@ -111,10 +111,7 @@ module.exports = {
       )
     ),
     new AutoDllPlugin({
-      config: {
-        devtool: 'inline-cheap-module-source-map',
-        mode: 'development',
-      },
+      inherit: !isCi,
       filename: 'vendor.dll.js',
       context: path.join(__dirname, '..'),
       entry: {
