@@ -37,8 +37,8 @@ let
   cardanoWalletSrc = import (pkgs.fetchFromGitHub {
     owner = "input-output-hk";
     repo = "cardano-wallet";
-    rev = "5209c1a55a04963ad662406f90daa7cbc45be321";
-    sha256 = "0gags7ia6lvg49qs7yh9n52vxaval50zi5kw98vhypbiizq6q3h8";
+    rev = "47c256f9e9f4d71e7fdb7d272f4aad9e2a86f826";
+    sha256 = "17rdsph1f39f2grq982aygf7r6p48pwy0i8nclz38f956fd6g4wy";
   }) {};
 
   cardanoWallet = if nodeImplementation == "jormungandr" then cardanoWalletSrc.cardano-wallet-jormungandr else cardanoWalletSrc.cardano-wallet-http-bridge;
