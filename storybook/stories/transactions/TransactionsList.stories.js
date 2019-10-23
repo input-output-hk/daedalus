@@ -3,10 +3,16 @@
 // @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import { boolean, number } from '@storybook/addon-knobs';
+import { boolean, number, select } from '@storybook/addon-knobs';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
 import faker from 'faker';
+
+import {
+  DATE_ENGLISH_OPTIONS,
+  DATE_JAPANESE_OPTIONS,
+  TIME_OPTIONS,
+} from '../../../source/renderer/app/config/profileConfig';
 
 // Assets and helpers
 import { generateTransaction } from '../_support/utils';
@@ -21,6 +27,18 @@ import WalletsWrapper from '../wallets/utils/WalletsWrapper';
 import WalletTransactionsList from '../../../source/renderer/app/components/wallet/transactions/WalletTransactionsList';
 import { UtxoDistributionStory } from './Utxo.stories';
 
+const timeOptions = TIME_OPTIONS.reduce((obj, { label, value }) => {
+  obj[label] = value;
+  return obj;
+}, {});
+const dateOptions = [...DATE_ENGLISH_OPTIONS, ...DATE_JAPANESE_OPTIONS].reduce(
+  (obj, { label, value }) => {
+    obj[label] = value;
+    return obj;
+  },
+  {}
+);
+
 /* eslint-disable consistent-return */
 storiesOf('Transactions|Transactions', module)
   .addDecorator(WalletsWrapper)
@@ -29,6 +47,16 @@ storiesOf('Transactions|Transactions', module)
 
   .add('Transactions List', () => (
     <WalletTransactionsList
+      currentDateFormat={select(
+        'currentDateFormat',
+        dateOptions,
+        DATE_ENGLISH_OPTIONS[0].value
+      )}
+      currentTimeFormat={select(
+        'currentTimeFormat',
+        timeOptions,
+        TIME_OPTIONS[0].value
+      )}
       transactions={[
         ...Array.from(Array(number('Transactions Sent', 1))).map((x, i) =>
           generateTransaction(

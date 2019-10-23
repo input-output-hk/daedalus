@@ -16,18 +16,18 @@ export const NUMBER_OPTIONS = [
 ];
 
 export const DATE_ENGLISH_OPTIONS = [
-  { value: 'date-english-1', label: 'mm/dd/yyyy' },
-  { value: 'date-english-2', label: 'dd/mm/yyyy' },
-  { value: 'date-english-3', label: 'yyyy/mm/dd' },
+  { value: 'MM/DD/YYYY', label: 'mm/dd/yyyy' },
+  { value: 'DD/MM/YYYY', label: 'dd/mm/yyyy' },
+  { value: 'YYYY/MM/DD', label: 'yyyy/mm/dd' },
 ];
 
 export const DATE_JAPANESE_OPTIONS = [
-  { value: 'date-japanese-1', label: 'yyyy年mm月dd日' },
-  { value: 'date-japanese-2', label: 'yy/mm/dd' },
-  { value: 'date-japanese-3', label: 'yyyy/mm/dd' },
+  { value: 'YYYY年MM月DD日', label: 'yyyy年mm月dd日' },
+  { value: 'YY/MM/DD', label: 'yy/mm/dd' },
+  { value: 'YYYY/MM/DD', label: 'yyyy/mm/dd' },
 ];
 
 export const TIME_OPTIONS = [
-  { value: '12-hour', label: '02:00 PM' },
-  { value: '24-hour', label: '14:00' },
+  { value: 'hh:mm:ss A', label: '02:00 PM' },
+  { value: 'HH:mm:ss', label: '14:00' },
 ];

@@ -138,6 +138,7 @@ type Props = {
   network: string,
   onDetailsToggled: ?Function,
   onOpenExternalLink: ?Function,
+  currentTimeFormat: string,
 };
 
 export default class Transaction extends Component<Props> {
@@ -169,6 +170,7 @@ export default class Transaction extends Component<Props> {
       onOpenExternalLink,
       isRestoreActive,
       isExpanded,
+      currentTimeFormat,
     } = this.props;
     const { intl } = this.context;
 
@@ -261,7 +263,7 @@ export default class Transaction extends Component<Props> {
             <div className={styles.details}>
               <div className={styles.type}>
                 {intl.formatMessage(messages.type, { currency })},{' '}
-                {moment(data.date).format('hh:mm:ss A')}
+                {moment(data.date).format(currentTimeFormat)}
               </div>
               {transactionStateTag()}
             </div>

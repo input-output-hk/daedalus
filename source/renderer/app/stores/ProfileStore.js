@@ -190,6 +190,12 @@ export default class ProfileStore extends Store {
     );
   }
 
+  @computed get currentDateFormat(): string {
+    return this.currentLocale === 'en-US'
+      ? this.currentDateEnglishFormat
+      : this.currentDateJapaneseFormat;
+  }
+
   @computed get currentDateEnglishFormat(): string {
     return requestGetter(
       this.getProfileDateFormatEnglishRequest,
