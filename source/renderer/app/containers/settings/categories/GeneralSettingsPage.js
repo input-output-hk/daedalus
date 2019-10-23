@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
-import ProfileSettingsForm from '../../../components/widgets/forms/ProfileSettingsForm';
+import GeneralSettings from '../../../components/settings/categories/GeneralSettings';
 import { rebuildApplicationMenu } from '../../../ipc/rebuild-application-menu.js';
 import type { InjectedProps } from '../../../types/injectedPropsType';
 
@@ -30,7 +30,7 @@ export default class GeneralSettingsPage extends Component<InjectedProps> {
       currentTimeFormat,
     } = this.props.stores.profile;
     return (
-      <ProfileSettingsForm
+      <GeneralSettings
         onChangeItem={this.handleSelectItem}
         currentLocale={currentLocale}
         currentNumberFormat={currentNumberFormat}
