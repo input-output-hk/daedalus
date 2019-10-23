@@ -9,12 +9,12 @@ import CopyToClipboard from 'react-copy-to-clipboard';
 import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
 import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
 import SVGInline from 'react-svg-inline';
-import {
-  ALLOWED_TIME_DIFFERENCE,
-  MAX_ALLOWED_STALL_DURATION,
-} from '../../config/timingConfig';
-import { UNSYNCED_BLOCKS_ALLOWED } from '../../config/numbersConfig';
-import { getNetworkEkgUrl } from '../../utils/network';
+// import {
+//   ALLOWED_TIME_DIFFERENCE,
+//   MAX_ALLOWED_STALL_DURATION,
+// } from '../../config/timingConfig';
+// import { UNSYNCED_BLOCKS_ALLOWED } from '../../config/numbersConfig';
+// import { getNetworkEkgUrl } from '../../utils/network';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
 import iconCopy from '../../assets/images/clipboard-ic.inline.svg';
@@ -330,25 +330,25 @@ type Props = {
   systemInfo: SystemInfo,
   coreInfo: CoreSystemInfo,
   cardanoNodeState: ?CardanoNodeState,
-  isDev: boolean,
-  isMainnet: boolean,
-  isStaging: boolean,
-  isTestnet: boolean,
+  // isDev: boolean,
+  // isMainnet: boolean,
+  // isStaging: boolean,
+  // isTestnet: boolean,
   isNodeResponding: boolean,
-  isNodeSubscribed: boolean,
+  // isNodeSubscribed: boolean,
   isNodeSyncing: boolean,
   isNodeInSync: boolean,
-  isNodeTimeCorrect: boolean,
+  // isNodeTimeCorrect: boolean,
   nodeConnectionError: ?LocalizableError,
   isConnected: boolean,
   isSynced: boolean,
   syncPercentage: number,
-  localTimeDifference: ?number,
-  isSystemTimeIgnored: boolean,
-  isSystemTimeCorrect: boolean,
-  isForceCheckingNodeTime: boolean,
-  latestLocalBlockTimestamp: number,
-  latestNetworkBlockTimestamp: number,
+  // localTimeDifference: ?number,
+  // isSystemTimeIgnored: boolean,
+  // isSystemTimeCorrect: boolean,
+  // isForceCheckingNodeTime: boolean,
+  // latestLocalBlockTimestamp: number,
+  // latestNetworkBlockTimestamp: number,
   localBlockHeight: number,
   networkBlockHeight: number,
   currentLocale: string,
@@ -474,30 +474,30 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
       coreInfo,
       cardanoNodeState,
       isNodeResponding,
-      isNodeSubscribed,
+      // isNodeSubscribed,
       isNodeSyncing,
       isNodeInSync,
-      isNodeTimeCorrect,
+      // isNodeTimeCorrect,
       isConnected,
       isSynced,
       syncPercentage,
-      localTimeDifference,
-      isSystemTimeCorrect,
-      isForceCheckingNodeTime,
+      // localTimeDifference,
+      // isSystemTimeCorrect,
+      // isForceCheckingNodeTime,
       localBlockHeight,
       networkBlockHeight,
-      latestLocalBlockTimestamp,
-      latestNetworkBlockTimestamp,
+      // latestLocalBlockTimestamp,
+      // latestNetworkBlockTimestamp,
       onOpenStateDirectory,
       onClose,
       onCopyStateDirectoryPath,
       nodeConnectionError,
-      isSystemTimeIgnored,
+      // isSystemTimeIgnored,
       onOpenExternalLink,
-      isDev,
-      isTestnet,
-      isStaging,
-      isMainnet,
+      // isDev,
+      // isTestnet,
+      // isStaging,
+      // isMainnet,
       currentLocale,
     } = this.props;
 
@@ -522,56 +522,56 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
     } = coreInfo;
 
     const { isNodeRestarting } = this.state;
-    const isNTPServiceReachable = localTimeDifference != null;
+    // const isNTPServiceReachable = localTimeDifference != null;
     const connectionError = get(nodeConnectionError, 'values', '{}');
     const { message, code } = connectionError;
 
-    const localTimeDifferenceClasses = classNames([
-      !isNTPServiceReachable ||
-      (localTimeDifference && localTimeDifference > ALLOWED_TIME_DIFFERENCE)
-        ? styles.red
-        : styles.green,
-    ]);
+    // const localTimeDifferenceClasses = classNames([
+    //   !isNTPServiceReachable ||
+    //   (localTimeDifference && localTimeDifference > ALLOWED_TIME_DIFFERENCE)
+    //     ? styles.red
+    //     : styles.green,
+    // ]);
 
-    const remainingUnsyncedBlocks = networkBlockHeight - localBlockHeight;
-    const remainingUnsyncedBlocksClasses = classNames([
-      remainingUnsyncedBlocks < 0 ||
-      remainingUnsyncedBlocks > UNSYNCED_BLOCKS_ALLOWED
-        ? styles.red
-        : styles.green,
-    ]);
+    // const remainingUnsyncedBlocks = networkBlockHeight - localBlockHeight;
+    // const remainingUnsyncedBlocksClasses = classNames([
+    //   remainingUnsyncedBlocks < 0 ||
+    //   remainingUnsyncedBlocks > UNSYNCED_BLOCKS_ALLOWED
+    //     ? styles.red
+    //     : styles.green,
+    // ]);
 
-    const latestLocalBlockAge = moment(Date.now()).diff(
-      moment(latestLocalBlockTimestamp)
-    );
-    const isLocalBlockHeightStalling =
-      latestLocalBlockAge > MAX_ALLOWED_STALL_DURATION;
-    const latestLocalBlockAgeClasses = classNames([
-      latestLocalBlockTimestamp > 0 && !isLocalBlockHeightStalling
-        ? styles.green
-        : styles.red,
-    ]);
+    // const latestLocalBlockAge = moment(Date.now()).diff(
+    //   moment(latestLocalBlockTimestamp)
+    // );
+    // const isLocalBlockHeightStalling =
+    //   latestLocalBlockAge > MAX_ALLOWED_STALL_DURATION;
+    // const latestLocalBlockAgeClasses = classNames([
+    //   latestLocalBlockTimestamp > 0 && !isLocalBlockHeightStalling
+    //     ? styles.green
+    //     : styles.red,
+    // ]);
 
-    const latestNetworkBlockAge = moment(Date.now()).diff(
-      moment(latestNetworkBlockTimestamp)
-    );
-    const isNetworkBlockHeightStalling =
-      latestNetworkBlockAge > MAX_ALLOWED_STALL_DURATION;
-    const latestNetworkBlockAgeClasses = classNames([
-      latestNetworkBlockTimestamp > 0 && !isNetworkBlockHeightStalling
-        ? styles.green
-        : styles.red,
-    ]);
+    // const latestNetworkBlockAge = moment(Date.now()).diff(
+    //   moment(latestNetworkBlockTimestamp)
+    // );
+    // const isNetworkBlockHeightStalling =
+    //   latestNetworkBlockAge > MAX_ALLOWED_STALL_DURATION;
+    // const latestNetworkBlockAgeClasses = classNames([
+    //   latestNetworkBlockTimestamp > 0 && !isNetworkBlockHeightStalling
+    //     ? styles.green
+    //     : styles.red,
+    // ]);
 
     // Cardano Node EKG server is not enabled for the Mainnet and Testnet builds!
-    const cardanoNodeEkgLink =
-      isMainnet || isTestnet
-        ? false
-        : getNetworkEkgUrl({
-            isDev,
-            isStaging,
-            isTestnet,
-          });
+    // const showCardanoNodeEkgLink =
+    //   isMainnet || isTestnet
+    //     ? false
+    //     : getNetworkEkgUrl({
+    //         isDev,
+    //         isStaging,
+    //         isTestnet,
+    //       });
 
     const stateDirectoryPathStyles = classNames([
       styles.stateDirectoryPath,
@@ -769,72 +769,74 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                 <th>{intl.formatMessage(messages.localBlockHeight)}:</th>
                 <td>{localBlockHeight}</td>
               </tr>
-              <tr>
-                <th>{intl.formatMessage(messages.remainingUnsyncedBlocks)}:</th>
-                <td className={remainingUnsyncedBlocksClasses}>
-                  {remainingUnsyncedBlocks >= 0 ? remainingUnsyncedBlocks : '-'}
-                </td>
-              </tr>
-              <tr>
-                <th>{intl.formatMessage(messages.latestLocalBlockAge)}:</th>
-                <td className={latestLocalBlockAgeClasses}>
-                  {latestLocalBlockTimestamp > 0
-                    ? `${latestLocalBlockAge} ms`
-                    : '-'}
-                </td>
-              </tr>
-              <tr>
-                <th>{intl.formatMessage(messages.latestNetworkBlockAge)}:</th>
-                <td className={latestNetworkBlockAgeClasses}>
-                  {latestNetworkBlockTimestamp > 0
-                    ? `${latestNetworkBlockAge} ms`
-                    : '-'}
-                </td>
-              </tr>
-              <tr>
-                <th>{intl.formatMessage(messages.localTimeDifference)}:</th>
-                <td className={styles.localTimeDifferenceItem}>
-                  <button
-                    onClick={() => this.checkTime()}
-                    disabled={isForceCheckingNodeTime || !isConnected}
-                  >
+              {/*
+                <tr>
+                  <th>{intl.formatMessage(messages.remainingUnsyncedBlocks)}:</th>
+                  <td className={remainingUnsyncedBlocksClasses}>
+                    {remainingUnsyncedBlocks >= 0 ? remainingUnsyncedBlocks : '-'}
+                  </td>
+                </tr>
+                <tr>
+                  <th>{intl.formatMessage(messages.latestLocalBlockAge)}:</th>
+                  <td className={latestLocalBlockAgeClasses}>
+                    {latestLocalBlockTimestamp > 0
+                      ? `${latestLocalBlockAge} ms`
+                      : '-'}
+                  </td>
+                </tr>
+                <tr>
+                  <th>{intl.formatMessage(messages.latestNetworkBlockAge)}:</th>
+                  <td className={latestNetworkBlockAgeClasses}>
+                    {latestNetworkBlockTimestamp > 0
+                      ? `${latestNetworkBlockAge} ms`
+                      : '-'}
+                  </td>
+                </tr>
+                <tr>
+                  <th>{intl.formatMessage(messages.localTimeDifference)}:</th>
+                  <td className={styles.localTimeDifferenceItem}>
+                    <button
+                      onClick={() => this.checkTime()}
+                      disabled={isForceCheckingNodeTime || !isConnected}
+                    >
+                      {isForceCheckingNodeTime
+                        ? intl.formatMessage(messages.localTimeDifferenceChecking)
+                        : intl.formatMessage(
+                            messages.localTimeDifferenceCheckTime
+                          )}
+                    </button>
+                    <span className={localTimeDifferenceClasses}>
+                      {isNTPServiceReachable
+                        ? `${localTimeDifference || 0} μs`
+                        : intl.formatMessage(messages.serviceUnreachable)}
+                    </span>
+                  </td>
+                </tr>
+                <tr>
+                  <th>{intl.formatMessage(messages.systemTimeCorrect)}:</th>
+                  <td className={this.getClassName(isSystemTimeCorrect)}>
+                    {isSystemTimeCorrect
+                      ? intl.formatMessage(messages.statusOn)
+                      : intl.formatMessage(messages.statusOff)}
+                  </td>
+                </tr>
+                <tr>
+                  <th>{intl.formatMessage(messages.systemTimeIgnored)}:</th>
+                  <td className={this.getClassName(!isSystemTimeIgnored)}>
+                    {isSystemTimeIgnored
+                      ? intl.formatMessage(messages.statusOn)
+                      : intl.formatMessage(messages.statusOff)}
+                  </td>
+                </tr>
+                <tr>
+                  <th>{intl.formatMessage(messages.checkingNodeTime)}:</th>
+                  <td>
                     {isForceCheckingNodeTime
-                      ? intl.formatMessage(messages.localTimeDifferenceChecking)
-                      : intl.formatMessage(
-                          messages.localTimeDifferenceCheckTime
-                        )}
-                  </button>
-                  <span className={localTimeDifferenceClasses}>
-                    {isNTPServiceReachable
-                      ? `${localTimeDifference || 0} μs`
-                      : intl.formatMessage(messages.serviceUnreachable)}
-                  </span>
-                </td>
-              </tr>
-              <tr>
-                <th>{intl.formatMessage(messages.systemTimeCorrect)}:</th>
-                <td className={this.getClassName(isSystemTimeCorrect)}>
-                  {isSystemTimeCorrect
-                    ? intl.formatMessage(messages.statusOn)
-                    : intl.formatMessage(messages.statusOff)}
-                </td>
-              </tr>
-              <tr>
-                <th>{intl.formatMessage(messages.systemTimeIgnored)}:</th>
-                <td className={this.getClassName(!isSystemTimeIgnored)}>
-                  {isSystemTimeIgnored
-                    ? intl.formatMessage(messages.statusOn)
-                    : intl.formatMessage(messages.statusOff)}
-                </td>
-              </tr>
-              <tr>
-                <th>{intl.formatMessage(messages.checkingNodeTime)}:</th>
-                <td>
-                  {isForceCheckingNodeTime
-                    ? intl.formatMessage(messages.statusOn)
-                    : intl.formatMessage(messages.statusOff)}
-                </td>
-              </tr>
+                      ? intl.formatMessage(messages.statusOn)
+                      : intl.formatMessage(messages.statusOff)}
+                  </td>
+                </tr>
+              */}
             </tbody>
             <tbody>
               <tr>
@@ -852,25 +854,27 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                   <hr />
                 </th>
               </tr>
-              {cardanoNodeEkgLink ? (
-                <tr>
-                  <th>
-                    {intl.formatMessage(messages.cardanoNodeDiagnostics)}:
-                  </th>
-                  <td>
-                    <button
-                      className={styles.realTimeStatusBtn}
-                      onClick={() => onOpenExternalLink(cardanoNodeEkgLink)}
-                    >
-                      {intl.formatMessage(messages.realtimeStatisticsMonitor)}
-                      <SVGInline
-                        svg={externalLinkIcon}
-                        className={styles.externalLinkIcon}
-                      />
-                    </button>
-                  </td>
-                </tr>
-              ) : null}
+              {/*
+                {showCardanoNodeEkgLink ? (
+                  <tr>
+                    <th>
+                      {intl.formatMessage(messages.cardanoNodeDiagnostics)}:
+                    </th>
+                    <td>
+                      <button
+                        className={styles.realTimeStatusBtn}
+                        onClick={() => onOpenExternalLink(showCardanoNodeEkgLink)}
+                      >
+                        {intl.formatMessage(messages.realtimeStatisticsMonitor)}
+                        <SVGInline
+                          svg={externalLinkIcon}
+                          className={styles.externalLinkIcon}
+                        />
+                      </button>
+                    </td>
+                  </tr>
+                ) : null}
+              */}
               <tr>
                 <th>{intl.formatMessage(messages.cardanoNodeState)}:</th>
                 <td>
@@ -891,22 +895,24 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                     : intl.formatMessage(messages.statusOff)}
                 </td>
               </tr>
-              <tr>
-                <th>{intl.formatMessage(messages.cardanoNodeSubscribed)}:</th>
-                <td className={this.getClassName(isNodeSubscribed)}>
-                  {isNodeSubscribed
-                    ? intl.formatMessage(messages.statusOn)
-                    : intl.formatMessage(messages.statusOff)}
-                </td>
-              </tr>
-              <tr>
-                <th>{intl.formatMessage(messages.cardanoNodeTimeCorrect)}:</th>
-                <td className={this.getClassName(isNodeTimeCorrect)}>
-                  {isNodeTimeCorrect
-                    ? intl.formatMessage(messages.statusOn)
-                    : intl.formatMessage(messages.statusOff)}
-                </td>
-              </tr>
+              {/*
+                <tr>
+                  <th>{intl.formatMessage(messages.cardanoNodeSubscribed)}:</th>
+                  <td className={this.getClassName(isNodeSubscribed)}>
+                    {isNodeSubscribed
+                      ? intl.formatMessage(messages.statusOn)
+                      : intl.formatMessage(messages.statusOff)}
+                  </td>
+                </tr>
+                <tr>
+                  <th>{intl.formatMessage(messages.cardanoNodeTimeCorrect)}:</th>
+                  <td className={this.getClassName(isNodeTimeCorrect)}>
+                    {isNodeTimeCorrect
+                      ? intl.formatMessage(messages.statusOn)
+                      : intl.formatMessage(messages.statusOff)}
+                  </td>
+                </tr>
+              */}
               <tr>
                 <th>{intl.formatMessage(messages.cardanoNodeSyncing)}:</th>
                 <td className={this.getClassName(isNodeSyncing)}>

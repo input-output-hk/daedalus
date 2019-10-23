@@ -900,7 +900,7 @@ export default class AdaApi {
       const syncProgress =
         get(sync_progress, 'status') === 'ready'
           ? 100
-          : get(sync_progress, 'quantity', 0);
+          : get(sync_progress, 'progress.quantity', 0);
 
       // extract relevant data before sending to NetworkStatusStore
       return {

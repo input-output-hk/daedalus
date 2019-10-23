@@ -710,6 +710,10 @@ export default class NetworkStatusStore extends Store {
   }
 
   @computed get syncPercentage(): number {
+    if (this.isIncentivizedTestnet) {
+      return this.syncProgress || 0;
+    }
+
     const { networkBlockHeight, localBlockHeight } = this;
     if (networkBlockHeight >= 1) {
       if (localBlockHeight >= networkBlockHeight) {
