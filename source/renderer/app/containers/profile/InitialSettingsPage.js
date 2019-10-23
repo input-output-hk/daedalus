@@ -15,8 +15,12 @@ export default class InitialSettingsPage extends Component<InjectedProps> {
   onSubmit = async (values: { locale: string }) => {
     const { actions, stores } = this.props;
     const { isUpdateAvailable } = stores.nodeUpdate;
-    const { updateUserLocalSettings } = actions.profile;
+    const {
+      updateUserLocalSettings,
+      finishInitialScreenSettings,
+    } = actions.profile;
     updateUserLocalSettings.trigger(values);
+    finishInitialScreenSettings.trigger();
     await rebuildApplicationMenu.send({ isUpdateAvailable });
   };
 

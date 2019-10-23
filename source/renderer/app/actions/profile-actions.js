@@ -21,4 +21,5 @@ export default class ProfileActions {
   }> = new Action();
   updateUserLocalSettings: Action<{ [key: string]: string }> = new Action();
   updateTheme: Action<{ theme: string }> = new Action();
+  finishInitialScreenSettings: Action<any> = new Action();
 }

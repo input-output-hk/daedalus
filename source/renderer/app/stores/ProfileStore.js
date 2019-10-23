@@ -111,9 +111,13 @@ export default class ProfileStore extends Store {
   @observable compressedLogsFilePath: ?string = null;
   @observable compressedLogsStatus: CompressedLogStatus = {};
   @observable isSubmittingBugReport: boolean = false;
+  @observable isInitialScreen: boolean = false;
   /* eslint-enable max-len */
 
   setup() {
+    this.actions.profile.finishInitialScreenSettings.listen(
+      this._finishInitialScreenSettings
+    );
     this.actions.profile.updateUserLocalSetting.listen(
       this._updateUserLocalSetting
     );
@@ -250,6 +254,10 @@ export default class ProfileStore extends Store {
     this._onReceiveSystemLocale(await detectSystemLocaleChannel.request());
   };
 
+  _finishInitialScreenSettings = action(() => {
+    this.isInitialScreen = false;
+  });
+
   _updateUserLocalSetting = async ({
     param,
     value,
@@ -257,31 +265,6 @@ export default class ProfileStore extends Store {
     param: string,
     value: string,
   }) => {
-    // LONG VERSION - No Flow Errors
-    // let setRequest: Request<string>;
-    // let getRequest: Request<string>;
-    // if (param === 'numberFormat') {
-    //   setRequest = this.setProfileNumberFormatRequest;
-    //   getRequest = this.getProfileNumberFormatRequest;
-    // } else if (param === 'dateFormat') {
-    //   if (this.currentLocale === 'en-US') {
-    //     setRequest = this.setProfileDateFormatEnglishRequest;
-    //     getRequest = this.getProfileDateFormatEnglishRequest;
-    //   } else {
-    //     setRequest = this.setProfileDateFormatJapaneseRequest;
-    //     getRequest = this.getProfileDateFormatJapaneseRequest;
-    //   }
-    // } else if (param === 'timeFormat') {
-    //   setRequest = this.setProfileTimeFormatRequest;
-    //   getRequest = this.getProfileTimeFormatRequest;
-    // } else {
-    //   setRequest = this.setProfileLocaleRequest;
-    //   getRequest = this.getProfileLocaleRequest;
-    // }
-    // setRequest.execute(value);
-    // getRequest.execute();
-
-    // SHORT VERSION - Flow Errors
     const { set, get } = getRequestKeys(param, this.currentLocale);
     await (this: any)[set].execute(value);
     await (this: any)[get].execute();
@@ -322,7 +305,13 @@ export default class ProfileStore extends Store {
   };
 
   _redirectToInitialSettingsIfNoLocaleSet = () => {
-    if (this.hasLoadedCurrentLocale && !this.isCurrentLocaleSet) {
+    if (
+      (this.hasLoadedCurrentLocale && !this.isCurrentLocaleSet) ||
+      this.isInitialScreen
+    ) {
+      runInAction('Set `isInitialScreen` true', () => {
+        this.isInitialScreen = true;
+      });
       this.actions.router.goToRoute.trigger({
         route: ROUTES.PROFILE.INITIAL_SETTINGS,
       });
@@ -332,7 +321,11 @@ export default class ProfileStore extends Store {
   _redirectToTermsOfUseScreenIfTermsNotAccepted = () => {
     const termsOfUseNotAccepted =
       this.hasLoadedTermsOfUseAcceptance && !this.areTermsOfUseAccepted;
-    if (this.isCurrentLocaleSet && termsOfUseNotAccepted) {
+    if (
+      !this.isInitialScreen &&
+      this.isCurrentLocaleSet &&
+      termsOfUseNotAccepted
+    ) {
       this.actions.router.goToRoute.trigger({
         route: ROUTES.PROFILE.TERMS_OF_USE,
       });
