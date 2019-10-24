@@ -1,6 +1,7 @@
 {
   "updatedAt": 1571901613559,
   "items": [
+
     {
       "title": {
         "en-US": "What's new in Daedalus 0.15.0?",
@@ -12,7 +13,7 @@
       },
       "target": {
         "daedalusVersion": "0.15.0 - 0.15.0",
-        "platforms": ["darwin", "win32", "linux"]
+        "platforms":["darwin","win32","linux"]
       },
       "action": {
         "label": {
@@ -38,7 +39,7 @@
       },
       "target": {
         "daedalusVersion": "0.14.0 - 0.15.0",
-        "platforms": ["darwin", "win32", "linux"]
+        "platforms":["darwin","win32","linux"]
       },
       "action": {
         "label": {

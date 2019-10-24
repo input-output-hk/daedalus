@@ -12,7 +12,7 @@
       },
       "target": {
         "daedalusVersion": null,
-        "platforms": ["darwin", "win32", "linux"]
+        "platforms":["darwin","win32","linux"]
       },
       "action": {
         "label": {
@@ -38,7 +38,7 @@
       },
       "target": {
         "daedalusVersion": "0.12.0 - 0.15.0",
-        "platforms": ["darwin", "win32", "linux"]
+        "platforms":["darwin","win32","linux"]
       },
       "action": {
         "label": {
@@ -64,7 +64,7 @@
       },
       "target": {
         "daedalusVersion": "0.12.0 - 0.15.0",
-        "platforms": ["darwin", "win32", "linux"]
+        "platforms":["darwin","win32","linux"]
       },
       "action": {
         "label": {
@@ -90,7 +90,7 @@
       },
       "target": {
         "daedalusVersion": "0.12.0 - 0.15.0",
-        "platforms": ["darwin", "win32", "linux"]
+        "platforms":["darwin","win32","linux"]
       },
       "action": {
         "label": {
@@ -116,7 +116,7 @@
       },
       "target": {
         "daedalusVersion": "0.12.0 - 0.15.0",
-        "platforms": ["darwin", "win32", "linux"]
+        "platforms":["darwin","win32","linux"]
       },
       "action": {
         "label": {
@@ -142,7 +142,7 @@
       },
       "target": {
         "daedalusVersion": "0.12.0 - 0.15.0",
-        "platforms": ["darwin", "win32", "linux"]
+        "platforms":["darwin","win32","linux"]
       },
       "action": {
         "label": {
@@ -168,7 +168,7 @@
       },
       "target": {
         "daedalusVersion": "0.12.0 - 0.15.0",
-        "platforms": ["darwin", "win32", "linux"]
+        "platforms":["darwin","win32","linux"]
       },
       "action": {
         "label": {

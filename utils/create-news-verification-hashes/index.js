@@ -13,6 +13,9 @@
  *
  * 4. Fetch files from specific GH branch (default: develop) and for specific environment (default: *) and create hash:
  *   NEWS_ENV=development GH_BRANCH=develop yarn create-news-verification-hashes
+ *
+ * EXAMPLE:
+ *  NEWS_ENV=development GH_BRANCH=feature/ddw-907-add-internal-link-support-in-newsfeed-items yarn create-news-verification-hashes
  */
 
 const lodash = require('lodash');
