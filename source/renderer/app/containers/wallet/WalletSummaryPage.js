@@ -55,7 +55,11 @@ export default class WalletSummaryPage extends Component<Props> {
     } = transactions;
     const { isActiveWalletRestoring } = wallets;
     const wallet = wallets.active;
-    const { currentTimeFormat, currentDateFormat } = profile;
+    const {
+      currentTimeFormat,
+      currentDateFormat,
+      currentNumberFormatPretty,
+    } = profile;
     // Guard against potential null values
     if (!wallet)
       throw new Error('Active wallet required for WalletSummaryPage.');
@@ -102,6 +106,7 @@ export default class WalletSummaryPage extends Component<Props> {
           pendingAmount={unconfirmedAmount}
           isLoadingTransactions={recentTransactionsRequest.isExecutingFirstTime}
           isRestoreActive={isActiveWalletRestoring}
+          currentNumberFormatPretty={currentNumberFormatPretty}
         />
         {walletTransactions}
       </VerticalFlexContainer>

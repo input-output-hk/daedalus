@@ -1,11 +1,15 @@
 // @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import { boolean, number } from '@storybook/addon-knobs';
+import { boolean, number, select } from '@storybook/addon-knobs';
 import BigNumber from 'bignumber.js';
 
 // Assets and helpers
 import { generateWallet } from '../../_support/utils';
+import {
+  numberOptions,
+  numberDefaultOption,
+} from '../../_support/profileSettings';
 import WalletsWrapper from '../utils/WalletsWrapper';
 
 // Screens
@@ -16,6 +20,11 @@ storiesOf('Wallets|Summary', module)
   .addDecorator(WalletsWrapper)
   .add('Wallet Summary', () => (
     <WalletSummary
+      currentNumberFormatPretty={select(
+        'numberFormat',
+        numberOptions,
+        numberDefaultOption
+      )}
       wallet={generateWallet('Wallet name', '45119903750165')}
       pendingAmount={{
         incoming: new BigNumber(number('Incoming', 1)),

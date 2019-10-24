@@ -9,6 +9,7 @@ import adaSymbolSmallest from '../../../assets/images/ada-symbol-smallest-dark.i
 import BorderedBox from '../../widgets/BorderedBox';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import type { UnconfirmedAmount } from '../../../types/unconfirmedAmountType';
+import type { NumberFormat } from '../../../../../common/types/number.types';
 import styles from './WalletSummary.scss';
 import Wallet from '../../../domains/Wallet';
 
@@ -37,6 +38,7 @@ type Props = {
   pendingAmount: UnconfirmedAmount,
   isLoadingTransactions: boolean,
   isRestoreActive: boolean,
+  currentNumberFormatPretty: NumberFormat,
 };
 
 @observer
@@ -53,6 +55,7 @@ export default class WalletSummary extends Component<Props> {
       numberOfTransactions,
       isLoadingTransactions,
       isRestoreActive,
+      currentNumberFormatPretty,
     } = this.props;
     const { intl } = this.context;
     const isLoadingAllTransactions =
@@ -67,7 +70,9 @@ export default class WalletSummary extends Component<Props> {
         <BorderedBox>
           <div className={styles.walletName}>{wallet.name}</div>
           <div className={styles.walletAmount}>
-            {wallet.amount.toFormat(DECIMAL_PLACES_IN_ADA)}
+            {wallet.amount
+              .decimalPlaces(DECIMAL_PLACES_IN_ADA)
+              .toFormat(currentNumberFormatPretty)}
             <SVGInline
               svg={adaSymbolBig}
               className={styles.currencySymbolBig}
@@ -76,7 +81,7 @@ export default class WalletSummary extends Component<Props> {
 
           {!isRestoreActive ? (
             <div>
-              {pendingAmount.incoming.greaterThan(0) && (
+              {pendingAmount.incoming.isGreaterThan(0) && (
                 <div className={styles.pendingConfirmation}>
                   {`${intl.formatMessage(
                     messages.pendingIncomingConfirmationLabel
@@ -88,7 +93,7 @@ export default class WalletSummary extends Component<Props> {
                   />
                 </div>
               )}
-              {pendingAmount.outgoing.greaterThan(0) && (
+              {pendingAmount.outgoing.isGreaterThan(0) && (
                 <div className={styles.pendingConfirmation}>
                   {`${intl.formatMessage(
                     messages.pendingOutgoingConfirmationLabel

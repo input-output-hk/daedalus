@@ -10,9 +10,9 @@ export const LANGUAGE_OPTIONS = [
 ];
 
 export const NUMBER_OPTIONS = [
-  { value: 'number-1', label: '8,638,301,639.283542' },
-  { value: 'number-2', label: '8.638.301.639,283542' },
-  { value: 'number-3', label: '8 638 301 639.283542' },
+  { value: 'number-1', label: '1,123,456,789.123456' },
+  { value: 'number-2', label: '1.123.456.789,123456' },
+  { value: 'number-3', label: '1 123 456 789.123456' },
 ];
 
 export const DATE_ENGLISH_OPTIONS = [

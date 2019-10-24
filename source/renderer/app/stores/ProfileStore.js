@@ -22,6 +22,8 @@ import {
 } from '../ipc/logs.ipc';
 import type { LogFiles, CompressedLogStatus } from '../types/LogTypes';
 import type { StateSnapshotLogParams } from '../../../common/types/logging.types';
+import { NUMBER_FORMATS } from '../../../common/types/number.types';
+import type { NumberFormat } from '../../../common/types/number.types';
 import {
   hasLoadedRequest,
   isRequestSet,
@@ -188,6 +190,10 @@ export default class ProfileStore extends Store {
       this.getProfileNumberFormatRequest,
       this.systemNumberFormat
     );
+  }
+
+  @computed get currentNumberFormatPretty(): NumberFormat {
+    return NUMBER_FORMATS[this.currentNumberFormat];
   }
 
   @computed get currentDateFormat(): string {

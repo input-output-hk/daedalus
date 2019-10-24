@@ -1,10 +1,11 @@
 // @flow
-import { select } from '@storybook/addon-knobs';
 import {
   DATE_ENGLISH_OPTIONS,
   DATE_JAPANESE_OPTIONS,
   TIME_OPTIONS,
+  NUMBER_OPTIONS,
 } from '../../../source/renderer/app/config/profileConfig';
+import { NUMBER_FORMATS } from '../../../source/common/types/number.types';
 
 export const timeOptions = TIME_OPTIONS.reduce((obj, { label, value }) => {
   obj[label] = value;
@@ -19,14 +20,9 @@ export const dateOptions = [
   return obj;
 }, {});
 
-export const currentTimeFormatSelect = select(
-  'currentTimeFormat',
-  timeOptions,
-  TIME_OPTIONS[0].value
-);
+export const numberOptions = NUMBER_OPTIONS.reduce((obj, { value, label }) => {
+  obj[label] = NUMBER_FORMATS[value];
+  return obj;
+}, {});
 
-export const currentDateFormatSelect = select(
-  'currentDateFormat',
-  dateOptions,
-  DATE_ENGLISH_OPTIONS[0].value
-);
+export const numberDefaultOption = Object.values(NUMBER_FORMATS)[0];

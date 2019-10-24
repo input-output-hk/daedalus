@@ -9,6 +9,7 @@ import linkNewWindowIcon from '../../../assets/images/link-ic-colored.inline.svg
 import DonutRing from './DonutRing';
 import styles from './DelegationCenterHeader.scss';
 import { with2Decimals } from './helpers';
+import type { NumberFormat } from '../../../../../common/types/number.types';
 
 const messages = defineMessages({
   heading: {
@@ -39,7 +40,11 @@ const messages = defineMessages({
   },
 });
 
-type Props = { adaValue: BigNumber, percentage: number };
+type Props = {
+  adaValue: BigNumber,
+  percentage: number,
+  currentNumberFormatPretty: NumberFormat,
+};
 
 @observer
 export default class DelegationCenterHeader extends Component<Props> {
@@ -49,7 +54,7 @@ export default class DelegationCenterHeader extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { adaValue, percentage } = this.props;
+    const { adaValue, percentage, currentNumberFormatPretty } = this.props;
     const heading = intl.formatMessage(messages.heading);
     const descriptionSecondPart = intl.formatMessage(
       messages.descriptionSecondPart
@@ -78,7 +83,9 @@ export default class DelegationCenterHeader extends Component<Props> {
               <FormattedHTMLMessage
                 {...messages.descriptionFirstPart}
                 values={{
-                  adaValue: adaValue.toFormat(SIMPLE_DECIMAL_PLACES_IN_ADA),
+                  adaValue: adaValue
+                    .decimalPlaces(SIMPLE_DECIMAL_PLACES_IN_ADA)
+                    .toFormat(currentNumberFormatPretty),
                   percentage: parseFloat(percentageWith2Decimals).toFixed(2),
                 }}
               />

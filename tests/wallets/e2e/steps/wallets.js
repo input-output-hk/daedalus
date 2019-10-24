@@ -211,7 +211,7 @@ When(/^the transaction fees are calculated$/, async function() {
       '.AmountInputSkin_fees'
     );
     const transactionFeeAmount = new BigNumber(transactionFeeText.substr(2, 8));
-    return transactionFeeAmount.greaterThan(0) ? transactionFeeAmount : false;
+    return transactionFeeAmount.isGreaterThan(0) ? transactionFeeAmount : false;
   });
 });
 
