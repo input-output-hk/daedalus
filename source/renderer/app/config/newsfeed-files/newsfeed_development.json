@@ -12,7 +12,7 @@
       },
       "target": {
         "daedalusVersion": null,
-        "platforms":["darwin","win32","linux"]
+        "platforms": ["darwin", "win32", "linux"]
       },
       "action": {
         "label": {
@@ -38,16 +38,16 @@
       },
       "target": {
         "daedalusVersion": "0.12.0 - 0.15.0",
-        "platforms":["darwin","win32","linux"]
+        "platforms": ["darwin", "win32", "linux"]
       },
       "action": {
         "label": {
           "en-US": "Visit en-US",
           "ja-JP": "Visit ja-JP"
         },
-        "url": {
-          "en-US": "https://iohk.zendesk.com/hc/en-us/articles/",
-          "ja-JP": "https://iohk.zendesk.com/hc/ja/articles/"
+        "route": {
+          "en-US": "/settings",
+          "ja-JP": "/settings"
         }
       },
       "date": 1569238907194,
@@ -64,16 +64,16 @@
       },
       "target": {
         "daedalusVersion": "0.12.0 - 0.15.0",
-        "platforms":["darwin","win32","linux"]
+        "platforms": ["darwin", "win32", "linux"]
       },
       "action": {
         "label": {
           "en-US": "Visit en-US",
           "ja-JP": "Visit ja-JP"
         },
-        "url": {
-          "en-US": "https://iohk.zendesk.com/hc/en-us/articles/",
-          "ja-JP": "https://iohk.zendesk.com/hc/ja/articles/"
+        "event": {
+          "en-US": "OPEN_DIAGNOSTIC_DIALOG",
+          "ja-JP": "OPEN_DIAGNOSTIC_DIALOG"
         }
       },
       "date": 1569325284166,
@@ -90,16 +90,16 @@
       },
       "target": {
         "daedalusVersion": "0.12.0 - 0.15.0",
-        "platforms":["darwin","win32","linux"]
+        "platforms": ["darwin", "win32", "linux"]
       },
       "action": {
         "label": {
           "en-US": "Visit en-US",
           "ja-JP": "Visit ja-JP"
         },
-        "url": {
-          "en-US": "https://iohk.zendesk.com/hc/en-us/articles/",
-          "ja-JP": "https://iohk.zendesk.com/hc/ja/articles/"
+        "route": {
+          "en-US": "/settings",
+          "ja-JP": "/settings"
         }
       },
       "date": 1569429144746,
@@ -116,16 +116,16 @@
       },
       "target": {
         "daedalusVersion": "0.12.0 - 0.15.0",
-        "platforms":["darwin","win32","linux"]
+        "platforms": ["darwin", "win32", "linux"]
       },
       "action": {
         "label": {
           "en-US": "Visit en-US",
           "ja-JP": "Visit ja-JP"
         },
-        "url": {
-          "en-US": "https://iohk.zendesk.com/hc/en-us/articles/",
-          "ja-JP": "https://iohk.zendesk.com/hc/ja/articles/"
+        "event": {
+          "en-US": "DOWNLOAD_LOGS",
+          "ja-JP": "DOWNLOAD_LOGS"
         }
       },
       "date": 1569342749091,
@@ -142,16 +142,16 @@
       },
       "target": {
         "daedalusVersion": "0.12.0 - 0.15.0",
-        "platforms":["darwin","win32","linux"]
+        "platforms": ["darwin", "win32", "linux"]
       },
       "action": {
         "label": {
           "en-US": "Visit en-US",
           "ja-JP": "Visit ja-JP"
         },
-        "url": {
-          "en-US": "https://iohk.zendesk.com/hc/en-us/articles/",
-          "ja-JP": "https://iohk.zendesk.com/hc/ja/articles/"
+        "route": {
+          "en-US": "/settings",
+          "ja-JP": "/settings"
         }
       },
       "date": 1569256354107,
@@ -168,16 +168,16 @@
       },
       "target": {
         "daedalusVersion": "0.12.0 - 0.15.0",
-        "platforms":["darwin","win32","linux"]
+        "platforms": ["darwin", "win32", "linux"]
       },
       "action": {
         "label": {
           "en-US": "Visit en-US",
           "ja-JP": "Visit ja-JP"
         },
-        "url": {
-          "en-US": "https://iohk.zendesk.com/hc/en-us/articles/",
-          "ja-JP": "https://iohk.zendesk.com/hc/ja/articles/"
+        "event": {
+          "en-US": "OPEN_DIAGNOSTIC_DIALOG",
+          "ja-JP": "OPEN_DIAGNOSTIC_DIALOG"
         }
       },
       "date": 1569169958620,
