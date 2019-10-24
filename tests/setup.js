@@ -83,7 +83,7 @@ BeforeAll({ timeout: 5 * 60 * 1000 }, async () => {
 });
 
 // Make the electron app accessible in each scenario context
-Before({ timeout: DEFAULT_TIMEOUT * 2 }, async function(testCase) {
+Before({ tags: '@e2e', timeout: DEFAULT_TIMEOUT * 2 }, async function(testCase) {
   const tags = getTagNames(testCase);
   this.app = context.app;
   this.client = context.app.client;
@@ -153,7 +153,7 @@ Before(function() {
 });
 
 // ads intl method to webdriver
-Before(function() {
+Before({ tags: '@e2e' }, function() {
   this.intl = async (translationId, translationValues = {}) => {
     const translation = await this.client.execute(
       (id, values) => {
@@ -197,7 +197,7 @@ After({ tags: '@reconnectApp' }, async function() {
 });
 
 // eslint-disable-next-line prefer-arrow-callback
-After(async function({ sourceLocation, result }) {
+After({ tags: '@e2e' }, async function({ sourceLocation, result }) {
   scenariosCount++;
   if (result.status === 'failed') {
     const testName = getTestNameFromTestFile(sourceLocation.uri);

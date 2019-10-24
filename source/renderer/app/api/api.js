@@ -38,7 +38,6 @@ import { createTransaction } from './transactions/requests/createTransaction';
 import { resetWalletState } from './wallets/requests/resetWalletState';
 import { changeSpendingPassword } from './wallets/requests/changeSpendingPassword';
 import { deleteWallet } from './wallets/requests/deleteWallet';
-import { exportWalletAsJSON } from './wallets/requests/exportWalletAsJSON';
 import { importWalletAsJSON } from './wallets/requests/importWalletAsJSON';
 import { getWallets } from './wallets/requests/getWallets';
 import { importWalletAsKey } from './wallets/requests/importWalletAsKey';
@@ -128,7 +127,6 @@ import type {
   DeleteWalletRequest,
   RestoreWalletRequest,
   UpdateSpendingPasswordRequest,
-  ExportWalletToFileRequest,
   GetWalletCertificateRecoveryPhraseRequest,
   GetWalletRecoveryPhraseFromCertificateRequest,
   ImportWalletFromKeyRequest,
@@ -843,26 +841,6 @@ export default class AdaApi {
       if (errorMessage.includes('UpdateWalletPasswordOldPasswordMismatch')) {
         throw new IncorrectSpendingPasswordError();
       }
-      throw new GenericApiError();
-    }
-  };
-
-  exportWalletToFile = async (
-    request: ExportWalletToFileRequest
-  ): Promise<[]> => {
-    const { walletId, filePath } = request;
-    Logger.debug('AdaApi::exportWalletToFile called', {
-      parameters: filterLogData(request),
-    });
-    try {
-      const response: Promise<[]> = await exportWalletAsJSON(this.config, {
-        walletId,
-        filePath,
-      });
-      Logger.debug('AdaApi::exportWalletToFile success', { response });
-      return response;
-    } catch (error) {
-      Logger.error('AdaApi::exportWalletToFile error', { error });
       throw new GenericApiError();
     }
   };
