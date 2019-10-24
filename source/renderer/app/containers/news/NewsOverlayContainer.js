@@ -18,6 +18,7 @@ export default class NewsOverlayContainer extends Component<InjectedProps> {
       markNewsAsRead,
       newsFeedData,
       openedAlert,
+      proceedNewsAction,
     } = newsFeed;
     const { incident, alerts } = newsFeedData;
     const unreadAlerts = alerts.unread;
@@ -33,6 +34,7 @@ export default class NewsOverlayContainer extends Component<InjectedProps> {
         <IncidentOverlay
           incident={incident}
           onOpenExternalLink={openExternalLink}
+          onProceedNewsAction={proceedNewsAction}
         />
       );
     if (unreadAlerts.length > 0)
@@ -43,6 +45,7 @@ export default class NewsOverlayContainer extends Component<InjectedProps> {
           onCloseOpenAlert={closeOpenedAlert}
           onMarkNewsAsRead={markNewsAsRead}
           onOpenExternalLink={openExternalLink}
+          onProceedNewsAction={proceedNewsAction}
         />
       );
     if (alertToOpen.length > 0) {
@@ -53,6 +56,7 @@ export default class NewsOverlayContainer extends Component<InjectedProps> {
           onCloseOpenAlert={closeOpenedAlert}
           onMarkNewsAsRead={markNewsAsRead}
           onOpenExternalLink={openExternalLink}
+          onProceedNewsAction={proceedNewsAction}
           hideCounter
         />
       );

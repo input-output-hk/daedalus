@@ -1,6 +1,7 @@
 // @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
+import { action } from '@storybook/addon-actions';
 import StoryDecorator from '../_support/StoryDecorator';
 import IncidentOverlay from '../../../source/renderer/app/components/news/IncidentOverlay';
 
@@ -25,5 +26,9 @@ storiesOf('News|Incidents', module)
     </StoryDecorator>
   ))
   .add('Incident Overlay', props => (
-    <IncidentOverlay incident={props} onOpenExternalLink={() => {}} />
+    <IncidentOverlay
+      incident={props}
+      onOpenExternalLink={action('onOpenExternalLink')}
+      onProceedNewsAction={action('onProceedNewsAction')}
+    />
   ));

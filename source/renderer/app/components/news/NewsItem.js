@@ -14,9 +14,9 @@ import styles from './NewsItem.scss';
 type Props = {
   newsItem: News.News,
   onMarkNewsAsRead: Function,
-  onOpenExternalLink: Function,
   onOpenAlert?: Function,
-  onGoToRoute: Function,
+  onOpenExternalLink: Function,
+  onProceedNewsAction: Function,
   expandWithoutTransition?: boolean,
   isNewsFeedOpen: boolean,
 };
@@ -79,17 +79,9 @@ export default class NewsItem extends Component<Props, State> {
     }
   }
 
-  newsItemButtonClickHandler(event: SyntheticMouseEvent<HTMLElement>) {
-    event.preventDefault();
-    event.stopPropagation();
-    const { onOpenExternalLink, newsItem, onGoToRoute } = this.props;
-    const { url, route } = newsItem.action;
-
-    if (url) {
-      onOpenExternalLink(url, event);
-    } else if (route) {
-      onGoToRoute(route);
-    }
+  onProceedNewsAction(event: SyntheticMouseEvent<HTMLElement>) {
+    const { newsItem, onProceedNewsAction } = this.props;
+    onProceedNewsAction(newsItem, event);
   }
 
   generateTitleWithBadge = (title: string, isRead: boolean) => {
@@ -121,7 +113,7 @@ export default class NewsItem extends Component<Props, State> {
       this.state.newsItemExpanded ? styles.expanded : null,
       newsItem.read ? styles.isRead : null,
     ]);
-    const { route } = newsItem.action;
+    const { url } = newsItem.action;
     const title = this.generateTitleWithBadge(newsItem.title, newsItem.read);
 
     return (
@@ -158,10 +150,10 @@ export default class NewsItem extends Component<Props, State> {
             </div>
             <button
               className={styles.newsItemActionBtn}
-              onClick={this.newsItemButtonClickHandler.bind(this)}
+              onClick={this.onProceedNewsAction.bind(this)}
             >
               {newsItem.action.label}
-              {!route && <SVGInline svg={externalLinkIcon} />}
+              {url && <SVGInline svg={externalLinkIcon} />}
             </button>
           </AnimateHeight>
         </div>

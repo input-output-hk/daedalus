@@ -12,6 +12,7 @@ import styles from './IncidentOverlay.scss';
 type Props = {
   incident: News.News,
   onOpenExternalLink: Function,
+  onProceedNewsAction: Function,
 };
 
 @observer
@@ -30,15 +31,20 @@ export default class IncidentOverlay extends Component<Props> {
     }
   }
 
+  onProceedNewsAction(event: SyntheticMouseEvent<HTMLElement>) {
+    const { incident, onProceedNewsAction } = this.props;
+    onProceedNewsAction(incident, event);
+  }
+
   renderAction = (action: Object) => {
-    if (action && action.url) {
+    if (action && (action.url || action.event)) {
       return (
         <button
           className={styles.actionBtn}
-          onClick={() => this.props.onOpenExternalLink(action.url)}
+          onClick={this.onProceedNewsAction.bind(this)}
         >
           {action.label}
-          <SVGInline svg={externalLinkIcon} />
+          {action.url && <SVGInline svg={externalLinkIcon} />}
         </button>
       );
     }

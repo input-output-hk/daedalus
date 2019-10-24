@@ -1,0 +1,57 @@
+{
+  "updatedAt": 1571901613559,
+  "items": [
+    {
+      "title": {
+        "en-US": "What's new in Daedalus 0.15.0?",
+        "ja-JP": "Daedalus 0.15.0の新機能"
+      },
+      "content": {
+        "en-US": "You are using the latest Daedalus version 0.15.0, which is part of the Cardano 1.7 release. Read about new features, improvements, and fixes in the release notes and watch the video demonstrating the changes using the link below. ",
+        "ja-JP": "ご使用のDaedalusは、Cardano 1.7リリースの一部である0.15.0バージョンです。新機能、改良および修正部については、下記のリンクからリリースノートや変更部を解説する動画をご覧ください。"
+      },
+      "target": {
+        "daedalusVersion": "0.15.0 - 0.15.0",
+        "platforms": ["darwin", "win32", "linux"]
+      },
+      "action": {
+        "label": {
+          "en-US": "Daedalus 0.15 release notes",
+          "ja-JP": "Daedalus 0.15.0 リリースノート"
+        },
+        "url": {
+          "en-US": "https://iohk.zendesk.com/hc/en-us/articles/360037127154",
+          "ja-JP": "https://iohk.zendesk.com/hc/ja/articles/360037127154"
+        }
+      },
+      "date": 1571901601553,
+      "type": "announcement"
+    },
+    {
+      "title": {
+        "en-US": "Submit a feature request!",
+        "ja-JP": "機能リクエストの送信"
+      },
+      "content": {
+        "en-US": "Did you know that Daedalus users can submit feature requests through the support portal? If there is a feature you would like to have in Daedalus, please use the link below and submit your request.\nYou can also see feature requests submitted by other Daedalus users and use the Yes and No buttons at the bottom of each request to vote for them.",
+        "ja-JP": "Daedalusユーザーはサポートポータルを通じて機能追加のリクエストを送信することができます。Daedalusに搭載したい機能がある場合、下記のリンク先からリクエストを送信してください。\n他のユーザーが送信した機能リクエストを閲覧し、各リクエスト画面下部の[はい]または[いいえ]のボタンを使って投票することもできます。"
+      },
+      "target": {
+        "daedalusVersion": "0.14.0 - 0.15.0",
+        "platforms": ["darwin", "win32", "linux"]
+      },
+      "action": {
+        "label": {
+          "en-US": "Feature requests",
+          "ja-JP": "機能リクエスト"
+        },
+        "url": {
+          "en-US": "https://iohk.zendesk.com/hc/en-us/sections/360002144373",
+          "ja-JP": "https://iohk.zendesk.com/hc/ja/sections/360002144373"
+        }
+      },
+      "date": 1571901607418,
+      "type": "info"
+    }
+  ]
+}

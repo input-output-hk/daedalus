@@ -38,7 +38,7 @@ type Props = {
   openWithoutTransition?: boolean,
   isLoadingNews: boolean,
   onOpenExternalLink: Function,
-  onGoToRoute: Function,
+  onProceedNewsAction: Function,
 };
 
 type State = {
@@ -104,9 +104,9 @@ export default class NewsFeed extends Component<Props, State> {
       onClose,
       onOpenAlert,
       onMarkNewsAsRead,
-      onOpenExternalLink,
       openWithoutTransition,
-      onGoToRoute,
+      onProceedNewsAction,
+      onOpenExternalLink,
     } = this.props;
     const { hasShadow } = this.state;
 
@@ -147,9 +147,9 @@ export default class NewsFeed extends Component<Props, State> {
                   newsItem={newsItem}
                   isNewsFeedOpen={isNewsFeedOpen}
                   onMarkNewsAsRead={onMarkNewsAsRead}
-                  onOpenExternalLink={onOpenExternalLink}
                   onOpenAlert={onOpenAlert}
-                  onGoToRoute={onGoToRoute}
+                  onProceedNewsAction={onProceedNewsAction}
+                  onOpenExternalLink={onOpenExternalLink}
                 />
               ))}
             </div>
