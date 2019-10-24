@@ -147,7 +147,6 @@ export default class NewsItem extends Component<Props, State> {
                   'code',
                   'html',
                   'virtualHtml',
-                  'parsedHtml',
                 ]}
               />
             </div>

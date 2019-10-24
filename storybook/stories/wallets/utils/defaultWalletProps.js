@@ -9,7 +9,6 @@ import wordlist from 'bip39/wordlists/english';
 import { WalletAssuranceModeOptions } from '../../../../source/renderer/app/domains/Wallet';
 import ChangeSpendingPasswordDialog from '../../../../source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog';
 import DeleteWalletConfirmationDialog from '../../../../source/renderer/app/components/wallet/settings/DeleteWalletConfirmationDialog';
-import ExportWalletToFileDialog from '../../../../source/renderer/app/components/wallet/settings/ExportWalletToFileDialog';
 import WalletRecoveryPhraseStep1Dialog from '../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep1Dialog';
 import WalletRecoveryPhraseStep2Dialog from '../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep2Dialog';
 import WalletRecoveryPhraseStep3Dialog from '../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep3Dialog';
@@ -113,15 +112,6 @@ export const defaultProps = {
         'Delete Wallet - onConfirmationValueChange'
       )}
       isSubmitting={boolean('Delete Wallet - isSubmitting', false)}
-    />
-  ),
-  exportWalletDialogContainer: (
-    <ExportWalletToFileDialog
-      walletName={text('Wallet Name', 'Wallet Name')}
-      hasSpendingPassword={boolean('isSpendingPasswordSet', false)}
-      isSubmitting={boolean('Export Wallet - isSubmitting', false)}
-      onSubmit={action('Export Wallet - onSubmit')}
-      onClose={action('Export Wallet - onClose')}
     />
   ),
 };
