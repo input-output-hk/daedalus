@@ -111,6 +111,7 @@ module.exports = {
       )
     ),
     new AutoDllPlugin({
+      inherit: !isCi,
       filename: 'vendor.dll.js',
       context: path.join(__dirname, '..'),
       entry: {
