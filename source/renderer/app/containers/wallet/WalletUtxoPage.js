@@ -24,18 +24,26 @@ export default class WalletSettingsPage extends Component<Props> {
   }
 
   render() {
-    const { app, wallets, walletSettings, transactions } = this.props.stores;
-    const { walletUtxos } = walletSettings;
-    const { histogram } = walletUtxos || { histogram: {} };
+    const {
+      app,
+      wallets,
+      walletSettings,
+      transactions,
+      profile,
+    } = this.props.stores;
     const { active: activeWallet } = wallets;
     if (!activeWallet)
       throw new Error('Active wallet required for WalletSummaryPage.');
+    const { walletUtxos } = walletSettings;
+    const { histogram } = walletUtxos || { histogram: {} };
+    const { currentNumberFormatPretty } = profile;
     const chartData = getUtxoChartData(histogram);
     const walletUtxosAmount = getWalletUtxosTotalAmount(histogram);
     const { pendingTransactionsCount: pendingTxnsCount } = transactions;
 
     return (
       <WalletUtxo
+        currentNumberFormatPretty={currentNumberFormatPretty}
         walletAmount={activeWallet.amount}
         walletUtxosAmount={walletUtxosAmount}
         chartData={chartData}

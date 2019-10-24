@@ -19,6 +19,7 @@ import { navigateTo, sidebarHelpers, waitUntilUrlEquals } from '../../../navigat
 import { waitForActiveRestoreNotification } from '../../../nodes/e2e/steps/helpers';
 import { i18nHelpers } from '../../../settings/e2e/steps/helpers';
 import type { Daedalus } from '../../../types';
+import { NUMBER_FORMATS } from '../../../../source/common/types/number.types';
 
 declare var daedalus: Daedalus;
 
@@ -571,7 +572,7 @@ Then(/^the latest transaction should show:$/, async function(table) {
   const transactionAmount = new BigNumber(transactionAmounts[0]);
   const transactionAmountWithoutFees = transactionAmount
     .add(this.fees)
-    .toFormat(DECIMAL_PLACES_IN_ADA);
+    .toFormat(DECIMAL_PLACES_IN_ADA, NUMBER_FORMATS['number-1']);
   expect(expectedData.amountWithoutFees).to.equal(transactionAmountWithoutFees);
 });
 

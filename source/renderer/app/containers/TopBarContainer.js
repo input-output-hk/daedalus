@@ -20,8 +20,9 @@ export default class TopBarContainer extends Component<Props> {
 
   render() {
     const { actions, stores } = this.props;
-    const { sidebar, app, networkStatus, wallets, newsFeed } = stores;
+    const { sidebar, app, networkStatus, wallets, newsFeed, profile } = stores;
     const { active, isWalletRoute, hasAnyWallets } = wallets;
+    const { currentNumberFormatPretty } = profile;
     const {
       currentRoute,
       environment: { isMainnet, network },
@@ -49,6 +50,7 @@ export default class TopBarContainer extends Component<Props> {
         leftIcon={leftIcon}
         onLeftIconClick={actions.sidebar.toggleSubMenus.trigger}
         activeWallet={activeWallet}
+        currentNumberFormatPretty={currentNumberFormatPretty}
       >
         {testnetLabel}
         <NodeSyncStatusIcon networkStatus={networkStatus} />

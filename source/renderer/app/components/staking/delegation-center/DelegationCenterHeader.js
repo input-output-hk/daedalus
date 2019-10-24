@@ -83,9 +83,10 @@ export default class DelegationCenterHeader extends Component<Props> {
               <FormattedHTMLMessage
                 {...messages.descriptionFirstPart}
                 values={{
-                  adaValue: adaValue
-                    .decimalPlaces(SIMPLE_DECIMAL_PLACES_IN_ADA)
-                    .toFormat(currentNumberFormatPretty),
+                  adaValue: adaValue.toFormat(
+                    SIMPLE_DECIMAL_PLACES_IN_ADA,
+                    currentNumberFormatPretty
+                  ),
                   percentage: parseFloat(percentageWith2Decimals).toFixed(2),
                 }}
               />

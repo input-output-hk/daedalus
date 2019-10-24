@@ -8,12 +8,12 @@ import {
   LOVELACES_PER_ADA,
 } from '../config/numbersConfig';
 
+const defaultNumberFormat = NUMBER_FORMATS[NUMBER_OPTIONS[0].value];
+
 export const formattedWalletAmount = (
   amount: BigNumber,
   withCurrency: boolean = true,
-  currentNumberFormatPretty: NumberFormat = NUMBER_FORMATS[
-    NUMBER_OPTIONS[0].value
-  ]
+  currentNumberFormatPretty?: NumberFormat = defaultNumberFormat
 ) => {
   let formattedAmount = amount.toFormat(
     DECIMAL_PLACES_IN_ADA,

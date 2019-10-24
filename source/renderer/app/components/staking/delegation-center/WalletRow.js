@@ -142,9 +142,10 @@ export default class WalletRow extends Component<Props> {
             <FormattedMessage
               {...messages.walletAmount}
               values={{
-                amount: amount
-                  .decimalPlaces(SIMPLE_DECIMAL_PLACES_IN_ADA)
-                  .toFormat(currentNumberFormatPretty),
+                amount: amount.toFormat(
+                  SIMPLE_DECIMAL_PLACES_IN_ADA,
+                  currentNumberFormatPretty
+                ),
               }}
             />
             {inactiveStakePercentageValue > 0 && (

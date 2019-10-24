@@ -7,6 +7,7 @@ import BigNumber from 'bignumber.js';
 import WalletUtxo from '../../../source/renderer/app/components/wallet/utxo/WalletUtxo';
 
 import { getUtxoChartData } from '../../../source/renderer/app/utils/utxoUtils';
+import { NUMBER_FORMATS } from '../../../source/common/types/number.types';
 
 const cfg = {
   range: true,
@@ -19,6 +20,7 @@ const cfg = {
 
 export const UtxoDistributionStory = () => (
   <WalletUtxo
+    currentNumberFormatPretty={NUMBER_FORMATS['number-1']}
     walletAmount={
       new BigNumber(
         number('Amount', 66.998, {

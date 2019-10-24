@@ -10,18 +10,26 @@ import Wallet from '../../domains/Wallet';
 import styles from './TopBar.scss';
 import { formattedWalletAmount } from '../../utils/formatters';
 import headerLogo from '../../assets/images/header-logo.inline.svg';
+import type { NumberFormat } from '../../../../common/types/number.types';
 
 type Props = {
   onLeftIconClick?: ?Function,
   leftIcon?: ?string,
   children?: ?Node,
   activeWallet?: ?Wallet,
+  currentNumberFormatPretty?: NumberFormat,
 };
 
 @observer
 export default class TopBar extends Component<Props> {
   render() {
-    const { onLeftIconClick, leftIcon, activeWallet, children } = this.props;
+    const {
+      onLeftIconClick,
+      leftIcon,
+      activeWallet,
+      children,
+      currentNumberFormatPretty,
+    } = this.props;
 
     const topBarStyles = classNames([
       styles.topBar,
@@ -38,7 +46,11 @@ export default class TopBar extends Component<Props> {
         </span>
         <span className={styles.walletAmount}>
           {// show currency and use long format
-          formattedWalletAmount(activeWallet.amount, true)}
+          formattedWalletAmount(
+            activeWallet.amount,
+            true,
+            currentNumberFormatPretty
+          )}
         </span>
       </span>
     ) : null;

@@ -25,6 +25,8 @@ import {
 } from '../../utils/formatters';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
 import { FormattedHTMLMessageWithLink } from '../widgets/FormattedHTMLMessageWithLink';
+import { DECIMAL_PLACES_IN_ADA } from '../../config/numbersConfig';
+import type { NumberFormat } from '../../../../common/types/number.types';
 
 /* eslint-disable consistent-return */
 
@@ -101,8 +103,6 @@ messages.fieldIsRequired = globalMessages.fieldIsRequired;
 
 type Props = {
   currencyUnit: string,
-  currencyMaxIntegerDigits?: number,
-  currencyMaxFractionalDigits: number,
   validateAmount: (amountInNaturalUnits: string) => Promise<boolean>,
   calculateTransactionFee: (
     address: string,
@@ -113,6 +113,7 @@ type Props = {
   isDialogOpen: Function,
   onExternalLinkClick?: Function,
   isRestoreActive: boolean,
+  currentNumberFormatPretty: NumberFormat,
 };
 
 type State = {
@@ -162,6 +163,12 @@ export default class WalletSendForm extends Component<Props, State> {
     });
   };
 
+  get placeholder() {
+    return `0${
+      this.props.currentNumberFormatPretty.decimalSeparator
+    }${'0'.repeat(DECIMAL_PLACES_IN_ADA)}`;
+  }
+
   handleSubmitOnEnter = submitOnEnter.bind(this, this.handleOnSubmit);
 
   isDisabled = () =>
@@ -203,9 +210,7 @@ export default class WalletSendForm extends Component<Props, State> {
         },
         amount: {
           label: this.context.intl.formatMessage(messages.amountLabel),
-          placeholder: `0.${'0'.repeat(
-            this.props.currencyMaxFractionalDigits
-          )}`,
+          placeholder: this.placeholder,
           value: null,
           validators: [
             async ({ field, form }) => {
@@ -251,10 +256,10 @@ export default class WalletSendForm extends Component<Props, State> {
     const { intl } = this.context;
     const {
       currencyUnit,
-      currencyMaxFractionalDigits,
       isDialogOpen,
       isRestoreActive,
       onExternalLinkClick,
+      currentNumberFormatPretty,
     } = this.props;
     const {
       isTransactionFeeCalculated,
@@ -271,8 +276,13 @@ export default class WalletSendForm extends Component<Props, State> {
     let fees = null;
     let total = null;
     if (isTransactionFeeCalculated) {
-      fees = transactionFee.toFormat(currencyMaxFractionalDigits);
-      total = amount.add(transactionFee).toFormat(currencyMaxFractionalDigits);
+      fees = transactionFee.toFormat(
+        DECIMAL_PLACES_IN_ADA,
+        currentNumberFormatPretty
+      );
+      total = amount
+        .plus(transactionFee)
+        .toFormat(DECIMAL_PLACES_IN_ADA, currentNumberFormatPretty);
     }
 
     const buttonClasses = classnames(['primary', styles.nextButton]);
@@ -310,8 +320,9 @@ export default class WalletSendForm extends Component<Props, State> {
                   className="amount"
                   label={intl.formatMessage(messages.amountLabel)}
                   numberLocaleOptions={{
-                    minimumFractionDigits: currencyMaxFractionalDigits,
+                    minimumFractionDigits: DECIMAL_PLACES_IN_ADA,
                   }}
+                  placeholder={this.placeholder}
                   error={transactionFeeError || amountField.error}
                   onChange={value => {
                     this._isCalculatingFee = true;
@@ -340,7 +351,10 @@ export default class WalletSendForm extends Component<Props, State> {
 
         {isDialogOpen(WalletSendConfirmationDialog) ? (
           <WalletSendConfirmationDialogContainer
-            amount={amount.toFormat(currencyMaxFractionalDigits)}
+            amount={amount.toFormat(
+              DECIMAL_PLACES_IN_ADA,
+              currentNumberFormatPretty
+            )}
             receiver={receiverFieldProps.value}
             totalAmount={total}
             transactionFee={fees}
