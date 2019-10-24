@@ -1,5 +1,8 @@
 // @flow
 import BigNumber from 'bignumber.js';
+import { NUMBER_FORMATS } from '../../../common/types/number.types';
+import type { NumberFormat } from '../../../common/types/number.types';
+import { NUMBER_OPTIONS } from '../config/profileConfig';
 import {
   DECIMAL_PLACES_IN_ADA,
   LOVELACES_PER_ADA,
@@ -7,9 +10,15 @@ import {
 
 export const formattedWalletAmount = (
   amount: BigNumber,
-  withCurrency: boolean = true
+  withCurrency: boolean = true,
+  currentNumberFormatPretty: NumberFormat = NUMBER_FORMATS[
+    NUMBER_OPTIONS[0].value
+  ]
 ) => {
-  let formattedAmount = amount.toFormat(DECIMAL_PLACES_IN_ADA);
+  let formattedAmount = amount.toFormat(
+    DECIMAL_PLACES_IN_ADA,
+    currentNumberFormatPretty
+  );
 
   if (withCurrency) formattedAmount += ' ADA';
 

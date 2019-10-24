@@ -70,9 +70,10 @@ export default class WalletSummary extends Component<Props> {
         <BorderedBox>
           <div className={styles.walletName}>{wallet.name}</div>
           <div className={styles.walletAmount}>
-            {wallet.amount
-              .decimalPlaces(DECIMAL_PLACES_IN_ADA)
-              .toFormat(currentNumberFormatPretty)}
+            {wallet.amount.toFormat(
+              DECIMAL_PLACES_IN_ADA,
+              currentNumberFormatPretty
+            )}
             <SVGInline
               svg={adaSymbolBig}
               className={styles.currencySymbolBig}
@@ -86,7 +87,11 @@ export default class WalletSummary extends Component<Props> {
                   {`${intl.formatMessage(
                     messages.pendingIncomingConfirmationLabel
                   )}`}
-                  : {pendingAmount.incoming.toFormat(DECIMAL_PLACES_IN_ADA)}
+                  :{' '}
+                  {pendingAmount.incoming.toFormat(
+                    DECIMAL_PLACES_IN_ADA,
+                    currentNumberFormatPretty
+                  )}
                   <SVGInline
                     svg={adaSymbolSmallest}
                     className={styles.currencySymbolSmallest}
@@ -98,7 +103,11 @@ export default class WalletSummary extends Component<Props> {
                   {`${intl.formatMessage(
                     messages.pendingOutgoingConfirmationLabel
                   )}`}
-                  : {pendingAmount.outgoing.toFormat(DECIMAL_PLACES_IN_ADA)}
+                  :{' '}
+                  {pendingAmount.outgoing.toFormat(
+                    DECIMAL_PLACES_IN_ADA,
+                    currentNumberFormatPretty
+                  )}
                   <SVGInline
                     svg={adaSymbolSmallest}
                     className={styles.currencySymbolSmallest}
