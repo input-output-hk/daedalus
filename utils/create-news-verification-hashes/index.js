@@ -24,7 +24,7 @@ externalRequest = (file) => (
     const ghBranch = process.env.GH_BRANCH || 'develop';
     const options = {
       hostname: 'raw.githubusercontent.com',
-      path: `/input-output-hk/daedalus/${ghBranch}/source/renderer/app/config/${file.name}`,
+      path: `/input-output-hk/daedalus/${ghBranch}/source/renderer/app/config/newsfeed-files/${file.name}`,
       method: 'GET',
       protocol: 'https:',
     }
