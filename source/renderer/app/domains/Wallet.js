@@ -11,9 +11,11 @@ import type { StakePool } from '../api/staking/types';
 
 export const WalletSyncStateStatuses: {
   RESTORING: SyncStateStatus,
+  SYNCING: SyncStateStatus,
   READY: SyncStateStatus,
 } = {
-  RESTORING: 'restoring',
+  RESTORING: 'syncing', // @API TODO - calculate if the wallet is restoring!
+  SYNCING: 'syncing',
   READY: 'ready',
 };
 
@@ -46,7 +48,7 @@ export default class Wallet {
   @observable amount: BigNumber;
   @observable hasPassword: boolean;
   @observable passwordUpdateDate: ?Date;
-  @observable syncState: ?WalletSyncState;
+  @observable syncState: WalletSyncState;
   @observable isLegacy: boolean;
   @observable isDelegated: boolean;
   @observable inactiveStakePercentage: ?number;
