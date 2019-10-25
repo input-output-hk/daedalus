@@ -11,8 +11,7 @@ export default class GeneralSettings extends Component<ProfileSettingsFormProps>
       onChangeItem,
       currentLocale,
       currentNumberFormat,
-      currentDateEnglishFormat,
-      currentDateJapaneseFormat,
+      currentDateFormat,
       currentTimeFormat,
       error,
     } = this.props;
@@ -21,8 +20,7 @@ export default class GeneralSettings extends Component<ProfileSettingsFormProps>
         onChangeItem={onChangeItem}
         currentLocale={currentLocale}
         currentNumberFormat={currentNumberFormat}
-        currentDateEnglishFormat={currentDateEnglishFormat}
-        currentDateJapaneseFormat={currentDateJapaneseFormat}
+        currentDateFormat={currentDateFormat}
         currentTimeFormat={currentTimeFormat}
         error={error}
       />

@@ -25,8 +25,7 @@ export default class GeneralSettingsPage extends Component<InjectedProps> {
       setProfileLocaleRequest,
       currentLocale,
       currentNumberFormat,
-      currentDateEnglishFormat,
-      currentDateJapaneseFormat,
+      currentDateFormat,
       currentTimeFormat,
     } = this.props.stores.profile;
     return (
@@ -34,8 +33,7 @@ export default class GeneralSettingsPage extends Component<InjectedProps> {
         onChangeItem={this.handleSelectItem}
         currentLocale={currentLocale}
         currentNumberFormat={currentNumberFormat}
-        currentDateEnglishFormat={currentDateEnglishFormat}
-        currentDateJapaneseFormat={currentDateJapaneseFormat}
+        currentDateFormat={currentDateFormat}
         currentTimeFormat={currentTimeFormat}
         error={setProfileLocaleRequest.error}
       />

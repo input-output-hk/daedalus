@@ -49,8 +49,7 @@ const messages = defineMessages({
 export type ProfileSettingsFormProps = {
   currentLocale: string,
   currentNumberFormat: string,
-  currentDateEnglishFormat: string,
-  currentDateJapaneseFormat: string,
+  currentDateFormat: string,
   currentTimeFormat: string,
   onChangeItem: Function,
   onSubmit?: Function,
@@ -99,10 +98,7 @@ export default class ProfileSettingsForm extends Component<ProfileSettingsFormPr
         },
         dateId: {
           label: this.context.intl.formatMessage(messages.dateSelectLabel),
-          value:
-            this.props.currentLocale === 'en-US'
-              ? this.props.currentDateEnglishFormat
-              : this.props.currentDateJapaneseFormat,
+          value: this.props.currentDateFormat,
         },
         timeId: {
           label: this.context.intl.formatMessage(messages.timeSelectLabel),
@@ -125,8 +121,7 @@ export default class ProfileSettingsForm extends Component<ProfileSettingsFormPr
       isSubmitting,
       currentLocale,
       currentNumberFormat,
-      currentDateEnglishFormat,
-      currentDateJapaneseFormat,
+      currentDateFormat,
       currentTimeFormat,
     } = this.props;
     const { intl } = this.context;
@@ -145,10 +140,6 @@ export default class ProfileSettingsForm extends Component<ProfileSettingsFormPr
     const dateOptions =
       currentLocale === 'en-US' ? dateEnglishOptions : dateJapaneseOptions;
     const timeOptions = TIME_OPTIONS;
-    const currentDateFormat =
-      currentLocale === 'en-US'
-        ? currentDateEnglishFormat
-        : currentDateJapaneseFormat;
     const componentClassNames = classNames([styles.component, 'general']);
     return (
       <div className={componentClassNames}>

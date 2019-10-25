@@ -277,6 +277,7 @@ export default class ProfileStore extends Store {
   };
 
   _updateUserLocalSettings = async (settings: { [key: string]: string }) => {
+    settings.dateFormat = 'YYYY/MM/DD';
     Object.entries(settings).forEach(([param, value]) => {
       if (value && typeof value === 'string')
         this._updateUserLocalSetting({ param, value });

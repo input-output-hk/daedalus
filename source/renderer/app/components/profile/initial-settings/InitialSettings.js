@@ -17,8 +17,7 @@ export default class InitialSettings extends Component<ProfileSettingsFormProps>
       onSubmit,
       currentLocale,
       currentNumberFormat,
-      currentDateEnglishFormat,
-      currentDateJapaneseFormat,
+      currentDateFormat,
       currentTimeFormat,
       error,
     } = this.props;
@@ -30,8 +29,7 @@ export default class InitialSettings extends Component<ProfileSettingsFormProps>
             onSubmit={onSubmit}
             currentLocale={currentLocale}
             currentNumberFormat={currentNumberFormat}
-            currentDateEnglishFormat={currentDateEnglishFormat}
-            currentDateJapaneseFormat={currentDateJapaneseFormat}
+            currentDateFormat={currentDateFormat}
             currentTimeFormat={currentTimeFormat}
             error={error}
           />

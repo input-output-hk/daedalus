@@ -35,8 +35,7 @@ export default class InitialSettingsPage extends Component<InjectedProps> {
       setProfileLocaleRequest,
       currentLocale,
       currentNumberFormat,
-      currentDateEnglishFormat,
-      currentDateJapaneseFormat,
+      currentDateFormat,
       currentTimeFormat,
     } = this.props.stores.profile;
     const isSubmitting = setProfileLocaleRequest.isExecuting;
@@ -51,8 +50,7 @@ export default class InitialSettingsPage extends Component<InjectedProps> {
           isSubmitting={isSubmitting}
           currentLocale={currentLocale}
           currentNumberFormat={currentNumberFormat}
-          currentDateEnglishFormat={currentDateEnglishFormat}
-          currentDateJapaneseFormat={currentDateJapaneseFormat}
+          currentDateFormat={currentDateFormat}
           currentTimeFormat={currentTimeFormat}
           error={setProfileLocaleRequest.error}
         />
