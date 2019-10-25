@@ -616,16 +616,10 @@ export default class WalletsStore extends Store {
       const hasActiveWalletBeenUpdated = !isEqual(this.active, newActiveWallet);
       if (hasActiveWalletBeenChanged) {
         // Active wallet has been replaced or removed
-        const { addresses, profile } = this.stores;
-        const { currentNumberFormatPretty } = profile;
-        addresses.lastGeneratedAddress = null;
+        this.stores.addresses.lastGeneratedAddress = null;
         this.active = newActiveWallet || null;
         if (this.active) {
-          this.activeValue = formattedWalletAmount(
-            this.active.amount,
-            true,
-            currentNumberFormatPretty
-          );
+          this.activeValue = formattedWalletAmount(this.active.amount);
         }
       } else if (hasActiveWalletBeenUpdated) {
         // Active wallet has been updated

@@ -7,7 +7,6 @@ import { promise } from '../../_support/utils';
 
 // Assets and helpers
 import WalletsWrapper from '../utils/WalletsWrapper';
-import { NUMBER_FORMATS } from '../../../../source/common/types/number.types';
 
 // Screens
 import WalletSendForm from '../../../../source/renderer/app/components/wallet/WalletSendForm';
@@ -17,12 +16,13 @@ storiesOf('Wallets|Actions', module)
   .add('Send', () => (
     <WalletSendForm
       currencyUnit="Ada"
+      currencyMaxFractionalDigits={6}
+      currencyMaxIntegerDigits={11}
       validateAmount={promise(true)}
       calculateTransactionFee={promise(true)}
       addressValidator={action('addressValidator')}
       openDialogAction={action('openDialogAction')}
       isDialogOpen={() => boolean('isDialogOpen', false)}
       isRestoreActive={boolean('isRestoreActive', false)}
-      currentNumberFormatPretty={NUMBER_FORMATS['number-1']}
     />
   ));

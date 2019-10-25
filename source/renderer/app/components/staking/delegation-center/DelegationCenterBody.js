@@ -6,7 +6,6 @@ import { rangeMap } from '../../../utils/rangeMap';
 import Wallet from '../../../domains/Wallet';
 import WalletRow from './WalletRow';
 import styles from './DelegationCenterBody.scss';
-import type { NumberFormat } from '../../../../../common/types/number.types';
 
 const messages = defineMessages({
   bodyTitle: {
@@ -19,7 +18,6 @@ const messages = defineMessages({
 type Props = {
   wallets: Array<Wallet>,
   onDelegate: Function,
-  currentNumberFormatPretty: NumberFormat,
 };
 
 @observer
@@ -42,7 +40,7 @@ export default class DelegationCenterBody extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { wallets, onDelegate, currentNumberFormatPretty } = this.props;
+    const { wallets, onDelegate } = this.props;
 
     const title = intl.formatMessage(messages.bodyTitle);
 
@@ -61,7 +59,6 @@ export default class DelegationCenterBody extends Component<Props> {
                   wallet={wallet}
                   index={index}
                   onDelegate={onDelegate}
-                  currentNumberFormatPretty={currentNumberFormatPretty}
                 />
               );
             }
@@ -70,7 +67,6 @@ export default class DelegationCenterBody extends Component<Props> {
                 key={wallet.id}
                 wallet={wallet}
                 onDelegate={onDelegate}
-                currentNumberFormatPretty={currentNumberFormatPretty}
               />
             );
           })}

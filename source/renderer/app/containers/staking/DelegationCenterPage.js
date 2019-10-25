@@ -30,7 +30,7 @@ export default class DelegationCenterPage extends Component<Props> {
   };
 
   render() {
-    const { uiDialogs, staking, wallets, profile } = this.props.stores;
+    const { uiDialogs, staking, wallets } = this.props.stores;
 
     if (!wallets.all.length) {
       return (
@@ -40,8 +40,6 @@ export default class DelegationCenterPage extends Component<Props> {
       );
     }
 
-    const { currentNumberFormatPretty } = profile;
-
     return (
       <div>
         <DelegationCenter
@@ -49,7 +47,6 @@ export default class DelegationCenterPage extends Component<Props> {
           percentage={staking.percentage}
           wallets={wallets.all}
           onDelegate={this.handleDelegate}
-          currentNumberFormatPretty={currentNumberFormatPretty}
         />
         {uiDialogs.isOpen(DelegationSetupWizardDialog) ? (
           <DelegationSetupWizardDialogContainer />

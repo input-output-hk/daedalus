@@ -16,7 +16,6 @@ import { SIMPLE_DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import DropdownMenu from './DropdownMenu';
 import DonutRing from './DonutRing';
 import styles from './WalletRow.scss';
-import type { NumberFormat } from '../../../../../common/types/number.types';
 
 export const DELEGATION_ACTIONS = {
   CHANGE_DELEGATION: 'changeDelegation',
@@ -82,7 +81,6 @@ type Props = {
   wallet: Wallet,
   index?: number,
   onDelegate: Function,
-  currentNumberFormatPretty: NumberFormat,
 };
 
 @observer
@@ -107,7 +105,6 @@ export default class WalletRow extends Component<Props> {
         delegatedStakePool,
       },
       index,
-      currentNumberFormatPretty,
     } = this.props;
 
     const inactiveStakePercentageValue = inactiveStakePercentage || 0;
@@ -142,10 +139,7 @@ export default class WalletRow extends Component<Props> {
             <FormattedMessage
               {...messages.walletAmount}
               values={{
-                amount: amount.toFormat(
-                  SIMPLE_DECIMAL_PLACES_IN_ADA,
-                  currentNumberFormatPretty
-                ),
+                amount: amount.toFormat(SIMPLE_DECIMAL_PLACES_IN_ADA),
               }}
             />
             {inactiveStakePercentageValue > 0 && (

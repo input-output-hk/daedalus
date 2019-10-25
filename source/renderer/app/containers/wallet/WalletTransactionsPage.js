@@ -8,6 +8,7 @@ import WalletTransactionsList from '../../components/wallet/transactions/WalletT
 import WalletNoTransactions from '../../components/wallet/transactions/WalletNoTransactions';
 import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer';
 import type { InjectedProps } from '../../types/injectedPropsType';
+import { formattedWalletAmount } from '../../utils/formatters';
 import { WalletSyncStateTags } from '../../domains/Wallet';
 
 export const messages = defineMessages({
@@ -56,11 +57,7 @@ export default class WalletTransactionsPage extends Component<Props> {
       filtered,
       recent,
     } = stores.transactions;
-    const {
-      currentTimeFormat,
-      currentDateFormat,
-      currentNumberFormatPretty,
-    } = profile;
+    const { currentTimeFormat, currentDateFormat } = profile;
 
     // Guard against potential null values
     if (!searchOptions || !activeWallet) return null;
@@ -104,10 +101,10 @@ export default class WalletTransactionsPage extends Component<Props> {
           onLoadMore={actions.transactions.loadMoreTransactions.trigger}
           assuranceMode={activeWallet.assuranceMode}
           walletId={activeWallet.id}
+          formattedWalletAmount={formattedWalletAmount}
           onOpenExternalLink={openExternalLink}
           currentTimeFormat={currentTimeFormat}
           currentDateFormat={currentDateFormat}
-          currentNumberFormatPretty={currentNumberFormatPretty}
           isRenderingAsVirtualList
         />
       );

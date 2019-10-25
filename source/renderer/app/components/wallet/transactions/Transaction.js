@@ -18,8 +18,6 @@ import {
 import globalMessages from '../../../i18n/global-messages';
 import type { TransactionState } from '../../../api/transactions/types';
 import { getNetworkExplorerUrl } from '../../../utils/network';
-import { formattedWalletAmount } from '../../../utils/formatters';
-import type { NumberFormat } from '../../../../../common/types/number.types';
 
 /* eslint-disable consistent-return */
 
@@ -136,11 +134,11 @@ type Props = {
   isExpanded: boolean,
   isRestoreActive: boolean,
   isLastInList: boolean,
+  formattedWalletAmount: Function,
   network: string,
   onDetailsToggled: ?Function,
   onOpenExternalLink: ?Function,
   currentTimeFormat: string,
-  currentNumberFormatPretty: NumberFormat,
 };
 
 export default class Transaction extends Component<Props> {
@@ -168,11 +166,11 @@ export default class Transaction extends Component<Props> {
       isLastInList,
       state,
       assuranceLevel,
+      formattedWalletAmount,
       onOpenExternalLink,
       isRestoreActive,
       isExpanded,
       currentTimeFormat,
-      currentNumberFormatPretty,
     } = this.props;
     const { intl } = this.context;
 
@@ -256,11 +254,8 @@ export default class Transaction extends Component<Props> {
                   : intl.formatMessage(messages.received, { currency })}
               </div>
               <div className={styles.amount}>
-                {formattedWalletAmount(
-                  data.amount,
-                  false,
-                  currentNumberFormatPretty
-                )}
+                {// hide currency (we are showing symbol instead)
+                formattedWalletAmount(data.amount, false)}
                 <SVGInline svg={symbol} className={styles.currencySymbol} />
               </div>
             </div>

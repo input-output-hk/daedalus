@@ -10,6 +10,7 @@ import WalletNoTransactions from '../../components/wallet/transactions/WalletNoT
 import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer';
 import { ROUTES } from '../../routes-config';
 import type { InjectedProps } from '../../types/injectedPropsType';
+import { formattedWalletAmount } from '../../utils/formatters';
 
 export const messages = defineMessages({
   noTransactions: {
@@ -54,11 +55,7 @@ export default class WalletSummaryPage extends Component<Props> {
     } = transactions;
     const { isActiveWalletRestoring } = wallets;
     const wallet = wallets.active;
-    const {
-      currentTimeFormat,
-      currentDateFormat,
-      currentNumberFormatPretty,
-    } = profile;
+    const { currentTimeFormat, currentDateFormat } = profile;
     // Guard against potential null values
     if (!wallet)
       throw new Error('Active wallet required for WalletSummaryPage.');
@@ -80,6 +77,7 @@ export default class WalletSummaryPage extends Component<Props> {
           assuranceMode={wallet.assuranceMode}
           walletId={wallet.id}
           isRestoreActive={isActiveWalletRestoring}
+          formattedWalletAmount={formattedWalletAmount}
           showMoreTransactionsButton={
             recent.length > MAX_TRANSACTIONS_ON_SUMMARY_PAGE
           }
@@ -89,7 +87,6 @@ export default class WalletSummaryPage extends Component<Props> {
           totalAvailable={totalAvailable}
           currentTimeFormat={currentTimeFormat}
           currentDateFormat={currentDateFormat}
-          currentNumberFormatPretty={currentNumberFormatPretty}
         />
       );
     } else if (!hasAny) {
@@ -105,7 +102,6 @@ export default class WalletSummaryPage extends Component<Props> {
           pendingAmount={unconfirmedAmount}
           isLoadingTransactions={recentTransactionsRequest.isExecutingFirstTime}
           isRestoreActive={isActiveWalletRestoring}
-          currentNumberFormatPretty={currentNumberFormatPretty}
         />
         {walletTransactions}
       </VerticalFlexContainer>

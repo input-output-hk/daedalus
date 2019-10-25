@@ -2,7 +2,7 @@
 import React from 'react';
 import { action } from '@storybook/addon-actions';
 import BigNumber from 'bignumber.js';
-import { number, select } from '@storybook/addon-knobs';
+import { number } from '@storybook/addon-knobs';
 import DelegationCenter from '../../../source/renderer/app/components/staking/delegation-center/DelegationCenter';
 import STAKE_POOLS from '../../../source/renderer/app/config/stakingStakePools.dummy.json';
 import Wallet from '../../../source/renderer/app/domains/Wallet';
@@ -10,10 +10,6 @@ import {
   WalletRecoveryPhraseVerificationStatuses,
   WalletRecoveryPhraseVerificationTypes,
 } from '../../../source/renderer/app/stores/WalletsStore';
-import {
-  numberOptions,
-  numberDefaultOption,
-} from '../_support/profileSettings';
 
 const defaultAdaValue = 82650.15;
 const defaultPercentage = 33.123456;
@@ -92,10 +88,5 @@ export const StakingDelegationCenterStory = () => (
     })}
     wallets={wallets}
     onDelegate={action('onDelegate')}
-    currentNumberFormatPretty={select(
-      'numberFormat',
-      numberOptions,
-      numberDefaultOption
-    )}
   />
 );

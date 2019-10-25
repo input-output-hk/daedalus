@@ -137,7 +137,7 @@
   },
   "dependencies": {
     "aes-js": "3.1.0",
-    "bignumber.js": "^9.0.0",
+    "bignumber.js": "5.0.0",
     "bip39": "2.3.0",
     "blakejs": "1.1.0",
     "bs58": "4.0.1",

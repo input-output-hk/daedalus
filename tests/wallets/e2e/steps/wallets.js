@@ -19,7 +19,6 @@ import { navigateTo, sidebarHelpers, waitUntilUrlEquals } from '../../../navigat
 import { waitForActiveRestoreNotification } from '../../../nodes/e2e/steps/helpers';
 import { i18nHelpers } from '../../../settings/e2e/steps/helpers';
 import type { Daedalus } from '../../../types';
-import { NUMBER_FORMATS } from '../../../../source/common/types/number.types';
 
 declare var daedalus: Daedalus;
 
@@ -212,7 +211,7 @@ When(/^the transaction fees are calculated$/, async function() {
       '.AmountInputSkin_fees'
     );
     const transactionFeeAmount = new BigNumber(transactionFeeText.substr(2, 8));
-    return transactionFeeAmount.isGreaterThan(0) ? transactionFeeAmount : false;
+    return transactionFeeAmount.greaterThan(0) ? transactionFeeAmount : false;
   });
 });
 
@@ -572,7 +571,7 @@ Then(/^the latest transaction should show:$/, async function(table) {
   const transactionAmount = new BigNumber(transactionAmounts[0]);
   const transactionAmountWithoutFees = transactionAmount
     .add(this.fees)
-    .toFormat(DECIMAL_PLACES_IN_ADA, NUMBER_FORMATS['number-1']);
+    .toFormat(DECIMAL_PLACES_IN_ADA);
   expect(expectedData.amountWithoutFees).to.equal(transactionAmountWithoutFees);
 });
 

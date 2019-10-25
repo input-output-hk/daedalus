@@ -16,7 +16,7 @@ import { updateParam } from '../../../addons/DaedalusMenu';
 import { locales, themesIds } from '../../_support/config';
 
 // Screens
-import GeneralSettings from '../../../../source/renderer/app/components/settings/categories/GeneralSettings';
+import ProfileSettingsForm from '../../../../source/renderer/app/components/widgets/forms/ProfileSettingsForm';
 import DisplaySettings from '../../../../source/renderer/app/components/settings/categories/DisplaySettings';
 import SupportSettings from '../../../../source/renderer/app/components/settings/categories/SupportSettings';
 import TermsOfUseSettings from '../../../../source/renderer/app/components/settings/categories/TermsOfUseSettings';
@@ -31,7 +31,7 @@ storiesOf('Settings|General', module)
   // ====== Stories ======
 
   .add('General', () => (
-    <GeneralSettings
+    <ProfileSettingsForm
       isSubmitting={boolean('isSubmitting', false)}
       onSubmit={action('submit')}
       onChangeItem={(param: string, value: string) => {

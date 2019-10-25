@@ -9,7 +9,6 @@ import adaSymbolSmallest from '../../../assets/images/ada-symbol-smallest-dark.i
 import BorderedBox from '../../widgets/BorderedBox';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import type { UnconfirmedAmount } from '../../../types/unconfirmedAmountType';
-import type { NumberFormat } from '../../../../../common/types/number.types';
 import styles from './WalletSummary.scss';
 import Wallet from '../../../domains/Wallet';
 
@@ -38,7 +37,6 @@ type Props = {
   pendingAmount: UnconfirmedAmount,
   isLoadingTransactions: boolean,
   isRestoreActive: boolean,
-  currentNumberFormatPretty: NumberFormat,
 };
 
 @observer
@@ -55,7 +53,6 @@ export default class WalletSummary extends Component<Props> {
       numberOfTransactions,
       isLoadingTransactions,
       isRestoreActive,
-      currentNumberFormatPretty,
     } = this.props;
     const { intl } = this.context;
     const isLoadingAllTransactions =
@@ -70,10 +67,7 @@ export default class WalletSummary extends Component<Props> {
         <BorderedBox>
           <div className={styles.walletName}>{wallet.name}</div>
           <div className={styles.walletAmount}>
-            {wallet.amount.toFormat(
-              DECIMAL_PLACES_IN_ADA,
-              currentNumberFormatPretty
-            )}
+            {wallet.amount.toFormat(DECIMAL_PLACES_IN_ADA)}
             <SVGInline
               svg={adaSymbolBig}
               className={styles.currencySymbolBig}
@@ -82,32 +76,24 @@ export default class WalletSummary extends Component<Props> {
 
           {!isRestoreActive ? (
             <div>
-              {pendingAmount.incoming.isGreaterThan(0) && (
+              {pendingAmount.incoming.greaterThan(0) && (
                 <div className={styles.pendingConfirmation}>
                   {`${intl.formatMessage(
                     messages.pendingIncomingConfirmationLabel
                   )}`}
-                  :{' '}
-                  {pendingAmount.incoming.toFormat(
-                    DECIMAL_PLACES_IN_ADA,
-                    currentNumberFormatPretty
-                  )}
+                  : {pendingAmount.incoming.toFormat(DECIMAL_PLACES_IN_ADA)}
                   <SVGInline
                     svg={adaSymbolSmallest}
                     className={styles.currencySymbolSmallest}
                   />
                 </div>
               )}
-              {pendingAmount.outgoing.isGreaterThan(0) && (
+              {pendingAmount.outgoing.greaterThan(0) && (
                 <div className={styles.pendingConfirmation}>
                   {`${intl.formatMessage(
                     messages.pendingOutgoingConfirmationLabel
                   )}`}
-                  :{' '}
-                  {pendingAmount.outgoing.toFormat(
-                    DECIMAL_PLACES_IN_ADA,
-                    currentNumberFormatPretty
-                  )}
+                  : {pendingAmount.outgoing.toFormat(DECIMAL_PLACES_IN_ADA)}
                   <SVGInline
                     svg={adaSymbolSmallest}
                     className={styles.currencySymbolSmallest}

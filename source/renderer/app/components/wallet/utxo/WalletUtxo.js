@@ -22,7 +22,6 @@ import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import styles from './WalletUtxo.scss';
 import type { TickProps } from './WalletUtxoTick';
 import externalLinkIcon from '../../../assets/images/link-ic.inline.svg';
-import type { NumberFormat } from '../../../../../common/types/number.types';
 
 export const messages = defineMessages({
   title: {
@@ -78,7 +77,6 @@ type Props = {
   chartData: Array<any>,
   onExternalLinkClick: Function,
   pendingTxnsCount: number,
-  currentNumberFormatPretty: NumberFormat,
 };
 
 type State = {
@@ -125,12 +123,8 @@ export default class WalletUtxo extends Component<Props, State> {
       chartData,
       onExternalLinkClick,
       pendingTxnsCount,
-      currentNumberFormatPretty,
     } = this.props;
-    const formattedWalletAmount = walletAmount.toFormat(
-      DECIMAL_PLACES_IN_ADA,
-      currentNumberFormatPretty
-    );
+    const formattedWalletAmount = walletAmount.toFormat(DECIMAL_PLACES_IN_ADA);
     const isEmpty = walletUtxosAmount === 0;
     const componentStyles = classnames([
       styles.component,

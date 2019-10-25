@@ -21,7 +21,6 @@ import {
   DATE_ENGLISH_OPTIONS,
   TIME_OPTIONS,
 } from '../../../source/renderer/app/config/profileConfig';
-import { NUMBER_FORMATS } from '../../../source/common/types/number.types';
 
 // Screens
 import WalletTransactionsList from '../../../source/renderer/app/components/wallet/transactions/WalletTransactionsList';
@@ -35,7 +34,6 @@ storiesOf('Transactions|Transactions', module)
 
   .add('Transactions List', () => (
     <WalletTransactionsList
-      currentNumberFormatPretty={NUMBER_FORMATS['number-1']}
       currentDateFormat={select(
         'currentDateFormat',
         dateOptions,

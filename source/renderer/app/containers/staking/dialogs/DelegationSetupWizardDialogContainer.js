@@ -127,16 +127,12 @@ export default class DelegationSetupWizardDialogContainer extends Component<
   render() {
     const { activeStep, selectedWalletId, selectedPoolId } = this.state;
     const { app, staking, wallets, profile } = this.props.stores;
-    const { currentTheme, currentNumberFormatPretty } = profile;
+    const { currentTheme } = profile;
     const { stakePools, delegatingStakePools } = staking;
 
     let setupDisabled = true;
     const walletsData = map(wallets.all, wallet => {
-      const value = formattedWalletAmount(
-        wallet.amount,
-        true,
-        currentNumberFormatPretty
-      );
+      const value = formattedWalletAmount(wallet.amount);
       const isAcceptableSetupWallet = parseFloat(value) >= MIN_DELEGATION_FUNDS;
 
       // Setup enabled if at least one wallet has more that 1 ADA
