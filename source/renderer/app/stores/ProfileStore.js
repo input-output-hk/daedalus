@@ -23,6 +23,10 @@ import {
 import type { LogFiles, CompressedLogStatus } from '../types/LogTypes';
 import type { StateSnapshotLogParams } from '../../../common/types/logging.types';
 import {
+  DEFAULT_NUMBER_FORMAT,
+  NUMBER_FORMATS,
+} from '../../../common/types/number.types';
+import {
   hasLoadedRequest,
   isRequestSet,
   requestGetter,
@@ -44,14 +48,6 @@ export default class ProfileStore extends Store {
   @observable systemDateFormatEnglish: string = DATE_ENGLISH_OPTIONS[0].value;
   @observable systemDateFormatJapanese: string = DATE_JAPANESE_OPTIONS[0].value;
   @observable systemTimeFormat: string = TIME_OPTIONS[0].value;
-  @observable bigNumberDecimalFormat = {
-    decimalSeparator: '.',
-    groupSeparator: ',',
-    groupSize: 3,
-    secondaryGroupSize: 0,
-    fractionGroupSeparator: ' ',
-    fractionGroupSize: 0,
-  };
 
   /* eslint-disable max-len */
   @observable getProfileLocaleRequest: Request<string> = new Request(
@@ -138,7 +134,7 @@ export default class ProfileStore extends Store {
     this.actions.app.initAppEnvironment.listen(() => {});
 
     this.registerReactions([
-      this._setBigNumberFormat,
+      this._updateBigNumberFormat,
       this._updateMomentJsLocaleAfterLocaleChange,
       this._reloadAboutWindowOnLocaleChange,
       this._redirectToInitialSettingsIfNoLocaleSet,
@@ -152,8 +148,12 @@ export default class ProfileStore extends Store {
     this._getDataLayerMigrationAcceptance();
   }
 
-  _setBigNumberFormat = () => {
-    BigNumber.config({ FORMAT: this.bigNumberDecimalFormat });
+  _updateBigNumberFormat = () => {
+    const FORMAT = {
+      ...DEFAULT_NUMBER_FORMAT,
+      ...NUMBER_FORMATS[this.currentNumberFormat],
+    };
+    BigNumber.config({ FORMAT });
   };
 
   @computed get currentLocale(): string {
@@ -272,6 +272,9 @@ export default class ProfileStore extends Store {
     value: string,
   }) => {
     const { set, get } = getRequestKeys(param, this.currentLocale);
+    // if (param === 'numberFormat') {
+    //   this._setBigNumberFormat(value);
+    // }
     await (this: any)[set].execute(value);
     await (this: any)[get].execute();
   };
