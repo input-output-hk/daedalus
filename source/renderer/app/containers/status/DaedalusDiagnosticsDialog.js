@@ -64,6 +64,8 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
       forceCheckLocalTimeDifference,
       openStateDirectory,
       getNetworkInfoRequest,
+      networkTip,
+      localTip,
       localBlockHeight,
       networkBlockHeight,
       latestLocalBlockTimestamp,
@@ -134,6 +136,8 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
           nodeConnectionError={
             getNetworkInfoRequest.error || forceCheckTimeDifferenceRequest.error
           }
+          localTip={localTip}
+          networkTip={networkTip}
           localBlockHeight={localBlockHeight}
           networkBlockHeight={networkBlockHeight}
           onForceCheckLocalTimeDifference={forceCheckLocalTimeDifference}

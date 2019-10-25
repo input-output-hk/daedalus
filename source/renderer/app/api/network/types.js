@@ -4,16 +4,15 @@ export type LocalTimeInformationStatus =
   | 'pending'
   | 'available';
 
+export type TipInfo = {
+  epoch: number,
+  slot: number,
+};
+
 export type GetNetworkInfoResponse = {
   syncProgress: number,
-  localTip: {
-    epoch: number,
-    slot: number,
-  },
-  networkTip: {
-    epoch: number,
-    slot: number,
-  },
+  localTip: TipInfo,
+  networkTip: TipInfo,
   localTimeInformation: {
     status: LocalTimeInformationStatus,
     difference: ?number,

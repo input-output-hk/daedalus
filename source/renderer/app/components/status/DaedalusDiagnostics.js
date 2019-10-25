@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { get, includes, upperFirst, capitalize } from 'lodash';
 import { defineMessages, intlShape } from 'react-intl';
-import moment from 'moment';
 import classNames from 'classnames';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
@@ -25,8 +24,7 @@ import styles from './DaedalusDiagnostics.scss';
 import type { CardanoNodeState } from '../../../../common/types/cardano-node.types';
 import type { SystemInfo } from '../../types/systemInfoTypes';
 import type { CoreSystemInfo } from '../../types/coreSystemInfoTypes';
-
-let syncingInterval = null;
+import type { TipInfo } from '../../api/network/types';
 
 const messages = defineMessages({
   systemInfo: {
@@ -349,8 +347,10 @@ type Props = {
   // isForceCheckingNodeTime: boolean,
   // latestLocalBlockTimestamp: number,
   // latestNetworkBlockTimestamp: number,
-  localBlockHeight: number,
-  networkBlockHeight: number,
+  localTip: ?TipInfo,
+  networkTip: ?TipInfo,
+  // localBlockHeight: number,
+  // networkBlockHeight: number,
   currentLocale: string,
   onForceCheckLocalTimeDifference: Function,
   onOpenStateDirectory: Function,
@@ -361,11 +361,6 @@ type Props = {
 };
 
 type State = {
-  data: Array<{
-    localBlockHeight: ?number,
-    networkBlockHeight: ?number,
-    time: number,
-  }>,
   isNodeRestarting: boolean,
 };
 
@@ -377,68 +372,12 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
 
   constructor(props: Props) {
     super(props);
-    let { localBlockHeight, networkBlockHeight } = props;
-    localBlockHeight = localBlockHeight || null;
-    networkBlockHeight = networkBlockHeight || null;
+    // let { localBlockHeight, networkBlockHeight } = props;
+    // localBlockHeight = localBlockHeight || null;
+    // networkBlockHeight = networkBlockHeight || null;
     this.state = {
-      data: [
-        {
-          localBlockHeight,
-          networkBlockHeight,
-          time: moment(Date.now() - 20000).format('HH:mm:ss'),
-        },
-        {
-          localBlockHeight,
-          networkBlockHeight,
-          time: moment(Date.now() - 18000).format('HH:mm:ss'),
-        },
-        {
-          localBlockHeight,
-          networkBlockHeight,
-          time: moment(Date.now() - 16000).format('HH:mm:ss'),
-        },
-        {
-          localBlockHeight,
-          networkBlockHeight,
-          time: moment(Date.now() - 14000).format('HH:mm:ss'),
-        },
-        {
-          localBlockHeight,
-          networkBlockHeight,
-          time: moment(Date.now() - 12000).format('HH:mm:ss'),
-        },
-        {
-          localBlockHeight,
-          networkBlockHeight,
-          time: moment(Date.now() - 10000).format('HH:mm:ss'),
-        },
-        {
-          localBlockHeight,
-          networkBlockHeight,
-          time: moment(Date.now() - 8000).format('HH:mm:ss'),
-        },
-        {
-          localBlockHeight,
-          networkBlockHeight,
-          time: moment(Date.now() - 6000).format('HH:mm:ss'),
-        },
-        {
-          localBlockHeight,
-          networkBlockHeight,
-          time: moment(Date.now() - 4000).format('HH:mm:ss'),
-        },
-        {
-          localBlockHeight,
-          networkBlockHeight,
-          time: moment(Date.now() - 2000).format('HH:mm:ss'),
-        },
-      ],
       isNodeRestarting: false,
     };
-  }
-
-  componentWillMount() {
-    syncingInterval = setInterval(this.syncingTimer, 2000);
   }
 
   componentWillReceiveProps(nextProps: Props) {
@@ -462,10 +401,6 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
     }
   }
 
-  componentWillUnmount() {
-    this.resetSyncingTimer();
-  }
-
   render() {
     const { intl } = this.context;
 
@@ -484,8 +419,10 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
       // localTimeDifference,
       // isSystemTimeCorrect,
       // isForceCheckingNodeTime,
-      localBlockHeight,
-      networkBlockHeight,
+      localTip,
+      networkTip,
+      // localBlockHeight,
+      // networkBlockHeight,
       // latestLocalBlockTimestamp,
       // latestNetworkBlockTimestamp,
       onOpenStateDirectory,
@@ -763,11 +700,19 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
               </tr>
               <tr>
                 <th>{intl.formatMessage(messages.networkBlockHeight)}:</th>
-                <td>{networkBlockHeight}</td>
+                <td>
+                  {networkTip
+                    ? `epoch: ${networkTip.epoch} | slot: ${networkTip.slot}`
+                    : 'epoch: - | slot: -'}
+                </td>
               </tr>
               <tr>
                 <th>{intl.formatMessage(messages.localBlockHeight)}:</th>
-                <td>{localBlockHeight}</td>
+                <td>
+                  {localTip
+                    ? `epoch: ${localTip.epoch} | slot: ${localTip.slot}`
+                    : 'epoch: - | slot: -'}
+                </td>
               </tr>
               {/*
                 <tr>
@@ -994,22 +939,4 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
 
   getClassName = (isTrue: boolean) =>
     classNames([isTrue ? styles.green : styles.red]);
-
-  syncingTimer = () => {
-    const { localBlockHeight, networkBlockHeight } = this.props;
-    const { data } = this.state;
-    data.push({
-      localBlockHeight,
-      networkBlockHeight,
-      time: moment().format('HH:mm:ss'),
-    });
-    this.setState({ data: data.slice(-10) });
-  };
-
-  resetSyncingTimer = () => {
-    if (syncingInterval !== null) {
-      clearInterval(syncingInterval);
-      syncingInterval = null;
-    }
-  };
 }

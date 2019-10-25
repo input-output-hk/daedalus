@@ -28,7 +28,7 @@ import {
 import { CardanoNodeStates } from '../../../common/types/cardano-node.types';
 import { getDiskSpaceStatusChannel } from '../ipc/getDiskSpaceChannel.js';
 import { getStateDirectoryPathChannel } from '../ipc/getStateDirectoryPathChannel';
-import type { GetNetworkInfoResponse } from '../api/network/types';
+import type { GetNetworkInfoResponse, TipInfo } from '../api/network/types';
 import type {
   CardanoNodeState,
   CardanoStatus,
@@ -94,6 +94,8 @@ export default class NetworkStatusStore extends Store {
 
   @observable hasBeenConnected = false;
   @observable syncProgress = null;
+  @observable localTip: ?TipInfo = null;
+  @observable networkTip: ?TipInfo = null;
   @observable initialLocalHeight = null;
   @observable localBlockHeight = 0;
   @observable networkBlockHeight = 0;
@@ -402,12 +404,6 @@ export default class NetworkStatusStore extends Store {
             .promise
         : await this.getNetworkInfoRequest.execute().promise;
 
-      // eslint-disable-next-line
-      console.debug(
-        'NetworkStatusStore::_updateNetworkStatus',
-        networkStatus.syncProgress
-      );
-
       // In case we no longer have TLS config we ignore all API call responses
       // as this means we are in the Cardano shutdown (stopping|exiting|updating) sequence
       if (!this.tlsConfig) {
@@ -420,8 +416,8 @@ export default class NetworkStatusStore extends Store {
       const {
         // subscriptionStatus,
         syncProgress,
-        // blockchainHeight,
-        // localBlockchainHeight,
+        localTip,
+        networkTip,
         localTimeInformation,
       } = networkStatus;
 
@@ -436,6 +432,11 @@ export default class NetworkStatusStore extends Store {
         // const nodeIPs = Object.values(subscriptionStatus || {});
         // this.isNodeSubscribed = nodeIPs.includes('subscribed');
         this.isNodeSubscribed = true;
+      });
+
+      runInAction('update localTip and networkTip', () => {
+        this.localTip = localTip;
+        this.networkTip = networkTip;
       });
 
       // System time is correct if local time difference is below allowed threshold
