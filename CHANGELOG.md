@@ -10,7 +10,7 @@ Changelog
 ### Chores
 
 - Fixed build mode of webpack auto dll plugin ([PR 1606](https://github.com/input-output-hk/daedalus/pull/1606))
-- Changed delete wallet button layout for emphasized location/importance and removed export wallet feature ([PR 1612](https://github.com/input-output-hk/daedalus/pull/1612))
+- Changed delete wallet button layout for emphasized location/importance and removed export wallet feature ([PR 1612](https://github.com/input-output-hk/daedalus/pull/1612), [PR 1619](https://github.com/input-output-hk/daedalus/pull/1619))
 - Speedup storybook builds in development ([PR 1607](https://github.com/input-output-hk/daedalus/pull/1607))
 - Added note to UTXO screen showing pending transactions ([PR 1589](https://github.com/input-output-hk/daedalus/pull/1589))
 - Fixed broken source maps ([PR 1594](https://github.com/input-output-hk/daedalus/pull/1594))

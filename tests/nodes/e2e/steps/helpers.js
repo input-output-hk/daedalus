@@ -1,4 +1,5 @@
 // @flow
+import { When } from 'cucumber';
 import { getProcessesByName } from '../../../../source/main/utils/processes';
 import type { Daedalus, WebdriverClient } from '../../../types';
 
@@ -12,6 +13,12 @@ export const getCardanoNodeState = async (client: WebdriverClient) =>
 export const refreshClient = async (client: WebdriverClient) => {
   await client.url(`file://${__dirname}/../../../../dist/renderer/index.html`);
 };
+
+const oneHour = 60 * 60 * 1000;
+// Helper step to pause execution for up to an hour ;)
+When(/^I freeze$/, { timeout: oneHour }, callback => {
+  setTimeout(callback, oneHour);
+});
 
 export const waitForActiveRestoreNotification = (
   client: WebdriverClient,
