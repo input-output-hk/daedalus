@@ -3,6 +3,10 @@ Changelog
 
 ## vNext
 
+### Features
+
+- Add internal link support in newsfeed items ([PR 1617](https://github.com/input-output-hk/daedalus/pull/1617))
+
 ### Chores
 
 - Speedup storybook builds in development ([PR 1607](https://github.com/input-output-hk/daedalus/pull/1607))
