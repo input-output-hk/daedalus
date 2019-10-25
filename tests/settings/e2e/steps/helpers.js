@@ -40,7 +40,7 @@ export const i18nHelpers = {
     }, language || DEFAULT_LANGUAGE),
 };
 
-export const InitialSettingsHelpers = {
+export const initialSettingsHelpers = {
   waitForVisible: async (
     client: WebdriverClient,
     { isHidden }: { isHidden: boolean } = {}
@@ -51,7 +51,10 @@ export const InitialSettingsHelpers = {
     { language }: { language: string } = {}
   ) => {
     await i18nHelpers.setActiveLanguage(client, { language });
-    await InitialSettingsHelpers.waitForVisible(client, { isHidden: true });
+    client.execute(
+      () => daedalus.actions.profile.finishInitialScreenSettings.trigger()
+    );
+    await initialSettingsHelpers.waitForVisible(client, { isHidden: true });
   },
 };
 

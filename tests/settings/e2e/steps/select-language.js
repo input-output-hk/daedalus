@@ -1,11 +1,11 @@
 // @flow
 import { Given, When, Then } from 'cucumber';
 import { expect } from 'chai';
-import { InitialSettingsHelpers } from './helpers';
+import { initialSettingsHelpers } from './helpers';
 import type { Daedalus } from '../../../types';
 
 declare var daedalus: Daedalus;
-const { ensureLanguageIsSelected } = InitialSettingsHelpers;
+const { ensureLanguageIsSelected } = initialSettingsHelpers;
 const INITIAL_SETTINGS_FORM = '.InitialSettings_component';
 
 Given(/^I have selected English language$/, async function() {
@@ -37,7 +37,7 @@ When(/^I select Japanese language$/, function() {
 });
 
 When(/^I submit the language selection form$/, function() {
-  return this.waitAndClick('.InitialSettings_submitButton');
+  return this.waitAndClick('.ProfileSettingsForm_submitButton');
 });
 
 Then(/^I should not see the language selection screen anymore$/, function() {

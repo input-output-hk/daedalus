@@ -272,9 +272,6 @@ export default class ProfileStore extends Store {
     value: string,
   }) => {
     const { set, get } = getRequestKeys(param, this.currentLocale);
-    // if (param === 'numberFormat') {
-    //   this._setBigNumberFormat(value);
-    // }
     await (this: any)[set].execute(value);
     await (this: any)[get].execute();
   };
