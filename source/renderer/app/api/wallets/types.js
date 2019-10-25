@@ -108,12 +108,6 @@ export type ImportWalletFromFileRequest = {
   walletName: ?string,
 };
 
-export type ExportWalletToFileRequest = {
-  walletId: string,
-  filePath: string,
-  password: ?string,
-};
-
 export type GetWalletCertificateRecoveryPhraseRequest = {
   passphrase: string,
   input: string,

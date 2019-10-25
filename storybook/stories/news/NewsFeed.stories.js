@@ -4,7 +4,7 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { boolean } from '@storybook/addon-knobs';
-import StoryDecorator from '../support/StoryDecorator';
+import StoryDecorator from '../_support/StoryDecorator';
 import NewsFeed from '../../../source/renderer/app/components/news/NewsFeed';
 import News from '../../../source/renderer/app/domains/News';
 
@@ -112,30 +112,14 @@ const news = [
 
 const newsCollection = new News.NewsCollection(news);
 
-storiesOf('NewsFeed', module)
+storiesOf('News|NewsFeed', module)
   .addDecorator(story => (
     <StoryDecorator>{story(newsCollection)}</StoryDecorator>
   ))
 
   // ====== Stories ======
 
-  .add('NewsFeed - no news items fetched from server', () => (
-    <div>
-      <NewsFeed
-        onGoToRoute={action('onGoToRoute')}
-        isLoadingNews={false}
-        onMarkNewsAsRead={action('onMarkNewsAsRead')}
-        onNewsItemActionClick={action('onNewsItemActionClick')}
-        onClose={action('onClose')}
-        news={undefined}
-        isNewsFeedOpen={boolean('isNewsFeedOpen', true)}
-        onOpenExternalLink={() => {}}
-        onOpenAlert={() => {}}
-      />
-    </div>
-  ))
-
-  .add('NewsFeed - newsfeed empty', () => (
+  .add('Empty', () => (
     <div>
       <NewsFeed
         onGoToRoute={action('onGoToRoute')}
@@ -151,7 +135,7 @@ storiesOf('NewsFeed', module)
     </div>
   ))
 
-  .add('NewsFeed - loading', () => (
+  .add('Fetching', () => (
     <div>
       <NewsFeed
         onGoToRoute={action('onGoToRoute')}
@@ -167,7 +151,7 @@ storiesOf('NewsFeed', module)
     </div>
   ))
 
-  .add('NewsFeed', () => (
+  .add('Fetched', () => (
     <div>
       <NewsFeed
         onGoToRoute={action('onGoToRoute')}
