@@ -23,24 +23,22 @@ const readModuleFile = (path, callback) => {
   }
 }
 
-
 // Start script
 console.log('\n\x1b[36m%s\x1b[0m', 'Creating news verification hashes...\n');
 
 const newsEnvironment = process.env.NEWS_ENV;
 const allowedFiles = [
-  {name: 'newsfeed_development1.json', env: 'development'},
-  {name: 'newsfeed_mainnet.json', env: 'mainnet'},
-  {name: 'newsfeed_staging.json', env: 'staging'},
-  {name: 'newsfeed_testnet.json', env: 'testnet'},
-  {name: 'news.dummy.json', env: 'dummy_development'}, // Faked test file for development purposes
+  { name: 'newsfeed_development.json', env: 'development' },
+  { name: 'newsfeed_mainnet.json', env: 'mainnet' },
+  { name: 'newsfeed_staging.json', env: 'staging' },
+  { name: 'newsfeed_testnet.json', env: 'testnet' },
+  { name: 'news.dummy.json', env: 'dummy_development' }, // Faked test file for development purposes
 ];
 
 let filesToHash = [];
 if (newsEnvironment) {
   const fileName = `newsfeed_${newsEnvironment.toLowerCase()}.json`;
   const fileAllowed = lodash.find(allowedFiles, (allowedFiles => allowedFiles.name === fileName));
-
   if (fileAllowed) {
     filesToHash.push(fileAllowed);
   } else {
@@ -58,18 +56,35 @@ if (filesToHash.length === 0) {
 
 console.log('\n \x1b[33m', 'NOTE: create file with NAME and put HASH as content! \n', '\x1b[0m');
 lodash.map(filesToHash, file => {
-
-  readModuleFile(`../../source/renderer/app/config/newsfeed-files/${file.name}`, function (error, words) {
-    if (error) {
-      console.error(error.message)
+  readModuleFile(`../../source/renderer/app/config/newsfeed-files/${file.name}`, function (error, fileContent) {
+    // Log Environment
+    console.log('\n \x1b[32m', `${lodash.capitalize(file.env)}`, '\x1b[0m');
+    if (error) { // e.g.File not found
+      console.log('\x1b[31m', error.message, '\x1b[36m');
     } else {
+      // Check if file is valid JSON file
+      let parsedFile;
+      try {
+        parsedFile = JSON.parse(fileContent);
+      } catch (err) {
+        console.log(`\x1b[31m File: ${file.name} is not VALID json file. Please check file and try again!`, '\x1b[0m')
+        return;
+      }
+
+      // Check all timestamps in file and throw error if there are duplicates
+      const timestamps = lodash.map(parsedFile.items, (item => (item.date)))
+      const hasDuplicatedTimestamps = lodash.uniq(timestamps).length !== timestamps.length;
+      if (hasDuplicatedTimestamps) {
+        console.log(`\x1b[31m File: ${file.name} has duplicated TIMESTAMPS. Please check file and try again!`, '\x1b[0m');
+        return;
+      }
+
+      // Create varification hash
       const hash = crypto.createHash('sha256');
-      const hashBuffer = hash.digest(hash.update(words, 'utf8'));
+      const hashBuffer = hash.digest(hash.update(fileContent, 'utf8'));
       const hashArray = Array.from(new Uint8Array(hashBuffer))
       const verificationHash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 
-      const parsedFile = JSON.parse(words);
-      console.log('\n \x1b[32m', `${lodash.capitalize(file.env)}`, '\x1b[0m');
       console.log(`New verification FILE NAME: \x1b[36m ${parsedFile.updatedAt}.txt \x1b[0m | HASH: \x1b[36m ${verificationHash}`, '\x1b[0m');
     }
   });
