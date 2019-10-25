@@ -12,21 +12,20 @@ import type { InjectedProps } from '../../types/injectedPropsType';
 export default class InitialSettingsPage extends Component<InjectedProps> {
   static defaultProps = { actions: null, stores: null };
 
-  onSubmit = async (values: { locale: string }) => {
-    const { actions, stores } = this.props;
-    const { isUpdateAvailable } = stores.nodeUpdate;
-    const {
-      updateUserLocalSettings,
-      finishInitialScreenSettings,
-    } = actions.profile;
-    updateUserLocalSettings.trigger(values);
+  onSubmit = async () => {
+    const { actions } = this.props;
+    const { finishInitialScreenSettings } = actions.profile;
     finishInitialScreenSettings.trigger();
-    await rebuildApplicationMenu.send({ isUpdateAvailable });
   };
 
   handleSelectItem = async (param: string, value: string) => {
-    const { updateUserLocalSetting } = this.props.actions.profile;
+    const { actions, stores } = this.props;
+    const { updateUserLocalSetting } = actions.profile;
     updateUserLocalSetting.trigger({ param, value });
+    const { isUpdateAvailable } = stores.nodeUpdate;
+    if (param === 'locale') {
+      await rebuildApplicationMenu.send({ isUpdateAvailable });
+    }
   };
 
   render() {

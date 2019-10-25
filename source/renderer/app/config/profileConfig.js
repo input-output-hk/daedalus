@@ -1,5 +1,12 @@
 import globalMessages from '../i18n/global-messages';
 
+export const PROFILE_SETTINGS = [
+  'locale',
+  'numberFormat',
+  'dateFormat',
+  'timeFormat',
+];
+
 export const LANGUAGE_OPTIONS = [
   { value: 'en-US', label: globalMessages.languageEnglish },
   { value: 'ja-JP', label: globalMessages.languageJapanese },

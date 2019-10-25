@@ -17,9 +17,8 @@ export default class ProfileActions {
   downloadLogsSuccess: Action<any> = new Action();
   updateUserLocalSetting: Action<{
     param: string,
-    value: string,
+    value?: string,
   }> = new Action();
-  updateUserLocalSettings: Action<{ [key: string]: string }> = new Action();
   updateTheme: Action<{ theme: string }> = new Action();
   finishInitialScreenSettings: Action<any> = new Action();
 }

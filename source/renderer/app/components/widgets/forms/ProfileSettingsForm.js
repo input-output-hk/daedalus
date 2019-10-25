@@ -7,7 +7,6 @@ import { Select } from 'react-polymorph/lib/components/Select';
 import { ButtonSpinnerSkin } from 'react-polymorph/lib/skins/simple/ButtonSpinnerSkin';
 import { SelectSkin } from 'react-polymorph/lib/skins/simple/SelectSkin';
 import { defineMessages, intlShape } from 'react-intl';
-import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import LocalizableError from '../../../i18n/LocalizableError';
 import styles from './ProfileSettingsForm.scss';
 import {
@@ -16,6 +15,7 @@ import {
   DATE_ENGLISH_OPTIONS,
   DATE_JAPANESE_OPTIONS,
   TIME_OPTIONS,
+  PROFILE_SETTINGS,
 } from '../../../config/profileConfig';
 
 const messages = defineMessages({
@@ -67,123 +67,73 @@ export default class ProfileSettingsForm extends Component<ProfileSettingsFormPr
     intl: intlShape.isRequired,
   };
 
-  submit = () => {
-    this.form.submit({
-      onSuccess: form => {
-        const { languageId, numberId, dateId, timeId } = form.values();
-        const { onSubmit } = this.props;
-        if (onSubmit) {
-          onSubmit({
-            locale: languageId,
-            numberFormat: numberId,
-            dateFormat: dateId,
-            timeFormat: timeId,
-          });
-        }
-      },
-      onError: () => {},
-    });
+  get locale() {
+    const { props, context } = this;
+    const options = LANGUAGE_OPTIONS.map(language => ({
+      value: language.value,
+      label: context.intl.formatMessage(language.label),
+    }));
+    const value = props.currentLocale;
+    return { value, options };
+  }
+
+  get numberFormat() {
+    return {
+      options: NUMBER_OPTIONS,
+      value: this.props.currentNumberFormat,
+    };
+  }
+
+  get dateFormat() {
+    const { currentLocale, currentDateFormat } = this.props;
+    return {
+      options:
+        currentLocale === 'en-US'
+          ? DATE_ENGLISH_OPTIONS
+          : DATE_JAPANESE_OPTIONS,
+      value: currentDateFormat,
+    };
+  }
+
+  get timeFormat() {
+    return {
+      options: TIME_OPTIONS,
+      value: this.props.currentTimeFormat,
+    };
+  }
+
+  getSelect = (id: string) => {
+    const { formatMessage } = this.context.intl;
+    const { onChangeItem } = this.props;
+    const { value, options } = (this: any)[id];
+    return (
+      <Select
+        label={formatMessage(messages.languageSelectLabel)}
+        value={value}
+        options={options}
+        onChange={(v: string) => onChangeItem(id, v)}
+        skin={SelectSkin}
+        className={styles.select}
+        key={id}
+      />
+    );
   };
 
-  form = new ReactToolboxMobxForm(
-    {
-      fields: {
-        languageId: {
-          label: this.context.intl.formatMessage(messages.languageSelectLabel),
-          value: this.props.currentLocale,
-        },
-        numberId: {
-          label: this.context.intl.formatMessage(messages.numberSelectLabel),
-          value: this.props.currentNumberFormat,
-        },
-        dateId: {
-          label: this.context.intl.formatMessage(messages.dateSelectLabel),
-          value: this.props.currentDateFormat,
-        },
-        timeId: {
-          label: this.context.intl.formatMessage(messages.timeSelectLabel),
-          value: this.props.currentTimeFormat,
-        },
-      },
-    },
-    {
-      options: {
-        validateOnChange: false,
-      },
-    }
-  );
-
   render() {
-    const {
-      error,
-      onChangeItem,
-      onSubmit,
-      isSubmitting,
-      currentLocale,
-      currentNumberFormat,
-      currentDateFormat,
-      currentTimeFormat,
-    } = this.props;
-    const { intl } = this.context;
-    const { form } = this;
-    const languageId = form.$('languageId');
-    const numberId = form.$('numberId');
-    const dateId = form.$('dateId');
-    const timeId = form.$('timeId');
-    const languageOptions = LANGUAGE_OPTIONS.map(language => ({
-      value: language.value,
-      label: intl.formatMessage(language.label),
-    }));
-    const numberOptions = NUMBER_OPTIONS;
-    const dateEnglishOptions = DATE_ENGLISH_OPTIONS;
-    const dateJapaneseOptions = DATE_JAPANESE_OPTIONS;
-    const dateOptions =
-      currentLocale === 'en-US' ? dateEnglishOptions : dateJapaneseOptions;
-    const timeOptions = TIME_OPTIONS;
+    const { error, onSubmit, isSubmitting } = this.props;
+    const { formatMessage } = this.context.intl;
     const componentClassNames = classNames([styles.component, 'general']);
     return (
       <div className={componentClassNames}>
-        <Select
-          className={styles.select}
-          options={languageOptions}
-          {...languageId.bind()}
-          onChange={(value: string) => onChangeItem('locale', value)}
-          skin={SelectSkin}
-        />
-        <Select
-          className={styles.select}
-          options={numberOptions}
-          {...numberId.bind()}
-          value={currentNumberFormat}
-          onChange={(value: string) => onChangeItem('numberFormat', value)}
-          skin={SelectSkin}
-        />
-        <Select
-          className={styles.select}
-          options={dateOptions}
-          {...dateId.bind()}
-          value={currentDateFormat}
-          onChange={(value: string) => onChangeItem('dateFormat', value)}
-          skin={SelectSkin}
-        />
-        <Select
-          className={styles.select}
-          options={timeOptions}
-          {...timeId.bind()}
-          value={currentTimeFormat}
-          onChange={(value: string) => onChangeItem('timeFormat', value)}
-          skin={SelectSkin}
-        />
-
+        {PROFILE_SETTINGS.map((param: string) => this.getSelect(param))}
         {error && <p className={styles.error}>{error}</p>}
-
         {onSubmit && (
           <Button
             className={classNames(['primary', styles.submitButton])}
-            label={intl.formatMessage(messages.submitLabel)}
+            label={formatMessage(messages.submitLabel)}
             skin={ButtonSpinnerSkin}
             loading={isSubmitting}
-            onClick={this.submit}
+            onClick={onSubmit}
           />
         )}
       </div>

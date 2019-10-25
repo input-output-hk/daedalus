@@ -2,7 +2,7 @@
 import { action, observable, computed, toJS, runInAction } from 'mobx';
 import BigNumber from 'bignumber.js';
 import moment from 'moment/moment';
-import { includes } from 'lodash';
+import { includes, camelCase } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import { THEMES } from '../themes/index';
@@ -37,6 +37,7 @@ import {
   DATE_ENGLISH_OPTIONS,
   DATE_JAPANESE_OPTIONS,
   TIME_OPTIONS,
+  PROFILE_SETTINGS,
 } from '../config/profileConfig';
 
 // TODO: refactor all parts that rely on this to ipc channels!
@@ -117,9 +118,6 @@ export default class ProfileStore extends Store {
     this.actions.profile.updateUserLocalSetting.listen(
       this._updateUserLocalSetting
     );
-    this.actions.profile.updateUserLocalSettings.listen(
-      this._updateUserLocalSettings
-    );
     this.actions.profile.acceptTermsOfUse.listen(this._acceptTermsOfUse);
     this.actions.profile.acceptDataLayerMigration.listen(
       this._acceptDataLayerMigration
@@ -135,15 +133,15 @@ export default class ProfileStore extends Store {
 
     this.registerReactions([
       this._updateBigNumberFormat,
-      this._updateMomentJsLocaleAfterLocaleChange,
-      this._reloadAboutWindowOnLocaleChange,
+      // this._updateMomentJsLocaleAfterLocaleChange,
+      // this._reloadAboutWindowOnLocaleChange,
       this._redirectToInitialSettingsIfNoLocaleSet,
       this._redirectToTermsOfUseScreenIfTermsNotAccepted,
       this._redirectToDataLayerMigrationScreenIfMigrationHasNotAccepted,
       this._redirectToMainUiAfterTermsAreAccepted,
       this._redirectToMainUiAfterDataLayerMigrationIsAccepted,
     ]);
-    this._getSystemLocale();
+    // this._getSystemLocale();
     this._getTermsOfUseAcceptance();
     this._getDataLayerMigrationAcceptance();
   }
@@ -261,27 +259,29 @@ export default class ProfileStore extends Store {
   };
 
   _finishInitialScreenSettings = action(() => {
+    this._consolidateUserSettings();
     this.isInitialScreen = false;
   });
+
+  _consolidateUserSettings = () => {
+    PROFILE_SETTINGS.forEach((param: string) => {
+      this._updateUserLocalSetting({ param });
+    });
+  };
 
   _updateUserLocalSetting = async ({
     param,
     value,
   }: {
     param: string,
-    value: string,
+    value?: string,
   }) => {
+    // In case `value` is missing, it consolidates in the localstorage the default value
+    const consolidatedValue =
+      value || (this: any)[camelCase(['current', param])];
     const { set, get } = getRequestKeys(param, this.currentLocale);
-    await (this: any)[set].execute(value);
+    await (this: any)[set].execute(consolidatedValue);
     await (this: any)[get].execute();
-  };
-
-  _updateUserLocalSettings = async (settings: { [key: string]: string }) => {
-    settings.dateFormat = 'YYYY/MM/DD';
-    Object.entries(settings).forEach(([param, value]) => {
-      if (value && typeof value === 'string')
-        this._updateUserLocalSetting({ param, value });
-    });
   };
 
   _updateTheme = async ({ theme }: { theme: string }) => {
