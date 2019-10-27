@@ -19,22 +19,22 @@ import {
 } from '../../../config/profileConfig';
 
 const messages = defineMessages({
-  languageSelectLabel: {
+  localeSelectLabel: {
     id: 'profile.settings.languageSelect.label',
     defaultMessage: '!!!Language',
     description: 'Label for the language select.',
   },
-  numberSelectLabel: {
+  numberFormatSelectLabel: {
     id: 'profile.settings.numberSelect.label',
     defaultMessage: '!!!Number format',
     description: 'Label for the number select.',
   },
-  dateSelectLabel: {
+  dateFormatSelectLabel: {
     id: 'profile.settings.dateSelect.label',
     defaultMessage: '!!!Date format',
     description: 'Label for the date select.',
   },
-  timeSelectLabel: {
+  timeFormatSelectLabel: {
     id: 'profile.settings.timeSelect.label',
     defaultMessage: '!!!Time format',
     description: 'Label for the time select.',
@@ -108,7 +108,7 @@ export default class ProfileSettingsForm extends Component<ProfileSettingsFormPr
     const { value, options } = (this: any)[id];
     return (
       <Select
-        label={formatMessage(messages.languageSelectLabel)}
+        label={formatMessage(messages[`${id}SelectLabel`])}
         value={value}
         options={options}
         onChange={(v: string) => onChangeItem(id, v)}
