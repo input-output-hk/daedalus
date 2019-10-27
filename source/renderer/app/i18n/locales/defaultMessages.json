@@ -2147,13 +2147,13 @@
         "description": "Title \"Confirm Delegation\" on the delegation setup \"activation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 33
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsActivationDialog.js",
         "id": "staking.delegationSetup.activation.step.dialog.title",
         "start": {
           "column": 9,
-          "line": 26
+          "line": 28
         }
       },
       {
@@ -2161,13 +2161,13 @@
         "description": "Step indicator labe on the delegation setup \"activation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 39
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsActivationDialog.js",
         "id": "staking.delegationSetup.activation.step.dialog.stepIndicatorLabel",
         "start": {
           "column": 22,
-          "line": 32
+          "line": 34
         }
       },
       {
@@ -2175,13 +2175,13 @@
         "description": "Description \"line 1\" on the delegation setup \"activation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 46
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsActivationDialog.js",
         "id": "staking.delegationSetup.activation.step.dialog.description.line1",
         "start": {
           "column": 20,
-          "line": 38
+          "line": 40
         }
       },
       {
@@ -2189,13 +2189,13 @@
         "description": "Description \"line 2\" on the delegation setup \"activation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 51
+          "line": 53
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsActivationDialog.js",
         "id": "staking.delegationSetup.activation.step.dialog.description.line2",
         "start": {
           "column": 20,
-          "line": 45
+          "line": 47
         }
       },
       {
@@ -2203,13 +2203,13 @@
         "description": "Address label on the delegation setup \"activation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 57
+          "line": 59
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsActivationDialog.js",
         "id": "staking.delegationSetup.activation.step.dialog.addressLabel",
         "start": {
           "column": 16,
-          "line": 52
+          "line": 54
         }
       },
       {
@@ -2217,13 +2217,13 @@
         "description": "Amount label on the delegation setup \"activation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 63
+          "line": 65
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsActivationDialog.js",
         "id": "staking.delegationSetup.activation.step.dialog.amountLabel",
         "start": {
           "column": 15,
-          "line": 58
+          "line": 60
         }
       },
       {
@@ -2231,13 +2231,13 @@
         "description": "Fees label on the delegation setup \"activation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 68
+          "line": 70
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsActivationDialog.js",
         "id": "staking.delegationSetup.activation.step.dialog.feesLabel",
         "start": {
           "column": 13,
-          "line": 64
+          "line": 66
         }
       },
       {
@@ -2245,13 +2245,13 @@
         "description": "Total label on the delegation setup \"activation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 74
+          "line": 76
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsActivationDialog.js",
         "id": "staking.delegationSetup.activation.step.dialog.totalLabel",
         "start": {
           "column": 14,
-          "line": 69
+          "line": 71
         }
       },
       {
@@ -2259,13 +2259,13 @@
         "description": "Placeholder for \"spending password\"",
         "end": {
           "column": 3,
-          "line": 80
+          "line": 82
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsActivationDialog.js",
         "id": "staking.delegationSetup.activation.step.dialog.spendingPasswordPlaceholder",
         "start": {
           "column": 31,
-          "line": 75
+          "line": 77
         }
       },
       {
@@ -2273,13 +2273,13 @@
         "description": "Label for \"spending password\"",
         "end": {
           "column": 3,
-          "line": 85
+          "line": 87
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsActivationDialog.js",
         "id": "staking.delegationSetup.activation.step.dialog.spendingPasswordLabel",
         "start": {
           "column": 25,
-          "line": 81
+          "line": 83
         }
       },
       {
@@ -2287,13 +2287,13 @@
         "description": "Label for continue button on the delegation setup \"activation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 91
+          "line": 93
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsActivationDialog.js",
         "id": "staking.delegationSetup.activation.step.dialog.confirmButtonLabel",
         "start": {
           "column": 22,
-          "line": 86
+          "line": 88
         }
       },
       {
@@ -2301,13 +2301,13 @@
         "description": "Postpone button label on the delegation setup \"activation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 97
+          "line": 99
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsActivationDialog.js",
         "id": "staking.delegationSetup.activation.step.dialog.postponeButtonLabel",
         "start": {
           "column": 23,
-          "line": 92
+          "line": 94
         }
       }
     ],
@@ -2540,13 +2540,13 @@
         "description": "Title \"Confirm Delegation\" on the delegation setup \"confirmation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 28
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.title",
         "start": {
           "column": 9,
-          "line": 21
+          "line": 23
         }
       },
       {
@@ -2554,13 +2554,13 @@
         "description": "Step indicator labe on the delegation setup \"confirmation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 34
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.stepIndicatorLabel",
         "start": {
           "column": 22,
-          "line": 27
+          "line": 29
         }
       },
       {
@@ -2568,13 +2568,13 @@
         "description": "Description on the delegation setup \"confirmation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 41
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.description",
         "start": {
           "column": 15,
-          "line": 33
+          "line": 35
         }
       },
       {
@@ -2582,13 +2582,13 @@
         "description": "Fees label on the delegation setup \"confirmation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 45
+          "line": 47
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.feesLabel",
         "start": {
           "column": 13,
-          "line": 40
+          "line": 42
         }
       },
       {
@@ -2596,13 +2596,13 @@
         "description": "Placeholder for \"spending password\"",
         "end": {
           "column": 3,
-          "line": 51
+          "line": 53
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.spendingPasswordPlaceholder",
         "start": {
           "column": 31,
-          "line": 46
+          "line": 48
         }
       },
       {
@@ -2610,13 +2610,13 @@
         "description": "Label for \"spending password\"",
         "end": {
           "column": 3,
-          "line": 57
+          "line": 59
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.spendingPasswordLabel",
         "start": {
           "column": 25,
-          "line": 52
+          "line": 54
         }
       },
       {
@@ -2624,13 +2624,13 @@
         "description": "Label for continue button on the delegation setup \"confirmation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 63
+          "line": 65
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.confirmButtonLabel",
         "start": {
           "column": 22,
-          "line": 58
+          "line": 60
         }
       },
       {
@@ -2638,13 +2638,13 @@
         "description": "Label for \"Cancel\" button on the delegation setup \"confirmation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 69
+          "line": 71
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.cancelButtonLabel",
         "start": {
           "column": 21,
-          "line": 64
+          "line": 66
         }
       }
     ],
@@ -8303,7 +8303,7 @@
         "file": "source/renderer/app/components/widgets/forms/ProfileSettingsForm.js",
         "id": "profile.settings.languageSelect.label",
         "start": {
-          "column": 23,
+          "column": 21,
           "line": 22
         }
       },
@@ -8317,7 +8317,7 @@
         "file": "source/renderer/app/components/widgets/forms/ProfileSettingsForm.js",
         "id": "profile.settings.numberSelect.label",
         "start": {
-          "column": 21,
+          "column": 27,
           "line": 27
         }
       },
@@ -8331,7 +8331,7 @@
         "file": "source/renderer/app/components/widgets/forms/ProfileSettingsForm.js",
         "id": "profile.settings.dateSelect.label",
         "start": {
-          "column": 19,
+          "column": 25,
           "line": 32
         }
       },
@@ -8345,7 +8345,7 @@
         "file": "source/renderer/app/components/widgets/forms/ProfileSettingsForm.js",
         "id": "profile.settings.timeSelect.label",
         "start": {
-          "column": 19,
+          "column": 25,
           "line": 37
         }
       },
