@@ -5,12 +5,14 @@ import { defineMessages, intlShape } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import { get, map, orderBy } from 'lodash';
 import classNames from 'classnames';
+import { BigNumber } from 'bignumber.js';
 import BorderedBox from '../../widgets/BorderedBox';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import sortIcon from '../../../assets/images/ascending.inline.svg';
 import externalLinkIcon from '../../../assets/images/link-ic.inline.svg';
 import type { Reward } from '../../../api/staking/types';
 import styles from './StakingRewards.scss';
+import { SIMPLE_DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 
 const messages = defineMessages({
   title: {
@@ -192,7 +194,12 @@ export default class StakingRewards extends Component<Props, State> {
                         </p>
                       </td>
                       <td>{rewardWallet}</td>
-                      <td>{rewardAmount} ADA</td>
+                      <td>
+                        {new BigNumber(rewardAmount).toFormat(
+                          SIMPLE_DECIMAL_PLACES_IN_ADA
+                        )}{' '}
+                        ADA
+                      </td>
                     </tr>
                   );
                 })}
