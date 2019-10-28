@@ -66,7 +66,7 @@
 }
 
 .networkInfo {
-  background-color: rgb(235, 34, 86);
+  background-color: var(--theme-sidebar-category-networkInfo-background-color);
   border-radius: 0 5px 5px 0;
   bottom: 16.5px;
   box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.12);
@@ -81,7 +81,9 @@
   z-index: 100;
 
   &:hover {
-    background-color: rgb(235, 34, 86);
+    background-color: var(
+      --theme-sidebar-category-networkInfo-background-color
+    );
     width: 190.5px;
   }
 }

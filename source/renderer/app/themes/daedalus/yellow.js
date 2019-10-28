@@ -594,6 +594,8 @@ export const YELLOW_THEME_OUTPUT = {
       'rgba(255, 255, 255, 0.3)',
     '--theme-sidebar-wallets-scrollbar-background-color-hover':
       'rgba(255, 255, 255, 0.3)',
+    '--theme-sidebar-category-networkInfo-background-color': '#eb2256',
+    '--theme-sidebar-category-networkInfo-text-color': '#121326',
   },
   stakePools: {
     '--theme-staking-stake-pools-title-color': '#2d2d2d',
