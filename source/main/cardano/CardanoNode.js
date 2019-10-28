@@ -282,20 +282,19 @@ export class CardanoNode {
           args: nodeArgs,
         });
 
-        // TODO: Cleanup nodeArgs to only include those relevant to `cardano-wallet`
-        // TODO: Add TSL path once supported by cardano-wallet
-        const networkIndexFromArgs = nodeArgs.indexOf('--network');
-        const networkFromArgs = nodeArgs[networkIndexFromArgs + 1];
+        const launcherIndex = nodeArgs.indexOf('launch');
+        const launcherArgs = nodeArgs.slice(launcherIndex);
+        console.log('~~~~~~~~');
+        console.log(launcherArgs);
+        console.log('~~~~~~~~');
 
         const node = await CardanoWalletLauncher({
           path: nodePath,
           logStream: logFile,
-          networkMode: networkFromArgs,
           nodeImplementation,
           cliPath,
-          // TODO: Make this dynamic
-          nodePort: 8888,
           stateDir: config.workingDir,
+          launcherArgs,
         });
 
         this._node = node;

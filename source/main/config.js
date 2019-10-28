@@ -38,7 +38,7 @@ export type LauncherConfig = {
   statePath: string,
   nodePath: string,
   cliPath: string,
-  nodeImplementation: 'jormungandr' | 'cardano-http-bridge' | 'cardano-node',
+  nodeImplementation: 'jormungandr' | 'cardano-node',
   nodeArgs: Array<string>,
   tlsPath: string,
   nodeDbPath: string,
