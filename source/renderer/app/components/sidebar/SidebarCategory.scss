@@ -72,9 +72,9 @@
   box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.12);
   cursor: default !important;
   height: 50px;
-  justify-content: start;
+  justify-content: space-between;
   overflow: hidden;
-  padding-left: 26px;
+  padding: 0 26px;
   position: absolute;
   transition: width 0.2s ease-out;
   width: 71px;
