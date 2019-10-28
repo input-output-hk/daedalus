@@ -9,6 +9,7 @@ import CopyToClipboard from 'react-copy-to-clipboard';
 import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
 import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
 import SVGInline from 'react-svg-inline';
+import { BigNumber } from 'bignumber.js';
 import {
   ALLOWED_TIME_DIFFERENCE,
   MAX_ALLOWED_STALL_DURATION,
@@ -763,11 +764,11 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
               </tr>
               <tr>
                 <th>{intl.formatMessage(messages.networkBlockHeight)}:</th>
-                <td>{networkBlockHeight}</td>
+                <td>{new BigNumber(networkBlockHeight).toFormat(0)}</td>
               </tr>
               <tr>
                 <th>{intl.formatMessage(messages.localBlockHeight)}:</th>
-                <td>{localBlockHeight}</td>
+                <td>{new BigNumber(localBlockHeight).toFormat(0)}</td>
               </tr>
               <tr>
                 <th>{intl.formatMessage(messages.remainingUnsyncedBlocks)}:</th>
