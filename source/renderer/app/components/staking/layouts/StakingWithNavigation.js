@@ -10,6 +10,7 @@ type Props = {
   activeItem: string,
   onNavItemClick: Function,
   isActiveNavItem: Function,
+  isIncentivizedTestnet?: boolean,
 };
 
 @observer
@@ -20,6 +21,7 @@ export default class StakingWithNavigation extends Component<Props> {
       onNavItemClick,
       activeItem,
       isActiveNavItem,
+      isIncentivizedTestnet,
     } = this.props;
 
     return (
@@ -29,6 +31,7 @@ export default class StakingWithNavigation extends Component<Props> {
             isActiveNavItem={isActiveNavItem}
             onNavItemClick={onNavItemClick}
             activeItem={activeItem}
+            isIncentivizedTestnet={isIncentivizedTestnet}
           />
         </div>
         <div className={styles.page}>{children}</div>

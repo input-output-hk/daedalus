@@ -119,6 +119,7 @@ storiesOf('Staking', module)
                 isActiveNavItem={item => item === getItemFromContext()}
                 activeItem={getItemFromContext()}
                 onNavItemClick={linkTo('Staking', item => pageNames[item])}
+                isIncentivizedTestnet
               >
                 {storyWithKnobs}
               </StakingWithNavigation>

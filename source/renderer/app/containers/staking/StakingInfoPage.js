@@ -1,7 +1,9 @@
 // @flow
 import React, { Component } from 'react';
+import { Redirect } from 'react-router';
 import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
+import { ROUTES } from '../../routes-config';
 import StakingInfo from '../../components/staking/info/StakingInfo';
 import type { InjectedProps } from '../../types/injectedPropsType';
 
@@ -32,6 +34,14 @@ export default class StakingInfoPage extends Component<Props> {
   };
 
   render() {
+    const {
+      stores: { networkStatus },
+    } = this.props;
+
+    if (networkStatus.isIncentivizedTestnet) {
+      return <Redirect to={ROUTES.STAKING.DELEGATION_CENTER} />;
+    }
+
     return (
       <StakingInfo
         percentage={this.props.stores.staking.decentralizationProgress}
