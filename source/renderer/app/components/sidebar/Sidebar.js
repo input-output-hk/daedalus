@@ -1,28 +1,24 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { find, kebabCase } from 'lodash';
+import { find } from 'lodash';
 import classNames from 'classnames';
 import styles from './Sidebar.scss';
 import SidebarCategory from './SidebarCategory';
 import SidebarWalletsMenu from './wallets/SidebarWalletsMenu';
 import InstructionsDialog from '../wallet/paper-wallet-certificate/InstructionsDialog';
-import supportIconLight from '../../assets/images/sidebar/bug-report-ic.inline.svg';
-import supportIconDark from '../../assets/images/sidebar/bug-report-ic-dark.inline.svg';
-import type { SidebarWalletType } from '../../types/sidebarTypes';
-import { ROUTES } from '../../routes-config';
 import { CATEGORIES_BY_NAME } from '../../config/sidebarConfig.js';
+import { ROUTES } from '../../routes-config';
+import type { SidebarWalletType } from '../../types/sidebarTypes';
 
 type Props = {
   menus: SidebarMenus,
   categories: SidebarCategories,
   activeSidebarCategory: string,
-  currentTheme: string,
   onCategoryClicked: Function,
   isShowingSubMenus: boolean,
   openDialogAction: Function,
   onAddWallet: Function,
-  onSubmitSupportRequest: Function,
   pathname: string,
 };
 
@@ -48,13 +44,6 @@ export default class Sidebar extends Component<Props> {
     isShowingSubMenus: false,
   };
 
-  get supportIcon() {
-    const { currentTheme } = this.props;
-    return currentTheme === 'yellow' || currentTheme === 'white'
-      ? supportIconDark
-      : supportIconLight;
-  }
-
   render() {
     const {
       menus,
@@ -63,7 +52,6 @@ export default class Sidebar extends Component<Props> {
       pathname,
       isShowingSubMenus,
       onAddWallet,
-      onSubmitSupportRequest,
     } = this.props;
     let subMenu = null;
 
@@ -92,26 +80,16 @@ export default class Sidebar extends Component<Props> {
     return (
       <div className={sidebarStyles}>
         <div className={styles.minimized}>
-          {categories.map((category, index) => {
-            const categoryClassName = kebabCase(category.name);
+          {categories.map((category: Category) => {
             return (
               <SidebarCategory
-                // eslint-disable-next-line react/no-array-index-key
-                key={index}
-                className={categoryClassName}
-                icon={category.icon}
-                active={activeSidebarCategory === category.route}
-                onClick={() => this.handleClick(category.route)}
+                key={category.name}
+                category={category}
+                isActive={activeSidebarCategory === category.route}
+                onClick={this.handleClick}
               />
             );
           })}
-
-          <SidebarCategory
-            className="supportRequest"
-            icon={this.supportIcon}
-            active={false}
-            onClick={onSubmitSupportRequest}
-          />
         </div>
         {subMenu}
       </div>

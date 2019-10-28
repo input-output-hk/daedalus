@@ -3,37 +3,40 @@ import React, { Component } from 'react';
 import SVGInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
 import classNames from 'classnames';
+import { camelCase } from 'lodash';
+import { CATEGORY_TYPES } from '../../config/sidebarConfig.js';
+import type { Category } from '../../config/sidebarConfig';
 import styles from './SidebarCategory.scss';
 
 type Props = {
-  icon: string,
-  active: boolean,
+  category: Category,
+  isActive: boolean,
   onClick: Function,
-  className: string,
 };
 
 @observer
 export default class SidebarCategory extends Component<Props> {
   render() {
-    const { icon, active, className, onClick } = this.props;
-    const componentStyles = classNames([
-      className,
+    const { category, isActive, onClick } = this.props;
+    const { name, icon, route, type = CATEGORY_TYPES.LINK_TYPE } = category;
+    const className = camelCase(name);
+    const componentStyles = classNames(
       styles.component,
-      active ? styles.active : null,
-      styles[className] ? styles[className] : null,
-    ]);
+      className,
+      styles[className],
+      {
+        [styles.active]: isActive,
+      }
+    );
 
-    const iconStyles = classNames({
-      [styles.supportRequestIcon]: className === 'supportRequest',
-      [styles.decentralizationStartIcon]:
-        className === 'staking-delegation-countdown',
-      [styles.decentralizationProgressIcon]: className === 'staking',
-      [styles.icon]: className !== 'supportRequest',
-    });
+    const onClickFn =
+      type === CATEGORY_TYPES.LINK_TYPE ? () => onClick(route) : null;
+
+    const iconClassName = classNames(styles.icon, styles[`${className}Icon`]);
 
     return (
-      <button className={componentStyles} onClick={onClick}>
-        <SVGInline svg={icon} className={iconStyles} />
+      <button className={componentStyles} onClick={onClickFn}>
+        <SVGInline svg={icon} className={iconClassName} />
       </button>
     );
   }
