@@ -4,7 +4,7 @@ import classnames from 'classnames';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import styles from './DisplaySettings.scss';
-import themeIncentivizedTestnetPreview from '../../../assets/images/themes/dark-cardano.png';
+import themeIncentivizedTestnetPreview from '../../../assets/images/themes/incentivized-testnet.png';
 import { THEMES } from '../../../themes/index';
 // import themeCardanoPreview from '../../../assets/images/themes/cardano.png';
 // import themeDarkBluePreview from '../../../assets/images/themes/dark-blue.png';
