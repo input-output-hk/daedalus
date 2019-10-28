@@ -8319,13 +8319,13 @@
         "description": "\"Learn more\" link URL in the staking info page",
         "end": {
           "column": 3,
-          "line": 13
+          "line": 15
         },
         "file": "source/renderer/app/containers/staking/StakingInfoPage.js",
         "id": "staking.info.learnMore.linkUrl",
         "start": {
           "column": 20,
-          "line": 9
+          "line": 11
         }
       }
     ],
