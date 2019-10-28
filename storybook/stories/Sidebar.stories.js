@@ -75,6 +75,7 @@ storiesOf('Sidebar', module)
       onSubmitSupportRequest={() => {}}
       pathname="/"
       currentTheme={currentTheme}
+      network="testnet"
     />
   ))
   .add('wallets category', () => (
@@ -89,6 +90,7 @@ storiesOf('Sidebar', module)
       onSubmitSupportRequest={() => {}}
       pathname="/"
       currentTheme={currentTheme}
+      network="testnet"
     />
   ))
   .add('wallets / sub', () => (
@@ -104,6 +106,7 @@ storiesOf('Sidebar', module)
       onSubmitSupportRequest={() => {}}
       pathname="/"
       currentTheme={currentTheme}
+      network="testnet"
     />
   ))
   .add('delegation category', () => (
@@ -118,6 +121,7 @@ storiesOf('Sidebar', module)
       onSubmitSupportRequest={() => {}}
       pathname="/"
       currentTheme={currentTheme}
+      network="testnet"
     />
   ))
   .add('decentralization-progress', () => (
@@ -132,5 +136,6 @@ storiesOf('Sidebar', module)
       onSubmitSupportRequest={() => {}}
       pathname="/"
       currentTheme={currentTheme}
+      network="testnet"
     />
   ));

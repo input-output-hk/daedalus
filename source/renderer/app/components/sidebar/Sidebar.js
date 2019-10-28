@@ -1,25 +1,29 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { find } from 'lodash';
+import { find, camelCase } from 'lodash';
 import classNames from 'classnames';
 import styles from './Sidebar.scss';
 import SidebarCategory from './SidebarCategory';
+import SidebarCategoryNetworkInfo from './SidebarCategoryNetworkInfo';
 import SidebarWalletsMenu from './wallets/SidebarWalletsMenu';
 import InstructionsDialog from '../wallet/paper-wallet-certificate/InstructionsDialog';
 import { CATEGORIES_BY_NAME } from '../../config/sidebarConfig.js';
 import { ROUTES } from '../../routes-config';
 import type { SidebarWalletType } from '../../types/sidebarTypes';
+import type { networkType } from '../../types/networkTypes';
+import type { SidebarCategoryInfo } from '../../config/sidebarConfig';
 
 type Props = {
   menus: SidebarMenus,
-  categories: SidebarCategories,
+  categories: Array<SidebarCategoryInfo>,
   activeSidebarCategory: string,
   onCategoryClicked: Function,
   isShowingSubMenus: boolean,
   openDialogAction: Function,
   onAddWallet: Function,
   pathname: string,
+  network: networkType,
 };
 
 export type SidebarMenus = ?{
@@ -32,17 +36,15 @@ export type SidebarMenus = ?{
   },
 };
 
-export type SidebarCategories = Array<{
-  name: string,
-  route: string,
-  icon: string,
-}>;
-
 @observer
 export default class Sidebar extends Component<Props> {
   static defaultProps = {
     isShowingSubMenus: false,
   };
+
+  get networkInfoContent() {
+    return <SidebarCategoryNetworkInfo network={this.props.network} />;
+  }
 
   render() {
     const {
@@ -80,13 +82,17 @@ export default class Sidebar extends Component<Props> {
     return (
       <div className={sidebarStyles}>
         <div className={styles.minimized}>
-          {categories.map((category: Category) => {
+          {categories.map((category: SidebarCategoryInfo) => {
+            const categoryName = camelCase(category.name);
+            const content = (this: any)[`${categoryName}Content`];
+            const isActive = activeSidebarCategory === category.route;
             return (
               <SidebarCategory
-                key={category.name}
+                key={categoryName}
                 category={category}
-                isActive={activeSidebarCategory === category.route}
+                isActive={isActive}
                 onClick={this.handleClick}
+                content={content}
               />
             );
           })}

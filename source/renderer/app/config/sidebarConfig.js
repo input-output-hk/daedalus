@@ -7,7 +7,7 @@ import delegationIcon from '../assets/images/sidebar/delegation-ic.inline.svg';
 import delegationProgressIcon from '../assets/images/sidebar/delegation-progress-ic.inline.svg';
 import networkInfoLogo from '../assets/images/sidebar/network-info-logo-cardano-ic.inline.svg';
 
-export type Category = {
+export type SidebarCategoryInfo = {
   name: string,
   icon: string,
   route?: string,

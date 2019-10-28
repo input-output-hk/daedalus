@@ -157,6 +157,7 @@ export default class StoryLayout extends Component<Props> {
         onSubmitSupportRequest={() => {}}
         pathname="/"
         currentTheme={currentTheme}
+        network="testnet"
       />
     );
   };

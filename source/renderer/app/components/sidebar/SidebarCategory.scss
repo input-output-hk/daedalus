@@ -70,13 +70,15 @@
   border-radius: 0 5px 5px 0;
   bottom: 16.5px;
   box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.12);
+  cursor: default !important;
   height: 50px;
   justify-content: start;
+  overflow: hidden;
   padding-left: 26px;
   position: absolute;
   transition: width 0.2s ease-out;
   width: 71px;
-  z-index: 1;
+  z-index: 100;
 
   &:hover {
     background-color: rgb(235, 34, 86);

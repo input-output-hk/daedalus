@@ -20,10 +20,13 @@ export default class MainLayout extends Component<InjectedContainerProps> {
 
   render() {
     const { actions, stores } = this.props;
-    const { sidebar, wallets, profile } = stores;
+    const { sidebar, wallets, profile, app } = stores;
     const activeWallet = wallets.active;
     const activeWalletId = activeWallet ? activeWallet.id : null;
     const { currentTheme } = profile;
+    const {
+      environment: { network },
+    } = app;
 
     const sidebarMenus =
       sidebar.wallets.length > 0
@@ -59,6 +62,7 @@ export default class MainLayout extends Component<InjectedContainerProps> {
         }
         pathname={this.props.stores.router.location.pathname}
         currentTheme={currentTheme}
+        network={network}
       />
     );
 

@@ -1857,6 +1857,53 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Staging vx",
+        "description": "Label for staging network with version.",
+        "end": {
+          "column": 3,
+          "line": 12
+        },
+        "file": "source/renderer/app/components/sidebar/SidebarCategoryNetworkInfo.js",
+        "id": "test.environment.stagingLabel",
+        "start": {
+          "column": 11,
+          "line": 8
+        }
+      },
+      {
+        "defaultMessage": "!!!Testnet vx",
+        "description": "Label for testnet with version.",
+        "end": {
+          "column": 3,
+          "line": 17
+        },
+        "file": "source/renderer/app/components/sidebar/SidebarCategoryNetworkInfo.js",
+        "id": "test.environment.testnetLabel",
+        "start": {
+          "column": 11,
+          "line": 13
+        }
+      },
+      {
+        "defaultMessage": "!!!Development vx",
+        "description": "Label for development with version.",
+        "end": {
+          "column": 3,
+          "line": 22
+        },
+        "file": "source/renderer/app/components/sidebar/SidebarCategoryNetworkInfo.js",
+        "id": "test.environment.developmentLabel",
+        "start": {
+          "column": 15,
+          "line": 18
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/sidebar/SidebarCategoryNetworkInfo.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Add wallet",
         "description": "Label for the \"Add wallet\" button in wallet sidebar menu.",
         "end": {
