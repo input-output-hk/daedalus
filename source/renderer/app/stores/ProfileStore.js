@@ -138,7 +138,7 @@ export default class ProfileStore extends Store {
   @computed get currentTheme(): string {
     const { result } = this.getThemeRequest.execute();
     if (this.isCurrentThemeSet) return result;
-    return this.environment.isMainnet ? THEMES.DARK_BLUE : THEMES.LIGHT_BLUE; // defaults
+    return THEMES.INCENTIVIZED_TESTNET; // default for incentivized testnet
   }
 
   @computed get isCurrentThemeSet(): boolean {
