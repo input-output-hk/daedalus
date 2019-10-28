@@ -8638,25 +8638,6 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!MMMM D, YYYY - h:mm A",
-        "description": "Timestamp for the Paper Wallet PDF content.",
-        "end": {
-          "column": 3,
-          "line": 15
-        },
-        "file": "source/renderer/app/containers/wallet/dialogs/paper-wallet-certificate/InstructionsDialogContainer.js",
-        "id": "paper.wallet.create.certificate.instructions.dialog.timestamp",
-        "start": {
-          "column": 13,
-          "line": 11
-        }
-      }
-    ],
-    "path": "source/renderer/app/containers/wallet/dialogs/paper-wallet-certificate/InstructionsDialogContainer.json"
-  },
-  {
-    "descriptors": [
-      {
         "defaultMessage": "!!!You have successfully copied wallet address",
         "description": "Message for the wallet address copy success notification.",
         "end": {

@@ -191,7 +191,6 @@
   "paper.wallet.create.certificate.instructions.dialog.printingInstructions": "When you click “Save PDF file for printing” you will be prompted to choose a location on your computer where the PDF file will be saved. After that open the saved PDF file and print it.",
   "paper.wallet.create.certificate.instructions.dialog.subtitle": "Create a paper wallet certificate to store funds offline.",
   "paper.wallet.create.certificate.instructions.dialog.subtitle2": "The paper wallet certificate will not be associated with any of your existing wallets. A new, empty wallet will be created.",
-  "paper.wallet.create.certificate.instructions.dialog.timestamp": "MMMM D, YYYY - h:mm A",
   "paper.wallet.create.certificate.print.dialog.certificatePrintedConfirmation": "Yes, the paper wallet certificate printed successfully.",
   "paper.wallet.create.certificate.print.dialog.certificateReadableConfirmation": "Yes, first {paperWalletPrintedWordsCount} words of the paper wallet recovery phrase are readable.",
   "paper.wallet.create.certificate.print.dialog.headline": "Verify printed certificate",

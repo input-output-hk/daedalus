@@ -215,6 +215,10 @@ export default class ProfileStore extends Store {
     );
   }
 
+  @computed get currentTimeFormatShort(): string {
+    return this.currentTimeFormat.replace(':ss', '');
+  }
+
   @computed get termsOfUse(): string {
     const network = this.environment.isMainnet ? 'mainnet' : 'other';
     return require(`../i18n/locales/terms-of-use/${network}/${

@@ -191,7 +191,6 @@
   "paper.wallet.create.certificate.instructions.dialog.printingInstructions": "「印刷用PDFファイルを保存する」を選択した場合、証明書を保存する場所を指定できます。指定後、保存したPDFファイルを開いて印刷してください。",
   "paper.wallet.create.certificate.instructions.dialog.subtitle": "オフラインで資金を保管するためのペーパーウォレット証明書を作成します。",
   "paper.wallet.create.certificate.instructions.dialog.subtitle2": "ペーパーウォレット証明書は、既存のウォレットには関連付けられません。 新規の空のウォレットが作成されます。",
-  "paper.wallet.create.certificate.instructions.dialog.timestamp": "YYYY年M月D日 - HH:mm",
   "paper.wallet.create.certificate.print.dialog.certificatePrintedConfirmation": "はい、ペーパーウォレット証明書は無事印刷されました。",
   "paper.wallet.create.certificate.print.dialog.certificateReadableConfirmation": "はい、ペーパーウォレット復元フレーズの最初の{paperWalletPrintedWordsCount}の英単語を読み取ることができます。",
   "paper.wallet.create.certificate.print.dialog.headline": "印刷された証明書の確認",
