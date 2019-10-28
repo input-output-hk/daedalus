@@ -4,13 +4,14 @@ import classnames from 'classnames';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import styles from './DisplaySettings.scss';
-import themeCardanoPreview from '../../../assets/images/themes/cardano.png';
-import themeDarkBluePreview from '../../../assets/images/themes/dark-blue.png';
-import themeDarkCardanoPreview from '../../../assets/images/themes/dark-cardano.png';
-import themeLightBluePreview from '../../../assets/images/themes/light-blue.png';
-import themeYellowPreview from '../../../assets/images/themes/yellow.png';
-import themeWhitePreview from '../../../assets/images/themes/white.png';
+import themeIncentivizedTestnetPreview from '../../../assets/images/themes/dark-cardano.png';
 import { THEMES } from '../../../themes/index';
+// import themeCardanoPreview from '../../../assets/images/themes/cardano.png';
+// import themeDarkBluePreview from '../../../assets/images/themes/dark-blue.png';
+// import themeDarkCardanoPreview from '../../../assets/images/themes/dark-cardano.png';
+// import themeLightBluePreview from '../../../assets/images/themes/light-blue.png';
+// import themeYellowPreview from '../../../assets/images/themes/yellow.png';
+// import themeWhitePreview from '../../../assets/images/themes/white.png';
 
 const messages = defineMessages({
   themeLabel: {
@@ -19,40 +20,43 @@ const messages = defineMessages({
     description:
       'Label for the "Theme" selection on the display settings page.',
   },
-  themeLightBlue: {
-    id: 'settings.display.themeNames.lightBlue',
-    defaultMessage: '!!!Light blue',
-    description: 'Name of the "Light blue" theme on the display settings page.',
-  },
-  themeCardano: {
-    id: 'settings.display.themeNames.cardano',
-    defaultMessage: '!!!Cardano',
-    description: 'Name of the "Cardano" theme on the display settings page.',
-  },
-  themeDarkBlue: {
-    id: 'settings.display.themeNames.darkBlue',
-    defaultMessage: '!!!Dark blue',
-    description: 'Name of the "Dark blue" theme on the display settings page.',
-  },
-
-  themeDarkCardano: {
-    id: 'settings.display.themeNames.darkCardano',
-    defaultMessage: '!!!Dark Cardano',
+  themeIncentivizedTestnet: {
+    id: 'settings.display.themeNames.incentivizedTestnet',
+    defaultMessage: '!!!Incentivized Testnet',
     description:
-      'Name of the "Dark cardano" theme on the display settings page.',
+      'Name of the "Incentivized Testnet" theme on the display settings page.',
   },
-
-  themeYellow: {
-    id: 'settings.display.themeNames.yellow',
-    defaultMessage: '!!!Yellow',
-    description: 'Name of the "Yellow" theme on the display settings page.',
-  },
-
-  themeWhite: {
-    id: 'settings.display.themeNames.white',
-    defaultMessage: '!!!White',
-    description: 'Name of the "White" theme on the display settings page.',
-  },
+  // themeLightBlue: {
+  //   id: 'settings.display.themeNames.lightBlue',
+  //   defaultMessage: '!!!Light blue',
+  //   description: 'Name of the "Light blue" theme on the display settings page.',
+  // },
+  // themeCardano: {
+  //   id: 'settings.display.themeNames.cardano',
+  //   defaultMessage: '!!!Cardano',
+  //   description: 'Name of the "Cardano" theme on the display settings page.',
+  // },
+  // themeDarkBlue: {
+  //   id: 'settings.display.themeNames.darkBlue',
+  //   defaultMessage: '!!!Dark blue',
+  //   description: 'Name of the "Dark blue" theme on the display settings page.',
+  // },
+  // themeDarkCardano: {
+  //   id: 'settings.display.themeNames.darkCardano',
+  //   defaultMessage: '!!!Dark Cardano',
+  //   description:
+  //     'Name of the "Dark cardano" theme on the display settings page.',
+  // },
+  // themeYellow: {
+  //   id: 'settings.display.themeNames.yellow',
+  //   defaultMessage: '!!!Yellow',
+  //   description: 'Name of the "Yellow" theme on the display settings page.',
+  // },
+  // themeWhite: {
+  //   id: 'settings.display.themeNames.white',
+  //   defaultMessage: '!!!White',
+  //   description: 'Name of the "White" theme on the display settings page.',
+  // },
 });
 
 type Props = {
@@ -70,35 +74,40 @@ export default class DisplaySettings extends Component<Props> {
     const { theme, selectTheme } = this.props;
     const { intl } = this.context;
 
-    const themeLightBlueClasses = classnames([
-      theme === THEMES.LIGHT_BLUE ? styles.active : styles.inactive,
+    const themeIncentivizedTestnetClasses = classnames([
+      theme === THEMES.INCENTIVIZED_TESTNET ? styles.active : styles.inactive,
       styles.themeImageWrapper,
     ]);
 
-    const themeCardanoClasses = classnames([
-      theme === THEMES.CARDANO ? styles.active : styles.inactive,
-      styles.themeImageWrapper,
-    ]);
+    // const themeLightBlueClasses = classnames([
+    //   theme === THEMES.LIGHT_BLUE ? styles.active : styles.inactive,
+    //   styles.themeImageWrapper,
+    // ]);
 
-    const themeDarkBlueClasses = classnames([
-      theme === THEMES.DARK_BLUE ? styles.active : styles.inactive,
-      styles.themeImageWrapper,
-    ]);
+    // const themeCardanoClasses = classnames([
+    //   theme === THEMES.CARDANO ? styles.active : styles.inactive,
+    //   styles.themeImageWrapper,
+    // ]);
 
-    const themeDarkCardanoClasses = classnames([
-      theme === THEMES.DARK_CARDANO ? styles.active : styles.inactive,
-      styles.themeImageWrapper,
-    ]);
+    // const themeDarkBlueClasses = classnames([
+    //   theme === THEMES.DARK_BLUE ? styles.active : styles.inactive,
+    //   styles.themeImageWrapper,
+    // ]);
 
-    const themeYellowClasses = classnames([
-      theme === THEMES.YELLOW ? styles.active : styles.inactive,
-      styles.themeImageWrapper,
-    ]);
+    // const themeDarkCardanoClasses = classnames([
+    //   theme === THEMES.DARK_CARDANO ? styles.active : styles.inactive,
+    //   styles.themeImageWrapper,
+    // ]);
 
-    const themeWhiteClasses = classnames([
-      theme === THEMES.WHITE ? styles.active : styles.inactive,
-      styles.themeImageWrapper,
-    ]);
+    // const themeYellowClasses = classnames([
+    //   theme === THEMES.YELLOW ? styles.active : styles.inactive,
+    //   styles.themeImageWrapper,
+    // ]);
+
+    // const themeWhiteClasses = classnames([
+    //   theme === THEMES.WHITE ? styles.active : styles.inactive,
+    //   styles.themeImageWrapper,
+    // ]);
 
     return (
       <div className={styles.component}>
@@ -108,6 +117,20 @@ export default class DisplaySettings extends Component<Props> {
 
         <div className={styles.themesRowWrapper}>
           <button
+            className={themeIncentivizedTestnetClasses}
+            onClick={selectTheme.bind(this, {
+              theme: THEMES.INCENTIVIZED_TESTNET,
+            })}
+          >
+            <img
+              src={themeIncentivizedTestnetPreview}
+              role="presentation"
+              draggable="false"
+            />
+            <span>{intl.formatMessage(messages.themeIncentivizedTestnet)}</span>
+          </button>
+
+          {/* <button
             className={themeLightBlueClasses}
             onClick={selectTheme.bind(this, { theme: THEMES.LIGHT_BLUE })}
           >
@@ -179,7 +202,7 @@ export default class DisplaySettings extends Component<Props> {
               draggable="false"
             />
             <span>{intl.formatMessage(messages.themeYellow)}</span>
-          </button>
+          </button> */}
         </div>
       </div>
     );
