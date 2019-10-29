@@ -510,8 +510,6 @@
   "wallet.settings.changePassword.dialog.currentPasswordLabel": "Current password",
   "wallet.settings.changePassword.dialog.newPasswordFieldPlaceholder": "Type new password",
   "wallet.settings.changePassword.dialog.newPasswordLabel": "New password",
-  "wallet.settings.changePassword.dialog.passwordSwitchLabel": "Remove password",
-  "wallet.settings.changePassword.dialog.passwordSwitchPlaceholder": "Check to deactivate password",
   "wallet.settings.changePassword.dialog.repeatPasswordFieldPlaceholder": "Repeat new password",
   "wallet.settings.changePassword.dialog.repeatPasswordLabel": "Repeat password",
   "wallet.settings.changePassword.dialog.spendingPasswordLabel": "Spending password",
