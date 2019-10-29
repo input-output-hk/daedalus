@@ -32,11 +32,6 @@ export const messages = defineMessages({
     defaultMessage: '!!!Last updated',
     description: 'Last updated X time ago message.',
   },
-  passwordNotSet: {
-    id: 'wallet.settings.passwordNotSet',
-    defaultMessage: "!!!You still don't have password",
-    description: "You still don't have password set message.",
-  },
   exportButtonLabel: {
     id: 'wallet.settings.exportWalletButtonLabel',
     defaultMessage: '!!!Export wallet',
