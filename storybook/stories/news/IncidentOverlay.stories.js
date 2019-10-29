@@ -1,8 +1,11 @@
 // @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
+import { select, withKnobs } from '@storybook/addon-knobs';
 import StoryDecorator from '../_support/StoryDecorator';
 import IncidentOverlay from '../../../source/renderer/app/components/news/IncidentOverlay';
+import { dateOptions } from '../_support/profileSettings';
+import { DATE_ENGLISH_OPTIONS } from '../../../source/renderer/app/config/profileConfig';
 
 storiesOf('News|Incidents', module)
   .addDecorator(story => (
@@ -24,6 +27,15 @@ storiesOf('News|Incidents', module)
       })}
     </StoryDecorator>
   ))
+  .addDecorator(withKnobs)
   .add('Incident Overlay', props => (
-    <IncidentOverlay incident={props} onOpenExternalLink={() => {}} />
+    <IncidentOverlay
+      incident={props}
+      onOpenExternalLink={() => {}}
+      currentDateFormat={select(
+        'currentDateFormat',
+        dateOptions,
+        DATE_ENGLISH_OPTIONS[0].value
+      )}
+    />
   ));

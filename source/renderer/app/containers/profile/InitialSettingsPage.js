@@ -3,45 +3,54 @@ import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import TopBar from '../../components/layout/TopBar';
 import TopBarLayout from '../../components/layout/TopBarLayout';
-import LanguageSelectionForm from '../../components/profile/language-selection/LanguageSelectionForm';
+import InitialSettings from '../../components/profile/initial-settings/InitialSettings';
 import { rebuildApplicationMenu } from '../../ipc/rebuild-application-menu';
 import type { InjectedProps } from '../../types/injectedPropsType';
 
 @inject('stores', 'actions')
 @observer
-export default class LanguageSelectionPage extends Component<InjectedProps> {
+export default class InitialSettingsPage extends Component<InjectedProps> {
   static defaultProps = { actions: null, stores: null };
 
-  onSubmit = async (values: { locale: string }) => {
+  onSubmit = async () => {
+    const { actions } = this.props;
+    const { finishInitialScreenSettings } = actions.profile;
+    finishInitialScreenSettings.trigger();
+  };
+
+  handleSelectItem = async (param: string, value: string) => {
     const { actions, stores } = this.props;
+    const { updateUserLocalSetting } = actions.profile;
+    updateUserLocalSetting.trigger({ param, value });
     const { isUpdateAvailable } = stores.nodeUpdate;
-    const { updateLocale } = actions.profile;
-    updateLocale.trigger(values);
-    await rebuildApplicationMenu.send({ isUpdateAvailable });
+    if (param === 'locale') {
+      await rebuildApplicationMenu.send({ isUpdateAvailable });
+    }
   };
 
   render() {
     const { currentRoute } = this.props.stores.app;
     const {
       setProfileLocaleRequest,
-      LANGUAGE_OPTIONS,
-      systemLocale,
+      currentLocale,
+      currentNumberFormat,
+      currentDateFormat,
+      currentTimeFormat,
     } = this.props.stores.profile;
     const isSubmitting = setProfileLocaleRequest.isExecuting;
-    const preselectedIndex = LANGUAGE_OPTIONS.findIndex(
-      ({ value }) => value === systemLocale
-    );
-    const preselectedLanguage = LANGUAGE_OPTIONS[preselectedIndex].value;
     const topbar = (
       <TopBar currentRoute={currentRoute} showSubMenuToggle={false} />
     );
     return (
       <TopBarLayout topbar={topbar}>
-        <LanguageSelectionForm
+        <InitialSettings
+          onChangeItem={this.handleSelectItem}
           onSubmit={this.onSubmit}
           isSubmitting={isSubmitting}
-          languages={LANGUAGE_OPTIONS}
-          preselectedLanguage={preselectedLanguage}
+          currentLocale={currentLocale}
+          currentNumberFormat={currentNumberFormat}
+          currentDateFormat={currentDateFormat}
+          currentTimeFormat={currentTimeFormat}
           error={setProfileLocaleRequest.error}
         />
       </TopBarLayout>

@@ -9,6 +9,7 @@ import CopyToClipboard from 'react-copy-to-clipboard';
 import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
 import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
 import SVGInline from 'react-svg-inline';
+import { BigNumber } from 'bignumber.js';
 import {
   ALLOWED_TIME_DIFFERENCE,
   MAX_ALLOWED_STALL_DURATION,
@@ -759,15 +760,24 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
               </tr>
               <tr>
                 <th>{intl.formatMessage(messages.syncPercentage)}:</th>
-                <td>{syncPercentage.toFixed(2)}%</td>
+                <td>
+                  {new BigNumber(
+                    parseFloat(syncPercentage).toFixed(2)
+                  ).toFormat(2)}
+                  %
+                </td>
               </tr>
               <tr>
                 <th>{intl.formatMessage(messages.networkBlockHeight)}:</th>
-                <td>{networkBlockHeight}</td>
+                <td>
+                  {new BigNumber(parseInt(networkBlockHeight, 10)).toFormat(0)}
+                </td>
               </tr>
               <tr>
                 <th>{intl.formatMessage(messages.localBlockHeight)}:</th>
-                <td>{localBlockHeight}</td>
+                <td>
+                  {new BigNumber(parseInt(localBlockHeight, 10)).toFormat(0)}
+                </td>
               </tr>
               <tr>
                 <th>{intl.formatMessage(messages.remainingUnsyncedBlocks)}:</th>
@@ -779,7 +789,9 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                 <th>{intl.formatMessage(messages.latestLocalBlockAge)}:</th>
                 <td className={latestLocalBlockAgeClasses}>
                   {latestLocalBlockTimestamp > 0
-                    ? `${latestLocalBlockAge} ms`
+                    ? `${new BigNumber(
+                        parseInt(latestLocalBlockAge, 10)
+                      ).toFormat(0)} ms`
                     : '-'}
                 </td>
               </tr>
@@ -787,7 +799,9 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                 <th>{intl.formatMessage(messages.latestNetworkBlockAge)}:</th>
                 <td className={latestNetworkBlockAgeClasses}>
                   {latestNetworkBlockTimestamp > 0
-                    ? `${latestNetworkBlockAge} ms`
+                    ? `${new BigNumber(
+                        parseInt(latestNetworkBlockAge, 10)
+                      ).toFormat(0)} ms`
                     : '-'}
                 </td>
               </tr>
@@ -806,7 +820,9 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                   </button>
                   <span className={localTimeDifferenceClasses}>
                     {isNTPServiceReachable
-                      ? `${localTimeDifference || 0} μs`
+                      ? `${new BigNumber(
+                          parseInt(localTimeDifference, 10)
+                        ).toFormat(0) || 0} μs`
                       : intl.formatMessage(messages.serviceUnreachable)}
                   </span>
                 </td>

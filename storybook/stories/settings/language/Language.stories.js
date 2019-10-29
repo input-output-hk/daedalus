@@ -3,17 +3,13 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import StoryDecorator from '../../_support/StoryDecorator';
-import LanguageSelectionForm from '../../../../source/renderer/app/components/profile/language-selection/LanguageSelectionForm';
-import globalMessages from '../../../../source/renderer/app/i18n/global-messages';
-
-const LANGUAGES = [
-  { value: 'en-US', label: globalMessages.languageEnglish },
-  { value: 'ja-JP', label: globalMessages.languageJapanese },
-  { value: 'zh-CN', label: globalMessages.languageChinese },
-  { value: 'ko-KR', label: globalMessages.languageKorean },
-  { value: 'de-DE', label: globalMessages.languageGerman },
-  { value: 'hr-HR', label: globalMessages.languageCroatian },
-];
+import InitialSettings from '../../../../source/renderer/app/components/profile/initial-settings/InitialSettings';
+import {
+  DATE_ENGLISH_OPTIONS,
+  LANGUAGE_OPTIONS,
+  NUMBER_OPTIONS,
+  TIME_OPTIONS,
+} from '../../../../source/renderer/app/config/profileConfig';
 
 storiesOf('Settings|Language', module)
   .addDecorator(story => <StoryDecorator>{story()}</StoryDecorator>)
@@ -22,21 +18,26 @@ storiesOf('Settings|Language', module)
 
   .add('Select Language - initial', () => (
     <div>
-      <LanguageSelectionForm
+      <InitialSettings
         onSubmit={action('submit')}
-        languages={LANGUAGES}
-        preselectedLanguage={LANGUAGES[0].value}
-        isSubmitting={false}
+        onChangeItem={action('onChangeItem')}
+        currentDateFormat={DATE_ENGLISH_OPTIONS[0].value}
+        currentLocale={LANGUAGE_OPTIONS[0].value}
+        currentNumberFormat={NUMBER_OPTIONS[0].value}
+        currentTimeFormat={TIME_OPTIONS[0].value}
       />
     </div>
   ))
 
   .add('Select Language - submitting', () => (
     <div>
-      <LanguageSelectionForm
+      <InitialSettings
         onSubmit={action('submit')}
-        languages={LANGUAGES}
-        preselectedLanguage={LANGUAGES[0].value}
+        onChangeItem={action('onChangeItem')}
+        currentDateFormat={DATE_ENGLISH_OPTIONS[0].value}
+        currentLocale={LANGUAGE_OPTIONS[0].value}
+        currentNumberFormat={NUMBER_OPTIONS[0].value}
+        currentTimeFormat={TIME_OPTIONS[0].value}
         isSubmitting
       />
     </div>
