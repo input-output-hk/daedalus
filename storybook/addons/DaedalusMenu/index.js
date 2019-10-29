@@ -1,17 +1,21 @@
 // @flow
 import addons from '@storybook/addons';
-import type { DaedalusMenuState } from './DaedalusMenu';
 
 const channel = addons.getChannel();
 
-export const setInitialProps = (props: DaedalusMenuState) => {
-  channel.emit('daedalusMenu/init', props);
-};
+export const setInitialState = (initialState: Object) =>
+  Object.entries(initialState).forEach(([param, value]) =>
+    updateParam({ param, value })
+  );
+
+channel.on('daedalusMenu/updateParam', query => {
+  channel.emit('daedalusMenu/paramUpdated', query);
+});
 
 export const updateParam = (query: Object) =>
   channel.emit('daedalusMenu/updateParam', query);
 
 export const onReceiveParam = (cb: Function) =>
-  channel.on('daedalusMenu/receiveParam', ({ param, value }) =>
-    cb(param, value)
-  );
+  channel.on('daedalusMenu/updateParam', query => {
+    cb(query);
+  });

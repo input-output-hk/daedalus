@@ -1,6 +1,24 @@
 Changelog
 =========
 
+## vNext
+
+### Chores
+
+- Fixed build mode of webpack auto dll plugin ([PR 1606](https://github.com/input-output-hk/daedalus/pull/1606))
+- Changed delete wallet button layout for emphasized location/importance and removed export wallet feature ([PR 1612](https://github.com/input-output-hk/daedalus/pull/1612), [PR 1619](https://github.com/input-output-hk/daedalus/pull/1619))
+- Speedup storybook builds in development ([PR 1607](https://github.com/input-output-hk/daedalus/pull/1607))
+- Added note to UTXO screen showing pending transactions ([PR 1589](https://github.com/input-output-hk/daedalus/pull/1589))
+- Fixed broken source maps ([PR 1594](https://github.com/input-output-hk/daedalus/pull/1594))
+- Reorganized Storybook by domain ([PR 1537](https://github.com/input-output-hk/daedalus/pull/1537))
+- Reorganized Tests by domain ([PR 1540](https://github.com/input-output-hk/daedalus/pull/1540))
+
+### Fixes
+
+- Reduce layout re-renderings ([PR 1595](https://github.com/input-output-hk/daedalus/pull/1595))
+- Fixed green Cardano theme white color and borders color ([PR 1584](https://github.com/input-output-hk/daedalus/pull/1584))
+- Fixed flat button color  ([PR 1586](https://github.com/input-output-hk/daedalus/pull/1586))
+
 ## 0.15.0
 
 ### Features

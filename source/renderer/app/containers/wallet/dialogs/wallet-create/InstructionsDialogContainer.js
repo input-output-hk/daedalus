@@ -14,7 +14,13 @@ export default class InstructionsDialogContainer extends Component<Props> {
   static defaultProps = DefaultProps;
 
   render() {
-    const { onClose, onContinue } = this.props;
-    return <InstructionsDialog onClose={onClose} onContinue={onContinue} />;
+    const { onClose, onContinue, isVideoWatched } = this.props;
+    return (
+      <InstructionsDialog
+        isVideoWatched={isVideoWatched}
+        onClose={onClose}
+        onContinue={onContinue}
+      />
+    );
   }
 }

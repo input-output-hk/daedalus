@@ -5985,13 +5985,13 @@
         "description": "Label for the delete button on wallet settings",
         "end": {
           "column": 3,
-          "line": 11
+          "line": 13
         },
         "file": "source/renderer/app/components/wallet/settings/DeleteWalletButton.js",
         "id": "wallet.settings.deleteWalletButtonLabel",
         "start": {
           "column": 9,
-          "line": 7
+          "line": 9
         }
       }
     ],
@@ -6071,53 +6071,6 @@
       }
     ],
     "path": "source/renderer/app/components/wallet/settings/DeleteWalletConfirmationDialog.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Export Wallet",
-        "description": "headline for \"export wallet to file\" dialog.",
-        "end": {
-          "column": 3,
-          "line": 23
-        },
-        "file": "source/renderer/app/components/wallet/settings/ExportWalletToFileDialog.js",
-        "id": "wallet.settings.exportToFile.dialog.headline",
-        "start": {
-          "column": 12,
-          "line": 19
-        }
-      },
-      {
-        "defaultMessage": "!!!You are exporting <strong>{walletName}</strong> to a file.",
-        "description": "headline for \"export wallet to file\" dialog.",
-        "end": {
-          "column": 3,
-          "line": 29
-        },
-        "file": "source/renderer/app/components/wallet/settings/ExportWalletToFileDialog.js",
-        "id": "wallet.settings.exportToFile.dialog.introduction",
-        "start": {
-          "column": 16,
-          "line": 24
-        }
-      },
-      {
-        "defaultMessage": "!!!Export",
-        "description": "Label for export wallet to file submit button.",
-        "end": {
-          "column": 3,
-          "line": 34
-        },
-        "file": "source/renderer/app/components/wallet/settings/ExportWalletToFileDialog.js",
-        "id": "wallet.settings.exportToFile.dialog.submit.label",
-        "start": {
-          "column": 21,
-          "line": 30
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/wallet/settings/ExportWalletToFileDialog.json"
   },
   {
     "descriptors": [
@@ -6567,31 +6520,59 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Name",
-        "description": "Label for the \"Name\" text input on the wallet settings page.",
+        "defaultMessage": "!!!Transaction assurance security level",
+        "description": "Label for the \"Transaction assurance security level\" dropdown.",
         "end": {
           "column": 3,
           "line": 26
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
-        "id": "wallet.settings.name.label",
-        "start": {
-          "column": 8,
-          "line": 22
-        }
-      },
-      {
-        "defaultMessage": "!!!Transaction assurance security level",
-        "description": "Label for the \"Transaction assurance security level\" dropdown.",
-        "end": {
-          "column": 3,
-          "line": 32
-        },
-        "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.assurance",
         "start": {
           "column": 23,
+          "line": 21
+        }
+      },
+      {
+        "defaultMessage": "!!!Delete wallet",
+        "description": "Delete wallet header on the wallet settings page.",
+        "end": {
+          "column": 3,
+          "line": 31
+        },
+        "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
+        "id": "wallet.settings.deleteWallet.header",
+        "start": {
+          "column": 22,
           "line": 27
+        }
+      },
+      {
+        "defaultMessage": "!!!Once you delete a wallet, there is no going back. The only way to restore your wallet is to use your recovery phrase.",
+        "description": "Delete wallet warning explaining the consequences.",
+        "end": {
+          "column": 3,
+          "line": 37
+        },
+        "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
+        "id": "wallet.settings.deleteWallet.warning",
+        "start": {
+          "column": 23,
+          "line": 32
+        }
+      },
+      {
+        "defaultMessage": "!!!Name",
+        "description": "Label for the \"Name\" text input on the wallet settings page.",
+        "end": {
+          "column": 3,
+          "line": 42
+        },
+        "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
+        "id": "wallet.settings.name.label",
+        "start": {
+          "column": 8,
+          "line": 38
         }
       },
       {
@@ -6599,13 +6580,13 @@
         "description": "Label for the \"Password\" field.",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 47
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.password",
         "start": {
           "column": 17,
-          "line": 33
+          "line": 43
         }
       },
       {
@@ -6613,13 +6594,13 @@
         "description": "Last updated X time ago message.",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 52
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.passwordLastUpdated",
         "start": {
           "column": 23,
-          "line": 38
+          "line": 48
         }
       },
       {
@@ -6627,27 +6608,13 @@
         "description": "You still don't have password set message.",
         "end": {
           "column": 3,
-          "line": 47
+          "line": 57
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.passwordNotSet",
         "start": {
           "column": 18,
-          "line": 43
-        }
-      },
-      {
-        "defaultMessage": "!!!Export wallet",
-        "description": "Label for the export button on wallet settings.",
-        "end": {
-          "column": 3,
-          "line": 52
-        },
-        "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
-        "id": "wallet.settings.exportWalletButtonLabel",
-        "start": {
-          "column": 21,
-          "line": 48
+          "line": 53
         }
       }
     ],
@@ -7096,45 +7063,17 @@
         }
       },
       {
-        "defaultMessage": "!!!amount",
-        "description": "Label X for the \"Wallet Utxos\" screen.",
+        "defaultMessage": "!!!Find out more",
+        "description": "\"Find out more\" link on the \"Wallet Utxos\" screen.",
         "end": {
           "column": 3,
           "line": 48
         },
         "file": "source/renderer/app/components/wallet/utxo/WalletUtxo.js",
-        "id": "wallet.settings.utxos.labelX",
-        "start": {
-          "column": 10,
-          "line": 44
-        }
-      },
-      {
-        "defaultMessage": "!!!Nº UTXO",
-        "description": "Label Y for the \"Wallet Utxos\" screen.",
-        "end": {
-          "column": 3,
-          "line": 53
-        },
-        "file": "source/renderer/app/components/wallet/utxo/WalletUtxo.js",
-        "id": "wallet.settings.utxos.labelY",
-        "start": {
-          "column": 10,
-          "line": 49
-        }
-      },
-      {
-        "defaultMessage": "!!!Find out more",
-        "description": "\"Find out more\" link on the \"Wallet Utxos\" screen.",
-        "end": {
-          "column": 3,
-          "line": 58
-        },
-        "file": "source/renderer/app/components/wallet/utxo/WalletUtxo.js",
         "id": "wallet.settings.utxos.findOutMoreLink",
         "start": {
           "column": 19,
-          "line": 54
+          "line": 44
         }
       },
       {
@@ -7142,13 +7081,55 @@
         "description": "\"Find out more\" link URL on the \"Wallet Utxos\" screen.",
         "end": {
           "column": 3,
-          "line": 64
+          "line": 54
         },
         "file": "source/renderer/app/components/wallet/utxo/WalletUtxo.js",
         "id": "wallet.settings.utxos.findOutMoreLinkUrl",
         "start": {
           "column": 22,
+          "line": 49
+        }
+      },
+      {
+        "defaultMessage": "!!!amount",
+        "description": "Label X for the \"Wallet Utxos\" screen.",
+        "end": {
+          "column": 3,
           "line": 59
+        },
+        "file": "source/renderer/app/components/wallet/utxo/WalletUtxo.js",
+        "id": "wallet.settings.utxos.labelX",
+        "start": {
+          "column": 10,
+          "line": 55
+        }
+      },
+      {
+        "defaultMessage": "!!!Nº UTXO",
+        "description": "Label Y for the \"Wallet Utxos\" screen.",
+        "end": {
+          "column": 3,
+          "line": 64
+        },
+        "file": "source/renderer/app/components/wallet/utxo/WalletUtxo.js",
+        "id": "wallet.settings.utxos.labelY",
+        "start": {
+          "column": 10,
+          "line": 60
+        }
+      },
+      {
+        "defaultMessage": "!!!<b>Pending transactions</b> may affect the accuracy of data presented here. <br /> You have <b>{pendingTxnsCount}</b> pending transaction{txnsPlural}.",
+        "description": "Number of pending transactions for the \"Wallet Utxos\" screen.",
+        "end": {
+          "column": 3,
+          "line": 71
+        },
+        "file": "source/renderer/app/components/wallet/utxo/WalletUtxo.js",
+        "id": "wallet.settings.utxos.pendingTransactions",
+        "start": {
+          "column": 23,
+          "line": 65
         }
       }
     ],
@@ -8676,13 +8657,13 @@
         "description": "Message shown when wallet has no transactions on wallet summary page.",
         "end": {
           "column": 3,
-          "line": 22
+          "line": 21
         },
         "file": "source/renderer/app/containers/wallet/WalletSummaryPage.js",
         "id": "wallet.summary.no.transactions",
         "start": {
           "column": 18,
-          "line": 17
+          "line": 16
         }
       }
     ],
