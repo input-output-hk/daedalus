@@ -397,7 +397,7 @@ When(/^I submit the create wallet recovery phrase entry dialog$/, function() {
 });
 
 When(/^I click on delete wallet button$/, async function() {
-  return this.client.click('.DeleteWalletButton_button');
+  return this.waitAndClick('.WalletSettings_deleteWalletBox button');
 });
 
 When(/^I enter "([^"]*)" as name of the wallet to confirm$/, async function(
