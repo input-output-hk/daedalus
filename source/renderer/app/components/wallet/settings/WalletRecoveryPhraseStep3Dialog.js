@@ -67,7 +67,7 @@ export default class WalletRecoveryPhraseStep1 extends Component<Props, State> {
 
     const actions = [
       {
-        label: 'Continue',
+        label: intl.formatMessage(messages.recoveryPhraseStep3Button),
         primary: true,
         onClick: onClose,
         disabled: !safetyAgreement,
