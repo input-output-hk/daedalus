@@ -31,18 +31,15 @@ export default class IncidentOverlay extends Component<Props> {
     }
   }
 
-  onProceedNewsAction(event: SyntheticMouseEvent<HTMLElement>) {
+  onProceedNewsAction = (event: SyntheticMouseEvent<HTMLElement>) => {
     const { incident, onProceedNewsAction } = this.props;
     onProceedNewsAction(incident, event);
-  }
+  };
 
   renderAction = (action: Object) => {
     if (action && (action.url || action.event)) {
       return (
-        <button
-          className={styles.actionBtn}
-          onClick={this.onProceedNewsAction.bind(this)}
-        >
+        <button className={styles.actionBtn} onClick={this.onProceedNewsAction}>
           {action.label}
           {action.url && <SVGInline svg={externalLinkIcon} />}
         </button>

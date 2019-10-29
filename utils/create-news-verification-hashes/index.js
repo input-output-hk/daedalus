@@ -10,7 +10,6 @@
  */
 
 const lodash = require('lodash');
-const https = require('https');
 const crypto = require('crypto');
 const fs = require('fs');
 
@@ -38,7 +37,7 @@ const allowedFiles = [
 let filesToHash = [];
 if (newsEnvironment) {
   const fileName = `newsfeed_${newsEnvironment.toLowerCase()}.json`;
-  const fileAllowed = lodash.find(allowedFiles, (allowedFiles => allowedFiles.name === fileName));
+  const fileAllowed = lodash.find(allowedFiles, (allowedFile => allowedFile.name === fileName));
   if (fileAllowed) {
     filesToHash.push(fileAllowed);
   } else {

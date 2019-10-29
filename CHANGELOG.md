@@ -5,7 +5,7 @@ Changelog
 
 ### Features
 
-- Add internal link support in newsfeed items ([PR 1617](https://github.com/input-output-hk/daedalus/pull/1617))
+- Add internal link support in newsfeed items and verification hash generator script ([PR 1617](https://github.com/input-output-hk/daedalus/pull/1617))
 
 ### Chores
 

@@ -59,19 +59,15 @@ export default class AlertsOverlay extends Component<Props, State> {
     this.props.onMarkNewsAsRead(alerts[0].date);
   };
 
-  onProceedNewsAction(event: SyntheticMouseEvent<HTMLElement>) {
+  onProceedNewsAction = (event: SyntheticMouseEvent<HTMLElement>) => {
     const { onProceedNewsAction, alerts } = this.props;
-    const [alert] = alerts;
-    onProceedNewsAction(alert, event);
-  }
+    onProceedNewsAction(alerts[0], event);
+  };
 
   renderAction = (action: Object) => {
     if (action && (action.url || action.event)) {
       return (
-        <button
-          className={styles.actionBtn}
-          onClick={this.onProceedNewsAction.bind(this)}
-        >
+        <button className={styles.actionBtn} onClick={this.onProceedNewsAction}>
           {action.label}
           {action.url && <SVGInline svg={externalLinkIcon} />}
         </button>
@@ -95,8 +91,7 @@ export default class AlertsOverlay extends Component<Props, State> {
   render() {
     const { showOverlay } = this.state;
     const { alerts } = this.props;
-    const [alert] = alerts;
-    const { content, date, action, title } = alert;
+    const { content, date, action, title } = alerts[0];
     return (
       showOverlay && (
         <div className={styles.component}>
