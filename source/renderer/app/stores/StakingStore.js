@@ -16,7 +16,10 @@ export default class StakingStore extends Store {
 
   setup() {
     const { staking } = this.actions;
-    staking.goToStakingPage.listen(this._goToStakingPage);
+    staking.goToStakingInfoPage.listen(this._goToStakingInfoPage);
+    staking.goToStakingDelegationCenterPage.listen(
+      this._goToStakingDelegationCenterPage
+    );
   }
 
   // =================== PUBLIC API ==================== //
@@ -36,7 +39,8 @@ export default class StakingStore extends Store {
     return STAKE_POOLS;
   }
 
-  @computed get delegatingStakePools(): Array<StakePool> {
+  @computed
+  get delegatingStakePools(): Array<StakePool> {
     // return this.stakePoolsRequest.result ? this.stakePoolsRequest.result : [];
     return [STAKE_POOLS[1], STAKE_POOLS[3], STAKE_POOLS[20], STAKE_POOLS[36]];
   }
@@ -54,9 +58,15 @@ export default class StakingStore extends Store {
     return new Date(this.startDateTime).getTime() - new Date().getTime() > 0;
   }
 
-  _goToStakingPage = () => {
+  _goToStakingInfoPage = () => {
     this.actions.router.goToRoute.trigger({
-      route: ROUTES.STAKING.ROOT,
+      route: ROUTES.STAKING.INFO,
+    });
+  };
+
+  _goToStakingDelegationCenterPage = () => {
+    this.actions.router.goToRoute.trigger({
+      route: ROUTES.STAKING.DELEGATION_CENTER,
     });
   };
 }

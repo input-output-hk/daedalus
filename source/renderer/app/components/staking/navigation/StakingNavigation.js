@@ -68,16 +68,18 @@ export default class StakingNavigation extends Component<Props> {
         id: 'rewards',
         label: intl.formatMessage(messages.rewards),
       },
-      {
-        id: 'epochs',
-        label: intl.formatMessage(messages.epochs),
-      },
     ];
     if (!isIncentivizedTestnet) {
-      navigationItems.push({
-        id: 'info',
-        label: intl.formatMessage(messages.info),
-      });
+      navigationItems.push(
+        {
+          id: 'epochs',
+          label: intl.formatMessage(messages.epochs),
+        },
+        {
+          id: 'info',
+          label: intl.formatMessage(messages.info),
+        }
+      );
     }
 
     return (

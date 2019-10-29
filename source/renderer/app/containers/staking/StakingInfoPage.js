@@ -28,12 +28,12 @@ export default class StakingInfoPage extends Component<Props> {
     const {
       stores: { networkStatus },
       actions: {
-        staking: { goToStakingPage },
+        staking: { goToStakingDelegationCenterPage },
       },
     } = this.props;
 
     if (networkStatus.isIncentivizedTestnet) {
-      goToStakingPage.trigger();
+      goToStakingDelegationCenterPage.trigger();
     }
   }
 
