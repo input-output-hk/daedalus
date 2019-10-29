@@ -760,7 +760,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
               </tr>
               <tr>
                 <th>{intl.formatMessage(messages.syncPercentage)}:</th>
-                <td>{syncPercentage.toFixed(2)}%</td>
+                <td>{new BigNumber(syncPercentage).toFormat(2)}%</td>
               </tr>
               <tr>
                 <th>{intl.formatMessage(messages.networkBlockHeight)}:</th>
@@ -780,7 +780,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                 <th>{intl.formatMessage(messages.latestLocalBlockAge)}:</th>
                 <td className={latestLocalBlockAgeClasses}>
                   {latestLocalBlockTimestamp > 0
-                    ? `${latestLocalBlockAge} ms`
+                    ? `${new BigNumber(latestLocalBlockAge).toFormat(0)} ms`
                     : '-'}
                 </td>
               </tr>
@@ -788,7 +788,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                 <th>{intl.formatMessage(messages.latestNetworkBlockAge)}:</th>
                 <td className={latestNetworkBlockAgeClasses}>
                   {latestNetworkBlockTimestamp > 0
-                    ? `${latestNetworkBlockAge} ms`
+                    ? `${new BigNumber(latestNetworkBlockAge).toFormat(0)} ms`
                     : '-'}
                 </td>
               </tr>
@@ -807,7 +807,8 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                   </button>
                   <span className={localTimeDifferenceClasses}>
                     {isNTPServiceReachable
-                      ? `${localTimeDifference || 0} μs`
+                      ? `${new BigNumber(localTimeDifference).toFormat(0) ||
+                          0} μs`
                       : intl.formatMessage(messages.serviceUnreachable)}
                   </span>
                 </td>
