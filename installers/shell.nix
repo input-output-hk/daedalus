@@ -1,1 +1,2 @@
-(import ../. {}).daedalus-installer.env
+{ haskellCompiler ? "ghc865" }:
+(import ./. { inherit haskellCompiler; }).shells.ghc

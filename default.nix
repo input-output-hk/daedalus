@@ -108,7 +108,7 @@ let
       touch cardano-launcher.exe cardano-node.exe cardano-x509-certificates.exe log-config-prod.yaml configuration.yaml mainnet-genesis.json
     '';
 
-    nsisFiles = pkgs.runCommand "nsis-files" { buildInputs = [ self.daedalus-installer pkgs.glibcLocales ]; } ''
+    nsisFiles = pkgs.runCommand "nsis-files" { buildInputs = [ self.daedalus-installer.components.cexes.make-installer pkgs.glibcLocales ]; } ''
       mkdir installers
       cp -vir ${./package.json} package.json
       cp -vir ${./installers/dhall} installers/dhall
@@ -150,7 +150,7 @@ let
       installDir = mapping.${cluster};
     in pkgs.runCommand "win64-installer-${cluster}" {
       buildInputs = [
-        self.daedalus-installer self.nsis pkgs.unzip pkgs.jq self.yaml2json
+        self.daedalus-installer.components.cexes.make-installer self.nsis pkgs.unzip pkgs.jq self.yaml2json
       ] ++ lib.optional (fudgeConfig != null) self.configMutator;
     } ''
       mkdir home
@@ -202,12 +202,7 @@ let
     '';
     windows-installer = if needSignedBinaries then self.signed-windows-installer else self.unsigned-windows-installer;
 
-    ## TODO: move to installers/nix
-    hsDaedalusPkgs = import ./installers {
-      inherit (cardanoSL) daedalus-bridge;
-      inherit localLib system;
-    };
-    daedalus-installer = pkgs.haskell.lib.justStaticExecutables self.hsDaedalusPkgs.daedalus-installer;
+    daedalus-installer = (pkgs.callPackage ./installers { inherit system config; }).daedalus-installer;
     daedalus = self.callPackage ./installers/nix/linux.nix {};
     configMutator = pkgs.runCommand "configMutator" { buildInputs = [ ghcWithCardano ]; } ''
       cp ${./ConfigMutator.hs} ConfigMutator.hs
