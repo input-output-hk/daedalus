@@ -24,10 +24,7 @@ export default class ReadOnlyInput extends Component<Props> {
     const { label, value, onClick } = this.props;
     const { intl } = this.context;
 
-    const mainClasses = classnames([
-      styles.component,
-      'changeLabel',
-    ]);
+    const mainClasses = classnames([styles.component, 'changeLabel']);
 
     return (
       <div className={mainClasses}>

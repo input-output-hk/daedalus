@@ -87,10 +87,7 @@ type Props = {
 };
 
 @observer
-export default class ChangeSpendingPasswordDialog extends Component<
-  Props,
-  State
-> {
+export default class ChangeSpendingPasswordDialog extends Component<Props> {
   static defaultProps = {
     currentPasswordValue: '',
     newPasswordValue: '',
@@ -114,7 +111,9 @@ export default class ChangeSpendingPasswordDialog extends Component<
         },
         spendingPassword: {
           type: 'password',
-          label: this.context.intl.formatMessage(messages.spendingPasswordLabel),
+          label: this.context.intl.formatMessage(
+            messages.spendingPasswordLabel
+          ),
           placeholder: this.context.intl.formatMessage(
             messages.newPasswordFieldPlaceholder
           ),
@@ -195,10 +194,7 @@ export default class ChangeSpendingPasswordDialog extends Component<
       isSubmitting,
       error,
     } = this.props;
-    const dialogClasses = classnames([
-      styles.dialog,
-      'changePasswordDialog'
-    ]);
+    const dialogClasses = classnames([styles.dialog, 'changePasswordDialog']);
 
     const confirmButtonClasses = classnames([
       'confirmButton',
@@ -234,7 +230,9 @@ export default class ChangeSpendingPasswordDialog extends Component<
             label={currentPasswordField.label}
             value={currentPasswordValue}
             onKeyPress={this.handleSubmitOnEnter}
-            onChange={value => this.handleDataChange('currentPasswordValue', value)}
+            onChange={value =>
+              this.handleDataChange('currentPasswordValue', value)
+            }
             {...currentPasswordField.bind()}
             error={currentPasswordField.error}
             skin={InputSkin}
