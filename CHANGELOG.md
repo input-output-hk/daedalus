@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 
+- Implemented incentivized testnet theme for incentivized testnet version of Daedalus ([PR 1620](https://github.com/input-output-hk/daedalus/pull/1620))
 - Implemented address validator ([PR 1609](https://github.com/input-output-hk/daedalus/pull/1609))
 - Add "frontend-only" mode utility that has no dependency on nix ([PR 1583](https://github.com/input-output-hk/daedalus/pull/1583))
 - Added Jormungandr support for Cardano V2 API ([PR 1567](https://github.com/input-output-hk/daedalus/pull/1567)
