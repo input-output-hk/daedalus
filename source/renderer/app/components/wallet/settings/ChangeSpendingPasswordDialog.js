@@ -2,11 +2,8 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import { Input } from 'react-polymorph/lib/components/Input';
-import { SwitchSkin } from 'react-polymorph/lib/skins/simple/SwitchSkin';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
-import { IDENTIFIERS } from 'react-polymorph/lib/themes/API';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
@@ -76,35 +73,17 @@ const messages = defineMessages({
     description:
       'Placeholder for the "Repeat password" inputs in the change wallet password dialog.',
   },
-  passwordSwitchLabel: {
-    id: 'wallet.settings.changePassword.dialog.passwordSwitchLabel',
-    defaultMessage: '!!!Remove password',
-    description:
-      'Label for the "Check to deactivate password" switch in the change wallet password dialog.',
-  },
-  passwordSwitchPlaceholder: {
-    id: 'wallet.settings.changePassword.dialog.passwordSwitchPlaceholder',
-    defaultMessage: '!!!Check to deactivate password',
-    description:
-      'Text for the "Check to deactivate password" switch in the change wallet password dialog.',
-  },
 });
 
 type Props = {
-  isSpendingPasswordSet: boolean,
   currentPasswordValue: string,
   newPasswordValue: string,
   repeatedPasswordValue: string,
   onSave: Function,
   onCancel: Function,
   onDataChange: Function,
-  onPasswordSwitchToggle: Function,
   isSubmitting: boolean,
   error: ?LocalizableError,
-};
-
-type State = {
-  removePassword: boolean,
 };
 
 @observer
@@ -122,10 +101,6 @@ export default class ChangeSpendingPasswordDialog extends Component<
     intl: intlShape.isRequired,
   };
 
-  state = {
-    removePassword: false,
-  };
-
   form = new ReactToolboxMobxForm(
     {
       fields: {
@@ -139,20 +114,13 @@ export default class ChangeSpendingPasswordDialog extends Component<
         },
         spendingPassword: {
           type: 'password',
-          label: this.context.intl.formatMessage(
-            messages[
-              this.props.isSpendingPasswordSet
-                ? 'newPasswordLabel'
-                : 'spendingPasswordLabel'
-            ]
-          ),
+          label: this.context.intl.formatMessage(messages.spendingPasswordLabel),
           placeholder: this.context.intl.formatMessage(
             messages.newPasswordFieldPlaceholder
           ),
           value: '',
           validators: [
             ({ field, form }) => {
-              if (this.state.removePassword) return [true];
               const repeatPasswordField = form.$('repeatPassword');
               if (repeatPasswordField.value.length > 0) {
                 repeatPasswordField.validate({ showErrors: true });
@@ -175,7 +143,6 @@ export default class ChangeSpendingPasswordDialog extends Component<
           value: '',
           validators: [
             ({ field, form }) => {
-              if (this.state.removePassword) return [true];
               const spendingPassword = form.$('spendingPassword').value;
               if (spendingPassword.length === 0) return [true];
               return [
@@ -200,11 +167,10 @@ export default class ChangeSpendingPasswordDialog extends Component<
   submit = () => {
     this.form.submit({
       onSuccess: form => {
-        const { removePassword } = this.state;
         const { currentPassword, spendingPassword } = form.values();
         const passwordData = {
-          oldPassword: currentPassword || null,
-          newPassword: removePassword ? null : spendingPassword,
+          oldPassword: currentPassword,
+          newPassword: spendingPassword,
         };
         this.props.onSave(passwordData);
       },
@@ -214,11 +180,6 @@ export default class ChangeSpendingPasswordDialog extends Component<
 
   handleSubmitOnEnter = submitOnEnter.bind(this, this.submit);
 
-  handlePasswordSwitchToggle = (value: boolean) => {
-    this.setState({ removePassword: value });
-    this.props.onPasswordSwitchToggle();
-  };
-
   handleDataChange = (key: string, value: string) => {
     this.props.onDataChange({ [key]: value });
   };
@@ -227,7 +188,6 @@ export default class ChangeSpendingPasswordDialog extends Component<
     const { form } = this;
     const { intl } = this.context;
     const {
-      isSpendingPasswordSet,
       onCancel,
       currentPasswordValue,
       newPasswordValue,
@@ -235,31 +195,19 @@ export default class ChangeSpendingPasswordDialog extends Component<
       isSubmitting,
       error,
     } = this.props;
-    const { removePassword } = this.state;
-
     const dialogClasses = classnames([
-      isSpendingPasswordSet ? 'changePasswordDialog' : 'createPasswordDialog',
       styles.dialog,
-    ]);
-
-    const spendingPasswordFieldsClasses = classnames([
-      styles.spendingPasswordFields,
-      removePassword ? styles.hidden : null,
+      'changePasswordDialog'
     ]);
 
     const confirmButtonClasses = classnames([
       'confirmButton',
-      removePassword ? 'attention' : null,
       isSubmitting ? styles.isSubmitting : null,
     ]);
 
-    const newPasswordClasses = classnames(['newPassword', styles.newPassword]);
-
     const actions = [
       {
-        label: intl.formatMessage(
-          globalMessages[removePassword ? 'remove' : 'save']
-        ),
+        label: intl.formatMessage(globalMessages.save),
         onClick: this.submit,
         primary: true,
         className: confirmButtonClasses,
@@ -272,54 +220,29 @@ export default class ChangeSpendingPasswordDialog extends Component<
 
     return (
       <Dialog
-        title={intl.formatMessage(
-          messages[
-            !isSpendingPasswordSet
-              ? 'dialogTitleSetPassword'
-              : 'dialogTitleChangePassword'
-          ]
-        )}
+        title={intl.formatMessage(messages.dialogTitleChangePassword)}
         actions={actions}
         closeOnOverlayClick
         onClose={!isSubmitting ? onCancel : () => {}}
         className={dialogClasses}
         closeButton={<DialogCloseButton onClose={onCancel} />}
       >
-        {isSpendingPasswordSet ? (
-          <div className={styles.spendingPassword}>
-            <div className={styles.spendingPasswordSwitch}>
-              <div className={styles.passwordLabel}>
-                {intl.formatMessage(messages.passwordSwitchLabel)}
-              </div>
-              <Checkbox
-                onChange={this.handlePasswordSwitchToggle}
-                label={intl.formatMessage(messages.passwordSwitchPlaceholder)}
-                checked={removePassword}
-                themeId={IDENTIFIERS.SWITCH}
-                skin={SwitchSkin}
-              />
-            </div>
-
-            <Input
-              type="password"
-              className="currentPassword"
-              label={currentPasswordField.label}
-              value={currentPasswordValue}
-              onKeyPress={this.handleSubmitOnEnter}
-              onChange={value =>
-                this.handleDataChange('currentPasswordValue', value)
-              }
-              {...currentPasswordField.bind()}
-              error={currentPasswordField.error}
-              skin={InputSkin}
-            />
-          </div>
-        ) : null}
-
-        <div className={spendingPasswordFieldsClasses}>
+        <div className={styles.spendingPasswordFields}>
           <Input
             type="password"
-            className={newPasswordClasses}
+            className={styles.currentPassword}
+            label={currentPasswordField.label}
+            value={currentPasswordValue}
+            onKeyPress={this.handleSubmitOnEnter}
+            onChange={value => this.handleDataChange('currentPasswordValue', value)}
+            {...currentPasswordField.bind()}
+            error={currentPasswordField.error}
+            skin={InputSkin}
+          />
+
+          <Input
+            type="password"
+            className={styles.newPassword}
             label={newPasswordField.label}
             value={newPasswordValue}
             onKeyPress={this.handleSubmitOnEnter}
@@ -331,7 +254,7 @@ export default class ChangeSpendingPasswordDialog extends Component<
 
           <Input
             type="password"
-            className="repeatedPassword"
+            className={styles.repeatedPassword}
             label={repeatedPasswordField.label}
             value={repeatedPasswordValue}
             onKeyPress={this.handleSubmitOnEnter}

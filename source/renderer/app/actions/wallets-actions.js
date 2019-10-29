@@ -14,7 +14,7 @@ export default class WalletsActions {
   // Create Wallet
   createWallet: Action<{
     name: string,
-    spendingPassword: ?string,
+    spendingPassword: string,
   }> = new Action();
   createWalletBegin: Action<any> = new Action();
   createWalletChangeStep: Action<any> = new Action();
@@ -24,7 +24,7 @@ export default class WalletsActions {
   restoreWallet: Action<{
     recoveryPhrase: string,
     walletName: string,
-    spendingPassword: ?string,
+    spendingPassword: string,
     type?: string,
   }> = new Action();
   importWalletFromFile: Action<WalletImportFromFileParams> = new Action();

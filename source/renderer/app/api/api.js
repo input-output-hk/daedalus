@@ -407,7 +407,7 @@ export default class AdaApi {
       const walletInitData = {
         name,
         mnemonic_sentence: split(mnemonic, ' '),
-        passphrase: spendingPassword || '',
+        passphrase: spendingPassword,
       };
       const wallet: AdaWallet = await createWallet(this.config, {
         walletInitData,
@@ -627,7 +627,7 @@ export default class AdaApi {
     const walletInitData = {
       name: walletName,
       mnemonic_sentence: split(recoveryPhrase, ' '),
-      passphrase: spendingPassword || '',
+      passphrase: spendingPassword,
     };
     try {
       const wallet: AdaWallet = await restoreWallet(this.config, {
