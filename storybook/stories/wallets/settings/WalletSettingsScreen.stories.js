@@ -10,7 +10,6 @@ import WalletSettings from '../../../../source/renderer/app/components/wallet/se
 import { WalletAssuranceModeOptions } from '../../../../source/renderer/app/domains/Wallet';
 import ChangeSpendingPasswordDialog from '../../../../source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog';
 import DeleteWalletConfirmationDialog from '../../../../source/renderer/app/components/wallet/settings/DeleteWalletConfirmationDialog';
-import ExportWalletToFileDialog from '../../../../source/renderer/app/components/wallet/settings/ExportWalletToFileDialog';
 import WalletRecoveryPhraseStep1Dialog from '../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep1Dialog';
 import WalletRecoveryPhraseStep2Dialog from '../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep2Dialog';
 import WalletRecoveryPhraseStep3Dialog from '../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep3Dialog';
@@ -29,7 +28,6 @@ import {
 const basicSettingsId = 'Basic Settings';
 const changePasswordId = 'Change Password';
 const deleteWalletId = 'Delete Wallet';
-const exportWalletId = 'Export Wallet';
 const recoveryPhraseId = 'Recovery Phrase';
 
 const recoveryPhraseVerificationDateOptions = {
@@ -119,9 +117,6 @@ export default () => {
         }
         if (dialog === DeleteWalletConfirmationDialog) {
           return boolean('Delete Wallet - Show dialog', false, deleteWalletId);
-        }
-        if (dialog === ExportWalletToFileDialog) {
-          return boolean('Export Wallet - Show dialog', false, exportWalletId);
         }
         if (dialog === WalletRecoveryPhraseStep1Dialog) {
           return recoveryDialog === 1;
@@ -231,23 +226,6 @@ export default () => {
             false,
             deleteWalletId
           )}
-        />
-      }
-      exportWalletDialogContainer={
-        <ExportWalletToFileDialog
-          walletName={text('Wallet Name', 'Wallet Name')}
-          hasSpendingPassword={boolean(
-            'isSpendingPasswordSet',
-            false,
-            basicSettingsId
-          )}
-          isSubmitting={boolean(
-            'Export Wallet - isSubmitting',
-            false,
-            exportWalletId
-          )}
-          onSubmit={action('Export Wallet - onSubmit')}
-          onClose={action('Export Wallet - onClose')}
         />
       }
       walletRecoveryPhraseStep1Container={
