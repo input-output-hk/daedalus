@@ -86,13 +86,6 @@ When(/^I select a valid wallet import key file$/, function() {
   this.waitAndClick('.WalletFileImportDialog .FileUploadWidget_dropZone');
 });
 
-When(
-  /^I toggle "Activate to create password" switch on the import wallet key dialog$/,
-  function() {
-    return this.waitAndClick('.WalletFileImportDialog .SimpleSwitch_switch');
-  }
-);
-
 When(/^I enter wallet spending password:$/, async function(table) {
   const fields = table.hashes()[0];
   await this.client.setValue(
@@ -205,20 +198,6 @@ When(/^I submit the wallet send form$/, async function() {
     '.WalletSendConfirmationDialog_dialog .confirmButton'
   );
 });
-
-When(
-  /^I toggle "Spending password" switch on the create wallet dialog$/,
-  function() {
-    return this.waitAndClick('.WalletCreateDialog .SimpleSwitch_switch');
-  }
-);
-
-When(
-  /^I toggle "Spending password" switch on the restore wallet dialog$/,
-  function() {
-    return this.waitAndClick('.WalletRestoreDialog .SimpleSwitch_switch');
-  }
-);
 
 When(
   /^I submit the create wallet dialog with the following inputs:$/,

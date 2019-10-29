@@ -9,7 +9,7 @@ Given(
   async function() {
     const wallets = [...Array(MAX_ADA_WALLETS_COUNT)].map((x, i) => ({
       name: `Wallet ${i + 1}`,
-      password: '',
+      password: 'Secret1234',
     }));
     await createWallets(wallets, this);
   }
