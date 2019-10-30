@@ -306,6 +306,7 @@ export default class NetworkStatusStore extends Store {
   ) => {
     runInAction('updating nodeImplementation', () => {
       this.nodeImplementation = nodeImplementation;
+      this.actions.networkStatus.nodeImplementationUpdate.trigger();
     });
     return Promise.resolve();
   };
