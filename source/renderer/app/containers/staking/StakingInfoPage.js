@@ -24,6 +24,19 @@ export default class StakingInfoPage extends Component<Props> {
 
   static defaultProps = { actions: null, stores: null };
 
+  componentDidMount() {
+    const {
+      stores: { networkStatus },
+      actions: {
+        staking: { goToStakingDelegationCenterPage },
+      },
+    } = this.props;
+
+    if (networkStatus.isIncentivizedTestnet) {
+      goToStakingDelegationCenterPage.trigger();
+    }
+  }
+
   handleLearnMoreClick = (event: SyntheticEvent<HTMLButtonElement>) => {
     event.persist();
     const { intl } = this.context;
