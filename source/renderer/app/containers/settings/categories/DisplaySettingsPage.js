@@ -14,10 +14,16 @@ export default class DisplaySettingsPage extends Component<InjectedProps> {
   };
 
   render() {
-    const { currentTheme } = this.props.stores.profile;
+    const { profile, networkStatus } = this.props.stores;
+    const { currentTheme } = profile;
+    const { isIncentivizedTestnet } = networkStatus;
 
     return (
-      <DisplaySettings theme={currentTheme} selectTheme={this.selectTheme} />
+      <DisplaySettings
+        theme={currentTheme}
+        selectTheme={this.selectTheme}
+        isIncentivizedTestnet={isIncentivizedTestnet}
+      />
     );
   }
 }
