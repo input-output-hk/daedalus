@@ -38,7 +38,7 @@ type Props = {
   activeItem: string,
   onNavItemClick: Function,
   isActiveNavItem: Function,
-  isIncentivizedTestnet?: boolean,
+  isIncentivizedTestnet: boolean,
 };
 
 @observer
