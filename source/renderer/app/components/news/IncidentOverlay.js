@@ -13,16 +13,11 @@ type Props = {
   incident: News.News,
   onOpenExternalLink: Function,
   onProceedNewsAction: Function,
+  currentDateFormat: string,
 };
 
 @observer
 export default class IncidentOverlay extends Component<Props> {
-  localizedDateFormat: 'MM/DD/YYYY';
-
-  componentWillMount() {
-    this.localizedDateFormat = moment.localeData().longDateFormat('L');
-  }
-
   contentClickHandler(event: SyntheticMouseEvent<HTMLElement>) {
     const linkUrl = get(event, ['target', 'href']);
     if (linkUrl) {
@@ -49,13 +44,13 @@ export default class IncidentOverlay extends Component<Props> {
   };
 
   render() {
-    const { incident } = this.props;
+    const { incident, currentDateFormat } = this.props;
     const { content, date, action, title } = incident;
     return (
       <div className={styles.component}>
         <h1 className={styles.title}>{title}</h1>
         <span className={styles.date}>
-          {moment(date).format(this.localizedDateFormat)}
+          {moment(date).format(currentDateFormat)}
         </span>
         <div
           className={styles.content}

@@ -57,6 +57,8 @@ type Props = {
   showMoreTransactionsButton?: boolean,
   transactions: Array<WalletTransaction>,
   walletId: string,
+  currentTimeFormat: string,
+  currentDateFormat: string,
 };
 
 const DATE_FORMAT = 'YYYY-MM-DD';
@@ -79,14 +81,6 @@ export default class WalletTransactionsList extends Component<Props> {
   virtualList: ?VirtualTransactionList;
   simpleList: ?SimpleTransactionList;
   loadingSpinner: ?LoadingSpinner;
-  localizedDateFormat: 'MM/DD/YYYY';
-
-  componentWillMount() {
-    this.localizedDateFormat = moment.localeData().longDateFormat('L');
-    // Localized dateFormat:
-    // English - MM/DD/YYYY
-    // Japanese - YYYY/MM/DD
-  }
 
   groupTransactionsByDay(
     transactions: Array<WalletTransaction>
@@ -123,6 +117,7 @@ export default class WalletTransactionsList extends Component<Props> {
 
   localizedDate(date: string) {
     const { intl } = this.context;
+    const { currentDateFormat } = this.props;
     // TODAY
     const today = moment().format(DATE_FORMAT);
     if (date === today) return intl.formatMessage(messages.today);
@@ -132,7 +127,7 @@ export default class WalletTransactionsList extends Component<Props> {
       .format(DATE_FORMAT);
     if (date === yesterday) return intl.formatMessage(messages.yesterday);
     // PAST DATE
-    return moment(date).format(this.localizedDateFormat);
+    return moment(date).format(currentDateFormat);
   }
 
   isTxExpanded = (tx: WalletTransaction) =>
@@ -185,6 +180,7 @@ export default class WalletTransactionsList extends Component<Props> {
       isRestoreActive,
       network,
       onOpenExternalLink,
+      currentTimeFormat,
     } = this.props;
     const { isFirstInGroup, isLastInGroup, tx } = data;
     const txClasses = classnames([
@@ -205,6 +201,7 @@ export default class WalletTransactionsList extends Component<Props> {
           onDetailsToggled={() => this.toggleTransactionExpandedState(tx)}
           onOpenExternalLink={onOpenExternalLink}
           state={tx.state}
+          currentTimeFormat={currentTimeFormat}
         />
       </div>
     );

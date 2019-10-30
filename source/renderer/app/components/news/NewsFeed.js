@@ -37,6 +37,7 @@ type Props = {
   onMarkNewsAsRead: Function,
   openWithoutTransition?: boolean,
   isLoadingNews: boolean,
+  currentDateFormat: string,
   onOpenExternalLink: Function,
   onProceedNewsAction: Function,
 };
@@ -107,6 +108,7 @@ export default class NewsFeed extends Component<Props, State> {
       openWithoutTransition,
       onProceedNewsAction,
       onOpenExternalLink,
+      currentDateFormat,
     } = this.props;
     const { hasShadow } = this.state;
 
@@ -150,6 +152,7 @@ export default class NewsFeed extends Component<Props, State> {
                   onOpenAlert={onOpenAlert}
                   onProceedNewsAction={onProceedNewsAction}
                   onOpenExternalLink={onOpenExternalLink}
+                  currentDateFormat={currentDateFormat}
                 />
               ))}
             </div>

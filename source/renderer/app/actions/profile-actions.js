@@ -15,6 +15,10 @@ export default class ProfileActions {
     fresh?: boolean,
   }> = new Action();
   downloadLogsSuccess: Action<any> = new Action();
-  updateLocale: Action<{ locale: string }> = new Action();
+  updateUserLocalSetting: Action<{
+    param: string,
+    value?: string,
+  }> = new Action();
   updateTheme: Action<{ theme: string }> = new Action();
+  finishInitialScreenSettings: Action<any> = new Action();
 }

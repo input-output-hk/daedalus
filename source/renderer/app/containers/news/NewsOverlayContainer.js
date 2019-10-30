@@ -11,7 +11,7 @@ export default class NewsOverlayContainer extends Component<InjectedProps> {
   static defaultProps = { actions: null, stores: null };
 
   render() {
-    const { app, newsFeed } = this.props.stores;
+    const { app, newsFeed, profile } = this.props.stores;
     const { openExternalLink } = app;
     const {
       closeOpenedAlert,
@@ -23,6 +23,7 @@ export default class NewsOverlayContainer extends Component<InjectedProps> {
     const { incident, alerts } = newsFeedData;
     const unreadAlerts = alerts.unread;
     const allAlertsCount = alerts.all ? alerts.all.length : 0;
+    const { currentDateFormat } = profile;
 
     const alertToOpen = [];
     if (openedAlert) {
@@ -35,6 +36,7 @@ export default class NewsOverlayContainer extends Component<InjectedProps> {
           incident={incident}
           onOpenExternalLink={openExternalLink}
           onProceedNewsAction={proceedNewsAction}
+          currentDateFormat={currentDateFormat}
         />
       );
     if (unreadAlerts.length > 0)
@@ -46,6 +48,7 @@ export default class NewsOverlayContainer extends Component<InjectedProps> {
           onMarkNewsAsRead={markNewsAsRead}
           onOpenExternalLink={openExternalLink}
           onProceedNewsAction={proceedNewsAction}
+          currentDateFormat={currentDateFormat}
         />
       );
     if (alertToOpen.length > 0) {
@@ -57,6 +60,7 @@ export default class NewsOverlayContainer extends Component<InjectedProps> {
           onMarkNewsAsRead={markNewsAsRead}
           onOpenExternalLink={openExternalLink}
           onProceedNewsAction={proceedNewsAction}
+          currentDateFormat={currentDateFormat}
           hideCounter
         />
       );

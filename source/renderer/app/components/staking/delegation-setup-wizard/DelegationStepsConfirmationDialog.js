@@ -7,6 +7,7 @@ import { Stepper } from 'react-polymorph/lib/components/Stepper';
 import { StepperSkin } from 'react-polymorph/lib/skins/simple/StepperSkin';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
+import BigNumber from 'bignumber.js';
 import commonStyles from './DelegationSteps.scss';
 import styles from './DelegationStepsConfirmationDialog.scss';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
@@ -16,6 +17,7 @@ import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import { submitOnEnter } from '../../../utils/form';
 import globalMessages from '../../../i18n/global-messages';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
+import { formattedWalletAmount } from '../../../utils/formatters';
 
 const messages = defineMessages({
   title: {
@@ -76,6 +78,7 @@ type Props = {
   onBack: Function,
   onClose: Function,
   onConfirm: Function,
+  fees: BigNumber,
   stepsList: Array<string>,
 };
 
@@ -142,7 +145,13 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
   render() {
     const { form } = this;
     const { intl } = this.context;
-    const { isSpendingPasswordSet, onBack, onClose, stepsList } = this.props;
+    const {
+      isSpendingPasswordSet,
+      onBack,
+      onClose,
+      stepsList,
+      fees,
+    } = this.props;
 
     const spendingPasswordField = form.$('spendingPassword');
 
@@ -206,7 +215,8 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
               {intl.formatMessage(messages.feesLabel)}
             </p>
             <p className={styles.feesAmount}>
-              0.172081<span> ADA</span>
+              {formattedWalletAmount(fees, false)}
+              <span> ADA</span>
             </p>
           </div>
 

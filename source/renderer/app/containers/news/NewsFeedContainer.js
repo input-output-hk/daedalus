@@ -17,9 +17,11 @@ export default class NewsFeedContainer extends Component<InjectedProps> {
 
   render() {
     const { stores, actions } = this.props;
+    const { app, profile } = stores;
     const { newsFeedData, isLoadingNews, proceedNewsAction } = stores.newsFeed;
     const { toggleNewsFeed } = actions.app;
-    const { openExternalLink, newsFeedIsOpen } = stores.app;
+    const { openExternalLink, newsFeedIsOpen } = app;
+    const { currentDateFormat } = profile;
 
     return (
       <NewsFeed
@@ -32,6 +34,7 @@ export default class NewsFeedContainer extends Component<InjectedProps> {
         openWithoutTransition={stores.networkStatus.environment.isTest}
         onProceedNewsAction={proceedNewsAction}
         onOpenExternalLink={openExternalLink}
+        currentDateFormat={currentDateFormat}
       />
     );
   }

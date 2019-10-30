@@ -23,6 +23,7 @@ type Props = {
   onProceedNewsAction: Function,
   allAlertsCount: number,
   hideCounter?: boolean,
+  currentDateFormat: string,
 };
 
 @observer
@@ -32,12 +33,6 @@ export default class AlertsOverlay extends Component<Props, State> {
     this.state = {
       showOverlay: true,
     };
-  }
-
-  localizedDateFormat: 'MM/DD/YYYY';
-
-  componentWillMount() {
-    this.localizedDateFormat = moment.localeData().longDateFormat('L');
   }
 
   contentClickHandler(event: SyntheticMouseEvent<HTMLElement>) {
@@ -90,7 +85,7 @@ export default class AlertsOverlay extends Component<Props, State> {
 
   render() {
     const { showOverlay } = this.state;
-    const { alerts } = this.props;
+    const { alerts, currentDateFormat } = this.props;
     const { content, date, action, title } = alerts[0];
     return (
       showOverlay && (
@@ -103,7 +98,7 @@ export default class AlertsOverlay extends Component<Props, State> {
           {this.renderCounter(alerts)}
           <h1 className={styles.title}>{title}</h1>
           <span className={styles.date}>
-            {moment(date).format(this.localizedDateFormat)}
+            {moment(date).format(currentDateFormat)}
           </span>
           <div
             className={styles.content}
