@@ -34,6 +34,7 @@ storiesOf('Settings', module)
       <SettingsMenu
         onItemClick={action('onItemClick')}
         isActiveItem={isActiveItem}
+        isIncentivizedTestnet={false}
       />
     </div>
   ))

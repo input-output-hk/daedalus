@@ -32,6 +32,7 @@ const messages = defineMessages({
 type Props = {
   isActiveItem: Function,
   onItemClick: Function,
+  isIncentivizedTestnet: boolean,
 };
 
 @observer
@@ -42,7 +43,7 @@ export default class SettingsMenu extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { onItemClick, isActiveItem } = this.props;
+    const { onItemClick, isActiveItem, isIncentivizedTestnet } = this.props;
     return (
       <div>
         <div className={styles.component}>
@@ -53,12 +54,14 @@ export default class SettingsMenu extends Component<Props> {
             className="general"
           />
 
-          <SettingsMenuItem
-            label={intl.formatMessage(messages.display)}
-            onClick={() => onItemClick(ROUTES.SETTINGS.DISPLAY)}
-            active={isActiveItem(ROUTES.SETTINGS.DISPLAY)}
-            className="display"
-          />
+          {!isIncentivizedTestnet ? (
+            <SettingsMenuItem
+              label={intl.formatMessage(messages.display)}
+              onClick={() => onItemClick(ROUTES.SETTINGS.DISPLAY)}
+              active={isActiveItem(ROUTES.SETTINGS.DISPLAY)}
+              className="display"
+            />
+          ) : null}
 
           <SettingsMenuItem
             label={intl.formatMessage(messages.termsOfUse)}

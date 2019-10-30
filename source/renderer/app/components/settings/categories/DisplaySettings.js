@@ -1,5 +1,5 @@
 // @flow
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import classnames from 'classnames';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
@@ -62,7 +62,6 @@ const messages = defineMessages({
 type Props = {
   theme: string,
   selectTheme: Function,
-  isIncentivizedTestnet: boolean,
 };
 
 @observer
@@ -72,7 +71,7 @@ export default class DisplaySettings extends Component<Props> {
   };
 
   render() {
-    const { theme, selectTheme, isIncentivizedTestnet } = this.props;
+    const { theme, selectTheme } = this.props;
     const { intl } = this.context;
 
     const themeIncentivizedTestnetClasses = classnames([
@@ -116,85 +115,81 @@ export default class DisplaySettings extends Component<Props> {
           {intl.formatMessage(messages.themeLabel)}
         </div>
 
-        {!isIncentivizedTestnet ? (
-          <Fragment>
-            <div className={styles.themesRowWrapper}>
-              <button
-                className={themeLightBlueClasses}
-                onClick={selectTheme.bind(this, { theme: THEMES.LIGHT_BLUE })}
-              >
-                <img
-                  src={themeLightBluePreview}
-                  role="presentation"
-                  draggable="false"
-                />
-                <span>{intl.formatMessage(messages.themeLightBlue)}</span>
-              </button>
+        <div className={styles.themesRowWrapper}>
+          <button
+            className={themeLightBlueClasses}
+            onClick={selectTheme.bind(this, { theme: THEMES.LIGHT_BLUE })}
+          >
+            <img
+              src={themeLightBluePreview}
+              role="presentation"
+              draggable="false"
+            />
+            <span>{intl.formatMessage(messages.themeLightBlue)}</span>
+          </button>
 
-              <button
-                className={themeCardanoClasses}
-                onClick={selectTheme.bind(this, { theme: THEMES.CARDANO })}
-              >
-                <img
-                  src={themeCardanoPreview}
-                  role="presentation"
-                  draggable="false"
-                />
-                <span>{intl.formatMessage(messages.themeCardano)}</span>
-              </button>
+          <button
+            className={themeCardanoClasses}
+            onClick={selectTheme.bind(this, { theme: THEMES.CARDANO })}
+          >
+            <img
+              src={themeCardanoPreview}
+              role="presentation"
+              draggable="false"
+            />
+            <span>{intl.formatMessage(messages.themeCardano)}</span>
+          </button>
 
-              <button
-                className={themeWhiteClasses}
-                onClick={selectTheme.bind(this, { theme: THEMES.WHITE })}
-              >
-                <img
-                  src={themeWhitePreview}
-                  role="presentation"
-                  draggable="false"
-                />
-                <span>{intl.formatMessage(messages.themeWhite)}</span>
-              </button>
-            </div>
+          <button
+            className={themeWhiteClasses}
+            onClick={selectTheme.bind(this, { theme: THEMES.WHITE })}
+          >
+            <img
+              src={themeWhitePreview}
+              role="presentation"
+              draggable="false"
+            />
+            <span>{intl.formatMessage(messages.themeWhite)}</span>
+          </button>
+        </div>
 
-            <div className={styles.themesRowWrapper}>
-              <button
-                className={themeDarkBlueClasses}
-                onClick={selectTheme.bind(this, { theme: THEMES.DARK_BLUE })}
-              >
-                <img
-                  src={themeDarkBluePreview}
-                  role="presentation"
-                  draggable="false"
-                />
-                <span>{intl.formatMessage(messages.themeDarkBlue)}</span>
-              </button>
+        <div className={styles.themesRowWrapper}>
+          <button
+            className={themeDarkBlueClasses}
+            onClick={selectTheme.bind(this, { theme: THEMES.DARK_BLUE })}
+          >
+            <img
+              src={themeDarkBluePreview}
+              role="presentation"
+              draggable="false"
+            />
+            <span>{intl.formatMessage(messages.themeDarkBlue)}</span>
+          </button>
 
-              <button
-                className={themeDarkCardanoClasses}
-                onClick={selectTheme.bind(this, { theme: THEMES.DARK_CARDANO })}
-              >
-                <img
-                  src={themeDarkCardanoPreview}
-                  role="presentation"
-                  draggable="false"
-                />
-                <span>{intl.formatMessage(messages.themeDarkCardano)}</span>
-              </button>
+          <button
+            className={themeDarkCardanoClasses}
+            onClick={selectTheme.bind(this, { theme: THEMES.DARK_CARDANO })}
+          >
+            <img
+              src={themeDarkCardanoPreview}
+              role="presentation"
+              draggable="false"
+            />
+            <span>{intl.formatMessage(messages.themeDarkCardano)}</span>
+          </button>
 
-              <button
-                className={themeYellowClasses}
-                onClick={selectTheme.bind(this, { theme: THEMES.YELLOW })}
-              >
-                <img
-                  src={themeYellowPreview}
-                  role="presentation"
-                  draggable="false"
-                />
-                <span>{intl.formatMessage(messages.themeYellow)}</span>
-              </button>
-            </div>
-          </Fragment>
-        ) : null}
+          <button
+            className={themeYellowClasses}
+            onClick={selectTheme.bind(this, { theme: THEMES.YELLOW })}
+          >
+            <img
+              src={themeYellowPreview}
+              role="presentation"
+              draggable="false"
+            />
+            <span>{intl.formatMessage(messages.themeYellow)}</span>
+          </button>
+        </div>
 
         <div className={styles.themesRowWrapper}>
           <button
