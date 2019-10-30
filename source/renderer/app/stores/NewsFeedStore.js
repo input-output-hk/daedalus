@@ -1,5 +1,5 @@
 // @flow
-import { observable, action, runInAction, computed } from 'mobx';
+import { observable, action, computed } from 'mobx';
 import { map, get, find } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
@@ -39,6 +39,7 @@ export default class NewsFeedStore extends Store {
     this.api.localStorage.markNewsAsRead
   );
   @observable openedAlert: ?News.News = null;
+  @observable fetchLocalNews: boolean = false;
 
   pollingNewsIntervalId: ?IntervalID = null;
   pollingNewsOnErrorIntervalId: ?IntervalID = null;
@@ -56,8 +57,20 @@ export default class NewsFeedStore extends Store {
     }
   }
 
+  @action getNewsFromLocalFiles = (isLocal: boolean) => {
+    this.fetchLocalNews = isLocal;
+    this.getNews();
+  };
+
   @action getNews = async () => {
     let rawNews;
+
+    if (this.fetchLocalNews) {
+      rawNews = await this.api.ada.getNewsFromLocalFiles();
+      this._setNews(rawNews);
+      return;
+    }
+
     try {
       rawNews = await this.getNewsRequest.execute().promise;
       const hasIncident = find(
@@ -138,11 +151,13 @@ export default class NewsFeedStore extends Store {
     await this.getReadNewsRequest.execute();
 
     if (rawNews) {
-      runInAction('set news data', () => {
-        this.rawNews = get(rawNews, 'items', []);
-        this.newsUpdatedAt = get(rawNews, 'updatedAt', null);
-      });
+      this._setNews(rawNews);
     }
+  };
+
+  @action _setNews = news => {
+    this.rawNews = get(news, 'items', []);
+    this.newsUpdatedAt = get(news, 'updatedAt', null);
   };
 
   @action markNewsAsRead = async newsTimestamps => {

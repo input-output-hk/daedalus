@@ -47,7 +47,7 @@ import { getWalletUtxos } from './wallets/requests/getWalletUtxos';
 import { getWalletIdAndBalance } from './wallets/requests/getWalletIdAndBalance';
 
 // News requests
-// import { getNews } from './news/requests/getNews';
+import { getNews } from './news/requests/getNews';
 
 // utility functions
 import {
@@ -165,8 +165,8 @@ import {
 } from './transactions/errors';
 import type { FaultInjectionIpcRequest } from '../../../common/types/cardano-node.types';
 import { TlsCertificateNotValidError } from './nodes/errors';
-// import { getSHA256HexForString } from './utils/hashing';
-// import { getNewsHash } from './news/requests/getNewsHash';
+import { getSHA256HexForString } from './utils/hashing';
+import { getNewsHash } from './news/requests/getNewsHash';
 
 export default class AdaApi {
   config: RequestConfig;
@@ -1026,44 +1026,47 @@ export default class AdaApi {
     }
   };
 
-  //  getNews = async (): Promise<GetNewsResponse> => {
-  //    Logger.debug('AdaApi::getNews called');
-
-  //    // Fetch news json
-  //    let rawNews: string;
-  //    let news: GetNewsResponse;
-  //    try {
-  //      rawNews = await getNews();
-  //      news = JSON.parse(rawNews);
-  //    } catch (error) {
-  //      Logger.error('AdaApi::getNews error', { error });
-  //      throw new Error('Unable to fetch news');
-  //    }
-
-  //    // Fetch news verification hash
-  //    let newsHash: string;
-  //    let expectedNewsHash: string;
-  //    try {
-  //      newsHash = await getSHA256HexForString(rawNews);
-  //      expectedNewsHash = await getNewsHash(news.updatedAt);
-  //    } catch (error) {
-  //      Logger.error('AdaApi::getNews (hash) error', { error });
-  //      throw new Error('Unable to fetch news hash');
-  //    }
-
-  //    if (newsHash !== expectedNewsHash) {
-  //      throw new Error('Newsfeed could not be verified');
-  //    }
-
-  //    Logger.debug('AdaApi::getNews success', {
-  //      updatedAt: news.updatedAt,
-  //      items: news.items.length,
-  //    });
-  //    return news;
-  //  };
-
   getNews = async (): Promise<GetNewsResponse> => {
-    const news = require('../config/newsfeed-files/newsfeed_development.json');
+    Logger.debug('AdaApi::getNews called');
+
+    // Fetch news json
+    let rawNews: string;
+    let news: GetNewsResponse;
+    try {
+      rawNews = await getNews();
+      news = JSON.parse(rawNews);
+    } catch (error) {
+      Logger.error('AdaApi::getNews error', { error });
+      throw new Error('Unable to fetch news');
+    }
+
+    // Fetch news verification hash
+    let newsHash: string;
+    let expectedNewsHash: string;
+    try {
+      newsHash = await getSHA256HexForString(rawNews);
+      expectedNewsHash = await getNewsHash(news.updatedAt);
+    } catch (error) {
+      Logger.error('AdaApi::getNews (hash) error', { error });
+      throw new Error('Unable to fetch news hash');
+    }
+
+    if (newsHash !== expectedNewsHash) {
+      throw new Error('Newsfeed could not be verified');
+    }
+
+    Logger.debug('AdaApi::getNews success', {
+      updatedAt: news.updatedAt,
+      items: news.items.length,
+    });
+    return news;
+  };
+
+  // For "Testing" purposes - get newsfeed from local JSON files
+  getNewsFromLocalFiles = async (env?: string): Promise<GetNewsResponse> => {
+    const fileName = `newsfeed_${env || 'development'}`;
+    Logger.info('AdaApi::getNewsFromLocalFiles', `${fileName}.json`);
+    const news = require(`../config/newsfeed-files/${fileName}.json`);
     return news;
   };
 
