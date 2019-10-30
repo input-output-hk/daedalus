@@ -27,12 +27,15 @@ export default class Settings extends Component<InjectedContainerProps> {
 
   render() {
     const { actions, children, stores } = this.props;
-    const { isIncentivizedTestnet } = stores.networkStatus;
+    const {
+      isIncentivizedTestnet,
+      environment: { isTest },
+    } = stores.networkStatus;
     const menu = (
       <SettingsMenu
         onItemClick={route => actions.router.goToRoute.trigger({ route })}
         isActiveItem={this.isActivePage}
-        isIncentivizedTestnet={isIncentivizedTestnet}
+        showDisplaySettings={!isIncentivizedTestnet || isTest}
       />
     );
     return (
