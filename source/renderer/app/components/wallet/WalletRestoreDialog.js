@@ -27,6 +27,7 @@ import LocalizableError from '../../i18n/LocalizableError';
 import {
   PAPER_WALLET_RECOVERY_PHRASE_WORD_COUNT,
   WALLET_RECOVERY_PHRASE_WORD_COUNT,
+  LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT,
 } from '../../config/cryptoConfig';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
 import styles from './WalletRestoreDialog.scss';
@@ -163,6 +164,7 @@ type Props = {
 type State = {
   createPassword: boolean,
   activeChoice: string,
+  walletType: string,
 };
 
 @observer
@@ -211,8 +213,11 @@ export default class WalletRestoreDialog extends Component<Props, State> {
             const { intl } = this.context;
             const enteredWords = field.value;
             const wordCount = enteredWords.length;
-            const expectedWordCount = this.isRegular()
+            const regularWalletWordCound = !this.isLegacy()
               ? WALLET_RECOVERY_PHRASE_WORD_COUNT
+              : LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT;
+            const expectedWordCount = this.isRegular()
+              ? regularWalletWordCound
               : PAPER_WALLET_RECOVERY_PHRASE_WORD_COUNT;
             const value = join(enteredWords, ' ');
             // Regular mnemonics have 12 and paper wallet recovery needs 27 words
@@ -288,12 +293,15 @@ export default class WalletRestoreDialog extends Component<Props, State> {
     }
   );
 
-  handlePasswordSwitchToggle = (value: boolean) => {
-    this.setState({ createPassword: value });
+  handlePasswordSwitchToggle = (createPassword: boolean) => {
+    this.setState({ createPassword });
   };
 
-  handleWalletTypeToggle = (value: string) => {
-    this.setState({ walletType: value });
+  handleWalletTypeToggle = (walletType: string) => {
+    if (walletType === RESTORE_WALLET_TYPES.DAEDALUS_WALLET) {
+      this.handlePasswordSwitchToggle(true);
+    }
+    this.setState({ walletType });
   };
 
   submit = () => {
@@ -423,7 +431,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
                     15 words <b>(Daedalus wallet)</b>
                   </p>
                 ),
-                selected: walletType === RESTORE_WALLET_TYPES.DAEDALUS_WALLET,
+                selected: !this.isLegacy(),
                 onChange: () =>
                   this.handleWalletTypeToggle(
                     RESTORE_WALLET_TYPES.DAEDALUS_WALLET
@@ -436,8 +444,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
                     12 words <b>(Daedalus legacy wallet)</b>
                   </p>
                 ),
-                selected:
-                  walletType === RESTORE_WALLET_TYPES.DAEDALUS_LEGACY_WALLET,
+                selected: this.isLegacy(),
                 onChange: () =>
                   this.handleWalletTypeToggle(
                     RESTORE_WALLET_TYPES.DAEDALUS_LEGACY_WALLET
@@ -487,7 +494,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
               label={intl.formatMessage(messages.passwordSwitchPlaceholder)}
               checked={createPassword}
               skin={SwitchSkin}
-              disabled // @API TODO: in V2 API passphrase is required
+              disabled={!this.isLegacy()} // @API TODO: in V2 API passphrase is required
             />
           </div>
 
@@ -523,6 +530,12 @@ export default class WalletRestoreDialog extends Component<Props, State> {
 
   isCertificate() {
     return this.state.activeChoice === RESTORE_TYPES.CERTIFICATE;
+  }
+
+  isLegacy() {
+    return (
+      this.state.walletType === RESTORE_WALLET_TYPES.DAEDALUS_LEGACY_WALLET
+    );
   }
 
   onSelectChoice = (choice: string) => {
