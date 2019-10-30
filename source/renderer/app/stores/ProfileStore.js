@@ -138,7 +138,8 @@ export default class ProfileStore extends Store {
   @computed get currentTheme(): string {
     // Force "Incentivized Testnet" theme for the Incentivized Testnet Daedalus version
     const { isIncentivizedTestnet } = this.stores.networkStatus;
-    if (isIncentivizedTestnet) return THEMES.INCENTIVIZED_TESTNET;
+    if (isIncentivizedTestnet && !this.environment.isTest)
+      return THEMES.INCENTIVIZED_TESTNET;
     // Default theme handling
     const { result } = this.getThemeRequest.execute();
     if (this.isCurrentThemeSet) return result;
