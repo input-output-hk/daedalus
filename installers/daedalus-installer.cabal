@@ -2,10 +2,10 @@ name:                daedalus-installer
 version:             0.1.0.0
 synopsis:            Daedalus Installer Builder
 description:         Please see README.md
-license:             MIT
-author:              Serokell
-maintainer:          Serokell <hi@serokell.io>
-copyright:           2016 IOHK
+license:             apache2
+author:              IOHK
+maintainer:          DevOps <devops@iohk.io>
+copyright:           2019 IOHK
 build-type:          Simple
 extra-source-files:  README.md
 cabal-version:       >=1.10
