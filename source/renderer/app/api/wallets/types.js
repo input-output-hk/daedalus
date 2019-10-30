@@ -17,6 +17,19 @@ export type AdaWallet = {
   createdAt: Date,
 };
 
+export type LegacyAdaWallet = {
+  id: string,
+  balance: {
+    available: WalletBalance,
+    total: WalletBalance,
+  },
+  name: string,
+  passphrase?: {
+    last_updated_at: string,
+  },
+  state: WalletSyncState,
+};
+
 export type WalletUnit = 'lovelace' | 'ada';
 
 export type AdaWallets = Array<AdaWallet>;
@@ -70,6 +83,12 @@ export type WalletInitData = {
   address_pool_gap?: number, // 20
 };
 
+export type LegacyWalletInitData = {
+  name: string,
+  mnemonic_sentence: [string], // [ 12 ] words
+  passphrase: string,
+};
+
 export type WalletIdAndBalance = {
   walletId: string,
   balance: ?BigNumber,
@@ -109,6 +128,12 @@ export type GetWalletIdAndBalanceResponse = {
 };
 
 export type RestoreWalletRequest = {
+  recoveryPhrase: string,
+  walletName: string,
+  spendingPassword?: ?string,
+};
+
+export type RestoreLegacyWalletRequest = {
   recoveryPhrase: string,
   walletName: string,
   spendingPassword?: ?string,

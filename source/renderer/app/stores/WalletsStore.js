@@ -25,6 +25,10 @@ import {
 import type { walletExportTypeChoices } from '../types/walletExportTypes';
 import type { WalletImportFromFileParams } from '../actions/wallets-actions';
 import type LocalizableError from '../i18n/LocalizableError';
+import {
+  WALLET_RESTORE_TYPES,
+  WALLET_RESTORE_REGULAR_TYPES,
+} from '../components/wallet/WalletRestoreDialog';
 import type {
   WalletLocalData,
   WalletsLocalData,
@@ -110,6 +114,9 @@ export default class WalletsStore extends Store {
   > = new Request(this.api.ada.getWalletRecoveryPhraseFromCertificate);
   @observable restoreRequest: Request<Wallet> = new Request(
     this.api.ada.restoreWallet
+  );
+  @observable restoreLegacyRequest: Request<Wallet> = new Request(
+    this.api.ada.restoreLegacyWallet
   );
   @observable
   getWalletsLocalDataRequest: Request<WalletsLocalData> = new Request(
@@ -543,10 +550,9 @@ export default class WalletsStore extends Store {
       recoveryPhrase: params.recoveryPhrase,
       walletName: params.walletName,
       spendingPassword: params.spendingPassword,
-      walletType: params.walletType,
     };
 
-    if (params.type === 'certificate') {
+    if (params.type === WALLET_RESTORE_TYPES.CERTIFICATE) {
       // Split recovery phrase to 18 (scrambled mnemonics) + 9 (mnemonics seed) mnemonics
       const recoveryPhraseArray = params.recoveryPhrase.split(' ');
       const chunked = chunk(recoveryPhraseArray, 18);
@@ -565,7 +571,12 @@ export default class WalletsStore extends Store {
       this.getWalletRecoveryPhraseFromCertificateRequest.reset();
     }
 
-    const restoredWallet = await this.restoreRequest.execute(data).promise;
+    const request =
+      params.walletType === WALLET_RESTORE_REGULAR_TYPES.DAEDALUS_WALLET
+        ? this.restoreRequest
+        : this.restoreLegacyRequest;
+
+    const restoredWallet = await request.execute(data).promise;
     if (!restoredWallet)
       throw new Error('Restored wallet was not received correctly');
     await this._patchWalletRequestWithNewWallet(restoredWallet);

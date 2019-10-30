@@ -33,12 +33,12 @@ import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
 import styles from './WalletRestoreDialog.scss';
 import { submitOnEnter } from '../../utils/form';
 
-const RESTORE_TYPES = {
+export const WALLET_RESTORE_TYPES = {
   REGULAR: 'regular',
   CERTIFICATE: 'certificate',
 };
 
-const RESTORE_WALLET_TYPES = {
+export const WALLET_RESTORE_REGULAR_TYPES = {
   DAEDALUS_WALLET: 'daedalus-wallet',
   DAEDALUS_LEGACY_WALLET: 'daedalus-legacy-wallet',
 };
@@ -178,8 +178,8 @@ export default class WalletRestoreDialog extends Component<Props, State> {
   };
 
   state = {
-    activeChoice: RESTORE_TYPES.REGULAR, // regular | certificate
-    walletType: RESTORE_WALLET_TYPES.DAEDALUS_WALLET,
+    activeChoice: WALLET_RESTORE_TYPES.REGULAR, // regular | certificate
+    walletType: WALLET_RESTORE_REGULAR_TYPES.DAEDALUS_WALLET,
     createPassword: true,
   };
 
@@ -232,7 +232,9 @@ export default class WalletRestoreDialog extends Component<Props, State> {
             }
             return [
               // TODO: we should also validate paper wallets mnemonics here!
-              this.isRegular() ? this.props.mnemonicValidator(value) : true,
+              this.isRegular() && !this.isLegacy()
+                ? this.props.mnemonicValidator(value)
+                : true,
               this.context.intl.formatMessage(messages.invalidRecoveryPhrase),
             ];
           },
@@ -298,7 +300,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
   };
 
   handleWalletTypeToggle = (walletType: string) => {
-    if (walletType === RESTORE_WALLET_TYPES.DAEDALUS_WALLET) {
+    if (walletType === WALLET_RESTORE_REGULAR_TYPES.DAEDALUS_WALLET) {
       this.handlePasswordSwitchToggle(true);
     }
     this.setState({ walletType });
@@ -310,7 +312,6 @@ export default class WalletRestoreDialog extends Component<Props, State> {
         const { createPassword } = this.state;
         const { onSubmit } = this.props;
         const { recoveryPhrase, walletName, spendingPassword } = form.values();
-
         const walletData: Object = {
           recoveryPhrase: join(recoveryPhrase, ' '),
           walletName,
@@ -400,13 +401,19 @@ export default class WalletRestoreDialog extends Component<Props, State> {
         <div className={styles.restoreTypeChoice}>
           <button
             className={regularTabClasses}
-            onClick={this.onSelectChoice.bind(this, RESTORE_TYPES.REGULAR)}
+            onClick={this.onSelectChoice.bind(
+              this,
+              WALLET_RESTORE_TYPES.REGULAR
+            )}
           >
             {intl.formatMessage(messages.recoveryPhraseTabTitle)}
           </button>
           <button
             className={certificateTabClasses}
-            onClick={this.onSelectChoice.bind(this, RESTORE_TYPES.CERTIFICATE)}
+            onClick={this.onSelectChoice.bind(
+              this,
+              WALLET_RESTORE_TYPES.CERTIFICATE
+            )}
           >
             {intl.formatMessage(messages.certificateTabTitle)}
           </button>
@@ -425,7 +432,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
             label="Recovery phrase type"
             items={[
               {
-                key: RESTORE_WALLET_TYPES.DAEDALUS_WALLET,
+                key: WALLET_RESTORE_REGULAR_TYPES.DAEDALUS_WALLET,
                 label: (
                   <p>
                     15 words <b>(Daedalus wallet)</b>
@@ -434,11 +441,11 @@ export default class WalletRestoreDialog extends Component<Props, State> {
                 selected: !this.isLegacy(),
                 onChange: () =>
                   this.handleWalletTypeToggle(
-                    RESTORE_WALLET_TYPES.DAEDALUS_WALLET
+                    WALLET_RESTORE_REGULAR_TYPES.DAEDALUS_WALLET
                   ),
               },
               {
-                key: RESTORE_WALLET_TYPES.DAEDALUS_LEGACY_WALLET,
+                key: WALLET_RESTORE_REGULAR_TYPES.DAEDALUS_LEGACY_WALLET,
                 label: (
                   <p>
                     12 words <b>(Daedalus legacy wallet)</b>
@@ -447,7 +454,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
                 selected: this.isLegacy(),
                 onChange: () =>
                   this.handleWalletTypeToggle(
-                    RESTORE_WALLET_TYPES.DAEDALUS_LEGACY_WALLET
+                    WALLET_RESTORE_REGULAR_TYPES.DAEDALUS_LEGACY_WALLET
                   ),
               },
             ]}
@@ -525,16 +532,17 @@ export default class WalletRestoreDialog extends Component<Props, State> {
   }
 
   isRegular() {
-    return this.state.activeChoice === RESTORE_TYPES.REGULAR;
+    return this.state.activeChoice === WALLET_RESTORE_TYPES.REGULAR;
   }
 
   isCertificate() {
-    return this.state.activeChoice === RESTORE_TYPES.CERTIFICATE;
+    return this.state.activeChoice === WALLET_RESTORE_TYPES.CERTIFICATE;
   }
 
   isLegacy() {
     return (
-      this.state.walletType === RESTORE_WALLET_TYPES.DAEDALUS_LEGACY_WALLET
+      this.state.walletType ===
+      WALLET_RESTORE_REGULAR_TYPES.DAEDALUS_LEGACY_WALLET
     );
   }
 
