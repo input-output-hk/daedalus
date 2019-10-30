@@ -345,7 +345,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
     const { intl } = this.context;
     const { form } = this;
     const { suggestedMnemonics, isSubmitting, error, onCancel } = this.props;
-    const { createPassword, walletType } = this.state;
+    const { createPassword } = this.state;
 
     const dialogClasses = classnames([
       styles.component,

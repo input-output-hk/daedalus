@@ -543,6 +543,7 @@ export default class WalletsStore extends Store {
       recoveryPhrase: params.recoveryPhrase,
       walletName: params.walletName,
       spendingPassword: params.spendingPassword,
+      walletType: params.walletType,
     };
 
     if (params.type === 'certificate') {

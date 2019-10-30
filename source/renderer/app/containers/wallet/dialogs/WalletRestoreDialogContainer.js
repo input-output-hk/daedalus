@@ -22,6 +22,7 @@ export default class WalletRestoreDialogContainer extends Component<Props> {
     walletName: string,
     spendingPassword: ?string,
     type?: string,
+    walletType?: string,
   }) => {
     this.props.actions.wallets.restoreWallet.trigger(values);
   };

@@ -4,7 +4,6 @@ import type { Node } from 'react';
 import { Radio } from 'react-polymorph/lib/components/Radio';
 import { RadioSkin } from 'react-polymorph/lib/skins/simple/RadioSkin';
 import { observer } from 'mobx-react';
-import classnames from 'classnames';
 import styles from './RadioSet.scss';
 import stylesOverride from './RadioOverride.scss';
 
@@ -16,12 +15,12 @@ type Props = {
 type RadioProps = {
   key: string,
   disabled?: boolean,
-  label?: string | Element<any>,
+  label?: Node,
   onBlur?: Function,
   onChange?: Function,
   onFocus?: Function,
   selected: boolean,
-  skin?: ComponentType<any>,
+  skin?: Node,
   theme: ?Object,
   themeOverrides: Object,
 };

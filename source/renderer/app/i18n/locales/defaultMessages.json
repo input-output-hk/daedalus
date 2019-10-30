@@ -7419,13 +7419,13 @@
         "description": "Label \"Restore wallet\" on the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 51
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.title.label",
         "start": {
           "column": 9,
-          "line": 40
+          "line": 47
         }
       },
       {
@@ -7433,13 +7433,13 @@
         "description": "Label for the wallet name input on the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 50
+          "line": 57
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.wallet.name.input.label",
         "start": {
           "column": 24,
-          "line": 45
+          "line": 52
         }
       },
       {
@@ -7447,13 +7447,13 @@
         "description": "Hint \"Name the wallet you are restoring\" for the wallet name input on the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 56
+          "line": 63
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.wallet.name.input.hint",
         "start": {
           "column": 23,
-          "line": 51
+          "line": 58
         }
       },
       {
@@ -7461,13 +7461,13 @@
         "description": "Label for the recovery phrase input on the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 62
+          "line": 69
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.recovery.phrase.input.label",
         "start": {
           "column": 28,
-          "line": 57
+          "line": 64
         }
       },
       {
@@ -7475,13 +7475,13 @@
         "description": "Hint \"Enter recovery phrase\" for the recovery phrase input on the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 68
+          "line": 75
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.recovery.phrase.input.hint",
         "start": {
           "column": 27,
-          "line": 63
+          "line": 70
         }
       },
       {
@@ -7489,13 +7489,13 @@
         "description": "\"No results\" message for the recovery phrase input search results.",
         "end": {
           "column": 3,
-          "line": 74
+          "line": 81
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.recovery.phrase.input.noResults",
         "start": {
           "column": 27,
-          "line": 69
+          "line": 76
         }
       },
       {
@@ -7503,13 +7503,13 @@
         "description": "Label for the \"Restore wallet\" button on the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 80
+          "line": 87
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.restore.wallet.button.label",
         "start": {
           "column": 21,
-          "line": 75
+          "line": 82
         }
       },
       {
@@ -7517,13 +7517,13 @@
         "description": "Error message shown when invalid recovery phrase was entered.",
         "end": {
           "column": 3,
-          "line": 86
+          "line": 93
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.form.errors.invalidRecoveryPhrase",
         "start": {
           "column": 25,
-          "line": 81
+          "line": 88
         }
       },
       {
@@ -7531,13 +7531,13 @@
         "description": "Text for the \"Spending password\" switch in the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 93
+          "line": 100
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.passwordSwitchPlaceholder",
         "start": {
           "column": 29,
-          "line": 87
+          "line": 94
         }
       },
       {
@@ -7545,13 +7545,13 @@
         "description": "Label for the \"Spending password\" switch in the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 99
+          "line": 106
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.passwordSwitchLabel",
         "start": {
           "column": 23,
-          "line": 94
+          "line": 101
         }
       },
       {
@@ -7559,13 +7559,13 @@
         "description": "Label for the \"Wallet password\" input in the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 105
+          "line": 112
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.spendingPasswordLabel",
         "start": {
           "column": 25,
-          "line": 100
+          "line": 107
         }
       },
       {
@@ -7573,13 +7573,13 @@
         "description": "Label for the \"Repeat password\" input in the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 111
+          "line": 118
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.repeatPasswordLabel",
         "start": {
           "column": 23,
-          "line": 106
+          "line": 113
         }
       },
       {
@@ -7587,13 +7587,13 @@
         "description": "Placeholder for the \"Password\" inputs in the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 117
+          "line": 124
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.passwordFieldPlaceholder",
         "start": {
           "column": 28,
-          "line": 112
+          "line": 119
         }
       },
       {
@@ -7601,13 +7601,13 @@
         "description": "Tab title \"Backup recovery phrase\" in the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 123
+          "line": 130
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.tab.title.recoveryPhrase",
         "start": {
           "column": 26,
-          "line": 118
+          "line": 125
         }
       },
       {
@@ -7615,13 +7615,13 @@
         "description": "Tab title \"Paper wallet certificate\" in the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 129
+          "line": 136
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.tab.title.certificate",
         "start": {
           "column": 23,
-          "line": 124
+          "line": 131
         }
       },
       {
@@ -7629,13 +7629,13 @@
         "description": "Label for the shielded recovery phrase input on the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 135
+          "line": 142
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.shielded.recovery.phrase.input.label",
         "start": {
           "column": 36,
-          "line": 130
+          "line": 137
         }
       },
       {
@@ -7643,13 +7643,13 @@
         "description": "Hint \"Enter shielded recovery phrase\" for the recovery phrase input on the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 142
+          "line": 149
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.shielded.recovery.phrase.input.hint",
         "start": {
           "column": 35,
-          "line": 136
+          "line": 143
         }
       }
     ],
