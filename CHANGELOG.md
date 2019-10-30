@@ -3,6 +3,10 @@ Changelog
 
 ## vNext
 
+### Features
+
+- Implemented date, time and number format user options ([PR 1611](https://github.com/input-output-hk/daedalus/pull/1611))
+
 ### Chores
 
 - Implemented Mobx DevTools along with React DevTools ([PR 1474](https://github.com/input-output-hk/daedalus/pull/1474))

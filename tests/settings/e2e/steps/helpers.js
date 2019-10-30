@@ -3,7 +3,7 @@ import type { Daedalus, WebdriverClient } from '../../../types';
 
 const DATA_LAYER_MIGRATION_ACCEPTANCE_COMPONENT = '.DataLayerMigrationForm_component';
 const DEFAULT_LANGUAGE = 'en-US';
-const LANGUAGE_SELECTION_FORM = '.LanguageSelectionForm_component';
+const INITIAL_SETTINGS_FORM = '.InitialSettings_component';
 const TERMS_OF_USE_FORM = '.TermsOfUseForm_component';
 
 declare var daedalus: Daedalus;
@@ -35,23 +35,26 @@ export const i18nHelpers = {
     client: WebdriverClient,
     { language }: { language: string } = {}
   ) =>
-    client.execute(locale => {
-      daedalus.actions.profile.updateLocale.trigger({ locale });
+    client.execute(value => {
+      daedalus.actions.profile.updateUserLocalSetting.trigger({ param: 'locale', value });
     }, language || DEFAULT_LANGUAGE),
 };
 
-export const languageSelectionHelpers = {
+export const initialSettingsHelpers = {
   waitForVisible: async (
     client: WebdriverClient,
     { isHidden }: { isHidden: boolean } = {}
   ) =>
-    client.waitForVisible(LANGUAGE_SELECTION_FORM, null, isHidden),
+    client.waitForVisible(INITIAL_SETTINGS_FORM, null, isHidden),
   ensureLanguageIsSelected: async (
     client: WebdriverClient,
     { language }: { language: string } = {}
   ) => {
     await i18nHelpers.setActiveLanguage(client, { language });
-    await languageSelectionHelpers.waitForVisible(client, { isHidden: true });
+    client.execute(
+      () => daedalus.actions.profile.finishInitialScreenSettings.trigger()
+    );
+    await initialSettingsHelpers.waitForVisible(client, { isHidden: true });
   },
 };
 
