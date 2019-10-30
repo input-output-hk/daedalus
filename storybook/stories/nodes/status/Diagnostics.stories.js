@@ -1,6 +1,7 @@
 // @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
+import { number, withKnobs } from '@storybook/addon-knobs';
 
 // Assets and helpers
 import StoryDecorator from '../../_support/StoryDecorator';
@@ -31,6 +32,7 @@ const coreInfo = {
 
 storiesOf('Nodes|Status', module)
   .addDecorator(story => <StoryDecorator>{story()}</StoryDecorator>)
+  .addDecorator(withKnobs)
 
   // ====== Stories ======
 
@@ -51,17 +53,20 @@ storiesOf('Nodes|Status', module)
       isNodeTimeCorrect
       isConnected
       isSynced
-      syncPercentage={100}
+      syncPercentage={number('syncPercentage', 100)}
       hasBeenConnected
-      localTimeDifference={29912}
+      localTimeDifference={number('localTimeDifference', 0)}
       isSystemTimeCorrect
       isForceCheckingNodeTime={false}
       isSystemTimeIgnored={false}
-      latestLocalBlockTimestamp={280719}
-      latestNetworkBlockTimestamp={280719}
+      latestLocalBlockTimestamp={number('latestLocalBlockTimestamp', 280719)}
+      latestNetworkBlockTimestamp={number(
+        'latestNetworkBlockTimestamp',
+        280719
+      )}
       nodeConnectionError={null}
-      localBlockHeight={42539}
-      networkBlockHeight={42539}
+      localBlockHeight={number('localBlockHeight', 280719)}
+      networkBlockHeight={number('networkBlockHeight', 42539)}
       onForceCheckLocalTimeDifference={() => null}
       onCopyStateDirectoryPath={() => null}
       onOpenStateDirectory={() => null}

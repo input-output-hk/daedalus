@@ -6,6 +6,7 @@ Changelog
 ### Features
 
 - Implemented Internet connection status overlay ([PR 1546](https://github.com/input-output-hk/daedalus/pull/1546), [PR 1554](https://github.com/input-output-hk/daedalus/pull/1554))
+- Implemented date, time and number format user options ([PR 1611](https://github.com/input-output-hk/daedalus/pull/1611))
 
 ### Chores
 

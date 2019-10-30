@@ -1,5 +1,6 @@
 // @flow
 import React, { Component } from 'react';
+import { BigNumber } from 'bignumber.js';
 import { number } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
 
@@ -85,6 +86,7 @@ export class StakingDelegationSteps extends Component<any, State> {
         selectedWallet={null}
       />,
       <DelegationStepsConfirmationDialog
+        fees={new BigNumber(0.172081)}
         key="DelegationStepsConfirmationDialog"
         stepsList={DELEGATION_WIZARD_STEPS_LIST}
         isSpendingPasswordSet
@@ -93,6 +95,8 @@ export class StakingDelegationSteps extends Component<any, State> {
         onBack={action('onBack')}
       />,
       <DelegationStepsActivationDialog
+        amount={new BigNumber(3)}
+        fees={new BigNumber(0.172081)}
         key="DelegationStepsActivationDialog"
         stepsList={DELEGATION_WIZARD_STEPS_LIST}
         isSpendingPasswordSet
