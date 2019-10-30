@@ -26,6 +26,7 @@ export default class WalletsActions {
     walletName: string,
     spendingPassword: ?string,
     type?: string,
+    walletType?: string,
   }> = new Action();
   importWalletFromFile: Action<WalletImportFromFileParams> = new Action();
   deleteWallet: Action<{ walletId: string }> = new Action();

@@ -534,6 +534,7 @@ export default class WalletsStore extends Store {
     walletName: string,
     spendingPassword: ?string,
     type?: string,
+    walletType?: string,
   }) => {
     // reset getWalletRecoveryPhraseFromCertificateRequest to clear previous errors
     this.getWalletRecoveryPhraseFromCertificateRequest.reset();

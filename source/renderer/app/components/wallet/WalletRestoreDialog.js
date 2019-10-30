@@ -6,11 +6,12 @@ import classnames from 'classnames';
 import { Autocomplete } from 'react-polymorph/lib/components/Autocomplete';
 import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import { Input } from 'react-polymorph/lib/components/Input';
-import { AutocompleteSkin } from 'react-polymorph/lib/skins/simple/AutocompleteSkin';
 import { SwitchSkin } from 'react-polymorph/lib/skins/simple/SwitchSkin';
+import { AutocompleteSkin } from 'react-polymorph/lib/skins/simple/AutocompleteSkin';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { IDENTIFIERS } from 'react-polymorph/lib/themes/API';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
+import RadioSet from '../widgets/RadioSet';
 import ReactToolboxMobxForm, {
   handleFormErrors,
 } from '../../utils/ReactToolboxMobxForm';
@@ -34,6 +35,11 @@ import { submitOnEnter } from '../../utils/form';
 const RESTORE_TYPES = {
   REGULAR: 'regular',
   CERTIFICATE: 'certificate',
+};
+
+const RESTORE_WALLET_TYPES = {
+  DAEDALUS_WALLET: 'daedalus-wallet',
+  DAEDALUS_LEGACY_WALLET: 'daedalus-legacy-wallet',
 };
 
 const messages = defineMessages({
@@ -171,6 +177,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
 
   state = {
     activeChoice: RESTORE_TYPES.REGULAR, // regular | certificate
+    walletType: RESTORE_WALLET_TYPES.DAEDALUS_WALLET,
     createPassword: true,
   };
 
@@ -285,6 +292,10 @@ export default class WalletRestoreDialog extends Component<Props, State> {
     this.setState({ createPassword: value });
   };
 
+  handleWalletTypeToggle = (value: string) => {
+    this.setState({ walletType: value });
+  };
+
   submit = () => {
     this.form.submit({
       onSuccess: form => {
@@ -326,7 +337,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
     const { intl } = this.context;
     const { form } = this;
     const { suggestedMnemonics, isSubmitting, error, onCancel } = this.props;
-    const { createPassword } = this.state;
+    const { createPassword, walletType } = this.state;
 
     const dialogClasses = classnames([
       styles.component,
@@ -400,6 +411,41 @@ export default class WalletRestoreDialog extends Component<Props, State> {
           error={walletNameField.error}
           skin={InputSkin}
         />
+
+        {this.isRegular() && (
+          <RadioSet
+            label="Recovery phrase type"
+            items={[
+              {
+                key: RESTORE_WALLET_TYPES.DAEDALUS_WALLET,
+                label: (
+                  <p>
+                    15 words <b>(Daedalus wallet)</b>
+                  </p>
+                ),
+                selected: walletType === RESTORE_WALLET_TYPES.DAEDALUS_WALLET,
+                onChange: () =>
+                  this.handleWalletTypeToggle(
+                    RESTORE_WALLET_TYPES.DAEDALUS_WALLET
+                  ),
+              },
+              {
+                key: RESTORE_WALLET_TYPES.DAEDALUS_LEGACY_WALLET,
+                label: (
+                  <p>
+                    12 words <b>(Daedalus legacy wallet)</b>
+                  </p>
+                ),
+                selected:
+                  walletType === RESTORE_WALLET_TYPES.DAEDALUS_LEGACY_WALLET,
+                onChange: () =>
+                  this.handleWalletTypeToggle(
+                    RESTORE_WALLET_TYPES.DAEDALUS_LEGACY_WALLET
+                  ),
+              },
+            ]}
+          />
+        )}
 
         <Autocomplete
           {...recoveryPhraseField.bind()}
