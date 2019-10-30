@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import { get, take } from 'lodash';
+import { take } from 'lodash';
 import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import { MAX_TRANSACTIONS_ON_SUMMARY_PAGE } from '../../config/numbersConfig';
@@ -11,7 +11,6 @@ import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer
 import { ROUTES } from '../../routes-config';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import { formattedWalletAmount } from '../../utils/formatters';
-import { WalletSyncStateTags } from '../../domains/Wallet';
 
 export const messages = defineMessages({
   noTransactions: {
@@ -42,7 +41,7 @@ export default class WalletSummaryPage extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { app, wallets, transactions } = this.props.stores;
+    const { app, wallets, transactions, profile } = this.props.stores;
     const {
       openExternalLink,
       environment: { network },
@@ -54,7 +53,9 @@ export default class WalletSummaryPage extends Component<Props> {
       recentTransactionsRequest,
       unconfirmedAmount,
     } = transactions;
+    const { isActiveWalletRestoring } = wallets;
     const wallet = wallets.active;
+    const { currentTimeFormat, currentDateFormat } = profile;
     // Guard against potential null values
     if (!wallet)
       throw new Error('Active wallet required for WalletSummaryPage.');
@@ -62,13 +63,10 @@ export default class WalletSummaryPage extends Component<Props> {
     let walletTransactions = null;
     const noTransactionsLabel = intl.formatMessage(messages.noTransactions);
 
-    const isRestoreActive =
-      get(wallet, 'syncState.tag') === WalletSyncStateTags.RESTORING;
-
     if (
       recentTransactionsRequest.isExecutingFirstTime ||
       hasAny ||
-      isRestoreActive
+      isActiveWalletRestoring
     ) {
       walletTransactions = (
         <WalletTransactionsList
@@ -78,7 +76,7 @@ export default class WalletSummaryPage extends Component<Props> {
           hasMoreToLoad={false}
           assuranceMode={wallet.assuranceMode}
           walletId={wallet.id}
-          isRestoreActive={isRestoreActive}
+          isRestoreActive={isActiveWalletRestoring}
           formattedWalletAmount={formattedWalletAmount}
           showMoreTransactionsButton={
             recent.length > MAX_TRANSACTIONS_ON_SUMMARY_PAGE
@@ -87,6 +85,8 @@ export default class WalletSummaryPage extends Component<Props> {
           onOpenExternalLink={openExternalLink}
           onShowMoreTransactions={this.handleShowMoreTransaction}
           totalAvailable={totalAvailable}
+          currentTimeFormat={currentTimeFormat}
+          currentDateFormat={currentDateFormat}
         />
       );
     } else if (!hasAny) {
@@ -101,7 +101,7 @@ export default class WalletSummaryPage extends Component<Props> {
           numberOfTransactions={totalAvailable}
           pendingAmount={unconfirmedAmount}
           isLoadingTransactions={recentTransactionsRequest.isExecutingFirstTime}
-          isRestoreActive={isRestoreActive}
+          isRestoreActive={isActiveWalletRestoring}
         />
         {walletTransactions}
       </VerticalFlexContainer>

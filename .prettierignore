@@ -20,4 +20,5 @@
 
 # Ignore the following special folders and files
 source/renderer/app/i18n/locales/
-features/tests/e2e/documents/*
+tests/paper-wallets/e2e/documents/*
+tests/wallets/e2e/documents/*

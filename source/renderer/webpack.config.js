@@ -9,7 +9,7 @@ const isCi = process.env.CI && process.env.CI !== '';
 
 module.exports = {
   mode: 'development',
-  devtool: 'cheap-module-source-map',
+  devtool: 'inline-cheap-module-source-map',
   entry: './source/renderer/index.js',
   optimization: {
     // https://github.com/webpack/webpack/issues/7470
@@ -111,6 +111,7 @@ module.exports = {
       )
     ),
     new AutoDllPlugin({
+      inherit: !isCi,
       filename: 'vendor.dll.js',
       context: path.join(__dirname, '..'),
       entry: {

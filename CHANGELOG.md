@@ -1,12 +1,34 @@
 Changelog
 =========
 
+## vNext
+
+### Features
+
+- Implemented date, time and number format user options ([PR 1611](https://github.com/input-output-hk/daedalus/pull/1611))
+
+### Chores
+
+- Fixed build mode of webpack auto dll plugin ([PR 1606](https://github.com/input-output-hk/daedalus/pull/1606))
+- Changed delete wallet button layout for emphasized location/importance and removed export wallet feature ([PR 1612](https://github.com/input-output-hk/daedalus/pull/1612), [PR 1619](https://github.com/input-output-hk/daedalus/pull/1619))
+- Speedup storybook builds in development ([PR 1607](https://github.com/input-output-hk/daedalus/pull/1607))
+- Added note to UTXO screen showing pending transactions ([PR 1589](https://github.com/input-output-hk/daedalus/pull/1589))
+- Fixed broken source maps ([PR 1594](https://github.com/input-output-hk/daedalus/pull/1594))
+- Reorganized Storybook by domain ([PR 1537](https://github.com/input-output-hk/daedalus/pull/1537))
+- Reorganized Tests by domain ([PR 1540](https://github.com/input-output-hk/daedalus/pull/1540))
+
+### Fixes
+
+- Reduce layout re-renderings ([PR 1595](https://github.com/input-output-hk/daedalus/pull/1595))
+- Fixed green Cardano theme white color and borders color ([PR 1584](https://github.com/input-output-hk/daedalus/pull/1584))
+- Fixed flat button color  ([PR 1586](https://github.com/input-output-hk/daedalus/pull/1586))
+
 ## 0.15.0
 
 ### Features
 
 - Implemented "Newsfeed" feature ([PR 1570](https://github.com/input-output-hk/daedalus/pull/1570), [PR 1578](https://github.com/input-output-hk/daedalus/pull/1578), [PR 1580](https://github.com/input-output-hk/daedalus/pull/1580))
-- Implemented "Wallet recovery phrase verification" feature ([PR 1565](https://github.com/input-output-hk/daedalus/pull/1565), [PR 1623](https://github.com/input-output-hk/daedalus/pull/1623)
+- Implemented "Wallet recovery phrase verification" feature ([PR 1565](https://github.com/input-output-hk/daedalus/pull/1565), [PR 1623](https://github.com/input-output-hk/daedalus/pull/1623))
 - Implemented new "Automated update" notification design ([PR 1491](https://github.com/input-output-hk/daedalus/pull/1491))
 - Improved "Wallets" list scrollbar UX ([PR 1475](https://github.com/input-output-hk/daedalus/pull/1475))
 - Removed "Ada Redemption" feature ([PR 1510](https://github.com/input-output-hk/daedalus/pull/1510))

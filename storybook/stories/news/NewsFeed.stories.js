@@ -3,10 +3,12 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
-import { boolean } from '@storybook/addon-knobs';
-import StoryDecorator from '../support/StoryDecorator';
+import { boolean, select, withKnobs } from '@storybook/addon-knobs';
+import StoryDecorator from '../_support/StoryDecorator';
 import NewsFeed from '../../../source/renderer/app/components/news/NewsFeed';
 import News from '../../../source/renderer/app/domains/News';
+import { dateOptions } from '../_support/profileSettings';
+import { DATE_ENGLISH_OPTIONS } from '../../../source/renderer/app/config/profileConfig';
 
 const news = [
   new News.News({
@@ -112,30 +114,14 @@ const news = [
 
 const newsCollection = new News.NewsCollection(news);
 
-storiesOf('NewsFeed', module)
-  .addDecorator(story => (
-    <StoryDecorator>{story(newsCollection)}</StoryDecorator>
+storiesOf('News|NewsFeed', module)
+  .addDecorator((story, context) => (
+    <StoryDecorator>{withKnobs(story, context)}</StoryDecorator>
   ))
 
   // ====== Stories ======
 
-  .add('NewsFeed - no news items fetched from server', () => (
-    <div>
-      <NewsFeed
-        onGoToRoute={action('onGoToRoute')}
-        isLoadingNews={false}
-        onMarkNewsAsRead={action('onMarkNewsAsRead')}
-        onNewsItemActionClick={action('onNewsItemActionClick')}
-        onClose={action('onClose')}
-        news={undefined}
-        isNewsFeedOpen={boolean('isNewsFeedOpen', true)}
-        onOpenExternalLink={() => {}}
-        onOpenAlert={() => {}}
-      />
-    </div>
-  ))
-
-  .add('NewsFeed - newsfeed empty', () => (
+  .add('Empty', () => (
     <div>
       <NewsFeed
         onGoToRoute={action('onGoToRoute')}
@@ -147,11 +133,12 @@ storiesOf('NewsFeed', module)
         isNewsFeedOpen={boolean('isNewsFeedOpen2', true)}
         onOpenExternalLink={() => {}}
         onOpenAlert={() => {}}
+        currentDateFormat=" "
       />
     </div>
   ))
 
-  .add('NewsFeed - loading', () => (
+  .add('Fetching', () => (
     <div>
       <NewsFeed
         onGoToRoute={action('onGoToRoute')}
@@ -163,11 +150,12 @@ storiesOf('NewsFeed', module)
         isNewsFeedOpen={boolean('isNewsFeedOpen2', true)}
         onOpenExternalLink={() => {}}
         onOpenAlert={() => {}}
+        currentDateFormat=" "
       />
     </div>
   ))
 
-  .add('NewsFeed', () => (
+  .add('Fetched', () => (
     <div>
       <NewsFeed
         onGoToRoute={action('onGoToRoute')}
@@ -179,6 +167,11 @@ storiesOf('NewsFeed', module)
         isNewsFeedOpen={boolean('isNewsFeedOpen3', true)}
         onOpenExternalLink={() => {}}
         onOpenAlert={() => {}}
+        currentDateFormat={select(
+          'currentDateFormat',
+          dateOptions,
+          DATE_ENGLISH_OPTIONS[0].value
+        )}
       />
     </div>
   ));
