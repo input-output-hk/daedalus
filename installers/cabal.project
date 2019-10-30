@@ -1,0 +1,7 @@
+packages: .
+
+source-repository-package
+  type: git
+  location: https://github.com/input-output-hk/haskell-nsis
+  tag: 020e61eced93eaa6ab86ac603617e93aa6bf5af0
+

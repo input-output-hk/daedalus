@@ -13,4 +13,12 @@ let
 in with pkgs.haskell-nix; cabalProject {
   src = ./.;
   ghc = pkgs.buildPackages.pkgs.haskell.compiler.${haskellCompiler};
+  cache = (import ./args.nix).cache;
+  pkg-def-extras = [
+    (hackage: {
+      packages = {
+        nsis = hackage.nsis."1.0.12".revisions.default;
+      };
+    })
+  ];
 }
