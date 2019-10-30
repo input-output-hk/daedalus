@@ -3,6 +3,10 @@ Changelog
 
 ## vNext
 
+### Features
+
+- Implemented date, time and number format user options ([PR 1611](https://github.com/input-output-hk/daedalus/pull/1611))
+
 ### Chores
 
 - Refactor wallet nav to use new react-polymorph Dropdown ([PR 1593](https://github.com/input-output-hk/daedalus/pull/1593))

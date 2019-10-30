@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
+import { BigNumber } from 'bignumber.js';
 import { get } from 'lodash';
 import DelegationStepsActivationDialog from './DelegationStepsActivationDialog';
 import DelegationStepsChooseWalletDialog from './DelegationStepsChooseWalletDialog';
@@ -109,6 +110,7 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
       case 3:
         content = (
           <DelegationStepsConfirmationDialog
+            fees={new BigNumber(0.172081)}
             stepsList={stepsList}
             isSpendingPasswordSet={selectedWalletHasPassword}
             onClose={onClose}
@@ -120,6 +122,8 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
       case 4:
         content = (
           <DelegationStepsActivationDialog
+            amount={new BigNumber(3)}
+            fees={new BigNumber(0.172081)}
             stepsList={stepsList}
             isSpendingPasswordSet={selectedWalletHasPassword}
             onClose={onClose}

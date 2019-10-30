@@ -12,6 +12,7 @@ import { Stepper } from 'react-polymorph/lib/components/Stepper';
 import { StepperSkin } from 'react-polymorph/lib/skins/simple/StepperSkin';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
+import { BigNumber } from 'bignumber.js';
 import commonStyles from './DelegationSteps.scss';
 import styles from './DelegationStepsActivationDialog.scss';
 import Dialog from '../../widgets/Dialog';
@@ -21,6 +22,7 @@ import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import { submitOnEnter } from '../../../utils/form';
 import globalMessages from '../../../i18n/global-messages';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
+import { formattedWalletAmount } from '../../../utils/formatters';
 
 const messages = defineMessages({
   title: {
@@ -100,6 +102,8 @@ const messages = defineMessages({
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
 
 type Props = {
+  amount: BigNumber,
+  fees: BigNumber,
   isSpendingPasswordSet?: boolean,
   onActivate: Function,
   onBack: Function,
@@ -173,7 +177,14 @@ export default class DelegationStepsActivationDialog extends Component<Props> {
   render() {
     const { form } = this;
     const { intl } = this.context;
-    const { isSpendingPasswordSet, onBack, onClose, stepsList } = this.props;
+    const {
+      isSpendingPasswordSet,
+      onBack,
+      onClose,
+      stepsList,
+      amount,
+      fees,
+    } = this.props;
 
     const spendingPasswordField = form.$('spendingPassword');
 
@@ -248,7 +259,8 @@ export default class DelegationStepsActivationDialog extends Component<Props> {
                 {intl.formatMessage(messages.amountLabel)}
               </p>
               <p className={styles.amount}>
-                3<span> ADA</span>
+                {formattedWalletAmount(amount, false)}
+                <span> ADA</span>
               </p>
             </div>
 
@@ -257,7 +269,8 @@ export default class DelegationStepsActivationDialog extends Component<Props> {
                 {intl.formatMessage(messages.feesLabel)}
               </p>
               <p className={styles.amount}>
-                + 12.042481<span> ADA</span>
+                + {formattedWalletAmount(fees, false)}
+                <span> ADA</span>
               </p>
             </div>
           </div>
@@ -267,7 +280,8 @@ export default class DelegationStepsActivationDialog extends Component<Props> {
               {intl.formatMessage(messages.totalLabel)}
             </p>
             <p className={styles.amount}>
-              15.042481<span> ADA</span>
+              {formattedWalletAmount(amount.add(fees), false)}
+              <span> ADA</span>
             </p>
           </div>
 

@@ -43,7 +43,7 @@ export default class WalletTransactionsPage extends Component<Props> {
   render() {
     const { intl } = this.context;
     const { actions, stores } = this.props;
-    const { app, wallets } = stores;
+    const { app, wallets, profile } = stores;
     const {
       openExternalLink,
       environment: { network },
@@ -57,6 +57,7 @@ export default class WalletTransactionsPage extends Component<Props> {
       filtered,
       recent,
     } = stores.transactions;
+    const { currentTimeFormat, currentDateFormat } = profile;
 
     // Guard against potential null values
     if (!searchOptions || !activeWallet) return null;
@@ -102,6 +103,8 @@ export default class WalletTransactionsPage extends Component<Props> {
           walletId={activeWallet.id}
           formattedWalletAmount={formattedWalletAmount}
           onOpenExternalLink={openExternalLink}
+          currentTimeFormat={currentTimeFormat}
+          currentDateFormat={currentDateFormat}
           isRenderingAsVirtualList
         />
       );
