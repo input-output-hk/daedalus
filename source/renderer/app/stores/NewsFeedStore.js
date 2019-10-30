@@ -57,16 +57,17 @@ export default class NewsFeedStore extends Store {
     }
   }
 
-  @action getNewsFromLocalFiles = (isLocal: boolean) => {
+  @action getNewsFromLocalFiles = (isLocal: boolean, env?: string) => {
     this.fetchLocalNews = isLocal;
-    this.getNews();
+    this.getNews(env);
   };
 
-  @action getNews = async () => {
+  @action getNews = async (env?: string) => {
+    const { isDev } = this.stores.app.environment;
     let rawNews;
 
-    if (this.fetchLocalNews) {
-      rawNews = await this.api.ada.getNewsFromLocalFiles();
+    if (this.fetchLocalNews && isDev) {
+      rawNews = await this.api.ada.getNewsFromLocalFiles(env);
       this._setNews(rawNews);
       return;
     }
