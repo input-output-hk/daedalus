@@ -22,7 +22,7 @@ import {
   RECOVERY_PHRASE_VERIFICATION_NOTIFICATION,
   RECOVERY_PHRASE_VERIFICATION_WARNING,
 } from '../config/walletsConfig';
-import { DEVELOPMENT, TESTNET } from '../../../common/types/environment.types';
+import { TESTNET } from '../../../common/types/environment.types';
 import type { walletExportTypeChoices } from '../types/walletExportTypes';
 import type { WalletImportFromFileParams } from '../actions/wallets-actions';
 import type LocalizableError from '../i18n/LocalizableError';
@@ -452,34 +452,15 @@ export default class WalletsStore extends Store {
   isValidAddress = (address: string) => {
     const { app, networkStatus } = this.stores;
     const { environment } = app;
-    const { network } = environment;
+    const { network, isDev } = environment;
     const { nodeImplementation } = networkStatus;
     try {
       const result = Util.introspectAddress(address);
       if (
-        // Address must match environment
         result.network === network ||
-        /**
-         *
-         * OR
-         *
-         * Special case because CardanoWalletLauncher setup
-         * Temp solution to enable development
-         * isJormungandrTestnet = !!process.env.JORMUNGANDR_TESTNET;
-         *
-         * Jourmagandr KIND's specification:
-         * JormungandrAddressKind {
-         *   singleAddress = 3,
-         *   groupedAddress = 4,
-         *   accountAddress = 5,
-         *   multisigAddress = 6
-         * }
-         */
-        (result.kind >= 3 &&
-          result.kind <= 6 &&
+        (isDev &&
           result.network === TESTNET &&
-          nodeImplementation === 'jormungandr' &&
-          network === DEVELOPMENT)
+          nodeImplementation === 'jormungandr')
       ) {
         return true;
       }
