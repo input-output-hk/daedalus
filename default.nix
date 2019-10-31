@@ -204,7 +204,7 @@ let
 
     ## TODO: move to installers/nix
     hsDaedalusPkgs = import ./installers {
-      inherit (cardanoSL) daedalus-bridge;
+      #inherit (cardanoSL) daedalus-bridge;
       inherit localLib system;
     };
     daedalus-installer = pkgs.haskell.lib.justStaticExecutables self.hsDaedalusPkgs.daedalus-installer;

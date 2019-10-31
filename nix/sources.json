@@ -36,6 +36,18 @@
         "url": "https://github.com/hercules-ci/gitignore/archive/f9e996052b5af4032fe6150bba4a6fe4f7b9d698.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
+    "haskell.nix": {
+        "branch": "master",
+        "description": "Alternative Haskell Infrastructure for Nixpkgs",
+        "homepage": "https://input-output-hk.github.io/haskell.nix",
+        "owner": "input-output-hk",
+        "repo": "haskell.nix",
+        "rev": "6260dcb06b7d2855cbcd0a0f36483453c311248e",
+        "sha256": "1q9bqgf41ch3dpghsvh74xqnj98h3khj4gxk9n2kq9qai12720yv",
+        "type": "tarball",
+        "url": "https://github.com/input-output-hk/haskell.nix/archive/6260dcb06b7d2855cbcd0a0f36483453c311248e.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
     "iohk-nix": {
         "branch": "niv-snappy-choco",
         "description": "nix scripts shared across projects",
