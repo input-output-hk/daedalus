@@ -41,16 +41,6 @@ export const messages = defineMessages({
       '!!!This wallet is empty so it does not contain any UTXOs (unspent transaction outputs).',
     description: 'Empty wallet description for the "Wallet Utxos" screen.',
   },
-  labelX: {
-    id: 'wallet.settings.utxos.labelX',
-    defaultMessage: '!!!amount',
-    description: 'Label X for the "Wallet Utxos" screen.',
-  },
-  labelY: {
-    id: 'wallet.settings.utxos.labelY',
-    defaultMessage: '!!!Nº UTXO',
-    description: 'Label Y for the "Wallet Utxos" screen.',
-  },
   findOutMoreLink: {
     id: 'wallet.settings.utxos.findOutMoreLink',
     defaultMessage: '!!!Find out more',
@@ -62,6 +52,23 @@ export const messages = defineMessages({
       '!!!https://iohk.zendesk.com/hc/en-us/articles/360034118013',
     description: '"Find out more" link URL on the "Wallet Utxos" screen.',
   },
+  labelX: {
+    id: 'wallet.settings.utxos.labelX',
+    defaultMessage: '!!!amount',
+    description: 'Label X for the "Wallet Utxos" screen.',
+  },
+  labelY: {
+    id: 'wallet.settings.utxos.labelY',
+    defaultMessage: '!!!Nº UTXO',
+    description: 'Label Y for the "Wallet Utxos" screen.',
+  },
+  pendingTransactions: {
+    id: 'wallet.settings.utxos.pendingTransactions',
+    defaultMessage:
+      '!!!<b>Pending transactions</b> may affect the accuracy of data presented here. <br /> You have <b>{pendingTxnsCount}</b> pending transaction{txnsPlural}.',
+    description:
+      'Number of pending transactions for the "Wallet Utxos" screen.',
+  },
 });
 
 type Props = {
@@ -69,6 +76,7 @@ type Props = {
   walletUtxosAmount: number,
   chartData: Array<any>,
   onExternalLinkClick: Function,
+  pendingTxnsCount: number,
 };
 
 type State = {
@@ -88,6 +96,25 @@ export default class WalletUtxo extends Component<Props, State> {
     return !this.state.isHoveringChart;
   }
 
+  renderPendingTxns = (pendingTxnsCount: number) => {
+    const txnsPlural = (!pendingTxnsCount || pendingTxnsCount > 1) && 's';
+    return (
+      <div className={styles.pendingTxnsWrapper}>
+        <div>
+          <p>
+            <FormattedHTMLMessage
+              {...messages.pendingTransactions}
+              values={{
+                pendingTxnsCount,
+                txnsPlural,
+              }}
+            />
+          </p>
+        </div>
+      </div>
+    );
+  };
+
   render() {
     const { intl } = this.context;
     const {
@@ -95,6 +122,7 @@ export default class WalletUtxo extends Component<Props, State> {
       walletUtxosAmount,
       chartData,
       onExternalLinkClick,
+      pendingTxnsCount,
     } = this.props;
     const formattedWalletAmount = walletAmount.toFormat(DECIMAL_PLACES_IN_ADA);
     const isEmpty = walletUtxosAmount === 0;
@@ -117,7 +145,7 @@ export default class WalletUtxo extends Component<Props, State> {
 
     return (
       <div className={componentStyles}>
-        <BorderedBox>
+        <BorderedBox className={styles.borderedBox}>
           <div
             className={styles.container}
             onMouseEnter={() => this.setState({ isHoveringChart: true })}
@@ -196,6 +224,7 @@ export default class WalletUtxo extends Component<Props, State> {
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
+                {this.renderPendingTxns(pendingTxnsCount)}
               </Fragment>
             ) : (
               <p>{intl.formatMessage(messages.emptyWallet)}</p>
