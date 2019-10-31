@@ -16,6 +16,23 @@
   }
 
   .spendingPasswordWrapper {
+    border-top: 1px solid var(--theme-dialog-border-color);
+    margin-top: 30px;
+    padding-top: 20px;
+
+    .passwordSectionLabel {
+      font-family: var(--font-medium);
+      font-size: 16px;
+      line-height: 1.38;
+      margin-bottom: 14px;
+    }
+
+    .passwordSectionDescription {
+      font-family: var(--font-light);
+      font-size: 16px;
+      line-height: 1.38;
+    }
+
     .spendingPasswordFields {
       display: flex;
       flex-wrap: wrap;
@@ -36,7 +53,7 @@
         color: var(--theme-dialog-text-color);
         font-family: var(--font-light);
         line-height: 1.38;
-        margin-top: 16px;
+        margin-top: 10px;
       }
     }
   }

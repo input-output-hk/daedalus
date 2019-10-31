@@ -45,6 +45,17 @@ const messages = defineMessages({
     description:
       'Label for the "Create personal wallet" button on create wallet dialog.',
   },
+  passwordSectionLabel: {
+    id: 'wallet.create.dialog.passwordSectionLabel',
+    defaultMessage: '!!!Spending password',
+    description: 'Password creation label.',
+  },
+  passwordSectionDescription: {
+    id: 'wallet.create.dialog.passwordSectionDescription',
+    defaultMessage:
+      '!!!Keep your private keys safely encrypted by setting the spending password',
+    description: 'Password creation description.',
+  },
   spendingPasswordLabel: {
     id: 'wallet.create.dialog.spendingPasswordLabel',
     defaultMessage: '!!!Enter password',
@@ -221,6 +232,14 @@ export default class WalletCreateDialog extends Component<Props, State> {
         />
 
         <div className={styles.spendingPasswordWrapper}>
+          <div className={styles.passwordSectionLabel}>
+            {intl.formatMessage(messages.passwordSectionLabel)}
+          </div>
+
+          <div className={styles.passwordSectionDescription}>
+            {intl.formatMessage(messages.passwordSectionDescription)}
+          </div>
+
           <div className={styles.spendingPasswordFields}>
             <Input
               className="spendingPassword"

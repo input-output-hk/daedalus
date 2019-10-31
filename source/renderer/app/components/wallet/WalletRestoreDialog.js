@@ -81,6 +81,17 @@ const messages = defineMessages({
     description:
       'Error message shown when invalid recovery phrase was entered.',
   },
+  passwordSectionLabel: {
+    id: 'wallet.restore.dialog.passwordSectionLabel',
+    defaultMessage: '!!!Spending password',
+    description: 'Password creation label.',
+  },
+  passwordSectionDescription: {
+    id: 'wallet.restore.dialog.passwordSectionDescription',
+    defaultMessage:
+      '!!!Keep your private keys safely encrypted by setting the spending password',
+    description: 'Password creation description.',
+  },
   spendingPasswordLabel: {
     id: 'wallet.restore.dialog.spendingPasswordLabel',
     defaultMessage: '!!!Enter password',
@@ -400,6 +411,14 @@ export default class WalletRestoreDialog extends Component<Props, State> {
         />
 
         <div className={styles.spendingPasswordWrapper}>
+          <div className={styles.passwordSectionLabel}>
+            {intl.formatMessage(messages.passwordSectionLabel)}
+          </div>
+
+          <div className={styles.passwordSectionDescription}>
+            {intl.formatMessage(messages.passwordSectionDescription)}
+          </div>
+
           <div className={styles.spendingPasswordFields}>
             <Input
               className="spendingPassword"
