@@ -9,7 +9,7 @@ in
 , pkgs ? localLib.iohkNix.getPkgs { inherit system config; }
 }:
 let
-  nodejs = pkgs.nodejs-12_x;
+  nodejs = pkgs.nodejs-10_x;
   yarn = pkgs.yarn.override { inherit nodejs; };
   lint = runCommand "daedalus-lint-ci" { buildInputs = [ yarn ]; } ''
     set -x

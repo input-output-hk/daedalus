@@ -6,5 +6,5 @@ let
   '';
 in root.pkgs.stdenv.mkDerivation {
   name = "dhall-shell";
-  buildInputs = [ root.hsDaedalusPkgs.dhall tester ];
+  buildInputs = [ root.hsDaedalusPkgs.dhall.components.exes.dhall tester ];
 }

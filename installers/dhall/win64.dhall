@@ -20,11 +20,10 @@ in
 , pass      =
   { statePath           = dataDir
   , workingDir          = dataDir
-  , nodePath            = "\${DAEDALUS_DIR}\\${NODE_EXE}.exe"
-  , cliPath             = "\${DAEDALUS_DIR}\\${CLI_EXE}.exe"
+  , nodePath            = "\${DAEDALUS_DIR}\\jormungandr.exe"
+  , cliPath             = "\${DAEDALUS_INSTALL_DIRECTORY}\\jcli.exe"
   , nodeDbPath          = "DB-1.0"
   , nodeLogConfig       = "\${DAEDALUS_INSTALL_DIRECTORY}\\log-config-prod.yaml"
-  , nodeLogPath         = [] : Optional Text
 
   , walletPath          = "\${DAEDALUS_DIR}\\${installDir}.exe"
   , walletLogging       = True
@@ -33,7 +32,7 @@ in
   , updaterPath         = "Installer.exe"
   , updaterArgs         = [] : List Text
   , updateArchive       = [] : Optional Text
-  , updateWindowsRunner = ["Installer.bat"] : Optional Text
+  , updateWindowsRunner = ["Installer.bat"]
 
   , launcherLogsPrefix  = "Logs\\pub"
   }

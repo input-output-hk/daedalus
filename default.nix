@@ -206,8 +206,8 @@ let
     '';
     windows-installer = if needSignedBinaries then self.signed-windows-installer else self.unsigned-windows-installer;
 
-    inherit (pkgs.callPackage ./installers { inherit config system; }) haskellPackages;
-    inherit (self.haskellPackages.daedalus-installer.components.exes) make-installer;
+    hsDaedalusPkgs = (pkgs.callPackage ./installers { inherit config system; }).haskellPackages;
+    inherit (self.hsDaedalusPkgs.daedalus-installer.components.exes) make-installer;
     daedalus = self.callPackage ./installers/nix/linux.nix {};
     configMutator = pkgs.runCommand "configMutator" { buildInputs = [ ghcWithCardano ]; } ''
       cp ${./ConfigMutator.hs} ConfigMutator.hs

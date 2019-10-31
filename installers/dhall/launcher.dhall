@@ -3,8 +3,8 @@
 { configuration  =
     { filePath     = os.configurationYaml
     , key          = "${cluster.keyPrefix}_${os.name}"
-    , systemStart  = [] : Optional Integer
-    , seed         = [] : Optional Integer
+    , systemStart  = [] : List Integer
+    , seed         = [] : List Integer
     }
 , nodeTimeoutSec = 60
 , walletArgs     = [] : List Text
