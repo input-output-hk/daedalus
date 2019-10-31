@@ -3,7 +3,8 @@
 }:
 let
   daedalusPkgs = { cluster ? null }: import ./. {
-    inherit buildNum cluster system;
+    inherit buildNum cluster;
+    target = system;
     version = "${version}${suffix}";
   };
   shellEnvs = {
