@@ -19,7 +19,7 @@ export const YELLOW_THEME_OUTPUT = {
   },
   backToTopButton: {
     '--theme-back-to-top-button-background-color': '#2d2d2d',
-    '--theme-back-to-top-button-text-color': '#fafbfc',
+    '--theme-back-to-top-button-text-color': '#ffffff',
     '--theme-back-to-top-button-box-shadow-color': 'rgba(0, 0, 0, 0.36)',
   },
   automaticUpdate: {
@@ -283,7 +283,7 @@ export const YELLOW_THEME_OUTPUT = {
   },
   navDropdown: {
     '--theme-nav-dropdown-item-text-color': '#2d2d2d',
-    '--theme-nav-dropdown-item-background-color': '#fff',
+    '--theme-nav-dropdown-item-background-color': '#ffffff',
     '--theme-nav-dropdown-item-background-color-hover':
       'rgba(45, 45, 45, 0.07)',
     '--theme-nav-dropdown-item-color-hover': '#2d2d2d',
@@ -346,8 +346,8 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-node-update-background-color': '#f8f3ed',
     '--theme-node-update-title-color': '#2d2d2d',
     '--theme-node-update-message-color': '#2d2d2d',
-    '--theme-node-sync-info-message-background-color': '#f8f3ed',
-    '--theme-node-sync-info-message-text-color': '#2d2d2d',
+    '--theme-node-sync-info-message-background-color': '#2d2d2d',
+    '--theme-node-sync-info-message-text-color': '#ffffff',
     '--theme-node-sync-icon-color': '#2d2d2d',
     '--theme-node-update-accept-button-background-color': '#424242',
     '--theme-node-update-accept-button-background-color-hover': '#2d2d2d',
@@ -729,7 +729,7 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-utxo-tick-text-color': '#2d2d2d73',
     '--theme-utxo-cursor-background-color': 'rgba(45, 45, 45, 0.1)',
     '--theme-utxo-tooltip-background-color': '#2d2d2d',
-    '--theme-utxo-tooltip-shadow-color': 'rgba(45, 45, 45, 0.18)',
+    '--theme-utxo-tooltip-shadow-color': 'rgba(0, 0, 0, 0.18)',
     '--theme-utxo-tooltip-text-color': '#fff',
   },
   recoveryPhrase: {

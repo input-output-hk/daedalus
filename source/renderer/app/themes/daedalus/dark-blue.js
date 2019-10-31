@@ -20,8 +20,8 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-about-window-icon-close-hover-background': 'rgba(0, 0, 0, 0.2)',
   },
   backToTopButton: {
-    '--theme-back-to-top-button-background-color': '#5e6066',
-    '--theme-back-to-top-button-text-color': '#fafbfc',
+    '--theme-back-to-top-button-background-color': '#536370',
+    '--theme-back-to-top-button-text-color': '#e9f4fe',
     '--theme-back-to-top-button-box-shadow-color': 'rgba(0, 0, 0, 0.36)',
   },
   automaticUpdate: {

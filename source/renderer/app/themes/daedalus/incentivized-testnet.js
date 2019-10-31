@@ -18,8 +18,8 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--theme-about-window-icon-close-hover-background': 'rgba(0, 0, 0, 0.16)',
   },
   backToTopButton: {
-    '--theme-back-to-top-button-background-color': '#ffffff',
-    '--theme-back-to-top-button-text-color': '#000000',
+    '--theme-back-to-top-button-background-color': '#3f404f',
+    '--theme-back-to-top-button-text-color': '#ffffff',
     '--theme-back-to-top-button-box-shadow-color': 'rgba(0, 0, 0, 0.36)',
   },
   automaticUpdate: {
@@ -281,9 +281,9 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
   },
   navDropdown: {
     '--theme-nav-dropdown-item-text-color': '#ffffff',
-    '--theme-nav-dropdown-item-background-color': '#36374d',
+    '--theme-nav-dropdown-item-background-color': '#3f404f',
     '--theme-nav-dropdown-item-background-color-hover':
-      'rgba(233, 244, 254, 0.07)',
+      'rgba(255, 255, 255, 0.07)',
     '--theme-nav-dropdown-item-color-hover': '#ffffff',
   },
   navItem: {
@@ -309,7 +309,7 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
   },
   newsFeed: {
     '--theme-news-feed-background-color': '#2a2b3c',
-    '--theme-news-feed-badge-background-color': '#ea4c5b',
+    '--theme-news-feed-badge-background-color': '#eb4a22',
     '--theme-news-feed-badge-text-color': '#ffffff',
     '--theme-news-feed-box-shadow-color': '-5px 0 20px 0 rgba(0, 0, 0, 0.25)',
     '--theme-news-feed-header-background-color': '#20212e',
@@ -332,7 +332,7 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--theme-news-item-action-button-color-hover': '#2a2b3c',
     '--theme-news-item-alert-background-color': 'rgba(242, 162, 24, 0.5)',
     '--theme-news-item-announcement-background-color': 'rgba(235, 34, 88, 0.2)',
-    '--theme-news-item-badge-color': '#ea4c5b',
+    '--theme-news-item-badge-color': '#eb4a22',
     '--theme-news-item-content-link-color': '#ffffff',
     '--theme-news-item-info-background-color': 'rgba(0, 0, 0, 0.1)',
     '--theme-news-item-title-color': '#ffffff',
@@ -341,7 +341,7 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--theme-node-update-background-color': '#121326',
     '--theme-node-update-title-color': '#ffffff',
     '--theme-node-update-message-color': '#ffffff',
-    '--theme-node-sync-info-message-background-color': '#121326',
+    '--theme-node-sync-info-message-background-color': '#3f404f',
     '--theme-node-sync-info-message-text-color': '#ffffff',
     '--theme-node-sync-icon-color': '#fff',
     '--theme-node-update-accept-button-background-color': '#36374d',
@@ -653,9 +653,9 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--theme-staking-donut-ring-remaining-color': '#ea4c5b',
     '--theme-staking-wallet-row-border-color': 'rgba(255, 255, 255, 0.2)',
     '--theme-staking-dropdown-item-text-color-hover': '#ffffff',
-    '--theme-staking-dropdown-item-background-color': '#36374d',
+    '--theme-staking-dropdown-item-background-color': '#3f404f',
     '--theme-staking-dropdown-item-background-color-hover':
-      'rgba(233, 244, 254, 0.07)',
+      'rgba(255, 255, 255, 0.07)',
     '--theme-staking-delegation-center-gear-icon-fill-color': '#ffffff80',
     '--theme-staking-delegation-center-gear-icon-fill-color-active': '#ffffff',
     '--theme-staking-delegation-center-no-wallets-instructions-color':
@@ -703,12 +703,12 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--theme-transactions-list-border-color': '1e1f31',
     '--theme-transactions-list-group-date-color': '#ffffff',
     '--theme-transactions-list-item-details-color': '#ffffff',
-    '--theme-transactions-state-ok-background-color': '#007600',
+    '--theme-transactions-state-ok-background-color': '#2cbb69',
     '--theme-transactions-state-pending-background-color':
       'rgba(188, 196, 205, 0.4)',
     '--theme-transactions-state-pending-stripes-color':
       'rgba(189, 197, 206, 0.4)',
-    '--theme-transactions-state-text-color': 'rgba(255, 255, 255, 0.8)',
+    '--theme-transactions-state-text-color': 'rgba(18, 19, 38, 0.8)',
     '--theme-transactions-search-background-color': '#121326',
     '--theme-transactions-icon-type-expend-background-color': '#709cf0',
     '--theme-transactions-icon-type-income-background-color': '#2cbb69',
@@ -728,7 +728,7 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--theme-utxo-tick-text-color': '#ffffff73',
     '--theme-utxo-cursor-background-color': 'rgba(255, 255, 255, 0.1)',
     '--theme-utxo-tooltip-background-color': 'rgba(63, 64, 79, 0.9)',
-    '--theme-utxo-tooltip-shadow-color': 'rgba(235, 34, 88, 0.18)',
+    '--theme-utxo-tooltip-shadow-color': 'rgba(0, 0, 0, 0.18)',
     '--theme-utxo-tooltip-text-color': '#fff',
   },
   recoveryPhrase: {
