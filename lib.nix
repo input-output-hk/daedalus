@@ -2,7 +2,7 @@
 
 let
   sources = import ./nix/sources.nix;
-  iohkNix = import sources.iohk-nix { application = "daedalus"; };
+  iohkNix = import sources.iohk-nix { sourcesOverride = sources; };
   # TODO: can we use the filter in iohk-nix instead?
   cleanSourceFilter = with pkgs.stdenv;
     name: type: let baseName = baseNameOf (toString name); in ! (
