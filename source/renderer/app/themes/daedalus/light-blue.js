@@ -292,11 +292,11 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-modal-overlay-background-color': 'rgba(0, 0, 0, 0.4)',
   },
   navDropdown: {
-    '--theme-nav-dropdown-item-text-color': '#1d2e47',
-    '--theme-nav-dropdown-item-background-color': '#fff',
+    '--theme-nav-dropdown-item-text-color': '#5e6066',
+    '--theme-nav-dropdown-item-background-color': '#fafbfc',
     '--theme-nav-dropdown-item-background-color-hover':
       'rgba(68, 91, 124, 0.07)',
-    '--theme-nav-dropdown-item-color-hover': '#1d2e47',
+    '--theme-nav-dropdown-item-color-hover': '#5e6066',
   },
   navItem: {
     '--theme-nav-item-background-color': '#1c2e47',
@@ -357,8 +357,8 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-node-update-background-color': '#ebeff2',
     '--theme-node-update-title-color': '#5e6066',
     '--theme-node-update-message-color': '#5e6066',
-    '--theme-node-sync-info-message-background-color': '#fafbfc',
-    '--theme-node-sync-info-message-text-color': '#5e6066',
+    '--theme-node-sync-info-message-background-color': '#5e6066',
+    '--theme-node-sync-info-message-text-color': '#fafbfc',
     '--theme-node-sync-icon-color': '#fff',
     '--theme-node-update-accept-button-background-color': '#445b7c',
     '--theme-node-update-accept-button-background-color-hover': '#243e62',
@@ -459,11 +459,12 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
   },
   rpCheckbox: {
     '--rp-checkbox-border': '1px solid #2f496e',
+    '--rp-checkbox-border-color': '#c6cdd6',
     '--rp-checkbox-border-color-disabled': 'rgba(47, 73, 110, 0.2)',
     '--rp-checkbox-check-bg-color': '#2f496e',
+    '--rp-checkbox-check-icon-color': '#fafbfc',
     '--rp-checkbox-label-text-color': '#5e6066',
     '--rp-checkbox-label-text-color-disabled': 'rgba(94, 96, 102, 0.3)',
-    '--rp-checkbox-border-color': '#c6cdd6',
   },
   rpColors: {
     '--rp-theme-color-error': '#ea4c5b',
@@ -663,7 +664,8 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-staking-wallet-row-border-color': '#dfe4e8',
     '--theme-staking-dropdown-item-text-color-hover': '#5e6066',
     '--theme-staking-dropdown-item-background-color': '#fafbfc',
-    '--theme-staking-dropdown-item-background-color-hover': '#f1f3f5',
+    '--theme-staking-dropdown-item-background-color-hover':
+      'rgba(68, 91, 124, 0.07)',
     '--theme-staking-delegation-center-gear-icon-fill-color':
       'rgba(94, 96, 102, 0.5)',
     '--theme-staking-delegation-center-gear-icon-fill-color-active': '#5e6066',

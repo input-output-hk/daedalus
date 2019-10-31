@@ -4,6 +4,7 @@ import classnames from 'classnames';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import styles from './DisplaySettings.scss';
+import themeIncentivizedTestnetPreview from '../../../assets/images/themes/incentivized-testnet.png';
 import themeCardanoPreview from '../../../assets/images/themes/cardano.png';
 import themeDarkBluePreview from '../../../assets/images/themes/dark-blue.png';
 import themeDarkCardanoPreview from '../../../assets/images/themes/dark-cardano.png';
@@ -18,6 +19,12 @@ const messages = defineMessages({
     defaultMessage: '!!!Theme',
     description:
       'Label for the "Theme" selection on the display settings page.',
+  },
+  themeIncentivizedTestnet: {
+    id: 'settings.display.themeNames.incentivizedTestnet',
+    defaultMessage: '!!!Incentivized Testnet',
+    description:
+      'Name of the "Incentivized Testnet" theme on the display settings page.',
   },
   themeLightBlue: {
     id: 'settings.display.themeNames.lightBlue',
@@ -34,20 +41,17 @@ const messages = defineMessages({
     defaultMessage: '!!!Dark blue',
     description: 'Name of the "Dark blue" theme on the display settings page.',
   },
-
   themeDarkCardano: {
     id: 'settings.display.themeNames.darkCardano',
     defaultMessage: '!!!Dark Cardano',
     description:
       'Name of the "Dark cardano" theme on the display settings page.',
   },
-
   themeYellow: {
     id: 'settings.display.themeNames.yellow',
     defaultMessage: '!!!Yellow',
     description: 'Name of the "Yellow" theme on the display settings page.',
   },
-
   themeWhite: {
     id: 'settings.display.themeNames.white',
     defaultMessage: '!!!White',
@@ -69,6 +73,11 @@ export default class DisplaySettings extends Component<Props> {
   render() {
     const { theme, selectTheme } = this.props;
     const { intl } = this.context;
+
+    const themeIncentivizedTestnetClasses = classnames([
+      theme === THEMES.INCENTIVIZED_TESTNET ? styles.active : styles.inactive,
+      styles.themeImageWrapper,
+    ]);
 
     const themeLightBlueClasses = classnames([
       theme === THEMES.LIGHT_BLUE ? styles.active : styles.inactive,
@@ -179,6 +188,22 @@ export default class DisplaySettings extends Component<Props> {
               draggable="false"
             />
             <span>{intl.formatMessage(messages.themeYellow)}</span>
+          </button>
+        </div>
+
+        <div className={styles.themesRowWrapper}>
+          <button
+            className={themeIncentivizedTestnetClasses}
+            onClick={selectTheme.bind(this, {
+              theme: THEMES.INCENTIVIZED_TESTNET,
+            })}
+          >
+            <img
+              src={themeIncentivizedTestnetPreview}
+              role="presentation"
+              draggable="false"
+            />
+            <span>{intl.formatMessage(messages.themeIncentivizedTestnet)}</span>
           </button>
         </div>
       </div>
