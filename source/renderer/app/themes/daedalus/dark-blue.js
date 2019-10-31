@@ -20,8 +20,8 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-about-window-icon-close-hover-background': 'rgba(0, 0, 0, 0.2)',
   },
   backToTopButton: {
-    '--theme-back-to-top-button-background-color': '#5e6066',
-    '--theme-back-to-top-button-text-color': '#fafbfc',
+    '--theme-back-to-top-button-background-color': '#536370',
+    '--theme-back-to-top-button-text-color': '#e9f4fe',
     '--theme-back-to-top-button-box-shadow-color': 'rgba(0, 0, 0, 0.36)',
   },
   automaticUpdate: {
@@ -464,11 +464,12 @@ export const DARK_BLUE_THEME_OUTPUT = {
   },
   rpCheckbox: {
     '--rp-checkbox-border': '1px solid #536370',
+    '--rp-checkbox-border-color': 'rgba(102, 122, 138, 0.3)',
     '--rp-checkbox-border-color-disabled': 'rgba(83, 99, 112, 0.4)',
     '--rp-checkbox-check-bg-color': '#536370',
+    '--rp-checkbox-check-icon-color': '#e9f4fe',
     '--rp-checkbox-label-text-color': '#e9f4fe',
     '--rp-checkbox-label-text-color-disabled': 'rgba(233, 244, 254, 0.3)',
-    '--rp-checkbox-border-color': 'rgba(102, 122, 138, 0.3)',
   },
   rpColors: {
     '--rp-theme-color-error': '#ea4c5b',

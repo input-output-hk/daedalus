@@ -13,7 +13,10 @@ export default class SidebarStore extends Store {
   @observable isShowingSubMenus: boolean = true;
 
   setup() {
-    const { sidebar: sidebarActions } = this.actions;
+    const {
+      sidebar: sidebarActions,
+      networkStatus: networkStatusActions,
+    } = this.actions;
 
     sidebarActions.showSubMenus.listen(this._showSubMenus);
     sidebarActions.toggleSubMenus.listen(this._toggleSubMenus);
@@ -21,6 +24,9 @@ export default class SidebarStore extends Store {
       this._onActivateSidebarCategory
     );
     sidebarActions.walletSelected.listen(this._onWalletSelected);
+    networkStatusActions.nodeImplementationUpdate.listen(
+      this._syncSidebarWithNetworkStatus
+    );
 
     this.registerReactions([this._syncSidebarRouteWithRouter]);
     this._configureCategories();
@@ -47,7 +53,8 @@ export default class SidebarStore extends Store {
   }
 
   @action _configureCategories = () => {
-    if (this.stores.networkStatus.environment.isDev) {
+    const { networkStatus } = this.stores;
+    if (networkStatus.environment.isDev) {
       this.CATEGORIES = sidebarConfig.CATEGORIES_WITH_STAKING;
     }
   };
@@ -100,5 +107,16 @@ export default class SidebarStore extends Store {
       if (route.indexOf(category.route) === 0)
         this._setActivateSidebarCategory(category.route);
     });
+  };
+
+  _syncSidebarWithNetworkStatus = () => {
+    const { networkStatus } = this.stores;
+    if (networkStatus.environment.isDev) {
+      if (networkStatus.isIncentivizedTestnet) {
+        this.CATEGORIES = sidebarConfig.CATEGORIES_WITHOUT_DELEGATION_COUNTDOWN;
+      } else {
+        this.CATEGORIES = sidebarConfig.CATEGORIES_WITH_STAKING;
+      }
+    }
   };
 }

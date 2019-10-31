@@ -94,6 +94,7 @@ export const createReactPolymorphTheme = (
         background.secondary.regular
       ).alpha(0.4)}`,
       '--rp-checkbox-check-bg-color': `${background.secondary.regular}`,
+      '--rp-checkbox-check-icon-color': `${text.secondary}`,
       '--rp-checkbox-label-text-color': `${text.primary}`,
       '--rp-checkbox-label-text-color-disabled': `${chroma(text.primary).alpha(
         0.3
