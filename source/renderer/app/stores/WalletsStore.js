@@ -581,7 +581,7 @@ export default class WalletsStore extends Store {
     }
 
     const request =
-      params.type === !WALLET_RESTORE_TYPES.LEGACY
+      params.type !== WALLET_RESTORE_TYPES.LEGACY
         ? this.restoreRequest
         : this.restoreLegacyRequest;
 
