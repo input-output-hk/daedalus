@@ -168,14 +168,14 @@
 
       p {
         -webkit-box-orient: vertical;
-        -webkit-line-clamp: 1;
         display: -webkit-box;
+        -webkit-line-clamp: 1;
         overflow: hidden;
         text-overflow: ellipsis;
         word-break: break-all;
 
         .stakePoolReference {
-          color: var(--theme-staking-table-body-highlighted-text-color);
+          color: var(--theme-staking-font-color-regular);
           font-family: var(--font-medium);
         }
       }

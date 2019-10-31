@@ -2,19 +2,18 @@
 import path from 'path';
 import { app, dialog } from 'electron';
 import { readLauncherConfig } from './utils/config';
-import { DEVELOPMENT, TEST } from '../common/types/environment.types';
+import { environment } from './environment';
+
+const { isTest, isProduction, isBlankScreenFixActive } = environment;
 
 // Make sure Daedalus is started with required configuration
-const { NODE_ENV, LAUNCHER_CONFIG } = process.env;
-const isProd = NODE_ENV === 'production';
-const CURRENT_NODE_ENV = NODE_ENV || DEVELOPMENT;
-const isTest = CURRENT_NODE_ENV === TEST;
+const { LAUNCHER_CONFIG } = process.env;
 const isStartedByLauncher = !!LAUNCHER_CONFIG;
+const isWindows = process.platform === 'win32';
 if (!isStartedByLauncher) {
-  const isWindows = process.platform === 'win32';
   const dialogTitle = 'Daedalus improperly started!';
   let dialogMessage;
-  if (isProd) {
+  if (isProduction) {
     dialogMessage = isWindows
       ? 'Please start Daedalus using the icon in the Windows start menu or using Daedalus icon on your desktop.'
       : 'Daedalus was launched without needed configuration. Please start Daedalus using the shortcut provided by the installer.';
@@ -53,6 +52,38 @@ export type LauncherConfig = {
   },
 };
 
+type WindowOptionsType = {
+  show: boolean,
+  width: number,
+  height: number,
+  webPreferences: {
+    nodeIntegration: boolean,
+    webviewTag: boolean,
+    enableRemoteModule: boolean,
+    preload: string,
+  },
+  icon?: string,
+};
+
+export const WINDOW_WIDTH = 1150;
+export const WINDOW_HEIGHT = 870;
+export const MIN_WINDOW_CONTENT_WIDTH = 905;
+export const MIN_WINDOW_CONTENT_HEIGHT = 600;
+
+export const windowOptions: WindowOptionsType = {
+  show: false,
+  width: WINDOW_WIDTH,
+  height: WINDOW_HEIGHT,
+  webPreferences: {
+    nodeIntegration: isTest,
+    webviewTag: false,
+    enableRemoteModule: isTest,
+    preload: path.join(__dirname, './preload.js'),
+    additionalArguments: isBlankScreenFixActive ? ['--safe-mode'] : [],
+  },
+  useContentSize: true,
+};
+
 export const APP_NAME = 'Daedalus';
 export const launcherConfig: LauncherConfig = readLauncherConfig(
   LAUNCHER_CONFIG
@@ -62,6 +93,7 @@ export const pubLogsFolderPath = path.join(appLogsFolderPath, 'pub');
 export const appFolderPath = launcherConfig.workingDir;
 export const { nodeDbPath } = launcherConfig;
 export const stateDirectoryPath = launcherConfig.statePath;
+export const stateDrive = isWindows ? stateDirectoryPath.slice(0, 2) : '/';
 export const ALLOWED_LOGS = [
   'Daedalus.json',
   'System-info.json',

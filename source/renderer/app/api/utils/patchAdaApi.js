@@ -1,5 +1,4 @@
 // @flow
-import BigNumber from 'bignumber.js';
 import { get } from 'lodash';
 import AdaApi from '../api';
 import { getNodeInfo } from '../nodes/requests/getNodeInfo';
@@ -7,9 +6,6 @@ import { getNodeSettings } from '../nodes/requests/getNodeSettings';
 import { getLatestAppVersion } from '../nodes/requests/getLatestAppVersion';
 import { GenericApiError } from '../common/errors';
 import { Logger } from '../../utils/logging';
-import { RedeemAdaError } from '../transactions/errors';
-import type { RedeemAdaParams } from '../transactions/requests/redeemAda';
-import type { RedeemPaperVendedAdaParams } from '../transactions/requests/redeemPaperVendedAda';
 import type { NodeInfoQueryParams } from '../nodes/requests/getNodeInfo';
 import type {
   LatestAppVersionInfoResponse,
@@ -19,6 +15,7 @@ import type {
   GetNodeSettingsResponse,
   GetLatestAppVersionResponse,
 } from '../nodes/types';
+import type { GetNewsResponse } from '../news/types';
 
 let LATEST_APP_VERSION = null;
 let LOCAL_TIME_DIFFERENCE = 0;
@@ -26,61 +23,10 @@ let LOCAL_BLOCK_HEIGHT = null;
 let NETWORK_BLOCK_HEIGHT = null;
 let NEXT_ADA_UPDATE = null;
 let SUBSCRIPTION_STATUS = null;
+let APPLICATION_VERSION = null;
+let FAKE_NEWSFEED_JSON: ?GetNewsResponse;
 
 export default (api: AdaApi) => {
-  // Since we cannot test ada redemption in dev mode, just resolve the requests
-  api.redeemAda = (request: RedeemAdaParams): Promise<any> =>
-    new Promise(resolve => {
-      try {
-        Logger.debug('AdaApi::redeemAda (PATCHED) called', { request });
-        const { redemptionCode } = request;
-        const isValidRedemptionCode = api.isValidRedemptionKey(redemptionCode);
-        if (!isValidRedemptionCode) {
-          Logger.debug(
-            'AdaApi::redeemAda (PATCHED) failed: not a valid redemption key!'
-          );
-          throw new RedeemAdaError();
-        }
-        Logger.debug('AdaApi::redeemAda (PATCHED) success');
-        resolve({ amount: new BigNumber(1000) });
-      } catch (error) {
-        Logger.error('AdaApi::redeemAda (PATCHED) error', { error });
-        throw new RedeemAdaError();
-      }
-    });
-
-  api.redeemPaperVendedAda = (
-    request: RedeemPaperVendedAdaParams
-  ): Promise<any> =>
-    new Promise(resolve => {
-      try {
-        Logger.debug('AdaApi::redeemPaperVendedAda (PATCHED) called', {
-          request,
-        });
-        const { redemptionCode, mnemonic } = request;
-        const isValidKey = api.isValidPaperVendRedemptionKey(redemptionCode);
-        const isValidMnemonic = api.isValidRedemptionMnemonic(
-          mnemonic.join(' ')
-        );
-        if (!isValidKey)
-          Logger.debug(
-            'AdaApi::redeemPaperVendedAda (PATCHED) failed: not a valid redemption key!'
-          );
-        if (!isValidMnemonic)
-          Logger.debug(
-            'AdaApi::redeemPaperVendedAda (PATCHED) failed: not a valid mnemonic!'
-          );
-        if (!isValidKey || !isValidMnemonic) {
-          throw new RedeemAdaError();
-        }
-        Logger.debug('AdaApi::redeemPaperVendedAda (PATCHED) success');
-        resolve({ amount: new BigNumber(1000) });
-      } catch (error) {
-        Logger.error('AdaApi::redeemPaperVendedAda (PATCHED) error', { error });
-        throw new RedeemAdaError();
-      }
-    });
-
   api.getLocalTimeDifference = async () =>
     Promise.resolve(LOCAL_TIME_DIFFERENCE);
 
@@ -164,7 +110,18 @@ export default (api: AdaApi) => {
     LOCAL_TIME_DIFFERENCE = timeDifference;
   };
 
-  api.nextUpdate = async () => Promise.resolve(NEXT_ADA_UPDATE);
+  api.nextUpdate = async () => {
+    let nodeUpdate = null;
+
+    if (NEXT_ADA_UPDATE) {
+      nodeUpdate = {
+        version: NEXT_ADA_UPDATE,
+      };
+    }
+
+    Logger.debug('AdaApi::nextUpdate success', { nodeUpdate });
+    return Promise.resolve(nodeUpdate);
+  };
 
   api.setNextUpdate = async nextUpdate => {
     NEXT_ADA_UPDATE = nextUpdate;
@@ -178,16 +135,33 @@ export default (api: AdaApi) => {
       const latestAppVersionPath = `platforms.${
         isWindows ? 'windows' : platform
       }.version`;
+
+      const applicationVersionPath = `platforms.${
+        isWindows ? 'windows' : platform
+      }.applicationVersion`;
+
       const latestAppVersion = get(
         latestAppVersionInfo,
         latestAppVersionPath,
         null
       );
+
+      const applicationVersion = get(
+        latestAppVersionInfo,
+        applicationVersionPath,
+        null
+      );
+
       Logger.debug('AdaApi::getLatestAppVersion success', {
         latestAppVersion,
         latestAppVersionInfo,
+        applicationVersion,
       });
-      return { latestAppVersion: LATEST_APP_VERSION || latestAppVersion };
+
+      return {
+        latestAppVersion: LATEST_APP_VERSION || latestAppVersion,
+        applicationVersion: APPLICATION_VERSION || applicationVersion,
+      };
     } catch (error) {
       Logger.error('AdaApi::getLatestAppVersion (PATCHED) error', { error });
       throw new GenericApiError();
@@ -196,6 +170,10 @@ export default (api: AdaApi) => {
 
   api.setLatestAppVersion = async (latestAppVersion: ?string) => {
     LATEST_APP_VERSION = latestAppVersion;
+  };
+
+  api.setApplicationVersion = async (applicationVersion: number) => {
+    APPLICATION_VERSION = applicationVersion;
   };
 
   api.setSubscriptionStatus = async (subscriptionStatus: ?Object) => {
@@ -208,5 +186,29 @@ export default (api: AdaApi) => {
 
   api.setNetworkBlockHeight = async (height: number) => {
     NETWORK_BLOCK_HEIGHT = height;
+  };
+
+  api.setFakeNewsFeedJsonForTesting = (fakeNewsfeedJson: ?GetNewsResponse) => {
+    FAKE_NEWSFEED_JSON = fakeNewsfeedJson;
+  };
+
+  api.getNews = (): Promise<GetNewsResponse> => {
+    return new Promise((resolve, reject) => {
+      if (!FAKE_NEWSFEED_JSON) {
+        reject(new Error('Unable to fetch news'));
+      } else {
+        resolve(FAKE_NEWSFEED_JSON);
+      }
+    });
+  };
+
+  api.resetTestOverrides = () => {
+    LATEST_APP_VERSION = null;
+    LOCAL_TIME_DIFFERENCE = 0;
+    LOCAL_BLOCK_HEIGHT = null;
+    NETWORK_BLOCK_HEIGHT = null;
+    NEXT_ADA_UPDATE = null;
+    SUBSCRIPTION_STATUS = null;
+    APPLICATION_VERSION = null;
   };
 };

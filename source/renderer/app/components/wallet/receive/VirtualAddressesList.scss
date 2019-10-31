@@ -1,7 +1,7 @@
 .component {
+  height: 100%;
   width: 100%;
   width: -webkit-calc(100% + 20px);
-  height: 100%;
 
   :global(.ReactVirtualized__Grid__innerScrollContainer) {
     overflow: visible !important;
@@ -10,6 +10,7 @@
 
 .list {
   overflow-y: scroll;
+  padding-right: 15px;
   will-change: none !important;
   &:focus {
     outline: 0;

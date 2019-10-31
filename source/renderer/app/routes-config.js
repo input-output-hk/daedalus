@@ -1,7 +1,6 @@
 // @flow
 export const ROUTES = {
   ROOT: '/',
-  ADA_REDEMPTION: '/ada-redemption',
   PAPER_WALLET_CREATE_CERTIFICATE: '/paper-wallet/create-certificate',
   STAKING: {
     ROOT: '/staking',

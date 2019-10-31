@@ -1,22 +1,18 @@
 // @flow
 import React from 'react';
-import { number, radios } from '@storybook/addon-knobs';
+import { number } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
 
 import StakePools from '../../source/renderer/app/components/staking/stake-pools/StakePools';
 import STAKE_POOLS from '../../source/renderer/app/config/stakingStakePools.dummy.json';
 
-const themes = {
-  'Light Blue': 'light-blue',
-  Cardano: 'cardano',
-  'Dark Blue': 'dark-blue',
-};
+const currentTheme = sessionStorage.getItem('themeName') || 'light-blue';
 
 export const StakePoolsStory = () => (
   <StakePools
     stakePoolsList={STAKE_POOLS.slice(
       0,
-      number('Pools', 100, {
+      number('Pools', 300, {
         range: true,
         min: 37,
         max: 300,
@@ -30,7 +26,7 @@ export const StakePoolsStory = () => (
       STAKE_POOLS[36],
     ]}
     onOpenExternalLink={() => {}}
-    currentTheme={radios('Theme (Only for tooltip colors)', themes)}
+    currentTheme={currentTheme}
     onDelegate={action('onDelegate')}
   />
 );

@@ -1,21 +1,24 @@
 // @flow
 import React, { Component } from 'react';
 import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
+import classNames from 'classnames';
 import SVGInline from 'react-svg-inline';
 import { Stepper } from 'react-polymorph/lib/components/Stepper';
 import { StepperSkin } from 'react-polymorph/lib/skins/simple/StepperSkin';
 import { find, get } from 'lodash';
-import classNames from 'classnames';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import DialogBackButton from '../../widgets/DialogBackButton';
 import Dialog from '../../widgets/Dialog';
 import { StakePoolsList } from '../stake-pools/StakePoolsList';
 import { StakePoolsSearch } from '../stake-pools/StakePoolsSearch';
+import { getFilteredStakePoolsList } from '../stake-pools/helpers';
+import BackToTopButton from '../../widgets/BackToTopButton';
+import commonStyles from './DelegationSteps.scss';
 import styles from './DelegationStepsChooseStakePoolDialog.scss';
 import checkmarkImage from '../../../assets/images/check-w.inline.svg';
 import { getColorFromRange } from '../../../utils/colors';
 
-import type { StakePool } from '../../../api/staking/types';
+import type { StakePool, StakePoolsListType } from '../../../api/staking/types';
 
 const messages = defineMessages({
   title: {
@@ -106,9 +109,8 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
     selectedPoolId: get(this.props, ['selectedPool', 'id'], null),
   };
 
-  searchInput: ?HTMLElement = null;
-
   handleSearch = (searchValue: string) => this.setState({ searchValue });
+  handleClearSearch = () => this.setState({ searchValue: '' });
 
   handleSelect = (selectedPoolId: number) => {
     this.setState({ selectedPoolId });
@@ -149,6 +151,12 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
         disabled: !selectedPoolId,
       },
     ];
+
+    const dialogClassName = classNames([
+      commonStyles.delegationSteps,
+      styles.delegationStepsChooseStakePoolDialogWrapper,
+    ]);
+    const contentClassName = classNames([commonStyles.content, styles.content]);
 
     const selectedPoolBlock = stakePoolId => {
       const selectedPool = find(
@@ -197,6 +205,11 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
       />
     );
 
+    const filteredStakePoolsList: StakePoolsListType = getFilteredStakePoolsList(
+      stakePoolsList,
+      searchValue
+    );
+
     return (
       <Dialog
         title={intl.formatMessage(messages.title)}
@@ -204,11 +217,17 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
         actions={actions}
         closeOnOverlayClick
         onClose={onClose}
-        className={styles.delegationStepsChooseStakePoolDialogWrapper}
+        className={dialogClassName}
         closeButton={<DialogCloseButton onClose={onClose} />}
         backButton={<DialogBackButton onBack={onBack} />}
       >
-        <div className={styles.delegationStepsIndicatorWrapper}>
+        <BackToTopButton
+          scrollableElementClassName="Dialog_content"
+          buttonTopPosition={100}
+          scrollTopToActivate={100}
+        />
+
+        <div className={commonStyles.delegationStepsIndicatorWrapper}>
           <Stepper
             steps={stepsList}
             activeStep={2}
@@ -217,7 +236,7 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
           />
         </div>
 
-        <div className={styles.content}>
+        <div className={contentClassName}>
           <p className={styles.description}>
             {intl.formatMessage(messages.description)}
           </p>
@@ -250,16 +269,15 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
               label={intl.formatMessage(messages.searchInputLabel)}
               placeholder={intl.formatMessage(messages.searchInputPlaceholder)}
               onSearch={this.handleSearch}
-              registerSearchInput={searchInput => {
-                this.searchInput = searchInput;
-              }}
+              onClearSearch={this.handleClearSearch}
+              scrollableElementClassName="Dialog_content"
             />
           </div>
 
           <div className={styles.stakePoolsListWrapper}>
             <StakePoolsList
               listName="selectedIndexList"
-              stakePoolsList={stakePoolsList}
+              stakePoolsList={filteredStakePoolsList}
               onOpenExternalLink={onOpenExternalLink}
               currentTheme={currentTheme}
               isListActive={selectedList === 'selectedIndexList'}

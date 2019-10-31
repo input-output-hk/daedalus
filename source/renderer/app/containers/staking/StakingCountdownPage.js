@@ -33,7 +33,7 @@ export default class StakingCountdownPage extends Component<Props> {
 
   render() {
     const { stores, actions } = this.props;
-    const { profile, staking } = stores;
+    const { staking } = stores;
     const {
       staking: { goToStakingPage },
     } = actions;
@@ -42,7 +42,6 @@ export default class StakingCountdownPage extends Component<Props> {
     return (
       <StakingCountdown
         redirectToStakingPage={redirectToStakingPage}
-        currentLocale={profile.currentLocale}
         startDateTime={staking.startDateTime}
         onLearnMoreClick={this.handleLearnMoreClick}
       />

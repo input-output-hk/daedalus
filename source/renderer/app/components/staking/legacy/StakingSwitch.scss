@@ -8,10 +8,10 @@
 }
 
 .label {
+  color: var(--rp-switch-label-text-color);
   flex: 1;
-  padding-top: 1px;
   font-family: var(--font-semibold);
   font-size: 16px;
   line-height: 1.38;
-  color: var(--rp-switch-label-text-color);
+  padding-top: 1px;
 }

@@ -66,17 +66,17 @@
 
 .closeButton {
   cursor: pointer;
+  opacity: 0.5;
   position: absolute;
   right: 20px;
   top: 25.5px;
-  opacity: 0.5;
   &:hover {
     opacity: 0.8;
   }
 
   svg {
-    width: 11px;
     height: 11px;
+    width: 11px;
     polygon {
       fill: var(--theme-notification-message-close-icon-color);
     }

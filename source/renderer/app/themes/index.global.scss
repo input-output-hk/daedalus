@@ -84,11 +84,11 @@ time,
 mark,
 audio,
 video {
+  border: 0;
+  font: inherit;
+  font-size: 100%;
   margin: 0;
   padding: 0;
-  border: 0;
-  font-size: 100%;
-  font: inherit;
   vertical-align: baseline;
 }
 /* HTML5 display-role reset for older browsers */
@@ -237,13 +237,13 @@ html,
 body,
 :global(#root),
 :global(#root) > [data-reactroot] {
-  width: 100%;
-  height: 100%;
   // Make the default font ugly so we immediately see when something
   // is not yet defined correctly in our UI
   font-family: 'Times New Roman', serif;
   -webkit-font-smoothing: antialiased;
+  height: 100%;
   user-select: none;
+  width: 100%;
 }
 
 * {
@@ -262,13 +262,16 @@ body,
   }
 
   &::-webkit-scrollbar-thumb {
+    background-clip: content-box;
     background-color: var(--theme-scrollbar-thumb-background);
     border: 7px solid transparent;
     border-radius: 12px;
-    background-clip: content-box;
     &:vertical {
       // This ensures that the scroll bar never shrinks too much
       min-height: 30px;
+    }
+    &:hover {
+      background-color: var(--theme-scrollbar-thumb-background-hover);
     }
   }
 }

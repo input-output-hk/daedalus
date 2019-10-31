@@ -11,11 +11,16 @@ export type WalletImportFromFileParams = {
 // ======= WALLET ACTIONS =======
 
 export default class WalletsActions {
+  // Create Wallet
   createWallet: Action<{
     name: string,
     spendingPassword: ?string,
   }> = new Action();
-  // eslint-disable-next-line max-len
+  createWalletBegin: Action<any> = new Action();
+  createWalletChangeStep: Action<any> = new Action();
+  createWalletClose: Action<any> = new Action();
+  createWalletAbort: Action<any> = new Action();
+  // ---
   restoreWallet: Action<{
     recoveryPhrase: string,
     walletName: string,
@@ -37,4 +42,6 @@ export default class WalletsActions {
   closeCertificateGeneration: Action<any> = new Action();
   setCertificateTemplate: Action<{ selectedTemplate: string }> = new Action();
   finishCertificate: Action<any> = new Action();
+  updateWalletLocalData: Action<any> = new Action();
+  updateRecoveryPhraseVerificationDate: Action<any> = new Action();
 }

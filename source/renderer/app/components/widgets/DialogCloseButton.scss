@@ -1,12 +1,12 @@
 .component {
-  position: absolute;
-  top: 7px;
-  right: 0;
   cursor: pointer;
+  position: absolute;
+  right: 0;
+  top: 7px;
 
   svg {
-    width: 11px;
     height: 11px;
+    width: 11px;
 
     polygon {
       fill: var(--theme-icon-close-button-color);

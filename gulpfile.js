@@ -63,8 +63,10 @@ const buildRendererWatch = () => done =>
   rendererInputSource()
     .pipe(
       webpackStream(rendererWebpackWatchConfig, webpack, () => {
-        // Reload app everytime after renderer script has been re-compiled
-        electronServer.reload();
+        if (electronServer) {
+          // Reload app everytime after renderer script has been re-compiled
+          electronServer.reload();
+        }
         done();
       })
     )
@@ -135,10 +137,11 @@ gulp.task('prepare:themes:daedalus', () =>
     .src([
       'source/renderer/app/themes/daedalus/cardano.js',
       'source/renderer/app/themes/daedalus/dark-blue.js',
-      'source/renderer/app/themes/daedalus/light-blue.js',
       'source/renderer/app/themes/daedalus/dark-cardano.js',
-      'source/renderer/app/themes/daedalus/yellow.js',
+      'source/renderer/app/themes/daedalus/index.js',
+      'source/renderer/app/themes/daedalus/light-blue.js',
       'source/renderer/app/themes/daedalus/white.js',
+      'source/renderer/app/themes/daedalus/yellow.js',
     ])
     .pipe(flowRemoveTypes())
     .pipe(gulp.dest('dist/daedalus'))

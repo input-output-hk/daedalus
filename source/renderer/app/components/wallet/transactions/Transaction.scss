@@ -2,8 +2,8 @@
 
 .component {
   color: var(--theme-transactions-list-item-details-color);
-  position: relative;
   cursor: pointer;
+  position: relative;
 
   &.failed {
     .title,
@@ -119,6 +119,7 @@
       }
     }
   }
+  animation: pending-label-animation 2s linear infinite;
 
   background-color: var(--theme-transactions-state-pending-background-color);
   background-image: linear-gradient(
@@ -132,7 +133,6 @@
     transparent
   );
   background-size: 50px 50px;
-  animation: pending-label-animation 2s linear infinite;
   overflow: hidden;
 }
 
@@ -172,8 +172,8 @@
 }
 
 .contentExpanded {
-  padding-bottom: 20px;
   margin-top: -10px;
+  padding-bottom: 20px;
 }
 
 .last {
@@ -181,8 +181,8 @@
 }
 
 .details {
-  height: auto;
   cursor: default;
+  height: auto;
 
   .row {
     &.retainHeight {
@@ -199,6 +199,10 @@
     font-family: var(--font-medium);
     font-size: 16px;
     margin-bottom: 8px;
+  }
+
+  .addressRow {
+    padding-bottom: 6px;
   }
 
   .addressRow,
@@ -221,13 +225,17 @@
   }
 
   &.clickable {
-    .transactionId,
-    .address {
+    .transactionId {
       @include link(--theme-transactions-list-item-details-color);
       border-bottom: 1px solid transparent;
       &:hover {
         border-bottom-color: var(--theme-transactions-list-item-details-color);
       }
+    }
+
+    .address {
+      @include link(--theme-link-main-color);
+      border-bottom: 1px solid var(--theme-link-main-color);
     }
   }
 }
@@ -256,8 +264,8 @@
   margin-bottom: -1px;
   margin-left: 4px;
   & > svg {
-    width: 12px;
     height: 12px;
+    width: 12px;
     & > g > g {
       stroke: var(--theme-icon-transactions-ada-symbol-color);
     }

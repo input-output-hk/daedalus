@@ -9,8 +9,8 @@
   & > .title {
     font-family: var(--font-medium);
     font-size: 18px;
-    line-height: 1.39;
     letter-spacing: 1px;
+    line-height: 1.39;
     margin-bottom: 20px;
     text-align: center;
     text-transform: uppercase;
@@ -30,6 +30,7 @@
     overflow-x: hidden;
     overflow-y: overlay;
     padding-right: 25px;
+    scroll-behavior: smooth;
   }
 
   & > .actions {

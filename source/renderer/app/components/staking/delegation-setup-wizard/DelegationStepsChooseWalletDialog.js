@@ -12,6 +12,7 @@ import { Select } from 'react-polymorph/lib/components/Select';
 import { SelectSkin } from 'react-polymorph/lib/skins/simple/SelectSkin';
 import { Stepper } from 'react-polymorph/lib/components/Stepper';
 import { StepperSkin } from 'react-polymorph/lib/skins/simple/StepperSkin';
+import commonStyles from './DelegationSteps.scss';
 import styles from './DelegationStepsChooseWalletDialog.scss';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import DialogBackButton from '../../widgets/DialogBackButton';
@@ -138,6 +139,12 @@ export default class DelegationStepsChooseWalletDialog extends Component<
       },
     ];
 
+    const dialogClassName = classNames([
+      commonStyles.delegationSteps,
+      styles.delegationStepsChooseWalletDialogWrapper,
+    ]);
+    const contentClassName = classNames([commonStyles.content, styles.content]);
+
     const walletSelectClasses = classNames([
       styles.walletSelect,
       selectedWallet && !isAcceptableSetupWallet ? styles.error : null,
@@ -160,11 +167,11 @@ export default class DelegationStepsChooseWalletDialog extends Component<
         actions={actions}
         closeOnOverlayClick
         onClose={onClose}
-        className={styles.delegationStepsChooseWalletDialogWrapper}
+        className={dialogClassName}
         closeButton={<DialogCloseButton onClose={onClose} />}
         backButton={<DialogBackButton onBack={onBack} />}
       >
-        <div className={styles.delegationStepsIndicatorWrapper}>
+        <div className={commonStyles.delegationStepsIndicatorWrapper}>
           <Stepper
             steps={stepsList}
             activeStep={1}
@@ -173,7 +180,7 @@ export default class DelegationStepsChooseWalletDialog extends Component<
           />
         </div>
 
-        <div className={styles.content}>
+        <div className={contentClassName}>
           <p className={styles.description}>
             <FormattedHTMLMessage
               {...messages.description}

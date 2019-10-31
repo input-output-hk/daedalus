@@ -404,7 +404,7 @@ export default class StakePoolTooltip extends Component<Props, State> {
             className={styles.url}
             onClick={() => onOpenExternalLink(url)}
           >
-            {url}
+            <span className={styles.urlContent}>{url}</span>
             <SVGInline svg={externalLinkIcon} />
           </button>
           <dl className={styles.table}>

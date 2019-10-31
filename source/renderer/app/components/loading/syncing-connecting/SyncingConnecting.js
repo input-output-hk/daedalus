@@ -10,6 +10,7 @@ import { CardanoNodeStates } from '../../../../../common/types/cardano-node.type
 import styles from './SyncingConnecting.scss';
 import type { CardanoNodeState } from '../../../../../common/types/cardano-node.types';
 import { REPORT_ISSUE_TIME_TRIGGER } from '../../../config/timingConfig';
+import NewsFeedIcon from '../../widgets/NewsFeedIcon';
 
 let connectingInterval = null;
 let syncingInterval = null;
@@ -35,6 +36,7 @@ type Props = {
   syncPercentage: number,
   hasLoadedCurrentLocale: boolean,
   hasLoadedCurrentTheme: boolean,
+  hasUnreadNews: boolean,
   isCheckingSystemTime: boolean,
   isNodeResponding: boolean,
   isNodeSubscribed: boolean,
@@ -44,10 +46,12 @@ type Props = {
   isNewAppVersionLoading: boolean,
   isNewAppVersionLoaded: boolean,
   disableDownloadLogs: boolean,
+  showNewsFeedIcon: boolean,
   onIssueClick: Function,
   onDownloadLogs: Function,
   onGetAvailableVersions: Function,
   onStatusIconClick: Function,
+  onToggleNewsFeedIconClick: Function,
 };
 
 @observer
@@ -196,6 +200,7 @@ export default class SyncingConnecting extends Component<Props, State> {
       isSyncing,
       hasLoadedCurrentLocale,
       hasLoadedCurrentTheme,
+      hasUnreadNews,
       onIssueClick,
       onDownloadLogs,
       disableDownloadLogs,
@@ -210,6 +215,8 @@ export default class SyncingConnecting extends Component<Props, State> {
       isNodeStopped,
       syncPercentage,
       onStatusIconClick,
+      onToggleNewsFeedIconClick,
+      showNewsFeedIcon,
     } = this.props;
 
     const componentStyles = classNames([
@@ -217,6 +224,11 @@ export default class SyncingConnecting extends Component<Props, State> {
       hasLoadedCurrentTheme ? null : styles['is-loading-theme'],
       isConnecting ? styles['is-connecting'] : null,
       isSyncing ? styles['is-syncing'] : null,
+    ]);
+
+    const newsFeedIconStyles = classNames([
+      isConnecting ? 'connectingScreen' : null,
+      isSyncing || isSynced ? 'syncingScreen' : null,
     ]);
 
     return (
@@ -229,6 +241,13 @@ export default class SyncingConnecting extends Component<Props, State> {
             disableDownloadLogs={disableDownloadLogs}
             isConnecting={isConnecting}
             isSyncing={isSyncing}
+          />
+        )}
+        {showNewsFeedIcon && (
+          <NewsFeedIcon
+            onNewsFeedIconClick={onToggleNewsFeedIconClick}
+            newsFeedIconClass={newsFeedIconStyles}
+            showDot={hasUnreadNews}
           />
         )}
         <LogosDisplay isConnected={isConnected} />

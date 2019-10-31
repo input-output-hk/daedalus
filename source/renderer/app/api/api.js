@@ -32,8 +32,6 @@ import { getLatestAppVersion } from './nodes/requests/getLatestAppVersion';
 import { getTransactionFee } from './transactions/requests/getTransactionFee';
 import { getTransactionHistory } from './transactions/requests/getTransactionHistory';
 import { createTransaction } from './transactions/requests/createTransaction';
-import { redeemAda } from './transactions/requests/redeemAda';
-import { redeemPaperVendedAda } from './transactions/requests/redeemPaperVendedAda';
 
 // Wallets requests
 import { resetWalletState } from './wallets/requests/resetWalletState';
@@ -47,6 +45,10 @@ import { createWallet } from './wallets/requests/createWallet';
 import { restoreWallet } from './wallets/requests/restoreWallet';
 import { updateWallet } from './wallets/requests/updateWallet';
 import { getWalletUtxos } from './wallets/requests/getWalletUtxos';
+import { getWalletIdAndBalance } from './wallets/requests/getWalletIdAndBalance';
+
+// News requests
+import { getNews } from './news/requests/getNews';
 
 // utility functions
 import {
@@ -57,10 +59,6 @@ import patchAdaApi from './utils/patchAdaApi';
 import { isValidMnemonic } from '../../../common/crypto/decrypt';
 import { utcStringToDate, encryptPassphrase } from './utils';
 import { Logger } from '../utils/logging';
-import {
-  isValidRedemptionKey,
-  isValidPaperVendRedemptionKey,
-} from '../utils/redemption-key-validation';
 import {
   unscrambleMnemonics,
   scrambleMnemonics,
@@ -78,7 +76,6 @@ import {
 } from '../config/numbersConfig';
 import {
   ADA_CERTIFICATE_MNEMONIC_LENGTH,
-  ADA_REDEMPTION_PASSPHRASE_LENGTH,
   WALLET_RECOVERY_PHRASE_WORD_COUNT,
 } from '../config/cryptoConfig';
 
@@ -111,8 +108,6 @@ import type {
 import type { NodeInfoQueryParams } from './nodes/requests/getNodeInfo';
 
 // Transactions Types
-import type { RedeemAdaParams } from './transactions/requests/redeemAda';
-import type { RedeemPaperVendedAdaParams } from './transactions/requests/redeemPaperVendedAda';
 import type {
   Transaction,
   Transactions,
@@ -127,6 +122,7 @@ import type {
   AdaWallet,
   AdaWallets,
   WalletUtxos,
+  WalletIdAndBalance,
   CreateWalletRequest,
   DeleteWalletRequest,
   RestoreWalletRequest,
@@ -138,7 +134,12 @@ import type {
   ImportWalletFromFileRequest,
   UpdateWalletRequest,
   GetWalletUtxosRequest,
+  GetWalletIdAndBalanceRequest,
+  GetWalletIdAndBalanceResponse,
 } from './wallets/types';
+
+// News Types
+import type { GetNewsResponse } from './news/types';
 
 // Common errors
 import {
@@ -162,11 +163,12 @@ import {
   NotEnoughFundsForTransactionFeesError,
   NotEnoughFundsForTransactionError,
   NotEnoughMoneyToSendError,
-  RedeemAdaError,
   TooBigTransactionError,
 } from './transactions/errors';
 import type { FaultInjectionIpcRequest } from '../../../common/types/cardano-node.types';
 import { TlsCertificateNotValidError } from './nodes/errors';
+import { getSHA256HexForString } from './utils/hashing';
+import { getNewsHash } from './news/requests/getNewsHash';
 
 export default class AdaApi {
   config: RequestConfig;
@@ -590,15 +592,6 @@ export default class AdaApi {
   isValidMnemonic = (mnemonic: string): boolean =>
     isValidMnemonic(mnemonic, WALLET_RECOVERY_PHRASE_WORD_COUNT);
 
-  isValidRedemptionKey = (mnemonic: string): boolean =>
-    isValidRedemptionKey(mnemonic);
-
-  isValidPaperVendRedemptionKey = (mnemonic: string): boolean =>
-    isValidPaperVendRedemptionKey(mnemonic);
-
-  isValidRedemptionMnemonic = (mnemonic: string): boolean =>
-    isValidMnemonic(mnemonic, ADA_REDEMPTION_PASSPHRASE_LENGTH);
-
   isValidCertificateMnemonic = (mnemonic: string): boolean =>
     mnemonic.split(' ').length === ADA_CERTIFICATE_MNEMONIC_LENGTH;
 
@@ -770,56 +763,6 @@ export default class AdaApi {
     }
   };
 
-  redeemAda = async (request: RedeemAdaParams): Promise<WalletTransaction> => {
-    Logger.debug('AdaApi::redeemAda called', {
-      parameters: filterLogData(request),
-    });
-    const { spendingPassword: passwordString } = request;
-    const spendingPassword = passwordString
-      ? encryptPassphrase(passwordString)
-      : '';
-    try {
-      const transaction: Transaction = await redeemAda(this.config, {
-        ...request,
-        spendingPassword,
-      });
-      Logger.debug('AdaApi::redeemAda success', { transaction });
-      return _createTransactionFromServerData(transaction);
-    } catch (error) {
-      Logger.error('AdaApi::redeemAda error', { error });
-      if (error.message === 'CannotCreateAddress') {
-        throw new IncorrectSpendingPasswordError();
-      }
-      throw new RedeemAdaError();
-    }
-  };
-
-  redeemPaperVendedAda = async (
-    request: RedeemPaperVendedAdaParams
-  ): Promise<WalletTransaction> => {
-    Logger.debug('AdaApi::redeemAdaPaperVend called', {
-      parameters: filterLogData(request),
-    });
-    const { spendingPassword: passwordString } = request;
-    const spendingPassword = passwordString
-      ? encryptPassphrase(passwordString)
-      : '';
-    try {
-      const transaction: Transaction = await redeemPaperVendedAda(this.config, {
-        ...request,
-        spendingPassword,
-      });
-      Logger.debug('AdaApi::redeemAdaPaperVend success', { transaction });
-      return _createTransactionFromServerData(transaction);
-    } catch (error) {
-      Logger.error('AdaApi::redeemAdaPaperVend error', { error });
-      if (error.message === 'CannotCreateAddress') {
-        throw new IncorrectSpendingPasswordError();
-      }
-      throw new RedeemAdaError();
-    }
-  };
-
   nextUpdate = async (): Promise<NodeSoftware | null> => {
     Logger.debug('AdaApi::nextUpdate called');
     try {
@@ -942,6 +885,36 @@ export default class AdaApi {
     }
   };
 
+  getWalletIdAndBalance = async (
+    request: GetWalletIdAndBalanceRequest
+  ): Promise<WalletIdAndBalance> => {
+    const { recoveryPhrase, getBalance } = request;
+    Logger.debug('AdaApi::getWalletIdAndBalance called', {
+      parameters: { getBalance },
+    });
+    try {
+      const response: GetWalletIdAndBalanceResponse = await getWalletIdAndBalance(
+        this.config,
+        {
+          recoveryPhrase,
+          getBalance,
+        }
+      );
+      Logger.debug('AdaApi::getWalletIdAndBalance success', { response });
+      const { walletId, balance } = response;
+      return {
+        walletId,
+        balance:
+          balance !== null // If balance is "null" it means we didn't fetch it - getBalance was false
+            ? new BigNumber(balance).dividedBy(LOVELACES_PER_ADA)
+            : null,
+      };
+    } catch (error) {
+      Logger.error('AdaApi::getWalletIdAndBalance error', { error });
+      throw new GenericApiError();
+    }
+  };
+
   testReset = async (): Promise<void> => {
     Logger.debug('AdaApi::testReset called');
     try {
@@ -1043,23 +1016,72 @@ export default class AdaApi {
     try {
       const { isWindows, platform } = global.environment;
       const latestAppVersionInfo: LatestAppVersionInfoResponse = await getLatestAppVersion();
+
       const latestAppVersionPath = `platforms.${
         isWindows ? 'windows' : platform
       }.version`;
+
+      const applicationVersionPath = `platforms.${
+        isWindows ? 'windows' : platform
+      }.applicationVersion`;
+
       const latestAppVersion = get(
         latestAppVersionInfo,
         latestAppVersionPath,
         null
       );
+
+      const applicationVersion = get(
+        latestAppVersionInfo,
+        applicationVersionPath,
+        null
+      );
       Logger.debug('AdaApi::getLatestAppVersion success', {
         latestAppVersion,
         latestAppVersionInfo,
+        applicationVersion,
       });
-      return { latestAppVersion };
+      return { latestAppVersion, applicationVersion };
     } catch (error) {
       Logger.error('AdaApi::getLatestAppVersion error', { error });
       throw new GenericApiError();
     }
+  };
+
+  getNews = async (): Promise<GetNewsResponse> => {
+    Logger.debug('AdaApi::getNews called');
+
+    // Fetch news json
+    let rawNews: string;
+    let news: GetNewsResponse;
+    try {
+      rawNews = await getNews();
+      news = JSON.parse(rawNews);
+    } catch (error) {
+      Logger.error('AdaApi::getNews error', { error });
+      throw new Error('Unable to fetch news');
+    }
+
+    // Fetch news verification hash
+    let newsHash: string;
+    let expectedNewsHash: string;
+    try {
+      newsHash = await getSHA256HexForString(rawNews);
+      expectedNewsHash = await getNewsHash(news.updatedAt);
+    } catch (error) {
+      Logger.error('AdaApi::getNews (hash) error', { error });
+      throw new Error('Unable to fetch news hash');
+    }
+
+    if (newsHash !== expectedNewsHash) {
+      throw new Error('Newsfeed could not be verified');
+    }
+
+    Logger.debug('AdaApi::getNews success', {
+      updatedAt: news.updatedAt,
+      items: news.items.length,
+    });
+    return news;
   };
 
   setCardanoNodeFault = async (fault: FaultInjectionIpcRequest) => {
@@ -1074,7 +1096,12 @@ export default class AdaApi {
   setLocalBlockHeight: Function;
   setNetworkBlockHeight: Function;
   setLatestAppVersion: Function;
+  setApplicationVersion: Function;
   setFaultyNodeSettingsApi: boolean;
+  resetTestOverrides: Function;
+
+  // Newsfeed testing utility
+  setFakeNewsFeedJsonForTesting: (fakeNewsfeedJson: GetNewsResponse) => void;
 }
 
 // ========== TRANSFORM SERVER DATA INTO FRONTEND MODELS =========
@@ -1090,6 +1117,7 @@ const _createWalletFromServerData = action(
       hasSpendingPassword,
       spendingPasswordLastUpdate,
       syncState,
+      createdAt,
     } = data;
 
     return new Wallet({
@@ -1101,6 +1129,7 @@ const _createWalletFromServerData = action(
       passwordUpdateDate: new Date(`${spendingPasswordLastUpdate}Z`),
       syncState,
       isLegacy: false,
+      createdAt,
     });
   }
 );

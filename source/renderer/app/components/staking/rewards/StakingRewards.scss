@@ -4,14 +4,14 @@
 
   .headerWrapper {
     display: flex;
-    margin: 0 20px 10px;
     line-height: 1.38;
+    margin: 0 20px 10px;
 
     & > .title {
       color: var(--theme-staking-font-color-lighter);
+      flex-grow: 1;
       font-family: var(--font-regular);
       font-size: 16px;
-      flex-grow: 1;
     }
 
     & > .actionLabel {
@@ -20,16 +20,16 @@
       font-family: var(--font-medium);
       font-size: 14px;
       &:hover {
-        color: var(--theme-staking-font-color);
+        color: var(--theme-staking-font-color-light);
       }
     }
   }
 
   .noRewardsLabel {
     color: var(--theme-staking-font-color-lighter);
+    flex-grow: 1;
     font-family: var(--font-regular);
     font-size: 16px;
-    flex-grow: 1;
     text-align: center;
   }
 
@@ -84,17 +84,17 @@
 
       &:hover {
         & > .sortIcon {
-          visibility: visible;
           opacity: 0.5;
+          visibility: visible;
         }
       }
 
       & > .sortIcon {
-        visibility: hidden;
         margin-left: 6px;
+        visibility: hidden;
         & > svg {
-          width: 7px;
           height: 7.5px;
+          width: 7px;
           & > path {
             fill: var(--theme-staking-font-color-regular);
           }
@@ -105,8 +105,8 @@
           }
         }
         &.sorted {
-          visibility: visible;
           opacity: 1;
+          visibility: visible;
         }
       }
     }
@@ -121,12 +121,12 @@
       width: 25%;
 
       p {
+        -webkit-box-orient: vertical;
         display: -webkit-box;
+        -webkit-line-clamp: 1;
         overflow: hidden;
         text-overflow: ellipsis;
         word-break: break-all;
-        -webkit-line-clamp: 1;
-        -webkit-box-orient: vertical;
 
         .stakePoolReference {
           font-family: var(--font-medium);

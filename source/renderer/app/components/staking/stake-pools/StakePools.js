@@ -4,8 +4,10 @@ import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import { StakePoolsList } from './StakePoolsList';
 import { StakePoolsSearch } from './StakePoolsSearch';
-import type { StakePool } from '../../../api/staking/types';
+import BackToTopButton from '../../widgets/BackToTopButton';
 import styles from './StakePools.scss';
+import { getFilteredStakePoolsList } from './helpers';
+import type { StakePoolsListType } from '../../../api/staking/types';
 
 const messages = defineMessages({
   delegatingListTitle: {
@@ -18,11 +20,16 @@ const messages = defineMessages({
     defaultMessage: '!!!Stake pools ({pools})',
     description: '"listTitle" for the Stake Pools page.',
   },
+  listTitleWithSearch: {
+    id: 'staking.stakePools.listTitleWithSearch',
+    defaultMessage: '!!!Stake pools. Search results: ({pools})',
+    description: '"listTitle" for the Stake Pools page.',
+  },
 });
 
 type Props = {
-  stakePoolsDelegatingList: Array<StakePool>,
-  stakePoolsList: Array<StakePool>,
+  stakePoolsDelegatingList: StakePoolsListType,
+  stakePoolsList: StakePoolsListType,
   onOpenExternalLink: Function,
   currentTheme: string,
   onDelegate: Function,
@@ -30,7 +37,6 @@ type Props = {
 
 type State = {
   search: string,
-  filter: string,
   selectedList?: ?string,
 };
 
@@ -46,15 +52,11 @@ export default class StakePools extends Component<Props, State> {
 
   state = {
     search: '',
-    filter: 'all',
     ...initialState,
   };
 
-  searchInput: ?HTMLElement = null;
-
-  handleFilterChange = (filter: string) => this.setState({ filter });
-
   handleSearch = (search: string) => this.setState({ search });
+  handleClearSearch = () => this.setState({ search: '' });
 
   handleSetListActive = (selectedList: string) =>
     this.setState({ selectedList });
@@ -72,23 +74,34 @@ export default class StakePools extends Component<Props, State> {
       onOpenExternalLink,
       currentTheme,
     } = this.props;
-    const { search, filter, selectedList } = this.state;
+    const { search, selectedList } = this.state;
+
+    const filteredStakePoolsList: StakePoolsListType = getFilteredStakePoolsList(
+      stakePoolsList,
+      search
+    );
+
+    const listTitleMessage = search.trim().length
+      ? messages.listTitleWithSearch
+      : messages.listTitle;
 
     return (
       <div className={styles.component}>
+        <BackToTopButton
+          scrollableElementClassName="StakingWithNavigation_page"
+          buttonTopPosition={144}
+        />
+
         <StakePoolsSearch
           search={search}
-          filter={filter}
           onSearch={this.handleSearch}
-          onFilterChange={this.handleFilterChange}
-          registerSearchInput={searchInput => {
-            this.searchInput = searchInput;
-          }}
+          onClearSearch={this.handleClearSearch}
+          isClearTooltipOpeningDownward
         />
 
         <h2>{intl.formatMessage(messages.delegatingListTitle)}</h2>
 
-        {stakePoolsDelegatingList.length && (
+        {stakePoolsDelegatingList.length > 0 && (
           <StakePoolsList
             listName="stakePoolsDelegatingList"
             stakePoolsList={stakePoolsDelegatingList}
@@ -104,9 +117,9 @@ export default class StakePools extends Component<Props, State> {
 
         <h2>
           <FormattedMessage
-            {...messages.listTitle}
+            {...listTitleMessage}
             values={{
-              pools: stakePoolsList.length,
+              pools: filteredStakePoolsList.length,
             }}
           />
         </h2>
@@ -114,7 +127,7 @@ export default class StakePools extends Component<Props, State> {
         <StakePoolsList
           showWithSelectButton
           listName="selectedIndexList"
-          stakePoolsList={stakePoolsList}
+          stakePoolsList={filteredStakePoolsList}
           onOpenExternalLink={onOpenExternalLink}
           currentTheme={currentTheme}
           isListActive={selectedList === 'selectedIndexList'}

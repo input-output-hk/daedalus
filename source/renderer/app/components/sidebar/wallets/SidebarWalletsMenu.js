@@ -4,6 +4,7 @@ import SVGInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import classNames from 'classnames';
+import { Scrollbars } from 'react-custom-scrollbars';
 import SidebarSubMenu from '../SidebarMenu';
 import styles from './SidebarWalletsMenu.scss';
 import addWalletIcon from '../../../assets/images/sidebar/add-wallet-ic.inline.svg';
@@ -33,6 +34,10 @@ export default class SidebarWalletsMenu extends Component<Props> {
     intl: intlShape.isRequired,
   };
 
+  renderThumb = (props: any) => (
+    <div {...props} className={styles.scrollbarThumb} />
+  );
+
   render() {
     const { intl } = this.context;
     const {
@@ -51,19 +56,24 @@ export default class SidebarWalletsMenu extends Component<Props> {
     return (
       <SidebarSubMenu visible={this.props.visible}>
         <div className={styles.wallets}>
-          {wallets.map(wallet => (
-            <SidebarWalletMenuItem
-              title={wallet.title}
-              info={wallet.info}
-              active={isActiveWallet(wallet.id)}
-              onClick={() => onWalletItemClick(wallet.id)}
-              key={wallet.id}
-              className={`Wallet_${wallet.id}`}
-              isRestoreActive={wallet.isRestoreActive}
-              restoreProgress={wallet.restoreProgress}
-              isLegacy={wallet.isLegacy}
-            />
-          ))}
+          <Scrollbars renderThumbVertical={this.renderThumb}>
+            {wallets.map(wallet => (
+              <SidebarWalletMenuItem
+                title={wallet.title}
+                info={wallet.info}
+                active={isActiveWallet(wallet.id)}
+                onClick={() => onWalletItemClick(wallet.id)}
+                key={wallet.id}
+                className={`Wallet_${wallet.id}`}
+                isRestoreActive={wallet.isRestoreActive}
+                restoreProgress={wallet.restoreProgress}
+                isLegacy={wallet.isLegacy}
+                recoveryPhraseVerificationStatus={
+                  wallet.recoveryPhraseVerificationStatus
+                }
+              />
+            ))}
+          </Scrollbars>
         </div>
         <button className={addWalletButtonStyles} onClick={onAddWallet}>
           <SVGInline svg={addWalletIcon} className={styles.icon} />

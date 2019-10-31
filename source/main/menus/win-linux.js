@@ -7,7 +7,7 @@ import { getTranslation } from '../utils/getTranslation';
 import { environment } from '../environment';
 import { NOTIFICATIONS } from '../../common/ipc/constants';
 import { showUiPartChannel } from '../ipc/control-ui-parts';
-import type { SupportRequests } from '../../common/types/support-requests.types';
+import { generateSupportRequestLink } from '../../common/utils/reporting';
 
 const id = 'menu';
 const { isWindows, isBlankScreenFixActive } = environment;
@@ -17,8 +17,8 @@ export const winLinuxMenu = (
   window: BrowserWindow,
   actions: MenuActions,
   translations: {},
-  supportRequestData: SupportRequests,
-  isNodeInSync: boolean,
+  locale: string,
+  isUpdateAvailable: boolean,
   translation: Function = getTranslation(translations, id)
 ) => [
   {
@@ -29,13 +29,7 @@ export const winLinuxMenu = (
         click() {
           actions.openAboutDialog();
         },
-      },
-      {
-        label: translation('daedalus.adaRedemption'),
-        enabled: isNodeInSync,
-        click() {
-          actions.openAdaRedemptionScreen();
-        },
+        enabled: !isUpdateAvailable,
       },
       {
         label: translation('daedalus.close'),
@@ -163,14 +157,11 @@ export const winLinuxMenu = (
           const supportRequestLinkUrl = translation(
             'helpSupport.supportRequestUrl'
           );
-          const supportUrl = `${supportRequestLinkUrl}?${Object.entries(
-            supportRequestData
-          )
-            .map(
-              ([key, val]: [string, any]) =>
-                `${encodeURIComponent(key)}=${encodeURIComponent(val)}`
-            )
-            .join('&')}`;
+          const supportUrl = generateSupportRequestLink(
+            supportRequestLinkUrl,
+            environment,
+            locale
+          );
           shell.openExternal(supportUrl);
         },
       },
@@ -179,6 +170,7 @@ export const winLinuxMenu = (
         click() {
           showUiPartChannel.send(NOTIFICATIONS.DOWNLOAD_LOGS, window);
         },
+        enabled: !isUpdateAvailable,
       },
       { type: 'separator' },
       {
@@ -187,6 +179,7 @@ export const winLinuxMenu = (
         click() {
           actions.openBlockConsolidationStatusDialog();
         },
+        enabled: !isUpdateAvailable,
       },
       {
         label: translation('helpSupport.daedalusDiagnostics'),
@@ -194,6 +187,7 @@ export const winLinuxMenu = (
         click() {
           actions.openDaedalusDiagnosticsDialog();
         },
+        enabled: !isUpdateAvailable,
       },
     ]),
   },

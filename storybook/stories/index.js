@@ -15,11 +15,8 @@ import './PaperWallets.stories';
 // Staking
 import './Staking.stories';
 
-// Ada Redemption
-import './AdaRedemptionDialog.stories';
-
 // Settings
-import './LanguageSelectionForm.stories';
+import './Settings.stories';
 
 // Loading
 import './Loading.stories';
@@ -35,3 +32,11 @@ import './TopBar.stories';
 
 // Widgets
 import './Widgets.stories';
+
+// Notifications
+import './Notifications.stories';
+
+// Newsfeed
+import './news/NewsFeed.stories';
+import './news/IncidentOverlay.stories';
+import './news/AlertsOverlay.stories';

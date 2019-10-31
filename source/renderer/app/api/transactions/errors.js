@@ -21,11 +21,6 @@ const messages = defineMessages({
     defaultMessage: '!!!Not enough money to make this transaction.',
     description: '"Not enough money to make this transaction." error message.',
   },
-  redeemAdaError: {
-    id: 'api.errors.RedeemAdaError',
-    defaultMessage: '!!!Your ADA could not be redeemed correctly.',
-    description: '"Your ADA could not be redeemed correctly." error message.',
-  },
   allFundsAlreadyAtReceiverAddressError: {
     id: 'api.errors.AllFundsAlreadyAtReceiverAddressError',
     defaultMessage:
@@ -97,15 +92,6 @@ export class NotEnoughMoneyToSendError extends LocalizableError {
     super({
       id: messages.notEnoughMoneyToSendError.id,
       defaultMessage: messages.notEnoughMoneyToSendError.defaultMessage,
-    });
-  }
-}
-
-export class RedeemAdaError extends LocalizableError {
-  constructor() {
-    super({
-      id: messages.redeemAdaError.id,
-      defaultMessage: messages.redeemAdaError.defaultMessage,
     });
   }
 }

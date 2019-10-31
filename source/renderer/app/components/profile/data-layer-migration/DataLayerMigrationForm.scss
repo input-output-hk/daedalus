@@ -53,7 +53,7 @@
 }
 
 .submitButton {
-  background: none !important;
+  background-color: var(--theme-data-migration-layer-button-background-color);
   border: solid 1px var(--theme-data-migration-button-border-color) !important;
   color: var(--theme-data-migration-button-label-color) !important;
   line-height: 1.36 !important;
@@ -67,12 +67,12 @@
     background: var(
       --theme-data-migration-layer-button-background-color-hover
     ) !important;
-    color: var(--theme-data-migration-layer-background-color) !important;
+    color: var(--theme-data-migration-layer-text-color-hover) !important;
   }
 }
 
 .error {
   @include error-message;
-  text-align: center;
   margin-bottom: 1rem;
+  text-align: center;
 }

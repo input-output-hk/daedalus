@@ -117,10 +117,10 @@ export default class WalletFileImportDialog extends Component<Props, State> {
   form = new ReactToolboxMobxForm(
     {
       fields: {
-        walletFile: {
-          label: this.context.intl.formatMessage(messages.walletFileLabel),
-          placeholder: this.context.intl.formatMessage(messages.walletFileHint),
-          type: 'file',
+        walletFilePath: {
+          label: 'filePath',
+          placeholder: 'filePath',
+          type: 'hidden',
         },
         walletName: {
           label: this.context.intl.formatMessage(messages.walletNameInputLabel),
@@ -200,9 +200,9 @@ export default class WalletFileImportDialog extends Component<Props, State> {
     this.form.submit({
       onSuccess: form => {
         const { createPassword } = this.state;
-        const { walletFile, spendingPassword, walletName } = form.values();
+        const { walletFilePath, spendingPassword, walletName } = form.values();
         const walletData = {
-          filePath: walletFile.path,
+          filePath: walletFilePath,
           spendingPassword: createPassword ? spendingPassword : null,
           walletName: walletName.length > 0 ? walletName : null,
         };
@@ -216,9 +216,7 @@ export default class WalletFileImportDialog extends Component<Props, State> {
     const { intl } = this.context;
     const { form } = this;
     const { isSubmitting, error, onClose } = this.props;
-    // const { createPassword } = this.state;
-
-    const walletFile = form.$('walletFile');
+    const walletFilePath = form.$('walletFilePath');
     const dialogClasses = classnames([
       styles.component,
       'WalletFileImportDialog',
@@ -234,7 +232,7 @@ export default class WalletFileImportDialog extends Component<Props, State> {
         className: isSubmitting ? styles.isSubmitting : null,
         label: intl.formatMessage(messages.submitLabel),
         primary: true,
-        disabled: isSubmitting || !(walletFile.value instanceof File),
+        disabled: isSubmitting || !walletFilePath.value,
         onClick: this.submit,
       },
     ];
@@ -254,11 +252,13 @@ export default class WalletFileImportDialog extends Component<Props, State> {
       >
         <div className={styles.fileUpload}>
           <FileUploadWidget
-            {...walletFile.bind()}
-            selectedFile={walletFile.value}
-            onFileSelected={file => {
+            label={intl.formatMessage(messages.walletFileLabel)}
+            placeholder={intl.formatMessage(messages.walletFileHint)}
+            acceptedFileTypes={['*']}
+            selectedFile={walletFilePath.value}
+            onFileSelected={filePath => {
               // "set(value)" is an unbound method and thus must be explicitly called
-              walletFile.set(file);
+              walletFilePath.set(filePath);
             }}
           />
         </div>

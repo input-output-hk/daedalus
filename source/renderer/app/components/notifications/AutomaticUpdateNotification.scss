@@ -1,0 +1,101 @@
+@import '../../themes/mixins/link';
+
+.overlay {
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  left: 0;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 101;
+
+  .dialog {
+    height: 100%;
+    margin: auto 0;
+    overflow: hidden;
+    width: 100%;
+
+    &:focus {
+      outline: none;
+    }
+    .content {
+      background-color: var(--theme-automatic-update-overlay-background-color);
+      display: flex;
+      flex-direction: column;
+      font-family: var(--font-regular);
+      height: 100%;
+      justify-content: center;
+      text-align: center;
+
+      h1 {
+        color: var(--theme-automatic-update-overlay-title-text-color);
+        font-size: 20px;
+        line-height: 1.2;
+      }
+
+      .description {
+        margin: 16px auto 0;
+        max-width: 620px;
+        p {
+          color: var(--theme-automatic-update-overlay-text-color);
+          font-size: 16px;
+          line-height: 1.38;
+          margin-bottom: 14px;
+          b {
+            color: var(--theme-automatic-update-overlay-text-highlight-color);
+            font-family: var(--font-medium);
+          }
+        }
+      }
+
+      .acceptButton {
+        background-color: var(
+          --theme-automatic-update-overlay-button-background-color
+        );
+        border: solid 1px
+          var(--theme-automatic-update-overlay-button-border-color);
+        display: block;
+        font-weight: 500;
+        line-height: 1.36;
+        margin: 30px auto 0;
+
+        .btnLabel {
+          color: var(--theme-automatic-update-overlay-button-label-color);
+        }
+
+        &:hover {
+          background-color: var(
+            --theme-automatic-update-overlay-button-background-color-hover
+          );
+          border: none;
+          color: var(--theme-automatic-update-overlay-button-text-color-hover);
+
+          .btnLabel {
+            color: var(
+              --theme-automatic-update-overlay-button-label-color-hover
+            );
+          }
+        }
+      }
+
+      .postponeButton {
+        @include link(
+          --theme-automatic-update-overlay-button-label-color-light
+        );
+        display: inline-block;
+        font-size: 14px;
+        margin: 20px auto 0;
+        &:hover {
+          border-bottom: 1px solid
+            var(--theme-automatic-update-overlay-button-label-color);
+          color: var(--theme-automatic-update-overlay-button-label-color);
+        }
+      }
+    }
+  }
+
+  @media (max-width: 950px), (max-height: 678px) {
+    overflow-y: auto;
+  }
+}

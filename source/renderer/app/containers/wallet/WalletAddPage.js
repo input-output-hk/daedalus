@@ -2,7 +2,6 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import WalletAdd from '../../components/wallet/WalletAdd';
-import WalletCreateDialog from '../../components/wallet/WalletCreateDialog';
 import WalletRestoreDialog from '../../components/wallet/WalletRestoreDialog';
 import WalletFileImportDialog from '../../components/wallet/file-import/WalletFileImportDialog';
 import WalletBackupDialog from '../../components/wallet/WalletBackupDialog';
@@ -12,6 +11,10 @@ import WalletBackupDialogContainer from './dialogs/WalletBackupDialogContainer';
 import WalletCreateDialogContainer from './dialogs/WalletCreateDialogContainer';
 import Layout from '../MainLayout';
 import type { InjectedProps } from '../../types/injectedPropsType';
+
+// TODO: Remove once the new wallet creation process is ready
+import WalletCreateDialogContainerOld from './dialogs/WalletCreateDialogContainerOld';
+import WalletCreateDialog from '../../components/wallet/WalletCreateDialog';
 
 type Props = InjectedProps;
 
@@ -27,14 +30,27 @@ export default class WalletAddPage extends Component<Props> {
   render() {
     const { actions, stores } = this.props;
     const { wallets, uiDialogs, app } = stores;
-    const { isRestoreActive } = wallets;
+    const {
+      isRestoreActive,
+      createWalletStep,
+      useNewWalletCreationProcess,
+    } = wallets;
     const {
       environment: { isMainnet, isTestnet },
     } = app;
 
+    const walletCreationAction = useNewWalletCreationProcess
+      ? () => actions.wallets.createWalletBegin.trigger()
+      : // TODO: Remove once the new wallet creation process is ready
+        () => actions.dialogs.open.trigger({ dialog: WalletCreateDialog });
+
     let content = null;
 
+    // TODO: Remove once the new wallet creation process is ready
     if (uiDialogs.isOpen(WalletCreateDialog)) {
+      content = <WalletCreateDialogContainerOld onClose={this.onClose} />;
+      // ----
+    } else if (createWalletStep !== null) {
       content = <WalletCreateDialogContainer onClose={this.onClose} />;
     } else if (uiDialogs.isOpen(WalletBackupDialog)) {
       content = <WalletBackupDialogContainer onClose={this.onClose} />;
@@ -47,9 +63,7 @@ export default class WalletAddPage extends Component<Props> {
         <WalletAdd
           isMainnet={isMainnet}
           isTestnet={isTestnet}
-          onCreate={() =>
-            actions.dialogs.open.trigger({ dialog: WalletCreateDialog })
-          }
+          onCreate={walletCreationAction}
           onRestore={() =>
             actions.dialogs.open.trigger({ dialog: WalletRestoreDialog })
           }

@@ -5,7 +5,7 @@ const { isTest } = global.environment;
 /* eslint-disable max-len */
 export const REPORT_ISSUE_TIME_TRIGGER = isTest ? 12 : 5 * 60; // 5 minutes / 12 seconds (isTest = true) | unit: seconds
 export const ADDRESS_COPY_NOTIFICATION_DURATION = 10; // unit: seconds
-export const ADDRESS_COPY_NOTIFICATION_SMALL_DURATION = 3; // unit: seconds
+export const ADDRESS_COPY_NOTIFICATION_SMALL_DURATION = 5; // unit: seconds
 export const DOWNLOAD_LOGS_SUCCESS_DURATION = 10; // unit: seconds
 export const DELETE_WALLET_COUNTDOWN = 10; // unit: seconds
 export const FORM_VALIDATION_DEBOUNCE_WAIT = 250; // unit: milliseconds
@@ -19,6 +19,9 @@ export const NTP_RECHECK_TIMEOUT = 1 * 1000; // 1 second | unit: milliseconds;
 export const BLOCK_CONSOLIDATION_IPC_REQUEST_INTERVAL = 10 * 1000; // 10 seconds | unit: milliseconds
 export const BLOCK_CONSOLIDATION_API_REQUEST_INTERVAL = 30 * 1000; // 30 seconds | unit: milliseconds
 export const WALLET_UTXO_API_REQUEST_INTERVAL = 5 * 1000; // 5 seconds | unit: milliseconds
-export const STAKE_POOL_TOOLTIP_HOVER_WAIT = 350; // 350 milliseconds | unit: milliseconds
+export const STAKE_POOL_TOOLTIP_HOVER_WAIT = 700; // 700 milliseconds | unit: milliseconds
 export const COPY_STATE_DIRECTORY_PATH_NOTIFICATION_DURATION = 10; // unit: seconds
+export const NEWS_POLL_INTERVAL = 30 * 60 * 1000; // 30 minutes | unit: milliseconds
+export const NEWS_POLL_INTERVAL_ON_ERROR = 1 * 60 * 1000; // 1 minute | unit: milliseconds
+export const NEWS_POLL_INTERVAL_ON_INCIDENT = 10 * 60 * 1000; // 10 minutes | unit: milliseconds
 /* eslint-disable max-len */

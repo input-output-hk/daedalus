@@ -1,11 +1,11 @@
 // @flow
 import { observable, action } from 'mobx';
 import type Store from './lib/Store';
-import AdaRedemptionStore from './AdaRedemptionStore';
 import AddressesStore from './AddressesStore';
 import AppStore from './AppStore';
 import BlockConsolidationStore from './BlockConsolidationStore';
 import NetworkStatusStore from './NetworkStatusStore';
+import NewsFeedStore from './NewsFeedStore';
 import NodeUpdateStore from './NodeUpdateStore';
 import ProfileStore from './ProfileStore';
 import SidebarStore from './SidebarStore';
@@ -19,11 +19,11 @@ import WalletBackupStore from './WalletBackupStore';
 import WindowStore from './WindowStore';
 
 export const storeClasses = {
-  adaRedemption: AdaRedemptionStore,
   addresses: AddressesStore,
   app: AppStore,
   blockConsolidation: BlockConsolidationStore,
   networkStatus: NetworkStatusStore,
+  newsFeed: NewsFeedStore,
   nodeUpdate: NodeUpdateStore,
   profile: ProfileStore,
   sidebar: SidebarStore,
@@ -38,11 +38,11 @@ export const storeClasses = {
 };
 
 export type StoresMap = {
-  adaRedemption: AdaRedemptionStore,
   addresses: AddressesStore,
   app: AppStore,
   blockConsolidation: BlockConsolidationStore,
   networkStatus: NetworkStatusStore,
+  newsFeed: NewsFeedStore,
   nodeUpdate: NodeUpdateStore,
   profile: ProfileStore,
   router: Object,
@@ -79,11 +79,11 @@ export default action(
 
     // Create fresh instances of all stores
     stores = observable({
-      adaRedemption: createStoreInstanceOf(AdaRedemptionStore),
       addresses: createStoreInstanceOf(AddressesStore),
       app: createStoreInstanceOf(AppStore),
       blockConsolidation: createStoreInstanceOf(BlockConsolidationStore),
       networkStatus: createStoreInstanceOf(NetworkStatusStore),
+      newsFeed: createStoreInstanceOf(NewsFeedStore),
       nodeUpdate: createStoreInstanceOf(NodeUpdateStore),
       profile: createStoreInstanceOf(ProfileStore),
       router,

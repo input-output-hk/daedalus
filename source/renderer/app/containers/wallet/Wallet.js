@@ -5,13 +5,13 @@ import { get } from 'lodash';
 import MainLayout from '../MainLayout';
 import WalletWithNavigation from '../../components/wallet/layouts/WalletWithNavigation';
 import LoadingSpinner from '../../components/widgets/LoadingSpinner';
-import AdaRedemptionSuccessOverlay from '../../components/wallet/ada-redemption/AdaRedemptionSuccessOverlay';
 import RestoreNotification from '../../components/notifications/RestoreNotification';
 import { buildRoute } from '../../utils/routing';
 import { ROUTES } from '../../routes-config';
 import { WalletSyncStateTags } from '../../domains/Wallet';
 import type { InjectedContainerProps } from '../../types/injectedPropsType';
 import type { NavDropdownProps } from '../../components/navigation/Navigation';
+import { WalletRecoveryPhraseVerificationStatuses } from '../../stores/WalletsStore';
 
 type Props = InjectedContainerProps;
 
@@ -51,12 +51,12 @@ export default class Wallet extends Component<Props> {
   };
 
   render() {
-    const { actions, stores } = this.props;
-    const { wallets, adaRedemption, profile, app } = stores;
-    const { showAdaRedemptionSuccessMessage, amountRedeemed } = adaRedemption;
+    const { wallets, profile, app } = this.props.stores;
     const { currentLocale } = profile;
 
-    if (!wallets.active)
+    const { active: activeWallet } = wallets;
+
+    if (!activeWallet)
       return (
         <MainLayout>
           <LoadingSpinner />
@@ -64,17 +64,24 @@ export default class Wallet extends Component<Props> {
       );
 
     const isRestoreActive =
-      get(wallets.active, 'syncState.tag') === WalletSyncStateTags.RESTORING;
+      get(activeWallet, 'syncState.tag') === WalletSyncStateTags.RESTORING;
     const restoreProgress = get(
-      wallets.active,
+      activeWallet,
       'syncState.data.percentage.quantity',
       0
     );
     const restoreETA = get(
-      wallets.active,
+      activeWallet,
       'syncState.data.estimatedCompletionTime.quantity',
       0
     );
+
+    const {
+      recoveryPhraseVerificationStatus,
+    } = wallets.getWalletRecoveryPhraseVerification(activeWallet.id);
+    const hasNotification =
+      recoveryPhraseVerificationStatus ===
+      WalletRecoveryPhraseVerificationStatuses.NOTIFICATION;
 
     return (
       <MainLayout>
@@ -90,18 +97,10 @@ export default class Wallet extends Component<Props> {
           isActiveScreen={this.isActiveScreen}
           onWalletNavItemClick={this.handleWalletNavItemClick}
           activeItem={app.currentPage}
+          hasNotification={hasNotification}
         >
           {this.props.children}
         </WalletWithNavigation>
-
-        {showAdaRedemptionSuccessMessage ? (
-          <AdaRedemptionSuccessOverlay
-            amount={amountRedeemed}
-            onClose={
-              actions.adaRedemption.closeAdaRedemptionSuccessOverlay.trigger
-            }
-          />
-        ) : null}
       </MainLayout>
     );
   }

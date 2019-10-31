@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import SyncingConnecting from '../../components/loading/syncing-connecting/SyncingConnecting';
-import { getSupportUrl } from '../../utils/network';
+import { generateSupportRequestLink } from '../../../../common/utils/reporting';
 
 type Props = InjectedProps;
 
@@ -36,6 +36,9 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
       isNewAppVersionLoaded,
     } = stores.nodeUpdate;
     const { hasLoadedCurrentLocale, hasLoadedCurrentTheme } = stores.profile;
+    const { toggleNewsFeed } = this.props.actions.app;
+    const { unread } = stores.newsFeed.newsFeedData;
+    const hasUnreadNews = unread.length > 0;
 
     return (
       <SyncingConnecting
@@ -50,6 +53,7 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
         isNotEnoughDiskSpace={isNotEnoughDiskSpace}
         isTlsCertInvalid={isTlsCertInvalid}
         syncPercentage={syncPercentage}
+        hasUnreadNews={hasUnreadNews}
         hasLoadedCurrentLocale={hasLoadedCurrentLocale}
         hasLoadedCurrentTheme={hasLoadedCurrentTheme}
         isCheckingSystemTime={forceCheckTimeDifferenceRequest.isExecuting}
@@ -64,14 +68,21 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
         onGetAvailableVersions={this.handleGetAvailableVersions}
         onStatusIconClick={this.openDaedalusDiagnosticsDialog}
         onDownloadLogs={this.handleDownloadLogs}
+        onToggleNewsFeedIconClick={toggleNewsFeed.trigger}
         disableDownloadLogs={stores.app.isDownloadNotificationVisible}
+        showNewsFeedIcon={!isNodeStopping && !isNodeStopped}
       />
     );
   }
 
   handleIssueClick = async (issueButtonUrl: string) => {
     const locale = this.props.stores.profile.currentLocale;
-    const supportUrl = await getSupportUrl(issueButtonUrl, locale);
+    const { environment } = this.props.stores.app;
+    const supportUrl = generateSupportRequestLink(
+      issueButtonUrl,
+      environment,
+      locale
+    );
     this.props.stores.app.openExternalLink(supportUrl);
   };
 

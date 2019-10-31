@@ -10,13 +10,13 @@ const formatConstNames = (fileName: string): FormattedConstNames => {
   const fileNameParts = fileName.split('-');
   if (fileNameParts.length > 1) {
     PREFIX = `${fileNameParts[0].toUpperCase()}_${fileNameParts[1].toUpperCase()}`;
-    constNames.themeConfig = `${PREFIX}_THEME_CONFIG`;
+    constNames.themeOutput = `${PREFIX}_THEME_OUTPUT`;
     constNames.themeParams = `${PREFIX}_THEME_PARAMS`;
     return constNames;
   }
 
   PREFIX = `${fileNameParts[0].toUpperCase()}`;
-  constNames.themeConfig = `${PREFIX}_THEME_CONFIG`;
+  constNames.themeOutput = `${PREFIX}_THEME_OUTPUT`;
   constNames.themeParams = `${PREFIX}_THEME_PARAMS`;
   return constNames;
 };
@@ -29,17 +29,17 @@ export const writeThemeUpdate = ({
     __dirname,
     `../../source/renderer/app/themes/daedalus/${fileName}.js`
   );
-  const { themeConfig, themeParams } = formatConstNames(fileName);
+  const { themeOutput, themeParams } = formatConstNames(fileName);
   const FILE_CONTENT = `
     // @flow
     import { createTheme } from '../utils/createTheme';
     import type { CreateThemeParams } from '../types';
 
-    //  ==== ${fileName} theme config for Daedalus and react-polymorph components === //
-    export const ${themeConfig} = ${JSON.stringify(updatedThemeObj, null, 2)};
+    //  ==== ${fileName} theme output for Daedalus and react-polymorph components === //
+    export const ${themeOutput} = ${JSON.stringify(updatedThemeObj, null, 2)};
 
     const ${themeParams}: CreateThemeParams = {
-      config: ${themeConfig},
+      config: ${themeOutput},
     };
 
     export default createTheme(${themeParams});

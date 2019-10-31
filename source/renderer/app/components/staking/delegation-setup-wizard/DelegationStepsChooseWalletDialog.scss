@@ -1,12 +1,5 @@
 .delegationStepsChooseWalletDialogWrapper {
-  font-family: var(--font-regular);
-
   :global {
-    .Dialog_title {
-      letter-spacing: 2px;
-      margin-bottom: 0;
-    }
-
     .Dialog_subtitle {
       color: var(--theme-delegation-steps-choose-wallet-steps-indicator-color);
     }
@@ -18,24 +11,14 @@
     }
   }
 
-  .delegationStepsIndicatorWrapper {
-    margin: 4px auto 0;
-    width: 410px;
-  }
-
   .content {
-    font-size: 16px;
-    line-height: 1.38;
-    margin-top: 20px;
-    text-align: left;
-
     .description {
       color: var(--theme-delegation-steps-choose-wallet-description-color);
       span > span {
-        font-family: var(--font-medium);
         color: var(
           --theme-delegation-steps-choose-wallet-description-highlighted-color
         );
+        font-family: var(--font-medium);
         font-weight: 500;
       }
     }
@@ -101,6 +84,12 @@
         font-size: 12px;
         line-height: 1.33;
         opacity: 0.5;
+      }
+    }
+
+    :global {
+      .SimpleOptions_option {
+        padding: 8px 20px;
       }
     }
   }

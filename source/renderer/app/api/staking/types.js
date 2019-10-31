@@ -10,8 +10,12 @@ export type StakePool = {
   profitMargin: number,
   ranking: number,
   retiring?: Date,
+  created_at: Date,
+  isCharity: boolean,
   url: string,
 };
+
+export type StakePoolsListType = Array<StakePool>;
 
 export type Reward = {
   date: string,

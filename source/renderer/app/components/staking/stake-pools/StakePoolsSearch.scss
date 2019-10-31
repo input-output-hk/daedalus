@@ -2,14 +2,6 @@
   background: transparent;
   padding: 20px 0 6px;
   width: 100%;
-
-  /*
-   * This makes the Search component to be fixed.
-   * Removing this for now until we have a solution that won't take too much space.
-   */
-  // position: sticky;
-  // top: 0;
-  // z-index: 2;
 }
 
 .container {
@@ -17,9 +9,9 @@
 }
 
 .searchIcon {
+  bottom: 12.5px;
   left: 20px;
   position: absolute;
-  bottom: 12.5px;
   z-index: 1;
 
   svg {
@@ -34,30 +26,35 @@
   input {
     border-radius: 4px;
     height: 50px;
-    padding-left: 55px;
-    padding-right: 175px;
+    padding: 0 50px 0 55px;
   }
 }
 
-.searchFilter {
-  display: block;
+.inputExtras {
+  background: var(--rp-input-bg-color);
+  bottom: 1px;
+  display: flex;
+  height: 48px;
+  line-height: 48px;
+  padding-left: 20px;
   position: absolute;
   right: 20px;
-  top: 13px;
+}
 
-  li {
-    display: inline-block;
-    margin-left: 20px;
-  }
+.clearSearch {
+  margin-top: 11px;
 
   button {
-    color: var(--theme-staking-stake-pools-search-button-color);
+    background-color: var(
+      --theme-staking-stake-pools-search-clear-button-background-color
+    );
+    border-radius: 3px;
     cursor: pointer;
-    font-size: 16px;
-    opacity: 0.3;
+    height: 28px;
+    width: 28px;
   }
 
-  .searchFilterActiveItem {
-    opacity: 1;
+  svg {
+    width: 10px;
   }
 }

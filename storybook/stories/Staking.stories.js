@@ -50,7 +50,7 @@ const pageNames = {
 const WALLETS = [
   {
     id: '1',
-    value: '1.0001 ADA',
+    value: '1 ADA',
     label: 'First Wallet',
     isAcceptableSetupWallet: true,
     hasPassword: true,
@@ -77,8 +77,8 @@ const locales = {
 };
 
 // Delegation steps labels are translated outside components and we need to determine correct translations
-const locale = localStorage.getItem('currentLocale') || 'English';
-const currentTheme = localStorage.getItem('currentTheme') || 'light-blue';
+const locale = sessionStorage.getItem('localeName') || 'English';
+const currentTheme = sessionStorage.getItem('themeName') || 'light-blue';
 const translationIndex = locales[locale];
 
 // @TODO - improve locales GET once [DDW-711](https://github.com/input-output-hk/daedalus/pull/1426) is merged
@@ -135,7 +135,6 @@ storiesOf('Staking', module)
     () => (
       <div>
         <StakingCountdown
-          currentLocale={translationIndex}
           startDateTime={startDateTimeKnob(
             'Decentralization Start DateTime',
             defaultStartDateTime

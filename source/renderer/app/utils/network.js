@@ -9,29 +9,21 @@ import {
   MAINNET_LATEST_VERSION_INFO_URL,
   STAGING_LATEST_VERSION_INFO_URL,
   TESTNET_LATEST_VERSION_INFO_URL,
+  MAINNET_NEWS_URL,
+  TESTNET_NEWS_URL,
+  STAGING_NEWS_URL,
+  DEVELOPMENT_NEWS_URL,
+  MAINNET_NEWS_HASH_URL,
+  STAGING_NEWS_HASH_URL,
+  TESTNET_NEWS_HASH_URL,
+  DEVELOPMENT_NEWS_HASH_URL,
 } from '../config/urlsConfig';
-import serialize from './serialize';
 import {
   MAINNET,
   STAGING,
   TESTNET,
   DEVELOPMENT,
 } from '../../../common/types/environment.types';
-
-const localesFillForm = {
-  'en-US': 'English',
-  'ja-JP': 'Japanese',
-};
-
-const {
-  version,
-  os,
-  apiVersion,
-  network: NETWORK,
-  build,
-  buildNumber,
-  installerVersion,
-} = global.environment;
 
 export const getNetworkExplorerUri = (network: string): string => {
   // sets default to mainnet in case env.NETWORK is undefined
@@ -74,23 +66,6 @@ export const getNetworkEkgUrl = (env: {
   return ekgUrl;
 };
 
-export const getSupportUrl = async (baseUrl: string, locale: string) => {
-  const network = NETWORK === 'development' ? 'staging' : NETWORK;
-  const info = {
-    frontendVersion: version,
-    backendVersion: apiVersion,
-    network,
-    build,
-    installerVersion,
-    os,
-    locale,
-    product: `Daedalus wallet - ${network}`,
-    supportLanguage: localesFillForm[locale],
-    productVersion: `Daedalus ${version}+Cardano ${buildNumber}`,
-  };
-  return `${baseUrl}?${serialize(info)}`;
-};
-
 export const getLatestVersionInfoUrl = (network: string): string => {
   // sets default to mainnet in case env.NETWORK is undefined
   let latestVersionInfoUrl = MAINNET_LATEST_VERSION_INFO_URL;
@@ -104,4 +79,40 @@ export const getLatestVersionInfoUrl = (network: string): string => {
     latestVersionInfoUrl = TESTNET_LATEST_VERSION_INFO_URL;
   }
   return latestVersionInfoUrl;
+};
+
+export const getNewsURL = (network: string): string => {
+  // sets default to mainnet in case env.NETWORK is undefined
+  let newsUrl = MAINNET_NEWS_URL;
+  if (network === MAINNET) {
+    newsUrl = MAINNET_NEWS_URL;
+  }
+  if (network === STAGING) {
+    newsUrl = STAGING_NEWS_URL;
+  }
+  if (network === TESTNET) {
+    newsUrl = TESTNET_NEWS_URL;
+  }
+  if (network === DEVELOPMENT) {
+    newsUrl = DEVELOPMENT_NEWS_URL;
+  }
+  return newsUrl;
+};
+
+export const getNewsHashURL = (network: string): string => {
+  // sets default to mainnet in case env.NETWORK is undefined
+  let newsUrl = MAINNET_NEWS_HASH_URL;
+  if (network === MAINNET) {
+    newsUrl = MAINNET_NEWS_HASH_URL;
+  }
+  if (network === STAGING) {
+    newsUrl = STAGING_NEWS_HASH_URL;
+  }
+  if (network === TESTNET) {
+    newsUrl = TESTNET_NEWS_HASH_URL;
+  }
+  if (network === DEVELOPMENT) {
+    newsUrl = DEVELOPMENT_NEWS_HASH_URL;
+  }
+  return newsUrl;
 };

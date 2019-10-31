@@ -1,7 +1,9 @@
 // @flow
 import React, { Component } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
+import classNames from 'classnames';
 import SVGInline from 'react-svg-inline';
+import commonStyles from './DelegationSteps.scss';
 import styles from './DelegationStepsIntroDialog.scss';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
@@ -106,16 +108,22 @@ export default class DelegationStepsIntroDialog extends Component<Props> {
       },
     ];
 
+    const dialogClassName = classNames([
+      commonStyles.delegationSteps,
+      styles.delegationStepsIntroDialogWrapper,
+    ]);
+    const contentClassName = classNames([commonStyles.content, styles.content]);
+
     return (
       <Dialog
         title={intl.formatMessage(messages.title)}
         actions={actions}
         closeOnOverlayClick
         onClose={onClose}
-        className={styles.delegationStepsIntroDialogWrapper}
+        className={dialogClassName}
         closeButton={<DialogCloseButton onClose={onClose} />}
       >
-        <div className={styles.content}>
+        <div className={contentClassName}>
           <p className={styles.description}>
             {intl.formatMessage(messages.description)}
           </p>

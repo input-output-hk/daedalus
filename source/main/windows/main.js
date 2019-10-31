@@ -5,6 +5,7 @@ import { environment } from '../environment';
 import ipcApi from '../ipc';
 import RendererErrorHandler from '../utils/rendererErrorHandler';
 import { getTranslation } from '../utils/getTranslation';
+import { getContentMinimumSize } from '../utils/getContentMinimumSize';
 import { launcherConfig } from '../config';
 
 const rendererErrorHandler = new RendererErrorHandler();
@@ -64,7 +65,8 @@ export const createMainWindow = (locale: string) => {
 
   rendererErrorHandler.setup(window, createMainWindow);
 
-  window.setMinimumSize(905, 600);
+  const { minWindowsWidth, minWindowsHeight } = getContentMinimumSize(window);
+  window.setMinimumSize(minWindowsWidth, minWindowsHeight);
 
   // Initialize our ipc api methods that can be called by the render processes
   ipcApi({ window });

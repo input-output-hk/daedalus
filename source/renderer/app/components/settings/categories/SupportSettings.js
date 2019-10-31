@@ -95,7 +95,7 @@ export default class SupportSettings extends Component<Props> {
 
     const faqLink = (
       <a
-        className={styles.externalLink}
+        className={styles.externalLinkNotWrapped}
         href={faqLinkUrl}
         onClick={event => onExternalLinkClick(faqLinkUrl, event)}
       >

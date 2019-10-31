@@ -4,13 +4,38 @@
 .component {
   padding: 20px;
 
+  .mainContent {
+    @extend %contentBorderAndBackground;
+    padding: 20px;
+    text-align: center;
+  }
+
+  .heading {
+    @extend %accentText;
+    font-size: 19px;
+    margin-bottom: 14px;
+  }
+
+  .description {
+    @extend %regularText;
+    color: var(--theme-staking-font-color-light);
+    margin-bottom: 24px;
+  }
+
+  .timeLeftDesc {
+    @extend %accentText;
+    margin-bottom: 10px;
+  }
+
   .learnMoreButton {
     color: var(--theme-staking-learn-more-button-color);
+    margin-top: 30px;
 
     .externalLinkIcon {
       @include link(--theme-staking-learn-more-icon-color);
       border-bottom: none;
       margin-right: 12px;
+
       svg {
         margin-left: 0;
         vertical-align: sub;
@@ -18,25 +43,4 @@
       }
     }
   }
-}
-
-.mainContent {
-  @extend %contentBorderAndBackground;
-  padding: 20px;
-  text-align: center;
-}
-
-.heading {
-  @extend %accentText;
-  font-size: 19px;
-  margin-bottom: 14px;
-}
-
-.description {
-  @extend %regularText;
-  margin-bottom: 24px;
-}
-
-.timeLeftDesc {
-  @extend %accentText;
 }

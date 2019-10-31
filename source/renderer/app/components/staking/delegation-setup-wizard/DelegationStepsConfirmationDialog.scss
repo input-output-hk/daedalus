@@ -1,34 +1,5 @@
 .delegationStepsConfirmationDialogWrapper {
-  font-family: var(--font-regular);
-
-  :global {
-    .Dialog_title {
-      letter-spacing: 2px;
-      margin-bottom: 0;
-    }
-  }
-
-  .delegationStepsIndicatorWrapper {
-    margin: auto;
-    width: 410px;
-
-    .stepIndicatorLabel {
-      color: var(--theme-delegation-steps-confirmation-steps-indicator-color);
-      font-family: var(--font-medium);
-      font-size: 12px;
-      font-weight: 500;
-      line-height: 1.83;
-      margin-bottom: 10px;
-      text-align: center;
-    }
-  }
-
   .content {
-    font-size: 16px;
-    line-height: 1.38;
-    margin-top: 20px;
-    text-align: left;
-
     .description {
       color: var(--theme-delegation-steps-confirmation-description-color);
       margin-bottom: 20px;
@@ -39,7 +10,7 @@
       font-size: 16px;
       font-weight: 500;
       line-height: 1.38;
-      margin-bottom: 20px;
+      margin-bottom: 0;
       .feesLabel {
         color: var(--theme-delegation-steps-confirmation-fees-label-color);
         margin-bottom: 6px;

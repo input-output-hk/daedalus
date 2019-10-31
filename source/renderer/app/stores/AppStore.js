@@ -4,7 +4,7 @@ import Store from './lib/Store';
 import LocalizableError from '../i18n/LocalizableError';
 import { buildRoute } from '../utils/routing';
 import { ROUTES } from '../routes-config';
-import { DIALOGS, SCREENS, NOTIFICATIONS } from '../../../common/ipc/constants';
+import { DIALOGS, NOTIFICATIONS } from '../../../common/ipc/constants';
 import { openExternalUrlChannel } from '../ipc/open-external-url';
 import {
   toggleUiPartChannel,
@@ -22,6 +22,7 @@ export default class AppStore extends Store {
   @observable numberOfEpochsConsolidated: number = 0;
   @observable previousRoute: string = ROUTES.ROOT;
   @observable activeDialog: ApplicationDialog = null;
+  @observable newsFeedIsOpen: boolean = false;
 
   setup() {
     this.actions.router.goToRoute.listen(this._updateRouteLocation);
@@ -55,6 +56,9 @@ export default class AppStore extends Store {
     this.actions.app.setNotificationVisibility.listen(
       this._setDownloadNotification
     );
+
+    this.actions.app.toggleNewsFeed.listen(this._toggleNewsFeed);
+
     toggleUiPartChannel.onReceive(this.toggleUiPart);
     showUiPartChannel.onReceive(this.showUiPart);
   }
@@ -74,6 +78,10 @@ export default class AppStore extends Store {
 
   isActiveDialog = (dialog: ApplicationDialog): boolean => {
     return this.activeDialog === dialog;
+  };
+
+  @action _toggleNewsFeed = () => {
+    this.newsFeedIsOpen = !this.newsFeedIsOpen;
   };
 
   /**
@@ -102,10 +110,6 @@ export default class AppStore extends Store {
         break;
       case NOTIFICATIONS.DOWNLOAD_LOGS:
         this._downloadLogs();
-        break;
-      case SCREENS.ADA_REDEMPTION:
-        this._openAdaRedemptionScreen();
-        this._closeActiveDialog();
         break;
       default:
     }
@@ -145,14 +149,6 @@ export default class AppStore extends Store {
 
   @action _closeActiveDialog = () => {
     if (this.activeDialog !== null) this.activeDialog = null;
-  };
-
-  @action _openAdaRedemptionScreen = () => {
-    const { isConnected, isSynced } = this.stores.networkStatus;
-    const { hasLoadedWallets } = this.stores.wallets;
-    if (isConnected && isSynced && hasLoadedWallets && !this.isSetupPage) {
-      this._updateRouteLocation({ route: ROUTES.ADA_REDEMPTION });
-    }
   };
 
   @action _downloadLogs = () => {

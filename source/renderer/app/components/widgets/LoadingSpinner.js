@@ -8,22 +8,26 @@ import styles from './LoadingSpinner.scss';
 
 type Props = {
   big?: boolean,
+  medium?: boolean,
 };
 
 export default class LoadingSpinner extends Component<Props> {
   static defaultProps = {
     big: false,
+    medium: false,
   };
 
   root: ?HTMLElement;
 
   render() {
-    const { big } = this.props;
+    const { big, medium } = this.props;
     const icon = big ? spinnerIconBig : spinnerIconSmall;
 
     const componentClasses = classnames([
       styles.component,
-      big ? styles.big : styles.small,
+      big ? styles.big : null,
+      medium ? styles.medium : null,
+      !big && !medium ? styles.small : null,
     ]);
 
     return (

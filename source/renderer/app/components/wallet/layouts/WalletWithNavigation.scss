@@ -1,19 +1,19 @@
 .component {
-  height: 100%;
   display: flex;
   flex-direction: column;
+  height: 100%;
 }
 
 .navigation {
-  height: 50px;
   flex-shrink: 0;
+  height: 50px;
   position: relative;
   z-index: 1;
 }
 
 .page {
   height: calc(100% - 50px);
-  overflow: auto;
+  overflow: overlay;
   position: relative;
 }
 

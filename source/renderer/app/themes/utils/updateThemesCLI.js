@@ -1,4 +1,5 @@
 // @flow
+import { isEmpty } from 'lodash';
 import readline from 'readline';
 import chalk from 'chalk';
 import { updateThemes } from './updateThemes';
@@ -14,9 +15,7 @@ export const runUpdateThemesCLI = (pendingUpdates: PendingThemesUpdates) => {
   const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
-    prompt: chalk.cyan(
-      `\nWould you like to write these updates to the theme files? ( ${YES_OR_NO} )\n`
-    ),
+    prompt: chalk`\n{cyan Would you like to write these updates to the theme files?} ( ${YES_OR_NO} )\n`,
   });
 
   rl.prompt();
@@ -24,29 +23,32 @@ export const runUpdateThemesCLI = (pendingUpdates: PendingThemesUpdates) => {
   rl.on('line', line => {
     switch (line.trim()) {
       case 'yes': {
-        /* eslint-disable-next-line no-unused-expressions */
-        chalk`\n{bold Upating themes...}\n`;
-        // returns updated theme objects in 'daedalus/themes'
+        logMsg(chalk`\n{cyan Upating themes...}\n`);
+        // combines pending theme updates with existing theme outputs
         const updatedThemes = updateThemes(pendingUpdates);
 
-        for (const updatedTheme of Object.entries(updatedThemes)) {
-          const [fileName, updatedThemeObj] = updatedTheme;
-          writeThemeUpdate({ fileName, updatedThemeObj });
+        for (const themeName in updatedThemes) {
+          if (themeName && !isEmpty(updatedThemes[themeName])) {
+            const fileName = themeName.split('.')[0];
+            const updatedThemeObj = updatedThemes[themeName];
+            writeThemeUpdate({ fileName, updatedThemeObj });
+          }
         }
 
+        logMsg(chalk`\n{greenBright Themes are up to date!}\n`);
         logMsg(
-          chalk
-            .hex('#2cbb69')
-            .bold(
-              `\nThemes are up to date! Prettier is now formatting the updated theme files. Please check the diff and commit the changes if all is correct.\n`
-            )
+          chalk`{cyan Prettier is now formatting the updated theme files.}`
         );
+        logMsg(
+          chalk`{cyan Once Prettier finshes, please check the diff and commit the changes if all is correct.}`
+        );
+        logMsg(chalk`\n{cyan Prettier in progress...}\n`);
         process.exit(0);
         break;
       }
 
       case 'no': {
-        logMsg(chalk.cyan('Exiting... See you later!'));
+        logMsg(chalk`\n{cyan Exiting... See you later!}\n`);
         process.exit(0);
         break;
       }
@@ -54,7 +56,7 @@ export const runUpdateThemesCLI = (pendingUpdates: PendingThemesUpdates) => {
       default: {
         logMsg(
           chalk.cyan(
-            `\nCommand not recognized.\nEnter ( ${YES_OR_NO} ) to continue, or ${logInputOption(
+            `\nCommand not recognized.\n\nEnter ( ${YES_OR_NO} ) to continue, or ${logInputOption(
               'ctrl + c'
             )} to exit.`
           )
@@ -63,7 +65,7 @@ export const runUpdateThemesCLI = (pendingUpdates: PendingThemesUpdates) => {
       }
     }
   }).on('close', () => {
-    logMsg(chalk.cyan('Exiting... See you later!'));
+    logMsg(chalk`\n{cyan Exiting... See you later!}\n`);
     process.exit(0);
   });
 };

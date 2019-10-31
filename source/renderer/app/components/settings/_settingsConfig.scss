@@ -1,5 +1,5 @@
 @mixin borderAndBackground {
   background-color: var(--theme-settings-body-background-color);
-  border-radius: 4px;
   border: solid 1px var(--theme-settings-pane-background-color);
+  border-radius: 4px;
 }

@@ -1,3 +1,4 @@
+// TODO: Remove once the new wallet creation process is ready
 @import '../../themes/mixins/loading-spinner';
 @import '../../themes/mixins/place-form-field-error-below-input';
 
@@ -49,7 +50,6 @@
       font-family: var(--font-light);
       line-height: 1.38;
       margin-top: 16px;
-      opacity: 0.5;
     }
   }
 }

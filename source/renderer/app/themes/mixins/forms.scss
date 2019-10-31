@@ -1,5 +1,5 @@
 @mixin form-label {
+  color: var(--theme-label-color);
   font-family: var(--font-medium);
   font-size: 16px;
-  color: var(--theme-label-color);
 }

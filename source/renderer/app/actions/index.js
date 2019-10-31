@@ -1,5 +1,4 @@
 // @flow
-import AdaRedemptionActions from './ada-redemption-actions';
 import AddressesActions from './addresses-actions';
 import AppActions from './app-actions';
 import BlockConsolidationActions from './block-consolidation-actions';
@@ -18,7 +17,6 @@ import WalletSettingsActions from './wallet-settings-actions';
 import WindowActions from './window-actions';
 
 export type ActionsMap = {
-  adaRedemption: AdaRedemptionActions,
   addresses: AddressesActions,
   app: AppActions,
   blockConsolidation: BlockConsolidationActions,
@@ -38,7 +36,6 @@ export type ActionsMap = {
 };
 
 const actionsMap: ActionsMap = {
-  adaRedemption: new AdaRedemptionActions(),
   addresses: new AddressesActions(),
   app: new AppActions(),
   blockConsolidation: new BlockConsolidationActions(),

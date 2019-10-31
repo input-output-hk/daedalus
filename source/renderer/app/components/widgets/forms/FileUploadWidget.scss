@@ -1,7 +1,4 @@
 .component {
-  color: var(--theme-input-placeholder-color);
-  font-family: var(--theme-input-hint-font);
-  font-size: 16px;
   line-height: 1.38;
 }
 
@@ -10,10 +7,14 @@
   background-color: inherit;
   border: solid 1px var(--theme-uploader-border-color);
   border-radius: 2px;
+  color: var(--theme-input-placeholder-color);
   cursor: pointer;
   display: flex;
+  font-family: var(--theme-input-hint-font);
+  font-size: 16px;
   height: 50px;
   padding: 10px 20px;
+  width: 100%;
 
   &:hover .attachIcon {
     opacity: 1;

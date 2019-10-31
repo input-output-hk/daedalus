@@ -63,31 +63,30 @@
         font-family: var(--font-light);
         line-height: 1.38;
         margin-top: 16px;
-        opacity: 0.5;
       }
     }
   }
 
   .restoreTypeChoice {
     display: flex;
-    width: 100%;
     margin-bottom: 20px;
+    width: 100%;
 
     button {
-      flex: 1;
-      padding: 20px;
-      font-family: var(--font-medium);
-      font-size: 16px;
-      text-align: center;
       color: var(--theme-choice-tabs-text-color);
       cursor: pointer;
+      flex: 1;
+      font-family: var(--font-medium);
+      font-size: 16px;
       opacity: 0.5;
+      padding: 20px;
+      text-align: center;
     }
 
     .activeButton {
-      color: var(--theme-choice-tabs-text-color-active);
       border-bottom: 2px solid
         var(--theme-choice-tabs-bottom-border-color-active);
+      color: var(--theme-choice-tabs-text-color-active);
       cursor: default;
       opacity: 1;
     }

@@ -37,7 +37,6 @@ import type { NodeInfoQueryParams } from '../api/nodes/requests/getNodeInfo';
 import type { CheckDiskSpaceResponse } from '../../../common/types/no-disk-space.types';
 import { TlsCertificateNotValidError } from '../api/nodes/errors';
 import { openLocalDirectoryChannel } from '../ipc/open-local-directory';
-import { rebuildApplicationMenu } from '../ipc/rebuild-application-menu';
 
 // DEFINE CONSTANTS -------------------------
 const NETWORK_STATUS = {
@@ -200,10 +199,6 @@ export default class NetworkStatusStore extends Store {
     try {
       Logger.info('NetworkStatusStore: Updating node status');
       await setCachedCardanoStatusChannel.send(this._extractNodeStatus(this));
-      // Force application menu rebuild in order to disable/enable
-      // "Ada redemption" option based on isNodeInSync variable value
-      // which was sent to the main process via setCachedCardanoStatusChannel
-      await rebuildApplicationMenu.send();
     } catch (error) {
       Logger.error('NetworkStatusStore: Error while updating node status', {
         error,
@@ -298,6 +293,7 @@ export default class NetworkStatusStore extends Store {
           this.tlsConfig = null;
         });
         this._setDisconnected(wasConnected);
+        this.stores.nodeUpdate.hideUpdateDialog();
         this.stores.app._closeActiveDialog();
         break;
       default:

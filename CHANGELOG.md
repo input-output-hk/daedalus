@@ -1,6 +1,55 @@
 Changelog
 =========
 
+## 0.15.0
+
+### Features
+
+- Implemented "Newsfeed" feature ([PR 1570](https://github.com/input-output-hk/daedalus/pull/1570), [PR 1578](https://github.com/input-output-hk/daedalus/pull/1578), [PR 1580](https://github.com/input-output-hk/daedalus/pull/1580))
+- Implemented "Wallet recovery phrase verification" feature ([PR 1565](https://github.com/input-output-hk/daedalus/pull/1565), [PR 1623](https://github.com/input-output-hk/daedalus/pull/1623)
+- Implemented new "Automated update" notification design ([PR 1491](https://github.com/input-output-hk/daedalus/pull/1491))
+- Improved "Wallets" list scrollbar UX ([PR 1475](https://github.com/input-output-hk/daedalus/pull/1475))
+- Removed "Ada Redemption" feature ([PR 1510](https://github.com/input-output-hk/daedalus/pull/1510))
+- Updated behavior of system dialogs ([PR 1494](https://github.com/input-output-hk/daedalus/pull/1494))
+
+### Fixes
+
+- Fixed the "Numeric input" component caret positioning issues ([PR 1511](https://github.com/input-output-hk/daedalus/pull/1511))
+- Fixed the "Feature Request" menu item Japanese translation ([PR 1533](https://github.com/input-output-hk/daedalus/pull/1533))
+- Implemented disk space check error handling ([PR 1562](https://github.com/input-output-hk/daedalus/pull/1562))
+- Implemented platform specific main window minimum heights ([PR 1485](https://github.com/input-output-hk/daedalus/pull/1485))
+- Implemented pluralization for number of confirmations in transaction details ([PR 1531](https://github.com/input-output-hk/daedalus/pull/1531))
+- Minor UI fixes:
+  - Fixed external and copy icons positioning inconsistencies ([PR 1512](https://github.com/input-output-hk/daedalus/pull/1512))
+  - Fixed minor UI issues across different themes ([PR 1547](https://github.com/input-output-hk/daedalus/pull/1547))
+  - Fixed "White" theme styling ([PR 1532](https://github.com/input-output-hk/daedalus/pull/1532))
+  - Removed select dropdown arrow ([PR 1550](https://github.com/input-output-hk/daedalus/pull/1550))
+  - Removed tooltip from connection error message on "Daedalus Diagnostics" screen ([PR 1535](https://github.com/input-output-hk/daedalus/pull/1535))
+- Storybook fixes:
+  - Fixed Storybook dialog content overflow issues in Chrome 76+ versions ([PR 1536](https://github.com/input-output-hk/daedalus/pull/1536))
+  - Fixed Storybook "Wallets" stories ([PR 1473](https://github.com/input-output-hk/daedalus/pull/1473))
+
+### Chores
+
+- Implemented automatic sorting of CSS properties ([PR 1483](https://github.com/input-output-hk/daedalus/pull/1483))
+- Improved "Netlify" build setup ([PR 1509](https://github.com/input-output-hk/daedalus/pull/1509))
+- Unified "Support request" data handling ([PR 1472](https://github.com/input-output-hk/daedalus/pull/1472))
+- Updated Storybook to the latest version ([PR 1426](https://github.com/input-output-hk/daedalus/pull/1426))
+- Updated "Buildkite" to use "daedalus" queue for macOS builds ([PR 1568](https://github.com/input-output-hk/daedalus/pull/1568))
+- Theming improvements:
+  - Improved scalability of theme management code ([PR 1502](https://github.com/input-output-hk/daedalus/pull/1502))
+  - Renamed `themes:check` script and updated "Daedalus Theme Management" documentation ([PR 1525](https://github.com/input-output-hk/daedalus/pull/1525))
+
+### Specifications
+
+- Newsfeed ([PR 1569](https://github.com/input-output-hk/daedalus/pull/1569))
+- New "Wallet Creation" process ([PR 1499](https://github.com/input-output-hk/daedalus/pull/1499), [PR 1515](https://github.com/input-output-hk/daedalus/pull/1515), [PR 1530](https://github.com/input-output-hk/daedalus/issues/1530))
+- "Delegation" screens UI:
+  - Improved "Delegation setup" wizard ([PR 1503](https://github.com/input-output-hk/daedalus/pull/1503))
+  - Implemented "Stake pools" screen "Search and Filtering" logic ([PR 1468](https://github.com/input-output-hk/daedalus/pull/1468))
+  - Implemented "Delegation countdown" design update ([PR 1481](https://github.com/input-output-hk/daedalus/pull/1481))
+  - Fixed minor UI issues on the "Delegation center" screen and "Delegation setup" wizard ([PR 1545](https://github.com/input-output-hk/daedalus/pull/1545))
+
 ## 0.14.0
 
 ### Features
@@ -60,6 +109,7 @@ Changelog
 ### Chores
 
 - Code improvements:
+  - Implemented Storybook menu using queryStrings over localStorage ([PR 1426](https://github.com/input-output-hk/daedalus/pull/1426))
   - Implemented Storybook build script for deployment to "Netlify" ([1391](https://github.com/input-output-hk/daedalus/pull/1391))
   - Implemented Storybook theme and language selection ([PR 1408](https://github.com/input-output-hk/daedalus/pull/1408))
   - Implemented `prettier` formatting tool and set up automation for basic maintainance tasks ([PR 1335](https://github.com/input-output-hk/daedalus/pull/1335), [PR 1347](https://github.com/input-output-hk/daedalus/pull/1347), [PR 1352](https://github.com/input-output-hk/daedalus/pull/1352), [PR 1375](https://github.com/input-output-hk/daedalus/pull/1375))

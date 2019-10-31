@@ -1,30 +1,47 @@
 // ========= LAYOUT =========
 
 .component {
-  width: 100%;
-  height: 100%;
-  text-align: center;
-  display: flex;
   align-items: center;
+  display: flex;
+  height: 100%;
   justify-content: center;
+  text-align: center;
+  width: 100%;
+
+  &.hasNotification {
+    .container {
+      position: relative;
+      &:after {
+        background: var(--theme-button-attention-background-color);
+        border-radius: 50%;
+        content: '';
+        height: 8px;
+        transform: translate(4px, -4px);
+        width: 8px;
+      }
+      .icon {
+        margin-left: 8px;
+      }
+    }
+  }
 }
 
 .container {
-  text-align: center;
+  align-items: center;
+  border-radius: 4px;
   display: flex;
   flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  padding: 0 5px;
-  width: calc(100% - 30px);
   height: 30px;
-  border-radius: 4px;
+  justify-content: center;
+  padding: 0 5px;
+  text-align: center;
+  width: calc(100% - 30px);
 }
 
 .label {
-  font-size: 14px;
-  font-family: var(--font-regular);
   display: block;
+  font-family: var(--font-regular);
+  font-size: 14px;
   line-height: 30px;
   overflow: hidden;
   text-overflow: ellipsis;

@@ -58,17 +58,7 @@ User agrees to indemnify, hold harmless and defend Company, its shareholders, di
 
 The Company retains all right, title, and interest in and to all of the Company&#39;s brands, logos, and trademarks, including, but not limited to, Input Output HK Limited, IOHK, Daedalus, Daedalus Cryptocurrency Wallet, Daedalus Wallet, Daedalus App, and variations of the wording of the aforementioned brands, logos, and trademarks.
 
-11. ## 11. Ada Redemption
-
-User agrees and consents to redeem User&#39;s ada by choosing one of the three available redemption options:
-
-a) User may redeem User&#39;s ada by uploading User&#39;s certificate or by copying and pasting User&#39;s redemption key from User&#39;s certificate. If User uploads a PDF file with User&#39;s certificate, a redemption key shall be automatically extracted. If User uploads an encrypted certificate, User&#39;s redemption code shall be automatically extracted only after User provides User&#39;s 9 word mnemonic passphrase;
-
-b) User may redeem User&#39;s ada by uploading User&#39;s certificate or by copying and pasting User&#39;s redemption key from User&#39;s certificate. If User uploads a PDF file with User&#39;s certificate, a redemption key shall be automatically extracted. If User uploads an encrypted certificate, User&#39;s redemption key shall be automatically extracted only after User provides User&#39;s email address, ada passcode and ada amount; or
-
-c) User may redeem User&#39;s ada by (i) entering the shielded vending key from User&#39;s certificate, (ii) choosing a wallet where User&#39;s ada shall be redeemed and (iii) entering User&#39;s 9 word mnemonic passphrase.
-
-12. ## 12. Warnings
+11. ## 11. Warnings
 
 User acknowledges that IOHK shall not be responsible for transferring, safeguarding, or maintaining private keys and/or User&#39;s ada or any other cryptocurrency. If User and/or any co-signing authorities lose, mishandle, or have stolen associated private keys, or if User&#39;s cosigners refuse to provide requisite authority, User acknowledges that User may not be able to recover User&#39;s ada or any other cryptocurrency, and that the Company shall not be responsible for such loss.
 
@@ -82,7 +72,7 @@ User acknowledges and agrees that by redeeming ada in the testnet User redeems T
 
 By using Daedalus, User acknowledges and agrees: (i) that the Company is not responsible for operation of the underlying protocols and that the Company makes no guarantee of their functionality, security, or availability; and (ii) that the underlying protocols are subject to sudden changes in operating rules (&quot;forks&quot;), and that such forks may materially affect the value, and/or function of the ada or any other cryptocurrency that User stores on Daedalus. In the event of a fork, User agrees that the Company may temporarily suspend Daedalus operations (with or without notice to User) and that the Company may, in its sole discretion, (a) configure or reconfigure its systems or (b) decide not to support (or cease supporting) the forked protocol entirely, provided, however, that User will have an opportunity to withdraw funds from Daedalus. User acknowledges and agrees that the Company assumes absolutely no responsibility whatsoever in respect of an unsupported branch of a forked protocol.
 
-13. ## 13. Miscellaneous
+12. ## 12. Miscellaneous
 
 **a. Amendment.** Company shall have the right, at any time and without notice, to add to or modify the terms of this Agreement, simply by delivering such amended terms to User by electronic message through any medium to any address provided to Company by User. User&#39;s access to or use of the Software after the date such amended terms are delivered to User shall be deemed to constitute acceptance of such amended terms.
 

@@ -6,7 +6,7 @@ export type SupportRequests = {
   build: string,
   installerVersion: string,
   os: string,
-  networkLocale: string,
+  locale: string,
   product: string,
   supportLanguage: string,
   productVersion: string,

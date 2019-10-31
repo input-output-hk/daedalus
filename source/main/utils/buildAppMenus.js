@@ -1,50 +1,31 @@
 // @flow
 import { app, globalShortcut, Menu, BrowserWindow, dialog } from 'electron';
-import { get } from 'lodash';
 import { environment } from '../environment';
 import { winLinuxMenu } from '../menus/win-linux';
 import { osxMenu } from '../menus/osx';
 import { Logger } from './logging';
 import { safeExitWithCode } from './safeExitWithCode';
 import { CardanoNode } from '../cardano/CardanoNode';
-import { DIALOGS, SCREENS } from '../../common/ipc/constants';
+import { DIALOGS } from '../../common/ipc/constants';
 import { showUiPartChannel } from '../ipc/control-ui-parts';
-import { getLocale } from './getLocale';
 import { getTranslation } from './getTranslation';
-
-const localesFillForm = {
-  'en-US': 'English',
-  'ja-JP': 'Japanese',
-};
 
 export const buildAppMenus = async (
   mainWindow: BrowserWindow,
   cardanoNode: ?CardanoNode,
-  locale: string
+  locale: string,
+  data: {
+    isUpdateAvailable: boolean,
+  }
 ) => {
-  const { ADA_REDEMPTION } = SCREENS;
   const { ABOUT, BLOCK_CONSOLIDATION, DAEDALUS_DIAGNOSTICS } = DIALOGS;
+  const { isUpdateAvailable } = data;
 
-  const {
-    isMacOS,
-    version,
-    apiVersion,
-    network,
-    build,
-    installerVersion,
-    os,
-    buildNumber,
-    isBlankScreenFixActive,
-  } = environment;
+  const { isMacOS, isBlankScreenFixActive } = environment;
   const translations = require(`../locales/${locale}`);
-  const networkLocale = getLocale(network);
 
   const openAboutDialog = () => {
     if (mainWindow) showUiPartChannel.send(ABOUT, mainWindow);
-  };
-
-  const openAdaRedemptionScreen = () => {
-    if (mainWindow) showUiPartChannel.send(ADA_REDEMPTION, mainWindow);
   };
 
   const openBlockConsolidationStatusDialog = () => {
@@ -99,30 +80,15 @@ export const buildAppMenus = async (
     });
   };
 
-  const supportRequestData = {
-    frontendVersion: version,
-    backendVersion: apiVersion,
-    network: network === 'development' ? 'staging' : network,
-    build,
-    installerVersion,
-    os,
-    networkLocale,
-    product: `Daedalus wallet - ${network}`,
-    supportLanguage: localesFillForm[networkLocale],
-    productVersion: `Daedalus ${version}+Cardano ${buildNumber}`,
-  };
-
   const menuActions = {
     openAboutDialog,
     openDaedalusDiagnosticsDialog,
-    openAdaRedemptionScreen,
-    toggleBlankScreenFix,
     openBlockConsolidationStatusDialog,
+    toggleBlankScreenFix,
   };
 
   // Build app menus
   let menu;
-  const isNodeInSync = get(cardanoNode, 'status.isNodeInSync', false);
   if (isMacOS) {
     menu = Menu.buildFromTemplate(
       osxMenu(
@@ -130,8 +96,8 @@ export const buildAppMenus = async (
         mainWindow,
         menuActions,
         translations,
-        supportRequestData,
-        isNodeInSync
+        locale,
+        isUpdateAvailable
       )
     );
     Menu.setApplicationMenu(menu);
@@ -142,8 +108,8 @@ export const buildAppMenus = async (
         mainWindow,
         menuActions,
         translations,
-        supportRequestData,
-        isNodeInSync
+        locale,
+        isUpdateAvailable
       )
     );
     mainWindow.setMenu(menu);

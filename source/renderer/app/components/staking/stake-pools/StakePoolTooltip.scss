@@ -4,15 +4,15 @@
 .component {
   @extend %regularText;
   background: var(--theme-staking-stake-pool-tooltip-background-color);
-  border-radius: 5px;
   border: 1px solid var(--theme-staking-stake-pool-tooltip-border-color);
+  border-radius: 5px;
   box-shadow: 0 1.5px 5px 0 var(--theme-staking-stake-pool-tooltip-shadow-color);
   display: none;
   padding: 10px;
   position: absolute;
   user-select: text;
   width: 240px;
-  z-index: 1;
+  z-index: 2;
 
   :global {
     button.SimpleButton_root {
@@ -21,11 +21,11 @@
       );
       border: 1px solid
         var(--theme-staking-stake-pool-tooltip-delegate-button-border-color);
+      border-radius: 2px;
       color: var(--theme-staking-stake-pool-tooltip-delegate-button-text-color);
       height: 33px;
       user-select: none;
       width: 100%;
-      border-radius: 2px;
 
       &:hover {
         background-color: var(
@@ -56,20 +56,20 @@
 
 .colorBand {
   border-radius: 4px 4px 0 0;
-  top: 0;
   display: block;
   height: 5px;
   left: 0;
   position: absolute;
+  top: 0;
   width: 100%;
 }
 
 .arrow {
-  width: 0px;
-  height: 0px;
   border-color: transparent;
   border-style: solid;
+  height: 0px;
   position: absolute;
+  width: 0px;
 
   &:before {
     border-color: transparent;
@@ -89,8 +89,8 @@
         --theme-staking-stake-pool-tooltip-background-color
       );
       border-width: 10px 10px 0px 10px;
-      top: -11px;
       left: -10px;
+      top: -11px;
     }
   }
   &.tooltipPositionRight {
@@ -111,8 +111,8 @@
     &:before {
       border-bottom-color: transparent;
       border-width: 0px 10px 10px 10px;
-      top: -11px;
       left: -10px;
+      top: -11px;
     }
   }
   &.tooltipPositionLeft {
@@ -201,6 +201,14 @@
   font-size: 14px;
   line-height: 1.36;
   margin-bottom: 18px;
+  max-width: 100%;
+
+  .urlContent {
+    display: inline-block;
+    max-width: calc(100% - 14px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
   & > span {
     vertical-align: text-top;

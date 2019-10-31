@@ -1,12 +1,12 @@
 .component {
   align-items: center;
   background-color: var(--theme-dialog-big-button-background-color);
-  border-radius: 10px;
   border: solid 1px var(--theme-dialog-big-button-border-color);
+  border-radius: 10px;
   cursor: pointer;
   display: flex;
-  flex-direction: column;
   flex: 1;
+  flex-direction: column;
   height: 200px;
   justify-content: center;
   margin: 10px;
@@ -14,8 +14,8 @@
 }
 
 .disabled {
-  opacity: 0.3;
   cursor: default;
+  opacity: 0.3;
 }
 
 .icon {
@@ -28,17 +28,17 @@
 }
 
 .label {
-  margin-top: 20px;
-  font-size: 19px;
-  line-height: 1.37;
   color: var(--theme-dialog-big-button-label-color);
   font-family: var(--font-medium);
+  font-size: 19px;
+  line-height: 1.37;
+  margin-top: 20px;
 }
 
 .description {
-  font-family: var(--font-regular);
-  height: 19px;
-  font-size: 14px;
-  line-height: 1.36;
   color: var(--theme-dialog-big-button-description-color);
+  font-family: var(--font-regular);
+  font-size: 14px;
+  height: 19px;
+  line-height: 1.36;
 }

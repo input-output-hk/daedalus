@@ -1,10 +1,26 @@
 .component {
-  width: 100%;
   height: 100%;
+  width: 100%;
 
   > div {
-    width: 100%;
     height: 100%;
+    width: 100%;
+  }
+
+  &.hasNotification {
+    :global {
+      .SimpleOptions_option:first-child span {
+        &:before {
+          background: var(--theme-button-attention-background-color);
+          border-radius: 50%;
+          content: '';
+          display: inline-block;
+          height: 8px;
+          margin-right: 8px;
+          width: 8px;
+        }
+      }
+    }
   }
 
   :global {
@@ -12,7 +28,7 @@
       left: auto !important;
       position: absolute;
       right: 0;
-      top: 45px !important;
+      top: 57px !important;
       width: 200px !important;
     }
     .NavButton_component {
@@ -20,8 +36,8 @@
     }
     .SimpleBubble_root:not(.SimpleBubble_transparent) {
       .SimpleBubble_bubble {
-        border-radius: 3px;
         border: none;
+        border-radius: 3px;
         box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.12);
         right: 15px;
 

@@ -1,11 +1,13 @@
 // @flow
 import React, { Component } from 'react';
 import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
+import classNames from 'classnames';
 import { observer } from 'mobx-react';
 import { Stepper } from 'react-polymorph/lib/components/Stepper';
 import { StepperSkin } from 'react-polymorph/lib/skins/simple/StepperSkin';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
+import commonStyles from './DelegationSteps.scss';
 import styles from './DelegationStepsConfirmationDialog.scss';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import DialogBackButton from '../../widgets/DialogBackButton';
@@ -158,6 +160,12 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
       },
     ];
 
+    const dialogClassName = classNames([
+      commonStyles.delegationSteps,
+      styles.delegationStepsConfirmationDialogWrapper,
+    ]);
+    const contentClassName = classNames([commonStyles.content, styles.content]);
+
     const stepsIndicatorLabel = (
       <FormattedMessage
         {...messages.stepIndicatorLabel}
@@ -175,11 +183,11 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
         actions={actions}
         closeOnOverlayClick
         onClose={onClose}
-        className={styles.delegationStepsConfirmationDialogWrapper}
+        className={dialogClassName}
         closeButton={<DialogCloseButton onClose={onClose} />}
         backButton={<DialogBackButton onBack={onBack} />}
       >
-        <div className={styles.delegationStepsIndicatorWrapper}>
+        <div className={commonStyles.delegationStepsIndicatorWrapper}>
           <Stepper
             steps={stepsList}
             activeStep={3}
@@ -188,7 +196,7 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
           />
         </div>
 
-        <div className={styles.content}>
+        <div className={contentClassName}>
           <p className={styles.description}>
             {intl.formatMessage(messages.description)}
           </p>

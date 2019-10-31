@@ -11,6 +11,7 @@ import { CATEGORIES_BY_NAME } from '../../../source/renderer/app/config/sidebarC
 import { formattedWalletAmount } from '../../../source/renderer/app/utils/formatters';
 import NodeSyncStatusIcon from '../../../source/renderer/app/components/widgets/NodeSyncStatusIcon';
 import Wallet from '../../../source/renderer/app/domains/Wallet.js';
+import NewsFeedIcon from '../../../source/renderer/app/components/widgets/NewsFeedIcon';
 import type { SidebarMenus } from '../../../source/renderer/app/components/sidebar/Sidebar';
 import type { SidebarWalletType } from '../../../source/renderer/app/types/sidebarTypes';
 // import type { Wallet } from '../../../source/renderer/app/domains/WalletTransaction';
@@ -21,6 +22,7 @@ import Sidebar from '../../../source/renderer/app/components/sidebar/Sidebar';
 import SidebarLayout from '../../../source/renderer/app/components/layout/SidebarLayout';
 import menuIconOpened from '../../../source/renderer/app/assets/images/menu-opened-ic.inline.svg';
 import menuIconClosed from '../../../source/renderer/app/assets/images/menu-ic.inline.svg';
+import { WalletRecoveryPhraseVerificationStatuses } from '../../../source/renderer/app/stores/WalletsStore';
 
 export type StoriesProps = {
   wallets: Array<Wallet>,
@@ -48,7 +50,7 @@ const CATEGORIES = [
   CATEGORIES_BY_NAME.SETTINGS,
 ];
 
-let currentTheme = localStorage.getItem('currentTheme') || 'light-blue';
+let currentTheme = sessionStorage.getItem('themeName') || 'light-blue';
 currentTheme = currentTheme.toLowerCase();
 
 @inject('stores', 'storiesProps')
@@ -113,6 +115,8 @@ export default class StoryLayout extends Component<Props> {
       isRestoreActive: get(wallet, 'syncState.tag', 'synced') === 'restoring',
       restoreProgress: get(wallet, 'syncState.data.percentage.quantity', 0),
       isLegacy: wallet.isLegacy,
+      recoveryPhraseVerificationStatus:
+        WalletRecoveryPhraseVerificationStatuses.OK,
     }));
 
   getSidebarMenus = (
@@ -186,6 +190,10 @@ export default class StoryLayout extends Component<Props> {
         }}
         isProduction
         isMainnet
+      />
+      <NewsFeedIcon
+        onNewsFeedIconClick={action('onNewsFeedIconClick')}
+        showDot={false}
       />
     </TopBar>
   );

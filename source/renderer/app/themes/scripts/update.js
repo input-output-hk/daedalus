@@ -1,28 +1,18 @@
 // @flow
+import { isEmpty } from 'lodash';
 import { createTheme } from '../utils/createTheme';
 import { findUpdates } from '../utils/findUpdates';
 import { runUpdateThemesCLI } from '../utils/updateThemesCLI';
-import {
-  CREATE_CARDANO_THEME_PARAMS,
-  CREATE_DARK_BLUE_THEME_PARAMS,
-  CREATE_LIGHT_BLUE_THEME_PARAMS,
-  CREATE_YELLOW_THEME_PARAMS,
-  CREATE_DARK_CARDANO_THEME_PARAMS,
-  CREATE_WHITE_THEME_PARAMS,
-} from '../utils/constants';
+import { CREATE_THEME_PARAMS } from '../utils/constants';
 
-const findUpdatesParams = {
-  cardano: createTheme(CREATE_CARDANO_THEME_PARAMS),
-  darkBlue: createTheme(CREATE_DARK_BLUE_THEME_PARAMS),
-  darkCardano: createTheme(CREATE_DARK_CARDANO_THEME_PARAMS),
-  lightBlue: createTheme(CREATE_LIGHT_BLUE_THEME_PARAMS),
-  yellow: createTheme(CREATE_YELLOW_THEME_PARAMS),
-  white: createTheme(CREATE_WHITE_THEME_PARAMS),
-};
+const createThemeOutputs = CREATE_THEME_PARAMS.reduce(
+  (outputs, theme) => [[theme[0], createTheme(theme[1])], ...outputs],
+  []
+);
 
-const pendingUpdates = findUpdates(findUpdatesParams);
+const pendingUpdates = findUpdates(createThemeOutputs);
 
-if (pendingUpdates !== null) {
-  // opens CLI which will allow user to update theme objects in 'themes/daedalus'
+if (!isEmpty(pendingUpdates)) {
+  // opens CLI which will allow user to update theme outputs in 'themes/daedalus'
   runUpdateThemesCLI(pendingUpdates);
 }

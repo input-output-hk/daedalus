@@ -3,6 +3,7 @@ import type {
   BugReportRequestHttpOptions,
   BugReportRequestPayload,
 } from '../types/bug-report-request.types';
+import type { GenerateFileMetaParams } from '../types/file-meta-request.types';
 import type { GeneratePaperWalletParams } from '../types/paper-wallet-request.types';
 import type {
   CardanoNodeState,
@@ -10,11 +11,6 @@ import type {
   FaultInjectionIpcRequest,
   TlsConfig,
 } from '../types/cardano-node.types';
-import type {
-  AdaRedemptionCode,
-  AdaRedemptionDecryptionKey,
-} from '../types/ada-redemption.types';
-import type { RedemptionTypeChoices } from '../../renderer/app/types/redemptionTypes';
 import type { CheckDiskSpaceResponse } from '../types/no-disk-space.types';
 import type { LogFiles } from '../../renderer/app/types/LogTypes';
 import type { GpuStatus } from '../../renderer/app/types/gpuStatus';
@@ -121,7 +117,7 @@ export type SubmitBugReportRequestMainResponse = void;
  * Channel to rebuild the electron application menu after the language setting changes
  */
 export const REBUILD_APP_MENU_CHANNEL = 'REBUILD_APP_MENU_CHANNEL';
-export type RebuildAppMenuRendererRequest = void;
+export type RebuildAppMenuRendererRequest = { isUpdateAvailable: boolean };
 export type RebuildAppMenuMainResponse = void;
 
 /**
@@ -133,17 +129,11 @@ export type GetConsolidatedEpochsCountRendererRequest = void;
 export type GetConsolidatedEpochsCountMainResponse = number;
 
 /**
- * Channel where renderer can ask the main process to parse the redemption
- * code from a given certificate, providing the file path, decryption key
- * and type of redemption that is required.
+ * Channel to generate file blob
  */
-export const PARSE_REDEMPTION_CODE_CHANNEL = 'PARSE_REDEMPTION_CODE_CHANNEL';
-export type ParseRedemptionCodeRendererRequest = {
-  certificateFilePath: string,
-  decryptionKey: ?AdaRedemptionDecryptionKey,
-  redemptionType: RedemptionTypeChoices,
-};
-export type ParseRedemptionCodeMainResponse = AdaRedemptionCode;
+export const GENERATE_FILE_META_CHANNEL = 'GENERATE_FILE_META_CHANNEL';
+export type GenerateFileMetaRendererRequest = GenerateFileMetaParams;
+export type GenerateFileMetaMainResponse = any;
 
 /**
  * Channel to generate and save a paper wallet certificate

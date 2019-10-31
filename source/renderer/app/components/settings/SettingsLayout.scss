@@ -13,8 +13,8 @@
   overflow-y: overlay;
   padding: 20px 20px 20px 0;
   &::-webkit-scrollbar-button {
-    height: 7px;
     display: block;
+    height: 7px;
   }
 }
 
@@ -22,6 +22,6 @@
   background-color: var(--theme-settings-pane-background-color);
   border: var(--theme-settings-pane-border);
   border-radius: 4px;
-  padding: 30px 30px 10px 30px;
   overflow: visible;
+  padding: 30px 30px 10px 30px;
 }

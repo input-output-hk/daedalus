@@ -1,14 +1,14 @@
 .component {
   :global {
     .recharts-cartesian-axis-tick text {
+      fill: #c2cad4;
       font-family: var(--font-medium);
       font-size: 10px;
-      fill: #c2cad4;
     }
   }
 }
 
 .toolTip {
-  position: fixed;
   overflow: visible;
+  position: fixed;
 }

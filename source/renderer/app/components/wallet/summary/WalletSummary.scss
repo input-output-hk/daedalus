@@ -1,12 +1,12 @@
 @import '../../../themes/mixins/animations';
 
 %smallText {
-  height: 19px;
+  color: var(--theme-bordered-box-text-color);
   font-family: var(--font-regular);
   font-size: 14px;
-  line-height: 1.36;
+  height: 19px;
   letter-spacing: 0.5px;
-  color: var(--theme-bordered-box-text-color);
+  line-height: 1.36;
 }
 
 .component {
@@ -14,23 +14,23 @@
 }
 
 .walletName {
+  color: var(--theme-bordered-box-text-color);
   font-family: var(--font-bold);
   font-size: 16px;
-  line-height: 1.38;
   letter-spacing: 0.5px;
-  color: var(--theme-bordered-box-text-color);
+  line-height: 1.38;
   margin-bottom: 11px;
   user-select: text;
 }
 
 .walletAmount {
+  color: var(--theme-bordered-box-text-color);
   font-family: var(--font-ultralight);
   font-size: 40px;
   line-height: 1;
-  color: var(--theme-bordered-box-text-color);
   margin-bottom: 11px;
-  word-break: break-all;
   user-select: text;
+  word-break: break-all;
 
   & > .decimal {
     font-family: var(--font-medium);
@@ -41,8 +41,8 @@
     display: inline-block;
     margin-left: 10px;
     & > svg {
-      width: 25px;
       height: 27.5px;
+      width: 25px;
       & > g > g {
         stroke: var(--theme-icon-ada-summary-wallet-amount-symbol-color);
       }

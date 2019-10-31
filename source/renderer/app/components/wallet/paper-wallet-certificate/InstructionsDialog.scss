@@ -11,8 +11,8 @@
   }
 
   .subtitle2 {
-    line-height: 1.38;
     font-family: var(--font-medium);
+    line-height: 1.38;
   }
 
   .instructionsList {
@@ -21,8 +21,8 @@
 
     .link,
     .instructionsListLabel {
-      font-weight: 500;
       font-family: var(--font-medium);
+      font-weight: 500;
       margin-top: 20px;
     }
 
@@ -46,10 +46,10 @@
 
   .printingInstructions {
     border-top: 1px solid var(--theme-dialog-border-color);
+    line-height: 1.38;
     margin-top: 20px;
     padding-bottom: 0;
     padding-top: 20px;
-    line-height: 1.38;
 
     strong {
       font-family: var(--font-medium);

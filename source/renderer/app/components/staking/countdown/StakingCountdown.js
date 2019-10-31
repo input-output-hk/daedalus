@@ -35,7 +35,6 @@ const messages = defineMessages({
 
 type Props = {
   redirectToStakingInfo?: Function,
-  currentLocale: string,
   startDateTime: string,
   onLearnMoreClick: Function,
 };
@@ -49,7 +48,6 @@ export default class StakingCountdown extends Component<Props> {
   render() {
     const {
       redirectToStakingInfo,
-      currentLocale,
       startDateTime,
       onLearnMoreClick,
     } = this.props;
@@ -67,7 +65,6 @@ export default class StakingCountdown extends Component<Props> {
           <div className={styles.timeLeftDesc}>{timeLeftDesc}</div>
           <CountdownWidget
             redirectToStakingInfo={redirectToStakingInfo}
-            currentLocale={currentLocale}
             startDateTime={startDateTime}
           />
           <Button
