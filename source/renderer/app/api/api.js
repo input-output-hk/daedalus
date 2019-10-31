@@ -1076,6 +1076,14 @@ export default class AdaApi {
     }
   };
 
+  // For "Testing" purposes - get newsfeed from local JSON files
+  getNewsFromLocalFiles = async (env?: string): Promise<GetNewsResponse> => {
+    const fileName = `newsfeed_${env || 'development'}`;
+    Logger.info('AdaApi::getNewsFromLocalFiles', `${fileName}.json`);
+    const news = require(`../config/newsfeed-files/${fileName}.json`);
+    return news;
+  };
+
   setCardanoNodeFault = async (fault: FaultInjectionIpcRequest) => {
     await cardanoFaultInjectionChannel.send(fault);
   };

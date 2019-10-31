@@ -2,6 +2,7 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { select, withKnobs } from '@storybook/addon-knobs';
+import { action } from '@storybook/addon-actions';
 import StoryDecorator from '../_support/StoryDecorator';
 import IncidentOverlay from '../../../source/renderer/app/components/news/IncidentOverlay';
 import { dateOptions } from '../_support/profileSettings';
@@ -31,7 +32,8 @@ storiesOf('News|Incidents', module)
   .add('Incident Overlay', props => (
     <IncidentOverlay
       incident={props}
-      onOpenExternalLink={() => {}}
+      onOpenExternalLink={action('onOpenExternalLink')}
+      onProceedNewsAction={action('onProceedNewsAction')}
       currentDateFormat={select(
         'currentDateFormat',
         dateOptions,

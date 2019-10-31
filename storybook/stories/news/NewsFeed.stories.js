@@ -131,8 +131,9 @@ storiesOf('News|NewsFeed', module)
         onClose={action('onClose')}
         news={new News.NewsCollection([])}
         isNewsFeedOpen={boolean('isNewsFeedOpen2', true)}
-        onOpenExternalLink={() => {}}
-        onOpenAlert={() => {}}
+        onOpenExternalLink={action('onOpenExternalLink')}
+        onOpenAlert={action('onOpenAlert')}
+        onProceedNewsAction={action('onOpenExternalLink')}
         currentDateFormat=" "
       />
     </div>
@@ -148,8 +149,9 @@ storiesOf('News|NewsFeed', module)
         onClose={action('onClose')}
         news={new News.NewsCollection([])}
         isNewsFeedOpen={boolean('isNewsFeedOpen2', true)}
-        onOpenExternalLink={() => {}}
-        onOpenAlert={() => {}}
+        onOpenExternalLink={action('onOpenExternalLink')}
+        onOpenAlert={action('onOpenAlert')}
+        onProceedNewsAction={action('onOpenExternalLink')}
         currentDateFormat=" "
       />
     </div>
@@ -165,8 +167,9 @@ storiesOf('News|NewsFeed', module)
         onClose={action('onClose')}
         news={newsCollection}
         isNewsFeedOpen={boolean('isNewsFeedOpen3', true)}
-        onOpenExternalLink={() => {}}
-        onOpenAlert={() => {}}
+        onOpenExternalLink={action('onOpenExternalLink')}
+        onOpenAlert={action('onOpenAlert')}
+        onProceedNewsAction={action('onOpenExternalLink')}
         currentDateFormat={select(
           'currentDateFormat',
           dateOptions,
