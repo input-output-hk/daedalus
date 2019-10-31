@@ -3,8 +3,7 @@
 }:
 let
   daedalusPkgs = { cluster ? null }: import ./. {
-    inherit buildNum cluster;
-    target = system;
+    inherit buildNum cluster system;
     version = "${version}${suffix}";
   };
   shellEnvs = {
@@ -18,9 +17,9 @@ let
     x86_64-linux = (daedalusPkgsWithSystem "x86_64-linux").yaml2json;
     x86_64-darwin = (daedalusPkgsWithSystem "x86_64-darwin").yaml2json;
   };
-  daedalus-installer = {
-    x86_64-linux = (daedalusPkgsWithSystem "x86_64-linux").daedalus-installer;
-    x86_64-darwin = (daedalusPkgsWithSystem "x86_64-darwin").daedalus-installer;
+  make-installer = {
+    x86_64-linux = (daedalusPkgsWithSystem "x86_64-linux").make-installer;
+    x86_64-darwin = (daedalusPkgsWithSystem "x86_64-darwin").make-installer;
   };
 
   makeJobs = cluster: with daedalusPkgs { inherit cluster; }; {
@@ -41,7 +40,7 @@ let
   lib = (import ./. {}).pkgs.lib;
   clusters = lib.splitString " " (builtins.replaceStrings ["\n"] [""] (builtins.readFile ./installer-clusters.cfg));
 in {
-  inherit shellEnvs yaml2json daedalus-installer;
+  inherit shellEnvs yaml2json make-installer;
   inherit ((daedalusPkgs {}).pkgs) mono;
   tests = (daedalusPkgs {}).tests;
 } // builtins.listToAttrs (map (x: { name = x; value = makeJobs x; }) clusters)
