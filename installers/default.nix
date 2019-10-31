@@ -23,5 +23,5 @@ let
 
   };
 in {
-  inherit haskellPackages shell;
+  inherit haskellPackages shell pkgs;
 }

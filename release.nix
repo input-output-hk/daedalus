@@ -43,4 +43,8 @@ in {
   inherit shellEnvs yaml2json make-installer;
   inherit ((daedalusPkgs {}).pkgs) mono;
   tests = (daedalusPkgs {}).tests;
+  ifd-pins = {
+    ghc844.x86_64-linux = (import ./installers { system = "x86_64-linux"; }).pkgs.haskell.compiler.ghc844;
+    ghc844.x86_64-darwin = (import ./installers { system = "x86_64-darwin"; }).pkgs.haskell.compiler.ghc844;
+  };
 } // builtins.listToAttrs (map (x: { name = x; value = makeJobs x; }) clusters)
