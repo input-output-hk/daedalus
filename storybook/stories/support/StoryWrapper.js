@@ -18,6 +18,7 @@ import lightBlue from '../../../source/renderer/app/themes/daedalus/light-blue.j
 import darkCardano from '../../../source/renderer/app/themes/daedalus/dark-cardano.js';
 import white from '../../../source/renderer/app/themes/daedalus/white.js';
 import yellow from '../../../source/renderer/app/themes/daedalus/yellow.js';
+import incentivizedTestnet from '../../../source/renderer/app/themes/daedalus/incentivized-testnet.js';
 
 import WindowSizeManager from '../../../source/renderer/app/WindowSizeManager';
 
@@ -33,6 +34,7 @@ const themes = {
   DarkCardano: darkCardano,
   Yellow: yellow,
   White: white,
+  IncentivizedTestnet: incentivizedTestnet,
 };
 const themeNames = keys(themes);
 
