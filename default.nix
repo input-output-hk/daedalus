@@ -1,12 +1,7 @@
-let
-  system = builtins.currentSystem; # todo
-in
 { target ? builtins.currentSystem
-#system ? builtins.currentSystem
 , nodeImplementation ? "jormungandr"
 , localLib ? import ./lib.nix { inherit nodeImplementation; }
 , config ? {}
-, pkgs ? localLib.iohkNix.getPkgs { inherit system config; }
 , cluster ? "mainnet"
 , version ? "versionNotSet"
 , buildNum ? null
@@ -17,6 +12,15 @@ in
 }:
 
 let
+  systemTable = {
+    x86_64-windows = builtins.currentSystem;
+  };
+  crossSystemTable = {
+    x86_64-windows = lib.systems.examples.mingwW64;
+  };
+  system = systemTable.${target} or target;
+  crossSystem = crossSystemTable.${target} or null;
+  pkgs = localLib.iohkNix.getPkgs { inherit system config; };
   # TODO, nsis cant cross-compile with the nixpkgs daedalus currently uses
   nsisNixPkgs = import localLib.sources.nixpkgs-nsis {};
   installPath = ".daedalus";
@@ -202,7 +206,7 @@ let
     '';
     windows-installer = if needSignedBinaries then self.signed-windows-installer else self.unsigned-windows-installer;
 
-    inherit (pkgs.callPackage ./installers { inherit config; system = target; }) haskellPackages;
+    inherit (pkgs.callPackage ./installers { inherit config system; }) haskellPackages;
     inherit (self.haskellPackages.daedalus-installer.components.exes) make-installer;
     daedalus = self.callPackage ./installers/nix/linux.nix {};
     configMutator = pkgs.runCommand "configMutator" { buildInputs = [ ghcWithCardano ]; } ''

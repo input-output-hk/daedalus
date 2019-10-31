@@ -1,6 +1,6 @@
 { stdenv, runCommand, writeText, writeScriptBin, electron3,
 coreutils, utillinux, procps, cluster,
-rawapp, daedalus-bridge, daedalus-installer,
+rawapp, daedalus-bridge, make-installer,
 sandboxed ? false
 }:
 
@@ -12,7 +12,7 @@ let
     ##       splitting the dep chain further:
     cp -v ${daedalus-bridge}/config/* $out
     cd $out
-    ${daedalus-installer}/bin/make-installer --out-dir "." --cluster ${cluster} config "${daedalus-installer.src}/dhall" "."
+    ${make-installer}/bin/make-installer --out-dir "." --cluster ${cluster} config "${../dhall}" "."
   '';
   # closure size TODO list
   # electron depends on cups, which depends on avahi
