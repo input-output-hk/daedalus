@@ -5,11 +5,8 @@ Changelog
 
 ### Features
 
-<<<<<<< HEAD
 - Add internal link support in newsfeed items and verification hash generator script ([PR 1617](https://github.com/input-output-hk/daedalus/pull/1617))
-=======
 - Implemented date, time and number format user options ([PR 1611](https://github.com/input-output-hk/daedalus/pull/1611))
->>>>>>> develop
 
 ### Chores
 
