@@ -20,6 +20,7 @@ type Props = {
   onCloseOpenAlert: Function,
   onMarkNewsAsRead: Function,
   onOpenExternalLink: Function,
+  onProceedNewsAction: Function,
   allAlertsCount: number,
   hideCounter?: boolean,
   currentDateFormat: string,
@@ -53,15 +54,17 @@ export default class AlertsOverlay extends Component<Props, State> {
     this.props.onMarkNewsAsRead(alerts[0].date);
   };
 
+  onProceedNewsAction = (event: SyntheticMouseEvent<HTMLElement>) => {
+    const { onProceedNewsAction, alerts } = this.props;
+    onProceedNewsAction(alerts[0], event);
+  };
+
   renderAction = (action: Object) => {
-    if (action && action.url) {
+    if (action && (action.url || action.event)) {
       return (
-        <button
-          className={styles.actionBtn}
-          onClick={() => this.props.onOpenExternalLink(action.url)}
-        >
+        <button className={styles.actionBtn} onClick={this.onProceedNewsAction}>
           {action.label}
-          <SVGInline svg={externalLinkIcon} />
+          {action.url && <SVGInline svg={externalLinkIcon} />}
         </button>
       );
     }
@@ -83,8 +86,7 @@ export default class AlertsOverlay extends Component<Props, State> {
   render() {
     const { showOverlay } = this.state;
     const { alerts, currentDateFormat } = this.props;
-    const [alert] = alerts;
-    const { content, date, action, title } = alert;
+    const { content, date, action, title } = alerts[0];
     return (
       showOverlay && (
         <div className={styles.component}>

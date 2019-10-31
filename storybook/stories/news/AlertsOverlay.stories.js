@@ -58,7 +58,8 @@ storiesOf('News|Alerts', module)
       alerts={props['0'].alerts}
       onCloseOpenAlert={() => {}}
       onMarkNewsAsRead={action('onMarkNewsAsRead')}
-      onOpenExternalLink={() => {}}
+      onOpenExternalLink={action('onOpenExternalLink')}
+      onProceedNewsAction={action('onProceedNewsAction')}
       currentDateFormat={select(
         'currentDateFormat',
         dateOptions,
