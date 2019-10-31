@@ -754,6 +754,11 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-recovery-phrase-attention-background-color':
       'rgba(234, 76, 91, .2)',
   },
+  rpRadio: {
+    '--rp-radio-border-color': '#536370',
+    '--rp-radio-size': '22px',
+    '--rp-radio-label-text-color': '#e9f4fe',
+  },
 };
 
 const DARK_BLUE_THEME_PARAMS: CreateThemeParams = {

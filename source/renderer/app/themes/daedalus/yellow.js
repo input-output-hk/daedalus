@@ -738,6 +738,11 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-recovery-phrase-attention-background-color':
       'rgba(234, 76, 91, .1)',
   },
+  rpRadio: {
+    '--rp-radio-border-color': '#424242',
+    '--rp-radio-size': '22px',
+    '--rp-radio-label-text-color': '#2d2d2d',
+  },
 };
 
 const YELLOW_THEME_PARAMS: CreateThemeParams = {

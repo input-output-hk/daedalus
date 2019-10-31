@@ -147,6 +147,11 @@ export const createReactPolymorphTheme = (
       '--rp-options-border-color': `${border}`,
       '--rp-options-shadow': 'none',
     },
+    rpRadio: {
+      '--rp-radio-border-color': `${background.secondary.regular}`,
+      '--rp-radio-size': '22px',
+      '--rp-radio-label-text-color': `${text.primary}`,
+    },
     rpSelect: {
       '--rp-select-arrow-bg-color': `${border}`,
       '--rp-select-arrow-bg-color-open': `${focus}`,

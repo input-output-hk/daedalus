@@ -1,5 +1,5 @@
 // @flow
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { join } from 'lodash';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
@@ -60,6 +60,30 @@ const messages = defineMessages({
     defaultMessage: '!!!Name the wallet you are restoring',
     description:
       'Hint "Name the wallet you are restoring" for the wallet name input on the wallet restore dialog.',
+  },
+  recoveryPhraseTypeLabel: {
+    id: 'wallet.restore.dialog.recovery.phrase.type.options.label',
+    defaultMessage: '!!!Recovery phrase type',
+    description:
+      'Label for the recovery phrase type options on the wallet restore dialog.',
+  },
+  recoveryPhraseTypeOptionWord: {
+    id: 'wallet.restore.dialog.recovery.phrase.type.word',
+    defaultMessage: '!!! words',
+    description:
+      'Word for the recovery phrase type on the wallet restore dialog.',
+  },
+  recoveryPhraseType15WordOption: {
+    id: 'wallet.restore.dialog.recovery.phrase.type.15word.option',
+    defaultMessage: '!!!Daedalus wallet',
+    description:
+      'Label for the recovery phrase type 15-word option on the wallet restore dialog.',
+  },
+  recoveryPhraseType12WordOption: {
+    id: 'wallet.restore.dialog.recovery.phrase.type.12word.option',
+    defaultMessage: '!!!Daedalus legacy wallet',
+    description:
+      'Label for the recovery phrase type 12-word option on the wallet restore dialog.',
   },
   recoveryPhraseInputLabel: {
     id: 'wallet.restore.dialog.recovery.phrase.input.label',
@@ -429,14 +453,24 @@ export default class WalletRestoreDialog extends Component<Props, State> {
 
         {this.isRegular() && (
           <RadioSet
-            label="Recovery phrase type"
+            label={intl.formatMessage(messages.recoveryPhraseTypeLabel)}
             items={[
               {
                 key: WALLET_RESTORE_REGULAR_TYPES.DAEDALUS_WALLET,
                 label: (
-                  <p>
-                    15 words <b>(Daedalus wallet)</b>
-                  </p>
+                  <Fragment>
+                    15
+                    {intl.formatMessage(
+                      messages.recoveryPhraseTypeOptionWord
+                    )}{' '}
+                    <span>
+                      (
+                      {intl.formatMessage(
+                        messages.recoveryPhraseType15WordOption
+                      )}
+                      )
+                    </span>
+                  </Fragment>
                 ),
                 selected: !this.isLegacy(),
                 onChange: () =>
@@ -447,9 +481,19 @@ export default class WalletRestoreDialog extends Component<Props, State> {
               {
                 key: WALLET_RESTORE_REGULAR_TYPES.DAEDALUS_LEGACY_WALLET,
                 label: (
-                  <p>
-                    12 words <b>(Daedalus legacy wallet)</b>
-                  </p>
+                  <Fragment>
+                    12
+                    {intl.formatMessage(
+                      messages.recoveryPhraseTypeOptionWord
+                    )}{' '}
+                    <span>
+                      (
+                      {intl.formatMessage(
+                        messages.recoveryPhraseType12WordOption
+                      )}
+                      )
+                    </span>
+                  </Fragment>
                 ),
                 selected: this.isLegacy(),
                 onChange: () =>

@@ -740,6 +740,11 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--theme-recovery-phrase-attention-background-color':
       'rgba(234, 76, 91, .2)',
   },
+  rpRadio: {
+    '--rp-radio-border-color': '#1fc1c3',
+    '--rp-radio-size': '22px',
+    '--rp-radio-label-text-color': '#ffffff',
+  },
 };
 
 const DARK_CARDANO_THEME_PARAMS: CreateThemeParams = {

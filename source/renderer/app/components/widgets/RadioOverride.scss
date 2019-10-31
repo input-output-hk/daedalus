@@ -1,6 +1,7 @@
 .root {
-  .circle {
-    height: 22px;
-    width: 22px;
+  .label {
+    span {
+      opacity: 0.5;
+    }
   }
 }
