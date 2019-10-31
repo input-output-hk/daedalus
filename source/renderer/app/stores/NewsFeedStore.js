@@ -1,5 +1,5 @@
 // @flow
-import { observable, action, runInAction, computed } from 'mobx';
+import { observable, action, computed } from 'mobx';
 import { map, get, find } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
@@ -19,6 +19,11 @@ import type {
 
 const { isTest } = global.environment;
 
+const AVAILABLE_NEWSFEED_EVENT_ACTIONS = [
+  'DOWNLOAD_LOGS',
+  'OPEN_DIAGNOSTIC_DIALOG',
+];
+
 export default class NewsFeedStore extends Store {
   @observable rawNews: ?Array<NewsItem> = null;
   @observable newsUpdatedAt: ?Date = null;
@@ -34,6 +39,7 @@ export default class NewsFeedStore extends Store {
     this.api.localStorage.markNewsAsRead
   );
   @observable openedAlert: ?News.News = null;
+  @observable fetchLocalNews: boolean = false;
 
   pollingNewsIntervalId: ?IntervalID = null;
   pollingNewsOnErrorIntervalId: ?IntervalID = null;
@@ -51,8 +57,21 @@ export default class NewsFeedStore extends Store {
     }
   }
 
-  @action getNews = async () => {
+  @action getNewsFromLocalFiles = (isLocal: boolean, env?: string) => {
+    this.fetchLocalNews = isLocal;
+    this.getNews(env);
+  };
+
+  @action getNews = async (env?: string) => {
+    const { isDev } = this.stores.app.environment;
     let rawNews;
+
+    if (this.fetchLocalNews && isDev) {
+      rawNews = await this.api.ada.getNewsFromLocalFiles(env);
+      this._setNews(rawNews);
+      return;
+    }
+
     try {
       rawNews = await this.getNewsRequest.execute().promise;
       const hasIncident = find(
@@ -133,11 +152,13 @@ export default class NewsFeedStore extends Store {
     await this.getReadNewsRequest.execute();
 
     if (rawNews) {
-      runInAction('set news data', () => {
-        this.rawNews = get(rawNews, 'items', []);
-        this.newsUpdatedAt = get(rawNews, 'updatedAt', null);
-      });
+      this._setNews(rawNews);
     }
+  };
+
+  @action _setNews = news => {
+    this.rawNews = get(news, 'items', []);
+    this.newsUpdatedAt = get(news, 'updatedAt', null);
   };
 
   @action markNewsAsRead = async newsTimestamps => {
@@ -166,6 +187,32 @@ export default class NewsFeedStore extends Store {
     this.fetchingNewsFailed = fetchingNewsFailed;
   };
 
+  @action proceedNewsAction = (newsItem, e: MouseEvent) => {
+    const { url, route, event } = newsItem.action;
+
+    if (url) {
+      this.stores.app.openExternalLink(url, e);
+    } else if (
+      route &&
+      newsItem.type !== NewsTypes.INCIDENT &&
+      newsItem.type !== NewsTypes.ALERT
+    ) {
+      this.actions.app.closeNewsFeed.trigger();
+      this.actions.router.goToRoute.trigger({ route });
+    } else if (event && AVAILABLE_NEWSFEED_EVENT_ACTIONS.includes(event)) {
+      switch (event) {
+        case 'OPEN_DIAGNOSTIC_DIALOG':
+          this.actions.app.openDaedalusDiagnosticsDialog.trigger();
+          break;
+        case 'DOWNLOAD_LOGS':
+          this.actions.app.downloadLogs.trigger();
+          break;
+        default:
+          break;
+      }
+    }
+  };
+
   @computed get newsFeedData(): News.NewsCollection {
     const { currentLocale } = this.stores.profile;
     const readNews = this.getReadNewsRequest.result;
@@ -177,8 +224,10 @@ export default class NewsFeedStore extends Store {
         content: item.content[currentLocale],
         action: {
           ...item.action,
-          label: item.action.label[currentLocale],
+          label: get(item, ['action', 'label', currentLocale]),
           url: get(item, ['action', 'url', currentLocale]),
+          route: get(item, ['action', 'route', currentLocale]),
+          event: get(item, ['action', 'event', currentLocale]),
         },
         read: readNews.includes(item.date),
       }));
