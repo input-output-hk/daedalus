@@ -22,7 +22,6 @@ export default class WalletRestoreDialogContainer extends Component<Props> {
     walletName: string,
     spendingPassword: ?string,
     type?: string,
-    walletType?: string,
   }) => {
     this.props.actions.wallets.restoreWallet.trigger(values);
   };
@@ -56,7 +55,7 @@ export default class WalletRestoreDialogContainer extends Component<Props> {
 
     return (
       <WalletRestoreDialog
-        mnemonicValidator={mnemonic => isValidMnemonic(mnemonic)}
+        mnemonicValidator={isValidMnemonic}
         suggestedMnemonics={validWords}
         isSubmitting={restoreRequest.isExecuting}
         onSubmit={this.onSubmit}

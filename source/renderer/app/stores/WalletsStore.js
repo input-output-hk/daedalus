@@ -21,15 +21,12 @@ import { WalletPaperWalletOpenPdfError } from '../i18n/errors';
 import {
   RECOVERY_PHRASE_VERIFICATION_NOTIFICATION,
   RECOVERY_PHRASE_VERIFICATION_WARNING,
+  WALLET_RESTORE_TYPES,
 } from '../config/walletsConfig';
 import { TESTNET } from '../../../common/types/environment.types';
 import type { walletExportTypeChoices } from '../types/walletExportTypes';
 import type { WalletImportFromFileParams } from '../actions/wallets-actions';
 import type LocalizableError from '../i18n/LocalizableError';
-import {
-  WALLET_RESTORE_TYPES,
-  WALLET_RESTORE_REGULAR_TYPES,
-} from '../components/wallet/WalletRestoreDialog';
 import type {
   WalletLocalData,
   WalletsLocalData,
@@ -554,7 +551,6 @@ export default class WalletsStore extends Store {
     walletName: string,
     spendingPassword: ?string,
     type?: string,
-    walletType?: string,
   }) => {
     // reset getWalletRecoveryPhraseFromCertificateRequest to clear previous errors
     this.getWalletRecoveryPhraseFromCertificateRequest.reset();
@@ -585,7 +581,7 @@ export default class WalletsStore extends Store {
     }
 
     const request =
-      params.walletType === WALLET_RESTORE_REGULAR_TYPES.DAEDALUS_WALLET
+      params.type === !WALLET_RESTORE_TYPES.LEGACY
         ? this.restoreRequest
         : this.restoreLegacyRequest;
 
