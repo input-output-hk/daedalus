@@ -443,11 +443,12 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
   },
   rpCheckbox: {
     '--rp-checkbox-border': '1px solid #eb2256',
+    '--rp-checkbox-border-color': 'rgba(255, 255, 255, 0.2)',
     '--rp-checkbox-border-color-disabled': '#eb225666',
     '--rp-checkbox-check-bg-color': '#eb2256',
+    '--rp-checkbox-check-icon-color': '#121326',
     '--rp-checkbox-label-text-color': '#ffffff',
     '--rp-checkbox-label-text-color-disabled': '#ffffff4d',
-    '--rp-checkbox-border-color': 'rgba(255, 255, 255, 0.2)',
   },
   rpColors: {
     '--rp-theme-color-error': '#ea4c5b',

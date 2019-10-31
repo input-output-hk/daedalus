@@ -1,0 +1,7 @@
+.root {
+  &.checked {
+    .check::after {
+      border-color: var(--rp-checkbox-check-icon-color);
+    }
+  }
+}

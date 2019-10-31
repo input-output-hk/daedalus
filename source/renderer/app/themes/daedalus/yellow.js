@@ -446,11 +446,12 @@ export const YELLOW_THEME_OUTPUT = {
   },
   rpCheckbox: {
     '--rp-checkbox-border': '1px solid #2d2d2d',
+    '--rp-checkbox-border-color': '#e1dac6',
     '--rp-checkbox-border-color-disabled': '#2d2d2d66',
     '--rp-checkbox-check-bg-color': '#2d2d2d',
+    '--rp-checkbox-check-icon-color': '#ffffff',
     '--rp-checkbox-label-text-color': '#2d2d2d',
     '--rp-checkbox-label-text-color-disabled': '#2d2d2d4d',
-    '--rp-checkbox-border-color': '#e1dac6',
   },
   rpColors: {
     '--rp-theme-color-error': '#ea4c5b',

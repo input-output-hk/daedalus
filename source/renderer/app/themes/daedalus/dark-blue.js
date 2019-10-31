@@ -464,11 +464,12 @@ export const DARK_BLUE_THEME_OUTPUT = {
   },
   rpCheckbox: {
     '--rp-checkbox-border': '1px solid #536370',
+    '--rp-checkbox-border-color': 'rgba(102, 122, 138, 0.3)',
     '--rp-checkbox-border-color-disabled': 'rgba(83, 99, 112, 0.4)',
     '--rp-checkbox-check-bg-color': '#536370',
+    '--rp-checkbox-check-icon-color': '#e9f4fe',
     '--rp-checkbox-label-text-color': '#e9f4fe',
     '--rp-checkbox-label-text-color-disabled': 'rgba(233, 244, 254, 0.3)',
-    '--rp-checkbox-border-color': 'rgba(102, 122, 138, 0.3)',
   },
   rpColors: {
     '--rp-theme-color-error': '#ea4c5b',

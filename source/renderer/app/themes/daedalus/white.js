@@ -448,9 +448,10 @@ export const WHITE_THEME_OUTPUT = {
   },
   rpCheckbox: {
     '--rp-checkbox-border': '1px solid #29b595',
-    '--rp-checkbox-border-color-disabled': 'rgba(41, 181, 149, 0.3)',
     '--rp-checkbox-border-color': '#29b595',
+    '--rp-checkbox-border-color-disabled': 'rgba(41, 181, 149, 0.3)',
     '--rp-checkbox-check-bg-color': '#29b595',
+    '--rp-checkbox-check-icon-color': '#ffffff',
     '--rp-checkbox-label-text-color': '#2d2d2d',
     '--rp-checkbox-label-text-color-disabled': '#2d2d2d4d',
   },
