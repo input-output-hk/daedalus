@@ -740,6 +740,11 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--theme-recovery-phrase-attention-background-color':
       'rgba(235, 74, 34, 0.2)',
   },
+  rpRadio: {
+    '--rp-radio-border-color': '#eb2256',
+    '--rp-radio-size': '22px',
+    '--rp-radio-label-text-color': '#ffffff',
+  },
 };
 
 const INCENTIVIZED_TESTNET_THEME_PARAMS: CreateThemeParams = {
