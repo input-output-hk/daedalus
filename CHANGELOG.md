@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 
+- Implemented "Spending passord" as required parameter for Cardano V2 API ([PR 1631](https://github.com/input-output-hk/daedalus/pull/1631))
 - Implemented address validator ([PR 1609](https://github.com/input-output-hk/daedalus/pull/1609))
 - Add "frontend-only" mode utility that has no dependency on nix ([PR 1583](https://github.com/input-output-hk/daedalus/pull/1583))
 - Added Jormungandr support for Cardano V2 API ([PR 1567](https://github.com/input-output-hk/daedalus/pull/1567)
