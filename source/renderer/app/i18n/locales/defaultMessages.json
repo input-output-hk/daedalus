@@ -1533,13 +1533,27 @@
         "description": "Label for the \"Theme\" selection on the display settings page.",
         "end": {
           "column": 3,
-          "line": 21
+          "line": 22
         },
         "file": "source/renderer/app/components/settings/categories/DisplaySettings.js",
         "id": "settings.display.themeLabel",
         "start": {
           "column": 14,
-          "line": 16
+          "line": 17
+        }
+      },
+      {
+        "defaultMessage": "!!!Incentivized Testnet",
+        "description": "Name of the \"Incentivized Testnet\" theme on the display settings page.",
+        "end": {
+          "column": 3,
+          "line": 28
+        },
+        "file": "source/renderer/app/components/settings/categories/DisplaySettings.js",
+        "id": "settings.display.themeNames.incentivizedTestnet",
+        "start": {
+          "column": 28,
+          "line": 23
         }
       },
       {
@@ -1547,13 +1561,13 @@
         "description": "Name of the \"Light blue\" theme on the display settings page.",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 33
         },
         "file": "source/renderer/app/components/settings/categories/DisplaySettings.js",
         "id": "settings.display.themeNames.lightBlue",
         "start": {
           "column": 18,
-          "line": 22
+          "line": 29
         }
       },
       {
@@ -1561,13 +1575,13 @@
         "description": "Name of the \"Cardano\" theme on the display settings page.",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 38
         },
         "file": "source/renderer/app/components/settings/categories/DisplaySettings.js",
         "id": "settings.display.themeNames.cardano",
         "start": {
           "column": 16,
-          "line": 27
+          "line": 34
         }
       },
       {
@@ -1575,13 +1589,13 @@
         "description": "Name of the \"Dark blue\" theme on the display settings page.",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 43
         },
         "file": "source/renderer/app/components/settings/categories/DisplaySettings.js",
         "id": "settings.display.themeNames.darkBlue",
         "start": {
           "column": 17,
-          "line": 32
+          "line": 39
         }
       },
       {
@@ -1589,13 +1603,13 @@
         "description": "Name of the \"Dark cardano\" theme on the display settings page.",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 49
         },
         "file": "source/renderer/app/components/settings/categories/DisplaySettings.js",
         "id": "settings.display.themeNames.darkCardano",
         "start": {
           "column": 20,
-          "line": 38
+          "line": 44
         }
       },
       {
@@ -1603,13 +1617,13 @@
         "description": "Name of the \"Yellow\" theme on the display settings page.",
         "end": {
           "column": 3,
-          "line": 49
+          "line": 54
         },
         "file": "source/renderer/app/components/settings/categories/DisplaySettings.js",
         "id": "settings.display.themeNames.yellow",
         "start": {
           "column": 15,
-          "line": 45
+          "line": 50
         }
       },
       {
@@ -1617,13 +1631,13 @@
         "description": "Name of the \"White\" theme on the display settings page.",
         "end": {
           "column": 3,
-          "line": 55
+          "line": 59
         },
         "file": "source/renderer/app/components/settings/categories/DisplaySettings.js",
         "id": "settings.display.themeNames.white",
         "start": {
           "column": 14,
-          "line": 51
+          "line": 55
         }
       }
     ],
