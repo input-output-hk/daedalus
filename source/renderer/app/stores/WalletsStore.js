@@ -22,6 +22,7 @@ import {
   RECOVERY_PHRASE_VERIFICATION_NOTIFICATION,
   RECOVERY_PHRASE_VERIFICATION_WARNING,
 } from '../config/walletsConfig';
+import { TESTNET } from '../../../common/types/environment.types';
 import type { walletExportTypeChoices } from '../types/walletExportTypes';
 import type { WalletImportFromFileParams } from '../actions/wallets-actions';
 import type LocalizableError from '../i18n/LocalizableError';
@@ -449,9 +450,21 @@ export default class WalletsStore extends Store {
   };
 
   isValidAddress = (address: string) => {
+    const { app, networkStatus } = this.stores;
+    const { environment } = app;
+    const { network, isDev } = environment;
+    const { nodeImplementation } = networkStatus;
     try {
-      Util.introspectAddress(address);
-      return true;
+      const result = Util.introspectAddress(address);
+      if (
+        result.network === network ||
+        (isDev &&
+          result.network === TESTNET &&
+          nodeImplementation === 'jormungandr')
+      ) {
+        return true;
+      }
+      return false;
     } catch (error) {
       return false;
     }
