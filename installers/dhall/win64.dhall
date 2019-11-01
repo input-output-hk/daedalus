@@ -4,32 +4,31 @@ in let dataDir = "\${APPDATA}\\${installDir}"
     --
     --
 in
-{ name      = "win64"
-, configurationYaml  = "\${DAEDALUS_INSTALL_DIRECTORY}\\configuration.yaml"
+{ name               = "win64"
 , installDirectory   = installDir
 , macPackageName     = "unused"
-, x509ToolPath       = "\${DAEDALUS_DIR}\\cardano-x509-certificates.exe"
+, x509ToolPath       = None Text
 , nodeArgs           =
-  { keyfile          = "Secrets-1.0\\secret.key"
-  , logsPrefix       = "Logs"
-  , topology         = "\${DAEDALUS_DIR}\\wallet-topology.yaml"
-  , updateLatestPath = "Installer.exe"
-  , statePath     = "state"
-  , tlsPath          = "tls"
+  { logsPrefix       = "Logs"
+  , topology         = None Text
+  , updateLatestPath = None Text
+  , statePath        = "state"
+  , tlsPath          = None Text
   }
 , pass      =
   { statePath           = dataDir
   , workingDir          = dataDir
-  , nodePath            = "\${DAEDALUS_DIR}\\jormungandr.exe"
-  , cliPath             = "\${DAEDALUS_DIR}\\jcli.exe"
-  , nodeLogConfig       = "\${DAEDALUS_INSTALL_DIRECTORY}\\log-config-prod.yaml"
+  , nodeBin             = "\${DAEDALUS_INSTALL_DIRECTORY}\\jormungandr.exe"
+  , walletBin           = "\${DAEDALUS_INSTALL_DIRECTORY}\\cardano-wallet-jormungandr.exe"
+  , daedalusBin         = "\${DAEDALUS_INSTALL_DIRECTORY}\\${installDir}.exe"
+  , cliPath             = "\${DAEDALUS_INSTALL_DIRECTORY}\\jcli.exe"
+  , nodeLogConfig       = None Text
   , nodeLogPath         = None Text
 
-  , walletPath          = "\${DAEDALUS_DIR}\\${installDir}.exe"
   , walletLogging       = True
   , frontendOnlyMode    = True
 
-  , updaterPath         = "Installer.exe"
+  , updaterPath         = None Text
   , updaterArgs         = [] : List Text
   , updateArchive       = None Text
   , updateWindowsRunner = Some "Installer.bat"
