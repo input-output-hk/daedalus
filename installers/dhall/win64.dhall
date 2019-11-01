@@ -14,17 +14,16 @@ in
   , logsPrefix       = "Logs"
   , topology         = "\${DAEDALUS_DIR}\\wallet-topology.yaml"
   , updateLatestPath = "Installer.exe"
-  , walletDBPath     = "Wallet-1.0"
+  , statePath     = "state"
   , tlsPath          = "tls"
   }
 , pass      =
   { statePath           = dataDir
   , workingDir          = dataDir
-  , nodePath            = "\${DAEDALUS_DIR}\\${NODE_EXE}.exe"
-  , cliPath             = "\${DAEDALUS_DIR}\\${CLI_EXE}.exe"
-  , nodeDbPath          = "DB-1.0"
+  , nodePath            = "\${DAEDALUS_DIR}\\jormungandr.exe"
+  , cliPath             = "\${DAEDALUS_DIR}\\jcli.exe"
   , nodeLogConfig       = "\${DAEDALUS_INSTALL_DIRECTORY}\\log-config-prod.yaml"
-  , nodeLogPath         = [] : Optional Text
+  , nodeLogPath         = None Text
 
   , walletPath          = "\${DAEDALUS_DIR}\\${installDir}.exe"
   , walletLogging       = True
@@ -32,8 +31,8 @@ in
 
   , updaterPath         = "Installer.exe"
   , updaterArgs         = [] : List Text
-  , updateArchive       = [] : Optional Text
-  , updateWindowsRunner = ["Installer.bat"] : Optional Text
+  , updateArchive       = None Text
+  , updateWindowsRunner = Some "Installer.bat"
 
   , launcherLogsPrefix  = "Logs\\pub"
   }
