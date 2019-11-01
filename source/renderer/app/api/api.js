@@ -27,6 +27,7 @@ import { getLatestAppVersion } from './nodes/requests/getLatestAppVersion';
 import { getTransactionFee } from './transactions/requests/getTransactionFee';
 import { getTransactionHistory } from './transactions/requests/getTransactionHistory';
 import { createTransaction } from './transactions/requests/createTransaction';
+import { deleteTransaction } from './transactions/requests/deleteTransaction';
 
 // Wallets requests
 import { changeSpendingPassword } from './wallets/requests/changeSpendingPassword';
@@ -96,6 +97,7 @@ import type {
   TransactionFee,
   GetTransactionFeeRequest,
   CreateTransactionRequest,
+  DeleteTransactionRequest,
   GetTransactionsRequest,
   GetTransactionsResponse,
 } from './transactions/types';
@@ -544,6 +546,23 @@ export default class AdaApi {
       } else {
         throw new GenericApiError();
       }
+    }
+  };
+
+  deleteTransaction = async (
+    request: DeleteTransactionRequest
+  ): Promise<void> => {
+    Logger.debug('AdaApi::deleteTransaction called', { parameters: request });
+    const { walletId, transactionId } = request;
+    try {
+      const response: void = await deleteTransaction(this.config, {
+        walletId,
+        transactionId,
+      });
+      Logger.debug('AdaApi::deleteTransaction success', response);
+    } catch (error) {
+      Logger.error('AdaApi::deleteTransaction error', { error });
+      throw new GenericApiError();
     }
   };
 
