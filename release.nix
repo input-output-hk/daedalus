@@ -43,6 +43,6 @@ let
 in {
   inherit shellEnvs yaml2json daedalus-installer;
   inherit ((daedalusPkgs {}).pkgs) mono;
-  inherit ((daedalusPkgs {}).pkgs.pkgsi686Linux) wine;
+  wine = (daedalusPkgs {}).pkgs.wine.override { wineBuild = "wine32"; };
   tests = (daedalusPkgs {}).tests;
 } // builtins.listToAttrs (map (x: { name = x; value = makeJobs x; }) clusters)
