@@ -222,6 +222,7 @@ let
       inherit buildNum;
       api = "ada";
       apiVersion = cardanoSL.daedalus-bridge.version;
+      wine = pkgs.pkgsi686Linux.wine;
     };
     rawapp-win64 = self.rawapp.override { win64 = true; };
     source = builtins.filterSource localLib.cleanSourceFilter ./.;
