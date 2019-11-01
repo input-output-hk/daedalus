@@ -4,12 +4,9 @@ import { join } from 'lodash';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { Autocomplete } from 'react-polymorph/lib/components/Autocomplete';
-import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { AutocompleteSkin } from 'react-polymorph/lib/skins/simple/AutocompleteSkin';
-import { SwitchSkin } from 'react-polymorph/lib/skins/simple/SwitchSkin';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
-import { IDENTIFIERS } from 'react-polymorph/lib/themes/API';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import ReactToolboxMobxForm, {
   handleFormErrors,
@@ -84,18 +81,16 @@ const messages = defineMessages({
     description:
       'Error message shown when invalid recovery phrase was entered.',
   },
-  passwordSwitchPlaceholder: {
-    id: 'wallet.restore.dialog.passwordSwitchPlaceholder',
+  passwordSectionLabel: {
+    id: 'wallet.restore.dialog.passwordSectionLabel',
+    defaultMessage: '!!!Spending password',
+    description: 'Password creation label.',
+  },
+  passwordSectionDescription: {
+    id: 'wallet.restore.dialog.passwordSectionDescription',
     defaultMessage:
       '!!!Keep your private keys safely encrypted by setting the spending password',
-    description:
-      'Text for the "Spending password" switch in the wallet restore dialog.',
-  },
-  passwordSwitchLabel: {
-    id: 'wallet.restore.dialog.passwordSwitchLabel',
-    defaultMessage: '!!!Spending password',
-    description:
-      'Label for the "Spending password" switch in the wallet restore dialog.',
+    description: 'Password creation description.',
   },
   spendingPasswordLabel: {
     id: 'wallet.restore.dialog.spendingPasswordLabel',
@@ -155,7 +150,6 @@ type Props = {
 };
 
 type State = {
-  createPassword: boolean,
   activeChoice: string,
 };
 
@@ -171,7 +165,6 @@ export default class WalletRestoreDialog extends Component<Props, State> {
 
   state = {
     activeChoice: RESTORE_TYPES.REGULAR, // regular | certificate
-    createPassword: true,
   };
 
   recoveryPhraseAutocomplete: Autocomplete;
@@ -236,7 +229,6 @@ export default class WalletRestoreDialog extends Component<Props, State> {
           value: '',
           validators: [
             ({ field, form }) => {
-              if (!this.state.createPassword) return [true];
               const repeatPasswordField = form.$('repeatPassword');
               if (repeatPasswordField.value.length > 0) {
                 repeatPasswordField.validate({ showErrors: true });
@@ -259,7 +251,6 @@ export default class WalletRestoreDialog extends Component<Props, State> {
           value: '',
           validators: [
             ({ field, form }) => {
-              if (!this.state.createPassword) return [true];
               const spendingPassword = form.$('spendingPassword').value;
               if (spendingPassword.length === 0) return [true];
               return [
@@ -281,21 +272,16 @@ export default class WalletRestoreDialog extends Component<Props, State> {
     }
   );
 
-  handlePasswordSwitchToggle = (value: boolean) => {
-    this.setState({ createPassword: value });
-  };
-
   submit = () => {
     this.form.submit({
       onSuccess: form => {
-        const { createPassword } = this.state;
         const { onSubmit } = this.props;
         const { recoveryPhrase, walletName, spendingPassword } = form.values();
 
         const walletData: Object = {
           recoveryPhrase: join(recoveryPhrase, ' '),
           walletName,
-          spendingPassword: createPassword ? spendingPassword : null,
+          spendingPassword,
         };
 
         walletData.type = this.state.activeChoice;
@@ -326,7 +312,6 @@ export default class WalletRestoreDialog extends Component<Props, State> {
     const { intl } = this.context;
     const { form } = this;
     const { suggestedMnemonics, isSubmitting, error, onCancel } = this.props;
-    const { createPassword } = this.state;
 
     const dialogClasses = classnames([
       styles.component,
@@ -337,11 +322,6 @@ export default class WalletRestoreDialog extends Component<Props, State> {
     const walletNameFieldClasses = classnames([
       'walletName',
       styles.walletName,
-    ]);
-
-    const spendingPasswordFieldsClasses = classnames([
-      styles.spendingPasswordFields,
-      createPassword ? styles.show : null,
     ]);
 
     const walletNameField = form.$('walletName');
@@ -430,22 +410,16 @@ export default class WalletRestoreDialog extends Component<Props, State> {
           skin={AutocompleteSkin}
         />
 
-        <div className={styles.spendingPassword}>
-          <div className={styles.spendingPasswordSwitch}>
-            <div className={styles.passwordLabel}>
-              {intl.formatMessage(messages.passwordSwitchLabel)}
-            </div>
-            <Checkbox
-              themeId={IDENTIFIERS.SWITCH}
-              onChange={this.handlePasswordSwitchToggle}
-              label={intl.formatMessage(messages.passwordSwitchPlaceholder)}
-              checked={createPassword}
-              skin={SwitchSkin}
-              disabled // @API TODO: in V2 API passphrase is required
-            />
+        <div className={styles.spendingPasswordWrapper}>
+          <div className={styles.passwordSectionLabel}>
+            {intl.formatMessage(messages.passwordSectionLabel)}
           </div>
 
-          <div className={spendingPasswordFieldsClasses}>
+          <div className={styles.passwordSectionDescription}>
+            {intl.formatMessage(messages.passwordSectionDescription)}
+          </div>
+
+          <div className={styles.spendingPasswordFields}>
             <Input
               className="spendingPassword"
               onKeyPress={this.handleSubmitOnEnter}
@@ -482,10 +456,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
   onSelectChoice = (choice: string) => {
     const { isSubmitting, onChoiceChange } = this.props;
     if (!isSubmitting) {
-      this.setState({
-        activeChoice: choice,
-        createPassword: true,
-      });
+      this.setState({ activeChoice: choice });
       this.resetForm();
       if (onChoiceChange) onChoiceChange();
     }

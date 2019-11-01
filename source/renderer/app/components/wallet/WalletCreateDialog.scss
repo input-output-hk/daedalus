@@ -2,44 +2,35 @@
 @import '../../themes/mixins/loading-spinner';
 @import '../../themes/mixins/place-form-field-error-below-input';
 
-.spendingPassword {
-  .spendingPasswordSwitch {
-    border-top: 1px solid var(--theme-dialog-border-color);
-    margin-top: 30px;
-    padding-top: 20px;
+.spendingPasswordWrapper {
+  border-top: 1px solid var(--theme-dialog-border-color);
+  margin-top: 30px;
+  padding-top: 20px;
 
-    & > .passwordLabel {
-      color: var(--rp-switch-label-text-color);
-      font-family: var(--font-semibold);
-      font-size: 16px;
-      line-height: 1.38;
-      margin-bottom: 10px;
-    }
+  .passwordSectionLabel {
+    font-family: var(--font-medium);
+    font-size: 16px;
+    line-height: 1.38;
+    margin-bottom: 14px;
+  }
 
-    :global {
-      .SimpleSwitch_root {
-        margin-bottom: 0;
-      }
-    }
+  .passwordSectionDescription {
+    font-family: var(--font-light);
+    font-size: 16px;
+    line-height: 1.38;
   }
 
   .spendingPasswordFields {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-    max-height: 0;
-    opacity: 0;
-    overflow: hidden;
+    max-height: 250px;
+    opacity: 1;
+    overflow: visible;
     transition: all 400ms ease;
 
-    &.show {
-      max-height: 250px;
-      opacity: 1;
-      overflow: visible;
-    }
-
     & > div {
-      margin-top: 30px;
+      margin-top: 20px;
       width: 275px;
     }
 
@@ -49,7 +40,7 @@
       color: var(--theme-dialog-text-color);
       font-family: var(--font-light);
       line-height: 1.38;
-      margin-top: 16px;
+      margin-top: 10px;
     }
   }
 }

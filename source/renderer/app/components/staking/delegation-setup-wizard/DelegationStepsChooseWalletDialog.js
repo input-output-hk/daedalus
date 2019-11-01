@@ -72,7 +72,6 @@ type DelegationWalletData = {
   label: string,
   value: string,
   isAcceptableSetupWallet: boolean,
-  hasPassword: boolean,
 };
 
 type Props = {

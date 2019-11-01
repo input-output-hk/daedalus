@@ -14,7 +14,6 @@ storiesOf('ExportWalletToFileDialog', module)
     <div>
       <ExportWalletToFileDialog
         walletName="Test Wallet"
-        hasSpendingPassword={false}
         isSubmitting={false}
         onSubmit={action('onSubmit')}
         onClose={action('onClose')}
@@ -26,7 +25,6 @@ storiesOf('ExportWalletToFileDialog', module)
     <div>
       <ExportWalletToFileDialog
         walletName="Test Wallet"
-        hasSpendingPassword={false}
         isSubmitting
         onSubmit={action('onSubmit')}
         onClose={action('onClose')}
@@ -38,7 +36,6 @@ storiesOf('ExportWalletToFileDialog', module)
     <div>
       <ExportWalletToFileDialog
         walletName="Test Wallet"
-        hasSpendingPassword
         isSubmitting={false}
         onSubmit={action('onSubmit')}
         onClose={action('onClose')}
