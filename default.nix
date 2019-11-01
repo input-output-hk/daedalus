@@ -36,6 +36,7 @@ let
 
     # a cross-compiled fastlist for the ps-list package
     fastlist = pkgs.pkgsCross.mingwW64.callPackage ./fastlist.nix {};
+    wine = pkgs.wine.override { wineBuild = "wine32"; };
 
     dlls = pkgs.fetchurl {
       url = "https://s3.eu-central-1.amazonaws.com/daedalus-ci-binaries/DLLs.zip";
@@ -126,7 +127,7 @@ let
       cp daedalus.nsi uninstaller.nsi launcher-config.yaml wallet-topology.yaml $out/
     '';
 
-    unsignedUninstaller = pkgs.runCommand "uninstaller" { buildInputs = [ self.nsis pkgs.winePackages.minimal ]; } ''
+    unsignedUninstaller = pkgs.runCommand "uninstaller" { buildInputs = [ self.nsis self.wine ]; } ''
       mkdir home
       export HOME=$(realpath home)
 
@@ -222,7 +223,6 @@ let
       inherit buildNum;
       api = "ada";
       apiVersion = cardanoSL.daedalus-bridge.version;
-      wine = pkgs.wine.override { wineBuild = "wine32"; };
     };
     rawapp-win64 = self.rawapp.override { win64 = true; };
     source = builtins.filterSource localLib.cleanSourceFilter ./.;
