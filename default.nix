@@ -1,12 +1,7 @@
-let
-  system = builtins.currentSystem; # todo
-in
 { target ? builtins.currentSystem
-#system ? builtins.currentSystem
 , nodeImplementation ? "jormungandr"
 , localLib ? import ./lib.nix { inherit nodeImplementation; }
 , config ? {}
-, pkgs ? localLib.iohkNix.getPkgs { inherit system config; }
 , cluster ? "mainnet"
 , version ? "versionNotSet"
 , buildNum ? null
@@ -17,6 +12,15 @@ in
 }:
 
 let
+  systemTable = {
+    x86_64-windows = builtins.currentSystem;
+  };
+  crossSystemTable = {
+    x86_64-windows = lib.systems.examples.mingwW64;
+  };
+  system = systemTable.${target} or target;
+  pkgs = localLib.iohkNix.getPkgs { inherit system config; };
+  crossSystem = crossSystemTable.${target} or null;
   # TODO, nsis cant cross-compile with the nixpkgs daedalus currently uses
   nsisNixPkgs = import localLib.sources.nixpkgs-nsis {};
   installPath = ".daedalus";
