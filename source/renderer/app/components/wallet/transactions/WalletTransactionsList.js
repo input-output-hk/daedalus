@@ -44,6 +44,7 @@ const messages = defineMessages({
 });
 
 type Props = {
+  deletePendingTransaction: Function,
   formattedWalletAmount: Function,
   hasMoreToLoad: boolean,
   isLoadingTransactions: boolean,
@@ -178,10 +179,12 @@ export default class WalletTransactionsList extends Component<Props> {
 
   renderTransaction = (data: TransactionInfo): Node => {
     const {
+      deletePendingTransaction,
       formattedWalletAmount,
       isRestoreActive,
       network,
       onOpenExternalLink,
+      walletId,
     } = this.props;
     const { isFirstInGroup, isLastInGroup, tx } = data;
     const txClasses = classnames([
@@ -193,6 +196,7 @@ export default class WalletTransactionsList extends Component<Props> {
       <div id={`tx-${tx.id}`} className={txClasses}>
         <Transaction
           data={tx}
+          deletePendingTransaction={deletePendingTransaction}
           formattedWalletAmount={formattedWalletAmount}
           isExpanded={this.isTxExpanded(tx)}
           isLastInList={isLastInGroup}
@@ -201,6 +205,7 @@ export default class WalletTransactionsList extends Component<Props> {
           onDetailsToggled={() => this.toggleTransactionExpandedState(tx)}
           onOpenExternalLink={onOpenExternalLink}
           state={tx.state}
+          walletId={walletId}
         />
       </div>
     );

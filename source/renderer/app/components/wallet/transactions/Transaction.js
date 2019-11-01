@@ -99,6 +99,7 @@ const stateTranslations = defineMessages({
 
 type Props = {
   data: WalletTransaction,
+  deletePendingTransaction: Function,
   state: TransactionState,
   isExpanded: boolean,
   isRestoreActive: boolean,
@@ -107,6 +108,7 @@ type Props = {
   network: string,
   onDetailsToggled: ?Function,
   onOpenExternalLink: ?Function,
+  walletId: string,
 };
 
 export default class Transaction extends Component<Props> {
@@ -126,6 +128,20 @@ export default class Transaction extends Component<Props> {
       const link = `${getNetworkExplorerUrl(network)}/${type}/${param}`;
       onOpenExternalLink(link);
     }
+  }
+
+  deletePendingTransaction() {
+    const { data, walletId } = this.props;
+    const { id: transactionId, state } = data;
+
+    if (state !== 'pending') {
+      return null;
+    }
+
+    return this.props.deletePendingTransaction({
+      walletId,
+      transactionId,
+    });
   }
 
   render() {
