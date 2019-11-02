@@ -2,14 +2,12 @@
 import React, { Component, Fragment } from 'react';
 import { join } from 'lodash';
 import { observer } from 'mobx-react';
+import { action } from 'mobx';
 import classnames from 'classnames';
 import { Autocomplete } from 'react-polymorph/lib/components/Autocomplete';
-import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import { Input } from 'react-polymorph/lib/components/Input';
-import { SwitchSkin } from 'react-polymorph/lib/skins/simple/SwitchSkin';
 import { AutocompleteSkin } from 'react-polymorph/lib/skins/simple/AutocompleteSkin';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
-import { IDENTIFIERS } from 'react-polymorph/lib/themes/API';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import RadioSet from '../widgets/RadioSet';
 import ReactToolboxMobxForm, {
@@ -104,18 +102,16 @@ const messages = defineMessages({
     description:
       'Error message shown when invalid recovery phrase was entered.',
   },
-  passwordSwitchPlaceholder: {
-    id: 'wallet.restore.dialog.passwordSwitchPlaceholder',
+  passwordSectionLabel: {
+    id: 'wallet.restore.dialog.passwordSectionLabel',
+    defaultMessage: '!!!Spending password',
+    description: 'Password creation label.',
+  },
+  passwordSectionDescription: {
+    id: 'wallet.restore.dialog.passwordSectionDescription',
     defaultMessage:
       '!!!Keep your private keys safely encrypted by setting the spending password',
-    description:
-      'Text for the "Spending password" switch in the wallet restore dialog.',
-  },
-  passwordSwitchLabel: {
-    id: 'wallet.restore.dialog.passwordSwitchLabel',
-    defaultMessage: '!!!Spending password',
-    description:
-      'Label for the "Spending password" switch in the wallet restore dialog.',
+    description: 'Password creation description.',
   },
   spendingPasswordLabel: {
     id: 'wallet.restore.dialog.spendingPasswordLabel',
@@ -329,8 +325,12 @@ export default class WalletRestoreDialog extends Component<Props, State> {
     });
     form.reset();
     form.showErrors(false);
+  };
 
-    // Autocomplete has to be reset manually
+  resetMnemonics = () => {
+    const recoveryPhraseField = this.form.$('recoveryPhrase');
+    recoveryPhraseField.debouncedValidation.cancel();
+    recoveryPhraseField.reset();
     this.recoveryPhraseAutocomplete.clear();
   };
 
@@ -349,11 +349,6 @@ export default class WalletRestoreDialog extends Component<Props, State> {
     const walletNameFieldClasses = classnames([
       'walletName',
       styles.walletName,
-    ]);
-
-    const spendingPasswordFieldsClasses = classnames([
-      styles.spendingPasswordFields,
-      styles.show,
     ]);
 
     const walletNameField = form.$('walletName');
@@ -394,7 +389,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
           <button
             className={regularTabClasses}
             onClick={() =>
-              this.onSelectWalletType(WALLET_RESTORE_TYPES.REGULAR)
+              this.onSelectWalletType(WALLET_RESTORE_TYPES.REGULAR, true)
             }
           >
             {intl.formatMessage(messages.recoveryPhraseTabTitle)}
@@ -402,7 +397,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
           <button
             className={certificateTabClasses}
             onClick={() =>
-              this.onSelectWalletType(WALLET_RESTORE_TYPES.CERTIFICATE)
+              this.onSelectWalletType(WALLET_RESTORE_TYPES.CERTIFICATE, true)
             }
           >
             {intl.formatMessage(messages.certificateTabTitle)}
@@ -440,7 +435,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
                 ),
                 selected: !this.isLegacy(),
                 onChange: () =>
-                  this.onSelectWalletType(WALLET_RESTORE_TYPES.REGULAR, true),
+                  this.onSelectWalletType(WALLET_RESTORE_TYPES.REGULAR),
               },
               {
                 key: WALLET_RESTORE_TYPES.LEGACY,
@@ -461,7 +456,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
                 ),
                 selected: this.isLegacy(),
                 onChange: () =>
-                  this.onSelectWalletType(WALLET_RESTORE_TYPES.LEGACY, true),
+                  this.onSelectWalletType(WALLET_RESTORE_TYPES.LEGACY),
               },
             ]}
           />
@@ -492,21 +487,16 @@ export default class WalletRestoreDialog extends Component<Props, State> {
           skin={AutocompleteSkin}
         />
 
-        <div className={styles.spendingPassword}>
-          <div className={styles.spendingPasswordSwitch}>
-            <div className={styles.passwordLabel}>
-              {intl.formatMessage(messages.passwordSwitchLabel)}
-            </div>
-            <Checkbox
-              themeId={IDENTIFIERS.SWITCH}
-              label={intl.formatMessage(messages.passwordSwitchPlaceholder)}
-              skin={SwitchSkin}
-              checked // @API TODO: in V2 API passphrase is required
-              disabled
-            />
+        <div className={styles.spendingPasswordWrapper}>
+          <div className={styles.passwordSectionLabel}>
+            {intl.formatMessage(messages.passwordSectionLabel)}
           </div>
 
-          <div className={spendingPasswordFieldsClasses}>
+          <div className={styles.passwordSectionDescription}>
+            {intl.formatMessage(messages.passwordSectionDescription)}
+          </div>
+
+          <div className={styles.spendingPasswordFields}>
             <Input
               className="spendingPassword"
               onKeyPress={this.handleSubmitOnEnter}
@@ -544,15 +534,12 @@ export default class WalletRestoreDialog extends Component<Props, State> {
     return this.state.walletType === WALLET_RESTORE_TYPES.LEGACY;
   }
 
-  onSelectWalletType = (walletType: string, resetForm: boolean = true) => {
-    const { isSubmitting, onChoiceChange } = this.props;
-    if (!isSubmitting) {
-      this.setState({
-        walletType,
-      });
-      if (!resetForm) return;
-      this.resetForm();
-      if (onChoiceChange) onChoiceChange();
-    }
+  onSelectWalletType = (walletType: string, shouldResetForm?: boolean) => {
+    const { onChoiceChange, isSubmitting } = this.props;
+    if (isSubmitting) return;
+    this.setState({ walletType });
+    if (shouldResetForm) this.resetForm();
+    this.resetMnemonics();
+    if (onChoiceChange) onChoiceChange();
   };
 }
