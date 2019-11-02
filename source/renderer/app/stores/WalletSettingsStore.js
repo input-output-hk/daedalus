@@ -83,8 +83,8 @@ export default class WalletSettingsStore extends Store {
     newPassword,
   }: {
     walletId: string,
-    oldPassword: ?string,
-    newPassword: ?string,
+    oldPassword: string,
+    newPassword: string,
   }) => {
     await this.updateSpendingPasswordRequest.execute({
       walletId,

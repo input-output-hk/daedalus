@@ -47,7 +47,6 @@ Feature: Paper Wallets Certificate generation
     And I see "Restore wallet with certificate" form
     And I enter wallet name "Restored CERTIFICATE wallet" in restore wallet dialog
     And I enter paper wallet recovery phrase
-    And I toggle "Spending password" switch on the restore wallet with certificate dialog
     And I submit the restore wallet dialog
     Then I should not see the restore wallet dialog anymore
     And I should have newly created "Restored CERTIFICATE wallet" wallet loaded

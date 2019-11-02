@@ -99,14 +99,14 @@ export type CreateWalletRequest = {
   name: string,
   mnemonic: [string],
   mnemonicPassphrase?: [string],
-  spendingPassword: ?string,
+  spendingPassword: string,
   addressPoolGap?: number,
 };
 
 export type UpdateSpendingPasswordRequest = {
   walletId: string,
-  oldPassword?: string,
-  newPassword: ?string,
+  oldPassword: string,
+  newPassword: string,
 };
 
 export type DeleteWalletRequest = {
@@ -130,7 +130,7 @@ export type GetWalletIdAndBalanceResponse = {
 export type RestoreWalletRequest = {
   recoveryPhrase: string,
   walletName: string,
-  spendingPassword?: ?string,
+  spendingPassword: string,
 };
 
 export type RestoreLegacyWalletRequest = {
@@ -145,19 +145,19 @@ export type UpdateWalletRequest = {
 };
 export type ImportWalletFromKeyRequest = {
   filePath: string,
-  spendingPassword: ?string,
+  spendingPassword: string,
 };
 
 export type ImportWalletFromFileRequest = {
   filePath: string,
-  spendingPassword: ?string,
+  spendingPassword: string,
   walletName: ?string,
 };
 
 export type ExportWalletToFileRequest = {
   walletId: string,
   filePath: string,
-  password: ?string,
+  password: string,
 };
 
 export type GetWalletCertificateRecoveryPhraseRequest = {

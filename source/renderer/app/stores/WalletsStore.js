@@ -154,11 +154,11 @@ export default class WalletsStore extends Store {
   _newWalletDetails: {
     name: string,
     mnemonic: string,
-    spendingPassword: ?string,
+    spendingPassword: string,
   } = {
     name: '',
     mnemonic: '',
-    spendingPassword: null,
+    spendingPassword: '',
   };
   _pollingBlocked = false;
 
@@ -203,7 +203,7 @@ export default class WalletsStore extends Store {
     walletsActions.updateWalletLocalData.listen(this._updateWalletLocalData);
   }
 
-  _create = async (params: { name: string, spendingPassword: ?string }) => {
+  _create = async (params: { name: string, spendingPassword: string }) => {
     Object.assign(this._newWalletDetails, params);
     try {
       const recoveryPhrase: ?Array<string> = await this.getWalletRecoveryPhraseRequest.execute()
@@ -294,7 +294,7 @@ export default class WalletsStore extends Store {
   _restore = async (params: {
     recoveryPhrase: string,
     walletName: string,
-    spendingPassword: ?string,
+    spendingPassword: string,
   }) => {
     const restoredWallet = await this.restoreRequest.execute(params).promise;
     if (!restoredWallet)
@@ -549,7 +549,7 @@ export default class WalletsStore extends Store {
   @action _restoreWallet = async (params: {
     recoveryPhrase: string,
     walletName: string,
-    spendingPassword: ?string,
+    spendingPassword: string,
     type?: string,
   }) => {
     // reset getWalletRecoveryPhraseFromCertificateRequest to clear previous errors
