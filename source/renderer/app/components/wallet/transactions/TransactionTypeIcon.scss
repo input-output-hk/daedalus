@@ -1,3 +1,5 @@
+@import '../../../themes/mixins/loading-spinner';
+
 .transactionTypeIconWrapper {
   align-items: center;
   border-radius: 10px;
@@ -19,11 +21,16 @@
   &.exchange {
     background: var(--theme-transactions-icon-type-exchange-background-color);
   }
+
+  &.pending {
+    background: var(--theme-transactions-icon-type-pending-background-color);
+    position: relative;
+    @include loading-spinner('../../../assets/images/spinner-dark.svg');
+  }
 }
 
 .transactionTypeIcon {
   display: flex;
-
   & > svg {
     height: 19px;
     width: 23px;
