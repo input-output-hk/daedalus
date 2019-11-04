@@ -1,18 +1,22 @@
-{ stdenv, runCommand, writeText, writeScriptBin, electron3,
-coreutils, utillinux, procps, cluster,
-rawapp, daedalus-bridge, daedalus-installer,
-sandboxed ? false
+{ stdenv, runCommand, writeText, writeScriptBin, electron3
+, coreutils, utillinux, procps, cluster
+, rawapp, daedalus-bridge, daedalus-installer
+, sandboxed ? false
+, nodeImplementation
+, jormungandrLib
 }:
 
 let
+  launcherConfig = import ../../nix/launcher-config.nix {
+    inherit jormungandrLib;
+    environment = cluster;
+    os = "linux";
+    backend = nodeImplementation;
+  };
   daedalus-config = runCommand "daedalus-config" {} ''
     mkdir -pv $out
-    ## TODO: we don't need all of the genesis files (even if file names sound cool),
-    ##       but the choice would have to be made in the Dhall-generated files,
-    ##       splitting the dep chain further:
-    cp -v ${daedalus-bridge}/config/* $out
     cd $out
-    ${daedalus-installer}/bin/make-installer --out-dir "." --cluster ${cluster} config "${daedalus-installer.src}/dhall" "."
+    cp ${builtins.toFile "launcher-config.yaml" (builtins.toJSON launcherConfig)} $out/launcher-config.yaml
   '';
   # closure size TODO list
   # electron depends on cups, which depends on avahi

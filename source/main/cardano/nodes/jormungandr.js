@@ -53,7 +53,7 @@ export function buildJormungandrNodeOpts(
 }
 
 export async function configureJormungandrDeps(
-  cliPath: string,
+  cliBin: string,
   stateDir: string
 ) {
   const secretPath = `${stateDir}/secret.yaml`;
@@ -65,16 +65,16 @@ export async function configureJormungandrDeps(
     return;
   }
 
-  const secret = await createAndWriteClientSecret(cliPath, secretPath);
-  await createBlock0({ cliPath, genesisPath, block0Path, secret });
+  const secret = await createAndWriteClientSecret(cliBin, secretPath);
+  await createBlock0({ cliBin, genesisPath, block0Path, secret });
 }
 
 export async function createAndWriteClientSecret(
-  cliPath: string,
+  cliBin: string,
   secretPath: string
 ): Promise<string> {
   const secret: string = await new Promise((resolve, reject) => {
-    exec(`${cliPath} key generate --type=Ed25519`, (err, stdout, stderr) => {
+    exec(`${cliBin} key generate --type=Ed25519`, (err, stdout, stderr) => {
       if (err || stderr) {
         return err ? reject(err) : reject(stderr);
       }
@@ -92,12 +92,12 @@ export async function createAndWriteClientSecret(
 }
 
 export async function createBlock0({
-  cliPath,
+  cliBin,
   genesisPath,
   block0Path,
   secret,
 }: {
-  cliPath: string,
+  cliBin: string,
   genesisPath: string,
   block0Path: string,
   secret: string,
@@ -111,7 +111,7 @@ export async function createBlock0({
 
   const publicKey = await new Promise((resolve, reject) => {
     exec(
-      `echo "${secret}" | ${cliPath} key to-public`,
+      `echo "${secret}" | ${cliBin} key to-public`,
       (err, stdout, stderr) => {
         if (err || stderr) {
           return err ? reject(err) : reject(stderr);
@@ -134,7 +134,7 @@ export async function createBlock0({
     const outputPath = pathEscaper(block0Path);
 
     exec(
-      `${cliPath} genesis encode --input ${inputPath} --output ${outputPath}`,
+      `${cliBin} genesis encode --input ${inputPath} --output ${outputPath}`,
       (err, stdout, stderr) => {
         if (err || stderr) {
           return err ? reject(err) : reject(stderr);

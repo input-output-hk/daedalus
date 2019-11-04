@@ -7,11 +7,6 @@ let
   }) { inherit pkgs nodejs; };
   # TODO: these hard-coded values will go away when wallet port
   # selection happens at runtime.
-  walletPortMap = {
-    mainnet = 8090;
-    staging = 8092;
-    testnet = 8094;
-  };
   dotGitExists = builtins.pathExists ./.git;
   isNix2 = 0 <= builtins.compareVersions builtins.nixVersion "1.12";
   canUseFetchGit = dotGitExists && isNix2;
@@ -20,6 +15,7 @@ let
     mainnet = "Daedalus";
     staging = "Daedalus Staging";
     testnet = "Daedalus Testnet";
+    nightly = "Daedalus Jormungandr Nightly";
   };
   newPackage = (origPackage // {
     productName = nameTable.${if cluster == null then "testnet" else cluster};
@@ -63,7 +59,6 @@ yarn2nix.mkYarnPackage {
   API_VERSION = apiVersion;
   CI = "nix";
   NETWORK = cluster;
-  WALLET_PORT = walletPortMap.${cluster};
   BUILD_NUMBER = "${toString buildNum}";
   NODE_ENV = "production";
   extraBuildInputs = if win64 then [ wine nukeReferences ] else [ nukeReferences ];
@@ -77,7 +72,6 @@ yarn2nix.mkYarnPackage {
       done
     '';
   in if win64 then ''
-    cp ${daedalus.cfg}/etc/launcher-config.yaml ./launcher-config.yaml
     export ELECTRON_CACHE=${electron-cache}
     mkdir home
     export HOME=$(realpath home)

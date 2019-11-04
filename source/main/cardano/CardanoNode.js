@@ -63,12 +63,12 @@ type NodeArgs = Array<string>;
 
 export type CardanoNodeConfig = {
   workingDir: string, // Path to the state directory
-  nodePath: string, // Path to jormungandr or cardano-node executable
-  cliPath: string, // Path to node CLI tool. Jormungandr only
+  walletBin: string, // Path to jormungandr or cardano-node executable
+  cliBin: string, // Path to node CLI tool. Jormungandr only
   nodeImplementation: CardanoNodeImplementation,
   logFilePath: string, // Log file path for cardano-sl
   tlsPath: string, // Path to cardano-node TLS folder
-  nodeArgs: NodeArgs, // Arguments that are used to spwan cardano-node
+  walletArgs: NodeArgs, // Arguments that are used to spwan cardano-node
   startupTimeout: number, // Milliseconds to wait for cardano-node to startup
   startupMaxRetries: number, // Maximum number of retries for re-starting then ode
   shutdownTimeout: number, // Milliseconds to wait for cardano-node to gracefully shutdown
@@ -253,9 +253,9 @@ export class CardanoNode {
     // Setup
     const { _log } = this;
     const {
-      nodePath,
-      cliPath,
-      nodeArgs,
+      walletBin,
+      cliBin,
+      walletArgs,
       startupTimeout,
       nodeImplementation,
     } = config;
@@ -277,22 +277,23 @@ export class CardanoNode {
       logFile.on('open', async () => {
         this._cardanoLogFile = logFile;
         // Spawning cardano-node
-        _log.debug('CardanoNode path with args', {
-          path: nodePath,
-          args: nodeArgs,
+        _log.info('CardanoNode path with args', {
+          path: walletBin,
+          args: walletArgs,
         });
 
-        // TODO: Cleanup nodeArgs to only include those relevant to `cardano-wallet`
+        // TODO: Cleanup walletArgs to only include those relevant to `cardano-wallet`
         // TODO: Add TSL path once supported by cardano-wallet
-        const networkIndexFromArgs = nodeArgs.indexOf('--network');
-        const networkFromArgs = nodeArgs[networkIndexFromArgs + 1];
+        // const networkIndexFromArgs = walletArgs.indexOf('--network');
+        // const networkFromArgs = nodeArgs[networkIndexFromArgs + 1];
 
         const node = await CardanoWalletLauncher({
-          path: nodePath,
+          path: walletBin,
+          walletArgs,
           logStream: logFile,
-          networkMode: networkFromArgs,
+          networkMode: "remove-me",
           nodeImplementation,
-          cliPath,
+          cliBin,
           // TODO: Make this dynamic
           nodePort: 8888,
           stateDir: config.workingDir,

@@ -35,22 +35,22 @@ const startCardanoNode = (
   launcherConfig: LauncherConfig
 ) => {
   const {
-    nodePath,
+    walletBin,
     tlsPath,
     logsPrefix,
     workingDir,
-    cliPath,
+    cliBin,
     nodeImplementation,
   } = launcherConfig;
-  const nodeArgs = prepareArgs(launcherConfig);
+  const walletArgs = prepareArgs(launcherConfig);
   const logFilePath = `${logsPrefix}/cardano-node.log`;
   const config = {
-    nodePath,
-    cliPath,
+    walletBin,
+    cliBin,
     nodeImplementation,
     logFilePath,
     tlsPath,
-    nodeArgs,
+    walletArgs,
     workingDir,
     startupTimeout: NODE_STARTUP_TIMEOUT,
     startupMaxRetries: NODE_STARTUP_MAX_RETRIES,

@@ -36,8 +36,9 @@ if (!isStartedByLauncher) {
 export type LauncherConfig = {
   frontendOnlyMode: boolean,
   statePath: string,
-  nodePath: string,
-  cliPath: string,
+  walletBin: string,
+  walletArgs: Array<string>,
+  cliBin: string,
   nodeImplementation: 'jormungandr' | 'cardano-http-bridge' | 'cardano-node',
   nodeArgs: Array<string>,
   tlsPath: string,

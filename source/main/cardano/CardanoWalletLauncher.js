@@ -9,7 +9,8 @@ import {
 
 export type WalletOpts = {
   path: string,
-  cliPath: string,
+  walletArgs: string[],
+  cliBin: string,
   nodeImplementation: 'cardano-http-bridge' | 'jormungandr' | 'cardano-node',
   networkMode: string,
   nodePort: number,
@@ -20,7 +21,7 @@ export type WalletOpts = {
 export async function CardanoWalletLauncher(
   walletOpts: WalletOpts
 ): Promise<ChildProcess> {
-  const { logStream, nodeImplementation, cliPath, stateDir, path } = walletOpts;
+  const { logStream, nodeImplementation, cliBin, stateDir, path } = walletOpts;
 
   let nodeOpts: string[] = [];
 
@@ -34,8 +35,9 @@ export async function CardanoWalletLauncher(
     case 'cardano-node':
       break;
     case 'jormungandr':
-      await configureJormungandrDeps(cliPath, stateDir);
-      nodeOpts = buildJormungandrNodeOpts(walletOpts, isJormungandrTestnet);
+      await configureJormungandrDeps(cliBin, stateDir);
+      nodeOpts = walletOpts.walletArgs;
+      //nodeOpts = buildJormungandrNodeOpts(walletOpts, isJormungandrTestnet);
       break;
     default:
       break;

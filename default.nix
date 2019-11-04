@@ -31,11 +31,19 @@ let
   throwSystem = throw "Unsupported system: ${pkgs.stdenv.hostPlatform.system}";
   ghcWithCardano = cardanoSL.haskellPackages.ghcWithPackages (ps: [ ps.cardano-sl ps.cardano-sl-x509 ]);
   packages = self: {
-    inherit cluster pkgs version;
-    inherit (cardanoSL) daedalus-bridge;
+    inherit cluster pkgs version target nodeImplementation;
+    jormungandrLib = localLib.iohkNix.jormungandrLib;
+    daedalus-bridge = self.bridgeTable.${nodeImplementation};
+
+    sources = localLib.sources;
+    bridgeTable = {
+      jormungandr = self.callPackage ./nix/jormungandr-bridge.nix {};
+    };
+    cardano-wallet = import self.sources.cardano-wallet { inherit system crossSystem; };
+    cardano-shell = import self.sources.cardano-shell { inherit system crossSystem; };
 
     # a cross-compiled fastlist for the ps-list package
-    fastlist = pkgs.pkgsCross.mingwW64.callPackage ./fastlist.nix {};
+    fastlist = pkgs.pkgsCross.mingwW64.callPackage ./nix/fastlist.nix {};
     wine = pkgs.wine.override { wineBuild = "wine32"; };
 
     dlls = pkgs.fetchurl {
