@@ -20,10 +20,13 @@ export default class MainLayout extends Component<InjectedContainerProps> {
 
   render() {
     const { actions, stores } = this.props;
-    const { sidebar, wallets, profile } = stores;
+    const { sidebar, wallets, profile, app } = stores;
     const activeWallet = wallets.active;
     const activeWalletId = activeWallet ? activeWallet.id : null;
     const { currentTheme } = profile;
+    const {
+      environment: { network },
+    } = app;
 
     const sidebarMenus =
       sidebar.wallets.length > 0
@@ -46,11 +49,10 @@ export default class MainLayout extends Component<InjectedContainerProps> {
         isShowingSubMenus={sidebar.isShowingSubMenus}
         categories={sidebar.CATEGORIES}
         activeSidebarCategory={sidebar.activeSidebarCategory}
-        onCategoryClicked={category => {
+        onActivateCategory={category => {
           actions.sidebar.activateSidebarCategory.trigger({ category });
         }}
-        isSynced
-        openDialogAction={actions.dialogs.open.trigger}
+        onOpenDialog={dialog => actions.dialogs.open.trigger({ dialog })}
         onAddWallet={() =>
           actions.router.goToRoute.trigger({ route: ROUTES.WALLETS.ADD })
         }
@@ -59,6 +61,8 @@ export default class MainLayout extends Component<InjectedContainerProps> {
         }
         pathname={this.props.stores.router.location.pathname}
         currentTheme={currentTheme}
+        network={network}
+        isSynced
       />
     );
 
