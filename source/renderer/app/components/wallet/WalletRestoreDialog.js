@@ -330,6 +330,9 @@ export default class WalletRestoreDialog extends Component<Props, State> {
     const recoveryPhraseField = this.form.$('recoveryPhrase');
     recoveryPhraseField.debouncedValidation.cancel();
     recoveryPhraseField.reset();
+    recoveryPhraseField.showErrors(false);
+
+    // Autocomplete has to be reset manually
     this.recoveryPhraseAutocomplete.clear();
   };
 
