@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { find, camelCase } from 'lodash';
+import { find } from 'lodash';
 import classNames from 'classnames';
 import styles from './Sidebar.scss';
 import SidebarCategory from './SidebarCategory';
@@ -18,12 +18,12 @@ type Props = {
   menus: SidebarMenus,
   categories: Array<SidebarCategoryInfo>,
   activeSidebarCategory: string,
-  onCategoryClicked: Function,
   isShowingSubMenus: boolean,
-  openDialogAction: Function,
-  onAddWallet: Function,
   pathname: string,
   network: networkType,
+  onActivateCategory: Function,
+  onOpenDialog: Function,
+  onAddWallet: Function,
 };
 
 export type SidebarMenus = ?{
@@ -41,10 +41,6 @@ export default class Sidebar extends Component<Props> {
   static defaultProps = {
     isShowingSubMenus: false,
   };
-
-  get networkInfoContent() {
-    return <SidebarCategoryNetworkInfo network={this.props.network} />;
-  }
 
   render() {
     const {
@@ -83,12 +79,11 @@ export default class Sidebar extends Component<Props> {
       <div className={sidebarStyles}>
         <div className={styles.minimized}>
           {categories.map((category: SidebarCategoryInfo) => {
-            const categoryName = camelCase(category.name);
-            const content = (this: any)[`${categoryName}Content`];
+            const content = this.getCategoryContent(category.name);
             const isActive = activeSidebarCategory === category.route;
             return (
               <SidebarCategory
-                key={categoryName}
+                key={category.name}
                 category={category}
                 isActive={isActive}
                 onClick={this.handleClick}
@@ -102,13 +97,21 @@ export default class Sidebar extends Component<Props> {
     );
   }
 
+  getCategoryContent = (categoryName: string) => {
+    if (categoryName === 'NETWORK_INFO') {
+      return <SidebarCategoryNetworkInfo network={this.props.network} />;
+    }
+    return null;
+  };
+
   handleClick = (categoryRoute: string) => {
+    const { onActivateCategory, onOpenDialog } = this.props;
     if (categoryRoute === ROUTES.PAPER_WALLET_CREATE_CERTIFICATE) {
-      this.props.openDialogAction({
-        dialog: InstructionsDialog,
-      });
+      onOpenDialog(InstructionsDialog);
+    } else if (categoryRoute === ROUTES.NETWORK_INFO) {
+      // TODO: waiting for the Network Info screen to be done
     } else {
-      this.props.onCategoryClicked(categoryRoute);
+      onActivateCategory(categoryRoute);
     }
   };
 }

@@ -9,6 +9,7 @@ import StoryDecorator from './support/StoryDecorator';
 const category = {
   name: 'Wallets',
   icon: walletsIcon,
+  route: 'WALLETS',
 };
 
 storiesOf('SidebarCategory', module)

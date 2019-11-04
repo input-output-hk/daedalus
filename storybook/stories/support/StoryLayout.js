@@ -150,10 +150,10 @@ export default class StoryLayout extends Component<Props> {
         activeSidebarCategory={activeSidebarCategory}
         menus={sidebarMenus}
         isShowingSubMenus={this.isShowingSubMenus}
-        onCategoryClicked={action('onCategoryClicked')}
+        onActivateCategory={action('onActivateCategory')}
         isDialogOpen={() => false}
         onAddWallet={action('onAddWallet')}
-        openDialogAction={action('openDialog')}
+        onOpenDialog={action('onOpenDialog')}
         onSubmitSupportRequest={() => {}}
         pathname="/"
         currentTheme={currentTheme}

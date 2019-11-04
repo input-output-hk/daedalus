@@ -49,11 +49,10 @@ export default class MainLayout extends Component<InjectedContainerProps> {
         isShowingSubMenus={sidebar.isShowingSubMenus}
         categories={sidebar.CATEGORIES}
         activeSidebarCategory={sidebar.activeSidebarCategory}
-        onCategoryClicked={category => {
+        onActivateCategory={category => {
           actions.sidebar.activateSidebarCategory.trigger({ category });
         }}
-        isSynced
-        openDialogAction={actions.dialogs.open.trigger}
+        onOpenDialog={dialog => actions.dialogs.open.trigger({ dialog })}
         onAddWallet={() =>
           actions.router.goToRoute.trigger({ route: ROUTES.WALLETS.ADD })
         }
@@ -63,6 +62,7 @@ export default class MainLayout extends Component<InjectedContainerProps> {
         pathname={this.props.stores.router.location.pathname}
         currentTheme={currentTheme}
         network={network}
+        isSynced
       />
     );
 

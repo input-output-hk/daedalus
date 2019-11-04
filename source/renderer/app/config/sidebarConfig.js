@@ -10,13 +10,7 @@ import networkInfoLogo from '../assets/images/sidebar/network-info-logo-cardano-
 export type SidebarCategoryInfo = {
   name: string,
   icon: string,
-  route?: string,
-  type?: string,
-};
-
-export const CATEGORY_TYPES = {
-  LINK_TYPE: 'link-type',
-  HOVER_TYPE: 'hover-type',
+  route: string,
 };
 
 export const CATEGORIES_BY_NAME = {
@@ -48,7 +42,7 @@ export const CATEGORIES_BY_NAME = {
   NETWORK_INFO: {
     name: 'NETWORK_INFO',
     icon: networkInfoLogo,
-    type: CATEGORY_TYPES.HOVER_TYPE,
+    route: ROUTES.NETWORK_INFO,
   },
 };
 
