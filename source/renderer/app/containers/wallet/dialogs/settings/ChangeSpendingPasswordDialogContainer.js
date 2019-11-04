@@ -24,7 +24,6 @@ export default class ChangeSpendingPasswordDialogContainer extends Component<Inj
 
     return (
       <ChangeSpendingPasswordDialog
-        isSpendingPasswordSet={activeWallet.hasPassword}
         currentPasswordValue={dialogData.currentPasswordValue}
         newPasswordValue={dialogData.newPasswordValue}
         repeatedPasswordValue={dialogData.repeatedPasswordValue}
@@ -39,9 +38,6 @@ export default class ChangeSpendingPasswordDialogContainer extends Component<Inj
         }}
         onCancel={() => {
           actions.dialogs.closeActiveDialog.trigger();
-          updateSpendingPasswordRequest.reset();
-        }}
-        onPasswordSwitchToggle={() => {
           updateSpendingPasswordRequest.reset();
         }}
         onDataChange={data => {

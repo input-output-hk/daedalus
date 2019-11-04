@@ -100,7 +100,6 @@ const messages = defineMessages({
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
 
 type Props = {
-  isSpendingPasswordSet?: boolean,
   onActivate: Function,
   onBack: Function,
   onClose: Function,
@@ -127,9 +126,8 @@ export default class DelegationStepsActivationDialog extends Component<Props> {
           value: '',
           validators: [
             ({ field }) => {
-              const { isSpendingPasswordSet } = this.props;
               const password = field.value;
-              if (isSpendingPasswordSet && password === '') {
+              if (password === '') {
                 return [
                   false,
                   this.context.intl.formatMessage(messages.fieldIsRequired),
@@ -152,14 +150,12 @@ export default class DelegationStepsActivationDialog extends Component<Props> {
   submit = () => {
     this.form.submit({
       onSuccess: form => {
-        const { isSpendingPasswordSet } = this.props;
         const { spendingPassword } = form.values();
-        const password = isSpendingPasswordSet ? spendingPassword : null;
         const data = {
           fees: 12.042481,
           amount: 3,
           total: 15.042481,
-          password,
+          spendingPassword,
         };
         this.props.onActivate(data);
         form.clear();
@@ -173,7 +169,7 @@ export default class DelegationStepsActivationDialog extends Component<Props> {
   render() {
     const { form } = this;
     const { intl } = this.context;
-    const { isSpendingPasswordSet, onBack, onClose, stepsList } = this.props;
+    const { onBack, onClose, stepsList } = this.props;
 
     const spendingPasswordField = form.$('spendingPassword');
 
@@ -271,15 +267,13 @@ export default class DelegationStepsActivationDialog extends Component<Props> {
             </p>
           </div>
 
-          {isSpendingPasswordSet && (
-            <Input
-              className={styles.spendingPassword}
-              {...spendingPasswordField.bind()}
-              skin={InputSkin}
-              error={spendingPasswordField.error}
-              onKeyPress={this.handleSubmitOnEnter}
-            />
-          )}
+          <Input
+            className={styles.spendingPassword}
+            {...spendingPasswordField.bind()}
+            skin={InputSkin}
+            error={spendingPasswordField.error}
+            onKeyPress={this.handleSubmitOnEnter}
+          />
         </div>
       </Dialog>
     );

@@ -3,11 +3,8 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import { Input } from 'react-polymorph/lib/components/Input';
-import { SwitchSkin } from 'react-polymorph/lib/skins/simple/SwitchSkin';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
-import { IDENTIFIERS } from 'react-polymorph/lib/themes/API';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import ReactToolboxMobxForm, {
   handleFormErrors,
@@ -48,18 +45,16 @@ const messages = defineMessages({
     description:
       'Label for the "Create personal wallet" button on create wallet dialog.',
   },
-  passwordSwitchPlaceholder: {
-    id: 'wallet.create.dialog.passwordSwitchPlaceholder',
+  passwordSectionLabel: {
+    id: 'wallet.create.dialog.passwordSectionLabel',
+    defaultMessage: '!!!Spending password',
+    description: 'Password creation label.',
+  },
+  passwordSectionDescription: {
+    id: 'wallet.create.dialog.passwordSectionDescription',
     defaultMessage:
       '!!!Keep your private keys safely encrypted by setting the spending password',
-    description:
-      'Text for the "Activate to create password" switch in the create wallet dialog.',
-  },
-  passwordSwitchLabel: {
-    id: 'wallet.create.dialog.passwordSwitchLabel',
-    defaultMessage: '!!!Spending password',
-    description:
-      'Label for the "Activate to create password" switch in the create wallet dialog.',
+    description: 'Password creation description.',
   },
   spendingPasswordLabel: {
     id: 'wallet.create.dialog.spendingPasswordLabel',
@@ -88,7 +83,6 @@ type Props = {
 
 type State = {
   isSubmitting: boolean,
-  createPassword: boolean,
 };
 
 @observer
@@ -99,7 +93,6 @@ export default class WalletCreateDialog extends Component<Props, State> {
 
   state = {
     isSubmitting: false,
-    createPassword: true,
   };
 
   componentDidMount() {
@@ -135,7 +128,6 @@ export default class WalletCreateDialog extends Component<Props, State> {
           value: '',
           validators: [
             ({ field, form }) => {
-              if (!this.state.createPassword) return [true];
               const repeatPasswordField = form.$('repeatPassword');
               if (repeatPasswordField.value.length > 0) {
                 repeatPasswordField.validate({ showErrors: true });
@@ -158,7 +150,6 @@ export default class WalletCreateDialog extends Component<Props, State> {
           value: '',
           validators: [
             ({ field, form }) => {
-              if (!this.state.createPassword) return [true];
               const spendingPassword = form.$('spendingPassword').value;
               if (spendingPassword.length === 0) return [true];
               return [
@@ -184,11 +175,10 @@ export default class WalletCreateDialog extends Component<Props, State> {
     this.form.submit({
       onSuccess: form => {
         this.setState({ isSubmitting: true });
-        const { createPassword } = this.state;
         const { walletName, spendingPassword } = form.values();
         const walletData = {
           name: walletName,
-          spendingPassword: createPassword ? spendingPassword : null,
+          spendingPassword,
         };
         this.props.onSubmit(walletData);
       },
@@ -201,20 +191,12 @@ export default class WalletCreateDialog extends Component<Props, State> {
 
   handleSubmitOnEnter = submitOnEnter.bind(this, this.submit);
 
-  handlePasswordSwitchToggle = (value: boolean) => {
-    this.setState({ createPassword: value });
-  };
-
   render() {
     const { form } = this;
     const { intl } = this.context;
     const { onCancel } = this.props;
-    const { createPassword, isSubmitting } = this.state;
+    const { isSubmitting } = this.state;
     const dialogClasses = classnames([styles.component, 'WalletCreateDialog']);
-    const spendingPasswordFieldsClasses = classnames([
-      styles.spendingPasswordFields,
-      createPassword ? styles.show : null,
-    ]);
 
     const actions = [
       {
@@ -249,22 +231,16 @@ export default class WalletCreateDialog extends Component<Props, State> {
           skin={InputSkin}
         />
 
-        <div className={styles.spendingPassword}>
-          <div className={styles.spendingPasswordSwitch}>
-            <div className={styles.passwordLabel}>
-              {intl.formatMessage(messages.passwordSwitchLabel)}
-            </div>
-            <Checkbox
-              themeId={IDENTIFIERS.SWITCH}
-              onChange={this.handlePasswordSwitchToggle}
-              label={intl.formatMessage(messages.passwordSwitchPlaceholder)}
-              checked={createPassword}
-              skin={SwitchSkin}
-              disabled // @API TODO: in V2 API passphrase is required
-            />
+        <div className={styles.spendingPasswordWrapper}>
+          <div className={styles.passwordSectionLabel}>
+            {intl.formatMessage(messages.passwordSectionLabel)}
           </div>
 
-          <div className={spendingPasswordFieldsClasses}>
+          <div className={styles.passwordSectionDescription}>
+            {intl.formatMessage(messages.passwordSectionDescription)}
+          </div>
+
+          <div className={styles.spendingPasswordFields}>
             <Input
               className="spendingPassword"
               onKeyPress={this.handleSubmitOnEnter}

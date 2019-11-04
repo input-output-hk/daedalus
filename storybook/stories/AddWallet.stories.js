@@ -6,6 +6,7 @@ import wordlist from 'bip39/wordlists/english';
 import StoryDecorator from './support/StoryDecorator';
 import WalletAdd from '../../source/renderer/app/components/wallet/WalletAdd';
 import WalletRestoreDialog from '../../source/renderer/app/components/wallet/WalletRestoreDialog';
+import WalletCreateDialog from '../../source/renderer/app/components/wallet/WalletCreateDialog';
 import WalletFileImportDialog from '../../source/renderer/app/components/wallet/file-import/WalletFileImportDialog';
 
 storiesOf('AddWallet', module)
@@ -21,6 +22,15 @@ storiesOf('AddWallet', module)
         onRestore={() => {}}
         isRestoreActive={false}
         isMaxNumberOfWalletsReached={false}
+      />
+    </div>
+  ))
+
+  .add('WalletCreateDialog - old', () => (
+    <div>
+      <WalletCreateDialog
+        onSubmit={action('onSubmit')}
+        onCancel={action('onClose')}
       />
     </div>
   ))

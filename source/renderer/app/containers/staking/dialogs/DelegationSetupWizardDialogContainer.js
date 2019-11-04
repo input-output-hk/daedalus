@@ -145,7 +145,6 @@ export default class DelegationSetupWizardDialogContainer extends Component<
         label: wallet.name,
         value,
         isAcceptableSetupWallet,
-        hasPassword: wallet.hasPassword,
       };
     });
 

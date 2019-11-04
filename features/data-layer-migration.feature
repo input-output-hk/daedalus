@@ -11,8 +11,8 @@ Feature: Data Layer Migration
 
   Scenario: I do have wallets
     Given I have the following wallets:
-    | name   | password  |
-    | Wallet |           |
+    | name   |
+    | Wallet |
     Then I should see the Data Layer Migration screen
     When I click the migration button
     Then I should see the main ui

@@ -204,7 +204,6 @@ storiesOf('Staking', module)
   .add('DelegationStepsConfirmationDialog', () => (
     <DelegationStepsConfirmationDialog
       stepsList={DELEGATION_WIZARD_STEPS_LIST}
-      isSpendingPasswordSet
       onClose={action('onClose')}
       onConfirm={action('onConfirm')}
       onBack={action('onBack')}
@@ -214,7 +213,6 @@ storiesOf('Staking', module)
   .add('DelegationStepsActivationDialog', () => (
     <DelegationStepsActivationDialog
       stepsList={DELEGATION_WIZARD_STEPS_LIST}
-      isSpendingPasswordSet
       onClose={action('onClose')}
       onActivate={action('onActivate')}
       onBack={action('onBack')}

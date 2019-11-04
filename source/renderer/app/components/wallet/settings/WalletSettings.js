@@ -32,11 +32,6 @@ export const messages = defineMessages({
     defaultMessage: '!!!Last updated',
     description: 'Last updated X time ago message.',
   },
-  passwordNotSet: {
-    id: 'wallet.settings.passwordNotSet',
-    defaultMessage: "!!!You still don't have password",
-    description: "You still don't have password set message.",
-  },
   exportButtonLabel: {
     id: 'wallet.settings.exportWalletButtonLabel',
     defaultMessage: '!!!Export wallet',
@@ -47,7 +42,6 @@ export const messages = defineMessages({
 type Props = {
   walletName: string,
   creationDate: Date,
-  isSpendingPasswordSet: boolean,
   spendingPasswordUpdateDate: ?Date,
   error?: ?LocalizableError,
   openDialogAction: Function,
@@ -94,7 +88,6 @@ export default class WalletSettings extends Component<Props> {
     const {
       walletName,
       creationDate,
-      isSpendingPasswordSet,
       spendingPasswordUpdateDate,
       error,
       openDialogAction,
@@ -121,12 +114,6 @@ export default class WalletSettings extends Component<Props> {
       recoveryPhraseVerificationStatusType,
     } = this.props;
 
-    const passwordMessage = isSpendingPasswordSet
-      ? intl.formatMessage(messages.passwordLastUpdated, {
-          lastUpdated: moment(spendingPasswordUpdateDate).fromNow(),
-        })
-      : intl.formatMessage(messages.passwordNotSet);
-
     return (
       <div className={styles.component}>
         <BorderedBox>
@@ -150,8 +137,9 @@ export default class WalletSettings extends Component<Props> {
 
           <ReadOnlyInput
             label={intl.formatMessage(messages.passwordLabel)}
-            value={passwordMessage}
-            isSet={isSpendingPasswordSet}
+            value={intl.formatMessage(messages.passwordLastUpdated, {
+              lastUpdated: moment(spendingPasswordUpdateDate).fromNow(),
+            })}
             onClick={() =>
               openDialogAction({
                 dialog: ChangeSpendingPasswordDialog,

@@ -55,9 +55,6 @@ export default class ExportWalletToFileDialogContainer extends Component<Props> 
     return (
       <ExportWalletToFileDialog
         walletName={activeWallet.name}
-        // TODO: re-enable when spending-password support is added to the API endpoint
-        // hasSpendingPassword={activeWallet.hasPassword}
-        hasSpendingPassword={false}
         isSubmitting={exportWalletToFileRequest.isExecuting}
         onSubmit={this.onSubmit}
         onClose={this.onCancel}

@@ -1,7 +1,6 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { get } from 'lodash';
 import DelegationStepsActivationDialog from './DelegationStepsActivationDialog';
 import DelegationStepsChooseWalletDialog from './DelegationStepsChooseWalletDialog';
 import DelegationStepsConfirmationDialog from './DelegationStepsConfirmationDialog';
@@ -15,7 +14,6 @@ type DelegationWalletData = {
   isAcceptableSetupWallet: boolean,
   label: string,
   value: string,
-  hasPassword: boolean,
 };
 
 type Props = {
@@ -65,8 +63,6 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
       selectedPool,
     } = this.props;
 
-    const selectedWalletHasPassword = get(selectedWallet, 'hasPassword', false);
-
     if (isDisabled) {
       return (
         <DelegationStepsNotAvailableDialog
@@ -110,7 +106,6 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
         content = (
           <DelegationStepsConfirmationDialog
             stepsList={stepsList}
-            isSpendingPasswordSet={selectedWalletHasPassword}
             onClose={onClose}
             onConfirm={onConfirm}
             onBack={onBack}
@@ -121,7 +116,6 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
         content = (
           <DelegationStepsActivationDialog
             stepsList={stepsList}
-            isSpendingPasswordSet={selectedWalletHasPassword}
             onClose={onClose}
             onActivate={onActivate}
             onBack={onBack}
