@@ -2,7 +2,6 @@
 import React, { Component, Fragment } from 'react';
 import { join } from 'lodash';
 import { observer } from 'mobx-react';
-import { action } from 'mobx';
 import classnames from 'classnames';
 import { Autocomplete } from 'react-polymorph/lib/components/Autocomplete';
 import { Input } from 'react-polymorph/lib/components/Input';
