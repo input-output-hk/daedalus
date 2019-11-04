@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 
+- Implemented transfer funds wizard for Incentivized Testnet ([PR 1634](https://github.com/input-output-hk/daedalus/pull/1634))
 - Replace sidebar "Bug-report" icon with a "Network" badge ([PR 1622](https://github.com/input-output-hk/daedalus/pull/1622))
 - Implemented "Spending password" as required parameter for Cardano V2 API ([PR 1631](https://github.com/input-output-hk/daedalus/pull/1631))
 - Implemented "Incentivized Testnet" theme for Incentivized Testnet version of Daedalus ([PR 1620](https://github.com/input-output-hk/daedalus/pull/1620))
