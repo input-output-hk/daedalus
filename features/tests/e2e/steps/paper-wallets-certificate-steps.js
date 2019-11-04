@@ -189,15 +189,6 @@ When(/^I see "Restore wallet with certificate" form$/, function() {
   );
 });
 
-When(
-  /^I toggle "Spending password" switch on the restore wallet with certificate dialog$/,
-  function() {
-    return this.waitAndClick(
-      '.WalletRestoreDialog_dialogWithCertificateRestore .SimpleSwitch_switch'
-    );
-  }
-);
-
 Then(/^I should see that address was used$/, async function() {
   const addressSelector = '.Address_usedWalletAddress .Address_addressId';
   await this.client.waitForVisible(addressSelector);

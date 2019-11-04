@@ -1,5 +1,5 @@
 // @flow
-import { split, get, size, includes } from 'lodash';
+import { split, get, includes } from 'lodash';
 import { action } from 'mobx';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
@@ -407,7 +407,7 @@ export default class AdaApi {
       const walletInitData = {
         name,
         mnemonic_sentence: split(mnemonic, ' '),
-        passphrase: spendingPassword || '',
+        passphrase: spendingPassword,
       };
       const wallet: AdaWallet = await createWallet(this.config, {
         walletInitData,
@@ -627,7 +627,7 @@ export default class AdaApi {
     const walletInitData = {
       name: walletName,
       mnemonic_sentence: split(recoveryPhrase, ' '),
-      passphrase: spendingPassword || '',
+      passphrase: spendingPassword,
     };
     try {
       const wallet: AdaWallet = await restoreWallet(this.config, {
@@ -694,7 +694,7 @@ export default class AdaApi {
       const importedWallet: AdaWallet = isKeyFile
         ? await importWalletAsKey(this.config, {
             filePath,
-            spendingPassword: spendingPassword || '',
+            spendingPassword,
           })
         : await importWalletAsJSON(this.config, filePath);
       Logger.debug('AdaApi::importWalletFromFile success', { importedWallet });
@@ -1052,7 +1052,6 @@ const _createWalletFromServerData = action(
       addressPoolGap: address_pool_gap,
       name,
       amount: walletTotalAmount,
-      hasPassword: size(passphrase) > 0,
       passwordUpdateDate:
         passphraseLastUpdatedAt && new Date(passphraseLastUpdatedAt),
       syncState: state,

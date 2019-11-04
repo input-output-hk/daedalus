@@ -16,8 +16,8 @@ export default class WalletSettingsActions {
   // eslint-disable-next-line max-len
   updateSpendingPassword: Action<{
     walletId: string,
-    oldPassword: ?string,
-    newPassword: ?string,
+    oldPassword: string,
+    newPassword: string,
   }> = new Action();
   exportToFile: Action<WalletExportToFileParams> = new Action();
   startWalletUtxoPolling: Action<any> = new Action();
