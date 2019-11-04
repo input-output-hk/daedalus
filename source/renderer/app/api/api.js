@@ -671,9 +671,22 @@ export default class AdaApi {
       passphrase: spendingPassword,
     };
     try {
-      const wallet: LegacyAdaWallet = await restoreLegacyWallet(this.config, {
-        walletInitData,
-      });
+      const legacyWallet: LegacyAdaWallet = await restoreLegacyWallet(
+        this.config,
+        {
+          walletInitData,
+        }
+      );
+      const extraWalletEntries = {
+        address_pool_gap: 0,
+        createdAt: new Date(),
+        delegation: WalletDelegationStatuses.NOT_DELEGATING,
+        isLegacy: true,
+      };
+      const wallet = {
+        ...legacyWallet,
+        ...extraWalletEntries,
+      };
       Logger.debug('AdaApi::restoreLegacyWallet success', { wallet });
       return _createWalletFromServerData(wallet);
     } catch (error) {
@@ -1071,13 +1084,14 @@ const _createWalletFromServerData = action(
   (data: AdaWallet) => {
     const {
       id,
-      address_pool_gap, // eslint-disable-line
+      address_pool_gap: addressPoolGap,
       balance,
       name,
       state,
       passphrase,
       delegation,
       createdAt,
+      isLegacy = false,
     } = data;
 
     const isDelegated =
@@ -1090,13 +1104,13 @@ const _createWalletFromServerData = action(
 
     return new Wallet({
       id,
-      addressPoolGap: address_pool_gap,
+      addressPoolGap,
       name,
       amount: walletTotalAmount,
       passwordUpdateDate:
         passphraseLastUpdatedAt && new Date(passphraseLastUpdatedAt),
       syncState: state,
-      isLegacy: false, // @API TODO - legacy declaration not exist for now
+      isLegacy,
       isDelegated,
       createdAt,
       // @API TODO - integrate once "Stake Pools" endpoints are done

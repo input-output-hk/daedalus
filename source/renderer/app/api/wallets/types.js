@@ -15,6 +15,7 @@ export type AdaWallet = {
   },
   state: WalletSyncState,
   createdAt: Date,
+  isLegacy: boolean,
 };
 
 export type LegacyAdaWallet = {
