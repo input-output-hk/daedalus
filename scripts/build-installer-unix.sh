@@ -135,6 +135,14 @@ pushd installers
                          "  --build-job        ${build_id}"
                          "  --cluster          ${cluster}"
                          "  --out-dir          ${APP_NAME}")
+          nix-build .. -A launcherConfigs.cfg-files --argstr os macos64 --argstr cluster "${cluster}" -o cfg-files
+          cp -v cfg-files/{installer-config.json,launcher-config.yaml} .
+          cp -vf ../utils/jormungandr/selfnode/genesis.yaml .
+          if [ "${cluster}" != selfnode ]; then
+            cp -v cfg-files/jormungandr-config.yaml .
+          fi
+          chmod -R +w .
+          echo '~~~ Running make-installer in nix-shell'
           $nix_shell ../shell.nix -A buildShell --run "${INSTALLER_CMD[*]}"
 
           if [ -d ${APP_NAME} ]; then
@@ -144,9 +152,7 @@ pushd installers
                           export PATH=${BUILDKITE_BIN_PATH:-}:$PATH
                           upload_artifacts_public "${APP_NAME}/*"
                           mv "launcher-config.yaml" "launcher-config-${cluster}.macos64.yaml"
-                          mv "wallet-topology.yaml" "wallet-topology-${cluster}.macos64.yaml"
                           upload_artifacts "launcher-config-${cluster}.macos64.yaml"
-                          upload_artifacts "wallet-topology-${cluster}.macos64.yaml"
                           rm -rf "${APP_NAME}"
                   fi
           else

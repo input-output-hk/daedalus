@@ -41,11 +41,8 @@ import           Filesystem.Path
 import           Filesystem.Path.CurrentOS           (fromText, encodeString)
 import           Turtle                              (pwd, cd)
 import           Turtle.Format                       (format, fp)
-import           Data.Aeson                          (FromJSON(..), withObject, eitherDecode, (.:))
+import           Data.Aeson                          (FromJSON(..), withObject, eitherDecode, (.:), genericParseJSON, defaultOptions)
 import qualified Data.ByteString.Lazy.Char8       as L8
-import qualified Dhall as Dhall
-
-
 
 data OS
   = Linux64
@@ -54,10 +51,9 @@ data OS
   deriving (Bounded, Enum, Eq, Read, Show)
 
 data Cluster
-  = Mainnet
-  | Staging
-  | Testnet
-  | Demo
+  = Nightly
+  | QA
+  | Selfnode
   deriving (Bounded, Enum, Eq, Read, Show)
 
 -- | The wallet backend to include in the installer.
@@ -73,12 +69,10 @@ data SigningResult
 
 data Config
   = Launcher
-  | Topology
   deriving (Bounded, Enum, Eq, Show)
 
 configFilename :: Config -> FilePath
 configFilename Launcher = "launcher-config.yaml"
-configFilename Topology = "wallet-topology.yaml"
 
 -- | What runtime config file to generate.
 data ConfigRequest = ConfigRequest
@@ -91,13 +85,9 @@ newtype AppName      = AppName      { fromAppName      :: Text } deriving (Eq, I
 newtype BuildJob     = BuildJob     { fromBuildJob     :: Text } deriving (Eq, IsString, Show)
 newtype Version      = Version      { fromVer          :: Text } deriving (Eq, IsString, Show)
 
-
-
 data TestInstaller      = DontTestInstaller         | TestInstaller          deriving (Eq, Show)
 testInstaller    True   =                             TestInstaller
 testInstaller    False  = DontTestInstaller
-
-
 
 lshowText :: Show a => a -> Text
 lshowText = T.toLower . Universum.show
@@ -105,15 +95,12 @@ lshowText = T.toLower . Universum.show
 tt :: FilePath -> Text
 tt = format fp
 
-
-
 -- | Value of the NETWORK variable used by the npm build.
 -- See also: the cluster argument in default.nix.
 clusterNetwork :: Cluster -> Text
-clusterNetwork Mainnet = "mainnet"
-clusterNetwork Staging = "staging"
-clusterNetwork Testnet = "testnet"
-clusterNetwork Demo = "demo"
+clusterNetwork Nightly = "nightly"
+clusterNetwork QA = "qa"
+clusterNetwork Selfnode = "selfnode"
 
 packageFileName :: OS -> Cluster -> Version -> Backend -> Text -> Maybe BuildJob -> FilePath
 packageFileName os cluster ver backend backendVer build = fromText name <.> ext
@@ -121,7 +108,7 @@ packageFileName os cluster ver backend backendVer build = fromText name <.> ext
     name = T.intercalate "-" parts
     parts = ["daedalus", fromVer ver, backend', backendVer, lshowText cluster, os'] ++ build'
     backend' = case backend of
-                 Cardano _ -> "cardano-sl"
+                 Cardano _ -> "cardano-wallet"
                  Mantis    -> "mantis"
     ext = case os of
             Win64   -> "exe"
@@ -150,8 +137,10 @@ withDir path = bracket (pwd >>= \old -> (cd path >> pure old)) cd . const
 
 data InstallerConfig = InstallerConfig {
       installDirectory :: Text
+    , spacedName :: Text
     , macPackageName :: Text
-    , walletPort :: Natural
+    , dataDir :: Text
     } deriving (Generic, Show)
 
-instance Dhall.Interpret InstallerConfig
+instance FromJSON InstallerConfig where
+  parseJSON = genericParseJSON defaultOptions

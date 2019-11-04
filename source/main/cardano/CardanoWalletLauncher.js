@@ -1,18 +1,15 @@
 // @flow
 import { spawn } from 'child_process';
 import type { ChildProcess } from 'child_process';
-import {
-  configureJormungandrDeps,
-  buildHttpBridgeNodeOpts,
-  buildJormungandrNodeOpts,
-} from './nodes';
+import { configureJormungandrDeps } from './nodes';
+import { dirname } from 'path';
 
 export type WalletOpts = {
   path: string,
-  cliPath: string,
-  nodeImplementation: 'cardano-http-bridge' | 'jormungandr' | 'cardano-node',
-  networkMode: string,
-  nodePort: number,
+  walletArgs: string[],
+  cliBin: string,
+  nodeBin: string,
+  nodeImplementation: 'jormungandr' | 'cardano-node',
   stateDir: string,
   logStream: any,
 };
@@ -20,27 +17,41 @@ export type WalletOpts = {
 export async function CardanoWalletLauncher(
   walletOpts: WalletOpts
 ): Promise<ChildProcess> {
-  const { logStream, nodeImplementation, cliPath, stateDir, path } = walletOpts;
+  const {
+    logStream,
+    nodeImplementation,
+    nodeBin,
+    cliBin,
+    stateDir,
+    path,
+    walletArgs,
+  } = walletOpts;
 
-  let nodeOpts: string[] = [];
-
-  // Temp solution to enable development
-  const isJormungandrTestnet = !!process.env.JORMUNGANDR_TESTNET;
-
+  // This switch statement handles any node specifc
+  // configuration, prior to spawning the child process
   switch (nodeImplementation) {
-    case 'cardano-http-bridge':
-      nodeOpts = buildHttpBridgeNodeOpts(walletOpts);
-      break;
     case 'cardano-node':
       break;
     case 'jormungandr':
-      await configureJormungandrDeps(cliPath, stateDir);
-      nodeOpts = buildJormungandrNodeOpts(walletOpts, isJormungandrTestnet);
+      // This configuration is for the selfnode only
+      // The selfnode is identified by the unique genesis-block wallet arg
+      if (walletArgs.findIndex(arg => arg === '--genesis-block') > -1) {
+        await configureJormungandrDeps(cliBin, stateDir);
+      }
       break;
     default:
       break;
   }
 
   const walletStdio: string[] = ['inherit', logStream, logStream, 'ipc'];
-  return spawn(path, nodeOpts, { stdio: walletStdio });
+  const nodePath = dirname(nodeBin);
+  const PATH: string = (process.env.PATH: any);
+
+  return spawn(path, walletArgs, {
+    stdio: walletStdio,
+    env: {
+      ...process.env,
+      PATH: `${nodePath}:${PATH}`,
+    },
+  });
 }

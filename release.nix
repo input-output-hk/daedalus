@@ -25,11 +25,11 @@ let
 
   makeJobs = cluster: with daedalusPkgs { inherit cluster; }; {
     daedalus.x86_64-linux = daedalus;
-    installer.x86_64-linux = wrappedBundle newBundle pkgs cluster daedalus-bridge.version;
+    installer.x86_64-linux = wrappedBundle newBundle pkgs cluster daedalus-bridge.wallet-version;
     installer.x86_64-windows = (import ./. { inherit cluster; target = "x86_64-windows"; }).windows-installer;
   };
   wrappedBundle = newBundle: pkgs: cluster: cardanoVersion: let
-    backend = "cardano-sl-${cardanoVersion}";
+    backend = "cardano-wallet-${cardanoVersion}";
     fn = "daedalus-${version}-${backend}-${cluster}-${system}${suffix}.bin";
   in pkgs.runCommand fn {} ''
     mkdir -pv $out/nix-support
