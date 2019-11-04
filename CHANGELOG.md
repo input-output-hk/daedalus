@@ -6,6 +6,7 @@ Changelog
 ### Features
 
 - Implement restoration of both 12 and 15 mnemonic words phrases in Wallet Restore dialog ([PR 1629](https://github.com/input-output-hk/daedalus/pull/1629))
+- Replace sidebar "Bug-report" icon with a "Network" badge ([PR 1622](https://github.com/input-output-hk/daedalus/pull/1622))
 - Implemented "Spending password" as required parameter for Cardano V2 API ([PR 1631](https://github.com/input-output-hk/daedalus/pull/1631))
 - Implemented "Incentivized Testnet" theme for Incentivized Testnet version of Daedalus ([PR 1620](https://github.com/input-output-hk/daedalus/pull/1620))
 - Removed "Decentralization countdown", "Decentralization info", and "Staking epochs" screens for Incentivized Testnet Daedalus version ([PR 1625](https://github.com/input-output-hk/daedalus/pull/1625))
