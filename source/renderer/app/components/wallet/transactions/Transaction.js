@@ -199,6 +199,10 @@ export default class Transaction extends Component<Props> {
       );
     };
 
+    const iconType = isPendingTransaction
+      ? TransactionStates.PENDING
+      : data.type;
+
     return (
       <div
         onClick={this.toggleDetails.bind(this)}
@@ -207,7 +211,7 @@ export default class Transaction extends Component<Props> {
         aria-hidden
       >
         <div className={styles.toggler}>
-          <TransactionTypeIcon iconType={data.type} />
+          <TransactionTypeIcon iconType={iconType} />
 
           <div className={styles.togglerContent}>
             <div className={styles.header}>

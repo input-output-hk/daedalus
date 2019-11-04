@@ -5,8 +5,12 @@ import SVGInline from 'react-svg-inline';
 import expendIcon from '../../../assets/images/wallet-nav/send-ic.inline.svg';
 import incomeIcon from '../../../assets/images/wallet-nav/receive-ic.inline.svg';
 import exchangeIcon from '../../../assets/images/exchange-ic.inline.svg';
+import pendingIcon from '../../../assets/images/wallet-nav/pending-txn.inline.svg';
 import styles from './TransactionTypeIcon.scss';
-import { TransactionTypes } from '../../../domains/WalletTransaction';
+import {
+  TransactionTypes,
+  TransactionStates,
+} from '../../../domains/WalletTransaction';
 
 type Props = {
   iconType: string,
@@ -31,6 +35,9 @@ export default class TransactionTypeIcon extends Component<Props> {
         break;
       case TransactionTypes.EXCHANGE:
         icon = exchangeIcon;
+        break;
+      case TransactionStates.PENDING:
+        icon = pendingIcon;
         break;
       default:
         icon = '';
