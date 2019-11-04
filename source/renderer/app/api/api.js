@@ -668,7 +668,7 @@ export default class AdaApi {
     const walletInitData = {
       name: walletName,
       mnemonic_sentence: split(recoveryPhrase, ' '),
-      passphrase: spendingPassword || '',
+      passphrase: spendingPassword,
     };
     try {
       const wallet: LegacyAdaWallet = await restoreLegacyWallet(this.config, {

@@ -28,6 +28,14 @@ export type LegacyAdaWallet = {
     last_updated_at: string,
   },
   state: WalletSyncState,
+  tip: {
+    slot_number: number,
+    epoch_number: number,
+    height: {
+      quantity: number,
+      unit: 'block',
+    },
+  },
 };
 
 export type WalletUnit = 'lovelace' | 'ada';
@@ -136,7 +144,7 @@ export type RestoreWalletRequest = {
 export type RestoreLegacyWalletRequest = {
   recoveryPhrase: string,
   walletName: string,
-  spendingPassword?: ?string,
+  spendingPassword: string,
 };
 
 export type UpdateWalletRequest = {
