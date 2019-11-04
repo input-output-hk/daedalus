@@ -36,7 +36,8 @@
     "clear:cache": "gulp clear:cache",
     "nix:dev": "nix-shell --arg autoStartBackend true --arg allowFaultInjection true",
     "nix:staging": "nix-shell --arg autoStartBackend true --argstr cluster staging",
-    "v2-api-importer": "node utils/v2-api-importer/index.js",
+    "v2:wallet:importer": "node utils/v2-api-importer/index.js",
+    "v2:legacy:wallet:importer": "node utils/v2-api-importer/legacy.js",
     "js-launcher": "node utils/js-launcher/index.js",
     "dev:selfnode": "yarn dev",
     "dev:testnet": "JORMUNGANDR_TESTNET=true yarn dev"

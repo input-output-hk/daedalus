@@ -127,9 +127,18 @@ export default class WalletsStore extends Store {
   );
   /* eslint-enable max-len */
 
+  /* ----------  Create Wallet  ---------- */
+  @observable createWalletStep = null;
+  @observable createWalletShowAbortConfirmation = false;
+  // TODO: Remove once the new wallet creation process is ready
+  @observable useNewWalletCreationProcess = false;
+
+  /* ----------  Export Wallet  ---------- */
   @observable walletExportType: walletExportTypeChoices = 'paperWallet';
   @observable walletExportMnemonic =
     'marine joke dry silk ticket thing sugar stereo aim';
+
+  /* ----------  Paper Wallet  ---------- */
   @observable createPaperWalletCertificateStep = 0;
   @observable walletCertificatePassword = null;
   @observable walletCertificateAddress = null;
@@ -139,13 +148,15 @@ export default class WalletsStore extends Store {
   @observable certificateStep = null;
   @observable certificateTemplate = null;
   @observable additionalMnemonicWords = null;
-  @observable createWalletStep = null;
-  @observable createWalletShowAbortConfirmation = false;
+
+  /* ----------  Transfer Funds  ---------- */
+  @observable transferFundsWalletFromId: ?string = null;
+  @observable transferFundsWalletToId: ?string = null;
+  @observable transferFundsStep: ?number = null;
+
+  /* ----------  Other  ---------- */
   @observable
   recoveryPhraseVerificationData: RecoveryPhraseVerificationData = {};
-
-  // TODO: Remove once the new wallet creation process is ready
-  @observable useNewWalletCreationProcess = false;
 
   _newWalletDetails: {
     name: string,
@@ -196,7 +207,16 @@ export default class WalletsStore extends Store {
     walletsActions.updateRecoveryPhraseVerificationDate.listen(
       this._updateRecoveryPhraseVerificationDate
     );
-    walletsActions.updateWalletLocalData.listen(this._updateWalletLocalData);
+    walletsActions.transferFundsStepChange.listen(
+      this._transferFundsStepChange
+    );
+    walletsActions.transferFundsSetWalletFromId.listen(
+      this._transferFundsSetWalletFromId
+    );
+    walletsActions.transferFundsSetWalletToId.listen(
+      this._transferFundsSetWalletToId
+    );
+    walletsActions.transferFundsRedeem.listen(this._transferFundsRedeem);
   }
 
   _create = async (params: { name: string, spendingPassword: string }) => {
@@ -331,6 +351,31 @@ export default class WalletsStore extends Store {
     this.actions.dialogs.closeActiveDialog.trigger();
     this.sendMoneyRequest.reset();
     this.goToWalletRoute(wallet.id);
+  };
+
+  @action _transferFundsStepChange = ({
+    stepNumber,
+  }: {
+    stepNumber?: number,
+  }) => {
+    this.transferFundsStep = stepNumber;
+  };
+  @action _transferFundsSetWalletFromId = ({
+    walletFromId,
+  }: {
+    walletFromId: string,
+  }) => {
+    this.transferFundsWalletFromId = walletFromId;
+  };
+  @action _transferFundsSetWalletToId = ({
+    walletToId,
+  }: {
+    walletToId: string,
+  }) => {
+    this.transferFundsWalletToId = walletToId;
+  };
+  @action _transferFundsRedeem = () => {
+    // TODO: Call API method
   };
 
   // =================== PUBLIC API ==================== //
