@@ -62,19 +62,19 @@ currentTheme = currentTheme.toLowerCase();
 storiesOf('Sidebar', module)
   .addDecorator(story => <StoryDecorator>{story()}</StoryDecorator>)
   // ====== Stories ======
-
   .add('no category', () => (
     <Sidebar
       menus={emptyMenus}
       categories={CATEGORIES_WITH_DELEGATION_COUNTDOWN}
       activeSidebarCategory=""
-      onCategoryClicked={action('onCategoryClicked')}
+      onActivateCategory={action('onActivateCategory')}
       isDialogOpen={() => false}
       onAddWallet={action('onAddWallet')}
-      openDialogAction={action('openDialog')}
+      onOpenDialog={action('openDialog')}
       onSubmitSupportRequest={() => {}}
       pathname="/"
       currentTheme={currentTheme}
+      network="testnet"
     />
   ))
   .add('wallets category', () => (
@@ -82,13 +82,14 @@ storiesOf('Sidebar', module)
       menus={emptyMenus}
       categories={CATEGORIES_WITH_DELEGATION_COUNTDOWN}
       activeSidebarCategory={CATEGORIES_WITH_DELEGATION_COUNTDOWN[0].route}
-      onCategoryClicked={action('onCategoryClicked')}
+      onActivateCategory={action('onActivateCategory')}
       isDialogOpen={() => false}
       onAddWallet={action('onAddWallet')}
-      openDialogAction={action('openDialog')}
+      onOpenDialog={action('openDialog')}
       onSubmitSupportRequest={() => {}}
       pathname="/"
       currentTheme={currentTheme}
+      network="testnet"
     />
   ))
   .add('wallets / sub', () => (
@@ -96,14 +97,15 @@ storiesOf('Sidebar', module)
       categories={CATEGORIES_WITH_DELEGATION_COUNTDOWN}
       activeSidebarCategory={CATEGORIES_WITH_DELEGATION_COUNTDOWN[0].route}
       menus={sidebarMenus}
-      onCategoryClicked={action('onCategoryClicked')}
+      onActivateCategory={action('onActivateCategory')}
       isShowingSubMenus
       isDialogOpen={() => false}
       onAddWallet={action('onAddWallet')}
-      openDialogAction={action('openDialog')}
+      onOpenDialog={action('openDialog')}
       onSubmitSupportRequest={() => {}}
       pathname="/"
       currentTheme={currentTheme}
+      network="testnet"
     />
   ))
   .add('delegation category', () => (
@@ -111,13 +113,14 @@ storiesOf('Sidebar', module)
       menus={emptyMenus}
       categories={CATEGORIES_WITH_DELEGATION_COUNTDOWN}
       activeSidebarCategory={CATEGORIES_WITH_DELEGATION_COUNTDOWN[1].route}
-      onCategoryClicked={action('onCategoryClicked')}
+      onActivateCategory={action('onActivateCategory')}
       isDialogOpen={() => false}
       onAddWallet={action('onAddWallet')}
-      openDialogAction={action('openDialog')}
+      onOpenDialog={action('openDialog')}
       onSubmitSupportRequest={() => {}}
       pathname="/"
       currentTheme={currentTheme}
+      network="testnet"
     />
   ))
   .add('decentralization-progress', () => (
@@ -125,12 +128,13 @@ storiesOf('Sidebar', module)
       menus={emptyMenus}
       categories={CATEGORIES_WITHOUT_DELEGATION_COUNTDOWN}
       activeSidebarCategory={CATEGORIES_WITHOUT_DELEGATION_COUNTDOWN[1].route}
-      onCategoryClicked={action('onCategoryClicked')}
+      onActivateCategory={action('onActivateCategory')}
       isDialogOpen={() => false}
       onAddWallet={action('onAddWallet')}
-      openDialogAction={action('openDialog')}
+      onOpenDialog={action('openDialog')}
       onSubmitSupportRequest={() => {}}
       pathname="/"
       currentTheme={currentTheme}
+      network="testnet"
     />
   ));

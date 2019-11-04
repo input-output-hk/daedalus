@@ -2,6 +2,7 @@
 export const ROUTES = {
   ROOT: '/',
   PAPER_WALLET_CREATE_CERTIFICATE: '/paper-wallet/create-certificate',
+  NETWORK_INFO: '/network-info',
   STAKING: {
     ROOT: '/staking',
     COUNTDOWN: '/staking/countdown',

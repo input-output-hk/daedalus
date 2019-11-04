@@ -1,39 +1,41 @@
 // @flow
 import React, { Component } from 'react';
+import type { Node } from 'react';
 import SVGInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
 import classNames from 'classnames';
+import { camelCase } from 'lodash';
+import type { SidebarCategoryInfo } from '../../config/sidebarConfig';
 import styles from './SidebarCategory.scss';
 
 type Props = {
-  icon: string,
-  active: boolean,
+  category: SidebarCategoryInfo,
+  isActive: boolean,
   onClick: Function,
-  className: string,
+  content?: Node,
 };
 
 @observer
 export default class SidebarCategory extends Component<Props> {
   render() {
-    const { icon, active, className, onClick } = this.props;
-    const componentStyles = classNames([
-      className,
+    const { category, isActive, onClick, content } = this.props;
+    const { name, icon, route } = category;
+    const className = camelCase(name);
+    const componentStyles = classNames(
       styles.component,
-      active ? styles.active : null,
-      styles[className] ? styles[className] : null,
-    ]);
+      className,
+      styles[className],
+      {
+        [styles.active]: isActive,
+      }
+    );
 
-    const iconStyles = classNames({
-      [styles.supportRequestIcon]: className === 'supportRequest',
-      [styles.decentralizationStartIcon]:
-        className === 'staking-delegation-countdown',
-      [styles.decentralizationProgressIcon]: className === 'staking',
-      [styles.icon]: className !== 'supportRequest',
-    });
+    const iconClassName = classNames(styles.icon, styles[`${className}Icon`]);
 
     return (
-      <button className={componentStyles} onClick={onClick}>
-        <SVGInline svg={icon} className={iconStyles} />
+      <button className={componentStyles} onClick={() => onClick(route)}>
+        <SVGInline svg={icon} className={iconClassName} />
+        {content}
       </button>
     );
   }
