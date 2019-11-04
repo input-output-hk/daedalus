@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import StakingRewards from '../../components/staking/rewards/StakingRewards';
+import StakingRewardsForIncentivizedTestnet from '../../components/staking/rewards/StakingRewardsForIncentivizedTestnet';
 import type { InjectedProps } from '../../types/injectedPropsType';
 
 const messages = defineMessages({
@@ -32,8 +33,20 @@ export default class StakingRewardsPage extends Component<Props> {
   };
 
   render() {
-    const { rewards } = this.props.stores.staking;
+    const {
+      staking: { rewards },
+      networkStatus,
+    } = this.props.stores;
 
+    if (networkStatus.isIncentivizedTestnet) {
+      return (
+        <StakingRewardsForIncentivizedTestnet
+          rewards={rewards}
+          isLoading={false}
+          onLearnMoreClick={this.handleLearnMoreClick}
+        />
+      );
+    }
     return (
       <StakingRewards
         rewards={rewards}

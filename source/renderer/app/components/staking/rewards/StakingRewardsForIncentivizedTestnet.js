@@ -5,12 +5,15 @@ import { defineMessages, intlShape } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import { get, map, orderBy } from 'lodash';
 import classNames from 'classnames';
+import { Button } from 'react-polymorph/lib/components/Button';
+import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import BorderedBox from '../../widgets/BorderedBox';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import sortIcon from '../../../assets/images/ascending.inline.svg';
 import externalLinkIcon from '../../../assets/images/link-ic.inline.svg';
-import type { Reward } from '../../../api/staking/types';
-import styles from './StakingRewards.scss';
+import downloadIcon from '../../../assets/images/download-ic.inline.svg';
+import type { RewardForIncentivizedTestnet } from '../../../api/staking/types';
+import styles from './StakingRewardsForIncentivizedTestnet.scss';
 
 const messages = defineMessages({
   title: {
@@ -29,16 +32,6 @@ const messages = defineMessages({
     id: 'staking.rewards.no.rewards',
     defaultMessage: '!!!No rewards',
     description: '"No rewards" rewards label on staking rewards page.',
-  },
-  tableHeaderDate: {
-    id: 'staking.rewards.tableHeader.date',
-    defaultMessage: '!!!Date',
-    description: 'Table header "Date" label on staking rewards page',
-  },
-  tableHeaderPool: {
-    id: 'staking.rewards.tableHeader.pool',
-    defaultMessage: '!!!Stake pool',
-    description: 'Table header "Stake pool" label on staking rewards page',
   },
   tableHeaderWallet: {
     id: 'staking.rewards.tableHeader.wallet',
@@ -64,7 +57,7 @@ const messages = defineMessages({
 });
 
 type Props = {
-  rewards: Array<Reward>,
+  rewards: Array<RewardForIncentivizedTestnet>,
   isLoading: boolean,
   onLearnMoreClick: Function,
 };
@@ -72,10 +65,14 @@ type Props = {
 type State = {
   rewardsOrder: string,
   rewardsSortBy: string,
+  exportButtonOpacity: number,
 };
 
 @observer
-export default class StakingRewards extends Component<Props, State> {
+export default class StakingRewardsForIncentivizedTestnet extends Component<
+  Props,
+  State
+> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -88,7 +85,8 @@ export default class StakingRewards extends Component<Props, State> {
     super();
     this.state = {
       rewardsOrder: 'desc',
-      rewardsSortBy: 'date',
+      rewardsSortBy: 'wallet',
+      exportButtonOpacity: 1,
     };
   }
 
@@ -102,22 +100,10 @@ export default class StakingRewards extends Component<Props, State> {
 
     let sortedRewards;
     if (showRewards) {
-      sortedRewards = orderBy(
-        rewards,
-        rewardsSortBy === 'pool' ? 'pool.name' : rewardsSortBy,
-        rewardsOrder
-      );
+      sortedRewards = orderBy(rewards, rewardsSortBy, rewardsOrder);
     }
 
     const availableTableHeaders = [
-      {
-        name: 'date',
-        title: intl.formatMessage(messages.tableHeaderDate),
-      },
-      {
-        name: 'pool',
-        title: intl.formatMessage(messages.tableHeaderPool),
-      },
       {
         name: 'wallet',
         title: intl.formatMessage(messages.tableHeaderWallet),
@@ -135,12 +121,24 @@ export default class StakingRewards extends Component<Props, State> {
             {intl.formatMessage(messages.title)}
           </div>
           {!noRewards && (
-            <div className={styles.actionLabel}>
-              {intl.formatMessage(messages.exportButtonLabel)}
-            </div>
+            <Button
+              className={classNames(['primary', styles.actionButton])}
+              label={
+                <>
+                  <div className={styles.actionLabel}>
+                    {intl.formatMessage(messages.exportButtonLabel)}
+                  </div>
+                  <SVGInline
+                    svg={downloadIcon}
+                    className={styles.downloadIcon}
+                  />
+                </>
+              }
+              onClick={() => null}
+              skin={ButtonSkin}
+            />
           )}
         </div>
-
         <BorderedBox>
           {noRewards && (
             <div className={styles.noRewardsLabel}>
@@ -176,22 +174,11 @@ export default class StakingRewards extends Component<Props, State> {
               </thead>
               <tbody>
                 {map(sortedRewards, (reward, key) => {
-                  const rewardDate = get(reward, 'date', '');
-                  const rewardPoolSlug = get(reward, ['pool', 'slug'], '');
-                  const rewardPoolName = get(reward, ['pool', 'name'], '');
                   const rewardWallet = get(reward, 'wallet', '');
                   const rewardAmount = get(reward, 'reward', '');
+
                   return (
                     <tr key={key}>
-                      <td>{rewardDate}</td>
-                      <td>
-                        <p>
-                          <span className={styles.stakePoolReference}>
-                            [{rewardPoolSlug}]
-                          </span>{' '}
-                          {rewardPoolName}
-                        </p>
-                      </td>
                       <td>{rewardWallet}</td>
                       <td>{rewardAmount} ADA</td>
                     </tr>

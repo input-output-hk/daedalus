@@ -668,6 +668,8 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-staking-countdown-widget-field-label-color':
       'rgba(45, 45, 45, 0.7)',
     '--theme-staking-countdown-widget-field-value-color': '#2d2d2d',
+    '--theme-staking-export-button-shadow-color': 'rgba(45, 45, 45, 0.18)',
+    '--theme-staking-export-button-color': '#f8f7f3',
   },
   support: {
     '--theme-support-settings-item-color': '#2d2d2d',

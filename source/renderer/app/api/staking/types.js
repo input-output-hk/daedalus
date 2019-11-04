@@ -20,8 +20,13 @@ export type StakePoolsListType = Array<StakePool>;
 export type Reward = {
   date: string,
   wallet: string,
-  amount: number,
+  reward: number,
   pool: StakePool,
+};
+
+export type RewardForIncentivizedTestnet = {
+  wallet: string,
+  reward: number,
 };
 
 export type EpochData = {

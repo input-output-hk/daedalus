@@ -666,6 +666,8 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-staking-countdown-widget-field-label-color':
       'rgba(45, 45, 45, 0.7)',
     '--theme-staking-countdown-widget-field-value-color': '#2d2d2d',
+    '--theme-staking-export-button-shadow-color': 'rgba(0, 0, 0, 0.18)',
+    '--theme-staking-export-button-color': '#fff',
   },
   support: {
     '--theme-support-settings-item-color': '#2d2d2d',
