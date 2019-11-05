@@ -28,7 +28,7 @@ export default class WalletsActions {
     type?: string,
   }> = new Action();
   importWalletFromFile: Action<WalletImportFromFileParams> = new Action();
-  deleteWallet: Action<{ walletId: string }> = new Action();
+  deleteWallet: Action<{ walletId: string, isLegacy: boolean }> = new Action();
   sendMoney: Action<{
     receiver: string,
     amount: string,
