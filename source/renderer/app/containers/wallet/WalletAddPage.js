@@ -30,11 +30,7 @@ export default class WalletAddPage extends Component<Props> {
   render() {
     const { actions, stores } = this.props;
     const { wallets, uiDialogs, app } = stores;
-    const {
-      isRestoreActive,
-      createWalletStep,
-      useNewWalletCreationProcess,
-    } = wallets;
+    const { createWalletStep, useNewWalletCreationProcess } = wallets;
     const {
       environment: { isMainnet, isTestnet },
     } = app;
@@ -70,7 +66,6 @@ export default class WalletAddPage extends Component<Props> {
           onImportFile={() =>
             actions.dialogs.open.trigger({ dialog: WalletFileImportDialog })
           }
-          isRestoreActive={isRestoreActive}
           isMaxNumberOfWalletsReached={wallets.hasMaxWallets}
         />
       );
