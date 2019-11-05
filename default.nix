@@ -183,6 +183,7 @@ let
         self.daedalus-installer self.nsis pkgs.unzip pkgs.jq self.yaml2json
       ] ++ lib.optional (fudgeConfig != null) self.configMutator;
     } ''
+      echo '~~~ Preparing files for installer'
       mkdir home
       export HOME=$(realpath home)
 
@@ -215,8 +216,10 @@ let
         set +x
       ''}
 
+      echo '~~~ Generating installer'
       makensis daedalus.nsi -V4
 
+      echo '~~~ Copying to $out'
       cp daedalus-*-cardano-wallet-*-windows*.exe $out/
       cp *.yaml $out/cfg-files/
       echo file installer $out/*.exe > $out/nix-support/hydra-build-products
