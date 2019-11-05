@@ -67,9 +67,7 @@ export type GetTransactionsRequest = {
   fromDate: ?string,
   toDate: ?string,
   isLegacy: boolean,
-
   // @API TODO - Params "pending" for V2
-
   // searchTerm: string,
   // skip: number,
   // limit: number,

@@ -128,21 +128,11 @@ export default class TransactionsStore extends Store {
     return results ? results.transactions.length : 0;
   }
 
-  @action _refreshTransactionData = async (restoredWalletId: ?string) => {
+  @action _refreshTransactionData = () => {
     if (this.stores.networkStatus.isConnected) {
       const allWallets = this.stores.wallets.all;
       for (const wallet of allWallets) {
-        // @API TODO - Params "pending" for V2
-        // const isRestoreActive =
-        //   get(wallet, ['syncState', 'status'], '') ===
-        //   WalletSyncStateStatuses.RESTORING;
-        const isRestoreCompleted = restoredWalletId === wallet.id;
         const recentRequest = this._getTransactionsRecentRequest(wallet.id);
-        if (isRestoreCompleted && recentRequest.isExecuting) {
-          // We need to make sure to run recentRequest if the restoration has just completed
-          // as otherwise some transactions could be lost!
-          await recentRequest;
-        }
         recentRequest.execute({
           walletId: wallet.id,
           order: 'descending',
@@ -159,11 +149,6 @@ export default class TransactionsStore extends Store {
           // cachedTransactions: get(recentRequest, 'result.transactions', []),
         });
         const allRequest = this._getTransactionsAllRequest(wallet.id);
-        if (isRestoreCompleted && allRequest.isExecuting) {
-          // We need to make sure to run allRequest if the restoration has just completed
-          // as otherwise some transactions could be lost!
-          await allRequest;
-        }
         allRequest.execute({
           walletId: wallet.id,
           order: 'descending',
@@ -229,7 +214,7 @@ export default class TransactionsStore extends Store {
   }
 
   _getTransactionsRecentRequest = (
-    walletId: string,
+    walletId: string
   ): Request<GetTransactionsResponse> => {
     const foundRequest = find(this.transactionsRequests, { walletId });
 
@@ -239,7 +224,7 @@ export default class TransactionsStore extends Store {
   };
 
   _getTransactionsAllRequest = (
-    walletId: string,
+    walletId: string
   ): Request<GetTransactionsResponse> => {
     const foundRequest = find(this.transactionsRequests, { walletId });
 

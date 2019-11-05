@@ -32,6 +32,7 @@ import { createTransaction } from './transactions/requests/createTransaction';
 // Wallets requests
 import { changeSpendingPassword } from './wallets/requests/changeSpendingPassword';
 import { deleteWallet } from './wallets/requests/deleteWallet';
+import { deleteLegacyWallet } from './wallets/requests/deleteLegacyWallet';
 import { exportWalletAsJSON } from './wallets/requests/exportWalletAsJSON';
 import { importWalletAsJSON } from './wallets/requests/importWalletAsJSON';
 import { getWallets } from './wallets/requests/getWallets';
@@ -225,11 +226,7 @@ export default class AdaApi {
     try {
       let response = [];
       if (!isLegacy) {
-        response = await getAddresses(
-          this.config,
-          walletId,
-          queryParams
-        );
+        response = await getAddresses(this.config, walletId, queryParams);
       }
       Logger.debug('AdaApi::getAddresses success', { addresses: response });
       return response.map(_createAddressFromServerData);
@@ -265,11 +262,7 @@ export default class AdaApi {
           params
         );
       } else {
-        response = await getTransactionHistory(
-          this.config,
-          walletId,
-          params
-        );
+        response = await getTransactionHistory(this.config, walletId, params);
       }
 
       const transactions = response.map(tx =>
@@ -461,8 +454,13 @@ export default class AdaApi {
       parameters: filterLogData(request),
     });
     try {
-      const { walletId } = request;
-      const response = await deleteWallet(this.config, { walletId });
+      const { walletId, isLegacy } = request;
+      let response;
+      if (isLegacy) {
+        response = await deleteLegacyWallet(this.config, { walletId });
+      } else {
+        response = await deleteWallet(this.config, { walletId });
+      }
       Logger.debug('AdaApi::deleteWallet success', { response });
       return true;
     } catch (error) {
