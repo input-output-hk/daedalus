@@ -8,8 +8,6 @@ export type WalletOpts = {
   walletArgs: string[],
   cliBin: string,
   nodeImplementation: 'jormungandr' | 'cardano-node',
-  networkMode: string,
-  nodePort: number,
   stateDir: string,
   logStream: any,
 };

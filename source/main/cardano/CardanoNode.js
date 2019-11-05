@@ -282,20 +282,12 @@ export class CardanoNode {
           args: walletArgs,
         });
 
-        // TODO: Cleanup walletArgs to only include those relevant to `cardano-wallet`
-        // TODO: Add TSL path once supported by cardano-wallet
-        // const networkIndexFromArgs = walletArgs.indexOf('--network');
-        // const networkFromArgs = nodeArgs[networkIndexFromArgs + 1];
-
         const node = await CardanoWalletLauncher({
           path: walletBin,
           walletArgs,
           logStream: logFile,
-          networkMode: 'remove-me',
           nodeImplementation,
           cliBin,
-          // TODO: Make this dynamic
-          nodePort: 8888,
           stateDir: config.workingDir,
         });
 

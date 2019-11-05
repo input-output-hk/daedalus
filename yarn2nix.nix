@@ -17,6 +17,7 @@ let
     testnet = "Daedalus Testnet";
     nightly = "Daedalus Jormungandr Nightly";
     qa = "Daedalus Jormungandr QA";
+    selfnode = "Daedalus Jormungandr Selfnode";
   };
   newPackage = (origPackage // {
     productName = nameTable.${if cluster == null then "testnet" else cluster};
