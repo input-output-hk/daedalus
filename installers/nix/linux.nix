@@ -23,7 +23,7 @@ let
 
     cd "''${DAEDALUS_DIR}/${cluster}/"
 
-    exec ${electron3}/bin/electron --inspect-brk=5858 ${rawapp}/share/daedalus "$@"
+    exec ${electron3}/bin/electron ${rawapp}/share/daedalus "$@"
   '';
   daedalus = writeScriptBin "daedalus" ''
     #!${stdenv.shell}
