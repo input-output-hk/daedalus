@@ -222,7 +222,7 @@ let
       echo file installer $out/*.exe > $out/nix-support/hydra-build-products
     '';
     signed-windows-installer = let
-      backend_version = lib.removeSuffix "\n" (builtins.readFile "${self.unpackedCardano}/version"); # TODO, get from a nix expr
+      backend_version = self.daedalus-bridge.wallet-version;
       frontend_version = (builtins.fromJSON (builtins.readFile ./package.json)).version;
       fullName = "daedalus-${frontend_version}-cardano-sl-${backend_version}-${cluster}-windows${buildNumSuffix}.exe"; # must match to packageFileName in make-installer
     in pkgs.runCommand "signed-windows-installer-${cluster}" {} ''
