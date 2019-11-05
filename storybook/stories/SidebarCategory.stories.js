@@ -6,6 +6,12 @@ import SidebarCategory from '../../source/renderer/app/components/sidebar/Sideba
 import walletsIcon from '../../source/renderer/app/assets/images/sidebar/wallet-ic.inline.svg';
 import StoryDecorator from './support/StoryDecorator';
 
+const category = {
+  name: 'Wallets',
+  icon: walletsIcon,
+  route: 'WALLETS',
+};
+
 storiesOf('SidebarCategory', module)
   .addDecorator(story => <StoryDecorator>{story()}</StoryDecorator>)
 
@@ -13,20 +19,16 @@ storiesOf('SidebarCategory', module)
 
   .add('inactive', () => (
     <SidebarCategory
-      label="Wallets"
-      icon={walletsIcon}
-      active={false}
+      category={category}
+      isActive={false}
       onClick={action('categoryClicked')}
-      className=""
     />
   ))
 
   .add('active', () => (
     <SidebarCategory
-      label="Wallets"
-      icon={walletsIcon}
-      active
+      category={category}
+      isActive
       onClick={action('categoryClicked')}
-      className=""
     />
   ));

@@ -39,6 +39,7 @@ import { getWallets } from './wallets/requests/getWallets';
 import { importWalletAsKey } from './wallets/requests/importWalletAsKey';
 import { createWallet } from './wallets/requests/createWallet';
 import { restoreWallet } from './wallets/requests/restoreWallet';
+import { restoreLegacyWallet } from './wallets/requests/restoreLegacyWallet';
 import { updateWallet } from './wallets/requests/updateWallet';
 import { getWalletUtxos } from './wallets/requests/getWalletUtxos';
 import { getWallet } from './wallets/requests/getWallet';
@@ -110,11 +111,13 @@ import type {
 import type {
   AdaWallet,
   AdaWallets,
+  LegacyAdaWallet,
   WalletUtxos,
   WalletIdAndBalance,
   CreateWalletRequest,
   DeleteWalletRequest,
   RestoreWalletRequest,
+  RestoreLegacyWalletRequest,
   UpdateSpendingPasswordRequest,
   ExportWalletToFileRequest,
   GetWalletCertificateRecoveryPhraseRequest,
@@ -661,6 +664,57 @@ export default class AdaApi {
     }
   };
 
+  restoreLegacyWallet = async (
+    request: RestoreLegacyWalletRequest
+  ): Promise<Wallet> => {
+    Logger.debug('AdaApi::restoreLegacyWallet called', {
+      parameters: filterLogData(request),
+    });
+    const { recoveryPhrase, walletName, spendingPassword } = request;
+    const walletInitData = {
+      name: walletName,
+      mnemonic_sentence: split(recoveryPhrase, ' '),
+      passphrase: spendingPassword,
+    };
+    try {
+      const legacyWallet: LegacyAdaWallet = await restoreLegacyWallet(
+        this.config,
+        {
+          walletInitData,
+        }
+      );
+      const extraWalletEntries = {
+        address_pool_gap: 0,
+        createdAt: new Date(),
+        delegation: WalletDelegationStatuses.NOT_DELEGATING,
+        isLegacy: true,
+      };
+      const wallet = {
+        ...legacyWallet,
+        ...extraWalletEntries,
+      };
+      Logger.debug('AdaApi::restoreLegacyWallet success', { wallet });
+      return _createWalletFromServerData(wallet);
+    } catch (error) {
+      Logger.error('AdaApi::restoreLegacyWallet error', { error });
+      if (error.code === 'wallet_already_exists') {
+        throw new WalletAlreadyRestoredError();
+      }
+      // @API TOOD - improve once error is handled by v2 API (REPORT to BE team)
+      if (error.message === 'JSONValidationFailed') {
+        const validationError = get(error, 'diagnostic.validationError', '');
+        if (
+          validationError.includes(
+            'Forbidden Mnemonic: an example Mnemonic has been submitted'
+          )
+        ) {
+          throw new ForbiddenMnemonicError();
+        }
+      }
+      throw new GenericApiError();
+    }
+  };
+
   importWalletFromKey = async (
     request: ImportWalletFromKeyRequest
   ): Promise<Wallet> => {
@@ -1025,13 +1079,14 @@ const _createWalletFromServerData = action(
   (data: AdaWallet) => {
     const {
       id,
-      address_pool_gap, // eslint-disable-line camelcase
+      address_pool_gap: addressPoolGap,
       balance,
       name,
       state,
       passphrase,
       delegation,
       createdAt,
+      isLegacy = false,
     } = data;
 
     const isDelegated =
@@ -1044,13 +1099,13 @@ const _createWalletFromServerData = action(
 
     return new Wallet({
       id,
-      addressPoolGap: address_pool_gap,
+      addressPoolGap,
       name,
       amount: walletTotalAmount,
       passwordUpdateDate:
         passphraseLastUpdatedAt && new Date(passphraseLastUpdatedAt),
       syncState: state,
-      isLegacy: false, // @API TODO - legacy declaration not exist for now
+      isLegacy,
       isDelegated,
       createdAt,
       // @API TODO - integrate once "Stake Pools" endpoints are done
