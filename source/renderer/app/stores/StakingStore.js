@@ -3,7 +3,12 @@ import { computed, action } from 'mobx';
 import BigNumber from 'bignumber.js';
 import Store from './lib/Store';
 import { ROUTES } from '../routes-config';
-import type { StakePool, Reward } from '../api/staking/types';
+import type {
+  StakePool,
+  Reward,
+  RewardForIncentivizedTestnet,
+} from '../api/staking/types';
+import Wallet from '../domains/Wallet';
 
 import STAKE_POOLS from '../config/stakingStakePools.dummy.json';
 import REWARDS from '../config/stakingRewards.dummy.json';
@@ -52,6 +57,13 @@ export default class StakingStore extends Store {
     return REWARDS;
   }
 
+  @computed
+  get rewardsForIncentivizedTestnet(): Array<RewardForIncentivizedTestnet> {
+    const { wallets } = this.stores;
+
+    return wallets.all.map(this._transformWalletToRewardForIncentivizedTestnet);
+  }
+
   @action showCountdown(): boolean {
     return new Date(this.startDateTime).getTime() - new Date().getTime() > 0;
   }
@@ -66,5 +78,12 @@ export default class StakingStore extends Store {
     this.actions.router.goToRoute.trigger({
       route: ROUTES.STAKING.DELEGATION_CENTER,
     });
+  };
+
+  _transformWalletToRewardForIncentivizedTestnet = (inputWallet: Wallet) => {
+    const wallet = inputWallet.name;
+    const reward = inputWallet.reward || 0;
+
+    return { wallet, reward };
   };
 }

@@ -34,14 +34,14 @@ export default class StakingRewardsPage extends Component<Props> {
 
   render() {
     const {
-      staking: { rewards },
+      staking: { rewards, rewardsForIncentivizedTestnet },
       networkStatus,
     } = this.props.stores;
 
     if (networkStatus.isIncentivizedTestnet) {
       return (
         <StakingRewardsForIncentivizedTestnet
-          rewards={rewards}
+          rewards={rewardsForIncentivizedTestnet}
           isLoading={false}
           onLearnMoreClick={this.handleLearnMoreClick}
         />

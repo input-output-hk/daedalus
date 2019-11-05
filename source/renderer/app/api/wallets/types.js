@@ -7,6 +7,7 @@ export type AdaWallet = {
   balance: {
     available: WalletBalance,
     total: WalletBalance,
+    reward?: number,
   },
   delegation: WalletDelegation,
   name: string,
@@ -23,6 +24,7 @@ export type LegacyAdaWallet = {
   balance: {
     available: WalletBalance,
     total: WalletBalance,
+    reward?: number,
   },
   name: string,
   passphrase?: {

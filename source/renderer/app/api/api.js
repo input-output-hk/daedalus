@@ -1107,6 +1107,7 @@ const _createWalletFromServerData = action(
       addressPoolGap,
       name,
       amount: walletTotalAmount,
+      reward: balance.reward,
       passwordUpdateDate:
         passphraseLastUpdatedAt && new Date(passphraseLastUpdatedAt),
       syncState: state,
