@@ -26,6 +26,7 @@ import { getLatestAppVersion } from './nodes/requests/getLatestAppVersion';
 // Transactions requests
 import { getTransactionFee } from './transactions/requests/getTransactionFee';
 import { getTransactionHistory } from './transactions/requests/getTransactionHistory';
+import { getLegacyWalletTransactionHistory } from './transactions/requests/getLegacyWalletTransactionHistory';
 import { createTransaction } from './transactions/requests/createTransaction';
 
 // Wallets requests
@@ -220,13 +221,17 @@ export default class AdaApi {
     Logger.debug('AdaApi::getAddresses called', {
       parameters: filterLogData(request),
     });
-    const { walletId, queryParams } = request;
+
+    const { walletId, queryParams, isLegacy } = request;
     try {
-      const response: Addresses = await getAddresses(
-        this.config,
-        walletId,
-        queryParams
-      );
+      let response = [];
+      if (!isLegacy) {
+        response = await getAddresses(
+          this.config,
+          walletId,
+          queryParams
+        );
+      }
       Logger.debug('AdaApi::getAddresses success', { addresses: response });
       return response.map(_createAddressFromServerData);
     } catch (error) {
@@ -239,7 +244,7 @@ export default class AdaApi {
     request: GetTransactionsRequest
   ): Promise<GetTransactionsResponse> => {
     Logger.debug('AdaApi::searchHistory called', { parameters: request });
-    const { walletId, order, fromDate, toDate } = request;
+    const { walletId, order, fromDate, toDate, isLegacy } = request;
 
     const params = Object.assign(
       {},
@@ -253,11 +258,21 @@ export default class AdaApi {
       params.end = `${moment.utc(toDate).format('YYYY-MM-DDTHH:mm:ss')}Z`;
 
     try {
-      const response: Transactions = await getTransactionHistory(
-        this.config,
-        walletId,
-        params
-      );
+      let response;
+      if (isLegacy) {
+        response = await getLegacyWalletTransactionHistory(
+          this.config,
+          walletId,
+          params
+        );
+      } else {
+        response = await getTransactionHistory(
+          this.config,
+          walletId,
+          params
+        );
+      }
+
       const transactions = response.map(tx =>
         _createTransactionFromServerData(tx)
       );
