@@ -52,9 +52,6 @@ main :: Options -> IO ()
 main opts@Options{..} = do
   hSetBuffering stdout NoBuffering
 
-  generateOSClusterConfigs "./dhall" "." opts
-  cp "launcher-config.yaml" "../launcher-config.yaml"
-
   installerConfig <- getInstallerConfig "./dhall" Macos64 oCluster
 
   let
@@ -178,7 +175,6 @@ makeComponentRoot Options{..} appRoot darwinConfig@DarwinConfig{..} = do
 
       -- Config yaml (generated from dhall files)
       cp "launcher-config.yaml" (dir </> "launcher-config.yaml")
-      cp "wallet-topology.yaml" (dir </> "wallet-topology.yaml")
 
       procs "chmod" ["-R", "+w", tt dir] empty
 
