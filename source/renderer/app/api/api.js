@@ -1,5 +1,5 @@
 // @flow
-import { split, get, includes } from 'lodash';
+import { split, get, includes, map } from 'lodash';
 import { action } from 'mobx';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
@@ -34,6 +34,7 @@ import { deleteWallet } from './wallets/requests/deleteWallet';
 import { exportWalletAsJSON } from './wallets/requests/exportWalletAsJSON';
 import { importWalletAsJSON } from './wallets/requests/importWalletAsJSON';
 import { getWallets } from './wallets/requests/getWallets';
+import { getLegacyWallets } from './wallets/requests/getLegacyWallets';
 import { importWalletAsKey } from './wallets/requests/importWalletAsKey';
 import { createWallet } from './wallets/requests/createWallet';
 import { restoreWallet } from './wallets/requests/restoreWallet';
@@ -106,6 +107,7 @@ import type {
   AdaWallet,
   AdaWallets,
   LegacyAdaWallet,
+  LegacyAdaWallets,
   WalletUtxos,
   WalletIdAndBalance,
   CreateWalletRequest,
@@ -171,9 +173,25 @@ export default class AdaApi {
   getWallets = async (): Promise<Array<Wallet>> => {
     Logger.debug('AdaApi::getWallets called');
     try {
-      const response: AdaWallets = await getWallets(this.config);
-      Logger.debug('AdaApi::getWallets success', { wallets: response });
-      return response.map(_createWalletFromServerData);
+      const wallets: AdaWallets = await getWallets(this.config);
+      const legacyWallets: LegacyAdaWallets = await getLegacyWallets(
+        this.config
+      );
+      Logger.debug('AdaApi::getWallets success', { wallets, legacyWallets });
+
+      map(legacyWallets, legacyAdaWallet => {
+        const extraLegacyWalletProps = {
+          address_pool_gap: 0, // Not needed for legacy wallets
+          delegation: WalletDelegationStatuses.NOT_DELEGATING,
+          isLegacy: true,
+        };
+        wallets.push({
+          ...legacyAdaWallet,
+          ...extraLegacyWalletProps,
+        });
+      });
+
+      return wallets.map(_createWalletFromServerData);
     } catch (error) {
       Logger.error('AdaApi::getWallets error', { error });
       throw new GenericApiError();
@@ -677,15 +695,14 @@ export default class AdaApi {
           walletInitData,
         }
       );
-      const extraWalletEntries = {
-        address_pool_gap: 0,
-        createdAt: new Date(),
+      const extraLegacyWalletProps = {
+        address_pool_gap: 0, // Not needed for legacy wallets
         delegation: WalletDelegationStatuses.NOT_DELEGATING,
         isLegacy: true,
       };
       const wallet = {
         ...legacyWallet,
-        ...extraWalletEntries,
+        ...extraLegacyWalletProps,
       };
       Logger.debug('AdaApi::restoreLegacyWallet success', { wallet });
       return _createWalletFromServerData(wallet);
@@ -1090,7 +1107,6 @@ const _createWalletFromServerData = action(
       state,
       passphrase,
       delegation,
-      createdAt,
       isLegacy = false,
     } = data;
 
@@ -1112,7 +1128,6 @@ const _createWalletFromServerData = action(
       syncState: state,
       isLegacy,
       isDelegated,
-      createdAt,
       // @API TODO - integrate once "Stake Pools" endpoints are done
       // inactiveStakePercentage: 0,
       // delegatedStakePool: new StakePool(),
