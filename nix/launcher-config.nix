@@ -21,18 +21,33 @@ let
   logsPrefix.linux = "${dataDir.${os}}/Logs";
   logsPrefix.windows = "Logs";
 
-  cfg = jormungandrLib.mkConfig jormungandrLib.environments.${environment};
-  jormungandrConfigForCluster = builtins.toFile "jormungandr-config.yaml" (builtins.toJSON cfg);
-
   launcherConfig = {
     walletBin = walletBin.${os};
-    walletArgs = [
-      "launch"
-      "--genesis-block-hash"
-      "${jormungandrLib.environments.${environment}.genesisHash}"
-      "--"
-      "--config" "${jormungandrConfigForCluster}"
-    ];
+    walletArgs = if environment != "selfnode"
+      then
+        let cfg = jormungandrLib.mkConfig jormungandrLib.environments.${environment};
+        jormungandrConfigForCluster = builtins.toFile "jormungandr-config.yaml" (builtins.toJSON cfg);
+        in [
+          "launch"
+          "--genesis-block-hash"
+          "${jormungandrLib.environments.${environment}.genesisHash}"
+          "--"
+          "--config" "${jormungandrConfigForCluster}"
+        ]
+      else [
+        "launch"
+        "--node-port"
+        "8888"
+        "--port"
+        "8088"
+        "--state-dir"
+        dataDir.${os}
+        "--genesis-block"
+        "${dataDir.${os}}/block0.bin"
+        "--"
+        "--secret"
+        "${dataDir.${os}}/secret.yaml"
+      ];
 
     nodeBin = nodeBin.${os};
     nodeArgs = [];
