@@ -84,7 +84,6 @@ yarn2nix.mkYarnPackage {
     popd
     rm -rf $out/resources/app/{installers,launcher-config.yaml,gulpfile.js,home}
   '' else ''
-    cp -v ${daedalus.cfg}/etc/launcher-config.yaml ./launcher-config.yaml
     yarn --offline run build
     mkdir -p $out/bin $out/share/daedalus
     cp -R dist/* $out/share/daedalus
