@@ -176,7 +176,7 @@ export default class AdaApi {
       const wallets: AdaWallets = await getWallets(this.config);
       const legacyAdaWallets: LegacyAdaWallets = await getLegacyWallets(
         this.config
-      ); // LegacyAdaWallet
+      );
       Logger.debug('AdaApi::getWallets success', { wallets, legacyAdaWallets });
 
       map(legacyAdaWallets, legacyAdaWallet => {
