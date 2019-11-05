@@ -1,6 +1,5 @@
 // @flow
 import React, { Component } from 'react';
-import type { Node } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
@@ -9,16 +8,15 @@ import type { DialogAction } from '../../widgets/Dialog';
 
 const messages = defineMessages({
   dialogTitle: {
-    id: 'wallet.create.dialog.title',
-    defaultMessage: '!!!Create a new wallet',
-    description: 'Title "Create a new wallet" in the wallet create form.',
+    id: 'wallet.transferFunds.dialog2.title',
+    defaultMessage: '!!!Transfer funds from the legacy wallet',
+    description: 'Title in the transfer funds form.',
   },
 });
 
 type Props = {
   actions?: Array<DialogAction>,
   onClose?: Function,
-  children: Node,
 };
 
 export default class TransferFundsStep2Dialog extends Component<Props> {
@@ -28,7 +26,7 @@ export default class TransferFundsStep2Dialog extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { actions, children, onClose } = this.props;
+    const { actions, onClose } = this.props;
 
     return (
       <Dialog
@@ -39,7 +37,7 @@ export default class TransferFundsStep2Dialog extends Component<Props> {
         onClose={onClose}
         closeButton={<DialogCloseButton />}
       >
-        <div className={styles.content}>{children}</div>
+        CONTENT
       </Dialog>
     );
   }

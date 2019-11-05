@@ -599,5 +599,9 @@
   "wallet.transaction.type.card": "!!!Card payment",
   "wallet.transaction.type.exchange": "!!!Exchange",
   "wallet.transactions.no.transactions": "!!!No transactions",
-  "wallet.transactions.no.transactions.found": "!!!No transactions found"
+  "wallet.transactions.no.transactions.found": "!!!No transactions found",
+  "wallet.transferFunds.dialog1.fromWallet": "!!!From wallet",
+  "wallet.transferFunds.dialog1.title": "!!!Transfer funds from the legacy wallet",
+  "wallet.transferFunds.dialog1.toWallet": "!!!To walet",
+  "wallet.transferFunds.dialog2.title": "!!!Transfer funds from the legacy wallet"
 }

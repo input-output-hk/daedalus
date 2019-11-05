@@ -47,8 +47,10 @@ export default class WalletsActions {
   updateRecoveryPhraseVerificationDate: Action<any> = new Action();
 
   /* ----------  Transfer Funds  ---------- */
-  transferFundsStepChange: Action<{ stepNumber?: number }> = new Action();
+  transferFundsNextStep: Action<any> = new Action();
+  transferFundsPrevStep: Action<any> = new Action();
   transferFundsSetWalletFromId: Action<{ walletFromId: string }> = new Action();
   transferFundsSetWalletToId: Action<{ walletToId: string }> = new Action();
   transferFundsRedeem: Action<any> = new Action();
+  transferFundsClose: Action<any> = new Action();
 }

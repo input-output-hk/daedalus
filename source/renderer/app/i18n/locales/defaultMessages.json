@@ -2564,13 +2564,13 @@
         "description": "Title \"Delegation Setup\" on the delegation setup \"choose wallet\" step dialog.",
         "end": {
           "column": 3,
-          "line": 27
+          "line": 26
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseWalletDialog.js",
         "id": "staking.delegationSetup.chooseWallet.step.dialog.title",
         "start": {
           "column": 9,
-          "line": 22
+          "line": 21
         }
       },
       {
@@ -2578,13 +2578,13 @@
         "description": "Description on the delegation setup \"choose wallet\" step dialog.",
         "end": {
           "column": 3,
-          "line": 34
+          "line": 33
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseWalletDialog.js",
         "id": "staking.delegationSetup.chooseWallet.step.dialog.description",
         "start": {
           "column": 15,
-          "line": 28
+          "line": 27
         }
       },
       {
@@ -2592,13 +2592,13 @@
         "description": "Label \"Wallet\" for select input on the delegation setup \"choose wallet\" step dialog.",
         "end": {
           "column": 3,
-          "line": 41
+          "line": 40
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseWalletDialog.js",
         "id": "staking.delegationSetup.chooseWallet.step.dialog.selectWalletInputLabel",
         "start": {
           "column": 26,
-          "line": 35
+          "line": 34
         }
       },
       {
@@ -2606,13 +2606,13 @@
         "description": "Placeholder \"Select Wallet\" for select input on the delegation setup \"choose wallet\" step dialog.",
         "end": {
           "column": 3,
-          "line": 48
+          "line": 47
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseWalletDialog.js",
         "id": "staking.delegationSetup.chooseWallet.step.dialog.selectWalletInputPlaceholder",
         "start": {
           "column": 32,
-          "line": 42
+          "line": 41
         }
       },
       {
@@ -2620,13 +2620,13 @@
         "description": "Step indicator labe on the delegation setup \"choose wallet\" step dialog.",
         "end": {
           "column": 3,
-          "line": 54
+          "line": 53
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseWalletDialog.js",
         "id": "staking.delegationSetup.chooseWallet.step.dialog.stepIndicatorLabel",
         "start": {
           "column": 22,
-          "line": 49
+          "line": 48
         }
       },
       {
@@ -2634,13 +2634,13 @@
         "description": "Error Label on the delegation setup \"choose wallet\" step dialog.",
         "end": {
           "column": 3,
-          "line": 61
+          "line": 60
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseWalletDialog.js",
         "id": "staking.delegationSetup.chooseWallet.step.dialog.errorMessage",
         "start": {
           "column": 16,
-          "line": 55
+          "line": 54
         }
       },
       {
@@ -2648,13 +2648,13 @@
         "description": "Label for continue button on the delegation setup \"choose wallet\" step dialog.",
         "end": {
           "column": 3,
-          "line": 67
+          "line": 66
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseWalletDialog.js",
         "id": "staking.delegationSetup.chooseWallet.step.dialog.continueButtonLabel",
         "start": {
           "column": 23,
-          "line": 62
+          "line": 61
         }
       }
     ],
@@ -6816,6 +6816,86 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Transfer funds from the legacy wallet",
+        "description": "Title  in the transfer funds form.",
+        "end": {
+          "column": 3,
+          "line": 17
+        },
+        "file": "source/renderer/app/components/wallet/transfer-funds/TransferFundsStep1Dialog.js",
+        "id": "wallet.transferFunds.dialog1.title",
+        "start": {
+          "column": 15,
+          "line": 13
+        }
+      },
+      {
+        "defaultMessage": "!!!From wallet",
+        "description": "fromWallet in the transfer funds form.",
+        "end": {
+          "column": 3,
+          "line": 22
+        },
+        "file": "source/renderer/app/components/wallet/transfer-funds/TransferFundsStep1Dialog.js",
+        "id": "wallet.transferFunds.dialog1.fromWallet",
+        "start": {
+          "column": 14,
+          "line": 18
+        }
+      },
+      {
+        "defaultMessage": "!!!To walet",
+        "description": "toWallet in the transfer funds form.",
+        "end": {
+          "column": 3,
+          "line": 27
+        },
+        "file": "source/renderer/app/components/wallet/transfer-funds/TransferFundsStep1Dialog.js",
+        "id": "wallet.transferFunds.dialog1.toWallet",
+        "start": {
+          "column": 12,
+          "line": 23
+        }
+      },
+      {
+        "defaultMessage": "!!!Continue",
+        "description": "continue in the transfer funds form.",
+        "end": {
+          "column": 3,
+          "line": 32
+        },
+        "file": "source/renderer/app/components/wallet/transfer-funds/TransferFundsStep1Dialog.js",
+        "id": "global.dialog.button.continue",
+        "start": {
+          "column": 12,
+          "line": 28
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/transfer-funds/TransferFundsStep1Dialog.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Transfer funds from the legacy wallet",
+        "description": "Title in the transfer funds form.",
+        "end": {
+          "column": 3,
+          "line": 15
+        },
+        "file": "source/renderer/app/components/wallet/transfer-funds/TransferFundsStep2Dialog.js",
+        "id": "wallet.transferFunds.dialog2.title",
+        "start": {
+          "column": 15,
+          "line": 11
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/transfer-funds/TransferFundsStep2Dialog.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Wallet UTXO distribution",
         "description": "Title for the \"Wallet Utxos\" screen.",
         "end": {
@@ -8272,13 +8352,13 @@
         "description": "\"Learn more\" link URL on the delegation setup \"intro\" dialog.",
         "end": {
           "column": 3,
-          "line": 17
+          "line": 19
         },
         "file": "source/renderer/app/containers/staking/dialogs/DelegationSetupWizardDialogContainer.js",
         "id": "staking.delegationSetup.intro.step.dialog.learnMore.url",
         "start": {
           "column": 20,
-          "line": 12
+          "line": 14
         }
       },
       {
@@ -8286,13 +8366,13 @@
         "description": "Step 1 label text on delegation steps dialog.",
         "end": {
           "column": 3,
-          "line": 22
+          "line": 24
         },
         "file": "source/renderer/app/containers/staking/dialogs/DelegationSetupWizardDialogContainer.js",
         "id": "staking.delegationSetup.steps.step.1.label",
         "start": {
           "column": 29,
-          "line": 18
+          "line": 20
         }
       },
       {
@@ -8300,13 +8380,13 @@
         "description": "Step 2 label text on delegation steps dialog.",
         "end": {
           "column": 3,
-          "line": 27
+          "line": 29
         },
         "file": "source/renderer/app/containers/staking/dialogs/DelegationSetupWizardDialogContainer.js",
         "id": "staking.delegationSetup.steps.step.2.label",
         "start": {
           "column": 29,
-          "line": 23
+          "line": 25
         }
       },
       {
@@ -8314,13 +8394,13 @@
         "description": "Step 3 label text on delegation steps dialog.",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 34
         },
         "file": "source/renderer/app/containers/staking/dialogs/DelegationSetupWizardDialogContainer.js",
         "id": "staking.delegationSetup.steps.step.3.label",
         "start": {
           "column": 29,
-          "line": 28
+          "line": 30
         }
       },
       {
@@ -8328,13 +8408,13 @@
         "description": "Step 4 label text on delegation steps dialog.",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 39
         },
         "file": "source/renderer/app/containers/staking/dialogs/DelegationSetupWizardDialogContainer.js",
         "id": "staking.delegationSetup.steps.step.4.label",
         "start": {
           "column": 29,
-          "line": 33
+          "line": 35
         }
       }
     ],

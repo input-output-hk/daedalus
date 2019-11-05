@@ -1,24 +1,44 @@
 // @flow
 import React, { Component } from 'react';
-import type { Node } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
 import styles from './TransferFundsStep1Dialog.scss';
-import type { DialogAction } from '../../widgets/Dialog';
+import Wallet from '../../../domains/Wallet';
+import WalletsDropdown from '../../widgets/forms/WalletsDropdown';
+import WalletsDropdownOption from '../../widgets/forms/WalletsDropdownOption';
+import { formattedWalletAmount } from '../../../utils/formatters';
 
 const messages = defineMessages({
   dialogTitle: {
-    id: 'wallet.transferFunds.dialog.title',
-    defaultMessage: '!!!Redeem funds...',
-    description: 'Title  in the redeem funds form.',
+    id: 'wallet.transferFunds.dialog1.title',
+    defaultMessage: '!!!Transfer funds from the legacy wallet',
+    description: 'Title  in the transfer funds form.',
+  },
+  fromWallet: {
+    id: 'wallet.transferFunds.dialog1.fromWallet',
+    defaultMessage: '!!!From wallet',
+    description: 'fromWallet in the transfer funds form.',
+  },
+  toWallet: {
+    id: 'wallet.transferFunds.dialog1.toWallet',
+    defaultMessage: '!!!To walet',
+    description: 'toWallet in the transfer funds form.',
+  },
+  continue: {
+    id: 'global.dialog.button.continue',
+    defaultMessage: '!!!Continue',
+    description: 'continue in the transfer funds form.',
   },
 });
 
 type Props = {
-  actions?: Array<DialogAction>,
-  onClose?: Function,
-  wallets: Array<any>,
+  onClose: Function,
+  onContinue: Function,
+  onSetToWallet: Function,
+  walletToId?: string,
+  walletFrom: $Shape<Wallet>,
+  wallets: Array<Wallet>,
 };
 
 export default class TransferFundsStep1Dialog extends Component<Props> {
@@ -28,19 +48,43 @@ export default class TransferFundsStep1Dialog extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { actions, wallets, onClose } = this.props;
+    const {
+      onClose,
+      onContinue,
+      onSetToWallet,
+      walletToId,
+      walletFrom,
+      wallets,
+    } = this.props;
 
     return (
       <Dialog
         className={styles.component}
         title={intl.formatMessage(messages.dialogTitle)}
-        actions={actions}
+        actions={[
+          {
+            label: intl.formatMessage(messages.continue),
+            onClick: onContinue,
+          },
+        ]}
         closeOnOverlayClick
         onClose={onClose}
         closeButton={<DialogCloseButton />}
       >
-        <p>Choose a wallet you would like to transfer your funds.</p>
-        <pre>{JSON.stringify(wallets, null, 2)}</pre>
+        <h3>{intl.formatMessage(messages.fromWallet)}</h3>
+        <div className={styles.walletFrom}>
+          <WalletsDropdownOption
+            label={walletFrom.name}
+            detail={formattedWalletAmount(walletFrom.amount)}
+            selected
+          />
+        </div>
+        <WalletsDropdown
+          label={intl.formatMessage(messages.toWallet)}
+          wallets={wallets}
+          onChange={onSetToWallet}
+          value={walletToId}
+        />
       </Dialog>
     );
   }

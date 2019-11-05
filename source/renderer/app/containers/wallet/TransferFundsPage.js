@@ -12,28 +12,29 @@ type Props = InjectedProps;
 export default class PaperWalletCreateCertificatePage extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
-  handleClose = () => {
-    console.log('ON CLOSE');
-    // ...
-  };
-
-  handleContinue = () => {
-    console.log('ON CONTINUE');
-    // ...
-  };
-
   render() {
-    const { transferFundsStep } = this.props.stores.wallets;
-    if (transferFundsStep === null) return null;
-    let Container = null;
-    if (transferFundsStep === 0) {
-      Container = TransferFundsStep1Container;
-    }
+    const { actions, stores } = this.props;
+    const { wallets: walletsActions } = actions;
+    const { wallets: walletsStore } = stores;
+    const {
+      transferFundsNextStep,
+      transferFundsPrevStep,
+      transferFundsClose,
+    } = walletsActions;
+    const { transferFundsStep } = walletsStore;
+    if (!transferFundsStep) return null;
+    let Container;
     if (transferFundsStep === 1) {
+      Container = TransferFundsStep1Container;
+    } else {
       Container = TransferFundsStep2Container;
     }
     return (
-      <Container onClose={this.handleClose} onContinue={this.handleContinue} />
+      <Container
+        onContinue={() => transferFundsNextStep.trigger()}
+        onBack={() => transferFundsPrevStep.trigger()}
+        onClose={() => transferFundsClose.trigger()}
+      />
     );
   }
 }

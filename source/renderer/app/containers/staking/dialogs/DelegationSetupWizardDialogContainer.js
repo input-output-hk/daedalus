@@ -2,11 +2,12 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
-import { map, find, get } from 'lodash';
+import { find, get } from 'lodash';
+import BigNumber from 'bignumber.js';
 import DelegationSetupWizardDialog from '../../../components/staking/delegation-setup-wizard/DelegationSetupWizardDialog';
-import { formattedWalletAmount } from '../../../utils/formatters';
 import { MIN_DELEGATION_FUNDS } from '../../../config/stakingConfig';
 import type { InjectedDialogContainerProps } from '../../../types/injectedPropsType';
+import Wallet from '../../../domains/Wallet';
 
 const messages = defineMessages({
   learnMoreLinkUrl: {
@@ -39,7 +40,7 @@ const messages = defineMessages({
 
 type State = {
   activeStep: number,
-  selectedWalletId: ?string,
+  selectedWalletId: string,
   selectedPoolId: ?string,
 };
 
@@ -124,45 +125,32 @@ export default class DelegationSetupWizardDialogContainer extends Component<
     this.handleContinue();
   };
 
+  handleIsWalletAcceptable = (walletAmount: BigNumber) =>
+    parseFloat(walletAmount) >= MIN_DELEGATION_FUNDS;
+
   render() {
     const { activeStep, selectedWalletId, selectedPoolId } = this.state;
     const { app, staking, wallets, profile } = this.props.stores;
     const { currentTheme } = profile;
     const { stakePools, delegatingStakePools } = staking;
-
-    let setupDisabled = true;
-    const walletsData = map(wallets.all, wallet => {
-      const value = formattedWalletAmount(wallet.amount);
-      const isAcceptableSetupWallet = parseFloat(value) >= MIN_DELEGATION_FUNDS;
-
-      // Setup enabled if at least one wallet has more that 1 ADA
-      if (isAcceptableSetupWallet) {
-        setupDisabled = false;
-      }
-
-      return {
-        id: wallet.id,
-        label: wallet.name,
-        value,
-        isAcceptableSetupWallet,
-      };
-    });
-
-    const selectedWallet = find(
-      walletsData,
-      wallet => wallet.id === selectedWalletId
+    const isDisabled = wallets.all.reduce(
+      (disabled: boolean, { amount }: Wallet) => {
+        if (!disabled) return false;
+        return this.handleIsWalletAcceptable(amount);
+      },
+      true
     );
-
     const selectedPool = find(stakePools, pool => pool.id === selectedPoolId);
 
     return (
       <DelegationSetupWizardDialog
-        wallets={walletsData}
+        wallets={wallets.all}
         stepsList={this.STEPS_LIST}
         activeStep={activeStep}
         minDelegationFunds={MIN_DELEGATION_FUNDS}
-        isDisabled={activeStep === 1 && setupDisabled}
-        selectedWallet={selectedWallet || null}
+        isDisabled={activeStep === 1 && isDisabled}
+        isWalletAcceptable={this.handleIsWalletAcceptable}
+        selectedWalletId={selectedWalletId}
         selectedPool={selectedPool || null}
         stakePoolsList={stakePools}
         stakePoolsDelegatingList={delegatingStakePools}

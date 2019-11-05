@@ -50,24 +50,18 @@ const pageNames = {
 const WALLETS = [
   {
     id: '1',
-    value: '1 ADA',
-    label: 'First Wallet',
-    isAcceptableSetupWallet: true,
-    hasPassword: true,
+    amount: 1,
+    name: 'First Wallet',
   },
   {
     id: '2',
-    value: '2 ADA',
-    label: 'Second Wallet',
-    isAcceptableSetupWallet: true,
-    hasPassword: true,
+    amount: 2,
+    name: 'Second Wallet',
   },
   {
     id: '3',
-    value: '0.0001 ADA',
-    label: 'Third Wallet',
-    isAcceptableSetupWallet: false,
-    hasPassword: true,
+    amount: 0.0001,
+    name: 'Third Wallet',
   },
 ];
 
@@ -197,7 +191,8 @@ storiesOf('Staking', module)
       onBack={action('onBack')}
       wallets={WALLETS}
       minDelegationFunds={1}
-      selectedWallet={null}
+      selectedWalletId={WALLETS[0].id}
+      isWalletAcceptable={amount => amount >= 1}
     />
   ))
 

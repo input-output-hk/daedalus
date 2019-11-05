@@ -6,10 +6,7 @@ import {
   FormattedHTMLMessage,
   FormattedMessage,
 } from 'react-intl';
-import { get } from 'lodash';
 import classNames from 'classnames';
-import { Select } from 'react-polymorph/lib/components/Select';
-import { SelectSkin } from 'react-polymorph/lib/skins/simple/SelectSkin';
 import { Stepper } from 'react-polymorph/lib/components/Stepper';
 import { StepperSkin } from 'react-polymorph/lib/skins/simple/StepperSkin';
 import commonStyles from './DelegationSteps.scss';
@@ -17,6 +14,8 @@ import styles from './DelegationStepsChooseWalletDialog.scss';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import DialogBackButton from '../../widgets/DialogBackButton';
 import Dialog from '../../widgets/Dialog';
+import WalletsDropdown from '../../widgets/forms/WalletsDropdown';
+import Wallet from '../../../domains/Wallet';
 
 const messages = defineMessages({
   title: {
@@ -67,12 +66,7 @@ const messages = defineMessages({
   },
 });
 
-type DelegationWalletData = {
-  id: string,
-  label: string,
-  value: string,
-  isAcceptableSetupWallet: boolean,
-};
+type DelegationWalletData = $Shape<Wallet>;
 
 type Props = {
   onClose: Function,
@@ -81,11 +75,12 @@ type Props = {
   wallets: Array<DelegationWalletData>,
   stepsList: Array<string>,
   minDelegationFunds: number,
-  selectedWallet: ?Object,
+  selectedWalletId: string,
+  isWalletAcceptable: Function,
 };
 
 type State = {
-  selectedWallet: ?DelegationWalletData,
+  selectedWalletId: string,
 };
 
 export default class DelegationStepsChooseWalletDialog extends Component<
@@ -97,44 +92,44 @@ export default class DelegationStepsChooseWalletDialog extends Component<
   };
 
   state = {
-    selectedWallet: this.props.selectedWallet,
+    selectedWalletId: this.props.selectedWalletId,
   };
 
-  onWalletChange = (selectedWallet: DelegationWalletData) => {
-    this.setState({ selectedWallet });
+  onWalletChange = (selectedWalletId: string) => {
+    this.setState({ selectedWalletId });
   };
 
   onSelectWallet = () => {
-    const { selectedWallet } = this.state;
-    const selectedWalletId = get(selectedWallet, 'id');
+    const { selectedWalletId } = this.state;
     this.props.onSelectWallet(selectedWalletId);
   };
 
   render() {
     const { intl } = this.context;
-    const { selectedWallet } = this.state;
+    const { selectedWalletId } = this.state;
     const {
       wallets,
       stepsList,
       minDelegationFunds,
       onClose,
       onBack,
+      isWalletAcceptable,
     } = this.props;
 
-    const selectedWalletValue = get(selectedWallet, 'value', '');
-    const isAcceptableSetupWallet = get(
-      selectedWallet,
-      'isAcceptableSetupWallet',
-      false
-    );
-
+    const selectedWallet: DelegationWalletData =
+      wallets.find(
+        (wallet: DelegationWalletData) =>
+          wallet && wallet.id === selectedWalletId
+      ) || {};
+    const { amount } = selectedWallet;
+    const isAcceptableSetupWallet = isWalletAcceptable(amount);
     const actions = [
       {
         className: 'continueButton',
         label: intl.formatMessage(messages.continueButtonLabel),
         onClick: this.onSelectWallet.bind(this),
         primary: true,
-        disabled: !selectedWalletValue || !isAcceptableSetupWallet,
+        disabled: !selectedWalletId || !isAcceptableSetupWallet,
       },
     ];
 
@@ -146,7 +141,7 @@ export default class DelegationStepsChooseWalletDialog extends Component<
 
     const walletSelectClasses = classNames([
       styles.walletSelect,
-      selectedWallet && !isAcceptableSetupWallet ? styles.error : null,
+      selectedWalletId && !isAcceptableSetupWallet ? styles.error : null,
     ]);
 
     const stepsIndicatorLabel = (
@@ -186,33 +181,17 @@ export default class DelegationStepsChooseWalletDialog extends Component<
               values={{ minDelegationFunds }}
             />
           </p>
-          <Select
+          <WalletsDropdown
             className={walletSelectClasses}
             label={intl.formatMessage(messages.selectWalletInputLabel)}
-            options={wallets}
-            optionRenderer={option => (
-              <div
-                className={styles.customOptionStyle}
-                role="presentation"
-                onClick={this.onWalletChange.bind(this, option)}
-              >
-                <div className={styles.optionLabel}>{option.label}</div>
-                <div className={styles.optionValue}>{option.value}</div>
-              </div>
-            )}
-            selectionRenderer={option => (
-              <div className={styles.customValueStyle}>
-                <div className={styles.label}>{option.label}</div>
-                <div className={styles.value}>{option.value}</div>
-              </div>
-            )}
+            wallets={wallets}
+            onChange={(walletId: string) => this.onWalletChange(walletId)}
             placeholder={intl.formatMessage(
               messages.selectWalletInputPlaceholder
             )}
-            skin={SelectSkin}
-            value={selectedWalletValue}
+            value={selectedWalletId}
           />
-          {selectedWallet && !isAcceptableSetupWallet && (
+          {selectedWalletId && !isAcceptableSetupWallet && (
             <p className={styles.errorMessage}>
               <FormattedHTMLMessage
                 {...messages.errorMessage}

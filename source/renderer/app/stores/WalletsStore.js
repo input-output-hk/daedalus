@@ -154,9 +154,9 @@ export default class WalletsStore extends Store {
   @observable additionalMnemonicWords = null;
 
   /* ----------  Transfer Funds  ---------- */
-  @observable transferFundsWalletFromId: ?string = null;
-  @observable transferFundsWalletToId: ?string = null;
-  @observable transferFundsStep: ?number = null;
+  @observable transferFundsWalletFromId: string = '';
+  @observable transferFundsWalletToId: string = '';
+  @observable transferFundsStep: number = 0;
 
   /* ----------  Other  ---------- */
   @observable
@@ -211,9 +211,8 @@ export default class WalletsStore extends Store {
     walletsActions.updateRecoveryPhraseVerificationDate.listen(
       this._updateRecoveryPhraseVerificationDate
     );
-    walletsActions.transferFundsStepChange.listen(
-      this._transferFundsStepChange
-    );
+    walletsActions.transferFundsNextStep.listen(this._transferFundsNextStep);
+    walletsActions.transferFundsPrevStep.listen(this._transferFundsPrevStep);
     walletsActions.transferFundsSetWalletFromId.listen(
       this._transferFundsSetWalletFromId
     );
@@ -221,6 +220,7 @@ export default class WalletsStore extends Store {
       this._transferFundsSetWalletToId
     );
     walletsActions.transferFundsRedeem.listen(this._transferFundsRedeem);
+    walletsActions.transferFundsClose.listen(this._transferFundsClose);
   }
 
   _create = async (params: { name: string, spendingPassword: string }) => {
@@ -356,12 +356,29 @@ export default class WalletsStore extends Store {
     this.goToWalletRoute(wallet.id);
   };
 
-  @action _transferFundsStepChange = ({
-    stepNumber,
-  }: {
-    stepNumber?: number,
-  }) => {
-    this.transferFundsStep = stepNumber;
+  @action _transferFundsNextStep = () => {
+    const {
+      transferFundsStep,
+      transferFundsWalletFromId,
+      transferFundsWalletToId,
+    } = this;
+    let nextStep = 0;
+    if (transferFundsStep === 0 && transferFundsWalletFromId) {
+      nextStep = 1;
+    }
+    if (
+      transferFundsStep === 1 &&
+      transferFundsWalletFromId &&
+      transferFundsWalletToId
+    ) {
+      nextStep = 2;
+    }
+    this.transferFundsStep = nextStep;
+  };
+  @action _transferFundsPrevStep = () => {
+    const { transferFundsStep } = this;
+    const prevStep = transferFundsStep > 0 ? transferFundsStep - 1 : 0;
+    this.transferFundsStep = prevStep;
   };
   @action _transferFundsSetWalletFromId = ({
     walletFromId,
@@ -369,6 +386,7 @@ export default class WalletsStore extends Store {
     walletFromId: string,
   }) => {
     this.transferFundsWalletFromId = walletFromId;
+    this.transferFundsStep = 1;
   };
   @action _transferFundsSetWalletToId = ({
     walletToId,
@@ -378,7 +396,11 @@ export default class WalletsStore extends Store {
     this.transferFundsWalletToId = walletToId;
   };
   @action _transferFundsRedeem = () => {
+    this.transferFundsStep = 0;
     // TODO: Call API method
+  };
+  @action _transferFundsClose = () => {
+    this.transferFundsStep = 0;
   };
 
   // =================== PUBLIC API ==================== //

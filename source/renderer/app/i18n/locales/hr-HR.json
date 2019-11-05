@@ -599,5 +599,9 @@
   "wallet.transaction.type.card": "!!!Plaćanje karticom",
   "wallet.transaction.type.exchange": "!!!Konverzija",
   "wallet.transactions.no.transactions": "!!!Nema transakcija",
-  "wallet.transactions.no.transactions.found": "!!!Ne postoje transakcije koje zadovoljavaju uvjete pretraživanja"
+  "wallet.transactions.no.transactions.found": "!!!Ne postoje transakcije koje zadovoljavaju uvjete pretraživanja",
+  "wallet.transferFunds.dialog1.fromWallet": "!!!From wallet",
+  "wallet.transferFunds.dialog1.title": "!!!Transfer funds from the legacy wallet",
+  "wallet.transferFunds.dialog1.toWallet": "!!!To walet",
+  "wallet.transferFunds.dialog2.title": "!!!Transfer funds from the legacy wallet"
 }
