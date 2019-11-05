@@ -122,6 +122,7 @@ export type UpdateSpendingPasswordRequest = {
 
 export type DeleteWalletRequest = {
   walletId: string,
+  isLegacy: boolean,
 };
 
 export type GetWalletUtxosRequest = {

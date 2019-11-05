@@ -259,14 +259,17 @@ export default class WalletsStore extends Store {
     }
   };
 
-  _deleteWallet = async (params: { walletId: string }) => {
+  _deleteWallet = async (params: { walletId: string, isLegacy: boolean }) => {
     // Pause polling in order to avoid fetching data for wallet we are about to delete
     this._pausePolling();
 
     const walletToDelete = this.getWalletById(params.walletId);
     if (!walletToDelete) return;
     const indexOfWalletToDelete = this.all.indexOf(walletToDelete);
-    await this.deleteWalletRequest.execute({ walletId: params.walletId });
+    await this.deleteWalletRequest.execute({
+      walletId: params.walletId,
+      isLegacy: params.isLegacy,
+    });
     await this.walletsRequest.patch(result => {
       result.splice(indexOfWalletToDelete, 1);
     });
@@ -702,7 +705,10 @@ export default class WalletsStore extends Store {
         }).promise;
 
         // delete temporary wallet
-        yield this.deleteWalletRequest.execute({ walletId: wallet.id });
+        yield this.deleteWalletRequest.execute({
+          walletId: wallet.id,
+          isLegacy: wallet.isLegacy,
+        });
       }
 
       // Set wallet certificate address
