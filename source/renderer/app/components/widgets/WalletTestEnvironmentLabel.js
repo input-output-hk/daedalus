@@ -25,6 +25,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Nightly vx',
     description: 'Label for nightly with version.',
   },
+  qa: {
+    id: 'test.environment.qaLabel',
+    defaultMessage: '!!!QA vx',
+    description: 'Label for qa with version.',
+  },
 });
 
 type Props = {

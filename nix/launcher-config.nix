@@ -28,10 +28,10 @@ let
     walletBin = walletBin.${os};
     walletArgs = [
       "launch"
-      "--genesis-block-hash" "c83ecf5b971d5ab70acb850cbf911f89709cd8207af0a51a6e5ed240c5f640db"
-      #"${jormungandrLib.environments.${environment}.genesisHash}"
+      "--genesis-block-hash"
+      "${jormungandrLib.environments.${environment}.genesisHash}"
       "--"
-      "--config" "${../hack.yaml}"
+      "--config" "${jormungandrConfigForCluster}"
     ];
 
     nodeBin = nodeBin.${os};
