@@ -4,6 +4,9 @@
 , jormungandrLib
 }:
 let
+  cfg = jormungandrLib.mkConfig jormungandrLib.environments.${environment};
+  jormungandrConfigForCluster = builtins.toFile "jormungandr-config-${environment}.yaml" (builtins.toJSON cfg);
+
   dataDir.linux = "\${XDG_DATA_HOME}/Daedalus/${environment}";
 
   # TODO, use backend
@@ -14,40 +17,32 @@ let
 
   daedalusBin.linux = "daedalus-frontend";
   daedalusBin.windows = "\${DAEDALUS_INSTALL_DIRECTORY}\\Daedalus.exe";
-  cliPath.linux = "jcli";
-  cliPath.windows = "\${DAEDALUS_INSTALL_DIRECTORY}\\jcli.exe";
+  cliBin.linux = "jcli";
+  cliBin.windows = "\${DAEDALUS_INSTALL_DIRECTORY}\\jcli.exe";
   launcherLogsPrefix.linux = "${dataDir.${os}}/Logs/";
   launcherLogsPrefix.windows = "Logs\\pub";
   logsPrefix.linux = "${dataDir.${os}}/Logs";
   logsPrefix.windows = "Logs";
 
+  walletArgs.linux = [
+    "launch"
+    "--genesis-block-hash" "${jormungandrLib.environments.${environment}.genesisHash}"
+    "--"
+    "--config" "${jormungandrConfigForCluster}"
+  ];
+  walletArgs.selfnode.linux = [
+    "launch"
+    "--node-port" "8888"
+    "--port" "8088"
+    "--state-dir" dataDir.${os}
+    "--genesis-block" "${dataDir.${os}}/block0.bin"
+    "--"
+    "--secret" "${dataDir.${os}}/secret.yaml"
+  ];
+
   launcherConfig = {
     walletBin = walletBin.${os};
-    walletArgs = if environment != "selfnode"
-      then
-        let cfg = jormungandrLib.mkConfig jormungandrLib.environments.${environment};
-        jormungandrConfigForCluster = builtins.toFile "jormungandr-config.yaml" (builtins.toJSON cfg);
-        in [
-          "launch"
-          "--genesis-block-hash"
-          "${jormungandrLib.environments.${environment}.genesisHash}"
-          "--"
-          "--config" "${jormungandrConfigForCluster}"
-        ]
-      else [
-        "launch"
-        "--node-port"
-        "8888"
-        "--port"
-        "8088"
-        "--state-dir"
-        dataDir.${os}
-        "--genesis-block"
-        "${dataDir.${os}}/block0.bin"
-        "--"
-        "--secret"
-        "${dataDir.${os}}/secret.yaml"
-      ];
+    walletArgs = walletArgs.${environment}.${os} or walletArgs.${os};
 
     nodeBin = nodeBin.${os};
     nodeArgs = [];
@@ -56,7 +51,7 @@ let
     walletLogging = true;
     statePath = dataDir.${os};
     launcherLogsPrefix = launcherLogsPrefix.${os};
-    cliBin = cliPath.${os};
+    cliBin = cliBin.${os};
     workingDir = dataDir.${os};
     frontendOnlyMode = true;
     nodeLogPath = null;

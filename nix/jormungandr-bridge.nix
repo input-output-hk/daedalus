@@ -6,7 +6,7 @@ let
 in pkgs.runCommandCC "daedalus-bridge" {
   passthru = {
     node-version = cardano-wallet.jormungandr.version;
-    wallet-version = cardano-wallet.cardano-wallet-jormungandr.identifier.version;
+    wallet-version = cardano-wallet.version;
   };
 } ''
   mkdir -pv $out/bin

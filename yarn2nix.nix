@@ -5,8 +5,6 @@ let
     url = "https://github.com/moretea/yarn2nix/archive/v1.0.0.tar.gz";
     sha256 = "02bzr9j83i1064r1r34cn74z7ccb84qb5iaivwdplaykyyydl1k8";
   }) { inherit pkgs nodejs; };
-  # TODO: these hard-coded values will go away when wallet port
-  # selection happens at runtime.
   dotGitExists = builtins.pathExists ./.git;
   isNix2 = 0 <= builtins.compareVersions builtins.nixVersion "1.12";
   canUseFetchGit = dotGitExists && isNix2;

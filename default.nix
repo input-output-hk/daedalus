@@ -54,7 +54,7 @@ let
     # the native makensis binary, with cross-compiled windows stubs
     nsis = nsisNixPkgs.callPackage ./nsis.nix {};
 
-    unsignedUnpackedCardano = cardanoSL.daedalus-bridge;
+    unsignedUnpackedCardano = self.daedalus-bridge; # TODO
     unpackedCardano = if dummyInstaller then self.dummyUnpacked else (if needSignedBinaries then self.signedCardano else self.unsignedUnpackedCardano);
     signFile = file: let
       localSigningScript = pkgs.writeScript "signing-script" ''
@@ -286,6 +286,10 @@ let
       testnet = {
         small = ./installers/icons/testnet/64x64.png;
         large = ./installers/icons/testnet/1024x1024.png;
+      };
+      selfnode = {
+        small = ./installers/icons/staging/64x64.png;
+        large = ./installers/icons/staging/1024x1024.png;
       };
     };
     namespaceHelper = pkgs.writeScriptBin "namespaceHelper" ''

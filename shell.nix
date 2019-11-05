@@ -3,7 +3,7 @@
 , nodeImplementation ? "jormungandr"
 , localLib ? import ./lib.nix { inherit nodeImplementation; }
 , pkgs ? localLib.iohkNix.getPkgs { inherit system config; }
-, cluster ? "demo"
+, cluster ? "selfnode"
 , systemStart ? null
 , autoStartBackend ? systemStart != null
 , walletExtraArgs ? []
