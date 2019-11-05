@@ -158,6 +158,7 @@ export default class StoryLayout extends Component<Props> {
         pathname="/"
         currentTheme={currentTheme}
         network="testnet"
+        isIncentivizedTestnet
       />
     );
   };
