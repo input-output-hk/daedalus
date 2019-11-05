@@ -165,14 +165,14 @@ makeComponentRoot Options{..} appRoot darwinConfig@DarwinConfig{..} = do
         cp (bridge </> "bin" </> f) (dir </> f)
 
       -- Config files (from daedalus-bridge)
-      cp (bridge </> "config/configuration.yaml") (dir </> "configuration.yaml")
-      cp (bridge </> "config/log-config-prod.yaml") (dir </> "log-config-prod.yaml")
+      --cp (bridge </> "config/configuration.yaml") (dir </> "configuration.yaml")
+      --cp (bridge </> "config/log-config-prod.yaml") (dir </> "log-config-prod.yaml")
 
       -- Genesis (from daedalus-bridge)
-      genesisFiles <- glob . encodeString $ bridge </> "config" </> "*genesis*.json"
-      when (null genesisFiles) $
-        error "Cardano package carries no genesis files."
-      procs "cp" (map T.pack genesisFiles ++ [tt dir]) mempty
+      --genesisFiles <- glob . encodeString $ bridge </> "config" </> "*genesis*.json"
+      --when (null genesisFiles) $
+      --  error "Cardano package carries no genesis files."
+      --procs "cp" (map T.pack genesisFiles ++ [tt dir]) mempty
 
       -- Config yaml (generated from dhall files)
       cp "launcher-config.yaml" (dir </> "launcher-config.yaml")

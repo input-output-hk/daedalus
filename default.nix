@@ -120,6 +120,7 @@ let
       cp ${self.signFile "${self.unsignedUnpackedCardano}/bin/cardano-launcher.exe"} bin/cardano-launcher.exe
       cp ${self.signFile "${self.unsignedUnpackedCardano}/bin/jormungandr.exe"} bin/jormungandr.exe
       cp ${self.signFile "${self.unsignedUnpackedCardano}/bin/cardano-wallet-jormungandr.exe"} bin/cardano-wallet-jormungandr.exe
+      cp ${self.signFile "${self.unsignedUnpackedCardano}/bin/jcli.exe"} bin/jcli.exe
     '';
     dummyUnpacked = pkgs.runCommand "dummy-unpacked-cardano" {} ''
       mkdir $out
