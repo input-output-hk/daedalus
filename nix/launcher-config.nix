@@ -13,6 +13,7 @@ let
 
   dataDir.linux = "\${XDG_DATA_HOME}/Daedalus/${environment}";
   dataDir.macos64 = "\${HOME}/Library/Application Support/Daedalus/${environment}";
+  dataDir.windows = "\${APPDATA}\\Daedalus\\${environment}";
 
   # TODO, use backend
   nodeBin.linux = "jormungandr";
@@ -43,6 +44,13 @@ let
     "--config" "${jormungandrConfigForCluster}"
   ];
   walletArgs.macos64 = [
+    "launch"
+    "--genesis-block-hash" "${jormungandrLib.environments.${environment}.genesisHash}"
+    "--state-dir" dataDir.${os}
+    "--"
+    "--config" "\${DAEDALUS_INSTALL_DIRECTORY}/jormungandr-config-${environment}.yaml"
+  ];
+  walletArgs.windows = [
     "launch"
     "--genesis-block-hash" "${jormungandrLib.environments.${environment}.genesisHash}"
     "--state-dir" dataDir.${os}

@@ -30,6 +30,9 @@ let
   buildNumSuffix = if buildNum == null then "" else ("-${builtins.toString buildNum}");
   throwSystem = throw "Unsupported system: ${pkgs.stdenv.hostPlatform.system}";
   ghcWithCardano = cardanoSL.haskellPackages.ghcWithPackages (ps: [ ps.cardano-sl ps.cardano-sl-x509 ]);
+  ostable.x86_64-windows = "windows";
+  ostable.x86_64-linux = "linux";
+  ostable.x86_64-darwin = "macos64";
   packages = self: {
     inherit cluster pkgs version target nodeImplementation;
     jormungandrLib = localLib.iohkNix.jormungandrLib;
@@ -57,7 +60,7 @@ let
     launcherConfigs = import ./nix/launcher-config.nix {
       inherit (self) jormungandrLib;
       environment = cluster;
-      os = "linux";
+      os = ostable.${target};
       backend = nodeImplementation;
     };
 

@@ -184,6 +184,7 @@ writeInstallerNSIS outName (Version fullVersion') installerConfig clusterName = 
                 file [] "jcli.exe"
                 file [] "cardano-wallet-jormungandr.exe"
                 file [] "cardano-launcher.exe"
+                file [] "libffi-6.dll"
                 --file [] "cardano-x509-certificates.exe"
                 --file [] "log-config-prod.yaml"
                 --file [] "wallet-topology.yaml"
