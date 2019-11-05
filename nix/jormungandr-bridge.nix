@@ -21,7 +21,7 @@ in pkgs.runCommandCC "daedalus-bridge" {
   ${pkgs.lib.optionalString (target == "x86_64-windows") ''
     echo ${cardano-wallet.jormungandr}
     cp ${pkgsCross.libffi}/bin/libffi-6.dll .
-    cp ${pkgsCross.openssl.out}/lib/libeay32.dll .
+    #cp {pkgsCross.openssl.out}/lib/libeay32.dll .
   ''}
   ${pkgs.lib.optionalString (target == "x86_64-linux") ''
     for bin in cardano-launcher cardano-wallet-jormungandr; do

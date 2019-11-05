@@ -4,19 +4,14 @@
 , sandboxed ? false
 , nodeImplementation
 , jormungandrLib
+, launcherConfigs
 }:
 
 let
-  launcherConfig = import ../../nix/launcher-config.nix {
-    inherit jormungandrLib;
-    environment = cluster;
-    os = "linux";
-    backend = nodeImplementation;
-  };
   daedalus-config = runCommand "daedalus-config" {} ''
     mkdir -pv $out
     cd $out
-    cp ${builtins.toFile "launcher-config.yaml" (builtins.toJSON launcherConfig)} $out/launcher-config.yaml
+    cp ${builtins.toFile "launcher-config.yaml" (builtins.toJSON launcherConfigs.launcherConfig)} $out/launcher-config.yaml
   '';
   # closure size TODO list
   # electron depends on cups, which depends on avahi
@@ -28,7 +23,7 @@ let
 
     cd "''${DAEDALUS_DIR}/${cluster}/"
 
-    exec ${electron3}/bin/electron ${rawapp}/share/daedalus "$@"
+    exec ${electron3}/bin/electron --inspect-brk=5858 ${rawapp}/share/daedalus "$@"
   '';
   daedalus = writeScriptBin "daedalus" ''
     #!${stdenv.shell}

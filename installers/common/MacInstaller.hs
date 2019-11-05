@@ -25,6 +25,7 @@ import           Control.Exception         (handle)
 import           Control.Monad             (unless)
 import           Data.Text                 (Text)
 import qualified Data.Text                 as T
+import           Data.Yaml                 (decodeFileThrow)
 import           Filesystem.Path           (FilePath, dropExtension, (<.>),
                                             (</>))
 import           Filesystem.Path.CurrentOS (encodeString)
@@ -52,7 +53,7 @@ main :: Options -> IO ()
 main opts@Options{..} = do
   hSetBuffering stdout NoBuffering
 
-  installerConfig <- getInstallerConfig "./dhall" Macos64 oCluster
+  installerConfig <- decodeFileThrow "installer-config.json"
 
   let
     darwinConfig = DarwinConfig {
@@ -64,7 +65,7 @@ main opts@Options{..} = do
   print darwinConfig
 
   ver <- getBackendVersion oBackend
-  exportBuildVars opts installerConfig ver
+  exportBuildVars opts ver
 
   buildIcons oCluster
   appRoot <- buildElectronApp darwinConfig installerConfig

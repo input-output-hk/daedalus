@@ -54,6 +54,13 @@ let
     # the native makensis binary, with cross-compiled windows stubs
     nsis = nsisNixPkgs.callPackage ./nsis.nix {};
 
+    launcherConfigs = import ./nix/launcher-config.nix {
+      inherit (self) jormungandrLib;
+      environment = cluster;
+      os = "linux";
+      backend = nodeImplementation;
+    };
+
     unsignedUnpackedCardano = self.daedalus-bridge; # TODO
     unpackedCardano = if dummyInstaller then self.dummyUnpacked else (if needSignedBinaries then self.signedCardano else self.unsignedUnpackedCardano);
     signFile = file: let
@@ -121,18 +128,25 @@ let
       touch cardano-launcher.exe cardano-node.exe cardano-x509-certificates.exe log-config-prod.yaml configuration.yaml mainnet-genesis.json
     '';
 
-    nsisFiles = pkgs.runCommand "nsis-files" { buildInputs = [ self.daedalus-installer pkgs.glibcLocales ]; } ''
+    nsisFiles = pkgs.runCommand "nsis-files" {
+      buildInputs = [ self.daedalus-installer pkgs.glibcLocales ];
+      installerConfig = builtins.toJSON self.launcherConfigs.installerConfig;
+      launcherConfig = builtins.toJSON self.launcherConfigs.launcherConfig;
+      passAsFile = [ "installerConfig" "launcherConfig" ];
+    } ''
       mkdir installers
       cp -vir ${./package.json} package.json
-      cp -vir ${./installers/dhall} installers/dhall
       cd installers
-      cp -vi ${self.unpackedCardano}/version version
 
+      echo ${self.daedalus-bridge.wallet-version} > version
+
+      cp $installerConfigPath installer-config.json
       export LANG=en_US.UTF-8
       make-installer --os win64 -o $out --cluster ${cluster} ${lib.optionalString (buildNum != null) "--build-job ${buildNum}"} buildkite-cross
 
       mkdir $out
-      cp daedalus.nsi uninstaller.nsi launcher-config.yaml wallet-topology.yaml $out/
+      cp daedalus.nsi uninstaller.nsi $out/
+      cp $launcherConfigPath $out/launcher-config.yaml
     '';
 
     unsignedUninstaller = pkgs.runCommand "uninstaller" { buildInputs = [ self.nsis self.wine ]; } ''

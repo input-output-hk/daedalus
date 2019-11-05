@@ -7,7 +7,7 @@ let
   cfg = jormungandrLib.mkConfig jormungandrLib.environments.${environment};
   jormungandrConfigForCluster = builtins.toFile "jormungandr-config-${environment}.yaml" (builtins.toJSON cfg);
 
-  installDirectorySuffix.qa = " qa";
+  installDirectorySuffix.qa = "QA";
 
   dataDir.linux = "\${XDG_DATA_HOME}/Daedalus/${environment}";
   dataDir.macos64 = "\${HOME}/Library/Application Support/Daedalus/${environment}";
@@ -84,5 +84,10 @@ let
     updaterArgs = [];
     updateArchive = "/bar";
   };
-in
-  launcherConfig
+  installerConfig = {
+    installDirectory = "Daedalus ${installDirectorySuffix.${environment}}";
+    macPackageName = "Daedalus${installDirectorySuffix.${environment}}";
+  };
+in {
+  inherit launcherConfig installerConfig;
+}

@@ -12,6 +12,7 @@ import           Control.Monad (unless)
 import qualified Data.List as L
 import           Data.Text (Text, unpack)
 import qualified Data.Text as T
+import           Data.Yaml                 (decodeFileThrow)
 import           Development.NSIS (Attrib (IconFile, IconIndex, RebootOK, Recursive, Required, StartOptions, Target),
                                    HKEY (HKLM), Level (Highest), Page (Directory, InstFiles), abort,
                                    constant, constantStr, createDirectory, createShortcut, delete,
@@ -245,10 +246,9 @@ packageFrontend cluster installerConfig = do
 -- | The contract of `main` is not to produce unsigned installer binaries.
 main :: Options -> IO ()
 main opts@Options{..}  = do
-    generateOSClusterConfigs "./dhall" "." opts
     cp (fromText "launcher-config.yaml") (fromText "../launcher-config.yaml")
 
-    installerConfig <- getInstallerConfig "./dhall" Win64 oCluster
+    installerConfig <- decodeFileThrow "installer-config.json"
 
     fetchCardanoSL "."
     printCardanoBuildInfo "."
@@ -257,7 +257,7 @@ main opts@Options{..}  = do
     ver <- getCardanoVersion
 
     echo "Packaging frontend"
-    exportBuildVars opts installerConfig ver
+    exportBuildVars opts ver
     packageFrontend oCluster installerConfig
 
     let fullName = packageFileName Win64 oCluster fullVersion oBackend ver oBuildJob

@@ -52,19 +52,20 @@ executable make-installer
   build-depends:       base
                      , bytestring
                      , containers
+                     , daedalus-installer
                      , directory
-                     , foldl
                      , filepath
+                     , foldl
+                     , optional-args
                      , optparse-applicative
                      , optparse-generic
-                     , optional-args
                      , split
                      , system-filepath
                      , temporary
                      , text
                      , turtle
                      , universum
-                     , daedalus-installer
+                     , yaml
 
   default-language:    Haskell2010
   ghc-options:         -threaded -rtsopts
