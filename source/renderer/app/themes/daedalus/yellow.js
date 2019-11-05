@@ -499,6 +499,13 @@ export const YELLOW_THEME_OUTPUT = {
     '--rp-options-border-color': 'rgba(45, 45, 45, 0.2)',
     '--rp-options-shadow': 'none',
   },
+  rpRadio: {
+    '--rp-radio-border-color': '#2d2d2d',
+    '--rp-radio-color': '#ffffff',
+    '--rp-radio-label-margin': '0 0 0 10px',
+    '--rp-radio-label-text-color': '#2d2d2d',
+    '--rp-radio-size': '22px',
+  },
   rpSelect: {
     '--rp-select-arrow-bg-color': 'rgba(45, 45, 45, 0.2)',
     '--rp-select-arrow-bg-color-open': '#2d2d2d',
@@ -740,11 +747,6 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-recovery-phrase-warning-background-color': 'rgba(45, 45, 45, .1)',
     '--theme-recovery-phrase-attention-background-color':
       'rgba(234, 76, 91, .1)',
-  },
-  rpRadio: {
-    '--rp-radio-border-color': '#424242',
-    '--rp-radio-size': '22px',
-    '--rp-radio-label-text-color': '#2d2d2d',
   },
 };
 

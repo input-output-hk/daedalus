@@ -267,7 +267,7 @@
       cursor: default;
       opacity: 0.5;
 
-      &::after {
+      &:after {
         display: none;
       }
     }
@@ -307,7 +307,7 @@
       text-transform: initial;
       width: initial;
 
-      &::after {
+      &:after {
         border-top: 1px solid var(--theme-network-window-white-color);
         bottom: 1px;
         content: '';

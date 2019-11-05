@@ -150,8 +150,10 @@ export const createReactPolymorphTheme = (
     },
     rpRadio: {
       '--rp-radio-border-color': `${background.secondary.regular}`,
-      '--rp-radio-size': '22px',
+      '--rp-radio-color': '#ffffff',
+      '--rp-radio-label-margin': '0 0 0 10px',
       '--rp-radio-label-text-color': `${text.primary}`,
+      '--rp-radio-size': '22px',
     },
     rpSelect: {
       '--rp-select-arrow-bg-color': `${border}`,

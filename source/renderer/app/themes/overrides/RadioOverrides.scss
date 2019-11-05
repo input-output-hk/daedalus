@@ -1,2 +1,10 @@
 .root {
+  &.selected {
+    .circle:after {
+      height: 8px;
+      left: 7px;
+      top: 7px;
+      width: 8px;
+    }
+  }
 }

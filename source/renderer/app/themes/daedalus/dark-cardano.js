@@ -497,6 +497,13 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--rp-options-border-color': 'rgba(255, 255, 255, 0.2)',
     '--rp-options-shadow': 'none',
   },
+  rpRadio: {
+    '--rp-radio-border-color': '#1fc1c3',
+    '--rp-radio-color': '#121326',
+    '--rp-radio-label-margin': '0 0 0 10px',
+    '--rp-radio-label-text-color': '#ffffff',
+    '--rp-radio-size': '22px',
+  },
   rpSelect: {
     '--rp-select-arrow-bg-color': 'rgba(255, 255, 255, 0.3)',
     '--rp-select-arrow-bg-color-open': 'rgba(255, 255, 255, 0.7)',
@@ -742,11 +749,6 @@ export const DARK_CARDANO_THEME_OUTPUT = {
       'rgba(255, 255, 255, .1)',
     '--theme-recovery-phrase-attention-background-color':
       'rgba(234, 76, 91, .2)',
-  },
-  rpRadio: {
-    '--rp-radio-border-color': '#1fc1c3',
-    '--rp-radio-size': '22px',
-    '--rp-radio-label-text-color': '#ffffff',
   },
 };
 
