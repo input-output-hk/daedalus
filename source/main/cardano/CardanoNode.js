@@ -291,7 +291,7 @@ export class CardanoNode {
           path: walletBin,
           walletArgs,
           logStream: logFile,
-          networkMode: "remove-me",
+          networkMode: 'remove-me',
           nodeImplementation,
           cliBin,
           // TODO: Make this dynamic
