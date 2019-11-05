@@ -8,6 +8,8 @@ let
   jormungandrConfigForCluster = builtins.toFile "jormungandr-config-${environment}.yaml" (builtins.toJSON cfg);
 
   installDirectorySuffix.qa = "QA";
+  installDirectorySuffix.selfnode = "SelfNode";
+  installDirectorySuffix.nightly = "Nightly";
 
   dataDir.linux = "\${XDG_DATA_HOME}/Daedalus/${environment}";
   dataDir.macos64 = "\${HOME}/Library/Application Support/Daedalus/${environment}";
