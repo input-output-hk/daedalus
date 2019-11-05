@@ -14,62 +14,6 @@
   &:hover {
     background-color: var(--theme-sidebar-category-background-color-hover);
   }
-
-  &.paper-wallet-create-certificate {
-    svg {
-      height: 21px;
-      margin-left: -4px;
-      width: 31px;
-    }
-  }
-
-  &.supportRequest {
-    &:hover,
-    &.active {
-      svg {
-        & > g {
-          opacity: 1;
-
-          :nth-child(1) {
-            opacity: 0.5;
-          }
-
-          :nth-child(2) {
-            fill: rgb(255, 79, 25);
-            opacity: 1;
-          }
-
-          & > g {
-            opacity: 0.5;
-            stroke: none;
-            & > path {
-              opacity: 1 !important;
-            }
-          }
-
-          :nth-child(5) {
-            fill: rgb(255, 79, 25);
-          }
-
-          :nth-child(6) {
-            fill: rgb(220, 43, 0);
-          }
-
-          :nth-child(7) {
-            fill: rgb(255, 219, 45);
-          }
-
-          :nth-child(8) {
-            opacity: 0.5;
-          }
-
-          :nth-child(9) {
-            fill: rgb(245, 179, 0);
-          }
-        }
-      }
-    }
-  }
 }
 
 .active {
@@ -98,28 +42,22 @@
   }
 }
 
-.supportRequest {
-  bottom: 0;
-  position: absolute;
-}
-
-.supportRequestIcon {
-  flex-shrink: 0;
-
+.paperWalletCreateCertificateIcon {
   & > svg {
-    height: 24px;
-    width: 24px;
+    height: 21px;
+    margin-left: -4px;
+    width: 31px;
   }
 }
 
-.decentralizationStartIcon {
+.stakingDelegationCountdownIcon {
   & > svg {
     height: 23px;
     width: 33px;
   }
 }
 
-.decentralizationProgressIcon {
+.stakingIcon {
   & > svg {
     height: 55px;
     margin-top: -4px;
@@ -127,7 +65,31 @@
   }
 }
 
-.label {
-  font-family: var(--font-regular);
-  font-size: 18px;
+.networkInfo {
+  background-color: var(--theme-sidebar-category-networkInfo-background-color);
+  border-radius: 0 5px 5px 0;
+  bottom: 16.5px;
+  box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.12);
+  height: 50px;
+  justify-content: space-between;
+  overflow: hidden;
+  padding: 0 26px;
+  position: absolute;
+  transition: width 0.2s ease-out;
+  width: 71px;
+  z-index: 100;
+
+  &:hover {
+    background-color: var(
+      --theme-sidebar-category-networkInfo-background-color
+    );
+    width: 190.5px;
+  }
+}
+
+.networkInfoIcon {
+  & > svg {
+    height: 29px;
+    width: 32px;
+  }
 }
