@@ -5,8 +5,12 @@ Changelog
 
 ### Features
 
-- Removed decentralization countdown, info, and staking epochs screens for incentivized testnet ([PR 1625](https://github.com/input-output-hk/daedalus/pull/1625))
-- Implemented address validator ([PR 1609](https://github.com/input-output-hk/daedalus/pull/1609))
+- Implement restoration of both 12 and 15 mnemonic words phrases in Wallet Restore dialog ([PR 1629](https://github.com/input-output-hk/daedalus/pull/1629))
+- Replace sidebar "Bug-report" icon with a "Network" badge ([PR 1622](https://github.com/input-output-hk/daedalus/pull/1622))
+- Implemented "Spending password" as required parameter for Cardano V2 API ([PR 1631](https://github.com/input-output-hk/daedalus/pull/1631))
+- Implemented "Incentivized Testnet" theme for Incentivized Testnet version of Daedalus ([PR 1620](https://github.com/input-output-hk/daedalus/pull/1620))
+- Removed "Decentralization countdown", "Decentralization info", and "Staking epochs" screens for Incentivized Testnet Daedalus version ([PR 1625](https://github.com/input-output-hk/daedalus/pull/1625))
+- Implemented address validator ([PR 1609](https://github.com/input-output-hk/daedalus/pull/1609), [PR 1618](https://github.com/input-output-hk/daedalus/pull/1618))
 - Add "frontend-only" mode utility that has no dependency on nix ([PR 1583](https://github.com/input-output-hk/daedalus/pull/1583))
 - Added Jormungandr support for Cardano V2 API ([PR 1567](https://github.com/input-output-hk/daedalus/pull/1567)
 - Integrated Cardano V2 API endpoints ([PR 1548](https://github.com/input-output-hk/daedalus/pull/1548), [PR 1551](https://github.com/input-output-hk/daedalus/pull/1551), [PR 1552](https://github.com/input-output-hk/daedalus/pull/1552), [PR 1553](https://github.com/input-output-hk/daedalus/pull/1553), [PR 1555](https://github.com/input-output-hk/daedalus/pull/1555), [PR 1556](https://github.com/input-output-hk/daedalus/pull/1556), [PR 1557](https://github.com/input-output-hk/daedalus/pull/1557), [PR 1558](https://github.com/input-output-hk/daedalus/pull/1558), [PR 1559](https://github.com/input-output-hk/daedalus/pull/1559), [PR 1560](https://github.com/input-output-hk/daedalus/pull/1560), [PR 1575](https://github.com/input-output-hk/daedalus/pull/1575), [PR 1577](https://github.com/input-output-hk/daedalus/pull/1577), [PR 1579](https://github.com/input-output-hk/daedalus/pull/1579), [PR 1604](https://github.com/input-output-hk/daedalus/pull/1604))

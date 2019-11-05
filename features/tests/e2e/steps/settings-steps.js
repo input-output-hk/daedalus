@@ -27,15 +27,15 @@ When(/^I submit the wallet password dialog$/, function() {
 When(/^I change wallet password:$/, async function(table) {
   const fields = table.hashes()[0];
   await this.client.setValue(
-    '.changePasswordDialog .currentPassword input',
+    '.ChangeSpendingPasswordDialog_currentPassword input',
     fields.currentPassword
   );
   await this.client.setValue(
-    '.changePasswordDialog .newPassword input',
+    '.ChangeSpendingPasswordDialog_newPassword input',
     fields.password
   );
   await this.client.setValue(
-    '.changePasswordDialog .repeatedPassword input',
+    '.ChangeSpendingPasswordDialog_repeatedPassword input',
     fields.repeatedPassword
   );
 });
@@ -47,7 +47,7 @@ Then(/^I should not see the change password dialog anymore$/, function() {
 When(/^I enter current wallet password:$/, async function(table) {
   const fields = table.hashes()[0];
   await this.client.setValue(
-    '.changePasswordDialog .currentPassword input',
+    '.ChangeSpendingPasswordDialog_currentPassword input',
     fields.currentPassword
   );
 });

@@ -21,7 +21,9 @@ import { WalletPaperWalletOpenPdfError } from '../i18n/errors';
 import {
   RECOVERY_PHRASE_VERIFICATION_NOTIFICATION,
   RECOVERY_PHRASE_VERIFICATION_WARNING,
+  WALLET_RESTORE_TYPES,
 } from '../config/walletsConfig';
+import { TESTNET } from '../../../common/types/environment.types';
 import type { walletExportTypeChoices } from '../types/walletExportTypes';
 import type { WalletImportFromFileParams } from '../actions/wallets-actions';
 import type LocalizableError from '../i18n/LocalizableError';
@@ -111,6 +113,9 @@ export default class WalletsStore extends Store {
   @observable restoreRequest: Request<Wallet> = new Request(
     this.api.ada.restoreWallet
   );
+  @observable restoreLegacyRequest: Request<Wallet> = new Request(
+    this.api.ada.restoreLegacyWallet
+  );
   @observable
   getWalletsLocalDataRequest: Request<WalletsLocalData> = new Request(
     this.api.localStorage.getWalletsLocalData
@@ -149,11 +154,11 @@ export default class WalletsStore extends Store {
   _newWalletDetails: {
     name: string,
     mnemonic: string,
-    spendingPassword: ?string,
+    spendingPassword: string,
   } = {
     name: '',
     mnemonic: '',
-    spendingPassword: null,
+    spendingPassword: '',
   };
   _pollingBlocked = false;
 
@@ -198,7 +203,7 @@ export default class WalletsStore extends Store {
     walletsActions.updateWalletLocalData.listen(this._updateWalletLocalData);
   }
 
-  _create = async (params: { name: string, spendingPassword: ?string }) => {
+  _create = async (params: { name: string, spendingPassword: string }) => {
     Object.assign(this._newWalletDetails, params);
     try {
       const recoveryPhrase: ?Array<string> = await this.getWalletRecoveryPhraseRequest.execute()
@@ -289,7 +294,7 @@ export default class WalletsStore extends Store {
   _restore = async (params: {
     recoveryPhrase: string,
     walletName: string,
-    spendingPassword: ?string,
+    spendingPassword: string,
   }) => {
     const restoredWallet = await this.restoreRequest.execute(params).promise;
     if (!restoredWallet)
@@ -449,9 +454,21 @@ export default class WalletsStore extends Store {
   };
 
   isValidAddress = (address: string) => {
+    const { app, networkStatus } = this.stores;
+    const { environment } = app;
+    const { network, isDev } = environment;
+    const { nodeImplementation } = networkStatus;
     try {
-      Util.introspectAddress(address);
-      return true;
+      const result = Util.introspectAddress(address);
+      if (
+        result.network === network ||
+        (isDev &&
+          result.network === TESTNET &&
+          nodeImplementation === 'jormungandr')
+      ) {
+        return true;
+      }
+      return false;
     } catch (error) {
       return false;
     }
@@ -532,7 +549,7 @@ export default class WalletsStore extends Store {
   @action _restoreWallet = async (params: {
     recoveryPhrase: string,
     walletName: string,
-    spendingPassword: ?string,
+    spendingPassword: string,
     type?: string,
   }) => {
     // reset getWalletRecoveryPhraseFromCertificateRequest to clear previous errors
@@ -544,7 +561,7 @@ export default class WalletsStore extends Store {
       spendingPassword: params.spendingPassword,
     };
 
-    if (params.type === 'certificate') {
+    if (params.type === WALLET_RESTORE_TYPES.CERTIFICATE) {
       // Split recovery phrase to 18 (scrambled mnemonics) + 9 (mnemonics seed) mnemonics
       const recoveryPhraseArray = params.recoveryPhrase.split(' ');
       const chunked = chunk(recoveryPhraseArray, 18);
@@ -563,7 +580,12 @@ export default class WalletsStore extends Store {
       this.getWalletRecoveryPhraseFromCertificateRequest.reset();
     }
 
-    const restoredWallet = await this.restoreRequest.execute(data).promise;
+    const request =
+      params.type !== WALLET_RESTORE_TYPES.LEGACY
+        ? this.restoreRequest
+        : this.restoreLegacyRequest;
+
+    const restoredWallet = await request.execute(data).promise;
     if (!restoredWallet)
       throw new Error('Restored wallet was not received correctly');
     await this._patchWalletRequestWithNewWallet(restoredWallet);

@@ -5,8 +5,8 @@ import { request } from '../../utils/request';
 
 export type ChangeSpendingPasswordParams = {
   walletId: string,
-  oldPassword: ?string,
-  newPassword: ?string,
+  oldPassword: string,
+  newPassword: string,
 };
 
 export const changeSpendingPassword = (

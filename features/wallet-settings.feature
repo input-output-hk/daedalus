@@ -4,9 +4,9 @@ Feature: Wallet Settings
   Background:
     Given I have completed the basic setup
     And I have the following wallets:
-      | name   | password   |
-      | first  |            |
-      | second | Secret1234 |
+      | name   |
+      | first  |
+      | second |
 
   Scenario: User changes Wallet password
     Given I am on the "second" wallet "settings" screen

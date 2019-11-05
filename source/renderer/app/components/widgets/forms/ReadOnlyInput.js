@@ -11,7 +11,6 @@ import styles from './ReadOnlyInput.scss';
 type Props = {
   label: string,
   value: string,
-  isSet: boolean,
   onClick: Function,
 };
 
@@ -22,16 +21,10 @@ export default class ReadOnlyInput extends Component<Props> {
   };
 
   render() {
-    const { label, value, isSet, onClick } = this.props;
+    const { label, value, onClick } = this.props;
     const { intl } = this.context;
-    const buttonLabel = intl.formatMessage(
-      globalMessages[isSet ? 'change' : 'create']
-    );
 
-    const mainClasses = classnames([
-      styles.component,
-      isSet ? 'changeLabel' : 'createLabel',
-    ]);
+    const mainClasses = classnames([styles.component, 'changeLabel']);
 
     return (
       <div className={mainClasses}>
@@ -45,7 +38,7 @@ export default class ReadOnlyInput extends Component<Props> {
         />
 
         <button className={styles.button} onClick={onClick}>
-          {buttonLabel}
+          {intl.formatMessage(globalMessages.change)}
         </button>
       </div>
     );

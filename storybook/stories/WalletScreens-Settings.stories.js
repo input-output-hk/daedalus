@@ -150,21 +150,11 @@ export default () => {
       spendingPasswordUpdateDate={moment()
         .subtract(1, 'month')
         .toDate()}
-      isSpendingPasswordSet={boolean(
-        'isSpendingPasswordSet',
-        false,
-        changePasswordId
-      )}
       changeSpendingPasswordDialog={
         <ChangeSpendingPasswordDialog
           currentPasswordValue="current"
           newPasswordValue="new"
           repeatedPasswordValue="new"
-          isSpendingPasswordSet={boolean(
-            'isSpendingPasswordSet',
-            false,
-            changePasswordId
-          )}
           onSave={action('Change Password - onSave')}
           onCancel={action('Change Password - onCancel')}
           onPasswordSwitchToggle={action(
@@ -216,11 +206,6 @@ export default () => {
       exportWalletDialogContainer={
         <ExportWalletToFileDialog
           walletName={text('Wallet Name', 'Wallet Name')}
-          hasSpendingPassword={boolean(
-            'isSpendingPasswordSet',
-            false,
-            basicSettingsId
-          )}
           isSubmitting={boolean(
             'Export Wallet - isSubmitting',
             false,

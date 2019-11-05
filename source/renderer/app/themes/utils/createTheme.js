@@ -94,6 +94,7 @@ export const createReactPolymorphTheme = (
         background.secondary.regular
       ).alpha(0.4)}`,
       '--rp-checkbox-check-bg-color': `${background.secondary.regular}`,
+      '--rp-checkbox-check-icon-color': `${text.secondary}`,
       '--rp-checkbox-label-text-color': `${text.primary}`,
       '--rp-checkbox-label-text-color-disabled': `${chroma(text.primary).alpha(
         0.3
@@ -146,6 +147,13 @@ export const createReactPolymorphTheme = (
       '--rp-option-text-color': `${text.primary}`,
       '--rp-options-border-color': `${border}`,
       '--rp-options-shadow': 'none',
+    },
+    rpRadio: {
+      '--rp-radio-border-color': `${background.secondary.regular}`,
+      '--rp-radio-color': '#ffffff',
+      '--rp-radio-label-margin': '0 0 0 10px',
+      '--rp-radio-label-text-color': `${text.primary}`,
+      '--rp-radio-size': '22px',
     },
     rpSelect: {
       '--rp-select-arrow-bg-color': `${border}`,
@@ -862,6 +870,8 @@ export const createDaedalusComponentsTheme = (
         background.secondary.darker
       }`,
       '--theme-sidebar-category-text-color': `${text.secondary}`,
+      '--theme-sidebar-category-networkInfo-background-color': '#eb2256',
+      '--theme-sidebar-category-networkInfo-text-color': '#121326',
       '--theme-sidebar-layout-shadow-color': 'rgba(0, 0, 0, 0.25)',
       '--theme-sidebar-layout-topbar-shadow-color': 'rgba(0, 0, 0, 0.25)',
       '--theme-sidebar-menu-background-color': `${background.secondary.darker}`,
