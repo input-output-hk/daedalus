@@ -146,9 +146,7 @@ pushd installers
                           export PATH=${BUILDKITE_BIN_PATH:-}:$PATH
                           upload_artifacts_public "${APP_NAME}/*"
                           mv "launcher-config.yaml" "launcher-config-${cluster}.macos64.yaml"
-                          mv "wallet-topology.yaml" "wallet-topology-${cluster}.macos64.yaml"
                           upload_artifacts "launcher-config-${cluster}.macos64.yaml"
-                          upload_artifacts "wallet-topology-${cluster}.macos64.yaml"
                           rm -rf "${APP_NAME}"
                   fi
           else

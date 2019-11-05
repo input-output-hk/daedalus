@@ -69,7 +69,6 @@ main = do
                 putStr banner
                 genSignedInstaller os opts''
                 copyFile "launcher-config.yaml" ("launcher-config-" <> cluster' <> ".win64.yaml")
-                copyFile "wallet-topology.yaml" ("wallet-topology-" <> cluster' <> ".win64.yaml")
         clusters' <- getEnv "CLUSTERS"
         let clusters = splitOn " " clusters'
         print clusters
