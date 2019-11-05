@@ -13,7 +13,7 @@ let
     mainnet = "Daedalus";
     staging = "Daedalus Staging";
     testnet = "Daedalus Testnet";
-    nightly = "Daedalus Jormungandr Nightly";
+    nightly = "Daedalus Nightly";
     qa = "Daedalus QA";
     selfnode = "Daedalus Selfnode";
   };
