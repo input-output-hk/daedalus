@@ -55,6 +55,7 @@ storiesOf('WalletTransactionsList', module)
           new BigNumber(1)
         ),
       ]}
+      deletePendingTransaction={() => {}}
       isRestoreActive={false}
       isLoadingTransactions={false}
       hasMoreToLoad={false}
@@ -80,6 +81,7 @@ storiesOf('WalletTransactionsList', module)
           TransactionStates.PENDING
         ),
       ]}
+      deletePendingTransaction={() => {}}
       isRestoreActive={false}
       isLoadingTransactions={false}
       hasMoreToLoad={false}
@@ -94,6 +96,7 @@ storiesOf('WalletTransactionsList', module)
       isRenderingAsVirtualList
       isRestoreActive={false}
       transactions={generateMultipleTransactions(500)}
+      deletePendingTransaction={() => {}}
       isLoadingTransactions={false}
       hasMoreToLoad={false}
       walletId="test-wallet"

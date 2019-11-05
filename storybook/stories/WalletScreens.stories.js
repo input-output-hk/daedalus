@@ -170,6 +170,7 @@ storiesOf('WalletScreens', module)
           )
         ),
       ]}
+      deletePendingTransaction={() => {}}
       isLoadingTransactions={boolean('isLoadingTransactions', false)}
       isRestoreActive={boolean('isRestoreActive', false)}
       hasMoreToLoad={false}
