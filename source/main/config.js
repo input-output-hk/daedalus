@@ -35,7 +35,7 @@ if (!isStartedByLauncher) {
  */
 export type LauncherConfig = {
   frontendOnlyMode: boolean,
-  statePath: string,
+  stateDir: string,
   walletBin: string,
   walletArgs: Array<string>,
   cliBin: string,
@@ -95,7 +95,7 @@ export const appLogsFolderPath = launcherConfig.logsPrefix;
 export const pubLogsFolderPath = path.join(appLogsFolderPath, 'pub');
 export const appFolderPath = launcherConfig.workingDir;
 export const { nodeDbPath } = launcherConfig;
-export const stateDirectoryPath = launcherConfig.statePath;
+export const stateDirectoryPath = launcherConfig.stateDir;
 export const stateDrive = isWindows ? stateDirectoryPath.slice(0, 2) : '/';
 export const ALLOWED_LOGS = [
   'Daedalus.json',

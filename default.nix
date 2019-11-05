@@ -160,7 +160,8 @@ let
         staging = "Daedalus Staging";
         testnet = "Daedalus Testnet";
         nightly = "Daedalus Jormungandr Nightly";
-        qa = "DAEDALUS_DIR Jormungandr QA";
+        qa = "Daedalus Jormungandr QA";
+        selfnode = "Daedalus Jormungandr Selfnode";
       };
       installDir = mapping.${cluster};
     in pkgs.runCommand "win64-installer-${cluster}" {
@@ -288,6 +289,14 @@ let
         large = ./installers/icons/testnet/1024x1024.png;
       };
       selfnode = {
+        small = ./installers/icons/staging/64x64.png;
+        large = ./installers/icons/staging/1024x1024.png;
+      };
+      qa = {
+        small = ./installers/icons/staging/64x64.png;
+        large = ./installers/icons/staging/1024x1024.png;
+      };
+      nightly = {
         small = ./installers/icons/staging/64x64.png;
         large = ./installers/icons/staging/1024x1024.png;
       };

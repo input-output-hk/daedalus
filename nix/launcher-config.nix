@@ -49,7 +49,7 @@ let
 
     daedalusBin = daedalusBin.${os};
     walletLogging = true;
-    statePath = dataDir.${os};
+    stateDir = dataDir.${os};
     launcherLogsPrefix = launcherLogsPrefix.${os};
     cliBin = cliBin.${os};
     workingDir = dataDir.${os};
