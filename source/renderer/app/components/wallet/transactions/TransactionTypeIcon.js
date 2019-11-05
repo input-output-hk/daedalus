@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
 import SVGInline from 'react-svg-inline';
+import moment from 'moment';
 import { LoadingSpinner } from 'react-polymorph/lib/components/LoadingSpinner';
 import { LoadingSpinnerSkin } from 'react-polymorph/lib/skins/simple/LoadingSpinnerSkin';
 import styles from './TransactionTypeIcon.scss';
@@ -10,6 +11,7 @@ import expendIcon from '../../../assets/images/wallet-nav/send-ic.inline.svg';
 import incomeIcon from '../../../assets/images/wallet-nav/receive-ic.inline.svg';
 import exchangeIcon from '../../../assets/images/exchange-ic.inline.svg';
 import pendingIcon from '../../../assets/images/wallet-nav/pending.inline.svg';
+import { PENDING_LIMIT } from '../../../config/txnsConfig';
 import {
   TransactionTypes,
   TransactionStates,
@@ -17,20 +19,47 @@ import {
 
 type Props = {
   iconType: string,
+  txnDate: Date,
 };
 
 export default class TransactionTypeIcon extends Component<Props> {
+  getTimePending = (txnDate: Date): number => {
+    // right now in milliseconds & txn creation date in milliseconds
+    const NOW = moment().valueOf();
+    const TXN_PENDING_SINCE = moment(txnDate).valueOf();
+    return NOW - TXN_PENDING_SINCE;
+  };
+
+  handlePendingTxn = () => {
+    const TIME_PENDING = this.getTimePending(this.props.txnDate);
+    if (TIME_PENDING > PENDING_LIMIT) {
+      return this.renderPendingWarningIcon();
+    }
+    return this.renderPendingIcon();
+  };
+
+  renderPendingIcon = () => (
+    <div className={styles.pendingTxnIconWrapper}>
+      <LoadingSpinner
+        skin={LoadingSpinnerSkin}
+        themeOverrides={spinnerOverrides}
+      />
+    </div>
+  );
+
+  renderPendingWarningIcon = () => (
+    <div className={styles.pendingTxnIconWrapper}>
+      <LoadingSpinner
+        skin={LoadingSpinnerSkin}
+        themeOverrides={spinnerOverrides}
+      />
+      <SVGInline svg={pendingIcon} className={styles.pendingTxnIcon} />
+    </div>
+  );
+
   renderIcon = (icon: string) => {
     if (this.props.iconType === TransactionStates.PENDING) {
-      return (
-        <div className={styles.pendingTxnIconWrapper}>
-          <LoadingSpinner
-            skin={LoadingSpinnerSkin}
-            themeOverrides={spinnerOverrides}
-          />
-          <SVGInline svg={pendingIcon} className={styles.pendingTxnIcon} />
-        </div>
-      );
+      return this.handlePendingTxn();
     }
     return <SVGInline svg={icon} className={styles.transactionTypeIcon} />;
   };
