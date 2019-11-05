@@ -57,6 +57,15 @@ let
     "--"
     "--config" "\${DAEDALUS_INSTALL_DIRECTORY}/jormungandr-config-${environment}.yaml"
   ];
+  walletArgs.selfnode.macos64 = [
+    "launch"
+    "--node-port" "8888"
+    "--port" "8088"
+    "--state-dir" dataDir.${os}
+    "--genesis-block" "${dataDir.${os}}/block0.bin"
+    "--"
+    "--secret" "${dataDir.${os}}/secret.yaml"
+  ];
   walletArgs.selfnode.windows = [
     "launch"
     "--node-port" "8888"
