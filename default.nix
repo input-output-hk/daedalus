@@ -159,6 +159,8 @@ let
         mainnet = "Daedalus";
         staging = "Daedalus Staging";
         testnet = "Daedalus Testnet";
+        nightly = "Daedalus Jormungandr Nightly";
+        qa = "DAEDALUS_DIR Jormungandr QA";
       };
       installDir = mapping.${cluster};
     in pkgs.runCommand "win64-installer-${cluster}" {
