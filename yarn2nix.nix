@@ -14,7 +14,7 @@ let
     staging = "Daedalus Staging";
     testnet = "Daedalus Testnet";
     nightly = "Daedalus Jormungandr Nightly";
-    qa = "Daedalus Jormungandr QA";
+    qa = "Daedalus QA";
     selfnode = "Daedalus Jormungandr Selfnode";
   };
   newPackage = (origPackage // {
