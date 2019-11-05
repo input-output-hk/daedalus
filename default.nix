@@ -150,7 +150,7 @@ let
       mkdir $out
       cp daedalus.nsi uninstaller.nsi $out/
       cp $launcherConfigPath $out/launcher-config.yaml
-      cp ${self.launcherConfigs.jormungandr-config} $out/jormungandr-config.yaml
+      ${lib.optionalString (cluster != "selfnode") "cp ${self.launcherConfigs.jormungandr-config} $out/jormungandr-config.yaml"}
     '';
 
     unsignedUninstaller = pkgs.runCommand "uninstaller" { buildInputs = [ self.nsis self.wine ]; } ''
