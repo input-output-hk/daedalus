@@ -21,7 +21,7 @@ export default class MainLayout extends Component<InjectedContainerProps> {
 
   render() {
     const { actions, stores } = this.props;
-    const { sidebar, wallets, profile, app } = stores;
+    const { sidebar, wallets, profile, app, networkStatus } = stores;
     const activeWallet = wallets.active;
     const activeWalletId = activeWallet ? activeWallet.id : null;
     const { currentTheme } = profile;
@@ -48,6 +48,7 @@ export default class MainLayout extends Component<InjectedContainerProps> {
       <Sidebar
         menus={sidebarMenus}
         isShowingSubMenus={sidebar.isShowingSubMenus}
+        isIncentivizedTestnet={networkStatus.isIncentivizedTestnet}
         categories={sidebar.CATEGORIES}
         activeSidebarCategory={sidebar.activeSidebarCategory}
         onActivateCategory={category => {
