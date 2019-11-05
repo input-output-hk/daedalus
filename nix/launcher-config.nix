@@ -27,6 +27,7 @@ let
   walletArgs.linux = [
     "launch"
     "--genesis-block-hash" "${jormungandrLib.environments.${environment}.genesisHash}"
+    "--state-dir" dataDir.${os}
     "--"
     "--config" "${jormungandrConfigForCluster}"
   ];

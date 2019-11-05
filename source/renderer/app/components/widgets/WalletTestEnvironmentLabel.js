@@ -30,6 +30,11 @@ const messages = defineMessages({
     defaultMessage: '!!!QA vx',
     description: 'Label for qa with version.',
   },
+  selfnode: {
+    id: 'test.environment.selfnodeLabel',
+    defaultMessage: '!!!Selfnode vx',
+    description: 'Label for Selfnode with version.',
+  },
 });
 
 type Props = {
