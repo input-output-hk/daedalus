@@ -1,28 +1,37 @@
 { backend ? "jormungandr"
 , environment ? "staging"
 , os ? "linux"
-, jormungandrLib
+, jormungandrLib ? (import ../. {}).jormungandrLib
 }:
 let
   cfg = jormungandrLib.mkConfig jormungandrLib.environments.${environment};
   jormungandrConfigForCluster = builtins.toFile "jormungandr-config-${environment}.yaml" (builtins.toJSON cfg);
 
+  installDirectorySuffix.qa = " qa";
+
   dataDir.linux = "\${XDG_DATA_HOME}/Daedalus/${environment}";
+  dataDir.macos64 = "\${HOME}/Library/Application Support/Daedalus/${environment}";
 
   # TODO, use backend
   nodeBin.linux = "jormungandr";
   nodeBin.windows = "\${DAEDALUS_INSTALL_DIRECTORY}\\jormungandr.exe";
+  nodeBin.macos64 = "\${DAEDALUS_INSTALL_DIRECTORY}/jormungandr";
   walletBin.linux = "cardano-wallet-jormungandr";
   walletBin.windows = "\${DAEDALUS_INSTALL_DIRECTORY}\\cardano-wallet-jormungandr.exe";
+  walletBin.macos64 = "\${DAEDALUS_INSTALL_DIRECTORY}/cardano-wallet-jormungandr";
 
   daedalusBin.linux = "daedalus-frontend";
   daedalusBin.windows = "\${DAEDALUS_INSTALL_DIRECTORY}\\Daedalus.exe";
+  daedalusBin.macos64 = "\${DAEDALUS_INSTALL_DIRECTORY}/Frontend";
   cliBin.linux = "jcli";
   cliBin.windows = "\${DAEDALUS_INSTALL_DIRECTORY}\\jcli.exe";
+  cliBin.macos64 = "\${DAEDALUS_INSTALL_DIRECTORY}/jcli";
   launcherLogsPrefix.linux = "${dataDir.${os}}/Logs/";
   launcherLogsPrefix.windows = "Logs\\pub";
+  launcherLogsPrefix.macos64 = "${dataDir.${os}}/Logs/pub";
   logsPrefix.linux = "${dataDir.${os}}/Logs";
   logsPrefix.windows = "Logs";
+  logsPrefix.macos64 = "${dataDir.${os}}/Logs";
 
   walletArgs.linux = [
     "launch"
@@ -30,6 +39,13 @@ let
     "--state-dir" dataDir.${os}
     "--"
     "--config" "${jormungandrConfigForCluster}"
+  ];
+  walletArgs.macos64 = [
+    "launch"
+    "--genesis-block-hash" "${jormungandrLib.environments.${environment}.genesisHash}"
+    "--state-dir" dataDir.${os}
+    "--"
+    "--config" "\${DAEDALUS_INSTALL_DIRECTORY}/jormungandr-config-${environment}.yaml"
   ];
   walletArgs.selfnode.linux = [
     "launch"
