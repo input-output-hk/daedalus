@@ -154,7 +154,7 @@ getBackendVersion (Cardano bridge) = readCardanoVersionFile bridge
 getBackendVersion Mantis = pure "DEVOPS-533"
 
 makeComponentRoot :: Options -> FilePath -> DarwinConfig -> IO ()
-makeComponentRoot Options{oBackend} appRoot darwinConfig@DarwinConfig{dcAppName} = do
+makeComponentRoot Options{oBackend,oCluster} appRoot darwinConfig@DarwinConfig{dcAppName} = do
   let dir     = appRoot </> "Contents/MacOS"
 
   echo "~~~ Preparing files ..."
@@ -167,7 +167,8 @@ makeComponentRoot Options{oBackend} appRoot darwinConfig@DarwinConfig{dcAppName}
       -- Config files (from daedalus-bridge)
       --cp (bridge </> "config/configuration.yaml") (dir </> "configuration.yaml")
       --cp (bridge </> "config/log-config-prod.yaml") (dir </> "log-config-prod.yaml")
-      cp "jormungandr-config.yaml" (dir </> "jormungandr-config.yaml")
+      when (oCluster /= Selfnode) $
+        cp "jormungandr-config.yaml" (dir </> "jormungandr-config.yaml")
 
       -- Genesis (from daedalus-bridge)
       --genesisFiles <- glob . encodeString $ bridge </> "config" </> "*genesis*.json"
