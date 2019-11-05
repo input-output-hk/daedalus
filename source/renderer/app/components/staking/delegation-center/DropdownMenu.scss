@@ -2,7 +2,7 @@
   :global {
     .SimpleSelect_select {
       .SimpleSelect_selectInput {
-        &::after {
+        &:after {
           display: none;
         }
         input {
@@ -42,7 +42,7 @@
             );
           }
 
-          &::after {
+          &:after {
             display: none;
           }
 

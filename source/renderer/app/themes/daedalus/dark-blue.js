@@ -517,6 +517,13 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--rp-options-border-color': '#667a8a',
     '--rp-options-shadow': 'none',
   },
+  rpRadio: {
+    '--rp-radio-border-color': '#536370',
+    '--rp-radio-color': '#e9f4fe',
+    '--rp-radio-label-margin': '0 0 0 10px',
+    '--rp-radio-label-text-color': '#e9f4fe',
+    '--rp-radio-size': '22px',
+  },
   rpSelect: {
     '--rp-select-arrow-bg-color': '#606d7b',
     '--rp-select-arrow-bg-color-open': '#e9f4fe',
