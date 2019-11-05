@@ -75,6 +75,7 @@ storiesOf('Sidebar', module)
       pathname="/"
       currentTheme={currentTheme}
       network="testnet"
+      isIncentivizedTestnet
     />
   ))
   .add('wallets category', () => (
@@ -90,6 +91,7 @@ storiesOf('Sidebar', module)
       pathname="/"
       currentTheme={currentTheme}
       network="testnet"
+      isIncentivizedTestnet
     />
   ))
   .add('wallets / sub', () => (
@@ -106,6 +108,7 @@ storiesOf('Sidebar', module)
       pathname="/"
       currentTheme={currentTheme}
       network="testnet"
+      isIncentivizedTestnet
     />
   ))
   .add('delegation category', () => (
@@ -121,6 +124,7 @@ storiesOf('Sidebar', module)
       pathname="/"
       currentTheme={currentTheme}
       network="testnet"
+      isIncentivizedTestnet
     />
   ))
   .add('decentralization-progress', () => (
@@ -136,5 +140,6 @@ storiesOf('Sidebar', module)
       pathname="/"
       currentTheme={currentTheme}
       network="testnet"
+      isIncentivizedTestnet
     />
   ));
