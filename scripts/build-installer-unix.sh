@@ -137,7 +137,7 @@ pushd installers
                          "  --out-dir          ${APP_NAME}")
           nix-instantiate .. -A launcherConfigs.installerConfig --read-write-mode --strict --json --eval --argstr os macos64 --argstr cluster "${cluster}" > installer-config.json
           nix-instantiate .. -A launcherConfigs.launcherConfig --read-write-mode --strict --json --eval --argstr os macos64 --argstr cluster "${cluster}" > launcher-config.yaml
-          if [ "${cluster}" -ne selfnode ]; then
+          if [ "${cluster}" != selfnode ]; then
             cp $(nix-instantiate .. -A launcherConfigs.jormungandr-config --read-write-mode --strict --json --eval --argstr os macos64 --argstr cluster "${cluster}") jormungandr-config.yaml
           fi
           echo '~~~ Running make-installer in nix-shell'
