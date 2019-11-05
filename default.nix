@@ -210,7 +210,10 @@ let
       popd
       cp -v ${self.unpackedCardano}/{bin,config}/* .
       cp ${self.uninstaller}/uninstall.exe ../uninstall.exe
-      cp -v ${self.nsisFiles}/{daedalus.nsi,launcher-config.yaml,jormungandr-config.yaml} .
+      cp -v ${self.nsisFiles}/{daedalus.nsi,launcher-config.yaml} .
+      if [ -f ${self.nsisFiles}/jormungandr-config.yaml ] then
+        cp -v ${self.nsisFiles}/jormungandr-config.yaml .
+      fi
       chmod -R +w .
       ${lib.optionalString (fudgeConfig != null) ''
         set -x
