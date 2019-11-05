@@ -118,7 +118,7 @@ let
       cd $out
       rm bin/*.exe
       cp ${self.signFile "${self.unsignedUnpackedCardano}/bin/cardano-launcher.exe"} bin/cardano-launcher.exe
-      cp ${self.signFile "${self.unsignedUnpackedCardano}/bin/cardano-node.exe"} bin/cardano-node.exe
+      cp ${self.signFile "${self.unsignedUnpackedCardano}/bin/jormungandr.exe"} bin/jormungandr.exe
       cp ${self.signFile "${self.unsignedUnpackedCardano}/bin/cardano-x509-certificates.exe"} bin/cardano-x509-certificates.exe
       cp ${self.signFile "${self.unsignedUnpackedCardano}/bin/wallet-extractor.exe"} bin/wallet-extractor.exe
     '';
