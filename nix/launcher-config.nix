@@ -113,7 +113,8 @@ let
     updateArchive = "/bar";
   };
   installerConfig = {
-    installDirectory = "Daedalus ${installDirectorySuffix.${environment}}";
+    installDirectory = "Daedalus/${environment}";
+    spacedName = "Daedalus ${installDirectorySuffix.${environment}}";
     macPackageName = "Daedalus${installDirectorySuffix.${environment}}";
     dataDir = dataDir.${os};
   };
