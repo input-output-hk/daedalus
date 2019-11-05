@@ -138,6 +138,7 @@ withDir path = bracket (pwd >>= \old -> (cd path >> pure old)) cd . const
 data InstallerConfig = InstallerConfig {
       installDirectory :: Text
     , macPackageName :: Text
+    , dataDir :: Text
     } deriving (Generic, Show)
 
 instance FromJSON InstallerConfig where

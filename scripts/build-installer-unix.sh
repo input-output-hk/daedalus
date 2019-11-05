@@ -135,8 +135,8 @@ pushd installers
                          "  --build-job        ${build_id}"
                          "  --cluster          ${cluster}"
                          "  --out-dir          ${APP_NAME}")
-          nix-instantiate .. -A launcherConfigs.installerConfig --read-write-mode --strict --json --eval --argstr cluster "${cluster}" > installer-config.json
-          nix-instantiate .. -A launcherConfigs.launcherConfig --read-write-mode --strict --json --eval --argstr cluster "${cluster}" > launcher-config.yaml
+          nix-instantiate .. -A launcherConfigs.installerConfig --read-write-mode --strict --json --eval --argstr os macos64 --argstr cluster "${cluster}" > installer-config.json
+          nix-instantiate .. -A launcherConfigs.launcherConfig --read-write-mode --strict --json --eval --argstr os macos64 --argstr cluster "${cluster}" > launcher-config.yaml
           echo '~~~ Running make-installer in nix-shell'
           $nix_shell ../shell.nix -A buildShell --run "${INSTALLER_CMD[*]}"
 

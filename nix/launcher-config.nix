@@ -89,6 +89,7 @@ let
   installerConfig = {
     installDirectory = "Daedalus ${installDirectorySuffix.${environment}}";
     macPackageName = "Daedalus${installDirectorySuffix.${environment}}";
+    dataDir = dataDir.${os};
   };
 in {
   inherit launcherConfig installerConfig;
