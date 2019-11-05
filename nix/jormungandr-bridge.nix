@@ -2,7 +2,7 @@
 
 let
   commonLib = import ../lib.nix {};
-  pkgsCross = import pkgs.path { crossSystem = pkgs.lib.systems.examples.mingwW64; config = {}; overlays = []; };
+  pkgsCross = import cardano-wallet.pkgs.path { crossSystem = pkgs.lib.systems.examples.mingwW64; config = {}; overlays = []; };
 in pkgs.runCommandCC "daedalus-bridge" {
   passthru = {
     node-version = cardano-wallet.jormungandr.version;
@@ -18,17 +18,13 @@ in pkgs.runCommandCC "daedalus-bridge" {
 
   chmod +w -R .
 
-  strip cardano-wallet-jormungandr
-  patchelf --shrink-rpath cardano-wallet-jormungandr
-  #cp {nix-tools.cexes.cardano-node.cardano-node}/bin/cardano-node* .
   ${pkgs.lib.optionalString (target == "x86_64-windows") ''
     echo ${cardano-wallet.jormungandr}
     cp ${pkgsCross.libffi}/bin/libffi-6.dll .
     cp ${pkgsCross.openssl.out}/lib/libeay32.dll .
   ''}
   ${pkgs.lib.optionalString (target == "x86_64-linux") ''
-    chmod +w -R .
-    for bin in cardano-launcher; do
+    for bin in cardano-launcher cardano-wallet-jormungandr; do
       strip $bin
       patchelf --shrink-rpath $bin
     done
