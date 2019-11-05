@@ -32,6 +32,7 @@ import { deleteTransaction } from './transactions/requests/deleteTransaction';
 // Wallets requests
 import { changeSpendingPassword } from './wallets/requests/changeSpendingPassword';
 import { deleteWallet } from './wallets/requests/deleteWallet';
+import { deleteLegacyWallet } from './wallets/requests/deleteLegacyWallet';
 import { exportWalletAsJSON } from './wallets/requests/exportWalletAsJSON';
 import { importWalletAsJSON } from './wallets/requests/importWalletAsJSON';
 import { getWallets } from './wallets/requests/getWallets';
@@ -448,8 +449,13 @@ export default class AdaApi {
       parameters: filterLogData(request),
     });
     try {
-      const { walletId } = request;
-      const response = await deleteWallet(this.config, { walletId });
+      const { walletId, isLegacy } = request;
+      let response;
+      if (isLegacy) {
+        response = await deleteLegacyWallet(this.config, { walletId });
+      } else {
+        response = await deleteWallet(this.config, { walletId });
+      }
       Logger.debug('AdaApi::deleteWallet success', { response });
       return true;
     } catch (error) {
