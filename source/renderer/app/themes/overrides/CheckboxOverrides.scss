@@ -1,6 +1,6 @@
 .root {
   &.checked {
-    .check::after {
+    .check:after {
       border-color: var(--rp-checkbox-check-icon-color);
     }
   }

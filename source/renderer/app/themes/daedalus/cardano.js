@@ -515,6 +515,13 @@ export const CARDANO_THEME_OUTPUT = {
     '--rp-options-border-color': '#c6cdd6',
     '--rp-options-shadow': 'none',
   },
+  rpRadio: {
+    '--rp-radio-border-color': '#2cbb69',
+    '--rp-radio-color': '#ffffff',
+    '--rp-radio-label-margin': '0 0 0 10px',
+    '--rp-radio-label-text-color': '#5e6066',
+    '--rp-radio-size': '22px',
+  },
   rpSelect: {
     '--rp-select-arrow-bg-color': '#c6cdd6',
     '--rp-select-arrow-bg-color-open': '#5e6066',
