@@ -52,7 +52,7 @@ let
     };
 
     # the native makensis binary, with cross-compiled windows stubs
-    nsis = nsisNixPkgs.callPackage ./nsis.nix {};
+    nsis = nsisNixPkgs.callPackage ./nix/nsis.nix {};
 
     launcherConfigs = import ./nix/launcher-config.nix {
       inherit (self) jormungandrLib;
@@ -169,12 +169,12 @@ let
     uninstaller = if needSignedBinaries then self.signedUninstaller else self.unsignedUninstaller;
 
     unsigned-windows-installer = let
-      mapping = {
+      mapping = { # TODO, get from launcher-config.nix
         mainnet = "Daedalus";
         staging = "Daedalus Staging";
         testnet = "Daedalus Testnet";
         nightly = "Daedalus Jormungandr Nightly";
-        qa = "Daedalus Jormungandr QA";
+        qa = "Daedalus QA";
         selfnode = "Daedalus Jormungandr Selfnode";
       };
       installDir = mapping.${cluster};
@@ -206,7 +206,7 @@ let
       popd
       cp -v ${self.unpackedCardano}/{bin,config}/* .
       cp ${self.uninstaller}/uninstall.exe ../uninstall.exe
-      cp -v ${self.nsisFiles}/{daedalus.nsi,wallet-topology.yaml,launcher-config.yaml} .
+      cp -v ${self.nsisFiles}/{daedalus.nsi,launcher-config.yaml} .
       chmod -R +w .
       ${lib.optionalString (fudgeConfig != null) ''
         set -x
