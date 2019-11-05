@@ -48,7 +48,7 @@ let
     "--genesis-block-hash" "${jormungandrLib.environments.${environment}.genesisHash}"
     "--state-dir" dataDir.${os}
     "--"
-    "--config" "\${DAEDALUS_INSTALL_DIRECTORY}/jormungandr-config-${environment}.yaml"
+    "--config" "\${DAEDALUS_INSTALL_DIRECTORY}/jormungandr-config.yaml"
   ];
   walletArgs.windows = [
     "launch"
@@ -120,4 +120,5 @@ let
   };
 in {
   inherit launcherConfig installerConfig;
+  jormungandr-config = jormungandrConfigForCluster;
 }

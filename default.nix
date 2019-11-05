@@ -150,6 +150,7 @@ let
       mkdir $out
       cp daedalus.nsi uninstaller.nsi $out/
       cp $launcherConfigPath $out/launcher-config.yaml
+      cp ${self.launcherConfigs.jormungandr-config} $out/jormungandr-config.yaml
     '';
 
     unsignedUninstaller = pkgs.runCommand "uninstaller" { buildInputs = [ self.nsis self.wine ]; } ''
@@ -209,7 +210,7 @@ let
       popd
       cp -v ${self.unpackedCardano}/{bin,config}/* .
       cp ${self.uninstaller}/uninstall.exe ../uninstall.exe
-      cp -v ${self.nsisFiles}/{daedalus.nsi,launcher-config.yaml} .
+      cp -v ${self.nsisFiles}/{daedalus.nsi,launcher-config.yaml,jormungandr-config.yaml} .
       chmod -R +w .
       ${lib.optionalString (fudgeConfig != null) ''
         set -x

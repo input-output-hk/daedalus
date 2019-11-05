@@ -193,6 +193,7 @@ writeInstallerNSIS outName (Version fullVersion') installerConfig clusterName = 
                 --file [] "configuration.yaml"
                 --file [] "*genesis*.json"
                 file [] "launcher-config.yaml"
+                file [] "jormungandr-config.yaml"
                 file [Recursive] "dlls\\"
                 file [Recursive] "..\\release\\win32-x64\\$SpacedName-win32-x64\\"
 

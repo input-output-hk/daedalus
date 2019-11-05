@@ -56,8 +56,8 @@ main opts@Options{oBackend, oCluster, oBuildJob, oOutputDir, oTestInstaller} = d
 
   let
     darwinConfig = DarwinConfig {
-        dcAppNameApp = (installDirectory installerConfig) <> ".app"
-      , dcAppName = installDirectory installerConfig
+        dcAppNameApp = (spacedName installerConfig) <> ".app"
+      , dcAppName = spacedName installerConfig
       , dcPkgName = "org." <> (macPackageName installerConfig) <> ".pkg"
       , dcDataDir = dataDir installerConfig
       }
@@ -135,7 +135,7 @@ buildElectronApp darwinConfig@DarwinConfig{dcAppName, dcAppNameApp} installerCon
     formatter :: Format r (Text -> Text -> r)
     formatter = "../release/darwin-x64/" % s % "-darwin-x64/" % s
     pathtoapp = format formatter dcAppName dcAppNameApp
-  rewritePackageJson (T.unpack $ pathtoapp <> "/Contents/Resources/app/package.json") (installDirectory installerConfig)
+  rewritePackageJson (T.unpack $ pathtoapp <> "/Contents/Resources/app/package.json") (spacedName installerConfig)
   pure $ fromString $ T.unpack $ pathtoapp
 
 npmPackage :: DarwinConfig -> Shell ()
@@ -167,6 +167,7 @@ makeComponentRoot Options{oBackend} appRoot darwinConfig@DarwinConfig{dcAppName}
       -- Config files (from daedalus-bridge)
       --cp (bridge </> "config/configuration.yaml") (dir </> "configuration.yaml")
       --cp (bridge </> "config/log-config-prod.yaml") (dir </> "log-config-prod.yaml")
+      cp "jormungandr-config.yaml" (dir </> "jormungandr-config.yaml")
 
       -- Genesis (from daedalus-bridge)
       --genesisFiles <- glob . encodeString $ bridge </> "config" </> "*genesis*.json"
