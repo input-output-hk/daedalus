@@ -87,7 +87,6 @@ type Props = {
   onCreate: Function,
   onRestore: Function,
   onImportFile: Function,
-  isRestoreActive: boolean,
   isMainnet: boolean,
   isTestnet: boolean,
   isMaxNumberOfWalletsReached: boolean,
@@ -110,7 +109,6 @@ export default class WalletAdd extends Component<Props> {
       onCreate,
       onRestore,
       onImportFile,
-      isRestoreActive,
       isMaxNumberOfWalletsReached,
       isMainnet,
       isTestnet,
@@ -121,8 +119,6 @@ export default class WalletAdd extends Component<Props> {
     let activeNotification = null;
     if (isMaxNumberOfWalletsReached) {
       activeNotification = 'maxNumberOfWalletsNotificationMessage';
-    } else if (isRestoreActive) {
-      activeNotification = 'restoreNotificationMessage';
     }
 
     return (
@@ -154,7 +150,7 @@ export default class WalletAdd extends Component<Props> {
               description={intl.formatMessage(
                 messages.restoreWithCertificateDescription
               )}
-              isDisabled={isMaxNumberOfWalletsReached || isRestoreActive}
+              isDisabled={isMaxNumberOfWalletsReached}
             />
             <BigButtonForDialogs
               className="importWalletButton"
@@ -162,12 +158,7 @@ export default class WalletAdd extends Component<Props> {
               icon={importIcon}
               label={intl.formatMessage(messages.importLabel)}
               description={intl.formatMessage(messages.importDescription)}
-              isDisabled={
-                isMaxNumberOfWalletsReached ||
-                isRestoreActive ||
-                isMainnet ||
-                isTestnet
-              }
+              isDisabled={isMaxNumberOfWalletsReached || isMainnet || isTestnet}
             />
           </div>
           {activeNotification ? (

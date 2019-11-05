@@ -44,8 +44,8 @@ export default class SidebarStore extends Store {
         info: formattedWalletAmount(wallet.amount),
         isConnected: networkStatus.isConnected,
         isRestoreActive:
-          get(wallet, 'syncState.tag') === WalletSyncStateStatuses.RESTORING,
-        restoreProgress: get(wallet, 'syncState.data.percentage.quantity', 0),
+          get(wallet, 'syncState.status') === WalletSyncStateStatuses.RESTORING,
+        restoreProgress: get(wallet, 'syncState.progress.quantity', 0),
         isLegacy: wallet.isLegacy,
         recoveryPhraseVerificationStatus,
       };
