@@ -137,6 +137,7 @@ pushd installers
                          "  --out-dir          ${APP_NAME}")
           nix-instantiate .. -A launcherConfigs.installerConfig --strict --json --eval --argstr cluster "${cluster}" > installer-config.json
           nix-instantiate .. -A launcherConfigs.launcherConfig --strict --json --eval --argstr cluster "${cluster}" > launcher-config.yaml
+          echo '~~~ Running make-installer in nix-shell'
           $nix_shell ../shell.nix -A buildShell --run "${INSTALLER_CMD[*]}"
 
           if [ -d ${APP_NAME} ]; then
