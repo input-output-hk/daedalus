@@ -1,5 +1,5 @@
 // @flow
-import { split, get, includes } from 'lodash';
+import { split, get, includes, map } from 'lodash';
 import { action } from 'mobx';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
@@ -34,6 +34,7 @@ import { deleteWallet } from './wallets/requests/deleteWallet';
 import { exportWalletAsJSON } from './wallets/requests/exportWalletAsJSON';
 import { importWalletAsJSON } from './wallets/requests/importWalletAsJSON';
 import { getWallets } from './wallets/requests/getWallets';
+import { getLegacyWallets } from './wallets/requests/getLegacyWallets';
 import { importWalletAsKey } from './wallets/requests/importWalletAsKey';
 import { createWallet } from './wallets/requests/createWallet';
 import { restoreWallet } from './wallets/requests/restoreWallet';
@@ -106,6 +107,7 @@ import type {
   AdaWallet,
   AdaWallets,
   LegacyAdaWallet,
+  LegacyAdaWallets,
   WalletUtxos,
   WalletIdAndBalance,
   CreateWalletRequest,
@@ -171,9 +173,26 @@ export default class AdaApi {
   getWallets = async (): Promise<Array<Wallet>> => {
     Logger.debug('AdaApi::getWallets called');
     try {
-      const response: AdaWallets = await getWallets(this.config);
-      Logger.debug('AdaApi::getWallets success', { wallets: response });
-      return response.map(_createWalletFromServerData);
+      const wallets: AdaWallets = await getWallets(this.config);
+      const legacyAdaWallets: LegacyAdaWallets = await getLegacyWallets(
+        this.config
+      ); // LegacyAdaWallet
+      Logger.debug('AdaApi::getWallets success', { wallets, legacyAdaWallets });
+
+      map(legacyAdaWallets, legacyAdaWallet => {
+        const extraLegacyWalletEntries = {
+          address_pool_gap: 0,
+          createdAt: new Date(),
+          delegation: WalletDelegationStatuses.NOT_DELEGATING,
+          isLegacy: true,
+        };
+        wallets.push({
+          ...legacyAdaWallet,
+          ...extraLegacyWalletEntries,
+        });
+      });
+
+      return wallets.map(_createWalletFromServerData);
     } catch (error) {
       Logger.error('AdaApi::getWallets error', { error });
       throw new GenericApiError();
