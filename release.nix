@@ -29,7 +29,7 @@ let
     installer.x86_64-windows = (import ./. { inherit cluster; target = "x86_64-windows"; }).windows-installer;
   };
   wrappedBundle = newBundle: pkgs: cluster: cardanoVersion: let
-    backend = "cardano-sl-${cardanoVersion}";
+    backend = "cardano-wallet-${cardanoVersion}";
     fn = "daedalus-${version}-${backend}-${cluster}-${system}${suffix}.bin";
   in pkgs.runCommand fn {} ''
     mkdir -pv $out/nix-support

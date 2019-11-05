@@ -188,7 +188,6 @@ let
 
       mkdir -p $out/{nix-support,cfg-files}
       mkdir installers
-      cp ${./cardano-sl-src.json} cardano-sl-src.json
       cp -vir ${./installers/dhall} installers/dhall
       cp -vir ${./installers/icons} installers/icons
       cp -vir ${./package.json} package.json
@@ -218,7 +217,7 @@ let
 
       makensis daedalus.nsi -V4
 
-      cp daedalus-*-cardano-sl-*-windows*.exe $out/
+      cp daedalus-*-cardano-wallet-*-windows*.exe $out/
       cp *.yaml $out/cfg-files/
       echo file installer $out/*.exe > $out/nix-support/hydra-build-products
     '';

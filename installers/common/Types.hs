@@ -108,7 +108,7 @@ packageFileName os cluster ver backend backendVer build = fromText name <.> ext
     name = T.intercalate "-" parts
     parts = ["daedalus", fromVer ver, backend', backendVer, lshowText cluster, os'] ++ build'
     backend' = case backend of
-                 Cardano _ -> "cardano-sl"
+                 Cardano _ -> "cardano-wallet"
                  Mantis    -> "mantis"
     ext = case os of
             Win64   -> "exe"

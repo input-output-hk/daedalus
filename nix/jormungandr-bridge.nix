@@ -16,6 +16,8 @@ in pkgs.runCommandCC "daedalus-bridge" {
   cp ${cardano-wallet.jormungandr-cli}/bin/jcli* .
   cp ${cardano-wallet.jormungandr}/bin/jormungandr* .
 
+  echo ${cardano-wallet.version} > $out/version
+
   chmod +w -R .
 
   ${pkgs.lib.optionalString (target == "x86_64-windows") ''
