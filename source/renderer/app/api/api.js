@@ -174,21 +174,20 @@ export default class AdaApi {
     Logger.debug('AdaApi::getWallets called');
     try {
       const wallets: AdaWallets = await getWallets(this.config);
-      const legacyAdaWallets: LegacyAdaWallets = await getLegacyWallets(
+      const legacyWallets: LegacyAdaWallets = await getLegacyWallets(
         this.config
       );
-      Logger.debug('AdaApi::getWallets success', { wallets, legacyAdaWallets });
+      Logger.debug('AdaApi::getWallets success', { wallets, legacyWallets });
 
-      map(legacyAdaWallets, legacyAdaWallet => {
-        const extraLegacyWalletEntries = {
-          address_pool_gap: 0,
-          createdAt: new Date(),
+      map(legacyWallets, legacyAdaWallet => {
+        const extraLegacyWalletProps = {
+          address_pool_gap: 0, // Not needed for legacy wallets
           delegation: WalletDelegationStatuses.NOT_DELEGATING,
           isLegacy: true,
         };
         wallets.push({
           ...legacyAdaWallet,
-          ...extraLegacyWalletEntries,
+          ...extraLegacyWalletProps,
         });
       });
 
@@ -696,15 +695,14 @@ export default class AdaApi {
           walletInitData,
         }
       );
-      const extraWalletEntries = {
-        address_pool_gap: 0,
-        createdAt: new Date(),
+      const extraLegacyWalletProps = {
+        address_pool_gap: 0, // Not needed for legacy wallets
         delegation: WalletDelegationStatuses.NOT_DELEGATING,
         isLegacy: true,
       };
       const wallet = {
         ...legacyWallet,
-        ...extraWalletEntries,
+        ...extraLegacyWalletProps,
       };
       Logger.debug('AdaApi::restoreLegacyWallet success', { wallet });
       return _createWalletFromServerData(wallet);
@@ -1109,7 +1107,6 @@ const _createWalletFromServerData = action(
       state,
       passphrase,
       delegation,
-      createdAt,
       isLegacy = false,
     } = data;
 
@@ -1131,7 +1128,6 @@ const _createWalletFromServerData = action(
       syncState: state,
       isLegacy,
       isDelegated,
-      createdAt,
       // @API TODO - integrate once "Stake Pools" endpoints are done
       // inactiveStakePercentage: 0,
       // delegatedStakePool: new StakePool(),
