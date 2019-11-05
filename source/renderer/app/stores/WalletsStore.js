@@ -1,6 +1,6 @@
 // @flow
 import { observable, action, computed, runInAction, flow } from 'mobx';
-import { get, chunk, find, isEqual } from 'lodash';
+import { get, chunk, find, findIndex, isEqual } from 'lodash';
 import moment from 'moment';
 import { BigNumber } from 'bignumber.js';
 import { Util } from 'cardano-js';
@@ -253,9 +253,7 @@ export default class WalletsStore extends Store {
     ).promise;
     if (wallet) {
       await this._createWalletLocalData(wallet.id);
-      await this.walletsRequest.patch(result => {
-        result.push(wallet);
-      });
+      await this._patchWalletRequestWithNewWallet(wallet);
       this.actions.dialogs.closeActiveDialog.trigger();
       this.goToWalletRoute(wallet.id);
     }
@@ -297,6 +295,7 @@ export default class WalletsStore extends Store {
     const restoredWallet = await this.restoreRequest.execute(params).promise;
     if (!restoredWallet)
       throw new Error('Restored wallet was not received correctly');
+    await this._createWalletLocalData(restoredWallet.id);
     await this._patchWalletRequestWithNewWallet(restoredWallet);
     this.actions.dialogs.closeActiveDialog.trigger();
     this.restoreRequest.reset();
@@ -407,7 +406,14 @@ export default class WalletsStore extends Store {
   _patchWalletRequestWithNewWallet = async (wallet: Wallet) => {
     // Only add the new wallet if it does not exist yet in the result!
     await this.walletsRequest.patch(result => {
-      if (!find(result, { id: wallet.id })) result.push(wallet);
+      if (!find(result, { id: wallet.id })) {
+        const index = findIndex(result, 'isLegacy');
+        if (index >= 0) {
+          result.splice(index, 0, wallet);
+        } else {
+          result.push(wallet);
+        }
+      }
     });
   };
 
