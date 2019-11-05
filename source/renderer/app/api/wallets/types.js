@@ -39,6 +39,8 @@ export type LegacyAdaWallet = {
   },
 };
 
+export type LegacyAdaWallets = Array<LegacyAdaWallet>;
+
 export type WalletUnit = 'lovelace' | 'ada';
 
 export type AdaWallets = Array<AdaWallet>;
