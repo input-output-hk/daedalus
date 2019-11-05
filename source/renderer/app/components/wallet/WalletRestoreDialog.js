@@ -1,5 +1,5 @@
 // @flow
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { join } from 'lodash';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
@@ -8,6 +8,7 @@ import { Input } from 'react-polymorph/lib/components/Input';
 import { AutocompleteSkin } from 'react-polymorph/lib/skins/simple/AutocompleteSkin';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
+import RadioSet from '../widgets/RadioSet';
 import ReactToolboxMobxForm, {
   handleFormErrors,
 } from '../../utils/ReactToolboxMobxForm';
@@ -20,18 +21,13 @@ import {
 } from '../../utils/validations';
 import globalMessages from '../../i18n/global-messages';
 import LocalizableError from '../../i18n/LocalizableError';
-import {
-  PAPER_WALLET_RECOVERY_PHRASE_WORD_COUNT,
-  WALLET_RECOVERY_PHRASE_WORD_COUNT,
-} from '../../config/cryptoConfig';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
 import styles from './WalletRestoreDialog.scss';
 import { submitOnEnter } from '../../utils/form';
-
-const RESTORE_TYPES = {
-  REGULAR: 'regular',
-  CERTIFICATE: 'certificate',
-};
+import {
+  WALLET_RESTORE_TYPES,
+  RECOVERY_PHRASE_WORD_COUNT_OPTIONS,
+} from '../../config/walletsConfig';
 
 const messages = defineMessages({
   title: {
@@ -50,6 +46,30 @@ const messages = defineMessages({
     defaultMessage: '!!!Name the wallet you are restoring',
     description:
       'Hint "Name the wallet you are restoring" for the wallet name input on the wallet restore dialog.',
+  },
+  recoveryPhraseTypeLabel: {
+    id: 'wallet.restore.dialog.recovery.phrase.type.options.label',
+    defaultMessage: '!!!Recovery phrase type',
+    description:
+      'Label for the recovery phrase type options on the wallet restore dialog.',
+  },
+  recoveryPhraseTypeOptionWord: {
+    id: 'wallet.restore.dialog.recovery.phrase.type.word',
+    defaultMessage: '!!! words',
+    description:
+      'Word for the recovery phrase type on the wallet restore dialog.',
+  },
+  recoveryPhraseType15WordOption: {
+    id: 'wallet.restore.dialog.recovery.phrase.type.15word.option',
+    defaultMessage: '!!!Daedalus wallet',
+    description:
+      'Label for the recovery phrase type 15-word option on the wallet restore dialog.',
+  },
+  recoveryPhraseType12WordOption: {
+    id: 'wallet.restore.dialog.recovery.phrase.type.12word.option',
+    defaultMessage: '!!!Daedalus legacy wallet',
+    description:
+      'Label for the recovery phrase type 12-word option on the wallet restore dialog.',
   },
   recoveryPhraseInputLabel: {
     id: 'wallet.restore.dialog.recovery.phrase.input.label',
@@ -150,7 +170,7 @@ type Props = {
 };
 
 type State = {
-  activeChoice: string,
+  walletType: string,
 };
 
 @observer
@@ -164,7 +184,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
   };
 
   state = {
-    activeChoice: RESTORE_TYPES.REGULAR, // regular | certificate
+    walletType: WALLET_RESTORE_TYPES.REGULAR, // regular | certificate | legacy
   };
 
   recoveryPhraseAutocomplete: Autocomplete;
@@ -195,11 +215,11 @@ export default class WalletRestoreDialog extends Component<Props, State> {
           value: [],
           validators: ({ field }) => {
             const { intl } = this.context;
+            const { walletType } = this.state;
             const enteredWords = field.value;
             const wordCount = enteredWords.length;
-            const expectedWordCount = this.isRegular()
-              ? WALLET_RECOVERY_PHRASE_WORD_COUNT
-              : PAPER_WALLET_RECOVERY_PHRASE_WORD_COUNT;
+            const expectedWordCount =
+              RECOVERY_PHRASE_WORD_COUNT_OPTIONS[walletType];
             const value = join(enteredWords, ' ');
             // Regular mnemonics have 12 and paper wallet recovery needs 27 words
             const isPhraseComplete = wordCount === expectedWordCount;
@@ -213,7 +233,9 @@ export default class WalletRestoreDialog extends Component<Props, State> {
             }
             return [
               // TODO: we should also validate paper wallets mnemonics here!
-              this.isRegular() ? this.props.mnemonicValidator(value) : true,
+              this.isRegular() && !this.isLegacy()
+                ? this.props.mnemonicValidator(value)
+                : true,
               this.context.intl.formatMessage(messages.invalidRecoveryPhrase),
             ];
           },
@@ -277,14 +299,13 @@ export default class WalletRestoreDialog extends Component<Props, State> {
       onSuccess: form => {
         const { onSubmit } = this.props;
         const { recoveryPhrase, walletName, spendingPassword } = form.values();
-
         const walletData: Object = {
           recoveryPhrase: join(recoveryPhrase, ' '),
           walletName,
           spendingPassword,
         };
 
-        walletData.type = this.state.activeChoice;
+        walletData.type = this.state.walletType;
 
         onSubmit(walletData);
       },
@@ -303,6 +324,13 @@ export default class WalletRestoreDialog extends Component<Props, State> {
     });
     form.reset();
     form.showErrors(false);
+  };
+
+  resetMnemonics = () => {
+    const recoveryPhraseField = this.form.$('recoveryPhrase');
+    recoveryPhraseField.debouncedValidation.cancel();
+    recoveryPhraseField.reset();
+    recoveryPhraseField.showErrors(false);
 
     // Autocomplete has to be reset manually
     this.recoveryPhraseAutocomplete.clear();
@@ -311,6 +339,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
   render() {
     const { intl } = this.context;
     const { form } = this;
+    const { walletType } = this.state;
     const { suggestedMnemonics, isSubmitting, error, onCancel } = this.props;
 
     const dialogClasses = classnames([
@@ -341,7 +370,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
 
     const regularTabClasses = classnames([
       'regularTab',
-      this.isRegular() ? styles.activeButton : '',
+      !this.isCertificate() ? styles.activeButton : '',
     ]);
 
     const certificateTabClasses = classnames([
@@ -361,13 +390,17 @@ export default class WalletRestoreDialog extends Component<Props, State> {
         <div className={styles.restoreTypeChoice}>
           <button
             className={regularTabClasses}
-            onClick={this.onSelectChoice.bind(this, RESTORE_TYPES.REGULAR)}
+            onClick={() =>
+              this.onSelectWalletType(WALLET_RESTORE_TYPES.REGULAR, true)
+            }
           >
             {intl.formatMessage(messages.recoveryPhraseTabTitle)}
           </button>
           <button
             className={certificateTabClasses}
-            onClick={this.onSelectChoice.bind(this, RESTORE_TYPES.CERTIFICATE)}
+            onClick={() =>
+              this.onSelectWalletType(WALLET_RESTORE_TYPES.CERTIFICATE, true)
+            }
           >
             {intl.formatMessage(messages.certificateTabTitle)}
           </button>
@@ -381,27 +414,73 @@ export default class WalletRestoreDialog extends Component<Props, State> {
           skin={InputSkin}
         />
 
+        {!this.isCertificate() && (
+          <RadioSet
+            label={intl.formatMessage(messages.recoveryPhraseTypeLabel)}
+            items={[
+              {
+                key: WALLET_RESTORE_TYPES.REGULAR,
+                label: (
+                  <Fragment>
+                    15
+                    {intl.formatMessage(
+                      messages.recoveryPhraseTypeOptionWord
+                    )}{' '}
+                    <span>
+                      (
+                      {intl.formatMessage(
+                        messages.recoveryPhraseType15WordOption
+                      )}
+                      )
+                    </span>
+                  </Fragment>
+                ),
+                selected: !this.isLegacy(),
+                onChange: () =>
+                  this.onSelectWalletType(WALLET_RESTORE_TYPES.REGULAR),
+              },
+              {
+                key: WALLET_RESTORE_TYPES.LEGACY,
+                label: (
+                  <Fragment>
+                    12
+                    {intl.formatMessage(
+                      messages.recoveryPhraseTypeOptionWord
+                    )}{' '}
+                    <span>
+                      (
+                      {intl.formatMessage(
+                        messages.recoveryPhraseType12WordOption
+                      )}
+                      )
+                    </span>
+                  </Fragment>
+                ),
+                selected: this.isLegacy(),
+                onChange: () =>
+                  this.onSelectWalletType(WALLET_RESTORE_TYPES.LEGACY),
+              },
+            ]}
+          />
+        )}
+
         <Autocomplete
           {...recoveryPhraseField.bind()}
           ref={autocomplete => {
             this.recoveryPhraseAutocomplete = autocomplete;
           }}
           label={
-            this.isRegular()
+            !this.isCertificate()
               ? intl.formatMessage(messages.recoveryPhraseInputLabel)
               : intl.formatMessage(messages.shieldedRecoveryPhraseInputLabel)
           }
           placeholder={
-            this.isRegular()
+            !this.isCertificate()
               ? intl.formatMessage(messages.recoveryPhraseInputHint)
               : intl.formatMessage(messages.shieldedRecoveryPhraseInputHint)
           }
           options={suggestedMnemonics}
-          maxSelections={
-            this.isCertificate()
-              ? PAPER_WALLET_RECOVERY_PHRASE_WORD_COUNT
-              : WALLET_RECOVERY_PHRASE_WORD_COUNT
-          }
+          maxSelections={RECOVERY_PHRASE_WORD_COUNT_OPTIONS[walletType]}
           error={recoveryPhraseField.error}
           maxVisibleOptions={5}
           noResultsMessage={intl.formatMessage(
@@ -446,19 +525,23 @@ export default class WalletRestoreDialog extends Component<Props, State> {
   }
 
   isRegular() {
-    return this.state.activeChoice === RESTORE_TYPES.REGULAR;
+    return this.state.walletType === WALLET_RESTORE_TYPES.REGULAR;
   }
 
   isCertificate() {
-    return this.state.activeChoice === RESTORE_TYPES.CERTIFICATE;
+    return this.state.walletType === WALLET_RESTORE_TYPES.CERTIFICATE;
   }
 
-  onSelectChoice = (choice: string) => {
-    const { isSubmitting, onChoiceChange } = this.props;
-    if (!isSubmitting) {
-      this.setState({ activeChoice: choice });
-      this.resetForm();
-      if (onChoiceChange) onChoiceChange();
-    }
+  isLegacy() {
+    return this.state.walletType === WALLET_RESTORE_TYPES.LEGACY;
+  }
+
+  onSelectWalletType = (walletType: string, shouldResetForm?: boolean) => {
+    const { onChoiceChange, isSubmitting } = this.props;
+    if (isSubmitting) return;
+    this.setState({ walletType });
+    if (shouldResetForm) this.resetForm();
+    this.resetMnemonics();
+    if (onChoiceChange) onChoiceChange();
   };
 }
