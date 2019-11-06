@@ -1355,17 +1355,31 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!The balance and transaction history of this wallet is being synced with the blockchain.",
+        "defaultMessage": "!!!The balance and transaction history of this wallet is",
         "description": "Status message \"Wallet restore in progress\" shown while wallet is being restored.",
         "end": {
           "column": 3,
-          "line": 17
+          "line": 16
         },
         "file": "source/renderer/app/components/notifications/RestoreNotification.js",
-        "id": "wallet.statusMessages.activeRestore",
+        "id": "wallet.statusMessages.activeRestoreFirst",
         "start": {
-          "column": 24,
+          "column": 29,
           "line": 11
+        }
+      },
+      {
+        "defaultMessage": "!!!synced with the blockchain.",
+        "description": "Status message \"Wallet restore in progress\" shown while wallet is being restored.",
+        "end": {
+          "column": 3,
+          "line": 22
+        },
+        "file": "source/renderer/app/components/notifications/RestoreNotification.js",
+        "id": "wallet.statusMessages.activeRestoreSecond",
+        "start": {
+          "column": 30,
+          "line": 17
         }
       }
     ],
