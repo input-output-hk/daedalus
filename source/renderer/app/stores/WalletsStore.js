@@ -428,7 +428,15 @@ export default class WalletsStore extends Store {
   }
 
   @computed get all(): Array<Wallet> {
-    return this.walletsRequest.result ? this.walletsRequest.result : [];
+    return this.walletsRequest.result
+      ? this.walletsRequest.result.filter(({ isLegacy }: Wallet) => !isLegacy)
+      : [];
+  }
+
+  @computed get allLegacy(): Array<Wallet> {
+    return this.walletsRequest.result
+      ? this.walletsRequest.result.filter(({ isLegacy }: Wallet) => isLegacy)
+      : [];
   }
 
   @computed get first(): ?Wallet {

@@ -34,7 +34,7 @@ export default class SidebarStore extends Store {
 
   @computed get wallets(): Array<SidebarWalletType> {
     const { networkStatus, wallets } = this.stores;
-    return wallets.all.map(wallet => {
+    return [...wallets.all, ...wallets.allLegacy].map(wallet => {
       const {
         recoveryPhraseVerificationStatus,
       } = wallets.getWalletRecoveryPhraseVerification(wallet.id);
