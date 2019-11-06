@@ -589,6 +589,7 @@
   "wallet.transaction.addresses.from": "送信元",
   "wallet.transaction.addresses.to": "送信先",
   "wallet.transaction.conversion.rate": "両替率",
+  "wallet.transaction.noInputAddressesLabel": "!!!No addresses",
   "wallet.transaction.received": "{currency}受取済み",
   "wallet.transaction.sent": "{currency}送金済み",
   "wallet.transaction.state.confirmed": "トランザクション承認済み",
@@ -598,6 +599,8 @@
   "wallet.transaction.type": "{currency}トランザクション",
   "wallet.transaction.type.card": "カード支払い",
   "wallet.transaction.type.exchange": "換金",
+  "wallet.transaction.unresolvedInputAddressesAdditionalLabel": "!!!to see these addresses.",
+  "wallet.transaction.unresolvedInputAddressesLinkLabel": "!!!Open this transaction in Cardano explorer",
   "wallet.transactions.no.transactions": "トランザクションはありません",
   "wallet.transactions.no.transactions.found": "トランザクションが見つかりません"
 }
