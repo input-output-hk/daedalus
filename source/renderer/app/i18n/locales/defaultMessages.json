@@ -1359,7 +1359,7 @@
         "description": "Status message \"Wallet restore in progress\" shown while wallet is being restored.",
         "end": {
           "column": 3,
-          "line": 16
+          "line": 17
         },
         "file": "source/renderer/app/components/notifications/RestoreNotification.js",
         "id": "wallet.statusMessages.activeRestore",
