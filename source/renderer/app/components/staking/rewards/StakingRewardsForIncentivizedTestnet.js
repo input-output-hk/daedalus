@@ -5,8 +5,10 @@ import { defineMessages, intlShape } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import { get, map, orderBy } from 'lodash';
 import classNames from 'classnames';
+import moment from 'moment';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
+import { SIMPLE_DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import { StakingPageScrollContext } from '../layouts/StakingWithNavigation';
 import BorderedBox from '../../widgets/BorderedBox';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
@@ -43,6 +45,11 @@ const messages = defineMessages({
     id: 'staking.rewards.tableHeader.reward',
     defaultMessage: '!!!Reward',
     description: 'Table header "Reward" label on staking rewards page',
+  },
+  tableHeaderDate: {
+    id: 'staking.rewards.tableHeader.date',
+    defaultMessage: '!!!Date',
+    description: 'Table header "Date" label in exported csv file',
   },
   learnMoreButtonLabel: {
     id: 'staking.rewards.learnMore.ButtonLabel',
@@ -97,12 +104,19 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
     sortedRewards: Array<RewardForIncentivizedTestnet>
   ) => {
     const { onExportCsv } = this.props;
-    const exportedHeader = availableTableHeaders.map(header => header.title);
+    const { intl } = this.context;
+    const exportedHeader = [
+      ...availableTableHeaders.map(header => header.title),
+      intl.formatMessage(messages.tableHeaderDate),
+    ];
+    const date = moment().format('YYYY-MM-DDTHHmmss.0SSS');
     const exportedBody = sortedRewards.map(reward => {
-      const rewardWallet = get(reward, 'wallet', '');
-      const rewardAmount = get(reward, 'reward', 0);
+      const rewardWallet = get(reward, 'wallet');
+      const rewardAmount = get(reward, 'reward').toFormat(
+        SIMPLE_DECIMAL_PLACES_IN_ADA
+      );
 
-      return [rewardWallet, `${rewardAmount} ADA`];
+      return [rewardWallet, `${rewardAmount} ADA`, date];
     });
     const exportedContent = [exportedHeader, ...exportedBody];
 
@@ -204,8 +218,10 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
                   </thead>
                   <tbody>
                     {map(sortedRewards, (reward, key) => {
-                      const rewardWallet = get(reward, 'wallet', '');
-                      const rewardAmount = get(reward, 'reward', 0);
+                      const rewardWallet = get(reward, 'wallet');
+                      const rewardAmount = get(reward, 'reward').toFormat(
+                        SIMPLE_DECIMAL_PLACES_IN_ADA
+                      );
 
                       return (
                         <tr key={key}>

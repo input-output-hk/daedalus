@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
+import { generateFileNameWithTimestamp } from '../../../../common/utils/files';
 import StakingRewards from '../../components/staking/rewards/StakingRewards';
 import StakingRewardsForIncentivizedTestnet from '../../components/staking/rewards/StakingRewardsForIncentivizedTestnet';
 import type { InjectedProps } from '../../types/injectedPropsType';
@@ -37,7 +38,11 @@ export default class StakingRewardsPage extends Component<Props> {
       actions: { wallets },
     } = this.props;
     const filePath = global.dialog.showSaveDialog({
-      defaultPath: `rewards.csv`,
+      defaultPath: generateFileNameWithTimestamp({
+        prefix: 'Rewards',
+        extension: 'csv',
+        isUTC: true,
+      }),
       filters: [
         {
           extensions: ['csv'],

@@ -81,8 +81,7 @@ export default class StakingStore extends Store {
   };
 
   _transformWalletToRewardForIncentivizedTestnet = (inputWallet: Wallet) => {
-    const wallet = inputWallet.name;
-    const reward = inputWallet.reward || 0;
+    const { name: wallet, reward } = inputWallet;
 
     return { wallet, reward };
   };

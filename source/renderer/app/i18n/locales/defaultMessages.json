@@ -3445,13 +3445,13 @@
         "description": "Title \"Earned delegation rewards\" label on the staking rewards page.",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 27
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
         "id": "staking.rewards.title",
         "start": {
           "column": 9,
-          "line": 20
+          "line": 22
         }
       },
       {
@@ -3459,13 +3459,13 @@
         "description": "Label for the \"Export CSV\" button on the staking rewards page.",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 33
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
         "id": "staking.rewards.exportButtonLabel",
         "start": {
           "column": 21,
-          "line": 26
+          "line": 28
         }
       },
       {
@@ -3473,13 +3473,13 @@
         "description": "\"No rewards\" rewards label on staking rewards page.",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 38
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
         "id": "staking.rewards.no.rewards",
         "start": {
           "column": 13,
-          "line": 32
+          "line": 34
         }
       },
       {
@@ -3487,13 +3487,13 @@
         "description": "Table header \"Wallet\" label on staking rewards page",
         "end": {
           "column": 3,
-          "line": 41
+          "line": 43
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
         "id": "staking.rewards.tableHeader.wallet",
         "start": {
           "column": 21,
-          "line": 37
+          "line": 39
         }
       },
       {
@@ -3501,13 +3501,27 @@
         "description": "Table header \"Reward\" label on staking rewards page",
         "end": {
           "column": 3,
-          "line": 46
+          "line": 48
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
         "id": "staking.rewards.tableHeader.reward",
         "start": {
           "column": 21,
-          "line": 42
+          "line": 44
+        }
+      },
+      {
+        "defaultMessage": "!!!Date",
+        "description": "Table header \"Date\" label in exported csv file",
+        "end": {
+          "column": 3,
+          "line": 53
+        },
+        "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
+        "id": "staking.rewards.tableHeader.date",
+        "start": {
+          "column": 19,
+          "line": 49
         }
       },
       {
@@ -3515,13 +3529,13 @@
         "description": "Label for \"Learn more\" button on staking rewards page",
         "end": {
           "column": 3,
-          "line": 51
+          "line": 58
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
         "id": "staking.rewards.learnMore.ButtonLabel",
         "start": {
           "column": 24,
-          "line": 47
+          "line": 54
         }
       },
       {
@@ -3529,13 +3543,13 @@
         "description": "Rewards description text on staking rewards page",
         "end": {
           "column": 3,
-          "line": 57
+          "line": 64
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
         "id": "staking.rewards.note",
         "start": {
           "column": 8,
-          "line": 52
+          "line": 59
         }
       }
     ],
@@ -8488,13 +8502,13 @@
         "description": "\"Learn more\" link URL in the staking rewards page",
         "end": {
           "column": 3,
-          "line": 14
+          "line": 15
         },
         "file": "source/renderer/app/containers/staking/StakingRewardsPage.js",
         "id": "staking.rewards.learnMore.linkUrl",
         "start": {
           "column": 20,
-          "line": 10
+          "line": 11
         }
       }
     ],
