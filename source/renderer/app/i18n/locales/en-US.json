@@ -603,5 +603,11 @@
   "wallet.transferFunds.dialog1.fromWallet": "From wallet",
   "wallet.transferFunds.dialog1.title": "Transfer funds from the legacy wallet",
   "wallet.transferFunds.dialog1.toWallet": "To walet",
+  "wallet.transferFunds.dialog2.label.amount": "Amount",
+  "wallet.transferFunds.dialog2.label.buttonLabel": "Transfer funds",
+  "wallet.transferFunds.dialog2.label.description": "Confirm transfer from the Legacy wallet name wallet to the Main wallet wallet.",
+  "wallet.transferFunds.dialog2.label.fees": "Fees",
+  "wallet.transferFunds.dialog2.label.to": "To",
+  "wallet.transferFunds.dialog2.label.total": "Total",
   "wallet.transferFunds.dialog2.title": "Transfer funds from the legacy wallet"
 }

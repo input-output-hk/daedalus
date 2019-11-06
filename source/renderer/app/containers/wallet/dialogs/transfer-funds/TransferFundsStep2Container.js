@@ -14,9 +14,17 @@ export default class TransferFundsStep1Container extends Component<Props> {
   static defaultProps = DefaultProps;
 
   render() {
-    const { onClose, onContinue } = this.props;
+    const { onClose, onContinue, onBack } = this.props;
     return (
-      <TransferFundsStep2Dialog onClose={onClose} onContinue={onContinue} />
+      <TransferFundsStep2Dialog
+        onClose={onClose}
+        onContinue={onContinue}
+        onBack={onBack}
+        addresses={[]}
+        amount="3"
+        fees="+ 12.042481"
+        total="15.042481"
+      />
     );
   }
 }

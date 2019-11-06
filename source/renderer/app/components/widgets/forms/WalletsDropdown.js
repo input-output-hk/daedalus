@@ -33,7 +33,7 @@ type SelectProps = {
 
 type Props = {
   ...$Shape<SelectProps>,
-  wallets: Array<Wallet>,
+  wallets: Array<$Shape<Wallet>>,
 };
 
 type WalletOption = {

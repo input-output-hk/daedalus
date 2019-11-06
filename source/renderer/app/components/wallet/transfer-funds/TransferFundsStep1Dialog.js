@@ -25,10 +25,10 @@ const messages = defineMessages({
     defaultMessage: '!!!To walet',
     description: 'toWallet in the transfer funds form.',
   },
-  continue: {
+  buttonLabel: {
     id: 'global.dialog.button.continue',
     defaultMessage: '!!!Continue',
-    description: 'continue in the transfer funds form.',
+    description: 'buttonLabel in the transfer funds form.',
   },
 });
 
@@ -38,7 +38,7 @@ type Props = {
   onSetToWallet: Function,
   walletToId?: string,
   walletFrom: $Shape<Wallet>,
-  wallets: Array<Wallet>,
+  wallets: Array<$Shape<Wallet>>,
 };
 
 export default class TransferFundsStep1Dialog extends Component<Props> {
@@ -59,19 +59,21 @@ export default class TransferFundsStep1Dialog extends Component<Props> {
 
     return (
       <Dialog
-        className={styles.component}
         title={intl.formatMessage(messages.dialogTitle)}
         actions={[
           {
-            label: intl.formatMessage(messages.continue),
+            label: intl.formatMessage(messages.buttonLabel),
             onClick: onContinue,
+            primary: true,
           },
         ]}
         closeOnOverlayClick
         onClose={onClose}
         closeButton={<DialogCloseButton />}
       >
-        <h3>{intl.formatMessage(messages.fromWallet)}</h3>
+        <p className={styles.label}>
+          {intl.formatMessage(messages.fromWallet)}
+        </p>
         <div className={styles.walletFrom}>
           <WalletsDropdownOption
             label={walletFrom.name}

@@ -6859,7 +6859,7 @@
       },
       {
         "defaultMessage": "!!!Continue",
-        "description": "continue in the transfer funds form.",
+        "description": "buttonLabel in the transfer funds form.",
         "end": {
           "column": 3,
           "line": 32
@@ -6867,7 +6867,7 @@
         "file": "source/renderer/app/components/wallet/transfer-funds/TransferFundsStep1Dialog.js",
         "id": "global.dialog.button.continue",
         "start": {
-          "column": 12,
+          "column": 15,
           "line": 28
         }
       }
@@ -6881,13 +6881,97 @@
         "description": "Title in the transfer funds form.",
         "end": {
           "column": 3,
-          "line": 15
+          "line": 14
         },
         "file": "source/renderer/app/components/wallet/transfer-funds/TransferFundsStep2Dialog.js",
         "id": "wallet.transferFunds.dialog2.title",
         "start": {
           "column": 15,
-          "line": 11
+          "line": 10
+        }
+      },
+      {
+        "defaultMessage": "!!!Confirm transfer from the Legacy wallet name wallet to the Main wallet wallet.",
+        "description": "description in the transfer funds form.",
+        "end": {
+          "column": 3,
+          "line": 19
+        },
+        "file": "source/renderer/app/components/wallet/transfer-funds/TransferFundsStep2Dialog.js",
+        "id": "wallet.transferFunds.dialog2.label.description",
+        "start": {
+          "column": 15,
+          "line": 15
+        }
+      },
+      {
+        "defaultMessage": "!!!To",
+        "description": "Label To in the transfer funds form",
+        "end": {
+          "column": 3,
+          "line": 24
+        },
+        "file": "source/renderer/app/components/wallet/transfer-funds/TransferFundsStep2Dialog.js",
+        "id": "wallet.transferFunds.dialog2.label.to",
+        "start": {
+          "column": 11,
+          "line": 20
+        }
+      },
+      {
+        "defaultMessage": "!!!Amount",
+        "description": "Label Amount in the transfer funds form",
+        "end": {
+          "column": 3,
+          "line": 29
+        },
+        "file": "source/renderer/app/components/wallet/transfer-funds/TransferFundsStep2Dialog.js",
+        "id": "wallet.transferFunds.dialog2.label.amount",
+        "start": {
+          "column": 15,
+          "line": 25
+        }
+      },
+      {
+        "defaultMessage": "!!!Fees",
+        "description": "Label Fees in the transfer funds form",
+        "end": {
+          "column": 3,
+          "line": 34
+        },
+        "file": "source/renderer/app/components/wallet/transfer-funds/TransferFundsStep2Dialog.js",
+        "id": "wallet.transferFunds.dialog2.label.fees",
+        "start": {
+          "column": 13,
+          "line": 30
+        }
+      },
+      {
+        "defaultMessage": "!!!Total",
+        "description": "Total Fees in the transfer funds form",
+        "end": {
+          "column": 3,
+          "line": 39
+        },
+        "file": "source/renderer/app/components/wallet/transfer-funds/TransferFundsStep2Dialog.js",
+        "id": "wallet.transferFunds.dialog2.label.total",
+        "start": {
+          "column": 14,
+          "line": 35
+        }
+      },
+      {
+        "defaultMessage": "!!!Transfer funds",
+        "description": "buttonLabel in the transfer funds form.",
+        "end": {
+          "column": 3,
+          "line": 44
+        },
+        "file": "source/renderer/app/components/wallet/transfer-funds/TransferFundsStep2Dialog.js",
+        "id": "wallet.transferFunds.dialog2.label.buttonLabel",
+        "start": {
+          "column": 15,
+          "line": 40
         }
       }
     ],
@@ -8352,13 +8436,13 @@
         "description": "\"Learn more\" link URL on the delegation setup \"intro\" dialog.",
         "end": {
           "column": 3,
-          "line": 19
+          "line": 18
         },
         "file": "source/renderer/app/containers/staking/dialogs/DelegationSetupWizardDialogContainer.js",
         "id": "staking.delegationSetup.intro.step.dialog.learnMore.url",
         "start": {
           "column": 20,
-          "line": 14
+          "line": 13
         }
       },
       {
@@ -8366,13 +8450,13 @@
         "description": "Step 1 label text on delegation steps dialog.",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 23
         },
         "file": "source/renderer/app/containers/staking/dialogs/DelegationSetupWizardDialogContainer.js",
         "id": "staking.delegationSetup.steps.step.1.label",
         "start": {
           "column": 29,
-          "line": 20
+          "line": 19
         }
       },
       {
@@ -8380,13 +8464,13 @@
         "description": "Step 2 label text on delegation steps dialog.",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 28
         },
         "file": "source/renderer/app/containers/staking/dialogs/DelegationSetupWizardDialogContainer.js",
         "id": "staking.delegationSetup.steps.step.2.label",
         "start": {
           "column": 29,
-          "line": 25
+          "line": 24
         }
       },
       {
@@ -8394,13 +8478,13 @@
         "description": "Step 3 label text on delegation steps dialog.",
         "end": {
           "column": 3,
-          "line": 34
+          "line": 33
         },
         "file": "source/renderer/app/containers/staking/dialogs/DelegationSetupWizardDialogContainer.js",
         "id": "staking.delegationSetup.steps.step.3.label",
         "start": {
           "column": 29,
-          "line": 30
+          "line": 29
         }
       },
       {
@@ -8408,13 +8492,13 @@
         "description": "Step 4 label text on delegation steps dialog.",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 38
         },
         "file": "source/renderer/app/containers/staking/dialogs/DelegationSetupWizardDialogContainer.js",
         "id": "staking.delegationSetup.steps.step.4.label",
         "start": {
           "column": 29,
-          "line": 35
+          "line": 34
         }
       }
     ],

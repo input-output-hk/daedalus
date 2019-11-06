@@ -1,3 +1,15 @@
 .component {
-  background: green;
+  p {
+  }
+}
+.label {
+  color: var(--rp-formfield-label-text-color, #5e6066);
+  font-family: var(--font-medium);
+  font-size: 16px;
+  line-height: 1.38;
+  margin-bottom: 10px;
+}
+.walletFrom {
+  background-color: rgba(94, 96, 102, 0.5);
+  margin-bottom: 20px;
 }
