@@ -60,9 +60,7 @@ export type GetTransactionsRequest = {
   order?: 'ascending' | 'descending',
   fromDate: ?string,
   toDate: ?string,
-
   // @API TODO - Params "pending" for V2
-
   // searchTerm: string,
   // skip: number,
   // limit: number,

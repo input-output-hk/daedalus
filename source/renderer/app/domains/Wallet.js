@@ -13,7 +13,7 @@ export const WalletSyncStateStatuses: {
   RESTORING: SyncStateStatus,
   READY: SyncStateStatus,
 } = {
-  RESTORING: 'restoring',
+  RESTORING: 'syncing', // @API TODO - calculate if the wallet is restoring!
   READY: 'ready',
 };
 
@@ -46,7 +46,7 @@ export default class Wallet {
   @observable amount: BigNumber;
   @observable reward: number;
   @observable passwordUpdateDate: ?Date;
-  @observable syncState: ?WalletSyncState;
+  @observable syncState: WalletSyncState;
   @observable isLegacy: boolean;
   @observable isDelegated: boolean;
   @observable inactiveStakePercentage: ?number;

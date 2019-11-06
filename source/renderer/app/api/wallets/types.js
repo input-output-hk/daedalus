@@ -40,11 +40,13 @@ export type LegacyAdaWallet = {
   },
 };
 
+export type LegacyAdaWallets = Array<LegacyAdaWallet>;
+
 export type WalletUnit = 'lovelace' | 'ada';
 
 export type AdaWallets = Array<AdaWallet>;
 
-export type SyncStateStatus = 'ready' | 'restoring';
+export type SyncStateStatus = 'ready' | 'restoring' | 'syncing';
 
 export type DelegationStatus = 'delegating' | 'not_delegating';
 
@@ -121,6 +123,7 @@ export type UpdateSpendingPasswordRequest = {
 
 export type DeleteWalletRequest = {
   walletId: string,
+  isLegacy: boolean,
 };
 
 export type GetWalletUtxosRequest = {

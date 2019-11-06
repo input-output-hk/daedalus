@@ -1,12 +1,12 @@
 // @flow
 import { observable, action, computed, runInAction, flow } from 'mobx';
-import { get, chunk, find, isEqual } from 'lodash';
+import { get, chunk, find, findIndex, isEqual } from 'lodash';
 import moment from 'moment';
 import { BigNumber } from 'bignumber.js';
 import { Util } from 'cardano-js';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
-import Wallet, { WalletSyncStateStatuses } from '../domains/Wallet';
+import Wallet from '../domains/Wallet';
 import WalletAddress from '../domains/WalletAddress';
 import { WalletTransaction } from '../domains/WalletTransaction';
 import { MAX_ADA_WALLETS_COUNT } from '../config/numbersConfig';
@@ -81,8 +81,6 @@ export default class WalletsStore extends Store {
   /* eslint-disable max-len */
   @observable active: ?Wallet = null;
   @observable activeValue: ?BigNumber = null;
-  @observable isRestoreActive: boolean = false;
-  @observable restoringWalletId: ?string = null;
   @observable walletsRequest: Request<Array<Wallet>> = new Request(
     this.api.ada.getWallets
   );
@@ -270,22 +268,23 @@ export default class WalletsStore extends Store {
     ).promise;
     if (wallet) {
       await this._createWalletLocalData(wallet.id);
-      await this.walletsRequest.patch(result => {
-        result.push(wallet);
-      });
+      await this._patchWalletRequestWithNewWallet(wallet);
       this.actions.dialogs.closeActiveDialog.trigger();
       this.goToWalletRoute(wallet.id);
     }
   };
 
-  _deleteWallet = async (params: { walletId: string }) => {
+  _deleteWallet = async (params: { walletId: string, isLegacy: boolean }) => {
     // Pause polling in order to avoid fetching data for wallet we are about to delete
     this._pausePolling();
 
     const walletToDelete = this.getWalletById(params.walletId);
     if (!walletToDelete) return;
     const indexOfWalletToDelete = this.all.indexOf(walletToDelete);
-    await this.deleteWalletRequest.execute({ walletId: params.walletId });
+    await this.deleteWalletRequest.execute({
+      walletId: params.walletId,
+      isLegacy: params.isLegacy,
+    });
     await this.walletsRequest.patch(result => {
       result.splice(indexOfWalletToDelete, 1);
     });
@@ -314,6 +313,7 @@ export default class WalletsStore extends Store {
     const restoredWallet = await this.restoreRequest.execute(params).promise;
     if (!restoredWallet)
       throw new Error('Restored wallet was not received correctly');
+    await this._createWalletLocalData(restoredWallet.id);
     await this._patchWalletRequestWithNewWallet(restoredWallet);
     this.actions.dialogs.closeActiveDialog.trigger();
     this.restoreRequest.reset();
@@ -424,7 +424,14 @@ export default class WalletsStore extends Store {
   _patchWalletRequestWithNewWallet = async (wallet: Wallet) => {
     // Only add the new wallet if it does not exist yet in the result!
     await this.walletsRequest.patch(result => {
-      if (!find(result, { id: wallet.id })) result.push(wallet);
+      if (!find(result, { id: wallet.id })) {
+        const index = findIndex(result, 'isLegacy');
+        if (index >= 0) {
+          result.splice(index, 0, wallet);
+        } else {
+          result.push(wallet);
+        }
+      }
     });
   };
 
@@ -495,11 +502,6 @@ export default class WalletsStore extends Store {
   isValidCertificateMnemonic = (mnemonic: string) =>
     this.api.ada.isValidCertificateMnemonic(mnemonic);
 
-  // TODO - call endpoint to check if private key is valid
-  isValidPrivateKey = () => {
-    return true;
-  }; // eslint-disable-line
-
   @action refreshWalletsData = async () => {
     // Prevent wallets data refresh if polling is blocked
     if (this._pollingBlocked) return;
@@ -509,22 +511,10 @@ export default class WalletsStore extends Store {
       if (!result) return;
       const walletIds = result.map((wallet: Wallet) => wallet.id);
       await this._setWalletsRecoveryPhraseVerificationData(walletIds);
-      let restoredWalletId = null; // id of a wallet which has just been restored
       runInAction('refresh active wallet', () => {
         if (this.active) {
           this._setActiveWallet({ walletId: this.active.id });
         }
-      });
-      runInAction('refresh active wallet restore', () => {
-        const restoringWallet = find(
-          result,
-          ['syncState', 'status'],
-          WalletSyncStateStatuses.RESTORING
-        );
-        const restoringWalletId = get(restoringWallet, 'id', null);
-        restoredWalletId =
-          (restoringWalletId === null && this.restoringWalletId) || null;
-        this._setIsRestoreActive(restoringWalletId);
       });
       runInAction('refresh address data', () => {
         this.stores.addresses.addressesRequests = walletIds.map(walletId => ({
@@ -545,7 +535,7 @@ export default class WalletsStore extends Store {
             ),
           })
         );
-        this.stores.transactions._refreshTransactionData(restoredWalletId);
+        this.stores.transactions._refreshTransactionData();
       });
     }
   };
@@ -554,11 +544,6 @@ export default class WalletsStore extends Store {
     this.walletsRequest.reset();
     this.stores.addresses.addressesRequests = [];
     this.stores.transactions.transactionsRequests = [];
-  };
-
-  @action _setIsRestoreActive = (restoringWalletId: ?string) => {
-    this.isRestoreActive = restoringWalletId !== null;
-    this.restoringWalletId = restoringWalletId;
   };
 
   @action _restoreWallet = async (params: {
@@ -735,7 +720,10 @@ export default class WalletsStore extends Store {
         }).promise;
 
         // delete temporary wallet
-        yield this.deleteWalletRequest.execute({ walletId: wallet.id });
+        yield this.deleteWalletRequest.execute({
+          walletId: wallet.id,
+          isLegacy: wallet.isLegacy,
+        });
       }
 
       // Set wallet certificate address
