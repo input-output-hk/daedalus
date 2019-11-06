@@ -131,6 +131,13 @@ export default class Transaction extends Component<Props> {
     }
   }
 
+  handleOpenSupportArticle = () => {
+    const { onOpenExternalLink } = this.props;
+    const articleUrl = 'https://daedaluswallet.io';
+    if (!onOpenExternalLink) return null;
+    return onOpenExternalLink(articleUrl);
+  };
+
   deletePendingTransaction() {
     const { data, walletId } = this.props;
     const { id: transactionId, state } = data;
@@ -320,6 +327,19 @@ export default class Transaction extends Component<Props> {
                   onClick={this.handleOpenExplorer.bind(this, 'tx', data.id)}
                 >
                   {data.id}
+                  <SVGInline svg={externalLinkIcon} />
+                </span>
+              </div>
+              <div className={styles.pendingTxnNote}>
+                This transaction is pending for too long. We recomend you to
+                cancel it.
+                <span
+                  role="presentation"
+                  aria-hidden
+                  className={styles.articleLink}
+                  onClick={this.handleOpenSupportArticle}
+                >
+                  Read Why
                   <SVGInline svg={externalLinkIcon} />
                 </span>
               </div>
