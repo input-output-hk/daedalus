@@ -1,8 +1,7 @@
 // @flow
 import * as fs from 'fs-extra';
-import { exec } from 'child_process';
-import { join, normalize } from 'path';
 import { spawn } from 'child_process';
+import { join, normalize } from 'path';
 import { Logger } from '../../utils/logging';
 
 export async function configureJormungandrDeps(
@@ -35,15 +34,18 @@ export async function createAndWriteClientSecret(
 ): Promise<string> {
   Logger.info('Creating client secret for selfnode', {});
   const secret: string = await new Promise((resolve, reject) => {
-    var result = spawn(cliBin, ['key', 'generate', '--type=Ed25519']);
+    const result = spawn(cliBin, ['key', 'generate', '--type=Ed25519']);
     let buffer = '';
     result.stdout.setEncoding('utf8');
     result.stdout.on('data', data => {
       buffer += data;
     });
-
     result.on('exit', code => {
-      code === 0 ? resolve(buffer) : reject('failed to run jcli');
+      if (code === 0) {
+        resolve(buffer);
+      } else {
+        reject(new Error('failed to run jcli'));
+      }
     });
   });
 
@@ -66,7 +68,7 @@ export async function createBlock0({
   block0Path: string,
   secret: string,
 }) {
-  let installDir = process.env.DAEDALUS_INSTALL_DIRECTORY || '';
+  const installDir = process.env.DAEDALUS_INSTALL_DIRECTORY || '';
   const genesisDefaultPath = 'utils/jormungandr/selfnode/genesis.yaml';
   const genesisInstalledPath = join(installDir, 'genesis.yaml');
 
@@ -82,7 +84,7 @@ export async function createBlock0({
   }
 
   const publicKey = await new Promise((resolve, reject) => {
-    let result = spawn(cliBin, ['key', 'to-public'], {
+    const result = spawn(cliBin, ['key', 'to-public'], {
       stdio: ['pipe', 'pipe', 'inherit'],
     });
     result.stdin.write(secret);
@@ -94,9 +96,11 @@ export async function createBlock0({
       buffer += data;
     });
     result.on('exit', code => {
-      code === 0
-        ? resolve(buffer.split('\n')[0])
-        : reject('failed to run jcli key to-public');
+      if (code === 0) {
+        resolve(buffer.split('\n')[0]);
+      } else {
+        reject(new Error('failed to run jcli key to-public'));
+      }
     });
   });
 
@@ -113,7 +117,7 @@ export async function createBlock0({
 
     Logger.info('block0 creation params', { inputPath, outputPath });
 
-    let result = spawn(cliBin, [
+    const result = spawn(cliBin, [
       'genesis',
       'encode',
       '--input',
@@ -123,7 +127,11 @@ export async function createBlock0({
     ]);
 
     result.on('exit', code => {
-      code === 0 ? resolve() : reject();
+      if (code === 0) {
+        resolve();
+      } else {
+        reject();
+      }
     });
   });
 }

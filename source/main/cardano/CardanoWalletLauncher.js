@@ -1,8 +1,8 @@
 // @flow
 import { spawn } from 'child_process';
+import { dirname } from 'path';
 import type { ChildProcess } from 'child_process';
 import { configureJormungandrDeps } from './nodes';
-import { dirname } from 'path';
 
 export type WalletOpts = {
   path: string,
