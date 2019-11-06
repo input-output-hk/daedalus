@@ -140,6 +140,7 @@ pushd installers
           if [ "${cluster}" != selfnode ]; then
             cp -v cfg-files/jormungandr-config.yaml .
           fi
+          chmod -R +w .
           echo '~~~ Running make-installer in nix-shell'
           $nix_shell ../shell.nix -A buildShell --run "${INSTALLER_CMD[*]}"
 
