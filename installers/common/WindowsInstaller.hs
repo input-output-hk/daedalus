@@ -195,6 +195,8 @@ writeInstallerNSIS outName (Version fullVersion') installerConfig clusterName = 
                 file [] "launcher-config.yaml"
                 when (clusterName /= Selfnode) $
                   file [] "jormungandr-config.yaml"
+                when (clusterName == Selfnode) $
+                  file [] "genesis.yaml"
                 file [Recursive] "dlls\\"
                 file [Recursive] "..\\release\\win32-x64\\$SpacedName-win32-x64\\"
 

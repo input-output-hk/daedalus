@@ -169,6 +169,8 @@ makeComponentRoot Options{oBackend,oCluster} appRoot darwinConfig@DarwinConfig{d
       --cp (bridge </> "config/log-config-prod.yaml") (dir </> "log-config-prod.yaml")
       when (oCluster /= Selfnode) $
         cp "jormungandr-config.yaml" (dir </> "jormungandr-config.yaml")
+      when (oCluster == Selfnode) $
+        cp "genesis.yaml" (dir </> "genesis.yaml")
 
       -- Genesis (from daedalus-bridge)
       --genesisFiles <- glob . encodeString $ bridge </> "config" </> "*genesis*.json"

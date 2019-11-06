@@ -214,6 +214,7 @@ let
       if [ -f ${self.nsisFiles}/jormungandr-config.yaml ]; then
         cp -v ${self.nsisFiles}/jormungandr-config.yaml .
       fi
+      cp -v ${./utils/jormungandr/selfnode/genesis.yaml} genesis.yaml
       chmod -R +w .
       ${lib.optionalString (fudgeConfig != null) ''
         set -x

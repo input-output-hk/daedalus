@@ -1,6 +1,7 @@
 // @flow
 import * as fs from 'fs-extra';
 import { exec } from 'child_process';
+import path from 'path';
 
 export async function configureJormungandrDeps(
   cliBin: string,
@@ -53,8 +54,15 @@ export async function createBlock0({
   secret: string,
 }) {
   // The block0 we create here is only used for the selfnode
+  let envVar = process.env.DAEDALUS_INSTALL_DIRECTORY;
   const genesisDefaultPath = `utils/jormungandr/selfnode/genesis.yaml`;
-  const networkGenesisFileExists = await fs.pathExists(genesisDefaultPath);
+  var genesisYamlPath;
+  if (envVar && (await fs.pathExists(path.join(envVar,"genesis.yaml")))) {
+    genesisYamlPath = path.join(envVar,"genesis.yaml");
+  } else {
+    genesisYamlPath = genesisDefaultPath;
+  }
+  const networkGenesisFileExists = await fs.pathExists(genesisYamlPath);
   if (!networkGenesisFileExists) {
     throw new Error(`No genesis file exists for testnet`);
   }
@@ -72,7 +80,7 @@ export async function createBlock0({
     );
   });
 
-  const genesisFile = (await fs.readFile(genesisDefaultPath)).toString('utf8');
+  const genesisFile = (await fs.readFile(genesisYamlPath)).toString('utf8');
   const KEY_PLACEHOLDER = '!!CONSENSUS_ID_OVERRIDE!!';
   const [pre, post] = genesisFile.split(KEY_PLACEHOLDER);
   const genesisFileWithLeaderKey = [pre, publicKey, post].join('');
