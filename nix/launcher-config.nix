@@ -57,7 +57,7 @@ let
     "--genesis-block-hash" "${jormungandrLib.environments.${environment}.genesisHash}"
     "--state-dir" dataDir.${os}
     "--"
-    "--config" "\${DAEDALUS_INSTALL_DIRECTORY}/jormungandr-config.yaml"
+    "--config" "\${DAEDALUS_INSTALL_DIRECTORY}\\jormungandr-config.yaml"
   ];
   walletArgs.selfnode.macos64 = [
     "launch"
