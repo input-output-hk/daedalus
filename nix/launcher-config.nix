@@ -115,7 +115,7 @@ let
     updateArchive = "/bar";
   };
   installerConfig = {
-    installDirectory = "Daedalus/${environment}";
+    installDirectory = if os == "windows" then "Daedalus\\${environment}" else "Daedalus/${environment}";
     spacedName = "Daedalus ${installDirectorySuffix.${environment}}";
     macPackageName = "Daedalus${installDirectorySuffix.${environment}}";
     dataDir = dataDir.${os};
