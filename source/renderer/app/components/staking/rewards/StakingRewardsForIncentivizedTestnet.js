@@ -154,6 +154,12 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
         <SVGInline svg={downloadIcon} className={styles.downloadIcon} />
       </>
     );
+    const exportCsvButtonClasses = ctx =>
+      classNames([
+        'primary',
+        styles.actionButton,
+        ctx.scrollTop > 10 ? styles.actionButtonFaded : null,
+      ]);
 
     return (
       <StakingPageScrollContext.Consumer>
@@ -165,11 +171,7 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
               </div>
               {!noRewards && (
                 <Button
-                  className={classNames([
-                    'primary',
-                    styles.actionButton,
-                    context.scrollTop > 10 ? styles.actionButtonFaded : null,
-                  ])}
+                  className={exportCsvButtonClasses(context)}
                   label={exportCsvButtonLabel}
                   onClick={() =>
                     this.handleExportCsv(availableTableHeaders, sortedRewards)

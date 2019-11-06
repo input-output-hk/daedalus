@@ -29,7 +29,6 @@ export const StakingPageScrollContext = React.createContext<ContextValue>({
 export default class StakingWithNavigation extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
-
     this.state = {
       scrollTop: 0,
     };

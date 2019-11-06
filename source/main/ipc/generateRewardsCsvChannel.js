@@ -18,16 +18,13 @@ export const handleRewardsCsvRequests = () => {
   generateRewardsCsvChannel.onReceive(
     (request: GenerateRewardsCsvRendererRequest) =>
       new Promise((resolve, reject) => {
-        // Prepare params
         const { rewards, filePath } = request;
 
-        // Stringify rewards data
         csvStringify(rewards, (csvErr, output) => {
           if (csvErr) {
             return reject(csvErr);
           }
 
-          // Write file to disk
           return fs.writeFile(filePath, output, fileErr => {
             if (fileErr) {
               return reject(fileErr);
