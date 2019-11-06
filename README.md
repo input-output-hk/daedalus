@@ -87,9 +87,7 @@ Dependencies are updated with the follow nix command: `nix-shell -A devops --run
    ```
    and then add the following lines:
    ```
-   extra-sandbox-paths = /System/Library/Frameworks
    substituters = https://hydra.iohk.io https://cache.nixos.org/
-   trusted-substituters =
    trusted-public-keys = hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ= cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=
    max-jobs = 2  # run at most two builds at once
    cores = 0     # the builder will use all available CPU cores
