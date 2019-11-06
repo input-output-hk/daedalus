@@ -57,7 +57,7 @@ let
     # the native makensis binary, with cross-compiled windows stubs
     nsis = nsisNixPkgs.callPackage ./nix/nsis.nix {};
 
-    launcherConfigs = import ./nix/launcher-config.nix {
+    launcherConfigs = self.callPackage ./nix/launcher-config.nix {
       inherit (self) jormungandrLib;
       environment = cluster;
       os = ostable.${target};
@@ -211,7 +211,7 @@ let
       cp -v ${self.unpackedCardano}/{bin,config}/* .
       cp ${self.uninstaller}/uninstall.exe ../uninstall.exe
       cp -v ${self.nsisFiles}/{daedalus.nsi,launcher-config.yaml} .
-      if [ -f ${self.nsisFiles}/jormungandr-config.yaml ] then
+      if [ -f ${self.nsisFiles}/jormungandr-config.yaml ]; then
         cp -v ${self.nsisFiles}/jormungandr-config.yaml .
       fi
       chmod -R +w .
