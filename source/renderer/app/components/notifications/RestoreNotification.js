@@ -17,8 +17,12 @@ const messages = defineMessages({
   },
 });
 
+type Props = {
+  restoreProgress?: number,
+};
+
 @observer
-export default class RestoreNotification extends Component {
+export default class RestoreNotification extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
