@@ -1126,8 +1126,8 @@ const _createWalletFromServerData = action(
         : new BigNumber(balance.total.quantity);
     const walletRewardAmount =
       reward.unit === 'lovelace'
-        ? reward.quantity / LOVELACES_PER_ADA
-        : reward.quantity || 0;
+        ? new BigNumber(reward.quantity).dividedBy(LOVELACES_PER_ADA)
+        : new BigNumber(reward.quantity || 0);
 
     return new Wallet({
       id,
