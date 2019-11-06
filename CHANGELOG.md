@@ -17,6 +17,7 @@ Changelog
 
 ### Chores
 
+- Changed wallet restoration notification message ([PR ](https://github.com/input-output-hk/daedalus/pull/))
 - Removed parallel wallet restoration limitation ([PR 1638](https://github.com/input-output-hk/daedalus/pull/1638))
 - Disabled create a paper wallet certificate feature ([PR 1640](https://github.com/input-output-hk/daedalus/pull/1640))
 - Removed all notions of account indexes from the codebase ([PR 1614](https://github.com/input-output-hk/daedalus/pull/1614))

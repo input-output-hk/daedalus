@@ -1355,7 +1355,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Wallet restore in progress",
+        "defaultMessage": "!!!The balance and transaction history of this wallet is being synced with the blockchain.",
         "description": "Status message \"Wallet restore in progress\" shown while wallet is being restored.",
         "end": {
           "column": 3,

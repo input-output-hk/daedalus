@@ -10,25 +10,21 @@ import styles from './RestoreNotification.scss';
 const messages = defineMessages({
   activeRestoreMessage: {
     id: 'wallet.statusMessages.activeRestore',
-    defaultMessage: '!!!Wallet restore in progress',
+    defaultMessage:
+      '!!!The balance and transaction history of this wallet is being synced with the blockchain.',
     description:
       'Status message "Wallet restore in progress" shown while wallet is being restored.',
   },
 });
 
-type Props = {
-  restoreProgress: number,
-};
-
 @observer
-export default class RestoreNotification extends Component<Props> {
+export default class RestoreNotification extends Component {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
 
   render() {
     const { intl } = this.context;
-    const { restoreProgress } = this.props;
 
     const restoreNotificationClasses = classnames([
       styles.component,
@@ -38,8 +34,7 @@ export default class RestoreNotification extends Component<Props> {
     return (
       <div className={restoreNotificationClasses}>
         <span className={styles.text}>
-          {intl.formatMessage(messages.activeRestoreMessage)}: {restoreProgress}
-          %
+          {intl.formatMessage(messages.activeRestoreMessage)}
         </span>
         <SVGInline svg={spinnerIcon} className={styles.icon} />
       </div>
