@@ -65,6 +65,11 @@ export default class Wallet extends Component<Props> {
     const isRestoreActive =
       get(wallets, ['active', 'syncState', 'status']) ===
       WalletSyncStateStatuses.RESTORING;
+    const restoreProgress = get(
+      activeWallet,
+      ['syncState', 'progress', 'quantity'],
+      0
+    );
 
     const {
       recoveryPhraseVerificationStatus,
@@ -75,7 +80,9 @@ export default class Wallet extends Component<Props> {
 
     return (
       <MainLayout>
-        {isRestoreActive ? <RestoreNotification /> : null}
+        {isRestoreActive ? (
+          <RestoreNotification restoreProgress={restoreProgress} />
+        ) : null}
 
         <WalletWithNavigation
           isActiveScreen={this.isActiveScreen}
