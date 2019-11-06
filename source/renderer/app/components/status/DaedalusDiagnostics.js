@@ -147,16 +147,6 @@ const messages = defineMessages({
     defaultMessage: '!!!Sync Percentage',
     description: 'Sync Percentage',
   },
-  networkBlockHeight: {
-    id: 'daedalus.diagnostics.dialog.networkBlockHeight',
-    defaultMessage: '!!!Network Block Height',
-    description: 'Network Block Height',
-  },
-  localBlockHeight: {
-    id: 'daedalus.diagnostics.dialog.localBlockHeight',
-    defaultMessage: '!!!Local Block Height',
-    description: 'Local Block Height',
-  },
   remainingUnsyncedBlocks: {
     id: 'daedalus.diagnostics.dialog.remainingUnsyncedBlocks',
     defaultMessage: '!!!Remaining Unsynced Blocks',
@@ -321,6 +311,36 @@ const messages = defineMessages({
     id: 'daedalus.diagnostics.dialog.serviceUnreachable',
     defaultMessage: '!!!NTP Service unreachable',
     description: 'NTP Service unreachable',
+  },
+  message: {
+    id: 'daedalus.diagnostics.dialog.message',
+    defaultMessage: '!!!message',
+    description: 'message',
+  },
+  code: {
+    id: 'daedalus.diagnostics.dialog.code',
+    defaultMessage: '!!!code',
+    description: 'code',
+  },
+  lastNetworkBlock: {
+    id: 'daedalus.diagnostics.dialog.lastNetworkBlock',
+    defaultMessage: '!!!Last network block',
+    description: 'Last network block',
+  },
+  lastSynchronizedBlock: {
+    id: 'daedalus.diagnostics.dialog.lastSynchronizedBlock',
+    defaultMessage: '!!!Last synchronized block',
+    description: 'Last synchronized block',
+  },
+  epoch: {
+    id: 'daedalus.diagnostics.dialog.epoch',
+    defaultMessage: '!!!epoch',
+    description: 'epoch',
+  },
+  slot: {
+    id: 'daedalus.diagnostics.dialog.slot',
+    defaultMessage: '!!!slot',
+    description: 'slot',
   },
 });
 
@@ -660,9 +680,9 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                 <tr>
                   <th>
                     <div className={styles.error}>
-                      message: {message || '-'}
+                      {intl.formatMessage(messages.message)}: {message || '-'}
                       <br />
-                      code: {code || '-'}
+                      {intl.formatMessage(messages.code)}: {code || '-'}
                     </div>
                   </th>
                 </tr>
@@ -699,19 +719,21 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                 <td>{syncPercentage.toFixed(2)}%</td>
               </tr>
               <tr>
-                <th>{intl.formatMessage(messages.networkBlockHeight)}:</th>
-                <td>
-                  {networkTip
-                    ? `epoch: ${networkTip.epoch} | slot: ${networkTip.slot}`
-                    : 'epoch: - | slot: -'}
+                <th>{intl.formatMessage(messages.lastNetworkBlock)}:</th>
+                <td className={styles.blockchainHeightInfo}>
+                  <span>{intl.formatMessage(messages.epoch)}:</span>{' '}
+                  {get(networkTip, 'epoch', '-')}
+                  <span>{intl.formatMessage(messages.slot)}:</span>{' '}
+                  {get(networkTip, 'slot', '-')}
                 </td>
               </tr>
               <tr>
-                <th>{intl.formatMessage(messages.localBlockHeight)}:</th>
-                <td>
-                  {localTip
-                    ? `epoch: ${localTip.epoch} | slot: ${localTip.slot}`
-                    : 'epoch: - | slot: -'}
+                <th>{intl.formatMessage(messages.lastSynchronizedBlock)}:</th>
+                <td className={styles.blockchainHeightInfo}>
+                  <span>{intl.formatMessage(messages.epoch)}:</span>{' '}
+                  {get(localTip, 'epoch', '-')}
+                  <span>{intl.formatMessage(messages.slot)}:</span>{' '}
+                  {get(localTip, 'slot', '-')}
                 </td>
               </tr>
               {/*
