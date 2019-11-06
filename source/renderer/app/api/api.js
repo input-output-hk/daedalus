@@ -44,6 +44,8 @@ import { updateWallet } from './wallets/requests/updateWallet';
 import { getWalletUtxos } from './wallets/requests/getWalletUtxos';
 import { getWallet } from './wallets/requests/getWallet';
 import { getWalletIdAndBalance } from './wallets/requests/getWalletIdAndBalance';
+import { transferFundsCalculateFee } from './wallets/requests/transferFundsCalculateFee';
+import { transferFunds } from './wallets/requests/transferFunds';
 
 // News requests
 import { getNews } from './news/requests/getNews';
@@ -126,6 +128,10 @@ import type {
   GetWalletRequest,
   GetWalletIdAndBalanceRequest,
   GetWalletIdAndBalanceResponse,
+  TransferFundsCalculateFeeRequest,
+  TransferFundsCalculateFeeResponse,
+  TransferFundsRequest,
+  TransferFundsResponse,
 } from './wallets/types';
 
 // News Types
@@ -936,6 +942,49 @@ export default class AdaApi {
       };
     } catch (error) {
       Logger.error('AdaApi::getWalletIdAndBalance error', { error });
+      throw new GenericApiError();
+    }
+  };
+
+  transferFundsCalculateFee = async (
+    request: TransferFundsCalculateFeeRequest
+  ): Promise<TransferFundsCalculateFeeResponse> => {
+    const { sourceWalletId } = request;
+    Logger.debug('AdaApi::transferFundsCalculateFee called', {
+      parameters: { sourceWalletId },
+    });
+    try {
+      const response: TransferFundsCalculateFeeResponse = await transferFundsCalculateFee(
+        this.config,
+        {
+          sourceWalletId,
+        }
+      );
+      Logger.debug('AdaApi::transferFundsCalculateFee success', { response });
+      return response;
+    } catch (error) {
+      Logger.error('AdaApi::transferFundsCalculateFee error', { error });
+      throw new GenericApiError();
+    }
+  };
+
+  transferFunds = async (
+    request: TransferFundsRequest
+  ): Promise<TransferFundsResponse> => {
+    const { sourceWalletId, targetWalletId, passphrase } = request;
+    Logger.debug('AdaApi::transferFunds called', {
+      parameters: { sourceWalletId, targetWalletId, passphrase },
+    });
+    try {
+      const response: TransferFundsResponse = await transferFunds(this.config, {
+        sourceWalletId,
+        targetWalletId,
+        passphrase,
+      });
+      Logger.debug('AdaApi::transferFunds success', { response });
+      return response;
+    } catch (error) {
+      Logger.error('AdaApi::transferFunds error', { error });
       throw new GenericApiError();
     }
   };

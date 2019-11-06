@@ -16,25 +16,25 @@ export default class TransferFundsStep1Container extends Component<Props> {
   render() {
     const { stores, actions, onClose, onContinue } = this.props;
     const {
-      transferFundsWalletFromId,
-      transferFundsWalletToId,
+      transferFundsSourceWalletId,
+      transferFundsTargetWalletId,
       allLegacyWallets,
       allWallets,
     } = stores.wallets;
-    const { transferFundsSetWalletToId } = actions.wallets;
+    const { transferFundsSetTargetWalletId } = actions.wallets;
     const walletFrom = allLegacyWallets.find(
-      ({ id }) => id === transferFundsWalletFromId
+      ({ id }) => id === transferFundsSourceWalletId
     );
     if (!walletFrom) return null;
     return (
       <TransferFundsStep1Dialog
-        walletToId={transferFundsWalletToId}
+        targetWalletId={transferFundsTargetWalletId}
         walletFrom={walletFrom}
         wallets={allWallets}
         onClose={onClose}
         onContinue={onContinue}
-        onSetToWallet={(walletToId: string) =>
-          transferFundsSetWalletToId.trigger({ walletToId })
+        onSetSourceWallet={(targetWalletId: string) =>
+          transferFundsSetTargetWalletId.trigger({ targetWalletId })
         }
       />
     );

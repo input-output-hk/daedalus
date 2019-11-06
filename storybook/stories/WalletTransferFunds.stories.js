@@ -57,9 +57,13 @@ storiesOf('WalletTransferFunds', module)
       <TransferFundsStep1Dialog
         onClose={action('onClose')}
         onContinue={action('onContinue')}
-        onSetToWallet={action('onSetToWallet')}
+        onSetSourceWallet={action('onSetSourceWallet')}
         walletFrom={step1WalletSelectValue}
-        walletToId={select('walletToId', step1WalletIdOptions, wallets[0].id)}
+        targetWalletId={select(
+          'targetWalletId',
+          step1WalletIdOptions,
+          wallets[0].id
+        )}
         wallets={wallets}
       />
     );
@@ -76,5 +80,7 @@ storiesOf('WalletTransferFunds', module)
       amount="3"
       fees="+ 12.042481"
       total="15.042481"
+      walletFrom={wallets[0]}
+      walletTo={wallets[1]}
     />
   ));

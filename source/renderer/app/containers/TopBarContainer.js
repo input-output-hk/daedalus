@@ -41,8 +41,10 @@ export default class TopBarContainer extends Component<Props> {
       <WalletTestEnvironmentLabel network={network} />
     ) : null;
 
-    const onTransferFunds = (walletFromId: string) =>
-      actions.wallets.transferFundsSetWalletFromId.trigger({ walletFromId });
+    const onTransferFunds = (sourceWalletId: string) =>
+      actions.wallets.transferFundsSetSourceWalletId.trigger({
+        sourceWalletId,
+      });
 
     const { unread } = newsFeed.newsFeedData;
     const hasUnreadNews = unread.length > 0;

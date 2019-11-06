@@ -15,15 +15,15 @@ const messages = defineMessages({
     defaultMessage: '!!!Transfer funds from the legacy wallet',
     description: 'Title  in the transfer funds form.',
   },
-  fromWallet: {
-    id: 'wallet.transferFunds.dialog1.fromWallet',
+  sourceWallet: {
+    id: 'wallet.transferFunds.dialog1.sourceWallet',
     defaultMessage: '!!!From wallet',
-    description: 'fromWallet in the transfer funds form.',
+    description: 'sourceWallet in the transfer funds form.',
   },
-  toWallet: {
-    id: 'wallet.transferFunds.dialog1.toWallet',
+  targetWallet: {
+    id: 'wallet.transferFunds.dialog1.targetWallet',
     defaultMessage: '!!!To walet',
-    description: 'toWallet in the transfer funds form.',
+    description: 'targetWallet in the transfer funds form.',
   },
   buttonLabel: {
     id: 'global.dialog.button.continue',
@@ -35,8 +35,8 @@ const messages = defineMessages({
 type Props = {
   onClose: Function,
   onContinue: Function,
-  onSetToWallet: Function,
-  walletToId?: string,
+  onSetSourceWallet: Function,
+  targetWalletId?: string,
   walletFrom: $Shape<Wallet>,
   wallets: Array<$Shape<Wallet>>,
 };
@@ -51,8 +51,8 @@ export default class TransferFundsStep1Dialog extends Component<Props> {
     const {
       onClose,
       onContinue,
-      onSetToWallet,
-      walletToId,
+      onSetSourceWallet,
+      targetWalletId,
       walletFrom,
       wallets,
     } = this.props;
@@ -65,6 +65,7 @@ export default class TransferFundsStep1Dialog extends Component<Props> {
             label: intl.formatMessage(messages.buttonLabel),
             onClick: onContinue,
             primary: true,
+            disabled: !this.props.targetWalletId,
           },
         ]}
         closeOnOverlayClick
@@ -72,7 +73,7 @@ export default class TransferFundsStep1Dialog extends Component<Props> {
         closeButton={<DialogCloseButton />}
       >
         <p className={styles.label}>
-          {intl.formatMessage(messages.fromWallet)}
+          {intl.formatMessage(messages.sourceWallet)}
         </p>
         <div className={styles.walletFrom}>
           <WalletsDropdownOption
@@ -82,10 +83,10 @@ export default class TransferFundsStep1Dialog extends Component<Props> {
           />
         </div>
         <WalletsDropdown
-          label={intl.formatMessage(messages.toWallet)}
+          label={intl.formatMessage(messages.targetWallet)}
           wallets={wallets}
-          onChange={onSetToWallet}
-          value={walletToId}
+          onChange={onSetSourceWallet}
+          value={targetWalletId}
         />
       </Dialog>
     );

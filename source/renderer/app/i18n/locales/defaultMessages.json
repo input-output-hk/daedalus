@@ -6831,13 +6831,13 @@
       },
       {
         "defaultMessage": "!!!From wallet",
-        "description": "fromWallet in the transfer funds form.",
+        "description": "sourceWallet in the transfer funds form.",
         "end": {
           "column": 3,
           "line": 22
         },
         "file": "source/renderer/app/components/wallet/transfer-funds/TransferFundsStep1Dialog.js",
-        "id": "wallet.transferFunds.dialog1.fromWallet",
+        "id": "wallet.transferFunds.dialog1.sourceWallet",
         "start": {
           "column": 14,
           "line": 18
@@ -6845,13 +6845,13 @@
       },
       {
         "defaultMessage": "!!!To walet",
-        "description": "toWallet in the transfer funds form.",
+        "description": "targetWallet in the transfer funds form.",
         "end": {
           "column": 3,
           "line": 27
         },
         "file": "source/renderer/app/components/wallet/transfer-funds/TransferFundsStep1Dialog.js",
-        "id": "wallet.transferFunds.dialog1.toWallet",
+        "id": "wallet.transferFunds.dialog1.targetWallet",
         "start": {
           "column": 12,
           "line": 23

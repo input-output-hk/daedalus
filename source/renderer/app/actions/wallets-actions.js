@@ -49,8 +49,13 @@ export default class WalletsActions {
   /* ----------  Transfer Funds  ---------- */
   transferFundsNextStep: Action<any> = new Action();
   transferFundsPrevStep: Action<any> = new Action();
-  transferFundsSetWalletFromId: Action<{ walletFromId: string }> = new Action();
-  transferFundsSetWalletToId: Action<{ walletToId: string }> = new Action();
+  transferFundsSetSourceWalletId: Action<{
+    sourceWalletId: string,
+  }> = new Action();
+  transferFundsSetTargetWalletId: Action<{
+    targetWalletId: string,
+  }> = new Action();
   transferFundsRedeem: Action<any> = new Action();
   transferFundsClose: Action<any> = new Action();
+  transferFundsCalculateFee: Action<{ targetWalletId: string }> = new Action();
 }

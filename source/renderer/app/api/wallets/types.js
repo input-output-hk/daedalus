@@ -185,3 +185,44 @@ export type GetWalletRecoveryPhraseFromCertificateRequest = {
 export type GetWalletRequest = {
   walletId: string,
 };
+
+export type TransferFundsCalculateFeeRequest = {
+  sourceWalletId: string,
+};
+
+export type TransferFundsCalculateFeeResponse = {
+  migration_cost: {
+    quantity: number,
+    unit: 'lovelace',
+  },
+};
+
+export type TransferFundsRequest = {
+  targetWalletId: string,
+  targetWalletId: string,
+  passphrase: string,
+};
+
+export type TransferFundsResponse = {
+  id: string,
+  amount: {
+    quantity: number,
+    unit: 'lovelace',
+  },
+  inserted_at: {
+    time: Date,
+    block: Object,
+  },
+  pending_since: {
+    time: '2019-11-06T19:36:27.243Z',
+    block: Object,
+  },
+  depth: {
+    quantity: number,
+    unit: 'block',
+  },
+  direction: 'outgoing',
+  inputs: Array<any>,
+  outputs: Array<any>,
+  status: string,
+};

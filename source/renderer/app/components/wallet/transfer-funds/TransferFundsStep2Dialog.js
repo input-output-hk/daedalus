@@ -15,7 +15,7 @@ const messages = defineMessages({
   description: {
     id: 'wallet.transferFunds.dialog2.label.description',
     defaultMessage:
-      '!!!Confirm transfer from the Legacy wallet name wallet to the Main wallet wallet.',
+      '!!!Confirm transfer from the {sourceWalletName} name wallet to the {targetWalletName} wallet.',
     description: 'description in the transfer funds form.',
   },
   labelTo: {
@@ -50,6 +50,8 @@ type Props = {
   onClose: Function,
   onBack: Function,
   addresses: Array<any>,
+  walletFrom: $Shape<Wallet>,
+  walletTo: $Shape<Wallet>,
   amount: string,
   fees: string,
   total: string,
@@ -70,6 +72,8 @@ export default class TransferFundsStep2Dialog extends Component<Props> {
       amount,
       fees,
       total,
+      walletFrom,
+      walletTo,
     } = this.props;
 
     return (
