@@ -33,7 +33,7 @@ const messages = defineMessages({
 
 type Props = {
   onLearnMore: Function,
-  onMove: Function,
+  onTransferFunds: Function,
 };
 
 @observer
@@ -44,7 +44,7 @@ export default class LegacyNotification extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { onLearnMore, onMove } = this.props;
+    const { onLearnMore, onTransferFunds } = this.props;
     const title = intl.formatMessage(messages.title);
     const description = intl.formatMessage(messages.description);
     const actionLearnMore = intl.formatMessage(messages.actionLearnMore);
@@ -64,7 +64,7 @@ export default class LegacyNotification extends Component<Props> {
           <Button
             className={styles.actionMove}
             label={actionMove}
-            onClick={onMove}
+            onClick={onTransferFunds}
             skin={ButtonSkin}
           />
         </div>

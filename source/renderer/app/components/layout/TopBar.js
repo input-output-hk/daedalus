@@ -16,12 +16,19 @@ type Props = {
   leftIcon?: ?string,
   children?: ?Node,
   activeWallet?: ?Wallet,
+  onTransferFunds?: Function,
 };
 
 @observer
 export default class TopBar extends Component<Props> {
   render() {
-    const { onLeftIconClick, leftIcon, activeWallet, children } = this.props;
+    const {
+      onLeftIconClick,
+      leftIcon,
+      activeWallet,
+      children,
+      onTransferFunds,
+    } = this.props;
 
     const topBarStyles = classNames([
       styles.topBar,
@@ -62,8 +69,11 @@ export default class TopBar extends Component<Props> {
           )}
           {children}
         </div>
-        {activeWallet && activeWallet.isLegacy && (
-          <LegacyNotification onLearnMore={() => null} onMove={() => null} />
+        {activeWallet && activeWallet.isLegacy && onTransferFunds && (
+          <LegacyNotification
+            onLearnMore={() => null}
+            onTransferFunds={() => onTransferFunds(activeWallet.id)}
+          />
         )}
       </header>
     );

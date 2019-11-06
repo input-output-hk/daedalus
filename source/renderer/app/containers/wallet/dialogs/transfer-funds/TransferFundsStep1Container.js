@@ -18,10 +18,11 @@ export default class TransferFundsStep1Container extends Component<Props> {
     const {
       transferFundsWalletFromId,
       transferFundsWalletToId,
-      all: wallets,
+      allLegacyWallets,
+      allWallets,
     } = stores.wallets;
     const { transferFundsSetWalletToId } = actions.wallets;
-    const walletFrom = wallets.find(
+    const walletFrom = allLegacyWallets.find(
       ({ id }) => id === transferFundsWalletFromId
     );
     if (!walletFrom) return null;
@@ -29,7 +30,7 @@ export default class TransferFundsStep1Container extends Component<Props> {
       <TransferFundsStep1Dialog
         walletToId={transferFundsWalletToId}
         walletFrom={walletFrom}
-        wallets={wallets}
+        wallets={allWallets}
         onClose={onClose}
         onContinue={onContinue}
         onSetToWallet={(walletToId: string) =>

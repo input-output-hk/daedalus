@@ -41,6 +41,9 @@ export default class TopBarContainer extends Component<Props> {
       <WalletTestEnvironmentLabel network={network} />
     ) : null;
 
+    const onTransferFunds = (walletFromId: string) =>
+      actions.wallets.transferFundsSetWalletFromId.trigger({ walletFromId });
+
     const { unread } = newsFeed.newsFeedData;
     const hasUnreadNews = unread.length > 0;
 
@@ -49,6 +52,7 @@ export default class TopBarContainer extends Component<Props> {
         leftIcon={leftIcon}
         onLeftIconClick={actions.sidebar.toggleSubMenus.trigger}
         activeWallet={activeWallet}
+        onTransferFunds={onTransferFunds}
       >
         {testnetLabel}
         <NodeSyncStatusIcon networkStatus={networkStatus} />

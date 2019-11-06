@@ -2,10 +2,12 @@ const axios = require('axios')
 
 const mnemonics = [
   ['connect', 'fish', 'fitness', 'palace', 'electric', 'suit', 'student', 'page', 'home', 'scissors', 'moon', 'staff'],
+  ['judge', 'sting', 'fish', 'script', 'silent', 'soup', 'chef', 'very', 'employ', 'wage', 'cloud', 'tourist'],
 ]
 
 const walletNames = [
-  'Legacy',
+  'Astrid',
+  'Jesse',
 ]
 
 const API_PORT = process.env.API_PORT || 8088

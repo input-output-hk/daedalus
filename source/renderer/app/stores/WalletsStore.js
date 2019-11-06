@@ -387,6 +387,9 @@ export default class WalletsStore extends Store {
     walletFromId: string,
   }) => {
     this.transferFundsWalletFromId = walletFromId;
+    // Resets the target wallet
+    this.transferFundsWalletToId = '';
+    // Sets to first step
     this.transferFundsStep = 1;
   };
   @action _transferFundsSetWalletToId = ({
@@ -428,7 +431,7 @@ export default class WalletsStore extends Store {
   }
 
   @computed get all(): Array<Wallet> {
-    return [...this.allWallets, ...this.allLegacy];
+    return [...this.allWallets, ...this.allLegacyWallets];
   }
 
   @computed get allWallets(): Array<Wallet> {
@@ -437,7 +440,7 @@ export default class WalletsStore extends Store {
       : [];
   }
 
-  @computed get allLegacy(): Array<Wallet> {
+  @computed get allLegacyWallets(): Array<Wallet> {
     return this.walletsRequest.result
       ? this.walletsRequest.result.filter(({ isLegacy }: Wallet) => isLegacy)
       : [];
