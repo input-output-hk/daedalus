@@ -576,7 +576,7 @@
   "wallet.settings.utxos.tooltip": "<b>{previousWalletAmount}</b>～<b>{walletAmount}</b>ADAを含む<br />UTXO数は<b>{walletUtxosAmount}</b>",
   "wallet.settings.utxos.tooltipFirst": "<b>{walletAmount}</b>ADAを含む<br />UTXO数は<b>{walletUtxosAmount}</b>",
   "wallet.settings.utxos.tooltipLast": "<b>{walletAmount}</b>以上のADAを含む<br />UTXO数は<b>{walletUtxosAmount}</b>",
-  "wallet.statusMessages.activeRestore": "ウォレットを復元中",
+  "wallet.statusMessages.activeRestore": "このウォレットの残高と取引履歴は {percentage}% ブロックチェーンと同期しました。",
   "wallet.summary.no.transactions": "最近のトランザクションはありません",
   "wallet.summary.page.pendingIncomingConfirmationLabel": "保留中の入金確認",
   "wallet.summary.page.pendingOutgoingConfirmationLabel": "保留中の送金確認",
