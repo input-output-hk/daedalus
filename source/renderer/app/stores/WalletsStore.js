@@ -428,6 +428,10 @@ export default class WalletsStore extends Store {
   }
 
   @computed get all(): Array<Wallet> {
+    return [...this.allWallets, ...this.allLegacy];
+  }
+
+  @computed get allWallets(): Array<Wallet> {
     return this.walletsRequest.result
       ? this.walletsRequest.result.filter(({ isLegacy }: Wallet) => !isLegacy)
       : [];
