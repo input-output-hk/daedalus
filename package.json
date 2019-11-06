@@ -151,7 +151,7 @@
     "check-disk-space": "1.5.0",
     "chroma-js": "2.0.3",
     "classnames": "2.2.6",
-    "csv-stringify": "^5.3.3",
+    "csv-stringify": "5.3.3",
     "electron": "3.0.14",
     "electron-debug": "2.0.0",
     "electron-log-daedalus": "2.2.20",
