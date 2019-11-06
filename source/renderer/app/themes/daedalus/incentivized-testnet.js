@@ -721,9 +721,7 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--theme-transactions-search-background-color': '#121326',
     '--theme-transactions-state-ok-background-color': '#2cbb69',
     '--theme-transactions-state-pending-background-color':
-      'rgba(188, 196, 205, 0.4)',
-    '--theme-transactions-state-pending-stripes-color':
-      'rgba(189, 197, 206, 0.4)',
+      'rgba(255, 255, 255, 0.3)',
     '--theme-transactions-state-text-color': 'rgba(18, 19, 38, 0.8)',
   },
   uploader: {

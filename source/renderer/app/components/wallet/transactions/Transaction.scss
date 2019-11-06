@@ -80,6 +80,7 @@
 
 .pendingLabel,
 .okLabel {
+  background-color: var(--theme-transactions-state-pending-background-color);
   border-radius: 3px;
   color: var(--theme-transactions-state-text-color);
   display: inline-block;
@@ -90,34 +91,6 @@
   margin-top: 3px;
   padding: 0 9px;
   text-transform: uppercase;
-}
-
-.pendingLabel {
-  :global {
-    @keyframes pending-label-animation {
-      0% {
-        background-position: 0 0;
-      }
-      100% {
-        background-position: 50px 50px;
-      }
-    }
-  }
-  animation: pending-label-animation 2s linear infinite;
-
-  background-color: var(--theme-transactions-state-pending-background-color);
-  background-image: linear-gradient(
-    -45deg,
-    var(--theme-transactions-state-pending-stripes-color) 25%,
-    transparent 25%,
-    transparent 50%,
-    var(--theme-transactions-state-pending-stripes-color) 50%,
-    var(--theme-transactions-state-pending-stripes-color) 75%,
-    transparent 75%,
-    transparent
-  );
-  background-size: 50px 50px;
-  overflow: hidden;
 }
 
 .okLabel {
