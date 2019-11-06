@@ -30,15 +30,26 @@ export default class TransactionTypeIcon extends Component<Props> {
     return NOW - TXN_PENDING_SINCE;
   };
 
-  handlePendingTxn = () => {
-    const TIME_PENDING = this.getTimePending(this.props.txnDate);
-    if (TIME_PENDING > PENDING_LIMIT) {
-      return this.renderPendingWarningIcon();
+  applyIconStyles = (iconType: string): string => {
+    if (iconType !== TransactionStates.PENDING) {
+      return iconType;
     }
-    return this.renderPendingIcon();
+    const TIME_PENDING = this.getTimePending(this.props.txnDate);
+    if (TIME_PENDING < PENDING_LIMIT) {
+      return `${iconType}Regular`;
+    }
+    return `${iconType}Warning`;
   };
 
-  renderPendingIcon = () => (
+  renderPendingIcon = () => {
+    const TIME_PENDING = this.getTimePending(this.props.txnDate);
+    if (TIME_PENDING < PENDING_LIMIT) {
+      return this.renderPendingRegularIcon();
+    }
+    return this.renderPendingWarningIcon();
+  };
+
+  renderPendingRegularIcon = () => (
     <div className={styles.pendingTxnIconWrapper}>
       <LoadingSpinner
         skin={LoadingSpinnerSkin}
@@ -59,7 +70,7 @@ export default class TransactionTypeIcon extends Component<Props> {
 
   renderIcon = (icon: string) => {
     if (this.props.iconType === TransactionStates.PENDING) {
-      return this.handlePendingTxn();
+      return this.renderPendingIcon();
     }
     return <SVGInline svg={icon} className={styles.transactionTypeIcon} />;
   };
@@ -69,7 +80,7 @@ export default class TransactionTypeIcon extends Component<Props> {
 
     const transactionTypeIconClasses = classNames([
       styles.transactionTypeIconWrapper,
-      styles[iconType],
+      styles[this.applyIconStyles(iconType)],
     ]);
 
     let icon;

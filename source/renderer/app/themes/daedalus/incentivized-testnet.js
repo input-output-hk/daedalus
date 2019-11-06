@@ -710,7 +710,9 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--theme-transactions-icon-type-exchange-background-color': '#10aca4',
     '--theme-transactions-icon-type-expend-background-color': '#709cf0',
     '--theme-transactions-icon-type-income-background-color': '#2cbb69',
-    '--theme-transactions-icon-type-pending-background-color':
+    '--theme-transactions-icon-type-pending-regular-background-color':
+      'rgba(255, 255, 255, 0.3)',
+    '--theme-transactions-icon-type-pending-warning-background-color':
       'rgba(236, 93, 107, 0.8)',
     '--theme-transactions-list-background-color': '#1e1f31',
     '--theme-transactions-list-border-color': '1e1f31',
