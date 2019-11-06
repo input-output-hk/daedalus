@@ -171,7 +171,7 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
                 </div>
               )}
 
-              {sortedRewards && (
+              {sortedRewards.length > 0 && (
                 <table>
                   <thead>
                     <tr>
