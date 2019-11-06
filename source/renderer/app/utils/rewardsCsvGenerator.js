@@ -1,8 +1,9 @@
 // @flow
 import { generateRewardsCsvChannel } from '../ipc/generateRewardsCsvChannel';
+import type { CsvRecord } from '../../../common/types/rewards-csv-request.types';
 
 type Params = {
-  rewards: Array<Array<string>>,
+  rewards: Array<CsvRecord>,
   filePath: string,
 };
 

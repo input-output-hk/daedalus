@@ -6,6 +6,7 @@ import { generateFileNameWithTimestamp } from '../../../../common/utils/files';
 import StakingRewards from '../../components/staking/rewards/StakingRewards';
 import StakingRewardsForIncentivizedTestnet from '../../components/staking/rewards/StakingRewardsForIncentivizedTestnet';
 import type { InjectedProps } from '../../types/injectedPropsType';
+import type { CsvRecord } from '../../../../common/types/rewards-csv-request.types';
 
 const messages = defineMessages({
   learnMoreLinkUrl: {
@@ -33,7 +34,7 @@ export default class StakingRewardsPage extends Component<Props> {
     this.props.stores.app.openExternalLink(learnMoreLinkUrl);
   };
 
-  onExportCsv = (rewards: Array<Array<string>>) => {
+  onExportCsv = (rewards: Array<CsvRecord>) => {
     const {
       actions: { wallets },
     } = this.props;

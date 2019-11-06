@@ -1,5 +1,6 @@
 // @flow
+export type CsvRecord = Array<string>;
 export type GenerateRewardsCsvParams = {
-  rewards: Array<Array<string>>,
+  rewards: Array<CsvRecord>,
   filePath: string,
 };

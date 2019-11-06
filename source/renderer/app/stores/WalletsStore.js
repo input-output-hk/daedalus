@@ -28,6 +28,7 @@ import {
   WALLET_RESTORE_TYPES,
 } from '../config/walletsConfig';
 import { TESTNET } from '../../../common/types/environment.types';
+import type { CsvRecord } from '../../../common/types/rewards-csv-request.types';
 import type { walletExportTypeChoices } from '../types/walletExportTypes';
 import type { WalletImportFromFileParams } from '../actions/wallets-actions';
 import type LocalizableError from '../i18n/LocalizableError';
@@ -804,7 +805,7 @@ export default class WalletsStore extends Store {
    * @private
    */
   _generateRewardsCsv = flow(function* generateRewardsCsv(params: {
-    rewards: Array<Array<string>>,
+    rewards: Array<CsvRecord>,
     filePath: string,
   }) {
     try {
@@ -822,10 +823,7 @@ export default class WalletsStore extends Store {
     }
   }).bind(this);
 
-  _downloadRewardsCsv = async (
-    rewards: Array<Array<string>>,
-    filePath: string
-  ) => {
+  _downloadRewardsCsv = async (rewards: Array<CsvRecord>, filePath: string) => {
     try {
       await downloadRewardsCsv({
         rewards,
