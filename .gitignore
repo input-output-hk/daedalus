@@ -78,6 +78,7 @@ staging
 configuration.yaml
 log-config-prod.yaml
 mainnet-genesis-dryrun-with-stakeholders.json
+wallet-topology.yaml
 
 # nix-build results
 result*

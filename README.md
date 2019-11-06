@@ -70,7 +70,6 @@ API docs for pinned cardano-wallet version: https://input-output-hk.github.io/ca
    ```
    and then add the following lines:
    ```
-   sandbox = true
    extra-sandbox-paths = /System/Library/Frameworks
    substituters = https://hydra.iohk.io https://cache.nixos.org/
    trusted-substituters =
