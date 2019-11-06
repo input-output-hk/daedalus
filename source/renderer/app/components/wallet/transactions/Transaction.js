@@ -164,6 +164,8 @@ export default class Transaction extends Component<Props> {
       ? TransactionStates.PENDING
       : state;
 
+    const txnDate = data.date ? data.date : new Date();
+
     const componentStyles = classNames([
       styles.component,
       isExpanded ? 'Transaction_expanded' : null,
@@ -202,7 +204,7 @@ export default class Transaction extends Component<Props> {
     const iconType = isPendingTransaction
       ? TransactionStates.PENDING
       : data.type;
-    // console.log(`transaction: ${JSON.stringify(data, 0, 2)}`);
+
     return (
       <div
         onClick={this.toggleDetails.bind(this)}
@@ -211,7 +213,7 @@ export default class Transaction extends Component<Props> {
         aria-hidden
       >
         <div className={styles.toggler}>
-          <TransactionTypeIcon txnDate={data.date} iconType={iconType} />
+          <TransactionTypeIcon txnDate={txnDate} iconType={iconType} />
 
           <div className={styles.togglerContent}>
             <div className={styles.header}>
