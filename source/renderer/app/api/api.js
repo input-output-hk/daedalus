@@ -1187,7 +1187,7 @@ const _createTransactionFromServerData = action(
       date: utcStringToDate(date),
       description: '',
       addresses: {
-        from: inputs.map(({ address, id: inputId }) => address || inputId), // @API TODO: id is faked due to lack of informations
+        from: inputs.map(({ address }) => address),
         to: outputs.map(({ address }) => address),
       },
       state,

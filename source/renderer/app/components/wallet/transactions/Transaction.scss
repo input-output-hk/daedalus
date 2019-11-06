@@ -173,8 +173,18 @@
   }
 
   .addressRow,
-  .transactionIdRow {
+  .transactionIdRow,
+  .explorerLinkRow {
     line-height: 17px;
+  }
+
+  .explorerLinkRow {
+    span:nth-child(2) {
+      color: var(--theme-transactions-list-item-details-color);
+      font-family: var(--font-light);
+      font-size: 16px;
+      margin-left: 6px;
+    }
   }
 
   span {
@@ -188,16 +198,19 @@
       font-family: var(--font-mono);
       letter-spacing: -0.4px;
     }
+
+    &.explorerLink {
+      font-family: var(--font-regular);
+      font-size: 16px;
+    }
   }
 
   &.clickable {
     .transactionId,
-    .address {
+    .address,
+    .explorerLink {
       @include link(--theme-link-main-color);
-      border-bottom: 1px solid transparent;
-      &:hover {
-        border-bottom-color: var(--theme-link-main-color);
-      }
+      border-bottom-color: var(--theme-link-main-color);
     }
   }
 }

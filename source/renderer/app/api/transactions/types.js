@@ -43,7 +43,7 @@ export type Transaction = {
 export type Transactions = Array<Transaction>;
 
 export type TransactionInputs = {
-  address?: string,
+  address: string,
   amount?: TransactionAmount,
   id: string,
   index: number,
