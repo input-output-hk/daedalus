@@ -17,6 +17,7 @@ import {
 import globalMessages from '../../../i18n/global-messages';
 import type { TransactionState } from '../../../domains/WalletTransaction';
 import { getNetworkExplorerUrl } from '../../../utils/network';
+import { PENDING_LIMIT } from '../../../config/txnsConfig';
 
 /* eslint-disable consistent-return */
 
@@ -144,6 +145,37 @@ export default class Transaction extends Component<Props> {
     });
   }
 
+  getTimePending = (txnDate: Date): number => {
+    // right now (milliseconds) minus txn created_at date (milliseconds)
+    const NOW = moment().valueOf();
+    const TXN_PENDING_SINCE = moment(txnDate).valueOf();
+    return NOW - TXN_PENDING_SINCE;
+  };
+
+  renderTxnStateTag = () => {
+    const { intl } = this.context;
+    const {
+      data: { date },
+      isRestoreActive,
+      state,
+    } = this.props;
+
+    if (isRestoreActive || !date) return;
+
+    const PENDING_SINCE = this.getTimePending(date);
+    const isPendingTxn = state === TransactionStates.PENDING;
+    const pendingTimedOut = isPendingTxn && PENDING_SINCE > PENDING_LIMIT;
+    const styleLabel = pendingTimedOut
+      ? `${state}WarningLabel`
+      : `${state}Label`;
+
+    return (
+      <div className={styles[styleLabel]}>
+        {intl.formatMessage(stateTranslations[state])}
+      </div>
+    );
+  };
+
   render() {
     const {
       data,
@@ -151,7 +183,6 @@ export default class Transaction extends Component<Props> {
       state,
       formattedWalletAmount,
       onOpenExternalLink,
-      isRestoreActive,
       isExpanded,
     } = this.props;
     const { intl } = this.context;
@@ -159,10 +190,6 @@ export default class Transaction extends Component<Props> {
     const canOpenExplorer = onOpenExternalLink;
 
     const isPendingTransaction = state === TransactionStates.PENDING;
-
-    const transactionState = isPendingTransaction
-      ? TransactionStates.PENDING
-      : state;
 
     const txnDate = data.date ? data.date : new Date();
 
@@ -190,16 +217,6 @@ export default class Transaction extends Component<Props> {
 
     const currency = intl.formatMessage(globalMessages.currency);
     const symbol = adaSymbol;
-
-    const transactionStateTag = () => {
-      if (isRestoreActive) return;
-
-      return (
-        <div className={styles[`${transactionState}Label`]}>
-          {intl.formatMessage(stateTranslations[transactionState])}
-        </div>
-      );
-    };
 
     const iconType = isPendingTransaction
       ? TransactionStates.PENDING
@@ -234,7 +251,7 @@ export default class Transaction extends Component<Props> {
                 {intl.formatMessage(messages.type, { currency })},{' '}
                 {moment(data.date).format('hh:mm:ss A')}
               </div>
-              {transactionStateTag()}
+              {this.renderTxnStateTag()}
             </div>
           </div>
         </div>

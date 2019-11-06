@@ -79,7 +79,8 @@
 }
 
 .pendingLabel,
-.okLabel {
+.okLabel,
+.pendingWarningLabel {
   background-color: var(--theme-transactions-state-pending-background-color);
   border-radius: 3px;
   color: var(--theme-transactions-state-text-color);
@@ -95,6 +96,12 @@
 
 .okLabel {
   background-color: var(--theme-transactions-state-ok-background-color);
+}
+
+.pendingWarningLabel {
+  background-color: var(
+    --theme-transactions-state-pending-warning-background-color
+  );
 }
 
 .type {
