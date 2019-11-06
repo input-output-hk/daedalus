@@ -204,7 +204,7 @@ writeInstallerNSIS outName (Version fullVersion') installerConfig clusterName = 
                     , "DetailPrint \"liteFirewall::AddRule: $0\""
                     ]
 
-                createShortcut "$DESKTOP\\$SpacedName.lnk" (daedalusShortcut $ installDirectory installerConfig)
+                createShortcut "$DESKTOP\\$SpacedName.lnk" (daedalusShortcut $ spacedName installerConfig)
 
                 -- Uninstaller
                 let
