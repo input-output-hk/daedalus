@@ -53,6 +53,7 @@ type Props = {
   nameValidator: Function,
   activeField: ?string,
   isSubmitting: boolean,
+  isIncentivizedTestnet: boolean,
   isInvalid: boolean,
   showExportLink: boolean,
   lastUpdatedField: ?string,
@@ -99,6 +100,7 @@ export default class WalletSettings extends Component<Props> {
       nameValidator,
       activeField,
       isSubmitting,
+      isIncentivizedTestnet,
       isInvalid,
       lastUpdatedField,
       showExportLink,
@@ -147,28 +149,32 @@ export default class WalletSettings extends Component<Props> {
             }
           />
 
-          <WalletRecoveryPhrase
-            recoveryPhraseVerificationDate={recoveryPhraseVerificationDate}
-            recoveryPhraseVerificationStatus={recoveryPhraseVerificationStatus}
-            recoveryPhraseVerificationStatusType={
-              recoveryPhraseVerificationStatusType
-            }
-            creationDate={creationDate}
-            openDialogAction={openDialogAction}
-            isDialogOpen={isDialogOpen}
-            walletRecoveryPhraseStep1Container={
-              walletRecoveryPhraseStep1Container
-            }
-            walletRecoveryPhraseStep2Container={
-              walletRecoveryPhraseStep2Container
-            }
-            walletRecoveryPhraseStep3Container={
-              walletRecoveryPhraseStep3Container
-            }
-            walletRecoveryPhraseStep4Container={
-              walletRecoveryPhraseStep4Container
-            }
-          />
+          {!isIncentivizedTestnet && (
+            <WalletRecoveryPhrase
+              recoveryPhraseVerificationDate={recoveryPhraseVerificationDate}
+              recoveryPhraseVerificationStatus={
+                recoveryPhraseVerificationStatus
+              }
+              recoveryPhraseVerificationStatusType={
+                recoveryPhraseVerificationStatusType
+              }
+              creationDate={creationDate}
+              openDialogAction={openDialogAction}
+              isDialogOpen={isDialogOpen}
+              walletRecoveryPhraseStep1Container={
+                walletRecoveryPhraseStep1Container
+              }
+              walletRecoveryPhraseStep2Container={
+                walletRecoveryPhraseStep2Container
+              }
+              walletRecoveryPhraseStep3Container={
+                walletRecoveryPhraseStep3Container
+              }
+              walletRecoveryPhraseStep4Container={
+                walletRecoveryPhraseStep4Container
+              }
+            />
+          )}
 
           {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
 
