@@ -14,18 +14,35 @@ import {
   TEST,
   TESTNET,
   WINDOWS,
+  QA,
+  NIGHTLY,
+  SELFNODE,
 } from '../common/types/environment.types';
+
+function evaluateNetwork(network) {
+  let currentNetwork = network || DEVELOPMENT;
+  if (network === QA) {
+    currentNetwork = STAGING;
+  }
+  if (network === NIGHTLY) {
+    currentNetwork = TESTNET;
+  }
+  if (network === SELFNODE) {
+    currentNetwork = DEVELOPMENT;
+  }
+  return currentNetwork;
+}
 
 // environment variables
 const CURRENT_NODE_ENV = process.env.NODE_ENV || DEVELOPMENT;
-const NETWORK = process.env.NETWORK || DEVELOPMENT;
+const NETWORK = evaluateNetwork(process.env.NETWORK);
 const isDev = CURRENT_NODE_ENV === DEVELOPMENT;
 const isTest = CURRENT_NODE_ENV === TEST;
 const isProduction = CURRENT_NODE_ENV === PRODUCTION;
 const isMainnet = NETWORK === MAINNET;
-const isStaging = NETWORK === STAGING;
-const isTestnet = NETWORK === TESTNET;
-const isDevelopment = NETWORK === DEVELOPMENT;
+const isStaging = NETWORK === STAGING || NETWORK === QA;
+const isTestnet = NETWORK === TESTNET || NETWORK === NIGHTLY;
+const isDevelopment = NETWORK === DEVELOPMENT || NETWORK === SELFNODE;
 const isWatchMode = process.env.IS_WATCH_MODE;
 const API_VERSION = process.env.API_VERSION || 'dev';
 const mainProcessID = get(process, 'ppid', '-');
