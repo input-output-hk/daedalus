@@ -20,18 +20,20 @@
     background: var(--theme-transactions-icon-type-exchange-background-color);
   }
 
-  &.pendingRegular {
+  &.pending {
     position: relative;
-    background: var(
-      --theme-transactions-icon-type-pending-regular-background-color
-    );
-  }
 
-  &.pendingWarning {
-    position: relative;
-    background: var(
-      --theme-transactions-icon-type-pending-warning-background-color
-    );
+    &_regular {
+      background: var(
+        --theme-transactions-icon-type-pending-regular-background-color
+      );
+    }
+
+    &_warning {
+      background: var(
+        --theme-transactions-icon-type-pending-warning-background-color
+      );
+    }
   }
 }
 

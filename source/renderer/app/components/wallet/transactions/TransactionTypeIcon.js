@@ -24,7 +24,7 @@ type Props = {
 
 export default class TransactionTypeIcon extends Component<Props> {
   getTimePending = (txnDate: Date): number => {
-    // right now in milliseconds & txn creation date in milliseconds
+    // right now (milliseconds) minus txn created_at date (milliseconds)
     const NOW = moment().valueOf();
     const TXN_PENDING_SINCE = moment(txnDate).valueOf();
     return NOW - TXN_PENDING_SINCE;
@@ -36,9 +36,9 @@ export default class TransactionTypeIcon extends Component<Props> {
     }
     const TIME_PENDING = this.getTimePending(this.props.txnDate);
     if (TIME_PENDING < PENDING_LIMIT) {
-      return `${iconType}Regular`;
+      return `${iconType}_regular`;
     }
-    return `${iconType}Warning`;
+    return `${iconType}_warning`;
   };
 
   renderPendingIcon = () => {
