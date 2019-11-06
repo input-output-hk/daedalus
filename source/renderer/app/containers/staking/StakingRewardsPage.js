@@ -40,7 +40,7 @@ export default class StakingRewardsPage extends Component<Props> {
     } = this.props;
     const filePath = global.dialog.showSaveDialog({
       defaultPath: generateFileNameWithTimestamp({
-        prefix: 'Rewards',
+        prefix: 'rewards',
         extension: 'csv',
         isUTC: true,
       }),
