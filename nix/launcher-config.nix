@@ -130,7 +130,7 @@ in {
   } ''
     mkdir $out
     cd $out
-    ${lib.optional (environment != "selfnode") "cp ${jormungandrConfigForCluster} jormungandr-config.yaml"}
+    ${lib.optionalString (environment != "selfnode") "cp ${jormungandrConfigForCluster} jormungandr-config.yaml"}
     cp $installerConfigPath installer-config.json
     cp $launcherConfigPath launcher-config.yaml
   '';
