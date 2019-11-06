@@ -229,7 +229,7 @@ export default class TransactionsStore extends Store {
   }
 
   _getTransactionsRecentRequest = (
-    walletId: string,
+    walletId: string
   ): Request<GetTransactionsResponse> => {
     const foundRequest = find(this.transactionsRequests, { walletId });
 
@@ -239,7 +239,7 @@ export default class TransactionsStore extends Store {
   };
 
   _getTransactionsAllRequest = (
-    walletId: string,
+    walletId: string
   ): Request<GetTransactionsResponse> => {
     const foundRequest = find(this.transactionsRequests, { walletId });
 

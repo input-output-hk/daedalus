@@ -73,11 +73,7 @@ import {
 } from '../config/cryptoConfig';
 
 // Addresses Types
-import type {
-  Address,
-  Addresses,
-  GetAddressesRequest,
-} from './addresses/types';
+import type { Address, GetAddressesRequest } from './addresses/types';
 
 // Common Types
 import type { RequestConfig } from './common/types';
@@ -95,7 +91,6 @@ import type { NodeInfoQueryParams } from './nodes/requests/getNodeInfo';
 // Transactions Types
 import type {
   Transaction,
-  Transactions,
   TransactionFee,
   GetTransactionFeeRequest,
   CreateTransactionRequest,
@@ -225,11 +220,7 @@ export default class AdaApi {
     try {
       let response = [];
       if (!isLegacy) {
-        response = await getAddresses(
-          this.config,
-          walletId,
-          queryParams
-        );
+        response = await getAddresses(this.config, walletId, queryParams);
       }
       Logger.debug('AdaApi::getAddresses success', { addresses: response });
       return response.map(_createAddressFromServerData);
@@ -265,11 +256,7 @@ export default class AdaApi {
           params
         );
       } else {
-        response = await getTransactionHistory(
-          this.config,
-          walletId,
-          params
-        );
+        response = await getTransactionHistory(this.config, walletId, params);
       }
 
       const transactions = response.map(tx =>

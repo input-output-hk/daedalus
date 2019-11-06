@@ -61,7 +61,7 @@ export const generateTransaction = (
     state,
     depth: {
       quantity: 0,
-      unit: 'slot',
+      unit: 'block',
     },
     epochNumber: 0,
     slotNumber: 0,
