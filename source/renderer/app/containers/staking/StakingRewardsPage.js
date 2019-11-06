@@ -32,10 +32,30 @@ export default class StakingRewardsPage extends Component<Props> {
     this.props.stores.app.openExternalLink(learnMoreLinkUrl);
   };
 
+  onExportCsv = (rewards: Array<Array<string>>) => {
+    const {
+      actions: { wallets },
+    } = this.props;
+    const filePath = global.dialog.showSaveDialog({
+      defaultPath: `rewards.csv`,
+      filters: [
+        {
+          extensions: ['csv'],
+        },
+      ],
+    });
+
+    // if cancel button is clicked or path is empty
+    if (!filePath) return;
+
+    wallets.generateRewardsCsv.trigger({ rewards, filePath });
+  };
+
   render() {
     const {
       staking: { rewards, rewardsForIncentivizedTestnet },
       networkStatus,
+      wallets,
     } = this.props.stores;
 
     if (networkStatus.isIncentivizedTestnet) {
@@ -43,7 +63,9 @@ export default class StakingRewardsPage extends Component<Props> {
         <StakingRewardsForIncentivizedTestnet
           rewards={rewardsForIncentivizedTestnet}
           isLoading={false}
+          isExporting={wallets.generatingRewardsCsvInProgress}
           onLearnMoreClick={this.handleLearnMoreClick}
+          onExportCsv={this.onExportCsv}
         />
       );
     }

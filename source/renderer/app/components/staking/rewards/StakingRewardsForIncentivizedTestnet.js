@@ -59,7 +59,9 @@ const messages = defineMessages({
 type Props = {
   rewards: Array<RewardForIncentivizedTestnet>,
   isLoading: boolean,
+  isExporting: boolean,
   onLearnMoreClick: Function,
+  onExportCsv: Function,
 };
 
 type State = {
@@ -79,6 +81,7 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
 
   static defaultProps = {
     isLoading: false,
+    isExporting: false,
   };
 
   constructor() {
@@ -90,19 +93,32 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
     };
   }
 
-  render() {
-    const { rewardsOrder, rewardsSortBy } = this.state;
-    const { rewards, isLoading, onLearnMoreClick } = this.props;
+  handleExportCsv = (
+    availableTableHeaders: Array<any>,
+    sortedRewards: Array<RewardForIncentivizedTestnet>
+  ) => {
+    const { onExportCsv } = this.props;
+    const exportedHeader = availableTableHeaders.map(header => header.title);
+    const exportedBody = sortedRewards.map(reward => {
+      const rewardWallet = get(reward, 'wallet', '');
+      const rewardAmount = get(reward, 'reward', 0);
 
+      return [rewardWallet, `${rewardAmount} ADA`];
+    });
+    const exportedContent = [exportedHeader, ...exportedBody];
+
+    onExportCsv(exportedContent);
+  };
+
+  render() {
+    const { rewards, isLoading, isExporting, onLearnMoreClick } = this.props;
+    const { rewardsOrder, rewardsSortBy } = this.state;
     const { intl } = this.context;
     const noRewards = !isLoading && ((rewards && !rewards.length) || !rewards);
     const showRewards = rewards && rewards.length > 0 && !isLoading;
-
-    let sortedRewards;
-    if (showRewards) {
-      sortedRewards = orderBy(rewards, rewardsSortBy, rewardsOrder);
-    }
-
+    const sortedRewards = showRewards
+      ? orderBy(rewards, rewardsSortBy, rewardsOrder)
+      : null;
     const availableTableHeaders = [
       {
         name: 'wallet',
@@ -113,6 +129,18 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
         title: intl.formatMessage(messages.tableHeaderReward),
       },
     ];
+    const exportCsvButtonLabel = isExporting ? (
+      <div className={styles.exportingSpinnerWrapper}>
+        <LoadingSpinner />
+      </div>
+    ) : (
+      <>
+        <div className={styles.actionLabel}>
+          {intl.formatMessage(messages.exportButtonLabel)}
+        </div>
+        <SVGInline svg={downloadIcon} className={styles.downloadIcon} />
+      </>
+    );
 
     return (
       <div className={styles.component}>
@@ -123,18 +151,10 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
           {!noRewards && (
             <Button
               className={classNames(['primary', styles.actionButton])}
-              label={
-                <>
-                  <div className={styles.actionLabel}>
-                    {intl.formatMessage(messages.exportButtonLabel)}
-                  </div>
-                  <SVGInline
-                    svg={downloadIcon}
-                    className={styles.downloadIcon}
-                  />
-                </>
+              label={exportCsvButtonLabel}
+              onClick={() =>
+                this.handleExportCsv(availableTableHeaders, sortedRewards)
               }
-              onClick={() => null}
               skin={ButtonSkin}
             />
           )}
@@ -175,7 +195,7 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
               <tbody>
                 {map(sortedRewards, (reward, key) => {
                   const rewardWallet = get(reward, 'wallet', '');
-                  const rewardAmount = get(reward, 'reward', '');
+                  const rewardAmount = get(reward, 'reward', 0);
 
                   return (
                     <tr key={key}>

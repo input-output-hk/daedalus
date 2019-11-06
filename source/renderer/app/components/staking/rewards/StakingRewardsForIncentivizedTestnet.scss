@@ -83,6 +83,18 @@
     margin: auto;
   }
 
+  .exportingSpinnerWrapper {
+    :global {
+      .LoadingSpinner_component {
+        &.LoadingSpinner_small {
+          height: 19px;
+          margin: 0;
+          width: 19px;
+        }
+      }
+    }
+  }
+
   table {
     border-style: hidden;
     user-select: text;

@@ -103,6 +103,7 @@
   "global.errors.invalidSpendingPassword": "Invalid password",
   "global.errors.invalidWalletName": "Wallet name requires at least 3 and at most 40 letters.",
   "global.errors.paperWalletOpenPdfError": "The file you are trying to replace is open. Please close it and try again.",
+  "global.errors.rewardsOpenCsvError": "The file you are trying to replace is open. Please close it and try again.",
   "global.labels.cancel": "Cancel",
   "global.labels.change": "Change",
   "global.labels.create": "Create",
