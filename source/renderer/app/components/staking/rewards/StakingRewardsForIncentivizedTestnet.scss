@@ -30,6 +30,10 @@
           var(--theme-staking-export-button-shadow-color) !important;
       }
 
+      &.actionButtonFaded {
+        opacity: 0.5;
+      }
+
       .actionLabel {
         color: var(--theme-staking-learn-more-button-color);
         font-size: 14px;

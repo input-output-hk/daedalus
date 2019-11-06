@@ -1086,6 +1086,7 @@ const _createWalletFromServerData = action(
       id,
       address_pool_gap: addressPoolGap,
       balance,
+      reward = {},
       name,
       state,
       passphrase,
@@ -1101,13 +1102,17 @@ const _createWalletFromServerData = action(
       balance.total.unit === 'lovelace'
         ? new BigNumber(balance.total.quantity).dividedBy(LOVELACES_PER_ADA)
         : new BigNumber(balance.total.quantity);
+    const walletRewardAmount =
+      reward.unit === 'lovelace'
+        ? reward.quantity / LOVELACES_PER_ADA
+        : reward.quantity || 0;
 
     return new Wallet({
       id,
       addressPoolGap,
       name,
       amount: walletTotalAmount,
-      reward: balance.reward,
+      reward: walletRewardAmount,
       passwordUpdateDate:
         passphraseLastUpdatedAt && new Date(passphraseLastUpdatedAt),
       syncState: state,

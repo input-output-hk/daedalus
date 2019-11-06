@@ -27,11 +27,16 @@ export const generateHash = () => {
     .digest('hex');
 };
 
-export const generateWallet = (name: string, amount: string) =>
+export const generateWallet = (
+  name: string,
+  amount: string,
+  reward?: number = 0
+) =>
   new Wallet({
     id: generateHash(),
     addressPoolGap: 20,
     amount: new BigNumber(amount).dividedBy(LOVELACES_PER_ADA),
+    reward: reward / LOVELACES_PER_ADA,
     createdAt: new Date(),
     name,
     hasPassword: false,

@@ -7,6 +7,7 @@ import { get, map, orderBy } from 'lodash';
 import classNames from 'classnames';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
+import { StakingPageScrollContext } from '../layouts/StakingWithNavigation';
 import BorderedBox from '../../widgets/BorderedBox';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import sortIcon from '../../../assets/images/ascending.inline.svg';
@@ -67,7 +68,6 @@ type Props = {
 type State = {
   rewardsOrder: string,
   rewardsSortBy: string,
-  exportButtonOpacity: number,
 };
 
 @observer
@@ -89,7 +89,6 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
     this.state = {
       rewardsOrder: 'desc',
       rewardsSortBy: 'wallet',
-      exportButtonOpacity: 1,
     };
   }
 
@@ -118,7 +117,7 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
     const showRewards = rewards && rewards.length > 0 && !isLoading;
     const sortedRewards = showRewards
       ? orderBy(rewards, rewardsSortBy, rewardsOrder)
-      : null;
+      : [];
     const availableTableHeaders = [
       {
         name: 'wallet',
@@ -143,87 +142,100 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
     );
 
     return (
-      <div className={styles.component}>
-        <div className={styles.headerWrapper}>
-          <div className={styles.title}>
-            {intl.formatMessage(messages.title)}
-          </div>
-          {!noRewards && (
-            <Button
-              className={classNames(['primary', styles.actionButton])}
-              label={exportCsvButtonLabel}
-              onClick={() =>
-                this.handleExportCsv(availableTableHeaders, sortedRewards)
-              }
-              skin={ButtonSkin}
-            />
-          )}
-        </div>
-        <BorderedBox>
-          {noRewards && (
-            <div className={styles.noRewardsLabel}>
-              {intl.formatMessage(messages.noRewards)}
+      <StakingPageScrollContext.Consumer>
+        {context => (
+          <div className={styles.component}>
+            <div className={styles.headerWrapper}>
+              <div className={styles.title}>
+                {intl.formatMessage(messages.title)}
+              </div>
+              {!noRewards && (
+                <Button
+                  className={classNames([
+                    'primary',
+                    styles.actionButton,
+                    context.scrollTop > 10 ? styles.actionButtonFaded : null,
+                  ])}
+                  label={exportCsvButtonLabel}
+                  onClick={() =>
+                    this.handleExportCsv(availableTableHeaders, sortedRewards)
+                  }
+                  skin={ButtonSkin}
+                />
+              )}
             </div>
-          )}
+            <BorderedBox>
+              {noRewards && (
+                <div className={styles.noRewardsLabel}>
+                  {intl.formatMessage(messages.noRewards)}
+                </div>
+              )}
 
-          {sortedRewards && (
-            <table>
-              <thead>
-                <tr>
-                  {map(availableTableHeaders, tableHeader => {
-                    const isSorted = tableHeader.name === rewardsSortBy;
-                    const sortIconClasses = classNames([
-                      styles.sortIcon,
-                      isSorted ? styles.sorted : null,
-                      isSorted && rewardsOrder === 'asc'
-                        ? styles.ascending
-                        : null,
-                    ]);
+              {sortedRewards && (
+                <table>
+                  <thead>
+                    <tr>
+                      {map(availableTableHeaders, tableHeader => {
+                        const isSorted = tableHeader.name === rewardsSortBy;
+                        const sortIconClasses = classNames([
+                          styles.sortIcon,
+                          isSorted ? styles.sorted : null,
+                          isSorted && rewardsOrder === 'asc'
+                            ? styles.ascending
+                            : null,
+                        ]);
 
-                    return (
-                      <th
-                        key={tableHeader.name}
-                        onClick={() => this.handleRewardsSort(tableHeader.name)}
-                      >
-                        {tableHeader.title}
-                        <SVGInline svg={sortIcon} className={sortIconClasses} />
-                      </th>
-                    );
-                  })}
-                </tr>
-              </thead>
-              <tbody>
-                {map(sortedRewards, (reward, key) => {
-                  const rewardWallet = get(reward, 'wallet', '');
-                  const rewardAmount = get(reward, 'reward', 0);
-
-                  return (
-                    <tr key={key}>
-                      <td>{rewardWallet}</td>
-                      <td>{rewardAmount} ADA</td>
+                        return (
+                          <th
+                            key={tableHeader.name}
+                            onClick={() =>
+                              this.handleRewardsSort(tableHeader.name)
+                            }
+                          >
+                            {tableHeader.title}
+                            <SVGInline
+                              svg={sortIcon}
+                              className={sortIconClasses}
+                            />
+                          </th>
+                        );
+                      })}
                     </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          )}
+                  </thead>
+                  <tbody>
+                    {map(sortedRewards, (reward, key) => {
+                      const rewardWallet = get(reward, 'wallet', '');
+                      const rewardAmount = get(reward, 'reward', 0);
 
-          {isLoading && (
-            <div className={styles.loadingSpinnerWrapper}>
-              <LoadingSpinner />
+                      return (
+                        <tr key={key}>
+                          <td>{rewardWallet}</td>
+                          <td>{rewardAmount} ADA</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              )}
+
+              {isLoading && (
+                <div className={styles.loadingSpinnerWrapper}>
+                  <LoadingSpinner />
+                </div>
+              )}
+            </BorderedBox>
+
+            <div className={styles.note}>
+              <span>* {intl.formatMessage(messages.note)} </span>
+              <button onClick={onLearnMoreClick}>
+                {intl.formatMessage(messages.learnMoreButtonLabel)}
+                <SVGInline svg={externalLinkIcon} />
+              </button>
+              <span>.</span>
             </div>
-          )}
-        </BorderedBox>
-
-        <div className={styles.note}>
-          <span>* {intl.formatMessage(messages.note)} </span>
-          <button onClick={onLearnMoreClick}>
-            {intl.formatMessage(messages.learnMoreButtonLabel)}
-            <SVGInline svg={externalLinkIcon} />
-          </button>
-          <span>.</span>
-        </div>
-      </div>
+          </div>
+        )}
+      </StakingPageScrollContext.Consumer>
     );
   }
 
