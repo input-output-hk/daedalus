@@ -806,7 +806,7 @@ export default class WalletsStore extends Store {
   _generateRewardsCsv = flow(function* generateRewardsCsv(params: {
     rewards: Array<Array<string>>,
     filePath: string,
-  }): Generator<any, any, any> {
+  }) {
     try {
       this._pausePolling();
 
