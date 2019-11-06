@@ -26,7 +26,7 @@ let
   walletBin.macos64 = "\${DAEDALUS_INSTALL_DIRECTORY}/cardano-wallet-jormungandr";
 
   daedalusBin.linux = "daedalus-frontend";
-  daedalusBin.windows = "\${DAEDALUS_INSTALL_DIRECTORY}\\Daedalus.exe";
+  daedalusBin.windows = "\${DAEDALUS_INSTALL_DIRECTORY}\\Daedalus ${environment}.exe";
   daedalusBin.macos64 = "\${DAEDALUS_INSTALL_DIRECTORY}/Frontend";
   cliBin.linux = "jcli";
   cliBin.windows = "\${DAEDALUS_INSTALL_DIRECTORY}\\jcli.exe";
