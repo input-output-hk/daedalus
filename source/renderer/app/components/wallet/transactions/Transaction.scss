@@ -171,12 +171,31 @@
     }
   }
 
+  .pendingTxnNote {
+    font-family: var(--font-light);
+    font-size: 16px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+
+    .articleLink {
+      @include link(--theme-link-main-color);
+      border-bottom: 1px solid transparent;
+      font-size: 16px;
+      margin-left: 5px;
+      text-decoration-line: none;
+      &:hover {
+        border-bottom-color: var(--theme-link-main-color);
+      }
+    }
+  }
+
   &.clickable {
     .transactionId {
-      @include link(--theme-transactions-list-item-details-color);
+      @include link(--theme-link-main-color);
       border-bottom: 1px solid transparent;
+      text-decoration-line: none;
       &:hover {
-        border-bottom-color: var(--theme-transactions-list-item-details-color);
+        border-bottom-color: var(--theme-link-main-color);
       }
     }
 
