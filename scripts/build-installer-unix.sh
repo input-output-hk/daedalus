@@ -135,10 +135,10 @@ pushd installers
                          "  --build-job        ${build_id}"
                          "  --cluster          ${cluster}"
                          "  --out-dir          ${APP_NAME}")
-          nix-instantiate .. -A launcherConfigs.installerConfig --read-write-mode --strict --json --eval --argstr os macos64 --argstr cluster "${cluster}" > installer-config.json
-          nix-instantiate .. -A launcherConfigs.launcherConfig --read-write-mode --strict --json --eval --argstr os macos64 --argstr cluster "${cluster}" > launcher-config.yaml
+          nix-build .. -A launcherConfigs.cfg-files --argstr os macos64 --argstr cluster "${cluster}" -o cfg-files
+          cp -v cfg-files/{installer-config.json,launcher-config.yaml} .
           if [ "${cluster}" != selfnode ]; then
-            cp $(nix-instantiate .. -A launcherConfigs.jormungandr-config --read-write-mode --strict --json --eval --argstr os macos64 --argstr cluster "${cluster}") jormungandr-config.yaml
+            cp -v cfg-files/jormungandr-config.yaml .
           fi
           echo '~~~ Running make-installer in nix-shell'
           $nix_shell ../shell.nix -A buildShell --run "${INSTALLER_CMD[*]}"

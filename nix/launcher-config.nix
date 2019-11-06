@@ -2,6 +2,8 @@
 , environment ? "staging"
 , os ? "linux"
 , jormungandrLib ? (import ../. {}).jormungandrLib
+, runCommand
+, lib
 }:
 let
   cfg = jormungandrLib.mkConfig jormungandrLib.environments.${environment};
@@ -121,4 +123,15 @@ let
 in {
   inherit launcherConfig installerConfig;
   jormungandr-config = jormungandrConfigForCluster;
+  cfg-files = runCommand "cfg-files" {
+    installerConfig = builtins.toJSON installerConfig;
+    launcherConfig = builtins.toJSON launcherConfig;
+    passAsFile = [ "installerConfig" "launcherConfig" ];
+  } ''
+    mkdir $out
+    cd $out
+    ${lib.optional (environment != "selfnode") "cp ${jormungandrConfigForCluster} jormungandr-config.yaml"}
+    cp $installerConfigPath installer-config.json
+    cp $launcherConfigPath launcher-config.yaml
+  '';
 }
