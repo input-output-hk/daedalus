@@ -678,6 +678,8 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--theme-staking-countdown-widget-field-label-color':
       'rgba(255, 255, 255, 0.7)',
     '--theme-staking-countdown-widget-field-value-color': '#ffffff',
+    '--theme-staking-export-button-shadow-color': 'rgba(31, 193, 195, 0.18)',
+    '--theme-staking-export-button-color': 'rgba(18, 19, 38, 1)',
   },
   support: {
     '--theme-support-settings-item-color': '#ffffff',

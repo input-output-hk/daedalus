@@ -696,6 +696,8 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-staking-countdown-widget-delimeter-background-color': '#e9f4fe',
     '--theme-staking-countdown-widget-field-label-color': '#e9f4fe',
     '--theme-staking-countdown-widget-field-value-color': '#e9f4fe',
+    '--theme-staking-export-button-shadow-color': 'rgba(0, 0, 0, 0.18)',
+    '--theme-staking-export-button-color': '#fafbfc',
   },
   support: {
     '--theme-support-settings-item-color': 'rgba(233, 244, 254, 0.5)',
