@@ -12,7 +12,7 @@
 }:
 
 let
-  daedalusPkgs = import ./. { inherit cluster; target = system; };
+  daedalusPkgs = import ./. { inherit cluster; target = system; devShell = true; };
   hostPkgs = import pkgs.path { config = {}; overlays = []; };
   yarn = pkgs.yarn.override { inherit nodejs; };
   nodejs = pkgs.nodejs-10_x;

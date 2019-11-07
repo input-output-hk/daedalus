@@ -9,6 +9,7 @@
 , signingKeys ? null
 , HSMServer ? null
 , fudgeConfig ? null
+, devShell ? false
 }:
 
 let
@@ -59,6 +60,7 @@ let
 
     launcherConfigs = self.callPackage ./nix/launcher-config.nix {
       inherit (self) jormungandrLib;
+      inherit devShell;
       environment = cluster;
       os = ostable.${target};
       backend = nodeImplementation;

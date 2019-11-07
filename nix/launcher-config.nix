@@ -4,8 +4,10 @@
 , jormungandrLib ? (import ../. {}).jormungandrLib
 , runCommand
 , lib
+, devShell ? false
 }:
 let
+  dirSep = if os == "windows" then "\\" else "/";
   cfg = jormungandrLib.mkConfig jormungandrLib.environments.${environment};
   jormungandrConfigForCluster = builtins.toFile "jormungandr-config-${environment}.yaml" (builtins.toJSON cfg);
 
@@ -38,58 +40,33 @@ let
   logsPrefix.windows = "Logs";
   logsPrefix.macos64 = "${dataDir.${os}}/Logs";
 
-  walletArgs.linux = [
+  cfgPathForOs = {
+    windows = "\${DAEDALUS_INSTALL_DIRECTORY}\\jormungandr-config.yaml";
+    macos64 = "\${DAEDALUS_INSTALL_DIRECTORY}/jormungandr-config.yaml";
+    linux = jormungandrConfigForCluster;
+  };
+  finalJormungandrCfgPath = if devShell then jormungandrConfigForCluster else cfgPathForOs.${os};
+
+  walletArgs = [
     "launch"
     "--genesis-block-hash" "${jormungandrLib.environments.${environment}.genesisHash}"
     "--state-dir" dataDir.${os}
     "--"
-    "--config" "${jormungandrConfigForCluster}"
+    "--config" finalJormungandrCfgPath
   ];
-  walletArgs.macos64 = [
-    "launch"
-    "--genesis-block-hash" "${jormungandrLib.environments.${environment}.genesisHash}"
-    "--state-dir" dataDir.${os}
-    "--"
-    "--config" "\${DAEDALUS_INSTALL_DIRECTORY}/jormungandr-config.yaml"
-  ];
-  walletArgs.windows = [
-    "launch"
-    "--genesis-block-hash" "${jormungandrLib.environments.${environment}.genesisHash}"
-    "--state-dir" dataDir.${os}
-    "--"
-    "--config" "\${DAEDALUS_INSTALL_DIRECTORY}\\jormungandr-config.yaml"
-  ];
-  walletArgs.selfnode.macos64 = [
+  walletArgsSelfnode = [
     "launch"
     "--node-port" "8888"
     "--port" "8088"
     "--state-dir" dataDir.${os}
-    "--genesis-block" "${dataDir.${os}}/block0.bin"
+    "--genesis-block" "${dataDir.${os}}${dirSep}block0.bin"
     "--"
-    "--secret" "${dataDir.${os}}/secret.yaml"
-  ];
-  walletArgs.selfnode.windows = [
-    "launch"
-    "--node-port" "8888"
-    "--port" "8088"
-    "--state-dir" dataDir.${os}
-    "--genesis-block" "${dataDir.${os}}\\block0.bin"
-    "--"
-    "--secret" "${dataDir.${os}}\\secret.yaml"
-  ];
-  walletArgs.selfnode.linux = [
-    "launch"
-    "--node-port" "8888"
-    "--port" "8088"
-    "--state-dir" dataDir.${os}
-    "--genesis-block" "${dataDir.${os}}/block0.bin"
-    "--"
-    "--secret" "${dataDir.${os}}/secret.yaml"
+    "--secret" "${dataDir.${os}}${dirSep}secret.yaml"
   ];
 
   launcherConfig = {
     walletBin = walletBin.${os};
-    walletArgs = walletArgs.${environment}.${os} or walletArgs.${os};
+    walletArgs = if environment == "selfnode" then walletArgsSelfnode else walletArgs;
 
     nodeBin = nodeBin.${os};
     nodeArgs = [];
