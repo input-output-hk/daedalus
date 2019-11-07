@@ -32,6 +32,10 @@
 
       &.actionButtonFaded {
         opacity: 0.5;
+
+        &:hover {
+          opacity: 1;
+        }
       }
 
       .actionLabel {
