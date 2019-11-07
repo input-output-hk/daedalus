@@ -1022,6 +1022,10 @@ export const createDaedalusComponentsTheme = (
         background.primary.light
       ).alpha(0.7)}`,
       '--theme-staking-countdown-widget-field-value-color': `${text.primary}`,
+      '--theme-staking-export-button-shadow-color': `${chroma(
+        background.primary.regular
+      ).alpha(0.18)}`,
+      '--theme-staking-export-button-color': `${background.primary.lightest}`,
     },
     support: {
       '--theme-support-settings-item-color': `${text.primary}`,
