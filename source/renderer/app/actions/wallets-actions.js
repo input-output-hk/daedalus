@@ -1,6 +1,7 @@
 // @flow
 import Action from './lib/Action';
 import type { walletExportTypeChoices } from '../types/walletExportTypes';
+import type { CsvRecord } from '../../../common/types/rewards-csv-request.types';
 
 export type WalletImportFromFileParams = {
   filePath: string,
@@ -38,10 +39,16 @@ export default class WalletsActions {
     walletExportType: walletExportTypeChoices,
   }> = new Action();
   generateCertificate: Action<{ filePath: string }> = new Action();
+  generateRewardsCsv: Action<{
+    filePath: string,
+    rewards: Array<CsvRecord>,
+  }> = new Action();
   updateCertificateStep: Action<any> = new Action();
   closeCertificateGeneration: Action<any> = new Action();
+  closeRewardsCsvGeneration: Action<any> = new Action();
   setCertificateTemplate: Action<{ selectedTemplate: string }> = new Action();
   finishCertificate: Action<any> = new Action();
+  finishRewardsCsv: Action<any> = new Action();
   getWallet: Action<{ walletId: string }> = new Action();
   updateWalletLocalData: Action<any> = new Action();
   updateRecoveryPhraseVerificationDate: Action<any> = new Action();
