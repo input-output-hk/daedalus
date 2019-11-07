@@ -168,7 +168,8 @@
     margin-bottom: 8px;
   }
 
-  .addressRow {
+  .addressRow,
+  .explorerLinkRow {
     padding-bottom: 6px;
   }
 
@@ -191,14 +192,15 @@
 
   span {
     font-family: var(--font-light);
-    font-size: 14px;
+    font-size: 15px;
     user-select: text;
     word-break: break-all;
 
     &.address,
     &.transactionId {
       font-family: var(--font-mono);
-      letter-spacing: -0.4px;
+      letter-spacing: 0.5px;
+      line-height: 1.4;
     }
 
     &.explorerLink {
