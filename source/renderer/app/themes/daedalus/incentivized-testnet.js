@@ -713,7 +713,7 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--theme-transactions-icon-type-pending-regular-background-color':
       'rgba(255, 255, 255, 0.3)',
     '--theme-transactions-icon-type-pending-warning-background-color':
-      'rgba(236, 93, 107, 0.8)',
+      'rgba(235, 74, 34, 0.8)',
     '--theme-transactions-list-background-color': '#1e1f31',
     '--theme-transactions-list-border-color': '1e1f31',
     '--theme-transactions-list-group-date-color': '#ffffff',
@@ -722,7 +722,7 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--theme-transactions-state-ok-background-color': '#2cbb69',
     '--theme-transactions-state-pending-background-color':
       'rgba(255, 255, 255, 0.3)',
-    '--theme-transactions-state-pending-warning-background-color': '#ec5d6b',
+    '--theme-transactions-state-pending-warning-background-color': '#eb4a22',
     '--theme-transactions-state-text-color': 'rgba(18, 19, 38, 0.8)',
   },
   uploader: {

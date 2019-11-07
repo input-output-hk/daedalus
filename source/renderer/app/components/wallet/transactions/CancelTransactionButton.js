@@ -27,7 +27,7 @@ export default class CancelTransactionButton extends Component<Props> {
     const label = this.context.intl.formatMessage(messages.label);
     return (
       <Button
-        className="primary"
+        className="attention"
         disabled={false}
         label={label}
         onClick={onClick}
