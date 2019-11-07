@@ -76,7 +76,6 @@ export default class Sidebar extends Component<Props> {
           onAddWallet={onAddWallet}
           onWalletItemClick={menus.wallets.actions.onWalletItemClick}
           isActiveWallet={id => id === menus.wallets.activeWalletId}
-          isIncentivizedTestnet={isIncentivizedTestnet}
           isAddWalletButtonActive={pathname === '/wallets/add'}
           visible={isShowingSubMenus}
         />

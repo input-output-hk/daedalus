@@ -15,7 +15,6 @@ type Props = {
   className: string,
   onClick: Function,
   isRestoreActive?: boolean,
-  isIncentivizedTestnet: boolean,
   restoreProgress?: number,
   isLegacy: boolean,
   recoveryPhraseVerificationStatus: string,
@@ -33,7 +32,6 @@ export default class SidebarWalletMenuItem extends Component<Props> {
       isRestoreActive,
       restoreProgress,
       isLegacy,
-      isIncentivizedTestnet,
       recoveryPhraseVerificationStatus,
     } = this.props;
 
@@ -53,9 +51,7 @@ export default class SidebarWalletMenuItem extends Component<Props> {
           <span className={styles.title}>{title}</span>
           <span className={styles.info}>{info}</span>
           {isRestoreActive ? <ProgressBar progress={restoreProgress} /> : null}
-          {!isIncentivizedTestnet && isLegacy && (
-            <LegacyBadge mode={LEGACY_BADGE_MODES.FLOATING} />
-          )}
+          {isLegacy && <LegacyBadge mode={LEGACY_BADGE_MODES.FLOATING} />}
         </span>
       </button>
     );
