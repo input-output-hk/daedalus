@@ -223,7 +223,7 @@ storiesOf('WalletTransferFunds', module)
         onClose={action('onClose')}
         onBack={action('onBack')}
         addresses={step2Addresses}
-        fees={12.042481}
+        fees={faker.finance.amount(1, 4)}
         sourceWallet={sourceWallet}
         targetWallet={targetWallet}
       />
