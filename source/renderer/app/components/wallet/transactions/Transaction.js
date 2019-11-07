@@ -139,7 +139,7 @@ export default class Transaction extends Component<Props> {
     return onOpenExternalLink(articleUrl);
   };
 
-  deletePendingTransaction() {
+  deletePendingTransaction = () => {
     const { data, walletId } = this.props;
     const { id: transactionId, state } = data;
 
@@ -151,7 +151,7 @@ export default class Transaction extends Component<Props> {
       walletId,
       transactionId,
     });
-  }
+  };
 
   getTimePending = (txnDate: Date): number => {
     // right now (milliseconds) minus txn created_at date (milliseconds)
