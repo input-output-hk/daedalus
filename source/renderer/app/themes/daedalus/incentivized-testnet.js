@@ -228,7 +228,7 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--theme-icon-syncing-ada-logo-color': '#ffffff',
     '--theme-icon-syncing-daedalus-logo-color': '#ffffff',
     '--theme-icon-transactions-ada-symbol-color': '#ffffff',
-    '--theme-icon-transaction-type-color': '#121326',
+    '--theme-icon-transaction-type-color': '#fafbfc',
   },
   input: {
     '--theme-input-background-color': '#1e1f31',
@@ -723,7 +723,7 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--theme-transactions-state-pending-background-color':
       'rgba(255, 255, 255, 0.3)',
     '--theme-transactions-state-pending-warning-background-color': '#eb4a22',
-    '--theme-transactions-state-text-color': 'rgba(18, 19, 38, 0.8)',
+    '--theme-transactions-state-text-color': '#fafbfc',
   },
   uploader: {
     '--theme-uploader-text-color': '#ffffff',

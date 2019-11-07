@@ -718,7 +718,7 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-transactions-state-ok-background-color': '#007600',
     '--theme-transactions-state-pending-background-color':
       'rgba(45, 45, 45, 0.5)',
-    '--theme-transactions-state-text-color': '#f8f3ed',
+    '--theme-transactions-state-text-color': '#fafbfc',
     '--theme-transactions-search-background-color': '#f8f3ed',
     '--theme-transactions-icon-type-expend-background-color': '#84a2d2',
     '--theme-transactions-icon-type-income-background-color': '#2dc06c',
