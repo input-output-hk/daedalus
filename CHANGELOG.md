@@ -26,6 +26,10 @@ Changelog
 - Removed all notions of account indexes from the codebase ([PR 1614](https://github.com/input-output-hk/daedalus/pull/1614))
 - Removed "Block consolidation status" dialog ([PR 1610](https://github.com/input-output-hk/daedalus/pull/1610))
 
+### Fixes
+
+- Fixed paper wallet certificate restoration ([PR 1055](https://github.com/input-output-hk/daedalus/pull/1055))
+
 ## 0.15.0
 
 ### Features
