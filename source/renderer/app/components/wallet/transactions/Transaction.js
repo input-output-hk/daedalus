@@ -170,8 +170,8 @@ export default class Transaction extends Component<Props> {
     const isPendingTxn = state === TransactionStates.PENDING;
     if (!isPendingTxn || isRestoreActive || !date) return false;
 
-    const PENDING_SINCE = this.getTimePending(date);
-    return PENDING_SINCE > PENDING_TIME_LIMIT;
+    const TOTAL_TIME_PENDING = this.getTimePending(date);
+    return TOTAL_TIME_PENDING > PENDING_TIME_LIMIT;
   };
 
   renderCancelPendingTxnContent = () => {
