@@ -9,11 +9,30 @@
   margin-bottom: 20px;
 }
 .label {
-  // color: var(--rp-formfield-label-text-color, #5e6066);
   font-family: var(--font-medium);
-  margin-bottom: 10px;
+  margin-bottom: 6px;
 }
 .sourceWallet {
   background-color: rgba(94, 96, 102, 0.5);
   margin-bottom: 20px;
+}
+.addresses {
+  margin-bottom: 20px;
+  li {
+    overflow-wrap: break-word;
+  }
+}
+
+.amountGroup {
+  display: inline-block;
+  font-family: var(--font-medium);
+  margin-bottom: 20px;
+  width: 50%;
+}
+.amount {
+  color: #ea4c5b;
+  &:after {
+    content: ' ADA';
+    opacity: 0.5;
+  }
 }

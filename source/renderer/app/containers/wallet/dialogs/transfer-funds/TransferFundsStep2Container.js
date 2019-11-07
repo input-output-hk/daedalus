@@ -36,9 +36,7 @@ export default class TransferFundsStep1Container extends Component<Props> {
         addresses={[]}
         sourceWallet={sourceWallet}
         targetWallet={targetWallet}
-        amount="3"
-        fees="+ 12.042481"
-        total="15.042481"
+        fees={12.042481}
       />
     );
   }

@@ -5,6 +5,7 @@ import DialogCloseButton from '../../widgets/DialogCloseButton';
 import DialogBackButton from '../../widgets/DialogBackButton';
 import Dialog from '../../widgets/Dialog';
 import styles from './TransferFundsStep2Dialog.scss';
+import { formattedWalletAmount } from '../../../utils/formatters';
 
 const messages = defineMessages({
   dialogTitle: {
@@ -52,9 +53,7 @@ type Props = {
   addresses: Array<any>,
   sourceWallet: $Shape<Wallet>,
   targetWallet: $Shape<Wallet>,
-  amount: string,
-  fees: string,
-  total: string,
+  fees: number,
 };
 
 export default class TransferFundsStep2Dialog extends Component<Props> {
@@ -69,12 +68,13 @@ export default class TransferFundsStep2Dialog extends Component<Props> {
       onContinue,
       onBack,
       addresses,
-      amount,
       fees,
-      total,
       sourceWallet,
       targetWallet,
     } = this.props;
+
+    const amount = formattedWalletAmount(sourceWallet.amount, false);
+    const total = formattedWalletAmount(sourceWallet.amount.add(fees), false);
 
     return (
       <Dialog
@@ -84,6 +84,7 @@ export default class TransferFundsStep2Dialog extends Component<Props> {
           {
             label: intl.formatMessage(messages.buttonLabel),
             onClick: onContinue,
+            primary: true,
           },
         ]}
         closeOnOverlayClick
@@ -100,24 +101,30 @@ export default class TransferFundsStep2Dialog extends Component<Props> {
         >
           {(...content) => <div className={styles.description}>{content}</div>}
         </FormattedMessage>
-        <p className={styles.label}>
-          {intl.formatMessage(messages.labelTo)}
+        <p className={styles.label}>{intl.formatMessage(messages.labelTo)}</p>
+        <ul className={styles.addresses}>
           {addresses.map(address => (
-            <p key={address}>{address}</p>
+            <li key={address}>{address}</li>
           ))}
-        </p>
-        <p className={styles.label}>
-          {intl.formatMessage(messages.labelAmount)}
-          {amount}
-        </p>
-        <p className={styles.label}>
-          {intl.formatMessage(messages.labelFees)}
-          {fees}
-        </p>
-        <p className={styles.label}>
-          {intl.formatMessage(messages.labelTotal)}
-          {total}
-        </p>
+        </ul>
+        <div className={styles.amountGroup}>
+          <p className={styles.label}>
+            {intl.formatMessage(messages.labelAmount)}
+          </p>
+          <div className={styles.amount}>{amount}</div>
+        </div>
+        <div className={styles.amountGroup}>
+          <p className={styles.label}>
+            {intl.formatMessage(messages.labelFees)}
+          </p>
+          <div className={styles.amount}>+ {fees}</div>
+        </div>
+        <div className={styles.amountGroup}>
+          <p className={styles.label}>
+            {intl.formatMessage(messages.labelTotal)}
+          </p>
+          <div className={styles.amount}>{total}</div>
+        </div>
       </Dialog>
     );
   }
