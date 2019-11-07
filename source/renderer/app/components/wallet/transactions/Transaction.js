@@ -257,6 +257,7 @@ export default class Transaction extends Component<Props> {
       ? TransactionStates.PENDING
       : data.type;
 
+    const exceedsPendingTimeLimit = this.hasExceededPendingTimeLimit();
     return (
       <div
         onClick={this.toggleDetails.bind(this)}
@@ -266,7 +267,7 @@ export default class Transaction extends Component<Props> {
       >
         <div className={styles.toggler}>
           <TransactionTypeIcon
-            exceedsPendingTimeLimit={this.hasExceededPendingTimeLimit()}
+            exceedsPendingTimeLimit={exceedsPendingTimeLimit}
             iconType={iconType}
           />
 
