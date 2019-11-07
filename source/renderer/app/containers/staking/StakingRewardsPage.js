@@ -2,8 +2,11 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
+import { generateFileNameWithTimestamp } from '../../../../common/utils/files';
 import StakingRewards from '../../components/staking/rewards/StakingRewards';
+import StakingRewardsForIncentivizedTestnet from '../../components/staking/rewards/StakingRewardsForIncentivizedTestnet';
 import type { InjectedProps } from '../../types/injectedPropsType';
+import type { CsvRecord } from '../../../../common/types/rewards-csv-request.types';
 
 const messages = defineMessages({
   learnMoreLinkUrl: {
@@ -31,9 +34,47 @@ export default class StakingRewardsPage extends Component<Props> {
     this.props.stores.app.openExternalLink(learnMoreLinkUrl);
   };
 
-  render() {
-    const { rewards } = this.props.stores.staking;
+  onExportCsv = (rewards: Array<CsvRecord>) => {
+    const {
+      actions: { wallets },
+    } = this.props;
+    const filePath = global.dialog.showSaveDialog({
+      defaultPath: generateFileNameWithTimestamp({
+        prefix: 'rewards',
+        extension: 'csv',
+        isUTC: true,
+      }),
+      filters: [
+        {
+          extensions: ['csv'],
+        },
+      ],
+    });
 
+    // if cancel button is clicked or path is empty
+    if (!filePath) return;
+
+    wallets.generateRewardsCsv.trigger({ rewards, filePath });
+  };
+
+  render() {
+    const {
+      staking: { rewards, rewardsForIncentivizedTestnet },
+      networkStatus,
+      wallets,
+    } = this.props.stores;
+
+    if (networkStatus.isIncentivizedTestnet) {
+      return (
+        <StakingRewardsForIncentivizedTestnet
+          rewards={rewardsForIncentivizedTestnet}
+          isLoading={false}
+          isExporting={wallets.generatingRewardsCsvInProgress}
+          onLearnMoreClick={this.handleLearnMoreClick}
+          onExportCsv={this.onExportCsv}
+        />
+      );
+    }
     return (
       <StakingRewards
         rewards={rewards}
