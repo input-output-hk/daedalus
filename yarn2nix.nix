@@ -1,17 +1,10 @@
-{ lib, pkgs, nodejs-8_x, python, api, apiVersion, cluster, buildNum, nukeReferences, fetchzip, daedalus, stdenv, win64 ? false, wine, runCommand, fetchurl }:
+{ lib, pkgs, nodejs-10_x, python, api, apiVersion, cluster, buildNum, nukeReferences, fetchzip, daedalus, stdenv, win64 ? false, wine, runCommand, fetchurl }:
 let
-  nodejs = nodejs-8_x;
+  nodejs = nodejs-10_x;
   yarn2nix = import (fetchzip {
     url = "https://github.com/moretea/yarn2nix/archive/v1.0.0.tar.gz";
     sha256 = "02bzr9j83i1064r1r34cn74z7ccb84qb5iaivwdplaykyyydl1k8";
   }) { inherit pkgs nodejs; };
-  # TODO: these hard-coded values will go away when wallet port
-  # selection happens at runtime.
-  walletPortMap = {
-    mainnet = 8090;
-    staging = 8092;
-    testnet = 8094;
-  };
   dotGitExists = builtins.pathExists ./.git;
   isNix2 = 0 <= builtins.compareVersions builtins.nixVersion "1.12";
   canUseFetchGit = dotGitExists && isNix2;
@@ -20,6 +13,9 @@ let
     mainnet = "Daedalus";
     staging = "Daedalus Staging";
     testnet = "Daedalus Testnet";
+    nightly = "Daedalus Nightly";
+    qa = "Daedalus QA";
+    selfnode = "Daedalus Selfnode";
   };
   newPackage = (origPackage // {
     productName = nameTable.${if cluster == null then "testnet" else cluster};
@@ -63,7 +59,6 @@ yarn2nix.mkYarnPackage {
   API_VERSION = apiVersion;
   CI = "nix";
   NETWORK = cluster;
-  WALLET_PORT = walletPortMap.${cluster};
   BUILD_NUMBER = "${toString buildNum}";
   NODE_ENV = "production";
   extraBuildInputs = if win64 then [ wine nukeReferences ] else [ nukeReferences ];
@@ -77,7 +72,6 @@ yarn2nix.mkYarnPackage {
       done
     '';
   in if win64 then ''
-    cp ${daedalus.cfg}/etc/launcher-config.yaml ./launcher-config.yaml
     export ELECTRON_CACHE=${electron-cache}
     mkdir home
     export HOME=$(realpath home)
@@ -90,7 +84,6 @@ yarn2nix.mkYarnPackage {
     popd
     rm -rf $out/resources/app/{installers,launcher-config.yaml,gulpfile.js,home}
   '' else ''
-    cp -v ${daedalus.cfg}/etc/launcher-config.yaml ./launcher-config.yaml
     yarn --offline run build
     mkdir -p $out/bin $out/share/daedalus
     cp -R dist/* $out/share/daedalus
