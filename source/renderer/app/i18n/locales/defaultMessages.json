@@ -6745,7 +6745,7 @@
         "description": "Note to cancel a transaction that has been pending too long",
         "end": {
           "column": 3,
-          "line": 91
+          "line": 92
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.pending.cancelPendingTxnNote",
@@ -6759,13 +6759,13 @@
         "description": "Link to support article explaining transactions stuck pending",
         "end": {
           "column": 3,
-          "line": 96
+          "line": 98
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.pending.supportArticleLink",
         "start": {
           "column": 22,
-          "line": 92
+          "line": 93
         }
       },
       {
@@ -6773,13 +6773,13 @@
         "description": "Transaction state \"confirmed\"",
         "end": {
           "column": 3,
-          "line": 104
+          "line": 106
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.state.confirmed",
         "start": {
           "column": 26,
-          "line": 100
+          "line": 102
         }
       },
       {
@@ -6787,13 +6787,13 @@
         "description": "Transaction state \"pending\"",
         "end": {
           "column": 3,
-          "line": 109
+          "line": 111
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.state.pending",
         "start": {
           "column": 31,
-          "line": 105
+          "line": 107
         }
       }
     ],
