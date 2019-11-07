@@ -6956,7 +6956,7 @@
         "file": "source/renderer/app/components/wallet/transfer-funds/TransferFundsStep1Dialog.js",
         "id": "wallet.transferFunds.dialog1.sourceWallet",
         "start": {
-          "column": 14,
+          "column": 16,
           "line": 18
         }
       },
@@ -6970,7 +6970,7 @@
         "file": "source/renderer/app/components/wallet/transfer-funds/TransferFundsStep1Dialog.js",
         "id": "wallet.transferFunds.dialog1.targetWallet",
         "start": {
-          "column": 12,
+          "column": 16,
           "line": 23
         }
       },
@@ -6998,27 +6998,27 @@
         "description": "Title in the transfer funds form.",
         "end": {
           "column": 3,
-          "line": 14
+          "line": 22
         },
         "file": "source/renderer/app/components/wallet/transfer-funds/TransferFundsStep2Dialog.js",
         "id": "wallet.transferFunds.dialog2.title",
         "start": {
           "column": 15,
-          "line": 10
+          "line": 18
         }
       },
       {
-        "defaultMessage": "!!!Confirm transfer from the Legacy wallet name wallet to the Main wallet wallet.",
+        "defaultMessage": "!!!Confirm transfer from the {sourceWalletName}wallet to the {targetWalletName} wallet.",
         "description": "description in the transfer funds form.",
         "end": {
           "column": 3,
-          "line": 19
+          "line": 28
         },
         "file": "source/renderer/app/components/wallet/transfer-funds/TransferFundsStep2Dialog.js",
         "id": "wallet.transferFunds.dialog2.label.description",
         "start": {
           "column": 15,
-          "line": 15
+          "line": 23
         }
       },
       {
@@ -7026,13 +7026,13 @@
         "description": "Label To in the transfer funds form",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 33
         },
         "file": "source/renderer/app/components/wallet/transfer-funds/TransferFundsStep2Dialog.js",
         "id": "wallet.transferFunds.dialog2.label.to",
         "start": {
           "column": 11,
-          "line": 20
+          "line": 29
         }
       },
       {
@@ -7040,13 +7040,13 @@
         "description": "Label Amount in the transfer funds form",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 38
         },
         "file": "source/renderer/app/components/wallet/transfer-funds/TransferFundsStep2Dialog.js",
         "id": "wallet.transferFunds.dialog2.label.amount",
         "start": {
           "column": 15,
-          "line": 25
+          "line": 34
         }
       },
       {
@@ -7054,13 +7054,13 @@
         "description": "Label Fees in the transfer funds form",
         "end": {
           "column": 3,
-          "line": 34
+          "line": 43
         },
         "file": "source/renderer/app/components/wallet/transfer-funds/TransferFundsStep2Dialog.js",
         "id": "wallet.transferFunds.dialog2.label.fees",
         "start": {
           "column": 13,
-          "line": 30
+          "line": 39
         }
       },
       {
@@ -7068,13 +7068,13 @@
         "description": "Total Fees in the transfer funds form",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 48
         },
         "file": "source/renderer/app/components/wallet/transfer-funds/TransferFundsStep2Dialog.js",
         "id": "wallet.transferFunds.dialog2.label.total",
         "start": {
           "column": 14,
-          "line": 35
+          "line": 44
         }
       },
       {
@@ -7082,13 +7082,41 @@
         "description": "buttonLabel in the transfer funds form.",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 53
         },
         "file": "source/renderer/app/components/wallet/transfer-funds/TransferFundsStep2Dialog.js",
         "id": "wallet.transferFunds.dialog2.label.buttonLabel",
         "start": {
           "column": 15,
-          "line": 40
+          "line": 49
+        }
+      },
+      {
+        "defaultMessage": "!!!Type your spending password",
+        "description": "passphraseFieldPlaceholder in the transfer funds form.",
+        "end": {
+          "column": 3,
+          "line": 58
+        },
+        "file": "source/renderer/app/components/wallet/transfer-funds/TransferFundsStep2Dialog.js",
+        "id": "wallet.transferFunds.dialog2.passphraseFieldPlaceholder",
+        "start": {
+          "column": 30,
+          "line": 54
+        }
+      },
+      {
+        "defaultMessage": "!!!Spending password",
+        "description": "passphraseLabel in the transfer funds form.",
+        "end": {
+          "column": 3,
+          "line": 63
+        },
+        "file": "source/renderer/app/components/wallet/transfer-funds/TransferFundsStep2Dialog.js",
+        "id": "wallet.transferFunds.dialog2.passphraseLabel",
+        "start": {
+          "column": 19,
+          "line": 59
         }
       }
     ],

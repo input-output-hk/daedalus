@@ -1,11 +1,18 @@
 // @flow
 import React, { Component } from 'react';
 import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
+import { Input } from 'react-polymorph/lib/components/Input';
+import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import DialogBackButton from '../../widgets/DialogBackButton';
 import Dialog from '../../widgets/Dialog';
 import styles from './TransferFundsStep2Dialog.scss';
+import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import { formattedWalletAmount } from '../../../utils/formatters';
+import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
+import { isValidSpendingPassword } from '../../../utils/validations';
+import globalMessages from '../../../i18n/global-messages';
+import Wallet from '../../../domains/Wallet';
 
 const messages = defineMessages({
   dialogTitle: {
@@ -44,6 +51,16 @@ const messages = defineMessages({
     defaultMessage: '!!!Transfer funds',
     description: 'buttonLabel in the transfer funds form.',
   },
+  passphraseFieldPlaceholder: {
+    id: 'wallet.transferFunds.dialog2.passphraseFieldPlaceholder',
+    defaultMessage: '!!!Type your spending password',
+    description: 'passphraseFieldPlaceholder in the transfer funds form.',
+  },
+  passphraseLabel: {
+    id: 'wallet.transferFunds.dialog2.passphraseLabel',
+    defaultMessage: '!!!Spending password',
+    description: 'passphraseLabel in the transfer funds form.',
+  },
 });
 
 type Props = {
@@ -54,6 +71,8 @@ type Props = {
   sourceWallet: $Shape<Wallet>,
   targetWallet: $Shape<Wallet>,
   fees: number,
+  spendingPasswordValue?: string,
+  onDataChange: Function,
 };
 
 export default class TransferFundsStep2Dialog extends Component<Props> {
@@ -61,20 +80,63 @@ export default class TransferFundsStep2Dialog extends Component<Props> {
     intl: intlShape.isRequired,
   };
 
+  form = new ReactToolboxMobxForm(
+    {
+      fields: {
+        spendingPassword: {
+          type: 'password',
+          label: this.context.intl.formatMessage(messages.passphraseLabel),
+          placeholder: this.context.intl.formatMessage(
+            messages.passphraseFieldPlaceholder
+          ),
+          value: '',
+          validators: [
+            ({ field }) => {
+              return [
+                isValidSpendingPassword(field.value),
+                this.context.intl.formatMessage(
+                  globalMessages.invalidSpendingPassword
+                ),
+              ];
+            },
+          ],
+        },
+      },
+    },
+    {
+      options: {
+        validateOnChange: true,
+        validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
+      },
+    }
+  );
+
+  submit = () => {
+    this.form.submit({
+      onSuccess: form => {
+        const { spendingPassword } = form.values();
+        this.props.onContinue(spendingPassword);
+      },
+      onError: () => {},
+    });
+  };
+
   render() {
     const { intl } = this.context;
     const {
       onClose,
-      onContinue,
       onBack,
       addresses,
       fees,
       sourceWallet,
       targetWallet,
+      onDataChange,
+      spendingPasswordValue,
     } = this.props;
 
     const amount = formattedWalletAmount(sourceWallet.amount, false);
     const total = formattedWalletAmount(sourceWallet.amount.add(fees), false);
+    const spendingPasswordField = this.form.$('spendingPassword');
 
     return (
       <Dialog
@@ -83,7 +145,7 @@ export default class TransferFundsStep2Dialog extends Component<Props> {
         actions={[
           {
             label: intl.formatMessage(messages.buttonLabel),
-            onClick: onContinue,
+            onClick: this.submit,
             primary: true,
           },
         ]}
@@ -125,6 +187,16 @@ export default class TransferFundsStep2Dialog extends Component<Props> {
           </p>
           <div className={styles.amount}>{total}</div>
         </div>
+        <Input
+          type="password"
+          className={styles.currentPassword}
+          label={spendingPasswordField.label}
+          {...spendingPasswordField.bind()}
+          error={spendingPasswordField.error}
+          value={spendingPasswordValue}
+          skin={InputSkin}
+          onChange={value => onDataChange({ spendingPasswordValue: value })}
+        />
       </Dialog>
     );
   }

@@ -440,7 +440,6 @@ export default class WalletsStore extends Store {
     const fee = await this.transferFundsCalculateFeeRequest.execute({
       sourceWalletId,
     }).promise;
-    console.log('fee', fee);
   };
 
   // =================== PUBLIC API ==================== //

@@ -199,7 +199,7 @@ export type TransferFundsCalculateFeeResponse = {
 };
 
 export type TransferFundsRequest = {
-  targetWalletId: string,
+  sourceWalletId: string,
   targetWalletId: string,
   passphrase: string,
 };

@@ -64,5 +64,5 @@ export default class WalletsActions {
   }> = new Action();
   transferFundsRedeem: Action<any> = new Action();
   transferFundsClose: Action<any> = new Action();
-  transferFundsCalculateFee: Action<{ targetWalletId: string }> = new Action();
+  transferFundsCalculateFee: Action<{ sourceWalletId: string }> = new Action();
 }

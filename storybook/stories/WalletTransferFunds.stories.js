@@ -219,11 +219,12 @@ storiesOf('WalletTransferFunds', module)
     const step2Addresses = addresses[parseInt(targetWalletSelect.id, 0) - 1];
     return (
       <TransferFundsStep2Dialog
-        onContinue={action('onContinue')}
-        onClose={action('onClose')}
-        onBack={action('onBack')}
         addresses={step2Addresses}
         fees={faker.finance.amount(1, 4)}
+        onBack={action('onBack')}
+        onClose={action('onClose')}
+        onContinue={action('onContinue')}
+        onDataChange={action('onDataChange')}
         sourceWallet={sourceWallet}
         targetWallet={targetWallet}
       />

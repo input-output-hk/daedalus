@@ -23,7 +23,6 @@ export default class PaperWalletCreateCertificatePage extends Component<Props> {
     } = walletsActions;
     const { transferFundsStep } = walletsStore;
     if (!transferFundsStep) return null;
-    console.log('transferFundsStep', transferFundsStep);
     let Container;
     if (transferFundsStep === 1) {
       Container = TransferFundsStep1Container;
