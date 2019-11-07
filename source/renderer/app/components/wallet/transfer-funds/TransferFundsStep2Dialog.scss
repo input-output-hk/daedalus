@@ -1,15 +1,19 @@
 .component {
-  p {
+  font-family: var(--font-light);
+  line-height: 1.38;
+  b {
+    font-family: var(--font-medium);
   }
 }
+.description {
+  margin-bottom: 20px;
+}
 .label {
-  color: var(--rp-formfield-label-text-color, #5e6066);
+  // color: var(--rp-formfield-label-text-color, #5e6066);
   font-family: var(--font-medium);
-  font-size: 16px;
-  line-height: 1.38;
   margin-bottom: 10px;
 }
-.walletFrom {
+.sourceWallet {
   background-color: rgba(94, 96, 102, 0.5);
   margin-bottom: 20px;
 }

@@ -21,19 +21,21 @@ export default class TransferFundsStep1Container extends Component<Props> {
       allLegacyWallets,
       allWallets,
     } = stores.wallets;
-    const walletFrom = allLegacyWallets.find(
+    const sourceWallet = allLegacyWallets.find(
       ({ id }) => id === transferFundsSourceWalletId
     );
-    const walletTo = allWallets.find(
+    const targetWallet = allWallets.find(
       ({ id }) => id === transferFundsTargetWalletId
     );
-    if (!walletFrom || !walletTo) return null;
+    if (!sourceWallet || !targetWallet) return null;
     return (
       <TransferFundsStep2Dialog
         onClose={onClose}
         onContinue={onContinue}
         onBack={onBack}
         addresses={[]}
+        sourceWallet={sourceWallet}
+        targetWallet={targetWallet}
         amount="3"
         fees="+ 12.042481"
         total="15.042481"

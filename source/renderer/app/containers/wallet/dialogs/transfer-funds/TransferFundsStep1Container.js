@@ -22,14 +22,14 @@ export default class TransferFundsStep1Container extends Component<Props> {
       allWallets,
     } = stores.wallets;
     const { transferFundsSetTargetWalletId } = actions.wallets;
-    const walletFrom = allLegacyWallets.find(
+    const sourceWallet = allLegacyWallets.find(
       ({ id }) => id === transferFundsSourceWalletId
     );
-    if (!walletFrom) return null;
+    if (!sourceWallet) return null;
     return (
       <TransferFundsStep1Dialog
         targetWalletId={transferFundsTargetWalletId}
-        walletFrom={walletFrom}
+        sourceWallet={sourceWallet}
         wallets={allWallets}
         onClose={onClose}
         onContinue={onContinue}

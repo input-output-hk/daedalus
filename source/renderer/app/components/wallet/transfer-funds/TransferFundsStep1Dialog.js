@@ -37,7 +37,7 @@ type Props = {
   onContinue: Function,
   onSetSourceWallet: Function,
   targetWalletId?: string,
-  walletFrom: $Shape<Wallet>,
+  sourceWallet: $Shape<Wallet>,
   wallets: Array<$Shape<Wallet>>,
 };
 
@@ -53,7 +53,7 @@ export default class TransferFundsStep1Dialog extends Component<Props> {
       onContinue,
       onSetSourceWallet,
       targetWalletId,
-      walletFrom,
+      sourceWallet,
       wallets,
     } = this.props;
 
@@ -75,10 +75,10 @@ export default class TransferFundsStep1Dialog extends Component<Props> {
         <p className={styles.label}>
           {intl.formatMessage(messages.sourceWallet)}
         </p>
-        <div className={styles.walletFrom}>
+        <div className={styles.sourceWallet}>
           <WalletsDropdownOption
-            label={walletFrom.name}
-            detail={formattedWalletAmount(walletFrom.amount)}
+            label={sourceWallet.name}
+            detail={formattedWalletAmount(sourceWallet.amount)}
             selected
           />
         </div>

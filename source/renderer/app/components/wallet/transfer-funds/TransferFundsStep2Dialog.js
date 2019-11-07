@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import { defineMessages, intlShape } from 'react-intl';
+import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import DialogBackButton from '../../widgets/DialogBackButton';
 import Dialog from '../../widgets/Dialog';
@@ -15,7 +15,7 @@ const messages = defineMessages({
   description: {
     id: 'wallet.transferFunds.dialog2.label.description',
     defaultMessage:
-      '!!!Confirm transfer from the {sourceWalletName} name wallet to the {targetWalletName} wallet.',
+      '!!!Confirm transfer from the {sourceWalletName}wallet to the {targetWalletName} wallet.',
     description: 'description in the transfer funds form.',
   },
   labelTo: {
@@ -50,8 +50,8 @@ type Props = {
   onClose: Function,
   onBack: Function,
   addresses: Array<any>,
-  walletFrom: $Shape<Wallet>,
-  walletTo: $Shape<Wallet>,
+  sourceWallet: $Shape<Wallet>,
+  targetWallet: $Shape<Wallet>,
   amount: string,
   fees: string,
   total: string,
@@ -72,8 +72,8 @@ export default class TransferFundsStep2Dialog extends Component<Props> {
       amount,
       fees,
       total,
-      walletFrom,
-      walletTo,
+      sourceWallet,
+      targetWallet,
     } = this.props;
 
     return (
@@ -91,7 +91,15 @@ export default class TransferFundsStep2Dialog extends Component<Props> {
         closeButton={<DialogCloseButton />}
         backButton={<DialogBackButton onBack={onBack} />}
       >
-        <p>{intl.formatMessage(messages.description)}</p>
+        <FormattedMessage
+          {...messages.description}
+          values={{
+            sourceWalletName: <b>{sourceWallet.name}</b>,
+            targetWalletName: <b>{targetWallet.name}</b>,
+          }}
+        >
+          {(...content) => <div className={styles.description}>{content}</div>}
+        </FormattedMessage>
         <p className={styles.label}>
           {intl.formatMessage(messages.labelTo)}
           {addresses.map(address => (
