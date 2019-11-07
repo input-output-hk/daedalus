@@ -48,6 +48,13 @@ export default defineMessages({
     description:
       'Error message shown when the file the user tries to replace is open.',
   },
+  rewardsOpenCsvError: {
+    id: 'global.errors.rewardsOpenCsvError',
+    defaultMessage:
+      '!!!The file you are trying to replace is open. Please close it and try again.',
+    description:
+      'Error message shown when the file the user tries to replace is open.',
+  },
   passwordInstructions: {
     id: 'global.passwordInstructions',
     defaultMessage:
