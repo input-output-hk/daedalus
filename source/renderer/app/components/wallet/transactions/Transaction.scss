@@ -183,7 +183,9 @@
       color: var(--theme-transactions-list-item-details-color);
       font-family: var(--font-light);
       font-size: 16px;
+      line-height: 1.38;
       margin-left: 6px;
+      word-break: break-word;
     }
   }
 
