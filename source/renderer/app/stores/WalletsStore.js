@@ -13,17 +13,22 @@ import { MAX_ADA_WALLETS_COUNT } from '../config/numbersConfig';
 import { i18nContext } from '../utils/i18nContext';
 import { mnemonicToSeedHex } from '../utils/crypto';
 import { downloadPaperWalletCertificate } from '../utils/paperWalletPdfGenerator';
+import { downloadRewardsCsv } from '../utils/rewardsCsvGenerator';
 import { buildRoute, matchRoute } from '../utils/routing';
 import { asyncForEach } from '../utils/asyncForEach';
 import { ROUTES } from '../routes-config';
 import { formattedWalletAmount } from '../utils/formatters';
-import { WalletPaperWalletOpenPdfError } from '../i18n/errors';
+import {
+  WalletPaperWalletOpenPdfError,
+  WalletRewardsOpenCsvError,
+} from '../i18n/errors';
 import {
   RECOVERY_PHRASE_VERIFICATION_NOTIFICATION,
   RECOVERY_PHRASE_VERIFICATION_WARNING,
   WALLET_RESTORE_TYPES,
 } from '../config/walletsConfig';
 import { TESTNET } from '../../../common/types/environment.types';
+import type { CsvRecord } from '../../../common/types/rewards-csv-request.types';
 import type { walletExportTypeChoices } from '../types/walletExportTypes';
 import type { WalletImportFromFileParams } from '../actions/wallets-actions';
 import type LocalizableError from '../i18n/LocalizableError';
@@ -136,6 +141,8 @@ export default class WalletsStore extends Store {
   @observable walletCertificateRecoveryPhrase = null;
   @observable generatingCertificateInProgress = false;
   @observable generatingCertificateError: ?LocalizableError = null;
+  @observable generatingRewardsCsvInProgress = false;
+  @observable generatingRewardsCsvError: ?LocalizableError = null;
   @observable certificateStep = null;
   @observable certificateTemplate = null;
   @observable additionalMnemonicWords = null;
@@ -182,17 +189,26 @@ export default class WalletsStore extends Store {
     walletsActions.restoreWallet.listen(this._restoreWallet);
     walletsActions.importWalletFromFile.listen(this._importWalletFromFile);
     walletsActions.chooseWalletExportType.listen(this._chooseWalletExportType);
+
     walletsActions.generateCertificate.listen(this._generateCertificate);
     walletsActions.updateCertificateStep.listen(this._updateCertificateStep);
     walletsActions.closeCertificateGeneration.listen(
       this._closeCertificateGeneration
     );
+
+    walletsActions.generateRewardsCsv.listen(this._generateRewardsCsv);
+    walletsActions.closeRewardsCsvGeneration.listen(
+      this._closeRewardsCsvGeneration
+    );
+
     walletsActions.setCertificateTemplate.listen(this._setCertificateTemplate);
     walletsActions.finishCertificate.listen(this._finishCertificate);
+    walletsActions.finishRewardsCsv.listen(this._finishRewardsCsv);
     router.goToRoute.listen(this._onRouteChange);
     walletBackup.finishWalletBackup.listen(this._finishWalletBackup);
     app.initAppEnvironment.listen(() => {});
     networkStatus.restartNode.listen(this._updateGeneratingCertificateError);
+    networkStatus.restartNode.listen(this._updateGeneratingRewardsCsvError);
     walletsActions.updateRecoveryPhraseVerificationDate.listen(
       this._updateRecoveryPhraseVerificationDate
     );
@@ -779,6 +795,61 @@ export default class WalletsStore extends Store {
   });
 
   /**
+   * Generates a rewards csv and saves it to the user selected file location.
+   *
+   * Using mobx flows: https://mobx.js.org/best/actions.html#flows
+   * @private
+   */
+  _generateRewardsCsv = flow(function* generateRewardsCsv(params: {
+    rewards: Array<CsvRecord>,
+    filePath: string,
+  }) {
+    try {
+      this._pausePolling();
+
+      // Set inProgress state to show spinner if is needed
+      this._updateRewardsCsvCreationState(true);
+
+      // download rewards csv
+      yield this._downloadRewardsCsv(params.rewards, params.filePath);
+    } catch (error) {
+      throw error;
+    } finally {
+      this._resumePolling();
+    }
+  }).bind(this);
+
+  _downloadRewardsCsv = async (rewards: Array<CsvRecord>, filePath: string) => {
+    try {
+      await downloadRewardsCsv({
+        rewards,
+        filePath,
+      });
+      runInAction('handle successful rewards csv download', () => {
+        this._updateRewardsCsvCreationState(false);
+      });
+    } catch (error) {
+      runInAction('handle failed rewards csv download', () => {
+        this._updateRewardsCsvCreationState(false, error);
+      });
+    }
+  };
+
+  _updateRewardsCsvCreationState = action((state: boolean, error?: ?Object) => {
+    this.generatingRewardsCsvInProgress = state;
+    this._updateGeneratingRewardsCsvError(error);
+  });
+
+  _updateGeneratingRewardsCsvError = action((error?: ?Object) => {
+    if (error && error.syscall && error.syscall === 'open') {
+      // User tries to replace a file that is open
+      this.generatingRewardsCsvError = new WalletRewardsOpenCsvError();
+    } else {
+      this.generatingRewardsCsvError = null;
+    }
+  });
+
+  /**
    * - Receives a walet local data
    * - Returns the wallet's recovery phrase verification status
    */
@@ -879,6 +950,11 @@ export default class WalletsStore extends Store {
     this._closeCertificateGeneration();
   };
 
+  @action _finishRewardsCsv = () => {
+    this._updateGeneratingRewardsCsvError();
+    this._closeRewardsCsvGeneration();
+  };
+
   @action _updateCertificateStep = (isBack: boolean = false) => {
     this._updateGeneratingCertificateError();
     const currrentCertificateStep = this.certificateStep || 0;
@@ -892,6 +968,11 @@ export default class WalletsStore extends Store {
     this._resetCertificateData();
   };
 
+  @action _closeRewardsCsvGeneration = () => {
+    this.actions.dialogs.closeActiveDialog.trigger();
+    this._resetRewardsCsvData();
+  };
+
   @action _resetCertificateData = () => {
     this.walletCertificatePassword = null;
     this.walletCertificateAddress = null;
@@ -900,6 +981,11 @@ export default class WalletsStore extends Store {
     this.certificateTemplate = false;
     this.certificateStep = null;
     this._updateGeneratingCertificateError();
+  };
+
+  @action _resetRewardsCsvData = () => {
+    this.generatingRewardsCsvInProgress = false;
+    this._updateGeneratingRewardsCsvError();
   };
 
   _getWalletsLocalData = async () => {
