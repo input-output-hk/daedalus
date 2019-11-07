@@ -15,7 +15,11 @@ type Props = {
   activeItem: string,
   icon?: string,
   isActive: boolean,
-  options?: Array<{ value: number | string, label: string, isLegacy?: boolean }>,
+  options?: Array<{
+    value: number | string,
+    label: string,
+    isLegacy?: boolean,
+  }>,
   onChange: Function,
   hasNotification?: boolean,
 };
