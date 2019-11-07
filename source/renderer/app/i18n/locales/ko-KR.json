@@ -597,6 +597,7 @@
   "wallet.transaction.addresses.from": "!!!From addresses",
   "wallet.transaction.addresses.to": "!!!To addresses",
   "wallet.transaction.conversion.rate": "!!!Conversion rate",
+  "wallet.transaction.noInputAddressesLabel": "!!!No addresses",
   "wallet.transaction.received": "!!!{currency} received",
   "wallet.transaction.sent": "!!!{currency} sent",
   "wallet.transaction.state.confirmed": "!!!Transaction confirmed",
@@ -606,6 +607,8 @@
   "wallet.transaction.type": "!!!{currency} transaction",
   "wallet.transaction.type.card": "!!!Card payment",
   "wallet.transaction.type.exchange": "!!!Exchange",
+  "wallet.transaction.unresolvedInputAddressesAdditionalLabel": "!!!to see these addresses.",
+  "wallet.transaction.unresolvedInputAddressesLinkLabel": "!!!Open this transaction in Cardano explorer",
   "wallet.transactions.no.transactions": "!!!No transactions",
   "wallet.transactions.no.transactions.found": "!!!No transactions found"
 }

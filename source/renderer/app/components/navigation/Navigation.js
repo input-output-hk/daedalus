@@ -10,13 +10,14 @@ export type NavButtonProps = {
   id: string,
   label: string,
   icon?: string,
+  isLegacy?: boolean,
   hasNotification?: boolean,
 };
 
 export type NavDropdownProps = {
   ...$Exact<NavButtonProps>,
   type: 'dropdown',
-  options: Array<{ value: number | string, label: string }>,
+  options: Array<{ value: number | string, label: string, isLegacy?: boolean }>,
   hasNotification?: boolean,
 };
 
@@ -49,29 +50,43 @@ export default class Navigation extends Component<Props> {
     } = this.props;
     return (
       <div className={styles.component}>
-        {items.map(({ id, icon, label, hasNotification, ...item }) =>
-          item.type === 'dropdown' ? (
-            <NavDropdown
-              key={id}
-              label={label}
-              icon={icon}
-              isActive={isActiveNavItem(id, item)}
-              onChange={i => onNavItemClick(i)}
-              activeItem={activeItem}
-              options={item.options}
-              hasNotification={hasNotification}
-            />
-          ) : (
-            <NavButton
-              key={id}
-              className={id}
-              label={label}
-              icon={icon}
-              isActive={isActiveNavItem(id, item)}
-              onClick={() => onNavItemClick(id)}
-              hasNotification={hasNotification}
-            />
-          )
+        {items.map(({ id, icon, label, isLegacy, hasNotification, ...item }) =>
+          item.type === 'dropdown'
+            ? (!isLegacy && (
+                <NavDropdown
+                  key={id}
+                  label={label}
+                  icon={icon}
+                  isActive={isActiveNavItem(id, item)}
+                  onChange={i => onNavItemClick(i)}
+                  isLegacy={isLegacy}
+                  activeItem={activeItem}
+                  options={item.options}
+                  hasNotification={hasNotification}
+                />
+              )) ||
+              (isLegacy && (
+                <NavButton
+                  key={id}
+                  className={id}
+                  label={label}
+                  icon={icon}
+                  isActive={isActiveNavItem(id, item)}
+                  onClick={() => onNavItemClick(id)}
+                  hasNotification={hasNotification}
+                />
+              ))
+            : !isLegacy && (
+                <NavButton
+                  key={id}
+                  className={id}
+                  label={label}
+                  icon={icon}
+                  isActive={isActiveNavItem(id, item)}
+                  onClick={() => onNavItemClick(id)}
+                  hasNotification={hasNotification}
+                />
+              )
         )}
       </div>
     );
