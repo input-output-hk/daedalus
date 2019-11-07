@@ -17,7 +17,8 @@ steps:
     agents:
       system: x86_64-linux
 
-  - label: 'release.nix'
-    command: 'ci/check-hydra.sh'
-    agents:
-      system: x86_64-linux
+  # TODO: Re-enable once script is fixed
+  # - label: 'release.nix'
+  #   command: 'ci/check-hydra.sh'
+  #   agents:
+  #     system: x86_64-linux
