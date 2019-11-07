@@ -2,7 +2,7 @@
 {-# LANGUAGE LambdaCase        #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE RecordWildCards   #-}
+{-# LANGUAGE NamedFieldPuns    #-}
 module MacInstaller
     ( main
     , SigningConfig(..)
@@ -12,7 +12,6 @@ module MacInstaller
     , deleteCertificate
     , run
     , run'
-    , readCardanoVersionFile
     ) where
 
 ---
@@ -25,10 +24,10 @@ import           Control.Exception         (handle)
 import           Control.Monad             (unless)
 import           Data.Text                 (Text)
 import qualified Data.Text                 as T
+import           Data.Yaml                 (decodeFileThrow)
 import           Filesystem.Path           (FilePath, dropExtension, (<.>),
                                             (</>))
 import           Filesystem.Path.CurrentOS (encodeString)
-import           System.FilePath.Glob      (glob)
 import           System.IO                 (BufferMode (NoBuffering),
                                             hSetBuffering)
 import           System.IO.Error           (IOError, isDoesNotExistError)
@@ -45,29 +44,28 @@ data DarwinConfig = DarwinConfig {
     dcAppNameApp :: Text -- ^ Daedalus.app for example
   , dcAppName :: Text -- ^ the Daedalus from Daedalus.app
   , dcPkgName :: Text -- ^ org.daedalus.pkg for example
+  , dcDataDir :: Text -- ^ ${HOME}/Library/Application Support/Daedalus/qa
   } deriving (Show)
 
 -- | The contract of `main` is not to produce unsigned installer binaries.
 main :: Options -> IO ()
-main opts@Options{..} = do
+main opts@Options{oBackend, oCluster, oBuildJob, oOutputDir, oTestInstaller} = do
   hSetBuffering stdout NoBuffering
 
-  generateOSClusterConfigs "./dhall" "." opts
-  cp "launcher-config.yaml" "../launcher-config.yaml"
-
-  installerConfig <- getInstallerConfig "./dhall" Macos64 oCluster
+  installerConfig <- decodeFileThrow "installer-config.json"
 
   let
     darwinConfig = DarwinConfig {
-        dcAppNameApp = (installDirectory installerConfig) <> ".app"
-      , dcAppName = installDirectory installerConfig
+        dcAppNameApp = (spacedName installerConfig) <> ".app"
+      , dcAppName = spacedName installerConfig
       , dcPkgName = "org." <> (macPackageName installerConfig) <> ".pkg"
+      , dcDataDir = dataDir installerConfig
       }
     signing = False
   print darwinConfig
 
   ver <- getBackendVersion oBackend
-  exportBuildVars opts installerConfig ver
+  exportBuildVars opts ver
 
   buildIcons oCluster
   appRoot <- buildElectronApp darwinConfig installerConfig
@@ -107,7 +105,7 @@ makePostInstall = "#!/usr/bin/env bash\n" %
                   "./dockutil --add \"${dst_root}/" % s % "\" --allhomes\n"
 
 makeScriptsDir :: Options -> DarwinConfig -> Managed T.Text
-makeScriptsDir Options{..} DarwinConfig{..} = case oBackend of
+makeScriptsDir Options{oBackend} DarwinConfig{dcAppNameApp} = case oBackend of
   Cardano _ -> do
     tmp <- fromString <$> (liftIO $ getEnv "TMP")
     tempdir <- mktempdir tmp "scripts"
@@ -130,18 +128,18 @@ buildIcons cluster = do
 -- NB: If webpack scripts are changed then this function may need to
 -- be updated.
 buildElectronApp :: DarwinConfig -> InstallerConfig -> IO FilePath
-buildElectronApp darwinConfig@DarwinConfig{..} installerConfig = do
+buildElectronApp darwinConfig@DarwinConfig{dcAppName, dcAppNameApp} installerConfig = do
   withDir ".." . sh $ npmPackage darwinConfig
 
   let
     formatter :: Format r (Text -> Text -> r)
     formatter = "../release/darwin-x64/" % s % "-darwin-x64/" % s
     pathtoapp = format formatter dcAppName dcAppNameApp
-  rewritePackageJson (T.unpack $ pathtoapp <> "/Contents/Resources/app/package.json") (installDirectory installerConfig)
+  rewritePackageJson (T.unpack $ pathtoapp <> "/Contents/Resources/app/package.json") (spacedName installerConfig)
   pure $ fromString $ T.unpack $ pathtoapp
 
 npmPackage :: DarwinConfig -> Shell ()
-npmPackage DarwinConfig{..} = do
+npmPackage DarwinConfig{dcAppName} = do
   mktree "release"
   echo "~~~ Installing nodejs dependencies..."
   procs "yarn" ["install"] empty
@@ -156,34 +154,37 @@ getBackendVersion (Cardano bridge) = readCardanoVersionFile bridge
 getBackendVersion Mantis = pure "DEVOPS-533"
 
 makeComponentRoot :: Options -> FilePath -> DarwinConfig -> IO ()
-makeComponentRoot Options{..} appRoot darwinConfig@DarwinConfig{..} = do
+makeComponentRoot Options{oBackend,oCluster} appRoot darwinConfig@DarwinConfig{dcAppName} = do
   let dir     = appRoot </> "Contents/MacOS"
 
   echo "~~~ Preparing files ..."
   case oBackend of
     Cardano bridge -> do
       -- Executables (from daedalus-bridge)
-      forM ["cardano-launcher", "cardano-node", "cardano-x509-certificates"] $ \f ->
+      forM ["cardano-launcher", "cardano-wallet-jormungandr", "jormungandr", "jcli" ] $ \f ->
         cp (bridge </> "bin" </> f) (dir </> f)
 
       -- Config files (from daedalus-bridge)
-      cp (bridge </> "config/configuration.yaml") (dir </> "configuration.yaml")
-      cp (bridge </> "config/log-config-prod.yaml") (dir </> "log-config-prod.yaml")
+      --cp (bridge </> "config/configuration.yaml") (dir </> "configuration.yaml")
+      --cp (bridge </> "config/log-config-prod.yaml") (dir </> "log-config-prod.yaml")
+      when (oCluster /= Selfnode) $
+        cp "jormungandr-config.yaml" (dir </> "jormungandr-config.yaml")
+      when (oCluster == Selfnode) $
+        cp "genesis.yaml" (dir </> "genesis.yaml")
 
       -- Genesis (from daedalus-bridge)
-      genesisFiles <- glob . encodeString $ bridge </> "config" </> "*genesis*.json"
-      when (null genesisFiles) $
-        error "Cardano package carries no genesis files."
-      procs "cp" (map T.pack genesisFiles ++ [tt dir]) mempty
+      --genesisFiles <- glob . encodeString $ bridge </> "config" </> "*genesis*.json"
+      --when (null genesisFiles) $
+      --  error "Cardano package carries no genesis files."
+      --procs "cp" (map T.pack genesisFiles ++ [tt dir]) mempty
 
       -- Config yaml (generated from dhall files)
       cp "launcher-config.yaml" (dir </> "launcher-config.yaml")
-      cp "wallet-topology.yaml" (dir </> "wallet-topology.yaml")
 
       procs "chmod" ["-R", "+w", tt dir] empty
 
       -- Rewrite libs paths and bundle them
-      void $ chain (encodeString dir) $ fmap tt [dir </> "cardano-launcher", dir </> "cardano-node", dir </> "cardano-x509-certificates"]
+      void $ chain (encodeString dir) $ fmap tt [dir </> "cardano-launcher", dir </> "cardano-wallet-jormungandr", dir </> "jormungandr", dir </> "jcli" ]
 
     Mantis -> pure () -- DEVOPS-533
 
@@ -195,7 +196,7 @@ makeComponentRoot Options{..} appRoot darwinConfig@DarwinConfig{..} = do
 
 
 makeInstaller :: Options -> DarwinConfig -> FilePath -> FilePath -> IO FilePath
-makeInstaller opts@Options{..} darwinConfig@DarwinConfig{..} componentRoot pkg = do
+makeInstaller opts@Options{oOutputDir} darwinConfig@DarwinConfig{dcPkgName} componentRoot pkg = do
   let tempPkg1 = format fp (oOutputDir </> pkg)
       tempPkg2 = oOutputDir </> (dropExtension pkg <.> "unsigned" <.> "pkg")
 
@@ -235,13 +236,13 @@ readCardanoVersionFile bridge = prefix <$> handle handler (readTextFile verFile)
               | otherwise = throwM e
 
 writeLauncherFile :: FilePath -> DarwinConfig -> IO FilePath
-writeLauncherFile dir DarwinConfig{..} = do
+writeLauncherFile dir DarwinConfig{dcDataDir,dcAppName} = do
   writeTextFile path $ T.unlines contents
   run "chmod" ["+x", tt path]
   pure path
   where
     path = dir </> (fromString $ T.unpack dcAppName)
-    dataDir = "$HOME/Library/Application Support/" <> (dcAppName)
+    dataDir = dcDataDir
     contents =
       [ "#!/usr/bin/env bash"
       , "mkdir -p \"" <> dataDir <> "/Secrets-1.0\""
@@ -264,7 +265,7 @@ signingConfig = SigningConfig
 
 -- | Runs "security import -x"
 importCertificate :: SigningConfig -> FilePath -> Maybe Text -> IO ExitCode
-importCertificate SigningConfig{..} cert password = do
+importCertificate SigningConfig{signingKeyChain} cert password = do
   let optArg s = maybe [] (\p -> [s, p])
       certPass = optArg "-P" password
       keyChain = optArg "-k" signingKeyChain
@@ -274,14 +275,14 @@ importCertificate SigningConfig{..} cert password = do
 
 --- | Remove our certificate from the keychain
 deleteCertificate :: SigningConfig -> IO ExitCode
-deleteCertificate SigningConfig{..} = run' "security" args
+deleteCertificate SigningConfig{signingKeyChain, signingIdentity} = run' "security" args
   where
     args = ["delete-certificate", "-c", signingIdentity] ++ keychain
     keychain = maybe [] pure signingKeyChain
 
 -- | Creates a new installer package with signature added.
 signInstaller :: SigningConfig -> FilePath -> FilePath -> IO ()
-signInstaller SigningConfig{..} src dst =
+signInstaller SigningConfig{signingKeyChain, signingIdentity} src dst =
   run "productsign" $ sign ++ keychain ++ map tt [src, dst]
   where
     sign = [ "--sign", signingIdentity ]

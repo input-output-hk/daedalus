@@ -35,10 +35,12 @@ if (!isStartedByLauncher) {
  */
 export type LauncherConfig = {
   frontendOnlyMode: boolean,
-  statePath: string,
-  nodePath: string,
-  cliPath: string,
-  nodeImplementation: 'jormungandr' | 'cardano-http-bridge' | 'cardano-node',
+  stateDir: string,
+  walletBin: string,
+  walletArgs: Array<string>,
+  nodeBin: string,
+  cliBin: string,
+  nodeImplementation: 'jormungandr' | 'cardano-node',
   nodeArgs: Array<string>,
   tlsPath: string,
   nodeDbPath: string,
@@ -94,7 +96,7 @@ export const appLogsFolderPath = launcherConfig.logsPrefix;
 export const pubLogsFolderPath = path.join(appLogsFolderPath, 'pub');
 export const appFolderPath = launcherConfig.workingDir;
 export const { nodeDbPath } = launcherConfig;
-export const stateDirectoryPath = launcherConfig.statePath;
+export const stateDirectoryPath = launcherConfig.stateDir;
 export const stateDrive = isWindows ? stateDirectoryPath.slice(0, 2) : '/';
 export const ALLOWED_LOGS = [
   'Daedalus.json',
