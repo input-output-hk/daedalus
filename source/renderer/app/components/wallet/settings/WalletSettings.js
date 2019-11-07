@@ -53,6 +53,7 @@ type Props = {
   nameValidator: Function,
   activeField: ?string,
   isSubmitting: boolean,
+  isIncentivizedTestnet: boolean,
   isInvalid: boolean,
   isLegacy: boolean,
   showExportLink: boolean,
@@ -100,6 +101,7 @@ export default class WalletSettings extends Component<Props> {
       nameValidator,
       activeField,
       isSubmitting,
+      isIncentivizedTestnet,
       isInvalid,
       isLegacy,
       lastUpdatedField,
@@ -116,8 +118,8 @@ export default class WalletSettings extends Component<Props> {
       recoveryPhraseVerificationStatusType,
     } = this.props;
 
-    return (
-      (isLegacy && (
+    if (isLegacy) {
+      return (
         <div className={styles.component}>
           <BorderedBox>
             <DeleteWalletButton
@@ -129,40 +131,43 @@ export default class WalletSettings extends Component<Props> {
             />
           </BorderedBox>
         </div>
-      )) ||
-      (!isLegacy && (
-        <div className={styles.component}>
-          <BorderedBox>
-            <InlineEditingInput
-              className="walletName"
-              inputFieldLabel={intl.formatMessage(messages.name)}
-              inputFieldValue={walletName}
-              isActive={activeField === 'name'}
-              onStartEditing={() => onStartEditing('name')}
-              onStopEditing={onStopEditing}
-              onCancelEditing={onCancelEditing}
-              onSubmit={value => onFieldValueChange('name', value)}
-              isValid={nameValidator}
-              validationErrorMessage={intl.formatMessage(
-                globalMessages.invalidWalletName
-              )}
-              successfullyUpdated={
-                !isSubmitting && lastUpdatedField === 'name' && !isInvalid
-              }
-            />
+      );
+    }
 
-            <ReadOnlyInput
-              label={intl.formatMessage(messages.passwordLabel)}
-              value={intl.formatMessage(messages.passwordLastUpdated, {
-                lastUpdated: moment(spendingPasswordUpdateDate).fromNow(),
-              })}
-              onClick={() =>
-                openDialogAction({
-                  dialog: ChangeSpendingPasswordDialog,
-                })
-              }
-            />
+    return (
+      <div className={styles.component}>
+        <BorderedBox>
+          <InlineEditingInput
+            className="walletName"
+            inputFieldLabel={intl.formatMessage(messages.name)}
+            inputFieldValue={walletName}
+            isActive={activeField === 'name'}
+            onStartEditing={() => onStartEditing('name')}
+            onStopEditing={onStopEditing}
+            onCancelEditing={onCancelEditing}
+            onSubmit={value => onFieldValueChange('name', value)}
+            isValid={nameValidator}
+            validationErrorMessage={intl.formatMessage(
+              globalMessages.invalidWalletName
+            )}
+            successfullyUpdated={
+              !isSubmitting && lastUpdatedField === 'name' && !isInvalid
+            }
+          />
 
+          <ReadOnlyInput
+            label={intl.formatMessage(messages.passwordLabel)}
+            value={intl.formatMessage(messages.passwordLastUpdated, {
+              lastUpdated: moment(spendingPasswordUpdateDate).fromNow(),
+            })}
+            onClick={() =>
+              openDialogAction({
+                dialog: ChangeSpendingPasswordDialog,
+              })
+            }
+          />
+
+          {!isIncentivizedTestnet && (
             <WalletRecoveryPhrase
               recoveryPhraseVerificationDate={recoveryPhraseVerificationDate}
               recoveryPhraseVerificationStatus={
@@ -187,50 +192,48 @@ export default class WalletSettings extends Component<Props> {
                 walletRecoveryPhraseStep4Container
               }
             />
+          )}
 
-            {error && (
-              <p className={styles.error}>{intl.formatMessage(error)}</p>
-            )}
+          {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
 
-            <div className={styles.actionButtons}>
-              {showExportLink ? (
-                <button
-                  className={styles.exportLink}
-                  onClick={() =>
-                    openDialogAction({
-                      dialog: ExportWalletToFileDialog,
-                    })
-                  }
-                >
-                  {intl.formatMessage(messages.exportButtonLabel)}
-                </button>
-              ) : (
-                false
-              )}
-
-              <DeleteWalletButton
+          <div className={styles.actionButtons}>
+            {showExportLink ? (
+              <button
+                className={styles.exportLink}
                 onClick={() =>
                   openDialogAction({
-                    dialog: DeleteWalletConfirmationDialog,
+                    dialog: ExportWalletToFileDialog,
                   })
                 }
-              />
-            </div>
-          </BorderedBox>
+              >
+                {intl.formatMessage(messages.exportButtonLabel)}
+              </button>
+            ) : (
+              false
+            )}
 
-          {isDialogOpen(ChangeSpendingPasswordDialog)
-            ? changeSpendingPasswordDialog
-            : false}
+            <DeleteWalletButton
+              onClick={() =>
+                openDialogAction({
+                  dialog: DeleteWalletConfirmationDialog,
+                })
+              }
+            />
+          </div>
+        </BorderedBox>
 
-          {isDialogOpen(DeleteWalletConfirmationDialog)
-            ? deleteWalletDialogContainer
-            : false}
+        {isDialogOpen(ChangeSpendingPasswordDialog)
+          ? changeSpendingPasswordDialog
+          : false}
 
-          {isDialogOpen(ExportWalletToFileDialog)
-            ? exportWalletDialogContainer
-            : false}
-        </div>
-      ))
+        {isDialogOpen(DeleteWalletConfirmationDialog)
+          ? deleteWalletDialogContainer
+          : false}
+
+        {isDialogOpen(ExportWalletToFileDialog)
+          ? exportWalletDialogContainer
+          : false}
+      </div>
     );
   }
 }

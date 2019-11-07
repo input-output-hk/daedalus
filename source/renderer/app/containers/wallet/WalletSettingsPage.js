@@ -20,7 +20,13 @@ export default class WalletSettingsPage extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
   render() {
-    const { uiDialogs, walletSettings, app, wallets } = this.props.stores;
+    const {
+      uiDialogs,
+      walletSettings,
+      app,
+      wallets,
+      networkStatus,
+    } = this.props.stores;
     const activeWallet = wallets.active;
     let isLegacyWallet: boolean = false;
     if (activeWallet) {
@@ -69,6 +75,7 @@ export default class WalletSettingsPage extends Component<Props> {
         walletId={activeWallet.id}
         walletName={activeWallet.name}
         creationDate={creationDate}
+        isIncentivizedTestnet={networkStatus.isIncentivizedTestnet}
         isSubmitting={updateWalletRequest.isExecuting}
         isInvalid={
           updateWalletRequest.wasExecuted &&
