@@ -54,6 +54,7 @@ type Props = {
   activeField: ?string,
   isSubmitting: boolean,
   isInvalid: boolean,
+  isLegacy: boolean,
   showExportLink: boolean,
   lastUpdatedField: ?string,
   changeSpendingPasswordDialog: Node,
@@ -100,6 +101,7 @@ export default class WalletSettings extends Component<Props> {
       activeField,
       isSubmitting,
       isInvalid,
+      isLegacy,
       lastUpdatedField,
       showExportLink,
       changeSpendingPasswordDialog,
@@ -115,101 +117,127 @@ export default class WalletSettings extends Component<Props> {
     } = this.props;
 
     return (
-      <div className={styles.component}>
-        <BorderedBox>
-          <InlineEditingInput
-            className="walletName"
-            inputFieldLabel={intl.formatMessage(messages.name)}
-            inputFieldValue={walletName}
-            isActive={activeField === 'name'}
-            onStartEditing={() => onStartEditing('name')}
-            onStopEditing={onStopEditing}
-            onCancelEditing={onCancelEditing}
-            onSubmit={value => onFieldValueChange('name', value)}
-            isValid={nameValidator}
-            validationErrorMessage={intl.formatMessage(
-              globalMessages.invalidWalletName
-            )}
-            successfullyUpdated={
-              !isSubmitting && lastUpdatedField === 'name' && !isInvalid
-            }
-          />
-
-          <ReadOnlyInput
-            label={intl.formatMessage(messages.passwordLabel)}
-            value={intl.formatMessage(messages.passwordLastUpdated, {
-              lastUpdated: moment(spendingPasswordUpdateDate).fromNow(),
-            })}
-            onClick={() =>
-              openDialogAction({
-                dialog: ChangeSpendingPasswordDialog,
-              })
-            }
-          />
-
-          <WalletRecoveryPhrase
-            recoveryPhraseVerificationDate={recoveryPhraseVerificationDate}
-            recoveryPhraseVerificationStatus={recoveryPhraseVerificationStatus}
-            recoveryPhraseVerificationStatusType={
-              recoveryPhraseVerificationStatusType
-            }
-            creationDate={creationDate}
-            openDialogAction={openDialogAction}
-            isDialogOpen={isDialogOpen}
-            walletRecoveryPhraseStep1Container={
-              walletRecoveryPhraseStep1Container
-            }
-            walletRecoveryPhraseStep2Container={
-              walletRecoveryPhraseStep2Container
-            }
-            walletRecoveryPhraseStep3Container={
-              walletRecoveryPhraseStep3Container
-            }
-            walletRecoveryPhraseStep4Container={
-              walletRecoveryPhraseStep4Container
-            }
-          />
-
-          {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
-
-          <div className={styles.actionButtons}>
-            {showExportLink ? (
-              <button
-                className={styles.exportLink}
+      (isLegacy && (
+        <div className={styles.component}>
+          <BorderedBox>
+            <h2 className={styles.deleteWalletLabel}>Delete Wallet</h2>
+            <div className={styles.deleteWalletDescriptionContainer}>
+              <p className={styles.deleteWalletDescriptionText}>
+                Once you delete a wallet, there is no going back. The only way
+                to restore your wallet is to use recovery phrase.
+              </p>
+              <DeleteWalletButton
                 onClick={() =>
                   openDialogAction({
-                    dialog: ExportWalletToFileDialog,
+                    dialog: DeleteWalletConfirmationDialog,
                   })
                 }
-              >
-                {intl.formatMessage(messages.exportButtonLabel)}
-              </button>
-            ) : (
-              false
-            )}
+              />
+            </div>
+          </BorderedBox>
+        </div>
+      )) ||
+      (!isLegacy && (
+        <div className={styles.component}>
+          <BorderedBox>
+            <InlineEditingInput
+              className="walletName"
+              inputFieldLabel={intl.formatMessage(messages.name)}
+              inputFieldValue={walletName}
+              isActive={activeField === 'name'}
+              onStartEditing={() => onStartEditing('name')}
+              onStopEditing={onStopEditing}
+              onCancelEditing={onCancelEditing}
+              onSubmit={value => onFieldValueChange('name', value)}
+              isValid={nameValidator}
+              validationErrorMessage={intl.formatMessage(
+                globalMessages.invalidWalletName
+              )}
+              successfullyUpdated={
+                !isSubmitting && lastUpdatedField === 'name' && !isInvalid
+              }
+            />
 
-            <DeleteWalletButton
+            <ReadOnlyInput
+              label={intl.formatMessage(messages.passwordLabel)}
+              value={intl.formatMessage(messages.passwordLastUpdated, {
+                lastUpdated: moment(spendingPasswordUpdateDate).fromNow(),
+              })}
               onClick={() =>
                 openDialogAction({
-                  dialog: DeleteWalletConfirmationDialog,
+                  dialog: ChangeSpendingPasswordDialog,
                 })
               }
             />
-          </div>
-        </BorderedBox>
 
-        {isDialogOpen(ChangeSpendingPasswordDialog)
-          ? changeSpendingPasswordDialog
-          : false}
+            <WalletRecoveryPhrase
+              recoveryPhraseVerificationDate={recoveryPhraseVerificationDate}
+              recoveryPhraseVerificationStatus={
+                recoveryPhraseVerificationStatus
+              }
+              recoveryPhraseVerificationStatusType={
+                recoveryPhraseVerificationStatusType
+              }
+              creationDate={creationDate}
+              openDialogAction={openDialogAction}
+              isDialogOpen={isDialogOpen}
+              walletRecoveryPhraseStep1Container={
+                walletRecoveryPhraseStep1Container
+              }
+              walletRecoveryPhraseStep2Container={
+                walletRecoveryPhraseStep2Container
+              }
+              walletRecoveryPhraseStep3Container={
+                walletRecoveryPhraseStep3Container
+              }
+              walletRecoveryPhraseStep4Container={
+                walletRecoveryPhraseStep4Container
+              }
+            />
 
-        {isDialogOpen(DeleteWalletConfirmationDialog)
-          ? deleteWalletDialogContainer
-          : false}
+            {error && (
+              <p className={styles.error}>{intl.formatMessage(error)}</p>
+            )}
 
-        {isDialogOpen(ExportWalletToFileDialog)
-          ? exportWalletDialogContainer
-          : false}
-      </div>
+            <div className={styles.actionButtons}>
+              {showExportLink ? (
+                <button
+                  className={styles.exportLink}
+                  onClick={() =>
+                    openDialogAction({
+                      dialog: ExportWalletToFileDialog,
+                    })
+                  }
+                >
+                  {intl.formatMessage(messages.exportButtonLabel)}
+                </button>
+              ) : (
+                false
+              )}
+
+              <DeleteWalletButton
+                onClick={() =>
+                  openDialogAction({
+                    dialog: DeleteWalletConfirmationDialog,
+                  })
+                }
+              />
+            </div>
+          </BorderedBox>
+
+          {isDialogOpen(ChangeSpendingPasswordDialog)
+            ? changeSpendingPasswordDialog
+            : false}
+
+          {isDialogOpen(DeleteWalletConfirmationDialog)
+            ? deleteWalletDialogContainer
+            : false}
+
+          {isDialogOpen(ExportWalletToFileDialog)
+            ? exportWalletDialogContainer
+            : false}
+        </div>
+      ))
     );
   }
 }

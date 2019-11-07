@@ -563,6 +563,8 @@ export const DARK_CARDANO_THEME_OUTPUT = {
   },
   settings: {
     '--theme-settings-body-background-color': '#121326',
+    '--theme-settings-delete-button-legacy-background-color': '#414251',
+    '--theme-settings-delete-button-legacy-background-color-hover': '#414251',
     '--theme-settings-pane-background-color': '#1e1f31',
     '--theme-settings-pane-border': 'none',
     '--theme-settings-menu-box-background-color': '#1e1f31',
