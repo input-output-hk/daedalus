@@ -1,5 +1,5 @@
 // @flow
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
 import SVGInline from 'react-svg-inline';
@@ -160,20 +160,51 @@ export default class Transaction extends Component<Props> {
     return NOW - TXN_PENDING_SINCE;
   };
 
-  renderTxnStateTag = () => {
-    const { intl } = this.context;
+  hasExceededPendingTimeLimit = (): boolean => {
     const {
       data: { date },
       isRestoreActive,
       state,
     } = this.props;
 
-    if (isRestoreActive || !date) return;
+    const isPendingTxn = state === TransactionStates.PENDING;
+    if (!isPendingTxn || isRestoreActive || !date) return false;
 
     const PENDING_SINCE = this.getTimePending(date);
-    const isPendingTxn = state === TransactionStates.PENDING;
-    const pendingTimedOut = isPendingTxn && PENDING_SINCE > PENDING_LIMIT;
-    const styleLabel = pendingTimedOut
+    return PENDING_SINCE > PENDING_LIMIT;
+  };
+
+  renderCancelPendingTxnContent = () => {
+    const overPendingTimeLimit = this.hasExceededPendingTimeLimit();
+    if (!overPendingTimeLimit) return null;
+    return (
+      <Fragment>
+        <div className={styles.pendingTxnNote}>
+          This transaction has been pending for too long. We recomend you cancel
+          it.
+          <span
+            role="presentation"
+            aria-hidden
+            className={styles.articleLink}
+            onClick={this.handleOpenSupportArticle}
+          >
+            Read Why
+            <SVGInline svg={externalLinkIcon} />
+          </span>
+        </div>
+        <div>
+          <CancelTransactionButton onClick={this.deletePendingTransaction} />
+        </div>
+      </Fragment>
+    );
+  };
+
+  renderTxnStateTag = () => {
+    const { intl } = this.context;
+    const { state } = this.props;
+
+    const overPendingTimeLimit = this.hasExceededPendingTimeLimit();
+    const styleLabel = overPendingTimeLimit
       ? `${state}WarningLabel`
       : `${state}Label`;
 
@@ -331,24 +362,7 @@ export default class Transaction extends Component<Props> {
                   <SVGInline svg={externalLinkIcon} />
                 </span>
               </div>
-              <div className={styles.pendingTxnNote}>
-                This transaction has been pending for too long. We recomend you
-                cancel it.
-                <span
-                  role="presentation"
-                  aria-hidden
-                  className={styles.articleLink}
-                  onClick={this.handleOpenSupportArticle}
-                >
-                  Read Why
-                  <SVGInline svg={externalLinkIcon} />
-                </span>
-              </div>
-              <div>
-                <CancelTransactionButton
-                  onClick={this.deletePendingTransaction}
-                />
-              </div>
+              {this.renderCancelPendingTxnContent()}
             </div>
           </div>
           <SVGInline svg={arrow} className={arrowStyles} />
