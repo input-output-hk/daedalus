@@ -14,5 +14,6 @@ export type Addresses = Array<Address>;
 
 export type GetAddressesRequest = {
   walletId: string,
+  isLegacy: boolean,
   queryParams?: GetAddressesRequestQueryParams,
 };
