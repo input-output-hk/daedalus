@@ -49,7 +49,7 @@ export default class Navigation extends Component<Props> {
     } = this.props;
     return (
       <div className={styles.component}>
-        {items.map(({ id, icon, label, hasNotification, ...item }) =>
+        {items.map(({ id, icon, label, isLegacy, hasNotification, ...item }) =>
           item.type === 'dropdown' ? (
             <NavDropdown
               key={id}
@@ -62,15 +62,17 @@ export default class Navigation extends Component<Props> {
               hasNotification={hasNotification}
             />
           ) : (
-            <NavButton
-              key={id}
-              className={id}
-              label={label}
-              icon={icon}
-              isActive={isActiveNavItem(id, item)}
-              onClick={() => onNavItemClick(id)}
-              hasNotification={hasNotification}
-            />
+            !isLegacy && (
+              <NavButton
+                key={id}
+                className={id}
+                label={label}
+                icon={icon}
+                isActive={isActiveNavItem(id, item)}
+                onClick={() => onNavItemClick(id)}
+                hasNotification={hasNotification}
+              />
+            )
           )
         )}
       </div>

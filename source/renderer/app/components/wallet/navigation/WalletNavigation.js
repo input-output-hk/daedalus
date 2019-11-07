@@ -53,6 +53,7 @@ const messages = defineMessages({
 type Props = {
   activeItem: string,
   isActiveNavItem: Function,
+  isLegacy: boolean,
   onNavItemClick: Function,
   hasNotification?: boolean,
 };
@@ -66,6 +67,7 @@ export default class WalletNavigation extends Component<Props> {
   render() {
     const {
       isActiveNavItem,
+      isLegacy,
       onNavItemClick,
       activeItem,
       hasNotification,
@@ -86,11 +88,13 @@ export default class WalletNavigation extends Component<Props> {
             id: 'send',
             label: intl.formatMessage(messages.send),
             icon: sendIcon,
+            isLegacy,
           },
           {
             id: 'receive',
             label: intl.formatMessage(messages.receive),
             icon: receiveIcon,
+            isLegacy,
           },
           {
             id: 'transactions',
@@ -112,6 +116,7 @@ export default class WalletNavigation extends Component<Props> {
               {
                 label: intl.formatMessage(messages.utxo),
                 value: 'utxo',
+                isLegacy,
               },
             ],
           },

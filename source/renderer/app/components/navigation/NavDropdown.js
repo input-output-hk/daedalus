@@ -32,6 +32,7 @@ export default class NavDropdown extends Component<Props> {
       activeItem,
       hasNotification,
     } = this.props;
+    const filteredOptions = options.filter(option => !option.isLegacy);
     const componentStyles = classnames([
       styles.component,
       hasNotification ? styles.hasNotification : null,
@@ -49,7 +50,7 @@ export default class NavDropdown extends Component<Props> {
             />
           }
           onChange={({ value }) => onChange(value)}
-          options={options}
+          options={filteredOptions}
           skin={SelectSkin}
           themeOverrides={selectStyles}
           value={activeItem}

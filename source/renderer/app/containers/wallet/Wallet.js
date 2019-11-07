@@ -88,6 +88,7 @@ export default class Wallet extends Component<Props> {
           isActiveScreen={this.isActiveScreen}
           onWalletNavItemClick={this.handleWalletNavItemClick}
           activeItem={app.currentPage}
+          isLegacy={activeWallet.isLegacy}
           hasNotification={hasNotification}
         >
           {this.props.children}
