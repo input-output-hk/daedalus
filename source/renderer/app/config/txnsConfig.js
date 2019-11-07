@@ -1,1 +1,1 @@
-export const PENDING_LIMIT = 600000; // 10 minutes
+export const PENDING_TIME_LIMIT = 60000 * 10; // 10 minutes

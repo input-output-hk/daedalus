@@ -18,7 +18,7 @@ import {
 import globalMessages from '../../../i18n/global-messages';
 import type { TransactionState } from '../../../domains/WalletTransaction';
 import { getNetworkExplorerUrl } from '../../../utils/network';
-import { PENDING_LIMIT } from '../../../config/txnsConfig';
+import { PENDING_TIME_LIMIT } from '../../../config/txnsConfig';
 
 /* eslint-disable consistent-return */
 
@@ -143,7 +143,7 @@ export default class Transaction extends Component<Props> {
     const { data, walletId } = this.props;
     const { id: transactionId, state } = data;
 
-    if (state !== 'pending') {
+    if (state !== TransactionStates.PENDING) {
       return null;
     }
 
@@ -156,8 +156,8 @@ export default class Transaction extends Component<Props> {
   getTimePending = (txnDate: Date): number => {
     // right now (milliseconds) minus txn created_at date (milliseconds)
     const NOW = moment().valueOf();
-    const TXN_PENDING_SINCE = moment(txnDate).valueOf();
-    return NOW - TXN_PENDING_SINCE;
+    const TXN_CREATED_AT = moment(txnDate).valueOf();
+    return NOW - TXN_CREATED_AT;
   };
 
   hasExceededPendingTimeLimit = (): boolean => {
@@ -171,7 +171,7 @@ export default class Transaction extends Component<Props> {
     if (!isPendingTxn || isRestoreActive || !date) return false;
 
     const PENDING_SINCE = this.getTimePending(date);
-    return PENDING_SINCE > PENDING_LIMIT;
+    return PENDING_SINCE > PENDING_TIME_LIMIT;
   };
 
   renderCancelPendingTxnContent = () => {
@@ -202,9 +202,7 @@ export default class Transaction extends Component<Props> {
   renderTxnStateTag = () => {
     const { intl } = this.context;
     const { state } = this.props;
-
-    const overPendingTimeLimit = this.hasExceededPendingTimeLimit();
-    const styleLabel = overPendingTimeLimit
+    const styleLabel = this.hasExceededPendingTimeLimit()
       ? `${state}WarningLabel`
       : `${state}Label`;
 
@@ -229,8 +227,6 @@ export default class Transaction extends Component<Props> {
     const canOpenExplorer = onOpenExternalLink;
 
     const isPendingTransaction = state === TransactionStates.PENDING;
-
-    const txnDate = data.date ? data.date : new Date();
 
     const componentStyles = classNames([
       styles.component,
@@ -269,7 +265,10 @@ export default class Transaction extends Component<Props> {
         aria-hidden
       >
         <div className={styles.toggler}>
-          <TransactionTypeIcon txnDate={txnDate} iconType={iconType} />
+          <TransactionTypeIcon
+            exceedsPendingTimeLimit={this.hasExceededPendingTimeLimit()}
+            iconType={iconType}
+          />
 
           <div className={styles.togglerContent}>
             <div className={styles.header}>
