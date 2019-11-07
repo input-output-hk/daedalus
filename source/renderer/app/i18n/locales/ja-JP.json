@@ -588,6 +588,7 @@
   "wallet.transaction.address.to": "送信先",
   "wallet.transaction.addresses.from": "送信元",
   "wallet.transaction.addresses.to": "送信先",
+  "wallet.transaction.cancelTransactionButton": "!!!Cancel pending transaction",
   "wallet.transaction.conversion.rate": "両替率",
   "wallet.transaction.received": "{currency}受取済み",
   "wallet.transaction.sent": "{currency}送金済み",

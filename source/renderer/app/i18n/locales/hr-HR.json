@@ -588,6 +588,7 @@
   "wallet.transaction.address.to": "!!!To address",
   "wallet.transaction.addresses.from": "!!!From addresses",
   "wallet.transaction.addresses.to": "!!!To addresses",
+  "wallet.transaction.cancelTransactionButton": "!!!Cancel pending transaction",
   "wallet.transaction.conversion.rate": "!!!Tečajna stopa",
   "wallet.transaction.received": "!!!{currency} received",
   "wallet.transaction.sent": "!!!{currency} sent",
