@@ -63,7 +63,6 @@ const NODE_STOPPED_STATES = [
 
 const NODE_IMPLEMENTATIONS: { [key: string]: CardanoNodeImplementation } = {
   jormungandr: 'jormungandr',
-  cardanoHttpBridge: 'cardano-http-bridge',
   cardanoNode: 'cardano-node',
 };
 
