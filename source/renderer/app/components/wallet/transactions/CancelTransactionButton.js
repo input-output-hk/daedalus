@@ -7,7 +7,7 @@ import styles from './CancelTransactionButton.scss';
 
 const messages = defineMessages({
   label: {
-    id: 'wallet.transaction.cancelTransactionButton',
+    id: 'wallet.transaction.pending.cancelTransactionButton',
     defaultMessage: '!!!Cancel pending transaction',
     description: 'Label for the cancel pending transaction button',
   },

@@ -84,6 +84,18 @@ const messages = defineMessages({
     defaultMessage: '!!!Transaction amount',
     description: 'Transaction amount.',
   },
+  cancelPendingTxnNote: {
+    id: 'wallet.transaction.pending.cancelPendingTxnNote',
+    defaultMessage:
+      '!!!This transaction has been pending for too long. We recommend you cancel it.',
+    description: 'Note to cancel a transaction that has been pending too long',
+  },
+  supportArticleLink: {
+    id: 'wallet.transaction.pending.supportArticleLink',
+    defaultMessage: '!!!Read why',
+    description:
+      'Link to support article explaining transactions stuck pending',
+  },
 });
 
 const stateTranslations = defineMessages({
@@ -175,20 +187,22 @@ export default class Transaction extends Component<Props> {
   };
 
   renderCancelPendingTxnContent = () => {
+    const { intl } = this.context;
     const overPendingTimeLimit = this.hasExceededPendingTimeLimit();
+
     if (!overPendingTimeLimit) return null;
+
     return (
       <Fragment>
         <div className={styles.pendingTxnNote}>
-          This transaction has been pending for too long. We recomend you cancel
-          it.
+          {intl.formatMessage(messages.cancelPendingTxnNote)}
           <span
             role="presentation"
             aria-hidden
             className={styles.articleLink}
             onClick={this.handleOpenSupportArticle}
           >
-            Read Why
+            {intl.formatMessage(messages.supportArticleLink)}
             <SVGInline svg={externalLinkIcon} />
           </span>
         </div>
