@@ -4,6 +4,7 @@ const mnemonics = [
   ['connect', 'fish', 'fitness', 'palace', 'electric', 'suit', 'student', 'page', 'home', 'scissors', 'moon', 'staff'],
   ['judge', 'sting', 'fish', 'script', 'silent', 'soup', 'chef', 'very', 'employ', 'wage', 'cloud', 'tourist'],
   ['collect', 'fold', 'file', 'clown', 'injury', 'sun', 'brass', 'diet', 'exist', 'spike', 'behave', 'clip'],
+  [ 'arctic', 'decade', 'pink', 'easy', 'jar', 'index', 'base', 'bright', 'vast', 'ocean', 'hard', 'pizza'],
 ]
 
 const walletNames = [

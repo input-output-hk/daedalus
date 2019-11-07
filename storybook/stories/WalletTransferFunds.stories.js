@@ -80,7 +80,7 @@ storiesOf('WalletTransferFunds', module)
       amount="3"
       fees="+ 12.042481"
       total="15.042481"
-      walletFrom={wallets[0]}
-      walletTo={wallets[1]}
+      sourceWallet={wallets[0]}
+      targetWallet={wallets[1]}
     />
   ));
