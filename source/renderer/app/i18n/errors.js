@@ -45,3 +45,13 @@ export class WalletPaperWalletOpenPdfError extends LocalizableError {
     });
   }
 }
+
+export class WalletRewardsOpenCsvError extends LocalizableError {
+  constructor() {
+    super({
+      id: 'global.errors.rewardsOpenCsvError',
+      defaultMessage:
+        '!!!The file you are trying to replace is open. Please close it and try again.',
+    });
+  }
+}
