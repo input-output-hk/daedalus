@@ -13,6 +13,45 @@
       color: var(--theme-input-label-color);
     }
   }
+
+  .deleteWalletLabel {
+    color: var(--theme-input-label-color);
+    font-size: 16px;
+    font-weight: 500;
+    padding-bottom: 14px;
+  }
+
+  .deleteWalletDescriptionContainer {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+
+    .deleteWalletDescriptionText {
+      color: var(--theme-input-label-color);
+      font-size: 16px;
+      font-weight: 300;
+      line-height: 1.38;
+      padding-right: 10px;
+    }
+
+    button {
+      background-color: var(
+        --theme-settings-delete-button-legacy-background-color
+      );
+      border-radius: 5px;
+      font-size: 14px;
+      font-weight: 500;
+      height: 36px;
+      line-height: inherit;
+      width: 217px;
+
+      &:hover {
+        background-color: var(
+          --theme-settings-delete-button-legacy-background-color-hover
+        );
+      }
+    }
+  }
 }
 
 .actionButtons {

@@ -8,6 +8,7 @@ import WalletAddress from '../domains/WalletAddress';
 export default class AddressesStore extends Store {
   @observable addressesRequests: Array<{
     walletId: string,
+    isLegacy: boolean,
     allRequest: CachedRequest<Array<WalletAddress>>,
   }> = [];
 
@@ -45,7 +46,7 @@ export default class AddressesStore extends Store {
       for (const wallet of allWallets) {
         const allRequest = this._getAddressesAllRequest(wallet.id);
         allRequest.invalidate({ immediately: false });
-        allRequest.execute({ walletId: wallet.id });
+        allRequest.execute({ walletId: wallet.id, isLegacy: wallet.isLegacy });
       }
     }
   };
