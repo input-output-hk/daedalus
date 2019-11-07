@@ -13,8 +13,31 @@ type Props = {
   isIncentivizedTestnet: boolean,
 };
 
+type State = {
+  scrollTop: number,
+};
+
+type ContextValue = {
+  scrollTop: number,
+};
+
+export const StakingPageScrollContext = React.createContext<ContextValue>({
+  scrollTop: 0,
+});
+
 @observer
-export default class StakingWithNavigation extends Component<Props> {
+export default class StakingWithNavigation extends Component<Props, State> {
+  constructor(props: Props) {
+    super(props);
+    this.state = {
+      scrollTop: 0,
+    };
+  }
+
+  handleScroll = (evt: SyntheticEvent<HTMLElement>) => {
+    this.setState({ scrollTop: evt.currentTarget.scrollTop });
+  };
+
   render() {
     const {
       children,
@@ -23,19 +46,24 @@ export default class StakingWithNavigation extends Component<Props> {
       isActiveNavItem,
       isIncentivizedTestnet,
     } = this.props;
+    const { scrollTop } = this.state;
 
     return (
-      <div className={styles.component}>
-        <div className={styles.navigation}>
-          <StakingNavigation
-            isActiveNavItem={isActiveNavItem}
-            onNavItemClick={onNavItemClick}
-            activeItem={activeItem}
-            isIncentivizedTestnet={isIncentivizedTestnet}
-          />
+      <StakingPageScrollContext.Provider value={{ scrollTop }}>
+        <div className={styles.component}>
+          <div className={styles.navigation}>
+            <StakingNavigation
+              isActiveNavItem={isActiveNavItem}
+              onNavItemClick={onNavItemClick}
+              activeItem={activeItem}
+              isIncentivizedTestnet={isIncentivizedTestnet}
+            />
+          </div>
+          <div className={styles.page} onScroll={this.handleScroll}>
+            {children}
+          </div>
         </div>
-        <div className={styles.page}>{children}</div>
-      </div>
+      </StakingPageScrollContext.Provider>
     );
   }
 }

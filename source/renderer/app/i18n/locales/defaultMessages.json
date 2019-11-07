@@ -3310,11 +3310,11 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Earned Rewards",
-        "description": "Title \"Earned Rewards\" label on the staking rewards page.",
+        "defaultMessage": "!!!Earned delegation rewards",
+        "description": "Title \"Earned delegation rewards\" label on the staking rewards page.",
         "end": {
           "column": 3,
-          "line": 20
+          "line": 21
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.title",
@@ -3328,13 +3328,13 @@
         "description": "Label for the \"Export CSV\" button on the staking rewards page.",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 27
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.exportButtonLabel",
         "start": {
           "column": 21,
-          "line": 21
+          "line": 22
         }
       },
       {
@@ -3342,13 +3342,13 @@
         "description": "\"No rewards\" rewards label on staking rewards page.",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 32
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.no.rewards",
         "start": {
           "column": 13,
-          "line": 27
+          "line": 28
         }
       },
       {
@@ -3356,13 +3356,13 @@
         "description": "Table header \"Date\" label on staking rewards page",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 37
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.tableHeader.date",
         "start": {
           "column": 19,
-          "line": 32
+          "line": 33
         }
       },
       {
@@ -3370,13 +3370,13 @@
         "description": "Table header \"Stake pool\" label on staking rewards page",
         "end": {
           "column": 3,
-          "line": 41
+          "line": 42
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.tableHeader.pool",
         "start": {
           "column": 19,
-          "line": 37
+          "line": 38
         }
       },
       {
@@ -3384,27 +3384,27 @@
         "description": "Table header \"Wallet\" label on staking rewards page",
         "end": {
           "column": 3,
-          "line": 46
+          "line": 47
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.tableHeader.wallet",
         "start": {
           "column": 21,
-          "line": 42
+          "line": 43
         }
       },
       {
-        "defaultMessage": "!!!Amount",
-        "description": "Table header \"Amount\" label on staking rewards page",
+        "defaultMessage": "!!!Reward",
+        "description": "Table header \"Reward\" label on staking rewards page",
         "end": {
           "column": 3,
-          "line": 51
+          "line": 52
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
-        "id": "staking.rewards.tableHeader.amount",
+        "id": "staking.rewards.tableHeader.reward",
         "start": {
           "column": 21,
-          "line": 47
+          "line": 48
         }
       },
       {
@@ -3412,13 +3412,13 @@
         "description": "Label for \"Learn more\" button on staking rewards page",
         "end": {
           "column": 3,
-          "line": 56
+          "line": 57
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.learnMore.ButtonLabel",
         "start": {
           "column": 24,
-          "line": 52
+          "line": 53
         }
       },
       {
@@ -3426,17 +3426,134 @@
         "description": "Rewards description text on staking rewards page",
         "end": {
           "column": 3,
-          "line": 62
+          "line": 63
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.note",
         "start": {
           "column": 8,
-          "line": 57
+          "line": 58
         }
       }
     ],
     "path": "source/renderer/app/components/staking/rewards/StakingRewards.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Earned delegation rewards",
+        "description": "Title \"Earned delegation rewards\" label on the staking rewards page.",
+        "end": {
+          "column": 3,
+          "line": 27
+        },
+        "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
+        "id": "staking.rewards.title",
+        "start": {
+          "column": 9,
+          "line": 22
+        }
+      },
+      {
+        "defaultMessage": "!!!Export CSV",
+        "description": "Label for the \"Export CSV\" button on the staking rewards page.",
+        "end": {
+          "column": 3,
+          "line": 33
+        },
+        "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
+        "id": "staking.rewards.exportButtonLabel",
+        "start": {
+          "column": 21,
+          "line": 28
+        }
+      },
+      {
+        "defaultMessage": "!!!No rewards",
+        "description": "\"No rewards\" rewards label on staking rewards page.",
+        "end": {
+          "column": 3,
+          "line": 38
+        },
+        "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
+        "id": "staking.rewards.no.rewards",
+        "start": {
+          "column": 13,
+          "line": 34
+        }
+      },
+      {
+        "defaultMessage": "!!!Wallet",
+        "description": "Table header \"Wallet\" label on staking rewards page",
+        "end": {
+          "column": 3,
+          "line": 43
+        },
+        "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
+        "id": "staking.rewards.tableHeader.wallet",
+        "start": {
+          "column": 21,
+          "line": 39
+        }
+      },
+      {
+        "defaultMessage": "!!!Reward",
+        "description": "Table header \"Reward\" label on staking rewards page",
+        "end": {
+          "column": 3,
+          "line": 48
+        },
+        "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
+        "id": "staking.rewards.tableHeader.reward",
+        "start": {
+          "column": 21,
+          "line": 44
+        }
+      },
+      {
+        "defaultMessage": "!!!Date",
+        "description": "Table header \"Date\" label in exported csv file",
+        "end": {
+          "column": 3,
+          "line": 53
+        },
+        "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
+        "id": "staking.rewards.tableHeader.date",
+        "start": {
+          "column": 19,
+          "line": 49
+        }
+      },
+      {
+        "defaultMessage": "!!!Learn more",
+        "description": "Label for \"Learn more\" button on staking rewards page",
+        "end": {
+          "column": 3,
+          "line": 58
+        },
+        "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
+        "id": "staking.rewards.learnMore.ButtonLabel",
+        "start": {
+          "column": 24,
+          "line": 54
+        }
+      },
+      {
+        "defaultMessage": "!!!Rewards from stake delegation are automatically collected into your reward account.",
+        "description": "Rewards description text on staking rewards page",
+        "end": {
+          "column": 3,
+          "line": 64
+        },
+        "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
+        "id": "staking.rewards.note",
+        "start": {
+          "column": 8,
+          "line": 59
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.json"
   },
   {
     "descriptors": [
@@ -8209,6 +8326,48 @@
           "column": 15,
           "line": 18
         }
+      },
+      {
+        "defaultMessage": "!!!Nightly vx",
+        "description": "Label for nightly with version.",
+        "end": {
+          "column": 3,
+          "line": 27
+        },
+        "file": "source/renderer/app/components/widgets/WalletTestEnvironmentLabel.js",
+        "id": "test.environment.nightlyLabel",
+        "start": {
+          "column": 11,
+          "line": 23
+        }
+      },
+      {
+        "defaultMessage": "!!!QA vx",
+        "description": "Label for qa with version.",
+        "end": {
+          "column": 3,
+          "line": 32
+        },
+        "file": "source/renderer/app/components/widgets/WalletTestEnvironmentLabel.js",
+        "id": "test.environment.qaLabel",
+        "start": {
+          "column": 6,
+          "line": 28
+        }
+      },
+      {
+        "defaultMessage": "!!!Selfnode vx",
+        "description": "Label for Selfnode with version.",
+        "end": {
+          "column": 3,
+          "line": 37
+        },
+        "file": "source/renderer/app/components/widgets/WalletTestEnvironmentLabel.js",
+        "id": "test.environment.selfnodeLabel",
+        "start": {
+          "column": 12,
+          "line": 33
+        }
       }
     ],
     "path": "source/renderer/app/components/widgets/WalletTestEnvironmentLabel.json"
@@ -8385,13 +8544,13 @@
         "description": "\"Learn more\" link URL in the staking rewards page",
         "end": {
           "column": 3,
-          "line": 13
+          "line": 16
         },
         "file": "source/renderer/app/containers/staking/StakingRewardsPage.js",
         "id": "staking.rewards.learnMore.linkUrl",
         "start": {
           "column": 20,
-          "line": 9
+          "line": 12
         }
       }
     ],
@@ -8621,17 +8780,31 @@
         }
       },
       {
+        "defaultMessage": "!!!The file you are trying to replace is open. Please close it and try again.",
+        "description": "Error message shown when the file the user tries to replace is open.",
+        "end": {
+          "column": 3,
+          "line": 57
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "global.errors.rewardsOpenCsvError",
+        "start": {
+          "column": 23,
+          "line": 51
+        }
+      },
+      {
         "defaultMessage": "!!!Note that password needs to be at least 10 characters long, and have at least 1 uppercase, 1 lowercase letter and 1 number.",
         "description": "Password instructions note.",
         "end": {
           "column": 3,
-          "line": 56
+          "line": 63
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.passwordInstructions",
         "start": {
           "column": 24,
-          "line": 51
+          "line": 58
         }
       },
       {
@@ -8639,13 +8812,13 @@
         "description": "The word \"cancel\" reused at several places (like cancel buttons)",
         "end": {
           "column": 3,
-          "line": 62
+          "line": 69
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.cancel",
         "start": {
           "column": 10,
-          "line": 57
+          "line": 64
         }
       },
       {
@@ -8653,13 +8826,13 @@
         "description": "The word \"change\" reused at several places (like change buttons)",
         "end": {
           "column": 3,
-          "line": 68
+          "line": 75
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.change",
         "start": {
           "column": 10,
-          "line": 63
+          "line": 70
         }
       },
       {
@@ -8667,13 +8840,13 @@
         "description": "The word \"create\" reused at several places (like create buttons)",
         "end": {
           "column": 3,
-          "line": 74
+          "line": 81
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.create",
         "start": {
           "column": 10,
-          "line": 69
+          "line": 76
         }
       },
       {
@@ -8681,13 +8854,13 @@
         "description": "The word \"remove\" reused at several places (like remove buttons)",
         "end": {
           "column": 3,
-          "line": 80
+          "line": 87
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.remove",
         "start": {
           "column": 10,
-          "line": 75
+          "line": 82
         }
       },
       {
@@ -8695,13 +8868,13 @@
         "description": "The word \"save\" reused at several places (like save buttons)",
         "end": {
           "column": 3,
-          "line": 85
+          "line": 92
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.save",
         "start": {
           "column": 8,
-          "line": 81
+          "line": 88
         }
       },
       {
@@ -8709,13 +8882,13 @@
         "description": "Language name for \"English\" language.",
         "end": {
           "column": 3,
-          "line": 90
+          "line": 97
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.language.english",
         "start": {
           "column": 19,
-          "line": 86
+          "line": 93
         }
       },
       {
@@ -8723,13 +8896,13 @@
         "description": "Language name for \"Japanese\" language.",
         "end": {
           "column": 3,
-          "line": 95
+          "line": 102
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.language.japanese",
         "start": {
           "column": 20,
-          "line": 91
+          "line": 98
         }
       },
       {
@@ -8737,13 +8910,13 @@
         "description": "Language name for \"Chinese\" language.",
         "end": {
           "column": 3,
-          "line": 100
+          "line": 107
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.language.chinese",
         "start": {
           "column": 19,
-          "line": 96
+          "line": 103
         }
       },
       {
@@ -8751,13 +8924,13 @@
         "description": "Language name for \"Korean\" language.",
         "end": {
           "column": 3,
-          "line": 105
+          "line": 112
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.language.korean",
         "start": {
           "column": 18,
-          "line": 101
+          "line": 108
         }
       },
       {
@@ -8765,13 +8938,13 @@
         "description": "Language name for \"German\" language.",
         "end": {
           "column": 3,
-          "line": 110
+          "line": 117
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.language.german",
         "start": {
           "column": 18,
-          "line": 106
+          "line": 113
         }
       },
       {
@@ -8779,13 +8952,13 @@
         "description": "Language name for \"Croatian\" language.",
         "end": {
           "column": 3,
-          "line": 115
+          "line": 122
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.language.croatian",
         "start": {
           "column": 20,
-          "line": 111
+          "line": 118
         }
       },
       {
@@ -8793,13 +8966,13 @@
         "description": "Name for \"ADA\" unit.",
         "end": {
           "column": 3,
-          "line": 120
+          "line": 127
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.unit.ada",
         "start": {
           "column": 11,
-          "line": 116
+          "line": 123
         }
       },
       {
@@ -8807,13 +8980,13 @@
         "description": "Title for the \"Recovery Phrase\" dialog.",
         "end": {
           "column": 3,
-          "line": 125
+          "line": 132
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "wallet.backup.recovery.phrase.dialog.title",
         "start": {
           "column": 29,
-          "line": 121
+          "line": 128
         }
       },
       {
@@ -8821,13 +8994,13 @@
         "description": "Label for the \"Wallet password\" input in the create wallet dialog.",
         "end": {
           "column": 3,
-          "line": 131
+          "line": 138
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.spendingPasswordLabel",
         "start": {
           "column": 25,
-          "line": 126
+          "line": 133
         }
       },
       {
@@ -8835,13 +9008,13 @@
         "description": "Placeholder for the \"Password\" inputs in the create wallet dialog.",
         "end": {
           "column": 3,
-          "line": 137
+          "line": 144
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.spendingPasswordPlaceholder",
         "start": {
           "column": 31,
-          "line": 132
+          "line": 139
         }
       },
       {
@@ -8849,13 +9022,13 @@
         "description": "Label \"Continue\" in dialogs.",
         "end": {
           "column": 3,
-          "line": 142
+          "line": 149
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.dialog.button.continue",
         "start": {
           "column": 29,
-          "line": 138
+          "line": 145
         }
       },
       {
@@ -8863,13 +9036,13 @@
         "description": "URL for the \"Known Issues\" link in the \"Help and support\" section on the support settings page",
         "end": {
           "column": 3,
-          "line": 149
+          "line": 156
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "settings.support.faq.faqLinkURL",
         "start": {
           "column": 14,
-          "line": 143
+          "line": 150
         }
       },
       {
@@ -8877,13 +9050,13 @@
         "description": "Name for \"Ada\" unit.",
         "end": {
           "column": 3,
-          "line": 154
+          "line": 161
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.currency.ada",
         "start": {
           "column": 12,
-          "line": 150
+          "line": 157
         }
       },
       {
@@ -8891,13 +9064,13 @@
         "description": "Name for \"Cardano\" client.",
         "end": {
           "column": 3,
-          "line": 159
+          "line": 166
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.apiName.cardano",
         "start": {
           "column": 11,
-          "line": 155
+          "line": 162
         }
       }
     ],

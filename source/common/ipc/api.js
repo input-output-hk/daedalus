@@ -5,6 +5,7 @@ import type {
 } from '../types/bug-report-request.types';
 import type { GenerateFileMetaParams } from '../types/file-meta-request.types';
 import type { GeneratePaperWalletParams } from '../types/paper-wallet-request.types';
+import type { GenerateRewardsCsvParams } from '../types/rewards-csv-request.types';
 import type {
   CardanoNodeState,
   CardanoNodeImplementation,
@@ -134,6 +135,13 @@ export type GenerateFileMetaMainResponse = any;
 export const GENERATE_PAPER_WALLET_CHANNEL = 'GENERATE_PAPER_WALLET_CHANNEL';
 export type GeneratePaperWalletRendererRequest = GeneratePaperWalletParams;
 export type GeneratePaperWalletMainResponse = void;
+
+/**
+ * Channel to generate and save a rewards csv
+ */
+export const GENERATE_REWARDS_CSV_CHANNEL = 'GENERATE_REWARDS_CSV_CHANNEL';
+export type GenerateRewardsCsvRendererRequest = GenerateRewardsCsvParams;
+export type GenerateRewardsCsvMainResponse = void;
 
 /**
  * ====================== CARDANO IPC CHANNELS ======================

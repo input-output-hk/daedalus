@@ -20,6 +20,21 @@ const messages = defineMessages({
     defaultMessage: '!!!Development vx',
     description: 'Label for development with version.',
   },
+  nightly: {
+    id: 'test.environment.nightlyLabel',
+    defaultMessage: '!!!Nightly vx',
+    description: 'Label for nightly with version.',
+  },
+  qa: {
+    id: 'test.environment.qaLabel',
+    defaultMessage: '!!!QA vx',
+    description: 'Label for qa with version.',
+  },
+  selfnode: {
+    id: 'test.environment.selfnodeLabel',
+    defaultMessage: '!!!Selfnode vx',
+    description: 'Label for Selfnode with version.',
+  },
 });
 
 type Props = {

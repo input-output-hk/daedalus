@@ -34,12 +34,11 @@
     "themes:check:createTheme": "gulp build:themes && node -r esm ./dist/scripts/check.js",
     "themes:update": "gulp build:themes && node -r esm ./dist/scripts/update.js && yarn prettier --loglevel warn --write source/renderer/app/themes/daedalus/*.js",
     "clear:cache": "gulp clear:cache",
-    "nix:dev": "nix-shell --arg autoStartBackend true --arg allowFaultInjection true",
-    "nix:staging": "nix-shell --arg autoStartBackend true --argstr cluster staging",
+    "nix:dev": "nix-shell",
+    "nix:qa": "nix-shell --argstr cluster qa",
+    "nix:nightly": "nix-shell --argstr cluster nightly",
     "v2-api-importer": "node utils/v2-api-importer/index.js",
-    "js-launcher": "node utils/js-launcher/index.js",
-    "dev:selfnode": "yarn dev",
-    "dev:testnet": "JORMUNGANDR_TESTNET=true yarn dev"
+    "js-launcher": "node utils/js-launcher/index.js"
   },
   "bin": {
     "electron": "./node_modules/.bin/electron"
@@ -151,6 +150,7 @@
     "check-disk-space": "1.5.0",
     "chroma-js": "2.0.3",
     "classnames": "2.2.6",
+    "csv-stringify": "5.3.3",
     "electron": "3.0.14",
     "electron-debug": "2.0.0",
     "electron-log-daedalus": "2.2.20",
