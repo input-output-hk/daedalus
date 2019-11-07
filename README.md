@@ -42,16 +42,33 @@ The result can be found at `./result/daedalus-*.bin`.
 
 ## V2 API Integration Guide [Jormungandr]
 
-1. Run `yarn nix:dev` from `daedalus`. The systemStart argument no longer applies.
-2. Run `yarn dev:selfnode` or `yarn dev:testnet` from the `nix-shell`, depending on whether you want to connect to the testnet, or run a selfnode
+API docs for pinned cardano-wallet version: https://input-output-hk.github.io/cardano-wallet/api/v2019-10-16/
+
+### Selfnode
+
+1. Run `yarn nix:dev` from `daedalus`.
+2. Run `yarn dev` from the subsequent `nix-shell`
 3. Once Daedalus has started, and has gotten past the loading screen, run `yarn v2-api-importer` from a new terminal window. This is only required if you wish to import some funded wallets
 
-API docs for pinned cardano-wallet version: https://input-output-hk.github.io/cardano-wallet/api/v2019-09-13/
+### QA testnet
+
+1. Run `yarn nix:qa` from `daedalus`.
+2. Run `yarn dev` from the subsequent `nix-shell`
+
+### Nightly testnet
+
+1. Run `yarn nix:nightly` from `daedalus`.
+2. Run `yarn dev` from the subsequent `nix-shell`
 
 ### V2 Known Issues
 - As network-info is stubbed, the NTP check will throw. Just disregard this for now.
 - Lots of things have been temporarily commented out or mocked to get the integration started.
 - TLS is not yet supported, so `request.js` has been overwritten to use the HTTP module for the time being.
+
+### Updating Upstream Dependencies (cardano-wallet & Jormungandr)
+Niv is used to manage the version of upstream dependencies. The versions of these dependencies can be seen in `nix/sources.json`.
+
+Dependencies are updated with the follow nix command: `nix-shell -A devops --run "niv update cardano-wallet"`
 
 ## Connect to staging cluster:
 
@@ -70,7 +87,6 @@ API docs for pinned cardano-wallet version: https://input-output-hk.github.io/ca
    ```
    and then add the following lines:
    ```
-   sandbox = true
    extra-sandbox-paths = /System/Library/Frameworks
    substituters = https://hydra.iohk.io https://cache.nixos.org/
    trusted-substituters =

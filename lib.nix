@@ -1,49 +1,40 @@
-{ nodeImplementation }:
+{ nodeImplementation ? "jormungandr" }:
 
 let
-  # iohk-nix can be overridden for debugging purposes by setting
-  # NIX_PATH=iohk_nix=/path/to/iohk-nix
-  iohkNix = import (
-    let try = builtins.tryEval <iohk_nix>;
-    in if try.success
-    then builtins.trace "using host <iohk_nix>" try.value
-    else
-      let
-        spec = builtins.fromJSON (builtins.readFile ./iohk-nix.json);
-      in builtins.fetchTarball {
-        url = "${spec.url}/archive/${spec.rev}.tar.gz";
-        inherit (spec) sha256;
-      }) {};
+  sources = import ./nix/sources.nix;
+  iohkNix = import sources.iohk-nix { sourcesOverride = sources; };
+  # TODO: can we use the filter in iohk-nix instead?
+  cleanSourceFilter = with pkgs.stdenv;
+    name: type: let baseName = baseNameOf (toString name); in ! (
+      # Filter out .git repo
+      (type == "directory" && baseName == ".git") ||
+      # Filter out editor backup / swap files.
+      lib.hasSuffix "~" baseName ||
+      builtins.match "^\\.sw[a-z]$" baseName != null ||
+      builtins.match "^\\..*\\.sw[a-z]$" baseName != null ||
 
-  # NIX_PATH=cardano-sl=/path/to/cardano-sl
-  # WARNING: currently broken with infinite recursion
-  cardanoSL = { config ? {}, target }:
-    let try = builtins.tryEval <cardano-sl>;
-    in if try.success
-    then builtins.trace "using host <cardano-sl>" (import try.value { inherit target; })
-    else
-      let
-        spec = builtins.fromJSON (builtins.readFile ./cardano-sl-src.json);
-      in import (builtins.fetchTarball {
-        url = "${spec.url}/archive/${spec.rev}.tar.gz";
-        inherit (spec) sha256;
-      }) { inherit target; gitrev = spec.rev; };
+      # Filter out locally generated/downloaded things.
+      baseName == "dist" ||
+      baseName == "node_modules" ||
 
-  # nixpkgs can be overridden for debugging purposes by setting
-  # NIX_PATH=custom_nixpkgs=/path/to/nixpkgs
+      # Filter out the files which I'm editing often.
+      lib.hasSuffix ".nix" baseName ||
+      lib.hasSuffix ".dhall" baseName ||
+      lib.hasSuffix ".hs" baseName ||
+      # Filter out nix-build result symlinks
+      (type == "symlink" && lib.hasPrefix "result" baseName)
+    );
+  rustPkgs = iohkNix.rust-packages.pkgs;
+  isDaedalus = name: false;
+  cardanoSL = { target }: import sources.cardano-sl { gitrev = sources.cardano-sl.rev; };
+  cardanoWallet' = import sources.cardano-wallet {};
+  cardanoWallet = if nodeImplementation == "jormungandr" then cardanoWallet'.cardano-wallet-jormungandr else cardanoWallet'.cardano-wallet-http-bridge;
+  cardanoNode = if nodeImplementation == "jormungandr" then cardanoWallet'.jormungandr else cardanoWallet'.cardano-http-bridge;
+  jormungandr = cardanoWallet'.jormungandr;
+  jcli = cardanoWallet'.jormungandr-cli;
   pkgs = iohkNix.pkgs;
   lib = pkgs.lib;
-  isDaedalus = name: false;
-  cardanoWalletSrc = import (pkgs.fetchFromGitHub {
-    owner = "input-output-hk";
-    repo = "cardano-wallet";
-    rev = "24741607590fed8b1109d309a40d7899ba45881f";
-    sha256 = "09k40gzybdz79kav1pqncl4sypc5lfnibgsvxl95crdzsc2n3dfx";
-  }) {};
-
-  cardanoWallet = if nodeImplementation == "jormungandr" then cardanoWalletSrc.cardano-wallet-jormungandr else cardanoWalletSrc.cardano-wallet-http-bridge;
-  cardanoNode = if nodeImplementation == "jormungandr" then cardanoWalletSrc.jormungandr else cardanoWalletSrc.cardano-http-bridge;
-  jcli = cardanoWalletSrc.jormungandr-cli;
-in lib // {
-  inherit iohkNix pkgs cardanoSL isDaedalus cardanoWallet cardanoNode jcli;
+in
+lib // {
+  inherit sources iohkNix pkgs cardanoSL isDaedalus cleanSourceFilter cardanoWallet cardanoNode jcli jormungandr;
 }
