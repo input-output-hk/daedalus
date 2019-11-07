@@ -8,7 +8,7 @@ export type TransactionAmount = {
 
 export type TransactionDepth = {
   quantity: number,
-  unit: 'slot',
+  unit: 'block',
 };
 
 export type TransactionInsertionBlock = {
@@ -25,7 +25,13 @@ export type Transaction = {
   },
   pending_since?: {
     time: Date,
-    block: TransactionInsertionBlock,
+    block: {
+      ...TransactionInsertionBlock,
+      height: {
+        quantity: number,
+        unit: string,
+      },
+    },
   },
   depth: TransactionDepth,
   direction: 'outgoing' | 'incoming',
@@ -37,7 +43,7 @@ export type Transaction = {
 export type Transactions = Array<Transaction>;
 
 export type TransactionInputs = {
-  address?: string,
+  address: string,
   amount?: TransactionAmount,
   id: string,
   index: number,
@@ -48,7 +54,7 @@ export type TransactionOutputs = {
   amount: TransactionAmount,
 };
 
-export type TransactionState = 'pending' | 'in_ledger' | 'invalidated';
+export type TransactionState = 'pending' | 'in_ledger';
 
 export type TrasactionAddresses = { from: Array<string>, to: Array<string> };
 
@@ -60,6 +66,7 @@ export type GetTransactionsRequest = {
   order?: 'ascending' | 'descending',
   fromDate: ?string,
   toDate: ?string,
+  isLegacy: boolean,
   // @API TODO - Params "pending" for V2
   // searchTerm: string,
   // skip: number,
