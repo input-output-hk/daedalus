@@ -1,28 +1,26 @@
 { name       : Text
-, configurationYaml  : Text
 , installDirectory   : Text
 , macPackageName     : Text
-, x509ToolPath       : Text
+, x509ToolPath       : Optional Text
 , nodeArgs           :
-  { keyfile          : Text
-  , logsPrefix       : Text
-  , topology         : Text
-  , updateLatestPath : Text
-  , walletDBPath     : Text
-  , tlsPath          : Text
+  { logsPrefix       : Text
+  , topology         : Optional Text
+  , updateLatestPath : Optional Text
+  , statePath        : Text
+  , tlsPath          : Optional Text
   }
 , pass :
   { statePath           : Text
-  , nodePath            : Text
+  , nodeBin             : Text
+  , daedalusBin         : Text
+  , walletBin           : Text
   , cliPath             : Text
-  , nodeDbPath          : Text
-  , nodeLogConfig       : Text
+  , nodeLogConfig       : Optional Text
   , nodeLogPath         : Optional Text
-  , walletPath          : Text
   , walletLogging       : Bool
   , workingDir          : Text
   , frontendOnlyMode    : Bool
-  , updaterPath         : Text
+  , updaterPath         : Optional Text
   , updaterArgs         : List Text
   , updateArchive       : Optional Text
   , updateWindowsRunner : Optional Text
