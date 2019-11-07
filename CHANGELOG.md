@@ -17,7 +17,7 @@ Changelog
 
 ### Chores
 
-- Added Legacy Wallet changes ([PR 1644](https://github.com/input-output-hk/daedalus/pull/1644))
+- Added Legacy Wallet changes ([PR 1647](https://github.com/input-output-hk/daedalus/pull/1647))
 - Changed wallet restoration notification message ([PR 1644](https://github.com/input-output-hk/daedalus/pull/1644))
 - Removed parallel wallet restoration limitation ([PR 1638](https://github.com/input-output-hk/daedalus/pull/1638))
 - Disabled create a paper wallet certificate feature ([PR 1640](https://github.com/input-output-hk/daedalus/pull/1640))
