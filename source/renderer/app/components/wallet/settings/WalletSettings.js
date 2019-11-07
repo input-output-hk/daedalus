@@ -55,6 +55,7 @@ type Props = {
   isSubmitting: boolean,
   isIncentivizedTestnet: boolean,
   isInvalid: boolean,
+  isLegacy: boolean,
   showExportLink: boolean,
   lastUpdatedField: ?string,
   changeSpendingPasswordDialog: Node,
@@ -102,6 +103,7 @@ export default class WalletSettings extends Component<Props> {
       isSubmitting,
       isIncentivizedTestnet,
       isInvalid,
+      isLegacy,
       lastUpdatedField,
       showExportLink,
       changeSpendingPasswordDialog,
@@ -115,6 +117,26 @@ export default class WalletSettings extends Component<Props> {
       recoveryPhraseVerificationStatus,
       recoveryPhraseVerificationStatusType,
     } = this.props;
+
+    if (isLegacy) {
+      return (
+        <div className={styles.component}>
+          <BorderedBox>
+            <DeleteWalletButton
+              onClick={() =>
+                openDialogAction({
+                  dialog: DeleteWalletConfirmationDialog,
+                })
+              }
+            />
+          </BorderedBox>
+
+          {isDialogOpen(DeleteWalletConfirmationDialog)
+            ? deleteWalletDialogContainer
+            : false}
+        </div>
+      );
+    }
 
     return (
       <div className={styles.component}>

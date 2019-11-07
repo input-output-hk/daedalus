@@ -562,6 +562,10 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
   },
   settings: {
     '--theme-settings-body-background-color': '#121326',
+    '--theme-settings-delete-button-legacy-background-color':
+      'rgba(65, 66, 81, 0.5)',
+    '--theme-settings-delete-button-legacy-background-color-hover':
+      'rgba(65, 66, 81, 1)',
     '--theme-settings-pane-background-color': '#1e1f31',
     '--theme-settings-pane-border': 'none',
     '--theme-settings-menu-box-background-color': '#1e1f31',

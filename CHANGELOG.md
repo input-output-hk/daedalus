@@ -18,6 +18,7 @@ Changelog
 
 ### Chores
 
+- Added Legacy Wallet UI changes ([PR 1647](https://github.com/input-output-hk/daedalus/pull/1647))
 - Removed wallet recovery phrase verification feature for Incentivized Testnet version of Daedalus ([PR 1645](https://github.com/input-output-hk/daedalus/pull/1645))
 - Changed wallet restoration notification message ([PR 1644](https://github.com/input-output-hk/daedalus/pull/1644))
 - Removed parallel wallet restoration limitation ([PR 1638](https://github.com/input-output-hk/daedalus/pull/1638))
