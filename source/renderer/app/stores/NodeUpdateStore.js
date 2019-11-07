@@ -49,6 +49,7 @@ export default class NodeUpdateStore extends Store {
     if (this.stores.networkStatus.isSynced) {
       await this.nextUpdateRequest.execute();
       const { result } = this.nextUpdateRequest;
+      console.debug('>>> RESULT: ', result);
       // If nextUpdate is available, fetch additional Daedalus info
       if (result) {
         await this._getLatestAvailableAppVersion();
@@ -96,6 +97,15 @@ export default class NodeUpdateStore extends Store {
     this._activateAutomaticUpdate(nextUpdateVersion);
   };
 
+  @action _setManualUpdate = async (
+    isNewAppVersionAvailable,
+  ) => {
+    console.debug('CALL: ', isNewAppVersionAvailable);
+    this.isNewAppVersionAvailable = true;
+    this.availableAppVersion = "1.1.1";
+    this.applicationVersion = 10;
+  };
+
   @action _postponeNodeUpdate = async () => {
     this.postponeUpdateRequest.execute();
     this.isUpdatePostponed = true;
@@ -115,6 +125,7 @@ export default class NodeUpdateStore extends Store {
   };
 
   @action _getLatestAvailableAppVersion = async () => {
+    console.debug('>> _getLatestAvailableAppVersion')
     const {
       latestAppVersion,
       applicationVersion,
@@ -126,6 +137,7 @@ export default class NodeUpdateStore extends Store {
     latestAppVersion: ?string,
     applicationVersion: ?number
   ) => {
+    console.debug('>>>> setLatestAvailableAppVersion');
     let isNewAppVersionAvailable = false;
 
     if (latestAppVersion) {
@@ -170,7 +182,19 @@ export default class NodeUpdateStore extends Store {
     return (
       this.isUpdateAvailable &&
       !this.isUpdatePostponed &&
-      !this.isUpdateInstalled
+      !this.isUpdateInstalled &&
+      !this.stores.networkStatus.isIncentivizedTestnet
+    );
+  }
+
+  @computed get showManualUpdate(): boolean {
+    return (
+      this.isNewAppVersionAvailable &&
+      !this.stores.networkStatus.isNodeStopping &&
+      !this.stores.networkStatus.isNodeStopped &&
+      !this.isUpdatePostponed &&
+      !this.isUpdateAvailable &&
+      !this.stores.networkStatus.isIncentivizedTestnet
     );
   }
 }
