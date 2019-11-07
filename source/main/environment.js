@@ -14,11 +14,22 @@ import {
   TEST,
   TESTNET,
   WINDOWS,
+  QA,
+  NIGHTLY,
+  SELFNODE,
 } from '../common/types/environment.types';
+
+function evaluateNetwork(network) {
+  let currentNetwork = network || DEVELOPMENT;
+  if (network === QA || network === NIGHTLY || network === SELFNODE) {
+    currentNetwork = DEVELOPMENT;
+  }
+  return currentNetwork;
+}
 
 // environment variables
 const CURRENT_NODE_ENV = process.env.NODE_ENV || DEVELOPMENT;
-const NETWORK = process.env.NETWORK || DEVELOPMENT;
+const NETWORK = evaluateNetwork(process.env.NETWORK);
 const isDev = CURRENT_NODE_ENV === DEVELOPMENT;
 const isTest = CURRENT_NODE_ENV === TEST;
 const isProduction = CURRENT_NODE_ENV === PRODUCTION;

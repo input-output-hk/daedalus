@@ -8209,6 +8209,48 @@
           "column": 15,
           "line": 18
         }
+      },
+      {
+        "defaultMessage": "!!!Nightly vx",
+        "description": "Label for nightly with version.",
+        "end": {
+          "column": 3,
+          "line": 27
+        },
+        "file": "source/renderer/app/components/widgets/WalletTestEnvironmentLabel.js",
+        "id": "test.environment.nightlyLabel",
+        "start": {
+          "column": 11,
+          "line": 23
+        }
+      },
+      {
+        "defaultMessage": "!!!QA vx",
+        "description": "Label for qa with version.",
+        "end": {
+          "column": 3,
+          "line": 32
+        },
+        "file": "source/renderer/app/components/widgets/WalletTestEnvironmentLabel.js",
+        "id": "test.environment.qaLabel",
+        "start": {
+          "column": 6,
+          "line": 28
+        }
+      },
+      {
+        "defaultMessage": "!!!Selfnode vx",
+        "description": "Label for Selfnode with version.",
+        "end": {
+          "column": 3,
+          "line": 37
+        },
+        "file": "source/renderer/app/components/widgets/WalletTestEnvironmentLabel.js",
+        "id": "test.environment.selfnodeLabel",
+        "start": {
+          "column": 12,
+          "line": 33
+        }
       }
     ],
     "path": "source/renderer/app/components/widgets/WalletTestEnvironmentLabel.json"

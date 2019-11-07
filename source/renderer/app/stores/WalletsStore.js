@@ -463,15 +463,13 @@ export default class WalletsStore extends Store {
   isValidAddress = (address: string) => {
     const { app, networkStatus } = this.stores;
     const { environment } = app;
-    const { network, isDev } = environment;
+    const { network } = environment;
     const { nodeImplementation } = networkStatus;
     try {
       const result = Util.introspectAddress(address);
       if (
         result.network === network ||
-        (isDev &&
-          result.network === TESTNET &&
-          nodeImplementation === 'jormungandr')
+        (nodeImplementation === 'jormungandr' && result.network === TESTNET)
       ) {
         return true;
       }

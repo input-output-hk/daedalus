@@ -57,7 +57,7 @@ export const createMainWindow = (locale: string) => {
   };
 
   if (isLinux) {
-    windowOptions.icon = path.join(launcherConfig.statePath, 'icon.png');
+    windowOptions.icon = path.join(launcherConfig.stateDir, 'icon.png');
   }
 
   // Construct new BrowserWindow

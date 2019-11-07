@@ -1,6 +1,2 @@
 // @flow
-export { buildHttpBridgeNodeOpts } from './http-bridge';
-export {
-  configureJormungandrDeps,
-  buildJormungandrNodeOpts,
-} from './jormungandr';
+export { configureJormungandrDeps } from './jormungandr';
