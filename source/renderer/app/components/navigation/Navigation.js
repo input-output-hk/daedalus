@@ -51,30 +51,42 @@ export default class Navigation extends Component<Props> {
     return (
       <div className={styles.component}>
         {items.map(({ id, icon, label, isLegacy, hasNotification, ...item }) =>
-          item.type === 'dropdown' ? (
-            <NavDropdown
-              key={id}
-              label={label}
-              icon={icon}
-              isActive={isActiveNavItem(id, item)}
-              onChange={i => onNavItemClick(i)}
-              activeItem={activeItem}
-              options={item.options}
-              hasNotification={hasNotification}
-            />
-          ) : (
-            !isLegacy && (
-              <NavButton
-                key={id}
-                className={id}
-                label={label}
-                icon={icon}
-                isActive={isActiveNavItem(id, item)}
-                onClick={() => onNavItemClick(id)}
-                hasNotification={hasNotification}
-              />
-            )
-          )
+          item.type === 'dropdown'
+            ? (!isLegacy && (
+                <NavDropdown
+                  key={id}
+                  label={label}
+                  icon={icon}
+                  isActive={isActiveNavItem(id, item)}
+                  onChange={i => onNavItemClick(i)}
+                  isLegacy={isLegacy}
+                  activeItem={activeItem}
+                  options={item.options}
+                  hasNotification={hasNotification}
+                />
+              )) ||
+              (isLegacy && (
+                <NavButton
+                  key={id}
+                  className={id}
+                  label={label}
+                  icon={icon}
+                  isActive={isActiveNavItem(id, item)}
+                  onClick={() => onNavItemClick(id)}
+                  hasNotification={hasNotification}
+                />
+              ))
+            : !isLegacy && (
+                <NavButton
+                  key={id}
+                  className={id}
+                  label={label}
+                  icon={icon}
+                  isActive={isActiveNavItem(id, item)}
+                  onClick={() => onNavItemClick(id)}
+                  hasNotification={hasNotification}
+                />
+              )
         )}
       </div>
     );

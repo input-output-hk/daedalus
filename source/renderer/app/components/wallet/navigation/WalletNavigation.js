@@ -104,9 +104,12 @@ export default class WalletNavigation extends Component<Props> {
           {
             type: 'dropdown',
             id: 'settings',
-            label: intl.formatMessage(messages.more),
+            label: isLegacy
+              ? intl.formatMessage(messages.settings)
+              : intl.formatMessage(messages.more),
             icon: settingsIcon,
             hasNotification,
+            isLegacy,
             options: [
               {
                 label: intl.formatMessage(messages.settings),
@@ -116,7 +119,6 @@ export default class WalletNavigation extends Component<Props> {
               {
                 label: intl.formatMessage(messages.utxo),
                 value: 'utxo',
-                isLegacy,
               },
             ],
           },
