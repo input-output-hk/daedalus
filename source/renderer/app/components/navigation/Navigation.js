@@ -10,13 +10,14 @@ export type NavButtonProps = {
   id: string,
   label: string,
   icon?: string,
+  isLegacy?: boolean,
   hasNotification?: boolean,
 };
 
 export type NavDropdownProps = {
   ...$Exact<NavButtonProps>,
   type: 'dropdown',
-  options: Array<{ value: number | string, label: string }>,
+  options: Array<{ value: number | string, label: string, isLegacy?: boolean }>,
   hasNotification?: boolean,
 };
 

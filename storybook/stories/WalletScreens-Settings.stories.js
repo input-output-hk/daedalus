@@ -139,6 +139,7 @@ export default () => {
       activeField={null}
       isInvalid={false}
       isSubmitting={false}
+      isLegacy={false}
       lastUpdatedField={null}
       nameValidator={() => true}
       onCancelEditing={() => {}}

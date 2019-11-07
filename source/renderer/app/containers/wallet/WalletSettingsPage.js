@@ -22,7 +22,10 @@ export default class WalletSettingsPage extends Component<Props> {
   render() {
     const { uiDialogs, walletSettings, app, wallets } = this.props.stores;
     const activeWallet = wallets.active;
-    const { isLegacy } = activeWallet;
+    let isLegacyWallet: boolean = false;
+    if (activeWallet) {
+      isLegacyWallet = activeWallet.isLegacy;
+    }
 
     // Guard against potential null values
     if (!activeWallet)
@@ -62,7 +65,7 @@ export default class WalletSettingsPage extends Component<Props> {
           recoveryPhraseVerificationStatusType
         }
         isDialogOpen={uiDialogs.isOpen}
-        isLegacy={isLegacy}
+        isLegacy={isLegacyWallet}
         walletId={activeWallet.id}
         walletName={activeWallet.name}
         creationDate={creationDate}
