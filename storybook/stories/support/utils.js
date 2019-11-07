@@ -55,7 +55,9 @@ export const generateTransaction = (
   type: TransactionType = TransactionTypes.INCOME,
   date: Date = faker.date.past(),
   amount: BigNumber = new BigNumber(faker.finance.amount()),
-  state: TransactionState = TransactionStates.OK
+  state: TransactionState = TransactionStates.OK,
+  hasUnresolvedIncomeAddresses: boolean = false,
+  noIncomeAddresses: boolean = false
 ) =>
   new WalletTransaction({
     id: faker.random.uuid(),
@@ -66,13 +68,19 @@ export const generateTransaction = (
     state,
     depth: {
       quantity: 0,
-      unit: 'slot',
+      unit: 'block',
     },
     epochNumber: 0,
     slotNumber: 0,
     description: '',
     addresses: {
-      from: [faker.random.alphaNumeric(Math.round(Math.random() * 10) + 100)],
+      from: noIncomeAddresses
+        ? []
+        : [
+            hasUnresolvedIncomeAddresses
+              ? ''
+              : faker.random.alphaNumeric(Math.round(Math.random() * 10) + 100),
+          ],
       to: [
         faker.random.alphaNumeric(Math.round(Math.random() * 10) + 100),
         faker.random.alphaNumeric(Math.round(Math.random() * 10) + 100),

@@ -242,7 +242,7 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--theme-input-text-color': '#ffffff',
   },
   link: {
-    '--theme-link-main-color': '#eb2256',
+    '--theme-link-main-color': '#f69ab2',
   },
   loading: {
     '--theme-loading-background-color': '#121326',
