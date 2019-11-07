@@ -583,6 +583,10 @@ export const DARK_BLUE_THEME_OUTPUT = {
   },
   settings: {
     '--theme-settings-body-background-color': '#0b1926',
+    '--theme-settings-delete-button-legacy-background-color':
+      'rgba(83, 99, 112, 0.3)',
+    '--theme-settings-delete-button-legacy-background-color-hover':
+      'rgba(83, 99, 112, 1)',
     '--theme-settings-pane-background-color': '#263345',
     '--theme-settings-pane-border': 'none',
     '--theme-settings-menu-box-background-color': '#263345',
