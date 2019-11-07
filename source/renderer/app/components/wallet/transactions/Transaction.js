@@ -4,6 +4,7 @@ import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
 import SVGInline from 'react-svg-inline';
 import classNames from 'classnames';
+import CancelTransactionButton from './CancelTransactionButton';
 import styles from './Transaction.scss';
 import TransactionTypeIcon from './TransactionTypeIcon.js';
 import adaSymbol from '../../../assets/images/ada-symbol.inline.svg';
@@ -331,7 +332,7 @@ export default class Transaction extends Component<Props> {
                 </span>
               </div>
               <div className={styles.pendingTxnNote}>
-                This transaction is pending for too long. We recomend you to
+                This transaction has been pending for too long. We recomend you
                 cancel it.
                 <span
                   role="presentation"
@@ -342,6 +343,11 @@ export default class Transaction extends Component<Props> {
                   Read Why
                   <SVGInline svg={externalLinkIcon} />
                 </span>
+              </div>
+              <div>
+                <CancelTransactionButton
+                  onClick={this.deletePendingTransaction}
+                />
               </div>
             </div>
           </div>
