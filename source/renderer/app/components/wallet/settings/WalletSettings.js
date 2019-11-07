@@ -120,20 +120,13 @@ export default class WalletSettings extends Component<Props> {
       (isLegacy && (
         <div className={styles.component}>
           <BorderedBox>
-            <h2 className={styles.deleteWalletLabel}>Delete Wallet</h2>
-            <div className={styles.deleteWalletDescriptionContainer}>
-              <p className={styles.deleteWalletDescriptionText}>
-                Once you delete a wallet, there is no going back. The only way
-                to restore your wallet is to use recovery phrase.
-              </p>
-              <DeleteWalletButton
-                onClick={() =>
-                  openDialogAction({
-                    dialog: DeleteWalletConfirmationDialog,
-                  })
-                }
-              />
-            </div>
+            <DeleteWalletButton
+              onClick={() =>
+                openDialogAction({
+                  dialog: DeleteWalletConfirmationDialog,
+                })
+              }
+            />
           </BorderedBox>
         </div>
       )) ||
