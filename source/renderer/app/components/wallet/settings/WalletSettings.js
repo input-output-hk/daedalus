@@ -130,6 +130,10 @@ export default class WalletSettings extends Component<Props> {
               }
             />
           </BorderedBox>
+
+          {isDialogOpen(DeleteWalletConfirmationDialog)
+            ? deleteWalletDialogContainer
+            : false}
         </div>
       );
     }
