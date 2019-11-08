@@ -31,7 +31,7 @@ const evaluateNetwork = network => {
 
 const getBuildLabel = () => {
   const networkLabel = !(isMainnet || isDev || isItnBalanceCheck)
-    ? ` ${networkPrettyNames(NETWORK)}`
+    ? ` ${networkPrettyNames[NETWORK]}`
     : '';
   let buildLabel = `Daedalus${networkLabel} (${version}#${BUILD_NUMBER})`;
   if (!isProduction) buildLabel += ` ${CURRENT_NODE_ENV}`;
