@@ -82,9 +82,7 @@ export default class SplashNetwork extends Component<Props> {
           <div className={styles.subTitle1}>{subTitle1}</div>
           <div className={styles.subTitle2}>{subTitle2}</div>
           <div className={styles.description}>{description}</div>
-          <div className={styles.action}>
-            <Button label={actionLabel} onClick={onClose} skin={ButtonSkin} />
-          </div>
+          <Button label={actionLabel} onClick={onClose} skin={ButtonSkin} />
           <div className={styles.learnMore}>
             <button onClick={onLearnMoreClick}>
               {intl.formatMessage(messages.learnMore)}
