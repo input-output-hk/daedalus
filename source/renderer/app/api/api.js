@@ -265,7 +265,6 @@ export default class AdaApi {
       } else {
         response = await getTransactionHistory(this.config, walletId, params);
       }
-
       const transactions = response.map(tx =>
         _createTransactionFromServerData(tx)
       );
@@ -963,7 +962,7 @@ export default class AdaApi {
         }
       );
       Logger.debug('AdaApi::transferFundsCalculateFee success', { response });
-      return _createMigrationFeeFromServerData(response)
+      return _createMigrationFeeFromServerData(response);
     } catch (error) {
       Logger.error('AdaApi::transferFundsCalculateFee error', { error });
       throw new GenericApiError();
