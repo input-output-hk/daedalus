@@ -1,4 +1,8 @@
 .root {
   height: 36px !important;
-  width: 240px !important;
+  min-height: 36px !important;
+  min-width: 240px !important;
+  padding-left: 20px !important;
+  padding-right: 20px !important;
+  width: auto !important;
 }
