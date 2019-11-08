@@ -53,6 +53,6 @@ export const OS_NAMES = {
 
 export const networkPrettyNames = {
   production: 'Production',
-  development: 'Production',
+  development: 'Development',
   itn_balance_check: 'Incentivized Testnet - Balance check',
 };
