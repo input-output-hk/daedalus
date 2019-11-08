@@ -26,6 +26,7 @@ type Props = {
   onWalletItemClick: Function,
   visible: boolean,
   isAddWalletButtonActive: boolean,
+  isIncentivizedTestnet: boolean,
 };
 
 @observer
@@ -46,6 +47,7 @@ export default class SidebarWalletsMenu extends Component<Props> {
       isActiveWallet,
       onWalletItemClick,
       isAddWalletButtonActive,
+      isIncentivizedTestnet,
     } = this.props;
 
     const addWalletButtonStyles = classNames([
@@ -66,6 +68,7 @@ export default class SidebarWalletsMenu extends Component<Props> {
                 key={wallet.id}
                 className={`Wallet_${wallet.id}`}
                 isRestoreActive={wallet.isRestoreActive}
+                isIncentivizedTestnet={isIncentivizedTestnet}
                 restoreProgress={wallet.restoreProgress}
                 isLegacy={wallet.isLegacy}
                 recoveryPhraseVerificationStatus={

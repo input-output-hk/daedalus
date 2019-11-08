@@ -96,6 +96,21 @@ const messages = defineMessages({
     description:
       'Link to support article explaining transactions stuck pending',
   },
+  noInputAddressesLabel: {
+    id: 'wallet.transaction.noInputAddressesLabel',
+    defaultMessage: '!!!No addresses',
+    description: 'Input Addresses label.',
+  },
+  unresolvedInputAddressesLinkLabel: {
+    id: 'wallet.transaction.unresolvedInputAddressesLinkLabel',
+    defaultMessage: '!!!Open this transaction in Cardano explorer',
+    description: 'Unresolved Input Addresses link label.',
+  },
+  unresolvedInputAddressesAdditionalLabel: {
+    id: 'wallet.transaction.unresolvedInputAddressesAdditionalLabel',
+    defaultMessage: '!!!to see these addresses.',
+    description: 'Unresolved Input Addresses additional label.',
+  },
 });
 
 const stateTranslations = defineMessages({
@@ -272,6 +287,53 @@ export default class Transaction extends Component<Props> {
       : data.type;
 
     const exceedsPendingTimeLimit = this.hasExceededPendingTimeLimit();
+
+    const fromAddresses = (addresses, transactionId) => {
+      if (addresses.length) {
+        return addresses.map((address, addressIndex) =>
+          address ? (
+            <div
+              // eslint-disable-next-line react/no-array-index-key
+              key={`${data.id}-from-${address}-${addressIndex}`}
+              className={styles.addressRow}
+            >
+              <span
+                role="presentation"
+                aria-hidden
+                className={styles.address}
+                onClick={this.handleOpenExplorer.bind(this, 'address', address)}
+              >
+                {address}
+                <SVGInline svg={externalLinkIcon} />
+              </span>
+            </div>
+          ) : (
+            <div className={styles.explorerLinkRow}>
+              <span
+                role="presentation"
+                aria-hidden
+                className={styles.explorerLink}
+                onClick={this.handleOpenExplorer.bind(
+                  this,
+                  'tx',
+                  transactionId
+                )}
+              >
+                {intl.formatMessage(messages.unresolvedInputAddressesLinkLabel)}
+                <SVGInline svg={externalLinkIcon} />
+              </span>
+              <span>
+                {intl.formatMessage(
+                  messages.unresolvedInputAddressesAdditionalLabel
+                )}
+              </span>
+            </div>
+          )
+        );
+      }
+      return <span>{intl.formatMessage(messages.noInputAddressesLabel)}</span>;
+    };
+
     return (
       <div
         onClick={this.toggleDetails.bind(this)}
@@ -319,27 +381,8 @@ export default class Transaction extends Component<Props> {
           >
             <div>
               <h2>{intl.formatMessage(messages.fromAddresses)}</h2>
-              {data.addresses.from.map((address, addressIndex) => (
-                <div
-                  // eslint-disable-next-line react/no-array-index-key
-                  key={`${data.id}-from-${address}-${addressIndex}`}
-                  className={styles.addressRow}
-                >
-                  <span
-                    role="presentation"
-                    aria-hidden
-                    className={styles.address}
-                    onClick={this.handleOpenExplorer.bind(
-                      this,
-                      'address',
-                      address
-                    )}
-                  >
-                    {address}
-                    <SVGInline svg={externalLinkIcon} />
-                  </span>
-                </div>
-              ))}
+
+              {fromAddresses(data.addresses.from, data.id)}
 
               <h2>{intl.formatMessage(messages.toAddresses)}</h2>
               {data.addresses.to.map((address, addressIndex) => (

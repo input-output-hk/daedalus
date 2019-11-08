@@ -596,6 +596,7 @@
   "wallet.transaction.pending.cancelPendingTxnNote": "このトランザクションは長時間保留中です。キャンセルすることをお勧めします。",
   "wallet.transaction.pending.cancelTransactionButton": "保留中のトランザクションをキャンセル",
   "wallet.transaction.pending.supportArticleLink": "理由を読む",
+  "wallet.transaction.noInputAddressesLabel": "アドレスなし",
   "wallet.transaction.received": "{currency}受取済み",
   "wallet.transaction.sent": "{currency}送金済み",
   "wallet.transaction.state.confirmed": "トランザクション承認済み",
@@ -605,6 +606,8 @@
   "wallet.transaction.type": "{currency}トランザクション",
   "wallet.transaction.type.card": "カード支払い",
   "wallet.transaction.type.exchange": "換金",
+  "wallet.transaction.unresolvedInputAddressesAdditionalLabel": "アドレスを表示する。",
+  "wallet.transaction.unresolvedInputAddressesLinkLabel": "Cardanoエクスプローラーでこのトランザクションを開き",
   "wallet.transactions.no.transactions": "トランザクションはありません",
   "wallet.transactions.no.transactions.found": "トランザクションが見つかりません"
 }

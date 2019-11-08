@@ -53,7 +53,9 @@ type Props = {
   nameValidator: Function,
   activeField: ?string,
   isSubmitting: boolean,
+  isIncentivizedTestnet: boolean,
   isInvalid: boolean,
+  isLegacy: boolean,
   showExportLink: boolean,
   lastUpdatedField: ?string,
   changeSpendingPasswordDialog: Node,
@@ -99,7 +101,9 @@ export default class WalletSettings extends Component<Props> {
       nameValidator,
       activeField,
       isSubmitting,
+      isIncentivizedTestnet,
       isInvalid,
+      isLegacy,
       lastUpdatedField,
       showExportLink,
       changeSpendingPasswordDialog,
@@ -113,6 +117,26 @@ export default class WalletSettings extends Component<Props> {
       recoveryPhraseVerificationStatus,
       recoveryPhraseVerificationStatusType,
     } = this.props;
+
+    if (isLegacy) {
+      return (
+        <div className={styles.component}>
+          <BorderedBox>
+            <DeleteWalletButton
+              onClick={() =>
+                openDialogAction({
+                  dialog: DeleteWalletConfirmationDialog,
+                })
+              }
+            />
+          </BorderedBox>
+
+          {isDialogOpen(DeleteWalletConfirmationDialog)
+            ? deleteWalletDialogContainer
+            : false}
+        </div>
+      );
+    }
 
     return (
       <div className={styles.component}>
@@ -147,28 +171,32 @@ export default class WalletSettings extends Component<Props> {
             }
           />
 
-          <WalletRecoveryPhrase
-            recoveryPhraseVerificationDate={recoveryPhraseVerificationDate}
-            recoveryPhraseVerificationStatus={recoveryPhraseVerificationStatus}
-            recoveryPhraseVerificationStatusType={
-              recoveryPhraseVerificationStatusType
-            }
-            creationDate={creationDate}
-            openDialogAction={openDialogAction}
-            isDialogOpen={isDialogOpen}
-            walletRecoveryPhraseStep1Container={
-              walletRecoveryPhraseStep1Container
-            }
-            walletRecoveryPhraseStep2Container={
-              walletRecoveryPhraseStep2Container
-            }
-            walletRecoveryPhraseStep3Container={
-              walletRecoveryPhraseStep3Container
-            }
-            walletRecoveryPhraseStep4Container={
-              walletRecoveryPhraseStep4Container
-            }
-          />
+          {!isIncentivizedTestnet && (
+            <WalletRecoveryPhrase
+              recoveryPhraseVerificationDate={recoveryPhraseVerificationDate}
+              recoveryPhraseVerificationStatus={
+                recoveryPhraseVerificationStatus
+              }
+              recoveryPhraseVerificationStatusType={
+                recoveryPhraseVerificationStatusType
+              }
+              creationDate={creationDate}
+              openDialogAction={openDialogAction}
+              isDialogOpen={isDialogOpen}
+              walletRecoveryPhraseStep1Container={
+                walletRecoveryPhraseStep1Container
+              }
+              walletRecoveryPhraseStep2Container={
+                walletRecoveryPhraseStep2Container
+              }
+              walletRecoveryPhraseStep3Container={
+                walletRecoveryPhraseStep3Container
+              }
+              walletRecoveryPhraseStep4Container={
+                walletRecoveryPhraseStep4Container
+              }
+            />
+          )}
 
           {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
 

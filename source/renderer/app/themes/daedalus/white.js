@@ -567,6 +567,10 @@ export const WHITE_THEME_OUTPUT = {
   },
   settings: {
     '--theme-settings-body-background-color': '#f9f9f9',
+    '--theme-settings-delete-button-legacy-background-color':
+      'rgba(41, 181, 149, 0.1)',
+    '--theme-settings-delete-button-legacy-background-color-hover':
+      'rgba(41, 181, 149, 1)',
     '--theme-settings-pane-background-color': '#fff',
     '--theme-settings-pane-border': 'none',
     '--theme-settings-menu-box-background-color': '#fff',

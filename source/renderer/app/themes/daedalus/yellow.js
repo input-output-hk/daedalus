@@ -565,6 +565,10 @@ export const YELLOW_THEME_OUTPUT = {
   },
   settings: {
     '--theme-settings-body-background-color': '#f8f3ed',
+    '--theme-settings-delete-button-legacy-background-color':
+      'rgba(45, 45, 45, 0.1)',
+    '--theme-settings-delete-button-legacy-background-color-hover':
+      'rgba(41, 181, 149, 1)',
     '--theme-settings-pane-background-color': '#fff',
     '--theme-settings-pane-border': '1px solid #e1dac6',
     '--theme-settings-menu-box-background-color': '#fff',

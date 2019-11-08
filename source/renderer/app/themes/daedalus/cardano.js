@@ -581,6 +581,8 @@ export const CARDANO_THEME_OUTPUT = {
   },
   settings: {
     '--theme-settings-body-background-color': '#efefef',
+    '--theme-settings-delete-button-legacy-background-color': '#f0f3f5',
+    '--theme-settings-delete-button-legacy-background-color-hover': '#f0f3f5',
     '--theme-settings-pane-background-color': '#fafbfc',
     '--theme-settings-pane-border': '1px solid #c6cdd6',
     '--theme-settings-menu-box-background-color': '#fafbfc',

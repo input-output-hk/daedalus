@@ -596,6 +596,7 @@
   "wallet.transaction.pending.cancelPendingTxnNote": "This transaction has been pending for too long. We recommend you cancel it.",
   "wallet.transaction.pending.cancelTransactionButton": "Cancel pending transaction",
   "wallet.transaction.pending.supportArticleLink": "Read why",
+  "wallet.transaction.noInputAddressesLabel": "No addresses",
   "wallet.transaction.received": "{currency} received",
   "wallet.transaction.sent": "{currency} sent",
   "wallet.transaction.state.confirmed": "Transaction confirmed",
@@ -605,6 +606,8 @@
   "wallet.transaction.type": "{currency} transaction",
   "wallet.transaction.type.card": "Card Payment",
   "wallet.transaction.type.exchange": "Exchange",
+  "wallet.transaction.unresolvedInputAddressesAdditionalLabel": "to see these addresses.",
+  "wallet.transaction.unresolvedInputAddressesLinkLabel": "Open this transaction in Cardano explorer",
   "wallet.transactions.no.transactions": "No transactions",
   "wallet.transactions.no.transactions.found": "No transactions found"
 }

@@ -840,6 +840,12 @@ export const createDaedalusComponentsTheme = (
     },
     settings: {
       '--theme-settings-body-background-color': `${background.primary.regular}`,
+      '--theme-settings-delete-button-legacy-background-color': `${
+        background.primary.light
+      }`,
+      '--theme-settings-delete-button-legacy-background-color-hover': `${
+        background.primary.lighter
+      }`,
       '--theme-settings-pane-background-color': `${
         background.primary.lightest
       }`,

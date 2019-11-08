@@ -45,6 +45,7 @@ export default class TransactionsStore extends Store {
 
   @observable transactionsRequests: Array<{
     walletId: string,
+    isLegacy: boolean,
     recentRequest: Request<GetTransactionsResponse>,
     allRequest: Request<GetTransactionsResponse>,
   }> = [];
@@ -140,6 +141,7 @@ export default class TransactionsStore extends Store {
           order: 'descending',
           fromDate: null,
           toDate: null,
+          isLegacy: wallet.isLegacy,
           // @API TODO - Params "pending" for V2
           // limit: this.RECENT_TRANSACTIONS_LIMIT,
           // skip: 0,
@@ -155,6 +157,7 @@ export default class TransactionsStore extends Store {
           order: 'descending',
           fromDate: null,
           toDate: null,
+          isLegacy: wallet.isLegacy,
           // @API TODO - Params "pending" for V2
           // limit: this.INITIAL_SEARCH_LIMIT,
           // skip: 0,
@@ -237,6 +240,7 @@ export default class TransactionsStore extends Store {
     walletId: string
   ): Request<GetTransactionsResponse> => {
     const foundRequest = find(this.transactionsRequests, { walletId });
+
     if (foundRequest && foundRequest.recentRequest)
       return foundRequest.recentRequest;
     return new Request(this.api.ada.getTransactions);
@@ -246,6 +250,7 @@ export default class TransactionsStore extends Store {
     walletId: string
   ): Request<GetTransactionsResponse> => {
     const foundRequest = find(this.transactionsRequests, { walletId });
+
     if (foundRequest && foundRequest.allRequest) return foundRequest.allRequest;
     return new Request(this.api.ada.getTransactions);
   };

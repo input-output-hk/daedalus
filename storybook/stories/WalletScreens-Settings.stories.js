@@ -139,6 +139,8 @@ export default () => {
       activeField={null}
       isInvalid={false}
       isSubmitting={false}
+      isLegacy={false}
+      isIncentivizedTestnet={false}
       lastUpdatedField={null}
       nameValidator={() => true}
       onCancelEditing={() => {}}

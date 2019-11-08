@@ -103,4 +103,62 @@ storiesOf('WalletTransactionsList', module)
       formattedWalletAmount={formattedWalletAmount}
       totalAvailable={500}
     />
+  ))
+
+  .add('transactions with unresolved income addresses', () => (
+    <WalletTransactionsList
+      isRenderingAsVirtualList
+      isRestoreActive={false}
+      transactions={[
+        generateTransaction(
+          TransactionTypes.INCOME,
+          new Date(),
+          new BigNumber(1),
+          TransactionStates.OK,
+          true
+        ),
+        generateTransaction(
+          TransactionTypes.INCOME,
+          new Date(),
+          new BigNumber(1),
+          TransactionStates.OK,
+          true
+        ),
+      ]}
+      isLoadingTransactions={false}
+      hasMoreToLoad={false}
+      walletId="test-wallet"
+      formattedWalletAmount={formattedWalletAmount}
+      totalAvailable={3}
+    />
+  ))
+
+  .add('transactions without income addresses', () => (
+    <WalletTransactionsList
+      isRenderingAsVirtualList
+      isRestoreActive={false}
+      transactions={[
+        generateTransaction(
+          TransactionTypes.INCOME,
+          new Date(),
+          new BigNumber(1),
+          TransactionStates.OK,
+          false,
+          true
+        ),
+        generateTransaction(
+          TransactionTypes.INCOME,
+          new Date(),
+          new BigNumber(1),
+          TransactionStates.OK,
+          false,
+          true
+        ),
+      ]}
+      isLoadingTransactions={false}
+      hasMoreToLoad={false}
+      walletId="test-wallet"
+      formattedWalletAmount={formattedWalletAmount}
+      totalAvailable={3}
+    />
   ));
