@@ -13,10 +13,17 @@ const messages = defineMessages({
     description:
       'Headline for the pending transaction cancellation confirmation dialog.',
   },
-  content: {
-    id: 'cancel.transaction.confirmation.dialog.content',
+  content1: {
+    id: 'cancel.transaction.confirmation.dialog.content1',
     defaultMessage:
-      '!!!This transaction was submitted to the Cardano network. However, this transaction may still be processed successfully, and if that happens, it will appear in the list of transactions in this wallet.',
+      '!!!This transaction was submitted to the Cardano network some time ago, but hasn’t been finalized yet. You can try to cancel the transaction now to release the pending funds, but there is a chance that the transaction will be finalized regardless. In this case, the transaction will reappear in your wallet as a completed transaction.',
+    description:
+      'Content for the pending transaction cancellation confirmation dialog.',
+  },
+  content2: {
+    id: 'cancel.transaction.confirmation.dialog.content2',
+    defaultMessage:
+      '!!!To ensure that this transfer of funds is processed as soon as possible, we recommend that you cancel this transaction and submit a new one to the network.',
     description:
       'Content for the pending transaction cancellation confirmation dialog.',
   },
@@ -79,7 +86,10 @@ export default class CancelTransactionConfirmationDialog extends Component<Props
         closeOnOverlayClick={false}
         onClose={onCancel}
       >
-        <p>{intl.formatMessage(messages.content)}</p>
+        <p>{intl.formatMessage(messages.content1)}</p>
+        <p>
+          <strong>{intl.formatMessage(messages.content2)}</strong>
+        </p>
       </Dialog>
     );
   }
