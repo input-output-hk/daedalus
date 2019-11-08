@@ -8,19 +8,20 @@ import { InjectedDialogContainerStepDefaultProps } from '../../../../types/injec
 type Props = InjectedDialogContainerStepProps;
 const DefaultProps = InjectedDialogContainerStepDefaultProps;
 
-@inject('stores')
+@inject('stores', 'actions')
 @observer
 export default class TransferFundsStep2Container extends Component<Props> {
   static defaultProps = DefaultProps;
 
   onClose = () => {
-    const { onClose, transferFundsRequest } = this.props.stores.wallets;
+    const { onClose } = this.props;
+    const { transferFundsRequest } = this.props.stores.wallets;
     transferFundsRequest.reset();
     onClose();
   };
 
   render() {
-    const { stores, onBack, onFinish } = this.props;
+    const { stores, actions, onBack } = this.props;
     const {
       transferFundsSourceWalletId,
       transferFundsTargetWalletId,
@@ -29,6 +30,9 @@ export default class TransferFundsStep2Container extends Component<Props> {
       transferFundsFee,
       transferFundsRequest,
     } = stores.wallets;
+
+    const onFinish = spendingPassword =>
+      actions.wallets.transferFunds.trigger(spendingPassword);
 
     const sourceWallet = allLegacyWallets.find(
       ({ id }) => id === transferFundsSourceWalletId

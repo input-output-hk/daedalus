@@ -25,7 +25,7 @@ export default class TransferFundsStep1Container extends Component<Props> {
     const sourceWallet = allLegacyWallets.find(
       ({ id }) => id === transferFundsSourceWalletId
     );
-    if (!sourceWallet) return null;
+    if (!sourceWallet || !transferFundsTargetWalletId) return null;
     return (
       <TransferFundsStep1Dialog
         targetWalletId={transferFundsTargetWalletId}

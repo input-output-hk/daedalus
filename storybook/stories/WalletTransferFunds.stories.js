@@ -3,7 +3,7 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import faker from 'faker';
 import { action } from '@storybook/addon-actions';
-import { withKnobs, select } from '@storybook/addon-knobs';
+import { withKnobs, select, boolean } from '@storybook/addon-knobs';
 import { BigNumber } from 'bignumber.js';
 import { set } from 'lodash';
 import StoryDecorator from './support/StoryDecorator';
@@ -220,13 +220,15 @@ storiesOf('WalletTransferFunds', module)
     return (
       <TransferFundsStep2Dialog
         addresses={step2Addresses}
-        fees={faker.finance.amount(1, 4)}
+        transferFundsFee={faker.finance.amount(1, 20)}
         onBack={action('onBack')}
         onClose={action('onClose')}
         onContinue={action('onContinue')}
         onDataChange={action('onDataChange')}
         sourceWallet={sourceWallet}
         targetWallet={targetWallet}
+        isSubmitting={boolean('isSubmitting', false)}
+        onFinish={action('onFinish')}
       />
     );
   });
