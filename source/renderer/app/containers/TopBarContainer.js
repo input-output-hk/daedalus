@@ -25,6 +25,7 @@ export default class TopBarContainer extends Component<Props> {
     const {
       currentRoute,
       environment: { isMainnet, network },
+      openExternalLink,
     } = app;
     const hasAnyWallets = allWallets.length > allLegacyWallets.length;
     const walletRoutesMatch = matchRoute(
@@ -63,6 +64,7 @@ export default class TopBarContainer extends Component<Props> {
         onTransferFunds={onTransferFunds}
         hasAnyWallets={hasAnyWallets}
         onWalletAdd={onWalletAdd}
+        onLearnMore={openExternalLink}
       >
         {testnetLabel}
         <NodeSyncStatusIcon networkStatus={networkStatus} />

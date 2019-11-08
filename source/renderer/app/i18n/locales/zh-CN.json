@@ -471,6 +471,7 @@
   "wallet.legacy.notification.actionMove": "!!!Move all of the ada from this wallet",
   "wallet.legacy.notification.addWallet": "!!!Move all of the ada from this wallet",
   "wallet.legacy.notification.description": "!!!This is a legacy wallet which uses legacy addresses and does not support new features. Please move all of the ada from this legacy wallet to one of the wallets where new features are available. You can also create a brand new wallet for your ada in case you don’t want to move ada to one of your existing wallets. A sequence of screens will guide you through the process.",
+  "wallet.legacy.notification.learnMore.url": "!!!https://iohk.zendesk.com/hc/en-us",
   "wallet.legacy.notification.title": "!!!Move funds from the legacy wallet",
   "wallet.navigation.more": "!!!More",
   "wallet.navigation.receive": "!!!Receive",
