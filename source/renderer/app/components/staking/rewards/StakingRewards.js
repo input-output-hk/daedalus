@@ -15,8 +15,9 @@ import styles from './StakingRewards.scss';
 const messages = defineMessages({
   title: {
     id: 'staking.rewards.title',
-    defaultMessage: '!!!Earned Rewards',
-    description: 'Title "Earned Rewards" label on the staking rewards page.',
+    defaultMessage: '!!!Earned delegation rewards',
+    description:
+      'Title "Earned delegation rewards" label on the staking rewards page.',
   },
   exportButtonLabel: {
     id: 'staking.rewards.exportButtonLabel',
@@ -44,10 +45,10 @@ const messages = defineMessages({
     defaultMessage: '!!!Wallet',
     description: 'Table header "Wallet" label on staking rewards page',
   },
-  tableHeaderAmount: {
-    id: 'staking.rewards.tableHeader.amount',
-    defaultMessage: '!!!Amount',
-    description: 'Table header "Amount" label on staking rewards page',
+  tableHeaderReward: {
+    id: 'staking.rewards.tableHeader.reward',
+    defaultMessage: '!!!Reward',
+    description: 'Table header "Reward" label on staking rewards page',
   },
   learnMoreButtonLabel: {
     id: 'staking.rewards.learnMore.ButtonLabel',
@@ -122,8 +123,8 @@ export default class StakingRewards extends Component<Props, State> {
         title: intl.formatMessage(messages.tableHeaderWallet),
       },
       {
-        name: 'amount',
-        title: intl.formatMessage(messages.tableHeaderAmount),
+        name: 'reward',
+        title: intl.formatMessage(messages.tableHeaderReward),
       },
     ];
 
@@ -179,7 +180,7 @@ export default class StakingRewards extends Component<Props, State> {
                   const rewardPoolSlug = get(reward, ['pool', 'slug'], '');
                   const rewardPoolName = get(reward, ['pool', 'name'], '');
                   const rewardWallet = get(reward, 'wallet', '');
-                  const rewardAmount = get(reward, 'amount', '');
+                  const rewardAmount = get(reward, 'reward', '');
                   return (
                     <tr key={key}>
                       <td>{rewardDate}</td>

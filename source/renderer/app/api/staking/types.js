@@ -1,4 +1,5 @@
 // @flow
+import BigNumber from 'bignumber.js';
 
 export type StakePool = {
   id: string,
@@ -20,8 +21,13 @@ export type StakePoolsListType = Array<StakePool>;
 export type Reward = {
   date: string,
   wallet: string,
-  amount: number,
+  reward: BigNumber,
   pool: StakePool,
+};
+
+export type RewardForIncentivizedTestnet = {
+  wallet: string,
+  reward: BigNumber,
 };
 
 export type EpochData = {

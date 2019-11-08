@@ -578,6 +578,8 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
   },
   settings: {
     '--theme-settings-body-background-color': '#ebeff2',
+    '--theme-settings-delete-button-legacy-background-color': '#f0f3f5',
+    '--theme-settings-delete-button-legacy-background-color-hover': '#f0f3f5',
     '--theme-settings-pane-background-color': '#fafbfc',
     '--theme-settings-pane-border': '1px solid #c6cdd6',
     '--theme-settings-menu-box-background-color': '#fafbfc',
@@ -687,6 +689,8 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-staking-countdown-widget-delimeter-background-color': '#5e6066',
     '--theme-staking-countdown-widget-field-label-color': '#5e6066',
     '--theme-staking-countdown-widget-field-value-color': '#5e6066',
+    '--theme-staking-export-button-shadow-color': 'rgba(0, 0, 0, 0.18)',
+    '--theme-staking-export-button-color': '#fafbfc',
   },
   support: {
     '--theme-support-settings-item-color': 'rgba(94, 96, 102, 0.5)',

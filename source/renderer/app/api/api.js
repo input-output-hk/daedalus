@@ -26,6 +26,7 @@ import { getLatestAppVersion } from './nodes/requests/getLatestAppVersion';
 // Transactions requests
 import { getTransactionFee } from './transactions/requests/getTransactionFee';
 import { getTransactionHistory } from './transactions/requests/getTransactionHistory';
+import { getLegacyWalletTransactionHistory } from './transactions/requests/getLegacyWalletTransactionHistory';
 import { createTransaction } from './transactions/requests/createTransaction';
 
 // Wallets requests
@@ -73,11 +74,7 @@ import {
 } from '../config/cryptoConfig';
 
 // Addresses Types
-import type {
-  Address,
-  Addresses,
-  GetAddressesRequest,
-} from './addresses/types';
+import type { Address, GetAddressesRequest } from './addresses/types';
 
 // Common Types
 import type { RequestConfig } from './common/types';
@@ -95,7 +92,6 @@ import type { NodeInfoQueryParams } from './nodes/requests/getNodeInfo';
 // Transactions Types
 import type {
   Transaction,
-  Transactions,
   TransactionFee,
   GetTransactionFeeRequest,
   CreateTransactionRequest,
@@ -220,13 +216,13 @@ export default class AdaApi {
     Logger.debug('AdaApi::getAddresses called', {
       parameters: filterLogData(request),
     });
-    const { walletId, queryParams } = request;
+
+    const { walletId, queryParams, isLegacy } = request;
     try {
-      const response: Addresses = await getAddresses(
-        this.config,
-        walletId,
-        queryParams
-      );
+      let response = [];
+      if (!isLegacy) {
+        response = await getAddresses(this.config, walletId, queryParams);
+      }
       Logger.debug('AdaApi::getAddresses success', { addresses: response });
       return response.map(_createAddressFromServerData);
     } catch (error) {
@@ -239,7 +235,7 @@ export default class AdaApi {
     request: GetTransactionsRequest
   ): Promise<GetTransactionsResponse> => {
     Logger.debug('AdaApi::searchHistory called', { parameters: request });
-    const { walletId, order, fromDate, toDate } = request;
+    const { walletId, order, fromDate, toDate, isLegacy } = request;
 
     const params = Object.assign(
       {},
@@ -253,11 +249,17 @@ export default class AdaApi {
       params.end = `${moment.utc(toDate).format('YYYY-MM-DDTHH:mm:ss')}Z`;
 
     try {
-      const response: Transactions = await getTransactionHistory(
-        this.config,
-        walletId,
-        params
-      );
+      let response;
+      if (isLegacy) {
+        response = await getLegacyWalletTransactionHistory(
+          this.config,
+          walletId,
+          params
+        );
+      } else {
+        response = await getTransactionHistory(this.config, walletId, params);
+      }
+
       const transactions = response.map(tx =>
         _createTransactionFromServerData(tx)
       );
@@ -1109,6 +1111,7 @@ const _createWalletFromServerData = action(
       id,
       address_pool_gap: addressPoolGap,
       balance,
+      reward = {},
       name,
       state,
       passphrase,
@@ -1123,12 +1126,17 @@ const _createWalletFromServerData = action(
       balance.total.unit === 'lovelace'
         ? new BigNumber(balance.total.quantity).dividedBy(LOVELACES_PER_ADA)
         : new BigNumber(balance.total.quantity);
+    const walletRewardAmount =
+      reward.unit === 'lovelace'
+        ? new BigNumber(reward.quantity).dividedBy(LOVELACES_PER_ADA)
+        : new BigNumber(reward.quantity || 0);
 
     return new Wallet({
       id,
       addressPoolGap,
       name,
       amount: walletTotalAmount,
+      reward: walletRewardAmount,
       passwordUpdateDate:
         passphraseLastUpdatedAt && new Date(passphraseLastUpdatedAt),
       syncState: state,
@@ -1191,7 +1199,7 @@ const _createTransactionFromServerData = action(
       date: utcStringToDate(date),
       description: '',
       addresses: {
-        from: inputs.map(({ address, id: inputId }) => address || inputId), // @API TODO: id is faked due to lack of informations
+        from: inputs.map(({ address }) => address),
         to: outputs.map(({ address }) => address),
       },
       state,

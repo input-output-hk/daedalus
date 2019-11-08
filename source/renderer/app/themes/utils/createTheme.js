@@ -840,6 +840,12 @@ export const createDaedalusComponentsTheme = (
     },
     settings: {
       '--theme-settings-body-background-color': `${background.primary.regular}`,
+      '--theme-settings-delete-button-legacy-background-color': `${
+        background.primary.light
+      }`,
+      '--theme-settings-delete-button-legacy-background-color-hover': `${
+        background.primary.lighter
+      }`,
       '--theme-settings-pane-background-color': `${
         background.primary.lightest
       }`,
@@ -1022,6 +1028,10 @@ export const createDaedalusComponentsTheme = (
         background.primary.light
       ).alpha(0.7)}`,
       '--theme-staking-countdown-widget-field-value-color': `${text.primary}`,
+      '--theme-staking-export-button-shadow-color': `${chroma(
+        background.primary.regular
+      ).alpha(0.18)}`,
+      '--theme-staking-export-button-color': `${background.primary.lightest}`,
     },
     support: {
       '--theme-support-settings-item-color': `${text.primary}`,
