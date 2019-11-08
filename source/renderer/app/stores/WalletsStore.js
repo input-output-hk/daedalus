@@ -36,6 +36,10 @@ import type {
   WalletLocalData,
   WalletsLocalData,
 } from '../api/utils/localStorage';
+import type {
+  TransferFundsCalculateFeeRequest,
+  TransferFundsRequest,
+} from '../api/wallets/types';
 /* eslint-disable consistent-return */
 
 export const WalletRecoveryPhraseVerificationStatuses = {
@@ -119,10 +123,11 @@ export default class WalletsStore extends Store {
   @observable restoreLegacyRequest: Request<Wallet> = new Request(
     this.api.ada.restoreLegacyWallet
   );
-  @observable transferFundsCalculateFeeRequest: Request<any> = new Request(
+  @observable
+  transferFundsCalculateFeeRequest: Request<TransferFundsCalculateFeeRequest> = new Request(
     this.api.ada.transferFundsCalculateFee
   );
-  @observable transferFundsRequest: Request<any> = new Request(
+  @observable transferFundsRequest: Request<TransferFundsRequest> = new Request(
     this.api.ada.transferFunds
   );
   @observable
@@ -414,7 +419,11 @@ export default class WalletsStore extends Store {
     this.transferFundsStep = prevStep;
   };
 
-  @action _transferFunds = async (spendingPassword: string) => {
+  @action _transferFunds = async ({
+    spendingPassword,
+  }: {
+    spendingPassword: string,
+  }) => {
     const { transferFundsSourceWalletId, transferFundsTargetWalletId } = this;
     await this.transferFundsRequest.execute({
       sourceWalletId: transferFundsSourceWalletId,

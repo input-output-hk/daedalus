@@ -37,7 +37,7 @@ export default class TransferFundsStep2Container extends Component<Props> {
     } = stores.wallets;
 
     const onFinish = spendingPassword =>
-      actions.wallets.transferFunds.trigger(spendingPassword);
+      actions.wallets.transferFunds.trigger({ spendingPassword });
 
     const sourceWallet = allLegacyWallets.find(
       ({ id }) => id === transferFundsSourceWalletId

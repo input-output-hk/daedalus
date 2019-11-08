@@ -44,7 +44,7 @@ export default class TopBarContainer extends Component<Props> {
     const onWalletAdd = () => {
       actions.router.goToRoute.trigger({
         route: ROUTES.WALLETS.ADD,
-      })
+      });
     };
 
     const onTransferFunds = (sourceWalletId: string) =>

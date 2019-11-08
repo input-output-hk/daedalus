@@ -1,6 +1,33 @@
 // @flow
 import BigNumber from 'bignumber.js';
 
+export type Block = {
+  slot_number: number,
+  epoch_number: number,
+  height: {
+    quantity: number,
+    unit: 'block',
+  },
+};
+
+export type Input = {
+  address?: string,
+  amount?: {
+    quantity: number,
+    unit: 'lovelace',
+  },
+  id: string,
+  index: number,
+};
+
+export type Output = {
+  address: string,
+  amount: {
+    quantity: number,
+    unit: 'lovelace',
+  },
+};
+
 export type AdaWallet = {
   id: string,
   address_pool_gap: number,
@@ -30,14 +57,7 @@ export type LegacyAdaWallet = {
     last_updated_at: string,
   },
   state: WalletSyncState,
-  tip: {
-    slot_number: number,
-    epoch_number: number,
-    height: {
-      quantity: number,
-      unit: 'block',
-    },
-  },
+  tip: Block,
 };
 
 export type LegacyAdaWallets = Array<LegacyAdaWallet>;
@@ -210,20 +230,20 @@ export type TransferFundsResponse = {
     quantity: number,
     unit: 'lovelace',
   },
-  inserted_at: {
+  inserted_at?: {
     time: Date,
-    block: Object,
+    block: Block,
   },
-  pending_since: {
+  pending_since?: {
     time: '2019-11-06T19:36:27.243Z',
-    block: Object,
+    block: Block,
   },
   depth: {
     quantity: number,
     unit: 'block',
   },
-  direction: 'outgoing',
-  inputs: Array<any>,
-  outputs: Array<any>,
-  status: string,
+  direction: 'incoming' | 'outgoing',
+  inputs: Array<Input>,
+  outputs: Array<Output>,
+  status: 'pending' | 'in_ledger' | 'invalidated',
 };

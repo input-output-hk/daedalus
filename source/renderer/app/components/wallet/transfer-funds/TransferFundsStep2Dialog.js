@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
+import BigNumber from 'bignumber.js';
 import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
@@ -76,15 +77,15 @@ type Props = {
   // addresses: Array<any>,
   sourceWallet: $Shape<Wallet>,
   targetWallet: $Shape<Wallet>,
-  transferFundsFee: ?number,
+  transferFundsFee: ?BigNumber,
   isSubmitting?: boolean,
   error?: ?LocalizableError,
 };
 
 type State = {
-  total: number,
+  total: string,
   fees: ?number,
-  amount: ?number,
+  amount: ?string,
 };
 
 @observer
@@ -99,12 +100,15 @@ export default class TransferFundsStep2Dialog extends Component<Props, State> {
     amount: null,
   };
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps: Props) {
     const { transferFundsFee, sourceWallet } = nextProps;
     // "FREEZ" current amounts with component state
     if (transferFundsFee && !this.state.fees && !this.state.amount) {
       const fees = transferFundsFee.toFormat(DECIMAL_PLACES_IN_ADA);
-      const amount = formattedWalletAmount(sourceWallet.amount.minus(fees), false);
+      const amount = formattedWalletAmount(
+        sourceWallet.amount.minus(fees),
+        false
+      );
       this.setState({ fees, amount });
     }
   }
@@ -157,7 +161,7 @@ export default class TransferFundsStep2Dialog extends Component<Props, State> {
 
   render() {
     const { intl } = this.context;
-    const { total, fees, amount} = this.state;
+    const { total, fees, amount } = this.state;
     const {
       onClose,
       onBack,

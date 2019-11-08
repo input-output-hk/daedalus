@@ -949,7 +949,7 @@ export default class AdaApi {
 
   transferFundsCalculateFee = async (
     request: TransferFundsCalculateFeeRequest
-  ): Promise<TransferFundsCalculateFeeResponse> => {
+  ): Promise<BigNumber> => {
     const { sourceWalletId } = request;
     Logger.debug('AdaApi::transferFundsCalculateFee called', {
       parameters: { sourceWalletId },
