@@ -10,6 +10,8 @@ import StoryDecorator from './support/StoryDecorator';
 
 import { CATEGORIES_BY_NAME } from '../../source/renderer/app/config/sidebarConfig';
 
+import { generateWallet } from './support/utils';
+
 import StakingWithNavigation from '../../source/renderer/app/components/staking/layouts/StakingWithNavigation';
 import StakingCountdown from '../../source/renderer/app/components/staking/countdown/StakingCountdown';
 import StakingInfo from '../../source/renderer/app/components/staking/info/StakingInfo';
@@ -48,27 +50,9 @@ const pageNames = {
 };
 
 const WALLETS = [
-  {
-    id: '1',
-    value: '1 ADA',
-    label: 'First Wallet',
-    isAcceptableSetupWallet: true,
-    hasPassword: true,
-  },
-  {
-    id: '2',
-    value: '2 ADA',
-    label: 'Second Wallet',
-    isAcceptableSetupWallet: true,
-    hasPassword: true,
-  },
-  {
-    id: '3',
-    value: '0.0001 ADA',
-    label: 'Third Wallet',
-    isAcceptableSetupWallet: false,
-    hasPassword: true,
-  },
+  generateWallet('First Wallet', '1'),
+  generateWallet('Second Wallet', '2'),
+  generateWallet('Third Wallet', '0.0001'),
 ];
 
 const locales = {
@@ -197,7 +181,8 @@ storiesOf('Staking', module)
       onBack={action('onBack')}
       wallets={WALLETS}
       minDelegationFunds={1}
-      selectedWallet={null}
+      selectedWalletId={WALLETS[0].id}
+      isWalletAcceptable={amount => amount >= 1}
     />
   ))
 

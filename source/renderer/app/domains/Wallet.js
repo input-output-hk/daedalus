@@ -76,6 +76,6 @@ export default class Wallet {
   }
 
   @computed get hasFunds(): boolean {
-    return this.amount > 0;
+    return this.amount.gt(0);
   }
 }

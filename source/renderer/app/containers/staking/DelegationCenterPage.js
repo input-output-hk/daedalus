@@ -32,7 +32,7 @@ export default class DelegationCenterPage extends Component<Props> {
   render() {
     const { uiDialogs, staking, wallets } = this.props.stores;
 
-    if (!wallets.all.length) {
+    if (!wallets.allWallets.length) {
       return (
         <DelegationCenterNoWallets
           onGoToCreateWalletClick={this.handleGoToCreateWalletClick}
@@ -45,7 +45,7 @@ export default class DelegationCenterPage extends Component<Props> {
         <DelegationCenter
           adaValue={staking.adaValue}
           percentage={staking.percentage}
-          wallets={wallets.all}
+          wallets={wallets.allWallets}
           onDelegate={this.handleDelegate}
         />
         {uiDialogs.isOpen(DelegationSetupWizardDialog) ? (

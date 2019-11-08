@@ -16,17 +16,39 @@ type Props = {
   leftIcon?: ?string,
   children?: ?Node,
   activeWallet?: ?Wallet,
+  onTransferFunds?: Function,
+  onWalletAdd?: Function,
+  hasAnyWallets?: boolean,
 };
 
 @observer
 export default class TopBar extends Component<Props> {
   render() {
-    const { onLeftIconClick, leftIcon, activeWallet, children } = this.props;
+    const {
+      onLeftIconClick,
+      leftIcon,
+      activeWallet,
+      children,
+      hasAnyWallets,
+      onTransferFunds,
+      onWalletAdd,
+    } = this.props;
 
     const topBarStyles = classNames([
       styles.topBar,
       activeWallet ? styles.withWallet : styles.withoutWallet,
     ]);
+
+    const hasLegacyNotification =
+      activeWallet &&
+      activeWallet.isLegacy &&
+      activeWallet.amount.gt(0) &&
+      ((hasAnyWallets && onTransferFunds) || onWalletAdd);
+
+    const onTransferFundsFn =
+      onTransferFunds && activeWallet
+        ? () => onTransferFunds(activeWallet.id)
+        : () => {};
 
     const topBarTitle = activeWallet ? (
       <span className={styles.walletInfo}>
@@ -62,8 +84,13 @@ export default class TopBar extends Component<Props> {
           )}
           {children}
         </div>
-        {activeWallet && activeWallet.isLegacy && (
-          <LegacyNotification onLearnMore={() => null} onMove={() => null} />
+        {hasLegacyNotification && (
+          <LegacyNotification
+            onLearnMore={() => null}
+            onTransferFunds={onTransferFundsFn}
+            hasAnyWallets={hasAnyWallets}
+            onWalletAdd={onWalletAdd}
+          />
         )}
       </header>
     );

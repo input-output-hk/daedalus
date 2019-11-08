@@ -469,6 +469,7 @@
   "wallet.legacy.badge.label": "Legacy",
   "wallet.legacy.notification.actionLearnMore": "Learn more",
   "wallet.legacy.notification.actionMove": "Move all of the ada from this wallet",
+  "wallet.legacy.notification.addWallet": "Add wallet",
   "wallet.legacy.notification.description": "This is a legacy wallet which uses legacy addresses and does not support new features. Please move all of the ada from this legacy wallet to one of the wallets where new features are available. You can also create a brand new wallet for your ada in case you don’t want to move ada to one of your existing wallets. A sequence of screens will guide you through the process.",
   "wallet.legacy.notification.title": "Move funds from the legacy wallet",
   "wallet.navigation.more": "More",
@@ -622,5 +623,17 @@
   "wallet.transaction.unresolvedInputAddressesAdditionalLabel": "to see these addresses.",
   "wallet.transaction.unresolvedInputAddressesLinkLabel": "Open this transaction in Cardano explorer",
   "wallet.transactions.no.transactions": "No transactions",
-  "wallet.transactions.no.transactions.found": "No transactions found"
+  "wallet.transactions.no.transactions.found": "No transactions found",
+  "wallet.transferFunds.dialog1.sourceWallet": "From wallet",
+  "wallet.transferFunds.dialog1.targetWallet": "To walet",
+  "wallet.transferFunds.dialog1.title": "Transfer funds from the legacy wallet",
+  "wallet.transferFunds.dialog2.label.amount": "Amount",
+  "wallet.transferFunds.dialog2.label.buttonLabel": "Transfer funds",
+  "wallet.transferFunds.dialog2.label.description": "Confirm transfer from the {sourceWalletName} wallet to the {targetWalletName} wallet.",
+  "wallet.transferFunds.dialog2.label.fees": "Fees",
+  "wallet.transferFunds.dialog2.label.to": "To",
+  "wallet.transferFunds.dialog2.label.total": "Total",
+  "wallet.transferFunds.dialog2.passphraseFieldPlaceholder": "Type your spending password",
+  "wallet.transferFunds.dialog2.passphraseLabel": "Spending password",
+  "wallet.transferFunds.dialog2.title": "Transfer funds from the legacy wallet"
 }
