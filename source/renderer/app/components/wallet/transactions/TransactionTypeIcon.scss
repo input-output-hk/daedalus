@@ -48,10 +48,10 @@
   .pendingTxnIcon {
     & > svg {
       height: 9px;
+      width: 2px;
       path {
         fill: var(--theme-icon-transaction-type-color);
       }
-      width: 2px;
     }
   }
 }
