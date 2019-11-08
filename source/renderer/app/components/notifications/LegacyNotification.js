@@ -34,6 +34,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Move all of the ada from this wallet',
     description: 'Add wallet action of legacy notification.',
   },
+  learnMoreLinkUrl: {
+    id: 'wallet.legacy.notification.learnMore.url',
+    defaultMessage: '!!!https://iohk.zendesk.com/hc/en-us',
+    description: '"Learn more" link URL',
+  },
 });
 
 type Props = {
@@ -49,14 +54,15 @@ export default class LegacyNotification extends Component<Props> {
     intl: intlShape.isRequired,
   };
 
+  onLearnMore = () => {
+    const { intl } = this.context;
+    const learnMoreLinkUrl = intl.formatMessage(messages.learnMoreLinkUrl);
+    this.props.onLearnMore(learnMoreLinkUrl);
+  };
+
   render() {
     const { intl } = this.context;
-    const {
-      onLearnMore,
-      onTransferFunds,
-      hasAnyWallets,
-      onWalletAdd,
-    } = this.props;
+    const { onTransferFunds, hasAnyWallets, onWalletAdd } = this.props;
     const title = intl.formatMessage(messages.title);
     const description = intl.formatMessage(messages.description);
     const actionLearnMore = intl.formatMessage(messages.actionLearnMore);
@@ -75,7 +81,7 @@ export default class LegacyNotification extends Component<Props> {
           <Button
             className={styles.actionLearnMore}
             label={actionLearnMore}
-            onClick={onLearnMore}
+            onClick={this.onLearnMore}
             skin={ButtonSkin}
           />
           {
