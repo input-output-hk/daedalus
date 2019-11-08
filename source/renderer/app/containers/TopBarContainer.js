@@ -41,6 +41,10 @@ export default class TopBarContainer extends Component<Props> {
       <WalletTestEnvironmentLabel network={network} />
     ) : null;
 
+    const onWalletAdd = actions.router.goToRoute.trigger({
+      route: ROUTES.WALLETS.ADD,
+    });
+
     const onTransferFunds = (sourceWalletId: string) =>
       actions.wallets.transferFundsSetSourceWalletId.trigger({
         sourceWalletId,
@@ -55,6 +59,8 @@ export default class TopBarContainer extends Component<Props> {
         onLeftIconClick={actions.sidebar.toggleSubMenus.trigger}
         activeWallet={activeWallet}
         onTransferFunds={onTransferFunds}
+        hasAnyWallets={hasAnyWallets}
+        onWalletAdd={onWalletAdd}
       >
         {testnetLabel}
         <NodeSyncStatusIcon networkStatus={networkStatus} />
