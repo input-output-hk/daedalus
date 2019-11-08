@@ -73,7 +73,7 @@ type Props = {
   onFinish: Function,
   onClose: Function,
   onBack: Function,
-  addresses: Array<any>,
+  // addresses: Array<any>,
   sourceWallet: $Shape<Wallet>,
   targetWallet: $Shape<Wallet>,
   transferFundsFee: ?number,
@@ -81,11 +81,33 @@ type Props = {
   error?: ?LocalizableError,
 };
 
+type State = {
+  total: number,
+  fees: ?number,
+  amount: ?number,
+};
+
 @observer
-export default class TransferFundsStep2Dialog extends Component<Props> {
+export default class TransferFundsStep2Dialog extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
+
+  state = {
+    total: formattedWalletAmount(this.props.sourceWallet.amount, false),
+    fees: null,
+    amount: null,
+  };
+
+  componentWillReceiveProps(nextProps) {
+    const { transferFundsFee, sourceWallet } = nextProps;
+    // "FREEZ" current amounts with component state
+    if (transferFundsFee && !this.state.fees && !this.state.amount) {
+      const fees = transferFundsFee.toFormat(DECIMAL_PLACES_IN_ADA);
+      const amount = formattedWalletAmount(sourceWallet.amount.minus(fees), false);
+      this.setState({ fees, amount });
+    }
+  }
 
   form = new ReactToolboxMobxForm(
     {
@@ -135,25 +157,18 @@ export default class TransferFundsStep2Dialog extends Component<Props> {
 
   render() {
     const { intl } = this.context;
+    const { total, fees, amount} = this.state;
     const {
       onClose,
       onBack,
-      addresses,
-      transferFundsFee,
+      // addresses,
       sourceWallet,
       targetWallet,
       isSubmitting,
       error,
     } = this.props;
 
-    const amount = formattedWalletAmount(sourceWallet.amount, false);
     const spendingPasswordField = this.form.$('spendingPassword');
-    let fees = null;
-    let total = null;
-    if (transferFundsFee) {
-      fees = transferFundsFee.toFormat(DECIMAL_PLACES_IN_ADA);
-      total = formattedWalletAmount(sourceWallet.amount.add(fees), false);
-    }
 
     const buttonClasses = classnames([
       'confirmButton',
@@ -189,12 +204,12 @@ export default class TransferFundsStep2Dialog extends Component<Props> {
         >
           {(...content) => <div className={styles.description}>{content}</div>}
         </FormattedMessage>
-        <p className={styles.label}>{intl.formatMessage(messages.labelTo)}</p>
+        {/* <p className={styles.label}>{intl.formatMessage(messages.labelTo)}</p>
         <ul className={styles.addresses}>
           {addresses.map(address => (
             <li key={address}>{address}</li>
           ))}
-        </ul>
+        </ul> */}
         <div className={styles.amountGroup}>
           <p className={styles.label}>
             {intl.formatMessage(messages.labelAmount)}

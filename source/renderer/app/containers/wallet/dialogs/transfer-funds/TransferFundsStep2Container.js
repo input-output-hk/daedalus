@@ -16,6 +16,11 @@ export default class TransferFundsStep2Container extends Component<Props> {
   onClose = () => {
     const { onClose } = this.props;
     const { transferFundsRequest } = this.props.stores.wallets;
+
+    if (transferFundsRequest.isExecuting) {
+      return;
+    }
+
     transferFundsRequest.reset();
     onClose();
   };

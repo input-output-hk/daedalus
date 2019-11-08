@@ -373,12 +373,12 @@ export const WHITE_THEME_OUTPUT = {
       '#f9f9f94d',
     '--theme-legacy-notification-learn-more-button-background-color-active':
       '#f9f9f966',
-    '--theme-legacy-notification-move-button-text-color': '#ab2712',
+    '--theme-legacy-notification-move-button-text-color': '#ab1700',
     '--theme-legacy-notification-move-button-background-color': '#fafbfc',
     '--theme-legacy-notification-move-button-background-color-hover':
-      '#f9f9f9e6',
+      'rgb(250, 251, 252, 0.9)',
     '--theme-legacy-notification-move-button-background-color-active':
-      '#f9f9f9cc',
+      'rgb(250, 251, 252, 0.8)',
     '--theme-legacy-notification-title-color': '#fafbfc',
     '--theme-legacy-notification-description-color': '#fafbfc',
     '--theme-notification-message-checkmark-icon-color': '#fafbfc',

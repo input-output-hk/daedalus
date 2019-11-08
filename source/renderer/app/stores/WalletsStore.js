@@ -424,6 +424,7 @@ export default class WalletsStore extends Store {
     this.refreshWalletsData();
     this._transferFundsClose();
     this.transferFundsRequest.reset();
+    this.goToWalletRoute(transferFundsSourceWalletId);
   };
 
   @action _transferFundsSetSourceWalletId = ({
@@ -434,7 +435,7 @@ export default class WalletsStore extends Store {
     this.transferFundsSourceWalletId = sourceWalletId;
     // Sets the target wallet to the first wallet
     const { allWallets } = this;
-    this.transferFundsTargetWalletId = allWallets[0].id;
+    this.transferFundsTargetWalletId = get(allWallets, [0, 'id'], '');
     // Sets to first step
     this.transferFundsStep = 1;
   };
