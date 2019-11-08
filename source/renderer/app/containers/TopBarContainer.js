@@ -21,12 +21,12 @@ export default class TopBarContainer extends Component<Props> {
   render() {
     const { actions, stores } = this.props;
     const { sidebar, app, networkStatus, wallets, newsFeed } = stores;
-    const { active, isWalletRoute, hasAnyWallets } = wallets;
+    const { active, isWalletRoute, allWallets, allLegacyWallets } = wallets;
     const {
       currentRoute,
       environment: { isMainnet, network },
     } = app;
-
+    const hasAnyWallets = allWallets.length > allLegacyWallets.length;
     const walletRoutesMatch = matchRoute(
       `${ROUTES.WALLETS.ROOT}/:id(*page)`,
       currentRoute
@@ -44,7 +44,7 @@ export default class TopBarContainer extends Component<Props> {
     const onWalletAdd = () => {
       actions.router.goToRoute.trigger({
         route: ROUTES.WALLETS.ADD,
-      })
+      });
     };
 
     const onTransferFunds = (sourceWalletId: string) =>

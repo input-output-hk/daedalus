@@ -42,7 +42,7 @@ export default class TopBar extends Component<Props> {
     const hasLegacyNotification =
       activeWallet &&
       activeWallet.isLegacy &&
-      activeWallet.amount > 0 &&
+      activeWallet.amount.gt(0) &&
       ((hasAnyWallets && onTransferFunds) || onWalletAdd);
 
     const onTransferFundsFn =
