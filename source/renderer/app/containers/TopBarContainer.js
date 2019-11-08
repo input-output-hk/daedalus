@@ -42,7 +42,6 @@ export default class TopBarContainer extends Component<Props> {
     ) : null;
 
     const onWalletAdd = () => {
-      console.debug('TRIGGER');
       actions.router.goToRoute.trigger({
         route: ROUTES.WALLETS.ADD,
       })
