@@ -30,7 +30,7 @@ const evaluateNetwork = network => {
 };
 
 const getBuildLabel = () => {
-  const networkLabel = !(isMainnet || isDev || isItnBalanceCheck)
+  const networkLabel = !(isMainnet || isDev || isIncentivizedTestnet)
     ? ` ${networkPrettyNames[NETWORK]}`
     : '';
   let buildLabel = `Daedalus${networkLabel} (${version}#${BUILD_NUMBER})`;
@@ -47,7 +47,7 @@ const isProduction = CURRENT_NODE_ENV === PRODUCTION;
 const isMainnet = NETWORK === MAINNET;
 const isStaging = NETWORK === STAGING;
 const isTestnet = NETWORK === TESTNET;
-const isItnBalanceCheck = NETWORK === ITN_BALANCE_CHECK;
+const isIncentivizedTestnet = NETWORK === ITN_BALANCE_CHECK;
 const isDevelopment = NETWORK === DEVELOPMENT;
 const isWatchMode = process.env.IS_WATCH_MODE;
 const API_VERSION = process.env.API_VERSION || 'dev';
@@ -82,7 +82,7 @@ export const environment: Environment = Object.assign(
     isMainnet,
     isStaging,
     isTestnet,
-    isItnBalanceCheck,
+    isIncentivizedTestnet,
     isDevelopment,
     isWatchMode,
     build: BUILD,
