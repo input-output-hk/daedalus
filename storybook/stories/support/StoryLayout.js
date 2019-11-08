@@ -184,6 +184,7 @@ export default class StoryLayout extends Component<Props> {
       showSubMenuToggle
       showSubMenus={this.isShowingSubMenus}
       leftIcon={this.isShowingSubMenus ? menuIconOpened : menuIconClosed}
+      onTransferFunds={action('onTransferFunds')}
     >
       <NodeSyncStatusIcon
         networkStatus={{

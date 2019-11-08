@@ -35,6 +35,12 @@ export default class TopBar extends Component<Props> {
       activeWallet ? styles.withWallet : styles.withoutWallet,
     ]);
 
+    const hasLegacyNotification =
+      activeWallet &&
+      activeWallet.isLegacy &&
+      activeWallet.amount > 0 &&
+      onTransferFunds;
+
     const topBarTitle = activeWallet ? (
       <span className={styles.walletInfo}>
         <span className={styles.walletName}>
@@ -69,7 +75,7 @@ export default class TopBar extends Component<Props> {
           )}
           {children}
         </div>
-        {activeWallet && activeWallet.isLegacy && onTransferFunds && (
+        {hasLegacyNotification && (
           <LegacyNotification
             onLearnMore={() => null}
             onTransferFunds={() => onTransferFunds(activeWallet.id)}
