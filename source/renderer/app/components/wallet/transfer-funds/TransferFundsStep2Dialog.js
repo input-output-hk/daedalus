@@ -1,5 +1,7 @@
 // @flow
 import React, { Component } from 'react';
+import { observer } from 'mobx-react';
+import classnames from 'classnames';
 import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
@@ -12,7 +14,10 @@ import { formattedWalletAmount } from '../../../utils/formatters';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 import { isValidSpendingPassword } from '../../../utils/validations';
 import globalMessages from '../../../i18n/global-messages';
+import LocalizableError from '../../../i18n/LocalizableError';
 import Wallet from '../../../domains/Wallet';
+import { submitOnEnter } from '../../../utils/form';
+import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 
 const messages = defineMessages({
   dialogTitle: {
@@ -63,18 +68,23 @@ const messages = defineMessages({
   },
 });
 
+messages.fieldIsRequired = globalMessages.fieldIsRequired;
+
 type Props = {
-  onContinue: Function,
+  onFinish: Function,
   onClose: Function,
   onBack: Function,
   addresses: Array<any>,
   sourceWallet: $Shape<Wallet>,
   targetWallet: $Shape<Wallet>,
-  fees: number,
+  transferFundsFee: number,
   spendingPasswordValue?: string,
   onDataChange: Function,
+  isSubmitting: boolean,
+  error: ?LocalizableError,
 };
 
+@observer
 export default class TransferFundsStep2Dialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -92,12 +102,14 @@ export default class TransferFundsStep2Dialog extends Component<Props> {
           value: '',
           validators: [
             ({ field }) => {
-              return [
-                isValidSpendingPassword(field.value),
-                this.context.intl.formatMessage(
-                  globalMessages.invalidSpendingPassword
-                ),
-              ];
+              if (field.value === '') {
+                console.debug('EMPTY');
+                return [
+                  false,
+                  this.context.intl.formatMessage(messages.fieldIsRequired),
+                ];
+              }
+              return [true];
             },
           ],
         },
@@ -112,10 +124,12 @@ export default class TransferFundsStep2Dialog extends Component<Props> {
   );
 
   submit = () => {
+    console.debug('SUBMIT');
     this.form.submit({
       onSuccess: form => {
         const { spendingPassword } = form.values();
-        this.props.onContinue(spendingPassword);
+        console.debug('SUBMIT: ', spendingPassword);
+        this.props.onFinish(spendingPassword);
       },
       onError: () => {},
     });
@@ -127,28 +141,44 @@ export default class TransferFundsStep2Dialog extends Component<Props> {
       onClose,
       onBack,
       addresses,
-      fees,
+      transferFundsFee,
       sourceWallet,
       targetWallet,
       onDataChange,
       spendingPasswordValue,
+      isSubmitting,
+      error,
     } = this.props;
 
     const amount = formattedWalletAmount(sourceWallet.amount, false);
-    const total = formattedWalletAmount(sourceWallet.amount.add(fees), false);
     const spendingPasswordField = this.form.$('spendingPassword');
+    let fees = null;
+    let total = null;
+    if (transferFundsFee) {
+      fees = transferFundsFee.toFormat(DECIMAL_PLACES_IN_ADA);
+      total = formattedWalletAmount(sourceWallet.amount.add(fees), false);
+    }
+
+    const buttonClasses = classnames([
+      'confirmButton',
+      isSubmitting ? styles.submitButtonSpinning : null,
+    ]);
+
+    const actions = [
+      {
+        label: intl.formatMessage(messages.buttonLabel),
+        onClick: this.submit,
+        primary: true,
+        className: buttonClasses,
+        disabled: isSubmitting || !spendingPasswordField.isValid,
+      },
+    ];
 
     return (
       <Dialog
-        className={styles.component}
+        className={styles.dialog}
         title={intl.formatMessage(messages.dialogTitle)}
-        actions={[
-          {
-            label: intl.formatMessage(messages.buttonLabel),
-            onClick: this.submit,
-            primary: true,
-          },
-        ]}
+        actions={actions}
         closeOnOverlayClick
         onClose={onClose}
         closeButton={<DialogCloseButton />}
@@ -190,13 +220,13 @@ export default class TransferFundsStep2Dialog extends Component<Props> {
         <Input
           type="password"
           className={styles.currentPassword}
-          label={spendingPasswordField.label}
           {...spendingPasswordField.bind()}
           error={spendingPasswordField.error}
-          value={spendingPasswordValue}
           skin={InputSkin}
-          onChange={value => onDataChange({ spendingPasswordValue: value })}
+          onKeyPress={this.handleSubmitOnEnter}
+          autoFocus
         />
+        {error ? <p className={styles.error}>{this.context.intl.formatMessage(error)}</p> : null}
       </Dialog>
     );
   }

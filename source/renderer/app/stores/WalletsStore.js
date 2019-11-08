@@ -122,6 +122,9 @@ export default class WalletsStore extends Store {
   @observable transferFundsCalculateFeeRequest: Request<any> = new Request(
     this.api.ada.transferFundsCalculateFee
   );
+  @observable transferFundsRequest: Request<any> = new Request(
+    this.api.ada.transferFunds
+  );
   @observable
   getWalletsLocalDataRequest: Request<WalletsLocalData> = new Request(
     this.api.localStorage.getWalletsLocalData
@@ -166,6 +169,7 @@ export default class WalletsStore extends Store {
   @observable transferFundsSourceWalletId: string = '';
   @observable transferFundsTargetWalletId: string = '';
   @observable transferFundsStep: number = 0;
+  @observable transferFundsFee: ?number = null;
 
   /* ----------  Other  ---------- */
   @observable
@@ -231,6 +235,7 @@ export default class WalletsStore extends Store {
     );
     walletsActions.transferFundsNextStep.listen(this._transferFundsNextStep);
     walletsActions.transferFundsPrevStep.listen(this._transferFundsPrevStep);
+    walletsActions.transferFunds.listen(this._transferFunds);
     walletsActions.transferFundsSetSourceWalletId.listen(
       this._transferFundsSetSourceWalletId
     );
@@ -386,6 +391,13 @@ export default class WalletsStore extends Store {
       transferFundsSourceWalletId,
       transferFundsTargetWalletId,
     } = this;
+
+
+    console.debug('_transferFundsNextStep: ', {
+      transferFundsSourceWalletId,
+      transferFundsTargetWalletId,
+    });
+
     let nextStep = 0;
     if (transferFundsStep === 0 && transferFundsSourceWalletId) {
       nextStep = 1;
@@ -402,11 +414,35 @@ export default class WalletsStore extends Store {
     }
     this.transferFundsStep = nextStep;
   };
+
   @action _transferFundsPrevStep = () => {
     const { transferFundsStep } = this;
     const prevStep = transferFundsStep > 0 ? transferFundsStep - 1 : 0;
     this.transferFundsStep = prevStep;
   };
+
+  @action _transferFunds = async (spendingPassword: string) => {
+    const {
+      transferFundsSourceWalletId,
+      transferFundsTargetWalletId,
+    } = this;
+    console.debug('>>> _transferFunds: ', {
+      transferFundsSourceWalletId,
+      transferFundsTargetWalletId,
+      spendingPassword,
+    });
+    const response = await this.transferFundsRequest.execute({
+      sourceWalletId: transferFundsSourceWalletId,
+      targetWalletId: transferFundsTargetWalletId,
+      passphrase: spendingPassword,
+    });
+
+    console.debug('STORE::_transferFunds - SUCCESS: ', response);
+    this.refreshWalletsData();
+    this._transferFundsClose()
+    this.transferFundsRequest.reset();
+  };
+
   @action _transferFundsSetSourceWalletId = ({
     sourceWalletId,
   }: {
@@ -418,6 +454,7 @@ export default class WalletsStore extends Store {
     // Sets to first step
     this.transferFundsStep = 1;
   };
+
   @action _transferFundsSetTargetWalletId = ({
     targetWalletId,
   }: {
@@ -425,13 +462,17 @@ export default class WalletsStore extends Store {
   }) => {
     this.transferFundsTargetWalletId = targetWalletId;
   };
+
   @action _transferFundsRedeem = () => {
     this.transferFundsStep = 0;
     // TODO: Call API method
   };
+
   @action _transferFundsClose = () => {
     this.transferFundsStep = 0;
+    this.transferFundsFee = null;
   };
+
   @action _transferFundsCalculateFee = async ({
     sourceWalletId,
   }: {
@@ -440,7 +481,9 @@ export default class WalletsStore extends Store {
     const fee = await this.transferFundsCalculateFeeRequest.execute({
       sourceWalletId,
     }).promise;
-    return fee;
+    runInAction('set migration fee', () => {
+      this.transferFundsFee = fee;
+    });
   };
 
   // =================== PUBLIC API ==================== //

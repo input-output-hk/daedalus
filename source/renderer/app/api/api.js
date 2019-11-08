@@ -963,7 +963,7 @@ export default class AdaApi {
         }
       );
       Logger.debug('AdaApi::transferFundsCalculateFee success', { response });
-      return response;
+      return _createMigrationFeeFromServerData(response)
     } catch (error) {
       Logger.error('AdaApi::transferFundsCalculateFee error', { error });
       throw new GenericApiError();
@@ -977,16 +977,23 @@ export default class AdaApi {
     Logger.debug('AdaApi::transferFunds called', {
       parameters: { sourceWalletId, targetWalletId, passphrase },
     });
+
+    console.debug('REQUEST: ', request);
     try {
       const response: TransferFundsResponse = await transferFunds(this.config, {
         sourceWalletId,
         targetWalletId,
         passphrase,
       });
+      console.debug('API RESPONSE: ', response);
       Logger.debug('AdaApi::transferFunds success', { response });
       return response;
     } catch (error) {
+      console.debug('API ERROR: ', error);
       Logger.error('AdaApi::transferFunds error', { error });
+      if (error.code === 'wrong_encryption_passphrase') {
+        throw new IncorrectSpendingPasswordError();
+      }
       throw new GenericApiError();
     }
   };
@@ -1260,6 +1267,14 @@ const _createTransactionFeeFromServerData = action(
   'AdaApi::_createTransactionFeeFromServerData',
   (data: TransactionFee) => {
     const amount = get(data, ['amount', 'quantity'], 0);
+    return new BigNumber(amount).dividedBy(LOVELACES_PER_ADA);
+  }
+);
+
+const _createMigrationFeeFromServerData = action(
+  'AdaApi::_createTransactionFeeFromServerData',
+  (data: TransactionFee) => {
+    const amount = get(data, ['migration_cost', 'quantity'], 0);
     return new BigNumber(amount).dividedBy(LOVELACES_PER_ADA);
   }
 );

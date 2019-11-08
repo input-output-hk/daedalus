@@ -10,17 +10,30 @@ const DefaultProps = InjectedDialogContainerStepDefaultProps;
 
 @inject('stores', 'actions')
 @observer
-export default class TransferFundsStep1Container extends Component<Props> {
+export default class TransferFundsStep2Container extends Component<Props> {
   static defaultProps = DefaultProps;
 
+  onClose = () => {
+    const { transferFundsRequest } = this.props.stores.wallets;
+    transferFundsRequest.reset();
+    this.props.onClose();
+  };
+
   render() {
-    const { stores, actions, onClose, onContinue, onBack } = this.props;
+    const { stores, actions, onClose, onBack, onFinish } = this.props;
     const {
       transferFundsSourceWalletId,
       transferFundsTargetWalletId,
       allLegacyWallets,
       allWallets,
+      transferFundsFee,
+      transferFundsRequest,
     } = stores.wallets;
+
+    console.debug('CHECKS: ', {
+      isExecuting: transferFundsRequest.isExecuting,
+      error: transferFundsRequest.error,
+    })
 
     const { updateDataForActiveDialog } = actions.dialogs;
     const { dataForActiveDialog } = stores.uiDialogs;
@@ -35,10 +48,12 @@ export default class TransferFundsStep1Container extends Component<Props> {
     return (
       <TransferFundsStep2Dialog
         addresses={[]}
-        fees={12.042481}
+        transferFundsFee={transferFundsFee}
         onBack={onBack}
-        onClose={onClose}
-        onContinue={onContinue}
+        onClose={this.onClose}
+        onFinish={onFinish}
+        isSubmitting={transferFundsRequest.isExecuting}
+        error={transferFundsRequest.error}
         onDataChange={data => {
           updateDataForActiveDialog.trigger({ data });
         }}

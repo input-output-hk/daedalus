@@ -9,11 +9,10 @@ export const transferFunds = (
 ): Promise<TransferFundsResponse> =>
   request(
     {
-      method: 'GET',
-      path: `/byron-wallets/${sourceWalletId}/migrations/${targetWalletId}`,
+      method: 'POST',
+      path: `/v2/byron-wallets/${sourceWalletId}/migrations/${targetWalletId}`,
       ...config,
     },
-    {
-      passphrase,
-    }
+    {},
+    { passphrase }
   );

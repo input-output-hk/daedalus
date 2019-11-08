@@ -20,6 +20,7 @@ export default class PaperWalletCreateCertificatePage extends Component<Props> {
       transferFundsNextStep,
       transferFundsPrevStep,
       transferFundsClose,
+      transferFunds,
     } = walletsActions;
     const { transferFundsStep } = walletsStore;
     if (!transferFundsStep) return null;
@@ -34,6 +35,7 @@ export default class PaperWalletCreateCertificatePage extends Component<Props> {
         onContinue={() => transferFundsNextStep.trigger()}
         onBack={() => transferFundsPrevStep.trigger()}
         onClose={() => transferFundsClose.trigger()}
+        onFinish={(spendingPassword) => transferFunds.trigger(spendingPassword)}
       />
     );
   }
