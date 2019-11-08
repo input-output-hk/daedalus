@@ -5,9 +5,13 @@ Changelog
 
 ### Features
 
-- Implemented cancel pending transaction V2 API endpoint and UI ([PR 1633](https://github.com/input-output-hk/daedalus/pull/1633))
-- Implemented restoration of both 12 and 15 mnemonic words phrases in Wallet Restore dialog ([PR 1629](https://github.com/input-output-hk/daedalus/pull/1629))
-- Replaced sidebar "Bug-report" icon with a "Network" badge ([PR 1622](https://github.com/input-output-hk/daedalus/pull/1622))
+- Implemented cancel pending transaction V2 API endpoint and UI for legacy wallets ([PR 1651](https://github.com/input-output-hk/daedalus/pull/1651))
+- Implemented "Transfer funds" wizard for Incentivized Testnet version of Daedalus ([PR 1634](https://github.com/input-output-hk/daedalus/pull/1634), [PR 1659](https://github.com/input-output-hk/daedalus/pull/1659))
+- Implemented "Network info" overlay ([PR 1655](https://github.com/input-output-hk/daedalus/pull/1655))
+- Disable "Manual update" notification for Incentivized Testnet version of Daedalus ([PR 1652](https://github.com/input-output-hk/daedalus/pull/1652))
+- Update rewards screen for incentivized testnet ([PR 1643](https://github.com/input-output-hk/daedalus/pull/1643))
+- Implement restoration of both 12 and 15 mnemonic words phrases in Wallet Restore dialog ([PR 1629](https://github.com/input-output-hk/daedalus/pull/1629))
+- Replace sidebar "Bug-report" icon with a "Network" badge ([PR 1622](https://github.com/input-output-hk/daedalus/pull/1622))
 - Implemented "Spending password" as required parameter for Cardano V2 API ([PR 1631](https://github.com/input-output-hk/daedalus/pull/1631))
 - Implemented "Incentivized Testnet" theme for Incentivized Testnet version of Daedalus ([PR 1620](https://github.com/input-output-hk/daedalus/pull/1620))
 - Removed "Decentralization countdown", "Decentralization info", and "Staking epochs" screens for Incentivized Testnet Daedalus version ([PR 1625](https://github.com/input-output-hk/daedalus/pull/1625))

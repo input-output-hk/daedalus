@@ -12,7 +12,7 @@ export type WalletImportFromFileParams = {
 // ======= WALLET ACTIONS =======
 
 export default class WalletsActions {
-  // Create Wallet
+  /* ----------  Create Wallet  ---------- */
   createWallet: Action<{
     name: string,
     spendingPassword: string,
@@ -21,7 +21,7 @@ export default class WalletsActions {
   createWalletChangeStep: Action<any> = new Action();
   createWalletClose: Action<any> = new Action();
   createWalletAbort: Action<any> = new Action();
-  // ---
+
   restoreWallet: Action<{
     recoveryPhrase: string,
     walletName: string,
@@ -52,4 +52,18 @@ export default class WalletsActions {
   getWallet: Action<{ walletId: string }> = new Action();
   updateWalletLocalData: Action<any> = new Action();
   updateRecoveryPhraseVerificationDate: Action<any> = new Action();
+
+  /* ----------  Transfer Funds  ---------- */
+  transferFundsNextStep: Action<any> = new Action();
+  transferFundsPrevStep: Action<any> = new Action();
+  transferFundsSetSourceWalletId: Action<{
+    sourceWalletId: string,
+  }> = new Action();
+  transferFundsSetTargetWalletId: Action<{
+    targetWalletId: string,
+  }> = new Action();
+  transferFundsRedeem: Action<any> = new Action();
+  transferFundsClose: Action<any> = new Action();
+  transferFundsCalculateFee: Action<{ sourceWalletId: string }> = new Action();
+  transferFunds: Action<{ spendingPassword: string }> = new Action();
 }

@@ -390,7 +390,7 @@ export const DARK_BLUE_THEME_OUTPUT = {
       'rgba(250, 251, 252, 0.3)',
     '--theme-legacy-notification-learn-more-button-background-color-active':
       'rgba(250, 251, 252, 0.4)',
-    '--theme-legacy-notification-move-button-text-color': '#ab2712',
+    '--theme-legacy-notification-move-button-text-color': '#ab1700',
     '--theme-legacy-notification-move-button-background-color': '#fafbfc',
     '--theme-legacy-notification-move-button-background-color-hover':
       'rgba(250, 251, 252, 0.9)',
@@ -622,6 +622,24 @@ export const DARK_BLUE_THEME_OUTPUT = {
       'rgba(255, 255, 255, 0.3)',
     '--theme-sidebar-category-networkInfo-background-color': '#eb2256',
     '--theme-sidebar-category-networkInfo-text-color': '#121326',
+  },
+  splash: {
+    '--theme-splash-network-background-color': 'rgba(38, 51, 69, 0.96)',
+    '--theme-splash-network-background-color1': 'rgba(18, 19, 38, 1)',
+    '--theme-splash-network-background-color2': 'rgba(18, 19, 38, 0.91)',
+    '--theme-splash-network-background-color3': 'rgba(18, 19, 38, 0.31)',
+    '--theme-splash-network-background-color4': 'rgba(18, 19, 38, 0)',
+    '--theme-splash-network-background-color5': 'rgba(0, 0, 0, 0)',
+    '--theme-splash-network-background-color6': 'rgba(18, 19, 38, 0.31)',
+    '--theme-splash-network-background-color7': 'rgba(18, 19, 38, 0.91)',
+    '--theme-splash-network-background-color8': 'rgba(18, 19, 38, 1)',
+    '--theme-splash-network-logo-fill-color': '#e9f4fe',
+    '--theme-splash-network-title-color': '#e9f4fe',
+    '--theme-splash-network-subTitle1-color': 'rgba(233, 244, 254, 0.5)',
+    '--theme-splash-network-subTitle2-color': 'rgba(233, 244, 254, 0.5)',
+    '--theme-splash-network-description-background-color': 'rgba(0, 0, 0, 0.1)',
+    '--theme-splash-network-description-color': 'rgba(233, 244, 254, 0.7)',
+    '--theme-splash-network-learn-more-color': '#e9f4fe',
   },
   stakePools: {
     '--theme-staking-stake-pool-background-color': '#263345',

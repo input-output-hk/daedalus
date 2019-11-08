@@ -367,12 +367,12 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
       '#1213264d',
     '--theme-legacy-notification-learn-more-button-background-color-active':
       '#12132666',
-    '--theme-legacy-notification-move-button-text-color': '#ab2712',
-    '--theme-legacy-notification-move-button-background-color': '#ffffff',
+    '--theme-legacy-notification-move-button-text-color': '#ab1700',
+    '--theme-legacy-notification-move-button-background-color': '#fafbfc',
     '--theme-legacy-notification-move-button-background-color-hover':
       'rgba(250, 251, 252, 0.9)',
     '--theme-legacy-notification-move-button-background-color-active':
-      '#121326cc',
+      'rgb(250, 251, 252, 0.8)',
     '--theme-legacy-notification-title-color': '#ffffff',
     '--theme-legacy-notification-description-color': '#ffffff',
     '--theme-notification-message-checkmark-icon-color': '#fafbfc',
@@ -600,6 +600,25 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
       'rgba(255, 255, 255, 0.3)',
     '--theme-sidebar-wallets-scrollbar-background-color-hover':
       'rgba(255, 255, 255, 0.3)',
+  },
+  splash: {
+    '--theme-splash-network-background-color': '#121326',
+    '--theme-splash-network-background-color1': 'rgba(18, 19, 38, 1)',
+    '--theme-splash-network-background-color2': 'rgba(18, 19, 38, 0.91)',
+    '--theme-splash-network-background-color3': 'rgba(18, 19, 38, 0.31)',
+    '--theme-splash-network-background-color4': 'rgba(18, 19, 38, 0)',
+    '--theme-splash-network-background-color5': 'rgba(0, 0, 0, 0)',
+    '--theme-splash-network-background-color6': 'rgba(18, 19, 38, 0.31)',
+    '--theme-splash-network-background-color7': 'rgba(18, 19, 38, 0.91)',
+    '--theme-splash-network-background-color8': 'rgba(18, 19, 38, 1)',
+    '--theme-splash-network-logo-fill-color': '#fff',
+    '--theme-splash-network-title-color': '#fafbfc',
+    '--theme-splash-network-subTitle1-color': '#eb2256',
+    '--theme-splash-network-subTitle2-color': '#eb2256',
+    '--theme-splash-network-description-background-color':
+      'rgba(255, 255, 255, 0.1)',
+    '--theme-splash-network-description-color': 'rgba(255, 255, 255, 0.7)',
+    '--theme-splash-network-learn-more-color': '#fafbfc',
   },
   stakePools: {
     '--theme-staking-stake-pools-title-color': '#ffffff',

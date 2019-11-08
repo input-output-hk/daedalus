@@ -5,6 +5,7 @@ import Sidebar from '../components/sidebar/Sidebar';
 import TopBarContainer from './TopBarContainer';
 import SidebarLayout from '../components/layout/SidebarLayout';
 import PaperWalletCreateCertificatePage from './wallet/PaperWalletCreateCertificatePage';
+import TransferFundsPage from './wallet/TransferFundsPage';
 import type { InjectedContainerProps } from '../types/injectedPropsType';
 import { ROUTES } from '../routes-config';
 
@@ -60,6 +61,7 @@ export default class MainLayout extends Component<InjectedContainerProps> {
         onSubmitSupportRequest={() =>
           actions.router.goToRoute.trigger({ route: ROUTES.SETTINGS.SUPPORT })
         }
+        onOpenSplashNetwork={() => actions.networkStatus.toggleSplash.trigger()}
         pathname={this.props.stores.router.location.pathname}
         currentTheme={currentTheme}
         network={network}
@@ -76,6 +78,7 @@ export default class MainLayout extends Component<InjectedContainerProps> {
             key="PaperWalletCreateCertificatePage"
             certificateStep={this.props.stores.wallets.certificateStep}
           />,
+          <TransferFundsPage key="TransferFundsPage" />,
         ]}
       >
         {this.props.children}

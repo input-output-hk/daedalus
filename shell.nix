@@ -81,8 +81,7 @@ let
 
       ${localLib.optionalString pkgs.stdenv.isLinux "export XDG_DATA_HOME=$HOME/.local/share"}
 
-      # TODO: Revert to dynamic by adding selfnode
-      cp -f ${daedalusPkgs.iconPath.testnet.small} $DAEDALUS_INSTALL_DIRECTORY/icon.png
+      cp -f ${daedalusPkgs.iconPath.${cluster}.small} $DAEDALUS_INSTALL_DIRECTORY/icon.png
 
       # These links will only occur to binaries that exist for the
       # specific build config

@@ -10,6 +10,7 @@ import './DeleteWalletConfirmationDialog.stories';
 import './WalletTransactionsList.stories';
 import './ExportWalletToFileDialog.stories';
 import './PaperWallets.stories';
+import './WalletTransferFunds.stories.js';
 
 // Staking
 import './Staking.stories';
@@ -19,6 +20,9 @@ import './Settings.stories';
 
 // Loading
 import './Loading.stories';
+
+// Splash
+import './Splash.stories';
 
 // Diagnostics
 import './Diagnostics.stories';
