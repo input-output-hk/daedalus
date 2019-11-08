@@ -4,6 +4,7 @@ import { observer, inject } from 'mobx-react';
 import TopBar from '../components/layout/TopBar';
 import NodeSyncStatusIcon from '../components/widgets/NodeSyncStatusIcon';
 import NewsFeedIcon from '../components/widgets/NewsFeedIcon';
+import WalletCreateDialog from '../components/wallet/WalletCreateDialog';
 import WalletTestEnvironmentLabel from '../components/widgets/WalletTestEnvironmentLabel';
 import type { InjectedProps } from '../types/injectedPropsType';
 import menuIconOpened from '../assets/images/menu-opened-ic.inline.svg';
@@ -41,6 +42,10 @@ export default class TopBarContainer extends Component<Props> {
       <WalletTestEnvironmentLabel network={network} />
     ) : null;
 
+    const onWalletAdd = actions.router.goToRoute.trigger({
+      route: ROUTES.WALLETS.ADD,
+    });
+
     const onTransferFunds = (sourceWalletId: string) =>
       actions.wallets.transferFundsSetSourceWalletId.trigger({
         sourceWalletId,
@@ -55,6 +60,8 @@ export default class TopBarContainer extends Component<Props> {
         onLeftIconClick={actions.sidebar.toggleSubMenus.trigger}
         activeWallet={activeWallet}
         onTransferFunds={onTransferFunds}
+        hasAnyWallets={hasAnyWallets}
+        onWalletAdd={onWalletAdd}
       >
         {testnetLabel}
         <NodeSyncStatusIcon networkStatus={networkStatus} />
