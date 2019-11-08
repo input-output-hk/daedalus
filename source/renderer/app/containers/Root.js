@@ -33,7 +33,11 @@ export default class Root extends Component<Props> {
     // for all the screens except of the "Network status" screen.
     const isNodeInStoppingSequence = isNodeStopping || isNodeStopped;
 
-    if (!app.isSetupPage && networkStatus.isSplashShown) {
+    if (
+      !app.isSetupPage &&
+      !app.environment.isTest &&
+      networkStatus.isSplashShown
+    ) {
       return <SplashNetworkPage />;
     }
 
