@@ -35,6 +35,8 @@ export default class NodeUpdateStore extends Store {
   );
   /* eslint-disable max-len */
 
+  nextUpdateInterval: ?IntervalID = null;
+
   setup() {
     const actions = this.actions.nodeUpdate;
     actions.acceptNodeUpdate.listen(this._acceptNodeUpdate);
@@ -42,14 +44,25 @@ export default class NodeUpdateStore extends Store {
     actions.getLatestAvailableAppVersion.listen(
       this._getLatestAvailableAppVersion
     );
-    setInterval(this.refreshNextUpdate, NODE_UPDATE_POLL_INTERVAL);
+    this.nextUpdateInterval = setInterval(
+      this.refreshNextUpdate,
+      NODE_UPDATE_POLL_INTERVAL
+    );
   }
 
   refreshNextUpdate = async () => {
+    // isIncentivizedTestnet flag not set in NodeUpdate setup(), check here and reset nextUpdate check poller
+    if (this.stores.networkStatus.isIncentivizedTestnet) {
+      // Reset nextUpdateInterval when is available
+      if (this.nextUpdateInterval) {
+        clearInterval(this.nextUpdateInterval);
+      }
+      return;
+    }
+
     if (this.stores.networkStatus.isSynced) {
       await this.nextUpdateRequest.execute();
       const { result } = this.nextUpdateRequest;
-      console.debug('>>> RESULT: ', result);
       // If nextUpdate is available, fetch additional Daedalus info
       if (result) {
         await this._getLatestAvailableAppVersion();
@@ -97,12 +110,13 @@ export default class NodeUpdateStore extends Store {
     this._activateAutomaticUpdate(nextUpdateVersion);
   };
 
-  @action _setManualUpdate = async (
-    isNewAppVersionAvailable,
-  ) => {
-    console.debug('CALL: ', isNewAppVersionAvailable);
+  @action _setManualUpdate = async () => {
+    clearInterval(this.stores.networkStatus._networkStatusPollingInterval);
+    this.stores.networkStatus._updateNetworkStatus = param => {}; // eslint-disable-line
+    this.stores.networkStatus._setDisconnected(true);
+    this.stores.networkStatus.teardown();
     this.isNewAppVersionAvailable = true;
-    this.availableAppVersion = "1.1.1";
+    this.availableAppVersion = '0.16.0';
     this.applicationVersion = 10;
   };
 
@@ -125,7 +139,6 @@ export default class NodeUpdateStore extends Store {
   };
 
   @action _getLatestAvailableAppVersion = async () => {
-    console.debug('>> _getLatestAvailableAppVersion')
     const {
       latestAppVersion,
       applicationVersion,
@@ -137,7 +150,6 @@ export default class NodeUpdateStore extends Store {
     latestAppVersion: ?string,
     applicationVersion: ?number
   ) => {
-    console.debug('>>>> setLatestAvailableAppVersion');
     let isNewAppVersionAvailable = false;
 
     if (latestAppVersion) {

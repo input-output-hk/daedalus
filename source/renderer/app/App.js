@@ -33,10 +33,7 @@ export default class App extends Component<{
   render() {
     const { stores, actions, history } = this.props;
     const { app, nodeUpdate, networkStatus } = stores;
-    const {
-      showNextUpdate,
-      showManualUpdate,
-    } = nodeUpdate;
+    const { showNextUpdate, showManualUpdate } = nodeUpdate;
     const { isActiveDialog, isSetupPage } = app;
     const { isNodeStopping, isNodeStopped } = networkStatus;
     const locale = stores.profile.currentLocale;

@@ -15,7 +15,6 @@ export default class LoadingPage extends Component<InjectedProps> {
 
   get activeOverlay() {
     const { showManualUpdate } = this.props.stores.nodeUpdate;
-    console.debug('showManualUpdate: ', showManualUpdate);
     if (this.isNotEnoughDiskSpace) return <NoDiskSpaceErrorPage />;
     if (showManualUpdate) return <ManualUpdatePage />;
     if (this.isSystemTimeError) return <SystemTimeErrorPage />;
@@ -40,7 +39,6 @@ export default class LoadingPage extends Component<InjectedProps> {
   }
 
   render() {
-    console.debug('RENDER');
     return (
       <CenteredLayout>
         {this.activeOverlay}
