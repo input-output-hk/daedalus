@@ -608,6 +608,7 @@
   "wallet.transaction.pending.cancelPendingTxnNote": "!!!This transaction has been pending for too long. We recommend you cancel it.",
   "wallet.transaction.pending.cancelTransactionButton": "!!!Cancel pending transaction",
   "wallet.transaction.pending.supportArticleLink": "!!!Read why",
+  "wallet.transaction.pending.supportArticleUrl": "!!!https://iohk.zendesk.com/hc/en-us/articles/360038113814",
   "wallet.transaction.received": "!!!{currency} received",
   "wallet.transaction.sent": "!!!{currency} sent",
   "wallet.transaction.state.confirmed": "!!!Transaction confirmed",

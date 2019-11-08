@@ -608,6 +608,7 @@
   "wallet.transaction.pending.cancelPendingTxnNote": "このトランザクションは長時間保留されています。このトランザクションに使用されている資金を解放するために、トランザクションのキャンセルを試みることができます。",
   "wallet.transaction.pending.cancelTransactionButton": "保留中のトランザクションをキャンセル",
   "wallet.transaction.pending.supportArticleLink": "このトランザクションをキャンセルする理由",
+  "wallet.transaction.pending.supportArticleUrl": "https://iohk.zendesk.com/hc/ja/articles/360038113814",
   "wallet.transaction.received": "{currency}受取済み",
   "wallet.transaction.sent": "{currency}送金済み",
   "wallet.transaction.state.confirmed": "トランザクション承認済み",
