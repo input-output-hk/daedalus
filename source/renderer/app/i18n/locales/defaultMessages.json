@@ -6793,17 +6793,31 @@
         }
       },
       {
-        "defaultMessage": "!!!This transaction was submitted to the Cardano network. However, this transaction may still be processed successfully, and if that happens, it will appear in the list of transactions in this wallet.",
+        "defaultMessage": "!!!This transaction was submitted to the Cardano network some time ago, but hasn’t been finalized yet. You can try to cancel the transaction now to release the pending funds, but there is a chance that the transaction will be finalized regardless. In this case, the transaction will reappear in your wallet as a completed transaction.",
         "description": "Content for the pending transaction cancellation confirmation dialog.",
         "end": {
           "column": 3,
           "line": 22
         },
         "file": "source/renderer/app/components/wallet/transactions/CancelTransactionConfirmationDialog.js",
-        "id": "cancel.transaction.confirmation.dialog.content",
+        "id": "cancel.transaction.confirmation.dialog.content1",
         "start": {
-          "column": 11,
+          "column": 12,
           "line": 16
+        }
+      },
+      {
+        "defaultMessage": "!!!To ensure that this transfer of funds is processed as soon as possible, we recommend that you cancel this transaction and submit a new one to the network.",
+        "description": "Content for the pending transaction cancellation confirmation dialog.",
+        "end": {
+          "column": 3,
+          "line": 29
+        },
+        "file": "source/renderer/app/components/wallet/transactions/CancelTransactionConfirmationDialog.js",
+        "id": "cancel.transaction.confirmation.dialog.content2",
+        "start": {
+          "column": 12,
+          "line": 23
         }
       },
       {
@@ -6811,13 +6825,13 @@
         "description": "\"Cancel\" button label for the pending transaction cancellation confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 35
         },
         "file": "source/renderer/app/components/wallet/transactions/CancelTransactionConfirmationDialog.js",
         "id": "cancel.transaction.confirmation.dialog.button.backLabel",
         "start": {
           "column": 21,
-          "line": 23
+          "line": 30
         }
       },
       {
@@ -6825,13 +6839,13 @@
         "description": "\"Confirm\" button label for the pending transaction cancellation confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 34
+          "line": 41
         },
         "file": "source/renderer/app/components/wallet/transactions/CancelTransactionConfirmationDialog.js",
         "id": "cancel.transaction.confirmation.dialog.button.confirmLabel",
         "start": {
           "column": 22,
-          "line": 29
+          "line": 36
         }
       }
     ],
