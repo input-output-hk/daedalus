@@ -47,6 +47,7 @@ type Props = {
   isNewAppVersionLoaded: boolean,
   disableDownloadLogs: boolean,
   showNewsFeedIcon: boolean,
+  isIncentivizedTestnet: boolean,
   onIssueClick: Function,
   onDownloadLogs: Function,
   onGetAvailableVersions: Function,
@@ -172,6 +173,7 @@ export default class SyncingConnecting extends Component<Props, State> {
       cardanoNodeState,
       isNewAppVersionLoaded,
       isNewAppVersionAvailable,
+      isIncentivizedTestnet,
       forceConnectivityIssue,
       forceSyncIssue,
     } = this.props;
@@ -184,6 +186,11 @@ export default class SyncingConnecting extends Component<Props, State> {
     const canReportSyncingIssue =
       forceSyncIssue ||
       (isConnected && !isSynced && syncingTime >= REPORT_ISSUE_TIME_TRIGGER);
+
+    if (isIncentivizedTestnet) {
+      return canReportConnectingIssue || canReportSyncingIssue;
+    }
+
     return (
       isNewAppVersionLoaded &&
       !isNewAppVersionAvailable &&

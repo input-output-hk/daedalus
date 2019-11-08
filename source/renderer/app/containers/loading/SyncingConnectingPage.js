@@ -29,6 +29,7 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
       isNodeStopped,
       isNotEnoughDiskSpace,
       isTlsCertInvalid,
+      isIncentivizedTestnet,
     } = stores.networkStatus;
     const {
       isNewAppVersionAvailable,
@@ -64,6 +65,7 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
         isNewAppVersionAvailable={isNewAppVersionAvailable}
         isNewAppVersionLoading={isNewAppVersionLoading}
         isNewAppVersionLoaded={isNewAppVersionLoaded}
+        isIncentivizedTestnet={isIncentivizedTestnet}
         onIssueClick={this.handleIssueClick}
         onGetAvailableVersions={this.handleGetAvailableVersions}
         onStatusIconClick={this.openDaedalusDiagnosticsDialog}
