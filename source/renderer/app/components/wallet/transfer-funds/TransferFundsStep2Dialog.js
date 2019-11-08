@@ -76,9 +76,9 @@ type Props = {
   addresses: Array<any>,
   sourceWallet: $Shape<Wallet>,
   targetWallet: $Shape<Wallet>,
-  transferFundsFee: number,
-  isSubmitting: boolean,
-  error: ?LocalizableError,
+  transferFundsFee: ?number,
+  isSubmitting?: boolean,
+  error?: ?LocalizableError,
 };
 
 @observer
@@ -130,7 +130,8 @@ export default class TransferFundsStep2Dialog extends Component<Props> {
   };
 
   handleSubmitOnEnter = (event: {}) =>
-    this.form.$('spendingPassword').isValid && submitOnEnter(this.submit, event);
+    this.form.$('spendingPassword').isValid &&
+    submitOnEnter(this.submit, event);
 
   render() {
     const { intl } = this.context;
@@ -221,7 +222,11 @@ export default class TransferFundsStep2Dialog extends Component<Props> {
           onKeyPress={this.handleSubmitOnEnter}
           autoFocus
         />
-        {error ? <p className={styles.error}>{this.context.intl.formatMessage(error)}</p> : null}
+        {error ? (
+          <p className={styles.error}>
+            {this.context.intl.formatMessage(error)}
+          </p>
+        ) : null}
       </Dialog>
     );
   }
