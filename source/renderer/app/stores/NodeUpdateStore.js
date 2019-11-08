@@ -51,7 +51,8 @@ export default class NodeUpdateStore extends Store {
   }
 
   refreshNextUpdate = async () => {
-    // isIncentivizedTestnet flag not set in NodeUpdate setup(), check here and reset nextUpdate check poller
+    // Since isIncentivizedTestnet flag is not set during NodeUpdate setup()
+    // we need to check for it here and reset nextUpdate check poller
     if (this.stores.networkStatus.isIncentivizedTestnet) {
       // Reset nextUpdateInterval when is available
       if (this.nextUpdateInterval) {
@@ -79,7 +80,8 @@ export default class NodeUpdateStore extends Store {
       !this.isUpdateInstalled
     ) {
       this.isUpdateAvailable = true;
-      // If next update version matches applicationVersion (fetched from latestAppVersion json) then set next update version to latest availableAppVersion
+      // If next update version matches applicationVersion (fetched from latestAppVersion json)
+      // then set next update version to latest availableAppVersion
       this.nextUpdateVersion =
         nextUpdateVersion === this.applicationVersion
           ? this.availableAppVersion
@@ -94,30 +96,6 @@ export default class NodeUpdateStore extends Store {
         isUpdateAvailable: this.isUpdateAvailable,
       });
     }
-  };
-
-  /** Automatic update overlay faker
-    - example with "newer version" label: _setNextUpdateVersion(11, 10, '0.16.0')
-    - example with "v 0.16.0" label: _setNextUpdateVersion(10, 10, '0.16.0')
-    */
-  @action _setNextUpdateVersion = async (
-    nextUpdateVersion,
-    applicationVersion,
-    availableAppVersion
-  ) => {
-    this.applicationVersion = applicationVersion;
-    this.availableAppVersion = availableAppVersion;
-    this._activateAutomaticUpdate(nextUpdateVersion);
-  };
-
-  @action _setManualUpdate = async () => {
-    clearInterval(this.stores.networkStatus._networkStatusPollingInterval);
-    this.stores.networkStatus._updateNetworkStatus = param => {}; // eslint-disable-line
-    this.stores.networkStatus._setDisconnected(true);
-    this.stores.networkStatus.teardown();
-    this.isNewAppVersionAvailable = true;
-    this.availableAppVersion = '0.16.0';
-    this.applicationVersion = 10;
   };
 
   @action _postponeNodeUpdate = async () => {
