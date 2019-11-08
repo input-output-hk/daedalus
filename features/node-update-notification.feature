@@ -1,4 +1,5 @@
-@e2e
+@e2e @skip
+# @API TODO - we don't have API endpoint for app update check
 Feature: Node Update Notification
 
   Background:
