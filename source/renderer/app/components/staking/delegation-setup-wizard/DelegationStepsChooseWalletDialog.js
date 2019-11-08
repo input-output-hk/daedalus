@@ -122,7 +122,7 @@ export default class DelegationStepsChooseWalletDialog extends Component<
           wallet && wallet.id === selectedWalletId
       ) || {};
     const { amount } = selectedWallet;
-    const isAcceptableSetupWallet = isWalletAcceptable(amount);
+    const isAcceptableSetupWallet = amount && isWalletAcceptable(amount);
     const actions = [
       {
         className: 'continueButton',

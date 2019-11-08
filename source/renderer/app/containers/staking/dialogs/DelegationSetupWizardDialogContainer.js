@@ -126,25 +126,25 @@ export default class DelegationSetupWizardDialogContainer extends Component<
   };
 
   handleIsWalletAcceptable = (walletAmount: BigNumber) =>
-    parseFloat(walletAmount) >= MIN_DELEGATION_FUNDS;
+    walletAmount.gte(MIN_DELEGATION_FUNDS);
 
   render() {
     const { activeStep, selectedWalletId, selectedPoolId } = this.state;
     const { app, staking, wallets, profile } = this.props.stores;
     const { currentTheme } = profile;
     const { stakePools, delegatingStakePools } = staking;
-    const isDisabled = wallets.all.reduce(
+    const isDisabled = wallets.allWallets.reduce(
       (disabled: boolean, { amount }: Wallet) => {
         if (!disabled) return false;
         return this.handleIsWalletAcceptable(amount);
       },
-      true
+      false
     );
     const selectedPool = find(stakePools, pool => pool.id === selectedPoolId);
 
     return (
       <DelegationSetupWizardDialog
-        wallets={wallets.all}
+        wallets={wallets.allWallets}
         stepsList={this.STEPS_LIST}
         activeStep={activeStep}
         minDelegationFunds={MIN_DELEGATION_FUNDS}
