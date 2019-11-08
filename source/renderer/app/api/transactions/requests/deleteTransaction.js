@@ -9,6 +9,6 @@ export const deleteTransaction = (
 ): Promise<*> =>
   request({
     method: 'DELETE',
-    path: `/v2/wallets/${walletId}/transactions/${transactionId}`,
+    path: `/v2/byron-wallets/${walletId}/transactions/${transactionId}`,
     ...config,
   });
