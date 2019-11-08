@@ -90,6 +90,7 @@ export default class NetworkStatusStore extends Store {
   @observable isNodeStopped = false; // 'true' if node is in `NODE_STOPPED_STATES` states
   @observable isNodeTimeCorrect = true; // Is 'true' in case local and global time are in sync
   @observable isSystemTimeIgnored = false; // Tracks if NTP time checks are ignored
+  @observable splashShown = true; // Visibility of splash screen
 
   @observable hasBeenConnected = false;
   @observable syncProgress = null;
@@ -123,6 +124,7 @@ export default class NetworkStatusStore extends Store {
     // ========== IPC CHANNELS =========== //
 
     this.actions.networkStatus.restartNode.listen(this._restartNode);
+    this.actions.networkStatus.toggleSplash.listen(this._toggleSplash);
 
     // Request node state
     this._requestCardanoState();
@@ -184,6 +186,12 @@ export default class NetworkStatusStore extends Store {
         error,
       });
     }
+  };
+
+  @action _toggleSplash = () => {
+    runInAction('Toggle splash visibility', () => {
+      this.splashShown = !this.splashShown;
+    });
   };
 
   teardown() {

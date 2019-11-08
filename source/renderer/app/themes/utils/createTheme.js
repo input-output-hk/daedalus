@@ -907,6 +907,10 @@ export const createDaedalusComponentsTheme = (
         'rgba(255, 255, 255, 0.3)',
     },
     splash: {
+      '--theme-splash-network-background-color1': '#121326',
+      '--theme-splash-network-background-color2': 'rgba(18, 19, 38, 0.92)',
+      '--theme-splash-network-background-color3': 'rgba(18, 19, 38, 0.31)',
+      '--theme-splash-network-background-color4': 'rgba(18, 19, 38, 0)',
       '--theme-splash-network-logo-fill-color': '#fff',
       '--theme-splash-network-title-color': '#fafbfc',
       '--theme-splash-network-subTitle1-color': `${background.secondary}`,
