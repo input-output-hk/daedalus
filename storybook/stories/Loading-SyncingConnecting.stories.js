@@ -43,6 +43,7 @@ export const DefaultSyncingConnectingStory = () => (
     onStatusIconClick={linkTo('Diagnostics', () => 'default')}
     disableDownloadLogs={boolean('disableDownloadLogs', true)}
     showNewsFeedIcon
+    isIncentivizedTestnet={false}
   />
 );
 
@@ -79,6 +80,7 @@ export const ConnectivityIssuesSyncingConnectingStory = () => (
     onStatusIconClick={linkTo('Diagnostics', () => 'default')}
     disableDownloadLogs={boolean('disableDownloadLogs', false)}
     showNewsFeedIcon
+    isIncentivizedTestnet={false}
   />
 );
 
@@ -115,5 +117,6 @@ export const SyncIssuesSyncingConnectingStory = () => (
     onStatusIconClick={linkTo('Diagnostics', () => 'default')}
     disableDownloadLogs={boolean('disableDownloadLogs', false)}
     showNewsFeedIcon
+    isIncentivizedTestnet={false}
   />
 );

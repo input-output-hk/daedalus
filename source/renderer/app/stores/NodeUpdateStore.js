@@ -35,6 +35,8 @@ export default class NodeUpdateStore extends Store {
   );
   /* eslint-disable max-len */
 
+  nextUpdateInterval: ?IntervalID = null;
+
   setup() {
     const actions = this.actions.nodeUpdate;
     actions.acceptNodeUpdate.listen(this._acceptNodeUpdate);
@@ -42,10 +44,23 @@ export default class NodeUpdateStore extends Store {
     actions.getLatestAvailableAppVersion.listen(
       this._getLatestAvailableAppVersion
     );
-    setInterval(this.refreshNextUpdate, NODE_UPDATE_POLL_INTERVAL);
+    this.nextUpdateInterval = setInterval(
+      this.refreshNextUpdate,
+      NODE_UPDATE_POLL_INTERVAL
+    );
   }
 
   refreshNextUpdate = async () => {
+    // Since isIncentivizedTestnet flag is not set during NodeUpdate setup()
+    // we need to check for it here and reset nextUpdate check poller
+    if (this.stores.networkStatus.isIncentivizedTestnet) {
+      // Reset nextUpdateInterval when is available
+      if (this.nextUpdateInterval) {
+        clearInterval(this.nextUpdateInterval);
+      }
+      return;
+    }
+
     if (this.stores.networkStatus.isSynced) {
       await this.nextUpdateRequest.execute();
       const { result } = this.nextUpdateRequest;
@@ -65,7 +80,8 @@ export default class NodeUpdateStore extends Store {
       !this.isUpdateInstalled
     ) {
       this.isUpdateAvailable = true;
-      // If next update version matches applicationVersion (fetched from latestAppVersion json) then set next update version to latest availableAppVersion
+      // If next update version matches applicationVersion (fetched from latestAppVersion json)
+      // then set next update version to latest availableAppVersion
       this.nextUpdateVersion =
         nextUpdateVersion === this.applicationVersion
           ? this.availableAppVersion
@@ -80,20 +96,6 @@ export default class NodeUpdateStore extends Store {
         isUpdateAvailable: this.isUpdateAvailable,
       });
     }
-  };
-
-  /** Automatic update overlay faker
-    - example with "newer version" label: _setNextUpdateVersion(11, 10, '0.16.0')
-    - example with "v 0.16.0" label: _setNextUpdateVersion(10, 10, '0.16.0')
-    */
-  @action _setNextUpdateVersion = async (
-    nextUpdateVersion,
-    applicationVersion,
-    availableAppVersion
-  ) => {
-    this.applicationVersion = applicationVersion;
-    this.availableAppVersion = availableAppVersion;
-    this._activateAutomaticUpdate(nextUpdateVersion);
   };
 
   @action _postponeNodeUpdate = async () => {
@@ -170,7 +172,19 @@ export default class NodeUpdateStore extends Store {
     return (
       this.isUpdateAvailable &&
       !this.isUpdatePostponed &&
-      !this.isUpdateInstalled
+      !this.isUpdateInstalled &&
+      !this.stores.networkStatus.isIncentivizedTestnet
+    );
+  }
+
+  @computed get showManualUpdate(): boolean {
+    return (
+      this.isNewAppVersionAvailable &&
+      !this.stores.networkStatus.isNodeStopping &&
+      !this.stores.networkStatus.isNodeStopped &&
+      !this.isUpdatePostponed &&
+      !this.isUpdateAvailable &&
+      !this.stores.networkStatus.isIncentivizedTestnet
     );
   }
 }
