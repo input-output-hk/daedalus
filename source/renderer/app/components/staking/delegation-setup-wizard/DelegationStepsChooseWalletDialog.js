@@ -66,13 +66,11 @@ const messages = defineMessages({
   },
 });
 
-type DelegationWalletData = $Shape<Wallet>;
-
 type Props = {
   onClose: Function,
   onSelectWallet: Function,
   onBack: Function,
-  wallets: Array<DelegationWalletData>,
+  wallets: Array<Wallet>,
   stepsList: Array<string>,
   minDelegationFunds: number,
   selectedWalletId: string,
@@ -116,12 +114,11 @@ export default class DelegationStepsChooseWalletDialog extends Component<
       isWalletAcceptable,
     } = this.props;
 
-    const selectedWallet: DelegationWalletData =
+    const selectedWallet: ?Wallet =
       wallets.find(
-        (wallet: DelegationWalletData) =>
-          wallet && wallet.id === selectedWalletId
-      ) || {};
-    const { amount } = selectedWallet;
+        (wallet: Wallet) => wallet && wallet.id === selectedWalletId
+      ) || null;
+    const amount = selectedWallet ? selectedWallet.amount : null;
     const isAcceptableSetupWallet = amount && isWalletAcceptable(amount);
     const actions = [
       {

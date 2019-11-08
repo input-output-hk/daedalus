@@ -10,6 +10,8 @@ import StoryDecorator from './support/StoryDecorator';
 
 import { CATEGORIES_BY_NAME } from '../../source/renderer/app/config/sidebarConfig';
 
+import { generateWallet } from './support/utils';
+
 import StakingWithNavigation from '../../source/renderer/app/components/staking/layouts/StakingWithNavigation';
 import StakingCountdown from '../../source/renderer/app/components/staking/countdown/StakingCountdown';
 import StakingInfo from '../../source/renderer/app/components/staking/info/StakingInfo';
@@ -48,21 +50,9 @@ const pageNames = {
 };
 
 const WALLETS = [
-  {
-    id: '1',
-    amount: 1,
-    name: 'First Wallet',
-  },
-  {
-    id: '2',
-    amount: 2,
-    name: 'Second Wallet',
-  },
-  {
-    id: '3',
-    amount: 0.0001,
-    name: 'Third Wallet',
-  },
+  generateWallet('First Wallet', '1'),
+  generateWallet('Second Wallet', '2'),
+  generateWallet('Third Wallet', '0.0001'),
 ];
 
 const locales = {

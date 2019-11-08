@@ -974,7 +974,7 @@ export default class AdaApi {
   ): Promise<TransferFundsResponse> => {
     const { sourceWalletId, targetWalletId, passphrase } = request;
     Logger.debug('AdaApi::transferFunds called', {
-      parameters: { sourceWalletId, targetWalletId, passphrase },
+      parameters: { sourceWalletId, targetWalletId },
     });
 
     try {

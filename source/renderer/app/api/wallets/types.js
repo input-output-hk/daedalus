@@ -235,7 +235,7 @@ export type TransferFundsResponse = {
     block: Block,
   },
   pending_since?: {
-    time: '2019-11-06T19:36:27.243Z',
+    time: Date,
     block: Block,
   },
   depth: {
@@ -245,5 +245,5 @@ export type TransferFundsResponse = {
   direction: 'incoming' | 'outgoing',
   inputs: Array<Input>,
   outputs: Array<Output>,
-  status: 'pending' | 'in_ledger' | 'invalidated',
+  status: 'pending' | 'in_ledger',
 };
