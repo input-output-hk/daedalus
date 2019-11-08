@@ -8,4 +8,5 @@ export default class NetworkStatusActions {
   tlsConfigIsReady: Action<any> = new Action();
   restartNode: Action<any> = new Action();
   nodeImplementationUpdate: Action<any> = new Action();
+  toggleSplash: Action<any> = new Action();
 }

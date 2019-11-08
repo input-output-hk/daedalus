@@ -68,7 +68,9 @@ API docs for pinned cardano-wallet version: https://input-output-hk.github.io/ca
 ### Updating Upstream Dependencies (cardano-wallet & Jormungandr)
 Niv is used to manage the version of upstream dependencies. The versions of these dependencies can be seen in `nix/sources.json`.
 
-Dependencies are updated with the follow nix command: `nix-shell -A devops --run "niv update cardano-wallet"`
+Dependencies are updated with the follow nix command:
+- Update to the latest master: `nix-shell -A devops --run "niv update cardano-wallet"`
+- Update to a specific revision: `nix-shell -A devops --run "niv update cardano-wallet -a rev=1988f22895c45e12506ec83da0496ebdcdd17719"`
 
 ## Connect to staging cluster:
 
@@ -87,9 +89,7 @@ Dependencies are updated with the follow nix command: `nix-shell -A devops --run
    ```
    and then add the following lines:
    ```
-   extra-sandbox-paths = /System/Library/Frameworks
    substituters = https://hydra.iohk.io https://cache.nixos.org/
-   trusted-substituters =
    trusted-public-keys = hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ= cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=
    max-jobs = 2  # run at most two builds at once
    cores = 0     # the builder will use all available CPU cores
