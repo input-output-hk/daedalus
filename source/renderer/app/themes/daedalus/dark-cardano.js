@@ -602,6 +602,16 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--theme-sidebar-category-networkInfo-background-color': '#eb2256',
     '--theme-sidebar-category-networkInfo-text-color': '#121326',
   },
+  splash: {
+    '--theme-splash-network-logo-fill-color': '#fff',
+    '--theme-splash-network-title-color': '#fafbfc',
+    '--theme-splash-network-subTitle1-color': '#36374d',
+    '--theme-splash-network-subTitle2-color': '#36374d',
+    '--theme-splash-network-description-background-color':
+      'rgba(255, 255, 255, 0.1)',
+    '--theme-splash-network-description-color': '#ffffff',
+    '--theme-splash-network-learn-more-color': '#ffffff',
+  },
   stakePools: {
     '--theme-staking-stake-pools-title-color': '#ffffff',
     '--theme-staking-stake-pools-search-button-color': '#ffffff',

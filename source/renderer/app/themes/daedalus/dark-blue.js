@@ -623,6 +623,16 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-sidebar-category-networkInfo-background-color': '#eb2256',
     '--theme-sidebar-category-networkInfo-text-color': '#121326',
   },
+  splash: {
+    '--theme-splash-network-logo-fill-color': '#fff',
+    '--theme-splash-network-title-color': '#fafbfc',
+    '--theme-splash-network-subTitle1-color': '#536370',
+    '--theme-splash-network-subTitle2-color': '#536370',
+    '--theme-splash-network-description-background-color':
+      'rgba(255, 255, 255, 0.1)',
+    '--theme-splash-network-description-color': '#e9f4fe',
+    '--theme-splash-network-learn-more-color': '#e9f4fe',
+  },
   stakePools: {
     '--theme-staking-stake-pool-background-color': '#263345',
     '--theme-staking-stake-pool-border-color': '#263345',

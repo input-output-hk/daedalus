@@ -906,6 +906,16 @@ export const createDaedalusComponentsTheme = (
       '--theme-sidebar-wallets-scrollbar-background-color-hover':
         'rgba(255, 255, 255, 0.3)',
     },
+    splash: {
+      '--theme-splash-network-logo-fill-color': '#fff',
+      '--theme-splash-network-title-color': '#fafbfc',
+      '--theme-splash-network-subTitle1-color': `${background.secondary}`,
+      '--theme-splash-network-subTitle2-color': `${background.secondary}`,
+      '--theme-splash-network-description-background-color':
+        'rgba(255, 255, 255, 0.1)',
+      '--theme-splash-network-description-color': `${text.primary}`,
+      '--theme-splash-network-learn-more-color': `${text.primary}`,
+    },
     stakePools: {
       '--theme-staking-stake-pools-title-color': `${text.primary}`,
       '--theme-staking-stake-pools-search-button-color': `${text.primary}`,
