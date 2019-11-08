@@ -33,12 +33,7 @@ export default class App extends Component<{
   render() {
     const { stores, actions, history } = this.props;
     const { app, nodeUpdate, networkStatus } = stores;
-    const {
-      showNextUpdate,
-      isNewAppVersionAvailable,
-      isUpdatePostponed,
-      isUpdateAvailable,
-    } = nodeUpdate;
+    const { showNextUpdate, showManualUpdate } = nodeUpdate;
     const { isActiveDialog, isSetupPage } = app;
     const { isNodeStopping, isNodeStopped } = networkStatus;
     const locale = stores.profile.currentLocale;
@@ -47,17 +42,10 @@ export default class App extends Component<{
     const themeVars = require(`./themes/daedalus/${currentTheme}.js`).default;
     const { ABOUT, DAEDALUS_DIAGNOSTICS } = DIALOGS;
 
-    const isManualUpdateAvailable =
-      isNewAppVersionAvailable &&
-      !isNodeStopping &&
-      !isNodeStopped &&
-      !isUpdatePostponed &&
-      !isUpdateAvailable;
-
     const canShowNews =
       !isSetupPage && // Active page is not "Language Selection" or "Terms of Use"
       !showNextUpdate && // Autmatic update not available
-      !isManualUpdateAvailable && // Manual update not available
+      !showManualUpdate && // Manual update not available
       !isNodeStopping && // Daedalus is not shutting down
       !isNodeStopped; // Daedalus is not shutting down
 
