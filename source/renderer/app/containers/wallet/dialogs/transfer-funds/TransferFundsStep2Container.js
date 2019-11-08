@@ -8,19 +8,19 @@ import { InjectedDialogContainerStepDefaultProps } from '../../../../types/injec
 type Props = InjectedDialogContainerStepProps;
 const DefaultProps = InjectedDialogContainerStepDefaultProps;
 
-@inject('stores', 'actions')
+@inject('stores')
 @observer
 export default class TransferFundsStep2Container extends Component<Props> {
   static defaultProps = DefaultProps;
 
   onClose = () => {
-    const { transferFundsRequest } = this.props.stores.wallets;
+    const { onClose, transferFundsRequest } = this.props.stores.wallets;
     transferFundsRequest.reset();
-    this.props.onClose();
+    onClose();
   };
 
   render() {
-    const { stores, actions, onClose, onBack, onFinish } = this.props;
+    const { stores, onBack, onFinish } = this.props;
     const {
       transferFundsSourceWalletId,
       transferFundsTargetWalletId,
@@ -29,14 +29,6 @@ export default class TransferFundsStep2Container extends Component<Props> {
       transferFundsFee,
       transferFundsRequest,
     } = stores.wallets;
-
-    console.debug('CHECKS: ', {
-      isExecuting: transferFundsRequest.isExecuting,
-      error: transferFundsRequest.error,
-    })
-
-    const { updateDataForActiveDialog } = actions.dialogs;
-    const { dataForActiveDialog } = stores.uiDialogs;
 
     const sourceWallet = allLegacyWallets.find(
       ({ id }) => id === transferFundsSourceWalletId
@@ -54,11 +46,7 @@ export default class TransferFundsStep2Container extends Component<Props> {
         onFinish={onFinish}
         isSubmitting={transferFundsRequest.isExecuting}
         error={transferFundsRequest.error}
-        onDataChange={data => {
-          updateDataForActiveDialog.trigger({ data });
-        }}
         sourceWallet={sourceWallet}
-        spendingPasswordValue={dataForActiveDialog.spendingPasswordValue}
         targetWallet={targetWallet}
       />
     );

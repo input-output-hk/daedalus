@@ -978,18 +978,15 @@ export default class AdaApi {
       parameters: { sourceWalletId, targetWalletId, passphrase },
     });
 
-    console.debug('REQUEST: ', request);
     try {
       const response: TransferFundsResponse = await transferFunds(this.config, {
         sourceWalletId,
         targetWalletId,
         passphrase,
       });
-      console.debug('API RESPONSE: ', response);
       Logger.debug('AdaApi::transferFunds success', { response });
       return response;
     } catch (error) {
-      console.debug('API ERROR: ', error);
       Logger.error('AdaApi::transferFunds error', { error });
       if (error.code === 'wrong_encryption_passphrase') {
         throw new IncorrectSpendingPasswordError();

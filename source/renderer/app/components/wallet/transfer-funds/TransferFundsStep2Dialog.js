@@ -12,7 +12,6 @@ import styles from './TransferFundsStep2Dialog.scss';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import { formattedWalletAmount } from '../../../utils/formatters';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
-import { isValidSpendingPassword } from '../../../utils/validations';
 import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
 import Wallet from '../../../domains/Wallet';
@@ -78,8 +77,6 @@ type Props = {
   sourceWallet: $Shape<Wallet>,
   targetWallet: $Shape<Wallet>,
   transferFundsFee: number,
-  spendingPasswordValue?: string,
-  onDataChange: Function,
   isSubmitting: boolean,
   error: ?LocalizableError,
 };
@@ -103,7 +100,6 @@ export default class TransferFundsStep2Dialog extends Component<Props> {
           validators: [
             ({ field }) => {
               if (field.value === '') {
-                console.debug('EMPTY');
                 return [
                   false,
                   this.context.intl.formatMessage(messages.fieldIsRequired),
@@ -124,16 +120,17 @@ export default class TransferFundsStep2Dialog extends Component<Props> {
   );
 
   submit = () => {
-    console.debug('SUBMIT');
     this.form.submit({
       onSuccess: form => {
         const { spendingPassword } = form.values();
-        console.debug('SUBMIT: ', spendingPassword);
         this.props.onFinish(spendingPassword);
       },
       onError: () => {},
     });
   };
+
+  handleSubmitOnEnter = (event: {}) =>
+    this.form.$('spendingPassword').isValid && submitOnEnter(this.submit, event);
 
   render() {
     const { intl } = this.context;
@@ -144,8 +141,6 @@ export default class TransferFundsStep2Dialog extends Component<Props> {
       transferFundsFee,
       sourceWallet,
       targetWallet,
-      onDataChange,
-      spendingPasswordValue,
       isSubmitting,
       error,
     } = this.props;

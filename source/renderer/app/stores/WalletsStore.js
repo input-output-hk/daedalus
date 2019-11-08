@@ -391,13 +391,6 @@ export default class WalletsStore extends Store {
       transferFundsSourceWalletId,
       transferFundsTargetWalletId,
     } = this;
-
-
-    console.debug('_transferFundsNextStep: ', {
-      transferFundsSourceWalletId,
-      transferFundsTargetWalletId,
-    });
-
     let nextStep = 0;
     if (transferFundsStep === 0 && transferFundsSourceWalletId) {
       nextStep = 1;
@@ -426,18 +419,11 @@ export default class WalletsStore extends Store {
       transferFundsSourceWalletId,
       transferFundsTargetWalletId,
     } = this;
-    console.debug('>>> _transferFunds: ', {
-      transferFundsSourceWalletId,
-      transferFundsTargetWalletId,
-      spendingPassword,
-    });
-    const response = await this.transferFundsRequest.execute({
+    await this.transferFundsRequest.execute({
       sourceWalletId: transferFundsSourceWalletId,
       targetWalletId: transferFundsTargetWalletId,
       passphrase: spendingPassword,
     });
-
-    console.debug('STORE::_transferFunds - SUCCESS: ', response);
     this.refreshWalletsData();
     this._transferFundsClose()
     this.transferFundsRequest.reset();
