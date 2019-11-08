@@ -6890,13 +6890,13 @@
         "description": "Input Addresses label.",
         "end": {
           "column": 3,
-          "line": 89
+          "line": 103
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.noInputAddressesLabel",
         "start": {
           "column": 25,
-          "line": 85
+          "line": 99
         }
       },
       {
@@ -6904,13 +6904,13 @@
         "description": "Unresolved Input Addresses link label.",
         "end": {
           "column": 3,
-          "line": 94
+          "line": 108
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.unresolvedInputAddressesLinkLabel",
         "start": {
           "column": 37,
-          "line": 90
+          "line": 104
         }
       },
       {
@@ -6918,13 +6918,13 @@
         "description": "Unresolved Input Addresses additional label.",
         "end": {
           "column": 3,
-          "line": 99
+          "line": 113
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.unresolvedInputAddressesAdditionalLabel",
         "start": {
           "column": 43,
-          "line": 95
+          "line": 109
         }
       },
       {
@@ -6932,21 +6932,13 @@
         "description": "Transaction state \"confirmed\"",
         "end": {
           "column": 3,
-<<<<<<< HEAD
-          "line": 106
-=======
-          "line": 107
->>>>>>> 5751371e45669c049a491dcf48c1445e4c1a0a1b
+          "line": 121
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.state.confirmed",
         "start": {
           "column": 26,
-<<<<<<< HEAD
-          "line": 102
-=======
-          "line": 103
->>>>>>> 5751371e45669c049a491dcf48c1445e4c1a0a1b
+          "line": 117
         }
       },
       {
@@ -6954,13 +6946,13 @@
         "description": "Transaction state \"pending\"",
         "end": {
           "column": 3,
-          "line": 112
+          "line": 126
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.state.pending",
         "start": {
           "column": 31,
-          "line": 108
+          "line": 122
         }
       }
     ],
