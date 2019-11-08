@@ -59,22 +59,25 @@ export default class SplashNetwork extends Component<Props> {
     const { intl } = this.context;
     const { isIncentivizedTestnet, onClose, onLearnMoreClick } = this.props;
     const title = intl.formatMessage(messages.title);
-    const subTitle1 = isIncentivizedTestnet
-      ? intl.formatMessage(messages.incentivizedTestnet)
-      : null;
-    const subTitle2 = isIncentivizedTestnet
-      ? intl.formatMessage(messages.balanceCheck)
-      : null;
-    const description = isIncentivizedTestnet ? (
+    const subTitle1 = intl.formatMessage(messages.incentivizedTestnet);
+    const subTitle2 = intl.formatMessage(messages.balanceCheck);
+    const description = (
       <FormattedHTMLMessage {...messages.incentivizedTestnetDescription} />
-    ) : null;
+    );
     const actionLabel = intl.formatMessage(messages.actionLabel);
 
     return (
       <div className={styles.component}>
         <div className={styles.backgroundContainer}>
-          <div className={styles.backgroundOverlay} />
-          <SVGInline svg={backgroundImage} className={styles.backgroundImage} />
+          {isIncentivizedTestnet && (
+            <>
+              <div className={styles.backgroundOverlay} />
+              <SVGInline
+                svg={backgroundImage}
+                className={styles.backgroundImage}
+              />
+            </>
+          )}
         </div>
         <div className={styles.content}>
           <SVGInline svg={daedalusIcon} className={styles.daedalusIcon} />
@@ -82,7 +85,9 @@ export default class SplashNetwork extends Component<Props> {
           <div className={styles.subTitle1}>{subTitle1}</div>
           <div className={styles.subTitle2}>{subTitle2}</div>
           <div className={styles.description}>{description}</div>
-          <Button label={actionLabel} onClick={onClose} skin={ButtonSkin} />
+          <div className={styles.action}>
+            <Button label={actionLabel} onClick={onClose} skin={ButtonSkin} />
+          </div>
           <div className={styles.learnMore}>
             <button onClick={onLearnMoreClick}>
               {intl.formatMessage(messages.learnMore)}

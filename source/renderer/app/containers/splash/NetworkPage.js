@@ -24,7 +24,7 @@ export default class SplashNetworkPage extends Component<Props> {
 
   static defaultProps = { actions: null, stores: {} };
 
-  handleLearnMoreClick = (event: SyntheticEvent<HTMLButtonElement>) => {
+  handleLearnMoreClick = () => {
     const { intl } = this.context;
     const { stores } = this.props;
     const learnMoreLinkUrl = intl.formatMessage(messages.learnMoreLinkUrl);

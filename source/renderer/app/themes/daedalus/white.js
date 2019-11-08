@@ -609,6 +609,7 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-sidebar-category-networkInfo-text-color': '#121326',
   },
   splash: {
+    '--theme-splash-network-background-color': 'rgba(255, 255, 255, 0.96)',
     '--theme-splash-network-background-color1': 'rgba(18, 19, 38, 1)',
     '--theme-splash-network-background-color2': 'rgba(18, 19, 38, 0.91)',
     '--theme-splash-network-background-color3': 'rgba(18, 19, 38, 0.31)',
@@ -617,13 +618,13 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-splash-network-background-color6': 'rgba(18, 19, 38, 0.31)',
     '--theme-splash-network-background-color7': 'rgba(18, 19, 38, 0.91)',
     '--theme-splash-network-background-color8': 'rgba(18, 19, 38, 1)',
-    '--theme-splash-network-logo-fill-color': '#fff',
-    '--theme-splash-network-title-color': '#fafbfc',
-    '--theme-splash-network-subTitle1-color': '#ffffff',
-    '--theme-splash-network-subTitle2-color': '#ffffff',
+    '--theme-splash-network-logo-fill-color': '#29b595',
+    '--theme-splash-network-title-color': '#2d2d2d',
+    '--theme-splash-network-subTitle1-color': 'rgba(45, 45, 45, 0.5)',
+    '--theme-splash-network-subTitle2-color': 'rgba(45, 45, 45, 0.5)',
     '--theme-splash-network-description-background-color':
-      'rgba(255, 255, 255, 0.1)',
-    '--theme-splash-network-description-color': '#2d2d2d',
+      'rgba(41, 181, 149, 0.1)',
+    '--theme-splash-network-description-color': 'rgba(45, 45, 45, 0.7)',
     '--theme-splash-network-learn-more-color': '#2d2d2d',
   },
   stakePools: {

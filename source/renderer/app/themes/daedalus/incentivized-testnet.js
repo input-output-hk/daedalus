@@ -602,6 +602,7 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
       'rgba(255, 255, 255, 0.3)',
   },
   splash: {
+    '--theme-splash-network-background-color': '#121326',
     '--theme-splash-network-background-color1': 'rgba(18, 19, 38, 1)',
     '--theme-splash-network-background-color2': 'rgba(18, 19, 38, 0.91)',
     '--theme-splash-network-background-color3': 'rgba(18, 19, 38, 0.31)',

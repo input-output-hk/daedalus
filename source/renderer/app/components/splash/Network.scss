@@ -7,7 +7,7 @@
   width: 100%;
 
   .backgroundContainer {
-    background-color: var(--theme-main-body-background-color);
+    background-color: var(--theme-splash-network-background-color);
     height: 100%;
     left: 0;
     object-fit: contain;
@@ -114,7 +114,7 @@
       font-size: 14px;
       line-height: 1.43;
       margin-bottom: 30px;
-      max-height: 250px;
+      max-height: 190px;
       max-width: 608px;
       overflow-y: scroll;
       padding: 12px 24px;
@@ -125,6 +125,11 @@
         &:last-child {
           margin-bottom: 0;
         }
+      }
+    }
+    .action {
+      button {
+        min-height: 50px;
       }
     }
     .learnMore {
