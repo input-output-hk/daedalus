@@ -389,7 +389,7 @@ export const CARDANO_THEME_OUTPUT = {
       'rgba(250, 251, 252, 0.3)',
     '--theme-legacy-notification-learn-more-button-background-color-active':
       'rgba(250, 251, 252, 0.4)',
-    '--theme-legacy-notification-move-button-text-color': '#ab2712',
+    '--theme-legacy-notification-move-button-text-color': '#ab1700',
     '--theme-legacy-notification-move-button-background-color': '#fafbfc',
     '--theme-legacy-notification-move-button-background-color-hover':
       'rgba(250, 251, 252, 0.9)',

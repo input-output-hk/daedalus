@@ -35,7 +35,7 @@ export default class WalletAddPage extends Component<Props> {
       environment: { isMainnet, isTestnet },
     } = app;
 
-    const walletCreationAction = useNewWalletCreationProcess
+    const onWalletAdd = useNewWalletCreationProcess
       ? () => actions.wallets.createWalletBegin.trigger()
       : // TODO: Remove once the new wallet creation process is ready
         () => actions.dialogs.open.trigger({ dialog: WalletCreateDialog });
@@ -59,7 +59,7 @@ export default class WalletAddPage extends Component<Props> {
         <WalletAdd
           isMainnet={isMainnet}
           isTestnet={isTestnet}
-          onCreate={walletCreationAction}
+          onCreate={onWalletAdd}
           onRestore={() =>
             actions.dialogs.open.trigger({ dialog: WalletRestoreDialog })
           }

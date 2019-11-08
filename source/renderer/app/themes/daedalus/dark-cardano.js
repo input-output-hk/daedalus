@@ -368,12 +368,12 @@ export const DARK_CARDANO_THEME_OUTPUT = {
       '#1213264d',
     '--theme-legacy-notification-learn-more-button-background-color-active':
       '#12132666',
-    '--theme-legacy-notification-move-button-text-color': '#ab2712',
-    '--theme-legacy-notification-move-button-background-color': '#ffffff',
+    '--theme-legacy-notification-move-button-text-color': '#ab1700',
+    '--theme-legacy-notification-move-button-background-color': '#fafbfc',
     '--theme-legacy-notification-move-button-background-color-hover':
       'rgba(250, 251, 252, 0.9)',
     '--theme-legacy-notification-move-button-background-color-active':
-      '#121326cc',
+      'rgb(250, 251, 252, 0.8)',
     '--theme-legacy-notification-title-color': '#ffffff',
     '--theme-legacy-notification-description-color': '#ffffff',
     '--theme-notification-message-checkmark-icon-color': '#fafbfc',

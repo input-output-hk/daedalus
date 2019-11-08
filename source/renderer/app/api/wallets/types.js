@@ -1,6 +1,33 @@
 // @flow
 import BigNumber from 'bignumber.js';
 
+export type Block = {
+  slot_number: number,
+  epoch_number: number,
+  height: {
+    quantity: number,
+    unit: 'block',
+  },
+};
+
+export type Input = {
+  address?: string,
+  amount?: {
+    quantity: number,
+    unit: 'lovelace',
+  },
+  id: string,
+  index: number,
+};
+
+export type Output = {
+  address: string,
+  amount: {
+    quantity: number,
+    unit: 'lovelace',
+  },
+};
+
 export type AdaWallet = {
   id: string,
   address_pool_gap: number,
@@ -30,14 +57,7 @@ export type LegacyAdaWallet = {
     last_updated_at: string,
   },
   state: WalletSyncState,
-  tip: {
-    slot_number: number,
-    epoch_number: number,
-    height: {
-      quantity: number,
-      unit: 'block',
-    },
-  },
+  tip: Block,
 };
 
 export type LegacyAdaWallets = Array<LegacyAdaWallet>;
@@ -185,4 +205,45 @@ export type GetWalletRecoveryPhraseFromCertificateRequest = {
 
 export type GetWalletRequest = {
   walletId: string,
+};
+
+export type TransferFundsCalculateFeeRequest = {
+  sourceWalletId: string,
+};
+
+export type TransferFundsCalculateFeeResponse = {
+  migration_cost: {
+    quantity: number,
+    unit: 'lovelace',
+  },
+};
+
+export type TransferFundsRequest = {
+  sourceWalletId: string,
+  targetWalletId: string,
+  passphrase: string,
+};
+
+export type TransferFundsResponse = {
+  id: string,
+  amount: {
+    quantity: number,
+    unit: 'lovelace',
+  },
+  inserted_at?: {
+    time: Date,
+    block: Block,
+  },
+  pending_since?: {
+    time: Date,
+    block: Block,
+  },
+  depth: {
+    quantity: number,
+    unit: 'block',
+  },
+  direction: 'incoming' | 'outgoing',
+  inputs: Array<Input>,
+  outputs: Array<Output>,
+  status: 'pending' | 'in_ledger',
 };

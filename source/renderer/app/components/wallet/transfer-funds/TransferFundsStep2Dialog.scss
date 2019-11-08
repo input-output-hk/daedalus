@@ -1,0 +1,57 @@
+@import '../../../themes/mixins/loading-spinner';
+@import '../../../themes/mixins/error-message';
+
+.dialog {
+  font-family: var(--font-light);
+  line-height: 1.38;
+  b {
+    font-family: var(--font-medium);
+  }
+
+  .description {
+    margin-bottom: 20px;
+  }
+
+  .label {
+    font-family: var(--font-medium);
+    margin-bottom: 6px;
+  }
+
+  .sourceWallet {
+    background-color: rgba(94, 96, 102, 0.5);
+    margin-bottom: 20px;
+  }
+
+  .addresses {
+    margin-bottom: 20px;
+    li {
+      overflow-wrap: break-word;
+    }
+  }
+
+  .amountGroup {
+    display: inline-block;
+    font-family: var(--font-medium);
+    margin-bottom: 20px;
+    width: 50%;
+  }
+
+  .amount {
+    color: #ea4c5b;
+    &:after {
+      content: ' ADA';
+      opacity: 0.5;
+    }
+  }
+
+  .error {
+    @include error-message;
+    margin-top: 27px;
+    text-align: center;
+  }
+}
+
+.submitButtonSpinning {
+  box-shadow: none !important;
+  @include loading-spinner('../../../assets/images/spinner-light.svg');
+}
