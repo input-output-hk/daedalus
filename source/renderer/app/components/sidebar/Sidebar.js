@@ -123,12 +123,14 @@ export default class Sidebar extends Component<Props> {
     const {
       onActivateCategory,
       onOpenDialog,
-      onOpenSplashNetwork = () => null,
+      onOpenSplashNetwork,
     } = this.props;
     if (categoryRoute === ROUTES.PAPER_WALLET_CREATE_CERTIFICATE) {
       onOpenDialog(InstructionsDialog);
     } else if (categoryRoute === ROUTES.NETWORK_INFO) {
-      onOpenSplashNetwork();
+      if (onOpenSplashNetwork) {
+        onOpenSplashNetwork();
+      }
     } else {
       onActivateCategory(categoryRoute);
     }
