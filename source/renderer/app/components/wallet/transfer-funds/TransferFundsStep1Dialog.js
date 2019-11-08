@@ -36,7 +36,7 @@ type Props = {
   onClose: Function,
   onContinue: Function,
   onSetSourceWallet: Function,
-  targetWalletId?: string,
+  targetWalletId: string,
   sourceWallet: $Shape<Wallet>,
   wallets: Array<$Shape<Wallet>>,
 };

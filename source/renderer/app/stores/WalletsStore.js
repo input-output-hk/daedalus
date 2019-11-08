@@ -415,17 +415,14 @@ export default class WalletsStore extends Store {
   };
 
   @action _transferFunds = async (spendingPassword: string) => {
-    const {
-      transferFundsSourceWalletId,
-      transferFundsTargetWalletId,
-    } = this;
+    const { transferFundsSourceWalletId, transferFundsTargetWalletId } = this;
     await this.transferFundsRequest.execute({
       sourceWalletId: transferFundsSourceWalletId,
       targetWalletId: transferFundsTargetWalletId,
       passphrase: spendingPassword,
     });
     this.refreshWalletsData();
-    this._transferFundsClose()
+    this._transferFundsClose();
     this.transferFundsRequest.reset();
   };
 
@@ -435,8 +432,9 @@ export default class WalletsStore extends Store {
     sourceWalletId: string,
   }) => {
     this.transferFundsSourceWalletId = sourceWalletId;
-    // Resets the target wallet
-    this.transferFundsTargetWalletId = '';
+    // Sets the target wallet to the first wallet
+    const { allWallets } = this;
+    this.transferFundsTargetWalletId = allWallets[0].id;
     // Sets to first step
     this.transferFundsStep = 1;
   };
