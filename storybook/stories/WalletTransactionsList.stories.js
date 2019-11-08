@@ -108,6 +108,7 @@ storiesOf('WalletTransactionsList', module)
   .add('transactions with unresolved income addresses', () => (
     <WalletTransactionsList
       isRenderingAsVirtualList
+      deletePendingTransaction={() => {}}
       isRestoreActive={false}
       transactions={[
         generateTransaction(
@@ -136,6 +137,7 @@ storiesOf('WalletTransactionsList', module)
   .add('transactions without income addresses', () => (
     <WalletTransactionsList
       isRenderingAsVirtualList
+      deletePendingTransaction={() => {}}
       isRestoreActive={false}
       transactions={[
         generateTransaction(
