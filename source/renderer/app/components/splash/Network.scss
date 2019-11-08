@@ -114,7 +114,9 @@
       font-size: 14px;
       line-height: 1.43;
       margin-bottom: 30px;
+      max-height: 250px;
       max-width: 608px;
+      overflow-y: scroll;
       padding: 12px 24px;
 
       p {
