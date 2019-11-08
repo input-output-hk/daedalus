@@ -7008,7 +7008,7 @@
         }
       },
       {
-        "defaultMessage": "!!!This transaction has been pending for too long. We recommend you cancel it.",
+        "defaultMessage": "!!!This transaction has been pending for a long time. To release the funds used by this transaction, you can try canceling it.",
         "description": "Note to cancel a transaction that has been pending too long",
         "end": {
           "column": 3,
@@ -7022,7 +7022,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Read why",
+        "defaultMessage": "!!!Why should I cancel this transaction?",
         "description": "Link to support article explaining transactions stuck pending",
         "end": {
           "column": 3,

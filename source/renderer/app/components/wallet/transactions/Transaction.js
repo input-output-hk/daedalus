@@ -88,14 +88,13 @@ const messages = defineMessages({
   cancelPendingTxnNote: {
     id: 'wallet.transaction.pending.cancelPendingTxnNote',
     defaultMessage:
-      '!!!This transaction has been pending for too long. We recommend you cancel it.',
+      '!!!This transaction has been pending for a long time. To release the funds used by this transaction, you can try canceling it.',
     description: 'Note to cancel a transaction that has been pending too long',
   },
   supportArticleLink: {
     id: 'wallet.transaction.pending.supportArticleLink',
-    defaultMessage: '!!!Read why',
-    description:
-      'Link to support article explaining transactions stuck pending',
+    defaultMessage: '!!!Why should I cancel this transaction?',
+    description: 'Link to support article for canceling a pending transaction',
   },
   noInputAddressesLabel: {
     id: 'wallet.transaction.noInputAddressesLabel',
