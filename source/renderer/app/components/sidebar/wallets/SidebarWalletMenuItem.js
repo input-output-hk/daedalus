@@ -15,6 +15,7 @@ type Props = {
   className: string,
   onClick: Function,
   isRestoreActive?: boolean,
+  isIncentivizedTestnet: boolean,
   restoreProgress?: number,
   isLegacy: boolean,
   recoveryPhraseVerificationStatus: string,
@@ -30,6 +31,7 @@ export default class SidebarWalletMenuItem extends Component<Props> {
       className,
       onClick,
       isRestoreActive,
+      isIncentivizedTestnet,
       restoreProgress,
       isLegacy,
       recoveryPhraseVerificationStatus,
@@ -40,9 +42,11 @@ export default class SidebarWalletMenuItem extends Component<Props> {
       active ? styles.active : null,
       isLegacy ? styles.legacyItem : null,
       className,
-      styles[
-        `recoveryPhraseVerificationStatus-${recoveryPhraseVerificationStatus}`
-      ],
+      !isIncentivizedTestnet
+        ? styles[
+            `recoveryPhraseVerificationStatus-${recoveryPhraseVerificationStatus}`
+          ]
+        : null,
     ]);
 
     return (

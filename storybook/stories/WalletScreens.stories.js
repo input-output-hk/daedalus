@@ -54,6 +54,7 @@ storiesOf('WalletScreens', module)
             {context.story !== 'Empty' && context.story !== 'Wallet Add' ? (
               <WalletWithNavigation
                 isActiveScreen={item => item === getItemFromContext()}
+                isLegacy={false}
                 onWalletNavItemClick={linkTo('WalletScreens', item =>
                   item === 'utxo' ? 'Wallet UTXO distribution' : startCase(item)
                 )}

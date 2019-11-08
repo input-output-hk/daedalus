@@ -25,6 +25,7 @@ storiesOf('SidebarWalletsMenu', module)
       onWalletItemClick={() => {}}
       isActiveWallet={() => false}
       isAddWalletButtonActive={false}
+      isIncentivizedTestnet={false}
       visible
     />
   ))
@@ -94,6 +95,7 @@ storiesOf('SidebarWalletsMenu', module)
         },
       ]}
       isActiveWallet={id => id === '2'}
+      isIncentivizedTestnet={false}
       onWalletItemClick={action('walletItemClick')}
       onAddWallet={action('addWallet')}
       isAddWalletButtonActive={false}
