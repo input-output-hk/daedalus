@@ -1362,6 +1362,20 @@
           "column": 13,
           "line": 32
         }
+      },
+      {
+        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us",
+        "description": "\"Learn more\" link URL",
+        "end": {
+          "column": 3,
+          "line": 41
+        },
+        "file": "source/renderer/app/components/notifications/LegacyNotification.js",
+        "id": "wallet.legacy.notification.learnMore.url",
+        "start": {
+          "column": 20,
+          "line": 37
+        }
       }
     ],
     "path": "source/renderer/app/components/notifications/LegacyNotification.json"

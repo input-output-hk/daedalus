@@ -19,6 +19,7 @@ type Props = {
   onTransferFunds?: Function,
   onWalletAdd?: Function,
   hasAnyWallets?: boolean,
+  onLearnMore?: Function,
 };
 
 @observer
@@ -32,6 +33,7 @@ export default class TopBar extends Component<Props> {
       hasAnyWallets,
       onTransferFunds,
       onWalletAdd,
+      onLearnMore,
     } = this.props;
 
     const topBarStyles = classNames([
@@ -86,7 +88,7 @@ export default class TopBar extends Component<Props> {
         </div>
         {hasLegacyNotification && (
           <LegacyNotification
-            onLearnMore={() => null}
+            onLearnMore={onLearnMore}
             onTransferFunds={onTransferFundsFn}
             hasAnyWallets={hasAnyWallets}
             onWalletAdd={onWalletAdd}
