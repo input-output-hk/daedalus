@@ -10,6 +10,7 @@ export type Environment = {
   isMainnet: boolean,
   isStaging: boolean,
   isTestnet: boolean,
+  isItnBalanceCheck: boolean,
   isDevelopment: boolean,
   isWatchMode: boolean,
   build: string,
@@ -36,6 +37,7 @@ export const DEVELOPMENT = 'development';
 export const TEST = 'test';
 export const MAINNET = 'mainnet';
 export const NIGHTLY = 'nightly';
+export const ITN_BALANCE_CHECK = 'itn_balance_check';
 export const QA = 'qa';
 export const SELFNODE = 'selfnode';
 export const STAGING = 'staging';
@@ -47,4 +49,10 @@ export const OS_NAMES = {
   [MAC_OS]: 'macOS',
   [WINDOWS]: 'Windows',
   [LINUX]: 'Linux',
+};
+
+export const networkPrettyNames = {
+  production: 'Production',
+  development: 'Production',
+  itn_balance_check: 'Incentivized Testnet - Balance check',
 };
