@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## 0.15.1
+
+### Fixes
+
+- Fixed newsfeed content loading issue ([PR 1653](https://github.com/input-output-hk/daedalus/pull/1653))
+
 ## 0.15.0
 
 ### Features
