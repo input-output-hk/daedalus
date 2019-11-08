@@ -24,6 +24,7 @@ type Props = {
   onActivateCategory: Function,
   onOpenDialog: Function,
   onAddWallet: Function,
+  onOpenSplashNetwork?: Function,
   isIncentivizedTestnet: boolean,
 };
 
@@ -41,6 +42,7 @@ export type SidebarMenus = ?{
 export default class Sidebar extends Component<Props> {
   static defaultProps = {
     isShowingSubMenus: false,
+    onOpenSplashNetwork: () => null,
   };
 
   render() {
@@ -118,11 +120,17 @@ export default class Sidebar extends Component<Props> {
   };
 
   handleClick = (categoryRoute: string) => {
-    const { onActivateCategory, onOpenDialog } = this.props;
+    const {
+      onActivateCategory,
+      onOpenDialog,
+      onOpenSplashNetwork,
+    } = this.props;
     if (categoryRoute === ROUTES.PAPER_WALLET_CREATE_CERTIFICATE) {
       onOpenDialog(InstructionsDialog);
     } else if (categoryRoute === ROUTES.NETWORK_INFO) {
-      // TODO: waiting for the Network Info screen to be done
+      if (onOpenSplashNetwork) {
+        onOpenSplashNetwork();
+      }
     } else {
       onActivateCategory(categoryRoute);
     }

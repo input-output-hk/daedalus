@@ -61,6 +61,7 @@ export default class MainLayout extends Component<InjectedContainerProps> {
         onSubmitSupportRequest={() =>
           actions.router.goToRoute.trigger({ route: ROUTES.SETTINGS.SUPPORT })
         }
+        onOpenSplashNetwork={() => actions.networkStatus.toggleSplash.trigger()}
         pathname={this.props.stores.router.location.pathname}
         currentTheme={currentTheme}
         network={network}

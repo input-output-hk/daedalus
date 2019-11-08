@@ -1951,6 +1951,95 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Daedalus",
+        "description": "Daedalus",
+        "end": {
+          "column": 3,
+          "line": 17
+        },
+        "file": "source/renderer/app/components/splash/Network.js",
+        "id": "static.splash.network.title",
+        "start": {
+          "column": 9,
+          "line": 13
+        }
+      },
+      {
+        "defaultMessage": "!!!Incentivized Testnet",
+        "description": "Incentivized Testnet",
+        "end": {
+          "column": 3,
+          "line": 22
+        },
+        "file": "source/renderer/app/components/splash/Network.js",
+        "id": "static.splash.network.incentivizedTestnet",
+        "start": {
+          "column": 23,
+          "line": 18
+        }
+      },
+      {
+        "defaultMessage": "!!!Balance Check",
+        "description": "Balance Check",
+        "end": {
+          "column": 3,
+          "line": 27
+        },
+        "file": "source/renderer/app/components/splash/Network.js",
+        "id": "static.splash.network.balanceCheck",
+        "start": {
+          "column": 16,
+          "line": 23
+        }
+      },
+      {
+        "defaultMessage": "!!!This version of Daedalus has been created specifically for the balance check, the first stage in the roll-out of the Incentivized Testnet. It is not compatible with the Cardano mainnet. The balance check is a practice run for the official balance snapshot that is currently planned for later in November. This initial test will allow us to test core functionality, while enabling users to validate that the value of their mainnet ada balances is accurately captured ahead of the Incentivized Testnet.",
+        "description": "This version of Daedalus has been created specifically for the balance check, the first stage in the roll-out of the Incentivized Testnet. It is not compatible with the Cardano mainnet. The balance check is a practice run for the official balance snapshot that is currently planned for later in November. This initial test will allow us to test core functionality, while enabling users to validate that the value of their mainnet ada balances is accurately captured ahead of the Incentivized Testnet.",
+        "end": {
+          "column": 3,
+          "line": 34
+        },
+        "file": "source/renderer/app/components/splash/Network.js",
+        "id": "static.splash.network.incentivizedTestnetDescription",
+        "start": {
+          "column": 34,
+          "line": 28
+        }
+      },
+      {
+        "defaultMessage": "!!!I understand",
+        "description": "I understand",
+        "end": {
+          "column": 3,
+          "line": 39
+        },
+        "file": "source/renderer/app/components/splash/Network.js",
+        "id": "static.splash.network.actionLabel",
+        "start": {
+          "column": 15,
+          "line": 35
+        }
+      },
+      {
+        "defaultMessage": "!!!Learn more",
+        "description": "Learn more",
+        "end": {
+          "column": 3,
+          "line": 44
+        },
+        "file": "source/renderer/app/components/splash/Network.js",
+        "id": "static.splash.network.learnMore",
+        "start": {
+          "column": 13,
+          "line": 40
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/splash/Network.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Cardano decentralization",
         "description": "Headline for the Decentralisation notification.",
         "end": {
@@ -8671,6 +8760,25 @@
       }
     ],
     "path": "source/renderer/app/containers/settings/categories/SupportSettingsPage.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!http://staking.cardano.org/",
+        "description": "\"Learn more\" link URL on the network splash screen",
+        "end": {
+          "column": 3,
+          "line": 13
+        },
+        "file": "source/renderer/app/containers/splash/NetworkPage.js",
+        "id": "static.splash.network.learnMore.linkUrl",
+        "start": {
+          "column": 20,
+          "line": 9
+        }
+      }
+    ],
+    "path": "source/renderer/app/containers/splash/NetworkPage.json"
   },
   {
     "descriptors": [

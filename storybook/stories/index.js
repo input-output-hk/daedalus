@@ -21,6 +21,9 @@ import './Settings.stories';
 // Loading
 import './Loading.stories';
 
+// Splash
+import './Splash.stories';
+
 // Diagnostics
 import './Diagnostics.stories';
 

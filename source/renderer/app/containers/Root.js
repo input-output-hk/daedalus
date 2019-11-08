@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import WalletAddPage from './wallet/WalletAddPage';
 import LoadingPage from './loading/LoadingPage';
+import SplashNetworkPage from './splash/NetworkPage';
 import type { InjectedContainerProps } from '../types/injectedPropsType';
 
 type Props = InjectedContainerProps;
@@ -12,7 +13,7 @@ type Props = InjectedContainerProps;
 export default class Root extends Component<Props> {
   render() {
     const { stores, actions, children } = this.props;
-    const { networkStatus, profile, wallets, staking } = stores;
+    const { app, networkStatus, profile, wallets, staking } = stores;
     const { isStakingPage } = staking;
     const { isProfilePage, isSettingsPage } = profile;
     const { hasLoadedWallets } = wallets;
@@ -31,6 +32,14 @@ export default class Root extends Component<Props> {
     // with the "Stopping Cardano node..." and "Cardano node stopped" messages
     // for all the screens except of the "Network status" screen.
     const isNodeInStoppingSequence = isNodeStopping || isNodeStopped;
+
+    if (
+      !app.isSetupPage &&
+      !app.environment.isTest &&
+      networkStatus.isSplashShown
+    ) {
+      return <SplashNetworkPage />;
+    }
 
     // Just render any page that doesn't require wallets to be loaded or node to be connected
     if (
