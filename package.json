@@ -37,7 +37,8 @@
     "nix:dev": "nix-shell",
     "nix:qa": "nix-shell --argstr cluster qa",
     "nix:nightly": "nix-shell --argstr cluster nightly",
-    "v2-api-importer": "node utils/v2-api-importer/index.js",
+    "v2:wallet:importer": "node utils/v2-api-importer/index.js",
+    "v2:legacy:wallet:importer": "node utils/v2-api-importer/legacy.js",
     "js-launcher": "node utils/js-launcher/index.js"
   },
   "bin": {

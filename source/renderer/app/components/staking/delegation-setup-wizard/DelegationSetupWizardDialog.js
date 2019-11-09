@@ -8,13 +8,7 @@ import DelegationStepsIntroDialog from './DelegationStepsIntroDialog';
 import DelegationStepsNotAvailableDialog from './DelegationStepsNotAvailableDialog';
 import DelegationStepsChooseStakePoolDialog from './DelegationStepsChooseStakePoolDialog';
 import type { StakePool } from '../../../api/staking/types';
-
-type DelegationWalletData = {
-  id: string,
-  isAcceptableSetupWallet: boolean,
-  label: string,
-  value: string,
-};
+import Wallet from '../../../domains/Wallet';
 
 type Props = {
   activeStep: number,
@@ -27,14 +21,15 @@ type Props = {
   onLearnMoreClick: Function,
   onSelectWallet: Function,
   onSelectPool: Function,
+  isWalletAcceptable: Function,
   stepsList: Array<string>,
-  wallets: Array<DelegationWalletData>,
+  wallets: Array<Wallet>,
   minDelegationFunds: number,
   stakePoolsDelegatingList: Array<StakePool>,
   stakePoolsList: Array<StakePool>,
   onOpenExternalLink: Function,
   currentTheme: string,
-  selectedWallet: ?DelegationWalletData,
+  selectedWalletId: string,
   selectedPool: ?StakePool,
 };
 
@@ -59,8 +54,9 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
       stakePoolsList,
       onOpenExternalLink,
       currentTheme,
-      selectedWallet,
+      selectedWalletId,
       selectedPool,
+      isWalletAcceptable,
     } = this.props;
 
     if (isDisabled) {
@@ -80,10 +76,11 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
             stepsList={stepsList}
             wallets={wallets}
             minDelegationFunds={minDelegationFunds}
-            selectedWallet={selectedWallet}
+            selectedWalletId={selectedWalletId}
             onBack={onBack}
             onClose={onClose}
             onSelectWallet={onSelectWallet}
+            isWalletAcceptable={isWalletAcceptable}
           />
         );
         break;

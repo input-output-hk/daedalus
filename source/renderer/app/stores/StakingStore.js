@@ -60,8 +60,9 @@ export default class StakingStore extends Store {
   @computed
   get rewardsForIncentivizedTestnet(): Array<RewardForIncentivizedTestnet> {
     const { wallets } = this.stores;
-
-    return wallets.all.map(this._transformWalletToRewardForIncentivizedTestnet);
+    return wallets.allWallets.map(
+      this._transformWalletToRewardForIncentivizedTestnet
+    );
   }
 
   @action showCountdown(): boolean {

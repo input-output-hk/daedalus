@@ -29,11 +29,23 @@ const messages = defineMessages({
     defaultMessage: '!!!Move all of the ada from this wallet',
     description: 'Move all ada action of legacy notification.',
   },
+  addWallet: {
+    id: 'wallet.legacy.notification.addWallet',
+    defaultMessage: '!!!Move all of the ada from this wallet',
+    description: 'Add wallet action of legacy notification.',
+  },
+  learnMoreLinkUrl: {
+    id: 'wallet.legacy.notification.learnMore.url',
+    defaultMessage: '!!!https://iohk.zendesk.com/hc/en-us',
+    description: '"Learn more" link URL',
+  },
 });
 
 type Props = {
   onLearnMore: Function,
-  onMove: Function,
+  onTransferFunds: Function,
+  hasAnyWallets?: boolean,
+  onWalletAdd?: boolean,
 };
 
 @observer
@@ -42,13 +54,24 @@ export default class LegacyNotification extends Component<Props> {
     intl: intlShape.isRequired,
   };
 
+  onLearnMore = () => {
+    const { intl } = this.context;
+    const learnMoreLinkUrl = intl.formatMessage(messages.learnMoreLinkUrl);
+    this.props.onLearnMore(learnMoreLinkUrl);
+  };
+
   render() {
     const { intl } = this.context;
-    const { onLearnMore, onMove } = this.props;
+    const { onTransferFunds, hasAnyWallets, onWalletAdd } = this.props;
     const title = intl.formatMessage(messages.title);
     const description = intl.formatMessage(messages.description);
     const actionLearnMore = intl.formatMessage(messages.actionLearnMore);
-    const actionMove = intl.formatMessage(messages.actionMove);
+
+    const buttonLabel = hasAnyWallets
+      ? intl.formatMessage(messages.actionMove)
+      : intl.formatMessage(messages.addWallet);
+
+    const buttonAction = hasAnyWallets ? onTransferFunds : onWalletAdd;
 
     return (
       <div className={styles.component}>
@@ -58,15 +81,17 @@ export default class LegacyNotification extends Component<Props> {
           <Button
             className={styles.actionLearnMore}
             label={actionLearnMore}
-            onClick={onLearnMore}
+            onClick={this.onLearnMore}
             skin={ButtonSkin}
           />
-          <Button
-            className={styles.actionMove}
-            label={actionMove}
-            onClick={onMove}
-            skin={ButtonSkin}
-          />
+          {
+            <Button
+              className={styles.actionMove}
+              label={buttonLabel}
+              onClick={buttonAction}
+              skin={ButtonSkin}
+            />
+          }
         </div>
       </div>
     );

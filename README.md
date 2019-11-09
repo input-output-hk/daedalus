@@ -48,7 +48,7 @@ API docs for pinned cardano-wallet version: https://input-output-hk.github.io/ca
 
 1. Run `yarn nix:dev` from `daedalus`.
 2. Run `yarn dev` from the subsequent `nix-shell`
-3. Once Daedalus has started, and has gotten past the loading screen, run `yarn v2-api-importer` from a new terminal window. This is only required if you wish to import some funded wallets
+3. Once Daedalus has started, and has gotten past the loading screen, run `yarn v2:wallet:importer` from a new terminal window. This is only required if you wish to import some funded wallets
 
 ### QA testnet
 
