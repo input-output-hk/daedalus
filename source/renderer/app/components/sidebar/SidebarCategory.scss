@@ -83,7 +83,7 @@
     background-color: var(
       --theme-sidebar-category-networkInfo-background-color
     );
-    width: 190.5px;
+    width: auto;
   }
 }
 
@@ -91,5 +91,8 @@
   & > svg {
     height: 29px;
     width: 32px;
+    path {
+      fill: var(--theme-sidebar-category-networkInfo-text-color);
+    }
   }
 }

@@ -613,8 +613,8 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
       'rgba(255, 255, 255, 0.3)',
     '--theme-sidebar-wallets-scrollbar-background-color-hover':
       'rgba(255, 255, 255, 0.3)',
-    '--theme-sidebar-category-networkInfo-background-color': '#eb2256',
-    '--theme-sidebar-category-networkInfo-text-color': '#121326',
+    '--theme-sidebar-category-networkInfo-background-color': '#233856',
+    '--theme-sidebar-category-networkInfo-text-color': '#fafbfc',
   },
   splash: {
     '--theme-splash-network-background-color': 'rgba(36, 62, 98, 0.96)',

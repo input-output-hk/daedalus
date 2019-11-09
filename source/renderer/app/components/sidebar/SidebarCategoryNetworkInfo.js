@@ -20,6 +20,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Development vx',
     description: 'Label for development with version.',
   },
+  itn_balance_check: {
+    id: 'test.environment.itnBalanceCheckLabel',
+    defaultMessage: '!!!Development vx',
+    description: 'Label for development with version.',
+  },
 });
 
 type Props = {

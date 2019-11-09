@@ -1939,6 +1939,20 @@
           "column": 15,
           "line": 18
         }
+      },
+      {
+        "defaultMessage": "!!!Development vx",
+        "description": "Label for development with version.",
+        "end": {
+          "column": 3,
+          "line": 27
+        },
+        "file": "source/renderer/app/components/sidebar/SidebarCategoryNetworkInfo.js",
+        "id": "test.environment.itnBalanceCheckLabel",
+        "start": {
+          "column": 21,
+          "line": 23
+        }
       }
     ],
     "path": "source/renderer/app/components/sidebar/SidebarCategoryNetworkInfo.json"
@@ -8854,6 +8868,20 @@
         "start": {
           "column": 12,
           "line": 33
+        }
+      },
+      {
+        "defaultMessage": "!!!Development vx",
+        "description": "Label for development with version.",
+        "end": {
+          "column": 3,
+          "line": 42
+        },
+        "file": "source/renderer/app/components/widgets/WalletTestEnvironmentLabel.js",
+        "id": "test.environment.itnBalanceCheckLabel",
+        "start": {
+          "column": 21,
+          "line": 38
         }
       }
     ],

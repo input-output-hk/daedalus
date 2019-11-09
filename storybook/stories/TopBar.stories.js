@@ -34,6 +34,29 @@ const topBarTestEnv = (
   </TopBar>
 );
 
+const topBarItnEnv = (
+  <TopBar
+    formattedWalletAmount={formattedWalletAmount}
+    currentRoute=""
+    showSubMenuToggle={false}
+    leftIcon={menuIconClosed}
+  >
+    <WalletTestEnvironmentLabel network="itn_balance_check" />
+    <NodeSyncStatusIcon
+      networkStatus={{
+        isSynced: true,
+        syncPercentage: 100,
+      }}
+      isProduction={false}
+      isMainnet={false}
+    />
+    <NewsFeedIcon
+      onNewsFeedIconClick={action('onNewsFeedIconClick')}
+      showDot={false}
+    />
+  </TopBar>
+);
+
 const topBarProductionEnv = (
   <TopBar
     formattedWalletAmount={formattedWalletAmount}
@@ -64,7 +87,9 @@ storiesOf('TopBar', module)
   .add('Test Environment label', () => (
     <SidebarLayout topbar={topBarTestEnv} sidebar={<noscript />} />
   ))
-
+  .add('ITN Environment label', () => (
+    <SidebarLayout topbar={topBarItnEnv} sidebar={<noscript />} />
+  ))
   .add('Production Environment', () => (
     <SidebarLayout topbar={topBarProductionEnv} sidebar={<noscript />} />
   ));

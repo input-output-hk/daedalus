@@ -1,6 +1,6 @@
 // @flow
 import os from 'os';
-import { uniq, upperFirst, get, includes } from 'lodash';
+import { uniq, get, includes, upperFirst } from 'lodash';
 import { version } from '../../package.json';
 import type { Environment } from '../common/types/environment.types';
 import {
@@ -14,18 +14,27 @@ import {
   TEST,
   TESTNET,
   WINDOWS,
+  ITN_BALANCE_CHECK,
   QA,
   NIGHTLY,
   SELFNODE,
+  networkPrettyNames,
 } from '../common/types/environment.types';
 
-function evaluateNetwork(network) {
+const evaluateNetwork = network => {
   let currentNetwork = network || DEVELOPMENT;
   if (network === QA || network === NIGHTLY || network === SELFNODE) {
-    currentNetwork = DEVELOPMENT;
+    currentNetwork = ITN_BALANCE_CHECK;
   }
   return currentNetwork;
-}
+};
+
+const getBuildLabel = () => {
+  const networkLabel = isMainnet ? '' : ` ${networkPrettyNames[NETWORK]}`;
+  let buildLabel = `Daedalus${networkLabel} (${version}#${BUILD_NUMBER})`;
+  if (!isProduction) buildLabel += ` ${upperFirst(CURRENT_NODE_ENV)}`;
+  return buildLabel;
+};
 
 // environment variables
 const CURRENT_NODE_ENV = process.env.NODE_ENV || DEVELOPMENT;
@@ -36,6 +45,7 @@ const isProduction = CURRENT_NODE_ENV === PRODUCTION;
 const isMainnet = NETWORK === MAINNET;
 const isStaging = NETWORK === STAGING;
 const isTestnet = NETWORK === TESTNET;
+const isIncentivizedTestnet = NETWORK === ITN_BALANCE_CHECK;
 const isDevelopment = NETWORK === DEVELOPMENT;
 const isWatchMode = process.env.IS_WATCH_MODE;
 const API_VERSION = process.env.API_VERSION || 'dev';
@@ -49,12 +59,7 @@ const ram = os.totalmem();
 const isBlankScreenFixActive = includes(process.argv.slice(1), '--safe-mode');
 const BUILD = process.env.BUILD_NUMBER || 'dev';
 const BUILD_NUMBER = uniq([API_VERSION, BUILD]).join('.');
-const BUILD_LABEL = (() => {
-  const networkLabel = !(isMainnet || isDev) ? ` ${upperFirst(NETWORK)}` : '';
-  let buildLabel = `Daedalus${networkLabel} (${version}#${BUILD_NUMBER})`;
-  if (!isProduction) buildLabel += ` ${CURRENT_NODE_ENV}`;
-  return buildLabel;
-})();
+const BUILD_LABEL = getBuildLabel();
 const INSTALLER_VERSION = uniq([API_VERSION, BUILD]).join('.');
 const MOBX_DEV_TOOLS = process.env.MOBX_DEV_TOOLS || false;
 const isMacOS = PLATFORM === MAC_OS;
@@ -75,6 +80,7 @@ export const environment: Environment = Object.assign(
     isMainnet,
     isStaging,
     isTestnet,
+    isIncentivizedTestnet,
     isDevelopment,
     isWatchMode,
     build: BUILD,
