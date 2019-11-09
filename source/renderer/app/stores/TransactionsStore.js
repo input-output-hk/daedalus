@@ -200,16 +200,12 @@ export default class TransactionsStore extends Store {
     walletId: string,
     transactionId: string,
   }) => {
-    // reset deleteTransactionRequest to clear previous errors
-    this.deleteTransactionRequest.reset();
-
     const wallet = this.stores.wallets.getWalletById(walletId);
     if (!wallet) {
       throw new Error(
         'Active wallet required before deleting a pending transaction.'
       );
     }
-
     const { isLegacy } = wallet;
     await this.deleteTransactionRequest.execute({
       walletId,
