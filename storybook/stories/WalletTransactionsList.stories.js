@@ -22,6 +22,7 @@ storiesOf('WalletTransactionsList', module)
 
   .add('transactions grouped by days', () => (
     <WalletTransactionsList
+      currentLocale="en-US"
       transactions={[
         generateTransaction(
           TransactionTypes.INCOME,
@@ -68,6 +69,7 @@ storiesOf('WalletTransactionsList', module)
 
   .add('confirmed and pending transactions', () => (
     <WalletTransactionsList
+      currentLocale="en-US"
       transactions={[
         generateTransaction(
           TransactionTypes.INCOME,
@@ -102,6 +104,7 @@ storiesOf('WalletTransactionsList', module)
 
   .add('rendering many transactions', () => (
     <WalletTransactionsList
+      currentLocale="en-US"
       isRenderingAsVirtualList
       isRestoreActive={false}
       transactions={generateMultipleTransactions(500)}
@@ -117,6 +120,7 @@ storiesOf('WalletTransactionsList', module)
 
   .add('transactions with unresolved income addresses', () => (
     <WalletTransactionsList
+      currentLocale="en-US"
       isRenderingAsVirtualList
       deletePendingTransaction={() => {}}
       isRestoreActive={false}
@@ -147,6 +151,7 @@ storiesOf('WalletTransactionsList', module)
 
   .add('transactions without income addresses', () => (
     <WalletTransactionsList
+      currentLocale="en-US"
       isRenderingAsVirtualList
       deletePendingTransaction={() => {}}
       isRestoreActive={false}

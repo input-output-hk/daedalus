@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { get, includes, upperFirst, capitalize } from 'lodash';
+import { get, includes, upperFirst } from 'lodash';
 import { defineMessages, intlShape } from 'react-intl';
 import classNames from 'classnames';
 import CopyToClipboard from 'react-copy-to-clipboard';
@@ -635,7 +635,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
               </tr>
               <tr>
                 <th>{intl.formatMessage(messages.cardanoNetwork)}:</th>
-                <td>{capitalize(cardanoNetwork)}</td>
+                <td>{cardanoNetwork}</td>
               </tr>
               <tr>
                 <th>{intl.formatMessage(messages.stateDirectoryPath)}:</th>

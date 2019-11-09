@@ -20,6 +20,7 @@ import type { TransactionState } from '../../../domains/WalletTransaction';
 import { getNetworkExplorerUrl } from '../../../utils/network';
 import { PENDING_TIME_LIMIT } from '../../../config/txnsConfig';
 import CancelTransactionConfirmationDialog from './CancelTransactionConfirmationDialog';
+import { ITN_BALANCE_CHECK } from '../../../../../common/types/environment.types';
 
 /* eslint-disable consistent-return */
 
@@ -145,6 +146,7 @@ type Props = {
   onOpenExternalLink: ?Function,
   walletId: string,
   isDeletingTransaction: boolean,
+  currentLocale: string,
 };
 
 type State = {
@@ -166,10 +168,22 @@ export default class Transaction extends Component<Props, State> {
   }
 
   handleOpenExplorer(type: string, param: string, e: Event) {
-    const { onOpenExternalLink, network } = this.props;
+    const { onOpenExternalLink, network, currentLocale } = this.props;
+    let queryStringPrefix = '';
+    let localePrefix = '';
+    let typeValue = type;
+
+    if (network === ITN_BALANCE_CHECK) {
+      queryStringPrefix = '?id=';
+      localePrefix = `/${currentLocale.substr(0, 2)}`;
+      if (type === 'tx') typeValue = 'transaction';
+    }
+
     if (onOpenExternalLink) {
       e.stopPropagation();
-      const link = `${getNetworkExplorerUrl(network)}/${type}/${param}`;
+      const link = `${getNetworkExplorerUrl(
+        network
+      )}${localePrefix}/${typeValue}/${queryStringPrefix}${param}`;
       onOpenExternalLink(link);
     }
   }

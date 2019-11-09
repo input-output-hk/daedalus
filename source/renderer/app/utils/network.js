@@ -3,6 +3,7 @@ import {
   MAINNET_EXPLORER_URL,
   STAGING_EXPLORER_URL,
   TESTNET_EXPLORER_URL,
+  ITN_EXPLORER_URL,
   DEVELOPMENT_EKG_URL,
   STAGING_EKG_URL,
   TESTNET_EKG_URL,
@@ -23,6 +24,7 @@ import {
   STAGING,
   TESTNET,
   DEVELOPMENT,
+  ITN_BALANCE_CHECK,
 } from '../../../common/types/environment.types';
 
 export const getNetworkExplorerUri = (network: string): string => {
@@ -37,12 +39,19 @@ export const getNetworkExplorerUri = (network: string): string => {
   if (network === TESTNET) {
     explorerUrl = TESTNET_EXPLORER_URL;
   }
+  if (network === ITN_BALANCE_CHECK) {
+    explorerUrl = ITN_EXPLORER_URL;
+  }
   return explorerUrl; // sets default to mainnet incase env.NETWORK is undefined
 };
 
 export const getNetworkExplorerUrl = (network: string): string => {
   const protocol =
-    network === MAINNET || network === DEVELOPMENT ? 'https://' : 'http://';
+    network === MAINNET ||
+    network === DEVELOPMENT ||
+    network === ITN_BALANCE_CHECK
+      ? 'https://'
+      : 'http://';
   const uri = getNetworkExplorerUri(network);
   return `${protocol}${uri}`;
 };

@@ -42,7 +42,7 @@ export default class WalletSummaryPage extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { app, wallets, transactions } = this.props.stores;
+    const { app, wallets, transactions, profile } = this.props.stores;
     const {
       openExternalLink,
       environment: { network },
@@ -57,6 +57,7 @@ export default class WalletSummaryPage extends Component<Props> {
       deleteTransactionRequest,
     } = transactions;
     const wallet = wallets.active;
+    const { currentLocale } = profile;
     // Guard against potential null values
     if (!wallet)
       throw new Error('Active wallet required for WalletSummaryPage.');
@@ -91,6 +92,7 @@ export default class WalletSummaryPage extends Component<Props> {
           onOpenExternalLink={openExternalLink}
           onShowMoreTransactions={this.handleShowMoreTransaction}
           totalAvailable={totalAvailable}
+          currentLocale={currentLocale}
         />
       );
     } else if (!hasAny) {
