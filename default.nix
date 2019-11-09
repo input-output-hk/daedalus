@@ -315,16 +315,16 @@ let
         large = ./installers/icons/testnet/1024x1024.png;
       };
       selfnode = {
-        small = ./installers/icons/staging/64x64.png;
-        large = ./installers/icons/staging/1024x1024.png;
+        small = ./installers/icons/selfnode/64x64.png;
+        large = ./installers/icons/selfnode/1024x1024.png;
       };
       qa = {
-        small = ./installers/icons/staging/64x64.png;
-        large = ./installers/icons/staging/1024x1024.png;
+        small = ./installers/icons/qa/64x64.png;
+        large = ./installers/icons/qa/1024x1024.png;
       };
       nightly = {
-        small = ./installers/icons/staging/64x64.png;
-        large = ./installers/icons/staging/1024x1024.png;
+        small = ./installers/icons/nightly/64x64.png;
+        large = ./installers/icons/nightly/1024x1024.png;
       };
     };
     namespaceHelper = pkgs.writeScriptBin "namespaceHelper" ''
