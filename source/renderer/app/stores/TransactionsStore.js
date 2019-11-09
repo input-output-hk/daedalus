@@ -14,7 +14,10 @@ import {
   WalletTransaction,
   TransactionTypes,
 } from '../domains/WalletTransaction';
-import type { GetTransactionsResponse } from '../api/transactions/types';
+import type {
+  DeleteTransactionRequest,
+  GetTransactionsResponse,
+} from '../api/transactions/types';
 import type { UnconfirmedAmount } from '../types/unconfirmedAmountType';
 import { isValidAmountInLovelaces } from '../utils/validations';
 import { TX_UNCONFIRMED_THRESHOLD } from '../config/numbersConfig';
@@ -46,6 +49,10 @@ export default class TransactionsStore extends Store {
     recentRequest: Request<GetTransactionsResponse>,
     allRequest: Request<GetTransactionsResponse>,
   }> = [];
+  @observable
+  deleteTransactionRequest: Request<DeleteTransactionRequest> = new Request(
+    this.api.ada.deleteTransaction
+  );
 
   @observable _searchOptionsForWallets = {};
 
@@ -184,6 +191,28 @@ export default class TransactionsStore extends Store {
       ...transactionFeeRequest,
       walletBalance: wallet.amount,
     });
+  };
+
+  deletePendingTransaction = async ({
+    walletId,
+    transactionId,
+  }: {
+    walletId: string,
+    transactionId: string,
+  }) => {
+    const wallet = this.stores.wallets.getWalletById(walletId);
+    if (!wallet) {
+      throw new Error(
+        'Active wallet required before deleting a pending transaction.'
+      );
+    }
+    const { isLegacy } = wallet;
+    await this.deleteTransactionRequest.execute({
+      walletId,
+      transactionId,
+      isLegacy,
+    });
+    this.stores.wallets.refreshWalletsData();
   };
 
   validateAmount = (amountInLovelaces: string): Promise<boolean> =>

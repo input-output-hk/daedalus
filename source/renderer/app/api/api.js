@@ -30,6 +30,7 @@ import { getTransactionFee } from './transactions/requests/getTransactionFee';
 import { getTransactionHistory } from './transactions/requests/getTransactionHistory';
 import { getLegacyWalletTransactionHistory } from './transactions/requests/getLegacyWalletTransactionHistory';
 import { createTransaction } from './transactions/requests/createTransaction';
+import { deleteLegacyTransaction } from './transactions/requests/deleteLegacyTransaction';
 
 // Wallets requests
 import { changeSpendingPassword } from './wallets/requests/changeSpendingPassword';
@@ -103,6 +104,7 @@ import type {
   TransactionFee,
   GetTransactionFeeRequest,
   CreateTransactionRequest,
+  DeleteTransactionRequest,
   GetTransactionsRequest,
   GetTransactionsResponse,
 } from './transactions/types';
@@ -166,6 +168,7 @@ import type { FaultInjectionIpcRequest } from '../../../common/types/cardano-nod
 import { TlsCertificateNotValidError } from './nodes/errors';
 import { getSHA256HexForString } from './utils/hashing';
 import { getNewsHash } from './news/requests/getNewsHash';
+import { deleteTransaction } from './transactions/requests/deleteTransaction';
 
 export default class AdaApi {
   config: RequestConfig;
@@ -584,6 +587,33 @@ export default class AdaApi {
       } else {
         throw new GenericApiError();
       }
+    }
+  };
+
+  deleteTransaction = async (
+    request: DeleteTransactionRequest
+  ): Promise<void> => {
+    Logger.debug('AdaApi::deleteTransaction called', { parameters: request });
+    const { walletId, transactionId, isLegacy } = request;
+    try {
+      let response;
+      if (isLegacy) {
+        response = await deleteLegacyTransaction(this.config, {
+          walletId,
+          transactionId,
+        });
+      } else {
+        response = await deleteTransaction(this.config, {
+          walletId,
+          transactionId,
+        });
+      }
+      Logger.debug('AdaApi::deleteTransaction success', response);
+    } catch (error) {
+      Logger.error('AdaApi::deleteTransaction error', { error });
+      // In this particular call we don't need to handle the error in the UI
+      // The only reason transaction canceling would fail is if the transaction
+      // is no longer pending - in which case there is nothign we can do.
     }
   };
 
