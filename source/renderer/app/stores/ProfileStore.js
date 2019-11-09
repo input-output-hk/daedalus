@@ -264,9 +264,12 @@ export default class ProfileStore extends Store {
       this.stores.wallets.hasLoadedWallets &&
       dataLayerMigrationNotAccepted
     ) {
-      if (!this.stores.wallets.hasAnyWallets) {
-        // There are no wallets to migrate so we just need
-        // to set the data layer migration acceptance to true
+      if (
+        !this.stores.wallets.hasAnyWallets ||
+        this.environment.isIncentivizedTestnet
+      ) {
+        // There are no wallets to migrate or it's Incentivized Testnet:
+        // set the data layer migration acceptance to true
         // in order to prevent future data migration checks
         this._acceptDataLayerMigration();
       } else {

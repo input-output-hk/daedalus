@@ -47,18 +47,18 @@ API docs for pinned cardano-wallet version: https://input-output-hk.github.io/ca
 ### Selfnode
 
 1. Run `yarn nix:dev` from `daedalus`.
-2. Run `yarn dev` from the subsequent `nix-shell`
-3. Once Daedalus has started, and has gotten past the loading screen, run `yarn v2:wallet:importer` from a new terminal window. This is only required if you wish to import some funded wallets
+2. Run `yarn dev:itn` from the subsequent `nix-shell`
+3. Once Daedalus has started, and has gotten past the loading screen, run `yarn v2:wallet:importer` from a new terminal window. This is only required if you wish to import some funded wallets. It is also possible to import funded legacy wallets by running `yarn v2:legacy:importer` script.
 
 ### QA testnet
 
 1. Run `yarn nix:qa` from `daedalus`.
-2. Run `yarn dev` from the subsequent `nix-shell`
+2. Run `yarn dev:itn` from the subsequent `nix-shell`
 
 ### Nightly testnet
 
 1. Run `yarn nix:nightly` from `daedalus`.
-2. Run `yarn dev` from the subsequent `nix-shell`
+2. Run `yarn dev:itn` from the subsequent `nix-shell`
 
 ### V2 Known Issues
 - As network-info is stubbed, the NTP check will throw. Just disregard this for now.

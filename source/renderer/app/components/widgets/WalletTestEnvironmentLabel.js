@@ -35,6 +35,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Selfnode vx',
     description: 'Label for Selfnode with version.',
   },
+  itn_balance_check: {
+    id: 'test.environment.itnBalanceCheckLabel',
+    defaultMessage: '!!!Development vx',
+    description: 'Label for development with version.',
+  },
 });
 
 type Props = {

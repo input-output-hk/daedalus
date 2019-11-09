@@ -418,6 +418,7 @@
   "systemTime.error.supportPortalLink": "Support Portal",
   "systemTime.error.supportPortalLinkUrl": "https://daedaluswallet.io/ja/clock-sync/",
   "test.environment.developmentLabel": "開発",
+  "test.environment.itnBalanceCheckLabel": "インセンティブ付きテストネット - 模擬スナップショット",
   "test.environment.nightlyLabel": "!!!Nightly vx",
   "test.environment.qaLabel": "!!!QA vx",
   "test.environment.selfnodeLabel": "!!!Selfnode vx",
