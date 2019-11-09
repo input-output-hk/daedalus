@@ -91,5 +91,8 @@
   & > svg {
     height: 29px;
     width: 32px;
+    path {
+      fill: var(--theme-sidebar-category-networkInfo-text-color);
+    }
   }
 }
