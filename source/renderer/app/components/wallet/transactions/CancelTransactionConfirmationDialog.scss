@@ -1,3 +1,5 @@
+@import '../../../themes/mixins/loading-spinner';
+
 .component {
   color: var(--theme-dialog-text-color);
   font-family: var(--font-light);
@@ -13,5 +15,10 @@
 
   button {
     padding: 0 10px;
+  }
+
+  .isSubmitting {
+    box-shadow: none !important;
+    @include loading-spinner('../../../assets/images/spinner-light.svg');
   }
 }

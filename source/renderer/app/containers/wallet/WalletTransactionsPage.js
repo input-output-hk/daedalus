@@ -57,6 +57,7 @@ export default class WalletTransactionsPage extends Component<Props> {
       filtered,
       recent,
       deletePendingTransaction,
+      deleteTransactionRequest,
     } = stores.transactions;
 
     // Guard against potential null values
@@ -102,6 +103,7 @@ export default class WalletTransactionsPage extends Component<Props> {
           hasMoreToLoad={hasMoreToLoad()}
           onLoadMore={actions.transactions.loadMoreTransactions.trigger}
           walletId={activeWallet.id}
+          isDeletingTransaction={deleteTransactionRequest.isExecuting}
           formattedWalletAmount={formattedWalletAmount}
           onOpenExternalLink={openExternalLink}
           isRenderingAsVirtualList

@@ -49,6 +49,10 @@ export default class TransactionsStore extends Store {
     recentRequest: Request<GetTransactionsResponse>,
     allRequest: Request<GetTransactionsResponse>,
   }> = [];
+  @observable
+  deleteTransactionRequest: Request<DeleteTransactionRequest> = new Request(
+    this.api.ada.deleteTransaction
+  );
 
   @observable _searchOptionsForWallets = {};
 
@@ -189,19 +193,30 @@ export default class TransactionsStore extends Store {
     });
   };
 
-  deletePendingTransaction = async (
-    deleteTransactionRequest: DeleteTransactionRequest
-  ) => {
-    const { walletId } = deleteTransactionRequest;
-    const wallet = this.stores.wallets.getWalletById(walletId);
+  deletePendingTransaction = async ({
+    walletId,
+    transactionId,
+  }: {
+    walletId: string,
+    transactionId: string,
+  }) => {
+    // reset deleteTransactionRequest to clear previous errors
+    this.deleteTransactionRequest.reset();
 
+    const wallet = this.stores.wallets.getWalletById(walletId);
     if (!wallet) {
       throw new Error(
         'Active wallet required before deleting a pending transaction.'
       );
     }
-    deleteTransactionRequest.isLegacy = wallet.isLegacy;
-    return this.api.ada.deleteTransaction(deleteTransactionRequest);
+
+    const { isLegacy } = wallet;
+    await this.deleteTransactionRequest.execute({
+      walletId,
+      transactionId,
+      isLegacy,
+    });
+    this.stores.wallets.refreshWalletsData();
   };
 
   validateAmount = (amountInLovelaces: string): Promise<boolean> =>

@@ -60,6 +60,7 @@ storiesOf('WalletTransactionsList', module)
       isLoadingTransactions={false}
       hasMoreToLoad={false}
       walletId="test-wallet"
+      isDeletingTransaction={false}
       formattedWalletAmount={formattedWalletAmount}
       totalAvailable={5}
     />
@@ -93,6 +94,7 @@ storiesOf('WalletTransactionsList', module)
       isLoadingTransactions={false}
       hasMoreToLoad={false}
       walletId="test-wallet"
+      isDeletingTransaction={false}
       formattedWalletAmount={formattedWalletAmount}
       totalAvailable={3}
     />
@@ -107,6 +109,7 @@ storiesOf('WalletTransactionsList', module)
       isLoadingTransactions={false}
       hasMoreToLoad={false}
       walletId="test-wallet"
+      isDeletingTransaction={false}
       formattedWalletAmount={formattedWalletAmount}
       totalAvailable={500}
     />
@@ -136,6 +139,7 @@ storiesOf('WalletTransactionsList', module)
       isLoadingTransactions={false}
       hasMoreToLoad={false}
       walletId="test-wallet"
+      isDeletingTransaction={false}
       formattedWalletAmount={formattedWalletAmount}
       totalAvailable={3}
     />
@@ -167,6 +171,7 @@ storiesOf('WalletTransactionsList', module)
       isLoadingTransactions={false}
       hasMoreToLoad={false}
       walletId="test-wallet"
+      isDeletingTransaction={false}
       formattedWalletAmount={formattedWalletAmount}
       totalAvailable={3}
     />

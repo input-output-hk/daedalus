@@ -144,6 +144,7 @@ type Props = {
   onDetailsToggled: ?Function,
   onOpenExternalLink: ?Function,
   walletId: string,
+  isDeletingTransaction: boolean,
 };
 
 type State = {
@@ -272,7 +273,7 @@ export default class Transaction extends Component<Props, State> {
       formattedWalletAmount,
       onOpenExternalLink,
       isExpanded,
-      network,
+      isDeletingTransaction,
     } = this.props;
     const { intl } = this.context;
 
@@ -454,7 +455,7 @@ export default class Transaction extends Component<Props, State> {
 
         {showConfirmationDialog && (
           <CancelTransactionConfirmationDialog
-            network={network}
+            isSubmitting={isDeletingTransaction}
             onCancel={this.hideConfirmationDialog}
             onConfirm={this.deletePendingTransaction}
           />

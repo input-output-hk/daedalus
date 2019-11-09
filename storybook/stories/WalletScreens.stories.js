@@ -176,6 +176,7 @@ storiesOf('WalletScreens', module)
       isRestoreActive={boolean('isRestoreActive', false)}
       hasMoreToLoad={false}
       walletId="test-wallet"
+      isDeletingTransaction={false}
       formattedWalletAmount={formattedWalletAmount}
       totalAvailable={
         number('Transactions Sent', 1) + number('Transactions Received', 1)

@@ -605,7 +605,9 @@ export default class AdaApi {
       Logger.debug('AdaApi::deleteTransaction success', response);
     } catch (error) {
       Logger.error('AdaApi::deleteTransaction error', { error });
-      throw new GenericApiError();
+      // In this particular call we don't need to handle the error in the UI
+      // The only reason transaction canceling would fail is if the transaction
+      // is no longer pending - in which case there is nothign we can do.
     }
   };
 

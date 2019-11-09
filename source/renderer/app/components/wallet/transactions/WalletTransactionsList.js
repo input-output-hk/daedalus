@@ -56,6 +56,7 @@ type Props = {
   showMoreTransactionsButton?: boolean,
   transactions: Array<WalletTransaction>,
   walletId: string,
+  isDeletingTransaction: boolean,
 };
 
 const DATE_FORMAT = 'YYYY-MM-DD';
@@ -185,6 +186,7 @@ export default class WalletTransactionsList extends Component<Props> {
       network,
       onOpenExternalLink,
       walletId,
+      isDeletingTransaction,
     } = this.props;
     const { isFirstInGroup, isLastInGroup, tx } = data;
     const txClasses = classnames([
@@ -206,6 +208,7 @@ export default class WalletTransactionsList extends Component<Props> {
           onOpenExternalLink={onOpenExternalLink}
           state={tx.state}
           walletId={walletId}
+          isDeletingTransaction={isDeletingTransaction}
         />
       </div>
     );

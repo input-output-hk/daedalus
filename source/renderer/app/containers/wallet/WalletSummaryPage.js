@@ -54,6 +54,7 @@ export default class WalletSummaryPage extends Component<Props> {
       recentTransactionsRequest,
       unconfirmedAmount,
       deletePendingTransaction,
+      deleteTransactionRequest,
     } = transactions;
     const wallet = wallets.active;
     // Guard against potential null values
@@ -80,6 +81,7 @@ export default class WalletSummaryPage extends Component<Props> {
           hasMoreToLoad={false}
           deletePendingTransaction={deletePendingTransaction}
           walletId={wallet.id}
+          isDeletingTransaction={deleteTransactionRequest.isExecuting}
           isRestoreActive={isRestoreActive}
           formattedWalletAmount={formattedWalletAmount}
           showMoreTransactionsButton={

@@ -42,6 +42,7 @@ const messages = defineMessages({
 });
 
 type Props = {
+  isSubmitting: boolean,
   onConfirm: Function,
   onCancel: Function,
 };
@@ -54,7 +55,7 @@ export default class CancelTransactionConfirmationDialog extends Component<Props
 
   render() {
     const { intl } = this.context;
-    const { onConfirm, onCancel } = this.props;
+    const { isSubmitting, onConfirm, onCancel } = this.props;
 
     const dialogClasses = classnames([styles.component, 'ConfirmDialog']);
 
@@ -62,18 +63,21 @@ export default class CancelTransactionConfirmationDialog extends Component<Props
       'confirmButton',
       'attention',
       styles.confirmButton,
+      isSubmitting ? styles.isSubmitting : null,
     ]);
 
     const actions = [
       {
         className: 'cancelButton',
         label: intl.formatMessage(messages.cancelButtonLabel),
+        disabled: isSubmitting,
         onClick: onCancel,
       },
       {
         className: confirmButtonClasses,
         label: intl.formatMessage(messages.confirmButtonLabel),
         primary: true,
+        disabled: isSubmitting,
         onClick: onConfirm,
       },
     ];
@@ -84,7 +88,7 @@ export default class CancelTransactionConfirmationDialog extends Component<Props
         title={intl.formatMessage(messages.headline)}
         actions={actions}
         closeOnOverlayClick={false}
-        onClose={onCancel}
+        onClose={!isSubmitting && onCancel}
       >
         <p>{intl.formatMessage(messages.content1)}</p>
         <p>
