@@ -1,6 +1,6 @@
 // @flow
 import os from 'os';
-import { uniq, get, includes } from 'lodash';
+import { uniq, get, includes, upperFirst } from 'lodash';
 import { version } from '../../package.json';
 import type { Environment } from '../common/types/environment.types';
 import {
@@ -30,11 +30,9 @@ const evaluateNetwork = network => {
 };
 
 const getBuildLabel = () => {
-  const networkLabel = !(isMainnet || isDev)
-    ? ` ${networkPrettyNames[NETWORK]}`
-    : '';
+  const networkLabel = isMainnet ? '' : ` ${networkPrettyNames[NETWORK]}`;
   let buildLabel = `Daedalus${networkLabel} (${version}#${BUILD_NUMBER})`;
-  if (!isProduction) buildLabel += ` ${CURRENT_NODE_ENV}`;
+  if (!isProduction) buildLabel += ` ${upperFirst(CURRENT_NODE_ENV)}`;
   return buildLabel;
 };
 
