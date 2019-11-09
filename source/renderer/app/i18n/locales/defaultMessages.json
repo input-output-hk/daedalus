@@ -9153,13 +9153,13 @@
         "description": "Message for the wallet address copy success notification.",
         "end": {
           "column": 3,
-          "line": 18
+          "line": 20
         },
         "file": "source/renderer/app/containers/status/DaedalusDiagnosticsDialog.js",
         "id": "daedalus.diagnostics.dialog.stateDirectoryCopyNotificationMessage",
         "start": {
           "column": 41,
-          "line": 14
+          "line": 16
         }
       }
     ],
