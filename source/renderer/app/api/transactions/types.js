@@ -93,7 +93,7 @@ export type CreateTransactionRequest = {
 export type DeleteTransactionRequest = {
   walletId: string,
   transactionId: string,
-  isLegacy?: boolean,
+  isLegacy: boolean,
 };
 
 export type GetTransactionsResponse = {
