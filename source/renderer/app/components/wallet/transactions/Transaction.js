@@ -360,7 +360,98 @@ export default class Transaction extends Component<Props, State> {
     };
 
     return (
-      <div>
+      <Fragment>
+        <div
+          onClick={this.toggleDetails.bind(this)}
+          className={componentStyles}
+          role="presentation"
+          aria-hidden
+        >
+          <div className={styles.toggler}>
+            <TransactionTypeIcon
+              exceedsPendingTimeLimit={exceedsPendingTimeLimit}
+              iconType={iconType}
+            />
+
+            <div className={styles.togglerContent}>
+              <div className={styles.header}>
+                <div className={styles.title}>
+                  {data.type === TransactionTypes.EXPEND
+                    ? intl.formatMessage(messages.sent, { currency })
+                    : intl.formatMessage(messages.received, { currency })}
+                </div>
+                <div className={styles.amount}>
+                  {// hide currency (we are showing symbol instead)
+                  formattedWalletAmount(data.amount, false)}
+                  <SVGInline svg={symbol} className={styles.currencySymbol} />
+                </div>
+              </div>
+
+              <div className={styles.details}>
+                <div className={styles.type}>
+                  {intl.formatMessage(messages.type, { currency })},{' '}
+                  {moment(data.date).format('hh:mm:ss A')}
+                </div>
+                {this.renderTxnStateTag()}
+              </div>
+            </div>
+          </div>
+
+          {/* ==== Toggleable Transaction Details ==== */}
+          <div className={contentStyles}>
+            <div
+              className={detailsStyles}
+              onClick={event => event.stopPropagation()}
+              role="presentation"
+              aria-hidden
+            >
+              <div>
+                <h2>{intl.formatMessage(messages.fromAddresses)}</h2>
+
+                {fromAddresses(data.addresses.from, data.id)}
+
+                <h2>{intl.formatMessage(messages.toAddresses)}</h2>
+                {data.addresses.to.map((address, addressIndex) => (
+                  <div
+                    // eslint-disable-next-line react/no-array-index-key
+                    key={`${data.id}-to-${address}-${addressIndex}`}
+                    className={styles.addressRow}
+                  >
+                    <span
+                      role="presentation"
+                      aria-hidden
+                      className={styles.address}
+                      onClick={this.handleOpenExplorer.bind(
+                        this,
+                        'address',
+                        address
+                      )}
+                    >
+                      {address}
+                      <SVGInline svg={externalLinkIcon} />
+                    </span>
+                  </div>
+                ))}
+
+                <h2>{intl.formatMessage(messages.transactionId)}</h2>
+                <div className={styles.transactionIdRow}>
+                  <span
+                    role="presentation"
+                    aria-hidden
+                    className={styles.transactionId}
+                    onClick={this.handleOpenExplorer.bind(this, 'tx', data.id)}
+                  >
+                    {data.id}
+                    <SVGInline svg={externalLinkIcon} />
+                  </span>
+                </div>
+                {this.renderCancelPendingTxnContent()}
+              </div>
+            </div>
+            <SVGInline svg={arrow} className={arrowStyles} />
+          </div>
+        </div>
+
         {showConfirmationDialog && (
           <CancelTransactionConfirmationDialog
             network={network}
@@ -368,103 +459,7 @@ export default class Transaction extends Component<Props, State> {
             onConfirm={this.deletePendingTransaction}
           />
         )}
-        {!showConfirmationDialog && (
-          <div
-            onClick={this.toggleDetails.bind(this)}
-            className={componentStyles}
-            role="presentation"
-            aria-hidden
-          >
-            <div className={styles.toggler}>
-              <TransactionTypeIcon
-                exceedsPendingTimeLimit={exceedsPendingTimeLimit}
-                iconType={iconType}
-              />
-
-              <div className={styles.togglerContent}>
-                <div className={styles.header}>
-                  <div className={styles.title}>
-                    {data.type === TransactionTypes.EXPEND
-                      ? intl.formatMessage(messages.sent, { currency })
-                      : intl.formatMessage(messages.received, { currency })}
-                  </div>
-                  <div className={styles.amount}>
-                    {// hide currency (we are showing symbol instead)
-                    formattedWalletAmount(data.amount, false)}
-                    <SVGInline svg={symbol} className={styles.currencySymbol} />
-                  </div>
-                </div>
-
-                <div className={styles.details}>
-                  <div className={styles.type}>
-                    {intl.formatMessage(messages.type, { currency })},{' '}
-                    {moment(data.date).format('hh:mm:ss A')}
-                  </div>
-                  {this.renderTxnStateTag()}
-                </div>
-              </div>
-            </div>
-
-            {/* ==== Toggleable Transaction Details ==== */}
-            <div className={contentStyles}>
-              <div
-                className={detailsStyles}
-                onClick={event => event.stopPropagation()}
-                role="presentation"
-                aria-hidden
-              >
-                <div>
-                  <h2>{intl.formatMessage(messages.fromAddresses)}</h2>
-
-                  {fromAddresses(data.addresses.from, data.id)}
-
-                  <h2>{intl.formatMessage(messages.toAddresses)}</h2>
-                  {data.addresses.to.map((address, addressIndex) => (
-                    <div
-                      // eslint-disable-next-line react/no-array-index-key
-                      key={`${data.id}-to-${address}-${addressIndex}`}
-                      className={styles.addressRow}
-                    >
-                      <span
-                        role="presentation"
-                        aria-hidden
-                        className={styles.address}
-                        onClick={this.handleOpenExplorer.bind(
-                          this,
-                          'address',
-                          address
-                        )}
-                      >
-                        {address}
-                        <SVGInline svg={externalLinkIcon} />
-                      </span>
-                    </div>
-                  ))}
-
-                  <h2>{intl.formatMessage(messages.transactionId)}</h2>
-                  <div className={styles.transactionIdRow}>
-                    <span
-                      role="presentation"
-                      aria-hidden
-                      className={styles.transactionId}
-                      onClick={this.handleOpenExplorer.bind(
-                        this,
-                        'tx',
-                        data.id
-                      )}
-                    >
-                      {data.id}
-                      <SVGInline svg={externalLinkIcon} />
-                    </span>
-                  </div>
-                  {this.renderCancelPendingTxnContent()}
-                </div>
-              </div>
-              <SVGInline svg={arrow} className={arrowStyles} />
-            </div>
-          </div>
-        )}
-      </div>
+      </Fragment>
     );
   }
 }

@@ -3,12 +3,12 @@ import type { RequestConfig } from '../../common/types';
 import type { DeleteTransactionRequest } from '../types';
 import { request } from '../../utils/request';
 
-export const deleteTransaction = (
+export const deleteLegacyTransaction = (
   config: RequestConfig,
   { walletId, transactionId }: DeleteTransactionRequest
 ): Promise<*> =>
   request({
     method: 'DELETE',
-    path: `/v2/wallets/${walletId}/transactions/${transactionId}`,
+    path: `/v2/byron-wallets/${walletId}/transactions/${transactionId}`,
     ...config,
   });

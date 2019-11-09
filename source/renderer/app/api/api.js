@@ -28,7 +28,7 @@ import { getTransactionFee } from './transactions/requests/getTransactionFee';
 import { getTransactionHistory } from './transactions/requests/getTransactionHistory';
 import { getLegacyWalletTransactionHistory } from './transactions/requests/getLegacyWalletTransactionHistory';
 import { createTransaction } from './transactions/requests/createTransaction';
-import { deleteTransaction } from './transactions/requests/deleteTransaction';
+import { deleteLegacyTransaction } from './transactions/requests/deleteLegacyTransaction';
 
 // Wallets requests
 import { changeSpendingPassword } from './wallets/requests/changeSpendingPassword';
@@ -589,7 +589,7 @@ export default class AdaApi {
     Logger.debug('AdaApi::deleteTransaction called', { parameters: request });
     const { walletId, transactionId } = request;
     try {
-      const response: void = await deleteTransaction(this.config, {
+      const response: void = await deleteLegacyTransaction(this.config, {
         walletId,
         transactionId,
       });
