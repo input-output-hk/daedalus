@@ -38,6 +38,7 @@ const getBuildLabel = () => {
 
 // environment variables
 const CURRENT_NODE_ENV = process.env.NODE_ENV || DEVELOPMENT;
+const RAW_NETWORK = process.env.NETWORK || '';
 const NETWORK = evaluateNetwork(process.env.NETWORK);
 const isDev = CURRENT_NODE_ENV === DEVELOPMENT;
 const isTest = CURRENT_NODE_ENV === TEST;
@@ -71,6 +72,7 @@ export const environment: Environment = Object.assign(
   {},
   {
     network: NETWORK,
+    rawNetwork: RAW_NETWORK,
     apiVersion: API_VERSION,
     mobxDevTools: MOBX_DEV_TOOLS,
     current: CURRENT_NODE_ENV,

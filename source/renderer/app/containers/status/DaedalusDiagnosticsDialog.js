@@ -3,6 +3,8 @@ import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import ReactModal from 'react-modal';
+import { capitalize } from 'lodash';
+import { networkPrettyNames } from '../../../../common/types/environment.types';
 import DaedalusDiagnostics from '../../components/status/DaedalusDiagnostics';
 import styles from './DaedalusDiagnosticsDialog.scss';
 import GenericNotification from '../../components/notifications/GenericNotification';
@@ -86,6 +88,12 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
       availableDiskSpace: diskSpaceAvailable,
     };
 
+    const { network, rawNetwork } = environment;
+    let cardanoNetwork = networkPrettyNames[network];
+    if (rawNetwork && network !== rawNetwork) {
+      cardanoNetwork += ` (${capitalize(rawNetwork)})`;
+    }
+
     const coreInfo = {
       daedalusVersion: environment.version,
       daedalusProcessID: environment.rendererProcessID,
@@ -94,7 +102,7 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
       cardanoVersion: environment.buildNumber,
       cardanoProcessID: cardanoNodeID,
       cardanoAPIPort: tlsConfig ? tlsConfig.port : 0,
-      cardanoNetwork: environment.network,
+      cardanoNetwork,
       daedalusStateDirectoryPath: stateDirectoryPath,
     };
 
