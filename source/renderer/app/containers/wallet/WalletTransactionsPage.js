@@ -59,6 +59,7 @@ export default class WalletTransactionsPage extends Component<Props> {
       deletePendingTransaction,
       deleteTransactionRequest,
     } = stores.transactions;
+    const { currentLocale } = stores.profile;
 
     // Guard against potential null values
     if (!searchOptions || !activeWallet) return null;
@@ -106,6 +107,7 @@ export default class WalletTransactionsPage extends Component<Props> {
           isDeletingTransaction={deleteTransactionRequest.isExecuting}
           formattedWalletAmount={formattedWalletAmount}
           onOpenExternalLink={openExternalLink}
+          currentLocale={currentLocale}
           isRenderingAsVirtualList
         />
       );

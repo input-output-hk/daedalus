@@ -151,6 +151,7 @@ storiesOf('WalletScreens', module)
 
   .add('Transactions', () => (
     <WalletTransactionsList
+      currentLocale="en-US"
       transactions={[
         ...Array.from(Array(number('Transactions Sent', 1))).map((x, i) =>
           generateTransaction(
