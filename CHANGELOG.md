@@ -25,6 +25,12 @@ Changelog
 - Fixed green Cardano theme white color and borders color ([PR 1584](https://github.com/input-output-hk/daedalus/pull/1584))
 - Fixed flat button color  ([PR 1586](https://github.com/input-output-hk/daedalus/pull/1586))
 
+## 0.15.1
+
+### Fixes
+
+- Fixed newsfeed content loading issue ([PR 1653](https://github.com/input-output-hk/daedalus/pull/1653))
+
 ## 0.15.0
 
 ### Features
