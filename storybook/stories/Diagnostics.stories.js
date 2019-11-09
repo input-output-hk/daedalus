@@ -60,6 +60,8 @@ storiesOf('Diagnostics', module)
       latestLocalBlockTimestamp={280719}
       latestNetworkBlockTimestamp={280719}
       nodeConnectionError={null}
+      localTip={{ epoch: 123, slot: 13400 }}
+      networkTip={{ epoch: 123, slot: 13400 }}
       localBlockHeight={42539}
       networkBlockHeight={42539}
       onForceCheckLocalTimeDifference={() => null}

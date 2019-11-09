@@ -230,6 +230,18 @@
         padding-top: 0;
       }
     }
+
+    &.blockchainHeightInfo {
+      span {
+        opacity: 0.7;
+
+        & + span {
+          border-left: 1px solid var(--theme-network-window-border-color);
+          margin-left: 6px;
+          padding-left: 6px;
+        }
+      }
+    }
   }
 
   span {

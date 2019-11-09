@@ -11,9 +11,11 @@ import type { StakePool } from '../api/staking/types';
 
 export const WalletSyncStateStatuses: {
   RESTORING: SyncStateStatus,
+  SYNCING: SyncStateStatus,
   READY: SyncStateStatus,
 } = {
   RESTORING: 'syncing', // @API TODO - calculate if the wallet is restoring!
+  SYNCING: 'syncing',
   READY: 'ready',
 };
 

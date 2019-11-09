@@ -1,25 +1,25 @@
 // @flow
 import { get } from 'lodash';
 import AdaApi from '../api';
-// import { getNodeInfo } from '../nodes/requests/getNodeInfo';
+import { getNetworkInfo } from '../network/requests/getNetworkInfo';
 import { getLatestAppVersion } from '../nodes/requests/getLatestAppVersion';
 import { GenericApiError } from '../common/errors';
 import { Logger } from '../../utils/logging';
-import type { NodeInfoQueryParams } from '../nodes/requests/getNodeInfo';
+import type { NetworkInfoQueryParams } from '../network/requests/getNetworkInfo';
+import type {
+  GetNetworkInfoResponse,
+  NetworkInfoResponse,
+} from '../network/types';
 import type {
   LatestAppVersionInfoResponse,
-  // NodeInfoResponse,
-  GetNetworkStatusResponse,
   GetLatestAppVersionResponse,
 } from '../nodes/types';
 import type { GetNewsResponse } from '../news/types';
 
 let LATEST_APP_VERSION = null;
 let LOCAL_TIME_DIFFERENCE = 0;
-let LOCAL_BLOCK_HEIGHT = null;
-let NETWORK_BLOCK_HEIGHT = null;
+let SYNC_PROGRESS = null;
 let NEXT_ADA_UPDATE = null;
-let SUBSCRIPTION_STATUS = null;
 let APPLICATION_VERSION = null;
 let FAKE_NEWSFEED_JSON: ?GetNewsResponse;
 
@@ -27,48 +27,40 @@ export default (api: AdaApi) => {
   api.getLocalTimeDifference = async () =>
     Promise.resolve(LOCAL_TIME_DIFFERENCE);
 
-  api.getNetworkStatus = async (
-    queryInfoParams?: NodeInfoQueryParams
-  ): Promise<GetNetworkStatusResponse> => {
-    Logger.debug('AdaApi::getNetworkStatus (PATCHED) called');
+  api.getNetworkInfo = async (
+    queryInfoParams?: NetworkInfoQueryParams
+  ): Promise<GetNetworkInfoResponse> => {
+    Logger.debug('AdaApi::getNetworkInfo (PATCHED) called');
     try {
-      /* @API TODO: Uncomment once implemented
-      const nodeInfo: NodeInfoResponse = await getNodeInfo(
+      const networkInfo: NetworkInfoResponse = await getNetworkInfo(
         api.config,
         queryInfoParams
       );
-      Logger.debug('AdaApi::getNetworkStatus (PATCHED) success', {
-        nodeInfo,
+      Logger.debug('AdaApi::getNetworkInfo (PATCHED) success', {
+        networkInfo,
       });
 
-      const {
-        blockchainHeight,
-        subscriptionStatus,
-        syncProgress,
-        localBlockchainHeight,
-      } = nodeInfo; */
-
-      const blockchainHeight = { quantity: 100 };
-      const subscriptionStatus = 'subscribed';
-      const syncProgress = { quantity: 1 };
-      const localTimeInformation = { status: 'available' };
-      const localBlockchainHeight = { quantity: 100 };
+      /* eslint-disable-next-line camelcase */
+      const { sync_progress, node_tip, network_tip } = networkInfo;
+      const syncProgress =
+        get(sync_progress, 'status') === 'ready'
+          ? 100
+          : get(sync_progress, 'quantity', 0);
 
       // extract relevant data before sending to NetworkStatusStore
       const response = {
-        subscriptionStatus: SUBSCRIPTION_STATUS || subscriptionStatus,
-        syncProgress: syncProgress.quantity,
-        blockchainHeight:
-          NETWORK_BLOCK_HEIGHT || get(blockchainHeight, 'quantity', 0),
-        localBlockchainHeight:
-          LOCAL_BLOCK_HEIGHT || localBlockchainHeight.quantity,
+        syncProgress: SYNC_PROGRESS || syncProgress,
+        localTip: {
+          epoch: get(node_tip, 'epoch_number', 0),
+          slot: get(node_tip, 'slot_number', 0),
+        },
+        networkTip: {
+          epoch: get(network_tip, 'epoch_number', 0),
+          slot: get(network_tip, 'slot_number', 0),
+        },
         localTimeInformation: {
-          status: localTimeInformation.status,
-          difference: get(
-            localTimeInformation,
-            'localTimeDifference.quantity',
-            LOCAL_TIME_DIFFERENCE
-          ),
+          status: 'available',
+          difference: 0 || LOCAL_TIME_DIFFERENCE,
         },
       };
 
@@ -83,13 +75,17 @@ export default (api: AdaApi) => {
           })
         : response;
     } catch (error) {
-      Logger.error('AdaApi::getNetworkStatus (PATCHED) error', { error });
+      Logger.error('AdaApi::getNetworkInfo (PATCHED) error', { error });
       throw new GenericApiError();
     }
   };
 
   api.setLocalTimeDifference = async timeDifference => {
     LOCAL_TIME_DIFFERENCE = timeDifference;
+  };
+
+  api.setSyncProgress = async syncProgress => {
+    SYNC_PROGRESS = syncProgress;
   };
 
   api.nextUpdate = async () => {
@@ -158,18 +154,6 @@ export default (api: AdaApi) => {
     APPLICATION_VERSION = applicationVersion;
   };
 
-  api.setSubscriptionStatus = async (subscriptionStatus: ?Object) => {
-    SUBSCRIPTION_STATUS = subscriptionStatus;
-  };
-
-  api.setLocalBlockHeight = async (height: number) => {
-    LOCAL_BLOCK_HEIGHT = height;
-  };
-
-  api.setNetworkBlockHeight = async (height: number) => {
-    NETWORK_BLOCK_HEIGHT = height;
-  };
-
   api.setFakeNewsFeedJsonForTesting = (fakeNewsfeedJson: ?GetNewsResponse) => {
     FAKE_NEWSFEED_JSON = fakeNewsfeedJson;
   };
@@ -187,10 +171,7 @@ export default (api: AdaApi) => {
   api.resetTestOverrides = () => {
     LATEST_APP_VERSION = null;
     LOCAL_TIME_DIFFERENCE = 0;
-    LOCAL_BLOCK_HEIGHT = null;
-    NETWORK_BLOCK_HEIGHT = null;
     NEXT_ADA_UPDATE = null;
-    SUBSCRIPTION_STATUS = null;
     APPLICATION_VERSION = null;
   };
 };

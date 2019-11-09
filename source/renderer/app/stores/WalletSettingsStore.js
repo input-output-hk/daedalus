@@ -9,7 +9,6 @@ import type { WalletUtxos } from '../api/wallets/types';
 import { WALLET_UTXO_API_REQUEST_INTERVAL } from '../config/timingConfig';
 
 export default class WalletSettingsStore extends Store {
-  /* eslint-disable max-len */
   @observable updateWalletRequest: Request<Wallet> = new Request(
     this.api.ada.updateWallet
   );
@@ -22,8 +21,6 @@ export default class WalletSettingsStore extends Store {
   @observable getWalletUtxosRequest: Request<WalletUtxos> = new Request(
     this.api.ada.getWalletUtxos
   );
-
-  /* eslint-enable max-len */
 
   @observable walletFieldBeingEdited = null;
   @observable lastUpdatedWalletField = null;

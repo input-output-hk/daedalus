@@ -47,7 +47,6 @@ export default class ProfileStore extends Store {
     fractionGroupSize: 0,
   };
 
-  /* eslint-disable max-len */
   @observable getProfileLocaleRequest: Request<string> = new Request(
     this.api.localStorage.getUserLocale
   );
@@ -79,7 +78,6 @@ export default class ProfileStore extends Store {
   @observable compressedLogsFilePath: ?string = null;
   @observable compressedLogsStatus: CompressedLogStatus = {};
   @observable isSubmittingBugReport: boolean = false;
-  /* eslint-enable max-len */
 
   setup() {
     this.actions.profile.updateLocale.listen(this._updateLocale);

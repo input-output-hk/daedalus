@@ -83,7 +83,6 @@ export default class WalletsStore extends Store {
   };
 
   // REQUESTS
-  /* eslint-disable max-len */
   @observable active: ?Wallet = null;
   @observable activeValue: ?BigNumber = null;
   @observable walletsRequest: Request<Array<Wallet>> = new Request(
@@ -143,8 +142,6 @@ export default class WalletsStore extends Store {
   @observable unsetWalletLocalDataRequest: Request<any> = new Request(
     this.api.localStorage.unsetWalletLocalData
   );
-
-  /* eslint-enable max-len */
 
   /* ----------  Create Wallet  ---------- */
   @observable createWalletStep = null;
