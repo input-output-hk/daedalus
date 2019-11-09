@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 
+- Implemented "Transfer funds" wizard for Incentivized Testnet version of Daedalus ([PR 1634](https://github.com/input-output-hk/daedalus/pull/1634), [PR 1659](https://github.com/input-output-hk/daedalus/pull/1659), [PR 1660](https://github.com/input-output-hk/daedalus/pull/1660))
 - Implemented "Network info" overlay ([PR 1655](https://github.com/input-output-hk/daedalus/pull/1655))
 - Disable "Manual update" notification for Incentivized Testnet version of Daedalus ([PR 1652](https://github.com/input-output-hk/daedalus/pull/1652))
 - Update rewards screen for incentivized testnet ([PR 1643](https://github.com/input-output-hk/daedalus/pull/1643))

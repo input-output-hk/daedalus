@@ -5,6 +5,7 @@ import { observable, runInAction } from 'mobx';
 import { observer, inject } from 'mobx-react';
 import { get } from 'lodash';
 import { action } from '@storybook/addon-actions';
+import { boolean } from '@storybook/addon-knobs';
 
 // Assets and helpers
 import { CATEGORIES_BY_NAME } from '../../../source/renderer/app/config/sidebarConfig';
@@ -184,6 +185,9 @@ export default class StoryLayout extends Component<Props> {
       showSubMenuToggle
       showSubMenus={this.isShowingSubMenus}
       leftIcon={this.isShowingSubMenus ? menuIconOpened : menuIconClosed}
+      onTransferFunds={action('onTransferFunds')}
+      onWalletAdd={action('onWalletAdd')}
+      hasAnyWallets={boolean('hasAnyWallets', true)}
     >
       <NodeSyncStatusIcon
         networkStatus={{

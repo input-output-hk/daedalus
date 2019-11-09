@@ -1,0 +1,23 @@
+.component {
+  color: var(--theme-delegation-steps-choose-wallet-error-select-options-color);
+  font-family: var(--font-regular);
+  :global {
+    .SimpleOptions_option {
+      padding: 8px 20px;
+    }
+  }
+}
+.label {
+  font-size: 14px;
+  line-height: 1.43;
+}
+.detail {
+  font-size: 12px;
+  line-height: 1.33;
+  opacity: 0.5;
+}
+.selected {
+  color: var(--theme-delegation-steps-choose-wallet-custom-value-color);
+  height: 100%;
+  padding: 8px 20px;
+}

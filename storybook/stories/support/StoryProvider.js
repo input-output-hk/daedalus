@@ -36,7 +36,7 @@ export const WALLETS = [
   },
   {
     id: '2',
-    name: 'Legacy',
+    name: 'Legacy with funds',
     amount: new BigNumber(55.555),
     hasPassword: false,
     passwordUpdateDate: new Date(),
@@ -48,6 +48,18 @@ export const WALLETS = [
   },
   {
     id: '3',
+    name: 'Legacy with no funds',
+    amount: new BigNumber(0),
+    hasPassword: false,
+    passwordUpdateDate: new Date(),
+    syncState: { data: null, tag: 'synced' },
+    isLegacy: true,
+    recoveryPhraseVerificationDate: moment()
+      .subtract(200, 'days')
+      .toDate(),
+  },
+  {
+    id: '4',
     name: 'Restoring',
     amount: new BigNumber(12.345),
     hasPassword: false,

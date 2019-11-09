@@ -468,7 +468,9 @@
   "wallet.legacy.badge.label": "旧",
   "wallet.legacy.notification.actionLearnMore": "もっと知る",
   "wallet.legacy.notification.actionMove": "すべてのADAをこのウォレットから移す",
+  "wallet.legacy.notification.addWallet": "ウォレットを追加",
   "wallet.legacy.notification.description": "これは旧アドレスを使用している旧タイプのウォレットであり、新機能をサポートしていません。 このウォレットに含まれるすべてのADAを、新機能の使用が可能な新タイプのウォレットに移してください。既存のウォレットへ移動させたくない場合は、新規にウォレットを作成することもできます。画面の指示に従って手続きをしてください。",
+  "wallet.legacy.notification.learnMore.url": "https://iohk.zendesk.com/hc/ja",
   "wallet.legacy.notification.title": "旧ウォレットから資金を移してください",
   "wallet.navigation.more": "その他",
   "wallet.navigation.receive": "入金",
@@ -617,5 +619,17 @@
   "wallet.transaction.unresolvedInputAddressesAdditionalLabel": "アドレスを表示する。",
   "wallet.transaction.unresolvedInputAddressesLinkLabel": "Cardanoエクスプローラーでこのトランザクションを開き",
   "wallet.transactions.no.transactions": "トランザクションはありません",
-  "wallet.transactions.no.transactions.found": "トランザクションが見つかりません"
+  "wallet.transactions.no.transactions.found": "トランザクションが見つかりません",
+  "wallet.transferFunds.dialog1.sourceWallet": "送信元ウォレット",
+  "wallet.transferFunds.dialog1.targetWallet": "送信先ウォレット",
+  "wallet.transferFunds.dialog1.title": "旧ウォレットから資金を移し替える",
+  "wallet.transferFunds.dialog2.label.amount": "金額",
+  "wallet.transferFunds.dialog2.label.buttonLabel": "資金を移す",
+  "wallet.transferFunds.dialog2.label.description": "sourceWalletNameウォレットからtargetWalletNameウォレットへ移し替えます。.",
+  "wallet.transferFunds.dialog2.label.fees": "手数料",
+  "wallet.transferFunds.dialog2.label.to": "送信先",
+  "wallet.transferFunds.dialog2.label.total": "合計",
+  "wallet.transferFunds.dialog2.passphraseFieldPlaceholder": "送信時パスワードを入力してください",
+  "wallet.transferFunds.dialog2.passphraseLabel": "送信時パスワード",
+  "wallet.transferFunds.dialog2.title": "旧ウォレットから資金を移し替える"
 }

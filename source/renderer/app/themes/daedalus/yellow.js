@@ -374,12 +374,12 @@ export const YELLOW_THEME_OUTPUT = {
       '#f8f3ed4d',
     '--theme-legacy-notification-learn-more-button-background-color-active':
       '#f8f3ed66',
-    '--theme-legacy-notification-move-button-text-color': '#ab2712',
+    '--theme-legacy-notification-move-button-text-color': '#ab1700',
     '--theme-legacy-notification-move-button-background-color': '#fafbfc',
     '--theme-legacy-notification-move-button-background-color-hover':
-      '#f8f3ede6',
+      'rgb(250, 251, 252, 0.9)',
     '--theme-legacy-notification-move-button-background-color-active':
-      '#f8f3edcc',
+      'rgb(250, 251, 252, 0.8)',
     '--theme-legacy-notification-title-color': '#fafbfc',
     '--theme-legacy-notification-description-color': '#fafbfc',
   },
