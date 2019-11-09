@@ -20,6 +20,17 @@
     margin-left: 20px;
   }
 
+  ol {
+    list-style: decimal;
+    margin-left: 20px;
+
+    li {
+      p {
+        margin-left: 2px;
+      }
+    }
+  }
+
   p,
   li {
     font-family: var(--font-regular);
@@ -27,7 +38,7 @@
     margin-bottom: 11px;
 
     strong {
-      font-weight: 500;
+      font-weight: bold;
     }
   }
   li {

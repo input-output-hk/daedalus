@@ -1,83 +1,25 @@
-# サービス利用規約 - ITN
+# Terms of Use - IOHK Incentivized Testnet
 
-本サービス利用規約（以下「本契約」）は、Input Output HK Limited（以下「当社」）と、当社が作成または提供するソフトウェア、データ処理サービス、アプリケーション、コミュニケーションサービス、もしくはその他のコンテンツ（ダイダロス仮想通貨ウォレットのアプリケーションを含みますが、これに限定しません。）（以下「本ソフトウェア」）のダウンロード、利用または操作の処理実行者（以下「ユーザー」）との間で締結するものです。当社とユーザーは、以下「両当事者」と総称します。
+These Terms of Use (&quot;**Terms**&quot;) are made by and between the person accepting these Terms (&quot;**you**&quot;) and Input Output Hong Kong Ltd. (&quot;**we**&quot; or &quot;**us**&quot;), and are effective as of the date you accept them (whether via an online click-through or by using the IOHK Incentivized Testnet (as defined below) (the &quot;**Effective Date**&quot;).
 
-承認ボタンのクリックにより、または本ソフトウェアの一部へアクセス、利用もしくはインストールすることにより、ユーザーは本契約のすべてに拘束されることを明確に承認し、かつこれに同意します。ユーザーが本契約のすべてに同意しない場合、ユーザーは本ソフトウェアのいかなる部分へのアクセス、利用もしくはインストールも許可されないものとします。
+1. IOHK is testing and making available to users under these Terms a test rewards and incentivization mechanism which is intended to mimic the rewards and incentivization mechanism to be included in the Shelley release (the &quot;**Incentivized Testnet**&quot;). You may participate in the Incentivized Testnet by following the Incentivized Testnet registration and setup process (&quot;**Setup Process**&quot;). Participation is not mandatory.
 
-1. ## 第1条 サービス利用の条件と制限
+2. Participation in the Incentivized Testnet entitles you to earn ADA. The amount of ADA earned will depend on various factors including, but not limited to, user participation, stakepool profit margins and the number of ADA you stake (&quot;**Reward**&quot;). It is also possible that the actual reward could be zero, due to the above-mentioned factors. Rewards will  be earned as of the start of a new epoch on the Cardano blockchain.
 
-**a. 内容の説明** 本ソフトウェアは、無料かつオープンソースのデジタル仮想通貨ウォレットとして機能するものです。当社もしくはその他の第三者がユーザーのadaやその他の仮想通貨の金融仲介業者または管理者として管理するアカウントを、本ソフトウェアは構成しません。
+3. We will provide a rewards calculator which is designed to estimate the amount of Rewards you may earn on the Incentivized Testnet (&quot;**Rewards Calculator**&quot;). You understand that the Rewards Calculator is provided for illustrative purposes only and may not be accurate. Similarly, any information we share regarding stakepools, including performance metrics, will be for indicative purposes only and may not be relied upon. We do not promise that the Reward received will correspond to the amount indicated by the Rewards Calculator or by the stakepools.
 
-本ソフトウェアについてはベータテストを行い、開発者コミュニティ、オープンソース貢献者およびベータテスターからのフィードバックを基に継続的な改良を行っていますが、当社は本ソフトウェアにバグが存在しないとする保証は行いません。ユーザーは、ユーザー自身の責任および選択にて、かつ適用されるすべての法律に従って、本ソフトウェアを利用することを了承します。ユーザーは、ユーザーが本ソフトウェア、または情報、ada、バウチャー、その他の仮想通貨単位へアクセスする際に用いるユーザーのパスワード、暗証番号（PIN番号）、秘密鍵、換金鍵、保護販売鍵、バックアップ復元用ニーモニック・パスフレーズ、ADA用パスコード、およびその他のコード類の保管についての責任を負うものとします。
+4. You may only participate in the Incentivized Testnet if your ADA is in a Daedalus or Yoroi wallet at the time of the Setup Process. When the Incentivized Testnet is discontinued, any Rewards earned can be transferred back to your Daedalus or Yoroi wallet.
 
-ユーザーが、ユーザーの仮想通貨ウォレットへのアクセスまたは秘密鍵を失った場合に、ユーザーの仮想通貨ウォレットまたはバックアップ復元用ニーモニックフレーズ、およびこれに対応するパスワードを別個に保管していなかった場合、ユーザーは、当該仮想通貨ウォレットにてユーザーが所有するadaまたはその他のあらゆる仮想通貨へはアクセス不能となることを了承し、かつこれに同意します。すべての取引のリクエストは取消不能です。ユーザーがユーザーの秘密鍵もしくはパスワードを紛失または忘れた場合、当社および当社の株主、取締役、役員、従業員、関連会社および代理人は、取引の確認、秘密鍵もしくはパスワードの回復について保証することはできません。
+5. You may provide suggestions, comments or ideas and report issues or problems related to your use of the Incentivized Testnet at any time (collectively, &quot;**Feedback**&quot;) by using any of the official Feedback channels.
 
-**b. アクセスについて** ユーザーは、何らかの理由により本ソフトウェアが随時アクセス不能または操作不能となる場合があることに同意します。上記の理由には以下のものが含まれますが、これらに限定されません。(i) 機器の不具合、(ii) 当社が随時実施する定期的なメンテナンスもしくは修理、または、(iii) 当社の制御を超える事由、もしくは合理的に考えて当社には予測不可能な事由。
+6. The Incentivized Testnet is still undergoing beta testing and continues to be improved by feedback from the developer community, open-source contributors and beta-testers.  Consequently, you acknowledge that the Incentivized Testnet may not operate properly and that it may contain errors, design flaws or other issues. Your use of the Incentivized Testnet remains at your risk and discretion.
 
-**c. 機器** ユーザーは、本ソフトウェアの利用に必要とされるハードウェア、ソフトウェア、電気製品、およびその他物理的な必要品の一切（電気通信ならびにインターネット利用のための接続およびリンク、ウェブブラウザ、または本ソフトウェアへのアクセスおよび利用に必要なその他の機器、プログラムおよびサービスを含みますが、これらに限定されません。）を準備し、維持し、かつ本ソフトウェアとの互換性を確実にすることを、ユーザーの単独責任にて行うものとします。
+7. You are at all times responsible for safekeeping your passwords, PINs, private keys and recovery mnemonic phrases and for your selection of stakepools. If you lose access to your Daedalus or Yoroi wallet or private keys and have not separately stored a backup of such wallet or backup recovery mnemonic phrase(s) and corresponding password(s), you acknowledge and agree that any ADA or any other cryptocurrencies you have associated with that wallet will become permanently inaccessible and may not be retrieved.
 
-2. ## 第2条 制限
+8. In no event will IOHK or its shareholders, directors, officers, employees, contractors or service providers, be liable to you or any third party for any use, interruption, delay or inability to use the Incentivized Testnet, lost Rewards or profits, delays, interruption or loss of services, business or goodwill, loss or corruption of data, loss of cryptocurrency or any other loss resulting from system or system service failure, malfunction or shutdown, failure to accurately transfer, read or transmit information, failure to update or provide correct information, system incompatibility or provision of incorrect compatibility information or breaches in system security, or for any consequential, incidental, indirect, exemplary, special or punitive damages, whether arising out of or in connection with these Terms regardless of whether such damages were foreseeable and whether or not we were advised of the possibility of such damages. Without limiting the generality of the foregoing, our aggregate liability arising out of or relating to any access to, testing of or use of the Incentivized Testnet shall not exceed one hundred dollars ($100).
 
-**a. セキュリティ** ユーザーは、ユーザーが本ソフトウェアを通じて受信もしくは送信する、または本ソフトウェアに保存する一切の情報および内容の安全性、機密性および整合性につき、単独でその責任を負うものとします。ユーザーは、いかなる者によるユーザーのアカウントへのアクセスも、正当不当にかかわらず、そのすべてに対して単独の責任を負うものとします。ユーザーは、ユーザーのセキュリティデバイス、情報、鍵（キー）、またはパスワードの機密性について、単独の責任を負うものとします。
+9. As between us, we retain exclusive ownership of the Incentivized Testnet and of all of our brands, logos, and trademarks, including, but not limited to, Input Output HK Limited, IOHK and Daedalus, as well as variations of the wording of the aforementioned brands, logos, and trademarks.
 
-**b. プライバシー** 合理的に実行可能な範囲で、当社はユーザーのプライバシーを尊重するよう努めます。ユーザーまたはユーザーのアカウントに関する個人情報（アカウント内容またはユーザーの本ソフトウェア利用状況を含みます。）については、ユーザーによる事前の同意を得ない限り、当社がこれらを監視、編集、または開示することはありません。ただし、当社が以下に掲げる行為の必要性を誠実に信ずる場合は、この限りではありません。(i) 法的手続きまたはその他政府当局からの法的要求の遵守、(ii) 当社の権利または財産の保護および防衛、(iii) 本契約の強制、(iv) ユーザー以外の他の本ソフトウェア利用者の権益の保護、または、(v) 法律の許可に基づいて実施する、当社のサービスまたは機器（本ソフトウェアを含む。）のメンテナンスおよび修理。インターネット全般におけるユーザーのプライバシーは期待できません。ユーザーが本ソフトウェアから送信する各メッセージまたはその他の情報においては、ユーザーのIPアドレスが送信されかつ記録されます。
+10. Any changes to these Terms will be made available to you online and will also apply to your use of the Incentivized Testnet. For clarity, once we post updated Terms online, the online version of such Terms will supersede any prior versions provided to you. By continuing to access, test or use the Incentivized Testnet, you agree to be bound by the updated Terms.
 
-3. ## 第3条 税金と手数料
-
-本ソフトウェアへのアクセス、利用またはインストールのためにユーザーが負担する通貨換算手数料、第三者手数料、売上税、使用税、付加価値税、動産税、もしくはその他の税金、関税、または、利息および罰金を含む現在または今後のあらゆる政府機関によるあらゆる種類の賦課金および手数料については、そのすべての責任をユーザーが単独で負うものとします。
-
-4. ## 第4条 ユーザーの表明
-
-ユーザーは当社に対し、以下のことを表明しかつ保証します。(a) ユーザーの年齢は18歳より上であり、かつ、本契約の締結および本契約上のユーザーの義務の履行に対する能力ならびに権限を有すること。(b) ユーザーが当社に提供する情報はすべて真実、正確かつ完全であること。(c) ユーザーは、本ソフトウェアへのアクセス、利用およびインストールに関し、適用管轄の法令に従うこと。(d) ユーザーは、本契約のすべての条項（第5条に定める規定を含むが、これに限定されない。）に従うこと。および、(e) ユーザーは、本ソフトウェアへのアクセス、利用またはインストールに必要な正確かつ完全な情報をすでに提供しており、今後も提供すること。
-
-5. ## 第5条 利用禁止事項
-
-ユーザーは、ユーザーのアカウント、セキュリティ情報、鍵（キー）、またはパスワードに対するすべての作為および不作為に対し単独の責任を負うものとし、かつユーザーは、本ソフトウェアの不適正な使用に関わらないことに同意します。不適正な使用には以下の目的で本ソフトウェアを使用することが含まれますが、これらに限定されるものではありません。(a) 迷惑メッセージ、チェーンレター、もしくは営利目的の迷惑メールの散布、保存、または送信。(b) 通常人にとって罵倒、わいせつ、ポルノ、中傷、嫌がらせ、著しい侮辱、卑猥、脅迫、もしくは悪意となり得るような内容物の散布または送信。(c) 他者が有する著作権、商標権、特許権、企業秘密、またはその他の知的財産権を、現に侵害しているかもしくは今後侵害する可能性のある、ファイル、グラフィクス、ソフトウェア、もしくはその他の資料の散布、保存、または送信。(d) 偽名の作成、またはその他身元もしくは通信の起点に関して他者を誤解に導く試み。(e) 適用管轄における輸出入に関する法律、条例もしくは規制に違反して行う、または、必要とされるすべての許可、ライセンスもしくは免除を得ずに行う、メッセージまたはコンテンツの輸出、再輸出、またはダウンロードの許可。(f) 本ソフトウェアまたはその他のコンピューターネットワークの他者アカウントへの妨害、阻止、または不正アクセスの試み。または、(g) ウイルス、トロイの木馬、その他の悪性コードもしくは不正プログラムの拡散、保存または送信。
-
-6. ## 第6条 契約解除
-
-本契約は、ユーザーが本契約の規定を受諾した時点で有効となり、かつ、ユーザーが本ソフトウェアへのアクセス、利用またはインストールを続ける限り継続して有効であるものとします。当社は、その単独の裁量により、予告なく、いつでも、理由の如何を問わず、以下の事項を行う権利を留保します。(a) 本ソフトウェアの全部もしくは一部へのアクセスの解除または無効化。(b) 本ソフトウェアの全部または一部へのアクセスの停止。および、(c) 本契約の解除。
-
-7. ## 第7条 保証の免責事項
-
-本ソフトウェアは、明示・黙示を問わずいかなる種類の保証も付されることなく「現状のまま」提供されています。ユーザーは、本ソフトウェアの利用に対するリスクを単独で負うものとします。当社は本ソフトウェアが中断されないこと、またはエラーフリーであることを保証せず、また、本ソフトウェアの利用によりもたらされる結果について保証しません。当社は、明示・黙示にかかわらず、その他一切の保証を行いません。当社は、市場性の保証、特定の目的への適合性の保証、権原の保証、または非侵害性の保証の一切につき、これらを明確に否認します。
-
-8. ## 第8条 賠償責任の限定
-
-いかなる場合であっても、当社、またはその株主、取締役、役員、従業員、関連会社もしくは代理人、またはその各々のサービス提供者は、本ソフトウェアの利用、利用における中断、遅延もしくは無効、損益もしくは収益、サービス、ビジネスもしくは顧客吸引力の遅延、中断もしくは低下、データの損失もしくは破損、システムまたはシステムの故障、不具合もしくはシャットダウンに起因する損失、情報の正確な移行、表示もしくは送信の失敗、正しい情報の更新もしくは提供の失敗、システムの非互換性または互換性に関する不正確な情報の提供、システムのセキュリティ違反、または、損害となることが予測可能か否かにかかわらず、かつ当社がその損害の可能性について助言を受けたか否かにかかわらず、本契約、契約違反、不法行為（過失の場合を含みます。）、その他に起因もしくは関連する、派生的、付随的、間接的、懲罰的、もしくは特別的損害賠償についての責任を、ユーザーに対してもいかなる第三者に対しても、一切負うことはありません。
-
-いかなる場合であっても、当社、またはその株主、取締役、役員、従業員、関連会社もしくは代理人は、ユーザーの本ソフトウェアへのアクセス、利用もしくはインストールに起因もしくは関連する請求、損害賠償またはその他の責任につき、契約、不法行為、その他に関して係争中か否かにかかわらず、一切の責任を負わないものとします。
-
-管轄によっては、付随的もしくは派生的な損害賠償の除外または限定が禁止されている場合があります。そのため、本条の賠償責任の限定がユーザーに適用されない場合もあります。ユーザーが本ソフトウェアにご満足いただけない場合のユーザーの唯一かつ排他的な救済は、ユーザーが本ソフトウェアの利用を停止することであるものとします。
-
-9. ## 第9条 補償
-
-ユーザーは、(a) 本契約、(b) ユーザーの本ソフトウェアへのアクセス、利用またはインストール（ユーザーが送信もしくは受信するデータまたは作品を含む。）、および、(c) いずれかの者による本ソフトウェアの不適正な使用、すなわち第5条にて不適正使用であるとして禁止されている行為（ユーザーまたはその他の者が送信もしくは再掲載したあらゆる声明、データ、またはコンテンツを含むが、これらに限定されない）に起因または関連していずれかの者が主張する訴訟、主張、請求、損害、負債、要求または責任（合理的な額の費用および弁護士費用を含みます。）から、当社、またはその株主、取締役、役員、従業員、関連会社もしくは代理人（以下「被補償当事者」）を補償し、無害に保ち、かつ保護することに同意します。本条の補償には、当社もしくはいずれかの被補償当事者に対する過失の申立、重過失の申立、またはその他の違法行為の申立について、当社およびすべての被補償当事者が明示する補償を含みます。
-
-10. ## 第10条 知的財産権
-
-Input Output HK Limited、IOHK、Daedalus（ダイダロス）、Daedalus Cryptocurrency Wallet（ダイダロス仮想通貨ウォレット）、Daedalus Wallet（ダイダロス・ウォレット）、Daedalus App（ダイダロス・アプリケーション）を含む（ただしこれらに限定されない）当社のブランド、ロゴ、および商標のすべて、ならびに、それらのブランド、ロゴ、および商標の派生語のすべてに付随する権利、権原および権益はすべて、当社が保持するものです。
-
-11. ## 第11条 警告事項
-
-ユーザーは、IOHKが秘密鍵、および／または、ユーザーのadaもしくはその他の仮想通貨の移行、保護または維持についての責任を負わないことを了承しています。ユーザーおよび／または連署による権限者が関連の秘密鍵を紛失し、誤って処理し、もしくは盗難された場合、または、ユーザーの連署人が必要とされる権限の使用を拒否した場合、ユーザーは、ユーザーのadaまたはその他の仮想通貨が復元不可能となる可能性があり、かつ当社は当該損失についての責任を負わないことを了承しています。
-
-ユーザーは、ダイダロスおよび／または当社が処理するadaまたはその他の仮想通貨の取引に遅延が起こり得ること、および、当社はその遅延に関連した損失に対し責任を負わないことを了承し、かつこれに同意します。
-
-ユーザーは、ダイダロスおよび／または当社にアクセス可能な、もしくはこれらにリンクする第三者の素材または第三者のサイトに含まれる情報、内容またはサービスのいかなる部分についても、当社はその責任を負わないことを了承し、かつこれに同意します。
-
-ユーザーは、いかなる自然人または法人（当社、カルダノ財団、アテインコーポレーション、その他の事業体を含みます。）とも、ユーザーの証明書を決して共有しないことに同意します。さらにユーザーは、ユーザーの証明書の共有によりユーザーのadaを損失する場合があることを了承し、かつ、ユーザーは、当社が当該損失に対する責任を負わないことに同意します。
-
-ユーザーは、Testnet上でのadaの換金ではテスト版のadaのみの換金となること、および、実際のadaを換金するには、Mainnetがリリースされた後にユーザーがMainnet上で同じ手続きを再度行う必要があることを了承し、かつこれらに同意します。
-
-ダイダロスを利用することにより、ユーザーは以下のことを了承し、かつこれらに同意します。(i) 当社は下位プロトコルの操作に対して責任を負わないこと、および、当社はそれらの機能性、安全性、または入手可能性について何らの保証も行わないこと、および、(ii) 下位プロトコルは操作ルールにおける急な変更（以下「フォーク」）を前提としており、かつ、それらのフォークは、ユーザーがダイダロスに保管するadaもしくはその他の仮想通貨の価値および／または機能に重大な影響を与える可能性があること。フォークが発生した場合、当社は（ユーザーへの通知の有無を問わず）一時的にダイダロスの運営を停止する可能性があること、および、当社は、その単独の裁量により、(a) システムの設定または再設定を行うか、または、(b) フォークが発生したプロトコルのサポートを完全に行わない（またはサポートを終了する）決定を行う場合があることに、ユーザーは同意します。ただし、ユーザーにはダイダロスから資金を引き出す機会が与えられます。ユーザーは、フォークが発生した非サポートのプロトコル分岐に関しては当社が完全に一切の責任を負わないことを了承し、かつこれに同意します。
-
-12. ## 第12条 雑則
-
-**a. 改正** 当社は、ユーザーが当社に提供したアドレスに宛てた、いずれかの媒体を通じた電子メッセージによる改正箇所の交付により、いつでも予告なしに、本契約の条項への追加または変更を行う権利を有するものとします。改正条項をユーザー宛てに交付した日の後の本ソフトウェアへのアクセスまたは利用により、ユーザーは当該条項の改正を受領したものとみなされます。
-
-**b. 契約の分離** 本契約の規定または規定の一部が、無効、不適法、または強制不能である場合、もしくはこれらの状態となった場合、有効、合法および強制可能にするために必要な最低限の範囲で変更が行われるものとみなします。当該変更が不可能な場合は、該当の規定または規定の一部は削除されるものとみなします。本条の規定または規定の一部に変更または削除があった場合でも、本契約のその他の部分の有効性および強制可能性には何らの影響も及ばないものとします。
-
-**c. 完全合意 – 依拠の否認** 本契約は、本契約の内容に関する両当事者間の完全な合意を構成するものであり、かつ、両当事者間における従前のすべての合意または了解に優先します。各当事者は、a) 本契約を締結する権限を有すること、および、b) 本契約中に明示にて規定されるもの以外のいかなる声明、了解、表明、見込み、または合意にも依拠しないことを明確に保証し、かつ表明します。
-
-**d. 本契約は仲裁を前提とします** 本契約、または、ユーザーもしくはその他の者による本ソフトウェアへのアクセス、利用またはインストールに起因または関連して提起されるいずれかの者に対する紛争および請求は、その一切が国際商業会議所の仲裁規則に基づく仲裁を前提とし、当該仲裁は同規則に従って任命された1名以上の仲裁人により行われるものとします。仲裁地は香港とし、仲裁での使用言語は英語とします。
+11. The term of these Terms will begin on the Effective Date and will continue until we end the Incentivized Testnet. You understand and agree that we may change, withdraw, terminate your access to, testing of and/or use of, or discontinue the Incentivized Testnet (or any portion thereof) at any time and in our sole discretion. You may also end your participation in the Incentivized Testnet at any time and any Rewards gained up to that time can still be transferred to your Daedalus or Yoroi mainet wallet once the Incentivized Testnet is discontinued.
