@@ -55,10 +55,12 @@ storiesOf('WalletTransactionsList', module)
           new BigNumber(1)
         ),
       ]}
+      deletePendingTransaction={() => {}}
       isRestoreActive={false}
       isLoadingTransactions={false}
       hasMoreToLoad={false}
       walletId="test-wallet"
+      isDeletingTransaction={false}
       formattedWalletAmount={formattedWalletAmount}
       totalAvailable={5}
     />
@@ -79,11 +81,20 @@ storiesOf('WalletTransactionsList', module)
           new BigNumber(1),
           TransactionStates.PENDING
         ),
+        generateTransaction(
+          TransactionTypes.INCOME,
+          new Date(2019, 10, 8, 20),
+          new BigNumber(1),
+          TransactionStates.PENDING,
+          true
+        ),
       ]}
+      deletePendingTransaction={() => {}}
       isRestoreActive={false}
       isLoadingTransactions={false}
       hasMoreToLoad={false}
       walletId="test-wallet"
+      isDeletingTransaction={false}
       formattedWalletAmount={formattedWalletAmount}
       totalAvailable={3}
     />
@@ -94,9 +105,11 @@ storiesOf('WalletTransactionsList', module)
       isRenderingAsVirtualList
       isRestoreActive={false}
       transactions={generateMultipleTransactions(500)}
+      deletePendingTransaction={() => {}}
       isLoadingTransactions={false}
       hasMoreToLoad={false}
       walletId="test-wallet"
+      isDeletingTransaction={false}
       formattedWalletAmount={formattedWalletAmount}
       totalAvailable={500}
     />
@@ -105,6 +118,7 @@ storiesOf('WalletTransactionsList', module)
   .add('transactions with unresolved income addresses', () => (
     <WalletTransactionsList
       isRenderingAsVirtualList
+      deletePendingTransaction={() => {}}
       isRestoreActive={false}
       transactions={[
         generateTransaction(
@@ -125,6 +139,7 @@ storiesOf('WalletTransactionsList', module)
       isLoadingTransactions={false}
       hasMoreToLoad={false}
       walletId="test-wallet"
+      isDeletingTransaction={false}
       formattedWalletAmount={formattedWalletAmount}
       totalAvailable={3}
     />
@@ -133,6 +148,7 @@ storiesOf('WalletTransactionsList', module)
   .add('transactions without income addresses', () => (
     <WalletTransactionsList
       isRenderingAsVirtualList
+      deletePendingTransaction={() => {}}
       isRestoreActive={false}
       transactions={[
         generateTransaction(
@@ -155,6 +171,7 @@ storiesOf('WalletTransactionsList', module)
       isLoadingTransactions={false}
       hasMoreToLoad={false}
       walletId="test-wallet"
+      isDeletingTransaction={false}
       formattedWalletAmount={formattedWalletAmount}
       totalAvailable={3}
     />

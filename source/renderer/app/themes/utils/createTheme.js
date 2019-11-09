@@ -1093,9 +1093,6 @@ export const createDaedalusComponentsTheme = (
       '--theme-transactions-state-pending-background-color': `${
         background.primary.dark
       }`,
-      '--theme-transactions-state-pending-stripes-color': `${
-        background.primary.darker
-      }`,
       '--theme-transactions-state-text-color': `${background.primary.regular}`,
       '--theme-transactions-search-background-color': `${
         background.primary.regular
