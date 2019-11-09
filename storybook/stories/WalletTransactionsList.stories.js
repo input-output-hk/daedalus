@@ -179,6 +179,5 @@ storiesOf('WalletTransactionsList', module)
       isDeletingTransaction={false}
       formattedWalletAmount={formattedWalletAmount}
       totalAvailable={3}
-      current
     />
   ));
