@@ -9,7 +9,7 @@
     "start": "gulp start",
     "start:dev": "NODE_ENV=development gulp start",
     "dev": "IS_WATCH_MODE=true gulp dev",
-    "dev:itn_balance_check": "NETWORK=itn_balance_check IS_WATCH_MODE=true gulp dev",
+    "dev:itn": "NETWORK=itn_balance_check IS_WATCH_MODE=true gulp dev",
     "test": "NODE_ENV=test yarn build && yarn test:unit && yarn test:e2e",
     "test:unit": "yarn cucumber --require 'features/tests/unit/**/*.js' --tags '@unit and not @skip and not @wip'",
     "test:unit:watch": "nodemon --watch source --watch features --exec \"yarn test:unit --tags '@unit and @watch'\"",
