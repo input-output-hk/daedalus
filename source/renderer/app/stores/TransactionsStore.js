@@ -52,6 +52,10 @@ export default class TransactionsStore extends Store {
 
   @observable _searchOptionsForWallets = {};
 
+  @observable deleteTransactionRequest: Request<
+    Array<DeleteTransactionRequest>
+  > = new Request(this.api.ada.deleteTransaction);
+
   @observable
   unconfirmedAmount: UnconfirmedAmount = this._getEmptyUnconfirmedAmount();
 
@@ -201,7 +205,7 @@ export default class TransactionsStore extends Store {
       );
     }
     deleteTransactionRequest.isLegacy = wallet.isLegacy;
-    return this.api.ada.deleteTransaction(deleteTransactionRequest);
+    this.deleteTransactionRequest.execute(deleteTransactionRequest);
   };
 
   validateAmount = (amountInLovelaces: string): Promise<boolean> =>
