@@ -16,7 +16,16 @@ import {
 import { formattedWalletAmount } from '../../source/renderer/app/utils/formatters';
 
 storiesOf('WalletTransactionsList', module)
-  .addDecorator(story => <StoryDecorator>{story()}</StoryDecorator>)
+  .addDecorator(story => (
+    <div
+      style={{
+        backgroundColor: 'var(--theme-main-body-background-color)',
+        height: '175%',
+      }}
+    >
+      <StoryDecorator>{story()}</StoryDecorator>
+    </div>
+  ))
 
   // ====== Stories ======
 
