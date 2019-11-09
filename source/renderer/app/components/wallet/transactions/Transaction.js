@@ -139,7 +139,6 @@ type Props = {
   isExpanded: boolean,
   isRestoreActive: boolean,
   isLastInList: boolean,
-  isLegacy: boolean,
   formattedWalletAmount: Function,
   network: string,
   onDetailsToggled: ?Function,
@@ -183,7 +182,7 @@ export default class Transaction extends Component<Props, State> {
   };
 
   deletePendingTransaction = async () => {
-    const { data, walletId, isLegacy } = this.props;
+    const { data, walletId } = this.props;
     const { id: transactionId, state } = data;
     if (state !== TransactionStates.PENDING) {
       return this.hideConfirmationDialog();
@@ -191,7 +190,6 @@ export default class Transaction extends Component<Props, State> {
     await this.props.deletePendingTransaction({
       walletId,
       transactionId,
-      isLegacy,
     });
     return this.hideConfirmationDialog();
   };

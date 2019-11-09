@@ -200,7 +200,7 @@ export default class TransactionsStore extends Store {
         'Active wallet required before deleting a pending transaction.'
       );
     }
-
+    deleteTransactionRequest.isLegacy = wallet.isLegacy;
     return this.api.ada.deleteTransaction(deleteTransactionRequest);
   };
 
