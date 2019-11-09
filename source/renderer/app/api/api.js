@@ -162,6 +162,7 @@ import type { FaultInjectionIpcRequest } from '../../../common/types/cardano-nod
 import { TlsCertificateNotValidError } from './nodes/errors';
 import { getSHA256HexForString } from './utils/hashing';
 import { getNewsHash } from './news/requests/getNewsHash';
+import { deleteTransaction } from './transactions/requests/deleteTransaction';
 
 export default class AdaApi {
   config: RequestConfig;
@@ -587,12 +588,20 @@ export default class AdaApi {
     request: DeleteTransactionRequest
   ): Promise<void> => {
     Logger.debug('AdaApi::deleteTransaction called', { parameters: request });
-    const { walletId, transactionId } = request;
+    const { walletId, transactionId, isLegacy } = request;
     try {
-      const response: void = await deleteLegacyTransaction(this.config, {
-        walletId,
-        transactionId,
-      });
+      let response;
+      if (isLegacy) {
+        response = await deleteLegacyTransaction(this.config, {
+          walletId,
+          transactionId,
+        });
+      } else {
+        response = await deleteTransaction(this.config, {
+          walletId,
+          transactionId,
+        });
+      }
       Logger.debug('AdaApi::deleteTransaction success', response);
     } catch (error) {
       Logger.error('AdaApi::deleteTransaction error', { error });

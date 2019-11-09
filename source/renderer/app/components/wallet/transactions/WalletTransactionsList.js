@@ -50,6 +50,7 @@ type Props = {
   isLoadingTransactions: boolean,
   isRestoreActive: boolean,
   isRenderingAsVirtualList: boolean,
+  isLegacy: boolean,
   network: string,
   onShowMoreTransactions?: Function,
   onOpenExternalLink?: Function,
@@ -185,6 +186,7 @@ export default class WalletTransactionsList extends Component<Props> {
       network,
       onOpenExternalLink,
       walletId,
+      isLegacy,
     } = this.props;
     const { isFirstInGroup, isLastInGroup, tx } = data;
     const txClasses = classnames([
@@ -201,6 +203,7 @@ export default class WalletTransactionsList extends Component<Props> {
           isExpanded={this.isTxExpanded(tx)}
           isLastInList={isLastInGroup}
           isRestoreActive={isRestoreActive}
+          isLegacy={isLegacy}
           network={network}
           onDetailsToggled={() => this.toggleTransactionExpandedState(tx)}
           onOpenExternalLink={onOpenExternalLink}

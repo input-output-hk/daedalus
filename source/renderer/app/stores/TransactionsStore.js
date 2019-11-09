@@ -201,11 +201,6 @@ export default class TransactionsStore extends Store {
       );
     }
 
-    // TODO:
-    // check wallet for pending transaction using transactionId
-    // if transaction does not exist or transaction state is not "pending"
-    // throw new Error
-
     return this.api.ada.deleteTransaction(deleteTransactionRequest);
   };
 

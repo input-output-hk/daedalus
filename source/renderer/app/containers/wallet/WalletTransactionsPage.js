@@ -101,6 +101,7 @@ export default class WalletTransactionsPage extends Component<Props> {
           isRestoreActive={isRestoreActive}
           hasMoreToLoad={hasMoreToLoad()}
           onLoadMore={actions.transactions.loadMoreTransactions.trigger}
+          isLegacy={activeWallet.isLegacy}
           walletId={activeWallet.id}
           formattedWalletAmount={formattedWalletAmount}
           onOpenExternalLink={openExternalLink}
