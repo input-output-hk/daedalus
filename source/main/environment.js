@@ -30,7 +30,7 @@ const evaluateNetwork = network => {
 };
 
 const getBuildLabel = () => {
-  const networkLabel = !(isMainnet || isDev || isIncentivizedTestnet)
+  const networkLabel = !(isMainnet || isDev)
     ? ` ${networkPrettyNames[NETWORK]}`
     : '';
   let buildLabel = `Daedalus${networkLabel} (${version}#${BUILD_NUMBER})`;
