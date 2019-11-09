@@ -157,6 +157,11 @@ export default class ProfileStore extends Store {
   }
 
   @computed get termsOfUse(): string {
+    const { isIncentivizedTestnet } = this.stores.networkStatus;
+    if (isIncentivizedTestnet)
+      return require(`../i18n/locales/terms-of-use/itn-balance-check/${
+        this.currentLocale
+      }.md`);
     const network = this.environment.isMainnet ? 'mainnet' : 'other';
     return require(`../i18n/locales/terms-of-use/${network}/${
       this.currentLocale
