@@ -29,6 +29,7 @@ export const externalRequest = (
     const request = requestMethod(options);
 
     request.on('response', response => {
+      response.setEncoding('utf8');
       let body = '';
       response.on('data', chunk => {
         body += chunk;
