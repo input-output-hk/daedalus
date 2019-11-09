@@ -751,14 +751,19 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-transactions-list-group-date-color': '#5e6066',
     '--theme-transactions-list-item-details-color': '#5e6066',
     '--theme-transactions-state-ok-background-color': '#007600',
-    '--theme-transactions-state-pending-background-color': '#bdc5ce',
-    '--theme-transactions-state-pending-stripes-color': '#b2bac2',
+    '--theme-transactions-state-pending-background-color':
+      'rgba(94, 96, 102, 0.5)',
     '--theme-transactions-state-text-color': '#fafbfc',
     '--theme-transactions-search-background-color': '#fafbfc',
     '--theme-transactions-icon-type-expend-background-color': '#84a2d2',
     '--theme-transactions-icon-type-income-background-color': '#2dc06c',
     '--theme-transactions-icon-type-exchange-background-color': '#10aca4',
     '--theme-transactions-arrow-stroke-color': '#5e6066',
+    '--theme-transactions-icon-type-pending-regular-background-color':
+      'rgba(94, 96, 102, 0.5)',
+    '--theme-transactions-icon-type-pending-warning-background-color':
+      'rgba(236, 93, 107, 0.8)',
+    '--theme-transactions-state-pending-warning-background-color': '#ec5d6b',
   },
   uploader: {
     '--theme-uploader-text-color': '#5e6066',

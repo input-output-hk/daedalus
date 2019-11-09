@@ -755,15 +755,18 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-transactions-list-item-details-color': '#e9f4fe',
     '--theme-transactions-state-ok-background-color': '#274c2d',
     '--theme-transactions-state-pending-background-color':
-      'rgba(189, 197, 206, 0.4)',
-    '--theme-transactions-state-pending-stripes-color':
-      'rgba(78, 98, 128, 0.5)',
-    '--theme-transactions-state-text-color': 'rgba(250, 251, 252, 0.8)',
+      'rgba(233, 244, 254, 0.3)',
+    '--theme-transactions-state-text-color': '#fafbfc',
     '--theme-transactions-search-background-color': '#fafbfc',
     '--theme-transactions-icon-type-expend-background-color': '#4f5f7a',
     '--theme-transactions-icon-type-income-background-color': '#3b6956',
     '--theme-transactions-icon-type-exchange-background-color': '#10aca4',
     '--theme-transactions-arrow-stroke-color': '#e9f4fe',
+    '--theme-transactions-icon-type-pending-regular-background-color':
+      'rgba(233, 244, 254, 0.3)',
+    '--theme-transactions-icon-type-pending-warning-background-color':
+      'rgba(236, 93, 107, 0.8)',
+    '--theme-transactions-state-pending-warning-background-color': '#ec5d6b',
   },
   uploader: {
     '--theme-uploader-text-color': '#e9f4fe',
