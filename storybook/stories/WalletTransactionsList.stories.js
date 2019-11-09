@@ -80,6 +80,13 @@ storiesOf('WalletTransactionsList', module)
           new BigNumber(1),
           TransactionStates.PENDING
         ),
+        generateTransaction(
+          TransactionTypes.INCOME,
+          new Date(2019, 10, 8, 20),
+          new BigNumber(1),
+          TransactionStates.PENDING,
+          true
+        ),
       ]}
       deletePendingTransaction={() => {}}
       isRestoreActive={false}
