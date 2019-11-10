@@ -52,6 +52,7 @@ let
     "--genesis-block-hash" "${jormungandrLib.environments.${environment}.genesisHash}"
     "--state-dir" dataDir.${os}
     "--sync-tolerance" "${jormungandrLib.environments.${environment}.syncTolerance}"
+    "--random-port"
     "--"
     "--config" finalJormungandrCfgPath
   ];
@@ -62,6 +63,7 @@ let
     "--state-dir" dataDir.${os}
     "--genesis-block" "${dataDir.${os}}${dirSep}block0.bin"
     "--sync-tolerance" "300s"
+    "--random-port"
     "--"
     "--secret" "${dataDir.${os}}${dirSep}secret.yaml"
   ];
