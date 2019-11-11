@@ -60,11 +60,11 @@ const checkCondition = async (
 
 export const promisedCondition = (
   cond: Function,
-  timeout: number = 50000,
+  timeout: number = 5000,
   retryEvery: number = 1000
 ): Promise<void> =>
   new Promise((resolve, reject) => {
-    checkCondition(cond, resolve, reject, timeout, retryEvery);
+    checkCondition(cond, resolve, reject, 60000, retryEvery);
   });
 
 const getNetworkName = (network: NetworkNames): string =>
