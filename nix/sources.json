@@ -24,13 +24,13 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "cardano-wallet": {
-        "branch": "rvl/jormungandr-windows-rc7",
+        "branch": "master",
         "description": "Official Wallet Backend & API for Cardano decentralized",
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "cardano-wallet",
         "rev": "67458315ea40d591d9f6b1ea6b451bff234d144f",
-        "sha256": "1647nmdfy0pvpxszjzpyrmasg46rafkq4bs0cf66cmq3six92cky",
+        "sha256": "0bqfb38s86nf4h8w3g092clkvn5nnrdhyd4sfbzif9cbpp85sby2",
         "type": "tarball",
         "url": "https://github.com/input-output-hk/cardano-wallet/archive/67458315ea40d591d9f6b1ea6b451bff234d144f.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz",
