@@ -36,7 +36,7 @@ const messages = defineMessages({
   },
   learnMoreLinkUrl: {
     id: 'wallet.legacy.notification.learnMore.url',
-    defaultMessage: '!!!https://iohk.zendesk.com/hc/en-us',
+    defaultMessage: '!!!https://iohk.zendesk.com/hc/en-us/articles/360038726373',
     description: '"Learn more" link URL',
   },
 });
