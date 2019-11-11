@@ -957,7 +957,7 @@ export class CardanoNode {
 
   _isNodeProcessStillRunning = async (): Promise<boolean> => {
     return this._node != null &&
-    this._isProcessRunning(this._node.pid, CARDANO_PROCESS_NAME);
+    this._isProcessRunning(this._node.pid, CARDANO_PROCESS_NAME); // true
   }
 
  //  _isNodeProcessNotRunningAnymore = async () => {
@@ -971,7 +971,7 @@ export class CardanoNode {
  // }
 
   _isNodeProcessNotRunningAnymore = async () =>
-    (await this._isNodeProcessStillRunning()) === false;
+    (await this._isNodeProcessStillRunning()) === false; // false
 
   _waitForNodeProcessToExit = async (timeout: number) =>
     promisedCondition(this._isNodeProcessNotRunningAnymore, timeout);
