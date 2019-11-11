@@ -15,8 +15,10 @@ import {
   WalletRecoveryPhraseVerificationStatuses,
   WalletRecoveryPhraseVerificationTypes,
 } from '../../../source/renderer/app/stores/WalletsStore';
-import type { TransactionType } from '../../../source/renderer/app/api/transactions/types';
-import type { TransactionState } from '../../../source/renderer/app/domains/WalletTransaction';
+import type {
+  TransactionType,
+  TransactionState,
+} from '../../../source/renderer/app/api/transactions/types';
 
 export const generateHash = () => {
   const now = new Date().valueOf().toString();

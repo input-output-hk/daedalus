@@ -3,6 +3,7 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { boolean } from '@storybook/addon-knobs';
+import BigNumber from 'bignumber.js';
 import { promise } from '../../_support/utils';
 
 // Assets and helpers
@@ -24,5 +25,6 @@ storiesOf('Wallets|Actions', module)
       openDialogAction={action('openDialogAction')}
       isDialogOpen={() => boolean('isDialogOpen', false)}
       isRestoreActive={boolean('isRestoreActive', false)}
+      walletAmount={new BigNumber(123)}
     />
   ));

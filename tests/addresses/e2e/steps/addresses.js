@@ -85,12 +85,12 @@ Then('I should see the following addresses:', async function(table) {
   }
 });
 
-Then('The active address should be the newest one', async function() {
-  const {
-    value: { id: lastGeneratedAddress },
-  } = await this.client.execute(
-    () => daedalus.stores.addresses.lastGeneratedAddress
-  );
-  const activeAddress = await this.client.getText(SELECTORS.ADDRESS_ACTIVE);
-  expect(lastGeneratedAddress).to.equal(activeAddress);
-});
+// Then('The active address should be the newest one', async function() {
+//   const {
+//     value: { id: lastGeneratedAddress },
+//   } = await this.client.execute(
+//     () => daedalus.stores.addresses.lastGeneratedAddress
+//   );
+//   const activeAddress = await this.client.getText(SELECTORS.ADDRESS_ACTIVE);
+//   expect(lastGeneratedAddress).to.equal(activeAddress);
+// });

@@ -27,6 +27,7 @@ storiesOf('Navigation|Wallets Menu', module)
       onWalletItemClick={() => {}}
       isActiveWallet={() => false}
       isAddWalletButtonActive={false}
+      isIncentivizedTestnet
       visible
     />
   ))
@@ -99,6 +100,7 @@ storiesOf('Navigation|Wallets Menu', module)
       onWalletItemClick={action('walletItemClick')}
       onAddWallet={action('addWallet')}
       isAddWalletButtonActive={false}
+      isIncentivizedTestnet
       visible
     />
   ));

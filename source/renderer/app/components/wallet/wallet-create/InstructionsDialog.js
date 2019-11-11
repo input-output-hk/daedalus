@@ -6,7 +6,7 @@ import commonStyles from './WalletCreateStyles.scss';
 type Props = {
   onContinue: Function,
   onClose: Function,
-  isVideoWatched: boolean,
+  isVideoWatched?: boolean,
 };
 
 export default class InstructionsDialog extends Component<Props> {

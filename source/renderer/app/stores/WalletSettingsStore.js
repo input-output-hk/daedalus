@@ -4,6 +4,7 @@ import { findIndex } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import Wallet from '../domains/Wallet';
+import type { WalletExportToFileParams } from '../actions/wallet-settings-actions';
 import type { WalletUtxos } from '../api/wallets/types';
 import { WALLET_UTXO_API_REQUEST_INTERVAL } from '../config/timingConfig';
 
@@ -13,6 +14,9 @@ export default class WalletSettingsStore extends Store {
   );
   @observable updateSpendingPasswordRequest: Request<boolean> = new Request(
     this.api.ada.updateSpendingPassword
+  );
+  @observable exportWalletToFileRequest: Request<Promise<[]>> = new Request(
+    this.api.ada.exportWalletToFile
   );
   @observable getWalletUtxosRequest: Request<WalletUtxos> = new Request(
     this.api.ada.getWalletUtxos
@@ -42,6 +46,7 @@ export default class WalletSettingsStore extends Store {
     walletSettingsActions.updateSpendingPassword.listen(
       this._updateSpendingPassword
     );
+    walletSettingsActions.exportToFile.listen(this._exportToFile);
 
     walletSettingsActions.startWalletUtxoPolling.listen(
       this._startWalletUtxoPolling
@@ -115,6 +120,16 @@ export default class WalletSettingsStore extends Store {
     });
     this.updateWalletRequest.reset();
     this.stores.wallets.refreshWalletsData();
+  };
+
+  @action _exportToFile = async (params: WalletExportToFileParams) => {
+    const { walletId, filePath, password } = params;
+    await this.exportWalletToFileRequest.execute({
+      walletId,
+      filePath,
+      password,
+    });
+    this.actions.dialogs.closeActiveDialog.trigger();
   };
 
   @action _startWalletUtxoPolling = () => {

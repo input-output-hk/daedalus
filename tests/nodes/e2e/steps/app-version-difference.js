@@ -27,9 +27,9 @@ Given(/^There is a newer application version available$/, async function() {
   }, nextAppVersion);
 });
 
-When(/^Daedalus is stuck in connecting state$/, async function() {
-  await this.client.execute(() => daedalus.api.ada.setSubscriptionStatus({}));
-});
+// When(/^Daedalus is stuck in connecting state$/, async function() {
+//   await this.client.execute(() => daedalus.api.ada.setSubscriptionStatus({}));
+// });
 
 Then(/^I should see the "Manual Update" overlay$/, function() {
   return this.client.waitForVisible(SELECTORS.OVERLAY);

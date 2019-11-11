@@ -17,6 +17,12 @@ import {
   TransactionTypes,
 } from '../../../source/renderer/app/domains/WalletTransaction';
 import WalletsWrapper from '../wallets/utils/WalletsWrapper';
+import {
+  DATE_ENGLISH_OPTIONS,
+  // LANGUAGE_OPTIONS,
+  // NUMBER_OPTIONS,
+  TIME_OPTIONS,
+} from '../../../source/renderer/app/config/profileConfig';
 
 // Screens
 import WalletTransactionsList from '../../../source/renderer/app/components/wallet/transactions/WalletTransactionsList';
@@ -71,6 +77,8 @@ storiesOf('Transactions|Transactions', module)
       isDeletingTransaction={false}
       formattedWalletAmount={formattedWalletAmount}
       totalAvailable={5}
+      currentDateFormat={DATE_ENGLISH_OPTIONS[0].value}
+      currentTimeFormat={TIME_OPTIONS[0].value}
     />
   ))
 
@@ -106,6 +114,8 @@ storiesOf('Transactions|Transactions', module)
       isDeletingTransaction={false}
       formattedWalletAmount={formattedWalletAmount}
       totalAvailable={3}
+      currentDateFormat={DATE_ENGLISH_OPTIONS[0].value}
+      currentTimeFormat={TIME_OPTIONS[0].value}
     />
   ))
 
@@ -122,6 +132,8 @@ storiesOf('Transactions|Transactions', module)
       isDeletingTransaction={false}
       formattedWalletAmount={formattedWalletAmount}
       totalAvailable={500}
+      currentDateFormat={DATE_ENGLISH_OPTIONS[0].value}
+      currentTimeFormat={TIME_OPTIONS[0].value}
     />
   ))
 
@@ -153,6 +165,8 @@ storiesOf('Transactions|Transactions', module)
       isDeletingTransaction={false}
       formattedWalletAmount={formattedWalletAmount}
       totalAvailable={3}
+      currentDateFormat={DATE_ENGLISH_OPTIONS[0].value}
+      currentTimeFormat={TIME_OPTIONS[0].value}
     />
   ))
 
@@ -162,6 +176,8 @@ storiesOf('Transactions|Transactions', module)
       isRenderingAsVirtualList
       deletePendingTransaction={() => {}}
       isRestoreActive={false}
+      currentDateFormat={DATE_ENGLISH_OPTIONS[0].value}
+      currentTimeFormat={TIME_OPTIONS[0].value}
       transactions={[
         generateTransaction(
           TransactionTypes.INCOME,
@@ -186,5 +202,7 @@ storiesOf('Transactions|Transactions', module)
       isDeletingTransaction={false}
       formattedWalletAmount={formattedWalletAmount}
       totalAvailable={3}
+      currentDateFormat={DATE_ENGLISH_OPTIONS[0].value}
+      currentTimeFormat={TIME_OPTIONS[0].value}
     />
   ));

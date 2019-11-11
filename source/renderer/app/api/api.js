@@ -36,6 +36,7 @@ import { deleteLegacyTransaction } from './transactions/requests/deleteLegacyTra
 import { changeSpendingPassword } from './wallets/requests/changeSpendingPassword';
 import { deleteWallet } from './wallets/requests/deleteWallet';
 import { deleteLegacyWallet } from './wallets/requests/deleteLegacyWallet';
+import { exportWalletAsJSON } from './wallets/requests/exportWalletAsJSON';
 import { importWalletAsJSON } from './wallets/requests/importWalletAsJSON';
 import { getWallets } from './wallets/requests/getWallets';
 import { getLegacyWallets } from './wallets/requests/getLegacyWallets';
@@ -121,6 +122,7 @@ import type {
   RestoreWalletRequest,
   RestoreLegacyWalletRequest,
   UpdateSpendingPasswordRequest,
+  ExportWalletToFileRequest,
   GetWalletCertificateRecoveryPhraseRequest,
   GetWalletRecoveryPhraseFromCertificateRequest,
   ImportWalletFromKeyRequest,
@@ -908,6 +910,26 @@ export default class AdaApi {
       if (errorCode === 'wrong_encryption_passphrase') {
         throw new IncorrectSpendingPasswordError();
       }
+      throw new GenericApiError();
+    }
+  };
+
+  exportWalletToFile = async (
+    request: ExportWalletToFileRequest
+  ): Promise<[]> => {
+    const { walletId, filePath } = request;
+    Logger.debug('AdaApi::exportWalletToFile called', {
+      parameters: filterLogData(request),
+    });
+    try {
+      const response: Promise<[]> = await exportWalletAsJSON(this.config, {
+        walletId,
+        filePath,
+      });
+      Logger.debug('AdaApi::exportWalletToFile success', { response });
+      return response;
+    } catch (error) {
+      Logger.error('AdaApi::exportWalletToFile error', { error });
       throw new GenericApiError();
     }
   };

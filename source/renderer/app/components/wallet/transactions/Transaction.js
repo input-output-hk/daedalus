@@ -16,7 +16,7 @@ import {
   WalletTransaction,
 } from '../../../domains/WalletTransaction';
 import globalMessages from '../../../i18n/global-messages';
-import type { TransactionState } from '../../../domains/WalletTransaction';
+import type { TransactionState } from '../../../api/transactions/types';
 import { getNetworkExplorerUrl } from '../../../utils/network';
 import { PENDING_TIME_LIMIT } from '../../../config/txnsConfig';
 import CancelTransactionConfirmationDialog from './CancelTransactionConfirmationDialog';

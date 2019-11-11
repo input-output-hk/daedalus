@@ -65,7 +65,7 @@ async function prepareNewsOfType(
 }
 
 // Set newsfeed to open before each newsfeed step
-export function setNewsFeedIsOpen(client, flag) {
+export function setNewsFeedIsOpen(client: Object, flag) {
   return client.execute(desiredState => {
     if (daedalus.stores.app.newsFeedIsOpen !== desiredState) {
       daedalus.actions.app.toggleNewsFeed.trigger();

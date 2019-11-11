@@ -7,7 +7,6 @@ import wordlist from 'bip39/wordlists/english';
 
 // Screens
 import WalletSettings from '../../../../source/renderer/app/components/wallet/settings/WalletSettings';
-import { WalletAssuranceModeOptions } from '../../../../source/renderer/app/domains/Wallet';
 import ChangeSpendingPasswordDialog from '../../../../source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog';
 import DeleteWalletConfirmationDialog from '../../../../source/renderer/app/components/wallet/settings/DeleteWalletConfirmationDialog';
 import WalletRecoveryPhraseStep1Dialog from '../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep1Dialog';
@@ -107,6 +106,8 @@ export default () => {
 
   return (
     <WalletSettings
+      isIncentivizedTestnet={boolean('isIncentivizedTestnet', false)}
+      isLegacy={boolean('isLegacy', false)}
       isDialogOpen={dialog => {
         if (dialog === ChangeSpendingPasswordDialog) {
           return boolean(

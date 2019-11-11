@@ -20,6 +20,7 @@ type Props = {
   onCloseOpenAlert: Function,
   onMarkNewsAsRead: Function,
   onOpenExternalLink: Function,
+  onProceedNewsAction: Function,
   allAlertsCount: number,
   hideCounter?: boolean,
   currentDateFormat: string,

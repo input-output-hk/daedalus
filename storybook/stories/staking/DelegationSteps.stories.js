@@ -13,29 +13,12 @@ import DelegationStepsActivationDialog from '../../../source/renderer/app/compon
 
 import translations from '../../../source/renderer/app/i18n/translations';
 import STAKE_POOLS from '../../../source/renderer/app/config/stakingStakePools.dummy.json';
+import { generateWallet } from '../_support/utils';
 
 const WALLETS = [
-  {
-    id: '1',
-    value: '1.0001 ADA',
-    label: 'First Wallet',
-    isAcceptableSetupWallet: true,
-    hasPassword: true,
-  },
-  {
-    id: '2',
-    value: '2 ADA',
-    label: 'Second Wallet',
-    isAcceptableSetupWallet: true,
-    hasPassword: true,
-  },
-  {
-    id: '3',
-    value: '0.0001 ADA',
-    label: 'Third Wallet',
-    isAcceptableSetupWallet: false,
-    hasPassword: true,
-  },
+  generateWallet('First Wallet', '1'),
+  generateWallet('Second Wallet', '2'),
+  generateWallet('Third Wallet', '0.0001'),
 ];
 
 const locales = {
@@ -84,6 +67,8 @@ export class StakingDelegationSteps extends Component<any, State> {
         wallets={WALLETS}
         minDelegationFunds={1}
         selectedWallet={null}
+        isWalletAcceptable
+        selectedWalletId="1"
       />,
       <DelegationStepsConfirmationDialog
         fees={new BigNumber(0.172081)}
