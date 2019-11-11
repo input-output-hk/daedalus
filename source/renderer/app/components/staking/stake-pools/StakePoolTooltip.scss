@@ -197,7 +197,7 @@
 }
 
 .url {
-  @include link(--theme-staking-stake-pool-tooltip-link-color);
+  @include link(--theme-link-main-color);
   font-size: 14px;
   line-height: 1.36;
   margin-bottom: 18px;
@@ -212,9 +212,6 @@
 
   & > span {
     vertical-align: text-top;
-    svg {
-      vertical-align: baseline;
-    }
   }
 }
 
