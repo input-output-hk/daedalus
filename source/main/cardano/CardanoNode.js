@@ -1,4 +1,5 @@
 // @flow
+/* eslint-disable */
 import Store from 'electron-store';
 import { spawn, exec } from 'child_process';
 import type { ChildProcess } from 'child_process';
@@ -329,6 +330,7 @@ export class CardanoNode {
    */
   async stop(): Promise<void> {
     const { _node, _log, _config } = this;
+    console.log('>>> STOP: ', _node);
     if (await this._isDead()) {
       _log.info('CardanoNode#stop: process is not running anymore');
       return Promise.resolve();
@@ -361,12 +363,15 @@ export class CardanoNode {
    */
   kill(): Promise<void> {
     const { _node, _log } = this;
+    console.log('>>> KILL: ', _node);
     return new Promise(async (resolve, reject) => {
+      console.log('>>>> _isDead: ', await this._isDead());
       if (await this._isDead()) {
         _log.info('CardanoNode#kill: process is already dead');
         return Promise.resolve();
       }
       try {
+        console.log('>>>> NODE: ', _node);
         _log.info('CardanoNode#kill: killing cardano-node process');
         if (_node) _node.kill();
         await this._waitForCardanoToExitOrKillIt();
@@ -639,8 +644,13 @@ export class CardanoNode {
    * Checks if cardano-node child_process is not running anymore
    * @returns {boolean}
    */
-  _isDead = async (): Promise<boolean> =>
-    !this._isConnected() && this._isNodeProcessNotRunningAnymore();
+  _isDead = async (): Promise<boolean> => {
+    const dead = !this._isConnected() && this._isNodeProcessNotRunningAnymore();
+    console.log('>>> TRY _isDead: ', dead);
+    console.log('>> this._isConnected: ', this._isConnected);
+    console.log('>> this._isNodeProcessNotRunningAnymore(): ', this._isNodeProcessNotRunningAnymore());
+    return !this._isConnected() && this._isNodeProcessNotRunningAnymore();
+  }
 
   /**
    * Checks if current cardano-node child_process is "awake" (created, connected, stateful)
@@ -822,9 +832,11 @@ export class CardanoNode {
       }
     });
 
-  _isNodeProcessStillRunning = async (): Promise<boolean> =>
-    this._node != null &&
+  _isNodeProcessStillRunning = async (): Promise<boolean> => {
+    console.log('_isNodeProcessStillRunning: ', { node: this._node, CARDANO_PROCESS_NAME });
+    return this._node != null &&
     this._isProcessRunning(this._node.pid, CARDANO_PROCESS_NAME);
+  }
 
   _isNodeProcessNotRunningAnymore = async () =>
     (await this._isNodeProcessStillRunning()) === false;
