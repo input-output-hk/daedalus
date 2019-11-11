@@ -711,13 +711,18 @@ export default class NetworkStatusStore extends Store {
     return this.isNodeResponding && this.isNodeSubscribed && this.isNodeSyncing;
   }
 
-  // @API TODO - uncomment checking once api v2 is integrated
   @computed get isSystemTimeCorrect(): boolean {
-    // return this.isNodeTimeCorrect || this.isSystemTimeIgnored;
-    return true;
+    return (
+      this.isIncentivizedTestnet ||
+      (this.isNodeTimeCorrect || this.isSystemTimeIgnored)
+    );
   }
 
   @computed get isSynced(): boolean {
+    if (this.isIncentivizedTestnet) {
+      return this.syncPercentage === 100;
+    }
+
     return this.isConnected && this.isNodeInSync && this.isSystemTimeCorrect;
   }
 
