@@ -43,7 +43,7 @@ export default class WalletTransactionsPage extends Component<Props> {
   render() {
     const { intl } = this.context;
     const { actions, stores } = this.props;
-    const { app, wallets } = stores;
+    const { app, wallets, profile } = stores;
     const {
       openExternalLink,
       environment: { network },
@@ -59,7 +59,7 @@ export default class WalletTransactionsPage extends Component<Props> {
       deletePendingTransaction,
       deleteTransactionRequest,
     } = stores.transactions;
-    const { currentLocale } = stores.profile;
+    const { currentTimeFormat, currentDateFormat, currentLocale } = profile;
 
     // Guard against potential null values
     if (!searchOptions || !activeWallet) return null;
@@ -107,6 +107,8 @@ export default class WalletTransactionsPage extends Component<Props> {
           isDeletingTransaction={deleteTransactionRequest.isExecuting}
           formattedWalletAmount={formattedWalletAmount}
           onOpenExternalLink={openExternalLink}
+          currentTimeFormat={currentTimeFormat}
+          currentDateFormat={currentDateFormat}
           currentLocale={currentLocale}
           isRenderingAsVirtualList
         />

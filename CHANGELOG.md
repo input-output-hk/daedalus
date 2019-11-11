@@ -32,10 +32,28 @@ Changelog
 - Disabled create a paper wallet certificate feature ([PR 1640](https://github.com/input-output-hk/daedalus/pull/1640))
 - Removed all notions of account indexes from the codebase ([PR 1614](https://github.com/input-output-hk/daedalus/pull/1614))
 - Removed "Block consolidation status" dialog ([PR 1610](https://github.com/input-output-hk/daedalus/pull/1610))
+- Fixed build mode of webpack auto dll plugin ([PR 1606](https://github.com/input-output-hk/daedalus/pull/1606))
+- Changed delete wallet button layout for emphasized location/importance and removed export wallet feature ([PR 1612](https://github.com/input-output-hk/daedalus/pull/1612), [PR 1619](https://github.com/input-output-hk/daedalus/pull/1619))
+- Speedup storybook builds in development ([PR 1607](https://github.com/input-output-hk/daedalus/pull/1607))
+- Added note to UTXO screen showing pending transactions ([PR 1589](https://github.com/input-output-hk/daedalus/pull/1589))
+- Fixed broken source maps ([PR 1594](https://github.com/input-output-hk/daedalus/pull/1594))
+- Reorganized Storybook by domain ([PR 1537](https://github.com/input-output-hk/daedalus/pull/1537))
+- Reorganized Tests by domain ([PR 1540](https://github.com/input-output-hk/daedalus/pull/1540))
 
 ### Fixes
 
-- Fixed paper wallet certificate restoration ([PR 1055](https://github.com/input-output-hk/daedalus/pull/1055))
+- Reduce layout re-renderings ([PR 1595](https://github.com/input-output-hk/daedalus/pull/1595))
+- Fixed green Cardano theme white color and borders color ([PR 1584](https://github.com/input-output-hk/daedalus/pull/1584))
+- Fixed flat button color  ([PR 1586](https://github.com/input-output-hk/daedalus/pull/1586))
+- Add internal link support in newsfeed items and verification hash generator script ([PR 1617](https://github.com/input-output-hk/daedalus/pull/1617))
+- Implemented date, time and number format user options ([PR 1611](https://github.com/input-output-hk/daedalus/pull/1611))
+
+
+## 0.15.1
+
+### Fixes
+
+- Fixed newsfeed content loading issue ([PR 1653](https://github.com/input-output-hk/daedalus/pull/1653))
 
 ## 0.15.0
 

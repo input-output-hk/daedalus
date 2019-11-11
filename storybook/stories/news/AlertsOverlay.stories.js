@@ -2,10 +2,16 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
-import StoryDecorator from '../support/StoryDecorator';
+import { select, withKnobs } from '@storybook/addon-knobs';
+
+import StoryDecorator from '../_support/StoryDecorator';
+import { dateOptions } from '../_support/profileSettings';
+import { DATE_ENGLISH_OPTIONS } from '../../../source/renderer/app/config/profileConfig';
+
 import AlertsOverlay from '../../../source/renderer/app/components/news/AlertsOverlay';
 
-storiesOf('NewsFeed', module)
+
+storiesOf('News|Alerts', module)
   .addDecorator(story => (
     <StoryDecorator>
       {story([
@@ -48,12 +54,19 @@ storiesOf('NewsFeed', module)
       ])}
     </StoryDecorator>
   ))
+  .addDecorator(withKnobs)
   .add('Alerts Overlay', props => (
     <AlertsOverlay
       allAlertsCount={props['0'].alerts.length}
       alerts={props['0'].alerts}
       onCloseOpenAlert={() => {}}
       onMarkNewsAsRead={action('onMarkNewsAsRead')}
-      onOpenExternalLink={() => {}}
+      onOpenExternalLink={action('onOpenExternalLink')}
+      onProceedNewsAction={action('onProceedNewsAction')}
+      currentDateFormat={select(
+        'currentDateFormat',
+        dateOptions,
+        DATE_ENGLISH_OPTIONS[0].value
+      )}
     />
   ));

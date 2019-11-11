@@ -54,16 +54,29 @@
   }
 }
 
-.actionButtons {
-  display: flex;
-  justify-content: space-around;
-  margin-bottom: 10px;
+  .deleteWalletBox {
+    margin-bottom: 37px;
+    margin-top: 20px;
+    padding-bottom: 30px;
+    padding-top: 30px;
 
-  .exportLink {
-    color: var(--theme-bordered-box-text-color);
-    cursor: pointer;
-    font-family: var(--font-medium);
-    font-size: 16px;
+    span {
+      color: var(--theme-input-label-color);
+      font-family: var(--font-medium);
+      font-size: 16px;
+      margin-bottom: 14px;
+    }
+
+    .contentBox {
+      align-items: center;
+      color: var(--theme-bordered-box-text-color);
+      display: flex;
+      flex-direction: row;
+      font-family: var(--font-light);
+      justify-content: space-between;
+      line-height: 1.38;
+      padding-top: 14px;
+    }
   }
 }
 

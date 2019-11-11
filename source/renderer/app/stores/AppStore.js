@@ -49,6 +49,7 @@ export default class AppStore extends Store {
     );
 
     this.actions.app.toggleNewsFeed.listen(this._toggleNewsFeed);
+    this.actions.app.closeNewsFeed.listen(this._closeNewsFeed);
 
     toggleUiPartChannel.onReceive(this.toggleUiPart);
     showUiPartChannel.onReceive(this.showUiPart);
@@ -73,6 +74,10 @@ export default class AppStore extends Store {
 
   @action _toggleNewsFeed = () => {
     this.newsFeedIsOpen = !this.newsFeedIsOpen;
+  };
+
+  @action _closeNewsFeed = () => {
+    this.newsFeedIsOpen = false;
   };
 
   /**
@@ -106,7 +111,7 @@ export default class AppStore extends Store {
 
   @computed get isSetupPage(): boolean {
     return (
-      this.currentRoute === ROUTES.PROFILE.LANGUAGE_SELECTION ||
+      this.currentRoute === ROUTES.PROFILE.INITIAL_SETTINGS ||
       this.currentRoute === ROUTES.PROFILE.TERMS_OF_USE
     );
   }

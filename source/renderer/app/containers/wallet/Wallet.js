@@ -1,7 +1,6 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
-import { get } from 'lodash';
 import MainLayout from '../MainLayout';
 import WalletWithNavigation from '../../components/wallet/layouts/WalletWithNavigation';
 import LoadingSpinner from '../../components/widgets/LoadingSpinner';
@@ -55,12 +54,13 @@ export default class Wallet extends Component<Props> {
 
     const { active: activeWallet } = wallets;
 
-    if (!activeWallet)
+    if (!activeWallet) {
       return (
         <MainLayout>
           <LoadingSpinner />
         </MainLayout>
       );
+    }
 
     const isRestoreActive =
       get(wallets, ['active', 'syncState', 'status']) ===

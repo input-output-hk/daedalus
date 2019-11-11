@@ -174,4 +174,28 @@ export default (api: AdaApi) => {
     NEXT_ADA_UPDATE = null;
     APPLICATION_VERSION = null;
   };
+
+  api.setFakeNewsFeedJsonForTesting = (fakeNewsfeedJson: ?GetNewsResponse) => {
+    FAKE_NEWSFEED_JSON = fakeNewsfeedJson;
+  };
+
+  api.getNews = (): Promise<GetNewsResponse> => {
+    return new Promise((resolve, reject) => {
+      if (!FAKE_NEWSFEED_JSON) {
+        reject(new Error('Unable to fetch news'));
+      } else {
+        resolve(FAKE_NEWSFEED_JSON);
+      }
+    });
+  };
+
+  api.resetTestOverrides = () => {
+    LATEST_APP_VERSION = null;
+    LOCAL_TIME_DIFFERENCE = 0;
+    LOCAL_BLOCK_HEIGHT = null;
+    NETWORK_BLOCK_HEIGHT = null;
+    NEXT_ADA_UPDATE = null;
+    SUBSCRIPTION_STATUS = null;
+    APPLICATION_VERSION = null;
+  };
 };

@@ -800,8 +800,9 @@ export const createDaedalusComponentsTheme = (
       '--theme-recovery-phrase-normal-border-color': 'rgba(68, 91, 124, .07)',
       '--theme-recovery-phrase-warning-background-color':
         'rgba(68, 91, 124, 0.05)',
-      '--theme-recovery-phrase-attention-background-color':
-        'rgba(234, 76, 91, .1)',
+      '--theme-recovery-phrase-attention-background-color': `${
+        background.primary.light
+      }`,
     },
     reportIssue: {
       '--theme-report-issue-button-background-color': `${
@@ -866,6 +867,7 @@ export const createDaedalusComponentsTheme = (
         background.secondary.regular
       }`,
       '--theme-settings-theme-select-title-color': `${text.primary}`,
+      '--theme-settings-theme-select-border-color': `${border}`,
     },
     sidebar: {
       '--theme-sidebar-background-color': `${background.secondary.regular}`,

@@ -1,3 +1,4 @@
+-- TODO: Merge review
 {-# OPTIONS_GHC -Wno-missing-signatures #-}
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
@@ -43,6 +44,10 @@ import           Turtle                              (pwd, cd)
 import           Turtle.Format                       (format, fp)
 import           Data.Aeson                          (FromJSON(..), withObject, eitherDecode, (.:), genericParseJSON, defaultOptions)
 import qualified Data.ByteString.Lazy.Char8       as L8
+ -- HEAD
+-- =======
+-- import qualified Dhall as Dhall
+-- >>>>>>> develop
 
 data OS
   = Linux64

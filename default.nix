@@ -1,3 +1,4 @@
+# TODO: Merge review
 { target ? builtins.currentSystem
 , nodeImplementation ? "jormungandr"
 , localLib ? import ./lib.nix { inherit nodeImplementation; }
@@ -31,6 +32,7 @@ let
   buildNumSuffix = if buildNum == null then "" else ("-${builtins.toString buildNum}");
   throwSystem = throw "Unsupported system: ${pkgs.stdenv.hostPlatform.system}";
   ghcWithCardano = cardanoSL.haskellPackages.ghcWithPackages (ps: [ ps.cardano-sl ps.cardano-sl-x509 ]);
+  # HEAD
   ostable.x86_64-windows = "windows";
   ostable.x86_64-linux = "linux";
   ostable.x86_64-darwin = "macos64";
@@ -45,6 +47,16 @@ let
     };
     cardano-wallet = import self.sources.cardano-wallet { inherit system crossSystem; };
     cardano-shell = import self.sources.cardano-shell { inherit system crossSystem; };
+  # =======
+  # daedalus-bridge = cardanoSL.daedalus-bridge.overrideAttrs (oldAttrs: {
+  #   buildCommand = ''
+  #     ${oldAttrs.buildCommand}
+  #     cp ${./installers/cardano-configuration.yaml} $out/config/configuration.yaml
+  #   '';
+  # });
+  # packages = self: {
+  #   inherit cluster pkgs version daedalus-bridge;
+  # >>>>>>> develop
 
     # a cross-compiled fastlist for the ps-list package
     fastlist = pkgs.pkgsCross.mingwW64.callPackage ./nix/fastlist.nix {};
@@ -66,7 +78,11 @@ let
       backend = nodeImplementation;
     };
 
+  # HEAD
     unsignedUnpackedCardano = self.daedalus-bridge; # TODO
+  # =======
+    # unsignedUnpackedCardano = daedalus-bridge;
+  # >>>>>>> develop
     unpackedCardano = if dummyInstaller then self.dummyUnpacked else (if needSignedBinaries then self.signedCardano else self.unsignedUnpackedCardano);
     signFile = file: let
       localSigningScript = pkgs.writeScript "signing-script" ''
@@ -246,8 +262,12 @@ let
 
     ## TODO: move to installers/nix
     hsDaedalusPkgs = import ./installers {
+  # HEAD
       #inherit (cardanoSL) daedalus-bridge;
       inherit localLib system;
+  # =======
+      # inherit localLib system daedalus-bridge;
+  # >>>>>>> develop
     };
     daedalus-installer = pkgs.haskell.lib.justStaticExecutables self.hsDaedalusPkgs.daedalus-installer;
     daedalus = self.callPackage ./installers/nix/linux.nix {};
@@ -259,7 +279,7 @@ let
     rawapp = self.callPackage ./yarn2nix.nix {
       inherit buildNum;
       api = "ada";
-      apiVersion = cardanoSL.daedalus-bridge.version;
+      apiVersion = daedalus-bridge.version;
     };
     rawapp-win64 = self.rawapp.override { win64 = true; };
     source = builtins.filterSource localLib.cleanSourceFilter ./.;
@@ -391,7 +411,7 @@ let
       inherit (self) postInstall preInstall cluster rawapp;
       inherit pkgs;
       installationSlug = installPath;
-      installedPackages = [ daedalus' self.postInstall self.namespaceHelper daedalus'.cfg self.daedalus-bridge daedalus'.daedalus-frontend self.xdg-open ];
+      installedPackages = [ daedalus' self.postInstall self.namespaceHelper daedalus'.cfg daedalus-bridge daedalus'.daedalus-frontend self.xdg-open ];
       nix-bundle = self.nix-bundle;
     }).installerBundle;
   };

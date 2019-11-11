@@ -1,14 +1,18 @@
+-- TODO: Merge review
 {-# LANGUAGE OverloadedStrings, NamedFieldPuns #-}
 
 module Util where
 
 import Control.Monad (mapM_)
 import Data.Text (Text)
-import qualified Data.ByteString as BS
-import qualified Data.ByteString.Lazy as BSL
 import System.Directory (listDirectory, withCurrentDirectory, removeDirectory, removeFile, doesDirectoryExist)
+-- HEAD
 import Turtle (export)
 import Data.Aeson (Value, decodeStrict', FromJSON, Value(Object, String), ToJSON, encode)
+-- =======
+-- import Turtle (export, format, d)
+-- import Data.Aeson (Value, Value(Object, String), decodeFileStrict', encodeFile)
+-- >>>>>>> develop
 import qualified Data.HashMap.Strict as HM
 
 import Config (Options(..), Backend(..))
@@ -40,12 +44,6 @@ exportBuildVars Options{oBackend, oBuildJob, oCluster} backendVersion = do
     where
         apiName (Cardano _) = "ada"
         apiName Mantis      = "etc"
-
-decodeFileStrict' :: FromJSON a => FilePath -> IO (Maybe a)
-decodeFileStrict' = fmap decodeStrict' . BS.readFile
-
-encodeFile :: ToJSON a => FilePath -> a -> IO ()
-encodeFile fp = BSL.writeFile fp . encode
 
 rewritePackageJson :: FilePath -> Text -> IO ()
 rewritePackageJson path name = do

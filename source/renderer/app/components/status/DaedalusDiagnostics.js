@@ -14,6 +14,7 @@ import SVGInline from 'react-svg-inline';
 // } from '../../config/timingConfig';
 // import { UNSYNCED_BLOCKS_ALLOWED } from '../../config/numbersConfig';
 // import { getNetworkEkgUrl } from '../../utils/network';
+import { BigNumber } from 'bignumber.js';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
 import iconCopy from '../../assets/images/clipboard-ic.inline.svg';
@@ -716,7 +717,12 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
               </tr>
               <tr>
                 <th>{intl.formatMessage(messages.syncPercentage)}:</th>
-                <td>{syncPercentage.toFixed(2)}%</td>
+                <td>
+                  {new BigNumber(
+                    parseFloat(syncPercentage).toFixed(2)
+                  ).toFormat(2)}
+                  %
+                </td>
               </tr>
               <tr>
                 <th>{intl.formatMessage(messages.lastNetworkBlock)}:</th>

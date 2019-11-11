@@ -135,7 +135,11 @@ export default class TransactionsStore extends Store {
     return results ? results.transactions.length : 0;
   }
 
-  @action _refreshTransactionData = () => {
+  @computed get pendingTransactionsCount(): number {
+    return this.recent.filter(({ state }) => state === 'pending').length;
+  }
+
+  @action _refreshTransactionData = async (restoredWalletId: ?string) => {
     if (this.stores.networkStatus.isConnected) {
       const { all: wallets } = this.stores.wallets;
       for (const wallet of wallets) {

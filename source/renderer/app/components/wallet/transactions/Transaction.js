@@ -144,6 +144,7 @@ type Props = {
   network: string,
   onDetailsToggled: ?Function,
   onOpenExternalLink: ?Function,
+  currentTimeFormat: string,
   walletId: string,
   isDeletingTransaction: boolean,
   currentLocale: string,
@@ -288,6 +289,7 @@ export default class Transaction extends Component<Props, State> {
       onOpenExternalLink,
       isExpanded,
       isDeletingTransaction,
+      currentTimeFormat,
     } = this.props;
     const { intl } = this.context;
 
@@ -405,7 +407,7 @@ export default class Transaction extends Component<Props, State> {
               <div className={styles.details}>
                 <div className={styles.type}>
                   {intl.formatMessage(messages.type, { currency })},{' '}
-                  {moment(data.date).format('hh:mm:ss A')}
+                  {moment(data.date).format(currentTimeFormat)}
                 </div>
                 {this.renderTxnStateTag()}
               </div>

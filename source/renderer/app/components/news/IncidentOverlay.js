@@ -12,6 +12,8 @@ import styles from './IncidentOverlay.scss';
 type Props = {
   incident: News.News,
   onOpenExternalLink: Function,
+  onProceedNewsAction: Function,
+  currentDateFormat: string,
 };
 
 @observer
@@ -30,15 +32,17 @@ export default class IncidentOverlay extends Component<Props> {
     }
   }
 
+  onProceedNewsAction = (event: SyntheticMouseEvent<HTMLElement>) => {
+    const { incident, onProceedNewsAction } = this.props;
+    onProceedNewsAction(incident, event);
+  };
+
   renderAction = (action: Object) => {
-    if (action && action.url) {
+    if (action && (action.url || action.event)) {
       return (
-        <button
-          className={styles.actionBtn}
-          onClick={() => this.props.onOpenExternalLink(action.url)}
-        >
+        <button className={styles.actionBtn} onClick={this.onProceedNewsAction}>
           {action.label}
-          <SVGInline svg={externalLinkIcon} />
+          {action.url && <SVGInline svg={externalLinkIcon} />}
         </button>
       );
     }
@@ -46,13 +50,13 @@ export default class IncidentOverlay extends Component<Props> {
   };
 
   render() {
-    const { incident } = this.props;
+    const { incident, currentDateFormat } = this.props;
     const { content, date, action, title } = incident;
     return (
       <div className={styles.component}>
         <h1 className={styles.title}>{title}</h1>
         <span className={styles.date}>
-          {moment(date).format(this.localizedDateFormat)}
+          {moment(date).format(currentDateFormat)}
         </span>
         <div
           className={styles.content}

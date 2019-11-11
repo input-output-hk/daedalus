@@ -29,7 +29,7 @@ export default class WalletsActions {
     type?: string,
   }> = new Action();
   importWalletFromFile: Action<WalletImportFromFileParams> = new Action();
-  deleteWallet: Action<{ walletId: string, isLegacy: boolean }> = new Action();
+  deleteWallet: Action<{ walletId: string, isLegacy?: boolean }> = new Action();
   sendMoney: Action<{
     receiver: string,
     amount: string,
@@ -48,8 +48,6 @@ export default class WalletsActions {
   closeRewardsCsvGeneration: Action<any> = new Action();
   setCertificateTemplate: Action<{ selectedTemplate: string }> = new Action();
   finishCertificate: Action<any> = new Action();
-  finishRewardsCsv: Action<any> = new Action();
-  getWallet: Action<{ walletId: string }> = new Action();
   updateWalletLocalData: Action<any> = new Action();
   updateRecoveryPhraseVerificationDate: Action<any> = new Action();
 
