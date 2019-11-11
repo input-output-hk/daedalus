@@ -4,7 +4,7 @@ import Store from 'electron-store';
 import { spawn, exec } from 'child_process';
 import type { ChildProcess } from 'child_process';
 import type { WriteStream } from 'fs';
-import { toInteger } from 'lodash';
+import { toInteger, get } from 'lodash';
 import { environment } from '../environment';
 import {
   deriveProcessNames,
@@ -330,26 +330,62 @@ export class CardanoNode {
    */
   async stop(): Promise<void> {
     const { _node, _log, _config } = this;
-    console.log('>>> STOP: ', _node);
+    _log.info('1. CardanoNode#stop: killing cardano-node process', {
+      TESTING: true,
+      NODE: get(_node, 'pid'),
+      hasDisconnect: get(_node, 'disconnect'),
+    });
     if (await this._isDead()) {
-      _log.info('CardanoNode#stop: process is not running anymore');
+      _log.info('1.1. CardanoNode#stop: process is not running anymore - isDead', {
+        TESTING: true,
+      });
       return Promise.resolve();
     }
-    _log.info('CardanoNode#stop: disconnecting from cardano-node process');
+    _log.info('1.2. CardanoNode#stop: disconnecting from cardano-node process', {
+      TESTING: true,
+    });
     try {
+      _log.info('1.3. TRY disconnect', {
+        TESTING: true,
+      });
       if (_node) _node.disconnect();
+      _log.info('1.3.1. DISCONNECTED', {
+        TESTING: true,
+      });
       this._changeToState(CardanoNodeStates.STOPPING);
+      _log.info('1.3.2. _changeToState', {
+        TESTING: true,
+        SetState: CardanoNodeStates.STOPPING,
+      });
       await this._waitForNodeProcessToExit(_config.shutdownTimeout);
+      _log.info('1.3.3. _waitForNodeProcessToExit', {
+        TESTING: true,
+        shutdownTimeout: _config.shutdownTimeout,
+      });
       await this._storeProcessStates();
+      _log.info('1.3.4. _storeProcessStates', {
+        TESTING: true,
+      });
       this._reset();
+      _log.info('1.3.5. RESET', {
+        TESTING: true,
+      });
       return Promise.resolve();
     } catch (error) {
-      _log.error('CardanoNode#stop: cardano-node did not stop correctly', {
+      _log.error('1.4. CardanoNode#stop: cardano-node did not stop correctly', {
         error,
       });
+
       try {
+        _log.info('1.5.1. TRY KILL', {
+          TESTING: true,
+        });
         await this.kill();
       } catch (killError) {
+        _log.info('1.5.2. KILL ERROR', {
+          TESTING: true,
+          killError,
+        });
         return Promise.reject(killError);
       }
     }
@@ -363,15 +399,12 @@ export class CardanoNode {
    */
   kill(): Promise<void> {
     const { _node, _log } = this;
-    console.log('>>> KILL: ', _node);
     return new Promise(async (resolve, reject) => {
-      console.log('>>>> _isDead: ', await this._isDead());
       if (await this._isDead()) {
         _log.info('CardanoNode#kill: process is already dead');
         return Promise.resolve();
       }
       try {
-        console.log('>>>> NODE: ', _node);
         _log.info('CardanoNode#kill: killing cardano-node process');
         if (_node) _node.kill();
         await this._waitForCardanoToExitOrKillIt();
@@ -646,9 +679,6 @@ export class CardanoNode {
    */
   _isDead = async (): Promise<boolean> => {
     const dead = !this._isConnected() && this._isNodeProcessNotRunningAnymore();
-    console.log('>>> TRY _isDead: ', dead);
-    console.log('>> this._isConnected: ', this._isConnected);
-    console.log('>> this._isNodeProcessNotRunningAnymore(): ', this._isNodeProcessNotRunningAnymore());
     return !this._isConnected() && this._isNodeProcessNotRunningAnymore();
   }
 
@@ -833,7 +863,6 @@ export class CardanoNode {
     });
 
   _isNodeProcessStillRunning = async (): Promise<boolean> => {
-    console.log('_isNodeProcessStillRunning: ', { node: this._node, CARDANO_PROCESS_NAME });
     return this._node != null &&
     this._isProcessRunning(this._node.pid, CARDANO_PROCESS_NAME);
   }
