@@ -73,7 +73,7 @@
     line-height: 1.43;
     padding: 10px 20px;
     & > button {
-      @include link(--theme-staking-link-color-light);
+      @include link(--theme-link-main-color);
       font-size: 14px;
       &:hover {
         border-bottom: 1px solid var(--theme-link-main-color);
