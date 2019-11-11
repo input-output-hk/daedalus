@@ -333,6 +333,7 @@ export class CardanoNode {
     _log.info('1. CardanoNode#stop: killing cardano-node process', {
       START_TESTING: true,
       _config,
+      CARDANO_PROCESS_NAME,
     });
     if (await this._isDead()) {
       _log.info('1.1. CardanoNode#stop: process is not running anymore - isDead', {
@@ -411,7 +412,7 @@ export class CardanoNode {
         _log.info('1.5.1. TRY KILL', {
           TESTING: true,
         });
-        await this.kill();
+        // await this.kill();
       } catch (killError) {
         _log.info('1.5.2. KILL ERROR', {
           TESTING: true,

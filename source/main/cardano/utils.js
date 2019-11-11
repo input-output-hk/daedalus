@@ -60,7 +60,7 @@ const checkCondition = async (
 
 export const promisedCondition = (
   cond: Function,
-  timeout: number = 5000,
+  timeout: number = 50000,
   retryEvery: number = 1000
 ): Promise<void> =>
   new Promise((resolve, reject) => {
