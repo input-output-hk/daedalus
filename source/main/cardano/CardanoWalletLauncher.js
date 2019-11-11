@@ -3,7 +3,6 @@ import { spawn } from 'child_process';
 import { dirname } from 'path';
 import type { ChildProcess } from 'child_process';
 import { configureJormungandrDeps } from './nodes';
-import { Logger } from '../utils/logging';
 
 export type WalletOpts = {
   path: string,
@@ -27,10 +26,6 @@ export async function CardanoWalletLauncher(
     path,
     walletArgs,
   } = walletOpts;
-
-  Logger.info('>>> nodeImplementation 999', {
-    nodeImplementation,
-  });
 
   // This switch statement handles any node specifc
   // configuration, prior to spawning the child process

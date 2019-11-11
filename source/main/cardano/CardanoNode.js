@@ -332,6 +332,7 @@ export class CardanoNode {
     const { _node, _log, _config } = this;
     _log.info('1. CardanoNode#stop: killing cardano-node process', {
       START_TESTING: true,
+      _config,
     });
     if (await this._isDead()) {
       _log.info('1.1. CardanoNode#stop: process is not running anymore - isDead', {
