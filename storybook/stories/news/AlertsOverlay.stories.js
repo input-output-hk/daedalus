@@ -10,7 +10,6 @@ import { DATE_ENGLISH_OPTIONS } from '../../../source/renderer/app/config/profil
 
 import AlertsOverlay from '../../../source/renderer/app/components/news/AlertsOverlay';
 
-
 storiesOf('News|Alerts', module)
   .addDecorator(story => (
     <StoryDecorator>

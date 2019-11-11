@@ -6,6 +6,7 @@ import type { InjectedProps } from '../../types/injectedPropsType';
 import { isValidWalletName } from '../../utils/validations';
 import ChangeSpendingPasswordDialogContainer from './dialogs/settings/ChangeSpendingPasswordDialogContainer';
 import DeleteWalletDialogContainer from './dialogs/settings/DeleteWalletDialogContainer';
+import ExportWalletToFileDialogContainer from './dialogs/settings/ExportWalletToFileDialogContainer';
 import WalletRecoveryPhraseStep1Container from './dialogs/settings/WalletRecoveryPhraseStep1Container';
 import WalletRecoveryPhraseStep2Container from './dialogs/settings/WalletRecoveryPhraseStep2Container';
 import WalletRecoveryPhraseStep3Container from './dialogs/settings/WalletRecoveryPhraseStep3Container';
@@ -19,14 +20,27 @@ export default class WalletSettingsPage extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
   render() {
-    const { uiDialogs, walletSettings, wallets } = this.props.stores;
+    const {
+      uiDialogs,
+      walletSettings,
+      app,
+      wallets,
+      networkStatus,
+    } = this.props.stores;
     const activeWallet = wallets.active;
+    let isLegacyWallet: boolean = false;
+    if (activeWallet) {
+      isLegacyWallet = activeWallet.isLegacy;
+    }
 
     // Guard against potential null values
     if (!activeWallet)
       throw new Error('Active wallet required for WalletSettingsPage.');
 
     const { actions } = this.props;
+    const {
+      environment: { isProduction },
+    } = app;
     const {
       updateWalletRequest,
       lastUpdatedWalletField,
@@ -67,6 +81,7 @@ export default class WalletSettingsPage extends Component<Props> {
           updateWalletRequest.wasExecuted &&
           updateWalletRequest.result === false
         }
+        showExportLink={!isProduction}
         lastUpdatedField={lastUpdatedWalletField}
         onFieldValueChange={(field, value) =>
           updateWalletField.trigger({ field, value })
@@ -78,6 +93,7 @@ export default class WalletSettingsPage extends Component<Props> {
         nameValidator={name => isValidWalletName(name)}
         changeSpendingPasswordDialog={<ChangeSpendingPasswordDialogContainer />}
         deleteWalletDialogContainer={<DeleteWalletDialogContainer />}
+        exportWalletDialogContainer={<ExportWalletToFileDialogContainer />}
         walletRecoveryPhraseStep1Container={
           <WalletRecoveryPhraseStep1Container />
         }

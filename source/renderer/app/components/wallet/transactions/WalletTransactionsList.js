@@ -58,6 +58,7 @@ type Props = {
   walletId: string,
   isDeletingTransaction: boolean,
   currentLocale: string,
+  currentDateFormat: string,
 };
 
 const DATE_FORMAT = 'YYYY-MM-DD';

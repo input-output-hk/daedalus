@@ -56,7 +56,6 @@ export default class WalletSummaryPage extends Component<Props> {
       deletePendingTransaction,
       deleteTransactionRequest,
     } = transactions;
-    const { isActiveWalletRestoring } = wallets;
     const wallet = wallets.active;
     const { currentTimeFormat, currentDateFormat, currentLocale } = profile;
     // Guard against potential null values
@@ -73,7 +72,7 @@ export default class WalletSummaryPage extends Component<Props> {
     if (
       recentTransactionsRequest.isExecutingFirstTime ||
       hasAny ||
-      isActiveWalletRestoring
+      isRestoreActive
     ) {
       walletTransactions = (
         <WalletTransactionsList
@@ -110,7 +109,7 @@ export default class WalletSummaryPage extends Component<Props> {
           numberOfTransactions={totalAvailable}
           pendingAmount={unconfirmedAmount}
           isLoadingTransactions={recentTransactionsRequest.isExecutingFirstTime}
-          isRestoreActive={isActiveWalletRestoring}
+          isRestoreActive={isRestoreActive}
         />
         {walletTransactions}
       </VerticalFlexContainer>

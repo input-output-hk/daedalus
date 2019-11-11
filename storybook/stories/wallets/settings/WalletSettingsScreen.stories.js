@@ -133,24 +133,6 @@ export default () => {
         return false;
       }}
       activeField={null}
-      assuranceLevels={[
-        {
-          value: WalletAssuranceModeOptions.NORMAL,
-          label: {
-            id: 'global.assuranceLevel.normal',
-            defaultMessage: '!!!Normal',
-            description: '',
-          },
-        },
-        {
-          value: WalletAssuranceModeOptions.STRICT,
-          label: {
-            id: 'global.assuranceLevel.strict',
-            defaultMessage: '!!!Strict',
-            description: '',
-          },
-        },
-      ]}
       isInvalid={false}
       isSubmitting={false}
       lastUpdatedField={null}
@@ -160,7 +142,6 @@ export default () => {
       onStartEditing={() => {}}
       onStopEditing={() => {}}
       openDialogAction={() => {}}
-      walletAssurance={WalletAssuranceModeOptions.NORMAL}
       walletName={text('Wallet Name', 'Wallet Name', basicSettingsId)}
       spendingPasswordUpdateDate={moment()
         .subtract(1, 'month')

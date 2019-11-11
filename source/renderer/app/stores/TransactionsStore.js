@@ -139,7 +139,7 @@ export default class TransactionsStore extends Store {
     return this.recent.filter(({ state }) => state === 'pending').length;
   }
 
-  @action _refreshTransactionData = async (restoredWalletId: ?string) => {
+  @action _refreshTransactionData = async () => {
     if (this.stores.networkStatus.isConnected) {
       const { all: wallets } = this.stores.wallets;
       for (const wallet of wallets) {

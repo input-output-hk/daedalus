@@ -218,60 +218,6 @@ export const expectActiveWallet = async function(walletName) {
   );
 };
 
-export const waitUntilWaletNamesEqual = function(walletName) {
-  const context = this;
-  return context.client.waitUntil(async () => {
-    const currentWalletName = await getNameOfActiveWalletInSidebar.call(
-      context
-    );
-    return currentWalletName === walletName;
-  });
-};
-
-export const waitUntilWalletIsLoaded = async function(walletName) {
-  let wallet = null;
-  const context = this;
-  await context.client.waitUntil(async () => {
-    const result = await context.client.execute(
-      name => daedalus.stores.wallets.getWalletByName(name),
-      walletName
-    );
-    if (result.value) {
-      wallet = result.value;
-      return true;
-    }
-    return false;
-  });
-  return wallet;
-};
-
-export const addOrSetWalletsForScenario = function(wallet) {
-  this.wallet = wallet;
-  if (this.wallets != null) {
-    this.wallets.push(this.wallet);
-  } else {
-    this.wallets = [this.wallet];
-  }
-};
-
-export const restoreWalletWithFunds = async (client, { walletName }) =>
-  client.executeAsync((name, done) => {
-    daedalus.api.ada
-      .restoreWallet({
-        walletName: name,
-        recoveryPhrase:
-          'pass proud clarify cargo control fancy question option bring recall dolphin meat comic version pitch',
-        spendingPassword: 'Secret1234',
-      })
-      .then(() =>
-        daedalus.stores.wallets
-          .refreshWalletsData()
-          .then(done)
-          .catch(error => done(error))
-      )
-      .catch(error => done(error));
-  }, walletName);
-
 const createWalletsAsync = async (table, context) => {
   const result = await context.client.executeAsync((wallets, done) => {
     const mnemonics = {};
@@ -431,5 +377,5 @@ export const i18n = {
     }, language || DEFAULT_LANGUAGE),
 };
 
-export const waitForActiveRestoreNotification = (client, { isHidden } = {}) =>
+export const waitForActiveRestoreNotification = (client, { isHidden }: { isHidden?: boolean } = {}) =>
   client.waitForVisible('.ActiveRestoreNotification', null, isHidden);

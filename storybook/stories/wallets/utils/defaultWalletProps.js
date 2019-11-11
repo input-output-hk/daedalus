@@ -6,7 +6,6 @@ import moment from 'moment';
 import wordlist from 'bip39/wordlists/english';
 
 // Screens
-import { WalletAssuranceModeOptions } from '../../../../source/renderer/app/domains/Wallet';
 import ChangeSpendingPasswordDialog from '../../../../source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog';
 import DeleteWalletConfirmationDialog from '../../../../source/renderer/app/components/wallet/settings/DeleteWalletConfirmationDialog';
 import WalletRecoveryPhraseStep1Dialog from '../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep1Dialog';
@@ -46,24 +45,6 @@ export const defaultProps = {
     />
   ),
   activeField: null,
-  assuranceLevels: [
-    {
-      value: WalletAssuranceModeOptions.NORMAL,
-      label: {
-        id: 'global.assuranceLevel.normal',
-        defaultMessage: '!!!Normal',
-        description: '',
-      },
-    },
-    {
-      value: WalletAssuranceModeOptions.STRICT,
-      label: {
-        id: 'global.assuranceLevel.strict',
-        defaultMessage: '!!!Strict',
-        description: '',
-      },
-    },
-  ],
   isInvalid: boolean('isInvalid', false),
   isSubmitting: boolean('isSubmitting', false),
   isSpendingPasswordSet: boolean('isSpendingPasswordSet', false),
@@ -74,7 +55,6 @@ export const defaultProps = {
   onStartEditing: () => {},
   onStopEditing: () => {},
   openDialogAction: () => {},
-  walletAssurance: WalletAssuranceModeOptions.NORMAL,
   walletName: text('Wallet Name', 'Wallet Name'),
   spendingPasswordUpdateDate: moment()
     .subtract(1, 'month')

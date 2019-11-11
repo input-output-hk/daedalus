@@ -534,10 +534,6 @@ export default class WalletsStore extends Store {
     return matchRoute(`${ROUTES.WALLETS.ROOT}(/*rest)`, currentRoute);
   }
 
-  @computed get isActiveWalletRestoring(): boolean {
-    return get(this.active, 'syncState.tag') === WalletSyncStateTags.RESTORING;
-  }
-
   @computed get restoreProgress(): number {
     return get(this.active, 'syncState.data.percentage.quantity', 0);
   }

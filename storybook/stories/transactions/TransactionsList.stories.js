@@ -7,7 +7,10 @@ import BigNumber from 'bignumber.js';
 import moment from 'moment';
 
 // Assets and helpers
-import { generateTransaction, generateMultipleTransactions } from '../_support/utils';
+import {
+  generateTransaction,
+  generateMultipleTransactions,
+} from '../_support/utils';
 import { formattedWalletAmount } from '../../../source/renderer/app/utils/formatters';
 import {
   TransactionStates,

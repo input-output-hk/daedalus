@@ -12,7 +12,6 @@ import TransferFundsStep2Dialog from '../../../../source/renderer/app/components
 // Helpers
 import WalletsWrapper from '../utils/WalletsWrapper';
 
-
 const wallets = [
   {
     id: '1',

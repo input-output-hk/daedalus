@@ -4,7 +4,7 @@ import { expect } from 'chai';
 import BigNumber from 'bignumber.js';
 import { DECIMAL_PLACES_IN_ADA } from '../../../../source/renderer/app/config/numbersConfig';
 import {
-  addWalletHelpers,
+  addWalletPage,
   importWalletHelpers,
   isActiveWalletBeingRestored,
   createWallets,
@@ -16,11 +16,12 @@ import {
   waitUntilUrlEquals,
   navigateTo,
   sidebar,
-  addWalletPage,
-  importWalletDialog,
   i18n,
   waitForActiveRestoreNotification,
 } from './helpers';
+import {
+  sidebarHelpers,
+} from '../../../navigation/e2e/steps/helpers';
 
 Given(/^I have a "([^"]*)" wallet with funds$/, async function(walletName) {
   await restoreWalletWithFunds(this.client, { walletName });
@@ -46,7 +47,7 @@ Given(/^I am on the "([^"]*)" wallet "([^"]*)" screen$/, async function(
 });
 
 Given(/^I see the add wallet page/, function() {
-  return addWalletHelpers.waitForVisible(this.client);
+  return addWalletPage.waitForVisible(this.client);
 });
 
 Given(/^I see delete wallet dialog$/, function() {
@@ -70,7 +71,7 @@ When(/^I click on the create wallet button on the add wallet page/, function() {
 });
 
 When(/^I click on the import wallet button on the add wallet page/, function() {
-  return addWalletHelpers.clickImportButton(this.client);
+  return addWalletPage.clickImportButton(this.client);
 });
 
 When(/^I see the import wallet dialog$/, function() {
@@ -361,8 +362,8 @@ When(/^I submit the delete wallet dialog$/, function() {
 When(/^I try to import the wallet with funds again$/, async function() {
   await sidebarHelpers.activateCategory(this.client, { category: 'wallets' });
   await sidebarHelpers.clickAddWalletButton(this.client);
-  await addWalletHelpers.waitForVisible(this.client);
-  await addWalletHelpers.clickImportButton(this.client);
+  await addWalletPage.waitForVisible(this.client);
+  await addWalletPage.clickImportButton(this.client);
   this.waitAndClick('.WalletFileImportDialog .FileUploadWidget_dropZone');
   this.waitAndClick('.Dialog_actions button');
 });
@@ -371,7 +372,7 @@ Then(
   /^I see the import wallet dialog with an error that the wallet already exists$/,
   async function() {
     return importWalletHelpers.expectError(this.client, {
-      error: await formatMessage(this.client, {
+      error: await i18n.formatMessage(this.client, {
         id: 'api.errors.WalletAlreadyImportedError',
       }),
     });

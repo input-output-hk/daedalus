@@ -53,7 +53,6 @@ export const messages = defineMessages({
 type Props = {
   walletName: string,
   creationDate: Date,
-  walletAssurance: string,
   spendingPasswordUpdateDate: ?Date,
   error?: ?LocalizableError,
   openDialogAction: Function,
