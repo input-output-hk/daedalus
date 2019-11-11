@@ -63,7 +63,6 @@ let
     "--state-dir" dataDir.${os}
     "--genesis-block" "${dataDir.${os}}${dirSep}block0.bin"
     "--sync-tolerance" "300s"
-    "--random-port"
     "--"
     "--secret" "${dataDir.${os}}${dirSep}secret.yaml"
   ];
