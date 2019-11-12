@@ -481,7 +481,7 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--rp-input-border-color': 'rgba(255, 255, 255, 0.2)',
     '--rp-input-border-color-disabled': 'rgba(255, 255, 255, 0.05)',
     '--rp-input-border-color-errored': '#ea4c5b',
-    '--rp-input-border-color-focus': 'rgba(255, 255, 255, 0.4)',
+    '--rp-input-border-color-focus': 'rgba(255, 255, 255, 0.7)',
     '--rp-input-line-height': '22px',
     '--rp-input-padding': '12px 20px',
     '--rp-input-placeholder-color': 'rgba(255, 255, 255, 0.5)',
