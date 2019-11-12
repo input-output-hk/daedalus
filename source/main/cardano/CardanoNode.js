@@ -1,12 +1,16 @@
 // @flow
-import Store from 'electron-store'
-import type { ChildProcess } from 'child_process'
-import { exec, spawn } from 'child_process'
-import type { WriteStream } from 'fs'
-import { toInteger } from 'lodash'
-import { environment } from '../environment'
-import { deriveProcessNames, deriveStorageKeys, promisedCondition, } from './utils'
-import { getProcess } from '../utils/processes'
+import Store from 'electron-store';
+import type { ChildProcess } from 'child_process';
+import { exec, spawn } from 'child_process';
+import type { WriteStream } from 'fs';
+import { toInteger } from 'lodash';
+import { environment } from '../environment';
+import {
+  deriveProcessNames,
+  deriveStorageKeys,
+  promisedCondition,
+} from './utils';
+import { getProcess } from '../utils/processes';
 import type {
   CardanoNodeImplementation,
   CardanoNodeState,
@@ -15,10 +19,10 @@ import type {
   FaultInjectionIpcRequest,
   FaultInjectionIpcResponse,
   TlsConfig,
-} from '../../common/types/cardano-node.types'
-import { CardanoNodeStates } from '../../common/types/cardano-node.types'
-import { CardanoWalletLauncher } from './CardanoWalletLauncher'
-import { launcherConfig } from '../config'
+} from '../../common/types/cardano-node.types';
+import { CardanoNodeStates } from '../../common/types/cardano-node.types';
+import { CardanoWalletLauncher } from './CardanoWalletLauncher';
+import { launcherConfig } from '../config';
 
 /* eslint-disable consistent-return */
 
@@ -269,14 +273,14 @@ export class CardanoNode {
       { startupTries: this._startupTries }
     );
 
-    const readFile = async (logFile) => {
+    const readFile = async logFile => {
       await logFile.on('open', logFilename => {
         this._cardanoLogFile = logFilename;
         return logFilename;
       });
     };
 
-    const logFileNameGenerator = (time) => {
+    const logFileNameGenerator = time => {
       if (!time) return config.logFilePath;
 
       const year = time.getFullYear();
