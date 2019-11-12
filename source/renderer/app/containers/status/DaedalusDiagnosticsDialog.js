@@ -51,28 +51,17 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
       // Node state
       cardanoNodeState,
       isNodeResponding,
-      isNodeSubscribed,
       isNodeSyncing,
       isNodeInSync,
-      isNodeTimeCorrect,
       // Application state
       isConnected,
       isSynced,
       syncPercentage,
       hasBeenConnected,
-      localTimeDifference,
-      isSystemTimeCorrect,
-      forceCheckTimeDifferenceRequest,
-      forceCheckLocalTimeDifference,
       openStateDirectory,
       getNetworkInfoRequest,
       networkTip,
       localTip,
-      localBlockHeight,
-      networkBlockHeight,
-      latestLocalBlockTimestamp,
-      latestNetworkBlockTimestamp,
-      isSystemTimeIgnored,
       environment,
       diskSpaceAvailable,
       tlsConfig,
@@ -127,28 +116,15 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
           isStaging={environment.isStaging}
           isTestnet={environment.isTestnet}
           isNodeResponding={isNodeResponding}
-          isNodeSubscribed={isNodeSubscribed}
           isNodeSyncing={isNodeSyncing}
           isNodeInSync={isNodeInSync}
-          isNodeTimeCorrect={isNodeTimeCorrect}
           isConnected={isConnected}
           isSynced={isSynced}
           syncPercentage={syncPercentage}
           hasBeenConnected={hasBeenConnected}
-          localTimeDifference={localTimeDifference}
-          isSystemTimeCorrect={isSystemTimeCorrect}
-          isForceCheckingNodeTime={forceCheckTimeDifferenceRequest.isExecuting}
-          isSystemTimeIgnored={isSystemTimeIgnored}
-          latestLocalBlockTimestamp={latestLocalBlockTimestamp}
-          latestNetworkBlockTimestamp={latestNetworkBlockTimestamp}
-          nodeConnectionError={
-            getNetworkInfoRequest.error || forceCheckTimeDifferenceRequest.error
-          }
+          nodeConnectionError={getNetworkInfoRequest.error}
           localTip={localTip}
           networkTip={networkTip}
-          localBlockHeight={localBlockHeight}
-          networkBlockHeight={networkBlockHeight}
-          onForceCheckLocalTimeDifference={forceCheckLocalTimeDifference}
           onOpenStateDirectory={openStateDirectory}
           onOpenExternalLink={openExternalLink}
           onRestartNode={restartNode}

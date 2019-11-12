@@ -26,12 +26,13 @@ export default class LoadingPage extends Component<InjectedProps> {
   }
 
   get isSystemTimeError() {
-    const {
-      isSystemTimeCorrect,
-      isNodeStopping,
-      isNodeStopped,
-    } = this.networkStatus;
-    return !isSystemTimeCorrect && !isNodeStopping && !isNodeStopped;
+    return false;
+    // const {
+    //   isSystemTimeCorrect,
+    //   isNodeStopping,
+    //   isNodeStopped,
+    // } = this.networkStatus;
+    // return !isSystemTimeCorrect && !isNodeStopping && !isNodeStopped;
   }
 
   get networkStatus() {

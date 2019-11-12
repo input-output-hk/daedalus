@@ -17,14 +17,11 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
     const {
       cardanoNodeState,
       isNodeResponding,
-      isNodeSubscribed,
       isNodeSyncing,
-      isNodeTimeCorrect,
       isConnected,
       isSynced,
       syncPercentage,
       hasBeenConnected,
-      forceCheckTimeDifferenceRequest,
       isNodeStopping,
       isNodeStopped,
       isNotEnoughDiskSpace,
@@ -57,11 +54,8 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
         hasUnreadNews={hasUnreadNews}
         hasLoadedCurrentLocale={hasLoadedCurrentLocale}
         hasLoadedCurrentTheme={hasLoadedCurrentTheme}
-        isCheckingSystemTime={forceCheckTimeDifferenceRequest.isExecuting}
         isNodeResponding={isNodeResponding}
-        isNodeSubscribed={isNodeSubscribed}
         isNodeSyncing={isNodeSyncing}
-        isNodeTimeCorrect={isNodeTimeCorrect}
         isNewAppVersionAvailable={isNewAppVersionAvailable}
         isNewAppVersionLoading={isNewAppVersionLoading}
         isNewAppVersionLoaded={isNewAppVersionLoaded}

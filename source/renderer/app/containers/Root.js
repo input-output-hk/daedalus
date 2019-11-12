@@ -21,7 +21,6 @@ export default class Root extends Component<Props> {
       isSynced,
       isNodeStopping,
       isNodeStopped,
-      isSystemTimeCorrect,
       isNotEnoughDiskSpace,
     } = networkStatus;
 
@@ -49,12 +48,7 @@ export default class Root extends Component<Props> {
       return React.Children.only(children);
     }
 
-    if (
-      !isSynced ||
-      !hasLoadedWallets ||
-      !isSystemTimeCorrect ||
-      isNotEnoughDiskSpace
-    ) {
+    if (!isSynced || !hasLoadedWallets || isNotEnoughDiskSpace) {
       return <LoadingPage stores={stores} actions={actions} />;
     }
 
