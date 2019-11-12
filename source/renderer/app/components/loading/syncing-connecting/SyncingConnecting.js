@@ -39,11 +39,8 @@ type Props = {
   hasLoadedCurrentLocale: boolean,
   hasLoadedCurrentTheme: boolean,
   hasUnreadNews: boolean,
-  isCheckingSystemTime: boolean,
   isNodeResponding: boolean,
-  isNodeSubscribed: boolean,
   isNodeSyncing: boolean,
-  isNodeTimeCorrect: boolean,
   isNewAppVersionAvailable: boolean,
   isNewAppVersionLoading: boolean,
   isNewAppVersionLoaded: boolean,
@@ -215,10 +212,7 @@ export default class SyncingConnecting extends Component<Props, State> {
       disableDownloadLogs,
       isIncentivizedTestnet,
       isNodeResponding,
-      isNodeSubscribed,
       isNodeSyncing,
-      isNodeTimeCorrect,
-      isCheckingSystemTime,
       hasBeenConnected,
       isTlsCertInvalid,
       isNodeStopping,
@@ -280,10 +274,6 @@ export default class SyncingConnecting extends Component<Props, State> {
           onIconClick={onStatusIconClick}
           nodeState={cardanoNodeState}
           isNodeResponding={isNodeResponding}
-          isNodeSubscribed={isNodeSubscribed}
-          isNodeTimeCorrect={
-            isCheckingSystemTime ? undefined : isNodeTimeCorrect
-          }
           isNodeSyncing={isNodeSyncing}
         />
       </div>

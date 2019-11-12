@@ -72,7 +72,9 @@ export type CardanoNodeStorageKeys = {
   PREVIOUS_CARDANO_PID: CardanoPidOptions,
 };
 
-export type CardanoNodeProcessNames = 'cardano-node' | 'cardano-node.exe';
+export type CardanoNodeProcessNames =
+  | 'cardano-wallet-jormungandr'
+  | 'cardano-wallet-jormungandr.exe';
 
 export type ProcessNames = {
   CARDANO_PROCESS_NAME: CardanoNodeProcessNames,
@@ -83,9 +85,9 @@ export const CardanoProcessNameOptions: {
   linux: CardanoNodeProcessNames,
   darwin: CardanoNodeProcessNames,
 } = {
-  win32: 'cardano-node.exe',
-  linux: 'cardano-node',
-  darwin: 'cardano-node',
+  win32: 'cardano-wallet-jormungandr.exe',
+  linux: 'cardano-wallet-jormungandr',
+  darwin: 'cardano-wallet-jormungandr',
 };
 
 /**
@@ -115,7 +117,6 @@ export type FaultInjectionIpcRequest = [FaultInjection, boolean];
 
 export type CardanoStatus = {
   isNodeResponding: boolean,
-  isNodeSubscribed: boolean,
   isNodeSyncing: boolean,
   isNodeInSync: boolean,
   hasBeenConnected: boolean,
