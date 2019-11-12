@@ -2,7 +2,6 @@
 import React, { Component } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
 import classNames from 'classnames';
-import LoadingSpinner from '../../widgets/LoadingSpinner';
 import styles from './SyncingConnectingStatus.scss';
 import { CardanoNodeStates } from '../../../../../common/types/cardano-node.types';
 import type { CardanoNodeState } from '../../../../../common/types/cardano-node.types';
@@ -173,15 +172,12 @@ export default class SyncingConnectingStatus extends Component<Props> {
     const syncPercentageDisplay =
       isConnected && !isSynced ? `${syncPercentage.toFixed(2)}%` : null;
 
-    const loadingSpinner = isConnected && isSynced ? <LoadingSpinner /> : null;
-
     return (
       <div className={componentStyles}>
         <h1 className={headlineStyles}>
           {intl.formatMessage(this._getConnectingMessage())}{' '}
           {syncPercentageDisplay}
         </h1>
-        {loadingSpinner}
       </div>
     );
   }

@@ -24,9 +24,9 @@ export default class SyncingConnectingBackground extends Component<Props> {
     } = this.props;
     const componentStyles = classNames([
       styles.component,
-      hasLoadedCurrentTheme ? null : styles['is-loading-theme'],
-      isConnecting ? styles['is-connecting'] : null,
-      isSyncing ? styles['is-syncing'] : null,
+      hasLoadedCurrentTheme ? null : styles.isLoadingTheme,
+      isConnecting ? styles.isConnecting : null,
+      isSyncing ? styles.isSyncing : null,
     ]);
     return (
       <div className={componentStyles}>

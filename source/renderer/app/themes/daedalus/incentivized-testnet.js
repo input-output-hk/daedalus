@@ -726,8 +726,8 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
   },
   syncingConnecting: {
     '--theme-syncing-connecting-title-color': '#fafbfc',
-    '--theme-syncing-connecting-subTitle1-color': '#f69ab2',
-    '--theme-syncing-connecting-subTitle2-color': '#fafbfc',
+    '--theme-syncing-connecting-subTitle1-color': '#eb2256',
+    '--theme-syncing-connecting-subTitle2-color': '#eb2256',
   },
   systemError: {
     '--theme-system-error-overlay-attention-icon-color': '#ffffff',
