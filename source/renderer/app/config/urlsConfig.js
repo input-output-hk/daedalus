@@ -6,10 +6,9 @@ export const TESTNET_EXPLORER_URL =
 
 // ITN
 export const ITN_EXPLORER_URL = 'shelleyexplorer.cardano.org';
-export const ITN_QA_EXPLORER_URL =
-  'shelley-testnet-explorer-nightly.netlify.com';
+export const ITN_QA_EXPLORER_URL = 'shelley-testnet-explorer-qa.netlify.com';
 export const ITN_NIGHTLY_EXPLORER_URL =
-  'shelley-testnet-explorer-qa.netlify.com';
+  'shelley-testnet-explorer-nightly.netlify.com';
 
 export const DEVELOPMENT_EKG_URL = 'http://localhost:8085';
 export const STAGING_EKG_URL = 'http://localhost:8082';
