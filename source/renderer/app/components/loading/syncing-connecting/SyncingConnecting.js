@@ -5,7 +5,9 @@ import classNames from 'classnames';
 import StatusIcons from './StatusIcons';
 import ReportIssue from './ReportIssue';
 import LogosDisplay from './LogosDisplay';
+import SyncingConnectingBackground from './SyncingConnectingBackground';
 import SyncingConnectingTitle from './SyncingConnectingTitle';
+import SyncingConnectingStatus from './SyncingConnectingStatus';
 import { CardanoNodeStates } from '../../../../../common/types/cardano-node.types';
 import styles from './SyncingConnecting.scss';
 import type { CardanoNodeState } from '../../../../../common/types/cardano-node.types';
@@ -211,6 +213,7 @@ export default class SyncingConnecting extends Component<Props, State> {
       onIssueClick,
       onDownloadLogs,
       disableDownloadLogs,
+      isIncentivizedTestnet,
       isNodeResponding,
       isNodeSubscribed,
       isNodeSyncing,
@@ -226,39 +229,43 @@ export default class SyncingConnecting extends Component<Props, State> {
       showNewsFeedIcon,
     } = this.props;
 
-    const componentStyles = classNames([
-      styles.component,
-      hasLoadedCurrentTheme ? null : styles['is-loading-theme'],
-      isConnecting ? styles['is-connecting'] : null,
-      isSyncing ? styles['is-syncing'] : null,
-    ]);
-
     const newsFeedIconStyles = classNames([
       isConnecting ? 'connectingScreen' : null,
       isSyncing || isSynced ? 'syncingScreen' : null,
     ]);
 
     return (
-      <div className={componentStyles}>
-        {this.showReportIssue && (
-          <ReportIssue
-            isConnected={isConnected}
-            onIssueClick={onIssueClick}
-            onDownloadLogs={onDownloadLogs}
-            disableDownloadLogs={disableDownloadLogs}
-            isConnecting={isConnecting}
-            isSyncing={isSyncing}
+      <div className={styles.component}>
+        <SyncingConnectingBackground
+          isConnecting={isConnecting}
+          isSyncing={isSyncing}
+          hasLoadedCurrentTheme={hasLoadedCurrentTheme}
+          isIncentivizedTestnet={isIncentivizedTestnet}
+        />
+        <div className={styles.content}>
+          {this.showReportIssue && (
+            <ReportIssue
+              isConnected={isConnected}
+              onIssueClick={onIssueClick}
+              onDownloadLogs={onDownloadLogs}
+              disableDownloadLogs={disableDownloadLogs}
+              isConnecting={isConnecting}
+              isSyncing={isSyncing}
+            />
+          )}
+          {showNewsFeedIcon && (
+            <NewsFeedIcon
+              onNewsFeedIconClick={onToggleNewsFeedIconClick}
+              newsFeedIconClass={newsFeedIconStyles}
+              showDot={hasUnreadNews}
+            />
+          )}
+          <LogosDisplay isConnected={isConnected} />
+          <SyncingConnectingTitle
+            isIncentivizedTestnet={isIncentivizedTestnet}
           />
-        )}
-        {showNewsFeedIcon && (
-          <NewsFeedIcon
-            onNewsFeedIconClick={onToggleNewsFeedIconClick}
-            newsFeedIconClass={newsFeedIconStyles}
-            showDot={hasUnreadNews}
-          />
-        )}
-        <LogosDisplay isConnected={isConnected} />
-        <SyncingConnectingTitle
+        </div>
+        <SyncingConnectingStatus
           cardanoNodeState={cardanoNodeState}
           hasLoadedCurrentLocale={hasLoadedCurrentLocale}
           hasBeenConnected={hasBeenConnected}

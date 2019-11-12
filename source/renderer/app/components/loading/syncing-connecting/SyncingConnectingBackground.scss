@@ -1,0 +1,74 @@
+.component {
+  height: 100%;
+  left: 0;
+  object-fit: contain;
+  overflow: hidden;
+  position: absolute;
+  transition: background-color 500ms;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+
+  &.is-loading-theme {
+    background-color: transparent !important;
+  }
+  &.is-connecting {
+    background-color: var(--theme-connecting-background-color);
+
+    .backgroundOverlay {
+      background-image: linear-gradient(
+        0deg,
+        var(--theme-connecting-background-color1) 0%,
+        var(--theme-connecting-background-color2) 3%,
+        var(--theme-connecting-background-color3) 7%,
+        var(--theme-connecting-background-color4) 10%,
+        var(--theme-connecting-background-color5) 90%,
+        var(--theme-connecting-background-color6) 93%,
+        var(--theme-connecting-background-color7) 97%,
+        var(--theme-connecting-background-color8) 100%
+      );
+    }
+  }
+  &.is-syncing {
+    background-color: var(--theme-syncing-background-color);
+
+    .backgroundOverlay {
+      background-image: linear-gradient(
+        0deg,
+        var(--theme-syncing-background-color1) 0%,
+        var(--theme-syncing-background-color2) 3%,
+        var(--theme-syncing-background-color3) 7%,
+        var(--theme-syncing-background-color4) 10%,
+        var(--theme-syncing-background-color5) 90%,
+        var(--theme-syncing-background-color6) 93%,
+        var(--theme-syncing-background-color7) 97%,
+        var(--theme-syncing-background-color8) 100%
+      );
+    }
+  }
+
+  .backgroundOverlay {
+    height: calc(100% - 60px);
+    position: absolute;
+    width: 100%;
+    z-index: 1500;
+  }
+
+  .backgroundImage {
+    display: block;
+    height: calc(100% - 60px);
+    opacity: 0.1;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+
+    & > svg {
+      display: block;
+      left: 50%;
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 1186px;
+    }
+  }
+}
