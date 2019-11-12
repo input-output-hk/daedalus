@@ -8,12 +8,6 @@ import CopyToClipboard from 'react-copy-to-clipboard';
 import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
 import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
 import SVGInline from 'react-svg-inline';
-// import {
-//   ALLOWED_TIME_DIFFERENCE,
-//   MAX_ALLOWED_STALL_DURATION,
-// } from '../../config/timingConfig';
-// import { UNSYNCED_BLOCKS_ALLOWED } from '../../config/numbersConfig';
-// import { getNetworkEkgUrl } from '../../utils/network';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
 import iconCopy from '../../assets/images/clipboard-ic.inline.svg';
@@ -372,7 +366,7 @@ type Props = {
   // localBlockHeight: number,
   // networkBlockHeight: number,
   currentLocale: string,
-  onForceCheckLocalTimeDifference: Function,
+  // onForceCheckLocalTimeDifference: Function,
   onOpenStateDirectory: Function,
   onOpenExternalLink: Function,
   onRestartNode: Function,
@@ -949,7 +943,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
   };
 
   checkTime = () => {
-    this.props.onForceCheckLocalTimeDifference();
+    // this.props.onForceCheckLocalTimeDifference();
     this.restoreDialogCloseOnEscKey();
   };
 
