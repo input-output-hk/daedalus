@@ -1,14 +1,14 @@
 {
     "cardano-shell": {
-        "branch": "rename-fields",
+        "branch": "master",
         "description": "Node shell, a thin layer for running the node and it's modules.",
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "cardano-shell",
-        "rev": "dc93f006faaba1e3f6a130d06889ecb1e5e5d827",
-        "sha256": "15klh0zhggs81r7x38ryq4lywmannpkgwbb1ifx2j8pc5qqk7azx",
+        "rev": "ba7257c82ead851eff7b43884f91847aa7034c38",
+        "sha256": "1vsx8z2dg3b7y62hskmh6kjbbc2bhywa9jnil2klnsr92cdnqqb0",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-shell/archive/dc93f006faaba1e3f6a130d06889ecb1e5e5d827.tar.gz",
+        "url": "https://github.com/input-output-hk/cardano-shell/archive/ba7257c82ead851eff7b43884f91847aa7034c38.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "cardano-sl": {
@@ -29,10 +29,10 @@
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "cardano-wallet",
-        "rev": "ae3dfa0484f837eb16b1d5203236d0af694a5738",
-        "sha256": "03927p9g3xl8aqmkx6s5wdp8rrg4bby1jjmpx4py5c7v3wnw0529",
+        "rev": "b64792f732ef47db046888085e9a11e9e16b50d2",
+        "sha256": "041ahlscfh968392kpa3028vrsafxszgd4c388m1pmc47yf9za4p",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-wallet/archive/ae3dfa0484f837eb16b1d5203236d0af694a5738.tar.gz",
+        "url": "https://github.com/input-output-hk/cardano-wallet/archive/b64792f732ef47db046888085e9a11e9e16b50d2.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz",
         "version": "v2019-10-16"
     },

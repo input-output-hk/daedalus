@@ -43,7 +43,7 @@ let
     bridgeTable = {
       jormungandr = self.callPackage ./nix/jormungandr-bridge.nix {};
     };
-    cardano-wallet = import self.sources.cardano-wallet { inherit system crossSystem; };
+    cardano-wallet = import self.sources.cardano-wallet { inherit system crossSystem; gitrev = self.sources.cardano-wallet.rev; };
     cardano-shell = import self.sources.cardano-shell { inherit system crossSystem; };
 
     # a cross-compiled fastlist for the ps-list package
