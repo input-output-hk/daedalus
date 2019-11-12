@@ -159,7 +159,6 @@ export default (api: AdaApi) => {
 
   api.resetTestOverrides = () => {
     LATEST_APP_VERSION = null;
-    LOCAL_TIME_DIFFERENCE = 0;
     NEXT_ADA_UPDATE = null;
     APPLICATION_VERSION = null;
   };

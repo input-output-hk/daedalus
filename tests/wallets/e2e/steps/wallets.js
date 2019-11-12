@@ -22,6 +22,9 @@ import {
 import {
   sidebarHelpers,
 } from '../../../navigation/e2e/steps/helpers';
+import type { Daedalus } from '../../../types';
+
+declare var daedalus: Daedalus;
 
 Given(/^I have a "([^"]*)" wallet with funds$/, async function(walletName) {
   await restoreWalletWithFunds(this.client, { walletName });
@@ -146,7 +149,7 @@ When(
     const walletId = getWalletByName.call(this, walletName).id;
     const walletAddress = await this.client.executeAsync((id, done) => {
       daedalus.api.ada
-        .getAddresses({ walletId: id })
+        .getAddresses({ walletId: id, isLegacy: false })
         .then(response => done(response[0].id))
         .catch(error => done(error));
     }, walletId);
