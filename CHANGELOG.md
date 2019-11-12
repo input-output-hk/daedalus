@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 
+- Update network splash screen priority for ITN ([PR 1676](https://github.com/input-output-hk/daedalus/pull/1676))
 - Added the Cardano Explorer URL's for ITN ([PR 1674](https://github.com/input-output-hk/daedalus/pull/1674))
 - Hide legacy wallet notification during wallet restoration / syncing ([PR 1667](https://github.com/input-output-hk/daedalus/pull/1667))
 - Implemented the necessary UI changes for the Incentivized Testnet network ([PR 1657](https://github.com/input-output-hk/daedalus/pull/1657))
