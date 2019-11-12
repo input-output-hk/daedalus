@@ -290,7 +290,9 @@ export class CardanoNode {
       const minutes = time.getMinutes();
       const seconds = time.getSeconds();
 
-      return `cardano-node.log-${year}${month}${day}${hour}${minutes}${seconds}`;
+      return `${
+        config.logFilePath
+      }-${year}${month}${day}${hour}${minutes}${seconds}`;
     };
 
     const rotateFileStream = async () => {
