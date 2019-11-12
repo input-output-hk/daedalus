@@ -4,6 +4,8 @@ import {
   STAGING_EXPLORER_URL,
   TESTNET_EXPLORER_URL,
   ITN_EXPLORER_URL,
+  ITN_QA_EXPLORER_URL,
+  ITN_NIGHTLY_EXPLORER_URL,
   DEVELOPMENT_EKG_URL,
   STAGING_EKG_URL,
   TESTNET_EKG_URL,
@@ -26,8 +28,15 @@ import {
   DEVELOPMENT,
   ITN_BALANCE_CHECK,
 } from '../../../common/types/environment.types';
+import {
+  checkIsIncentivizedTestnetQA,
+  checkIsIncentivizedTestnetNightly,
+} from '../../../main/environment';
 
-export const getNetworkExplorerUri = (network: string): string => {
+export const getNetworkExplorerUri = (
+  network: string,
+  rawNetwork: string
+): string => {
   // sets default to mainnet in case env.NETWORK is undefined
   let explorerUrl = MAINNET_EXPLORER_URL;
   if (network === MAINNET) {
@@ -39,20 +48,29 @@ export const getNetworkExplorerUri = (network: string): string => {
   if (network === TESTNET) {
     explorerUrl = TESTNET_EXPLORER_URL;
   }
+  if (checkIsIncentivizedTestnetQA(rawNetwork)) {
+    explorerUrl = ITN_QA_EXPLORER_URL;
+  }
+  if (checkIsIncentivizedTestnetNightly(rawNetwork)) {
+    explorerUrl = ITN_NIGHTLY_EXPLORER_URL;
+  }
   if (network === ITN_BALANCE_CHECK) {
     explorerUrl = ITN_EXPLORER_URL;
   }
   return explorerUrl; // sets default to mainnet incase env.NETWORK is undefined
 };
 
-export const getNetworkExplorerUrl = (network: string): string => {
+export const getNetworkExplorerUrl = (
+  network: string,
+  rawNetwork: string
+): string => {
   const protocol =
     network === MAINNET ||
     network === DEVELOPMENT ||
     network === ITN_BALANCE_CHECK
       ? 'https://'
       : 'http://';
-  const uri = getNetworkExplorerUri(network);
+  const uri = getNetworkExplorerUri(network, rawNetwork);
   return `${protocol}${uri}`;
 };
 

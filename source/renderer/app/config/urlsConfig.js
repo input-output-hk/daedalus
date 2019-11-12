@@ -3,7 +3,13 @@ export const MAINNET_EXPLORER_URL = 'cardanoexplorer.com';
 export const STAGING_EXPLORER_URL = 'cardano-explorer.awstest.iohkdev.io';
 export const TESTNET_EXPLORER_URL =
   'cardano-explorer.cardano-testnet.iohkdev.io';
-export const ITN_EXPLORER_URL = 'shelley-testnet-explorer-qa.netlify.com';
+
+// ITN
+export const ITN_EXPLORER_URL = 'shelleyexplorer.cardano.org';
+export const ITN_QA_EXPLORER_URL =
+  'shelley-testnet-explorer-nightly.netlify.com';
+export const ITN_NIGHTLY_EXPLORER_URL =
+  'shelley-testnet-explorer-qa.netlify.com';
 
 export const DEVELOPMENT_EKG_URL = 'http://localhost:8085';
 export const STAGING_EKG_URL = 'http://localhost:8082';
@@ -30,6 +36,8 @@ export const ALLOWED_EXTERNAL_HOSTNAMES = [
   STAGING_EXPLORER_URL,
   TESTNET_EXPLORER_URL,
   ITN_EXPLORER_URL,
+  ITN_QA_EXPLORER_URL,
+  ITN_NIGHTLY_EXPLORER_URL,
   MAINNET_LATEST_VERSION_INFO_URL,
   TESTNET_LATEST_VERSION_INFO_URL,
   STAGING_LATEST_VERSION_INFO_URL,

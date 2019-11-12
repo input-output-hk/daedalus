@@ -142,6 +142,7 @@ type Props = {
   isLastInList: boolean,
   formattedWalletAmount: Function,
   network: string,
+  rawNetwork: string,
   onDetailsToggled: ?Function,
   onOpenExternalLink: ?Function,
   walletId: string,
@@ -168,7 +169,12 @@ export default class Transaction extends Component<Props, State> {
   }
 
   handleOpenExplorer(type: string, param: string, e: Event) {
-    const { onOpenExternalLink, network, currentLocale } = this.props;
+    const {
+      onOpenExternalLink,
+      network,
+      rawNetwork,
+      currentLocale,
+    } = this.props;
     let queryStringPrefix = '';
     let localePrefix = '';
     let typeValue = type;
@@ -182,7 +188,8 @@ export default class Transaction extends Component<Props, State> {
     if (onOpenExternalLink) {
       e.stopPropagation();
       const link = `${getNetworkExplorerUrl(
-        network
+        network,
+        rawNetwork
       )}${localePrefix}/${typeValue}/${queryStringPrefix}${param}`;
       onOpenExternalLink(link);
     }
