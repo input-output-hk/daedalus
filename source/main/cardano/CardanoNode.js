@@ -1,29 +1,24 @@
 // @flow
-import Store from 'electron-store';
-import { spawn, exec } from 'child_process';
-import type { ChildProcess } from 'child_process';
-import type { WriteStream } from 'fs';
-import { toInteger } from 'lodash';
-import fs from 'fs';
-import { environment } from '../environment';
-import {
-  deriveProcessNames,
-  deriveStorageKeys,
-  promisedCondition,
-} from './utils';
-import { getProcess } from '../utils/processes';
+import Store from 'electron-store'
+import type { ChildProcess } from 'child_process'
+import { exec, spawn } from 'child_process'
+import type { WriteStream } from 'fs'
+import { toInteger } from 'lodash'
+import { environment } from '../environment'
+import { deriveProcessNames, deriveStorageKeys, promisedCondition, } from './utils'
+import { getProcess } from '../utils/processes'
 import type {
+  CardanoNodeImplementation,
   CardanoNodeState,
   CardanoStatus,
   FaultInjection,
   FaultInjectionIpcRequest,
   FaultInjectionIpcResponse,
   TlsConfig,
-  CardanoNodeImplementation,
-} from '../../common/types/cardano-node.types';
-import { CardanoNodeStates } from '../../common/types/cardano-node.types';
-import { CardanoWalletLauncher } from './CardanoWalletLauncher';
-import { launcherConfig } from '../config';
+} from '../../common/types/cardano-node.types'
+import { CardanoNodeStates } from '../../common/types/cardano-node.types'
+import { CardanoWalletLauncher } from './CardanoWalletLauncher'
+import { launcherConfig } from '../config'
 
 /* eslint-disable consistent-return */
 
@@ -274,78 +269,76 @@ export class CardanoNode {
       { startupTries: this._startupTries }
     );
 
-    const readFile = async logFile => {
-      _log.info('Test 3.1');
+    const readFile = async (logFile) => {
       await logFile.on('open', logFilename => {
         this._cardanoLogFile = logFilename;
-        _log.info('Test 2', {
-          cardanoLogFile: this._cardanoLogFile,
-        });
-        _log.info('Test 3.2');
         return logFilename;
       });
-      _log.info('Test 3.3');
     };
 
-    const test = async () => {
-      _log.info('Test 1');
+    const logFileNameGenerator = (time) => {
+      if (!time) return config.logFilePath;
+
+      const year = time.getFullYear();
+      const month = time.getMonth() + 1;
+      const day = time.getDate();
+      const hour = time.getHours();
+      const minutes = time.getMinutes();
+      const seconds = time.getSeconds();
+
+      return `cardano-node.log-${year}${month}${day}${hour}${minutes}${seconds}`;
+    };
+
+    const rotateFileStream = async () => {
       const rfs = require('rotating-file-stream');
-      const logFile = rfs(config.logFilePath, {
-        size: '10M', // rotate every 10 MegaBytes written
-        interval: '1d', // rotate daily
-        compress: 'gzip', // compress rotated files
+      const logFile = rfs(logFileNameGenerator, {
+        size: '5M',
+        maxFiles: 4,
       });
-      _log.info('Test 3');
-      const result = await readFile(logFile);
-      _log.info('Test 99', {
-        result,
-      });
-      return result;
+      return readFile(logFile);
     };
 
     return new Promise(async (resolve, reject) => {
-      const logFilename = await test();
-      _log.info('Test 4', {
-        logFilename,
-        cardanoLogFile: this._cardanoLogFile,
-      });
-      // Spawning cardano-node
-      _log.info('CardanoNode path with args', {
-        path: walletBin,
-        args: walletArgs,
-      });
+      const logFilename = await rotateFileStream();
+      if (logFilename) {
+        // Spawning cardano-node
+        _log.info('CardanoNode path with args', {
+          path: walletBin,
+          args: walletArgs,
+        });
 
-      const node = await CardanoWalletLauncher({
-        path: walletBin,
-        nodeBin,
-        walletArgs,
-        logStream: this._cardanoLogFile,
-        nodeImplementation,
-        cliBin,
-        stateDir: config.workingDir,
-      });
+        const node = await CardanoWalletLauncher({
+          path: walletBin,
+          nodeBin,
+          walletArgs,
+          logStream: this._cardanoLogFile,
+          nodeImplementation,
+          cliBin,
+          stateDir: config.workingDir,
+        });
 
-      this._node = node;
+        this._node = node;
 
-      try {
-        await promisedCondition(() => node.connected, startupTimeout);
-        // Setup livecycle event handlers
-        node.on('message', this._handleCardanoNodeMessage);
-        node.on('exit', this._handleCardanoNodeExit);
-        node.on('error', this._handleCardanoNodeError);
-        // Request cardano-node to reply with port
-        node.send({ QueryPort: [] });
-        _log.info(
-          `CardanoNode#start: cardano-node child process spawned with PID ${
-            node.pid
-          }`,
-          { pid: node.pid }
-        );
-        resolve();
-      } catch (_) {
-        reject(
-          new Error('CardanoNode#start: Error while spawning cardano-node')
-        );
+        try {
+          await promisedCondition(() => node.connected, startupTimeout);
+          // Setup livecycle event handlers
+          node.on('message', this._handleCardanoNodeMessage);
+          node.on('exit', this._handleCardanoNodeExit);
+          node.on('error', this._handleCardanoNodeError);
+          // Request cardano-node to reply with port
+          node.send({ QueryPort: [] });
+          _log.info(
+            `CardanoNode#start: cardano-node child process spawned with PID ${
+              node.pid
+            }`,
+            { pid: node.pid }
+          );
+          resolve();
+        } catch (_) {
+          reject(
+            new Error('CardanoNode#start: Error while spawning cardano-node')
+          );
+        }
       }
     });
   };
