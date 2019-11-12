@@ -80,6 +80,7 @@
 
 .pendingLabel,
 .okLabel,
+.in_ledgerLabel,
 .pendingWarningLabel {
   background-color: var(--theme-transactions-state-pending-background-color);
   border-radius: 3px;
@@ -94,7 +95,8 @@
   text-transform: uppercase;
 }
 
-.okLabel {
+.okLabel,
+.in_ledgerLabel {
   background-color: var(--theme-transactions-state-ok-background-color);
 }
 
