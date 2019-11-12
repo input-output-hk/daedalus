@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 
+- Added the Cardano Explorer URL's for ITN ([PR 1674](https://github.com/input-output-hk/daedalus/pull/1674))
 - Hide legacy wallet notification during wallet restoration / syncing ([PR 1667](https://github.com/input-output-hk/daedalus/pull/1667))
 - Implemented the necessary UI changes for the Incentivized Testnet network ([PR 1657](https://github.com/input-output-hk/daedalus/pull/1657))
 - Implemented cancel pending transaction V2 API endpoint and UI for legacy wallets ([PR 1651](https://github.com/input-output-hk/daedalus/pull/1651))
