@@ -1,67 +1,26 @@
 // @flow
 import os from 'os';
-import { uniq, get, includes, upperFirst } from 'lodash';
+import { uniq, get, includes } from 'lodash';
 import { version } from '../../package.json';
 import type { Environment } from '../common/types/environment.types';
+import { DEVELOPMENT, OS_NAMES } from '../common/types/environment.types';
 import {
-  DEVELOPMENT,
-  LINUX,
-  MAC_OS,
-  MAINNET,
-  OS_NAMES,
-  PRODUCTION,
-  STAGING,
-  TEST,
-  TESTNET,
-  WINDOWS,
-  ITN_BALANCE_CHECK,
-  QA,
-  NIGHTLY,
-  SELFNODE,
-  networkPrettyNames,
-} from '../common/types/environment.types';
-
-/* ==================================================================
-=                    Static checks and generators                   =
-================================================================== */
-
-export const evaluateNetwork = (network: ?string) => {
-  let currentNetwork = network || DEVELOPMENT;
-  if (network === QA || network === NIGHTLY || network === SELFNODE) {
-    currentNetwork = ITN_BALANCE_CHECK;
-  }
-  return currentNetwork;
-};
-
-export const getBuildLabel = (
-  buildNumber: string,
-  network: string,
-  currentNodeEnv: string
-) => {
-  const networkLabel = isMainnet ? '' : ` ${networkPrettyNames[network]}`;
-  let buildLabel = `Daedalus${networkLabel} (${version}#${buildNumber})`;
-  if (!isProduction) buildLabel += ` ${upperFirst(currentNodeEnv)}`;
-  return buildLabel;
-};
-
-export const checkIsDev = (currentNodeEnv: string) =>
-  currentNodeEnv === DEVELOPMENT;
-export const checkIsTest = (currentNodeEnv: string) => currentNodeEnv === TEST;
-export const checkIsProduction = (currentNodeEnv: string) =>
-  currentNodeEnv === PRODUCTION;
-export const checkIsMainnet = (network: string) => network === MAINNET;
-export const checkIsStaging = (network: string) => network === STAGING;
-export const checkIsTestnet = (network: string) => network === TESTNET;
-export const checkIsIncentivizedTestnet = (network: string) =>
-  network === ITN_BALANCE_CHECK;
-export const checkIsIncentivizedTestnetQA = (rawNetwork: string) =>
-  rawNetwork === QA;
-export const checkIsIncentivizedTestnetNightly = (rawNetwork: string) =>
-  rawNetwork === NIGHTLY;
-export const checkIsDevelopment = (network: string) => network === DEVELOPMENT;
-export const checkIsMacOS = (platform: string) => platform === MAC_OS;
-export const checkIsWindows = (platform: string) => platform === WINDOWS;
-export const checkIsLinux = (platform: string) => platform === LINUX;
+  evaluateNetwork,
+  checkIsDev,
+  checkIsTest,
+  checkIsProduction,
+  checkIsMainnet,
+  checkIsStaging,
+  checkIsTestnet,
+  checkIsDevelopment,
+  checkIsIncentivizedTestnet,
+  checkIsIncentivizedTestnetQA,
+  checkIsIncentivizedTestnetNightly,
+  getBuildLabel,
+  checkIsMacOS,
+  checkIsWindows,
+  checkIsLinux,
+} from '../common/utils/environmentCheckers';
 
 /* ==================================================================
 =                           Evaluations                             =
@@ -95,7 +54,12 @@ const ram = os.totalmem();
 const isBlankScreenFixActive = includes(process.argv.slice(1), '--safe-mode');
 const BUILD = process.env.BUILD_NUMBER || 'dev';
 const BUILD_NUMBER = uniq([API_VERSION, BUILD]).join('.');
-const BUILD_LABEL = getBuildLabel(BUILD_NUMBER, NETWORK, CURRENT_NODE_ENV);
+const BUILD_LABEL = getBuildLabel(
+  BUILD_NUMBER,
+  NETWORK,
+  CURRENT_NODE_ENV,
+  version
+);
 const INSTALLER_VERSION = uniq([API_VERSION, BUILD]).join('.');
 const MOBX_DEV_TOOLS = process.env.MOBX_DEV_TOOLS || false;
 const isMacOS = checkIsMacOS(PLATFORM);

@@ -31,7 +31,7 @@ import {
 import {
   checkIsIncentivizedTestnetQA,
   checkIsIncentivizedTestnetNightly,
-} from '../../../main/environment';
+} from '../../../common/utils/environmentCheckers';
 
 export const getNetworkExplorerUri = (
   network: string,
