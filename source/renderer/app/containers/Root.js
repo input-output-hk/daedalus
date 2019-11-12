@@ -33,7 +33,8 @@ export default class Root extends Component<Props> {
     const isNodeInStoppingSequence = isNodeStopping || isNodeStopped;
 
     if (
-      !app.isSetupPage &&
+      profile.isCurrentLocaleSet &&
+      profile.areTermsOfUseAccepted &&
       !app.environment.isTest &&
       networkStatus.isSplashShown
     ) {
