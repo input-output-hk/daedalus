@@ -327,11 +327,7 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-news-feed-icon-dot-background-color': '#be0b0b',
     '--theme-news-feed-icon-toggle-hover-background-color':
       'rgba(0, 0, 0, 0.1)',
-    //  HEAD
-    '--theme-news-feed-no-fetch-color': '#fafbfc',
-    // =======
-    //     '--theme-news-feed-no-fetch-color': '#2d2d2d',
-    // >>>>>>> develop
+    '--theme-news-feed-no-fetch-color': '#2d2d2d',
   },
   newsItem: {
     '--theme-news-item-action-button-background-color': 'rgba(0, 0, 0, 0.1)',
