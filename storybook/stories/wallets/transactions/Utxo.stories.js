@@ -5,11 +5,11 @@ import { number } from '@storybook/addon-knobs';
 import BigNumber from 'bignumber.js';
 
 // Assets and helpers
-import WalletsWrapper from '../wallets/utils/WalletsWrapper';
-import { getUtxoChartData } from '../../../source/renderer/app/utils/utxoUtils';
+import WalletsWrapper from '../_utils/WalletsWrapper';
+import { getUtxoChartData } from '../../../../source/renderer/app/utils/utxoUtils';
 
 // Screens
-import WalletUtxo from '../../../source/renderer/app/components/wallet/utxo/WalletUtxo';
+import WalletUtxo from '../../../../source/renderer/app/components/wallet/utxo/WalletUtxo';
 
 const cfg = {
   range: true,
@@ -19,7 +19,7 @@ const cfg = {
 };
 
 /* eslint-disable consistent-return */
-storiesOf('Transactions|UTXO', module)
+storiesOf('Wallets|Transactions', module)
   .addDecorator(WalletsWrapper)
 
   // ====== Stories ======

@@ -12,7 +12,7 @@ import { generateAddress } from '../../_support/utils';
 import WalletReceive from '../../../../source/renderer/app/components/wallet/receive/WalletReceive';
 import VerticalFlexContainer from '../../../../source/renderer/app/components/layout/VerticalFlexContainer';
 
-storiesOf('Wallets|Actions', module)
+storiesOf('Wallets|Receive', module)
   .addDecorator(WalletsWrapper)
   .add('Receive', () => (
     <VerticalFlexContainer>

@@ -6,6 +6,6 @@ import CreateWalletScreens from '../_utils/CreateWalletScreens';
 // Assets and helpers
 import WalletsWrapper from '../_utils/WalletsWrapper';
 
-storiesOf('Wallets|Actions', module)
+storiesOf('Wallets|Add Wallet', module)
   .addDecorator(WalletsWrapper)
   .add('Create', () => <CreateWalletScreens />);

@@ -15,7 +15,7 @@ const wrapperStyles = {
   justifyContent: 'center',
 };
 /* eslint-disable consistent-return */
-storiesOf('Wallets|Actions', module)
+storiesOf('Wallets|Add Wallet', module)
   // ====== Stories ======
   .add('Add', () => (
     <div style={wrapperStyles}>

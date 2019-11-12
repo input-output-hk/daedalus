@@ -12,7 +12,7 @@ import WalletsWrapper from '../_utils/WalletsWrapper';
 // Screens
 import WalletSendForm from '../../../../source/renderer/app/components/wallet/WalletSendForm';
 
-storiesOf('Wallets|Actions', module)
+storiesOf('Wallets|Send', module)
   .addDecorator(WalletsWrapper)
   .add('Send', () => (
     <WalletSendForm

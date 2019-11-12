@@ -10,30 +10,30 @@ import moment from 'moment';
 import {
   generateTransaction,
   generateMultipleTransactions,
-} from '../_support/utils';
-import { formattedWalletAmount } from '../../../source/renderer/app/utils/formatters';
+} from '../../_support/utils';
+import { formattedWalletAmount } from '../../../../source/renderer/app/utils/formatters';
 import {
   TransactionStates,
   TransactionTypes,
-} from '../../../source/renderer/app/domains/WalletTransaction';
-import WalletsWrapper from '../wallets/utils/WalletsWrapper';
+} from '../../../../source/renderer/app/domains/WalletTransaction';
+import WalletsWrapper from '../_utils/WalletsWrapper';
 import {
   DATE_ENGLISH_OPTIONS,
   // LANGUAGE_OPTIONS,
   // NUMBER_OPTIONS,
   TIME_OPTIONS,
-} from '../../../source/renderer/app/config/profileConfig';
+} from '../../../../source/renderer/app/config/profileConfig';
 
 // Screens
-import WalletTransactionsList from '../../../source/renderer/app/components/wallet/transactions/WalletTransactionsList';
+import WalletTransactionsList from '../../../../source/renderer/app/components/wallet/transactions/WalletTransactionsList';
 
 /* eslint-disable consistent-return */
-storiesOf('Transactions|Transactions', module)
+storiesOf('Wallets|Transactions', module)
   .addDecorator(WalletsWrapper)
 
   // ====== Stories ======
 
-  .add('transactions grouped by days', () => (
+  .add('Transactions - Grouped by days', () => (
     <WalletTransactionsList
       currentLocale="en-US"
       transactions={[
@@ -82,7 +82,7 @@ storiesOf('Transactions|Transactions', module)
     />
   ))
 
-  .add('confirmed and pending transactions', () => (
+  .add('Transactions - Confirmed and pending transactions', () => (
     <WalletTransactionsList
       currentLocale="en-US"
       transactions={[
@@ -119,7 +119,7 @@ storiesOf('Transactions|Transactions', module)
     />
   ))
 
-  .add('rendering many transactions', () => (
+  .add('Transactions - Rendering many transactions', () => (
     <WalletTransactionsList
       currentLocale="en-US"
       isRenderingAsVirtualList
@@ -137,7 +137,7 @@ storiesOf('Transactions|Transactions', module)
     />
   ))
 
-  .add('transactions with unresolved income addresses', () => (
+  .add('Transactions - Unresolved income addresses', () => (
     <WalletTransactionsList
       currentLocale="en-US"
       isRenderingAsVirtualList
@@ -170,7 +170,7 @@ storiesOf('Transactions|Transactions', module)
     />
   ))
 
-  .add('transactions without income addresses', () => (
+  .add('Transactions - Without income addresses', () => (
     <WalletTransactionsList
       currentLocale="en-US"
       isRenderingAsVirtualList

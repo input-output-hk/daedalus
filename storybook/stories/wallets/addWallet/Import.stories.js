@@ -7,7 +7,7 @@ import { storiesOf } from '@storybook/react';
 import WalletsWrapper from '../_utils/WalletsWrapper';
 import WalletFileImportDialog from '../../../../source/renderer/app/components/wallet/file-import/WalletFileImportDialog';
 
-storiesOf('Wallets|Actions', module)
+storiesOf('Wallets|Add Wallet', module)
   .addDecorator(WalletsWrapper)
   .add('Import', () => (
     <WalletFileImportDialog

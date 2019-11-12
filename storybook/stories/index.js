@@ -5,12 +5,6 @@ import './_support/environment';
 // Wallets
 import './wallets';
 
-// Paper Wallets
-import './paper-wallets/PaperWallets.stories';
-
-// Transactions
-import './transactions';
-
 // Nodes
 import './nodes';
 
