@@ -29,10 +29,10 @@
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "cardano-wallet",
-        "rev": "67458315ea40d591d9f6b1ea6b451bff234d144f",
-        "sha256": "0bqfb38s86nf4h8w3g092clkvn5nnrdhyd4sfbzif9cbpp85sby2",
+        "rev": "ae3dfa0484f837eb16b1d5203236d0af694a5738",
+        "sha256": "03927p9g3xl8aqmkx6s5wdp8rrg4bby1jjmpx4py5c7v3wnw0529",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-wallet/archive/67458315ea40d591d9f6b1ea6b451bff234d144f.tar.gz",
+        "url": "https://github.com/input-output-hk/cardano-wallet/archive/ae3dfa0484f837eb16b1d5203236d0af694a5738.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz",
         "version": "v2019-10-16"
     },
