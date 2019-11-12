@@ -51,6 +51,7 @@ type Props = {
   isRestoreActive: boolean,
   isRenderingAsVirtualList: boolean,
   network: string,
+  rawNetwork: string,
   onShowMoreTransactions?: Function,
   onOpenExternalLink?: Function,
   showMoreTransactionsButton?: boolean,
@@ -71,6 +72,7 @@ export default class WalletTransactionsList extends Component<Props> {
   static defaultProps = {
     isRenderingAsVirtualList: false,
     network: DEVELOPMENT,
+    rawNetwork: DEVELOPMENT,
     showMoreTransactionsButton: false,
     onShowMoreTransactions: () => {},
     onOpenExternalLink: () => {},
@@ -185,6 +187,7 @@ export default class WalletTransactionsList extends Component<Props> {
       formattedWalletAmount,
       isRestoreActive,
       network,
+      rawNetwork,
       onOpenExternalLink,
       walletId,
       isDeletingTransaction,
@@ -206,6 +209,7 @@ export default class WalletTransactionsList extends Component<Props> {
           isLastInList={isLastInGroup}
           isRestoreActive={isRestoreActive}
           network={network}
+          rawNetwork={rawNetwork}
           onDetailsToggled={() => this.toggleTransactionExpandedState(tx)}
           onOpenExternalLink={onOpenExternalLink}
           state={tx.state}

@@ -4,7 +4,7 @@ import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
-import backgroundImage from '../../assets/images/splash-network-bg-faded.inline.svg';
+import backgroundImage from '../../assets/images/circle-bg-faded.inline.svg';
 import daedalusIcon from '../../assets/images/daedalus-logo-loading-grey.inline.svg';
 import externalLinkIcon from '../../assets/images/link-ic.inline.svg';
 import styles from './Network.scss';

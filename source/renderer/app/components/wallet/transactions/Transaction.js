@@ -2,6 +2,7 @@
 import React, { Component, Fragment } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
+import { includes } from 'lodash';
 import SVGInline from 'react-svg-inline';
 import classNames from 'classnames';
 import CancelTransactionButton from './CancelTransactionButton';
@@ -142,6 +143,7 @@ type Props = {
   isLastInList: boolean,
   formattedWalletAmount: Function,
   network: string,
+  rawNetwork: string,
   onDetailsToggled: ?Function,
   onOpenExternalLink: ?Function,
   walletId: string,
@@ -168,7 +170,12 @@ export default class Transaction extends Component<Props, State> {
   }
 
   handleOpenExplorer(type: string, param: string, e: Event) {
-    const { onOpenExternalLink, network, currentLocale } = this.props;
+    const {
+      onOpenExternalLink,
+      network,
+      rawNetwork,
+      currentLocale,
+    } = this.props;
     let queryStringPrefix = '';
     let localePrefix = '';
     let typeValue = type;
@@ -182,7 +189,8 @@ export default class Transaction extends Component<Props, State> {
     if (onOpenExternalLink) {
       e.stopPropagation();
       const link = `${getNetworkExplorerUrl(
-        network
+        network,
+        rawNetwork
       )}${localePrefix}/${typeValue}/${queryStringPrefix}${param}`;
       onOpenExternalLink(link);
     }
@@ -328,13 +336,32 @@ export default class Transaction extends Component<Props, State> {
 
     const exceedsPendingTimeLimit = this.hasExceededPendingTimeLimit();
 
+    const includesUnresolvedAddresses = addresses => includes(addresses, null);
+
     const fromAddresses = (addresses, transactionId) => {
-      if (addresses.length) {
-        return addresses.map((address, addressIndex) =>
-          address ? (
+      if (addresses.length > 0) {
+        return includesUnresolvedAddresses(addresses) ? (
+          <div className={styles.explorerLinkRow}>
+            <span
+              role="presentation"
+              aria-hidden
+              className={styles.explorerLink}
+              onClick={this.handleOpenExplorer.bind(this, 'tx', transactionId)}
+            >
+              {intl.formatMessage(messages.unresolvedInputAddressesLinkLabel)}
+              <SVGInline svg={externalLinkIcon} />
+            </span>
+            <span>
+              {intl.formatMessage(
+                messages.unresolvedInputAddressesAdditionalLabel
+              )}
+            </span>
+          </div>
+        ) : (
+          addresses.map((address, addressIndex) => (
             <div
               // eslint-disable-next-line react/no-array-index-key
-              key={`${data.id}-from-${address}-${addressIndex}`}
+              key={`${data.id}-from-${address || ''}-${addressIndex}`}
               className={styles.addressRow}
             >
               <span
@@ -347,28 +374,7 @@ export default class Transaction extends Component<Props, State> {
                 <SVGInline svg={externalLinkIcon} />
               </span>
             </div>
-          ) : (
-            <div className={styles.explorerLinkRow}>
-              <span
-                role="presentation"
-                aria-hidden
-                className={styles.explorerLink}
-                onClick={this.handleOpenExplorer.bind(
-                  this,
-                  'tx',
-                  transactionId
-                )}
-              >
-                {intl.formatMessage(messages.unresolvedInputAddressesLinkLabel)}
-                <SVGInline svg={externalLinkIcon} />
-              </span>
-              <span>
-                {intl.formatMessage(
-                  messages.unresolvedInputAddressesAdditionalLabel
-                )}
-              </span>
-            </div>
-          )
+          ))
         );
       }
       return <span>{intl.formatMessage(messages.noInputAddressesLabel)}</span>;
