@@ -3393,7 +3393,7 @@
         "description": "Title \"Earned delegation rewards\" label on the staking rewards page.",
         "end": {
           "column": 3,
-          "line": 22
+          "line": 23
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.title",
@@ -3407,13 +3407,13 @@
         "description": "Label for the \"Export CSV\" button on the staking rewards page.",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 29
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.exportButtonLabel",
         "start": {
           "column": 21,
-          "line": 23
+          "line": 24
         }
       },
       {
@@ -3421,13 +3421,13 @@
         "description": "\"No rewards\" rewards label on staking rewards page.",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 34
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.no.rewards",
         "start": {
           "column": 13,
-          "line": 29
+          "line": 30
         }
       },
       {
@@ -3435,13 +3435,13 @@
         "description": "Table header \"Date\" label on staking rewards page",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 39
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.tableHeader.date",
         "start": {
           "column": 19,
-          "line": 34
+          "line": 35
         }
       },
       {
@@ -3449,13 +3449,13 @@
         "description": "Table header \"Stake pool\" label on staking rewards page",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 44
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.tableHeader.pool",
         "start": {
           "column": 19,
-          "line": 39
+          "line": 40
         }
       },
       {
@@ -3463,13 +3463,13 @@
         "description": "Table header \"Wallet\" label on staking rewards page",
         "end": {
           "column": 3,
-          "line": 48
+          "line": 49
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.tableHeader.wallet",
         "start": {
           "column": 21,
-          "line": 44
+          "line": 45
         }
       },
       {
@@ -3477,13 +3477,13 @@
         "description": "Table header \"Reward\" label on staking rewards page",
         "end": {
           "column": 3,
-          "line": 53
+          "line": 54
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.tableHeader.reward",
         "start": {
           "column": 21,
-          "line": 49
+          "line": 50
         }
       },
       {
@@ -3491,13 +3491,13 @@
         "description": "Label for \"Learn more\" button on staking rewards page",
         "end": {
           "column": 3,
-          "line": 58
+          "line": 59
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.learnMore.ButtonLabel",
         "start": {
           "column": 24,
-          "line": 54
+          "line": 55
         }
       },
       {
@@ -3505,13 +3505,13 @@
         "description": "Rewards description text on staking rewards page",
         "end": {
           "column": 3,
-          "line": 64
+          "line": 65
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.note",
         "start": {
           "column": 8,
-          "line": 59
+          "line": 60
         }
       }
     ],
@@ -3941,13 +3941,13 @@
         "description": "System info",
         "end": {
           "column": 3,
-          "line": 34
+          "line": 35
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.system.info",
         "start": {
           "column": 14,
-          "line": 30
+          "line": 31
         }
       },
       {
@@ -3955,13 +3955,13 @@
         "description": "Platform",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 40
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.platform",
         "start": {
           "column": 12,
-          "line": 35
+          "line": 36
         }
       },
       {
@@ -3969,153 +3969,13 @@
         "description": "Platform Version",
         "end": {
           "column": 3,
-          "line": 44
-        },
-        "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
-        "id": "daedalus.diagnostics.dialog.platform.version",
-        "start": {
-          "column": 19,
-          "line": 40
-        }
-      },
-      {
-        "defaultMessage": "!!!CPU",
-        "description": "CPU",
-        "end": {
-          "column": 3,
-          "line": 49
-        },
-        "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
-        "id": "daedalus.diagnostics.dialog.cpu",
-        "start": {
-          "column": 7,
           "line": 45
-        }
-      },
-      {
-        "defaultMessage": "!!!RAM",
-        "description": "RAM",
-        "end": {
-          "column": 3,
-          "line": 54
-        },
-        "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
-        "id": "daedalus.diagnostics.dialog.ram",
-        "start": {
-          "column": 7,
-          "line": 50
-        }
-      },
-      {
-        "defaultMessage": "!!!Available disk space",
-        "description": "Available disk space",
-        "end": {
-          "column": 3,
-          "line": 59
-        },
-        "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
-        "id": "daedalus.diagnostics.dialog.availableDiskSpace",
-        "start": {
-          "column": 22,
-          "line": 55
-        }
-      },
-      {
-        "defaultMessage": "!!!Unknown",
-        "description": "Unknown amount of disk space",
-        "end": {
-          "column": 3,
-          "line": 64
-        },
-        "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
-        "id": "daedalus.diagnostics.dialog.unknownDiskSpace",
-        "start": {
-          "column": 20,
-          "line": 60
-        }
-      },
-      {
-        "defaultMessage": "!!!https://iohk.zendesk.com/hc",
-        "description": "\"Support\" link URL while disk space is unknown",
-        "end": {
-          "column": 3,
-          "line": 69
-        },
-        "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
-        "id": "daedalus.diagnostics.dialog.unknownDiskSpaceSupportUrl",
-        "start": {
-          "column": 30,
-          "line": 65
-        }
-      },
-      {
-        "defaultMessage": "!!!CORE INFO",
-        "description": "CORE INFO",
-        "end": {
-          "column": 3,
-          "line": 74
-        },
-        "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
-        "id": "daedalus.diagnostics.dialog.coreInfo",
-        "start": {
-          "column": 12,
-          "line": 70
-        }
-      },
-      {
-        "defaultMessage": "!!!Daedalus Version",
-        "description": "Daedalus Version",
-        "end": {
-          "column": 3,
-          "line": 79
-        },
-        "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
-        "id": "daedalus.diagnostics.dialog.daedalusVersion",
-        "start": {
-          "column": 19,
-          "line": 75
-        }
-      },
-      {
-        "defaultMessage": "!!!Daedalus Main Process ID",
-        "description": "Daedalus Main Process ID",
-        "end": {
-          "column": 3,
-          "line": 37
-        },
-        "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
-        "id": "daedalus.diagnostics.dialog.daedalusMainProcessID",
-        "start": {
-          "column": 14,
-          "line": 33
-        }
-      },
-      {
-        "defaultMessage": "!!!Daedalus Renderer Process ID",
-        "description": "Daedalus Renderer Process ID",
-        "end": {
-          "column": 3,
-          "line": 42
-        },
-        "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
-        "id": "daedalus.diagnostics.dialog.daedalusProcessID",
-        "start": {
-          "column": 12,
-          "line": 38
-        }
-      },
-      {
-        "defaultMessage": "!!!'Blank Screen Fix' active",
-        "description": "'Blank Screen Fix' active",
-        "end": {
-          "column": 3,
-          "line": 47
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.platform.version",
         "start": {
           "column": 19,
-          "line": 43
+          "line": 41
         }
       },
       {
@@ -4123,13 +3983,13 @@
         "description": "CPU",
         "end": {
           "column": 3,
-          "line": 52
+          "line": 50
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cpu",
         "start": {
           "column": 7,
-          "line": 48
+          "line": 46
         }
       },
       {
@@ -4137,13 +3997,13 @@
         "description": "RAM",
         "end": {
           "column": 3,
-          "line": 57
+          "line": 55
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.ram",
         "start": {
           "column": 7,
-          "line": 53
+          "line": 51
         }
       },
       {
@@ -4151,13 +4011,13 @@
         "description": "Available disk space",
         "end": {
           "column": 3,
-          "line": 62
+          "line": 60
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.availableDiskSpace",
         "start": {
           "column": 22,
-          "line": 58
+          "line": 56
         }
       },
       {
@@ -4165,13 +4025,13 @@
         "description": "Unknown amount of disk space",
         "end": {
           "column": 3,
-          "line": 67
+          "line": 65
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.unknownDiskSpace",
         "start": {
           "column": 20,
-          "line": 63
+          "line": 61
         }
       },
       {
@@ -4179,13 +4039,13 @@
         "description": "\"Support\" link URL while disk space is unknown",
         "end": {
           "column": 3,
-          "line": 72
+          "line": 70
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.unknownDiskSpaceSupportUrl",
         "start": {
           "column": 30,
-          "line": 68
+          "line": 66
         }
       },
       {
@@ -4193,13 +4053,13 @@
         "description": "CORE INFO",
         "end": {
           "column": 3,
-          "line": 77
+          "line": 75
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.coreInfo",
         "start": {
           "column": 12,
-          "line": 73
+          "line": 71
         }
       },
       {
@@ -4207,13 +4067,13 @@
         "description": "Daedalus Version",
         "end": {
           "column": 3,
-          "line": 82
+          "line": 80
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.daedalusVersion",
         "start": {
           "column": 19,
-          "line": 78
+          "line": 76
         }
       },
       {
@@ -4221,13 +4081,13 @@
         "description": "Daedalus Main Process ID",
         "end": {
           "column": 3,
-          "line": 87
+          "line": 85
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.daedalusMainProcessID",
         "start": {
           "column": 25,
-          "line": 83
+          "line": 81
         }
       },
       {
@@ -4235,13 +4095,13 @@
         "description": "Daedalus Renderer Process ID",
         "end": {
           "column": 3,
-          "line": 92
+          "line": 90
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.daedalusProcessID",
         "start": {
           "column": 21,
-          "line": 88
+          "line": 86
         }
       },
       {
@@ -4249,13 +4109,13 @@
         "description": "'Blank Screen Fix' active",
         "end": {
           "column": 3,
-          "line": 97
+          "line": 95
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.blankScreenFix",
         "start": {
           "column": 18,
-          "line": 93
+          "line": 91
         }
       },
       {
@@ -4263,13 +4123,13 @@
         "description": "Cardano Version",
         "end": {
           "column": 3,
-          "line": 102
+          "line": 100
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoVersion",
         "start": {
           "column": 18,
-          "line": 98
+          "line": 96
         }
       },
       {
@@ -4277,13 +4137,13 @@
         "description": "Cardano Process ID",
         "end": {
           "column": 3,
-          "line": 107
+          "line": 105
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoProcessID",
         "start": {
           "column": 20,
-          "line": 103
+          "line": 101
         }
       },
       {
@@ -4291,13 +4151,13 @@
         "description": "Cardano API Port",
         "end": {
           "column": 3,
-          "line": 112
+          "line": 110
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoApiPort",
         "start": {
           "column": 18,
-          "line": 108
+          "line": 106
         }
       },
       {
@@ -4305,13 +4165,13 @@
         "description": "Cardano Network",
         "end": {
           "column": 3,
-          "line": 117
+          "line": 115
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNetwork",
         "start": {
           "column": 18,
-          "line": 113
+          "line": 111
         }
       },
       {
@@ -4319,13 +4179,13 @@
         "description": "Daedalus State Directory",
         "end": {
           "column": 3,
-          "line": 122
+          "line": 120
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.stateDirectory",
         "start": {
           "column": 22,
-          "line": 118
+          "line": 116
         }
       },
       {
@@ -4333,13 +4193,13 @@
         "description": "Open",
         "end": {
           "column": 3,
-          "line": 127
+          "line": 125
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.stateDirectoryPathOpenBtn",
         "start": {
           "column": 29,
-          "line": 123
+          "line": 121
         }
       },
       {
@@ -4347,13 +4207,13 @@
         "description": "CONNECTION ERROR",
         "end": {
           "column": 3,
-          "line": 132
+          "line": 130
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.connectionError",
         "start": {
           "column": 19,
-          "line": 128
+          "line": 126
         }
       },
       {
@@ -4361,13 +4221,13 @@
         "description": "DAEDALUS STATUS",
         "end": {
           "column": 3,
-          "line": 137
+          "line": 135
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.daedalusStatus",
         "start": {
           "column": 18,
-          "line": 133
+          "line": 131
         }
       },
       {
@@ -4375,13 +4235,13 @@
         "description": "Connected",
         "end": {
           "column": 3,
-          "line": 142
+          "line": 140
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.connected",
         "start": {
           "column": 13,
-          "line": 138
+          "line": 136
         }
       },
       {
@@ -4389,13 +4249,13 @@
         "description": "Synced",
         "end": {
           "column": 3,
-          "line": 147
+          "line": 145
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.synced",
         "start": {
           "column": 10,
-          "line": 143
+          "line": 141
         }
       },
       {
@@ -4403,41 +4263,13 @@
         "description": "Sync Percentage",
         "end": {
           "column": 3,
-          "line": 152
+          "line": 150
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.syncPercentage",
         "start": {
           "column": 18,
-          "line": 148
-        }
-      },
-      {
-        "defaultMessage": "!!!Network Block Height",
-        "description": "Network Block Height",
-        "end": {
-          "column": 3,
-          "line": 157
-        },
-        "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
-        "id": "daedalus.diagnostics.dialog.networkBlockHeight",
-        "start": {
-          "column": 22,
-          "line": 153
-        }
-      },
-      {
-        "defaultMessage": "!!!Local Block Height",
-        "description": "Local Block Height",
-        "end": {
-          "column": 3,
-          "line": 162
-        },
-        "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
-        "id": "daedalus.diagnostics.dialog.localBlockHeight",
-        "start": {
-          "column": 20,
-          "line": 158
+          "line": 146
         }
       },
       {
@@ -4445,13 +4277,13 @@
         "description": "Remaining Unsynced Blocks",
         "end": {
           "column": 3,
-          "line": 167
+          "line": 155
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.remainingUnsyncedBlocks",
         "start": {
           "column": 27,
-          "line": 163
+          "line": 151
         }
       },
       {
@@ -4459,13 +4291,13 @@
         "description": "Latest Local Block Age",
         "end": {
           "column": 3,
-          "line": 172
+          "line": 160
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.latestLocalBlockAge",
         "start": {
           "column": 23,
-          "line": 168
+          "line": 156
         }
       },
       {
@@ -4473,13 +4305,13 @@
         "description": "Latest Network Block Age",
         "end": {
           "column": 3,
-          "line": 177
+          "line": 165
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.latestNetworkBlockAge",
         "start": {
           "column": 25,
-          "line": 173
+          "line": 161
         }
       },
       {
@@ -4487,13 +4319,13 @@
         "description": "Local Time Difference",
         "end": {
           "column": 3,
-          "line": 182
+          "line": 170
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.localTimeDifference",
         "start": {
           "column": 23,
-          "line": 178
+          "line": 166
         }
       },
       {
@@ -4501,13 +4333,13 @@
         "description": "System Time Correct",
         "end": {
           "column": 3,
-          "line": 187
+          "line": 175
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.systemTimeCorrect",
         "start": {
           "column": 21,
-          "line": 183
+          "line": 171
         }
       },
       {
@@ -4515,13 +4347,13 @@
         "description": "System Time Ignored",
         "end": {
           "column": 3,
-          "line": 192
+          "line": 180
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.systemTimeIgnored",
         "start": {
           "column": 21,
-          "line": 188
+          "line": 176
         }
       },
       {
@@ -4529,13 +4361,13 @@
         "description": "Checking Node Time",
         "end": {
           "column": 3,
-          "line": 197
+          "line": 185
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.checkingNodeTime",
         "start": {
           "column": 20,
-          "line": 193
+          "line": 181
         }
       },
       {
@@ -4543,13 +4375,13 @@
         "description": "CARDANO NODE STATUS",
         "end": {
           "column": 3,
-          "line": 202
+          "line": 190
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNodeStatus",
         "start": {
           "column": 21,
-          "line": 198
+          "line": 186
         }
       },
       {
@@ -4557,13 +4389,13 @@
         "description": "Restarting Cardano Node...",
         "end": {
           "column": 3,
-          "line": 207
+          "line": 195
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNodeStatusRestarting",
         "start": {
           "column": 31,
-          "line": 203
+          "line": 191
         }
       },
       {
@@ -4571,13 +4403,13 @@
         "description": "Restart Cardano Node",
         "end": {
           "column": 3,
-          "line": 212
+          "line": 200
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNodeStatusRestart",
         "start": {
           "column": 28,
-          "line": 208
+          "line": 196
         }
       },
       {
@@ -4585,13 +4417,13 @@
         "description": "Cardano Node Diagnostics",
         "end": {
           "column": 3,
-          "line": 217
+          "line": 205
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNodeDiagnostics",
         "start": {
           "column": 26,
-          "line": 213
+          "line": 201
         }
       },
       {
@@ -4599,13 +4431,13 @@
         "description": "Realtime statistics monitor",
         "end": {
           "column": 3,
-          "line": 222
+          "line": 210
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.realtimeStatisticsMonitor",
         "start": {
           "column": 29,
-          "line": 218
+          "line": 206
         }
       },
       {
@@ -4613,13 +4445,13 @@
         "description": "Cardano Node State",
         "end": {
           "column": 3,
-          "line": 227
+          "line": 215
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNodeState",
         "start": {
           "column": 20,
-          "line": 223
+          "line": 211
         }
       },
       {
@@ -4627,13 +4459,13 @@
         "description": "Updated",
         "end": {
           "column": 3,
-          "line": 232
+          "line": 220
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.nodeHasBeenUpdated",
         "start": {
           "column": 22,
-          "line": 228
+          "line": 216
         }
       },
       {
@@ -4641,13 +4473,13 @@
         "description": "Crashed",
         "end": {
           "column": 3,
-          "line": 237
+          "line": 225
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.nodeHasCrashed",
         "start": {
           "column": 18,
-          "line": 233
+          "line": 221
         }
       },
       {
@@ -4655,13 +4487,13 @@
         "description": "Errored",
         "end": {
           "column": 3,
-          "line": 242
+          "line": 230
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.nodeHasErrored",
         "start": {
           "column": 18,
-          "line": 238
+          "line": 226
         }
       },
       {
@@ -4669,13 +4501,13 @@
         "description": "Stopped",
         "end": {
           "column": 3,
-          "line": 247
+          "line": 235
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.nodeHasStopped",
         "start": {
           "column": 18,
-          "line": 243
+          "line": 231
         }
       },
       {
@@ -4683,13 +4515,13 @@
         "description": "Exiting",
         "end": {
           "column": 3,
-          "line": 252
+          "line": 240
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.nodeIsExiting",
         "start": {
           "column": 17,
-          "line": 248
+          "line": 236
         }
       },
       {
@@ -4697,13 +4529,13 @@
         "description": "Running",
         "end": {
           "column": 3,
-          "line": 257
+          "line": 245
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.nodeIsRunning",
         "start": {
           "column": 17,
-          "line": 253
+          "line": 241
         }
       },
       {
@@ -4711,13 +4543,13 @@
         "description": "Starting",
         "end": {
           "column": 3,
-          "line": 262
+          "line": 250
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.nodeIsStarting",
         "start": {
           "column": 18,
-          "line": 258
+          "line": 246
         }
       },
       {
@@ -4725,13 +4557,13 @@
         "description": "Stopping",
         "end": {
           "column": 3,
-          "line": 267
+          "line": 255
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.nodeIsStopping",
         "start": {
           "column": 18,
-          "line": 263
+          "line": 251
         }
       },
       {
@@ -4739,13 +4571,13 @@
         "description": "Unrecoverable",
         "end": {
           "column": 3,
-          "line": 272
+          "line": 260
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.nodeIsUnrecoverable",
         "start": {
           "column": 23,
-          "line": 268
+          "line": 256
         }
       },
       {
@@ -4753,13 +4585,13 @@
         "description": "Updating",
         "end": {
           "column": 3,
-          "line": 277
+          "line": 265
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.nodeIsUpdating",
         "start": {
           "column": 18,
-          "line": 273
+          "line": 261
         }
       },
       {
@@ -4767,13 +4599,13 @@
         "description": "Node Responding",
         "end": {
           "column": 3,
-          "line": 282
+          "line": 270
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNodeResponding",
         "start": {
           "column": 25,
-          "line": 278
+          "line": 266
         }
       },
       {
@@ -4781,13 +4613,13 @@
         "description": "Node Subscribed",
         "end": {
           "column": 3,
-          "line": 287
+          "line": 275
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNodeSubscribed",
         "start": {
           "column": 25,
-          "line": 283
+          "line": 271
         }
       },
       {
@@ -4795,13 +4627,13 @@
         "description": "Node Time Correct",
         "end": {
           "column": 3,
-          "line": 292
+          "line": 280
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNodeTimeCorrect",
         "start": {
           "column": 26,
-          "line": 288
+          "line": 276
         }
       },
       {
@@ -4809,13 +4641,13 @@
         "description": "Node Syncing",
         "end": {
           "column": 3,
-          "line": 297
+          "line": 285
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNodeSyncing",
         "start": {
           "column": 22,
-          "line": 293
+          "line": 281
         }
       },
       {
@@ -4823,13 +4655,13 @@
         "description": "Node In Sync",
         "end": {
           "column": 3,
-          "line": 302
+          "line": 290
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNodeInSync",
         "start": {
           "column": 21,
-          "line": 298
+          "line": 286
         }
       },
       {
@@ -4837,13 +4669,13 @@
         "description": "Checking...",
         "end": {
           "column": 3,
-          "line": 307
+          "line": 295
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.localTimeDifferenceChecking",
         "start": {
           "column": 31,
-          "line": 303
+          "line": 291
         }
       },
       {
@@ -4851,13 +4683,13 @@
         "description": "Check time",
         "end": {
           "column": 3,
-          "line": 312
+          "line": 300
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.localTimeDifferenceCheckTime",
         "start": {
           "column": 32,
-          "line": 308
+          "line": 296
         }
       },
       {
@@ -4865,13 +4697,13 @@
         "description": "YES",
         "end": {
           "column": 3,
-          "line": 317
+          "line": 305
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.statusOn",
         "start": {
           "column": 12,
-          "line": 313
+          "line": 301
         }
       },
       {
@@ -4879,13 +4711,13 @@
         "description": "NO",
         "end": {
           "column": 3,
-          "line": 322
+          "line": 310
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.statusOff",
         "start": {
           "column": 13,
-          "line": 318
+          "line": 306
         }
       },
       {
@@ -4893,13 +4725,13 @@
         "description": "NTP Service unreachable",
         "end": {
           "column": 3,
-          "line": 327
+          "line": 315
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.serviceUnreachable",
         "start": {
           "column": 22,
-          "line": 326
+          "line": 311
         }
       },
       {
@@ -4907,13 +4739,13 @@
         "description": "message",
         "end": {
           "column": 3,
-          "line": 319
+          "line": 320
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.message",
         "start": {
           "column": 11,
-          "line": 315
+          "line": 316
         }
       },
       {
@@ -4921,13 +4753,13 @@
         "description": "code",
         "end": {
           "column": 3,
-          "line": 324
+          "line": 325
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.code",
         "start": {
           "column": 8,
-          "line": 320
+          "line": 321
         }
       },
       {
@@ -4935,13 +4767,13 @@
         "description": "Last network block",
         "end": {
           "column": 3,
-          "line": 329
+          "line": 330
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.lastNetworkBlock",
         "start": {
           "column": 20,
-          "line": 325
+          "line": 326
         }
       },
       {
@@ -4949,13 +4781,13 @@
         "description": "Last synchronized block",
         "end": {
           "column": 3,
-          "line": 334
+          "line": 335
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.lastSynchronizedBlock",
         "start": {
           "column": 25,
-          "line": 330
+          "line": 331
         }
       },
       {
@@ -4963,13 +4795,13 @@
         "description": "epoch",
         "end": {
           "column": 3,
-          "line": 339
+          "line": 340
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.epoch",
         "start": {
           "column": 9,
-          "line": 335
+          "line": 336
         }
       },
       {
@@ -4977,13 +4809,13 @@
         "description": "slot",
         "end": {
           "column": 3,
-          "line": 344
+          "line": 345
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.slot",
         "start": {
           "column": 8,
-          "line": 340
+          "line": 341
         }
       }
     ],
@@ -6355,6 +6187,53 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Export Wallet",
+        "description": "headline for \"export wallet to file\" dialog.",
+        "end": {
+          "column": 3,
+          "line": 23
+        },
+        "file": "source/renderer/app/components/wallet/settings/ExportWalletToFileDialog.js",
+        "id": "wallet.settings.exportToFile.dialog.headline",
+        "start": {
+          "column": 12,
+          "line": 19
+        }
+      },
+      {
+        "defaultMessage": "!!!You are exporting <strong>{walletName}</strong> to a file.",
+        "description": "headline for \"export wallet to file\" dialog.",
+        "end": {
+          "column": 3,
+          "line": 29
+        },
+        "file": "source/renderer/app/components/wallet/settings/ExportWalletToFileDialog.js",
+        "id": "wallet.settings.exportToFile.dialog.introduction",
+        "start": {
+          "column": 16,
+          "line": 24
+        }
+      },
+      {
+        "defaultMessage": "!!!Export",
+        "description": "Label for export wallet to file submit button.",
+        "end": {
+          "column": 3,
+          "line": 34
+        },
+        "file": "source/renderer/app/components/wallet/settings/ExportWalletToFileDialog.js",
+        "id": "wallet.settings.exportToFile.dialog.submit.label",
+        "start": {
+          "column": 21,
+          "line": 30
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/settings/ExportWalletToFileDialog.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Do you have your wallet recovery phrase?",
         "description": "Label for the recoveryPhraseVerificationTitle on wallet settings.",
         "end": {
@@ -6804,13 +6683,13 @@
         "description": "Label for the \"Transaction assurance security level\" dropdown.",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 24
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.assurance",
         "start": {
           "column": 23,
-          "line": 21
+          "line": 19
         }
       },
       {
@@ -6818,13 +6697,13 @@
         "description": "Delete wallet header on the wallet settings page.",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 29
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.deleteWallet.header",
         "start": {
           "column": 22,
-          "line": 27
+          "line": 25
         }
       },
       {
@@ -6832,465 +6711,27 @@
         "description": "Delete wallet warning explaining the consequences.",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 35
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.deleteWallet.warning",
         "start": {
           "column": 23,
-          "line": 32
-        }
-      },
-      {
-        "end": {
-          "line": 29
-        },
-        "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhrase.js",
-        "id": "wallet.settings.recoveryPhraseVerificationTitle",
-        "start": {
-          "column": 35,
-          "line": 24
-        }
-      },
-      {
-        "defaultMessage": "!!!Funds in this wallet can only be recovered using the correct wallet recovery phrase, which is a unique 12-word string you were shown and asked to write down when creating this wallet. You can re-enter your wallet recovery phrase to verify that you have the correct recovery phrase for this wallet.",
-        "description": "Label for the recoveryPhraseVerificationDescription on wallet settings.",
-        "end": {
-          "column": 3,
-          "line": 47
-        },
-        "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhrase.js",
-        "id": "wallet.settings.recoveryPhraseVerificationDescription",
-        "start": {
-          "line": 43
-        }
-      },
-      {
-        "defaultMessage": "!!!We recommend that you verify your wallet recovery phrase in <b>{timeUntilWarning}</b>.",
-        "description": "Label for the recoveryPhraseVerificationNeverOk on wallet settings.",
-        "end": {
-          "column": 3,
-          "line": 52
-        },
-        "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhrase.js",
-        "id": "wallet.settings.recoveryPhraseVerificationNeverOk",
-        "start": {
-          "line": 48
-        }
-      },
-      {
-        "defaultMessage": "!!!We recommend that you verify your wallet recovery phrase.",
-        "description": "Label for the recoveryPhraseVerificationNeverWarning on wallet settings.",
-        "end": {
-          "column": 3,
-          "line": 57
-        },
-        "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhrase.js",
-        "id": "wallet.settings.recoveryPhraseVerificationNeverWarning",
-        "start": {
-        }
-      },
-      {
-        "defaultMessage": "!!!We recommend that you verify your wallet recovery phrase.",
-        "description": "Label for the recoveryPhraseVerificationNeverNotification on wallet settings.",
-        "end": {
-          "column": 3,
-          "line": 57
-        },
-        "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhrase.js",
-        "id": "wallet.settings.recoveryPhraseVerificationNeverNotification",
-        "start": {
-          "column": 47,
-          "line": 51
-        }
-      },
-      {
-        "defaultMessage": "!!!You verified the recovery phrase for this wallet <b>{timeAgo}</b>.",
-        "description": "Label for the recoveryPhraseVerificationCheckedOk on wallet settings.",
-        "end": {
-          "column": 3,
-          "line": 64
-        },
-        "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhrase.js",
-        "id": "wallet.settings.recoveryPhraseVerificationCheckedOk",
-        "start": {
-          "column": 39,
-          "line": 58
-        }
-      },
-      {
-        "defaultMessage": "!!!You verified the recovery phrase for this wallet <b>{timeAgo}</b>.",
-        "description": "Label for the recoveryPhraseVerificationCheckedWarning on wallet settings.",
-        "end": {
-          "column": 3,
-          "line": 71
-        },
-        "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhrase.js",
-        "id": "wallet.settings.recoveryPhraseVerificationCheckedWarning",
-        "start": {
-          "column": 44,
-          "line": 65
-        }
-      },
-      {
-        "defaultMessage": "!!!You verified the recovery phrase for this wallet <b>{timeAgo}</b>. We recommend that you verify your wallet recovery phrase again.",
-        "description": "Label for the recoveryPhraseVerificationCheckedNotification on wallet settings.",
-        "end": {
-          "column": 3,
-          "line": 78
-        },
-        "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhrase.js",
-        "id": "wallet.settings.recoveryPhraseVerificationCheckedNotification",
-        "start": {
-          "column": 49,
-          "line": 72
-        }
-      },
-      {
-        "defaultMessage": "!!!Verify wallet recovery phrase",
-        "description": "Label for the recoveryPhraseVerificationButton on wallet settings.",
-        "end": {
-          "column": 3,
-          "line": 84
-        },
-        "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhrase.js",
-        "id": "wallet.settings.recoveryPhraseVerificationButton",
-        "start": {
-          "column": 36,
-          "line": 79
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/wallet/settings/WalletRecoveryPhrase.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Wallet recovery phrase verification",
-        "description": "Label for the recoveryPhraseStep1Title on wallet settings.",
-        "end": {
-          "column": 3,
-          "line": 16
-        },
-        "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep1Dialog.js",
-        "id": "wallet.settings.recoveryPhraseStep1Title",
-        "start": {
-          "column": 28,
-          "line": 12
-        }
-      },
-      {
-        "defaultMessage": "!!!To verify that you have the correct recovery phrase for this wallet, you can enter it on the following screen. This wallet uses a 12-word recovery phrase.",
-        "description": "Label for the recoveryPhraseStep1Paragraph1 on wallet settings.",
-        "end": {
-          "column": 3,
-          "line": 23
-        },
-        "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep1Dialog.js",
-        "id": "wallet.settings.recoveryPhraseStep1Paragraph1",
-        "start": {
-          "column": 33,
-          "line": 17
-        }
-      },
-      {
-        "defaultMessage": "!!!Are you being watched? Please make sure that nobody can see your screen while you are entering your wallet recovery phrase.",
-        "description": "Label for the recoveryPhraseStep1Paragraph2 on wallet settings.",
-        "end": {
-          "column": 3,
           "line": 30
-        },
-        "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep1Dialog.js",
-        "id": "wallet.settings.recoveryPhraseStep1Paragraph2",
-        "start": {
-          "column": 33,
-          "line": 24
         }
       },
-      {
-        "defaultMessage": "!!!Continue",
-        "description": "Label for the recoveryPhraseStep1Button on wallet settings.",
-        "end": {
-          "column": 3,
-          "line": 35
-        },
-        "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep1Dialog.js",
-        "id": "wallet.settings.recoveryPhraseStep1Button",
-        "start": {
-          "column": 29,
-          "line": 31
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep1Dialog.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Wallet recovery phrase verification",
-        "description": "Label for the recoveryPhraseStep2Title on wallet settings.",
-        "end": {
-          "column": 3,
-          "line": 20
-        },
-        "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep2Dialog.js",
-        "id": "wallet.settings.recoveryPhraseStep2Title",
-        "start": {
-          "column": 28,
-          "line": 16
-        }
-      },
-      {
-        "defaultMessage": "!!!Please enter your 12-word wallet recovery phrase. Make sure you enter the words in the correct order.",
-        "description": "Label for the recoveryPhraseStep2Description on wallet settings.",
-        "end": {
-          "column": 3,
-          "line": 27
-        },
-        "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep2Dialog.js",
-        "id": "wallet.settings.recoveryPhraseStep2Description",
-        "start": {
-          "column": 34,
-          "line": 21
-        }
-      },
-      {
-        "defaultMessage": "!!!Recovery phrase",
-        "description": "Label for the recoveryPhraseStep2Subtitle on wallet settings.",
-        "end": {
-          "column": 3,
-          "line": 33
-        },
-        "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep2Dialog.js",
-        "id": "wallet.settings.recoveryPhraseStep2Subtitle",
-        "start": {
-          "column": 31,
-          "line": 28
-        }
-      },
-      {
-        "defaultMessage": "!!!Verify",
-        "description": "Label for the recoveryPhraseStep2Button on wallet settings.",
-        "end": {
-          "column": 3,
-          "line": 38
-        },
-        "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep2Dialog.js",
-        "id": "wallet.settings.recoveryPhraseStep2Button",
-        "start": {
-          "column": 29,
-          "line": 34
-        }
-      },
-      {
-        "defaultMessage": "!!!Enter recovery phrase",
-        "description": "Hint \"Enter recovery phrase\" for the recovery phrase input on the wallet restore dialog.",
-        "end": {
-          "column": 3,
-          "line": 44
-        },
-        "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep2Dialog.js",
-        "id": "wallet.settings.recoveryPhraseInputHint",
-        "start": {
-          "column": 27,
-          "line": 39
-        }
-      },
-      {
-        "defaultMessage": "!!!No results",
-        "description": "\"No results\" message for the recovery phrase input search results.",
-        "end": {
-          "column": 3,
-          "line": 50
-        },
-        "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep2Dialog.js",
-        "id": "wallet.settings.recoveryPhraseInputNoResults",
-        "start": {
-          "column": 27,
-          "line": 45
-        }
-      },
-      {
-        "defaultMessage": "!!!Invalid recovery phrase",
-        "description": "Error message shown when invalid recovery phrase was entered.",
-        "end": {
-          "column": 3,
-          "line": 56
-        },
-        "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep2Dialog.js",
-        "id": "wallet.settings.recoveryPhraseStep2InvalidMnemonics",
-        "start": {
-          "column": 39,
-          "line": 51
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep2Dialog.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!verification successful",
-        "description": "Label for the recoveryPhraseStep3Title on wallet settings.",
-        "end": {
-          "column": 3,
-          "line": 17
-        },
-        "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep3Dialog.js",
-        "id": "wallet.settings.recoveryPhraseStep3Title",
-        "start": {
-          "column": 28,
-          "line": 13
-        }
-      },
-      {
-        "defaultMessage": "!!!You have verified the recovery phrase for this wallet. You can use it at any time to recover the funds in this wallet on another computer, even if using a different version of Daedalus.",
-        "description": "Label for the recoveryPhraseStep3Paragraph1 on wallet settings.",
-        "end": {
-          "column": 3,
-          "line": 24
-        },
-        "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep3Dialog.js",
-        "id": "wallet.settings.recoveryPhraseStep3Paragraph1",
-        "start": {
-          "column": 33,
-          "line": 18
-        }
-      },
-      {
-        "defaultMessage": "!!!Please make sure to return your wallet recovery phrase to a secure place for safekeeping. Anyone with access to your wallet recovery phrase can take control of your funds.",
-        "description": "Label for the recoveryPhraseStep3Paragraph2 on wallet settings.",
-        "end": {
-          "column": 3,
-          "line": 31
-        },
-        "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep3Dialog.js",
-        "id": "wallet.settings.recoveryPhraseStep3Paragraph2",
-        "start": {
-          "column": 33,
-          "line": 25
-        }
-      },
-      {
-        "defaultMessage": "!!!Continue",
-        "description": "Label for the recoveryPhraseStep3Button on wallet settings.",
-        "end": {
-          "column": 3,
-          "line": 36
-        },
-        "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep3Dialog.js",
-        "id": "wallet.settings.recoveryPhraseStep3Button",
-        "start": {
-          "column": 29,
-          "line": 32
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep3Dialog.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!verification failure",
-        "description": "Label for the recoveryPhraseStep4Title on wallet settings.",
-        "end": {
-          "column": 3,
-          "line": 17
-        },
-        "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep4Dialog.js",
-        "id": "wallet.settings.recoveryPhraseStep4Title",
-        "start": {
-          "column": 28,
-          "line": 13
-        }
-      },
-      {
-        "defaultMessage": "!!!The wallet recovery phrase you have entered does not match the recovery phrase of this wallet. Make sure you have entered the wallet recovery phrase which was written down during the wallet creation process for this wallet and make sure the words are in the correct order.",
-        "description": "Label for the recoveryPhraseStep4Paragraph1 on wallet settings.",
-        "end": {
-          "column": 3,
-          "line": 24
-        },
-        "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep4Dialog.js",
-        "id": "wallet.settings.recoveryPhraseStep4Paragraph1",
-        "start": {
-          "column": 33,
-          "line": 18
-        }
-      },
-      {
-        "defaultMessage": "!!!If you are unable to verify your wallet recovery phrase, you should create a new wallet and move all of the funds from this wallet to the new wallet. If you do this, make sure you keep the wallet recovery phrase for the new wallet safe and secure.",
-        "description": "Label for the recoveryPhraseStep4Paragraph2 on wallet settings.",
-        "end": {
-          "column": 3,
-          "line": 31
-        },
-        "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep4Dialog.js",
-        "id": "wallet.settings.recoveryPhraseStep4Paragraph2",
-        "start": {
-          "column": 33,
-          "line": 25
-        }
-      },
-      {
-        "defaultMessage": "!!!Verify recovery phrase again",
-        "description": "Label for the recoveryPhraseStep4Button on wallet settings.",
-        "end": {
-          "column": 3,
-          "line": 36
-        },
-        "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep4Dialog.js",
-        "id": "wallet.settings.recoveryPhraseStep4Button",
-        "start": {
-          "column": 29,
-          "line": 32
-        }
-      },
-      {
-        "defaultMessage": "!!!Read support portal article",
-        "description": "Label for the recoveryPhraseStep4SupportTitle on wallet settings.",
-        "end": {
-          "column": 3,
-          "line": 42
-        },
-        "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep4Dialog.js",
-        "id": "wallet.settings.recoveryPhraseStep4SupportTitle",
-        "start": {
-          "column": 35,
-          "line": 37
-        }
-      },
-      {
-        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/articles/360035341914",
-        "description": "Label for the recoveryPhraseStep4SupportUrl on wallet settings.",
-        "end": {
-          "column": 3,
-          "line": 49
-        },
-        "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep4Dialog.js",
-        "id": "wallet.settings.recoveryPhraseStep4SupportUrl",
-        "start": {
-          "column": 33,
-          "line": 43
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep4Dialog.json"
-  },
-  {
-    "descriptors": [
       {
         "defaultMessage": "!!!Name",
         "description": "Label for the \"Name\" text input on the wallet settings page.",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 40
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.name.label",
         "start": {
           "column": 8,
-          "line": 20
+          "line": 36
         }
       },
       {
@@ -7298,13 +6739,13 @@
         "description": "Label for the \"Password\" field.",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 45
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.password",
         "start": {
           "column": 17,
-          "line": 25
+          "line": 41
         }
       },
       {
@@ -7312,27 +6753,13 @@
         "description": "Last updated X time ago message.",
         "end": {
           "column": 3,
-          "line": 34
+          "line": 50
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.passwordLastUpdated",
         "start": {
           "column": 23,
-          "line": 30
-        }
-      },
-      {
-        "defaultMessage": "!!!Export wallet",
-        "description": "Label for the export button on wallet settings.",
-        "end": {
-          "column": 3,
-          "line": 39
-        },
-        "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
-        "id": "wallet.settings.exportWalletButtonLabel",
-        "start": {
-          "column": 21,
-          "line": 35
+          "line": 46
         }
       }
     ],
@@ -9829,13 +9256,13 @@
         "description": "Message shown when wallet has no transactions on wallet summary page.",
         "end": {
           "column": 3,
-          "line": 21
+          "line": 22
         },
         "file": "source/renderer/app/containers/wallet/WalletSummaryPage.js",
         "id": "wallet.summary.no.transactions",
         "start": {
           "column": 18,
-          "line": 16
+          "line": 17
         }
       }
     ],
