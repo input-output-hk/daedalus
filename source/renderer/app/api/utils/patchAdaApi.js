@@ -16,6 +16,7 @@ import type {
 import type { GetNewsResponse } from '../news/types';
 
 let LATEST_APP_VERSION = null;
+let LOCAL_TIME_DIFFERENCE = 0;
 let SYNC_PROGRESS = null;
 let NEXT_ADA_UPDATE = null;
 let APPLICATION_VERSION = null;

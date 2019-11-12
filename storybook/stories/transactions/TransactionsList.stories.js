@@ -176,8 +176,6 @@ storiesOf('Transactions|Transactions', module)
       isRenderingAsVirtualList
       deletePendingTransaction={() => {}}
       isRestoreActive={false}
-      currentDateFormat={DATE_ENGLISH_OPTIONS[0].value}
-      currentTimeFormat={TIME_OPTIONS[0].value}
       transactions={[
         generateTransaction(
           TransactionTypes.INCOME,

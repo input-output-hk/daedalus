@@ -1162,6 +1162,7 @@ export default class AdaApi {
   };
 
   // No implementation here but can be overwritten
+  setLocalTimeDifference: Function;
   setSyncProgress: Function;
   setNextUpdate: Function;
   setLatestAppVersion: Function;
