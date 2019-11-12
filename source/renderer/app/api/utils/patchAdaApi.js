@@ -5,7 +5,6 @@ import { getNetworkInfo } from '../network/requests/getNetworkInfo';
 import { getLatestAppVersion } from '../nodes/requests/getLatestAppVersion';
 import { GenericApiError } from '../common/errors';
 import { Logger } from '../../utils/logging';
-import type { NetworkInfoQueryParams } from '../network/requests/getNetworkInfo';
 import type {
   GetNetworkInfoResponse,
   NetworkInfoResponse,
@@ -17,28 +16,17 @@ import type {
 import type { GetNewsResponse } from '../news/types';
 
 let LATEST_APP_VERSION = null;
-let LOCAL_TIME_DIFFERENCE = 0;
 let SYNC_PROGRESS = null;
 let NEXT_ADA_UPDATE = null;
 let APPLICATION_VERSION = null;
 let FAKE_NEWSFEED_JSON: ?GetNewsResponse;
 
 export default (api: AdaApi) => {
-  api.getLocalTimeDifference = async () =>
-    Promise.resolve(LOCAL_TIME_DIFFERENCE);
-
-  api.getNetworkInfo = async (
-    queryInfoParams?: NetworkInfoQueryParams
-  ): Promise<GetNetworkInfoResponse> => {
+  api.getNetworkInfo = async (): Promise<GetNetworkInfoResponse> => {
     Logger.debug('AdaApi::getNetworkInfo (PATCHED) called');
     try {
-      const networkInfo: NetworkInfoResponse = await getNetworkInfo(
-        api.config,
-        queryInfoParams
-      );
-      Logger.debug('AdaApi::getNetworkInfo (PATCHED) success', {
-        networkInfo,
-      });
+      const networkInfo: NetworkInfoResponse = await getNetworkInfo(api.config);
+      Logger.debug('AdaApi::getNetworkInfo (PATCHED) success', { networkInfo });
 
       /* eslint-disable-next-line camelcase */
       const { sync_progress, node_tip, network_tip } = networkInfo;
@@ -48,7 +36,7 @@ export default (api: AdaApi) => {
           : get(sync_progress, 'quantity', 0);
 
       // extract relevant data before sending to NetworkStatusStore
-      const response = {
+      return {
         syncProgress: SYNC_PROGRESS || syncProgress,
         localTip: {
           epoch: get(node_tip, 'epoch_number', 0),
@@ -58,30 +46,11 @@ export default (api: AdaApi) => {
           epoch: get(network_tip, 'epoch_number', 0),
           slot: get(network_tip, 'slot_number', 0),
         },
-        localTimeInformation: {
-          status: 'available',
-          difference: 0 || LOCAL_TIME_DIFFERENCE,
-        },
       };
-
-      // Since in test environment we run multiple NTP force-checks
-      // we need to protect ourselves from getting punished by the NTP
-      // service which results in 30 second delay in NTP check response.
-      // In order to simulate NTP force-check we use 250ms timeout.
-      const isForcedTimeDifferenceCheck = !!queryInfoParams;
-      return isForcedTimeDifferenceCheck
-        ? new Promise(resolve => {
-            setTimeout(() => resolve(response), 250);
-          })
-        : response;
     } catch (error) {
       Logger.error('AdaApi::getNetworkInfo (PATCHED) error', { error });
       throw new GenericApiError();
     }
-  };
-
-  api.setLocalTimeDifference = async timeDifference => {
-    LOCAL_TIME_DIFFERENCE = timeDifference;
   };
 
   api.setSyncProgress = async syncProgress => {
@@ -170,7 +139,6 @@ export default (api: AdaApi) => {
 
   api.resetTestOverrides = () => {
     LATEST_APP_VERSION = null;
-    LOCAL_TIME_DIFFERENCE = 0;
     NEXT_ADA_UPDATE = null;
     APPLICATION_VERSION = null;
   };

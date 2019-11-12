@@ -89,7 +89,6 @@ import type {
   GetNetworkInfoResponse,
   NetworkInfoResponse,
 } from './network/types';
-import type { NetworkInfoQueryParams } from './network/requests/getNetworkInfo';
 
 // Nodes Types
 import type {
@@ -1048,19 +1047,13 @@ export default class AdaApi {
     }
   };
 
-  getNetworkInfo = async (
-    queryInfoParams?: NetworkInfoQueryParams
-  ): Promise<GetNetworkInfoResponse> => {
-    const isForceNTPCheck = !!queryInfoParams;
-    const loggerText = `AdaApi::getNetworkInfo${
-      isForceNTPCheck ? ' (FORCE-NTP-CHECK)' : ''
-    }`;
+  getNetworkInfo = async (): Promise<GetNetworkInfoResponse> => {
+    Logger.debug('AdaApi::getNetworkInfo called');
     try {
       const networkInfo: NetworkInfoResponse = await getNetworkInfo(
-        this.config,
-        queryInfoParams
+        this.config
       );
-      Logger.debug(`${loggerText} success`, { networkInfo });
+      Logger.debug('AdaApi::getNetworkInfo success', { networkInfo });
 
       /* eslint-disable-next-line camelcase */
       const { sync_progress, node_tip, network_tip } = networkInfo;
@@ -1080,13 +1073,9 @@ export default class AdaApi {
           epoch: get(network_tip, 'epoch_number', 0),
           slot: get(network_tip, 'slot_number', 0),
         },
-        localTimeInformation: {
-          status: 'available',
-          difference: 0,
-        },
       };
     } catch (error) {
-      Logger.error(`${loggerText} error`, { error });
+      Logger.error('AdaApi::getNetworkInfo error', { error });
       // @API TODO - Inspect this implementation once TLS support is implemented on the BE
       if (error.code === TlsCertificateNotValidError.API_ERROR) {
         throw new TlsCertificateNotValidError();
@@ -1173,8 +1162,6 @@ export default class AdaApi {
   };
 
   // No implementation here but can be overwritten
-  getLocalTimeDifference: Function;
-  setLocalTimeDifference: Function;
   setSyncProgress: Function;
   setNextUpdate: Function;
   setLatestAppVersion: Function;

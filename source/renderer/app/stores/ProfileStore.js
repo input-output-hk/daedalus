@@ -497,21 +497,14 @@ export default class ProfileStore extends Store {
         diskSpaceAvailable,
         cardanoNodeState,
         isConnected,
-        forceCheckTimeDifferenceRequest,
         isNodeInSync,
         isNodeResponding,
-        isNodeSubscribed,
         isNodeSyncing,
-        isNodeTimeCorrect,
         isSynced,
-        isSystemTimeCorrect,
-        isSystemTimeIgnored,
-        latestLocalBlockTimestamp,
-        latestNetworkBlockTimestamp,
-        localBlockHeight,
-        localTimeDifference,
-        networkBlockHeight,
         syncPercentage,
+        localTip,
+        networkTip,
+        isIncentivizedTestnet,
       } = networkStatus;
 
       const {
@@ -558,29 +551,18 @@ export default class ProfileStore extends Store {
         currentLocale: this.currentLocale,
         isConnected,
         isDev,
-        isForceCheckingNodeTime: forceCheckTimeDifferenceRequest.isExecuting,
         isMainnet,
         isNodeInSync,
         isNodeResponding,
-        isNodeSubscribed,
         isNodeSyncing,
-        isNodeTimeCorrect,
         isStaging,
         isSynced,
-        isSystemTimeCorrect,
-        isSystemTimeIgnored,
         isTestnet,
-        latestLocalBlockTimestamp: moment(Date.now()).diff(
-          moment(latestLocalBlockTimestamp)
-        ),
-        latestNetworkBlockTimestamp: moment(Date.now()).diff(
-          moment(latestNetworkBlockTimestamp)
-        ),
-        localBlockHeight,
-        localTimeDifference,
-        networkBlockHeight,
+        isIncentivizedTestnet,
         currentTime: new Date().toISOString(),
         syncPercentage: syncPercentage.toFixed(2),
+        localTip,
+        networkTip,
       };
 
       await setStateSnapshotLogChannel.send(stateSnapshotData);
