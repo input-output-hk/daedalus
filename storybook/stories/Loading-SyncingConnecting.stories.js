@@ -84,6 +84,43 @@ export const ConnectivityIssuesSyncingConnectingStory = () => (
   />
 );
 
+export const ConnectivityIssuesSyncingConnectingStoryForIncentivizedTestnet = () => (
+  <SyncingConnecting
+    hasUnreadAlerts={false}
+    hasUnreadAnnouncements={false}
+    hasUnreadNews={false}
+    onToggleNewsFeedIconClick={action('onToggleNewsFeedIconClick')}
+    forceConnectivityIssue
+    isConnected={false}
+    cardanoNodeState={CardanoNodeStates.RUNNING}
+    hasBeenConnected
+    isSynced={false}
+    isConnecting
+    isSyncing={false}
+    isNodeStopping={false}
+    isNodeStopped={false}
+    isTlsCertInvalid={false}
+    syncPercentage={0}
+    hasLoadedCurrentLocale
+    hasLoadedCurrentTheme
+    isCheckingSystemTime={false}
+    isNodeResponding
+    isNodeSubscribed={false}
+    isNodeSyncing={false}
+    isNodeTimeCorrect
+    isNewAppVersionAvailable={false}
+    isNewAppVersionLoading={false}
+    isNewAppVersionLoaded
+    onIssueClick={action('onIssueClick')}
+    onDownloadLogs={action('onDownloadLogs')}
+    onGetAvailableVersions={action('onGetAvailableVersions')}
+    onStatusIconClick={linkTo('Diagnostics', () => 'default')}
+    disableDownloadLogs={boolean('disableDownloadLogs', false)}
+    showNewsFeedIcon
+    isIncentivizedTestnet
+  />
+);
+
 export const SyncIssuesSyncingConnectingStory = () => (
   <SyncingConnecting
     hasUnreadAlerts={false}
@@ -118,5 +155,42 @@ export const SyncIssuesSyncingConnectingStory = () => (
     disableDownloadLogs={boolean('disableDownloadLogs', false)}
     showNewsFeedIcon
     isIncentivizedTestnet={false}
+  />
+);
+
+export const SyncIssuesSyncingConnectingStoryForIncentivizedTestnet = () => (
+  <SyncingConnecting
+    hasUnreadAlerts={false}
+    hasUnreadAnnouncements={false}
+    hasUnreadNews={false}
+    onToggleNewsFeedIconClick={action('onToggleNewsFeedIconClick')}
+    forceSyncIssue
+    cardanoNodeState={CardanoNodeStates.RUNNING}
+    hasBeenConnected
+    isConnected
+    isSynced={false}
+    isConnecting={false}
+    isSyncing
+    isNodeStopping={false}
+    isNodeStopped={false}
+    isTlsCertInvalid={false}
+    syncPercentage={50}
+    hasLoadedCurrentLocale
+    hasLoadedCurrentTheme
+    isCheckingSystemTime={false}
+    isNodeResponding
+    isNodeSubscribed
+    isNodeSyncing
+    isNodeTimeCorrect
+    isNewAppVersionAvailable={false}
+    isNewAppVersionLoading={false}
+    isNewAppVersionLoaded
+    onIssueClick={action('onIssueClick')}
+    onDownloadLogs={action('onDownloadLogs')}
+    onGetAvailableVersions={action('onGetAvailableVersions')}
+    onStatusIconClick={linkTo('Diagnostics', () => 'default')}
+    disableDownloadLogs={boolean('disableDownloadLogs', false)}
+    showNewsFeedIcon
+    isIncentivizedTestnet
   />
 );

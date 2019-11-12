@@ -841,7 +841,7 @@
           "column": 3,
           "line": 15
         },
-        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingTitle.js",
+        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.js",
         "id": "loading.screen.startingCardanoMessage",
         "start": {
           "column": 12,
@@ -855,7 +855,7 @@
           "column": 3,
           "line": 20
         },
-        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingTitle.js",
+        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.js",
         "id": "loading.screen.stoppingCardanoMessage",
         "start": {
           "column": 12,
@@ -869,7 +869,7 @@
           "column": 3,
           "line": 25
         },
-        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingTitle.js",
+        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.js",
         "id": "loading.screen.stoppedCardanoMessage",
         "start": {
           "column": 11,
@@ -883,7 +883,7 @@
           "column": 3,
           "line": 30
         },
-        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingTitle.js",
+        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.js",
         "id": "loading.screen.updatingCardanoMessage",
         "start": {
           "column": 12,
@@ -897,7 +897,7 @@
           "column": 3,
           "line": 35
         },
-        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingTitle.js",
+        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.js",
         "id": "loading.screen.updatedCardanoMessage",
         "start": {
           "column": 11,
@@ -911,7 +911,7 @@
           "column": 3,
           "line": 40
         },
-        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingTitle.js",
+        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.js",
         "id": "loading.screen.crashedCardanoMessage",
         "start": {
           "column": 11,
@@ -925,7 +925,7 @@
           "column": 3,
           "line": 47
         },
-        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingTitle.js",
+        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.js",
         "id": "loading.screen.unrecoverableCardanoMessage",
         "start": {
           "column": 17,
@@ -939,7 +939,7 @@
           "column": 3,
           "line": 52
         },
-        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingTitle.js",
+        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.js",
         "id": "loading.screen.connectingToNetworkMessage",
         "start": {
           "column": 14,
@@ -953,7 +953,7 @@
           "column": 3,
           "line": 58
         },
-        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingTitle.js",
+        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.js",
         "id": "loading.screen.reconnectingToNetworkMessage",
         "start": {
           "column": 16,
@@ -967,7 +967,7 @@
           "column": 3,
           "line": 63
         },
-        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingTitle.js",
+        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.js",
         "id": "loading.screen.syncingBlocksMessage",
         "start": {
           "column": 11,
@@ -981,7 +981,7 @@
           "column": 3,
           "line": 68
         },
-        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingTitle.js",
+        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.js",
         "id": "loading.screen.loadingWalletData",
         "start": {
           "column": 21,
@@ -995,11 +995,58 @@
           "column": 3,
           "line": 73
         },
-        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingTitle.js",
+        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.js",
         "id": "loading.screen.errors.tlsCertificateNotValidPleaseRestartError",
         "start": {
           "column": 31,
           "line": 69
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Daedalus",
+        "description": "Daedalus",
+        "end": {
+          "column": 3,
+          "line": 13
+        },
+        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingTitle.js",
+        "id": "loading.screen.syncingConnectingTitle",
+        "start": {
+          "column": 9,
+          "line": 9
+        }
+      },
+      {
+        "defaultMessage": "!!!Incentivized Testnet",
+        "description": "Incentivized Testnet",
+        "end": {
+          "column": 3,
+          "line": 18
+        },
+        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingTitle.js",
+        "id": "loading.screen.syncingConnectingIncentivizedTestnet",
+        "start": {
+          "column": 23,
+          "line": 14
+        }
+      },
+      {
+        "defaultMessage": "!!!Balance Check",
+        "description": "Balance Check",
+        "end": {
+          "column": 3,
+          "line": 23
+        },
+        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingTitle.js",
+        "id": "loading.screen.syncingConnectingBalanceCheck",
+        "start": {
+          "column": 16,
+          "line": 19
         }
       }
     ],
