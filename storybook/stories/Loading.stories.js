@@ -10,7 +10,9 @@ import StoryDecorator from './support/StoryDecorator';
 import {
   DefaultSyncingConnectingStory,
   ConnectivityIssuesSyncingConnectingStory,
+  ConnectivityIssuesSyncingConnectingStoryForIncentivizedTestnet,
   SyncIssuesSyncingConnectingStory,
+  SyncIssuesSyncingConnectingStoryForIncentivizedTestnet,
 } from './Loading-SyncingConnecting.stories';
 import { NoDiskSpaceErrorStory } from './Loading-NoDiskSpaceError.stories';
 import { SystemTimeErrorStory } from './Loading-SystemTimeError.stories';
@@ -29,7 +31,15 @@ storiesOf('Loading', module)
     'SyncingConnecting - Connectivity Issues',
     ConnectivityIssuesSyncingConnectingStory
   )
+  .add(
+    'SyncingConnecting - Connectivity Issues For Incentivized Testnet',
+    ConnectivityIssuesSyncingConnectingStoryForIncentivizedTestnet
+  )
   .add('SyncingConnecting - Sync Issues', SyncIssuesSyncingConnectingStory)
+  .add(
+    'SyncingConnecting - Sync Issues For Incentivized Testnet',
+    SyncIssuesSyncingConnectingStoryForIncentivizedTestnet
+  )
   .add('NoDiskSpaceError', NoDiskSpaceErrorStory)
   .add('SystemTimeError', SystemTimeErrorStory)
   .add('ManualUpdate', ManualUpdateStory)
