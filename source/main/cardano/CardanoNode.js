@@ -262,7 +262,8 @@ export class CardanoNode {
       nodeImplementation,
     } = config;
 
-    const { createWriteStream } = this._actions;
+    const rfs = require('rotating-file-stream'); // eslint-disable-line global-require
+
     this._config = config;
 
     this._startupTries++;
@@ -275,9 +276,9 @@ export class CardanoNode {
     );
 
     return new Promise(async (resolve, reject) => {
-      const logFile = createWriteStream(config.logFilePath, { flags: 'a' });
-      logFile.on('open', async () => {
-        this._cardanoLogFile = logFile;
+      const logFile = rfs(config.logFilePath);
+      logFile.on('open', async logFilename => {
+        this._cardanoLogFile = logFilename;
         // Spawning cardano-node
         _log.info('CardanoNode path with args', {
           path: walletBin,
@@ -288,7 +289,7 @@ export class CardanoNode {
           path: walletBin,
           nodeBin,
           walletArgs,
-          logStream: logFile,
+          logStream: logFilename,
           nodeImplementation,
           cliBin,
           stateDir: config.workingDir,
