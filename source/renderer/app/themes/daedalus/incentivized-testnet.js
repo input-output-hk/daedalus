@@ -291,13 +291,13 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--theme-nav-dropdown-item-text-color': '#ffffff',
     '--theme-nav-dropdown-item-background-color': '#3f404f',
     '--theme-nav-dropdown-item-background-color-hover':
-      'rgba(255, 255, 255, 0.07)',
+      'rgba(255, 255, 255, 0.05)',
     '--theme-nav-dropdown-item-color-hover': '#ffffff',
   },
   navItem: {
     '--theme-nav-item-background-color': '#2a2b3c',
     '--theme-nav-item-background-color-active': 'rgba(255, 255, 255, 0.1)',
-    '--theme-nav-item-background-color-hover': '#afafb833',
+    '--theme-nav-item-background-color-hover': 'rgba(255, 255, 255, 0.05)',
     '--theme-nav-item-text-color': 'rgba(255, 255, 255, 0.6)',
     '--theme-nav-item-text-color-active': '#ffffff',
   },
