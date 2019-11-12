@@ -149,7 +149,7 @@ export const waitUntilWalletIsLoaded = async function(walletName: string): Promi
   const context = this;
   await context.client.waitUntil(async () => {
     const result = await context.client.execute(
-      name => daedalus.stores.wallets.getWalletByName.call(this, name),
+      (name) => daedalus.stores.wallets.getWalletByName(name),
       walletName
     );
     if (result.value) {
