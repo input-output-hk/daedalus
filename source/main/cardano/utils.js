@@ -1,6 +1,4 @@
 // @flow
-/* eslint-disable */
-import { Logger } from '../utils/logging';
 import type {
   CardanoNodeStorageKeys,
   NetworkNames,
@@ -29,20 +27,12 @@ const checkCondition = async (
   retryEvery: number,
   timeWaited: number = 0
 ): Promise<void> => {
-  Logger.info('>> CALL 1: ', { condition });
   const result = await condition();
-  Logger.info('>> CALL 1.1. RESULT: ', { result });
   if (result) {
-    Logger.info('>> CALL 1.2. CASE 1');
     resolve();
   } else if (timeWaited >= timeout) {
-    Logger.info('>> CALL 1.2. CASE 2');
     reject(`Promised condition not met within ${timeout}ms.`);
   } else {
-    Logger.info('>> CALL 1.2. CASE 3: ', {
-      timeWaited,
-      timeout,
-    });
     setTimeout(
       () =>
         checkCondition(
@@ -64,7 +54,7 @@ export const promisedCondition = (
   retryEvery: number = 1000
 ): Promise<void> =>
   new Promise((resolve, reject) => {
-    checkCondition(cond, resolve, reject, 60000, retryEvery);
+    checkCondition(cond, resolve, reject, timeout, retryEvery);
   });
 
 const getNetworkName = (network: NetworkNames): string =>

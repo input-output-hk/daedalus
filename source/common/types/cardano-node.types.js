@@ -72,7 +72,11 @@ export type CardanoNodeStorageKeys = {
   PREVIOUS_CARDANO_PID: CardanoPidOptions,
 };
 
-export type CardanoNodeProcessNames = 'cardano-node' | 'cardano-node.exe' | 'cardano-wallet-jormungandr' | 'cardano-wallet-jormungandr.exe';
+export type CardanoNodeProcessNames =
+  | 'cardano-node'
+  | 'cardano-node.exe'
+  | 'cardano-wallet-jormungandr'
+  | 'cardano-wallet-jormungandr.exe';
 
 export type ProcessNames = {
   CARDANO_PROCESS_NAME: CardanoNodeProcessNames,

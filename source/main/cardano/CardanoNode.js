@@ -1,10 +1,9 @@
 // @flow
-/* eslint-disable */
 import Store from 'electron-store';
 import { spawn, exec } from 'child_process';
 import type { ChildProcess } from 'child_process';
 import type { WriteStream } from 'fs';
-import { toInteger, get } from 'lodash';
+import { toInteger } from 'lodash';
 import { environment } from '../environment';
 import {
   deriveProcessNames,
@@ -330,94 +329,25 @@ export class CardanoNode {
    */
   async stop(): Promise<void> {
     const { _node, _log, _config } = this;
-    _log.info('1. CardanoNode#stop: killing cardano-node process', {
-      START_TESTING: true,
-      _config,
-      CARDANO_PROCESS_NAME,
-    });
     if (await this._isDead()) {
-      _log.info('1.1. CardanoNode#stop: process is not running anymore - isDead', {
-        TESTING: true,
-      });
+      _log.info('CardanoNode#stop: process is not running anymore');
       return Promise.resolve();
     }
-    _log.info('1.2. CardanoNode#stop: disconnecting from cardano-node process', {
-      TESTING: true,
-    });
+    _log.info('CardanoNode#stop: disconnecting from cardano-node process');
     try {
-      _log.info('1.3. TRY disconnect', {
-        TESTING: true,
-      });
-      if (_node) {
-        _node.disconnect()
-        _log.info('1.3.1. DISCONNECTED', {
-          TESTING: true,
-        });
-      };
-      _log.info('1.3.1.1*** Continue', {
-        TESTING: true,
-      });
+      if (_node) _node.disconnect();
       this._changeToState(CardanoNodeStates.STOPPING);
-      _log.info('1.3.2. _changeToState', {
-        TESTING: true,
-        SetState: CardanoNodeStates.STOPPING,
-      });
       await this._waitForNodeProcessToExit(_config.shutdownTimeout);
-      _log.info('1.3.3. _waitForNodeProcessToExit', {
-        TESTING: true,
-        shutdownTimeout: _config.shutdownTimeout,
-      });
-      // try {
-      //   await this._waitForNodeProcessToExit(_config.shutdownTimeout);
-      //   _log.info('1.3.3. _waitForNodeProcessToExit', {
-      //     TESTING: true,
-      //     shutdownTimeout: _config.shutdownTimeout,
-      //   });
-      // } catch(error) {
-      //   _log.info('1.3.3. ERROR', {
-      //     TESTING: true,
-      //     error: error,
-      //   });
-      // }
-
       await this._storeProcessStates();
-        _log.info('1.3.4. _storeProcessStates', {
-          TESTING: true,
-        });
-
-      // try {
-      //   await this._storeProcessStates();
-      //   _log.info('1.3.4. _storeProcessStates', {
-      //     TESTING: true,
-      //   });
-      // } catch (error) {
-      //   _log.info('1.3.4. ERROR', {
-      //     TESTING: true,
-      //     error: error,
-      //   });
-      // }
-
       this._reset();
-      _log.info('1.3.5. RESET', {
-        TESTING: true,
-      });
       return Promise.resolve();
     } catch (error) {
-      _log.error('1.4. CardanoNode#stop: cardano-node did not stop correctly', {
+      _log.error('CardanoNode#stop: cardano-node did not stop correctly', {
         error,
-        TESTING: true,
       });
-
       try {
-        _log.info('1.5.1. TRY KILL', {
-          TESTING: true,
-        });
-        // await this.kill();
+        await this.kill();
       } catch (killError) {
-        _log.info('1.5.2. KILL ERROR', {
-          TESTING: true,
-          killError,
-        });
         return Promise.reject(killError);
       }
     }
@@ -709,10 +639,8 @@ export class CardanoNode {
    * Checks if cardano-node child_process is not running anymore
    * @returns {boolean}
    */
-  _isDead = async (): Promise<boolean> => {
-    const dead = !this._isConnected() && this._isNodeProcessNotRunningAnymore();
-    return !this._isConnected() && this._isNodeProcessNotRunningAnymore();
-  }
+  _isDead = async (): Promise<boolean> =>
+    !this._isConnected() && this._isNodeProcessNotRunningAnymore();
 
   /**
    * Checks if current cardano-node child_process is "awake" (created, connected, stateful)
@@ -791,21 +719,8 @@ export class CardanoNode {
     processName: string
   ): Promise<boolean> => {
     const { _log } = this;
-//
-    _log.info('1.3.3. _isProcessRunning', {
-      TESTING: true,
-      CHECK: '1.3.3. - 3',
-      previousPID,
-      processName,
-    });
-//
     try {
       const previousProcess = await getProcess(previousPID, processName);
-      _log.info('1.3.3. _isProcessRunning', {
-        TESTING: true,
-        CHECK: '1.3.3. - 4 TRY',
-        previousProcess,
-      });
       if (!previousProcess) {
         _log.debug(
           `CardanoNode: No previous ${processName} process is running anymore`,
@@ -819,40 +734,10 @@ export class CardanoNode {
       });
       return true;
     } catch (error) {
-      _log.info('1.3.3. _isProcessRunning', {
-        TESTING: true,
-        CHECK: '1.3.3. - 4 ERROR',
-        error,
-      });
       _log.error('CardanoNode: _isProcessRunning error', { error });
       return false;
     }
   };
-
-  // _isProcessRunning = async (
-  //   previousPID: number,
-  //   processName: string
-  // ): Promise<boolean> => {
-  //   const { _log } = this;
-  //   try {
-  //     const previousProcess = await getProcess(previousPID, processName);
-  //     if (!previousProcess) {
-  //       _log.debug(
-  //         `CardanoNode: No previous ${processName} process is running anymore`,
-  //         { processName }
-  //       );
-  //       return false;
-  //     }
-  //     _log.debug(`CardanoNode: previous ${processName} process found`, {
-  //       processName,
-  //       previousProcess,
-  //     });
-  //     return true;
-  //   } catch (error) {
-  //     _log.error('CardanoNode: _isProcessRunning error', { error });
-  //     return false;
-  //   }
-  // };
 
   // kills running process which did not shut down properly between sessions
   _killProcessWithName = async (pid: number, name: string): Promise<void> => {
@@ -937,43 +822,12 @@ export class CardanoNode {
       }
     });
 
- //  _waitForNodeProcessToExit = async (timeout: number) => {
- //     _log.info('1.3.3. _waitForNodeProcessToExit', {
- //       TESTING: true,
- //       CHECK: '1.3.3. - 0',
- //       _isNodeProcessNotRunningAnymore: this._isNodeProcessNotRunningAnymore,
- //       timeout,
- //     });
- //     return promisedCondition(this._isNodeProcessNotRunningAnymore, timeout);
- //   }
-//
- //  _waitForCardanoToExitOrKillIt = async () => {
- //    const { _config } = this;
- //    if (this._isNodeProcessNotRunningAnymore()) return Promise.resolve();
- //    try {
- //      await this._waitForNodeProcessToExit(_config.shutdownTimeout);
- //    } catch (_) {
- //      await this._ensureCurrentCardanoNodeIsNotRunning();
- //    }
- //  };
-
-  _isNodeProcessStillRunning = async (): Promise<boolean> => {
-    return this._node != null &&
-    this._isProcessRunning(this._node.pid, CARDANO_PROCESS_NAME); // true
-  }
-
- //  _isNodeProcessNotRunningAnymore = async () => {
- //   const isRunning = await this._isNodeProcessStillRunning();
- //   _log.info('1.3.3. _isNodeProcessNotRunningAnymore', {
- //     TESTING: true,
- //     CHECK: '1.3.3. - 2',
- //     isRunning,
- //   });
- //   return isRunning === false;
- // }
+  _isNodeProcessStillRunning = async (): Promise<boolean> =>
+    this._node != null &&
+    this._isProcessRunning(this._node.pid, CARDANO_PROCESS_NAME);
 
   _isNodeProcessNotRunningAnymore = async () =>
-    (await this._isNodeProcessStillRunning()) === false; // false
+    (await this._isNodeProcessStillRunning()) === false;
 
   _waitForNodeProcessToExit = async (timeout: number) =>
     promisedCondition(this._isNodeProcessNotRunningAnymore, timeout);
