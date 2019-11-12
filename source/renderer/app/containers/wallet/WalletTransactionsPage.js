@@ -46,7 +46,7 @@ export default class WalletTransactionsPage extends Component<Props> {
     const { app, wallets } = stores;
     const {
       openExternalLink,
-      environment: { network },
+      environment: { network, rawNetwork },
     } = app;
     const activeWallet = wallets.active;
     const {
@@ -97,6 +97,7 @@ export default class WalletTransactionsPage extends Component<Props> {
       walletTransactions = (
         <WalletTransactionsList
           network={network}
+          rawNetwork={rawNetwork}
           transactions={transactions}
           deletePendingTransaction={deletePendingTransaction}
           isLoadingTransactions={searchRequest.isExecutingFirstTime}
