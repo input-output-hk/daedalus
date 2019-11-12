@@ -5,5 +5,3 @@ import './Receive.stories';
 import './Delete.stories';
 import './Import.stories';
 import './Restore.stories';
-import './TransferFunds.stories';
-import './ExportToFile.stories';

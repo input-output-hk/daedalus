@@ -10,7 +10,7 @@ import TransferFundsStep1Dialog from '../../../../source/renderer/app/components
 import TransferFundsStep2Dialog from '../../../../source/renderer/app/components/wallet/transfer-funds/TransferFundsStep2Dialog';
 
 // Helpers
-import WalletsWrapper from '../utils/WalletsWrapper';
+import WalletsWrapper from '../_utils/WalletsWrapper';
 
 const wallets = [
   {
@@ -168,13 +168,13 @@ const walletIdOptions = wallets.reduce(
   }),
   {}
 );
-storiesOf('Wallets|Actions|Transfer Funds', module)
+storiesOf('Wallets|Transfer Funds', module)
   .addDecorator(WalletsWrapper)
   .addDecorator(withKnobs)
 
   // ====== Stories ======
 
-  .add('TransferFundsStep1Dialog', () => {
+  .add('Step1', () => {
     const sourceWalletSelect = select(
       'sourceWallet',
       walletOptions,
@@ -199,7 +199,7 @@ storiesOf('Wallets|Actions|Transfer Funds', module)
       />
     );
   })
-  .add('TransferFundsStep2Dialog', () => {
+  .add('Step2', () => {
     const sourceWalletSelect = select(
       'sourceWallet',
       walletOptions,

@@ -7,7 +7,7 @@ import BigNumber from 'bignumber.js';
 import { promise } from '../../_support/utils';
 
 // Assets and helpers
-import WalletsWrapper from '../utils/WalletsWrapper';
+import WalletsWrapper from '../_utils/WalletsWrapper';
 
 // Screens
 import WalletSendForm from '../../../../source/renderer/app/components/wallet/WalletSendForm';

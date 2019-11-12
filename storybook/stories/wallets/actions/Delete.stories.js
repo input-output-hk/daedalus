@@ -9,12 +9,12 @@ import StoryDecorator from '../../_support/StoryDecorator';
 // Screens
 import DeleteWalletConfirmationDialog from '../../../../source/renderer/app/components/wallet/settings/DeleteWalletConfirmationDialog';
 
-storiesOf('Wallets|Actions|Delete', module)
+storiesOf('Wallets|Actions', module)
   .addDecorator(story => <StoryDecorator>{story()}</StoryDecorator>)
 
   // ====== Stories ======
 
-  .add('without funds & countdown', () => (
+  .add('Delete - without funds & countdown', () => (
     <div>
       <DeleteWalletConfirmationDialog
         walletName="My Wallet"
@@ -30,7 +30,7 @@ storiesOf('Wallets|Actions|Delete', module)
       />
     </div>
   ))
-  .add('without funds - not accepted', () => (
+  .add('Delete - without funds - not accepted', () => (
     <div>
       <DeleteWalletConfirmationDialog
         walletName="My Wallet"
@@ -46,7 +46,7 @@ storiesOf('Wallets|Actions|Delete', module)
       />
     </div>
   ))
-  .add('without funds - accepted', () => (
+  .add('Delete - without funds - accepted', () => (
     <div>
       <DeleteWalletConfirmationDialog
         walletName="My Wallet"
@@ -62,7 +62,7 @@ storiesOf('Wallets|Actions|Delete', module)
       />
     </div>
   ))
-  .add('funds & countdown', () => (
+  .add('Delete - funds & countdown', () => (
     <div>
       <DeleteWalletConfirmationDialog
         walletName="My Wallet"
@@ -78,7 +78,7 @@ storiesOf('Wallets|Actions|Delete', module)
       />
     </div>
   ))
-  .add('funds & accepted', () => (
+  .add('Delete - funds & accepted', () => (
     <div>
       <DeleteWalletConfirmationDialog
         walletName="My Wallet"
@@ -94,7 +94,7 @@ storiesOf('Wallets|Actions|Delete', module)
       />
     </div>
   ))
-  .add('funds & accepted & filled', () => (
+  .add('Delete - funds & accepted & filled', () => (
     <div>
       <DeleteWalletConfirmationDialog
         walletName="My Wallet"

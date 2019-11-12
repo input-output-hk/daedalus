@@ -5,7 +5,7 @@ import { boolean } from '@storybook/addon-knobs';
 import { storiesOf } from '@storybook/react';
 
 // Helpers
-import WalletsWrapper from '../utils/WalletsWrapper';
+import WalletsWrapper from '../_utils/WalletsWrapper';
 
 // Screens
 import WalletRestoreDialog from '../../../../source/renderer/app/components/wallet/WalletRestoreDialog';

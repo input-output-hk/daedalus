@@ -1,10 +1,10 @@
 // @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import CreateWalletScreens from '../utils/CreateWalletScreens';
+import CreateWalletScreens from '../_utils/CreateWalletScreens';
 
 // Assets and helpers
-import WalletsWrapper from '../utils/WalletsWrapper';
+import WalletsWrapper from '../_utils/WalletsWrapper';
 
 storiesOf('Wallets|Actions', module)
   .addDecorator(WalletsWrapper)

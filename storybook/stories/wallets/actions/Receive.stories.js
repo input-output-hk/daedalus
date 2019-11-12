@@ -5,7 +5,7 @@ import { action } from '@storybook/addon-actions';
 import { text, boolean, number } from '@storybook/addon-knobs';
 
 // Assets and helpers
-import WalletsWrapper from '../utils/WalletsWrapper';
+import WalletsWrapper from '../_utils/WalletsWrapper';
 import { generateAddress } from '../../_support/utils';
 
 // Screens

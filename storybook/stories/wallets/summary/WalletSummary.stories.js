@@ -6,7 +6,7 @@ import BigNumber from 'bignumber.js';
 
 // Assets and helpers
 import { generateWallet } from '../../_support/utils';
-import WalletsWrapper from '../utils/WalletsWrapper';
+import WalletsWrapper from '../_utils/WalletsWrapper';
 
 // Screens
 import WalletSummary from '../../../../source/renderer/app/components/wallet/summary/WalletSummary';
