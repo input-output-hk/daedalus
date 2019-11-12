@@ -1,9 +1,4 @@
 // @flow
-export type LocalTimeInformationStatus =
-  | 'unavailable'
-  | 'pending'
-  | 'available';
-
 export type TipInfo = {
   epoch: number,
   slot: number,
@@ -13,10 +8,6 @@ export type GetNetworkInfoResponse = {
   syncProgress: number,
   localTip: TipInfo,
   networkTip: TipInfo,
-  localTimeInformation: {
-    status: LocalTimeInformationStatus,
-    difference: ?number,
-  },
 };
 
 export type NetworkInfoResponse = {

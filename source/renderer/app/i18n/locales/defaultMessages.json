@@ -1368,7 +1368,7 @@
         "description": "\"Learn more\" link URL",
         "end": {
           "column": 3,
-          "line": 41
+          "line": 42
         },
         "file": "source/renderer/app/components/notifications/LegacyNotification.js",
         "id": "wallet.legacy.notification.learnMore.url",
@@ -3993,13 +3993,13 @@
         "description": "System info",
         "end": {
           "column": 3,
-          "line": 34
+          "line": 28
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.system.info",
         "start": {
           "column": 14,
-          "line": 30
+          "line": 24
         }
       },
       {
@@ -4007,13 +4007,13 @@
         "description": "Platform",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 33
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.platform",
         "start": {
           "column": 12,
-          "line": 35
+          "line": 29
         }
       },
       {
@@ -4021,13 +4021,13 @@
         "description": "Platform Version",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 38
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.platform.version",
         "start": {
           "column": 19,
-          "line": 40
+          "line": 34
         }
       },
       {
@@ -4035,13 +4035,13 @@
         "description": "CPU",
         "end": {
           "column": 3,
-          "line": 49
+          "line": 43
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cpu",
         "start": {
           "column": 7,
-          "line": 45
+          "line": 39
         }
       },
       {
@@ -4049,13 +4049,13 @@
         "description": "RAM",
         "end": {
           "column": 3,
-          "line": 54
+          "line": 48
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.ram",
         "start": {
           "column": 7,
-          "line": 50
+          "line": 44
         }
       },
       {
@@ -4063,13 +4063,13 @@
         "description": "Available disk space",
         "end": {
           "column": 3,
-          "line": 59
+          "line": 53
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.availableDiskSpace",
         "start": {
           "column": 22,
-          "line": 55
+          "line": 49
         }
       },
       {
@@ -4077,13 +4077,13 @@
         "description": "Unknown amount of disk space",
         "end": {
           "column": 3,
-          "line": 64
+          "line": 58
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.unknownDiskSpace",
         "start": {
           "column": 20,
-          "line": 60
+          "line": 54
         }
       },
       {
@@ -4091,13 +4091,13 @@
         "description": "\"Support\" link URL while disk space is unknown",
         "end": {
           "column": 3,
-          "line": 69
+          "line": 63
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.unknownDiskSpaceSupportUrl",
         "start": {
           "column": 30,
-          "line": 65
+          "line": 59
         }
       },
       {
@@ -4105,13 +4105,13 @@
         "description": "CORE INFO",
         "end": {
           "column": 3,
-          "line": 74
+          "line": 68
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.coreInfo",
         "start": {
           "column": 12,
-          "line": 70
+          "line": 64
         }
       },
       {
@@ -4119,13 +4119,13 @@
         "description": "Daedalus Version",
         "end": {
           "column": 3,
-          "line": 79
+          "line": 73
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.daedalusVersion",
         "start": {
           "column": 19,
-          "line": 75
+          "line": 69
         }
       },
       {
@@ -4133,13 +4133,13 @@
         "description": "Daedalus Main Process ID",
         "end": {
           "column": 3,
-          "line": 84
+          "line": 78
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.daedalusMainProcessID",
         "start": {
           "column": 25,
-          "line": 80
+          "line": 74
         }
       },
       {
@@ -4147,13 +4147,13 @@
         "description": "Daedalus Renderer Process ID",
         "end": {
           "column": 3,
-          "line": 89
+          "line": 83
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.daedalusProcessID",
         "start": {
           "column": 21,
-          "line": 85
+          "line": 79
         }
       },
       {
@@ -4161,13 +4161,13 @@
         "description": "'Blank Screen Fix' active",
         "end": {
           "column": 3,
-          "line": 94
+          "line": 88
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.blankScreenFix",
         "start": {
           "column": 18,
-          "line": 90
+          "line": 84
         }
       },
       {
@@ -4175,13 +4175,13 @@
         "description": "Cardano Version",
         "end": {
           "column": 3,
-          "line": 99
+          "line": 93
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoVersion",
         "start": {
           "column": 18,
-          "line": 95
+          "line": 89
         }
       },
       {
@@ -4189,13 +4189,13 @@
         "description": "Cardano Process ID",
         "end": {
           "column": 3,
-          "line": 104
+          "line": 98
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoProcessID",
         "start": {
           "column": 20,
-          "line": 100
+          "line": 94
         }
       },
       {
@@ -4203,13 +4203,13 @@
         "description": "Cardano API Port",
         "end": {
           "column": 3,
-          "line": 109
+          "line": 103
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoApiPort",
         "start": {
           "column": 18,
-          "line": 105
+          "line": 99
         }
       },
       {
@@ -4217,13 +4217,13 @@
         "description": "Cardano Network",
         "end": {
           "column": 3,
-          "line": 114
+          "line": 108
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNetwork",
         "start": {
           "column": 18,
-          "line": 110
+          "line": 104
         }
       },
       {
@@ -4231,13 +4231,13 @@
         "description": "Daedalus State Directory",
         "end": {
           "column": 3,
-          "line": 119
+          "line": 113
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.stateDirectory",
         "start": {
           "column": 22,
-          "line": 115
+          "line": 109
         }
       },
       {
@@ -4245,13 +4245,13 @@
         "description": "Open",
         "end": {
           "column": 3,
-          "line": 124
+          "line": 118
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.stateDirectoryPathOpenBtn",
         "start": {
           "column": 29,
-          "line": 120
+          "line": 114
         }
       },
       {
@@ -4259,13 +4259,13 @@
         "description": "CONNECTION ERROR",
         "end": {
           "column": 3,
-          "line": 129
+          "line": 123
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.connectionError",
         "start": {
           "column": 19,
-          "line": 125
+          "line": 119
         }
       },
       {
@@ -4273,13 +4273,13 @@
         "description": "DAEDALUS STATUS",
         "end": {
           "column": 3,
-          "line": 134
+          "line": 128
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.daedalusStatus",
         "start": {
           "column": 18,
-          "line": 130
+          "line": 124
         }
       },
       {
@@ -4287,13 +4287,13 @@
         "description": "Connected",
         "end": {
           "column": 3,
-          "line": 139
+          "line": 133
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.connected",
         "start": {
           "column": 13,
-          "line": 135
+          "line": 129
         }
       },
       {
@@ -4301,13 +4301,13 @@
         "description": "Synced",
         "end": {
           "column": 3,
-          "line": 144
+          "line": 138
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.synced",
         "start": {
           "column": 10,
-          "line": 140
+          "line": 134
         }
       },
       {
@@ -4315,13 +4315,13 @@
         "description": "Sync Percentage",
         "end": {
           "column": 3,
-          "line": 149
+          "line": 143
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.syncPercentage",
         "start": {
           "column": 18,
-          "line": 145
+          "line": 139
         }
       },
       {
@@ -4329,13 +4329,13 @@
         "description": "Remaining Unsynced Blocks",
         "end": {
           "column": 3,
-          "line": 154
+          "line": 148
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.remainingUnsyncedBlocks",
         "start": {
           "column": 27,
-          "line": 150
+          "line": 144
         }
       },
       {
@@ -4343,13 +4343,13 @@
         "description": "Latest Local Block Age",
         "end": {
           "column": 3,
-          "line": 159
+          "line": 153
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.latestLocalBlockAge",
         "start": {
           "column": 23,
-          "line": 155
+          "line": 149
         }
       },
       {
@@ -4357,13 +4357,13 @@
         "description": "Latest Network Block Age",
         "end": {
           "column": 3,
-          "line": 164
+          "line": 158
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.latestNetworkBlockAge",
         "start": {
           "column": 25,
-          "line": 160
+          "line": 154
         }
       },
       {
@@ -4371,13 +4371,13 @@
         "description": "Local Time Difference",
         "end": {
           "column": 3,
-          "line": 169
+          "line": 163
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.localTimeDifference",
         "start": {
           "column": 23,
-          "line": 165
+          "line": 159
         }
       },
       {
@@ -4385,13 +4385,13 @@
         "description": "System Time Correct",
         "end": {
           "column": 3,
-          "line": 174
+          "line": 168
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.systemTimeCorrect",
         "start": {
           "column": 21,
-          "line": 170
+          "line": 164
         }
       },
       {
@@ -4399,13 +4399,13 @@
         "description": "System Time Ignored",
         "end": {
           "column": 3,
-          "line": 179
+          "line": 173
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.systemTimeIgnored",
         "start": {
           "column": 21,
-          "line": 175
+          "line": 169
         }
       },
       {
@@ -4413,13 +4413,13 @@
         "description": "Checking Node Time",
         "end": {
           "column": 3,
-          "line": 184
+          "line": 178
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.checkingNodeTime",
         "start": {
           "column": 20,
-          "line": 180
+          "line": 174
         }
       },
       {
@@ -4427,13 +4427,13 @@
         "description": "CARDANO NODE STATUS",
         "end": {
           "column": 3,
-          "line": 189
+          "line": 183
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNodeStatus",
         "start": {
           "column": 21,
-          "line": 185
+          "line": 179
         }
       },
       {
@@ -4441,13 +4441,13 @@
         "description": "Restarting Cardano Node...",
         "end": {
           "column": 3,
-          "line": 194
+          "line": 188
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNodeStatusRestarting",
         "start": {
           "column": 31,
-          "line": 190
+          "line": 184
         }
       },
       {
@@ -4455,13 +4455,13 @@
         "description": "Restart Cardano Node",
         "end": {
           "column": 3,
-          "line": 199
+          "line": 193
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNodeStatusRestart",
         "start": {
           "column": 28,
-          "line": 195
+          "line": 189
         }
       },
       {
@@ -4469,13 +4469,13 @@
         "description": "Cardano Node Diagnostics",
         "end": {
           "column": 3,
-          "line": 204
+          "line": 198
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNodeDiagnostics",
         "start": {
           "column": 26,
-          "line": 200
+          "line": 194
         }
       },
       {
@@ -4483,13 +4483,13 @@
         "description": "Realtime statistics monitor",
         "end": {
           "column": 3,
-          "line": 209
+          "line": 203
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.realtimeStatisticsMonitor",
         "start": {
           "column": 29,
-          "line": 205
+          "line": 199
         }
       },
       {
@@ -4497,13 +4497,13 @@
         "description": "Cardano Node State",
         "end": {
           "column": 3,
-          "line": 214
+          "line": 208
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNodeState",
         "start": {
           "column": 20,
-          "line": 210
+          "line": 204
         }
       },
       {
@@ -4511,13 +4511,13 @@
         "description": "Updated",
         "end": {
           "column": 3,
-          "line": 219
+          "line": 213
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.nodeHasBeenUpdated",
         "start": {
           "column": 22,
-          "line": 215
+          "line": 209
         }
       },
       {
@@ -4525,13 +4525,13 @@
         "description": "Crashed",
         "end": {
           "column": 3,
-          "line": 224
+          "line": 218
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.nodeHasCrashed",
         "start": {
           "column": 18,
-          "line": 220
+          "line": 214
         }
       },
       {
@@ -4539,13 +4539,13 @@
         "description": "Errored",
         "end": {
           "column": 3,
-          "line": 229
+          "line": 223
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.nodeHasErrored",
         "start": {
           "column": 18,
-          "line": 225
+          "line": 219
         }
       },
       {
@@ -4553,13 +4553,13 @@
         "description": "Stopped",
         "end": {
           "column": 3,
-          "line": 234
+          "line": 228
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.nodeHasStopped",
         "start": {
           "column": 18,
-          "line": 230
+          "line": 224
         }
       },
       {
@@ -4567,13 +4567,13 @@
         "description": "Exiting",
         "end": {
           "column": 3,
-          "line": 239
+          "line": 233
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.nodeIsExiting",
         "start": {
           "column": 17,
-          "line": 235
+          "line": 229
         }
       },
       {
@@ -4581,13 +4581,13 @@
         "description": "Running",
         "end": {
           "column": 3,
-          "line": 244
+          "line": 238
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.nodeIsRunning",
         "start": {
           "column": 17,
-          "line": 240
+          "line": 234
         }
       },
       {
@@ -4595,13 +4595,13 @@
         "description": "Starting",
         "end": {
           "column": 3,
-          "line": 249
+          "line": 243
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.nodeIsStarting",
         "start": {
           "column": 18,
-          "line": 245
+          "line": 239
         }
       },
       {
@@ -4609,13 +4609,13 @@
         "description": "Stopping",
         "end": {
           "column": 3,
-          "line": 254
+          "line": 248
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.nodeIsStopping",
         "start": {
           "column": 18,
-          "line": 250
+          "line": 244
         }
       },
       {
@@ -4623,13 +4623,13 @@
         "description": "Unrecoverable",
         "end": {
           "column": 3,
-          "line": 259
+          "line": 253
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.nodeIsUnrecoverable",
         "start": {
           "column": 23,
-          "line": 255
+          "line": 249
         }
       },
       {
@@ -4637,13 +4637,13 @@
         "description": "Updating",
         "end": {
           "column": 3,
-          "line": 264
+          "line": 258
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.nodeIsUpdating",
         "start": {
           "column": 18,
-          "line": 260
+          "line": 254
         }
       },
       {
@@ -4651,13 +4651,13 @@
         "description": "Node Responding",
         "end": {
           "column": 3,
-          "line": 269
+          "line": 263
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNodeResponding",
         "start": {
           "column": 25,
-          "line": 265
+          "line": 259
         }
       },
       {
@@ -4665,13 +4665,13 @@
         "description": "Node Subscribed",
         "end": {
           "column": 3,
-          "line": 274
+          "line": 268
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNodeSubscribed",
         "start": {
           "column": 25,
-          "line": 270
+          "line": 264
         }
       },
       {
@@ -4679,13 +4679,13 @@
         "description": "Node Time Correct",
         "end": {
           "column": 3,
-          "line": 279
+          "line": 273
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNodeTimeCorrect",
         "start": {
           "column": 26,
-          "line": 275
+          "line": 269
         }
       },
       {
@@ -4693,13 +4693,13 @@
         "description": "Node Syncing",
         "end": {
           "column": 3,
-          "line": 284
+          "line": 278
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNodeSyncing",
         "start": {
           "column": 22,
-          "line": 280
+          "line": 274
         }
       },
       {
@@ -4707,13 +4707,13 @@
         "description": "Node In Sync",
         "end": {
           "column": 3,
-          "line": 289
+          "line": 283
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNodeInSync",
         "start": {
           "column": 21,
-          "line": 285
+          "line": 279
         }
       },
       {
@@ -4721,13 +4721,13 @@
         "description": "Checking...",
         "end": {
           "column": 3,
-          "line": 294
+          "line": 288
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.localTimeDifferenceChecking",
         "start": {
           "column": 31,
-          "line": 290
+          "line": 284
         }
       },
       {
@@ -4735,13 +4735,13 @@
         "description": "Check time",
         "end": {
           "column": 3,
-          "line": 299
+          "line": 293
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.localTimeDifferenceCheckTime",
         "start": {
           "column": 32,
-          "line": 295
+          "line": 289
         }
       },
       {
@@ -4749,13 +4749,13 @@
         "description": "YES",
         "end": {
           "column": 3,
-          "line": 304
+          "line": 298
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.statusOn",
         "start": {
           "column": 12,
-          "line": 300
+          "line": 294
         }
       },
       {
@@ -4763,13 +4763,13 @@
         "description": "NO",
         "end": {
           "column": 3,
-          "line": 309
+          "line": 303
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.statusOff",
         "start": {
           "column": 13,
-          "line": 305
+          "line": 299
         }
       },
       {
@@ -4777,13 +4777,13 @@
         "description": "NTP Service unreachable",
         "end": {
           "column": 3,
-          "line": 314
+          "line": 308
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.serviceUnreachable",
         "start": {
           "column": 22,
-          "line": 310
+          "line": 304
         }
       },
       {
@@ -4791,13 +4791,13 @@
         "description": "message",
         "end": {
           "column": 3,
-          "line": 319
+          "line": 313
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.message",
         "start": {
           "column": 11,
-          "line": 315
+          "line": 309
         }
       },
       {
@@ -4805,13 +4805,13 @@
         "description": "code",
         "end": {
           "column": 3,
-          "line": 324
+          "line": 318
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.code",
         "start": {
           "column": 8,
-          "line": 320
+          "line": 314
         }
       },
       {
@@ -4819,13 +4819,13 @@
         "description": "Last network block",
         "end": {
           "column": 3,
-          "line": 329
+          "line": 323
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.lastNetworkBlock",
         "start": {
           "column": 20,
-          "line": 325
+          "line": 319
         }
       },
       {
@@ -4833,13 +4833,13 @@
         "description": "Last synchronized block",
         "end": {
           "column": 3,
-          "line": 334
+          "line": 328
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.lastSynchronizedBlock",
         "start": {
           "column": 25,
-          "line": 330
+          "line": 324
         }
       },
       {
@@ -4847,13 +4847,13 @@
         "description": "epoch",
         "end": {
           "column": 3,
-          "line": 339
+          "line": 333
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.epoch",
         "start": {
           "column": 9,
-          "line": 335
+          "line": 329
         }
       },
       {
@@ -4861,13 +4861,13 @@
         "description": "slot",
         "end": {
           "column": 3,
-          "line": 344
+          "line": 338
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.slot",
         "start": {
           "column": 8,
-          "line": 340
+          "line": 334
         }
       }
     ],
