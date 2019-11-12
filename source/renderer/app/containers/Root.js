@@ -22,7 +22,9 @@ export default class Root extends Component<Props> {
       isNodeStopping,
       isNodeStopped,
       isNotEnoughDiskSpace,
+      isSplashShown,
     } = networkStatus;
+    const { isCurrentLocaleSet, areTermsOfUseAccepted } = profile;
 
     const isPageThatDoesntNeedWallets =
       (isStakingPage || isSettingsPage) && hasLoadedWallets && isSynced;
@@ -33,10 +35,10 @@ export default class Root extends Component<Props> {
     const isNodeInStoppingSequence = isNodeStopping || isNodeStopped;
 
     if (
-      profile.isCurrentLocaleSet &&
-      profile.areTermsOfUseAccepted &&
+      isCurrentLocaleSet &&
+      areTermsOfUseAccepted &&
       !app.environment.isTest &&
-      networkStatus.isSplashShown
+      isSplashShown
     ) {
       return <SplashNetworkPage />;
     }
