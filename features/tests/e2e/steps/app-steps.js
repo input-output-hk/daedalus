@@ -52,7 +52,7 @@ Then(/^I should see the loading screen with "([^"]*)"$/, async function(
   message
 ) {
   await waitUntilTextInSelector(this.client, {
-    selector: '.SyncingConnectingTitle_connecting h1',
+    selector: '.SyncingConnectingStatus_connecting h1',
     text: message,
   });
 });
