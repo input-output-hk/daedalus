@@ -74,6 +74,7 @@ type Props = {
   onOpenExternalLink: Function,
   copyAddressNotificationDuration: number,
   network: string,
+  rawNetwork: string,
 };
 
 type State = {
@@ -88,6 +89,7 @@ export default class CompletionDialog extends Component<Props, State> {
 
   static defaultProps = {
     network: DEVELOPMENT,
+    rawNetwork: DEVELOPMENT,
   };
 
   state = {
@@ -115,6 +117,7 @@ export default class CompletionDialog extends Component<Props, State> {
       walletCertificateAddress,
       onOpenExternalLink,
       network,
+      rawNetwork,
     } = this.props;
     const { showCopyNotification } = this.state;
     const dialogClasses = classnames([styles.component, 'completionDialog']);
@@ -128,7 +131,8 @@ export default class CompletionDialog extends Component<Props, State> {
       },
     ];
     const cardanoExplorerLink = `${getNetworkExplorerUrl(
-      network
+      network,
+      rawNetwork
     )}/address/${walletCertificateAddress}`;
 
     // Get QRCode color value from active theme's CSS variable

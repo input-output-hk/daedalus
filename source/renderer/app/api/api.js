@@ -1269,7 +1269,7 @@ const _createTransactionFromServerData = action(
       date: utcStringToDate(date),
       description: '',
       addresses: {
-        from: inputs.map(({ address }) => address),
+        from: inputs.map(({ address }) => address || null),
         to: outputs.map(({ address }) => address),
       },
       state,
