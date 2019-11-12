@@ -2,6 +2,7 @@
 import React, { Component, Fragment } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
+import { includes } from 'lodash';
 import SVGInline from 'react-svg-inline';
 import classNames from 'classnames';
 import CancelTransactionButton from './CancelTransactionButton';
@@ -335,13 +336,32 @@ export default class Transaction extends Component<Props, State> {
 
     const exceedsPendingTimeLimit = this.hasExceededPendingTimeLimit();
 
+    const includesUnresolvedAddresses = addresses => includes(addresses, null);
+
     const fromAddresses = (addresses, transactionId) => {
-      if (addresses.length) {
-        return addresses.map((address, addressIndex) =>
-          address ? (
+      if (addresses.length > 0) {
+        return includesUnresolvedAddresses(addresses) ? (
+          <div className={styles.explorerLinkRow}>
+            <span
+              role="presentation"
+              aria-hidden
+              className={styles.explorerLink}
+              onClick={this.handleOpenExplorer.bind(this, 'tx', transactionId)}
+            >
+              {intl.formatMessage(messages.unresolvedInputAddressesLinkLabel)}
+              <SVGInline svg={externalLinkIcon} />
+            </span>
+            <span>
+              {intl.formatMessage(
+                messages.unresolvedInputAddressesAdditionalLabel
+              )}
+            </span>
+          </div>
+        ) : (
+          addresses.map((address, addressIndex) => (
             <div
               // eslint-disable-next-line react/no-array-index-key
-              key={`${data.id}-from-${address}-${addressIndex}`}
+              key={`${data.id}-from-${address || ''}-${addressIndex}`}
               className={styles.addressRow}
             >
               <span
@@ -354,28 +374,7 @@ export default class Transaction extends Component<Props, State> {
                 <SVGInline svg={externalLinkIcon} />
               </span>
             </div>
-          ) : (
-            <div className={styles.explorerLinkRow}>
-              <span
-                role="presentation"
-                aria-hidden
-                className={styles.explorerLink}
-                onClick={this.handleOpenExplorer.bind(
-                  this,
-                  'tx',
-                  transactionId
-                )}
-              >
-                {intl.formatMessage(messages.unresolvedInputAddressesLinkLabel)}
-                <SVGInline svg={externalLinkIcon} />
-              </span>
-              <span>
-                {intl.formatMessage(
-                  messages.unresolvedInputAddressesAdditionalLabel
-                )}
-              </span>
-            </div>
-          )
+          ))
         );
       }
       return <span>{intl.formatMessage(messages.noInputAddressesLabel)}</span>;

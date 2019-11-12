@@ -56,7 +56,7 @@ export type TransactionOutputs = {
 
 export type TransactionState = 'pending' | 'in_ledger';
 
-export type TrasactionAddresses = { from: Array<string>, to: Array<string> };
+export type TrasactionAddresses = { from: Array<?string>, to: Array<string> };
 
 export type TransactionType = 'card' | 'expend' | 'income' | 'exchange';
 
