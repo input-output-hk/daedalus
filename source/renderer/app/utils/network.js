@@ -37,27 +37,25 @@ export const getNetworkExplorerUri = (
   network: string,
   rawNetwork: string
 ): string => {
-  // sets default to mainnet in case env.NETWORK is undefined
-  let explorerUrl = MAINNET_EXPLORER_URL;
   if (network === MAINNET) {
-    explorerUrl = MAINNET_EXPLORER_URL;
+    return MAINNET_EXPLORER_URL;
   }
   if (network === STAGING) {
-    explorerUrl = STAGING_EXPLORER_URL;
+    return STAGING_EXPLORER_URL;
   }
   if (network === TESTNET) {
-    explorerUrl = TESTNET_EXPLORER_URL;
+    return TESTNET_EXPLORER_URL;
   }
   if (checkIsIncentivizedTestnetQA(rawNetwork)) {
-    explorerUrl = ITN_QA_EXPLORER_URL;
+    return ITN_QA_EXPLORER_URL;
   }
   if (checkIsIncentivizedTestnetNightly(rawNetwork)) {
-    explorerUrl = ITN_NIGHTLY_EXPLORER_URL;
+    return ITN_NIGHTLY_EXPLORER_URL;
   }
   if (network === ITN_BALANCE_CHECK) {
-    explorerUrl = ITN_EXPLORER_URL;
+    return ITN_EXPLORER_URL;
   }
-  return explorerUrl; // sets default to mainnet incase env.NETWORK is undefined
+  return MAINNET_EXPLORER_URL; // sets default to mainnet incase env.NETWORK is undefined
 };
 
 export const getNetworkExplorerUrl = (
