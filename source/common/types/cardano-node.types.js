@@ -73,8 +73,6 @@ export type CardanoNodeStorageKeys = {
 };
 
 export type CardanoNodeProcessNames =
-  | 'cardano-node'
-  | 'cardano-node.exe'
   | 'cardano-wallet-jormungandr'
   | 'cardano-wallet-jormungandr.exe';
 
