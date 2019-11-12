@@ -32,8 +32,8 @@
   }
 
   a {
-    border-bottom: 1px solid var(--theme-staking-link-color);
-    color: var(--theme-staking-link-color);
+    border-bottom: 1px solid var(--theme-link-main-color);
+    color: var(--theme-link-main-color);
     margin: 0 5px;
     padding-right: 18px;
     position: relative;
@@ -50,7 +50,7 @@
 
     & > svg {
       & > g {
-        stroke: var(--theme-staking-link-color);
+        stroke: var(--theme-link-main-color);
       }
     }
   }
