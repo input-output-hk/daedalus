@@ -479,7 +479,7 @@
   "wallet.legacy.notification.actionMove": "すべてのADAをこのウォレットから移す",
   "wallet.legacy.notification.addWallet": "ウォレットを追加",
   "wallet.legacy.notification.description": "これは旧アドレスを使用している旧タイプのウォレットであり、新機能をサポートしていません。 このウォレットに含まれるすべてのADAを、新機能の使用が可能な新タイプのウォレットに移してください。既存のウォレットへ移動させたくない場合は、新規にウォレットを作成することもできます。画面の指示に従って手続きをしてください。",
-  "wallet.legacy.notification.learnMore.url": "https://iohk.zendesk.com/hc/ja",
+  "wallet.legacy.notification.learnMore.url": "https://iohk.zendesk.com/hc/ja/articles/360038726373",
   "wallet.legacy.notification.title": "旧ウォレットから資金を移してください",
   "wallet.navigation.more": "その他",
   "wallet.navigation.receive": "入金",
