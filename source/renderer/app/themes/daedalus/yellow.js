@@ -1,5 +1,4 @@
 // @flow
-// TODO: Merge review
 import { createTheme } from '../utils/createTheme';
 import type { CreateThemeParams } from '../types';
 
