@@ -232,10 +232,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
               ];
             }
             return [
-              // TODO: we should also validate paper wallets mnemonics here!
-              this.isRegular() && !this.isLegacy()
-                ? this.props.mnemonicValidator(value)
-                : true,
+              this.props.mnemonicValidator(value, expectedWordCount),
               this.context.intl.formatMessage(messages.invalidRecoveryPhrase),
             ];
           },

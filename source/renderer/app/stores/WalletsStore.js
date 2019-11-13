@@ -652,9 +652,6 @@ export default class WalletsStore extends Store {
     }
   };
 
-  isValidMnemonic = (mnemonic: string) =>
-    this.api.ada.isValidMnemonic(mnemonic);
-
   isValidCertificateMnemonic = (mnemonic: string) =>
     this.api.ada.isValidCertificateMnemonic(mnemonic);
 

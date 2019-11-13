@@ -4,6 +4,7 @@ import { observer, inject } from 'mobx-react';
 import WalletRestoreDialog from '../../../components/wallet/WalletRestoreDialog';
 import type { InjectedDialogContainerProps } from '../../../types/injectedPropsType';
 import validWords from '../../../../../common/crypto/valid-words.en';
+import { isValidMnemonic } from '../../../../../common/crypto/decrypt';
 
 type Props = InjectedDialogContainerProps;
 
@@ -45,7 +46,6 @@ export default class WalletRestoreDialogContainer extends Component<Props> {
     const { wallets } = this.props.stores;
     const {
       restoreRequest,
-      isValidMnemonic,
       getWalletRecoveryPhraseFromCertificateRequest,
     } = wallets;
 
