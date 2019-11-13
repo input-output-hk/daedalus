@@ -72,11 +72,11 @@
   box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.12);
   height: 50px;
   justify-content: space-between;
+  max-width: 71px;
   overflow: hidden;
   padding: 0 26px;
   position: absolute;
   transition: max-width 0.2s ease-out;
-  max-width: 71px;
   width: 71px;
   z-index: 21;
 
