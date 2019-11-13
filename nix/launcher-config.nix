@@ -98,7 +98,7 @@ let
     updateArchive = "/bar";
   };
   installerConfig = {
-    installDirectory = if os == "linux" then "Daedalus/${environment}" else "Daedalus ${spacedName}";
+    installDirectory = if os == "linux" then "Daedalus/${environment}" else spacedName;
     inherit spacedName;
     macPackageName = "Daedalus${environment}";
     dataDir = dataDir.${os};
