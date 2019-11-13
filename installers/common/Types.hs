@@ -52,6 +52,7 @@ data OS
 
 data Cluster
   = Nightly
+  | ITn_Balance_Check
   | QA
   | Selfnode
   deriving (Bounded, Enum, Eq, Read, Show)
@@ -99,6 +100,7 @@ tt = format fp
 -- See also: the cluster argument in default.nix.
 clusterNetwork :: Cluster -> Text
 clusterNetwork Nightly = "nightly"
+clusterNetwork ITn_Balance_Check = "itn_balance_check"
 clusterNetwork QA = "qa"
 clusterNetwork Selfnode = "selfnode"
 
