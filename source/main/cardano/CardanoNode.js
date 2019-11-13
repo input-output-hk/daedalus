@@ -23,6 +23,8 @@ import type {
 import { CardanoNodeStates } from '../../common/types/cardano-node.types';
 import { CardanoWalletLauncher } from './CardanoWalletLauncher';
 import { launcherConfig } from '../config';
+import { join } from 'path';
+import rfs from 'rotating-file-stream';
 
 /* eslint-disable consistent-return */
 
@@ -275,7 +277,10 @@ export class CardanoNode {
     );
 
     return new Promise(async (resolve, reject) => {
-      const logFile = createWriteStream(config.logFilePath, { flags: 'a' });
+      const logFile = rfs(join(config.logFilePath, `node.log-${Date.now()}`), {
+        size: '50K',
+      });
+
       logFile.on('open', async () => {
         this._cardanoLogFile = logFile;
         // Spawning cardano-node

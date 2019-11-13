@@ -44,7 +44,7 @@ const startCardanoNode = (
     nodeImplementation,
   } = launcherConfig;
   const walletArgs = prepareArgs(launcherConfig);
-  const logFilePath = `${logsPrefix}/cardano-node.log`;
+  const logFilePath = `${logsPrefix}/pub/`;
   const config = {
     walletBin,
     nodeBin,
