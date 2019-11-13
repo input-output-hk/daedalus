@@ -16,6 +16,8 @@ let
   installDirectorySuffix.nightly = "Nightly";
   installDirectorySuffix.itn_balance_check = "Incentivized Testnet (Balance Check)";
 
+  spacedName = "Daedalus ${installDirectorySuffix.${environment}}";
+
   dataDir.linux = "\${XDG_DATA_HOME}/Daedalus/${environment}";
   dataDir.macos64 = "\${HOME}/Library/Application Support/Daedalus ${environment}";
   dataDir.windows = "\${APPDATA}\\Daedalus ${environment}";
@@ -29,7 +31,7 @@ let
   walletBin.macos64 = "\${DAEDALUS_INSTALL_DIRECTORY}/cardano-wallet-jormungandr";
 
   daedalusBin.linux = "daedalus-frontend";
-  daedalusBin.windows = "\${DAEDALUS_INSTALL_DIRECTORY}\\Daedalus ${environment}.exe";
+  daedalusBin.windows = "\${DAEDALUS_INSTALL_DIRECTORY}\\${spacedName}.exe";
   daedalusBin.macos64 = "\${DAEDALUS_INSTALL_DIRECTORY}/Frontend";
   cliBin.linux = "jcli";
   cliBin.windows = "\${DAEDALUS_INSTALL_DIRECTORY}\\jcli.exe";
@@ -96,8 +98,8 @@ let
     updateArchive = "/bar";
   };
   installerConfig = {
-    installDirectory = if os == "windows" then "Daedalus ${environment}" else "Daedalus/${environment}";
-    spacedName = "Daedalus ${installDirectorySuffix.${environment}}";
+    installDirectory = if os == "linux" then "Daedalus/${environment}" else "Daedalus ${environment}";
+    inherit spacedName;
     macPackageName = "Daedalus${installDirectorySuffix.${environment}}";
     dataDir = dataDir.${os};
   };
