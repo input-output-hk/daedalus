@@ -1344,7 +1344,7 @@
         "defaultMessage": "!!!Move testnet ada from {activeWalletName}",
         "description": "Title \"Move funds from the legacy wallet\" on the legacy notification.",
         "end": {
-          "column": 2,
+          "column": 3,
           "line": 18
         },
         "file": "source/renderer/app/components/notifications/LegacyNotification.js",
@@ -1359,7 +1359,7 @@
         "description": "Title \"Create a Rewards wallet\" on the legacy notification.",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 23
         },
         "file": "source/renderer/app/components/notifications/LegacyNotification.js",
         "id": "wallet.legacy.notification.addWalletTitle",
@@ -1373,13 +1373,13 @@
         "description": "Legacy notification description.",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 29
         },
         "file": "source/renderer/app/components/notifications/LegacyNotification.js",
         "id": "wallet.legacy.notification.moveFundsDescription.line1",
         "start": {
           "column": 29,
-          "line": 25
+          "line": 24
         }
       },
       {
@@ -1387,13 +1387,13 @@
         "description": "Legacy notification description.",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 35
         },
         "file": "source/renderer/app/components/notifications/LegacyNotification.js",
         "id": "wallet.legacy.notification.moveFundsDescription.line2",
         "start": {
           "column": 29,
-          "line": 31
+          "line": 30
         }
       },
       {
@@ -1401,27 +1401,27 @@
         "description": "Legacy notification description.",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 41
         },
         "file": "source/renderer/app/components/notifications/LegacyNotification.js",
         "id": "wallet.legacy.notification.addWalletDescription.line1",
         "start": {
           "column": 29,
-          "line": 37
+          "line": 36
         }
       },
       {
         "defaultMessage": "!!!Create a Rewards wallet to delegate your testnet ada stake and earn rewards.",
         "description": "Legacy notification description.",
         "end": {
-          "column": 4,
-          "line": 48
+          "column": 3,
+          "line": 47
         },
         "file": "source/renderer/app/components/notifications/LegacyNotification.js",
         "id": "wallet.legacy.notification.addWalletDescription.line2",
         "start": {
           "column": 29,
-          "line": 43
+          "line": 42
         }
       },
       {
@@ -1429,13 +1429,13 @@
         "description": "Learn more action of legacy notification.",
         "end": {
           "column": 3,
-          "line": 53
+          "line": 52
         },
         "file": "source/renderer/app/components/notifications/LegacyNotification.js",
         "id": "wallet.legacy.notification.actionLearnMore",
         "start": {
           "column": 19,
-          "line": 49
+          "line": 48
         }
       },
       {
@@ -1443,13 +1443,13 @@
         "description": "Move testnet ada action of legacy notification.",
         "end": {
           "column": 3,
-          "line": 58
+          "line": 57
         },
         "file": "source/renderer/app/components/notifications/LegacyNotification.js",
         "id": "wallet.legacy.notification.actionMove",
         "start": {
           "column": 14,
-          "line": 54
+          "line": 53
         }
       },
       {
@@ -1457,13 +1457,13 @@
         "description": "Create a new Rewards wallet action of legacy notification.",
         "end": {
           "column": 3,
-          "line": 63
+          "line": 62
         },
         "file": "source/renderer/app/components/notifications/LegacyNotification.js",
         "id": "wallet.legacy.notification.addWallet",
         "start": {
           "column": 13,
-          "line": 59
+          "line": 58
         }
       },
       {
@@ -1471,13 +1471,13 @@
         "description": "\"Learn more\" link URL",
         "end": {
           "column": 3,
-          "line": 69
+          "line": 68
         },
         "file": "source/renderer/app/components/notifications/LegacyNotification.js",
         "id": "wallet.legacy.notification.learnMore.url",
         "start": {
           "column": 20,
-          "line": 64
+          "line": 63
         }
       }
     ],
@@ -7957,7 +7957,7 @@
         "description": "Description for the \"Restore\" button with paper wallet certificate on the wallet add dialog.",
         "end": {
           "column": 3,
-          "line": 51
+          "line": 52
         },
         "file": "source/renderer/app/components/wallet/WalletAdd.js",
         "id": "wallet.add.dialog.restore.withCertificate.description",
@@ -7971,13 +7971,13 @@
         "description": "Description for the \"Restore\" button without paper wallet certificate on the wallet add dialog.",
         "end": {
           "column": 3,
-          "line": 57
+          "line": 58
         },
         "file": "source/renderer/app/components/wallet/WalletAdd.js",
         "id": "wallet.add.dialog.restore.withoutCertificate.description",
         "start": {
           "column": 40,
-          "line": 52
+          "line": 53
         }
       },
       {
@@ -7985,13 +7985,13 @@
         "description": "Label for the \"Import\" button on the wallet add dialog.",
         "end": {
           "column": 3,
-          "line": 62
+          "line": 63
         },
         "file": "source/renderer/app/components/wallet/WalletAdd.js",
         "id": "wallet.add.dialog.import.label",
         "start": {
           "column": 15,
-          "line": 58
+          "line": 59
         }
       },
       {
@@ -7999,13 +7999,13 @@
         "description": "Description for the \"Import\" button on the wallet add dialog.",
         "end": {
           "column": 3,
-          "line": 68
+          "line": 69
         },
         "file": "source/renderer/app/components/wallet/WalletAdd.js",
         "id": "wallet.add.dialog.import.description",
         "start": {
           "column": 21,
-          "line": 63
+          "line": 64
         }
       },
       {
@@ -8013,13 +8013,13 @@
         "description": "Restore notification message shown during async wallet restore on the wallet add screen.",
         "end": {
           "column": 3,
-          "line": 75
+          "line": 76
         },
         "file": "source/renderer/app/components/wallet/WalletAdd.js",
         "id": "wallet.add.dialog.restoreNotificationMessage",
         "start": {
           "column": 30,
-          "line": 69
+          "line": 70
         }
       },
       {
@@ -8027,13 +8027,13 @@
         "description": "\"Maximum number of wallets reached\" notification message shown on the wallet add screen if user has 50 wallets.",
         "end": {
           "column": 3,
-          "line": 82
+          "line": 83
         },
         "file": "source/renderer/app/components/wallet/WalletAdd.js",
         "id": "wallet.add.dialog.maxNumberOfWalletsNotificationMessage",
         "start": {
           "column": 41,
-          "line": 76
+          "line": 77
         }
       }
     ],

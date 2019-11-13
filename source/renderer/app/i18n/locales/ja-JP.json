@@ -428,7 +428,7 @@
   "test.environment.selfnodeLabel": "!!!Selfnode vx",
   "test.environment.stagingLabel": "ステージング",
   "test.environment.testnetLabel": "テストネット",
-  "wallet.add.dialog.create.description": "残高確認用ウォレットを作成",
+  "wallet.add.dialog.create.description": "ウォレット新規作成",
   "wallet.add.dialog.create.label": "作成",
   "wallet.add.dialog.import.description": "ファイルからウォレットをインポート",
   "wallet.add.dialog.import.label": "インポート",

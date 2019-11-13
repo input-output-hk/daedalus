@@ -428,7 +428,7 @@
   "test.environment.selfnodeLabel": "!!!Selfnode vx",
   "test.environment.stagingLabel": "Staging",
   "test.environment.testnetLabel": "Testnet",
-  "wallet.add.dialog.create.description": "Create a wallet for the balance check",
+  "wallet.add.dialog.create.description": "Create a new wallet",
   "wallet.add.dialog.create.label": "Create",
   "wallet.add.dialog.import.description": "Import a wallet from a file",
   "wallet.add.dialog.import.label": "Import",
