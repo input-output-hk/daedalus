@@ -124,14 +124,18 @@ export default class WalletSettings extends Component<Props> {
     if (isLegacy) {
       return (
         <div className={styles.component}>
-          <BorderedBox>
-            <DeleteWalletButton
-              onClick={() =>
-                openDialogAction({
-                  dialog: DeleteWalletConfirmationDialog,
-                })
-              }
-            />
+          <BorderedBox className={styles.deleteWalletBox}>
+            <span>{intl.formatMessage(messages.deleteWalletHeader)}</span>
+            <div className={styles.contentBox}>
+              <p>{intl.formatMessage(messages.deleteWalletWarning)}</p>
+              <DeleteWalletButton
+                onClick={() =>
+                  openDialogAction({
+                    dialog: DeleteWalletConfirmationDialog,
+                  })
+                }
+              />
+            </div>
           </BorderedBox>
 
           {isDialogOpen(DeleteWalletConfirmationDialog)
