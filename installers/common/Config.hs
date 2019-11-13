@@ -67,6 +67,7 @@ data Options = Options
   , oAppName        :: AppName
   , oOutputDir      :: FilePath
   , oTestInstaller  :: TestInstaller
+  , oSigningConfigPath :: Maybe FilePath
   } deriving Show
 
 commandParser :: Parser Command
@@ -92,6 +93,7 @@ optionsParser detectedOS = Options
   <*>                   optPath "out-dir"             'o' "Installer output directory"
   <*> (testInstaller
                     <$> switch  "test-installer"      't' "Test installers after building")
+  <*> (optional $ optPath       "signing-config"      'k' "the path to the json file describing the signing config")
 
 backendOptionParser :: Parser Backend
 backendOptionParser = cardano <|> bool (Cardano "") Mantis <$> enableMantis
