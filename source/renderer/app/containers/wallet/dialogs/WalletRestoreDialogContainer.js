@@ -35,10 +35,15 @@ export default class WalletRestoreDialogContainer extends Component<Props> {
   resetRequests = () => {
     // Restore request should be reset only in case restore is finished/errored
     const { wallets } = this.props.stores;
-    const { restoreRequest } = wallets;
+    const {
+      restoreRequest,
+      restoreLegacyRequest,
+      getWalletRecoveryPhraseFromCertificateRequest,
+    } = wallets;
     if (!restoreRequest.isExecuting) {
       restoreRequest.reset();
-      wallets.getWalletRecoveryPhraseFromCertificateRequest.reset();
+      restoreLegacyRequest.reset();
+      getWalletRecoveryPhraseFromCertificateRequest.reset();
     }
   };
 
@@ -46,18 +51,25 @@ export default class WalletRestoreDialogContainer extends Component<Props> {
     const { wallets } = this.props.stores;
     const {
       restoreRequest,
+      restoreLegacyRequest,
       getWalletRecoveryPhraseFromCertificateRequest,
     } = wallets;
 
     const error =
       restoreRequest.error ||
+      restoreLegacyRequest.error ||
       getWalletRecoveryPhraseFromCertificateRequest.error;
+
+    const isExecuting =
+      restoreRequest.isExecuting ||
+      restoreLegacyRequest.isExecuting ||
+      getWalletRecoveryPhraseFromCertificateRequest.isExecuting;
 
     return (
       <WalletRestoreDialog
         mnemonicValidator={isValidMnemonic}
         suggestedMnemonics={validWords}
-        isSubmitting={restoreRequest.isExecuting}
+        isSubmitting={isExecuting}
         onSubmit={this.onSubmit}
         onCancel={this.onCancel}
         onChoiceChange={this.resetRequests}
