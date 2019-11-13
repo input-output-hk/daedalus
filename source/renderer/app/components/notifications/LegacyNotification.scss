@@ -45,7 +45,6 @@
     .externalLinkIcon {
       @include link(--theme-legacy-notification-learn-more-button-text-color);
       border-bottom: none;
-      margin-right: 12px;
 
       svg {
         margin-bottom: 1px;
