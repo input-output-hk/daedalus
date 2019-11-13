@@ -1322,8 +1322,8 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Legacy",
-        "description": "Label \"Legacy\" on the legacy badge.",
+        "defaultMessage": "!!!Balance",
+        "description": "Label \"Balance\" on the legacy badge.",
         "end": {
           "column": 3,
           "line": 13
@@ -1341,31 +1341,87 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Move funds from the legacy wallet",
+        "defaultMessage": "!!!Move testnet ada from {activeWalletName}",
         "description": "Title \"Move funds from the legacy wallet\" on the legacy notification.",
         "end": {
-          "column": 3,
-          "line": 17
+          "column": 2,
+          "line": 18
         },
         "file": "source/renderer/app/components/notifications/LegacyNotification.js",
-        "id": "wallet.legacy.notification.title",
+        "id": "wallet.legacy.notification.moveFundsTitle",
         "start": {
-          "column": 9,
-          "line": 12
+          "column": 18,
+          "line": 13
         }
       },
       {
-        "defaultMessage": "!!!This is a legacy wallet which uses legacy addresses and does not support new features. Please move all of the ada from this legacy wallet to one of the wallets where new features are available. You can also create a brand new wallet for your ada in case you don’t want to move ada to one of your existing wallets. A sequence of screens will guide you through the process.",
+        "defaultMessage": "!!!Create a Rewards wallet",
+        "description": "Title \"Create a Rewards wallet\" on the legacy notification.",
+        "end": {
+          "column": 3,
+          "line": 24
+        },
+        "file": "source/renderer/app/components/notifications/LegacyNotification.js",
+        "id": "wallet.legacy.notification.addWalletTitle",
+        "start": {
+          "column": 18,
+          "line": 19
+        }
+      },
+      {
+        "defaultMessage": "!!!\"{transferWalletName}\"\" is a Balance wallet. It currently holds the testnet ada copied from the mainnet via the balance check snapshot.",
         "description": "Legacy notification description.",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 30
         },
         "file": "source/renderer/app/components/notifications/LegacyNotification.js",
-        "id": "wallet.legacy.notification.description",
+        "id": "wallet.legacy.notification.moveFundsDescription.line1",
         "start": {
-          "column": 15,
-          "line": 18
+          "column": 29,
+          "line": 25
+        }
+      },
+      {
+        "defaultMessage": "!!!Move testnet ada to a Rewards wallet to delegate your testnet ada stake and earn rewards.",
+        "description": "Legacy notification description.",
+        "end": {
+          "column": 3,
+          "line": 36
+        },
+        "file": "source/renderer/app/components/notifications/LegacyNotification.js",
+        "id": "wallet.legacy.notification.moveFundsDescription.line2",
+        "start": {
+          "column": 29,
+          "line": 31
+        }
+      },
+      {
+        "defaultMessage": "!!!\"{activeWalletName}\"\" is a Balance wallet. It currently holds the testnet ada copied from the mainnet via the balance check snapshot.",
+        "description": "Legacy notification description.",
+        "end": {
+          "column": 3,
+          "line": 42
+        },
+        "file": "source/renderer/app/components/notifications/LegacyNotification.js",
+        "id": "wallet.legacy.notification.addWalletDescription.line1",
+        "start": {
+          "column": 29,
+          "line": 37
+        }
+      },
+      {
+        "defaultMessage": "!!!Create a Rewards wallet to delegate your testnet ada stake and earn rewards.",
+        "description": "Legacy notification description.",
+        "end": {
+          "column": 4,
+          "line": 48
+        },
+        "file": "source/renderer/app/components/notifications/LegacyNotification.js",
+        "id": "wallet.legacy.notification.addWalletDescription.line2",
+        "start": {
+          "column": 29,
+          "line": 43
         }
       },
       {
@@ -1373,41 +1429,41 @@
         "description": "Learn more action of legacy notification.",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 53
         },
         "file": "source/renderer/app/components/notifications/LegacyNotification.js",
         "id": "wallet.legacy.notification.actionLearnMore",
         "start": {
           "column": 19,
-          "line": 24
+          "line": 49
         }
       },
       {
-        "defaultMessage": "!!!Move all of the ada from this wallet",
-        "description": "Move all ada action of legacy notification.",
+        "defaultMessage": "!!!Move testnet ada",
+        "description": "Move testnet ada action of legacy notification.",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 58
         },
         "file": "source/renderer/app/components/notifications/LegacyNotification.js",
         "id": "wallet.legacy.notification.actionMove",
         "start": {
           "column": 14,
-          "line": 29
+          "line": 54
         }
       },
       {
-        "defaultMessage": "!!!Move all of the ada from this wallet",
-        "description": "Add wallet action of legacy notification.",
+        "defaultMessage": "!!!Create a new Rewards wallet",
+        "description": "Create a new Rewards wallet action of legacy notification.",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 63
         },
         "file": "source/renderer/app/components/notifications/LegacyNotification.js",
         "id": "wallet.legacy.notification.addWallet",
         "start": {
           "column": 13,
-          "line": 34
+          "line": 59
         }
       },
       {
@@ -1415,13 +1471,13 @@
         "description": "\"Learn more\" link URL",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 69
         },
         "file": "source/renderer/app/components/notifications/LegacyNotification.js",
         "id": "wallet.legacy.notification.learnMore.url",
         "start": {
           "column": 20,
-          "line": 39
+          "line": 64
         }
       }
     ],
@@ -7321,7 +7377,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Transfer funds from the legacy wallet",
+        "defaultMessage": "!!!Transfer funds from the Balance wallet",
         "description": "Title  in the transfer funds form.",
         "end": {
           "column": 3,
@@ -7335,7 +7391,7 @@
         }
       },
       {
-        "defaultMessage": "!!!From wallet",
+        "defaultMessage": "!!!From Balance wallet",
         "description": "sourceWallet in the transfer funds form.",
         "end": {
           "column": 3,
@@ -7349,7 +7405,7 @@
         }
       },
       {
-        "defaultMessage": "!!!To walet",
+        "defaultMessage": "!!!To Rewards wallet",
         "description": "targetWallet in the transfer funds form.",
         "end": {
           "column": 3,
@@ -7370,7 +7426,7 @@
           "line": 32
         },
         "file": "source/renderer/app/components/wallet/transfer-funds/TransferFundsStep1Dialog.js",
-        "id": "global.dialog.button.continue",
+        "id": "wallet.transferFunds.dialog1.continueLabel",
         "start": {
           "column": 15,
           "line": 28
@@ -7382,7 +7438,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Transfer funds from the legacy wallet",
+        "defaultMessage": "!!!Transfer funds from the Balance wallet",
         "description": "Title in the transfer funds form.",
         "end": {
           "column": 3,
@@ -7841,7 +7897,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Create a new wallet",
+        "defaultMessage": "!!!Create a wallet for the balance check",
         "description": "Description for the \"Create\" button on the wallet add dialog.",
         "end": {
           "column": 3,
@@ -7897,11 +7953,11 @@
         }
       },
       {
-        "defaultMessage": "!!!Restore using backup-recovery phrase or paper wallet certificate.",
+        "defaultMessage": "!!!Restore a wallet or paper wallet using wallet recovery phrase",
         "description": "Description for the \"Restore\" button with paper wallet certificate on the wallet add dialog.",
         "end": {
           "column": 3,
-          "line": 52
+          "line": 51
         },
         "file": "source/renderer/app/components/wallet/WalletAdd.js",
         "id": "wallet.add.dialog.restore.withCertificate.description",
@@ -7915,13 +7971,13 @@
         "description": "Description for the \"Restore\" button without paper wallet certificate on the wallet add dialog.",
         "end": {
           "column": 3,
-          "line": 58
+          "line": 57
         },
         "file": "source/renderer/app/components/wallet/WalletAdd.js",
         "id": "wallet.add.dialog.restore.withoutCertificate.description",
         "start": {
           "column": 40,
-          "line": 53
+          "line": 52
         }
       },
       {
@@ -7929,27 +7985,27 @@
         "description": "Label for the \"Import\" button on the wallet add dialog.",
         "end": {
           "column": 3,
-          "line": 63
+          "line": 62
         },
         "file": "source/renderer/app/components/wallet/WalletAdd.js",
         "id": "wallet.add.dialog.import.label",
         "start": {
           "column": 15,
-          "line": 59
+          "line": 58
         }
       },
       {
-        "defaultMessage": "!!!Import wallet from a file",
+        "defaultMessage": "!!!Import a wallet from a file",
         "description": "Description for the \"Import\" button on the wallet add dialog.",
         "end": {
           "column": 3,
-          "line": 69
+          "line": 68
         },
         "file": "source/renderer/app/components/wallet/WalletAdd.js",
         "id": "wallet.add.dialog.import.description",
         "start": {
           "column": 21,
-          "line": 64
+          "line": 63
         }
       },
       {
@@ -7957,13 +8013,13 @@
         "description": "Restore notification message shown during async wallet restore on the wallet add screen.",
         "end": {
           "column": 3,
-          "line": 76
+          "line": 75
         },
         "file": "source/renderer/app/components/wallet/WalletAdd.js",
         "id": "wallet.add.dialog.restoreNotificationMessage",
         "start": {
           "column": 30,
-          "line": 70
+          "line": 69
         }
       },
       {
@@ -7971,13 +8027,13 @@
         "description": "\"Maximum number of wallets reached\" notification message shown on the wallet add screen if user has 50 wallets.",
         "end": {
           "column": 3,
-          "line": 83
+          "line": 82
         },
         "file": "source/renderer/app/components/wallet/WalletAdd.js",
         "id": "wallet.add.dialog.maxNumberOfWalletsNotificationMessage",
         "start": {
           "column": 41,
-          "line": 77
+          "line": 76
         }
       }
     ],
@@ -8145,7 +8201,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Name the wallet you are restoring",
+        "defaultMessage": "!!!Choose a name for the wallet you are about to restore",
         "description": "Hint \"Name the wallet you are restoring\" for the wallet name input on the wallet restore dialog.",
         "end": {
           "column": 3,
@@ -8159,7 +8215,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Recovery phrase type",
+        "defaultMessage": "!!!Number of words in your recovery phrase",
         "description": "Label for the recovery phrase type options on the wallet restore dialog.",
         "end": {
           "column": 3,
@@ -8187,7 +8243,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Daedalus wallet",
+        "defaultMessage": "!!!Rewards wallet",
         "description": "Label for the recovery phrase type 15-word option on the wallet restore dialog.",
         "end": {
           "column": 3,
@@ -8201,7 +8257,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Daedalus legacy wallet",
+        "defaultMessage": "!!!Balance wallet",
         "description": "Label for the recovery phrase type 12-word option on the wallet restore dialog.",
         "end": {
           "column": 3,
@@ -8215,7 +8271,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Recovery phrase",
+        "defaultMessage": "!!!Wallet recovery phrase",
         "description": "Label for the recovery phrase input on the wallet restore dialog.",
         "end": {
           "column": 3,
@@ -8229,7 +8285,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Enter recovery phrase",
+        "defaultMessage": "!!!Enter your {numberOfWords}-word wallet recovery phrase",
         "description": "Hint \"Enter recovery phrase\" for the recovery phrase input on the wallet restore dialog.",
         "end": {
           "column": 3,
@@ -8299,7 +8355,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Keep your private keys safely encrypted by setting the spending password",
+        "defaultMessage": "!!!Keep your wallet secure by setting the spending password",
         "description": "Password creation description.",
         "end": {
           "column": 3,
@@ -8355,8 +8411,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Backup recovery phrase",
-        "description": "Tab title \"Backup recovery phrase\" in the wallet restore dialog.",
+        "defaultMessage": "!!!Wallet recovery phrase",
+        "description": "Tab title \"Wallet recovery phrasee\" in the wallet restore dialog.",
         "end": {
           "column": 3,
           "line": 138
@@ -8369,8 +8425,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Paper wallet certificate",
-        "description": "Tab title \"Paper wallet certificate\" in the wallet restore dialog.",
+        "defaultMessage": "!!!Paper wallet recovery phrase",
+        "description": "Tab title \"Paper wallet recovery phrase\" in the wallet restore dialog.",
         "end": {
           "column": 3,
           "line": 144
@@ -8383,7 +8439,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Paper wallet recovery phrase",
+        "defaultMessage": "!!!27-word paper wallet recovery phrase",
         "description": "Label for the shielded recovery phrase input on the wallet restore dialog.",
         "end": {
           "column": 3,
@@ -8397,8 +8453,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Enter the recovery phrase from your paper wallet certificate",
-        "description": "Hint \"Enter shielded recovery phrase\" for the recovery phrase input on the wallet restore dialog.",
+        "defaultMessage": "!!!Enter your {numberOfWords}-word paper wallet recovery phrase",
+        "description": "Hint \"Enter your 27-word paper wallet recovery phrase.\" for the recovery phrase input on the wallet restore dialog.",
         "end": {
           "column": 3,
           "line": 157
@@ -8408,6 +8464,20 @@
         "start": {
           "column": 35,
           "line": 151
+        }
+      },
+      {
+        "defaultMessage": "!!!Restore paper wallet",
+        "description": "Label for the \"Restore paper wallet\" button on the wallet restore dialog.",
+        "end": {
+          "column": 3,
+          "line": 163
+        },
+        "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
+        "id": "wallet.restore.dialog.paper.wallet.button.label",
+        "start": {
+          "column": 33,
+          "line": 158
         }
       }
     ],
