@@ -47,6 +47,7 @@ Changelog
 
 ### Fixes
 
+- Fixed incentivized testnet theme ([PR 1677](https://github.com/input-output-hk/daedalus/pull/1677))
 - Fixed wrong "Jormugandr" process name ([PR 1669](https://github.com/input-output-hk/daedalus/pull/1669))
 - Fixed paper wallet certificate restoration ([PR 1055](https://github.com/input-output-hk/daedalus/pull/1055))
 - Reduce layout re-renderings ([PR 1595](https://github.com/input-output-hk/daedalus/pull/1595))

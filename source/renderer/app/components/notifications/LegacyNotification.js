@@ -2,8 +2,10 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
+import SVGInline from 'react-svg-inline';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
+import externalLinkIcon from '../../assets/images/link-ic.inline.svg';
 import styles from './LegacyNotification.scss';
 
 const messages = defineMessages({
@@ -66,7 +68,6 @@ export default class LegacyNotification extends Component<Props> {
     const { onTransferFunds, hasAnyWallets, onWalletAdd } = this.props;
     const title = intl.formatMessage(messages.title);
     const description = intl.formatMessage(messages.description);
-    const actionLearnMore = intl.formatMessage(messages.actionLearnMore);
 
     const buttonLabel = hasAnyWallets
       ? intl.formatMessage(messages.actionMove)
@@ -81,7 +82,15 @@ export default class LegacyNotification extends Component<Props> {
         <div className={styles.actions}>
           <Button
             className={styles.actionLearnMore}
-            label={actionLearnMore}
+            label={
+              <p>
+                {intl.formatMessage(messages.actionLearnMore)}
+                <SVGInline
+                  svg={externalLinkIcon}
+                  className={styles.externalLinkIcon}
+                />
+              </p>
+            }
             onClick={this.onLearnMore}
             skin={ButtonSkin}
           />

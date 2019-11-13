@@ -1345,13 +1345,13 @@
         "description": "Title \"Move funds from the legacy wallet\" on the legacy notification.",
         "end": {
           "column": 3,
-          "line": 15
+          "line": 17
         },
         "file": "source/renderer/app/components/notifications/LegacyNotification.js",
         "id": "wallet.legacy.notification.title",
         "start": {
           "column": 9,
-          "line": 10
+          "line": 12
         }
       },
       {
@@ -1359,13 +1359,13 @@
         "description": "Legacy notification description.",
         "end": {
           "column": 3,
-          "line": 21
+          "line": 23
         },
         "file": "source/renderer/app/components/notifications/LegacyNotification.js",
         "id": "wallet.legacy.notification.description",
         "start": {
           "column": 15,
-          "line": 16
+          "line": 18
         }
       },
       {
@@ -1373,13 +1373,13 @@
         "description": "Learn more action of legacy notification.",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 28
         },
         "file": "source/renderer/app/components/notifications/LegacyNotification.js",
         "id": "wallet.legacy.notification.actionLearnMore",
         "start": {
           "column": 19,
-          "line": 22
+          "line": 24
         }
       },
       {
@@ -1387,13 +1387,13 @@
         "description": "Move all ada action of legacy notification.",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 33
         },
         "file": "source/renderer/app/components/notifications/LegacyNotification.js",
         "id": "wallet.legacy.notification.actionMove",
         "start": {
           "column": 14,
-          "line": 27
+          "line": 29
         }
       },
       {
@@ -1401,13 +1401,13 @@
         "description": "Add wallet action of legacy notification.",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 38
         },
         "file": "source/renderer/app/components/notifications/LegacyNotification.js",
         "id": "wallet.legacy.notification.addWallet",
         "start": {
           "column": 13,
-          "line": 32
+          "line": 34
         }
       },
       {
@@ -1415,13 +1415,13 @@
         "description": "\"Learn more\" link URL",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 44
         },
         "file": "source/renderer/app/components/notifications/LegacyNotification.js",
         "id": "wallet.legacy.notification.learnMore.url",
         "start": {
           "column": 20,
-          "line": 37
+          "line": 39
         }
       }
     ],

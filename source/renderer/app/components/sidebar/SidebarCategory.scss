@@ -72,17 +72,19 @@
   box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.12);
   height: 50px;
   justify-content: space-between;
+  max-width: 71px;
   overflow: hidden;
   padding: 0 26px;
   position: absolute;
-  transition: width 0.2s ease-out;
+  transition: max-width 0.2s ease-out;
   width: 71px;
-  z-index: 100;
+  z-index: 21;
 
   &:hover {
     background-color: var(
       --theme-sidebar-category-networkInfo-background-color
     );
+    max-width: 400px;
     width: auto;
   }
 }
