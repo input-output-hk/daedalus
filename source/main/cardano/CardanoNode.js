@@ -4,6 +4,7 @@ import { spawn, exec } from 'child_process';
 import type { ChildProcess } from 'child_process';
 import type { WriteStream } from 'fs';
 import { toInteger } from 'lodash';
+import moment from 'moment';
 import rfs from 'rotating-file-stream';
 import { environment } from '../environment';
 import {
@@ -278,16 +279,14 @@ export class CardanoNode {
       const logFile = rfs(
         time => {
           // The module works by writing to the one file name before it is rotated out.
-          if (!time) {
-            return `node.log-current`;
-          }
-
-          return `node.log-${Date.now()}`;
+          if (!time) return 'node.log';
+          const timestamp = moment.utc().format('YYYYMMDDHHmmss');
+          return `node.log-${timestamp}`;
         },
         {
           size: '5M',
           path: config.logFilePath,
-          maxFiles: 10,
+          maxFiles: 4,
         }
       );
 
