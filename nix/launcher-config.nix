@@ -19,8 +19,8 @@ let
   spacedName = "Daedalus ${installDirectorySuffix.${environment}}";
 
   dataDir.linux = "\${XDG_DATA_HOME}/Daedalus/${environment}";
-  dataDir.macos64 = "\${HOME}/Library/Application Support/Daedalus ${environment}";
-  dataDir.windows = "\${APPDATA}\\Daedalus ${environment}";
+  dataDir.macos64 = "\${HOME}/Library/Application Support/${spacedName}";
+  dataDir.windows = "\${APPDATA}\\${spacedName}";
 
   # TODO, use backend
   nodeBin.linux = "jormungandr";
