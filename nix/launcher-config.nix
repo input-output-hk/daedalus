@@ -100,7 +100,7 @@ let
   installerConfig = {
     installDirectory = if os == "linux" then "Daedalus/${environment}" else "Daedalus ${environment}";
     inherit spacedName;
-    macPackageName = "Daedalus${installDirectorySuffix.${environment}}";
+    macPackageName = "Daedalus${environment}";
     dataDir = dataDir.${os};
   };
 in {
