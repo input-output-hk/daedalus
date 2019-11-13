@@ -839,13 +839,13 @@
         "description": "Message \"Starting Cardano node\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 15
+          "line": 14
         },
-        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingTitle.js",
+        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.js",
         "id": "loading.screen.startingCardanoMessage",
         "start": {
           "column": 12,
-          "line": 11
+          "line": 10
         }
       },
       {
@@ -853,13 +853,13 @@
         "description": "Message \"Stopping Cardano node\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 20
+          "line": 19
         },
-        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingTitle.js",
+        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.js",
         "id": "loading.screen.stoppingCardanoMessage",
         "start": {
           "column": 12,
-          "line": 16
+          "line": 15
         }
       },
       {
@@ -867,13 +867,13 @@
         "description": "Message \"Cardano node stopped\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 24
         },
-        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingTitle.js",
+        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.js",
         "id": "loading.screen.stoppedCardanoMessage",
         "start": {
           "column": 11,
-          "line": 21
+          "line": 20
         }
       },
       {
@@ -881,13 +881,13 @@
         "description": "Message \"Updating Cardano node\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 29
         },
-        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingTitle.js",
+        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.js",
         "id": "loading.screen.updatingCardanoMessage",
         "start": {
           "column": 12,
-          "line": 26
+          "line": 25
         }
       },
       {
@@ -895,13 +895,13 @@
         "description": "Message \"Cardano node updated\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 34
         },
-        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingTitle.js",
+        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.js",
         "id": "loading.screen.updatedCardanoMessage",
         "start": {
           "column": 11,
-          "line": 31
+          "line": 30
         }
       },
       {
@@ -909,13 +909,13 @@
         "description": "Message \"Cardano node crashed\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 40
+          "line": 39
         },
-        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingTitle.js",
+        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.js",
         "id": "loading.screen.crashedCardanoMessage",
         "start": {
           "column": 11,
-          "line": 36
+          "line": 35
         }
       },
       {
@@ -923,13 +923,13 @@
         "description": "Message \"Unable to start Cardano node. Please submit a support request.\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 47
+          "line": 46
         },
-        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingTitle.js",
+        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.js",
         "id": "loading.screen.unrecoverableCardanoMessage",
         "start": {
           "column": 17,
-          "line": 41
+          "line": 40
         }
       },
       {
@@ -937,13 +937,13 @@
         "description": "Message \"Connecting to network\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 52
+          "line": 51
         },
-        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingTitle.js",
+        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.js",
         "id": "loading.screen.connectingToNetworkMessage",
         "start": {
           "column": 14,
-          "line": 48
+          "line": 47
         }
       },
       {
@@ -951,13 +951,13 @@
         "description": "Message \"Network connection lost - reconnecting\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 58
+          "line": 57
         },
-        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingTitle.js",
+        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.js",
         "id": "loading.screen.reconnectingToNetworkMessage",
         "start": {
           "column": 16,
-          "line": 53
+          "line": 52
         }
       },
       {
@@ -965,13 +965,13 @@
         "description": "Message \"Syncing blocks\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 63
+          "line": 62
         },
-        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingTitle.js",
+        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.js",
         "id": "loading.screen.syncingBlocksMessage",
         "start": {
           "column": 11,
-          "line": 59
+          "line": 58
         }
       },
       {
@@ -979,13 +979,13 @@
         "description": "Message \"Loading wallet data\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 68
+          "line": 67
         },
-        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingTitle.js",
+        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.js",
         "id": "loading.screen.loadingWalletData",
         "start": {
           "column": 21,
-          "line": 64
+          "line": 63
         }
       },
       {
@@ -993,13 +993,60 @@
         "description": "The TLS cert is not valid and Daedalus should be restarted",
         "end": {
           "column": 3,
-          "line": 73
+          "line": 72
         },
-        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingTitle.js",
+        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.js",
         "id": "loading.screen.errors.tlsCertificateNotValidPleaseRestartError",
         "start": {
           "column": 31,
-          "line": 69
+          "line": 68
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Daedalus",
+        "description": "Daedalus",
+        "end": {
+          "column": 3,
+          "line": 13
+        },
+        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingTitle.js",
+        "id": "loading.screen.syncingConnectingTitle",
+        "start": {
+          "column": 9,
+          "line": 9
+        }
+      },
+      {
+        "defaultMessage": "!!!Incentivized Testnet",
+        "description": "Incentivized Testnet",
+        "end": {
+          "column": 3,
+          "line": 18
+        },
+        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingTitle.js",
+        "id": "loading.screen.syncingConnectingIncentivizedTestnet",
+        "start": {
+          "column": 23,
+          "line": 14
+        }
+      },
+      {
+        "defaultMessage": "!!!Balance Check",
+        "description": "Balance Check",
+        "end": {
+          "column": 3,
+          "line": 23
+        },
+        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingTitle.js",
+        "id": "loading.screen.syncingConnectingBalanceCheck",
+        "start": {
+          "column": 16,
+          "line": 19
         }
       }
     ],
@@ -6932,13 +6979,13 @@
         "description": "Transaction type shown for credit card payments.",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 33
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.type.card",
         "start": {
           "column": 8,
-          "line": 28
+          "line": 29
         }
       },
       {
@@ -6946,13 +6993,13 @@
         "description": "Transaction type shown for {currency} transactions.",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 38
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.type",
         "start": {
           "column": 8,
-          "line": 33
+          "line": 34
         }
       },
       {
@@ -6960,13 +7007,13 @@
         "description": "Transaction type shown for money exchanges between currencies.",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 44
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.type.exchange",
         "start": {
           "column": 12,
-          "line": 38
+          "line": 39
         }
       },
       {
@@ -6974,13 +7021,13 @@
         "description": "Transaction ID.",
         "end": {
           "column": 3,
-          "line": 48
+          "line": 49
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.transactionId",
         "start": {
           "column": 17,
-          "line": 44
+          "line": 45
         }
       },
       {
@@ -6988,13 +7035,13 @@
         "description": "Conversion rate.",
         "end": {
           "column": 3,
-          "line": 53
+          "line": 54
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.conversion.rate",
         "start": {
           "column": 18,
-          "line": 49
+          "line": 50
         }
       },
       {
@@ -7002,13 +7049,13 @@
         "description": "Label \"{currency} sent\" for the transaction.",
         "end": {
           "column": 3,
-          "line": 58
+          "line": 59
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.sent",
         "start": {
           "column": 8,
-          "line": 54
+          "line": 55
         }
       },
       {
@@ -7016,13 +7063,13 @@
         "description": "Label \"{currency} received\" for the transaction.",
         "end": {
           "column": 3,
-          "line": 63
+          "line": 64
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.received",
         "start": {
           "column": 12,
-          "line": 59
+          "line": 60
         }
       },
       {
@@ -7030,13 +7077,13 @@
         "description": "From address",
         "end": {
           "column": 3,
-          "line": 68
+          "line": 69
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.address.from",
         "start": {
           "column": 15,
-          "line": 64
+          "line": 65
         }
       },
       {
@@ -7044,13 +7091,13 @@
         "description": "From addresses",
         "end": {
           "column": 3,
-          "line": 73
+          "line": 74
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.addresses.from",
         "start": {
           "column": 17,
-          "line": 69
+          "line": 70
         }
       },
       {
@@ -7058,13 +7105,13 @@
         "description": "To address",
         "end": {
           "column": 3,
-          "line": 78
+          "line": 79
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.address.to",
         "start": {
           "column": 13,
-          "line": 74
+          "line": 75
         }
       },
       {
@@ -7072,13 +7119,13 @@
         "description": "To addresses",
         "end": {
           "column": 3,
-          "line": 83
+          "line": 84
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.addresses.to",
         "start": {
           "column": 15,
-          "line": 79
+          "line": 80
         }
       },
       {
@@ -7086,13 +7133,13 @@
         "description": "Transaction amount.",
         "end": {
           "column": 3,
-          "line": 88
+          "line": 89
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.transactionAmount",
         "start": {
           "column": 21,
-          "line": 84
+          "line": 85
         }
       },
       {
@@ -7100,13 +7147,13 @@
         "description": "Note to cancel a transaction that has been pending too long",
         "end": {
           "column": 3,
-          "line": 94
+          "line": 95
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.pending.cancelPendingTxnNote",
         "start": {
           "column": 24,
-          "line": 89
+          "line": 90
         }
       },
       {
@@ -7114,13 +7161,13 @@
         "description": "Link to support article for canceling a pending transaction",
         "end": {
           "column": 3,
-          "line": 99
+          "line": 100
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.pending.supportArticleLink",
         "start": {
           "column": 22,
-          "line": 95
+          "line": 96
         }
       },
       {
@@ -7128,13 +7175,13 @@
         "description": "Url to support article for canceling a pending transaction",
         "end": {
           "column": 3,
-          "line": 105
+          "line": 106
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.pending.supportArticleUrl",
         "start": {
           "column": 21,
-          "line": 100
+          "line": 101
         }
       },
       {
@@ -7142,13 +7189,13 @@
         "description": "Input Addresses label.",
         "end": {
           "column": 3,
-          "line": 110
+          "line": 111
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.noInputAddressesLabel",
         "start": {
           "column": 25,
-          "line": 106
+          "line": 107
         }
       },
       {
@@ -7156,13 +7203,13 @@
         "description": "Unresolved Input Addresses link label.",
         "end": {
           "column": 3,
-          "line": 115
+          "line": 116
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.unresolvedInputAddressesLinkLabel",
         "start": {
           "column": 37,
-          "line": 111
+          "line": 112
         }
       },
       {
@@ -7170,13 +7217,13 @@
         "description": "Unresolved Input Addresses additional label.",
         "end": {
           "column": 3,
-          "line": 120
+          "line": 121
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.unresolvedInputAddressesAdditionalLabel",
         "start": {
           "column": 43,
-          "line": 116
+          "line": 117
         }
       },
       {
@@ -7184,13 +7231,13 @@
         "description": "Transaction state \"confirmed\"",
         "end": {
           "column": 3,
-          "line": 128
+          "line": 129
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.state.confirmed",
         "start": {
           "column": 26,
-          "line": 124
+          "line": 125
         }
       },
       {
@@ -7198,13 +7245,13 @@
         "description": "Transaction state \"pending\"",
         "end": {
           "column": 3,
-          "line": 133
+          "line": 134
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.state.pending",
         "start": {
           "column": 31,
-          "line": 129
+          "line": 130
         }
       }
     ],

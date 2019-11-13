@@ -1,0 +1,74 @@
+.component {
+  height: 100%;
+  left: 0;
+  object-fit: contain;
+  overflow: hidden;
+  position: absolute;
+  top: 0;
+  transition: background-color 500ms;
+  width: 100%;
+  z-index: 1000;
+
+  &.isLoadingTheme {
+    background-color: transparent;
+  }
+  &.isConnecting {
+    background-color: var(--theme-connecting-background-color);
+
+    .backgroundOverlay {
+      background-image: linear-gradient(
+        0deg,
+        var(--theme-connecting-background-color1) 0%,
+        var(--theme-connecting-background-color2) 15%,
+        var(--theme-connecting-background-color3) 25%,
+        var(--theme-connecting-background-color4) 30%,
+        var(--theme-connecting-background-color5) 70%,
+        var(--theme-connecting-background-color6) 75%,
+        var(--theme-connecting-background-color7) 85%,
+        var(--theme-connecting-background-color8) 100%
+      );
+    }
+  }
+  &.isSyncing {
+    background-color: var(--theme-syncing-background-color);
+
+    .backgroundOverlay {
+      background-image: linear-gradient(
+        0deg,
+        var(--theme-syncing-background-color1) 0%,
+        var(--theme-syncing-background-color2) 15%,
+        var(--theme-syncing-background-color3) 25%,
+        var(--theme-syncing-background-color4) 30%,
+        var(--theme-syncing-background-color5) 70%,
+        var(--theme-syncing-background-color6) 75%,
+        var(--theme-syncing-background-color7) 85%,
+        var(--theme-syncing-background-color8) 100%
+      );
+    }
+  }
+
+  .backgroundOverlay {
+    height: 100%;
+    position: absolute;
+    width: 100%;
+    z-index: 1500;
+  }
+
+  .backgroundImage {
+    display: block;
+    height: 100%;
+    opacity: 0.1;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+
+    & > svg {
+      display: block;
+      left: 50%;
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 1186px;
+    }
+  }
+}

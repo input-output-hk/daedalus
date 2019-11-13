@@ -371,6 +371,30 @@ export const createDaedalusComponentsTheme = (
     },
     connecting: {
       '--theme-connecting-background-color': `${background.secondary.regular}`,
+      '--theme-connecting-background-color1': `${chroma(
+        background.secondary.regular
+      ).alpha(1)}`,
+      '--theme-connecting-background-color2': `${chroma(
+        background.secondary.regular
+      ).alpha(0.91)}`,
+      '--theme-connecting-background-color3': `${chroma(
+        background.secondary.regular
+      ).alpha(0.31)}`,
+      '--theme-connecting-background-color4': `${chroma(
+        background.secondary.regular
+      ).alpha(0)}`,
+      '--theme-connecting-background-color5': `${chroma(
+        background.secondary.regular
+      ).alpha(0)}`,
+      '--theme-connecting-background-color6': `${chroma(
+        background.secondary.regular
+      ).alpha(0.31)}`,
+      '--theme-connecting-background-color7': `${chroma(
+        background.secondary.regular
+      ).alpha(0.91)}`,
+      '--theme-connecting-background-color8': `${chroma(
+        background.secondary.regular
+      ).alpha(1)}`,
       '--theme-connecting-text-color': `${text.secondary}`,
     },
     dataMigration: {
@@ -909,10 +933,15 @@ export const createDaedalusComponentsTheme = (
         'rgba(255, 255, 255, 0.3)',
     },
     splash: {
-      '--theme-splash-network-background-color1': '#121326',
-      '--theme-splash-network-background-color2': 'rgba(18, 19, 38, 0.92)',
+      '--theme-splash-network-background-color': 'rgba(36, 62, 98, 0.96)',
+      '--theme-splash-network-background-color1': 'rgba(18, 19, 38, 1)',
+      '--theme-splash-network-background-color2': 'rgba(18, 19, 38, 0.91)',
       '--theme-splash-network-background-color3': 'rgba(18, 19, 38, 0.31)',
       '--theme-splash-network-background-color4': 'rgba(18, 19, 38, 0)',
+      '--theme-splash-network-background-color5': 'rgba(18, 19, 38, 0)',
+      '--theme-splash-network-background-color6': 'rgba(18, 19, 38, 0.31)',
+      '--theme-splash-network-background-color7': 'rgba(18, 19, 38, 0.91)',
+      '--theme-splash-network-background-color8': 'rgba(18, 19, 38, 1)',
       '--theme-splash-network-logo-fill-color': '#fff',
       '--theme-splash-network-title-color': '#fafbfc',
       '--theme-splash-network-subTitle1-color': `${background.secondary}`,
@@ -1056,7 +1085,36 @@ export const createDaedalusComponentsTheme = (
     },
     syncing: {
       '--theme-syncing-background-color': `${background.primary.regular}`,
+      '--theme-syncing-background-color1': `${chroma(
+        background.primary.regular
+      ).alpha(1)}`,
+      '--theme-syncing-background-color2': `${chroma(
+        background.primary.regular
+      ).alpha(0.91)}`,
+      '--theme-syncing-background-color3': `${chroma(
+        background.primary.regular
+      ).alpha(0.31)}`,
+      '--theme-syncing-background-color4': `${chroma(
+        background.primary.regular
+      ).alpha(0)}`,
+      '--theme-syncing-background-color5': `${chroma(
+        background.primary.regular
+      ).alpha(0)}`,
+      '--theme-syncing-background-color6': `${chroma(
+        background.primary.regular
+      ).alpha(0.31)}`,
+      '--theme-syncing-background-color7': `${chroma(
+        background.primary.regular
+      ).alpha(0.91)}`,
+      '--theme-syncing-background-color8': `${chroma(
+        background.primary.regular
+      ).alpha(1)}`,
       '--theme-syncing-text-color': `${text.primary}`,
+    },
+    syncingConnecting: {
+      '--theme-syncing-connecting-title-color': `${text.primary}`,
+      '--theme-syncing-connecting-subTitle1-color': `${text.secondary}`,
+      '--theme-syncing-connecting-subTitle2-color': `${text.primary}`,
     },
     systemError: {
       '--theme-system-error-overlay-attention-icon-color': `${text.secondary}`,

@@ -12,25 +12,24 @@ Given(/^Daedalus is running$/, function() {
   expect(this.app.isRunning()).to.equal(true);
 });
 
-// Given('im on the syncing screen', async function() {
-//   this.client.executeAsync(done => {
-//     // Simulate that syncing is necessary
-//     const adaApi = daedalus.api.ada;
-//     adaApi.setNetworkBlockHeight(10);
-//     adaApi.setLocalBlockHeight(1);
-//     daedalus.stores.networkStatus._updateNetworkStatus().then(done);
-//   });
-//   await this.client.waitForVisible('.SyncingConnecting_is-syncing');
-// });
+Given('im on the syncing screen', async function() {
+  this.client.executeAsync(done => {
+    // Simulate that syncing is necessary
+    daedalus.api.ada.setSyncProgress(10);
+    daedalus.stores.networkStatus._updateNetworkStatus().then(done);
+  });
+  await this.client.waitForVisible('.SyncingConnecting_is-syncing');
+});
 
-// Given('im on the connecting screen', async function() {
-//   this.client.executeAsync(done => {
-//     // Simulate that there is no connection to cardano node
-//     daedalus.api.ada.setSubscriptionStatus({});
-//     daedalus.stores.networkStatus._updateNetworkStatus().then(done);
-//   });
-//   await this.client.waitForVisible('.SyncingConnecting_is-connecting');
-// });
+Given('im on the connecting screen', async function() {
+  this.client.executeAsync(done => {
+    // Simulate that there is no connection to cardano node
+    // @API TODO - find a way to simulate lost connection
+    daedalus.api.ada.setSyncProgress(0);
+    daedalus.stores.networkStatus._updateNetworkStatus().then(done);
+  });
+  await this.client.waitForVisible('.SyncingConnecting_is-connecting');
+});
 
 When(/^I refresh the main window$/, async function() {
   await refreshClient(this.client);

@@ -45,7 +45,7 @@ export default class WalletSummaryPage extends Component<Props> {
     const { app, wallets, transactions, profile } = this.props.stores;
     const {
       openExternalLink,
-      environment: { network },
+      environment: { network, rawNetwork },
     } = app;
     const {
       hasAny,
@@ -89,6 +89,7 @@ export default class WalletSummaryPage extends Component<Props> {
             recent.length > MAX_TRANSACTIONS_ON_SUMMARY_PAGE
           }
           network={network}
+          rawNetwork={rawNetwork}
           onOpenExternalLink={openExternalLink}
           onShowMoreTransactions={this.handleShowMoreTransaction}
           totalAvailable={totalAvailable}
