@@ -43,15 +43,20 @@ export async function CardanoWalletLauncher(
       break;
   }
 
-  const walletStdio: string[] = ['inherit', logStream, logStream, 'ipc'];
+  const walletStdio: string[] = ['pipe', 'pipe', 'pipe', 'ipc'];
   const nodePath = dirname(nodeBin);
   const PATH: string = (process.env.PATH: any);
 
-  return spawn(path, walletArgs, {
+  const childProcess = spawn(path, walletArgs, {
     stdio: walletStdio,
     env: {
       ...process.env,
       PATH: `${nodePath}:${PATH}`,
     },
   });
+
+  childProcess.stdout.on('data', data => logStream.write(data));
+  childProcess.stderr.on('data', data => logStream.write(data));
+
+  return childProcess;
 }
