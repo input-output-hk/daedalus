@@ -75,15 +75,17 @@
   overflow: hidden;
   padding: 0 26px;
   position: absolute;
-  transition: width 0.2s ease-out;
+  transition: max-width 0.2s ease-out;
   width: 71px;
-  z-index: 19;
+  max-width: 71px;
+  z-index: 21;
 
   &:hover {
     background-color: var(
       --theme-sidebar-category-networkInfo-background-color
     );
-    width: 193px;
+    width: auto;
+    max-width: 400px;
   }
 }
 
