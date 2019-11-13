@@ -27,14 +27,9 @@ let
   rustPkgs = iohkNix.rust-packages.pkgs;
   isDaedalus = name: false;
   cardanoSL = { target }: import sources.cardano-sl { gitrev = sources.cardano-sl.rev; };
-  cardanoWallet' = import sources.cardano-wallet {};
-  cardanoWallet = if nodeImplementation == "jormungandr" then cardanoWallet'.cardano-wallet-jormungandr else cardanoWallet'.cardano-wallet-http-bridge;
-  cardanoNode = if nodeImplementation == "jormungandr" then cardanoWallet'.jormungandr else cardanoWallet'.cardano-http-bridge;
-  jormungandr = cardanoWallet'.jormungandr;
-  jcli = cardanoWallet'.jormungandr-cli;
   pkgs = iohkNix.pkgs;
   lib = pkgs.lib;
 in
 lib // {
-  inherit sources iohkNix pkgs cardanoSL isDaedalus cleanSourceFilter cardanoWallet cardanoNode jcli jormungandr;
+  inherit sources iohkNix pkgs cardanoSL isDaedalus cleanSourceFilter;
 }

@@ -40,9 +40,7 @@ let
   # to evaluate it.
   daedalusShellBuildInputs = [
       nodejs yarn
-      localLib.cardanoWallet
-      localLib.cardanoNode
-      localLib.jcli
+      daedalusPkgs.daedalus-bridge
     ] ++ (with pkgs; [
       nix bash binutils coreutils curl gnutar
       git python27 curl jq

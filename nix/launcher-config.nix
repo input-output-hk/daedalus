@@ -16,8 +16,8 @@ let
   installDirectorySuffix.nightly = "Nightly";
 
   dataDir.linux = "\${XDG_DATA_HOME}/Daedalus/${environment}";
-  dataDir.macos64 = "\${HOME}/Library/Application Support/Daedalus/${environment}";
-  dataDir.windows = "\${APPDATA}\\Daedalus\\${environment}";
+  dataDir.macos64 = "\${HOME}/Library/Application Support/Daedalus ${environment}";
+  dataDir.windows = "\${APPDATA}\\Daedalus ${environment}";
 
   # TODO, use backend
   nodeBin.linux = "jormungandr";
@@ -95,7 +95,7 @@ let
     updateArchive = "/bar";
   };
   installerConfig = {
-    installDirectory = if os == "windows" then "Daedalus\\${environment}" else "Daedalus/${environment}";
+    installDirectory = if os == "windows" then "Daedalus ${environment}" else "Daedalus/${environment}";
     spacedName = "Daedalus ${installDirectorySuffix.${environment}}";
     macPackageName = "Daedalus${installDirectorySuffix.${environment}}";
     dataDir = dataDir.${os};
