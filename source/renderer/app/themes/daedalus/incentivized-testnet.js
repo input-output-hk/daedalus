@@ -291,7 +291,7 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--theme-nav-dropdown-item-text-color': '#ffffff',
     '--theme-nav-dropdown-item-background-color': '#3f404f',
     '--theme-nav-dropdown-item-background-color-hover':
-      'rgba(255, 255, 255, 0.05)',
+      'rgba(255, 255, 255, 0.07)',
     '--theme-nav-dropdown-item-color-hover': '#ffffff',
   },
   navItem: {
