@@ -39,7 +39,7 @@ export const getBuildLabel = (
     ? ''
     : ` ${networkPrettyNames[network]}`;
   let buildLabel = `Daedalus${networkLabel} (${version}#${buildNumber})`;
-  if (!checkIsProduction(network))
+  if (!checkIsProduction(currentNodeEnv))
     buildLabel += ` ${upperFirst(currentNodeEnv)}`;
   return buildLabel;
 };
