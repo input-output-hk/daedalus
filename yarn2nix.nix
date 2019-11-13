@@ -14,7 +14,7 @@ let
     staging = "Daedalus Staging";
     testnet = "Daedalus Testnet";
     nightly = "Daedalus Nightly";
-    itn_balance_check = "Daedalus Incentivized Testnet (Balance Check)";
+    itn_balance_check = "Daedalus - Balance check";
     qa = "Daedalus QA";
     selfnode = "Daedalus Selfnode";
   };
