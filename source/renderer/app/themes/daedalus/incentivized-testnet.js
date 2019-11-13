@@ -757,7 +757,7 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--theme-transactions-icon-type-expend-background-color': '#709cf0',
     '--theme-transactions-icon-type-income-background-color': '#2cbb69',
     '--theme-transactions-icon-type-pending-regular-background-color':
-      'rgba(255, 255, 255, 0.3)',
+      'rgba(255, 255, 255, 0.5)',
     '--theme-transactions-icon-type-pending-warning-background-color':
       'rgba(235, 74, 34, 0.8)',
     '--theme-transactions-list-background-color': '#1e1f31',
@@ -767,7 +767,7 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--theme-transactions-search-background-color': '#121326',
     '--theme-transactions-state-ok-background-color': '#2cbb69',
     '--theme-transactions-state-pending-background-color':
-      'rgba(255, 255, 255, 0.3)',
+      'rgba(255, 255, 255, 0.5)',
     '--theme-transactions-state-pending-warning-background-color': '#eb4a22',
     '--theme-transactions-state-text-color': '#121326',
   },
