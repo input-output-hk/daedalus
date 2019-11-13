@@ -1,3 +1,5 @@
+@import '../../themes/mixins/link';
+
 %actionButton {
   border-radius: 2px;
   box-sizing: border-box;
@@ -38,6 +40,18 @@
       background-color: var(
         --theme-legacy-notification-learn-more-button-background-color-active
       ) !important;
+    }
+
+    .externalLinkIcon {
+      @include link(--theme-legacy-notification-learn-more-button-text-color);
+      border-bottom: none;
+
+      svg {
+        margin-bottom: 1px;
+        margin-left: 5px;
+        vertical-align: sub;
+        width: 14px;
+      }
     }
   }
 
