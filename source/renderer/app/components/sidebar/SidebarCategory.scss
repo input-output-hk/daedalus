@@ -76,16 +76,16 @@
   padding: 0 26px;
   position: absolute;
   transition: max-width 0.2s ease-out;
-  width: 71px;
   max-width: 71px;
+  width: 71px;
   z-index: 21;
 
   &:hover {
     background-color: var(
       --theme-sidebar-category-networkInfo-background-color
     );
-    width: auto;
     max-width: 400px;
+    width: auto;
   }
 }
 
