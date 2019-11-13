@@ -52,6 +52,7 @@ data OS
 
 data Cluster
   = Nightly
+  | IncentivizedBal
   | QA
   | Selfnode
   deriving (Bounded, Enum, Eq, Read, Show)
@@ -99,6 +100,7 @@ tt = format fp
 -- See also: the cluster argument in default.nix.
 clusterNetwork :: Cluster -> Text
 clusterNetwork Nightly = "nightly"
+clusterNetwork IncentivizedBal = "itn_balance_check"
 clusterNetwork QA = "qa"
 clusterNetwork Selfnode = "selfnode"
 

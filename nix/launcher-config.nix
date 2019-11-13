@@ -14,6 +14,7 @@ let
   installDirectorySuffix.qa = "QA";
   installDirectorySuffix.selfnode = "SelfNode";
   installDirectorySuffix.nightly = "Nightly";
+  installDirectorySuffix.itn_balance_check = "Incentivized Testnet (Balance Check)";
 
   dataDir.linux = "\${XDG_DATA_HOME}/Daedalus/${environment}";
   dataDir.macos64 = "\${HOME}/Library/Application Support/Daedalus ${environment}";
