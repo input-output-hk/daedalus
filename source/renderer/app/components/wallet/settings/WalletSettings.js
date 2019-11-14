@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import type { Node } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
+import classNames from 'classnames';
 import moment from 'moment';
 import LocalizableError from '../../../i18n/LocalizableError';
 import BorderedBox from '../../widgets/BorderedBox';
@@ -154,9 +155,13 @@ export default class WalletSettings extends Component<Props, State> {
     const { isFormBlocked } = this.state;
 
     if (isLegacy) {
+      const deleteWalletBoxStyles = classNames([
+        styles.deleteWalletBox,
+        styles.legacyWallet,
+      ]);
       return (
         <div className={styles.component}>
-          <BorderedBox className={styles.deleteWalletBox}>
+          <BorderedBox className={deleteWalletBoxStyles}>
             <span>{intl.formatMessage(messages.deleteWalletHeader)}</span>
             <div className={styles.contentBox}>
               <p>{intl.formatMessage(messages.deleteWalletWarning)}</p>
