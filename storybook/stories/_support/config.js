@@ -5,6 +5,7 @@ import lightBlue from '../../../source/renderer/app/themes/daedalus/light-blue.j
 import darkCardano from '../../../source/renderer/app/themes/daedalus/dark-cardano.js';
 import white from '../../../source/renderer/app/themes/daedalus/white.js';
 import yellow from '../../../source/renderer/app/themes/daedalus/yellow.js';
+import incentivizedTestnet from '../../../source/renderer/app/themes/daedalus/incentivized-testnet.js';
 
 export const themes = {
   Cardano: cardano,
@@ -13,6 +14,7 @@ export const themes = {
   DarkCardano: darkCardano,
   Yellow: yellow,
   White: white,
+  IncentivizedTestnet: incentivizedTestnet,
 };
 export const themeNames: Array<any> = Object.keys(themes);
 export const themesIds = {
@@ -22,6 +24,7 @@ export const themesIds = {
   DarkCardano: 'dark-cardano',
   Yellow: 'yellow',
   White: 'white',
+  IncentivizedTestnet: 'incentivized-testnet',
 };
 
 export const locales = {
