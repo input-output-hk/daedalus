@@ -180,6 +180,7 @@ let
         staging = "Daedalus Staging";
         testnet = "Daedalus Testnet";
         nightly = "Daedalus Nightly";
+        itn_balance_check = "Daedalus - Balance check";
         qa = "Daedalus QA";
         selfnode = "Daedalus SelfNode";
       };
@@ -246,7 +247,7 @@ let
 
     ## TODO: move to installers/nix
     hsDaedalusPkgs = import ./installers {
-      #inherit (cardanoSL) daedalus-bridge;
+      inherit (self) daedalus-bridge;
       inherit localLib system;
     };
     daedalus-installer = pkgs.haskell.lib.justStaticExecutables self.hsDaedalusPkgs.daedalus-installer;
@@ -325,6 +326,10 @@ let
       nightly = {
         small = ./installers/icons/nightly/64x64.png;
         large = ./installers/icons/nightly/1024x1024.png;
+      };
+      itn_balance_check = {
+        small = ./installers/icons/itn_balance_check/64x64.png;
+        large = ./installers/icons/itn_balance_check/1024x1024.png;
       };
     };
     namespaceHelper = pkgs.writeScriptBin "namespaceHelper" ''
