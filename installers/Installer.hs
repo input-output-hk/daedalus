@@ -52,6 +52,7 @@ main = do
             go :: String -> IO ()
             go cluster' = do
                 let
+                    getAppName ITn_Balance_Check = "DaedalusItnBalanceCheck"
                     getAppName Nightly = "DaedalusNightly"
                     getAppName QA = "DaedalusQA";
                     getAppName Selfnode = "DaedalusSelfnode"

@@ -9,7 +9,7 @@ import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
 import styles from './WalletRecoveryPhraseStepDialogs.scss';
-import { WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../../../config/cryptoConfig';
+import { LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../../../config/cryptoConfig';
 import globalMessages from '../../../i18n/global-messages';
 
 export const messages = defineMessages({
@@ -83,12 +83,12 @@ export default class WalletRecoveryPhraseStep2 extends Component<Props> {
 
             // Check if recovery phrase contains 12 words
             const isPhraseComplete =
-              wordCount === WALLET_RECOVERY_PHRASE_WORD_COUNT;
+              wordCount === LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT;
             if (!isPhraseComplete) {
               return [
                 false,
                 intl.formatMessage(globalMessages.incompleteMnemonic, {
-                  expected: WALLET_RECOVERY_PHRASE_WORD_COUNT,
+                  expected: LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT,
                 }),
               ];
             }
@@ -118,7 +118,8 @@ export default class WalletRecoveryPhraseStep2 extends Component<Props> {
     const canSubmit =
       !recoveryPhraseField.error &&
       !isVerifying &&
-      recoveryPhraseField.value.length === WALLET_RECOVERY_PHRASE_WORD_COUNT;
+      recoveryPhraseField.value.length ===
+        LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT;
     const actions = [
       {
         className: isVerifying ? styles.isVerifying : null,
@@ -147,7 +148,7 @@ export default class WalletRecoveryPhraseStep2 extends Component<Props> {
           label={intl.formatMessage(messages.recoveryPhraseStep2Subtitle)}
           placeholder={intl.formatMessage(messages.recoveryPhraseInputHint)}
           options={suggestedMnemonics}
-          maxSelections={WALLET_RECOVERY_PHRASE_WORD_COUNT}
+          maxSelections={LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT}
           error={recoveryPhraseField.error}
           maxVisibleOptions={5}
           noResultsMessage={intl.formatMessage(
