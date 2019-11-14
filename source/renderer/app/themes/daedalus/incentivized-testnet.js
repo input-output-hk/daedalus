@@ -59,7 +59,7 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--theme-button-attention-background-color-hover': '#ce411d',
     '--theme-button-attention-background-color-active': '#b23819',
     '--theme-button-attention-background-color-disabled':
-      'rgba(235, 74, 34, 0.3)',
+      'rgba(235, 74, 34, 1)',
     '--theme-button-attention-text-color': '#121326',
     '--theme-button-attention-text-color-disabled': '#121326',
     '--theme-button-attention-outline-color': 'rgba(255, 255, 255, 0.3)',
@@ -90,8 +90,7 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--theme-button-primary-background-color': '#eb2256',
     '--theme-button-primary-background-color-hover': '#d41345',
     '--theme-button-primary-background-color-active': '#c81241',
-    '--theme-button-primary-background-color-disabled':
-      'rgba(235, 34, 88, 0.3)',
+    '--theme-button-primary-background-color-disabled': 'rgba(235, 34, 88, 1)',
     '--theme-button-primary-text-color-disabled': '#121326',
     '--theme-button-primary-text-color': '#121326',
     '--theme-button-primary-outline-color': 'rgba(255, 255, 255, 0.5)',

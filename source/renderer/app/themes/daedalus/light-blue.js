@@ -65,7 +65,7 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-button-attention-background-color-hover': '#ec5d6b',
     '--theme-button-attention-background-color-active': '#d34452',
     '--theme-button-attention-background-color-disabled':
-      'rgba(234, 76, 91, 0.3)',
+      'rgba(234, 76, 91, 1)',
     '--theme-button-attention-text-color-disabled': '#fafbfc',
     '--theme-button-attention-text-color': '#fafbfc',
     '--theme-button-attention-outline-color': '#ff707e',
