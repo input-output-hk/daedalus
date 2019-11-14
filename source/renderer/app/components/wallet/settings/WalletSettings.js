@@ -207,11 +207,12 @@ export default class WalletSettings extends Component<Props, State> {
             value={intl.formatMessage(messages.passwordLastUpdated, {
               lastUpdated: moment(spendingPasswordUpdateDate).fromNow(),
             })}
-            onClick={() =>
+            onClick={() => {
+              this.onBlockForm();
               openDialogAction({
                 dialog: ChangeSpendingPasswordDialog,
-              })
-            }
+              });
+            }}
           />
 
           {!isIncentivizedTestnet && (
