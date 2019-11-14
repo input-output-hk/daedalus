@@ -77,7 +77,7 @@
   padding: 0 26px;
   position: absolute;
   transition: max-width 0.2s ease-out;
-  width: 71px;
+  width: auto;
   z-index: 21;
 
   &:hover {
@@ -85,7 +85,6 @@
       --theme-sidebar-category-networkInfo-background-color
     );
     max-width: 400px;
-    width: auto;
   }
 }
 
