@@ -15,6 +15,8 @@
   }
   .radiosContainer {
     display: flex;
-    justify-content: space-between;
+    > div {
+      margin-right: 40px;
+    }
   }
 }
