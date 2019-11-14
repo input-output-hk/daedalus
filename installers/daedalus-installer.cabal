@@ -29,8 +29,6 @@ library
                      , bytestring
                      , unordered-containers
                      , containers
-                     , dhall
-                     , dhall-json
                      , directory
                      , github
                      , lens-aeson
@@ -86,8 +84,6 @@ test-suite test-make-installer
                      , aeson
                      , bytestring
                      , containers
-                     , dhall
-                     , dhall-json
                      , directory
                      , filepath
                      , foldl

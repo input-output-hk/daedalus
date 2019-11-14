@@ -3,16 +3,12 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE NamedFieldPuns    #-}
+{-# LANGUAGE DeriveGeneric     #-}
+
 module MacInstaller
-    ( main
-    , SigningConfig(..)
-    , signingConfig
-    , signInstaller
-    , importCertificate
-    , deleteCertificate
-    , run
-    , run'
-    ) where
+  ( main
+  , readCardanoVersionFile
+  ) where
 
 ---
 --- An overview of Mac .pkg internals:    http://www.peachpit.com/articles/article.aspx?p=605381&seqNum=2
@@ -24,6 +20,7 @@ import           Control.Exception         (handle)
 import           Control.Monad             (unless)
 import           Data.Text                 (Text)
 import qualified Data.Text                 as T
+import           Data.Aeson                (FromJSON(parseJSON), genericParseJSON, defaultOptions, decodeFileStrict')
 import           Data.Yaml                 (decodeFileThrow)
 import           Filesystem.Path           (FilePath, dropExtension, (<.>),
                                             (</>))
@@ -49,10 +46,14 @@ data DarwinConfig = DarwinConfig {
 
 -- | The contract of `main` is not to produce unsigned installer binaries.
 main :: Options -> IO ()
-main opts@Options{oBackend, oCluster, oBuildJob, oOutputDir, oTestInstaller} = do
+main opts@Options{oBackend, oCluster, oBuildJob, oOutputDir, oTestInstaller, oSigningConfigPath} = do
   hSetBuffering stdout NoBuffering
 
   installerConfig <- decodeFileThrow "installer-config.json"
+  mSigningConfig <- case oSigningConfigPath of
+    Just path -> do
+      decodeFileStrict' $ encodeString path
+    Nothing -> pure Nothing
 
   let
     darwinConfig = DarwinConfig {
@@ -61,7 +62,6 @@ main opts@Options{oBackend, oCluster, oBuildJob, oOutputDir, oTestInstaller} = d
       , dcPkgName = "org." <> (macPackageName installerConfig) <> ".pkg"
       , dcDataDir = dataDir installerConfig
       }
-    signing = False
   print darwinConfig
 
   ver <- getBackendVersion oBackend
@@ -77,9 +77,9 @@ main opts@Options{oBackend, oCluster, oBuildJob, oOutputDir, oTestInstaller} = d
 
   tempInstaller <- makeInstaller opts darwinConfig appRoot pkg
 
-  case signing of
-    True -> signInstaller signingConfig tempInstaller opkg
-    False -> cp tempInstaller opkg
+  case mSigningConfig of
+    Just signingConfig -> signInstaller signingConfig tempInstaller opkg
+    Nothing -> cp tempInstaller opkg
 
   run "rm" [tt tempInstaller]
   printf ("Generated "%fp%"\n") opkg
@@ -88,13 +88,13 @@ main opts@Options{oBackend, oCluster, oBuildJob, oOutputDir, oTestInstaller} = d
     echo $ "--test-installer passed, will test the installer for installability"
     procs "sudo" ["installer", "-dumplog", "-verbose", "-target", "/", "-pkg", tt opkg] empty
 
-  case signing of
-    True -> do
+  case mSigningConfig of
+    Just _ -> do
       signed <- checkSignature opkg
       case signed of
         SignedOK -> pure ()
         NotSigned -> rm opkg
-    False -> pure ()
+    Nothing -> pure ()
 
 makePostInstall :: Format a (Text -> a)
 makePostInstall = "#!/usr/bin/env bash\n" %
@@ -254,31 +254,10 @@ data SigningConfig = SigningConfig
   { signingIdentity         :: T.Text
   , signingKeyChain         :: Maybe T.Text
   , signingKeyChainPassword :: Maybe T.Text
-  } deriving (Show, Eq)
+  } deriving (Show, Eq, Generic)
 
-signingConfig :: SigningConfig
-signingConfig = SigningConfig
-  { signingIdentity = "Developer ID Installer: Input Output HK Limited (89TW38X994)"
-  , signingKeyChain = Nothing
-  , signingKeyChainPassword = Nothing
-  }
-
--- | Runs "security import -x"
-importCertificate :: SigningConfig -> FilePath -> Maybe Text -> IO ExitCode
-importCertificate SigningConfig{signingKeyChain} cert password = do
-  let optArg s = maybe [] (\p -> [s, p])
-      certPass = optArg "-P" password
-      keyChain = optArg "-k" signingKeyChain
-  productSign <- optArg "-T" . fmap tt <$> which "productsign"
-  let args = ["import", tt cert, "-x"] ++ keyChain ++ certPass ++ productSign
-  proc "security" args mempty
-
---- | Remove our certificate from the keychain
-deleteCertificate :: SigningConfig -> IO ExitCode
-deleteCertificate SigningConfig{signingKeyChain, signingIdentity} = run' "security" args
-  where
-    args = ["delete-certificate", "-c", signingIdentity] ++ keychain
-    keychain = maybe [] pure signingKeyChain
+instance FromJSON SigningConfig where
+  parseJSON = genericParseJSON defaultOptions
 
 -- | Creates a new installer package with signature added.
 signInstaller :: SigningConfig -> FilePath -> FilePath -> IO ()
