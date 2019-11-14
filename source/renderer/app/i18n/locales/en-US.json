@@ -124,7 +124,7 @@
   "global.language.german": "German",
   "global.language.japanese": "Japanese / 日本語",
   "global.language.korean": "Korean",
-  "global.passwordInstructions": "The password needs to be at least <strong>7 characters</strong> long, and have at least <strong>1 uppercase letter</strong>, <strong>1 lowercase letter</strong> and <strong>1 number</strong>.",
+  "global.passwordInstructions": "The password needs to be at least <strong>10 characters</strong> long, and have at least <strong>1 uppercase letter</strong>, <strong>1 lowercase letter</strong> and <strong>1 number</strong>.",
   "global.spendingPasswordLabel": "Spending Password",
   "global.spendingPasswordPlaceholder": "Password",
   "global.unit.ada": "ADA",
