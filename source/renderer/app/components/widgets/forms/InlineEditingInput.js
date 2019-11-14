@@ -125,8 +125,9 @@ export default class InlineEditingInput extends Component<Props, State> {
 
   componentDidUpdate() {
     if (this.props.isActive) {
+      const { inputBlocked } = this.props;
       // eslint-disable-next-line no-unused-expressions
-      this.inputField && this.inputField.focus();
+      this.inputField && !inputBlocked && this.inputField.focus();
     }
   }
 

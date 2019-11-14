@@ -100,7 +100,7 @@ export default class WalletSettings extends Component<Props, State> {
     // Set "name" input to active and "unblock form" on Dialog close
     if (
       !isDialogOpen(DeleteWalletConfirmationDialog) &&
-      !isDialogOpen(DeleteWalletConfirmationDialog) &&
+      !isDialogOpen(ChangeSpendingPasswordDialog) &&
       isFormBlocked
     ) {
       this.unblockForm();
@@ -113,12 +113,10 @@ export default class WalletSettings extends Component<Props, State> {
   }
 
   onBlockForm = () => {
-    this.props.onStopEditing();
     this.setState({ isFormBlocked: true });
   };
 
   unblockForm = () => {
-    this.props.onStartEditing('name');
     this.setState({ isFormBlocked: false });
   };
 
