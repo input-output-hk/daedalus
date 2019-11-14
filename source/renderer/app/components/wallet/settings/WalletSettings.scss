@@ -27,6 +27,10 @@
     padding-bottom: 30px;
     padding-top: 30px;
 
+    &.legacyWallet {
+      margin-top: 0;
+    }
+
     span {
       color: var(--theme-input-label-color);
       font-family: var(--font-medium);
