@@ -162,7 +162,7 @@ const STATUS_CLASSNAMES: Object = {
   [CardanoNodeStates.ERRORED]: 'off',
   [CardanoNodeStates.UNRECOVERABLE]: 'off',
   true: 'on',
-  false: 'off',
+  false: 'unknown',
   undefined: 'unloaded',
 };
 
@@ -233,10 +233,11 @@ export default class StatusIcons extends Component<Props> {
 
   getIconWithToolTip = (icon: string, paramName: string) => (
     <Tooltip
-      skin={TooltipSkin}
-      themeOverrides={tooltipStyles}
-      tip={this.getTip(paramName, this.props[paramName])}
       className={this.getTooltipClassname(paramName)}
+      key={paramName}
+      themeOverrides={tooltipStyles}
+      skin={TooltipSkin}
+      tip={this.getTip(paramName, this.props[paramName])}
     >
       <button className={styles.iconButton} onClick={this.props.onIconClick}>
         <SVGInline svg={icon} className={this.getClassName(paramName)} />

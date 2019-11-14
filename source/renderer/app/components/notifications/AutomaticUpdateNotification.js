@@ -16,7 +16,7 @@ const messages = defineMessages({
   descriptionLine1: {
     id: 'automaticUpdate.description1',
     defaultMessage:
-      '!!!You are currently running Daedalus <b>v {currentAppVersion}</b> and <b>{nextAppVersion}</b> is available.',
+      '!!!You are currently running Daedalus <b>{currentAppVersion}</b> and <b>{nextAppVersion}</b> is available.',
     description: 'First description line of "Automatic update" overlay',
   },
   descriptionLine2: {
@@ -83,9 +83,9 @@ export default class AutomaticUpdateNotification extends Component<Props> {
                 {...messages.descriptionLine1}
                 values={{
                   currentAppVersion,
-                  nextUpdateVersion: nextUpdateVersion
-                    ? `v ${nextUpdateVersion}`
-                    : formatMessage(messages.newerVersionlabel),
+                  nextUpdateVersion:
+                    nextUpdateVersion ||
+                    formatMessage(messages.newerVersionlabel),
                 }}
               />
             </p>

@@ -14,7 +14,7 @@ export const ROUTES = {
     INFO: '/staking/info',
   },
   PROFILE: {
-    LANGUAGE_SELECTION: '/profile/language-selection',
+    INITIAL_SETTINGS: '/profile/initial-settings',
     TERMS_OF_USE: '/profile/terms-of-use',
     DATA_LAYER_MIGRATION: '/profile/data-layer-migration',
   },

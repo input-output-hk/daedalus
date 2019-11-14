@@ -31,8 +31,10 @@ export default class SidebarStore extends Store {
     this.registerReactions([this._syncSidebarRouteWithRouter]);
     this._configureCategories();
   }
-
-  @computed get wallets(): Array<SidebarWalletType> {
+  // We need to use computed.struct for computed objects (so they are structurally compared
+  // for equality instead of idendity (which would always invalidate)
+  // https://alexhisen.gitbooks.io/mobx-recipes/content/use-computedstruct-for-computed-objects.html
+  @computed.struct get wallets(): Array<SidebarWalletType> {
     const { networkStatus, wallets } = this.stores;
     return wallets.all.map(wallet => {
       const {

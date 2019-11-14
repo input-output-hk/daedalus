@@ -1,24 +1,48 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { defineMessages, intlShape } from 'react-intl';
+import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import externalLinkIcon from '../../assets/images/link-ic.inline.svg';
 import styles from './LegacyNotification.scss';
+import Wallet from '../../domains/Wallet';
 
 const messages = defineMessages({
-  title: {
-    id: 'wallet.legacy.notification.title',
-    defaultMessage: '!!!Move funds from the legacy wallet',
+  moveFundsTitle: {
+    id: 'wallet.legacy.notification.moveFundsTitle',
+    defaultMessage: '!!!Move testnet ada from {activeWalletName}',
     description:
       'Title "Move funds from the legacy wallet" on the legacy notification.',
   },
-  description: {
-    id: 'wallet.legacy.notification.description',
+  addWalletTitle: {
+    id: 'wallet.legacy.notification.addWalletTitle',
+    defaultMessage: '!!!Create a Rewards wallet',
+    description: 'Title "Create a Rewards wallet" on the legacy notification.',
+  },
+  moveFundsDescriptionLine1: {
+    id: 'wallet.legacy.notification.moveFundsDescription.line1',
     defaultMessage:
-      '!!!This is a legacy wallet which uses legacy addresses and does not support new features. Please move all of the ada from this legacy wallet to one of the wallets where new features are available. You can also create a brand new wallet for your ada in case you don’t want to move ada to one of your existing wallets. A sequence of screens will guide you through the process.',
+      '!!!"{transferWalletName}"" is a Balance wallet. It currently holds the testnet ada copied from the mainnet via the balance check snapshot.',
+    description: 'Legacy notification description.',
+  },
+  moveFundsDescriptionLine2: {
+    id: 'wallet.legacy.notification.moveFundsDescription.line2',
+    defaultMessage:
+      '!!!Move testnet ada to a Rewards wallet to delegate your testnet ada stake and earn rewards.',
+    description: 'Legacy notification description.',
+  },
+  addWalletDescriptionLine1: {
+    id: 'wallet.legacy.notification.addWalletDescription.line1',
+    defaultMessage:
+      '!!!"{activeWalletName}"" is a Balance wallet. It currently holds the testnet ada copied from the mainnet via the balance check snapshot.',
+    description: 'Legacy notification description.',
+  },
+  addWalletDescriptionLine2: {
+    id: 'wallet.legacy.notification.addWalletDescription.line2',
+    defaultMessage:
+      '!!!Create a Rewards wallet to delegate your testnet ada stake and earn rewards.',
     description: 'Legacy notification description.',
   },
   actionLearnMore: {
@@ -28,13 +52,13 @@ const messages = defineMessages({
   },
   actionMove: {
     id: 'wallet.legacy.notification.actionMove',
-    defaultMessage: '!!!Move all of the ada from this wallet',
-    description: 'Move all ada action of legacy notification.',
+    defaultMessage: '!!!Move testnet ada',
+    description: 'Move testnet ada action of legacy notification.',
   },
   addWallet: {
     id: 'wallet.legacy.notification.addWallet',
-    defaultMessage: '!!!Move all of the ada from this wallet',
-    description: 'Add wallet action of legacy notification.',
+    defaultMessage: '!!!Create a new Rewards wallet',
+    description: 'Create a new Rewards wallet action of legacy notification.',
   },
   learnMoreLinkUrl: {
     id: 'wallet.legacy.notification.learnMore.url',
@@ -45,6 +69,7 @@ const messages = defineMessages({
 });
 
 type Props = {
+  activeWallet: Wallet,
   onLearnMore: Function,
   onTransferFunds: Function,
   hasAnyWallets?: boolean,
@@ -65,20 +90,73 @@ export default class LegacyNotification extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { onTransferFunds, hasAnyWallets, onWalletAdd } = this.props;
-    const title = intl.formatMessage(messages.title);
-    const description = intl.formatMessage(messages.description);
+    const {
+      onTransferFunds,
+      hasAnyWallets,
+      onWalletAdd,
+      activeWallet,
+    } = this.props;
+    const buttonAction = hasAnyWallets ? onTransferFunds : onWalletAdd;
 
     const buttonLabel = hasAnyWallets
       ? intl.formatMessage(messages.actionMove)
       : intl.formatMessage(messages.addWallet);
 
-    const buttonAction = hasAnyWallets ? onTransferFunds : onWalletAdd;
-
     return (
       <div className={styles.component}>
-        <div className={styles.title}>{title}</div>
-        <div className={styles.description}>{description}</div>
+        <div className={styles.title}>
+          {hasAnyWallets ? (
+            <FormattedHTMLMessage
+              {...messages.moveFundsTitle}
+              values={{
+                activeWalletName: activeWallet.name,
+              }}
+            />
+          ) : (
+            <FormattedHTMLMessage
+              {...messages.addWalletTitle}
+              values={{
+                activeWalletName: activeWallet.name,
+              }}
+            />
+          )}
+        </div>
+        <div className={styles.description}>
+          <p>
+            {hasAnyWallets ? (
+              <FormattedHTMLMessage
+                {...messages.moveFundsDescriptionLine1}
+                values={{
+                  activeWalletName: activeWallet.name,
+                }}
+              />
+            ) : (
+              <FormattedHTMLMessage
+                {...messages.addWalletDescriptionLine1}
+                values={{
+                  activeWalletName: activeWallet.name,
+                }}
+              />
+            )}
+          </p>
+          <p>
+            {hasAnyWallets ? (
+              <FormattedHTMLMessage
+                {...messages.moveFundsDescriptionLine2}
+                values={{
+                  activeWalletName: activeWallet.name,
+                }}
+              />
+            ) : (
+              <FormattedHTMLMessage
+                {...messages.addWalletDescriptionLine2}
+                values={{
+                  activeWalletName: activeWallet.name,
+                }}
+              />
+            )}
+          </p>
+        </div>
         <div className={styles.actions}>
           <Button
             className={styles.actionLearnMore}

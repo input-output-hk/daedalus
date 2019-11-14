@@ -56,7 +56,7 @@ type Props = {
 };
 
 @observer
-export default class WalletRecoveryPhraseStep1 extends Component<Props> {
+export default class WalletRecoveryPhraseStep4 extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };

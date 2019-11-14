@@ -43,13 +43,13 @@ const messages = defineMessages({
   },
   walletNameInputHint: {
     id: 'wallet.restore.dialog.wallet.name.input.hint',
-    defaultMessage: '!!!Name the wallet you are restoring',
+    defaultMessage: '!!!Choose a name for the wallet you are about to restore',
     description:
       'Hint "Name the wallet you are restoring" for the wallet name input on the wallet restore dialog.',
   },
   recoveryPhraseTypeLabel: {
     id: 'wallet.restore.dialog.recovery.phrase.type.options.label',
-    defaultMessage: '!!!Recovery phrase type',
+    defaultMessage: '!!!Number of words in your recovery phrase',
     description:
       'Label for the recovery phrase type options on the wallet restore dialog.',
   },
@@ -61,25 +61,25 @@ const messages = defineMessages({
   },
   recoveryPhraseType15WordOption: {
     id: 'wallet.restore.dialog.recovery.phrase.type.15word.option',
-    defaultMessage: '!!!Daedalus wallet',
+    defaultMessage: '!!!Rewards wallet',
     description:
       'Label for the recovery phrase type 15-word option on the wallet restore dialog.',
   },
   recoveryPhraseType12WordOption: {
     id: 'wallet.restore.dialog.recovery.phrase.type.12word.option',
-    defaultMessage: '!!!Daedalus legacy wallet',
+    defaultMessage: '!!!Balance wallet',
     description:
       'Label for the recovery phrase type 12-word option on the wallet restore dialog.',
   },
   recoveryPhraseInputLabel: {
     id: 'wallet.restore.dialog.recovery.phrase.input.label',
-    defaultMessage: '!!!Recovery phrase',
+    defaultMessage: '!!!Wallet recovery phrase',
     description:
       'Label for the recovery phrase input on the wallet restore dialog.',
   },
   recoveryPhraseInputHint: {
     id: 'wallet.restore.dialog.recovery.phrase.input.hint',
-    defaultMessage: '!!!Enter recovery phrase',
+    defaultMessage: '!!!Enter your {numberOfWords}-word wallet recovery phrase',
     description:
       'Hint "Enter recovery phrase" for the recovery phrase input on the wallet restore dialog.',
   },
@@ -109,7 +109,7 @@ const messages = defineMessages({
   passwordSectionDescription: {
     id: 'wallet.restore.dialog.passwordSectionDescription',
     defaultMessage:
-      '!!!Keep your private keys safely encrypted by setting the spending password',
+      '!!!Keep your wallet secure by setting the spending password',
     description: 'Password creation description.',
   },
   spendingPasswordLabel: {
@@ -132,28 +132,34 @@ const messages = defineMessages({
   },
   recoveryPhraseTabTitle: {
     id: 'wallet.restore.dialog.tab.title.recoveryPhrase',
-    defaultMessage: '!!!Backup recovery phrase',
+    defaultMessage: '!!!Wallet recovery phrase',
     description:
-      'Tab title "Backup recovery phrase" in the wallet restore dialog.',
+      'Tab title "Wallet recovery phrasee" in the wallet restore dialog.',
   },
   certificateTabTitle: {
     id: 'wallet.restore.dialog.tab.title.certificate',
-    defaultMessage: '!!!Paper wallet certificate',
+    defaultMessage: '!!!Paper wallet recovery phrase',
     description:
-      'Tab title "Paper wallet certificate" in the wallet restore dialog.',
+      'Tab title "Paper wallet recovery phrase" in the wallet restore dialog.',
   },
   shieldedRecoveryPhraseInputLabel: {
     id: 'wallet.restore.dialog.shielded.recovery.phrase.input.label',
-    defaultMessage: '!!!Paper wallet recovery phrase',
+    defaultMessage: '!!!27-word paper wallet recovery phrase',
     description:
       'Label for the shielded recovery phrase input on the wallet restore dialog.',
   },
   shieldedRecoveryPhraseInputHint: {
     id: 'wallet.restore.dialog.shielded.recovery.phrase.input.hint',
     defaultMessage:
-      '!!!Enter the recovery phrase from your paper wallet certificate',
+      '!!!Enter your {numberOfWords}-word paper wallet recovery phrase',
     description:
-      'Hint "Enter shielded recovery phrase" for the recovery phrase input on the wallet restore dialog.',
+      'Hint "Enter your 27-word paper wallet recovery phrase." for the recovery phrase input on the wallet restore dialog.',
+  },
+  restorePaperWalletButtonLabel: {
+    id: 'wallet.restore.dialog.paper.wallet.button.label',
+    defaultMessage: '!!!Restore paper wallet',
+    description:
+      'Label for the "Restore paper wallet" button on the wallet restore dialog.',
   },
 });
 
@@ -184,7 +190,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
   };
 
   state = {
-    walletType: WALLET_RESTORE_TYPES.REGULAR, // regular | certificate | legacy
+    walletType: WALLET_RESTORE_TYPES.LEGACY, // regular | certificate | legacy
   };
 
   recoveryPhraseAutocomplete: Autocomplete;
@@ -233,8 +239,8 @@ export default class WalletRestoreDialog extends Component<Props, State> {
             }
             return [
               // TODO: we should also validate paper wallets mnemonics here!
-              this.isRegular() && !this.isLegacy()
-                ? this.props.mnemonicValidator(value)
+              !this.isCertificate()
+                ? this.props.mnemonicValidator(value, expectedWordCount)
                 : true,
               this.context.intl.formatMessage(messages.invalidRecoveryPhrase),
             ];
@@ -361,7 +367,11 @@ export default class WalletRestoreDialog extends Component<Props, State> {
     const actions = [
       {
         className: isSubmitting ? styles.isSubmitting : null,
-        label: this.context.intl.formatMessage(messages.importButtonLabel),
+        label: this.isCertificate()
+          ? this.context.intl.formatMessage(
+              messages.restorePaperWalletButtonLabel
+            )
+          : this.context.intl.formatMessage(messages.importButtonLabel),
         primary: true,
         disabled: isSubmitting,
         onClick: this.submit,
@@ -419,27 +429,6 @@ export default class WalletRestoreDialog extends Component<Props, State> {
             label={intl.formatMessage(messages.recoveryPhraseTypeLabel)}
             items={[
               {
-                key: WALLET_RESTORE_TYPES.REGULAR,
-                label: (
-                  <Fragment>
-                    15
-                    {intl.formatMessage(
-                      messages.recoveryPhraseTypeOptionWord
-                    )}{' '}
-                    <span>
-                      (
-                      {intl.formatMessage(
-                        messages.recoveryPhraseType15WordOption
-                      )}
-                      )
-                    </span>
-                  </Fragment>
-                ),
-                selected: !this.isLegacy(),
-                onChange: () =>
-                  this.onSelectWalletType(WALLET_RESTORE_TYPES.REGULAR),
-              },
-              {
                 key: WALLET_RESTORE_TYPES.LEGACY,
                 label: (
                   <Fragment>
@@ -460,6 +449,27 @@ export default class WalletRestoreDialog extends Component<Props, State> {
                 onChange: () =>
                   this.onSelectWalletType(WALLET_RESTORE_TYPES.LEGACY),
               },
+              {
+                key: WALLET_RESTORE_TYPES.REGULAR,
+                label: (
+                  <Fragment>
+                    15
+                    {intl.formatMessage(
+                      messages.recoveryPhraseTypeOptionWord
+                    )}{' '}
+                    <span>
+                      (
+                      {intl.formatMessage(
+                        messages.recoveryPhraseType15WordOption
+                      )}
+                      )
+                    </span>
+                  </Fragment>
+                ),
+                selected: !this.isLegacy(),
+                onChange: () =>
+                  this.onSelectWalletType(WALLET_RESTORE_TYPES.REGULAR),
+              },
             ]}
           />
         )}
@@ -476,8 +486,13 @@ export default class WalletRestoreDialog extends Component<Props, State> {
           }
           placeholder={
             !this.isCertificate()
-              ? intl.formatMessage(messages.recoveryPhraseInputHint)
-              : intl.formatMessage(messages.shieldedRecoveryPhraseInputHint)
+              ? intl.formatMessage(messages.recoveryPhraseInputHint, {
+                  numberOfWords:
+                    walletType === WALLET_RESTORE_TYPES.LEGACY ? '12' : '15',
+                })
+              : intl.formatMessage(messages.shieldedRecoveryPhraseInputHint, {
+                  numberOfWords: 27,
+                })
           }
           options={suggestedMnemonics}
           maxSelections={RECOVERY_PHRASE_WORD_COUNT_OPTIONS[walletType]}

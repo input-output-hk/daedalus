@@ -24,7 +24,7 @@ const messages = defineMessages({
   },
   createDescription: {
     id: 'wallet.add.dialog.create.description',
-    defaultMessage: '!!!Create a new wallet',
+    defaultMessage: '!!!Create a wallet for the balance check',
     description:
       'Description for the "Create" button on the wallet add dialog.',
   },
@@ -46,7 +46,7 @@ const messages = defineMessages({
   restoreWithCertificateDescription: {
     id: 'wallet.add.dialog.restore.withCertificate.description',
     defaultMessage:
-      '!!!Restore using backup-recovery phrase or paper wallet certificate.',
+      '!!!Restore a wallet or paper wallet using wallet recovery phrase',
     description:
       'Description for the "Restore" button with paper wallet certificate on the wallet add dialog.',
   },
@@ -63,7 +63,7 @@ const messages = defineMessages({
   },
   importDescription: {
     id: 'wallet.add.dialog.import.description',
-    defaultMessage: '!!!Import wallet from a file',
+    defaultMessage: '!!!Import a wallet from a file',
     description:
       'Description for the "Import" button on the wallet add dialog.',
   },
@@ -90,6 +90,7 @@ type Props = {
   isMainnet: boolean,
   isTestnet: boolean,
   isMaxNumberOfWalletsReached: boolean,
+  isIncentivizedTestnet: boolean,
 };
 
 @observer
@@ -112,6 +113,7 @@ export default class WalletAdd extends Component<Props> {
       isMaxNumberOfWalletsReached,
       isMainnet,
       isTestnet,
+      isIncentivizedTestnet,
     } = this.props;
 
     const componentClasses = classnames([styles.component, 'WalletAdd']);
@@ -158,7 +160,12 @@ export default class WalletAdd extends Component<Props> {
               icon={importIcon}
               label={intl.formatMessage(messages.importLabel)}
               description={intl.formatMessage(messages.importDescription)}
-              isDisabled={isMaxNumberOfWalletsReached || isMainnet || isTestnet}
+              isDisabled={
+                isMaxNumberOfWalletsReached ||
+                isMainnet ||
+                isTestnet ||
+                isIncentivizedTestnet
+              }
             />
           </div>
           {activeNotification ? (

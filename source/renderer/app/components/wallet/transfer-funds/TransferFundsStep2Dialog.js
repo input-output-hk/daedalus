@@ -22,7 +22,7 @@ import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 const messages = defineMessages({
   dialogTitle: {
     id: 'wallet.transferFunds.dialog2.title',
-    defaultMessage: '!!!Transfer funds from the legacy wallet',
+    defaultMessage: '!!!Transfer funds from the Balance wallet',
     description: 'Title in the transfer funds form.',
   },
   description: {
@@ -102,11 +102,11 @@ export default class TransferFundsStep2Dialog extends Component<Props, State> {
 
   componentWillReceiveProps(nextProps: Props) {
     const { transferFundsFee, sourceWallet } = nextProps;
-    // "FREEZ" current amounts with component state
+    // "freezes" the current amounts in the component state
     if (transferFundsFee && !this.state.fees && !this.state.amount) {
       const fees = transferFundsFee.toFormat(DECIMAL_PLACES_IN_ADA);
       const amount = formattedWalletAmount(
-        sourceWallet.amount.minus(fees),
+        sourceWallet.amount.minus(transferFundsFee),
         false
       );
       this.setState({ fees, amount });
@@ -202,8 +202,8 @@ export default class TransferFundsStep2Dialog extends Component<Props, State> {
         <FormattedMessage
           {...messages.description}
           values={{
-            sourceWalletName: <b>{sourceWallet.name}</b>,
-            targetWalletName: <b>{targetWallet.name}</b>,
+            sourceWalletName: <b key="source">{sourceWallet.name}</b>,
+            targetWalletName: <b key="target">{targetWallet.name}</b>,
           }}
         >
           {(...content) => <div className={styles.description}>{content}</div>}

@@ -60,7 +60,6 @@ import {
   cardanoFaultInjectionChannel,
 } from '../ipc/cardano.ipc';
 import patchAdaApi from './utils/patchAdaApi';
-import { isValidMnemonic } from '../../../common/crypto/decrypt';
 import { utcStringToDate } from './utils';
 import { Logger } from '../utils/logging';
 import {
@@ -73,10 +72,7 @@ import { filterLogData } from '../../../common/utils/logging';
 
 // Config constants
 import { LOVELACES_PER_ADA } from '../config/numbersConfig';
-import {
-  ADA_CERTIFICATE_MNEMONIC_LENGTH,
-  WALLET_RECOVERY_PHRASE_WORD_COUNT,
-} from '../config/cryptoConfig';
+import { ADA_CERTIFICATE_MNEMONIC_LENGTH } from '../config/cryptoConfig';
 
 // Addresses Types
 import type { Address, GetAddressesRequest } from './addresses/types';
@@ -615,9 +611,6 @@ export default class AdaApi {
       // is no longer pending - in which case there is nothign we can do.
     }
   };
-
-  isValidMnemonic = (mnemonic: string): boolean =>
-    isValidMnemonic(mnemonic, WALLET_RECOVERY_PHRASE_WORD_COUNT);
 
   isValidCertificateMnemonic = (mnemonic: string): boolean =>
     mnemonic.split(' ').length === ADA_CERTIFICATE_MNEMONIC_LENGTH;
@@ -1162,10 +1155,12 @@ export default class AdaApi {
   };
 
   // No implementation here but can be overwritten
+  setLocalTimeDifference: Function;
   setSyncProgress: Function;
   setNextUpdate: Function;
   setLatestAppVersion: Function;
   setApplicationVersion: Function;
+  setFaultyNodeSettingsApi: boolean;
   resetTestOverrides: Function;
 
   // Newsfeed testing utility

@@ -21,49 +21,33 @@
     padding-bottom: 14px;
   }
 
-  .deleteWalletDescriptionContainer {
-    align-items: center;
-    display: flex;
-    justify-content: space-between;
+  .deleteWalletBox {
+    margin-bottom: 37px;
+    margin-top: 20px;
+    padding-bottom: 30px;
+    padding-top: 30px;
 
-    .deleteWalletDescriptionText {
+    &.legacyWallet {
+      margin-top: 0;
+    }
+
+    span {
       color: var(--theme-input-label-color);
+      font-family: var(--font-medium);
       font-size: 16px;
-      font-weight: 300;
+      margin-bottom: 14px;
+    }
+
+    .contentBox {
+      align-items: center;
+      color: var(--theme-bordered-box-text-color);
+      display: flex;
+      flex-direction: row;
+      font-family: var(--font-light);
+      justify-content: space-between;
       line-height: 1.38;
-      padding-right: 10px;
+      padding-top: 14px;
     }
-
-    button {
-      background-color: var(
-        --theme-settings-delete-button-legacy-background-color
-      );
-      border-radius: 5px;
-      font-size: 14px;
-      font-weight: 500;
-      height: 36px;
-      line-height: inherit;
-      width: 217px;
-
-      &:hover {
-        background-color: var(
-          --theme-settings-delete-button-legacy-background-color-hover
-        );
-      }
-    }
-  }
-}
-
-.actionButtons {
-  display: flex;
-  justify-content: space-around;
-  margin-bottom: 10px;
-
-  .exportLink {
-    color: var(--theme-bordered-box-text-color);
-    cursor: pointer;
-    font-family: var(--font-medium);
-    font-size: 16px;
   }
 }
 

@@ -5,6 +5,7 @@ import WalletRecoveryPhraseStep2Dialog from '../../../../components/wallet/setti
 import WalletRecoveryPhraseStep3Dialog from '../../../../components/wallet/settings/WalletRecoveryPhraseStep3Dialog';
 import WalletRecoveryPhraseStep4Dialog from '../../../../components/wallet/settings/WalletRecoveryPhraseStep4Dialog';
 import validWords from '../../../../../../common/crypto/valid-words.en';
+import { isValidMnemonic } from '../../../../../../common/crypto/decrypt';
 import type { InjectedDialogContainerProps } from '../../../../types/injectedPropsType';
 
 type Props = InjectedDialogContainerProps;
@@ -50,8 +51,7 @@ export default class WalletRecoveryPhraseStep2Container extends Component<Props>
 
   render() {
     const { stores } = this.props;
-    const { wallets, walletBackup } = stores;
-    const { isValidMnemonic } = wallets;
+    const { walletBackup } = stores;
     const { getWalletIdAndBalanceRequest } = walletBackup;
     const { closeActiveDialog } = this.props.actions.dialogs;
 
@@ -61,7 +61,7 @@ export default class WalletRecoveryPhraseStep2Container extends Component<Props>
 
     return (
       <WalletRecoveryPhraseStep2Dialog
-        mnemonicValidator={mnemonic => isValidMnemonic(mnemonic)}
+        mnemonicValidator={isValidMnemonic}
         suggestedMnemonics={validWords}
         isVerifying={isVerifying}
         onVerify={this.handleVerify}

@@ -9,6 +9,7 @@ export default class AppActions {
   initAppEnvironment: Action<any> = new Action();
   setNotificationVisibility: Action<boolean> = new Action();
   toggleNewsFeed: Action<boolean> = new Action();
+  closeNewsFeed: Action<any> = new Action();
 
   // About dialog actions
   closeAboutDialog: Action<any> = new Action();
