@@ -162,7 +162,7 @@ const STATUS_CLASSNAMES: Object = {
   [CardanoNodeStates.ERRORED]: 'off',
   [CardanoNodeStates.UNRECOVERABLE]: 'off',
   true: 'on',
-  false: 'off',
+  false: 'unknown',
   undefined: 'unloaded',
 };
 
