@@ -10,13 +10,29 @@ import InlineEditingInput from '../../widgets/forms/InlineEditingInput';
 import ReadOnlyInput from '../../widgets/forms/ReadOnlyInput';
 import DeleteWalletButton from './DeleteWalletButton';
 import DeleteWalletConfirmationDialog from './DeleteWalletConfirmationDialog';
-import ExportWalletToFileDialog from './ExportWalletToFileDialog';
 import ChangeSpendingPasswordDialog from './ChangeSpendingPasswordDialog';
 import globalMessages from '../../../i18n/global-messages';
 import styles from './WalletSettings.scss';
 import WalletRecoveryPhrase from './WalletRecoveryPhrase';
 
 export const messages = defineMessages({
+  assuranceLevelLabel: {
+    id: 'wallet.settings.assurance',
+    defaultMessage: '!!!Transaction assurance security level',
+    description:
+      'Label for the "Transaction assurance security level" dropdown.',
+  },
+  deleteWalletHeader: {
+    id: 'wallet.settings.deleteWallet.header',
+    defaultMessage: '!!!Delete wallet',
+    description: 'Delete wallet header on the wallet settings page.',
+  },
+  deleteWalletWarning: {
+    id: 'wallet.settings.deleteWallet.warning',
+    defaultMessage:
+      '!!!Once you delete a wallet, there is no going back. The only way to restore your wallet is to use your recovery phrase.',
+    description: 'Delete wallet warning explaining the consequences.',
+  },
   name: {
     id: 'wallet.settings.name.label',
     defaultMessage: '!!!Name',
@@ -31,11 +47,6 @@ export const messages = defineMessages({
     id: 'wallet.settings.passwordLastUpdated',
     defaultMessage: '!!!Last updated',
     description: 'Last updated X time ago message.',
-  },
-  exportButtonLabel: {
-    id: 'wallet.settings.exportWalletButtonLabel',
-    defaultMessage: '!!!Export wallet',
-    description: 'Label for the export button on wallet settings.',
   },
 });
 
@@ -56,11 +67,9 @@ type Props = {
   isIncentivizedTestnet: boolean,
   isInvalid: boolean,
   isLegacy: boolean,
-  showExportLink: boolean,
   lastUpdatedField: ?string,
   changeSpendingPasswordDialog: Node,
   deleteWalletDialogContainer: Node,
-  exportWalletDialogContainer: Node,
   walletRecoveryPhraseStep1Container: Node,
   walletRecoveryPhraseStep2Container: Node,
   walletRecoveryPhraseStep3Container: Node,
@@ -74,10 +83,6 @@ type Props = {
 export default class WalletSettings extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
-  };
-
-  static defaultProps = {
-    showExportLink: false,
   };
 
   componentWillUnmount() {
@@ -105,10 +110,8 @@ export default class WalletSettings extends Component<Props> {
       isInvalid,
       isLegacy,
       lastUpdatedField,
-      showExportLink,
       changeSpendingPasswordDialog,
       deleteWalletDialogContainer,
-      exportWalletDialogContainer,
       walletRecoveryPhraseStep1Container,
       walletRecoveryPhraseStep2Container,
       walletRecoveryPhraseStep3Container,
@@ -199,23 +202,12 @@ export default class WalletSettings extends Component<Props> {
           )}
 
           {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
+        </BorderedBox>
 
-          <div className={styles.actionButtons}>
-            {showExportLink ? (
-              <button
-                className={styles.exportLink}
-                onClick={() =>
-                  openDialogAction({
-                    dialog: ExportWalletToFileDialog,
-                  })
-                }
-              >
-                {intl.formatMessage(messages.exportButtonLabel)}
-              </button>
-            ) : (
-              false
-            )}
-
+        <BorderedBox className={styles.deleteWalletBox}>
+          <span>{intl.formatMessage(messages.deleteWalletHeader)}</span>
+          <div className={styles.contentBox}>
+            <p>{intl.formatMessage(messages.deleteWalletWarning)}</p>
             <DeleteWalletButton
               onClick={() =>
                 openDialogAction({
@@ -232,10 +224,6 @@ export default class WalletSettings extends Component<Props> {
 
         {isDialogOpen(DeleteWalletConfirmationDialog)
           ? deleteWalletDialogContainer
-          : false}
-
-        {isDialogOpen(ExportWalletToFileDialog)
-          ? exportWalletDialogContainer
           : false}
       </div>
     );

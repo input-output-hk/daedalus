@@ -17,7 +17,7 @@ import {
   WalletTransaction,
 } from '../../../domains/WalletTransaction';
 import globalMessages from '../../../i18n/global-messages';
-import type { TransactionState } from '../../../domains/WalletTransaction';
+import type { TransactionState } from '../../../api/transactions/types';
 import { getNetworkExplorerUrl } from '../../../utils/network';
 import { PENDING_TIME_LIMIT } from '../../../config/txnsConfig';
 import CancelTransactionConfirmationDialog from './CancelTransactionConfirmationDialog';
@@ -146,6 +146,7 @@ type Props = {
   rawNetwork: string,
   onDetailsToggled: ?Function,
   onOpenExternalLink: ?Function,
+  currentTimeFormat: string,
   walletId: string,
   isDeletingTransaction: boolean,
   currentLocale: string,
@@ -296,6 +297,7 @@ export default class Transaction extends Component<Props, State> {
       onOpenExternalLink,
       isExpanded,
       isDeletingTransaction,
+      currentTimeFormat,
     } = this.props;
     const { intl } = this.context;
 
@@ -411,7 +413,7 @@ export default class Transaction extends Component<Props, State> {
               <div className={styles.details}>
                 <div className={styles.type}>
                   {intl.formatMessage(messages.type, { currency })},{' '}
-                  {moment(data.date).format('hh:mm:ss A')}
+                  {moment(data.date).format(currentTimeFormat)}
                 </div>
                 {this.renderTxnStateTag()}
               </div>

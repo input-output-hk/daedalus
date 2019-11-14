@@ -309,7 +309,7 @@ export default class WalletsStore extends Store {
     }
   };
 
-  _deleteWallet = async (params: { walletId: string, isLegacy: boolean }) => {
+  _deleteWallet = async (params: { walletId: string, isLegacy?: boolean }) => {
     // Pause polling in order to avoid fetching data for wallet we are about to delete
     this._pausePolling();
 
@@ -318,7 +318,7 @@ export default class WalletsStore extends Store {
     const indexOfWalletToDelete = this.all.indexOf(walletToDelete);
     await this.deleteWalletRequest.execute({
       walletId: params.walletId,
-      isLegacy: params.isLegacy,
+      isLegacy: params.isLegacy || false,
     });
     await this.walletsRequest.patch(result => {
       result.splice(indexOfWalletToDelete, 1);
@@ -534,6 +534,27 @@ export default class WalletsStore extends Store {
     return matchRoute(`${ROUTES.WALLETS.ROOT}(/*rest)`, currentRoute);
   }
 
+  @computed get restoreProgress(): number {
+    return get(this.active, 'syncState.data.percentage.quantity', 0);
+  }
+
+  @computed get restoreETA(): number {
+    return get(
+      this.active,
+      'syncState.data.estimatedCompletionTime.quantity',
+      0
+    );
+  }
+
+  @computed get hasActiveWalletNotification(): boolean {
+    const { active } = this;
+    if (!active) return false;
+    return (
+      this.getWalletRecoveryPhraseVerification(active.id) ===
+      WalletRecoveryPhraseVerificationStatuses.NOTIFICATION
+    );
+  }
+
   getWalletById = (id: string): ?Wallet => this.all.find(w => w.id === id);
 
   getWalletByName = (name: string): ?Wallet =>
@@ -630,9 +651,6 @@ export default class WalletsStore extends Store {
       return false;
     }
   };
-
-  isValidMnemonic = (mnemonic: string) =>
-    this.api.ada.isValidMnemonic(mnemonic);
 
   isValidCertificateMnemonic = (mnemonic: string) =>
     this.api.ada.isValidCertificateMnemonic(mnemonic);

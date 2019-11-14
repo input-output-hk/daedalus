@@ -5,8 +5,9 @@ main.js
 logs
 node_modules
 translations
-./tests
-features/tests/e2e/documents/*
+tests
+tests/paper-wallets/e2e/documents/*
+tests/wallets/e2e/documents/*
 mainnet-genesis-dryrun-with-stakeholders.json
 source/renderer/app/i18n/locales
 nodemon.json

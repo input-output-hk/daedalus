@@ -55,12 +55,13 @@ export default class Wallet extends Component<Props> {
 
     const { active: activeWallet } = wallets;
 
-    if (!activeWallet)
+    if (!activeWallet) {
       return (
         <MainLayout>
           <LoadingSpinner />
         </MainLayout>
       );
+    }
 
     const isRestoreActive =
       get(wallets, ['active', 'syncState', 'status']) ===

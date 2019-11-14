@@ -1,9 +1,9 @@
 .actionBtn {
   background-color: rgba(0, 0, 0, 0.1);
-  border: 1px solid #fafbfc;
+  border: 1px solid #fff;
   border-radius: 5px;
   box-sizing: border-box;
-  color: #fafbfc;
+  color: #fff;
   font-family: var(--font-medium);
   font-size: 14px;
   font-weight: 500;
@@ -18,13 +18,13 @@
 
     g {
       path {
-        stroke: #fafbfc;
+        stroke: #fff;
       }
     }
   }
 
   &:hover {
-    background-color: #fafbfc;
+    background-color: #fff;
     color: #ab1700;
     cursor: pointer;
     svg {
@@ -40,7 +40,7 @@
 .component {
   align-items: center;
   background-color: rgba(171, 23, 0, 0.98);
-  color: #fafbfc;
+  color: #fff;
   display: flex;
   flex-direction: column;
   font-family: var(--font-regular);
@@ -65,12 +65,12 @@
   padding: 12px 20px;
   word-break: break-word;
   &::-webkit-scrollbar-thumb {
-    background-color: rgba(250, 251, 252, 0.3);
+    background-color: rgba(255, 255, 255, 0.3);
     outline: none;
     width: 4px;
 
     &:hover {
-      background-color: rgba(250, 251, 252, 0.5);
+      background-color: rgba(255, 255, 255, 0.5);
     }
   }
 
@@ -104,21 +104,21 @@
 
   p,
   li {
-    color: rgba(250, 251, 252, 0.7);
+    color: rgba(255, 255, 255, 0.7);
     font-family: var(--font-regular);
     font-size: 14px;
     line-height: 1.5;
     margin-bottom: 6px;
 
     strong {
-      color: rgba(250, 251, 252, 1);
+      color: rgba(255, 255, 255, 1);
       font-weight: 500;
     }
   }
 
   a {
-    border-bottom: 1px solid #fafbfc;
-    color: #fafbfc;
+    border-bottom: 1px solid #fff;
+    color: #fff;
     text-decoration: none;
   }
 

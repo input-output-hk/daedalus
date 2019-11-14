@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import { get, take } from 'lodash';
+import { take, get } from 'lodash';
 import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import { MAX_TRANSACTIONS_ON_SUMMARY_PAGE } from '../../config/numbersConfig';
@@ -57,7 +57,7 @@ export default class WalletSummaryPage extends Component<Props> {
       deleteTransactionRequest,
     } = transactions;
     const wallet = wallets.active;
-    const { currentLocale } = profile;
+    const { currentTimeFormat, currentDateFormat, currentLocale } = profile;
     // Guard against potential null values
     if (!wallet)
       throw new Error('Active wallet required for WalletSummaryPage.');
@@ -93,6 +93,8 @@ export default class WalletSummaryPage extends Component<Props> {
           onOpenExternalLink={openExternalLink}
           onShowMoreTransactions={this.handleShowMoreTransaction}
           totalAvailable={totalAvailable}
+          currentTimeFormat={currentTimeFormat}
+          currentDateFormat={currentDateFormat}
           currentLocale={currentLocale}
         />
       );

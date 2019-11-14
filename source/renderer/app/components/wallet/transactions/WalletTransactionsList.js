@@ -59,6 +59,8 @@ type Props = {
   walletId: string,
   isDeletingTransaction: boolean,
   currentLocale: string,
+  currentDateFormat: string,
+  currentTimeFormat: string,
 };
 
 const DATE_FORMAT = 'YYYY-MM-DD';
@@ -82,14 +84,6 @@ export default class WalletTransactionsList extends Component<Props> {
   virtualList: ?VirtualTransactionList;
   simpleList: ?SimpleTransactionList;
   loadingSpinner: ?LoadingSpinner;
-  localizedDateFormat: 'MM/DD/YYYY';
-
-  componentWillMount() {
-    this.localizedDateFormat = moment.localeData().longDateFormat('L');
-    // Localized dateFormat:
-    // English - MM/DD/YYYY
-    // Japanese - YYYY/MM/DD
-  }
 
   groupTransactionsByDay(
     transactions: Array<WalletTransaction>
@@ -126,6 +120,7 @@ export default class WalletTransactionsList extends Component<Props> {
 
   localizedDate(date: string) {
     const { intl } = this.context;
+    const { currentDateFormat } = this.props;
     // TODAY
     const today = moment().format(DATE_FORMAT);
     if (date === today) return intl.formatMessage(messages.today);
@@ -135,7 +130,7 @@ export default class WalletTransactionsList extends Component<Props> {
       .format(DATE_FORMAT);
     if (date === yesterday) return intl.formatMessage(messages.yesterday);
     // PAST DATE
-    return moment(date).format(this.localizedDateFormat);
+    return moment(date).format(currentDateFormat);
   }
 
   isTxExpanded = (tx: WalletTransaction) =>
@@ -192,6 +187,7 @@ export default class WalletTransactionsList extends Component<Props> {
       walletId,
       isDeletingTransaction,
       currentLocale,
+      currentTimeFormat,
     } = this.props;
     const { isFirstInGroup, isLastInGroup, tx } = data;
     const txClasses = classnames([
@@ -216,6 +212,7 @@ export default class WalletTransactionsList extends Component<Props> {
           walletId={walletId}
           isDeletingTransaction={isDeletingTransaction}
           currentLocale={currentLocale}
+          currentTimeFormat={currentTimeFormat}
         />
       </div>
     );
