@@ -371,6 +371,10 @@ When(/^I try to import the wallet with funds again$/, async function() {
   this.waitAndClick('.Dialog_actions button');
 });
 
+When(/^I click on "Rewards wallet" radio button/, function() {
+  return this.waitAndClick('.RadioSet_radiosContainer div:nth-child(2) label');
+});
+
 Then(
   /^I see the import wallet dialog with an error that the wallet already exists$/,
   async function() {
