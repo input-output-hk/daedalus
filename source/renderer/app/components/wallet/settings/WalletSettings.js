@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import type { Node } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
+import classNames from 'classnames';
 import moment from 'moment';
 import LocalizableError from '../../../i18n/LocalizableError';
 import BorderedBox from '../../widgets/BorderedBox';
@@ -79,16 +80,45 @@ type Props = {
   recoveryPhraseVerificationStatusType: string,
 };
 
+type State = {
+  isFormBlocked: boolean,
+};
+
 @observer
-export default class WalletSettings extends Component<Props> {
+export default class WalletSettings extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
+
+  state = {
+    isFormBlocked: false,
+  };
+
+  componentDidUpdate() {
+    const { isDialogOpen } = this.props;
+    const { isFormBlocked } = this.state;
+    // Set "name" input to active and "unblock form" on Dialog close
+    if (
+      !isDialogOpen(DeleteWalletConfirmationDialog) &&
+      !isDialogOpen(ChangeSpendingPasswordDialog) &&
+      isFormBlocked
+    ) {
+      this.unblockForm();
+    }
+  }
 
   componentWillUnmount() {
     // This call is used to prevent display of old successfully-updated messages
     this.props.onCancelEditing();
   }
+
+  onBlockForm = () => {
+    this.setState({ isFormBlocked: true });
+  };
+
+  unblockForm = () => {
+    this.setState({ isFormBlocked: false });
+  };
 
   render() {
     const { intl } = this.context;
@@ -120,18 +150,27 @@ export default class WalletSettings extends Component<Props> {
       recoveryPhraseVerificationStatus,
       recoveryPhraseVerificationStatusType,
     } = this.props;
+    const { isFormBlocked } = this.state;
 
     if (isLegacy) {
+      const deleteWalletBoxStyles = classNames([
+        styles.deleteWalletBox,
+        styles.legacyWallet,
+      ]);
       return (
         <div className={styles.component}>
-          <BorderedBox>
-            <DeleteWalletButton
-              onClick={() =>
-                openDialogAction({
-                  dialog: DeleteWalletConfirmationDialog,
-                })
-              }
-            />
+          <BorderedBox className={deleteWalletBoxStyles}>
+            <span>{intl.formatMessage(messages.deleteWalletHeader)}</span>
+            <div className={styles.contentBox}>
+              <p>{intl.formatMessage(messages.deleteWalletWarning)}</p>
+              <DeleteWalletButton
+                onClick={() =>
+                  openDialogAction({
+                    dialog: DeleteWalletConfirmationDialog,
+                  })
+                }
+              />
+            </div>
           </BorderedBox>
 
           {isDialogOpen(DeleteWalletConfirmationDialog)
@@ -148,7 +187,7 @@ export default class WalletSettings extends Component<Props> {
             className="walletName"
             inputFieldLabel={intl.formatMessage(messages.name)}
             inputFieldValue={walletName}
-            isActive={activeField === 'name'}
+            isActive={!isFormBlocked && activeField === 'name'}
             onStartEditing={() => onStartEditing('name')}
             onStopEditing={onStopEditing}
             onCancelEditing={onCancelEditing}
@@ -160,6 +199,7 @@ export default class WalletSettings extends Component<Props> {
             successfullyUpdated={
               !isSubmitting && lastUpdatedField === 'name' && !isInvalid
             }
+            inputBlocked={isFormBlocked}
           />
 
           <ReadOnlyInput
@@ -167,11 +207,12 @@ export default class WalletSettings extends Component<Props> {
             value={intl.formatMessage(messages.passwordLastUpdated, {
               lastUpdated: moment(spendingPasswordUpdateDate).fromNow(),
             })}
-            onClick={() =>
+            onClick={() => {
+              this.onBlockForm();
               openDialogAction({
                 dialog: ChangeSpendingPasswordDialog,
-              })
-            }
+              });
+            }}
           />
 
           {!isIncentivizedTestnet && (
@@ -209,11 +250,12 @@ export default class WalletSettings extends Component<Props> {
           <div className={styles.contentBox}>
             <p>{intl.formatMessage(messages.deleteWalletWarning)}</p>
             <DeleteWalletButton
-              onClick={() =>
+              onClick={() => {
+                this.onBlockForm();
                 openDialogAction({
                   dialog: DeleteWalletConfirmationDialog,
-                })
-              }
+                });
+              }}
             />
           </div>
         </BorderedBox>

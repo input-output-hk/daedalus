@@ -92,8 +92,9 @@ export default class TopBar extends Component<Props> {
           )}
           {children}
         </div>
-        {hasLegacyNotification && (
+        {hasLegacyNotification && activeWallet && (
           <LegacyNotification
+            activeWallet={activeWallet}
             onLearnMore={onLearnMore}
             onTransferFunds={onTransferFundsFn}
             hasAnyWallets={hasAnyWallets}

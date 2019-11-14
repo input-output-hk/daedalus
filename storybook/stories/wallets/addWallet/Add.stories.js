@@ -25,6 +25,7 @@ storiesOf('Wallets|Add Wallet', module)
         onImportFile={() => {}}
         isMainnet={boolean('isMainnet', false)}
         isTestnet={boolean('isTestnet', false)}
+        isIncentivizedTestnet={false}
         isMaxNumberOfWalletsReached={boolean(
           'isMaxNumberOfWalletsReached',
           false

@@ -22,7 +22,7 @@ import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 const messages = defineMessages({
   dialogTitle: {
     id: 'wallet.transferFunds.dialog2.title',
-    defaultMessage: '!!!Transfer funds from the legacy wallet',
+    defaultMessage: '!!!Transfer funds from the Balance wallet',
     description: 'Title in the transfer funds form.',
   },
   description: {

@@ -29,8 +29,9 @@ export default class WalletAddPage extends Component<Props> {
 
   render() {
     const { actions, stores } = this.props;
-    const { wallets, uiDialogs, app } = stores;
+    const { wallets, uiDialogs, app, networkStatus } = stores;
     const { createWalletStep, useNewWalletCreationProcess } = wallets;
+    const { isIncentivizedTestnet } = networkStatus;
     const {
       environment: { isMainnet, isTestnet },
     } = app;
@@ -67,6 +68,7 @@ export default class WalletAddPage extends Component<Props> {
             actions.dialogs.open.trigger({ dialog: WalletFileImportDialog })
           }
           isMaxNumberOfWalletsReached={wallets.hasMaxWallets}
+          isIncentivizedTestnet={isIncentivizedTestnet}
         />
       );
     }
