@@ -41,6 +41,7 @@ type Props = {
   validationErrorMessage: string,
   successfullyUpdated: boolean,
   inputBlocked?: boolean,
+  maxLength?: string,
 };
 
 type State = {
@@ -141,6 +142,7 @@ export default class InlineEditingInput extends Component<Props, State> {
       isActive,
       successfullyUpdated,
       inputBlocked,
+      maxLength,
     } = this.props;
     const { intl } = this.context;
     const inputField = validator.$('inputField');
@@ -166,6 +168,7 @@ export default class InlineEditingInput extends Component<Props, State> {
           className={inputStyles}
           themeOverrides={styles}
           type="text"
+          maxLength={maxLength}
           label={inputFieldLabel}
           value={inputField.value}
           onChange={inputField.onChange}

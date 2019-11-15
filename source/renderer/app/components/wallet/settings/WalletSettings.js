@@ -82,6 +82,7 @@ type Props = {
 
 type State = {
   isFormBlocked: boolean,
+  walletNameFieldMaxlength: string,
 };
 
 @observer
@@ -92,6 +93,7 @@ export default class WalletSettings extends Component<Props, State> {
 
   state = {
     isFormBlocked: false,
+    walletNameFieldMaxlength: '40',
   };
 
   componentDidUpdate() {
@@ -150,7 +152,7 @@ export default class WalletSettings extends Component<Props, State> {
       recoveryPhraseVerificationStatus,
       recoveryPhraseVerificationStatusType,
     } = this.props;
-    const { isFormBlocked } = this.state;
+    const { isFormBlocked, walletNameFieldMaxlength } = this.state;
 
     if (isLegacy) {
       const deleteWalletBoxStyles = classNames([
@@ -187,6 +189,7 @@ export default class WalletSettings extends Component<Props, State> {
             className="walletName"
             inputFieldLabel={intl.formatMessage(messages.name)}
             inputFieldValue={walletName}
+            maxLength={walletNameFieldMaxlength}
             isActive={!isFormBlocked && activeField === 'name'}
             onStartEditing={() => onStartEditing('name')}
             onStopEditing={onStopEditing}
