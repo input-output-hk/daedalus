@@ -30,11 +30,16 @@
     background-color: var(--theme-sidebar-menu-item-background-color-active);
     cursor: default;
   }
+
+  .meta {
+    padding-right: 0;
+  }
 }
 
 .meta {
   display: flex;
   flex-direction: column;
+  padding-right: 8px;
   position: relative;
   text-align: left;
   width: 100%;
