@@ -67,6 +67,12 @@ export const messages = defineMessages({
     description:
       'Label for the back button in the wallet send confirmation dialog.',
   },
+  passwordErrorMessage: {
+    id: 'wallet.send.confirmationDialog.passwordError',
+    defaultMessage: '!!!Incorrect spending password.',
+    description:
+      'Label for password error in the wallet send confirmation dialog.',
+  },
 });
 
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
@@ -186,7 +192,7 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
           onExternalLinkClick={onExternalLinkClick}
         />
       ) : (
-        this.context.intl.formatMessage(error)
+        this.context.intl.formatMessage(messages.passwordErrorMessage)
       );
     }
 

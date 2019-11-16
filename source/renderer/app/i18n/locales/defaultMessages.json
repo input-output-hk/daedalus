@@ -8610,6 +8610,20 @@
           "column": 19,
           "line": 64
         }
+      },
+      {
+        "defaultMessage": "!!!Incorrect spending password.",
+        "description": "Label for password error in the wallet send confirmation dialog.",
+        "end": {
+          "column": 3,
+          "line": 75
+        },
+        "file": "source/renderer/app/components/wallet/WalletSendConfirmationDialog.js",
+        "id": "wallet.send.confirmationDialog.passwordError",
+        "start": {
+          "column": 24,
+          "line": 70
+        }
       }
     ],
     "path": "source/renderer/app/components/wallet/WalletSendConfirmationDialog.json"
