@@ -407,7 +407,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
           <button
             className={regularTabClasses}
             onClick={() =>
-              this.onSelectWalletType(WALLET_RESTORE_TYPES.LEGACY, false, true)
+              this.onSelectWalletType(WALLET_RESTORE_TYPES.LEGACY, 0, true)
             }
           >
             {intl.formatMessage(messages.recoveryPhraseTabTitle)}
@@ -417,7 +417,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
             onClick={() =>
               this.onSelectWalletType(
                 WALLET_RESTORE_TYPES.CERTIFICATE,
-                false,
+                0,
                 true
               )
             }
@@ -575,7 +575,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
 
   onSelectWalletType = (
     walletType: string,
-    mnemonics: boolean,
+    mnemonics: number,
     shouldResetForm?: boolean
   ) => {
     const { onChoiceChange, isSubmitting } = this.props;
