@@ -575,7 +575,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
 
   onSelectWalletType = (
     walletType: string,
-    mnemonics: number,
+    mnemonics: boolean,
     shouldResetForm?: boolean
   ) => {
     const { onChoiceChange, isSubmitting } = this.props;
