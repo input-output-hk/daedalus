@@ -21,6 +21,16 @@
 
 .legacyItem {
   padding-right: 58.5px;
+
+  .meta {
+    padding-right: 8px;
+
+    :global {
+      .ProgressBar_component {
+        width: 156px;
+      }
+    }
+  }
 }
 
 .active {
@@ -30,16 +40,11 @@
     background-color: var(--theme-sidebar-menu-item-background-color-active);
     cursor: default;
   }
-
-  .meta {
-    padding-right: 0;
-  }
 }
 
 .meta {
   display: flex;
   flex-direction: column;
-  padding-right: 8px;
   position: relative;
   text-align: left;
   width: 100%;
