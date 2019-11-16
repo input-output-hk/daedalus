@@ -36,10 +36,15 @@
       .walletName {
         color: var(--theme-topbar-wallet-name-color);
         font-size: 21px;
+        line-height: 16px;
+        margin-bottom: 4px;
+        max-height: 16px;
         max-width: 320px;
         overflow: hidden;
         position: relative;
         text-overflow: ellipsis;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 1;
       }
 
       .walletAmount {
