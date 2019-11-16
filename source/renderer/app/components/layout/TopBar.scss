@@ -34,8 +34,10 @@
       user-select: text;
 
       .walletName {
+        -webkit-box-orient: vertical;
         color: var(--theme-topbar-wallet-name-color);
         font-size: 21px;
+        -webkit-line-clamp: 1;
         line-height: 16px;
         margin-bottom: 4px;
         max-height: 16px;
@@ -43,8 +45,6 @@
         overflow: hidden;
         position: relative;
         text-overflow: ellipsis;
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: 1;
       }
 
       .walletAmount {
