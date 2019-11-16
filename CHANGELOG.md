@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## vNext
+
+### Fixes
+
+- On the restore dialog when i click first tab it changes selection to 15 word recovery phrase ([PR 1692](https://github.com/input-output-hk/daedalus/pull/1692))
+
+
 ## 1.0.0-ITN0
 
 ### Features
