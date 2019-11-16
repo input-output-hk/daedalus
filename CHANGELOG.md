@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## vNext
+
+### Fixes
+
+- Fixed Wallet name length issues on smaller screen sizes ([PR 1689](https://github.com/input-output-hk/daedalus/pull/1689))
+
 ## 1.0.0-ITN0
 
 ### Features
@@ -48,7 +54,6 @@ Changelog
 
 ### Fixes
 
-- Fixed Wallet name length issues on smaller screen sizes ([PR 1689](https://github.com/input-output-hk/daedalus/pull/1689))
 - Fixed incentivized testnet theme ([PR 1677](https://github.com/input-output-hk/daedalus/pull/1677), [PR 1684](https://github.com/input-output-hk/daedalus/pull/1684))
 - Fixed wrong "Jormugandr" process name ([PR 1669](https://github.com/input-output-hk/daedalus/pull/1669))
 - Fixed paper wallet certificate restoration ([PR 1055](https://github.com/input-output-hk/daedalus/pull/1055))
