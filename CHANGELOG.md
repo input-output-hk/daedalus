@@ -7,6 +7,10 @@ Changelog
 
 - Added Japanese "Terms of use" text ([PR 1691](https://github.com/input-output-hk/daedalus/pull/1691))
 
+### Fixes
+
+- Fixed "Verify wallet recovery phrase" button text vertical centering ([PR 1693](https://github.com/input-output-hk/daedalus/pull/1693))
+
 ## 1.0.0-ITN0
 
 ### Features
