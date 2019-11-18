@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 
+- Implemented the new Wallet Receive screen ([PR 1700](https://github.com/input-output-hk/daedalus/pull/1700))
 - Added Japanese "Terms of use" text ([PR 1691](https://github.com/input-output-hk/daedalus/pull/1691))
 
 ### Fixes
