@@ -1,5 +1,14 @@
 @import '../../themes/mixins/link';
 
+:global {
+  .DaedalusDiagnosticsDialog_overlay,
+  .DaedalusDiagnosticsDialog_dialog {
+    &:focus {
+      outline: none;
+    }
+  }
+}
+
 .component {
   align-items: center;
   background: var(--theme-network-window-background-color);

@@ -20,6 +20,7 @@ Changelog
 
 ### Fixes
 
+- Fixed yellow frame around the "Diagnostics" dialog ([PR 1698](https://github.com/input-output-hk/daedalus/pull/1698))
 - Reduce layout re-renderings ([PR 1595](https://github.com/input-output-hk/daedalus/pull/1595))
 - Fixed green Cardano theme white color and borders color ([PR 1584](https://github.com/input-output-hk/daedalus/pull/1584))
 - Fixed flat button color  ([PR 1586](https://github.com/input-output-hk/daedalus/pull/1586))
