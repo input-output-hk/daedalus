@@ -584,7 +584,7 @@ export default class WalletsStore extends Store {
     await this.walletsRequest.patch(result => {
       if (!find(result, { id: wallet.id })) {
         if (wallet.isLegacy) {
-          // Legacu wallets are always added at the end of the list!
+          // Legacy wallets are always added to the end of the list!
           result.push(wallet);
         } else {
           const index = findIndex(result, 'isLegacy');

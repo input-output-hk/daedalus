@@ -3,6 +3,10 @@ Changelog
 
 ## vNext
 
+### Features
+
+- Added Japanese "Terms of use" text ([PR 1691](https://github.com/input-output-hk/daedalus/pull/1691))
+
 ### Fixes
 
 - Disable last version check call and fix wallet ordering after wallet restoration ([PR 1690](https://github.com/input-output-hk/daedalus/pull/1690))
