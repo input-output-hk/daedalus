@@ -12,6 +12,12 @@
     .SimpleFormField_label {
       color: var(--theme-input-label-color);
     }
+
+    .walletName {
+      .SimpleInput_input {
+        padding-right: 120px;
+      }
+    }
   }
 
   .deleteWalletLabel {

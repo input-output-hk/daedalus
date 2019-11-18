@@ -531,6 +531,7 @@
   "wallet.send.confirmationDialog.feesLabel": "手数料",
   "wallet.send.confirmationDialog.passphraseFieldPlaceholder": "送金時のパスワードを入力して下さい",
   "wallet.send.confirmationDialog.passphraseLabel": "送金時のパスワード",
+  "wallet.send.confirmationDialog.passwordError": "間違った支出パスワード",
   "wallet.send.confirmationDialog.submit": "送金",
   "wallet.send.confirmationDialog.title": "トランザクションの確認",
   "wallet.send.confirmationDialog.totalLabel": "合計",

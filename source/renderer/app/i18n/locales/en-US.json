@@ -531,6 +531,7 @@
   "wallet.send.confirmationDialog.feesLabel": "Fees",
   "wallet.send.confirmationDialog.passphraseFieldPlaceholder": "Type your spending password",
   "wallet.send.confirmationDialog.passphraseLabel": "Spending password",
+  "wallet.send.confirmationDialog.passwordError": "Incorrect spending password",
   "wallet.send.confirmationDialog.submit": "Send",
   "wallet.send.confirmationDialog.title": "Confirm transaction",
   "wallet.send.confirmationDialog.totalLabel": "Total",

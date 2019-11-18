@@ -21,6 +21,16 @@
 
 .legacyItem {
   padding-right: 58.5px;
+
+  .meta {
+    padding-right: 8px;
+
+    :global {
+      .ProgressBar_component {
+        width: 156px;
+      }
+    }
+  }
 }
 
 .active {

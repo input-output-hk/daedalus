@@ -78,6 +78,7 @@ type Props = {
   recoveryPhraseVerificationDate: ?Date,
   recoveryPhraseVerificationStatus: string,
   recoveryPhraseVerificationStatusType: string,
+  locale: string,
 };
 
 type State = {
@@ -149,8 +150,16 @@ export default class WalletSettings extends Component<Props, State> {
       recoveryPhraseVerificationDate,
       recoveryPhraseVerificationStatus,
       recoveryPhraseVerificationStatusType,
+      locale,
     } = this.props;
     const { isFormBlocked } = this.state;
+
+    // Set Japanese locale to moment. Default is en-US
+    if (locale === 'ja-JP') {
+      moment.locale('ja');
+    } else {
+      moment.locale('en-us');
+    }
 
     if (isLegacy) {
       const deleteWalletBoxStyles = classNames([
@@ -187,6 +196,7 @@ export default class WalletSettings extends Component<Props, State> {
             className="walletName"
             inputFieldLabel={intl.formatMessage(messages.name)}
             inputFieldValue={walletName}
+            maxLength={40}
             isActive={!isFormBlocked && activeField === 'name'}
             onStartEditing={() => onStartEditing('name')}
             onStopEditing={onStopEditing}
