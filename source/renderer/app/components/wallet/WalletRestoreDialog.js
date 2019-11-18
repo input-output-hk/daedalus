@@ -28,10 +28,6 @@ import {
   WALLET_RESTORE_TYPES,
   RECOVERY_PHRASE_WORD_COUNT_OPTIONS,
 } from '../../config/walletsConfig';
-import {
-  LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT,
-  WALLET_RECOVERY_PHRASE_WORD_COUNT,
-} from '../../config/cryptoConfig';
 
 const messages = defineMessages({
   title: {
@@ -181,7 +177,6 @@ type Props = {
 
 type State = {
   walletType: string,
-  mnemonics: number,
 };
 
 @observer
@@ -196,7 +191,6 @@ export default class WalletRestoreDialog extends Component<Props, State> {
 
   state = {
     walletType: WALLET_RESTORE_TYPES.LEGACY, // regular | certificate | legacy
-    mnemonics: 12, // 12 | 15
   };
 
   recoveryPhraseAutocomplete: Autocomplete;
@@ -407,7 +401,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
           <button
             className={regularTabClasses}
             onClick={() =>
-              this.onSelectWalletType(WALLET_RESTORE_TYPES.LEGACY, 0, true)
+              this.onSelectWalletType(WALLET_RESTORE_TYPES.LEGACY, true)
             }
           >
             {intl.formatMessage(messages.recoveryPhraseTabTitle)}
@@ -415,11 +409,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
           <button
             className={certificateTabClasses}
             onClick={() =>
-              this.onSelectWalletType(
-                WALLET_RESTORE_TYPES.CERTIFICATE,
-                0,
-                true
-              )
+              this.onSelectWalletType(WALLET_RESTORE_TYPES.CERTIFICATE, true)
             }
           >
             {intl.formatMessage(messages.certificateTabTitle)}
@@ -457,10 +447,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
                 ),
                 selected: this.isLegacy(),
                 onChange: () =>
-                  this.onSelectWalletType(
-                    WALLET_RESTORE_TYPES.LEGACY,
-                    LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT
-                  ),
+                  this.onSelectWalletType(WALLET_RESTORE_TYPES.LEGACY),
               },
               {
                 key: WALLET_RESTORE_TYPES.REGULAR,
@@ -481,10 +468,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
                 ),
                 selected: !this.isLegacy(),
                 onChange: () =>
-                  this.onSelectWalletType(
-                    WALLET_RESTORE_TYPES.REGULAR,
-                    WALLET_RECOVERY_PHRASE_WORD_COUNT
-                  ),
+                  this.onSelectWalletType(WALLET_RESTORE_TYPES.REGULAR),
               },
             ]}
           />
@@ -556,10 +540,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
   }
 
   isRegular() {
-    return (
-      this.state.walletType === WALLET_RESTORE_TYPES.REGULAR &&
-      this.state.mnemonics === WALLET_RECOVERY_PHRASE_WORD_COUNT
-    );
+    return this.state.walletType === WALLET_RESTORE_TYPES.REGULAR;
   }
 
   isCertificate() {
@@ -567,23 +548,13 @@ export default class WalletRestoreDialog extends Component<Props, State> {
   }
 
   isLegacy() {
-    return (
-      this.state.walletType === WALLET_RESTORE_TYPES.LEGACY &&
-      this.state.mnemonics === LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT
-    );
+    return this.state.walletType === WALLET_RESTORE_TYPES.LEGACY;
   }
 
-  onSelectWalletType = (
-    walletType: string,
-    mnemonics: number,
-    shouldResetForm?: boolean
-  ) => {
+  onSelectWalletType = (walletType: string, shouldResetForm?: boolean) => {
     const { onChoiceChange, isSubmitting } = this.props;
     if (isSubmitting) return;
     this.setState({ walletType });
-    if (mnemonics) {
-      this.setState({ mnemonics });
-    }
     if (shouldResetForm) this.resetForm();
     this.resetMnemonics();
     if (onChoiceChange) onChoiceChange();
