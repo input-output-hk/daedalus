@@ -401,7 +401,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
           <button
             className={regularTabClasses}
             onClick={() =>
-              this.onSelectWalletType(WALLET_RESTORE_TYPES.REGULAR, true)
+              this.onSelectWalletType(WALLET_RESTORE_TYPES.LEGACY, true)
             }
           >
             {intl.formatMessage(messages.recoveryPhraseTabTitle)}
