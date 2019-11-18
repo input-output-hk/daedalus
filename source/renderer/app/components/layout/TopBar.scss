@@ -38,13 +38,13 @@
         color: var(--theme-topbar-wallet-name-color);
         font-size: 21px;
         -webkit-line-clamp: 1;
-        line-height: 16px;
+        line-height: 25px;
         margin-bottom: 4px;
-        max-height: 16px;
         max-width: 320px;
         overflow: hidden;
         position: relative;
         text-overflow: ellipsis;
+        word-break: keep-all;
       }
 
       .walletAmount {
