@@ -24,7 +24,7 @@ const messages = defineMessages({
   },
   addressesTitle: {
     id: 'wallet.receive.page.addresses.addressesTitle',
-    defaultMessage: '!!!Generated addresses',
+    defaultMessage: '!!!Addresses',
     description: 'Addresses Title on the wallet "Receive page"',
   },
   showUsedLabel: {

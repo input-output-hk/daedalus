@@ -3,54 +3,50 @@
   display: flex;
   padding: 10.5px 0;
   word-break: break-all;
-
-  .addressId {
-    flex-grow: 1;
-    font-family: var(--font-mono);
-    letter-spacing: -0.4px;
-    margin-right: 32.5px;
-    user-select: text;
-  }
-
-  .addressActions {
-    .copyAddress {
-      cursor: pointer;
-      display: flex;
-      white-space: nowrap;
-
-      .shareAddressLabel {
-        color: var(--theme-label-button-color);
-        font-size: 14px;
-        margin-left: 6px;
-        opacity: 0.5;
-      }
+  &.usedWalletAddress {
+    .addressId,
+    .shareIcon {
+      opacity: 0.4;
+    }
+    .shareAddressLabel {
+      opacity: 0.2;
     }
   }
 }
+.addressId {
+  flex-grow: 1;
+  font-family: var(--font-mono);
+  letter-spacing: -0.4px;
+  margin-right: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  user-select: text;
+  white-space: nowrap;
 
+  // background: darkcyan;
+}
 .addressActions {
-  align-items: flex-end;
   display: flex;
-  flex-direction: column;
-  text-align: right;
-  width: 94px;
+  flex-direction: row;
+  height: 18px;
+  justify-content: flex-end;
+  width: 90px;
+
+  // background: pink;
 }
-
-.usedWalletAddress {
-  .addressId,
-  .addressActions .copyAddress .shareIcon {
-    opacity: 0.4;
-  }
-
-  .addressActions .copyAddress .shareAddressLabel {
-    opacity: 0.2;
+.invalidAddress {
+  & > svg {
+    height: 12px;
+    width: 12px;
   }
 }
-
-.shareIcon {
+.shareAddressButton {
   cursor: pointer;
-  margin-left: 4px;
-  object-fit: contain;
+  line-height: 1.36;
+  margin-left: 22.5px;
+  white-space: nowrap;
+}
+.shareIcon {
   & > svg {
     height: 12px;
     width: 12px;
@@ -59,15 +55,9 @@
     }
   }
 }
-
-.iconExclamationPoint {
-  margin-right: 22.5px;
-  & > svg {
-    height: 12px;
-    width: 12px;
-  }
-}
-
-.invalidAddressTooltip {
-  // width: 194px;
+.shareAddressLabel {
+  color: var(--theme-label-button-color);
+  font-size: 14px;
+  margin-left: 6px;
+  opacity: 0.5;
 }

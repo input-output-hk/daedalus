@@ -5990,7 +5990,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Generated addresses",
+        "defaultMessage": "!!!Addresses",
         "description": "Addresses Title on the wallet \"Receive page\"",
         "end": {
           "column": 3,
