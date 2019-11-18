@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## vNext
+
+### Features
+
+- Added Japanese "Terms of use" text ([PR 1691](https://github.com/input-output-hk/daedalus/pull/1691))
+
 ## 1.0.0-ITN0
 
 ### Features
@@ -29,7 +35,6 @@ Changelog
 
 ### Chores
 
-- Added Japanese terms of use text ([PR 1691](https://github.com/input-output-hk/daedalus/pull/1691))
 - Daedalus copy updates for Incentivized Testnet - Balance check ([PR 1680](https://github.com/input-output-hk/daedalus/pull/1680))
 - Added "Terms of use" for Incentivized Testnet version of Daedalus ([PR 1664](https://github.com/input-output-hk/daedalus/pull/1664))
 - Added Legacy Wallet UI changes ([PR 1647](https://github.com/input-output-hk/daedalus/pull/1647))
