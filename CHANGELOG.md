@@ -3,9 +3,15 @@ Changelog
 
 ## vNext
 
+### Features
+
+- Added Japanese "Terms of use" text ([PR 1691](https://github.com/input-output-hk/daedalus/pull/1691))
+
 ### Fixes
 
 - Fixed Wallet name length issues on smaller screen sizes ([PR 1689](https://github.com/input-output-hk/daedalus/pull/1689))
+- Disabled "Latest version check" call and fixed "Legacy" wallet ordering after wallet restoration ([PR 1690](https://github.com/input-output-hk/daedalus/pull/1690))
+- Fixed "Verify wallet recovery phrase" button text vertical centering ([PR 1693](https://github.com/input-output-hk/daedalus/pull/1693))
 
 ## 1.0.0-ITN0
 
