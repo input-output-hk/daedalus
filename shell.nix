@@ -113,8 +113,7 @@ let
     name = "devops-shell";
     buildInputs = let
       inherit (localLib.iohkNix) niv;
-      inherit (localLib) cardanoWallet jormungandr jcli;
-    in [ niv cardanoWallet jormungandr jcli ];
+    in [ niv ];
     shellHook = ''
       echo "DevOps Tools" \
       | ${pkgs.figlet}/bin/figlet -f banner -c \
