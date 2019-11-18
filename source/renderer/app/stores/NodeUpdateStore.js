@@ -115,6 +115,9 @@ export default class NodeUpdateStore extends Store {
   };
 
   @action _getLatestAvailableAppVersion = async () => {
+    if (this.stores.networkStatus.isIncentivizedTestnet) {
+      return;
+    }
     const {
       latestAppVersion,
       applicationVersion,

@@ -78,6 +78,7 @@ export default class SyncingConnecting extends Component<Props, State> {
       onGetAvailableVersions,
       isNewAppVersionLoading,
       isNewAppVersionLoaded,
+      isIncentivizedTestnet,
     } = this.props;
     const canResetSyncing = this._syncingTimerShouldStop(isSynced);
     const canResetConnecting = this._connectingTimerShouldStop(isConnected);
@@ -94,7 +95,8 @@ export default class SyncingConnecting extends Component<Props, State> {
     if (
       isAppLoadingStuck &&
       !isNewAppVersionLoaded &&
-      !isNewAppVersionLoading
+      !isNewAppVersionLoading &&
+      !isIncentivizedTestnet
     ) {
       onGetAvailableVersions();
     }
