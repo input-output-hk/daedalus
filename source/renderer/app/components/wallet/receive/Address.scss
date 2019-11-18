@@ -30,7 +30,7 @@
 
 .usedWalletAddress {
   .addressId,
-  .addressActions .copyAddress .copyIcon {
+  .addressActions .copyAddress .shareIcon {
     opacity: 0.4;
   }
 
@@ -39,13 +39,13 @@
   }
 }
 
-.copyIcon {
+.shareIcon {
   cursor: pointer;
   margin-left: 4px;
   object-fit: contain;
   & > svg {
     height: 12px;
-    width: 10px;
+    width: 12px;
     path {
       fill: var(--theme-icon-copy-address-color);
     }

@@ -5,7 +5,7 @@ import CopyToClipboard from 'react-copy-to-clipboard';
 import classnames from 'classnames';
 import SVGInline from 'react-svg-inline';
 import styles from './Address.scss';
-import iconCopy from '../../../assets/images/clipboard-ic.inline.svg';
+import iconQR from '../../../assets/images/qr-code.inline.svg';
 import WalletAddress from '../../../domains/WalletAddress';
 
 type Props = {
@@ -36,7 +36,7 @@ export class Address extends Component<Props> {
             onCopy={onCopyAddress.bind(this, address.id)}
           >
             <span className={styles.copyAddress}>
-              <SVGInline svg={iconCopy} className={styles.copyIcon} />
+              <SVGInline svg={iconQR} className={styles.shareIcon} />
               <span className={styles.copyAddressLabel}>
                 {copyAddressLabel}
               </span>

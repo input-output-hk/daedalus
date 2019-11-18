@@ -2,7 +2,9 @@
 @import '../../../themes/mixins/error-message';
 
 .component {
+  color: var(--theme-bordered-box-text-color);
   flex: 1;
+  font-family: var(--font-regular);
   min-height: 500px;
   overflow-x: hidden;
   overflow-y: overlay;
@@ -15,79 +17,25 @@
     min-height: 600px;
   }
 }
-
-.copyIconBig {
-  cursor: pointer;
-  margin-left: 6px;
-  object-fit: contain;
-  & > svg {
-    height: 14.5px;
-    width: 11.5px;
-    path {
-      fill: var(--theme-icon-copy-address-color);
-    }
-  }
-}
-
-.qrCodeAndInstructions {
-  display: flex;
-  flex-direction: row;
-  margin: 10px 0 24px;
-  position: relative;
-  width: 100%;
-
-  .qrCode {
-    align-items: flex-start;
-    display: flex;
-    margin-right: 20px;
-
-    canvas {
-      border: 4px solid var(--theme-receive-qr-code-background-color);
-      box-sizing: content-box;
-      margin-bottom: 1.5rem;
-    }
-  }
-
-  .instructions {
-    color: var(--theme-bordered-box-text-color);
-    font-family: var(--font-regular);
-    font-size: 14px;
-    line-height: 19px;
-
-    .hash {
-      font-family: var(--font-mono);
-      font-size: 19px;
-      line-height: 23px;
-      margin-bottom: 6px;
-      user-select: text;
-      word-break: break-all;
-    }
-
-    .usedHash {
-      opacity: 0.4;
-    }
-
-    .hashLabel {
-      margin-bottom: 6px;
-      opacity: 0.5;
-    }
-
-    .instructionsText {
-      font-size: 16px;
-      line-height: 22px;
-      margin-bottom: 12px;
-      word-break: break-word;
-    }
-  }
-}
-
 .container {
   display: flex;
   flex-direction: column;
   height: 100%;
 }
-
-.generatedAddresses {
+.instructionsTitle {
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.33;
+  margin-bottom: 11px;
+}
+.instructionsDescription {
+  border-bottom: 1px solid var(--theme-dialog-border-color);
+  font-size: 16px;
+  line-height: 1.38;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+}
+.addresses {
   color: var(--theme-bordered-box-text-color);
   display: flex;
   flex: 1;
@@ -97,7 +45,7 @@
   line-height: 22px;
   width: 100%;
 
-  h2 {
+  .addressesTitle {
     font-family: var(--font-medium);
     padding-bottom: 10px;
 
