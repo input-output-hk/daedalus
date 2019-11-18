@@ -583,11 +583,16 @@ export default class WalletsStore extends Store {
     // Only add the new wallet if it does not exist yet in the result!
     await this.walletsRequest.patch(result => {
       if (!find(result, { id: wallet.id })) {
-        const index = findIndex(result, 'isLegacy');
-        if (index >= 0) {
-          result.splice(index, 0, wallet);
-        } else {
+        if (wallet.isLegacy) {
+          // Legacy wallets are always added to the end of the list!
           result.push(wallet);
+        } else {
+          const index = findIndex(result, 'isLegacy');
+          if (index >= 0) {
+            result.splice(index, 0, wallet);
+          } else {
+            result.push(wallet);
+          }
         }
       }
     });
