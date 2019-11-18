@@ -41,7 +41,7 @@ type Props = {
   validationErrorMessage: string,
   successfullyUpdated: boolean,
   inputBlocked?: boolean,
-  maxLength?: string,
+  maxLength?: number,
 };
 
 type State = {
