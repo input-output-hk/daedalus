@@ -3,18 +3,15 @@ Changelog
 
 ## 1.1.0-ITN0
 
-### Fixes
-
-- On the restore dialog when i click first tab it changes selection to 15 word recovery phrase ([PR 1692](https://github.com/input-output-hk/daedalus/pull/1692))
-
 ### Features
 
 - Added Japanese "Terms of use" text ([PR 1691](https://github.com/input-output-hk/daedalus/pull/1691))
 
 ### Fixes
 
-- Disabled "Latest version check" call and fixed "Legacy" wallet ordering after wallet restoration ([PR 1690](https://github.com/input-output-hk/daedalus/pull/1690))
+- Fixed "Number of words in your recovery phrase" default state on "Restore a wallet" dialog ([PR 1692](https://github.com/input-output-hk/daedalus/pull/1692))
 - Fixed "Verify wallet recovery phrase" button text vertical centering ([PR 1693](https://github.com/input-output-hk/daedalus/pull/1693))
+- Disabled "Latest version check" call and fixed "Legacy" wallet ordering after wallet restoration ([PR 1690](https://github.com/input-output-hk/daedalus/pull/1690))
 
 ### Chores
 
