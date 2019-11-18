@@ -7,6 +7,9 @@ Changelog
 
 - On the restore dialog when i click first tab it changes selection to 15 word recovery phrase ([PR 1692](https://github.com/input-output-hk/daedalus/pull/1692))
 
+### Features
+
+- Added Japanese "Terms of use" text ([PR 1691](https://github.com/input-output-hk/daedalus/pull/1691))
 
 ## 1.0.0-ITN0
 
