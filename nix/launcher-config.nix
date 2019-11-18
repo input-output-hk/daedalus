@@ -65,7 +65,7 @@ let
     "--port" "8088"
     "--state-dir" dataDir.${os}
     "--genesis-block" "${dataDir.${os}}${dirSep}block0.bin"
-    "--sync-tolerance" "300s"
+    "--sync-tolerance" "600s"
     "--"
     "--secret" "${dataDir.${os}}${dirSep}secret.yaml"
   ];
