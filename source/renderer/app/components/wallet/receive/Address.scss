@@ -18,7 +18,7 @@
       display: flex;
       white-space: nowrap;
 
-      .copyAddressLabel {
+      .shareAddressLabel {
         color: var(--theme-label-button-color);
         font-size: 14px;
         margin-left: 6px;
@@ -28,13 +28,21 @@
   }
 }
 
+.addressActions {
+  align-items: flex-end;
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+  width: 94px;
+}
+
 .usedWalletAddress {
   .addressId,
   .addressActions .copyAddress .shareIcon {
     opacity: 0.4;
   }
 
-  .addressActions .copyAddress .copyAddressLabel {
+  .addressActions .copyAddress .shareAddressLabel {
     opacity: 0.2;
   }
 }
@@ -50,4 +58,16 @@
       fill: var(--theme-icon-copy-address-color);
     }
   }
+}
+
+.iconExclamationPoint {
+  margin-right: 22.5px;
+  & > svg {
+    height: 12px;
+    width: 12px;
+  }
+}
+
+.invalidAddressTooltip {
+  // width: 194px;
 }

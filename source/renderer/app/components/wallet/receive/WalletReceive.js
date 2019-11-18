@@ -2,7 +2,6 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
-import classnames from 'classnames';
 import BorderedBox from '../../widgets/BorderedBox';
 import TinySwitch from '../../widgets/forms/TinySwitch';
 import WalletAddress from '../../../domains/WalletAddress';
@@ -39,15 +38,21 @@ const messages = defineMessages({
     defaultMessage: '!!!Share',
     description: 'Label for "Share" link on the wallet "Receive page"',
   },
+  invalidAddressTooltipLabel: {
+    id: 'wallet.receive.page.invalidAddressTooltipLabel',
+    defaultMessage:
+      '!!!This address does not match your delegation preferences. Do not use it to receive ada.',
+    description:
+      'Label for "invalid address tooltip" link on the wallet "Receive page"',
+  },
 });
 
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
 
 type Props = {
-  walletAddress: string,
-  isWalletAddressUsed: boolean,
   walletAddresses: Array<WalletAddress>,
-  onCopyAddress: Function,
+  onShareAddress: Function,
+  isAddressValid: Function,
 };
 
 type State = {
@@ -72,10 +77,14 @@ export default class WalletReceive extends Component<Props, State> {
     <Address
       index={index}
       address={address}
-      onCopyAddress={this.props.onCopyAddress}
-      copyAddressLabel={this.context.intl.formatMessage(
+      onShareAddress={this.props.onShareAddress}
+      shareAddressLabel={this.context.intl.formatMessage(
         messages.shareIconLabel
       )}
+      invalidAddressTooltipLabel={this.context.intl.formatMessage(
+        messages.invalidAddressTooltipLabel
+      )}
+      isAddressValid={this.props.isAddressValid}
     />
   );
 
@@ -87,12 +96,7 @@ export default class WalletReceive extends Component<Props, State> {
     );
 
   render() {
-    const {
-      walletAddress,
-      walletAddresses,
-      onCopyAddress,
-      isWalletAddressUsed,
-    } = this.props;
+    const { walletAddresses } = this.props;
     const { intl } = this.context;
     const { showUsed } = this.state;
 

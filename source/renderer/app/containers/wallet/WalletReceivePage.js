@@ -49,6 +49,8 @@ export default class WalletReceivePage extends Component<Props, State> {
     }
   };
 
+  handleIsAddressValid = (index: number) => index < 3 || index > 7;
+
   render() {
     const { copiedAddress } = this.state;
     const { actions } = this.props;
@@ -59,10 +61,6 @@ export default class WalletReceivePage extends Component<Props, State> {
     if (!wallet)
       throw new Error('Active wallet required for WalletReceivePage.');
 
-    const walletAddress = addresses.active ? addresses.active.id : '';
-    const isWalletAddressUsed = addresses.active
-      ? addresses.active.used
-      : false;
     const walletAddresses = addresses.all.slice().reverse();
 
     const notification = {
@@ -86,10 +84,9 @@ export default class WalletReceivePage extends Component<Props, State> {
       <Fragment>
         <VerticalFlexContainer>
           <WalletReceive
-            walletAddress={walletAddress}
-            isWalletAddressUsed={isWalletAddressUsed}
             walletAddresses={walletAddresses}
-            onCopyAddress={address => {
+            isAddressValid={this.handleIsAddressValid}
+            onShareAddress={address => {
               this.setState({ copiedAddress: address });
               actions.notifications.open.trigger({
                 id: notification.id,

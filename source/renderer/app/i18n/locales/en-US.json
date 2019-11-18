@@ -498,6 +498,7 @@
   "wallet.receive.page.addresses.addressesTitle": "Generated addresses",
   "wallet.receive.page.showUsedLabel": "show used",
   "wallet.receive.page.shareIconLabel": "Share",
+  "wallet.receive.page.invalidAddressTooltipLabel": "This address does not match your delegation preferences. Do not use it to receive ada.",
   "wallet.recovery.phrase.show.entry.dialog.button.labelClear": "Clear",
   "wallet.recovery.phrase.show.entry.dialog.button.labelConfirm": "Confirm",
   "wallet.restore.dialog.form.errors.invalidRecoveryPhrase": "Invalid recovery phrase",
