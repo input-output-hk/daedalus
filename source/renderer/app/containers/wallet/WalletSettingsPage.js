@@ -26,6 +26,7 @@ export default class WalletSettingsPage extends Component<Props> {
       app,
       wallets,
       networkStatus,
+      profile,
     } = this.props.stores;
     const activeWallet = wallets.active;
     let isLegacyWallet: boolean = false;
@@ -59,6 +60,8 @@ export default class WalletSettingsPage extends Component<Props> {
       recoveryPhraseVerificationStatus,
       recoveryPhraseVerificationStatusType,
     } = getWalletRecoveryPhraseVerification(activeWallet.id);
+
+    const locale = profile.currentLocale;
 
     return (
       <WalletSettings
@@ -106,6 +109,7 @@ export default class WalletSettingsPage extends Component<Props> {
         walletRecoveryPhraseStep4Container={
           <WalletRecoveryPhraseStep4Container />
         }
+        locale={locale}
       />
     );
   }

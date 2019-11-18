@@ -84,6 +84,8 @@ const getWalletDates = (type: string, status: string) => {
   };
 };
 
+const locale = sessionStorage.getItem('localeName') || 'English';
+
 export default () => {
   const { type, status } = select(
     'Wallet Recovery Phrase Verification',
@@ -243,6 +245,7 @@ export default () => {
       recoveryPhraseVerificationStatusType={
         type || WalletRecoveryPhraseVerificationTypes.NEVER_CHECKED
       }
+      locale={locale === 'Japanese' ? 'ja-JP' : 'en-US'}
     />
   );
 };
