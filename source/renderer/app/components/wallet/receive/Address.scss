@@ -61,3 +61,26 @@
   margin-left: 6px;
   opacity: 0.5;
 }
+.copyAddress {
+  cursor: pointer;
+  display: flex;
+  white-space: nowrap;
+}
+.copyAddressLabel {
+  color: var(--theme-label-button-color);
+  font-size: 14px;
+  margin-left: 6px;
+  opacity: 0.5;
+}
+.copyIcon {
+  cursor: pointer;
+  margin-left: 4px;
+  object-fit: contain;
+  & > svg {
+    height: 12px;
+    width: 10px;
+    path {
+      fill: var(--theme-icon-copy-address-color);
+    }
+  }
+}

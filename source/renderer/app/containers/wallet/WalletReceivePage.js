@@ -38,33 +38,19 @@ export default class WalletReceivePage extends Component<Props, State> {
     this.closeNotification();
   }
 
-  closeNotification = () => {
-    const { wallets } = this.props.stores;
-    const wallet = wallets.active;
-    if (wallet) {
-      const notificationId = `${wallet.id}-copyNotification`;
-      this.props.actions.notifications.closeActiveNotification.trigger({
-        id: notificationId,
-      });
-    }
-  };
+  get activeWallet() {
+    return this.props.stores.wallets.active;
+  }
 
-  handleIsAddressValid = (index: number) => index < 3 || index > 7;
-
-  render() {
+  get notification() {
     const { copiedAddress } = this.state;
-    const { actions } = this.props;
-    const { uiNotifications, wallets, addresses } = this.props.stores;
-    const wallet = wallets.active;
 
     // Guard against potential null values
-    if (!wallet)
+    if (!this.activeWallet)
       throw new Error('Active wallet required for WalletReceivePage.');
 
-    const walletAddresses = addresses.all.slice().reverse();
-
-    const notification = {
-      id: `${wallet.id}-copyNotification`,
+    return {
+      id: `${this.activeWallet.id}-copyNotification`,
       duration: ADDRESS_COPY_NOTIFICATION_DURATION,
       message: (
         <FormattedHTMLMessage
@@ -79,6 +65,38 @@ export default class WalletReceivePage extends Component<Props, State> {
         />
       ),
     };
+  }
+
+  closeNotification = () => {
+    const { id } = this.notification;
+    if (this.activeWallet) {
+      this.props.actions.notifications.closeActiveNotification.trigger({ id });
+    }
+  };
+
+  handleIsAddressValid = (index: number) => index < 3 || index > 7;
+
+  handleCopyAddress = (address: string) => {
+    this.setState({ copiedAddress: address });
+    this.props.actions.notifications.open.trigger({
+      id: this.notification.id,
+      duration: this.notification.duration,
+    });
+  };
+
+  handleShareAddress = () => {
+    console.log('handleShareAddress');
+  };
+
+  render() {
+    const { uiNotifications, addresses, networkStatus } = this.props.stores;
+    const { isIncentivizedTestnet } = networkStatus.environment;
+
+    // Guard against potential null values
+    if (!this.activeWallet)
+      throw new Error('Active wallet required for WalletReceivePage.');
+
+    const walletAddresses = addresses.all.slice().reverse();
 
     return (
       <Fragment>
@@ -86,28 +104,20 @@ export default class WalletReceivePage extends Component<Props, State> {
           <WalletReceive
             walletAddresses={walletAddresses}
             isAddressValid={this.handleIsAddressValid}
-            onShareAddress={address => {
-              this.setState({ copiedAddress: address });
-              actions.notifications.open.trigger({
-                id: notification.id,
-                duration: notification.duration,
-              });
-            }}
+            onShareAddress={this.handleShareAddress}
+            onCopyAddress={this.handleCopyAddress}
+            isIncentivizedTestnet={isIncentivizedTestnet}
           />
         </VerticalFlexContainer>
 
         <NotificationMessage
           icon={successIcon}
-          show={uiNotifications.isOpen(notification.id)}
-          onClose={() => {
-            actions.notifications.closeActiveNotification.trigger({
-              id: notification.id,
-            });
-          }}
+          show={uiNotifications.isOpen(this.notification.id)}
+          onClose={this.closeNotification}
           clickToClose
           hasCloseButton
         >
-          {notification.message}
+          {this.notification.message}
         </NotificationMessage>
       </Fragment>
     );

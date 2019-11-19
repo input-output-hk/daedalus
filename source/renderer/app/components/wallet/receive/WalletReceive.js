@@ -8,7 +8,7 @@ import WalletAddress from '../../../domains/WalletAddress';
 import globalMessages from '../../../i18n/global-messages';
 import { VirtualAddressesList } from './VirtualAddressesList';
 import styles from './WalletReceive.scss';
-import { Address } from './Address';
+import Address from './Address';
 
 const messages = defineMessages({
   instructionsTitle: {
@@ -33,8 +33,8 @@ const messages = defineMessages({
     description:
       'Label for "show used" wallet addresses link on the wallet "Receive page"',
   },
-  shareIconLabel: {
-    id: 'wallet.receive.page.shareIconLabel',
+  shareAddressLabel: {
+    id: 'wallet.receive.page.shareAddressLabel',
     defaultMessage: '!!!Share',
     description: 'Label for "Share" link on the wallet "Receive page"',
   },
@@ -45,6 +45,11 @@ const messages = defineMessages({
     description:
       'Label for "invalid address tooltip" link on the wallet "Receive page"',
   },
+  copyAddressLabel: {
+    id: 'wallet.receive.page.copyAddressLabel',
+    defaultMessage: '!!!Copy address',
+    description: 'Label for "Copy address" link on the wallet "Receive page"',
+  },
 });
 
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
@@ -52,7 +57,8 @@ messages.fieldIsRequired = globalMessages.fieldIsRequired;
 type Props = {
   walletAddresses: Array<WalletAddress>,
   onShareAddress: Function,
-  isAddressValid: Function,
+  onCopyAddress: Function,
+  isIncentivizedTestnet: boolean,
 };
 
 type State = {
@@ -73,18 +79,21 @@ export default class WalletReceive extends Component<Props, State> {
     this.setState(prevState => ({ showUsed: !prevState.showUsed }));
   };
 
-  renderRow = (address: WalletAddress, index: number) => (
+  renderRow = (address: WalletAddress) => (
     <Address
-      index={index}
       address={address}
       onShareAddress={this.props.onShareAddress}
+      onCopyAddress={this.props.onCopyAddress}
       shareAddressLabel={this.context.intl.formatMessage(
-        messages.shareIconLabel
+        messages.shareAddressLabel
       )}
       invalidAddressTooltipLabel={this.context.intl.formatMessage(
         messages.invalidAddressTooltipLabel
       )}
-      isAddressValid={this.props.isAddressValid}
+      copyAddressLabel={this.context.intl.formatMessage(
+        messages.copyAddressLabel
+      )}
+      isIncentivizedTestnet={this.props.isIncentivizedTestnet}
     />
   );
 

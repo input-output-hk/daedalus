@@ -2,7 +2,7 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
-import { number } from '@storybook/addon-knobs';
+import { number, boolean } from '@storybook/addon-knobs';
 
 // Assets and helpers
 import WalletsWrapper from '../_utils/WalletsWrapper';
@@ -25,8 +25,10 @@ storiesOf('Wallets|Receive', module)
             generateAddress(true)
           ),
         ]}
-        onShareAddress={action('onGenerateAddress')}
+        onShareAddress={action('onShareAddress')}
+        onCopyAddress={action('onCopyAddress')}
         isAddressValid={() => parseInt(Math.random() * 10, 10) > 3}
+        isIncentivizedTestnet={boolean('isIncentivizedTestnet', false)}
       />
     </VerticalFlexContainer>
   ));
