@@ -4,6 +4,7 @@ import { defineMessages, FormattedHTMLMessage } from 'react-intl';
 import { observer, inject } from 'mobx-react';
 import { ellipsis } from '../../utils/strings';
 import WalletReceive from '../../components/wallet/receive/WalletReceive';
+import WalletReceiveDialog from '../../components/wallet/receive/WalletReceiveDialog';
 import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer';
 import NotificationMessage from '../../components/widgets/NotificationMessage';
 import successIcon from '../../assets/images/success-small.inline.svg';
@@ -24,6 +25,7 @@ type Props = InjectedProps;
 
 type State = {
   copiedAddress: string,
+  addressToShare?: ?WalletAddress,
 };
 
 @inject('stores', 'actions')
@@ -33,6 +35,7 @@ export default class WalletReceivePage extends Component<Props, State> {
 
   state = {
     copiedAddress: '',
+    addressToShare: null,
   };
 
   componentWillUnmount() {
@@ -85,13 +88,27 @@ export default class WalletReceivePage extends Component<Props, State> {
     });
   };
 
-  handleShareAddress = () => {
-    console.log('handleShareAddress');
+  handleShareAddress = (addressToShare: WalletAddress) => {
+    this.setState({
+      addressToShare,
+    });
+    const dialog = WalletReceiveDialog;
+    this.props.actions.dialogs.open.trigger({ dialog });
+  };
+
+  handleCloseShareAddress = () => {
+    this.props.actions.dialogs.closeActiveDialog.trigger();
   };
 
   render() {
-    const { uiNotifications, addresses, networkStatus } = this.props.stores;
+    const {
+      uiNotifications,
+      uiDialogs,
+      addresses,
+      networkStatus,
+    } = this.props.stores;
     const { isIncentivizedTestnet } = networkStatus.environment;
+    const { addressToShare } = this.state;
 
     // Guard against potential null values
     if (!this.activeWallet)
@@ -99,25 +116,11 @@ export default class WalletReceivePage extends Component<Props, State> {
 
     const walletAddresses = addresses.all.slice().reverse();
 
-    const invalidWalletAddress: WalletAddress = new WalletAddress({
-      ...walletAddresses[4],
-      isInvalid: true,
-    });
-
-    const walletAddressesWithInvalidAddresses =
-      walletAddresses && walletAddresses.length
-        ? [
-            ...walletAddresses.slice(0, 4),
-            invalidWalletAddress,
-            ...walletAddresses.slice(5, walletAddresses.length - 1),
-          ]
-        : [];
-
     return (
       <Fragment>
         <VerticalFlexContainer>
           <WalletReceive
-            walletAddresses={walletAddressesWithInvalidAddresses}
+            walletAddresses={walletAddresses}
             isAddressValid={this.handleIsAddressValid}
             onShareAddress={this.handleShareAddress}
             onCopyAddress={this.handleCopyAddress}
@@ -134,6 +137,13 @@ export default class WalletReceivePage extends Component<Props, State> {
         >
           {this.notification.message}
         </NotificationMessage>
+        {uiDialogs.isOpen(WalletReceiveDialog) && addressToShare && (
+          <WalletReceiveDialog
+            address={addressToShare}
+            onCopyAddress={this.handleCopyAddress}
+            onClose={this.handleCloseShareAddress}
+          />
+        )}
       </Fragment>
     );
   }

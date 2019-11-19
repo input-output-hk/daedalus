@@ -130,7 +130,7 @@ export default class Address extends Component<Props, State> {
           {!isIncentivizedTestnet ? (
             <button
               className={styles.shareAddressButton}
-              onClick={onShareAddress}
+              onClick={() => onShareAddress(address)}
             >
               <SVGInline svg={iconQR} className={styles.shareIcon} />
               <span className={styles.shareAddressLabel}>
@@ -141,8 +141,7 @@ export default class Address extends Component<Props, State> {
           {isIncentivizedTestnet ? (
             <CopyToClipboard
               text={address.id}
-              // eslint-disable-next-line react/jsx-no-bind
-              onCopy={onCopyAddress.bind(this, address.id)}
+              onCopy={() => onCopyAddress(address.id)}
             >
               <span className={styles.copyAddress}>
                 <SVGInline svg={iconCopy} className={styles.copyIcon} />
