@@ -6025,9 +6025,9 @@
           "line": 40
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceive.js",
-        "id": "wallet.receive.page.shareIconLabel",
+        "id": "wallet.receive.page.shareAddressLabel",
         "start": {
-          "column": 18,
+          "column": 21,
           "line": 36
         }
       },
@@ -6043,6 +6043,20 @@
         "start": {
           "column": 30,
           "line": 41
+        }
+      },
+      {
+        "defaultMessage": "!!!Copy address",
+        "description": "Label for \"Copy address\" link on the wallet \"Receive page\"",
+        "end": {
+          "column": 3,
+          "line": 52
+        },
+        "file": "source/renderer/app/components/wallet/receive/WalletReceive.js",
+        "id": "wallet.receive.page.copyAddressLabel",
+        "start": {
+          "column": 20,
+          "line": 48
         }
       }
     ],
@@ -9354,13 +9368,13 @@
         "description": "Message for the wallet address copy success notification.",
         "end": {
           "column": 3,
-          "line": 19
+          "line": 20
         },
         "file": "source/renderer/app/containers/wallet/WalletReceivePage.js",
         "id": "wallet.receive.page.addressCopyNotificationMessage",
         "start": {
           "column": 11,
-          "line": 15
+          "line": 16
         }
       }
     ],
