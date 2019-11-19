@@ -53,6 +53,7 @@ export default class Address extends Component<Props> {
               tip={invalidAddressTooltipLabel}
               className={styles.invalidAddressTooltip}
               themeOverrides={tooltipStyles}
+              arrowRelativeToTip
             >
               <SVGInline
                 svg={iconExclamationPoint}

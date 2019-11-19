@@ -98,11 +98,23 @@ export default class WalletReceivePage extends Component<Props, State> {
 
     const walletAddresses = addresses.all.slice().reverse();
 
+    const walletAddressesWithInvalidAddresses =
+      walletAddresses && walletAddresses.length
+        ? [
+            ...walletAddresses.slice(0, 4),
+            {
+              ...walletAddresses[4],
+              isInvalid: true,
+            },
+            ...walletAddresses.slice(5, walletAddresses.length - 1),
+          ]
+        : [];
+
     return (
       <Fragment>
         <VerticalFlexContainer>
           <WalletReceive
-            walletAddresses={walletAddresses}
+            walletAddresses={walletAddressesWithInvalidAddresses}
             isAddressValid={this.handleIsAddressValid}
             onShareAddress={this.handleShareAddress}
             onCopyAddress={this.handleCopyAddress}
