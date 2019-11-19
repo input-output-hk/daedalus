@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## vNext
+
+### Fixes
+
+- Fixed yellow frame around the "Diagnostics" dialog ([PR 1699](https://github.com/input-output-hk/daedalus/pull/1699))
+- Fixed the Japanese translation for `timeAgo` in "Wallet settings" stories ([PR 1701](https://github.com/input-output-hk/daedalus/pull/1701))
+
 ## 1.1.0-ITN0
 
 ### Features

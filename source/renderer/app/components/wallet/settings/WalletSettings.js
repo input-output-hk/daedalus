@@ -215,7 +215,9 @@ export default class WalletSettings extends Component<Props, State> {
           <ReadOnlyInput
             label={intl.formatMessage(messages.passwordLabel)}
             value={intl.formatMessage(messages.passwordLastUpdated, {
-              lastUpdated: moment(spendingPasswordUpdateDate).fromNow(),
+              lastUpdated: moment(spendingPasswordUpdateDate)
+                .locale(this.context.intl.locale)
+                .fromNow(),
             })}
             onClick={() => {
               this.onBlockForm();
