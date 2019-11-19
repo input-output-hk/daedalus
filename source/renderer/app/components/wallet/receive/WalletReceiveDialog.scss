@@ -1,20 +1,24 @@
-.component {
+.qrCode {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 30px;
+  canvas {
+    border: 4px solid var(--theme-receive-qr-code-background-color);
+    box-sizing: content-box;
+  }
 }
 .address {
   font-family: var(--font-mono);
   font-size: 19px;
   line-height: 1.37;
+  margin-bottom: 10px;
   text-align: center;
   word-wrap: break-word;
 }
-
-.qrCode {
-  display: flex;
-  justify-content: center;
-
-  canvas {
-    border: 4px solid var(--theme-receive-qr-code-background-color);
-    box-sizing: content-box;
-    margin-bottom: 1.5rem;
-  }
+.invalidAddress {
+  color: var(--theme-color-error);
+  font-family: var(--font-regular);
+  font-size: 16px;
+  line-height: 1.38;
+  text-align: center;
 }

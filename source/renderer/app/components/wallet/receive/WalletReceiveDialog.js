@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
+import copyToClipboard from 'copy-to-clipboard';
 // import CopyToClipboard from 'react-copy-to-clipboard';
 // import { Input } from 'react-polymorph/lib/components/Input';
 // import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
@@ -55,9 +56,9 @@ export default class WalletReceiveDialog extends Component<Props, State> {
     intl: intlShape.isRequired,
   };
 
-  state = {
-    title: '',
-  };
+  // state = {
+  //   title: '',
+  // };
 
   render() {
     const { address, onCopyAddress, onClose } = this.props;
@@ -73,7 +74,10 @@ export default class WalletReceiveDialog extends Component<Props, State> {
       {
         className: 'copyAddressButton',
         label: intl.formatMessage(messages.copyAddressButton),
-        onClick: () => onCopyAddress(address.id),
+        onClick: () => {
+          copyToClipboard(address.id);
+          onCopyAddress(address.id);
+        },
         primary: true,
       },
     ];
@@ -96,7 +100,6 @@ export default class WalletReceiveDialog extends Component<Props, State> {
         actions={actions}
         closeOnOverlayClick
         onClose={onClose}
-        className={styles.component}
         closeButton={<DialogCloseButton onClose={onClose} />}
       >
         <BorderedBox fullHeight>
@@ -111,7 +114,7 @@ export default class WalletReceiveDialog extends Component<Props, State> {
 
             <div className={styles.qrCode}>
               <QRCode
-                value={address}
+                value={address.id}
                 bgColor={qrCodeBackgroundColor}
                 fgColor={qrCodeForegroundColor}
                 size={192}
@@ -120,12 +123,11 @@ export default class WalletReceiveDialog extends Component<Props, State> {
 
             <div className={styles.address}>{address.id}</div>
 
-            {/* <CopyToClipboard
-              text={address.id}
-              onCopy={() => onCopyAddress(address.id)}
-            >
-              <button>{intl.formatMessage(messages.placeholder)}</button>
-            </CopyToClipboard> */}
+            {!address.isInvalid && (
+              <div className={styles.invalidAddress}>
+                {intl.formatMessage(messages.invalidAddressMessage)}
+              </div>
+            )}
           </div>
         </BorderedBox>
       </Dialog>

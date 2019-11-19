@@ -6065,6 +6065,67 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Add a message for the sender",
+        "description": "placeholder on the wallet \"Share Address\" dialog",
+        "end": {
+          "column": 3,
+          "line": 22
+        },
+        "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
+        "id": "wallet.receive.dialog.placeholder",
+        "start": {
+          "column": 15,
+          "line": 18
+        }
+      },
+      {
+        "defaultMessage": "!!!This address does not match your delegation preferences. Do not use it to receive ada.",
+        "description": "invalidAddressMessage on the wallet \"Share Address\" dialog",
+        "end": {
+          "column": 3,
+          "line": 28
+        },
+        "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
+        "id": "wallet.receive.dialog.invalidAddressMessage",
+        "start": {
+          "column": 25,
+          "line": 23
+        }
+      },
+      {
+        "defaultMessage": "!!!Download as PDF",
+        "description": "downloadPDFButton on the wallet \"Share Address\" dialog",
+        "end": {
+          "column": 3,
+          "line": 33
+        },
+        "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
+        "id": "wallet.receive.dialog.downloadPDFButton",
+        "start": {
+          "column": 21,
+          "line": 29
+        }
+      },
+      {
+        "defaultMessage": "!!!Copy address",
+        "description": "copyAddressButton on the wallet \"Share Address\" dialog",
+        "end": {
+          "column": 3,
+          "line": 38
+        },
+        "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
+        "id": "wallet.receive.dialog.copyAddressButton",
+        "start": {
+          "column": 21,
+          "line": 34
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Password",
         "description": "Title for the \"Change wallet password\" dialog when there is no password set.",
         "end": {
@@ -9368,13 +9429,13 @@
         "description": "Message for the wallet address copy success notification.",
         "end": {
           "column": 3,
-          "line": 20
+          "line": 21
         },
         "file": "source/renderer/app/containers/wallet/WalletReceivePage.js",
         "id": "wallet.receive.page.addressCopyNotificationMessage",
         "start": {
           "column": 11,
-          "line": 16
+          "line": 17
         }
       }
     ],
