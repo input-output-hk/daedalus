@@ -14,6 +14,29 @@ import iconExclamationPoint from '../../../assets/images/exclamation-point.inlin
 import WalletAddress from '../../../domains/WalletAddress';
 import { ellipsis } from '../../../utils/strings';
 
+const BREAKPOINTS = [
+  {
+    minCharsInit: 22,
+    minCharsEnd: 22,
+  },
+  {
+    minCharsInit: 24,
+    minCharsEnd: 24,
+  },
+  {
+    minCharsInit: 27,
+    minCharsEnd: 27,
+  },
+  {
+    minCharsInit: 29,
+    minCharsEnd: 29,
+  },
+  {
+    minCharsInit: 999999999999,
+    minCharsEnd: null,
+  },
+];
+
 type Props = {
   address: WalletAddress,
   onShareAddress: Function,
@@ -24,8 +47,48 @@ type Props = {
   isIncentivizedTestnet: boolean,
 };
 
+type State = {
+  currentBreakPoint: 0,
+  minCharsInit: number,
+  minCharsEnd: ?number,
+};
+
 @observer
-export default class Address extends Component<Props> {
+export default class Address extends Component<Props, State> {
+  state = {
+    ...BREAKPOINTS[0],
+  };
+
+  componentDidMount() {
+    this.updateWindowDimensions();
+    window.addEventListener('resize', this.updateWindowDimensions, 250);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.updateWindowDimensions);
+  }
+
+  updateWindowDimensions = () => {
+    const { currentBreakPoint } = this.state;
+    const newBreakpoint = this.getBreakpoint(window.innerWidth);
+    if (currentBreakPoint !== newBreakpoint) {
+      const { minCharsInit, minCharsEnd } = BREAKPOINTS[newBreakpoint];
+      this.setState({
+        currentBreakPoint: newBreakpoint,
+        minCharsInit,
+        minCharsEnd,
+      });
+    }
+  };
+
+  getBreakpoint = (windowWidth: number) => {
+    if (windowWidth >= 1081) return 4;
+    if (windowWidth >= 1050) return 3;
+    if (windowWidth >= 1000) return 2;
+    if (windowWidth >= 950) return 1;
+    return 0;
+  };
+
   render() {
     const {
       address,
@@ -41,10 +104,11 @@ export default class Address extends Component<Props> {
       styles.component,
       address.used ? styles.usedWalletAddress : null,
     ]);
+    const { minCharsInit, minCharsEnd } = this.state;
     return (
       <div className={addressClasses}>
         <div className={styles.addressId} id={`address-${address.id}`}>
-          {ellipsis(address.id, 30, 30)}
+          {ellipsis(address.id, minCharsInit, minCharsEnd)}
         </div>
         <div className={styles.addressActions}>
           {address.isInvalid && (

@@ -1,6 +1,7 @@
 .component {
   box-sizing: border-box;
   display: flex;
+  justify-content: space-between;
   padding: 10.5px 0;
   word-break: break-all;
   &.usedWalletAddress {
@@ -18,10 +19,24 @@
   font-family: var(--font-mono);
   letter-spacing: -0.4px;
   margin-right: 4px;
+  max-width: 438px;
   overflow: hidden;
-  text-overflow: ellipsis;
+  // text-overflow: ellipsis;
   user-select: text;
   white-space: nowrap;
+
+  @media (min-width: 950px) {
+    max-width: 476px;
+  }
+  @media (min-width: 1000px) {
+    max-width: 523px;
+  }
+  @media (min-width: 1050px) {
+    max-width: 570px;
+  }
+  @media (min-width: 1081px) {
+    max-width: none;
+  }
 
   // background: darkcyan;
 }
