@@ -48,15 +48,17 @@ type Props = {
 };
 
 type State = {
-  currentBreakPoint: 0,
+  currentBreakPoint: number,
   minCharsInit: number,
-  minCharsEnd: ?number,
+  minCharsEnd?: ?number,
 };
 
 @observer
 export default class Address extends Component<Props, State> {
   state = {
-    ...BREAKPOINTS[0],
+    currentBreakPoint: -1,
+    minCharsInit: 0,
+    minCharsEnd: 0,
   };
 
   componentDidMount() {

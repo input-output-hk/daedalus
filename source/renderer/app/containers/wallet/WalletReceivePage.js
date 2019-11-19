@@ -8,6 +8,7 @@ import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer
 import NotificationMessage from '../../components/widgets/NotificationMessage';
 import successIcon from '../../assets/images/success-small.inline.svg';
 import type { InjectedProps } from '../../types/injectedPropsType';
+import WalletAddress from '../../domains/WalletAddress';
 import { ADDRESS_COPY_NOTIFICATION_DURATION } from '../../config/timingConfig';
 import { ADDRESS_COPY_NOTIFICATION_ELLIPSIS } from '../../config/formattingConfig';
 
@@ -98,14 +99,16 @@ export default class WalletReceivePage extends Component<Props, State> {
 
     const walletAddresses = addresses.all.slice().reverse();
 
+    const invalidWalletAddress: WalletAddress = new WalletAddress({
+      ...walletAddresses[4],
+      isInvalid: true,
+    });
+
     const walletAddressesWithInvalidAddresses =
       walletAddresses && walletAddresses.length
         ? [
             ...walletAddresses.slice(0, 4),
-            {
-              ...walletAddresses[4],
-              isInvalid: true,
-            },
+            invalidWalletAddress,
             ...walletAddresses.slice(5, walletAddresses.length - 1),
           ]
         : [];
