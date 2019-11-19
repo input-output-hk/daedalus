@@ -27,7 +27,6 @@ Feature: General Settings
     | support      | display      |
     | support      | terms-of-use |
 
-
   Scenario: Change language in General Settings
     Given I am on the General Settings "general" screen
     And I open General Settings language selection dropdown
