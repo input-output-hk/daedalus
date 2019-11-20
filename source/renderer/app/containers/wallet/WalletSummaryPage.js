@@ -52,9 +52,9 @@ export default class WalletSummaryPage extends Component<Props> {
       totalAvailable,
       recent,
       recentTransactionsRequest,
-      unconfirmedAmount,
       deletePendingTransaction,
       deleteTransactionRequest,
+      pendingTransactionsCount,
     } = transactions;
     const wallet = wallets.active;
     const { currentTimeFormat, currentDateFormat, currentLocale } = profile;
@@ -108,9 +108,8 @@ export default class WalletSummaryPage extends Component<Props> {
           wallet={wallet}
           numberOfRecentTransactions={recent.length}
           numberOfTransactions={totalAvailable}
-          pendingAmount={unconfirmedAmount}
+          numberOfPendingTransactions={pendingTransactionsCount}
           isLoadingTransactions={recentTransactionsRequest.isExecutingFirstTime}
-          isRestoreActive={isRestoreActive}
         />
         {walletTransactions}
       </VerticalFlexContainer>

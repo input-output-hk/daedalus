@@ -231,8 +231,6 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-icon-node-update-notification-arrow-color': '#5e6066',
     '--theme-icon-add-wallet-from-sidebar-color': '#fafbfc',
     '--theme-icon-ada-summary-wallet-amount-symbol-color': '#5e6066',
-    '--theme-icon-ada-summary-wallet-pending-confirmation-symbol-color':
-      '#5e6066',
     '--theme-icon-add-wallet-dialog-big-button-color': '#8a98ab',
     '--theme-icon-back-button-color': '#5e6066',
     '--theme-icon-close-button-color': '#5e6066',

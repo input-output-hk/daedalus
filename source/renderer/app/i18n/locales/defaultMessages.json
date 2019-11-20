@@ -6890,45 +6890,31 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Outgoing pending confirmation",
-        "description": "\"Outgoing pending confirmation\" label on Wallet summary page",
-        "end": {
-          "column": 3,
-          "line": 20
-        },
-        "file": "source/renderer/app/components/wallet/summary/WalletSummary.js",
-        "id": "wallet.summary.page.pendingOutgoingConfirmationLabel",
-        "start": {
-          "column": 36,
-          "line": 16
-        }
-      },
-      {
-        "defaultMessage": "!!!Incoming pending confirmation",
-        "description": "\"Incoming pending confirmation\" label on Wallet summary page",
-        "end": {
-          "column": 3,
-          "line": 25
-        },
-        "file": "source/renderer/app/components/wallet/summary/WalletSummary.js",
-        "id": "wallet.summary.page.pendingIncomingConfirmationLabel",
-        "start": {
-          "column": 36,
-          "line": 21
-        }
-      },
-      {
         "defaultMessage": "!!!Number of transactions",
         "description": "\"Number of transactions\" label on Wallet summary page",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 18
         },
         "file": "source/renderer/app/components/wallet/summary/WalletSummary.js",
         "id": "wallet.summary.page.transactionsLabel",
         "start": {
           "column": 21,
-          "line": 26
+          "line": 14
+        }
+      },
+      {
+        "defaultMessage": "!!!Number of pending transactions",
+        "description": "\"Number of pending transactions\" label on Wallet summary page",
+        "end": {
+          "column": 3,
+          "line": 24
+        },
+        "file": "source/renderer/app/components/wallet/summary/WalletSummary.js",
+        "id": "wallet.summary.page.pendingTransactionsLabel",
+        "start": {
+          "column": 28,
+          "line": 19
         }
       }
     ],
