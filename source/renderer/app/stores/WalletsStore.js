@@ -12,7 +12,8 @@ import { WalletTransaction } from '../domains/WalletTransaction';
 import { MAX_ADA_WALLETS_COUNT } from '../config/numbersConfig';
 import { i18nContext } from '../utils/i18nContext';
 import { mnemonicToSeedHex } from '../utils/crypto';
-import { downloadPaperWalletCertificate } from '../utils/paperWalletPdfGenerator';
+import { paperWalletPdfGenerator } from '../utils/paperWalletPdfGenerator';
+import { addressPDFGenerator } from '../utils/addressPDFGenerator';
 import { downloadRewardsCsv } from '../utils/rewardsCsvGenerator';
 import { buildRoute, matchRoute } from '../utils/routing';
 import { asyncForEach } from '../utils/asyncForEach';
@@ -214,6 +215,7 @@ export default class WalletsStore extends Store {
     walletsActions.chooseWalletExportType.listen(this._chooseWalletExportType);
 
     walletsActions.generateCertificate.listen(this._generateCertificate);
+    walletsActions.generateAddressPDF.listen(this._generateAddressPDF);
     walletsActions.updateCertificateStep.listen(this._updateCertificateStep);
     walletsActions.closeCertificateGeneration.listen(
       this._closeCertificateGeneration
@@ -917,7 +919,7 @@ export default class WalletsStore extends Store {
     const intl = i18nContext(locale);
     const { isMainnet, buildLabel } = this.environment;
     try {
-      await downloadPaperWalletCertificate({
+      await paperWalletPdfGenerator({
         address,
         mnemonics: recoveryPhrase,
         intl,
@@ -938,6 +940,36 @@ export default class WalletsStore extends Store {
         this._updateCertificateCreationState(false, error);
       });
     }
+  };
+
+  _generateAddressPDF = async (
+    address: string,
+    contentTitle: string,
+    fileName: string
+  ) => {
+    console.log('WALLET STORE _generateAddressPDF');
+    const locale = this.stores.profile.currentLocale;
+    const intl = i18nContext(locale);
+    // try {
+    await addressPDFGenerator({
+      address,
+      contentTitle,
+      fileName,
+      intl,
+    });
+    // runInAction('handle successful certificate download', () => {
+    //   // Reset progress
+    //   this._updateCertificateCreationState(false);
+    //   // Update certificate generator step
+    //   this._updateCertificateStep();
+    // });
+    // } catch (error) {
+    //   console.log('WALLET STORE  error', error);
+    // //   runInAction('handle failed certificate download', () => {
+    // //     // Reset progress
+    // //     this._updateCertificateCreationState(false, error);
+    // //   });
+    // }
   };
 
   _updateCertificateCreationState = action(

@@ -12,6 +12,7 @@ import type { InjectedProps } from '../../types/injectedPropsType';
 import WalletAddress from '../../domains/WalletAddress';
 import { ADDRESS_COPY_NOTIFICATION_DURATION } from '../../config/timingConfig';
 import { ADDRESS_COPY_NOTIFICATION_ELLIPSIS } from '../../config/formattingConfig';
+import { generateFileNameWithTimestamp } from '../../../../common/utils/files';
 
 export const messages = defineMessages({
   message: {
@@ -100,6 +101,39 @@ export default class WalletReceivePage extends Component<Props, State> {
     this.props.actions.dialogs.closeActiveDialog.trigger();
   };
 
+  handleDownloadPDF = (pdfContentTitle: string) => {
+    const { addressToShare } = this.state;
+    // const { name: walletName } = this.activeWallet;
+
+    const name = generateFileNameWithTimestamp({
+      prefix: 'ada-address',
+      extension: '',
+      isUTC: false,
+    });
+
+    // TODO: refactor this direct access to the dialog api
+    const filePath = global.dialog.showSaveDialog({
+      defaultPath: `${name}.pdf`,
+      filters: [
+        {
+          name,
+          extensions: ['pdf'],
+        },
+      ],
+    });
+    console.log('filePath', filePath);
+
+    // if cancel button is clicked or path is empty
+    if (!filePath) console.log('NOOOO FILEPAAPAPAPA');
+    if (!filePath) return;
+
+    this.props.actions.wallets.generateAddressPDF.trigger({
+      address: addressToShare.id,
+      contentTitle: pdfContentTitle,
+      filePath,
+    });
+  };
+
   render() {
     const {
       uiNotifications,
@@ -141,6 +175,7 @@ export default class WalletReceivePage extends Component<Props, State> {
           <WalletReceiveDialog
             address={addressToShare}
             onCopyAddress={this.handleCopyAddress}
+            onDownloadPDF={this.handleDownloadPDF}
             onClose={this.handleCloseShareAddress}
           />
         )}

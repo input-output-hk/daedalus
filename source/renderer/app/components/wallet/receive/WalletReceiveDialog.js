@@ -3,9 +3,8 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import copyToClipboard from 'copy-to-clipboard';
-// import CopyToClipboard from 'react-copy-to-clipboard';
-// import { Input } from 'react-polymorph/lib/components/Input';
-// import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
+import { Input } from 'react-polymorph/lib/components/Input';
+import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import QRCode from 'qrcode.react';
 import BorderedBox from '../../widgets/BorderedBox';
 import Dialog from '../../widgets/Dialog';
@@ -13,12 +12,18 @@ import DialogCloseButton from '../../widgets/DialogCloseButton';
 import WalletAddress from '../../../domains/WalletAddress';
 import globalMessages from '../../../i18n/global-messages';
 import styles from './WalletReceiveDialog.scss';
+import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 
 const messages = defineMessages({
-  placeholder: {
-    id: 'wallet.receive.dialog.placeholder',
-    defaultMessage: '!!!Add a message for the sender',
+  inputLabel: {
+    id: 'wallet.receive.dialog.inputLabel',
+    defaultMessage: '!!!PDF title',
     description: 'placeholder on the wallet "Share Address" dialog',
+  },
+  inputPlaceholder: {
+    id: 'wallet.receive.dialog.inputPlaceholder',
+    defaultMessage: '!!!Add a message for the sender',
+    description: 'inputPlaceholder on the wallet "Share Address" dialog',
   },
   invalidAddressMessage: {
     id: 'wallet.receive.dialog.invalidAddressMessage',
@@ -36,6 +41,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Copy address',
     description: 'copyAddressButton on the wallet "Share Address" dialog',
   },
+  dialogTitle: {
+    id: 'wallet.receive.dialog.dialogTitle',
+    defaultMessage: '!!!Share address',
+    description: 'dialogTitle on the wallet "Share Address" dialog',
+  },
 });
 
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
@@ -43,11 +53,8 @@ messages.fieldIsRequired = globalMessages.fieldIsRequired;
 type Props = {
   address: WalletAddress,
   onCopyAddress: Function,
+  onDownloadPDF: Function,
   onClose: Function,
-};
-
-type State = {
-  title: string,
 };
 
 @observer
@@ -56,20 +63,40 @@ export default class WalletReceiveDialog extends Component<Props, State> {
     intl: intlShape.isRequired,
   };
 
-  // state = {
-  //   title: '',
-  // };
+  form = new ReactToolboxMobxForm({
+    fields: {
+      pdfContentTitle: {
+        value: '',
+        label: this.context.intl.formatMessage(messages.inputLabel),
+        placeholder: this.context.intl.formatMessage(messages.inputPlaceholder),
+      },
+    },
+  });
+
+  submit = () => {
+    this.form.submit({
+      onSuccess: form => {
+        const { pdfContentTitle } = form.values();
+        const { onDownloadPDF, onClose } = this.props;
+        onDownloadPDF(pdfContentTitle);
+        onClose();
+      },
+      onError: err => {
+        throw new Error(err);
+      },
+    });
+  };
 
   render() {
     const { address, onCopyAddress, onClose } = this.props;
     const { intl } = this.context;
-    // const { title } = this.state;
+    const pdfContentTitleField = this.form.$('pdfContentTitle');
 
     const actions = [
       {
         className: 'downloadPDFButton',
         label: intl.formatMessage(messages.downloadPDFButton),
-        onClick: () => {},
+        onClick: this.submit,
       },
       {
         className: 'copyAddressButton',
@@ -96,7 +123,7 @@ export default class WalletReceiveDialog extends Component<Props, State> {
 
     return (
       <Dialog
-        title="Share address"
+        title={intl.formatMessage(messages.dialogTitle)}
         actions={actions}
         closeOnOverlayClick
         onClose={onClose}
@@ -104,14 +131,6 @@ export default class WalletReceiveDialog extends Component<Props, State> {
       >
         <BorderedBox fullHeight>
           <div className={styles.container}>
-            {/* <Input
-              className={styles.title}
-              skin={InputSkin}
-              placeholder={intl.formatMessage(messages.placeholder)}
-              onKeyPress={() => {}}
-              value={title}
-            /> */}
-
             <div className={styles.qrCode}>
               <QRCode
                 value={address.id}
@@ -123,11 +142,18 @@ export default class WalletReceiveDialog extends Component<Props, State> {
 
             <div className={styles.address}>{address.id}</div>
 
-            {!address.isInvalid && (
+            {address.isInvalid && (
               <div className={styles.invalidAddress}>
                 {intl.formatMessage(messages.invalidAddressMessage)}
               </div>
             )}
+
+            <Input
+              className={styles.title}
+              skin={InputSkin}
+              onKeyPress={this.onChangeContentTitle}
+              {...pdfContentTitleField.bind()}
+            />
           </div>
         </BorderedBox>
       </Dialog>

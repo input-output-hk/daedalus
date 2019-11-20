@@ -480,10 +480,9 @@ export default class NetworkStatusStore extends Store {
 
   // DEFINE COMPUTED VALUES
   @computed get isIncentivizedTestnet(): boolean {
-    return (
-      this.environment.isIncentivizedTestnet ||
-      this.nodeImplementation === NODE_IMPLEMENTATIONS.jormungandr
-    );
+    return this.environment.isIncentivizedTestnet;
+    //  ||
+    // this.nodeImplementation === NODE_IMPLEMENTATIONS.jormungandr
   }
 
   @computed get isConnected(): boolean {

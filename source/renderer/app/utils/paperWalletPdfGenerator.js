@@ -40,7 +40,7 @@ type Params = {
   timestamp: string,
 };
 
-export const downloadPaperWalletCertificate = async ({
+export default async ({
   address,
   filePath,
   mnemonics,
