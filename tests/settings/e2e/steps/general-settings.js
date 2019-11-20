@@ -1,5 +1,6 @@
 // @flow
 import { When, Then } from 'cucumber';
+import { expect } from 'chai';
 import { camelCase } from 'lodash';
 
 When(/^I click on secondary menu (.*) item$/, async function(buttonName) {
@@ -15,17 +16,17 @@ When(/^I select second theme$/, async function() {
 });
 
 When(/^I open General Settings language selection dropdown$/, async function() {
-  await this.client.click('.GeneralSettings_component .SimpleInput_input');
+  await this.client.click('.ProfileSettingsForm_component input:nth-child(1)');
 });
 
 Then(/^I should see Japanese language as selected$/, async function() {
-  return this.client.waitUntil(async () => {
-    const selectedLanguage = await this.client.getValue(
-      '.GeneralSettings_component .SimpleInput_input'
+  const [selectedLanguage] = await this.client.waitUntil(async () => {
+    return await this.client.getValue(
+      '.ProfileSettingsForm_component .SimpleInput_input'
     );
-    const expectedLanguage = await this.intl('global.language.japanese');
-    return selectedLanguage === expectedLanguage;
   });
+  const locale = await this.intl('global.language.japanese');
+  expect(selectedLanguage).to.equal(locale);
 });
 
 Then(/^I should see second theme as selected$/, async function() {
