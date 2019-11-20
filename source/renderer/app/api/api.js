@@ -899,7 +899,10 @@ export default class AdaApi {
     } catch (error) {
       Logger.error('AdaApi::updateSpendingPassword error', { error });
       const errorCode = get(error, 'code', '');
-      if (errorCode === 'wrong_encryption_passphrase') {
+      if (
+        errorCode === 'wrong_encryption_passphrase' ||
+        errorCode === 'bad_request'
+      ) {
         throw new IncorrectSpendingPasswordError();
       }
       throw new GenericApiError();
