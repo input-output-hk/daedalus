@@ -11,7 +11,7 @@ storiesOf('Nodes|Environment|Splash', module)
   .add(
     'Network',
     <SplashNetwork
-      isIncentivizedTestnet={currentTheme === 'IncentivizedTestnet'}
+      currentTheme={currentTheme}
       onClose={() => null}
       onLearnMoreClick={() => null}
     />

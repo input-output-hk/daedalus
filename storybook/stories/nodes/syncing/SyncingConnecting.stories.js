@@ -7,8 +7,11 @@ import { action } from '@storybook/addon-actions';
 import SyncingConnecting from '../../../../source/renderer/app/components/loading/syncing-connecting/SyncingConnecting';
 import { CardanoNodeStates } from '../../../../source/common/types/cardano-node.types';
 
+const currentTheme = sessionStorage.getItem('themeName') || 'light-blue';
+
 export const DefaultSyncingConnectingStory = () => (
   <SyncingConnecting
+    currentTheme={currentTheme}
     hasUnreadAlerts={false}
     hasUnreadAnnouncements={false}
     hasUnreadNews={false}
@@ -49,6 +52,7 @@ export const DefaultSyncingConnectingStory = () => (
 
 export const ConnectivityIssuesSyncingConnectingStory = () => (
   <SyncingConnecting
+    currentTheme={currentTheme}
     hasUnreadAlerts={false}
     hasUnreadAnnouncements={false}
     hasUnreadNews={false}
@@ -86,6 +90,7 @@ export const ConnectivityIssuesSyncingConnectingStory = () => (
 
 export const ConnectivityIssuesSyncingConnectingStoryForIncentivizedTestnet = () => (
   <SyncingConnecting
+    currentTheme={currentTheme}
     hasUnreadAlerts={false}
     hasUnreadAnnouncements={false}
     hasUnreadNews={false}
@@ -123,6 +128,7 @@ export const ConnectivityIssuesSyncingConnectingStoryForIncentivizedTestnet = ()
 
 export const SyncIssuesSyncingConnectingStory = () => (
   <SyncingConnecting
+    currentTheme={currentTheme}
     hasUnreadAlerts={false}
     hasUnreadAnnouncements={false}
     hasUnreadNews={false}
@@ -160,6 +166,7 @@ export const SyncIssuesSyncingConnectingStory = () => (
 
 export const SyncIssuesSyncingConnectingStoryForIncentivizedTestnet = () => (
   <SyncingConnecting
+    currentTheme={currentTheme}
     hasUnreadAlerts={false}
     hasUnreadAnnouncements={false}
     hasUnreadNews={false}
