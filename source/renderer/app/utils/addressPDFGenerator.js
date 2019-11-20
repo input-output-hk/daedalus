@@ -3,12 +3,12 @@ import { defineMessages } from 'react-intl';
 import { generateAddressPDFChannel } from '../ipc/generateAddressPDFChannel';
 
 const messages = defineMessages({
-  infoTitle: {
+  fileTitle: {
     id: 'wallet.receive.pdf.infoTitle',
     defaultMessage: '!!!Daedalus wallet address',
     description: 'PDF title',
   },
-  infoAuthor: {
+  fileAuthor: {
     id: 'wallet.receive.pdf.infoAuthor',
     defaultMessage: '!!!Daedalus wallet',
     description: 'PDF author',
@@ -22,10 +22,12 @@ type Params = {
   intl: Object,
 };
 
-export default async ({ address, contentTitle, filePath, intl }: Params) => {
-  console.log('address', address);
-  console.log('contentTitle', contentTitle);
-  console.log('filePath', filePath);
+export const addressPDFGenerator = async ({
+  address,
+  contentTitle,
+  filePath,
+  intl,
+}: Params) => {
   await generateAddressPDFChannel.send({
     address,
     contentTitle,

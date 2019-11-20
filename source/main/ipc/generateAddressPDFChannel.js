@@ -30,8 +30,6 @@ export const handleAddressPDFRequests = () => {
           fileAuthor,
         } = request;
 
-        console.log('handleAddressPDFRequests --------');
-
         const readAssetSync = p => fs.readFileSync(path.join(__dirname, p));
 
         // Generate QR image for wallet address
@@ -63,8 +61,9 @@ export const handleAddressPDFRequests = () => {
           doc.font(fontBuffer);
           doc.fillColor(textColor);
 
-          // Timestamp
+          // Title
           doc.fontSize(18).text(contentTitle, 119, 484);
+          doc.image(qrCodeImage, width / 2 - 80 / 2, 180, { fit: [80, 80] });
         } catch (error) {
           reject(error);
         }

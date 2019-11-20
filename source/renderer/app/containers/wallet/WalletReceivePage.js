@@ -121,10 +121,8 @@ export default class WalletReceivePage extends Component<Props, State> {
         },
       ],
     });
-    console.log('filePath', filePath);
 
     // if cancel button is clicked or path is empty
-    if (!filePath) console.log('NOOOO FILEPAAPAPAPA');
     if (!filePath) return;
 
     this.props.actions.wallets.generateAddressPDF.trigger({

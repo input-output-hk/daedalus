@@ -942,34 +942,27 @@ export default class WalletsStore extends Store {
     }
   };
 
-  _generateAddressPDF = async (
+  _generateAddressPDF = async ({
+    address,
+    contentTitle,
+    filePath,
+  }: {
     address: string,
     contentTitle: string,
-    fileName: string
-  ) => {
-    console.log('WALLET STORE _generateAddressPDF');
+    filePath: string,
+  }) => {
     const locale = this.stores.profile.currentLocale;
     const intl = i18nContext(locale);
-    // try {
-    await addressPDFGenerator({
-      address,
-      contentTitle,
-      fileName,
-      intl,
-    });
-    // runInAction('handle successful certificate download', () => {
-    //   // Reset progress
-    //   this._updateCertificateCreationState(false);
-    //   // Update certificate generator step
-    //   this._updateCertificateStep();
-    // });
-    // } catch (error) {
-    //   console.log('WALLET STORE  error', error);
-    // //   runInAction('handle failed certificate download', () => {
-    // //     // Reset progress
-    // //     this._updateCertificateCreationState(false, error);
-    // //   });
-    // }
+    try {
+      await addressPDFGenerator({
+        address,
+        contentTitle,
+        filePath,
+        intl,
+      });
+    } catch (error) {
+      throw new Error(error);
+    }
   };
 
   _updateCertificateCreationState = action(
