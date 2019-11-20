@@ -5,6 +5,7 @@ Changelog
 
 ### Fixes
 
+- Fixed select language e2e tests ([PR 1702](https://github.com/input-output-hk/daedalus/pull/1702))
 - Fixed yellow frame around the "Diagnostics" dialog ([PR 1699](https://github.com/input-output-hk/daedalus/pull/1699))
 - Fixed the Japanese translation for `timeAgo` in "Wallet settings" stories ([PR 1701](https://github.com/input-output-hk/daedalus/pull/1701))
 
@@ -16,7 +17,6 @@ Changelog
 
 ### Fixes
 
-- Fixed select language e2e tests ([PR 1702](https://github.com/input-output-hk/daedalus/pull/1702))
 - Fixed Wallet name length UI issues on smaller screen sizes ([PR 1689](https://github.com/input-output-hk/daedalus/pull/1689))
 - Fixed "Number of words in your recovery phrase" default state on "Restore a wallet" dialog ([PR 1692](https://github.com/input-output-hk/daedalus/pull/1692))
 - Fixed "Verify wallet recovery phrase" button text vertical centering ([PR 1693](https://github.com/input-output-hk/daedalus/pull/1693))
