@@ -3,6 +3,10 @@ Changelog
 
 ## vNext
 
+### Features
+
+- Added number of pending transactions to “Wallet Summary” screen ([PR 1705](https://github.com/input-output-hk/daedalus/pull/1705))
+
 ### Fixes
 
 - Fixed select language e2e tests ([PR 1702](https://github.com/input-output-hk/daedalus/pull/1702))

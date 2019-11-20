@@ -233,8 +233,6 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-icon-node-update-notification-arrow-color': '#5e6066',
     '--theme-icon-add-wallet-from-sidebar-color': '#ffffff',
     '--theme-icon-ada-summary-wallet-amount-symbol-color': '#5e6066',
-    '--theme-icon-ada-summary-wallet-pending-confirmation-symbol-color':
-      '#5e6066',
     '--theme-icon-add-wallet-dialog-big-button-color': '#ababab',
     '--theme-icon-back-button-color': '#5e6066',
     '--theme-icon-close-button-color': '#5e6066',

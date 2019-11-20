@@ -567,9 +567,6 @@ export const createDaedalusComponentsTheme = (
       '--theme-icon-node-update-notification-arrow-color': `${text.primary}`,
       '--theme-icon-add-wallet-from-sidebar-color': `${text.secondary}`,
       '--theme-icon-ada-summary-wallet-amount-symbol-color': `${text.primary}`,
-      '--theme-icon-ada-summary-wallet-pending-confirmation-symbol-color': `${
-        text.primary
-      }`,
       '--theme-icon-add-wallet-dialog-big-button-color': `${
         background.primary.darker
       }`,

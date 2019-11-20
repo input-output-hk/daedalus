@@ -220,8 +220,6 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--theme-icon-node-update-notification-arrow-color': '#ffffff',
     '--theme-icon-add-wallet-from-sidebar-color': '#ffffff',
     '--theme-icon-ada-summary-wallet-amount-symbol-color': '#ffffff',
-    '--theme-icon-ada-summary-wallet-pending-confirmation-symbol-color':
-      '#ffffff',
     '--theme-icon-add-wallet-dialog-big-button-color': '#ffffff',
     '--theme-icon-back-button-color': '#ffffff',
     '--theme-icon-close-button-color': '#ffffff',
