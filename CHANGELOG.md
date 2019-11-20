@@ -9,6 +9,7 @@ Changelog
 
 ### Fixes
 
+- Fixed proper styles to "network info" screen's button on all of the themes ([PR 1708](https://github.com/input-output-hk/daedalus/pull/1708))
 - Fixed disabled button background color on all of the themes ([PR 1707](https://github.com/input-output-hk/daedalus/pull/1707))
 - Fixed select language e2e tests ([PR 1702](https://github.com/input-output-hk/daedalus/pull/1702))
 - Fixed yellow frame around the "Diagnostics" dialog ([PR 1699](https://github.com/input-output-hk/daedalus/pull/1699))
