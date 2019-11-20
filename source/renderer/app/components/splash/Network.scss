@@ -140,20 +140,21 @@
     .action {
       .actionButton {
         background-color: var(
-            --theme-splash-network-overlay-button-background-color
+          --theme-splash-network-overlay-button-background-color
         );
-        border: solid 1px var(--theme-splash-network-overlay-button-border-color);
+        border: solid 1px
+          var(--theme-splash-network-overlay-button-border-color);
         color: var(--theme-splash-network-overlay-button-text-color);
         font-weight: 500;
         line-height: 1.36;
         margin: 0 auto;
 
         &:hover {
-            background-color: var(
-                --theme-splash-network-overlay-button-background-color-hover
-            );
-            border: none;
-            color: var(--theme-splash-network-overlay-button-text-color-hover);
+          background-color: var(
+            --theme-splash-network-overlay-button-background-color-hover
+          );
+          border: none;
+          color: var(--theme-splash-network-overlay-button-text-color-hover);
         }
       }
     }

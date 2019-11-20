@@ -632,7 +632,8 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-splash-network-background-color7': 'rgba(18, 19, 38, 0.91)',
     '--theme-splash-network-background-color8': 'rgba(18, 19, 38, 1)',
     '--theme-splash-network-logo-fill-color': '#fafbfc',
-    '--theme-splash-network-overlay-button-background-color': 'rgba(0, 0, 0, 0.1)',
+    '--theme-splash-network-overlay-button-background-color':
+      'rgba(0, 0, 0, 0.1)',
     '--theme-splash-network-overlay-button-background-color-hover': '#fafbfc',
     '--theme-splash-network-overlay-button-border-color': '#fafbfc',
     '--theme-splash-network-overlay-button-text-color': '#fafbfc',

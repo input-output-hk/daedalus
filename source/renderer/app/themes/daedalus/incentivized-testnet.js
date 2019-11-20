@@ -619,7 +619,8 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--theme-splash-network-background-color7': 'rgba(18, 19, 38, 0.91)',
     '--theme-splash-network-background-color8': 'rgba(18, 19, 38, 1)',
     '--theme-splash-network-logo-fill-color': '#fff',
-    '--theme-splash-network-overlay-button-background-color': 'rgba(255, 255, 255, 0.1)',
+    '--theme-splash-network-overlay-button-background-color':
+      'rgba(255, 255, 255, 0.1)',
     '--theme-splash-network-overlay-button-background-color-hover': '#fff',
     '--theme-splash-network-overlay-button-border-color': '#fff',
     '--theme-splash-network-overlay-button-text-color': '#fff',
