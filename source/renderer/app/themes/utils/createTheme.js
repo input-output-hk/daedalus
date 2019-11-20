@@ -315,10 +315,7 @@ export const createDaedalusComponentsTheme = (
       '--theme-button-attention-background-color': `${error.regular}`,
       '--theme-button-attention-background-color-hover': `${error.light}`,
       '--theme-button-attention-background-color-active': `${error.darkest}`,
-      '--theme-button-attention-background-color-disabled': `${
-        error.ultralight
-      }`,
-
+      '--theme-button-attention-background-color-disabled': `${error.regular}`,
       '--theme-button-attention-text-color': `${text.secondary}`,
       '--theme-button-attention-text-color-disabled': `${text.secondary}`,
       '--theme-button-attention-outline-color': `${error.lighter}`,
