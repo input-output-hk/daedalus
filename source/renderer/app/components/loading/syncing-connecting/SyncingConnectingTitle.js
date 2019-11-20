@@ -49,8 +49,8 @@ export default class SyncingConnectingTitle extends Component<Props> {
 
     return (
       <div className={styles.component}>
-        (isIncentivizedTestnet &&
-        <div className={titleStyles}>{title}</div>)
+        {isIncentivizedTestnet &&
+        <div className={titleStyles}>{title}</div>}
         <div className={subTitle1Styles}>{subTitle1}</div>
         <div className={subTitle2Styles}>{subTitle2}</div>
       </div>
