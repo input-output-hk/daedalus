@@ -8,6 +8,7 @@ import backgroundImage from '../../assets/images/circle-bg-faded.inline.svg';
 import daedalusIcon from '../../assets/images/daedalus-logo-loading-grey.inline.svg';
 import externalLinkIcon from '../../assets/images/link-ic.inline.svg';
 import styles from './Network.scss';
+import { THEMES } from '../../themes';
 
 const messages = defineMessages({
   title: {
@@ -45,7 +46,7 @@ const messages = defineMessages({
 });
 
 type Props = {
-  isIncentivizedTestnet: boolean,
+  currentTheme: string,
   onClose: Function,
   onLearnMoreClick: Function,
 };
@@ -57,7 +58,7 @@ export default class SplashNetwork extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { isIncentivizedTestnet, onClose, onLearnMoreClick } = this.props;
+    const { onClose, onLearnMoreClick, currentTheme } = this.props;
     const title = intl.formatMessage(messages.title);
     const subTitle1 = intl.formatMessage(messages.incentivizedTestnet);
     const subTitle2 = intl.formatMessage(messages.balanceCheck);
@@ -69,7 +70,7 @@ export default class SplashNetwork extends Component<Props> {
     return (
       <div className={styles.component}>
         <div className={styles.backgroundContainer}>
-          {isIncentivizedTestnet && (
+          {currentTheme === THEMES.INCENTIVIZED_TESTNET && (
             <>
               <div className={styles.backgroundOverlay} />
               <SVGInline
@@ -86,7 +87,7 @@ export default class SplashNetwork extends Component<Props> {
           <div className={styles.subTitle2}>{subTitle2}</div>
           <div className={styles.description}>{description}</div>
           <div className={styles.action}>
-            <Button label={actionLabel} onClick={onClose} skin={ButtonSkin} />
+            <Button className={styles.actionButton} label={actionLabel} onClick={onClose} skin={ButtonSkin} />
           </div>
           <div className={styles.learnMore}>
             <button onClick={onLearnMoreClick}>
