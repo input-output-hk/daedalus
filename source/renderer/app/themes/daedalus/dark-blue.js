@@ -234,8 +234,6 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-icon-node-update-notification-arrow-color': '#e9f4fe',
     '--theme-icon-add-wallet-from-sidebar-color': '#fafbfc',
     '--theme-icon-ada-summary-wallet-amount-symbol-color': '#e9f4fe',
-    '--theme-icon-ada-summary-wallet-pending-confirmation-symbol-color':
-      '#e9f4fe',
     '--theme-icon-add-wallet-dialog-big-button-color':
       'rgba(233, 244, 254, 0.8)',
     '--theme-icon-back-button-color': '#e9f4fe',
