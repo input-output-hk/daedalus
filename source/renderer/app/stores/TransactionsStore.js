@@ -6,21 +6,15 @@ import {
   extendObservable,
   runInAction,
 } from 'mobx';
-import BigNumber from 'bignumber.js';
 import { find } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
-import {
-  WalletTransaction,
-  TransactionTypes,
-} from '../domains/WalletTransaction';
+import { WalletTransaction } from '../domains/WalletTransaction';
 import type {
   DeleteTransactionRequest,
   GetTransactionsResponse,
 } from '../api/transactions/types';
-import type { UnconfirmedAmount } from '../types/unconfirmedAmountType';
 import { isValidAmountInLovelaces } from '../utils/validations';
-import { TX_UNCONFIRMED_THRESHOLD } from '../config/numbersConfig';
 // import { WalletSyncStateStatuses } from '../domains/Wallet';
 
 /* eslint-disable consistent-return */
@@ -55,9 +49,6 @@ export default class TransactionsStore extends Store {
   );
 
   @observable _searchOptionsForWallets = {};
-
-  @observable
-  unconfirmedAmount: UnconfirmedAmount = this._getEmptyUnconfirmedAmount();
 
   setup() {
     // const actions = this.actions.transactions;
@@ -230,22 +221,6 @@ export default class TransactionsStore extends Store {
     }
   };
 
-  _getEmptyUnconfirmedAmount(): UnconfirmedAmount {
-    return {
-      total: new BigNumber(0),
-      incoming: new BigNumber(0),
-      outgoing: new BigNumber(0),
-    };
-  }
-
-  _setUnconfirmedAmount(amount: UnconfirmedAmount) {
-    Object.assign(this.unconfirmedAmount, amount);
-  }
-
-  _resetUnconfirmedAmount() {
-    this._setUnconfirmedAmount(this._getEmptyUnconfirmedAmount());
-  }
-
   _getTransactionsRecentRequest = (
     walletId: string
   ): Request<GetTransactionsResponse> => {
@@ -267,41 +242,6 @@ export default class TransactionsStore extends Store {
 
   // ======================= REACTIONS ========================== //
 
-  /**
-   * Reaction that recomputes unconfirmed amounts for the active wallet
-   * and then updates the observable struct with the new props.
-   * @private
-   */
-  @action _calculateUnconfirmedAmount() {
-    // Reset when no active wallet
-    const wallet = this.stores.wallets.active;
-    if (!wallet) return this._resetUnconfirmedAmount();
-    // Reset when no transactions
-    const results = this._getTransactionsAllRequest(wallet.id).result;
-    if (!results || !results.transactions)
-      return this._resetUnconfirmedAmount();
-
-    // We have some results, lets compute and update
-    const unconfirmedAmount = this._getEmptyUnconfirmedAmount();
-    for (const transaction of results.transactions) {
-      if (transaction.numberOfConfirmations <= TX_UNCONFIRMED_THRESHOLD) {
-        unconfirmedAmount.total = unconfirmedAmount.total.plus(
-          transaction.amount.absoluteValue()
-        );
-        if (transaction.type === TransactionTypes.EXPEND) {
-          unconfirmedAmount.outgoing = unconfirmedAmount.outgoing.plus(
-            transaction.amount.absoluteValue()
-          );
-        }
-        if (transaction.type === TransactionTypes.INCOME) {
-          unconfirmedAmount.incoming = unconfirmedAmount.incoming.plus(
-            transaction.amount.absoluteValue()
-          );
-        }
-      }
-    }
-    this._setUnconfirmedAmount(unconfirmedAmount);
-  }
   /**
    * Reaction that makes sure that we have some default (empty)
    * search options for the active wallet.
