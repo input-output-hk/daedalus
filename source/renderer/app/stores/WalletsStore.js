@@ -27,7 +27,7 @@ import {
   RECOVERY_PHRASE_VERIFICATION_WARNING,
   WALLET_RESTORE_TYPES,
 } from '../config/walletsConfig';
-import { TESTNET } from '../../../common/types/environment.types';
+import { MAINNET, TESTNET } from '../../../common/types/environment.types';
 import type { CsvRecord } from '../../../common/types/rewards-csv-request.types';
 import type { walletExportTypeChoices } from '../types/walletExportTypes';
 import type { WalletImportFromFileParams } from '../actions/wallets-actions';
@@ -639,19 +639,11 @@ export default class WalletsStore extends Store {
   };
 
   isValidAddress = (address: string) => {
-    const { app, networkStatus } = this.stores;
-    const { environment } = app;
-    const { network } = environment;
-    const { nodeImplementation } = networkStatus;
+    const { app } = this.stores;
+    const { isMainnet } = app.environment;
+    const chainSettings = isMainnet ? MAINNET : TESTNET;
     try {
-      const result = Util.introspectAddress(address);
-      if (
-        result.network === network ||
-        (nodeImplementation === 'jormungandr' && result.network === TESTNET)
-      ) {
-        return true;
-      }
-      return false;
+      return Util.isAddress(address, chainSettings);
     } catch (error) {
       return false;
     }
