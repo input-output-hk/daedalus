@@ -70,6 +70,8 @@ export const createReactPolymorphTheme = (
       '--rp-bubble-bg-color': `${background.primary.lightest}`,
       '--rp-bubble-border-color': `${border}`,
       '--rp-bubble-border-radius': '2px',
+      '--rp-bubble-box-shadow':
+        '0 4px 16px 0 rgba(0, 0, 0, 0.12), 0 0 8px 0 rgba(0, 0, 0, 0.06)',
       '--rp-bubble-arrow-bg-color': `${background.primary.regular}`,
     },
     rpButton: {
@@ -1147,6 +1149,7 @@ export const createDaedalusComponentsTheme = (
       '--theme-transactions-state-pending-background-color': `${
         background.primary.dark
       }`,
+      '--theme-transactions-state-pending-warning-background-color': '#ec5d6b',
       '--theme-transactions-state-text-color': `${background.primary.regular}`,
       '--theme-transactions-search-background-color': `${
         background.primary.regular
@@ -1154,6 +1157,12 @@ export const createDaedalusComponentsTheme = (
       '--theme-transactions-icon-type-expend-background-color': '#84a2d2',
       '--theme-transactions-icon-type-income-background-color': '#2dc06c',
       '--theme-transactions-icon-type-exchange-background-color': '#10aca4',
+      '--theme-transactions-icon-type-pending-regular-background-color': `
+        ${chroma(text.primary).alpha(0.5)}
+      `,
+      '--theme-transactions-icon-type-pending-warning-background-color': `
+        ${chroma(error.regular).alpha(0.8)}
+      `,
       '--theme-transactions-arrow-stroke-color': `${text.primary}`,
     },
     uploader: {
