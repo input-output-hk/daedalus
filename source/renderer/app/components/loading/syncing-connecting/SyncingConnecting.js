@@ -260,6 +260,7 @@ export default class SyncingConnecting extends Component<Props, State> {
           )}
           <LogosDisplay isConnected={isConnected} />
           <SyncingConnectingTitle
+            currentTheme={currentTheme}
             isIncentivizedTestnet={isIncentivizedTestnet}
           />
         </div>

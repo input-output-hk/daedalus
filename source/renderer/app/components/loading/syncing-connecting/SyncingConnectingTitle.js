@@ -4,6 +4,7 @@ import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import classNames from 'classnames';
 import styles from './SyncingConnectingTitle.scss';
+import { THEMES } from '../../../themes';
 
 const messages = defineMessages({
   title: {
@@ -24,6 +25,7 @@ const messages = defineMessages({
 });
 
 type Props = {
+  currentTheme: string,
   isIncentivizedTestnet: boolean,
 };
 
@@ -35,7 +37,7 @@ export default class SyncingConnectingTitle extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { isIncentivizedTestnet } = this.props;
+    const { isIncentivizedTestnet, currentTheme } = this.props;
     const title = intl.formatMessage(messages.title);
     const subTitle1 = isIncentivizedTestnet
       ? intl.formatMessage(messages.incentivizedTestnet)
@@ -49,7 +51,7 @@ export default class SyncingConnectingTitle extends Component<Props> {
 
     return (
       <div className={styles.component}>
-        {isIncentivizedTestnet &&
+        {currentTheme === THEMES.INCENTIVIZED_TESTNET &&
         <div className={titleStyles}>{title}</div>}
         <div className={subTitle1Styles}>{subTitle1}</div>
         <div className={subTitle2Styles}>{subTitle2}</div>
