@@ -315,10 +315,7 @@ export const createDaedalusComponentsTheme = (
       '--theme-button-attention-background-color': `${error.regular}`,
       '--theme-button-attention-background-color-hover': `${error.light}`,
       '--theme-button-attention-background-color-active': `${error.darkest}`,
-      '--theme-button-attention-background-color-disabled': `${
-        error.ultralight
-      }`,
-
+      '--theme-button-attention-background-color-disabled': `${error.regular}`,
       '--theme-button-attention-text-color': `${text.secondary}`,
       '--theme-button-attention-text-color-disabled': `${text.secondary}`,
       '--theme-button-attention-outline-color': `${error.lighter}`,
@@ -567,9 +564,6 @@ export const createDaedalusComponentsTheme = (
       '--theme-icon-node-update-notification-arrow-color': `${text.primary}`,
       '--theme-icon-add-wallet-from-sidebar-color': `${text.secondary}`,
       '--theme-icon-ada-summary-wallet-amount-symbol-color': `${text.primary}`,
-      '--theme-icon-ada-summary-wallet-pending-confirmation-symbol-color': `${
-        text.primary
-      }`,
       '--theme-icon-add-wallet-dialog-big-button-color': `${
         background.primary.darker
       }`,

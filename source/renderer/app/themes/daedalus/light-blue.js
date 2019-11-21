@@ -64,8 +64,7 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-button-attention-background-color': '#ea4c5b',
     '--theme-button-attention-background-color-hover': '#ec5d6b',
     '--theme-button-attention-background-color-active': '#d34452',
-    '--theme-button-attention-background-color-disabled':
-      'rgba(234, 76, 91, 1)',
+    '--theme-button-attention-background-color-disabled': '#ea4c5b',
     '--theme-button-attention-text-color-disabled': '#fafbfc',
     '--theme-button-attention-text-color': '#fafbfc',
     '--theme-button-attention-outline-color': '#ff707e',
@@ -168,8 +167,7 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
       'rgba(94, 96, 102, 0.8)',
     '--theme-delegation-steps-choose-wallet-description-highlighted-color':
       '#5e6066',
-    '--theme-delegation-steps-choose-wallet-error-message-color':
-      'rgba(234, 76, 91, 1)',
+    '--theme-delegation-steps-choose-wallet-error-message-color': '#ea4c5b',
     '--theme-delegation-steps-choose-wallet-error-message-light-color':
       'rgba(234, 76, 91, 0.7)',
     '--theme-delegation-steps-choose-wallet-error-select-options-color':
@@ -231,8 +229,6 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-icon-node-update-notification-arrow-color': '#5e6066',
     '--theme-icon-add-wallet-from-sidebar-color': '#fafbfc',
     '--theme-icon-ada-summary-wallet-amount-symbol-color': '#5e6066',
-    '--theme-icon-ada-summary-wallet-pending-confirmation-symbol-color':
-      '#5e6066',
     '--theme-icon-add-wallet-dialog-big-button-color': '#8a98ab',
     '--theme-icon-back-button-color': '#5e6066',
     '--theme-icon-close-button-color': '#5e6066',
