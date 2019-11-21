@@ -4,6 +4,7 @@ import { text, boolean, number, select } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
 import moment from 'moment';
 import wordlist from 'bip39/wordlists/english';
+import { isIncentivizedTestnetTheme } from '../../_support/utils';
 
 // Screens
 import WalletSettings from '../../../../source/renderer/app/components/wallet/settings/WalletSettings';
@@ -84,9 +85,9 @@ const getWalletDates = (type: string, status: string) => {
   };
 };
 
-const locale = sessionStorage.getItem('localeName') || 'English';
+export default (props: { currentTheme: string, locale: string }) => {
+  const { currentTheme, locale } = props;
 
-export default () => {
   const { type, status } = select(
     'Wallet Recovery Phrase Verification',
     recoveryPhraseVerificationDateOptions,
@@ -108,7 +109,7 @@ export default () => {
 
   return (
     <WalletSettings
-      isIncentivizedTestnet={boolean('isIncentivizedTestnet', false)}
+      isIncentivizedTestnet={isIncentivizedTestnetTheme(currentTheme)}
       isLegacy={boolean('isLegacy', false)}
       isDialogOpen={dialog => {
         if (dialog === ChangeSpendingPasswordDialog) {

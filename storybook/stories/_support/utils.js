@@ -118,3 +118,6 @@ export const promise = (returnValue: any): (() => Promise<any>) => () =>
       resolve(returnValue);
     }, 2000);
   });
+
+export const isIncentivizedTestnetTheme = (currentTheme: string) =>
+  currentTheme === 'incentivized-testnet';

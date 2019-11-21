@@ -36,10 +36,7 @@ export default (story, context) => {
   return (
     <StoryDecorator>
       <StoryProvider>
-        <StoryLayout
-          activeSidebarCategory={activeSidebarCategory}
-          storyName={context.story}
-        >
+        <StoryLayout activeSidebarCategory={activeSidebarCategory} {...context}>
           {context.parameters.id === 'countdown' ? (
             storyWithKnobs
           ) : (

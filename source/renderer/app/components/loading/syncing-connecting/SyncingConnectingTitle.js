@@ -23,26 +23,17 @@ const messages = defineMessages({
   },
 });
 
-type Props = {
-  isIncentivizedTestnet: boolean,
-};
-
 @observer
-export default class SyncingConnectingTitle extends Component<Props> {
+export default class SyncingConnectingTitle extends Component<any> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
 
   render() {
     const { intl } = this.context;
-    const { isIncentivizedTestnet } = this.props;
     const title = intl.formatMessage(messages.title);
-    const subTitle1 = isIncentivizedTestnet
-      ? intl.formatMessage(messages.incentivizedTestnet)
-      : null;
-    const subTitle2 = isIncentivizedTestnet
-      ? intl.formatMessage(messages.balanceCheck)
-      : null;
+    const subTitle1 = intl.formatMessage(messages.incentivizedTestnet);
+    const subTitle2 = intl.formatMessage(messages.balanceCheck);
     const titleStyles = classNames([styles.textContent, styles.title]);
     const subTitle1Styles = classNames([styles.textContent, styles.subTitle1]);
     const subTitle2Styles = classNames([styles.textContent, styles.subTitle2]);
