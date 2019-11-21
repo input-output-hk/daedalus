@@ -1,11 +1,12 @@
 // @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import { withKnobs, date, number, boolean } from '@storybook/addon-knobs';
+import { withKnobs, date, number } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
 import StoryLayout from '../_support/StoryLayout';
 import StoryProvider from '../_support/StoryProvider';
 import StoryDecorator from '../_support/StoryDecorator';
+import { isIncentivizedTestnetTheme } from '../_support/utils';
 
 import { CATEGORIES_BY_NAME } from '../../../source/renderer/app/config/sidebarConfig';
 
@@ -62,7 +63,9 @@ const decorator = (story, context) => {
               isActiveNavItem={item => item === getItemFromContext()}
               activeItem={getItemFromContext()}
               onNavItemClick={() => {}}
-              isIncentivizedTestnet={boolean('isIncentivizedTestnet', false)}
+              isIncentivizedTestnet={isIncentivizedTestnetTheme(
+                context.currentTheme
+              )}
             >
               {storyWithKnobs}
             </StakingWithNavigation>

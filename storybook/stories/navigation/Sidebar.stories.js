@@ -11,6 +11,7 @@ import {
   STAGING,
 } from '../../../source/common/types/environment.types';
 import StoryDecorator from '../_support/StoryDecorator';
+import { isIncentivizedTestnetTheme } from '../_support/utils';
 import Sidebar from '../../../source/renderer/app/components/sidebar/Sidebar';
 import { WalletRecoveryPhraseVerificationStatuses } from '../../../source/renderer/app/stores/WalletsStore';
 import {
@@ -80,7 +81,7 @@ storiesOf('Navigation|Sidebar', module)
       pathname="/"
       currentTheme={props.currentTheme}
       network="testnet"
-      isIncentivizedTestnet
+      isIncentivizedTestnet={isIncentivizedTestnetTheme(props.currentTheme)}
     />
   ))
   .add('Wallets Category', (props: { currentTheme: string }) => (
@@ -96,7 +97,7 @@ storiesOf('Navigation|Sidebar', module)
       pathname="/"
       currentTheme={props.currentTheme}
       network="testnet"
-      isIncentivizedTestnet
+      isIncentivizedTestnet={isIncentivizedTestnetTheme(props.currentTheme)}
     />
   ))
   .add('Wallet Selected', (props: { currentTheme: string }) => (
@@ -113,7 +114,7 @@ storiesOf('Navigation|Sidebar', module)
       pathname="/"
       currentTheme={props.currentTheme}
       network="testnet"
-      isIncentivizedTestnet
+      isIncentivizedTestnet={isIncentivizedTestnetTheme(props.currentTheme)}
     />
   ))
   .add('Delegation Category', (props: { currentTheme: string }) => (
@@ -129,7 +130,7 @@ storiesOf('Navigation|Sidebar', module)
       pathname="/"
       currentTheme={props.currentTheme}
       network="testnet"
-      isIncentivizedTestnet
+      isIncentivizedTestnet={isIncentivizedTestnetTheme(props.currentTheme)}
     />
   ))
   .add(
@@ -147,7 +148,7 @@ storiesOf('Navigation|Sidebar', module)
         pathname="/"
         currentTheme={props.currentTheme}
         network="testnet"
-        isIncentivizedTestnet
+        isIncentivizedTestnet={isIncentivizedTestnetTheme(props.currentTheme)}
       />
     )
   )
@@ -173,6 +174,6 @@ storiesOf('Navigation|Sidebar', module)
         },
         TESTNET
       )}
-      isIncentivizedTestnet
+      isIncentivizedTestnet={isIncentivizedTestnetTheme(props.currentTheme)}
     />
   ));

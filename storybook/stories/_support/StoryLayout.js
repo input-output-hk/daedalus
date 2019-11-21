@@ -6,6 +6,7 @@ import { observer, inject } from 'mobx-react';
 import { get } from 'lodash';
 import { action } from '@storybook/addon-actions';
 import { boolean } from '@storybook/addon-knobs';
+import { isIncentivizedTestnetTheme } from './utils';
 
 // Assets and helpers
 import { CATEGORIES_BY_NAME } from '../../../source/renderer/app/config/sidebarConfig';
@@ -60,6 +61,7 @@ export default class StoryLayout extends Component<Props> {
   render() {
     const {
       activeSidebarCategory,
+      currentTheme,
       story = '',
       storiesProps = {},
       stores,
@@ -82,7 +84,12 @@ export default class StoryLayout extends Component<Props> {
         }}
       >
         <SidebarLayout
-          sidebar={this.getSidebar(story, activeSidebarCategory, sidebarMenus)}
+          sidebar={this.getSidebar(
+            story,
+            activeSidebarCategory,
+            sidebarMenus,
+            currentTheme
+          )}
           topbar={this.getTopbar(
             activeSidebarCategory,
             activeWallet,
@@ -131,7 +138,8 @@ export default class StoryLayout extends Component<Props> {
   getSidebar = (
     story: string,
     activeSidebarCategory: string,
-    sidebarMenus: SidebarMenus
+    sidebarMenus: SidebarMenus,
+    currentTheme: string
   ) => {
     const sidebarCategories =
       story === 'Decentralization Start Info'
@@ -150,9 +158,9 @@ export default class StoryLayout extends Component<Props> {
         onOpenDialog={action('onOpenDialog')}
         onSubmitSupportRequest={() => {}}
         pathname="/"
-        currentTheme={this.props.currentTheme}
+        currentTheme={currentTheme}
         network="testnet"
-        isIncentivizedTestnet
+        isIncentivizedTestnet={isIncentivizedTestnetTheme(currentTheme)}
       />
     );
   };

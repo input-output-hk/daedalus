@@ -75,6 +75,7 @@ export default class StakingRewardsPage extends Component<Props> {
         />
       );
     }
+
     return (
       <StakingRewards
         rewards={rewards}
