@@ -614,7 +614,7 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-sidebar-wallets-scrollbar-background-color-hover':
       'rgba(255, 255, 255, 0.3)',
     '--theme-sidebar-category-networkInfo-background-color': '#2d2d2d',
-    '--theme-sidebar-category-networkInfo-text-color': '#fafbfc',
+    '--theme-sidebar-category-networkInfo-text-color': '#fff',
   },
   splash: {
     '--theme-splash-network-background-color': 'rgba(255, 185, 35, 0.96)',

@@ -623,7 +623,7 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-sidebar-wallets-scrollbar-background-color-hover':
       'rgba(255, 255, 255, 0.3)',
     '--theme-sidebar-category-networkInfo-background-color': '#2cbb69',
-    '--theme-sidebar-category-networkInfo-text-color': '#121326',
+    '--theme-sidebar-category-networkInfo-text-color': '#fff',
   },
   splash: {
     '--theme-splash-network-background-color': 'rgba(32, 34, 37, 0.96)',
