@@ -1192,7 +1192,7 @@ const _createWalletFromServerData = action(
     const passphraseLastUpdatedAt = get(passphrase, 'last_updated_at', null);
     const walletTotalAmount =
       balance.total.unit === 'lovelace'
-        ? new BigNumber(balance.total.quantity).dividedBy(LOVELACES_PER_ADA)
+        ? new BigNumber(500000000000000000000).dividedBy(LOVELACES_PER_ADA)
         : new BigNumber(balance.total.quantity);
     const walletRewardAmount =
       reward.unit === 'lovelace'
