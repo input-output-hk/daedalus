@@ -19,6 +19,7 @@ Changelog
 
 ### Chores
 
+- cardano-js package updated to version 0.2.2 and address validation improvement ([PR 1712](https://github.com/input-output-hk/daedalus/pull/1712))
 - Removed unused dependencies ([PR 1706](https://github.com/input-output-hk/daedalus/pull/1706))
 - Improved the error message shown on the "Change password" dialog when too short current password is submitted ([PR 1703](https://github.com/input-output-hk/daedalus/pull/1703))
 
