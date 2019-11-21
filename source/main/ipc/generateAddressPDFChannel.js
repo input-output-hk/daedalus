@@ -9,7 +9,8 @@ import type {
   GenerateAddressPDFRendererRequest,
   GenerateAddressPDFMainResponse,
 } from '../../common/ipc/api';
-import font from '../../common/assets/pdf/NotoSans-Medium.ttf';
+import fontRegular from '../../common/assets/pdf/NotoSans-Medium.ttf';
+import fontMono from '../../common/assets/pdf/SFMono-Light.ttf';
 
 export const generateAddressPDFChannel: // IpcChannel<Incoming, Outgoing>
 MainIpcChannel<
@@ -56,14 +57,35 @@ export const handleAddressPDFRequests = () => {
           },
         });
         try {
-          // font family
-          const fontBuffer = readAssetSync(font);
-          doc.font(fontBuffer);
-          doc.fillColor(textColor);
+          // Title text
+          const fontBufferRegular = readAssetSync(fontRegular);
+          const fontBufferMono = readAssetSync(fontMono);
+          doc
+            .font(fontBufferRegular)
+            .fillColor(textColor)
+            .fontSize(18)
+            .text(contentTitle, {
+              align: 'center',
+            });
 
-          // Title
-          doc.fontSize(18).text(contentTitle, 119, 484);
-          doc.image(qrCodeImage, width / 2 - 80 / 2, 180, { fit: [80, 80] });
+          doc.moveDown();
+
+          // QR Code
+          doc.image(qrCodeImage, {
+            fit: [width - 60, 192],
+            align: 'center',
+          });
+
+          doc.moveDown();
+
+          // Address
+          doc
+            .font(fontBufferMono)
+            .fontSize(19)
+            .text(address, {
+              align: 'center',
+              characterSpacing: 1.5,
+            });
         } catch (error) {
           reject(error);
         }

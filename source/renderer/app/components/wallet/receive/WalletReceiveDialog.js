@@ -3,8 +3,8 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import copyToClipboard from 'copy-to-clipboard';
-import { Input } from 'react-polymorph/lib/components/Input';
-import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
+import { TextArea } from 'react-polymorph/lib/components/TextArea';
+import { TextAreaSkin } from 'react-polymorph/lib/skins/simple/TextAreaSkin';
 import QRCode from 'qrcode.react';
 import BorderedBox from '../../widgets/BorderedBox';
 import Dialog from '../../widgets/Dialog';
@@ -17,12 +17,12 @@ import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 const messages = defineMessages({
   inputLabel: {
     id: 'wallet.receive.dialog.inputLabel',
-    defaultMessage: '!!!PDF title',
+    defaultMessage: '!!!PDF note',
     description: 'placeholder on the wallet "Share Address" dialog',
   },
   inputPlaceholder: {
     id: 'wallet.receive.dialog.inputPlaceholder',
-    defaultMessage: '!!!Add a message for the sender',
+    defaultMessage: '!!!Add a note to the sender',
     description: 'inputPlaceholder on the wallet "Share Address" dialog',
   },
   invalidAddressMessage: {
@@ -148,10 +148,11 @@ export default class WalletReceiveDialog extends Component<Props, State> {
               </div>
             )}
 
-            <Input
+            <TextArea
               className={styles.title}
-              skin={InputSkin}
+              skin={TextAreaSkin}
               onKeyPress={this.onChangeContentTitle}
+              autoResize={false}
               {...pdfContentTitleField.bind()}
             />
           </div>
