@@ -19,7 +19,7 @@ export default (story, context) => {
   return (
     <StoryDecorator>
       <StoryProvider>
-        <StoryLayout activeSidebarCategory="/wallets" storyName={context.story}>
+        <StoryLayout activeSidebarCategory="/wallets" {...context}>
           {context.story !== 'Empty' && context.story !== 'Wallet Add' ? (
             <WalletWithNavigation
               isActiveScreen={item => item === getItemFromContext()}

@@ -24,7 +24,6 @@ type State = {
 };
 
 type Props = {
-  currentTheme: string,
   cardanoNodeState: ?CardanoNodeState,
   hasBeenConnected: boolean,
   forceConnectivityIssue?: boolean,
@@ -224,7 +223,6 @@ export default class SyncingConnecting extends Component<Props, State> {
       onStatusIconClick,
       onToggleNewsFeedIconClick,
       showNewsFeedIcon,
-      currentTheme,
     } = this.props;
 
     const newsFeedIconStyles = classNames([
@@ -235,10 +233,10 @@ export default class SyncingConnecting extends Component<Props, State> {
     return (
       <div className={styles.component}>
         <SyncingConnectingBackground
-          currentTheme={currentTheme}
+          hasLoadedCurrentTheme={hasLoadedCurrentTheme}
+          isIncentivizedTestnet={isIncentivizedTestnet}
           isConnecting={isConnecting}
           isSyncing={isSyncing}
-          hasLoadedCurrentTheme={hasLoadedCurrentTheme}
         />
         <div className={styles.content}>
           {this.showReportIssue && (
@@ -259,9 +257,7 @@ export default class SyncingConnecting extends Component<Props, State> {
             />
           )}
           <LogosDisplay isConnected={isConnected} />
-          <SyncingConnectingTitle
-            isIncentivizedTestnet={isIncentivizedTestnet}
-          />
+          {isIncentivizedTestnet && <SyncingConnectingTitle />}
         </div>
         <SyncingConnectingStatus
           cardanoNodeState={cardanoNodeState}

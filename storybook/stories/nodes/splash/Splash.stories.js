@@ -3,16 +3,14 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import SplashNetwork from '../../../../source/renderer/app/components/splash/Network';
 import StoryDecorator from '../../_support/StoryDecorator';
+import { isIncentivizedTestnetTheme } from '../../_support/utils';
 
-const currentTheme = sessionStorage.getItem('themeName') || 'light-blue';
-
-storiesOf('Nodes|Environment|Splash', module)
+storiesOf('Nodes|Splash', module)
   .addDecorator(story => <StoryDecorator>{story()}</StoryDecorator>)
-  .add(
-    'Network',
+  .add('Network Info', props => (
     <SplashNetwork
-      currentTheme={currentTheme}
+      isIncentivizedTestnet={isIncentivizedTestnetTheme(props.currentTheme)}
       onClose={() => null}
       onLearnMoreClick={() => null}
     />
-  );
+  ));

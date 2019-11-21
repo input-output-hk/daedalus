@@ -37,10 +37,7 @@ export default (story: Object, context: Object) => {
   return (
     <StoryDecorator>
       <StoryProvider>
-        <StoryLayout
-          activeSidebarCategory="/settings"
-          storyName={context.story}
-        >
+        <StoryLayout activeSidebarCategory="/settings" {...context}>
           <SettingsLayout menu={menu}>{storyWithKnobs}</SettingsLayout>
         </StoryLayout>
       </StoryProvider>

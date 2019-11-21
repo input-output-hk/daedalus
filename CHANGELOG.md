@@ -9,7 +9,7 @@ Changelog
 
 ### Fixes
 
-- Fixed proper styles to "network info" screen's button on all of the themes ([PR 1708](https://github.com/input-output-hk/daedalus/pull/1708))
+- Fixed styling issues on the "Network info" overlay on all the themes ([PR 1708](https://github.com/input-output-hk/daedalus/pull/1708))
 - Fixed the `themes:check:createTheme` script and updated the `createTheme` object ([PR 1709](https://github.com/input-output-hk/daedalus/pull/1709))
 - Fixed disabled button background color on all of the themes ([PR 1707](https://github.com/input-output-hk/daedalus/pull/1707))
 - Fixed select language e2e tests ([PR 1702](https://github.com/input-output-hk/daedalus/pull/1702))

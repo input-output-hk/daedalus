@@ -33,8 +33,9 @@ export type StoriesProps = {
 
 type Props = {
   activeSidebarCategory: string,
+  currentTheme: string,
   storiesProps: any | StoriesProps,
-  storyName?: string,
+  story?: string,
   children?: any | Node,
   stores?: ?{},
 };
@@ -51,9 +52,6 @@ const CATEGORIES = [
   CATEGORIES_BY_NAME.SETTINGS,
 ];
 
-let currentTheme = sessionStorage.getItem('themeName') || 'light-blue';
-currentTheme = currentTheme.toLowerCase();
-
 @inject('stores', 'storiesProps')
 @observer
 export default class StoryLayout extends Component<Props> {
@@ -62,16 +60,15 @@ export default class StoryLayout extends Component<Props> {
   render() {
     const {
       activeSidebarCategory,
-      storyName = '',
+      story = '',
       storiesProps = {},
       stores,
       children,
     } = this.props;
-
     const { wallets, activeWalletId, setActiveWalletId } = storiesProps;
 
     const activeWallet: Wallet = wallets[parseInt(activeWalletId, 10)];
-    const activeNavItem = storyName.split(' ')[0].toLowerCase();
+    const activeNavItem = story.split(' ')[0].toLowerCase();
     const sidebarMenus = this.getSidebarMenus(
       this.getSidebarWallets(wallets),
       activeWalletId,
@@ -85,11 +82,7 @@ export default class StoryLayout extends Component<Props> {
         }}
       >
         <SidebarLayout
-          sidebar={this.getSidebar(
-            storyName,
-            activeSidebarCategory,
-            sidebarMenus
-          )}
+          sidebar={this.getSidebar(story, activeSidebarCategory, sidebarMenus)}
           topbar={this.getTopbar(
             activeSidebarCategory,
             activeWallet,
@@ -136,12 +129,12 @@ export default class StoryLayout extends Component<Props> {
   });
 
   getSidebar = (
-    storyName: string,
+    story: string,
     activeSidebarCategory: string,
     sidebarMenus: SidebarMenus
   ) => {
     const sidebarCategories =
-      storyName === 'Decentralization Start Info'
+      story === 'Decentralization Start Info'
         ? CATEGORIES_COUNTDOWN
         : CATEGORIES;
 
@@ -157,7 +150,7 @@ export default class StoryLayout extends Component<Props> {
         onOpenDialog={action('onOpenDialog')}
         onSubmitSupportRequest={() => {}}
         pathname="/"
-        currentTheme={currentTheme}
+        currentTheme={this.props.currentTheme}
         network="testnet"
         isIncentivizedTestnet
       />

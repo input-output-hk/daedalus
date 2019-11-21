@@ -21,23 +21,17 @@ const WALLETS = [
   generateWallet('Third Wallet', '0.0001'),
 ];
 
-const locales = {
-  English: 'en-US',
-  Japanese: 'ja-JP',
-};
-
-// Delegation steps labels are translated outside components and we need to determine correct translations
-const locale = sessionStorage.getItem('localeName') || 'English';
-const currentTheme = sessionStorage.getItem('themeName') || 'light-blue';
-const translationIndex = locales[locale];
-
-// @TODO - improve locales GET once [DDW-711](https://github.com/input-output-hk/daedalus/pull/1426) is merged
-const DELEGATION_WIZARD_STEPS_LIST = [
-  translations[translationIndex]['staking.delegationSetup.steps.step.1.label'],
-  translations[translationIndex]['staking.delegationSetup.steps.step.2.label'],
-  translations[translationIndex]['staking.delegationSetup.steps.step.3.label'],
-  translations[translationIndex]['staking.delegationSetup.steps.step.4.label'],
+const getDelegationWizardStepsList = locale => [
+  translations[locale]['staking.delegationSetup.steps.step.1.label'],
+  translations[locale]['staking.delegationSetup.steps.step.2.label'],
+  translations[locale]['staking.delegationSetup.steps.step.3.label'],
+  translations[locale]['staking.delegationSetup.steps.step.4.label'],
 ];
+
+type Props = {
+  currentTheme: string,
+  locale: string,
+};
 
 type State = {
   currentStep: number,
@@ -45,7 +39,7 @@ type State = {
 
 const NUMBER_OF_STEPS = 6;
 
-export class StakingDelegationSteps extends Component<any, State> {
+export class StakingDelegationSteps extends Component<Props, State> {
   state = {
     currentStep: 0,
   };
@@ -60,7 +54,7 @@ export class StakingDelegationSteps extends Component<any, State> {
       />,
       <DelegationStepsChooseWalletDialog
         key="DelegationStepsChooseWalletDialog"
-        stepsList={DELEGATION_WIZARD_STEPS_LIST}
+        stepsList={getDelegationWizardStepsList(this.props.locale)}
         onClose={action('onClose')}
         onSelectWallet={this.onContinue}
         onBack={action('onBack')}
@@ -73,7 +67,7 @@ export class StakingDelegationSteps extends Component<any, State> {
       <DelegationStepsConfirmationDialog
         fees={new BigNumber(0.172081)}
         key="DelegationStepsConfirmationDialog"
-        stepsList={DELEGATION_WIZARD_STEPS_LIST}
+        stepsList={getDelegationWizardStepsList(this.props.locale)}
         isSpendingPasswordSet
         onClose={action('onClose')}
         onConfirm={this.onContinue}
@@ -83,7 +77,7 @@ export class StakingDelegationSteps extends Component<any, State> {
         amount={new BigNumber(3)}
         fees={new BigNumber(0.172081)}
         key="DelegationStepsActivationDialog"
-        stepsList={DELEGATION_WIZARD_STEPS_LIST}
+        stepsList={getDelegationWizardStepsList(this.props.locale)}
         isSpendingPasswordSet
         onClose={action('onClose')}
         onActivate={this.onContinue}
@@ -91,7 +85,7 @@ export class StakingDelegationSteps extends Component<any, State> {
       />,
       <DelegationStepsChooseStakePoolDialog
         key="DelegationStepsChooseStakePoolDialog"
-        stepsList={DELEGATION_WIZARD_STEPS_LIST}
+        stepsList={getDelegationWizardStepsList(this.props.locale)}
         stakePoolsList={STAKE_POOLS.slice(
           0,
           number('Pools', 100, {
@@ -107,7 +101,7 @@ export class StakingDelegationSteps extends Component<any, State> {
           STAKE_POOLS[36],
         ]}
         onOpenExternalLink={() => {}}
-        currentTheme={currentTheme}
+        currentTheme={this.props.currentTheme}
         onClose={action('onClose')}
         onBack={action('onBack')}
         onSelectPool={this.onContinue}

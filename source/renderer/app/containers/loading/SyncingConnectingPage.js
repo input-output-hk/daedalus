@@ -33,18 +33,13 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
       isNewAppVersionLoading,
       isNewAppVersionLoaded,
     } = stores.nodeUpdate;
-    const {
-      hasLoadedCurrentLocale,
-      hasLoadedCurrentTheme,
-      currentTheme,
-    } = stores.profile;
+    const { hasLoadedCurrentLocale, hasLoadedCurrentTheme } = stores.profile;
     const { toggleNewsFeed } = this.props.actions.app;
     const { unread } = stores.newsFeed.newsFeedData;
     const hasUnreadNews = unread.length > 0;
 
     return (
       <SyncingConnecting
-        currentTheme={currentTheme}
         cardanoNodeState={cardanoNodeState}
         hasBeenConnected={hasBeenConnected}
         isConnected={isConnected}

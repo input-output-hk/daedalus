@@ -12,6 +12,7 @@
   &.isLoadingTheme {
     background-color: transparent;
   }
+
   &.isConnecting {
     background-color: var(--theme-connecting-background-color);
 
@@ -29,6 +30,7 @@
       );
     }
   }
+
   &.isSyncing {
     background-color: var(--theme-syncing-background-color);
 
