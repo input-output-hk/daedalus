@@ -50,26 +50,12 @@
   }
 }
 
-.pendingConfirmation {
-  @extend %smallText;
-  & > .currencySymbolSmallest {
-    display: inline-block;
-    margin-left: 1px;
-    & > svg {
-      height: 10px;
-      width: 9px;
-      & > g > g {
-        stroke: var(
-          --theme-icon-ada-summary-wallet-pending-confirmation-symbol-color
-        );
-      }
+.transactionsCountWrapper {
+  .numberOfTransactions,
+  .numberOfPendingTransactions {
+    @extend %smallText;
+    &.isLoadingNumberOfTransactions {
+      @include animated-ellipsis($width: 16px);
     }
-  }
-}
-
-.numberOfTransactions {
-  @extend %smallText;
-  &.isLoadingNumberOfTransactions {
-    @include animated-ellipsis($width: 16px);
   }
 }
