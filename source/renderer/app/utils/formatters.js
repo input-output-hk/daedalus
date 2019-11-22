@@ -13,10 +13,6 @@ export const formattedWalletAmount = (
   let formattedAmount = '';
   if (long) {
     formattedAmount = amount.toFormat(DECIMAL_PLACES_IN_ADA);
-  } else if (amount.isZero()) {
-    formattedAmount = '0';
-  } else if (amount.lessThan(0.000001)) {
-    formattedAmount = '< 0.000001';
   } else if (amount.lessThan(1)) {
     formattedAmount = amount.round(6, BigNumber.ROUND_DOWN);
   } else if (amount.lessThan(1000)) {
