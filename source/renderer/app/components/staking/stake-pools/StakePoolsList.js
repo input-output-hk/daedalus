@@ -120,6 +120,7 @@ export class StakePoolsList extends Component<Props, State> {
               isSelected={isSelected}
               showSelected={showSelected}
               containerClassName={containerClassName}
+              numberOfStakePools={stakePoolsList.length}
             />
           );
         })}

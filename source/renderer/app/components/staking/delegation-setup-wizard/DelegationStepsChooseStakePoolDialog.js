@@ -175,7 +175,7 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
       ]);
 
       const rankColor = selectedPool
-        ? getColorFromRange(selectedPool.ranking)
+        ? getColorFromRange(selectedPool.ranking, stakePoolsList.length)
         : 'transparent';
 
       return (
