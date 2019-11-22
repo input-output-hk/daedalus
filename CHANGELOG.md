@@ -6,6 +6,7 @@ Changelog
 ### Features
 
 - Added number of pending transactions to “Wallet Summary” screen ([PR 1705](https://github.com/input-output-hk/daedalus/pull/1705))
+- Added new Mainnet and Testnet icons ([PR 1716](https://github.com/input-output-hk/daedalus/pull/1716))
 
 ### Fixes
 
