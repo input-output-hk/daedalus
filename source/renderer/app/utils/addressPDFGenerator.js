@@ -18,7 +18,7 @@ const messages = defineMessages({
 type Params = {
   address: string,
   contentTitle: string,
-  fileName: string,
+  filePath: string,
   intl: Object,
 };
 

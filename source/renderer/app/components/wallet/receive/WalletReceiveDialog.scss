@@ -1,3 +1,8 @@
+:global {
+  .Dialog_actions {
+    margin-top: 10px;
+  }
+}
 .qrCode {
   display: flex;
   justify-content: center;
@@ -11,14 +16,33 @@
   font-family: var(--font-mono);
   font-size: 19px;
   line-height: 1.37;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   text-align: center;
   word-wrap: break-word;
 }
-.invalidAddress {
-  color: var(--theme-color-error);
-  font-family: var(--font-regular);
-  font-size: 16px;
-  line-height: 1.38;
+.copyAddress {
+  display: block;
+  margin-bottom: 20px;
   text-align: center;
+  width: 100%;
+}
+.copyAddressLabel {
+  color: var(--theme-label-button-color);
+  cursor: pointer;
+  font-family: var(--font-regular);
+  font-size: 14px;
+  margin-left: 6px;
+  opacity: 0.5;
+}
+.copyIcon {
+  cursor: pointer;
+  margin-left: 4px;
+  object-fit: contain;
+  & > svg {
+    height: 12px;
+    width: 10px;
+    path {
+      fill: var(--theme-icon-copy-address-color);
+    }
+  }
 }

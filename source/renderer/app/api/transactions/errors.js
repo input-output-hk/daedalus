@@ -65,11 +65,6 @@ const messages = defineMessages({
     description:
       '"Transaction too big due to too many inputs." error link URL.',
   },
-  invalidAddressError: {
-    id: 'api.errors.invalidAddress',
-    defaultMessage: '!!!Please enter a valid address.',
-    description: 'Error message shown when invalid address was entered.',
-  },
 });
 
 export class NotAllowedToSendMoneyToSameAddressError extends LocalizableError {

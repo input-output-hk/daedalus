@@ -1,16 +1,12 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
-import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import classnames from 'classnames';
 import SVGInline from 'react-svg-inline';
 import styles from './Address.scss';
-import tooltipStyles from './AddressTooltip.scss';
 import iconQR from '../../../assets/images/qr-code.inline.svg';
 import iconCopy from '../../../assets/images/clipboard-ic.inline.svg';
-import iconExclamationPoint from '../../../assets/images/exclamation-point.inline.svg';
 import WalletAddress from '../../../domains/WalletAddress';
 import { ellipsis } from '../../../utils/strings';
 
@@ -43,7 +39,6 @@ type Props = {
   onCopyAddress: Function,
   shareAddressLabel: string,
   copyAddressLabel: string,
-  invalidAddressTooltipLabel: string,
   isIncentivizedTestnet: boolean,
 };
 
@@ -98,7 +93,6 @@ export default class Address extends Component<Props, State> {
       onCopyAddress,
       shareAddressLabel,
       copyAddressLabel,
-      invalidAddressTooltipLabel,
       isIncentivizedTestnet,
     } = this.props;
     const addressClasses = classnames([
@@ -113,20 +107,6 @@ export default class Address extends Component<Props, State> {
           {ellipsis(address.id, minCharsInit, minCharsEnd)}
         </div>
         <div className={styles.addressActions}>
-          {address.isInvalid && (
-            <Tooltip
-              skin={TooltipSkin}
-              tip={invalidAddressTooltipLabel}
-              className={styles.invalidAddressTooltip}
-              themeOverrides={tooltipStyles}
-              arrowRelativeToTip
-            >
-              <SVGInline
-                svg={iconExclamationPoint}
-                className={styles.invalidAddress}
-              />
-            </Tooltip>
-          )}
           {!isIncentivizedTestnet ? (
             <button
               className={styles.shareAddressButton}

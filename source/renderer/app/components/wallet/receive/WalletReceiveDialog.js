@@ -2,7 +2,8 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
-import copyToClipboard from 'copy-to-clipboard';
+import CopyToClipboard from 'react-copy-to-clipboard';
+import SVGInline from 'react-svg-inline';
 import { TextArea } from 'react-polymorph/lib/components/TextArea';
 import { TextAreaSkin } from 'react-polymorph/lib/skins/simple/TextAreaSkin';
 import QRCode from 'qrcode.react';
@@ -13,6 +14,7 @@ import WalletAddress from '../../../domains/WalletAddress';
 import globalMessages from '../../../i18n/global-messages';
 import styles from './WalletReceiveDialog.scss';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
+import iconCopy from '../../../assets/images/clipboard-ic.inline.svg';
 
 const messages = defineMessages({
   inputLabel: {
@@ -46,6 +48,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Share address',
     description: 'dialogTitle on the wallet "Share Address" dialog',
   },
+  copyAddressLabel: {
+    id: 'wallet.receive.page.copyAddressLabel',
+    defaultMessage: '!!!Copy address',
+    description: 'Label for "Copy address" link on the wallet "Receive page"',
+  },
 });
 
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
@@ -58,7 +65,7 @@ type Props = {
 };
 
 @observer
-export default class WalletReceiveDialog extends Component<Props, State> {
+export default class WalletReceiveDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -97,14 +104,6 @@ export default class WalletReceiveDialog extends Component<Props, State> {
         className: 'downloadPDFButton',
         label: intl.formatMessage(messages.downloadPDFButton),
         onClick: this.submit,
-      },
-      {
-        className: 'copyAddressButton',
-        label: intl.formatMessage(messages.copyAddressButton),
-        onClick: () => {
-          copyToClipboard(address.id);
-          onCopyAddress(address.id);
-        },
         primary: true,
       },
     ];
@@ -142,17 +141,23 @@ export default class WalletReceiveDialog extends Component<Props, State> {
 
             <div className={styles.address}>{address.id}</div>
 
-            {address.isInvalid && (
-              <div className={styles.invalidAddress}>
-                {intl.formatMessage(messages.invalidAddressMessage)}
-              </div>
-            )}
+            <CopyToClipboard
+              text={address.id}
+              onCopy={() => onCopyAddress(address.id)}
+            >
+              <span className={styles.copyAddress}>
+                <SVGInline svg={iconCopy} className={styles.copyIcon} />
+                <span className={styles.copyAddressLabel}>
+                  {intl.formatMessage(messages.copyAddressLabel)}
+                </span>
+              </span>
+            </CopyToClipboard>
 
             <TextArea
               className={styles.title}
               skin={TextAreaSkin}
-              onKeyPress={this.onChangeContentTitle}
               autoResize={false}
+              rows={3}
               {...pdfContentTitleField.bind()}
             />
           </div>

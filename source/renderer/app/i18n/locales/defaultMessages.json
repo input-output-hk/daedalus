@@ -215,20 +215,6 @@
           "column": 33,
           "line": 61
         }
-      },
-      {
-        "defaultMessage": "!!!Please enter a valid address.",
-        "description": "Error message shown when invalid address was entered.",
-        "end": {
-          "column": 3,
-          "line": 72
-        },
-        "file": "source/renderer/app/api/transactions/errors.js",
-        "id": "api.errors.invalidAddress",
-        "start": {
-          "column": 23,
-          "line": 68
-        }
       }
     ],
     "path": "source/renderer/app/api/transactions/errors.json"
@@ -6065,17 +6051,31 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Add a message for the sender",
+        "defaultMessage": "!!!PDF note",
         "description": "placeholder on the wallet \"Share Address\" dialog",
         "end": {
           "column": 3,
-          "line": 22
+          "line": 24
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
-        "id": "wallet.receive.dialog.placeholder",
+        "id": "wallet.receive.dialog.inputLabel",
         "start": {
-          "column": 15,
-          "line": 18
+          "column": 14,
+          "line": 20
+        }
+      },
+      {
+        "defaultMessage": "!!!Add a note to the sender",
+        "description": "inputPlaceholder on the wallet \"Share Address\" dialog",
+        "end": {
+          "column": 3,
+          "line": 29
+        },
+        "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
+        "id": "wallet.receive.dialog.inputPlaceholder",
+        "start": {
+          "column": 20,
+          "line": 25
         }
       },
       {
@@ -6083,13 +6083,13 @@
         "description": "invalidAddressMessage on the wallet \"Share Address\" dialog",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 35
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
         "id": "wallet.receive.dialog.invalidAddressMessage",
         "start": {
           "column": 25,
-          "line": 23
+          "line": 30
         }
       },
       {
@@ -6097,13 +6097,13 @@
         "description": "downloadPDFButton on the wallet \"Share Address\" dialog",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 40
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
         "id": "wallet.receive.dialog.downloadPDFButton",
         "start": {
           "column": 21,
-          "line": 29
+          "line": 36
         }
       },
       {
@@ -6111,13 +6111,41 @@
         "description": "copyAddressButton on the wallet \"Share Address\" dialog",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 45
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
         "id": "wallet.receive.dialog.copyAddressButton",
         "start": {
           "column": 21,
-          "line": 34
+          "line": 41
+        }
+      },
+      {
+        "defaultMessage": "!!!Share address",
+        "description": "dialogTitle on the wallet \"Share Address\" dialog",
+        "end": {
+          "column": 3,
+          "line": 50
+        },
+        "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
+        "id": "wallet.receive.dialog.dialogTitle",
+        "start": {
+          "column": 15,
+          "line": 46
+        }
+      },
+      {
+        "defaultMessage": "!!!Copy address",
+        "description": "Label for \"Copy address\" link on the wallet \"Receive page\"",
+        "end": {
+          "column": 3,
+          "line": 55
+        },
+        "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
+        "id": "wallet.receive.page.copyAddressLabel",
+        "start": {
+          "column": 20,
+          "line": 51
         }
       }
     ],
@@ -9415,13 +9443,13 @@
         "description": "Message for the wallet address copy success notification.",
         "end": {
           "column": 3,
-          "line": 21
+          "line": 22
         },
         "file": "source/renderer/app/containers/wallet/WalletReceivePage.js",
         "id": "wallet.receive.page.addressCopyNotificationMessage",
         "start": {
           "column": 11,
-          "line": 17
+          "line": 18
         }
       }
     ],
@@ -9889,6 +9917,39 @@
       }
     ],
     "path": "source/renderer/app/i18n/global-messages.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Daedalus wallet address",
+        "description": "PDF title",
+        "end": {
+          "column": 3,
+          "line": 10
+        },
+        "file": "source/renderer/app/utils/addressPDFGenerator.js",
+        "id": "wallet.receive.pdf.infoTitle",
+        "start": {
+          "column": 13,
+          "line": 6
+        }
+      },
+      {
+        "defaultMessage": "!!!Daedalus wallet",
+        "description": "PDF author",
+        "end": {
+          "column": 3,
+          "line": 15
+        },
+        "file": "source/renderer/app/utils/addressPDFGenerator.js",
+        "id": "wallet.receive.pdf.infoAuthor",
+        "start": {
+          "column": 14,
+          "line": 11
+        }
+      }
+    ],
+    "path": "source/renderer/app/utils/addressPDFGenerator.json"
   },
   {
     "descriptors": [

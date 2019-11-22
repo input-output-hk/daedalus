@@ -103,7 +103,6 @@ export default class WalletReceivePage extends Component<Props, State> {
 
   handleDownloadPDF = (pdfContentTitle: string) => {
     const { addressToShare } = this.state;
-    // const { name: walletName } = this.activeWallet;
 
     const name = generateFileNameWithTimestamp({
       prefix: 'ada-address',
@@ -126,7 +125,7 @@ export default class WalletReceivePage extends Component<Props, State> {
     if (!filePath) return;
 
     this.props.actions.wallets.generateAddressPDF.trigger({
-      address: addressToShare.id,
+      address: addressToShare ? addressToShare.id : '',
       contentTitle: pdfContentTitle,
       filePath,
     });

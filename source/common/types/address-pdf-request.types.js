@@ -2,7 +2,7 @@
 export type GenerateAddressPDFParams = {
   address: string,
   contentTitle: string,
-  fileName: string,
+  filePath: string,
   fileTitle: string,
   fileAuthor: string,
 };
