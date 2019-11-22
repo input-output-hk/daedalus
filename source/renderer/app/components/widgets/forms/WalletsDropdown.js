@@ -57,7 +57,7 @@ export default class WalletsDropdown extends Component<Props> {
     const { wallets, ...props } = this.props;
     const walletsData = wallets.map(
       ({ name: label, id: value, amount }: Wallet) => {
-        const detail = formattedWalletAmount(amount);
+        const detail = formattedWalletAmount(amount, true, true);
         return {
           detail,
           label,

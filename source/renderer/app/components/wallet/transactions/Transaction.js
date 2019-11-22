@@ -405,7 +405,7 @@ export default class Transaction extends Component<Props, State> {
                 </div>
                 <div className={styles.amount}>
                   {// hide currency (we are showing symbol instead)
-                  formattedWalletAmount(data.amount, false)}
+                  formattedWalletAmount(data.amount, false, true)}
                   <SVGInline svg={symbol} className={styles.currencySymbol} />
                 </div>
               </div>

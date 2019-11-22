@@ -248,7 +248,7 @@ export default class DelegationStepsActivationDialog extends Component<Props> {
                 {intl.formatMessage(messages.amountLabel)}
               </p>
               <p className={styles.amount}>
-                {formattedWalletAmount(amount, false)}
+                {formattedWalletAmount(amount, false, true)}
                 <span> ADA</span>
               </p>
             </div>
@@ -258,7 +258,7 @@ export default class DelegationStepsActivationDialog extends Component<Props> {
                 {intl.formatMessage(messages.feesLabel)}
               </p>
               <p className={styles.amount}>
-                + {formattedWalletAmount(fees, false)}
+                + {formattedWalletAmount(fees, false, true)}
                 <span> ADA</span>
               </p>
             </div>
@@ -269,7 +269,7 @@ export default class DelegationStepsActivationDialog extends Component<Props> {
               {intl.formatMessage(messages.totalLabel)}
             </p>
             <p className={styles.amount}>
-              {formattedWalletAmount(amount.add(fees), false)}
+              {formattedWalletAmount(amount.add(fees), false, true)}
               <span> ADA</span>
             </p>
           </div>

@@ -20,6 +20,9 @@
 }
 
 .legacyItem {
+  .title {
+    padding-right: 58.5px;
+  }
 
   .meta {
     padding-right: 8px;
@@ -65,7 +68,6 @@
   font-size: 18px;
   line-height: 1.5em;
   margin-top: -5.5px;
-  padding-right: 58.5px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

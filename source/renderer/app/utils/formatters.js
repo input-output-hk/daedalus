@@ -7,9 +7,42 @@ import {
 
 export const formattedWalletAmount = (
   amount: BigNumber,
-  withCurrency: boolean = true
+  withCurrency: boolean = true,
+  long: boolean = false
 ) => {
-  let formattedAmount = amount.toFormat(DECIMAL_PLACES_IN_ADA);
+  let formattedAmount = '';
+  if (long) {
+    formattedAmount = amount.toFormat(DECIMAL_PLACES_IN_ADA);
+  } else if (amount.isZero()) {
+    formattedAmount = '0';
+  } else if (amount.lessThan(0.000001)) {
+    formattedAmount = '< 0.000001';
+  } else if (amount.lessThan(1)) {
+    formattedAmount = amount.round(6, BigNumber.ROUND_DOWN);
+  } else if (amount.lessThan(1000)) {
+    formattedAmount = amount.round(1, BigNumber.ROUND_DOWN);
+  } else if (amount.lessThan(1000000)) {
+    formattedAmount = `${amount
+      .dividedBy(1000)
+      .round(1, BigNumber.ROUND_DOWN)}K`;
+  } else if (amount.lessThan(1000000000)) {
+    formattedAmount = `${amount
+      .dividedBy(1000000)
+      .round(1, BigNumber.ROUND_DOWN)}M`;
+  } else if (amount.lessThan(1000000000000)) {
+    formattedAmount = `${amount
+      .dividedBy(1000000000)
+      .round(1, BigNumber.ROUND_DOWN)}B`;
+  } else if (amount.lessThan(1000000000000000)) {
+    formattedAmount = `${amount
+      .dividedBy(1000000000000)
+      .round(1, BigNumber.ROUND_DOWN)}T`;
+  } else if (amount.lessThan(1000000000000000000)) {
+    formattedAmount = `${amount
+      .dividedBy(1000000000000000)
+      .round(1, BigNumber.ROUND_DOWN)}Q`;
+  }
+
   if (withCurrency) formattedAmount += ' ADA';
   return formattedAmount.toString();
 };

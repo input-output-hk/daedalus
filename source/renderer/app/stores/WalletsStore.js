@@ -782,7 +782,11 @@ export default class WalletsStore extends Store {
         // Active wallet has been replaced or removed
         this.active = newActiveWallet || null;
         if (this.active) {
-          this.activeValue = formattedWalletAmount(this.active.amount);
+          this.activeValue = formattedWalletAmount(
+            this.active.amount,
+            true,
+            true
+          );
         }
       } else if (hasActiveWalletBeenUpdated) {
         // Active wallet has been updated
