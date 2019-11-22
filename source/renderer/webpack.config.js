@@ -135,7 +135,6 @@ module.exports = {
           'react',
           'react-copy-to-clipboard',
           'react-dom',
-          'react-number-format',
           'react-router',
           'react-svg-inline',
           'recharts',

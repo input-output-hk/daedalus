@@ -68,6 +68,7 @@
 
     .daedalusIcon {
       height: 135px;
+      margin-bottom: 30px;
       object-fit: contain;
       width: 173px;
 
@@ -77,6 +78,7 @@
         }
       }
     }
+
     .title {
       color: var(--theme-splash-network-title-color);
       font-size: 20px;
@@ -84,9 +86,9 @@
       letter-spacing: 1px;
       line-height: 1.2;
       margin-bottom: 5px;
-      margin-top: 30px;
       text-transform: uppercase;
     }
+
     .subTitle1 {
       color: var(--theme-splash-network-subTitle1-color);
       font-size: 20px;
@@ -96,6 +98,7 @@
       margin-bottom: 5px;
       text-transform: uppercase;
     }
+
     .subTitle2 {
       color: var(--theme-splash-network-subTitle2-color);
       font-size: 16px;
@@ -105,12 +108,12 @@
       margin-bottom: 20px;
       text-transform: uppercase;
     }
+
     .description {
       background-color: var(
         --theme-splash-network-description-background-color
       );
       border-radius: 4px;
-      color: var(--theme-splash-network-description-color);
       font-size: 14px;
       line-height: 1.43;
       margin-bottom: 30px;
@@ -120,18 +123,42 @@
       padding: 12px 24px;
 
       p {
+        color: var(--theme-splash-network-description-color);
         margin-bottom: 12px;
 
         &:last-child {
           margin-bottom: 0;
         }
       }
-    }
-    .action {
-      button {
-        min-height: 50px;
+
+      b {
+        color: var(--theme-splash-network-description-bold-color);
+        font-family: var(--font-medium);
       }
     }
+
+    .action {
+      .actionButton {
+        background-color: var(
+          --theme-splash-network-overlay-button-background-color
+        );
+        border: solid 1px
+          var(--theme-splash-network-overlay-button-border-color);
+        color: var(--theme-splash-network-overlay-button-text-color);
+        font-weight: 500;
+        line-height: 1.36;
+        margin: 0 auto;
+
+        &:hover {
+          background-color: var(
+            --theme-splash-network-overlay-button-background-color-hover
+          );
+          border: none;
+          color: var(--theme-splash-network-overlay-button-text-color-hover);
+        }
+      }
+    }
+
     .learnMore {
       margin-top: 20px;
 

@@ -58,8 +58,7 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--theme-button-attention-background-color': '#ea4c5b',
     '--theme-button-attention-background-color-hover': '#ee707c',
     '--theme-button-attention-background-color-active': '#a43540',
-    '--theme-button-attention-background-color-disabled':
-      'rgba(234, 76, 91, 1)',
+    '--theme-button-attention-background-color-disabled': '#ea4c5b',
     '--theme-button-attention-text-color': '#ffffff',
     '--theme-button-attention-text-color-disabled': '#ffffff',
     '--theme-button-attention-outline-color': '#f2949d',
@@ -619,11 +618,18 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--theme-splash-network-background-color7': 'rgba(18, 19, 38, 0.91)',
     '--theme-splash-network-background-color8': 'rgba(18, 19, 38, 1)',
     '--theme-splash-network-logo-fill-color': '#fff',
+    '--theme-splash-network-overlay-button-background-color':
+      'rgba(0, 0, 0, 0.1)',
+    '--theme-splash-network-overlay-button-background-color-hover': '#fff',
+    '--theme-splash-network-overlay-button-border-color': '#fff',
+    '--theme-splash-network-overlay-button-text-color': '#fff',
+    '--theme-splash-network-overlay-button-text-color-hover': '#2a2b3c',
     '--theme-splash-network-title-color': '#fff',
     '--theme-splash-network-subTitle1-color': 'rgba(255, 255, 255, 0.5)',
     '--theme-splash-network-subTitle2-color': 'rgba(255, 255, 255, 0.5)',
     '--theme-splash-network-description-background-color': 'rgba(0, 0, 0, 0.1)',
     '--theme-splash-network-description-color': 'rgba(255, 255, 255, 0.7)',
+    '--theme-splash-network-description-bold-color': '#fff',
     '--theme-splash-network-learn-more-color': '#fff',
   },
   stakePools: {

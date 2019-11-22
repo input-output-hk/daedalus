@@ -5,16 +5,23 @@ Changelog
 
 ### Features
 
+- Added new Mainnet and Testnet icons ([PR 1716](https://github.com/input-output-hk/daedalus/pull/1716))
 - Added number of pending transactions to “Wallet Summary” screen ([PR 1705](https://github.com/input-output-hk/daedalus/pull/1705))
 
 ### Fixes
 
+- Fixed styling issues on the "Network info" overlay on all the themes ([PR 1708](https://github.com/input-output-hk/daedalus/pull/1708))
+- Fixed read newsfeed items ID duplication in local storage ([PR 1710](https://github.com/input-output-hk/daedalus/pull/1710))
+- Fixed the `themes:check:createTheme` script and updated the `createTheme` object ([PR 1709](https://github.com/input-output-hk/daedalus/pull/1709))
+- Fixed disabled button background color on all of the themes ([PR 1707](https://github.com/input-output-hk/daedalus/pull/1707))
 - Fixed select language e2e tests ([PR 1702](https://github.com/input-output-hk/daedalus/pull/1702))
 - Fixed yellow frame around the "Diagnostics" dialog ([PR 1699](https://github.com/input-output-hk/daedalus/pull/1699))
 - Fixed the Japanese translation for `timeAgo` in "Wallet settings" stories ([PR 1701](https://github.com/input-output-hk/daedalus/pull/1701))
 
 ### Chores
-- Improve error message shown on the "Change password" dialog when too short current password is submitted ([PR 1703](https://github.com/input-output-hk/daedalus/pull/1703))
+
+- Removed unused dependencies ([PR 1706](https://github.com/input-output-hk/daedalus/pull/1706))
+- Improved the error message shown on the "Change password" dialog when too short current password is submitted ([PR 1703](https://github.com/input-output-hk/daedalus/pull/1703))
 
 ## 1.1.0-ITN0
 

@@ -11,8 +11,6 @@ import {
   DefaultSyncingConnectingStory,
   ConnectivityIssuesSyncingConnectingStory,
   SyncIssuesSyncingConnectingStory,
-  ConnectivityIssuesSyncingConnectingStoryForIncentivizedTestnet,
-  SyncIssuesSyncingConnectingStoryForIncentivizedTestnet,
 } from './SyncingConnecting.stories';
 
 storiesOf('Nodes|Syncing and Connecting', module)
@@ -22,12 +20,4 @@ storiesOf('Nodes|Syncing and Connecting', module)
   // ====== Stories ======
   .add('Default', DefaultSyncingConnectingStory)
   .add('Trouble Connecting', ConnectivityIssuesSyncingConnectingStory)
-  .add(
-    ' Trouble Connecting For Incentivized Testnet',
-    ConnectivityIssuesSyncingConnectingStoryForIncentivizedTestnet
-  )
-  .add('Trouble Syncing', SyncIssuesSyncingConnectingStory)
-  .add(
-    'Trouble Syncing For Incentivized Testnet',
-    SyncIssuesSyncingConnectingStoryForIncentivizedTestnet
-  );
+  .add('Trouble Syncing', SyncIssuesSyncingConnectingStory);

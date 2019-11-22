@@ -65,8 +65,7 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-button-attention-background-color': '#ea4c5b',
     '--theme-button-attention-background-color-hover': '#ec5d6b',
     '--theme-button-attention-background-color-active': '#d34452',
-    '--theme-button-attention-background-color-disabled':
-      'rgba(234, 76, 91, 1)',
+    '--theme-button-attention-background-color-disabled': '#ea4c5b',
     '--theme-button-attention-text-color-disabled': '#ffffff',
     '--theme-button-attention-text-color': '#ffffff',
     '--theme-button-attention-outline-color': '#ff707e',
@@ -170,8 +169,7 @@ export const CARDANO_THEME_OUTPUT = {
       'rgba(94, 96, 102, 0.8)',
     '--theme-delegation-steps-choose-wallet-description-highlighted-color':
       '#5e6066',
-    '--theme-delegation-steps-choose-wallet-error-message-color':
-      'rgba(234, 76, 91, 1)',
+    '--theme-delegation-steps-choose-wallet-error-message-color': '#ea4c5b',
     '--theme-delegation-steps-choose-wallet-error-message-light-color':
       'rgba(234, 76, 91, 0.7)',
     '--theme-delegation-steps-choose-wallet-error-select-options-color':
@@ -625,7 +623,7 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-sidebar-wallets-scrollbar-background-color-hover':
       'rgba(255, 255, 255, 0.3)',
     '--theme-sidebar-category-networkInfo-background-color': '#2cbb69',
-    '--theme-sidebar-category-networkInfo-text-color': '#121326',
+    '--theme-sidebar-category-networkInfo-text-color': '#fff',
   },
   splash: {
     '--theme-splash-network-background-color': 'rgba(32, 34, 37, 0.96)',
@@ -638,11 +636,18 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-splash-network-background-color7': 'rgba(18, 19, 38, 0.91)',
     '--theme-splash-network-background-color8': 'rgba(18, 19, 38, 1)',
     '--theme-splash-network-logo-fill-color': '#fff',
+    '--theme-splash-network-overlay-button-background-color':
+      'rgba(0, 0, 0, 0.1)',
+    '--theme-splash-network-overlay-button-background-color-hover': '#fff',
+    '--theme-splash-network-overlay-button-border-color': '#fff',
+    '--theme-splash-network-overlay-button-text-color': '#fff',
+    '--theme-splash-network-overlay-button-text-color-hover': '#202225',
     '--theme-splash-network-title-color': '#fff',
     '--theme-splash-network-subTitle1-color': 'rgba(255, 255, 255, 0.5)',
     '--theme-splash-network-subTitle2-color': 'rgba(255, 255, 255, 0.5)',
     '--theme-splash-network-description-background-color': 'rgba(0, 0, 0, 0.1)',
     '--theme-splash-network-description-color': 'rgba(255, 255, 255, 0.7)',
+    '--theme-splash-network-description-bold-color': '#fff',
     '--theme-splash-network-learn-more-color': '#fff',
   },
   stakePools: {

@@ -7,10 +7,10 @@ import backgroundImage from '../../../assets/images/circle-bg-faded.inline.svg';
 import styles from './SyncingConnectingBackground.scss';
 
 type Props = {
-  isConnecting: boolean,
-  isSyncing: boolean,
   hasLoadedCurrentTheme: boolean,
   isIncentivizedTestnet: boolean,
+  isConnecting: boolean,
+  isSyncing: boolean,
 };
 
 @observer
@@ -19,12 +19,12 @@ export default class SyncingConnectingBackground extends Component<Props> {
     const {
       isConnecting,
       isSyncing,
-      hasLoadedCurrentTheme,
       isIncentivizedTestnet,
+      hasLoadedCurrentTheme,
     } = this.props;
     const componentStyles = classNames([
       styles.component,
-      hasLoadedCurrentTheme ? null : styles.isLoadingTheme,
+      !hasLoadedCurrentTheme ? styles.isLoadingTheme : null,
       isConnecting ? styles.isConnecting : null,
       isSyncing ? styles.isSyncing : null,
     ]);
