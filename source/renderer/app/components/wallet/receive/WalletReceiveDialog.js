@@ -13,6 +13,7 @@ import DialogCloseButton from '../../widgets/DialogCloseButton';
 import WalletAddress from '../../../domains/WalletAddress';
 import globalMessages from '../../../i18n/global-messages';
 import styles from './WalletReceiveDialog.scss';
+import textAreaStyles from './WalletReceiveDialogTextArea.scss';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import iconCopy from '../../../assets/images/clipboard-ic.inline.svg';
 
@@ -72,7 +73,7 @@ export default class WalletReceiveDialog extends Component<Props> {
 
   form = new ReactToolboxMobxForm({
     fields: {
-      pdfContentTitle: {
+      noteInput: {
         value: '',
         label: this.context.intl.formatMessage(messages.inputLabel),
         placeholder: this.context.intl.formatMessage(messages.inputPlaceholder),
@@ -83,9 +84,9 @@ export default class WalletReceiveDialog extends Component<Props> {
   submit = () => {
     this.form.submit({
       onSuccess: form => {
-        const { pdfContentTitle } = form.values();
+        const { noteInput } = form.values();
         const { onDownloadPDF, onClose } = this.props;
-        onDownloadPDF(pdfContentTitle);
+        onDownloadPDF(noteInput);
         onClose();
       },
       onError: err => {
@@ -94,10 +95,14 @@ export default class WalletReceiveDialog extends Component<Props> {
     });
   };
 
+  handleChange = (field: { value: string }) => {
+    field.value = field.value.replace(/\n/g, '');
+  };
+
   render() {
     const { address, onCopyAddress, onClose } = this.props;
     const { intl } = this.context;
-    const pdfContentTitleField = this.form.$('pdfContentTitle');
+    const noteInputField = this.form.$('noteInput');
 
     const actions = [
       {
@@ -154,11 +159,15 @@ export default class WalletReceiveDialog extends Component<Props> {
             </CopyToClipboard>
 
             <TextArea
-              className={styles.title}
+              className={styles.noteInput}
               skin={TextAreaSkin}
               autoResize={false}
               rows={3}
-              {...pdfContentTitleField.bind()}
+              maxLength={150}
+              themeOverrides={textAreaStyles}
+              {...noteInputField.bind({
+                onChange: this.handleChange(noteInputField),
+              })}
             />
           </div>
         </BorderedBox>
