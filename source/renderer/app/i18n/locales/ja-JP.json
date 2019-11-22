@@ -385,7 +385,7 @@
   "static.splash.network.actionLabel": "了解した",
   "static.splash.network.balanceCheck": "模擬スナップショット",
   "static.splash.network.incentivizedTestnet": "インセンティブ付きテストネット",
-  "static.splash.network.incentivizedTestnetDescription": "<p>Daedalusの本バージョンは、インセンティブ付きテストネット公開の第一段階である模擬スナップショット専用に作成されました。したがって、Cardanoメインネットとの互換性はありません。</p><p>模擬スナップショットは当面11月後半に予定されている公式の残高スナップショットに向けたリハーサルとなります。この初回テストにより鍵となる機能がテストできると同時に、ユーザーはインセンティブ付きテストネットに先立ち、メインネットのADA残高が正確にキャプチャーされるかを検証することができます。</p>",
+  "static.splash.network.incentivizedTestnetDescription": "<p>Daedalusの本バージョンは、インセンティブ付きテストネット公開の第一段階である模擬スナップショット専用に作成されました。したがって、Cardanoメインネットとの互換性はありません。</p><p><b>模擬スナップショットは当面11月後半に予定されている公式の残高スナップショットに向けたリハーサルとなります。この初回テストにより鍵となる機能がテストできると同時に、ユーザーはインセンティブ付きテストネットに先立ち、メインネットのADA残高が正確にキャプチャーされるかを検証することができます。</b></p>",
   "static.splash.network.learnMore": "もっと知る",
   "static.splash.network.learnMore.linkUrl": "https://staking.cardano.org/ja/",
   "static.splash.network.title": "Daedalus",

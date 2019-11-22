@@ -81,12 +81,21 @@ export default class SplashNetwork extends Component<Props> {
         </div>
         <div className={styles.content}>
           <SVGInline svg={daedalusIcon} className={styles.daedalusIcon} />
-          <div className={styles.title}>{title}</div>
-          <div className={styles.subTitle1}>{subTitle1}</div>
-          <div className={styles.subTitle2}>{subTitle2}</div>
+          {isIncentivizedTestnet && (
+            <>
+              <div className={styles.title}>{title}</div>
+              <div className={styles.subTitle1}>{subTitle1}</div>
+              <div className={styles.subTitle2}>{subTitle2}</div>
+            </>
+          )}
           <div className={styles.description}>{description}</div>
           <div className={styles.action}>
-            <Button label={actionLabel} onClick={onClose} skin={ButtonSkin} />
+            <Button
+              className={styles.actionButton}
+              label={actionLabel}
+              onClick={onClose}
+              skin={ButtonSkin}
+            />
           </div>
           <div className={styles.learnMore}>
             <button onClick={onLearnMoreClick}>

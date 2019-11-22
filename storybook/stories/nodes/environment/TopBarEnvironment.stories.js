@@ -79,17 +79,17 @@ const topBarProductionEnv = (
   </TopBar>
 );
 
-storiesOf('Nodes|Environment|TopBar', module)
+storiesOf('Nodes|Environment', module)
   .addDecorator(story => <StoryDecorator>{story()}</StoryDecorator>)
 
   // ====== Stories ======
 
-  .add('Test Environment label', () => (
+  .add('Testnet', () => (
     <SidebarLayout topbar={topBarTestEnv} sidebar={<noscript />} />
   ))
-  .add('ITN Environment label', () => (
+  .add('Incentivized Testnet', () => (
     <SidebarLayout topbar={topBarItnEnv} sidebar={<noscript />} />
   ))
-  .add('Production Environment', () => (
+  .add('Production', () => (
     <SidebarLayout topbar={topBarProductionEnv} sidebar={<noscript />} />
   ));

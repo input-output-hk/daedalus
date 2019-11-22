@@ -3,11 +3,14 @@ import React from 'react';
 import { number, boolean, radios } from '@storybook/addon-knobs';
 import { linkTo } from '@storybook/addon-links';
 import { action } from '@storybook/addon-actions';
+import { isIncentivizedTestnetTheme } from '../../_support/utils';
 
 import SyncingConnecting from '../../../../source/renderer/app/components/loading/syncing-connecting/SyncingConnecting';
 import { CardanoNodeStates } from '../../../../source/common/types/cardano-node.types';
 
-export const DefaultSyncingConnectingStory = () => (
+export const DefaultSyncingConnectingStory = (props: {
+  currentTheme: string,
+}) => (
   <SyncingConnecting
     hasUnreadAlerts={false}
     hasUnreadAnnouncements={false}
@@ -43,11 +46,13 @@ export const DefaultSyncingConnectingStory = () => (
     onStatusIconClick={linkTo('Diagnostics', () => 'default')}
     disableDownloadLogs={boolean('disableDownloadLogs', true)}
     showNewsFeedIcon
-    isIncentivizedTestnet={false}
+    isIncentivizedTestnet={isIncentivizedTestnetTheme(props.currentTheme)}
   />
 );
 
-export const ConnectivityIssuesSyncingConnectingStory = () => (
+export const ConnectivityIssuesSyncingConnectingStory = (props: {
+  currentTheme: string,
+}) => (
   <SyncingConnecting
     hasUnreadAlerts={false}
     hasUnreadAnnouncements={false}
@@ -80,48 +85,13 @@ export const ConnectivityIssuesSyncingConnectingStory = () => (
     onStatusIconClick={linkTo('Diagnostics', () => 'default')}
     disableDownloadLogs={boolean('disableDownloadLogs', false)}
     showNewsFeedIcon
-    isIncentivizedTestnet={false}
+    isIncentivizedTestnet={isIncentivizedTestnetTheme(props.currentTheme)}
   />
 );
 
-export const ConnectivityIssuesSyncingConnectingStoryForIncentivizedTestnet = () => (
-  <SyncingConnecting
-    hasUnreadAlerts={false}
-    hasUnreadAnnouncements={false}
-    hasUnreadNews={false}
-    onToggleNewsFeedIconClick={action('onToggleNewsFeedIconClick')}
-    forceConnectivityIssue
-    isConnected={false}
-    cardanoNodeState={CardanoNodeStates.RUNNING}
-    hasBeenConnected
-    isSynced={false}
-    isConnecting
-    isSyncing={false}
-    isNodeStopping={false}
-    isNodeStopped={false}
-    isTlsCertInvalid={false}
-    syncPercentage={0}
-    hasLoadedCurrentLocale
-    hasLoadedCurrentTheme
-    isCheckingSystemTime={false}
-    isNodeResponding
-    isNodeSubscribed={false}
-    isNodeSyncing={false}
-    isNodeTimeCorrect
-    isNewAppVersionAvailable={false}
-    isNewAppVersionLoading={false}
-    isNewAppVersionLoaded
-    onIssueClick={action('onIssueClick')}
-    onDownloadLogs={action('onDownloadLogs')}
-    onGetAvailableVersions={action('onGetAvailableVersions')}
-    onStatusIconClick={linkTo('Diagnostics', () => 'default')}
-    disableDownloadLogs={boolean('disableDownloadLogs', false)}
-    showNewsFeedIcon
-    isIncentivizedTestnet
-  />
-);
-
-export const SyncIssuesSyncingConnectingStory = () => (
+export const SyncIssuesSyncingConnectingStory = (props: {
+  currentTheme: string,
+}) => (
   <SyncingConnecting
     hasUnreadAlerts={false}
     hasUnreadAnnouncements={false}
@@ -154,43 +124,6 @@ export const SyncIssuesSyncingConnectingStory = () => (
     onStatusIconClick={linkTo('Diagnostics', () => 'default')}
     disableDownloadLogs={boolean('disableDownloadLogs', false)}
     showNewsFeedIcon
-    isIncentivizedTestnet={false}
-  />
-);
-
-export const SyncIssuesSyncingConnectingStoryForIncentivizedTestnet = () => (
-  <SyncingConnecting
-    hasUnreadAlerts={false}
-    hasUnreadAnnouncements={false}
-    hasUnreadNews={false}
-    onToggleNewsFeedIconClick={action('onToggleNewsFeedIconClick')}
-    forceSyncIssue
-    cardanoNodeState={CardanoNodeStates.RUNNING}
-    hasBeenConnected
-    isConnected
-    isSynced={false}
-    isConnecting={false}
-    isSyncing
-    isNodeStopping={false}
-    isNodeStopped={false}
-    isTlsCertInvalid={false}
-    syncPercentage={50}
-    hasLoadedCurrentLocale
-    hasLoadedCurrentTheme
-    isCheckingSystemTime={false}
-    isNodeResponding
-    isNodeSubscribed
-    isNodeSyncing
-    isNodeTimeCorrect
-    isNewAppVersionAvailable={false}
-    isNewAppVersionLoading={false}
-    isNewAppVersionLoaded
-    onIssueClick={action('onIssueClick')}
-    onDownloadLogs={action('onDownloadLogs')}
-    onGetAvailableVersions={action('onGetAvailableVersions')}
-    onStatusIconClick={linkTo('Diagnostics', () => 'default')}
-    disableDownloadLogs={boolean('disableDownloadLogs', false)}
-    showNewsFeedIcon
-    isIncentivizedTestnet
+    isIncentivizedTestnet={isIncentivizedTestnetTheme(props.currentTheme)}
   />
 );
