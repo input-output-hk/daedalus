@@ -233,10 +233,10 @@ export default class SyncingConnecting extends Component<Props, State> {
     return (
       <div className={styles.component}>
         <SyncingConnectingBackground
-          isConnecting={isConnecting}
-          isSyncing={isSyncing}
           hasLoadedCurrentTheme={hasLoadedCurrentTheme}
           isIncentivizedTestnet={isIncentivizedTestnet}
+          isConnecting={isConnecting}
+          isSyncing={isSyncing}
         />
         <div className={styles.content}>
           {this.showReportIssue && (
@@ -257,9 +257,7 @@ export default class SyncingConnecting extends Component<Props, State> {
             />
           )}
           <LogosDisplay isConnected={isConnected} />
-          <SyncingConnectingTitle
-            isIncentivizedTestnet={isIncentivizedTestnet}
-          />
+          {isIncentivizedTestnet && <SyncingConnectingTitle />}
         </div>
         <SyncingConnectingStatus
           cardanoNodeState={cardanoNodeState}
