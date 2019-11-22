@@ -257,6 +257,7 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
                 containerClassName="Dialog_content"
                 onSelect={this.handleSelect}
                 selectedPoolId={selectedPoolId}
+                numberOfStakePools={stakePoolsList.length}
                 showSelected
                 highlightOnHover
               />
@@ -285,6 +286,7 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
               onSelect={this.handleSelect}
               selectedPoolId={selectedPoolId}
               containerClassName="Dialog_content"
+              numberOfStakePools={stakePoolsList.length}
               showSelected
               highlightOnHover
             />
