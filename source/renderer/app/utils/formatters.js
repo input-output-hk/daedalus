@@ -5,6 +5,12 @@ import {
   LOVELACES_PER_ADA,
 } from '../config/numbersConfig';
 
+// Symbol	  Name	              Scientific Notation
+// K	      Thousand	          1.00E+03
+// M	      Million	            1.00E+06
+// B	      Billion	            1.00E+09
+// T	      Trillion	          1.00E+12
+// Q	      Quadrillion	        1.00E+15
 export const formattedWalletAmount = (
   amount: BigNumber,
   withCurrency: boolean = true,
