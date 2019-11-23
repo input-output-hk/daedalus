@@ -30,7 +30,7 @@ storiesOf('Wallets|Settings', module)
       />
     </div>
   ))
-  .add('Delete - no funds - not accepted', () => (
+  .add('Delete - no funds & not accepted', () => (
     <div>
       <DeleteWalletConfirmationDialog
         walletName="My Wallet"
