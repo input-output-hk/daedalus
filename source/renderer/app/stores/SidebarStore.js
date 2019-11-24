@@ -44,7 +44,12 @@ export default class SidebarStore extends Store {
       return {
         id: wallet.id,
         title: wallet.name,
-        info: formattedWalletAmount(wallet.amount, true, false, currentNumberFormat),
+        info: formattedWalletAmount(
+          wallet.amount,
+          true,
+          false,
+          currentNumberFormat
+        ),
         isConnected: networkStatus.isConnected,
         isRestoreActive:
           get(wallet, 'syncState.status') === WalletSyncStateStatuses.RESTORING,

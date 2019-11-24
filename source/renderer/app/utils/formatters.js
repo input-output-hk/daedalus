@@ -16,7 +16,7 @@ export const formattedWalletAmount = (
   amount: BigNumber,
   withCurrency: boolean = true,
   long: boolean = false,
-  currentNumberFormat?: string,
+  currentNumberFormat?: string
 ) => {
   let formattedAmount = '';
   if (long) {
