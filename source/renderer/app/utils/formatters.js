@@ -4,6 +4,7 @@ import {
   DECIMAL_PLACES_IN_ADA,
   LOVELACES_PER_ADA,
 } from '../config/numbersConfig';
+import { NUMBER_FORMATS } from '../../../common/types/number.types';
 
 // Symbol	  Name	              Scientific Notation
 // K	      Thousand	          1.00E+03
@@ -14,7 +15,8 @@ import {
 export const formattedWalletAmount = (
   amount: BigNumber,
   withCurrency: boolean = true,
-  long: boolean = false
+  long: boolean = false,
+  currentNumberFormat?: string,
 ) => {
   let formattedAmount = '';
   if (long) {
@@ -47,6 +49,10 @@ export const formattedWalletAmount = (
       .round(1, BigNumber.ROUND_DOWN)}Q`;
   }
 
+  if (currentNumberFormat && NUMBER_FORMATS[currentNumberFormat]) {
+    const { groupSeparator } = NUMBER_FORMATS[currentNumberFormat];
+    formattedAmount = formattedAmount.split('.').join(groupSeparator);
+  }
   if (withCurrency) formattedAmount += ' ADA';
   return formattedAmount.toString();
 };
