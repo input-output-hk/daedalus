@@ -346,14 +346,18 @@ export default class WalletRestoreDialog extends Component<Props, State> {
   };
 
   autoScrollOnFocus = () => {
-      const scrollableDialogElement = document.querySelector(
-        SCROLLABLE_DOM_ELEMENT_SELECTOR
-      );
-      const autocompleteField = document.querySelector(
-        FOCUSED_DOM_ELEMENT_SELECTOR
-      );
-      if (!(scrollableDialogElement instanceof HTMLElement) || !(autocompleteField instanceof HTMLElement) ) return;
-      scrollableDialogElement.scrollTop = autocompleteField.offsetHeight;
+    const scrollableDialogElement = document.querySelector(
+      SCROLLABLE_DOM_ELEMENT_SELECTOR
+    );
+    const autocompleteField = document.querySelector(
+      FOCUSED_DOM_ELEMENT_SELECTOR
+    );
+    if (
+      !(scrollableDialogElement instanceof HTMLElement) ||
+      !(autocompleteField instanceof HTMLElement)
+    )
+      return;
+    scrollableDialogElement.scrollTop = autocompleteField.offsetHeight;
   };
 
   render() {
