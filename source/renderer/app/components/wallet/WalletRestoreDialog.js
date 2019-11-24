@@ -179,6 +179,9 @@ type State = {
   walletType: string,
 };
 
+const SCROLLABLE_DOM_ELEMENT_SELECTOR = '.Dialog_content';
+const FOCUSED_DOM_ELEMENT_SELECTOR = '.SimpleAutocomplete_autocompleteContent';
+
 @observer
 export default class WalletRestoreDialog extends Component<Props, State> {
   static contextTypes = {
@@ -342,6 +345,18 @@ export default class WalletRestoreDialog extends Component<Props, State> {
     this.recoveryPhraseAutocomplete.clear();
   };
 
+  autoScrollOnFocus = () => {
+    if (this.recoveryPhraseAutocomplete) {
+      const scrollableDialogElement = document.querySelector(
+        SCROLLABLE_DOM_ELEMENT_SELECTOR
+      );
+      const autocompleteField = document.querySelector(
+        FOCUSED_DOM_ELEMENT_SELECTOR
+      );
+      scrollableDialogElement.scrollTop = autocompleteField.offsetHeight;
+    }
+  };
+
   render() {
     const { intl } = this.context;
     const { form } = this;
@@ -474,36 +489,37 @@ export default class WalletRestoreDialog extends Component<Props, State> {
           />
         )}
 
-        <Autocomplete
-          {...recoveryPhraseField.bind()}
-          ref={autocomplete => {
-            this.recoveryPhraseAutocomplete = autocomplete;
-          }}
-          label={
-            !this.isCertificate()
-              ? intl.formatMessage(messages.recoveryPhraseInputLabel)
-              : intl.formatMessage(messages.shieldedRecoveryPhraseInputLabel)
-          }
-          placeholder={
-            !this.isCertificate()
-              ? intl.formatMessage(messages.recoveryPhraseInputHint, {
-                  numberOfWords:
-                    walletType === WALLET_RESTORE_TYPES.LEGACY ? '12' : '15',
-                })
-              : intl.formatMessage(messages.shieldedRecoveryPhraseInputHint, {
-                  numberOfWords: 27,
-                })
-          }
-          options={suggestedMnemonics}
-          maxSelections={RECOVERY_PHRASE_WORD_COUNT_OPTIONS[walletType]}
-          error={recoveryPhraseField.error}
-          maxVisibleOptions={5}
-          noResultsMessage={intl.formatMessage(
-            messages.recoveryPhraseNoResults
-          )}
-          skin={AutocompleteSkin}
-        />
-
+        <div onFocus={this.autoScrollOnFocus}>
+          <Autocomplete
+            {...recoveryPhraseField.bind()}
+            ref={autocomplete => {
+              this.recoveryPhraseAutocomplete = autocomplete;
+            }}
+            label={
+              !this.isCertificate()
+                ? intl.formatMessage(messages.recoveryPhraseInputLabel)
+                : intl.formatMessage(messages.shieldedRecoveryPhraseInputLabel)
+            }
+            placeholder={
+              !this.isCertificate()
+                ? intl.formatMessage(messages.recoveryPhraseInputHint, {
+                    numberOfWords:
+                      walletType === WALLET_RESTORE_TYPES.LEGACY ? '12' : '15',
+                  })
+                : intl.formatMessage(messages.shieldedRecoveryPhraseInputHint, {
+                    numberOfWords: 27,
+                  })
+            }
+            options={suggestedMnemonics}
+            maxSelections={RECOVERY_PHRASE_WORD_COUNT_OPTIONS[walletType]}
+            error={recoveryPhraseField.error}
+            maxVisibleOptions={5}
+            noResultsMessage={intl.formatMessage(
+              messages.recoveryPhraseNoResults
+            )}
+            skin={AutocompleteSkin}
+          />
+        </div>
         <div className={styles.spendingPasswordWrapper}>
           <div className={styles.passwordSectionLabel}>
             {intl.formatMessage(messages.passwordSectionLabel)}
