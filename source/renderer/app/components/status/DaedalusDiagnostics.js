@@ -174,8 +174,8 @@ const messages = defineMessages({
   },
   checkingNodeTime: {
     id: 'daedalus.diagnostics.dialog.checkingNodeTime',
-    defaultMessage: '!!!Checking Node Time',
-    description: 'Checking Node Time',
+    defaultMessage: '!!!Checking Cardano node Time',
+    description: 'Checking Cardano node Time',
   },
   cardanoNodeStatus: {
     id: 'daedalus.diagnostics.dialog.cardanoNodeStatus',
@@ -184,13 +184,13 @@ const messages = defineMessages({
   },
   cardanoNodeStatusRestarting: {
     id: 'daedalus.diagnostics.dialog.cardanoNodeStatusRestarting',
-    defaultMessage: '!!!Restarting Cardano Node...',
-    description: 'Restarting Cardano Node...',
+    defaultMessage: '!!!Restarting Cardano node...',
+    description: 'Restarting Cardano node...',
   },
   cardanoNodeStatusRestart: {
     id: 'daedalus.diagnostics.dialog.cardanoNodeStatusRestart',
-    defaultMessage: '!!!Restart Cardano Node',
-    description: 'Restart Cardano Node',
+    defaultMessage: '!!!Restart Cardano node',
+    description: 'Restart Cardano node',
   },
   cardanoNodeDiagnostics: {
     id: 'daedalus.diagnostics.dialog.cardanoNodeDiagnostics',
@@ -204,8 +204,8 @@ const messages = defineMessages({
   },
   cardanoNodeState: {
     id: 'daedalus.diagnostics.dialog.cardanoNodeState',
-    defaultMessage: '!!!Cardano Node State',
-    description: 'Cardano Node State',
+    defaultMessage: '!!!Cardano node State',
+    description: 'Cardano node State',
   },
   nodeHasBeenUpdated: {
     id: 'daedalus.diagnostics.dialog.nodeHasBeenUpdated',
@@ -259,28 +259,28 @@ const messages = defineMessages({
   },
   cardanoNodeResponding: {
     id: 'daedalus.diagnostics.dialog.cardanoNodeResponding',
-    defaultMessage: '!!!Node Responding',
-    description: 'Node Responding',
+    defaultMessage: '!!!Cardano node Responding',
+    description: 'Cardano node Responding',
   },
   cardanoNodeSubscribed: {
     id: 'daedalus.diagnostics.dialog.cardanoNodeSubscribed',
-    defaultMessage: '!!!Node Subscribed',
-    description: 'Node Subscribed',
+    defaultMessage: '!!!Cardano node Subscribed',
+    description: 'Cardano node Subscribed',
   },
   cardanoNodeTimeCorrect: {
     id: 'daedalus.diagnostics.dialog.cardanoNodeTimeCorrect',
-    defaultMessage: '!!!Node Time Correct',
-    description: 'Node Time Correct',
+    defaultMessage: '!!!Cardano node Time Correct',
+    description: 'Cardano node Time Correct',
   },
   cardanoNodeSyncing: {
     id: 'daedalus.diagnostics.dialog.cardanoNodeSyncing',
-    defaultMessage: '!!!Node Syncing',
-    description: 'Node Syncing',
+    defaultMessage: '!!!Cardano node Syncing',
+    description: 'Cardano node Syncing',
   },
   cardanoNodeInSync: {
     id: 'daedalus.diagnostics.dialog.cardanoNodeInSync',
-    defaultMessage: '!!!Node In Sync',
-    description: 'Node In Sync',
+    defaultMessage: '!!!Cardano node In Sync',
+    description: 'Cardano node In Sync',
   },
   localTimeDifferenceChecking: {
     id: 'daedalus.diagnostics.dialog.localTimeDifferenceChecking',
