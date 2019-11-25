@@ -181,6 +181,9 @@ type State = {
 
 const SCROLLABLE_DOM_ELEMENT_SELECTOR = '.Dialog_content';
 const FOCUSED_DOM_ELEMENT_SELECTOR = '.SimpleAutocomplete_autocompleteContent';
+const DROPDOWN_DOM_ELEMENT_SELECTOR = '.SimpleOptions_options';
+
+const AUTOSCROLL_TIMEOUT = 800;
 
 @observer
 export default class WalletRestoreDialog extends Component<Props, State> {
@@ -352,12 +355,21 @@ export default class WalletRestoreDialog extends Component<Props, State> {
     const autocompleteField = document.querySelector(
       FOCUSED_DOM_ELEMENT_SELECTOR
     );
+    const dropdownField = document.querySelector(
+      DROPDOWN_DOM_ELEMENT_SELECTOR
+    );
     if (
       !(scrollableDialogElement instanceof HTMLElement) ||
-      !(autocompleteField instanceof HTMLElement)
+      !(autocompleteField instanceof HTMLElement) ||
+      !(dropdownField instanceof HTMLElement)
     )
       return;
+    dropdownField.classList.add('hidden');
     scrollableDialogElement.scrollTop = autocompleteField.offsetHeight;
+    setTimeout(() => {
+      autocompleteField.click();
+      dropdownField.classList.remove('hidden');
+    }, AUTOSCROLL_TIMEOUT);
   };
 
   render() {
