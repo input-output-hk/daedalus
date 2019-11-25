@@ -73,12 +73,12 @@ type Props = {
   wallets: Array<Wallet>,
   stepsList: Array<string>,
   minDelegationFunds: number,
-  selectedWalletId: string,
+  selectedWalletId: ?string,
   isWalletAcceptable: Function,
 };
 
 type State = {
-  selectedWalletId: string,
+  selectedWalletId: ?string,
 };
 
 export default class DelegationStepsChooseWalletDialog extends Component<

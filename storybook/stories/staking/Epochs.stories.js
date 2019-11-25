@@ -1,5 +1,6 @@
 // @flow
 import React from 'react';
+import moment from 'moment';
 import { date, number } from '@storybook/addon-knobs';
 
 // Component
@@ -8,6 +9,8 @@ import StakingEpochs from '../../../source/renderer/app/components/staking/epoch
 // Dummy data initialization
 import PREVIOUS_EPOCHS from '../../../source/renderer/app/config/stakingPreviousEpoch.dummy.json';
 import CURRENT_EPOCHS from '../../../source/renderer/app/config/stakingCurrentEpoch.dummy.json';
+
+const threeDaysFromToday = moment().add(3, 'days');
 
 const endDateTimeKnob = (name, defaultValue) => {
   const stringTimestamp = date(name, defaultValue);
@@ -20,7 +23,7 @@ export const StakingEpochsStory = () => (
     currentEpochData={CURRENT_EPOCHS.data}
     currentEpochEndDateTime={endDateTimeKnob(
       'Current Epoch End DateTime',
-      new Date(CURRENT_EPOCHS.endsAt)
+      new Date(threeDaysFromToday)
     )}
     currentEpochProgress={number(
       'Current Epoch Progress percentage',

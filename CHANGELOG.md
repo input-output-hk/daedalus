@@ -11,6 +11,7 @@ Changelog
 ### Fixes
 
 - Fixed auto scrolling on wallet restore wizard when recovery phrase words field is focused ([PR 1077](https://github.com/input-output-hk/daedalus/pull/1077))
+- Fixed naming of labels on "Daedalus Diagnostics" screen and status icons on "Loading" screen from "Node..." to "Cardano node..." ([PR 1723](https://github.com/input-output-hk/daedalus/pull/1723))
 - Adjusted the Stake pool logic for ranking color to account for the total number of stake pools ([PR 1719](https://github.com/input-output-hk/daedalus/pull/1719))
 - Fixed styling issues on the "Network info" overlay on all the themes ([PR 1708](https://github.com/input-output-hk/daedalus/pull/1708))
 - Fixed read newsfeed items ID duplication in local storage ([PR 1710](https://github.com/input-output-hk/daedalus/pull/1710))
