@@ -101,7 +101,7 @@ export default class WalletReceivePage extends Component<Props, State> {
     this.props.actions.dialogs.closeActiveDialog.trigger();
   };
 
-  handleDownloadPDF = (pdfContentTitle: string) => {
+  handleDownloadPDF = (note: string) => {
     const { addressToShare } = this.state;
 
     const name = generateFileNameWithTimestamp({
@@ -122,11 +122,13 @@ export default class WalletReceivePage extends Component<Props, State> {
     });
 
     // if cancel button is clicked or path is empty
-    if (!filePath) return;
+    if (!filePath || !addressToShare) return;
+
+    const { id: address } = addressToShare;
 
     this.props.actions.wallets.generateAddressPDF.trigger({
-      address: addressToShare ? addressToShare.id : '',
-      contentTitle: pdfContentTitle,
+      address,
+      note,
       filePath,
     });
   };

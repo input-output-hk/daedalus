@@ -45,7 +45,7 @@ export default class WalletsActions {
   }> = new Action();
   generateAddressPDF: Action<{
     address: string,
-    contentTitle: string,
+    note: string,
     filePath: string,
   }> = new Action();
   updateCertificateStep: Action<any> = new Action();

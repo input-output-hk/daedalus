@@ -13,7 +13,6 @@ import DialogCloseButton from '../../widgets/DialogCloseButton';
 import WalletAddress from '../../../domains/WalletAddress';
 import globalMessages from '../../../i18n/global-messages';
 import styles from './WalletReceiveDialog.scss';
-import textAreaStyles from './WalletReceiveDialogTextArea.scss';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import iconCopy from '../../../assets/images/clipboard-ic.inline.svg';
 
@@ -163,8 +162,7 @@ export default class WalletReceiveDialog extends Component<Props> {
               skin={TextAreaSkin}
               autoResize={false}
               rows={3}
-              maxLength={150}
-              themeOverrides={textAreaStyles}
+              maxLength={201}
               {...noteInputField.bind({
                 onChange: this.handleChange(noteInputField),
               })}

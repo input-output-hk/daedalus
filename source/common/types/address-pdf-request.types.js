@@ -1,8 +1,10 @@
 // @flow
 export type GenerateAddressPDFParams = {
+  title: string,
+  creationDate: string,
   address: string,
-  contentTitle: string,
+  noteTitle: string,
+  note: string,
+  author: string,
   filePath: string,
-  fileTitle: string,
-  fileAuthor: string,
 };

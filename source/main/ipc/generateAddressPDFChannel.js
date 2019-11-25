@@ -24,11 +24,13 @@ export const handleAddressPDFRequests = () => {
       new Promise((resolve, reject) => {
         // Prepare params
         const {
+          title,
+          creationDate,
           address,
-          contentTitle,
           filePath,
-          fileTitle,
-          fileAuthor,
+          note,
+          noteTitle,
+          author,
         } = request;
 
         const readAssetSync = p => fs.readFileSync(path.join(__dirname, p));
@@ -42,7 +44,7 @@ export const handleAddressPDFRequests = () => {
         });
         const textColor = '#5e6066';
         const width = 640;
-        const height = 441;
+        const height = note ? 470 : 360;
         const doc = new PDFDocument({
           size: [width, height],
           margins: {
@@ -52,21 +54,28 @@ export const handleAddressPDFRequests = () => {
             top: 20,
           },
           info: {
-            Title: fileTitle,
-            Author: fileAuthor,
+            Title: title,
+            Author: author,
           },
-        });
+        }).fillColor(textColor);
+
         try {
-          // Title text
           const fontBufferRegular = readAssetSync(fontRegular);
           const fontBufferMono = readAssetSync(fontMono);
+
+          // Title
           doc
             .font(fontBufferRegular)
-            .fillColor(textColor)
             .fontSize(18)
-            .text(contentTitle, {
+            .text(title.toUpperCase(), {
               align: 'center',
+              characterSpacing: 2,
             });
+
+          // Creation date
+          doc.fontSize(14).text(creationDate.toUpperCase(), {
+            align: 'center',
+          });
 
           doc.moveDown();
 
@@ -86,6 +95,18 @@ export const handleAddressPDFRequests = () => {
               align: 'center',
               characterSpacing: 1.5,
             });
+
+          if (note) {
+            doc.moveDown();
+            // Note title
+            doc
+              .font(fontBufferRegular)
+              .fontSize(14)
+              .text(noteTitle);
+
+            // Note
+            doc.font(fontBufferMono).text(note);
+          }
         } catch (error) {
           reject(error);
         }

@@ -944,19 +944,25 @@ export default class WalletsStore extends Store {
 
   _generateAddressPDF = async ({
     address,
-    contentTitle,
+    note,
     filePath,
   }: {
     address: string,
-    contentTitle: string,
+    note: string,
     filePath: string,
   }) => {
-    const locale = this.stores.profile.currentLocale;
-    const intl = i18nContext(locale);
+    const {
+      currentLocale,
+      currentDateFormat,
+      currentTimeFormat,
+    } = this.stores.profile;
+    const intl = i18nContext(currentLocale);
     try {
       await addressPDFGenerator({
         address,
-        contentTitle,
+        currentDateFormat,
+        currentTimeFormat,
+        note,
         filePath,
         intl,
       });
