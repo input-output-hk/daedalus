@@ -1,4 +1,5 @@
 // @flow
+import BigNumber from 'bignumber.js';
 import { WalletTransaction } from '../../domains/WalletTransaction';
 
 export type TransactionAmount = {
@@ -81,6 +82,8 @@ export type GetTransactionFeeRequest = {
   walletId: string,
   address: string,
   amount: number,
+  walletBalance: BigNumber,
+  availableBalance: BigNumber,
 };
 
 export type CreateTransactionRequest = {

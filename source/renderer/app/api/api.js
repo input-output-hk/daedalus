@@ -155,6 +155,8 @@ import {
 import {
   NotAllowedToSendMoneyToRedeemAddressError,
   NotEnoughFundsForTransactionError,
+  CanNotCalculateTransactionFeesError,
+  NotEnoughFundsForTransactionFeesError,
   NotEnoughMoneyToSendError,
   TooBigTransactionError,
   InvalidAddressError,
@@ -507,21 +509,19 @@ export default class AdaApi {
       return _createTransactionFromServerData(response);
     } catch (error) {
       Logger.error('AdaApi::createTransaction error', { error });
-      // @API TODO - check error codes that match old api error messages
-      if (error.message === 'output_is_redeem') {
+      if (error.code === 'output_is_redeem') {
         throw new NotAllowedToSendMoneyToRedeemAddressError();
       }
-      if (
-        error.code === 'not_enough_money' ||
-        error.message === 'utxo_not_enough_fragmented' // @API TODO - check error codes that match old api error messages
-      ) {
+      if (error.code === 'cannot_cover_fee') {
+        throw new NotEnoughFundsForTransactionFeesError();
+      }
+      if (error.code === 'not_enough_money') {
         throw new NotEnoughMoneyToSendError();
       }
       if (error.code === 'wrong_encryption_passphrase') {
         throw new IncorrectSpendingPasswordError();
       }
-      // @API TODO - check error codes that match old api error messages
-      if (error.message === 'too_big_transaction') {
+      if (error.code === 'too_big_transaction') {
         throw new TooBigTransactionError();
       }
       throw new GenericApiError();
@@ -534,7 +534,7 @@ export default class AdaApi {
     Logger.debug('AdaApi::calculateTransactionFee called', {
       parameters: filterLogData(request),
     });
-    const { walletId, address, amount } = request;
+    const { walletId, address, amount, walletBalance } = request;
 
     try {
       const data = {
@@ -548,32 +548,45 @@ export default class AdaApi {
           },
         ],
       };
+
       const response: TransactionFee = await getTransactionFee(this.config, {
         walletId,
         data,
       });
 
+      const formattedTxAmount = new BigNumber(request.amount).dividedBy(
+        LOVELACES_PER_ADA
+      );
+      const fee = _createTransactionFeeFromServerData(response);
+      const amountWithFee = formattedTxAmount.plus(fee);
+      if (amountWithFee.gt(walletBalance)) {
+        // Amount + fees exceeds walletBalance:
+        // = show "Not enough Ada for fees. Try sending a smaller amount."
+        throw new NotEnoughFundsForTransactionFeesError();
+      }
+
       Logger.debug('AdaApi::calculateTransactionFee success', {
         transactionFee: response,
       });
-
-      return _createTransactionFeeFromServerData(response);
+      return fee;
     } catch (error) {
       Logger.error('AdaApi::calculateTransactionFee error', { error });
-      if (error.code === 'not_enough_money') {
-        // 1 utxo available
-        // created tx with one output
-        // transaction amount is greater than wallet's balance
-        throw new NotEnoughFundsForTransactionError();
-      } else if (error.code === 'utxo_not_enough_fragmented') {
-        // 1 utxo available
-        // created tx with 2 outputs
-        // calculated fees PLUS the transaction amount exceeds wallet's balance
-        // transaction amount is less than wallet's balance
-
-        // @API TODO - Change error message when fee calculation fails regarding to not enough fragmented UTXO
-        //           - Also check if error.code is correct
-        throw new NotEnoughFundsForTransactionError();
+      if (error.name === 'NotEnoughFundsForTransactionFeesError') {
+        throw new NotEnoughFundsForTransactionFeesError();
+      } else if (error.code === 'not_enough_money') {
+        if (request.walletBalance.gt(request.availableBalance)) {
+          // Amount exceeds availableBalance due to pending transactions:
+          // - error.diagnostic.details.msg === 'Not enough available coins to proceed.'
+          // - total walletBalance > error.diagnostic.details.availableBalance
+          // = show "Cannot calculate fees while there are pending transactions."
+          throw new CanNotCalculateTransactionFeesError();
+        } else {
+          // Amount exceeds walletBalance:
+          // - error.diagnostic.details.msg === 'Not enough available coins to proceed.'
+          // - total walletBalance === error.diagnostic.details.availableBalance
+          // = show "Not enough Ada. Try sending a smaller amount."
+          throw new NotEnoughFundsForTransactionError();
+        }
       } else if (
         error.code === 'bad_request' &&
         includes(error.message, 'Unable to decode Address')
@@ -1194,6 +1207,10 @@ const _createWalletFromServerData = action(
       balance.total.unit === 'lovelace'
         ? new BigNumber(balance.total.quantity).dividedBy(LOVELACES_PER_ADA)
         : new BigNumber(balance.total.quantity);
+    const walletAvailableAmount =
+      balance.available.unit === 'lovelace'
+        ? new BigNumber(balance.available.quantity).dividedBy(LOVELACES_PER_ADA)
+        : new BigNumber(balance.available.quantity);
     const walletRewardAmount =
       reward.unit === 'lovelace'
         ? new BigNumber(reward.quantity).dividedBy(LOVELACES_PER_ADA)
@@ -1204,6 +1221,7 @@ const _createWalletFromServerData = action(
       addressPoolGap,
       name,
       amount: walletTotalAmount,
+      availableAmount: walletAvailableAmount,
       reward: walletRewardAmount,
       passwordUpdateDate:
         passphraseLastUpdatedAt && new Date(passphraseLastUpdatedAt),
