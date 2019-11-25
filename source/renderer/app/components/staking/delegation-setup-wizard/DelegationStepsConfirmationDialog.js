@@ -205,7 +205,7 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
               {intl.formatMessage(messages.feesLabel)}
             </p>
             <p className={styles.feesAmount}>
-              {formattedWalletAmount(fees, false, true)}
+              {formattedWalletAmount(fees, false)}
               <span> ADA</span>
             </p>
           </div>

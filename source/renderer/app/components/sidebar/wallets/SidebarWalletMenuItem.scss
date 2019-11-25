@@ -21,12 +21,10 @@
 
 .legacyItem {
   .title {
-    padding-right: 58.5px;
+    padding-right: 50px;
   }
 
   .meta {
-    padding-right: 8px;
-
     :global {
       .ProgressBar_component {
         width: 156px;
