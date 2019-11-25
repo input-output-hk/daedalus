@@ -355,9 +355,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
     const autocompleteField = document.querySelector(
       FOCUSED_DOM_ELEMENT_SELECTOR
     );
-    const dropdownField = document.querySelector(
-      DROPDOWN_DOM_ELEMENT_SELECTOR
-    );
+    const dropdownField = document.querySelector(DROPDOWN_DOM_ELEMENT_SELECTOR);
     if (
       !(scrollableDialogElement instanceof HTMLElement) ||
       !(autocompleteField instanceof HTMLElement) ||
