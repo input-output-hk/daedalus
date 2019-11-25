@@ -34,8 +34,8 @@ const messages = defineMessages({
   },
   platformVersion: {
     id: 'daedalus.diagnostics.dialog.platform.version',
-    defaultMessage: '!!!Platform Version',
-    description: 'Platform Version',
+    defaultMessage: '!!!Platform version',
+    description: 'Platform version',
   },
   cpu: {
     id: 'daedalus.diagnostics.dialog.cpu',
@@ -69,48 +69,48 @@ const messages = defineMessages({
   },
   daedalusVersion: {
     id: 'daedalus.diagnostics.dialog.daedalusVersion',
-    defaultMessage: '!!!Daedalus Version',
-    description: 'Daedalus Version',
+    defaultMessage: '!!!Daedalus version',
+    description: 'Daedalus version',
   },
   daedalusMainProcessID: {
     id: 'daedalus.diagnostics.dialog.daedalusMainProcessID',
-    defaultMessage: '!!!Daedalus Main Process ID',
-    description: 'Daedalus Main Process ID',
+    defaultMessage: '!!!Daedalus main process ID',
+    description: 'Daedalus main process ID',
   },
   daedalusProcessID: {
     id: 'daedalus.diagnostics.dialog.daedalusProcessID',
-    defaultMessage: '!!!Daedalus Renderer Process ID',
-    description: 'Daedalus Renderer Process ID',
+    defaultMessage: '!!!Daedalus renderer process ID',
+    description: 'Daedalus renderer process ID',
   },
   blankScreenFix: {
     id: 'daedalus.diagnostics.dialog.blankScreenFix',
-    defaultMessage: "!!!'Blank Screen Fix' active",
-    description: "'Blank Screen Fix' active",
+    defaultMessage: "!!!Daedalus 'Blank Screen Fix' active",
+    description: "Daedalus 'Blank Screen Fix' active",
   },
   cardanoVersion: {
     id: 'daedalus.diagnostics.dialog.cardanoVersion',
-    defaultMessage: '!!!Cardano Version',
-    description: 'Cardano Version',
+    defaultMessage: '!!!Cardano node version',
+    description: 'Cardano node version',
   },
   cardanoProcessID: {
     id: 'daedalus.diagnostics.dialog.cardanoProcessID',
-    defaultMessage: '!!!Cardano Process ID',
-    description: 'Cardano Process ID',
+    defaultMessage: '!!!Cardano node process ID',
+    description: 'Cardano node process ID',
   },
   cardanoApiPort: {
     id: 'daedalus.diagnostics.dialog.cardanoApiPort',
-    defaultMessage: '!!!Cardano API Port',
-    description: 'Cardano API Port',
+    defaultMessage: '!!!Cardano node API port',
+    description: 'Cardano node API port',
   },
   cardanoNetwork: {
     id: 'daedalus.diagnostics.dialog.cardanoNetwork',
-    defaultMessage: '!!!Cardano Network',
-    description: 'Cardano Network',
+    defaultMessage: '!!!Cardano network',
+    description: 'Cardano network',
   },
   stateDirectoryPath: {
     id: 'daedalus.diagnostics.dialog.stateDirectory',
-    defaultMessage: '!!!Daedalus State Directory',
-    description: 'Daedalus State Directory',
+    defaultMessage: '!!!Daedalus state directory',
+    description: 'Daedalus state directory',
   },
   stateDirectoryPathOpenBtn: {
     id: 'daedalus.diagnostics.dialog.stateDirectoryPathOpenBtn',
@@ -139,43 +139,43 @@ const messages = defineMessages({
   },
   syncPercentage: {
     id: 'daedalus.diagnostics.dialog.syncPercentage',
-    defaultMessage: '!!!Sync Percentage',
-    description: 'Sync Percentage',
+    defaultMessage: '!!!Sync percentage',
+    description: 'Sync percentage',
   },
   remainingUnsyncedBlocks: {
     id: 'daedalus.diagnostics.dialog.remainingUnsyncedBlocks',
-    defaultMessage: '!!!Remaining Unsynced Blocks',
-    description: 'Remaining Unsynced Blocks',
+    defaultMessage: '!!!Remaining unsynced blocks',
+    description: 'Remaining unsynced blocks',
   },
   latestLocalBlockAge: {
     id: 'daedalus.diagnostics.dialog.latestLocalBlockAge',
-    defaultMessage: '!!!Latest Local Block Age',
-    description: 'Latest Local Block Age',
+    defaultMessage: '!!!Latest local block age',
+    description: 'Latest local block age',
   },
   latestNetworkBlockAge: {
     id: 'daedalus.diagnostics.dialog.latestNetworkBlockAge',
-    defaultMessage: '!!!Latest Network Block Age',
-    description: 'Latest Network Block Age',
+    defaultMessage: '!!!Latest network block age',
+    description: 'Latest network block age',
   },
   localTimeDifference: {
     id: 'daedalus.diagnostics.dialog.localTimeDifference',
-    defaultMessage: '!!!Local Time Difference',
-    description: 'Local Time Difference',
+    defaultMessage: '!!!Local time difference',
+    description: 'Local time difference',
   },
   systemTimeCorrect: {
     id: 'daedalus.diagnostics.dialog.systemTimeCorrect',
-    defaultMessage: '!!!System Time Correct',
-    description: 'System Time Correct',
+    defaultMessage: '!!!System time correct',
+    description: 'System time correct',
   },
   systemTimeIgnored: {
     id: 'daedalus.diagnostics.dialog.systemTimeIgnored',
-    defaultMessage: '!!!System Time Ignored',
-    description: 'System Time Ignored',
+    defaultMessage: '!!!System time ignored',
+    description: 'System time ignored',
   },
   checkingNodeTime: {
     id: 'daedalus.diagnostics.dialog.checkingNodeTime',
-    defaultMessage: '!!!Checking Node Time',
-    description: 'Checking Node Time',
+    defaultMessage: '!!!Checking Cardano node time',
+    description: 'Checking Cardano node time',
   },
   cardanoNodeStatus: {
     id: 'daedalus.diagnostics.dialog.cardanoNodeStatus',
@@ -184,18 +184,18 @@ const messages = defineMessages({
   },
   cardanoNodeStatusRestarting: {
     id: 'daedalus.diagnostics.dialog.cardanoNodeStatusRestarting',
-    defaultMessage: '!!!Restarting Cardano Node...',
-    description: 'Restarting Cardano Node...',
+    defaultMessage: '!!!Restarting Cardano node...',
+    description: 'Restarting Cardano node...',
   },
   cardanoNodeStatusRestart: {
     id: 'daedalus.diagnostics.dialog.cardanoNodeStatusRestart',
-    defaultMessage: '!!!Restart Cardano Node',
-    description: 'Restart Cardano Node',
+    defaultMessage: '!!!Restart Cardano node',
+    description: 'Restart Cardano node',
   },
   cardanoNodeDiagnostics: {
     id: 'daedalus.diagnostics.dialog.cardanoNodeDiagnostics',
-    defaultMessage: '!!!Cardano Node Diagnostics',
-    description: 'Cardano Node Diagnostics',
+    defaultMessage: '!!!Cardano node diagnostics',
+    description: 'Cardano node diagnostics',
   },
   realtimeStatisticsMonitor: {
     id: 'daedalus.diagnostics.dialog.realtimeStatisticsMonitor',
@@ -204,8 +204,8 @@ const messages = defineMessages({
   },
   cardanoNodeState: {
     id: 'daedalus.diagnostics.dialog.cardanoNodeState',
-    defaultMessage: '!!!Cardano Node State',
-    description: 'Cardano Node State',
+    defaultMessage: '!!!Cardano node state',
+    description: 'Cardano node state',
   },
   nodeHasBeenUpdated: {
     id: 'daedalus.diagnostics.dialog.nodeHasBeenUpdated',
@@ -259,28 +259,28 @@ const messages = defineMessages({
   },
   cardanoNodeResponding: {
     id: 'daedalus.diagnostics.dialog.cardanoNodeResponding',
-    defaultMessage: '!!!Node Responding',
-    description: 'Node Responding',
+    defaultMessage: '!!!Cardano node responding',
+    description: 'Cardano node responding',
   },
   cardanoNodeSubscribed: {
     id: 'daedalus.diagnostics.dialog.cardanoNodeSubscribed',
-    defaultMessage: '!!!Node Subscribed',
-    description: 'Node Subscribed',
+    defaultMessage: '!!!Cardano node subscribed',
+    description: 'Cardano node subscribed',
   },
   cardanoNodeTimeCorrect: {
     id: 'daedalus.diagnostics.dialog.cardanoNodeTimeCorrect',
-    defaultMessage: '!!!Node Time Correct',
-    description: 'Node Time Correct',
+    defaultMessage: '!!!Cardano node time correct',
+    description: 'Cardano node time correct',
   },
   cardanoNodeSyncing: {
     id: 'daedalus.diagnostics.dialog.cardanoNodeSyncing',
-    defaultMessage: '!!!Node Syncing',
-    description: 'Node Syncing',
+    defaultMessage: '!!!Cardano node syncing',
+    description: 'Cardano node syncing',
   },
   cardanoNodeInSync: {
     id: 'daedalus.diagnostics.dialog.cardanoNodeInSync',
-    defaultMessage: '!!!Node In Sync',
-    description: 'Node In Sync',
+    defaultMessage: '!!!Cardano node in sync',
+    description: 'Cardano node in sync',
   },
   localTimeDifferenceChecking: {
     id: 'daedalus.diagnostics.dialog.localTimeDifferenceChecking',
@@ -304,8 +304,8 @@ const messages = defineMessages({
   },
   serviceUnreachable: {
     id: 'daedalus.diagnostics.dialog.serviceUnreachable',
-    defaultMessage: '!!!NTP Service unreachable',
-    description: 'NTP Service unreachable',
+    defaultMessage: '!!!NTP service unreachable',
+    description: 'NTP service unreachable',
   },
   message: {
     id: 'daedalus.diagnostics.dialog.message',
@@ -617,22 +617,6 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                 </td>
               </tr>
               <tr>
-                <th>{intl.formatMessage(messages.cardanoVersion)}:</th>
-                <td>{cardanoVersion}</td>
-              </tr>
-              <tr>
-                <th>{intl.formatMessage(messages.cardanoProcessID)}:</th>
-                <td>{cardanoProcessID}</td>
-              </tr>
-              <tr>
-                <th>{intl.formatMessage(messages.cardanoApiPort)}:</th>
-                <td>{cardanoAPIPort || '-'}</td>
-              </tr>
-              <tr>
-                <th>{intl.formatMessage(messages.cardanoNetwork)}:</th>
-                <td>{cardanoNetwork}</td>
-              </tr>
-              <tr>
                 <th>{intl.formatMessage(messages.stateDirectoryPath)}:</th>
                 <td className={styles.stateDirectory}>
                   <button
@@ -662,6 +646,22 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                     </div>
                   </CopyToClipboard>
                 </td>
+              </tr>
+              <tr>
+                <th>{intl.formatMessage(messages.cardanoVersion)}:</th>
+                <td>{cardanoVersion}</td>
+              </tr>
+              <tr>
+                <th>{intl.formatMessage(messages.cardanoProcessID)}:</th>
+                <td>{cardanoProcessID}</td>
+              </tr>
+              <tr>
+                <th>{intl.formatMessage(messages.cardanoApiPort)}:</th>
+                <td>{cardanoAPIPort || '-'}</td>
+              </tr>
+              <tr>
+                <th>{intl.formatMessage(messages.cardanoNetwork)}:</th>
+                <td>{cardanoNetwork}</td>
               </tr>
             </tbody>
             {isConnected && nodeConnectionError ? (
