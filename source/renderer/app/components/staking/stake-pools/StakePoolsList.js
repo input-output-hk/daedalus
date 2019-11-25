@@ -26,6 +26,7 @@ type Props = {
   isListActive?: boolean,
   setListActive?: Function,
   selectedPoolId?: ?number,
+  numberOfStakePools: number,
 };
 
 type State = {
@@ -97,6 +98,7 @@ export class StakePoolsList extends Component<Props, State> {
       stakePoolsList,
       selectedPoolId,
       containerClassName,
+      numberOfStakePools,
     } = this.props;
 
     return (
@@ -120,6 +122,7 @@ export class StakePoolsList extends Component<Props, State> {
               isSelected={isSelected}
               showSelected={showSelected}
               containerClassName={containerClassName}
+              numberOfStakePools={numberOfStakePools}
             />
           );
         })}

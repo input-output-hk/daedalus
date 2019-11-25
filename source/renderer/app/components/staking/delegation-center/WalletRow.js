@@ -79,7 +79,7 @@ const messages = defineMessages({
 
 type Props = {
   wallet: Wallet,
-  index?: number,
+  numberOfStakePools: number,
   onDelegate: Function,
 };
 
@@ -104,12 +104,16 @@ export default class WalletRow extends Component<Props> {
         isDelegated,
         delegatedStakePool,
       },
-      index,
+      numberOfStakePools,
     } = this.props;
+
+    const { ranking } = delegatedStakePool || {};
 
     const inactiveStakePercentageValue = inactiveStakePercentage || 0;
     const color =
-      isDelegated && !isNil(index) ? getColorFromRange(index) : 'transparent';
+      isDelegated && !isNil(ranking)
+        ? getColorFromRange(ranking, numberOfStakePools)
+        : 'transparent';
 
     const delegated = intl.formatMessage(messages.delegated);
     const notDelegated = intl.formatMessage(messages.notDelegated);

@@ -25,6 +25,7 @@ type Props = {
   stakePool: StakePool,
   isSelected?: ?Function,
   containerClassName: string,
+  numberOfStakePools: number,
 };
 
 type State = {
@@ -97,11 +98,12 @@ export class StakePoolThumbnail extends Component<Props, State> {
       showSelected,
       stakePool,
       containerClassName,
+      numberOfStakePools,
     } = this.props;
     const { top, left } = this.state;
 
     const { ranking, slug, retiring } = stakePool;
-    const color = getColorFromRange(ranking);
+    const color = getColorFromRange(ranking, numberOfStakePools);
 
     const componentClassnames = classnames([
       styles.component,
