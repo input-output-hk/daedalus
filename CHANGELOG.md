@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 
+- Added new Mainnet and Testnet icons ([PR 1717](https://github.com/input-output-hk/daedalus/pull/1717))
 - Add internal link support in newsfeed items and verification hash generator script ([PR 1617](https://github.com/input-output-hk/daedalus/pull/1617))
 - Implemented date, time and number format user options ([PR 1611](https://github.com/input-output-hk/daedalus/pull/1611))
 
