@@ -104,5 +104,6 @@ export const StakingDelegationCenterStory = () => (
     })}
     wallets={wallets}
     onDelegate={action('onDelegate')}
+    numberOfStakePools={STAKE_POOLS.length}
   />
 );
