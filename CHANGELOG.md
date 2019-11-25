@@ -21,6 +21,7 @@ Changelog
 
 ### Chores
 
+- Improve send screen error messages ([PR 1724](https://github.com/input-output-hk/daedalus/pull/1724))
 - Removed unused dependencies ([PR 1706](https://github.com/input-output-hk/daedalus/pull/1706))
 - Improved the error message shown on the "Change password" dialog when too short current password is submitted ([PR 1703](https://github.com/input-output-hk/daedalus/pull/1703))
 
