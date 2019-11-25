@@ -10,6 +10,7 @@ Changelog
 
 ### Fixes
 
+- Fixed naming of labels in Daedalus Diagnostics screen and status icons on Loading/Refresh screen from "Node ..." to "Cardano node..." ([PR 1723](https://github.com/input-output-hk/daedalus/pull/1723))
 - Fixed styling issues on the "Network info" overlay on all the themes ([PR 1708](https://github.com/input-output-hk/daedalus/pull/1708))
 - Fixed read newsfeed items ID duplication in local storage ([PR 1710](https://github.com/input-output-hk/daedalus/pull/1710))
 - Fixed the `themes:check:createTheme` script and updated the `createTheme` object ([PR 1709](https://github.com/input-output-hk/daedalus/pull/1709))
