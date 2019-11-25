@@ -4068,8 +4068,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Platform Version",
-        "description": "Platform Version",
+        "defaultMessage": "!!!Platform version",
+        "description": "Platform version",
         "end": {
           "column": 3,
           "line": 39
@@ -4166,8 +4166,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Daedalus Version",
-        "description": "Daedalus Version",
+        "defaultMessage": "!!!Daedalus version",
+        "description": "Daedalus version",
         "end": {
           "column": 3,
           "line": 74
@@ -4180,8 +4180,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Daedalus Main Process ID",
-        "description": "Daedalus Main Process ID",
+        "defaultMessage": "!!!Daedalus main process ID",
+        "description": "Daedalus main process ID",
         "end": {
           "column": 3,
           "line": 79
@@ -4194,8 +4194,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Daedalus Renderer Process ID",
-        "description": "Daedalus Renderer Process ID",
+        "defaultMessage": "!!!Daedalus renderer process ID",
+        "description": "Daedalus renderer process ID",
         "end": {
           "column": 3,
           "line": 84
@@ -4208,8 +4208,8 @@
         }
       },
       {
-        "defaultMessage": "!!!'Blank Screen Fix' active",
-        "description": "'Blank Screen Fix' active",
+        "defaultMessage": "!!!Daedalus 'Blank Screen Fix' active",
+        "description": "Daedalus 'Blank Screen Fix' active",
         "end": {
           "column": 3,
           "line": 89
@@ -4222,8 +4222,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Cardano Version",
-        "description": "Cardano Version",
+        "defaultMessage": "!!!Cardano node version",
+        "description": "Cardano node version",
         "end": {
           "column": 3,
           "line": 94
@@ -4236,8 +4236,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Cardano Process ID",
-        "description": "Cardano Process ID",
+        "defaultMessage": "!!!Cardano node process ID",
+        "description": "Cardano node process ID",
         "end": {
           "column": 3,
           "line": 99
@@ -4250,8 +4250,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Cardano API Port",
-        "description": "Cardano API Port",
+        "defaultMessage": "!!!Cardano node API port",
+        "description": "Cardano node API port",
         "end": {
           "column": 3,
           "line": 104
@@ -4264,8 +4264,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Cardano Network",
-        "description": "Cardano Network",
+        "defaultMessage": "!!!Cardano network",
+        "description": "Cardano network",
         "end": {
           "column": 3,
           "line": 109
@@ -4278,8 +4278,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Daedalus State Directory",
-        "description": "Daedalus State Directory",
+        "defaultMessage": "!!!Daedalus state directory",
+        "description": "Daedalus state directory",
         "end": {
           "column": 3,
           "line": 114
@@ -4362,8 +4362,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Sync Percentage",
-        "description": "Sync Percentage",
+        "defaultMessage": "!!!Sync percentage",
+        "description": "Sync percentage",
         "end": {
           "column": 3,
           "line": 144
@@ -4376,8 +4376,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Remaining Unsynced Blocks",
-        "description": "Remaining Unsynced Blocks",
+        "defaultMessage": "!!!Remaining unsynced blocks",
+        "description": "Remaining unsynced blocks",
         "end": {
           "column": 3,
           "line": 149
@@ -4390,8 +4390,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Latest Local Block Age",
-        "description": "Latest Local Block Age",
+        "defaultMessage": "!!!Latest local block age",
+        "description": "Latest local block age",
         "end": {
           "column": 3,
           "line": 154
@@ -4404,8 +4404,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Latest Network Block Age",
-        "description": "Latest Network Block Age",
+        "defaultMessage": "!!!Latest network block age",
+        "description": "Latest network block age",
         "end": {
           "column": 3,
           "line": 159
@@ -4418,8 +4418,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Local Time Difference",
-        "description": "Local Time Difference",
+        "defaultMessage": "!!!Local time difference",
+        "description": "Local time difference",
         "end": {
           "column": 3,
           "line": 164
@@ -4432,8 +4432,8 @@
         }
       },
       {
-        "defaultMessage": "!!!System Time Correct",
-        "description": "System Time Correct",
+        "defaultMessage": "!!!System time correct",
+        "description": "System time correct",
         "end": {
           "column": 3,
           "line": 169
@@ -4446,8 +4446,8 @@
         }
       },
       {
-        "defaultMessage": "!!!System Time Ignored",
-        "description": "System Time Ignored",
+        "defaultMessage": "!!!System time ignored",
+        "description": "System time ignored",
         "end": {
           "column": 3,
           "line": 174
@@ -4460,8 +4460,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Checking Cardano node Time",
-        "description": "Checking Cardano node Time",
+        "defaultMessage": "!!!Checking Cardano node time",
+        "description": "Checking Cardano node time",
         "end": {
           "column": 3,
           "line": 179
@@ -4516,8 +4516,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Cardano Node Diagnostics",
-        "description": "Cardano Node Diagnostics",
+        "defaultMessage": "!!!Cardano node diagnostics",
+        "description": "Cardano node diagnostics",
         "end": {
           "column": 3,
           "line": 199
@@ -4544,8 +4544,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Cardano node State",
-        "description": "Cardano node State",
+        "defaultMessage": "!!!Cardano node state",
+        "description": "Cardano node state",
         "end": {
           "column": 3,
           "line": 209
@@ -4698,8 +4698,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Cardano node Responding",
-        "description": "Cardano node Responding",
+        "defaultMessage": "!!!Cardano node responding",
+        "description": "Cardano node responding",
         "end": {
           "column": 3,
           "line": 264
@@ -4712,8 +4712,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Cardano node Subscribed",
-        "description": "Cardano node Subscribed",
+        "defaultMessage": "!!!Cardano node subscribed",
+        "description": "Cardano node subscribed",
         "end": {
           "column": 3,
           "line": 269
@@ -4726,8 +4726,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Cardano node Time Correct",
-        "description": "Cardano node Time Correct",
+        "defaultMessage": "!!!Cardano node time correct",
+        "description": "Cardano node time correct",
         "end": {
           "column": 3,
           "line": 274
@@ -4740,8 +4740,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Cardano node Syncing",
-        "description": "Cardano node Syncing",
+        "defaultMessage": "!!!Cardano node syncing",
+        "description": "Cardano node syncing",
         "end": {
           "column": 3,
           "line": 279
@@ -4754,8 +4754,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Cardano node In Sync",
-        "description": "Cardano node In Sync",
+        "defaultMessage": "!!!Cardano node in sync",
+        "description": "Cardano node in sync",
         "end": {
           "column": 3,
           "line": 284
@@ -4824,8 +4824,8 @@
         }
       },
       {
-        "defaultMessage": "!!!NTP Service unreachable",
-        "description": "NTP Service unreachable",
+        "defaultMessage": "!!!NTP service unreachable",
+        "description": "NTP service unreachable",
         "end": {
           "column": 3,
           "line": 309
