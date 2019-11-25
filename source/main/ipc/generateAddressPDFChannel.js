@@ -9,8 +9,9 @@ import type {
   GenerateAddressPDFRendererRequest,
   GenerateAddressPDFMainResponse,
 } from '../../common/ipc/api';
-import fontRegular from '../../common/assets/pdf/NotoSans-Medium.ttf';
+import fontRegularEn from '../../common/assets/pdf/NotoSans-Medium.ttf';
 import fontMono from '../../common/assets/pdf/SFMono-Light.ttf';
+import fontRegularJp from '../../common/assets/pdf/arial-unicode.ttf';
 
 export const generateAddressPDFChannel: // IpcChannel<Incoming, Outgoing>
 MainIpcChannel<
@@ -27,6 +28,7 @@ export const handleAddressPDFRequests = () => {
           title,
           creationDate,
           address,
+          currentLocale,
           filePath,
           note,
           noteTitle,
@@ -34,6 +36,9 @@ export const handleAddressPDFRequests = () => {
         } = request;
 
         const readAssetSync = p => fs.readFileSync(path.join(__dirname, p));
+        const fontRegular =
+          currentLocale === 'ja-JP' ? fontRegularJp : fontRegularEn;
+        const fontNote = currentLocale === 'ja-JP' ? fontRegularJp : fontMono;
 
         // Generate QR image for wallet address
         const qrCodeImage = qr.imageSync(address, {
@@ -44,7 +49,7 @@ export const handleAddressPDFRequests = () => {
         });
         const textColor = '#5e6066';
         const width = 640;
-        const height = note ? 470 : 360;
+        const height = 500;
         const doc = new PDFDocument({
           size: [width, height],
           margins: {
@@ -62,6 +67,7 @@ export const handleAddressPDFRequests = () => {
         try {
           const fontBufferRegular = readAssetSync(fontRegular);
           const fontBufferMono = readAssetSync(fontMono);
+          const fontBufferNote = readAssetSync(fontNote);
 
           // Title
           doc
@@ -105,7 +111,7 @@ export const handleAddressPDFRequests = () => {
               .text(noteTitle);
 
             // Note
-            doc.font(fontBufferMono).text(note);
+            doc.font(fontBufferNote).text(note);
           }
         } catch (error) {
           reject(error);

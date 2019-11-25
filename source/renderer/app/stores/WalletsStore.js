@@ -960,6 +960,7 @@ export default class WalletsStore extends Store {
     try {
       await addressPDFGenerator({
         address,
+        currentLocale,
         currentDateFormat,
         currentTimeFormat,
         note,

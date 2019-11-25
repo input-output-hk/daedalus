@@ -27,12 +27,6 @@ const messages = defineMessages({
     defaultMessage: '!!!Add a note to the sender',
     description: 'inputPlaceholder on the wallet "Share Address" dialog',
   },
-  invalidAddressMessage: {
-    id: 'wallet.receive.dialog.invalidAddressMessage',
-    defaultMessage:
-      '!!!This address does not match your delegation preferences. Do not use it to receive ada.',
-    description: 'invalidAddressMessage on the wallet "Share Address" dialog',
-  },
   downloadPDFButton: {
     id: 'wallet.receive.dialog.downloadPDFButton',
     defaultMessage: '!!!Download as PDF',
@@ -45,11 +39,11 @@ const messages = defineMessages({
   },
   dialogTitle: {
     id: 'wallet.receive.dialog.dialogTitle',
-    defaultMessage: '!!!Share address',
+    defaultMessage: '!!!Share wallet address',
     description: 'dialogTitle on the wallet "Share Address" dialog',
   },
   copyAddressLabel: {
-    id: 'wallet.receive.page.copyAddressLabel',
+    id: 'wallet.receive.dialog.copyAddressLabel',
     defaultMessage: '!!!Copy address',
     description: 'Label for "Copy address" link on the wallet "Receive page"',
   },

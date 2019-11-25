@@ -30,6 +30,7 @@ type Params = {
   address: string,
   note: string,
   filePath: string,
+  currentLocale: string,
   currentDateFormat: string,
   currentTimeFormat: string,
   intl: Object,
@@ -40,6 +41,7 @@ export const addressPDFGenerator = async ({
   note,
   filePath,
   intl,
+  currentLocale,
   currentDateFormat,
   currentTimeFormat,
 }: Params) => {
@@ -49,6 +51,7 @@ export const addressPDFGenerator = async ({
     address,
     filePath,
     note,
+    currentLocale,
     creationDate: intl.formatMessage(messages.creationDate, { date, time }),
     noteTitle: intl.formatMessage(messages.noteTitle),
     title: intl.formatMessage(messages.title),

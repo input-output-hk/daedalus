@@ -6018,31 +6018,17 @@
         }
       },
       {
-        "defaultMessage": "!!!This address does not match your delegation preferences. Do not use it to receive ada.",
-        "description": "Label for \"invalid address tooltip\" link on the wallet \"Receive page\"",
-        "end": {
-          "column": 3,
-          "line": 47
-        },
-        "file": "source/renderer/app/components/wallet/receive/WalletReceive.js",
-        "id": "wallet.receive.page.invalidAddressTooltipLabel",
-        "start": {
-          "column": 30,
-          "line": 41
-        }
-      },
-      {
         "defaultMessage": "!!!Copy address",
         "description": "Label for \"Copy address\" link on the wallet \"Receive page\"",
         "end": {
           "column": 3,
-          "line": 52
+          "line": 45
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceive.js",
         "id": "wallet.receive.page.copyAddressLabel",
         "start": {
           "column": 20,
-          "line": 48
+          "line": 41
         }
       }
     ],
@@ -6079,31 +6065,17 @@
         }
       },
       {
-        "defaultMessage": "!!!This address does not match your delegation preferences. Do not use it to receive ada.",
-        "description": "invalidAddressMessage on the wallet \"Share Address\" dialog",
-        "end": {
-          "column": 3,
-          "line": 35
-        },
-        "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
-        "id": "wallet.receive.dialog.invalidAddressMessage",
-        "start": {
-          "column": 25,
-          "line": 30
-        }
-      },
-      {
         "defaultMessage": "!!!Download as PDF",
         "description": "downloadPDFButton on the wallet \"Share Address\" dialog",
         "end": {
           "column": 3,
-          "line": 40
+          "line": 34
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
         "id": "wallet.receive.dialog.downloadPDFButton",
         "start": {
           "column": 21,
-          "line": 36
+          "line": 30
         }
       },
       {
@@ -6111,27 +6083,27 @@
         "description": "copyAddressButton on the wallet \"Share Address\" dialog",
         "end": {
           "column": 3,
-          "line": 45
+          "line": 39
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
         "id": "wallet.receive.dialog.copyAddressButton",
         "start": {
           "column": 21,
-          "line": 41
+          "line": 35
         }
       },
       {
-        "defaultMessage": "!!!Share address",
+        "defaultMessage": "!!!Share wallet address",
         "description": "dialogTitle on the wallet \"Share Address\" dialog",
         "end": {
           "column": 3,
-          "line": 50
+          "line": 44
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
         "id": "wallet.receive.dialog.dialogTitle",
         "start": {
           "column": 15,
-          "line": 46
+          "line": 40
         }
       },
       {
@@ -6139,13 +6111,13 @@
         "description": "Label for \"Copy address\" link on the wallet \"Receive page\"",
         "end": {
           "column": 3,
-          "line": 55
+          "line": 49
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
-        "id": "wallet.receive.page.copyAddressLabel",
+        "id": "wallet.receive.dialog.copyAddressLabel",
         "start": {
           "column": 20,
-          "line": 51
+          "line": 45
         }
       }
     ],
@@ -9921,17 +9893,45 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Daedalus wallet address",
+        "defaultMessage": "!!!PDF creation date {date} {time}",
         "description": "PDF title",
         "end": {
           "column": 3,
-          "line": 10
+          "line": 11
         },
         "file": "source/renderer/app/utils/addressPDFGenerator.js",
-        "id": "wallet.receive.pdf.infoTitle",
+        "id": "wallet.receive.pdf.creationDate",
+        "start": {
+          "column": 16,
+          "line": 7
+        }
+      },
+      {
+        "defaultMessage": "!!!Note:",
+        "description": "PDF title",
+        "end": {
+          "column": 3,
+          "line": 16
+        },
+        "file": "source/renderer/app/utils/addressPDFGenerator.js",
+        "id": "wallet.receive.pdf.noteTitle",
         "start": {
           "column": 13,
-          "line": 6
+          "line": 12
+        }
+      },
+      {
+        "defaultMessage": "!!!Daedalus address",
+        "description": "PDF title",
+        "end": {
+          "column": 3,
+          "line": 21
+        },
+        "file": "source/renderer/app/utils/addressPDFGenerator.js",
+        "id": "wallet.receive.pdf.title",
+        "start": {
+          "column": 9,
+          "line": 17
         }
       },
       {
@@ -9939,13 +9939,13 @@
         "description": "PDF author",
         "end": {
           "column": 3,
-          "line": 15
+          "line": 26
         },
         "file": "source/renderer/app/utils/addressPDFGenerator.js",
-        "id": "wallet.receive.pdf.infoAuthor",
+        "id": "wallet.receive.pdf.author",
         "start": {
-          "column": 14,
-          "line": 11
+          "column": 10,
+          "line": 22
         }
       }
     ],

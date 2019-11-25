@@ -38,13 +38,6 @@ const messages = defineMessages({
     defaultMessage: '!!!Share',
     description: 'Label for "Share" link on the wallet "Receive page"',
   },
-  invalidAddressTooltipLabel: {
-    id: 'wallet.receive.page.invalidAddressTooltipLabel',
-    defaultMessage:
-      '!!!This address does not match your delegation preferences. Do not use it to receive ada.',
-    description:
-      'Label for "invalid address tooltip" link on the wallet "Receive page"',
-  },
   copyAddressLabel: {
     id: 'wallet.receive.page.copyAddressLabel',
     defaultMessage: '!!!Copy address',
@@ -86,9 +79,6 @@ export default class WalletReceive extends Component<Props, State> {
       onCopyAddress={this.props.onCopyAddress}
       shareAddressLabel={this.context.intl.formatMessage(
         messages.shareAddressLabel
-      )}
-      invalidAddressTooltipLabel={this.context.intl.formatMessage(
-        messages.invalidAddressTooltipLabel
       )}
       copyAddressLabel={this.context.intl.formatMessage(
         messages.copyAddressLabel
