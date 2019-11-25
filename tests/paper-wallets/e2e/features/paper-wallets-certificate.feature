@@ -52,8 +52,8 @@ Feature: Paper Wallets Certificate generation
     And I should have newly created "Restored CERTIFICATE wallet" wallet loaded
     And I should be on the "Restored CERTIFICATE wallet" wallet "summary" screen
     And the balance of "Restored CERTIFICATE wallet" wallet should be:
-      | balance  |
-      | 0.000010 |
+      | balance |
+      | 0.00001 |
     And I should see the restore status notification while restore is running
     And I should not see the restore status notification once restore is finished
     When I click the wallet receive button
