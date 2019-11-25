@@ -2,7 +2,6 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
-import { rangeMap } from '../../../utils/rangeMap';
 import Wallet from '../../../domains/Wallet';
 import WalletRow from './WalletRow';
 import styles from './DelegationCenterBody.scss';
@@ -18,6 +17,7 @@ const messages = defineMessages({
 type Props = {
   wallets: Array<Wallet>,
   onDelegate: Function,
+  numberOfStakePools: number,
 };
 
 @observer
@@ -26,21 +26,9 @@ export default class DelegationCenterBody extends Component<Props> {
     intl: intlShape.isRequired,
   };
 
-  getIndex = (ranking: number) => {
-    const { wallets } = this.props;
-
-    return rangeMap(
-      ranking,
-      1,
-      wallets.filter(wallet => wallet.isDelegated).length,
-      0,
-      99
-    );
-  };
-
   render() {
     const { intl } = this.context;
-    const { wallets, onDelegate } = this.props;
+    const { wallets, onDelegate, numberOfStakePools } = this.props;
 
     const title = intl.formatMessage(messages.bodyTitle);
 
@@ -50,26 +38,14 @@ export default class DelegationCenterBody extends Component<Props> {
           <span>{title}</span>
         </div>
         <div className={styles.mainContent}>
-          {wallets.map(wallet => {
-            if (wallet.isDelegated && wallet.delegatedStakePool) {
-              const index = this.getIndex(wallet.delegatedStakePool.ranking);
-              return (
-                <WalletRow
-                  key={wallet.id}
-                  wallet={wallet}
-                  index={index}
-                  onDelegate={onDelegate}
-                />
-              );
-            }
-            return (
-              <WalletRow
-                key={wallet.id}
-                wallet={wallet}
-                onDelegate={onDelegate}
-              />
-            );
-          })}
+          {wallets.map(wallet => (
+            <WalletRow
+              key={wallet.id}
+              wallet={wallet}
+              onDelegate={onDelegate}
+              numberOfStakePools={numberOfStakePools}
+            />
+          ))}
         </div>
       </div>
     );
