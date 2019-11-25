@@ -2170,13 +2170,13 @@
         "description": "Title for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 15
+          "line": 14
         },
         "file": "source/renderer/app/components/staking/delegation-center/DelegationCenterBody.js",
         "id": "staking.delegationCenter.bodyTitle",
         "start": {
           "column": 13,
-          "line": 11
+          "line": 10
         }
       }
     ],
