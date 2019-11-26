@@ -160,8 +160,7 @@ export default class ProfileStore extends Store {
   @computed get currentTheme(): string {
     // Force "Incentivized Testnet" theme for the Incentivized Testnet Daedalus version
     const { isIncentivizedTestnet } = this.stores.networkStatus;
-    if (isIncentivizedTestnet && !this.environment.isTest)
-      return THEMES.INCENTIVIZED_TESTNET;
+    if (isIncentivizedTestnet) return THEMES.INCENTIVIZED_TESTNET;
     // Default theme handling
     const systemValue = this.environment.isMainnet
       ? THEMES.DARK_BLUE
@@ -357,7 +356,7 @@ export default class ProfileStore extends Store {
     ) {
       if (
         !this.stores.wallets.hasAnyWallets ||
-        this.environment.isIncentivizedTestnet
+        this.stores.networkStatus.isIncentivizedTestnet
       ) {
         // There are no wallets to migrate or it's Incentivized Testnet:
         // set the data layer migration acceptance to true

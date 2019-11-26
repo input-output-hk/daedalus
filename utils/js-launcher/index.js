@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 const fs = require('fs')
 const { spawn } = require('child_process')
 const rimraf = require('./lib/rimraf')
@@ -28,7 +29,7 @@ fs.mkdirSync(`${stateDir}/Logs`)
 // ca.crt  client.key  client.pem
 createAndWriteX509(`${stateDir}/tls/client`)
 
-// Specific env vars 
+// Specific env vars
 const cardanoTlsPath = `${stateDir}/tls`
 
 if (process.platform === 'darwin') {
