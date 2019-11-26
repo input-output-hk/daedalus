@@ -24,8 +24,8 @@ Feature: Send Money to Receiver
       | title                   | amountWithoutFees |
       | wallet.transaction.sent | -0.000010         |
     And the balance of "first" wallet should be:
-      | balance  |
-      | 0.000010 |
+      | balance |
+      | 0.00001 |
 
   Scenario: User Enters Wrong Receiver Address
     Given I am on the "first" wallet "send" screen
