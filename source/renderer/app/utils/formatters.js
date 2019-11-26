@@ -69,9 +69,14 @@ export const formattedAmountToNaturalUnits = (amount: string): string => {
   return cleanedAmount === '' ? '0' : cleanedAmount;
 };
 
-// TODO: FIX!
 export const formattedAmountToBigNumber = (amount: string) => {
   const cleanedAmount = amount.replace(/,/g, '');
+  // Replace line above with the commented out lines below once we add custom number
+  // formats support to NumericInput in React-Polymorph within the YT card:
+  // https://iohk.myjetbrains.com/youtrack/issue/DDW-1018
+  // const { groupSeparator } = BigNumber.config().FORMAT;
+  // const groupSeparatorPattern = `\\${groupSeparator}`;
+  // const cleanedAmount = amount.replace(new RegExp(groupSeparatorPattern, 'g'), '');
   return new BigNumber(cleanedAmount !== '' ? cleanedAmount : 0);
 };
 
@@ -82,7 +87,6 @@ export const formattedLovelaceToAmount = (lovelace: number): number =>
   formattedAmountToBigNumber(String(lovelace))
     .dividedBy(LOVELACES_PER_ADA)
     .toNumber();
-// TODO: FIX!
 
 export const formattedBytesToSize = (bytes: number): string => {
   const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
