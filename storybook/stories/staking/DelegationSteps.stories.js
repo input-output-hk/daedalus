@@ -55,6 +55,12 @@ export class StakingDelegationSteps extends Component<Props, State> {
       />,
       <DelegationStepsChooseWalletDialog
         key="DelegationStepsChooseWalletDialog"
+        numberOfStakePools={100}
+        stakePoolsDelegatingList={[
+          STAKE_POOLS[0],
+          STAKE_POOLS[13],
+          STAKE_POOLS[36],
+        ]}
         stepsList={getDelegationWizardStepsList(this.props.locale)}
         onClose={action('onClose')}
         onSelectWallet={this.onContinue}
