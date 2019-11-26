@@ -1,5 +1,9 @@
 .component {
   color: var(--theme-delegation-steps-choose-wallet-error-select-options-color);
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
   font-family: var(--font-regular);
   :global {
     .SimpleOptions_option {
@@ -10,14 +14,20 @@
 .label {
   font-size: 14px;
   line-height: 19px;
+  margin-right: 10px;
 }
 .detail {
   font-size: 12px;
   line-height: 1.33;
   opacity: 0.5;
+  margin-right: 10px;
 }
 .selected {
   color: var(--theme-delegation-steps-choose-wallet-custom-value-color);
   height: 100%;
   padding: 8px 20px;
+}
+.slug {
+  margin-right: 10px;
+  text-transform: uppercase;
 }
