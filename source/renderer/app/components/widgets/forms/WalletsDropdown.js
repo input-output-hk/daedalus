@@ -8,6 +8,7 @@ import WalletsDropdownOption from './WalletsDropdownOption';
 
 import { formattedWalletAmount } from '../../../utils/formatters';
 import Wallet from '../../../domains/Wallet';
+import type { StakePool } from '../../../api/staking/types';
 
 type SelectProps = {
   allowBlank: boolean,
@@ -33,35 +34,69 @@ type SelectProps = {
 
 type Props = {
   ...$Shape<SelectProps>,
+  numberOfStakePools: number,
+  stakePoolsDelegatingList: Array<StakePool>,
   wallets: Array<$Shape<Wallet>>,
 };
 
 type WalletOption = {
+  activeDelegation: StakePool,
   label: string,
+  numberOfStakePools: number,
   detail: string,
   value: string,
 };
 
 export default class WalletsDropdown extends Component<Props> {
   static defaultProps = {
-    optionRenderer: ({ label, detail }: WalletOption) => (
-      <WalletsDropdownOption label={label} detail={detail} />
+    optionRenderer: ({
+      label,
+      detail,
+      numberOfStakePools,
+      activeDelegation,
+    }: WalletOption) => (
+      <WalletsDropdownOption
+        label={label}
+        numberOfStakePools={numberOfStakePools}
+        detail={detail}
+        activeDelegation={activeDelegation}
+      />
     ),
-    selectionRenderer: ({ label, detail }: WalletOption) => (
-      <WalletsDropdownOption label={label} detail={detail} selected />
+    selectionRenderer: ({
+      label,
+      detail,
+      numberOfStakePools,
+      activeDelegation,
+    }: WalletOption) => (
+      <WalletsDropdownOption
+        selected
+        label={label}
+        numberOfStakePools={numberOfStakePools}
+        detail={detail}
+        activeDelegation={activeDelegation}
+      />
     ),
     skin: SelectSkin,
   };
 
   render() {
-    const { wallets, ...props } = this.props;
+    const {
+      wallets,
+      numberOfStakePools,
+      stakePoolsDelegatingList,
+      ...props
+    } = this.props;
     const walletsData = wallets.map(
       ({ name: label, id: value, amount }: Wallet) => {
         const detail = formattedWalletAmount(amount);
+        // TODO: use wallet ID or another method to determine if the wallet actually has an active delegation
+        const activeDelegation = stakePoolsDelegatingList[0];
         return {
           detail,
           label,
           value,
+          numberOfStakePools,
+          activeDelegation,
         };
       }
     );
