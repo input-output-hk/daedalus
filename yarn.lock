@@ -3408,11 +3408,12 @@ capture-stack-trace@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/capture-stack-trace/-/capture-stack-trace-1.0.1.tgz#a6c0bbe1f38f3aa0b92238ecb6ff42c344d4135d"
 
-cardano-js@0.1.4:
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/cardano-js/-/cardano-js-0.1.4.tgz#6e9ed611e85b2aa90342eae780b869d50e4a27aa"
+cardano-js@0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/cardano-js/-/cardano-js-0.3.0.tgz#8e3bf5f2a018b1c48719b89ee6540aae2979438f"
   dependencies:
     bech32 "^1.1.3"
+    bignumber.js "^9.0.0"
     bs58 "^4.0.1"
     cbor "^4.3.0"
     ts-custom-error "^3.1.1"

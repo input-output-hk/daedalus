@@ -138,7 +138,7 @@
     "bip39": "2.3.0",
     "blakejs": "1.1.0",
     "bs58": "4.0.1",
-    "cardano-js": "0.1.4",
+    "cardano-js": "0.3.0",
     "check-disk-space": "1.5.0",
     "chroma-js": "2.0.3",
     "classnames": "2.2.6",
