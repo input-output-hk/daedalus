@@ -60,21 +60,25 @@ export const formattedWalletAmount = (
   return formattedAmount.toString();
 };
 
-export const formattedAmountToBigNumber = (amount: string) => {
-  const cleanedAmount = amount.replace(/,/g, '');
-  return new BigNumber(cleanedAmount !== '' ? cleanedAmount : 0);
-};
-
 export const formattedAmountToNaturalUnits = (amount: string): string => {
   const cleanedAmount = amount
-    .replace('.', '')
-    .replace(/,/g, '')
+    .replace(/\./g, '') // removes all the dot separators
+    .replace(/,/g, '') // removes all the comma separators
+    .replace(/\s/g, '') // removes all the space separators
     .replace(/^0+/, '');
   return cleanedAmount === '' ? '0' : cleanedAmount;
 };
 
-export const formattedAmountWithoutTrailingZeros = (amount: string): string =>
-  amount.replace(/0+$/, '').replace(/\.$/, '');
+export const formattedAmountToBigNumber = (amount: string) => {
+  const cleanedAmount = amount.replace(/,/g, '');
+  // Replace line above with the commented out lines below once we add custom number
+  // formats support to NumericInput in React-Polymorph within the YT card:
+  // https://iohk.myjetbrains.com/youtrack/issue/DDW-1018
+  // const { groupSeparator } = BigNumber.config().FORMAT;
+  // const groupSeparatorPattern = `\\${groupSeparator}`;
+  // const cleanedAmount = amount.replace(new RegExp(groupSeparatorPattern, 'g'), '');
+  return new BigNumber(cleanedAmount !== '' ? cleanedAmount : 0);
+};
 
 export const formattedAmountToLovelace = (amount: string): number =>
   parseInt(formattedAmountToBigNumber(amount).times(LOVELACES_PER_ADA), 10);
