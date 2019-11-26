@@ -1,3 +1,4 @@
+/* eslint-disable no-console, func-names */
 /**
  * SCRIPT FOR NEWS FEED VERIFICATION HASH CREATION
  *

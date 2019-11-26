@@ -22,7 +22,7 @@
     "package": "gulp build && cross-env NODE_ENV=production node -r @babel/register -r @babel/polyfill scripts/package.js",
     "package:all": "yarn package --all",
     "cleanup": "mop -v",
-    "lint": "eslint --format=node_modules/eslint-formatter-pretty source tests storybook *.js",
+    "lint": "eslint --format=node_modules/eslint-formatter-pretty source tests storybook utils *.js",
     "flow:test": "flow; test $? -eq 0 -o $? -eq 2",
     "prettier": "./node_modules/.bin/prettier \"**/*.*\"",
     "prettier:check": "yarn prettier --check",
@@ -41,7 +41,9 @@
     "v2:wallet:importer": "node utils/v2-api-importer/index.js",
     "v2:legacy:wallet:importer": "node utils/v2-api-importer/legacy.js",
     "js-launcher": "node utils/js-launcher/index.js",
-    "create-news-verification-hashes": "node utils/create-news-verification-hashes/index.js"
+    "create-news-verification-hashes": "node utils/create-news-verification-hashes/index.js",
+    "lockfile:check": "node utils/lockfile-checker/index.js --check",
+    "lockfile:fix": "node utils/lockfile-checker/index.js --fix"
   },
   "bin": {
     "electron": "./node_modules/.bin/electron"
@@ -130,7 +132,8 @@
     "webpack": "4.27.1",
     "webpack-cli": "3.1.2",
     "webpack-stream": "5.2.1",
-    "yamljs": "0.3.0"
+    "yamljs": "0.3.0",
+    "yarn-lockfile": "1.1.1"
   },
   "dependencies": {
     "aes-js": "3.1.0",
@@ -197,7 +200,7 @@
   "husky": {
     "hooks": {
       "pre-commit": "pretty-quick --staged",
-      "pre-push": "yarn prettier:check && yarn lint && yarn flow:test && yarn stylelint && yarn manage:translations"
+      "pre-push": "yarn prettier:check && yarn lint && yarn flow:test && yarn stylelint && yarn lockfile:check && yarn manage:translations"
     }
   },
   "resolutions": {
