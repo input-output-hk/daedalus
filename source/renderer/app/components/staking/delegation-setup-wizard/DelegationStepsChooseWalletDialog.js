@@ -16,6 +16,7 @@ import DialogBackButton from '../../widgets/DialogBackButton';
 import Dialog from '../../widgets/Dialog';
 import WalletsDropdown from '../../widgets/forms/WalletsDropdown';
 import Wallet from '../../../domains/Wallet';
+import type { StakePool } from '../../../api/staking/types';
 
 const messages = defineMessages({
   title: {
@@ -67,6 +68,8 @@ const messages = defineMessages({
 });
 
 type Props = {
+  numberOfStakePools: number,
+  stakePoolsDelegatingList: Array<StakePool>,
   onClose: Function,
   onSelectWallet: Function,
   onBack: Function,
@@ -112,6 +115,8 @@ export default class DelegationStepsChooseWalletDialog extends Component<
       onClose,
       onBack,
       isWalletAcceptable,
+      numberOfStakePools,
+      stakePoolsDelegatingList,
     } = this.props;
 
     const selectedWallet: ?Wallet =
@@ -181,6 +186,8 @@ export default class DelegationStepsChooseWalletDialog extends Component<
           <WalletsDropdown
             className={walletSelectClasses}
             label={intl.formatMessage(messages.selectWalletInputLabel)}
+            numberOfStakePools={numberOfStakePools}
+            stakePoolsDelegatingList={stakePoolsDelegatingList}
             wallets={wallets}
             onChange={(walletId: string) => this.onWalletChange(walletId)}
             placeholder={intl.formatMessage(
