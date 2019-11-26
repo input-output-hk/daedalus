@@ -200,7 +200,7 @@
   "husky": {
     "hooks": {
       "pre-commit": "pretty-quick --staged",
-      "pre-push": "yarn prettier:check && yarn lint && yarn flow:test && yarn stylelint && lockfile:check && yarn manage:translations"
+      "pre-push": "yarn prettier:check && yarn lint && yarn flow:test && yarn stylelint && yarn lockfile:check && yarn manage:translations"
     }
   },
   "resolutions": {
