@@ -1,10 +1,11 @@
 // @flow
+/* eslint-disable no-console */
 const lodash = require('lodash');
-const fs = require('fs')
-const lockfile = require('yarn-lockfile')
+const fs = require('fs');
+const lockfile = require('yarn-lockfile');
 
-let file = fs.readFileSync('yarn.lock', 'utf8')
-let json = lockfile.parse(file)
+const file = fs.readFileSync('yarn.lock', 'utf8');
+const json = lockfile.parse(file);
 
 console.log('\n\x1b[36m%s\x1b[0m', 'Script started!\n');
 
@@ -16,7 +17,11 @@ lodash.map(json.object, (entry, key) => {
 })
 
 const shouldFix = process.argv.slice(2)[0] === '--fix';
-shouldFix ? fix() : check();
+if (shouldFix) {
+  fix();
+} else {
+  check();
+}
 
 function check() {
   console.log('\x1b[36m%s\x1b[0m', 'Checking yarn.lock file...\n');
@@ -37,18 +42,18 @@ function fix() {
 
   console.log('\x1b[36m%s\x1b[0m', 'Fixing yarn.lock file...\n');
 
-  let fixedJSON = {}
+  const fixedJSON = {};
   lodash.map(json.object, (entry, key) => {
     let obj = entry;
     if(entry.integrity) {
       obj = lodash.omit(entry, 'integrity');
     }
-    Object.assign(fixedJSON, {[key]: obj})
+    Object.assign(fixedJSON, {[key]: obj});
   })
 
   try {
-    const fixedFileContent = lockfile.stringify(fixedJSON)
-    fs.writeFileSync('yarn.lock',fixedFileContent)
+    const fixedFileContent = lockfile.stringify(fixedJSON);
+    fs.writeFileSync('yarn.lock',fixedFileContent);
     console.log('\n \x1b[32m', 'yarn.lock file successfully FIXED!\n', '\x1b[0m');
   } catch (err) {
     throw err;
