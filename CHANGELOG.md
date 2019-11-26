@@ -6,10 +6,13 @@ Changelog
 ### Features
 
 - Added script which checks for "integrity" lines in yarn.lock file ([PR 1715](https://github.com/input-output-hk/daedalus/pull/1715))
+- Added new Mainnet and Testnet icons ([PR 1716](https://github.com/input-output-hk/daedalus/pull/1716))
 - Added number of pending transactions to “Wallet Summary” screen ([PR 1705](https://github.com/input-output-hk/daedalus/pull/1705))
 
 ### Fixes
 
+- Fixed naming of labels on "Daedalus Diagnostics" screen and status icons on "Loading" screen from "Node..." to "Cardano node..." ([PR 1723](https://github.com/input-output-hk/daedalus/pull/1723))
+- Adjusted the Stake pool logic for ranking color to account for the total number of stake pools ([PR 1719](https://github.com/input-output-hk/daedalus/pull/1719))
 - Fixed styling issues on the "Network info" overlay on all the themes ([PR 1708](https://github.com/input-output-hk/daedalus/pull/1708))
 - Fixed read newsfeed items ID duplication in local storage ([PR 1710](https://github.com/input-output-hk/daedalus/pull/1710))
 - Fixed the `themes:check:createTheme` script and updated the `createTheme` object ([PR 1709](https://github.com/input-output-hk/daedalus/pull/1709))
