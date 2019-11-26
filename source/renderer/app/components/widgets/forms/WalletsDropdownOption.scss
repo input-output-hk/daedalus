@@ -1,9 +1,9 @@
 .component {
   color: var(--theme-delegation-steps-choose-wallet-error-select-options-color);
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: flex-start;
-  align-items: center;
+  align-items: flex-start;
   font-family: var(--font-regular);
   :global {
     .SimpleOptions_option {
@@ -11,23 +11,31 @@
     }
   }
 }
-.label {
-  font-size: 14px;
-  line-height: 19px;
-  margin-right: 10px;
+.topRow {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  .slug {
+    font-size: 14px;
+    line-height: 1.43;
+    margin-right: 10px;
+    text-transform: uppercase;
+  }
+  .label {
+    font-size: 14px;
+    line-height: 1.43;
+  }
 }
 .detail {
   font-size: 12px;
   line-height: 1.33;
   opacity: 0.5;
   margin-right: 10px;
+  margin-top: 3px;
 }
 .selected {
   color: var(--theme-delegation-steps-choose-wallet-custom-value-color);
   height: 100%;
   padding: 8px 20px;
-}
-.slug {
-  margin-right: 10px;
-  text-transform: uppercase;
 }
