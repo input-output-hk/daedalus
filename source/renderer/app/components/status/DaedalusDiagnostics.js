@@ -561,9 +561,11 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
               </tr>
               <tr>
                 <th>{intl.formatMessage(messages.cpu)}:</th>
-                <Tooltip skin={TooltipSkin} tip={cpu}>
-                  <td>{cpu}</td>
-                </Tooltip>
+                <td>
+                  <Tooltip skin={TooltipSkin} tip={cpu}>
+                    {cpu}
+                  </Tooltip>
+                </td>
               </tr>
               <tr>
                 <th>{intl.formatMessage(messages.ram)}:</th>
