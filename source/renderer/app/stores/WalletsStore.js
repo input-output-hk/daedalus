@@ -956,15 +956,18 @@ export default class WalletsStore extends Store {
       currentDateFormat,
       currentTimeFormat,
     } = this.stores.profile;
+    const { network, isMainnet } = this.environment;
     const intl = i18nContext(currentLocale);
     try {
       await addressPDFGenerator({
         address,
+        note,
+        filePath,
         currentLocale,
         currentDateFormat,
         currentTimeFormat,
-        note,
-        filePath,
+        network,
+        isMainnet,
         intl,
       });
     } catch (error) {

@@ -4,8 +4,11 @@ export type GenerateAddressPDFParams = {
   currentLocale: string,
   creationDate: string,
   address: string,
-  noteTitle: string,
+  noteLabel: string,
   note: string,
   author: string,
   filePath: string,
+  isMainnet: boolean,
+  networkLabel: string,
+  networkName: string,
 };

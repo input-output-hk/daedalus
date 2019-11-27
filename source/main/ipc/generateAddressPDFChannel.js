@@ -9,9 +9,10 @@ import type {
   GenerateAddressPDFRendererRequest,
   GenerateAddressPDFMainResponse,
 } from '../../common/ipc/api';
-import fontRegularEn from '../../common/assets/pdf/NotoSans-Medium.ttf';
-import fontMono from '../../common/assets/pdf/SFMono-Light.ttf';
-import fontRegularJp from '../../common/assets/pdf/arial-unicode.ttf';
+import fontRegularEn from '../../common/assets/pdf/NotoSans-Regular.ttf';
+import fontMediumEn from '../../common/assets/pdf/NotoSans-Medium.ttf';
+import fontUnicode from '../../common/assets/pdf/arial-unicode.ttf';
+import fontMono from '../../common/assets/pdf/SFMono-Regular.otf';
 
 export const generateAddressPDFChannel: // IpcChannel<Incoming, Outgoing>
 MainIpcChannel<
@@ -25,20 +26,30 @@ export const handleAddressPDFRequests = () => {
       new Promise((resolve, reject) => {
         // Prepare params
         const {
-          title,
-          creationDate,
           address,
-          currentLocale,
           filePath,
           note,
-          noteTitle,
+          currentLocale,
+          isMainnet,
+          networkLabel,
+          networkName,
+          creationDate,
+          noteLabel,
+          title,
           author,
         } = request;
 
         const readAssetSync = p => fs.readFileSync(path.join(__dirname, p));
-        const fontRegular =
-          currentLocale === 'ja-JP' ? fontRegularJp : fontRegularEn;
-        const fontNote = currentLocale === 'ja-JP' ? fontRegularJp : fontMono;
+        let fontRegular;
+        let fontMedium;
+
+        if (currentLocale === 'ja-JP') {
+          fontRegular = fontUnicode;
+          fontMedium = fontUnicode;
+        } else {
+          fontRegular = fontRegularEn;
+          fontMedium = fontMediumEn;
+        }
 
         // Generate QR image for wallet address
         const qrCodeImage = qr.imageSync(address, {
@@ -48,6 +59,7 @@ export const handleAddressPDFRequests = () => {
           margin: 0,
         });
         const textColor = '#5e6066';
+        const textColorRed = '#ea4c5b';
         const width = 640;
         const height = 500;
         const doc = new PDFDocument({
@@ -65,13 +77,14 @@ export const handleAddressPDFRequests = () => {
         }).fillColor(textColor);
 
         try {
+          const fontBufferMedium = readAssetSync(fontMedium);
           const fontBufferRegular = readAssetSync(fontRegular);
           const fontBufferMono = readAssetSync(fontMono);
-          const fontBufferNote = readAssetSync(fontNote);
+          const fontBufferUnicode = readAssetSync(fontUnicode);
 
           // Title
           doc
-            .font(fontBufferRegular)
+            .font(fontBufferMedium)
             .fontSize(18)
             .text(title.toUpperCase(), {
               align: 'center',
@@ -79,9 +92,13 @@ export const handleAddressPDFRequests = () => {
             });
 
           // Creation date
-          doc.fontSize(14).text(creationDate.toUpperCase(), {
-            align: 'center',
-          });
+          doc
+            .font(fontBufferRegular)
+            .fontSize(12)
+            .text(creationDate.toUpperCase(), {
+              align: 'center',
+              characterSpacing: 0.6,
+            });
 
           doc.moveDown();
 
@@ -108,11 +125,22 @@ export const handleAddressPDFRequests = () => {
             doc
               .font(fontBufferRegular)
               .fontSize(14)
-              .text(noteTitle);
+              .text(noteLabel);
 
             // Note
-            doc.font(fontBufferNote).text(note);
+            doc.font(fontBufferUnicode).text(note);
           }
+
+          doc.moveDown();
+
+          // Footer
+          doc
+            .fontSize(12)
+            .font(isMainnet ? fontBufferRegular : fontBufferMedium)
+            .fillColor(isMainnet ? textColor : textColorRed)
+            .text(`${networkLabel} ${networkName}`, {
+              align: 'right',
+            });
         } catch (error) {
           reject(error);
         }

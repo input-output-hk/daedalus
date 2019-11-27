@@ -32,11 +32,6 @@ const messages = defineMessages({
     defaultMessage: '!!!Download as PDF',
     description: 'downloadPDFButton on the wallet "Share Address" dialog',
   },
-  copyAddressButton: {
-    id: 'wallet.receive.dialog.copyAddressButton',
-    defaultMessage: '!!!Copy address',
-    description: 'copyAddressButton on the wallet "Share Address" dialog',
-  },
   dialogTitle: {
     id: 'wallet.receive.dialog.dialogTitle',
     defaultMessage: '!!!Share wallet address',
@@ -126,7 +121,7 @@ export default class WalletReceiveDialog extends Component<Props> {
         onClose={onClose}
         closeButton={<DialogCloseButton onClose={onClose} />}
       >
-        <BorderedBox fullHeight>
+        <BorderedBox fullHeight fullInnerWidth>
           <div className={styles.container}>
             <div className={styles.qrCode}>
               <QRCode

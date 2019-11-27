@@ -1,6 +1,6 @@
 // @flow
 export type Environment = {
-  network: string,
+  network: networkId,
   rawNetwork: string,
   apiVersion: string,
   mobxDevTools: boolean | string,
@@ -51,6 +51,13 @@ export const OS_NAMES = {
   [WINDOWS]: 'Windows',
   [LINUX]: 'Linux',
 };
+
+export type networkId =
+  | 'mainnet'
+  | 'staging'
+  | 'testnet'
+  | 'development'
+  | 'itn_balance_check';
 
 export const networkPrettyNames = {
   mainnet: 'Mainnet',
