@@ -5,7 +5,10 @@ import BigNumber from 'bignumber.js';
 import moment from 'moment';
 
 // domains
-import Wallet, { WalletDelegationStatuses } from '../domains/Wallet';
+import Wallet, {
+  WalletDelegationStatuses,
+  WalletUnits,
+} from '../domains/Wallet';
 import {
   WalletTransaction,
   TransactionTypes,
@@ -490,7 +493,7 @@ export default class AdaApi {
             address,
             amount: {
               quantity: amount,
-              unit: 'lovelace',
+              unit: WalletUnits.LOVELACE,
             },
           },
         ],
@@ -534,7 +537,13 @@ export default class AdaApi {
     Logger.debug('AdaApi::calculateTransactionFee called', {
       parameters: filterLogData(request),
     });
-    const { walletId, address, amount, walletBalance } = request;
+    const {
+      walletId,
+      address,
+      amount,
+      walletBalance,
+      availableBalance,
+    } = request;
 
     try {
       const data = {
@@ -543,7 +552,7 @@ export default class AdaApi {
             address,
             amount: {
               quantity: amount,
-              unit: 'lovelace',
+              unit: WalletUnits.LOVELACE,
             },
           },
         ],
@@ -554,7 +563,7 @@ export default class AdaApi {
         data,
       });
 
-      const formattedTxAmount = new BigNumber(request.amount).dividedBy(
+      const formattedTxAmount = new BigNumber(amount).dividedBy(
         LOVELACES_PER_ADA
       );
       const fee = _createTransactionFeeFromServerData(response);
@@ -572,9 +581,9 @@ export default class AdaApi {
     } catch (error) {
       Logger.error('AdaApi::calculateTransactionFee error', { error });
       if (error.name === 'NotEnoughFundsForTransactionFeesError') {
-        throw new NotEnoughFundsForTransactionFeesError();
+        throw error;
       } else if (error.code === 'not_enough_money') {
-        if (request.walletBalance.gt(request.availableBalance)) {
+        if (walletBalance.gt(availableBalance)) {
           // Amount exceeds availableBalance due to pending transactions:
           // - error.diagnostic.details.msg === 'Not enough available coins to proceed.'
           // - total walletBalance > error.diagnostic.details.availableBalance
@@ -1204,15 +1213,15 @@ const _createWalletFromServerData = action(
       delegation.status === WalletDelegationStatuses.DELEGATING;
     const passphraseLastUpdatedAt = get(passphrase, 'last_updated_at', null);
     const walletTotalAmount =
-      balance.total.unit === 'lovelace'
+      balance.total.unit === WalletUnits.LOVELACE
         ? new BigNumber(balance.total.quantity).dividedBy(LOVELACES_PER_ADA)
         : new BigNumber(balance.total.quantity);
     const walletAvailableAmount =
-      balance.available.unit === 'lovelace'
+      balance.available.unit === WalletUnits.LOVELACE
         ? new BigNumber(balance.available.quantity).dividedBy(LOVELACES_PER_ADA)
         : new BigNumber(balance.available.quantity);
     const walletRewardAmount =
-      reward.unit === 'lovelace'
+      reward.unit === WalletUnits.LOVELACE
         ? new BigNumber(reward.quantity).dividedBy(LOVELACES_PER_ADA)
         : new BigNumber(reward.quantity || 0);
 

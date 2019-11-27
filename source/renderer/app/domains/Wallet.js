@@ -6,6 +6,7 @@ import type {
   WalletSyncState,
   SyncStateStatus,
   DelegationStatus,
+  WalletUnit,
 } from '../api/wallets/types';
 import type { StakePool } from '../api/staking/types';
 
@@ -25,6 +26,14 @@ export const WalletDelegationStatuses: {
 } = {
   DELEGATING: 'delegating',
   NOT_DELEGATING: 'not_delegating',
+};
+
+export const WalletUnits: {
+  ADA: WalletUnit,
+  LOVELACE: WalletUnit,
+} = {
+  ADA: 'ada',
+  LOVELACE: 'lovelace',
 };
 
 export type WalletProps = {
