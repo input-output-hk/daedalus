@@ -14,7 +14,7 @@ const systemInfo = {
   platformVersion: '17.7.0',
   cpu: 'Intel(R) Core(TM) i5-3210M CPU @ 2.50GHz',
   ram: '32.0 GB',
-  availableDiskSpace: '500GB',
+  availableDiskSpace: '500 GB',
 };
 
 const coreInfo = {

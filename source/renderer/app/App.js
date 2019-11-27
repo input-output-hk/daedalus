@@ -64,9 +64,9 @@ export default class App extends Component<{
                   <AutomaticUpdateNotificationDialog />
                 ) : (
                   [
-                    isActiveDialog(ABOUT) && <AboutDialog />,
+                    isActiveDialog(ABOUT) && <AboutDialog key="aboutDialog" />,
                     isActiveDialog(DAEDALUS_DIAGNOSTICS) && (
-                      <DaedalusDiagnosticsDialog />
+                      <DaedalusDiagnosticsDialog key="daedalusDiagnosticsDialog" />
                     ),
                     <GenericNotificationContainer key="genericNotification" />,
                   ]

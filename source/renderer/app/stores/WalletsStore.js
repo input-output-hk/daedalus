@@ -3,7 +3,9 @@ import { observable, action, computed, runInAction, flow } from 'mobx';
 import { get, chunk, find, findIndex, isEqual } from 'lodash';
 import moment from 'moment';
 import { BigNumber } from 'bignumber.js';
-import { Util } from 'cardano-js';
+import { Address } from 'cardano-js';
+import { AddressGroup } from 'cardano-js/dist/Address/AddressGroup';
+import { ChainSettings } from 'cardano-js/dist/ChainSettings';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import Wallet from '../domains/Wallet';
@@ -28,7 +30,6 @@ import {
   RECOVERY_PHRASE_VERIFICATION_WARNING,
   WALLET_RESTORE_TYPES,
 } from '../config/walletsConfig';
-import { TESTNET } from '../../../common/types/environment.types';
 import type { CsvRecord } from '../../../common/types/rewards-csv-request.types';
 import type { walletExportTypeChoices } from '../types/walletExportTypes';
 import type { WalletImportFromFileParams } from '../actions/wallets-actions';
@@ -642,18 +643,15 @@ export default class WalletsStore extends Store {
 
   isValidAddress = (address: string) => {
     const { app, networkStatus } = this.stores;
-    const { environment } = app;
-    const { network } = environment;
-    const { nodeImplementation } = networkStatus;
+    const { isMainnet } = app.environment;
+    const addressGroup = networkStatus.isIncentivizedTestnet
+      ? AddressGroup.jormungandr
+      : AddressGroup.byron;
+    const chainSettings = isMainnet
+      ? ChainSettings.mainnet
+      : ChainSettings.testnet;
     try {
-      const result = Util.introspectAddress(address);
-      if (
-        result.network === network ||
-        (nodeImplementation === 'jormungandr' && result.network === TESTNET)
-      ) {
-        return true;
-      }
-      return false;
+      return Address.Util.isAddress(address, chainSettings, addressGroup);
     } catch (error) {
       return false;
     }

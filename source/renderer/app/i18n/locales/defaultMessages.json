@@ -494,8 +494,8 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Node is running!",
-        "description": "Message \"Node is running\" on the status icon tooltip",
+        "defaultMessage": "!!!Cardano node is running!",
+        "description": "Message \"Cardano node is running\" on the status icon tooltip",
         "end": {
           "column": 3,
           "line": 23
@@ -508,7 +508,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Node is starting!",
+        "defaultMessage": "!!!Cardano node is starting!",
         "description": "Message \"Node is starting\" on the status icon tooltip",
         "end": {
           "column": 3,
@@ -522,8 +522,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Node is exiting!",
-        "description": "Message \"Node is exiting\" on the status icon tooltip",
+        "defaultMessage": "!!!Cardano node is exiting!",
+        "description": "Message \"Cardano node is exiting\" on the status icon tooltip",
         "end": {
           "column": 3,
           "line": 33
@@ -536,11 +536,11 @@
         }
       },
       {
-        "defaultMessage": "!!!Node is stopping!",
-        "description": "Message \"Node is stopping\" on the status icon tooltip",
+        "defaultMessage": "!!!Cardano node is stopping!",
+        "description": "Message \"Cardano node is stopping\" on the status icon tooltip",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 39
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
         "id": "status.icons.nodeIsStopping",
@@ -550,87 +550,87 @@
         }
       },
       {
-        "defaultMessage": "!!!Node has stopped!",
-        "description": "Message \"Node has stopped\" on the status icon tooltip",
+        "defaultMessage": "!!!Cardano node has stopped!",
+        "description": "Message \"Cardano node has stopped\" on the status icon tooltip",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 45
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
         "id": "status.icons.nodeHasStopped",
         "start": {
           "column": 18,
-          "line": 39
+          "line": 40
         }
       },
       {
-        "defaultMessage": "!!!Node is updating!",
-        "description": "Message \"Node is updating\" on the status icon tooltip",
+        "defaultMessage": "!!!Cardano node is updating!",
+        "description": "Message \"Cardano node is updating\" on the status icon tooltip",
         "end": {
           "column": 3,
-          "line": 48
+          "line": 51
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
         "id": "status.icons.nodeIsUpdating",
         "start": {
           "column": 18,
-          "line": 44
+          "line": 46
         }
       },
       {
-        "defaultMessage": "!!!Node has been updated!",
-        "description": "Message \"Node has been updated\" on the status icon tooltip",
+        "defaultMessage": "!!!Cardano node has been updated!",
+        "description": "Message \"Cardano node has been updated\" on the status icon tooltip",
         "end": {
           "column": 3,
-          "line": 53
+          "line": 57
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
         "id": "status.icons.nodeHasBeenUpdated",
         "start": {
           "column": 22,
-          "line": 49
+          "line": 52
         }
       },
       {
-        "defaultMessage": "!!!Node has crashed!",
-        "description": "Message \"Node has crashed\" on the status icon tooltip",
-        "end": {
-          "column": 3,
-          "line": 58
-        },
-        "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
-        "id": "status.icons.nodeHasCrashed",
-        "start": {
-          "column": 18,
-          "line": 54
-        }
-      },
-      {
-        "defaultMessage": "!!!Node has errored!",
-        "description": "Message \"Node has errored\" on the status icon tooltip",
+        "defaultMessage": "!!!Cardano node has crashed!",
+        "description": "Message \"Cardano node has crashed\" on the status icon tooltip",
         "end": {
           "column": 3,
           "line": 63
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
-        "id": "status.icons.nodeHasErrored",
+        "id": "status.icons.nodeHasCrashed",
         "start": {
           "column": 18,
-          "line": 59
+          "line": 58
         }
       },
       {
-        "defaultMessage": "!!!Node is unrecoverable!",
-        "description": "Message \"Node is unrecoverable\" on the status icon tooltip",
+        "defaultMessage": "!!!Cardano node has errored!",
+        "description": "Message \"Cardano node has errored\" on the status icon tooltip",
         "end": {
           "column": 3,
-          "line": 68
+          "line": 69
+        },
+        "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
+        "id": "status.icons.nodeHasErrored",
+        "start": {
+          "column": 18,
+          "line": 64
+        }
+      },
+      {
+        "defaultMessage": "!!!Cardano node is unrecoverable!",
+        "description": "Message \"Cardano node is unrecoverable\" on the status icon tooltip",
+        "end": {
+          "column": 3,
+          "line": 75
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
         "id": "status.icons.nodeIsUnrecoverable",
         "start": {
           "column": 23,
-          "line": 64
+          "line": 70
         }
       },
       {
@@ -638,181 +638,181 @@
         "description": "Message \"Check your Internet connection\" on the status icon tooltip",
         "end": {
           "column": 3,
-          "line": 74
+          "line": 81
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
         "id": "status.icons.checkYourInternetConnection",
         "start": {
           "column": 31,
-          "line": 69
+          "line": 76
         }
       },
       {
-        "defaultMessage": "!!!Node is responding!",
-        "description": "Message \"Node is responding\" on the status icon tooltip",
+        "defaultMessage": "!!!Cardano node is responding!",
+        "description": "Message \"Cardano node is responding\" on the status icon tooltip",
         "end": {
           "column": 3,
-          "line": 79
+          "line": 87
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
         "id": "status.icons.isNodeRespondingOn",
         "start": {
           "column": 22,
-          "line": 75
+          "line": 82
         }
       },
       {
-        "defaultMessage": "!!!Node is not responding!",
-        "description": "Message \"Node is not responding\" on the status icon tooltip",
+        "defaultMessage": "!!!Cardano node is not responding!",
+        "description": "Message \"Cardano node is not responding\" on the status icon tooltip",
         "end": {
           "column": 3,
-          "line": 84
+          "line": 93
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
         "id": "status.icons.isNodeRespondingOff",
         "start": {
           "column": 23,
-          "line": 80
+          "line": 88
         }
       },
       {
-        "defaultMessage": "!!!Checking if Node is responding!",
-        "description": "Message \"Checking if Node is responding\" on the status icon tooltip",
+        "defaultMessage": "!!!Checking if Cardano node is responding!",
+        "description": "Message \"Checking if Cardano node is responding\" on the status icon tooltip",
         "end": {
           "column": 3,
-          "line": 90
+          "line": 99
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
         "id": "status.icons.isNodeRespondingLoading",
         "start": {
           "column": 27,
-          "line": 85
+          "line": 94
         }
       },
       {
-        "defaultMessage": "!!!Node is subscribed!",
-        "description": "Message \"Node is subscribed\" on the status icon tooltip",
+        "defaultMessage": "!!!Cardano node is subscribed!",
+        "description": "Message \"Cardano node is subscribed\" on the status icon tooltip",
         "end": {
           "column": 3,
-          "line": 95
+          "line": 105
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
         "id": "status.icons.isNodeSubscribedOn",
         "start": {
           "column": 22,
-          "line": 91
-        }
-      },
-      {
-        "defaultMessage": "!!!Node is not subscribed!",
-        "description": "Message \"Node is not subscribed\" on the status icon tooltip",
-        "end": {
-          "column": 3,
           "line": 100
-        },
-        "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
-        "id": "status.icons.isNodeSubscribedOff",
-        "start": {
-          "column": 23,
-          "line": 96
         }
       },
       {
-        "defaultMessage": "!!!Checking if Node is subscribed!",
-        "description": "Message \"Checking if Node is subscribed\" on the status icon tooltip",
-        "end": {
-          "column": 3,
-          "line": 106
-        },
-        "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
-        "id": "status.icons.isNodeSubscribedLoading",
-        "start": {
-          "column": 27,
-          "line": 101
-        }
-      },
-      {
-        "defaultMessage": "!!!Node time is correct!",
-        "description": "Message \"Node time is correct\" on the status icon tooltip",
+        "defaultMessage": "!!!Cardano node is not subscribed!",
+        "description": "Message \"Cardano node is not subscribed\" on the status icon tooltip",
         "end": {
           "column": 3,
           "line": 111
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
-        "id": "status.icons.isNodeTimeCorrectOn",
+        "id": "status.icons.isNodeSubscribedOff",
         "start": {
           "column": 23,
-          "line": 107
+          "line": 106
         }
       },
       {
-        "defaultMessage": "!!!Node time is not correct!",
-        "description": "Message \"Node time is not correct\" on the status icon tooltip",
+        "defaultMessage": "!!!Checking if Cardano node is subscribed!",
+        "description": "Message \"Checking if Cardano node is subscribed\" on the status icon tooltip",
         "end": {
           "column": 3,
           "line": 117
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
-        "id": "status.icons.isNodeTimeCorrectOff",
+        "id": "status.icons.isNodeSubscribedLoading",
         "start": {
-          "column": 24,
+          "column": 27,
           "line": 112
         }
       },
       {
-        "defaultMessage": "!!!Checking if Node time is correct!",
-        "description": "Message \"Checking if Node time is correct\" on the status icon tooltip",
+        "defaultMessage": "!!!Cardano node time is correct!",
+        "description": "Message \"Cardano node time is correct\" on the status icon tooltip",
         "end": {
           "column": 3,
           "line": 123
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
-        "id": "status.icons.isNodeTimeCorrectLoading",
+        "id": "status.icons.isNodeTimeCorrectOn",
         "start": {
-          "column": 28,
+          "column": 23,
           "line": 118
         }
       },
       {
-        "defaultMessage": "!!!Node is syncing!",
-        "description": "Message \"Node is syncing\" on the status icon tooltip",
+        "defaultMessage": "!!!Cardano node time is not correct!",
+        "description": "Message \"Cardano node time is not correct\" on the status icon tooltip",
         "end": {
           "column": 3,
-          "line": 128
+          "line": 129
+        },
+        "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
+        "id": "status.icons.isNodeTimeCorrectOff",
+        "start": {
+          "column": 24,
+          "line": 124
+        }
+      },
+      {
+        "defaultMessage": "!!!Checking if Cardano node time is correct!",
+        "description": "Message \"Checking if Cardano node time is correct\" on the status icon tooltip",
+        "end": {
+          "column": 3,
+          "line": 135
+        },
+        "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
+        "id": "status.icons.isNodeTimeCorrectLoading",
+        "start": {
+          "column": 28,
+          "line": 130
+        }
+      },
+      {
+        "defaultMessage": "!!!Cardano node is syncing!",
+        "description": "Message \"Cardano node is syncing\" on the status icon tooltip",
+        "end": {
+          "column": 3,
+          "line": 140
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
         "id": "status.icons.isNodeSyncingOn",
         "start": {
           "column": 19,
-          "line": 124
+          "line": 136
         }
       },
       {
-        "defaultMessage": "!!!Node is not syncing!",
-        "description": "Message \"Node is not syncing\" on the status icon tooltip",
+        "defaultMessage": "!!!Cardano node is not syncing!",
+        "description": "Message \"Cardano node is not syncing\" on the status icon tooltip",
         "end": {
           "column": 3,
-          "line": 133
+          "line": 146
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
         "id": "status.icons.isNodeSyncingOff",
         "start": {
           "column": 20,
-          "line": 129
+          "line": 141
         }
       },
       {
-        "defaultMessage": "!!!Checking if Node is syncing!",
-        "description": "Message \"Checking if Node is syncing\" on the status icon tooltip",
+        "defaultMessage": "!!!Checking if Cardano node is syncing!",
+        "description": "Message \"Checking if Cardano node is syncing\" on the status icon tooltip",
         "end": {
           "column": 3,
-          "line": 139
+          "line": 152
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
         "id": "status.icons.isNodeSyncingLoading",
         "start": {
           "column": 24,
-          "line": 134
+          "line": 147
         }
       }
     ],
@@ -4054,8 +4054,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Platform Version",
-        "description": "Platform Version",
+        "defaultMessage": "!!!Platform version",
+        "description": "Platform version",
         "end": {
           "column": 3,
           "line": 39
@@ -4152,8 +4152,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Daedalus Version",
-        "description": "Daedalus Version",
+        "defaultMessage": "!!!Daedalus version",
+        "description": "Daedalus version",
         "end": {
           "column": 3,
           "line": 74
@@ -4166,8 +4166,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Daedalus Main Process ID",
-        "description": "Daedalus Main Process ID",
+        "defaultMessage": "!!!Daedalus main process ID",
+        "description": "Daedalus main process ID",
         "end": {
           "column": 3,
           "line": 79
@@ -4180,8 +4180,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Daedalus Renderer Process ID",
-        "description": "Daedalus Renderer Process ID",
+        "defaultMessage": "!!!Daedalus renderer process ID",
+        "description": "Daedalus renderer process ID",
         "end": {
           "column": 3,
           "line": 84
@@ -4194,8 +4194,8 @@
         }
       },
       {
-        "defaultMessage": "!!!'Blank Screen Fix' active",
-        "description": "'Blank Screen Fix' active",
+        "defaultMessage": "!!!Daedalus 'Blank Screen Fix' active",
+        "description": "Daedalus 'Blank Screen Fix' active",
         "end": {
           "column": 3,
           "line": 89
@@ -4208,8 +4208,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Cardano Version",
-        "description": "Cardano Version",
+        "defaultMessage": "!!!Cardano node version",
+        "description": "Cardano node version",
         "end": {
           "column": 3,
           "line": 94
@@ -4222,8 +4222,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Cardano Process ID",
-        "description": "Cardano Process ID",
+        "defaultMessage": "!!!Cardano node process ID",
+        "description": "Cardano node process ID",
         "end": {
           "column": 3,
           "line": 99
@@ -4236,8 +4236,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Cardano API Port",
-        "description": "Cardano API Port",
+        "defaultMessage": "!!!Cardano node API port",
+        "description": "Cardano node API port",
         "end": {
           "column": 3,
           "line": 104
@@ -4250,8 +4250,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Cardano Network",
-        "description": "Cardano Network",
+        "defaultMessage": "!!!Cardano network",
+        "description": "Cardano network",
         "end": {
           "column": 3,
           "line": 109
@@ -4264,8 +4264,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Daedalus State Directory",
-        "description": "Daedalus State Directory",
+        "defaultMessage": "!!!Daedalus state directory",
+        "description": "Daedalus state directory",
         "end": {
           "column": 3,
           "line": 114
@@ -4348,8 +4348,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Sync Percentage",
-        "description": "Sync Percentage",
+        "defaultMessage": "!!!Sync percentage",
+        "description": "Sync percentage",
         "end": {
           "column": 3,
           "line": 144
@@ -4362,8 +4362,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Remaining Unsynced Blocks",
-        "description": "Remaining Unsynced Blocks",
+        "defaultMessage": "!!!Remaining unsynced blocks",
+        "description": "Remaining unsynced blocks",
         "end": {
           "column": 3,
           "line": 149
@@ -4376,8 +4376,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Latest Local Block Age",
-        "description": "Latest Local Block Age",
+        "defaultMessage": "!!!Latest local block age",
+        "description": "Latest local block age",
         "end": {
           "column": 3,
           "line": 154
@@ -4390,8 +4390,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Latest Network Block Age",
-        "description": "Latest Network Block Age",
+        "defaultMessage": "!!!Latest network block age",
+        "description": "Latest network block age",
         "end": {
           "column": 3,
           "line": 159
@@ -4404,8 +4404,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Local Time Difference",
-        "description": "Local Time Difference",
+        "defaultMessage": "!!!Local time difference",
+        "description": "Local time difference",
         "end": {
           "column": 3,
           "line": 164
@@ -4418,8 +4418,8 @@
         }
       },
       {
-        "defaultMessage": "!!!System Time Correct",
-        "description": "System Time Correct",
+        "defaultMessage": "!!!System time correct",
+        "description": "System time correct",
         "end": {
           "column": 3,
           "line": 169
@@ -4432,8 +4432,8 @@
         }
       },
       {
-        "defaultMessage": "!!!System Time Ignored",
-        "description": "System Time Ignored",
+        "defaultMessage": "!!!System time ignored",
+        "description": "System time ignored",
         "end": {
           "column": 3,
           "line": 174
@@ -4446,8 +4446,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Checking Node Time",
-        "description": "Checking Node Time",
+        "defaultMessage": "!!!Checking Cardano node time",
+        "description": "Checking Cardano node time",
         "end": {
           "column": 3,
           "line": 179
@@ -4474,8 +4474,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Restarting Cardano Node...",
-        "description": "Restarting Cardano Node...",
+        "defaultMessage": "!!!Restarting Cardano node...",
+        "description": "Restarting Cardano node...",
         "end": {
           "column": 3,
           "line": 189
@@ -4488,8 +4488,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Restart Cardano Node",
-        "description": "Restart Cardano Node",
+        "defaultMessage": "!!!Restart Cardano node",
+        "description": "Restart Cardano node",
         "end": {
           "column": 3,
           "line": 194
@@ -4502,8 +4502,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Cardano Node Diagnostics",
-        "description": "Cardano Node Diagnostics",
+        "defaultMessage": "!!!Cardano node diagnostics",
+        "description": "Cardano node diagnostics",
         "end": {
           "column": 3,
           "line": 199
@@ -4530,8 +4530,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Cardano Node State",
-        "description": "Cardano Node State",
+        "defaultMessage": "!!!Cardano node state",
+        "description": "Cardano node state",
         "end": {
           "column": 3,
           "line": 209
@@ -4684,8 +4684,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Node Responding",
-        "description": "Node Responding",
+        "defaultMessage": "!!!Cardano node responding",
+        "description": "Cardano node responding",
         "end": {
           "column": 3,
           "line": 264
@@ -4698,8 +4698,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Node Subscribed",
-        "description": "Node Subscribed",
+        "defaultMessage": "!!!Cardano node subscribed",
+        "description": "Cardano node subscribed",
         "end": {
           "column": 3,
           "line": 269
@@ -4712,8 +4712,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Node Time Correct",
-        "description": "Node Time Correct",
+        "defaultMessage": "!!!Cardano node time correct",
+        "description": "Cardano node time correct",
         "end": {
           "column": 3,
           "line": 274
@@ -4726,8 +4726,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Node Syncing",
-        "description": "Node Syncing",
+        "defaultMessage": "!!!Cardano node syncing",
+        "description": "Cardano node syncing",
         "end": {
           "column": 3,
           "line": 279
@@ -4740,8 +4740,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Node In Sync",
-        "description": "Node In Sync",
+        "defaultMessage": "!!!Cardano node in sync",
+        "description": "Cardano node in sync",
         "end": {
           "column": 3,
           "line": 284
@@ -4810,8 +4810,8 @@
         }
       },
       {
-        "defaultMessage": "!!!NTP Service unreachable",
-        "description": "NTP Service unreachable",
+        "defaultMessage": "!!!NTP service unreachable",
+        "description": "NTP service unreachable",
         "end": {
           "column": 3,
           "line": 309

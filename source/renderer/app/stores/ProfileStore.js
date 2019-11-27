@@ -1,7 +1,6 @@
 // @flow
 import { action, observable, computed, toJS, runInAction } from 'mobx';
 import BigNumber from 'bignumber.js';
-import moment from 'moment/moment';
 import { includes, camelCase } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
@@ -13,7 +12,6 @@ import { generateFileNameWithTimestamp } from '../../../common/utils/files';
 import { formattedBytesToSize } from '../utils/formatters';
 import { Logger } from '../utils/logging';
 import { setStateSnapshotLogChannel } from '../ipc/setStateSnapshotLogChannel';
-import { detectSystemLocaleChannel } from '../ipc/detect-system-locale';
 import { LOCALES } from '../../../common/types/locales.types';
 import {
   compressLogsChannel,
@@ -39,9 +37,6 @@ import {
   TIME_OPTIONS,
   PROFILE_SETTINGS,
 } from '../config/profileConfig';
-
-// TODO: refactor all parts that rely on this to ipc channels!
-const { ipcRenderer } = global;
 
 export default class ProfileStore extends Store {
   @observable systemLocale: string = LOCALES.english;
@@ -132,15 +127,12 @@ export default class ProfileStore extends Store {
 
     this.registerReactions([
       this._updateBigNumberFormat,
-      // this._updateMomentJsLocaleAfterLocaleChange,
-      // this._reloadAboutWindowOnLocaleChange,
       this._redirectToInitialSettingsIfNoLocaleSet,
       this._redirectToTermsOfUseScreenIfTermsNotAccepted,
       this._redirectToDataLayerMigrationScreenIfMigrationHasNotAccepted,
       this._redirectToMainUiAfterTermsAreAccepted,
       this._redirectToMainUiAfterDataLayerMigrationIsAccepted,
     ]);
-    // this._getSystemLocale();
     this._getTermsOfUseAcceptance();
     this._getDataLayerMigrationAcceptance();
   }
@@ -168,8 +160,7 @@ export default class ProfileStore extends Store {
   @computed get currentTheme(): string {
     // Force "Incentivized Testnet" theme for the Incentivized Testnet Daedalus version
     const { isIncentivizedTestnet } = this.stores.networkStatus;
-    if (isIncentivizedTestnet && !this.environment.isTest)
-      return THEMES.INCENTIVIZED_TESTNET;
+    if (isIncentivizedTestnet) return THEMES.INCENTIVIZED_TESTNET;
     // Default theme handling
     const systemValue = this.environment.isMainnet
       ? THEMES.DARK_BLUE
@@ -267,10 +258,6 @@ export default class ProfileStore extends Store {
     return includes(ROUTES.SETTINGS, currentRoute);
   }
 
-  _getSystemLocale = async () => {
-    this._onReceiveSystemLocale(await detectSystemLocaleChannel.request());
-  };
-
   _finishInitialScreenSettings = action(() => {
     this._consolidateUserSettings();
     this.isInitialScreen = false;
@@ -295,15 +282,15 @@ export default class ProfileStore extends Store {
     const { set, get } = getRequestKeys(param, this.currentLocale);
     await (this: any)[set].execute(consolidatedValue);
     await (this: any)[get].execute();
+    if (param === 'numberFormat') {
+      // Force re-rendering of the sidebar in order to apply new number format
+      this.stores.wallets.refreshWalletsData();
+    }
   };
 
   _updateTheme = async ({ theme }: { theme: string }) => {
     await this.setThemeRequest.execute(theme);
     await this.getThemeRequest.execute();
-  };
-
-  _updateMomentJsLocaleAfterLocaleChange = () => {
-    moment.locale(this.currentLocale);
   };
 
   _acceptTermsOfUse = async () => {
@@ -369,7 +356,7 @@ export default class ProfileStore extends Store {
     ) {
       if (
         !this.stores.wallets.hasAnyWallets ||
-        this.environment.isIncentivizedTestnet
+        this.stores.networkStatus.isIncentivizedTestnet
       ) {
         // There are no wallets to migrate or it's Incentivized Testnet:
         // set the data layer migration acceptance to true
@@ -403,13 +390,6 @@ export default class ProfileStore extends Store {
 
   _redirectToRoot = () => {
     this.actions.router.goToRoute.trigger({ route: ROUTES.ROOT });
-  };
-
-  _reloadAboutWindowOnLocaleChange = () => {
-    // register mobx observer for currentLocale in order to trigger reaction on change
-    this.currentLocale; // eslint-disable-line
-    // TODO: refactor to ipc channel
-    ipcRenderer.send('reload-about-window');
   };
 
   _setLogFiles = action((files: LogFiles) => {

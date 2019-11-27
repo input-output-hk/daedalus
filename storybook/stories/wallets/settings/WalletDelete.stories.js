@@ -14,55 +14,7 @@ storiesOf('Wallets|Settings', module)
 
   // ====== Stories ======
 
-  .add('Delete - without funds & countdown', () => (
-    <div>
-      <DeleteWalletConfirmationDialog
-        walletName="My Wallet"
-        hasWalletFunds={false}
-        countdownFn={() => 10}
-        isBackupNoticeAccepted={false}
-        confirmationValue="babushka"
-        onAcceptBackupNotice={() => {}}
-        onContinue={() => {}}
-        onCancel={() => {}}
-        onConfirmationValueChange={() => {}}
-        isSubmitting={false}
-      />
-    </div>
-  ))
-  .add('Delete - without funds - not accepted', () => (
-    <div>
-      <DeleteWalletConfirmationDialog
-        walletName="My Wallet"
-        hasWalletFunds={false}
-        countdownFn={() => 0}
-        isBackupNoticeAccepted={false}
-        confirmationValue="babushka"
-        onAcceptBackupNotice={() => {}}
-        onContinue={() => {}}
-        onCancel={() => {}}
-        onConfirmationValueChange={() => {}}
-        isSubmitting={false}
-      />
-    </div>
-  ))
-  .add('Delete - without funds - accepted', () => (
-    <div>
-      <DeleteWalletConfirmationDialog
-        walletName="My Wallet"
-        hasWalletFunds={false}
-        countdownFn={() => 0}
-        isBackupNoticeAccepted
-        confirmationValue="babushka"
-        onAcceptBackupNotice={() => {}}
-        onContinue={() => {}}
-        onCancel={() => {}}
-        onConfirmationValueChange={() => {}}
-        isSubmitting={false}
-      />
-    </div>
-  ))
-  .add('Delete - funds & countdown', () => (
+  .add('Delete - Countdown', () => (
     <div>
       <DeleteWalletConfirmationDialog
         walletName="My Wallet"
@@ -78,23 +30,7 @@ storiesOf('Wallets|Settings', module)
       />
     </div>
   ))
-  .add('Delete - funds & accepted', () => (
-    <div>
-      <DeleteWalletConfirmationDialog
-        walletName="My Wallet"
-        hasWalletFunds
-        countdownFn={() => 0}
-        isBackupNoticeAccepted
-        confirmationValue="babushka"
-        onAcceptBackupNotice={() => {}}
-        onContinue={() => {}}
-        onCancel={() => {}}
-        onConfirmationValueChange={() => {}}
-        isSubmitting={false}
-      />
-    </div>
-  ))
-  .add('Delete - funds & accepted & filled', () => (
+  .add('Delete - Accepted & filled incorrectly', () => (
     <div>
       <DeleteWalletConfirmationDialog
         walletName="My Wallet"
@@ -107,6 +43,38 @@ storiesOf('Wallets|Settings', module)
         onCancel={() => {}}
         onConfirmationValueChange={action('onRecoveryWordChange')}
         isSubmitting={false}
+      />
+    </div>
+  ))
+  .add('Delete - Accepted & filled correctly', () => (
+    <div>
+      <DeleteWalletConfirmationDialog
+        walletName="My Wallet"
+        hasWalletFunds
+        countdownFn={() => 0}
+        isBackupNoticeAccepted
+        confirmationValue="My Wallet"
+        onAcceptBackupNotice={() => {}}
+        onContinue={() => {}}
+        onCancel={() => {}}
+        onConfirmationValueChange={action('onRecoveryWordChange')}
+        isSubmitting={false}
+      />
+    </div>
+  ))
+  .add('Delete - Accepted, filled correctly & submitting', () => (
+    <div>
+      <DeleteWalletConfirmationDialog
+        walletName="My Wallet"
+        hasWalletFunds
+        countdownFn={() => 0}
+        isBackupNoticeAccepted
+        confirmationValue="My Wallet"
+        onAcceptBackupNotice={() => {}}
+        onContinue={() => {}}
+        onCancel={() => {}}
+        onConfirmationValueChange={action('onRecoveryWordChange')}
+        isSubmitting
       />
     </div>
   ));
