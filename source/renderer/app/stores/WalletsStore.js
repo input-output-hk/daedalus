@@ -641,10 +641,11 @@ export default class WalletsStore extends Store {
 
   isValidAddress = (address: string) => {
     const { app, networkStatus } = this.stores;
-    const { isMainnet } = app.environment;
-    const addressGroup = networkStatus.isIncentivizedTestnet
-      ? AddressGroup.jormungandr
-      : AddressGroup.byron;
+    const { isMainnet, isTest } = app.environment;
+    const addressGroup =
+      networkStatus.isIncentivizedTestnet || isTest
+        ? AddressGroup.jormungandr
+        : AddressGroup.byron;
     const chainSettings = isMainnet
       ? ChainSettings.mainnet
       : ChainSettings.testnet;
