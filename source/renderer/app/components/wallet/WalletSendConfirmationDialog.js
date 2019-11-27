@@ -192,7 +192,7 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
           onExternalLinkClick={onExternalLinkClick}
         />
       ) : (
-        this.context.intl.formatMessage(messages.passwordErrorMessage)
+        this.context.intl.formatMessage(error)
       );
     }
 

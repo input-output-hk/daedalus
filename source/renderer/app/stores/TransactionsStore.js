@@ -185,6 +185,7 @@ export default class TransactionsStore extends Store {
     return this.api.ada.calculateTransactionFee({
       ...transactionFeeRequest,
       walletBalance: wallet.amount,
+      availableBalance: wallet.availableAmount,
     });
   };
 

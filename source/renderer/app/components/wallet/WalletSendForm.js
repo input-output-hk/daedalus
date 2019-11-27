@@ -26,10 +26,7 @@ import {
 } from '../../utils/formatters';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
 import { FormattedHTMLMessageWithLink } from '../widgets/FormattedHTMLMessageWithLink';
-import {
-  NotEnoughFundsForTransactionFeesError,
-  InvalidAddressError,
-} from '../../api/transactions/errors';
+import { InvalidAddressError } from '../../api/transactions/errors';
 /* eslint-disable consistent-return */
 
 export const messages = defineMessages({
@@ -365,20 +362,10 @@ export default class WalletSendForm extends Component<Props, State> {
   }
 
   async _calculateTransactionFee(address: string, amountValue: string) {
-    const { walletAmount } = this.props;
     const amount = formattedAmountToLovelace(amountValue);
-    const transactionAmount = new BigNumber(amountValue || 0);
 
     try {
       const fee = await this.props.calculateTransactionFee(address, amount);
-      const amountWithFee = transactionAmount.add(fee);
-
-      // Amount + fees exceeds walletBalance:
-      // = show "Not enough Ada for fees. Try sending a smaller amount."
-      if (amountWithFee.gt(walletAmount)) {
-        throw new NotEnoughFundsForTransactionFeesError();
-      }
-
       if (this._isMounted) {
         this._isCalculatingFee = false;
         this.setState({
