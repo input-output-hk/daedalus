@@ -57,6 +57,9 @@ import { transferFunds } from './wallets/requests/transferFunds';
 // News requests
 import { getNews } from './news/requests/getNews';
 
+// Stake Pools request
+import { joinStakePool } from './staking/requests/joinStakePool';
+
 // Utility functions
 import {
   awaitUpdateChannel,
@@ -138,6 +141,9 @@ import type {
 
 // News Types
 import type { GetNewsResponse } from './news/types';
+
+// Staking Types
+import type { JoinStakePoolRequest, StakePool } from './staking/types';
 
 // Common errors
 import {
@@ -1173,6 +1179,32 @@ export default class AdaApi {
       items: news.items.length,
     });
     return news;
+  };
+
+  joinStakePool = async (request: JoinStakePoolRequest): Promise<StakePool> => {
+    Logger.debug('AdaApi::joinStakePool called', {
+      parameters: filterLogData(request),
+    });
+    const { walletId, stakePoolId, passphrase } = request;
+    console.debug('API - request: ', request);
+
+    try {
+      const response: StakePool = await joinStakePool(this.config, {
+        walletId,
+        stakePoolId,
+        passphrase,
+      });
+      console.debug('API - response: ', response);
+
+      Logger.debug('AdaApi::joinStakePool success', {
+        stakePool: response,
+      });
+
+      return response;
+    } catch (error) {
+      console.debug('>>>> ERROR ', error);
+      throw new GenericApiError();
+    }
   };
 
   setCardanoNodeFault = async (fault: FaultInjectionIpcRequest) => {

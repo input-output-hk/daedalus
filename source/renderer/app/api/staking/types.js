@@ -44,3 +44,9 @@ export type Epoch = {
   endsAt?: string,
   data: Array<EpochData>,
 };
+
+export type JoinStakePoolRequest = {
+  walletId: string,
+  stakePoolId: string,
+  passphrase: string,
+};

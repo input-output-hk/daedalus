@@ -1,12 +1,14 @@
 // @flow
-import { computed, action } from 'mobx';
+import { observable, computed, action } from 'mobx';
 import BigNumber from 'bignumber.js';
 import Store from './lib/Store';
+import Request from './lib/LocalizedRequest';
 import { ROUTES } from '../routes-config';
 import type {
   StakePool,
   Reward,
   RewardForIncentivizedTestnet,
+  JoinStakePoolRequest,
 } from '../api/staking/types';
 import Wallet from '../domains/Wallet';
 
@@ -25,7 +27,26 @@ export default class StakingStore extends Store {
     staking.goToStakingDelegationCenterPage.listen(
       this._goToStakingDelegationCenterPage
     );
+    staking.joinStakePool.listen(this._joinStakePool);
   }
+
+  // REQUESTS
+  @observable joinStakePoolRequest: Request<JoinStakePoolRequest> = new Request(
+    this.api.ada.joinStakePool
+  );
+
+  @action _joinStakePool = async (request: JoinStakePoolRequest) => {
+    const { walletId, stakePoolId, passphrase } = request;
+    await this.joinStakePoolRequest.execute({
+      walletId,
+      stakePoolId,
+      passphrase,
+    });
+    this.stores.wallets.refreshWalletsData();
+    this.actions.dialogs.closeActiveDialog.trigger();
+    this.joinStakePoolRequest.reset();
+    this.stores.wallets.goToWalletRoute(walletId);
+  };
 
   // =================== PUBLIC API ==================== //
 

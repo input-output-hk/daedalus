@@ -110,9 +110,16 @@ export default class DelegationSetupWizardDialogContainer extends Component<
     this.handleContinue();
   };
 
-  handleActivate = () => {
+  handleActivate = (values: any) => {
     // @TODO - proceed activation data
-    this.handleDialogClose();
+    console.debug('ACTIVATE: ', values);
+    // this.handleDialogClose();
+    this.props.actions.staking.joinStakePool.trigger({
+      stakePoolId:
+        'addr1sjck9mdmfyhzvjhydcjllgj9vjvl522w0573ncustrrr2rg7h9azg4cyqd36yyd48t5ut72hgld0fg2xfvz82xgwh7wal6g2xt8n996s3xvu5g',
+      walletId: this.state.selectedWalletId,
+      passphrase: 'Secret1234',
+    });
   };
 
   handleSelectWallet = (walletId: string) => {
