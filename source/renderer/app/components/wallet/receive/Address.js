@@ -121,8 +121,7 @@ export default class Address extends Component<Props, State> {
                 {shareAddressLabel}
               </span>
             </button>
-          ) : null}
-          {isIncentivizedTestnet ? (
+          ) : (
             <CopyToClipboard
               text={address.id}
               onCopy={() => onCopyAddress(address.id)}
@@ -134,7 +133,7 @@ export default class Address extends Component<Props, State> {
                 </span>
               </span>
             </CopyToClipboard>
-          ) : null}
+          )}
         </div>
       </div>
     );
