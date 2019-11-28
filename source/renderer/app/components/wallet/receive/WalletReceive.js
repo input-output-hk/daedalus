@@ -47,15 +47,43 @@ const messages = defineMessages({
 
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
 
+const BREAKPOINTS = [
+  {
+    minCharsInit: 22,
+    minCharsEnd: 22,
+  },
+  {
+    minCharsInit: 24,
+    minCharsEnd: 24,
+  },
+  {
+    minCharsInit: 27,
+    minCharsEnd: 27,
+  },
+  {
+    minCharsInit: 29,
+    minCharsEnd: 29,
+  },
+  {
+    minCharsInit: 999999999999,
+    minCharsEnd: null,
+  },
+];
+
 type Props = {
   walletAddresses: Array<WalletAddress>,
   onShareAddress: Function,
   onCopyAddress: Function,
+  currentLocale: string,
   isIncentivizedTestnet: boolean,
+  isShowingSubMenus: boolean,
 };
 
 type State = {
   showUsed: boolean,
+  currentBreakPoint: number,
+  minCharsInit: number,
+  minCharsEnd?: ?number,
 };
 
 @observer
@@ -66,26 +94,93 @@ export default class WalletReceive extends Component<Props, State> {
 
   state = {
     showUsed: true,
+    currentBreakPoint: -1,
+    minCharsInit: 0,
+    minCharsEnd: 0,
   };
+
+  componentDidMount() {
+    this.updateWindowDimensions();
+    window.addEventListener('resize', this.updateWindowDimensions);
+  }
+
+  componentWillReceiveProps(nextProps: Props) {
+    const { isShowingSubMenus: isShowingSubMenusNext } = nextProps;
+    const { isShowingSubMenus: isShowingSubMenusCurrent } = this.props;
+    if (isShowingSubMenusNext !== isShowingSubMenusCurrent) {
+      setTimeout(this.updateWindowDimensions, 300);
+    }
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.updateWindowDimensions);
+  }
 
   toggleUsedAddresses = () => {
     this.setState(prevState => ({ showUsed: !prevState.showUsed }));
   };
 
-  renderRow = (address: WalletAddress) => (
-    <Address
-      address={address}
-      onShareAddress={this.props.onShareAddress}
-      onCopyAddress={this.props.onCopyAddress}
-      shareAddressLabel={this.context.intl.formatMessage(
-        messages.shareAddressLabel
-      )}
-      copyAddressLabel={this.context.intl.formatMessage(
-        messages.copyAddressLabel
-      )}
-      isIncentivizedTestnet={this.props.isIncentivizedTestnet}
-    />
-  );
+  updateWindowDimensions = () => {
+    const { currentBreakPoint } = this.state;
+    const newBreakpoint = this.getBreakpoint(window.innerWidth);
+    if (currentBreakPoint !== newBreakpoint) {
+      const { minCharsInit, minCharsEnd } = BREAKPOINTS[newBreakpoint];
+      this.setState({
+        currentBreakPoint: newBreakpoint,
+        minCharsInit,
+        minCharsEnd,
+      });
+    }
+  };
+
+  getBreakpoint = (windowWidth: number) => {
+    const {
+      isIncentivizedTestnet,
+      isShowingSubMenus,
+      currentLocale,
+    } = this.props;
+
+    if (
+      isIncentivizedTestnet &&
+      !isShowingSubMenus &&
+      currentLocale === 'ja-JP'
+    ) {
+      if (windowWidth < 950) return 3;
+      return 4;
+    }
+
+    if (windowWidth >= 1081) return 4;
+    if (windowWidth >= 1050) return 3;
+    if (windowWidth >= 1000) return 2;
+    if (windowWidth >= 950) return 1;
+    return 0;
+  };
+
+  renderRow = (address: WalletAddress) => {
+    const {
+      onShareAddress,
+      onCopyAddress,
+      isIncentivizedTestnet,
+      isShowingSubMenus,
+      currentLocale,
+    } = this.props;
+    const { minCharsInit, minCharsEnd } = this.state;
+    const { intl } = this.context;
+    return (
+      <Address
+        address={address}
+        onShareAddress={onShareAddress}
+        onCopyAddress={onCopyAddress}
+        shareAddressLabel={intl.formatMessage(messages.shareAddressLabel)}
+        copyAddressLabel={intl.formatMessage(messages.copyAddressLabel)}
+        currentLocale={currentLocale}
+        isIncentivizedTestnet={isIncentivizedTestnet}
+        isShowingSubMenus={isShowingSubMenus}
+        minCharsInit={minCharsInit}
+        minCharsEnd={minCharsEnd}
+      />
+    );
+  };
 
   getFilteredAddresses = (
     walletAddresses: Array<WalletAddress>

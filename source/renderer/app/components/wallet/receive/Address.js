@@ -10,81 +10,31 @@ import iconCopy from '../../../assets/images/clipboard-ic.inline.svg';
 import WalletAddress from '../../../domains/WalletAddress';
 import { ellipsis } from '../../../utils/strings';
 
-const BREAKPOINTS = [
-  {
-    minCharsInit: 22,
-    minCharsEnd: 22,
-  },
-  {
-    minCharsInit: 24,
-    minCharsEnd: 24,
-  },
-  {
-    minCharsInit: 27,
-    minCharsEnd: 27,
-  },
-  {
-    minCharsInit: 29,
-    minCharsEnd: 29,
-  },
-  {
-    minCharsInit: 999999999999,
-    minCharsEnd: null,
-  },
-];
-
 type Props = {
   address: WalletAddress,
   onShareAddress: Function,
   onCopyAddress: Function,
   shareAddressLabel: string,
   copyAddressLabel: string,
+  currentLocale: string,
   isIncentivizedTestnet: boolean,
-};
-
-type State = {
-  currentBreakPoint: number,
+  isShowingSubMenus: boolean,
   minCharsInit: number,
   minCharsEnd?: ?number,
 };
 
 @observer
-export default class Address extends Component<Props, State> {
-  state = {
-    currentBreakPoint: -1,
-    minCharsInit: 0,
-    minCharsEnd: 0,
-  };
-
-  componentDidMount() {
-    this.updateWindowDimensions();
-    window.addEventListener('resize', this.updateWindowDimensions);
+export default class Address extends Component<Props> {
+  get hasEllipsis() {
+    const {
+      isIncentivizedTestnet,
+      isShowingSubMenus,
+      currentLocale,
+    } = this.props;
+    return (
+      isShowingSubMenus || (isIncentivizedTestnet && currentLocale === 'ja-JP')
+    );
   }
-
-  componentWillUnmount() {
-    window.removeEventListener('resize', this.updateWindowDimensions);
-  }
-
-  updateWindowDimensions = () => {
-    const { currentBreakPoint } = this.state;
-    const newBreakpoint = this.getBreakpoint(window.innerWidth);
-    if (currentBreakPoint !== newBreakpoint) {
-      const { minCharsInit, minCharsEnd } = BREAKPOINTS[newBreakpoint];
-      this.setState({
-        currentBreakPoint: newBreakpoint,
-        minCharsInit,
-        minCharsEnd,
-      });
-    }
-  };
-
-  getBreakpoint = (windowWidth: number) => {
-    if (windowWidth >= 1081) return 4;
-    if (windowWidth >= 1050) return 3;
-    if (windowWidth >= 1000) return 2;
-    if (windowWidth >= 950) return 1;
-    return 0;
-  };
 
   render() {
     const {
@@ -94,6 +44,9 @@ export default class Address extends Component<Props, State> {
       shareAddressLabel,
       copyAddressLabel,
       isIncentivizedTestnet,
+      isShowingSubMenus,
+      minCharsInit,
+      minCharsEnd,
     } = this.props;
     const addressClasses = classnames([
       `receiveAddress-${address.id}`,
@@ -103,12 +56,14 @@ export default class Address extends Component<Props, State> {
     const addressIdClasses = classnames([
       styles.addressId,
       isIncentivizedTestnet ? styles.isIncentivizedTestnet : null,
+      isShowingSubMenus ? styles.isShowingSubMenus : null,
     ]);
-    const { minCharsInit, minCharsEnd } = this.state;
     return (
       <div className={addressClasses}>
         <div className={addressIdClasses} id={`address-${address.id}`}>
-          {ellipsis(address.id, minCharsInit, minCharsEnd)}
+          {this.hasEllipsis
+            ? ellipsis(address.id, minCharsInit, minCharsEnd)
+            : address.id}
         </div>
         <div className={styles.addressActions}>
           {!isIncentivizedTestnet ? (

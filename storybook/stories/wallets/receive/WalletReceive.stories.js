@@ -14,7 +14,7 @@ import VerticalFlexContainer from '../../../../source/renderer/app/components/la
 
 storiesOf('Wallets|Receive', module)
   .addDecorator(WalletsWrapper)
-  .add('Receive', () => (
+  .add('Receive', ({ currentLocale }: { currentLocale: string }) => (
     <VerticalFlexContainer>
       <WalletReceive
         walletAddresses={[
@@ -29,6 +29,8 @@ storiesOf('Wallets|Receive', module)
         onCopyAddress={action('onCopyAddress')}
         isAddressValid={() => parseInt(Math.random() * 10, 10) > 3}
         isIncentivizedTestnet={boolean('isIncentivizedTestnet', false)}
+        currentLocale={currentLocale}
+        isShowingSubMenus
       />
     </VerticalFlexContainer>
   ));
