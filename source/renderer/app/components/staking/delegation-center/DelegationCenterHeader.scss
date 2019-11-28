@@ -7,51 +7,17 @@
 
 .mainContent {
   @extend %contentBorderAndBackground;
-  padding: 20px 102px;
+  padding: 20px 70px;
   position: relative;
-}
-
-.progressRing {
-  position: absolute;
-  right: 38px;
-  top: 60px;
 }
 
 .heading {
   @extend %accentText;
-  font-size: 19px;
-  margin-bottom: 14px;
+  font-size: 16px;
+  padding-bottom: 10px;
 }
 
 .description {
   @extend %regularLightColorText;
-  margin-bottom: 24px;
-
-  b {
-    @extend %accentText;
-  }
-
-  a {
-    border-bottom: 1px solid var(--theme-link-main-color);
-    color: var(--theme-link-main-color);
-    margin: 0 5px;
-    padding-right: 18px;
-    position: relative;
-    text-decoration: none;
-  }
-
-  .linkNewWindowIcon {
-    display: inline-block;
-    height: 15px;
-    position: absolute;
-    right: 0;
-    top: 2px;
-    width: 15px;
-
-    & > svg {
-      & > g {
-        stroke: var(--theme-link-main-color);
-      }
-    }
-  }
+  padding-top: 10px;
 }

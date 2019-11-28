@@ -1,6 +1,7 @@
 // @flow
 import React, { Component, Fragment } from 'react';
 import { observer } from 'mobx-react';
+import DelegationCenterHeader from './DelegationCenterHeader';
 import DelegationCenterBody from './DelegationCenterBody';
 import Wallet from '../../../domains/Wallet';
 
@@ -21,6 +22,7 @@ export default class DelegationCenter extends Component<Props> {
 
     return (
       <Fragment>
+        <DelegationCenterHeader />
         <DelegationCenterBody
           wallets={wallets}
           onDelegate={onDelegate}
