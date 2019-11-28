@@ -58,7 +58,7 @@ export default class Address extends Component<Props, State> {
 
   componentDidMount() {
     this.updateWindowDimensions();
-    window.addEventListener('resize', this.updateWindowDimensions, 250);
+    window.addEventListener('resize', this.updateWindowDimensions);
   }
 
   componentWillUnmount() {

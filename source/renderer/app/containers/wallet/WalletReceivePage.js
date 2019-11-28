@@ -10,6 +10,7 @@ import NotificationMessage from '../../components/widgets/NotificationMessage';
 import successIcon from '../../assets/images/success-small.inline.svg';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import WalletAddress from '../../domains/WalletAddress';
+import Wallet from '../../domains/Wallet';
 import { ADDRESS_COPY_NOTIFICATION_DURATION } from '../../config/timingConfig';
 import { ADDRESS_COPY_NOTIFICATION_ELLIPSIS } from '../../config/formattingConfig';
 import { generateFileNameWithTimestamp } from '../../../../common/utils/files';
@@ -27,6 +28,7 @@ type Props = InjectedProps;
 type State = {
   copiedAddress: string,
   addressToShare?: ?WalletAddress,
+  activeWallet: ?Wallet,
 };
 
 @inject('stores', 'actions')
@@ -37,25 +39,22 @@ export default class WalletReceivePage extends Component<Props, State> {
   state = {
     copiedAddress: '',
     addressToShare: null,
+    activeWallet: this.props.stores.wallets.active,
   };
 
   componentWillUnmount() {
     this.closeNotification();
   }
 
-  get activeWallet() {
-    return this.props.stores.wallets.active;
-  }
-
   get notification() {
-    const { copiedAddress } = this.state;
+    const { copiedAddress, activeWallet } = this.state;
 
     // Guard against potential null values
-    if (!this.activeWallet)
+    if (!activeWallet)
       throw new Error('Active wallet required for WalletReceivePage.');
 
     return {
-      id: `${this.activeWallet.id}-copyNotification`,
+      id: `${activeWallet.id}-copyNotification`,
       duration: ADDRESS_COPY_NOTIFICATION_DURATION,
       message: (
         <FormattedHTMLMessage
@@ -74,7 +73,7 @@ export default class WalletReceivePage extends Component<Props, State> {
 
   closeNotification = () => {
     const { id } = this.notification;
-    if (this.activeWallet) {
+    if (id) {
       this.props.actions.notifications.closeActiveNotification.trigger({ id });
     }
   };
@@ -141,10 +140,10 @@ export default class WalletReceivePage extends Component<Props, State> {
       networkStatus,
     } = this.props.stores;
     const { isIncentivizedTestnet } = networkStatus.environment;
-    const { addressToShare } = this.state;
+    const { addressToShare, activeWallet } = this.state;
 
     // Guard against potential null values
-    if (!this.activeWallet)
+    if (!activeWallet)
       throw new Error('Active wallet required for WalletReceivePage.');
 
     const walletAddresses = addresses.all.slice().reverse();
