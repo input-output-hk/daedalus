@@ -1,6 +1,8 @@
 // @flow
 import BigNumber from 'bignumber.js';
 
+import { WalletUnits } from '../../domains/Wallet';
+
 export type Block = {
   slot_number: number,
   epoch_number: number,
@@ -14,7 +16,7 @@ export type Input = {
   address?: string,
   amount?: {
     quantity: number,
-    unit: 'lovelace',
+    unit: WalletUnits.LOVELACE,
   },
   id: string,
   index: number,
@@ -24,7 +26,7 @@ export type Output = {
   address: string,
   amount: {
     quantity: number,
-    unit: 'lovelace',
+    unit: WalletUnits.LOVELACE,
   },
 };
 
@@ -62,7 +64,7 @@ export type LegacyAdaWallet = {
 
 export type LegacyAdaWallets = Array<LegacyAdaWallet>;
 
-export type WalletUnit = 'lovelace' | 'ada';
+export type WalletUnit = WalletUnits.LOVELACE | WalletUnits.ADA;
 
 export type AdaWallets = Array<AdaWallet>;
 
@@ -82,7 +84,7 @@ export type WalletSyncState = {
 
 export type WalletBalance = {
   quantity: number,
-  unit: 'lovelace' | 'ada',
+  unit: WalletUnits.LOVELACE | WalletUnits.ADA,
 };
 
 export type WalletDelegation = {
@@ -96,7 +98,7 @@ export type Histogram = {
 
 export type WalletUtxoTotal = {
   quantity: number,
-  unit: 'lovelace',
+  unit: WalletUnits.LOVELACE,
 };
 
 export type WalletUtxos = {
@@ -214,7 +216,7 @@ export type TransferFundsCalculateFeeRequest = {
 export type TransferFundsCalculateFeeResponse = {
   migration_cost: {
     quantity: number,
-    unit: 'lovelace',
+    unit: WalletUnits.LOVELACE,
   },
 };
 
@@ -228,7 +230,7 @@ export type TransferFundsResponse = {
   id: string,
   amount: {
     quantity: number,
-    unit: 'lovelace',
+    unit: WalletUnits.LOVELACE,
   },
   inserted_at?: {
     time: Date,
