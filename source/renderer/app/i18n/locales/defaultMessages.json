@@ -6055,13 +6055,13 @@
         "description": "placeholder on the wallet \"Share Address\" dialog",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 23
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
         "id": "wallet.receive.dialog.inputLabel",
         "start": {
           "column": 14,
-          "line": 20
+          "line": 19
         }
       },
       {
@@ -6069,13 +6069,13 @@
         "description": "inputPlaceholder on the wallet \"Share Address\" dialog",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 28
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
         "id": "wallet.receive.dialog.inputPlaceholder",
         "start": {
           "column": 20,
-          "line": 25
+          "line": 24
         }
       },
       {
@@ -6083,13 +6083,13 @@
         "description": "downloadPDFButton on the wallet \"Share Address\" dialog",
         "end": {
           "column": 3,
-          "line": 34
+          "line": 33
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
         "id": "wallet.receive.dialog.downloadPDFButton",
         "start": {
           "column": 21,
-          "line": 30
+          "line": 29
         }
       },
       {
@@ -6097,13 +6097,13 @@
         "description": "dialogTitle on the wallet \"Share Address\" dialog",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 38
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
         "id": "wallet.receive.dialog.dialogTitle",
         "start": {
           "column": 15,
-          "line": 35
+          "line": 34
         }
       },
       {
@@ -6111,13 +6111,13 @@
         "description": "Label for \"Copy address\" link on the wallet \"Receive page\"",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 43
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
         "id": "wallet.receive.dialog.copyAddressLabel",
         "start": {
           "column": 20,
-          "line": 40
+          "line": 39
         }
       }
     ],

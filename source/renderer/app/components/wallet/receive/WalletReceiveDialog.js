@@ -7,7 +7,6 @@ import SVGInline from 'react-svg-inline';
 import { TextArea } from 'react-polymorph/lib/components/TextArea';
 import { TextAreaSkin } from 'react-polymorph/lib/skins/simple/TextAreaSkin';
 import QRCode from 'qrcode.react';
-import BorderedBox from '../../widgets/BorderedBox';
 import Dialog from '../../widgets/Dialog';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import WalletAddress from '../../../domains/WalletAddress';
@@ -121,43 +120,41 @@ export default class WalletReceiveDialog extends Component<Props> {
         onClose={onClose}
         closeButton={<DialogCloseButton onClose={onClose} />}
       >
-        <BorderedBox fullHeight fullInnerWidth>
-          <div className={styles.container}>
-            <div className={styles.qrCode}>
-              <QRCode
-                value={address.id}
-                bgColor={qrCodeBackgroundColor}
-                fgColor={qrCodeForegroundColor}
-                size={192}
-              />
-            </div>
-
-            <div className={styles.address}>{address.id}</div>
-
-            <CopyToClipboard
-              text={address.id}
-              onCopy={() => onCopyAddress(address.id)}
-            >
-              <span className={styles.copyAddress}>
-                <SVGInline svg={iconCopy} className={styles.copyIcon} />
-                <span className={styles.copyAddressLabel}>
-                  {intl.formatMessage(messages.copyAddressLabel)}
-                </span>
-              </span>
-            </CopyToClipboard>
-
-            <TextArea
-              className={styles.noteInput}
-              skin={TextAreaSkin}
-              autoResize={false}
-              rows={3}
-              maxLength={201}
-              {...noteInputField.bind({
-                onChange: this.handleChange(noteInputField),
-              })}
+        <div className={styles.container}>
+          <div className={styles.qrCode}>
+            <QRCode
+              value={address.id}
+              bgColor={qrCodeBackgroundColor}
+              fgColor={qrCodeForegroundColor}
+              size={192}
             />
           </div>
-        </BorderedBox>
+
+          <div className={styles.address}>{address.id}</div>
+
+          <CopyToClipboard
+            text={address.id}
+            onCopy={() => onCopyAddress(address.id)}
+          >
+            <span className={styles.copyAddress}>
+              <SVGInline svg={iconCopy} className={styles.copyIcon} />
+              <span className={styles.copyAddressLabel}>
+                {intl.formatMessage(messages.copyAddressLabel)}
+              </span>
+            </span>
+          </CopyToClipboard>
+
+          <TextArea
+            className={styles.noteInput}
+            skin={TextAreaSkin}
+            autoResize={false}
+            rows={3}
+            maxLength={201}
+            {...noteInputField.bind({
+              onChange: this.handleChange(noteInputField),
+            })}
+          />
+        </div>
       </Dialog>
     );
   }
