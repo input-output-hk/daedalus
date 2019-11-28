@@ -27,17 +27,13 @@ export default class DelegationCenterHeader extends Component {
   render() {
     const { intl } = this.context;
     const heading = intl.formatMessage(messages.heading);
-    const description = intl.formatMessage(
-      messages.description
-    );
+    const description = intl.formatMessage(messages.description);
 
     return (
       <div className={styles.component}>
         <div className={styles.mainContent}>
           <div className={styles.heading}>{heading}</div>
-          <div className={styles.description}>
-            {description}
-          </div>
+          <div className={styles.description}>{description}</div>
         </div>
       </div>
     );

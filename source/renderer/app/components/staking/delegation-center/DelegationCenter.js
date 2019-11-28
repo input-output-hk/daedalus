@@ -14,11 +14,7 @@ type Props = {
 @observer
 export default class DelegationCenter extends Component<Props> {
   render() {
-    const {
-      wallets,
-      onDelegate,
-      numberOfStakePools,
-    } = this.props;
+    const { wallets, onDelegate, numberOfStakePools } = this.props;
 
     return (
       <Fragment>

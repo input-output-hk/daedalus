@@ -2199,73 +2199,31 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Delegation center",
+        "defaultMessage": "!!!New Cardano epoch starts in",
         "description": "Headline for the Delegation center.",
         "end": {
           "column": 3,
-          "line": 18
+          "line": 12
         },
         "file": "source/renderer/app/components/staking/delegation-center/DelegationCenterHeader.js",
         "id": "staking.delegationCenter.heading",
         "start": {
           "column": 11,
-          "line": 14
+          "line": 8
         }
       },
       {
-        "defaultMessage": "!!!You are currently delegating <b>{adaValue} ADA</b>. This is <b>{percentage}%</b> of ada in your wallets.",
-        "description": "Delegation description-part1 for the Delegation center.",
+        "defaultMessage": "Changes to delegation preferences will take effect from the next epoch.",
+        "description": "Delegation description for the Delegation center.",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 18
         },
         "file": "source/renderer/app/components/staking/delegation-center/DelegationCenterHeader.js",
-        "id": "staking.delegationCenter.descriptionFirstPart",
+        "id": "staking.delegationCenter.description",
         "start": {
-          "column": 24,
-          "line": 19
-        }
-      },
-      {
-        "defaultMessage": "!!!Read",
-        "description": "Delegation description-part2 for the Delegation center.",
-        "end": {
-          "column": 3,
-          "line": 29
-        },
-        "file": "source/renderer/app/components/staking/delegation-center/DelegationCenterHeader.js",
-        "id": "staking.delegationCenter.descriptionSecondPart",
-        "start": {
-          "column": 25,
-          "line": 25
-        }
-      },
-      {
-        "defaultMessage": "!!!this article",
-        "description": "Delegation description-part3 for the Delegation center.",
-        "end": {
-          "column": 3,
-          "line": 34
-        },
-        "file": "source/renderer/app/components/staking/delegation-center/DelegationCenterHeader.js",
-        "id": "staking.delegationCenter.descriptionThirdPart",
-        "start": {
-          "column": 24,
-          "line": 30
-        }
-      },
-      {
-        "defaultMessage": "!!!to learn how to increase the delegated amount.",
-        "description": "Delegation description-part4 for the Delegation center.",
-        "end": {
-          "column": 3,
-          "line": 39
-        },
-        "file": "source/renderer/app/components/staking/delegation-center/DelegationCenterHeader.js",
-        "id": "staking.delegationCenter.descriptionFourthPart",
-        "start": {
-          "column": 25,
-          "line": 35
+          "column": 15,
+          "line": 13
         }
       }
     ],
