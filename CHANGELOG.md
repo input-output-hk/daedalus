@@ -24,6 +24,8 @@ Changelog
 
 ### Chores
 
+- Improve error messages on the "Send" screen ([PR 1724](https://github.com/input-output-hk/daedalus/pull/1724))
+- Improved menu items while adding external link icon on menu items which open external links ([PR 1727](https://github.com/input-output-hk/daedalus/pull/1727), [PR 1728](https://github.com/input-output-hk/daedalus/pull/1728))
 - Updated `cardano-js` package to version 0.2.2 and improved address validation ([PR 1712](https://github.com/input-output-hk/daedalus/pull/1712))
 - Removed unused dependencies ([PR 1706](https://github.com/input-output-hk/daedalus/pull/1706))
 - Improved the error message shown on the "Change password" dialog when too short current password is submitted ([PR 1703](https://github.com/input-output-hk/daedalus/pull/1703))
@@ -32,6 +34,7 @@ Changelog
 
 ### Features
 
+- Implemented the new Wallet Receive screen ([PR 1700](https://github.com/input-output-hk/daedalus/pull/1700))
 - Added Japanese "Terms of use" text ([PR 1691](https://github.com/input-output-hk/daedalus/pull/1691))
 
 ### Fixes

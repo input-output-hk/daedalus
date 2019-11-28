@@ -57,6 +57,26 @@ Then('I should see {int} used addresses', { timeout: 60000 }, async function(
   expect(addressesFound).to.equal(numberOfAddresses);
 });
 
+Then('I should not see any used addresses', { timeout: 60000 }, async function() {
+  await this.client.waitForVisible('.VirtualAddressesList_list');
+
+  await this.client.execute(() => {
+    const scrollableListContainer = window.document.getElementsByClassName(
+      'ReactVirtualized__Grid__innerScrollContainer'
+    );
+    const scrollableList = window.document.getElementsByClassName(
+      'VirtualAddressesList_list'
+    );
+    const listHeight = scrollableListContainer[0].getBoundingClientRect()
+      .height;
+
+    // Scroll to bottom
+    scrollableList[0].scroll(0, listHeight);
+  });
+
+  await this.client.waitForVisible(SELECTORS.ADDRESS_USED, null, true);
+});
+
 Then('I should see {int} addresses', async function(numberOfAddresses) {
   const addresses = await this.client.getAttribute(
     '.Address_component',
@@ -84,13 +104,3 @@ Then('I should see the following addresses:', async function(table) {
     );
   }
 });
-
-// Then('The active address should be the newest one', async function() {
-//   const {
-//     value: { id: lastGeneratedAddress },
-//   } = await this.client.execute(
-//     () => daedalus.stores.addresses.lastGeneratedAddress
-//   );
-//   const activeAddress = await this.client.getText(SELECTORS.ADDRESS_ACTIVE);
-//   expect(lastGeneratedAddress).to.equal(activeAddress);
-// });
