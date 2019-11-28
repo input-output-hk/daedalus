@@ -215,6 +215,20 @@
           "column": 33,
           "line": 61
         }
+      },
+      {
+        "defaultMessage": "!!!Please enter a valid address.",
+        "description": "Error message shown when invalid address was entered.",
+        "end": {
+          "column": 3,
+          "line": 72
+        },
+        "file": "source/renderer/app/api/transactions/errors.js",
+        "id": "api.errors.invalidAddress",
+        "start": {
+          "column": 23,
+          "line": 68
+        }
       }
     ],
     "path": "source/renderer/app/api/transactions/errors.json"
