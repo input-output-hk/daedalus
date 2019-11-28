@@ -22,12 +22,13 @@ $itnDecrease: 50px;
   }
 }
 .addressId {
+  cursor: default;
   flex-grow: 1;
   font-family: var(--font-mono);
   letter-spacing: -0.4px;
   margin-right: 4px;
   overflow: hidden;
-  user-select: text;
+  user-select: none;
   white-space: nowrap;
 
   &.isShowingSubMenus {
