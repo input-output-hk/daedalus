@@ -8668,13 +8668,13 @@
         "description": "Label for the \"Title\" text input in the wallet send form.",
         "end": {
           "column": 3,
-          "line": 40
+          "line": 37
         },
         "file": "source/renderer/app/components/wallet/WalletSendForm.js",
         "id": "wallet.send.form.title.label",
         "start": {
           "column": 14,
-          "line": 36
+          "line": 33
         }
       },
       {
@@ -8682,13 +8682,13 @@
         "description": "Hint inside the \"Receiver\" text input in the wallet send form.",
         "end": {
           "column": 3,
-          "line": 46
+          "line": 43
         },
         "file": "source/renderer/app/components/wallet/WalletSendForm.js",
         "id": "wallet.send.form.title.hint",
         "start": {
           "column": 13,
-          "line": 41
+          "line": 38
         }
       },
       {
@@ -8696,13 +8696,13 @@
         "description": "Label for the \"Receiver\" text input in the wallet send form.",
         "end": {
           "column": 3,
-          "line": 51
+          "line": 48
         },
         "file": "source/renderer/app/components/wallet/WalletSendForm.js",
         "id": "wallet.send.form.receiver.label",
         "start": {
           "column": 17,
-          "line": 47
+          "line": 44
         }
       },
       {
@@ -8710,13 +8710,13 @@
         "description": "Hint inside the \"Receiver\" text input in the wallet send form.",
         "end": {
           "column": 3,
-          "line": 57
+          "line": 54
         },
         "file": "source/renderer/app/components/wallet/WalletSendForm.js",
         "id": "wallet.send.form.receiver.hint",
         "start": {
           "column": 16,
-          "line": 52
+          "line": 49
         }
       },
       {
@@ -8724,13 +8724,13 @@
         "description": "Label for the \"Amount\" number input in the wallet send form.",
         "end": {
           "column": 3,
-          "line": 62
+          "line": 59
         },
         "file": "source/renderer/app/components/wallet/WalletSendForm.js",
         "id": "wallet.send.form.amount.label",
         "start": {
           "column": 15,
-          "line": 58
+          "line": 55
         }
       },
       {
@@ -8738,13 +8738,13 @@
         "description": "Label for the \"description\" text area in the wallet send form.",
         "end": {
           "column": 3,
-          "line": 68
+          "line": 65
         },
         "file": "source/renderer/app/components/wallet/WalletSendForm.js",
         "id": "wallet.send.form.description.label",
         "start": {
           "column": 20,
-          "line": 63
+          "line": 60
         }
       },
       {
@@ -8752,13 +8752,13 @@
         "description": "Hint in the \"description\" text area in the wallet send form.",
         "end": {
           "column": 3,
-          "line": 73
+          "line": 70
         },
         "file": "source/renderer/app/components/wallet/WalletSendForm.js",
         "id": "wallet.send.form.description.hint",
         "start": {
           "column": 19,
-          "line": 69
+          "line": 66
         }
       },
       {
@@ -8766,13 +8766,13 @@
         "description": "Label for the next button on the wallet send form.",
         "end": {
           "column": 3,
-          "line": 78
+          "line": 75
         },
         "file": "source/renderer/app/components/wallet/WalletSendForm.js",
         "id": "wallet.send.form.next",
         "start": {
           "column": 19,
-          "line": 74
+          "line": 71
         }
       },
       {
@@ -8780,13 +8780,13 @@
         "description": "Error message shown when invalid amount was entered.",
         "end": {
           "column": 3,
-          "line": 83
+          "line": 80
         },
         "file": "source/renderer/app/components/wallet/WalletSendForm.js",
         "id": "wallet.send.form.errors.invalidAmount",
         "start": {
           "column": 17,
-          "line": 79
+          "line": 76
         }
       },
       {
@@ -8794,13 +8794,13 @@
         "description": "Error message shown when invalid transaction title was entered.",
         "end": {
           "column": 3,
-          "line": 89
+          "line": 86
         },
         "file": "source/renderer/app/components/wallet/WalletSendForm.js",
         "id": "wallet.send.form.errors.invalidTitle",
         "start": {
           "column": 16,
-          "line": 84
+          "line": 81
         }
       },
       {
@@ -8808,13 +8808,13 @@
         "description": "Syncing transactions message shown during async wallet restore in the wallet send form.",
         "end": {
           "column": 3,
-          "line": 96
+          "line": 93
         },
         "file": "source/renderer/app/components/wallet/WalletSendForm.js",
         "id": "wallet.send.form.syncingTransactionsMessage",
         "start": {
           "column": 30,
-          "line": 90
+          "line": 87
         }
       }
     ],

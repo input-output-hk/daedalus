@@ -1,9 +1,11 @@
 // @flow
+import BigNumber from 'bignumber.js';
 import { WalletTransaction } from '../../domains/WalletTransaction';
+import { WalletUnits } from '../../domains/Wallet';
 
 export type TransactionAmount = {
   quantity: number,
-  unit: 'lovelace',
+  unit: WalletUnits.LOVELACE,
 };
 
 export type TransactionDepth = {
@@ -81,6 +83,8 @@ export type GetTransactionFeeRequest = {
   walletId: string,
   address: string,
   amount: number,
+  walletBalance: BigNumber,
+  availableBalance: BigNumber,
 };
 
 export type CreateTransactionRequest = {
@@ -103,7 +107,7 @@ export type GetTransactionsResponse = {
 
 export type TransactionFeeAmount = {
   quantity: number,
-  unit: 'lovelace',
+  unit: WalletUnits.LOVELACE,
 };
 
 export type TransactionPaymentData = {
