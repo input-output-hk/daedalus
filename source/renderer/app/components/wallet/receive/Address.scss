@@ -1,3 +1,10 @@
+$maxWidth1: 438px;
+$maxWidth2: 476px;
+$maxWidth3: 523px;
+$maxWidth4: 570px;
+$maxWidth5: none;
+$itnDecrease: 50px;
+
 .component {
   box-sizing: border-box;
   display: flex;
@@ -19,26 +26,40 @@
   font-family: var(--font-mono);
   letter-spacing: -0.4px;
   margin-right: 4px;
-  max-width: 438px;
+  max-width: $maxWidth1;
   overflow: hidden;
-  // text-overflow: ellipsis;
   user-select: text;
   white-space: nowrap;
 
   @media (min-width: 950px) {
-    max-width: 476px;
+    max-width: $maxWidth2;
   }
   @media (min-width: 1000px) {
-    max-width: 523px;
+    max-width: $maxWidth3;
   }
   @media (min-width: 1050px) {
-    max-width: 570px;
+    max-width: $maxWidth4;
   }
   @media (min-width: 1081px) {
     max-width: none;
   }
 
-  // background: darkcyan;
+  &.isIncentivizedTestnet {
+    max-width: $maxWidth1 - $itnDecrease;
+
+    @media (min-width: 950px) {
+      max-width: $maxWidth2 - $itnDecrease;
+    }
+    @media (min-width: 1000px) {
+      max-width: $maxWidth3 - $itnDecrease;
+    }
+    @media (min-width: 1050px) {
+      max-width: $maxWidth4 - $itnDecrease;
+    }
+    @media (min-width: 1110px) {
+      max-width: none;
+    }
+  }
 }
 .addressActions {
   display: flex;

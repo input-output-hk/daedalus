@@ -100,10 +100,14 @@ export default class Address extends Component<Props, State> {
       styles.component,
       address.used ? styles.usedWalletAddress : null,
     ]);
+    const addressIdClasses = classnames([
+      styles.addressId,
+      isIncentivizedTestnet ? styles.isIncentivizedTestnet : null,
+    ]);
     const { minCharsInit, minCharsEnd } = this.state;
     return (
       <div className={addressClasses}>
-        <div className={styles.addressId} id={`address-${address.id}`}>
+        <div className={addressIdClasses} id={`address-${address.id}`}>
           {ellipsis(address.id, minCharsInit, minCharsEnd)}
         </div>
         <div className={styles.addressActions}>
