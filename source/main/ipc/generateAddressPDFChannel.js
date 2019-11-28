@@ -74,7 +74,7 @@ export const handleAddressPDFRequests = () => {
           const textColor = '#5e6066';
           const textColorRed = '#ea4c5b';
           const width = 640;
-          const height = 400 + noteHeight;
+          const height = 420 + noteHeight;
           const doc = new PDFDocument({
             size: [width, height],
             margins: {
