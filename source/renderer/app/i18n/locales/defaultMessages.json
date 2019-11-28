@@ -2203,13 +2203,13 @@
         "description": "Headline for the Delegation center.",
         "end": {
           "column": 3,
-          "line": 12
+          "line": 13
         },
         "file": "source/renderer/app/components/staking/delegation-center/DelegationCenterHeader.js",
         "id": "staking.delegationCenter.heading",
         "start": {
           "column": 11,
-          "line": 8
+          "line": 9
         }
       },
       {
@@ -2217,13 +2217,13 @@
         "description": "Delegation description for the Delegation center.",
         "end": {
           "column": 3,
-          "line": 18
+          "line": 19
         },
         "file": "source/renderer/app/components/staking/delegation-center/DelegationCenterHeader.js",
         "id": "staking.delegationCenter.description",
         "start": {
           "column": 15,
-          "line": 13
+          "line": 14
         }
       }
     ],

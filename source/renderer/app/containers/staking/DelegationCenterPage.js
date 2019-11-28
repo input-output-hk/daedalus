@@ -32,6 +32,11 @@ export default class DelegationCenterPage extends Component<Props> {
   render() {
     const { uiDialogs, staking, wallets } = this.props.stores;
     const { stakePools } = staking;
+    const { actions } = this.props;
+    const {
+      staking: { goToStakingInfoPage },
+    } = actions;
+    const redirectToStakingInfo = goToStakingInfoPage.trigger;
 
     if (!wallets.allWallets.length) {
       return (
@@ -47,6 +52,8 @@ export default class DelegationCenterPage extends Component<Props> {
           wallets={wallets.allWallets}
           onDelegate={this.handleDelegate}
           numberOfStakePools={stakePools.length}
+          startDateTime={staking.startDateTime}
+          redirectToStakingInfo={redirectToStakingInfo}
         />
         {uiDialogs.isOpen(DelegationSetupWizardDialog) ? (
           <DelegationSetupWizardDialogContainer />

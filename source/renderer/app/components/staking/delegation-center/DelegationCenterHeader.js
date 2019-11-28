@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import styles from './DelegationCenterHeader.scss';
+import CountdownWidget from '../../widgets/CountdownWidget';
 
 const messages = defineMessages({
   heading: {
@@ -18,14 +19,20 @@ const messages = defineMessages({
   },
 });
 
+type Props = {
+  redirectToStakingInfo?: Function,
+  startDateTime: string,
+};
+
 @observer
-export default class DelegationCenterHeader extends Component {
+export default class DelegationCenterHeader extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
 
   render() {
     const { intl } = this.context;
+    const { redirectToStakingInfo, startDateTime } = this.props;
     const heading = intl.formatMessage(messages.heading);
     const description = intl.formatMessage(messages.description);
 
@@ -33,6 +40,10 @@ export default class DelegationCenterHeader extends Component {
       <div className={styles.component}>
         <div className={styles.mainContent}>
           <div className={styles.heading}>{heading}</div>
+          <CountdownWidget
+            redirectToStakingInfo={redirectToStakingInfo}
+            startDateTime={startDateTime}
+          />
           <div className={styles.description}>{description}</div>
         </div>
       </div>

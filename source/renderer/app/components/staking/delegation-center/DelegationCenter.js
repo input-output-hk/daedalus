@@ -9,16 +9,27 @@ type Props = {
   wallets: Array<Wallet>,
   onDelegate: Function,
   numberOfStakePools: number,
+  startDateTime: string,
+  redirectToStakingInfo: Function,
 };
 
 @observer
 export default class DelegationCenter extends Component<Props> {
   render() {
-    const { wallets, onDelegate, numberOfStakePools } = this.props;
+    const {
+      wallets,
+      onDelegate,
+      numberOfStakePools,
+      startDateTime,
+      redirectToStakingInfo,
+    } = this.props;
 
     return (
       <Fragment>
-        <DelegationCenterHeader />
+        <DelegationCenterHeader
+          redirectToStakingInfo={redirectToStakingInfo}
+          startDateTime={startDateTime}
+        />
         <DelegationCenterBody
           wallets={wallets}
           onDelegate={onDelegate}
