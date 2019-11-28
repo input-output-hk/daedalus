@@ -2,7 +2,8 @@
 import moment from 'moment';
 import { defineMessages } from 'react-intl';
 import { generateAddressPDFChannel } from '../ipc/generateAddressPDFChannel';
-import type { networkId } from '../../../common/types/environment.types';
+import type { Network } from '../../../common/types/environment.types';
+import globalMessages from '../i18n/global-messages';
 
 const messages = defineMessages({
   creationDate: {
@@ -17,7 +18,7 @@ const messages = defineMessages({
   },
   title: {
     id: 'wallet.receive.pdf.title',
-    defaultMessage: '!!!Daedalus address',
+    defaultMessage: '!!!Daedalus Cardano ada address',
     description: 'PDF title',
   },
   author: {
@@ -30,31 +31,6 @@ const messages = defineMessages({
     defaultMessage: '!!!Cardano Network:',
     description: 'PDF networkLabel',
   },
-  networkName_mainnet: {
-    id: 'wallet.receive.pdf.networkName_mainnet',
-    defaultMessage: '!!!mainnet',
-    description: 'PDF networkName mainnet',
-  },
-  networkName_staging: {
-    id: 'wallet.receive.pdf.networkName_staging',
-    defaultMessage: '!!!Staging',
-    description: 'PDF networkName staging',
-  },
-  networkName_testnet: {
-    id: 'wallet.receive.pdf.networkName_testnet',
-    defaultMessage: '!!!Testnet',
-    description: 'PDF networkName testnet',
-  },
-  networkName_development: {
-    id: 'wallet.receive.pdf.networkName_development',
-    defaultMessage: '!!!Development',
-    description: 'PDF networkName development',
-  },
-  networkName_itn_balance_check: {
-    id: 'wallet.receive.pdf.networkName_itn_balance_check',
-    defaultMessage: '!!!Incentivized Testnet',
-    description: 'PDF networkName itn_balance_check',
-  },
 });
 
 type Params = {
@@ -64,7 +40,7 @@ type Params = {
   currentLocale: string,
   currentDateFormat: string,
   currentTimeFormat: string,
-  network: networkId,
+  network: Network,
   isMainnet: boolean,
   intl: Object,
 };
@@ -89,7 +65,7 @@ export const addressPDFGenerator = async ({
     currentLocale,
     isMainnet,
     networkLabel: intl.formatMessage(messages.networkLabel),
-    networkName: intl.formatMessage(messages[`networkName_${network}`]),
+    networkName: intl.formatMessage(globalMessages[`network_${network}`]),
     creationDate: intl.formatMessage(messages.creationDate, { date, time }),
     noteLabel: intl.formatMessage(messages.noteLabel),
     title: intl.formatMessage(messages.title),

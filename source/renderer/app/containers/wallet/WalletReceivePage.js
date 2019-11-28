@@ -105,7 +105,7 @@ export default class WalletReceivePage extends Component<Props, State> {
     const { addressToShare } = this.state;
 
     const name = generateFileNameWithTimestamp({
-      prefix: 'ada-address',
+      prefix: 'daedalus-cardano-ada-address',
       extension: '',
       isUTC: false,
     });
