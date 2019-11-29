@@ -418,11 +418,11 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
     }
   }
 
-  getSectionRow = (message: Object, content?: Node) => {
+  getSectionRow = (messageId: string, content?: Node) => {
     return (
       <tr>
         <th className={styles.sectionTitle} colSpan={2}>
-          <span>{this.context.intl.formatMessage(message)}</span>
+          <span>{this.context.intl.formatMessage(messageId)}</span>
           {content}
           <hr />
         </th>
@@ -430,31 +430,27 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
     );
   };
 
-  getRow = (messageId: string, value: Node, className?: string) => {
+  getRow = (messageId: string, value: Node | boolean) => {
     const { intl } = this.context;
-    const key = messages[messageId]
-      ? intl.formatMessage(messages[messageId])
-      : '';
+    const key = intl.formatMessage(messages[messageId]);
     const colon = intl.formatMessage(globalMessages.punctuationColon);
-    const classNameTd = className || styles[messageId];
+    let content = value;
+    let className = styles[messageId];
+    if (typeof value === 'boolean') {
+      content = value
+        ? intl.formatMessage(messages.statusOn)
+        : intl.formatMessage(messages.statusOff);
+      className = value ? styles.green : styles.red;
+    }
     return (
-      <tr className={styles[messageId]}>
+      <tr>
         <th>
           {key}
           {colon}
         </th>
-        <td className={classNameTd}>{value}</td>
+        <td className={className}>{content}</td>
       </tr>
     );
-  };
-
-  getStatusRow = (messageId: string, isTrue: boolean) => {
-    const { intl } = this.context;
-    const value = isTrue
-      ? intl.formatMessage(messages.statusOn)
-      : intl.formatMessage(messages.statusOff);
-    const className = this.getClassName(isTrue);
-    return this.getRow(messageId, value, className);
   };
 
   render() {
@@ -587,7 +583,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
       cardanoNetworkValue += ` [${cardanoRawNetworkValue}]`;
     }
 
-    const { getSectionRow, getRow, getStatusRow } = this;
+    const { getSectionRow, getRow } = this;
 
     return (
       <div className={styles.component}>
@@ -600,7 +596,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
         <div className={styles.tables}>
           <table className={styles.table}>
             <tbody>
-              {getSectionRow(messages.cardanoNodeStatus)}
+              {getSectionRow('cardanoNodeStatus')}
               {getRow('platform', platform)}
               {getRow('platformVersion', platformVersion)}
               {getRow(
@@ -629,7 +625,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
               )}
             </tbody>
             <tbody>
-              {getSectionRow(messages.coreInfo)}
+              {getSectionRow('coreInfo')}
               {getRow('daedalusVersion', daedalusVersion)}
               {getRow('daedalusMainProcessID', daedalusMainProcessID)}
               {getRow('daedalusProcessID', daedalusProcessID)}
@@ -677,7 +673,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
             </tbody>
             {isConnected && nodeConnectionError ? (
               <tbody>
-                {getSectionRow(messages.connectionError)}
+                {getSectionRow('connectionError')}
                 <tr>
                   <th>
                     <div className={styles.error}>
@@ -693,9 +689,9 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
 
           <table className={styles.table}>
             <tbody>
-              {getSectionRow(messages.daedalusStatus)}
-              {getStatusRow('synced', isConnected)}
-              {getStatusRow('connected', isSynced)}
+              {getSectionRow('daedalusStatus')}
+              {getRow('synced', isConnected)}
+              {getRow('connected', isSynced)}
               {getRow(
                 'syncPercentage',
                 `${new BigNumber(
@@ -793,7 +789,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
               {getSectionRow(
                 messages.cardanoNodeStatus,
                 <button
-                  className={styles.statusBtn}
+                  className={styles.cardanoNodeStatusBtn}
                   onClick={() => this.restartNode()}
                   disabled={isNodeRestarting}
                 >
@@ -833,13 +829,13 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                     : 'unknown'
                 )
               )}
-              {getStatusRow('cardanoNodeResponding', isNodeResponding)}
+              {getRow('cardanoNodeResponding', isNodeResponding)}
               {/*
-                {getStatusRow('cardanoNodeSubscribed', isNodeSubscribed)}
-                {getStatusRow('cardanoNodeTimeCorrect', isNodeTimeCorrect)}
+                {getRow('cardanoNodeSubscribed', isNodeSubscribed)}
+                {getRow('cardanoNodeTimeCorrect', isNodeTimeCorrect)}
               */}
-              {getStatusRow('cardanoNodeSyncing', isNodeSyncing)}
-              {getStatusRow('cardanoNodeInSync', isNodeInSync)}
+              {getRow('cardanoNodeSyncing', isNodeSyncing)}
+              {getRow('cardanoNodeInSync', isNodeInSync)}
             </tbody>
           </table>
         </div>
@@ -902,7 +898,4 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
     this.props.onRestartNode.trigger();
     this.restoreDialogCloseOnEscKey();
   };
-
-  getClassName = (isTrue: boolean) =>
-    classNames([isTrue ? styles.green : styles.red]);
 }
