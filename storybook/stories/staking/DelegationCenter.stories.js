@@ -2,7 +2,6 @@
 import React from 'react';
 import { action } from '@storybook/addon-actions';
 import BigNumber from 'bignumber.js';
-import { number } from '@storybook/addon-knobs';
 import DelegationCenter from '../../../source/renderer/app/components/staking/delegation-center/DelegationCenter';
 import STAKE_POOLS from '../../../source/renderer/app/config/stakingStakePools.dummy.json';
 import Wallet from '../../../source/renderer/app/domains/Wallet';
@@ -10,15 +9,6 @@ import {
   WalletRecoveryPhraseVerificationStatuses,
   WalletRecoveryPhraseVerificationTypes,
 } from '../../../source/renderer/app/stores/WalletsStore';
-
-const defaultAdaValue = 82650.15;
-const defaultPercentage = 33.123456;
-
-const adaValueKnob = (name, defaultValue) => {
-  const value = number(name, defaultValue);
-
-  return new BigNumber(value);
-};
 
 const walletSyncedStateReady = { status: 'ready' };
 
@@ -29,6 +19,9 @@ const walletSyncedStateRestoring = {
     unit: 'percentage',
   },
 };
+
+const startDateTime: string = '"2019-12-26T00:00:00.161Z"';
+const redirectToStakingInfo: Function = null;
 
 // Dummy data initialization
 const wallets = [
@@ -98,13 +91,8 @@ const wallets = [
 
 export const StakingDelegationCenterStory = () => (
   <DelegationCenter
-    adaValue={adaValueKnob('ADA Value', defaultAdaValue)}
-    percentage={number('Percentage', defaultPercentage, {
-      min: 0,
-      max: 100,
-      step: 1,
-      range: true,
-    })}
+    startDateTime={startDateTime}
+    redirectToStakingInfo={redirectToStakingInfo}
     wallets={wallets}
     onDelegate={action('onDelegate')}
     numberOfStakePools={STAKE_POOLS.length}
