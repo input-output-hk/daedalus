@@ -1,44 +1,116 @@
+$maxWidth1: 438px;
+$maxWidth2: 476px;
+$maxWidth3: 523px;
+$maxWidth4: 570px;
+$maxWidth5: none;
+$itnDecrease: 50px;
+
 .component {
   box-sizing: border-box;
   display: flex;
+  justify-content: space-between;
   padding: 10.5px 0;
   word-break: break-all;
-
-  .addressId {
-    flex-grow: 1;
-    font-family: var(--font-mono);
-    letter-spacing: -0.4px;
-    margin-right: 32.5px;
-    user-select: text;
+  &.usedWalletAddress {
+    .addressId,
+    .shareIcon {
+      opacity: 0.4;
+    }
+    .shareAddressLabel {
+      opacity: 0.2;
+    }
   }
+}
+.addressId {
+  cursor: default;
+  flex-grow: 1;
+  font-family: var(--font-mono);
+  letter-spacing: -0.4px;
+  margin-right: 4px;
+  overflow: hidden;
+  user-select: none;
+  white-space: nowrap;
 
-  .addressActions {
-    .copyAddress {
-      cursor: pointer;
-      display: flex;
-      white-space: nowrap;
+  &.isShowingSubMenus {
+    max-width: $maxWidth1;
+    @media (min-width: 950px) {
+      max-width: $maxWidth2;
+    }
+    @media (min-width: 1000px) {
+      max-width: $maxWidth3;
+    }
+    @media (min-width: 1050px) {
+      max-width: $maxWidth4;
+    }
+    @media (min-width: 1081px) {
+      max-width: none;
+    }
 
-      .copyAddressLabel {
-        color: var(--theme-label-button-color);
-        font-size: 14px;
-        margin-left: 6px;
-        opacity: 0.5;
+    &.isIncentivizedTestnet {
+      max-width: $maxWidth1 - $itnDecrease;
+
+      @media (min-width: 950px) {
+        max-width: $maxWidth2 - $itnDecrease;
+      }
+      @media (min-width: 1000px) {
+        max-width: $maxWidth3 - $itnDecrease;
+      }
+      @media (min-width: 1050px) {
+        max-width: $maxWidth4 - $itnDecrease;
+      }
+      @media (min-width: 1110px) {
+        max-width: none;
       }
     }
   }
 }
+.addressActions {
+  display: flex;
+  flex-direction: row;
+  height: 18px;
+  justify-content: flex-end;
+  width: 90px;
 
-.usedWalletAddress {
-  .addressId,
-  .addressActions .copyAddress .copyIcon {
-    opacity: 0.4;
-  }
-
-  .addressActions .copyAddress .copyAddressLabel {
-    opacity: 0.2;
+  // background: pink;
+}
+.invalidAddress {
+  & > svg {
+    height: 12px;
+    width: 12px;
   }
 }
-
+.shareAddressButton {
+  cursor: pointer;
+  line-height: 1.36;
+  margin-left: 22.5px;
+  white-space: nowrap;
+}
+.shareIcon {
+  & > svg {
+    height: 12px;
+    width: 12px;
+    path {
+      fill: var(--theme-icon-copy-address-color);
+    }
+  }
+}
+.shareAddressLabel {
+  color: var(--theme-label-button-color);
+  font-size: 14px;
+  margin-left: 6px;
+  opacity: 0.5;
+}
+.copyAddress {
+  cursor: pointer;
+  display: flex;
+  white-space: nowrap;
+}
+.copyAddressLabel {
+  color: var(--theme-label-button-color);
+  font-size: 14px;
+  margin-left: 6px;
+  opacity: 0.5;
+}
 .copyIcon {
   cursor: pointer;
   margin-left: 4px;
