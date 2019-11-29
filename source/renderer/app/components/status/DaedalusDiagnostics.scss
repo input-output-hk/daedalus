@@ -82,6 +82,7 @@
     text-align: left;
     white-space: nowrap;
     width: 100%;
+
     span {
       opacity: 1;
     }
@@ -165,6 +166,7 @@
         max-width: 400px;
         overflow: hidden;
         text-overflow: ellipsis;
+        user-select: none;
         white-space: nowrap;
         width: 100%;
       }
@@ -240,7 +242,8 @@
       }
     }
 
-    &.blockchainHeightInfo {
+    &.lastNetworkBlock,
+    &.lastSynchronizedBlock {
       span {
         opacity: 0.7;
 

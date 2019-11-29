@@ -434,7 +434,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
     const { intl } = this.context;
     const key = messages[messageId]
       ? intl.formatMessage(messages[messageId])
-      : 'MA CHE CAZZO';
+      : '';
     const colon = intl.formatMessage(globalMessages.punctuationColon);
     const classNameTd = className || styles[messageId];
     return (
@@ -705,18 +705,18 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
               {getRow(
                 'lastNetworkBlock',
                 <Fragment>
-                  <span>{intl.formatMessage(messages.epoch)}:</span>
+                  <span>{intl.formatMessage(messages.epoch)}:</span>{' '}
                   {get(networkTip, 'epoch', '-')}
-                  <span>{intl.formatMessage(messages.slot)}:</span>
+                  <span>{intl.formatMessage(messages.slot)}:</span>{' '}
                   {get(networkTip, 'slot', '-')}
                 </Fragment>
               )}
               {getRow(
                 'lastSynchronizedBlock',
                 <Fragment>
-                  <span>{intl.formatMessage(messages.epoch)}:</span>
+                  <span>{intl.formatMessage(messages.epoch)}:</span>{' '}
                   {get(localTip, 'epoch', '-')}
-                  <span>{intl.formatMessage(messages.slot)}:</span>
+                  <span>{intl.formatMessage(messages.slot)}:</span>{' '}
                   {get(localTip, 'slot', '-')}
                 </Fragment>
               )}
