@@ -1022,8 +1022,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Incentivized Testnet",
-        "description": "Incentivized Testnet",
+        "defaultMessage": "!!!INCENTIVIZED TESTNET v1",
+        "description": "INCENTIVIZED TESTNET v1",
         "end": {
           "column": 3,
           "line": 18
@@ -1036,14 +1036,14 @@
         }
       },
       {
-        "defaultMessage": "!!!Balance Check",
-        "description": "Balance Check",
+        "defaultMessage": "!!!Rewards",
+        "description": "Rewards",
         "end": {
           "column": 3,
           "line": 23
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingTitle.js",
-        "id": "loading.screen.syncingConnectingBalanceCheck",
+        "id": "loading.screen.syncingConnectingRewards",
         "start": {
           "column": 16,
           "line": 19
@@ -1999,9 +1999,9 @@
           "line": 27
         },
         "file": "source/renderer/app/components/sidebar/SidebarCategoryNetworkInfo.js",
-        "id": "test.environment.itnBalanceCheckLabel",
+        "id": "test.environment.itnRewardsV1Label",
         "start": {
-          "column": 21,
+          "column": 18,
           "line": 23
         }
       }
@@ -2044,8 +2044,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Incentivized Testnet",
-        "description": "Incentivized Testnet",
+        "defaultMessage": "!!!INCENTIVIZED TESTNET v1",
+        "description": "INCENTIVIZED TESTNET v1",
         "end": {
           "column": 3,
           "line": 22
@@ -2058,21 +2058,21 @@
         }
       },
       {
-        "defaultMessage": "!!!Balance Check",
-        "description": "Balance Check",
+        "defaultMessage": "!!!Rewards",
+        "description": "Rewards",
         "end": {
           "column": 3,
           "line": 27
         },
         "file": "source/renderer/app/components/splash/Network.js",
-        "id": "static.splash.network.balanceCheck",
+        "id": "static.splash.network.rewards",
         "start": {
           "column": 16,
           "line": 23
         }
       },
       {
-        "defaultMessage": "!!!This version of Daedalus has been created specifically for the balance check, the first stage in the roll-out of the Incentivized Testnet. It is not compatible with the Cardano mainnet. The balance check is a practice run for the official balance snapshot that is currently planned for later in November. This initial test will allow us to test core functionality, while enabling users to validate that the value of their mainnet ada balances is accurately captured ahead of the Incentivized Testnet.",
+        "defaultMessage": "!!!This version of Daedalus has been created specifically for use with the Incentivized Testnet. It is not compatible with the Cardano mainnet. If you had ada in a mainnet Daedalus or Yoroi wallet at the time of the balance snapshot (12.00 UTC, November 29) you can use this version of Daedalus to restore those funds as testnet ada, for use exclusively on the Incentivized Testnet. The rewards earned for delegating stake and running stake pools on the Incentivized Testnet will be paid out in real ada at the end of the Incentivized Testnet program. Important: Please keep your Rewards wallet recovery phrase safe. You will need it to receive your ada rewards on the mainnet.",
         "description": "This version of Daedalus has been created specifically for the balance check, the first stage in the roll-out of the Incentivized Testnet. It is not compatible with the Cardano mainnet. The balance check is a practice run for the official balance snapshot that is currently planned for later in November. This initial test will allow us to test core functionality, while enabling users to validate that the value of their mainnet ada balances is accurately captured ahead of the Incentivized Testnet.",
         "end": {
           "column": 3,
@@ -9177,9 +9177,9 @@
           "line": 42
         },
         "file": "source/renderer/app/components/widgets/WalletTestEnvironmentLabel.js",
-        "id": "test.environment.itnBalanceCheckLabel",
+        "id": "test.environment.itnRewardsV1Label",
         "start": {
-          "column": 21,
+          "column": 18,
           "line": 38
         }
       }
@@ -9986,63 +9986,63 @@
         }
       },
       {
-        "defaultMessage": "!!!Incentivized Testnet - Balance check",
-        "description": "\"itn_balance_check\" Cardano network",
+        "defaultMessage": "!!!Incentivized Testnet v1 - Rewards",
+        "description": "\"itn_rewards_v1\" Cardano network",
         "end": {
           "column": 3,
           "line": 206
         },
         "file": "source/renderer/app/i18n/global-messages.js",
-        "id": "environment.network.itn_balance_check",
+        "id": "environment.network.itn_rewards_v1",
         "start": {
-          "column": 29,
+          "column": 26,
           "line": 202
         }
       },
       {
-        "defaultMessage": "!!!Incentivized Testnet - Balance check (Selfnode)",
-        "description": "\"itn_balance_check_selfnode\" Cardano network",
+        "defaultMessage": "!!!Incentivized Testnet v1 - Rewards (Selfnode)",
+        "description": "\"itn_rewards_v1_selfnode\" Cardano network",
         "end": {
           "column": 3,
           "line": 211
         },
         "file": "source/renderer/app/i18n/global-messages.js",
-        "id": "environment.network.itn_balance_check_selfnode",
+        "id": "environment.network.itn_rewards_v1_selfnode",
         "start": {
-          "column": 38,
+          "column": 35,
           "line": 207
         }
       },
       {
-        "defaultMessage": "!!!Incentivized Testnet - Balance check (Qa)",
-        "description": "\"itn_balance_check_qa\" Cardano network",
+        "defaultMessage": "!!!Incentivized Testnet v1 - Rewards (Qa)",
+        "description": "\"itn_rewards_v1_qa\" Cardano network",
         "end": {
           "column": 3,
           "line": 216
         },
         "file": "source/renderer/app/i18n/global-messages.js",
-        "id": "environment.network.itn_balance_check_qa",
+        "id": "environment.network.itn_rewards_v1_qa",
         "start": {
-          "column": 32,
+          "column": 29,
           "line": 212
         }
       },
       {
-        "defaultMessage": "!!!Incentivized Testnet - Balance check (Nightly)",
-        "description": "\"itn_balance_check_nightly\" Cardano network",
+        "defaultMessage": "!!!Incentivized Testnet v1 - Rewards (Nightly)",
+        "description": "\"itn_rewards_v1_nightly\" Cardano network",
         "end": {
           "column": 3,
           "line": 221
         },
         "file": "source/renderer/app/i18n/global-messages.js",
-        "id": "environment.network.itn_balance_check_nightly",
+        "id": "environment.network.itn_rewards_v1_nightly",
         "start": {
-          "column": 37,
+          "column": 34,
           "line": 217
         }
       },
       {
-        "defaultMessage": "!!!Incentivized Testnet - Rewards",
+        "defaultMessage": "!!!Incentivized Testnet v1 - Rewards",
         "description": "\"itn_rewards\" Cardano network",
         "end": {
           "column": 3,
@@ -10056,7 +10056,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Incentivized Testnet - Rewards (Selfnode)",
+        "defaultMessage": "!!!Incentivized Testnet v1 - Rewards (Selfnode)",
         "description": "\"itn_rewards_selfnode\" Cardano network",
         "end": {
           "column": 3,
@@ -10070,7 +10070,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Incentivized Testnet - Rewards (Qa)",
+        "defaultMessage": "!!!Incentivized Testnet v1 - Rewards (Qa)",
         "description": "\"itn_rewards_qa\" Cardano network",
         "end": {
           "column": 3,
@@ -10084,7 +10084,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Incentivized Testnet - Rewards (Nightly)",
+        "defaultMessage": "!!!Incentivized Testnet v1 - Rewards (Nightly)",
         "description": "\"itn_rewards_nightly\" Cardano network",
         "end": {
           "column": 3,
