@@ -3,8 +3,6 @@ import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import ReactModal from 'react-modal';
-import { capitalize } from 'lodash';
-import { networkPrettyNames } from '../../../../common/types/environment.types';
 import DaedalusDiagnostics from '../../components/status/DaedalusDiagnostics';
 import styles from './DaedalusDiagnosticsDialog.scss';
 import GenericNotification from '../../components/notifications/GenericNotification';
@@ -77,22 +75,27 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
       availableDiskSpace: diskSpaceAvailable,
     };
 
-    const { network, rawNetwork } = environment;
-    let cardanoNetwork = networkPrettyNames[network];
-    if (rawNetwork && network !== rawNetwork) {
-      cardanoNetwork += ` (${capitalize(rawNetwork)})`;
-    }
+    const {
+      network,
+      rawNetwork,
+      version,
+      rendererProcessID,
+      mainProcessID,
+      isBlankScreenFixActive,
+      buildNumber,
+    } = environment;
 
     const coreInfo = {
-      daedalusVersion: environment.version,
-      daedalusProcessID: environment.rendererProcessID,
-      daedalusMainProcessID: environment.mainProcessID,
-      isBlankScreenFixActive: environment.isBlankScreenFixActive,
-      cardanoVersion: environment.buildNumber,
+      daedalusVersion: version,
+      daedalusProcessID: rendererProcessID,
+      daedalusMainProcessID: mainProcessID,
+      daedalusStateDirectoryPath: stateDirectoryPath,
+      isBlankScreenFixActive,
+      cardanoVersion: buildNumber,
       cardanoProcessID: cardanoNodeID,
       cardanoAPIPort: tlsConfig ? tlsConfig.port : 0,
-      cardanoNetwork,
-      daedalusStateDirectoryPath: stateDirectoryPath,
+      cardanoNetwork: network,
+      cardanoRawNetwork: rawNetwork,
     };
 
     // Copy-address notification component z-index

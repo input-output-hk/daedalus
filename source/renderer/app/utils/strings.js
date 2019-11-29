@@ -2,7 +2,7 @@
 export const ellipsis = (
   str: string,
   minCharsInit: number,
-  minCharsEnd?: number
+  minCharsEnd?: ?number
 ) => {
   if (str.length <= minCharsInit) return str;
 

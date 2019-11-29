@@ -2,43 +2,30 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
-import SVGInline from 'react-svg-inline';
-import classnames from 'classnames';
-import CopyToClipboard from 'react-copy-to-clipboard';
-import QRCode from 'qrcode.react';
 import BorderedBox from '../../widgets/BorderedBox';
 import TinySwitch from '../../widgets/forms/TinySwitch';
-import iconCopy from '../../../assets/images/clipboard-ic.inline.svg';
 import WalletAddress from '../../../domains/WalletAddress';
 import globalMessages from '../../../i18n/global-messages';
 import { VirtualAddressesList } from './VirtualAddressesList';
 import styles from './WalletReceive.scss';
-import { Address } from './Address';
+import Address from './Address';
 
 const messages = defineMessages({
-  walletAddressLabel: {
-    id: 'wallet.receive.page.walletAddressLabel',
-    defaultMessage: '!!!Your wallet address',
-    description: 'Label for wallet address on the wallet "Receive page"',
+  instructionsTitle: {
+    id: 'wallet.receive.page.instructions.instructionsTitle',
+    defaultMessage: '!!!Your wallet addresses',
+    description: 'Instructions Title on the wallet "Receive page"',
   },
-  walletReceiveInstructions: {
-    id: 'wallet.receive.page.walletReceiveInstructions',
+  instructionsDescription: {
+    id: 'wallet.receive.page.instructions.instructionsDescription',
     defaultMessage:
-      '!!!Share this wallet address to receive payments. To protect your privacy generate new addresses for receiving payments instead of reusing existing ones.',
-    description:
-      'Wallet receive payments instructions on the wallet "Receive page"',
+      '!!!Share this wallet address to receive payments. To protect your privacy, new addresses are generated automatically once you use them.',
+    description: 'Instructions Description on the wallet "Receive page"',
   },
-  generateNewAddressButtonLabel: {
-    id: 'wallet.receive.page.generateNewAddressButtonLabel',
-    defaultMessage: '!!!Generate new address',
-    description:
-      'Label for "Generate new address" button on the wallet "Receive page"',
-  },
-  generatedAddressesSectionTitle: {
-    id: 'wallet.receive.page.generatedAddressesSectionTitle',
-    defaultMessage: '!!!Generated addresses',
-    description:
-      '"Generated addresses" section title on the wallet "Receive page"',
+  addressesTitle: {
+    id: 'wallet.receive.page.addresses.addressesTitle',
+    defaultMessage: '!!!Addresses',
+    description: 'Addresses Title on the wallet "Receive page"',
   },
   showUsedLabel: {
     id: 'wallet.receive.page.showUsedLabel',
@@ -46,11 +33,10 @@ const messages = defineMessages({
     description:
       'Label for "show used" wallet addresses link on the wallet "Receive page"',
   },
-  spendingPasswordPlaceholder: {
-    id: 'wallet.receive.page.spendingPasswordPlaceholder',
-    defaultMessage: '!!!Password',
-    description:
-      'Placeholder for "spending password" on the wallet "Receive page"',
+  shareAddressLabel: {
+    id: 'wallet.receive.page.shareAddressLabel',
+    defaultMessage: '!!!Share',
+    description: 'Label for "Share" link on the wallet "Receive page"',
   },
   copyAddressLabel: {
     id: 'wallet.receive.page.copyAddressLabel',
@@ -61,15 +47,43 @@ const messages = defineMessages({
 
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
 
+const BREAKPOINTS = [
+  {
+    minCharsInit: 22,
+    minCharsEnd: 22,
+  },
+  {
+    minCharsInit: 24,
+    minCharsEnd: 24,
+  },
+  {
+    minCharsInit: 27,
+    minCharsEnd: 27,
+  },
+  {
+    minCharsInit: 29,
+    minCharsEnd: 29,
+  },
+  {
+    minCharsInit: 999999999999,
+    minCharsEnd: null,
+  },
+];
+
 type Props = {
-  walletAddress: string,
-  isWalletAddressUsed: boolean,
   walletAddresses: Array<WalletAddress>,
+  onShareAddress: Function,
   onCopyAddress: Function,
+  currentLocale: string,
+  isIncentivizedTestnet: boolean,
+  isShowingSubMenus: boolean,
 };
 
 type State = {
   showUsed: boolean,
+  currentBreakPoint: number,
+  minCharsInit: number,
+  minCharsEnd?: ?number,
 };
 
 @observer
@@ -80,22 +94,93 @@ export default class WalletReceive extends Component<Props, State> {
 
   state = {
     showUsed: true,
+    currentBreakPoint: -1,
+    minCharsInit: 0,
+    minCharsEnd: 0,
   };
+
+  componentDidMount() {
+    this.updateWindowDimensions();
+    window.addEventListener('resize', this.updateWindowDimensions);
+  }
+
+  componentWillReceiveProps(nextProps: Props) {
+    const { isShowingSubMenus: isShowingSubMenusNext } = nextProps;
+    const { isShowingSubMenus: isShowingSubMenusCurrent } = this.props;
+    if (isShowingSubMenusNext !== isShowingSubMenusCurrent) {
+      setTimeout(this.updateWindowDimensions, 300);
+    }
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.updateWindowDimensions);
+  }
 
   toggleUsedAddresses = () => {
     this.setState(prevState => ({ showUsed: !prevState.showUsed }));
   };
 
-  renderRow = (address: WalletAddress, index: number) => (
-    <Address
-      index={index}
-      address={address}
-      onCopyAddress={this.props.onCopyAddress}
-      copyAddressLabel={this.context.intl.formatMessage(
-        messages.copyAddressLabel
-      )}
-    />
-  );
+  updateWindowDimensions = () => {
+    const { currentBreakPoint } = this.state;
+    const newBreakpoint = this.getBreakpoint(window.innerWidth);
+    if (currentBreakPoint !== newBreakpoint) {
+      const { minCharsInit, minCharsEnd } = BREAKPOINTS[newBreakpoint];
+      this.setState({
+        currentBreakPoint: newBreakpoint,
+        minCharsInit,
+        minCharsEnd,
+      });
+    }
+  };
+
+  getBreakpoint = (windowWidth: number) => {
+    const {
+      isIncentivizedTestnet,
+      isShowingSubMenus,
+      currentLocale,
+    } = this.props;
+
+    if (
+      isIncentivizedTestnet &&
+      !isShowingSubMenus &&
+      currentLocale === 'ja-JP'
+    ) {
+      if (windowWidth < 950) return 3;
+      return 4;
+    }
+
+    if (windowWidth >= 1081) return 4;
+    if (windowWidth >= 1050) return 3;
+    if (windowWidth >= 1000) return 2;
+    if (windowWidth >= 950) return 1;
+    return 0;
+  };
+
+  renderRow = (address: WalletAddress) => {
+    const {
+      onShareAddress,
+      onCopyAddress,
+      isIncentivizedTestnet,
+      isShowingSubMenus,
+      currentLocale,
+    } = this.props;
+    const { minCharsInit, minCharsEnd } = this.state;
+    const { intl } = this.context;
+    return (
+      <Address
+        address={address}
+        onShareAddress={onShareAddress}
+        onCopyAddress={onCopyAddress}
+        shareAddressLabel={intl.formatMessage(messages.shareAddressLabel)}
+        copyAddressLabel={intl.formatMessage(messages.copyAddressLabel)}
+        currentLocale={currentLocale}
+        isIncentivizedTestnet={isIncentivizedTestnet}
+        isShowingSubMenus={isShowingSubMenus}
+        minCharsInit={minCharsInit}
+        minCharsEnd={minCharsEnd}
+      />
+    );
+  };
 
   getFilteredAddresses = (
     walletAddresses: Array<WalletAddress>
@@ -105,71 +190,25 @@ export default class WalletReceive extends Component<Props, State> {
     );
 
   render() {
-    const {
-      walletAddress,
-      walletAddresses,
-      onCopyAddress,
-      isWalletAddressUsed,
-    } = this.props;
+    const { walletAddresses } = this.props;
     const { intl } = this.context;
     const { showUsed } = this.state;
-
-    const walletAddressClasses = classnames([
-      styles.hash,
-      isWalletAddressUsed ? styles.usedHash : null,
-    ]);
-
-    // Get QRCode color value from active theme's CSS variable
-    const qrCodeBackgroundColor = document.documentElement
-      ? document.documentElement.style.getPropertyValue(
-          '--theme-receive-qr-code-background-color'
-        )
-      : 'transparent';
-    const qrCodeForegroundColor = document.documentElement
-      ? document.documentElement.style.getPropertyValue(
-          '--theme-receive-qr-code-foreground-color'
-        )
-      : '#000';
 
     return (
       <div className={styles.component}>
         <BorderedBox fullHeight>
           <div className={styles.container}>
-            <div className={styles.qrCodeAndInstructions}>
-              <div className={styles.qrCode}>
-                <QRCode
-                  value={walletAddress}
-                  bgColor={qrCodeBackgroundColor}
-                  fgColor={qrCodeForegroundColor}
-                  size={152}
-                />
-              </div>
-
-              <div className={styles.instructions}>
-                <div className={walletAddressClasses}>
-                  {walletAddress}
-                  <CopyToClipboard
-                    text={walletAddress}
-                    // eslint-disable-next-line react/jsx-no-bind
-                    onCopy={onCopyAddress.bind(this, walletAddress)}
-                  >
-                    <SVGInline svg={iconCopy} className={styles.copyIconBig} />
-                  </CopyToClipboard>
-                </div>
-
-                <div className={styles.hashLabel}>
-                  {intl.formatMessage(messages.walletAddressLabel)}
-                </div>
-
-                <div className={styles.instructionsText}>
-                  {intl.formatMessage(messages.walletReceiveInstructions)}
-                </div>
-              </div>
+            <div className={styles.instructions}>
+              <h2 className={styles.instructionsTitle}>
+                {intl.formatMessage(messages.instructionsTitle)}
+              </h2>
+              <p className={styles.instructionsDescription}>
+                {intl.formatMessage(messages.instructionsDescription)}
+              </p>
             </div>
-
-            <div className={styles.generatedAddresses}>
-              <h2>
-                {intl.formatMessage(messages.generatedAddressesSectionTitle)}
+            <div className={styles.addresses}>
+              <h3 className={styles.addressesTitle}>
+                {intl.formatMessage(messages.addressesTitle)}
                 <div className={styles.hideUsed}>
                   <TinySwitch
                     label={intl.formatMessage(messages.showUsedLabel)}
@@ -177,7 +216,7 @@ export default class WalletReceive extends Component<Props, State> {
                     checked={showUsed}
                   />
                 </div>
-              </h2>
+              </h3>
 
               <VirtualAddressesList
                 rows={this.getFilteredAddresses(walletAddresses)}

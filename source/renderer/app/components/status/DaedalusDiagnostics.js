@@ -1,5 +1,6 @@
 // @flow
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
+import type { Node } from 'react';
 import { observer } from 'mobx-react';
 import { get, includes, upperFirst } from 'lodash';
 import { defineMessages, intlShape } from 'react-intl';
@@ -9,6 +10,7 @@ import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
 import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
 import SVGInline from 'react-svg-inline';
 import { BigNumber } from 'bignumber.js';
+import globalMessages from '../../i18n/global-messages';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
 import iconCopy from '../../assets/images/clipboard-ic.inline.svg';
@@ -416,6 +418,45 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
     }
   }
 
+  getSectionRow = (message: Object, content?: Node) => {
+    return (
+      <tr>
+        <th className={styles.sectionTitle} colSpan={2}>
+          <span>{this.context.intl.formatMessage(message)}</span>
+          {content}
+          <hr />
+        </th>
+      </tr>
+    );
+  };
+
+  getRow = (messageId: string, value: Node, className?: string) => {
+    const { intl } = this.context;
+    const key = messages[messageId]
+      ? intl.formatMessage(messages[messageId])
+      : 'MA CHE CAZZO';
+    const colon = intl.formatMessage(globalMessages.punctuationColon);
+    const classNameTd = className || styles[messageId];
+    return (
+      <tr className={styles[messageId]}>
+        <th>
+          {key}
+          {colon}
+        </th>
+        <td className={classNameTd}>{value}</td>
+      </tr>
+    );
+  };
+
+  getStatusRow = (messageId: string, isTrue: boolean) => {
+    const { intl } = this.context;
+    const value = isTrue
+      ? intl.formatMessage(messages.statusOn)
+      : intl.formatMessage(messages.statusOff);
+    const className = this.getClassName(isTrue);
+    return this.getRow(messageId, value, className);
+  };
+
   render() {
     const { intl } = this.context;
 
@@ -469,6 +510,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
       cardanoVersion,
       cardanoProcessID,
       cardanoAPIPort,
+      cardanoRawNetwork,
       cardanoNetwork,
       daedalusStateDirectoryPath,
     } = coreInfo;
@@ -534,6 +576,19 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
       messages.unknownDiskSpaceSupportUrl
     );
 
+    let cardanoNetworkValue = intl.formatMessage(
+      globalMessages[`network_${cardanoNetwork}`]
+    );
+
+    if (cardanoRawNetwork && cardanoNetwork !== cardanoRawNetwork) {
+      const cardanoRawNetworkValue = intl.formatMessage(
+        globalMessages[`network_${cardanoRawNetwork}`]
+      );
+      cardanoNetworkValue += ` [${cardanoRawNetworkValue}]`;
+    }
+
+    const { getSectionRow, getRow, getStatusRow } = this;
+
     return (
       <div className={styles.component}>
         <DialogCloseButton
@@ -545,82 +600,48 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
         <div className={styles.tables}>
           <table className={styles.table}>
             <tbody>
-              <tr>
-                <th className={styles.sectionTitle} colSpan={2}>
-                  <span>{intl.formatMessage(messages.systemInfo)}</span>
-                  <hr />
-                </th>
-              </tr>
-              <tr>
-                <th>{intl.formatMessage(messages.platform)}:</th>
-                <td>{platform}</td>
-              </tr>
-              <tr className={styles.platformVersion}>
-                <th>{intl.formatMessage(messages.platformVersion)}:</th>
-                <td className={styles.platform}>{platformVersion}</td>
-              </tr>
-              <tr>
-                <th>{intl.formatMessage(messages.cpu)}:</th>
-                <td>
-                  <Tooltip skin={TooltipSkin} tip={cpu}>
-                    {cpu}
-                  </Tooltip>
-                </td>
-              </tr>
-              <tr>
-                <th>{intl.formatMessage(messages.ram)}:</th>
-                <td>{ram}</td>
-              </tr>
-              <tr>
-                <th>{intl.formatMessage(messages.availableDiskSpace)}:</th>
-                <td>
-                  {availableDiskSpace || (
-                    <button
-                      className={styles.unknownDiskSpaceBtn}
-                      onClick={() =>
-                        onOpenExternalLink(unknownDiskSpaceSupportUrl)
-                      }
-                    >
-                      {intl.formatMessage(messages.unknownDiskSpace)}
-                      <SVGInline
-                        svg={externalLinkIcon}
-                        className={styles.externalLinkIcon}
-                      />
-                    </button>
-                  )}
-                </td>
-              </tr>
+              {getSectionRow(messages.cardanoNodeStatus)}
+              {getRow('platform', platform)}
+              {getRow('platformVersion', platformVersion)}
+              {getRow(
+                'cpu',
+                <Tooltip skin={TooltipSkin} tip={cpu}>
+                  {cpu}
+                </Tooltip>
+              )}
+              {getRow('ram', ram)}
+              {getRow(
+                'availableDiskSpace',
+                availableDiskSpace || (
+                  <button
+                    className={styles.unknownDiskSpaceBtn}
+                    onClick={() =>
+                      onOpenExternalLink(unknownDiskSpaceSupportUrl)
+                    }
+                  >
+                    {intl.formatMessage(messages.unknownDiskSpace)}
+                    <SVGInline
+                      svg={externalLinkIcon}
+                      className={styles.externalLinkIcon}
+                    />
+                  </button>
+                )
+              )}
             </tbody>
             <tbody>
-              <tr>
-                <th className={styles.sectionTitle} colSpan={2}>
-                  <span>{intl.formatMessage(messages.coreInfo)}</span>
-                  <hr />
-                </th>
-              </tr>
-              <tr>
-                <th>{intl.formatMessage(messages.daedalusVersion)}:</th>
-                <td>{daedalusVersion}</td>
-              </tr>
-              <tr>
-                <th>{intl.formatMessage(messages.daedalusMainProcessID)}:</th>
-                <td>{daedalusMainProcessID}</td>
-              </tr>
-              <tr>
-                <th>{intl.formatMessage(messages.daedalusProcessID)}:</th>
-                <td>{daedalusProcessID}</td>
-              </tr>
-              <tr>
-                <th>{intl.formatMessage(messages.blankScreenFix)}:</th>
-                <td className={styles.blankScreenFix}>
-                  {isBlankScreenFixActive
-                    ? intl.formatMessage(messages.statusOn)
-                    : intl.formatMessage(messages.statusOff)}
-                </td>
-              </tr>
-              <tr>
-                <th>{intl.formatMessage(messages.stateDirectoryPath)}:</th>
-                <td className={styles.stateDirectory}>
+              {getSectionRow(messages.coreInfo)}
+              {getRow('daedalusVersion', daedalusVersion)}
+              {getRow('daedalusMainProcessID', daedalusMainProcessID)}
+              {getRow('daedalusProcessID', daedalusProcessID)}
+              {getRow(
+                'blankScreenFix',
+                isBlankScreenFixActive
+                  ? intl.formatMessage(messages.statusOn)
+                  : intl.formatMessage(messages.statusOff)
+              )}
+              {getRow(
+                'stateDirectoryPath',
+                <Fragment>
                   <button
                     className={styles.stateDirectoryOpenBtn}
                     onClick={() =>
@@ -647,33 +668,16 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                       </Tooltip>
                     </div>
                   </CopyToClipboard>
-                </td>
-              </tr>
-              <tr>
-                <th>{intl.formatMessage(messages.cardanoVersion)}:</th>
-                <td>{cardanoVersion}</td>
-              </tr>
-              <tr>
-                <th>{intl.formatMessage(messages.cardanoProcessID)}:</th>
-                <td>{cardanoProcessID}</td>
-              </tr>
-              <tr>
-                <th>{intl.formatMessage(messages.cardanoApiPort)}:</th>
-                <td>{cardanoAPIPort || '-'}</td>
-              </tr>
-              <tr>
-                <th>{intl.formatMessage(messages.cardanoNetwork)}:</th>
-                <td>{cardanoNetwork}</td>
-              </tr>
+                </Fragment>
+              )}
+              {getRow('cardanoVersion', cardanoVersion)}
+              {getRow('cardanoProcessID', cardanoProcessID)}
+              {getRow('cardanoApiPort', cardanoAPIPort || '-')}
+              {getRow('cardanoNetwork', cardanoNetworkValue)}
             </tbody>
             {isConnected && nodeConnectionError ? (
               <tbody>
-                <tr>
-                  <th className={styles.sectionTitle} colSpan={2}>
-                    <span>{intl.formatMessage(messages.connectionError)}</span>
-                    <hr />
-                  </th>
-                </tr>
+                {getSectionRow(messages.connectionError)}
                 <tr>
                   <th>
                     <div className={styles.error}>
@@ -689,55 +693,33 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
 
           <table className={styles.table}>
             <tbody>
-              <tr>
-                <th className={styles.sectionTitle} colSpan={2}>
-                  <span>{intl.formatMessage(messages.daedalusStatus)}</span>
-                  <hr />
-                </th>
-              </tr>
-              <tr>
-                <th>{intl.formatMessage(messages.connected)}:</th>
-                <td className={this.getClassName(isConnected)}>
-                  {isConnected
-                    ? intl.formatMessage(messages.statusOn)
-                    : intl.formatMessage(messages.statusOff)}
-                </td>
-              </tr>
-              <tr>
-                <th>{intl.formatMessage(messages.synced)}:</th>
-                <td className={this.getClassName(isSynced)}>
-                  {isSynced
-                    ? intl.formatMessage(messages.statusOn)
-                    : intl.formatMessage(messages.statusOff)}
-                </td>
-              </tr>
-              <tr>
-                <th>{intl.formatMessage(messages.syncPercentage)}:</th>
-                <td>
-                  {new BigNumber(
-                    parseFloat(syncPercentage).toFixed(2)
-                  ).toFormat(2)}
-                  %
-                </td>
-              </tr>
-              <tr>
-                <th>{intl.formatMessage(messages.lastNetworkBlock)}:</th>
-                <td className={styles.blockchainHeightInfo}>
-                  <span>{intl.formatMessage(messages.epoch)}:</span>{' '}
+              {getSectionRow(messages.daedalusStatus)}
+              {getStatusRow('synced', isConnected)}
+              {getStatusRow('connected', isSynced)}
+              {getRow(
+                'syncPercentage',
+                `${new BigNumber(
+                  parseFloat(syncPercentage).toFixed(2)
+                ).toFormat(2)}%`
+              )}
+              {getRow(
+                'lastNetworkBlock',
+                <Fragment>
+                  <span>{intl.formatMessage(messages.epoch)}:</span>
                   {get(networkTip, 'epoch', '-')}
-                  <span>{intl.formatMessage(messages.slot)}:</span>{' '}
+                  <span>{intl.formatMessage(messages.slot)}:</span>
                   {get(networkTip, 'slot', '-')}
-                </td>
-              </tr>
-              <tr>
-                <th>{intl.formatMessage(messages.lastSynchronizedBlock)}:</th>
-                <td className={styles.blockchainHeightInfo}>
-                  <span>{intl.formatMessage(messages.epoch)}:</span>{' '}
+                </Fragment>
+              )}
+              {getRow(
+                'lastSynchronizedBlock',
+                <Fragment>
+                  <span>{intl.formatMessage(messages.epoch)}:</span>
                   {get(localTip, 'epoch', '-')}
-                  <span>{intl.formatMessage(messages.slot)}:</span>{' '}
+                  <span>{intl.formatMessage(messages.slot)}:</span>
                   {get(localTip, 'slot', '-')}
-                </td>
-              </tr>
+                </Fragment>
+              )}
               {/*
                 <tr>
                   <th>{intl.formatMessage(messages.remainingUnsyncedBlocks)}:</th>
@@ -808,21 +790,18 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
               */}
             </tbody>
             <tbody>
-              <tr>
-                <th className={styles.sectionTitle} colSpan={2}>
-                  <span>{intl.formatMessage(messages.cardanoNodeStatus)}</span>
-                  <button
-                    className={styles.statusBtn}
-                    onClick={() => this.restartNode()}
-                    disabled={isNodeRestarting}
-                  >
-                    {isNodeRestarting
-                      ? intl.formatMessage(messages.cardanoNodeStatusRestarting)
-                      : intl.formatMessage(messages.cardanoNodeStatusRestart)}
-                  </button>
-                  <hr />
-                </th>
-              </tr>
+              {getSectionRow(
+                messages.cardanoNodeStatus,
+                <button
+                  className={styles.statusBtn}
+                  onClick={() => this.restartNode()}
+                  disabled={isNodeRestarting}
+                >
+                  {isNodeRestarting
+                    ? intl.formatMessage(messages.cardanoNodeStatusRestarting)
+                    : intl.formatMessage(messages.cardanoNodeStatusRestart)}
+                </button>
+              )}
               {/*
                 {showCardanoNodeEkgLink ? (
                   <tr>
@@ -844,60 +823,23 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                   </tr>
                 ) : null}
               */}
-              <tr>
-                <th>{intl.formatMessage(messages.cardanoNodeState)}:</th>
-                <td>
-                  {upperFirst(
-                    cardanoNodeState != null
-                      ? intl.formatMessage(
-                          this.getLocalisationForCardanoNodeState()
-                        )
-                      : 'unknown'
-                  )}
-                </td>
-              </tr>
-              <tr>
-                <th>{intl.formatMessage(messages.cardanoNodeResponding)}:</th>
-                <td className={this.getClassName(isNodeResponding)}>
-                  {isNodeResponding
-                    ? intl.formatMessage(messages.statusOn)
-                    : intl.formatMessage(messages.statusOff)}
-                </td>
-              </tr>
+              {getRow(
+                'cardanoNodeState',
+                upperFirst(
+                  cardanoNodeState != null
+                    ? intl.formatMessage(
+                        this.getLocalisationForCardanoNodeState()
+                      )
+                    : 'unknown'
+                )
+              )}
+              {getStatusRow('cardanoNodeResponding', isNodeResponding)}
               {/*
-                <tr>
-                  <th>{intl.formatMessage(messages.cardanoNodeSubscribed)}:</th>
-                  <td className={this.getClassName(isNodeSubscribed)}>
-                    {isNodeSubscribed
-                      ? intl.formatMessage(messages.statusOn)
-                      : intl.formatMessage(messages.statusOff)}
-                  </td>
-                </tr>
-                <tr>
-                  <th>{intl.formatMessage(messages.cardanoNodeTimeCorrect)}:</th>
-                  <td className={this.getClassName(isNodeTimeCorrect)}>
-                    {isNodeTimeCorrect
-                      ? intl.formatMessage(messages.statusOn)
-                      : intl.formatMessage(messages.statusOff)}
-                  </td>
-                </tr>
+                {getStatusRow('cardanoNodeSubscribed', isNodeSubscribed)}
+                {getStatusRow('cardanoNodeTimeCorrect', isNodeTimeCorrect)}
               */}
-              <tr>
-                <th>{intl.formatMessage(messages.cardanoNodeSyncing)}:</th>
-                <td className={this.getClassName(isNodeSyncing)}>
-                  {isNodeSyncing
-                    ? intl.formatMessage(messages.statusOn)
-                    : intl.formatMessage(messages.statusOff)}
-                </td>
-              </tr>
-              <tr>
-                <th>{intl.formatMessage(messages.cardanoNodeInSync)}:</th>
-                <td className={this.getClassName(isNodeInSync)}>
-                  {isNodeInSync
-                    ? intl.formatMessage(messages.statusOn)
-                    : intl.formatMessage(messages.statusOff)}
-                </td>
-              </tr>
+              {getStatusRow('cardanoNodeSyncing', isNodeSyncing)}
+              {getStatusRow('cardanoNodeInSync', isNodeInSync)}
             </tbody>
           </table>
         </div>

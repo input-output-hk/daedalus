@@ -9,7 +9,7 @@
 }
 
 .list {
-  overflow-y: scroll;
+  overflow-x: hidden !important;
   padding-right: 15px;
   will-change: none !important;
   &:focus {
