@@ -21,13 +21,12 @@ export default class TopBarContainer extends Component<Props> {
   render() {
     const { actions, stores } = this.props;
     const { sidebar, app, networkStatus, wallets, newsFeed } = stores;
-    const { active, isWalletRoute, allWallets } = wallets;
+    const { active, isWalletRoute, hasAnyWallets } = wallets;
     const {
       currentRoute,
       environment: { isMainnet, network },
       openExternalLink,
     } = app;
-    const hasAnyWallets = allWallets.length > 0;
     const walletRoutesMatch = matchRoute(
       `${ROUTES.WALLETS.ROOT}/:id(*page)`,
       currentRoute
