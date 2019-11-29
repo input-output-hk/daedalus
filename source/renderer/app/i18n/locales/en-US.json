@@ -166,7 +166,7 @@
   "loading.screen.stoppingCardanoMessage": "Stopping Cardano node",
   "loading.screen.syncingBlocksMessage": "Syncing blocks",
   "loading.screen.syncingConnectingIncentivizedTestnet": "INCENTIVIZED TESTNET v1",
-  "loading.screen.syncingConnectingRewards": "Balance Check",
+  "loading.screen.syncingConnectingRewards": "Rewards",
   "loading.screen.syncingConnectingTitle": "Daedalus",
   "loading.screen.unrecoverableCardanoMessage": "Unable to start Cardano node. Please submit a support request.",
   "loading.screen.updatedCardanoMessage": "Cardano node updated",
