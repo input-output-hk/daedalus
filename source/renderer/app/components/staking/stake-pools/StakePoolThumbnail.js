@@ -8,7 +8,7 @@ import styles from './StakePoolThumbnail.scss';
 import { getColorFromRange } from '../../../utils/colors';
 import StakePoolTooltip from './StakePoolTooltip';
 import checkmarkImage from '../../../assets/images/check-w.inline.svg';
-import type { StakePool } from '../../../api/staking/types';
+import StakePool from '../../../domains/StakePool';
 import { STAKE_POOL_TOOLTIP_HOVER_WAIT } from '../../../config/timingConfig';
 import { getRelativePosition } from '../../../utils/domManipulation';
 
@@ -102,7 +102,7 @@ export class StakePoolThumbnail extends Component<Props, State> {
     } = this.props;
     const { top, left } = this.state;
 
-    const { ranking, slug, retiring } = stakePool;
+    const { ranking, ticker, retiring } = stakePool;
     const color = getColorFromRange(ranking, numberOfStakePools);
 
     const componentClassnames = classnames([
@@ -125,7 +125,7 @@ export class StakePoolThumbnail extends Component<Props, State> {
           onClick={!onHover ? this.handleOpen : this.handleSelect}
         />
         <div className={styles.content}>
-          <div className={styles.slug}>{slug}</div>
+          <div className={styles.ticker}>{ticker}</div>
 
           {isSelected && showSelected ? (
             <div className={styles.checkmarkWrapper}>

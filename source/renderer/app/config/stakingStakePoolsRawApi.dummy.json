@@ -2,12 +2,14 @@
   {
     "id": "h5khccud3aoj7g2fdsdlb5ogixr3ej59lhc39qk20qpk5y3uoh142mx5g2rjm56h",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 1,
     "metadata": {
@@ -19,12 +21,14 @@
   {
     "id": "vo8l99ap1uuxqrgz9rcryjri1bogk9crmcx4a85aftgd5g8ged7aj7vuruf0jej6",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 2,
     "metadata": {
@@ -36,12 +40,14 @@
   {
     "id": "8gokgkus2oouzm8rn148f4s5jlxk4s25m6nyhqiljkyoy2m56i11n0q3wcldo2yw",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 3,
     "metadata": {
@@ -53,12 +59,14 @@
   {
     "id": "ai030z5fus8upxk7n7jo8wj6zr14r8x1toa8d8ljj0kogxsruturlfx1blgpu5gj",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 4,
     "metadata": {
@@ -70,12 +78,14 @@
   {
     "id": "kfnnlnuexrm9q3ruqncascfdp14kii07ecfdiviahe0nawy0ro2qewjcyfn24da4",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 5,
     "metadata": {
@@ -87,12 +97,14 @@
   {
     "id": "4cu07xnttzlzojxkqj64wecht107sfv9oms5sl4znva9jgdd1rjyfjwf7dxf1pr4",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 6,
     "metadata": {
@@ -104,12 +116,14 @@
   {
     "id": "7f6dcd56cwub6258a7t1vunkmnho2jgpop4e16ior2smy9sqpxr9r2fipqko8f0k",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 7,
     "metadata": {
@@ -121,12 +135,14 @@
   {
     "id": "s5020mikt232xk8llm3rfeamvkb0ez6hq5k0mylc55ljh8ictafu8ofb22cx1ujd",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 8,
     "metadata": {
@@ -138,12 +154,14 @@
   {
     "id": "e61rdh9cu9yhyqjkjer94375hzshg7i3e4vjr6f9wffkibsrur4cn3g9qqomcwtz",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 9,
     "metadata": {
@@ -155,12 +173,14 @@
   {
     "id": "uju94ft2ia5bof2cslygrayzk28cok1t8fltyy5k17zwnbrx830g6ws9ce8e4y18",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 10,
     "metadata": {
@@ -172,12 +192,14 @@
   {
     "id": "nzke8yaybxkh3xxp94lyayw5nlwxu6oeb6vjdr2dvl0fg2c8n82hm828tf0l0a3o",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 11,
     "metadata": {
@@ -189,12 +211,14 @@
   {
     "id": "5nu7djc53ldazbrkczftv4e8f8eaf85actcj5k1l2hfnahv20f84yvo1dtj14k8q",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 12,
     "metadata": {
@@ -206,12 +230,14 @@
   {
     "id": "mfam1ooddscf0tg8cnps1qojsd56276tnhasrzw5tmds2y3vtaemqj9itqck2f36",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 13,
     "metadata": {
@@ -223,12 +249,14 @@
   {
     "id": "i93m4tqbvsyctulio4g9kzgpxysbgpy38bdo11c36qp5foev18i2l59huv4rbet1",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 14,
     "metadata": {
@@ -240,12 +268,14 @@
   {
     "id": "0e3ndnw7clc08r3ob9y3xyzdptgdk5kq1os01sljhcryfwu7mdcm64bdforgsdgs",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 15,
     "metadata": {
@@ -257,12 +287,14 @@
   {
     "id": "2janbztlbmtfmyycl4tij8bxj026lv6srwyfmcj5ue0vm5tlz6ga09lmxt7nrali",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 16,
     "metadata": {
@@ -274,12 +306,14 @@
   {
     "id": "oniah8akyvaxufscvgjay3faeaog3nt4sx4avdohha6g8206eb0a6tdtgcrlxoo4",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 17,
     "metadata": {
@@ -291,12 +325,14 @@
   {
     "id": "ihtr1lhvadihder4wj3zp7zs8hrmy4ki8w7gazybmkzfsvagzwugx9apjmhqduzt",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 18,
     "metadata": {
@@ -308,12 +344,14 @@
   {
     "id": "81ip7sonipf4t2ldoztnn2xt7pptrnlorlljj0jdjftnowi4kj2up64feej300z6",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 19,
     "metadata": {
@@ -325,12 +363,14 @@
   {
     "id": "m1siuqe38f9b047lp0meicjofhq9gwzff0kb3xui2ws8r5ned9wscgywh1d2kiam",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 20,
     "metadata": {
@@ -342,12 +382,14 @@
   {
     "id": "63joxk15obm3u9lou9s8qqq3o5n1zvrii78iqwux5z4ngdqerep3m809ndsp7cn3",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 21,
     "metadata": {
@@ -359,12 +401,14 @@
   {
     "id": "p3w4b0oqq0w2n7ds8aglq9wjynwdjq0e2d5v4fvgsk0hejg8bwyw72sjbacay0mw",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 22,
     "metadata": {
@@ -376,12 +420,14 @@
   {
     "id": "3a75opdng2l9baf593lbor4h73poxpm1kkbc4n8dcgg78cz77ggazp8zm5znhv74",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 23,
     "metadata": {
@@ -393,12 +439,14 @@
   {
     "id": "a0fp5kcy8fwrzyxrsw7ps5vckg4pc6wm4gcv5z2qpcy3tv7sacpc4fciho6tdxsh",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 24,
     "metadata": {
@@ -410,12 +458,14 @@
   {
     "id": "z9i67gpzgk0cstvx2wk1y2p6uo4dxqu9k7p8yt43ccsuohrjxw0pmwyadqnacixy",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 25,
     "metadata": {
@@ -427,12 +477,14 @@
   {
     "id": "t8yf1h8zagnaye82z499sl2d3tmuve1hg6cogj7p3i4y2fu2bnd05i5iderhqr7b",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 26,
     "metadata": {
@@ -444,12 +496,14 @@
   {
     "id": "ancimui6l5806rvat7i9wrpnm6njh7wuymg4hul68bo8b0ek4m3afffp2z4vahsp",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 27,
     "metadata": {
@@ -461,12 +515,14 @@
   {
     "id": "7s5f5dabv2dtksyunffks4o3d8mzowbf3zd4vvig7mx6zjyeagacqegaw1ajr52j",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 28,
     "metadata": {
@@ -478,12 +534,14 @@
   {
     "id": "c1h9p22wheyj1q53p051j7ik0m07i06fv3ru15n0r3gj1ygd6akj0ed45smj88pj",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 29,
     "metadata": {
@@ -495,12 +553,14 @@
   {
     "id": "cn6g6ku92hj0idtcl9ee682p07ly0eqapv6tpxmme4zzf96cej1j2ufhfq8sfdvl",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 30,
     "metadata": {
@@ -512,12 +572,14 @@
   {
     "id": "1cpxjptka7ndfg94d4m7cm21eix2aq7rmh8a6tlfxccea35y69m80gsxmgvbuptm",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 31,
     "metadata": {
@@ -529,12 +591,14 @@
   {
     "id": "g1jkkq8c4vfzsp4qoxqoa8r3zi78ghctf76t22haqmhhpjhrydhmsxoftavtfdq6",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 32,
     "metadata": {
@@ -546,12 +610,14 @@
   {
     "id": "1rj4p7stpvcuqufmqd5z14gw37nnjx9fbnceyyfxhikwqkzocckmkl39ge3rg3fi",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 33,
     "metadata": {
@@ -563,12 +629,14 @@
   {
     "id": "bog9o9kunugxw8np1hn16bn8uzm1ys6h38ua6of2tnx60indlfqfeqazjlqgpctn",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 34,
     "metadata": {
@@ -580,12 +648,14 @@
   {
     "id": "jg8i8s2s88hk57lb6my97fgj64hcqri45na44jqseglt55635xmdmm5uqkh458tb",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 35,
     "metadata": {
@@ -597,12 +667,14 @@
   {
     "id": "g2xly5w6vabql1xgag7qf21j7fgmts7xdee7x13qkbi9rcob7zq5i1l9yh6wytix",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 36,
     "metadata": {
@@ -614,12 +686,14 @@
   {
     "id": "zar82whgozlyijka3kvrwfjdtjo2ptlv2w1d707rs5s9c8p89ukigl015nwz8m1v",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 37,
     "metadata": {
@@ -631,12 +705,14 @@
   {
     "id": "mejqlx0eqbsrlofxqc5f9h9599joczuxv8t2kcq26tqmnycqdbp50gk116zh4qlr",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 38,
     "metadata": {
@@ -648,12 +724,14 @@
   {
     "id": "4ysalt6ee7po2d1uvhe78gyg69yfe5al2a4fl3rsr3x6lnbcerpgpik98l64dtq5",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 39,
     "metadata": {
@@ -665,12 +743,14 @@
   {
     "id": "423pe8q3of13a4lw6mk3a4dhim5e1yyi8zjyqar03tjrf0sluzm3vzxbtkaehf98",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 40,
     "metadata": {
@@ -682,12 +762,14 @@
   {
     "id": "mgcux1myk9kz5g6rmdwiob6b4i59p5cf84wpb33ir1q64s91jm5lho00pqcs1yg9",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 41,
     "metadata": {
@@ -699,12 +781,14 @@
   {
     "id": "utgkn6pckq16ljcnq7994y5fb9md3hhve4rkpiw8rexidzsnj0n0bl9qb4qgadwc",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 42,
     "metadata": {
@@ -716,12 +800,14 @@
   {
     "id": "w8gglm30tjrd4mtvurupx487t98h7gfzilffixv7l5een3nl1u43h9opur57fp4q",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 43,
     "metadata": {
@@ -733,12 +819,14 @@
   {
     "id": "c1qski4csn155l882w19t9cqgyzc1w16qt7ez7536f49bdz1gmhzgrujp1gyyazc",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 44,
     "metadata": {
@@ -750,12 +838,14 @@
   {
     "id": "hnhrgwsroanaygcs82vdmclg65pw0bcwud74x97145cocjeenfvoyguvxk5uoky7",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 45,
     "metadata": {
@@ -767,12 +857,14 @@
   {
     "id": "mimee9okmopkyywopidsw7i5ha20dhdn1loi6udhzosx67mglyd9utaj7wpckwbf",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 46,
     "metadata": {
@@ -784,12 +876,14 @@
   {
     "id": "lky1yk9j1frubex17tr7k3nw2iqzx1k6iz5efuu4pcgrug3b38gk5uves522h003",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 47,
     "metadata": {
@@ -801,12 +895,14 @@
   {
     "id": "84131yac9skhr1rv8cjlmg9vop4qxtyy62v2vxitzexxa4zn0vfpohv9o49q24p0",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 48,
     "metadata": {
@@ -818,12 +914,14 @@
   {
     "id": "fylw4uvrlsxcr1o3h4soik0lpnk2v2d1jpepdk68mqxko4p1xfpc5fpuy057zagu",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 49,
     "metadata": {
@@ -835,12 +933,14 @@
   {
     "id": "lwqbnzoc80anq21r3i3lvvcexs79ugll7yd0h1ab9sqnv2l28k780bff8fnfo3hr",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 50,
     "metadata": {
@@ -852,12 +952,14 @@
   {
     "id": "v2iv18yyz2xr83v1bikqtepiwjsqj9a3msn3vqyi35fnfllmyez7kt54ooumu9ka",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 51,
     "metadata": {
@@ -869,12 +971,14 @@
   {
     "id": "lpinf0kazf4gz8bzcy3eccc4wnzviefu6f33b9wkzzmw4n12makltwluqc3s2xtq",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 52,
     "metadata": {
@@ -886,12 +990,14 @@
   {
     "id": "ki00zga77tc9ubu980uf2qe39vxvew19exr9ejnpehj47r0gfjw4a9g664c7dba7",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 53,
     "metadata": {
@@ -903,12 +1009,14 @@
   {
     "id": "6msn9thgqfk2wrmlag807t0mj1425icgvfud6gqjzra7zrno8ctykiyqcd1u3oey",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 54,
     "metadata": {
@@ -920,12 +1028,14 @@
   {
     "id": "cdojhyein8xqdfuahmk8tf8f5j1io0zxejwx3gyqq4joe0857y6s4tqw0uucgwrm",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 55,
     "metadata": {
@@ -937,12 +1047,14 @@
   {
     "id": "vh1nvg3rwrfarvmkjaulqie6z14k63foyh65esa9jnv0bxrm5881h1kdhfh72i8k",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 56,
     "metadata": {
@@ -954,12 +1066,14 @@
   {
     "id": "72gtf0v1w9dnhpwh5pwcxt5i0sch8e9d7u8b8y12l79jzjajgq4w0s7gkd5o38yb",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 57,
     "metadata": {
@@ -971,12 +1085,14 @@
   {
     "id": "18zp0fnqykb3u2ru0ftou1ih0yozpc74d60qg2vhr67gqwla29ku890hbj8r0l4l",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 58,
     "metadata": {
@@ -988,12 +1104,14 @@
   {
     "id": "hrt12pzzk0ed7nd1i07bgg1bbhykwyk5sjyhbdrgsgkyfze443al6g66tr3tfcgi",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 59,
     "metadata": {
@@ -1005,12 +1123,14 @@
   {
     "id": "91s42nnh87te4xkb8qsnsm81krryu6tb96ubo8s6aiwo435qt5yr1hxwwfawwpbc",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 60,
     "metadata": {
@@ -1022,12 +1142,14 @@
   {
     "id": "3xe6dw4kgsq959q9muxzg7n5s9y7nhmhb94kz5djp1goyr3sk1nbzgpuv38jw2fw",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 61,
     "metadata": {
@@ -1039,12 +1161,14 @@
   {
     "id": "4roypwef9xz858f9mue5edrjx0snm7wx5uffk2brnal2yiv4hcn82mq7ye87j08l",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 62,
     "metadata": {
@@ -1056,12 +1180,14 @@
   {
     "id": "iwgnd4yv8s07v6im7zq7cy2blvyhfxbgwv9lmgn5xfyz9fakyzbee6aoatm4o340",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 63,
     "metadata": {
@@ -1073,12 +1199,14 @@
   {
     "id": "3pfxhhh4twvmoi15smyhwf6l7gumsv6tzedv18yhmwyl9fzvswbbtsjnw6y4prm6",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 64,
     "metadata": {
@@ -1090,12 +1218,14 @@
   {
     "id": "ym2nopj5snj17offoa0zcftrcwde8kjeky2tq8h1f6e09rxbc75vpaw8fxf45m42",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 65,
     "metadata": {
@@ -1107,12 +1237,14 @@
   {
     "id": "2o31a5sd1fkntmon03kgcy3fwpx4x6mm9f5vafwi07gogd445lg9fw3x56mfm0gm",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 66,
     "metadata": {
@@ -1124,12 +1256,14 @@
   {
     "id": "sytnuipiqo7ktsvg9tpp9rgq8iq0jgi0yjlk7464a37z4ml8hhz75ibu5j9iagv2",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 67,
     "metadata": {
@@ -1141,12 +1275,14 @@
   {
     "id": "gxulysm8l6fcvptf0n0bv3tixvuytgxusewdajcw2k2v0akd6jxbmpl830wyna4j",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 68,
     "metadata": {
@@ -1158,12 +1294,14 @@
   {
     "id": "y69fged2ckompjd3uk4wmhwa5edcnsj7mhdtpumvnum12pnp9dj1y8tysmlg36fs",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 69,
     "metadata": {
@@ -1175,12 +1313,14 @@
   {
     "id": "mykeuoocbafjlfkz7ihh60jz40v25wlw2yc6z2uoq6b5hnd444mpmy3j4bis1m47",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 70,
     "metadata": {
@@ -1192,12 +1332,14 @@
   {
     "id": "txhuhp3p4dkn2qqxks5dzcf30w2yueo8q945rhucz3c6wrmsdhab6ebmvgedvita",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 71,
     "metadata": {
@@ -1209,12 +1351,14 @@
   {
     "id": "9zp7yvj0cmktnzw7iccupeis85csqz7e5bacqe48g16z49p2z247k4hj123fmyog",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 72,
     "metadata": {
@@ -1226,12 +1370,14 @@
   {
     "id": "sdli2welwuha8ur7we7fxfhsv5rkiv88zzpgdg3w4qwdfinnkxjaszjy0w65e5pk",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 73,
     "metadata": {
@@ -1243,12 +1389,14 @@
   {
     "id": "z08d9pl36e5fn5ej4vmc6xp4tqxhfo599jm4f324oy5vf3qqfldpbsxwwqeoe8vq",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 74,
     "metadata": {
@@ -1260,12 +1408,14 @@
   {
     "id": "ukrq7w4tsuxpug777ilvpi470evzqhbglr0s3c03ekbqy6lfyb4p9jsrp7kz1ygi",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 75,
     "metadata": {
@@ -1277,12 +1427,14 @@
   {
     "id": "q9fjxkdopfyr12oxihaiahr04k49o6gdw7r97j4itlbxaadyqzcfcennen9sry8q",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 76,
     "metadata": {
@@ -1294,12 +1446,14 @@
   {
     "id": "761wz99zp22phq45knv9mj26zkikhw9tjvvyqnkk8iondcajd7st2hbj58lndtdx",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 77,
     "metadata": {
@@ -1311,12 +1465,14 @@
   {
     "id": "oy5mxbfg8fobtwmc1iw1j74dbm76um110oejoc40pk50bk5o6iv5sr72q1ppyxd2",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 78,
     "metadata": {
@@ -1328,12 +1484,14 @@
   {
     "id": "iwpzpx59muv9hkp4lc3gpsm2hwqact8hzfd0qkxi9fc6x3wsh82fdrfwqdw10udn",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 79,
     "metadata": {
@@ -1345,12 +1503,14 @@
   {
     "id": "h90el9osoair1dudj0zjd8y1yq94rac472fyqkjdfrlhm6z88ooazlfl8rd1rk6m",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 80,
     "metadata": {
@@ -1362,12 +1522,14 @@
   {
     "id": "s9lk3f0nv3lacmr21qd5pk242h6dbaym4mwtxzfdaa0xrezd90859h4stuwnsmqi",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 81,
     "metadata": {
@@ -1379,12 +1541,14 @@
   {
     "id": "dabqmweuz2fedxf5tvgfuq3j4aouaup56qowjscauuejothwrjbe40u8hb3t6bia",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 82,
     "metadata": {
@@ -1396,12 +1560,14 @@
   {
     "id": "i9jpgzfg0tovemd3l0d2m5okmu7b7j9rsps2z7z2mq6qku8h8mwczzjxsnn60li9",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 83,
     "metadata": {
@@ -1413,12 +1579,14 @@
   {
     "id": "3sbp88mkafpbnksp228628aokmpfanz5vo8ad8h5inrvivtyeayfvik970p7ykwh",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 84,
     "metadata": {
@@ -1430,12 +1598,14 @@
   {
     "id": "ha5rnjqw4m09i8cs06y2za28uurakw9l3r36bbc9sqnvscpdfjaptcw6wdg958w0",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 85,
     "metadata": {
@@ -1447,12 +1617,14 @@
   {
     "id": "ek9h0vcxbxbsge641jjke3hi7hetfhmc793540b3rgwe024bdd5rl6bdlbsgrevk",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 86,
     "metadata": {
@@ -1464,12 +1636,14 @@
   {
     "id": "5fkck6h7xsly57y9k0wtw4a7zzp5da3fzzyrwuidlah5sw2ume3qoli2wurh7cou",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 87,
     "metadata": {
@@ -1481,12 +1655,14 @@
   {
     "id": "0bqzkxps8suyx4qotc4huw72oycsfvxwq9kc41z86hxl65agi75xfpg5i9u98w89",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 88,
     "metadata": {
@@ -1498,12 +1674,14 @@
   {
     "id": "h3bitd6kh0y64ko979cdo5u8u364yl4dxf3nl8n1e0953h3kzure8nnnfqtsbs7j",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 89,
     "metadata": {
@@ -1515,12 +1693,14 @@
   {
     "id": "2x8olhwoall0qhv79l97bnh0eij26rvb1oubzpyt1c0300klm6x1kyxeexi8wp7n",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 90,
     "metadata": {
@@ -1532,12 +1712,14 @@
   {
     "id": "idqngeuckor21unsv6t8z3o0uvgvafgkeocpvj3r8vlwgr6jt4v55ost7hw8ectf",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 91,
     "metadata": {
@@ -1549,12 +1731,14 @@
   {
     "id": "0smhyw0b0l7ng5la7lwex8fyt9pb0z43glp9q4yirqjd4pk0ld5wn10tzxovpjqo",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 92,
     "metadata": {
@@ -1566,12 +1750,14 @@
   {
     "id": "la7rrcqhwu3qxw2sf96s11ktcq5ezn0u5mhx4wwcmxgxsn0z13brmbvnw484ja24",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 93,
     "metadata": {
@@ -1583,12 +1769,14 @@
   {
     "id": "1sktkt59biuit44afvp1mc8msht3stfwk11qyv5m44mhbn85z709kbfalq5op4kz",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 94,
     "metadata": {
@@ -1600,12 +1788,14 @@
   {
     "id": "8a4e4qj538xm69rfaychmbbjvvqdejs33wdmbqs5y8p0tj334mj8w2naqa4u3v2q",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 95,
     "metadata": {
@@ -1617,12 +1807,14 @@
   {
     "id": "off6hup6xs8jvu9w49s2j0x1k8j3g3c2m6b1r5emkbtwlosz51bgc11dr7wlxqj4",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 96,
     "metadata": {
@@ -1634,12 +1826,14 @@
   {
     "id": "8696kgkgxx05larkn22lzwklo6wsbt1bzkbruf0fa1oknr89erjp4w3atxcjt806",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 97,
     "metadata": {
@@ -1651,12 +1845,14 @@
   {
     "id": "j08lzjlo5mnyfprt5nnuvxletvt8q74v928rk64ytqthdnvn3v1byl48cx2qjmz5",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 98,
     "metadata": {
@@ -1668,12 +1864,14 @@
   {
     "id": "929e3ru7g1nv5vaun5qih84zqlku9nr7lxyjw6qn3f10luxcigpdnr2ls8hztyqz",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 99,
     "metadata": {
@@ -1685,12 +1883,14 @@
   {
     "id": "aqaz267u0dx4zthp3i2wa06egrl1bzeqo3jjv06t43wrkgou2keg5z7tzwjd6t2q",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 100,
     "metadata": {
@@ -1702,12 +1902,14 @@
   {
     "id": "mles2fvh7om0gotain5bcwvpxmqciqfievtbjzmjslr0kiluspogssoboivkp552",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 101,
     "metadata": {
@@ -1719,12 +1921,14 @@
   {
     "id": "khol39az9sb1ml973lfrp8lg6trlxucx8lgqoyapikn4lxe1elssd5udhwm7bxh0",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 102,
     "metadata": {
@@ -1736,12 +1940,14 @@
   {
     "id": "rpijfyi4vyvpefxc0b3imqsmc2m2o9b15scaoby9u37667pr18o0a4i3pi1kk4w2",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 103,
     "metadata": {
@@ -1753,12 +1959,14 @@
   {
     "id": "3ewpl31s4p85gn3moxpfahznthsagn91s1q2wintyk0digceclsdcqnhuk8y94z3",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 104,
     "metadata": {
@@ -1770,12 +1978,14 @@
   {
     "id": "iiv139b861qd19tu06za5pmcu2dng8n8phf3px1ocp67hg5a3l1caw0o9vrx9qp1",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 105,
     "metadata": {
@@ -1787,12 +1997,14 @@
   {
     "id": "sk69qtdj15d270s1d5dl8vrirmxr0jv4tiyf7uvxju97kkx5dqjeb4c9ksybi618",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 106,
     "metadata": {
@@ -1804,12 +2016,14 @@
   {
     "id": "c6i99u4qfgy95rcy6z03l8tq3wksvsrxoq3brxrewzihf6zruzp2uriguxgbaom5",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 107,
     "metadata": {
@@ -1821,12 +2035,14 @@
   {
     "id": "2ltiognixyfbvoul53cxfo98xr94tdtfuo1vw3uhogbsmif8ubvyb0wesrtf04p5",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 108,
     "metadata": {
@@ -1838,12 +2054,14 @@
   {
     "id": "53ub0sc1k5o3uog0f7xpycgbtgguo1haw5egm1ulrgejmhpbd4jl1swzlm0ah0rf",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 109,
     "metadata": {
@@ -1855,12 +2073,14 @@
   {
     "id": "6gvraoflgoqlhmmffblkcpk3yesohzy0upv9wyg6sir4cvkvy4gtwwok1nkciedx",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 110,
     "metadata": {
@@ -1872,12 +2092,14 @@
   {
     "id": "2hl0k31pl267aqwunmqtxy9bm7s0dpluz3hyrnhoijeyfdkxyu2wxfiepz5k09ba",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 111,
     "metadata": {
@@ -1889,12 +2111,14 @@
   {
     "id": "5s6ikfr2265cypase7higc0sdui9e8em828rwafw19rmolnfynpmaup7r0xyq5z8",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 112,
     "metadata": {
@@ -1906,12 +2130,14 @@
   {
     "id": "xu2eajuk33oyu69nr39sh7bdg9fpdt3nc69sslo4zrcmoawdozxz7fxciiby8s38",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 113,
     "metadata": {
@@ -1923,12 +2149,14 @@
   {
     "id": "mdoclrdeflujw905ham9qtpmr5jo1hn9g23aqjsky6ky0qx99lgoyknmid8okae0",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 114,
     "metadata": {
@@ -1940,12 +2168,14 @@
   {
     "id": "rmq1co84mdoynjwoagrvy7vu4cx359x3kfxojbcidu13amlvt4zby17eufdcmvyo",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 115,
     "metadata": {
@@ -1957,12 +2187,14 @@
   {
     "id": "nrrc7rasdxlwk1de6llq8k8gq1chc8k2jwzbqovuiipzc8s6ml1cso29m7ickl7g",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 116,
     "metadata": {
@@ -1974,12 +2206,14 @@
   {
     "id": "jt57k904r56jsc2m2dphwb1f9uekxqzf1rha3s12cfmscp4dlqhmu1kjykyg5dvg",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 117,
     "metadata": {
@@ -1991,12 +2225,14 @@
   {
     "id": "l441zagtqnunxf7rtdls59glvid3my4c045a1acs1qo0spg1vlhqii2zrr1jl0qj",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 118,
     "metadata": {
@@ -2008,12 +2244,14 @@
   {
     "id": "0gh47vkqkfixh2qgpypj68nrfrr0u31ijt7isss4rrcyeiofbilyaklcbcx3vch2",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 119,
     "metadata": {
@@ -2025,12 +2263,14 @@
   {
     "id": "f86zpvvbr53qf62nvu0hyexoapl2u3kj55qlvho3o1k6f8jdzcx2jdnki7013u08",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 120,
     "metadata": {
@@ -2042,12 +2282,14 @@
   {
     "id": "cbikb329n3hk835krf8anzn6nphetyi6r7n5yujeldcj72gg1olj9b0lc7kjtjhd",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 121,
     "metadata": {
@@ -2059,12 +2301,14 @@
   {
     "id": "ecph85vt4yp69sq3hw01pai1r15fipl3izphdg5tl688oiqnmjciw7fincsfk811",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 122,
     "metadata": {
@@ -2076,12 +2320,14 @@
   {
     "id": "2yywk49s938bwnza13n8o1azld7luvascvia8o1g5jgw9nw0vahk2z3hakdlh7p1",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 123,
     "metadata": {
@@ -2093,12 +2339,14 @@
   {
     "id": "ys14zfaflm8vl8rr09kbrd5kidwvwh5pcpr5zpnppa6woaqykjiow17vr11k9op8",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 124,
     "metadata": {
@@ -2110,12 +2358,14 @@
   {
     "id": "grddv9jpfgudrkmphtcobopj11bqag2jtf8tz2cbbs6prmjpeebhc9avwuvso7hi",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 125,
     "metadata": {
@@ -2127,12 +2377,14 @@
   {
     "id": "86n1p44qzw52gnzyp4v8iy75lvr3brckftwxl1hf8mpk18yr97sab95edtgegmgm",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 126,
     "metadata": {
@@ -2144,12 +2396,14 @@
   {
     "id": "qsyposxjfbhz64nzyieq09taa9mdkt2xe46ws7fkwecx45i6ebm1f45ye7csqptr",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 127,
     "metadata": {
@@ -2161,12 +2415,14 @@
   {
     "id": "gwrnr7t3c1q1xcnk9cuslzieiqxpl7iogc44aomnkns21aiu3il2az2kcf6js5xz",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 128,
     "metadata": {
@@ -2178,12 +2434,14 @@
   {
     "id": "x917782y098elv88nuu2w6i48llngnq6ol2dhzqj25aiz066ezs83yow02wydrnu",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 129,
     "metadata": {
@@ -2195,12 +2453,14 @@
   {
     "id": "2swn3ejdosp7l9rqxqj19woggz3amwrkr4iuhg2083zci87qn66taaa8o3nbxhtj",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 130,
     "metadata": {
@@ -2212,12 +2472,14 @@
   {
     "id": "qbzo7legl8lzeroldq7xw5iru16wayqbdwwhc1e1gjfcby5qfpoqmqe8ei06fpa4",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 131,
     "metadata": {
@@ -2229,12 +2491,14 @@
   {
     "id": "vnwz89rwm6ki5pmkp6sb2v7t7cackfs7ej7f2nr4d9do7aib8p7tiv2z95rlhkn5",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 132,
     "metadata": {
@@ -2246,12 +2510,14 @@
   {
     "id": "4k1zamk3qmbbz3kp5zxf25941ui7dl7jobpzool4zayb9z5p2hs1w2qx1ji3mljm",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 133,
     "metadata": {
@@ -2263,12 +2529,14 @@
   {
     "id": "dkn9yv76rjfwyf3haskc21zxhjb8xply80tndn63fd4nntjnf7xjh49dhp4q7s3x",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 134,
     "metadata": {
@@ -2280,12 +2548,14 @@
   {
     "id": "ansczq7fmbgjpq8vhbojkeux7d2ni8qxq2ol083r9y978imxiqqpw4ccbhqot9xi",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 135,
     "metadata": {
@@ -2297,12 +2567,14 @@
   {
     "id": "rqij44l2ffp230k5yyh4bcqw56tip05x57dqv2xvp9yprcicpj9npixtx10pija2",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 136,
     "metadata": {
@@ -2314,12 +2586,14 @@
   {
     "id": "q6tk6i7wypqb2s8e71p9gtz17ulw8sk0pboz47yx0skk1u2eyvs32wmi83sfr0pt",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 137,
     "metadata": {
@@ -2331,12 +2605,14 @@
   {
     "id": "xeofe34cqxue9pisyqaamyhi3vgh75oswmvmvwmgikuy6kmj1fif3tkp47m8z81d",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 138,
     "metadata": {
@@ -2348,12 +2624,14 @@
   {
     "id": "aqx5usy4ndm87h3hy95rca21i9yl9cvqs1rng2hk8d8dvjrdnsfadcp0r0mmq32x",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 139,
     "metadata": {
@@ -2365,12 +2643,14 @@
   {
     "id": "2oo7jp3z3hzvzhmpyi4liopzcywtdzudshm1xt6hyfngrkbn6wsjv2jftn8w8ycb",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 140,
     "metadata": {
@@ -2382,12 +2662,14 @@
   {
     "id": "ievl4ot2lf6otus1hd57w72vetjdbnnbn5a1ff5nbf65atiliuuk1strqohyv6pb",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 141,
     "metadata": {
@@ -2399,12 +2681,14 @@
   {
     "id": "y6jxp27jp134yrit4c5166utcpkxy0u4d212g9kr7omggu6nsh02fyu051x9urpb",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 142,
     "metadata": {
@@ -2416,12 +2700,14 @@
   {
     "id": "k3wsxvtsgwe5otr19b315y4erfoo7az8tuap7llci3lkfal6jke211hytlxrx28a",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 143,
     "metadata": {
@@ -2433,12 +2719,14 @@
   {
     "id": "z27c2jbjlsle6amdetjpl2mi0uouetpv5weiqrrzvmxlt0hjlixtpcf62k68bp3x",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 144,
     "metadata": {
@@ -2450,12 +2738,14 @@
   {
     "id": "lmgvq2158p0ac2gcjc5tzqq3v0ozm6cdrdc9miuyjxybv9ow4b5f7kquttdgrhlu",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 145,
     "metadata": {
@@ -2467,12 +2757,14 @@
   {
     "id": "5hjthvsxtzrc4lbyc7oro8altc0qb544tiebnairq5wz80joqgqogwo1mxneihqh",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 146,
     "metadata": {
@@ -2484,12 +2776,14 @@
   {
     "id": "9po8cm1qd8362dpz598yt05ch878iwvjnhiqvzb5qhr845ioi876o4w4lszfk53w",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 147,
     "metadata": {
@@ -2501,12 +2795,14 @@
   {
     "id": "3sh4blk52fjeid7pdjqkkfcrz9v668kpej7ieonl87ouefckgbdcfv4o1nwvt08e",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 148,
     "metadata": {
@@ -2518,12 +2814,14 @@
   {
     "id": "7x665vifjn6zl92e7qx4oquco98m3j6e307prq0tdcqq8mtdhkw8tx7cdrrl4dzk",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 149,
     "metadata": {
@@ -2535,12 +2833,14 @@
   {
     "id": "bxqtcuvb06wvdbo87vwc1zhz657qvbvulsfa4t58s73ivimqa6o74wu1a8jkegme",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 150,
     "metadata": {
@@ -2552,12 +2852,14 @@
   {
     "id": "nlg8dddeg3ao3ob7xl7udop5zstub0rw19n3p1r31x5vs7dqlxsqrzc8bkfwoqa2",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 151,
     "metadata": {
@@ -2569,12 +2871,14 @@
   {
     "id": "8eerki2r7cixpyft7cxhlxlvj6cj63vd98mk3i6qxjahp4m1xbv4xtmqog0lwqlg",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 152,
     "metadata": {
@@ -2586,12 +2890,14 @@
   {
     "id": "ukd60gxzvb159ujyhwaqi4fv7xjszg0rtc3a1k38p5yfhx11o1g6l53dojbarwjo",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 153,
     "metadata": {
@@ -2603,12 +2909,14 @@
   {
     "id": "q5wu2fm2nsoxz0tg7228kmh9ifmz59llahqu7b1p3wmsrxwjzba0ipnob2ydsrqa",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 154,
     "metadata": {
@@ -2620,12 +2928,14 @@
   {
     "id": "t55bz8pvpnv2wf13x5dp07qfokcckhnos0ayup8ez5jzuper3e1uvfbghgt9apxs",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 155,
     "metadata": {
@@ -2637,12 +2947,14 @@
   {
     "id": "bk2i8egjsxqq78vym1k9amj2eenvska09vfvz5cycaxscjxgvgc3hb9eycdl7pj1",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 156,
     "metadata": {
@@ -2654,12 +2966,14 @@
   {
     "id": "7cna2qwu0cyuifciafrqd5zouxhh8ryhrpjuwoyyyvreuz4mv80wg8ah4a01mg70",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 157,
     "metadata": {
@@ -2671,12 +2985,14 @@
   {
     "id": "lhlj6bi4ht3cjewt8tkduam36fohortb95hebtn5o8b8zmzhsisuyzyy1gsc8e6v",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 158,
     "metadata": {
@@ -2688,12 +3004,14 @@
   {
     "id": "ijjwl4nv4y7qkpi36xmf8utru3rtlwynmo2rm5dntbxkco1xnvfc8o3sma78pasc",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 159,
     "metadata": {
@@ -2705,12 +3023,14 @@
   {
     "id": "tloaz11qp75t6pemqsjshskc3atl8pul01u7aouacsmx7n93exxyokm9f1n46due",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 160,
     "metadata": {
@@ -2722,12 +3042,14 @@
   {
     "id": "faiyi0vi8eecv07930c3j92o0d8as62spi4xp92zp5myfi1eqpt3jw3g883bun30",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 161,
     "metadata": {
@@ -2739,12 +3061,14 @@
   {
     "id": "f8t7oue2gk1jb03yfdmzjq1iemz530v3w4erowqsbi2568tfm90opj5ok0dtq678",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 162,
     "metadata": {
@@ -2756,12 +3080,14 @@
   {
     "id": "iohz8176ecupe4qfz8tlrpywxl5ooqrw7hz7krwwphrhj20wgaf0v3u84uwz3hmf",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 163,
     "metadata": {
@@ -2773,12 +3099,14 @@
   {
     "id": "jqnxlenhuix63xpcso3r7ctk4twyodgodx49ra7y30eojbmwo8piwp9cfyqjl9ls",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 164,
     "metadata": {
@@ -2790,12 +3118,14 @@
   {
     "id": "7o014rpew4aubx2ubpk8ynqblsb589gla90utzb6ak9gtve7rpmquk93px4wo3qx",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 165,
     "metadata": {
@@ -2807,12 +3137,14 @@
   {
     "id": "f1i1rqoevgyhegiayyvcomfxe9kptg3jjt5no96yv0dgcumv7o96ah7tv4jkjfly",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 166,
     "metadata": {
@@ -2824,12 +3156,14 @@
   {
     "id": "xna95yv3znmcr7wkm47lpz7s07957htmr589ev2mpocm5gnc3hgyk60r1a3k31l3",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 167,
     "metadata": {
@@ -2841,12 +3175,14 @@
   {
     "id": "ep7th8ynj02ykh9aqwyr3jciui1cnbqkjcom20hllvlhd7b59emq8q3hljecxnx2",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 168,
     "metadata": {
@@ -2858,12 +3194,14 @@
   {
     "id": "9gjanbtrhbmd4caxvquns5vby3aact1u6hbzo48cip5ggy6mxp3afaajpenypre0",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 169,
     "metadata": {
@@ -2875,12 +3213,14 @@
   {
     "id": "ikeaz1gwka5wwpdru3ffysf58ezs57ufpjnrgl9ns29z85ftfky60ubendsx7tit",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 170,
     "metadata": {
@@ -2892,12 +3232,14 @@
   {
     "id": "g0yd1oemq4nmck4m2hmxyl7j591bmwaxufo67nd06ko1hj015p54h5h2aor3mdcy",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 171,
     "metadata": {
@@ -2909,12 +3251,14 @@
   {
     "id": "to0bemua4p5kazyi32kfdh0deypev47bsou3mxoftqoei5thnobwy7h0q6u1weel",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 172,
     "metadata": {
@@ -2926,12 +3270,14 @@
   {
     "id": "1h69ic99f4bqraxuyd6i94xbw8emg1lfsbks5ed0cswd2safjm90thrnwgbfylih",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 173,
     "metadata": {
@@ -2943,12 +3289,14 @@
   {
     "id": "fun5g4zc6jjwihi77i0cxqhgpvayc9iycik1ihbllpbewxll1qwa2r1cama5v0dx",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 174,
     "metadata": {
@@ -2960,12 +3308,14 @@
   {
     "id": "oc7ol6dfcuyz489xcub94mxhfypf73h7jr9z9w6eo6id23mm371o5js7zhtdicdi",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 175,
     "metadata": {
@@ -2977,12 +3327,14 @@
   {
     "id": "sa70g2kwxjcncs6fqfg7meusjhup2cdufytwy6l9bj46tx7g37wif25r49e1hdi9",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 176,
     "metadata": {
@@ -2994,12 +3346,14 @@
   {
     "id": "mobzp2zirno935ssjdjvp315zjj7e0iuydlyygobz2qkn4fg7x15je034epddcfn",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 177,
     "metadata": {
@@ -3011,12 +3365,14 @@
   {
     "id": "7025p0ztz4jbr5kokkhfbefnvjpny2rjx4tvgjvd7xov7wgxan5hbo2c71av0vyk",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 178,
     "metadata": {
@@ -3028,12 +3384,14 @@
   {
     "id": "ly7ksljprh3lxjm5ukcxff102aad7qadmzk31xuq84li2th2jdkhqmsc47ji1kh1",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 179,
     "metadata": {
@@ -3045,12 +3403,14 @@
   {
     "id": "ncxzl7gbbuhxm9bvc5w1fiecvyof5mnjv7l3orvhlf6u92aathkk2gfqxvv4ca2v",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 180,
     "metadata": {
@@ -3062,12 +3422,14 @@
   {
     "id": "myfyhok4t6b2fvwal74fmgdp33f7m24ui7eoiljkpmal08fovxy9q785lj37czky",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 181,
     "metadata": {
@@ -3079,12 +3441,14 @@
   {
     "id": "j7w97znuj7shgw2h203oghezp87vfrxl3aocx83ph3ne4w2076m3kauna6tydfci",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 182,
     "metadata": {
@@ -3096,12 +3460,14 @@
   {
     "id": "24nu97itj79aul01xlbws9in92mcfywl0apfigcoxk8269n5omusgoeqhtqfz77w",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 183,
     "metadata": {
@@ -3113,12 +3479,14 @@
   {
     "id": "rs19rj0mle413e4s9f27m52wau6b7sczfoc22r3c1n3v7c8s79b6iao10o2whzyo",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 184,
     "metadata": {
@@ -3130,12 +3498,14 @@
   {
     "id": "xvuqbls90ov83urc2d8aoo0qkaq62vd1v3uk0bvfxfq2m3a0g4sw8jg6vdi58suv",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 185,
     "metadata": {
@@ -3147,12 +3517,14 @@
   {
     "id": "iab34drain91cwzovymy18rfyvbpzkrks8pkib42it5k6s3z4qsj5hq59oiuih4h",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 186,
     "metadata": {
@@ -3164,12 +3536,14 @@
   {
     "id": "ldfl27g6pbwhgkxmkhywfs0faz0akl6xzgivs0tvbfy2emm8w3tcssl7xmw0v620",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 187,
     "metadata": {
@@ -3181,12 +3555,14 @@
   {
     "id": "tq4ynqvrasrzvud1s62lqm0bj3ph3qt9nv1kyu6p40du325jivcl3okcqje99b74",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 188,
     "metadata": {
@@ -3198,12 +3574,14 @@
   {
     "id": "1rfi6466e5elp1hqc5yxrlq9g90bwjgbzarn53oohomzz6eia0yp7zfdoklvxhha",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 189,
     "metadata": {
@@ -3215,12 +3593,14 @@
   {
     "id": "u6pbk6bwne1vjv22fx4bj21rd181l8k1dvzexwnsmi4pep5s1ad9ui88v1r65k7l",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 190,
     "metadata": {
@@ -3232,12 +3612,14 @@
   {
     "id": "8iolr8nc84d4mv78adi53r9a0krqkob73kmi82fs84ovs12ezi0w7pkr7zu8rqf7",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 191,
     "metadata": {
@@ -3249,12 +3631,14 @@
   {
     "id": "90tvnzivtfh30l3c70lxt4n0mphy2bodem4j5ootjw1fs6cngsaw2z75jjww26cb",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 192,
     "metadata": {
@@ -3266,12 +3650,14 @@
   {
     "id": "dsnh2hu95lx8ci8px9et44lbyo4jh3gfwegoeaujkyv76jwuzz0bsgkg945ro44e",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 193,
     "metadata": {
@@ -3283,12 +3669,14 @@
   {
     "id": "ycyt0aye9gs75p41vynqwhtxlra39g4dkg8y44fjum4i6227gzfpr5myjsjhhoo6",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 194,
     "metadata": {
@@ -3300,12 +3688,14 @@
   {
     "id": "zlpp4gkys7werj7nlbo1xw0q8gmmeivzrf2jwii5hnpikd0zcaul1xvvh77bcnlj",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 195,
     "metadata": {
@@ -3317,12 +3707,14 @@
   {
     "id": "exc93p0mucymk4j5dvuxnjqtuqekoko3jzv90tzrvf6uakp0csfjg1r6r4tr85k2",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 196,
     "metadata": {
@@ -3334,12 +3726,14 @@
   {
     "id": "a983bhxd6mqh7b0zsleqo7m6h7de0z4ra3imv6b7gmu6hfg758e6531nwf003xw7",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 197,
     "metadata": {
@@ -3351,12 +3745,14 @@
   {
     "id": "6rierlb5vsk5y89ub6bd1uvh1jb17gk48cdrjslioual9j2zum3d9ncy3hb5bml3",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 198,
     "metadata": {
@@ -3368,12 +3764,14 @@
   {
     "id": "h7eg6nvcf72599lhevnvk4vszdp3ch9j68es6dw3uvxx7ki5e8lvplmtp2oagoe7",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 199,
     "metadata": {
@@ -3385,12 +3783,14 @@
   {
     "id": "hid55s011m2t9adc4g3aheb2ak46l03s18lhk8t1fuk7z8uwqbbxxpwh355ujlw3",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 200,
     "metadata": {
@@ -3402,12 +3802,14 @@
   {
     "id": "592xp65uq3wudor8se4ryrympimdbdpk2fcrhvxxqpg6wi38c3lfpzw8v5dxy8u1",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 201,
     "metadata": {
@@ -3419,12 +3821,14 @@
   {
     "id": "zm9qky6nf9vpnoa86v35fipt2ugcnx04gry5za04w384eplqtj6lbc80m72aw5ck",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 202,
     "metadata": {
@@ -3436,12 +3840,14 @@
   {
     "id": "lrhkkj0t1enn0qcrvizt22tcff10syy1khjn5jclmh1it8t6pi7bzlbcnpjc6c14",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 203,
     "metadata": {
@@ -3453,12 +3859,14 @@
   {
     "id": "ujgo2r0vxxohg427hdtf5a65f2o9r7bqy6fh6rx4rbft334m976svrwnov9tmo4d",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 204,
     "metadata": {
@@ -3470,12 +3878,14 @@
   {
     "id": "um31c9xnozxkl9bof9rjje735yew71x9o229ysjffra7jv9iihlf93n4sk2dv04i",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 205,
     "metadata": {
@@ -3487,12 +3897,14 @@
   {
     "id": "fk41f5asofu6dxoayu9upaf4kx00hht17xdvd0bcjp89g49yfe2a5grkvzmtepx7",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 206,
     "metadata": {
@@ -3504,12 +3916,14 @@
   {
     "id": "5dvvpqxkiy3oviywcjwokch3it4q0uoq53oe50a61fcb1p1p7mymvgjsxwd8ghaf",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 207,
     "metadata": {
@@ -3521,12 +3935,14 @@
   {
     "id": "ax3gd74uk9lzr5bx09c0k1mpyzo99ypfvdx7uq4ymyl73kjz8zgaqjj1mp4qec3s",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 208,
     "metadata": {
@@ -3538,12 +3954,14 @@
   {
     "id": "4ix4e2h5mgkwgp614288wbx995055o8m37r0wctntcaivk9fzo7z6mq74zgvcu3y",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 209,
     "metadata": {
@@ -3555,12 +3973,14 @@
   {
     "id": "d22pfm3klh3y4mpd4m1orzhtlzu8ewpxci5jyrel9oc6b54tx836ubsim7akiucz",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 210,
     "metadata": {
@@ -3572,12 +3992,14 @@
   {
     "id": "xafazrgxr015vt3lwyqo288pqajb7y215gefhuvgk9114yqi7w2ip65oauuu68nn",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 211,
     "metadata": {
@@ -3589,12 +4011,14 @@
   {
     "id": "o5x6twzp28g3uxe2sz76u20lpjxiun8un1ayqxz5ky6b9v9rabbcn4ha0km8vcz2",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 212,
     "metadata": {
@@ -3606,12 +4030,14 @@
   {
     "id": "px7up2ffb5uhyqdznh6x8rj49szb8t6fo9wqq4bdym32ldflsgy1dwpxvcuf9owx",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 213,
     "metadata": {
@@ -3623,12 +4049,14 @@
   {
     "id": "wi6y3vfgbi24vnz89dh8hw31e91dwlld64rduu9uoh3f0rd9kdc7yazlgnnumdgj",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 214,
     "metadata": {
@@ -3640,12 +4068,14 @@
   {
     "id": "gqjiy3jel9lr9z0g88i2oif26ataxauiqik87czq6tear511d8gzjhuc4hz4f9i6",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 215,
     "metadata": {
@@ -3657,12 +4087,14 @@
   {
     "id": "89ppk5l6zsozj9idjsv7ddqkp7nf02w9zuk68lt419md1moyylsbplm8t1txckne",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 216,
     "metadata": {
@@ -3674,12 +4106,14 @@
   {
     "id": "12b6m4nwjl2f7967zlsi1u7cclznwm7qo606pozik5vry6zgzipgxxnr2rr6c0g3",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 217,
     "metadata": {
@@ -3691,12 +4125,14 @@
   {
     "id": "5ya41bta2954xt2jvbxd2o2co865ybpqq0tzo6b0dh50vobofk8jiynqv7cytq1q",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 218,
     "metadata": {
@@ -3708,12 +4144,14 @@
   {
     "id": "sfytvodlxkvrb2b5z72qd7svypdi6w7aemrpvxbqp9qc3xxe0037cecke4bltm35",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 219,
     "metadata": {
@@ -3725,12 +4163,14 @@
   {
     "id": "skba7ufa1hgm6432gpocv6zj10ifeu6ya7d5b8wvf0bddcf1qqgx7vys1ykl5m28",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 220,
     "metadata": {
@@ -3742,12 +4182,14 @@
   {
     "id": "z1f27u3ohp86ekz1sh7n9z6cbk4quz2cjoaoh1xgsc0zihoejgkdgin6fs349kgj",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 221,
     "metadata": {
@@ -3759,12 +4201,14 @@
   {
     "id": "9xh5k3tdmatsqj6o2zg03aiubdjtucczdf1a5cxymscnnh2tqc30nivim7dr6ah5",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 222,
     "metadata": {
@@ -3776,12 +4220,14 @@
   {
     "id": "pn5fopsk7e6pled3cni6uqdd8dn3vspo4iecpvbiscnisr4196sdr2i0umrroqty",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 223,
     "metadata": {
@@ -3793,12 +4239,14 @@
   {
     "id": "r8ub0r9f2tsll77pjzuydz8vl42jrs77lom4dksmjqqapc7wa0rj4876nzs1vi31",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 224,
     "metadata": {
@@ -3810,12 +4258,14 @@
   {
     "id": "nf7j0p5cp15d3pza3tjwu5e2cu76dqii3g7hsyvc0uras17yl5d793eyn0zp8ax8",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 225,
     "metadata": {
@@ -3827,12 +4277,14 @@
   {
     "id": "rzv93clp87l5ts0rcv5sqohllefo9gkn5wrj1bz8bxtjmdwa6wlynjyn8ib943mt",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 226,
     "metadata": {
@@ -3844,12 +4296,14 @@
   {
     "id": "lagijguoq21rhyflg9sihwtapqrwqgd5abhpjsc6biaq8qmgaf4b7p28jbebhic6",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 227,
     "metadata": {
@@ -3861,12 +4315,14 @@
   {
     "id": "jpid9zpazg8i5exhxz1gtav8ncxnw535zxx3hlgnzccrvixwn841cjktm2kmt7rh",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 228,
     "metadata": {
@@ -3878,12 +4334,14 @@
   {
     "id": "tmcp3aabk4a09igk9ndhizopie8aya2g8wkhib06nky8vnc6uxeq5zijaf374l5z",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 229,
     "metadata": {
@@ -3895,12 +4353,14 @@
   {
     "id": "sus726dt2oiuzk2pw5dnzqcrb8f6l9m4cleyge88z902v2c30ww04x7yknohv7m7",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 230,
     "metadata": {
@@ -3912,12 +4372,14 @@
   {
     "id": "6guj13v5yemw7yh62xihjrdrql189o75ufr3tnmhsfcacgek50l3gipacile8pux",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 231,
     "metadata": {
@@ -3929,12 +4391,14 @@
   {
     "id": "l6q089pmto21p2x7873plzievpa4ftfuswbsujro4ceboc74jbhor97sdj8w2wrt",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 232,
     "metadata": {
@@ -3946,12 +4410,14 @@
   {
     "id": "nimgmy23yjs30zdklkdrngt9cpu9g29qohuqyog36vx5sxxh89mui311lah8hwqy",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 233,
     "metadata": {
@@ -3963,12 +4429,14 @@
   {
     "id": "5xnxkaltmw95uk11xi1lfqfhmfnvg9uwc7qxh8mfyy7yb61y5ee185tg1fd57kmi",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 234,
     "metadata": {
@@ -3980,12 +4448,14 @@
   {
     "id": "87q14lsm28acgk7u24rkt0gqmt5meqjkexf1s2rtgfk1p7mafs6ajc6vg7kt11yy",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 235,
     "metadata": {
@@ -3997,12 +4467,14 @@
   {
     "id": "1gvj6a8tuc369vefvuj4kdnjkt6hl8w4tjglohkixg3jutfkupkgtea9rlzj5hth",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 236,
     "metadata": {
@@ -4014,12 +4486,14 @@
   {
     "id": "sjox7akfadqf1nl9v4b0qm1u7d8gsuk6ql92e6p1ruzzm7n4djv65agaafqmrzvd",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 237,
     "metadata": {
@@ -4031,12 +4505,14 @@
   {
     "id": "klrcpctk2pmnrrp0q0wuxiql8prm6h1lp2qyf1iyh9af3oedyttzi7zb6d4zb8er",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 238,
     "metadata": {
@@ -4048,12 +4524,14 @@
   {
     "id": "vc3p7oaxkmr3k6q9o6fqq4mmcw6p7jtw6s0f143ajh5qnnk1bihcjabp2if2sc1g",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 239,
     "metadata": {
@@ -4065,12 +4543,14 @@
   {
     "id": "16z74w18ejxby1429vnpjartb7i454qvikdyenr795jm14j5sf376xa6jmohl4lg",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 240,
     "metadata": {
@@ -4082,12 +4562,14 @@
   {
     "id": "1lw6ppczdkxakfx2kup0x5vtormfpo8emqc5paa5nkntiku34a7kqjjxzgjmnqwm",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 241,
     "metadata": {
@@ -4099,12 +4581,14 @@
   {
     "id": "bcbfos9yhro5g5uojp3trm5na83cp3t7ss153w3qpeqjrb8lezvr0df5wzuatfpo",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 242,
     "metadata": {
@@ -4116,12 +4600,14 @@
   {
     "id": "ipwdsgxe1ixagr7x3xgsgktk78ff6fz3zi5z1695oinb7thjrmre97oismbm9unq",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 243,
     "metadata": {
@@ -4133,12 +4619,14 @@
   {
     "id": "dxj04f6gvz4uy4e27w75e7li0997ovxzyvmdc2y5l9zgd6a99s0dqwejdcq8fvnw",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 244,
     "metadata": {
@@ -4150,12 +4638,14 @@
   {
     "id": "t0cmuw8g9dzgsa53dhvvvezfpjinptmyvbkizcac4l1tc73dmiy0y35cynwooaee",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 245,
     "metadata": {
@@ -4167,12 +4657,14 @@
   {
     "id": "hn7xmsn611rsmowf1qc8wdvqu54zafcnj030jzao3o2tsfew841lpv6zt6bs9lt8",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 246,
     "metadata": {
@@ -4184,12 +4676,14 @@
   {
     "id": "6y7evfk53yecv3k3n0ptkvua0cflxz6w8oc7na23enf3pb500deyupwhmovn0sol",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 247,
     "metadata": {
@@ -4201,12 +4695,14 @@
   {
     "id": "x1kf6b88s585a8bi3l6rpsiuo84omuuzr8nxilreewyuk0rn0btc8idt3a1m5pbd",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 248,
     "metadata": {
@@ -4218,12 +4714,14 @@
   {
     "id": "bozi2t7o5ika4kwd6qvsbau1otpvdyb9t053j0saw146gt586iavu7t7jqwphnkj",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 249,
     "metadata": {
@@ -4235,12 +4733,14 @@
   {
     "id": "f18n7g6okyje7qogh3cnxst1jp8js3ngcd92i3knqo93tyoytif0vt1899xwflyh",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 250,
     "metadata": {
@@ -4252,12 +4752,14 @@
   {
     "id": "p2wrqjxmtvexpfwtodj9w8ba4js2utkyuw7qz18k1542wswa5mvpbxlqawwfjrn1",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 251,
     "metadata": {
@@ -4269,12 +4771,14 @@
   {
     "id": "zbd55vy3u6siaw7bt9fhowtyyl8y0hykty5sb1ez8hbd7pmc27m6hwxcn7gluc99",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 252,
     "metadata": {
@@ -4286,12 +4790,14 @@
   {
     "id": "egvo51nqbaq6mt1lyo8ia6v9angqn6nxgy24obhwruk3h6ktmvzswvalvkd2r070",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 253,
     "metadata": {
@@ -4303,12 +4809,14 @@
   {
     "id": "lrcydt2xvkad9agh6lltu3uc5q68jlvv8lj04nif4f56477kenpp8u45qai6742k",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 254,
     "metadata": {
@@ -4320,12 +4828,14 @@
   {
     "id": "spbaqrkyege1vg6gi25xfubwcopgc1rwt8zk5pjkujaqmq8tken59l4pikz93dxj",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 255,
     "metadata": {
@@ -4337,12 +4847,14 @@
   {
     "id": "j2wk7km1ln7gzps0chfm7mllnefq1dx89trjkl2uigjrl8tkqr6l5pazh5dmzuoa",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 256,
     "metadata": {
@@ -4354,12 +4866,14 @@
   {
     "id": "qo6tjczxk4c4deidglvik0hw7dn3i5bkxngu9p026v7d5uykyfsv7otdofyr0ao9",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 257,
     "metadata": {
@@ -4371,12 +4885,14 @@
   {
     "id": "k1dn7277wuka42197dys38olf0dp4ufu168fbijo20s87kj8cw6e6seujwyfpx62",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 258,
     "metadata": {
@@ -4388,12 +4904,14 @@
   {
     "id": "n47vl66z349ck1dppeu5u3mp7z88zidtp1aik6d4ryipqda11wyoqifoaxj6s8yo",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 259,
     "metadata": {
@@ -4405,12 +4923,14 @@
   {
     "id": "lok40m0nhasdyg0lnhs5jnd29y8pmtn4sh7xlfswyfdje78kzhsed2kxz0blbbiu",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 260,
     "metadata": {
@@ -4422,12 +4942,14 @@
   {
     "id": "t3flu0pc3muqj6n1sqhi43oiofogle3bgua4rel6jsgkmz0mgu9drg5kwmlo5m3s",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 261,
     "metadata": {
@@ -4439,12 +4961,14 @@
   {
     "id": "v1hi8nwhypl2yvrhl88j3umatg9w0hw8ffijpzauq7v23fpgdywnvhrm0ufe9qp5",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 262,
     "metadata": {
@@ -4456,12 +4980,14 @@
   {
     "id": "ewa9947slepqxw1wcy8h2jobgxe8sf923f9fiwr3tsoaw2041k14sniyymngu64m",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 263,
     "metadata": {
@@ -4473,12 +4999,14 @@
   {
     "id": "x53566sottnb33ggw281qrdkhn8filzvjopdqdvqy6p7k1x75qfm6ylibvjvz5d1",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 264,
     "metadata": {
@@ -4490,12 +5018,14 @@
   {
     "id": "detet8e6efok772dyc03i6e9zwklbzslzeocktvs15gcd9isx1pjnmtfszogzk9s",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 265,
     "metadata": {
@@ -4507,12 +5037,14 @@
   {
     "id": "log8m807xjqv10mhb152aomsln10bc618vpvmlu1yplfo9z9scetjb3f9r2erpp9",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 266,
     "metadata": {
@@ -4524,12 +5056,14 @@
   {
     "id": "oc8m1hosd5khuow51sca5pyzqgjs523z5a269tlxy9dgu99mub80ohr7205psl2h",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 267,
     "metadata": {
@@ -4541,12 +5075,14 @@
   {
     "id": "frqdyrjz4ydxwk7myvyg1a9ji6bpraj5w76wdigbp16unfladela3uszdeybabrw",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 268,
     "metadata": {
@@ -4558,12 +5094,14 @@
   {
     "id": "t9tezb0et8evs2hbd33xpay5puc3r7lab0pl88ttmo4rvczskwdm3868jund5b6g",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 269,
     "metadata": {
@@ -4575,12 +5113,14 @@
   {
     "id": "k14oyyamwggeilii0i1y12y7qwpcroqkoizo8pixtjnnzmbwo43fifltjyueilmi",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 270,
     "metadata": {
@@ -4592,12 +5132,14 @@
   {
     "id": "h85wfqvrttq0n1s5o4tkt6c06eijg6te2nvnlhwzm1png91dwh7i8ondghdwn2o6",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 271,
     "metadata": {
@@ -4609,12 +5151,14 @@
   {
     "id": "1n43hx44bnw12h8kpstdpl0gump9zu5q9j1tm5unb1cvsmnlc3kr5kswj9dnbsbj",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 272,
     "metadata": {
@@ -4626,12 +5170,14 @@
   {
     "id": "0wgka7j7mo36v7cd4b6lz717pqc367xcj92ldkct1qy3ovik8n4uqv4fh0nd78lw",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 273,
     "metadata": {
@@ -4643,12 +5189,14 @@
   {
     "id": "mu8nb81u0q9w74zwcmleo1x1w3o6ujks60yqfum8elm0xefwhekjm1rk7lzqz24x",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 274,
     "metadata": {
@@ -4660,12 +5208,14 @@
   {
     "id": "dje0tbo8n3ovpw11ve1mzq4lzqpwjsnaloxfj5tu9njz5kbh3wkjz8twaj19iyuh",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 275,
     "metadata": {
@@ -4677,12 +5227,14 @@
   {
     "id": "rqasqy4lqnrye7xgwebdxor2o2x3dlv03gronndbgejxs355gjdmm6yt74b2ddeh",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 276,
     "metadata": {
@@ -4694,12 +5246,14 @@
   {
     "id": "1v136f3ad74cmcz4gchhquijadvuyxtzm9jdeqcsgerhruppoin9v2h0oj8a1tpf",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 277,
     "metadata": {
@@ -4711,12 +5265,14 @@
   {
     "id": "lulkugfmsopz9089xsdqgxzv7c5d8z1na2qpphzczufyrasrl2ejhqsl4j79behd",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 278,
     "metadata": {
@@ -4728,12 +5284,14 @@
   {
     "id": "66934mvlothasymoxzimtrftfkukehs4xhfys1052419767gfxjx3djui98bkldm",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 279,
     "metadata": {
@@ -4745,12 +5303,14 @@
   {
     "id": "kfmqfry8debh7n2qzkto74057piir6oaw87at1celoq3p8k7fu5pyckotdrrryi0",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 280,
     "metadata": {
@@ -4762,12 +5322,14 @@
   {
     "id": "wpnjwhavhpr25g2o1zdhov3ilgnurngl1loffizk06j6kdzg8gea7v1d3zxkh5dw",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 281,
     "metadata": {
@@ -4779,12 +5341,14 @@
   {
     "id": "3p1ezyw6k8yso8hk0i7u2z2tyy7cw5uw4h5grvn0p9oqogsbhynibtqaohflrco0",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 282,
     "metadata": {
@@ -4796,12 +5360,14 @@
   {
     "id": "z5uasgq0q9j4xls9we4hfc85f1v3wlvsvohmjfwzbzeonv3p5ma3g767cp5kzc03",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 283,
     "metadata": {
@@ -4813,12 +5379,14 @@
   {
     "id": "pqtr5cwzq2ind6j0hp90crph0029gpsydwbem3w6f0ounbxldci9xvaigt8d8q0x",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 284,
     "metadata": {
@@ -4830,12 +5398,14 @@
   {
     "id": "47ldyw87rf6oocydhoqh6ec3kekict9znwrh7gw4m5jl5rmgyeblcccwhxhi9wkl",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 285,
     "metadata": {
@@ -4847,12 +5417,14 @@
   {
     "id": "98earacbl12eh32q5cv0yy77vnztp3yo87o52ldhkze75ki0a2y707wuec2srau8",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 286,
     "metadata": {
@@ -4864,12 +5436,14 @@
   {
     "id": "xr8706eee4yihk1lgwawwn76815d5qg1ioehselytfk0wdi2qb75tlhq07owgge0",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 287,
     "metadata": {
@@ -4881,12 +5455,14 @@
   {
     "id": "wb63xprfuys69pzgf1nrep33l2gm45omcyk62bvejclj7c7kqwrcy6bxwfwfg3wc",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 288,
     "metadata": {
@@ -4898,12 +5474,14 @@
   {
     "id": "sivirw1vhdq50644v8s80c8blupi9p3ezb4xavhq4qyzz8crqv07j69zelld3e3n",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 289,
     "metadata": {
@@ -4915,12 +5493,14 @@
   {
     "id": "74zxl7n463p0a5mq89kk1el35juxck3d34o0yopffu8whadfpy5tzg4h910no9be",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 290,
     "metadata": {
@@ -4932,12 +5512,14 @@
   {
     "id": "zaemwekmgwdj6gqgzxjgq0obzis6ukw194vvytd35406qyl1ozgall47q1w7ghze",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 291,
     "metadata": {
@@ -4949,12 +5531,14 @@
   {
     "id": "rwgq2f309jbml5xrdeqyzz15304sx0ltwsrbjfjia5jtksqt6sk7p567fmp3loct",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 292,
     "metadata": {
@@ -4966,12 +5550,14 @@
   {
     "id": "fbuzp7xll996sy29vl5c4asvz24o6cpe8dqaly8s9e9yemr8jdcuo6zsx8o8fcqq",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 293,
     "metadata": {
@@ -4983,12 +5569,14 @@
   {
     "id": "75qmwmn08hlmqi1j6hmq1b04py81dcubyc32gz3uraulrcidulg4393eq36fpife",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 294,
     "metadata": {
@@ -5000,12 +5588,14 @@
   {
     "id": "do5ixgj3lqt70y1hw6cs3b4ufx9bim85boo9kkqhtkd8keo46g0ft6is0ie98spa",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 295,
     "metadata": {
@@ -5017,12 +5607,14 @@
   {
     "id": "11697qhdqe1l8pvpxjbj4uw7oxpzvgyg6ru4jo34pg93oq3th5agvg0vs5rvuhfl",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 296,
     "metadata": {
@@ -5034,12 +5626,14 @@
   {
     "id": "71mrhyt8qniskuxht9ehwsmhkoywnky7waxotlegjc1jz1gtpnzxg1me03q91bs8",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 297,
     "metadata": {
@@ -5051,12 +5645,14 @@
   {
     "id": "l9uj4bf2ehq88udospjx0pzd5wvxspjlzu36yhzalzz1luymmzzx40i0o4csqzu4",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 298,
     "metadata": {
@@ -5068,12 +5664,14 @@
   {
     "id": "pg1akslfqw9okqa1x6434tvvi2tf713y06f30kxm2fgq54mfb4icdatxq2xgvwvs",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 299,
     "metadata": {
@@ -5085,12 +5683,14 @@
   {
     "id": "bp3ewas5fw5su3d2gbd28hnyhfehvhhxjxnuoaeu4lpsdfhr7mni5asuy0rblrl3",
     "metrics": {
-      "quantity": 1,
-      "unit": "lovelace"
-    },
-    "produced_blocks": {
-      "quantity": 1234,
-      "unit": "block"
+      "controlled_stake": {
+        "quantity": 1,
+        "unit": "lovelace"
+      },
+      "produced_blocks": {
+        "quantity": 1234,
+        "unit": "block"
+      }
     },
     "apparent_performance": 300,
     "metadata": {

@@ -18,7 +18,7 @@ import styles from './DelegationStepsChooseStakePoolDialog.scss';
 import checkmarkImage from '../../../assets/images/check-w.inline.svg';
 import { getColorFromRange } from '../../../utils/colors';
 
-import type { StakePool, StakePoolsListType } from '../../../api/staking/types';
+import StakePool from '../../../domains/StakePool';
 
 const messages = defineMessages({
   title: {
@@ -165,7 +165,7 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
       );
       const blockLabel = get(
         selectedPool,
-        'slug',
+        'ticker',
         intl.formatMessage(messages.selectPoolPlaceholder)
       );
 
@@ -205,7 +205,7 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
       />
     );
 
-    const filteredStakePoolsList: StakePoolsListType = getFilteredStakePoolsList(
+    const filteredStakePoolsList: Array<StakePool> = getFilteredStakePoolsList(
       stakePoolsList,
       searchValue
     );

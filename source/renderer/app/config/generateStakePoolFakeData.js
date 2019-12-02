@@ -7,7 +7,7 @@ function generatStakePoolsFakeData() {
   for (let i = 1; i <= 300; i++) {
     const ranking = i;
     const id = faker.random.alphaNumeric(64);
-    const slug = faker.helpers.replaceSymbols('????');
+    const ticker = faker.helpers.replaceSymbols('????');
     const name = faker.name.findName();
     const description = faker.lorem.words();
     const url = faker.internet.url();
@@ -20,7 +20,7 @@ function generatStakePoolsFakeData() {
     stakePools.push({
       ranking,
       id,
-      slug,
+      ticker,
       name,
       description,
       url,

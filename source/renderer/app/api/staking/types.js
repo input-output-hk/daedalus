@@ -1,5 +1,6 @@
 // @flow
 import BigNumber from 'bignumber.js';
+import StakePool from '../../domains/StakePool';
 
 export type AdaApiStakePool = {
   id: string,
@@ -21,8 +22,6 @@ export type AdaApiStakePool = {
   },
 };
 export type AdaApiStakePools = Array<AdaApiStakePool>;
-
-export type StakePoolsListType = Array<any>;
 
 export type Reward = {
   date: string,

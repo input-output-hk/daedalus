@@ -7,7 +7,7 @@ import { StakePoolsSearch } from './StakePoolsSearch';
 import BackToTopButton from '../../widgets/BackToTopButton';
 import styles from './StakePools.scss';
 import { getFilteredStakePoolsList } from './helpers';
-import type { StakePoolsListType } from '../../../api/staking/types';
+import StakePool from '../../../domains/StakePool';
 
 const messages = defineMessages({
   delegatingListTitle: {
@@ -28,8 +28,8 @@ const messages = defineMessages({
 });
 
 type Props = {
-  stakePoolsDelegatingList: StakePoolsListType,
-  stakePoolsList: StakePoolsListType,
+  stakePoolsDelegatingList: Array<StakePool>,
+  stakePoolsList: Array<StakePool>,
   onOpenExternalLink: Function,
   currentTheme: string,
   onDelegate: Function,
@@ -76,7 +76,7 @@ export default class StakePools extends Component<Props, State> {
     } = this.props;
     const { search, selectedList } = this.state;
 
-    const filteredStakePoolsList: StakePoolsListType = getFilteredStakePoolsList(
+    const filteredStakePoolsList: Array<StakePool> = getFilteredStakePoolsList(
       stakePoolsList,
       search
     );

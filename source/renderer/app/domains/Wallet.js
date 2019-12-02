@@ -8,7 +8,7 @@ import type {
   DelegationStatus,
   WalletUnit,
 } from '../api/wallets/types';
-import type { StakePool } from '../api/staking/types';
+import type StakePool from './StakePool';
 
 export const WalletSyncStateStatuses: {
   RESTORING: SyncStateStatus,

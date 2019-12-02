@@ -9,7 +9,7 @@ import moment from 'moment';
 import SVGInline from 'react-svg-inline';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import styles from './StakePoolTooltip.scss';
-import type { StakePool } from '../../../api/staking/types';
+import StakePool from '../../../domains/StakePool';
 import closeCross from '../../../assets/images/close-cross.inline.svg';
 import externalLinkIcon from '../../../assets/images/link-ic.inline.svg';
 import { getColorFromRange } from '../../../utils/colors';
@@ -351,8 +351,8 @@ export default class StakePoolTooltip extends Component<Props, State> {
     const {
       name,
       description,
-      slug,
-      url,
+      ticker,
+      homepage,
       ranking,
       controlledStake,
       profitMargin,
@@ -390,7 +390,7 @@ export default class StakePoolTooltip extends Component<Props, State> {
           <button className={styles.closeButton} onClick={onClick}>
             <SVGInline svg={closeCross} />
           </button>
-          <div className={styles.slug}>{slug}</div>
+          <div className={styles.ticker}>{ticker}</div>
           {retiring && (
             <div className={styles.retirement}>
               <FormattedMessage
@@ -401,10 +401,10 @@ export default class StakePoolTooltip extends Component<Props, State> {
           )}
           <div className={styles.description}>{description}</div>
           <button
-            className={styles.url}
-            onClick={() => onOpenExternalLink(url)}
+            className={styles.homepage}
+            onClick={() => onOpenExternalLink(homepage)}
           >
-            <span className={styles.urlContent}>{url}</span>
+            <span className={styles.homepageContent}>{homepage}</span>
             <SVGInline svg={externalLinkIcon} />
           </button>
           <dl className={styles.table}>

@@ -127,13 +127,14 @@ export const DARK_CARDANO_THEME_OUTPUT = {
       'rgba(255, 255, 255, 0.2)',
     '--theme-delegation-steps-choose-stake-pool-delegated-pools-label-color':
       '#ffffff',
-    '--theme-delegation-steps-choose-stake-pool-slug-color':
+    '--theme-delegation-steps-choose-stake-pool-ticker-color':
       'rgba(255, 255, 255, 0.2)',
     '--theme-delegation-steps-choose-stake-pool-select-box-placeholder-color':
       'rgba(255, 255, 255, 0.2)',
     '--theme-delegation-steps-choose-stake-pool-selected-checkmark-icon-color':
       '#ffffff',
-    '--theme-delegation-steps-choose-stake-pool-selected-slug-color': '#ffffff',
+    '--theme-delegation-steps-choose-stake-pool-selected-ticker-color':
+      '#ffffff',
     '--theme-delegation-steps-choose-stake-pool-thumb-background-color':
       'rgba(42, 43, 60, 1)',
     '--theme-delegation-steps-choose-stake-pool-thumb-border-color':
@@ -147,7 +148,7 @@ export const DARK_CARDANO_THEME_OUTPUT = {
       '0 5px 20px 0 rgba(0, 0, 0, 0.25)',
     '--theme-delegation-steps-choose-stake-pool-tooltip-description-color':
       '#ffffff',
-    '--theme-delegation-steps-choose-stake-pool-tooltip-slug-color':
+    '--theme-delegation-steps-choose-stake-pool-tooltip-ticker-color':
       '#ffffff99',
     '--theme-delegation-steps-choose-stake-pool-tooltip-table-label-color':
       '#ffffff',
@@ -641,8 +642,8 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--theme-staking-stake-pools-search-icon-color': '#ffffff',
     '--theme-staking-stake-pool-selected-background-color': '#5da377',
     '--theme-staking-stake-pool-selected-checkmark-icon-color': '#ffffff',
-    '--theme-staking-stake-pool-selected-slug-color': '#ffffff',
-    '--theme-staking-stake-pool-slug-color': '#ffffff',
+    '--theme-staking-stake-pool-selected-ticker-color': '#ffffff',
+    '--theme-staking-stake-pool-ticker-color': '#ffffff',
     '--theme-staking-stake-pool-retirement-background-color': '#ea4c5b',
     '--theme-staking-stake-pool-tooltip-background-color':
       'rgba(42, 43, 60, 0.98)',

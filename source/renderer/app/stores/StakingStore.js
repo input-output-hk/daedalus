@@ -91,7 +91,8 @@ export default class StakingStore extends Store {
 
   @action refreshStakePoolsData = async () => {
     const { isSynced, isConnected } = this.stores.networkStatus;
-    if (this._pollingBlocked || !isSynced || !isConnected) return;
+    if (this.stores.wallets._pollingBlocked || !isSynced || !isConnected)
+      return;
     await this.stakePoolsRequest.execute().promise;
   };
 

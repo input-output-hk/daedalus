@@ -63,7 +63,7 @@ const messages = defineMessages({
     id: 'staking.delegationCenter.toStakePoolSlug',
     defaultMessage: '!!!To <b>[{delegatedStakePoolSlug}]</b> stake pool',
     description:
-      'Delegated stake pool slug for the Delegation center body section.',
+      'Delegated stake pool ticker for the Delegation center body section.',
   },
   delegate: {
     id: 'staking.delegationCenter.delegate',
@@ -184,7 +184,7 @@ export default class WalletRow extends Component<Props> {
                 <FormattedHTMLMessage
                   {...messages.toStakePoolSlug}
                   values={{
-                    delegatedStakePoolSlug: delegatedStakePool.slug,
+                    delegatedStakePoolSlug: delegatedStakePool.ticker,
                   }}
                 />
               ) : (

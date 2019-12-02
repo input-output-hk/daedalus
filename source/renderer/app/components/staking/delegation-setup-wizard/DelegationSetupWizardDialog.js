@@ -8,7 +8,7 @@ import DelegationStepsConfirmationDialog from './DelegationStepsConfirmationDial
 import DelegationStepsIntroDialog from './DelegationStepsIntroDialog';
 import DelegationStepsNotAvailableDialog from './DelegationStepsNotAvailableDialog';
 import DelegationStepsChooseStakePoolDialog from './DelegationStepsChooseStakePoolDialog';
-import type { StakePool } from '../../../api/staking/types';
+import StakePool from '../../../domains/StakePool';
 import Wallet from '../../../domains/Wallet';
 
 type Props = {

@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { debounce } from 'lodash';
 import styles from './StakePoolsList.scss';
-import type { StakePool } from '../../../api/staking/types';
+import StakePool from '../../../domains/StakePool';
 import { StakePoolThumbnail } from './StakePoolThumbnail';
 
 type Props = {
