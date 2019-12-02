@@ -13,7 +13,7 @@ type Props = {
   activeItem: string,
   icon?: string,
   isActive: boolean,
-  options?: Array<{ value: number | string, label: string }>,
+  options: Array<{ value: number | string, label: string }>,
   onChange: Function,
   hasNotification?: boolean,
 };
@@ -49,9 +49,13 @@ export default class NavDropdown extends Component<Props> {
           onItemSelected={({ value }) => {
             onChange(value);
           }}
+          optionRenderer={(o) => (
+            <div className={styles.optionLabel}>{o.label}</div>
+          )}
           items={options}
-          activeItem={activeItem}
+          activeItem={options.find(o => o.value === activeItem)}
           noArrow
+          isOpen
         />
       </div>
     );
