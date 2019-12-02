@@ -8,22 +8,11 @@ import { BigNumber } from 'bignumber.js';
 import { set } from 'lodash';
 import TransferFundsStep1Dialog from '../../../../source/renderer/app/components/wallet/transfer-funds/TransferFundsStep1Dialog';
 import TransferFundsStep2Dialog from '../../../../source/renderer/app/components/wallet/transfer-funds/TransferFundsStep2Dialog';
+import { WALLETS_V2 } from '../../_support/StoryProvider';
+import STAKE_POOLS from '../../../../source/renderer/app/config/stakingStakePools.dummy.json';
 
 // Helpers
 import WalletsWrapper from '../_utils/WalletsWrapper';
-
-const wallets = [
-  {
-    id: '1',
-    name: 'Wallet 1',
-    amount: new BigNumber(faker.finance.amount()),
-  },
-  {
-    id: '2',
-    name: 'Wallet 2',
-    amount: new BigNumber(faker.finance.amount()),
-  },
-];
 
 const addresses = [
   [
@@ -154,14 +143,14 @@ const addresses = [
   ],
 ];
 
-const walletOptions = wallets.reduce(
+const walletOptions = WALLETS_V2.reduce(
   (options, wallet) => ({
     ...options,
     ...set({}, wallet.name, wallet),
   }),
   {}
 );
-const walletIdOptions = wallets.reduce(
+const walletIdOptions = WALLETS_V2.reduce(
   (options, wallet) => ({
     ...options,
     ...set({}, wallet.name, wallet.id),
@@ -178,7 +167,7 @@ storiesOf('Wallets|Transfer Funds', module)
     const sourceWalletSelect = select(
       'sourceWallet',
       walletOptions,
-      wallets[1]
+      WALLETS_V2[1]
     );
     const sourceWallet = {
       ...sourceWalletSelect,
@@ -193,9 +182,10 @@ storiesOf('Wallets|Transfer Funds', module)
         targetWalletId={select(
           'targetWalletId',
           walletIdOptions,
-          wallets[0].id
+          WALLETS_V2[0].id
         )}
-        wallets={wallets}
+        wallets={WALLETS_V2}
+        numberOfStakePools={STAKE_POOLS}
       />
     );
   })
@@ -203,12 +193,12 @@ storiesOf('Wallets|Transfer Funds', module)
     const sourceWalletSelect = select(
       'sourceWallet',
       walletOptions,
-      wallets[1]
+      WALLETS_V2[1]
     );
     const targetWalletSelect = select(
       'targetWallet',
       walletOptions,
-      wallets[0]
+      WALLETS_V2[0]
     );
     const sourceWallet = {
       ...sourceWalletSelect,

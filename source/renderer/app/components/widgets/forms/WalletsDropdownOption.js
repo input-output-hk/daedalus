@@ -6,7 +6,7 @@ import styles from './WalletsDropdownOption.scss';
 import type { StakePool } from '../../../api/staking/types';
 
 export type WalletOption = {
-  activeDelegation?: StakePool,
+  delegatedStakePool?: ?StakePool,
   detail: string,
   label: string,
   numberOfStakePools?: number,
@@ -15,12 +15,12 @@ export type WalletOption = {
 
 export default class WalletsDropdownOption extends Component<WalletOption> {
   renderLabelAndSlug = () => {
-    const { activeDelegation, label, numberOfStakePools } = this.props;
-    if (!activeDelegation || !numberOfStakePools) {
+    const { delegatedStakePool, label, numberOfStakePools } = this.props;
+    if (!delegatedStakePool || !numberOfStakePools) {
       return <div className={styles.label}>{label}</div>;
     }
 
-    const { ranking, slug } = activeDelegation;
+    const { ranking, slug } = delegatedStakePool;
     const color = getColorFromRange(ranking, numberOfStakePools);
     return (
       <div className={styles.topRow}>

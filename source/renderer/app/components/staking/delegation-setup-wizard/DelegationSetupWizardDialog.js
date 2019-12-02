@@ -75,7 +75,6 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
         content = (
           <DelegationStepsChooseWalletDialog
             numberOfStakePools={stakePoolsList.length}
-            stakePoolsDelegatingList={stakePoolsDelegatingList}
             stepsList={stepsList}
             wallets={wallets}
             minDelegationFunds={minDelegationFunds}

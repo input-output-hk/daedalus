@@ -21,6 +21,7 @@ export default class TransferFundsStep1Container extends Component<Props> {
       allLegacyWallets,
       allWallets,
     } = stores.wallets;
+    const { stakePools } = stores.staking;
     const { transferFundsSetTargetWalletId } = actions.wallets;
     const sourceWallet = allLegacyWallets.find(
       ({ id }) => id === transferFundsSourceWalletId
@@ -36,6 +37,7 @@ export default class TransferFundsStep1Container extends Component<Props> {
         onSetSourceWallet={(targetWalletId: string) =>
           transferFundsSetTargetWalletId.trigger({ targetWalletId })
         }
+        numberOfStakePools={stakePools.length}
       />
     );
   }
