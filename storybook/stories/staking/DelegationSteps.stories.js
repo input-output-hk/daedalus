@@ -48,6 +48,15 @@ export class StakingDelegationSteps extends Component<Props, State> {
   };
 
   get dialogs() {
+    const stakePoolsList = STAKE_POOLS.slice(
+      0,
+      number('Pools', 100, {
+        range: true,
+        min: 37,
+        max: 300,
+        step: 1,
+      })
+    );
     return [
       <DelegationStepsIntroDialog
         key="DelegationStepsIntroDialog"
@@ -57,7 +66,7 @@ export class StakingDelegationSteps extends Component<Props, State> {
       />,
       <DelegationStepsChooseWalletDialog
         key="DelegationStepsChooseWalletDialog"
-        numberOfStakePools={STAKE_POOLS.length}
+        numberOfStakePools={stakePoolsList.length}
         stepsList={getDelegationWizardStepsList(this.props.locale)}
         onClose={action('onClose')}
         onSelectWallet={this.onContinue}
@@ -70,15 +79,7 @@ export class StakingDelegationSteps extends Component<Props, State> {
       <DelegationStepsChooseStakePoolDialog
         key="DelegationStepsChooseStakePoolDialog"
         stepsList={getDelegationWizardStepsList(this.props.locale)}
-        stakePoolsList={STAKE_POOLS.slice(
-          0,
-          number('Pools', 100, {
-            range: true,
-            min: 37,
-            max: 300,
-            step: 1,
-          })
-        )}
+        stakePoolsList={stakePoolsList}
         stakePoolsDelegatingList={[
           STAKE_POOLS[0],
           STAKE_POOLS[13],
