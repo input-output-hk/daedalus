@@ -690,8 +690,8 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
           <table className={styles.table}>
             <tbody>
               {getSectionRow('daedalusStatus')}
-              {getRow('synced', isConnected)}
-              {getRow('connected', isSynced)}
+              {getRow('connected', isConnected)}
+              {getRow('synced', isSynced)}
               {getRow(
                 'syncPercentage',
                 `${new BigNumber(
