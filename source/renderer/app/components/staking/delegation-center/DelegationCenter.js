@@ -4,6 +4,7 @@ import { observer } from 'mobx-react';
 import DelegationCenterHeader from './DelegationCenterHeader';
 import DelegationCenterBody from './DelegationCenterBody';
 import Wallet from '../../../domains/Wallet';
+import type { TipInfo } from '../../../api/network/types';
 
 type Props = {
   wallets: Array<Wallet>,
@@ -11,6 +12,7 @@ type Props = {
   numberOfStakePools: number,
   startDateTime: string,
   redirectToStakingInfo: Function,
+  networkTip: ?TipInfo,
 };
 
 @observer
@@ -22,6 +24,7 @@ export default class DelegationCenter extends Component<Props> {
       numberOfStakePools,
       startDateTime,
       redirectToStakingInfo,
+      networkTip,
     } = this.props;
 
     return (
@@ -29,6 +32,7 @@ export default class DelegationCenter extends Component<Props> {
         <DelegationCenterHeader
           redirectToStakingInfo={redirectToStakingInfo}
           startDateTime={startDateTime}
+          networkTip={networkTip}
         />
         <DelegationCenterBody
           wallets={wallets}

@@ -9,6 +9,7 @@ import {
   WalletRecoveryPhraseVerificationStatuses,
   WalletRecoveryPhraseVerificationTypes,
 } from '../../../source/renderer/app/stores/WalletsStore';
+import type { TipInfo } from '../../../source/renderer/app/api/network/types';
 
 const walletSyncedStateReady = { status: 'ready' };
 
@@ -20,8 +21,12 @@ const walletSyncedStateRestoring = {
   },
 };
 
-const startDateTime: string = '"2019-12-26T00:00:00.161Z"';
+const startDateTime: string = '2019-12-26T00:00:00.161Z';
 const redirectToStakingInfo: Function = null;
+const networkTip: TipInfo = {
+  epoch: 12352,
+  slot: 123,
+};
 
 // Dummy data initialization
 const wallets = [
@@ -96,5 +101,6 @@ export const StakingDelegationCenterStory = () => (
     wallets={wallets}
     onDelegate={action('onDelegate')}
     numberOfStakePools={STAKE_POOLS.length}
+    networkTip={networkTip}
   />
 );
