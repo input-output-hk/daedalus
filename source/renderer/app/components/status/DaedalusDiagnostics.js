@@ -422,7 +422,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
     return (
       <tr>
         <th className={styles.sectionTitle} colSpan={2}>
-          <span>{this.context.intl.formatMessage(messageId)}</span>
+          <span>{this.context.intl.formatMessage(messages[messageId])}</span>
           {content}
           <hr />
         </th>
@@ -787,7 +787,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
             </tbody>
             <tbody>
               {getSectionRow(
-                messages.cardanoNodeStatus,
+                'cardanoNodeStatus',
                 <button
                   className={styles.cardanoNodeStatusBtn}
                   onClick={() => this.restartNode()}
