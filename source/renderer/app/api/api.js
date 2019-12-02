@@ -54,6 +54,13 @@ import { getWalletIdAndBalance } from './wallets/requests/getWalletIdAndBalance'
 import { transferFundsCalculateFee } from './wallets/requests/transferFundsCalculateFee';
 import { transferFunds } from './wallets/requests/transferFunds';
 
+// Staking
+import StakePool from '../domains/StakePool';
+// import { getStakePools } from './staking/requests/getStakePools';
+import { AdaApiStakePools } from './staking/types';
+import stakePoolsRawApiDummyData from '../config/stakingStakePoolsRawApi.dummy.json';
+import stakingStakePoolsMissingApiData from '../config/stakingStakePoolsMissingApiData.dummy.json';
+
 // News requests
 import { getNews } from './news/requests/getNews';
 
@@ -1043,6 +1050,43 @@ export default class AdaApi {
       if (error.code === 'wrong_encryption_passphrase') {
         throw new IncorrectSpendingPasswordError();
       }
+      throw new GenericApiError();
+    }
+  };
+
+  getStakePools = async (): Promise<Array<StakePool>> => {
+    Logger.debug('AdaApi::getStakePools called');
+    try {
+      const stakePools: AdaApiStakePools = stakePoolsRawApiDummyData;
+      // API TODO: Uncomment once the API is returning the correct data
+      // stakePools = await getStakePools(this.config);
+      Logger.debug('AdaApi::getStakePools success');
+      return stakePools.map(
+        (stakePool: AdaApiStakePool, index: number) =>
+          new StakePool({
+            // DATA FROM THE API
+            id: stakePool.id,
+            ticker: stakePool.metadata.string,
+            homepage: stakePool.metadata.string,
+            pledgeAddress: stakePool.metadata.string,
+            performance: stakePool.apparent_performance,
+            metrics: stakePool.metrics.quantity,
+            producedBlocks: stakePool.produced_blocks.quantity,
+            // MISSING DATA FROM THE API
+            controlledStake:
+              stakingStakePoolsMissingApiData[index]._controlledStake,
+            createdAt: stakingStakePoolsMissingApiData[index]._created_at,
+            description: stakingStakePoolsMissingApiData[index]._description,
+            isCharity: stakingStakePoolsMissingApiData[index]._isCharity,
+            name: stakingStakePoolsMissingApiData[index]._name,
+            profitMargin: stakingStakePoolsMissingApiData[index]._profitMargin,
+            ranking: stakingStakePoolsMissingApiData[index]._ranking,
+            retiring: stakingStakePoolsMissingApiData[index]._retiring,
+          })
+      );
+    } catch (error) {
+      console.log('error', error);
+      Logger.error('AdaApi::getStakePools error', { error });
       throw new GenericApiError();
     }
   };
