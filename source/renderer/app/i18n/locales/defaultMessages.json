@@ -2406,7 +2406,7 @@
       },
       {
         "defaultMessage": "!!!To <b>[{delegatedStakePoolSlug}]</b> stake pool",
-        "description": "Delegated stake pool slug for the Delegation center body section.",
+        "description": "Delegated stake pool ticker for the Delegation center body section.",
         "end": {
           "column": 3,
           "line": 67
