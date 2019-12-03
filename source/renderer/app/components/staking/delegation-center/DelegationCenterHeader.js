@@ -92,23 +92,24 @@ export default class DelegationCenterHeader extends Component<Props> {
     const includeDotsDelimeter =
       !includeSlashDelimeter && index !== values.length - 1;
     const labelStr = labels[index];
-    let valueStr = value.toString();
+    const valueStr = value.toString();
+    let zeroValues = '';
     if (index === 1 && valueStr.length < values[index + 1].toString().length) {
       const zerosToAdd =
         parseInt(values[index + 1].toString().length, 10) -
         parseInt(valueStr.length, 10);
       switch (zerosToAdd) {
         case 1:
-          valueStr = `0${valueStr}`;
+          zeroValues = '0';
           break;
         case 2:
-          valueStr = `00${valueStr}`;
+          zeroValues = '00';
           break;
         case 3:
-          valueStr = `000${valueStr}`;
+          zeroValues = '000';
           break;
         case 4:
-          valueStr = `0000${valueStr}`;
+          zeroValues = '0000';
           break;
         default:
           break;
@@ -119,7 +120,10 @@ export default class DelegationCenterHeader extends Component<Props> {
       <div className={styles.fieldPanel}>
         <div className={styles.left}>
           <div className={styles.fieldLabel}>{labelStr}</div>
-          <div className={styles.fieldValue}>{valueStr}</div>
+          <div className={styles.fieldValue}>
+            {zeroValues && <span>{zeroValues}</span>}
+            {valueStr}
+          </div>
         </div>
         {includeDotsDelimeter && (
           <div className={styles.right}>
