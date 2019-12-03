@@ -9972,129 +9972,59 @@
         }
       },
       {
-        "defaultMessage": "!!!Incentivized Testnet",
-        "description": "\"itn\" Cardano network",
+        "defaultMessage": "!!!Incentivized Testnet v1 - Rewards",
+        "description": "\"itn_rewards_v1\" Cardano network",
         "end": {
           "column": 3,
           "line": 201
         },
         "file": "source/renderer/app/i18n/global-messages.js",
-        "id": "environment.network.itn",
+        "id": "environment.network.itn_rewards_v1",
         "start": {
-          "column": 15,
+          "column": 26,
           "line": 197
         }
       },
       {
-        "defaultMessage": "!!!Incentivized Testnet v1 - Rewards",
-        "description": "\"itn_rewards_v1\" Cardano network",
+        "defaultMessage": "!!!SelfNode",
+        "description": "\"selfnode\" Cardano network",
         "end": {
           "column": 3,
           "line": 206
         },
         "file": "source/renderer/app/i18n/global-messages.js",
-        "id": "environment.network.itn_rewards_v1",
+        "id": "environment.network.selfnode",
         "start": {
-          "column": 26,
+          "column": 20,
           "line": 202
         }
       },
       {
-        "defaultMessage": "!!!Incentivized Testnet v1 - Rewards (Selfnode)",
-        "description": "\"itn_rewards_v1_selfnode\" Cardano network",
+        "defaultMessage": "!!!QA",
+        "description": "\"qa\" Cardano network",
         "end": {
           "column": 3,
           "line": 211
         },
         "file": "source/renderer/app/i18n/global-messages.js",
-        "id": "environment.network.itn_rewards_v1_selfnode",
+        "id": "environment.network.qa",
         "start": {
-          "column": 35,
+          "column": 14,
           "line": 207
         }
       },
       {
-        "defaultMessage": "!!!Incentivized Testnet v1 - Rewards (Qa)",
-        "description": "\"itn_rewards_v1_qa\" Cardano network",
+        "defaultMessage": "!!!Nightly",
+        "description": "\"nightly\" Cardano network",
         "end": {
           "column": 3,
           "line": 216
         },
         "file": "source/renderer/app/i18n/global-messages.js",
-        "id": "environment.network.itn_rewards_v1_qa",
+        "id": "environment.network.nightly",
         "start": {
-          "column": 29,
+          "column": 19,
           "line": 212
-        }
-      },
-      {
-        "defaultMessage": "!!!Incentivized Testnet v1 - Rewards (Nightly)",
-        "description": "\"itn_rewards_v1_nightly\" Cardano network",
-        "end": {
-          "column": 3,
-          "line": 221
-        },
-        "file": "source/renderer/app/i18n/global-messages.js",
-        "id": "environment.network.itn_rewards_v1_nightly",
-        "start": {
-          "column": 34,
-          "line": 217
-        }
-      },
-      {
-        "defaultMessage": "!!!Incentivized Testnet v1 - Rewards",
-        "description": "\"itn_rewards\" Cardano network",
-        "end": {
-          "column": 3,
-          "line": 226
-        },
-        "file": "source/renderer/app/i18n/global-messages.js",
-        "id": "environment.network.itn_rewards",
-        "start": {
-          "column": 23,
-          "line": 222
-        }
-      },
-      {
-        "defaultMessage": "!!!Incentivized Testnet v1 - Rewards (Selfnode)",
-        "description": "\"itn_rewards_selfnode\" Cardano network",
-        "end": {
-          "column": 3,
-          "line": 231
-        },
-        "file": "source/renderer/app/i18n/global-messages.js",
-        "id": "environment.network.itn_rewards_selfnode",
-        "start": {
-          "column": 32,
-          "line": 227
-        }
-      },
-      {
-        "defaultMessage": "!!!Incentivized Testnet v1 - Rewards (Qa)",
-        "description": "\"itn_rewards_qa\" Cardano network",
-        "end": {
-          "column": 3,
-          "line": 236
-        },
-        "file": "source/renderer/app/i18n/global-messages.js",
-        "id": "environment.network.itn_rewards_qa",
-        "start": {
-          "column": 26,
-          "line": 232
-        }
-      },
-      {
-        "defaultMessage": "!!!Incentivized Testnet v1 - Rewards (Nightly)",
-        "description": "\"itn_rewards_nightly\" Cardano network",
-        "end": {
-          "column": 3,
-          "line": 241
-        },
-        "file": "source/renderer/app/i18n/global-messages.js",
-        "id": "environment.network.itn_rewards_nightly",
-        "start": {
-          "column": 31,
-          "line": 237
         }
       }
     ],
