@@ -1076,13 +1076,13 @@ export default class AdaApi {
         } = metrics;
         const { ticker, homepage, pledge_address: pledgeAddress } = metadata;
         const {
-          _created_at: createdAt,
-          _description: description,
-          _isCharity: isCharity,
-          _name: name,
-          _profitMargin: profitMargin,
-          _ranking: ranking,
-          _retiring: retiring,
+          created_at: createdAt,
+          description,
+          isCharity,
+          name,
+          profitMargin,
+          ranking,
+          retiring,
         } = stakingStakePoolsMissingApiData[index];
         return new StakePool({
           // DATA FROM THE API
