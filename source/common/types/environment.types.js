@@ -1,6 +1,6 @@
 // @flow
 export type Environment = {
-  network: string,
+  network: Network,
   rawNetwork: string,
   apiVersion: string,
   mobxDevTools: boolean | string,
@@ -38,7 +38,7 @@ export const DEVELOPMENT = 'development';
 export const TEST = 'test';
 export const MAINNET = 'mainnet';
 export const NIGHTLY = 'nightly';
-export const ITN_BALANCE_CHECK = 'itn_balance_check';
+export const ITN_REWARDS_V1 = 'itn_rewards_v1';
 export const QA = 'qa';
 export const SELFNODE = 'selfnode';
 export const STAGING = 'staging';
@@ -52,10 +52,25 @@ export const OS_NAMES = {
   [LINUX]: 'Linux',
 };
 
+export type Network =
+  | 'mainnet'
+  | 'staging'
+  | 'testnet'
+  | 'development'
+  | 'itn'
+  | 'itn_rewards_v1'
+  | 'itn_rewards_v1_selfnode'
+  | 'itn_rewards_v1_qa'
+  | 'itn_rewards_v1_nightly'
+  | 'itn_rewards'
+  | 'itn_rewards_selfnode'
+  | 'itn_rewards_qa'
+  | 'itn_rewards_nightly';
+
 export const networkPrettyNames = {
   mainnet: 'Mainnet',
   staging: 'Staging',
   testnet: 'Testnet',
   development: 'Development',
-  itn_balance_check: 'Incentivized Testnet - Balance check',
+  itn_rewards_v1: 'Incentivized Testnet v1 - Rewards',
 };

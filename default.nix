@@ -180,7 +180,7 @@ let
         staging = "Daedalus Staging";
         testnet = "Daedalus Testnet";
         nightly = "Daedalus Nightly";
-        itn_balance_check = "Daedalus - Balance check";
+        itn_rewards_v1 = "Daedalus - Rewards v1";
         qa = "Daedalus QA";
         selfnode = "Daedalus SelfNode";
       };
@@ -327,9 +327,9 @@ let
         small = ./installers/icons/nightly/64x64.png;
         large = ./installers/icons/nightly/1024x1024.png;
       };
-      itn_balance_check = {
-        small = ./installers/icons/itn_balance_check/64x64.png;
-        large = ./installers/icons/itn_balance_check/1024x1024.png;
+      itn_rewards_v1 = {
+        small = ./installers/icons/itn_rewards_v1/64x64.png;
+        large = ./installers/icons/itn_rewards_v1/1024x1024.png;
       };
     };
     namespaceHelper = pkgs.writeScriptBin "namespaceHelper" ''

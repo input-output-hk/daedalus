@@ -5,6 +5,7 @@ import type {
 } from '../types/bug-report-request.types';
 import type { GenerateFileMetaParams } from '../types/file-meta-request.types';
 import type { GeneratePaperWalletParams } from '../types/paper-wallet-request.types';
+import type { GenerateAddressPDFParams } from '../types/address-pdf-request.types';
 import type { GenerateRewardsCsvParams } from '../types/rewards-csv-request.types';
 import type {
   CardanoNodeState,
@@ -135,6 +136,13 @@ export type GenerateFileMetaMainResponse = any;
 export const GENERATE_PAPER_WALLET_CHANNEL = 'GENERATE_PAPER_WALLET_CHANNEL';
 export type GeneratePaperWalletRendererRequest = GeneratePaperWalletParams;
 export type GeneratePaperWalletMainResponse = void;
+
+/**
+ * Channel to generate and save a share address PDF
+ */
+export const GENERATE_ADDRESS_PDF_CHANNEL = 'GENERATE_ADDRESS_PDF_CHANNEL';
+export type GenerateAddressPDFRendererRequest = GenerateAddressPDFParams;
+export type GenerateAddressPDFMainResponse = void;
 
 /**
  * Channel to generate and save a rewards csv
