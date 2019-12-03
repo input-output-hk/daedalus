@@ -72,15 +72,15 @@
         border: 2px solid
           var(--theme-delegation-steps-choose-stake-pool-thumb-border-color);
         .ticker {
-          font-family: var(--font-semibold);
-          font-size: 14px;
-          margin-top: 8px;
-          text-align: center;
-          line-height: 1.57;
-          letter-spacing: -0.5px;
           color: var(
             --theme-delegation-steps-choose-stake-pool-selected-ticker-color
           );
+          font-family: var(--font-semibold);
+          font-size: 14px;
+          letter-spacing: -0.5px;
+          line-height: 1.57;
+          margin-top: 8px;
+          text-align: center;
         }
 
         .checkmarkWrapper {
