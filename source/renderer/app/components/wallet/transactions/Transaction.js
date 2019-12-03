@@ -21,7 +21,7 @@ import type { TransactionState } from '../../../api/transactions/types';
 import { getNetworkExplorerUrl } from '../../../utils/network';
 import { PENDING_TIME_LIMIT } from '../../../config/txnsConfig';
 import CancelTransactionConfirmationDialog from './CancelTransactionConfirmationDialog';
-import { ITN_BALANCE_CHECK } from '../../../../../common/types/environment.types';
+import { ITN_REWARDS_V1 } from '../../../../../common/types/environment.types';
 
 /* eslint-disable consistent-return */
 
@@ -181,7 +181,7 @@ export default class Transaction extends Component<Props, State> {
     let localePrefix = '';
     let typeValue = type;
 
-    if (network === ITN_BALANCE_CHECK) {
+    if (network === ITN_REWARDS_V1) {
       queryStringPrefix = '?id=';
       localePrefix = `/${currentLocale.substr(0, 2)}`;
       if (type === 'tx') typeValue = 'transaction';

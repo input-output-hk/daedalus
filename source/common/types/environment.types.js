@@ -38,7 +38,7 @@ export const DEVELOPMENT = 'development';
 export const TEST = 'test';
 export const MAINNET = 'mainnet';
 export const NIGHTLY = 'nightly';
-export const ITN_BALANCE_CHECK = 'itn_balance_check';
+export const ITN_REWARDS_V1 = 'itn_rewards_v1';
 export const QA = 'qa';
 export const SELFNODE = 'selfnode';
 export const STAGING = 'staging';
@@ -58,10 +58,10 @@ export type Network =
   | 'testnet'
   | 'development'
   | 'itn'
-  | 'itn_balance_check'
-  | 'itn_balance_check_selfnode'
-  | 'itn_balance_check_qa'
-  | 'itn_balance_check_nightly'
+  | 'itn_rewards_v1'
+  | 'itn_rewards_v1_selfnode'
+  | 'itn_rewards_v1_qa'
+  | 'itn_rewards_v1_nightly'
   | 'itn_rewards'
   | 'itn_rewards_selfnode'
   | 'itn_rewards_qa'
@@ -72,5 +72,5 @@ export const networkPrettyNames = {
   staging: 'Staging',
   testnet: 'Testnet',
   development: 'Development',
-  itn_balance_check: 'Incentivized Testnet - Balance check',
+  itn_rewards_v1: 'Incentivized Testnet v1 - Rewards',
 };
