@@ -39,6 +39,7 @@ type Props = {
   targetWalletId: string,
   sourceWallet: $Shape<Wallet>,
   wallets: Array<$Shape<Wallet>>,
+  numberOfStakePools: number,
 };
 
 export default class TransferFundsStep1Dialog extends Component<Props> {
@@ -55,6 +56,7 @@ export default class TransferFundsStep1Dialog extends Component<Props> {
       targetWalletId,
       sourceWallet,
       wallets,
+      numberOfStakePools,
     } = this.props;
 
     return (
@@ -79,6 +81,8 @@ export default class TransferFundsStep1Dialog extends Component<Props> {
           <WalletsDropdownOption
             label={sourceWallet.name}
             detail={formattedWalletAmount(sourceWallet.amount)}
+            numberOfStakePools={numberOfStakePools}
+            delegatedStakePool={sourceWallet.delegatedStakePool}
             selected
           />
         </div>
@@ -87,6 +91,7 @@ export default class TransferFundsStep1Dialog extends Component<Props> {
           wallets={wallets}
           onChange={onSetSourceWallet}
           value={targetWalletId}
+          numberOfStakePools={numberOfStakePools}
         />
       </Dialog>
     );

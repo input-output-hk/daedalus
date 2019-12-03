@@ -41,7 +41,7 @@ const topBarItnEnv = (
     showSubMenuToggle={false}
     leftIcon={menuIconClosed}
   >
-    <WalletTestEnvironmentLabel network="itn_balance_check" />
+    <WalletTestEnvironmentLabel network="itn_rewards_v1" />
     <NodeSyncStatusIcon
       networkStatus={{
         isSynced: true,
