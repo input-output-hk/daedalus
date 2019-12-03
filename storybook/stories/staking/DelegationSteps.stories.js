@@ -17,9 +17,11 @@ import STAKE_POOLS from '../../../source/renderer/app/config/stakingStakePools.d
 import { generateWallet } from '../_support/utils';
 
 const WALLETS = [
-  generateWallet('First Wallet', '1000000'),
-  generateWallet('Second Wallet', '500000'),
-  generateWallet('Third Wallet', '0'),
+  generateWallet('First Wallet', '1000000', 0, STAKE_POOLS[0]),
+  generateWallet('Second Wallet', '500000', 0, STAKE_POOLS[100]),
+  generateWallet('Third Wallet', '10000', 0, STAKE_POOLS[150]),
+  generateWallet('Fourth Wallet', '5000', 0, STAKE_POOLS[290]),
+  generateWallet('Fifth Wallet', '0'),
 ];
 
 const getDelegationWizardStepsList = locale => [
@@ -45,6 +47,15 @@ export class StakingDelegationSteps extends Component<Props, State> {
   };
 
   get dialogs() {
+    const stakePoolsList = STAKE_POOLS.slice(
+      0,
+      number('Pools', 100, {
+        range: true,
+        min: 37,
+        max: 300,
+        step: 1,
+      })
+    );
     return [
       <DelegationStepsIntroDialog
         key="DelegationStepsIntroDialog"
@@ -54,6 +65,7 @@ export class StakingDelegationSteps extends Component<Props, State> {
       />,
       <DelegationStepsChooseWalletDialog
         key="DelegationStepsChooseWalletDialog"
+        numberOfStakePools={stakePoolsList.length}
         stepsList={getDelegationWizardStepsList(this.props.locale)}
         onClose={action('onClose')}
         onSelectWallet={this.onContinue}
@@ -66,15 +78,7 @@ export class StakingDelegationSteps extends Component<Props, State> {
       <DelegationStepsChooseStakePoolDialog
         key="DelegationStepsChooseStakePoolDialog"
         stepsList={getDelegationWizardStepsList(this.props.locale)}
-        stakePoolsList={STAKE_POOLS.slice(
-          0,
-          number('Pools', 100, {
-            range: true,
-            min: 37,
-            max: 300,
-            step: 1,
-          })
-        )}
+        stakePoolsList={stakePoolsList}
         stakePoolsDelegatingList={[
           STAKE_POOLS[0],
           STAKE_POOLS[13],

@@ -580,7 +580,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
       const cardanoRawNetworkValue = intl.formatMessage(
         globalMessages[`network_${cardanoRawNetwork}`]
       );
-      cardanoNetworkValue += ` [${cardanoRawNetworkValue}]`;
+      cardanoNetworkValue += ` (${cardanoRawNetworkValue})`;
     }
 
     const { getSectionRow, getRow } = this;
