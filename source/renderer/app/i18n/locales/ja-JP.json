@@ -286,30 +286,15 @@
   "staking.delegationCountdown.description": "Cardanoはまもなく連合型システムから分散型システムへと移行します。このシステム変更により、ステークホルダーはネットワークの運営に参加することで、報酬を得ることができるようになります。ADAによる報酬を得るためには、直接ステーキングプロセスに参加する、またはステークプールにステーキングを委任することができます。",
   "staking.delegationCountdown.heading": "Cardano分散化",
   "staking.delegationCountdown.timeLeftDesc": "報酬制開始まであと",
-  "staking.delegationSetup.activation.step.dialog.addressLabel": "移動先",
-  "staking.delegationSetup.activation.step.dialog.amountLabel": "金額",
-  "staking.delegationSetup.activation.step.dialog.confirmButtonLabel": "確認",
-  "staking.delegationSetup.activation.step.dialog.description.line1": "すべての<span>新</span>ウォレットアドレスに委任設定が適用されるようになりました。これらのアドレスに入金されるADAに関連するステークは委任されます。 ",
-  "staking.delegationSetup.activation.step.dialog.description.line2": "旧ウォレットアドレスに含まれるADAを委任する場合は、委任設定が適用されている新アドレスにADAを移してください。",
-  "staking.delegationSetup.activation.step.dialog.feesLabel": "手数料",
-  "staking.delegationSetup.activation.step.dialog.postponeButtonLabel": "あとで行う",
-  "staking.delegationSetup.activation.step.dialog.spendingPasswordLabel": "送信時パスワード",
-  "staking.delegationSetup.activation.step.dialog.spendingPasswordPlaceholder": "パスワード",
-  "staking.delegationSetup.activation.step.dialog.stepIndicatorLabel": "ステップ{currentStep}/{totalSteps}",
-  "staking.delegationSetup.activation.step.dialog.title": "委任の確認",
-  "staking.delegationSetup.activation.step.dialog.totalLabel": "総額",
-  
   "staking.delegationSetup.chooseStakePool.step.dialog.continueButtonLabel": "続ける",
-  "staking.delegationSetup.chooseStakePool.step.dialog.selectStakePoolLabel": "<span>「{selectedWalletName}」</span>を委任するステークプールを選んでください。",
   "staking.delegationSetup.chooseStakePool.step.dialog.description": "現在選択されているステークプール：",
+  "staking.delegationSetup.chooseStakePool.step.dialog.recentPoolsLabel": "最近選択したステークプールから選択する：",
   "staking.delegationSetup.chooseStakePool.step.dialog.searchInput.label": "または利用可能な全ステークプールのリストから選択する：",
   "staking.delegationSetup.chooseStakePool.step.dialog.searchInput.placeholder": "ステークプールの検索",
-  "staking.delegationSetup.chooseStakePool.step.dialog.selectPoolPlaceholder": "プール",
+  "staking.delegationSetup.chooseStakePool.step.dialog.selectStakePoolLabel": "<span>「{selectedWalletName}」</span>を委任するステークプールを選んでください。",
+  "staking.delegationSetup.chooseStakePool.step.dialog.selectedStakePoolLabel": "<span>{selectedWalletName}</span>の委任先に<span>「{selectedPoolTicker}」</span>ステークプールが選択されました",
   "staking.delegationSetup.chooseStakePool.step.dialog.stepIndicatorLabel": "ステップ{currentStep}/{totalSteps}",
   "staking.delegationSetup.chooseStakePool.step.dialog.title": "ウォレットを委任する",
-  "staking.delegationSetup.chooseStakePool.step.dialog.recentPoolsLabel": "最近選択したステークプールから選択する：",
-  "staking.delegationSetup.chooseStakePool.step.dialog.selectedStakePoolLabel": "<span>{selectedWalletName}</span>の委任先に<span>「{selectedPoolTicker}」</span>ステークプールが選択されました",
-
   "staking.delegationSetup.chooseWallet.step.dialog.continueButtonLabel": "続ける",
   "staking.delegationSetup.chooseWallet.step.dialog.description": "委任をする資金の入ったウォレットを選んでください。委任を有効にするためには選択されたウォレットに<span>{minDelegationFunds}ADA</span>以上の資金が入っている必要があります。",
   "staking.delegationSetup.chooseWallet.step.dialog.errorMessage": "選択されたウォレットには委任を有効にするために必要な最低額1ADAが入っていません。<span>{minDelegationFunds}ADA以上</span>入っているウォレットを選択して、[続ける]をクリックしてください。",
@@ -317,7 +302,6 @@
   "staking.delegationSetup.chooseWallet.step.dialog.selectWalletInputPlaceholder": "ウォレットを選択してください",
   "staking.delegationSetup.chooseWallet.step.dialog.stepIndicatorLabel": "ステップ{currentStep}/{totalSteps}",
   "staking.delegationSetup.chooseWallet.step.dialog.title": "ウォレットを委任する",
-  
   "staking.delegationSetup.confirmation.step.dialog.cancelButtonLabel": "キャンセル",
   "staking.delegationSetup.confirmation.step.dialog.confirmButtonLabel": "確認",
   "staking.delegationSetup.confirmation.step.dialog.description": "委任設定をCardanoブロックチェーンに送信して<span>{selectedWalletName}<span>ウォレットの委任先が<span>「{selectedPoolTicker}」<span>ステークプールであることを確認します。",
@@ -341,16 +325,10 @@
   "staking.delegationSetup.steps.step.1.label": "ウォレット",
   "staking.delegationSetup.steps.step.2.label": "ステークプール",
   "staking.delegationSetup.steps.step.3.label": "確認",
-
-
-
-  "staking.delegationSetup.success.step.dialog.title": "Wallet Delegated",
+  "staking.delegationSetup.success.step.dialog.closeButtonLabel": "閉じる",
   "staking.delegationSetup.success.step.dialog.description.line1": "<span>{delegatedWalletName}</span>ウォレットのステークは<span>[{delegatedStakePoolTicker}]</span>ステークプールに委任されました。",
   "staking.delegationSetup.success.step.dialog.description.line2": "新しい委任設定はブロックチェーンに送信され、<span>{timeUntilNextEpochStart}後の次のCardanoエポックの開始とともに有効になります</span>現在のエポックが終了するまでは、これまでの委任設定が有効です。",
-  "staking.delegationSetup.success.step.dialog.closeButtonLabel": "閉じる",
-
-
-
+  "staking.delegationSetup.success.step.dialog.title": "Wallet Delegated",
   "staking.epochs.currentEpoch.tableHeader.pool": "ステークプール",
   "staking.epochs.currentEpoch.tableHeader.slotsElected": "選出されたスロット",
   "staking.epochs.currentHeading": "現在のエポック",
