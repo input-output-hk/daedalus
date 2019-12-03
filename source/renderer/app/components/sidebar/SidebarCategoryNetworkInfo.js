@@ -20,8 +20,8 @@ const messages = defineMessages({
     defaultMessage: '!!!Development vx',
     description: 'Label for development with version.',
   },
-  itn_balance_check: {
-    id: 'test.environment.itnBalanceCheckLabel',
+  itn_rewards_v1: {
+    id: 'test.environment.itnRewardsV1Label',
     defaultMessage: '!!!Development vx',
     description: 'Label for development with version.',
   },

@@ -7,7 +7,7 @@ import { withKnobs, select } from '@storybook/addon-knobs';
 import {
   DEVELOPMENT,
   TESTNET,
-  ITN_BALANCE_CHECK,
+  ITN_REWARDS_V1,
   STAGING,
 } from '../../../source/common/types/environment.types';
 import StoryDecorator from '../_support/StoryDecorator';
@@ -169,7 +169,7 @@ storiesOf('Navigation|Sidebar', module)
         {
           Development: DEVELOPMENT,
           Test: TESTNET,
-          'Incentivized Testnet - Balance check': ITN_BALANCE_CHECK,
+          'Incentivized Testnet v1 - Rewards': ITN_REWARDS_V1,
           Stagiing: STAGING,
         },
         TESTNET
