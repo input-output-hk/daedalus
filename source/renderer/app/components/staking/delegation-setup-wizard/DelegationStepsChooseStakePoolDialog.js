@@ -297,7 +297,6 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
               numberOfStakePools={stakePoolsList.length}
               showSelected
               highlightOnHover
-              horizontalScroll
             />
           </div>
 
