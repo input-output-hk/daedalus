@@ -6,7 +6,6 @@ import moment from 'moment';
 import SVGInline from 'react-svg-inline';
 import styles from './CountdownWidget.scss';
 import delimeterIcon from '../../assets/images/delimeter.inline.svg';
-import spinnerIcon from '../../assets/images/spinner.inline.svg';
 
 const messages = defineMessages({
   years: {
@@ -161,17 +160,12 @@ export default class CountdownWidget extends Component<Props, State> {
   };
 
   render() {
-    const { timeLeft } = this.state;
     const fieldPanels = this.generateCountdownPanels();
 
     return (
       <div className={styles.timeLeftContainer}>
         <div className={styles.timeLeft}>
-          {timeLeft === 0 ? (
-            <SVGInline svg={spinnerIcon} className={styles.spinnerIcon} />
-          ) : (
-            fieldPanels
-          )}
+          {fieldPanels}
         </div>
       </div>
     );

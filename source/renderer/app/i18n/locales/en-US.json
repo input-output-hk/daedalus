@@ -278,7 +278,6 @@
   "staking.delegationCenter.epoch": "Epoch",
   "staking.delegationCenter.headingLeft": "Cardano epoch {nextEpoch} starts in",
   "staking.delegationCenter.headingRight": "Current Cardano epoch",
-  "staking.delegationCenter.inactiveStakePercentageActivate": "<b>activate {inactiveStakePercentage}% of inactive stake</b>",
   "staking.delegationCenter.noWallets.createWalletButtonLabel": "Create wallet",
   "staking.delegationCenter.noWallets.headLine": "The Delegation Center is not available because you don't have any wallets.",
   "staking.delegationCenter.noWallets.instructions": "Create a new wallet (or restore an existing one) then come back here to delegate your stake.",
