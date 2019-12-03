@@ -43,12 +43,12 @@
 
           .SimpleOptions_option {
             background: none;
+            font-size: 13px;
             padding: 5px 10px;
             text-align: right;
-            font-size: 13px;
 
             &.SimpleOptions_selectedOption {
-              font-family: var(--rp-theme-font-bold)
+              font-family: var(--rp-theme-font-bold);
             }
 
             &.SimpleOptions_highlightedOption:hover {

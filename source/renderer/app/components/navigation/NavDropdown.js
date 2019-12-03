@@ -49,13 +49,12 @@ export default class NavDropdown extends Component<Props> {
           onItemSelected={({ value }) => {
             onChange(value);
           }}
-          optionRenderer={(o) => (
+          optionRenderer={o => (
             <div className={styles.optionLabel}>{o.label}</div>
           )}
           items={options}
           activeItem={options.find(o => o.value === activeItem)}
           noArrow
-          isOpen
         />
       </div>
     );
