@@ -2203,13 +2203,13 @@
         "description": "Headline for the Delegation center.",
         "end": {
           "column": 3,
-          "line": 18
+          "line": 19
         },
         "file": "source/renderer/app/components/staking/delegation-center/DelegationCenterHeader.js",
         "id": "staking.delegationCenter.epoch",
         "start": {
           "column": 9,
-          "line": 14
+          "line": 15
         }
       },
       {
@@ -2217,13 +2217,13 @@
         "description": "Headline for the Delegation center.",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 24
         },
         "file": "source/renderer/app/components/staking/delegation-center/DelegationCenterHeader.js",
         "id": "staking.delegationCenter.currentSlot",
         "start": {
           "column": 15,
-          "line": 19
+          "line": 20
         }
       },
       {
@@ -2231,27 +2231,27 @@
         "description": "Headline for the Delegation center.",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 29
         },
         "file": "source/renderer/app/components/staking/delegation-center/DelegationCenterHeader.js",
         "id": "staking.delegationCenter.totalSlots",
         "start": {
           "column": 14,
-          "line": 24
+          "line": 25
         }
       },
       {
-        "defaultMessage": "!!!Cardano epoch {nextEpoch} starts in",
+        "defaultMessage": "!!!Cardano epoch {nextEpochStart} starts in",
         "description": "Headline for the Delegation center.",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 34
         },
         "file": "source/renderer/app/components/staking/delegation-center/DelegationCenterHeader.js",
         "id": "staking.delegationCenter.headingLeft",
         "start": {
           "column": 15,
-          "line": 29
+          "line": 30
         }
       },
       {
@@ -2259,13 +2259,13 @@
         "description": "Headline for the Delegation center.",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 39
         },
         "file": "source/renderer/app/components/staking/delegation-center/DelegationCenterHeader.js",
         "id": "staking.delegationCenter.headingRight",
         "start": {
           "column": 16,
-          "line": 34
+          "line": 35
         }
       },
       {
@@ -2273,13 +2273,13 @@
         "description": "Delegation description for the Delegation center.",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 45
         },
         "file": "source/renderer/app/components/staking/delegation-center/DelegationCenterHeader.js",
         "id": "staking.delegationCenter.description",
         "start": {
           "column": 15,
-          "line": 39
+          "line": 40
         }
       }
     ],
@@ -8860,13 +8860,13 @@
         "description": "Label for years value in duration.",
         "end": {
           "column": 3,
-          "line": 15
+          "line": 16
         },
         "file": "source/renderer/app/components/widgets/CountdownWidget.js",
         "id": "global.duration.years",
         "start": {
           "column": 9,
-          "line": 11
+          "line": 12
         }
       },
       {
@@ -8874,13 +8874,13 @@
         "description": "Label for months value in duration.",
         "end": {
           "column": 3,
-          "line": 20
+          "line": 21
         },
         "file": "source/renderer/app/components/widgets/CountdownWidget.js",
         "id": "global.duration.months",
         "start": {
           "column": 10,
-          "line": 16
+          "line": 17
         }
       },
       {
@@ -8888,13 +8888,13 @@
         "description": "Label for days value in duration.",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 26
         },
         "file": "source/renderer/app/components/widgets/CountdownWidget.js",
         "id": "global.duration.days",
         "start": {
           "column": 8,
-          "line": 21
+          "line": 22
         }
       },
       {
@@ -8902,13 +8902,13 @@
         "description": "Label for hours value in duration.",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 31
         },
         "file": "source/renderer/app/components/widgets/CountdownWidget.js",
         "id": "global.duration.hours",
         "start": {
           "column": 9,
-          "line": 26
+          "line": 27
         }
       },
       {
@@ -8916,13 +8916,13 @@
         "description": "Label for minutes value in duration.",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 36
         },
         "file": "source/renderer/app/components/widgets/CountdownWidget.js",
         "id": "global.duration.minutes",
         "start": {
           "column": 11,
-          "line": 31
+          "line": 32
         }
       },
       {
@@ -8930,13 +8930,13 @@
         "description": "Label for seconds value in duration.",
         "end": {
           "column": 3,
-          "line": 40
+          "line": 41
         },
         "file": "source/renderer/app/components/widgets/CountdownWidget.js",
         "id": "global.duration.seconds",
         "start": {
           "column": 11,
-          "line": 36
+          "line": 37
         }
       }
     ],
