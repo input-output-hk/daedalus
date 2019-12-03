@@ -10686,10 +10686,10 @@ react-modal@3.1.12:
     prop-types "^15.5.10"
     warning "^3.0.0"
 
-react-polymorph@0.9.0-rc.23:
-  version "0.9.0-rc.23"
-  resolved "https://registry.yarnpkg.com/react-polymorph/-/react-polymorph-0.9.0-rc.23.tgz#45d98c60006a82743caaaf25459147c089709ced"
-  integrity sha512-nygjjkFI3Dc4K1I/c6Qq6MeYe8/5Iln9QJz9bLqC7k2P9ri973nIuK1pBTbBYq1zzBcjaPtneLz7ViZs+davMg==
+react-polymorph@0.9.0-rc.24:
+  version "0.9.0-rc.24"
+  resolved "https://registry.yarnpkg.com/react-polymorph/-/react-polymorph-0.9.0-rc.24.tgz#3afdb3f9a8d65d1ea7e526cb4285c02760236772"
+  integrity sha512-rp6UGH7b+KoqrQzgYDQfULoIZ2ea8pdexQFze1iYvVDNO0cIrNsCnLX/BoRVQPRw1vnT3vBel0Wh76ztaX1dsg==
   dependencies:
     create-react-context "0.2.2"
     create-react-ref "0.1.0"
