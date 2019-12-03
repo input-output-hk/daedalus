@@ -25,7 +25,8 @@ Changelog
 
 ### Chores
 
-- Improve error messages on the "Send" screen ([PR 1724](https://github.com/input-output-hk/daedalus/pull/1724))
+- Refactor wallet navigation to use new React-Polymorph Dropdown component ([PR 1593](https://github.com/input-output-hk/daedalus/pull/1593))
+- Improved error messages on the "Send" screen ([PR 1724](https://github.com/input-output-hk/daedalus/pull/1724))
 - Improved menu items while adding external link icon on menu items which open external links ([PR 1727](https://github.com/input-output-hk/daedalus/pull/1727), [PR 1728](https://github.com/input-output-hk/daedalus/pull/1728))
 - Updated `cardano-js` package to version 0.2.2 and improved address validation ([PR 1712](https://github.com/input-output-hk/daedalus/pull/1712))
 - Removed unused dependencies ([PR 1706](https://github.com/input-output-hk/daedalus/pull/1706))
