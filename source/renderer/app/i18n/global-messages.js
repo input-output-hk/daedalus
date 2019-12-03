@@ -120,6 +120,16 @@ export default defineMessages({
     defaultMessage: '!!!Croatian',
     description: 'Language name for "Croatian" language.',
   },
+  punctuationColon: {
+    id: 'global.punctuation.colon',
+    defaultMessage: '!!!:',
+    description: 'Colon punctuation.',
+  },
+  punctuationDot: {
+    id: 'global.punctuation.dot',
+    defaultMessage: '!!!.',
+    description: 'Final dot punctuation.',
+  },
   unitAda: {
     id: 'global.unit.ada',
     defaultMessage: '!!!ADA',
@@ -163,5 +173,45 @@ export default defineMessages({
     id: 'environment.apiName.cardano',
     defaultMessage: '!!!Cardano',
     description: 'Name for "Cardano" client.',
+  },
+  network_mainnet: {
+    id: 'environment.network.mainnet',
+    defaultMessage: '!!!mainnet',
+    description: '"mainnet" Cardano network',
+  },
+  network_staging: {
+    id: 'environment.network.staging',
+    defaultMessage: '!!!Staging',
+    description: '"staging" Cardano network',
+  },
+  network_testnet: {
+    id: 'environment.network.testnet',
+    defaultMessage: '!!!Testnet',
+    description: '"testnet" Cardano network',
+  },
+  network_development: {
+    id: 'environment.network.development',
+    defaultMessage: '!!!Development',
+    description: '"development" Cardano network',
+  },
+  network_itn_rewards_v1: {
+    id: 'environment.network.itn_rewards_v1',
+    defaultMessage: '!!!Incentivized Testnet v1 - Rewards',
+    description: '"itn_rewards_v1" Cardano network',
+  },
+  network_selfnode: {
+    id: 'environment.network.selfnode',
+    defaultMessage: '!!!SelfNode',
+    description: '"selfnode" Cardano network',
+  },
+  network_qa: {
+    id: 'environment.network.qa',
+    defaultMessage: '!!!QA',
+    description: '"qa" Cardano network',
+  },
+  network_nightly: {
+    id: 'environment.network.nightly',
+    defaultMessage: '!!!Nightly',
+    description: '"nightly" Cardano network',
   },
 });

@@ -2,6 +2,7 @@
 import hash from 'hash.js';
 import faker from 'faker';
 import moment from 'moment';
+import { random } from 'lodash';
 import BigNumber from 'bignumber.js';
 import Wallet from '../../../source/renderer/app/domains/Wallet';
 import {
@@ -22,17 +23,17 @@ import type {
 
 export const generateHash = () => {
   const now = new Date().valueOf().toString();
-  const random = Math.random().toString();
   return hash
     .sha512()
-    .update(now + random)
+    .update(now + random(0.1, 0.9))
     .digest('hex');
 };
 
 export const generateWallet = (
   name: string,
   amount: string,
-  reward?: number = 0
+  reward?: number = 0,
+  delegatedStakePool: Object
 ) =>
   new Wallet({
     id: generateHash(),
@@ -52,6 +53,7 @@ export const generateWallet = (
       WalletRecoveryPhraseVerificationStatuses.OK,
     recoveryPhraseVerificationStatusType:
       WalletRecoveryPhraseVerificationTypes.NEVER_CHECKED,
+    delegatedStakePool,
   });
 
 export const generateTransaction = (

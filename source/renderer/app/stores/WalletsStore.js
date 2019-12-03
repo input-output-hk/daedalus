@@ -14,7 +14,8 @@ import { WalletTransaction } from '../domains/WalletTransaction';
 import { MAX_ADA_WALLETS_COUNT } from '../config/numbersConfig';
 import { i18nContext } from '../utils/i18nContext';
 import { mnemonicToSeedHex } from '../utils/crypto';
-import { downloadPaperWalletCertificate } from '../utils/paperWalletPdfGenerator';
+import { paperWalletPdfGenerator } from '../utils/paperWalletPdfGenerator';
+import { addressPDFGenerator } from '../utils/addressPDFGenerator';
 import { downloadRewardsCsv } from '../utils/rewardsCsvGenerator';
 import { buildRoute, matchRoute } from '../utils/routing';
 import { asyncForEach } from '../utils/asyncForEach';
@@ -221,6 +222,7 @@ export default class WalletsStore extends Store {
     walletsActions.chooseWalletExportType.listen(this._chooseWalletExportType);
 
     walletsActions.generateCertificate.listen(this._generateCertificate);
+    walletsActions.generateAddressPDF.listen(this._generateAddressPDF);
     walletsActions.updateCertificateStep.listen(this._updateCertificateStep);
     walletsActions.closeCertificateGeneration.listen(
       this._closeCertificateGeneration
@@ -575,8 +577,11 @@ export default class WalletsStore extends Store {
   @computed get hasActiveWalletNotification(): boolean {
     const { active } = this;
     if (!active) return false;
+    const {
+      recoveryPhraseVerificationStatus,
+    } = this.getWalletRecoveryPhraseVerification(active.id);
     return (
-      this.getWalletRecoveryPhraseVerification(active.id) ===
+      recoveryPhraseVerificationStatus ===
       WalletRecoveryPhraseVerificationStatuses.NOTIFICATION
     );
   }
@@ -941,7 +946,7 @@ export default class WalletsStore extends Store {
     const intl = i18nContext(locale);
     const { isMainnet, buildLabel } = this.environment;
     try {
-      await downloadPaperWalletCertificate({
+      await paperWalletPdfGenerator({
         address,
         mnemonics: recoveryPhrase,
         intl,
@@ -961,6 +966,39 @@ export default class WalletsStore extends Store {
         // Reset progress
         this._updateCertificateCreationState(false, error);
       });
+    }
+  };
+
+  _generateAddressPDF = async ({
+    address,
+    note,
+    filePath,
+  }: {
+    address: string,
+    note: string,
+    filePath: string,
+  }) => {
+    const {
+      currentLocale,
+      currentDateFormat,
+      currentTimeFormat,
+    } = this.stores.profile;
+    const { network, isMainnet } = this.environment;
+    const intl = i18nContext(currentLocale);
+    try {
+      await addressPDFGenerator({
+        address,
+        note,
+        filePath,
+        currentLocale,
+        currentDateFormat,
+        currentTimeFormat,
+        network,
+        isMainnet,
+        intl,
+      });
+    } catch (error) {
+      throw new Error(error);
     }
   };
 
@@ -1178,6 +1216,7 @@ export default class WalletsStore extends Store {
     const walletsLocalData: WalletsLocalData = await this.getWalletsLocalDataRequest.execute();
     return walletsLocalData;
   };
+
   _updateWalletLocalData = async (updatedWalletData: Object): Object => {
     const { id } = updatedWalletData;
     const walletLocalData = await this.updateWalletLocalDataRequest.execute(
@@ -1189,6 +1228,7 @@ export default class WalletsStore extends Store {
       ] = this._setWalletRecoveryPhraseVerificationData(walletLocalData);
     });
   };
+
   _updateRecoveryPhraseVerificationDate = async () => {
     if (!this.active) return;
     const { id } = this.active;
@@ -1198,6 +1238,7 @@ export default class WalletsStore extends Store {
       recoveryPhraseVerificationDate,
     });
   };
+
   _unsetWalletLocalData = async (walletId: string) => {
     await this.unsetWalletLocalDataRequest.execute(walletId);
   };

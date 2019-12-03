@@ -67,6 +67,7 @@ const messages = defineMessages({
 });
 
 type Props = {
+  numberOfStakePools: number,
   onClose: Function,
   onSelectWallet: Function,
   onBack: Function,
@@ -112,6 +113,7 @@ export default class DelegationStepsChooseWalletDialog extends Component<
       onClose,
       onBack,
       isWalletAcceptable,
+      numberOfStakePools,
     } = this.props;
 
     const selectedWallet: ?Wallet =
@@ -181,6 +183,7 @@ export default class DelegationStepsChooseWalletDialog extends Component<
           <WalletsDropdown
             className={walletSelectClasses}
             label={intl.formatMessage(messages.selectWalletInputLabel)}
+            numberOfStakePools={numberOfStakePools}
             wallets={wallets}
             onChange={(walletId: string) => this.onWalletChange(walletId)}
             placeholder={intl.formatMessage(

@@ -47,8 +47,8 @@ export type WalletProps = {
   syncState: WalletSyncState,
   isLegacy: boolean,
   isDelegated: boolean,
-  inactiveStakePercentage?: number,
-  delegatedStakePool?: StakePool,
+  inactiveStakePercentage?: ?number,
+  delegatedStakePool?: ?StakePool,
 };
 
 export default class Wallet {

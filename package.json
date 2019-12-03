@@ -1,7 +1,7 @@
 {
   "name": "daedalus",
   "productName": "Daedalus",
-  "version": "1.1.0-ITN0",
+  "version": "2.0.0-ITN1",
   "description": "Cryptocurrency Wallet",
   "main": "./dist/main/index.js",
   "scripts": {
@@ -9,7 +9,7 @@
     "start": "gulp start",
     "start:dev": "NODE_ENV=development gulp start",
     "dev": "IS_WATCH_MODE=true gulp dev",
-    "dev:itn": "NETWORK=itn_balance_check IS_WATCH_MODE=true gulp dev",
+    "dev:itn": "NETWORK=itn_rewards_v1 IS_WATCH_MODE=true gulp dev",
     "test": "NODE_ENV=test yarn build && yarn test:unit && yarn test:e2e",
     "test:unit": "yarn cucumber --require 'tests/**/unit/*.js' --tags '@unit and not @skip and not @wip'",
     "test:unit:watch": "nodemon --watch source --watch tests --exec \"yarn test:unit --tags '@unit and @watch'\"",
@@ -178,7 +178,7 @@
     "react-intl": "2.7.2",
     "react-lottie": "1.2.3",
     "react-markdown": "3.1.0",
-    "react-polymorph": "0.9.0-rc.15",
+    "react-polymorph": "0.9.0-rc.23",
     "react-router": "3.2.1",
     "react-svg-inline": "2.1.0",
     "react-virtualized": "9.21.0",

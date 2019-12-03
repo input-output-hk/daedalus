@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## vNext
+## 2.0.0-ITN1
 
 ### Features
 
@@ -11,6 +11,7 @@ Changelog
 
 ### Fixes
 
+- Fixed missing "hamburger" icon on wallet menu while there are only legacy wallets in the UI ([PR 1730](https://github.com/input-output-hk/daedalus/pull/1730))
 - Fixed issues with wrong transaction amounts when new number formats are used ([PR 1726](https://github.com/input-output-hk/daedalus/pull/1726))
 - Fixed naming of labels on "Daedalus Diagnostics" screen and status icons on "Loading" screen from "Node..." to "Cardano node..." ([PR 1723](https://github.com/input-output-hk/daedalus/pull/1723))
 - Adjusted the Stake pool logic for ranking color to account for the total number of stake pools ([PR 1719](https://github.com/input-output-hk/daedalus/pull/1719))
@@ -24,7 +25,8 @@ Changelog
 
 ### Chores
 
-- Improve error messages on the "Send" screen ([PR 1724](https://github.com/input-output-hk/daedalus/pull/1724))
+- Refactor wallet navigation to use new React-Polymorph Dropdown component ([PR 1593](https://github.com/input-output-hk/daedalus/pull/1593))
+- Improved error messages on the "Send" screen ([PR 1724](https://github.com/input-output-hk/daedalus/pull/1724))
 - Improved menu items while adding external link icon on menu items which open external links ([PR 1727](https://github.com/input-output-hk/daedalus/pull/1727), [PR 1728](https://github.com/input-output-hk/daedalus/pull/1728))
 - Updated `cardano-js` package to version 0.2.2 and improved address validation ([PR 1712](https://github.com/input-output-hk/daedalus/pull/1712))
 - Removed unused dependencies ([PR 1706](https://github.com/input-output-hk/daedalus/pull/1706))
@@ -34,6 +36,7 @@ Changelog
 
 ### Features
 
+- Implemented the new Wallet Receive screen ([PR 1700](https://github.com/input-output-hk/daedalus/pull/1700))
 - Added Japanese "Terms of use" text ([PR 1691](https://github.com/input-output-hk/daedalus/pull/1691))
 
 ### Fixes

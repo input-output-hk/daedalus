@@ -111,7 +111,7 @@ When(/^I should see wallet spending password inputs$/, function() {
 });
 
 When(/^I have one wallet address$/, function() {
-  return this.client.waitForVisible('.generatedAddress-1');
+  return this.client.waitForVisible('.receiveAddress-1');
 });
 
 When(/^I enter spending password "([^"]*)"$/, function(password) {
@@ -544,7 +544,7 @@ Then(
     return this.client.waitUntil(async () => {
       const activeAddress = await this.client.getText('.WalletReceive_hash');
       const generatedAddress = await this.client.getText(
-        '.generatedAddress-1 .Address_addressId'
+        '.receiveAddress-1 .Address_addressId'
       );
       return generatedAddress === activeAddress;
     });

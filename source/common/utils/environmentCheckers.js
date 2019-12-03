@@ -10,7 +10,7 @@ import {
   TEST,
   TESTNET,
   WINDOWS,
-  ITN_BALANCE_CHECK,
+  ITN_REWARDS_V1,
   QA,
   NIGHTLY,
   SELFNODE,
@@ -24,7 +24,7 @@ import {
 export const evaluateNetwork = (network: ?string) => {
   let currentNetwork = network || DEVELOPMENT;
   if (network === QA || network === NIGHTLY || network === SELFNODE) {
-    currentNetwork = ITN_BALANCE_CHECK;
+    currentNetwork = ITN_REWARDS_V1;
   }
   return currentNetwork;
 };
@@ -53,7 +53,7 @@ export const checkIsMainnet = (network: string) => network === MAINNET;
 export const checkIsStaging = (network: string) => network === STAGING;
 export const checkIsTestnet = (network: string) => network === TESTNET;
 export const checkIsIncentivizedTestnet = (network: string) =>
-  network === ITN_BALANCE_CHECK;
+  network === ITN_REWARDS_V1;
 export const checkIsIncentivizedTestnetQA = (rawNetwork: string) =>
   rawNetwork === QA;
 export const checkIsIncentivizedTestnetNightly = (rawNetwork: string) =>
