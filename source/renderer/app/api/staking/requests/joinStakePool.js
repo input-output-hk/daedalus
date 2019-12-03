@@ -15,5 +15,5 @@ export const joinStakePool = (
       ...config,
     },
     {},
-    { passphrase }
+    { passphrase, fees }
   );

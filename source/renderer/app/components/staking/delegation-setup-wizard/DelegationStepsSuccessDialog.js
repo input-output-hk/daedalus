@@ -44,7 +44,7 @@ const messages = defineMessages({
 type Props = {
   delegatedWallet: Wallet,
   delegatedStakePool: StakePool,
-  timeUntilNextEpochStart: string,
+  nextEpochStartTime: string,
   onClose: Function,
   currentLocale: string,
 };
@@ -60,7 +60,7 @@ export default class DelegationStepsSuccessDialog extends Component<Props> {
     const {
       delegatedWallet,
       delegatedStakePool,
-      timeUntilNextEpochStart,
+      nextEpochStartTime,
       currentLocale,
       onClose,
     } = this.props;
@@ -85,7 +85,7 @@ export default class DelegationStepsSuccessDialog extends Component<Props> {
 
     const timeLeft = Math.max(
       0,
-      new Date(timeUntilNextEpochStart).getTime() - new Date().getTime()
+      new Date(nextEpochStartTime).getTime() - new Date().getTime()
     );
 
     let humanizedDurationLanguage;
@@ -106,15 +106,13 @@ export default class DelegationStepsSuccessDialog extends Component<Props> {
         humanizedDurationLanguage = 'en';
     }
 
-    const timeOffset = humanizeDuration((timeLeft || 0), {
+    const timeUntilNextEpochStart = humanizeDuration((timeLeft || 0), {
       round: true, // round seconds to prevent e.g. 1 day 3 hours *11,56 seconds*
       language: humanizedDurationLanguage,
       conjunction: ' and ',
       units: ['d', 'h', 'm'],
       serialComma: false,
-    }); // replace 1 day, 3 hours, 12 seconds* to clean period without comma
-
-    console.debug('timeOffset: ', timeOffset);
+    });
 
     return (
       <Dialog
@@ -136,7 +134,7 @@ export default class DelegationStepsSuccessDialog extends Component<Props> {
           <div className={styles.description2}>
             <FormattedHTMLMessage
               {...messages.descriptionLine2}
-              values={{ timeUntilNextEpochStart: timeOffset }}
+              values={{ timeUntilNextEpochStart }}
             />
           </div>
         </div>

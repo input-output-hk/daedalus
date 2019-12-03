@@ -129,7 +129,7 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-delegation-steps-activation-steps-indicator-color': '#5e6066',
     '--theme-delegation-steps-success-description-color':
       'rgba(94, 96, 102, 0.8)',
-    '--theme-delegation-steps-success-tada-color': 'rgba(94, 96, 102, 0.7)';
+    '--theme-delegation-steps-success-tada-color': 'rgba(94, 96, 102, 0.7)',
     '--theme-delegation-steps-choose-stake-pool-checkmark-icon-color':
       '#d2d3d3',
     '--theme-delegation-steps-choose-stake-pool-delegated-pools-label-color':

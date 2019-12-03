@@ -16,7 +16,7 @@ import STAKE_POOLS from '../config/stakingStakePools.dummy.json';
 import REWARDS from '../config/stakingRewards.dummy.json';
 
 export default class StakingStore extends Store {
-  startDateTime: string = '2019-12-09T00:00:00.161Z';
+  nextEpochStartTime: string = '2019-12-09T00:00:00.161Z';
   decentralizationProgress: number = 10;
   adaValue: BigNumber = new BigNumber(82650.15);
   percentage: number = 14;
@@ -48,10 +48,11 @@ export default class StakingStore extends Store {
     this.stores.wallets.goToWalletRoute(walletId);
   };
 
+  // @API TODO - integrate real API V2 endpoint once is available
   estimateJoinFee = async (
     estimateJoinFeeRequest: EstimateJoinFeeRequest
   ) => {
-    const { walletId, stakePoolId } = estimateJoinFeeRequest;
+    const { walletId } = estimateJoinFeeRequest;
     const wallet = this.stores.wallets.getWalletById(walletId);
 
     if (!wallet) {

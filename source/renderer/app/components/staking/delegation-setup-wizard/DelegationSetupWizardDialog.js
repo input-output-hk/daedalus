@@ -36,7 +36,8 @@ type Props = {
   stakePoolJoinFee: ?BigNumber,
   isSubmitting: boolean,
   error: ?LocalizableError,
-  startDateTime: string,
+  nextEpochStartTime: string,
+  currentLocale: string,
 };
 
 @observer
@@ -63,7 +64,7 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
       selectedPool,
       isWalletAcceptable,
       stakePoolJoinFee,
-      startDateTime,
+      nextEpochStartTime,
       currentLocale,
       isSubmitting,
       error,
@@ -133,7 +134,7 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
           <DelegationStepsSuccessDialog
             delegatedWallet={selectedWallet}
             delegatedStakePool={selectedPool}
-            timeUntilNextEpochStart={startDateTime}
+            nextEpochStartTime={nextEpochStartTime}
             currentLocale={currentLocale}
             onClose={onClose}
           />

@@ -75,10 +75,6 @@ export default class DelegationSetupWizardDialogContainer extends Component<
   };
 
   componentWillReceiveProps(nextProps) {
-    console.debug('RECEICE PROPS: ', {
-      THIS: this.props.stores.staking.joinStakePoolRequest,
-      NEXT: nextProps.stores.staking.joinStakePoolRequest,
-    })
     if (this.props.stores.staking.joinStakePoolRequest.isExecuting && !nextProps.stores.staking.joinStakePoolRequest.isExecuting && !nextProps.joinStakePoolRequest.error) {
       this.handleContinue();
     }
@@ -112,8 +108,7 @@ export default class DelegationSetupWizardDialogContainer extends Component<
   };
 
   handleConfirm = (spendingPassword: string) => {
-    console.debug('CONFIRM: ', spendingPassword);
-    const { stakePoolJoinFee, selectedPoolId, selectedWalletId } = this.state;
+    const { selectedPoolId, selectedWalletId } = this.state;
     this.props.actions.staking.joinStakePool.trigger({
       stakePoolId: selectedPoolId,
       walletId: selectedWalletId,
@@ -140,7 +135,7 @@ export default class DelegationSetupWizardDialogContainer extends Component<
     const { activeStep, selectedWalletId, selectedPoolId, stakePoolJoinFee } = this.state;
     const { app, staking, wallets, profile } = this.props.stores;
     const { currentTheme, currentLocale } = profile;
-    const { stakePools, delegatingStakePools, joinStakePoolRequest, startDateTime } = staking;
+    const { stakePools, delegatingStakePools, joinStakePoolRequest, nextEpochStartTime } = staking;
     const selectedPool = find(stakePools, pool => pool.id === selectedPoolId);
     const selectedWallet = find(wallets.allWallets, wallet => wallet.id === selectedWalletId);
     const isDisabled = wallets.allWallets.reduce(
@@ -150,12 +145,6 @@ export default class DelegationSetupWizardDialogContainer extends Component<
       },
       false
     );
-
-    console.debug('REQ ---> ', {
-      isSubmitting: joinStakePoolRequest.isExecuting,
-      error: joinStakePoolRequest.error,
-      currentLocale,
-    })
 
     return (
       <DelegationSetupWizardDialog
@@ -170,7 +159,7 @@ export default class DelegationSetupWizardDialogContainer extends Component<
         stakePoolsList={stakePools}
         stakePoolsDelegatingList={delegatingStakePools}
         stakePoolJoinFee={stakePoolJoinFee}
-        startDateTime={startDateTime}
+        nextEpochStartTime={nextEpochStartTime}
         currentLocale={currentLocale}
         onOpenExternalLink={app.openExternalLink}
         currentTheme={currentTheme}

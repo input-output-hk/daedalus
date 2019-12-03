@@ -145,7 +145,6 @@ import type { GetNewsResponse } from './news/types';
 // Staking Types
 import type {
   JoinStakePoolRequest,
-  StakePool,
   StakePoolJoinFee,
 } from './staking/types';
 
@@ -1192,7 +1191,6 @@ export default class AdaApi {
       parameters: filterLogData(request),
     });
     const { walletId, stakePoolId, passphrase } = request;
-    console.debug('API - request: ', request);
 
     try {
       const response = await joinStakePool(this.config, {
@@ -1200,7 +1198,6 @@ export default class AdaApi {
         stakePoolId,
         passphrase,
       });
-      console.debug('API - response: ', response);
 
       Logger.debug('AdaApi::joinStakePool success', {
         stakePool: response,
@@ -1208,7 +1205,6 @@ export default class AdaApi {
 
       return response;
     } catch (error) {
-      console.debug('>>>> ERROR ', error);
       throw new GenericApiError();
     }
   };
