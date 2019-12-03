@@ -56,7 +56,7 @@ import { transferFunds } from './wallets/requests/transferFunds';
 
 // Staking
 import StakePool from '../domains/StakePool';
-// import { getStakePools } from './staking/requests/getStakePools';
+import { getStakePools } from './staking/requests/getStakePools';
 import type { AdaApiStakePools, AdaApiStakePool } from './staking/types';
 import stakingStakePoolsRawApi from '../config/stakingStakePoolsRawApi.dummy.json';
 import stakingStakePoolsMissingApiData from '../config/stakingStakePoolsMissingApiData.dummy.json';
@@ -1058,55 +1058,55 @@ export default class AdaApi {
 
   getStakePools = async (): Promise<Array<StakePool>> => {
     Logger.debug('AdaApi::getStakePools called');
-    try {
-      const stakePools: AdaApiStakePools = stakingStakePoolsRawApi || [];
-      // API TODO: Uncomment once the API is returning the correct data
-      // stakePools = await getStakePools(this.config);
-      Logger.debug('AdaApi::getStakePools success');
-      return stakePools.map((stakePool: AdaApiStakePool, index: number) => {
-        const {
-          id,
-          metrics,
-          apparent_performance: performance,
-          metadata,
-        } = stakePool;
-        const {
-          controlled_stake: controlledStake,
-          produced_blocks: producedBlocks,
-        } = metrics;
-        const { ticker, homepage, pledge_address: pledgeAddress } = metadata;
-        const {
-          created_at: createdAt,
-          description,
-          isCharity,
-          name,
-          profitMargin,
-          ranking,
-          retiring,
-        } = stakingStakePoolsMissingApiData[index];
-        return new StakePool({
-          // DATA FROM THE API
-          id,
-          ticker,
-          homepage,
-          pledgeAddress,
-          performance,
-          controlledStake: controlledStake.quantity,
-          producedBlocks: producedBlocks.quantity,
-          // MISSING DATA FROM THE API
-          createdAt,
-          description,
-          isCharity,
-          name,
-          profitMargin,
-          ranking,
-          retiring,
-        });
+    // try {
+    const stakePools: AdaApiStakePools = await getStakePools(this.config);
+    Logger.debug('AdaApi::getStakePools success');
+    return stakePools.map((stakePool: AdaApiStakePool, index: number) => {
+      const {
+        id,
+        metrics,
+        apparent_performance: performance,
+        // metadata,
+      } = stakePool;
+      const {
+        controlled_stake: controlledStake,
+        produced_blocks: producedBlocks,
+      } = metrics;
+      const {
+        created_at: createdAt,
+        description,
+        isCharity,
+        name,
+        profitMargin,
+        ranking,
+        retiring,
+        metadata,
+      } = stakingStakePoolsMissingApiData[index];
+      const { ticker, homepage, pledge_address: pledgeAddress } = metadata;
+      return new StakePool({
+        // DATA FROM THE API
+        id,
+        ticker,
+        homepage,
+        pledgeAddress,
+        performance,
+        controlledStake: controlledStake.quantity,
+        producedBlocks: producedBlocks.quantity,
+        // MISSING DATA FROM THE API
+        createdAt,
+        description,
+        isCharity,
+        name,
+        profitMargin,
+        ranking,
+        retiring,
       });
-    } catch (error) {
-      Logger.error('AdaApi::getStakePools error', { error });
-      throw new GenericApiError();
-    }
+    });
+    // } catch (error) {
+    //   console.log('error', error);
+    //   Logger.error('AdaApi::getStakePools error', { error });
+    //   throw new GenericApiError();
+    // }
   };
 
   testReset = async (): Promise<void> => {

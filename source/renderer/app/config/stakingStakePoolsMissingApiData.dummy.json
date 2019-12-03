@@ -7,7 +7,12 @@
     "performance": 12,
     "created_at": "2019-08-19T21:27:33.575Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "UIYU",
+      "homepage": "https://linnea.name",
+      "pledge_address": "h5khccud3aoj7g2fdsdlb5ogixr3ej59lhc39qk20qpk5y3uoh142mx5g2rjm56h"
+    }
   },
   {
     "name": "Rasheed Hartmann",
@@ -17,7 +22,12 @@
     "performance": 74,
     "created_at": "2019-08-20T01:34:17.715Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "XGQE",
+      "homepage": "http://maryam.name",
+      "pledge_address": "vo8l99ap1uuxqrgz9rcryjri1bogk9crmcx4a85aftgd5g8ged7aj7vuruf0jej6"
+    }
   },
   {
     "name": "Unique Kuhic",
@@ -27,7 +37,12 @@
     "performance": 35,
     "created_at": "2019-08-19T21:59:32.264Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "EKPI",
+      "homepage": "http://javier.net",
+      "pledge_address": "8gokgkus2oouzm8rn148f4s5jlxk4s25m6nyhqiljkyoy2m56i11n0q3wcldo2yw"
+    }
   },
   {
     "name": "Clare McClure",
@@ -37,7 +52,12 @@
     "performance": 92,
     "created_at": "2019-08-19T16:33:05.379Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "RXJB",
+      "homepage": "http://harvey.info",
+      "pledge_address": "ai030z5fus8upxk7n7jo8wj6zr14r8x1toa8d8ljj0kogxsruturlfx1blgpu5gj"
+    }
   },
   {
     "name": "Jayda Labadie",
@@ -47,7 +67,12 @@
     "performance": 79,
     "created_at": "2019-08-20T04:54:58.253Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "EDUZ",
+      "homepage": "https://blanca.net",
+      "pledge_address": "kfnnlnuexrm9q3ruqncascfdp14kii07ecfdiviahe0nawy0ro2qewjcyfn24da4"
+    }
   },
   {
     "name": "Henderson D'Amore",
@@ -57,7 +82,12 @@
     "performance": 65,
     "created_at": "2019-08-20T00:16:10.786Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "VECR",
+      "homepage": "http://jayda.info",
+      "pledge_address": "4cu07xnttzlzojxkqj64wecht107sfv9oms5sl4znva9jgdd1rjyfjwf7dxf1pr4"
+    }
   },
   {
     "name": "Wilburn Hansen",
@@ -67,7 +97,12 @@
     "performance": 62,
     "created_at": "2019-08-19T17:19:22.875Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "DPKL",
+      "homepage": "https://brown.name",
+      "pledge_address": "7f6dcd56cwub6258a7t1vunkmnho2jgpop4e16ior2smy9sqpxr9r2fipqko8f0k"
+    }
   },
   {
     "name": "Sherman Herman",
@@ -77,7 +112,12 @@
     "performance": 25,
     "created_at": "2019-08-20T06:14:55.433Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "CVVD",
+      "homepage": "http://wyman.biz",
+      "pledge_address": "s5020mikt232xk8llm3rfeamvkb0ez6hq5k0mylc55ljh8ictafu8ofb22cx1ujd"
+    }
   },
   {
     "name": "Ms. Fleta Glover",
@@ -87,7 +127,12 @@
     "performance": 87,
     "created_at": "2019-08-20T01:31:53.493Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "JMFZ",
+      "homepage": "http://evie.info",
+      "pledge_address": "e61rdh9cu9yhyqjkjer94375hzshg7i3e4vjr6f9wffkibsrur4cn3g9qqomcwtz"
+    }
   },
   {
     "name": "Rosalind Feeney",
@@ -97,7 +142,12 @@
     "performance": 2,
     "created_at": "2019-08-19T15:40:37.184Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "EHGM",
+      "homepage": "https://tod.name",
+      "pledge_address": "uju94ft2ia5bof2cslygrayzk28cok1t8fltyy5k17zwnbrx830g6ws9ce8e4y18"
+    }
   },
   {
     "name": "Fermin O'Hara",
@@ -107,7 +157,12 @@
     "performance": 84,
     "created_at": "2019-08-20T01:37:47.022Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "GGUK",
+      "homepage": "http://demarcus.net",
+      "pledge_address": "nzke8yaybxkh3xxp94lyayw5nlwxu6oeb6vjdr2dvl0fg2c8n82hm828tf0l0a3o"
+    }
   },
   {
     "name": "Nicole Larkin Sr.",
@@ -117,7 +172,12 @@
     "performance": 99,
     "created_at": "2019-08-19T14:01:25.434Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "EQUB",
+      "homepage": "http://samara.com",
+      "pledge_address": "5nu7djc53ldazbrkczftv4e8f8eaf85actcj5k1l2hfnahv20f84yvo1dtj14k8q"
+    }
   },
   {
     "name": "Itzel O'Conner",
@@ -127,7 +187,12 @@
     "performance": 85,
     "created_at": "2019-08-19T17:01:54.823Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "NDWV",
+      "homepage": "http://jewell.com",
+      "pledge_address": "mfam1ooddscf0tg8cnps1qojsd56276tnhasrzw5tmds2y3vtaemqj9itqck2f36"
+    }
   },
   {
     "name": "Meda Runolfsson",
@@ -137,7 +202,12 @@
     "performance": 45,
     "created_at": "2019-08-20T00:06:43.804Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "UFYN",
+      "homepage": "http://fred.name",
+      "pledge_address": "i93m4tqbvsyctulio4g9kzgpxysbgpy38bdo11c36qp5foev18i2l59huv4rbet1"
+    }
   },
   {
     "name": "Mae Toy",
@@ -147,7 +217,12 @@
     "performance": 40,
     "created_at": "2019-08-20T01:25:59.263Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "MYDK",
+      "homepage": "https://marta.biz",
+      "pledge_address": "0e3ndnw7clc08r3ob9y3xyzdptgdk5kq1os01sljhcryfwu7mdcm64bdforgsdgs"
+    }
   },
   {
     "name": "Christiana Romaguera",
@@ -157,7 +232,12 @@
     "performance": 59,
     "created_at": "2019-08-20T05:08:41.066Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "TXFE",
+      "homepage": "http://aurelio.name",
+      "pledge_address": "2janbztlbmtfmyycl4tij8bxj026lv6srwyfmcj5ue0vm5tlz6ga09lmxt7nrali"
+    }
   },
   {
     "name": "Ian Johnson",
@@ -167,7 +247,12 @@
     "performance": 1,
     "created_at": "2019-08-19T12:11:23.469Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "HYBL",
+      "homepage": "http://wyman.org",
+      "pledge_address": "oniah8akyvaxufscvgjay3faeaog3nt4sx4avdohha6g8206eb0a6tdtgcrlxoo4"
+    }
   },
   {
     "name": "Greg Wiza",
@@ -177,7 +262,12 @@
     "performance": 93,
     "created_at": "2019-08-19T13:54:47.008Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "YLUT",
+      "homepage": "http://haylie.org",
+      "pledge_address": "ihtr1lhvadihder4wj3zp7zs8hrmy4ki8w7gazybmkzfsvagzwugx9apjmhqduzt"
+    }
   },
   {
     "name": "Mr. Kamille Raynor",
@@ -187,7 +277,12 @@
     "performance": 70,
     "created_at": "2019-08-20T03:43:09.620Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "PDSH",
+      "homepage": "https://laurine.info",
+      "pledge_address": "81ip7sonipf4t2ldoztnn2xt7pptrnlorlljj0jdjftnowi4kj2up64feej300z6"
+    }
   },
   {
     "name": "Carlos Abernathy I",
@@ -197,7 +292,12 @@
     "performance": 70,
     "created_at": "2019-08-19T23:41:36.755Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "SWKN",
+      "homepage": "https://deven.info",
+      "pledge_address": "m1siuqe38f9b047lp0meicjofhq9gwzff0kb3xui2ws8r5ned9wscgywh1d2kiam"
+    }
   },
   {
     "name": "Dayton Bartoletti",
@@ -207,7 +307,12 @@
     "performance": 51,
     "created_at": "2019-08-19T14:22:54.464Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "CIGN",
+      "homepage": "https://beulah.info",
+      "pledge_address": "63joxk15obm3u9lou9s8qqq3o5n1zvrii78iqwux5z4ngdqerep3m809ndsp7cn3"
+    }
   },
   {
     "name": "Miss Rogers Rowe",
@@ -217,7 +322,12 @@
     "performance": 18,
     "created_at": "2019-08-19T21:48:55.959Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "BDBK",
+      "homepage": "http://zelda.com",
+      "pledge_address": "p3w4b0oqq0w2n7ds8aglq9wjynwdjq0e2d5v4fvgsk0hejg8bwyw72sjbacay0mw"
+    }
   },
   {
     "name": "Sarina Howell Sr.",
@@ -227,7 +337,12 @@
     "performance": 73,
     "created_at": "2019-08-19T20:20:49.820Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "XQJK",
+      "homepage": "https://courtney.org",
+      "pledge_address": "3a75opdng2l9baf593lbor4h73poxpm1kkbc4n8dcgg78cz77ggazp8zm5znhv74"
+    }
   },
   {
     "name": "Neha Johnson",
@@ -237,7 +352,12 @@
     "performance": 63,
     "created_at": "2019-08-20T03:26:47.525Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "QNCR",
+      "homepage": "https://lucie.info",
+      "pledge_address": "a0fp5kcy8fwrzyxrsw7ps5vckg4pc6wm4gcv5z2qpcy3tv7sacpc4fciho6tdxsh"
+    }
   },
   {
     "name": "Allene Schmidt",
@@ -247,7 +367,12 @@
     "performance": 26,
     "created_at": "2019-08-20T01:29:01.597Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "NZBL",
+      "homepage": "http://cristian.com",
+      "pledge_address": "z9i67gpzgk0cstvx2wk1y2p6uo4dxqu9k7p8yt43ccsuohrjxw0pmwyadqnacixy"
+    }
   },
   {
     "name": "Gennaro Feeney",
@@ -257,7 +382,12 @@
     "performance": 13,
     "created_at": "2019-08-19T09:50:37.952Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "BYDV",
+      "homepage": "http://norene.info",
+      "pledge_address": "t8yf1h8zagnaye82z499sl2d3tmuve1hg6cogj7p3i4y2fu2bnd05i5iderhqr7b"
+    }
   },
   {
     "name": "Randy Ziemann",
@@ -267,7 +397,12 @@
     "performance": 70,
     "created_at": "2019-08-20T00:24:49.634Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "DOJK",
+      "homepage": "http://johnnie.info",
+      "pledge_address": "ancimui6l5806rvat7i9wrpnm6njh7wuymg4hul68bo8b0ek4m3afffp2z4vahsp"
+    }
   },
   {
     "name": "Leilani Lind",
@@ -277,7 +412,12 @@
     "performance": 90,
     "created_at": "2019-08-20T05:53:12.263Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "GOXA",
+      "homepage": "https://piper.net",
+      "pledge_address": "7s5f5dabv2dtksyunffks4o3d8mzowbf3zd4vvig7mx6zjyeagacqegaw1ajr52j"
+    }
   },
   {
     "name": "Mr. Hazel Morar",
@@ -287,7 +427,12 @@
     "performance": 79,
     "created_at": "2019-08-19T19:38:02.406Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "YRTM",
+      "homepage": "http://lavada.org",
+      "pledge_address": "c1h9p22wheyj1q53p051j7ik0m07i06fv3ru15n0r3gj1ygd6akj0ed45smj88pj"
+    }
   },
   {
     "name": "Hope Lang",
@@ -297,7 +442,12 @@
     "performance": 30,
     "created_at": "2019-08-20T08:57:55.934Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "ZNWP",
+      "homepage": "http://dorothy.com",
+      "pledge_address": "cn6g6ku92hj0idtcl9ee682p07ly0eqapv6tpxmme4zzf96cej1j2ufhfq8sfdvl"
+    }
   },
   {
     "name": "Alexandro Green",
@@ -307,7 +457,12 @@
     "performance": 89,
     "created_at": "2019-08-19T10:42:17.989Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "MIHS",
+      "homepage": "https://cameron.com",
+      "pledge_address": "1cpxjptka7ndfg94d4m7cm21eix2aq7rmh8a6tlfxccea35y69m80gsxmgvbuptm"
+    }
   },
   {
     "name": "Mara Labadie",
@@ -317,7 +472,12 @@
     "performance": 36,
     "created_at": "2019-08-19T10:03:58.190Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "AMSJ",
+      "homepage": "http://phyllis.com",
+      "pledge_address": "g1jkkq8c4vfzsp4qoxqoa8r3zi78ghctf76t22haqmhhpjhrydhmsxoftavtfdq6"
+    }
   },
   {
     "name": "Adrien Doyle",
@@ -327,7 +487,12 @@
     "performance": 42,
     "created_at": "2019-08-19T18:51:05.157Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "TVZX",
+      "homepage": "https://bertram.name",
+      "pledge_address": "1rj4p7stpvcuqufmqd5z14gw37nnjx9fbnceyyfxhikwqkzocckmkl39ge3rg3fi"
+    }
   },
   {
     "name": "Orlando Kub III",
@@ -337,7 +502,12 @@
     "performance": 85,
     "created_at": "2019-08-19T11:10:18.435Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "HUXI",
+      "homepage": "http://dejuan.biz",
+      "pledge_address": "bog9o9kunugxw8np1hn16bn8uzm1ys6h38ua6of2tnx60indlfqfeqazjlqgpctn"
+    }
   },
   {
     "name": "Granville Treutel",
@@ -347,7 +517,12 @@
     "performance": 29,
     "created_at": "2019-08-19T17:18:02.986Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "EOGB",
+      "homepage": "https://ryder.name",
+      "pledge_address": "jg8i8s2s88hk57lb6my97fgj64hcqri45na44jqseglt55635xmdmm5uqkh458tb"
+    }
   },
   {
     "name": "Karl Lang",
@@ -357,7 +532,12 @@
     "performance": 89,
     "created_at": "2019-08-19T19:37:44.111Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "REVX",
+      "homepage": "http://vergie.info",
+      "pledge_address": "g2xly5w6vabql1xgag7qf21j7fgmts7xdee7x13qkbi9rcob7zq5i1l9yh6wytix"
+    }
   },
   {
     "name": "Thomas Weissnat",
@@ -367,7 +547,12 @@
     "performance": 86,
     "created_at": "2019-08-19T19:46:25.868Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "VDSN",
+      "homepage": "https://rasheed.biz",
+      "pledge_address": "zar82whgozlyijka3kvrwfjdtjo2ptlv2w1d707rs5s9c8p89ukigl015nwz8m1v"
+    }
   },
   {
     "name": "Adolphus O'Hara",
@@ -377,7 +562,12 @@
     "performance": 93,
     "created_at": "2019-08-19T22:33:47.016Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "GXJK",
+      "homepage": "https://evalyn.name",
+      "pledge_address": "mejqlx0eqbsrlofxqc5f9h9599joczuxv8t2kcq26tqmnycqdbp50gk116zh4qlr"
+    }
   },
   {
     "name": "Susanna Nitzsche III",
@@ -387,7 +577,12 @@
     "performance": 46,
     "created_at": "2019-08-20T01:16:59.603Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "XPEL",
+      "homepage": "https://louvenia.info",
+      "pledge_address": "4ysalt6ee7po2d1uvhe78gyg69yfe5al2a4fl3rsr3x6lnbcerpgpik98l64dtq5"
+    }
   },
   {
     "name": "Chester Kuphal",
@@ -397,7 +592,12 @@
     "performance": 74,
     "created_at": "2019-08-19T11:43:49.161Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "ZQIT",
+      "homepage": "https://sincere.biz",
+      "pledge_address": "423pe8q3of13a4lw6mk3a4dhim5e1yyi8zjyqar03tjrf0sluzm3vzxbtkaehf98"
+    }
   },
   {
     "name": "Carlo Kovacek",
@@ -407,7 +607,12 @@
     "performance": 47,
     "created_at": "2019-08-19T15:22:37.247Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "MPGX",
+      "homepage": "https://paul.biz",
+      "pledge_address": "mgcux1myk9kz5g6rmdwiob6b4i59p5cf84wpb33ir1q64s91jm5lho00pqcs1yg9"
+    }
   },
   {
     "name": "Kamille Strosin",
@@ -417,7 +622,12 @@
     "performance": 92,
     "created_at": "2019-08-20T00:41:28.791Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "NOHC",
+      "homepage": "http://emmet.info",
+      "pledge_address": "utgkn6pckq16ljcnq7994y5fb9md3hhve4rkpiw8rexidzsnj0n0bl9qb4qgadwc"
+    }
   },
   {
     "name": "Keagan Wilkinson",
@@ -427,7 +637,12 @@
     "performance": 82,
     "created_at": "2019-08-19T18:59:03.253Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "GQIT",
+      "homepage": "https://kale.com",
+      "pledge_address": "w8gglm30tjrd4mtvurupx487t98h7gfzilffixv7l5een3nl1u43h9opur57fp4q"
+    }
   },
   {
     "name": "Aimee Barrows",
@@ -437,7 +652,12 @@
     "performance": 50,
     "created_at": "2019-08-20T02:45:48.036Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "CHBI",
+      "homepage": "https://bridie.name",
+      "pledge_address": "c1qski4csn155l882w19t9cqgyzc1w16qt7ez7536f49bdz1gmhzgrujp1gyyazc"
+    }
   },
   {
     "name": "Violet Thiel",
@@ -447,7 +667,12 @@
     "performance": 59,
     "created_at": "2019-08-20T04:15:27.753Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "MOKB",
+      "homepage": "https://princess.info",
+      "pledge_address": "hnhrgwsroanaygcs82vdmclg65pw0bcwud74x97145cocjeenfvoyguvxk5uoky7"
+    }
   },
   {
     "name": "Delpha Runte",
@@ -457,7 +682,12 @@
     "performance": 64,
     "created_at": "2019-08-19T11:34:45.360Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "XSIX",
+      "homepage": "http://alek.org",
+      "pledge_address": "mimee9okmopkyywopidsw7i5ha20dhdn1loi6udhzosx67mglyd9utaj7wpckwbf"
+    }
   },
   {
     "name": "Kaya Pouros",
@@ -467,7 +697,12 @@
     "performance": 90,
     "created_at": "2019-08-20T09:07:33.322Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "YKCO",
+      "homepage": "http://kennedy.org",
+      "pledge_address": "lky1yk9j1frubex17tr7k3nw2iqzx1k6iz5efuu4pcgrug3b38gk5uves522h003"
+    }
   },
   {
     "name": "Hillary Krajcik",
@@ -477,7 +712,12 @@
     "performance": 97,
     "created_at": "2019-08-20T01:29:29.786Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "CDUY",
+      "homepage": "https://rasheed.name",
+      "pledge_address": "84131yac9skhr1rv8cjlmg9vop4qxtyy62v2vxitzexxa4zn0vfpohv9o49q24p0"
+    }
   },
   {
     "name": "Ms. Magnus Carter",
@@ -487,7 +727,12 @@
     "performance": 48,
     "created_at": "2019-08-20T03:13:19.568Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "HHKG",
+      "homepage": "http://robert.com",
+      "pledge_address": "fylw4uvrlsxcr1o3h4soik0lpnk2v2d1jpepdk68mqxko4p1xfpc5fpuy057zagu"
+    }
   },
   {
     "name": "Mr. Melvin Simonis",
@@ -497,7 +742,12 @@
     "performance": 94,
     "created_at": "2019-08-19T10:54:30.038Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "APWG",
+      "homepage": "http://deon.org",
+      "pledge_address": "lwqbnzoc80anq21r3i3lvvcexs79ugll7yd0h1ab9sqnv2l28k780bff8fnfo3hr"
+    }
   },
   {
     "name": "Chet Robel",
@@ -507,7 +757,12 @@
     "performance": 97,
     "created_at": "2019-08-20T06:04:44.271Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "KEBF",
+      "homepage": "https://fern.net",
+      "pledge_address": "v2iv18yyz2xr83v1bikqtepiwjsqj9a3msn3vqyi35fnfllmyez7kt54ooumu9ka"
+    }
   },
   {
     "name": "Dr. Serena Howe",
@@ -517,7 +772,12 @@
     "performance": 8,
     "created_at": "2019-08-19T21:01:28.198Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "VNSD",
+      "homepage": "http://aurelio.com",
+      "pledge_address": "lpinf0kazf4gz8bzcy3eccc4wnzviefu6f33b9wkzzmw4n12makltwluqc3s2xtq"
+    }
   },
   {
     "name": "Amani Zemlak",
@@ -527,7 +787,12 @@
     "performance": 99,
     "created_at": "2019-08-20T07:47:19.081Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "BIEA",
+      "homepage": "https://marshall.name",
+      "pledge_address": "ki00zga77tc9ubu980uf2qe39vxvew19exr9ejnpehj47r0gfjw4a9g664c7dba7"
+    }
   },
   {
     "name": "Mollie McDermott",
@@ -537,7 +802,12 @@
     "performance": 19,
     "created_at": "2019-08-19T11:17:53.610Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "CKWE",
+      "homepage": "https://sabina.com",
+      "pledge_address": "6msn9thgqfk2wrmlag807t0mj1425icgvfud6gqjzra7zrno8ctykiyqcd1u3oey"
+    }
   },
   {
     "name": "Rosalinda Bayer",
@@ -547,7 +817,12 @@
     "performance": 82,
     "created_at": "2019-08-20T06:21:19.779Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "SXYB",
+      "homepage": "https://reed.com",
+      "pledge_address": "cdojhyein8xqdfuahmk8tf8f5j1io0zxejwx3gyqq4joe0857y6s4tqw0uucgwrm"
+    }
   },
   {
     "name": "Dixie Morissette",
@@ -557,7 +832,12 @@
     "performance": 70,
     "created_at": "2019-08-19T12:12:35.016Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "JBKL",
+      "homepage": "https://monique.biz",
+      "pledge_address": "vh1nvg3rwrfarvmkjaulqie6z14k63foyh65esa9jnv0bxrm5881h1kdhfh72i8k"
+    }
   },
   {
     "name": "Torey Yost",
@@ -567,7 +847,12 @@
     "performance": 45,
     "created_at": "2019-08-20T05:22:17.102Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "RRNA",
+      "homepage": "http://tony.org",
+      "pledge_address": "72gtf0v1w9dnhpwh5pwcxt5i0sch8e9d7u8b8y12l79jzjajgq4w0s7gkd5o38yb"
+    }
   },
   {
     "name": "Dorian VonRueden",
@@ -577,7 +862,12 @@
     "performance": 56,
     "created_at": "2019-08-19T09:47:51.843Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "ADDF",
+      "homepage": "https://sven.com",
+      "pledge_address": "18zp0fnqykb3u2ru0ftou1ih0yozpc74d60qg2vhr67gqwla29ku890hbj8r0l4l"
+    }
   },
   {
     "name": "Arnoldo Boehm",
@@ -587,7 +877,12 @@
     "performance": 13,
     "created_at": "2019-08-19T13:04:10.428Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "HIFS",
+      "homepage": "http://litzy.name",
+      "pledge_address": "hrt12pzzk0ed7nd1i07bgg1bbhykwyk5sjyhbdrgsgkyfze443al6g66tr3tfcgi"
+    }
   },
   {
     "name": "Shayna Kuvalis DDS",
@@ -597,7 +892,12 @@
     "performance": 45,
     "created_at": "2019-08-20T03:37:21.785Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "HJNL",
+      "homepage": "http://princess.org",
+      "pledge_address": "91s42nnh87te4xkb8qsnsm81krryu6tb96ubo8s6aiwo435qt5yr1hxwwfawwpbc"
+    }
   },
   {
     "name": "Waylon Kuhic",
@@ -607,7 +907,12 @@
     "performance": 78,
     "created_at": "2019-08-20T03:13:07.359Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "XDUU",
+      "homepage": "https://gerard.org",
+      "pledge_address": "3xe6dw4kgsq959q9muxzg7n5s9y7nhmhb94kz5djp1goyr3sk1nbzgpuv38jw2fw"
+    }
   },
   {
     "name": "Napoleon Rice",
@@ -617,7 +922,12 @@
     "performance": 78,
     "created_at": "2019-08-19T21:58:00.855Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "GXBW",
+      "homepage": "http://percy.biz",
+      "pledge_address": "4roypwef9xz858f9mue5edrjx0snm7wx5uffk2brnal2yiv4hcn82mq7ye87j08l"
+    }
   },
   {
     "name": "Taylor O'Reilly",
@@ -627,7 +937,12 @@
     "performance": 61,
     "created_at": "2019-08-19T17:50:01.616Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "OUHC",
+      "homepage": "http://kiana.com",
+      "pledge_address": "iwgnd4yv8s07v6im7zq7cy2blvyhfxbgwv9lmgn5xfyz9fakyzbee6aoatm4o340"
+    }
   },
   {
     "name": "Stewart Brown",
@@ -637,7 +952,12 @@
     "performance": 20,
     "created_at": "2019-08-19T18:38:10.512Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "SZWM",
+      "homepage": "https://mikayla.com",
+      "pledge_address": "3pfxhhh4twvmoi15smyhwf6l7gumsv6tzedv18yhmwyl9fzvswbbtsjnw6y4prm6"
+    }
   },
   {
     "name": "Giovani Rau",
@@ -647,7 +967,12 @@
     "performance": 49,
     "created_at": "2019-08-19T21:29:33.634Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "JZFS",
+      "homepage": "https://kristian.net",
+      "pledge_address": "ym2nopj5snj17offoa0zcftrcwde8kjeky2tq8h1f6e09rxbc75vpaw8fxf45m42"
+    }
   },
   {
     "name": "Cornell Walker",
@@ -657,7 +982,12 @@
     "performance": 29,
     "created_at": "2019-08-20T05:53:32.499Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "MVEI",
+      "homepage": "https://berneice.info",
+      "pledge_address": "2o31a5sd1fkntmon03kgcy3fwpx4x6mm9f5vafwi07gogd445lg9fw3x56mfm0gm"
+    }
   },
   {
     "name": "Orlando Lockman",
@@ -667,7 +997,12 @@
     "performance": 25,
     "created_at": "2019-08-20T08:49:01.858Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "ZGVO",
+      "homepage": "http://calista.info",
+      "pledge_address": "sytnuipiqo7ktsvg9tpp9rgq8iq0jgi0yjlk7464a37z4ml8hhz75ibu5j9iagv2"
+    }
   },
   {
     "name": "Elian Welch",
@@ -677,7 +1012,12 @@
     "performance": 80,
     "created_at": "2019-08-19T11:52:41.804Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "OUPF",
+      "homepage": "https://samara.info",
+      "pledge_address": "gxulysm8l6fcvptf0n0bv3tixvuytgxusewdajcw2k2v0akd6jxbmpl830wyna4j"
+    }
   },
   {
     "name": "Daphne Reichert",
@@ -687,7 +1027,12 @@
     "performance": 53,
     "created_at": "2019-08-19T18:00:04.310Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "ITZR",
+      "homepage": "http://candice.biz",
+      "pledge_address": "y69fged2ckompjd3uk4wmhwa5edcnsj7mhdtpumvnum12pnp9dj1y8tysmlg36fs"
+    }
   },
   {
     "name": "Elenora Keeling",
@@ -697,7 +1042,12 @@
     "performance": 72,
     "created_at": "2019-08-19T12:20:49.472Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "KGDN",
+      "homepage": "http://augustine.biz",
+      "pledge_address": "mykeuoocbafjlfkz7ihh60jz40v25wlw2yc6z2uoq6b5hnd444mpmy3j4bis1m47"
+    }
   },
   {
     "name": "Diamond Reichert",
@@ -707,7 +1057,12 @@
     "performance": 91,
     "created_at": "2019-08-20T04:55:09.950Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "FJZN",
+      "homepage": "http://velva.info",
+      "pledge_address": "txhuhp3p4dkn2qqxks5dzcf30w2yueo8q945rhucz3c6wrmsdhab6ebmvgedvita"
+    }
   },
   {
     "name": "Lois Adams",
@@ -717,7 +1072,12 @@
     "performance": 41,
     "created_at": "2019-08-20T04:27:50.014Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "JIHI",
+      "homepage": "http://otho.info",
+      "pledge_address": "9zp7yvj0cmktnzw7iccupeis85csqz7e5bacqe48g16z49p2z247k4hj123fmyog"
+    }
   },
   {
     "name": "Eliezer Smitham",
@@ -727,7 +1087,12 @@
     "performance": 34,
     "created_at": "2019-08-19T11:43:01.704Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "UQCH",
+      "homepage": "http://kaitlyn.net",
+      "pledge_address": "sdli2welwuha8ur7we7fxfhsv5rkiv88zzpgdg3w4qwdfinnkxjaszjy0w65e5pk"
+    }
   },
   {
     "name": "Cordia O'Connell",
@@ -737,7 +1102,12 @@
     "performance": 33,
     "created_at": "2019-08-19T09:43:28.027Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "RXQD",
+      "homepage": "http://eve.org",
+      "pledge_address": "z08d9pl36e5fn5ej4vmc6xp4tqxhfo599jm4f324oy5vf3qqfldpbsxwwqeoe8vq"
+    }
   },
   {
     "name": "Irma Smith",
@@ -747,7 +1117,12 @@
     "performance": 6,
     "created_at": "2019-08-19T15:39:44.637Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "FJOG",
+      "homepage": "https://brooklyn.biz",
+      "pledge_address": "ukrq7w4tsuxpug777ilvpi470evzqhbglr0s3c03ekbqy6lfyb4p9jsrp7kz1ygi"
+    }
   },
   {
     "name": "Curtis Legros",
@@ -757,7 +1132,12 @@
     "performance": 0,
     "created_at": "2019-08-19T17:30:17.103Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "FVWW",
+      "homepage": "http://blair.com",
+      "pledge_address": "q9fjxkdopfyr12oxihaiahr04k49o6gdw7r97j4itlbxaadyqzcfcennen9sry8q"
+    }
   },
   {
     "name": "Ms. Antonetta Harber",
@@ -767,7 +1147,12 @@
     "performance": 51,
     "created_at": "2019-08-20T07:36:17.833Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "NXAR",
+      "homepage": "https://kristian.biz",
+      "pledge_address": "761wz99zp22phq45knv9mj26zkikhw9tjvvyqnkk8iondcajd7st2hbj58lndtdx"
+    }
   },
   {
     "name": "Domenic Berge",
@@ -777,7 +1162,12 @@
     "performance": 32,
     "created_at": "2019-08-19T12:05:03.670Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "RQYC",
+      "homepage": "https://delia.org",
+      "pledge_address": "oy5mxbfg8fobtwmc1iw1j74dbm76um110oejoc40pk50bk5o6iv5sr72q1ppyxd2"
+    }
   },
   {
     "name": "Johnny Hartmann",
@@ -787,7 +1177,12 @@
     "performance": 33,
     "created_at": "2019-08-19T20:43:47.443Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "BGOW",
+      "homepage": "https://eulah.com",
+      "pledge_address": "iwpzpx59muv9hkp4lc3gpsm2hwqact8hzfd0qkxi9fc6x3wsh82fdrfwqdw10udn"
+    }
   },
   {
     "name": "Dejah Predovic",
@@ -797,7 +1192,12 @@
     "performance": 86,
     "created_at": "2019-08-19T17:58:14.382Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "OBHT",
+      "homepage": "http://mozelle.net",
+      "pledge_address": "h90el9osoair1dudj0zjd8y1yq94rac472fyqkjdfrlhm6z88ooazlfl8rd1rk6m"
+    }
   },
   {
     "name": "Glenda Hermann",
@@ -807,7 +1207,12 @@
     "performance": 20,
     "created_at": "2019-08-20T05:15:19.646Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "LESZ",
+      "homepage": "https://nina.name",
+      "pledge_address": "s9lk3f0nv3lacmr21qd5pk242h6dbaym4mwtxzfdaa0xrezd90859h4stuwnsmqi"
+    }
   },
   {
     "name": "Jimmie Heathcote",
@@ -817,7 +1222,12 @@
     "performance": 29,
     "created_at": "2019-08-19T11:20:48.966Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "TLJJ",
+      "homepage": "https://birdie.net",
+      "pledge_address": "dabqmweuz2fedxf5tvgfuq3j4aouaup56qowjscauuejothwrjbe40u8hb3t6bia"
+    }
   },
   {
     "name": "Mr. Zane McGlynn",
@@ -827,7 +1237,12 @@
     "performance": 44,
     "created_at": "2019-08-19T12:30:23.173Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "TCGK",
+      "homepage": "https://chad.name",
+      "pledge_address": "i9jpgzfg0tovemd3l0d2m5okmu7b7j9rsps2z7z2mq6qku8h8mwczzjxsnn60li9"
+    }
   },
   {
     "name": "Reagan Nikolaus",
@@ -837,7 +1252,12 @@
     "performance": 49,
     "created_at": "2019-08-19T10:33:09.311Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "RLAD",
+      "homepage": "http://lazaro.org",
+      "pledge_address": "3sbp88mkafpbnksp228628aokmpfanz5vo8ad8h5inrvivtyeayfvik970p7ykwh"
+    }
   },
   {
     "name": "Lorenzo Buckridge",
@@ -847,7 +1267,12 @@
     "performance": 44,
     "created_at": "2019-08-19T13:14:27.800Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "MIGC",
+      "homepage": "https://tyson.biz",
+      "pledge_address": "ha5rnjqw4m09i8cs06y2za28uurakw9l3r36bbc9sqnvscpdfjaptcw6wdg958w0"
+    }
   },
   {
     "name": "Elyssa Bode",
@@ -857,7 +1282,12 @@
     "performance": 93,
     "created_at": "2019-08-19T15:03:51.742Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "ZGWT",
+      "homepage": "https://silas.net",
+      "pledge_address": "ek9h0vcxbxbsge641jjke3hi7hetfhmc793540b3rgwe024bdd5rl6bdlbsgrevk"
+    }
   },
   {
     "name": "Clyde Medhurst",
@@ -867,7 +1297,12 @@
     "performance": 52,
     "created_at": "2019-08-19T13:46:07.539Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "EZUM",
+      "homepage": "http://elian.info",
+      "pledge_address": "5fkck6h7xsly57y9k0wtw4a7zzp5da3fzzyrwuidlah5sw2ume3qoli2wurh7cou"
+    }
   },
   {
     "name": "Spencer Cartwright V",
@@ -877,7 +1312,12 @@
     "performance": 47,
     "created_at": "2019-08-20T05:46:30.909Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "OPXQ",
+      "homepage": "https://dino.biz",
+      "pledge_address": "0bqzkxps8suyx4qotc4huw72oycsfvxwq9kc41z86hxl65agi75xfpg5i9u98w89"
+    }
   },
   {
     "name": "Mr. Dewitt Gutmann",
@@ -887,7 +1327,12 @@
     "performance": 87,
     "created_at": "2019-08-19T16:10:45.083Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "UGIS",
+      "homepage": "https://gregg.net",
+      "pledge_address": "h3bitd6kh0y64ko979cdo5u8u364yl4dxf3nl8n1e0953h3kzure8nnnfqtsbs7j"
+    }
   },
   {
     "name": "Verona Greenfelder Jr.",
@@ -897,7 +1342,12 @@
     "performance": 54,
     "created_at": "2019-08-20T08:46:50.936Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "BUIN",
+      "homepage": "https://theodora.org",
+      "pledge_address": "2x8olhwoall0qhv79l97bnh0eij26rvb1oubzpyt1c0300klm6x1kyxeexi8wp7n"
+    }
   },
   {
     "name": "Meredith Armstrong",
@@ -907,7 +1357,12 @@
     "performance": 5,
     "created_at": "2019-08-19T23:24:10.845Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "SAVQ",
+      "homepage": "http://susan.info",
+      "pledge_address": "idqngeuckor21unsv6t8z3o0uvgvafgkeocpvj3r8vlwgr6jt4v55ost7hw8ectf"
+    }
   },
   {
     "name": "Sim Swift",
@@ -917,7 +1372,12 @@
     "performance": 23,
     "created_at": "2019-08-19T21:33:44.224Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "EYAB",
+      "homepage": "https://quinten.com",
+      "pledge_address": "0smhyw0b0l7ng5la7lwex8fyt9pb0z43glp9q4yirqjd4pk0ld5wn10tzxovpjqo"
+    }
   },
   {
     "name": "Florian Rau",
@@ -927,7 +1387,12 @@
     "performance": 71,
     "created_at": "2019-08-19T23:59:55.292Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "WTIK",
+      "homepage": "https://javon.com",
+      "pledge_address": "la7rrcqhwu3qxw2sf96s11ktcq5ezn0u5mhx4wwcmxgxsn0z13brmbvnw484ja24"
+    }
   },
   {
     "name": "Audrey Roberts",
@@ -937,7 +1402,12 @@
     "performance": 3,
     "created_at": "2019-08-19T19:38:54.274Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "FXNI",
+      "homepage": "http://ashly.biz",
+      "pledge_address": "1sktkt59biuit44afvp1mc8msht3stfwk11qyv5m44mhbn85z709kbfalq5op4kz"
+    }
   },
   {
     "name": "Rosina Herman",
@@ -947,7 +1417,12 @@
     "performance": 1,
     "created_at": "2019-08-20T08:46:38.954Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "KKSG",
+      "homepage": "https://maude.net",
+      "pledge_address": "8a4e4qj538xm69rfaychmbbjvvqdejs33wdmbqs5y8p0tj334mj8w2naqa4u3v2q"
+    }
   },
   {
     "name": "Larry Kautzer",
@@ -957,7 +1432,12 @@
     "performance": 29,
     "created_at": "2019-08-19T10:45:28.112Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "YEOD",
+      "homepage": "http://pinkie.name",
+      "pledge_address": "off6hup6xs8jvu9w49s2j0x1k8j3g3c2m6b1r5emkbtwlosz51bgc11dr7wlxqj4"
+    }
   },
   {
     "name": "Natalie Runte",
@@ -967,7 +1447,12 @@
     "performance": 47,
     "created_at": "2019-08-19T23:43:12.374Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "XRIF",
+      "homepage": "http://dayne.info",
+      "pledge_address": "8696kgkgxx05larkn22lzwklo6wsbt1bzkbruf0fa1oknr89erjp4w3atxcjt806"
+    }
   },
   {
     "name": "Georgianna Johnston",
@@ -977,7 +1462,12 @@
     "performance": 92,
     "created_at": "2019-08-19T17:46:44.100Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "KWAC",
+      "homepage": "http://miller.net",
+      "pledge_address": "j08lzjlo5mnyfprt5nnuvxletvt8q74v928rk64ytqthdnvn3v1byl48cx2qjmz5"
+    }
   },
   {
     "name": "Alba Wolf",
@@ -987,7 +1477,12 @@
     "performance": 55,
     "created_at": "2019-08-19T14:19:28.312Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "IAQE",
+      "homepage": "https://itzel.name",
+      "pledge_address": "929e3ru7g1nv5vaun5qih84zqlku9nr7lxyjw6qn3f10luxcigpdnr2ls8hztyqz"
+    }
   },
   {
     "name": "Hazle Keebler",
@@ -997,7 +1492,12 @@
     "performance": 69,
     "created_at": "2019-08-20T01:48:36.779Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "DGDQ",
+      "homepage": "http://margot.org",
+      "pledge_address": "aqaz267u0dx4zthp3i2wa06egrl1bzeqo3jjv06t43wrkgou2keg5z7tzwjd6t2q"
+    }
   },
   {
     "name": "Maximillia Streich",
@@ -1007,7 +1507,12 @@
     "performance": 82,
     "created_at": "2019-08-19T16:19:10.664Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "LXRU",
+      "homepage": "http://neal.net",
+      "pledge_address": "mles2fvh7om0gotain5bcwvpxmqciqfievtbjzmjslr0kiluspogssoboivkp552"
+    }
   },
   {
     "name": "Sienna Kilback",
@@ -1017,7 +1522,12 @@
     "performance": 4,
     "created_at": "2019-08-19T15:41:36.332Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "PHPE",
+      "homepage": "http://gladyce.org",
+      "pledge_address": "khol39az9sb1ml973lfrp8lg6trlxucx8lgqoyapikn4lxe1elssd5udhwm7bxh0"
+    }
   },
   {
     "name": "Mr. Rickie Conn",
@@ -1027,7 +1537,12 @@
     "performance": 36,
     "created_at": "2019-08-19T23:28:44.985Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "IRUE",
+      "homepage": "http://mavis.info",
+      "pledge_address": "rpijfyi4vyvpefxc0b3imqsmc2m2o9b15scaoby9u37667pr18o0a4i3pi1kk4w2"
+    }
   },
   {
     "name": "Herminio Mraz",
@@ -1037,7 +1552,12 @@
     "performance": 2,
     "created_at": "2019-08-19T18:00:33.752Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "YEQU",
+      "homepage": "http://amara.name",
+      "pledge_address": "3ewpl31s4p85gn3moxpfahznthsagn91s1q2wintyk0digceclsdcqnhuk8y94z3"
+    }
   },
   {
     "name": "Eleonore Hilpert",
@@ -1047,7 +1567,12 @@
     "performance": 51,
     "created_at": "2019-08-20T03:34:32.871Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "QBID",
+      "homepage": "http://shanie.net",
+      "pledge_address": "iiv139b861qd19tu06za5pmcu2dng8n8phf3px1ocp67hg5a3l1caw0o9vrx9qp1"
+    }
   },
   {
     "name": "Kallie Auer",
@@ -1057,7 +1582,12 @@
     "performance": 51,
     "created_at": "2019-08-19T11:35:29.144Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "KOAR",
+      "homepage": "http://letha.net",
+      "pledge_address": "sk69qtdj15d270s1d5dl8vrirmxr0jv4tiyf7uvxju97kkx5dqjeb4c9ksybi618"
+    }
   },
   {
     "name": "Liza Mohr",
@@ -1067,7 +1597,12 @@
     "performance": 14,
     "created_at": "2019-08-20T02:35:07.804Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "WSMZ",
+      "homepage": "http://wilfred.info",
+      "pledge_address": "c6i99u4qfgy95rcy6z03l8tq3wksvsrxoq3brxrewzihf6zruzp2uriguxgbaom5"
+    }
   },
   {
     "name": "Antonietta King",
@@ -1077,7 +1612,12 @@
     "performance": 62,
     "created_at": "2019-08-19T13:35:30.748Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "RMIY",
+      "homepage": "https://agnes.info",
+      "pledge_address": "2ltiognixyfbvoul53cxfo98xr94tdtfuo1vw3uhogbsmif8ubvyb0wesrtf04p5"
+    }
   },
   {
     "name": "Jalen Maggio",
@@ -1087,7 +1627,12 @@
     "performance": 6,
     "created_at": "2019-08-20T01:39:38.603Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "QKNU",
+      "homepage": "http://granville.name",
+      "pledge_address": "53ub0sc1k5o3uog0f7xpycgbtgguo1haw5egm1ulrgejmhpbd4jl1swzlm0ah0rf"
+    }
   },
   {
     "name": "Mr. Kendrick Gerhold",
@@ -1097,7 +1642,12 @@
     "performance": 71,
     "created_at": "2019-08-20T02:19:40.063Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "TGRY",
+      "homepage": "http://nedra.net",
+      "pledge_address": "6gvraoflgoqlhmmffblkcpk3yesohzy0upv9wyg6sir4cvkvy4gtwwok1nkciedx"
+    }
   },
   {
     "name": "Brenden Hilll",
@@ -1107,7 +1657,12 @@
     "performance": 100,
     "created_at": "2019-08-19T17:56:15.554Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "WGXM",
+      "homepage": "https://jaylon.org",
+      "pledge_address": "2hl0k31pl267aqwunmqtxy9bm7s0dpluz3hyrnhoijeyfdkxyu2wxfiepz5k09ba"
+    }
   },
   {
     "name": "Hans Davis",
@@ -1117,7 +1672,12 @@
     "performance": 1,
     "created_at": "2019-08-19T16:44:55.711Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "CFRJ",
+      "homepage": "http://greg.name",
+      "pledge_address": "5s6ikfr2265cypase7higc0sdui9e8em828rwafw19rmolnfynpmaup7r0xyq5z8"
+    }
   },
   {
     "name": "Malcolm Langosh PhD",
@@ -1127,7 +1687,12 @@
     "performance": 67,
     "created_at": "2019-08-20T08:17:42.342Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "XWHU",
+      "homepage": "https://cleo.com",
+      "pledge_address": "xu2eajuk33oyu69nr39sh7bdg9fpdt3nc69sslo4zrcmoawdozxz7fxciiby8s38"
+    }
   },
   {
     "name": "Miss Ardella Hettinger",
@@ -1137,7 +1702,12 @@
     "performance": 0,
     "created_at": "2019-08-19T11:12:45.721Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "PXHI",
+      "homepage": "http://jenifer.net",
+      "pledge_address": "mdoclrdeflujw905ham9qtpmr5jo1hn9g23aqjsky6ky0qx99lgoyknmid8okae0"
+    }
   },
   {
     "name": "Lavina Toy",
@@ -1147,7 +1717,12 @@
     "performance": 17,
     "created_at": "2019-08-19T19:15:10.853Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "HUEI",
+      "homepage": "https://cale.com",
+      "pledge_address": "rmq1co84mdoynjwoagrvy7vu4cx359x3kfxojbcidu13amlvt4zby17eufdcmvyo"
+    }
   },
   {
     "name": "Mrs. Oda Pacocha",
@@ -1157,7 +1732,12 @@
     "performance": 33,
     "created_at": "2019-08-19T17:55:27.347Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "RCGA",
+      "homepage": "http://astrid.org",
+      "pledge_address": "nrrc7rasdxlwk1de6llq8k8gq1chc8k2jwzbqovuiipzc8s6ml1cso29m7ickl7g"
+    }
   },
   {
     "name": "Mrs. Joseph Deckow",
@@ -1167,7 +1747,12 @@
     "performance": 96,
     "created_at": "2019-08-20T04:59:05.678Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "EUIU",
+      "homepage": "https://etha.net",
+      "pledge_address": "jt57k904r56jsc2m2dphwb1f9uekxqzf1rha3s12cfmscp4dlqhmu1kjykyg5dvg"
+    }
   },
   {
     "name": "Robb Russel",
@@ -1177,7 +1762,12 @@
     "performance": 2,
     "created_at": "2019-08-19T16:13:50.461Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "MSRY",
+      "homepage": "http://carter.info",
+      "pledge_address": "l441zagtqnunxf7rtdls59glvid3my4c045a1acs1qo0spg1vlhqii2zrr1jl0qj"
+    }
   },
   {
     "name": "Davonte Kilback",
@@ -1187,7 +1777,12 @@
     "performance": 23,
     "created_at": "2019-08-19T16:04:01.006Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "BSIV",
+      "homepage": "https://mable.net",
+      "pledge_address": "0gh47vkqkfixh2qgpypj68nrfrr0u31ijt7isss4rrcyeiofbilyaklcbcx3vch2"
+    }
   },
   {
     "name": "Paxton Dooley",
@@ -1197,7 +1792,12 @@
     "performance": 12,
     "created_at": "2019-08-20T05:46:19.623Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "DPGQ",
+      "homepage": "https://darlene.name",
+      "pledge_address": "f86zpvvbr53qf62nvu0hyexoapl2u3kj55qlvho3o1k6f8jdzcx2jdnki7013u08"
+    }
   },
   {
     "name": "Lon Rodriguez",
@@ -1207,7 +1807,12 @@
     "performance": 1,
     "created_at": "2019-08-20T08:22:45.649Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "JAWV",
+      "homepage": "https://hilbert.info",
+      "pledge_address": "cbikb329n3hk835krf8anzn6nphetyi6r7n5yujeldcj72gg1olj9b0lc7kjtjhd"
+    }
   },
   {
     "name": "Gideon Rohan",
@@ -1217,7 +1822,12 @@
     "performance": 6,
     "created_at": "2019-08-20T03:20:49.633Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "VLRB",
+      "homepage": "https://mozelle.info",
+      "pledge_address": "ecph85vt4yp69sq3hw01pai1r15fipl3izphdg5tl688oiqnmjciw7fincsfk811"
+    }
   },
   {
     "name": "Obie Maggio",
@@ -1227,7 +1837,12 @@
     "performance": 55,
     "created_at": "2019-08-20T02:16:39.418Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "NHUL",
+      "homepage": "http://willow.com",
+      "pledge_address": "2yywk49s938bwnza13n8o1azld7luvascvia8o1g5jgw9nw0vahk2z3hakdlh7p1"
+    }
   },
   {
     "name": "Germaine Robel",
@@ -1237,7 +1852,12 @@
     "performance": 53,
     "created_at": "2019-08-20T07:56:15.623Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "BGZD",
+      "homepage": "https://joany.biz",
+      "pledge_address": "ys14zfaflm8vl8rr09kbrd5kidwvwh5pcpr5zpnppa6woaqykjiow17vr11k9op8"
+    }
   },
   {
     "name": "Vito Bosco",
@@ -1247,7 +1867,12 @@
     "performance": 97,
     "created_at": "2019-08-19T16:48:43.210Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "BOMG",
+      "homepage": "https://odell.org",
+      "pledge_address": "grddv9jpfgudrkmphtcobopj11bqag2jtf8tz2cbbs6prmjpeebhc9avwuvso7hi"
+    }
   },
   {
     "name": "Fausto Turner",
@@ -1257,7 +1882,12 @@
     "performance": 75,
     "created_at": "2019-08-19T22:03:46.131Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "PMAJ",
+      "homepage": "https://otho.name",
+      "pledge_address": "86n1p44qzw52gnzyp4v8iy75lvr3brckftwxl1hf8mpk18yr97sab95edtgegmgm"
+    }
   },
   {
     "name": "Adam Goldner",
@@ -1267,7 +1897,12 @@
     "performance": 40,
     "created_at": "2019-08-20T06:12:12.456Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "MINQ",
+      "homepage": "https://remington.name",
+      "pledge_address": "qsyposxjfbhz64nzyieq09taa9mdkt2xe46ws7fkwecx45i6ebm1f45ye7csqptr"
+    }
   },
   {
     "name": "Cortney Sawayn",
@@ -1277,7 +1912,12 @@
     "performance": 13,
     "created_at": "2019-08-20T07:03:46.968Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "QJFP",
+      "homepage": "http://emmanuel.name",
+      "pledge_address": "gwrnr7t3c1q1xcnk9cuslzieiqxpl7iogc44aomnkns21aiu3il2az2kcf6js5xz"
+    }
   },
   {
     "name": "Mathias Heaney",
@@ -1287,7 +1927,12 @@
     "performance": 70,
     "created_at": "2019-08-19T12:21:37.520Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "XTNA",
+      "homepage": "http://braulio.net",
+      "pledge_address": "x917782y098elv88nuu2w6i48llngnq6ol2dhzqj25aiz066ezs83yow02wydrnu"
+    }
   },
   {
     "name": "Ignatius Cremin",
@@ -1297,7 +1942,12 @@
     "performance": 83,
     "created_at": "2019-08-19T20:51:36.136Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "VWEZ",
+      "homepage": "https://arlene.net",
+      "pledge_address": "2swn3ejdosp7l9rqxqj19woggz3amwrkr4iuhg2083zci87qn66taaa8o3nbxhtj"
+    }
   },
   {
     "name": "Hyman Adams",
@@ -1307,7 +1957,12 @@
     "performance": 92,
     "created_at": "2019-08-19T19:46:14.443Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "CACF",
+      "homepage": "http://asia.info",
+      "pledge_address": "qbzo7legl8lzeroldq7xw5iru16wayqbdwwhc1e1gjfcby5qfpoqmqe8ei06fpa4"
+    }
   },
   {
     "name": "Edwin Bashirian",
@@ -1317,7 +1972,12 @@
     "performance": 18,
     "created_at": "2019-08-20T01:10:56.299Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "QZBX",
+      "homepage": "http://quincy.org",
+      "pledge_address": "vnwz89rwm6ki5pmkp6sb2v7t7cackfs7ej7f2nr4d9do7aib8p7tiv2z95rlhkn5"
+    }
   },
   {
     "name": "William Steuber",
@@ -1327,7 +1987,12 @@
     "performance": 72,
     "created_at": "2019-08-20T01:41:27.977Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "HPMD",
+      "homepage": "https://eleanora.name",
+      "pledge_address": "4k1zamk3qmbbz3kp5zxf25941ui7dl7jobpzool4zayb9z5p2hs1w2qx1ji3mljm"
+    }
   },
   {
     "name": "Vidal Cassin",
@@ -1337,7 +2002,12 @@
     "performance": 83,
     "created_at": "2019-08-19T09:43:54.320Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "CGBI",
+      "homepage": "https://arch.net",
+      "pledge_address": "dkn9yv76rjfwyf3haskc21zxhjb8xply80tndn63fd4nntjnf7xjh49dhp4q7s3x"
+    }
   },
   {
     "name": "Ephraim Heathcote",
@@ -1347,7 +2017,12 @@
     "performance": 27,
     "created_at": "2019-08-19T18:49:40.559Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "JSOL",
+      "homepage": "http://edwina.net",
+      "pledge_address": "ansczq7fmbgjpq8vhbojkeux7d2ni8qxq2ol083r9y978imxiqqpw4ccbhqot9xi"
+    }
   },
   {
     "name": "Alysa Adams",
@@ -1357,7 +2032,12 @@
     "performance": 67,
     "created_at": "2019-08-19T22:05:29.824Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "PJFO",
+      "homepage": "http://justus.org",
+      "pledge_address": "rqij44l2ffp230k5yyh4bcqw56tip05x57dqv2xvp9yprcicpj9npixtx10pija2"
+    }
   },
   {
     "name": "Camylle Hackett",
@@ -1367,7 +2047,12 @@
     "performance": 25,
     "created_at": "2019-08-19T12:07:08.938Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "XBXO",
+      "homepage": "https://guiseppe.name",
+      "pledge_address": "q6tk6i7wypqb2s8e71p9gtz17ulw8sk0pboz47yx0skk1u2eyvs32wmi83sfr0pt"
+    }
   },
   {
     "name": "Hilbert Rosenbaum",
@@ -1377,7 +2062,12 @@
     "performance": 87,
     "created_at": "2019-08-20T00:36:13.813Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "KKOG",
+      "homepage": "https://delta.com",
+      "pledge_address": "xeofe34cqxue9pisyqaamyhi3vgh75oswmvmvwmgikuy6kmj1fif3tkp47m8z81d"
+    }
   },
   {
     "name": "Carrie Haley V",
@@ -1387,7 +2077,12 @@
     "performance": 4,
     "created_at": "2019-08-19T16:44:46.523Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "GNZZ",
+      "homepage": "https://ozella.org",
+      "pledge_address": "aqx5usy4ndm87h3hy95rca21i9yl9cvqs1rng2hk8d8dvjrdnsfadcp0r0mmq32x"
+    }
   },
   {
     "name": "Darlene Pfeffer",
@@ -1397,7 +2092,12 @@
     "performance": 58,
     "created_at": "2019-08-19T20:22:57.945Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "FVUZ",
+      "homepage": "https://merlin.biz",
+      "pledge_address": "2oo7jp3z3hzvzhmpyi4liopzcywtdzudshm1xt6hyfngrkbn6wsjv2jftn8w8ycb"
+    }
   },
   {
     "name": "Jamir Cartwright",
@@ -1407,7 +2107,12 @@
     "performance": 42,
     "created_at": "2019-08-19T13:45:05.389Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "TGPU",
+      "homepage": "https://lucio.com",
+      "pledge_address": "ievl4ot2lf6otus1hd57w72vetjdbnnbn5a1ff5nbf65atiliuuk1strqohyv6pb"
+    }
   },
   {
     "name": "Zakary Cole",
@@ -1417,7 +2122,12 @@
     "performance": 9,
     "created_at": "2019-08-20T04:21:38.845Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "CUVE",
+      "homepage": "http://elenora.com",
+      "pledge_address": "y6jxp27jp134yrit4c5166utcpkxy0u4d212g9kr7omggu6nsh02fyu051x9urpb"
+    }
   },
   {
     "name": "Vallie Jaskolski Jr.",
@@ -1427,7 +2137,12 @@
     "performance": 42,
     "created_at": "2019-08-19T13:42:45.872Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "VWDL",
+      "homepage": "https://jenifer.com",
+      "pledge_address": "k3wsxvtsgwe5otr19b315y4erfoo7az8tuap7llci3lkfal6jke211hytlxrx28a"
+    }
   },
   {
     "name": "Dr. Clint Douglas",
@@ -1437,7 +2152,12 @@
     "performance": 6,
     "created_at": "2019-08-20T03:57:15.958Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "ZEVV",
+      "homepage": "http://aliza.org",
+      "pledge_address": "z27c2jbjlsle6amdetjpl2mi0uouetpv5weiqrrzvmxlt0hjlixtpcf62k68bp3x"
+    }
   },
   {
     "name": "Madalyn Strosin MD",
@@ -1447,7 +2167,12 @@
     "performance": 75,
     "created_at": "2019-08-20T04:48:58.623Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "JTCR",
+      "homepage": "http://maudie.biz",
+      "pledge_address": "lmgvq2158p0ac2gcjc5tzqq3v0ozm6cdrdc9miuyjxybv9ow4b5f7kquttdgrhlu"
+    }
   },
   {
     "name": "Johan Marks",
@@ -1457,7 +2182,12 @@
     "performance": 18,
     "created_at": "2019-08-19T17:16:07.458Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "RXCY",
+      "homepage": "http://alanis.biz",
+      "pledge_address": "5hjthvsxtzrc4lbyc7oro8altc0qb544tiebnairq5wz80joqgqogwo1mxneihqh"
+    }
   },
   {
     "name": "Antonetta Ernser",
@@ -1467,7 +2197,12 @@
     "performance": 23,
     "created_at": "2019-08-19T21:54:06.925Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "NVQI",
+      "homepage": "https://gordon.net",
+      "pledge_address": "9po8cm1qd8362dpz598yt05ch878iwvjnhiqvzb5qhr845ioi876o4w4lszfk53w"
+    }
   },
   {
     "name": "Gerard Kilback I",
@@ -1477,7 +2212,12 @@
     "performance": 1,
     "created_at": "2019-08-19T15:04:30.322Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "QWOJ",
+      "homepage": "https://stephany.org",
+      "pledge_address": "3sh4blk52fjeid7pdjqkkfcrz9v668kpej7ieonl87ouefckgbdcfv4o1nwvt08e"
+    }
   },
   {
     "name": "Osborne Jones Sr.",
@@ -1487,7 +2227,12 @@
     "performance": 42,
     "created_at": "2019-08-19T19:18:26.843Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "DBPK",
+      "homepage": "https://alexzander.org",
+      "pledge_address": "7x665vifjn6zl92e7qx4oquco98m3j6e307prq0tdcqq8mtdhkw8tx7cdrrl4dzk"
+    }
   },
   {
     "name": "Miracle Johnston",
@@ -1497,7 +2242,12 @@
     "performance": 64,
     "created_at": "2019-08-19T13:23:37.646Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "IBTT",
+      "homepage": "https://franco.org",
+      "pledge_address": "bxqtcuvb06wvdbo87vwc1zhz657qvbvulsfa4t58s73ivimqa6o74wu1a8jkegme"
+    }
   },
   {
     "name": "Neha Pfeffer",
@@ -1507,7 +2257,12 @@
     "performance": 23,
     "created_at": "2019-08-19T20:37:18.709Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "WIRK",
+      "homepage": "http://sanford.net",
+      "pledge_address": "nlg8dddeg3ao3ob7xl7udop5zstub0rw19n3p1r31x5vs7dqlxsqrzc8bkfwoqa2"
+    }
   },
   {
     "name": "Monte Blanda",
@@ -1517,7 +2272,12 @@
     "performance": 71,
     "created_at": "2019-08-19T22:33:56.932Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "KTTY",
+      "homepage": "https://reese.name",
+      "pledge_address": "8eerki2r7cixpyft7cxhlxlvj6cj63vd98mk3i6qxjahp4m1xbv4xtmqog0lwqlg"
+    }
   },
   {
     "name": "Assunta Schroeder",
@@ -1527,7 +2287,12 @@
     "performance": 7,
     "created_at": "2019-08-19T21:53:54.153Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "PPDZ",
+      "homepage": "https://nyah.name",
+      "pledge_address": "ukd60gxzvb159ujyhwaqi4fv7xjszg0rtc3a1k38p5yfhx11o1g6l53dojbarwjo"
+    }
   },
   {
     "name": "Viva Larkin",
@@ -1537,7 +2302,12 @@
     "performance": 24,
     "created_at": "2019-08-19T11:16:46.784Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "MLZE",
+      "homepage": "http://payton.name",
+      "pledge_address": "q5wu2fm2nsoxz0tg7228kmh9ifmz59llahqu7b1p3wmsrxwjzba0ipnob2ydsrqa"
+    }
   },
   {
     "name": "Jermain Eichmann",
@@ -1547,7 +2317,12 @@
     "performance": 26,
     "created_at": "2019-08-20T07:12:10.106Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "GPGN",
+      "homepage": "https://jillian.net",
+      "pledge_address": "t55bz8pvpnv2wf13x5dp07qfokcckhnos0ayup8ez5jzuper3e1uvfbghgt9apxs"
+    }
   },
   {
     "name": "Ken Kautzer",
@@ -1557,7 +2332,12 @@
     "performance": 55,
     "created_at": "2019-08-19T10:13:36.854Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "RRRK",
+      "homepage": "https://alden.name",
+      "pledge_address": "bk2i8egjsxqq78vym1k9amj2eenvska09vfvz5cycaxscjxgvgc3hb9eycdl7pj1"
+    }
   },
   {
     "name": "Loren Skiles",
@@ -1567,7 +2347,12 @@
     "performance": 0,
     "created_at": "2019-08-19T18:48:05.982Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "UVMH",
+      "homepage": "https://charlotte.name",
+      "pledge_address": "7cna2qwu0cyuifciafrqd5zouxhh8ryhrpjuwoyyyvreuz4mv80wg8ah4a01mg70"
+    }
   },
   {
     "name": "Royal Bednar",
@@ -1577,7 +2362,12 @@
     "performance": 23,
     "created_at": "2019-08-20T07:17:11.916Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "XVRS",
+      "homepage": "https://eileen.net",
+      "pledge_address": "lhlj6bi4ht3cjewt8tkduam36fohortb95hebtn5o8b8zmzhsisuyzyy1gsc8e6v"
+    }
   },
   {
     "name": "Dr. Allan Zieme",
@@ -1587,7 +2377,12 @@
     "performance": 53,
     "created_at": "2019-08-20T03:33:31.656Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "TABO",
+      "homepage": "http://alanis.net",
+      "pledge_address": "ijjwl4nv4y7qkpi36xmf8utru3rtlwynmo2rm5dntbxkco1xnvfc8o3sma78pasc"
+    }
   },
   {
     "name": "Aniyah Rippin",
@@ -1597,7 +2392,12 @@
     "performance": 94,
     "created_at": "2019-08-19T17:39:09.045Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "INGL",
+      "homepage": "https://jena.info",
+      "pledge_address": "tloaz11qp75t6pemqsjshskc3atl8pul01u7aouacsmx7n93exxyokm9f1n46due"
+    }
   },
   {
     "name": "Maia Hermann",
@@ -1607,7 +2407,12 @@
     "performance": 18,
     "created_at": "2019-08-19T21:07:17.697Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "IKIQ",
+      "homepage": "http://sadye.name",
+      "pledge_address": "faiyi0vi8eecv07930c3j92o0d8as62spi4xp92zp5myfi1eqpt3jw3g883bun30"
+    }
   },
   {
     "name": "Zackary Tremblay",
@@ -1617,7 +2422,12 @@
     "performance": 95,
     "created_at": "2019-08-19T21:16:36.532Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "IGAT",
+      "homepage": "https://brown.info",
+      "pledge_address": "f8t7oue2gk1jb03yfdmzjq1iemz530v3w4erowqsbi2568tfm90opj5ok0dtq678"
+    }
   },
   {
     "name": "Bernie Shanahan Sr.",
@@ -1627,7 +2437,12 @@
     "performance": 31,
     "created_at": "2019-08-20T01:57:26.122Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "PRLC",
+      "homepage": "https://gabrielle.info",
+      "pledge_address": "iohz8176ecupe4qfz8tlrpywxl5ooqrw7hz7krwwphrhj20wgaf0v3u84uwz3hmf"
+    }
   },
   {
     "name": "Presley Kutch",
@@ -1637,7 +2452,12 @@
     "performance": 91,
     "created_at": "2019-08-20T05:11:33.109Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "PLUL",
+      "homepage": "http://jan.com",
+      "pledge_address": "jqnxlenhuix63xpcso3r7ctk4twyodgodx49ra7y30eojbmwo8piwp9cfyqjl9ls"
+    }
   },
   {
     "name": "Trey Keeling",
@@ -1647,7 +2467,12 @@
     "performance": 16,
     "created_at": "2019-08-19T12:00:08.337Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "UZPE",
+      "homepage": "https://nicholas.org",
+      "pledge_address": "7o014rpew4aubx2ubpk8ynqblsb589gla90utzb6ak9gtve7rpmquk93px4wo3qx"
+    }
   },
   {
     "name": "Mathew Lind",
@@ -1657,7 +2482,12 @@
     "performance": 18,
     "created_at": "2019-08-19T13:24:31.962Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "ZVAA",
+      "homepage": "http://jenifer.com",
+      "pledge_address": "f1i1rqoevgyhegiayyvcomfxe9kptg3jjt5no96yv0dgcumv7o96ah7tv4jkjfly"
+    }
   },
   {
     "name": "Otilia Armstrong",
@@ -1667,7 +2497,12 @@
     "performance": 33,
     "created_at": "2019-08-20T04:19:07.772Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "CKLH",
+      "homepage": "http://linwood.com",
+      "pledge_address": "xna95yv3znmcr7wkm47lpz7s07957htmr589ev2mpocm5gnc3hgyk60r1a3k31l3"
+    }
   },
   {
     "name": "Rachel Gislason V",
@@ -1677,7 +2512,12 @@
     "performance": 70,
     "created_at": "2019-08-19T18:45:46.912Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "TFVU",
+      "homepage": "https://alayna.org",
+      "pledge_address": "ep7th8ynj02ykh9aqwyr3jciui1cnbqkjcom20hllvlhd7b59emq8q3hljecxnx2"
+    }
   },
   {
     "name": "Isadore Senger",
@@ -1687,7 +2527,12 @@
     "performance": 45,
     "created_at": "2019-08-19T18:52:25.114Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "AZJI",
+      "homepage": "http://lane.biz",
+      "pledge_address": "9gjanbtrhbmd4caxvquns5vby3aact1u6hbzo48cip5ggy6mxp3afaajpenypre0"
+    }
   },
   {
     "name": "Kaleb Jakubowski",
@@ -1697,7 +2542,12 @@
     "performance": 37,
     "created_at": "2019-08-19T09:24:51.382Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "ARHJ",
+      "homepage": "http://johan.net",
+      "pledge_address": "ikeaz1gwka5wwpdru3ffysf58ezs57ufpjnrgl9ns29z85ftfky60ubendsx7tit"
+    }
   },
   {
     "name": "Lizzie Watsica",
@@ -1707,7 +2557,12 @@
     "performance": 52,
     "created_at": "2019-08-20T07:16:07.172Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "FKVF",
+      "homepage": "http://jarrett.name",
+      "pledge_address": "g0yd1oemq4nmck4m2hmxyl7j591bmwaxufo67nd06ko1hj015p54h5h2aor3mdcy"
+    }
   },
   {
     "name": "Roslyn Torp",
@@ -1717,7 +2572,12 @@
     "performance": 61,
     "created_at": "2019-08-20T02:58:33.772Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "LCUJ",
+      "homepage": "http://jeromy.org",
+      "pledge_address": "to0bemua4p5kazyi32kfdh0deypev47bsou3mxoftqoei5thnobwy7h0q6u1weel"
+    }
   },
   {
     "name": "Mr. Roderick Rau",
@@ -1727,7 +2587,12 @@
     "performance": 32,
     "created_at": "2019-08-20T05:25:23.939Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "AVXB",
+      "homepage": "http://woodrow.com",
+      "pledge_address": "1h69ic99f4bqraxuyd6i94xbw8emg1lfsbks5ed0cswd2safjm90thrnwgbfylih"
+    }
   },
   {
     "name": "Shanel Simonis",
@@ -1737,7 +2602,12 @@
     "performance": 61,
     "created_at": "2019-08-19T15:24:00.257Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "JTIM",
+      "homepage": "http://juliet.info",
+      "pledge_address": "fun5g4zc6jjwihi77i0cxqhgpvayc9iycik1ihbllpbewxll1qwa2r1cama5v0dx"
+    }
   },
   {
     "name": "Sim Schowalter",
@@ -1747,7 +2617,12 @@
     "performance": 50,
     "created_at": "2019-08-19T10:23:18.711Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "SLID",
+      "homepage": "http://gerardo.info",
+      "pledge_address": "oc7ol6dfcuyz489xcub94mxhfypf73h7jr9z9w6eo6id23mm371o5js7zhtdicdi"
+    }
   },
   {
     "name": "Una O'Keefe",
@@ -1757,7 +2632,12 @@
     "performance": 61,
     "created_at": "2019-08-20T05:40:31.663Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "VQUB",
+      "homepage": "https://gillian.org",
+      "pledge_address": "sa70g2kwxjcncs6fqfg7meusjhup2cdufytwy6l9bj46tx7g37wif25r49e1hdi9"
+    }
   },
   {
     "name": "Emmet Hauck",
@@ -1767,7 +2647,12 @@
     "performance": 35,
     "created_at": "2019-08-20T08:17:57.814Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "KNJA",
+      "homepage": "https://jermey.com",
+      "pledge_address": "mobzp2zirno935ssjdjvp315zjj7e0iuydlyygobz2qkn4fg7x15je034epddcfn"
+    }
   },
   {
     "name": "Keven Kutch",
@@ -1777,7 +2662,12 @@
     "performance": 61,
     "created_at": "2019-08-20T05:31:56.421Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "KPVH",
+      "homepage": "https://boris.org",
+      "pledge_address": "7025p0ztz4jbr5kokkhfbefnvjpny2rjx4tvgjvd7xov7wgxan5hbo2c71av0vyk"
+    }
   },
   {
     "name": "Nils Runte",
@@ -1787,7 +2677,12 @@
     "performance": 19,
     "created_at": "2019-08-19T21:26:58.667Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "BDWI",
+      "homepage": "https://nannie.org",
+      "pledge_address": "ly7ksljprh3lxjm5ukcxff102aad7qadmzk31xuq84li2th2jdkhqmsc47ji1kh1"
+    }
   },
   {
     "name": "Bennie Labadie",
@@ -1797,7 +2692,12 @@
     "performance": 44,
     "created_at": "2019-08-20T08:32:29.800Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "KUPV",
+      "homepage": "http://narciso.com",
+      "pledge_address": "ncxzl7gbbuhxm9bvc5w1fiecvyof5mnjv7l3orvhlf6u92aathkk2gfqxvv4ca2v"
+    }
   },
   {
     "name": "Annamae Schmeler",
@@ -1807,7 +2707,12 @@
     "performance": 76,
     "created_at": "2019-08-19T10:51:13.940Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "ZVAS",
+      "homepage": "http://ethan.biz",
+      "pledge_address": "myfyhok4t6b2fvwal74fmgdp33f7m24ui7eoiljkpmal08fovxy9q785lj37czky"
+    }
   },
   {
     "name": "Dr. Ava Kuhn",
@@ -1817,7 +2722,12 @@
     "performance": 81,
     "created_at": "2019-08-20T02:51:09.953Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "ZQZI",
+      "homepage": "http://jammie.name",
+      "pledge_address": "j7w97znuj7shgw2h203oghezp87vfrxl3aocx83ph3ne4w2076m3kauna6tydfci"
+    }
   },
   {
     "name": "Dortha Dickens",
@@ -1827,7 +2737,12 @@
     "performance": 16,
     "created_at": "2019-08-19T13:38:05.626Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "RXAY",
+      "homepage": "https://cristopher.info",
+      "pledge_address": "24nu97itj79aul01xlbws9in92mcfywl0apfigcoxk8269n5omusgoeqhtqfz77w"
+    }
   },
   {
     "name": "Dr. Maggie Stoltenberg",
@@ -1837,7 +2752,12 @@
     "performance": 26,
     "created_at": "2019-08-20T03:04:04.041Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "WAKQ",
+      "homepage": "https://joshua.info",
+      "pledge_address": "rs19rj0mle413e4s9f27m52wau6b7sczfoc22r3c1n3v7c8s79b6iao10o2whzyo"
+    }
   },
   {
     "name": "Kristopher Maggio V",
@@ -1847,7 +2767,12 @@
     "performance": 47,
     "created_at": "2019-08-19T19:36:55.627Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "SPGL",
+      "homepage": "http://chance.org",
+      "pledge_address": "xvuqbls90ov83urc2d8aoo0qkaq62vd1v3uk0bvfxfq2m3a0g4sw8jg6vdi58suv"
+    }
   },
   {
     "name": "Sanford Gutmann",
@@ -1857,7 +2782,12 @@
     "performance": 30,
     "created_at": "2019-08-19T10:25:03.963Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "IQDL",
+      "homepage": "http://laney.com",
+      "pledge_address": "iab34drain91cwzovymy18rfyvbpzkrks8pkib42it5k6s3z4qsj5hq59oiuih4h"
+    }
   },
   {
     "name": "Alyson Swaniawski",
@@ -1867,7 +2797,12 @@
     "performance": 97,
     "created_at": "2019-08-19T19:07:29.402Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "SOKH",
+      "homepage": "https://jeanette.name",
+      "pledge_address": "ldfl27g6pbwhgkxmkhywfs0faz0akl6xzgivs0tvbfy2emm8w3tcssl7xmw0v620"
+    }
   },
   {
     "name": "Johnathan Batz",
@@ -1877,7 +2812,12 @@
     "performance": 97,
     "created_at": "2019-08-19T23:14:11.190Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "LMUS",
+      "homepage": "http://arely.net",
+      "pledge_address": "tq4ynqvrasrzvud1s62lqm0bj3ph3qt9nv1kyu6p40du325jivcl3okcqje99b74"
+    }
   },
   {
     "name": "Christiana Windler",
@@ -1887,7 +2827,12 @@
     "performance": 44,
     "created_at": "2019-08-19T17:29:45.721Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "UNFM",
+      "homepage": "https://chloe.name",
+      "pledge_address": "1rfi6466e5elp1hqc5yxrlq9g90bwjgbzarn53oohomzz6eia0yp7zfdoklvxhha"
+    }
   },
   {
     "name": "Jerry Gislason",
@@ -1897,7 +2842,12 @@
     "performance": 92,
     "created_at": "2019-08-19T11:41:45.859Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "UBLD",
+      "homepage": "https://kenton.net",
+      "pledge_address": "u6pbk6bwne1vjv22fx4bj21rd181l8k1dvzexwnsmi4pep5s1ad9ui88v1r65k7l"
+    }
   },
   {
     "name": "Evan Jacobson",
@@ -1907,7 +2857,12 @@
     "performance": 63,
     "created_at": "2019-08-20T04:23:25.515Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "QSLE",
+      "homepage": "http://lemuel.net",
+      "pledge_address": "8iolr8nc84d4mv78adi53r9a0krqkob73kmi82fs84ovs12ezi0w7pkr7zu8rqf7"
+    }
   },
   {
     "name": "Deondre Boyer",
@@ -1917,7 +2872,12 @@
     "performance": 76,
     "created_at": "2019-08-19T16:10:58.342Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "IUYZ",
+      "homepage": "https://hudson.com",
+      "pledge_address": "90tvnzivtfh30l3c70lxt4n0mphy2bodem4j5ootjw1fs6cngsaw2z75jjww26cb"
+    }
   },
   {
     "name": "Gene Zulauf",
@@ -1927,7 +2887,12 @@
     "performance": 100,
     "created_at": "2019-08-20T00:49:40.345Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "JEXC",
+      "homepage": "https://gerhard.name",
+      "pledge_address": "dsnh2hu95lx8ci8px9et44lbyo4jh3gfwegoeaujkyv76jwuzz0bsgkg945ro44e"
+    }
   },
   {
     "name": "Anabel Denesik",
@@ -1937,7 +2902,12 @@
     "performance": 78,
     "created_at": "2019-08-19T12:06:41.635Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "MLYI",
+      "homepage": "https://jamison.biz",
+      "pledge_address": "ycyt0aye9gs75p41vynqwhtxlra39g4dkg8y44fjum4i6227gzfpr5myjsjhhoo6"
+    }
   },
   {
     "name": "Chester Gutkowski",
@@ -1947,7 +2917,12 @@
     "performance": 65,
     "created_at": "2019-08-19T20:52:03.674Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "TWIL",
+      "homepage": "http://bud.org",
+      "pledge_address": "zlpp4gkys7werj7nlbo1xw0q8gmmeivzrf2jwii5hnpikd0zcaul1xvvh77bcnlj"
+    }
   },
   {
     "name": "Aaliyah Hansen",
@@ -1957,7 +2932,12 @@
     "performance": 68,
     "created_at": "2019-08-19T12:26:56.973Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "NWBT",
+      "homepage": "https://ezekiel.org",
+      "pledge_address": "exc93p0mucymk4j5dvuxnjqtuqekoko3jzv90tzrvf6uakp0csfjg1r6r4tr85k2"
+    }
   },
   {
     "name": "Leanna Koss",
@@ -1967,7 +2947,12 @@
     "performance": 92,
     "created_at": "2019-08-19T10:34:18.373Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "EACL",
+      "homepage": "https://joelle.com",
+      "pledge_address": "a983bhxd6mqh7b0zsleqo7m6h7de0z4ra3imv6b7gmu6hfg758e6531nwf003xw7"
+    }
   },
   {
     "name": "Archibald Hoppe",
@@ -1977,7 +2962,12 @@
     "performance": 7,
     "created_at": "2019-08-20T08:58:30.952Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "HQWV",
+      "homepage": "https://raquel.net",
+      "pledge_address": "6rierlb5vsk5y89ub6bd1uvh1jb17gk48cdrjslioual9j2zum3d9ncy3hb5bml3"
+    }
   },
   {
     "name": "Virginie O'Reilly",
@@ -1987,7 +2977,12 @@
     "performance": 53,
     "created_at": "2019-08-19T12:08:35.281Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "XKRI",
+      "homepage": "http://edward.biz",
+      "pledge_address": "h7eg6nvcf72599lhevnvk4vszdp3ch9j68es6dw3uvxx7ki5e8lvplmtp2oagoe7"
+    }
   },
   {
     "name": "Jodie Reynolds",
@@ -1997,7 +2992,12 @@
     "performance": 69,
     "created_at": "2019-08-19T12:21:43.550Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "LPPW",
+      "homepage": "https://daniella.info",
+      "pledge_address": "hid55s011m2t9adc4g3aheb2ak46l03s18lhk8t1fuk7z8uwqbbxxpwh355ujlw3"
+    }
   },
   {
     "name": "Nyasia Schulist",
@@ -2007,7 +3007,12 @@
     "performance": 79,
     "created_at": "2019-08-20T01:52:48.018Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "QUTH",
+      "homepage": "https://julian.info",
+      "pledge_address": "592xp65uq3wudor8se4ryrympimdbdpk2fcrhvxxqpg6wi38c3lfpzw8v5dxy8u1"
+    }
   },
   {
     "name": "Bulah Mosciski",
@@ -2017,7 +3022,12 @@
     "performance": 77,
     "created_at": "2019-08-19T22:25:37.274Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "CMTB",
+      "homepage": "https://estel.net",
+      "pledge_address": "zm9qky6nf9vpnoa86v35fipt2ugcnx04gry5za04w384eplqtj6lbc80m72aw5ck"
+    }
   },
   {
     "name": "Josh Leannon",
@@ -2027,7 +3037,12 @@
     "performance": 62,
     "created_at": "2019-08-19T21:27:37.157Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "KJJF",
+      "homepage": "https://heath.name",
+      "pledge_address": "lrhkkj0t1enn0qcrvizt22tcff10syy1khjn5jclmh1it8t6pi7bzlbcnpjc6c14"
+    }
   },
   {
     "name": "Jaylon Swaniawski",
@@ -2037,7 +3052,12 @@
     "performance": 36,
     "created_at": "2019-08-19T13:50:37.498Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "KPCF",
+      "homepage": "https://cathrine.com",
+      "pledge_address": "ujgo2r0vxxohg427hdtf5a65f2o9r7bqy6fh6rx4rbft334m976svrwnov9tmo4d"
+    }
   },
   {
     "name": "Cristopher West",
@@ -2047,7 +3067,12 @@
     "performance": 51,
     "created_at": "2019-08-20T03:19:44.787Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "PIVG",
+      "homepage": "https://adela.biz",
+      "pledge_address": "um31c9xnozxkl9bof9rjje735yew71x9o229ysjffra7jv9iihlf93n4sk2dv04i"
+    }
   },
   {
     "name": "Trycia Wisozk",
@@ -2057,7 +3082,12 @@
     "performance": 84,
     "created_at": "2019-08-19T12:23:03.123Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "SHXT",
+      "homepage": "http://arlene.net",
+      "pledge_address": "fk41f5asofu6dxoayu9upaf4kx00hht17xdvd0bcjp89g49yfe2a5grkvzmtepx7"
+    }
   },
   {
     "name": "Grover Kreiger",
@@ -2067,7 +3097,12 @@
     "performance": 100,
     "created_at": "2019-08-19T11:15:19.370Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "TLWL",
+      "homepage": "http://carson.net",
+      "pledge_address": "5dvvpqxkiy3oviywcjwokch3it4q0uoq53oe50a61fcb1p1p7mymvgjsxwd8ghaf"
+    }
   },
   {
     "name": "Nathen Kuvalis",
@@ -2077,7 +3112,12 @@
     "performance": 13,
     "created_at": "2019-08-19T21:23:46.573Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "JOCS",
+      "homepage": "https://beatrice.net",
+      "pledge_address": "ax3gd74uk9lzr5bx09c0k1mpyzo99ypfvdx7uq4ymyl73kjz8zgaqjj1mp4qec3s"
+    }
   },
   {
     "name": "Marley Schinner",
@@ -2087,7 +3127,12 @@
     "performance": 48,
     "created_at": "2019-08-19T14:16:47.862Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "RLIR",
+      "homepage": "https://judge.org",
+      "pledge_address": "4ix4e2h5mgkwgp614288wbx995055o8m37r0wctntcaivk9fzo7z6mq74zgvcu3y"
+    }
   },
   {
     "name": "Melyssa O'Reilly",
@@ -2097,7 +3142,12 @@
     "performance": 25,
     "created_at": "2019-08-19T23:11:35.586Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "YMPE",
+      "homepage": "https://donato.net",
+      "pledge_address": "d22pfm3klh3y4mpd4m1orzhtlzu8ewpxci5jyrel9oc6b54tx836ubsim7akiucz"
+    }
   },
   {
     "name": "Casandra West",
@@ -2107,7 +3157,12 @@
     "performance": 77,
     "created_at": "2019-08-19T13:04:56.732Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "HMAT",
+      "homepage": "https://jaylen.org",
+      "pledge_address": "xafazrgxr015vt3lwyqo288pqajb7y215gefhuvgk9114yqi7w2ip65oauuu68nn"
+    }
   },
   {
     "name": "Neal Stanton",
@@ -2117,7 +3172,12 @@
     "performance": 8,
     "created_at": "2019-08-19T12:03:21.265Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "OCMG",
+      "homepage": "http://burnice.name",
+      "pledge_address": "o5x6twzp28g3uxe2sz76u20lpjxiun8un1ayqxz5ky6b9v9rabbcn4ha0km8vcz2"
+    }
   },
   {
     "name": "Lorenzo Hintz",
@@ -2127,7 +3187,12 @@
     "performance": 42,
     "created_at": "2019-08-19T20:16:31.087Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "WJHT",
+      "homepage": "https://providenci.com",
+      "pledge_address": "px7up2ffb5uhyqdznh6x8rj49szb8t6fo9wqq4bdym32ldflsgy1dwpxvcuf9owx"
+    }
   },
   {
     "name": "Mr. Dessie Kemmer",
@@ -2137,7 +3202,12 @@
     "performance": 32,
     "created_at": "2019-08-19T21:31:41.173Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "MKJT",
+      "homepage": "https://gage.name",
+      "pledge_address": "wi6y3vfgbi24vnz89dh8hw31e91dwlld64rduu9uoh3f0rd9kdc7yazlgnnumdgj"
+    }
   },
   {
     "name": "Gisselle Carroll",
@@ -2147,7 +3217,12 @@
     "performance": 71,
     "created_at": "2019-08-20T02:53:42.310Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "SMKD",
+      "homepage": "http://faye.org",
+      "pledge_address": "gqjiy3jel9lr9z0g88i2oif26ataxauiqik87czq6tear511d8gzjhuc4hz4f9i6"
+    }
   },
   {
     "name": "Rodrigo Cummings",
@@ -2157,7 +3232,12 @@
     "performance": 79,
     "created_at": "2019-08-19T18:05:55.008Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "GEXT",
+      "homepage": "https://marjorie.info",
+      "pledge_address": "89ppk5l6zsozj9idjsv7ddqkp7nf02w9zuk68lt419md1moyylsbplm8t1txckne"
+    }
   },
   {
     "name": "Ora Gulgowski",
@@ -2167,7 +3247,12 @@
     "performance": 55,
     "created_at": "2019-08-19T21:47:13.254Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "HJBL",
+      "homepage": "http://stephon.biz",
+      "pledge_address": "12b6m4nwjl2f7967zlsi1u7cclznwm7qo606pozik5vry6zgzipgxxnr2rr6c0g3"
+    }
   },
   {
     "name": "Torrance Adams I",
@@ -2177,7 +3262,12 @@
     "performance": 1,
     "created_at": "2019-08-20T03:54:34.950Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "PDDI",
+      "homepage": "http://rahsaan.info",
+      "pledge_address": "5ya41bta2954xt2jvbxd2o2co865ybpqq0tzo6b0dh50vobofk8jiynqv7cytq1q"
+    }
   },
   {
     "name": "Dominique Wunsch",
@@ -2187,7 +3277,12 @@
     "performance": 76,
     "created_at": "2019-08-19T13:46:58.534Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "MXKZ",
+      "homepage": "http://destiny.com",
+      "pledge_address": "sfytvodlxkvrb2b5z72qd7svypdi6w7aemrpvxbqp9qc3xxe0037cecke4bltm35"
+    }
   },
   {
     "name": "Mrs. Marisa Bartoletti",
@@ -2197,7 +3292,12 @@
     "performance": 32,
     "created_at": "2019-08-19T23:27:23.394Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "AELF",
+      "homepage": "http://margret.info",
+      "pledge_address": "skba7ufa1hgm6432gpocv6zj10ifeu6ya7d5b8wvf0bddcf1qqgx7vys1ykl5m28"
+    }
   },
   {
     "name": "Erich Gusikowski DDS",
@@ -2207,7 +3307,12 @@
     "performance": 88,
     "created_at": "2019-08-20T02:34:43.744Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "EVGU",
+      "homepage": "https://darby.org",
+      "pledge_address": "z1f27u3ohp86ekz1sh7n9z6cbk4quz2cjoaoh1xgsc0zihoejgkdgin6fs349kgj"
+    }
   },
   {
     "name": "Eric Fahey Sr.",
@@ -2217,7 +3322,12 @@
     "performance": 38,
     "created_at": "2019-08-19T23:52:28.161Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "KWVO",
+      "homepage": "https://rosina.org",
+      "pledge_address": "9xh5k3tdmatsqj6o2zg03aiubdjtucczdf1a5cxymscnnh2tqc30nivim7dr6ah5"
+    }
   },
   {
     "name": "Charity Emard",
@@ -2227,7 +3337,12 @@
     "performance": 35,
     "created_at": "2019-08-19T20:30:43.019Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "ZILG",
+      "homepage": "http://kelsie.com",
+      "pledge_address": "pn5fopsk7e6pled3cni6uqdd8dn3vspo4iecpvbiscnisr4196sdr2i0umrroqty"
+    }
   },
   {
     "name": "Audra Kreiger",
@@ -2237,7 +3352,12 @@
     "performance": 34,
     "created_at": "2019-08-20T02:04:48.885Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "VSGO",
+      "homepage": "https://tressie.biz",
+      "pledge_address": "r8ub0r9f2tsll77pjzuydz8vl42jrs77lom4dksmjqqapc7wa0rj4876nzs1vi31"
+    }
   },
   {
     "name": "Orrin Hermiston",
@@ -2247,7 +3367,12 @@
     "performance": 1,
     "created_at": "2019-08-19T10:55:26.171Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "BGOU",
+      "homepage": "http://jeanne.net",
+      "pledge_address": "nf7j0p5cp15d3pza3tjwu5e2cu76dqii3g7hsyvc0uras17yl5d793eyn0zp8ax8"
+    }
   },
   {
     "name": "Lloyd Howe",
@@ -2257,7 +3382,12 @@
     "performance": 65,
     "created_at": "2019-08-19T14:17:03.668Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "TYYN",
+      "homepage": "http://dannie.biz",
+      "pledge_address": "rzv93clp87l5ts0rcv5sqohllefo9gkn5wrj1bz8bxtjmdwa6wlynjyn8ib943mt"
+    }
   },
   {
     "name": "Mozelle Heller",
@@ -2267,7 +3397,12 @@
     "performance": 28,
     "created_at": "2019-08-20T05:35:23.396Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "JQTF",
+      "homepage": "http://laney.biz",
+      "pledge_address": "lagijguoq21rhyflg9sihwtapqrwqgd5abhpjsc6biaq8qmgaf4b7p28jbebhic6"
+    }
   },
   {
     "name": "Delbert Farrell",
@@ -2277,7 +3412,12 @@
     "performance": 17,
     "created_at": "2019-08-19T22:50:18.840Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "JCPT",
+      "homepage": "http://madie.name",
+      "pledge_address": "jpid9zpazg8i5exhxz1gtav8ncxnw535zxx3hlgnzccrvixwn841cjktm2kmt7rh"
+    }
   },
   {
     "name": "Marlin Rowe PhD",
@@ -2287,7 +3427,12 @@
     "performance": 34,
     "created_at": "2019-08-19T15:07:55.825Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "RRFV",
+      "homepage": "http://elva.net",
+      "pledge_address": "tmcp3aabk4a09igk9ndhizopie8aya2g8wkhib06nky8vnc6uxeq5zijaf374l5z"
+    }
   },
   {
     "name": "Leonardo Nienow",
@@ -2297,7 +3442,12 @@
     "performance": 1,
     "created_at": "2019-08-19T11:02:32.890Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "AWST",
+      "homepage": "http://lia.biz",
+      "pledge_address": "sus726dt2oiuzk2pw5dnzqcrb8f6l9m4cleyge88z902v2c30ww04x7yknohv7m7"
+    }
   },
   {
     "name": "Jaylan Moore",
@@ -2307,7 +3457,12 @@
     "performance": 95,
     "created_at": "2019-08-20T01:54:29.849Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "ETPC",
+      "homepage": "http://kristina.net",
+      "pledge_address": "6guj13v5yemw7yh62xihjrdrql189o75ufr3tnmhsfcacgek50l3gipacile8pux"
+    }
   },
   {
     "name": "Miss Joshua Ernser",
@@ -2317,7 +3472,12 @@
     "performance": 60,
     "created_at": "2019-08-20T07:42:19.416Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "QFCN",
+      "homepage": "http://rosario.info",
+      "pledge_address": "l6q089pmto21p2x7873plzievpa4ftfuswbsujro4ceboc74jbhor97sdj8w2wrt"
+    }
   },
   {
     "name": "Ransom Kilback",
@@ -2327,7 +3487,12 @@
     "performance": 21,
     "created_at": "2019-08-20T02:33:39.019Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "FDIF",
+      "homepage": "https://ashleigh.org",
+      "pledge_address": "nimgmy23yjs30zdklkdrngt9cpu9g29qohuqyog36vx5sxxh89mui311lah8hwqy"
+    }
   },
   {
     "name": "Tanner Kohler",
@@ -2337,7 +3502,12 @@
     "performance": 23,
     "created_at": "2019-08-19T23:02:58.783Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "PSZB",
+      "homepage": "http://bradford.com",
+      "pledge_address": "5xnxkaltmw95uk11xi1lfqfhmfnvg9uwc7qxh8mfyy7yb61y5ee185tg1fd57kmi"
+    }
   },
   {
     "name": "Troy Conn PhD",
@@ -2347,7 +3517,12 @@
     "performance": 93,
     "created_at": "2019-08-19T19:19:46.643Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "MANW",
+      "homepage": "https://diego.info",
+      "pledge_address": "87q14lsm28acgk7u24rkt0gqmt5meqjkexf1s2rtgfk1p7mafs6ajc6vg7kt11yy"
+    }
   },
   {
     "name": "Freddy Bogisich",
@@ -2357,7 +3532,12 @@
     "performance": 53,
     "created_at": "2019-08-20T00:54:35.333Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "WGLU",
+      "homepage": "http://clarissa.biz",
+      "pledge_address": "1gvj6a8tuc369vefvuj4kdnjkt6hl8w4tjglohkixg3jutfkupkgtea9rlzj5hth"
+    }
   },
   {
     "name": "Ruby Boyer",
@@ -2367,7 +3547,12 @@
     "performance": 71,
     "created_at": "2019-08-19T12:51:26.331Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "CFBH",
+      "homepage": "http://leopoldo.name",
+      "pledge_address": "sjox7akfadqf1nl9v4b0qm1u7d8gsuk6ql92e6p1ruzzm7n4djv65agaafqmrzvd"
+    }
   },
   {
     "name": "Jarret Baumbach DVM",
@@ -2377,7 +3562,12 @@
     "performance": 65,
     "created_at": "2019-08-19T11:20:03.641Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "VCNI",
+      "homepage": "https://isabell.name",
+      "pledge_address": "klrcpctk2pmnrrp0q0wuxiql8prm6h1lp2qyf1iyh9af3oedyttzi7zb6d4zb8er"
+    }
   },
   {
     "name": "Watson Haag",
@@ -2387,7 +3577,12 @@
     "performance": 80,
     "created_at": "2019-08-19T19:06:09.030Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "KXJG",
+      "homepage": "http://neoma.name",
+      "pledge_address": "vc3p7oaxkmr3k6q9o6fqq4mmcw6p7jtw6s0f143ajh5qnnk1bihcjabp2if2sc1g"
+    }
   },
   {
     "name": "Miles Conroy",
@@ -2397,7 +3592,12 @@
     "performance": 5,
     "created_at": "2019-08-20T09:08:41.966Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "RQTD",
+      "homepage": "http://shanelle.net",
+      "pledge_address": "16z74w18ejxby1429vnpjartb7i454qvikdyenr795jm14j5sf376xa6jmohl4lg"
+    }
   },
   {
     "name": "Tristian Marvin",
@@ -2407,7 +3607,12 @@
     "performance": 89,
     "created_at": "2019-08-20T00:42:51.600Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "KLZS",
+      "homepage": "https://ebony.net",
+      "pledge_address": "1lw6ppczdkxakfx2kup0x5vtormfpo8emqc5paa5nkntiku34a7kqjjxzgjmnqwm"
+    }
   },
   {
     "name": "Stefan Fisher",
@@ -2417,7 +3622,12 @@
     "performance": 64,
     "created_at": "2019-08-19T11:13:18.396Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "KZWW",
+      "homepage": "https://bradley.com",
+      "pledge_address": "bcbfos9yhro5g5uojp3trm5na83cp3t7ss153w3qpeqjrb8lezvr0df5wzuatfpo"
+    }
   },
   {
     "name": "Lorna Cartwright",
@@ -2427,7 +3637,12 @@
     "performance": 2,
     "created_at": "2019-08-19T17:50:57.749Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "MIEO",
+      "homepage": "http://bart.info",
+      "pledge_address": "ipwdsgxe1ixagr7x3xgsgktk78ff6fz3zi5z1695oinb7thjrmre97oismbm9unq"
+    }
   },
   {
     "name": "Leopold Dach",
@@ -2437,7 +3652,12 @@
     "performance": 47,
     "created_at": "2019-08-19T23:19:49.429Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "CLPK",
+      "homepage": "https://janelle.info",
+      "pledge_address": "dxj04f6gvz4uy4e27w75e7li0997ovxzyvmdc2y5l9zgd6a99s0dqwejdcq8fvnw"
+    }
   },
   {
     "name": "Everette Kiehn",
@@ -2447,7 +3667,12 @@
     "performance": 39,
     "created_at": "2019-08-20T08:03:04.439Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "RLTV",
+      "homepage": "http://verlie.biz",
+      "pledge_address": "t0cmuw8g9dzgsa53dhvvvezfpjinptmyvbkizcac4l1tc73dmiy0y35cynwooaee"
+    }
   },
   {
     "name": "Estelle Harris",
@@ -2457,7 +3682,12 @@
     "performance": 14,
     "created_at": "2019-08-19T12:49:13.214Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "UBIL",
+      "homepage": "https://ike.net",
+      "pledge_address": "hn7xmsn611rsmowf1qc8wdvqu54zafcnj030jzao3o2tsfew841lpv6zt6bs9lt8"
+    }
   },
   {
     "name": "Kaela Goodwin",
@@ -2467,7 +3697,12 @@
     "performance": 88,
     "created_at": "2019-08-19T10:57:19.358Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "ISUK",
+      "homepage": "http://leatha.net",
+      "pledge_address": "6y7evfk53yecv3k3n0ptkvua0cflxz6w8oc7na23enf3pb500deyupwhmovn0sol"
+    }
   },
   {
     "name": "Jennifer Kub IV",
@@ -2477,7 +3712,12 @@
     "performance": 26,
     "created_at": "2019-08-20T03:20:01.303Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "AZTE",
+      "homepage": "https://maureen.biz",
+      "pledge_address": "x1kf6b88s585a8bi3l6rpsiuo84omuuzr8nxilreewyuk0rn0btc8idt3a1m5pbd"
+    }
   },
   {
     "name": "Yasmine Herzog",
@@ -2487,7 +3727,12 @@
     "performance": 71,
     "created_at": "2019-08-19T22:52:24.377Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "RBEI",
+      "homepage": "https://ottilie.info",
+      "pledge_address": "bozi2t7o5ika4kwd6qvsbau1otpvdyb9t053j0saw146gt586iavu7t7jqwphnkj"
+    }
   },
   {
     "name": "Arnold Zemlak",
@@ -2497,7 +3742,12 @@
     "performance": 100,
     "created_at": "2019-08-19T11:02:12.731Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "FONA",
+      "homepage": "http://jennie.org",
+      "pledge_address": "f18n7g6okyje7qogh3cnxst1jp8js3ngcd92i3knqo93tyoytif0vt1899xwflyh"
+    }
   },
   {
     "name": "Eleazar Bogisich",
@@ -2507,7 +3757,12 @@
     "performance": 4,
     "created_at": "2019-08-19T16:30:46.728Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "LHAE",
+      "homepage": "https://jarrod.com",
+      "pledge_address": "p2wrqjxmtvexpfwtodj9w8ba4js2utkyuw7qz18k1542wswa5mvpbxlqawwfjrn1"
+    }
   },
   {
     "name": "Kevin Kshlerin",
@@ -2517,7 +3772,12 @@
     "performance": 76,
     "created_at": "2019-08-19T10:30:25.127Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "HBAI",
+      "homepage": "https://maddison.com",
+      "pledge_address": "zbd55vy3u6siaw7bt9fhowtyyl8y0hykty5sb1ez8hbd7pmc27m6hwxcn7gluc99"
+    }
   },
   {
     "name": "Hannah Schinner",
@@ -2527,7 +3787,12 @@
     "performance": 20,
     "created_at": "2019-08-20T07:32:52.702Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "QHLA",
+      "homepage": "http://otilia.info",
+      "pledge_address": "egvo51nqbaq6mt1lyo8ia6v9angqn6nxgy24obhwruk3h6ktmvzswvalvkd2r070"
+    }
   },
   {
     "name": "Ricardo Shanahan",
@@ -2537,7 +3802,12 @@
     "performance": 92,
     "created_at": "2019-08-19T16:11:56.072Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "XACM",
+      "homepage": "https://evelyn.org",
+      "pledge_address": "lrcydt2xvkad9agh6lltu3uc5q68jlvv8lj04nif4f56477kenpp8u45qai6742k"
+    }
   },
   {
     "name": "Samantha Beahan",
@@ -2547,7 +3817,12 @@
     "performance": 24,
     "created_at": "2019-08-19T23:18:57.343Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "GLZO",
+      "homepage": "https://jabari.info",
+      "pledge_address": "spbaqrkyege1vg6gi25xfubwcopgc1rwt8zk5pjkujaqmq8tken59l4pikz93dxj"
+    }
   },
   {
     "name": "Pearlie Goodwin",
@@ -2557,7 +3832,12 @@
     "performance": 64,
     "created_at": "2019-08-19T18:16:51.421Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "CXRM",
+      "homepage": "http://mellie.org",
+      "pledge_address": "j2wk7km1ln7gzps0chfm7mllnefq1dx89trjkl2uigjrl8tkqr6l5pazh5dmzuoa"
+    }
   },
   {
     "name": "Angeline Lindgren",
@@ -2567,7 +3847,12 @@
     "performance": 14,
     "created_at": "2019-08-19T11:39:33.473Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "ZMWA",
+      "homepage": "https://rosario.org",
+      "pledge_address": "qo6tjczxk4c4deidglvik0hw7dn3i5bkxngu9p026v7d5uykyfsv7otdofyr0ao9"
+    }
   },
   {
     "name": "Tia Wisozk",
@@ -2577,7 +3862,12 @@
     "performance": 53,
     "created_at": "2019-08-19T22:17:55.230Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "GATD",
+      "homepage": "http://margarette.name",
+      "pledge_address": "k1dn7277wuka42197dys38olf0dp4ufu168fbijo20s87kj8cw6e6seujwyfpx62"
+    }
   },
   {
     "name": "Miss Fae Kuhic",
@@ -2587,7 +3877,12 @@
     "performance": 87,
     "created_at": "2019-08-20T07:04:07.031Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "EQNC",
+      "homepage": "https://madisen.name",
+      "pledge_address": "n47vl66z349ck1dppeu5u3mp7z88zidtp1aik6d4ryipqda11wyoqifoaxj6s8yo"
+    }
   },
   {
     "name": "Frances Senger Jr.",
@@ -2597,7 +3892,12 @@
     "performance": 88,
     "created_at": "2019-08-19T11:31:14.549Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "JJAU",
+      "homepage": "https://oscar.com",
+      "pledge_address": "lok40m0nhasdyg0lnhs5jnd29y8pmtn4sh7xlfswyfdje78kzhsed2kxz0blbbiu"
+    }
   },
   {
     "name": "Amos Bednar",
@@ -2607,7 +3907,12 @@
     "performance": 3,
     "created_at": "2019-08-19T20:16:19.045Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "OZYI",
+      "homepage": "https://betsy.name",
+      "pledge_address": "t3flu0pc3muqj6n1sqhi43oiofogle3bgua4rel6jsgkmz0mgu9drg5kwmlo5m3s"
+    }
   },
   {
     "name": "Richmond Boyer",
@@ -2617,7 +3922,12 @@
     "performance": 7,
     "created_at": "2019-08-20T07:05:12.679Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "VKOX",
+      "homepage": "http://keith.net",
+      "pledge_address": "v1hi8nwhypl2yvrhl88j3umatg9w0hw8ffijpzauq7v23fpgdywnvhrm0ufe9qp5"
+    }
   },
   {
     "name": "Vallie O'Reilly",
@@ -2627,7 +3937,12 @@
     "performance": 32,
     "created_at": "2019-08-19T23:09:51.840Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "BDHF",
+      "homepage": "https://wilmer.org",
+      "pledge_address": "ewa9947slepqxw1wcy8h2jobgxe8sf923f9fiwr3tsoaw2041k14sniyymngu64m"
+    }
   },
   {
     "name": "Willow Raynor",
@@ -2637,7 +3952,12 @@
     "performance": 100,
     "created_at": "2019-08-20T06:09:19.302Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "RNGH",
+      "homepage": "https://cali.name",
+      "pledge_address": "x53566sottnb33ggw281qrdkhn8filzvjopdqdvqy6p7k1x75qfm6ylibvjvz5d1"
+    }
   },
   {
     "name": "Dr. Una McDermott",
@@ -2647,7 +3967,12 @@
     "performance": 63,
     "created_at": "2019-08-19T17:12:14.006Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "CGKE",
+      "homepage": "http://chance.name",
+      "pledge_address": "detet8e6efok772dyc03i6e9zwklbzslzeocktvs15gcd9isx1pjnmtfszogzk9s"
+    }
   },
   {
     "name": "Laurianne Jakubowski",
@@ -2657,7 +3982,12 @@
     "performance": 100,
     "created_at": "2019-08-19T19:49:58.920Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "TYMI",
+      "homepage": "https://jovanny.net",
+      "pledge_address": "log8m807xjqv10mhb152aomsln10bc618vpvmlu1yplfo9z9scetjb3f9r2erpp9"
+    }
   },
   {
     "name": "Leonor Waters",
@@ -2667,7 +3997,12 @@
     "performance": 2,
     "created_at": "2019-08-20T08:31:30.403Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "NIQX",
+      "homepage": "http://zelda.com",
+      "pledge_address": "oc8m1hosd5khuow51sca5pyzqgjs523z5a269tlxy9dgu99mub80ohr7205psl2h"
+    }
   },
   {
     "name": "Russell Halvorson",
@@ -2677,7 +4012,12 @@
     "performance": 69,
     "created_at": "2019-08-20T07:36:29.031Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "YLWG",
+      "homepage": "https://cameron.org",
+      "pledge_address": "frqdyrjz4ydxwk7myvyg1a9ji6bpraj5w76wdigbp16unfladela3uszdeybabrw"
+    }
   },
   {
     "name": "Mr. Lance Huel",
@@ -2687,7 +4027,12 @@
     "performance": 98,
     "created_at": "2019-08-19T18:52:53.951Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "GTGF",
+      "homepage": "http://anahi.com",
+      "pledge_address": "t9tezb0et8evs2hbd33xpay5puc3r7lab0pl88ttmo4rvczskwdm3868jund5b6g"
+    }
   },
   {
     "name": "Isaias Erdman",
@@ -2697,7 +4042,12 @@
     "performance": 81,
     "created_at": "2019-08-19T15:27:05.114Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "IOXE",
+      "homepage": "https://cristobal.info",
+      "pledge_address": "k14oyyamwggeilii0i1y12y7qwpcroqkoizo8pixtjnnzmbwo43fifltjyueilmi"
+    }
   },
   {
     "name": "Keyshawn Kris",
@@ -2707,7 +4057,12 @@
     "performance": 62,
     "created_at": "2019-08-20T05:45:54.900Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "MOHM",
+      "homepage": "http://cale.info",
+      "pledge_address": "h85wfqvrttq0n1s5o4tkt6c06eijg6te2nvnlhwzm1png91dwh7i8ondghdwn2o6"
+    }
   },
   {
     "name": "Kyla Cormier",
@@ -2717,7 +4072,12 @@
     "performance": 77,
     "created_at": "2019-08-20T07:15:57.725Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "KMXF",
+      "homepage": "https://denis.net",
+      "pledge_address": "1n43hx44bnw12h8kpstdpl0gump9zu5q9j1tm5unb1cvsmnlc3kr5kswj9dnbsbj"
+    }
   },
   {
     "name": "Oliver Kshlerin",
@@ -2727,7 +4087,12 @@
     "performance": 14,
     "created_at": "2019-08-19T19:47:29.934Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "EEUU",
+      "homepage": "http://otha.com",
+      "pledge_address": "0wgka7j7mo36v7cd4b6lz717pqc367xcj92ldkct1qy3ovik8n4uqv4fh0nd78lw"
+    }
   },
   {
     "name": "Andreane Friesen",
@@ -2737,7 +4102,12 @@
     "performance": 14,
     "created_at": "2019-08-19T12:38:00.138Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "XANW",
+      "homepage": "https://lina.info",
+      "pledge_address": "mu8nb81u0q9w74zwcmleo1x1w3o6ujks60yqfum8elm0xefwhekjm1rk7lzqz24x"
+    }
   },
   {
     "name": "Kristian Kerluke",
@@ -2747,7 +4117,12 @@
     "performance": 56,
     "created_at": "2019-08-20T03:32:21.054Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "BNDG",
+      "homepage": "http://dawn.info",
+      "pledge_address": "dje0tbo8n3ovpw11ve1mzq4lzqpwjsnaloxfj5tu9njz5kbh3wkjz8twaj19iyuh"
+    }
   },
   {
     "name": "Clementine Schneider",
@@ -2757,7 +4132,12 @@
     "performance": 41,
     "created_at": "2019-08-20T08:31:48.802Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "WBXQ",
+      "homepage": "https://mikayla.name",
+      "pledge_address": "rqasqy4lqnrye7xgwebdxor2o2x3dlv03gronndbgejxs355gjdmm6yt74b2ddeh"
+    }
   },
   {
     "name": "Mrs. Allene Robel",
@@ -2767,7 +4147,12 @@
     "performance": 99,
     "created_at": "2019-08-20T07:30:01.591Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "DWQS",
+      "homepage": "http://peggie.biz",
+      "pledge_address": "1v136f3ad74cmcz4gchhquijadvuyxtzm9jdeqcsgerhruppoin9v2h0oj8a1tpf"
+    }
   },
   {
     "name": "Zion Douglas",
@@ -2777,7 +4162,12 @@
     "performance": 41,
     "created_at": "2019-08-19T23:57:27.991Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "QVXB",
+      "homepage": "http://talon.info",
+      "pledge_address": "lulkugfmsopz9089xsdqgxzv7c5d8z1na2qpphzczufyrasrl2ejhqsl4j79behd"
+    }
   },
   {
     "name": "Ona Hansen",
@@ -2787,7 +4177,12 @@
     "performance": 21,
     "created_at": "2019-08-20T04:07:51.613Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "DLGL",
+      "homepage": "https://jaleel.info",
+      "pledge_address": "66934mvlothasymoxzimtrftfkukehs4xhfys1052419767gfxjx3djui98bkldm"
+    }
   },
   {
     "name": "Francesca Schamberger",
@@ -2797,7 +4192,12 @@
     "performance": 4,
     "created_at": "2019-08-20T03:15:52.475Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "GMKY",
+      "homepage": "http://geraldine.info",
+      "pledge_address": "kfmqfry8debh7n2qzkto74057piir6oaw87at1celoq3p8k7fu5pyckotdrrryi0"
+    }
   },
   {
     "name": "Chasity Rohan",
@@ -2807,7 +4207,12 @@
     "performance": 18,
     "created_at": "2019-08-19T16:05:52.790Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "EBXC",
+      "homepage": "https://alize.com",
+      "pledge_address": "wpnjwhavhpr25g2o1zdhov3ilgnurngl1loffizk06j6kdzg8gea7v1d3zxkh5dw"
+    }
   },
   {
     "name": "Ara Heller MD",
@@ -2817,7 +4222,12 @@
     "performance": 24,
     "created_at": "2019-08-19T22:50:31.810Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "TJHQ",
+      "homepage": "https://curtis.org",
+      "pledge_address": "3p1ezyw6k8yso8hk0i7u2z2tyy7cw5uw4h5grvn0p9oqogsbhynibtqaohflrco0"
+    }
   },
   {
     "name": "Miss Laurie Rogahn",
@@ -2827,7 +4237,12 @@
     "performance": 51,
     "created_at": "2019-08-20T09:17:32.850Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "VTWU",
+      "homepage": "https://ona.name",
+      "pledge_address": "z5uasgq0q9j4xls9we4hfc85f1v3wlvsvohmjfwzbzeonv3p5ma3g767cp5kzc03"
+    }
   },
   {
     "name": "Devonte Nienow",
@@ -2837,7 +4252,12 @@
     "performance": 1,
     "created_at": "2019-08-19T15:40:36.747Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "YPYE",
+      "homepage": "http://rose.name",
+      "pledge_address": "pqtr5cwzq2ind6j0hp90crph0029gpsydwbem3w6f0ounbxldci9xvaigt8d8q0x"
+    }
   },
   {
     "name": "Easter Block",
@@ -2847,7 +4267,12 @@
     "performance": 2,
     "created_at": "2019-08-20T04:56:27.897Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "EEFJ",
+      "homepage": "https://judah.info",
+      "pledge_address": "47ldyw87rf6oocydhoqh6ec3kekict9znwrh7gw4m5jl5rmgyeblcccwhxhi9wkl"
+    }
   },
   {
     "name": "Ed Schmitt",
@@ -2857,7 +4282,12 @@
     "performance": 48,
     "created_at": "2019-08-19T10:09:04.522Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "WWDJ",
+      "homepage": "http://ethan.info",
+      "pledge_address": "98earacbl12eh32q5cv0yy77vnztp3yo87o52ldhkze75ki0a2y707wuec2srau8"
+    }
   },
   {
     "name": "Anjali Lowe",
@@ -2867,7 +4297,12 @@
     "performance": 35,
     "created_at": "2019-08-19T10:53:17.482Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "QTEG",
+      "homepage": "https://lora.name",
+      "pledge_address": "xr8706eee4yihk1lgwawwn76815d5qg1ioehselytfk0wdi2qb75tlhq07owgge0"
+    }
   },
   {
     "name": "Marianna Blick",
@@ -2877,7 +4312,12 @@
     "performance": 24,
     "created_at": "2019-08-20T02:35:43.835Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "IKQS",
+      "homepage": "https://bill.name",
+      "pledge_address": "wb63xprfuys69pzgf1nrep33l2gm45omcyk62bvejclj7c7kqwrcy6bxwfwfg3wc"
+    }
   },
   {
     "name": "Daphney Rosenbaum",
@@ -2887,7 +4327,12 @@
     "performance": 89,
     "created_at": "2019-08-19T10:25:57.142Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "DYAW",
+      "homepage": "https://floy.com",
+      "pledge_address": "sivirw1vhdq50644v8s80c8blupi9p3ezb4xavhq4qyzz8crqv07j69zelld3e3n"
+    }
   },
   {
     "name": "Darren Carter V",
@@ -2897,7 +4342,12 @@
     "performance": 86,
     "created_at": "2019-08-20T08:32:00.522Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "LGMX",
+      "homepage": "http://andrew.name",
+      "pledge_address": "74zxl7n463p0a5mq89kk1el35juxck3d34o0yopffu8whadfpy5tzg4h910no9be"
+    }
   },
   {
     "name": "Emil Hauck",
@@ -2907,7 +4357,12 @@
     "performance": 13,
     "created_at": "2019-08-19T09:50:10.286Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "WYDJ",
+      "homepage": "https://camren.name",
+      "pledge_address": "zaemwekmgwdj6gqgzxjgq0obzis6ukw194vvytd35406qyl1ozgall47q1w7ghze"
+    }
   },
   {
     "name": "Erick Metz",
@@ -2917,7 +4372,12 @@
     "performance": 21,
     "created_at": "2019-08-19T15:52:39.333Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "HGJU",
+      "homepage": "https://pat.com",
+      "pledge_address": "rwgq2f309jbml5xrdeqyzz15304sx0ltwsrbjfjia5jtksqt6sk7p567fmp3loct"
+    }
   },
   {
     "name": "Cleveland Ward",
@@ -2927,7 +4387,12 @@
     "performance": 48,
     "created_at": "2019-08-20T06:33:04.471Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "USNG",
+      "homepage": "http://casper.com",
+      "pledge_address": "fbuzp7xll996sy29vl5c4asvz24o6cpe8dqaly8s9e9yemr8jdcuo6zsx8o8fcqq"
+    }
   },
   {
     "name": "Paul Watsica",
@@ -2937,7 +4402,12 @@
     "performance": 17,
     "created_at": "2019-08-19T17:22:29.238Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "ALFJ",
+      "homepage": "http://lauretta.com",
+      "pledge_address": "75qmwmn08hlmqi1j6hmq1b04py81dcubyc32gz3uraulrcidulg4393eq36fpife"
+    }
   },
   {
     "name": "Ms. Aurore Price",
@@ -2947,7 +4417,12 @@
     "performance": 53,
     "created_at": "2019-08-19T22:18:26.760Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "GFOR",
+      "homepage": "https://wilford.name",
+      "pledge_address": "do5ixgj3lqt70y1hw6cs3b4ufx9bim85boo9kkqhtkd8keo46g0ft6is0ie98spa"
+    }
   },
   {
     "name": "Alex Schaden",
@@ -2957,7 +4432,12 @@
     "performance": 52,
     "created_at": "2019-08-19T19:19:37.613Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "WJKG",
+      "homepage": "http://regan.com",
+      "pledge_address": "11697qhdqe1l8pvpxjbj4uw7oxpzvgyg6ru4jo34pg93oq3th5agvg0vs5rvuhfl"
+    }
   },
   {
     "name": "Giovani Predovic PhD",
@@ -2967,7 +4447,12 @@
     "performance": 48,
     "created_at": "2019-08-20T06:51:37.950Z",
     "retiring": null,
-    "isCharity": false
+    "isCharity": false,
+    "metadata": {
+      "ticker": "EXLT",
+      "homepage": "http://esteban.name",
+      "pledge_address": "71mrhyt8qniskuxht9ehwsmhkoywnky7waxotlegjc1jz1gtpnzxg1me03q91bs8"
+    }
   },
   {
     "name": "Mollie Abbott",
@@ -2977,7 +4462,12 @@
     "performance": 37,
     "created_at": "2019-08-20T02:50:29.808Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "MBZP",
+      "homepage": "http://kamron.com",
+      "pledge_address": "l9uj4bf2ehq88udospjx0pzd5wvxspjlzu36yhzalzz1luymmzzx40i0o4csqzu4"
+    }
   },
   {
     "name": "Dominique Borer",
@@ -2987,7 +4477,12 @@
     "performance": 71,
     "created_at": "2019-08-20T09:20:34.198Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "SOUZ",
+      "homepage": "https://sam.com",
+      "pledge_address": "pg1akslfqw9okqa1x6434tvvi2tf713y06f30kxm2fgq54mfb4icdatxq2xgvwvs"
+    }
   },
   {
     "name": "Alicia Watsica",
@@ -2997,6 +4492,11 @@
     "performance": 44,
     "created_at": "2019-08-19T23:11:06.774Z",
     "retiring": null,
-    "isCharity": true
+    "isCharity": true,
+    "metadata": {
+      "ticker": "LBPB",
+      "homepage": "http://demond.biz",
+      "pledge_address": "bp3ewas5fw5su3d2gbd28hnyhfehvhhxjxnuoaeu4lpsdfhr7mni5asuy0rblrl3"
+    }
   }
 ]

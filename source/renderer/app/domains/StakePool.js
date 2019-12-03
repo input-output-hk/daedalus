@@ -32,13 +32,13 @@ export default class StakePool {
   @observable createdAt: Date;
   @observable description: string;
   @observable isCharity: boolean;
-  @observable name: string;
+  @observable name: string = '';
   @observable profitMargin: number;
-  @observable ranking: number;
   @observable ranking: number;
   @observable retiring: ?Date;
 
   constructor(data: StakePoolProps) {
+    // console.log('data', data);
     Object.assign(this, data);
   }
 }
