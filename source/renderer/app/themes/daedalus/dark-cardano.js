@@ -119,10 +119,8 @@ export const DARK_CARDANO_THEME_OUTPUT = {
   },
   delegationSetupWizard: {
     '--theme-delegation-steps-activation-steps-indicator-color': '#ffffff',
-    '--theme-delegation-steps-activation-description-color': '#ffffffcc',
-    '--theme-delegation-steps-activation-fees-label-color': '#ffffff',
-    '--theme-delegation-steps-activation-fees-amount-color': '#ea4c5b',
-    '--theme-delegation-steps-activation-address-value-color': '#ffffff',
+    '--theme-delegation-steps-success-description-color': '#ffffffcc',
+    '--theme-delegation-steps-success-tada-color': 'rgba(255, 255, 255, 0.7)',
     '--theme-delegation-steps-choose-stake-pool-checkmark-icon-color':
       'rgba(255, 255, 255, 0.2)',
     '--theme-delegation-steps-choose-stake-pool-delegated-pools-label-color':

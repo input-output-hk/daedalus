@@ -6,8 +6,8 @@ import { find, get } from 'lodash';
 import BigNumber from 'bignumber.js';
 import DelegationSetupWizardDialog from '../../../components/staking/delegation-setup-wizard/DelegationSetupWizardDialog';
 import { MIN_DELEGATION_FUNDS } from '../../../config/stakingConfig';
-import type { InjectedDialogContainerProps } from '../../../types/injectedPropsType';
 import Wallet from '../../../domains/Wallet';
+import type { InjectedDialogContainerProps } from '../../../types/injectedPropsType';
 
 const messages = defineMessages({
   learnMoreLinkUrl: {
@@ -139,8 +139,8 @@ export default class DelegationSetupWizardDialogContainer extends Component<
   render() {
     const { activeStep, selectedWalletId, selectedPoolId, stakePoolJoinFee } = this.state;
     const { app, staking, wallets, profile } = this.props.stores;
-    const { currentTheme } = profile;
-    const { stakePools, delegatingStakePools, joinStakePoolRequest } = staking;
+    const { currentTheme, currentLocale } = profile;
+    const { stakePools, delegatingStakePools, joinStakePoolRequest, startDateTime } = staking;
     const selectedPool = find(stakePools, pool => pool.id === selectedPoolId);
     const selectedWallet = find(wallets.allWallets, wallet => wallet.id === selectedWalletId);
     const isDisabled = wallets.allWallets.reduce(
@@ -154,6 +154,7 @@ export default class DelegationSetupWizardDialogContainer extends Component<
     console.debug('REQ ---> ', {
       isSubmitting: joinStakePoolRequest.isExecuting,
       error: joinStakePoolRequest.error,
+      currentLocale,
     })
 
     return (
@@ -169,6 +170,8 @@ export default class DelegationSetupWizardDialogContainer extends Component<
         stakePoolsList={stakePools}
         stakePoolsDelegatingList={delegatingStakePools}
         stakePoolJoinFee={stakePoolJoinFee}
+        startDateTime={startDateTime}
+        currentLocale={currentLocale}
         onOpenExternalLink={app.openExternalLink}
         currentTheme={currentTheme}
         onClose={this.handleDialogClose}

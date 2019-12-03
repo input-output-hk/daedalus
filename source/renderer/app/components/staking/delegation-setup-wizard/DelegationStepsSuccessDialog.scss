@@ -1,0 +1,49 @@
+.delegationStepsSuccessDialogWrapper {
+  .content {
+    margin-top: 28px;
+    .tadaImage {
+      display: block;
+      margin-bottom: 23px;
+      text-align: center;
+      svg {
+        height: 75px;
+        stroke: var(--theme-delegation-steps-success-tada-color);
+        path {
+          stroke: var(--theme-delegation-steps-success-tada-color);
+        }
+        g {
+          ellipse {
+            &:nth-child(7),
+            &:nth-child(8),
+            &:nth-child(9) {
+              stroke: var(--theme-delegation-steps-success-tada-color); 
+            }
+
+            &:nth-child(11),
+            &:nth-child(12),
+            &:nth-child(13),
+            &:nth-child(14),
+            &:nth-child(15),
+            &:nth-child(16) {
+              fill: var(--theme-delegation-steps-success-tada-color); 
+            }
+          }
+        }
+      }
+    }
+    .description1,
+    .description2 {
+      font-size: 16px;
+      color: var(--theme-delegation-steps-success-description-color);
+      font-family: var(--font-light);
+      line-height: 1.38;
+      span > span {
+        font-family: var(--font-medium);
+      }
+    }
+
+    .description2 {
+      margin-top: 11px;
+    }
+  }
+}

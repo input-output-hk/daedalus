@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { BigNumber } from 'bignumber.js';
 import { get } from 'lodash';
-import DelegationStepsActivationDialog from './DelegationStepsActivationDialog';
+import DelegationStepsSuccessDialog from './DelegationStepsSuccessDialog';
 import DelegationStepsChooseWalletDialog from './DelegationStepsChooseWalletDialog';
 import DelegationStepsConfirmationDialog from './DelegationStepsConfirmationDialog';
 import DelegationStepsIntroDialog from './DelegationStepsIntroDialog';
@@ -36,6 +36,7 @@ type Props = {
   stakePoolJoinFee: ?BigNumber,
   isSubmitting: boolean,
   error: ?LocalizableError,
+  startDateTime: string,
 };
 
 @observer
@@ -62,6 +63,8 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
       selectedPool,
       isWalletAcceptable,
       stakePoolJoinFee,
+      startDateTime,
+      currentLocale,
       isSubmitting,
       error,
     } = this.props;
@@ -126,12 +129,12 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
         break;
       case 4:
         content = (
-          <DelegationStepsActivationDialog
-            amount={new BigNumber(3)}
-            fees={new BigNumber(0.172081)}
-            stepsList={stepsList}
+          <DelegationStepsSuccessDialog
+            delegatedWallet={selectedWallet}
+            delegatedStakePool={selectedPool}
+            timeUntilNextEpochStart={startDateTime}
+            currentLocale={currentLocale}
             onClose={onClose}
-            onBack={onBack}
           />
         );
         break;

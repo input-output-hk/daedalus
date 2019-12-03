@@ -125,11 +125,9 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
   },
   delegationSetupWizard: {
     '--theme-delegation-steps-activation-steps-indicator-color': '#5e6066',
-    '--theme-delegation-steps-activation-description-color':
+    '--theme-delegation-steps-success-description-color':
       'rgba(94, 96, 102, 0.8)',
-    '--theme-delegation-steps-activation-fees-label-color': '#5e6066',
-    '--theme-delegation-steps-activation-fees-amount-color': '#ea4c5b',
-    '--theme-delegation-steps-activation-address-value-color': '#5e6066',
+    '--theme-delegation-steps-success-tada-color': 'rgba(94, 96, 102, 0.7)',
     '--theme-delegation-steps-choose-stake-pool-checkmark-icon-color':
       '#c6cdd6',
     '--theme-delegation-steps-choose-stake-pool-delegated-pools-label-color':

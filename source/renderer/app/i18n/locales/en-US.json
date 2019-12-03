@@ -345,6 +345,12 @@
   "staking.delegationSetup.notAvailable.dialog.description": "None of your wallets have the <span>minimum amount of {minDelegationFunds} ada</span> required for delegation",
   "staking.delegationSetup.notAvailable.dialog.title": "Delegation not available",
   
+  "staking.delegationSetup.success.step.dialog.title": "Wallet Delegated",
+  "staking.delegationSetup.success.step.dialog.description.line1": "The stake from your wallet <span>{delegatedWalletName}</span> is now delegated to the <span>[{delegatedStakePoolTicker}]</span> stake pool.",
+  "staking.delegationSetup.success.step.dialog.description.line2": "Your new delegation preferences are now posted on the blockchain <span>and will take effect at the start of the next Cardano epoch in {timeUntilNextEpochStart}</span>. For the rest of the current epoch, your previous delegation preferences are still active.",
+  "staking.delegationSetup.success.step.dialog.closeButtonLabel": "Close",
+
+
   "staking.delegationSetup.steps.step.1.label": "Wallet",
   "staking.delegationSetup.steps.step.2.label": "Stake pool",
   "staking.delegationSetup.steps.step.3.label": "Confirmation",

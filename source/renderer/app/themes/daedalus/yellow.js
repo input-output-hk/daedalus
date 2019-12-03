@@ -125,10 +125,8 @@ export const YELLOW_THEME_OUTPUT = {
   },
   delegationSetupWizard: {
     '--theme-delegation-steps-activation-steps-indicator-color': '#2d2d2d',
-    '--theme-delegation-steps-activation-description-color': '#2d2d2dcc',
-    '--theme-delegation-steps-activation-fees-label-color': '#2d2d2d',
-    '--theme-delegation-steps-activation-fees-amount-color': '#ea4c5b',
-    '--theme-delegation-steps-activation-address-value-color': '#2d2d2d',
+    '--theme-delegation-steps-success-description-color': '#2d2d2dcc',
+    '--theme-delegation-steps-success-tada-color': 'rgba(45, 45, 45, 0.7)',
     '--theme-delegation-steps-choose-stake-pool-checkmark-icon-color':
       '#e1dac6',
     '--theme-delegation-steps-choose-stake-pool-delegated-pools-label-color':
