@@ -2,19 +2,20 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { BigNumber } from 'bignumber.js';
+import { get } from 'lodash';
 import DelegationStepsActivationDialog from './DelegationStepsActivationDialog';
 import DelegationStepsChooseWalletDialog from './DelegationStepsChooseWalletDialog';
 import DelegationStepsConfirmationDialog from './DelegationStepsConfirmationDialog';
 import DelegationStepsIntroDialog from './DelegationStepsIntroDialog';
 import DelegationStepsNotAvailableDialog from './DelegationStepsNotAvailableDialog';
 import DelegationStepsChooseStakePoolDialog from './DelegationStepsChooseStakePoolDialog';
-import type { StakePool } from '../../../api/staking/types';
+import LocalizableError from '../../../i18n/LocalizableError';
 import Wallet from '../../../domains/Wallet';
+import type { StakePool } from '../../../api/staking/types';
 
 type Props = {
   activeStep: number,
   isDisabled: boolean,
-  onActivate: Function,
   onBack: Function,
   onClose: Function,
   onConfirm: Function,
@@ -30,8 +31,11 @@ type Props = {
   stakePoolsList: Array<StakePool>,
   onOpenExternalLink: Function,
   currentTheme: string,
-  selectedWalletId: string,
+  selectedWallet: ?Wallet,
   selectedPool: ?StakePool,
+  stakePoolJoinFee: ?BigNumber,
+  isSubmitting: boolean,
+  error: ?LocalizableError,
 };
 
 @observer
@@ -40,7 +44,6 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
     const {
       activeStep,
       isDisabled,
-      onActivate,
       onBack,
       onClose,
       onConfirm,
@@ -55,10 +58,15 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
       stakePoolsList,
       onOpenExternalLink,
       currentTheme,
-      selectedWalletId,
+      selectedWallet,
       selectedPool,
       isWalletAcceptable,
+      stakePoolJoinFee,
+      isSubmitting,
+      error,
     } = this.props;
+
+    const selectedWalletId = get(selectedWallet, 'id', null);
 
     if (isDisabled) {
       return (
@@ -91,6 +99,7 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
             stepsList={stepsList}
             stakePoolsDelegatingList={stakePoolsDelegatingList}
             stakePoolsList={stakePoolsList}
+            selectedWallet={selectedWallet}
             onOpenExternalLink={onOpenExternalLink}
             currentTheme={currentTheme}
             selectedPool={selectedPool}
@@ -103,11 +112,15 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
       case 3:
         content = (
           <DelegationStepsConfirmationDialog
-            fees={new BigNumber(0.172081)}
+            transactionFee={stakePoolJoinFee}
+            selectedPool={selectedPool}
+            selectedWallet={selectedWallet}
             stepsList={stepsList}
             onClose={onClose}
             onConfirm={onConfirm}
             onBack={onBack}
+            isSubmitting={isSubmitting}
+            error={error}
           />
         );
         break;
@@ -118,7 +131,6 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
             fees={new BigNumber(0.172081)}
             stepsList={stepsList}
             onClose={onClose}
-            onActivate={onActivate}
             onBack={onBack}
           />
         );

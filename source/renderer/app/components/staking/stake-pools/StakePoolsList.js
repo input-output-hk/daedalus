@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { debounce } from 'lodash';
+import classNames from 'classnames';
 import styles from './StakePoolsList.scss';
 import type { StakePool } from '../../../api/staking/types';
 import { StakePoolThumbnail } from './StakePoolThumbnail';
@@ -27,6 +28,7 @@ type Props = {
   setListActive?: Function,
   selectedPoolId?: ?number,
   numberOfStakePools: number,
+  horizontalScroll?: boolean,
 };
 
 type State = {
@@ -99,10 +101,21 @@ export class StakePoolsList extends Component<Props, State> {
       selectedPoolId,
       containerClassName,
       numberOfStakePools,
+      horizontalScroll,
     } = this.props;
 
+    const listClasses = classNames([
+      styles.component,
+      horizontalScroll ? styles.horizontalScroll : null,
+    ]);
+
     return (
-      <div className={styles.component}>
+      <div
+        className={listClasses}
+        style={horizontalScroll && {
+          gridTemplateColumns: `repeat(${stakePoolsList.length}, 80px)`,
+        }}
+      >
         {stakePoolsList.map(stakePool => {
           const isHighlighted = this.getIsHighlighted(stakePool.id);
           const isSelected = selectedPoolId && stakePool.id === selectedPoolId;

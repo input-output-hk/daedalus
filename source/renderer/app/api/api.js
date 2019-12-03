@@ -143,7 +143,11 @@ import type {
 import type { GetNewsResponse } from './news/types';
 
 // Staking Types
-import type { JoinStakePoolRequest, StakePool } from './staking/types';
+import type {
+  JoinStakePoolRequest,
+  StakePool,
+  StakePoolJoinFee,
+} from './staking/types';
 
 // Common errors
 import {
@@ -1181,7 +1185,7 @@ export default class AdaApi {
     return news;
   };
 
-  joinStakePool = async (request: JoinStakePoolRequest): Promise<StakePool> => {
+  joinStakePool = async (request: JoinStakePoolRequest): Promise<Transaction> => {
     Logger.debug('AdaApi::joinStakePool called', {
       parameters: filterLogData(request),
     });
@@ -1189,7 +1193,7 @@ export default class AdaApi {
     console.debug('API - request: ', request);
 
     try {
-      const response: StakePool = await joinStakePool(this.config, {
+      const response = await joinStakePool(this.config, {
         walletId,
         stakePoolId,
         passphrase,
@@ -1203,6 +1207,40 @@ export default class AdaApi {
       return response;
     } catch (error) {
       console.debug('>>>> ERROR ', error);
+      throw new GenericApiError();
+    }
+  };
+
+  estimateJoinFee = async (
+    request: EstimateJoinFeeRequest
+  ): Promise<BigNumber> => {
+    Logger.debug('AdaApi::estimateJoinFee called', {
+      parameters: filterLogData(request),
+    });
+
+    // @API TODO: Call API endpoint and fetch real data
+    try {
+      // const {
+      //   walletId,
+      //   stakePoolId,
+      // } = request;
+      // const response: StakePoolJoinFee = await estimateJoinFee(this.config, {
+      //   walletId,
+      //   stakePoolId,
+      // });
+
+      const response = {
+        amount: {
+          quantity: 42,
+          unit: 'lovelace',
+        }
+      }
+      const stakePoolJoinFee = _createStakePoolJoinFeeFromServerData(response);
+      return new Promise(resolve =>
+        resolve(stakePoolJoinFee)
+      );
+    } catch (error) {
+      Logger.error('AdaApi::estimateJoinFee error', { error });
       throw new GenericApiError();
     }
   };
@@ -1349,3 +1387,12 @@ const _createMigrationFeeFromServerData = action(
     return new BigNumber(amount).dividedBy(LOVELACES_PER_ADA);
   }
 );
+
+const _createStakePoolJoinFeeFromServerData = action(
+  'AdaApi::_createStakePoolJoinFeeFromServerData',
+  (data: StakePoolJoinFee) => {
+    const amount = get(data, ['amount', 'quantity'], 0);
+    return new BigNumber(amount).dividedBy(LOVELACES_PER_ADA);
+  }
+);
+

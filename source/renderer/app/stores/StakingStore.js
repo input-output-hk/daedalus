@@ -48,6 +48,23 @@ export default class StakingStore extends Store {
     this.stores.wallets.goToWalletRoute(walletId);
   };
 
+  estimateJoinFee = async (
+    estimateJoinFeeRequest: EstimateJoinFeeRequest
+  ) => {
+    const { walletId, stakePoolId } = estimateJoinFeeRequest;
+    const wallet = this.stores.wallets.getWalletById(walletId);
+
+    if (!wallet) {
+      throw new Error(
+        'Active wallet required before calculating transaction fees.'
+      );
+    }
+
+    return this.api.ada.estimateJoinFee({
+      ...estimateJoinFeeRequest,
+    });
+  };
+
   // =================== PUBLIC API ==================== //
 
   // GETTERS

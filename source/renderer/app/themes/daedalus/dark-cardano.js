@@ -127,18 +127,18 @@ export const DARK_CARDANO_THEME_OUTPUT = {
       'rgba(255, 255, 255, 0.2)',
     '--theme-delegation-steps-choose-stake-pool-delegated-pools-label-color':
       '#ffffff',
-    '--theme-delegation-steps-choose-stake-pool-slug-color':
+    '--theme-delegation-steps-choose-stake-pool-ticker-color':
       'rgba(255, 255, 255, 0.2)',
     '--theme-delegation-steps-choose-stake-pool-select-box-placeholder-color':
       'rgba(255, 255, 255, 0.2)',
     '--theme-delegation-steps-choose-stake-pool-selected-checkmark-icon-color':
       '#ffffff',
-    '--theme-delegation-steps-choose-stake-pool-selected-slug-color': '#ffffff',
+    '--theme-delegation-steps-choose-stake-pool-selected-ticker-color': '#ffffff',
     '--theme-delegation-steps-choose-stake-pool-thumb-background-color':
       'rgba(42, 43, 60, 1)',
     '--theme-delegation-steps-choose-stake-pool-thumb-border-color':
       'rgba(255, 255, 255, 0.2)',
-    '--theme-delegation-steps-choose-stake-pool-title-color': '#ffffffcc',
+    '--theme-delegation-steps-choose-stake-pool-title-color': '#ffffff',
     '--theme-delegation-steps-choose-stake-pool-tooltip-arrow-color':
       '#ffffffe6',
     '--theme-delegation-steps-choose-stake-pool-tooltip-background-color':

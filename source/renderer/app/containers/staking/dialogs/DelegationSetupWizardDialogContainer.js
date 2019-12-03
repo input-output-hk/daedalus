@@ -28,13 +28,8 @@ const messages = defineMessages({
   },
   delegationSetupStep3Label: {
     id: 'staking.delegationSetup.steps.step.3.label',
-    defaultMessage: '!!!Delegation',
+    defaultMessage: '!!!Confirmation',
     description: 'Step 3 label text on delegation steps dialog.',
-  },
-  delegationSetupStep4Label: {
-    id: 'staking.delegationSetup.steps.step.4.label',
-    defaultMessage: '!!!Activation',
-    description: 'Step 4 label text on delegation steps dialog.',
   },
 });
 
@@ -42,6 +37,7 @@ type State = {
   activeStep: number,
   selectedWalletId: string,
   selectedPoolId: ?string,
+  stakePoolJoinFee: ?BigNumber,
 };
 
 type Props = InjectedDialogContainerProps;
@@ -75,13 +71,23 @@ export default class DelegationSetupWizardDialogContainer extends Component<
       ['stores', 'uiDialogs', 'dataForActiveDialog', 'poolId'],
       null
     ),
+    stakePoolJoinFee: new BigNumber(0),
   };
+
+  componentWillReceiveProps(nextProps) {
+    console.debug('RECEICE PROPS: ', {
+      THIS: this.props.stores.staking.joinStakePoolRequest,
+      NEXT: nextProps.stores.staking.joinStakePoolRequest,
+    })
+    if (this.props.stores.staking.joinStakePoolRequest.isExecuting && !nextProps.stores.staking.joinStakePoolRequest.isExecuting && !nextProps.joinStakePoolRequest.error) {
+      this.handleContinue();
+    }
+  }
 
   STEPS_LIST = [
     this.context.intl.formatMessage(messages.delegationSetupStep1Label),
     this.context.intl.formatMessage(messages.delegationSetupStep2Label),
     this.context.intl.formatMessage(messages.delegationSetupStep3Label),
-    this.context.intl.formatMessage(messages.delegationSetupStep4Label),
   ];
 
   handleDialogClose = () => {
@@ -105,21 +111,15 @@ export default class DelegationSetupWizardDialogContainer extends Component<
     this.props.stores.app.openExternalLink(learnMoreLinkUrl);
   };
 
-  handleConfirm = () => {
-    // @TODO - proceed confirmation data
-    this.handleContinue();
-  };
-
-  handleActivate = (values: any) => {
-    // @TODO - proceed activation data
-    console.debug('ACTIVATE: ', values);
-    // this.handleDialogClose();
+  handleConfirm = (spendingPassword: string) => {
+    console.debug('CONFIRM: ', spendingPassword);
+    const { stakePoolJoinFee, selectedPoolId, selectedWalletId } = this.state;
     this.props.actions.staking.joinStakePool.trigger({
-      stakePoolId:
-        'addr1sjck9mdmfyhzvjhydcjllgj9vjvl522w0573ncustrrr2rg7h9azg4cyqd36yyd48t5ut72hgld0fg2xfvz82xgwh7wal6g2xt8n996s3xvu5g',
-      walletId: this.state.selectedWalletId,
-      passphrase: 'Secret1234',
+      stakePoolId: selectedPoolId,
+      walletId: selectedWalletId,
+      passphrase: spendingPassword,
     });
+    // this.handleContinue();
   };
 
   handleSelectWallet = (walletId: string) => {
@@ -128,6 +128,7 @@ export default class DelegationSetupWizardDialogContainer extends Component<
   };
 
   handleSelectPool = (poolId: string) => {
+    this._handleCalculateTransactionFee(poolId);
     this.setState({ selectedPoolId: poolId });
     this.handleContinue();
   };
@@ -136,10 +137,12 @@ export default class DelegationSetupWizardDialogContainer extends Component<
     walletAmount.gte(MIN_DELEGATION_FUNDS);
 
   render() {
-    const { activeStep, selectedWalletId, selectedPoolId } = this.state;
+    const { activeStep, selectedWalletId, selectedPoolId, stakePoolJoinFee } = this.state;
     const { app, staking, wallets, profile } = this.props.stores;
     const { currentTheme } = profile;
-    const { stakePools, delegatingStakePools } = staking;
+    const { stakePools, delegatingStakePools, joinStakePoolRequest } = staking;
+    const selectedPool = find(stakePools, pool => pool.id === selectedPoolId);
+    const selectedWallet = find(wallets.allWallets, wallet => wallet.id === selectedWalletId);
     const isDisabled = wallets.allWallets.reduce(
       (disabled: boolean, { amount }: Wallet) => {
         if (!disabled) return false;
@@ -147,7 +150,11 @@ export default class DelegationSetupWizardDialogContainer extends Component<
       },
       false
     );
-    const selectedPool = find(stakePools, pool => pool.id === selectedPoolId);
+
+    console.debug('REQ ---> ', {
+      isSubmitting: joinStakePoolRequest.isExecuting,
+      error: joinStakePoolRequest.error,
+    })
 
     return (
       <DelegationSetupWizardDialog
@@ -157,10 +164,11 @@ export default class DelegationSetupWizardDialogContainer extends Component<
         minDelegationFunds={MIN_DELEGATION_FUNDS}
         isDisabled={activeStep === 1 && isDisabled}
         isWalletAcceptable={this.handleIsWalletAcceptable}
-        selectedWalletId={selectedWalletId}
+        selectedWallet={selectedWallet}
         selectedPool={selectedPool || null}
         stakePoolsList={stakePools}
         stakePoolsDelegatingList={delegatingStakePools}
+        stakePoolJoinFee={stakePoolJoinFee}
         onOpenExternalLink={app.openExternalLink}
         currentTheme={currentTheme}
         onClose={this.handleDialogClose}
@@ -170,8 +178,21 @@ export default class DelegationSetupWizardDialogContainer extends Component<
         onBack={this.onBack}
         onLearnMoreClick={this.handleLearnMoreClick}
         onConfirm={this.handleConfirm}
-        onActivate={this.handleActivate}
+        isSubmitting={joinStakePoolRequest.isExecuting}
+        error={joinStakePoolRequest.error}
       />
     );
   }
+
+  async _handleCalculateTransactionFee(poolId: string) {
+    const { estimateJoinFee } = this.props.stores.staking;
+    const { selectedWalletId } = this.state;
+    const stakePoolJoinFee = await estimateJoinFee({
+      walletId: selectedWalletId,
+      stakePoolId: poolId
+    });
+    this.setState({ stakePoolJoinFee });
+  }
 }
+
+

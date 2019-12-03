@@ -17,37 +17,37 @@ type Props = {
 
 const messages = defineMessages({
   title: {
-    id: 'staking.delegationSetup.intro.step.dialog.title_new',
+    id: 'staking.delegationSetup.intro.step.dialog.title',
     defaultMessage: '!!!Delegate wallet',
     description:
       'Title "Delegation Setup" on the delegation setup "intro" dialog.',
   },
   description: {
-    id: 'staking.delegationSetup.intro.step.dialog.description_new',
+    id: 'staking.delegationSetup.intro.step.dialog.description',
     defaultMessage:
       '!!!Follow these steps to configure delegation preferences for your wallet. Please be aware that the last step of delegation confirmation will incur transaction fees.',
     description: 'Description on the delegation setup "intro" dialog.',
   },
   learnMoreButtonLabel: {
-    id: 'staking.delegationSetup.intro.step.dialog.learnMore.buttonLabel_new',
+    id: 'staking.delegationSetup.intro.step.dialog.learnMore.buttonLabel',
     defaultMessage: '!!!Learn more',
     description:
       '"Learn more" button label on the delegation setup "intro" dialog.',
   },
   stepsExplanationLabel1: {
-    id: 'staking.delegationSetup.intro.step.dialog.stepsExplanation.step1_new',
+    id: 'staking.delegationSetup.intro.step.dialog.stepsExplanation.step1',
     defaultMessage: '!!!Wallet selection',
     description:
       'Steps explanation list item 1 label on the delegation setup "intro" dialog.',
   },
   stepsExplanationLabel2: {
-    id: 'staking.delegationSetup.intro.step.dialog.stepsExplanation.step2_new',
+    id: 'staking.delegationSetup.intro.step.dialog.stepsExplanation.step2',
     defaultMessage: '!!!Stake pool selection',
     description:
       'Steps explanation list item 2 label on the delegation setup "intro" dialog.',
   },
   stepsExplanationLabel3: {
-    id: 'staking.delegationSetup.intro.step.dialog.stepsExplanation.step3_new',
+    id: 'staking.delegationSetup.intro.step.dialog.stepsExplanation.step3',
     defaultMessage: '!!!Delegation confirmation',
     description:
       'Steps explanation list item 3 label on the delegation setup "intro" dialog.',

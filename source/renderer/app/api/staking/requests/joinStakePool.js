@@ -1,12 +1,13 @@
 // @flow
 import type { RequestConfig } from '../../common/types';
-import type { StakePool, JoinStakePoolRequest } from '../types';
+import type { JoinStakePoolRequest } from '../types';
+import type { Transaction } from '../../transactions/types';
 import { request } from '../../utils/request';
 
 export const joinStakePool = (
   config: RequestConfig,
-  { walletId, stakePoolId, passphrase }: JoinStakePoolRequest
-): Promise<StakePool> =>
+  { walletId, stakePoolId, passphrase, fees }: JoinStakePoolRequest
+): Promise<Transaction> =>
   request(
     {
       method: 'PUT',

@@ -1,5 +1,6 @@
 // @flow
 import BigNumber from 'bignumber.js';
+import { WalletUnits } from '../../domains/Wallet';
 
 export type StakePool = {
   id: string,
@@ -49,4 +50,16 @@ export type JoinStakePoolRequest = {
   walletId: string,
   stakePoolId: string,
   passphrase: string,
+};
+
+export type StakePoolJoinFee = {
+  amount: {
+    quantity: number,
+    unit: WalletUnits.LOVELACE,
+  },
+};
+
+export type EstimateJoinFeeRequest = {
+  walletId: string,
+  stakePoolId: string,
 };

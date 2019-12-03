@@ -134,17 +134,17 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
       '#c6cdd6',
     '--theme-delegation-steps-choose-stake-pool-delegated-pools-label-color':
       'rgba(94, 96, 102, 1)',
-    '--theme-delegation-steps-choose-stake-pool-slug-color': '#c6cdd6',
+    '--theme-delegation-steps-choose-stake-pool-ticker-color': '#c6cdd6',
     '--theme-delegation-steps-choose-stake-pool-select-box-placeholder-color':
       '#c6cdd6',
     '--theme-delegation-steps-choose-stake-pool-selected-checkmark-icon-color':
       '#fafbfc',
-    '--theme-delegation-steps-choose-stake-pool-selected-slug-color': '#fafbfc',
+    '--theme-delegation-steps-choose-stake-pool-selected-ticker-color': '#fafbfc',
     '--theme-delegation-steps-choose-stake-pool-thumb-background-color':
       '#fafbfc',
     '--theme-delegation-steps-choose-stake-pool-thumb-border-color': '#c6cdd6',
     '--theme-delegation-steps-choose-stake-pool-title-color':
-      'rgba(94, 96, 102, 0.8)',
+      'rgba(94, 96, 102, 1)',
     '--theme-delegation-steps-choose-stake-pool-tooltip-arrow-color':
       'rgba(94, 96, 102, 0.9)',
     '--theme-delegation-steps-choose-stake-pool-tooltip-background-color':

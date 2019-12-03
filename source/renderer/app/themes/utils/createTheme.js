@@ -433,12 +433,12 @@ export const createDaedalusComponentsTheme = (
       '--theme-delegation-steps-choose-stake-pool-delegated-pools-label-color': `${
         text.primary
       }`,
-      '--theme-delegation-steps-choose-stake-pool-slug-color': `${border}`,
+      '--theme-delegation-steps-choose-stake-pool-ticker-color': `${border}`,
       '--theme-delegation-steps-choose-stake-pool-select-box-placeholder-color': `${border}`,
       '--theme-delegation-steps-choose-stake-pool-selected-checkmark-icon-color': `${
         text.secondary
       }`,
-      '--theme-delegation-steps-choose-stake-pool-selected-slug-color': `${
+      '--theme-delegation-steps-choose-stake-pool-selected-ticker-color': `${
         text.secondary
       }`,
       '--theme-delegation-steps-choose-stake-pool-thumb-background-color': `${
@@ -447,9 +447,7 @@ export const createDaedalusComponentsTheme = (
       '--theme-delegation-steps-choose-stake-pool-thumb-border-color': `${chroma(
         border
       ).alpha(0.2)}`,
-      '--theme-delegation-steps-choose-stake-pool-title-color': `${chroma(
-        text.primary
-      ).alpha(0.8)}`,
+      '--theme-delegation-steps-choose-stake-pool-title-color': `${text.primary}`,
       '--theme-delegation-steps-choose-stake-pool-tooltip-arrow-color': `${chroma(
         text.primary
       ).alpha(0.9)}`,

@@ -140,14 +140,14 @@ export const DARK_BLUE_THEME_OUTPUT = {
       '#9eabbb',
     '--theme-delegation-steps-choose-stake-pool-selected-checkmark-icon-color':
       '#fafbfc',
-    '--theme-delegation-steps-choose-stake-pool-selected-slug-color': '#fafbfc',
-    '--theme-delegation-steps-choose-stake-pool-slug-color': '#536370',
+    '--theme-delegation-steps-choose-stake-pool-selected-ticker-color': '#fafbfc',
+    '--theme-delegation-steps-choose-stake-pool-ticker-color': '#536370',
     '--theme-delegation-steps-choose-stake-pool-thumb-background-color':
       '#263345',
     '--theme-delegation-steps-choose-stake-pool-thumb-border-color':
       'rgba(102, 122, 138, 0.2)',
     '--theme-delegation-steps-choose-stake-pool-title-color':
-      'rgba(233, 244, 254, 0.8)',
+      'rgba(233, 244, 254, 1)',
     '--theme-delegation-steps-choose-stake-pool-tooltip-arrow-color':
       'rgba(94, 96, 102, 0.9)',
     '--theme-delegation-steps-choose-stake-pool-tooltip-background-color':

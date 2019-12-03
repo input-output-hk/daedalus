@@ -20,14 +20,14 @@ import Wallet from '../../../domains/Wallet';
 const messages = defineMessages({
   title: {
     id: 'staking.delegationSetup.chooseWallet.step.dialog.title',
-    defaultMessage: '!!!Delegation Setup',
+    defaultMessage: '!!!Delegate wallet',
     description:
-      'Title "Delegation Setup" on the delegation setup "choose wallet" step dialog.',
+      'Title "Delegate wallet" on the delegation setup "choose wallet" step dialog.',
   },
   description: {
     id: 'staking.delegationSetup.chooseWallet.step.dialog.description',
     defaultMessage:
-      '!!!Choose a wallet with funds you would like to delegate to a stake pool. Selected wallet needs to have a minimum of <span>{minDelegationFunds} ada</span>.',
+      '!!!Choose a wallet with funds that you want to delegate. The selected wallet must contain a <span>minimum amount of {minDelegationFunds} ada</span> for delegation to be available',
     description:
       'Description on the delegation setup "choose wallet" step dialog.',
   },
@@ -54,7 +54,7 @@ const messages = defineMessages({
   errorMessage: {
     id: 'staking.delegationSetup.chooseWallet.step.dialog.errorMessage',
     defaultMessage:
-      '!!!This wallet does not have enough ada for delegation setup. Please choose a wallet with a minimum of <span>{minDelegationFunds} ada</span> and click continue.',
+      '!!!This wallet does not contain the minimum amount of 1 ada which is required for delegation to be available. Please select a wallet with <span>a minimum amount of {minDelegationFunds} ada</span> and click continue.',
     description:
       'Error Label on the delegation setup "choose wallet" step dialog.',
   },

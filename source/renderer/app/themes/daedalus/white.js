@@ -129,17 +129,17 @@ export const WHITE_THEME_OUTPUT = {
       'rgba(45, 45, 45, 0.1)',
     '--theme-delegation-steps-choose-stake-pool-delegated-pools-label-color':
       '#2d2d2d',
-    '--theme-delegation-steps-choose-stake-pool-slug-color':
+    '--theme-delegation-steps-choose-stake-pool-ticker-color':
       'rgba(45, 45, 45, 0.1)',
     '--theme-delegation-steps-choose-stake-pool-select-box-placeholder-color':
       'rgba(45, 45, 45, 0.1)',
     '--theme-delegation-steps-choose-stake-pool-selected-checkmark-icon-color':
       '#fafbfc',
-    '--theme-delegation-steps-choose-stake-pool-selected-slug-color': '#fafbfc',
+    '--theme-delegation-steps-choose-stake-pool-selected-ticker-color': '#fafbfc',
     '--theme-delegation-steps-choose-stake-pool-thumb-background-color': '#fff',
     '--theme-delegation-steps-choose-stake-pool-thumb-border-color':
       'rgba(45, 45, 45, 0.1)',
-    '--theme-delegation-steps-choose-stake-pool-title-color': '#2d2d2dcc',
+    '--theme-delegation-steps-choose-stake-pool-title-color': '#2d2d2d',
     '--theme-delegation-steps-choose-stake-pool-tooltip-arrow-color':
       '#2d2d2de6',
     '--theme-delegation-steps-choose-stake-pool-tooltip-background-color':

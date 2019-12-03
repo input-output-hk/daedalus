@@ -26,7 +26,6 @@ const getDelegationWizardStepsList = locale => [
   translations[locale]['staking.delegationSetup.steps.step.1.label'],
   translations[locale]['staking.delegationSetup.steps.step.2.label'],
   translations[locale]['staking.delegationSetup.steps.step.3.label'],
-  translations[locale]['staking.delegationSetup.steps.step.4.label'],
 ];
 
 type Props = {
@@ -80,6 +79,15 @@ export class StakingDelegationSteps extends Component<Props, State> {
           STAKE_POOLS[0],
           STAKE_POOLS[13],
           STAKE_POOLS[36],
+          STAKE_POOLS[85],
+          STAKE_POOLS[100],
+          STAKE_POOLS[200],
+          STAKE_POOLS[250],
+          STAKE_POOLS[271],
+          STAKE_POOLS[101],
+          STAKE_POOLS[201],
+          STAKE_POOLS[251],
+          STAKE_POOLS[272],
         ]}
         onOpenExternalLink={() => {}}
         currentTheme={this.props.currentTheme}
