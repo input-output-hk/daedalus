@@ -24,6 +24,7 @@ import {
   TOOLTIP_MAX_HEIGHT,
   TOOLTIP_WIDTH,
 } from '../../../config/stakingConfig';
+import { formattedWalletAmount } from '../../../utils/formatters';
 
 const messages = defineMessages({
   ranking: {
@@ -358,6 +359,9 @@ export default class StakePoolTooltip extends Component<Props, State> {
       profitMargin,
       performance,
       retiring,
+      cost,
+      pledge,
+      pledgeAddress,
     } = stakePool;
 
     const componentClassnames = classnames([
@@ -459,7 +463,40 @@ export default class StakePoolTooltip extends Component<Props, State> {
                 {performance}%
               </span>
             </dd>
+            <dt>Cost</dt>
+            <dd className={styles.cost}>
+              <span
+                style={{
+                  background: getColorFromRange(cost, {
+                    darken,
+                    alpha,
+                  }),
+                }}
+              >
+                {formattedWalletAmount(cost)}
+              </span>
+            </dd>
+            <dt>Pledge</dt>
+            <dd className={styles.cost}>
+              <span
+                style={{
+                  background: getColorFromRange(pledge, {
+                    darken,
+                    alpha,
+                  }),
+                }}
+              >
+                {formattedWalletAmount(pledge)}
+              </span>
+            </dd>
           </dl>
+          <button
+            className={styles.homepage}
+            onClick={() => onOpenExternalLink(pledgeAddress)}
+          >
+            <span className={styles.homepageContent}>Pledge address</span>
+            <SVGInline svg={externalLinkIcon} />
+          </button>
         </div>
         {onSelect && showWithSelectButton && (
           <Button

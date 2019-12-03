@@ -1368,10 +1368,12 @@ const _createStakePoolFromServerData = action(
       metadata,
       // MISSING DATA FROM THE API
       // NOT CONTAINED IN THE CURRENT API DOCS:
+      _cost: cost,
       _createdAt: createdAt,
       _description: description,
       _isCharity: isCharity,
       _name: name,
+      _pledge: pledge,
       _profitMargin: profitMargin,
       _ranking: ranking,
       _retiring: retiring,
@@ -1387,10 +1389,13 @@ const _createStakePoolFromServerData = action(
       ticker,
       homepage,
       pledgeAddress,
+
+      cost: new BigNumber(cost).dividedBy(LOVELACES_PER_ADA),
       createdAt,
       description,
       isCharity,
       name,
+      pledge: new BigNumber(pledge).dividedBy(LOVELACES_PER_ADA),
       profitMargin,
       ranking,
       retiring,

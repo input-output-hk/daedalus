@@ -11,12 +11,14 @@ import type {
 } from '../api/staking/types';
 import Wallet from '../domains/Wallet';
 import StakePool from '../domains/StakePool';
-
-import STAKE_POOLS from '../config/stakingStakePools.dummy.json';
 import REWARDS from '../config/stakingRewards.dummy.json';
 
 export default class StakingStore extends Store {
-  STAKE_POOLS_REFRESH_INTERVAL = 5000;
+  STAKE_POOLS_INITIAL_INTERVAL = 1000; // 1000 milliseconds
+  STAKE_POOLS_REFRESH_INTERVAL = 30 * 60 * 1000; // 30 minutes | unit: milliseconds;
+
+  initialPooling: ?IntervalID = null;
+  refreshPooling: ?IntervalID = null;
 
   startDateTime: string = '2019-09-26T00:00:00.161Z';
   decentralizationProgress: number = 10;
@@ -24,7 +26,10 @@ export default class StakingStore extends Store {
   percentage: number = 14;
 
   setup() {
-    setInterval(this._stakePoolsRefresh, this.STAKE_POOLS_REFRESH_INTERVAL);
+    this.initialPooling = setInterval(
+      this.refreshStakePoolsData,
+      this.STAKE_POOLS_INITIAL_INTERVAL
+    );
     const { staking } = this.actions;
     staking.goToStakingInfoPage.listen(this._goToStakingInfoPage);
     staking.goToStakingDelegationCenterPage.listen(
@@ -78,15 +83,18 @@ export default class StakingStore extends Store {
     return new Date(this.startDateTime).getTime() - new Date().getTime() > 0;
   }
 
-  _stakePoolsRefresh = async () => {
-    const { isSynced } = this.stores.networkStatus;
-    return isSynced && this.refreshStakePoolsData();
-  };
-
   @action refreshStakePoolsData = async () => {
     const { isSynced, isConnected } = this.stores.networkStatus;
     if (this.stores.wallets._pollingBlocked || !isSynced || !isConnected)
       return;
+    if (this.initialPooling && !this.refreshPooling) {
+      clearInterval(this.initialPooling);
+      this.initialPooling = null;
+      this.refreshPooling = setInterval(
+        this.refreshStakePoolsData,
+        this.STAKE_POOLS_REFRESH_INTERVAL
+      );
+    }
     await this.stakePoolsRequest.execute().promise;
   };
 
