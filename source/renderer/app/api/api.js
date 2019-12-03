@@ -58,7 +58,6 @@ import { transferFunds } from './wallets/requests/transferFunds';
 import StakePool from '../domains/StakePool';
 import { getStakePools } from './staking/requests/getStakePools';
 import type { AdaApiStakePools, AdaApiStakePool } from './staking/types';
-import stakingStakePoolsRawApi from '../config/stakingStakePoolsRawApi.dummy.json';
 import stakingStakePoolsMissingApiData from '../config/stakingStakePoolsMissingApiData.dummy.json';
 
 // News requests
@@ -1359,21 +1358,27 @@ const _createStakePoolFromServerData = action(
   (stakePool: AdaApiStakePool, index: number) => {
     // DATA FROM THE API
     const { id, metrics, apparent_performance: performance } = stakePool;
-    const { controlled_stake, produced_blocks } = metrics; // eslint-disable-line
-    // MISSING DATA FROM THE API
+    let {
+      controlled_stake: controlledStake,
+      produced_blocks: producedBlocks,
+    } = metrics; // eslint-disable-line
     const {
-      created_at: createdAt,
-      description,
-      isCharity,
-      name,
-      profitMargin,
-      ranking,
-      retiring,
+      // MISSING DATA FROM THE API
+      // IT IS CONTAINED IN THE DOCS:
       metadata,
+      // MISSING DATA FROM THE API
+      // NOT CONTAINED IN THE CURRENT API DOCS:
+      _createdAt: createdAt,
+      _description: description,
+      _isCharity: isCharity,
+      _name: name,
+      _profitMargin: profitMargin,
+      _ranking: ranking,
+      _retiring: retiring,
     } = stakingStakePoolsMissingApiData[index];
     const { ticker, homepage, pledge_address: pledgeAddress } = metadata;
-    const controlledStake = controlled_stake.quantity;
-    const producedBlocks = produced_blocks.quantity;
+    controlledStake = controlledStake.quantity;
+    producedBlocks = producedBlocks.quantity;
     return new StakePool({
       id,
       performance,

@@ -1,5 +1,5 @@
 // @flow
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import { StakePoolsList } from './StakePoolsList';
@@ -99,21 +99,22 @@ export default class StakePools extends Component<Props, State> {
           isClearTooltipOpeningDownward
         />
 
-        <h2>{intl.formatMessage(messages.delegatingListTitle)}</h2>
-
         {stakePoolsDelegatingList.length > 0 && (
-          <StakePoolsList
-            listName="stakePoolsDelegatingList"
-            stakePoolsList={stakePoolsDelegatingList}
-            onOpenExternalLink={onOpenExternalLink}
-            currentTheme={currentTheme}
-            isListActive={selectedList === 'stakePoolsDelegatingList'}
-            setListActive={this.handleSetListActive}
-            containerClassName="StakingWithNavigation_page"
-            onSelect={this.onDelegate}
-            numberOfStakePools={stakePoolsList.length}
-            showWithSelectButton
-          />
+          <Fragment>
+            <h2>{intl.formatMessage(messages.delegatingListTitle)}</h2>
+            <StakePoolsList
+              listName="stakePoolsDelegatingList"
+              stakePoolsList={stakePoolsDelegatingList}
+              onOpenExternalLink={onOpenExternalLink}
+              currentTheme={currentTheme}
+              isListActive={selectedList === 'stakePoolsDelegatingList'}
+              setListActive={this.handleSetListActive}
+              containerClassName="StakingWithNavigation_page"
+              onSelect={this.onDelegate}
+              numberOfStakePools={stakePoolsList.length}
+              showWithSelectButton
+            />
+          </Fragment>
         )}
 
         <h2>

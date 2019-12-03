@@ -55,13 +55,7 @@ export default class StakingStore extends Store {
   }
 
   @computed get delegatingStakePools(): Array<StakePool> {
-    // return this.stakePoolsRequest.result ? this.stakePoolsRequest.result : [];
-    return [
-      STAKE_POOLS[1],
-      STAKE_POOLS[50],
-      STAKE_POOLS[100],
-      STAKE_POOLS[200],
-    ];
+    return [];
   }
 
   @computed get isStakingDelegationCountdown(): boolean {
