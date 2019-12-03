@@ -138,7 +138,8 @@ export const DARK_BLUE_THEME_OUTPUT = {
       '#9eabbb',
     '--theme-delegation-steps-choose-stake-pool-selected-checkmark-icon-color':
       '#fafbfc',
-    '--theme-delegation-steps-choose-stake-pool-selected-ticker-color': '#fafbfc',
+    '--theme-delegation-steps-choose-stake-pool-selected-ticker-color':
+      '#fafbfc',
     '--theme-delegation-steps-choose-stake-pool-ticker-color': '#536370',
     '--theme-delegation-steps-choose-stake-pool-thumb-background-color':
       '#263345',

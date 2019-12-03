@@ -133,7 +133,8 @@ export const WHITE_THEME_OUTPUT = {
       'rgba(45, 45, 45, 0.1)',
     '--theme-delegation-steps-choose-stake-pool-selected-checkmark-icon-color':
       '#fafbfc',
-    '--theme-delegation-steps-choose-stake-pool-selected-ticker-color': '#fafbfc',
+    '--theme-delegation-steps-choose-stake-pool-selected-ticker-color':
+      '#fafbfc',
     '--theme-delegation-steps-choose-stake-pool-thumb-background-color': '#fff',
     '--theme-delegation-steps-choose-stake-pool-thumb-border-color':
       'rgba(45, 45, 45, 0.1)',

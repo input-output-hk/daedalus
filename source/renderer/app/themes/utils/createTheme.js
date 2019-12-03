@@ -440,7 +440,9 @@ export const createDaedalusComponentsTheme = (
       '--theme-delegation-steps-choose-stake-pool-thumb-border-color': `${chroma(
         border
       ).alpha(0.2)}`,
-      '--theme-delegation-steps-choose-stake-pool-title-color': `${text.primary}`,
+      '--theme-delegation-steps-choose-stake-pool-title-color': `${
+        text.primary
+      }`,
       '--theme-delegation-steps-choose-stake-pool-tooltip-arrow-color': `${chroma(
         text.primary
       ).alpha(0.9)}`,

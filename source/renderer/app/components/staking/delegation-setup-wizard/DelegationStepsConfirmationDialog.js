@@ -1,6 +1,11 @@
 // @flow
 import React, { Component } from 'react';
-import { defineMessages, intlShape, FormattedMessage, FormattedHTMLMessage } from 'react-intl';
+import {
+  defineMessages,
+  intlShape,
+  FormattedMessage,
+  FormattedHTMLMessage,
+} from 'react-intl';
 import classNames from 'classnames';
 import { get } from 'lodash';
 import { observer } from 'mobx-react';
@@ -143,7 +148,16 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
   render() {
     const { form } = this;
     const { intl } = this.context;
-    const { onBack, onClose, stepsList, transactionFee, selectedPool, selectedWallet, error, isSubmitting } = this.props;
+    const {
+      onBack,
+      onClose,
+      stepsList,
+      transactionFee,
+      selectedPool,
+      selectedWallet,
+      error,
+      isSubmitting,
+    } = this.props;
     const selectedWalletName = get(selectedWallet, 'name');
     const selectedPoolTicker = get(selectedPool, 'slug');
     const spendingPasswordField = form.$('spendingPassword');
@@ -236,7 +250,9 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
           />
         </div>
 
-        {error ? <p className={styles.error}>{intl.formatMessage(error)}</p> : null}
+        {error ? (
+          <p className={styles.error}>{intl.formatMessage(error)}</p>
+        ) : null}
       </Dialog>
     );
   }

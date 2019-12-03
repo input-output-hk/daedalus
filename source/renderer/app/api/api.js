@@ -143,10 +143,7 @@ import type {
 import type { GetNewsResponse } from './news/types';
 
 // Staking Types
-import type {
-  JoinStakePoolRequest,
-  StakePoolJoinFee,
-} from './staking/types';
+import type { JoinStakePoolRequest, StakePoolJoinFee } from './staking/types';
 
 // Common errors
 import {
@@ -1186,7 +1183,9 @@ export default class AdaApi {
     return news;
   };
 
-  joinStakePool = async (request: JoinStakePoolRequest): Promise<Transaction> => {
+  joinStakePool = async (
+    request: JoinStakePoolRequest
+  ): Promise<Transaction> => {
     Logger.debug('AdaApi::joinStakePool called', {
       parameters: filterLogData(request),
     });
@@ -1231,12 +1230,10 @@ export default class AdaApi {
         amount: {
           quantity: 42,
           unit: 'lovelace',
-        }
-      }
+        },
+      };
       const stakePoolJoinFee = _createStakePoolJoinFeeFromServerData(response);
-      return new Promise(resolve =>
-        resolve(stakePoolJoinFee)
-      );
+      return new Promise(resolve => resolve(stakePoolJoinFee));
     } catch (error) {
       Logger.error('AdaApi::estimateJoinFee error', { error });
       throw new GenericApiError();
@@ -1405,4 +1402,3 @@ const _createStakePoolJoinFeeFromServerData = action(
     return new BigNumber(amount).dividedBy(LOVELACES_PER_ADA);
   }
 );
-

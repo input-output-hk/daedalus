@@ -139,7 +139,8 @@ export const CARDANO_THEME_OUTPUT = {
       '#d2d3d3',
     '--theme-delegation-steps-choose-stake-pool-selected-checkmark-icon-color':
       '#ffffff',
-    '--theme-delegation-steps-choose-stake-pool-selected-ticker-color': '#ffffff',
+    '--theme-delegation-steps-choose-stake-pool-selected-ticker-color':
+      '#ffffff',
     '--theme-delegation-steps-choose-stake-pool-thumb-background-color':
       '#ffffff',
     '--theme-delegation-steps-choose-stake-pool-thumb-border-color': '#d2d3d3',

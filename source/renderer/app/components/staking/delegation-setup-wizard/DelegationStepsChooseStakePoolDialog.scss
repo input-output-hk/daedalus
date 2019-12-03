@@ -51,7 +51,9 @@
       }
 
       .selectPoolBlockPlaceholder {
-        background-color: var(--theme-delegation-steps-choose-stake-pool-thumb-not-selected-background-color);
+        background-color: var(
+          --theme-delegation-steps-choose-stake-pool-thumb-not-selected-background-color
+        );
         .questionmarkWrapper {
           margin-top: 24.5px;
           text-align: center;
@@ -92,7 +94,7 @@
               width: 15.5px;
               path {
                 stroke: var(
-                   --theme-delegation-steps-choose-stake-pool-selected-checkmark-icon-color
+                  --theme-delegation-steps-choose-stake-pool-selected-checkmark-icon-color
                 );
               }
             }

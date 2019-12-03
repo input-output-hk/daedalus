@@ -23,13 +23,15 @@ const messages = defineMessages({
   },
   descriptionLine1: {
     id: 'staking.delegationSetup.success.step.dialog.description.line1',
-    defaultMessage: '!!!The stake from your wallet <span>{delegatedWalletName}</span> is now delegated to the <span>[{delegatedStakePoolTicker}]</span> stake pool.',
+    defaultMessage:
+      '!!!The stake from your wallet <span>{delegatedWalletName}</span> is now delegated to the <span>[{delegatedStakePoolTicker}]</span> stake pool.',
     description:
       'Description "line 1" on the delegation setup "success" step dialog.',
   },
   descriptionLine2: {
     id: 'staking.delegationSetup.success.step.dialog.description.line2',
-    defaultMessage: '!!!Your new delegation preferences are now posted on the blockchain <span>and will take effect at the start of the next Cardano epoch in {timeUntilNextEpochStart}</span>. For the rest of the current epoch, your previous delegation preferences are still active.',
+    defaultMessage:
+      '!!!Your new delegation preferences are now posted on the blockchain <span>and will take effect at the start of the next Cardano epoch in {timeUntilNextEpochStart}</span>. For the rest of the current epoch, your previous delegation preferences are still active.',
     description:
       'Description "line 2" on the delegation setup "success" step dialog.',
   },
@@ -106,7 +108,7 @@ export default class DelegationStepsSuccessDialog extends Component<Props> {
         humanizedDurationLanguage = 'en';
     }
 
-    const timeUntilNextEpochStart = humanizeDuration((timeLeft || 0), {
+    const timeUntilNextEpochStart = humanizeDuration(timeLeft || 0, {
       round: true, // round seconds to prevent e.g. 1 day 3 hours *11,56 seconds*
       language: humanizedDurationLanguage,
       conjunction: ' and ',

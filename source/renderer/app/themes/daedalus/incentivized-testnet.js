@@ -132,10 +132,12 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
       'rgba(255, 255, 255, 0.2)',
     '--theme-delegation-steps-choose-stake-pool-selected-checkmark-icon-color':
       '#ffffff',
-    '--theme-delegation-steps-choose-stake-pool-selected-ticker-color': '#ffffff',
+    '--theme-delegation-steps-choose-stake-pool-selected-ticker-color':
+      '#ffffff',
     '--theme-delegation-steps-choose-stake-pool-thumb-background-color':
       'rgba(42, 43, 60, 1)',
-    '--theme-delegation-steps-choose-stake-pool-thumb-not-selected-background-color': 'rgba(255, 255, 255, 0.02)',
+    '--theme-delegation-steps-choose-stake-pool-thumb-not-selected-background-color':
+      'rgba(255, 255, 255, 0.02)',
     '--theme-delegation-steps-choose-stake-pool-thumb-border-color':
       'rgba(255, 255, 255, 0.2)',
     '--theme-delegation-steps-choose-stake-pool-title-color': '#ffffff',

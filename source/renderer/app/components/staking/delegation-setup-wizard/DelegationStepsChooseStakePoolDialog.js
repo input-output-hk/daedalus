@@ -1,6 +1,11 @@
 // @flow
 import React, { Component } from 'react';
-import { defineMessages, intlShape, FormattedMessage, FormattedHTMLMessage } from 'react-intl';
+import {
+  defineMessages,
+  intlShape,
+  FormattedMessage,
+  FormattedHTMLMessage,
+} from 'react-intl';
 import classNames from 'classnames';
 import SVGInline from 'react-svg-inline';
 import { Stepper } from 'react-polymorph/lib/components/Stepper';
@@ -38,27 +43,29 @@ const messages = defineMessages({
   selectStakePoolLabel: {
     id:
       'staking.delegationSetup.chooseStakePool.step.dialog.selectStakePoolLabel',
-    defaultMessage: '!!!Select a stake pool to delegate to for <span>{selectedWalletName}<span>  wallet.',
+    defaultMessage:
+      '!!!Select a stake pool to delegate to for <span>{selectedWalletName}<span>  wallet.',
     description:
       'Select / Selected pool section label on the delegation setup "choose stake pool" dialog.',
   },
   selectedStakePoolLabel: {
     id:
       'staking.delegationSetup.chooseStakePool.step.dialog.selectedStakePoolLabel',
-    defaultMessage: '!!!You have selected [{selectedPoolTicker}] stake pool to delegate to for <span>{selectedWalletName}</span> wallet.',
+    defaultMessage:
+      '!!!You have selected [{selectedPoolTicker}] stake pool to delegate to for <span>{selectedWalletName}</span> wallet.',
     description:
       '"Selected Pools" Selected pool label on the delegation setup "choose stake pool" dialog.',
   },
   recentPoolsLabel: {
-    id:
-      'staking.delegationSetup.chooseStakePool.step.dialog.recentPoolsLabel',
+    id: 'staking.delegationSetup.chooseStakePool.step.dialog.recentPoolsLabel',
     defaultMessage: '!!!Pick one of your recent stake pool choices:',
     description:
       'Recent "Pool" choice section label on the delegation setup "choose stake pool" dialog.',
   },
   searchInputLabel: {
     id: 'staking.delegationSetup.chooseStakePool.step.dialog.searchInput.label',
-    defaultMessage: '!!!Or select a stake pool from the list of all available stake pools:',
+    defaultMessage:
+      '!!!Or select a stake pool from the list of all available stake pools:',
     description:
       'Search "Pools" input label on the delegation setup "choose stake pool" dialog.',
   },
@@ -176,7 +183,9 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
 
     const selectedPoolBlock = () => {
       const selectedPoolBlockClasses = classNames([
-        selectedPool ? styles.selectedPoolBlock : styles.selectPoolBlockPlaceholder,
+        selectedPool
+          ? styles.selectedPoolBlock
+          : styles.selectPoolBlockPlaceholder,
       ]);
 
       const selectedPoolImageClasses = classNames([
@@ -200,9 +209,14 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
             background: rankColor,
           }}
         >
-          {selectedPoolTicker && <div className={styles.ticker}>{selectedPoolTicker}</div>}
+          {selectedPoolTicker && (
+            <div className={styles.ticker}>{selectedPoolTicker}</div>
+          )}
           <div className={wrapperClasses}>
-            <SVGInline svg={selectedPool ? checkmarkImage : questionmarkImage} className={selectedPoolImageClasses} />
+            <SVGInline
+              svg={selectedPool ? checkmarkImage : questionmarkImage}
+              className={selectedPoolImageClasses}
+            />
           </div>
         </div>
       );
@@ -279,10 +293,7 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
 
           <div className={styles.recentStakePoolsWrapper}>
             <p className={styles.recentStakePoolsLabel}>
-              <FormattedMessage
-                {...messages.recentPoolsLabel}
-                values={{}}
-              />
+              <FormattedMessage {...messages.recentPoolsLabel} values={{}} />
             </p>
             <StakePoolsList
               listName="stakePoolsDelegatingList"

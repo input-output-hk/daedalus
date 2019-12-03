@@ -137,7 +137,8 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
       '#c6cdd6',
     '--theme-delegation-steps-choose-stake-pool-selected-checkmark-icon-color':
       '#fafbfc',
-    '--theme-delegation-steps-choose-stake-pool-selected-ticker-color': '#fafbfc',
+    '--theme-delegation-steps-choose-stake-pool-selected-ticker-color':
+      '#fafbfc',
     '--theme-delegation-steps-choose-stake-pool-thumb-background-color':
       '#fafbfc',
     '--theme-delegation-steps-choose-stake-pool-thumb-border-color': '#c6cdd6',

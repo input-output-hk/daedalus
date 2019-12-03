@@ -49,9 +49,7 @@ export default class StakingStore extends Store {
   };
 
   // @API TODO - integrate real API V2 endpoint once is available
-  estimateJoinFee = async (
-    estimateJoinFeeRequest: EstimateJoinFeeRequest
-  ) => {
+  estimateJoinFee = async (estimateJoinFeeRequest: EstimateJoinFeeRequest) => {
     const { walletId } = estimateJoinFeeRequest;
     const wallet = this.stores.wallets.getWalletById(walletId);
 

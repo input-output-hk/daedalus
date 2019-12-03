@@ -16,7 +16,7 @@
             &:nth-child(7),
             &:nth-child(8),
             &:nth-child(9) {
-              stroke: var(--theme-delegation-steps-success-tada-color); 
+              stroke: var(--theme-delegation-steps-success-tada-color);
             }
 
             &:nth-child(11),
@@ -25,7 +25,7 @@
             &:nth-child(14),
             &:nth-child(15),
             &:nth-child(16) {
-              fill: var(--theme-delegation-steps-success-tada-color); 
+              fill: var(--theme-delegation-steps-success-tada-color);
             }
           }
         }

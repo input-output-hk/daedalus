@@ -75,7 +75,11 @@ export default class DelegationSetupWizardDialogContainer extends Component<
   };
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.stores.staking.joinStakePoolRequest.isExecuting && !nextProps.stores.staking.joinStakePoolRequest.isExecuting && !nextProps.joinStakePoolRequest.error) {
+    if (
+      this.props.stores.staking.joinStakePoolRequest.isExecuting &&
+      !nextProps.stores.staking.joinStakePoolRequest.isExecuting &&
+      !nextProps.joinStakePoolRequest.error
+    ) {
       this.handleContinue();
     }
   }
@@ -132,12 +136,25 @@ export default class DelegationSetupWizardDialogContainer extends Component<
     walletAmount.gte(MIN_DELEGATION_FUNDS);
 
   render() {
-    const { activeStep, selectedWalletId, selectedPoolId, stakePoolJoinFee } = this.state;
+    const {
+      activeStep,
+      selectedWalletId,
+      selectedPoolId,
+      stakePoolJoinFee,
+    } = this.state;
     const { app, staking, wallets, profile } = this.props.stores;
     const { currentTheme, currentLocale } = profile;
-    const { stakePools, delegatingStakePools, joinStakePoolRequest, nextEpochStartTime } = staking;
+    const {
+      stakePools,
+      delegatingStakePools,
+      joinStakePoolRequest,
+      nextEpochStartTime,
+    } = staking;
     const selectedPool = find(stakePools, pool => pool.id === selectedPoolId);
-    const selectedWallet = find(wallets.allWallets, wallet => wallet.id === selectedWalletId);
+    const selectedWallet = find(
+      wallets.allWallets,
+      wallet => wallet.id === selectedWalletId
+    );
     const isDisabled = wallets.allWallets.reduce(
       (disabled: boolean, { amount }: Wallet) => {
         if (!disabled) return false;
@@ -181,10 +198,8 @@ export default class DelegationSetupWizardDialogContainer extends Component<
     const { selectedWalletId } = this.state;
     const stakePoolJoinFee = await estimateJoinFee({
       walletId: selectedWalletId,
-      stakePoolId: poolId
+      stakePoolId: poolId,
     });
     this.setState({ stakePoolJoinFee });
   }
 }
-
-
