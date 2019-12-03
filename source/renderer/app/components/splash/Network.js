@@ -17,18 +17,18 @@ const messages = defineMessages({
   },
   incentivizedTestnet: {
     id: 'static.splash.network.incentivizedTestnet',
-    defaultMessage: '!!!Incentivized Testnet',
-    description: 'Incentivized Testnet',
+    defaultMessage: '!!!INCENTIVIZED TESTNET v1',
+    description: 'INCENTIVIZED TESTNET v1',
   },
   balanceCheck: {
-    id: 'static.splash.network.balanceCheck',
-    defaultMessage: '!!!Balance Check',
-    description: 'Balance Check',
+    id: 'static.splash.network.rewards',
+    defaultMessage: '!!!Rewards',
+    description: 'Rewards',
   },
   incentivizedTestnetDescription: {
     id: 'static.splash.network.incentivizedTestnetDescription',
     defaultMessage:
-      '!!!This version of Daedalus has been created specifically for the balance check, the first stage in the roll-out of the Incentivized Testnet. It is not compatible with the Cardano mainnet. The balance check is a practice run for the official balance snapshot that is currently planned for later in November. This initial test will allow us to test core functionality, while enabling users to validate that the value of their mainnet ada balances is accurately captured ahead of the Incentivized Testnet.',
+      '!!!This version of Daedalus has been created specifically for use with the Incentivized Testnet. It is not compatible with the Cardano mainnet. If you had ada in a mainnet Daedalus or Yoroi wallet at the time of the balance snapshot (12.00 UTC, November 29) you can use this version of Daedalus to restore those funds as testnet ada, for use exclusively on the Incentivized Testnet. The rewards earned for delegating stake and running stake pools on the Incentivized Testnet will be paid out in real ada at the end of the Incentivized Testnet program. Important: Please keep your Rewards wallet recovery phrase safe. You will need it to receive your ada rewards on the mainnet.',
     description:
       'This version of Daedalus has been created specifically for the balance check, the first stage in the roll-out of the Incentivized Testnet. It is not compatible with the Cardano mainnet. The balance check is a practice run for the official balance snapshot that is currently planned for later in November. This initial test will allow us to test core functionality, while enabling users to validate that the value of their mainnet ada balances is accurately captured ahead of the Incentivized Testnet.',
   },
