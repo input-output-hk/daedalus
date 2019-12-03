@@ -89,12 +89,7 @@ export default class WalletRow extends Component<Props> {
   render() {
     const { intl } = this.context;
     const {
-      wallet: {
-        name,
-        amount,
-        isDelegated,
-        delegatedStakePool,
-      },
+      wallet: { name, amount, isDelegated, delegatedStakePool },
       numberOfStakePools,
     } = this.props;
 

@@ -164,9 +164,7 @@ export default class CountdownWidget extends Component<Props, State> {
 
     return (
       <div className={styles.timeLeftContainer}>
-        <div className={styles.timeLeft}>
-          {fieldPanels}
-        </div>
+        <div className={styles.timeLeft}>{fieldPanels}</div>
       </div>
     );
   }
