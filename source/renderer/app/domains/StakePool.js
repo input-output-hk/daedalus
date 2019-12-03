@@ -31,6 +31,8 @@ export default class StakePool {
   @observable producedBlocks: number;
   @observable controlledStake: number;
 
+  @observable pledge: BigNumber;
+  @observable cost: BigNumber;
   @observable createdAt: Date;
   @observable description: string;
   @observable isCharity: boolean;
@@ -40,7 +42,6 @@ export default class StakePool {
   @observable retiring: ?Date;
 
   constructor(data: StakePoolProps) {
-    // console.log('data', data);
     Object.assign(this, data);
   }
 }

@@ -1064,7 +1064,6 @@ export default class AdaApi {
         return _createStakePoolFromServerData(stakePool, index);
       });
     } catch (error) {
-      console.log('error', error);
       Logger.error('AdaApi::getStakePools error', { error });
       throw new GenericApiError();
     }

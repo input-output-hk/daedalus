@@ -52,6 +52,26 @@ const messages = defineMessages({
     defaultMessage: '!!!Retirement in {retirementFromNow}',
     description: '"Retirement" for the Stake Pools Tooltip page.',
   },
+  cost: {
+    id: 'staking.stakePools.tooltip.cost',
+    defaultMessage: '!!!Cost:',
+    description: 'Cost" for the Stake Pools Tooltip page.',
+  },
+  pledge: {
+    id: 'staking.stakePools.tooltip.pledge',
+    defaultMessage: '!!!Pledge:',
+    description: '"Pledge" for the Stake Pools Tooltip page.',
+  },
+  pledgeAddressLabel: {
+    id: 'staking.stakePools.tooltip.pledgeAddressLabel',
+    defaultMessage: '!!!Pledge address',
+    description: '"pledgeAddressLabel" for the Stake Pools Tooltip page.',
+  },
+  pledgeAddressUrl: {
+    id: 'staking.stakePools.tooltip.pledgeAddressUrl',
+    defaultMessage: '!!!http://cardano.org',
+    description: '"pledgeAddressUrl" for the Stake Pools Tooltip page.',
+  },
   delegateButton: {
     id: 'staking.stakePools.tooltip.delegateButton',
     defaultMessage: '!!!Delegate to this pool',
@@ -463,8 +483,8 @@ export default class StakePoolTooltip extends Component<Props, State> {
                 {performance}%
               </span>
             </dd>
-            <dt>Cost</dt>
-            <dd className={styles.cost}>
+            <dt>{intl.formatMessage(messages.cost)}</dt>
+            <dd>
               <span
                 style={{
                   background: getColorFromRange(cost, {
@@ -476,8 +496,8 @@ export default class StakePoolTooltip extends Component<Props, State> {
                 {formattedWalletAmount(cost)}
               </span>
             </dd>
-            <dt>Pledge</dt>
-            <dd className={styles.cost}>
+            <dt>{intl.formatMessage(messages.pledge)}</dt>
+            <dd>
               <span
                 style={{
                   background: getColorFromRange(pledge, {
@@ -492,9 +512,15 @@ export default class StakePoolTooltip extends Component<Props, State> {
           </dl>
           <button
             className={styles.homepage}
-            onClick={() => onOpenExternalLink(pledgeAddress)}
+            onClick={() =>
+              onOpenExternalLink(
+                intl.formatMessage(messages.pledgeAddressUrl) + pledgeAddress
+              )
+            }
           >
-            <span className={styles.homepageContent}>Pledge address</span>
+            <span className={styles.homepageContent}>
+              {intl.formatMessage(messages.pledgeAddressLabel)}
+            </span>
             <SVGInline svg={externalLinkIcon} />
           </button>
         </div>
