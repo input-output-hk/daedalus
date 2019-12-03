@@ -24,13 +24,6 @@
   }
 
   :global {
-    .SimpleOptions_options {
-      left: auto !important;
-      position: absolute;
-      right: 0;
-      top: 57px !important;
-      width: 200px !important;
-    }
     .NavButton_component {
       cursor: default;
     }
@@ -40,6 +33,9 @@
         border-radius: 3px;
         box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.12);
         right: 15px;
+        top: -5px;
+        white-space: nowrap;
+        width: auto !important;
 
         .SimpleOptions_ul {
           background-color: var(--theme-nav-dropdown-item-background-color);
@@ -47,6 +43,13 @@
 
           .SimpleOptions_option {
             background: none;
+            font-size: 13px;
+            padding: 5px 10px;
+            text-align: right;
+
+            &.SimpleOptions_selectedOption {
+              font-family: var(--rp-theme-font-bold);
+            }
 
             &.SimpleOptions_highlightedOption:hover {
               background-color: var(
@@ -56,18 +59,13 @@
           }
         }
       }
-      [data-bubble-arrow]:before,
-      [data-bubble-arrow]:after {
-        content: '';
-        display: none;
-      }
+    }
+    .OptionsOverrides_options {
+      margin-top: 0;
     }
   }
   &:hover {
     :global {
-      .SimpleOptions_options {
-        display: block;
-      }
       .NavButton_normal .NavButton_container {
         background-color: var(--theme-nav-item-background-color-hover);
       }
