@@ -14,6 +14,10 @@
 .mainContainer {
   display: flex;
   justify-content: center;
+
+  @media (max-width: 1024px) {
+    flex-direction: column;
+  }
 }
 
 .heading {
@@ -26,6 +30,11 @@
   display: flex;
   flex-direction: column;
   padding: 0 10px;
+
+
+  @media (max-width: 1024px) {
+    padding: 10px;
+  }
 }
 
 .description {
