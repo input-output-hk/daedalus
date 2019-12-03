@@ -1058,55 +1058,17 @@ export default class AdaApi {
 
   getStakePools = async (): Promise<Array<StakePool>> => {
     Logger.debug('AdaApi::getStakePools called');
-    // try {
-    const stakePools: AdaApiStakePools = await getStakePools(this.config);
-    Logger.debug('AdaApi::getStakePools success');
-    return stakePools.map((stakePool: AdaApiStakePool, index: number) => {
-      const {
-        id,
-        metrics,
-        apparent_performance: performance,
-        // metadata,
-      } = stakePool;
-      const {
-        controlled_stake: controlledStake,
-        produced_blocks: producedBlocks,
-      } = metrics;
-      const {
-        created_at: createdAt,
-        description,
-        isCharity,
-        name,
-        profitMargin,
-        ranking,
-        retiring,
-        metadata,
-      } = stakingStakePoolsMissingApiData[index];
-      const { ticker, homepage, pledge_address: pledgeAddress } = metadata;
-      return new StakePool({
-        // DATA FROM THE API
-        id,
-        ticker,
-        homepage,
-        pledgeAddress,
-        performance,
-        controlledStake: controlledStake.quantity,
-        producedBlocks: producedBlocks.quantity,
-        // MISSING DATA FROM THE API
-        createdAt,
-        description,
-        isCharity,
-        name,
-        profitMargin,
-        ranking,
-        retiring,
+    try {
+      const stakePools: AdaApiStakePools = await getStakePools(this.config);
+      Logger.debug('AdaApi::getStakePools success');
+      return stakePools.map((stakePool: AdaApiStakePool, index: number) => {
+        return _createStakePoolFromServerData(stakePool, index);
       });
-    });
-    // } catch (error) {
-    //   console.log('error', error);
-    //   Logger.error('AdaApi::getStakePools error', { error });
-    //   throw new GenericApiError();
-    // }
+    } catch (error) {
+      console.log('error', error);
+      Logger.error('AdaApi::getStakePools error', { error });
+      throw new GenericApiError();
+    }
   };
 
   testReset = async (): Promise<void> => {
@@ -1389,5 +1351,44 @@ const _createMigrationFeeFromServerData = action(
   (data: TransactionFee) => {
     const amount = get(data, ['migration_cost', 'quantity'], 0);
     return new BigNumber(amount).dividedBy(LOVELACES_PER_ADA);
+  }
+);
+
+const _createStakePoolFromServerData = action(
+  'AdaApi::_createStakePoolFromServerData',
+  (stakePool: AdaApiStakePool, index: number) => {
+    // DATA FROM THE API
+    const { id, metrics, apparent_performance: performance } = stakePool;
+    const { controlled_stake, produced_blocks } = metrics; // eslint-disable-line
+    // MISSING DATA FROM THE API
+    const {
+      created_at: createdAt,
+      description,
+      isCharity,
+      name,
+      profitMargin,
+      ranking,
+      retiring,
+      metadata,
+    } = stakingStakePoolsMissingApiData[index];
+    const { ticker, homepage, pledge_address: pledgeAddress } = metadata;
+    const controlledStake = controlled_stake.quantity;
+    const producedBlocks = produced_blocks.quantity;
+    return new StakePool({
+      id,
+      performance,
+      controlledStake,
+      producedBlocks,
+      ticker,
+      homepage,
+      pledgeAddress,
+      createdAt,
+      description,
+      isCharity,
+      name,
+      profitMargin,
+      ranking,
+      retiring,
+    });
   }
 );
