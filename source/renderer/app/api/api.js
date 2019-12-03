@@ -37,6 +37,7 @@ import { deleteLegacyTransaction } from './transactions/requests/deleteLegacyTra
 
 // Wallets requests
 import { changeSpendingPassword } from './wallets/requests/changeSpendingPassword';
+import { quitStakePool } from './wallets/requests/quitStakePool';
 import { deleteWallet } from './wallets/requests/deleteWallet';
 import { deleteLegacyWallet } from './wallets/requests/deleteLegacyWallet';
 import { exportWalletAsJSON } from './wallets/requests/exportWalletAsJSON';
@@ -134,6 +135,8 @@ import type {
   TransferFundsCalculateFeeResponse,
   TransferFundsRequest,
   TransferFundsResponse,
+  QuitStakePoolRequest,
+  QuitStakePoolResponse,
 } from './wallets/types';
 
 // News Types
@@ -920,6 +923,34 @@ export default class AdaApi {
       return true;
     } catch (error) {
       Logger.error('AdaApi::updateSpendingPassword error', { error });
+      const errorCode = get(error, 'code', '');
+      if (
+        errorCode === 'wrong_encryption_passphrase' ||
+        errorCode === 'bad_request'
+      ) {
+        throw new IncorrectSpendingPasswordError();
+      }
+      throw new GenericApiError();
+    }
+  };
+
+  quitStakePool = async (
+    request: QuitStakePoolRequest
+  ): Promise<QuitStakePoolResponse> => {
+    Logger.debug('AdaApi::quitStakePool called', {
+      parameters: filterLogData(request),
+    });
+    const { stakePoolId, walletId, passphrase } = request;
+    try {
+      const result = await quitStakePool(this.config, {
+        stakePoolId,
+        walletId,
+        passphrase,
+      });
+      Logger.debug('AdaApi::quitStakePool success');
+      return result;
+    } catch (error) {
+      Logger.error('AdaApi::quitStakePool error', { error });
       const errorCode = get(error, 'code', '');
       if (
         errorCode === 'wrong_encryption_passphrase' ||

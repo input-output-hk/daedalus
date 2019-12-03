@@ -81,6 +81,7 @@ type Props = {
   wallet: Wallet,
   numberOfStakePools: number,
   onDelegate: Function,
+  onUndelegate: Function,
 };
 
 @observer
@@ -90,8 +91,21 @@ export default class WalletRow extends Component<Props> {
   };
 
   onDelegate = () => {
-    const { wallet } = this.props;
-    this.props.onDelegate(wallet.id);
+    const { wallet, onDelegate } = this.props;
+    onDelegate(wallet.id);
+  };
+
+  onUndelegate = () => {
+    const { wallet, onUndelegate } = this.props;
+    onUndelegate(wallet.id);
+  };
+
+  handleWalletAction = (value: string) => {
+    if (value === DELEGATION_ACTIONS.CHANGE_DELEGATION) {
+      // @TODO: Change delegation action
+    } else if (value === DELEGATION_ACTIONS.REMOVE_DELEGATION) {
+      this.onUndelegate();
+    }
   };
 
   render() {
@@ -175,7 +189,7 @@ export default class WalletRow extends Component<Props> {
                     <SVGInline svg={settingsIcon} className={styles.gearIcon} />
                   }
                   menuItems={delegatedWalletActionOptions}
-                  onMenuItemClick={() => null}
+                  onMenuItemClick={this.handleWalletAction}
                 />
               )}
             </div>

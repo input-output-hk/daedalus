@@ -1,0 +1,28 @@
+@import '../../../themes/mixins/loading-spinner';
+
+.dialog {
+  font-family: var(--font-light);
+
+  :global {
+    .SimpleCheckbox_root {
+      margin-top: 20px;
+
+      .SimpleCheckbox_check {
+        border-color: var(--theme-input-remove-color-light);
+
+        &.SimpleCheckbox_checked {
+          background: var(--theme-input-remove-color-light);
+        }
+      }
+    }
+  }
+
+  .passwordInput {
+    margin-top: 20px;
+  }
+
+  .isSubmitting {
+    box-shadow: none !important;
+    @include loading-spinner('../../../assets/images/spinner-light.svg');
+  }
+}

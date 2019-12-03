@@ -1,0 +1,221 @@
+// @flow
+import React, { Component } from 'react';
+import { observer } from 'mobx-react';
+import BigNumber from 'bignumber.js';
+import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
+import { Input } from 'react-polymorph/lib/components/Input';
+import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
+import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
+import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
+import { SIMPLE_DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
+import DialogCloseButton from '../../widgets/DialogCloseButton';
+import Dialog from '../../widgets/Dialog';
+import styles from './UndelegateConfirmationDialog.scss';
+import globalMessages from '../../../i18n/global-messages';
+import { submitOnEnter } from '../../../utils/form';
+
+const messages = defineMessages({
+  dialogTitle: {
+    id: 'staking.delegationCenter.undelegate.dialog.title',
+    defaultMessage: '!!!Undelegate',
+    description: 'Title for the "Undelegate" dialog.',
+  },
+  confirmButtonLabel: {
+    id: 'staking.delegationCenter.undelegate.dialog.confirmButtonLabel',
+    defaultMessage: '!!!Undelegate',
+    description:
+      'Label for the "Undelegate" button in the "Undelegate" dialog.',
+  },
+  description: {
+    id: 'staking.delegationCenter.undelegate.dialog.description',
+    defaultMessage:
+      '!!!<p>The stake from your wallet <strong>{walletName}</strong> is currently delegated to the <strong>{stakePoolName}</strong> stake pool.</p><p>Do you want to undelegate your stake and stop earning rewards?</p>',
+    description: 'Description for the "Undelegate" dialog.',
+  },
+  confirmUnsupportCheck: {
+    id: 'staking.delegationCenter.undelegate.dialog.confirmUnsupportCheck',
+    defaultMessage:
+      '!!!I understand that I am not supporting the Cardano network when my stake is undelegated.',
+    description:
+      'Label for the unsupport confirmation check in the "Undelegate" dialog.',
+  },
+  confirmUneligibleCheck: {
+    id: 'staking.delegationCenter.undelegate.dialog.confirmUneligibleCheck',
+    defaultMessage:
+      '!!!I understand that I will not be eligible to earn rewards when my stake is undelegated.',
+    description:
+      'Label for the uneligible confirmation check in the "Undelegate" dialog.',
+  },
+  feesLabel: {
+    id: 'staking.delegationCenter.undelegate.dialog.feesLabel',
+    defaultMessage: '!!!Fees',
+    description: 'Fees label in the "Undelegate" dialog.',
+  },
+  adaLabel: {
+    id: 'staking.delegationCenter.undelegate.dialog.adaLabel',
+    defaultMessage: '!!!ADA',
+    description: 'ADA label in the "Undelegate" dialog.',
+  },
+  spendingPasswordLabel: {
+    id: 'staking.delegationCenter.undelegate.dialog.spendingPasswordLabel',
+    defaultMessage: '!!!Spending password',
+    description: 'Spending password label in the "Undelegate" dialog.',
+  },
+  spendingPasswordPlaceholder: {
+    id:
+      'staking.delegationCenter.undelegate.dialog.spendingPasswordPlaceholder',
+    defaultMessage: '!!!Type your spending password here',
+    description: 'Spending password placeholder in the "Undelegate" dialog.',
+  },
+});
+
+type Props = {
+  walletName: string,
+  stakePoolName: string,
+  onConfirm: Function,
+  onCancel: Function,
+  isSubmitting: boolean,
+  fees: BigNumber,
+};
+
+type State = {
+  isConfirmUnsupportChecked: boolean,
+  isConfirmUneligibleChecked: boolean,
+  passphrase: string,
+};
+
+@observer
+export default class UndelegateConfirmationDialog extends Component<
+  Props,
+  State
+> {
+  static contextTypes = {
+    intl: intlShape.isRequired,
+  };
+
+  constructor(props: Props) {
+    super(props);
+
+    this.state = {
+      isConfirmUnsupportChecked: false,
+      isConfirmUneligibleChecked: false,
+      passphrase: '',
+    };
+  }
+
+  onConfirmUnsupportCheckChange = () =>
+    this.setState(prevState => ({
+      isConfirmUnsupportChecked: !prevState.isConfirmUnsupportChecked,
+    }));
+
+  onConfirmUneligibleCheckChange = () =>
+    this.setState(prevState => ({
+      isConfirmUneligibleChecked: !prevState.isConfirmUneligibleChecked,
+    }));
+
+  onPassphraseChange = (passphrase: string) => this.setState({ passphrase });
+
+  isConfirmDisabled = () => {
+    const { isSubmitting } = this.props;
+    const {
+      isConfirmUnsupportChecked,
+      isConfirmUneligibleChecked,
+      passphrase,
+    } = this.state;
+
+    return (
+      isSubmitting ||
+      !isConfirmUnsupportChecked ||
+      !isConfirmUneligibleChecked ||
+      !passphrase
+    );
+  };
+
+  handleSubmit = () => {
+    if (this.isConfirmDisabled()) {
+      return false;
+    }
+
+    const { onConfirm } = this.props;
+    const { passphrase } = this.state;
+
+    return onConfirm(passphrase);
+  };
+
+  handleSubmitOnEnter = (event: KeyboardEvent) =>
+    submitOnEnter(this.handleSubmit, event);
+
+  render() {
+    const { intl } = this.context;
+    const {
+      walletName,
+      stakePoolName,
+      onCancel,
+      onConfirm,
+      isSubmitting,
+      fees,
+    } = this.props;
+    const {
+      isConfirmUnsupportChecked,
+      isConfirmUneligibleChecked,
+      passphrase,
+    } = this.state;
+    const isConfirmDisabled = this.isConfirmDisabled();
+    const actions = [
+      {
+        label: intl.formatMessage(globalMessages.cancel),
+        onClick: onCancel,
+      },
+      {
+        className: isSubmitting ? styles.isSubmitting : null,
+        label: intl.formatMessage(messages.confirmButtonLabel),
+        onClick: () => onConfirm(passphrase),
+        disabled: isConfirmDisabled,
+        primary: true,
+      },
+    ];
+
+    return (
+      <Dialog
+        title={intl.formatMessage(messages.dialogTitle)}
+        actions={actions}
+        closeOnOverlayClick
+        onClose={onCancel}
+        className={styles.dialog}
+        closeButton={<DialogCloseButton onClose={onCancel} />}
+      >
+        <FormattedHTMLMessage
+          {...messages.description}
+          values={{ walletName, stakePoolName }}
+        />
+        <Checkbox
+          label={intl.formatMessage(messages.confirmUnsupportCheck)}
+          onChange={this.onConfirmUnsupportCheckChange}
+          checked={isConfirmUnsupportChecked}
+          skin={CheckboxSkin}
+        />
+        <Checkbox
+          label={intl.formatMessage(messages.confirmUneligibleCheck)}
+          onChange={this.onConfirmUneligibleCheckChange}
+          checked={isConfirmUneligibleChecked}
+          skin={CheckboxSkin}
+        />
+        <hr />
+        <h5>{intl.formatMessage(messages.feesLabel)}</h5>
+        <p>
+          <span>{fees.toFormat(SIMPLE_DECIMAL_PLACES_IN_ADA)}</span>
+          <span>{intl.formatMessage(messages.adaLabel)}</span>
+        </p>
+        <Input
+          className={styles.passwordInput}
+          label={intl.formatMessage(messages.spendingPasswordLabel)}
+          placeholder={intl.formatMessage(messages.spendingPasswordPlaceholder)}
+          value={passphrase}
+          onKeyPress={this.handleSubmitOnEnter}
+          onChange={this.onPassphraseChange}
+          skin={InputSkin}
+        />
+      </Dialog>
+    );
+  }
+}

@@ -40,6 +40,7 @@ import type {
 import type {
   TransferFundsCalculateFeeRequest,
   TransferFundsRequest,
+  QuitStakePoolResponse,
 } from '../api/wallets/types';
 /* eslint-disable consistent-return */
 
@@ -88,6 +89,10 @@ export default class WalletsStore extends Store {
   @observable activeValue: ?BigNumber = null;
   @observable walletsRequest: Request<Array<Wallet>> = new Request(
     this.api.ada.getWallets
+  );
+  @observable
+  quitStakePoolRequest: Request<QuitStakePoolResponse> = new Request(
+    this.api.ada.quitStakePool
   );
   @observable importFromFileRequest: Request<Wallet> = new Request(
     this.api.ada.importWalletFromFile
@@ -209,6 +214,7 @@ export default class WalletsStore extends Store {
     walletsActions.createWalletClose.listen(this._createWalletClose);
     // ---
     walletsActions.deleteWallet.listen(this._deleteWallet);
+    walletsActions.undelegateWallet.listen(this._undelegateWallet);
     walletsActions.sendMoney.listen(this._sendMoney);
     walletsActions.restoreWallet.listen(this._restoreWallet);
     walletsActions.importWalletFromFile.listen(this._importWalletFromFile);
@@ -338,6 +344,25 @@ export default class WalletsStore extends Store {
     this._unsetWalletLocalData(params.walletId);
     this._resumePolling();
     this.deleteWalletRequest.reset();
+    this.refreshWalletsData();
+  };
+
+  _undelegateWallet = async (params: {
+    walletId: string,
+    stakePoolId: string,
+    passphrase: string,
+  }) => {
+    // Pause polling in order to avoid fetching data for wallet we are about to undelegate
+    this._pausePolling();
+
+    const walletToUndelegate = this.getWalletById(params.walletId);
+    if (!walletToUndelegate) return;
+    await this.quitStakePoolRequest.execute(params);
+    runInAction('AdaWalletsStore::_undelegateWallet', () => {
+      this.actions.dialogs.closeActiveDialog.trigger();
+    });
+    this._resumePolling();
+    this.quitStakePoolRequest.reset();
     this.refreshWalletsData();
   };
 

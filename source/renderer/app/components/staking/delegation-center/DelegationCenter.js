@@ -10,8 +10,9 @@ type Props = {
   adaValue: BigNumber,
   percentage: number,
   wallets: Array<Wallet>,
-  onDelegate: Function,
   numberOfStakePools: number,
+  onDelegate: Function,
+  onUndelegate: Function,
 };
 
 @observer
@@ -21,8 +22,9 @@ export default class DelegationCenter extends Component<Props> {
       adaValue,
       percentage,
       wallets,
-      onDelegate,
       numberOfStakePools,
+      onDelegate,
+      onUndelegate,
     } = this.props;
 
     return (
@@ -30,8 +32,9 @@ export default class DelegationCenter extends Component<Props> {
         <DelegationCenterHeader adaValue={adaValue} percentage={percentage} />
         <DelegationCenterBody
           wallets={wallets}
-          onDelegate={onDelegate}
           numberOfStakePools={numberOfStakePools}
+          onDelegate={onDelegate}
+          onUndelegate={onUndelegate}
         />
       </Fragment>
     );
