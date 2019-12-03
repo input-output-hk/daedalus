@@ -6,9 +6,10 @@ import SVGInline from 'react-svg-inline';
 import { get } from 'lodash';
 import styles from './DelegationCenterHeader.scss';
 import CountdownWidget from '../../widgets/CountdownWidget';
-import type { TipInfo } from '../../../api/network/types';
+import type { NextEpoch, TipInfo } from '../../../api/network/types';
 import delimeterIcon from '../../../assets/images/delimeter.inline.svg';
 import delimeterSlashIcon from '../../../assets/images/delimeter-slash.inline.svg';
+import { SLOTS_TOTAL } from '../../../config/epochsConfig';
 
 const messages = defineMessages({
   epoch: {
@@ -28,7 +29,7 @@ const messages = defineMessages({
   },
   headingLeft: {
     id: 'staking.delegationCenter.headingLeft',
-    defaultMessage: '!!!Cardano epoch {nextEpoch} starts in',
+    defaultMessage: '!!!Cardano epoch {nextEpochStart} starts in',
     description: 'Headline for the Delegation center.',
   },
   headingRight: {
@@ -44,12 +45,10 @@ const messages = defineMessages({
   },
 });
 
-const TOTAL_SLOTS = 21600;
-
 type Props = {
   redirectToStakingInfo?: Function,
-  startDateTime: string,
   networkTip: ?TipInfo,
+  nextEpoch: ?NextEpoch,
 };
 
 @observer
@@ -144,14 +143,14 @@ export default class DelegationCenterHeader extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { redirectToStakingInfo, startDateTime, networkTip } = this.props;
+    const { redirectToStakingInfo, networkTip, nextEpoch } = this.props;
     const epoch = get(networkTip, 'epoch', '-');
+    const nextEpochStart = get(nextEpoch, 'epochStart', '-');
     const slot = get(networkTip, 'slot', '-');
-    const totalSlots = TOTAL_SLOTS;
-    const nextEpoch = epoch + 1;
+    const totalSlots = SLOTS_TOTAL;
     const headingFirst = intl.formatMessage(messages.headingRight);
     const headingSecond = intl.formatMessage(messages.headingLeft, {
-      nextEpoch,
+      nextEpochStart,
     });
     const description = intl.formatMessage(messages.description);
     const fieldPanels = this.generateCurrentEpochPanels(
@@ -174,7 +173,7 @@ export default class DelegationCenterHeader extends Component<Props> {
               <div className={styles.heading}>{headingSecond}</div>
               <CountdownWidget
                 redirectToStakingInfo={redirectToStakingInfo}
-                startDateTime={startDateTime}
+                nextEpochStart={nextEpochStart}
               />
             </div>
           </div>

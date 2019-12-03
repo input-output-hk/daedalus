@@ -271,7 +271,7 @@
   "staking.delegationCenter.delegated": "委任中",
   "staking.delegationCenter.description": "変更した委任設定は次のエポックから有効になります。",
   "staking.delegationCenter.epoch": "エポック",
-  "staking.delegationCenter.headingLeft": "Cardanoエポック{nextEpoch}開始まであと",
+  "staking.delegationCenter.headingLeft": "Cardanoエポック{nextEpochStart}開始まであと",
   "staking.delegationCenter.headingRight": "現在のCardanoエポック",
   "staking.delegationCenter.noWallets.createWalletButtonLabel": "ウォレットを作成する",
   "staking.delegationCenter.noWallets.headLine": "委任センターはウォレットがないと利用できません。",

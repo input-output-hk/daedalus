@@ -6,6 +6,7 @@ import moment from 'moment';
 import SVGInline from 'react-svg-inline';
 import styles from './CountdownWidget.scss';
 import delimeterIcon from '../../assets/images/delimeter.inline.svg';
+import spinnerIcon from '../../assets/images/spinner.inline.svg';
 
 const messages = defineMessages({
   years: {
@@ -44,7 +45,8 @@ const TIME_LEFT_INTERVAL = 1 * 1000; // 1 second | unit: milliseconds;
 
 type Props = {
   redirectToStakingInfo?: Function,
-  startDateTime: string,
+  nextEpochStart?: string,
+  startDateTime?: string,
 };
 type State = { timeLeft: number };
 
@@ -65,21 +67,24 @@ export default class CountdownWidget extends Component<Props, State> {
   }
 
   updateTimeLeft = () => {
-    const { redirectToStakingInfo, startDateTime } = this.props;
-    const timeLeft = Math.max(
-      0,
-      new Date(startDateTime).getTime() - new Date().getTime()
-    );
+    const { redirectToStakingInfo, startDateTime, nextEpochStart } = this.props;
+    const startDateString = startDateTime || nextEpochStart;
+    if (startDateString) {
+      const timeLeft = Math.max(
+        0,
+        new Date(startDateString).getTime() - new Date().getTime()
+      );
 
-    this.setState({ timeLeft });
+      this.setState({ timeLeft });
 
-    if (timeLeft === 0) {
-      if (this.intervalHandler) {
-        clearInterval(this.intervalHandler);
-      }
+      if (timeLeft === 0) {
+        if (this.intervalHandler) {
+          clearInterval(this.intervalHandler);
+        }
 
-      if (redirectToStakingInfo) {
-        redirectToStakingInfo();
+        if (redirectToStakingInfo) {
+          redirectToStakingInfo();
+        }
       }
     }
   };
@@ -160,11 +165,19 @@ export default class CountdownWidget extends Component<Props, State> {
   };
 
   render() {
+    const { timeLeft } = this.state;
     const fieldPanels = this.generateCountdownPanels();
+    const { startDateTime } = this.props;
 
     return (
       <div className={styles.timeLeftContainer}>
-        <div className={styles.timeLeft}>{fieldPanels}</div>
+        <div className={styles.timeLeft}>
+          {startDateTime && timeLeft === 0 ? (
+            <SVGInline svg={spinnerIcon} className={styles.spinnerIcon} />
+          ) : (
+            fieldPanels
+          )}
+        </div>
       </div>
     );
   }

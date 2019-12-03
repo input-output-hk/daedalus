@@ -32,7 +32,7 @@ export default class DelegationCenterPage extends Component<Props> {
   render() {
     const { uiDialogs, staking, wallets, networkStatus } = this.props.stores;
     const { stakePools } = staking;
-    const { networkTip } = networkStatus;
+    const { networkTip, nextEpoch } = networkStatus;
     const { actions } = this.props;
     const {
       staking: { goToStakingInfoPage },
@@ -53,9 +53,9 @@ export default class DelegationCenterPage extends Component<Props> {
           wallets={wallets.allWallets}
           onDelegate={this.handleDelegate}
           numberOfStakePools={stakePools.length}
-          startDateTime={staking.startDateTime}
           redirectToStakingInfo={redirectToStakingInfo}
           networkTip={networkTip}
+          nextEpoch={nextEpoch}
         />
         {uiDialogs.isOpen(DelegationSetupWizardDialog) ? (
           <DelegationSetupWizardDialogContainer />
