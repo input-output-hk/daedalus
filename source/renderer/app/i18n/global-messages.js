@@ -194,49 +194,24 @@ export default defineMessages({
     defaultMessage: '!!!Development',
     description: '"development" Cardano network',
   },
-  network_itn: {
-    id: 'environment.network.itn',
-    defaultMessage: '!!!Incentivized Testnet',
-    description: '"itn" Cardano network',
-  },
   network_itn_rewards_v1: {
     id: 'environment.network.itn_rewards_v1',
     defaultMessage: '!!!Incentivized Testnet v1 - Rewards',
     description: '"itn_rewards_v1" Cardano network',
   },
-  network_itn_rewards_v1_selfnode: {
-    id: 'environment.network.itn_rewards_v1_selfnode',
-    defaultMessage: '!!!Incentivized Testnet v1 - Rewards (Selfnode)',
-    description: '"itn_rewards_v1_selfnode" Cardano network',
+  network_selfnode: {
+    id: 'environment.network.selfnode',
+    defaultMessage: '!!!SelfNode',
+    description: '"selfnode" Cardano network',
   },
-  network_itn_rewards_v1_qa: {
-    id: 'environment.network.itn_rewards_v1_qa',
-    defaultMessage: '!!!Incentivized Testnet v1 - Rewards (Qa)',
-    description: '"itn_rewards_v1_qa" Cardano network',
+  network_qa: {
+    id: 'environment.network.qa',
+    defaultMessage: '!!!QA',
+    description: '"qa" Cardano network',
   },
-  network_itn_rewards_v1_nightly: {
-    id: 'environment.network.itn_rewards_v1_nightly',
-    defaultMessage: '!!!Incentivized Testnet v1 - Rewards (Nightly)',
-    description: '"itn_rewards_v1_nightly" Cardano network',
-  },
-  network_itn_rewards: {
-    id: 'environment.network.itn_rewards',
-    defaultMessage: '!!!Incentivized Testnet v1 - Rewards',
-    description: '"itn_rewards" Cardano network',
-  },
-  network_itn_rewards_selfnode: {
-    id: 'environment.network.itn_rewards_selfnode',
-    defaultMessage: '!!!Incentivized Testnet v1 - Rewards (Selfnode)',
-    description: '"itn_rewards_selfnode" Cardano network',
-  },
-  network_itn_rewards_qa: {
-    id: 'environment.network.itn_rewards_qa',
-    defaultMessage: '!!!Incentivized Testnet v1 - Rewards (Qa)',
-    description: '"itn_rewards_qa" Cardano network',
-  },
-  network_itn_rewards_nightly: {
-    id: 'environment.network.itn_rewards_nightly',
-    defaultMessage: '!!!Incentivized Testnet v1 - Rewards (Nightly)',
-    description: '"itn_rewards_nightly" Cardano network',
+  network_nightly: {
+    id: 'environment.network.nightly',
+    defaultMessage: '!!!Nightly',
+    description: '"nightly" Cardano network',
   },
 });
