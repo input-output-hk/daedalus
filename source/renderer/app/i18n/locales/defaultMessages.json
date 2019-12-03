@@ -2339,27 +2339,13 @@
         "description": "Amount of each wallet for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 31
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.walletAmount",
         "start": {
           "column": 16,
-          "line": 27
-        }
-      },
-      {
-        "defaultMessage": "!!!<b>activate {inactiveStakePercentage}% of inactive stake</b>",
-        "description": "Inactive stake percentage of each wallet for the Delegation center body section.",
-        "end": {
-          "column": 3,
-          "line": 39
-        },
-        "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
-        "id": "staking.delegationCenter.inactiveStakePercentageActivate",
-        "start": {
-          "column": 35,
-          "line": 33
+          "line": 26
         }
       },
       {
@@ -2367,13 +2353,13 @@
         "description": "Delegated label for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 36
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.delegated",
         "start": {
           "column": 13,
-          "line": 40
+          "line": 32
         }
       },
       {
@@ -2381,13 +2367,13 @@
         "description": "Not-delegated label for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 49
+          "line": 41
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.notDelegated",
         "start": {
           "column": 16,
-          "line": 45
+          "line": 37
         }
       },
       {
@@ -2395,13 +2381,13 @@
         "description": "Change delegation label for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 55
+          "line": 47
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.changeDelegation",
         "start": {
           "column": 20,
-          "line": 50
+          "line": 42
         }
       },
       {
@@ -2409,13 +2395,13 @@
         "description": "Remove delegation label for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 61
+          "line": 53
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.removeDelegation",
         "start": {
           "column": 20,
-          "line": 56
+          "line": 48
         }
       },
       {
@@ -2423,13 +2409,13 @@
         "description": "Delegated stake pool slug for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 67
+          "line": 59
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.toStakePoolSlug",
         "start": {
           "column": 19,
-          "line": 62
+          "line": 54
         }
       },
       {
@@ -2437,13 +2423,13 @@
         "description": "Delegate label for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 72
+          "line": 64
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.delegate",
         "start": {
           "column": 12,
-          "line": 68
+          "line": 60
         }
       },
       {
@@ -2451,13 +2437,13 @@
         "description": "Your stake label for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 77
+          "line": 69
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.yourStake",
         "start": {
           "column": 13,
-          "line": 73
+          "line": 65
         }
       }
     ],
@@ -8874,13 +8860,13 @@
         "description": "Label for years value in duration.",
         "end": {
           "column": 3,
-          "line": 16
+          "line": 15
         },
         "file": "source/renderer/app/components/widgets/CountdownWidget.js",
         "id": "global.duration.years",
         "start": {
           "column": 9,
-          "line": 12
+          "line": 11
         }
       },
       {
@@ -8888,13 +8874,13 @@
         "description": "Label for months value in duration.",
         "end": {
           "column": 3,
-          "line": 21
+          "line": 20
         },
         "file": "source/renderer/app/components/widgets/CountdownWidget.js",
         "id": "global.duration.months",
         "start": {
           "column": 10,
-          "line": 17
+          "line": 16
         }
       },
       {
@@ -8902,13 +8888,13 @@
         "description": "Label for days value in duration.",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 25
         },
         "file": "source/renderer/app/components/widgets/CountdownWidget.js",
         "id": "global.duration.days",
         "start": {
           "column": 8,
-          "line": 22
+          "line": 21
         }
       },
       {
@@ -8916,13 +8902,13 @@
         "description": "Label for hours value in duration.",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 30
         },
         "file": "source/renderer/app/components/widgets/CountdownWidget.js",
         "id": "global.duration.hours",
         "start": {
           "column": 9,
-          "line": 27
+          "line": 26
         }
       },
       {
@@ -8930,13 +8916,13 @@
         "description": "Label for minutes value in duration.",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 35
         },
         "file": "source/renderer/app/components/widgets/CountdownWidget.js",
         "id": "global.duration.minutes",
         "start": {
           "column": 11,
-          "line": 32
+          "line": 31
         }
       },
       {
@@ -8944,13 +8930,13 @@
         "description": "Label for seconds value in duration.",
         "end": {
           "column": 3,
-          "line": 41
+          "line": 40
         },
         "file": "source/renderer/app/components/widgets/CountdownWidget.js",
         "id": "global.duration.seconds",
         "start": {
           "column": 11,
-          "line": 37
+          "line": 36
         }
       }
     ],
