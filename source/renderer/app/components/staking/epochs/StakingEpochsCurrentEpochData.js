@@ -97,7 +97,7 @@ export default class StakingEpochsCurrentEpochData extends Component<
     const tableBody = (
       <tbody>
         {map(sortedData, (row, key) => {
-          const poolSlug = get(row, ['pool', 'slug'], '');
+          const poolSlug = get(row, ['pool', 'ticker'], '');
           const poolName = get(row, ['pool', 'name'], '');
           const slotsElected = get(row, 'slotsElected', [0]);
 

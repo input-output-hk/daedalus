@@ -179,7 +179,7 @@ export default class StakingRewards extends Component<Props, State> {
               <tbody>
                 {map(sortedRewards, (reward, key) => {
                   const rewardDate = get(reward, 'date', '');
-                  const rewardPoolSlug = get(reward, ['pool', 'slug'], '');
+                  const rewardPoolSlug = get(reward, ['pool', 'ticker'], '');
                   const rewardPoolName = get(reward, ['pool', 'name'], '');
                   const rewardWallet = get(reward, 'wallet', '');
                   const rewardAmount = get(reward, 'reward', '');

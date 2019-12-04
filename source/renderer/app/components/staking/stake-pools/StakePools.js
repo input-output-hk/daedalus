@@ -1,5 +1,5 @@
 // @flow
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import { StakePoolsList } from './StakePoolsList';
@@ -7,7 +7,7 @@ import { StakePoolsSearch } from './StakePoolsSearch';
 import BackToTopButton from '../../widgets/BackToTopButton';
 import styles from './StakePools.scss';
 import { getFilteredStakePoolsList } from './helpers';
-import type { StakePoolsListType } from '../../../api/staking/types';
+import StakePool from '../../../domains/StakePool';
 
 const messages = defineMessages({
   delegatingListTitle: {
@@ -28,9 +28,10 @@ const messages = defineMessages({
 });
 
 type Props = {
-  stakePoolsDelegatingList: StakePoolsListType,
-  stakePoolsList: StakePoolsListType,
+  stakePoolsDelegatingList: Array<StakePool>,
+  stakePoolsList: Array<StakePool>,
   onOpenExternalLink: Function,
+  getPledgeAddressUrl: Function,
   currentTheme: string,
   onDelegate: Function,
 };
@@ -72,11 +73,12 @@ export default class StakePools extends Component<Props, State> {
       stakePoolsDelegatingList,
       stakePoolsList,
       onOpenExternalLink,
+      getPledgeAddressUrl,
       currentTheme,
     } = this.props;
     const { search, selectedList } = this.state;
 
-    const filteredStakePoolsList: StakePoolsListType = getFilteredStakePoolsList(
+    const filteredStakePoolsList: Array<StakePool> = getFilteredStakePoolsList(
       stakePoolsList,
       search
     );
@@ -99,21 +101,23 @@ export default class StakePools extends Component<Props, State> {
           isClearTooltipOpeningDownward
         />
 
-        <h2>{intl.formatMessage(messages.delegatingListTitle)}</h2>
-
         {stakePoolsDelegatingList.length > 0 && (
-          <StakePoolsList
-            listName="stakePoolsDelegatingList"
-            stakePoolsList={stakePoolsDelegatingList}
-            onOpenExternalLink={onOpenExternalLink}
-            currentTheme={currentTheme}
-            isListActive={selectedList === 'stakePoolsDelegatingList'}
-            setListActive={this.handleSetListActive}
-            containerClassName="StakingWithNavigation_page"
-            onSelect={this.onDelegate}
-            numberOfStakePools={stakePoolsList.length}
-            showWithSelectButton
-          />
+          <Fragment>
+            <h2>{intl.formatMessage(messages.delegatingListTitle)}</h2>
+            <StakePoolsList
+              listName="stakePoolsDelegatingList"
+              stakePoolsList={stakePoolsDelegatingList}
+              onOpenExternalLink={onOpenExternalLink}
+              getPledgeAddressUrl={getPledgeAddressUrl}
+              currentTheme={currentTheme}
+              isListActive={selectedList === 'stakePoolsDelegatingList'}
+              setListActive={this.handleSetListActive}
+              containerClassName="StakingWithNavigation_page"
+              onSelect={this.onDelegate}
+              numberOfStakePools={stakePoolsList.length}
+              showWithSelectButton
+            />
+          </Fragment>
         )}
 
         <h2>
@@ -130,6 +134,7 @@ export default class StakePools extends Component<Props, State> {
           listName="selectedIndexList"
           stakePoolsList={filteredStakePoolsList}
           onOpenExternalLink={onOpenExternalLink}
+          getPledgeAddressUrl={getPledgeAddressUrl}
           currentTheme={currentTheme}
           isListActive={selectedList === 'selectedIndexList'}
           setListActive={this.handleSetListActive}

@@ -381,6 +381,7 @@
   "staking.stakePools.tooltip.controlledStake": "管理下のステーク",
   "staking.stakePools.tooltip.delegateButton": "このプールに委任する",
   "staking.stakePools.tooltip.performance": "パフォーマンス",
+  "staking.stakePools.tooltip.pledgeAddressLabel": "出資アドレス",
   "staking.stakePools.tooltip.profitMargin": "マージン",
   "staking.stakePools.tooltip.ranking": "ランク",
   "staking.stakePools.tooltip.retirement": "あと{retirementFromNow}で終了",

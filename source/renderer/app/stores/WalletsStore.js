@@ -9,6 +9,7 @@ import { ChainSettings } from 'cardano-js/dist/ChainSettings';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import Wallet from '../domains/Wallet';
+import StakePool from '../domains/StakePool';
 import WalletAddress from '../domains/WalletAddress';
 import { WalletTransaction } from '../domains/WalletTransaction';
 import { MAX_ADA_WALLETS_COUNT } from '../config/numbersConfig';
@@ -671,6 +672,27 @@ export default class WalletsStore extends Store {
     if (this.stores.networkStatus.isConnected) {
       const result = await this.walletsRequest.execute().promise;
       if (!result) return;
+      runInAction('update stake pool data', () => {
+        result.forEach((wallet: Wallet, index: number) => {
+          // @API TODO - integrate once "Join Stake Pool" endpoint is done
+          const { /* delegatedStakePoolId, */ delegatedStakePool } = wallet;
+          if (/* delegatedStakePoolId && */ !delegatedStakePool) {
+            const { stakePools } = this.stores.staking;
+            // const stakePool: ?StakePool = stakePools.find(({ id }: StakePool) => id === delegatedStakePoolId);
+            const stakePool: ?StakePool =
+              index < stakePools.length ? stakePools[index] : null;
+            if (stakePool) {
+              wallet.update(
+                new Wallet({
+                  ...wallet,
+                  delegatedStakePool: stakePool,
+                  isDelegated: true,
+                })
+              );
+            }
+          }
+        });
+      });
       const walletIds = result.map((wallet: Wallet) => wallet.id);
       await this._setWalletsRecoveryPhraseVerificationData(walletIds);
       runInAction('refresh active wallet', () => {

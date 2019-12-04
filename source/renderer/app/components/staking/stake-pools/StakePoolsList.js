@@ -3,18 +3,20 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { debounce } from 'lodash';
 import styles from './StakePoolsList.scss';
-import type { StakePool } from '../../../api/staking/types';
+import StakePool from '../../../domains/StakePool';
 import { StakePoolThumbnail } from './StakePoolThumbnail';
 
 type Props = {
   stakePoolsList: Array<StakePool>,
   onOpenExternalLink: Function,
+  getPledgeAddressUrl: Function,
   currentTheme: string,
   highlightOnHover?: boolean,
   onSelect?: Function,
   showWithSelectButton?: boolean,
   showSelected?: boolean,
   containerClassName: string,
+  numberOfStakePools: number,
   /**
    *
    * If the parent component has more than one <StakePoolsList />
@@ -26,7 +28,6 @@ type Props = {
   isListActive?: boolean,
   setListActive?: Function,
   selectedPoolId?: ?number,
-  numberOfStakePools: number,
 };
 
 type State = {
@@ -93,6 +94,7 @@ export class StakePoolsList extends Component<Props, State> {
       currentTheme,
       highlightOnHover,
       onOpenExternalLink,
+      getPledgeAddressUrl,
       showSelected,
       showWithSelectButton,
       stakePoolsList,
@@ -112,6 +114,7 @@ export class StakePoolsList extends Component<Props, State> {
               stakePool={stakePool}
               key={stakePool.id + stakePool.ranking}
               onOpenExternalLink={onOpenExternalLink}
+              getPledgeAddressUrl={getPledgeAddressUrl}
               isHighlighted={isHighlighted}
               onClose={this.handleClose}
               onClick={!highlightOnHover && this.handleOpenThumbnail}

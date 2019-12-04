@@ -18,7 +18,7 @@ import styles from './DelegationStepsChooseStakePoolDialog.scss';
 import checkmarkImage from '../../../assets/images/check-w.inline.svg';
 import { getColorFromRange } from '../../../utils/colors';
 
-import type { StakePool, StakePoolsListType } from '../../../api/staking/types';
+import StakePool from '../../../domains/StakePool';
 
 const messages = defineMessages({
   title: {
@@ -82,6 +82,7 @@ type Props = {
   stakePoolsDelegatingList: Array<StakePool>,
   stakePoolsList: Array<StakePool>,
   onOpenExternalLink: Function,
+  getPledgeAddressUrl: Function,
   currentTheme: string,
   selectedPool: ?StakePool,
   onClose: Function,
@@ -136,6 +137,7 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
       stakePoolsDelegatingList,
       stakePoolsList,
       onOpenExternalLink,
+      getPledgeAddressUrl,
       currentTheme,
       onClose,
       onBack,
@@ -165,7 +167,7 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
       );
       const blockLabel = get(
         selectedPool,
-        'slug',
+        'ticker',
         intl.formatMessage(messages.selectPoolPlaceholder)
       );
 
@@ -205,7 +207,7 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
       />
     );
 
-    const filteredStakePoolsList: StakePoolsListType = getFilteredStakePoolsList(
+    const filteredStakePoolsList: Array<StakePool> = getFilteredStakePoolsList(
       stakePoolsList,
       searchValue
     );
@@ -251,6 +253,7 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
                 listName="stakePoolsDelegatingList"
                 stakePoolsList={stakePoolsDelegatingList}
                 onOpenExternalLink={onOpenExternalLink}
+                getPledgeAddressUrl={getPledgeAddressUrl}
                 currentTheme={currentTheme}
                 isListActive={selectedList === 'stakePoolsDelegatingList'}
                 setListActive={this.handleSetListActive}
@@ -280,6 +283,7 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
               listName="selectedIndexList"
               stakePoolsList={filteredStakePoolsList}
               onOpenExternalLink={onOpenExternalLink}
+              getPledgeAddressUrl={getPledgeAddressUrl}
               currentTheme={currentTheme}
               isListActive={selectedList === 'selectedIndexList'}
               setListActive={this.handleSetListActive}
