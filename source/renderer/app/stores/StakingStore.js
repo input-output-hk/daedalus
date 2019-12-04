@@ -17,6 +17,10 @@ import STAKE_POOLS from '../config/stakingStakePools.dummy.json';
 import REWARDS from '../config/stakingRewards.dummy.json';
 
 export default class StakingStore extends Store {
+  @observable joinStakePoolRequest: Request<JoinStakePoolRequest> = new Request(
+    this.api.ada.joinStakePool
+  );
+
   startDateTime: string = '2019-12-09T00:00:00.161Z';
   nextEpochStartTime: string = '2019-12-06T00:00:00.161Z';
   decentralizationProgress: number = 10;
@@ -32,14 +36,8 @@ export default class StakingStore extends Store {
     staking.joinStakePool.listen(this._joinStakePool);
   }
 
-  // REQUESTS
-  @observable joinStakePoolRequest: Request<JoinStakePoolRequest> = new Request(
-    this.api.ada.joinStakePool
-  );
-
   @action _joinStakePool = async (request: JoinStakePoolRequest) => {
     const { walletId, stakePoolId, passphrase } = request;
-    this.joinStakePoolRequest.reset();
     await this.joinStakePoolRequest.execute({
       walletId,
       stakePoolId,

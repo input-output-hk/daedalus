@@ -74,16 +74,6 @@ export default class DelegationSetupWizardDialogContainer extends Component<
     stakePoolJoinFee: new BigNumber(0),
   };
 
-  componentWillReceiveProps(nextProps: Props) {
-    if (
-      this.state.activeStep === 3 &&
-      nextProps.stores.staking.joinStakePoolRequest.result &&
-      !nextProps.stores.staking.joinStakePoolRequest.error
-    ) {
-      this.handleContinue();
-    }
-  }
-
   STEPS_LIST = [
     this.context.intl.formatMessage(messages.delegationSetupStep1Label),
     this.context.intl.formatMessage(messages.delegationSetupStep2Label),
@@ -102,9 +92,7 @@ export default class DelegationSetupWizardDialogContainer extends Component<
 
   onBack = () => {
     const { activeStep } = this.state;
-    if (activeStep === 3) {
-      this.props.stores.staking.joinStakePoolRequest.reset();
-    }
+    this.props.stores.staking.joinStakePoolRequest.reset();
     this.setState({ activeStep: activeStep - 1 });
   };
 
@@ -117,6 +105,7 @@ export default class DelegationSetupWizardDialogContainer extends Component<
 
   handleConfirm = (spendingPassword: string) => {
     const { selectedPoolId, selectedWalletId } = this.state;
+    this.props.stores.staking.joinStakePoolRequest.reset();
     this.props.actions.staking.joinStakePool.trigger({
       stakePoolId: selectedPoolId,
       walletId: selectedWalletId,
