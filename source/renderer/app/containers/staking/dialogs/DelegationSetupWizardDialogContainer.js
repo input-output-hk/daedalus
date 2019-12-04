@@ -144,10 +144,10 @@ export default class DelegationSetupWizardDialogContainer extends Component<
     );
     const selectedPool = find(stakePools, pool => pool.id === selectedPoolId);
 
-    const getPledgeAddressUrl = (pledge: string) =>
+    const getPledgeAddressUrl = (pledgeAddress: string) =>
       getNetworkExplorerUrlByType(
         'address',
-        pledge,
+        pledgeAddress,
         network,
         rawNetwork,
         currentLocale

@@ -28,10 +28,10 @@ export default class StakePoolsListPage extends Component<Props> {
     const { currentTheme, currentLocale, environment } = profile;
     const { stakePools, delegatingStakePools } = staking;
     const { network, rawNetwork } = environment;
-    const getPledgeAddressUrl = (pledge: string) =>
+    const getPledgeAddressUrl = (pledgeAddres: string) =>
       getNetworkExplorerUrlByType(
         'address',
-        pledge,
+        pledgeAddres,
         network,
         rawNetwork,
         currentLocale
