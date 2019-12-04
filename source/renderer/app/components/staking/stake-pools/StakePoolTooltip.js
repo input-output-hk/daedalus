@@ -9,10 +9,11 @@ import moment from 'moment';
 import SVGInline from 'react-svg-inline';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import styles from './StakePoolTooltip.scss';
-import type { StakePool } from '../../../api/staking/types';
+import StakePool from '../../../domains/StakePool';
 import closeCross from '../../../assets/images/close-cross.inline.svg';
 import externalLinkIcon from '../../../assets/images/link-ic.inline.svg';
 import { getColorFromRange } from '../../../utils/colors';
+// import { formattedWalletAmount } from '../../../utils/formatters';
 import { rangeMap } from '../../../utils/rangeMap';
 import {
   THUMBNAIL_HEIGHT,
@@ -51,6 +52,21 @@ const messages = defineMessages({
     defaultMessage: '!!!Retirement in {retirementFromNow}',
     description: '"Retirement" for the Stake Pools Tooltip page.',
   },
+  // cost: {
+  //   id: 'staking.stakePools.tooltip.cost',
+  //   defaultMessage: '!!!Cost:',
+  //   description: 'Cost" for the Stake Pools Tooltip page.',
+  // },
+  // pledge: {
+  //   id: 'staking.stakePools.tooltip.pledge',
+  //   defaultMessage: '!!!Pledge:',
+  //   description: '"Pledge" for the Stake Pools Tooltip page.',
+  // },
+  pledgeAddressLabel: {
+    id: 'staking.stakePools.tooltip.pledgeAddressLabel',
+    defaultMessage: '!!!Pledge address',
+    description: '"pledgeAddressLabel" for the Stake Pools Tooltip page.',
+  },
   delegateButton: {
     id: 'staking.stakePools.tooltip.delegateButton',
     defaultMessage: '!!!Delegate to this pool',
@@ -65,6 +81,7 @@ type Props = {
   currentTheme: string,
   onClick: Function,
   onOpenExternalLink: Function,
+  getPledgeAddressUrl: Function,
   onSelect?: Function,
   showWithSelectButton?: boolean,
   top: number,
@@ -337,6 +354,7 @@ export default class StakePoolTooltip extends Component<Props, State> {
       currentTheme,
       onClick,
       onOpenExternalLink,
+      getPledgeAddressUrl,
       onSelect,
       showWithSelectButton,
     } = this.props;
@@ -351,13 +369,16 @@ export default class StakePoolTooltip extends Component<Props, State> {
     const {
       name,
       description,
-      slug,
-      url,
+      ticker,
+      homepage,
       ranking,
       controlledStake,
       profitMargin,
       performance,
       retiring,
+      // cost,
+      // pledge,
+      pledgeAddress,
     } = stakePool;
 
     const componentClassnames = classnames([
@@ -390,7 +411,7 @@ export default class StakePoolTooltip extends Component<Props, State> {
           <button className={styles.closeButton} onClick={onClick}>
             <SVGInline svg={closeCross} />
           </button>
-          <div className={styles.slug}>{slug}</div>
+          <div className={styles.ticker}>{ticker}</div>
           {retiring && (
             <div className={styles.retirement}>
               <FormattedMessage
@@ -401,10 +422,10 @@ export default class StakePoolTooltip extends Component<Props, State> {
           )}
           <div className={styles.description}>{description}</div>
           <button
-            className={styles.url}
-            onClick={() => onOpenExternalLink(url)}
+            className={styles.homepage}
+            onClick={() => onOpenExternalLink(homepage)}
           >
-            <span className={styles.urlContent}>{url}</span>
+            <span className={styles.homepageContent}>{homepage}</span>
             <SVGInline svg={externalLinkIcon} />
           </button>
           <dl className={styles.table}>
@@ -459,7 +480,46 @@ export default class StakePoolTooltip extends Component<Props, State> {
                 {performance}%
               </span>
             </dd>
+            {/*
+            <dt>{intl.formatMessage(messages.cost)}</dt>
+            <dd>
+              <span
+                style={{
+                  background: getColorFromRange(cost, {
+                    darken,
+                    alpha,
+                  }),
+                }}
+              >
+                {formattedWalletAmount(cost)}
+              </span>
+            </dd></dl>
+            <dt>{intl.formatMessage(messages.pledge)}</dt>
+            <dd>
+              <span
+                style={{
+                  background: getColorFromRange(pledge, {
+                    darken,
+                    alpha,
+                  }),
+                }}
+              >
+                {formattedWalletAmount(pledge)}
+              </span>
+            </dd>
+            */}
           </dl>
+          <button
+            className={styles.homepage}
+            onClick={() =>
+              onOpenExternalLink(getPledgeAddressUrl(pledgeAddress))
+            }
+          >
+            <span className={styles.homepageContent}>
+              {intl.formatMessage(messages.pledgeAddressLabel)}
+            </span>
+            <SVGInline svg={externalLinkIcon} />
+          </button>
         </div>
         {onSelect && showWithSelectButton && (
           <Button

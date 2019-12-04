@@ -4,6 +4,7 @@ import { observer, inject } from 'mobx-react';
 import StakePools from '../../components/staking/stake-pools/StakePools';
 import DelegationSetupWizardDialogContainer from './dialogs/DelegationSetupWizardDialogContainer';
 import DelegationSetupWizardDialog from '../../components/staking/delegation-setup-wizard/DelegationSetupWizardDialog';
+import { getNetworkExplorerUrlByType } from '../../utils/network';
 import type { InjectedProps } from '../../types/injectedPropsType';
 
 type Props = InjectedProps;
@@ -24,8 +25,17 @@ export default class StakePoolsListPage extends Component<Props> {
 
   render() {
     const { uiDialogs, staking, app, profile } = this.props.stores;
-    const { currentTheme } = profile;
+    const { currentTheme, currentLocale, environment } = profile;
     const { stakePools, delegatingStakePools } = staking;
+    const { network, rawNetwork } = environment;
+    const getPledgeAddressUrl = (pledgeAddres: string) =>
+      getNetworkExplorerUrlByType(
+        'address',
+        pledgeAddres,
+        network,
+        rawNetwork,
+        currentLocale
+      );
 
     return (
       <div>
@@ -33,6 +43,7 @@ export default class StakePoolsListPage extends Component<Props> {
           stakePoolsList={stakePools}
           stakePoolsDelegatingList={delegatingStakePools}
           onOpenExternalLink={app.openExternalLink}
+          getPledgeAddressUrl={getPledgeAddressUrl}
           currentTheme={currentTheme}
           onDelegate={this.handleDelegate}
         />

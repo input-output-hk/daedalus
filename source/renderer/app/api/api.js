@@ -54,6 +54,12 @@ import { getWalletIdAndBalance } from './wallets/requests/getWalletIdAndBalance'
 import { transferFundsCalculateFee } from './wallets/requests/transferFundsCalculateFee';
 import { transferFunds } from './wallets/requests/transferFunds';
 
+// Staking
+import StakePool from '../domains/StakePool';
+import { getStakePools } from './staking/requests/getStakePools';
+import type { AdaApiStakePools, AdaApiStakePool } from './staking/types';
+import stakingStakePoolsMissingApiData from '../config/stakingStakePoolsMissingApiData.dummy.json';
+
 // News requests
 import { getNews } from './news/requests/getNews';
 
@@ -169,8 +175,6 @@ import { TlsCertificateNotValidError } from './nodes/errors';
 import { getSHA256HexForString } from './utils/hashing';
 import { getNewsHash } from './news/requests/getNewsHash';
 import { deleteTransaction } from './transactions/requests/deleteTransaction';
-
-import STAKE_POOLS from '../config/stakingStakePools.dummy.json';
 
 export default class AdaApi {
   config: RequestConfig;
@@ -1049,6 +1053,23 @@ export default class AdaApi {
     }
   };
 
+  getStakePools = async (): Promise<Array<StakePool>> => {
+    Logger.debug('AdaApi::getStakePools called');
+    try {
+      const stakePools: AdaApiStakePools = await getStakePools(this.config);
+      Logger.debug('AdaApi::getStakePools success');
+      return (
+        stakePools
+          // @API TODO: Filter Stake Pools without metadata, once metadata is present in the API response
+          // .filter(({ metadata }: AdaApiStakePool) => metadata !== undefined)
+          .map(_createStakePoolFromServerData)
+      );
+    } catch (error) {
+      Logger.error('AdaApi::getStakePools error', { error });
+      throw new GenericApiError();
+    }
+  };
+
   testReset = async (): Promise<void> => {
     Logger.debug('AdaApi::testReset called');
     try {
@@ -1198,7 +1219,7 @@ export default class AdaApi {
 
 const _createWalletFromServerData = action(
   'AdaApi::_createWalletFromServerData',
-  (data: AdaWallet, index?: number) => {
+  (data: AdaWallet) => {
     const {
       id,
       address_pool_gap: addressPoolGap,
@@ -1226,18 +1247,8 @@ const _createWalletFromServerData = action(
       reward.unit === WalletUnits.LOVELACE
         ? new BigNumber(reward.quantity).dividedBy(LOVELACES_PER_ADA)
         : new BigNumber(reward.quantity || 0);
+    const delegatedStakePoolId = delegation.target;
 
-    // @API TODO - remove once "Stake Pools" endpoints are done
-    let delegatedStakePool;
-    if (index !== null) {
-      if (index === 0) {
-        delegatedStakePool = STAKE_POOLS[0]; // eslint-disable-line
-      } else if (index === 1) {
-        delegatedStakePool = STAKE_POOLS[150]; // eslint-disable-line
-      } else if (index === 2) {
-        delegatedStakePool = STAKE_POOLS[290]; // eslint-disable-line
-      }
-    }
     return new Wallet({
       id,
       addressPoolGap,
@@ -1250,10 +1261,9 @@ const _createWalletFromServerData = action(
       syncState: state,
       isLegacy,
       isDelegated,
-      // @API TODO - integrate once "Stake Pools" endpoints are done
+      // @API TODO - integrate once "Join Stake Pool" endpoint is done
       // inactiveStakePercentage: 0,
-      // delegatedStakePool: new StakePool(),
-      delegatedStakePool,
+      delegatedStakePoolId,
     });
   }
 );
@@ -1329,5 +1339,55 @@ const _createMigrationFeeFromServerData = action(
   (data: TransactionFee) => {
     const amount = get(data, ['migration_cost', 'quantity'], 0);
     return new BigNumber(amount).dividedBy(LOVELACES_PER_ADA);
+  }
+);
+
+const _createStakePoolFromServerData = action(
+  'AdaApi::_createStakePoolFromServerData',
+  (stakePool: AdaApiStakePool, index: number) => {
+    // DATA FROM THE API
+    const { id, metrics, apparent_performance: performance } = stakePool;
+    let {
+      controlled_stake: controlledStake,
+      produced_blocks: producedBlocks,
+    } = metrics; // eslint-disable-line
+    const {
+      // MISSING DATA FROM THE API
+      // IT IS CONTAINED IN THE DOCS:
+      metadata,
+      // MISSING DATA FROM THE API
+      // NOT CONTAINED IN THE CURRENT API DOCS:
+      // _cost: cost,
+      _createdAt: createdAt,
+      _description: description,
+      _isCharity: isCharity,
+      _name: name,
+      // _pledge: pledge,
+      _profitMargin: profitMargin,
+      _ranking: ranking,
+      _retiring: retiring,
+    } = stakingStakePoolsMissingApiData[index];
+    const { ticker, homepage, pledge_address: pledgeAddress } = metadata;
+    controlledStake = controlledStake.quantity;
+    producedBlocks = producedBlocks.quantity;
+    return new StakePool({
+      id,
+      performance,
+      controlledStake,
+      producedBlocks,
+      ticker,
+      homepage,
+      pledgeAddress,
+
+      // cost: new BigNumber(cost).dividedBy(LOVELACES_PER_ADA),
+      createdAt,
+      description,
+      isCharity,
+      name,
+      // pledge: new BigNumber(pledge).dividedBy(LOVELACES_PER_ADA),
+      profitMargin,
+      ranking,
+      retiring,
+    });
   }
 );

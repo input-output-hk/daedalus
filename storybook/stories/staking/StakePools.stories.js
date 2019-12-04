@@ -23,7 +23,8 @@ export const StakePoolsStory = (props: { currentTheme: string }) => (
       STAKE_POOLS[20],
       STAKE_POOLS[36],
     ]}
-    onOpenExternalLink={() => {}}
+    onOpenExternalLink={action('onOpenExternalLink')}
+    getPledgeAddressUrl={action('getPledgeAddressUrl')}
     currentTheme={props.currentTheme}
     onDelegate={action('onDelegate')}
   />
