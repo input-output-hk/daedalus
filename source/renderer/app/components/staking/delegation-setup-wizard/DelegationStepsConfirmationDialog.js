@@ -24,8 +24,9 @@ import { submitOnEnter } from '../../../utils/form';
 import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
-import Wallet from '../../../domains/Wallet';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
+import Wallet from '../../../domains/Wallet';
+import type { StakePool } from '../../../api/staking/types';
 
 const messages = defineMessages({
   title: {
@@ -87,6 +88,7 @@ type Props = {
   onConfirm: Function,
   transactionFee: BigNumber,
   selectedWallet: Wallet,
+  selectedPool: StakePool,
   stepsList: Array<string>,
   isSubmitting: boolean,
   error: ?LocalizableError,

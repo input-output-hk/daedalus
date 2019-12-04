@@ -91,14 +91,17 @@ export class StakingDelegationSteps extends Component<Props, State> {
         onBack={action('onBack')}
         onSelectPool={this.onContinue}
         selectedPool={null}
+        selectedWallet={WALLETS[0]}
       />,
       <DelegationStepsConfirmationDialog
         key="DelegationStepsConfirmationDialog"
         transactionFee={new BigNumber(0.172081)}
         stepsList={getDelegationWizardStepsList(this.props.locale)}
+        selectedPool={STAKE_POOLS[0]}
         isSubmitting={false}
-        onClose={action('onClose')}
+        selectedWallet={WALLETS[0]}
         onConfirm={this.onContinue}
+        onClose={action('onClose')}
         onBack={action('onBack')}
       />,
       <DelegationStepsSuccessDialog
@@ -107,7 +110,7 @@ export class StakingDelegationSteps extends Component<Props, State> {
         delegatedStakePool={STAKE_POOLS[0]}
         currentLocale="en-US"
         nextEpochStartTime="2019-12-09T00:00:00.161Z"
-        onClose={action('onClose')}
+        onClose={this.onReset}
       />,
       <DelegationStepsNotAvailableDialog
         key="DelegationStepsNotAvailableDialog"
@@ -122,6 +125,10 @@ export class StakingDelegationSteps extends Component<Props, State> {
     let nextStep = currentStep + 1;
     if (nextStep > NUMBER_OF_STEPS - 1) nextStep = 0;
     this.setState({ currentStep: nextStep });
+  };
+
+  onReset = () => {
+    this.setState({ currentStep: 0 });
   };
 
   render() {
