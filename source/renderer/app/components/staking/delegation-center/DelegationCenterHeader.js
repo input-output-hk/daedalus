@@ -46,7 +46,6 @@ const messages = defineMessages({
 });
 
 type Props = {
-  redirectToStakingInfo?: Function,
   networkTip: ?TipInfo,
   nextEpoch: ?NextEpoch,
 };
@@ -143,7 +142,7 @@ export default class DelegationCenterHeader extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { redirectToStakingInfo, networkTip, nextEpoch } = this.props;
+    const { networkTip, nextEpoch } = this.props;
     const epoch = get(networkTip, 'epoch', '-');
     const nextEpochStart = get(nextEpoch, 'epochStart', '-');
     const slot = get(networkTip, 'slot', '-');
@@ -173,7 +172,6 @@ export default class DelegationCenterHeader extends Component<Props> {
               <div className={styles.countdownContainer}>
                 <div className={styles.heading}>{headingSecond}</div>
                 <CountdownWidget
-                  redirectToStakingInfo={redirectToStakingInfo}
                   nextEpochStart={nextEpochStart}
                 />
               </div>

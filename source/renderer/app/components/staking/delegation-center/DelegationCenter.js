@@ -10,7 +10,6 @@ type Props = {
   wallets: Array<Wallet>,
   onDelegate: Function,
   numberOfStakePools: number,
-  redirectToStakingInfo: Function,
   networkTip: ?TipInfo,
   nextEpoch: ?NextEpoch,
 };
@@ -22,7 +21,6 @@ export default class DelegationCenter extends Component<Props> {
       wallets,
       onDelegate,
       numberOfStakePools,
-      redirectToStakingInfo,
       networkTip,
       nextEpoch,
     } = this.props;
@@ -30,7 +28,6 @@ export default class DelegationCenter extends Component<Props> {
     return (
       <Fragment>
         <DelegationCenterHeader
-          redirectToStakingInfo={redirectToStakingInfo}
           networkTip={networkTip}
           nextEpoch={nextEpoch}
         />
