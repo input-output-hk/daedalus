@@ -2,6 +2,7 @@
 import React, { Component, Fragment } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
+import classNames from 'classnames';
 import moment from 'moment';
 import SVGInline from 'react-svg-inline';
 import styles from './CountdownWidget.scss';
@@ -167,17 +168,30 @@ export default class CountdownWidget extends Component<Props, State> {
   render() {
     const { timeLeft } = this.state;
     const fieldPanels = this.generateCountdownPanels();
-    const { startDateTime } = this.props;
+    const { startDateTime, nextEpochStart } = this.props;
+
+    let timeLeftContentStyles = classNames([styles.timeLeft]);
+
+    if (!nextEpochStart) {
+      timeLeftContentStyles = classNames([
+        styles.timeLeft,
+        styles.noTimeLeftNextEpoch,
+      ]);
+    }
 
     return (
       <div className={styles.timeLeftContainer}>
-        <div className={styles.timeLeft}>
-          {startDateTime && timeLeft === 0 ? (
-            <SVGInline svg={spinnerIcon} className={styles.spinnerIcon} />
-          ) : (
-            fieldPanels
-          )}
-        </div>
+        {startDateTime ? (
+          <div className={timeLeftContentStyles}>
+            {timeLeft === 0 ? (
+              <SVGInline svg={spinnerIcon} className={styles.spinnerIcon} />
+            ) : (
+              fieldPanels
+            )}
+          </div>
+        ) : (
+          <div className={timeLeftContentStyles}>{fieldPanels}</div>
+        )}
       </div>
     );
   }

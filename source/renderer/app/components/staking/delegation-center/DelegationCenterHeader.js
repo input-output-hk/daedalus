@@ -169,13 +169,15 @@ export default class DelegationCenterHeader extends Component<Props> {
                 <div className={styles.epochs}>{fieldPanels}</div>
               </div>
             </div>
-            <div className={styles.countdownContainer}>
-              <div className={styles.heading}>{headingSecond}</div>
-              <CountdownWidget
-                redirectToStakingInfo={redirectToStakingInfo}
-                nextEpochStart={nextEpochStart}
-              />
-            </div>
+            {nextEpochStart > 0 && (
+              <div className={styles.countdownContainer}>
+                <div className={styles.heading}>{headingSecond}</div>
+                <CountdownWidget
+                  redirectToStakingInfo={redirectToStakingInfo}
+                  nextEpochStart={nextEpochStart}
+                />
+              </div>
+            )}
           </div>
           <div className={styles.description}>{description}</div>
         </div>

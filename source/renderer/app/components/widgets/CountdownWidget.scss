@@ -71,6 +71,10 @@
         }
       }
     }
+
+    &.noTimeLeftNextEpoch {
+      background: none;
+    }
   }
 
   @keyframes rotating-spinner {

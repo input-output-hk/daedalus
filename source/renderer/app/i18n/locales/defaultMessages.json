@@ -8860,13 +8860,13 @@
         "description": "Label for years value in duration.",
         "end": {
           "column": 3,
-          "line": 16
+          "line": 17
         },
         "file": "source/renderer/app/components/widgets/CountdownWidget.js",
         "id": "global.duration.years",
         "start": {
           "column": 9,
-          "line": 12
+          "line": 13
         }
       },
       {
@@ -8874,13 +8874,13 @@
         "description": "Label for months value in duration.",
         "end": {
           "column": 3,
-          "line": 21
+          "line": 22
         },
         "file": "source/renderer/app/components/widgets/CountdownWidget.js",
         "id": "global.duration.months",
         "start": {
           "column": 10,
-          "line": 17
+          "line": 18
         }
       },
       {
@@ -8888,13 +8888,13 @@
         "description": "Label for days value in duration.",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 27
         },
         "file": "source/renderer/app/components/widgets/CountdownWidget.js",
         "id": "global.duration.days",
         "start": {
           "column": 8,
-          "line": 22
+          "line": 23
         }
       },
       {
@@ -8902,13 +8902,13 @@
         "description": "Label for hours value in duration.",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 32
         },
         "file": "source/renderer/app/components/widgets/CountdownWidget.js",
         "id": "global.duration.hours",
         "start": {
           "column": 9,
-          "line": 27
+          "line": 28
         }
       },
       {
@@ -8916,13 +8916,13 @@
         "description": "Label for minutes value in duration.",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 37
         },
         "file": "source/renderer/app/components/widgets/CountdownWidget.js",
         "id": "global.duration.minutes",
         "start": {
           "column": 11,
-          "line": 32
+          "line": 33
         }
       },
       {
@@ -8930,13 +8930,13 @@
         "description": "Label for seconds value in duration.",
         "end": {
           "column": 3,
-          "line": 41
+          "line": 42
         },
         "file": "source/renderer/app/components/widgets/CountdownWidget.js",
         "id": "global.duration.seconds",
         "start": {
           "column": 11,
-          "line": 37
+          "line": 38
         }
       }
     ],
