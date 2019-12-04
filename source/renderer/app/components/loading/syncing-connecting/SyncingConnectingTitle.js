@@ -13,13 +13,13 @@ const messages = defineMessages({
   },
   incentivizedTestnet: {
     id: 'loading.screen.syncingConnectingIncentivizedTestnet',
-    defaultMessage: '!!!Incentivized Testnet',
-    description: 'Incentivized Testnet',
+    defaultMessage: '!!!INCENTIVIZED TESTNET v1',
+    description: 'INCENTIVIZED TESTNET v1',
   },
   balanceCheck: {
-    id: 'loading.screen.syncingConnectingBalanceCheck',
-    defaultMessage: '!!!Balance Check',
-    description: 'Balance Check',
+    id: 'loading.screen.syncingConnectingRewards',
+    defaultMessage: '!!!Rewards',
+    description: 'Rewards',
   },
 });
 

@@ -6,6 +6,7 @@ import type {
   WalletSyncState,
   SyncStateStatus,
   DelegationStatus,
+  WalletUnit,
 } from '../api/wallets/types';
 import type { StakePool } from '../api/staking/types';
 
@@ -27,18 +28,27 @@ export const WalletDelegationStatuses: {
   NOT_DELEGATING: 'not_delegating',
 };
 
+export const WalletUnits: {
+  ADA: WalletUnit,
+  LOVELACE: WalletUnit,
+} = {
+  ADA: 'ada',
+  LOVELACE: 'lovelace',
+};
+
 export type WalletProps = {
   id: string,
   addressPoolGap: number,
   name: string,
   amount: BigNumber,
+  availableAmount: BigNumber,
   reward: BigNumber,
   passwordUpdateDate: ?Date,
   syncState: WalletSyncState,
   isLegacy: boolean,
   isDelegated: boolean,
-  inactiveStakePercentage?: number,
-  delegatedStakePool?: StakePool,
+  inactiveStakePercentage?: ?number,
+  delegatedStakePool?: ?StakePool,
 };
 
 export default class Wallet {
@@ -46,6 +56,7 @@ export default class Wallet {
   @observable addressPoolGap: number;
   @observable name: string = '';
   @observable amount: BigNumber;
+  @observable availableAmount: BigNumber;
   @observable reward: BigNumber;
   @observable passwordUpdateDate: ?Date;
   @observable syncState: WalletSyncState;
@@ -66,6 +77,7 @@ export default class Wallet {
         'addressPoolGap',
         'name',
         'amount',
+        'availableAmount',
         'reward',
         'passwordUpdateDate',
         'syncState',

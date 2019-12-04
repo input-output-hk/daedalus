@@ -1,6 +1,10 @@
 .component {
+  align-items: flex-start;
   color: var(--theme-delegation-steps-choose-wallet-error-select-options-color);
+  display: flex;
+  flex-direction: column;
   font-family: var(--font-regular);
+  justify-content: flex-start;
   :global {
     .SimpleOptions_option {
       padding: 8px 20px;
@@ -9,11 +13,25 @@
 }
 .label {
   font-size: 14px;
-  line-height: 19px;
+  line-height: 1.43;
+}
+.topRow {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  .slug {
+    font-size: 14px;
+    line-height: 1.43;
+    margin-right: 6px;
+    text-transform: uppercase;
+  }
 }
 .detail {
   font-size: 12px;
   line-height: 1.33;
+  margin-right: 10px;
+  margin-top: 3px;
   opacity: 0.5;
 }
 .selected {

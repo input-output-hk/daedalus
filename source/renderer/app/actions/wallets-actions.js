@@ -43,6 +43,11 @@ export default class WalletsActions {
     filePath: string,
     rewards: Array<CsvRecord>,
   }> = new Action();
+  generateAddressPDF: Action<{
+    address: string,
+    note: string,
+    filePath: string,
+  }> = new Action();
   updateCertificateStep: Action<any> = new Action();
   closeCertificateGeneration: Action<any> = new Action();
   closeRewardsCsvGeneration: Action<any> = new Action();

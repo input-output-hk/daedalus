@@ -14,7 +14,7 @@ let
   installDirectorySuffix.qa = "QA";
   installDirectorySuffix.selfnode = "SelfNode";
   installDirectorySuffix.nightly = "Nightly";
-  installDirectorySuffix.itn_balance_check = "- Balance check";
+  installDirectorySuffix.itn_rewards_v1 = "- Rewards v1";
 
   spacedName = "Daedalus ${installDirectorySuffix.${environment}}";
 

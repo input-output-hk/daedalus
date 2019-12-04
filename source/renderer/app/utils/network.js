@@ -26,7 +26,7 @@ import {
   STAGING,
   TESTNET,
   DEVELOPMENT,
-  ITN_BALANCE_CHECK,
+  ITN_REWARDS_V1,
 } from '../../../common/types/environment.types';
 import {
   checkIsIncentivizedTestnetQA,
@@ -52,7 +52,7 @@ export const getNetworkExplorerUri = (
   if (checkIsIncentivizedTestnetNightly(rawNetwork)) {
     return ITN_NIGHTLY_EXPLORER_URL;
   }
-  if (network === ITN_BALANCE_CHECK) {
+  if (network === ITN_REWARDS_V1) {
     return ITN_EXPLORER_URL;
   }
   return MAINNET_EXPLORER_URL; // sets default to mainnet incase env.NETWORK is undefined
@@ -63,9 +63,7 @@ export const getNetworkExplorerUrl = (
   rawNetwork: string
 ): string => {
   const protocol =
-    network === MAINNET ||
-    network === DEVELOPMENT ||
-    network === ITN_BALANCE_CHECK
+    network === MAINNET || network === DEVELOPMENT || network === ITN_REWARDS_V1
       ? 'https://'
       : 'http://';
   const uri = getNetworkExplorerUri(network, rawNetwork);

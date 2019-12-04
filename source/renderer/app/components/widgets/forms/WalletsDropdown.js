@@ -8,6 +8,7 @@ import WalletsDropdownOption from './WalletsDropdownOption';
 
 import { formattedWalletAmount } from '../../../utils/formatters';
 import Wallet from '../../../domains/Wallet';
+import type { StakePool } from '../../../api/staking/types';
 
 type SelectProps = {
   allowBlank: boolean,
@@ -33,35 +34,61 @@ type SelectProps = {
 
 type Props = {
   ...$Shape<SelectProps>,
+  numberOfStakePools: number,
   wallets: Array<$Shape<Wallet>>,
 };
 
 type WalletOption = {
+  delegatedStakePool?: StakePool,
   label: string,
+  numberOfStakePools: number,
   detail: string,
   value: string,
 };
 
 export default class WalletsDropdown extends Component<Props> {
   static defaultProps = {
-    optionRenderer: ({ label, detail }: WalletOption) => (
-      <WalletsDropdownOption label={label} detail={detail} />
+    optionRenderer: ({
+      label,
+      detail,
+      numberOfStakePools,
+      delegatedStakePool,
+    }: WalletOption) => (
+      <WalletsDropdownOption
+        label={label}
+        numberOfStakePools={numberOfStakePools}
+        detail={detail}
+        delegatedStakePool={delegatedStakePool}
+      />
     ),
-    selectionRenderer: ({ label, detail }: WalletOption) => (
-      <WalletsDropdownOption label={label} detail={detail} selected />
+    selectionRenderer: ({
+      label,
+      detail,
+      numberOfStakePools,
+      delegatedStakePool,
+    }: WalletOption) => (
+      <WalletsDropdownOption
+        selected
+        label={label}
+        numberOfStakePools={numberOfStakePools}
+        detail={detail}
+        delegatedStakePool={delegatedStakePool}
+      />
     ),
     skin: SelectSkin,
   };
 
   render() {
-    const { wallets, ...props } = this.props;
+    const { wallets, numberOfStakePools, ...props } = this.props;
     const walletsData = wallets.map(
-      ({ name: label, id: value, amount }: Wallet) => {
+      ({ name: label, id: value, amount, delegatedStakePool }: Wallet) => {
         const detail = formattedWalletAmount(amount);
         return {
           detail,
           label,
           value,
+          numberOfStakePools,
+          delegatedStakePool,
         };
       }
     );

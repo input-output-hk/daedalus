@@ -26,10 +26,8 @@ import {
 } from '../../utils/formatters';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
 import { FormattedHTMLMessageWithLink } from '../widgets/FormattedHTMLMessageWithLink';
-import {
-  NotEnoughFundsForTransactionFeesError,
-  InvalidAddressError,
-} from '../../api/transactions/errors';
+import { InvalidAddressError } from '../../api/transactions/errors';
+import { NUMBER_FORMATS } from '../../../../common/types/number.types';
 /* eslint-disable consistent-return */
 
 export const messages = defineMessages({
@@ -107,6 +105,7 @@ type Props = {
     address: string,
     amount: number
   ) => Promise<BigNumber>,
+  currentNumberFormat: string,
   walletAmount: BigNumber,
   addressValidator: Function,
   openDialogAction: Function,
@@ -204,9 +203,9 @@ export default class WalletSendForm extends Component<Props, State> {
         },
         amount: {
           label: this.context.intl.formatMessage(messages.amountLabel),
-          placeholder: `0.${'0'.repeat(
-            this.props.currencyMaxFractionalDigits
-          )}`,
+          placeholder: `0${
+            this._getCurrentNumberFormat().decimalSeparator
+          }${'0'.repeat(this.props.currencyMaxFractionalDigits)}`,
           value: null,
           validators: [
             async ({ field, form }) => {
@@ -310,6 +309,7 @@ export default class WalletSendForm extends Component<Props, State> {
                   {...amountFieldProps}
                   className="amount"
                   label={intl.formatMessage(messages.amountLabel)}
+                  numberFormat={this._getCurrentNumberFormat()}
                   numberLocaleOptions={{
                     minimumFractionDigits: currencyMaxFractionalDigits,
                   }}
@@ -365,20 +365,10 @@ export default class WalletSendForm extends Component<Props, State> {
   }
 
   async _calculateTransactionFee(address: string, amountValue: string) {
-    const { walletAmount } = this.props;
     const amount = formattedAmountToLovelace(amountValue);
-    const transactionAmount = new BigNumber(amountValue || 0);
 
     try {
       const fee = await this.props.calculateTransactionFee(address, amount);
-      const amountWithFee = transactionAmount.add(fee);
-
-      // Amount + fees exceeds walletBalance:
-      // = show "Not enough Ada for fees. Try sending a smaller amount."
-      if (amountWithFee.gt(walletAmount)) {
-        throw new NotEnoughFundsForTransactionFeesError();
-      }
-
       if (this._isMounted) {
         this._isCalculatingFee = false;
         this.setState({
@@ -406,5 +396,9 @@ export default class WalletSendForm extends Component<Props, State> {
         });
       }
     }
+  }
+
+  _getCurrentNumberFormat() {
+    return NUMBER_FORMATS[this.props.currentNumberFormat];
   }
 }
