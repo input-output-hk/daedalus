@@ -171,9 +171,7 @@ export default class DelegationCenterHeader extends Component<Props> {
             {nextEpochStart > 0 && (
               <div className={styles.countdownContainer}>
                 <div className={styles.heading}>{headingSecond}</div>
-                <CountdownWidget
-                  nextEpochStart={nextEpochStart}
-                />
+                <CountdownWidget nextEpochStart={nextEpochStart} />
               </div>
             )}
           </div>

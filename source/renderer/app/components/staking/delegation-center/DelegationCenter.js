@@ -27,10 +27,7 @@ export default class DelegationCenter extends Component<Props> {
 
     return (
       <Fragment>
-        <DelegationCenterHeader
-          networkTip={networkTip}
-          nextEpoch={nextEpoch}
-        />
+        <DelegationCenterHeader networkTip={networkTip} nextEpoch={nextEpoch} />
         <DelegationCenterBody
           wallets={wallets}
           onDelegate={onDelegate}
