@@ -27,6 +27,7 @@ import {
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
 import { FormattedHTMLMessageWithLink } from '../widgets/FormattedHTMLMessageWithLink';
 import { InvalidAddressError } from '../../api/transactions/errors';
+import { NUMBER_FORMATS } from '../../../../common/types/number.types';
 /* eslint-disable consistent-return */
 
 export const messages = defineMessages({
@@ -104,6 +105,7 @@ type Props = {
     address: string,
     amount: number
   ) => Promise<BigNumber>,
+  currentNumberFormat: string,
   walletAmount: BigNumber,
   addressValidator: Function,
   openDialogAction: Function,
@@ -201,9 +203,9 @@ export default class WalletSendForm extends Component<Props, State> {
         },
         amount: {
           label: this.context.intl.formatMessage(messages.amountLabel),
-          placeholder: `0.${'0'.repeat(
-            this.props.currencyMaxFractionalDigits
-          )}`,
+          placeholder: `0${
+            this._getCurrentNumberFormat().decimalSeparator
+          }${'0'.repeat(this.props.currencyMaxFractionalDigits)}`,
           value: null,
           validators: [
             async ({ field, form }) => {
@@ -307,6 +309,7 @@ export default class WalletSendForm extends Component<Props, State> {
                   {...amountFieldProps}
                   className="amount"
                   label={intl.formatMessage(messages.amountLabel)}
+                  numberFormat={this._getCurrentNumberFormat()}
                   numberLocaleOptions={{
                     minimumFractionDigits: currencyMaxFractionalDigits,
                   }}
@@ -393,5 +396,9 @@ export default class WalletSendForm extends Component<Props, State> {
         });
       }
     }
+  }
+
+  _getCurrentNumberFormat() {
+    return NUMBER_FORMATS[this.props.currentNumberFormat];
   }
 }
