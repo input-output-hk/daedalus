@@ -706,6 +706,9 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-staking-delegation-center-gear-icon-fill-color-active': '#2d2d2d',
     '--theme-staking-delegation-center-no-wallets-instructions-color':
       '#2d2d2d',
+    '--theme-staking-delegation-center-divider-border-color':
+      'rgba(45, 45, 45, 0.1)',
+    '--theme-staking-delegation-center-fees-amount-color': '#ea4c5b',
     '--theme-staking-countdown-widget-background-color':
       'rgba(94, 96, 102, 0.07)',
     '--theme-staking-countdown-widget-delimeter-background-color': '#2d2d2d',

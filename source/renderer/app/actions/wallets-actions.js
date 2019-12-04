@@ -35,6 +35,9 @@ export default class WalletsActions {
     stakePoolId: string,
     passphrase: string,
   }> = new Action();
+  setUndelegateWalletSubmissionSuccess: Action<{
+    result: boolean,
+  }> = new Action();
   sendMoney: Action<{
     receiver: string,
     amount: string,

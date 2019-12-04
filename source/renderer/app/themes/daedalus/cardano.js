@@ -714,6 +714,8 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-staking-delegation-center-gear-icon-fill-color-active': '#5e6066',
     '--theme-staking-delegation-center-no-wallets-instructions-color':
       '#5e6066',
+    '--theme-staking-delegation-center-divider-border-color': '#dfe4e8',
+    '--theme-staking-delegation-center-fees-amount-color': '#ea4c5b',
     '--theme-staking-info-learn-more-button-text-color': '#ffffff',
     '--theme-staking-info-learn-more-icon-color': 'rgba(255, 255, 255, 1)',
     '--theme-staking-learn-more-button-color': '#ffffff',

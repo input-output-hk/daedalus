@@ -1,17 +1,21 @@
 // @flow
+/* eslint-disable jsx-a11y/label-has-associated-control, jsx-a11y/label-has-for */
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import BigNumber from 'bignumber.js';
+import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
+import classnames from 'classnames';
 import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
-import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
-import { SIMPLE_DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
+import { formattedWalletAmount } from '../../../utils/formatters';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
+import { FormattedHTMLMessageWithLink } from '../../widgets/FormattedHTMLMessageWithLink';
 import Dialog from '../../widgets/Dialog';
 import styles from './UndelegateConfirmationDialog.scss';
 import globalMessages from '../../../i18n/global-messages';
+import LocalizableError from '../../../i18n/LocalizableError';
 import { submitOnEnter } from '../../../utils/form';
 
 const messages = defineMessages({
@@ -29,7 +33,7 @@ const messages = defineMessages({
   description: {
     id: 'staking.delegationCenter.undelegate.dialog.description',
     defaultMessage:
-      '!!!<p>The stake from your wallet <strong>{walletName}</strong> is currently delegated to the <strong>{stakePoolName}</strong> stake pool.</p><p>Do you want to undelegate your stake and stop earning rewards?</p>',
+      '!!!<p>The stake from your wallet <strong>{walletName}</strong> is currently delegated to the <strong>[{stakePoolSlug}] {stakePoolName}</strong> stake pool.</p><p>Do you want to undelegate your stake and stop earning rewards?</p>',
     description: 'Description for the "Undelegate" dialog.',
   },
   confirmUnsupportCheck: {
@@ -67,14 +71,22 @@ const messages = defineMessages({
     defaultMessage: '!!!Type your spending password here',
     description: 'Spending password placeholder in the "Undelegate" dialog.',
   },
+  passwordErrorMessage: {
+    id: 'staking.delegationCenter.undelegate.dialog.passwordError',
+    defaultMessage: '!!!Incorrect spending password.',
+    description: 'Label for password error in the "Undelegate" dialog.',
+  },
 });
 
 type Props = {
   walletName: string,
   stakePoolName: string,
+  stakePoolSlug: string,
   onConfirm: Function,
   onCancel: Function,
+  onExternalLinkClick: Function,
   isSubmitting: boolean,
+  error: ?LocalizableError,
   fees: BigNumber,
 };
 
@@ -145,11 +157,32 @@ export default class UndelegateConfirmationDialog extends Component<
   handleSubmitOnEnter = (event: KeyboardEvent) =>
     submitOnEnter(this.handleSubmit, event);
 
+  generateErrorElement = () => {
+    const { error, onExternalLinkClick } = this.props;
+
+    if (!error) {
+      return null;
+    }
+
+    const errorHasLink = !!error.values.linkLabel;
+    const result = errorHasLink ? (
+      <FormattedHTMLMessageWithLink
+        message={error}
+        onExternalLinkClick={onExternalLinkClick}
+      />
+    ) : (
+      this.context.intl.formatMessage(error)
+    );
+
+    return result;
+  };
+
   render() {
     const { intl } = this.context;
     const {
       walletName,
       stakePoolName,
+      stakePoolSlug,
       onCancel,
       onConfirm,
       isSubmitting,
@@ -161,19 +194,24 @@ export default class UndelegateConfirmationDialog extends Component<
       passphrase,
     } = this.state;
     const isConfirmDisabled = this.isConfirmDisabled();
+    const buttonClasses = classnames([
+      'attention',
+      isSubmitting ? styles.isSubmitting : null,
+    ]);
     const actions = [
       {
         label: intl.formatMessage(globalMessages.cancel),
         onClick: onCancel,
       },
       {
-        className: isSubmitting ? styles.isSubmitting : null,
+        className: buttonClasses,
         label: intl.formatMessage(messages.confirmButtonLabel),
         onClick: () => onConfirm(passphrase),
         disabled: isConfirmDisabled,
         primary: true,
       },
     ];
+    const errorElement = this.generateErrorElement();
 
     return (
       <Dialog
@@ -184,10 +222,12 @@ export default class UndelegateConfirmationDialog extends Component<
         className={styles.dialog}
         closeButton={<DialogCloseButton onClose={onCancel} />}
       >
-        <FormattedHTMLMessage
-          {...messages.description}
-          values={{ walletName, stakePoolName }}
-        />
+        <div className={styles.description}>
+          <FormattedHTMLMessage
+            {...messages.description}
+            values={{ walletName, stakePoolName, stakePoolSlug }}
+          />
+        </div>
         <Checkbox
           label={intl.formatMessage(messages.confirmUnsupportCheck)}
           onChange={this.onConfirmUnsupportCheckChange}
@@ -200,14 +240,20 @@ export default class UndelegateConfirmationDialog extends Component<
           checked={isConfirmUneligibleChecked}
           skin={CheckboxSkin}
         />
-        <hr />
-        <h5>{intl.formatMessage(messages.feesLabel)}</h5>
-        <p>
-          <span>{fees.toFormat(SIMPLE_DECIMAL_PLACES_IN_ADA)}</span>
-          <span>{intl.formatMessage(messages.adaLabel)}</span>
-        </p>
+        <div className={styles.divider} />
+        <div className={styles.feesWrapper}>
+          <label className="SimpleFormField_label">
+            {intl.formatMessage(messages.feesLabel)}
+          </label>
+          <p className={styles.feesAmount}>
+            <span>{formattedWalletAmount(fees, false)}</span>
+            <span className={styles.feesAmountLabel}>
+              &nbsp;{intl.formatMessage(messages.adaLabel)}
+            </span>
+          </p>
+        </div>
         <Input
-          className={styles.passwordInput}
+          type="password"
           label={intl.formatMessage(messages.spendingPasswordLabel)}
           placeholder={intl.formatMessage(messages.spendingPasswordPlaceholder)}
           value={passphrase}
@@ -215,6 +261,7 @@ export default class UndelegateConfirmationDialog extends Component<
           onChange={this.onPassphraseChange}
           skin={InputSkin}
         />
+        {errorElement && <p className={styles.error}>{errorElement}</p>}
       </Dialog>
     );
   }

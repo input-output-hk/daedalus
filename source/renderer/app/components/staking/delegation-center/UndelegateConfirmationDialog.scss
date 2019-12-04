@@ -1,7 +1,16 @@
 @import '../../../themes/mixins/loading-spinner';
+@import '../../../themes/mixins/error-message';
 
 .dialog {
   font-family: var(--font-light);
+
+  .description {
+    p {
+      font-weight: 300;
+      line-height: 1.38;
+      margin-bottom: 15px;
+    }
+  }
 
   :global {
     .SimpleCheckbox_root {
@@ -17,8 +26,33 @@
     }
   }
 
-  .passwordInput {
-    margin-top: 20px;
+  .divider {
+    height: 1px;
+    margin: 20px 0;
+    width: 100%;
+    border-top: 1px solid
+      var(--theme-staking-delegation-center-divider-border-color);
+  }
+
+  .feesWrapper {
+    font-family: var(--font-medium);
+    font-weight: 500;
+    line-height: 1.38;
+    margin-bottom: 20px;
+
+    .feesAmount {
+      color: var(--theme-staking-delegation-center-fees-amount-color);
+      user-select: text;
+
+      .feesAmountLabel {
+        opacity: 0.5;
+      }
+    }
+  }
+  .error {
+    @include error-message;
+    margin-top: 27px;
+    text-align: center;
   }
 
   .isSubmitting {

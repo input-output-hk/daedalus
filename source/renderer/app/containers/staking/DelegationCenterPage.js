@@ -41,7 +41,7 @@ export default class DelegationCenterPage extends Component<Props> {
 
   render() {
     const { stores } = this.props;
-    const { uiDialogs, staking, wallets } = stores;
+    const { app, uiDialogs, staking, wallets } = stores;
     const { adaValue, percentage, stakePools } = staking;
 
     if (!wallets.allWallets.length) {
@@ -63,7 +63,9 @@ export default class DelegationCenterPage extends Component<Props> {
           onUndelegate={this.handleUndelegate}
         />
         {uiDialogs.isOpen(UndelegateConfirmationDialog) ? (
-          <UndelegateDialogContainer />
+          <UndelegateDialogContainer
+            onExternalLinkClick={app.openExternalLink}
+          />
         ) : null}
         {uiDialogs.isOpen(DelegationSetupWizardDialog) ? (
           <DelegationSetupWizardDialogContainer />

@@ -702,6 +702,9 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--theme-staking-delegation-center-gear-icon-fill-color-active': '#ffffff',
     '--theme-staking-delegation-center-no-wallets-instructions-color':
       '#ffffff',
+    '--theme-staking-delegation-center-divider-border-color':
+      'rgba(255, 255, 255, 0.2)',
+    '--theme-staking-delegation-center-fees-amount-color': '#ea4c5b',
     '--theme-staking-countdown-widget-background-color':
       'rgba(255, 255, 255, 0.07)',
     '--theme-staking-countdown-widget-delimeter-background-color': '#ffffff',

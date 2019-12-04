@@ -1,0 +1,24 @@
+.dialog {
+  font-family: var(--font-light);
+
+  .sadLogoContainer {
+    display: flex;
+    justify-content: center;
+    margin: 0 0 20px;
+
+    .sadLogoIcon {
+      height: 90px;
+      width: 90px;
+    }
+  }
+  .description {
+    p {
+      font-weight: 300;
+      line-height: 1.38;
+      margin-bottom: 15px;
+    }
+    p:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
