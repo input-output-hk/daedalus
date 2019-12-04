@@ -50,15 +50,13 @@ type Props = {
   isLoadingTransactions: boolean,
   isRestoreActive: boolean,
   isRenderingAsVirtualList: boolean,
-  network: string,
-  rawNetwork: string,
   onShowMoreTransactions?: Function,
-  onOpenExternalLink?: Function,
+  onOpenExternalLink: Function,
+  getUrlByType: Function,
   showMoreTransactionsButton?: boolean,
   transactions: Array<WalletTransaction>,
   walletId: string,
   isDeletingTransaction: boolean,
-  currentLocale: string,
   currentDateFormat: string,
   currentTimeFormat: string,
 };
@@ -73,8 +71,6 @@ export default class WalletTransactionsList extends Component<Props> {
 
   static defaultProps = {
     isRenderingAsVirtualList: false,
-    network: DEVELOPMENT,
-    rawNetwork: DEVELOPMENT,
     showMoreTransactionsButton: false,
     onShowMoreTransactions: () => {},
     onOpenExternalLink: () => {},
@@ -181,12 +177,10 @@ export default class WalletTransactionsList extends Component<Props> {
       deletePendingTransaction,
       formattedWalletAmount,
       isRestoreActive,
-      network,
-      rawNetwork,
       onOpenExternalLink,
+      getUrlByType,
       walletId,
       isDeletingTransaction,
-      currentLocale,
       currentTimeFormat,
     } = this.props;
     const { isFirstInGroup, isLastInGroup, tx } = data;
@@ -204,14 +198,12 @@ export default class WalletTransactionsList extends Component<Props> {
           isExpanded={this.isTxExpanded(tx)}
           isLastInList={isLastInGroup}
           isRestoreActive={isRestoreActive}
-          network={network}
-          rawNetwork={rawNetwork}
           onDetailsToggled={() => this.toggleTransactionExpandedState(tx)}
           onOpenExternalLink={onOpenExternalLink}
+          getUrlByType={getUrlByType}
           state={tx.state}
           walletId={walletId}
           isDeletingTransaction={isDeletingTransaction}
-          currentLocale={currentLocale}
           currentTimeFormat={currentTimeFormat}
         />
       </div>
