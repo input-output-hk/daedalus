@@ -10,6 +10,7 @@ import {
 import SVGInline from 'react-svg-inline';
 import isNil from 'lodash/isNil';
 import Wallet from '../../../domains/Wallet';
+import StakePool from '../../../domains/StakePool';
 import { getColorFromRange } from '../../../utils/colors';
 import settingsIcon from '../../../assets/images/settings-ic.inline.svg';
 import { SIMPLE_DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
@@ -79,6 +80,7 @@ const messages = defineMessages({
 
 type Props = {
   wallet: Wallet,
+  delegatedStakePool?: StakePool,
   numberOfStakePools: number,
   onDelegate: Function,
 };
@@ -97,13 +99,8 @@ export default class WalletRow extends Component<Props> {
   render() {
     const { intl } = this.context;
     const {
-      wallet: {
-        name,
-        amount,
-        inactiveStakePercentage,
-        isDelegated,
-        delegatedStakePool,
-      },
+      wallet: { name, amount, inactiveStakePercentage, isDelegated },
+      delegatedStakePool,
       numberOfStakePools,
     } = this.props;
 

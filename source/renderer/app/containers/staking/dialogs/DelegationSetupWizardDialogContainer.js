@@ -133,7 +133,7 @@ export default class DelegationSetupWizardDialogContainer extends Component<
     const { activeStep, selectedWalletId, selectedPoolId } = this.state;
     const { app, staking, wallets, profile } = this.props.stores;
     const { currentTheme, currentLocale, environment } = profile;
-    const { stakePools, delegatingStakePools } = staking;
+    const { stakePools, delegatingStakePools, getStakePoolById } = staking;
     const { network, rawNetwork } = environment;
     const isDisabled = wallets.allWallets.reduce(
       (disabled: boolean, { amount }: Wallet) => {
@@ -176,6 +176,7 @@ export default class DelegationSetupWizardDialogContainer extends Component<
         onLearnMoreClick={this.handleLearnMoreClick}
         onConfirm={this.handleConfirm}
         onActivate={this.handleActivate}
+        getStakePoolById={getStakePoolById}
       />
     );
   }

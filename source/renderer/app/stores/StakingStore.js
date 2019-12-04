@@ -115,6 +115,11 @@ export default class StakingStore extends Store {
     return { wallet, reward };
   };
 
-  getStakePoolById = stakePoolId =>
-    this.stakePools.find(({ id }: StakePool) => id === stakePoolId);
+  // @API TODO: Replace when Stake Pools Join is implemented
+  // getStakePoolById = (stakePoolId: string) =>
+  //   this.stakePools.find(({ id }: StakePool) => id === stakePoolId);
+  getStakePoolById = (stakePoolIndex: number) =>
+    stakePoolIndex < this.stakePools.length
+      ? this.stakePools[stakePoolIndex]
+      : null;
 }
