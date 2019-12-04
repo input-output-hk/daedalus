@@ -30,39 +30,6 @@ $itnDecrease: 50px;
   overflow: hidden;
   user-select: none;
   white-space: nowrap;
-
-  &.isShowingSubMenus {
-    max-width: $maxWidth1;
-    @media (min-width: 950px) {
-      max-width: $maxWidth2;
-    }
-    @media (min-width: 1000px) {
-      max-width: $maxWidth3;
-    }
-    @media (min-width: 1050px) {
-      max-width: $maxWidth4;
-    }
-    @media (min-width: 1081px) {
-      max-width: none;
-    }
-
-    &.isIncentivizedTestnet {
-      max-width: $maxWidth1 - $itnDecrease;
-
-      @media (min-width: 950px) {
-        max-width: $maxWidth2 - $itnDecrease;
-      }
-      @media (min-width: 1000px) {
-        max-width: $maxWidth3 - $itnDecrease;
-      }
-      @media (min-width: 1050px) {
-        max-width: $maxWidth4 - $itnDecrease;
-      }
-      @media (min-width: 1110px) {
-        max-width: none;
-      }
-    }
-  }
 }
 .addressActions {
   display: flex;
