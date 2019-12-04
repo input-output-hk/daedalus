@@ -129,13 +129,14 @@ export const WHITE_THEME_OUTPUT = {
       'rgba(45, 45, 45, 0.1)',
     '--theme-delegation-steps-choose-stake-pool-delegated-pools-label-color':
       '#2d2d2d',
-    '--theme-delegation-steps-choose-stake-pool-slug-color':
+    '--theme-delegation-steps-choose-stake-pool-ticker-color':
       'rgba(45, 45, 45, 0.1)',
     '--theme-delegation-steps-choose-stake-pool-select-box-placeholder-color':
       'rgba(45, 45, 45, 0.1)',
     '--theme-delegation-steps-choose-stake-pool-selected-checkmark-icon-color':
       '#fafbfc',
-    '--theme-delegation-steps-choose-stake-pool-selected-slug-color': '#fafbfc',
+    '--theme-delegation-steps-choose-stake-pool-selected-ticker-color':
+      '#fafbfc',
     '--theme-delegation-steps-choose-stake-pool-thumb-background-color': '#fff',
     '--theme-delegation-steps-choose-stake-pool-thumb-border-color':
       'rgba(45, 45, 45, 0.1)',
@@ -148,7 +149,7 @@ export const WHITE_THEME_OUTPUT = {
       '0 5px 20px 0 rgba(0, 0, 0, 0.25)',
     '--theme-delegation-steps-choose-stake-pool-tooltip-description-color':
       '#fafbfc',
-    '--theme-delegation-steps-choose-stake-pool-tooltip-slug-color':
+    '--theme-delegation-steps-choose-stake-pool-tooltip-ticker-color':
       '#2d2d2d99',
     '--theme-delegation-steps-choose-stake-pool-tooltip-table-label-color':
       '#fafbfc',
@@ -649,8 +650,8 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-staking-stake-pools-search-icon-color': '#2d2d2d',
     '--theme-staking-stake-pool-selected-background-color': '#5da377',
     '--theme-staking-stake-pool-selected-checkmark-icon-color': '#fafbfc',
-    '--theme-staking-stake-pool-selected-slug-color': '#fafbfc',
-    '--theme-staking-stake-pool-slug-color': '#2d2d2d',
+    '--theme-staking-stake-pool-selected-ticker-color': '#fafbfc',
+    '--theme-staking-stake-pool-ticker-color': '#2d2d2d',
     '--theme-staking-stake-pool-retirement-background-color': '#ea4c5b',
     '--theme-staking-stake-pool-tooltip-background-color': '#fff',
     '--theme-staking-stake-pool-tooltip-border-color': 'rgba(45, 45, 45, 0.1)',

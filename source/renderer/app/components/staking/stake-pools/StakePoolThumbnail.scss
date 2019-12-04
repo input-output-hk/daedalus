@@ -32,8 +32,8 @@
   box-shadow: 0 0 4px 2px var(--theme-staking-stake-pool-glow-color);
 }
 
-.slug {
-  color: var(--theme-staking-stake-pool-slug-color);
+.ticker {
+  color: var(--theme-staking-stake-pool-ticker-color);
   font-size: 14px;
   font-weight: 600;
   letter-spacing: -0.5px;
@@ -100,7 +100,7 @@
   .ranking {
     visibility: hidden;
   }
-  .slug {
-    color: var(--theme-staking-stake-pool-selected-slug-color);
+  .ticker {
+    color: var(--theme-staking-stake-pool-selected-ticker-color);
   }
 }

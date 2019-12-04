@@ -12,6 +12,7 @@ import { ROUTES } from '../../routes-config';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import { formattedWalletAmount } from '../../utils/formatters';
 import { WalletSyncStateStatuses } from '../../domains/Wallet';
+import { getNetworkExplorerUrlByType } from '../../utils/network';
 
 export const messages = defineMessages({
   noTransactions: {
@@ -69,6 +70,15 @@ export default class WalletSummaryPage extends Component<Props> {
       get(wallet, ['syncState', 'status'], '') ===
       WalletSyncStateStatuses.RESTORING;
 
+    const getUrlByType = (type: 'tx' | 'address', param: string) =>
+      getNetworkExplorerUrlByType(
+        type,
+        param,
+        network,
+        rawNetwork,
+        currentLocale
+      );
+
     if (
       recentTransactionsRequest.isExecutingFirstTime ||
       hasAny ||
@@ -88,14 +98,12 @@ export default class WalletSummaryPage extends Component<Props> {
           showMoreTransactionsButton={
             recent.length > MAX_TRANSACTIONS_ON_SUMMARY_PAGE
           }
-          network={network}
-          rawNetwork={rawNetwork}
           onOpenExternalLink={openExternalLink}
+          getUrlByType={getUrlByType}
           onShowMoreTransactions={this.handleShowMoreTransaction}
           totalAvailable={totalAvailable}
           currentTimeFormat={currentTimeFormat}
           currentDateFormat={currentDateFormat}
-          currentLocale={currentLocale}
         />
       );
     } else if (!hasAny) {

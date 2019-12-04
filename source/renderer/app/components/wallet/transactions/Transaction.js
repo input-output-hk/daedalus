@@ -18,10 +18,8 @@ import {
 } from '../../../domains/WalletTransaction';
 import globalMessages from '../../../i18n/global-messages';
 import type { TransactionState } from '../../../api/transactions/types';
-import { getNetworkExplorerUrl } from '../../../utils/network';
 import { PENDING_TIME_LIMIT } from '../../../config/txnsConfig';
 import CancelTransactionConfirmationDialog from './CancelTransactionConfirmationDialog';
-import { ITN_REWARDS_V1 } from '../../../../../common/types/environment.types';
 
 /* eslint-disable consistent-return */
 
@@ -142,14 +140,12 @@ type Props = {
   isRestoreActive: boolean,
   isLastInList: boolean,
   formattedWalletAmount: Function,
-  network: string,
-  rawNetwork: string,
   onDetailsToggled: ?Function,
-  onOpenExternalLink: ?Function,
+  onOpenExternalLink: Function,
+  getUrlByType: Function,
   currentTimeFormat: string,
   walletId: string,
   isDeletingTransaction: boolean,
-  currentLocale: string,
 };
 
 type State = {
@@ -170,38 +166,10 @@ export default class Transaction extends Component<Props, State> {
     if (onDetailsToggled) onDetailsToggled();
   }
 
-  handleOpenExplorer(type: string, param: string, e: Event) {
-    const {
-      onOpenExternalLink,
-      network,
-      rawNetwork,
-      currentLocale,
-    } = this.props;
-    let queryStringPrefix = '';
-    let localePrefix = '';
-    let typeValue = type;
-
-    if (network === ITN_REWARDS_V1) {
-      queryStringPrefix = '?id=';
-      localePrefix = `/${currentLocale.substr(0, 2)}`;
-      if (type === 'tx') typeValue = 'transaction';
-    }
-
-    if (onOpenExternalLink) {
-      e.stopPropagation();
-      const link = `${getNetworkExplorerUrl(
-        network,
-        rawNetwork
-      )}${localePrefix}/${typeValue}/${queryStringPrefix}${param}`;
-      onOpenExternalLink(link);
-    }
-  }
-
   handleOpenSupportArticle = () => {
     const { intl } = this.context;
     const { onOpenExternalLink } = this.props;
     const supportArticleUrl = intl.formatMessage(messages.supportArticleUrl);
-    if (!onOpenExternalLink) return null;
     return onOpenExternalLink(supportArticleUrl);
   };
 
@@ -295,6 +263,7 @@ export default class Transaction extends Component<Props, State> {
       state,
       formattedWalletAmount,
       onOpenExternalLink,
+      getUrlByType,
       isExpanded,
       isDeletingTransaction,
       currentTimeFormat,
@@ -302,8 +271,6 @@ export default class Transaction extends Component<Props, State> {
     const { intl } = this.context;
 
     const { showConfirmationDialog } = this.state;
-
-    const canOpenExplorer = onOpenExternalLink;
 
     const isPendingTransaction = state === TransactionStates.PENDING;
 
@@ -320,7 +287,7 @@ export default class Transaction extends Component<Props, State> {
 
     const detailsStyles = classNames([
       styles.details,
-      canOpenExplorer ? styles.clickable : null,
+      styles.clickable,
       isExpanded ? styles.detailsExpanded : styles.detailsClosed,
     ]);
 
@@ -348,7 +315,9 @@ export default class Transaction extends Component<Props, State> {
               role="presentation"
               aria-hidden
               className={styles.explorerLink}
-              onClick={this.handleOpenExplorer.bind(this, 'tx', transactionId)}
+              onClick={() =>
+                onOpenExternalLink(getUrlByType('tx', transactionId))
+              }
             >
               {intl.formatMessage(messages.unresolvedInputAddressesLinkLabel)}
               <SVGInline svg={externalLinkIcon} />
@@ -370,7 +339,9 @@ export default class Transaction extends Component<Props, State> {
                 role="presentation"
                 aria-hidden
                 className={styles.address}
-                onClick={this.handleOpenExplorer.bind(this, 'address', address)}
+                onClick={() =>
+                  onOpenExternalLink(getUrlByType('address', address))
+                }
               >
                 {address}
                 <SVGInline svg={externalLinkIcon} />
@@ -444,11 +415,9 @@ export default class Transaction extends Component<Props, State> {
                       role="presentation"
                       aria-hidden
                       className={styles.address}
-                      onClick={this.handleOpenExplorer.bind(
-                        this,
-                        'address',
-                        address
-                      )}
+                      onClick={() =>
+                        onOpenExternalLink(getUrlByType('address', address))
+                      }
                     >
                       {address}
                       <SVGInline svg={externalLinkIcon} />
@@ -462,7 +431,9 @@ export default class Transaction extends Component<Props, State> {
                     role="presentation"
                     aria-hidden
                     className={styles.transactionId}
-                    onClick={this.handleOpenExplorer.bind(this, 'tx', data.id)}
+                    onClick={() =>
+                      onOpenExternalLink(getUrlByType('tx', data.id))
+                    }
                   >
                     {data.id}
                     <SVGInline svg={externalLinkIcon} />

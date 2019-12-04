@@ -25,7 +25,13 @@ export default class WalletSendPage extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { uiDialogs, wallets, transactions, app } = this.props.stores;
+    const {
+      uiDialogs,
+      wallets,
+      transactions,
+      app,
+      profile,
+    } = this.props.stores;
     const { actions } = this.props;
     const { isValidAddress } = wallets;
     const { calculateTransactionFee, validateAmount } = transactions;
@@ -44,6 +50,7 @@ export default class WalletSendPage extends Component<Props> {
         currencyUnit={intl.formatMessage(globalMessages.unitAda)}
         currencyMaxIntegerDigits={MAX_INTEGER_PLACES_IN_ADA}
         currencyMaxFractionalDigits={DECIMAL_PLACES_IN_ADA}
+        currentNumberFormat={profile.currentNumberFormat}
         validateAmount={validateAmount}
         calculateTransactionFee={(address: string, amount: number) =>
           calculateTransactionFee({
