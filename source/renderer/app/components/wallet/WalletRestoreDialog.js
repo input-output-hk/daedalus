@@ -132,15 +132,21 @@ const messages = defineMessages({
   },
   recoveryPhraseTabTitle: {
     id: 'wallet.restore.dialog.tab.title.recoveryPhrase',
-    defaultMessage: '!!!Wallet recovery phrase',
+    defaultMessage: '!!!Daedalus wallet',
     description:
-      'Tab title "Wallet recovery phrasee" in the wallet restore dialog.',
+      'Tab title "Daedalus wallet" in the wallet restore dialog.',
   },
   certificateTabTitle: {
     id: 'wallet.restore.dialog.tab.title.certificate',
-    defaultMessage: '!!!Paper wallet recovery phrase',
+    defaultMessage: '!!!Daedalus paper wallet',
     description:
-      'Tab title "Paper wallet recovery phrase" in the wallet restore dialog.',
+      'Tab title "Daedalus paper wallet" in the wallet restore dialog.',
+  },
+  yoroiTabTitle: {
+    id: 'wallet.restore.dialog.tab.title.yoroi',
+    defaultMessage: '!!!Yoroi wallet',
+    description:
+      'Tab title "Yoroi wallet" in the wallet restore dialog.',
   },
   shieldedRecoveryPhraseInputLabel: {
     id: 'wallet.restore.dialog.shielded.recovery.phrase.input.label',
@@ -413,6 +419,14 @@ export default class WalletRestoreDialog extends Component<Props, State> {
             }
           >
             {intl.formatMessage(messages.certificateTabTitle)}
+          </button>
+          <button
+            className={regularTabClasses}
+            onClick={() =>
+              this.onSelectWalletType(WALLET_RESTORE_TYPES.YOROI, true)
+            }
+          >
+            {intl.formatMessage(messages.yoroiTabTitle)}
           </button>
         </div>
 
