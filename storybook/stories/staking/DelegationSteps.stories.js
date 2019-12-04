@@ -79,11 +79,15 @@ export class StakingDelegationSteps extends Component<Props, State> {
         key="DelegationStepsChooseStakePoolDialog"
         stepsList={getDelegationWizardStepsList(this.props.locale)}
         stakePoolsList={stakePoolsList}
-        stakePoolsDelegatingList={[
+        recentStakePools={[
           STAKE_POOLS[0],
           STAKE_POOLS[13],
           STAKE_POOLS[36],
           STAKE_POOLS[85],
+          STAKE_POOLS[95],
+          STAKE_POOLS[105],
+          STAKE_POOLS[200],
+          STAKE_POOLS[250],
         ]}
         onOpenExternalLink={() => {}}
         currentTheme={this.props.currentTheme}

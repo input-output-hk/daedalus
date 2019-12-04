@@ -10,7 +10,7 @@ import classNames from 'classnames';
 import SVGInline from 'react-svg-inline';
 import { Stepper } from 'react-polymorph/lib/components/Stepper';
 import { StepperSkin } from 'react-polymorph/lib/skins/simple/StepperSkin';
-import { find, get } from 'lodash';
+import { find, get, take } from 'lodash';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import DialogBackButton from '../../widgets/DialogBackButton';
 import Dialog from '../../widgets/Dialog';
@@ -94,7 +94,7 @@ const messages = defineMessages({
 
 type Props = {
   stepsList: Array<string>,
-  stakePoolsDelegatingList: Array<StakePool>,
+  recentStakePools: Array<StakePool>,
   stakePoolsList: Array<StakePool>,
   selectedWallet: ?Wallet,
   onOpenExternalLink: Function,
@@ -149,7 +149,7 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
     const { intl } = this.context;
     const {
       stepsList,
-      stakePoolsDelegatingList,
+      recentStakePools,
       stakePoolsList,
       onOpenExternalLink,
       currentTheme,
@@ -296,11 +296,11 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
               <FormattedMessage {...messages.recentPoolsLabel} values={{}} />
             </p>
             <StakePoolsList
-              listName="stakePoolsDelegatingList"
-              stakePoolsList={stakePoolsDelegatingList}
+              listName="recentStakePools"
+              stakePoolsList={take(recentStakePools, 6)}
               onOpenExternalLink={onOpenExternalLink}
               currentTheme={currentTheme}
-              isListActive={selectedList === 'stakePoolsDelegatingList'}
+              isListActive={selectedList === 'recentStakePools'}
               setListActive={this.handleSetListActive}
               containerClassName="Dialog_content"
               onSelect={this.handleSelect}

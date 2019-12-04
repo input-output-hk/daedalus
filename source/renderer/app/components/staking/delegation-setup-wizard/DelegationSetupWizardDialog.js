@@ -27,7 +27,7 @@ type Props = {
   stepsList: Array<string>,
   wallets: Array<Wallet>,
   minDelegationFunds: number,
-  stakePoolsDelegatingList: Array<StakePool>,
+  recentStakePools: Array<StakePool>,
   stakePoolsList: Array<StakePool>,
   onOpenExternalLink: Function,
   currentTheme: string,
@@ -56,7 +56,7 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
       stepsList,
       wallets,
       minDelegationFunds,
-      stakePoolsDelegatingList,
+      recentStakePools,
       stakePoolsList,
       onOpenExternalLink,
       currentTheme,
@@ -102,7 +102,7 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
         content = (
           <DelegationStepsChooseStakePoolDialog
             stepsList={stepsList}
-            stakePoolsDelegatingList={stakePoolsDelegatingList}
+            recentStakePools={recentStakePools}
             stakePoolsList={stakePoolsList}
             selectedWallet={selectedWallet}
             onOpenExternalLink={onOpenExternalLink}

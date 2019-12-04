@@ -81,6 +81,20 @@ export default class StakingStore extends Store {
     return STAKE_POOLS;
   }
 
+  @computed get recentStakePools(): Array<StakePool> {
+    // return this.stakePoolsRequest.result ? this.stakePoolsRequest.result : [];
+    return [
+      STAKE_POOLS[1],
+      STAKE_POOLS[25],
+      STAKE_POOLS[100],
+      STAKE_POOLS[150],
+      STAKE_POOLS[200],
+      STAKE_POOLS[250],
+      STAKE_POOLS[275],
+      STAKE_POOLS[299],
+    ];
+  }
+
   @computed get delegatingStakePools(): Array<StakePool> {
     // return this.stakePoolsRequest.result ? this.stakePoolsRequest.result : [];
     return [

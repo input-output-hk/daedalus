@@ -149,7 +149,7 @@ export default class DelegationSetupWizardDialogContainer extends Component<
     const { currentTheme, currentLocale } = profile;
     const {
       stakePools,
-      delegatingStakePools,
+      recentStakePools,
       joinStakePoolRequest,
       nextEpochStartTime,
     } = staking;
@@ -177,7 +177,7 @@ export default class DelegationSetupWizardDialogContainer extends Component<
         selectedWallet={selectedWallet}
         selectedPool={selectedPool || null}
         stakePoolsList={stakePools}
-        stakePoolsDelegatingList={delegatingStakePools}
+        recentStakePools={recentStakePools}
         stakePoolJoinFee={stakePoolJoinFee}
         nextEpochStartTime={nextEpochStartTime}
         currentLocale={currentLocale}
