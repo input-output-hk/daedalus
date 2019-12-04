@@ -1292,12 +1292,16 @@ const _createWalletFromServerData = action(
 
     // @API TODO - remove once "Stake Pools" endpoints are done
     let delegatedStakePool;
-    if (index !== null) {
+    if (index !== null && isDelegated) {
       if (index === 0) {
         delegatedStakePool = STAKE_POOLS[0]; // eslint-disable-line
       } else if (index === 1) {
         delegatedStakePool = STAKE_POOLS[150]; // eslint-disable-line
       } else if (index === 2) {
+        delegatedStakePool = STAKE_POOLS[200]; // eslint-disable-line
+      } else if (index === 3) {
+        delegatedStakePool = STAKE_POOLS[250]; // eslint-disable-line
+      } else if (index === 4) {
         delegatedStakePool = STAKE_POOLS[290]; // eslint-disable-line
       }
     }

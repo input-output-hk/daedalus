@@ -37,15 +37,13 @@ export default class StakingStore extends Store {
 
   @action _joinStakePool = async (request: JoinStakePoolRequest) => {
     const { walletId, stakePoolId, passphrase } = request;
+    this.joinStakePoolRequest.reset();
     await this.joinStakePoolRequest.execute({
       walletId,
       stakePoolId,
       passphrase,
     });
     this.stores.wallets.refreshWalletsData();
-    this.actions.dialogs.closeActiveDialog.trigger();
-    this.joinStakePoolRequest.reset();
-    this.stores.wallets.goToWalletRoute(walletId);
   };
 
   // @API TODO - integrate real API V2 endpoint once is available

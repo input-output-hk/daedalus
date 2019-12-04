@@ -76,9 +76,9 @@ export default class DelegationSetupWizardDialogContainer extends Component<
 
   componentWillReceiveProps(nextProps) {
     if (
-      this.props.stores.staking.joinStakePoolRequest.isExecuting &&
-      !nextProps.stores.staking.joinStakePoolRequest.isExecuting &&
-      !nextProps.joinStakePoolRequest.error
+      this.state.activeStep === 3 &&
+      nextProps.stores.staking.joinStakePoolRequest.result &&
+      !nextProps.stores.staking.joinStakePoolRequest.error
     ) {
       this.handleContinue();
     }
@@ -91,6 +91,7 @@ export default class DelegationSetupWizardDialogContainer extends Component<
   ];
 
   handleDialogClose = () => {
+    this.props.stores.staking.joinStakePoolRequest.reset();
     this.props.actions.dialogs.closeActiveDialog.trigger();
   };
 
@@ -101,6 +102,9 @@ export default class DelegationSetupWizardDialogContainer extends Component<
 
   onBack = () => {
     const { activeStep } = this.state;
+    if (activeStep === 3) {
+      this.props.stores.staking.joinStakePoolRequest.reset();
+    }
     this.setState({ activeStep: activeStep - 1 });
   };
 
@@ -118,7 +122,6 @@ export default class DelegationSetupWizardDialogContainer extends Component<
       walletId: selectedWalletId,
       passphrase: spendingPassword,
     });
-    // this.handleContinue();
   };
 
   handleSelectWallet = (walletId: string) => {
