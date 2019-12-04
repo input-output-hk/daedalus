@@ -31,6 +31,7 @@ type Props = {
   stakePoolsDelegatingList: Array<StakePool>,
   stakePoolsList: Array<StakePool>,
   onOpenExternalLink: Function,
+  getPledgeAddressUrl: Function,
   currentTheme: string,
   onDelegate: Function,
 };
@@ -72,6 +73,7 @@ export default class StakePools extends Component<Props, State> {
       stakePoolsDelegatingList,
       stakePoolsList,
       onOpenExternalLink,
+      getPledgeAddressUrl,
       currentTheme,
     } = this.props;
     const { search, selectedList } = this.state;
@@ -106,6 +108,7 @@ export default class StakePools extends Component<Props, State> {
               listName="stakePoolsDelegatingList"
               stakePoolsList={stakePoolsDelegatingList}
               onOpenExternalLink={onOpenExternalLink}
+              getPledgeAddressUrl={getPledgeAddressUrl}
               currentTheme={currentTheme}
               isListActive={selectedList === 'stakePoolsDelegatingList'}
               setListActive={this.handleSetListActive}
@@ -131,6 +134,7 @@ export default class StakePools extends Component<Props, State> {
           listName="selectedIndexList"
           stakePoolsList={filteredStakePoolsList}
           onOpenExternalLink={onOpenExternalLink}
+          getPledgeAddressUrl={getPledgeAddressUrl}
           currentTheme={currentTheme}
           isListActive={selectedList === 'selectedIndexList'}
           setListActive={this.handleSetListActive}

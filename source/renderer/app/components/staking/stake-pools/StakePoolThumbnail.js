@@ -19,6 +19,7 @@ type Props = {
   onClose: Function,
   onHover?: Function,
   onOpenExternalLink: Function,
+  getPledgeAddressUrl: Function,
   onSelect: Function,
   showWithSelectButton?: boolean,
   showSelected?: boolean,
@@ -94,6 +95,7 @@ export class StakePoolThumbnail extends Component<Props, State> {
       onClose,
       onHover,
       onOpenExternalLink,
+      getPledgeAddressUrl,
       showWithSelectButton,
       showSelected,
       stakePool,
@@ -160,6 +162,7 @@ export class StakePoolThumbnail extends Component<Props, State> {
             onClick={onClose}
             currentTheme={currentTheme}
             onOpenExternalLink={onOpenExternalLink}
+            getPledgeAddressUrl={getPledgeAddressUrl}
             top={top}
             left={left}
             color={color}

@@ -13,6 +13,7 @@ import StakePool from '../../../domains/StakePool';
 import closeCross from '../../../assets/images/close-cross.inline.svg';
 import externalLinkIcon from '../../../assets/images/link-ic.inline.svg';
 import { getColorFromRange } from '../../../utils/colors';
+// import { formattedWalletAmount } from '../../../utils/formatters';
 import { rangeMap } from '../../../utils/rangeMap';
 import {
   THUMBNAIL_HEIGHT,
@@ -24,7 +25,6 @@ import {
   TOOLTIP_MAX_HEIGHT,
   TOOLTIP_WIDTH,
 } from '../../../config/stakingConfig';
-import { formattedWalletAmount } from '../../../utils/formatters';
 
 const messages = defineMessages({
   ranking: {
@@ -52,25 +52,20 @@ const messages = defineMessages({
     defaultMessage: '!!!Retirement in {retirementFromNow}',
     description: '"Retirement" for the Stake Pools Tooltip page.',
   },
-  cost: {
-    id: 'staking.stakePools.tooltip.cost',
-    defaultMessage: '!!!Cost:',
-    description: 'Cost" for the Stake Pools Tooltip page.',
-  },
-  pledge: {
-    id: 'staking.stakePools.tooltip.pledge',
-    defaultMessage: '!!!Pledge:',
-    description: '"Pledge" for the Stake Pools Tooltip page.',
-  },
+  // cost: {
+  //   id: 'staking.stakePools.tooltip.cost',
+  //   defaultMessage: '!!!Cost:',
+  //   description: 'Cost" for the Stake Pools Tooltip page.',
+  // },
+  // pledge: {
+  //   id: 'staking.stakePools.tooltip.pledge',
+  //   defaultMessage: '!!!Pledge:',
+  //   description: '"Pledge" for the Stake Pools Tooltip page.',
+  // },
   pledgeAddressLabel: {
     id: 'staking.stakePools.tooltip.pledgeAddressLabel',
     defaultMessage: '!!!Pledge address',
     description: '"pledgeAddressLabel" for the Stake Pools Tooltip page.',
-  },
-  pledgeAddressUrl: {
-    id: 'staking.stakePools.tooltip.pledgeAddressUrl',
-    defaultMessage: '!!!http://cardano.org',
-    description: '"pledgeAddressUrl" for the Stake Pools Tooltip page.',
   },
   delegateButton: {
     id: 'staking.stakePools.tooltip.delegateButton',
@@ -86,6 +81,7 @@ type Props = {
   currentTheme: string,
   onClick: Function,
   onOpenExternalLink: Function,
+  getPledgeAddressUrl: Function,
   onSelect?: Function,
   showWithSelectButton?: boolean,
   top: number,
@@ -358,6 +354,7 @@ export default class StakePoolTooltip extends Component<Props, State> {
       currentTheme,
       onClick,
       onOpenExternalLink,
+      getPledgeAddressUrl,
       onSelect,
       showWithSelectButton,
     } = this.props;
@@ -379,8 +376,8 @@ export default class StakePoolTooltip extends Component<Props, State> {
       profitMargin,
       performance,
       retiring,
-      cost,
-      pledge,
+      // cost,
+      // pledge,
       pledgeAddress,
     } = stakePool;
 
@@ -483,6 +480,7 @@ export default class StakePoolTooltip extends Component<Props, State> {
                 {performance}%
               </span>
             </dd>
+            {/*
             <dt>{intl.formatMessage(messages.cost)}</dt>
             <dd>
               <span
@@ -495,7 +493,7 @@ export default class StakePoolTooltip extends Component<Props, State> {
               >
                 {formattedWalletAmount(cost)}
               </span>
-            </dd>
+            </dd></dl>
             <dt>{intl.formatMessage(messages.pledge)}</dt>
             <dd>
               <span
@@ -509,13 +507,12 @@ export default class StakePoolTooltip extends Component<Props, State> {
                 {formattedWalletAmount(pledge)}
               </span>
             </dd>
+            */}
           </dl>
           <button
             className={styles.homepage}
             onClick={() =>
-              onOpenExternalLink(
-                intl.formatMessage(messages.pledgeAddressUrl) + pledgeAddress
-              )
+              onOpenExternalLink(getPledgeAddressUrl(pledgeAddress))
             }
           >
             <span className={styles.homepageContent}>

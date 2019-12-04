@@ -1058,9 +1058,12 @@ export default class AdaApi {
     try {
       const stakePools: AdaApiStakePools = await getStakePools(this.config);
       Logger.debug('AdaApi::getStakePools success');
-      return stakePools.map((stakePool: AdaApiStakePool, index: number) => {
-        return _createStakePoolFromServerData(stakePool, index);
-      });
+      return (
+        stakePools
+          // @API TODO: Filter Stake Pools without metadata, once metadata is present in the API response
+          // .filter(({ metadata }: AdaApiStakePool) => metadata !== undefined)
+          .map(_createStakePoolFromServerData)
+      );
     } catch (error) {
       Logger.error('AdaApi::getStakePools error', { error });
       throw new GenericApiError();
@@ -1354,12 +1357,12 @@ const _createStakePoolFromServerData = action(
       metadata,
       // MISSING DATA FROM THE API
       // NOT CONTAINED IN THE CURRENT API DOCS:
-      _cost: cost,
+      // _cost: cost,
       _createdAt: createdAt,
       _description: description,
       _isCharity: isCharity,
       _name: name,
-      _pledge: pledge,
+      // _pledge: pledge,
       _profitMargin: profitMargin,
       _ranking: ranking,
       _retiring: retiring,
@@ -1376,12 +1379,12 @@ const _createStakePoolFromServerData = action(
       homepage,
       pledgeAddress,
 
-      cost: new BigNumber(cost).dividedBy(LOVELACES_PER_ADA),
+      // cost: new BigNumber(cost).dividedBy(LOVELACES_PER_ADA),
       createdAt,
       description,
       isCharity,
       name,
-      pledge: new BigNumber(pledge).dividedBy(LOVELACES_PER_ADA),
+      // pledge: new BigNumber(pledge).dividedBy(LOVELACES_PER_ADA),
       profitMargin,
       ranking,
       retiring,

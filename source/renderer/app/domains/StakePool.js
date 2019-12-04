@@ -1,6 +1,6 @@
 // @flow
 import { observable } from 'mobx';
-import BigNumber from 'bignumber.js';
+// import BigNumber from 'bignumber.js';
 
 export type StakePoolProps = {
   id: string,
@@ -12,8 +12,8 @@ export type StakePoolProps = {
   producedBlocks: number,
   createdAt: Date,
   description: string,
-  cost: BigNumber,
-  pledge: BigNumber,
+  // cost: BigNumber,
+  // pledge: BigNumber,
   isCharity: boolean,
   name: string,
   profitMargin: number,
@@ -29,8 +29,8 @@ export default class StakePool {
   @observable performance: number;
   @observable producedBlocks: number;
   @observable controlledStake: number;
-  @observable pledge: BigNumber;
-  @observable cost: BigNumber;
+  // @observable pledge: BigNumber;
+  // @observable cost: BigNumber;
   @observable createdAt: Date;
   @observable description: string;
   @observable isCharity: boolean;

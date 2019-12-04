@@ -3904,34 +3904,6 @@
         }
       },
       {
-        "defaultMessage": "!!!Cost:",
-        "description": "Cost\" for the Stake Pools Tooltip page.",
-        "end": {
-          "column": 3,
-          "line": 59
-        },
-        "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
-        "id": "staking.stakePools.tooltip.cost",
-        "start": {
-          "column": 8,
-          "line": 55
-        }
-      },
-      {
-        "defaultMessage": "!!!Pledge:",
-        "description": "\"Pledge\" for the Stake Pools Tooltip page.",
-        "end": {
-          "column": 3,
-          "line": 64
-        },
-        "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
-        "id": "staking.stakePools.tooltip.pledge",
-        "start": {
-          "column": 10,
-          "line": 60
-        }
-      },
-      {
         "defaultMessage": "!!!Pledge address",
         "description": "\"pledgeAddressLabel\" for the Stake Pools Tooltip page.",
         "end": {
@@ -3946,31 +3918,17 @@
         }
       },
       {
-        "defaultMessage": "!!!http://cardano.org",
-        "description": "\"pledgeAddressUrl\" for the Stake Pools Tooltip page.",
-        "end": {
-          "column": 3,
-          "line": 74
-        },
-        "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
-        "id": "staking.stakePools.tooltip.pledgeAddressUrl",
-        "start": {
-          "column": 20,
-          "line": 70
-        }
-      },
-      {
         "defaultMessage": "!!!Delegate to this pool",
         "description": "\"Delegate to this pool\" Button for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 80
+          "line": 75
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
         "id": "staking.stakePools.tooltip.delegateButton",
         "start": {
           "column": 18,
-          "line": 75
+          "line": 70
         }
       }
     ],
@@ -9320,13 +9278,13 @@
         "description": "\"Learn more\" link URL on the delegation setup \"intro\" dialog.",
         "end": {
           "column": 3,
-          "line": 18
+          "line": 19
         },
         "file": "source/renderer/app/containers/staking/dialogs/DelegationSetupWizardDialogContainer.js",
         "id": "staking.delegationSetup.intro.step.dialog.learnMore.url",
         "start": {
           "column": 20,
-          "line": 13
+          "line": 14
         }
       },
       {
@@ -9334,13 +9292,13 @@
         "description": "Step 1 label text on delegation steps dialog.",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 24
         },
         "file": "source/renderer/app/containers/staking/dialogs/DelegationSetupWizardDialogContainer.js",
         "id": "staking.delegationSetup.steps.step.1.label",
         "start": {
           "column": 29,
-          "line": 19
+          "line": 20
         }
       },
       {
@@ -9348,13 +9306,13 @@
         "description": "Step 2 label text on delegation steps dialog.",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 29
         },
         "file": "source/renderer/app/containers/staking/dialogs/DelegationSetupWizardDialogContainer.js",
         "id": "staking.delegationSetup.steps.step.2.label",
         "start": {
           "column": 29,
-          "line": 24
+          "line": 25
         }
       },
       {
@@ -9362,13 +9320,13 @@
         "description": "Step 3 label text on delegation steps dialog.",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 34
         },
         "file": "source/renderer/app/containers/staking/dialogs/DelegationSetupWizardDialogContainer.js",
         "id": "staking.delegationSetup.steps.step.3.label",
         "start": {
           "column": 29,
-          "line": 29
+          "line": 30
         }
       },
       {
@@ -9376,13 +9334,13 @@
         "description": "Step 4 label text on delegation steps dialog.",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 39
         },
         "file": "source/renderer/app/containers/staking/dialogs/DelegationSetupWizardDialogContainer.js",
         "id": "staking.delegationSetup.steps.step.4.label",
         "start": {
           "column": 29,
-          "line": 34
+          "line": 35
         }
       }
     ],
@@ -9490,13 +9448,13 @@
         "description": "Message shown when wallet has no transactions on wallet summary page.",
         "end": {
           "column": 3,
-          "line": 22
+          "line": 23
         },
         "file": "source/renderer/app/containers/wallet/WalletSummaryPage.js",
         "id": "wallet.summary.no.transactions",
         "start": {
           "column": 18,
-          "line": 17
+          "line": 18
         }
       }
     ],
@@ -9509,13 +9467,13 @@
         "description": "Message shown when wallet has no transactions yet.",
         "end": {
           "column": 3,
-          "line": 19
+          "line": 20
         },
         "file": "source/renderer/app/containers/wallet/WalletTransactionsPage.js",
         "id": "wallet.transactions.no.transactions",
         "start": {
           "column": 18,
-          "line": 15
+          "line": 16
         }
       },
       {
@@ -9523,13 +9481,13 @@
         "description": "Message shown when wallet transaction search returns zero results.",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 26
         },
         "file": "source/renderer/app/containers/wallet/WalletTransactionsPage.js",
         "id": "wallet.transactions.no.transactions.found",
         "start": {
           "column": 23,
-          "line": 20
+          "line": 21
         }
       }
     ],
