@@ -12,7 +12,6 @@ import styles from './WalletTransactionsList.scss';
 import Transaction from './Transaction';
 import { WalletTransaction } from '../../../domains/WalletTransaction';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
-import { DEVELOPMENT } from '../../../../../common/types/environment.types';
 import { VirtualTransactionList } from './render-strategies/VirtualTransactionList';
 import { TransactionInfo, TransactionsGroup } from './types';
 import type { Row } from './types';

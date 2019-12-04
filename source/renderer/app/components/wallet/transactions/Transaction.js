@@ -18,10 +18,8 @@ import {
 } from '../../../domains/WalletTransaction';
 import globalMessages from '../../../i18n/global-messages';
 import type { TransactionState } from '../../../api/transactions/types';
-import { getNetworkExplorerUrl } from '../../../utils/network';
 import { PENDING_TIME_LIMIT } from '../../../config/txnsConfig';
 import CancelTransactionConfirmationDialog from './CancelTransactionConfirmationDialog';
-import { ITN_REWARDS_V1 } from '../../../../../common/types/environment.types';
 
 /* eslint-disable consistent-return */
 
