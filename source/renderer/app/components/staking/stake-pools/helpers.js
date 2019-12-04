@@ -17,6 +17,6 @@ export const getFilteredStakePoolsList = (
   stakePoolsList: Array<StakePool>,
   search: string
 ): Array<StakePool> =>
-  stakePoolsList.filter((stakePool: Object) =>
+  stakePoolsList.filter((stakePool: StakePool) =>
     stakePoolsListSearch(stakePool, search)
   );

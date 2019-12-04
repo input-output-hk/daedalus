@@ -18,7 +18,7 @@ export type StakePoolProps = {
   name: string,
   profitMargin: number,
   ranking: number,
-  retiring?: Date,
+  retiring?: ?Date,
 };
 
 export default class StakePool {
