@@ -1,7 +1,6 @@
 // @flow
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
-import BigNumber from 'bignumber.js';
 import type { StoresMap } from '../../../stores/index';
 import type { ActionsMap } from '../../../actions/index';
 import UndelegateConfirmationDialog from '../../../components/staking/delegation-center/UndelegateConfirmationDialog';
@@ -29,13 +28,11 @@ export default class UndelegateDialogContainer extends Component<Props> {
       undelegateWalletSubmissionSuccess,
     } = wallets;
     const walletToBeUndelegated = getWalletById(walletId);
-    console.log('walletToBeUndelegated', walletToBeUndelegated);
 
     if (!walletToBeUndelegated) {
-      return false;
-      // throw new Error(
-      //   'Delegated wallet should be selected for UndelegateDialogContainer.'
-      // );
+      throw new Error(
+        'Delegated wallet should be selected for UndelegateDialogContainer.'
+      );
     }
 
     const {
@@ -43,14 +40,6 @@ export default class UndelegateDialogContainer extends Component<Props> {
       reward: fees,
       delegatedStakePool,
     } = walletToBeUndelegated;
-
-    console.log('delegatedStakePool', delegatedStakePool);
-    if (!delegatedStakePool) {
-      return false;
-      // throw new Error(
-      //   'Stakepool of delegated wallet is required for UndelegateDialogContainer.'
-      // );
-    }
 
     if (undelegateWalletSubmissionSuccess) {
       return (
@@ -64,6 +53,12 @@ export default class UndelegateDialogContainer extends Component<Props> {
             });
           }}
         />
+      );
+    }
+
+    if (!delegatedStakePool) {
+      throw new Error(
+        'Stakepool of delegated wallet is required for UndelegateDialogContainer.'
       );
     }
 
