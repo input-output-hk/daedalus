@@ -18,7 +18,6 @@ export type StakePoolProps = {
   name: string,
   profitMargin: number,
   ranking: number,
-  ranking: number,
   retiring?: Date,
 };
 
@@ -30,7 +29,6 @@ export default class StakePool {
   @observable performance: number;
   @observable producedBlocks: number;
   @observable controlledStake: number;
-
   @observable pledge: BigNumber;
   @observable cost: BigNumber;
   @observable createdAt: Date;

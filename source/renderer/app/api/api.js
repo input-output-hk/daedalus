@@ -176,8 +176,6 @@ import { getSHA256HexForString } from './utils/hashing';
 import { getNewsHash } from './news/requests/getNewsHash';
 import { deleteTransaction } from './transactions/requests/deleteTransaction';
 
-import STAKE_POOLS from '../config/stakingStakePools.dummy.json';
-
 export default class AdaApi {
   config: RequestConfig;
 
@@ -1218,7 +1216,7 @@ export default class AdaApi {
 
 const _createWalletFromServerData = action(
   'AdaApi::_createWalletFromServerData',
-  (data: AdaWallet, index?: number) => {
+  (data: AdaWallet) => {
     const {
       id,
       address_pool_gap: addressPoolGap,
@@ -1246,18 +1244,8 @@ const _createWalletFromServerData = action(
       reward.unit === WalletUnits.LOVELACE
         ? new BigNumber(reward.quantity).dividedBy(LOVELACES_PER_ADA)
         : new BigNumber(reward.quantity || 0);
+    const delegatedStakePoolId = delegation.target;
 
-    // @API TODO - remove once "Stake Pools" endpoints are done
-    let delegatedStakePool;
-    if (index !== null) {
-      if (index === 0) {
-        delegatedStakePool = STAKE_POOLS[0]; // eslint-disable-line
-      } else if (index === 1) {
-        delegatedStakePool = STAKE_POOLS[150]; // eslint-disable-line
-      } else if (index === 2) {
-        delegatedStakePool = STAKE_POOLS[290]; // eslint-disable-line
-      }
-    }
     return new Wallet({
       id,
       addressPoolGap,
@@ -1270,10 +1258,9 @@ const _createWalletFromServerData = action(
       syncState: state,
       isLegacy,
       isDelegated,
-      // @API TODO - integrate once "Stake Pools" endpoints are done
+      // @API TODO - integrate once "Join Stake Pool" endpoint is done
       // inactiveStakePercentage: 0,
-      // delegatedStakePool: new StakePool(),
-      delegatedStakePool,
+      delegatedStakePoolId,
     });
   }
 );
