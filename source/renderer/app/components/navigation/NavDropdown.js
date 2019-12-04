@@ -3,9 +3,7 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 
-import { Select } from 'react-polymorph/lib/components/Select';
-import { SelectSkin } from './NavSelectSkin';
-import selectStyles from './NavSelectStyles.scss';
+import { Dropdown } from 'react-polymorph/lib/components/Dropdown';
 
 import NavButton from './NavButton';
 import styles from './NavDropdown.scss';
@@ -15,7 +13,7 @@ type Props = {
   activeItem: string,
   icon?: string,
   isActive: boolean,
-  options?: Array<{ value: number | string, label: string }>,
+  options: Array<{ value: number | string, label: string }>,
   onChange: Function,
   hasNotification?: boolean,
 };
@@ -38,7 +36,7 @@ export default class NavDropdown extends Component<Props> {
     ]);
     return (
       <div className={componentStyles}>
-        <Select
+        <Dropdown
           label={
             <NavButton
               label={label}
@@ -48,11 +46,15 @@ export default class NavDropdown extends Component<Props> {
               hasNotification={hasNotification}
             />
           }
-          onChange={({ value }) => onChange(value)}
-          options={options}
-          skin={SelectSkin}
-          themeOverrides={selectStyles}
-          value={activeItem}
+          onItemSelected={({ value }) => {
+            onChange(value);
+          }}
+          optionRenderer={o => (
+            <div className={styles.optionLabel}>{o.label}</div>
+          )}
+          items={options}
+          activeItem={options.find(o => o.value === activeItem)}
+          noArrow
         />
       </div>
     );
