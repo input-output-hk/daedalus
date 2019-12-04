@@ -44,8 +44,8 @@ const messages = defineMessages({
 });
 
 type Props = {
-  delegatedWallet: Wallet,
-  delegatedStakePool: StakePool,
+  delegatedWallet: ?Wallet,
+  delegatedStakePool: ?StakePool,
   nextEpochStartTime: string,
   onClose: Function,
   currentLocale: string,

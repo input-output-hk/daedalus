@@ -143,7 +143,11 @@ import type {
 import type { GetNewsResponse } from './news/types';
 
 // Staking Types
-import type { JoinStakePoolRequest, StakePoolJoinFee } from './staking/types';
+import type {
+  JoinStakePoolRequest,
+  StakePoolJoinFee,
+  EstimateJoinFeeRequest,
+} from './staking/types';
 
 // Common errors
 import {

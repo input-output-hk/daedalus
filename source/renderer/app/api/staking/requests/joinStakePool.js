@@ -6,7 +6,7 @@ import { request } from '../../utils/request';
 
 export const joinStakePool = (
   config: RequestConfig,
-  { walletId, stakePoolId, passphrase, fees }: JoinStakePoolRequest
+  { walletId, stakePoolId, passphrase }: JoinStakePoolRequest
 ): Promise<Transaction> =>
   request(
     {
@@ -15,5 +15,5 @@ export const joinStakePool = (
       ...config,
     },
     {},
-    { passphrase, fees }
+    { passphrase }
   );

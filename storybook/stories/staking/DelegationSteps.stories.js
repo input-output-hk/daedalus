@@ -103,6 +103,7 @@ export class StakingDelegationSteps extends Component<Props, State> {
         onConfirm={this.onContinue}
         onClose={action('onClose')}
         onBack={action('onBack')}
+        error={null}
       />,
       <DelegationStepsSuccessDialog
         key="DelegationStepsSuccessDialog"

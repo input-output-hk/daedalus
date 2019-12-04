@@ -36,7 +36,7 @@ const messages = defineMessages({
 type State = {
   activeStep: number,
   selectedWalletId: string,
-  selectedPoolId: ?string,
+  selectedPoolId: string,
   stakePoolJoinFee: ?BigNumber,
 };
 
@@ -74,7 +74,7 @@ export default class DelegationSetupWizardDialogContainer extends Component<
     stakePoolJoinFee: new BigNumber(0),
   };
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps: Props) {
     if (
       this.state.activeStep === 3 &&
       nextProps.stores.staking.joinStakePoolRequest.result &&

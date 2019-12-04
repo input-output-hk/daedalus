@@ -96,7 +96,7 @@ type Props = {
   stepsList: Array<string>,
   stakePoolsDelegatingList: Array<StakePool>,
   stakePoolsList: Array<StakePool>,
-  selectedWallet: Wallet,
+  selectedWallet: ?Wallet,
   onOpenExternalLink: Function,
   currentTheme: string,
   selectedPool: ?StakePool,

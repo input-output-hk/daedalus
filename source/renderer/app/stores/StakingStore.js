@@ -9,6 +9,7 @@ import type {
   Reward,
   RewardForIncentivizedTestnet,
   JoinStakePoolRequest,
+  EstimateJoinFeeRequest,
 } from '../api/staking/types';
 import Wallet from '../domains/Wallet';
 
@@ -16,7 +17,8 @@ import STAKE_POOLS from '../config/stakingStakePools.dummy.json';
 import REWARDS from '../config/stakingRewards.dummy.json';
 
 export default class StakingStore extends Store {
-  nextEpochStartTime: string = '2019-12-09T00:00:00.161Z';
+  startDateTime: string = '2019-12-09T00:00:00.161Z';
+  nextEpochStartTime: string = '2019-12-06T00:00:00.161Z';
   decentralizationProgress: number = 10;
   adaValue: BigNumber = new BigNumber(82650.15);
   percentage: number = 14;
