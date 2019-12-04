@@ -401,8 +401,11 @@ export default class WalletsStore extends Store {
   @computed get hasActiveWalletNotification(): boolean {
     const { active } = this;
     if (!active) return false;
+    const {
+      recoveryPhraseVerificationStatus,
+    } = this.getWalletRecoveryPhraseVerification(active.id);
     return (
-      this.getWalletRecoveryPhraseVerification(active.id) ===
+      recoveryPhraseVerificationStatus ===
       WalletRecoveryPhraseVerificationStatuses.NOTIFICATION
     );
   }
@@ -921,6 +924,7 @@ export default class WalletsStore extends Store {
     const walletsLocalData: WalletsLocalData = await this.getWalletsLocalDataRequest.execute();
     return walletsLocalData;
   };
+
   _updateWalletLocalData = async (updatedWalletData: Object): Object => {
     const { id } = updatedWalletData;
     const walletLocalData = await this.updateWalletLocalDataRequest.execute(
@@ -932,6 +936,7 @@ export default class WalletsStore extends Store {
       ] = this._setWalletRecoveryPhraseVerificationData(walletLocalData);
     });
   };
+
   _updateRecoveryPhraseVerificationDate = async () => {
     if (!this.active) return;
     const { id } = this.active;
@@ -941,6 +946,7 @@ export default class WalletsStore extends Store {
       recoveryPhraseVerificationDate,
     });
   };
+
   _unsetWalletLocalData = async (walletId: string) => {
     await this.unsetWalletLocalDataRequest.execute(walletId);
   };
