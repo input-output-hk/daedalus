@@ -1208,6 +1208,11 @@ export default class AdaApi {
 
       return response;
     } catch (error) {
+      // @API TODO - handle `pool_already_joined` error code
+      Logger.error('AdaApi::joinStakePool error', { error });
+      if (error.code === 'wrong_encryption_passphrase') {
+        throw new IncorrectSpendingPasswordError();
+      }
       throw new GenericApiError();
     }
   };
@@ -1219,7 +1224,7 @@ export default class AdaApi {
       parameters: filterLogData(request),
     });
 
-    // @API TODO: Call API endpoint and fetch real data
+    // @API TODO: Call API V2 endpoint for stake pool join fee calculation
     try {
       // const {
       //   walletId,
