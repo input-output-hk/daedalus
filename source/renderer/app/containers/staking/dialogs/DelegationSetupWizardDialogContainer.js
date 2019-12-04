@@ -196,12 +196,12 @@ export default class DelegationSetupWizardDialogContainer extends Component<
     );
   }
 
-  async _handleCalculateTransactionFee(poolId: string) {
+  async _handleCalculateTransactionFee(stakePoolId: string) {
     const { estimateJoinFee } = this.props.stores.staking;
     const { selectedWalletId } = this.state;
     const stakePoolJoinFee = await estimateJoinFee({
       walletId: selectedWalletId,
-      stakePoolId: poolId,
+      stakePoolId,
     });
     this.setState({ stakePoolJoinFee });
   }

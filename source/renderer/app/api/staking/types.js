@@ -2,6 +2,21 @@
 import BigNumber from 'bignumber.js';
 import { WalletUnits } from '../../domains/Wallet';
 
+export const DelegationActions: {
+  CHANGE_DELEGATION: DelegationAction,
+  REMOVE_DELEGATION: DelegationAction,
+  DELEGATE: DelegationAction,
+} = {
+  CHANGE_DELEGATION: 'changeDelegation',
+  REMOVE_DELEGATION: 'removeDelegation',
+  DELEGATE: 'delegate',
+};
+
+export type DelegationAction =
+  | 'changeDelegation'
+  | 'removeDelegation'
+  | 'delegate';
+
 export type StakePool = {
   id: string,
   controlledStake: number,

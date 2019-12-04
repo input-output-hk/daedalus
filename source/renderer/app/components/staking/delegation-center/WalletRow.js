@@ -16,12 +16,8 @@ import { SIMPLE_DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import DropdownMenu from './DropdownMenu';
 import DonutRing from './DonutRing';
 import styles from './WalletRow.scss';
-
-export const DELEGATION_ACTIONS = {
-  CHANGE_DELEGATION: 'changeDelegation',
-  REMOVE_DELEGATION: 'removeDelegation',
-  DELEGATE: 'delegate',
-};
+import { DelegationActions } from '../../../api/staking/types';
+import type { DelegationAction } from '../../../api/staking/types';
 
 const messages = defineMessages({
   walletAmount: {
@@ -81,6 +77,7 @@ type Props = {
   wallet: Wallet,
   numberOfStakePools: number,
   onDelegate: Function,
+  onMenuItemClick: Function,
 };
 
 @observer
@@ -92,6 +89,11 @@ export default class WalletRow extends Component<Props> {
   onDelegate = () => {
     const { wallet } = this.props;
     this.props.onDelegate(wallet.id);
+  };
+
+  onMenuItemClick = (clickeItem: DelegationAction) => {
+    const { wallet } = this.props;
+    this.props.onMenuItemClick(clickeItem, wallet.id);
   };
 
   render() {
@@ -125,12 +127,12 @@ export default class WalletRow extends Component<Props> {
     const delegatedWalletActionOptions = [
       {
         label: changeDelegation,
-        value: DELEGATION_ACTIONS.CHANGE_DELEGATION,
+        value: DelegationActions.CHANGE_DELEGATION,
         className: styles.normalOption,
       },
       {
         label: removeDelegation,
-        value: DELEGATION_ACTIONS.REMOVE_DELEGATION,
+        value: DelegationActions.REMOVE_DELEGATION,
         className: styles.removeOption,
       },
     ];
@@ -175,7 +177,7 @@ export default class WalletRow extends Component<Props> {
                     <SVGInline svg={settingsIcon} className={styles.gearIcon} />
                   }
                   menuItems={delegatedWalletActionOptions}
-                  onMenuItemClick={() => null}
+                  onMenuItemClick={this.onMenuItemClick}
                 />
               )}
             </div>
