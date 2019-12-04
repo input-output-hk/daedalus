@@ -60,6 +60,7 @@ import StakePool from '../domains/StakePool';
 import { getStakePools } from './staking/requests/getStakePools';
 import type { AdaApiStakePools, AdaApiStakePool } from './staking/types';
 import stakingStakePoolsMissingApiData from '../config/stakingStakePoolsMissingApiData.dummy.json';
+import STAKE_POOLS from '../config/stakingStakePools.dummy.json';
 
 // News requests
 import { getNews } from './news/requests/getNews';
@@ -1250,7 +1251,7 @@ export default class AdaApi {
 
 const _createWalletFromServerData = action(
   'AdaApi::_createWalletFromServerData',
-  (data: AdaWallet) => {
+  (data: AdaWallet, index: number) => {
     const {
       id,
       address_pool_gap: addressPoolGap,
@@ -1263,8 +1264,8 @@ const _createWalletFromServerData = action(
       isLegacy = false,
     } = data;
 
-    const isDelegated =
-      delegation.status === WalletDelegationStatuses.DELEGATING;
+    const isDelegated = index < STAKE_POOLS.length;
+    // delegation.status === WalletDelegationStatuses.DELEGATING;
     const passphraseLastUpdatedAt = get(passphrase, 'last_updated_at', null);
     const walletTotalAmount =
       balance.total.unit === WalletUnits.LOVELACE
@@ -1295,6 +1296,7 @@ const _createWalletFromServerData = action(
       // @API TODO - integrate once "Join Stake Pool" endpoint is done
       // inactiveStakePercentage: 0,
       delegatedStakePoolId,
+      delegatedStakePool: isDelegated ? STAKE_POOLS[index] : null,
     });
   }
 );
