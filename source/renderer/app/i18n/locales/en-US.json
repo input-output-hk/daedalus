@@ -271,7 +271,7 @@
   "staking.delegationCenter.delegated": "Delegated",
   "staking.delegationCenter.description": "Changes to delegation preferences will take effect from the next epoch.",
   "staking.delegationCenter.epoch": "Epoch",
-  "staking.delegationCenter.headingLeft": "Cardano epoch {nextEpochStart} starts in",
+  "staking.delegationCenter.headingLeft": "Cardano epoch {nextEpochNumber} starts in",
   "staking.delegationCenter.headingRight": "Current Cardano epoch",
   "staking.delegationCenter.noWallets.createWalletButtonLabel": "Create wallet",
   "staking.delegationCenter.noWallets.headLine": "The Delegation Center is not available because you don't have any wallets.",
