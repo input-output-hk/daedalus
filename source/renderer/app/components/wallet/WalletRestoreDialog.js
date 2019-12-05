@@ -317,6 +317,12 @@ export default class WalletRestoreDialog extends Component<Props, State> {
 
         walletData.type = this.state.walletType;
 
+        if (walletData.type === WALLET_RESTORE_TYPES.YOROI_REWARDS) {
+          walletData.type = WALLET_RESTORE_TYPES.REGULAR;
+        } else if (walletData.type === WALLET_RESTORE_TYPES.YOROI_BALANCE) {
+          walletData.type = WALLET_RESTORE_TYPES.LEGACY;
+        }
+
         onSubmit(walletData);
       },
       onError: () =>
@@ -384,7 +390,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
 
     const regularTabClasses = classnames([
       'regularTab',
-      !this.isCertificate() && !this.isYoroi() ? styles.activeButton : '',
+      !this.isYoroi() && !this.isCertificate() ? styles.activeButton : '',
     ]);
 
     const certificateTabClasses = classnames([
@@ -394,7 +400,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
 
     const yoroiTabClasses = classnames([
       'yoroiTab',
-      this.isYoroi() ? styles.activeButton : '',
+      this.isYoroi() && !this.isCertificate() ? styles.activeButton : '',
     ]);
 
     return (
@@ -426,7 +432,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
           <button
             className={yoroiTabClasses}
             onClick={() =>
-              this.onSelectWalletType(WALLET_RESTORE_TYPES.YOROI, true)
+              this.onSelectWalletType(WALLET_RESTORE_TYPES.YOROI_BALANCE, true)
             }
           >
             {intl.formatMessage(messages.yoroiTabTitle)}
@@ -496,7 +502,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
             label={intl.formatMessage(messages.recoveryPhraseTypeLabel)}
             items={[
               {
-                key: WALLET_RESTORE_TYPES.YOROI,
+                key: WALLET_RESTORE_TYPES.YOROI_BALANCE,
                 label: (
                   <Fragment>
                     15
@@ -506,18 +512,18 @@ export default class WalletRestoreDialog extends Component<Props, State> {
                     <span>
                       (
                       {intl.formatMessage(
-                        messages.recoveryPhraseType15WordOption
+                        messages.recoveryPhraseType12WordOption
                       )}
                       )
                     </span>
                   </Fragment>
                 ),
-                selected: this.isLegacy(),
+                selected: this.isYoroiBalance(),
                 onChange: () =>
-                  this.onSelectWalletType(WALLET_RESTORE_TYPES.YOROI),
+                  this.onSelectWalletType(WALLET_RESTORE_TYPES.YOROI_BALANCE),
               },
               {
-                key: WALLET_RESTORE_TYPES.YOROI,
+                key: WALLET_RESTORE_TYPES.YOROI_REWARDS,
                 label: (
                   <Fragment>
                     15
@@ -533,9 +539,9 @@ export default class WalletRestoreDialog extends Component<Props, State> {
                     </span>
                   </Fragment>
                 ),
-                selected: !this.isLegacy(),
+                selected: this.isYoroiRewards(),
                 onChange: () =>
-                  this.onSelectWalletType(WALLET_RESTORE_TYPES.YOROI),
+                  this.onSelectWalletType(WALLET_RESTORE_TYPES.YOROI_REWARDS),
               },
             ]}
           />
@@ -603,10 +609,6 @@ export default class WalletRestoreDialog extends Component<Props, State> {
     );
   }
 
-  isRegular() {
-    return this.state.walletType === WALLET_RESTORE_TYPES.REGULAR;
-  }
-
   isCertificate() {
     return this.state.walletType === WALLET_RESTORE_TYPES.CERTIFICATE;
   }
@@ -615,8 +617,16 @@ export default class WalletRestoreDialog extends Component<Props, State> {
     return this.state.walletType === WALLET_RESTORE_TYPES.LEGACY;
   }
 
+  isYoroiBalance() {
+    return this.state.walletType === WALLET_RESTORE_TYPES.YOROI_BALANCE;
+  }
+
   isYoroi() {
-    return this.state.walletType === WALLET_RESTORE_TYPES.YOROI;
+    return this.state.walletType === WALLET_RESTORE_TYPES.YOROI_REWARDS || this.state.walletType === WALLET_RESTORE_TYPES.YOROI_BALANCE;
+  }
+
+  isYoroiRewards() {
+    return this.state.walletType === WALLET_RESTORE_TYPES.YOROI_REWARDS;
   }
 
   onSelectWalletType = (walletType: string, shouldResetForm?: boolean) => {
