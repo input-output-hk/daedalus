@@ -1,6 +1,7 @@
 // @flow
 import React from 'react';
 import { action } from '@storybook/addon-actions';
+import { find } from 'lodash';
 import BigNumber from 'bignumber.js';
 import { number } from '@storybook/addon-knobs';
 import DelegationCenter from '../../../source/renderer/app/components/staking/delegation-center/DelegationCenter';
@@ -45,7 +46,7 @@ const wallets = [
     inactiveStakePercentage: 24,
     isDelegated: true,
     syncState: walletSyncedStateReady,
-    delegatedStakePool: STAKE_POOLS[0],
+    delegatedStakePoolId: STAKE_POOLS[0].id,
     createdAt: new Date(),
     recoveryPhraseVerificationDate: new Date(),
     recoveryPhraseVerificationStatus:
@@ -66,7 +67,7 @@ const wallets = [
     inactiveStakePercentage: 35,
     isDelegated: true,
     syncState: walletSyncedStateReady,
-    delegatedStakePool: STAKE_POOLS[1],
+    delegatedStakePoolId: STAKE_POOLS[1].id,
     createdAt: new Date(),
     recoveryPhraseVerificationDate: new Date(),
     recoveryPhraseVerificationStatus:
@@ -107,7 +108,9 @@ export const StakingDelegationCenterStory = () => (
     })}
     wallets={wallets}
     onDelegate={action('onDelegate')}
-    getStakePoolById={action('getStakePoolById')}
+    getStakePoolById={poolId =>
+      find(STAKE_POOLS, stakePool => stakePool.id === poolId)
+    }
     numberOfStakePools={STAKE_POOLS.length}
   />
 );

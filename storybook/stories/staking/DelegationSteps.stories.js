@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { BigNumber } from 'bignumber.js';
 import { number } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
-
+import { find } from 'lodash';
 import DelegationStepsIntroDialog from '../../../source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsIntroDialog';
 import DelegationStepsChooseWalletDialog from '../../../source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseWalletDialog';
 import DelegationStepsChooseStakePoolDialog from '../../../source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog';
@@ -68,7 +68,9 @@ export class StakingDelegationSteps extends Component<Props, State> {
         numberOfStakePools={stakePoolsList.length}
         stepsList={getDelegationWizardStepsList(this.props.locale)}
         onClose={action('onClose')}
-        getStakePoolById={action('getStakePoolById')}
+        getStakePoolById={poolId =>
+          find(STAKE_POOLS, stakePool => stakePool.id === poolId)
+        }
         onSelectWallet={this.onContinue}
         onBack={action('onBack')}
         wallets={WALLETS}
@@ -80,16 +82,7 @@ export class StakingDelegationSteps extends Component<Props, State> {
         key="DelegationStepsChooseStakePoolDialog"
         stepsList={getDelegationWizardStepsList(this.props.locale)}
         stakePoolsList={stakePoolsList}
-        recentStakePools={[
-          STAKE_POOLS[0],
-          STAKE_POOLS[13],
-          STAKE_POOLS[36],
-          STAKE_POOLS[85],
-          STAKE_POOLS[95],
-          STAKE_POOLS[105],
-          STAKE_POOLS[200],
-          STAKE_POOLS[250],
-        ]}
+        recentStakePools={[STAKE_POOLS[0], STAKE_POOLS[13], STAKE_POOLS[36]]}
         onOpenExternalLink={action('onOpenExternalLink')}
         getPledgeAddressUrl={action('getPledgeAddressUrl')}
         currentTheme={this.props.currentTheme}

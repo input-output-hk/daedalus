@@ -2,7 +2,7 @@
 import hash from 'hash.js';
 import faker from 'faker';
 import moment from 'moment';
-import { random } from 'lodash';
+import { random, get } from 'lodash';
 import BigNumber from 'bignumber.js';
 import Wallet from '../../../source/renderer/app/domains/Wallet';
 import {
@@ -53,7 +53,7 @@ export const generateWallet = (
       WalletRecoveryPhraseVerificationStatuses.OK,
     recoveryPhraseVerificationStatusType:
       WalletRecoveryPhraseVerificationTypes.NEVER_CHECKED,
-    delegatedStakePool,
+    delegatedStakePoolId: get(delegatedStakePool, 'id'),
   });
 
 export const generateTransaction = (
