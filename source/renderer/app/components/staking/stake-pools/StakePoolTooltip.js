@@ -449,7 +449,7 @@ export default class StakePoolTooltip extends Component<Props, State> {
                   }),
                 }}
               >
-                {controlledStake}%
+                {parseFloat(controlledStake.toFixed(2))}%
               </span>
             </dd>
             <dt>{intl.formatMessage(messages.profitMargin)}</dt>
@@ -463,7 +463,7 @@ export default class StakePoolTooltip extends Component<Props, State> {
                   }),
                 }}
               >
-                {profitMargin}%
+                {parseFloat(profitMargin.toFixed(2))}%
               </span>
             </dd>
             <dt>{intl.formatMessage(messages.performance)}</dt>
@@ -477,7 +477,7 @@ export default class StakePoolTooltip extends Component<Props, State> {
                   }),
                 }}
               >
-                {performance}%
+                {parseFloat(performance.toFixed(2))}%
               </span>
             </dd>
             {/*

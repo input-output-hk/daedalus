@@ -2339,13 +2339,13 @@
         "description": "Amount of each wallet for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 27
+          "line": 22
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.walletAmount",
         "start": {
           "column": 16,
-          "line": 22
+          "line": 17
         }
       },
       {
@@ -2353,13 +2353,13 @@
         "description": "Delegated label for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 27
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.delegated",
         "start": {
           "column": 13,
-          "line": 28
+          "line": 23
         }
       },
       {
@@ -2367,13 +2367,13 @@
         "description": "Not-delegated label for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 32
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.notDelegated",
         "start": {
           "column": 16,
-          "line": 33
+          "line": 28
         }
       },
       {
@@ -2381,13 +2381,13 @@
         "description": "Change delegation label for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 38
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.changeDelegation",
         "start": {
           "column": 20,
-          "line": 38
+          "line": 33
         }
       },
       {
@@ -2395,13 +2395,13 @@
         "description": "Remove delegation label for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 49
+          "line": 44
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.removeDelegation",
         "start": {
           "column": 20,
-          "line": 44
+          "line": 39
         }
       },
       {
@@ -2409,13 +2409,13 @@
         "description": "Delegated stake pool ticker for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 55
+          "line": 50
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.toStakePoolTickerPart1",
         "start": {
           "column": 26,
-          "line": 50
+          "line": 45
         }
       },
       {
@@ -2423,13 +2423,13 @@
         "description": "Delegated stake pool ticker for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 61
+          "line": 56
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.toStakePoolTickerPart2",
         "start": {
           "column": 26,
-          "line": 56
+          "line": 51
         }
       },
       {
@@ -2437,13 +2437,13 @@
         "description": "Delegate label for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 66
+          "line": 61
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.delegate",
         "start": {
           "column": 12,
-          "line": 62
+          "line": 57
         }
       },
       {
@@ -2451,13 +2451,13 @@
         "description": "Your stake label for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 71
+          "line": 66
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.yourStake",
         "start": {
           "column": 13,
-          "line": 67
+          "line": 62
         }
       }
     ],
