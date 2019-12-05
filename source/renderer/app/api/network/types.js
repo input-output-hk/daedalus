@@ -4,10 +4,16 @@ export type TipInfo = {
   slot: number,
 };
 
+export type NextEpoch = {
+  epochNumber: number,
+  epochStart: string,
+};
+
 export type GetNetworkInfoResponse = {
   syncProgress: number,
   localTip: TipInfo,
   networkTip: TipInfo,
+  nextEpoch: NextEpoch,
 };
 
 export type NetworkInfoResponse = {
@@ -29,5 +35,9 @@ export type NetworkInfoResponse = {
   network_tip: {
     slot_number: number,
     epoch_number: number,
+  },
+  next_epoch: {
+    epoch_number: number,
+    epoch_start: string,
   },
 };
