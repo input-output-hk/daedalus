@@ -8,7 +8,7 @@ import DelegationStepsConfirmationDialog from './DelegationStepsConfirmationDial
 import DelegationStepsIntroDialog from './DelegationStepsIntroDialog';
 import DelegationStepsNotAvailableDialog from './DelegationStepsNotAvailableDialog';
 import DelegationStepsChooseStakePoolDialog from './DelegationStepsChooseStakePoolDialog';
-import type { StakePool } from '../../../api/staking/types';
+import StakePool from '../../../domains/StakePool';
 import Wallet from '../../../domains/Wallet';
 
 type Props = {
@@ -29,9 +29,11 @@ type Props = {
   stakePoolsDelegatingList: Array<StakePool>,
   stakePoolsList: Array<StakePool>,
   onOpenExternalLink: Function,
+  getPledgeAddressUrl: Function,
   currentTheme: string,
   selectedWalletId: string,
   selectedPool: ?StakePool,
+  getStakePoolById: Function,
 };
 
 @observer
@@ -54,10 +56,12 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
       stakePoolsDelegatingList,
       stakePoolsList,
       onOpenExternalLink,
+      getPledgeAddressUrl,
       currentTheme,
       selectedWalletId,
       selectedPool,
       isWalletAcceptable,
+      getStakePoolById,
     } = this.props;
 
     if (isDisabled) {
@@ -83,6 +87,7 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
             onClose={onClose}
             onSelectWallet={onSelectWallet}
             isWalletAcceptable={isWalletAcceptable}
+            getStakePoolById={getStakePoolById}
           />
         );
         break;
@@ -93,6 +98,7 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
             stakePoolsDelegatingList={stakePoolsDelegatingList}
             stakePoolsList={stakePoolsList}
             onOpenExternalLink={onOpenExternalLink}
+            getPledgeAddressUrl={getPledgeAddressUrl}
             currentTheme={currentTheme}
             selectedPool={selectedPool}
             onClose={onClose}

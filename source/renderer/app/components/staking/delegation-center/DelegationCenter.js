@@ -12,6 +12,7 @@ type Props = {
   wallets: Array<Wallet>,
   onDelegate: Function,
   numberOfStakePools: number,
+  getStakePoolById: Function,
 };
 
 @observer
@@ -23,6 +24,7 @@ export default class DelegationCenter extends Component<Props> {
       wallets,
       onDelegate,
       numberOfStakePools,
+      getStakePoolById,
     } = this.props;
 
     return (
@@ -32,6 +34,7 @@ export default class DelegationCenter extends Component<Props> {
           wallets={wallets}
           onDelegate={onDelegate}
           numberOfStakePools={numberOfStakePools}
+          getStakePoolById={getStakePoolById}
         />
       </Fragment>
     );
