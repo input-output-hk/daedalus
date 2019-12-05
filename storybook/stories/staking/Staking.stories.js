@@ -22,7 +22,7 @@ import { StakingEpochsStory } from './Epochs.stories';
 import { StakingDelegationSteps } from './DelegationSteps.stories';
 
 const defaultPercentage = 10;
-const defaultStartDateTime = new Date('2019-09-26');
+const defaultStartDateTime = new Date('2019-12-31');
 const startDateTimeKnob = (name, defaultValue) => {
   const stringTimestamp = date(name, defaultValue);
 

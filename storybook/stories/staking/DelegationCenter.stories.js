@@ -3,7 +3,6 @@ import React from 'react';
 import { action } from '@storybook/addon-actions';
 import { find } from 'lodash';
 import BigNumber from 'bignumber.js';
-import { number } from '@storybook/addon-knobs';
 import DelegationCenter from '../../../source/renderer/app/components/staking/delegation-center/DelegationCenter';
 import STAKE_POOLS from '../../../source/renderer/app/config/stakingStakePools.dummy.json';
 import Wallet from '../../../source/renderer/app/domains/Wallet';
@@ -11,15 +10,10 @@ import {
   WalletRecoveryPhraseVerificationStatuses,
   WalletRecoveryPhraseVerificationTypes,
 } from '../../../source/renderer/app/stores/WalletsStore';
-
-const defaultAdaValue = 82650.15;
-const defaultPercentage = 33.123456;
-
-const adaValueKnob = (name, defaultValue) => {
-  const value = number(name, defaultValue);
-
-  return new BigNumber(value);
-};
+import type {
+  NextEpoch,
+  TipInfo,
+} from '../../../source/renderer/app/api/network/types';
 
 const walletSyncedStateReady = { status: 'ready' };
 
@@ -29,6 +23,18 @@ const walletSyncedStateRestoring = {
     quantity: 25,
     unit: 'percentage',
   },
+};
+
+const redirectToStakingInfo: Function = null;
+
+const networkTip: TipInfo = {
+  epoch: 12352,
+  slot: 123,
+};
+
+const nextEpoch: NextEpoch = {
+  epochNumber: 1233,
+  epochStart: new Date('2019-12-31').toUTCString(),
 };
 
 // Dummy data initialization
@@ -99,18 +105,14 @@ const wallets = [
 
 export const StakingDelegationCenterStory = () => (
   <DelegationCenter
-    adaValue={adaValueKnob('ADA Value', defaultAdaValue)}
-    percentage={number('Percentage', defaultPercentage, {
-      min: 0,
-      max: 100,
-      step: 1,
-      range: true,
-    })}
+    redirectToStakingInfo={redirectToStakingInfo}
     wallets={wallets}
     onDelegate={action('onDelegate')}
     getStakePoolById={poolId =>
       find(STAKE_POOLS, stakePool => stakePool.id === poolId)
     }
     numberOfStakePools={STAKE_POOLS.length}
+    networkTip={networkTip}
+    nextEpoch={nextEpoch}
   />
 );
