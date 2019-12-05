@@ -5,6 +5,7 @@ import { orderBy, take } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import { ROUTES } from '../routes-config';
+import { RECENT_STAKE_POOLS_COUNT } from '../config/stakingConfig';
 import type {
   Reward,
   RewardForIncentivizedTestnet,
@@ -93,7 +94,7 @@ export default class StakingStore extends Store {
 
   @computed get recentStakePools(): Array<StakePool> {
     const orderedStakePools = orderBy(this.stakePools, 'ranking', 'asc');
-    return take(orderedStakePools, 6);
+    return take(orderedStakePools, RECENT_STAKE_POOLS_COUNT);
   }
 
   @computed get isStakingDelegationCountdown(): boolean {

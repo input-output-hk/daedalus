@@ -20,14 +20,14 @@ blockchain_configuration:
   block0_consensus: genesis_praos
 
   # Number of slots in each epoch
-  slots_per_epoch: 20
+  slots_per_epoch: 10
 
   # The slot duration, in seconds, is the time between the creation
   # of 2 blocks
   slot_duration: 2
 
   # The number of blocks (*10) per epoch
-  epoch_stability_depth: 4
+  epoch_stability_depth: 5
 
   # A list of Ed25519 Extended PublicKey that represents the
   # BFT leaders encoded as bech32. The order in the list matters.
@@ -53,6 +53,63 @@ blockchain_configuration:
 
   # The speed to update the KES Key in seconds
   kes_update_speed: 43200 # 12hours
+
+  # Set the total reward supply available for monetary creation
+  #
+  # if not set there is no monetary creation
+  # once emptied, there is no more monetary creation
+  total_reward_supply: 100000000000000
+
+  # set the reward supply consumption. These parameters will define how the
+  # total_reward_supply is consumed for the stake pool reward
+  #
+  # There's fundamentally many potential choices for how rewards are contributed back, and here's two potential valid examples:
+  #
+  # Linear formula: constant - ratio * (#epoch after epoch_start / epoch_rate)
+  # Halving formula: constant * ratio ^ (#epoch after epoch_start / epoch_rate)
+  #
+  reward_parameters:
+    halving: # or use "linear" for the linear formula
+      # In the linear formula, it represents the starting point of the contribution
+      # at #epoch=0, whereas in halving formula is used as starting constant for
+      # the calculation.
+      constant: 100
+
+      # In the halving formula, an effective value between 0.0 to 1.0 indicates a
+      # reducing contribution, whereas above 1.0 it indicate an acceleration of contribution.
+      #
+      # However in linear formula the meaning is just a scaling factor for the epoch zone
+      # (current_epoch - start_epoch / epoch_rate). Further requirement is that this ratio
+      # is expressed in fractional form (e.g. 1/2), which allow calculation in integer form.
+      ratio: "1/1"
+
+      # indicates when this contribution start. note that if the epoch is not
+      # the same or after the epoch_start, the overall contribution is zero.
+      epoch_start: 0
+
+      # the rate at which the contribution is tweaked related to epoch.
+      epoch_rate: 1
+
+  # initial value the treasury will start with, if not set the treasury
+  # starts at 0
+  treasury: 0
+
+  # set the treasury parameters, this is the tax type, just as in stake pool
+  # registration certificate parameters.
+  #
+  # When distributing the rewards, the treasury will be first serve as per
+  # the incentive specification document
+  #
+  # if not set, the treasury will not grow
+  treasury_parameters:
+    # the fix value the treasury will take from the total reward pot of the epoch
+    fixed: 0
+    # the extra percentage the the treasury will take from the reward pot of the epoch
+    ratio: "0/1"
+    # It is possible to add a max bound to the total value the treasury takes
+    # at each reward distribution. For example, one could cap the treasury tax
+    # to 10000. Uncomment the following line to apply a max limit:
+    # max_limit: 10000
 
 # The initial deposits present in the blockchain.
 #
@@ -6117,15 +6174,15 @@ initial:
 
   # Stake pool registration certificates
   # $ cat stake_pools/{a,b,c}/stake_pool.cert.signed
-  - cert: signedcert1qvqqqqqqqqqqqqqqqqqqq0p5avfqqqqqqqqqqqqqqqqqqqqqqqqqruyewhyw63znm6sqjp97v9v0lzxwrcpn5clpqjku9tvx7gm26cgu6dch9gvcaf2qtkjwk4dxnl9dwtx0drc3df7c6qf4ud0ntl65dl0sz24h2ghlfdrfaj4l445flnca9lc8kj7cdyf0t6kv9efk55p4hjdlqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqpqqqqqqqqqqqqqqqpqruenu0stnzsfs5eaxkfp5ycuj7mzwvh0drhuknhu00x2g5r0wwqh29a5pelyg6ftnzrpd6ss9z3s3mukcuss3tf75vnn7gjm2609jqdtvrgeh
-  - cert: signedcert1qvqqqqqqqqqqqqqqqqqqq0p5avfqqqqqqqqqqqqqqqqqqqqqqqqqzqhrrx0rsyuc7uzd0fgzq7rlfkxl46uqa34vpsvlvkfhwcd9g8pmgqkmrlqp2pz3d6k3x3ffcvev968mwlxeuzgawla627j22t28fxhqz24h2ghlfdrfaj4l445flnca9lc8kj7cdyf0t6kv9efk55p4hjdlqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqpqqqqqqqqqqqqqqqpqq29drqd7vfcejvnst4luycy7xuegxwgj3hstkjz8jrj9egr73d0m9gjepjxa5kdewpczvxn9pvtvadar6f2dqw9x467qslv8a5l3nq2quec6p
-  - cert: signedcert1qvqqqqqqqqqqqqqqqqqqq0p5avfqqqqqqqqqqqqqqqqqqqqqqqqqr9hzg7q7clf0wz0t8x6qjyjcnug3qy9ls7lptrfmjlp026cl9mqk066q5pwhpyst4vawatz2s8cxpv664kaw8tcd8zamfua009rndlksz24h2ghlfdrfaj4l445flnca9lc8kj7cdyf0t6kv9efk55p4hjdlqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqpqqqqqqqqqqqqqqqpqzsmgc3fj8f49j9r8xdnkdwjp8j7djnyw56ltu758pe3j42ahd64c6ckzfumuhpqhp9pcsnyxk2jmlvgvhjve338ssmh8dkpde8mvcqx64l5t6
+  - cert: signedcert1qvqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqz28a80ya8gx0n05j3fs6x63tdtq8exs3yzfptf4vsaghapyc70mgxvh58klr73qul6y7y06ytkpyns6avc6k2lutpvwsv8dl47m73x4sz24h2ghlfdrfaj4l445flnca9lc8kj7cdyf0t6kv9efk55p4hjdlqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqpqqqqqqqqqqqqqqqpqq5ge00g04lkghp9n2pl20wwyn440kmy6vj6reyer34kzy46lgczdp25wjxsq2csdlch8gm58e9hlzr4hytl7d8hvsa3mpr64a7hlmqx26e5d7
+  - cert: signedcert1qvqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqrj5zl6jx4e7cvwuuhkxncf4nzxduqrujcpp65y65n8u4vl5m27z8v66p8h9nmnwlqv4qluyy56rxsd5za7myedfhrg8sz2a6s2r8skvsz24h2ghlfdrfaj4l445flnca9lc8kj7cdyf0t6kv9efk55p4hjdlqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqpqqqqqqqqqqqqqqqpqzm22p23wn7yyancd42wfj9um3t6ydp7z49xu0drpun7jj7fl0eekwk4vhdxkuykg703wy54r76c5kj96pysvylmsp8py4yeegc2t9gvy8yu5s
+  - cert: signedcert1qvqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqzfx2u4k4pnp2h8n0zvzctul7w4l6gazftzeen95xfvkteey92g2ctr7jya73cv4n6j5sapjtevgz6j49j46qmkg4w0dmfvfm5j5dl66qz24h2ghlfdrfaj4l445flnca9lc8kj7cdyf0t6kv9efk55p4hjdlqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqpqqqqqqqqqqqqqqqpqqzgeqj2agwtw6d32xt0puchkgknhq7prvnzsdh772fauqt3s9ng2xayvac42q4kj9dyv6nfhw9cl4ss5krk3vecvc9thdg5s6gswdszpcfu4e
 
   # Delegation certificates — delegating from the account addresses to the pools
   # $ cat funds/stake_delegation{1,2,3}.signedcert
-  - cert: signedcert1qxkalz75s4vtw2e9wsy2q9jvsu3qtz6d2vm3xj4e5q4ufejpjjfn5q20345x5qkxucjmtfvue83rfuewt4efsuqjl8p9exntvrw6mcvh6yqatymz6yv900jggz8f87j2rg7pdue9y7erxpehsy9v0yaz4mrfga4ezyhkqhtp02ju727e2cuhyuwknjps0hpc9py0ggdyy2shwfldquxhncdr
-  - cert: signedcert1q8qtmpgefmhlwrwlm48kxq43hpkxnvz8fey2jlmce5lea3mxnskfqqtne4rxffevd6wq9xczegz26egezseafg44zs8m7gluwh4thp8a4cq3ljlvewvpyqkg3u3hvrrrkqekatwenwgh0d52x7d333gc4str9pnr5fn7yjegcj87dkzpe7nunnucgknyc87e73d64lmh47azmzqhpvknapz9
-  - cert: signedcert1qxzn99jx8a2rw80gp9uea47tmcndv7gm28vy9as6akevy32204aqwq2hdzqhcr3fhra2twme69s3l6hw7d43dlf2qa36sc7f9v6jzc5yguqhp6p79m5xjp0u9j35dlpfutvvrcsv03tgfnzcqhsmgjwhqxkmd0ggmw84qjsctxu2pzg5fh55n492ue5mrsec7vmk04vyf0ly367dqgzj6m3e
+  - cert: signedcert1qxkalz75s4vtw2e9wsy2q9jvsu3qtz6d2vm3xj4e5q4ufejpjjfn5qt39hgzs6r4vpgxuwct8p62m0vjn2ufykgmlhhpygd4acmeddumwqq6hyqcxu5nc6l4669kf0v3l9n6mu6ypsmdtmkwpqpj8wuw6extdhu9gz5x0gaxkehy5gyxwmhdphem6dz6twqt7wvd0qtd27f5wgujpu7we5s9
+  - cert: signedcert1q8qtmpgefmhlwrwlm48kxq43hpkxnvz8fey2jlmce5lea3mxnskfqqf5tn9cdepgtllh8cquc0dux9fy85hnmg583czfl3ku6sccc9uzncq7pfq3s95dpnq5svfkl2aunkg6t8ypjrwauzgfgcv5mwg45w00shstqyzlyqlmdjg2jdkkskdj2rxqxu99qajta4fr33vww4xvwph3qy54ynez
+  - cert: signedcert1qxzn99jx8a2rw80gp9uea47tmcndv7gm28vy9as6akevy32204aqwq2ffdu996e56w0qc344emv560jmxnwhpk3ztguvcm0a3g400h0f6uqkf9lf2awlmd04p27fnjj79pnq4qkpwncq244f29xq4tluqdaqyjf0fxt24mchpt3qdtcpfzxw9j0ak4r7vn8msmz8j76m8qmxsy6fqsasm5ym
 
   # A special Byron Wallet comming from ["suffer", "decorate", "head", "opera", "yellow", "debate", "visa", "fire", "salute", "hybrid", "stone", "smart"]
   #

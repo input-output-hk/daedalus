@@ -22,7 +22,10 @@ export type AdaApiStakePool = {
   },
   apparent_performance: number,
   metadata: {
-    ticker: string,
+    owner: string,
+    ticker: string, // [3 .. 5] characters
+    name: string, // [1 .. 50] characters
+    description?: string, // <= 255 characters
     homepage: string,
     pledge_address: string,
   },
