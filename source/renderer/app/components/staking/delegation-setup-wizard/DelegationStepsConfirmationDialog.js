@@ -161,7 +161,7 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
       isSubmitting,
     } = this.props;
     const selectedWalletName = get(selectedWallet, 'name');
-    const selectedPoolTicker = get(selectedPool, 'slug');
+    const selectedPoolTicker = get(selectedPool, 'ticker');
     const spendingPasswordField = form.$('spendingPassword');
 
     const confirmButtonClasses = classNames([

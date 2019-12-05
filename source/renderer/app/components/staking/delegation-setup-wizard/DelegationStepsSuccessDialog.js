@@ -83,7 +83,7 @@ export default class DelegationStepsSuccessDialog extends Component<Props> {
     const contentClasses = classNames([commonStyles.content, styles.content]);
 
     const delegatedWalletName = get(delegatedWallet, 'name');
-    const delegatedStakePoolTicker = get(delegatedStakePool, 'slug');
+    const delegatedStakePoolTicker = get(delegatedStakePool, 'ticker');
 
     const timeLeft = Math.max(
       0,
