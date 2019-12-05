@@ -1248,16 +1248,21 @@ const _createWalletFromServerData = action(
       balance.available.unit === WalletUnits.LOVELACE
         ? new BigNumber(balance.available.quantity).dividedBy(LOVELACES_PER_ADA)
         : new BigNumber(balance.available.quantity);
-    const walletRewardAmount =
-      balance.reward.unit === WalletUnits.LOVELACE
-        ? new BigNumber(balance.reward.quantity).dividedBy(LOVELACES_PER_ADA)
-        : new BigNumber(balance.reward.quantity || 0);
-    const delegatedStakePoolId = delegation.target;
+    let walletRewardAmount = 0;
+    if (!isLegacy) {
+      walletRewardAmount =
+        balance.reward.unit === WalletUnits.LOVELACE
+          ? new BigNumber(balance.reward.quantity).dividedBy(LOVELACES_PER_ADA)
+          : new BigNumber(balance.reward.quantity);
+    }
+
+    const delegatedStakePoolId = isLegacy ? null : delegation.target;
 
     // @API TODO - integrate once "Join Stake Pool" endpoint is done
     // const isDelegated = delegation.status === WalletDelegationStatuses.DELEGATING;
-    const isDelegated = index < stakingStakePoolsMissingApiData.length;
-    const inactiveStakePercentage = 0;
+    const isDelegated = isLegacy
+      ? false
+      : index < stakingStakePoolsMissingApiData.length;
 
     return new Wallet({
       id,
@@ -1271,7 +1276,6 @@ const _createWalletFromServerData = action(
       syncState: state,
       isLegacy,
       isDelegated,
-      inactiveStakePercentage,
       delegatedStakePoolId,
     });
   }
