@@ -10,14 +10,13 @@ import {
 import SVGInline from 'react-svg-inline';
 import isNil from 'lodash/isNil';
 import Wallet from '../../../domains/Wallet';
-import StakePool from '../../../domains/StakePool';
+import StakePool, { DelegationActions } from '../../../domains/StakePool';
 import { getColorFromRange } from '../../../utils/colors';
 import settingsIcon from '../../../assets/images/settings-ic.inline.svg';
 import { SIMPLE_DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import DropdownMenu from './DropdownMenu';
 import DonutRing from './DonutRing';
 import styles from './WalletRow.scss';
-import { DelegationActions } from '../../../domains/StakePool';
 import type { DelegationAction } from '../../../api/staking/types';
 
 const messages = defineMessages({
