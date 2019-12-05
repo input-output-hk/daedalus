@@ -107,6 +107,7 @@ export const StakingDelegationCenterStory = () => (
     redirectToStakingInfo={redirectToStakingInfo}
     wallets={wallets}
     onDelegate={action('onDelegate')}
+    getStakePoolById={action('getStakePoolById')}
     numberOfStakePools={STAKE_POOLS.length}
     networkTip={networkTip}
     nextEpoch={nextEpoch}

@@ -1223,7 +1223,7 @@ export default class AdaApi {
 
 const _createWalletFromServerData = action(
   'AdaApi::_createWalletFromServerData',
-  (data: AdaWallet) => {
+  (data: AdaWallet, index: number) => {
     const {
       id,
       address_pool_gap: addressPoolGap,
@@ -1236,8 +1236,6 @@ const _createWalletFromServerData = action(
       isLegacy = false,
     } = data;
 
-    const isDelegated =
-      delegation.status === WalletDelegationStatuses.DELEGATING;
     const passphraseLastUpdatedAt = get(passphrase, 'last_updated_at', null);
     const walletTotalAmount =
       balance.total.unit === WalletUnits.LOVELACE
@@ -1253,6 +1251,11 @@ const _createWalletFromServerData = action(
         : new BigNumber(reward.quantity || 0);
     const delegatedStakePoolId = delegation.target;
 
+    // @API TODO - integrate once "Join Stake Pool" endpoint is done
+    // const isDelegated = delegation.status === WalletDelegationStatuses.DELEGATING;
+    const isDelegated = index < stakingStakePoolsMissingApiData.length;
+    const inactiveStakePercentage = 0;
+
     return new Wallet({
       id,
       addressPoolGap,
@@ -1265,8 +1268,7 @@ const _createWalletFromServerData = action(
       syncState: state,
       isLegacy,
       isDelegated,
-      // @API TODO - integrate once "Join Stake Pool" endpoint is done
-      // inactiveStakePercentage: 0,
+      inactiveStakePercentage,
       delegatedStakePoolId,
     });
   }

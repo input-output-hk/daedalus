@@ -10,6 +10,7 @@ import {
 import SVGInline from 'react-svg-inline';
 import isNil from 'lodash/isNil';
 import Wallet from '../../../domains/Wallet';
+import StakePool from '../../../domains/StakePool';
 import { getColorFromRange } from '../../../utils/colors';
 import settingsIcon from '../../../assets/images/settings-ic.inline.svg';
 import { SIMPLE_DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
@@ -51,9 +52,9 @@ const messages = defineMessages({
     description:
       'Remove delegation label for the Delegation center body section.',
   },
-  toStakePoolSlug: {
-    id: 'staking.delegationCenter.toStakePoolSlug',
-    defaultMessage: '!!!To <b>[{delegatedStakePoolSlug}]</b> stake pool',
+  toStakePoolTicker: {
+    id: 'staking.delegationCenter.toStakePoolTicker',
+    defaultMessage: '!!!To <b>[{delegatedStakePoolTicker}]</b> stake pool',
     description:
       'Delegated stake pool ticker for the Delegation center body section.',
   },
@@ -71,6 +72,7 @@ const messages = defineMessages({
 
 type Props = {
   wallet: Wallet,
+  delegatedStakePool?: StakePool,
   numberOfStakePools: number,
   onDelegate: Function,
 };
@@ -89,7 +91,8 @@ export default class WalletRow extends Component<Props> {
   render() {
     const { intl } = this.context;
     const {
-      wallet: { name, amount, isDelegated, delegatedStakePool },
+      wallet: { name, amount, isDelegated },
+      delegatedStakePool,
       numberOfStakePools,
     } = this.props;
 
@@ -150,9 +153,9 @@ export default class WalletRow extends Component<Props> {
             <div className={styles.action}>
               {isDelegated && delegatedStakePool ? (
                 <FormattedHTMLMessage
-                  {...messages.toStakePoolSlug}
+                  {...messages.toStakePoolTicker}
                   values={{
-                    delegatedStakePoolSlug: delegatedStakePool.ticker,
+                    delegatedStakePoolTicker: delegatedStakePool.ticker,
                   }}
                 />
               ) : (

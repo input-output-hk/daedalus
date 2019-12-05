@@ -12,6 +12,7 @@ type Props = {
   numberOfStakePools: number,
   networkTip: ?TipInfo,
   nextEpoch: ?NextEpoch,
+  getStakePoolById: Function,
 };
 
 @observer
@@ -23,6 +24,7 @@ export default class DelegationCenter extends Component<Props> {
       numberOfStakePools,
       networkTip,
       nextEpoch,
+      getStakePoolById,
     } = this.props;
 
     return (
@@ -32,6 +34,7 @@ export default class DelegationCenter extends Component<Props> {
           wallets={wallets}
           onDelegate={onDelegate}
           numberOfStakePools={numberOfStakePools}
+          getStakePoolById={getStakePoolById}
         />
       </Fragment>
     );
