@@ -6,6 +6,7 @@ import { find, get } from 'lodash';
 import BigNumber from 'bignumber.js';
 import DelegationSetupWizardDialog from '../../../components/staking/delegation-setup-wizard/DelegationSetupWizardDialog';
 import { MIN_DELEGATION_FUNDS } from '../../../config/stakingConfig';
+import { getNetworkExplorerUrlByType } from '../../../utils/network';
 import type { InjectedDialogContainerProps } from '../../../types/injectedPropsType';
 import Wallet from '../../../domains/Wallet';
 
@@ -131,8 +132,9 @@ export default class DelegationSetupWizardDialogContainer extends Component<
   render() {
     const { activeStep, selectedWalletId, selectedPoolId } = this.state;
     const { app, staking, wallets, profile } = this.props.stores;
-    const { currentTheme } = profile;
-    const { stakePools, delegatingStakePools } = staking;
+    const { currentTheme, currentLocale, environment } = profile;
+    const { stakePools, delegatingStakePools, getStakePoolById } = staking;
+    const { network, rawNetwork } = environment;
     const isDisabled = wallets.allWallets.reduce(
       (disabled: boolean, { amount }: Wallet) => {
         if (!disabled) return false;
@@ -141,6 +143,15 @@ export default class DelegationSetupWizardDialogContainer extends Component<
       false
     );
     const selectedPool = find(stakePools, pool => pool.id === selectedPoolId);
+
+    const getPledgeAddressUrl = (pledgeAddress: string) =>
+      getNetworkExplorerUrlByType(
+        'address',
+        pledgeAddress,
+        network,
+        rawNetwork,
+        currentLocale
+      );
 
     return (
       <DelegationSetupWizardDialog
@@ -155,6 +166,7 @@ export default class DelegationSetupWizardDialogContainer extends Component<
         stakePoolsList={stakePools}
         stakePoolsDelegatingList={delegatingStakePools}
         onOpenExternalLink={app.openExternalLink}
+        getPledgeAddressUrl={getPledgeAddressUrl}
         currentTheme={currentTheme}
         onClose={this.handleDialogClose}
         onContinue={this.handleContinue}
@@ -164,6 +176,7 @@ export default class DelegationSetupWizardDialogContainer extends Component<
         onLearnMoreClick={this.handleLearnMoreClick}
         onConfirm={this.handleConfirm}
         onActivate={this.handleActivate}
+        getStakePoolById={getStakePoolById}
       />
     );
   }

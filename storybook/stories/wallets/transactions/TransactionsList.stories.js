@@ -3,6 +3,7 @@
 // @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
+import { action } from '@storybook/addon-actions';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
 
@@ -35,6 +36,8 @@ storiesOf('Wallets|Transactions', module)
 
   .add('Transactions - Grouped by days', () => (
     <WalletTransactionsList
+      onOpenExternalLink={action('onOpenExternalLink')}
+      getUrlByType={action('getUrlByType')}
       currentLocale="en-US"
       transactions={[
         generateTransaction(
@@ -84,6 +87,8 @@ storiesOf('Wallets|Transactions', module)
 
   .add('Transactions - Confirmed and pending transactions', () => (
     <WalletTransactionsList
+      onOpenExternalLink={action('onOpenExternalLink')}
+      getUrlByType={action('getUrlByType')}
       currentLocale="en-US"
       transactions={[
         generateTransaction(
@@ -121,6 +126,8 @@ storiesOf('Wallets|Transactions', module)
 
   .add('Transactions - Rendering many transactions', () => (
     <WalletTransactionsList
+      onOpenExternalLink={action('onOpenExternalLink')}
+      getUrlByType={action('getUrlByType')}
       currentLocale="en-US"
       isRenderingAsVirtualList
       isRestoreActive={false}
@@ -139,6 +146,8 @@ storiesOf('Wallets|Transactions', module)
 
   .add('Transactions - Unresolved income addresses', () => (
     <WalletTransactionsList
+      onOpenExternalLink={action('onOpenExternalLink')}
+      getUrlByType={action('getUrlByType')}
       currentLocale="en-US"
       isRenderingAsVirtualList
       deletePendingTransaction={() => {}}
@@ -172,6 +181,8 @@ storiesOf('Wallets|Transactions', module)
 
   .add('Transactions - Without income addresses', () => (
     <WalletTransactionsList
+      onOpenExternalLink={action('onOpenExternalLink')}
+      getUrlByType={action('getUrlByType')}
       currentLocale="en-US"
       isRenderingAsVirtualList
       deletePendingTransaction={() => {}}

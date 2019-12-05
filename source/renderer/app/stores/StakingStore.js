@@ -1,31 +1,47 @@
 // @flow
-import { computed, action } from 'mobx';
+import { computed, action, observable } from 'mobx';
 import BigNumber from 'bignumber.js';
 import Store from './lib/Store';
+import Request from './lib/LocalizedRequest';
 import { ROUTES } from '../routes-config';
 import type {
-  StakePool,
+  // StakePool,
   Reward,
   RewardForIncentivizedTestnet,
 } from '../api/staking/types';
 import Wallet from '../domains/Wallet';
-
-import STAKE_POOLS from '../config/stakingStakePools.dummy.json';
+import StakePool from '../domains/StakePool';
 import REWARDS from '../config/stakingRewards.dummy.json';
 
 export default class StakingStore extends Store {
+  STAKE_POOLS_INITIAL_INTERVAL = 1000; // 1000 milliseconds
+  STAKE_POOLS_REFRESH_INTERVAL = 30 * 60 * 1000; // 30 minutes | unit: milliseconds;
+
+  initialPooling: ?IntervalID = null;
+  refreshPooling: ?IntervalID = null;
+
   startDateTime: string = '2019-09-26T00:00:00.161Z';
   decentralizationProgress: number = 10;
   adaValue: BigNumber = new BigNumber(82650.15);
   percentage: number = 14;
 
   setup() {
+    this.initialPooling = setInterval(
+      this.refreshStakePoolsData,
+      this.STAKE_POOLS_INITIAL_INTERVAL
+    );
     const { staking } = this.actions;
     staking.goToStakingInfoPage.listen(this._goToStakingInfoPage);
     staking.goToStakingDelegationCenterPage.listen(
       this._goToStakingDelegationCenterPage
     );
+    this.refreshStakePoolsData();
   }
+
+  // REQUESTS
+  @observable stakePoolsRequest: Request<Array<StakePool>> = new Request(
+    this.api.ada.getStakePools
+  );
 
   // =================== PUBLIC API ==================== //
 
@@ -40,18 +56,11 @@ export default class StakingStore extends Store {
   }
 
   @computed get stakePools(): Array<StakePool> {
-    // return this.stakePoolsRequest.result ? this.stakePoolsRequest.result : [];
-    return STAKE_POOLS;
+    return this.stakePoolsRequest.result ? this.stakePoolsRequest.result : [];
   }
 
   @computed get delegatingStakePools(): Array<StakePool> {
-    // return this.stakePoolsRequest.result ? this.stakePoolsRequest.result : [];
-    return [
-      STAKE_POOLS[1],
-      STAKE_POOLS[50],
-      STAKE_POOLS[100],
-      STAKE_POOLS[200],
-    ];
+    return [];
   }
 
   @computed get isStakingDelegationCountdown(): boolean {
@@ -74,6 +83,21 @@ export default class StakingStore extends Store {
     return new Date(this.startDateTime).getTime() - new Date().getTime() > 0;
   }
 
+  @action refreshStakePoolsData = async () => {
+    const { isSynced, isConnected } = this.stores.networkStatus;
+    if (this.stores.wallets._pollingBlocked || !isSynced || !isConnected)
+      return;
+    if (this.initialPooling && !this.refreshPooling) {
+      clearInterval(this.initialPooling);
+      this.initialPooling = null;
+      this.refreshPooling = setInterval(
+        this.refreshStakePoolsData,
+        this.STAKE_POOLS_REFRESH_INTERVAL
+      );
+    }
+    await this.stakePoolsRequest.execute().promise;
+  };
+
   _goToStakingInfoPage = () => {
     this.actions.router.goToRoute.trigger({
       route: ROUTES.STAKING.INFO,
@@ -88,7 +112,14 @@ export default class StakingStore extends Store {
 
   _transformWalletToRewardForIncentivizedTestnet = (inputWallet: Wallet) => {
     const { name: wallet, reward } = inputWallet;
-
     return { wallet, reward };
   };
+
+  // @API TODO: Replace when Stake Pools Join is implemented
+  // getStakePoolById = (stakePoolId: string) =>
+  //   this.stakePools.find(({ id }: StakePool) => id === stakePoolId);
+  getStakePoolById = (stakePoolIndex: number) =>
+    stakePoolIndex < this.stakePools.length
+      ? this.stakePools[stakePoolIndex]
+      : null;
 }

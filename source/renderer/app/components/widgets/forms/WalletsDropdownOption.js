@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import classnames from 'classnames';
 import { getColorFromRange } from '../../../utils/colors';
 import styles from './WalletsDropdownOption.scss';
-import type { StakePool } from '../../../api/staking/types';
+import StakePool from '../../../domains/StakePool';
 
 export type WalletOption = {
   delegatedStakePool?: ?StakePool,
@@ -14,18 +14,18 @@ export type WalletOption = {
 };
 
 export default class WalletsDropdownOption extends Component<WalletOption> {
-  renderLabelAndSlug = () => {
+  renderLabelAndTicker = () => {
     const { delegatedStakePool, label, numberOfStakePools } = this.props;
     if (!delegatedStakePool || !numberOfStakePools) {
       return <div className={styles.label}>{label}</div>;
     }
 
-    const { ranking, slug } = delegatedStakePool;
+    const { ranking, ticker } = delegatedStakePool;
     const color = getColorFromRange(ranking, numberOfStakePools);
     return (
       <div className={styles.topRow}>
-        <div style={{ color }} className={styles.slug}>
-          [{slug}]
+        <div style={{ color }} className={styles.ticker}>
+          [{ticker}]
         </div>
         <div className={styles.label}>{label}</div>
       </div>
@@ -39,7 +39,7 @@ export default class WalletsDropdownOption extends Component<WalletOption> {
     });
     return (
       <div className={componentStyles}>
-        {this.renderLabelAndSlug()}
+        {this.renderLabelAndTicker()}
         <div className={styles.detail}>{detail}</div>
       </div>
     );

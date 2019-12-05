@@ -47,7 +47,7 @@
         width: 116px;
 
         .label {
-          color: var(--theme-delegation-steps-choose-stake-pool-slug-color);
+          color: var(--theme-delegation-steps-choose-stake-pool-ticker-color);
           font-family: var(--font-semibold);
           font-size: 20.3px;
           font-weight: 600;
@@ -79,7 +79,7 @@
 
           .label {
             color: var(
-              --theme-delegation-steps-choose-stake-pool-selected-slug-color
+              --theme-delegation-steps-choose-stake-pool-selected-ticker-color
             );
           }
           .checkmarkImage {

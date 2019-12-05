@@ -69,6 +69,7 @@ export class StakingDelegationSteps extends Component<Props, State> {
         numberOfStakePools={stakePoolsList.length}
         stepsList={getDelegationWizardStepsList(this.props.locale)}
         onClose={action('onClose')}
+        getStakePoolById={action('getStakePoolById')}
         onSelectWallet={this.onContinue}
         onBack={action('onBack')}
         wallets={WALLETS}
@@ -85,7 +86,8 @@ export class StakingDelegationSteps extends Component<Props, State> {
           STAKE_POOLS[13],
           STAKE_POOLS[36],
         ]}
-        onOpenExternalLink={() => {}}
+        onOpenExternalLink={action('onOpenExternalLink')}
+        getPledgeAddressUrl={action('getPledgeAddressUrl')}
         currentTheme={this.props.currentTheme}
         onClose={action('onClose')}
         onBack={action('onBack')}

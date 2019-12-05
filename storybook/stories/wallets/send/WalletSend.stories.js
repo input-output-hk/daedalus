@@ -8,6 +8,7 @@ import { promise } from '../../_support/utils';
 
 // Assets and helpers
 import WalletsWrapper from '../_utils/WalletsWrapper';
+import { NUMBER_OPTIONS } from '../../../../source/renderer/app/config/profileConfig';
 
 // Screens
 import WalletSendForm from '../../../../source/renderer/app/components/wallet/WalletSendForm';
@@ -19,6 +20,7 @@ storiesOf('Wallets|Send', module)
       currencyUnit="Ada"
       currencyMaxFractionalDigits={6}
       currencyMaxIntegerDigits={11}
+      currentNumberFormat={NUMBER_OPTIONS[0].value}
       validateAmount={promise(true)}
       calculateTransactionFee={promise(true)}
       addressValidator={action('addressValidator')}
