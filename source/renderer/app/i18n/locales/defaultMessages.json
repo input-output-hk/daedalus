@@ -8262,7 +8262,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Choose a name for the wallet you are about to restore",
+        "defaultMessage": "!!!Name the wallet you are restoring",
         "description": "Hint \"Name the wallet you are restoring\" for the wallet name input on the wallet restore dialog.",
         "end": {
           "column": 3,
@@ -8276,7 +8276,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Number of words in your recovery phrase",
+        "defaultMessage": "!!!Number of words in the recovery phrase",
         "description": "Label for the recovery phrase type options on the wallet restore dialog.",
         "end": {
           "column": 3,
@@ -8332,7 +8332,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Wallet recovery phrase",
+        "defaultMessage": "!!!Recovery phrase",
         "description": "Label for the recovery phrase input on the wallet restore dialog.",
         "end": {
           "column": 3,
@@ -8346,7 +8346,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Enter your {numberOfWords}-word wallet recovery phrase",
+        "defaultMessage": "!!!Enter recovery phrase",
         "description": "Hint \"Enter recovery phrase\" for the recovery phrase input on the wallet restore dialog.",
         "end": {
           "column": 3,
@@ -8472,11 +8472,11 @@
         }
       },
       {
-        "defaultMessage": "!!!Wallet recovery phrase",
-        "description": "Tab title \"Wallet recovery phrasee\" in the wallet restore dialog.",
+        "defaultMessage": "!!!Daedalus wallet",
+        "description": "Tab title \"Daedalus wallet\" in the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 138
+          "line": 137
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.tab.title.recoveryPhrase",
@@ -8486,17 +8486,31 @@
         }
       },
       {
-        "defaultMessage": "!!!Paper wallet recovery phrase",
-        "description": "Tab title \"Paper wallet recovery phrase\" in the wallet restore dialog.",
+        "defaultMessage": "!!!Daedalus paper wallet",
+        "description": "Tab title \"Daedalus paper wallet\" in the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 144
+          "line": 143
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.tab.title.certificate",
         "start": {
           "column": 23,
-          "line": 139
+          "line": 138
+        }
+      },
+      {
+        "defaultMessage": "!!!Yoroi wallet",
+        "description": "Tab title \"Yoroi wallet\" in the wallet restore dialog.",
+        "end": {
+          "column": 3,
+          "line": 148
+        },
+        "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
+        "id": "wallet.restore.dialog.tab.title.yoroi",
+        "start": {
+          "column": 17,
+          "line": 144
         }
       },
       {
@@ -8504,13 +8518,13 @@
         "description": "Label for the shielded recovery phrase input on the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 150
+          "line": 154
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.shielded.recovery.phrase.input.label",
         "start": {
           "column": 36,
-          "line": 145
+          "line": 149
         }
       },
       {
@@ -8518,13 +8532,13 @@
         "description": "Hint \"Enter your 27-word paper wallet recovery phrase.\" for the recovery phrase input on the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 157
+          "line": 161
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.shielded.recovery.phrase.input.hint",
         "start": {
           "column": 35,
-          "line": 151
+          "line": 155
         }
       },
       {
@@ -8532,13 +8546,13 @@
         "description": "Label for the \"Restore paper wallet\" button on the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 163
+          "line": 167
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.paper.wallet.button.label",
         "start": {
           "column": 33,
-          "line": 158
+          "line": 162
         }
       }
     ],
@@ -9622,7 +9636,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Note that password needs to be at least 10 characters long, and have at least 1 uppercase, 1 lowercase letter and 1 number.",
+        "defaultMessage": "!!!Note that password needs to be at least 7 characters long, and have at least 1 uppercase, 1 lowercase letter and 1 number.",
         "description": "Password instructions note.",
         "end": {
           "column": 3,

@@ -43,13 +43,13 @@ const messages = defineMessages({
   },
   walletNameInputHint: {
     id: 'wallet.restore.dialog.wallet.name.input.hint',
-    defaultMessage: '!!!Choose a name for the wallet you are about to restore',
+    defaultMessage: '!!!Name the wallet you are restoring',
     description:
       'Hint "Name the wallet you are restoring" for the wallet name input on the wallet restore dialog.',
   },
   recoveryPhraseTypeLabel: {
     id: 'wallet.restore.dialog.recovery.phrase.type.options.label',
-    defaultMessage: '!!!Number of words in your recovery phrase',
+    defaultMessage: '!!!Number of words in the recovery phrase',
     description:
       'Label for the recovery phrase type options on the wallet restore dialog.',
   },
@@ -73,13 +73,13 @@ const messages = defineMessages({
   },
   recoveryPhraseInputLabel: {
     id: 'wallet.restore.dialog.recovery.phrase.input.label',
-    defaultMessage: '!!!Wallet recovery phrase',
+    defaultMessage: '!!!Recovery phrase',
     description:
       'Label for the recovery phrase input on the wallet restore dialog.',
   },
   recoveryPhraseInputHint: {
     id: 'wallet.restore.dialog.recovery.phrase.input.hint',
-    defaultMessage: '!!!Enter your {numberOfWords}-word wallet recovery phrase',
+    defaultMessage: '!!!Enter recovery phrase',
     description:
       'Hint "Enter recovery phrase" for the recovery phrase input on the wallet restore dialog.',
   },
@@ -133,8 +133,7 @@ const messages = defineMessages({
   recoveryPhraseTabTitle: {
     id: 'wallet.restore.dialog.tab.title.recoveryPhrase',
     defaultMessage: '!!!Daedalus wallet',
-    description:
-      'Tab title "Daedalus wallet" in the wallet restore dialog.',
+    description: 'Tab title "Daedalus wallet" in the wallet restore dialog.',
   },
   certificateTabTitle: {
     id: 'wallet.restore.dialog.tab.title.certificate',
@@ -145,8 +144,7 @@ const messages = defineMessages({
   yoroiTabTitle: {
     id: 'wallet.restore.dialog.tab.title.yoroi',
     defaultMessage: '!!!Yoroi wallet',
-    description:
-      'Tab title "Yoroi wallet" in the wallet restore dialog.',
+    description: 'Tab title "Yoroi wallet" in the wallet restore dialog.',
   },
   shieldedRecoveryPhraseInputLabel: {
     id: 'wallet.restore.dialog.shielded.recovery.phrase.input.label',
@@ -196,7 +194,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
   };
 
   state = {
-    walletType: WALLET_RESTORE_TYPES.LEGACY, // regular | certificate | legacy
+    walletType: WALLET_RESTORE_TYPES.LEGACY, // regular | certificate | legacy | yoroi
   };
 
   recoveryPhraseAutocomplete: Autocomplete;
@@ -498,7 +496,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
             label={intl.formatMessage(messages.recoveryPhraseTypeLabel)}
             items={[
               {
-                key: WALLET_RESTORE_TYPES.REGULAR,
+                key: WALLET_RESTORE_TYPES.YOROI,
                 label: (
                   <Fragment>
                     15
@@ -519,7 +517,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
                   this.onSelectWalletType(WALLET_RESTORE_TYPES.YOROI),
               },
               {
-                key: WALLET_RESTORE_TYPES.REGULAR,
+                key: WALLET_RESTORE_TYPES.YOROI,
                 label: (
                   <Fragment>
                     15
@@ -555,10 +553,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
           }
           placeholder={
             !this.isCertificate()
-              ? intl.formatMessage(messages.recoveryPhraseInputHint, {
-                  numberOfWords:
-                    walletType === WALLET_RESTORE_TYPES.LEGACY ? '12' : '15',
-                })
+              ? intl.formatMessage(messages.recoveryPhraseInputHint)
               : intl.formatMessage(messages.shieldedRecoveryPhraseInputHint, {
                   numberOfWords: 27,
                 })
