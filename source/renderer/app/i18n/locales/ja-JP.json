@@ -543,7 +543,7 @@
   "wallet.restore.dialog.spendingPasswordLabel": "パスワードを入力してください",
   "wallet.restore.dialog.tab.title.certificate": "ペーパーウォレット復元フレーズ",
   "wallet.restore.dialog.tab.title.recoveryPhrase": "ダイダロスウォレット",
-  "wallet.restore.dialog.tab.title.yoroi": "!!!Yoroi wallet",
+  "wallet.restore.dialog.tab.title.yoroi": "Yoroiウォレット",
   "wallet.restore.dialog.title.label": "ウォレットを復元する",
   "wallet.restore.dialog.wallet.name.input.hint": "復元するウォレット名を選んでください",
   "wallet.restore.dialog.wallet.name.input.label": "ウォレット名",
