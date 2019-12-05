@@ -33,7 +33,7 @@ const networkTip: TipInfo = {
 
 const nextEpoch: NextEpoch = {
   epochNumber: 1233,
-  epochStart: '2019-12-26T00:00:00.161Z',
+  epochStart: new Date('2019-12-31').toUTCString(),
 };
 
 // Dummy data initialization

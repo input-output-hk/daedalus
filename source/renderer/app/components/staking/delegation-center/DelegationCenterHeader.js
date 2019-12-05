@@ -86,8 +86,8 @@ export default class DelegationCenterHeader extends Component<Props> {
     const { intl } = this.context;
     const { networkTip, nextEpoch } = this.props;
     const epoch = get(networkTip, 'epoch', '-');
-    const nextEpochStart = get(nextEpoch, 'epochStart', '-');
-    const nextEpochNumber = get(nextEpoch, 'epochNumber', '-');
+    const nextEpochStart = get(nextEpoch, 'epochStart', '');
+    const nextEpochNumber = get(nextEpoch, 'epochNumber', 0);
     const slot = get(networkTip, 'slot', '-');
     const totalSlots = SLOTS_TOTAL;
     const headingFirst = intl.formatMessage(messages.headingRight);
@@ -101,6 +101,9 @@ export default class DelegationCenterHeader extends Component<Props> {
       totalSlots
     );
 
+    const showNextEpochCountdown =
+      nextEpochNumber > 0 && nextEpochStart.length > 0;
+
     return (
       <div className={styles.component}>
         <div className={styles.mainContent}>
@@ -111,10 +114,13 @@ export default class DelegationCenterHeader extends Component<Props> {
                 <div className={styles.epochs}>{fieldPanels}</div>
               </div>
             </div>
-            {nextEpochStart.length > 0 && (
+            {showNextEpochCountdown && (
               <div className={styles.countdownContainer}>
                 <div className={styles.heading}>{headingSecond}</div>
-                <CountdownWidget nextEpochStart={nextEpochStart} />
+                <CountdownWidget
+                  nextEpochStart={nextEpochStart}
+                  showLoader={false}
+                />
               </div>
             )}
           </div>

@@ -45,6 +45,7 @@ const messages = defineMessages({
 const TIME_LEFT_INTERVAL = 1 * 1000; // 1 second | unit: milliseconds;
 
 type Props = {
+  showLoader: boolean,
   redirectToStakingInfo?: Function,
   nextEpochStart?: string,
   startDateTime?: string,
@@ -61,6 +62,7 @@ export default class CountdownWidget extends Component<Props, State> {
   };
 
   componentDidMount() {
+    if (!this.props.showLoader) this.updateTimeLeft();
     this.intervalHandler = setInterval(
       () => this.updateTimeLeft(),
       TIME_LEFT_INTERVAL
@@ -170,28 +172,22 @@ export default class CountdownWidget extends Component<Props, State> {
     const fieldPanels = this.generateCountdownPanels();
     const { startDateTime, nextEpochStart } = this.props;
 
-    let timeLeftContentStyles = classNames([styles.timeLeft]);
+    const timeLeftContentStyles = classNames([
+      styles.timeLeft,
+      !nextEpochStart ? styles.noTimeLeftNextEpoch : null,
+    ]);
 
-    if (!nextEpochStart) {
-      timeLeftContentStyles = classNames([
-        styles.timeLeft,
-        styles.noTimeLeftNextEpoch,
-      ]);
-    }
+    const showSpinner = startDateTime && timeLeft === 0;
 
     return (
       <div className={styles.timeLeftContainer}>
-        {startDateTime ? (
-          <div className={timeLeftContentStyles}>
-            {timeLeft === 0 ? (
-              <SVGInline svg={spinnerIcon} className={styles.spinnerIcon} />
-            ) : (
-              fieldPanels
-            )}
-          </div>
-        ) : (
-          <div className={timeLeftContentStyles}>{fieldPanels}</div>
-        )}
+        <div className={timeLeftContentStyles}>
+          {showSpinner ? (
+            <SVGInline svg={spinnerIcon} className={styles.spinnerIcon} />
+          ) : (
+            fieldPanels
+          )}
+        </div>
       </div>
     );
   }
