@@ -65,14 +65,14 @@ export default class UndelegateDialogContainer extends Component<Props> {
     const {
       id: stakePoolId,
       name: stakePoolName,
-      slug: stakePoolSlug,
+      ticker: stakePoolTicker,
     } = delegatedStakePool;
 
     return (
       <UndelegateConfirmationDialog
         walletName={walletName}
         stakePoolName={stakePoolName}
-        stakePoolSlug={stakePoolSlug}
+        stakePoolTicker={stakePoolTicker}
         onConfirm={passphrase => {
           actions.wallets.undelegateWallet.trigger({
             walletId,

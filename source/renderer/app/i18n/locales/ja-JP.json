@@ -285,7 +285,7 @@
   "staking.delegationCenter.undelegate.dialog.confirmButtonLabel": "委任を解除する",
   "staking.delegationCenter.undelegate.dialog.confirmUneligibleCheck": "ⳤ ステークを委任していないと、報酬を得られないことを理解します。",
   "staking.delegationCenter.undelegate.dialog.confirmUnsupportCheck": "ⳤ ステークを委任していないと、Cardanoネットワークをサポートできないことを理解します。",
-  "staking.delegationCenter.undelegate.dialog.description": "<p><strong>{walletName}</strong>ウォレットのステークは現在<strong>「{stakePoolSlug}」 {stakePoolName}</strong>ステークプールに委任されています。</p><p>ステークの委任を解除して報酬の獲得を停止しますか。</p>",
+  "staking.delegationCenter.undelegate.dialog.description": "<p><strong>{walletName}</strong>ウォレットのステークは現在<strong>「{stakePoolTicker}」 {stakePoolName}</strong>ステークプールに委任されています。</p><p>ステークの委任を解除して報酬の獲得を停止しますか。</p>",
   "staking.delegationCenter.undelegate.dialog.feesLabel": "手数料",
   "staking.delegationCenter.undelegate.dialog.passwordError": "間違った支出パスワード。",
   "staking.delegationCenter.undelegate.dialog.spendingPasswordLabel": "送信時パスワード",

@@ -707,7 +707,7 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
       '#ffffff',
     '--theme-staking-delegation-center-divider-border-color':
       'rgba(255, 255, 255, 0.2)',
-    '--theme-staking-delegation-center-fees-amount-color': '#ea4c5b',
+    '--theme-staking-delegation-center-fees-amount-color': '#eb4a22',
     '--theme-staking-countdown-widget-background-color':
       'rgba(255, 255, 255, 0.07)',
     '--theme-staking-countdown-widget-delimeter-background-color': '#ffffff',
