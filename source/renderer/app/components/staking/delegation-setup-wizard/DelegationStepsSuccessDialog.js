@@ -12,7 +12,7 @@ import Dialog from '../../widgets/Dialog';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import tadaImage from '../../../assets/images/tada-ic.inline.svg';
 import Wallet from '../../../domains/Wallet';
-import type { StakePool } from '../../../api/staking/types';
+import StakePool from '../../../domains/StakePool';
 
 const messages = defineMessages({
   title: {

@@ -89,7 +89,8 @@ export class StakingDelegationSteps extends Component<Props, State> {
           STAKE_POOLS[200],
           STAKE_POOLS[250],
         ]}
-        onOpenExternalLink={() => {}}
+        onOpenExternalLink={action('onOpenExternalLink')}
+        getPledgeAddressUrl={action('getPledgeAddressUrl')}
         currentTheme={this.props.currentTheme}
         onClose={action('onClose')}
         onBack={action('onBack')}

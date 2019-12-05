@@ -1,40 +1,56 @@
 // @flow
-import { observable, computed, action } from 'mobx';
+import { computed, action, observable } from 'mobx';
 import BigNumber from 'bignumber.js';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import { ROUTES } from '../routes-config';
 import type {
-  StakePool,
+  // StakePool,
   Reward,
   RewardForIncentivizedTestnet,
   JoinStakePoolRequest,
   EstimateJoinFeeRequest,
 } from '../api/staking/types';
 import Wallet from '../domains/Wallet';
-
-import STAKE_POOLS from '../config/stakingStakePools.dummy.json';
+import StakePool from '../domains/StakePool';
 import REWARDS from '../config/stakingRewards.dummy.json';
+import STAKE_POOLS from '../config/stakingStakePools.dummy.json';
 
 export default class StakingStore extends Store {
-  @observable joinStakePoolRequest: Request<JoinStakePoolRequest> = new Request(
-    this.api.ada.joinStakePool
-  );
+  STAKE_POOLS_INITIAL_INTERVAL = 1000; // 1000 milliseconds
+  STAKE_POOLS_REFRESH_INTERVAL = 30 * 60 * 1000; // 30 minutes | unit: milliseconds;
+
+  initialPooling: ?IntervalID = null;
+  refreshPooling: ?IntervalID = null;
 
   startDateTime: string = '2019-12-09T00:00:00.161Z';
-  nextEpochStartTime: string = '2019-12-06T00:00:00.161Z';
   decentralizationProgress: number = 10;
   adaValue: BigNumber = new BigNumber(82650.15);
   percentage: number = 14;
 
   setup() {
+    this.initialPooling = setInterval(
+      this.refreshStakePoolsData,
+      this.STAKE_POOLS_INITIAL_INTERVAL
+    );
     const { staking } = this.actions;
     staking.goToStakingInfoPage.listen(this._goToStakingInfoPage);
     staking.goToStakingDelegationCenterPage.listen(
       this._goToStakingDelegationCenterPage
     );
     staking.joinStakePool.listen(this._joinStakePool);
+    this.refreshStakePoolsData();
   }
+
+  // REQUESTS
+  @observable joinStakePoolRequest: Request<JoinStakePoolRequest> = new Request(
+    this.api.ada.joinStakePool
+  );
+  @observable stakePoolsRequest: Request<Array<StakePool>> = new Request(
+    this.api.ada.getStakePools
+  );
+
+  // =================== PUBLIC API ==================== //
 
   @action _joinStakePool = async (request: JoinStakePoolRequest) => {
     const { walletId, stakePoolId, passphrase } = request;
@@ -62,8 +78,6 @@ export default class StakingStore extends Store {
     });
   };
 
-  // =================== PUBLIC API ==================== //
-
   // GETTERS
 
   @computed get currentRoute(): string {
@@ -75,8 +89,7 @@ export default class StakingStore extends Store {
   }
 
   @computed get stakePools(): Array<StakePool> {
-    // return this.stakePoolsRequest.result ? this.stakePoolsRequest.result : [];
-    return STAKE_POOLS;
+    return this.stakePoolsRequest.result ? this.stakePoolsRequest.result : [];
   }
 
   @computed get recentStakePools(): Array<StakePool> {
@@ -94,13 +107,7 @@ export default class StakingStore extends Store {
   }
 
   @computed get delegatingStakePools(): Array<StakePool> {
-    // return this.stakePoolsRequest.result ? this.stakePoolsRequest.result : [];
-    return [
-      STAKE_POOLS[1],
-      STAKE_POOLS[50],
-      STAKE_POOLS[100],
-      STAKE_POOLS[200],
-    ];
+    return [];
   }
 
   @computed get isStakingDelegationCountdown(): boolean {
@@ -122,6 +129,21 @@ export default class StakingStore extends Store {
   @action showCountdown(): boolean {
     return new Date(this.startDateTime).getTime() - new Date().getTime() > 0;
   }
+
+  @action refreshStakePoolsData = async () => {
+    const { isSynced, isConnected } = this.stores.networkStatus;
+    if (this.stores.wallets._pollingBlocked || !isSynced || !isConnected)
+      return;
+    if (this.initialPooling && !this.refreshPooling) {
+      clearInterval(this.initialPooling);
+      this.initialPooling = null;
+      this.refreshPooling = setInterval(
+        this.refreshStakePoolsData,
+        this.STAKE_POOLS_REFRESH_INTERVAL
+      );
+    }
+    await this.stakePoolsRequest.execute().promise;
+  };
 
   _goToStakingInfoPage = () => {
     this.actions.router.goToRoute.trigger({

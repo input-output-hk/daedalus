@@ -369,6 +369,7 @@
   "staking.stakePools.tooltip.controlledStake": "Controlled stake:",
   "staking.stakePools.tooltip.delegateButton": "Delegate to this pool",
   "staking.stakePools.tooltip.performance": "Performance:",
+  "staking.stakePools.tooltip.pledgeAddressLabel": "Pledge address",
   "staking.stakePools.tooltip.profitMargin": "Profit margin:",
   "staking.stakePools.tooltip.ranking": "Rank:",
   "staking.stakePools.tooltip.retirement": "Retirement in {retirementFromNow}",

@@ -70,6 +70,29 @@ export const getNetworkExplorerUrl = (
   return `${protocol}${uri}`;
 };
 
+export const getNetworkExplorerUrlByType = (
+  type: 'tx' | 'address',
+  param: string,
+  network: string,
+  rawNetwork: string,
+  currentLocale: string
+): string => {
+  let queryStringPrefix = '';
+  let localePrefix = '';
+  let typeValue = type;
+
+  if (network === ITN_REWARDS_V1) {
+    queryStringPrefix = '?id=';
+    localePrefix = `/${currentLocale.substr(0, 2)}`;
+    if (type === 'tx') typeValue = 'transaction';
+  }
+
+  return `${getNetworkExplorerUrl(
+    network,
+    rawNetwork
+  )}${localePrefix}/${typeValue}/${queryStringPrefix}${param}`;
+};
+
 export const getNetworkEkgUrl = (env: {
   isDev: boolean,
   isStaging: boolean,

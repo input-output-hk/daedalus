@@ -10,8 +10,8 @@ import DelegationStepsIntroDialog from './DelegationStepsIntroDialog';
 import DelegationStepsNotAvailableDialog from './DelegationStepsNotAvailableDialog';
 import DelegationStepsChooseStakePoolDialog from './DelegationStepsChooseStakePoolDialog';
 import LocalizableError from '../../../i18n/LocalizableError';
+import StakePool from '../../../domains/StakePool';
 import Wallet from '../../../domains/Wallet';
-import type { StakePool } from '../../../api/staking/types';
 
 type Props = {
   activeStep: number,
@@ -30,6 +30,7 @@ type Props = {
   recentStakePools: Array<StakePool>,
   stakePoolsList: Array<StakePool>,
   onOpenExternalLink: Function,
+  getPledgeAddressUrl: Function,
   currentTheme: string,
   selectedWallet: ?Wallet,
   selectedPool: ?StakePool,
@@ -71,6 +72,7 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
       recentStakePools,
       stakePoolsList,
       onOpenExternalLink,
+      getPledgeAddressUrl,
       currentTheme,
       selectedWallet,
       selectedPool,
@@ -118,6 +120,7 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
             stakePoolsList={stakePoolsList}
             selectedWallet={selectedWallet}
             onOpenExternalLink={onOpenExternalLink}
+            getPledgeAddressUrl={getPledgeAddressUrl}
             currentTheme={currentTheme}
             selectedPool={selectedPool}
             onClose={onClose}

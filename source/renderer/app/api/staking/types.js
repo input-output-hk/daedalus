@@ -1,6 +1,7 @@
 // @flow
 import BigNumber from 'bignumber.js';
 import { WalletUnits } from '../../domains/Wallet';
+import StakePool from '../../domains/StakePool';
 
 export const DelegationActions: {
   CHANGE_DELEGATION: DelegationAction,
@@ -17,22 +18,26 @@ export type DelegationAction =
   | 'removeDelegation'
   | 'delegate';
 
-export type StakePool = {
+export type AdaApiStakePool = {
   id: string,
-  controlledStake: number,
-  description: string,
-  slug: string,
-  name: string,
-  performance: number,
-  profitMargin: number,
-  ranking: number,
-  retiring?: Date,
-  created_at: Date,
-  isCharity: boolean,
-  url: string,
+  metrics: {
+    controlled_stake: {
+      quantity: number,
+      unit: 'lovelace',
+    },
+    produced_blocks: {
+      quantity: number,
+      unit: 'block',
+    },
+  },
+  apparent_performance: number,
+  metadata: {
+    ticker: string,
+    homepage: string,
+    pledge_address: string,
+  },
 };
-
-export type StakePoolsListType = Array<StakePool>;
+export type AdaApiStakePools = Array<AdaApiStakePool>;
 
 export type Reward = {
   date: string,

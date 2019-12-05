@@ -1,9 +1,10 @@
 // @flow
-import type { StakePool, StakePoolsListType } from '../../../api/staking/types';
+import StakePool from '../../../domains/StakePool';
+import type { StakePoolProps } from '../../../domains/StakePool';
 
-const searchFields = ['slug', 'name'];
+const searchFields = ['ticker', 'name'];
 
-const stakePoolsListSearch = (stakePool: StakePool, rawSearch: string) => {
+const stakePoolsListSearch = (stakePool: StakePoolProps, rawSearch: string) => {
   const search = rawSearch.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').trim();
   let pass = !search;
   searchFields.forEach((field: string) => {
@@ -13,9 +14,9 @@ const stakePoolsListSearch = (stakePool: StakePool, rawSearch: string) => {
 };
 
 export const getFilteredStakePoolsList = (
-  stakePoolsList: StakePoolsListType,
+  stakePoolsList: Array<StakePool>,
   search: string
-): StakePoolsListType =>
+): Array<StakePool> =>
   stakePoolsList.filter((stakePool: StakePool) =>
     stakePoolsListSearch(stakePool, search)
   );

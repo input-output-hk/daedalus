@@ -8,7 +8,7 @@ import WalletsDropdownOption from './WalletsDropdownOption';
 
 import { formattedWalletAmount } from '../../../utils/formatters';
 import Wallet from '../../../domains/Wallet';
-import type { StakePool } from '../../../api/staking/types';
+import StakePool from '../../../domains/StakePool';
 
 type SelectProps = {
   allowBlank: boolean,

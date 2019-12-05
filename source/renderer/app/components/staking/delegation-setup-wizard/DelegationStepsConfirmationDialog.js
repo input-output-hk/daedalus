@@ -26,7 +26,7 @@ import LocalizableError from '../../../i18n/LocalizableError';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import Wallet from '../../../domains/Wallet';
-import type { StakePool } from '../../../api/staking/types';
+import StakePool from '../../../domains/StakePool';
 
 const messages = defineMessages({
   title: {

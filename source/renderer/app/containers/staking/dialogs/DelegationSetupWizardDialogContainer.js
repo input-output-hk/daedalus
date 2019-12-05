@@ -6,6 +6,7 @@ import { find, get } from 'lodash';
 import BigNumber from 'bignumber.js';
 import DelegationSetupWizardDialog from '../../../components/staking/delegation-setup-wizard/DelegationSetupWizardDialog';
 import { MIN_DELEGATION_FUNDS } from '../../../config/stakingConfig';
+import { getNetworkExplorerUrlByType } from '../../../utils/network';
 import Wallet from '../../../domains/Wallet';
 import type { InjectedDialogContainerProps } from '../../../types/injectedPropsType';
 
@@ -134,15 +135,15 @@ export default class DelegationSetupWizardDialogContainer extends Component<
       selectedPoolId,
       stakePoolJoinFee,
     } = this.state;
-    const { app, staking, wallets, profile } = this.props.stores;
-    const { currentTheme, currentLocale } = profile;
-    const {
-      stakePools,
-      recentStakePools,
-      joinStakePoolRequest,
-      nextEpochStartTime,
-    } = staking;
+    const { app, staking, wallets, profile, networkStatus } = this.props.stores;
+    const { nextEpoch } = networkStatus;
+    const { currentTheme, currentLocale, environment } = profile;
+    const { stakePools, recentStakePools, joinStakePoolRequest } = staking;
+    const { network, rawNetwork } = environment;
+    const nextEpochStartTime = get(nextEpoch, 'epochStart', 0);
+
     const selectedPool = find(stakePools, pool => pool.id === selectedPoolId);
+
     const selectedWallet = find(
       wallets.allWallets,
       wallet => wallet.id === selectedWalletId
@@ -154,6 +155,15 @@ export default class DelegationSetupWizardDialogContainer extends Component<
       },
       false
     );
+
+    const getPledgeAddressUrl = (pledgeAddress: string) =>
+      getNetworkExplorerUrlByType(
+        'address',
+        pledgeAddress,
+        network,
+        rawNetwork,
+        currentLocale
+      );
 
     return (
       <DelegationSetupWizardDialog
@@ -171,6 +181,7 @@ export default class DelegationSetupWizardDialogContainer extends Component<
         nextEpochStartTime={nextEpochStartTime}
         currentLocale={currentLocale}
         onOpenExternalLink={app.openExternalLink}
+        getPledgeAddressUrl={getPledgeAddressUrl}
         currentTheme={currentTheme}
         onClose={this.handleDialogClose}
         onContinue={this.handleContinue}
