@@ -75,6 +75,7 @@ export class StakePoolsList extends Component<Props, State> {
   };
 
   handleClose = () => {
+    console.log('handleClose');
     this.setState({
       ...initialState,
     });

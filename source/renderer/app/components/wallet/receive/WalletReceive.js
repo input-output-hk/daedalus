@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
+import { throttle } from 'lodash';
 import BorderedBox from '../../widgets/BorderedBox';
 import TinySwitch from '../../widgets/forms/TinySwitch';
 import WalletAddress from '../../../domains/WalletAddress';
@@ -56,6 +57,8 @@ type Props = {
 
 type State = {
   showUsed: boolean,
+  addressWidth: number,
+  ellipsisIsVisible: boolean,
 };
 
 @observer
@@ -64,16 +67,55 @@ export default class WalletReceive extends Component<Props, State> {
     intl: intlShape.isRequired,
   };
 
+  addressContainerElement: ?HTMLElement;
+
   state = {
     showUsed: true,
+    addressWidth: 0,
+    ellipsisIsVisible: false,
+  };
+
+  componentDidMount() {
+    window.addEventListener('resize', this.throttleCalculateEllipsis);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.throttleCalculateEllipsis);
+  }
+
+  throttleCalculateEllipsis = throttle(
+    () => this.calculateEllipsisIsVisible(),
+    400
+  );
+
+  handleRegisterHTMLElements = (
+    addressElement: HTMLElement,
+    addressContainerElement: HTMLElement
+  ) => {
+    setTimeout(() => {
+      this.addressContainerElement = addressContainerElement;
+      const addressWidth = addressElement.offsetWidth;
+      this.setState({ addressWidth }, this.calculateEllipsisIsVisible);
+    }, 500);
+  };
+
+  calculateEllipsisIsVisible = () => {
+    const { addressWidth } = this.state;
+    if (!this.addressContainerElement || !addressWidth === 0) return;
+    const addressContainerWidth = this.addressContainerElement.offsetWidth;
+    const ellipsisIsVisible = addressWidth > addressContainerWidth - 30;
+    this.setState({
+      ellipsisIsVisible,
+    });
   };
 
   toggleUsedAddresses = () => {
     this.setState(prevState => ({ showUsed: !prevState.showUsed }));
   };
 
-  renderRow = (address: WalletAddress) => {
+  renderRow = (address: WalletAddress, index: number) => {
     const { onShareAddress, onCopyAddress, isIncentivizedTestnet } = this.props;
+    const { ellipsisIsVisible } = this.state;
     const { intl } = this.context;
     return (
       <Address
@@ -83,6 +125,9 @@ export default class WalletReceive extends Component<Props, State> {
         shareAddressLabel={intl.formatMessage(messages.shareAddressLabel)}
         copyAddressLabel={intl.formatMessage(messages.copyAddressLabel)}
         isIncentivizedTestnet={isIncentivizedTestnet}
+        shouldRegisterAddressElement={index === 0}
+        onRegisterHTMLElements={this.handleRegisterHTMLElements}
+        ellipsisIsVisible={ellipsisIsVisible}
       />
     );
   };
