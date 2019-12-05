@@ -531,6 +531,7 @@
   "wallet.restore.dialog.recovery.phrase.input.hint": "Enter recovery phrase",
   "wallet.restore.dialog.recovery.phrase.input.label": "Recovery phrase",
   "wallet.restore.dialog.recovery.phrase.input.noResults": "No results",
+  "wallet.restore.dialog.recovery.phrase.newLabel": "New",
   "wallet.restore.dialog.recovery.phrase.type.12word.option": "Balance wallet",
   "wallet.restore.dialog.recovery.phrase.type.15word.option": "Rewards wallet",
   "wallet.restore.dialog.recovery.phrase.type.options.label": "Number of words in the recovery phrase",

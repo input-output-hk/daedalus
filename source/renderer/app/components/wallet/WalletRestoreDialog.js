@@ -83,6 +83,11 @@ const messages = defineMessages({
     description:
       'Hint "Enter recovery phrase" for the recovery phrase input on the wallet restore dialog.',
   },
+  newLabel: {
+    id: 'wallet.restore.dialog.recovery.phrase.newLabel',
+    defaultMessage: '!!!New',
+    description: 'Label "new" on the wallet restore dialog.',
+  },
   recoveryPhraseNoResults: {
     id: 'wallet.restore.dialog.recovery.phrase.input.noResults',
     defaultMessage: '!!!No results',
@@ -487,6 +492,9 @@ export default class WalletRestoreDialog extends Component<Props, State> {
                       )}
                       )
                     </span>
+                    <span className={styles.newLabel}>
+                      {intl.formatMessage(messages.newLabel)}
+                    </span>
                   </Fragment>
                 ),
                 selected: !this.isLegacy(),
@@ -536,6 +544,9 @@ export default class WalletRestoreDialog extends Component<Props, State> {
                         messages.recoveryPhraseType15WordOption
                       )}
                       )
+                    </span>
+                    <span className={styles.newLabel}>
+                      {intl.formatMessage(messages.newLabel)}
                     </span>
                   </Fragment>
                 ),
@@ -622,7 +633,10 @@ export default class WalletRestoreDialog extends Component<Props, State> {
   }
 
   isYoroi() {
-    return this.state.walletType === WALLET_RESTORE_TYPES.YOROI_REWARDS || this.state.walletType === WALLET_RESTORE_TYPES.YOROI_BALANCE;
+    return (
+      this.state.walletType === WALLET_RESTORE_TYPES.YOROI_REWARDS ||
+      this.state.walletType === WALLET_RESTORE_TYPES.YOROI_BALANCE
+    );
   }
 
   isYoroiRewards() {
