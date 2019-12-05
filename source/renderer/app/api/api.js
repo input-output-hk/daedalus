@@ -1372,15 +1372,19 @@ const _createStakePoolFromServerData = action(
       // NOT CONTAINED IN THE CURRENT API DOCS:
       // _cost: cost,
       _createdAt: createdAt,
-      _description: description,
       _isCharity: isCharity,
-      _name: name,
       // _pledge: pledge,
       _profitMargin: profitMargin,
       _ranking: ranking,
       _retiring: retiring,
     } = stakingStakePoolsMissingApiData[index];
-    const { ticker, homepage, pledge_address: pledgeAddress } = metadata;
+    const {
+      name,
+      description,
+      ticker,
+      homepage,
+      pledge_address: pledgeAddress,
+    } = metadata;
     controlledStake = controlledStake.quantity;
     producedBlocks = producedBlocks.quantity;
     return new StakePool({
