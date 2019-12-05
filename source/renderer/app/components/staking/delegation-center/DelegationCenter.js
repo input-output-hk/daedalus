@@ -13,6 +13,7 @@ type Props = {
   numberOfStakePools: number,
   onDelegate: Function,
   onUndelegate: Function,
+  getStakePoolById: Function,
 };
 
 @observer
@@ -25,6 +26,7 @@ export default class DelegationCenter extends Component<Props> {
       numberOfStakePools,
       onDelegate,
       onUndelegate,
+      getStakePoolById,
     } = this.props;
 
     return (
@@ -35,6 +37,7 @@ export default class DelegationCenter extends Component<Props> {
           numberOfStakePools={numberOfStakePools}
           onDelegate={onDelegate}
           onUndelegate={onUndelegate}
+          getStakePoolById={getStakePoolById}
         />
       </Fragment>
     );

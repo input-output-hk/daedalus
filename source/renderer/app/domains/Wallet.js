@@ -8,7 +8,6 @@ import type {
   DelegationStatus,
   WalletUnit,
 } from '../api/wallets/types';
-import type StakePool from './StakePool';
 
 export const WalletSyncStateStatuses: {
   RESTORING: SyncStateStatus,
@@ -49,7 +48,6 @@ export type WalletProps = {
   isDelegated: boolean,
   inactiveStakePercentage?: ?number,
   delegatedStakePoolId?: ?string,
-  delegatedStakePool?: ?StakePool,
 };
 
 export default class Wallet {
@@ -65,7 +63,6 @@ export default class Wallet {
   @observable isDelegated: boolean;
   @observable inactiveStakePercentage: ?number;
   @observable delegatedStakePoolId: ?string;
-  @observable delegatedStakePool: ?StakePool;
 
   constructor(data: WalletProps) {
     Object.assign(this, data);
@@ -87,7 +84,6 @@ export default class Wallet {
         'isDelegated',
         'inactiveStakePercentage',
         'delegatedStakePoolId',
-        'delegatedStakePool',
       ])
     );
   }

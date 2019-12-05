@@ -33,6 +33,7 @@ type Props = {
   currentTheme: string,
   selectedWalletId: string,
   selectedPool: ?StakePool,
+  getStakePoolById: Function,
 };
 
 @observer
@@ -60,6 +61,7 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
       selectedWalletId,
       selectedPool,
       isWalletAcceptable,
+      getStakePoolById,
     } = this.props;
 
     if (isDisabled) {
@@ -85,6 +87,7 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
             onClose={onClose}
             onSelectWallet={onSelectWallet}
             isWalletAcceptable={isWalletAcceptable}
+            getStakePoolById={getStakePoolById}
           />
         );
         break;

@@ -19,6 +19,7 @@ type Props = {
   numberOfStakePools: number,
   onDelegate: Function,
   onUndelegate: Function,
+  getStakePoolById: Function,
 };
 
 @observer
@@ -34,6 +35,7 @@ export default class DelegationCenterBody extends Component<Props> {
       numberOfStakePools,
       onDelegate,
       onUndelegate,
+      getStakePoolById,
     } = this.props;
 
     const title = intl.formatMessage(messages.bodyTitle);
@@ -44,13 +46,18 @@ export default class DelegationCenterBody extends Component<Props> {
           <span>{title}</span>
         </div>
         <div className={styles.mainContent}>
-          {wallets.map(wallet => (
+          {wallets.map((wallet: Wallet, index: number) => (
             <WalletRow
               key={wallet.id}
               wallet={wallet}
               numberOfStakePools={numberOfStakePools}
               onDelegate={onDelegate}
               onUndelegate={onUndelegate}
+              /*
+                @API TODO: Replace when "Stake Pools Join" is
+                delegatedStakePool={getStakePoolById(wallet.delegatedStakePoolId)}
+              */
+              delegatedStakePool={getStakePoolById(index)}
             />
           ))}
         </div>

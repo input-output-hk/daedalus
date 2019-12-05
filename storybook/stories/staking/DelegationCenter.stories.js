@@ -108,6 +108,7 @@ export const StakingDelegationCenterStory = () => (
     wallets={wallets}
     onDelegate={action('onDelegate')}
     onUndelegate={action('onUndelegate')}
+    getStakePoolById={action('getStakePoolById')}
     numberOfStakePools={STAKE_POOLS.length}
   />
 );

@@ -1264,8 +1264,6 @@ const _createWalletFromServerData = action(
       isLegacy = false,
     } = data;
 
-    const isDelegated = index < STAKE_POOLS.length;
-    // delegation.status === WalletDelegationStatuses.DELEGATING;
     const passphraseLastUpdatedAt = get(passphrase, 'last_updated_at', null);
     const walletTotalAmount =
       balance.total.unit === WalletUnits.LOVELACE
@@ -1281,6 +1279,11 @@ const _createWalletFromServerData = action(
         : new BigNumber(reward.quantity || 0);
     const delegatedStakePoolId = delegation.target;
 
+    // @API TODO - integrate once "Join Stake Pool" endpoint is done
+    // const isDelegated = delegation.status === WalletDelegationStatuses.DELEGATING;
+    const isDelegated = index < stakingStakePoolsMissingApiData.length;
+    const inactiveStakePercentage = 0;
+
     return new Wallet({
       id,
       addressPoolGap,
@@ -1293,8 +1296,7 @@ const _createWalletFromServerData = action(
       syncState: state,
       isLegacy,
       isDelegated,
-      // @API TODO - integrate once "Join Stake Pool" endpoint is done
-      // inactiveStakePercentage: 0,
+      inactiveStakePercentage,
       delegatedStakePoolId,
       delegatedStakePool: isDelegated ? STAKE_POOLS[index] : null,
     });

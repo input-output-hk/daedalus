@@ -7,7 +7,6 @@ import { observable, computed, runInAction } from 'mobx';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
 import actions from '../../../source/renderer/app/actions';
-import stakePoolsList from '../../../source/renderer/app/config/stakingStakePools.dummy.json';
 
 type Props = {
   children: Node,
@@ -23,7 +22,7 @@ export const WALLETS = [
     syncState: { data: null, tag: 'synced' },
     isLegacy: false,
     recoveryPhraseVerificationDate: new Date(),
-    delegatedStakePool: stakePoolsList[0],
+    delegatedStakePoolId: 'kfhdsdkhfskdjfhskdhf',
   },
   {
     id: '1',
@@ -36,7 +35,7 @@ export const WALLETS = [
     syncState: { data: null, tag: 'synced' },
     isLegacy: false,
     recoveryPhraseVerificationDate: new Date(),
-    delegatedStakePool: stakePoolsList[100],
+    delegatedStakePoolId: 'kfhdsdkhfskdjfhskdhf',
   },
   {
     id: '2',
@@ -49,7 +48,7 @@ export const WALLETS = [
     recoveryPhraseVerificationDate: moment()
       .subtract(200, 'days')
       .toDate(),
-    delegatedStakePool: stakePoolsList[150],
+    delegatedStakePoolId: 'kfhdsdkhfskdjfhskdhf',
   },
   {
     id: '3',
@@ -98,25 +97,25 @@ export const WALLETS_V2 = [
     id: '1',
     name: 'Wallet 1',
     amount: new BigNumber(faker.finance.amount()),
-    delegatedStakePool: stakePoolsList[0],
+    delegatedStakePoolId: 'kfhdsdkhfskdjfhskdhf',
   },
   {
     id: '2',
     name: 'Wallet 2',
     amount: new BigNumber(faker.finance.amount()),
-    delegatedStakePool: stakePoolsList[50],
+    delegatedStakePoolId: 'kfhdsdkhfskdjfhskdhf',
   },
   {
     id: '3',
     name: 'Wallet 3',
     amount: new BigNumber(faker.finance.amount()),
-    delegatedStakePool: stakePoolsList[100],
+    delegatedStakePoolId: 'kfhdsdkhfskdjfhskdhf',
   },
   {
     id: '4',
     name: 'Wallet 4',
     amount: new BigNumber(faker.finance.amount()),
-    delegatedStakePool: stakePoolsList[150],
+    delegatedStakePoolId: 'kfhdsdkhfskdjfhskdhf',
   },
   {
     id: '5',

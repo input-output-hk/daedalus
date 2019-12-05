@@ -76,6 +76,7 @@ type Props = {
   minDelegationFunds: number,
   selectedWalletId: ?string,
   isWalletAcceptable: Function,
+  getStakePoolById: Function,
 };
 
 type State = {
@@ -114,6 +115,7 @@ export default class DelegationStepsChooseWalletDialog extends Component<
       onBack,
       isWalletAcceptable,
       numberOfStakePools,
+      getStakePoolById,
     } = this.props;
 
     const selectedWallet: ?Wallet =
@@ -190,6 +192,7 @@ export default class DelegationStepsChooseWalletDialog extends Component<
               messages.selectWalletInputPlaceholder
             )}
             value={selectedWalletId}
+            getStakePoolById={getStakePoolById}
           />
           {selectedWalletId && !isAcceptableSetupWallet && (
             <p className={styles.errorMessage}>
