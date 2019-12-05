@@ -299,7 +299,7 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
             </p>
             <StakePoolsList
               listName="recentStakePools"
-              stakePoolsList={take(recentStakePools, 6)}
+              stakePoolsList={recentStakePools}
               onOpenExternalLink={onOpenExternalLink}
               getPledgeAddressUrl={getPledgeAddressUrl}
               currentTheme={currentTheme}

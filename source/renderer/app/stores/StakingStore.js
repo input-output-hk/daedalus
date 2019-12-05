@@ -1,6 +1,7 @@
 // @flow
 import { computed, action, observable } from 'mobx';
 import BigNumber from 'bignumber.js';
+import { orderBy, take } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import { ROUTES } from '../routes-config';
@@ -13,7 +14,6 @@ import type {
 import Wallet from '../domains/Wallet';
 import StakePool from '../domains/StakePool';
 import REWARDS from '../config/stakingRewards.dummy.json';
-import STAKE_POOLS from '../config/stakingStakePools.dummy.json';
 
 export default class StakingStore extends Store {
   STAKE_POOLS_INITIAL_INTERVAL = 1000; // 1000 milliseconds
@@ -92,17 +92,8 @@ export default class StakingStore extends Store {
   }
 
   @computed get recentStakePools(): Array<StakePool> {
-    // return this.stakePoolsRequest.result ? this.stakePoolsRequest.result : [];
-    return [
-      STAKE_POOLS[1],
-      STAKE_POOLS[25],
-      STAKE_POOLS[100],
-      STAKE_POOLS[150],
-      STAKE_POOLS[200],
-      STAKE_POOLS[250],
-      STAKE_POOLS[275],
-      STAKE_POOLS[299],
-    ];
+    const orderedStakePools = orderBy(this.stakePools, 'ranking', 'asc');
+    return take(orderedStakePools, 6);
   }
 
   @computed get isStakingDelegationCountdown(): boolean {
