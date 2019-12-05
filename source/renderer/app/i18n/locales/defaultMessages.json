@@ -2405,16 +2405,16 @@
         }
       },
       {
-        "defaultMessage": "!!!To <b>[{delegatedStakePoolSlug}]</b> stake pool",
+        "defaultMessage": "!!!To <b>[{delegatedStakePoolTicker}]</b> stake pool",
         "description": "Delegated stake pool ticker for the Delegation center body section.",
         "end": {
           "column": 3,
           "line": 68
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
-        "id": "staking.delegationCenter.toStakePoolSlug",
+        "id": "staking.delegationCenter.toStakePoolTicker",
         "start": {
-          "column": 19,
+          "column": 21,
           "line": 63
         }
       },

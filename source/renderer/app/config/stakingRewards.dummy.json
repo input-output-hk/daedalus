@@ -6,7 +6,7 @@
     "pool": {
       "id": "a476343dd1dd57d680656224886ad9c11b5c44f6331bf029e9008a702713eda4",
       "ranking": 1,
-      "slug": "ELSAC",
+      "ticker": "ELSAC",
       "name": "Repellendus",
       "description": "Lorem ipsum dolor sit amet, consectetur.",
       "url": "https://technorati.com",
@@ -23,7 +23,7 @@
     "pool": {
       "id": "afd042672ed0212d074c5814771dc0f9d696b0fe3ca00c6bf613c1843f70419d",
       "ranking": 2,
-      "slug": "MOCO",
+      "ticker": "MOCO",
       "name": "Dolorem",
       "description": "Lorem ipsum dolor sit amet, consectetur.",
       "url": "https://amazon.de",
@@ -40,7 +40,7 @@
     "pool": {
       "id": "4484e2076b4604250f63032644acf37f0630e208b5d03378d546f747f9b7d3ff",
       "ranking": 3,
-      "slug": "IMMR",
+      "ticker": "IMMR",
       "name": "Suscipit",
       "description": "Lorem ipsum dolor sit amet, consectetur.",
       "url": "https://springer.com",
@@ -57,7 +57,7 @@
     "pool": {
       "id": "b537af120298162372fc393d87e35803a8573a654786838e7a34b8d2354ec2fb",
       "ranking": 4,
-      "slug": "ORAN",
+      "ticker": "ORAN",
       "name": "Prednisone",
       "description": "Lorem ipsum dolor sit amet, consectetur.",
       "url": "http://cisco.com",
@@ -74,7 +74,7 @@
     "pool": {
       "id": "9438c572026bf8a7019ae1733e4c6a1b4208fc12291e4788a7db70891d6bdb97",
       "ranking": 5,
-      "slug": "ITUB",
+      "ticker": "ITUB",
       "name": "Accusantium",
       "description": "Lorem ipsum dolor sit amet, consectetur.",
       "url": "http://stumbleupon.com",
@@ -91,7 +91,7 @@
     "pool": {
       "id": "9eebf901e2ab6ee31eddd54b9725df5b59f23a531f5cb6d547b69f3fa880df89",
       "ranking": 6,
-      "slug": "MKL",
+      "ticker": "MKL",
       "name": "Molestias",
       "description": "Lorem ipsum dolor sit amet, consectetur.",
       "url": "http://soundcloud.com",

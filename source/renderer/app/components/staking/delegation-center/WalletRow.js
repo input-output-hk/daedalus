@@ -60,9 +60,9 @@ const messages = defineMessages({
     description:
       'Remove delegation label for the Delegation center body section.',
   },
-  toStakePoolSlug: {
-    id: 'staking.delegationCenter.toStakePoolSlug',
-    defaultMessage: '!!!To <b>[{delegatedStakePoolSlug}]</b> stake pool',
+  toStakePoolTicker: {
+    id: 'staking.delegationCenter.toStakePoolTicker',
+    defaultMessage: '!!!To <b>[{delegatedStakePoolTicker}]</b> stake pool',
     description:
       'Delegated stake pool ticker for the Delegation center body section.',
   },
@@ -179,9 +179,9 @@ export default class WalletRow extends Component<Props> {
             <div className={styles.action}>
               {isDelegated && delegatedStakePool ? (
                 <FormattedHTMLMessage
-                  {...messages.toStakePoolSlug}
+                  {...messages.toStakePoolTicker}
                   values={{
-                    delegatedStakePoolSlug: delegatedStakePool.ticker,
+                    delegatedStakePoolTicker: delegatedStakePool.ticker,
                   }}
                 />
               ) : (
