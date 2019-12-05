@@ -1097,11 +1097,16 @@ export default class AdaApi {
       Logger.debug('AdaApi::getNetworkInfo success', { networkInfo });
 
       /* eslint-disable-next-line camelcase */
-      const { sync_progress, node_tip, network_tip } = networkInfo;
+      const { sync_progress, node_tip, network_tip, next_epoch } = networkInfo;
       const syncProgress =
         get(sync_progress, 'status') === 'ready'
           ? 100
           : get(sync_progress, 'progress.quantity', 0);
+
+      const dummyNextEpoch = {
+        epochNumber: get(network_tip, 'epoch_number', 0) + 1,
+        epochStart: '2019-12-31T00:00:00.123Z',
+      };
 
       // extract relevant data before sending to NetworkStatusStore
       return {
@@ -1113,6 +1118,10 @@ export default class AdaApi {
         networkTip: {
           epoch: get(network_tip, 'epoch_number', 0),
           slot: get(network_tip, 'slot_number', 0),
+        },
+        nextEpoch: dummyNextEpoch || {
+          epochNumber: get(next_epoch, 'epoch_number', 0),
+          epochStart: get(next_epoch, 'epoch_start', ''),
         },
       };
     } catch (error) {
