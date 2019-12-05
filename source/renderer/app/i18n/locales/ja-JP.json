@@ -360,7 +360,6 @@
   "staking.rewards.tableHeader.reward": "報酬",
   "staking.rewards.tableHeader.wallet": "ウォレット",
   "staking.rewards.title": "獲得した報酬",
-  "staking.stakePools.delegatingListTitle": "現在委任しているステークプール",
   "staking.stakePools.listTitle": "ステークプール ({pools})",
   "staking.stakePools.listTitleWithSearch": "ステークプール検索結果：({pools})",
   "staking.stakePools.search.delegatingListTitle": "現在委任しているステークプール",

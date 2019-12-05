@@ -1,7 +1,7 @@
 // @flow
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
+import { defineMessages, FormattedMessage } from 'react-intl';
 import { StakePoolsList } from './StakePoolsList';
 import { StakePoolsSearch } from './StakePoolsSearch';
 import BackToTopButton from '../../widgets/BackToTopButton';
@@ -10,11 +10,6 @@ import { getFilteredStakePoolsList } from './helpers';
 import StakePool from '../../../domains/StakePool';
 
 const messages = defineMessages({
-  delegatingListTitle: {
-    id: 'staking.stakePools.delegatingListTitle',
-    defaultMessage: '!!!Stake pools you are currently delegating to',
-    description: '"delegatingListTitlee" for the Stake Pools page.',
-  },
   listTitle: {
     id: 'staking.stakePools.listTitle',
     defaultMessage: '!!!Stake pools ({pools})',
@@ -46,10 +41,6 @@ const initialState = {
 
 @observer
 export default class StakePools extends Component<Props, State> {
-  static contextTypes = {
-    intl: intlShape.isRequired,
-  };
-
   state = {
     search: '',
     ...initialState,
@@ -67,7 +58,6 @@ export default class StakePools extends Component<Props, State> {
   };
 
   render() {
-    const { intl } = this.context;
     const {
       stakePoolsList,
       onOpenExternalLink,

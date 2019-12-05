@@ -360,7 +360,6 @@
   "staking.rewards.tableHeader.reward": "Reward",
   "staking.rewards.tableHeader.wallet": "Wallet",
   "staking.rewards.title": "Earned delegation rewards",
-  "staking.stakePools.delegatingListTitle": "Staking pools your are delegating to",
   "staking.stakePools.listTitle": "Stake pools ({pools})",
   "staking.stakePools.listTitleWithSearch": "Stake pools. Search results: ({pools})",
   "staking.stakePools.search.delegatingListTitle": "Staking pools your are delegating to",
