@@ -7,51 +7,146 @@
 
 .mainContent {
   @extend %contentBorderAndBackground;
-  padding: 20px 102px;
+  padding: 20px 70px;
   position: relative;
 }
 
-.progressRing {
-  position: absolute;
-  right: 38px;
-  top: 60px;
+.mainContainer {
+  display: flex;
+  justify-content: center;
+
+  @media (max-width: 1024px) {
+    flex-direction: column;
+  }
 }
 
 .heading {
   @extend %accentText;
-  font-size: 19px;
-  margin-bottom: 14px;
+  font-size: 16px;
+  padding-bottom: 10px;
+}
+
+.countdownContainer {
+  display: flex;
+  flex-direction: column;
+  padding: 0 10px;
+
+  @media (max-width: 1024px) {
+    padding: 10px;
+  }
 }
 
 .description {
   @extend %regularLightColorText;
-  margin-bottom: 24px;
+  padding-top: 10px;
+}
 
-  b {
-    @extend %accentText;
-  }
+.epochsContainer {
+  display: flex;
+  justify-content: center;
 
-  a {
-    border-bottom: 1px solid var(--theme-link-main-color);
-    color: var(--theme-link-main-color);
-    margin: 0 5px;
-    padding-right: 18px;
-    position: relative;
-    text-decoration: none;
-  }
+  .epochs {
+    background-color: var(--theme-staking-countdown-widget-background-color);
+    border-radius: 2px;
+    display: flex;
+    padding: 10px 20px;
 
-  .linkNewWindowIcon {
-    display: inline-block;
-    height: 15px;
-    position: absolute;
-    right: 0;
-    top: 2px;
-    width: 15px;
+    .spinnerIcon {
+      animation: rotating-spinner 1.2s linear infinite;
+      height: 42px;
+      margin: 12px 0;
+      width: 42px;
 
-    & > svg {
-      & > g {
-        stroke: var(--theme-link-main-color);
+      svg {
+        path {
+          stroke: var(--theme-staking-countdown-widget-field-value-color);
+        }
       }
+    }
+
+    .fieldPanel {
+      align-items: flex-end;
+      display: flex;
+
+      .left {
+        padding: 0 10px;
+
+        .fieldLabel {
+          align-items: center;
+          color: var(--theme-staking-countdown-widget-field-label-color);
+          display: flex;
+          font-family: var(--font-medium);
+          font-size: 10px;
+          height: 22px;
+          justify-content: center;
+          text-transform: uppercase;
+        }
+
+        .fieldValue {
+          align-items: center;
+          color: var(--theme-staking-countdown-widget-field-value-color);
+          display: flex;
+          font-family: var(--font-medium);
+          font-size: 36px;
+          height: 44px;
+          justify-content: center;
+
+          span {
+            opacity: 0.3;
+          }
+        }
+      }
+
+      &:last-child {
+        .left {
+          padding-left: 9px;
+
+          .fieldValue {
+            font-size: 21px;
+          }
+        }
+      }
+
+      .right {
+        align-items: center;
+        display: flex;
+        height: 44px;
+
+        .delimeterIcon {
+          height: 14px;
+          width: 4px;
+
+          svg {
+            path {
+              fill: var(
+                --theme-staking-countdown-widget-delimeter-background-color
+              );
+            }
+          }
+        }
+
+        .delimeterSlashIcon {
+          height: 15px;
+          width: 8px;
+
+          svg {
+            path {
+              fill: var(
+                --theme-staking-countdown-widget-delimeter-background-color
+              );
+            }
+          }
+        }
+      }
+    }
+  }
+
+  @keyframes rotating-spinner {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
     }
   }
 }

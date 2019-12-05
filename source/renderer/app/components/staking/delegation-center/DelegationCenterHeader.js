@@ -1,45 +1,52 @@
 // @flow
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { observer } from 'mobx-react';
-import BigNumber from 'bignumber.js';
-import SVGInline from 'react-svg-inline';
-import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
-import { SIMPLE_DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
-import linkNewWindowIcon from '../../../assets/images/link-ic-colored.inline.svg';
-import DonutRing from './DonutRing';
+import { defineMessages, intlShape } from 'react-intl';
+import { get } from 'lodash';
 import styles from './DelegationCenterHeader.scss';
-import { with2Decimals } from './helpers';
+import CountdownWidget from '../../widgets/CountdownWidget';
+import type { NextEpoch, TipInfo } from '../../../api/network/types';
+import { SLOTS_TOTAL } from '../../../config/epochsConfig';
+import { generateFieldPanel } from './helpers';
 
 const messages = defineMessages({
-  heading: {
-    id: 'staking.delegationCenter.heading',
-    defaultMessage: '!!!Delegation center',
+  epoch: {
+    id: 'staking.delegationCenter.epoch',
+    defaultMessage: '!!!Epoch',
     description: 'Headline for the Delegation center.',
   },
-  descriptionFirstPart: {
-    id: 'staking.delegationCenter.descriptionFirstPart',
+  currentSlot: {
+    id: 'staking.delegationCenter.currentSlot',
+    defaultMessage: '!!!Current slot',
+    description: 'Headline for the Delegation center.',
+  },
+  totalSlots: {
+    id: 'staking.delegationCenter.totalSlots',
+    defaultMessage: '!!!Total slots',
+    description: 'Headline for the Delegation center.',
+  },
+  headingLeft: {
+    id: 'staking.delegationCenter.headingLeft',
+    defaultMessage: '!!!Cardano epoch {nextEpochNumber} starts in',
+    description: 'Headline for the Delegation center.',
+  },
+  headingRight: {
+    id: 'staking.delegationCenter.headingRight',
+    defaultMessage: '!!!Current Cardano epoch',
+    description: 'Headline for the Delegation center.',
+  },
+  description: {
+    id: 'staking.delegationCenter.description',
     defaultMessage:
-      '!!!You are currently delegating <b>{adaValue} ADA</b>. This is <b>{percentage}%</b> of ada in your wallets.',
-    description: 'Delegation description-part1 for the Delegation center.',
-  },
-  descriptionSecondPart: {
-    id: 'staking.delegationCenter.descriptionSecondPart',
-    defaultMessage: '!!!Read',
-    description: 'Delegation description-part2 for the Delegation center.',
-  },
-  descriptionThirdPart: {
-    id: 'staking.delegationCenter.descriptionThirdPart',
-    defaultMessage: '!!!this article',
-    description: 'Delegation description-part3 for the Delegation center.',
-  },
-  descriptionFourthPart: {
-    id: 'staking.delegationCenter.descriptionFourthPart',
-    defaultMessage: '!!!to learn how to increase the delegated amount.',
-    description: 'Delegation description-part4 for the Delegation center.',
+      'Changes to delegation preferences will take effect from the next epoch.',
+    description: 'Delegation description for the Delegation center.',
   },
 });
 
-type Props = { adaValue: BigNumber, percentage: number };
+type Props = {
+  networkTip: ?TipInfo,
+  nextEpoch: ?NextEpoch,
+};
 
 @observer
 export default class DelegationCenterHeader extends Component<Props> {
@@ -47,56 +54,77 @@ export default class DelegationCenterHeader extends Component<Props> {
     intl: intlShape.isRequired,
   };
 
+  generateCurrentEpochPanels = (
+    epoch: number,
+    slots: number,
+    totalSlots: number
+  ) => {
+    const { intl } = this.context;
+    const epochLabel = intl.formatMessage(messages.epoch);
+    const currentSlotLabel = intl.formatMessage(messages.currentSlot);
+    const totalSlotsLabel = intl.formatMessage(messages.totalSlots);
+    const labels: Array<string> = [
+      epochLabel,
+      currentSlotLabel,
+      totalSlotsLabel,
+    ];
+
+    const values = [epoch, slots, totalSlots];
+    const keys = ['epoch', 'slots', 'totalSlots'];
+
+    return labels.map<any>((
+      label: string, // eslint-disable-line
+      index: number
+    ) => (
+      <Fragment key={keys[index]}>
+        {generateFieldPanel(labels, values, index)}
+      </Fragment>
+    ));
+  };
+
   render() {
     const { intl } = this.context;
-    const { adaValue, percentage } = this.props;
-    const heading = intl.formatMessage(messages.heading);
-    const descriptionSecondPart = intl.formatMessage(
-      messages.descriptionSecondPart
+    const { networkTip, nextEpoch } = this.props;
+    const epoch = get(networkTip, 'epoch', '-');
+    const nextEpochStart = get(nextEpoch, 'epochStart', '');
+    const nextEpochNumber = get(nextEpoch, 'epochNumber', 0);
+    const slot = get(networkTip, 'slot', '-');
+    const totalSlots = SLOTS_TOTAL;
+    const headingFirst = intl.formatMessage(messages.headingRight);
+    const headingSecond = intl.formatMessage(messages.headingLeft, {
+      nextEpochNumber,
+    });
+    const description = intl.formatMessage(messages.description);
+    const fieldPanels = this.generateCurrentEpochPanels(
+      epoch,
+      slot,
+      totalSlots
     );
-    const descriptionThirdPart = intl.formatMessage(
-      messages.descriptionThirdPart
-    );
-    const descriptionFourthPart = intl.formatMessage(
-      messages.descriptionFourthPart
-    );
-    const percentageWith2Decimals = with2Decimals(percentage);
+
+    const showNextEpochCountdown =
+      nextEpochNumber > 0 && nextEpochStart.length > 0;
 
     return (
       <div className={styles.component}>
         <div className={styles.mainContent}>
-          <div className={styles.progressRing}>
-            <DonutRing
-              percentage={percentageWith2Decimals}
-              sqSize={44}
-              strokeWidth={8}
-            />
+          <div className={styles.mainContainer}>
+            <div className={styles.countdownContainer}>
+              <div className={styles.heading}>{headingFirst}</div>
+              <div className={styles.epochsContainer}>
+                <div className={styles.epochs}>{fieldPanels}</div>
+              </div>
+            </div>
+            {showNextEpochCountdown && (
+              <div className={styles.countdownContainer}>
+                <div className={styles.heading}>{headingSecond}</div>
+                <CountdownWidget
+                  nextEpochStart={nextEpochStart}
+                  showLoader={false}
+                />
+              </div>
+            )}
           </div>
-          <div className={styles.heading}>{heading}</div>
-          <div className={styles.description}>
-            <p>
-              <FormattedHTMLMessage
-                {...messages.descriptionFirstPart}
-                values={{
-                  adaValue: adaValue.toFormat(SIMPLE_DECIMAL_PLACES_IN_ADA),
-                  percentage: parseFloat(percentageWith2Decimals).toFixed(2),
-                }}
-              />
-            </p>
-            <p>
-              <span>{descriptionSecondPart}</span>
-              <span>
-                <a href="/">
-                  {descriptionThirdPart}
-                  <SVGInline
-                    svg={linkNewWindowIcon}
-                    className={styles.linkNewWindowIcon}
-                  />
-                </a>
-              </span>
-              <span>{descriptionFourthPart}</span>
-            </p>
-          </div>
+          <div className={styles.description}>{description}</div>
         </div>
       </div>
     );

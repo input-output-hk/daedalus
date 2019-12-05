@@ -362,7 +362,7 @@ export default class NetworkStatusStore extends Store {
         this.isNodeResponding = true;
       });
 
-      runInAction('update localTip and networkTip', () => {
+      runInAction('update localTip, networkTip and nextEpoch', () => {
         this.localTip = localTip;
         this.networkTip = networkTip;
         this.nextEpoch = nextEpoch;
