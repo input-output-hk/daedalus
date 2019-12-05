@@ -1,5 +1,5 @@
 // @flow
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { observer } from 'mobx-react';
 import {
   defineMessages,
@@ -47,9 +47,15 @@ const messages = defineMessages({
     description:
       'Remove delegation label for the Delegation center body section.',
   },
-  toStakePoolTicker: {
-    id: 'staking.delegationCenter.toStakePoolTicker',
-    defaultMessage: '!!!To <b>[{delegatedStakePoolTicker}]</b> stake pool',
+  toStakePoolTickerPart1: {
+    id: 'staking.delegationCenter.toStakePoolTickerPart1',
+    defaultMessage: '!!!To',
+    description:
+      'Delegated stake pool ticker for the Delegation center body section.',
+  },
+  toStakePoolTickerPart2: {
+    id: 'staking.delegationCenter.toStakePoolTickerPart2',
+    defaultMessage: '!!!stake pool',
     description:
       'Delegated stake pool ticker for the Delegation center body section.',
   },
@@ -92,7 +98,7 @@ export default class WalletRow extends Component<Props> {
   render() {
     const { intl } = this.context;
     const {
-      wallet: { name, amount, isDelegated },
+      wallet: { name, amount, delegatedStakePoolId },
       delegatedStakePool,
       numberOfStakePools,
     } = this.props;
@@ -100,7 +106,7 @@ export default class WalletRow extends Component<Props> {
     const { ranking } = delegatedStakePool || {};
 
     const color =
-      isDelegated && !isNil(ranking)
+      delegatedStakePoolId && !isNil(ranking)
         ? getColorFromRange(ranking, numberOfStakePools)
         : 'transparent';
 
@@ -140,8 +146,8 @@ export default class WalletRow extends Component<Props> {
         <div className={styles.right}>
           <div>
             <div className={styles.status}>
-              <span>{isDelegated ? delegated : notDelegated}</span>
-              {isDelegated && (
+              <span>{delegatedStakePoolId ? delegated : notDelegated}</span>
+              {delegatedStakePoolId && (
                 <DropdownMenu
                   label={
                     <SVGInline svg={settingsIcon} className={styles.gearIcon} />
@@ -152,13 +158,12 @@ export default class WalletRow extends Component<Props> {
               )}
             </div>
             <div className={styles.action}>
-              {isDelegated && delegatedStakePool ? (
-                <FormattedHTMLMessage
-                  {...messages.toStakePoolTicker}
-                  values={{
-                    delegatedStakePoolTicker: delegatedStakePool.ticker,
-                  }}
-                />
+              {delegatedStakePoolId && delegatedStakePool ? (
+                <Fragment>
+                  {intl.formatMessage(messages.toStakePoolTickerPart1)}
+                  <span style={{ color }}> [{delegatedStakePool.ticker}] </span>
+                  {intl.formatMessage(messages.toStakePoolTickerPart2)}
+                </Fragment>
               ) : (
                 <span>
                   <span

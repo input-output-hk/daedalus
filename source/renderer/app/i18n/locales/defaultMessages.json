@@ -2405,17 +2405,31 @@
         }
       },
       {
-        "defaultMessage": "!!!To <b>[{delegatedStakePoolTicker}]</b> stake pool",
+        "defaultMessage": "!!!To",
         "description": "Delegated stake pool ticker for the Delegation center body section.",
         "end": {
           "column": 3,
           "line": 55
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
-        "id": "staking.delegationCenter.toStakePoolTicker",
+        "id": "staking.delegationCenter.toStakePoolTickerPart1",
         "start": {
-          "column": 21,
+          "column": 26,
           "line": 50
+        }
+      },
+      {
+        "defaultMessage": "!!!stake pool",
+        "description": "Delegated stake pool ticker for the Delegation center body section.",
+        "end": {
+          "column": 3,
+          "line": 61
+        },
+        "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
+        "id": "staking.delegationCenter.toStakePoolTickerPart2",
+        "start": {
+          "column": 26,
+          "line": 56
         }
       },
       {
@@ -2423,13 +2437,13 @@
         "description": "Delegate label for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 60
+          "line": 66
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.delegate",
         "start": {
           "column": 12,
-          "line": 56
+          "line": 62
         }
       },
       {
@@ -2437,13 +2451,13 @@
         "description": "Your stake label for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 65
+          "line": 71
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.yourStake",
         "start": {
           "column": 13,
-          "line": 61
+          "line": 67
         }
       }
     ],
