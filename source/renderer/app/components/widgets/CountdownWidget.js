@@ -2,6 +2,7 @@
 import React, { Component, Fragment } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
+import classNames from 'classnames';
 import moment from 'moment';
 import SVGInline from 'react-svg-inline';
 import styles from './CountdownWidget.scss';
@@ -44,8 +45,10 @@ const messages = defineMessages({
 const TIME_LEFT_INTERVAL = 1 * 1000; // 1 second | unit: milliseconds;
 
 type Props = {
+  showLoader: boolean,
   redirectToStakingInfo?: Function,
-  startDateTime: string,
+  nextEpochStart?: string,
+  startDateTime?: string,
 };
 type State = { timeLeft: number };
 
@@ -59,6 +62,7 @@ export default class CountdownWidget extends Component<Props, State> {
   };
 
   componentDidMount() {
+    if (!this.props.showLoader) this.updateTimeLeft();
     this.intervalHandler = setInterval(
       () => this.updateTimeLeft(),
       TIME_LEFT_INTERVAL
@@ -66,21 +70,24 @@ export default class CountdownWidget extends Component<Props, State> {
   }
 
   updateTimeLeft = () => {
-    const { redirectToStakingInfo, startDateTime } = this.props;
-    const timeLeft = Math.max(
-      0,
-      new Date(startDateTime).getTime() - new Date().getTime()
-    );
+    const { redirectToStakingInfo, startDateTime, nextEpochStart } = this.props;
+    const startDateString = startDateTime || nextEpochStart;
+    if (startDateString) {
+      const timeLeft = Math.max(
+        0,
+        new Date(startDateString).getTime() - new Date().getTime()
+      );
 
-    this.setState({ timeLeft });
+      this.setState({ timeLeft });
 
-    if (timeLeft === 0) {
-      if (this.intervalHandler) {
-        clearInterval(this.intervalHandler);
-      }
+      if (timeLeft === 0) {
+        if (this.intervalHandler) {
+          clearInterval(this.intervalHandler);
+        }
 
-      if (redirectToStakingInfo) {
-        redirectToStakingInfo();
+        if (redirectToStakingInfo) {
+          redirectToStakingInfo();
+        }
       }
     }
   };
@@ -163,11 +170,19 @@ export default class CountdownWidget extends Component<Props, State> {
   render() {
     const { timeLeft } = this.state;
     const fieldPanels = this.generateCountdownPanels();
+    const { startDateTime, nextEpochStart } = this.props;
+
+    const timeLeftContentStyles = classNames([
+      styles.timeLeft,
+      !nextEpochStart ? styles.noTimeLeftNextEpoch : null,
+    ]);
+
+    const showSpinner = startDateTime && timeLeft === 0;
 
     return (
       <div className={styles.timeLeftContainer}>
-        <div className={styles.timeLeft}>
-          {timeLeft === 0 ? (
+        <div className={timeLeftContentStyles}>
+          {showSpinner ? (
             <SVGInline svg={spinnerIcon} className={styles.spinnerIcon} />
           ) : (
             fieldPanels
