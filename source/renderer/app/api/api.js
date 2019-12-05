@@ -1233,14 +1233,12 @@ const _createWalletFromServerData = action(
       id,
       address_pool_gap: addressPoolGap,
       balance,
-      reward = {},
       name,
       state,
       passphrase,
       delegation,
       isLegacy = false,
     } = data;
-
     const passphraseLastUpdatedAt = get(passphrase, 'last_updated_at', null);
     const walletTotalAmount =
       balance.total.unit === WalletUnits.LOVELACE
@@ -1251,9 +1249,9 @@ const _createWalletFromServerData = action(
         ? new BigNumber(balance.available.quantity).dividedBy(LOVELACES_PER_ADA)
         : new BigNumber(balance.available.quantity);
     const walletRewardAmount =
-      reward.unit === WalletUnits.LOVELACE
-        ? new BigNumber(reward.quantity).dividedBy(LOVELACES_PER_ADA)
-        : new BigNumber(reward.quantity || 0);
+      balance.reward.unit === WalletUnits.LOVELACE
+        ? new BigNumber(balance.reward.quantity).dividedBy(LOVELACES_PER_ADA)
+        : new BigNumber(balance.reward.quantity || 0);
     const delegatedStakePoolId = delegation.target;
 
     // @API TODO - integrate once "Join Stake Pool" endpoint is done
