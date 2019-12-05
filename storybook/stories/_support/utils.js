@@ -5,6 +5,7 @@ import moment from 'moment';
 import { random, get } from 'lodash';
 import BigNumber from 'bignumber.js';
 import Wallet from '../../../source/renderer/app/domains/Wallet';
+import StakePool from '../../../source/renderer/app/domains/StakePool';
 import {
   WalletTransaction,
   TransactionStates,
@@ -33,7 +34,7 @@ export const generateWallet = (
   name: string,
   amount: string,
   reward?: number = 0,
-  delegatedStakePool: Object
+  delegatedStakePool?: StakePool
 ) =>
   new Wallet({
     id: generateHash(),
