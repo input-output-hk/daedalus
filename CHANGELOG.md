@@ -27,6 +27,7 @@ Changelog
 
 ### Chores
 
+- Updated Restore Wallet dialog with Yoroi wallets restoration ([PR 1740](https://github.com/input-output-hk/daedalus/pull/1740))
 - Updated `cardano-wallet` to latest master branch revision which includes Jormungandr 0.8.0-rc7 ([PR 1739](https://github.com/input-output-hk/daedalus/pull/1739))
 - Updated stake header info component and adds new information with the countdown timer for next epoch ([PR 1729](https://github.com/input-output-hk/daedalus/pull/1729))
 - Removed "StakePool" from Wallet domain ([PR 1738](https://github.com/input-output-hk/daedalus/pull/1738))
