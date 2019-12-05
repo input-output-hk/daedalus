@@ -43,7 +43,7 @@ export default class StakePool {
   // @observable pledge: BigNumber;
   // @observable cost: BigNumber;
   @observable createdAt: Date;
-  @observable description: string;
+  @observable description: string = '';
   @observable isCharity: boolean;
   @observable name: string = '';
   @observable profitMargin: number;
