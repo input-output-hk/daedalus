@@ -5,7 +5,7 @@ import { defineMessages, intlShape } from 'react-intl';
 import Wallet from '../../../domains/Wallet';
 import WalletRow from './WalletRow';
 import styles from './DelegationCenterBody.scss';
-import { DelegationActions } from '../../../api/staking/types';
+import { DelegationActions } from '../../../domains/StakePool';
 import type { DelegationAction } from '../../../api/staking/types';
 
 const messages = defineMessages({

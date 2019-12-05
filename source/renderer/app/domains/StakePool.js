@@ -1,6 +1,17 @@
 // @flow
 import { observable } from 'mobx';
 // import BigNumber from 'bignumber.js';
+import type { DelegationAction } from '../api/staking/types';
+
+export const DelegationActions: {
+  CHANGE_DELEGATION: DelegationAction,
+  REMOVE_DELEGATION: DelegationAction,
+  DELEGATE: DelegationAction,
+} = {
+  CHANGE_DELEGATION: 'changeDelegation',
+  REMOVE_DELEGATION: 'removeDelegation',
+  DELEGATE: 'delegate',
+};
 
 export type StakePoolProps = {
   id: string,

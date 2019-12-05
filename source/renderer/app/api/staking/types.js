@@ -3,16 +3,6 @@ import BigNumber from 'bignumber.js';
 import { WalletUnits } from '../../domains/Wallet';
 import StakePool from '../../domains/StakePool';
 
-export const DelegationActions: {
-  CHANGE_DELEGATION: DelegationAction,
-  REMOVE_DELEGATION: DelegationAction,
-  DELEGATE: DelegationAction,
-} = {
-  CHANGE_DELEGATION: 'changeDelegation',
-  REMOVE_DELEGATION: 'removeDelegation',
-  DELEGATE: 'delegate',
-};
-
 export type DelegationAction =
   | 'changeDelegation'
   | 'removeDelegation'

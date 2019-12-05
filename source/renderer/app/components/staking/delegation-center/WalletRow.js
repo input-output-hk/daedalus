@@ -16,7 +16,7 @@ import { SIMPLE_DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import DropdownMenu from './DropdownMenu';
 import DonutRing from './DonutRing';
 import styles from './WalletRow.scss';
-import { DelegationActions } from '../../../api/staking/types';
+import { DelegationActions } from '../../../domains/StakePool';
 import type { DelegationAction } from '../../../api/staking/types';
 
 const messages = defineMessages({
