@@ -13,10 +13,10 @@ import { formattedWalletAmount } from '../../../utils/formatters';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import { FormattedHTMLMessageWithLink } from '../../widgets/FormattedHTMLMessageWithLink';
 import Dialog from '../../widgets/Dialog';
-import styles from './UndelegateConfirmationDialog.scss';
 import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
 import { submitOnEnter } from '../../../utils/form';
+import styles from './UndelegateConfirmationDialog.scss';
 
 const messages = defineMessages({
   dialogTitle: {
