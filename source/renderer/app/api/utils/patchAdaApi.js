@@ -48,7 +48,7 @@ export default (api: AdaApi) => {
         },
         nextEpoch: {
           epochNumber: get(next_epoch, 'epoch_number', 0),
-          epochStart: get(next_epoch, 'epoch_start', 0),
+          epochStart: get(next_epoch, 'epoch_start', ''),
         },
       };
     } catch (error) {
