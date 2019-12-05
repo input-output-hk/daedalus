@@ -1,3 +1,6 @@
+$bg1: var(--theme-bordered-box-background-color);
+$bg0: rgba(0, 0, 0, 0);
+
 .component {
   box-sizing: border-box;
   display: flex;
@@ -55,23 +58,15 @@
   }
   .addressIdBegin {
     &:after {
-      background: linear-gradient(
-        90deg,
-        rgba(255, 255, 255, 0) 0%,
-        rgba(255, 255, 255, 1) 50%
-      );
-      right: 0;
+      background: linear-gradient(90deg, $bg0 0%, $bg1 50%);
+      right: -1px;
     }
   }
   .addressIdEnd {
     direction: rtl;
     &:after {
-      background: linear-gradient(
-        90deg,
-        rgba(255, 255, 255, 1) 50%,
-        rgba(255, 255, 255, 0) 100%
-      );
-      left: 0;
+      background: linear-gradient(90deg, $bg1 50%, $bg0 100%);
+      left: -1px;
     }
   }
   &.ellipsisIsVisible {

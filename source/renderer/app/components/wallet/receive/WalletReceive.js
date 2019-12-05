@@ -103,7 +103,7 @@ export default class WalletReceive extends Component<Props, State> {
     const { addressWidth } = this.state;
     if (!this.addressContainerElement || !addressWidth === 0) return;
     const addressContainerWidth = this.addressContainerElement.offsetWidth;
-    const ellipsisIsVisible = addressWidth > addressContainerWidth - 30;
+    const ellipsisIsVisible = addressWidth > addressContainerWidth - 10;
     this.setState({
       ellipsisIsVisible,
     });
