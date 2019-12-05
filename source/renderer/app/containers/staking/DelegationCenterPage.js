@@ -31,7 +31,7 @@ export default class DelegationCenterPage extends Component<Props> {
 
   render() {
     const { uiDialogs, staking, wallets } = this.props.stores;
-    const { adaValue, percentage, stakePools } = staking;
+    const { adaValue, percentage, stakePools, getStakePoolById } = staking;
 
     if (!wallets.allWallets.length) {
       return (
@@ -49,6 +49,7 @@ export default class DelegationCenterPage extends Component<Props> {
           wallets={wallets.allWallets}
           onDelegate={this.handleDelegate}
           numberOfStakePools={stakePools.length}
+          getStakePoolById={getStakePoolById}
         />
         {uiDialogs.isOpen(DelegationSetupWizardDialog) ? (
           <DelegationSetupWizardDialogContainer />

@@ -186,6 +186,7 @@ storiesOf('Wallets|Transfer Funds', module)
         )}
         wallets={WALLETS_V2}
         numberOfStakePools={STAKE_POOLS}
+        getStakePoolById={action('getStakePoolById')}
       />
     );
   })
