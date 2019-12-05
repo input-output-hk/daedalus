@@ -112,7 +112,14 @@ export default class StakingStore extends Store {
 
   _transformWalletToRewardForIncentivizedTestnet = (inputWallet: Wallet) => {
     const { name: wallet, reward } = inputWallet;
-
     return { wallet, reward };
   };
+
+  // @API TODO: Replace when Stake Pools Join is implemented
+  // getStakePoolById = (stakePoolId: string) =>
+  //   this.stakePools.find(({ id }: StakePool) => id === stakePoolId);
+  getStakePoolById = (stakePoolIndex: number) =>
+    stakePoolIndex < this.stakePools.length
+      ? this.stakePools[stakePoolIndex]
+      : null;
 }
