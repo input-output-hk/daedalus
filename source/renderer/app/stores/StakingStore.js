@@ -20,7 +20,7 @@ export default class StakingStore extends Store {
   initialPooling: ?IntervalID = null;
   refreshPooling: ?IntervalID = null;
 
-  startDateTime: string = '2019-09-26T00:00:00.161Z';
+  startDateTime: string = '2019-12-09T00:00:00.161Z';
   decentralizationProgress: number = 10;
   adaValue: BigNumber = new BigNumber(82650.15);
   percentage: number = 14;

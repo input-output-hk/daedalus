@@ -30,8 +30,9 @@ export default class DelegationCenterPage extends Component<Props> {
   };
 
   render() {
-    const { uiDialogs, staking, wallets } = this.props.stores;
-    const { adaValue, percentage, stakePools, getStakePoolById } = staking;
+    const { uiDialogs, staking, wallets, networkStatus } = this.props.stores;
+    const { stakePools, getStakePoolById } = staking;
+    const { networkTip, nextEpoch } = networkStatus;
 
     if (!wallets.allWallets.length) {
       return (
@@ -44,11 +45,11 @@ export default class DelegationCenterPage extends Component<Props> {
     return (
       <div>
         <DelegationCenter
-          adaValue={adaValue}
-          percentage={percentage}
           wallets={wallets.allWallets}
           onDelegate={this.handleDelegate}
           numberOfStakePools={stakePools.length}
+          networkTip={networkTip}
+          nextEpoch={nextEpoch}
           getStakePoolById={getStakePoolById}
         />
         {uiDialogs.isOpen(DelegationSetupWizardDialog) ? (
