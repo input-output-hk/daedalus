@@ -541,7 +541,7 @@
   "wallet.restore.dialog.shielded.recovery.phrase.input.hint": "{numberOfWords}語のペーパーウォレット復元フレーズを入力してください。",
   "wallet.restore.dialog.shielded.recovery.phrase.input.label": "27語のペーパーウォレット復元フレーズ",
   "wallet.restore.dialog.spendingPasswordLabel": "パスワードを入力してください",
-  "wallet.restore.dialog.tab.title.certificate": "ペーパーウォレット復元フレーズ",
+  "wallet.restore.dialog.tab.title.certificate": "Daedalus ペーパーウォレット",
   "wallet.restore.dialog.tab.title.recoveryPhrase": "ダイダロスウォレット",
   "wallet.restore.dialog.tab.title.yoroi": "Yoroiウォレット",
   "wallet.restore.dialog.title.label": "ウォレットを復元する",
