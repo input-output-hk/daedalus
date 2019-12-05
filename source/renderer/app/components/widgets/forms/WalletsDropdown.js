@@ -36,6 +36,7 @@ type Props = {
   ...$Shape<SelectProps>,
   numberOfStakePools: number,
   wallets: Array<$Shape<Wallet>>,
+  getStakePoolById: Function,
 };
 
 type WalletOption = {
@@ -79,9 +80,15 @@ export default class WalletsDropdown extends Component<Props> {
   };
 
   render() {
-    const { wallets, numberOfStakePools, ...props } = this.props;
+    const {
+      wallets,
+      numberOfStakePools,
+      getStakePoolById,
+      ...props
+    } = this.props;
     const walletsData = wallets.map(
-      ({ name: label, id: value, amount, delegatedStakePool }: Wallet) => {
+      ({ name: label, id: value, amount }: Wallet, index) => {
+        const delegatedStakePool = getStakePoolById(index);
         const detail = formattedWalletAmount(amount);
         return {
           detail,

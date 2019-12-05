@@ -40,6 +40,7 @@ type Props = {
   sourceWallet: $Shape<Wallet>,
   wallets: Array<$Shape<Wallet>>,
   numberOfStakePools: number,
+  getStakePoolById: Function,
 };
 
 export default class TransferFundsStep1Dialog extends Component<Props> {
@@ -57,6 +58,7 @@ export default class TransferFundsStep1Dialog extends Component<Props> {
       sourceWallet,
       wallets,
       numberOfStakePools,
+      getStakePoolById,
     } = this.props;
 
     return (
@@ -82,7 +84,11 @@ export default class TransferFundsStep1Dialog extends Component<Props> {
             label={sourceWallet.name}
             detail={formattedWalletAmount(sourceWallet.amount)}
             numberOfStakePools={numberOfStakePools}
-            delegatedStakePool={sourceWallet.delegatedStakePool}
+            /*
+              // @API TODO - integrate once "Join Stake Pool" endpoint is done
+              delegatedStakePool={getStakePoolById(sourceWallet.stakePoolId)}
+            */
+            delegatedStakePool={getStakePoolById(0)}
             selected
           />
         </div>
@@ -92,6 +98,7 @@ export default class TransferFundsStep1Dialog extends Component<Props> {
           onChange={onSetSourceWallet}
           value={targetWalletId}
           numberOfStakePools={numberOfStakePools}
+          getStakePoolById={getStakePoolById}
         />
       </Dialog>
     );

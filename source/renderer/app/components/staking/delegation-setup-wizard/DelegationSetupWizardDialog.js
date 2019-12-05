@@ -39,6 +39,7 @@ type Props = {
   error: ?LocalizableError,
   nextEpochStartTime: string,
   currentLocale: string,
+  getStakePoolById: Function,
 };
 
 @observer
@@ -82,6 +83,7 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
       currentLocale,
       isSubmitting,
       error,
+      getStakePoolById,
     } = this.props;
 
     const selectedWalletId = get(selectedWallet, 'id', null);
@@ -109,6 +111,7 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
             onClose={onClose}
             onSelectWallet={onSelectWallet}
             isWalletAcceptable={isWalletAcceptable}
+            getStakePoolById={getStakePoolById}
           />
         );
         break;
