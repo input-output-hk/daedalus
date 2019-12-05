@@ -58,7 +58,7 @@ export default class UndelegateDialogContainer extends Component<Props> {
 
     if (!delegatedStakePool) {
       throw new Error(
-        'Stakepool of delegated wallet is required for UndelegateDialogContainer.'
+        'Stake pool of delegated wallet is required for UndelegateDialogContainer.'
       );
     }
 
