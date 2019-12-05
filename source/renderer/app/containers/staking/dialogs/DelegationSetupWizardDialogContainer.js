@@ -138,7 +138,7 @@ export default class DelegationSetupWizardDialogContainer extends Component<
     const { app, staking, wallets, profile, networkStatus } = this.props.stores;
     const { nextEpoch } = networkStatus;
     const { currentTheme, currentLocale, environment } = profile;
-    const { stakePools, recentStakePools, joinStakePoolRequest } = staking;
+    const { stakePools, recentStakePools, joinStakePoolRequest, getStakePoolById } = staking;
     const { network, rawNetwork } = environment;
     const nextEpochStartTime = get(nextEpoch, 'epochStart', 0);
 
@@ -190,6 +190,7 @@ export default class DelegationSetupWizardDialogContainer extends Component<
         onBack={this.onBack}
         onLearnMoreClick={this.handleLearnMoreClick}
         onConfirm={this.handleConfirm}
+        getStakePoolById={getStakePoolById}
         isSubmitting={joinStakePoolRequest.isExecuting}
         error={joinStakePoolRequest.error}
       />

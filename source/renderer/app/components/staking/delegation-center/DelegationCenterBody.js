@@ -20,6 +20,7 @@ type Props = {
   wallets: Array<Wallet>,
   onDelegate: Function,
   numberOfStakePools: number,
+  getStakePoolById: Function,
 };
 
 @observer
@@ -45,7 +46,12 @@ export default class DelegationCenterBody extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { wallets, onDelegate, numberOfStakePools } = this.props;
+    const {
+      wallets,
+      onDelegate,
+      numberOfStakePools,
+      getStakePoolById,
+    } = this.props;
 
     const title = intl.formatMessage(messages.bodyTitle);
 
@@ -55,13 +61,14 @@ export default class DelegationCenterBody extends Component<Props> {
           <span>{title}</span>
         </div>
         <div className={styles.mainContent}>
-          {wallets.map(wallet => (
+          {wallets.map((wallet: Wallet) => (
             <WalletRow
               key={wallet.id}
               wallet={wallet}
               onDelegate={onDelegate}
               numberOfStakePools={numberOfStakePools}
               onMenuItemClick={this.handleMenuItemClick}
+              delegatedStakePool={getStakePoolById(wallet.delegatedStakePoolId)}
             />
           ))}
         </div>

@@ -28,7 +28,6 @@ const messages = defineMessages({
 });
 
 type Props = {
-  stakePoolsDelegatingList: Array<StakePool>,
   stakePoolsList: Array<StakePool>,
   onOpenExternalLink: Function,
   getPledgeAddressUrl: Function,
@@ -70,7 +69,6 @@ export default class StakePools extends Component<Props, State> {
   render() {
     const { intl } = this.context;
     const {
-      stakePoolsDelegatingList,
       stakePoolsList,
       onOpenExternalLink,
       getPledgeAddressUrl,
@@ -100,25 +98,6 @@ export default class StakePools extends Component<Props, State> {
           onClearSearch={this.handleClearSearch}
           isClearTooltipOpeningDownward
         />
-
-        {stakePoolsDelegatingList.length > 0 && (
-          <Fragment>
-            <h2>{intl.formatMessage(messages.delegatingListTitle)}</h2>
-            <StakePoolsList
-              listName="stakePoolsDelegatingList"
-              stakePoolsList={stakePoolsDelegatingList}
-              onOpenExternalLink={onOpenExternalLink}
-              getPledgeAddressUrl={getPledgeAddressUrl}
-              currentTheme={currentTheme}
-              isListActive={selectedList === 'stakePoolsDelegatingList'}
-              setListActive={this.handleSetListActive}
-              containerClassName="StakingWithNavigation_page"
-              onSelect={this.onDelegate}
-              numberOfStakePools={stakePoolsList.length}
-              showWithSelectButton
-            />
-          </Fragment>
-        )}
 
         <h2>
           <FormattedMessage

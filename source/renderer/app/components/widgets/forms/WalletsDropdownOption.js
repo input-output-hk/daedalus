@@ -14,7 +14,7 @@ export type WalletOption = {
 };
 
 export default class WalletsDropdownOption extends Component<WalletOption> {
-  renderLabelAndSlug = () => {
+  renderLabelAndTicker = () => {
     const { delegatedStakePool, label, numberOfStakePools } = this.props;
     if (!delegatedStakePool || !numberOfStakePools) {
       return <div className={styles.label}>{label}</div>;
@@ -39,7 +39,7 @@ export default class WalletsDropdownOption extends Component<WalletOption> {
     });
     return (
       <div className={componentStyles}>
-        {this.renderLabelAndSlug()}
+        {this.renderLabelAndTicker()}
         <div className={styles.detail}>{detail}</div>
       </div>
     );

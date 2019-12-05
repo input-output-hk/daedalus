@@ -5,7 +5,6 @@ import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import { ROUTES } from '../routes-config';
 import type {
-  // StakePool,
   Reward,
   RewardForIncentivizedTestnet,
   JoinStakePoolRequest,
@@ -106,10 +105,6 @@ export default class StakingStore extends Store {
     ];
   }
 
-  @computed get delegatingStakePools(): Array<StakePool> {
-    return [];
-  }
-
   @computed get isStakingDelegationCountdown(): boolean {
     return this.currentRoute === ROUTES.STAKING.COUNTDOWN;
   }
@@ -159,7 +154,9 @@ export default class StakingStore extends Store {
 
   _transformWalletToRewardForIncentivizedTestnet = (inputWallet: Wallet) => {
     const { name: wallet, reward } = inputWallet;
-
     return { wallet, reward };
   };
+
+  getStakePoolById = (stakePoolId: string) =>
+    this.stakePools.find(({ id }: StakePool) => id === stakePoolId);
 }
