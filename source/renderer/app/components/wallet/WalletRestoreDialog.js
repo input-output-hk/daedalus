@@ -28,6 +28,11 @@ import {
   WALLET_RESTORE_TYPES,
   RECOVERY_PHRASE_WORD_COUNT_OPTIONS,
 } from '../../config/walletsConfig';
+import {
+  LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT,
+  WALLET_RECOVERY_PHRASE_WORD_COUNT,
+  YOROI_WALLET_RECOVERY_PHRASE_WORD_COUNT,
+} from '../../config/cryptoConfig';
 
 const messages = defineMessages({
   title: {
@@ -454,7 +459,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
                 key: WALLET_RESTORE_TYPES.LEGACY,
                 label: (
                   <Fragment>
-                    12
+                    {LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT}
                     {intl.formatMessage(
                       messages.recoveryPhraseTypeOptionWord
                     )}{' '}
@@ -475,7 +480,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
                 key: WALLET_RESTORE_TYPES.REGULAR,
                 label: (
                   <Fragment>
-                    15
+                    {WALLET_RECOVERY_PHRASE_WORD_COUNT}
                     {intl.formatMessage(
                       messages.recoveryPhraseTypeOptionWord
                     )}{' '}
@@ -507,7 +512,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
                 key: WALLET_RESTORE_TYPES.YOROI_LEGACY,
                 label: (
                   <Fragment>
-                    15
+                    {YOROI_WALLET_RECOVERY_PHRASE_WORD_COUNT}
                     {intl.formatMessage(
                       messages.recoveryPhraseTypeOptionWord
                     )}{' '}
@@ -528,7 +533,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
                 key: WALLET_RESTORE_TYPES.YOROI_REGULAR,
                 label: (
                   <Fragment>
-                    15
+                    {YOROI_WALLET_RECOVERY_PHRASE_WORD_COUNT}
                     {intl.formatMessage(
                       messages.recoveryPhraseTypeOptionWord
                     )}{' '}
