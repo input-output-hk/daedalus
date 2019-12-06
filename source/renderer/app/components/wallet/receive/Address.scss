@@ -1,10 +1,3 @@
-$maxWidth1: 438px;
-$maxWidth2: 476px;
-$maxWidth3: 523px;
-$maxWidth4: 570px;
-$maxWidth5: none;
-$itnDecrease: 50px;
-
 .component {
   box-sizing: border-box;
   display: flex;
@@ -23,6 +16,7 @@ $itnDecrease: 50px;
 }
 .addressId {
   cursor: default;
+  display: flex;
   flex-grow: 1;
   font-family: var(--font-mono);
   letter-spacing: -0.4px;
@@ -30,39 +24,28 @@ $itnDecrease: 50px;
   overflow: hidden;
   user-select: none;
   white-space: nowrap;
-
-  &.isShowingSubMenus {
-    max-width: $maxWidth1;
-    @media (min-width: 950px) {
-      max-width: $maxWidth2;
-    }
-    @media (min-width: 1000px) {
-      max-width: $maxWidth3;
-    }
-    @media (min-width: 1050px) {
-      max-width: $maxWidth4;
-    }
-    @media (min-width: 1081px) {
-      max-width: none;
-    }
-
-    &.isIncentivizedTestnet {
-      max-width: $maxWidth1 - $itnDecrease;
-
-      @media (min-width: 950px) {
-        max-width: $maxWidth2 - $itnDecrease;
-      }
-      @media (min-width: 1000px) {
-        max-width: $maxWidth3 - $itnDecrease;
-      }
-      @media (min-width: 1050px) {
-        max-width: $maxWidth4 - $itnDecrease;
-      }
-      @media (min-width: 1110px) {
-        max-width: none;
-      }
+  .addressIdBegin,
+  .addressIdEnd {
+    flex-shrink: 0;
+    max-width: 50%;
+    overflow: hidden;
+    position: relative;
+    white-space: nowrap;
+    &:after {
+      background: rgb(255, 255, 255);
+      bottom: 0;
+      position: absolute;
+      top: 0;
+      width: 15px;
     }
   }
+}
+.addressIdBegin {
+  text-overflow: ellipsis;
+  text-align: right;
+}
+.addressIdEnd {
+  direction: rtl;
 }
 .addressActions {
   display: flex;
@@ -70,8 +53,6 @@ $itnDecrease: 50px;
   height: 18px;
   justify-content: flex-end;
   width: 90px;
-
-  // background: pink;
 }
 .invalidAddress {
   & > svg {
