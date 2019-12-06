@@ -200,7 +200,7 @@
   @include link(--theme-link-main-color);
   font-size: 14px;
   line-height: 1.36;
-  margin-bottom: 18px;
+  margin-bottom: 14px;
   max-width: 100%;
 
   .homepageContent {
@@ -219,7 +219,7 @@
   @extend %regularText;
   display: flex;
   flex-wrap: wrap;
-  margin-bottom: 14px;
+  margin-bottom: 6px;
 
   dt,
   dd {
