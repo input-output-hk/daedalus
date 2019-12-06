@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
+import BigNumber from 'bignumber.js';
 import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import classnames from 'classnames';
@@ -13,7 +14,8 @@ import StakePool from '../../../domains/StakePool';
 import closeCross from '../../../assets/images/close-cross.inline.svg';
 import externalLinkIcon from '../../../assets/images/link-ic.inline.svg';
 import { getColorFromRange } from '../../../utils/colors';
-// import { formattedWalletAmount } from '../../../utils/formatters';
+import { formattedWalletAmount } from '../../../utils/formatters';
+import { LOVELACES_PER_ADA } from '../../../config/numbersConfig';
 import { rangeMap } from '../../../utils/rangeMap';
 import {
   THUMBNAIL_HEIGHT,
@@ -441,15 +443,12 @@ export default class StakePoolTooltip extends Component<Props, State> {
             </dd>
             <dt>{intl.formatMessage(messages.controlledStake)}</dt>
             <dd className={styles.controlledStake}>
-              <span
-                style={{
-                  background: getColorFromRange(controlledStake, {
-                    darken,
-                    alpha,
-                  }),
-                }}
-              >
-                {parseFloat(controlledStake.toFixed(2))}%
+              <span>
+                {formattedWalletAmount(
+                  new BigNumber(controlledStake).dividedBy(LOVELACES_PER_ADA),
+                  true,
+                  false
+                )}
               </span>
             </dd>
             <dt>{intl.formatMessage(messages.profitMargin)}</dt>
