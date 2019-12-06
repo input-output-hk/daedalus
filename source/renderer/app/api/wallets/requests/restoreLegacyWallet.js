@@ -24,6 +24,7 @@ export const restoreYoroiLegacyWallet = (
   request(
     {
       method: 'POST',
+      // @todo - change to proper endpoint path
       path: '/v2/byron-wallets',
       ...config,
     },

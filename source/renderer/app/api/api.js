@@ -764,7 +764,7 @@ export default class AdaApi {
     };
     try {
       const legacyWallet: LegacyAdaWallet =
-        type && type === WALLET_RESTORE_TYPES.YOROI_LEGACY
+        type && type !== WALLET_RESTORE_TYPES.YOROI_LEGACY
           ? await restoreLegacyWallet(this.config, {
               walletInitData,
             })
