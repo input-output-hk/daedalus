@@ -132,7 +132,7 @@
   "global.language.german": "!!!German",
   "global.language.japanese": "!!!Japanese",
   "global.language.korean": "!!!Korean",
-  "global.passwordInstructions": "!!!Note that password needs to be at least <strong>7 characters</strong> long, and have at least <strong>1 uppercase</strong>, <strong>1 lowercase</strong> letter and <strong>1 number</strong>.",
+  "global.passwordInstructions": "!!!Note that password needs to be at least <strong>10 characters</strong> long, and have at least <strong>1 uppercase</strong>, <strong>1 lowercase</strong> letter and <strong>1 number</strong>.",
   "global.punctuation.colon": "!!!:",
   "global.punctuation.dot": "!!!.",
   "global.spendingPasswordLabel": "!!!Spending Password",

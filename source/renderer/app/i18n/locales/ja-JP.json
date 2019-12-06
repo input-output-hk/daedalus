@@ -132,7 +132,7 @@
   "global.language.german": "ドイツ語",
   "global.language.japanese": "日本語",
   "global.language.korean": "韓国語",
-  "global.passwordInstructions": "パスワードは<strong>7文字</strong>以上であり、<strong>英字大文字</strong>、<strong>小文字</strong>、<strong>数字を各1文字</strong>以上含む必要があります。",
+  "global.passwordInstructions": "パスワードは<strong>10文字</strong>以上であり、<strong>英字大文字</strong>、<strong>小文字</strong>、<strong>数字を各1文字</strong>以上含む必要があります。",
   "global.punctuation.colon": "：",
   "global.punctuation.dot": "。",
   "global.spendingPasswordLabel": "送金時のパスワード",
