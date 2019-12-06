@@ -1,7 +1,13 @@
 // @flow
 import BigNumber from 'bignumber.js';
+import { WalletUnits } from '../../domains/Wallet';
 import StakePool from '../../domains/StakePool';
 import { WalletUnits } from '../../domains/Wallet';
+
+export type DelegationAction =
+  | 'changeDelegation'
+  | 'removeDelegation'
+  | 'delegate';
 
 export type AdaApiStakePool = {
   id: string,
@@ -54,6 +60,19 @@ export type Epoch = {
   data: Array<EpochData>,
 };
 
+export type JoinStakePoolRequest = {
+  walletId: string,
+  stakePoolId: string,
+  passphrase: string,
+};
+
+export type StakePoolJoinFee = {
+  amount: {
+    quantity: number,
+    unit: WalletUnits.LOVELACE,
+  },
+};
+
 export type StakePoolQuitFee = {
   amount: {
     quantity: number,
@@ -63,4 +82,8 @@ export type StakePoolQuitFee = {
 
 export type EstimateQuitFeeRequest = {
   walletId: string,
-};
+}
+
+export type EstimateJoinFeeRequest = {
+  walletId: string,
+}

@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
+import { get } from 'lodash';
 import type { StoresMap } from '../../../stores/index';
 import type { ActionsMap } from '../../../actions/index';
 import UndelegateConfirmationDialog from '../../../components/staking/delegation-center/UndelegateConfirmationDialog';
@@ -19,28 +20,31 @@ export default class UndelegateDialogContainer extends Component<Props> {
 
   render() {
     const { actions, stores, onExternalLinkClick } = this.props;
-    const { uiDialogs, wallets } = stores;
+    const { uiDialogs, wallets, staking, networkStatus, profile } = stores;
     const dialogData = uiDialogs.dataForActiveDialog;
     const { walletId, stakePoolQuitFee } = dialogData;
+    const { nextEpoch } = networkStatus;
+    const { currentLocale } = profile;
     const {
       quitStakePoolRequest,
       getWalletById,
       undelegateWalletSubmissionSuccess,
     } = wallets;
+    const nextEpochStartTime = get(nextEpoch, 'epochStart', 0);
+
     const walletToBeUndelegated = getWalletById(walletId);
+    if (!walletToBeUndelegated)
+      return null;
 
-    if (!walletToBeUndelegated) {
-      throw new Error(
-        'Delegated wallet should be selected for UndelegateDialogContainer.'
-      );
-    }
-
-    const { name: walletName, delegatedStakePool } = walletToBeUndelegated;
+    const { name: walletName, delegatedStakePoolId } = walletToBeUndelegated;
+    const delegatedStakePool = staking.getStakePoolById(delegatedStakePoolId);
 
     if (undelegateWalletSubmissionSuccess) {
       return (
         <UndelegateConfirmationResultDialog
           walletName={walletName}
+          nextEpochStartTime={nextEpochStartTime}
+          currentLocale={currentLocale}
           onClose={() => {
             actions.dialogs.closeActiveDialog.trigger();
             quitStakePoolRequest.reset();
@@ -52,11 +56,8 @@ export default class UndelegateDialogContainer extends Component<Props> {
       );
     }
 
-    if (!delegatedStakePool) {
-      throw new Error(
-        'Stake pool of delegated wallet is required for UndelegateDialogContainer.'
-      );
-    }
+    if (!delegatedStakePool)
+      return null;
 
     const {
       id: stakePoolId,

@@ -18,14 +18,14 @@ type Props = {
 const messages = defineMessages({
   title: {
     id: 'staking.delegationSetup.intro.step.dialog.title',
-    defaultMessage: '!!!Delegation Setup',
+    defaultMessage: '!!!Delegate wallet',
     description:
       'Title "Delegation Setup" on the delegation setup "intro" dialog.',
   },
   description: {
     id: 'staking.delegationSetup.intro.step.dialog.description',
     defaultMessage:
-      '!!!Follow next sequence of screens to configure delegation for your wallet. During this process, you will need to deposit and pay transaction fees.',
+      '!!!Follow these steps to configure delegation preferences for your wallet. Please be aware that the last step of delegation confirmation will incur transaction fees.',
     description: 'Description on the delegation setup "intro" dialog.',
   },
   learnMoreButtonLabel: {
@@ -34,42 +34,23 @@ const messages = defineMessages({
     description:
       '"Learn more" button label on the delegation setup "intro" dialog.',
   },
-  stepsExplanationLabel: {
-    id: 'staking.delegationSetup.intro.step.dialog.stepsExplanationLabel',
-    defaultMessage: '!!!You will need to complete the following steps:',
-    description:
-      'Steps explanation label on the delegation setup "intro" dialog.',
-  },
   stepsExplanationLabel1: {
     id: 'staking.delegationSetup.intro.step.dialog.stepsExplanation.step1',
-    defaultMessage: '!!!Choose a wallet',
+    defaultMessage: '!!!Wallet selection',
     description:
       'Steps explanation list item 1 label on the delegation setup "intro" dialog.',
   },
   stepsExplanationLabel2: {
     id: 'staking.delegationSetup.intro.step.dialog.stepsExplanation.step2',
-    defaultMessage: '!!!Choose a stake pool',
+    defaultMessage: '!!!Stake pool selection',
     description:
       'Steps explanation list item 2 label on the delegation setup "intro" dialog.',
   },
   stepsExplanationLabel3: {
     id: 'staking.delegationSetup.intro.step.dialog.stepsExplanation.step3',
-    defaultMessage: '!!!Confirm delegation',
+    defaultMessage: '!!!Delegation confirmation',
     description:
       'Steps explanation list item 3 label on the delegation setup "intro" dialog.',
-  },
-  stepsExplanationLabel4: {
-    id: 'staking.delegationSetup.intro.step.dialog.stepsExplanation.step4',
-    defaultMessage: '!!!Move all of the ada to a new address',
-    description:
-      'Steps explanation list item 4 label on the delegation setup "intro" dialog.',
-  },
-  stepsExplanationOptionalLabel: {
-    id:
-      'staking.delegationSetup.intro.step.dialog.stepsExplanation.optionalLabel',
-    defaultMessage: '!!!(optional)',
-    description:
-      'Steps explanation list item 4 "Optional" label on the delegation setup "intro" dialog.',
   },
   cancelButtonLabel: {
     id: 'staking.delegationSetup.intro.step.dialog.cancelButtonLabel',
@@ -132,9 +113,6 @@ export default class DelegationStepsIntroDialog extends Component<Props> {
             <SVGInline svg={externalLinkIcon} />
           </button>
           <div className={styles.stepsExplanation}>
-            <p className={styles.label}>
-              {intl.formatMessage(messages.stepsExplanationLabel)}
-            </p>
             <ol>
               <li>
                 <span>1.</span>{' '}
@@ -147,15 +125,6 @@ export default class DelegationStepsIntroDialog extends Component<Props> {
               <li>
                 <span>3.</span>{' '}
                 {intl.formatMessage(messages.stepsExplanationLabel3)}
-              </li>
-              <li>
-                <p>
-                  <span>4. </span>
-                  {intl.formatMessage(messages.stepsExplanationLabel4)}{' '}
-                  <span className={styles.optionalLabel}>
-                    {intl.formatMessage(messages.stepsExplanationOptionalLabel)}
-                  </span>
-                </p>
               </li>
             </ol>
           </div>

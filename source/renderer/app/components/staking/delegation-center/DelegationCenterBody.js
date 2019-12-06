@@ -5,6 +5,8 @@ import { defineMessages, intlShape } from 'react-intl';
 import Wallet from '../../../domains/Wallet';
 import WalletRow from './WalletRow';
 import styles from './DelegationCenterBody.scss';
+import { DelegationActions } from '../../../domains/StakePool';
+import type { DelegationAction } from '../../../api/staking/types';
 
 const messages = defineMessages({
   bodyTitle: {
@@ -28,13 +30,28 @@ export default class DelegationCenterBody extends Component<Props> {
     intl: intlShape.isRequired,
   };
 
+  handleMenuItemClick = (item: DelegationAction, walletId: string) => {
+    const { onDelegate, onUndelegate } = this.props;
+
+    console.debug('TEST: ', item, walletId);
+    switch (item) {
+      case DelegationActions.CHANGE_DELEGATION:
+        onDelegate(walletId);
+        break;
+      case DelegationActions.REMOVE_DELEGATION:
+        onUndelegate(walletId);
+        break;
+      default:
+        break;
+    }
+  };
+
   render() {
     const { intl } = this.context;
     const {
       wallets,
       numberOfStakePools,
       onDelegate,
-      onUndelegate,
       getStakePoolById,
     } = this.props;
 
@@ -46,18 +63,14 @@ export default class DelegationCenterBody extends Component<Props> {
           <span>{title}</span>
         </div>
         <div className={styles.mainContent}>
-          {wallets.map((wallet: Wallet, index: number) => (
+          {wallets.map((wallet: Wallet) => (
             <WalletRow
               key={wallet.id}
               wallet={wallet}
               numberOfStakePools={numberOfStakePools}
               onDelegate={onDelegate}
-              onUndelegate={onUndelegate}
-              /*
-                @API TODO: Replace when "Stake Pools Join" is
-                delegatedStakePool={getStakePoolById(wallet.delegatedStakePoolId)}
-              */
-              delegatedStakePool={getStakePoolById(index)}
+              onMenuItemClick={this.handleMenuItemClick}
+              delegatedStakePool={getStakePoolById(wallet.delegatedStakePoolId)}
             />
           ))}
         </div>
