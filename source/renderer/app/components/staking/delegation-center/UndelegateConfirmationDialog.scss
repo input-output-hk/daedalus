@@ -27,11 +27,11 @@
   }
 
   .divider {
+    border-top: 1px solid
+      var(--theme-staking-delegation-center-divider-border-color);
     height: 1px;
     margin: 20px 0;
     width: 100%;
-    border-top: 1px solid
-      var(--theme-staking-delegation-center-divider-border-color);
   }
 
   .feesWrapper {

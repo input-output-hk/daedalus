@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
+import BigNumber from 'bignumber.js';
 import DelegationCenter from '../../components/staking/delegation-center/DelegationCenter';
 import DelegationSetupWizardDialogContainer from './dialogs/DelegationSetupWizardDialogContainer';
 import UndelegateDialogContainer from './dialogs/UndelegateDialogContainer';
@@ -27,12 +28,26 @@ export default class DelegationCenterPage extends Component<Props> {
     });
   };
 
-  handleUndelegate = (walletId: string) => {
-    const { actions } = this.props;
+  handleUndelegate = async (walletId: string) => {
+    const { actions, stores } = this.props;
     const { updateDataForActiveDialog } = actions.dialogs;
+    const { estimateQuitFee } = stores.staking;
 
     actions.dialogs.open.trigger({ dialog: UndelegateConfirmationDialog });
-    updateDataForActiveDialog.trigger({ data: { walletId } });
+    const dialogData = {
+      walletId,
+      stakePoolQuitFee: new BigNumber(0),
+    };
+    updateDataForActiveDialog.trigger({ data: dialogData });
+
+    // Update dialog one more time when quit fee is calculated
+    const stakePoolQuitFee = await estimateQuitFee({ walletId });
+    updateDataForActiveDialog.trigger({
+      data: {
+        ...dialogData,
+        stakePoolQuitFee,
+      },
+    });
   };
 
   handleGoToCreateWalletClick = () => {

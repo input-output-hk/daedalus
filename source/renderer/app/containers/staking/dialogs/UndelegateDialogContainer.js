@@ -21,7 +21,7 @@ export default class UndelegateDialogContainer extends Component<Props> {
     const { actions, stores, onExternalLinkClick } = this.props;
     const { uiDialogs, wallets } = stores;
     const dialogData = uiDialogs.dataForActiveDialog;
-    const { walletId } = dialogData;
+    const { walletId, stakePoolQuitFee } = dialogData;
     const {
       quitStakePoolRequest,
       getWalletById,
@@ -35,11 +35,7 @@ export default class UndelegateDialogContainer extends Component<Props> {
       );
     }
 
-    const {
-      name: walletName,
-      reward: fees,
-      delegatedStakePool,
-    } = walletToBeUndelegated;
+    const { name: walletName, delegatedStakePool } = walletToBeUndelegated;
 
     if (undelegateWalletSubmissionSuccess) {
       return (
@@ -90,7 +86,7 @@ export default class UndelegateDialogContainer extends Component<Props> {
         onExternalLinkClick={onExternalLinkClick}
         isSubmitting={quitStakePoolRequest.isExecuting}
         error={quitStakePoolRequest.error}
-        fees={fees}
+        fees={stakePoolQuitFee}
       />
     );
   }

@@ -58,7 +58,12 @@ import { transferFunds } from './wallets/requests/transferFunds';
 // Staking
 import StakePool from '../domains/StakePool';
 import { getStakePools } from './staking/requests/getStakePools';
-import type { AdaApiStakePools, AdaApiStakePool } from './staking/types';
+import type {
+  AdaApiStakePools,
+  AdaApiStakePool,
+  StakePoolQuitFee,
+  EstimateQuitFeeRequest,
+} from './staking/types';
 import stakingStakePoolsMissingApiData from '../config/stakingStakePoolsMissingApiData.dummy.json';
 import STAKE_POOLS from '../config/stakingStakePools.dummy.json';
 
@@ -1239,6 +1244,36 @@ export default class AdaApi {
     return news;
   };
 
+  estimateQuitFee = async (
+    request: EstimateQuitFeeRequest
+  ): Promise<BigNumber> => {
+    Logger.debug('AdaApi::estimateQuitFee called', {
+      parameters: filterLogData(request),
+    });
+
+    // @API TODO: Call API V2 endpoint for stake pool quit fee calculation
+    try {
+      // const {
+      //   walletId,
+      // } = request;
+      // const response: StakePoolJoinFee = await estimateQuitFee(this.config, {
+      //   walletId: request.walletId,
+      // });
+
+      const response = {
+        amount: {
+          quantity: 42,
+          unit: 'lovelace',
+        },
+      };
+      const stakePoolQuitFee = _createStakePoolQuitFeeFromServerData(response);
+      return new Promise(resolve => resolve(stakePoolQuitFee));
+    } catch (error) {
+      Logger.error('AdaApi::estimateQuitFee error', { error });
+      throw new GenericApiError();
+    }
+  };
+
   setCardanoNodeFault = async (fault: FaultInjectionIpcRequest) => {
     await cardanoFaultInjectionChannel.send(fault);
   };
@@ -1439,5 +1474,13 @@ const _createStakePoolFromServerData = action(
       ranking,
       retiring,
     });
+  }
+);
+
+const _createStakePoolQuitFeeFromServerData = action(
+  'AdaApi::_createStakePoolQuitFeeFromServerData',
+  (data: StakePoolQuitFee) => {
+    const amount = get(data, ['amount', 'quantity'], 0);
+    return new BigNumber(amount).dividedBy(LOVELACES_PER_ADA);
   }
 );

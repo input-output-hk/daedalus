@@ -1,6 +1,7 @@
 // @flow
 import BigNumber from 'bignumber.js';
 import StakePool from '../../domains/StakePool';
+import { WalletUnits } from '../../domains/Wallet';
 
 export type AdaApiStakePool = {
   id: string,
@@ -51,4 +52,15 @@ export type Epoch = {
   progress?: number,
   endsAt?: string,
   data: Array<EpochData>,
+};
+
+export type StakePoolQuitFee = {
+  amount: {
+    quantity: number,
+    unit: WalletUnits.LOVELACE,
+  },
+};
+
+export type EstimateQuitFeeRequest = {
+  walletId: string,
 };
