@@ -2,9 +2,10 @@
 import hash from 'hash.js';
 import faker from 'faker';
 import moment from 'moment';
-import { random } from 'lodash';
+import { random, get } from 'lodash';
 import BigNumber from 'bignumber.js';
 import Wallet from '../../../source/renderer/app/domains/Wallet';
+import StakePool from '../../../source/renderer/app/domains/StakePool';
 import {
   WalletTransaction,
   TransactionStates,
@@ -33,7 +34,7 @@ export const generateWallet = (
   name: string,
   amount: string,
   reward?: number = 0,
-  delegatedStakePool: Object
+  delegatedStakePool?: StakePool
 ) =>
   new Wallet({
     id: generateHash(),
@@ -47,13 +48,12 @@ export const generateWallet = (
     passwordUpdateDate: new Date(),
     syncState: { status: 'ready' },
     isLegacy: false,
-    isDelegated: false,
     recoveryPhraseVerificationDate: new Date(),
     recoveryPhraseVerificationStatus:
       WalletRecoveryPhraseVerificationStatuses.OK,
     recoveryPhraseVerificationStatusType:
       WalletRecoveryPhraseVerificationTypes.NEVER_CHECKED,
-    delegatedStakePool,
+    delegatedStakePoolId: get(delegatedStakePool, 'id'),
   });
 
 export const generateTransaction = (

@@ -1,27 +1,17 @@
 // @flow
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { observer } from 'mobx-react';
-import {
-  defineMessages,
-  intlShape,
-  FormattedMessage,
-  FormattedHTMLMessage,
-} from 'react-intl';
+import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import isNil from 'lodash/isNil';
 import Wallet from '../../../domains/Wallet';
-import StakePool from '../../../domains/StakePool';
+import StakePool, { DelegationActions } from '../../../domains/StakePool';
 import { getColorFromRange } from '../../../utils/colors';
 import settingsIcon from '../../../assets/images/settings-ic.inline.svg';
 import { SIMPLE_DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import DropdownMenu from './DropdownMenu';
 import styles from './WalletRow.scss';
-
-export const DELEGATION_ACTIONS = {
-  CHANGE_DELEGATION: 'changeDelegation',
-  REMOVE_DELEGATION: 'removeDelegation',
-  DELEGATE: 'delegate',
-};
+import type { DelegationAction } from '../../../api/staking/types';
 
 const messages = defineMessages({
   walletAmount: {
@@ -52,9 +42,15 @@ const messages = defineMessages({
     description:
       'Remove delegation label for the Delegation center body section.',
   },
-  toStakePoolTicker: {
-    id: 'staking.delegationCenter.toStakePoolTicker',
-    defaultMessage: '!!!To <b>[{delegatedStakePoolTicker}]</b> stake pool',
+  toStakePoolTickerPart1: {
+    id: 'staking.delegationCenter.toStakePoolTickerPart1',
+    defaultMessage: '!!!To',
+    description:
+      'Delegated stake pool ticker for the Delegation center body section.',
+  },
+  toStakePoolTickerPart2: {
+    id: 'staking.delegationCenter.toStakePoolTickerPart2',
+    defaultMessage: '!!!stake pool',
     description:
       'Delegated stake pool ticker for the Delegation center body section.',
   },
@@ -75,6 +71,7 @@ type Props = {
   delegatedStakePool?: StakePool,
   numberOfStakePools: number,
   onDelegate: Function,
+  onMenuItemClick: Function,
 };
 
 @observer
@@ -88,10 +85,15 @@ export default class WalletRow extends Component<Props> {
     this.props.onDelegate(wallet.id);
   };
 
+  onMenuItemClick = (clickeItem: DelegationAction) => {
+    const { wallet } = this.props;
+    this.props.onMenuItemClick(clickeItem, wallet.id);
+  };
+
   render() {
     const { intl } = this.context;
     const {
-      wallet: { name, amount, isDelegated },
+      wallet: { name, amount, delegatedStakePoolId },
       delegatedStakePool,
       numberOfStakePools,
     } = this.props;
@@ -99,7 +101,7 @@ export default class WalletRow extends Component<Props> {
     const { ranking } = delegatedStakePool || {};
 
     const color =
-      isDelegated && !isNil(ranking)
+      delegatedStakePoolId && !isNil(ranking)
         ? getColorFromRange(ranking, numberOfStakePools)
         : 'transparent';
 
@@ -113,12 +115,12 @@ export default class WalletRow extends Component<Props> {
     const delegatedWalletActionOptions = [
       {
         label: changeDelegation,
-        value: DELEGATION_ACTIONS.CHANGE_DELEGATION,
+        value: DelegationActions.CHANGE_DELEGATION,
         className: styles.normalOption,
       },
       {
         label: removeDelegation,
-        value: DELEGATION_ACTIONS.REMOVE_DELEGATION,
+        value: DelegationActions.REMOVE_DELEGATION,
         className: styles.removeOption,
       },
     ];
@@ -139,25 +141,24 @@ export default class WalletRow extends Component<Props> {
         <div className={styles.right}>
           <div>
             <div className={styles.status}>
-              <span>{isDelegated ? delegated : notDelegated}</span>
-              {isDelegated && (
+              <span>{delegatedStakePoolId ? delegated : notDelegated}</span>
+              {delegatedStakePoolId && (
                 <DropdownMenu
                   label={
                     <SVGInline svg={settingsIcon} className={styles.gearIcon} />
                   }
                   menuItems={delegatedWalletActionOptions}
-                  onMenuItemClick={() => null}
+                  onMenuItemClick={this.onMenuItemClick}
                 />
               )}
             </div>
             <div className={styles.action}>
-              {isDelegated && delegatedStakePool ? (
-                <FormattedHTMLMessage
-                  {...messages.toStakePoolTicker}
-                  values={{
-                    delegatedStakePoolTicker: delegatedStakePool.ticker,
-                  }}
-                />
+              {delegatedStakePoolId && delegatedStakePool ? (
+                <Fragment>
+                  {intl.formatMessage(messages.toStakePoolTickerPart1)}
+                  <span style={{ color }}> [{delegatedStakePool.ticker}] </span>
+                  {intl.formatMessage(messages.toStakePoolTickerPart2)}
+                </Fragment>
               ) : (
                 <span>
                   <span
