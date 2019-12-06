@@ -744,6 +744,7 @@ export default class WalletsStore extends Store {
 
     const request =
       params.type === WALLET_RESTORE_TYPES.LEGACY ||
+      params.type === WALLET_RESTORE_TYPES.YOROI_LEGACY ||
       params.type === WALLET_RESTORE_TYPES.CERTIFICATE
         ? this.restoreLegacyRequest
         : this.restoreRequest;
