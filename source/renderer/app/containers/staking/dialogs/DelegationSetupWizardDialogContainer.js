@@ -60,19 +60,33 @@ export default class DelegationSetupWizardDialogContainer extends Component<
     onClose: () => {},
   };
 
+  handleIsWalletAcceptable = (walletAmount: BigNumber) =>
+    walletAmount.gte(new BigNumber(MIN_DELEGATION_FUNDS));
+
+  get selectedWalletId() {
+    return get(
+      this.props,
+      ['stores', 'uiDialogs', 'dataForActiveDialog', 'walletId'],
+      null
+    );
+  }
+
+  get getActiveStep() {
+    const { selectedWalletId } = this;
+    if (selectedWalletId) {
+      const { wallets } = this.props.stores;
+      const wallet = wallets.getWalletById(selectedWalletId);
+      if (!wallet) return 0; // Intro step
+      const isWalletAcceptable = this.handleIsWalletAcceptable(wallet.amount);
+      if (!isWalletAcceptable) return 1; // Choose wallet step
+      return 2; // Choose stake pool step
+    }
+    return 0; // Intro step
+  }
+
   state = {
-    activeStep: get(
-      this.props,
-      ['stores', 'uiDialogs', 'dataForActiveDialog', 'walletId'],
-      null
-    )
-      ? 2
-      : 0,
-    selectedWalletId: get(
-      this.props,
-      ['stores', 'uiDialogs', 'dataForActiveDialog', 'walletId'],
-      null
-    ),
+    selectedWalletId: this.selectedWalletId,
+    activeStep: this.getActiveStep,
     selectedPoolId: get(
       this.props,
       ['stores', 'uiDialogs', 'dataForActiveDialog', 'poolId'],
@@ -130,9 +144,6 @@ export default class DelegationSetupWizardDialogContainer extends Component<
     this.setState({ selectedPoolId: poolId });
     this.handleContinue();
   };
-
-  handleIsWalletAcceptable = (walletAmount: BigNumber) =>
-    walletAmount.gte(new BigNumber(MIN_DELEGATION_FUNDS));
 
   render() {
     const {
