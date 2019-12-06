@@ -33,8 +33,7 @@ export default class UndelegateDialogContainer extends Component<Props> {
     const nextEpochStartTime = get(nextEpoch, 'epochStart', 0);
 
     const walletToBeUndelegated = getWalletById(walletId);
-    if (!walletToBeUndelegated)
-      return null;
+    if (!walletToBeUndelegated) return null;
 
     const { name: walletName, delegatedStakePoolId } = walletToBeUndelegated;
     const delegatedStakePool = staking.getStakePoolById(delegatedStakePoolId);
@@ -56,8 +55,7 @@ export default class UndelegateDialogContainer extends Component<Props> {
       );
     }
 
-    if (!delegatedStakePool)
-      return null;
+    if (!delegatedStakePool) return null;
 
     const {
       id: stakePoolId,

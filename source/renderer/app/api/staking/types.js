@@ -81,8 +81,8 @@ export type StakePoolQuitFee = {
 
 export type EstimateQuitFeeRequest = {
   walletId: string,
-}
+};
 
 export type EstimateJoinFeeRequest = {
   walletId: string,
-}
+};

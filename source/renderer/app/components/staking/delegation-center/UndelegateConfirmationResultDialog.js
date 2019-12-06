@@ -39,7 +39,12 @@ export default class UndelegateConfirmationResultDialog extends Component<Props>
 
   render() {
     const { intl } = this.context;
-    const { walletName, onClose, nextEpochStartTime, currentLocale } = this.props;
+    const {
+      walletName,
+      onClose,
+      nextEpochStartTime,
+      currentLocale,
+    } = this.props;
     const actions = [
       {
         label: intl.formatMessage(globalMessages.close),

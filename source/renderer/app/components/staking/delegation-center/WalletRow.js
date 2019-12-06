@@ -12,6 +12,8 @@ import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import DropdownMenu from './DropdownMenu';
 import styles from './WalletRow.scss';
 
+import type { DelegationAction } from '../../../api/staking/types';
+
 const messages = defineMessages({
   walletAmount: {
     id: 'staking.delegationCenter.walletAmount',
@@ -70,7 +72,7 @@ type Props = {
   delegatedStakePool?: StakePool,
   numberOfStakePools: number,
   onDelegate: Function,
-  onUndelegate: Function,
+  onMenuItemClick: Function,
 };
 
 @observer
