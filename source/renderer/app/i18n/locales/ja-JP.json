@@ -327,7 +327,7 @@
   "staking.delegationSetup.steps.step.2.label": "ステークプール",
   "staking.delegationSetup.steps.step.3.label": "確認",
   "staking.delegationSetup.success.step.dialog.closeButtonLabel": "閉じる",
-  "staking.delegationSetup.success.step.dialog.description.line1": "<span>{delegatedWalletName}</span>ウォレットのステークは<span>[{delegatedStakePoolTicker}]</span>ステークプールに委任されました。",
+  "staking.delegationSetup.success.step.dialog.description.line1": "<span>{delegatedWalletName}</span>ウォレットのステークは<span>[{delegatedStakePoolTicker}] {delegatedStakePoolName}</span>ステークプールに委任されました。",
   "staking.delegationSetup.success.step.dialog.description.line2": "新しい委任設定はブロックチェーンに送信され、<span>{timeUntilNextEpochStart}後の次のCardanoエポックの開始とともに有効になります</span>現在のエポックが終了するまでは、これまでの委任設定が有効です。",
   "staking.delegationSetup.success.step.dialog.title": "ウォレットは委任されました",
   "staking.epochs.currentEpoch.tableHeader.pool": "ステークプール",

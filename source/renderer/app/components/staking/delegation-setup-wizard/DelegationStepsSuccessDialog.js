@@ -24,7 +24,7 @@ const messages = defineMessages({
   descriptionLine1: {
     id: 'staking.delegationSetup.success.step.dialog.description.line1',
     defaultMessage:
-      '!!!The stake from your wallet <span>{delegatedWalletName}</span> is now delegated to the <span>[{delegatedStakePoolTicker}]</span> stake pool.',
+      '!!!The stake from your wallet <span>{delegatedWalletName}</span> is now delegated to the <span>[{delegatedStakePoolTicker}] {delegatedStakePoolName}</span> stake pool.',
     description:
       'Description "line 1" on the delegation setup "success" step dialog.',
   },
@@ -83,6 +83,7 @@ export default class DelegationStepsSuccessDialog extends Component<Props> {
     const contentClasses = classNames([commonStyles.content, styles.content]);
 
     const delegatedWalletName = get(delegatedWallet, 'name');
+    const delegatedStakePoolName = get(delegatedStakePool, 'name');
     const delegatedStakePoolTicker = get(delegatedStakePool, 'ticker');
 
     const timeLeft = Math.max(
@@ -130,7 +131,11 @@ export default class DelegationStepsSuccessDialog extends Component<Props> {
           <div className={styles.description1}>
             <FormattedHTMLMessage
               {...messages.descriptionLine1}
-              values={{ delegatedWalletName, delegatedStakePoolTicker }}
+              values={{
+                delegatedWalletName,
+                delegatedStakePoolTicker,
+                delegatedStakePoolName,
+              }}
             />
           </div>
           <div className={styles.description2}>
