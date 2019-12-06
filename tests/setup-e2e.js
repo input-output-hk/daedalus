@@ -134,11 +134,6 @@ Before({ tags: '@e2e', timeout: DEFAULT_TIMEOUT * 2 }, async function(testCase) 
   });
 });
 
-// adds context object to webdriver
-Before(function() {
-  this.context = {};
-});
-
 Before({ tags: '@newsfeed' }, function() {
   setNewsFeedIsOpen(this.client, false);
   resetTestNews(this.client);
