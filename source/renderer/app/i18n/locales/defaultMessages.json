@@ -2995,7 +2995,7 @@
         }
       },
       {
-        "defaultMessage": "!!!The stake from your wallet <span>{delegatedWalletName}</span> is now delegated to the <span>[{delegatedStakePoolTicker}]</span> stake pool.",
+        "defaultMessage": "!!!The stake from your wallet <span>{delegatedWalletName}</span> is now delegated to the <span>[{delegatedStakePoolTicker}] {delegatedStakePoolName}</span> stake pool.",
         "description": "Description \"line 1\" on the delegation setup \"success\" step dialog.",
         "end": {
           "column": 3,
