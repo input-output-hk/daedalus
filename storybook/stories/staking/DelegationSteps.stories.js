@@ -33,6 +33,7 @@ const getDelegationWizardStepsList = locale => [
 type Props = {
   currentTheme: string,
   locale: string,
+  currentStep?: number,
 };
 
 type State = {
@@ -43,7 +44,7 @@ const NUMBER_OF_STEPS = 6;
 
 export class StakingDelegationSteps extends Component<Props, State> {
   state = {
-    currentStep: 0,
+    currentStep: this.props.currentStep || 0,
   };
 
   get dialogs() {
