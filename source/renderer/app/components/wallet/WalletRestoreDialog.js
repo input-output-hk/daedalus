@@ -322,12 +322,6 @@ export default class WalletRestoreDialog extends Component<Props, State> {
 
         walletData.type = this.state.walletType;
 
-        if (walletData.type === WALLET_RESTORE_TYPES.YOROI_REGULAR) {
-          walletData.type = WALLET_RESTORE_TYPES.REGULAR;
-        } else if (walletData.type === WALLET_RESTORE_TYPES.YOROI_LEGACY) {
-          walletData.type = WALLET_RESTORE_TYPES.LEGACY;
-        }
-
         onSubmit(walletData);
       },
       onError: () =>
@@ -395,7 +389,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
 
     const regularTabClasses = classnames([
       'regularTab',
-      !this.isYoroi() && !this.isCertificate() ? styles.activeButton : '',
+      this.isRegular() || this.isLegacy() ? styles.activeButton : '',
     ]);
 
     const certificateTabClasses = classnames([
@@ -405,7 +399,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
 
     const yoroiTabClasses = classnames([
       'yoroiTab',
-      this.isYoroi() && !this.isCertificate() ? styles.activeButton : '',
+      this.isYoroi() ? styles.activeButton : '',
     ]);
 
     return (
@@ -505,7 +499,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
           />
         )}
 
-        {!this.isCertificate() && this.isYoroi() && (
+        {this.isYoroi() && (
           <RadioSet
             label={intl.formatMessage(messages.recoveryPhraseTypeLabel)}
             items={[
@@ -618,6 +612,10 @@ export default class WalletRestoreDialog extends Component<Props, State> {
         {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
       </Dialog>
     );
+  }
+
+  isRegular() {
+    return this.state.walletType === WALLET_RESTORE_TYPES.REGULAR;
   }
 
   isCertificate() {
