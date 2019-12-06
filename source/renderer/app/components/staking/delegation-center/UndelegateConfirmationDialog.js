@@ -9,6 +9,8 @@ import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
+import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
+import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 import { formattedWalletAmount } from '../../../utils/formatters';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import { FormattedHTMLMessageWithLink } from '../../widgets/FormattedHTMLMessageWithLink';
@@ -78,6 +80,8 @@ const messages = defineMessages({
   },
 });
 
+messages.fieldIsRequired = globalMessages.fieldIsRequired;
+
 type Props = {
   walletName: string,
   stakePoolName: string,
@@ -90,56 +94,98 @@ type Props = {
   fees: BigNumber,
 };
 
-type State = {
-  isConfirmUnsupportChecked: boolean,
-  isConfirmUneligibleChecked: boolean,
-  passphrase: string,
-};
-
 @observer
-export default class UndelegateConfirmationDialog extends Component<
-  Props,
-  State
-> {
+export default class UndelegateConfirmationDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
 
-  constructor(props: Props) {
-    super(props);
-
-    this.state = {
-      isConfirmUnsupportChecked: false,
-      isConfirmUneligibleChecked: false,
-      passphrase: '',
-    };
-  }
-
-  onConfirmUnsupportCheckChange = () =>
-    this.setState(prevState => ({
-      isConfirmUnsupportChecked: !prevState.isConfirmUnsupportChecked,
-    }));
-
-  onConfirmUneligibleCheckChange = () =>
-    this.setState(prevState => ({
-      isConfirmUneligibleChecked: !prevState.isConfirmUneligibleChecked,
-    }));
-
-  onPassphraseChange = (passphrase: string) => this.setState({ passphrase });
+  form = new ReactToolboxMobxForm(
+    {
+      fields: {
+        isConfirmUnsupportChecked: {
+          type: 'checkbox',
+          label: this.context.intl.formatMessage(
+            messages.confirmUnsupportCheck
+          ),
+          value: false,
+          validators: [
+            ({ field }) => {
+              if (field.value === false) {
+                return [
+                  false,
+                  this.context.intl.formatMessage(messages.fieldIsRequired),
+                ];
+              }
+              return [true];
+            },
+          ],
+        },
+        isConfirmUneligibleChecked: {
+          type: 'checkbox',
+          label: this.context.intl.formatMessage(
+            messages.confirmUneligibleCheck
+          ),
+          value: false,
+          validators: [
+            ({ field }) => {
+              if (field.value === false) {
+                return [
+                  false,
+                  this.context.intl.formatMessage(messages.fieldIsRequired),
+                ];
+              }
+              return [true];
+            },
+          ],
+        },
+        passphrase: {
+          type: 'password',
+          label: this.context.intl.formatMessage(
+            messages.spendingPasswordLabel
+          ),
+          placeholder: this.context.intl.formatMessage(
+            messages.spendingPasswordPlaceholder
+          ),
+          value: '',
+          validators: [
+            ({ field }) => {
+              if (field.value === '') {
+                return [
+                  false,
+                  this.context.intl.formatMessage(messages.fieldIsRequired),
+                ];
+              }
+              return [true];
+            },
+          ],
+        },
+      },
+    },
+    {
+      options: {
+        validateOnChange: true,
+        validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
+      },
+    }
+  );
 
   isConfirmDisabled = () => {
+    const { form } = this;
     const { isSubmitting } = this.props;
-    const {
-      isConfirmUnsupportChecked,
-      isConfirmUneligibleChecked,
-      passphrase,
-    } = this.state;
+    const { isValid: unsupportCheckboxIsValid } = form.$(
+      'isConfirmUnsupportChecked'
+    );
+    const { isValid: uneligibleCheckboxIsValid } = form.$(
+      'isConfirmUneligibleChecked'
+    );
+    const { isValid: passphraseIsValid } = form.$('passphrase');
 
     return (
       isSubmitting ||
-      !isConfirmUnsupportChecked ||
-      !isConfirmUneligibleChecked ||
-      !passphrase
+      !unsupportCheckboxIsValid ||
+      !uneligibleCheckboxIsValid ||
+      !passphraseIsValid
     );
   };
 
@@ -148,10 +194,14 @@ export default class UndelegateConfirmationDialog extends Component<
       return false;
     }
 
-    const { onConfirm } = this.props;
-    const { passphrase } = this.state;
-
-    return onConfirm(passphrase);
+    return this.form.submit({
+      onSuccess: form => {
+        const { onConfirm } = this.props;
+        const { passphrase } = form.values();
+        onConfirm(passphrase);
+      },
+      onError: () => null,
+    });
   };
 
   handleSubmitOnEnter = (event: KeyboardEvent) =>
@@ -178,21 +228,19 @@ export default class UndelegateConfirmationDialog extends Component<
   };
 
   render() {
+    const { form } = this;
     const { intl } = this.context;
+    const unsupportCheckboxField = form.$('isConfirmUnsupportChecked');
+    const uneligibleCheckboxField = form.$('isConfirmUneligibleChecked');
+    const passphraseField = form.$('passphrase');
     const {
       walletName,
       stakePoolName,
       stakePoolSlug,
       onCancel,
-      onConfirm,
       isSubmitting,
       fees,
     } = this.props;
-    const {
-      isConfirmUnsupportChecked,
-      isConfirmUneligibleChecked,
-      passphrase,
-    } = this.state;
     const isConfirmDisabled = this.isConfirmDisabled();
     const buttonClasses = classnames([
       'attention',
@@ -201,12 +249,12 @@ export default class UndelegateConfirmationDialog extends Component<
     const actions = [
       {
         label: intl.formatMessage(globalMessages.cancel),
-        onClick: onCancel,
+        onClick: !isSubmitting ? onCancel : () => null,
       },
       {
         className: buttonClasses,
         label: intl.formatMessage(messages.confirmButtonLabel),
-        onClick: () => onConfirm(passphrase),
+        onClick: this.handleSubmit,
         disabled: isConfirmDisabled,
         primary: true,
       },
@@ -218,9 +266,9 @@ export default class UndelegateConfirmationDialog extends Component<
         title={intl.formatMessage(messages.dialogTitle)}
         actions={actions}
         closeOnOverlayClick
-        onClose={onCancel}
+        onClose={!isSubmitting ? onCancel : () => null}
         className={styles.dialog}
-        closeButton={<DialogCloseButton onClose={onCancel} />}
+        closeButton={<DialogCloseButton />}
       >
         <div className={styles.description}>
           <FormattedHTMLMessage
@@ -229,15 +277,13 @@ export default class UndelegateConfirmationDialog extends Component<
           />
         </div>
         <Checkbox
-          label={intl.formatMessage(messages.confirmUnsupportCheck)}
-          onChange={this.onConfirmUnsupportCheckChange}
-          checked={isConfirmUnsupportChecked}
+          {...unsupportCheckboxField.bind()}
+          error={unsupportCheckboxField.error}
           skin={CheckboxSkin}
         />
         <Checkbox
-          label={intl.formatMessage(messages.confirmUneligibleCheck)}
-          onChange={this.onConfirmUneligibleCheckChange}
-          checked={isConfirmUneligibleChecked}
+          {...uneligibleCheckboxField.bind()}
+          error={uneligibleCheckboxField.error}
           skin={CheckboxSkin}
         />
         <div className={styles.divider} />
@@ -254,12 +300,10 @@ export default class UndelegateConfirmationDialog extends Component<
         </div>
         <Input
           type="password"
-          label={intl.formatMessage(messages.spendingPasswordLabel)}
-          placeholder={intl.formatMessage(messages.spendingPasswordPlaceholder)}
-          value={passphrase}
-          onKeyPress={this.handleSubmitOnEnter}
-          onChange={this.onPassphraseChange}
+          {...passphraseField.bind()}
+          error={passphraseField.error}
           skin={InputSkin}
+          onKeyPress={this.handleSubmitOnEnter}
         />
         {errorElement && <p className={styles.error}>{errorElement}</p>}
       </Dialog>
