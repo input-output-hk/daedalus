@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 
+- Added Yoroi wallets restoration to the "Restore Wallet" dialog ([PR 1740](https://github.com/input-output-hk/daedalus/pull/1740))
 - Integrated the V2 API endpoint for fetching stake pool data ([PR 1733](https://github.com/input-output-hk/daedalus/pull/1733))
 - Added support for new number formats to the React-Polymorph "Numeric input" on the "Send" screen ([PR 1735](https://github.com/input-output-hk/daedalus/pull/1735))
 - Added script which checks for "integrity" lines in yarn.lock file ([PR 1715](https://github.com/input-output-hk/daedalus/pull/1715))
@@ -27,7 +28,6 @@ Changelog
 
 ### Chores
 
-- Updated Restore Wallet dialog with Yoroi wallets restoration ([PR 1740](https://github.com/input-output-hk/daedalus/pull/1740))
 - Updated `cardano-wallet` to latest master branch revision which includes Jormungandr 0.8.0-rc7 ([PR 1739](https://github.com/input-output-hk/daedalus/pull/1739))
 - Updated stake header info component and adds new information with the countdown timer for next epoch ([PR 1729](https://github.com/input-output-hk/daedalus/pull/1729))
 - Removed "StakePool" from Wallet domain ([PR 1738](https://github.com/input-output-hk/daedalus/pull/1738))
