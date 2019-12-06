@@ -33,7 +33,7 @@ const getDelegationWizardStepsList = locale => [
 type Props = {
   currentTheme: string,
   locale: string,
-  currentStep?: number,
+  isDisabled?: boolean,
 };
 
 type State = {
@@ -44,7 +44,7 @@ const NUMBER_OF_STEPS = 6;
 
 export class StakingDelegationSteps extends Component<Props, State> {
   state = {
-    currentStep: this.props.currentStep || 0,
+    currentStep: 0,
   };
 
   get dialogs() {
@@ -57,6 +57,16 @@ export class StakingDelegationSteps extends Component<Props, State> {
         step: 1,
       })
     );
+
+    if (this.props.isDisabled) {
+      return [
+        <DelegationStepsNotAvailableDialog
+          key="DelegationStepsNotAvailableDialog"
+          minDelegationFunds={MIN_DELEGATION_FUNDS}
+          onClose={action('onClose')}
+        />,
+      ];
+    }
     return [
       <DelegationStepsIntroDialog
         key="DelegationStepsIntroDialog"
@@ -90,7 +100,7 @@ export class StakingDelegationSteps extends Component<Props, State> {
         onClose={action('onClose')}
         onBack={action('onBack')}
         onSelectPool={this.onContinue}
-        selectedPool={null}
+        selectedPool={STAKE_POOLS[0]}
         selectedWallet={WALLETS[0]}
       />,
       <DelegationStepsConfirmationDialog
@@ -112,11 +122,6 @@ export class StakingDelegationSteps extends Component<Props, State> {
         currentLocale="en-US"
         nextEpochStartTime="2019-12-09T00:00:00.161Z"
         onClose={this.onReset}
-      />,
-      <DelegationStepsNotAvailableDialog
-        key="DelegationStepsNotAvailableDialog"
-        minDelegationFunds={MIN_DELEGATION_FUNDS}
-        onClose={this.onContinue}
       />,
     ];
   }

@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
-import { find, get } from 'lodash';
+import { find, get, includes } from 'lodash';
 import BigNumber from 'bignumber.js';
 import DelegationSetupWizardDialog from '../../../components/staking/delegation-setup-wizard/DelegationSetupWizardDialog';
 import { MIN_DELEGATION_FUNDS } from '../../../config/stakingConfig';
@@ -132,7 +132,7 @@ export default class DelegationSetupWizardDialogContainer extends Component<
   };
 
   handleIsWalletAcceptable = (walletAmount: BigNumber) =>
-    walletAmount.gte(MIN_DELEGATION_FUNDS);
+    walletAmount.gte(new BigNumber(MIN_DELEGATION_FUNDS));
 
   render() {
     const {
@@ -152,7 +152,6 @@ export default class DelegationSetupWizardDialogContainer extends Component<
     } = staking;
     const { network, rawNetwork } = environment;
     const nextEpochStartTime = get(nextEpoch, 'epochStart', 0);
-
     const selectedPool = find(stakePools, pool => pool.id === selectedPoolId);
 
     const selectedWallet = find(
@@ -161,8 +160,8 @@ export default class DelegationSetupWizardDialogContainer extends Component<
     );
     const isDisabled = wallets.allWallets.reduce(
       (disabled: boolean, { amount }: Wallet) => {
-        if (!disabled) return false;
-        return this.handleIsWalletAcceptable(amount);
+        const isWalletAcceptable = this.handleIsWalletAcceptable(amount);
+        return !isWalletAcceptable;
       },
       false
     );
@@ -182,7 +181,7 @@ export default class DelegationSetupWizardDialogContainer extends Component<
         stepsList={this.STEPS_LIST}
         activeStep={activeStep}
         minDelegationFunds={MIN_DELEGATION_FUNDS}
-        isDisabled={activeStep === 1 && isDisabled}
+        isDisabled={includes([1, 2], activeStep) && isDisabled}
         isWalletAcceptable={this.handleIsWalletAcceptable}
         selectedWallet={selectedWallet}
         selectedPool={selectedPool || null}
