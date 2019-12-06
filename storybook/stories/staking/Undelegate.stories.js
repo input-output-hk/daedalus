@@ -11,7 +11,7 @@ export const StakingUndelegateConfirmationStory = () => (
   <UndelegateConfirmationDialog
     walletName="Darko's ADA"
     stakePoolName="Lush 1"
-    stakePoolSlug="LSH1"
+    stakePoolTicker="LSH1"
     onConfirm={linkTo(
       'Decentralization | Staking',
       'Undelegate Confirmation Result'

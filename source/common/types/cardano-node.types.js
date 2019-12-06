@@ -14,6 +14,7 @@ export type NetworkNames =
   | 'staging'
   | 'testnet'
   | 'development'
+  | 'itn_rewards_v1'
   | string;
 
 export type PlatformNames = 'win32' | 'linux' | 'darwin' | string;
@@ -23,6 +24,7 @@ export const NetworkNameOptions = {
   staging: 'staging',
   testnet: 'testnet',
   development: 'development',
+  itn_rewards_v1: 'itn_rewards_v1',
 };
 
 export type CardanoNodeState =
@@ -66,6 +68,7 @@ export type CardanoPidOptions =
   | 'staging-PREVIOUS-CARDANO-PID'
   | 'testnet-PREVIOUS-CARDANO-PID'
   | 'development-PREVIOUS-CARDANO-PID'
+  | 'itn_rewards_v1-PREVIOUS-CARDANO-PID'
   | string;
 
 export type CardanoNodeStorageKeys = {

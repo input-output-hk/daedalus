@@ -46,7 +46,6 @@ export type WalletProps = {
   syncState: WalletSyncState,
   isLegacy: boolean,
   isDelegated: boolean,
-  inactiveStakePercentage?: ?number,
   delegatedStakePoolId?: ?string,
 };
 
@@ -61,7 +60,6 @@ export default class Wallet {
   @observable syncState: WalletSyncState;
   @observable isLegacy: boolean;
   @observable isDelegated: boolean;
-  @observable inactiveStakePercentage: ?number;
   @observable delegatedStakePoolId: ?string;
 
   constructor(data: WalletProps) {
@@ -82,7 +80,6 @@ export default class Wallet {
         'syncState',
         'isLegacy',
         'isDelegated',
-        'inactiveStakePercentage',
         'delegatedStakePoolId',
       ])
     );

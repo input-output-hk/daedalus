@@ -16,7 +16,11 @@ import {
 import { CardanoNodeStates } from '../../../common/types/cardano-node.types';
 import { getDiskSpaceStatusChannel } from '../ipc/getDiskSpaceChannel.js';
 import { getStateDirectoryPathChannel } from '../ipc/getStateDirectoryPathChannel';
-import type { GetNetworkInfoResponse, TipInfo } from '../api/network/types';
+import type {
+  GetNetworkInfoResponse,
+  NextEpoch,
+  TipInfo,
+} from '../api/network/types';
 import type {
   CardanoNodeState,
   CardanoStatus,
@@ -78,6 +82,7 @@ export default class NetworkStatusStore extends Store {
   @observable syncProgress = null;
   @observable localTip: ?TipInfo = null;
   @observable networkTip: ?TipInfo = null;
+  @observable nextEpoch: ?NextEpoch = null;
   @observable
   getNetworkInfoRequest: Request<GetNetworkInfoResponse> = new Request(
     this.api.ada.getNetworkInfo
@@ -350,16 +355,17 @@ export default class NetworkStatusStore extends Store {
         return;
       }
 
-      const { syncProgress, localTip, networkTip } = networkStatus;
+      const { syncProgress, localTip, networkTip, nextEpoch } = networkStatus;
 
       // We got response which means node is responding
       runInAction('update isNodeResponding', () => {
         this.isNodeResponding = true;
       });
 
-      runInAction('update localTip and networkTip', () => {
+      runInAction('update localTip, networkTip and nextEpoch', () => {
         this.localTip = localTip;
         this.networkTip = networkTip;
+        this.nextEpoch = nextEpoch;
       });
 
       if (this._networkStatus === NETWORK_STATUS.CONNECTING) {

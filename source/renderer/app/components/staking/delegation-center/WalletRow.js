@@ -1,5 +1,5 @@
 // @flow
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import {
   defineMessages,
@@ -13,9 +13,8 @@ import Wallet from '../../../domains/Wallet';
 import StakePool from '../../../domains/StakePool';
 import { getColorFromRange } from '../../../utils/colors';
 import settingsIcon from '../../../assets/images/settings-ic.inline.svg';
-import { SIMPLE_DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
+import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import DropdownMenu from './DropdownMenu';
-import DonutRing from './DonutRing';
 import styles from './WalletRow.scss';
 
 export const DELEGATION_ACTIONS = {
@@ -31,13 +30,6 @@ const messages = defineMessages({
     description:
       'Amount of each wallet for the Delegation center body section.',
   },
-  inactiveStakePercentageActivate: {
-    id: 'staking.delegationCenter.inactiveStakePercentageActivate',
-    defaultMessage:
-      '!!!<b>activate {inactiveStakePercentage}% of inactive stake</b>',
-    description:
-      'Inactive stake percentage of each wallet for the Delegation center body section.',
-  },
   delegated: {
     id: 'staking.delegationCenter.delegated',
     defaultMessage: '!!!Delegated',
@@ -50,7 +42,7 @@ const messages = defineMessages({
   },
   changeDelegation: {
     id: 'staking.delegationCenter.changeDelegation',
-    defaultMessage: '!!!Change delegation',
+    defaultMessage: '!!!Change stake pool',
     description:
       'Change delegation label for the Delegation center body section.',
   },
@@ -113,14 +105,13 @@ export default class WalletRow extends Component<Props> {
   render() {
     const { intl } = this.context;
     const {
-      wallet: { name, amount, inactiveStakePercentage, isDelegated },
+      wallet: { name, amount, isDelegated },
       delegatedStakePool,
       numberOfStakePools,
     } = this.props;
 
     const { ranking } = delegatedStakePool || {};
 
-    const inactiveStakePercentageValue = inactiveStakePercentage || 0;
     const color =
       isDelegated && !isNil(ranking)
         ? getColorFromRange(ranking, numberOfStakePools)
@@ -154,26 +145,9 @@ export default class WalletRow extends Component<Props> {
             <FormattedMessage
               {...messages.walletAmount}
               values={{
-                amount: amount.toFormat(SIMPLE_DECIMAL_PLACES_IN_ADA),
+                amount: amount.toFormat(DECIMAL_PLACES_IN_ADA),
               }}
             />
-            {inactiveStakePercentageValue > 0 && (
-              <Fragment>
-                <span className={styles.donutRing}>
-                  <DonutRing
-                    percentage={100 - inactiveStakePercentageValue}
-                    sqSize={11}
-                    strokeWidth={3}
-                  />
-                </span>
-                <FormattedHTMLMessage
-                  {...messages.inactiveStakePercentageActivate}
-                  values={{
-                    inactiveStakePercentage: inactiveStakePercentageValue,
-                  }}
-                />
-              </Fragment>
-            )}
           </div>
         </div>
         <div className={styles.right}>

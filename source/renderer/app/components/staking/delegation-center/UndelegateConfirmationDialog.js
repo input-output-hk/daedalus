@@ -35,7 +35,7 @@ const messages = defineMessages({
   description: {
     id: 'staking.delegationCenter.undelegate.dialog.description',
     defaultMessage:
-      '!!!<p>The stake from your wallet <strong>{walletName}</strong> is currently delegated to the <strong>[{stakePoolSlug}] {stakePoolName}</strong> stake pool.</p><p>Do you want to undelegate your stake and stop earning rewards?</p>',
+      '!!!<p>The stake from your wallet <strong>{walletName}</strong> is currently delegated to the <strong>[{stakePoolTicker}] {stakePoolName}</strong> stake pool.</p><p>Do you want to undelegate your stake and stop earning rewards?</p>',
     description: 'Description for the "Undelegate" dialog.',
   },
   confirmUnsupportCheck: {
@@ -85,7 +85,7 @@ messages.fieldIsRequired = globalMessages.fieldIsRequired;
 type Props = {
   walletName: string,
   stakePoolName: string,
-  stakePoolSlug: string,
+  stakePoolTicker: string,
   onConfirm: Function,
   onCancel: Function,
   onExternalLinkClick: Function,
@@ -236,7 +236,7 @@ export default class UndelegateConfirmationDialog extends Component<Props> {
     const {
       walletName,
       stakePoolName,
-      stakePoolSlug,
+      stakePoolTicker,
       onCancel,
       isSubmitting,
       fees,
@@ -273,7 +273,7 @@ export default class UndelegateConfirmationDialog extends Component<Props> {
         <div className={styles.description}>
           <FormattedHTMLMessage
             {...messages.description}
-            values={{ walletName, stakePoolName, stakePoolSlug }}
+            values={{ walletName, stakePoolName, stakePoolTicker }}
           />
         </div>
         <Checkbox

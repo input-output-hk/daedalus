@@ -1129,11 +1129,16 @@ export default class AdaApi {
       Logger.debug('AdaApi::getNetworkInfo success', { networkInfo });
 
       /* eslint-disable-next-line camelcase */
-      const { sync_progress, node_tip, network_tip } = networkInfo;
+      const { sync_progress, node_tip, network_tip, next_epoch } = networkInfo;
       const syncProgress =
         get(sync_progress, 'status') === 'ready'
           ? 100
           : get(sync_progress, 'progress.quantity', 0);
+
+      const dummyNextEpoch = {
+        epochNumber: get(network_tip, 'epoch_number', 0) + 1,
+        epochStart: '2019-12-31T00:00:00.123Z',
+      };
 
       // extract relevant data before sending to NetworkStatusStore
       return {
@@ -1145,6 +1150,10 @@ export default class AdaApi {
         networkTip: {
           epoch: get(network_tip, 'epoch_number', 0),
           slot: get(network_tip, 'slot_number', 0),
+        },
+        nextEpoch: dummyNextEpoch || {
+          epochNumber: get(next_epoch, 'epoch_number', 0),
+          epochStart: get(next_epoch, 'epoch_start', ''),
         },
       };
     } catch (error) {
@@ -1256,14 +1265,12 @@ const _createWalletFromServerData = action(
       id,
       address_pool_gap: addressPoolGap,
       balance,
-      reward = {},
       name,
       state,
       passphrase,
       delegation,
       isLegacy = false,
     } = data;
-
     const passphraseLastUpdatedAt = get(passphrase, 'last_updated_at', null);
     const walletTotalAmount =
       balance.total.unit === WalletUnits.LOVELACE
@@ -1273,16 +1280,21 @@ const _createWalletFromServerData = action(
       balance.available.unit === WalletUnits.LOVELACE
         ? new BigNumber(balance.available.quantity).dividedBy(LOVELACES_PER_ADA)
         : new BigNumber(balance.available.quantity);
-    const walletRewardAmount =
-      reward.unit === WalletUnits.LOVELACE
-        ? new BigNumber(reward.quantity).dividedBy(LOVELACES_PER_ADA)
-        : new BigNumber(reward.quantity || 0);
-    const delegatedStakePoolId = delegation.target;
+    let walletRewardAmount = 0;
+    if (!isLegacy) {
+      walletRewardAmount =
+        balance.reward.unit === WalletUnits.LOVELACE
+          ? new BigNumber(balance.reward.quantity).dividedBy(LOVELACES_PER_ADA)
+          : new BigNumber(balance.reward.quantity);
+    }
+
+    const delegatedStakePoolId = isLegacy ? null : delegation.target;
 
     // @API TODO - integrate once "Join Stake Pool" endpoint is done
     // const isDelegated = delegation.status === WalletDelegationStatuses.DELEGATING;
-    const isDelegated = index < stakingStakePoolsMissingApiData.length;
-    const inactiveStakePercentage = 0;
+    const isDelegated = isLegacy
+      ? false
+      : index < stakingStakePoolsMissingApiData.length;
 
     return new Wallet({
       id,
@@ -1296,7 +1308,6 @@ const _createWalletFromServerData = action(
       syncState: state,
       isLegacy,
       isDelegated,
-      inactiveStakePercentage,
       delegatedStakePoolId,
       delegatedStakePool: isDelegated ? STAKE_POOLS[index] : null,
     });
@@ -1394,15 +1405,19 @@ const _createStakePoolFromServerData = action(
       // NOT CONTAINED IN THE CURRENT API DOCS:
       // _cost: cost,
       _createdAt: createdAt,
-      _description: description,
       _isCharity: isCharity,
-      _name: name,
       // _pledge: pledge,
       _profitMargin: profitMargin,
       _ranking: ranking,
       _retiring: retiring,
     } = stakingStakePoolsMissingApiData[index];
-    const { ticker, homepage, pledge_address: pledgeAddress } = metadata;
+    const {
+      name,
+      description,
+      ticker,
+      homepage,
+      pledge_address: pledgeAddress,
+    } = metadata;
     controlledStake = controlledStake.quantity;
     producedBlocks = producedBlocks.quantity;
     return new StakePool({

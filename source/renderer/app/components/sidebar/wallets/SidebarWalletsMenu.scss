@@ -1,6 +1,10 @@
 @import '../../../themes/mixins/buttons';
 @import '../sidebarConfig';
 
+.hideThumb {
+  display: none !important;
+}
+
 .scrollbarThumb {
   background-color: var(--theme-sidebar-wallets-scrollbar-background-color);
   border-radius: 3px;
