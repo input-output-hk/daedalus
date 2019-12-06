@@ -79,8 +79,6 @@ export default class UndelegateConfirmationResultDialog extends Component<Props>
       serialComma: false,
     });
 
-    console.debug('timeUntilNextEpochStart: ', timeUntilNextEpochStart);
-
     return (
       <Dialog
         title={intl.formatMessage(messages.dialogTitle)}

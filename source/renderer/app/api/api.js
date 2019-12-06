@@ -59,7 +59,6 @@ import { transferFunds } from './wallets/requests/transferFunds';
 import StakePool from '../domains/StakePool';
 import { getStakePools } from './staking/requests/getStakePools';
 import stakingStakePoolsMissingApiData from '../config/stakingStakePoolsMissingApiData.dummy.json';
-import STAKE_POOLS from '../config/stakingStakePools.dummy.json';
 
 // News requests
 import { getNews } from './news/requests/getNews';

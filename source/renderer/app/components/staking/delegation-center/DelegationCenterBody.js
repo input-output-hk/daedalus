@@ -33,7 +33,6 @@ export default class DelegationCenterBody extends Component<Props> {
   handleMenuItemClick = (item: DelegationAction, walletId: string) => {
     const { onDelegate, onUndelegate } = this.props;
 
-    console.debug('TEST: ', item, walletId);
     switch (item) {
       case DelegationActions.CHANGE_DELEGATION:
         onDelegate(walletId);

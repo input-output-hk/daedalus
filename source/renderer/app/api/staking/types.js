@@ -2,7 +2,6 @@
 import BigNumber from 'bignumber.js';
 import { WalletUnits } from '../../domains/Wallet';
 import StakePool from '../../domains/StakePool';
-import { WalletUnits } from '../../domains/Wallet';
 
 export type DelegationAction =
   | 'changeDelegation'
