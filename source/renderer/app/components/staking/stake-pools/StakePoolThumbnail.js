@@ -27,6 +27,7 @@ type Props = {
   isSelected?: ?Function,
   containerClassName: string,
   numberOfStakePools: number,
+  disabledStakePoolId: ?string,
 };
 
 type State = {
@@ -101,32 +102,41 @@ export class StakePoolThumbnail extends Component<Props, State> {
       stakePool,
       containerClassName,
       numberOfStakePools,
+      disabledStakePoolId,
     } = this.props;
     const { top, left } = this.state;
 
-    const { ranking, ticker, retiring } = stakePool;
+    const { ranking, ticker, retiring, id } = stakePool;
     const color = getColorFromRange(ranking, numberOfStakePools);
+    const isDisabled = disabledStakePoolId === id;
 
     const componentClassnames = classnames([
       styles.component,
+      isSelected && showSelected ? styles.isSelected : null,
+    ]);
+
+    const contentClassnames = classnames([
+      styles.content,
       isHighlighted ? styles.isHighlighted : null,
       onHover ? styles.isOnHover : null,
-      isSelected && showSelected ? styles.isSelected : null,
+      isDisabled ? styles.disabled : null,
     ]);
 
     return (
       <div
         className={componentClassnames}
         onMouseLeave={onHover ? this.handleClose : null}
-        style={{
-          background: isSelected && showSelected && color,
-        }}
       >
         <button
           onMouseEnter={onHover ? this.handleOpen : null}
           onClick={!onHover ? this.handleOpen : this.handleSelect}
         />
-        <div className={styles.content}>
+        <div
+          className={contentClassnames}
+          style={{
+            background: isSelected && showSelected && color,
+          }}
+        >
           <div className={styles.ticker}>{ticker}</div>
 
           {isSelected && showSelected ? (

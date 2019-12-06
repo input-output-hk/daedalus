@@ -60,13 +60,14 @@ export default class DelegationSetupWizardDialogContainer extends Component<
     onClose: () => {},
   };
 
-
   state = {
     activeStep: get(
       this.props,
       ['stores', 'uiDialogs', 'dataForActiveDialog', 'walletId'],
       null
-    ) ? 2 : 0,
+    )
+      ? 2
+      : 0,
     selectedWalletId: get(
       this.props,
       ['stores', 'uiDialogs', 'dataForActiveDialog', 'walletId'],

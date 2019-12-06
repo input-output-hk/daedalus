@@ -165,7 +165,14 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
       stakePoolsList,
       stakePool => stakePool.id === selectedPoolId
     );
+    const delegatedStakePoolId = get(
+      selectedWallet,
+      'delegatedStakePoolId',
+      null
+    );
     const selectedPoolTicker = get(selectedPool, 'ticker');
+    const canSubmit =
+      !delegatedStakePoolId || delegatedStakePoolId !== selectedPoolId;
 
     const actions = [
       {
@@ -173,7 +180,7 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
         label: intl.formatMessage(messages.continueButtonLabel),
         onClick: this.onAcceptPool,
         primary: true,
-        disabled: !selectedPoolId,
+        disabled: !selectedPoolId || !canSubmit,
       },
     ];
 
@@ -309,6 +316,7 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
               onSelect={this.handleSelect}
               selectedPoolId={selectedPoolId}
               numberOfStakePools={stakePoolsList.length}
+              disabledStakePoolId={delegatedStakePoolId}
               showSelected
               highlightOnHover
             />
@@ -322,6 +330,7 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
               onSearch={this.handleSearch}
               onClearSearch={this.handleClearSearch}
               scrollableElementClassName="Dialog_content"
+              disabledStakePoolId={delegatedStakePoolId}
             />
           </div>
 
@@ -338,6 +347,7 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
               selectedPoolId={selectedPoolId}
               containerClassName="Dialog_content"
               numberOfStakePools={stakePoolsList.length}
+              disabledStakePoolId={delegatedStakePoolId}
               showSelected
               highlightOnHover
             />

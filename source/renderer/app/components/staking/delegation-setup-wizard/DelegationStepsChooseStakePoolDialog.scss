@@ -1,13 +1,6 @@
 .delegationStepsChooseStakePoolDialogWrapper {
   :global {
-    .StakePoolThumbnail_component {
-      background-color: 1px solid
-        var(--theme-delegation-steps-choose-stake-pool-thumb-background-color);
-      border: 1px solid
-        var(--theme-delegation-steps-choose-stake-pool-thumb-border-color);
-    }
-
-    .StakePoolThumbnail_component {
+    .StakePoolThumbnail_content {
       background-color: 1px solid
         var(--theme-delegation-steps-choose-stake-pool-thumb-background-color);
       border: 1px solid
