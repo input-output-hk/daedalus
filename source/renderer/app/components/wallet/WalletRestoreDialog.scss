@@ -16,7 +16,9 @@
   }
 
   .newLabel {
-    background-color: var(--theme-wallet-restore-dialog-new-label-background-color);
+    background-color: var(
+      --theme-wallet-restore-dialog-new-label-background-color
+    );
     border-radius: 3px;
     color: var(--theme-wallet-restore-dialog-new-label-color);
     font-family: var(--font-bold);

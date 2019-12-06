@@ -16,3 +16,17 @@ export const restoreLegacyWallet = (
     {},
     walletInitData
   );
+
+export const restoreYoroiLegacyWallet = (
+  config: RequestConfig,
+  { walletInitData }: { walletInitData: LegacyWalletInitData }
+): Promise<LegacyAdaWallet> =>
+  request(
+    {
+      method: 'POST',
+      path: '/v2/byron-wallets',
+      ...config,
+    },
+    {},
+    walletInitData
+  );

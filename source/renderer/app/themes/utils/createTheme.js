@@ -1195,7 +1195,9 @@ export const createDaedalusComponentsTheme = (
       '--theme-wallet-restore-dialog-new-label-background-color': `${chroma(
         background.primary.regular
       ).alpha(0.1)}`,
-      '--theme-wallet-restore-dialog-new-label-color': `${chroma(text.primary)}`,
+      '--theme-wallet-restore-dialog-new-label-color': `${chroma(
+        text.primary
+      )}`,
     },
   };
 };

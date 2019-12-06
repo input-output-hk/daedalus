@@ -46,7 +46,10 @@ import { getLegacyWallets } from './wallets/requests/getLegacyWallets';
 import { importWalletAsKey } from './wallets/requests/importWalletAsKey';
 import { createWallet } from './wallets/requests/createWallet';
 import { restoreWallet } from './wallets/requests/restoreWallet';
-import { restoreLegacyWallet } from './wallets/requests/restoreLegacyWallet';
+import {
+  restoreLegacyWallet,
+  restoreYoroiLegacyWallet,
+} from './wallets/requests/restoreLegacyWallet';
 import { updateWallet } from './wallets/requests/updateWallet';
 import { getWalletUtxos } from './wallets/requests/getWalletUtxos';
 import { getWallet } from './wallets/requests/getWallet';
@@ -175,6 +178,8 @@ import { TlsCertificateNotValidError } from './nodes/errors';
 import { getSHA256HexForString } from './utils/hashing';
 import { getNewsHash } from './news/requests/getNewsHash';
 import { deleteTransaction } from './transactions/requests/deleteTransaction';
+
+import { WALLET_RESTORE_TYPES } from '../config/walletsConfig';
 
 export default class AdaApi {
   config: RequestConfig;
@@ -751,19 +756,21 @@ export default class AdaApi {
     Logger.debug('AdaApi::restoreLegacyWallet called', {
       parameters: filterLogData(request),
     });
-    const { recoveryPhrase, walletName, spendingPassword } = request;
+    const { recoveryPhrase, walletName, spendingPassword, type } = request;
     const walletInitData = {
       name: walletName,
       mnemonic_sentence: split(recoveryPhrase, ' '),
       passphrase: spendingPassword,
     };
     try {
-      const legacyWallet: LegacyAdaWallet = await restoreLegacyWallet(
-        this.config,
-        {
-          walletInitData,
-        }
-      );
+      const legacyWallet: LegacyAdaWallet =
+        type && type === WALLET_RESTORE_TYPES.YOROI_LEGACY
+          ? await restoreLegacyWallet(this.config, {
+              walletInitData,
+            })
+          : await restoreYoroiLegacyWallet(this.config, {
+              walletInitData,
+            });
       const extraLegacyWalletProps = {
         address_pool_gap: 0, // Not needed for legacy wallets
         delegation: WalletDelegationStatuses.NOT_DELEGATING,

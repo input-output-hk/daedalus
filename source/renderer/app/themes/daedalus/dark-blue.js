@@ -818,7 +818,8 @@ export const DARK_BLUE_THEME_OUTPUT = {
       'rgba(234, 76, 91, .2)',
   },
   walletRestoreDialog: {
-    '--theme-wallet-restore-dialog-new-label-background-color': 'rgba(233, 244, 254, 0.1)',
+    '--theme-wallet-restore-dialog-new-label-background-color':
+      'rgba(233, 244, 254, 0.1)',
     '--theme-wallet-restore-dialog-new-label-color': '#e9f4fe',
   },
 };
