@@ -74,5 +74,4 @@ export type StakePoolJoinFee = {
 
 export type EstimateJoinFeeRequest = {
   walletId: string,
-  stakePoolId: string,
 };

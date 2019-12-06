@@ -120,7 +120,7 @@ export default class DelegationSetupWizardDialogContainer extends Component<
   };
 
   handleSelectPool = (poolId: string) => {
-    this._handleCalculateTransactionFee(poolId);
+    this._handleCalculateTransactionFee();
     this.setState({ selectedPoolId: poolId });
     this.handleContinue();
   };
@@ -202,12 +202,11 @@ export default class DelegationSetupWizardDialogContainer extends Component<
     );
   }
 
-  async _handleCalculateTransactionFee(stakePoolId: string) {
+  async _handleCalculateTransactionFee() {
     const { estimateJoinFee } = this.props.stores.staking;
     const { selectedWalletId } = this.state;
     const stakePoolJoinFee = await estimateJoinFee({
       walletId: selectedWalletId,
-      stakePoolId,
     });
     this.setState({ stakePoolJoinFee });
   }

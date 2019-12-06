@@ -137,7 +137,10 @@ storiesOf('Decentralization | Wizard', module)
   .add('Delegation Wizard', props => <StakingDelegationSteps {...props} />, {
     id: 'wizard',
   })
-  .add('Delegation Wizard - Delegation Not Available', props => <StakingDelegationSteps {...props} currentStep={5} />, {
-    id: 'wizard',
-  });
-
+  .add(
+    'Delegation Wizard - Delegation Not Available',
+    props => <StakingDelegationSteps {...props} currentStep={5} />,
+    {
+      id: 'wizard',
+    }
+  );

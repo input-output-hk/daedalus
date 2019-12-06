@@ -125,7 +125,8 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
   },
   delegationSetupWizard: {
     '--theme-delegation-steps-activation-steps-indicator-color': '#5e6066',
-    '--theme-delegation-steps-success-description-color': 'rgba(94, 96, 102, 1)',
+    '--theme-delegation-steps-success-description-color':
+      'rgba(94, 96, 102, 1)',
     '--theme-delegation-steps-success-tada-color': 'rgba(94, 96, 102, 1)',
     '--theme-delegation-steps-choose-stake-pool-checkmark-icon-color':
       '#c6cdd6',

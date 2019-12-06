@@ -1259,11 +1259,9 @@ export default class AdaApi {
     try {
       // const {
       //   walletId,
-      //   stakePoolId,
       // } = request;
       // const response: StakePoolJoinFee = await estimateJoinFee(this.config, {
-      //   walletId,
-      //   stakePoolId,
+      //   walletId: request.walletId,
       // });
 
       const response = {

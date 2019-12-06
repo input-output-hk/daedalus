@@ -127,7 +127,8 @@ export const CARDANO_THEME_OUTPUT = {
   },
   delegationSetupWizard: {
     '--theme-delegation-steps-activation-steps-indicator-color': '#5e6066',
-    '--theme-delegation-steps-success-description-color': 'rgba(94, 96, 102, 1)',
+    '--theme-delegation-steps-success-description-color':
+      'rgba(94, 96, 102, 1)',
     '--theme-delegation-steps-success-tada-color': 'rgba(94, 96, 102, 1)',
     '--theme-delegation-steps-choose-stake-pool-checkmark-icon-color':
       '#d2d3d3',
