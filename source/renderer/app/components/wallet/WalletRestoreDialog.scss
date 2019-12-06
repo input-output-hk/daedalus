@@ -16,14 +16,15 @@
   }
 
   .newLabel {
-    background-color: var(--theme-main-body-background-color);
+    background-color: var(--theme-wallet-restore-dialog-new-label-background-color);
     border-radius: 3px;
-    color: var(--theme-main-body-messages-color);
+    color: var(--theme-wallet-restore-dialog-new-label-color);
+    font-family: var(--font-bold);
     font-size: 8px;
     font-weight: bold;
     margin-left: 6px;
     opacity: 1 !important;
-    padding: 2px 8px;
+    padding: 2px 8px 3px 8px;
     position: relative;
     text-transform: uppercase;
     top: -2px;

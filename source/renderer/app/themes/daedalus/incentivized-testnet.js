@@ -801,6 +801,10 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--theme-recovery-phrase-attention-background-color':
       'rgba(235, 74, 34, 0.2)',
   },
+  walletRestoreDialog: {
+    '--theme-wallet-restore-dialog-new-label-background-color': 'rgba(255, 255, 255, 0.1)',
+    '--theme-wallet-restore-dialog-new-label-color': '#ffffff',
+  },
 };
 
 const INCENTIVIZED_TESTNET_THEME_PARAMS: CreateThemeParams = {
