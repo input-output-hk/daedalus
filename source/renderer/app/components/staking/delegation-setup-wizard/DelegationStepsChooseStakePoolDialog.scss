@@ -42,18 +42,15 @@
 
       .selectedPoolBlock,
       .selectPoolBlockPlaceholder {
-        border: 2px solid
-          var(--theme-delegation-steps-choose-stake-pool-thumb-border-color);
         border-radius: 5.8px;
-        border-style: dashed;
         height: 71px;
         width: 80px;
       }
 
       .selectPoolBlockPlaceholder {
-        background-color: var(
-          --theme-delegation-steps-choose-stake-pool-thumb-not-selected-background-color
-        );
+        border: 2px solid
+          var(--theme-delegation-steps-choose-stake-pool-thumb-border-color);
+        border-style: dashed;
         .questionmarkWrapper {
           margin-top: 24.5px;
           text-align: center;
@@ -71,7 +68,7 @@
       }
 
       .selectedPoolBlock {
-        border: 2px solid
+        border: 1px solid
           var(--theme-delegation-steps-choose-stake-pool-thumb-border-color);
         .ticker {
           color: var(
@@ -106,6 +103,7 @@
         color: var(
           --theme-delegation-steps-choose-stake-pool-delegated-pools-label-color
         );
+        flex: 1;
         font-family: var(--font-light);
         font-size: 16px;
         line-height: 1.38;
@@ -113,29 +111,6 @@
         span {
           span {
             font-family: var(--font-medium);
-          }
-        }
-      }
-
-      .delegatedStakePoolsList {
-        flex: 1;
-        margin-left: 20px;
-
-        .selectStakePoolLabel {
-          color: var(
-            --theme-delegation-steps-choose-stake-pool-delegated-pools-label-color
-          );
-          font-family: var(--font-medium);
-          font-size: 16px;
-          font-weight: 500;
-          line-height: 1.38;
-          margin-bottom: 10px;
-        }
-
-        :global {
-          .StakePoolsList_component {
-            grid-gap: 20px;
-            justify-content: left;
           }
         }
       }

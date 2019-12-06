@@ -121,8 +121,8 @@ export const WHITE_THEME_OUTPUT = {
   },
   delegationSetupWizard: {
     '--theme-delegation-steps-activation-steps-indicator-color': '#2d2d2d',
-    '--theme-delegation-steps-success-description-color': '#2d2d2dcc',
-    '--theme-delegation-steps-success-tada-color': 'rgba(45, 45, 45, 0.7)',
+    '--theme-delegation-steps-success-description-color': '#2d2d2d',
+    '--theme-delegation-steps-success-tada-color': 'rgba(45, 45, 45, 1)',
     '--theme-delegation-steps-choose-stake-pool-checkmark-icon-color':
       'rgba(45, 45, 45, 0.1)',
     '--theme-delegation-steps-choose-stake-pool-delegated-pools-label-color':

@@ -120,8 +120,8 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
   },
   delegationSetupWizard: {
     '--theme-delegation-steps-activation-steps-indicator-color': '#ffffff',
-    '--theme-delegation-steps-success-description-color': '#ffffffcc',
-    '--theme-delegation-steps-success-tada-color': 'rgba(255, 255, 255, 0.7)',
+    '--theme-delegation-steps-success-description-color': '#ffffff',
+    '--theme-delegation-steps-success-tada-color': 'rgba(255, 255, 255, 1)',
     '--theme-delegation-steps-choose-stake-pool-checkmark-icon-color':
       'rgba(255, 255, 255, 0.2)',
     '--theme-delegation-steps-choose-stake-pool-delegated-pools-label-color':
@@ -136,8 +136,6 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
       '#ffffff',
     '--theme-delegation-steps-choose-stake-pool-thumb-background-color':
       'rgba(42, 43, 60, 1)',
-    '--theme-delegation-steps-choose-stake-pool-thumb-not-selected-background-color':
-      'rgba(255, 255, 255, 0.02)',
     '--theme-delegation-steps-choose-stake-pool-thumb-border-color':
       'rgba(255, 255, 255, 0.2)',
     '--theme-delegation-steps-choose-stake-pool-title-color': '#ffffff',
