@@ -1,15 +1,5 @@
 .component {
-  background-color: var(--theme-staking-stake-pool-background-color);
-  border: solid 1px var(--theme-staking-stake-pool-border-color);
-  border-radius: 4px;
-  height: 71px;
   position: relative;
-  width: 80px;
-
-  &.isOnHover:hover {
-    @extend .isHighlighted;
-  }
-
   > button {
     background: transparent;
     border: none;
@@ -22,10 +12,21 @@
 }
 
 .content {
+  background-color: var(--theme-staking-stake-pool-background-color);
+  border: solid 1px var(--theme-staking-stake-pool-border-color);
+  border-radius: 4px;
   cursor: pointer;
-  height: 100%;
+  height: 71px;
   padding: 12px 0 0;
-  width: 100%;
+  width: 80px;
+
+  &.disabled {
+    opacity: 0.3;
+  }
+
+  &.isOnHover:hover {
+    @extend .isHighlighted;
+  }
 }
 
 .isHighlighted {
@@ -34,8 +35,8 @@
 
 .ticker {
   color: var(--theme-staking-stake-pool-ticker-color);
+  font-family: var(--font-semibold);
   font-size: 14px;
-  font-weight: 600;
   letter-spacing: -0.5px;
   line-height: 1;
   margin: 0 0 4px;
@@ -95,7 +96,6 @@
 }
 
 .isSelected {
-  background-color: var(--theme-staking-stake-pool-selected-background-color);
   .colorBand,
   .ranking {
     visibility: hidden;

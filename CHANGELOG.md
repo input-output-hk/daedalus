@@ -6,6 +6,7 @@ Changelog
 ### Features
 
 - Added Yoroi wallets restoration to the "Restore Wallet" dialog ([PR 1740](https://github.com/input-output-hk/daedalus/pull/1740))
+- Integrated stake pool join V2 API endpoint and "Delegation" wizard updated ([PR 1744](https://github.com/input-output-hk/daedalus/pull/1744))
 - Integrated the V2 API endpoint for fetching stake pool data ([PR 1733](https://github.com/input-output-hk/daedalus/pull/1733))
 - Added support for new number formats to the React-Polymorph "Numeric input" on the "Send" screen ([PR 1735](https://github.com/input-output-hk/daedalus/pull/1735))
 - Added script which checks for "integrity" lines in yarn.lock file ([PR 1715](https://github.com/input-output-hk/daedalus/pull/1715))

@@ -419,16 +419,9 @@ export const createDaedalusComponentsTheme = (
       '--theme-delegation-steps-activation-steps-indicator-color': `${
         text.primary
       }`,
-      '--theme-delegation-steps-activation-description-color': `${chroma(
+      '--theme-delegation-steps-success-description-color': `${chroma(
         text.primary
       ).alpha(0.8)}`,
-      '--theme-delegation-steps-activation-fees-label-color': `${text.primary}`,
-      '--theme-delegation-steps-activation-fees-amount-color': `${
-        error.regular
-      }`,
-      '--theme-delegation-steps-activation-address-value-color': `${
-        text.primary
-      }`,
       '--theme-delegation-steps-choose-stake-pool-checkmark-icon-color': `${border}`,
       '--theme-delegation-steps-choose-stake-pool-delegated-pools-label-color': `${
         text.primary
@@ -447,9 +440,9 @@ export const createDaedalusComponentsTheme = (
       '--theme-delegation-steps-choose-stake-pool-thumb-border-color': `${chroma(
         border
       ).alpha(0.2)}`,
-      '--theme-delegation-steps-choose-stake-pool-title-color': `${chroma(
+      '--theme-delegation-steps-choose-stake-pool-title-color': `${
         text.primary
-      ).alpha(0.8)}`,
+      }`,
       '--theme-delegation-steps-choose-stake-pool-tooltip-arrow-color': `${chroma(
         text.primary
       ).alpha(0.9)}`,
