@@ -67,6 +67,12 @@ export default defineMessages({
     description:
       'The word "cancel" reused at several places (like cancel buttons)',
   },
+  close: {
+    id: 'global.labels.close',
+    defaultMessage: '!!!Close',
+    description:
+      'The word "close" reused at several places (like cancel buttons)',
+  },
   change: {
     id: 'global.labels.change',
     defaultMessage: '!!!Change',

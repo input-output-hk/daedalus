@@ -105,6 +105,7 @@ export const StakingDelegationCenterStory = () => (
     redirectToStakingInfo={redirectToStakingInfo}
     wallets={wallets}
     onDelegate={action('onDelegate')}
+    onUndelegate={action('onUndelegate')}
     getStakePoolById={poolId =>
       find(STAKE_POOLS, stakePool => stakePool.id === poolId)
     }

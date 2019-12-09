@@ -72,6 +72,17 @@ export type StakePoolJoinFee = {
   },
 };
 
+export type StakePoolQuitFee = {
+  amount: {
+    quantity: number,
+    unit: WalletUnits.LOVELACE,
+  },
+};
+
+export type EstimateQuitFeeRequest = {
+  walletId: string,
+};
+
 export type EstimateJoinFeeRequest = {
   walletId: string,
 };
