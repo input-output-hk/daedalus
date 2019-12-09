@@ -1,13 +1,16 @@
 // @flow
 import { computed, action, observable } from 'mobx';
 import BigNumber from 'bignumber.js';
+import { orderBy, take } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import { ROUTES } from '../routes-config';
+import { RECENT_STAKE_POOLS_COUNT } from '../config/stakingConfig';
 import type {
-  // StakePool,
   Reward,
   RewardForIncentivizedTestnet,
+  JoinStakePoolRequest,
+  EstimateJoinFeeRequest,
 } from '../api/staking/types';
 import Wallet from '../domains/Wallet';
 import StakePool from '../domains/StakePool';
@@ -35,15 +38,45 @@ export default class StakingStore extends Store {
     staking.goToStakingDelegationCenterPage.listen(
       this._goToStakingDelegationCenterPage
     );
+    staking.joinStakePool.listen(this._joinStakePool);
     this.refreshStakePoolsData();
   }
 
   // REQUESTS
+  @observable joinStakePoolRequest: Request<JoinStakePoolRequest> = new Request(
+    this.api.ada.joinStakePool
+  );
   @observable stakePoolsRequest: Request<Array<StakePool>> = new Request(
     this.api.ada.getStakePools
   );
 
   // =================== PUBLIC API ==================== //
+
+  @action _joinStakePool = async (request: JoinStakePoolRequest) => {
+    const { walletId, stakePoolId, passphrase } = request;
+    await this.joinStakePoolRequest.execute({
+      walletId,
+      stakePoolId,
+      passphrase,
+    });
+    this.stores.wallets.refreshWalletsData();
+  };
+
+  // @API TODO - integrate real API V2 endpoint once is available
+  estimateJoinFee = async (estimateJoinFeeRequest: EstimateJoinFeeRequest) => {
+    const { walletId } = estimateJoinFeeRequest;
+    const wallet = this.stores.wallets.getWalletById(walletId);
+
+    if (!wallet) {
+      throw new Error(
+        'Active wallet required before calculating transaction fees.'
+      );
+    }
+
+    return this.api.ada.estimateJoinFee({
+      ...estimateJoinFeeRequest,
+    });
+  };
 
   // GETTERS
 
@@ -59,8 +92,9 @@ export default class StakingStore extends Store {
     return this.stakePoolsRequest.result ? this.stakePoolsRequest.result : [];
   }
 
-  @computed get delegatingStakePools(): Array<StakePool> {
-    return [];
+  @computed get recentStakePools(): Array<StakePool> {
+    const orderedStakePools = orderBy(this.stakePools, 'ranking', 'asc');
+    return take(orderedStakePools, RECENT_STAKE_POOLS_COUNT);
   }
 
   @computed get isStakingDelegationCountdown(): boolean {
@@ -115,11 +149,6 @@ export default class StakingStore extends Store {
     return { wallet, reward };
   };
 
-  // @API TODO: Replace when Stake Pools Join is implemented
-  // getStakePoolById = (stakePoolId: string) =>
-  //   this.stakePools.find(({ id }: StakePool) => id === stakePoolId);
-  getStakePoolById = (stakePoolIndex: number) =>
-    stakePoolIndex < this.stakePools.length
-      ? this.stakePools[stakePoolIndex]
-      : null;
+  getStakePoolById = (stakePoolId: string) =>
+    this.stakePools.find(({ id }: StakePool) => id === stakePoolId);
 }

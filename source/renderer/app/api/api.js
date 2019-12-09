@@ -57,11 +57,13 @@ import { transferFunds } from './wallets/requests/transferFunds';
 // Staking
 import StakePool from '../domains/StakePool';
 import { getStakePools } from './staking/requests/getStakePools';
-import type { AdaApiStakePools, AdaApiStakePool } from './staking/types';
 import stakingStakePoolsMissingApiData from '../config/stakingStakePoolsMissingApiData.dummy.json';
 
 // News requests
 import { getNews } from './news/requests/getNews';
+
+// Stake Pools request
+import { joinStakePool } from './staking/requests/joinStakePool';
 
 // Utility functions
 import {
@@ -144,6 +146,15 @@ import type {
 
 // News Types
 import type { GetNewsResponse } from './news/types';
+
+// Staking Types
+import type {
+  JoinStakePoolRequest,
+  StakePoolJoinFee,
+  EstimateJoinFeeRequest,
+  AdaApiStakePools,
+  AdaApiStakePool,
+} from './staking/types';
 
 // Common errors
 import {
@@ -1207,6 +1218,66 @@ export default class AdaApi {
     return news;
   };
 
+  joinStakePool = async (
+    request: JoinStakePoolRequest
+  ): Promise<Transaction> => {
+    Logger.debug('AdaApi::joinStakePool called', {
+      parameters: filterLogData(request),
+    });
+    const { walletId, stakePoolId, passphrase } = request;
+
+    try {
+      const response = await joinStakePool(this.config, {
+        walletId,
+        stakePoolId,
+        passphrase,
+      });
+
+      Logger.debug('AdaApi::joinStakePool success', {
+        stakePool: response,
+      });
+
+      return response;
+    } catch (error) {
+      // @API TODO - handle `pool_already_joined` error code
+      Logger.error('AdaApi::joinStakePool error', { error });
+      if (error.code === 'wrong_encryption_passphrase') {
+        throw new IncorrectSpendingPasswordError();
+      }
+      throw new GenericApiError();
+    }
+  };
+
+  estimateJoinFee = async (
+    request: EstimateJoinFeeRequest
+  ): Promise<BigNumber> => {
+    Logger.debug('AdaApi::estimateJoinFee called', {
+      parameters: filterLogData(request),
+    });
+
+    // @API TODO: Call API V2 endpoint for stake pool join fee calculation
+    try {
+      // const {
+      //   walletId,
+      // } = request;
+      // const response: StakePoolJoinFee = await estimateJoinFee(this.config, {
+      //   walletId: request.walletId,
+      // });
+
+      const response = {
+        amount: {
+          quantity: 42,
+          unit: 'lovelace',
+        },
+      };
+      const stakePoolJoinFee = _createStakePoolJoinFeeFromServerData(response);
+      return new Promise(resolve => resolve(stakePoolJoinFee));
+    } catch (error) {
+      Logger.error('AdaApi::estimateJoinFee error', { error });
+      throw new GenericApiError();
+    }
+  };
+
   setCardanoNodeFault = async (fault: FaultInjectionIpcRequest) => {
     await cardanoFaultInjectionChannel.send(fault);
   };
@@ -1228,7 +1299,7 @@ export default class AdaApi {
 
 const _createWalletFromServerData = action(
   'AdaApi::_createWalletFromServerData',
-  (data: AdaWallet, index: number) => {
+  (data: AdaWallet) => {
     const {
       id,
       address_pool_gap: addressPoolGap,
@@ -1255,14 +1326,7 @@ const _createWalletFromServerData = action(
           ? new BigNumber(balance.reward.quantity).dividedBy(LOVELACES_PER_ADA)
           : new BigNumber(balance.reward.quantity);
     }
-
     const delegatedStakePoolId = isLegacy ? null : delegation.target;
-
-    // @API TODO - integrate once "Join Stake Pool" endpoint is done
-    // const isDelegated = delegation.status === WalletDelegationStatuses.DELEGATING;
-    const isDelegated = isLegacy
-      ? false
-      : index < stakingStakePoolsMissingApiData.length;
 
     return new Wallet({
       id,
@@ -1275,7 +1339,6 @@ const _createWalletFromServerData = action(
         passphraseLastUpdatedAt && new Date(passphraseLastUpdatedAt),
       syncState: state,
       isLegacy,
-      isDelegated,
       delegatedStakePoolId,
     });
   }
@@ -1351,6 +1414,14 @@ const _createMigrationFeeFromServerData = action(
   'AdaApi::_createTransactionFeeFromServerData',
   (data: TransactionFee) => {
     const amount = get(data, ['migration_cost', 'quantity'], 0);
+    return new BigNumber(amount).dividedBy(LOVELACES_PER_ADA);
+  }
+);
+
+const _createStakePoolJoinFeeFromServerData = action(
+  'AdaApi::_createStakePoolJoinFeeFromServerData',
+  (data: StakePoolJoinFee) => {
+    const amount = get(data, ['amount', 'quantity'], 0);
     return new BigNumber(amount).dividedBy(LOVELACES_PER_ADA);
   }
 );
