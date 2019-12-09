@@ -11,6 +11,14 @@ export default class AppActions {
   toggleNewsFeed: Action<boolean> = new Action();
   closeNewsFeed: Action<any> = new Action();
 
+  showNotification: Action<{
+    notificationId: string,
+  }> = new Action();
+
+  hideNoticiation: Action<{
+    notificationId: string,
+  }> = new Action();
+
   // About dialog actions
   closeAboutDialog: Action<any> = new Action();
   openAboutDialog: Action<any> = new Action();
