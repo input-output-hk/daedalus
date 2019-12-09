@@ -10,7 +10,6 @@ import globalMessages from '../../../i18n/global-messages';
 import { VirtualAddressesList } from './VirtualAddressesList';
 import styles from './WalletReceive.scss';
 import Address from './Address';
-import Action from '../../../actions/lib/Action';
 
 const messages = defineMessages({
   instructionsTitle: {
