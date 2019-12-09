@@ -127,11 +127,9 @@ export const CARDANO_THEME_OUTPUT = {
   },
   delegationSetupWizard: {
     '--theme-delegation-steps-activation-steps-indicator-color': '#5e6066',
-    '--theme-delegation-steps-activation-description-color':
-      'rgba(94, 96, 102, 0.8)',
-    '--theme-delegation-steps-activation-fees-label-color': '#5e6066',
-    '--theme-delegation-steps-activation-fees-amount-color': '#ea4c5b',
-    '--theme-delegation-steps-activation-address-value-color': '#5e6066',
+    '--theme-delegation-steps-success-description-color':
+      'rgba(94, 96, 102, 1)',
+    '--theme-delegation-steps-success-tada-color': 'rgba(94, 96, 102, 1)',
     '--theme-delegation-steps-choose-stake-pool-checkmark-icon-color':
       '#d2d3d3',
     '--theme-delegation-steps-choose-stake-pool-delegated-pools-label-color':
@@ -147,7 +145,7 @@ export const CARDANO_THEME_OUTPUT = {
       '#ffffff',
     '--theme-delegation-steps-choose-stake-pool-thumb-border-color': '#d2d3d3',
     '--theme-delegation-steps-choose-stake-pool-title-color':
-      'rgba(94, 96, 102, 0.8)',
+      'rgba(94, 96, 102, 1)',
     '--theme-delegation-steps-choose-stake-pool-tooltip-arrow-color':
       'rgba(94, 96, 102, 0.9)',
     '--theme-delegation-steps-choose-stake-pool-tooltip-background-color':
@@ -715,6 +713,8 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-staking-delegation-center-gear-icon-fill-color-active': '#5e6066',
     '--theme-staking-delegation-center-no-wallets-instructions-color':
       '#5e6066',
+    '--theme-staking-delegation-center-divider-border-color': '#dfe4e8',
+    '--theme-staking-delegation-center-fees-amount-color': '#ea4c5b',
     '--theme-staking-info-learn-more-button-text-color': '#ffffff',
     '--theme-staking-info-learn-more-icon-color': 'rgba(255, 255, 255, 1)',
     '--theme-staking-learn-more-button-color': '#ffffff',

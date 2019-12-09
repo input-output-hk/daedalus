@@ -84,11 +84,9 @@ export default class TransferFundsStep1Dialog extends Component<Props> {
             label={sourceWallet.name}
             detail={formattedWalletAmount(sourceWallet.amount)}
             numberOfStakePools={numberOfStakePools}
-            /*
-              // @API TODO - integrate once "Join Stake Pool" endpoint is done
-              delegatedStakePool={getStakePoolById(sourceWallet.stakePoolId)}
-            */
-            delegatedStakePool={getStakePoolById(0)}
+            delegatedStakePool={getStakePoolById(
+              sourceWallet.delegatedStakePoolId
+            )}
             selected
           />
         </div>

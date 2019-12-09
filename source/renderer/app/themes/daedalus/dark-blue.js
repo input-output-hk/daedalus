@@ -127,11 +127,9 @@ export const DARK_BLUE_THEME_OUTPUT = {
   },
   delegationSetupWizard: {
     '--theme-delegation-steps-activation-steps-indicator-color': '#e9f4fe',
-    '--theme-delegation-steps-activation-description-color':
-      'rgba(233, 244, 254, 0.8)',
-    '--theme-delegation-steps-activation-fees-label-color': '#e9f4fe',
-    '--theme-delegation-steps-activation-fees-amount-color': '#ea4c5b',
-    '--theme-delegation-steps-activation-address-value-color': '#e9f4fe',
+    '--theme-delegation-steps-success-description-color':
+      'rgba(233, 244, 254, 1)',
+    '--theme-delegation-steps-success-tada-color': 'rgba(233, 244, 254, 1)',
     '--theme-delegation-steps-choose-stake-pool-checkmark-icon-color':
       '#536370',
     '--theme-delegation-steps-choose-stake-pool-delegated-pools-label-color':
@@ -148,7 +146,7 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-delegation-steps-choose-stake-pool-thumb-border-color':
       'rgba(102, 122, 138, 0.2)',
     '--theme-delegation-steps-choose-stake-pool-title-color':
-      'rgba(233, 244, 254, 0.8)',
+      'rgba(233, 244, 254, 1)',
     '--theme-delegation-steps-choose-stake-pool-tooltip-arrow-color':
       'rgba(94, 96, 102, 0.9)',
     '--theme-delegation-steps-choose-stake-pool-tooltip-background-color':
@@ -718,6 +716,8 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-staking-delegation-center-gear-icon-fill-color-active': '#e9f4fe',
     '--theme-staking-delegation-center-no-wallets-instructions-color':
       '#e9f4fe',
+    '--theme-staking-delegation-center-divider-border-color': '#334152',
+    '--theme-staking-delegation-center-fees-amount-color': '#ea4c5b',
     '--theme-staking-info-learn-more-button-text-color': '#fafbfc',
     '--theme-staking-info-learn-more-icon-color': 'rgba(250, 251, 252, 1)',
     '--theme-staking-learn-more-button-color': '#fafbfc',
