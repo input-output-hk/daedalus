@@ -2,7 +2,6 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
-import { throttle } from 'lodash';
 import BorderedBox from '../../widgets/BorderedBox';
 import TinySwitch from '../../widgets/forms/TinySwitch';
 import WalletAddress from '../../../domains/WalletAddress';
@@ -79,16 +78,14 @@ export default class WalletReceive extends Component<Props, State> {
   };
 
   componentDidMount() {
-    window.addEventListener('resize', this.throttleCalculateEllipsis);
+    window.addEventListener('resize', this.calculateAddressSlice);
     this.props.onToggleSubMenus.listen(this.waitForSidebarToggle);
   }
 
   componentWillUnmount() {
-    window.removeEventListener('resize', this.throttleCalculateEllipsis);
+    window.removeEventListener('resize', this.calculateAddressSlice);
     this.props.onToggleSubMenus.listen(this.waitForSidebarToggle);
   }
-
-  throttleCalculateEllipsis = throttle(() => this.calculateAddressSlice(), 400);
 
   get addressLength() {
     const [address: WalletAddress] = this.props.walletAddresses;
