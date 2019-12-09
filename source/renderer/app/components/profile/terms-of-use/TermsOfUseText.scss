@@ -3,6 +3,13 @@
   text-align: justify;
   user-select: text;
 
+  hr {
+    border-color: var(--theme-support-settings-text-color);
+    margin-bottom: 30px;
+    margin-top: 20px;
+    opacity: 0.15;
+  }
+
   h1,
   h2 {
     font-family: var(--font-medium);
