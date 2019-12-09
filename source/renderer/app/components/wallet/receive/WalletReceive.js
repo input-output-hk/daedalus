@@ -10,7 +10,6 @@ import globalMessages from '../../../i18n/global-messages';
 import { VirtualAddressesList } from './VirtualAddressesList';
 import styles from './WalletReceive.scss';
 import Address from './Address';
-import Action from '../../../actions/lib/Action';
 
 const messages = defineMessages({
   instructionsTitle: {
@@ -53,7 +52,8 @@ type Props = {
   walletAddresses: Array<WalletAddress>,
   onShareAddress: Function,
   onCopyAddress: Function,
-  onToggleSubMenus: Action,
+  onToggleSubMenusListen: Function,
+  onToggleSubMenusRemove: Function,
   isIncentivizedTestnet: boolean,
 };
 
@@ -81,12 +81,12 @@ export default class WalletReceive extends Component<Props, State> {
 
   componentDidMount() {
     window.addEventListener('resize', this.throttleCalculateEllipsis);
-    this.props.onToggleSubMenus.listen(this.waitForSidebarToggle);
+    this.props.onToggleSubMenusListen(this.waitForSidebarToggle);
   }
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.throttleCalculateEllipsis);
-    this.props.onToggleSubMenus.remove(this.waitForSidebarToggle);
+    this.props.onToggleSubMenusRemove(this.waitForSidebarToggle);
   }
 
   throttleCalculateEllipsis = throttle(() => this.calculateAddressSlice(), 400);

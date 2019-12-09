@@ -34,6 +34,8 @@ storiesOf('Wallets|Receive', module)
           isAddressValid={() => parseInt(Math.random() * 10, 10) > 3}
           isIncentivizedTestnet={isIncentivizedTestnet}
           currentLocale={currentLocale}
+          onToggleSubMenusListen={action('onToggleSubMenusListen')}
+          onToggleSubMenusRemove={action('onToggleSubMenusRemove')}
           isShowingSubMenus
         />
         {showDialog && !isIncentivizedTestnet && (
