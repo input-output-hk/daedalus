@@ -44,7 +44,7 @@ export default class Address extends Component<Props> {
     if (!addressSlice) return rawAddress;
     const addressBegin = rawAddress.slice(0, addressSlice);
     const addressEnd = rawAddress.slice(-addressSlice);
-    return `${addressBegin}...${addressEnd}`;
+    return `${addressBegin}…${addressEnd}`;
   }
 
   render() {

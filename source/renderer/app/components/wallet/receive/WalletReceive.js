@@ -111,7 +111,7 @@ export default class WalletReceive extends Component<Props, State> {
     const containerWidth = containerElement.offsetWidth;
     const addressSlice =
       containerWidth < addressWidth
-        ? Math.floor(containerWidth / charWidth / 2) - 2
+        ? Math.floor(containerWidth / charWidth / 2) - 1
         : 0;
     this.setState({
       addressSlice,
