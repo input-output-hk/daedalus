@@ -635,12 +635,12 @@ export default class WalletRestoreDialog extends Component<Props, State> {
     return this.state.walletType === WALLET_RESTORE_TYPES.YOROI_LEGACY;
   }
 
-  isYoroi() {
-    return this.isYoroiRegular() || this.isYoroiLegacy();
-  }
-
   isYoroiRegular() {
     return this.state.walletType === WALLET_RESTORE_TYPES.YOROI_REGULAR;
+  }
+
+  isYoroi() {
+    return this.isYoroiLegacy() || this.isYoroiRegular();
   }
 
   onSelectWalletType = (walletType: string, shouldResetForm?: boolean) => {
