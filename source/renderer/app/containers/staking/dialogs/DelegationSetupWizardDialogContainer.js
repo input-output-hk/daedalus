@@ -134,7 +134,16 @@ export default class DelegationSetupWizardDialogContainer extends Component<
   };
 
   handleSelectWallet = (walletId: string) => {
-    this.setState({ selectedWalletId: walletId });
+    const { selectedPoolId } = this.state;
+    const { wallets } = this.props.stores;
+    const selectedWallet = find(
+      wallets.allWallets,
+      wallet => wallet.id === walletId
+    );
+    this.setState({
+      selectedWalletId: walletId,
+      selectedPoolId: selectedPoolId || selectedWallet.delegatedStakePoolId,
+    });
     this.handleContinue();
   };
 
