@@ -7,7 +7,6 @@ import BigNumber from 'bignumber.js';
 import DelegationSetupWizardDialog from '../../../components/staking/delegation-setup-wizard/DelegationSetupWizardDialog';
 import { MIN_DELEGATION_FUNDS } from '../../../config/stakingConfig';
 import { getNetworkExplorerUrlByType } from '../../../utils/network';
-import Wallet from '../../../domains/Wallet';
 import type { InjectedDialogContainerProps } from '../../../types/injectedPropsType';
 
 const messages = defineMessages({
@@ -169,12 +168,9 @@ export default class DelegationSetupWizardDialogContainer extends Component<
       wallets.allWallets,
       wallet => wallet.id === selectedWalletId
     );
-    const isDisabled = wallets.allWallets.reduce(
-      (disabled: boolean, { amount }: Wallet) => {
-        const isWalletAcceptable = this.handleIsWalletAcceptable(amount);
-        return !isWalletAcceptable;
-      },
-      false
+
+    const acceptableWallets = find(wallets.allWallets, wallet =>
+      this.handleIsWalletAcceptable(wallet.amount)
     );
 
     const getPledgeAddressUrl = (pledgeAddress: string) =>
@@ -192,7 +188,7 @@ export default class DelegationSetupWizardDialogContainer extends Component<
         stepsList={this.STEPS_LIST}
         activeStep={activeStep}
         minDelegationFunds={MIN_DELEGATION_FUNDS}
-        isDisabled={includes([1, 2], activeStep) && isDisabled}
+        isDisabled={includes([1, 2], activeStep) && !acceptableWallets}
         isWalletAcceptable={this.handleIsWalletAcceptable}
         selectedWallet={selectedWallet}
         selectedPool={selectedPool || null}
