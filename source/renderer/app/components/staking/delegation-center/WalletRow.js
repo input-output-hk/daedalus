@@ -8,9 +8,10 @@ import Wallet from '../../../domains/Wallet';
 import StakePool, { DelegationActions } from '../../../domains/StakePool';
 import { getColorFromRange } from '../../../utils/colors';
 import settingsIcon from '../../../assets/images/settings-ic.inline.svg';
-import { SIMPLE_DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
+import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import DropdownMenu from './DropdownMenu';
 import styles from './WalletRow.scss';
+
 import type { DelegationAction } from '../../../api/staking/types';
 
 const messages = defineMessages({
@@ -32,13 +33,13 @@ const messages = defineMessages({
   },
   changeDelegation: {
     id: 'staking.delegationCenter.changeDelegation',
-    defaultMessage: '!!!Change delegation',
+    defaultMessage: '!!!Change stake pool',
     description:
       'Change delegation label for the Delegation center body section.',
   },
   removeDelegation: {
     id: 'staking.delegationCenter.removeDelegation',
-    defaultMessage: '!!!Remove delegation',
+    defaultMessage: '!!!Undelegate',
     description:
       'Remove delegation label for the Delegation center body section.',
   },
@@ -81,8 +82,8 @@ export default class WalletRow extends Component<Props> {
   };
 
   onDelegate = () => {
-    const { wallet } = this.props;
-    this.props.onDelegate(wallet.id);
+    const { wallet, onDelegate } = this.props;
+    onDelegate(wallet.id);
   };
 
   onMenuItemClick = (clickeItem: DelegationAction) => {
@@ -133,7 +134,7 @@ export default class WalletRow extends Component<Props> {
             <FormattedMessage
               {...messages.walletAmount}
               values={{
-                amount: amount.toFormat(SIMPLE_DECIMAL_PLACES_IN_ADA),
+                amount: amount.toFormat(DECIMAL_PLACES_IN_ADA),
               }}
             />
           </div>

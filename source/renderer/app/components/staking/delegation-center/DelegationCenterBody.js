@@ -18,8 +18,9 @@ const messages = defineMessages({
 
 type Props = {
   wallets: Array<Wallet>,
-  onDelegate: Function,
   numberOfStakePools: number,
+  onDelegate: Function,
+  onUndelegate: Function,
   getStakePoolById: Function,
 };
 
@@ -30,14 +31,14 @@ export default class DelegationCenterBody extends Component<Props> {
   };
 
   handleMenuItemClick = (item: DelegationAction, walletId: string) => {
-    const { onDelegate } = this.props;
+    const { onDelegate, onUndelegate } = this.props;
 
     switch (item) {
       case DelegationActions.CHANGE_DELEGATION:
         onDelegate(walletId);
         break;
       case DelegationActions.REMOVE_DELEGATION:
-        // @TODO - Add once [DDW-1096] is done
+        onUndelegate(walletId);
         break;
       default:
         break;
@@ -48,8 +49,8 @@ export default class DelegationCenterBody extends Component<Props> {
     const { intl } = this.context;
     const {
       wallets,
-      onDelegate,
       numberOfStakePools,
+      onDelegate,
       getStakePoolById,
     } = this.props;
 
@@ -65,8 +66,8 @@ export default class DelegationCenterBody extends Component<Props> {
             <WalletRow
               key={wallet.id}
               wallet={wallet}
-              onDelegate={onDelegate}
               numberOfStakePools={numberOfStakePools}
+              onDelegate={onDelegate}
               onMenuItemClick={this.handleMenuItemClick}
               delegatedStakePool={getStakePoolById(wallet.delegatedStakePoolId)}
             />
