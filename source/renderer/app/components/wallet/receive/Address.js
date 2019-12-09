@@ -18,11 +18,14 @@ type Props = {
   isIncentivizedTestnet: boolean,
   shouldRegisterAddressElement: boolean,
   onRegisterHTMLElements: Function,
-  ellipsisIsVisible: boolean,
+  addressSlice: number,
 };
 
 @observer
 export default class Address extends Component<Props> {
+  addressElement: ?HTMLElement;
+  addressContainerElement: ?HTMLElement;
+
   componentDidMount() {
     if (this.props.shouldRegisterAddressElement) {
       this.props.onRegisterHTMLElements(
@@ -31,21 +34,18 @@ export default class Address extends Component<Props> {
       );
     }
   }
-  get address() {
+  get rawAddress() {
     return this.props.address.id;
   }
-  get addressBegin() {
-    return this.address.substring(0, parseInt(this.address.length / 2, 10));
-  }
-  get addressEnd() {
-    return this.address.substring(
-      parseInt(this.address.length / 2, 10),
-      this.address.length
-    );
-  }
 
-  addressElement: ?HTMLElement;
-  addressContainerElement: ?HTMLElement;
+  get renderAddress() {
+    const { rawAddress } = this;
+    const { addressSlice } = this.props;
+    if (!addressSlice) return rawAddress;
+    const addressBegin = rawAddress.slice(0, addressSlice);
+    const addressEnd = rawAddress.slice(-addressSlice);
+    return `${addressBegin}...${addressEnd}`;
+  }
 
   render() {
     const {
@@ -56,17 +56,14 @@ export default class Address extends Component<Props> {
       copyAddressLabel,
       isIncentivizedTestnet,
       shouldRegisterAddressElement,
-      ellipsisIsVisible,
     } = this.props;
+    const { renderAddress, rawAddress } = this;
     const addressClasses = classnames([
-      `receiveAddress-${address.id}`,
+      `receiveAddress-${rawAddress}`,
       styles.component,
       address.used ? styles.usedWalletAddress : null,
     ]);
-    const addressIdClasses = classnames([
-      styles.addressId,
-      ellipsisIsVisible ? styles.ellipsisIsVisible : null,
-    ]);
+    const addressIdClasses = classnames([styles.addressId]);
     return (
       <div className={addressClasses}>
         <div
@@ -74,11 +71,9 @@ export default class Address extends Component<Props> {
           ref={ref => {
             this.addressContainerElement = ref;
           }}
-          id={`address-${address.id}`}
+          id={`address-${rawAddress}`}
         >
-          <span className={styles.addressIdBegin}>{this.addressBegin}</span>
-          <span className={styles.addressIdEnd}>{this.addressEnd}</span>
-          {ellipsisIsVisible && <span className={styles.ellipsis}>…</span>}
+          {renderAddress}
           {shouldRegisterAddressElement && (
             <span
               ref={ref => {
@@ -86,7 +81,7 @@ export default class Address extends Component<Props> {
               }}
               className={styles.addressElement}
             >
-              {this.address}
+              {rawAddress}
             </span>
           )}
         </div>
@@ -103,8 +98,8 @@ export default class Address extends Component<Props> {
             </button>
           ) : (
             <CopyToClipboard
-              text={address.id}
-              onCopy={() => onCopyAddress(address.id)}
+              text={rawAddress}
+              onCopy={() => onCopyAddress(rawAddress)}
             >
               <span className={styles.copyAddress}>
                 <SVGInline svg={iconCopy} className={styles.copyIcon} />

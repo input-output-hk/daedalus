@@ -56,9 +56,10 @@ type Props = {
 };
 
 type State = {
-  showUsed: boolean,
+  addressSlice: number,
   addressWidth: number,
-  ellipsisIsVisible: boolean,
+  charWidth: number,
+  showUsed: boolean,
 };
 
 @observer
@@ -67,12 +68,13 @@ export default class WalletReceive extends Component<Props, State> {
     intl: intlShape.isRequired,
   };
 
-  addressContainerElement: ?HTMLElement;
+  containerElement: ?HTMLElement;
 
   state = {
-    showUsed: true,
+    addressSlice: 0,
     addressWidth: 0,
-    ellipsisIsVisible: false,
+    charWidth: 0,
+    showUsed: true,
   };
 
   componentDidMount() {
@@ -83,29 +85,36 @@ export default class WalletReceive extends Component<Props, State> {
     window.removeEventListener('resize', this.throttleCalculateEllipsis);
   }
 
-  throttleCalculateEllipsis = throttle(
-    () => this.calculateEllipsisIsVisible(),
-    400
-  );
+  throttleCalculateEllipsis = throttle(() => this.calculateAddressSlice(), 400);
+
+  get addressLength() {
+    const [address: WalletAddress] = this.props.walletAddresses;
+    return address.id.length;
+  }
 
   handleRegisterHTMLElements = (
     addressElement: HTMLElement,
-    addressContainerElement: HTMLElement
+    containerElement: HTMLElement
   ) => {
     setTimeout(() => {
-      this.addressContainerElement = addressContainerElement;
+      this.containerElement = containerElement;
       const addressWidth = addressElement.offsetWidth;
-      this.setState({ addressWidth }, this.calculateEllipsisIsVisible);
+      const charWidth = addressWidth / this.addressLength;
+      this.setState({ charWidth, addressWidth }, this.calculateAddressSlice);
     }, 500);
   };
 
-  calculateEllipsisIsVisible = () => {
-    const { addressWidth } = this.state;
-    if (!this.addressContainerElement || !addressWidth === 0) return;
-    const addressContainerWidth = this.addressContainerElement.offsetWidth;
-    const ellipsisIsVisible = addressWidth > addressContainerWidth - 10;
+  calculateAddressSlice = () => {
+    const { charWidth, addressWidth } = this.state;
+    const { addressLength, containerElement } = this;
+    if (!containerElement || !charWidth || !addressLength) return;
+    const containerWidth = containerElement.offsetWidth;
+    const addressSlice =
+      containerWidth < addressWidth
+        ? Math.floor(containerWidth / charWidth / 2) - 2
+        : 0;
     this.setState({
-      ellipsisIsVisible,
+      addressSlice,
     });
   };
 
@@ -115,7 +124,7 @@ export default class WalletReceive extends Component<Props, State> {
 
   renderRow = (address: WalletAddress, index: number) => {
     const { onShareAddress, onCopyAddress, isIncentivizedTestnet } = this.props;
-    const { ellipsisIsVisible } = this.state;
+    const { addressSlice } = this.state;
     const { intl } = this.context;
     return (
       <Address
@@ -127,7 +136,7 @@ export default class WalletReceive extends Component<Props, State> {
         isIncentivizedTestnet={isIncentivizedTestnet}
         shouldRegisterAddressElement={index === 0}
         onRegisterHTMLElements={this.handleRegisterHTMLElements}
-        ellipsisIsVisible={ellipsisIsVisible}
+        addressSlice={addressSlice}
       />
     );
   };
