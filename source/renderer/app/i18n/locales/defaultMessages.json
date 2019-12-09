@@ -5980,13 +5980,13 @@
         "description": "Instructions Title on the wallet \"Receive page\"",
         "end": {
           "column": 3,
-          "line": 18
+          "line": 19
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceive.js",
         "id": "wallet.receive.page.instructions.instructionsTitle",
         "start": {
           "column": 21,
-          "line": 14
+          "line": 15
         }
       },
       {
@@ -5994,13 +5994,13 @@
         "description": "Instructions Description on the wallet \"Receive page\"",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 25
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceive.js",
         "id": "wallet.receive.page.instructions.instructionsDescription",
         "start": {
           "column": 27,
-          "line": 19
+          "line": 20
         }
       },
       {
@@ -6008,13 +6008,13 @@
         "description": "Addresses Title on the wallet \"Receive page\"",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 30
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceive.js",
         "id": "wallet.receive.page.addresses.addressesTitle",
         "start": {
           "column": 18,
-          "line": 25
+          "line": 26
         }
       },
       {
@@ -6022,13 +6022,13 @@
         "description": "Label for \"show used\" wallet addresses link on the wallet \"Receive page\"",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 36
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceive.js",
         "id": "wallet.receive.page.showUsedLabel",
         "start": {
           "column": 17,
-          "line": 30
+          "line": 31
         }
       },
       {
@@ -6036,13 +6036,13 @@
         "description": "Label for \"Share\" link on the wallet \"Receive page\"",
         "end": {
           "column": 3,
-          "line": 40
+          "line": 41
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceive.js",
         "id": "wallet.receive.page.shareAddressLabel",
         "start": {
           "column": 21,
-          "line": 36
+          "line": 37
         }
       },
       {
@@ -6050,13 +6050,13 @@
         "description": "Label for \"Copy address\" link on the wallet \"Receive page\"",
         "end": {
           "column": 3,
-          "line": 45
+          "line": 46
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceive.js",
         "id": "wallet.receive.page.copyAddressLabel",
         "start": {
           "column": 20,
-          "line": 41
+          "line": 42
         }
       }
     ],
