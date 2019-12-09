@@ -155,8 +155,6 @@ export default class WalletReceivePage extends Component<Props, State> {
             onCopyAddress={this.handleCopyAddress}
             isIncentivizedTestnet={isIncentivizedTestnet}
             onToggleSubMenus={toggleSubMenus}
-            onToggleSubMenusListen={toggleSubMenus.listen}
-            onToggleSubMenusRemove={toggleSubMenus.remove}
           />
         </VerticalFlexContainer>
 
