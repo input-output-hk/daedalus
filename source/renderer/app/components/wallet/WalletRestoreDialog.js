@@ -636,9 +636,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
   }
 
   isYoroi() {
-    return (
-      this.isYoroiRegular() || this.isYoroiLegacy()
-    );
+    return this.isYoroiRegular() || this.isYoroiLegacy();
   }
 
   isYoroiRegular() {
