@@ -5,6 +5,8 @@ import { defineMessages, intlShape } from 'react-intl';
 import Wallet from '../../../domains/Wallet';
 import WalletRow from './WalletRow';
 import styles from './DelegationCenterBody.scss';
+import { DelegationActions } from '../../../domains/StakePool';
+import type { DelegationAction } from '../../../api/staking/types';
 
 const messages = defineMessages({
   bodyTitle: {
@@ -27,6 +29,21 @@ export default class DelegationCenterBody extends Component<Props> {
     intl: intlShape.isRequired,
   };
 
+  handleMenuItemClick = (item: DelegationAction, walletId: string) => {
+    const { onDelegate } = this.props;
+
+    switch (item) {
+      case DelegationActions.CHANGE_DELEGATION:
+        onDelegate(walletId);
+        break;
+      case DelegationActions.REMOVE_DELEGATION:
+        // @TODO - Add once [DDW-1096] is done
+        break;
+      default:
+        break;
+    }
+  };
+
   render() {
     const { intl } = this.context;
     const {
@@ -44,17 +61,14 @@ export default class DelegationCenterBody extends Component<Props> {
           <span>{title}</span>
         </div>
         <div className={styles.mainContent}>
-          {wallets.map((wallet: Wallet, index: number) => (
+          {wallets.map((wallet: Wallet) => (
             <WalletRow
               key={wallet.id}
               wallet={wallet}
               onDelegate={onDelegate}
               numberOfStakePools={numberOfStakePools}
-              /*
-                @API TODO: Replace when "Stake Pools Join" is
-                delegatedStakePool={getStakePoolById(wallet.delegatedStakePoolId)}
-              */
-              delegatedStakePool={getStakePoolById(index)}
+              onMenuItemClick={this.handleMenuItemClick}
+              delegatedStakePool={getStakePoolById(wallet.delegatedStakePoolId)}
             />
           ))}
         </div>

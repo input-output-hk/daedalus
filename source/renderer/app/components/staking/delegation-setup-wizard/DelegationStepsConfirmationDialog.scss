@@ -1,8 +1,17 @@
+@import '../../../themes/mixins/loading-spinner';
+@import '../../../themes/mixins/error-message';
+
 .delegationStepsConfirmationDialogWrapper {
   .content {
     .description {
       color: var(--theme-delegation-steps-confirmation-description-color);
+      font-family: var(--font-light);
       margin-bottom: 20px;
+      span {
+        span {
+          font-family: var(--font-medium);
+        }
+      }
     }
 
     .feesWrapper {
@@ -17,11 +26,23 @@
       }
       .feesAmount {
         color: var(--theme-delegation-steps-confirmation-fees-amount-color);
+        font-family: var(--font-medium);
         user-select: text;
         span {
-          opacity: 0.5;
+          font-family: var(--font-light);
         }
       }
     }
   }
+
+  .error {
+    @include error-message;
+    margin-top: 27px;
+    text-align: center;
+  }
+}
+
+.submitButtonSpinning {
+  box-shadow: none !important;
+  @include loading-spinner('../../../assets/images/spinner-light.svg');
 }

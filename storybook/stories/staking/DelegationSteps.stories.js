@@ -3,13 +3,13 @@ import React, { Component } from 'react';
 import { BigNumber } from 'bignumber.js';
 import { number } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
-
+import { find } from 'lodash';
 import DelegationStepsIntroDialog from '../../../source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsIntroDialog';
 import DelegationStepsChooseWalletDialog from '../../../source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseWalletDialog';
 import DelegationStepsChooseStakePoolDialog from '../../../source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog';
 import DelegationStepsNotAvailableDialog from '../../../source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsNotAvailableDialog';
 import DelegationStepsConfirmationDialog from '../../../source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog';
-import DelegationStepsActivationDialog from '../../../source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsActivationDialog';
+import DelegationStepsSuccessDialog from '../../../source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsSuccessDialog';
 
 import { MIN_DELEGATION_FUNDS } from '../../../source/renderer/app/config/stakingConfig';
 import translations from '../../../source/renderer/app/i18n/translations';
@@ -28,12 +28,12 @@ const getDelegationWizardStepsList = locale => [
   translations[locale]['staking.delegationSetup.steps.step.1.label'],
   translations[locale]['staking.delegationSetup.steps.step.2.label'],
   translations[locale]['staking.delegationSetup.steps.step.3.label'],
-  translations[locale]['staking.delegationSetup.steps.step.4.label'],
 ];
 
 type Props = {
   currentTheme: string,
   locale: string,
+  isDisabled?: boolean,
 };
 
 type State = {
@@ -57,6 +57,16 @@ export class StakingDelegationSteps extends Component<Props, State> {
         step: 1,
       })
     );
+
+    if (this.props.isDisabled) {
+      return [
+        <DelegationStepsNotAvailableDialog
+          key="DelegationStepsNotAvailableDialog"
+          minDelegationFunds={MIN_DELEGATION_FUNDS}
+          onClose={action('onClose')}
+        />,
+      ];
+    }
     return [
       <DelegationStepsIntroDialog
         key="DelegationStepsIntroDialog"
@@ -69,7 +79,9 @@ export class StakingDelegationSteps extends Component<Props, State> {
         numberOfStakePools={stakePoolsList.length}
         stepsList={getDelegationWizardStepsList(this.props.locale)}
         onClose={action('onClose')}
-        getStakePoolById={action('getStakePoolById')}
+        getStakePoolById={poolId =>
+          find(STAKE_POOLS, stakePool => stakePool.id === poolId)
+        }
         onSelectWallet={this.onContinue}
         onBack={action('onBack')}
         wallets={WALLETS}
@@ -81,42 +93,35 @@ export class StakingDelegationSteps extends Component<Props, State> {
         key="DelegationStepsChooseStakePoolDialog"
         stepsList={getDelegationWizardStepsList(this.props.locale)}
         stakePoolsList={stakePoolsList}
-        stakePoolsDelegatingList={[
-          STAKE_POOLS[0],
-          STAKE_POOLS[13],
-          STAKE_POOLS[36],
-        ]}
+        recentStakePools={[STAKE_POOLS[0], STAKE_POOLS[13], STAKE_POOLS[36]]}
         onOpenExternalLink={action('onOpenExternalLink')}
         getPledgeAddressUrl={action('getPledgeAddressUrl')}
         currentTheme={this.props.currentTheme}
         onClose={action('onClose')}
         onBack={action('onBack')}
         onSelectPool={this.onContinue}
-        selectedPool={null}
+        selectedPool={STAKE_POOLS[0]}
+        selectedWallet={WALLETS[0]}
       />,
       <DelegationStepsConfirmationDialog
-        fees={new BigNumber(0.172081)}
         key="DelegationStepsConfirmationDialog"
+        transactionFee={new BigNumber(0.172081)}
         stepsList={getDelegationWizardStepsList(this.props.locale)}
-        isSpendingPasswordSet
-        onClose={action('onClose')}
+        selectedPool={STAKE_POOLS[0]}
+        isSubmitting={false}
+        selectedWallet={WALLETS[0]}
         onConfirm={this.onContinue}
-        onBack={action('onBack')}
-      />,
-      <DelegationStepsActivationDialog
-        amount={new BigNumber(3)}
-        fees={new BigNumber(0.172081)}
-        key="DelegationStepsActivationDialog"
-        stepsList={getDelegationWizardStepsList(this.props.locale)}
-        isSpendingPasswordSet
         onClose={action('onClose')}
-        onActivate={this.onContinue}
         onBack={action('onBack')}
+        error={null}
       />,
-      <DelegationStepsNotAvailableDialog
-        key="DelegationStepsNotAvailableDialog"
-        minDelegationFunds={MIN_DELEGATION_FUNDS}
-        onClose={this.onContinue}
+      <DelegationStepsSuccessDialog
+        key="DelegationStepsSuccessDialog"
+        delegatedWallet={WALLETS[0]}
+        delegatedStakePool={STAKE_POOLS[0]}
+        currentLocale="en-US"
+        nextEpochStartTime="2019-12-09T00:00:00.161Z"
+        onClose={this.onReset}
       />,
     ];
   }
@@ -126,6 +131,10 @@ export class StakingDelegationSteps extends Component<Props, State> {
     let nextStep = currentStep + 1;
     if (nextStep > NUMBER_OF_STEPS - 1) nextStep = 0;
     this.setState({ currentStep: nextStep });
+  };
+
+  onReset = () => {
+    this.setState({ currentStep: 0 });
   };
 
   render() {
