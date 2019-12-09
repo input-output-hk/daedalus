@@ -24,7 +24,7 @@ These Terms of Use (&quot;**Terms**&quot;) are made by and between the person ac
 
 11. The term of these Terms will begin on the Effective Date and will continue until we end the Incentivized Testnet. You understand and agree that we may change, withdraw, terminate your access to, testing of and/or use of, or discontinue the Incentivized Testnet (or any portion thereof) at any time and in our sole discretion. You may also end your participation in the Incentivized Testnet at any time and any Rewards gained up to that time will still be transferred to your Daedalus or Yoroi mainet wallet once the Incentivized Testnet is discontinued.
 
-<hr />
+---
 
 # IOHK Testnet Stake Pool Staking Terms of Service
 
