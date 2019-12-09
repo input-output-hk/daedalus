@@ -133,14 +133,11 @@ export default class WalletReceivePage extends Component<Props, State> {
   };
 
   render() {
-    const {
-      uiNotifications,
-      uiDialogs,
-      addresses,
-      networkStatus,
-    } = this.props.stores;
+    const { actions, stores } = this.props;
+    const { uiNotifications, uiDialogs, addresses, networkStatus } = stores;
     const { isIncentivizedTestnet } = networkStatus.environment;
     const { addressToShare, activeWallet } = this.state;
+    const { toggleSubMenus } = actions.sidebar;
 
     // Guard against potential null values
     if (!activeWallet)
@@ -157,6 +154,7 @@ export default class WalletReceivePage extends Component<Props, State> {
             onShareAddress={this.handleShareAddress}
             onCopyAddress={this.handleCopyAddress}
             isIncentivizedTestnet={isIncentivizedTestnet}
+            onToggleSubMenus={toggleSubMenus}
           />
         </VerticalFlexContainer>
 
