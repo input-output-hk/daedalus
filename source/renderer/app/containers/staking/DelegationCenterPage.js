@@ -1,8 +1,12 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
+import BigNumber from 'bignumber.js';
+import { get } from 'lodash';
 import DelegationCenter from '../../components/staking/delegation-center/DelegationCenter';
 import DelegationSetupWizardDialogContainer from './dialogs/DelegationSetupWizardDialogContainer';
+import UndelegateDialogContainer from './dialogs/UndelegateDialogContainer';
+import UndelegateConfirmationDialog from '../../components/staking/delegation-center/UndelegateConfirmationDialog';
 import DelegationSetupWizardDialog from '../../components/staking/delegation-setup-wizard/DelegationSetupWizardDialog';
 import DelegationCenterNoWallets from '../../components/staking/delegation-center/DelegationCenterNoWallets';
 import { ROUTES } from '../../routes-config';
@@ -16,12 +20,37 @@ export default class DelegationCenterPage extends Component<Props> {
   static defaultProps = { stores: null };
 
   handleDelegate = (walletId: string) => {
-    const { actions } = this.props;
+    const { actions, stores } = this.props;
     const { updateDataForActiveDialog } = actions.dialogs;
+    const { wallets } = stores;
+    const wallet = wallets.getWalletById(walletId);
+    const delegatedStakePoolId = get(wallet, 'delegatedStakePoolId', null);
 
     actions.dialogs.open.trigger({ dialog: DelegationSetupWizardDialog });
     updateDataForActiveDialog.trigger({
-      data: { walletId },
+      data: { walletId, poolId: delegatedStakePoolId },
+    });
+  };
+
+  handleUndelegate = async (walletId: string) => {
+    const { actions, stores } = this.props;
+    const { updateDataForActiveDialog } = actions.dialogs;
+    const { estimateQuitFee } = stores.staking;
+
+    actions.dialogs.open.trigger({ dialog: UndelegateConfirmationDialog });
+    const dialogData = {
+      walletId,
+      stakePoolQuitFee: new BigNumber(0),
+    };
+    updateDataForActiveDialog.trigger({ data: dialogData });
+
+    // Update dialog one more time when quit fee is calculated
+    const stakePoolQuitFee = await estimateQuitFee({ walletId });
+    updateDataForActiveDialog.trigger({
+      data: {
+        ...dialogData,
+        stakePoolQuitFee,
+      },
     });
   };
 
@@ -30,7 +59,8 @@ export default class DelegationCenterPage extends Component<Props> {
   };
 
   render() {
-    const { uiDialogs, staking, wallets, networkStatus } = this.props.stores;
+    const { stores } = this.props;
+    const { app, uiDialogs, staking, wallets, networkStatus } = stores;
     const { stakePools, getStakePoolById } = staking;
     const { networkTip, nextEpoch } = networkStatus;
 
@@ -46,12 +76,18 @@ export default class DelegationCenterPage extends Component<Props> {
       <div>
         <DelegationCenter
           wallets={wallets.allWallets}
-          onDelegate={this.handleDelegate}
           numberOfStakePools={stakePools.length}
+          onDelegate={this.handleDelegate}
+          onUndelegate={this.handleUndelegate}
           networkTip={networkTip}
           nextEpoch={nextEpoch}
           getStakePoolById={getStakePoolById}
         />
+        {uiDialogs.isOpen(UndelegateConfirmationDialog) ? (
+          <UndelegateDialogContainer
+            onExternalLinkClick={app.openExternalLink}
+          />
+        ) : null}
         {uiDialogs.isOpen(DelegationSetupWizardDialog) ? (
           <DelegationSetupWizardDialogContainer />
         ) : null}

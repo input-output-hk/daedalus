@@ -26,7 +26,7 @@ export default class StakePoolsListPage extends Component<Props> {
   render() {
     const { uiDialogs, staking, app, profile } = this.props.stores;
     const { currentTheme, currentLocale, environment } = profile;
-    const { stakePools, delegatingStakePools } = staking;
+    const { stakePools } = staking;
     const { network, rawNetwork } = environment;
     const getPledgeAddressUrl = (pledgeAddres: string) =>
       getNetworkExplorerUrlByType(
@@ -41,7 +41,6 @@ export default class StakePoolsListPage extends Component<Props> {
       <div>
         <StakePools
           stakePoolsList={stakePools}
-          stakePoolsDelegatingList={delegatingStakePools}
           onOpenExternalLink={app.openExternalLink}
           getPledgeAddressUrl={getPledgeAddressUrl}
           currentTheme={currentTheme}
