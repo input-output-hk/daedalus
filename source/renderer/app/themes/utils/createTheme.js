@@ -1052,6 +1052,8 @@ export const createDaedalusComponentsTheme = (
       '--theme-staking-delegation-center-no-wallets-instructions-color': `${
         text.primary
       }`,
+      '--theme-staking-delegation-center-divider-border-color': `${border}`,
+      '--theme-staking-delegation-center-fees-amount-color': `${error.regular}`,
       '--theme-staking-countdown-widget-background-color': `${
         background.primary.regular
       }`,

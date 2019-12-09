@@ -12,7 +12,7 @@ import sortIcon from '../../../assets/images/ascending.inline.svg';
 import externalLinkIcon from '../../../assets/images/link-ic.inline.svg';
 import type { Reward } from '../../../api/staking/types';
 import styles from './StakingRewards.scss';
-import { SIMPLE_DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
+import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 
 const messages = defineMessages({
   title: {
@@ -197,7 +197,7 @@ export default class StakingRewards extends Component<Props, State> {
                       <td>{rewardWallet}</td>
                       <td>
                         {new BigNumber(rewardAmount).toFormat(
-                          SIMPLE_DECIMAL_PLACES_IN_ADA
+                          DECIMAL_PLACES_IN_ADA
                         )}{' '}
                         ADA
                       </td>

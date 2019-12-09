@@ -9,6 +9,7 @@ import { RECENT_STAKE_POOLS_COUNT } from '../config/stakingConfig';
 import type {
   Reward,
   RewardForIncentivizedTestnet,
+  EstimateQuitFeeRequest,
   JoinStakePoolRequest,
   EstimateJoinFeeRequest,
 } from '../api/staking/types';
@@ -60,6 +61,22 @@ export default class StakingStore extends Store {
       passphrase,
     });
     this.stores.wallets.refreshWalletsData();
+  };
+
+  // @API TODO - integrate real API V2 endpoint once is available
+  estimateQuitFee = async (estimateQuitFeeRequest: EstimateQuitFeeRequest) => {
+    const { walletId } = estimateQuitFeeRequest;
+    const wallet = this.stores.wallets.getWalletById(walletId);
+
+    if (!wallet) {
+      throw new Error(
+        'Active wallet required before calculating transaction fees.'
+      );
+    }
+
+    return this.api.ada.estimateQuitFee({
+      ...estimateQuitFeeRequest,
+    });
   };
 
   // @API TODO - integrate real API V2 endpoint once is available

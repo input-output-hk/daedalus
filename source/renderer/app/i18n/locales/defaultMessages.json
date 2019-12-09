@@ -2335,17 +2335,195 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Undelegate",
+        "description": "Title for the \"Undelegate\" dialog.",
+        "end": {
+          "column": 3,
+          "line": 28
+        },
+        "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
+        "id": "staking.delegationCenter.undelegate.dialog.title",
+        "start": {
+          "column": 15,
+          "line": 24
+        }
+      },
+      {
+        "defaultMessage": "!!!Undelegate",
+        "description": "Label for the \"Undelegate\" button in the \"Undelegate\" dialog.",
+        "end": {
+          "column": 3,
+          "line": 34
+        },
+        "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
+        "id": "staking.delegationCenter.undelegate.dialog.confirmButtonLabel",
+        "start": {
+          "column": 22,
+          "line": 29
+        }
+      },
+      {
+        "defaultMessage": "!!!<p>The stake from your wallet <strong>{walletName}</strong> is currently delegated to the <strong>[{stakePoolTicker}] {stakePoolName}</strong> stake pool.</p><p>Do you want to undelegate your stake and stop earning rewards?</p>",
+        "description": "Description for the \"Undelegate\" dialog.",
+        "end": {
+          "column": 3,
+          "line": 40
+        },
+        "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
+        "id": "staking.delegationCenter.undelegate.dialog.description",
+        "start": {
+          "column": 15,
+          "line": 35
+        }
+      },
+      {
+        "defaultMessage": "!!!I understand that I am not supporting the Cardano network when my stake is undelegated.",
+        "description": "Label for the unsupport confirmation check in the \"Undelegate\" dialog.",
+        "end": {
+          "column": 3,
+          "line": 47
+        },
+        "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
+        "id": "staking.delegationCenter.undelegate.dialog.confirmUnsupportCheck",
+        "start": {
+          "column": 25,
+          "line": 41
+        }
+      },
+      {
+        "defaultMessage": "!!!I understand that I will not be eligible to earn rewards when my stake is undelegated.",
+        "description": "Label for the uneligible confirmation check in the \"Undelegate\" dialog.",
+        "end": {
+          "column": 3,
+          "line": 54
+        },
+        "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
+        "id": "staking.delegationCenter.undelegate.dialog.confirmUneligibleCheck",
+        "start": {
+          "column": 26,
+          "line": 48
+        }
+      },
+      {
+        "defaultMessage": "!!!Fees",
+        "description": "Fees label in the \"Undelegate\" dialog.",
+        "end": {
+          "column": 3,
+          "line": 59
+        },
+        "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
+        "id": "staking.delegationCenter.undelegate.dialog.feesLabel",
+        "start": {
+          "column": 13,
+          "line": 55
+        }
+      },
+      {
+        "defaultMessage": "!!!ADA",
+        "description": "ADA label in the \"Undelegate\" dialog.",
+        "end": {
+          "column": 3,
+          "line": 64
+        },
+        "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
+        "id": "staking.delegationCenter.undelegate.dialog.adaLabel",
+        "start": {
+          "column": 12,
+          "line": 60
+        }
+      },
+      {
+        "defaultMessage": "!!!Spending password",
+        "description": "Spending password label in the \"Undelegate\" dialog.",
+        "end": {
+          "column": 3,
+          "line": 69
+        },
+        "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
+        "id": "staking.delegationCenter.undelegate.dialog.spendingPasswordLabel",
+        "start": {
+          "column": 25,
+          "line": 65
+        }
+      },
+      {
+        "defaultMessage": "!!!Type your spending password here",
+        "description": "Spending password placeholder in the \"Undelegate\" dialog.",
+        "end": {
+          "column": 3,
+          "line": 75
+        },
+        "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
+        "id": "staking.delegationCenter.undelegate.dialog.spendingPasswordPlaceholder",
+        "start": {
+          "column": 31,
+          "line": 70
+        }
+      },
+      {
+        "defaultMessage": "!!!Incorrect spending password.",
+        "description": "Label for password error in the \"Undelegate\" dialog.",
+        "end": {
+          "column": 3,
+          "line": 80
+        },
+        "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
+        "id": "staking.delegationCenter.undelegate.dialog.passwordError",
+        "start": {
+          "column": 24,
+          "line": 76
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Wallet Undelegated",
+        "description": "Title for the \"Undelegate Result\" dialog.",
+        "end": {
+          "column": 3,
+          "line": 18
+        },
+        "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationResultDialog.js",
+        "id": "staking.delegationCenter.undelegate.result.dialog.title",
+        "start": {
+          "column": 15,
+          "line": 14
+        }
+      },
+      {
+        "defaultMessage": "!!!<p>The stake from your wallet <strong>{walletName}</strong> is no longer delegated and you will soon stop earning rewards for this wallet.</p><p>Your new delegation preferences are now posted on the blockchain <strong>and will take effect at the start of the next Cardano epoch in {timeUntilNextEpochStart}</strong>. For the rest of the current epoch, your previous delegation preferences are still active.</p>",
+        "description": "Description for the \"Undelegate Result\" dialog.",
+        "end": {
+          "column": 3,
+          "line": 24
+        },
+        "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationResultDialog.js",
+        "id": "staking.delegationCenter.undelegate.result.dialog.description",
+        "start": {
+          "column": 15,
+          "line": 19
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationResultDialog.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!{amount} ADA",
         "description": "Amount of each wallet for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 22
+          "line": 23
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.walletAmount",
         "start": {
           "column": 16,
-          "line": 17
+          "line": 18
         }
       },
       {
@@ -2353,13 +2531,13 @@
         "description": "Delegated label for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 27
+          "line": 28
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.delegated",
         "start": {
           "column": 13,
-          "line": 23
+          "line": 24
         }
       },
       {
@@ -2367,41 +2545,41 @@
         "description": "Not-delegated label for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 33
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.notDelegated",
         "start": {
           "column": 16,
-          "line": 28
+          "line": 29
         }
       },
       {
-        "defaultMessage": "!!!Change delegation",
+        "defaultMessage": "!!!Change stake pool",
         "description": "Change delegation label for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 39
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.changeDelegation",
         "start": {
           "column": 20,
-          "line": 33
+          "line": 34
         }
       },
       {
-        "defaultMessage": "!!!Remove delegation",
+        "defaultMessage": "!!!Undelegate",
         "description": "Remove delegation label for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 45
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.removeDelegation",
         "start": {
           "column": 20,
-          "line": 39
+          "line": 40
         }
       },
       {
@@ -2409,13 +2587,13 @@
         "description": "Delegated stake pool ticker for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 50
+          "line": 51
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.toStakePoolTickerPart1",
         "start": {
           "column": 26,
-          "line": 45
+          "line": 46
         }
       },
       {
@@ -2423,13 +2601,13 @@
         "description": "Delegated stake pool ticker for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 56
+          "line": 57
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.toStakePoolTickerPart2",
         "start": {
           "column": 26,
-          "line": 51
+          "line": 52
         }
       },
       {
@@ -2437,13 +2615,13 @@
         "description": "Delegate label for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 61
+          "line": 62
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.delegate",
         "start": {
           "column": 12,
-          "line": 57
+          "line": 58
         }
       },
       {
@@ -2451,13 +2629,13 @@
         "description": "Your stake label for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 66
+          "line": 67
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.yourStake",
         "start": {
           "column": 13,
-          "line": 62
+          "line": 63
         }
       }
     ],
@@ -9124,13 +9302,13 @@
         "description": "\"Learn more\" link URL on the delegation setup \"intro\" dialog.",
         "end": {
           "column": 3,
-          "line": 19
+          "line": 18
         },
         "file": "source/renderer/app/containers/staking/dialogs/DelegationSetupWizardDialogContainer.js",
         "id": "staking.delegationSetup.intro.step.dialog.learnMore.url",
         "start": {
           "column": 20,
-          "line": 14
+          "line": 13
         }
       },
       {
@@ -9138,13 +9316,13 @@
         "description": "Step 1 label text on delegation steps dialog.",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 23
         },
         "file": "source/renderer/app/containers/staking/dialogs/DelegationSetupWizardDialogContainer.js",
         "id": "staking.delegationSetup.steps.step.1.label",
         "start": {
           "column": 29,
-          "line": 20
+          "line": 19
         }
       },
       {
@@ -9152,13 +9330,13 @@
         "description": "Step 2 label text on delegation steps dialog.",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 28
         },
         "file": "source/renderer/app/containers/staking/dialogs/DelegationSetupWizardDialogContainer.js",
         "id": "staking.delegationSetup.steps.step.2.label",
         "start": {
           "column": 29,
-          "line": 25
+          "line": 24
         }
       },
       {
@@ -9166,13 +9344,13 @@
         "description": "Step 3 label text on delegation steps dialog.",
         "end": {
           "column": 3,
-          "line": 34
+          "line": 33
         },
         "file": "source/renderer/app/containers/staking/dialogs/DelegationSetupWizardDialogContainer.js",
         "id": "staking.delegationSetup.steps.step.3.label",
         "start": {
           "column": 29,
-          "line": 30
+          "line": 29
         }
       }
     ],
@@ -9482,17 +9660,31 @@
         }
       },
       {
-        "defaultMessage": "!!!Change",
-        "description": "The word \"change\" reused at several places (like change buttons)",
+        "defaultMessage": "!!!Close",
+        "description": "The word \"close\" reused at several places (like cancel buttons)",
         "end": {
           "column": 3,
           "line": 75
         },
         "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "global.labels.close",
+        "start": {
+          "column": 9,
+          "line": 70
+        }
+      },
+      {
+        "defaultMessage": "!!!Change",
+        "description": "The word \"change\" reused at several places (like change buttons)",
+        "end": {
+          "column": 3,
+          "line": 81
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.change",
         "start": {
           "column": 10,
-          "line": 70
+          "line": 76
         }
       },
       {
@@ -9500,13 +9692,13 @@
         "description": "The word \"create\" reused at several places (like create buttons)",
         "end": {
           "column": 3,
-          "line": 81
+          "line": 87
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.create",
         "start": {
           "column": 10,
-          "line": 76
+          "line": 82
         }
       },
       {
@@ -9514,13 +9706,13 @@
         "description": "The word \"remove\" reused at several places (like remove buttons)",
         "end": {
           "column": 3,
-          "line": 87
+          "line": 93
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.remove",
         "start": {
           "column": 10,
-          "line": 82
+          "line": 88
         }
       },
       {
@@ -9528,13 +9720,13 @@
         "description": "The word \"save\" reused at several places (like save buttons)",
         "end": {
           "column": 3,
-          "line": 92
+          "line": 98
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.save",
         "start": {
           "column": 8,
-          "line": 88
+          "line": 94
         }
       },
       {
@@ -9542,13 +9734,13 @@
         "description": "Language name for \"English\" language.",
         "end": {
           "column": 3,
-          "line": 97
+          "line": 103
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.language.english",
         "start": {
           "column": 19,
-          "line": 93
+          "line": 99
         }
       },
       {
@@ -9556,13 +9748,13 @@
         "description": "Language name for \"Japanese\" language.",
         "end": {
           "column": 3,
-          "line": 102
+          "line": 108
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.language.japanese",
         "start": {
           "column": 20,
-          "line": 98
+          "line": 104
         }
       },
       {
@@ -9570,13 +9762,13 @@
         "description": "Language name for \"Chinese\" language.",
         "end": {
           "column": 3,
-          "line": 107
+          "line": 113
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.language.chinese",
         "start": {
           "column": 19,
-          "line": 103
+          "line": 109
         }
       },
       {
@@ -9584,13 +9776,13 @@
         "description": "Language name for \"Korean\" language.",
         "end": {
           "column": 3,
-          "line": 112
+          "line": 118
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.language.korean",
         "start": {
           "column": 18,
-          "line": 108
+          "line": 114
         }
       },
       {
@@ -9598,13 +9790,13 @@
         "description": "Language name for \"German\" language.",
         "end": {
           "column": 3,
-          "line": 117
+          "line": 123
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.language.german",
         "start": {
           "column": 18,
-          "line": 113
+          "line": 119
         }
       },
       {
@@ -9612,13 +9804,13 @@
         "description": "Language name for \"Croatian\" language.",
         "end": {
           "column": 3,
-          "line": 122
+          "line": 128
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.language.croatian",
         "start": {
           "column": 20,
-          "line": 118
+          "line": 124
         }
       },
       {
@@ -9626,13 +9818,13 @@
         "description": "Colon punctuation.",
         "end": {
           "column": 3,
-          "line": 127
+          "line": 133
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.punctuation.colon",
         "start": {
           "column": 20,
-          "line": 123
+          "line": 129
         }
       },
       {
@@ -9640,13 +9832,13 @@
         "description": "Final dot punctuation.",
         "end": {
           "column": 3,
-          "line": 132
+          "line": 138
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.punctuation.dot",
         "start": {
           "column": 18,
-          "line": 128
+          "line": 134
         }
       },
       {
@@ -9654,13 +9846,13 @@
         "description": "Name for \"ADA\" unit.",
         "end": {
           "column": 3,
-          "line": 137
+          "line": 143
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.unit.ada",
         "start": {
           "column": 11,
-          "line": 133
+          "line": 139
         }
       },
       {
@@ -9668,13 +9860,13 @@
         "description": "Title for the \"Recovery Phrase\" dialog.",
         "end": {
           "column": 3,
-          "line": 142
+          "line": 148
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "wallet.backup.recovery.phrase.dialog.title",
         "start": {
           "column": 29,
-          "line": 138
+          "line": 144
         }
       },
       {
@@ -9682,13 +9874,13 @@
         "description": "Label for the \"Wallet password\" input in the create wallet dialog.",
         "end": {
           "column": 3,
-          "line": 148
+          "line": 154
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.spendingPasswordLabel",
         "start": {
           "column": 25,
-          "line": 143
+          "line": 149
         }
       },
       {
@@ -9696,13 +9888,13 @@
         "description": "Placeholder for the \"Password\" inputs in the create wallet dialog.",
         "end": {
           "column": 3,
-          "line": 154
+          "line": 160
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.spendingPasswordPlaceholder",
         "start": {
           "column": 31,
-          "line": 149
+          "line": 155
         }
       },
       {
@@ -9710,13 +9902,13 @@
         "description": "Label \"Continue\" in dialogs.",
         "end": {
           "column": 3,
-          "line": 159
+          "line": 165
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.dialog.button.continue",
         "start": {
           "column": 29,
-          "line": 155
+          "line": 161
         }
       },
       {
@@ -9724,13 +9916,13 @@
         "description": "URL for the \"Known Issues\" link in the \"Help and support\" section on the support settings page",
         "end": {
           "column": 3,
-          "line": 166
+          "line": 172
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "settings.support.faq.faqLinkURL",
         "start": {
           "column": 14,
-          "line": 160
+          "line": 166
         }
       },
       {
@@ -9738,13 +9930,13 @@
         "description": "Name for \"Ada\" unit.",
         "end": {
           "column": 3,
-          "line": 171
+          "line": 177
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.currency.ada",
         "start": {
           "column": 12,
-          "line": 167
+          "line": 173
         }
       },
       {
@@ -9752,13 +9944,13 @@
         "description": "Name for \"Cardano\" client.",
         "end": {
           "column": 3,
-          "line": 176
+          "line": 182
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.apiName.cardano",
         "start": {
           "column": 11,
-          "line": 172
+          "line": 178
         }
       },
       {
@@ -9766,13 +9958,13 @@
         "description": "\"mainnet\" Cardano network",
         "end": {
           "column": 3,
-          "line": 181
+          "line": 187
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.mainnet",
         "start": {
           "column": 19,
-          "line": 177
+          "line": 183
         }
       },
       {
@@ -9780,13 +9972,13 @@
         "description": "\"staging\" Cardano network",
         "end": {
           "column": 3,
-          "line": 186
+          "line": 192
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.staging",
         "start": {
           "column": 19,
-          "line": 182
+          "line": 188
         }
       },
       {
@@ -9794,13 +9986,13 @@
         "description": "\"testnet\" Cardano network",
         "end": {
           "column": 3,
-          "line": 191
+          "line": 197
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.testnet",
         "start": {
           "column": 19,
-          "line": 187
+          "line": 193
         }
       },
       {
@@ -9808,13 +10000,13 @@
         "description": "\"development\" Cardano network",
         "end": {
           "column": 3,
-          "line": 196
+          "line": 202
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.development",
         "start": {
           "column": 23,
-          "line": 192
+          "line": 198
         }
       },
       {
@@ -9822,13 +10014,13 @@
         "description": "\"itn_rewards_v1\" Cardano network",
         "end": {
           "column": 3,
-          "line": 201
+          "line": 207
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.itn_rewards_v1",
         "start": {
           "column": 26,
-          "line": 197
+          "line": 203
         }
       },
       {
@@ -9836,13 +10028,13 @@
         "description": "\"selfnode\" Cardano network",
         "end": {
           "column": 3,
-          "line": 206
+          "line": 212
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.selfnode",
         "start": {
           "column": 20,
-          "line": 202
+          "line": 208
         }
       },
       {
@@ -9850,13 +10042,13 @@
         "description": "\"qa\" Cardano network",
         "end": {
           "column": 3,
-          "line": 211
+          "line": 217
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.qa",
         "start": {
           "column": 14,
-          "line": 207
+          "line": 213
         }
       },
       {
@@ -9864,13 +10056,13 @@
         "description": "\"nightly\" Cardano network",
         "end": {
           "column": 3,
-          "line": 216
+          "line": 222
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.nightly",
         "start": {
           "column": 19,
-          "line": 212
+          "line": 218
         }
       }
     ],
