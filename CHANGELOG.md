@@ -29,9 +29,10 @@ Changelog
 
 ### Chores
 
+- Updated `cardano-wallet` to revision `d4571952` which includes Jormungandr 0.8.0-rc8 ([PR 1749](https://github.com/input-output-hk/daedalus/pull/1749))
 - Improved the unit and e2e test setup ([PR 1743](https://github.com/input-output-hk/daedalus/pull/1743))
 - Updated to react-polymorph@0.9.0-rc.25 which includes a theme var for checkbox icon color (([PR 1742](https://github.com/input-output-hk/daedalus/pull/1742)))
-- Updated `cardano-wallet` to latest master branch revision which includes Jormungandr 0.8.0-rc7 ([PR 1739](https://github.com/input-output-hk/daedalus/pull/1739))
+- Updated `cardano-wallet` to revision `833f9d4e` which includes Jormungandr 0.8.0-rc7 ([PR 1739](https://github.com/input-output-hk/daedalus/pull/1739))
 - Updated stake header info component and adds new information with the countdown timer for next epoch ([PR 1729](https://github.com/input-output-hk/daedalus/pull/1729))
 - Removed "StakePool" from Wallet domain ([PR 1738](https://github.com/input-output-hk/daedalus/pull/1738))
 - Refactored wallet navigation to use new React-Polymorph Dropdown component ([PR 1593](https://github.com/input-output-hk/daedalus/pull/1593))
