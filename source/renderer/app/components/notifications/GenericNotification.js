@@ -2,13 +2,11 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { intlShape } from 'react-intl';
-import classNames from 'classnames';
 import Action from '../../actions/lib/Action';
 import NotificationMessage from '../widgets/NotificationMessage';
 import successIcon from '../../assets/images/success-small.inline.svg';
 import spinnerIcon from '../../assets/images/spinner-dark.inline.svg';
 import type { Props as NotificationMessageProps } from '../widgets/NotificationMessage';
-import styles from './GenericNotification.scss';
 
 type Props = {
   ...$Exact<NotificationMessageProps>,
@@ -26,7 +24,7 @@ type Props = {
    * Extra props from NotificationMessageProps.js:
    *
    * {
-   *   show: boolean,
+   *   isVisible: boolean,
    *   children?: Node,
    *   clickToClose?: boolean,
    *   hasCloseButton?: boolean,
@@ -87,7 +85,7 @@ export default class GenericNotification extends Component<Props> {
   render() {
     const {
       children,
-      show,
+      isVisible,
       hasCloseButton,
       clickToClose,
       order,
@@ -95,27 +93,24 @@ export default class GenericNotification extends Component<Props> {
       themeOverride,
     } = this.props;
 
-    let { icon, iconStyle } = this.props;
+    let { icon } = this.props;
     if (icon === 'success') icon = successIcon;
     if (icon === 'spinner') {
       icon = spinnerIcon;
-      iconStyle = styles.spinnerIcon;
     }
-
-    const childrenStyles = classNames([hasEllipsis ? styles.ellipsis : null]);
 
     return (
       <NotificationMessage
         icon={icon}
-        iconStyle={iconStyle}
-        show={show}
+        isVisible={isVisible}
         onClose={this.closeNotification}
         hasCloseButton={hasCloseButton}
         clickToClose={clickToClose}
         order={order}
         themeOverride={themeOverride}
+        hasEllipsis={hasEllipsis}
       >
-        <div className={childrenStyles}>{children}</div>
+        <div>{children}</div>
       </NotificationMessage>
     );
   }

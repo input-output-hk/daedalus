@@ -13,6 +13,7 @@ export default class AppActions {
 
   showNotification: Action<{
     notificationId: string,
+    notification: Object,
   }> = new Action();
 
   hideNoticiation: Action<{
