@@ -110,12 +110,10 @@ export default class SidebarStore extends Store {
 
   _syncSidebarWithNetworkStatus = () => {
     const { networkStatus } = this.stores;
-    if (networkStatus.environment.isDev) {
-      if (networkStatus.isIncentivizedTestnet) {
-        this.CATEGORIES = sidebarConfig.CATEGORIES_WITHOUT_DELEGATION_COUNTDOWN;
-      } else {
-        this.CATEGORIES = sidebarConfig.CATEGORIES_WITH_STAKING;
-      }
+    if (networkStatus.isIncentivizedTestnet) {
+      this.CATEGORIES = sidebarConfig.CATEGORIES_WITHOUT_DELEGATION_COUNTDOWN;
+    } else {
+      this.CATEGORIES = sidebarConfig.CATEGORIES_WITH_STAKING;
     }
   };
 }
