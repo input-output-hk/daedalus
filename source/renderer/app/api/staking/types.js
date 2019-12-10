@@ -65,24 +65,13 @@ export type JoinStakePoolRequest = {
   passphrase: string,
 };
 
-export type StakePoolJoinFee = {
+export type GetDelegationFeeRequest = {
+  walletId: string,
+};
+
+export type DelegationFee = {
   amount: {
     quantity: number,
     unit: WalletUnits.LOVELACE,
   },
-};
-
-export type StakePoolQuitFee = {
-  amount: {
-    quantity: number,
-    unit: WalletUnits.LOVELACE,
-  },
-};
-
-export type EstimateQuitFeeRequest = {
-  walletId: string,
-};
-
-export type EstimateJoinFeeRequest = {
-  walletId: string,
 };

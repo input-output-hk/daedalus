@@ -311,7 +311,7 @@
   "staking.delegationSetup.chooseStakePool.step.dialog.title": "ウォレットを委任する",
   "staking.delegationSetup.chooseWallet.step.dialog.continueButtonLabel": "続ける",
   "staking.delegationSetup.chooseWallet.step.dialog.description": "委任をする資金の入ったウォレットを選んでください。委任を有効にするためには選択されたウォレットに<span>{minDelegationFunds}ADA以上</span>の資金が入っている必要があります。",
-  "staking.delegationSetup.chooseWallet.step.dialog.errorMessage": "選択されたウォレットには委任を有効にするために必要な最低額1ADAが入っていません。<span>{minDelegationFunds}ADA以上</span>入っているウォレットを選択して、[続ける]をクリックしてください。",
+  "staking.delegationSetup.chooseWallet.step.dialog.errorMessage": "選択されたウォレットには委任を有効にするために必要な最低額{minDelegationFunds}ADAが入っていません。<span>{minDelegationFunds}ADA以上</span>入っているウォレットを選択して、[続ける]をクリックしてください。",
   "staking.delegationSetup.chooseWallet.step.dialog.selectWalletInputLabel": "ウォレット",
   "staking.delegationSetup.chooseWallet.step.dialog.selectWalletInputPlaceholder": "ウォレットを選択してください",
   "staking.delegationSetup.chooseWallet.step.dialog.stepIndicatorLabel": "ステップ{currentStep}/{totalSteps}",
