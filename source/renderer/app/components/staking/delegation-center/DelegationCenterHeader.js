@@ -101,7 +101,8 @@ export default class DelegationCenterHeader extends Component<Props> {
       totalSlots
     );
 
-    const nextEpochDateDifference = new Date(nextEpochStart).getTime() - new Date().getTime();
+    const nextEpochDateDifference =
+      new Date(nextEpochStart).getTime() - new Date().getTime();
 
     const showNextEpochCountdown =
       nextEpochNumber > 0 && nextEpochDateDifference > 0;
