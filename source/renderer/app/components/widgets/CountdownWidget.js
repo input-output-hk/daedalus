@@ -49,6 +49,7 @@ type Props = {
   redirectToStakingInfo?: Function,
   nextEpochStart?: string,
   startDateTime?: string,
+  hideYearsMonths?: boolean,
 };
 type State = { timeLeft: number };
 
@@ -101,15 +102,15 @@ export default class CountdownWidget extends Component<Props, State> {
   generateFieldPanel = (labels: any, values: any, index: number) => {
     const value = values[index];
     const includeDelimeter = index !== values.length - 1;
+    const labelStr = labels[index];
+    const { hideYearsMonths } = this.props;
     const shouldBeHidden =
       values.slice(0, index).reduce((acc, val) => acc + val, 0) === 0 &&
-      value === 0;
-
+      value === 0 && hideYearsMonths && (labelStr === 'years' || labelStr === 'months');
     if (shouldBeHidden) {
       return null;
     }
 
-    const labelStr = labels[index];
     let valueStr = value.toString();
     valueStr = valueStr.length === 1 ? `0${valueStr}` : valueStr;
 
