@@ -71,7 +71,7 @@ export default class CountdownWidget extends Component<Props, State> {
   }
 
   updateTimeLeft = () => {
-    const { redirectToStakingInfo, startDateTime, nextEpochStart } = this.props;
+    const { redirectToStakingInfo, startDateTime, nextEpochStart, hideYearsMonths } = this.props;
     const startDateString = startDateTime || nextEpochStart;
     if (startDateString) {
       const timeLeft = Math.max(
@@ -81,7 +81,7 @@ export default class CountdownWidget extends Component<Props, State> {
 
       this.setState({ timeLeft });
 
-      if (timeLeft === 0) {
+      if (timeLeft === 0 && !hideYearsMonths) {
         if (this.intervalHandler) {
           clearInterval(this.intervalHandler);
         }
