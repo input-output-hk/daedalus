@@ -1,9 +1,5 @@
-$maxWidth1: 438px;
-$maxWidth2: 476px;
-$maxWidth3: 523px;
-$maxWidth4: 570px;
-$maxWidth5: none;
-$itnDecrease: 50px;
+$bg1: var(--theme-bordered-box-background-color);
+$bg0: rgba(0, 0, 0, 0);
 
 .component {
   box-sizing: border-box;
@@ -23,43 +19,61 @@ $itnDecrease: 50px;
 }
 .addressId {
   cursor: default;
+  display: flex;
+  flex-direction: row;
   flex-grow: 1;
   font-family: var(--font-mono);
   letter-spacing: -0.4px;
   margin-right: 4px;
   overflow: hidden;
+  position: relative;
   user-select: none;
   white-space: nowrap;
 
-  &.isShowingSubMenus {
-    max-width: $maxWidth1;
-    @media (min-width: 950px) {
-      max-width: $maxWidth2;
+  .addressElement {
+    position: absolute;
+    visibility: hidden;
+  }
+  .ellipsis {
+    left: 50%;
+    margin-left: -5px;
+    position: absolute;
+    text-align: center;
+    width: 10px;
+  }
+  .addressIdBegin,
+  .addressIdEnd {
+    flex-shrink: 0;
+    max-width: 50%;
+    overflow: hidden;
+    position: relative;
+    white-space: nowrap;
+    &:after {
+      background: rgb(255, 255, 255);
+      bottom: 0;
+      position: absolute;
+      top: 0;
+      width: 15px;
     }
-    @media (min-width: 1000px) {
-      max-width: $maxWidth3;
+  }
+  .addressIdBegin {
+    &:after {
+      background: linear-gradient(90deg, $bg0 0%, $bg1 50%);
+      right: -1px;
     }
-    @media (min-width: 1050px) {
-      max-width: $maxWidth4;
+  }
+  .addressIdEnd {
+    direction: rtl;
+    &:after {
+      background: linear-gradient(90deg, $bg1 50%, $bg0 100%);
+      left: -1px;
     }
-    @media (min-width: 1081px) {
-      max-width: none;
-    }
-
-    &.isIncentivizedTestnet {
-      max-width: $maxWidth1 - $itnDecrease;
-
-      @media (min-width: 950px) {
-        max-width: $maxWidth2 - $itnDecrease;
-      }
-      @media (min-width: 1000px) {
-        max-width: $maxWidth3 - $itnDecrease;
-      }
-      @media (min-width: 1050px) {
-        max-width: $maxWidth4 - $itnDecrease;
-      }
-      @media (min-width: 1110px) {
-        max-width: none;
+  }
+  &.ellipsisIsVisible {
+    .addressIdBegin,
+    .addressIdEnd {
+      &:after {
+        content: '';
       }
     }
   }
@@ -67,11 +81,9 @@ $itnDecrease: 50px;
 .addressActions {
   display: flex;
   flex-direction: row;
+  flex-shrink: 0;
   height: 18px;
   justify-content: flex-end;
-  width: 90px;
-
-  // background: pink;
 }
 .invalidAddress {
   & > svg {
@@ -82,7 +94,6 @@ $itnDecrease: 50px;
 .shareAddressButton {
   cursor: pointer;
   line-height: 1.36;
-  margin-left: 22.5px;
   white-space: nowrap;
 }
 .shareIcon {

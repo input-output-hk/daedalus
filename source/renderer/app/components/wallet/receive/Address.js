@@ -8,7 +8,6 @@ import styles from './Address.scss';
 import iconQR from '../../../assets/images/qr-code.inline.svg';
 import iconCopy from '../../../assets/images/clipboard-ic.inline.svg';
 import WalletAddress from '../../../domains/WalletAddress';
-import { ellipsis } from '../../../utils/strings';
 
 type Props = {
   address: WalletAddress,
@@ -16,24 +15,36 @@ type Props = {
   onCopyAddress: Function,
   shareAddressLabel: string,
   copyAddressLabel: string,
-  currentLocale: string,
   isIncentivizedTestnet: boolean,
-  isShowingSubMenus: boolean,
-  minCharsInit: number,
-  minCharsEnd?: ?number,
+  shouldRegisterAddressElement: boolean,
+  onRegisterHTMLElements: Function,
+  addressSlice: number,
 };
 
 @observer
 export default class Address extends Component<Props> {
-  get hasEllipsis() {
-    const {
-      isIncentivizedTestnet,
-      isShowingSubMenus,
-      currentLocale,
-    } = this.props;
-    return (
-      isShowingSubMenus || (isIncentivizedTestnet && currentLocale === 'ja-JP')
-    );
+  addressElement: ?HTMLElement;
+  addressContainerElement: ?HTMLElement;
+
+  componentDidMount() {
+    if (this.props.shouldRegisterAddressElement) {
+      this.props.onRegisterHTMLElements(
+        this.addressElement,
+        this.addressContainerElement
+      );
+    }
+  }
+  get rawAddress() {
+    return this.props.address.id;
+  }
+
+  get renderAddress() {
+    const { rawAddress } = this;
+    const { addressSlice } = this.props;
+    if (!addressSlice) return rawAddress;
+    const addressBegin = rawAddress.slice(0, addressSlice);
+    const addressEnd = rawAddress.slice(-addressSlice);
+    return `${addressBegin}…${addressEnd}`;
   }
 
   render() {
@@ -44,26 +55,35 @@ export default class Address extends Component<Props> {
       shareAddressLabel,
       copyAddressLabel,
       isIncentivizedTestnet,
-      isShowingSubMenus,
-      minCharsInit,
-      minCharsEnd,
+      shouldRegisterAddressElement,
     } = this.props;
+    const { renderAddress, rawAddress } = this;
     const addressClasses = classnames([
-      `receiveAddress-${address.id}`,
+      `receiveAddress-${rawAddress}`,
       styles.component,
       address.used ? styles.usedWalletAddress : null,
     ]);
-    const addressIdClasses = classnames([
-      styles.addressId,
-      isIncentivizedTestnet ? styles.isIncentivizedTestnet : null,
-      isShowingSubMenus ? styles.isShowingSubMenus : null,
-    ]);
+    const addressIdClasses = classnames([styles.addressId]);
     return (
       <div className={addressClasses}>
-        <div className={addressIdClasses} id={`address-${address.id}`}>
-          {this.hasEllipsis
-            ? ellipsis(address.id, minCharsInit, minCharsEnd)
-            : address.id}
+        <div
+          className={addressIdClasses}
+          ref={ref => {
+            this.addressContainerElement = ref;
+          }}
+          id={`address-${rawAddress}`}
+        >
+          {renderAddress}
+          {shouldRegisterAddressElement && (
+            <span
+              ref={ref => {
+                this.addressElement = ref;
+              }}
+              className={styles.addressElement}
+            >
+              {rawAddress}
+            </span>
+          )}
         </div>
         <div className={styles.addressActions}>
           {!isIncentivizedTestnet ? (
@@ -78,8 +98,8 @@ export default class Address extends Component<Props> {
             </button>
           ) : (
             <CopyToClipboard
-              text={address.id}
-              onCopy={() => onCopyAddress(address.id)}
+              text={rawAddress}
+              onCopy={() => onCopyAddress(rawAddress)}
             >
               <span className={styles.copyAddress}>
                 <SVGInline svg={iconCopy} className={styles.copyIcon} />
