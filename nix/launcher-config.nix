@@ -16,6 +16,11 @@ let
   installDirectorySuffix.nightly = "Nightly";
   installDirectorySuffix.itn_rewards_v1 = "- Rewards v1";
 
+  registryUrl.beta = "https://explorer.beta.jormungandr-testnet.iohkdev.io/stakepool-registry.json";
+  registryUrl.qa = "https://explorer.qa.jormungandr-testnet.iohkdev.io/stakepool-registry.json";
+  registryUrl.nightly = "https://github.com/input-output-hk/testnet-stake-pool-registry/blob/master/stakepool-registry.json";
+  registryUrl.itn_rewards_v1 = "https://github.com/cardano-foundation/incentivized-testnet-stake-pool-registry/blob/master/stakepool-registry.json";
+
   spacedName = "Daedalus ${installDirectorySuffix.${environment}}";
 
   dataDir.linux = "\${XDG_DATA_HOME}/Daedalus/${environment}";
@@ -83,6 +88,7 @@ let
     launcherLogsPrefix = launcherLogsPrefix.${os};
     cliBin = cliBin.${os};
     workingDir = dataDir.${os};
+    registryUrl = registryUrl.${environment};
     frontendOnlyMode = true;
     nodeLogPath = null;
     logsPrefix = logsPrefix.${os};
