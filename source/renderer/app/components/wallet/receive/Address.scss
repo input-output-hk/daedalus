@@ -84,6 +84,9 @@ $bg0: rgba(0, 0, 0, 0);
   height: 18px;
   justify-content: flex-end;
   width: 90px;
+  &.itn {
+    width: 110px;
+  }
 }
 .invalidAddress {
   & > svg {
