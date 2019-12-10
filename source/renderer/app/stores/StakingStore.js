@@ -9,9 +9,8 @@ import { RECENT_STAKE_POOLS_COUNT } from '../config/stakingConfig';
 import type {
   Reward,
   RewardForIncentivizedTestnet,
-  EstimateQuitFeeRequest,
   JoinStakePoolRequest,
-  EstimateJoinFeeRequest,
+  GetDelegationFeeRequest,
 } from '../api/staking/types';
 import Wallet from '../domains/Wallet';
 import StakePool from '../domains/StakePool';
@@ -63,9 +62,10 @@ export default class StakingStore extends Store {
     this.stores.wallets.refreshWalletsData();
   };
 
-  // @API TODO - integrate real API V2 endpoint once is available
-  estimateQuitFee = async (estimateQuitFeeRequest: EstimateQuitFeeRequest) => {
-    const { walletId } = estimateQuitFeeRequest;
+  calculateDelegationFee = async (
+    delegationFeeRequest: GetDelegationFeeRequest
+  ) => {
+    const { walletId } = delegationFeeRequest;
     const wallet = this.stores.wallets.getWalletById(walletId);
 
     if (!wallet) {
@@ -74,24 +74,8 @@ export default class StakingStore extends Store {
       );
     }
 
-    return this.api.ada.estimateQuitFee({
-      ...estimateQuitFeeRequest,
-    });
-  };
-
-  // @API TODO - integrate real API V2 endpoint once is available
-  estimateJoinFee = async (estimateJoinFeeRequest: EstimateJoinFeeRequest) => {
-    const { walletId } = estimateJoinFeeRequest;
-    const wallet = this.stores.wallets.getWalletById(walletId);
-
-    if (!wallet) {
-      throw new Error(
-        'Active wallet required before calculating transaction fees.'
-      );
-    }
-
-    return this.api.ada.estimateJoinFee({
-      ...estimateJoinFeeRequest,
+    return this.api.ada.calculateDelegationFee({
+      ...delegationFeeRequest,
     });
   };
 
