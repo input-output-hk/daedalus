@@ -2,19 +2,20 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { BigNumber } from 'bignumber.js';
-import DelegationStepsActivationDialog from './DelegationStepsActivationDialog';
+import { get } from 'lodash';
+import DelegationStepsSuccessDialog from './DelegationStepsSuccessDialog';
 import DelegationStepsChooseWalletDialog from './DelegationStepsChooseWalletDialog';
 import DelegationStepsConfirmationDialog from './DelegationStepsConfirmationDialog';
 import DelegationStepsIntroDialog from './DelegationStepsIntroDialog';
 import DelegationStepsNotAvailableDialog from './DelegationStepsNotAvailableDialog';
 import DelegationStepsChooseStakePoolDialog from './DelegationStepsChooseStakePoolDialog';
+import LocalizableError from '../../../i18n/LocalizableError';
 import StakePool from '../../../domains/StakePool';
 import Wallet from '../../../domains/Wallet';
 
 type Props = {
   activeStep: number,
   isDisabled: boolean,
-  onActivate: Function,
   onBack: Function,
   onClose: Function,
   onConfirm: Function,
@@ -26,23 +27,39 @@ type Props = {
   stepsList: Array<string>,
   wallets: Array<Wallet>,
   minDelegationFunds: number,
-  stakePoolsDelegatingList: Array<StakePool>,
+  recentStakePools: Array<StakePool>,
   stakePoolsList: Array<StakePool>,
   onOpenExternalLink: Function,
   getPledgeAddressUrl: Function,
   currentTheme: string,
-  selectedWalletId: string,
+  selectedWallet: ?Wallet,
   selectedPool: ?StakePool,
+  stakePoolJoinFee: ?BigNumber,
+  isSubmitting: boolean,
+  error: ?LocalizableError,
+  nextEpochStartTime: string,
+  currentLocale: string,
   getStakePoolById: Function,
 };
 
 @observer
 export default class DelegationSetupWizardDialog extends Component<Props> {
+  componentWillReceiveProps(nextProps: Props) {
+    // On confirm delegation step, wait for API stake pool "join" endpoint response
+    // and redirect to "Ta-Da" step
+    if (
+      this.props.isSubmitting &&
+      !nextProps.isSubmitting &&
+      !nextProps.error
+    ) {
+      this.props.onContinue();
+    }
+  }
+
   render() {
     const {
       activeStep,
       isDisabled,
-      onActivate,
       onBack,
       onClose,
       onConfirm,
@@ -53,16 +70,23 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
       stepsList,
       wallets,
       minDelegationFunds,
-      stakePoolsDelegatingList,
+      recentStakePools,
       stakePoolsList,
       onOpenExternalLink,
       getPledgeAddressUrl,
       currentTheme,
-      selectedWalletId,
+      selectedWallet,
       selectedPool,
       isWalletAcceptable,
+      stakePoolJoinFee,
+      nextEpochStartTime,
+      currentLocale,
+      isSubmitting,
+      error,
       getStakePoolById,
     } = this.props;
+
+    const selectedWalletId = get(selectedWallet, 'id', null);
 
     if (isDisabled) {
       return (
@@ -95,8 +119,9 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
         content = (
           <DelegationStepsChooseStakePoolDialog
             stepsList={stepsList}
-            stakePoolsDelegatingList={stakePoolsDelegatingList}
+            recentStakePools={recentStakePools}
             stakePoolsList={stakePoolsList}
+            selectedWallet={selectedWallet}
             onOpenExternalLink={onOpenExternalLink}
             getPledgeAddressUrl={getPledgeAddressUrl}
             currentTheme={currentTheme}
@@ -110,23 +135,26 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
       case 3:
         content = (
           <DelegationStepsConfirmationDialog
-            fees={new BigNumber(0.172081)}
+            transactionFee={stakePoolJoinFee}
+            selectedPool={selectedPool}
+            selectedWallet={selectedWallet}
             stepsList={stepsList}
             onClose={onClose}
             onConfirm={onConfirm}
             onBack={onBack}
+            isSubmitting={isSubmitting}
+            error={error}
           />
         );
         break;
       case 4:
         content = (
-          <DelegationStepsActivationDialog
-            amount={new BigNumber(3)}
-            fees={new BigNumber(0.172081)}
-            stepsList={stepsList}
+          <DelegationStepsSuccessDialog
+            delegatedWallet={selectedWallet}
+            delegatedStakePool={selectedPool}
+            nextEpochStartTime={nextEpochStartTime}
+            currentLocale={currentLocale}
             onClose={onClose}
-            onActivate={onActivate}
-            onBack={onBack}
           />
         );
         break;

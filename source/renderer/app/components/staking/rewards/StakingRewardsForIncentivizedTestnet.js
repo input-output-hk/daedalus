@@ -8,7 +8,7 @@ import classNames from 'classnames';
 import moment from 'moment';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
-import { SIMPLE_DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
+import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import { StakingPageScrollContext } from '../layouts/StakingWithNavigation';
 import BorderedBox from '../../widgets/BorderedBox';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
@@ -113,7 +113,7 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
     const exportedBody = sortedRewards.map(reward => {
       const rewardWallet = get(reward, 'wallet');
       const rewardAmount = get(reward, 'reward').toFormat(
-        SIMPLE_DECIMAL_PLACES_IN_ADA
+        DECIMAL_PLACES_IN_ADA
       );
 
       return [rewardWallet, `${rewardAmount} ADA`, date];
@@ -222,7 +222,7 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
                     {map(sortedRewards, (reward, key) => {
                       const rewardWallet = get(reward, 'wallet');
                       const rewardAmount = get(reward, 'reward').toFormat(
-                        SIMPLE_DECIMAL_PLACES_IN_ADA
+                        DECIMAL_PLACES_IN_ADA
                       );
 
                       return (

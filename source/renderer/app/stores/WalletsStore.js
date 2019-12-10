@@ -41,6 +41,7 @@ import type {
 import type {
   TransferFundsCalculateFeeRequest,
   TransferFundsRequest,
+  QuitStakePoolResponse,
 } from '../api/wallets/types';
 /* eslint-disable consistent-return */
 
@@ -84,11 +85,16 @@ export default class WalletsStore extends Store {
     ALREADY_CHECKED: 'alreadyChecked',
   };
 
+  @observable undelegateWalletSubmissionSuccess: ?boolean = null;
   // REQUESTS
   @observable active: ?Wallet = null;
   @observable activeValue: ?BigNumber = null;
   @observable walletsRequest: Request<Array<Wallet>> = new Request(
     this.api.ada.getWallets
+  );
+  @observable
+  quitStakePoolRequest: Request<QuitStakePoolResponse> = new Request(
+    this.api.ada.quitStakePool
   );
   @observable importFromFileRequest: Request<Wallet> = new Request(
     this.api.ada.importWalletFromFile
@@ -210,6 +216,10 @@ export default class WalletsStore extends Store {
     walletsActions.createWalletClose.listen(this._createWalletClose);
     // ---
     walletsActions.deleteWallet.listen(this._deleteWallet);
+    walletsActions.undelegateWallet.listen(this._undelegateWallet);
+    walletsActions.setUndelegateWalletSubmissionSuccess.listen(
+      this._setUndelegateWalletSubmissionSuccess
+    );
     walletsActions.sendMoney.listen(this._sendMoney);
     walletsActions.restoreWallet.listen(this._restoreWallet);
     walletsActions.importWalletFromFile.listen(this._importWalletFromFile);
@@ -341,6 +351,30 @@ export default class WalletsStore extends Store {
     this._resumePolling();
     this.deleteWalletRequest.reset();
     this.refreshWalletsData();
+  };
+
+  _undelegateWallet = async (params: {
+    walletId: string,
+    stakePoolId: string,
+    passphrase: string,
+  }) => {
+    const walletToUndelegate = this.getWalletById(params.walletId);
+    if (!walletToUndelegate) {
+      return;
+    }
+    await this.quitStakePoolRequest.execute(params);
+    this._setUndelegateWalletSubmissionSuccess({ result: true });
+    this.quitStakePoolRequest.reset();
+    this.refreshWalletsData();
+  };
+
+  _setUndelegateWalletSubmissionSuccess = ({ result }: { result: boolean }) => {
+    runInAction(
+      'AdaWalletsStore::_setUndelegateWalletSubmissionSuccess',
+      () => {
+        this.undelegateWalletSubmissionSuccess = result;
+      }
+    );
   };
 
   _restore = async (params: {

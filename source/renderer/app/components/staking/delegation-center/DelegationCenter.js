@@ -8,8 +8,9 @@ import type { NextEpoch, TipInfo } from '../../../api/network/types';
 
 type Props = {
   wallets: Array<Wallet>,
-  onDelegate: Function,
   numberOfStakePools: number,
+  onDelegate: Function,
+  onUndelegate: Function,
   networkTip: ?TipInfo,
   nextEpoch: ?NextEpoch,
   getStakePoolById: Function,
@@ -20,8 +21,9 @@ export default class DelegationCenter extends Component<Props> {
   render() {
     const {
       wallets,
-      onDelegate,
       numberOfStakePools,
+      onDelegate,
+      onUndelegate,
       networkTip,
       nextEpoch,
       getStakePoolById,
@@ -32,8 +34,9 @@ export default class DelegationCenter extends Component<Props> {
         <DelegationCenterHeader networkTip={networkTip} nextEpoch={nextEpoch} />
         <DelegationCenterBody
           wallets={wallets}
-          onDelegate={onDelegate}
           numberOfStakePools={numberOfStakePools}
+          onDelegate={onDelegate}
+          onUndelegate={onUndelegate}
           getStakePoolById={getStakePoolById}
         />
       </Fragment>

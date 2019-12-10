@@ -20,6 +20,10 @@ import { StakingRewardsStory } from './Rewards.stories';
 import { StakingDelegationCenterStory } from './DelegationCenter.stories';
 import { StakingEpochsStory } from './Epochs.stories';
 import { StakingDelegationSteps } from './DelegationSteps.stories';
+import {
+  StakingUndelegateConfirmationStory,
+  StakingUndelegateConfirmationResultStory,
+} from './Undelegate.stories';
 
 const defaultPercentage = 10;
 const defaultStartDateTime = new Date('2019-12-31');
@@ -130,10 +134,24 @@ storiesOf('Decentralization | Staking', module)
     {
       id: 'info',
     }
-  );
-
-storiesOf('Decentralization | Wizard', module)
-  .addDecorator(decorator)
+  )
   .add('Delegation Wizard', props => <StakingDelegationSteps {...props} />, {
     id: 'wizard',
-  });
+  })
+  .add(
+    'Delegation Wizard - Delegation Not Available',
+    props => <StakingDelegationSteps {...props} isDisabled />,
+    {
+      id: 'wizard',
+    }
+  )
+  .add('Undelegate Confirmation', StakingUndelegateConfirmationStory, {
+    id: 'undelegate-confirmation',
+  })
+  .add(
+    'Undelegate Confirmation Result',
+    StakingUndelegateConfirmationResultStory,
+    {
+      id: 'undelegate-confirmation-result',
+    }
+  );
