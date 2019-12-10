@@ -63,6 +63,7 @@ storiesOf('Settings|General', module)
       localizedTermsOfUse={require(`../../../../source/renderer/app/i18n/locales/terms-of-use/mainnet/${
         props.locale
       }.md`)}
+      onOpenExternalLink={() => null}
     />
   ))
   .add('Support', () => (
