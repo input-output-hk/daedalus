@@ -81,12 +81,9 @@ $bg0: rgba(0, 0, 0, 0);
 .addressActions {
   display: flex;
   flex-direction: row;
+  flex-shrink: 0;
   height: 18px;
   justify-content: flex-end;
-  width: 90px;
-  &.itn {
-    width: 110px;
-  }
 }
 .invalidAddress {
   & > svg {
@@ -97,7 +94,6 @@ $bg0: rgba(0, 0, 0, 0);
 .shareAddressButton {
   cursor: pointer;
   line-height: 1.36;
-  margin-left: 22.5px;
   white-space: nowrap;
 }
 .shareIcon {

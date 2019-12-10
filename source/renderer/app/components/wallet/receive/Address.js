@@ -63,10 +63,6 @@ export default class Address extends Component<Props> {
       styles.component,
       address.used ? styles.usedWalletAddress : null,
     ]);
-    const addressActionsClasses = classnames([
-      styles.addressActions,
-      isIncentivizedTestnet ? styles.itn : null,
-    ]);
     const addressIdClasses = classnames([styles.addressId]);
     return (
       <div className={addressClasses}>
@@ -89,7 +85,7 @@ export default class Address extends Component<Props> {
             </span>
           )}
         </div>
-        <div className={addressActionsClasses}>
+        <div className={styles.addressActions}>
           {!isIncentivizedTestnet ? (
             <button
               className={styles.shareAddressButton}
