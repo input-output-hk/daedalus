@@ -1,6 +1,6 @@
 // @flow
 
-export const MIN_DELEGATION_FUNDS = 1;
+export const MIN_DELEGATION_FUNDS = 10;
 
 // Dimensions
 
