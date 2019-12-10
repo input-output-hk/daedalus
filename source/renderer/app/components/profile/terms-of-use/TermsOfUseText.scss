@@ -3,6 +3,10 @@
   text-align: justify;
   user-select: text;
 
+  a {
+    color: var(--theme-support-settings-text-color);
+  }
+
   hr {
     border-color: var(--theme-support-settings-text-color);
     margin: 25px 0 30px;

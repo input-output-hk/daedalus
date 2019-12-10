@@ -36,6 +36,7 @@ type Props = {
   onSubmit: Function,
   isSubmitting: boolean,
   error?: ?LocalizableError,
+  onOpenExternalLink: Function,
 };
 
 type State = {
@@ -64,7 +65,12 @@ export default class TermsOfUseForm extends Component<Props, State> {
 
   render() {
     const { intl } = this.context;
-    const { isSubmitting, error, localizedTermsOfUse } = this.props;
+    const {
+      isSubmitting,
+      error,
+      localizedTermsOfUse,
+      onOpenExternalLink,
+    } = this.props;
     const { areTermsOfUseAccepted } = this.state;
     const buttonClasses = classnames([
       'primary',
@@ -74,7 +80,10 @@ export default class TermsOfUseForm extends Component<Props, State> {
     return (
       <div className={styles.component}>
         <div className={styles.centeredBox}>
-          <TermsOfUseText localizedTermsOfUse={localizedTermsOfUse} />
+          <TermsOfUseText
+            localizedTermsOfUse={localizedTermsOfUse}
+            onOpenExternalLink={onOpenExternalLink}
+          />
 
           <div className={styles.checkbox}>
             <Checkbox
