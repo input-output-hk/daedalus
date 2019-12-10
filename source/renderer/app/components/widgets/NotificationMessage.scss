@@ -1,3 +1,5 @@
+@import '../../themes/mixins/animations';
+
 .component {
   background-color: var(--theme-notification-message-background-color);
   box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.25);
@@ -25,7 +27,7 @@
   }
 }
 
-.show {
+.isVisible {
   height: 62px;
   padding: 9px 0;
 }
@@ -81,4 +83,8 @@
       fill: var(--theme-notification-message-close-icon-color);
     }
   }
+}
+
+.hasEllipsis {
+  @include animated-ellipsis($width: 16px);
 }

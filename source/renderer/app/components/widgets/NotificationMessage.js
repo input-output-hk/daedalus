@@ -8,11 +8,11 @@ import closeCross from '../../assets/images/close-cross.inline.svg';
 
 export type Props = {
   icon?: string,
-  iconStyle?: Object,
-  show: boolean,
+  isVisible: boolean,
   children?: Node,
   clickToClose?: boolean,
   hasCloseButton?: boolean,
+  hasEllipsis?: boolean,
   onClose?: Function,
   order?: 'auto' | number | 'initial' | 'inherit',
   themeOverride?: 'grey', // if left empty, the noticiation will have its normal colors
@@ -26,11 +26,11 @@ export default class NotificationMessage extends Component<Props> {
   render() {
     const {
       icon,
-      iconStyle,
-      show,
+      isVisible,
       children,
       clickToClose,
       hasCloseButton,
+      hasEllipsis,
       onClose,
       order,
       themeOverride,
@@ -38,12 +38,11 @@ export default class NotificationMessage extends Component<Props> {
 
     const notificationMessageStyles = classNames([
       styles.component,
-      show ? styles.show : null,
+      isVisible ? styles.isVisible : null,
+      hasEllipsis ? styles.hasEllipsis : null,
       clickToClose ? styles.clickToClose : null,
       themeOverride ? styles[`theme-override-${themeOverride}`] : null,
     ]);
-
-    const iconStyles = classNames([styles.icon, iconStyle]);
 
     return (
       <div
@@ -55,7 +54,7 @@ export default class NotificationMessage extends Component<Props> {
           zIndex: order,
         }}
       >
-        {icon && <SVGInline svg={icon} className={iconStyles} />}
+        {icon && <SVGInline svg={icon} className={styles.icon} />}
 
         <div className={styles.message}>{children}</div>
 
