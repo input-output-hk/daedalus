@@ -37,6 +37,7 @@ import { deleteLegacyTransaction } from './transactions/requests/deleteLegacyTra
 
 // Wallets requests
 import { changeSpendingPassword } from './wallets/requests/changeSpendingPassword';
+import { quitStakePool } from './wallets/requests/quitStakePool';
 import { deleteWallet } from './wallets/requests/deleteWallet';
 import { deleteLegacyWallet } from './wallets/requests/deleteLegacyWallet';
 import { exportWalletAsJSON } from './wallets/requests/exportWalletAsJSON';
@@ -57,11 +58,13 @@ import { transferFunds } from './wallets/requests/transferFunds';
 // Staking
 import StakePool from '../domains/StakePool';
 import { getStakePools } from './staking/requests/getStakePools';
-import type { AdaApiStakePools, AdaApiStakePool } from './staking/types';
 import stakingStakePoolsMissingApiData from '../config/stakingStakePoolsMissingApiData.dummy.json';
 
 // News requests
 import { getNews } from './news/requests/getNews';
+
+// Stake Pools request
+import { joinStakePool } from './staking/requests/joinStakePool';
 
 // Utility functions
 import {
@@ -140,10 +143,23 @@ import type {
   TransferFundsCalculateFeeResponse,
   TransferFundsRequest,
   TransferFundsResponse,
+  QuitStakePoolRequest,
+  QuitStakePoolResponse,
 } from './wallets/types';
 
 // News Types
 import type { GetNewsResponse } from './news/types';
+
+// Staking Types
+import type {
+  JoinStakePoolRequest,
+  StakePoolJoinFee,
+  EstimateJoinFeeRequest,
+  AdaApiStakePools,
+  AdaApiStakePool,
+  StakePoolQuitFee,
+  EstimateQuitFeeRequest,
+} from './staking/types';
 
 // Common errors
 import {
@@ -937,6 +953,34 @@ export default class AdaApi {
     }
   };
 
+  quitStakePool = async (
+    request: QuitStakePoolRequest
+  ): Promise<QuitStakePoolResponse> => {
+    Logger.debug('AdaApi::quitStakePool called', {
+      parameters: filterLogData(request),
+    });
+    const { stakePoolId, walletId, passphrase } = request;
+    try {
+      const result = await quitStakePool(this.config, {
+        stakePoolId,
+        walletId,
+        passphrase,
+      });
+      Logger.debug('AdaApi::quitStakePool success');
+      return result;
+    } catch (error) {
+      Logger.error('AdaApi::quitStakePool error', { error });
+      const errorCode = get(error, 'code', '');
+      if (
+        errorCode === 'wrong_encryption_passphrase' ||
+        errorCode === 'bad_request'
+      ) {
+        throw new IncorrectSpendingPasswordError();
+      }
+      throw new GenericApiError();
+    }
+  };
+
   exportWalletToFile = async (
     request: ExportWalletToFileRequest
   ): Promise<[]> => {
@@ -1207,6 +1251,98 @@ export default class AdaApi {
     return news;
   };
 
+  estimateQuitFee = async (
+    request: EstimateQuitFeeRequest
+  ): Promise<BigNumber> => {
+    Logger.debug('AdaApi::estimateQuitFee called', {
+      parameters: filterLogData(request),
+    });
+
+    // @API TODO: Call API V2 endpoint for stake pool quit fee calculation
+    try {
+      // const {
+      //   walletId,
+      // } = request;
+      // const response: StakePoolQuitFee = await estimateQuitFee(this.config, {
+      //   walletId: request.walletId,
+      // });
+
+      const response = {
+        amount: {
+          quantity: 42,
+          unit: 'lovelace',
+        },
+      };
+
+      const stakePoolQuitFee = _createStakePoolQuitFeeFromServerData(response);
+      return new Promise(resolve => resolve(stakePoolQuitFee));
+    } catch (error) {
+      Logger.error('AdaApi::estimateQuitFee error', { error });
+      throw new GenericApiError();
+    }
+  };
+
+  estimateJoinFee = async (
+    request: EstimateJoinFeeRequest
+  ): Promise<BigNumber> => {
+    Logger.debug('AdaApi::estimateJoinFee called', {
+      parameters: filterLogData(request),
+    });
+
+    // @API TODO: Call API V2 endpoint for stake pool join fee calculation
+    try {
+      // const {
+      //   walletId,
+      // } = request;
+      // const response: StakePoolJoinFee = await estimateJoinFee(this.config, {
+      //   walletId: request.walletId,
+      // });
+
+      const response = {
+        amount: {
+          quantity: 42,
+          unit: 'lovelace',
+        },
+      };
+
+      const stakePoolJoinFee = _createStakePoolJoinFeeFromServerData(response);
+      return new Promise(resolve => resolve(stakePoolJoinFee));
+    } catch (error) {
+      Logger.error('AdaApi::estimateJoinFee error', { error });
+      throw new GenericApiError();
+    }
+  };
+
+  joinStakePool = async (
+    request: JoinStakePoolRequest
+  ): Promise<Transaction> => {
+    Logger.debug('AdaApi::joinStakePool called', {
+      parameters: filterLogData(request),
+    });
+    const { walletId, stakePoolId, passphrase } = request;
+
+    try {
+      const response = await joinStakePool(this.config, {
+        walletId,
+        stakePoolId,
+        passphrase,
+      });
+
+      Logger.debug('AdaApi::joinStakePool success', {
+        stakePool: response,
+      });
+
+      return response;
+    } catch (error) {
+      // @API TODO - handle `pool_already_joined` error code
+      Logger.error('AdaApi::joinStakePool error', { error });
+      if (error.code === 'wrong_encryption_passphrase') {
+        throw new IncorrectSpendingPasswordError();
+      }
+      throw new GenericApiError();
+    }
+  };
+
   setCardanoNodeFault = async (fault: FaultInjectionIpcRequest) => {
     await cardanoFaultInjectionChannel.send(fault);
   };
@@ -1228,7 +1364,7 @@ export default class AdaApi {
 
 const _createWalletFromServerData = action(
   'AdaApi::_createWalletFromServerData',
-  (data: AdaWallet, index: number) => {
+  (data: AdaWallet) => {
     const {
       id,
       address_pool_gap: addressPoolGap,
@@ -1255,14 +1391,7 @@ const _createWalletFromServerData = action(
           ? new BigNumber(balance.reward.quantity).dividedBy(LOVELACES_PER_ADA)
           : new BigNumber(balance.reward.quantity);
     }
-
     const delegatedStakePoolId = isLegacy ? null : delegation.target;
-
-    // @API TODO - integrate once "Join Stake Pool" endpoint is done
-    // const isDelegated = delegation.status === WalletDelegationStatuses.DELEGATING;
-    const isDelegated = isLegacy
-      ? false
-      : index < stakingStakePoolsMissingApiData.length;
 
     return new Wallet({
       id,
@@ -1275,7 +1404,6 @@ const _createWalletFromServerData = action(
         passphraseLastUpdatedAt && new Date(passphraseLastUpdatedAt),
       syncState: state,
       isLegacy,
-      isDelegated,
       delegatedStakePoolId,
     });
   }
@@ -1406,5 +1534,21 @@ const _createStakePoolFromServerData = action(
       ranking,
       retiring,
     });
+  }
+);
+
+const _createStakePoolJoinFeeFromServerData = action(
+  'AdaApi::_createStakePoolJoinFeeFromServerData',
+  (data: StakePoolJoinFee) => {
+    const amount = get(data, ['amount', 'quantity'], 0);
+    return new BigNumber(amount).dividedBy(LOVELACES_PER_ADA);
+  }
+);
+
+const _createStakePoolQuitFeeFromServerData = action(
+  'AdaApi::_createStakePoolQuitFeeFromServerData',
+  (data: StakePoolQuitFee) => {
+    const amount = get(data, ['amount', 'quantity'], 0);
+    return new BigNumber(amount).dividedBy(LOVELACES_PER_ADA);
   }
 );

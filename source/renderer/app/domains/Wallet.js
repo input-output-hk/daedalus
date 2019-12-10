@@ -45,7 +45,6 @@ export type WalletProps = {
   passwordUpdateDate: ?Date,
   syncState: WalletSyncState,
   isLegacy: boolean,
-  isDelegated: boolean,
   delegatedStakePoolId?: ?string,
 };
 
@@ -59,7 +58,6 @@ export default class Wallet {
   @observable passwordUpdateDate: ?Date;
   @observable syncState: WalletSyncState;
   @observable isLegacy: boolean;
-  @observable isDelegated: boolean;
   @observable delegatedStakePoolId: ?string;
 
   constructor(data: WalletProps) {
@@ -79,7 +77,6 @@ export default class Wallet {
         'passwordUpdateDate',
         'syncState',
         'isLegacy',
-        'isDelegated',
         'delegatedStakePoolId',
       ])
     );

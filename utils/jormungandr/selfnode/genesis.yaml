@@ -47,9 +47,9 @@ blockchain_configuration:
   #
   # fee(num_bytes, has_certificate) = constant + num_bytes * coefficient + has_certificate * certificate
   linear_fees:
-    constant: 42
-    coefficient: 0
-    certificate: 1
+    constant: 14
+    coefficient: 1
+    certificate: 42
 
   # The speed to update the KES Key in seconds
   kes_update_speed: 43200 # 12hours
@@ -6189,19 +6189,19 @@ initial:
   # with with only dust
   - legacy_fund:
     - address: DdzFFzCqrhsz56VqWWAQpRMcSFYE1WKeuFcVzV9UpovnJghF4YmV7TkMLNh1GCHftUBNEZQ2h3fCKsb25syBYrd1Qob2XkyeS6vgDzQ8
-      value: 10
+      value: 1
   - legacy_fund:
     - address: DdzFFzCqrhsfE8zNNyc84uMJrR6Ma3ToNYfwwZ4oQVGt8QrG9ZQtKngy3Qe4tzioZSdnwpD9n8RwFC22n61ytMs7NkXhVHrZwPoDjUju
-      value: 11
+      value: 2
   - legacy_fund:
     - address: DdzFFzCqrht6QNVjDuTwuwzYbubxxEHkRLR717NWYsUeqimhr9WwQQMJS8r4cfoW6Fkdefm53ea5vX5drr55vrTsGcPDKjFgENcXtDC8
-      value: 12
+      value: 3
   - legacy_fund:
     - address: DdzFFzCqrhspYWP9aDtu4t3LQWyt4h7zWSYgmRbfdvHindyJoSozKq81ZDEAVhzQy7PFCMFBDFyzrszZXvHQCwTwyPLpqgFwadJqn6rN
-      value: 13
+      value: 4
   - legacy_fund:
     - address: DdzFFzCqrhsktZddiMaLXEBdfpcZaJvUQpaM3KUQgaj4Tg3v2EeVU8HXimv6Ci7C46rYeQJ16sgwxU7t71eEbVpAknSsZDgCrk1ZbLk6
-      value: 14
+      value: 5
 
   # A special Byron Wallet comming from ["prison", "census", "discover", "give", "sound", "behave", "hundred", "cave", "someone", "orchard", "just", "wild"]
   #

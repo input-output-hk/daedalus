@@ -1,6 +1,7 @@
 // @flow
 import React from 'react';
 import { action } from '@storybook/addon-actions';
+import { find } from 'lodash';
 import BigNumber from 'bignumber.js';
 import DelegationCenter from '../../../source/renderer/app/components/staking/delegation-center/DelegationCenter';
 import STAKE_POOLS from '../../../source/renderer/app/config/stakingStakePools.dummy.json';
@@ -49,9 +50,8 @@ const wallets = [
     passwordUpdateDate: new Date(),
     isLegacy: false,
     inactiveStakePercentage: 24,
-    isDelegated: true,
     syncState: walletSyncedStateReady,
-    delegatedStakePool: STAKE_POOLS[0],
+    delegatedStakePoolId: STAKE_POOLS[0].id,
     createdAt: new Date(),
     recoveryPhraseVerificationDate: new Date(),
     recoveryPhraseVerificationStatus:
@@ -70,9 +70,8 @@ const wallets = [
     passwordUpdateDate: new Date(),
     isLegacy: false,
     inactiveStakePercentage: 35,
-    isDelegated: true,
     syncState: walletSyncedStateReady,
-    delegatedStakePool: STAKE_POOLS[1],
+    delegatedStakePoolId: STAKE_POOLS[1].id,
     createdAt: new Date(),
     recoveryPhraseVerificationDate: new Date(),
     recoveryPhraseVerificationStatus:
@@ -91,7 +90,6 @@ const wallets = [
     passwordUpdateDate: new Date(),
     isLegacy: false,
     inactiveStakePercentage: 0,
-    isDelegated: false,
     syncState: walletSyncedStateRestoring,
     createdAt: new Date(),
     recoveryPhraseVerificationDate: new Date(),
@@ -107,7 +105,10 @@ export const StakingDelegationCenterStory = () => (
     redirectToStakingInfo={redirectToStakingInfo}
     wallets={wallets}
     onDelegate={action('onDelegate')}
-    getStakePoolById={action('getStakePoolById')}
+    onUndelegate={action('onUndelegate')}
+    getStakePoolById={poolId =>
+      find(STAKE_POOLS, stakePool => stakePool.id === poolId)
+    }
     numberOfStakePools={STAKE_POOLS.length}
     networkTip={networkTip}
     nextEpoch={nextEpoch}

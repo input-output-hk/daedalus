@@ -5,6 +5,8 @@ import { defineMessages, intlShape } from 'react-intl';
 import Wallet from '../../../domains/Wallet';
 import WalletRow from './WalletRow';
 import styles from './DelegationCenterBody.scss';
+import { DelegationActions } from '../../../domains/StakePool';
+import type { DelegationAction } from '../../../api/staking/types';
 
 const messages = defineMessages({
   bodyTitle: {
@@ -16,8 +18,9 @@ const messages = defineMessages({
 
 type Props = {
   wallets: Array<Wallet>,
-  onDelegate: Function,
   numberOfStakePools: number,
+  onDelegate: Function,
+  onUndelegate: Function,
   getStakePoolById: Function,
 };
 
@@ -27,12 +30,27 @@ export default class DelegationCenterBody extends Component<Props> {
     intl: intlShape.isRequired,
   };
 
+  handleMenuItemClick = (item: DelegationAction, walletId: string) => {
+    const { onDelegate, onUndelegate } = this.props;
+
+    switch (item) {
+      case DelegationActions.CHANGE_DELEGATION:
+        onDelegate(walletId);
+        break;
+      case DelegationActions.REMOVE_DELEGATION:
+        onUndelegate(walletId);
+        break;
+      default:
+        break;
+    }
+  };
+
   render() {
     const { intl } = this.context;
     const {
       wallets,
-      onDelegate,
       numberOfStakePools,
+      onDelegate,
       getStakePoolById,
     } = this.props;
 
@@ -44,17 +62,14 @@ export default class DelegationCenterBody extends Component<Props> {
           <span>{title}</span>
         </div>
         <div className={styles.mainContent}>
-          {wallets.map((wallet: Wallet, index: number) => (
+          {wallets.map((wallet: Wallet) => (
             <WalletRow
               key={wallet.id}
               wallet={wallet}
-              onDelegate={onDelegate}
               numberOfStakePools={numberOfStakePools}
-              /*
-                @API TODO: Replace when "Stake Pools Join" is
-                delegatedStakePool={getStakePoolById(wallet.delegatedStakePoolId)}
-              */
-              delegatedStakePool={getStakePoolById(index)}
+              onDelegate={onDelegate}
+              onMenuItemClick={this.handleMenuItemClick}
+              delegatedStakePool={getStakePoolById(wallet.delegatedStakePoolId)}
             />
           ))}
         </div>
