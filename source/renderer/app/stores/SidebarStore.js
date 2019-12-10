@@ -55,10 +55,7 @@ export default class SidebarStore extends Store {
   }
 
   @action _configureCategories = () => {
-    const { networkStatus } = this.stores;
-    if (networkStatus.environment.isDev) {
-      this.CATEGORIES = sidebarConfig.CATEGORIES_WITH_STAKING;
-    }
+    this.CATEGORIES = sidebarConfig.CATEGORIES_WITH_STAKING;
   };
 
   @action _onActivateSidebarCategory = (params: {
