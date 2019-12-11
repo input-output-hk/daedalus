@@ -452,7 +452,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
           skin={InputSkin}
         />
 
-        {!this.isCertificate() && !this.isYoroi() && (
+        {(this.isRegular() || this.isLegacy()) && (
           <RadioSet
             label={intl.formatMessage(messages.recoveryPhraseTypeLabel)}
             items={[
