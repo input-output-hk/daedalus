@@ -696,7 +696,7 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-staking-table-head-background-color': 'rgba(32, 34, 37, 0.07)',
     '--theme-staking-table-border-color': '#d2d3d3',
     '--theme-staking-link-color': 'rgba(28, 172, 99, 1)',
-    '--theme-staking-link-color-light': 'rgba(28, 172, 99, 0.5)',
+    '--theme-staking-link-color-light': 'rgba(28, 172, 99, 0.7)',
     '--theme-staking-progress-bar-background-color': 'rgba(32, 34, 37, 0.1)',
     '--theme-staking-progress-stripe-dark-1-background-color': '#259c59',
     '--theme-staking-progress-stripe-dark-2-background-color': '#2cbb69',

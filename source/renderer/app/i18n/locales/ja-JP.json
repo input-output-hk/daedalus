@@ -369,7 +369,7 @@
   "staking.rewards.learnMore.ButtonLabel": "詳細",
   "staking.rewards.learnMore.linkUrl": "https://iohk.zendesk.com/hc/ja/articles/900000026583",
   "staking.rewards.no.rewards": "報酬なし",
-  "staking.rewards.note": "ステーク委任から得られた報酬は自動的に報酬アカウントに振り込まれます。",
+  "staking.rewards.note": "<p>ステークを委任することにより得た報酬は自動的に報酬アカウントに振り込まれます。</p><p>インセンティブ付きテストネットで得た報酬は報酬ウォレット残高には追加されません。報酬はインセンティブ付きテストネット終了後にCardanoメインネットに実際のADAで支払われます。</p><p>ステークプールの運営するためにこのウォレットの資金を使用している場合、ここに表示される報酬には出資ステーク分が含まれる場合があります。これは、Cardanoメインネットに支払われる報酬残高には含まれません。</p>",
   "staking.rewards.tableHeader.date": "日付",
   "staking.rewards.tableHeader.pool": "ステークプール",
   "staking.rewards.tableHeader.reward": "報酬",
