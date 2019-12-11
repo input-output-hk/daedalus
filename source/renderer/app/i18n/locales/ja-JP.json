@@ -301,6 +301,7 @@
   "staking.delegationCountdown.heading": "Cardano分散化",
   "staking.delegationCountdown.timeLeftDesc": "報酬制開始まであと",
   "staking.delegationSetup.chooseStakePool.step.dialog.continueButtonLabel": "続ける",
+  "staking.delegationSetup.chooseStakePool.step.dialog.delegatedStakePoolLabel": "<span>{selectedWalletName}</span>ウォレットは既に<span>「{selectedPoolTicker}」</span>ステークプールに委任されています。<span>ステークの委任先を変更する場合は、異なるプールを選択してください。</span>",
   "staking.delegationSetup.chooseStakePool.step.dialog.description": "現在選択されているステークプール：",
   "staking.delegationSetup.chooseStakePool.step.dialog.recentPoolsLabel": "最近選択したステークプールから選択する：",
   "staking.delegationSetup.chooseStakePool.step.dialog.searchInput.label": "または利用可能な全ステークプールのリストから選択する：",
