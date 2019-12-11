@@ -116,7 +116,8 @@ export default class CountdownWidget extends Component<Props, State> {
     const { keepFormat } = this.props;
     const shouldBeHidden =
       values.slice(0, index).reduce((acc, val) => acc + val, 0) === 0 &&
-      value === 0 && !keepFormat;
+      value === 0 &&
+      !keepFormat;
     if (shouldBeHidden) {
       return null;
     }
@@ -154,21 +155,16 @@ export default class CountdownWidget extends Component<Props, State> {
     const hoursLabel = intl.formatMessage(messages.hours);
     const minutesLabel = intl.formatMessage(messages.minutes);
     const secondsLabel = intl.formatMessage(messages.seconds);
-    const labels: Array<string> = keepFormat ?
-      [
-        daysLabel,
-        hoursLabel,
-        minutesLabel,
-        secondsLabel,
-      ]
+    const labels: Array<string> = keepFormat
+      ? [daysLabel, hoursLabel, minutesLabel, secondsLabel]
       : [
-        yearsLabel,
-        monthsLabel,
-        daysLabel,
-        hoursLabel,
-        minutesLabel,
-        secondsLabel,
-      ];
+          yearsLabel,
+          monthsLabel,
+          daysLabel,
+          hoursLabel,
+          minutesLabel,
+          secondsLabel,
+        ];
 
     const years = duration.years();
     const months = duration.months();
@@ -176,8 +172,12 @@ export default class CountdownWidget extends Component<Props, State> {
     const hours = duration.hours();
     const minutes = duration.minutes();
     const seconds = duration.seconds();
-    const values = keepFormat ? [days, hours, minutes, seconds] : [years, months, days, hours, minutes, seconds];
-    const keys = keepFormat ? ['days', 'hours', 'minutes', 'seconds'] : ['years', 'months', 'days', 'hours', 'minutes', 'seconds'];
+    const values = keepFormat
+      ? [days, hours, minutes, seconds]
+      : [years, months, days, hours, minutes, seconds];
+    const keys = keepFormat
+      ? ['days', 'hours', 'minutes', 'seconds']
+      : ['years', 'months', 'days', 'hours', 'minutes', 'seconds'];
 
     return labels.map<any>((
       label: string, // eslint-disable-line
