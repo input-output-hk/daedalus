@@ -35,7 +35,7 @@ export default class DelegationCenterPage extends Component<Props> {
   handleUndelegate = async (walletId: string) => {
     const { actions, stores } = this.props;
     const { updateDataForActiveDialog } = actions.dialogs;
-    const { estimateQuitFee } = stores.staking;
+    const { calculateDelegationFee } = stores.staking;
 
     actions.dialogs.open.trigger({ dialog: UndelegateConfirmationDialog });
     const dialogData = {
@@ -45,7 +45,7 @@ export default class DelegationCenterPage extends Component<Props> {
     updateDataForActiveDialog.trigger({ data: dialogData });
 
     // Update dialog one more time when quit fee is calculated
-    const stakePoolQuitFee = await estimateQuitFee({ walletId });
+    const stakePoolQuitFee = await calculateDelegationFee({ walletId });
     updateDataForActiveDialog.trigger({
       data: {
         ...dialogData,
