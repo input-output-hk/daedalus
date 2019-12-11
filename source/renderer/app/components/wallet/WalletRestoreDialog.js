@@ -30,6 +30,7 @@ import {
 } from '../../config/walletsConfig';
 import {
   LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT,
+  PAPER_WALLET_RECOVERY_PHRASE_WORD_COUNT,
   WALLET_RECOVERY_PHRASE_WORD_COUNT,
   YOROI_WALLET_RECOVERY_PHRASE_WORD_COUNT,
 } from '../../config/cryptoConfig';
@@ -571,7 +572,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
             !this.isCertificate()
               ? intl.formatMessage(messages.recoveryPhraseInputHint)
               : intl.formatMessage(messages.shieldedRecoveryPhraseInputHint, {
-                  numberOfWords: 27,
+                  numberOfWords: PAPER_WALLET_RECOVERY_PHRASE_WORD_COUNT,
                 })
           }
           options={suggestedMnemonics}
