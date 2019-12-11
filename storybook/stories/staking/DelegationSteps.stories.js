@@ -17,11 +17,11 @@ import STAKE_POOLS from '../../../source/renderer/app/config/stakingStakePools.d
 import { generateWallet } from '../_support/utils';
 
 const WALLETS = [
-  generateWallet('First Wallet', '1000000', 0, STAKE_POOLS[0]),
-  generateWallet('Second Wallet', '500000', 0, STAKE_POOLS[100]),
-  generateWallet('Third Wallet', '10000', 0, STAKE_POOLS[150]),
-  generateWallet('Fourth Wallet', '5000', 0, STAKE_POOLS[290]),
-  generateWallet('Fifth Wallet', '0'),
+  generateWallet('First Wallet', '1000000000', 0, STAKE_POOLS[0]),
+  generateWallet('Second Wallet', '500000000', 0, STAKE_POOLS[100]),
+  generateWallet('Third Wallet', '100000000', 0, STAKE_POOLS[150]),
+  generateWallet('Fourth Wallet', '50000000', 0, STAKE_POOLS[290]),
+  generateWallet('Fifth Wallet', '7000000'),
 ];
 
 const getDelegationWizardStepsList = locale => [

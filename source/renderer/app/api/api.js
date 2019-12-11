@@ -59,8 +59,9 @@ import { transferFundsCalculateFee } from './wallets/requests/transferFundsCalcu
 import { transferFunds } from './wallets/requests/transferFunds';
 
 // Staking
-import StakePool from '../domains/StakePool';
 import { getStakePools } from './staking/requests/getStakePools';
+import { getDelegationFee } from './staking/requests/getDelegationFee';
+import StakePool from '../domains/StakePool';
 import stakingStakePoolsMissingApiData from '../config/stakingStakePoolsMissingApiData.dummy.json';
 
 // News requests
@@ -156,12 +157,10 @@ import type { GetNewsResponse } from './news/types';
 // Staking Types
 import type {
   JoinStakePoolRequest,
-  StakePoolJoinFee,
-  EstimateJoinFeeRequest,
+  GetDelegationFeeRequest,
+  DelegationFee,
   AdaApiStakePools,
   AdaApiStakePool,
-  StakePoolQuitFee,
-  EstimateQuitFeeRequest,
 } from './staking/types';
 
 // Common errors
@@ -1258,64 +1257,21 @@ export default class AdaApi {
     return news;
   };
 
-  estimateQuitFee = async (
-    request: EstimateQuitFeeRequest
+  calculateDelegationFee = async (
+    request: GetDelegationFeeRequest
   ): Promise<BigNumber> => {
-    Logger.debug('AdaApi::estimateQuitFee called', {
+    Logger.debug('AdaApi::calculateDelegationFee called', {
       parameters: filterLogData(request),
     });
 
-    // @API TODO: Call API V2 endpoint for stake pool quit fee calculation
     try {
-      // const {
-      //   walletId,
-      // } = request;
-      // const response: StakePoolQuitFee = await estimateQuitFee(this.config, {
-      //   walletId: request.walletId,
-      // });
-
-      const response = {
-        amount: {
-          quantity: 42,
-          unit: 'lovelace',
-        },
-      };
-
-      const stakePoolQuitFee = _createStakePoolQuitFeeFromServerData(response);
-      return new Promise(resolve => resolve(stakePoolQuitFee));
+      const response: DelegationFee = await getDelegationFee(this.config, {
+        walletId: request.walletId,
+      });
+      const delegationFee = _createDelegationFeeFromServerData(response);
+      return delegationFee;
     } catch (error) {
-      Logger.error('AdaApi::estimateQuitFee error', { error });
-      throw new GenericApiError();
-    }
-  };
-
-  estimateJoinFee = async (
-    request: EstimateJoinFeeRequest
-  ): Promise<BigNumber> => {
-    Logger.debug('AdaApi::estimateJoinFee called', {
-      parameters: filterLogData(request),
-    });
-
-    // @API TODO: Call API V2 endpoint for stake pool join fee calculation
-    try {
-      // const {
-      //   walletId,
-      // } = request;
-      // const response: StakePoolJoinFee = await estimateJoinFee(this.config, {
-      //   walletId: request.walletId,
-      // });
-
-      const response = {
-        amount: {
-          quantity: 42,
-          unit: 'lovelace',
-        },
-      };
-
-      const stakePoolJoinFee = _createStakePoolJoinFeeFromServerData(response);
-      return new Promise(resolve => resolve(stakePoolJoinFee));
-    } catch (error) {
-      Logger.error('AdaApi::estimateJoinFee error', { error });
+      Logger.error('AdaApi::calculateDelegationFee error', { error });
       throw new GenericApiError();
     }
   };
@@ -1341,7 +1297,6 @@ export default class AdaApi {
 
       return response;
     } catch (error) {
-      // @API TODO - handle `pool_already_joined` error code
       Logger.error('AdaApi::joinStakePool error', { error });
       if (error.code === 'wrong_encryption_passphrase') {
         throw new IncorrectSpendingPasswordError();
@@ -1544,17 +1499,9 @@ const _createStakePoolFromServerData = action(
   }
 );
 
-const _createStakePoolJoinFeeFromServerData = action(
-  'AdaApi::_createStakePoolJoinFeeFromServerData',
-  (data: StakePoolJoinFee) => {
-    const amount = get(data, ['amount', 'quantity'], 0);
-    return new BigNumber(amount).dividedBy(LOVELACES_PER_ADA);
-  }
-);
-
-const _createStakePoolQuitFeeFromServerData = action(
-  'AdaApi::_createStakePoolQuitFeeFromServerData',
-  (data: StakePoolQuitFee) => {
+const _createDelegationFeeFromServerData = action(
+  'AdaApi::_createDelegationFeeFromServerData',
+  (data: DelegationFee) => {
     const amount = get(data, ['amount', 'quantity'], 0);
     return new BigNumber(amount).dividedBy(LOVELACES_PER_ADA);
   }

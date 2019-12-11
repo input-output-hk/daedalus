@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
+import { debounce } from 'lodash';
 import BorderedBox from '../../widgets/BorderedBox';
 import TinySwitch from '../../widgets/forms/TinySwitch';
 import WalletAddress from '../../../domains/WalletAddress';
@@ -47,43 +48,19 @@ const messages = defineMessages({
 
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
 
-const BREAKPOINTS = [
-  {
-    minCharsInit: 22,
-    minCharsEnd: 22,
-  },
-  {
-    minCharsInit: 24,
-    minCharsEnd: 24,
-  },
-  {
-    minCharsInit: 27,
-    minCharsEnd: 27,
-  },
-  {
-    minCharsInit: 29,
-    minCharsEnd: 29,
-  },
-  {
-    minCharsInit: 999999999999,
-    minCharsEnd: null,
-  },
-];
-
 type Props = {
   walletAddresses: Array<WalletAddress>,
   onShareAddress: Function,
   onCopyAddress: Function,
-  currentLocale: string,
+  onToggleSubMenus: Object,
   isIncentivizedTestnet: boolean,
-  isShowingSubMenus: boolean,
 };
 
 type State = {
+  addressSlice: number,
+  addressWidth: number,
+  charWidth: number,
   showUsed: boolean,
-  currentBreakPoint: number,
-  minCharsInit: number,
-  minCharsEnd?: ?number,
 };
 
 @observer
@@ -92,79 +69,68 @@ export default class WalletReceive extends Component<Props, State> {
     intl: intlShape.isRequired,
   };
 
+  containerElement: ?HTMLElement;
+
   state = {
+    addressSlice: 0,
+    addressWidth: 0,
+    charWidth: 0,
     showUsed: true,
-    currentBreakPoint: -1,
-    minCharsInit: 0,
-    minCharsEnd: 0,
   };
 
   componentDidMount() {
-    this.updateWindowDimensions();
-    window.addEventListener('resize', this.updateWindowDimensions);
-  }
-
-  componentWillReceiveProps(nextProps: Props) {
-    const { isShowingSubMenus: isShowingSubMenusNext } = nextProps;
-    const { isShowingSubMenus: isShowingSubMenusCurrent } = this.props;
-    if (isShowingSubMenusNext !== isShowingSubMenusCurrent) {
-      setTimeout(this.updateWindowDimensions, 300);
-    }
+    window.addEventListener('resize', this.debounceAddressCalculation);
+    this.props.onToggleSubMenus.listen(this.debounceAddressCalculation);
   }
 
   componentWillUnmount() {
-    window.removeEventListener('resize', this.updateWindowDimensions);
+    window.removeEventListener('resize', this.debounceAddressCalculation);
+    this.props.onToggleSubMenus.remove(this.debounceAddressCalculation);
   }
+
+  debounceAddressCalculation = debounce(
+    () => this.calculateAddressSlice(),
+    300
+  );
+
+  get addressLength() {
+    const [address: WalletAddress] = this.props.walletAddresses;
+    return address.id.length;
+  }
+
+  handleRegisterHTMLElements = (
+    addressElement: HTMLElement,
+    containerElement: HTMLElement
+  ) => {
+    setTimeout(() => {
+      this.containerElement = containerElement;
+      const addressWidth = addressElement.offsetWidth;
+      const charWidth = addressWidth / this.addressLength;
+      this.setState({ charWidth, addressWidth }, this.calculateAddressSlice);
+    }, 500);
+  };
+
+  calculateAddressSlice = () => {
+    const { charWidth, addressWidth } = this.state;
+    const { addressLength, containerElement } = this;
+    if (!containerElement || !charWidth || !addressLength) return;
+    const containerWidth = containerElement.offsetWidth;
+    const addressSlice =
+      containerWidth < addressWidth
+        ? Math.floor(containerWidth / charWidth / 2) - 1
+        : 0;
+    this.setState({
+      addressSlice,
+    });
+  };
 
   toggleUsedAddresses = () => {
     this.setState(prevState => ({ showUsed: !prevState.showUsed }));
   };
 
-  updateWindowDimensions = () => {
-    const { currentBreakPoint } = this.state;
-    const newBreakpoint = this.getBreakpoint(window.innerWidth);
-    if (currentBreakPoint !== newBreakpoint) {
-      const { minCharsInit, minCharsEnd } = BREAKPOINTS[newBreakpoint];
-      this.setState({
-        currentBreakPoint: newBreakpoint,
-        minCharsInit,
-        minCharsEnd,
-      });
-    }
-  };
-
-  getBreakpoint = (windowWidth: number) => {
-    const {
-      isIncentivizedTestnet,
-      isShowingSubMenus,
-      currentLocale,
-    } = this.props;
-
-    if (
-      isIncentivizedTestnet &&
-      !isShowingSubMenus &&
-      currentLocale === 'ja-JP'
-    ) {
-      if (windowWidth < 950) return 3;
-      return 4;
-    }
-
-    if (windowWidth >= 1081) return 4;
-    if (windowWidth >= 1050) return 3;
-    if (windowWidth >= 1000) return 2;
-    if (windowWidth >= 950) return 1;
-    return 0;
-  };
-
-  renderRow = (address: WalletAddress) => {
-    const {
-      onShareAddress,
-      onCopyAddress,
-      isIncentivizedTestnet,
-      isShowingSubMenus,
-      currentLocale,
-    } = this.props;
-    const { minCharsInit, minCharsEnd } = this.state;
+  renderRow = (address: WalletAddress, index: number) => {
+    const { onShareAddress, onCopyAddress, isIncentivizedTestnet } = this.props;
+    const { addressSlice } = this.state;
     const { intl } = this.context;
     return (
       <Address
@@ -173,11 +139,10 @@ export default class WalletReceive extends Component<Props, State> {
         onCopyAddress={onCopyAddress}
         shareAddressLabel={intl.formatMessage(messages.shareAddressLabel)}
         copyAddressLabel={intl.formatMessage(messages.copyAddressLabel)}
-        currentLocale={currentLocale}
         isIncentivizedTestnet={isIncentivizedTestnet}
-        isShowingSubMenus={isShowingSubMenus}
-        minCharsInit={minCharsInit}
-        minCharsEnd={minCharsEnd}
+        shouldRegisterAddressElement={index === 0}
+        onRegisterHTMLElements={this.handleRegisterHTMLElements}
+        addressSlice={addressSlice}
       />
     );
   };

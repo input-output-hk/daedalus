@@ -13,6 +13,11 @@ import WalletReceive from '../../../../source/renderer/app/components/wallet/rec
 import WalletReceiveDialog from '../../../../source/renderer/app/components/wallet/receive/WalletReceiveDialog';
 import VerticalFlexContainer from '../../../../source/renderer/app/components/layout/VerticalFlexContainer';
 
+const onToggleSubMenus = {
+  listen: action('onToggleSubMenus:listen'),
+  remove: action('onToggleSubMenus:remove'),
+};
+
 storiesOf('Wallets|Receive', module)
   .addDecorator(WalletsWrapper)
   .add('Receive', ({ currentLocale }: { currentLocale: string }) => {
@@ -34,6 +39,7 @@ storiesOf('Wallets|Receive', module)
           isAddressValid={() => parseInt(Math.random() * 10, 10) > 3}
           isIncentivizedTestnet={isIncentivizedTestnet}
           currentLocale={currentLocale}
+          onToggleSubMenus={onToggleSubMenus}
           isShowingSubMenus
         />
         {showDialog && !isIncentivizedTestnet && (
