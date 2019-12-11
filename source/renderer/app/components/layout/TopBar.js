@@ -19,7 +19,7 @@ type Props = {
   activeWallet?: ?Wallet,
   onTransferFunds?: Function,
   onWalletAdd?: Function,
-  hasAnyWallets?: boolean,
+  hasRewardsWallets?: boolean,
   onLearnMore?: Function,
 };
 
@@ -31,7 +31,7 @@ export default class TopBar extends Component<Props> {
       leftIcon,
       activeWallet,
       children,
-      hasAnyWallets,
+      hasRewardsWallets,
       onTransferFunds,
       onWalletAdd,
       onLearnMore,
@@ -51,7 +51,7 @@ export default class TopBar extends Component<Props> {
       activeWallet.isLegacy &&
       activeWallet.amount.gt(0) &&
       !isRestoreActive &&
-      ((hasAnyWallets && onTransferFunds) || onWalletAdd);
+      ((hasRewardsWallets && onTransferFunds) || onWalletAdd);
 
     const onTransferFundsFn =
       onTransferFunds && activeWallet
@@ -97,7 +97,7 @@ export default class TopBar extends Component<Props> {
             activeWallet={activeWallet}
             onLearnMore={onLearnMore}
             onTransferFunds={onTransferFundsFn}
-            hasAnyWallets={hasAnyWallets}
+            hasRewardsWallets={hasRewardsWallets}
             onWalletAdd={onWalletAdd}
           />
         )}
