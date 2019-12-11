@@ -16,3 +16,5 @@ export const EPOCH_LENGTH_BASE_MAINNET = 2160;
 export const EPOCH_LENGTH_BASE_STAGING = 2160;
 export const EPOCH_LENGTH_BASE_TESTNET = 2160;
 export const EPOCH_LENGTH_BASE_DEVELOPMENT = 2;
+
+export const EPOCH_LENGTH_ITN = 1; // unit: day

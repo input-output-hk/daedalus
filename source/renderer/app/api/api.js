@@ -86,6 +86,7 @@ import { filterLogData } from '../../../common/utils/logging';
 // Config constants
 import { LOVELACES_PER_ADA } from '../config/numbersConfig';
 import { ADA_CERTIFICATE_MNEMONIC_LENGTH } from '../config/cryptoConfig';
+import { EPOCH_LENGTH_ITN } from '../config/epochsConfig';
 
 // Addresses Types
 import type { Address, GetAddressesRequest } from './addresses/types';
@@ -1141,15 +1142,11 @@ export default class AdaApi {
 
       /* eslint-disable-next-line camelcase */
       const { sync_progress, node_tip, network_tip, next_epoch } = networkInfo;
+
       const syncProgress =
         get(sync_progress, 'status') === 'ready'
           ? 100
           : get(sync_progress, 'progress.quantity', 0);
-
-      const dummyNextEpoch = {
-        epochNumber: get(network_tip, 'epoch_number', 0) + 1,
-        epochStart: '2019-12-31T00:00:00.123Z',
-      };
 
       // extract relevant data before sending to NetworkStatusStore
       return {
@@ -1162,9 +1159,15 @@ export default class AdaApi {
           epoch: get(network_tip, 'epoch_number', 0),
           slot: get(network_tip, 'slot_number', 0),
         },
-        nextEpoch: dummyNextEpoch || {
+        nextEpoch: {
           epochNumber: get(next_epoch, 'epoch_number', 0),
-          epochStart: get(next_epoch, 'epoch_start', ''),
+          epochStart: '2019-12-15T00:00:00.123Z',
+          // epochStart: moment(get(next_epoch, 'epoch_start_time', 0)).add(EPOCH_LENGTH_ITN, 'day').toISOString(),
+        },
+        futureEpoch: {
+          epochNumber: get(next_epoch, 'epoch_number', 0) + 1,
+          epochStart: '2019-12-16T00:00:00.123Z',
+          // epochStart: moment(get(next_epoch, 'epoch_start_time', 0)).add(EPOCH_LENGTH_ITN + 1, 'day').toISOString(),
         },
       };
     } catch (error) {
