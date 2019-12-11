@@ -21,7 +21,7 @@ export default class TopBarContainer extends Component<Props> {
   render() {
     const { actions, stores } = this.props;
     const { sidebar, app, networkStatus, wallets, newsFeed } = stores;
-    const { active, isWalletRoute, hasAnyWallets } = wallets;
+    const { active, isWalletRoute, hasAnyWallets, hasRewardsWallets } = wallets;
     const {
       currentRoute,
       environment: { isMainnet, network },
@@ -61,7 +61,7 @@ export default class TopBarContainer extends Component<Props> {
         onLeftIconClick={actions.sidebar.toggleSubMenus.trigger}
         activeWallet={activeWallet}
         onTransferFunds={onTransferFunds}
-        hasAnyWallets={hasAnyWallets}
+        hasRewardsWallets={hasRewardsWallets}
         onWalletAdd={onWalletAdd}
         onLearnMore={openExternalLink}
       >

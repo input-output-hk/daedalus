@@ -69,19 +69,37 @@
 
   .note {
     color: var(--theme-staking-font-color-lighter);
+    display: flex;
     font-family: var(--font-regular);
     font-size: 14px;
     line-height: 1.43;
     padding: 10px 20px;
-    & > button {
-      @include link(--theme-link-main-color);
-      font-size: 14px;
-      &:hover {
-        border-bottom: 1px solid var(--theme-link-main-color);
-        color: var(--theme-link-main-color);
-        svg {
-          g {
-            stroke: var(--theme-link-main-color);
+
+    .asterisk {
+      margin-right: 12px;
+    }
+
+    .noteContent {
+      align-items: flex-start;
+      display: flex;
+      flex-direction: column;
+
+      p {
+        margin-bottom: 3px;
+      }
+
+      button {
+        @include link(--theme-staking-link-color-light);
+        font-size: 14px;
+        margin-top: 3px;
+
+        &:hover {
+          border-bottom: 1px solid var(--theme-staking-link-color);
+          color: var(--theme-staking-link-color);
+          svg {
+            g {
+              stroke: var(--theme-staking-link-color);
+            }
           }
         }
       }
