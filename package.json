@@ -209,6 +209,7 @@
     "**/**/lodash.mergewith": "^4.6.2",
     "**/**/lodash.template": "^4.5.0",
     "**/**/lodash": "^4.17.14",
-    "**/**/unicode-properties": "1.1.0"
+    "**/**/unicode-properties": "1.1.0",
+    "**/**/serialize-javascript": "2.1.1"
   }
 }
