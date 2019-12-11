@@ -302,6 +302,7 @@
   "staking.delegationCountdown.heading": "!!!Cardano decentralization",
   "staking.delegationCountdown.timeLeftDesc": "!!!Rewards begin in",
   "staking.delegationSetup.chooseStakePool.step.dialog.continueButtonLabel": "!!!Continue",
+  "staking.delegationSetup.chooseStakePool.step.dialog.delegatedStakePoolLabel": "!!!You are already delegating <span>{selectedWalletName}</span> wallet to <span>[{selectedPoolTicker}]</span> stake pool. <span>If you wish to re-delegate your stake, please select a different pool.</span>",
   "staking.delegationSetup.chooseStakePool.step.dialog.description": "!!!Choose a stake pool to which you would like to delegate.",
   "staking.delegationSetup.chooseStakePool.step.dialog.recentPoolsLabel": "!!!Pick one of your recent stake pool choices:",
   "staking.delegationSetup.chooseStakePool.step.dialog.searchInput.label": "!!!Or search for a stake pool:",
