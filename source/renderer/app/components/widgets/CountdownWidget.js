@@ -123,7 +123,7 @@ export default class CountdownWidget extends Component<Props, State> {
     }
 
     let valueStr = value.toString();
-    const isZeroValue = valueStr === '0';
+    const isZeroValue = valueStr === '0' && values.slice(0, index).reduce((acc, val) => acc + val, 0) === 0;
     valueStr = valueStr.length === 1 ? `0${valueStr}` : valueStr;
 
     return (
