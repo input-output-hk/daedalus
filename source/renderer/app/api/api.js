@@ -1453,7 +1453,7 @@ const _createStakePoolFromServerData = action(
       _isCharity: isCharity,
       // _pledge: pledge,
       _profitMargin: profitMargin,
-      _ranking: ranking,
+      // _ranking: ranking,
       _retiring: retiring,
     } = stakingStakePoolsMissingApiData[index];
     const {
@@ -1467,7 +1467,7 @@ const _createStakePoolFromServerData = action(
     producedBlocks = producedBlocks.quantity;
     return new StakePool({
       id,
-      performance,
+      performance: performance * 100, // Percentage!
       controlledStake,
       producedBlocks,
       ticker,
@@ -1481,7 +1481,7 @@ const _createStakePoolFromServerData = action(
       name,
       // pledge: new BigNumber(pledge).dividedBy(LOVELACES_PER_ADA),
       profitMargin,
-      ranking,
+      ranking: index + 1,
       retiring,
     });
   }
