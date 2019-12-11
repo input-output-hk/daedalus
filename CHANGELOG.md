@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 
+- Updated stake pool ranking logic to use `apparent_performance` from the Api response ([PR 1757](https://github.com/input-output-hk/daedalus/pull/1757))
 - Integrated V2 API endpoint for join/quit fee estimation ([PR 1752](https://github.com/input-output-hk/daedalus/pull/1752))
 - Integrated stake pool join V2 API endpoint and "Delegation" wizard updated ([PR 1744](https://github.com/input-output-hk/daedalus/pull/1744))
 - Integrated the V2 API endpoint for fetching stake pool data ([PR 1733](https://github.com/input-output-hk/daedalus/pull/1733))
@@ -17,6 +18,7 @@ Changelog
 ### Fixes
 
 - Fixed auto scrolling on wallet restore wizard when recovery phrase words field is focused ([PR 1077](https://github.com/input-output-hk/daedalus/pull/1077))
+- Fixed the middle ellipsis for different addresses lengths ([PR 1736](https://github.com/input-output-hk/daedalus/pull/1736))
 - Fixed missing "hamburger" icon on wallet menu while there are only legacy wallets in the UI ([PR 1730](https://github.com/input-output-hk/daedalus/pull/1730))
 - Fixed issues with wrong transaction amounts when new number formats are used ([PR 1726](https://github.com/input-output-hk/daedalus/pull/1726))
 - Fixed naming of labels on "Daedalus Diagnostics" screen and status icons on "Loading" screen from "Node..." to "Cardano node..." ([PR 1723](https://github.com/input-output-hk/daedalus/pull/1723))
@@ -31,8 +33,10 @@ Changelog
 
 ### Chores
 
+- Updated "Delegation" UI Support portal article URLs ([PR 1759](https://github.com/input-output-hk/daedalus/pull/1759))
+- Updated `serialize-javascript` package dependency ([PR 1756](https://github.com/input-output-hk/daedalus/pull/1756))
 - Updated minimum amount of ada for delegation to be available ([PR 1753](https://github.com/input-output-hk/daedalus/pull/1753))
-- Enable "Delegation" UI in Daedalus builds ([PR 1750](https://github.com/input-output-hk/daedalus/pull/1750))
+- Enabled "Delegation" UI in Daedalus builds ([PR 1750](https://github.com/input-output-hk/daedalus/pull/1750))
 - Updated `cardano-wallet` to revision `d4571952` which includes Jormungandr 0.8.0-rc8 ([PR 1749](https://github.com/input-output-hk/daedalus/pull/1749))
 - Improved the unit and e2e test setup ([PR 1743](https://github.com/input-output-hk/daedalus/pull/1743))
 - Updated to react-polymorph@0.9.0-rc.25 which includes a theme var for checkbox icon color (([PR 1742](https://github.com/input-output-hk/daedalus/pull/1742)))
