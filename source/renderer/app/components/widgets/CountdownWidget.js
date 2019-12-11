@@ -49,7 +49,7 @@ type Props = {
   redirectToStakingInfo?: Function,
   nextEpochStart?: string,
   startDateTime?: string,
-  hideYearsMonths?: boolean,
+  keepFormat?: boolean,
 };
 type State = { timeLeft: number };
 
@@ -70,13 +70,18 @@ export default class CountdownWidget extends Component<Props, State> {
     );
   }
 
+  componentWillReceiveProps(nextProps: Props) {
+    if (nextProps.nextEpochStart && this.state.timeLeft === 0) {
+      if (!this.props.showLoader) this.updateTimeLeft();
+      this.intervalHandler = setInterval(
+        () => this.updateTimeLeft(),
+        TIME_LEFT_INTERVAL
+      );
+    }
+  }
+
   updateTimeLeft = () => {
-    const {
-      redirectToStakingInfo,
-      startDateTime,
-      nextEpochStart,
-      hideYearsMonths,
-    } = this.props;
+    const { redirectToStakingInfo, startDateTime, nextEpochStart } = this.props;
     const startDateString = startDateTime || nextEpochStart;
     if (startDateString) {
       const timeLeft = Math.max(
@@ -86,7 +91,7 @@ export default class CountdownWidget extends Component<Props, State> {
 
       this.setState({ timeLeft });
 
-      if (timeLeft === 0 && !hideYearsMonths) {
+      if (timeLeft === 0) {
         if (this.intervalHandler) {
           clearInterval(this.intervalHandler);
         }
@@ -108,12 +113,10 @@ export default class CountdownWidget extends Component<Props, State> {
     const value = values[index];
     const includeDelimeter = index !== values.length - 1;
     const labelStr = labels[index];
-    const { hideYearsMonths } = this.props;
+    const { keepFormat } = this.props;
     const shouldBeHidden =
       values.slice(0, index).reduce((acc, val) => acc + val, 0) === 0 &&
-      value === 0 &&
-      hideYearsMonths &&
-      (labelStr === 'years' || labelStr === 'months');
+      value === 0 && !keepFormat;
     if (shouldBeHidden) {
       return null;
     }
@@ -142,6 +145,7 @@ export default class CountdownWidget extends Component<Props, State> {
   generateCountdownPanels = () => {
     const { intl } = this.context;
     const { timeLeft } = this.state;
+    const { keepFormat } = this.props;
     const duration = moment.duration(timeLeft, 'milliseconds');
 
     const yearsLabel = intl.formatMessage(messages.years);
@@ -150,14 +154,21 @@ export default class CountdownWidget extends Component<Props, State> {
     const hoursLabel = intl.formatMessage(messages.hours);
     const minutesLabel = intl.formatMessage(messages.minutes);
     const secondsLabel = intl.formatMessage(messages.seconds);
-    const labels: Array<string> = [
-      yearsLabel,
-      monthsLabel,
-      daysLabel,
-      hoursLabel,
-      minutesLabel,
-      secondsLabel,
-    ];
+    const labels: Array<string> = keepFormat ?
+      [
+        daysLabel,
+        hoursLabel,
+        minutesLabel,
+        secondsLabel,
+      ]
+      : [
+        yearsLabel,
+        monthsLabel,
+        daysLabel,
+        hoursLabel,
+        minutesLabel,
+        secondsLabel,
+      ];
 
     const years = duration.years();
     const months = duration.months();
@@ -165,8 +176,8 @@ export default class CountdownWidget extends Component<Props, State> {
     const hours = duration.hours();
     const minutes = duration.minutes();
     const seconds = duration.seconds();
-    const values = [years, months, days, hours, minutes, seconds];
-    const keys = ['years', 'months', 'days', 'hours', 'minutes', 'seconds'];
+    const values = keepFormat ? [days, hours, minutes, seconds] : [years, months, days, hours, minutes, seconds];
+    const keys = keepFormat ? ['days', 'hours', 'minutes', 'seconds'] : ['years', 'months', 'days', 'hours', 'minutes', 'seconds'];
 
     return labels.map<any>((
       label: string, // eslint-disable-line
