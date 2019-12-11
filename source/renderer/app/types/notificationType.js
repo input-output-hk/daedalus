@@ -4,8 +4,7 @@ import type { NotificationMessageProps } from '../components/notifications/Notif
 
 export type NotificationConfig = {
   id: string,
-  duration?: number | 'short' | 'long',
-  labelVariables?: Object,
+  duration?: number,
   actionToListenAndOpen: Action<any>,
   actionToListenAndClose?: Action<any>,
 };
@@ -13,4 +12,5 @@ export type NotificationConfig = {
 export type StoredNotification = {
   notificationConfig: NotificationConfig,
   notificationMessage: NotificationMessageProps,
+  labelValues?: Object,
 };

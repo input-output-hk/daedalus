@@ -1,10 +1,10 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
-import { intlShape } from 'react-intl';
+import { intlShape, FormattedHTMLMessage } from 'react-intl';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import Notification from '../../components/notifications/Notification';
-import type { NotificationMessageProps } from '../../components/notifications/Notification';
+import type { StoredNotification } from '../../types/notificationType';
 import messages from '../../i18n/notification-messages';
 
 import successIcon from '../../assets/images/success-small.inline.svg';
@@ -26,22 +26,35 @@ export default class NotificationsContainer extends Component<InjectedProps> {
 
   getIcon = (icon?: string) => (icon ? ICONS[icon] : icon);
 
+  getLabel = (id: string, labelValues?: ?Object) => {
+    return labelValues ? (
+      <FormattedHTMLMessage {...messages[id]} values={labelValues} />
+    ) : (
+      this.context.formatMessage(messages[id])
+    );
+  };
   render() {
-    const { stores } = this.props;
+    const { stores, actions } = this.props;
+    const { closeNotification } = actions.notifications;
     const { activeNotifications } = stores.uiNotifications;
-    const { intl } = this.context;
     return (
       <div>
-        {Object.entries(activeNotifications).map(
-          ([id: string, notification: NotificationMessageProps]) => (
+        {Object.keys(activeNotifications).map(key => {
+          const {
+            notificationConfig: { id },
+            notificationMessage,
+            labelValues,
+          } = activeNotifications[key];
+          return (
             <Notification
               key={id}
-              {...notification}
-              label={intl.formatMessage(messages[id])}
-              icon={this.getIcon}
+              {...notificationMessage}
+              label={this.getLabel(id, labelValues)}
+              onClose={() => closeNotification.trigger({ id })}
+              icon={successIcon}
             />
-          )
-        )}
+          );
+        })}
       </div>
     );
   }

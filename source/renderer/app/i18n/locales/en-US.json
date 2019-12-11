@@ -174,7 +174,7 @@
   "news.newsfeed.title": "Newsfeed",
   "noDiskSpace.error.overlayContent": "<b>Daedalus requires at least {diskSpaceRequired} of hard drive space to operate. Your computer is missing {diskSpaceMissing} of available space. Please delete some files to increase available hard drive space to continue using Daedalus. </b><br /><br />It is recommended to have at least 15% of hard drive space available ({diskSpaceRecommended} in your case) for normal and stable operation of the operating system and installed programs. We strongly recommend that you free up at least that amount of space from your hard drive.",
   "noDiskSpace.error.overlayTitle": "Daedalus requires more hard drive space",
-  "notification.copyAddress": "Address: <strong>{walletAddress}</strong> copied to clipboard",
+  "notification.copyAddress": "Address: <strong>{address}</strong> copied to clipboard",
   "notification.copyStateDirectory": "Daedalus state directory copied to clipboard",
   "notification.downloadLogsProgress": "Preparing logs for download",
   "notification.downloadLogsSuccess": "Logs successfully downloaded",

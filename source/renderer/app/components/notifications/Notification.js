@@ -1,11 +1,11 @@
 // @flow
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import type { Node } from 'react';
 import SVGInline from 'react-svg-inline';
-import { CSSTransition } from 'react-transition-group';
+// import { CSSTransition } from 'react-transition-group';
 import classNames from 'classnames';
 import styles from './Notification.scss';
-import notificationTransitionsStyles from './NotificationTransitions.scss';
+// import notificationTransitionsStyles from './NotificationTransitions.scss';
 import closeCross from '../../assets/images/close-cross.inline.svg';
 
 export type NotificationMessageProps = {
@@ -14,6 +14,7 @@ export type NotificationMessageProps = {
   hasCloseButton?: boolean,
   hasEllipsis?: boolean,
   themeOverride?: 'grey', // if left empty, the noticiation will have its normal colors
+  labelValues?: Object,
 };
 
 type Props = {
@@ -25,7 +26,10 @@ type Props = {
 
 export default class Notification extends Component<Props> {
   static defaultProps = {
-    order: 'auto',
+    order: 9999999999999999,
+    clickToClose: true,
+    hasCloseButton: true,
+    hasEllipsis: true,
   };
 
   render() {
@@ -47,10 +51,10 @@ export default class Notification extends Component<Props> {
       themeOverride ? styles[`theme-override-${themeOverride}`] : null,
     ]);
 
-    const transitionsStyles = classNames([
-      styles.transition,
-      notificationTransitionsStyles,
-    ]);
+    // const transitionsStyles = classNames([
+    //   styles.transition,
+    //   notificationTransitionsStyles,
+    // ]);
 
     return (
       <div
@@ -62,7 +66,7 @@ export default class Notification extends Component<Props> {
           zIndex: order,
         }}
       >
-        <CSSTransition className={transitionsStyles}>
+        <Fragment>
           {icon && <SVGInline svg={icon} className={styles.icon} />}
 
           <div className={styles.message}>{label}</div>
@@ -75,7 +79,7 @@ export default class Notification extends Component<Props> {
               <SVGInline svg={closeCross} />
             </button>
           )}
-        </CSSTransition>
+        </Fragment>
       </div>
     );
   }

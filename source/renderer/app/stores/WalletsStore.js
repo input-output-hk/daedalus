@@ -262,6 +262,16 @@ export default class WalletsStore extends Store {
     walletsActions.transferFundsCalculateFee.listen(
       this._transferFundsCalculateFee
     );
+
+    this.actions.notifications.registerNotification.trigger({
+      notificationConfig: {
+        id: 'copyAddress',
+        actionToListenAndOpen: walletsActions.copyAddress,
+      },
+      notificationMessage: {
+        icon: 'successIcon',
+      },
+    });
   }
 
   _create = async (params: { name: string, spendingPassword: string }) => {
