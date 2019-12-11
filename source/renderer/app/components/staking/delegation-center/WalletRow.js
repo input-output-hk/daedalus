@@ -86,9 +86,9 @@ export default class WalletRow extends Component<Props> {
     onDelegate(wallet.id);
   };
 
-  onMenuItemClick = (clickeItem: DelegationAction) => {
+  onMenuItemClick = ({ value }: { value: DelegationAction }) => {
     const { wallet } = this.props;
-    this.props.onMenuItemClick(clickeItem, wallet.id);
+    this.props.onMenuItemClick(value, wallet.id);
   };
 
   render() {
