@@ -17,7 +17,6 @@ import type { ApplicationDialog } from '../types/applicationDialogTypes';
 
 export default class AppStore extends Store {
   @observable error: ?LocalizableError = null;
-  @observable currentNotificationId: ?string = null;
   @observable isDownloadNotificationVisible = false;
   @observable gpuStatus: ?GpuStatus = null;
   @observable previousRoute: string = ROUTES.ROOT;
@@ -45,12 +44,7 @@ export default class AppStore extends Store {
     });
 
     this.actions.app.downloadLogs.listen(this._downloadLogs);
-    this.actions.app.setNotificationVisibility.listen(
-      this._setDownloadNotification
-    );
-
-    this.actions.app.showNotification.listen(this._showNotification);
-    this.actions.app.hideNoticiation.listen(this._hideNoticiation);
+    this.actions.app.setIsDownloadingLogs.listen(this._setIsDownloadingLogs);
 
     this.actions.app.toggleNewsFeed.listen(this._toggleNewsFeed);
     this.actions.app.closeNewsFeed.listen(this._closeNewsFeed);
@@ -165,7 +159,7 @@ export default class AppStore extends Store {
             fresh: true,
           });
         } else {
-          this.actions.app.setNotificationVisibility.trigger(
+          this.actions.app.setIsDownloadingLogs.trigger(
             !this.isDownloadNotificationVisible
           );
         }
@@ -174,25 +168,7 @@ export default class AppStore extends Store {
     this.isDownloadNotificationVisible = true;
   };
 
-  @action _setDownloadNotification = (
-    isDownloadNotificationVisible: boolean
-  ) => {
+  @action _setIsDownloadingLogs = (isDownloadNotificationVisible: boolean) => {
     this.isDownloadNotificationVisible = isDownloadNotificationVisible;
-  };
-
-  @action _showNotification = ({
-    notificationId,
-  }: {
-    notificationId: string,
-  }) => {
-    this.currentNotificationId = notificationId;
-  };
-  @action _hideNoticiation = ({
-    notificationId,
-  }: {
-    notificationId: string,
-  }) => {
-    if (this.currentNotificationId === notificationId)
-      this.currentNotificationId = null;
   };
 }

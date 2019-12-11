@@ -1,32 +1,17 @@
 // @flow
 import React, { Component, Fragment } from 'react';
-import { defineMessages, FormattedHTMLMessage } from 'react-intl';
 import { observer, inject } from 'mobx-react';
-import { ellipsis } from '../../utils/strings';
 import WalletReceive from '../../components/wallet/receive/WalletReceive';
 import WalletReceiveDialog from '../../components/wallet/receive/WalletReceiveDialog';
 import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer';
-import NotificationMessage from '../../components/widgets/NotificationMessage';
-import successIcon from '../../assets/images/success-small.inline.svg';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import WalletAddress from '../../domains/WalletAddress';
 import Wallet from '../../domains/Wallet';
-import { ADDRESS_COPY_NOTIFICATION_DURATION } from '../../config/timingConfig';
-import { ADDRESS_COPY_NOTIFICATION_ELLIPSIS } from '../../config/formattingConfig';
 import { generateFileNameWithTimestamp } from '../../../../common/utils/files';
-
-export const messages = defineMessages({
-  message: {
-    id: 'wallet.receive.page.addressCopyNotificationMessage',
-    defaultMessage: '!!!You have successfully copied wallet address',
-    description: 'Message for the wallet address copy success notification.',
-  },
-});
 
 type Props = InjectedProps;
 
 type State = {
-  copiedAddress: string,
   addressToShare?: ?WalletAddress,
   activeWallet: ?Wallet,
 };
@@ -37,56 +22,20 @@ export default class WalletReceivePage extends Component<Props, State> {
   static defaultProps = { actions: null, stores: null };
 
   state = {
-    copiedAddress: '',
     addressToShare: null,
     activeWallet: this.props.stores.wallets.active,
   };
 
   componentWillUnmount() {
-    this.closeNotification();
+    this.props.actions.notifications.closeNotification.trigger({
+      id: 'copyAddress',
+    });
   }
-
-  get notification() {
-    const { copiedAddress, activeWallet } = this.state;
-
-    // Guard against potential null values
-    if (!activeWallet)
-      throw new Error('Active wallet required for WalletReceivePage.');
-
-    return {
-      id: `${activeWallet.id}-copyNotification`,
-      duration: ADDRESS_COPY_NOTIFICATION_DURATION,
-      message: (
-        <FormattedHTMLMessage
-          {...messages.message}
-          values={{
-            walletAddress: ellipsis(
-              copiedAddress,
-              ADDRESS_COPY_NOTIFICATION_ELLIPSIS,
-              ADDRESS_COPY_NOTIFICATION_ELLIPSIS
-            ),
-          }}
-        />
-      ),
-    };
-  }
-
-  closeNotification = () => {
-    const { id } = this.notification;
-    if (id) {
-      this.props.actions.notifications.closeActiveNotification.trigger({ id });
-    }
-  };
 
   handleIsAddressValid = (index: number) => index < 3 || index > 7;
 
-  handleCopyAddress = (address: string) => {
-    this.setState({ copiedAddress: address });
-    this.props.actions.notifications.open.trigger({
-      id: this.notification.id,
-      duration: this.notification.duration,
-    });
-  };
+  handleCopyAddress = (address: string) =>
+    this.props.actions.wallets.copyAddress.trigger({ address });
 
   handleShareAddress = (addressToShare: WalletAddress) => {
     this.setState({
@@ -134,7 +83,6 @@ export default class WalletReceivePage extends Component<Props, State> {
 
   render() {
     const {
-      uiNotifications,
       uiDialogs,
       addresses,
       networkStatus,
@@ -166,15 +114,6 @@ export default class WalletReceivePage extends Component<Props, State> {
           />
         </VerticalFlexContainer>
 
-        <NotificationMessage
-          icon={successIcon}
-          show={uiNotifications.isOpen(this.notification.id)}
-          onClose={this.closeNotification}
-          clickToClose
-          hasCloseButton
-        >
-          {this.notification.message}
-        </NotificationMessage>
         {uiDialogs.isOpen(WalletReceiveDialog) && addressToShare && (
           <WalletReceiveDialog
             address={addressToShare}

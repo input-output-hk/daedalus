@@ -2,23 +2,28 @@
 import React, { Component } from 'react';
 import type { Node } from 'react';
 import SVGInline from 'react-svg-inline';
+import { CSSTransition } from 'react-transition-group';
 import classNames from 'classnames';
-import styles from './NotificationMessage.scss';
+import styles from './Notification.scss';
+import notificationTransitionsStyles from './NotificationTransitions.scss';
 import closeCross from '../../assets/images/close-cross.inline.svg';
 
-export type Props = {
+export type NotificationMessageProps = {
   icon?: string,
-  isVisible: boolean,
-  children?: Node,
   clickToClose?: boolean,
   hasCloseButton?: boolean,
   hasEllipsis?: boolean,
-  onClose?: Function,
-  order?: 'auto' | number | 'initial' | 'inherit',
   themeOverride?: 'grey', // if left empty, the noticiation will have its normal colors
 };
 
-export default class NotificationMessage extends Component<Props> {
+type Props = {
+  ...$Exact<NotificationMessageProps>,
+  label?: Node,
+  onClose?: Function,
+  order?: 'auto' | number | 'initial' | 'inherit',
+};
+
+export default class Notification extends Component<Props> {
   static defaultProps = {
     order: 'auto',
   };
@@ -26,8 +31,7 @@ export default class NotificationMessage extends Component<Props> {
   render() {
     const {
       icon,
-      isVisible,
-      children,
+      label,
       clickToClose,
       hasCloseButton,
       hasEllipsis,
@@ -38,10 +42,14 @@ export default class NotificationMessage extends Component<Props> {
 
     const notificationMessageStyles = classNames([
       styles.component,
-      isVisible ? styles.isVisible : null,
       hasEllipsis ? styles.hasEllipsis : null,
       clickToClose ? styles.clickToClose : null,
       themeOverride ? styles[`theme-override-${themeOverride}`] : null,
+    ]);
+
+    const transitionsStyles = classNames([
+      styles.transition,
+      notificationTransitionsStyles,
     ]);
 
     return (
@@ -54,18 +62,20 @@ export default class NotificationMessage extends Component<Props> {
           zIndex: order,
         }}
       >
-        {icon && <SVGInline svg={icon} className={styles.icon} />}
+        <CSSTransition className={transitionsStyles}>
+          {icon && <SVGInline svg={icon} className={styles.icon} />}
 
-        <div className={styles.message}>{children}</div>
+          <div className={styles.message}>{label}</div>
 
-        {hasCloseButton && (
-          <button
-            className={styles.closeButton}
-            onClick={() => onClose && onClose()}
-          >
-            <SVGInline svg={closeCross} />
-          </button>
-        )}
+          {hasCloseButton && (
+            <button
+              className={styles.closeButton}
+              onClick={() => onClose && onClose()}
+            >
+              <SVGInline svg={closeCross} />
+            </button>
+          )}
+        </CSSTransition>
       </div>
     );
   }

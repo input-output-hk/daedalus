@@ -555,7 +555,7 @@ export default class ProfileStore extends Store {
 
   _toggleDisableDownloadLogs = action(
     async ({ isDownloadNotificationVisible }) => {
-      this.actions.app.setNotificationVisibility.trigger(
+      this.actions.app.setIsDownloadingLogs.trigger(
         isDownloadNotificationVisible
       );
     }

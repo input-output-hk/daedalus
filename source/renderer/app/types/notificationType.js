@@ -1,6 +1,16 @@
 // @flow
-export type Notification = {
+import Action from '../actions/lib/Action';
+import type { NotificationMessageProps } from '../components/notifications/Notification.js';
+
+export type NotificationConfig = {
   id: string,
-  duration: ?number,
-  secondsTimerInterval: ?IntervalID,
+  duration?: number | 'short' | 'long',
+  labelVariables?: Object,
+  actionToListenAndOpen: Action<any>,
+  actionToListenAndClose?: Action<any>,
+};
+
+export type StoredNotification = {
+  notificationConfig: NotificationConfig,
+  notificationMessage: NotificationMessageProps,
 };
