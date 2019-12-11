@@ -3,6 +3,7 @@ import React, { Component, Fragment } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import { get } from 'lodash';
+import humanizeDuration from 'humanize-duration';
 import styles from './DelegationCenterHeader.scss';
 import CountdownWidget from '../../widgets/CountdownWidget';
 import type { NextEpoch, TipInfo } from '../../../api/network/types';
@@ -38,7 +39,7 @@ const messages = defineMessages({
   description: {
     id: 'staking.delegationCenter.description',
     defaultMessage:
-      'Changes to delegation preferences will take effect from the next epoch.',
+      '!!!Changes to delegation preferences will take effect after the next two Cardano epochs have completed. Epochs on the Incentivized Testnet last one day. Any changes made now will take effect in 2 days, 3 hours, and 1 minute.',
     description: 'Delegation description for the Delegation center.',
   },
 });
@@ -90,6 +91,13 @@ export default class DelegationCenterHeader extends Component<Props> {
     const nextEpochNumber = get(nextEpoch, 'epochNumber', 0);
     const slot = get(networkTip, 'slot', '-');
     const totalSlots = SLOTS_TOTAL;
+    // const timeUntilNextEpochStart = humanizeDuration(timeLeft || 0, {
+    //   round: true, // round seconds to prevent e.g. 1 day 3 hours *11,56 seconds*
+    //   language: humanizedDurationLanguage,
+    //   conjunction: ' and ',
+    //   units: ['d', 'h', 'm'],
+    //   serialComma: false,
+    // });
     const headingFirst = intl.formatMessage(messages.headingRight);
     const headingSecond = intl.formatMessage(messages.headingLeft, {
       nextEpochNumber,

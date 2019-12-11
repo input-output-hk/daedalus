@@ -8,3 +8,11 @@ export const LOCALES: Locales = {
   english: 'en-US',
   japanese: 'ja-JP',
 };
+
+export const humanizedDurationLanguage = {
+  'en-US': 'en',
+  'ja-JP': 'ja',
+  'zh-CN': 'zh_CN',
+  'ko-KR': 'ko',
+  'de-DE': 'de',
+};

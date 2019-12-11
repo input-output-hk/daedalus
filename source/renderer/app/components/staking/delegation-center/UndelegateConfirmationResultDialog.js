@@ -13,13 +13,13 @@ import sadLogo from '../../../assets/images/untada.inline.svg';
 const messages = defineMessages({
   dialogTitle: {
     id: 'staking.delegationCenter.undelegate.result.dialog.title',
-    defaultMessage: '!!!Wallet Undelegated',
+    defaultMessage: '!!!Wallet undelegated',
     description: 'Title for the "Undelegate Result" dialog.',
   },
   description: {
     id: 'staking.delegationCenter.undelegate.result.dialog.description',
     defaultMessage:
-      '!!!<p>The stake from your wallet <strong>{walletName}</strong> is no longer delegated and you will soon stop earning rewards for this wallet.</p><p>Your new delegation preferences are now posted on the blockchain <strong>and will take effect at the start of the next Cardano epoch in {timeUntilNextEpochStart}</strong>. For the rest of the current epoch, your previous delegation preferences are still active.</p>',
+      '!!!<p>The stake from your wallet <strong>{walletName}</strong> is no longer delegated and you will soon stop earning rewards for this wallet.</p><p>Your new delegation preferences are now posted on the blockchain <strong>and will take effect after the next two Cardano epochs have completed in {timeUntilNextEpochStart}</strong>. During this time, your previous delegation preferences are still active</p>',
     description: 'Description for the "Undelegate Result" dialog.',
   },
 });
