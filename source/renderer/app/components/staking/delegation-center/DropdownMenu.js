@@ -1,8 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { Select } from 'react-polymorph/lib/components/Select';
-import { SelectSkin } from 'react-polymorph/lib/skins/simple/SelectSkin';
+import { Dropdown } from 'react-polymorph/lib/components/Dropdown';
 import styles from './DropdownMenu.scss';
 
 type Props = {
@@ -26,14 +25,14 @@ export default class DropdownMenu extends Component<Props> {
 
     return (
       <div className={styles.component}>
-        <Select
-          allowBlank={false}
-          onChange={onMenuItemClick}
-          options={menuItems}
-          skin={SelectSkin}
+        <Dropdown
+          label={this.selectionRenderer()}
+          onItemSelected={onMenuItemClick}
           optionRenderer={this.optionRenderer}
-          optionsMaxHeight={null}
-          selectionRenderer={this.selectionRenderer}
+          items={menuItems}
+          activeItem={menuItems[0]}
+          clickToOpen
+          noArrow
         />
       </div>
     );

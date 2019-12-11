@@ -2,7 +2,6 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import BigNumber from 'bignumber.js';
-import { get } from 'lodash';
 import DelegationCenter from '../../components/staking/delegation-center/DelegationCenter';
 import DelegationSetupWizardDialogContainer from './dialogs/DelegationSetupWizardDialogContainer';
 import UndelegateDialogContainer from './dialogs/UndelegateDialogContainer';
@@ -20,15 +19,12 @@ export default class DelegationCenterPage extends Component<Props> {
   static defaultProps = { stores: null };
 
   handleDelegate = (walletId: string) => {
-    const { actions, stores } = this.props;
+    const { actions } = this.props;
     const { updateDataForActiveDialog } = actions.dialogs;
-    const { wallets } = stores;
-    const wallet = wallets.getWalletById(walletId);
-    const delegatedStakePoolId = get(wallet, 'delegatedStakePoolId', null);
 
     actions.dialogs.open.trigger({ dialog: DelegationSetupWizardDialog });
     updateDataForActiveDialog.trigger({
-      data: { walletId, poolId: delegatedStakePoolId },
+      data: { walletId },
     });
   };
 

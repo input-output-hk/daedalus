@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
-import { find, get, includes } from 'lodash';
+import { find, get } from 'lodash';
 import BigNumber from 'bignumber.js';
 import DelegationSetupWizardDialog from '../../../components/staking/delegation-setup-wizard/DelegationSetupWizardDialog';
 import { MIN_DELEGATION_FUNDS } from '../../../config/stakingConfig';
@@ -70,27 +70,18 @@ export default class DelegationSetupWizardDialogContainer extends Component<
     );
   }
 
-  get getActiveStep() {
-    const { selectedWalletId } = this;
-    if (selectedWalletId) {
-      const { wallets } = this.props.stores;
-      const wallet = wallets.getWalletById(selectedWalletId);
-      if (!wallet) return 0; // Intro step
-      const isWalletAcceptable = this.handleIsWalletAcceptable(wallet.amount);
-      if (!isWalletAcceptable) return 1; // Choose wallet step
-      return 2; // Choose stake pool step
-    }
-    return 0; // Intro step
-  }
-
-  state = {
-    selectedWalletId: this.selectedWalletId,
-    activeStep: this.getActiveStep,
-    selectedPoolId: get(
+  get selectedPoolId() {
+    return get(
       this.props,
       ['stores', 'uiDialogs', 'dataForActiveDialog', 'poolId'],
       null
-    ),
+    );
+  }
+
+  state = {
+    activeStep: 0,
+    selectedWalletId: this.selectedWalletId,
+    selectedPoolId: this.selectedPoolId,
     stakePoolJoinFee: new BigNumber(0),
   };
 
@@ -134,16 +125,7 @@ export default class DelegationSetupWizardDialogContainer extends Component<
   };
 
   handleSelectWallet = (walletId: string) => {
-    const { selectedPoolId } = this.state;
-    const { wallets } = this.props.stores;
-    const selectedWallet = find(
-      wallets.allWallets,
-      wallet => wallet.id === walletId
-    );
-    this.setState({
-      selectedWalletId: walletId,
-      selectedPoolId: selectedPoolId || selectedWallet.delegatedStakePoolId,
-    });
+    this.setState({ selectedWalletId: walletId });
     this.handleContinue();
   };
 
@@ -197,7 +179,7 @@ export default class DelegationSetupWizardDialogContainer extends Component<
         stepsList={this.STEPS_LIST}
         activeStep={activeStep}
         minDelegationFunds={MIN_DELEGATION_FUNDS}
-        isDisabled={includes([1, 2], activeStep) && !acceptableWallets}
+        isDisabled={activeStep === 1 && !acceptableWallets}
         isWalletAcceptable={this.handleIsWalletAcceptable}
         selectedWallet={selectedWallet}
         selectedPool={selectedPool || null}
