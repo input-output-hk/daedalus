@@ -119,13 +119,16 @@ export default class CountdownWidget extends Component<Props, State> {
     }
 
     let valueStr = value.toString();
+    const isZeroValue = valueStr === '0';
     valueStr = valueStr.length === 1 ? `0${valueStr}` : valueStr;
 
     return (
       <div className={styles.fieldPanel}>
         <div className={styles.left}>
           <div className={styles.fieldLabel}>{labelStr}</div>
-          <div className={styles.fieldValue}>{valueStr}</div>
+          <div className={styles.fieldValue}>
+            {isZeroValue ? <span>{valueStr}</span> : valueStr}
+          </div>
         </div>
         {includeDelimeter && (
           <div className={styles.right}>
