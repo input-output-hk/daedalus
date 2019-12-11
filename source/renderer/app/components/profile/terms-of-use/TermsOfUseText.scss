@@ -16,13 +16,17 @@
   h1,
   h2 {
     font-family: var(--font-medium);
-    font-size: 19px;
+  }
+
+  h1 {
+    font-size: 21px;
     margin-bottom: 11px;
   }
 
   h2 {
-    margin-bottom: 4px;
-    margin-top: 13px;
+    font-size: 19px;
+    margin-bottom: 25px;
+    margin-top: 35px;
   }
 
   ul {
