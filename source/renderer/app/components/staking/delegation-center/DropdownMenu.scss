@@ -65,9 +65,13 @@
         border: none;
         border-radius: 3px;
         box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.12);
-        margin-top: 14px !important;
+        margin-top: 5px !important;
         min-width: auto;
         right: 15px;
+
+        .SimpleOptions_ul {
+          max-height: none !important;
+        }
       }
       [data-bubble-arrow]:before,
       [data-bubble-arrow]:after {
