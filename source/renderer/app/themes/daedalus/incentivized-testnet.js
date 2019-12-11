@@ -246,7 +246,7 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--theme-input-text-color': '#ffffff',
   },
   link: {
-    '--theme-link-main-color': '#f69ab2',
+    '--theme-link-main-color': 'rgb(246, 154, 178)',
   },
   loading: {
     '--theme-loading-background-color': '#121326',
@@ -678,11 +678,11 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--theme-staking-font-color-accent': '#ffffff',
     '--theme-staking-font-color-regular': '#ffffff',
     '--theme-staking-font-color-light': '#ffffffb3',
-    '--theme-staking-font-color-lighter': '#ffffff80',
+    '--theme-staking-font-color-lighter': 'rgba(255, 255, 255, 0.5)',
     '--theme-staking-table-head-background-color': 'rgba(255, 255, 255, 0.07)',
     '--theme-staking-table-border-color': 'rgba(255, 255, 255, 0.2)',
-    '--theme-staking-link-color': '#eb2256',
-    '--theme-staking-link-color-light': 'rgba(235, 34, 88, 0.5)',
+    '--theme-staking-link-color': 'rgba(246, 154, 178, 1)',
+    '--theme-staking-link-color-light': 'rgba(246, 154, 178, 0.7)',
     '--theme-staking-progress-bar-background-color':
       'rgba(255, 255, 255, 0.07)',
     '--theme-staking-progress-stripe-dark-1-background-color': '#eb2256',

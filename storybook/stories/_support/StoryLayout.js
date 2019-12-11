@@ -188,7 +188,7 @@ export default class StoryLayout extends Component<Props> {
       leftIcon={this.isShowingSubMenus ? menuIconOpened : menuIconClosed}
       onTransferFunds={action('onTransferFunds')}
       onWalletAdd={action('onWalletAdd')}
-      hasAnyWallets={boolean('hasAnyWallets', true)}
+      hasRewardsWallets={boolean('hasRewardsWallets', true)}
     >
       <NodeSyncStatusIcon
         networkStatus={{
