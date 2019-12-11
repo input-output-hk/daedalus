@@ -72,7 +72,7 @@ type Props = {
   activeWallet: Wallet,
   onLearnMore: Function,
   onTransferFunds: Function,
-  hasAnyWallets?: boolean,
+  hasRewardsWallets?: boolean,
   onWalletAdd?: boolean,
 };
 
@@ -92,20 +92,20 @@ export default class LegacyNotification extends Component<Props> {
     const { intl } = this.context;
     const {
       onTransferFunds,
-      hasAnyWallets,
+      hasRewardsWallets,
       onWalletAdd,
       activeWallet,
     } = this.props;
-    const buttonAction = hasAnyWallets ? onTransferFunds : onWalletAdd;
+    const buttonAction = hasRewardsWallets ? onTransferFunds : onWalletAdd;
 
-    const buttonLabel = hasAnyWallets
+    const buttonLabel = hasRewardsWallets
       ? intl.formatMessage(messages.actionMove)
       : intl.formatMessage(messages.addWallet);
 
     return (
       <div className={styles.component}>
         <div className={styles.title}>
-          {hasAnyWallets ? (
+          {hasRewardsWallets ? (
             <FormattedHTMLMessage
               {...messages.moveFundsTitle}
               values={{
@@ -123,7 +123,7 @@ export default class LegacyNotification extends Component<Props> {
         </div>
         <div className={styles.description}>
           <p>
-            {hasAnyWallets ? (
+            {hasRewardsWallets ? (
               <FormattedHTMLMessage
                 {...messages.moveFundsDescriptionLine1}
                 values={{
@@ -140,7 +140,7 @@ export default class LegacyNotification extends Component<Props> {
             )}
           </p>
           <p>
-            {hasAnyWallets ? (
+            {hasRewardsWallets ? (
               <FormattedHTMLMessage
                 {...messages.moveFundsDescriptionLine2}
                 values={{
