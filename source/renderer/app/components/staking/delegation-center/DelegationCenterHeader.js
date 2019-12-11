@@ -1,13 +1,21 @@
 // @flow
 import React, { Component, Fragment } from 'react';
 import { observer } from 'mobx-react';
+import moment from 'moment';
 import { defineMessages, intlShape } from 'react-intl';
 import { get } from 'lodash';
-import humanizeDuration from 'humanize-duration';
 import styles from './DelegationCenterHeader.scss';
 import CountdownWidget from '../../widgets/CountdownWidget';
-import type { NextEpoch, TipInfo } from '../../../api/network/types';
-import { SLOTS_TOTAL } from '../../../config/epochsConfig';
+import type {
+  NextEpoch,
+  TipInfo,
+  FutureEpoch,
+} from '../../../api/network/types';
+import {
+  SLOTS_TOTAL,
+  // EPOCH_LENGTH_ITN,
+  EPOCH_COUNTDOWN_INTERVAL,
+} from '../../../config/epochsConfig';
 import { generateFieldPanel } from './helpers';
 
 const messages = defineMessages({
@@ -39,7 +47,7 @@ const messages = defineMessages({
   description: {
     id: 'staking.delegationCenter.description',
     defaultMessage:
-      '!!!Changes to delegation preferences will take effect after the next two Cardano epochs have completed. Epochs on the Incentivized Testnet last one day. Any changes made now will take effect in 2 days, 3 hours, and 1 minute.',
+      '!!!Changes to delegation preferences will take effect after the next two Cardano epochs have completed. Epochs on the Incentivized Testnet last one day. Any changes made now will take effect in {days} days, {hours} hours, and {minutes} minutes.',
     description: 'Delegation description for the Delegation center.',
   },
 });
@@ -47,12 +55,60 @@ const messages = defineMessages({
 type Props = {
   networkTip: ?TipInfo,
   nextEpoch: ?NextEpoch,
+  futureEpoch: ?FutureEpoch,
 };
+type State = { timeLeft: number };
 
 @observer
-export default class DelegationCenterHeader extends Component<Props> {
+export default class DelegationCenterHeader extends Component<Props, State> {
+  intervalHandler: ?IntervalID = null;
+  state = { timeLeft: 0 };
+
   static contextTypes = {
     intl: intlShape.isRequired,
+  };
+
+  componentDidMount() {
+    this.intervalHandler = setInterval(
+      () => this.updateTimeLeft(),
+      EPOCH_COUNTDOWN_INTERVAL
+    );
+  }
+
+  updateTimeLeft = () => {
+    const { futureEpoch } = this.props;
+    if (!futureEpoch) return;
+    const { epochStart } = futureEpoch;
+    if (epochStart) {
+      const timeLeft = Math.max(
+        0,
+        new Date(epochStart).getTime() - new Date().getTime()
+      );
+      this.setState({ timeLeft });
+    }
+  };
+
+  componentWillUnmount() {
+    if (this.intervalHandler) {
+      clearInterval(this.intervalHandler);
+    }
+  }
+
+  generateCountdownTimer = () => {
+    const { timeLeft } = this.state;
+    const duration = moment.duration(timeLeft, 'milliseconds');
+    const years = duration.years();
+    const months = duration.months();
+    const days = duration.days();
+    const hours = duration.hours();
+    const minutes = duration.minutes();
+    return {
+      years,
+      months,
+      days,
+      hours,
+      minutes,
+    };
   };
 
   generateCurrentEpochPanels = (
@@ -91,18 +147,15 @@ export default class DelegationCenterHeader extends Component<Props> {
     const nextEpochNumber = get(nextEpoch, 'epochNumber', 0);
     const slot = get(networkTip, 'slot', '-');
     const totalSlots = SLOTS_TOTAL;
-    // const timeUntilNextEpochStart = humanizeDuration(timeLeft || 0, {
-    //   round: true, // round seconds to prevent e.g. 1 day 3 hours *11,56 seconds*
-    //   language: humanizedDurationLanguage,
-    //   conjunction: ' and ',
-    //   units: ['d', 'h', 'm'],
-    //   serialComma: false,
-    // });
     const headingFirst = intl.formatMessage(messages.headingRight);
     const headingSecond = intl.formatMessage(messages.headingLeft, {
       nextEpochNumber,
     });
-    const description = intl.formatMessage(messages.description);
+    // console.log('this.generateCountdownTimer()', this.generateCountdownTimer());
+    const description = intl.formatMessage(
+      messages.description,
+      this.generateCountdownTimer()
+    );
     const fieldPanels = this.generateCurrentEpochPanels(
       epoch,
       slot,

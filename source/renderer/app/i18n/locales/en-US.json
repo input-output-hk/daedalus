@@ -270,7 +270,7 @@
   "staking.delegationCenter.currentSlot": "Current slot",
   "staking.delegationCenter.delegate": "Delegate",
   "staking.delegationCenter.delegated": "Delegated",
-  "staking.delegationCenter.description": "Changes to delegation preferences will take effect after the next two Cardano epochs have completed. Epochs on the Incentivized Testnet last one day. Any changes made now will take effect in 2 days, 3 hours, and 1 minute.",
+  "staking.delegationCenter.description": "Changes to delegation preferences will take effect after the next two Cardano epochs have completed. Epochs on the Incentivized Testnet last one day. Any changes made now will take effect in {days} days, {hours} hours, and {minutes} minutes.",
   "staking.delegationCenter.epoch": "Epoch",
   "staking.delegationCenter.headingLeft": "Cardano epoch {nextEpochNumber} starts in",
   "staking.delegationCenter.headingRight": "Current Cardano epoch",

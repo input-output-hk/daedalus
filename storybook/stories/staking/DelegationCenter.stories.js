@@ -34,7 +34,12 @@ const networkTip: TipInfo = {
 
 const nextEpoch: NextEpoch = {
   epochNumber: 1233,
-  epochStart: new Date('2019-12-31').toUTCString(),
+  epochStart: new Date('2019-12-29').toUTCString(),
+};
+
+const futureEpoch: NextEpoch = {
+  epochNumber: 1234,
+  epochStart: new Date('2019-12-30').toUTCString(),
 };
 
 // Dummy data initialization
@@ -112,5 +117,6 @@ export const StakingDelegationCenterStory = () => (
     numberOfStakePools={STAKE_POOLS.length}
     networkTip={networkTip}
     nextEpoch={nextEpoch}
+    futureEpoch={futureEpoch}
   />
 );

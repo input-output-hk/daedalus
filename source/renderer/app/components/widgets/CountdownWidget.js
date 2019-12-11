@@ -1,48 +1,15 @@
 // @flow
 import React, { Component, Fragment } from 'react';
 import { observer } from 'mobx-react';
-import { defineMessages, intlShape } from 'react-intl';
+import { intlShape } from 'react-intl';
 import classNames from 'classnames';
 import moment from 'moment';
 import SVGInline from 'react-svg-inline';
 import styles from './CountdownWidget.scss';
 import delimeterIcon from '../../assets/images/delimeter.inline.svg';
 import spinnerIcon from '../../assets/images/spinner.inline.svg';
-
-const messages = defineMessages({
-  years: {
-    id: 'global.duration.years',
-    defaultMessage: '!!!years',
-    description: 'Label for years value in duration.',
-  },
-  months: {
-    id: 'global.duration.months',
-    defaultMessage: '!!!months',
-    description: 'Label for months value in duration.',
-  },
-  days: {
-    id: 'global.duration.days',
-    defaultMessage: '!!!days',
-    description: 'Label for days value in duration.',
-  },
-  hours: {
-    id: 'global.duration.hours',
-    defaultMessage: '!!!hours',
-    description: 'Label for hours value in duration.',
-  },
-  minutes: {
-    id: 'global.duration.minutes',
-    defaultMessage: '!!!minutes',
-    description: 'Label for minutes value in duration.',
-  },
-  seconds: {
-    id: 'global.duration.seconds',
-    defaultMessage: '!!!seconds',
-    description: 'Label for seconds value in duration.',
-  },
-});
-
-const TIME_LEFT_INTERVAL = 1 * 1000; // 1 second | unit: milliseconds;
+import { EPOCH_COUNTDOWN_INTERVAL } from '../../config/epochsConfig';
+import globalMessages from '../../i18n/global-messages';
 
 type Props = {
   showLoader: boolean,
@@ -65,7 +32,7 @@ export default class CountdownWidget extends Component<Props, State> {
     if (!this.props.showLoader) this.updateTimeLeft();
     this.intervalHandler = setInterval(
       () => this.updateTimeLeft(),
-      TIME_LEFT_INTERVAL
+      EPOCH_COUNTDOWN_INTERVAL
     );
   }
 
@@ -133,12 +100,12 @@ export default class CountdownWidget extends Component<Props, State> {
     const { timeLeft } = this.state;
     const duration = moment.duration(timeLeft, 'milliseconds');
 
-    const yearsLabel = intl.formatMessage(messages.years);
-    const monthsLabel = intl.formatMessage(messages.months);
-    const daysLabel = intl.formatMessage(messages.days);
-    const hoursLabel = intl.formatMessage(messages.hours);
-    const minutesLabel = intl.formatMessage(messages.minutes);
-    const secondsLabel = intl.formatMessage(messages.seconds);
+    const yearsLabel = intl.formatMessage(globalMessages.years);
+    const monthsLabel = intl.formatMessage(globalMessages.months);
+    const daysLabel = intl.formatMessage(globalMessages.days);
+    const hoursLabel = intl.formatMessage(globalMessages.hours);
+    const minutesLabel = intl.formatMessage(globalMessages.minutes);
+    const secondsLabel = intl.formatMessage(globalMessages.seconds);
     const labels: Array<string> = [
       yearsLabel,
       monthsLabel,

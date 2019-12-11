@@ -29,7 +29,13 @@ export default (api: AdaApi) => {
       Logger.debug('AdaApi::getNetworkInfo (PATCHED) success', { networkInfo });
 
       /* eslint-disable-next-line camelcase */
-      const { sync_progress, node_tip, network_tip, next_epoch } = networkInfo;
+      const {
+        sync_progress,
+        node_tip,
+        network_tip,
+        next_epoch,
+        future_epoch,
+      } = networkInfo;
       const syncProgress =
         get(sync_progress, 'status') === 'ready'
           ? 100
@@ -49,6 +55,10 @@ export default (api: AdaApi) => {
         nextEpoch: {
           epochNumber: get(next_epoch, 'epoch_number', 0),
           epochStart: get(next_epoch, 'epoch_start', ''),
+        },
+        futureEpoch: {
+          epochNumber: get(future_epoch, 'epoch_number', 0),
+          epochStart: get(future_epoch, 'epoch_start', ''),
         },
       };
     } catch (error) {

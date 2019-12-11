@@ -4,7 +4,7 @@ import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import styles from './SupportSettings.scss';
-import globalMessages from '../../../i18n/global-messages.js';
+import globalMessages from '../../../i18n/global-messages';
 import externalLinkIcon from '../../../assets/images/link-ic.inline.svg';
 
 const messages = defineMessages({

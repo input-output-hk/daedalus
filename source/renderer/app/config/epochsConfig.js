@@ -18,3 +18,4 @@ export const EPOCH_LENGTH_BASE_TESTNET = 2160;
 export const EPOCH_LENGTH_BASE_DEVELOPMENT = 2;
 
 export const EPOCH_LENGTH_ITN = 1; // unit: day
+export const EPOCH_COUNTDOWN_INTERVAL = 1 * 1000; // 1 second | unit: milliseconds;

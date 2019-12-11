@@ -86,7 +86,6 @@ import { filterLogData } from '../../../common/utils/logging';
 // Config constants
 import { LOVELACES_PER_ADA } from '../config/numbersConfig';
 import { ADA_CERTIFICATE_MNEMONIC_LENGTH } from '../config/cryptoConfig';
-import { EPOCH_LENGTH_ITN } from '../config/epochsConfig';
 
 // Addresses Types
 import type { Address, GetAddressesRequest } from './addresses/types';
