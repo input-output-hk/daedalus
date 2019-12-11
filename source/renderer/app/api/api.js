@@ -1472,7 +1472,7 @@ const _createStakePoolFromServerData = action(
     producedBlocks = producedBlocks.quantity;
     return new StakePool({
       id,
-      performance,
+      performance: performance * 100, // Percentage!
       controlledStake,
       producedBlocks,
       ticker,
