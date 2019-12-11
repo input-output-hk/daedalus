@@ -78,12 +78,19 @@ export default class WalletReceive extends Component<Props, State> {
     showUsed: true,
   };
 
+  // We need to track the mounted state in order to avoid calling
+  // setState promise handling code after the component was already unmounted:
+  // Read more: https://facebook.github.io/react/blog/2015/12/16/ismounted-antipattern.html
+  _isMounted = false;
+
   componentDidMount() {
+    this._isMounted = true;
     window.addEventListener('resize', this.debounceAddressCalculation);
     this.props.onToggleSubMenus.listen(this.debounceAddressCalculation);
   }
 
   componentWillUnmount() {
+    this._isMounted = false;
     window.removeEventListener('resize', this.debounceAddressCalculation);
     this.props.onToggleSubMenus.remove(this.debounceAddressCalculation);
   }
@@ -103,25 +110,29 @@ export default class WalletReceive extends Component<Props, State> {
     containerElement: HTMLElement
   ) => {
     setTimeout(() => {
-      this.containerElement = containerElement;
-      const addressWidth = addressElement.offsetWidth;
-      const charWidth = addressWidth / this.addressLength;
-      this.setState({ charWidth, addressWidth }, this.calculateAddressSlice);
+      if (this._isMounted) {
+        this.containerElement = containerElement;
+        const addressWidth = addressElement.offsetWidth;
+        const charWidth = addressWidth / this.addressLength;
+        this.setState({ charWidth, addressWidth }, this.calculateAddressSlice);
+      }
     }, 500);
   };
 
   calculateAddressSlice = () => {
-    const { charWidth, addressWidth } = this.state;
-    const { addressLength, containerElement } = this;
-    if (!containerElement || !charWidth || !addressLength) return;
-    const containerWidth = containerElement.offsetWidth;
-    const addressSlice =
-      containerWidth < addressWidth
-        ? Math.floor(containerWidth / charWidth / 2) - 1
-        : 0;
-    this.setState({
-      addressSlice,
-    });
+    if (this._isMounted) {
+      const { charWidth, addressWidth } = this.state;
+      const { addressLength, containerElement } = this;
+      if (!containerElement || !charWidth || !addressLength) return;
+      const containerWidth = containerElement.offsetWidth;
+      const addressSlice =
+        containerWidth < addressWidth
+          ? Math.floor(containerWidth / charWidth / 2) - 1
+          : 0;
+      this.setState({
+        addressSlice,
+      });
+    }
   };
 
   toggleUsedAddresses = () => {
