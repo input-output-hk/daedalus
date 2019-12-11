@@ -13,24 +13,17 @@ export default class SidebarStore extends Store {
   @observable isShowingSubMenus: boolean = true;
 
   setup() {
-    const {
-      sidebar: sidebarActions,
-      networkStatus: networkStatusActions,
-    } = this.actions;
-
+    const { sidebar: sidebarActions } = this.actions;
     sidebarActions.showSubMenus.listen(this._showSubMenus);
     sidebarActions.toggleSubMenus.listen(this._toggleSubMenus);
     sidebarActions.activateSidebarCategory.listen(
       this._onActivateSidebarCategory
     );
     sidebarActions.walletSelected.listen(this._onWalletSelected);
-    networkStatusActions.nodeImplementationUpdate.listen(
-      this._syncSidebarWithNetworkStatus
-    );
-
     this.registerReactions([this._syncSidebarRouteWithRouter]);
     this._configureCategories();
   }
+
   // We need to use computed.struct for computed objects (so they are structurally compared
   // for equality instead of idendity (which would always invalidate)
   // https://alexhisen.gitbooks.io/mobx-recipes/content/use-computedstruct-for-computed-objects.html
@@ -55,7 +48,12 @@ export default class SidebarStore extends Store {
   }
 
   @action _configureCategories = () => {
-    this.CATEGORIES = sidebarConfig.CATEGORIES_WITH_STAKING;
+    const { networkStatus } = this.stores;
+    if (networkStatus.isIncentivizedTestnet) {
+      this.CATEGORIES = sidebarConfig.CATEGORIES_WITHOUT_DELEGATION_COUNTDOWN;
+    } else {
+      this.CATEGORIES = sidebarConfig.CATEGORIES_WITH_STAKING;
+    }
   };
 
   @action _onActivateSidebarCategory = (params: {
@@ -106,14 +104,5 @@ export default class SidebarStore extends Store {
       if (route.indexOf(category.route) === 0)
         this._setActivateSidebarCategory(category.route);
     });
-  };
-
-  _syncSidebarWithNetworkStatus = () => {
-    const { networkStatus } = this.stores;
-    if (networkStatus.isIncentivizedTestnet) {
-      this.CATEGORIES = sidebarConfig.CATEGORIES_WITHOUT_DELEGATION_COUNTDOWN;
-    } else {
-      this.CATEGORIES = sidebarConfig.CATEGORIES_WITH_STAKING;
-    }
   };
 }
