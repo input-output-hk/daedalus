@@ -43,7 +43,7 @@ THIS TERMS OF SERVICE AGREEMENT (&quot;**Agreement**&quot;) is made between Inpu
 
 ## 2. Special Terms - Daedalus Wallet
 
-2.1 **Product Specific Terms.** The [Daedalus Wallet Terms](https://github.com/input-output-hk/daedalus/blob/develop/source/renderer/app/i18n/locales/terms-of-use/mainnet/en-US.md) are incorporated by this reference into this Agreement.
+2.1 **Product Specific Terms.** The [Daedalus Wallet Terms](https://github.com/input-output-hk/daedalus/blob/master/source/renderer/app/i18n/locales/terms-of-use/mainnet/en-US.md) are incorporated by this reference into this Agreement.
 
 2.2 **Use.** By using Daedalus, User acknowledges and agrees: (i) that the Company is not responsible for operation of the underlying protocols and that the Company makes no guarantee of their functionality, security, or availability; and (ii) that the underlying protocols are subject to sudden changes in operating rules ("forks"), and that such forks may materially affect the value, and/or function of the ada or any other cryptocurrency that User stores on Daedalus. In the event of a fork, User agrees that the Company may temporarily suspend Daedalus operations (with or without notice to User) and that the Company may, in its sole discretion, (a) configure or reconfigure its systems or (b) decide not to support (or cease supporting) the forked protocol entirely, provided, however, that User will have an opportunity to withdraw funds from Daedalus. User acknowledges and agrees that the Company assumes absolutely no responsibility whatsoever in respect of an unsupported branch of a forked protocol.
 

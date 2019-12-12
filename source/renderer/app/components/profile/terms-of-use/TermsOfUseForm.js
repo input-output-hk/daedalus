@@ -14,20 +14,20 @@ import styles from './TermsOfUseForm.scss';
 const messages = defineMessages({
   checkboxLabel: {
     id: 'profile.termsOfUse.checkboxLabel',
-    defaultMessage: '!!!I agree with terms of use',
-    description: 'Label for the "I agree with terms of use" checkbox.',
+    defaultMessage: '!!!I agree with terms of service',
+    description: 'Label for the "I agree with terms of service" checkbox.',
   },
   checkboxLabelWithDisclaimer: {
     id: 'profile.termsOfUse.checkboxLabelWithDisclaimer',
     defaultMessage:
       '!!!I understand that the terms of use are only available in English and agree to the terms of use',
     description:
-      'Label for the "I agree with terms of use" checkbox when terms of use are not translated.',
+      'Label for the "I agree with terms of service" checkbox when terms of use are not translated.',
   },
   submitLabel: {
     id: 'profile.termsOfUse.submitLabel',
     defaultMessage: '!!!Continue',
-    description: 'Label for the "Terms of use" form submit button.',
+    description: 'Label for the "Terms of service" form submit button.',
   },
 });
 

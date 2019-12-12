@@ -58,14 +58,24 @@ storiesOf('Settings|General', module)
       }}
     />
   ))
-  .add('Terms of Use', props => (
-    <TermsOfUseSettings
-      localizedTermsOfUse={require(`../../../../source/renderer/app/i18n/locales/terms-of-use/mainnet/${
+  .add('Terms of Service', props => {
+    let termsOfUseSource = null;
+    if (props.currentTheme === 'incentivized-testnet') {
+      termsOfUseSource = require(`../../../../source/renderer/app/i18n/locales/terms-of-use/itn-rewards-v1/${
         props.locale
-      }.md`)}
-      onOpenExternalLink={() => null}
-    />
-  ))
+      }.md`);
+    } else {
+      termsOfUseSource = require(`../../../../source/renderer/app/i18n/locales/terms-of-use/mainnet/${
+        props.locale
+      }.md`);
+    }
+    return (
+      <TermsOfUseSettings
+        localizedTermsOfUse={termsOfUseSource}
+        onOpenExternalLink={() => null}
+      />
+    );
+  })
   .add('Support', () => (
     <SupportSettings
       onExternalLinkClick={action('onExternalLinkClick')}
