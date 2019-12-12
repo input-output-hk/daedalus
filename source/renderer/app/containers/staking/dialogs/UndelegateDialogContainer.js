@@ -37,9 +37,8 @@ export default class UndelegateDialogContainer extends Component<Props> {
     if (!walletToBeUndelegated) return null;
 
     const { name: walletName, delegatedStakePoolId } = walletToBeUndelegated;
-    const delegatedStakePool = getStakePoolById(delegatedStakePoolId);
 
-    if (!delegatedStakePool && undelegateWalletSubmissionSuccess) {
+    if (!delegatedStakePoolId && undelegateWalletSubmissionSuccess) {
       return (
         <UndelegateConfirmationResultDialog
           walletName={walletName}
@@ -55,6 +54,9 @@ export default class UndelegateDialogContainer extends Component<Props> {
         />
       );
     }
+
+    const delegatedStakePool = getStakePoolById(delegatedStakePoolId);
+    if (!delegatedStakePool) return null;
 
     const {
       id: stakePoolId,
