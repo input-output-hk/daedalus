@@ -58,6 +58,8 @@ export const checkIsIncentivizedTestnetQA = (rawNetwork: string) =>
   rawNetwork === QA;
 export const checkIsIncentivizedTestnetNightly = (rawNetwork: string) =>
   rawNetwork === NIGHTLY;
+export const checkIsIncentivizedTestnetSelfNode = (rawNetwork: string) =>
+  rawNetwork === SELFNODE;
 export const checkIsDevelopment = (network: string) => network === DEVELOPMENT;
 export const checkIsMacOS = (platform: string) => platform === MAC_OS;
 export const checkIsWindows = (platform: string) => platform === WINDOWS;
