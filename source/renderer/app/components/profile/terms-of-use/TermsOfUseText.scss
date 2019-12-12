@@ -25,8 +25,8 @@
 
   h2 {
     font-size: 19px;
-    margin-bottom: 25px;
-    margin-top: 35px;
+    margin-bottom: 11px;
+    margin-top: 22px;
   }
 
   ul {
@@ -47,12 +47,13 @@
 
   p,
   li {
-    font-family: var(--font-regular);
+    font-family: var(--font-light);
     line-height: 1.38;
     margin-bottom: 11px;
 
     strong {
-      font-weight: bold;
+      font-family: var(--font-medium);
+      font-weight: normal;
     }
   }
   li {

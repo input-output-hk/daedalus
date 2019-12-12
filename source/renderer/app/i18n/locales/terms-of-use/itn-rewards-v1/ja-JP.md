@@ -1,7 +1,5 @@
 # Terms of Service Agreement
 
----
-
 THIS TERMS OF SERVICE AGREEMENT (&quot;**Agreement**&quot;) is made between Input Output HK Limited (&quot;**Company**&quot;) and any person (&quot;**User**&quot;) who completes the process to download, utilize, or operate any software or application created or offered by Company, including, but not limited to, the Daedalus Wallet application and the IOHK Incentivised Testnet (&quot;**Software**&quot;). Company and User are collectively referred to as the &quot;parties.&quot;
 
 ## 1. General Terms - All Products
