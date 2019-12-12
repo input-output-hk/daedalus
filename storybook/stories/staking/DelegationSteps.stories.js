@@ -100,7 +100,7 @@ export class StakingDelegationSteps extends Component<Props, State> {
         onClose={action('onClose')}
         onBack={action('onBack')}
         onSelectPool={this.onContinue}
-        selectedPool={STAKE_POOLS[0]}
+        selectedPool={null}
         selectedWallet={WALLETS[0]}
       />,
       <DelegationStepsConfirmationDialog

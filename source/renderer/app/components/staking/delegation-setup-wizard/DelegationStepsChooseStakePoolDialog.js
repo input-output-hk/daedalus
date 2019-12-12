@@ -56,6 +56,14 @@ const messages = defineMessages({
     description:
       '"Selected Pools" Selected pool label on the delegation setup "choose stake pool" dialog.',
   },
+  delegatedStakePoolLabel: {
+    id:
+      'staking.delegationSetup.chooseStakePool.step.dialog.delegatedStakePoolLabel',
+    defaultMessage:
+      '!!!You are already delegating <span>{selectedWalletName}</span> wallet to <span>[{selectedPoolTicker}]</span> stake pool. <span>If you wish to re-delegate your stake, please select a different pool.</span>',
+    description:
+      '"You are already delegating to stake pool" label on the delegation setup "choose stake pool" dialog.',
+  },
   recentPoolsLabel: {
     id: 'staking.delegationSetup.chooseStakePool.step.dialog.recentPoolsLabel',
     defaultMessage: '!!!Pick one of your recent stake pool choices:',
@@ -137,10 +145,6 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
     this.setState({ selectedList });
   };
 
-  handleDeselectStakePool = () => {
-    this.setState({ selectedPoolId: null });
-  };
-
   onAcceptPool = () => {
     const { selectedPoolId } = this.state;
     this.props.onSelectPool(selectedPoolId);
@@ -195,6 +199,7 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
         selectedPool
           ? styles.selectedPoolBlock
           : styles.selectPoolBlockPlaceholder,
+        selectedPool && !canSubmit ? styles.alreadyDelegated : null,
       ]);
 
       const selectedPoolImageClasses = classNames([
@@ -213,7 +218,6 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
         <div
           role="presentation"
           className={selectedPoolBlockClasses}
-          onClick={this.handleDeselectStakePool}
           style={{
             background: rankColor,
           }}
@@ -229,6 +233,44 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
           </div>
         </div>
       );
+    };
+
+    const selectionPoolLabel = () => {
+      let label = '';
+      // Label when selected wallet already delegating to selected stake pool
+      if (selectedPoolId && delegatedStakePoolId === selectedPoolId) {
+        label = (
+          <FormattedHTMLMessage
+            {...messages.delegatedStakePoolLabel}
+            values={{
+              selectedWalletName,
+              selectedPoolTicker,
+            }}
+          />
+        );
+      } else if (selectedPoolId) {
+        // Stake pool selected and selected wallet are not delegated to it
+        label = (
+          <FormattedHTMLMessage
+            {...messages.selectedStakePoolLabel}
+            values={{
+              selectedWalletName,
+              selectedPoolTicker,
+            }}
+          />
+        );
+      } else {
+        // Stake pool not selected.
+        label = (
+          <FormattedHTMLMessage
+            {...messages.selectStakePoolLabel}
+            values={{
+              selectedWalletName,
+            }}
+          />
+        );
+      }
+      return label;
     };
 
     const stepsIndicatorLabel = (
@@ -281,22 +323,7 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
             {selectedPoolBlock()}
 
             <p className={styles.selectStakePoolLabel}>
-              {selectedPoolTicker ? (
-                <FormattedHTMLMessage
-                  {...messages.selectedStakePoolLabel}
-                  values={{
-                    selectedWalletName,
-                    selectedPoolTicker,
-                  }}
-                />
-              ) : (
-                <FormattedHTMLMessage
-                  {...messages.selectStakePoolLabel}
-                  values={{
-                    selectedWalletName,
-                  }}
-                />
-              )}
+              {selectionPoolLabel()}
             </p>
           </div>
 

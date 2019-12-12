@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { defineMessages, intlShape } from 'react-intl';
+import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import { get, map, orderBy } from 'lodash';
 import classNames from 'classnames';
@@ -60,7 +60,7 @@ const messages = defineMessages({
   note: {
     id: 'staking.rewards.note',
     defaultMessage:
-      '!!!Rewards from stake delegation are automatically collected into your reward account.',
+      '!!!<p>Rewards earned by delegating your stake are automatically collected into your reward account.</p><p>Rewards earned on the Incentivized Testnet are not added to your Rewards wallet balance. They will be paid to you in real ada on the Cardano mainnet after the end of the Incentivized Testnet.</p><p>If you are using funds from this wallet to operate a stake pool, the rewards displayed here may include your pledged stake, which will not be counted when reward balances are paid out on the Cardano mainnet.</p>',
     description: 'Rewards description text on staking rewards page',
   },
 });
@@ -216,12 +216,14 @@ export default class StakingRewards extends Component<Props, State> {
         </BorderedBox>
 
         <div className={styles.note}>
-          <span>* {intl.formatMessage(messages.note)} </span>
-          <button onClick={onLearnMoreClick}>
-            {intl.formatMessage(messages.learnMoreButtonLabel)}
-            <SVGInline svg={externalLinkIcon} />
-          </button>
-          <span>.</span>
+          <div className={styles.asterisk}>*</div>
+          <div className={styles.noteContent}>
+            <FormattedHTMLMessage {...messages.note} />
+            <button onClick={onLearnMoreClick}>
+              {intl.formatMessage(messages.learnMoreButtonLabel)}
+              <SVGInline svg={externalLinkIcon} />
+            </button>
+          </div>
         </div>
       </div>
     );
