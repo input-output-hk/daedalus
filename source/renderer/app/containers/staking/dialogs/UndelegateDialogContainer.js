@@ -55,13 +55,9 @@ export default class UndelegateDialogContainer extends Component<Props> {
       );
     }
 
-    if (!delegatedStakePool) return null;
-
-    const {
-      id: stakePoolId,
-      name: stakePoolName,
-      ticker: stakePoolTicker,
-    } = delegatedStakePool;
+    const stakePoolId = get(walletToBeUndelegated, 'delegatedStakePoolId');
+    const stakePoolName = get(delegatedStakePool, 'name', '');
+    const stakePoolTicker = get(delegatedStakePool, 'ticker');
 
     return (
       <UndelegateConfirmationDialog
