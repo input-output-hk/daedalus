@@ -44,11 +44,21 @@ const messages = defineMessages({
 
 const TIME_LEFT_INTERVAL = 1 * 1000; // 1 second | unit: milliseconds;
 
+const COLUMNS = {
+  YYYY: 'years',
+  MM: 'months',
+  DD: 'days',
+  HH: 'hours',
+  mm: 'minutes',
+  ss: 'seconds',
+};
+
 type Props = {
   showLoader: boolean,
   redirectToStakingInfo?: Function,
   nextEpochStart?: string,
   startDateTime?: string,
+  format?: string,
 };
 type State = { timeLeft: number };
 
@@ -67,6 +77,16 @@ export default class CountdownWidget extends Component<Props, State> {
       () => this.updateTimeLeft(),
       TIME_LEFT_INTERVAL
     );
+  }
+
+  componentWillReceiveProps(nextProps: Props) {
+    if (nextProps.nextEpochStart && this.state.timeLeft === 0) {
+      if (!this.props.showLoader) this.updateTimeLeft();
+      this.intervalHandler = setInterval(
+        () => this.updateTimeLeft(),
+        TIME_LEFT_INTERVAL
+      );
+    }
   }
 
   updateTimeLeft = () => {
@@ -101,23 +121,30 @@ export default class CountdownWidget extends Component<Props, State> {
   generateFieldPanel = (labels: any, values: any, index: number) => {
     const value = values[index];
     const includeDelimeter = index !== values.length - 1;
+    const labelStr = labels[index];
+    const { format } = this.props;
     const shouldBeHidden =
       values.slice(0, index).reduce((acc, val) => acc + val, 0) === 0 &&
-      value === 0;
-
+      value === 0 &&
+      !format;
     if (shouldBeHidden) {
       return null;
     }
 
-    const labelStr = labels[index];
-    let valueStr = value.toString();
-    valueStr = valueStr.length === 1 ? `0${valueStr}` : valueStr;
+    const valueStr = value.toString();
+    const zeroValue = valueStr.length === 1 ? '0' : '';
+    const isZeroValue =
+      valueStr === '0' &&
+      values.slice(0, index).reduce((acc, val) => acc + val, 0) === 0;
 
     return (
       <div className={styles.fieldPanel}>
         <div className={styles.left}>
           <div className={styles.fieldLabel}>{labelStr}</div>
-          <div className={styles.fieldValue}>{valueStr}</div>
+          <div className={styles.fieldValue}>
+            {(isZeroValue || zeroValue) && <span>{zeroValue}</span>}
+            {valueStr}
+          </div>
         </div>
         {includeDelimeter && (
           <div className={styles.right}>
@@ -131,6 +158,7 @@ export default class CountdownWidget extends Component<Props, State> {
   generateCountdownPanels = () => {
     const { intl } = this.context;
     const { timeLeft } = this.state;
+    const { format } = this.props;
     const duration = moment.duration(timeLeft, 'milliseconds');
 
     const yearsLabel = intl.formatMessage(messages.years);
@@ -139,14 +167,18 @@ export default class CountdownWidget extends Component<Props, State> {
     const hoursLabel = intl.formatMessage(messages.hours);
     const minutesLabel = intl.formatMessage(messages.minutes);
     const secondsLabel = intl.formatMessage(messages.seconds);
-    const labels: Array<string> = [
-      yearsLabel,
-      monthsLabel,
-      daysLabel,
-      hoursLabel,
-      minutesLabel,
-      secondsLabel,
-    ];
+    const labels: Array<string> = format
+      ? format
+          .split('-')
+          .map(item => intl.formatMessage(messages[COLUMNS[item]]))
+      : [
+          yearsLabel,
+          monthsLabel,
+          daysLabel,
+          hoursLabel,
+          minutesLabel,
+          secondsLabel,
+        ];
 
     const years = duration.years();
     const months = duration.months();
@@ -154,8 +186,12 @@ export default class CountdownWidget extends Component<Props, State> {
     const hours = duration.hours();
     const minutes = duration.minutes();
     const seconds = duration.seconds();
-    const values = [years, months, days, hours, minutes, seconds];
-    const keys = ['years', 'months', 'days', 'hours', 'minutes', 'seconds'];
+    const values = format
+      ? format.split('-').map(item => duration[COLUMNS[item]]())
+      : [years, months, days, hours, minutes, seconds];
+    const keys = format
+      ? format.split('-').map(item => COLUMNS[item])
+      : ['years', 'months', 'days', 'hours', 'minutes', 'seconds'];
 
     return labels.map<any>((
       label: string, // eslint-disable-line
