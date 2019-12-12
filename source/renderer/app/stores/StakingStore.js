@@ -66,23 +66,27 @@ export default class StakingStore extends Store {
     // Set join transaction in "PENDING" state
     this.isJoinTransactionPending = true;
 
-    const joinTransaction = await this.joinStakePoolRequest.execute({
-      walletId,
-      stakePoolId,
-      passphrase,
-    });
+    try {
+      const joinTransaction = await this.joinStakePoolRequest.execute({
+        walletId,
+        stakePoolId,
+        passphrase,
+      });
+      // Start interval to check transaction state every second
+      this.stakePoolJoinTimeInterval = setInterval(
+        this.checkStakePoolJoinTransaction,
+        STAKE_POOL_JOIN_TRANSACTION_CHECK_INTERVAL,
+        { joinTransactionId: joinTransaction.id, walletId }
+      );
 
-    // Start interval to check transaction state every second
-    this.stakePoolJoinTimeInterval = setInterval(
-      this.checkStakePoolJoinTransaction,
-      STAKE_POOL_JOIN_TRANSACTION_CHECK_INTERVAL,
-      { joinTransactionId: joinTransaction.id, walletId }
-    );
-
-    // Reset transtation state check interval after 30 seconds
-    setTimeout(() => {
+      // Reset transtation state check interval after 30 seconds
+      setTimeout(() => {
+        this.resetStakePoolJoinTransactionChecker();
+      }, STAKE_POOL_JOIN_TRANSACTION_CHECKER_TIMEOUT);
+    } catch (error) {
       this.resetStakePoolJoinTransactionChecker();
-    }, STAKE_POOL_JOIN_TRANSACTION_CHECKER_TIMEOUT);
+      throw error;
+    }
   };
 
   // Check join stake pool transaction state and reset pending state when transction is "in_ledger"
@@ -113,8 +117,10 @@ export default class StakingStore extends Store {
 
   // Reset "PENDING" state, transaction state check poller and refresh wallets data
   @action resetStakePoolJoinTransactionChecker = () => {
-    clearInterval(this.stakePoolJoinTimeInterval);
-    this.stakePoolJoinTimeInterval = null;
+    if (this.stakePoolJoinTimeInterval) {
+      clearInterval(this.stakePoolJoinTimeInterval);
+      this.stakePoolJoinTimeInterval = null;
+    }
     this.stores.wallets.refreshWalletsData();
     this.isJoinTransactionPending = false;
   };
