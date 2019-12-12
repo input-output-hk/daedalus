@@ -56,9 +56,10 @@ export default class DelegationCenterPage extends Component<Props> {
 
   render() {
     const { stores } = this.props;
-    const { app, uiDialogs, staking, wallets, networkStatus } = stores;
+    const { app, uiDialogs, staking, wallets, networkStatus, profile } = stores;
     const { stakePools, getStakePoolById } = staking;
-    const { networkTip, nextEpoch } = networkStatus;
+    const { networkTip, nextEpoch, futureEpoch } = networkStatus;
+    const { currentLocale } = profile;
 
     if (!wallets.allWallets.length) {
       return (
@@ -77,7 +78,9 @@ export default class DelegationCenterPage extends Component<Props> {
           onUndelegate={this.handleUndelegate}
           networkTip={networkTip}
           nextEpoch={nextEpoch}
+          futureEpoch={futureEpoch}
           getStakePoolById={getStakePoolById}
+          currentLocale={currentLocale}
         />
         {uiDialogs.isOpen(UndelegateConfirmationDialog) ? (
           <UndelegateDialogContainer

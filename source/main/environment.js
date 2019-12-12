@@ -16,6 +16,7 @@ import {
   checkIsIncentivizedTestnet,
   checkIsIncentivizedTestnetQA,
   checkIsIncentivizedTestnetNightly,
+  checkIsIncentivizedTestnetSelfNode,
   getBuildLabel,
   checkIsMacOS,
   checkIsWindows,
@@ -39,6 +40,9 @@ const isTestnet = checkIsTestnet(NETWORK);
 const isIncentivizedTestnet = checkIsIncentivizedTestnet(NETWORK);
 const isIncentivizedTestnetQA = checkIsIncentivizedTestnetQA(RAW_NETWORK);
 const isIncentivizedTestnetNightly = checkIsIncentivizedTestnetNightly(
+  RAW_NETWORK
+);
+const isIncentivizedTestnetSelfNode = checkIsIncentivizedTestnetSelfNode(
   RAW_NETWORK
 );
 const isDevelopment = checkIsDevelopment(NETWORK);
@@ -87,6 +91,7 @@ export const environment: Environment = Object.assign(
     isIncentivizedTestnet,
     isIncentivizedTestnetQA,
     isIncentivizedTestnetNightly,
+    isIncentivizedTestnetSelfNode,
     isDevelopment,
     isWatchMode,
     build: BUILD,
