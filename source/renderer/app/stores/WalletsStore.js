@@ -543,6 +543,10 @@ export default class WalletsStore extends Store {
     );
   }
 
+  @computed get hasRewardsWallets(): boolean {
+    return this.allWallets.length > 0;
+  }
+
   @computed get hasMaxWallets(): boolean {
     return this.all.length >= MAX_ADA_WALLETS_COUNT;
   }
