@@ -1,11 +1,13 @@
 // @flow
 import React, { Component, Fragment } from 'react';
 import { observer } from 'mobx-react';
-import moment from 'moment';
+import humanizeDuration from 'humanize-duration';
 import { defineMessages, intlShape } from 'react-intl';
 import { get } from 'lodash';
 import styles from './DelegationCenterHeader.scss';
 import CountdownWidget from '../../widgets/CountdownWidget';
+import { humanizedDurationLanguages } from '../../../../../common/types/locales.types';
+
 import type {
   NextEpoch,
   TipInfo,
@@ -13,7 +15,6 @@ import type {
 } from '../../../api/network/types';
 import {
   SLOTS_TOTAL,
-  // EPOCH_LENGTH_ITN,
   EPOCH_COUNTDOWN_INTERVAL,
 } from '../../../config/epochsConfig';
 import { generateFieldPanel } from './helpers';
@@ -47,7 +48,7 @@ const messages = defineMessages({
   description: {
     id: 'staking.delegationCenter.description',
     defaultMessage:
-      '!!!Changes to delegation preferences will take effect after the next two Cardano epochs have completed. Epochs on the Incentivized Testnet last one day. Any changes made now will take effect in {days} days, {hours} hours, and {minutes} minutes.',
+      '!!!Changes to delegation preferences will take effect after the next two Cardano epochs have completed. Epochs on the Incentivized Testnet last one day. Any changes made now will take effect in {timeUntilFutureEpoch}.',
     description: 'Delegation description for the Delegation center.',
   },
 });
@@ -56,35 +57,37 @@ type Props = {
   networkTip: ?TipInfo,
   nextEpoch: ?NextEpoch,
   futureEpoch: ?FutureEpoch,
+  currentLocale: string,
 };
-type State = { timeLeft: number };
+type State = { timeUntilFutureEpoch: number };
 
 @observer
 export default class DelegationCenterHeader extends Component<Props, State> {
   intervalHandler: ?IntervalID = null;
-  state = { timeLeft: 0 };
+  state = { timeUntilFutureEpoch: 0 };
 
   static contextTypes = {
     intl: intlShape.isRequired,
   };
 
   componentDidMount() {
+    this.updateTimeUntilFutureEpoch();
     this.intervalHandler = setInterval(
-      () => this.updateTimeLeft(),
+      () => this.updateTimeUntilFutureEpoch(),
       EPOCH_COUNTDOWN_INTERVAL
     );
   }
 
-  updateTimeLeft = () => {
+  updateTimeUntilFutureEpoch = () => {
     const { futureEpoch } = this.props;
     if (!futureEpoch) return;
     const { epochStart } = futureEpoch;
     if (epochStart) {
-      const timeLeft = Math.max(
+      const timeUntilFutureEpoch = Math.max(
         0,
         new Date(epochStart).getTime() - new Date().getTime()
       );
-      this.setState({ timeLeft });
+      this.setState({ timeUntilFutureEpoch });
     }
   };
 
@@ -93,23 +96,6 @@ export default class DelegationCenterHeader extends Component<Props, State> {
       clearInterval(this.intervalHandler);
     }
   }
-
-  generateCountdownTimer = () => {
-    const { timeLeft } = this.state;
-    const duration = moment.duration(timeLeft, 'milliseconds');
-    const years = duration.years();
-    const months = duration.months();
-    const days = duration.days();
-    const hours = duration.hours();
-    const minutes = duration.minutes();
-    return {
-      years,
-      months,
-      days,
-      hours,
-      minutes,
-    };
-  };
 
   generateCurrentEpochPanels = (
     epoch: number,
@@ -141,7 +127,7 @@ export default class DelegationCenterHeader extends Component<Props, State> {
 
   render() {
     const { intl } = this.context;
-    const { networkTip, nextEpoch } = this.props;
+    const { networkTip, nextEpoch, currentLocale } = this.props;
     const epoch = get(networkTip, 'epoch', '-');
     const nextEpochStart = get(nextEpoch, 'epochStart', '');
     const nextEpochNumber = get(nextEpoch, 'epochNumber', 0);
@@ -151,11 +137,20 @@ export default class DelegationCenterHeader extends Component<Props, State> {
     const headingSecond = intl.formatMessage(messages.headingLeft, {
       nextEpochNumber,
     });
-    // console.log('this.generateCountdownTimer()', this.generateCountdownTimer());
-    const description = intl.formatMessage(
-      messages.description,
-      this.generateCountdownTimer()
+    const language = humanizedDurationLanguages[currentLocale];
+    const timeUntilFutureEpoch = humanizeDuration(
+      this.state.timeUntilFutureEpoch || 0,
+      {
+        round: true, // round seconds to prevent e.g. 1 day 3 hours *11,56 seconds*
+        language,
+        conjunction: ' and ',
+        units: ['d', 'h', 'm'],
+        serialComma: false,
+      }
     );
+    const description = intl.formatMessage(messages.description, {
+      timeUntilFutureEpoch,
+    });
     const fieldPanels = this.generateCurrentEpochPanels(
       epoch,
       slot,

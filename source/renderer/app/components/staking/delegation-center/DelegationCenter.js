@@ -19,6 +19,7 @@ type Props = {
   nextEpoch: ?NextEpoch,
   futureEpoch: ?FutureEpoch,
   getStakePoolById: Function,
+  currentLocale: string,
 };
 
 @observer
@@ -33,6 +34,7 @@ export default class DelegationCenter extends Component<Props> {
       nextEpoch,
       futureEpoch,
       getStakePoolById,
+      currentLocale,
     } = this.props;
 
     return (
@@ -41,6 +43,7 @@ export default class DelegationCenter extends Component<Props> {
           networkTip={networkTip}
           nextEpoch={nextEpoch}
           futureEpoch={futureEpoch}
+          currentLocale={currentLocale}
         />
         <DelegationCenterBody
           wallets={wallets}

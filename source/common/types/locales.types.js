@@ -9,7 +9,7 @@ export const LOCALES: Locales = {
   japanese: 'ja-JP',
 };
 
-export const humanizedDurationLanguage = {
+export const humanizedDurationLanguages = {
   'en-US': 'en',
   'ja-JP': 'ja',
   'zh-CN': 'zh_CN',

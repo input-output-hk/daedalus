@@ -28,13 +28,12 @@ export default (api: AdaApi) => {
       const networkInfo: NetworkInfoResponse = await getNetworkInfo(api.config);
       Logger.debug('AdaApi::getNetworkInfo (PATCHED) success', { networkInfo });
 
-      /* eslint-disable-next-line camelcase */
       const {
-        sync_progress,
-        node_tip,
-        network_tip,
-        next_epoch,
-        future_epoch,
+        sync_progress, // eslint-disable-line camelcase
+        node_tip, // eslint-disable-line camelcase
+        network_tip, // eslint-disable-line camelcase
+        next_epoch, // eslint-disable-line camelcase
+        future_epoch, // eslint-disable-line camelcase
       } = networkInfo;
       const syncProgress =
         get(sync_progress, 'status') === 'ready'

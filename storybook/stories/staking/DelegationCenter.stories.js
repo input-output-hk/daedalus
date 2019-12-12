@@ -118,5 +118,6 @@ export const StakingDelegationCenterStory = () => (
     networkTip={networkTip}
     nextEpoch={nextEpoch}
     futureEpoch={futureEpoch}
+    currentLocale="en-US"
   />
 );
