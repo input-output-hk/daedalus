@@ -1161,15 +1161,13 @@ export default class AdaApi {
         },
         nextEpoch: {
           epochNumber: get(next_epoch, 'epoch_number', 0),
-          // epochStart: '2019-12-15T00:00:00.123Z',
-          epochStart: moment(get(next_epoch, 'epoch_start_time', 0))
-            .add(EPOCH_LENGTH_ITN, 'day')
-            .toISOString(),
+          epochStart: get(next_epoch, 'epoch_start_time', ''),
         },
         futureEpoch: {
           epochNumber: get(next_epoch, 'epoch_number', 0) + 1,
-          epochStart: '2019-12-16T00:00:00.123Z',
-          // epochStart: moment(get(next_epoch, 'epoch_start_time', 0)).add(EPOCH_LENGTH_ITN + 1, 'day').toISOString(),
+          epochStart: moment(get(next_epoch, 'epoch_start_time', 0))
+            .add(EPOCH_LENGTH_ITN + 1, 'day')
+            .toISOString(),
         },
       };
     } catch (error) {
