@@ -38,14 +38,6 @@ export default class CountdownWidget extends Component<Props, State> {
     intl: intlShape.isRequired,
   };
 
-  // componentDidMount() {
-  //   if (!this.props.showLoader) this.updateTimeLeft();
-  //   this.intervalHandler = setInterval(
-  //     () => this.updateTimeLeft(),
-  //     EPOCH_COUNTDOWN_INTERVAL
-  //   );
-  // }
-
   componentWillReceiveProps(nextProps: Props) {
     if (nextProps.nextEpochStart && this.state.timeLeft === 0) {
       if (!this.props.showLoader) this.updateTimeLeft();
