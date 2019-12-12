@@ -123,7 +123,7 @@ export default class DelegationCenterHeader extends Component<Props> {
                 <CountdownWidget
                   nextEpochStart={nextEpochStart}
                   showLoader={false}
-                  keepFormat
+                  format="DD-HH-mm-ss"
                 />
               </div>
             )}
