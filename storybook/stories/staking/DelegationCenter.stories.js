@@ -105,7 +105,11 @@ const wallets = [
   }),
 ];
 
-export const StakingDelegationCenterStory = () => (
+export const StakingDelegationCenterStory = ({
+  locale,
+}: {
+  locale: string,
+}) => (
   <DelegationCenter
     redirectToStakingInfo={redirectToStakingInfo}
     wallets={wallets}
@@ -118,6 +122,6 @@ export const StakingDelegationCenterStory = () => (
     networkTip={networkTip}
     nextEpoch={nextEpoch}
     futureEpoch={futureEpoch}
-    currentLocale="en-US"
+    currentLocale={locale}
   />
 );

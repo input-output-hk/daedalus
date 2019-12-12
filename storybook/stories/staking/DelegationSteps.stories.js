@@ -119,7 +119,7 @@ export class StakingDelegationSteps extends Component<Props, State> {
         key="DelegationStepsSuccessDialog"
         delegatedWallet={WALLETS[0]}
         delegatedStakePool={STAKE_POOLS[0]}
-        currentLocale="en-US"
+        currentLocale={this.props.locale}
         nextEpochStartTime="2019-12-09T00:00:00.161Z"
         onClose={this.onReset}
       />,

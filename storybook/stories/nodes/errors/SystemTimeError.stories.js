@@ -5,10 +5,10 @@ import { action } from '@storybook/addon-actions';
 
 import SystemTimeError from '../../../../source/renderer/app/components/loading/system-time-error/SystemTimeError';
 
-export const SystemTimeErrorStory = () => (
+export const SystemTimeErrorStory = ({ locale }: { locale: string }) => (
   <SystemTimeError
     localTimeDifference={number('localTimeDifference', 0)}
-    currentLocale="en-US"
+    currentLocale={locale}
     onExternalLinkClick={action('onExternalLinkClick')}
     onCheckTheTimeAgain={action('onExternalLinkClick')}
     onContinueWithoutClockSyncCheck={action('onExternalLinkClick')}

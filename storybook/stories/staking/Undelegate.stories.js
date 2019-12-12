@@ -25,11 +25,15 @@ export const StakingUndelegateConfirmationStory = () => (
   />
 );
 
-export const StakingUndelegateConfirmationResultStory = () => (
+export const StakingUndelegateConfirmationResultStory = ({
+  locale,
+}: {
+  locale: string,
+}) => (
   <UndelegateConfirmationResultDialog
     walletName="Darko's ADA"
     onClose={() => null}
-    currentLocale="en-US"
+    currentLocale={locale}
     nextEpochStartTime={moment()
       .add(35, 'hour')
       .toString()}
