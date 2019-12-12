@@ -1,5 +1,6 @@
 // @flow
 import { get } from 'lodash';
+import moment from 'moment';
 import AdaApi from '../api';
 import { getNetworkInfo } from '../network/requests/getNetworkInfo';
 import { getLatestAppVersion } from '../nodes/requests/getLatestAppVersion';
@@ -14,6 +15,7 @@ import type {
   GetLatestAppVersionResponse,
 } from '../nodes/types';
 import type { GetNewsResponse } from '../news/types';
+import { EPOCH_LENGTH_ITN } from '../../config/epochsConfig';
 
 let LATEST_APP_VERSION = null;
 let SYNC_PROGRESS = null;
@@ -28,8 +30,12 @@ export default (api: AdaApi) => {
       const networkInfo: NetworkInfoResponse = await getNetworkInfo(api.config);
       Logger.debug('AdaApi::getNetworkInfo (PATCHED) success', { networkInfo });
 
-      /* eslint-disable-next-line camelcase */
-      const { sync_progress, node_tip, network_tip, next_epoch } = networkInfo;
+      const {
+        sync_progress, // eslint-disable-line camelcase
+        node_tip, // eslint-disable-line camelcase
+        network_tip, // eslint-disable-line camelcase
+        next_epoch, // eslint-disable-line camelcase
+      } = networkInfo;
       const syncProgress =
         get(sync_progress, 'status') === 'ready'
           ? 100
@@ -49,6 +55,13 @@ export default (api: AdaApi) => {
         nextEpoch: {
           epochNumber: get(next_epoch, 'epoch_number', 0),
           epochStart: get(next_epoch, 'epoch_start_time', ''),
+        },
+        futureEpoch: {
+          epochNumber: get(next_epoch, 'epoch_number', 0) + 1,
+          epochStart: moment(get(next_epoch, 'epoch_start', '')).add(
+            EPOCH_LENGTH_ITN,
+            'seconds'
+          ),
         },
       };
     } catch (error) {

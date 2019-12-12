@@ -1,49 +1,15 @@
 // @flow
 import React, { Component, Fragment } from 'react';
 import { observer } from 'mobx-react';
-import { defineMessages, intlShape } from 'react-intl';
-import classNames from 'classnames';
+import { intlShape } from 'react-intl';
 import moment from 'moment';
 import SVGInline from 'react-svg-inline';
 import styles from './CountdownWidget.scss';
 import delimeterIcon from '../../assets/images/delimeter.inline.svg';
 import spinnerIcon from '../../assets/images/spinner.inline.svg';
-
-const messages = defineMessages({
-  years: {
-    id: 'global.duration.years',
-    defaultMessage: '!!!years',
-    description: 'Label for years value in duration.',
-  },
-  months: {
-    id: 'global.duration.months',
-    defaultMessage: '!!!months',
-    description: 'Label for months value in duration.',
-  },
-  days: {
-    id: 'global.duration.days',
-    defaultMessage: '!!!days',
-    description: 'Label for days value in duration.',
-  },
-  hours: {
-    id: 'global.duration.hours',
-    defaultMessage: '!!!hours',
-    description: 'Label for hours value in duration.',
-  },
-  minutes: {
-    id: 'global.duration.minutes',
-    defaultMessage: '!!!minutes',
-    description: 'Label for minutes value in duration.',
-  },
-  seconds: {
-    id: 'global.duration.seconds',
-    defaultMessage: '!!!seconds',
-    description: 'Label for seconds value in duration.',
-  },
-});
+import globalMessages from '../../i18n/global-messages';
 
 const TIME_LEFT_INTERVAL = 1 * 1000; // 1 second | unit: milliseconds;
-
 const COLUMNS = {
   YYYY: 'years',
   MM: 'months',
@@ -53,70 +19,74 @@ const COLUMNS = {
   ss: 'seconds',
 };
 
+type Format =
+  | 'YYYY-MM-DD-HH-mm-ss'
+  | 'MM-DD-HH-mm-ss'
+  | 'DD-HH-mm-ss'
+  | 'HH-mm-ss'
+  | 'mm-ss'
+  | 'YYYY'
+  | 'MM'
+  | 'DD'
+  | 'HH'
+  | 'mm'
+  | 'ss';
+
 type Props = {
-  showLoader: boolean,
-  redirectToStakingInfo?: Function,
-  nextEpochStart?: string,
-  startDateTime?: string,
-  format?: string,
+  startDateTime: ?string,
+  redirectOnEnd?: Function,
+  format?: Format, // If no format is specified only non-empty columns will be shown
 };
-type State = { timeLeft: number };
+
+type State = { timeLeft: ?number };
 
 @observer
 export default class CountdownWidget extends Component<Props, State> {
   intervalHandler: ?IntervalID = null;
-  state = { timeLeft: 0 };
+  state = { timeLeft: null };
 
   static contextTypes = {
     intl: intlShape.isRequired,
   };
 
   componentDidMount() {
-    if (!this.props.showLoader) this.updateTimeLeft();
+    this.startTimer();
+  }
+
+  componentWillUnmount() {
+    this.stopTimer();
+  }
+
+  startTimer = () => {
+    this.updateTimeLeft();
     this.intervalHandler = setInterval(
       () => this.updateTimeLeft(),
       TIME_LEFT_INTERVAL
     );
-  }
+  };
 
-  componentWillReceiveProps(nextProps: Props) {
-    if (nextProps.nextEpochStart && this.state.timeLeft === 0) {
-      if (!this.props.showLoader) this.updateTimeLeft();
-      this.intervalHandler = setInterval(
-        () => this.updateTimeLeft(),
-        TIME_LEFT_INTERVAL
-      );
+  stopTimer = () => {
+    if (this.intervalHandler) {
+      clearInterval(this.intervalHandler);
+      this.intervalHandler = null;
     }
-  }
+  };
 
   updateTimeLeft = () => {
-    const { redirectToStakingInfo, startDateTime, nextEpochStart } = this.props;
-    const startDateString = startDateTime || nextEpochStart;
-    if (startDateString) {
+    const { redirectOnEnd, startDateTime } = this.props;
+    if (startDateTime) {
       const timeLeft = Math.max(
         0,
-        new Date(startDateString).getTime() - new Date().getTime()
+        new Date(startDateTime).getTime() - new Date().getTime()
       );
 
       this.setState({ timeLeft });
 
-      if (timeLeft === 0) {
-        if (this.intervalHandler) {
-          clearInterval(this.intervalHandler);
-        }
-
-        if (redirectToStakingInfo) {
-          redirectToStakingInfo();
-        }
+      if (timeLeft === 0 && redirectOnEnd) {
+        redirectOnEnd();
       }
     }
   };
-
-  componentWillUnmount() {
-    if (this.intervalHandler) {
-      clearInterval(this.intervalHandler);
-    }
-  }
 
   generateFieldPanel = (labels: any, values: any, index: number) => {
     const value = values[index];
@@ -161,16 +131,16 @@ export default class CountdownWidget extends Component<Props, State> {
     const { format } = this.props;
     const duration = moment.duration(timeLeft, 'milliseconds');
 
-    const yearsLabel = intl.formatMessage(messages.years);
-    const monthsLabel = intl.formatMessage(messages.months);
-    const daysLabel = intl.formatMessage(messages.days);
-    const hoursLabel = intl.formatMessage(messages.hours);
-    const minutesLabel = intl.formatMessage(messages.minutes);
-    const secondsLabel = intl.formatMessage(messages.seconds);
+    const yearsLabel = intl.formatMessage(globalMessages.years);
+    const monthsLabel = intl.formatMessage(globalMessages.months);
+    const daysLabel = intl.formatMessage(globalMessages.days);
+    const hoursLabel = intl.formatMessage(globalMessages.hours);
+    const minutesLabel = intl.formatMessage(globalMessages.minutes);
+    const secondsLabel = intl.formatMessage(globalMessages.seconds);
     const labels: Array<string> = format
       ? format
           .split('-')
-          .map(item => intl.formatMessage(messages[COLUMNS[item]]))
+          .map(item => intl.formatMessage(globalMessages[COLUMNS[item]]))
       : [
           yearsLabel,
           monthsLabel,
@@ -204,20 +174,12 @@ export default class CountdownWidget extends Component<Props, State> {
   };
 
   render() {
-    const { timeLeft } = this.state;
+    const { startDateTime } = this.props;
     const fieldPanels = this.generateCountdownPanels();
-    const { startDateTime, nextEpochStart } = this.props;
-
-    const timeLeftContentStyles = classNames([
-      styles.timeLeft,
-      !nextEpochStart ? styles.noTimeLeftNextEpoch : null,
-    ]);
-
-    const showSpinner = startDateTime && timeLeft === 0;
-
+    const showSpinner = startDateTime === null;
     return (
       <div className={styles.timeLeftContainer}>
-        <div className={timeLeftContentStyles}>
+        <div className={styles.timeLeft}>
           {showSpinner ? (
             <SVGInline svg={spinnerIcon} className={styles.spinnerIcon} />
           ) : (
