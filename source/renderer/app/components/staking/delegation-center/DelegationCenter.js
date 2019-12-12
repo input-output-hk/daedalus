@@ -4,7 +4,11 @@ import { observer } from 'mobx-react';
 import DelegationCenterHeader from './DelegationCenterHeader';
 import DelegationCenterBody from './DelegationCenterBody';
 import Wallet from '../../../domains/Wallet';
-import type { NextEpoch, TipInfo } from '../../../api/network/types';
+import type {
+  NextEpoch,
+  TipInfo,
+  FutureEpoch,
+} from '../../../api/network/types';
 
 type Props = {
   wallets: Array<Wallet>,
@@ -13,7 +17,9 @@ type Props = {
   onUndelegate: Function,
   networkTip: ?TipInfo,
   nextEpoch: ?NextEpoch,
+  futureEpoch: ?FutureEpoch,
   getStakePoolById: Function,
+  currentLocale: string,
 };
 
 @observer
@@ -26,12 +32,19 @@ export default class DelegationCenter extends Component<Props> {
       onUndelegate,
       networkTip,
       nextEpoch,
+      futureEpoch,
       getStakePoolById,
+      currentLocale,
     } = this.props;
 
     return (
       <Fragment>
-        <DelegationCenterHeader networkTip={networkTip} nextEpoch={nextEpoch} />
+        <DelegationCenterHeader
+          networkTip={networkTip}
+          nextEpoch={nextEpoch}
+          futureEpoch={futureEpoch}
+          currentLocale={currentLocale}
+        />
         <DelegationCenterBody
           wallets={wallets}
           numberOfStakePools={numberOfStakePools}

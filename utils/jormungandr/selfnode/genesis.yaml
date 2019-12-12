@@ -20,7 +20,8 @@ blockchain_configuration:
   block0_consensus: genesis_praos
 
   # Number of slots in each epoch
-  slots_per_epoch: 10
+  slots_per_epoch: 150
+  # ^^ Daedalus specific value!
 
   # The slot duration, in seconds, is the time between the creation
   # of 2 blocks
