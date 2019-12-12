@@ -542,7 +542,10 @@ export default class AdaApi {
       if (error.code === 'not_enough_money') {
         throw new NotEnoughMoneyToSendError();
       }
-      if (error.code === 'wrong_encryption_passphrase') {
+      if (
+        error.code === 'wrong_encryption_passphrase' &&
+        error.message.includes('passphrase is too short')
+      ) {
         throw new IncorrectSpendingPasswordError();
       }
       if (error.code === 'too_big_transaction') {
@@ -943,7 +946,8 @@ export default class AdaApi {
       Logger.error('AdaApi::updateSpendingPassword error', { error });
       const errorCode = get(error, 'code', '');
       if (
-        errorCode === 'wrong_encryption_passphrase' ||
+        (errorCode === 'wrong_encryption_passphrase' &&
+          error.message.includes('passphrase is too short')) ||
         errorCode === 'bad_request'
       ) {
         throw new IncorrectSpendingPasswordError();
@@ -971,7 +975,8 @@ export default class AdaApi {
       Logger.error('AdaApi::quitStakePool error', { error });
       const errorCode = get(error, 'code', '');
       if (
-        errorCode === 'wrong_encryption_passphrase' ||
+        (errorCode === 'wrong_encryption_passphrase' &&
+          error.message.includes('passphrase is too short')) ||
         errorCode === 'bad_request'
       ) {
         throw new IncorrectSpendingPasswordError();
@@ -1089,7 +1094,10 @@ export default class AdaApi {
       return response;
     } catch (error) {
       Logger.error('AdaApi::transferFunds error', { error });
-      if (error.code === 'wrong_encryption_passphrase') {
+      if (
+        error.code === 'wrong_encryption_passphrase' &&
+        error.message.includes('passphrase is too short')
+      ) {
         throw new IncorrectSpendingPasswordError();
       }
       throw new GenericApiError();
@@ -1286,7 +1294,10 @@ export default class AdaApi {
       return response;
     } catch (error) {
       Logger.error('AdaApi::joinStakePool error', { error });
-      if (error.code === 'wrong_encryption_passphrase') {
+      if (
+        error.code === 'wrong_encryption_passphrase' &&
+        error.message.includes('passphrase is too short')
+      ) {
         throw new IncorrectSpendingPasswordError();
       }
       throw new GenericApiError();
