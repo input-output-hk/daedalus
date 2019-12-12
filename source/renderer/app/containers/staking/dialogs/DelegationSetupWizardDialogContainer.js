@@ -150,6 +150,7 @@ export default class DelegationSetupWizardDialogContainer extends Component<
       recentStakePools,
       joinStakePoolRequest,
       getStakePoolById,
+      isJoinTransactionPending,
     } = staking;
     const { network, rawNetwork } = environment;
     const nextEpochStartTime = get(nextEpoch, 'epochStart', 0);
@@ -199,7 +200,9 @@ export default class DelegationSetupWizardDialogContainer extends Component<
         onLearnMoreClick={this.handleLearnMoreClick}
         onConfirm={this.handleConfirm}
         getStakePoolById={getStakePoolById}
-        isSubmitting={joinStakePoolRequest.isExecuting}
+        isSubmitting={
+          joinStakePoolRequest.isExecuting || isJoinTransactionPending
+        }
         error={joinStakePoolRequest.error}
       />
     );

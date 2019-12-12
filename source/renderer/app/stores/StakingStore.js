@@ -1,11 +1,15 @@
 // @flow
 import { computed, action, observable } from 'mobx';
 import BigNumber from 'bignumber.js';
-import { orderBy, take } from 'lodash';
+import { orderBy, take, find } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import { ROUTES } from '../routes-config';
-import { RECENT_STAKE_POOLS_COUNT } from '../config/stakingConfig';
+import {
+  RECENT_STAKE_POOLS_COUNT,
+  STAKE_POOL_JOIN_TRANSACTION_CHECK_INTERVAL,
+  STAKE_POOL_JOIN_TRANSACTION_CHECKER_TIMEOUT,
+} from '../config/stakingConfig';
 import type {
   Reward,
   RewardForIncentivizedTestnet,
@@ -14,14 +18,18 @@ import type {
 } from '../api/staking/types';
 import Wallet from '../domains/Wallet';
 import StakePool from '../domains/StakePool';
+import { TransactionStates } from '../domains/WalletTransaction';
 import REWARDS from '../config/stakingRewards.dummy.json';
 
 export default class StakingStore extends Store {
+  @observable isJoinTransactionPending = false;
+
   STAKE_POOLS_INITIAL_INTERVAL = 1000; // 1000 milliseconds
   STAKE_POOLS_REFRESH_INTERVAL = 30 * 60 * 1000; // 30 minutes | unit: milliseconds;
 
   initialPooling: ?IntervalID = null;
   refreshPooling: ?IntervalID = null;
+  stakePoolJoinTimeInterval: ?IntervalID = null;
 
   startDateTime: string = '2019-12-09T00:00:00.161Z';
   decentralizationProgress: number = 10;
@@ -54,12 +62,61 @@ export default class StakingStore extends Store {
 
   @action _joinStakePool = async (request: JoinStakePoolRequest) => {
     const { walletId, stakePoolId, passphrase } = request;
-    await this.joinStakePoolRequest.execute({
+
+    // Set join transaction in "PENDING" state
+    this.isJoinTransactionPending = true;
+
+    const joinTransaction = await this.joinStakePoolRequest.execute({
       walletId,
       stakePoolId,
       passphrase,
     });
+
+    // Start interval to check transaction state every second
+    this.stakePoolJoinTimeInterval = setInterval(
+      this.checkStakePoolJoinTransaction,
+      STAKE_POOL_JOIN_TRANSACTION_CHECK_INTERVAL,
+      { joinTransactionId: joinTransaction.id, walletId }
+    );
+
+    // Reset transtation state check interval after 30 seconds
+    setTimeout(() => {
+      this.resetStakePoolJoinTransactionChecker();
+    }, STAKE_POOL_JOIN_TRANSACTION_CHECKER_TIMEOUT);
+  };
+
+  // Check join stake pool transaction state and reset pending state when transction is "in_ledger"
+  @action checkStakePoolJoinTransaction = (request: {
+    joinTransactionId: string,
+    walletId: string,
+  }) => {
+    const { joinTransactionId, walletId } = request;
+    const recenttransactionsResponse = this.stores.transactions._getTransactionsRecentRequest(
+      walletId
+    ).result;
+    const recentTransactions = recenttransactionsResponse
+      ? recenttransactionsResponse.transactions
+      : [];
+
+    // Return stake pool join transaction when state is not "PENDING"
+    const stakePoolJoinTransaction = find(
+      recentTransactions,
+      transaction =>
+        transaction.id === joinTransactionId &&
+        transaction.state === TransactionStates.OK
+    );
+
+    if (stakePoolJoinTransaction) {
+      this.resetStakePoolJoinTransactionChecker();
+    }
+  };
+
+  // Reset "PENDING" state, transaction state check poller and refresh wallets data
+  @action resetStakePoolJoinTransactionChecker = () => {
+    clearInterval(this.stakePoolJoinTimeInterval);
+    this.stakePoolJoinTimeInterval = null;
     this.stores.wallets.refreshWalletsData();
+    this.isJoinTransactionPending = false;
   };
 
   calculateDelegationFee = async (
