@@ -15,6 +15,10 @@ import type {
   TipInfo,
 } from '../../../source/renderer/app/api/network/types';
 
+type Props = {
+  isLoading: boolean,
+};
+
 const walletSyncedStateReady = { status: 'ready' };
 
 const walletSyncedStateRestoring = {
@@ -71,7 +75,7 @@ const wallets = [
     isLegacy: false,
     inactiveStakePercentage: 35,
     syncState: walletSyncedStateReady,
-    delegatedStakePoolId: STAKE_POOLS[1].id,
+    delegatedStakePoolId: '800',
     createdAt: new Date(),
     recoveryPhraseVerificationDate: new Date(),
     recoveryPhraseVerificationStatus:
@@ -100,7 +104,7 @@ const wallets = [
   }),
 ];
 
-export const StakingDelegationCenterStory = () => (
+export const StakingDelegationCenterStory = (props: Props) => (
   <DelegationCenter
     redirectToStakingInfo={redirectToStakingInfo}
     wallets={wallets}
@@ -112,5 +116,6 @@ export const StakingDelegationCenterStory = () => (
     numberOfStakePools={STAKE_POOLS.length}
     networkTip={networkTip}
     nextEpoch={nextEpoch}
+    fetchingStakePoolsFailed={props.isLoading}
   />
 );

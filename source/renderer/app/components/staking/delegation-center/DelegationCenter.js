@@ -14,6 +14,7 @@ type Props = {
   networkTip: ?TipInfo,
   nextEpoch: ?NextEpoch,
   getStakePoolById: Function,
+  fetchingStakePoolsFailed: boolean,
 };
 
 @observer
@@ -27,6 +28,7 @@ export default class DelegationCenter extends Component<Props> {
       networkTip,
       nextEpoch,
       getStakePoolById,
+      fetchingStakePoolsFailed,
     } = this.props;
 
     return (
@@ -38,6 +40,7 @@ export default class DelegationCenter extends Component<Props> {
           onDelegate={onDelegate}
           onUndelegate={onUndelegate}
           getStakePoolById={getStakePoolById}
+          isLoading={fetchingStakePoolsFailed}
         />
       </Fragment>
     );

@@ -65,11 +65,17 @@ const messages = defineMessages({
     defaultMessage: '!!!your stake',
     description: 'Your stake label for the Delegation center body section.',
   },
+  unknownStakePoolLabel: {
+    id: 'staking.delegationCenter.unknownStakePoolLabel',
+    defaultMessage: '!!!unknown',
+    description:
+      'unknown stake pool label for the Delegation center body section.',
+  },
 });
 
 type Props = {
   wallet: Wallet,
-  delegatedStakePool?: StakePool,
+  delegatedStakePool?: ?StakePool,
   numberOfStakePools: number,
   onDelegate: Function,
   onMenuItemClick: Function,
@@ -102,9 +108,9 @@ export default class WalletRow extends Component<Props> {
     const { ranking } = delegatedStakePool || {};
 
     const color =
-      delegatedStakePoolId && !isNil(ranking)
+      delegatedStakePoolId && delegatedStakePool && !isNil(ranking)
         ? getColorFromRange(ranking, numberOfStakePools)
-        : 'transparent';
+        : null;
 
     const delegated = intl.formatMessage(messages.delegated);
     const notDelegated = intl.formatMessage(messages.notDelegated);
@@ -112,6 +118,9 @@ export default class WalletRow extends Component<Props> {
     const removeDelegation = intl.formatMessage(messages.removeDelegation);
     const delegate = intl.formatMessage(messages.delegate);
     const yourStake = intl.formatMessage(messages.yourStake);
+    const delegatedStakePoolTicker = delegatedStakePool
+      ? `[${delegatedStakePool.ticker}]`
+      : intl.formatMessage(messages.unknownStakePoolLabel);
 
     const delegatedWalletActionOptions = [
       {
@@ -154,10 +163,16 @@ export default class WalletRow extends Component<Props> {
               )}
             </div>
             <div className={styles.action}>
-              {delegatedStakePoolId && delegatedStakePool ? (
+              {delegatedStakePoolId ? (
                 <Fragment>
                   {intl.formatMessage(messages.toStakePoolTickerPart1)}
-                  <span style={{ color }}> [{delegatedStakePool.ticker}] </span>
+                  <span
+                    className={!delegatedStakePool ? styles.unknown : null}
+                    style={{ color }}
+                  >
+                    {' '}
+                    {delegatedStakePoolTicker}{' '}
+                  </span>
                   {intl.formatMessage(messages.toStakePoolTickerPart2)}
                 </Fragment>
               ) : (
