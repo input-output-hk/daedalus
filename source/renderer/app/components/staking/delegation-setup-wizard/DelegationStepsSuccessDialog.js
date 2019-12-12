@@ -47,7 +47,7 @@ const messages = defineMessages({
 type Props = {
   delegatedWallet: ?Wallet,
   delegatedStakePool: ?StakePool,
-  nextEpochStartTime: string,
+  futureEpochStartTime: string,
   onClose: Function,
   currentLocale: string,
 };
@@ -74,10 +74,10 @@ export default class DelegationStepsSuccessDialog extends Component<
   }
 
   updateTimeUntilNextEpochStart = () => {
-    const { nextEpochStartTime } = this.props;
+    const { futureEpochStartTime } = this.props;
     const timeUntilNextEpochStart = Math.max(
       0,
-      new Date(nextEpochStartTime).getTime() - new Date().getTime()
+      new Date(futureEpochStartTime).getTime() - new Date().getTime()
     );
     this.setState({ timeUntilNextEpochStart });
   };

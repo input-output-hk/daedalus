@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { BigNumber } from 'bignumber.js';
+import moment from 'moment';
 import { number } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
 import { find } from 'lodash';
@@ -120,7 +121,9 @@ export class StakingDelegationSteps extends Component<Props, State> {
         delegatedWallet={WALLETS[0]}
         delegatedStakePool={STAKE_POOLS[0]}
         currentLocale={this.props.locale}
-        nextEpochStartTime="2019-12-09T00:00:00.161Z"
+        futureEpochStartTime={moment()
+          .add(35, 'hour')
+          .toString()}
         onClose={this.onReset}
       />,
     ];

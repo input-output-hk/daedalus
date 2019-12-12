@@ -25,10 +25,8 @@ const walletSyncedStateRestoring = {
   },
 };
 
-const redirectToStakingInfo: Function = null;
-
 const networkTip: TipInfo = {
-  epoch: 12352,
+  epoch: 1232,
   slot: 123,
 };
 
@@ -111,7 +109,6 @@ export const StakingDelegationCenterStory = ({
   locale: string,
 }) => (
   <DelegationCenter
-    redirectToStakingInfo={redirectToStakingInfo}
     wallets={wallets}
     onDelegate={action('onDelegate')}
     onUndelegate={action('onUndelegate')}

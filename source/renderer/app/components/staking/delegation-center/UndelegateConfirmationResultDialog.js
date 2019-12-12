@@ -33,7 +33,7 @@ const messages = defineMessages({
 
 type Props = {
   walletName: string,
-  nextEpochStartTime: string,
+  futureEpochStartTime: string,
   currentLocale: string,
   onClose: Function,
 };
@@ -60,10 +60,10 @@ export default class UndelegateConfirmationResultDialog extends Component<
   }
 
   updateTimeUntilNextEpochStart = () => {
-    const { nextEpochStartTime } = this.props;
+    const { futureEpochStartTime } = this.props;
     const timeUntilNextEpochStart = Math.max(
       0,
-      new Date(nextEpochStartTime).getTime() - new Date().getTime()
+      new Date(futureEpochStartTime).getTime() - new Date().getTime()
     );
     this.setState({ timeUntilNextEpochStart });
   };

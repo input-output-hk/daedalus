@@ -34,7 +34,7 @@ export const StakingUndelegateConfirmationResultStory = ({
     walletName="Darko's ADA"
     onClose={() => null}
     currentLocale={locale}
-    nextEpochStartTime={moment()
+    futureEpochStartTime={moment()
       .add(35, 'hour')
       .toString()}
   />
