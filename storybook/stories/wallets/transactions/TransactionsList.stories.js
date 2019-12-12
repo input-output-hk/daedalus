@@ -34,11 +34,11 @@ storiesOf('Wallets|Transactions', module)
 
   // ====== Stories ======
 
-  .add('Transactions - Grouped by days', () => (
+  .add('Transactions - Grouped by days', ({ locale }: { locale: string }) => (
     <WalletTransactionsList
       onOpenExternalLink={action('onOpenExternalLink')}
       getUrlByType={action('getUrlByType')}
-      currentLocale="en-US"
+      currentLocale={locale}
       transactions={[
         generateTransaction(
           TransactionTypes.INCOME,
@@ -85,133 +85,145 @@ storiesOf('Wallets|Transactions', module)
     />
   ))
 
-  .add('Transactions - Confirmed and pending transactions', () => (
-    <WalletTransactionsList
-      onOpenExternalLink={action('onOpenExternalLink')}
-      getUrlByType={action('getUrlByType')}
-      currentLocale="en-US"
-      transactions={[
-        generateTransaction(
-          TransactionTypes.INCOME,
-          new Date(),
-          new BigNumber(1),
-          TransactionStates.OK
-        ),
-        generateTransaction(
-          TransactionTypes.INCOME,
-          new Date(),
-          new BigNumber(1),
-          TransactionStates.PENDING
-        ),
-        generateTransaction(
-          TransactionTypes.INCOME,
-          new Date(2019, 10, 8, 20),
-          new BigNumber(1),
-          TransactionStates.PENDING,
-          true
-        ),
-      ]}
-      deletePendingTransaction={() => {}}
-      isRestoreActive={false}
-      isLoadingTransactions={false}
-      hasMoreToLoad={false}
-      walletId="test-wallet"
-      isDeletingTransaction={false}
-      formattedWalletAmount={formattedWalletAmount}
-      totalAvailable={3}
-      currentDateFormat={DATE_ENGLISH_OPTIONS[0].value}
-      currentTimeFormat={TIME_OPTIONS[0].value}
-    />
-  ))
+  .add(
+    'Transactions - Confirmed and pending transactions',
+    ({ locale }: { locale: string }) => (
+      <WalletTransactionsList
+        onOpenExternalLink={action('onOpenExternalLink')}
+        getUrlByType={action('getUrlByType')}
+        currentLocale={locale}
+        transactions={[
+          generateTransaction(
+            TransactionTypes.INCOME,
+            new Date(),
+            new BigNumber(1),
+            TransactionStates.OK
+          ),
+          generateTransaction(
+            TransactionTypes.INCOME,
+            new Date(),
+            new BigNumber(1),
+            TransactionStates.PENDING
+          ),
+          generateTransaction(
+            TransactionTypes.INCOME,
+            new Date(2019, 10, 8, 20),
+            new BigNumber(1),
+            TransactionStates.PENDING,
+            true
+          ),
+        ]}
+        deletePendingTransaction={() => {}}
+        isRestoreActive={false}
+        isLoadingTransactions={false}
+        hasMoreToLoad={false}
+        walletId="test-wallet"
+        isDeletingTransaction={false}
+        formattedWalletAmount={formattedWalletAmount}
+        totalAvailable={3}
+        currentDateFormat={DATE_ENGLISH_OPTIONS[0].value}
+        currentTimeFormat={TIME_OPTIONS[0].value}
+      />
+    )
+  )
 
-  .add('Transactions - Rendering many transactions', () => (
-    <WalletTransactionsList
-      onOpenExternalLink={action('onOpenExternalLink')}
-      getUrlByType={action('getUrlByType')}
-      currentLocale="en-US"
-      isRenderingAsVirtualList
-      isRestoreActive={false}
-      transactions={generateMultipleTransactions(500)}
-      deletePendingTransaction={() => {}}
-      isLoadingTransactions={false}
-      hasMoreToLoad={false}
-      walletId="test-wallet"
-      isDeletingTransaction={false}
-      formattedWalletAmount={formattedWalletAmount}
-      totalAvailable={500}
-      currentDateFormat={DATE_ENGLISH_OPTIONS[0].value}
-      currentTimeFormat={TIME_OPTIONS[0].value}
-    />
-  ))
+  .add(
+    'Transactions - Rendering many transactions',
+    ({ locale }: { locale: string }) => (
+      <WalletTransactionsList
+        onOpenExternalLink={action('onOpenExternalLink')}
+        getUrlByType={action('getUrlByType')}
+        currentLocale={locale}
+        isRenderingAsVirtualList
+        isRestoreActive={false}
+        transactions={generateMultipleTransactions(500)}
+        deletePendingTransaction={() => {}}
+        isLoadingTransactions={false}
+        hasMoreToLoad={false}
+        walletId="test-wallet"
+        isDeletingTransaction={false}
+        formattedWalletAmount={formattedWalletAmount}
+        totalAvailable={500}
+        currentDateFormat={DATE_ENGLISH_OPTIONS[0].value}
+        currentTimeFormat={TIME_OPTIONS[0].value}
+      />
+    )
+  )
 
-  .add('Transactions - Unresolved income addresses', () => (
-    <WalletTransactionsList
-      onOpenExternalLink={action('onOpenExternalLink')}
-      getUrlByType={action('getUrlByType')}
-      currentLocale="en-US"
-      isRenderingAsVirtualList
-      deletePendingTransaction={() => {}}
-      isRestoreActive={false}
-      transactions={[
-        generateTransaction(
-          TransactionTypes.INCOME,
-          new Date(),
-          new BigNumber(1),
-          TransactionStates.OK,
-          true
-        ),
-        generateTransaction(
-          TransactionTypes.INCOME,
-          new Date(),
-          new BigNumber(1),
-          TransactionStates.OK,
-          true
-        ),
-      ]}
-      isLoadingTransactions={false}
-      hasMoreToLoad={false}
-      walletId="test-wallet"
-      isDeletingTransaction={false}
-      formattedWalletAmount={formattedWalletAmount}
-      totalAvailable={3}
-      currentDateFormat={DATE_ENGLISH_OPTIONS[0].value}
-      currentTimeFormat={TIME_OPTIONS[0].value}
-    />
-  ))
+  .add(
+    'Transactions - Unresolved income addresses',
+    ({ locale }: { locale: string }) => (
+      <WalletTransactionsList
+        onOpenExternalLink={action('onOpenExternalLink')}
+        getUrlByType={action('getUrlByType')}
+        currentLocale={locale}
+        isRenderingAsVirtualList
+        deletePendingTransaction={() => {}}
+        isRestoreActive={false}
+        transactions={[
+          generateTransaction(
+            TransactionTypes.INCOME,
+            new Date(),
+            new BigNumber(1),
+            TransactionStates.OK,
+            true
+          ),
+          generateTransaction(
+            TransactionTypes.INCOME,
+            new Date(),
+            new BigNumber(1),
+            TransactionStates.OK,
+            true
+          ),
+        ]}
+        isLoadingTransactions={false}
+        hasMoreToLoad={false}
+        walletId="test-wallet"
+        isDeletingTransaction={false}
+        formattedWalletAmount={formattedWalletAmount}
+        totalAvailable={3}
+        currentDateFormat={DATE_ENGLISH_OPTIONS[0].value}
+        currentTimeFormat={TIME_OPTIONS[0].value}
+      />
+    )
+  )
 
-  .add('Transactions - Without income addresses', () => (
-    <WalletTransactionsList
-      onOpenExternalLink={action('onOpenExternalLink')}
-      getUrlByType={action('getUrlByType')}
-      currentLocale="en-US"
-      isRenderingAsVirtualList
-      deletePendingTransaction={() => {}}
-      isRestoreActive={false}
-      transactions={[
-        generateTransaction(
-          TransactionTypes.INCOME,
-          new Date(),
-          new BigNumber(1),
-          TransactionStates.OK,
-          false,
-          true
-        ),
-        generateTransaction(
-          TransactionTypes.INCOME,
-          new Date(),
-          new BigNumber(1),
-          TransactionStates.OK,
-          false,
-          true
-        ),
-      ]}
-      isLoadingTransactions={false}
-      hasMoreToLoad={false}
-      walletId="test-wallet"
-      isDeletingTransaction={false}
-      formattedWalletAmount={formattedWalletAmount}
-      totalAvailable={3}
-      currentDateFormat={DATE_ENGLISH_OPTIONS[0].value}
-      currentTimeFormat={TIME_OPTIONS[0].value}
-    />
-  ));
+  .add(
+    'Transactions - Without income addresses',
+    ({ locale }: { locale: string }) => (
+      <WalletTransactionsList
+        onOpenExternalLink={action('onOpenExternalLink')}
+        getUrlByType={action('getUrlByType')}
+        currentLocale={locale}
+        isRenderingAsVirtualList
+        deletePendingTransaction={() => {}}
+        isRestoreActive={false}
+        transactions={[
+          generateTransaction(
+            TransactionTypes.INCOME,
+            new Date(),
+            new BigNumber(1),
+            TransactionStates.OK,
+            false,
+            true
+          ),
+          generateTransaction(
+            TransactionTypes.INCOME,
+            new Date(),
+            new BigNumber(1),
+            TransactionStates.OK,
+            false,
+            true
+          ),
+        ]}
+        isLoadingTransactions={false}
+        hasMoreToLoad={false}
+        walletId="test-wallet"
+        isDeletingTransaction={false}
+        formattedWalletAmount={formattedWalletAmount}
+        totalAvailable={3}
+        currentDateFormat={DATE_ENGLISH_OPTIONS[0].value}
+        currentTimeFormat={TIME_OPTIONS[0].value}
+      />
+    )
+  );

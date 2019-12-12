@@ -143,7 +143,7 @@ export default class DelegationSetupWizardDialogContainer extends Component<
       stakePoolJoinFee,
     } = this.state;
     const { app, staking, wallets, profile, networkStatus } = this.props.stores;
-    const { nextEpoch } = networkStatus;
+    const { futureEpoch } = networkStatus;
     const { currentTheme, currentLocale, environment } = profile;
     const {
       stakePools,
@@ -152,7 +152,7 @@ export default class DelegationSetupWizardDialogContainer extends Component<
       getStakePoolById,
     } = staking;
     const { network, rawNetwork } = environment;
-    const nextEpochStartTime = get(nextEpoch, 'epochStart', 0);
+    const futureEpochStartTime = get(futureEpoch, 'epochStart', 0);
     const selectedPool = find(stakePools, pool => pool.id === selectedPoolId);
 
     const selectedWallet = find(
@@ -186,7 +186,7 @@ export default class DelegationSetupWizardDialogContainer extends Component<
         stakePoolsList={stakePools}
         recentStakePools={recentStakePools}
         stakePoolJoinFee={stakePoolJoinFee}
-        nextEpochStartTime={nextEpochStartTime}
+        futureEpochStartTime={futureEpochStartTime}
         currentLocale={currentLocale}
         onOpenExternalLink={app.openExternalLink}
         getPledgeAddressUrl={getPledgeAddressUrl}

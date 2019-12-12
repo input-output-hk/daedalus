@@ -246,7 +246,7 @@ export default (props: { currentTheme: string, locale: string }) => {
       recoveryPhraseVerificationStatusType={
         type || WalletRecoveryPhraseVerificationTypes.NEVER_CHECKED
       }
-      locale={locale === 'Japanese' ? 'ja-JP' : 'en-US'}
+      locale={locale}
     />
   );
 };
