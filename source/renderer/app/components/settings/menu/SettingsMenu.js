@@ -67,7 +67,7 @@ export default class SettingsMenu extends Component<Props> {
             label={intl.formatMessage(messages.termsOfUse)}
             onClick={() => onItemClick(ROUTES.SETTINGS.TERMS_OF_USE)}
             active={isActiveItem(ROUTES.SETTINGS.TERMS_OF_USE)}
-            className="termsOfUse"
+            className="termsOfService"
           />
           <SettingsMenuItem
             label={intl.formatMessage(messages.support)}
