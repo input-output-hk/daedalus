@@ -38,6 +38,6 @@ export type NetworkInfoResponse = {
   },
   next_epoch: {
     epoch_number: number,
-    epoch_start: string,
+    epoch_start_time: string,
   },
 };

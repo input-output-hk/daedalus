@@ -101,8 +101,11 @@ export default class DelegationCenterHeader extends Component<Props> {
       totalSlots
     );
 
+    const nextEpochDateDifference =
+      new Date(nextEpochStart).getTime() - new Date().getTime();
+
     const showNextEpochCountdown =
-      nextEpochNumber > 0 && nextEpochStart.length > 0;
+      nextEpochNumber > 0 && nextEpochDateDifference > 0;
 
     return (
       <div className={styles.component}>
@@ -120,6 +123,7 @@ export default class DelegationCenterHeader extends Component<Props> {
                 <CountdownWidget
                   nextEpochStart={nextEpochStart}
                   showLoader={false}
+                  format="DD-HH-mm-ss"
                 />
               </div>
             )}
