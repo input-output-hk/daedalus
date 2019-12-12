@@ -1,5 +1,6 @@
 // @flow
 import { get } from 'lodash';
+import moment from 'moment';
 import AdaApi from '../api';
 import { getNetworkInfo } from '../network/requests/getNetworkInfo';
 import { getLatestAppVersion } from '../nodes/requests/getLatestAppVersion';
@@ -14,6 +15,7 @@ import type {
   GetLatestAppVersionResponse,
 } from '../nodes/types';
 import type { GetNewsResponse } from '../news/types';
+import { EPOCH_LENGTH_ITN } from '../../config/epochsConfig';
 
 let LATEST_APP_VERSION = null;
 let SYNC_PROGRESS = null;
@@ -33,7 +35,6 @@ export default (api: AdaApi) => {
         node_tip, // eslint-disable-line camelcase
         network_tip, // eslint-disable-line camelcase
         next_epoch, // eslint-disable-line camelcase
-        future_epoch, // eslint-disable-line camelcase
       } = networkInfo;
       const syncProgress =
         get(sync_progress, 'status') === 'ready'
@@ -56,8 +57,11 @@ export default (api: AdaApi) => {
           epochStart: get(next_epoch, 'epoch_start', ''),
         },
         futureEpoch: {
-          epochNumber: get(future_epoch, 'epoch_number', 0),
-          epochStart: get(future_epoch, 'epoch_start', ''),
+          epochNumber: get(next_epoch, 'epoch_number', 0) + 1,
+          epochStart: moment(get(next_epoch, 'epoch_start', '')).add(
+            EPOCH_LENGTH_ITN,
+            'day'
+          ),
         },
       };
     } catch (error) {

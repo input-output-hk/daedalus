@@ -5,7 +5,6 @@ import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import classNames from 'classnames';
 import { get } from 'lodash';
 import SVGInline from 'react-svg-inline';
-import humanizeDuration from 'humanize-duration';
 import commonStyles from './DelegationSteps.scss';
 import styles from './DelegationStepsSuccessDialog.scss';
 import Dialog from '../../widgets/Dialog';
@@ -13,7 +12,7 @@ import DialogCloseButton from '../../widgets/DialogCloseButton';
 import tadaImage from '../../../assets/images/tada-ic.inline.svg';
 import Wallet from '../../../domains/Wallet';
 import StakePool from '../../../domains/StakePool';
-import { humanizedDurationLanguages } from '../../../../../common/types/locales.types';
+import humanizeDurationByLocale from '../../../utils/humanizeDurationByLocale';
 import { EPOCH_COUNTDOWN_INTERVAL } from '../../../config/epochsConfig';
 
 const messages = defineMessages({
@@ -116,16 +115,9 @@ export default class DelegationStepsSuccessDialog extends Component<
     const delegatedStakePoolName = get(delegatedStakePool, 'name');
     const delegatedStakePoolTicker = get(delegatedStakePool, 'ticker');
 
-    const language = humanizedDurationLanguages[currentLocale];
-    const timeUntilNextEpochStart = humanizeDuration(
-      this.state.timeUntilNextEpochStart || 0,
-      {
-        round: true, // round seconds to prevent e.g. 1 day 3 hours *11,56 seconds*
-        language,
-        conjunction: ' and ',
-        units: ['d', 'h', 'm'],
-        serialComma: false,
-      }
+    const timeUntilNextEpochStart = humanizeDurationByLocale(
+      this.state.timeUntilNextEpochStart,
+      currentLocale
     );
 
     return (

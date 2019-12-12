@@ -46,8 +46,4 @@ export type NetworkInfoResponse = {
     epoch_number: number,
     epoch_start: string,
   },
-  future_epoch: {
-    epoch_number: number,
-    epoch_start: string,
-  },
 };

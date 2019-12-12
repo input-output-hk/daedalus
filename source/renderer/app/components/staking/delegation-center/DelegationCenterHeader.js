@@ -1,12 +1,11 @@
 // @flow
 import React, { Component, Fragment } from 'react';
 import { observer } from 'mobx-react';
-import humanizeDuration from 'humanize-duration';
 import { defineMessages, intlShape } from 'react-intl';
 import { get } from 'lodash';
 import styles from './DelegationCenterHeader.scss';
 import CountdownWidget from '../../widgets/CountdownWidget';
-import { humanizedDurationLanguages } from '../../../../../common/types/locales.types';
+import humanizeDurationByLocale from '../../../utils/humanizeDurationByLocale';
 
 import type {
   NextEpoch,
@@ -137,16 +136,9 @@ export default class DelegationCenterHeader extends Component<Props, State> {
     const headingSecond = intl.formatMessage(messages.headingLeft, {
       nextEpochNumber,
     });
-    const language = humanizedDurationLanguages[currentLocale];
-    const timeUntilFutureEpoch = humanizeDuration(
-      this.state.timeUntilFutureEpoch || 0,
-      {
-        round: true, // round seconds to prevent e.g. 1 day 3 hours *11,56 seconds*
-        language,
-        conjunction: ' and ',
-        units: ['d', 'h', 'm'],
-        serialComma: false,
-      }
+    const timeUntilFutureEpoch = humanizeDurationByLocale(
+      this.state.timeUntilFutureEpoch,
+      currentLocale
     );
     const description = intl.formatMessage(messages.description, {
       timeUntilFutureEpoch,

@@ -60,6 +60,7 @@ import { getStakePools } from './staking/requests/getStakePools';
 import { getDelegationFee } from './staking/requests/getDelegationFee';
 import StakePool from '../domains/StakePool';
 import stakingStakePoolsMissingApiData from '../config/stakingStakePoolsMissingApiData.dummy.json';
+import { EPOCH_LENGTH_ITN } from '../config/epochsConfig';
 
 // News requests
 import { getNews } from './news/requests/getNews';
@@ -1160,8 +1161,10 @@ export default class AdaApi {
         },
         nextEpoch: {
           epochNumber: get(next_epoch, 'epoch_number', 0),
-          epochStart: '2019-12-15T00:00:00.123Z',
-          // epochStart: moment(get(next_epoch, 'epoch_start_time', 0)).add(EPOCH_LENGTH_ITN, 'day').toISOString(),
+          // epochStart: '2019-12-15T00:00:00.123Z',
+          epochStart: moment(get(next_epoch, 'epoch_start_time', 0))
+            .add(EPOCH_LENGTH_ITN, 'day')
+            .toISOString(),
         },
         futureEpoch: {
           epochNumber: get(next_epoch, 'epoch_number', 0) + 1,
