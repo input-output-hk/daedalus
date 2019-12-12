@@ -100,7 +100,7 @@
       @extend %regularText;
       font-size: 14px;
       .unknown {
-        font-weight: bold;
+        font-family: var(--font-bold);
       }
     }
     .stakePoolRankingIndicator {
