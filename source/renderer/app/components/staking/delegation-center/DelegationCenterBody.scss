@@ -1,7 +1,19 @@
 @import '../stakingConfig';
 
 .component {
-  margin: 20px;
+  margin: 0 20px 20px;
+
+  &.isLoading {
+    align-items: center;
+    display: flex;
+    flex: 1;
+    margin: -20px auto auto;
+    p {
+      @extend %regularText;
+      margin-bottom: 20px;
+      opacity: 0.5;
+    }
+  }
 
   .bodyTitle {
     @extend %regularLightColorText;

@@ -1,5 +1,5 @@
 // @flow
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { observer, inject } from 'mobx-react';
 import BigNumber from 'bignumber.js';
 import DelegationCenter from '../../components/staking/delegation-center/DelegationCenter';
@@ -57,7 +57,7 @@ export default class DelegationCenterPage extends Component<Props> {
   render() {
     const { stores } = this.props;
     const { app, uiDialogs, staking, wallets, networkStatus, profile } = stores;
-    const { stakePools, getStakePoolById } = staking;
+    const { stakePools, getStakePoolById, fetchingStakePoolsFailed } = staking;
     const { networkTip, nextEpoch, futureEpoch } = networkStatus;
     const { currentLocale } = profile;
 
@@ -70,7 +70,7 @@ export default class DelegationCenterPage extends Component<Props> {
     }
 
     return (
-      <div>
+      <Fragment>
         <DelegationCenter
           wallets={wallets.allWallets}
           numberOfStakePools={stakePools.length}
@@ -80,6 +80,7 @@ export default class DelegationCenterPage extends Component<Props> {
           nextEpoch={nextEpoch}
           futureEpoch={futureEpoch}
           getStakePoolById={getStakePoolById}
+          fetchingStakePoolsFailed={fetchingStakePoolsFailed}
           currentLocale={currentLocale}
         />
         {uiDialogs.isOpen(UndelegateConfirmationDialog) ? (
@@ -90,7 +91,7 @@ export default class DelegationCenterPage extends Component<Props> {
         {uiDialogs.isOpen(DelegationSetupWizardDialog) ? (
           <DelegationSetupWizardDialogContainer />
         ) : null}
-      </div>
+      </Fragment>
     );
   }
 }

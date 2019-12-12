@@ -8,11 +8,13 @@ import { linkTo } from '@storybook/addon-links';
 import UndelegateConfirmationDialog from '../../../source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog';
 import UndelegateConfirmationResultDialog from '../../../source/renderer/app/components/staking/delegation-center/UndelegateConfirmationResultDialog';
 
-export const StakingUndelegateConfirmationStory = () => (
+export const StakingUndelegateConfirmationStory = (props: {
+  unknownStakePool?: boolean,
+}) => (
   <UndelegateConfirmationDialog
     walletName="Darko's ADA"
-    stakePoolName="Lush 1"
-    stakePoolTicker="LSH1"
+    stakePoolName={!props.unknownStakePool ? 'Lush 1' : null}
+    stakePoolTicker={!props.unknownStakePool ? 'LSH1' : null}
     onConfirm={linkTo(
       'Decentralization | Staking',
       'Undelegate Confirmation Result'
