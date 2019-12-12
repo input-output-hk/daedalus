@@ -33,6 +33,7 @@ Changelog
 
 ### Chores
 
+- Updated `cardano-wallet` to revision `555b5e82` which includes Jormungandr 0.8.0-rc11 ([PR 1763](https://github.com/input-output-hk/daedalus/pull/1763))
 - Updated rewards screen note and learn more button style ([PR 1760](https://github.com/input-output-hk/daedalus/pull/1760))
 - Updated message for current stake pool being selected ([PR 1758](https://github.com/input-output-hk/daedalus/pull/1758))
 - Updated "Delegation" UI Support portal article URLs ([PR 1759](https://github.com/input-output-hk/daedalus/pull/1759))
