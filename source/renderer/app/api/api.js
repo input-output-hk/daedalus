@@ -37,7 +37,6 @@ import { deleteLegacyTransaction } from './transactions/requests/deleteLegacyTra
 
 // Wallets requests
 import { changeSpendingPassword } from './wallets/requests/changeSpendingPassword';
-import { quitStakePool } from './wallets/requests/quitStakePool';
 import { deleteWallet } from './wallets/requests/deleteWallet';
 import { deleteLegacyWallet } from './wallets/requests/deleteLegacyWallet';
 import { exportWalletAsJSON } from './wallets/requests/exportWalletAsJSON';
@@ -56,8 +55,6 @@ import { transferFundsCalculateFee } from './wallets/requests/transferFundsCalcu
 import { transferFunds } from './wallets/requests/transferFunds';
 
 // Staking
-import { getStakePools } from './staking/requests/getStakePools';
-import { getDelegationFee } from './staking/requests/getDelegationFee';
 import StakePool from '../domains/StakePool';
 import stakingStakePoolsMissingApiData from '../config/stakingStakePoolsMissingApiData.dummy.json';
 
@@ -65,7 +62,10 @@ import stakingStakePoolsMissingApiData from '../config/stakingStakePoolsMissingA
 import { getNews } from './news/requests/getNews';
 
 // Stake Pools request
+import { getStakePools } from './staking/requests/getStakePools';
+import { getDelegationFee } from './staking/requests/getDelegationFee';
 import { joinStakePool } from './staking/requests/joinStakePool';
+import { quitStakePool } from './staking/requests/quitStakePool';
 
 // Utility functions
 import {
@@ -144,8 +144,6 @@ import type {
   TransferFundsCalculateFeeResponse,
   TransferFundsRequest,
   TransferFundsResponse,
-  QuitStakePoolRequest,
-  QuitStakePoolResponse,
 } from './wallets/types';
 
 // News Types
@@ -158,6 +156,7 @@ import type {
   DelegationFee,
   AdaApiStakePools,
   AdaApiStakePool,
+  QuitStakePoolRequest,
 } from './staking/types';
 
 // Common errors
@@ -954,7 +953,7 @@ export default class AdaApi {
 
   quitStakePool = async (
     request: QuitStakePoolRequest
-  ): Promise<QuitStakePoolResponse> => {
+  ): Promise<Transaction> => {
     Logger.debug('AdaApi::quitStakePool called', {
       parameters: filterLogData(request),
     });
@@ -969,11 +968,7 @@ export default class AdaApi {
       return result;
     } catch (error) {
       Logger.error('AdaApi::quitStakePool error', { error });
-      const errorCode = get(error, 'code', '');
-      if (
-        errorCode === 'wrong_encryption_passphrase' ||
-        errorCode === 'bad_request'
-      ) {
+      if (error.code === 'wrong_encryption_passphrase') {
         throw new IncorrectSpendingPasswordError();
       }
       throw new GenericApiError();

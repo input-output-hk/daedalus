@@ -148,33 +148,6 @@ export type DeleteWalletRequest = {
   isLegacy: boolean,
 };
 
-export type QuitStakePoolRequest = {
-  stakePoolId: string,
-  walletId: string,
-  passphrase: string,
-};
-
-export type QuitStakePoolResponse = {
-  id: string,
-  amount: WalletBalance,
-  inserted_at: {
-    time: string,
-    block: Block,
-  },
-  pending_since: {
-    time: string,
-    block: Block,
-  },
-  depth: {
-    quantity: number,
-    unit: 'block',
-  },
-  direction: string,
-  inputs: [Input],
-  outputs: [Output],
-  status: string,
-};
-
 export type GetWalletUtxosRequest = {
   walletId: string,
 };

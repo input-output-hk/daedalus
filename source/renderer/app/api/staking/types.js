@@ -75,3 +75,9 @@ export type DelegationFee = {
     unit: WalletUnits.LOVELACE,
   },
 };
+
+export type QuitStakePoolRequest = {
+  stakePoolId: string,
+  walletId: string,
+  passphrase: string,
+};
