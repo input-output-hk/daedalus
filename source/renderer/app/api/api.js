@@ -544,9 +544,9 @@ export default class AdaApi {
         throw new NotEnoughMoneyToSendError();
       }
       if (
-        (error.code === 'wrong_encryption_passphrase' ||
-          error.code === 'bad_request') &&
-        error.message.includes('passphrase is too short')
+        error.code === 'wrong_encryption_passphrase' ||
+        (error.code === 'bad_request' &&
+          error.message.includes('passphrase is too short'))
       ) {
         throw new IncorrectSpendingPasswordError();
       }
@@ -948,9 +948,9 @@ export default class AdaApi {
       Logger.error('AdaApi::updateSpendingPassword error', { error });
       const errorCode = get(error, 'code', '');
       if (
-        (errorCode === 'wrong_encryption_passphrase' ||
-          errorCode === 'bad_request') &&
-        error.message.includes('passphrase is too short')
+        errorCode === 'wrong_encryption_passphrase' ||
+        (errorCode === 'bad_request' &&
+          error.message.includes('passphrase is too short'))
       ) {
         throw new IncorrectSpendingPasswordError();
       }
@@ -977,9 +977,9 @@ export default class AdaApi {
       Logger.error('AdaApi::quitStakePool error', { error });
       const errorCode = get(error, 'code', '');
       if (
-        (errorCode === 'wrong_encryption_passphrase' ||
-          errorCode === 'bad_request') &&
-        error.message.includes('passphrase is too short')
+        errorCode === 'wrong_encryption_passphrase' ||
+        (errorCode === 'bad_request' &&
+          error.message.includes('passphrase is too short'))
       ) {
         throw new IncorrectSpendingPasswordError();
       }
@@ -1097,9 +1097,9 @@ export default class AdaApi {
     } catch (error) {
       Logger.error('AdaApi::transferFunds error', { error });
       if (
-        (error.code === 'wrong_encryption_passphrase' ||
-          error.code === 'bad_request') &&
-        error.message.includes('passphrase is too short')
+        error.code === 'wrong_encryption_passphrase' ||
+        (error.code === 'bad_request' &&
+          error.message.includes('passphrase is too short'))
       ) {
         throw new IncorrectSpendingPasswordError();
       }
@@ -1305,9 +1305,9 @@ export default class AdaApi {
     } catch (error) {
       Logger.error('AdaApi::joinStakePool error', { error });
       if (
-        (error.code === 'wrong_encryption_passphrase' ||
-          error.code === 'bad_request') &&
-        error.message.includes('passphrase is too short')
+        error.code === 'wrong_encryption_passphrase' ||
+        (error.code === 'bad_request' &&
+          error.message.includes('passphrase is too short'))
       ) {
         throw new IncorrectSpendingPasswordError();
       }
