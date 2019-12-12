@@ -60,7 +60,7 @@ export default (api: AdaApi) => {
           epochNumber: get(next_epoch, 'epoch_number', 0) + 1,
           epochStart: moment(get(next_epoch, 'epoch_start', '')).add(
             EPOCH_LENGTH_ITN,
-            'day'
+            'seconds'
           ),
         },
       };
