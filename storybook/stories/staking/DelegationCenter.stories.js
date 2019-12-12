@@ -15,10 +15,6 @@ import type {
   TipInfo,
 } from '../../../source/renderer/app/api/network/types';
 
-type Props = {
-  isLoading: boolean,
-};
-
 const walletSyncedStateReady = { status: 'ready' };
 
 const walletSyncedStateRestoring = {
@@ -29,16 +25,19 @@ const walletSyncedStateRestoring = {
   },
 };
 
-const redirectToStakingInfo: Function = null;
-
 const networkTip: TipInfo = {
-  epoch: 12352,
+  epoch: 1232,
   slot: 123,
 };
 
 const nextEpoch: NextEpoch = {
   epochNumber: 1233,
-  epochStart: new Date('2019-12-31').toUTCString(),
+  epochStart: new Date('2019-12-29').toUTCString(),
+};
+
+const futureEpoch: NextEpoch = {
+  epochNumber: 1234,
+  epochStart: new Date('2019-12-30').toUTCString(),
 };
 
 // Dummy data initialization
@@ -104,9 +103,14 @@ const wallets = [
   }),
 ];
 
-export const StakingDelegationCenterStory = (props: Props) => (
+export const StakingDelegationCenterStory = ({
+  locale,
+  isLoading,
+}: {
+  locale: string,
+  isLoading: boolean,
+}) => (
   <DelegationCenter
-    redirectToStakingInfo={redirectToStakingInfo}
     wallets={wallets}
     onDelegate={action('onDelegate')}
     onUndelegate={action('onUndelegate')}
@@ -116,6 +120,8 @@ export const StakingDelegationCenterStory = (props: Props) => (
     numberOfStakePools={STAKE_POOLS.length}
     networkTip={networkTip}
     nextEpoch={nextEpoch}
-    fetchingStakePoolsFailed={props.isLoading}
+    fetchingStakePoolsFailed={isLoading}
+    futureEpoch={futureEpoch}
+    currentLocale={locale}
   />
 );

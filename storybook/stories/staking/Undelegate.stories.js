@@ -1,6 +1,7 @@
 // @flow
 import React from 'react';
 import BigNumber from 'bignumber.js';
+import moment from 'moment';
 import { linkTo } from '@storybook/addon-links';
 
 // Screens
@@ -26,11 +27,17 @@ export const StakingUndelegateConfirmationStory = (props: {
   />
 );
 
-export const StakingUndelegateConfirmationResultStory = () => (
+export const StakingUndelegateConfirmationResultStory = ({
+  locale,
+}: {
+  locale: string,
+}) => (
   <UndelegateConfirmationResultDialog
     walletName="Darko's ADA"
     onClose={() => null}
-    currentLocale="en-US"
-    nextEpochStartTime="2019-12-09T00:00:00.161Z"
+    currentLocale={locale}
+    futureEpochStartTime={moment()
+      .add(35, 'hour')
+      .toString()}
   />
 );

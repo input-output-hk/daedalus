@@ -1,12 +1,12 @@
 // @flow
 import React, { Component } from 'react';
-import humanizeDuration from 'humanize-duration';
 import SVGInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import attentionIcon from '../../../assets/images/attention-big-light.inline.svg';
 import externalLinkIcon from '../../../assets/images/link-ic.inline.svg';
 import { ALLOWED_TIME_DIFFERENCE } from '../../../config/timingConfig';
+import humanizeDurationByLocale from '../../../utils/humanizeDurationByLocale';
 import styles from './SystemTimeError.scss';
 
 const messages = defineMessages({
@@ -104,31 +104,13 @@ export default class SystemTimeError extends Component<Props> {
       </a>
     );
 
-    let humanizedDurationLanguage;
-    switch (currentLocale) {
-      case 'ja-JP':
-        humanizedDurationLanguage = 'ja';
-        break;
-      case 'zh-CN':
-        humanizedDurationLanguage = 'zh_CN';
-        break;
-      case 'ko-KR':
-        humanizedDurationLanguage = 'ko';
-        break;
-      case 'de-DE':
-        humanizedDurationLanguage = 'de';
-        break;
-      default:
-        humanizedDurationLanguage = 'en';
-    }
-
     const isNTPServiceReachable = !!localTimeDifference;
     const allowedTimeDifferenceInSeconds = ALLOWED_TIME_DIFFERENCE / 1000000;
-
-    const timeOffset = humanizeDuration((localTimeDifference || 0) / 1000, {
-      round: true, // round seconds to prevent e.g. 1 day 3 hours *11,56 seconds*
-      language: humanizedDurationLanguage,
-    }).replace(/,/g, ''); // replace 1 day, 3 hours, 12 seconds* to clean period without comma
+    const rawTimeOffset = (localTimeDifference || 0) / 1000;
+    const timeOffset = humanizeDurationByLocale(rawTimeOffset, currentLocale, {
+      delimiter: ' ',
+      units: ['y', 'mo', 'w', 'd', 'h', 'm', 's', 'ms'],
+    });
 
     return (
       <div className={styles.component}>
