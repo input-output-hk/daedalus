@@ -40,7 +40,7 @@ type Props = {
 };
 
 type WalletOption = {
-  delegatedStakePool?: StakePool,
+  delegatedStakePool?: ?StakePool,
   label: string,
   numberOfStakePools: number,
   detail: string,

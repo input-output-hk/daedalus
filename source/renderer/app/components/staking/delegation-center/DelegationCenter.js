@@ -19,6 +19,7 @@ type Props = {
   nextEpoch: ?NextEpoch,
   futureEpoch: ?FutureEpoch,
   getStakePoolById: Function,
+  fetchingStakePoolsFailed: boolean,
   currentLocale: string,
 };
 
@@ -34,6 +35,7 @@ export default class DelegationCenter extends Component<Props> {
       nextEpoch,
       futureEpoch,
       getStakePoolById,
+      fetchingStakePoolsFailed,
       currentLocale,
     } = this.props;
 
@@ -51,6 +53,7 @@ export default class DelegationCenter extends Component<Props> {
           onDelegate={onDelegate}
           onUndelegate={onUndelegate}
           getStakePoolById={getStakePoolById}
+          isLoading={fetchingStakePoolsFailed}
         />
       </Fragment>
     );
