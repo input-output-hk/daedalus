@@ -23,14 +23,14 @@ export default class UndelegateDialogContainer extends Component<Props> {
     const { uiDialogs, wallets, staking, networkStatus, profile } = stores;
     const dialogData = uiDialogs.dataForActiveDialog;
     const { walletId, stakePoolQuitFee } = dialogData;
-    const { nextEpoch } = networkStatus;
+    const { futureEpoch } = networkStatus;
     const { currentLocale } = profile;
     const {
       quitStakePoolRequest,
       getWalletById,
       undelegateWalletSubmissionSuccess,
     } = wallets;
-    const nextEpochStartTime = get(nextEpoch, 'epochStart', 0);
+    const futureEpochStartTime = get(futureEpoch, 'epochStart', 0);
 
     const walletToBeUndelegated = getWalletById(walletId);
     if (!walletToBeUndelegated) return null;
@@ -42,7 +42,7 @@ export default class UndelegateDialogContainer extends Component<Props> {
       return (
         <UndelegateConfirmationResultDialog
           walletName={walletName}
-          nextEpochStartTime={nextEpochStartTime}
+          futureEpochStartTime={futureEpochStartTime}
           currentLocale={currentLocale}
           onClose={() => {
             actions.dialogs.closeActiveDialog.trigger();
@@ -55,13 +55,9 @@ export default class UndelegateDialogContainer extends Component<Props> {
       );
     }
 
-    if (!delegatedStakePool) return null;
-
-    const {
-      id: stakePoolId,
-      name: stakePoolName,
-      ticker: stakePoolTicker,
-    } = delegatedStakePool;
+    const stakePoolId = get(walletToBeUndelegated, 'delegatedStakePoolId');
+    const stakePoolName = get(delegatedStakePool, 'name', '');
+    const stakePoolTicker = get(delegatedStakePool, 'ticker');
 
     return (
       <UndelegateConfirmationDialog

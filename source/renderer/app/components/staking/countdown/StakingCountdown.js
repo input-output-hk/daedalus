@@ -64,9 +64,8 @@ export default class StakingCountdown extends Component<Props> {
           <div className={styles.description}>{description}</div>
           <div className={styles.timeLeftDesc}>{timeLeftDesc}</div>
           <CountdownWidget
-            redirectToStakingInfo={redirectToStakingInfo}
             startDateTime={startDateTime}
-            showLoader
+            redirectOnEnd={redirectToStakingInfo}
           />
           <Button
             className={styles.learnMoreButton}

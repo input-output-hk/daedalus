@@ -25,16 +25,19 @@ const walletSyncedStateRestoring = {
   },
 };
 
-const redirectToStakingInfo: Function = null;
-
 const networkTip: TipInfo = {
-  epoch: 12352,
+  epoch: 1232,
   slot: 123,
 };
 
 const nextEpoch: NextEpoch = {
   epochNumber: 1233,
-  epochStart: new Date('2019-12-31').toUTCString(),
+  epochStart: new Date('2019-12-29').toUTCString(),
+};
+
+const futureEpoch: NextEpoch = {
+  epochNumber: 1234,
+  epochStart: new Date('2019-12-30').toUTCString(),
 };
 
 // Dummy data initialization
@@ -71,7 +74,7 @@ const wallets = [
     isLegacy: false,
     inactiveStakePercentage: 35,
     syncState: walletSyncedStateReady,
-    delegatedStakePoolId: STAKE_POOLS[1].id,
+    delegatedStakePoolId: '800',
     createdAt: new Date(),
     recoveryPhraseVerificationDate: new Date(),
     recoveryPhraseVerificationStatus:
@@ -100,9 +103,14 @@ const wallets = [
   }),
 ];
 
-export const StakingDelegationCenterStory = () => (
+export const StakingDelegationCenterStory = ({
+  locale,
+  isLoading,
+}: {
+  locale: string,
+  isLoading: boolean,
+}) => (
   <DelegationCenter
-    redirectToStakingInfo={redirectToStakingInfo}
     wallets={wallets}
     onDelegate={action('onDelegate')}
     onUndelegate={action('onUndelegate')}
@@ -112,5 +120,8 @@ export const StakingDelegationCenterStory = () => (
     numberOfStakePools={STAKE_POOLS.length}
     networkTip={networkTip}
     nextEpoch={nextEpoch}
+    fetchingStakePoolsFailed={isLoading}
+    futureEpoch={futureEpoch}
+    currentLocale={locale}
   />
 );
