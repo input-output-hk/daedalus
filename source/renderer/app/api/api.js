@@ -57,6 +57,7 @@ import { transferFunds } from './wallets/requests/transferFunds';
 // Staking
 import StakePool from '../domains/StakePool';
 import stakingStakePoolsMissingApiData from '../config/stakingStakePoolsMissingApiData.dummy.json';
+import { EPOCH_LENGTH_ITN } from '../config/epochsConfig';
 
 // News requests
 import { getNews } from './news/requests/getNews';
@@ -1136,6 +1137,7 @@ export default class AdaApi {
 
       /* eslint-disable-next-line camelcase */
       const { sync_progress, node_tip, network_tip, next_epoch } = networkInfo;
+
       const syncProgress =
         get(sync_progress, 'status') === 'ready'
           ? 100
@@ -1155,6 +1157,12 @@ export default class AdaApi {
         nextEpoch: {
           epochNumber: get(next_epoch, 'epoch_number', 0),
           epochStart: get(next_epoch, 'epoch_start_time', ''),
+        },
+        futureEpoch: {
+          epochNumber: get(next_epoch, 'epoch_number', 0) + 1,
+          epochStart: moment(get(next_epoch, 'epoch_start_time', 0))
+            .add(EPOCH_LENGTH_ITN, 'seconds')
+            .toISOString(),
         },
       };
     } catch (error) {

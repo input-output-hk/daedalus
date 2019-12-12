@@ -2203,13 +2203,13 @@
         "description": "Headline for the Delegation center.",
         "end": {
           "column": 3,
-          "line": 17
+          "line": 26
         },
         "file": "source/renderer/app/components/staking/delegation-center/DelegationCenterHeader.js",
         "id": "staking.delegationCenter.epoch",
         "start": {
           "column": 9,
-          "line": 13
+          "line": 22
         }
       },
       {
@@ -2217,13 +2217,13 @@
         "description": "Headline for the Delegation center.",
         "end": {
           "column": 3,
-          "line": 22
+          "line": 31
         },
         "file": "source/renderer/app/components/staking/delegation-center/DelegationCenterHeader.js",
         "id": "staking.delegationCenter.currentSlot",
         "start": {
           "column": 15,
-          "line": 18
+          "line": 27
         }
       },
       {
@@ -2231,13 +2231,13 @@
         "description": "Headline for the Delegation center.",
         "end": {
           "column": 3,
-          "line": 27
+          "line": 36
         },
         "file": "source/renderer/app/components/staking/delegation-center/DelegationCenterHeader.js",
         "id": "staking.delegationCenter.totalSlots",
         "start": {
           "column": 14,
-          "line": 23
+          "line": 32
         }
       },
       {
@@ -2245,13 +2245,13 @@
         "description": "Headline for the Delegation center.",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 41
         },
         "file": "source/renderer/app/components/staking/delegation-center/DelegationCenterHeader.js",
         "id": "staking.delegationCenter.headingLeft",
         "start": {
           "column": 15,
-          "line": 28
+          "line": 37
         }
       },
       {
@@ -2259,27 +2259,27 @@
         "description": "Headline for the Delegation center.",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 46
         },
         "file": "source/renderer/app/components/staking/delegation-center/DelegationCenterHeader.js",
         "id": "staking.delegationCenter.headingRight",
         "start": {
           "column": 16,
-          "line": 33
+          "line": 42
         }
       },
       {
-        "defaultMessage": "Changes to delegation preferences will take effect from the next epoch.",
+        "defaultMessage": "!!!Changes to delegation preferences will take effect after the next two Cardano epochs have completed. Epochs on the Incentivized Testnet last one day. Any changes made now will take effect in {timeUntilFutureEpoch}.",
         "description": "Delegation description for the Delegation center.",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 52
         },
         "file": "source/renderer/app/components/staking/delegation-center/DelegationCenterHeader.js",
         "id": "staking.delegationCenter.description",
         "start": {
           "column": 15,
-          "line": 38
+          "line": 47
         }
       }
     ],
@@ -2480,31 +2480,45 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Wallet Undelegated",
+        "defaultMessage": "!!!Wallet undelegated",
         "description": "Title for the \"Undelegate Result\" dialog.",
         "end": {
           "column": 3,
-          "line": 18
+          "line": 19
         },
         "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationResultDialog.js",
         "id": "staking.delegationCenter.undelegate.result.dialog.title",
         "start": {
           "column": 15,
-          "line": 14
+          "line": 15
         }
       },
       {
-        "defaultMessage": "!!!<p>The stake from your wallet <strong>{walletName}</strong> is no longer delegated and you will soon stop earning rewards for this wallet.</p><p>Your new delegation preferences are now posted on the blockchain <strong>and will take effect at the start of the next Cardano epoch in {timeUntilNextEpochStart}</strong>. For the rest of the current epoch, your previous delegation preferences are still active.</p>",
-        "description": "Description for the \"Undelegate Result\" dialog.",
+        "defaultMessage": "!!!The stake from your wallet <strong>{walletName}</strong> is no longer delegated and you will soon stop earning rewards for this wallet.",
+        "description": "Description 1 for the \"Undelegate Result\" dialog.",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 25
         },
         "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationResultDialog.js",
-        "id": "staking.delegationCenter.undelegate.result.dialog.description",
+        "id": "staking.delegationCenter.undelegate.result.dialog.description1",
         "start": {
-          "column": 15,
-          "line": 19
+          "column": 16,
+          "line": 20
+        }
+      },
+      {
+        "defaultMessage": "!!!Your new delegation preferences are now posted on the blockchain <strong>and will take effect after the next two Cardano epochs have completed in {timeUntilNextEpochStart}</strong>. During this time, your previous delegation preferences are still active.",
+        "description": "Description 2 for the \"Undelegate Result\" dialog.",
+        "end": {
+          "column": 3,
+          "line": 31
+        },
+        "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationResultDialog.js",
+        "id": "staking.delegationCenter.undelegate.result.dialog.description2",
+        "start": {
+          "column": 16,
+          "line": 26
         }
       }
     ],
@@ -3177,13 +3191,13 @@
         "description": "Title \"Wallet Delegated\" on the delegation setup \"success\" step dialog.",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 24
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsSuccessDialog.js",
         "id": "staking.delegationSetup.success.step.dialog.title",
         "start": {
           "column": 9,
-          "line": 18
+          "line": 19
         }
       },
       {
@@ -3191,27 +3205,27 @@
         "description": "Description \"line 1\" on the delegation setup \"success\" step dialog.",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 31
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsSuccessDialog.js",
         "id": "staking.delegationSetup.success.step.dialog.description.line1",
         "start": {
           "column": 20,
-          "line": 24
+          "line": 25
         }
       },
       {
-        "defaultMessage": "!!!Your new delegation preferences are now posted on the blockchain <span>and will take effect at the start of the next Cardano epoch in {timeUntilNextEpochStart}</span>. For the rest of the current epoch, your previous delegation preferences are still active.",
+        "defaultMessage": "!!!Your new delegation preferences are now posted on the blockchain <span>and will take effect after the next two Cardano epochs have completed in {timeUntilNextEpochStart}</span>. During this time, your previous delegation preferences are still active.",
         "description": "Description \"line 2\" on the delegation setup \"success\" step dialog.",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 38
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsSuccessDialog.js",
         "id": "staking.delegationSetup.success.step.dialog.description.line2",
         "start": {
           "column": 20,
-          "line": 31
+          "line": 32
         }
       },
       {
@@ -3219,13 +3233,13 @@
         "description": "Label for Close button on the delegation setup \"success\" step dialog.",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 44
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsSuccessDialog.js",
         "id": "staking.delegationSetup.success.step.dialog.closeButtonLabel",
         "start": {
           "column": 20,
-          "line": 38
+          "line": 39
         }
       }
     ],
@@ -8908,95 +8922,6 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!years",
-        "description": "Label for years value in duration.",
-        "end": {
-          "column": 3,
-          "line": 17
-        },
-        "file": "source/renderer/app/components/widgets/CountdownWidget.js",
-        "id": "global.duration.years",
-        "start": {
-          "column": 9,
-          "line": 13
-        }
-      },
-      {
-        "defaultMessage": "!!!months",
-        "description": "Label for months value in duration.",
-        "end": {
-          "column": 3,
-          "line": 22
-        },
-        "file": "source/renderer/app/components/widgets/CountdownWidget.js",
-        "id": "global.duration.months",
-        "start": {
-          "column": 10,
-          "line": 18
-        }
-      },
-      {
-        "defaultMessage": "!!!days",
-        "description": "Label for days value in duration.",
-        "end": {
-          "column": 3,
-          "line": 27
-        },
-        "file": "source/renderer/app/components/widgets/CountdownWidget.js",
-        "id": "global.duration.days",
-        "start": {
-          "column": 8,
-          "line": 23
-        }
-      },
-      {
-        "defaultMessage": "!!!hours",
-        "description": "Label for hours value in duration.",
-        "end": {
-          "column": 3,
-          "line": 32
-        },
-        "file": "source/renderer/app/components/widgets/CountdownWidget.js",
-        "id": "global.duration.hours",
-        "start": {
-          "column": 9,
-          "line": 28
-        }
-      },
-      {
-        "defaultMessage": "!!!minutes",
-        "description": "Label for minutes value in duration.",
-        "end": {
-          "column": 3,
-          "line": 37
-        },
-        "file": "source/renderer/app/components/widgets/CountdownWidget.js",
-        "id": "global.duration.minutes",
-        "start": {
-          "column": 11,
-          "line": 33
-        }
-      },
-      {
-        "defaultMessage": "!!!seconds",
-        "description": "Label for seconds value in duration.",
-        "end": {
-          "column": 3,
-          "line": 42
-        },
-        "file": "source/renderer/app/components/widgets/CountdownWidget.js",
-        "id": "global.duration.seconds",
-        "start": {
-          "column": 11,
-          "line": 38
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/widgets/CountdownWidget.json"
-  },
-  {
-    "descriptors": [
-      {
         "defaultMessage": "!!!change",
         "description": "Label \"change\" on inline editing inputs in inactive state.",
         "end": {
@@ -10077,6 +10002,90 @@
         "start": {
           "column": 19,
           "line": 218
+        }
+      },
+      {
+        "defaultMessage": "!!!years",
+        "description": "Label for years value in duration.",
+        "end": {
+          "column": 3,
+          "line": 227
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "global.duration.years",
+        "start": {
+          "column": 9,
+          "line": 223
+        }
+      },
+      {
+        "defaultMessage": "!!!months",
+        "description": "Label for months value in duration.",
+        "end": {
+          "column": 3,
+          "line": 232
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "global.duration.months",
+        "start": {
+          "column": 10,
+          "line": 228
+        }
+      },
+      {
+        "defaultMessage": "!!!days",
+        "description": "Label for days value in duration.",
+        "end": {
+          "column": 3,
+          "line": 237
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "global.duration.days",
+        "start": {
+          "column": 8,
+          "line": 233
+        }
+      },
+      {
+        "defaultMessage": "!!!hours",
+        "description": "Label for hours value in duration.",
+        "end": {
+          "column": 3,
+          "line": 242
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "global.duration.hours",
+        "start": {
+          "column": 9,
+          "line": 238
+        }
+      },
+      {
+        "defaultMessage": "!!!minutes",
+        "description": "Label for minutes value in duration.",
+        "end": {
+          "column": 3,
+          "line": 247
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "global.duration.minutes",
+        "start": {
+          "column": 11,
+          "line": 243
+        }
+      },
+      {
+        "defaultMessage": "!!!seconds",
+        "description": "Label for seconds value in duration.",
+        "end": {
+          "column": 3,
+          "line": 252
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "global.duration.seconds",
+        "start": {
+          "column": 11,
+          "line": 248
         }
       }
     ],
