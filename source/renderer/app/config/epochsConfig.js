@@ -10,7 +10,7 @@ export const SLOT_DURATION_MAINNET = 20; // unit: seconds
 export const SLOT_DURATION_STAGING = 20; // unit: seconds
 export const SLOT_DURATION_TESTNET = 20; // unit: seconds
 export const SLOT_DURATION_DEVELOPMENT = 7; // unit: seconds
-export const SLOTS_TOTAL = 21600;
+export const SLOTS_TOTAL = 43200;
 export const EPOCHS_TOTAL_NUMBER_LENGTH = 5;
 
 export const EPOCH_LENGTH_BASE_MAINNET = 2160;
