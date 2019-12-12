@@ -260,6 +260,9 @@
 
 .defaultColor {
   span {
-    background: var(--theme-nav-item-background-color-active);
+    background: var(
+      --theme-staking-stake-pool-tooltip-neutral-background-color
+    );
+    color: var(--theme-staking-stake-pool-tooltip-neutral-text-color);
   }
 }

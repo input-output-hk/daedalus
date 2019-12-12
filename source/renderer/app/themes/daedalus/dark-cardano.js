@@ -669,6 +669,9 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--theme-staking-progress-label-light': 'rgba(18, 19, 38, 1)',
     '--theme-staking-stake-pools-search-clear-button-background-color':
       'rgba(68, 91, 124, 0.05)',
+    '--theme-staking-stake-pool-tooltip-neutral-background-color':
+      'rgba(255, 255, 255, .1)',
+    '--theme-staking-stake-pool-tooltip-neutral-text-color': '#ffffff',
   },
   staking: {
     '--theme-staking-content-background-color': '#1e1f31',
