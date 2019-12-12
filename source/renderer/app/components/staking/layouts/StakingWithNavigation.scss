@@ -12,6 +12,8 @@
 }
 
 .page {
+  display: flex;
+  flex-direction: column;
   height: calc(100% - 50px);
   overflow-y: overlay;
   position: relative;

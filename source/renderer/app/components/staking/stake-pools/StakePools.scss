@@ -4,6 +4,17 @@
   @extend %regularText;
   margin: 0 20px 20px;
 
+  &.isLoading {
+    align-items: center;
+    display: flex;
+    flex: 1;
+    margin: auto;
+    p {
+      margin-bottom: 20px;
+      opacity: 0.5;
+    }
+  }
+
   h2 {
     color: var(--theme-staking-stake-pools-title-color);
     line-height: 1.38;
