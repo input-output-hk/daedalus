@@ -6,10 +6,12 @@ import { action } from '@storybook/addon-actions';
 import StakePools from '../../../source/renderer/app/components/staking/stake-pools/StakePools';
 import STAKE_POOLS from '../../../source/renderer/app/config/stakingStakePools.dummy.json';
 
-export const StakePoolsStory = (props: {
+type Props = {
   currentTheme: string,
   isLoading: boolean,
-}) => (
+};
+
+export const StakePoolsStory = (props: Props) => (
   <StakePools
     stakePoolsList={STAKE_POOLS.slice(
       0,
