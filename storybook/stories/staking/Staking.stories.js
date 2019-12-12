@@ -106,6 +106,14 @@ storiesOf('Decentralization | Staking', module)
     id: 'delegation-center',
   })
 
+  .add(
+    'Delegation Center - Loading',
+    props => <StakingDelegationCenterStory {...props} isLoading />,
+    {
+      id: 'delegation-center-loading',
+    }
+  )
+
   .add('Delegation Center - No Wallets', () => (
     <DelegationCenterNoWallets
       onGoToCreateWalletClick={action('onGoToCreateWalletClick')}
@@ -113,6 +121,14 @@ storiesOf('Decentralization | Staking', module)
   ))
 
   .add(pageNames['stake-pools'], StakePoolsStory, { id: 'stake-pools' })
+
+  .add(
+    `${pageNames['stake-pools']} - Loading`,
+    props => <StakePoolsStory {...props} isLoading />,
+    {
+      id: 'stake-pools-loading',
+    }
+  )
 
   .add(pageNames.rewards, StakingRewardsStory, { id: 'rewards' })
 
@@ -148,6 +164,15 @@ storiesOf('Decentralization | Staking', module)
   .add('Undelegate Confirmation', StakingUndelegateConfirmationStory, {
     id: 'undelegate-confirmation',
   })
+
+  .add(
+    'Undelegate Confirmation - unknownn stake pool',
+    props => <StakingUndelegateConfirmationStory {...props} unknownStakePool />,
+    {
+      id: 'undelegate-confirmation-unknown-pool',
+    }
+  )
+
   .add(
     'Undelegate Confirmation Result',
     StakingUndelegateConfirmationResultStory,
