@@ -3900,20 +3900,6 @@
         }
       },
       {
-        "defaultMessage": "!!!Profit margin:",
-        "description": "\"Profit margin\" for the Stake Pools Tooltip page.",
-        "end": {
-          "column": 3,
-          "line": 46
-        },
-        "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
-        "id": "staking.stakePools.tooltip.profitMargin",
-        "start": {
-          "column": 16,
-          "line": 42
-        }
-      },
-      {
         "defaultMessage": "!!!Performance:",
         "description": "\"Performance\" for the Stake Pools Tooltip page.",
         "end": {
@@ -3928,17 +3914,31 @@
         }
       },
       {
-        "defaultMessage": "!!!Retirement in {retirementFromNow}",
-        "description": "\"Retirement\" for the Stake Pools Tooltip page.",
+        "defaultMessage": "!!!Produced blocks:",
+        "description": "\"Produced blocks\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
           "line": 56
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
+        "id": "staking.stakePools.tooltip.producedBlocks",
+        "start": {
+          "column": 18,
+          "line": 52
+        }
+      },
+      {
+        "defaultMessage": "!!!Retirement in {retirementFromNow}",
+        "description": "\"Retirement\" for the Stake Pools Tooltip page.",
+        "end": {
+          "column": 3,
+          "line": 61
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
         "id": "staking.stakePools.tooltip.retirement",
         "start": {
           "column": 14,
-          "line": 52
+          "line": 57
         }
       },
       {
@@ -3946,13 +3946,13 @@
         "description": "\"pledgeAddressLabel\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 71
+          "line": 76
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
         "id": "staking.stakePools.tooltip.pledgeAddressLabel",
         "start": {
           "column": 22,
-          "line": 67
+          "line": 72
         }
       },
       {
@@ -3960,13 +3960,13 @@
         "description": "\"Delegate to this pool\" Button for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 77
+          "line": 82
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
         "id": "staking.stakePools.tooltip.delegateButton",
         "start": {
           "column": 18,
-          "line": 72
+          "line": 77
         }
       }
     ],

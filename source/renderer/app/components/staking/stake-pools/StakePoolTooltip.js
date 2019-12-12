@@ -14,7 +14,7 @@ import StakePool from '../../../domains/StakePool';
 import closeCross from '../../../assets/images/close-cross.inline.svg';
 import externalLinkIcon from '../../../assets/images/link-ic.inline.svg';
 import { getColorFromRange } from '../../../utils/colors';
-import { formattedWalletAmount } from '../../../utils/formatters';
+import { formattedWalletAmount, shortNumber } from '../../../utils/formatters';
 import { LOVELACES_PER_ADA } from '../../../config/numbersConfig';
 import { rangeMap } from '../../../utils/rangeMap';
 import {
@@ -39,15 +39,20 @@ const messages = defineMessages({
     defaultMessage: '!!!Controlled stake:',
     description: '"Controlled stake" for the Stake Pools Tooltip page.',
   },
-  profitMargin: {
-    id: 'staking.stakePools.tooltip.profitMargin',
-    defaultMessage: '!!!Profit margin:',
-    description: '"Profit margin" for the Stake Pools Tooltip page.',
-  },
+  // profitMargin: {
+  //   id: 'staking.stakePools.tooltip.profitMargin',
+  //   defaultMessage: '!!!Profit margin:',
+  //   description: '"Profit margin" for the Stake Pools Tooltip page.',
+  // },
   performance: {
     id: 'staking.stakePools.tooltip.performance',
     defaultMessage: '!!!Performance:',
     description: '"Performance" for the Stake Pools Tooltip page.',
+  },
+  producedBlocks: {
+    id: 'staking.stakePools.tooltip.producedBlocks',
+    defaultMessage: '!!!Produced blocks:',
+    description: '"Produced blocks" for the Stake Pools Tooltip page.',
   },
   retirement: {
     id: 'staking.stakePools.tooltip.retirement',
@@ -375,11 +380,9 @@ export default class StakePoolTooltip extends Component<Props, State> {
       homepage,
       ranking,
       controlledStake,
-      profitMargin,
       performance,
+      producedBlocks,
       retiring,
-      // cost,
-      // pledge,
       pledgeAddress,
     } = stakePool;
 
@@ -442,7 +445,7 @@ export default class StakePoolTooltip extends Component<Props, State> {
               </span>
             </dd>
             <dt>{intl.formatMessage(messages.controlledStake)}</dt>
-            <dd className={styles.controlledStake}>
+            <dd className={styles.defaultColor}>
               <span>
                 {formattedWalletAmount(
                   new BigNumber(controlledStake).dividedBy(LOVELACES_PER_ADA),
@@ -451,7 +454,7 @@ export default class StakePoolTooltip extends Component<Props, State> {
                 )}
               </span>
             </dd>
-            <dt>{intl.formatMessage(messages.profitMargin)}</dt>
+            {/* <dt>{intl.formatMessage(messages.profitMargin)}</dt>
             <dd className={styles.profitMargin}>
               <span
                 style={{
@@ -464,7 +467,7 @@ export default class StakePoolTooltip extends Component<Props, State> {
               >
                 {parseFloat(profitMargin.toFixed(2))}%
               </span>
-            </dd>
+            </dd> */}
             <dt>{intl.formatMessage(messages.performance)}</dt>
             <dd className={styles.performance}>
               <span
@@ -478,6 +481,10 @@ export default class StakePoolTooltip extends Component<Props, State> {
               >
                 {parseFloat(performance.toFixed(2))}%
               </span>
+            </dd>
+            <dt>{intl.formatMessage(messages.producedBlocks)}</dt>
+            <dd className={styles.defaultColor}>
+              <span>{shortNumber(producedBlocks)}</span>
             </dd>
             {/*
             <dt>{intl.formatMessage(messages.cost)}</dt>
