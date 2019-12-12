@@ -5,7 +5,8 @@ import SVGInline from 'react-svg-inline';
 import styles from './DelegationCenterHeader.scss';
 import delimeterIcon from '../../../assets/images/delimeter.inline.svg';
 import delimeterSlashIcon from '../../../assets/images/delimeter-slash.inline.svg';
-import { EPOCHS_TOTAL_NUMBER_LENGTH } from '../../../config/epochsConfig';
+
+const EPOCH_MAX_LENGTH = 5;
 
 export const with2Decimals = (value: number) => {
   const formattedValue = value.toString().match(/^-?\d+(?:\.\d{0,2})?/);
@@ -21,16 +22,15 @@ export const generateFieldPanel = (labels: any, values: any, index: number) => {
   const labelStr = labels[index];
   const valueStr = value.toString();
   let zeroValues = '';
-  const epochsMaxLength = EPOCHS_TOTAL_NUMBER_LENGTH;
   if (
     (index === 1 && valueStr.length < values[index + 1].toString().length) ||
-    (index === 0 && valueStr.length < epochsMaxLength)
+    (index === 0 && valueStr.length < EPOCH_MAX_LENGTH)
   ) {
     const zerosToAdd =
       index === 1
         ? parseInt(values[index + 1].toString().length, 10) -
           parseInt(valueStr.length, 10)
-        : parseInt(epochsMaxLength, 10) - parseInt(valueStr.length, 10);
+        : parseInt(EPOCH_MAX_LENGTH, 10) - parseInt(valueStr.length, 10);
     switch (zerosToAdd) {
       case 1:
         zeroValues = '0';
@@ -55,7 +55,7 @@ export const generateFieldPanel = (labels: any, values: any, index: number) => {
         <div className={styles.fieldLabel}>{labelStr}</div>
         <div className={styles.fieldValue}>
           {zeroValues && <span>{zeroValues}</span>}
-          {valueStr === '0' ? <span>{valueStr}</span> : valueStr}
+          {valueStr}
         </div>
       </div>
       {includeDotsDelimeter && (
