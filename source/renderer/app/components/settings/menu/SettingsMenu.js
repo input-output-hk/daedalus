@@ -19,8 +19,8 @@ const messages = defineMessages({
   },
   termsOfUse: {
     id: 'settings.menu.termsOfUse.link.label',
-    defaultMessage: '!!!Terms of use',
-    description: 'Label for the "Terms of use" link in the settings menu.',
+    defaultMessage: '!!!Terms of service',
+    description: 'Label for the "Terms of service" link in the settings menu.',
   },
   display: {
     id: 'settings.menu.display.link.label',
@@ -67,7 +67,7 @@ export default class SettingsMenu extends Component<Props> {
             label={intl.formatMessage(messages.termsOfUse)}
             onClick={() => onItemClick(ROUTES.SETTINGS.TERMS_OF_USE)}
             active={isActiveItem(ROUTES.SETTINGS.TERMS_OF_USE)}
-            className="termsOfUse"
+            className="termsOfService"
           />
           <SettingsMenuItem
             label={intl.formatMessage(messages.support)}

@@ -11,7 +11,7 @@ import SettingsMenu from '../../../../source/renderer/app/components/settings/me
 const pageNames = {
   '/settings/index': 'General',
   '/settings/display': 'Themes',
-  '/settings/terms-of-use': 'Terms of use',
+  '/settings/terms-of-service': 'Terms of service',
   '/settings/support': 'Support',
 };
 
