@@ -74,7 +74,7 @@ const wallets = [
     isLegacy: false,
     inactiveStakePercentage: 35,
     syncState: walletSyncedStateReady,
-    delegatedStakePoolId: STAKE_POOLS[1].id,
+    delegatedStakePoolId: '800',
     createdAt: new Date(),
     recoveryPhraseVerificationDate: new Date(),
     recoveryPhraseVerificationStatus:
@@ -105,8 +105,10 @@ const wallets = [
 
 export const StakingDelegationCenterStory = ({
   locale,
+  isLoading,
 }: {
   locale: string,
+  isLoading: boolean,
 }) => (
   <DelegationCenter
     wallets={wallets}
@@ -118,6 +120,7 @@ export const StakingDelegationCenterStory = ({
     numberOfStakePools={STAKE_POOLS.length}
     networkTip={networkTip}
     nextEpoch={nextEpoch}
+    fetchingStakePoolsFailed={isLoading}
     futureEpoch={futureEpoch}
     currentLocale={locale}
   />
