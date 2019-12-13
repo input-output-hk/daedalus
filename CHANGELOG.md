@@ -20,6 +20,7 @@ Changelog
 
 ### Fixes
 
+- Fixed the display of headlines on the "Network" splash screen ([PR 1770](https://github.com/input-output-hk/daedalus/pull/1770))
 - Fixed spending password error handling ([PR 1767](https://github.com/input-output-hk/daedalus/pull/1767))
 - Fixed an issue where "Balance" wallet notification wasn't offering an option to create a "Rewards" wallet in case none are available ([PR 1761](https://github.com/input-output-hk/daedalus/pull/1761))
 - Fixed the middle ellipsis for different addresses lengths ([PR 1736](https://github.com/input-output-hk/daedalus/pull/1736))
@@ -37,6 +38,8 @@ Changelog
 
 ### Chores
 
+- Updated `react-polymorph` to version `0.9.0-rc.26` ([PR 1772](https://github.com/input-output-hk/daedalus/pull/1772))
+- Updated wallet delegation / undelegation ([PR 1766](https://github.com/input-output-hk/daedalus/pull/1766))
 - Updated `webpack` package to version `4.39.1` ([PR 1769](https://github.com/input-output-hk/daedalus/pull/1769))
 - Improved "Delegration Center" epoch countdown to use epoch info from the Api ([PR 1751](https://github.com/input-output-hk/daedalus/pull/1751))
 - Updated `cardano-wallet` to revision `555b5e82` ([PR 1764](https://github.com/input-output-hk/daedalus/pull/1764))
