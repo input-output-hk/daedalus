@@ -37,12 +37,10 @@ export default class StakingStore extends Store {
   percentage: number = 14;
 
   setup() {
-    // Initial fetch
-    this.getStakePoolsData();
-    // Set fetch interval to 30 minutes
-    this.pollingStakePoolsInterval = setInterval(
+    // Set initial fetch interval to 1 second
+    this.refreshPooling = setInterval(
       this.getStakePoolsData,
-      STAKE_POOLS_INTERVAL
+      STAKE_POOLS_FAST_INTERVAL
     );
     const { staking } = this.actions;
     staking.goToStakingInfoPage.listen(this._goToStakingInfoPage);
@@ -234,19 +232,8 @@ export default class StakingStore extends Store {
   }
 
   @action getStakePoolsData = async () => {
-    const { stores } = this;
-    const { networkStatus, wallets } = stores;
-    const { isSynced, isConnected } = networkStatus;
-    const { _pollingBlocked } = wallets;
-
-    if (
-      (_pollingBlocked || !isSynced || !isConnected) &&
-      !this.refreshPooling
-    ) {
-      this._resetPolling(true);
-      return;
-    }
-
+    const { isSynced } = this.stores.networkStatus;
+    if (!isSynced) return;
     try {
       await this.stakePoolsRequest.execute().promise;
       if (this.refreshPooling) this._resetPolling(false);
