@@ -1469,6 +1469,7 @@ const _createStakePoolFromServerData = action(
     const {
       // MISSING DATA FROM THE API
       // IT IS CONTAINED IN THE DOCS:
+      // metadata,
       // MISSING DATA FROM THE API
       // NOT CONTAINED IN THE CURRENT API DOCS:
       // _cost: cost,
@@ -1481,7 +1482,7 @@ const _createStakePoolFromServerData = action(
     } = stakingStakePoolsMissingApiData[index];
     const {
       name,
-      description,
+      description = '',
       ticker,
       homepage,
       pledge_address: pledgeAddress,
