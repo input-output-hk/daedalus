@@ -12,11 +12,6 @@
     "pledge": "68",
     "pledgeAddress": "https://amira.net",
     "producedBlocks": 429856,
-    "metrics": {
-      "controlled_stake": 29384700000,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 99,
     "ranking": 1,
     "retiring": null,
@@ -35,11 +30,6 @@
     "pledge": "80",
     "pledgeAddress": "http://antonia.biz",
     "producedBlocks": 35,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 63,
     "ranking": 2,
     "retiring": null,
@@ -58,11 +48,6 @@
     "pledge": "66",
     "pledgeAddress": "https://duncan.net",
     "producedBlocks": 2,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 3,
     "ranking": 3,
     "retiring": null,
@@ -81,11 +66,6 @@
     "pledge": "60",
     "pledgeAddress": "https://elizabeth.com",
     "producedBlocks": 27,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 99,
     "ranking": 4,
     "retiring": null,
@@ -104,11 +84,6 @@
     "pledge": "41",
     "pledgeAddress": "http://tessie.org",
     "producedBlocks": 21,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 37,
     "ranking": 5,
     "retiring": null,
@@ -127,11 +102,6 @@
     "pledge": "24",
     "pledgeAddress": "http://cindy.info",
     "producedBlocks": 96,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 41,
     "ranking": 6,
     "retiring": null,
@@ -150,11 +120,6 @@
     "pledge": "25",
     "pledgeAddress": "http://florencio.net",
     "producedBlocks": 76,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 63,
     "ranking": 7,
     "retiring": null,
@@ -173,11 +138,6 @@
     "pledge": "46",
     "pledgeAddress": "http://mina.org",
     "producedBlocks": 76,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 89,
     "ranking": 8,
     "retiring": null,
@@ -196,11 +156,6 @@
     "pledge": "90",
     "pledgeAddress": "https://lenore.com",
     "producedBlocks": 86,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 52,
     "ranking": 9,
     "retiring": null,
@@ -219,11 +174,6 @@
     "pledge": "67",
     "pledgeAddress": "https://doris.org",
     "producedBlocks": 32,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 63,
     "ranking": 10,
     "retiring": null,
@@ -242,11 +192,6 @@
     "pledge": "40",
     "pledgeAddress": "http://heaven.net",
     "producedBlocks": 93,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 31,
     "ranking": 11,
     "retiring": null,
@@ -265,11 +210,6 @@
     "pledge": "98",
     "pledgeAddress": "http://marianne.net",
     "producedBlocks": 2,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 34,
     "ranking": 12,
     "retiring": null,
@@ -288,11 +228,6 @@
     "pledge": "41",
     "pledgeAddress": "https://hilario.biz",
     "producedBlocks": 48,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 17,
     "ranking": 13,
     "retiring": null,
@@ -311,11 +246,6 @@
     "pledge": "78",
     "pledgeAddress": "http://damian.net",
     "producedBlocks": 54,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 5,
     "ranking": 14,
     "retiring": null,
@@ -334,11 +264,6 @@
     "pledge": "95",
     "pledgeAddress": "http://maximilian.net",
     "producedBlocks": 61,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 25,
     "ranking": 15,
     "retiring": null,
@@ -357,11 +282,6 @@
     "pledge": "94",
     "pledgeAddress": "https://lorenza.net",
     "producedBlocks": 100,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 99,
     "ranking": 16,
     "retiring": null,
@@ -380,11 +300,6 @@
     "pledge": "54",
     "pledgeAddress": "http://layla.org",
     "producedBlocks": 80,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 89,
     "ranking": 17,
     "retiring": null,
@@ -403,11 +318,6 @@
     "pledge": "5",
     "pledgeAddress": "http://kaden.net",
     "producedBlocks": 95,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 31,
     "ranking": 18,
     "retiring": null,
@@ -426,11 +336,6 @@
     "pledge": "74",
     "pledgeAddress": "https://tyree.biz",
     "producedBlocks": 53,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 74,
     "ranking": 19,
     "retiring": null,
@@ -449,11 +354,6 @@
     "pledge": "98",
     "pledgeAddress": "https://kristofer.biz",
     "producedBlocks": 37,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 7,
     "ranking": 20,
     "retiring": null,
@@ -472,11 +372,6 @@
     "pledge": "44",
     "pledgeAddress": "https://effie.org",
     "producedBlocks": 51,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 61,
     "ranking": 21,
     "retiring": null,
@@ -495,11 +390,6 @@
     "pledge": "19",
     "pledgeAddress": "https://jackeline.com",
     "producedBlocks": 57,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 39,
     "ranking": 22,
     "retiring": null,
@@ -518,11 +408,6 @@
     "pledge": "92",
     "pledgeAddress": "https://delores.org",
     "producedBlocks": 95,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 94,
     "ranking": 23,
     "retiring": null,
@@ -541,11 +426,6 @@
     "pledge": "24",
     "pledgeAddress": "http://buck.net",
     "producedBlocks": 83,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 43,
     "ranking": 24,
     "retiring": null,
@@ -564,11 +444,6 @@
     "pledge": "16",
     "pledgeAddress": "http://dasia.biz",
     "producedBlocks": 61,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 62,
     "ranking": 25,
     "retiring": null,
@@ -587,11 +462,6 @@
     "pledge": "3",
     "pledgeAddress": "https://jeanie.info",
     "producedBlocks": 87,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 34,
     "ranking": 26,
     "retiring": null,
@@ -610,11 +480,6 @@
     "pledge": "21",
     "pledgeAddress": "https://dashawn.name",
     "producedBlocks": 97,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 46,
     "ranking": 27,
     "retiring": null,
@@ -633,11 +498,6 @@
     "pledge": "23",
     "pledgeAddress": "http://melissa.net",
     "producedBlocks": 92,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 90,
     "ranking": 28,
     "retiring": null,
@@ -656,11 +516,6 @@
     "pledge": "59",
     "pledgeAddress": "http://rory.biz",
     "producedBlocks": 99,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 99,
     "ranking": 29,
     "retiring": null,
@@ -679,11 +534,6 @@
     "pledge": "81",
     "pledgeAddress": "http://garnett.biz",
     "producedBlocks": 98,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 53,
     "ranking": 30,
     "retiring": null,
@@ -702,11 +552,6 @@
     "pledge": "32",
     "pledgeAddress": "http://tyrese.net",
     "producedBlocks": 90,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 10,
     "ranking": 31,
     "retiring": null,
@@ -725,11 +570,6 @@
     "pledge": "68",
     "pledgeAddress": "http://jeffery.org",
     "producedBlocks": 14,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 85,
     "ranking": 32,
     "retiring": null,
@@ -748,11 +588,6 @@
     "pledge": "10",
     "pledgeAddress": "http://nick.com",
     "producedBlocks": 50,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 74,
     "ranking": 33,
     "retiring": null,
@@ -771,11 +606,6 @@
     "pledge": "94",
     "pledgeAddress": "https://niko.name",
     "producedBlocks": 0,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 13,
     "ranking": 34,
     "retiring": null,
@@ -794,11 +624,6 @@
     "pledge": "23",
     "pledgeAddress": "https://elmore.net",
     "producedBlocks": 70,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 22,
     "ranking": 35,
     "retiring": null,
@@ -817,11 +642,6 @@
     "pledge": "28",
     "pledgeAddress": "https://rossie.com",
     "producedBlocks": 73,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 60,
     "ranking": 36,
     "retiring": null,
@@ -840,11 +660,6 @@
     "pledge": "16",
     "pledgeAddress": "http://tyshawn.com",
     "producedBlocks": 37,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 52,
     "ranking": 37,
     "retiring": null,
@@ -863,11 +678,6 @@
     "pledge": "99",
     "pledgeAddress": "http://jerrod.name",
     "producedBlocks": 73,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 42,
     "ranking": 38,
     "retiring": null,
@@ -886,11 +696,6 @@
     "pledge": "45",
     "pledgeAddress": "https://jarret.biz",
     "producedBlocks": 70,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 7,
     "ranking": 39,
     "retiring": null,
@@ -909,11 +714,6 @@
     "pledge": "86",
     "pledgeAddress": "https://ali.biz",
     "producedBlocks": 34,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 93,
     "ranking": 40,
     "retiring": null,
@@ -932,11 +732,6 @@
     "pledge": "53",
     "pledgeAddress": "https://clemmie.name",
     "producedBlocks": 69,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 54,
     "ranking": 41,
     "retiring": null,
@@ -955,11 +750,6 @@
     "pledge": "17",
     "pledgeAddress": "https://deja.org",
     "producedBlocks": 10,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 9,
     "ranking": 42,
     "retiring": null,
@@ -978,11 +768,6 @@
     "pledge": "90",
     "pledgeAddress": "https://blanca.biz",
     "producedBlocks": 61,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 84,
     "ranking": 43,
     "retiring": null,
@@ -1001,11 +786,6 @@
     "pledge": "87",
     "pledgeAddress": "http://anabel.net",
     "producedBlocks": 14,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 92,
     "ranking": 44,
     "retiring": null,
@@ -1024,11 +804,6 @@
     "pledge": "48",
     "pledgeAddress": "https://kip.info",
     "producedBlocks": 1,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 69,
     "ranking": 45,
     "retiring": null,
@@ -1047,11 +822,6 @@
     "pledge": "19",
     "pledgeAddress": "http://kaci.biz",
     "producedBlocks": 79,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 65,
     "ranking": 46,
     "retiring": null,
@@ -1070,11 +840,6 @@
     "pledge": "1",
     "pledgeAddress": "https://gerda.info",
     "producedBlocks": 60,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 78,
     "ranking": 47,
     "retiring": null,
@@ -1093,11 +858,6 @@
     "pledge": "82",
     "pledgeAddress": "http://clotilde.net",
     "producedBlocks": 70,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 94,
     "ranking": 48,
     "retiring": null,
@@ -1116,11 +876,6 @@
     "pledge": "82",
     "pledgeAddress": "https://haylee.info",
     "producedBlocks": 95,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 83,
     "ranking": 49,
     "retiring": null,
@@ -1139,11 +894,6 @@
     "pledge": "0",
     "pledgeAddress": "http://jerrell.com",
     "producedBlocks": 7,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 6,
     "ranking": 50,
     "retiring": null,
@@ -1162,11 +912,6 @@
     "pledge": "22",
     "pledgeAddress": "http://barney.biz",
     "producedBlocks": 54,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 67,
     "ranking": 51,
     "retiring": null,
@@ -1185,11 +930,6 @@
     "pledge": "97",
     "pledgeAddress": "http://armani.name",
     "producedBlocks": 78,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 88,
     "ranking": 52,
     "retiring": null,
@@ -1208,11 +948,6 @@
     "pledge": "96",
     "pledgeAddress": "http://kenyon.net",
     "producedBlocks": 73,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 100,
     "ranking": 53,
     "retiring": null,
@@ -1231,11 +966,6 @@
     "pledge": "84",
     "pledgeAddress": "https://bill.biz",
     "producedBlocks": 21,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 73,
     "ranking": 54,
     "retiring": null,
@@ -1254,11 +984,6 @@
     "pledge": "24",
     "pledgeAddress": "http://river.net",
     "producedBlocks": 49,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 96,
     "ranking": 55,
     "retiring": null,
@@ -1277,11 +1002,6 @@
     "pledge": "50",
     "pledgeAddress": "http://roger.org",
     "producedBlocks": 89,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 86,
     "ranking": 56,
     "retiring": null,
@@ -1300,11 +1020,6 @@
     "pledge": "31",
     "pledgeAddress": "https://sedrick.com",
     "producedBlocks": 48,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 83,
     "ranking": 57,
     "retiring": null,
@@ -1323,11 +1038,6 @@
     "pledge": "86",
     "pledgeAddress": "https://jabari.info",
     "producedBlocks": 74,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 60,
     "ranking": 58,
     "retiring": null,
@@ -1346,11 +1056,6 @@
     "pledge": "17",
     "pledgeAddress": "http://brennan.biz",
     "producedBlocks": 57,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 11,
     "ranking": 59,
     "retiring": null,
@@ -1369,11 +1074,6 @@
     "pledge": "86",
     "pledgeAddress": "https://raymundo.org",
     "producedBlocks": 71,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 94,
     "ranking": 60,
     "retiring": null,
@@ -1392,11 +1092,6 @@
     "pledge": "95",
     "pledgeAddress": "http://sandra.net",
     "producedBlocks": 0,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 2,
     "ranking": 61,
     "retiring": null,
@@ -1415,11 +1110,6 @@
     "pledge": "90",
     "pledgeAddress": "http://clifton.name",
     "producedBlocks": 84,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 78,
     "ranking": 62,
     "retiring": null,
@@ -1438,11 +1128,6 @@
     "pledge": "43",
     "pledgeAddress": "https://ezequiel.name",
     "producedBlocks": 21,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 36,
     "ranking": 63,
     "retiring": null,
@@ -1461,11 +1146,6 @@
     "pledge": "54",
     "pledgeAddress": "http://anika.org",
     "producedBlocks": 39,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 46,
     "ranking": 64,
     "retiring": null,
@@ -1484,11 +1164,6 @@
     "pledge": "84",
     "pledgeAddress": "http://jovani.name",
     "producedBlocks": 29,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 22,
     "ranking": 65,
     "retiring": null,
@@ -1507,11 +1182,6 @@
     "pledge": "83",
     "pledgeAddress": "https://frederic.com",
     "producedBlocks": 20,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 63,
     "ranking": 66,
     "retiring": null,
@@ -1530,11 +1200,6 @@
     "pledge": "1",
     "pledgeAddress": "http://geovanni.info",
     "producedBlocks": 79,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 73,
     "ranking": 67,
     "retiring": null,
@@ -1553,11 +1218,6 @@
     "pledge": "97",
     "pledgeAddress": "http://alvena.com",
     "producedBlocks": 5,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 95,
     "ranking": 68,
     "retiring": null,
@@ -1576,11 +1236,6 @@
     "pledge": "31",
     "pledgeAddress": "https://bradley.org",
     "producedBlocks": 14,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 63,
     "ranking": 69,
     "retiring": null,
@@ -1599,11 +1254,6 @@
     "pledge": "88",
     "pledgeAddress": "https://gust.info",
     "producedBlocks": 43,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 63,
     "ranking": 70,
     "retiring": null,
@@ -1622,11 +1272,6 @@
     "pledge": "82",
     "pledgeAddress": "http://marcus.info",
     "producedBlocks": 77,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 36,
     "ranking": 71,
     "retiring": null,
@@ -1645,11 +1290,6 @@
     "pledge": "61",
     "pledgeAddress": "http://ricky.info",
     "producedBlocks": 12,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 45,
     "ranking": 72,
     "retiring": null,
@@ -1668,11 +1308,6 @@
     "pledge": "54",
     "pledgeAddress": "https://dena.name",
     "producedBlocks": 29,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 69,
     "ranking": 73,
     "retiring": null,
@@ -1691,11 +1326,6 @@
     "pledge": "16",
     "pledgeAddress": "https://annamae.biz",
     "producedBlocks": 77,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 51,
     "ranking": 74,
     "retiring": null,
@@ -1714,11 +1344,6 @@
     "pledge": "2",
     "pledgeAddress": "http://kaylee.org",
     "producedBlocks": 8,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 4,
     "ranking": 75,
     "retiring": null,
@@ -1737,11 +1362,6 @@
     "pledge": "73",
     "pledgeAddress": "https://reyes.info",
     "producedBlocks": 8,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 70,
     "ranking": 76,
     "retiring": null,
@@ -1760,11 +1380,6 @@
     "pledge": "32",
     "pledgeAddress": "http://devon.org",
     "producedBlocks": 94,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 22,
     "ranking": 77,
     "retiring": null,
@@ -1783,11 +1398,6 @@
     "pledge": "81",
     "pledgeAddress": "https://ladarius.name",
     "producedBlocks": 40,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 46,
     "ranking": 78,
     "retiring": null,
@@ -1806,11 +1416,6 @@
     "pledge": "11",
     "pledgeAddress": "https://alejandrin.name",
     "producedBlocks": 54,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 86,
     "ranking": 79,
     "retiring": null,
@@ -1829,11 +1434,6 @@
     "pledge": "9",
     "pledgeAddress": "https://dora.org",
     "producedBlocks": 100,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 98,
     "ranking": 80,
     "retiring": null,
@@ -1852,11 +1452,6 @@
     "pledge": "25",
     "pledgeAddress": "https://noble.biz",
     "producedBlocks": 52,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 3,
     "ranking": 81,
     "retiring": null,
@@ -1875,11 +1470,6 @@
     "pledge": "11",
     "pledgeAddress": "https://kaitlin.biz",
     "producedBlocks": 85,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 6,
     "ranking": 82,
     "retiring": null,
@@ -1898,11 +1488,6 @@
     "pledge": "1",
     "pledgeAddress": "http://lonie.net",
     "producedBlocks": 83,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 27,
     "ranking": 83,
     "retiring": null,
@@ -1921,11 +1506,6 @@
     "pledge": "76",
     "pledgeAddress": "https://justus.biz",
     "producedBlocks": 88,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 65,
     "ranking": 84,
     "retiring": null,
@@ -1944,11 +1524,6 @@
     "pledge": "82",
     "pledgeAddress": "http://boris.biz",
     "producedBlocks": 95,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 41,
     "ranking": 85,
     "retiring": null,
@@ -1967,11 +1542,6 @@
     "pledge": "37",
     "pledgeAddress": "https://amy.biz",
     "producedBlocks": 51,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 19,
     "ranking": 86,
     "retiring": null,
@@ -1990,11 +1560,6 @@
     "pledge": "19",
     "pledgeAddress": "https://suzanne.biz",
     "producedBlocks": 44,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 17,
     "ranking": 87,
     "retiring": null,
@@ -2013,11 +1578,6 @@
     "pledge": "44",
     "pledgeAddress": "https://xzavier.name",
     "producedBlocks": 90,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 10,
     "ranking": 88,
     "retiring": null,
@@ -2036,11 +1596,6 @@
     "pledge": "8",
     "pledgeAddress": "https://virginia.net",
     "producedBlocks": 61,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 56,
     "ranking": 89,
     "retiring": null,
@@ -2059,11 +1614,6 @@
     "pledge": "12",
     "pledgeAddress": "http://torey.net",
     "producedBlocks": 11,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 91,
     "ranking": 90,
     "retiring": null,
@@ -2082,11 +1632,6 @@
     "pledge": "80",
     "pledgeAddress": "http://zula.net",
     "producedBlocks": 5,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 40,
     "ranking": 91,
     "retiring": null,
@@ -2105,11 +1650,6 @@
     "pledge": "86",
     "pledgeAddress": "http://maci.name",
     "producedBlocks": 44,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 22,
     "ranking": 92,
     "retiring": null,
@@ -2128,11 +1668,6 @@
     "pledge": "6",
     "pledgeAddress": "http://giovanni.net",
     "producedBlocks": 13,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 66,
     "ranking": 93,
     "retiring": null,
@@ -2151,11 +1686,6 @@
     "pledge": "7",
     "pledgeAddress": "https://marley.org",
     "producedBlocks": 28,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 38,
     "ranking": 94,
     "retiring": null,
@@ -2174,11 +1704,6 @@
     "pledge": "81",
     "pledgeAddress": "https://franco.org",
     "producedBlocks": 96,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 22,
     "ranking": 95,
     "retiring": null,
@@ -2197,11 +1722,6 @@
     "pledge": "95",
     "pledgeAddress": "http://kianna.info",
     "producedBlocks": 7,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 20,
     "ranking": 96,
     "retiring": null,
@@ -2220,11 +1740,6 @@
     "pledge": "52",
     "pledgeAddress": "https://aliza.net",
     "producedBlocks": 55,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 76,
     "ranking": 97,
     "retiring": null,
@@ -2243,11 +1758,6 @@
     "pledge": "46",
     "pledgeAddress": "https://bertram.biz",
     "producedBlocks": 44,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 88,
     "ranking": 98,
     "retiring": null,
@@ -2266,11 +1776,6 @@
     "pledge": "84",
     "pledgeAddress": "http://dejuan.name",
     "producedBlocks": 5,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 24,
     "ranking": 99,
     "retiring": null,
@@ -2289,11 +1794,6 @@
     "pledge": "23",
     "pledgeAddress": "https://joanny.com",
     "producedBlocks": 99,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 93,
     "ranking": 100,
     "retiring": null,
@@ -2312,11 +1812,6 @@
     "pledge": "81",
     "pledgeAddress": "http://wyatt.net",
     "producedBlocks": 11,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 47,
     "ranking": 101,
     "retiring": null,
@@ -2335,11 +1830,6 @@
     "pledge": "9",
     "pledgeAddress": "http://selmer.biz",
     "producedBlocks": 28,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 22,
     "ranking": 102,
     "retiring": null,
@@ -2358,11 +1848,6 @@
     "pledge": "26",
     "pledgeAddress": "https://alaina.biz",
     "producedBlocks": 9,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 70,
     "ranking": 103,
     "retiring": null,
@@ -2381,11 +1866,6 @@
     "pledge": "60",
     "pledgeAddress": "http://tyrese.org",
     "producedBlocks": 25,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 40,
     "ranking": 104,
     "retiring": null,
@@ -2404,11 +1884,6 @@
     "pledge": "98",
     "pledgeAddress": "https://irma.net",
     "producedBlocks": 74,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 63,
     "ranking": 105,
     "retiring": null,
@@ -2427,11 +1902,6 @@
     "pledge": "17",
     "pledgeAddress": "https://marilie.net",
     "producedBlocks": 54,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 16,
     "ranking": 106,
     "retiring": null,
@@ -2450,11 +1920,6 @@
     "pledge": "1",
     "pledgeAddress": "https://violette.net",
     "producedBlocks": 59,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 39,
     "ranking": 107,
     "retiring": null,
@@ -2473,11 +1938,6 @@
     "pledge": "74",
     "pledgeAddress": "https://emelie.net",
     "producedBlocks": 30,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 95,
     "ranking": 108,
     "retiring": null,
@@ -2496,11 +1956,6 @@
     "pledge": "40",
     "pledgeAddress": "http://owen.org",
     "producedBlocks": 40,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 25,
     "ranking": 109,
     "retiring": null,
@@ -2519,11 +1974,6 @@
     "pledge": "98",
     "pledgeAddress": "https://nannie.info",
     "producedBlocks": 57,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 12,
     "ranking": 110,
     "retiring": null,
@@ -2542,11 +1992,6 @@
     "pledge": "11",
     "pledgeAddress": "https://jabari.net",
     "producedBlocks": 92,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 72,
     "ranking": 111,
     "retiring": null,
@@ -2565,11 +2010,6 @@
     "pledge": "91",
     "pledgeAddress": "http://martin.org",
     "producedBlocks": 76,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 80,
     "ranking": 112,
     "retiring": null,
@@ -2588,11 +2028,6 @@
     "pledge": "35",
     "pledgeAddress": "http://brady.org",
     "producedBlocks": 46,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 12,
     "ranking": 113,
     "retiring": null,
@@ -2611,11 +2046,6 @@
     "pledge": "60",
     "pledgeAddress": "http://romaine.org",
     "producedBlocks": 0,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 92,
     "ranking": 114,
     "retiring": null,
@@ -2634,11 +2064,6 @@
     "pledge": "73",
     "pledgeAddress": "https://alford.name",
     "producedBlocks": 92,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 8,
     "ranking": 115,
     "retiring": null,
@@ -2657,11 +2082,6 @@
     "pledge": "17",
     "pledgeAddress": "https://justina.info",
     "producedBlocks": 37,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 7,
     "ranking": 116,
     "retiring": null,
@@ -2680,11 +2100,6 @@
     "pledge": "90",
     "pledgeAddress": "http://charity.info",
     "producedBlocks": 64,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 40,
     "ranking": 117,
     "retiring": null,
@@ -2703,11 +2118,6 @@
     "pledge": "94",
     "pledgeAddress": "http://florida.org",
     "producedBlocks": 93,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 6,
     "ranking": 118,
     "retiring": null,
@@ -2726,11 +2136,6 @@
     "pledge": "30",
     "pledgeAddress": "http://brant.net",
     "producedBlocks": 84,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 58,
     "ranking": 119,
     "retiring": null,
@@ -2749,11 +2154,6 @@
     "pledge": "86",
     "pledgeAddress": "http://angelica.net",
     "producedBlocks": 35,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 43,
     "ranking": 120,
     "retiring": null,
@@ -2772,11 +2172,6 @@
     "pledge": "16",
     "pledgeAddress": "http://bernardo.net",
     "producedBlocks": 10,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 79,
     "ranking": 121,
     "retiring": null,
@@ -2795,11 +2190,6 @@
     "pledge": "62",
     "pledgeAddress": "https://roman.com",
     "producedBlocks": 34,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 10,
     "ranking": 122,
     "retiring": null,
@@ -2818,11 +2208,6 @@
     "pledge": "38",
     "pledgeAddress": "https://peter.com",
     "producedBlocks": 69,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 26,
     "ranking": 123,
     "retiring": null,
@@ -2841,11 +2226,6 @@
     "pledge": "51",
     "pledgeAddress": "https://queenie.org",
     "producedBlocks": 61,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 80,
     "ranking": 124,
     "retiring": null,
@@ -2864,11 +2244,6 @@
     "pledge": "63",
     "pledgeAddress": "https://preston.net",
     "producedBlocks": 21,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 96,
     "ranking": 125,
     "retiring": null,
@@ -2887,11 +2262,6 @@
     "pledge": "87",
     "pledgeAddress": "https://maryse.org",
     "producedBlocks": 33,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 73,
     "ranking": 126,
     "retiring": null,
@@ -2910,11 +2280,6 @@
     "pledge": "17",
     "pledgeAddress": "http://jordy.com",
     "producedBlocks": 48,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 59,
     "ranking": 127,
     "retiring": null,
@@ -2933,11 +2298,6 @@
     "pledge": "67",
     "pledgeAddress": "https://gust.name",
     "producedBlocks": 3,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 83,
     "ranking": 128,
     "retiring": null,
@@ -2956,11 +2316,6 @@
     "pledge": "14",
     "pledgeAddress": "https://gaetano.net",
     "producedBlocks": 35,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 25,
     "ranking": 129,
     "retiring": null,
@@ -2979,11 +2334,6 @@
     "pledge": "10",
     "pledgeAddress": "https://montana.info",
     "producedBlocks": 25,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 7,
     "ranking": 130,
     "retiring": null,
@@ -3002,11 +2352,6 @@
     "pledge": "28",
     "pledgeAddress": "http://keyshawn.org",
     "producedBlocks": 77,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 29,
     "ranking": 131,
     "retiring": null,
@@ -3025,11 +2370,6 @@
     "pledge": "40",
     "pledgeAddress": "http://camron.name",
     "producedBlocks": 13,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 6,
     "ranking": 132,
     "retiring": null,
@@ -3048,11 +2388,6 @@
     "pledge": "20",
     "pledgeAddress": "https://jany.net",
     "producedBlocks": 25,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 36,
     "ranking": 133,
     "retiring": null,
@@ -3071,11 +2406,6 @@
     "pledge": "56",
     "pledgeAddress": "http://troy.com",
     "producedBlocks": 88,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 27,
     "ranking": 134,
     "retiring": null,
@@ -3094,11 +2424,6 @@
     "pledge": "65",
     "pledgeAddress": "https://wallace.net",
     "producedBlocks": 27,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 50,
     "ranking": 135,
     "retiring": null,
@@ -3117,11 +2442,6 @@
     "pledge": "71",
     "pledgeAddress": "https://ethelyn.com",
     "producedBlocks": 10,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 27,
     "ranking": 136,
     "retiring": null,
@@ -3140,11 +2460,6 @@
     "pledge": "59",
     "pledgeAddress": "http://jordy.name",
     "producedBlocks": 36,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 48,
     "ranking": 137,
     "retiring": null,
@@ -3163,11 +2478,6 @@
     "pledge": "99",
     "pledgeAddress": "http://lavinia.biz",
     "producedBlocks": 86,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 53,
     "ranking": 138,
     "retiring": null,
@@ -3186,11 +2496,6 @@
     "pledge": "47",
     "pledgeAddress": "https://wayne.biz",
     "producedBlocks": 32,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 5,
     "ranking": 139,
     "retiring": null,
@@ -3209,11 +2514,6 @@
     "pledge": "42",
     "pledgeAddress": "https://solon.info",
     "producedBlocks": 32,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 48,
     "ranking": 140,
     "retiring": null,
@@ -3232,11 +2532,6 @@
     "pledge": "15",
     "pledgeAddress": "http://ida.org",
     "producedBlocks": 53,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 3,
     "ranking": 141,
     "retiring": null,
@@ -3255,11 +2550,6 @@
     "pledge": "55",
     "pledgeAddress": "http://minnie.biz",
     "producedBlocks": 28,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 28,
     "ranking": 142,
     "retiring": null,
@@ -3278,11 +2568,6 @@
     "pledge": "50",
     "pledgeAddress": "http://cletus.info",
     "producedBlocks": 31,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 97,
     "ranking": 143,
     "retiring": null,
@@ -3301,11 +2586,6 @@
     "pledge": "47",
     "pledgeAddress": "https://hellen.info",
     "producedBlocks": 82,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 89,
     "ranking": 144,
     "retiring": null,
@@ -3324,11 +2604,6 @@
     "pledge": "52",
     "pledgeAddress": "https://leopold.org",
     "producedBlocks": 87,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 55,
     "ranking": 145,
     "retiring": null,
@@ -3347,11 +2622,6 @@
     "pledge": "45",
     "pledgeAddress": "https://colt.name",
     "producedBlocks": 82,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 69,
     "ranking": 146,
     "retiring": null,
@@ -3370,11 +2640,6 @@
     "pledge": "53",
     "pledgeAddress": "https://kiel.org",
     "producedBlocks": 20,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 33,
     "ranking": 147,
     "retiring": null,
@@ -3393,11 +2658,6 @@
     "pledge": "95",
     "pledgeAddress": "https://maida.com",
     "producedBlocks": 17,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 86,
     "ranking": 148,
     "retiring": null,
@@ -3416,11 +2676,6 @@
     "pledge": "80",
     "pledgeAddress": "http://emanuel.name",
     "producedBlocks": 55,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 31,
     "ranking": 149,
     "retiring": null,
@@ -3439,11 +2694,6 @@
     "pledge": "25",
     "pledgeAddress": "https://kiara.name",
     "producedBlocks": 35,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 45,
     "ranking": 150,
     "retiring": null,
@@ -3462,11 +2712,6 @@
     "pledge": "32",
     "pledgeAddress": "https://easter.com",
     "producedBlocks": 23,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 36,
     "ranking": 151,
     "retiring": null,
@@ -3485,11 +2730,6 @@
     "pledge": "88",
     "pledgeAddress": "https://donnell.info",
     "producedBlocks": 56,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 94,
     "ranking": 152,
     "retiring": null,
@@ -3508,11 +2748,6 @@
     "pledge": "71",
     "pledgeAddress": "https://myrl.biz",
     "producedBlocks": 58,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 7,
     "ranking": 153,
     "retiring": null,
@@ -3531,11 +2766,6 @@
     "pledge": "55",
     "pledgeAddress": "https://clara.net",
     "producedBlocks": 13,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 82,
     "ranking": 154,
     "retiring": null,
@@ -3554,11 +2784,6 @@
     "pledge": "52",
     "pledgeAddress": "https://garret.info",
     "producedBlocks": 49,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 42,
     "ranking": 155,
     "retiring": null,
@@ -3577,11 +2802,6 @@
     "pledge": "83",
     "pledgeAddress": "https://antone.name",
     "producedBlocks": 35,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 85,
     "ranking": 156,
     "retiring": null,
@@ -3600,11 +2820,6 @@
     "pledge": "87",
     "pledgeAddress": "https://maryam.info",
     "producedBlocks": 85,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 32,
     "ranking": 157,
     "retiring": null,
@@ -3623,11 +2838,6 @@
     "pledge": "71",
     "pledgeAddress": "http://chance.com",
     "producedBlocks": 85,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 62,
     "ranking": 158,
     "retiring": null,
@@ -3646,11 +2856,6 @@
     "pledge": "66",
     "pledgeAddress": "http://amya.biz",
     "producedBlocks": 71,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 36,
     "ranking": 159,
     "retiring": null,
@@ -3669,11 +2874,6 @@
     "pledge": "57",
     "pledgeAddress": "https://hardy.com",
     "producedBlocks": 80,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 58,
     "ranking": 160,
     "retiring": null,
@@ -3692,11 +2892,6 @@
     "pledge": "84",
     "pledgeAddress": "https://kelvin.net",
     "producedBlocks": 7,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 92,
     "ranking": 161,
     "retiring": null,
@@ -3715,11 +2910,6 @@
     "pledge": "34",
     "pledgeAddress": "https://drew.com",
     "producedBlocks": 76,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 79,
     "ranking": 162,
     "retiring": null,
@@ -3738,11 +2928,6 @@
     "pledge": "66",
     "pledgeAddress": "http://sylvia.name",
     "producedBlocks": 23,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 50,
     "ranking": 163,
     "retiring": null,
@@ -3761,11 +2946,6 @@
     "pledge": "97",
     "pledgeAddress": "https://marie.com",
     "producedBlocks": 68,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 4,
     "ranking": 164,
     "retiring": null,
@@ -3784,11 +2964,6 @@
     "pledge": "62",
     "pledgeAddress": "http://chaim.name",
     "producedBlocks": 33,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 43,
     "ranking": 165,
     "retiring": null,
@@ -3807,11 +2982,6 @@
     "pledge": "72",
     "pledgeAddress": "http://bridget.net",
     "producedBlocks": 18,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 8,
     "ranking": 166,
     "retiring": null,
@@ -3830,11 +3000,6 @@
     "pledge": "37",
     "pledgeAddress": "http://conrad.com",
     "producedBlocks": 91,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 46,
     "ranking": 167,
     "retiring": null,
@@ -3853,11 +3018,6 @@
     "pledge": "34",
     "pledgeAddress": "http://hassan.org",
     "producedBlocks": 40,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 63,
     "ranking": 168,
     "retiring": null,
@@ -3876,11 +3036,6 @@
     "pledge": "90",
     "pledgeAddress": "https://morgan.name",
     "producedBlocks": 50,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 63,
     "ranking": 169,
     "retiring": null,
@@ -3899,11 +3054,6 @@
     "pledge": "79",
     "pledgeAddress": "https://rogelio.biz",
     "producedBlocks": 89,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 55,
     "ranking": 170,
     "retiring": null,
@@ -3922,11 +3072,6 @@
     "pledge": "44",
     "pledgeAddress": "http://franco.biz",
     "producedBlocks": 51,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 93,
     "ranking": 171,
     "retiring": null,
@@ -3945,11 +3090,6 @@
     "pledge": "28",
     "pledgeAddress": "http://alessandra.com",
     "producedBlocks": 14,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 54,
     "ranking": 172,
     "retiring": null,
@@ -3968,11 +3108,6 @@
     "pledge": "42",
     "pledgeAddress": "https://frank.net",
     "producedBlocks": 83,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 88,
     "ranking": 173,
     "retiring": null,
@@ -3991,11 +3126,6 @@
     "pledge": "10",
     "pledgeAddress": "https://horace.biz",
     "producedBlocks": 26,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 17,
     "ranking": 174,
     "retiring": null,
@@ -4014,11 +3144,6 @@
     "pledge": "49",
     "pledgeAddress": "https://chauncey.com",
     "producedBlocks": 82,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 92,
     "ranking": 175,
     "retiring": null,
@@ -4037,11 +3162,6 @@
     "pledge": "88",
     "pledgeAddress": "https://leo.info",
     "producedBlocks": 47,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 77,
     "ranking": 176,
     "retiring": null,
@@ -4060,11 +3180,6 @@
     "pledge": "14",
     "pledgeAddress": "http://kayli.biz",
     "producedBlocks": 88,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 72,
     "ranking": 177,
     "retiring": null,
@@ -4083,11 +3198,6 @@
     "pledge": "66",
     "pledgeAddress": "https://anastacio.com",
     "producedBlocks": 73,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 27,
     "ranking": 178,
     "retiring": null,
@@ -4106,11 +3216,6 @@
     "pledge": "2",
     "pledgeAddress": "https://mohammad.com",
     "producedBlocks": 84,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 91,
     "ranking": 179,
     "retiring": null,
@@ -4129,11 +3234,6 @@
     "pledge": "45",
     "pledgeAddress": "https://heath.net",
     "producedBlocks": 71,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 95,
     "ranking": 180,
     "retiring": null,
@@ -4152,11 +3252,6 @@
     "pledge": "55",
     "pledgeAddress": "https://luella.net",
     "producedBlocks": 11,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 6,
     "ranking": 181,
     "retiring": null,
@@ -4175,11 +3270,6 @@
     "pledge": "32",
     "pledgeAddress": "https://heloise.biz",
     "producedBlocks": 36,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 57,
     "ranking": 182,
     "retiring": null,
@@ -4198,11 +3288,6 @@
     "pledge": "67",
     "pledgeAddress": "https://shirley.com",
     "producedBlocks": 57,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 21,
     "ranking": 183,
     "retiring": null,
@@ -4221,11 +3306,6 @@
     "pledge": "75",
     "pledgeAddress": "http://reagan.org",
     "producedBlocks": 73,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 27,
     "ranking": 184,
     "retiring": null,
@@ -4244,11 +3324,6 @@
     "pledge": "90",
     "pledgeAddress": "http://fay.org",
     "producedBlocks": 99,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 54,
     "ranking": 185,
     "retiring": null,
@@ -4267,11 +3342,6 @@
     "pledge": "8",
     "pledgeAddress": "http://nettie.biz",
     "producedBlocks": 90,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 80,
     "ranking": 186,
     "retiring": null,
@@ -4290,11 +3360,6 @@
     "pledge": "29",
     "pledgeAddress": "https://matilde.com",
     "producedBlocks": 46,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 26,
     "ranking": 187,
     "retiring": null,
@@ -4313,11 +3378,6 @@
     "pledge": "38",
     "pledgeAddress": "https://lillie.net",
     "producedBlocks": 34,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 98,
     "ranking": 188,
     "retiring": null,
@@ -4336,11 +3396,6 @@
     "pledge": "41",
     "pledgeAddress": "http://deon.com",
     "producedBlocks": 25,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 5,
     "ranking": 189,
     "retiring": null,
@@ -4359,11 +3414,6 @@
     "pledge": "47",
     "pledgeAddress": "https://earline.com",
     "producedBlocks": 10,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 6,
     "ranking": 190,
     "retiring": null,
@@ -4382,11 +3432,6 @@
     "pledge": "96",
     "pledgeAddress": "http://hermina.info",
     "producedBlocks": 57,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 19,
     "ranking": 191,
     "retiring": null,
@@ -4405,11 +3450,6 @@
     "pledge": "47",
     "pledgeAddress": "https://camden.net",
     "producedBlocks": 41,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 85,
     "ranking": 192,
     "retiring": null,
@@ -4428,11 +3468,6 @@
     "pledge": "70",
     "pledgeAddress": "http://shaina.net",
     "producedBlocks": 50,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 74,
     "ranking": 193,
     "retiring": null,
@@ -4451,11 +3486,6 @@
     "pledge": "51",
     "pledgeAddress": "http://nelle.net",
     "producedBlocks": 66,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 33,
     "ranking": 194,
     "retiring": null,
@@ -4474,11 +3504,6 @@
     "pledge": "50",
     "pledgeAddress": "https://novella.net",
     "producedBlocks": 97,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 8,
     "ranking": 195,
     "retiring": null,
@@ -4497,11 +3522,6 @@
     "pledge": "43",
     "pledgeAddress": "http://yolanda.biz",
     "producedBlocks": 21,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 68,
     "ranking": 196,
     "retiring": null,
@@ -4520,11 +3540,6 @@
     "pledge": "45",
     "pledgeAddress": "http://eliane.com",
     "producedBlocks": 45,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 4,
     "ranking": 197,
     "retiring": null,
@@ -4543,11 +3558,6 @@
     "pledge": "52",
     "pledgeAddress": "http://jaqueline.com",
     "producedBlocks": 66,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 84,
     "ranking": 198,
     "retiring": null,
@@ -4566,11 +3576,6 @@
     "pledge": "72",
     "pledgeAddress": "https://alessandra.biz",
     "producedBlocks": 26,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 58,
     "ranking": 199,
     "retiring": null,
@@ -4589,11 +3594,6 @@
     "pledge": "55",
     "pledgeAddress": "http://lonzo.com",
     "producedBlocks": 20,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 97,
     "ranking": 200,
     "retiring": null,
@@ -4612,11 +3612,6 @@
     "pledge": "69",
     "pledgeAddress": "https://adell.net",
     "producedBlocks": 69,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 82,
     "ranking": 201,
     "retiring": null,
@@ -4635,11 +3630,6 @@
     "pledge": "72",
     "pledgeAddress": "https://hassie.name",
     "producedBlocks": 14,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 86,
     "ranking": 202,
     "retiring": null,
@@ -4658,11 +3648,6 @@
     "pledge": "31",
     "pledgeAddress": "https://nestor.biz",
     "producedBlocks": 23,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 82,
     "ranking": 203,
     "retiring": null,
@@ -4681,11 +3666,6 @@
     "pledge": "54",
     "pledgeAddress": "https://triston.info",
     "producedBlocks": 87,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 11,
     "ranking": 204,
     "retiring": null,
@@ -4704,11 +3684,6 @@
     "pledge": "96",
     "pledgeAddress": "https://twila.net",
     "producedBlocks": 25,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 79,
     "ranking": 205,
     "retiring": null,
@@ -4727,11 +3702,6 @@
     "pledge": "81",
     "pledgeAddress": "http://kaley.com",
     "producedBlocks": 11,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 48,
     "ranking": 206,
     "retiring": null,
@@ -4750,11 +3720,6 @@
     "pledge": "34",
     "pledgeAddress": "http://percy.org",
     "producedBlocks": 38,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 52,
     "ranking": 207,
     "retiring": null,
@@ -4773,11 +3738,6 @@
     "pledge": "92",
     "pledgeAddress": "http://dereck.com",
     "producedBlocks": 53,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 86,
     "ranking": 208,
     "retiring": null,
@@ -4796,11 +3756,6 @@
     "pledge": "26",
     "pledgeAddress": "https://geovanny.net",
     "producedBlocks": 70,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 15,
     "ranking": 209,
     "retiring": null,
@@ -4819,11 +3774,6 @@
     "pledge": "0",
     "pledgeAddress": "https://herminia.com",
     "producedBlocks": 90,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 28,
     "ranking": 210,
     "retiring": null,
@@ -4842,11 +3792,6 @@
     "pledge": "25",
     "pledgeAddress": "http://helena.name",
     "producedBlocks": 82,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 0,
     "ranking": 211,
     "retiring": null,
@@ -4865,11 +3810,6 @@
     "pledge": "56",
     "pledgeAddress": "https://serenity.org",
     "producedBlocks": 98,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 30,
     "ranking": 212,
     "retiring": null,
@@ -4888,11 +3828,6 @@
     "pledge": "58",
     "pledgeAddress": "https://tad.com",
     "producedBlocks": 87,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 30,
     "ranking": 213,
     "retiring": null,
@@ -4911,11 +3846,6 @@
     "pledge": "46",
     "pledgeAddress": "http://elsie.name",
     "producedBlocks": 21,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 74,
     "ranking": 214,
     "retiring": null,
@@ -4934,11 +3864,6 @@
     "pledge": "48",
     "pledgeAddress": "https://natalia.org",
     "producedBlocks": 89,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 69,
     "ranking": 215,
     "retiring": null,
@@ -4957,11 +3882,6 @@
     "pledge": "86",
     "pledgeAddress": "https://patsy.name",
     "producedBlocks": 81,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 23,
     "ranking": 216,
     "retiring": null,
@@ -4980,11 +3900,6 @@
     "pledge": "81",
     "pledgeAddress": "https://demarco.info",
     "producedBlocks": 0,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 80,
     "ranking": 217,
     "retiring": null,
@@ -5003,11 +3918,6 @@
     "pledge": "85",
     "pledgeAddress": "https://domenico.info",
     "producedBlocks": 23,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 83,
     "ranking": 218,
     "retiring": null,
@@ -5026,11 +3936,6 @@
     "pledge": "42",
     "pledgeAddress": "https://carmen.info",
     "producedBlocks": 43,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 92,
     "ranking": 219,
     "retiring": null,
@@ -5049,11 +3954,6 @@
     "pledge": "56",
     "pledgeAddress": "https://daryl.com",
     "producedBlocks": 20,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 96,
     "ranking": 220,
     "retiring": null,
@@ -5072,11 +3972,6 @@
     "pledge": "14",
     "pledgeAddress": "http://jazmyne.biz",
     "producedBlocks": 35,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 13,
     "ranking": 221,
     "retiring": null,
@@ -5095,11 +3990,6 @@
     "pledge": "14",
     "pledgeAddress": "http://ruben.biz",
     "producedBlocks": 81,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 62,
     "ranking": 222,
     "retiring": null,
@@ -5118,11 +4008,6 @@
     "pledge": "82",
     "pledgeAddress": "http://bria.net",
     "producedBlocks": 7,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 81,
     "ranking": 223,
     "retiring": null,
@@ -5141,11 +4026,6 @@
     "pledge": "16",
     "pledgeAddress": "https://camilla.org",
     "producedBlocks": 50,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 1,
     "ranking": 224,
     "retiring": null,
@@ -5164,11 +4044,6 @@
     "pledge": "56",
     "pledgeAddress": "http://misael.biz",
     "producedBlocks": 26,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 35,
     "ranking": 225,
     "retiring": null,
@@ -5187,11 +4062,6 @@
     "pledge": "41",
     "pledgeAddress": "http://verla.net",
     "producedBlocks": 7,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 27,
     "ranking": 226,
     "retiring": null,
@@ -5210,11 +4080,6 @@
     "pledge": "68",
     "pledgeAddress": "https://corene.name",
     "producedBlocks": 0,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 81,
     "ranking": 227,
     "retiring": null,
@@ -5233,11 +4098,6 @@
     "pledge": "62",
     "pledgeAddress": "https://juliet.info",
     "producedBlocks": 2,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 98,
     "ranking": 228,
     "retiring": null,
@@ -5256,11 +4116,6 @@
     "pledge": "94",
     "pledgeAddress": "https://freeman.info",
     "producedBlocks": 29,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 39,
     "ranking": 229,
     "retiring": null,
@@ -5279,11 +4134,6 @@
     "pledge": "97",
     "pledgeAddress": "http://johnathan.info",
     "producedBlocks": 99,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 90,
     "ranking": 230,
     "retiring": null,
@@ -5302,11 +4152,6 @@
     "pledge": "71",
     "pledgeAddress": "https://julien.info",
     "producedBlocks": 40,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 19,
     "ranking": 231,
     "retiring": null,
@@ -5325,11 +4170,6 @@
     "pledge": "79",
     "pledgeAddress": "http://rosemarie.net",
     "producedBlocks": 18,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 70,
     "ranking": 232,
     "retiring": null,
@@ -5348,11 +4188,6 @@
     "pledge": "81",
     "pledgeAddress": "http://josie.net",
     "producedBlocks": 36,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 2,
     "ranking": 233,
     "retiring": null,
@@ -5371,11 +4206,6 @@
     "pledge": "37",
     "pledgeAddress": "http://royce.net",
     "producedBlocks": 22,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 65,
     "ranking": 234,
     "retiring": null,
@@ -5394,11 +4224,6 @@
     "pledge": "37",
     "pledgeAddress": "https://irwin.biz",
     "producedBlocks": 53,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 81,
     "ranking": 235,
     "retiring": null,
@@ -5417,11 +4242,6 @@
     "pledge": "68",
     "pledgeAddress": "http://retta.info",
     "producedBlocks": 3,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 28,
     "ranking": 236,
     "retiring": null,
@@ -5440,11 +4260,6 @@
     "pledge": "12",
     "pledgeAddress": "https://syble.com",
     "producedBlocks": 88,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 13,
     "ranking": 237,
     "retiring": null,
@@ -5463,11 +4278,6 @@
     "pledge": "49",
     "pledgeAddress": "http://anika.com",
     "producedBlocks": 53,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 96,
     "ranking": 238,
     "retiring": null,
@@ -5486,11 +4296,6 @@
     "pledge": "95",
     "pledgeAddress": "http://javier.info",
     "producedBlocks": 85,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 85,
     "ranking": 239,
     "retiring": null,
@@ -5509,11 +4314,6 @@
     "pledge": "44",
     "pledgeAddress": "http://audie.net",
     "producedBlocks": 33,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 18,
     "ranking": 240,
     "retiring": null,
@@ -5532,11 +4332,6 @@
     "pledge": "37",
     "pledgeAddress": "https://osvaldo.info",
     "producedBlocks": 15,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 24,
     "ranking": 241,
     "retiring": null,
@@ -5555,11 +4350,6 @@
     "pledge": "53",
     "pledgeAddress": "http://tiffany.com",
     "producedBlocks": 63,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 8,
     "ranking": 242,
     "retiring": null,
@@ -5578,11 +4368,6 @@
     "pledge": "24",
     "pledgeAddress": "http://olga.info",
     "producedBlocks": 5,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 70,
     "ranking": 243,
     "retiring": null,
@@ -5601,11 +4386,6 @@
     "pledge": "84",
     "pledgeAddress": "https://laurine.org",
     "producedBlocks": 84,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 29,
     "ranking": 244,
     "retiring": null,
@@ -5624,11 +4404,6 @@
     "pledge": "88",
     "pledgeAddress": "https://parker.info",
     "producedBlocks": 60,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 99,
     "ranking": 245,
     "retiring": null,
@@ -5647,11 +4422,6 @@
     "pledge": "88",
     "pledgeAddress": "http://eva.com",
     "producedBlocks": 93,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 37,
     "ranking": 246,
     "retiring": null,
@@ -5670,11 +4440,6 @@
     "pledge": "0",
     "pledgeAddress": "http://renee.name",
     "producedBlocks": 3,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 90,
     "ranking": 247,
     "retiring": null,
@@ -5693,11 +4458,6 @@
     "pledge": "25",
     "pledgeAddress": "http://angelo.info",
     "producedBlocks": 27,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 63,
     "ranking": 248,
     "retiring": null,
@@ -5716,11 +4476,6 @@
     "pledge": "47",
     "pledgeAddress": "https://tyrell.com",
     "producedBlocks": 48,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 65,
     "ranking": 249,
     "retiring": null,
@@ -5739,11 +4494,6 @@
     "pledge": "63",
     "pledgeAddress": "https://nikko.org",
     "producedBlocks": 2,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 79,
     "ranking": 250,
     "retiring": null,
@@ -5762,11 +4512,6 @@
     "pledge": "93",
     "pledgeAddress": "https://berneice.info",
     "producedBlocks": 27,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 38,
     "ranking": 251,
     "retiring": null,
@@ -5785,11 +4530,6 @@
     "pledge": "8",
     "pledgeAddress": "https://enrique.org",
     "producedBlocks": 58,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 81,
     "ranking": 252,
     "retiring": null,
@@ -5808,11 +4548,6 @@
     "pledge": "93",
     "pledgeAddress": "https://sibyl.net",
     "producedBlocks": 63,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 84,
     "ranking": 253,
     "retiring": null,
@@ -5831,11 +4566,6 @@
     "pledge": "43",
     "pledgeAddress": "https://savanna.net",
     "producedBlocks": 22,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 75,
     "ranking": 254,
     "retiring": null,
@@ -5854,11 +4584,6 @@
     "pledge": "8",
     "pledgeAddress": "http://bo.name",
     "producedBlocks": 14,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 49,
     "ranking": 255,
     "retiring": null,
@@ -5877,11 +4602,6 @@
     "pledge": "44",
     "pledgeAddress": "https://valerie.org",
     "producedBlocks": 74,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 0,
     "ranking": 256,
     "retiring": null,
@@ -5900,11 +4620,6 @@
     "pledge": "87",
     "pledgeAddress": "http://cara.org",
     "producedBlocks": 93,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 72,
     "ranking": 257,
     "retiring": null,
@@ -5923,11 +4638,6 @@
     "pledge": "8",
     "pledgeAddress": "http://dovie.info",
     "producedBlocks": 37,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 86,
     "ranking": 258,
     "retiring": null,
@@ -5946,11 +4656,6 @@
     "pledge": "11",
     "pledgeAddress": "http://serena.biz",
     "producedBlocks": 19,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 26,
     "ranking": 259,
     "retiring": null,
@@ -5969,11 +4674,6 @@
     "pledge": "9",
     "pledgeAddress": "https://della.org",
     "producedBlocks": 70,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 55,
     "ranking": 260,
     "retiring": null,
@@ -5992,11 +4692,6 @@
     "pledge": "65",
     "pledgeAddress": "https://mary.biz",
     "producedBlocks": 14,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 3,
     "ranking": 261,
     "retiring": null,
@@ -6015,11 +4710,6 @@
     "pledge": "66",
     "pledgeAddress": "https://randi.info",
     "producedBlocks": 24,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 45,
     "ranking": 262,
     "retiring": null,
@@ -6038,11 +4728,6 @@
     "pledge": "50",
     "pledgeAddress": "http://leonora.name",
     "producedBlocks": 70,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 67,
     "ranking": 263,
     "retiring": null,
@@ -6061,11 +4746,6 @@
     "pledge": "37",
     "pledgeAddress": "https://caleigh.info",
     "producedBlocks": 7,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 75,
     "ranking": 264,
     "retiring": null,
@@ -6084,11 +4764,6 @@
     "pledge": "39",
     "pledgeAddress": "http://jazmyn.net",
     "producedBlocks": 17,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 72,
     "ranking": 265,
     "retiring": null,
@@ -6107,11 +4782,6 @@
     "pledge": "75",
     "pledgeAddress": "https://cleora.biz",
     "producedBlocks": 14,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 34,
     "ranking": 266,
     "retiring": null,
@@ -6130,11 +4800,6 @@
     "pledge": "44",
     "pledgeAddress": "https://ned.org",
     "producedBlocks": 22,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 60,
     "ranking": 267,
     "retiring": null,
@@ -6153,11 +4818,6 @@
     "pledge": "90",
     "pledgeAddress": "http://roderick.org",
     "producedBlocks": 45,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 62,
     "ranking": 268,
     "retiring": null,
@@ -6176,11 +4836,6 @@
     "pledge": "60",
     "pledgeAddress": "http://taylor.info",
     "producedBlocks": 13,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 37,
     "ranking": 269,
     "retiring": null,
@@ -6199,11 +4854,6 @@
     "pledge": "89",
     "pledgeAddress": "https://keshawn.name",
     "producedBlocks": 37,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 2,
     "ranking": 270,
     "retiring": null,
@@ -6222,11 +4872,6 @@
     "pledge": "100",
     "pledgeAddress": "http://lucas.info",
     "producedBlocks": 27,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 12,
     "ranking": 271,
     "retiring": null,
@@ -6245,11 +4890,6 @@
     "pledge": "50",
     "pledgeAddress": "https://cierra.org",
     "producedBlocks": 41,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 88,
     "ranking": 272,
     "retiring": null,
@@ -6268,11 +4908,6 @@
     "pledge": "60",
     "pledgeAddress": "http://vivienne.net",
     "producedBlocks": 24,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 49,
     "ranking": 273,
     "retiring": null,
@@ -6291,11 +4926,6 @@
     "pledge": "100",
     "pledgeAddress": "https://cyril.biz",
     "producedBlocks": 56,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 13,
     "ranking": 274,
     "retiring": null,
@@ -6314,11 +4944,6 @@
     "pledge": "26",
     "pledgeAddress": "https://vada.org",
     "producedBlocks": 60,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 32,
     "ranking": 275,
     "retiring": null,
@@ -6337,11 +4962,6 @@
     "pledge": "39",
     "pledgeAddress": "https://frieda.net",
     "producedBlocks": 82,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 11,
     "ranking": 276,
     "retiring": null,
@@ -6360,11 +4980,6 @@
     "pledge": "0",
     "pledgeAddress": "http://imelda.com",
     "producedBlocks": 5,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 93,
     "ranking": 277,
     "retiring": null,
@@ -6383,11 +4998,6 @@
     "pledge": "60",
     "pledgeAddress": "https://hettie.net",
     "producedBlocks": 4,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 33,
     "ranking": 278,
     "retiring": null,
@@ -6406,11 +5016,6 @@
     "pledge": "95",
     "pledgeAddress": "http://eliezer.org",
     "producedBlocks": 81,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 14,
     "ranking": 279,
     "retiring": null,
@@ -6429,11 +5034,6 @@
     "pledge": "99",
     "pledgeAddress": "https://winston.biz",
     "producedBlocks": 69,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 39,
     "ranking": 280,
     "retiring": null,
@@ -6452,11 +5052,6 @@
     "pledge": "56",
     "pledgeAddress": "http://jodie.org",
     "producedBlocks": 9,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 85,
     "ranking": 281,
     "retiring": null,
@@ -6475,11 +5070,6 @@
     "pledge": "3",
     "pledgeAddress": "https://milo.biz",
     "producedBlocks": 98,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 28,
     "ranking": 282,
     "retiring": null,
@@ -6498,11 +5088,6 @@
     "pledge": "87",
     "pledgeAddress": "http://angelina.name",
     "producedBlocks": 68,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 29,
     "ranking": 283,
     "retiring": null,
@@ -6521,11 +5106,6 @@
     "pledge": "54",
     "pledgeAddress": "http://webster.org",
     "producedBlocks": 60,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 31,
     "ranking": 284,
     "retiring": null,
@@ -6544,11 +5124,6 @@
     "pledge": "86",
     "pledgeAddress": "https://thelma.info",
     "producedBlocks": 53,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 79,
     "ranking": 285,
     "retiring": null,
@@ -6567,11 +5142,6 @@
     "pledge": "44",
     "pledgeAddress": "http://mohammed.name",
     "producedBlocks": 48,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 76,
     "ranking": 286,
     "retiring": null,
@@ -6590,11 +5160,6 @@
     "pledge": "48",
     "pledgeAddress": "http://aisha.net",
     "producedBlocks": 81,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 2,
     "ranking": 287,
     "retiring": null,
@@ -6613,11 +5178,6 @@
     "pledge": "42",
     "pledgeAddress": "https://esther.com",
     "producedBlocks": 9,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 67,
     "ranking": 288,
     "retiring": null,
@@ -6636,11 +5196,6 @@
     "pledge": "32",
     "pledgeAddress": "https://darren.name",
     "producedBlocks": 25,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 9,
     "ranking": 289,
     "retiring": null,
@@ -6659,11 +5214,6 @@
     "pledge": "11",
     "pledgeAddress": "http://emma.name",
     "producedBlocks": 27,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 36,
     "ranking": 290,
     "retiring": null,
@@ -6682,11 +5232,6 @@
     "pledge": "13",
     "pledgeAddress": "https://claud.com",
     "producedBlocks": 2,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 4,
     "ranking": 291,
     "retiring": null,
@@ -6705,11 +5250,6 @@
     "pledge": "88",
     "pledgeAddress": "https://holly.biz",
     "producedBlocks": 73,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 59,
     "ranking": 292,
     "retiring": null,
@@ -6728,11 +5268,6 @@
     "pledge": "12",
     "pledgeAddress": "http://rocky.org",
     "producedBlocks": 50,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 86,
     "ranking": 293,
     "retiring": null,
@@ -6751,11 +5286,6 @@
     "pledge": "86",
     "pledgeAddress": "https://erica.net",
     "producedBlocks": 63,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 88,
     "ranking": 294,
     "retiring": null,
@@ -6774,11 +5304,6 @@
     "pledge": "1",
     "pledgeAddress": "http://jaleel.net",
     "producedBlocks": 98,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 94,
     "ranking": 295,
     "retiring": null,
@@ -6797,11 +5322,6 @@
     "pledge": "87",
     "pledgeAddress": "https://aron.biz",
     "producedBlocks": 71,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 27,
     "ranking": 296,
     "retiring": null,
@@ -6820,11 +5340,6 @@
     "pledge": "63",
     "pledgeAddress": "https://myrtis.biz",
     "producedBlocks": 50,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 15,
     "ranking": 297,
     "retiring": null,
@@ -6843,11 +5358,6 @@
     "pledge": "25",
     "pledgeAddress": "http://stephanie.biz",
     "producedBlocks": 100,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 15,
     "ranking": 298,
     "retiring": null,
@@ -6866,11 +5376,6 @@
     "pledge": "69",
     "pledgeAddress": "http://olin.org",
     "producedBlocks": 2,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 77,
     "ranking": 299,
     "retiring": null,
@@ -6889,11 +5394,6 @@
     "pledge": "23",
     "pledgeAddress": "http://yadira.net",
     "producedBlocks": 45,
-    "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 429856
-    },
-    "apparent_performance": 92387293,
     "profitMargin": 64,
     "ranking": 300,
     "retiring": null,
