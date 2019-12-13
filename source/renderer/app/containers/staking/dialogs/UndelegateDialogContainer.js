@@ -38,7 +38,10 @@ export default class UndelegateDialogContainer extends Component<Props> {
 
     const { name: walletName, delegatedStakePoolId } = walletToBeUndelegated;
 
-    if (!isDelegatioTransactionPending && undelegateWalletSubmissionSuccess) {
+    if (
+      (!delegatedStakePoolId || !isDelegatioTransactionPending) &&
+      undelegateWalletSubmissionSuccess
+    ) {
       return (
         <UndelegateConfirmationResultDialog
           walletName={walletName}
