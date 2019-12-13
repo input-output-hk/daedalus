@@ -1,7 +1,6 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import BigNumber from 'bignumber.js';
 import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import classnames from 'classnames';
@@ -15,7 +14,6 @@ import closeCross from '../../../assets/images/close-cross.inline.svg';
 import externalLinkIcon from '../../../assets/images/link-ic.inline.svg';
 import { getColorFromRange } from '../../../utils/colors';
 import { formattedWalletAmount, shortNumber } from '../../../utils/formatters';
-import { LOVELACES_PER_ADA } from '../../../config/numbersConfig';
 import { rangeMap } from '../../../utils/rangeMap';
 import {
   THUMBNAIL_HEIGHT,
@@ -452,13 +450,7 @@ export default class StakePoolTooltip extends Component<Props, State> {
             </dd>
             <dt>{intl.formatMessage(messages.controlledStake)}</dt>
             <dd className={styles.defaultColor}>
-              <span>
-                {formattedWalletAmount(
-                  new BigNumber(controlledStake).dividedBy(LOVELACES_PER_ADA),
-                  true,
-                  false
-                )}
-              </span>
+              <span>{formattedWalletAmount(controlledStake, true, false)}</span>
             </dd>
             <dt>{intl.formatMessage(messages.profitMargin)}</dt>
             <dd className={styles.profitMargin}>
@@ -471,9 +463,9 @@ export default class StakePoolTooltip extends Component<Props, State> {
                   }),
                 }}
               >
-                {`${parseFloat(profitMargin.toFixed(2))}% + ${shortNumber(
-                  cost
-                )} ADA`}
+                {`${parseFloat(
+                  profitMargin.toFixed(2)
+                )}% + ${formattedWalletAmount(cost, true, false)}`}
               </span>
             </dd>
             <dt>{intl.formatMessage(messages.performance)}</dt>

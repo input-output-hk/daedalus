@@ -39,7 +39,7 @@ export default class StakePool {
   @observable pledgeAddress: string;
   @observable performance: number;
   @observable producedBlocks: number;
-  @observable controlledStake: number;
+  @observable controlledStake: BigNumber;
   // @observable pledge: BigNumber;
   @observable cost: BigNumber;
   @observable createdAt: Date;

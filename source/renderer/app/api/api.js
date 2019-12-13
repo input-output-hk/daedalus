@@ -1464,7 +1464,7 @@ const _createStakePoolFromServerData = action(
       margin: profitMargin,
       metadata,
     } = stakePool;
-    let {
+    const {
       controlled_stake: controlledStake,
       produced_blocks: producedBlocks,
     } = metrics; // eslint-disable-line
@@ -1484,15 +1484,17 @@ const _createStakePoolFromServerData = action(
       homepage,
       pledge_address: pledgeAddress,
     } = metadata;
-    controlledStake = controlledStake.quantity;
-    producedBlocks = producedBlocks.quantity;
-    const costQuantity = cost ? cost.quantity : 1100000000;
-    const profitMarginQuantity = profitMargin ? profitMargin.quantity : 33;
+    const controlledStakeQuantity = get(controlledStake, 'quantity', 0);
+    const producedBlocksCount = get(producedBlocks, 'quantity', 0);
+    const costQuantity = get(cost, 'quantity', 0);
+    const profitMarginPercentage = get(profitMargin, 'quantity', 0);
     return new StakePool({
       id,
       performance: performance * 100, // Percentage!
-      controlledStake,
-      producedBlocks,
+      controlledStake: new BigNumber(controlledStakeQuantity).dividedBy(
+        LOVELACES_PER_ADA
+      ),
+      producedBlocks: producedBlocksCount,
       ticker,
       homepage,
       pledgeAddress,
@@ -1502,7 +1504,7 @@ const _createStakePoolFromServerData = action(
       isCharity,
       name,
       // pledge: new BigNumber(pledge).dividedBy(LOVELACES_PER_ADA),
-      profitMargin: profitMarginQuantity,
+      profitMargin: profitMarginPercentage,
       ranking: index + 1,
       retiring,
     });
