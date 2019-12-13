@@ -39,11 +39,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Controlled stake:',
     description: '"Controlled stake" for the Stake Pools Tooltip page.',
   },
-  // profitMargin: {
-  //   id: 'staking.stakePools.tooltip.profitMargin',
-  //   defaultMessage: '!!!Profit margin:',
-  //   description: '"Profit margin" for the Stake Pools Tooltip page.',
-  // },
+  profitMargin: {
+    id: 'staking.stakePools.tooltip.profitMargin',
+    defaultMessage: '!!!Profit margin:',
+    description: '"Profit margin" for the Stake Pools Tooltip page.',
+  },
   performance: {
     id: 'staking.stakePools.tooltip.performance',
     defaultMessage: '!!!Performance:',

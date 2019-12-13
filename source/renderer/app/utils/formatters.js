@@ -23,7 +23,9 @@ export const formattedWalletAmount = (
     // the correct number format has to be applied manually.
     formattedAmount = formattedAmount.split('.').join(decimalSeparator);
   }
-  if (withCurrency) formattedAmount += ' ADA';
+  if (withCurrency) {
+    formattedAmount = `${formattedAmount} ADA`;
+  }
   return formattedAmount.toString();
 };
 

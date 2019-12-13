@@ -21,8 +21,6 @@ import StakePool from '../domains/StakePool';
 import REWARDS from '../config/stakingRewards.dummy.json';
 
 export default class StakingStore extends Store {
-  STAKE_POOLS_INITIAL_INTERVAL = 1000; // 1 second | unit: 1000 milliseconds
-  STAKE_POOLS_REFRESH_INTERVAL = 30 * 60 * 1000; // 30 minutes | unit: milliseconds;
   @observable fetchingStakePoolsFailed = false;
 
   pollingStakePoolsInterval: ?IntervalID = null;

@@ -391,6 +391,7 @@
   "staking.stakePools.tooltip.performance": "!!!Performance",
   "staking.stakePools.tooltip.pledgeAddressLabel": "!!!Pledge address",
   "staking.stakePools.tooltip.producedBlocks": "!!!Produced blocks:",
+  "staking.stakePools.tooltip.profitMargin": "!!!Profit margin",
   "staking.stakePools.tooltip.ranking": "!!!Rank",
   "staking.stakePools.tooltip.retirement": "!!!Retirement",
   "static.about.buildInfo": "!!!MacOS build 3769, with Cardano 1.0.4",

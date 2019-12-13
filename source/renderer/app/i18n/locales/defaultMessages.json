@@ -3984,6 +3984,20 @@
         }
       },
       {
+        "defaultMessage": "!!!Profit margin:",
+        "description": "\"Profit margin\" for the Stake Pools Tooltip page.",
+        "end": {
+          "column": 3,
+          "line": 46
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
+        "id": "staking.stakePools.tooltip.profitMargin",
+        "start": {
+          "column": 16,
+          "line": 42
+        }
+      },
+      {
         "defaultMessage": "!!!Performance:",
         "description": "\"Performance\" for the Stake Pools Tooltip page.",
         "end": {

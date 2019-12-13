@@ -391,6 +391,7 @@
   "staking.stakePools.tooltip.performance": "パフォーマンス：",
   "staking.stakePools.tooltip.pledgeAddressLabel": "出資アドレス",
   "staking.stakePools.tooltip.producedBlocks": "生成ブロック数：",
+  "staking.stakePools.tooltip.profitMargin": "マージン：",
   "staking.stakePools.tooltip.ranking": "ランク：",
   "staking.stakePools.tooltip.retirement": "あと{retirementFromNow}で終了",
   "static.about.buildInfo": "{platform} ビルド <strong>{build}</strong>, {apiName} <strong>{apiVersion}</strong>",
