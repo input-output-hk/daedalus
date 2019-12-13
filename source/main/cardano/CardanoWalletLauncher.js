@@ -3,7 +3,9 @@ import { spawn } from 'child_process';
 import { dirname } from 'path';
 import type { ChildProcess } from 'child_process';
 import { configureJormungandrDeps } from './nodes';
-import { CARDANO_WALLET_STAKE_POOL_REGISTRY_URL } from '../config';
+import { STAKE_POOL_REGISTRY_URL } from '../config';
+import { environment } from '../environment';
+import { NIGHTLY, SELFNODE } from '../../common/types/environment.types';
 
 export type WalletOpts = {
   path: string,
@@ -47,7 +49,16 @@ export async function CardanoWalletLauncher(
       // The selfnode is identified by the unique genesis-block wallet arg
       if (walletArgs.findIndex(arg => arg === '--genesis-block') > -1) {
         await configureJormungandrDeps(cliBin, stateDir);
-        Object.assign(envVariables, { CARDANO_WALLET_STAKE_POOL_REGISTRY_URL });
+        Object.assign(envVariables, {
+          CARDANO_WALLET_STAKE_POOL_REGISTRY_URL:
+            STAKE_POOL_REGISTRY_URL[SELFNODE],
+        });
+      }
+      if (environment.isIncentivizedTestnetNightly) {
+        Object.assign(envVariables, {
+          CARDANO_WALLET_STAKE_POOL_REGISTRY_URL:
+            STAKE_POOL_REGISTRY_URL[NIGHTLY],
+        });
       }
       break;
     default:
