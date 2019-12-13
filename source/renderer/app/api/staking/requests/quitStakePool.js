@@ -1,12 +1,13 @@
 // @flow
 import type { RequestConfig } from '../../common/types';
-import type { QuitStakePoolRequest, QuitStakePoolResponse } from '../types';
+import type { QuitStakePoolRequest } from '../types';
+import type { Transaction } from '../../transactions/types';
 import { request } from '../../utils/request';
 
 export const quitStakePool = (
   config: RequestConfig,
   { stakePoolId, walletId, passphrase }: QuitStakePoolRequest
-): Promise<QuitStakePoolResponse> =>
+): Promise<Transaction> =>
   request(
     {
       method: 'DELETE',

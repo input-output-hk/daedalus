@@ -6,6 +6,8 @@ import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import { ROUTES } from '../routes-config';
 import {
+  STAKE_POOL_TRANSACTION_CHECK_INTERVAL,
+  STAKE_POOL_TRANSACTION_CHECKER_TIMEOUT,
   STAKE_POOLS_INTERVAL,
   STAKE_POOLS_FAST_INTERVAL,
 } from '../config/stakingConfig';
@@ -14,16 +16,20 @@ import type {
   RewardForIncentivizedTestnet,
   JoinStakePoolRequest,
   GetDelegationFeeRequest,
+  QuitStakePoolRequest,
 } from '../api/staking/types';
 import Wallet from '../domains/Wallet';
 import StakePool from '../domains/StakePool';
+import { TransactionStates } from '../domains/WalletTransaction';
 import REWARDS from '../config/stakingRewards.dummy.json';
 
 export default class StakingStore extends Store {
+  @observable isDelegatioTransactionPending = false;
   @observable fetchingStakePoolsFailed = false;
 
   pollingStakePoolsInterval: ?IntervalID = null;
   refreshPooling: ?IntervalID = null;
+  delegationCheckTimeInterval: ?IntervalID = null;
 
   startDateTime: string = '2019-12-09T00:00:00.161Z';
   decentralizationProgress: number = 10;
@@ -44,11 +50,15 @@ export default class StakingStore extends Store {
       this._goToStakingDelegationCenterPage
     );
     staking.joinStakePool.listen(this._joinStakePool);
+    staking.quitStakePool.listen(this._quitStakePool);
   }
 
   // REQUESTS
   @observable joinStakePoolRequest: Request<JoinStakePoolRequest> = new Request(
     this.api.ada.joinStakePool
+  );
+  @observable quitStakePoolRequest: Request<QuitStakePoolRequest> = new Request(
+    this.api.ada.quitStakePool
   );
   @observable stakePoolsRequest: Request<Array<StakePool>> = new Request(
     this.api.ada.getStakePools
@@ -58,12 +68,96 @@ export default class StakingStore extends Store {
 
   @action _joinStakePool = async (request: JoinStakePoolRequest) => {
     const { walletId, stakePoolId, passphrase } = request;
-    await this.joinStakePoolRequest.execute({
-      walletId,
-      stakePoolId,
-      passphrase,
-    });
+
+    // Set join transaction in "PENDING" state
+    this.isDelegatioTransactionPending = true;
+
+    try {
+      const joinTransaction = await this.joinStakePoolRequest.execute({
+        walletId,
+        stakePoolId,
+        passphrase,
+      });
+      // Start interval to check transaction state every second
+      this.delegationCheckTimeInterval = setInterval(
+        this.checkDelegationTransaction,
+        STAKE_POOL_TRANSACTION_CHECK_INTERVAL,
+        { transactionId: joinTransaction.id, walletId }
+      );
+
+      // Reset transtation state check interval after 30 seconds
+      setTimeout(() => {
+        this.resetStakePoolTransactionChecker();
+      }, STAKE_POOL_TRANSACTION_CHECKER_TIMEOUT);
+    } catch (error) {
+      this.resetStakePoolTransactionChecker();
+      throw error;
+    }
+  };
+
+  @action _quitStakePool = async (request: QuitStakePoolRequest) => {
+    const { walletId, stakePoolId, passphrase } = request;
+
+    // Set quit transaction in "PENDING" state
+    this.isDelegatioTransactionPending = true;
+
+    try {
+      const quitTransaction = await this.quitStakePoolRequest.execute({
+        walletId,
+        stakePoolId,
+        passphrase,
+      });
+      // Start interval to check transaction state every second
+      this.delegationCheckTimeInterval = setInterval(
+        this.checkDelegationTransaction,
+        STAKE_POOL_TRANSACTION_CHECK_INTERVAL,
+        { transactionId: quitTransaction.id, walletId }
+      );
+
+      // Reset transtation state check interval after 30 seconds
+      setTimeout(() => {
+        this.resetStakePoolTransactionChecker();
+      }, STAKE_POOL_TRANSACTION_CHECKER_TIMEOUT);
+    } catch (error) {
+      this.resetStakePoolTransactionChecker();
+      throw error;
+    }
+  };
+
+  // Check stake pool transaction state and reset pending state when transction is "in_ledger"
+  @action checkDelegationTransaction = (request: {
+    transactionId: string,
+    walletId: string,
+  }) => {
+    const { transactionId, walletId } = request;
+    const recenttransactionsResponse = this.stores.transactions._getTransactionsRecentRequest(
+      walletId
+    ).result;
+    const recentTransactions = recenttransactionsResponse
+      ? recenttransactionsResponse.transactions
+      : [];
+
+    // Return stake pool transaction when state is not "PENDING"
+    const stakePoolTransaction = find(
+      recentTransactions,
+      transaction =>
+        transaction.id === transactionId &&
+        transaction.state === TransactionStates.OK
+    );
+
+    if (stakePoolTransaction) {
+      this.resetStakePoolTransactionChecker();
+    }
+  };
+
+  // Reset "PENDING" state, transaction state check poller and refresh wallets data
+  @action resetStakePoolTransactionChecker = () => {
+    if (this.delegationCheckTimeInterval) {
+      clearInterval(this.delegationCheckTimeInterval);
+      this.delegationCheckTimeInterval = null;
+    }
     this.stores.wallets.refreshWalletsData();
+    this.isDelegatioTransactionPending = false;
   };
 
   calculateDelegationFee = async (
