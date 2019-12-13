@@ -132,4 +132,4 @@ export const DISK_SPACE_RECOMMENDED_PERCENTAGE = 15; // 15% of the total disk sp
 
 // CardanoWallet config
 export const CARDANO_WALLET_STAKE_POOL_REGISTRY_URL =
-  'https://github.com/input-output-hk/cardano-wallet/raw/master/lib/jormungandr/test/data/jormungandr/stake_pools/registry/test-integration-registry.zip';
+  'https://github.com/input-output-hk/daedalus/raw/selfnode/test-integration-registry.zip';

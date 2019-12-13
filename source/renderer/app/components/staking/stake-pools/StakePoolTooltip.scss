@@ -196,14 +196,21 @@
   text-overflow: ellipsis;
 }
 
-.homepage {
+.homepageAddress {
+  @include link(--theme-link-main-color);
+  border-bottom-color: var(--theme-link-main-color);
+  font-size: 14px;
+  line-height: 1.36;
+}
+
+.pledgeAddress {
   @include link(--theme-link-main-color);
   font-size: 14px;
   line-height: 1.36;
   margin-bottom: 14px;
   max-width: 100%;
 
-  .homepageContent {
+  .pledgeAddressContent {
     display: inline-block;
     max-width: calc(100% - 14px);
     overflow: hidden;
@@ -219,7 +226,7 @@
   @extend %regularText;
   display: flex;
   flex-wrap: wrap;
-  margin-bottom: 6px;
+  margin: 18px 0 6px 0;
 
   dt,
   dd {
