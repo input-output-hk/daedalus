@@ -32,10 +32,17 @@ const messages = defineMessages({
     description:
       'Label for the "Undelegate" button in the "Undelegate" dialog.',
   },
-  description: {
-    id: 'staking.delegationCenter.undelegate.dialog.description',
+  descriptionWithTicker: {
+    id: 'staking.delegationCenter.undelegate.dialog.descriptionWithTicker',
     defaultMessage:
       '!!!<p>The stake from your wallet <strong>{walletName}</strong> is currently delegated to the <strong>[{stakePoolTicker}] {stakePoolName}</strong> stake pool.</p><p>Do you want to undelegate your stake and stop earning rewards?</p>',
+    description: 'Description for the "Undelegate" dialog.',
+  },
+  descriptionWithUnknownTicker: {
+    id:
+      'staking.delegationCenter.undelegate.dialog.descriptionWithUnknownTicker',
+    defaultMessage:
+      '!!!<p>The stake from your wallet <strong>{walletName}</strong> is currently delegated to the <strong>{stakePoolTicker}</strong> stake pool.</p><p>Do you want to undelegate your stake and stop earning rewards?</p>',
     description: 'Description for the "Undelegate" dialog.',
   },
   confirmUnsupportCheck: {
@@ -78,14 +85,19 @@ const messages = defineMessages({
     defaultMessage: '!!!Incorrect spending password.',
     description: 'Label for password error in the "Undelegate" dialog.',
   },
+  unknownStakePoolLabel: {
+    id: 'staking.delegationCenter.undelegate.dialog.unknownStakePoolLabel',
+    defaultMessage: '!!!unknown',
+    description: 'unknown stake pool label in the "Undelegate" dialog.',
+  },
 });
 
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
 
 type Props = {
   walletName: string,
-  stakePoolName: string,
-  stakePoolTicker: string,
+  stakePoolName: ?string,
+  stakePoolTicker: ?string,
   onConfirm: Function,
   onCancel: Function,
   onExternalLinkClick: Function,
@@ -271,10 +283,22 @@ export default class UndelegateConfirmationDialog extends Component<Props> {
         closeButton={<DialogCloseButton />}
       >
         <div className={styles.description}>
-          <FormattedHTMLMessage
-            {...messages.description}
-            values={{ walletName, stakePoolName, stakePoolTicker }}
-          />
+          {stakePoolTicker ? (
+            <FormattedHTMLMessage
+              {...messages.descriptionWithTicker}
+              values={{ walletName, stakePoolName, stakePoolTicker }}
+            />
+          ) : (
+            <FormattedHTMLMessage
+              {...messages.descriptionWithUnknownTicker}
+              values={{
+                walletName,
+                stakePoolTicker: intl.formatMessage(
+                  messages.unknownStakePoolLabel
+                ),
+              }}
+            />
+          )}
         </div>
         <Checkbox
           {...unsupportCheckboxField.bind()}

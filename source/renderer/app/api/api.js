@@ -57,6 +57,7 @@ import { transferFunds } from './wallets/requests/transferFunds';
 // Staking
 import StakePool from '../domains/StakePool';
 import stakingStakePoolsMissingApiData from '../config/stakingStakePoolsMissingApiData.dummy.json';
+import { EPOCH_LENGTH_ITN } from '../config/epochsConfig';
 
 // News requests
 import { getNews } from './news/requests/getNews';
@@ -541,7 +542,11 @@ export default class AdaApi {
       if (error.code === 'not_enough_money') {
         throw new NotEnoughMoneyToSendError();
       }
-      if (error.code === 'wrong_encryption_passphrase') {
+      if (
+        error.code === 'wrong_encryption_passphrase' ||
+        (error.code === 'bad_request' &&
+          error.message.includes('passphrase is too short'))
+      ) {
         throw new IncorrectSpendingPasswordError();
       }
       if (error.code === 'too_big_transaction') {
@@ -943,7 +948,8 @@ export default class AdaApi {
       const errorCode = get(error, 'code', '');
       if (
         errorCode === 'wrong_encryption_passphrase' ||
-        errorCode === 'bad_request'
+        (errorCode === 'bad_request' &&
+          error.message.includes('passphrase is too short'))
       ) {
         throw new IncorrectSpendingPasswordError();
       }
@@ -968,7 +974,12 @@ export default class AdaApi {
       return result;
     } catch (error) {
       Logger.error('AdaApi::quitStakePool error', { error });
-      if (error.code === 'wrong_encryption_passphrase') {
+      const errorCode = get(error, 'code', '');
+      if (
+        errorCode === 'wrong_encryption_passphrase' ||
+        (errorCode === 'bad_request' &&
+          error.message.includes('passphrase is too short'))
+      ) {
         throw new IncorrectSpendingPasswordError();
       }
       throw new GenericApiError();
@@ -1084,7 +1095,11 @@ export default class AdaApi {
       return response;
     } catch (error) {
       Logger.error('AdaApi::transferFunds error', { error });
-      if (error.code === 'wrong_encryption_passphrase') {
+      if (
+        error.code === 'wrong_encryption_passphrase' ||
+        (error.code === 'bad_request' &&
+          error.message.includes('passphrase is too short'))
+      ) {
         throw new IncorrectSpendingPasswordError();
       }
       throw new GenericApiError();
@@ -1136,6 +1151,7 @@ export default class AdaApi {
 
       /* eslint-disable-next-line camelcase */
       const { sync_progress, node_tip, network_tip, next_epoch } = networkInfo;
+
       const syncProgress =
         get(sync_progress, 'status') === 'ready'
           ? 100
@@ -1155,6 +1171,12 @@ export default class AdaApi {
         nextEpoch: {
           epochNumber: get(next_epoch, 'epoch_number', 0),
           epochStart: get(next_epoch, 'epoch_start_time', ''),
+        },
+        futureEpoch: {
+          epochNumber: get(next_epoch, 'epoch_number', 0) + 1,
+          epochStart: moment(get(next_epoch, 'epoch_start_time', 0))
+            .add(EPOCH_LENGTH_ITN, 'seconds')
+            .toISOString(),
         },
       };
     } catch (error) {
@@ -1281,7 +1303,11 @@ export default class AdaApi {
       return response;
     } catch (error) {
       Logger.error('AdaApi::joinStakePool error', { error });
-      if (error.code === 'wrong_encryption_passphrase') {
+      if (
+        error.code === 'wrong_encryption_passphrase' ||
+        (error.code === 'bad_request' &&
+          error.message.includes('passphrase is too short'))
+      ) {
         throw new IncorrectSpendingPasswordError();
       }
       throw new GenericApiError();

@@ -6,7 +6,12 @@ import { action } from '@storybook/addon-actions';
 import StakePools from '../../../source/renderer/app/components/staking/stake-pools/StakePools';
 import STAKE_POOLS from '../../../source/renderer/app/config/stakingStakePools.dummy.json';
 
-export const StakePoolsStory = (props: { currentTheme: string }) => (
+type Props = {
+  currentTheme: string,
+  isLoading: boolean,
+};
+
+export const StakePoolsStory = (props: Props) => (
   <StakePools
     stakePoolsList={STAKE_POOLS.slice(
       0,
@@ -27,5 +32,6 @@ export const StakePoolsStory = (props: { currentTheme: string }) => (
     getPledgeAddressUrl={action('getPledgeAddressUrl')}
     currentTheme={props.currentTheme}
     onDelegate={action('onDelegate')}
+    isLoading={props.isLoading}
   />
 );
