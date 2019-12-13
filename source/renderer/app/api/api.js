@@ -1460,20 +1460,20 @@ const _createStakePoolFromServerData = action(
       id,
       metrics,
       apparent_performance: performance,
+      cost,
+      margin: profitMargin,
       metadata,
     } = stakePool;
-    let {
+    const {
       controlled_stake: controlledStake,
       produced_blocks: producedBlocks,
     } = metrics; // eslint-disable-line
     const {
       // MISSING DATA FROM THE API
       // NOT CONTAINED IN THE CURRENT API DOCS:
-      // _cost: cost,
       _createdAt: createdAt,
       _isCharity: isCharity,
       // _pledge: pledge,
-      // _profitMargin: profitMargin,
       // _ranking: ranking,
       _retiring: retiring,
     } = stakingStakePoolsMissingApiData[index];
@@ -1484,24 +1484,27 @@ const _createStakePoolFromServerData = action(
       homepage,
       pledge_address: pledgeAddress,
     } = metadata;
-    controlledStake = controlledStake.quantity;
-    producedBlocks = producedBlocks.quantity;
+    const controlledStakeQuantity = get(controlledStake, 'quantity', 0);
+    const producedBlocksCount = get(producedBlocks, 'quantity', 0);
+    const costQuantity = get(cost, 'quantity', 0);
+    const profitMarginPercentage = get(profitMargin, 'quantity', 0);
     return new StakePool({
       id,
       performance: performance * 100, // Percentage!
-      controlledStake,
-      producedBlocks,
+      controlledStake: new BigNumber(controlledStakeQuantity).dividedBy(
+        LOVELACES_PER_ADA
+      ),
+      producedBlocks: producedBlocksCount,
       ticker,
       homepage,
       pledgeAddress,
-
-      // cost: new BigNumber(cost).dividedBy(LOVELACES_PER_ADA),
+      cost: new BigNumber(costQuantity).dividedBy(LOVELACES_PER_ADA),
       createdAt,
       description,
       isCharity,
       name,
       // pledge: new BigNumber(pledge).dividedBy(LOVELACES_PER_ADA),
-      // profitMargin,
+      profitMargin: profitMarginPercentage,
       ranking: index + 1,
       retiring,
     });
