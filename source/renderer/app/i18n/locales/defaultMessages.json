@@ -10008,13 +10008,13 @@
         "description": "Label for years value in duration.",
         "end": {
           "column": 3,
-          "line": 227
+          "line": 228
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.duration.years",
         "start": {
           "column": 9,
-          "line": 223
+          "line": 224
         }
       },
       {
@@ -10022,13 +10022,13 @@
         "description": "Label for months value in duration.",
         "end": {
           "column": 3,
-          "line": 232
+          "line": 233
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.duration.months",
         "start": {
           "column": 10,
-          "line": 228
+          "line": 229
         }
       },
       {
@@ -10036,13 +10036,13 @@
         "description": "Label for days value in duration.",
         "end": {
           "column": 3,
-          "line": 237
+          "line": 238
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.duration.days",
         "start": {
           "column": 8,
-          "line": 233
+          "line": 234
         }
       },
       {
@@ -10050,13 +10050,13 @@
         "description": "Label for hours value in duration.",
         "end": {
           "column": 3,
-          "line": 242
+          "line": 243
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.duration.hours",
         "start": {
           "column": 9,
-          "line": 238
+          "line": 239
         }
       },
       {
@@ -10064,13 +10064,13 @@
         "description": "Label for minutes value in duration.",
         "end": {
           "column": 3,
-          "line": 247
+          "line": 248
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.duration.minutes",
         "start": {
           "column": 11,
-          "line": 243
+          "line": 244
         }
       },
       {
@@ -10078,13 +10078,13 @@
         "description": "Label for seconds value in duration.",
         "end": {
           "column": 3,
-          "line": 252
+          "line": 253
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.duration.seconds",
         "start": {
           "column": 11,
-          "line": 248
+          "line": 249
         }
       }
     ],
@@ -10144,7 +10144,7 @@
         "file": "source/renderer/app/i18n/notification-messages.js",
         "id": "notification.copyStateDirectoryPath",
         "start": {
-          "column": 22,
+          "column": 26,
           "line": 24
         }
       }

@@ -1,4 +1,5 @@
 {
+  "api.errors.AllFundsAlreadyAtReceiverAddressError": "!!!All your funds are already at the address you are trying send money to.",
   "api.errors.ApiMethodNotYetImplementedError": "This API method is not yet implemented.",
   "api.errors.CanNotCalculateTransactionFeesError": "Cannot calculate fees while there are pending transactions.",
   "api.errors.ForbiddenMnemonicError": "Invalid recovery phrase. Submitted recovery phrase is one of the example recovery phrases from the documentation and should not be used for wallets holding funds.",
