@@ -5,7 +5,7 @@ import type { ChildProcess } from 'child_process';
 import { configureJormungandrDeps } from './nodes';
 import { STAKE_POOL_REGISTRY_URL } from '../config';
 import { environment } from '../environment';
-import { NIGHTLY, SELFNODE } from '../../common/types/environment.types';
+import { NIGHTLY, SELFNODE, QA } from '../../common/types/environment.types';
 
 export type WalletOpts = {
   path: string,
@@ -58,6 +58,11 @@ export async function CardanoWalletLauncher(
         Object.assign(envVariables, {
           CARDANO_WALLET_STAKE_POOL_REGISTRY_URL:
             STAKE_POOL_REGISTRY_URL[NIGHTLY],
+        });
+      }
+      if (environment.isIncentivizedTestnetQA) {
+        Object.assign(envVariables, {
+          CARDANO_WALLET_STAKE_POOL_REGISTRY_URL: STAKE_POOL_REGISTRY_URL[QA],
         });
       }
       break;

@@ -136,4 +136,6 @@ export const STAKE_POOL_REGISTRY_URL = {
     'https://github.com/input-output-hk/daedalus/raw/selfnode/test-integration-registry.zip',
   nightly:
     'https://github.com/piotr-iohk/incentivized-testnet-stakepool-registry/archive/master.zip',
+  qa:
+    'https://explorer.qa.jormungandr-testnet.iohkdev.io/stakepool-registry/registry.zip',
 };
