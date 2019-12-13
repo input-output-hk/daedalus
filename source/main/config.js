@@ -131,5 +131,9 @@ export const DISK_SPACE_CHECK_SHORT_INTERVAL = isTest ? 2000 : 10 * 1000; // 10 
 export const DISK_SPACE_RECOMMENDED_PERCENTAGE = 15; // 15% of the total disk space
 
 // CardanoWallet config
-export const CARDANO_WALLET_STAKE_POOL_REGISTRY_URL =
-  'https://github.com/input-output-hk/daedalus/raw/selfnode/test-integration-registry.zip';
+export const STAKE_POOL_REGISTRY_URL = {
+  selfnode:
+    'https://github.com/input-output-hk/daedalus/raw/selfnode/test-integration-registry.zip',
+  nightly:
+    'https://github.com/piotr-iohk/incentivized-testnet-stakepool-registry/archive/master.zip',
+};
