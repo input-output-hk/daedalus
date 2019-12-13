@@ -10,7 +10,9 @@ export const formattedWalletAmount = (
   withCurrency: boolean = true,
   long: boolean = true
 ) => {
-  let formattedAmount = long ? amount.toFormat(DECIMAL_PLACES_IN_ADA) : shortNumber(amount);
+  let formattedAmount = long
+    ? amount.toFormat(DECIMAL_PLACES_IN_ADA)
+    : shortNumber(amount);
   const { decimalSeparator } = BigNumber.config().FORMAT;
   if (!long && decimalSeparator !== '.') {
     // Only BigNumber.toFormat() method is applying correct separators.
