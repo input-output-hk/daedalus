@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 
+- Implemented all notifications to be on the top of the app and in front of any other element ([PR 1748](https://github.com/input-output-hk/daedalus/pull/1748))
 - Added list stake pools API endpoint errors handlers ([PR 1765](https://github.com/input-output-hk/daedalus/pull/1765))
 - Added "Terms of use" for the Incentivized Testnet v1 - Rewards network ([PR 1741](https://github.com/input-output-hk/daedalus/pull/1741))
 - Updated stake pool ranking logic to use `apparent_performance` from the Api response ([PR 1757](https://github.com/input-output-hk/daedalus/pull/1757))
