@@ -1,12 +1,11 @@
 // @flow
 import { computed, action, observable } from 'mobx';
 import BigNumber from 'bignumber.js';
-import { orderBy, take } from 'lodash';
+import { orderBy, find, map } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import { ROUTES } from '../routes-config';
 import {
-  RECENT_STAKE_POOLS_COUNT,
   STAKE_POOLS_INTERVAL,
   STAKE_POOLS_FAST_INTERVAL,
 } from '../config/stakingConfig';
@@ -99,8 +98,25 @@ export default class StakingStore extends Store {
   }
 
   @computed get recentStakePools(): Array<StakePool> {
-    const orderedStakePools = orderBy(this.stakePools, 'ranking', 'asc');
-    return take(orderedStakePools, RECENT_STAKE_POOLS_COUNT);
+    const delegatedStakePools = [];
+    map(this.stores.wallets.all, wallet => {
+      if (wallet.delegatedStakePoolId) {
+        const delegatingStakePoolExistInList = find(
+          delegatedStakePools,
+          delegatedStakePool =>
+            delegatedStakePool.id === wallet.delegatedStakePoolId
+        );
+        if (!delegatingStakePoolExistInList) {
+          const delegatingStakePool = find(
+            this.stakePools,
+            stakePool => stakePool.id === wallet.delegatedStakePoolId
+          );
+          delegatedStakePools.push(delegatingStakePool);
+        }
+      }
+    });
+    const orderedStakePools = orderBy(delegatedStakePools, 'ranking', 'asc');
+    return orderedStakePools;
   }
 
   @computed get isStakingDelegationCountdown(): boolean {
