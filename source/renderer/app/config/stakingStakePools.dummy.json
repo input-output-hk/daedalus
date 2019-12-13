@@ -1,6 +1,6 @@
 [
   {
-    "controlledStake": 7,
+    "controlledStake": 2938470000000,
     "cost": "30",
     "createdAt": "2019-12-03T13:55:06.729Z",
     "description": "ea ea velit",
@@ -11,10 +11,10 @@
     "performance": 0,
     "pledge": "68",
     "pledgeAddress": "https://amira.net",
-    "producedBlocks": 82,
+    "producedBlocks": 429856,
     "metrics": {
-      "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "controlled_stake": 29384700000,
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 99,
@@ -23,7 +23,7 @@
     "ticker": "GKLN"
   },
   {
-    "controlledStake": 18,
+    "controlledStake": 18384700,
     "cost": "35",
     "createdAt": "2019-12-03T22:06:16.260Z",
     "description": "qui neque consequuntur",
@@ -37,7 +37,7 @@
     "producedBlocks": 35,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 63,
@@ -46,7 +46,7 @@
     "ticker": "ETZL"
   },
   {
-    "controlledStake": 83,
+    "controlledStake": 83384700000,
     "cost": "51",
     "createdAt": "2019-12-03T05:11:50.131Z",
     "description": "cumque a quas",
@@ -60,7 +60,7 @@
     "producedBlocks": 2,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 3,
@@ -69,7 +69,7 @@
     "ticker": "TUQV"
   },
   {
-    "controlledStake": 55,
+    "controlledStake": 55384700000000,
     "cost": "73",
     "createdAt": "2019-12-03T08:43:52.880Z",
     "description": "voluptatum necessitatibus et",
@@ -83,7 +83,7 @@
     "producedBlocks": 27,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 99,
@@ -92,7 +92,7 @@
     "ticker": "RKBV"
   },
   {
-    "controlledStake": 84,
+    "controlledStake": 8438470000000,
     "cost": "6",
     "createdAt": "2019-12-03T13:50:57.480Z",
     "description": "fugiat qui minima",
@@ -106,7 +106,7 @@
     "producedBlocks": 21,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 37,
@@ -129,7 +129,7 @@
     "producedBlocks": 96,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 41,
@@ -152,7 +152,7 @@
     "producedBlocks": 76,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 63,
@@ -175,7 +175,7 @@
     "producedBlocks": 76,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 89,
@@ -198,7 +198,7 @@
     "producedBlocks": 86,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 52,
@@ -221,7 +221,7 @@
     "producedBlocks": 32,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 63,
@@ -244,7 +244,7 @@
     "producedBlocks": 93,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 31,
@@ -267,7 +267,7 @@
     "producedBlocks": 2,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 34,
@@ -290,7 +290,7 @@
     "producedBlocks": 48,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 17,
@@ -313,7 +313,7 @@
     "producedBlocks": 54,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 5,
@@ -336,7 +336,7 @@
     "producedBlocks": 61,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 25,
@@ -359,7 +359,7 @@
     "producedBlocks": 100,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 99,
@@ -382,7 +382,7 @@
     "producedBlocks": 80,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 89,
@@ -405,7 +405,7 @@
     "producedBlocks": 95,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 31,
@@ -428,7 +428,7 @@
     "producedBlocks": 53,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 74,
@@ -451,7 +451,7 @@
     "producedBlocks": 37,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 7,
@@ -474,7 +474,7 @@
     "producedBlocks": 51,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 61,
@@ -497,7 +497,7 @@
     "producedBlocks": 57,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 39,
@@ -520,7 +520,7 @@
     "producedBlocks": 95,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 94,
@@ -543,7 +543,7 @@
     "producedBlocks": 83,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 43,
@@ -566,7 +566,7 @@
     "producedBlocks": 61,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 62,
@@ -589,7 +589,7 @@
     "producedBlocks": 87,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 34,
@@ -612,7 +612,7 @@
     "producedBlocks": 97,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 46,
@@ -635,7 +635,7 @@
     "producedBlocks": 92,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 90,
@@ -658,7 +658,7 @@
     "producedBlocks": 99,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 99,
@@ -681,7 +681,7 @@
     "producedBlocks": 98,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 53,
@@ -704,7 +704,7 @@
     "producedBlocks": 90,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 10,
@@ -727,7 +727,7 @@
     "producedBlocks": 14,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 85,
@@ -750,7 +750,7 @@
     "producedBlocks": 50,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 74,
@@ -773,7 +773,7 @@
     "producedBlocks": 0,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 13,
@@ -796,7 +796,7 @@
     "producedBlocks": 70,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 22,
@@ -819,7 +819,7 @@
     "producedBlocks": 73,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 60,
@@ -842,7 +842,7 @@
     "producedBlocks": 37,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 52,
@@ -865,7 +865,7 @@
     "producedBlocks": 73,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 42,
@@ -888,7 +888,7 @@
     "producedBlocks": 70,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 7,
@@ -911,7 +911,7 @@
     "producedBlocks": 34,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 93,
@@ -934,7 +934,7 @@
     "producedBlocks": 69,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 54,
@@ -957,7 +957,7 @@
     "producedBlocks": 10,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 9,
@@ -980,7 +980,7 @@
     "producedBlocks": 61,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 84,
@@ -1003,7 +1003,7 @@
     "producedBlocks": 14,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 92,
@@ -1026,7 +1026,7 @@
     "producedBlocks": 1,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 69,
@@ -1049,7 +1049,7 @@
     "producedBlocks": 79,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 65,
@@ -1072,7 +1072,7 @@
     "producedBlocks": 60,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 78,
@@ -1095,7 +1095,7 @@
     "producedBlocks": 70,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 94,
@@ -1118,7 +1118,7 @@
     "producedBlocks": 95,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 83,
@@ -1141,7 +1141,7 @@
     "producedBlocks": 7,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 6,
@@ -1164,7 +1164,7 @@
     "producedBlocks": 54,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 67,
@@ -1187,7 +1187,7 @@
     "producedBlocks": 78,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 88,
@@ -1210,7 +1210,7 @@
     "producedBlocks": 73,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 100,
@@ -1233,7 +1233,7 @@
     "producedBlocks": 21,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 73,
@@ -1256,7 +1256,7 @@
     "producedBlocks": 49,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 96,
@@ -1279,7 +1279,7 @@
     "producedBlocks": 89,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 86,
@@ -1302,7 +1302,7 @@
     "producedBlocks": 48,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 83,
@@ -1325,7 +1325,7 @@
     "producedBlocks": 74,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 60,
@@ -1348,7 +1348,7 @@
     "producedBlocks": 57,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 11,
@@ -1371,7 +1371,7 @@
     "producedBlocks": 71,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 94,
@@ -1394,7 +1394,7 @@
     "producedBlocks": 0,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 2,
@@ -1417,7 +1417,7 @@
     "producedBlocks": 84,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 78,
@@ -1440,7 +1440,7 @@
     "producedBlocks": 21,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 36,
@@ -1463,7 +1463,7 @@
     "producedBlocks": 39,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 46,
@@ -1486,7 +1486,7 @@
     "producedBlocks": 29,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 22,
@@ -1509,7 +1509,7 @@
     "producedBlocks": 20,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 63,
@@ -1532,7 +1532,7 @@
     "producedBlocks": 79,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 73,
@@ -1555,7 +1555,7 @@
     "producedBlocks": 5,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 95,
@@ -1578,7 +1578,7 @@
     "producedBlocks": 14,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 63,
@@ -1601,7 +1601,7 @@
     "producedBlocks": 43,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 63,
@@ -1624,7 +1624,7 @@
     "producedBlocks": 77,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 36,
@@ -1647,7 +1647,7 @@
     "producedBlocks": 12,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 45,
@@ -1670,7 +1670,7 @@
     "producedBlocks": 29,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 69,
@@ -1693,7 +1693,7 @@
     "producedBlocks": 77,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 51,
@@ -1716,7 +1716,7 @@
     "producedBlocks": 8,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 4,
@@ -1739,7 +1739,7 @@
     "producedBlocks": 8,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 70,
@@ -1762,7 +1762,7 @@
     "producedBlocks": 94,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 22,
@@ -1785,7 +1785,7 @@
     "producedBlocks": 40,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 46,
@@ -1808,7 +1808,7 @@
     "producedBlocks": 54,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 86,
@@ -1831,7 +1831,7 @@
     "producedBlocks": 100,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 98,
@@ -1854,7 +1854,7 @@
     "producedBlocks": 52,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 3,
@@ -1877,7 +1877,7 @@
     "producedBlocks": 85,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 6,
@@ -1900,7 +1900,7 @@
     "producedBlocks": 83,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 27,
@@ -1923,7 +1923,7 @@
     "producedBlocks": 88,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 65,
@@ -1946,7 +1946,7 @@
     "producedBlocks": 95,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 41,
@@ -1969,7 +1969,7 @@
     "producedBlocks": 51,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 19,
@@ -1992,7 +1992,7 @@
     "producedBlocks": 44,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 17,
@@ -2015,7 +2015,7 @@
     "producedBlocks": 90,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 10,
@@ -2038,7 +2038,7 @@
     "producedBlocks": 61,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 56,
@@ -2061,7 +2061,7 @@
     "producedBlocks": 11,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 91,
@@ -2084,7 +2084,7 @@
     "producedBlocks": 5,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 40,
@@ -2107,7 +2107,7 @@
     "producedBlocks": 44,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 22,
@@ -2130,7 +2130,7 @@
     "producedBlocks": 13,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 66,
@@ -2153,7 +2153,7 @@
     "producedBlocks": 28,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 38,
@@ -2176,7 +2176,7 @@
     "producedBlocks": 96,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 22,
@@ -2199,7 +2199,7 @@
     "producedBlocks": 7,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 20,
@@ -2222,7 +2222,7 @@
     "producedBlocks": 55,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 76,
@@ -2245,7 +2245,7 @@
     "producedBlocks": 44,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 88,
@@ -2268,7 +2268,7 @@
     "producedBlocks": 5,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 24,
@@ -2291,7 +2291,7 @@
     "producedBlocks": 99,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 93,
@@ -2314,7 +2314,7 @@
     "producedBlocks": 11,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 47,
@@ -2337,7 +2337,7 @@
     "producedBlocks": 28,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 22,
@@ -2360,7 +2360,7 @@
     "producedBlocks": 9,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 70,
@@ -2383,7 +2383,7 @@
     "producedBlocks": 25,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 40,
@@ -2406,7 +2406,7 @@
     "producedBlocks": 74,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 63,
@@ -2429,7 +2429,7 @@
     "producedBlocks": 54,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 16,
@@ -2452,7 +2452,7 @@
     "producedBlocks": 59,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 39,
@@ -2475,7 +2475,7 @@
     "producedBlocks": 30,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 95,
@@ -2498,7 +2498,7 @@
     "producedBlocks": 40,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 25,
@@ -2521,7 +2521,7 @@
     "producedBlocks": 57,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 12,
@@ -2544,7 +2544,7 @@
     "producedBlocks": 92,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 72,
@@ -2567,7 +2567,7 @@
     "producedBlocks": 76,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 80,
@@ -2590,7 +2590,7 @@
     "producedBlocks": 46,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 12,
@@ -2613,7 +2613,7 @@
     "producedBlocks": 0,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 92,
@@ -2636,7 +2636,7 @@
     "producedBlocks": 92,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 8,
@@ -2659,7 +2659,7 @@
     "producedBlocks": 37,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 7,
@@ -2682,7 +2682,7 @@
     "producedBlocks": 64,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 40,
@@ -2705,7 +2705,7 @@
     "producedBlocks": 93,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 6,
@@ -2728,7 +2728,7 @@
     "producedBlocks": 84,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 58,
@@ -2751,7 +2751,7 @@
     "producedBlocks": 35,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 43,
@@ -2774,7 +2774,7 @@
     "producedBlocks": 10,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 79,
@@ -2797,7 +2797,7 @@
     "producedBlocks": 34,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 10,
@@ -2820,7 +2820,7 @@
     "producedBlocks": 69,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 26,
@@ -2843,7 +2843,7 @@
     "producedBlocks": 61,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 80,
@@ -2866,7 +2866,7 @@
     "producedBlocks": 21,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 96,
@@ -2889,7 +2889,7 @@
     "producedBlocks": 33,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 73,
@@ -2912,7 +2912,7 @@
     "producedBlocks": 48,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 59,
@@ -2935,7 +2935,7 @@
     "producedBlocks": 3,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 83,
@@ -2958,7 +2958,7 @@
     "producedBlocks": 35,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 25,
@@ -2981,7 +2981,7 @@
     "producedBlocks": 25,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 7,
@@ -3004,7 +3004,7 @@
     "producedBlocks": 77,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 29,
@@ -3027,7 +3027,7 @@
     "producedBlocks": 13,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 6,
@@ -3050,7 +3050,7 @@
     "producedBlocks": 25,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 36,
@@ -3073,7 +3073,7 @@
     "producedBlocks": 88,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 27,
@@ -3096,7 +3096,7 @@
     "producedBlocks": 27,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 50,
@@ -3119,7 +3119,7 @@
     "producedBlocks": 10,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 27,
@@ -3142,7 +3142,7 @@
     "producedBlocks": 36,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 48,
@@ -3165,7 +3165,7 @@
     "producedBlocks": 86,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 53,
@@ -3188,7 +3188,7 @@
     "producedBlocks": 32,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 5,
@@ -3211,7 +3211,7 @@
     "producedBlocks": 32,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 48,
@@ -3234,7 +3234,7 @@
     "producedBlocks": 53,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 3,
@@ -3257,7 +3257,7 @@
     "producedBlocks": 28,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 28,
@@ -3280,7 +3280,7 @@
     "producedBlocks": 31,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 97,
@@ -3303,7 +3303,7 @@
     "producedBlocks": 82,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 89,
@@ -3326,7 +3326,7 @@
     "producedBlocks": 87,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 55,
@@ -3349,7 +3349,7 @@
     "producedBlocks": 82,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 69,
@@ -3372,7 +3372,7 @@
     "producedBlocks": 20,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 33,
@@ -3395,7 +3395,7 @@
     "producedBlocks": 17,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 86,
@@ -3418,7 +3418,7 @@
     "producedBlocks": 55,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 31,
@@ -3441,7 +3441,7 @@
     "producedBlocks": 35,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 45,
@@ -3464,7 +3464,7 @@
     "producedBlocks": 23,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 36,
@@ -3487,7 +3487,7 @@
     "producedBlocks": 56,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 94,
@@ -3510,7 +3510,7 @@
     "producedBlocks": 58,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 7,
@@ -3533,7 +3533,7 @@
     "producedBlocks": 13,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 82,
@@ -3556,7 +3556,7 @@
     "producedBlocks": 49,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 42,
@@ -3579,7 +3579,7 @@
     "producedBlocks": 35,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 85,
@@ -3602,7 +3602,7 @@
     "producedBlocks": 85,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 32,
@@ -3625,7 +3625,7 @@
     "producedBlocks": 85,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 62,
@@ -3648,7 +3648,7 @@
     "producedBlocks": 71,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 36,
@@ -3671,7 +3671,7 @@
     "producedBlocks": 80,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 58,
@@ -3694,7 +3694,7 @@
     "producedBlocks": 7,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 92,
@@ -3717,7 +3717,7 @@
     "producedBlocks": 76,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 79,
@@ -3740,7 +3740,7 @@
     "producedBlocks": 23,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 50,
@@ -3763,7 +3763,7 @@
     "producedBlocks": 68,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 4,
@@ -3786,7 +3786,7 @@
     "producedBlocks": 33,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 43,
@@ -3809,7 +3809,7 @@
     "producedBlocks": 18,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 8,
@@ -3832,7 +3832,7 @@
     "producedBlocks": 91,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 46,
@@ -3855,7 +3855,7 @@
     "producedBlocks": 40,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 63,
@@ -3878,7 +3878,7 @@
     "producedBlocks": 50,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 63,
@@ -3901,7 +3901,7 @@
     "producedBlocks": 89,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 55,
@@ -3924,7 +3924,7 @@
     "producedBlocks": 51,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 93,
@@ -3947,7 +3947,7 @@
     "producedBlocks": 14,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 54,
@@ -3970,7 +3970,7 @@
     "producedBlocks": 83,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 88,
@@ -3993,7 +3993,7 @@
     "producedBlocks": 26,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 17,
@@ -4016,7 +4016,7 @@
     "producedBlocks": 82,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 92,
@@ -4039,7 +4039,7 @@
     "producedBlocks": 47,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 77,
@@ -4062,7 +4062,7 @@
     "producedBlocks": 88,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 72,
@@ -4085,7 +4085,7 @@
     "producedBlocks": 73,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 27,
@@ -4108,7 +4108,7 @@
     "producedBlocks": 84,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 91,
@@ -4131,7 +4131,7 @@
     "producedBlocks": 71,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 95,
@@ -4154,7 +4154,7 @@
     "producedBlocks": 11,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 6,
@@ -4177,7 +4177,7 @@
     "producedBlocks": 36,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 57,
@@ -4200,7 +4200,7 @@
     "producedBlocks": 57,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 21,
@@ -4223,7 +4223,7 @@
     "producedBlocks": 73,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 27,
@@ -4246,7 +4246,7 @@
     "producedBlocks": 99,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 54,
@@ -4269,7 +4269,7 @@
     "producedBlocks": 90,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 80,
@@ -4292,7 +4292,7 @@
     "producedBlocks": 46,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 26,
@@ -4315,7 +4315,7 @@
     "producedBlocks": 34,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 98,
@@ -4338,7 +4338,7 @@
     "producedBlocks": 25,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 5,
@@ -4361,7 +4361,7 @@
     "producedBlocks": 10,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 6,
@@ -4384,7 +4384,7 @@
     "producedBlocks": 57,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 19,
@@ -4407,7 +4407,7 @@
     "producedBlocks": 41,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 85,
@@ -4430,7 +4430,7 @@
     "producedBlocks": 50,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 74,
@@ -4453,7 +4453,7 @@
     "producedBlocks": 66,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 33,
@@ -4476,7 +4476,7 @@
     "producedBlocks": 97,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 8,
@@ -4499,7 +4499,7 @@
     "producedBlocks": 21,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 68,
@@ -4522,7 +4522,7 @@
     "producedBlocks": 45,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 4,
@@ -4545,7 +4545,7 @@
     "producedBlocks": 66,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 84,
@@ -4568,7 +4568,7 @@
     "producedBlocks": 26,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 58,
@@ -4591,7 +4591,7 @@
     "producedBlocks": 20,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 97,
@@ -4614,7 +4614,7 @@
     "producedBlocks": 69,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 82,
@@ -4637,7 +4637,7 @@
     "producedBlocks": 14,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 86,
@@ -4660,7 +4660,7 @@
     "producedBlocks": 23,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 82,
@@ -4683,7 +4683,7 @@
     "producedBlocks": 87,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 11,
@@ -4706,7 +4706,7 @@
     "producedBlocks": 25,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 79,
@@ -4729,7 +4729,7 @@
     "producedBlocks": 11,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 48,
@@ -4752,7 +4752,7 @@
     "producedBlocks": 38,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 52,
@@ -4775,7 +4775,7 @@
     "producedBlocks": 53,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 86,
@@ -4798,7 +4798,7 @@
     "producedBlocks": 70,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 15,
@@ -4821,7 +4821,7 @@
     "producedBlocks": 90,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 28,
@@ -4844,7 +4844,7 @@
     "producedBlocks": 82,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 0,
@@ -4867,7 +4867,7 @@
     "producedBlocks": 98,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 30,
@@ -4890,7 +4890,7 @@
     "producedBlocks": 87,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 30,
@@ -4913,7 +4913,7 @@
     "producedBlocks": 21,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 74,
@@ -4936,7 +4936,7 @@
     "producedBlocks": 89,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 69,
@@ -4959,7 +4959,7 @@
     "producedBlocks": 81,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 23,
@@ -4982,7 +4982,7 @@
     "producedBlocks": 0,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 80,
@@ -5005,7 +5005,7 @@
     "producedBlocks": 23,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 83,
@@ -5028,7 +5028,7 @@
     "producedBlocks": 43,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 92,
@@ -5051,7 +5051,7 @@
     "producedBlocks": 20,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 96,
@@ -5074,7 +5074,7 @@
     "producedBlocks": 35,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 13,
@@ -5097,7 +5097,7 @@
     "producedBlocks": 81,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 62,
@@ -5120,7 +5120,7 @@
     "producedBlocks": 7,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 81,
@@ -5143,7 +5143,7 @@
     "producedBlocks": 50,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 1,
@@ -5166,7 +5166,7 @@
     "producedBlocks": 26,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 35,
@@ -5189,7 +5189,7 @@
     "producedBlocks": 7,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 27,
@@ -5212,7 +5212,7 @@
     "producedBlocks": 0,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 81,
@@ -5235,7 +5235,7 @@
     "producedBlocks": 2,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 98,
@@ -5258,7 +5258,7 @@
     "producedBlocks": 29,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 39,
@@ -5281,7 +5281,7 @@
     "producedBlocks": 99,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 90,
@@ -5304,7 +5304,7 @@
     "producedBlocks": 40,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 19,
@@ -5327,7 +5327,7 @@
     "producedBlocks": 18,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 70,
@@ -5350,7 +5350,7 @@
     "producedBlocks": 36,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 2,
@@ -5373,7 +5373,7 @@
     "producedBlocks": 22,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 65,
@@ -5396,7 +5396,7 @@
     "producedBlocks": 53,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 81,
@@ -5419,7 +5419,7 @@
     "producedBlocks": 3,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 28,
@@ -5442,7 +5442,7 @@
     "producedBlocks": 88,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 13,
@@ -5465,7 +5465,7 @@
     "producedBlocks": 53,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 96,
@@ -5488,7 +5488,7 @@
     "producedBlocks": 85,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 85,
@@ -5511,7 +5511,7 @@
     "producedBlocks": 33,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 18,
@@ -5534,7 +5534,7 @@
     "producedBlocks": 15,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 24,
@@ -5557,7 +5557,7 @@
     "producedBlocks": 63,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 8,
@@ -5580,7 +5580,7 @@
     "producedBlocks": 5,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 70,
@@ -5603,7 +5603,7 @@
     "producedBlocks": 84,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 29,
@@ -5626,7 +5626,7 @@
     "producedBlocks": 60,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 99,
@@ -5649,7 +5649,7 @@
     "producedBlocks": 93,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 37,
@@ -5672,7 +5672,7 @@
     "producedBlocks": 3,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 90,
@@ -5695,7 +5695,7 @@
     "producedBlocks": 27,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 63,
@@ -5718,7 +5718,7 @@
     "producedBlocks": 48,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 65,
@@ -5741,7 +5741,7 @@
     "producedBlocks": 2,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 79,
@@ -5764,7 +5764,7 @@
     "producedBlocks": 27,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 38,
@@ -5787,7 +5787,7 @@
     "producedBlocks": 58,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 81,
@@ -5810,7 +5810,7 @@
     "producedBlocks": 63,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 84,
@@ -5833,7 +5833,7 @@
     "producedBlocks": 22,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 75,
@@ -5856,7 +5856,7 @@
     "producedBlocks": 14,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 49,
@@ -5879,7 +5879,7 @@
     "producedBlocks": 74,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 0,
@@ -5902,7 +5902,7 @@
     "producedBlocks": 93,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 72,
@@ -5925,7 +5925,7 @@
     "producedBlocks": 37,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 86,
@@ -5948,7 +5948,7 @@
     "producedBlocks": 19,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 26,
@@ -5971,7 +5971,7 @@
     "producedBlocks": 70,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 55,
@@ -5994,7 +5994,7 @@
     "producedBlocks": 14,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 3,
@@ -6017,7 +6017,7 @@
     "producedBlocks": 24,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 45,
@@ -6040,7 +6040,7 @@
     "producedBlocks": 70,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 67,
@@ -6063,7 +6063,7 @@
     "producedBlocks": 7,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 75,
@@ -6086,7 +6086,7 @@
     "producedBlocks": 17,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 72,
@@ -6109,7 +6109,7 @@
     "producedBlocks": 14,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 34,
@@ -6132,7 +6132,7 @@
     "producedBlocks": 22,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 60,
@@ -6155,7 +6155,7 @@
     "producedBlocks": 45,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 62,
@@ -6178,7 +6178,7 @@
     "producedBlocks": 13,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 37,
@@ -6201,7 +6201,7 @@
     "producedBlocks": 37,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 2,
@@ -6224,7 +6224,7 @@
     "producedBlocks": 27,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 12,
@@ -6247,7 +6247,7 @@
     "producedBlocks": 41,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 88,
@@ -6270,7 +6270,7 @@
     "producedBlocks": 24,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 49,
@@ -6293,7 +6293,7 @@
     "producedBlocks": 56,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 13,
@@ -6316,7 +6316,7 @@
     "producedBlocks": 60,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 32,
@@ -6339,7 +6339,7 @@
     "producedBlocks": 82,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 11,
@@ -6362,7 +6362,7 @@
     "producedBlocks": 5,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 93,
@@ -6385,7 +6385,7 @@
     "producedBlocks": 4,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 33,
@@ -6408,7 +6408,7 @@
     "producedBlocks": 81,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 14,
@@ -6431,7 +6431,7 @@
     "producedBlocks": 69,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 39,
@@ -6454,7 +6454,7 @@
     "producedBlocks": 9,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 85,
@@ -6477,7 +6477,7 @@
     "producedBlocks": 98,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 28,
@@ -6500,7 +6500,7 @@
     "producedBlocks": 68,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 29,
@@ -6523,7 +6523,7 @@
     "producedBlocks": 60,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 31,
@@ -6546,7 +6546,7 @@
     "producedBlocks": 53,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 79,
@@ -6569,7 +6569,7 @@
     "producedBlocks": 48,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 76,
@@ -6592,7 +6592,7 @@
     "producedBlocks": 81,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 2,
@@ -6615,7 +6615,7 @@
     "producedBlocks": 9,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 67,
@@ -6638,7 +6638,7 @@
     "producedBlocks": 25,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 9,
@@ -6661,7 +6661,7 @@
     "producedBlocks": 27,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 36,
@@ -6684,7 +6684,7 @@
     "producedBlocks": 2,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 4,
@@ -6707,7 +6707,7 @@
     "producedBlocks": 73,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 59,
@@ -6730,7 +6730,7 @@
     "producedBlocks": 50,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 86,
@@ -6753,7 +6753,7 @@
     "producedBlocks": 63,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 88,
@@ -6776,7 +6776,7 @@
     "producedBlocks": 98,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 94,
@@ -6799,7 +6799,7 @@
     "producedBlocks": 71,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 27,
@@ -6822,7 +6822,7 @@
     "producedBlocks": 50,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 15,
@@ -6845,7 +6845,7 @@
     "producedBlocks": 100,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 15,
@@ -6868,7 +6868,7 @@
     "producedBlocks": 2,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 77,
@@ -6891,7 +6891,7 @@
     "producedBlocks": 45,
     "metrics": {
       "controlled_stake": 293847,
-      "produced_blocks": 42985629456
+      "produced_blocks": 429856
     },
     "apparent_performance": 92387293,
     "profitMargin": 64,
