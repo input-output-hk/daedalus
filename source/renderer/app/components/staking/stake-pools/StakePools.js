@@ -12,6 +12,11 @@ import { getFilteredStakePoolsList } from './helpers';
 import StakePool from '../../../domains/StakePool';
 
 const messages = defineMessages({
+  delegatingListTitle: {
+    id: 'staking.stakePools.delegatingListTitle',
+    defaultMessage: '!!!Stake pools you are currently delegating to',
+    description: '"delegatingListTitlee" for the Stake Pools page.',
+  },
   listTitle: {
     id: 'staking.stakePools.listTitle',
     defaultMessage: '!!!Stake pools ({pools})',
@@ -37,6 +42,7 @@ type Props = {
   currentTheme: string,
   onDelegate: Function,
   isLoading: boolean,
+  stakePoolsDelegatingList: Array<StakePool>,
 };
 
 type State = {
@@ -79,6 +85,7 @@ export default class StakePools extends Component<Props, State> {
       getPledgeAddressUrl,
       currentTheme,
       isLoading,
+      stakePoolsDelegatingList,
     } = this.props;
     const { search, selectedList } = this.state;
 
@@ -125,6 +132,25 @@ export default class StakePools extends Component<Props, State> {
               onClearSearch={this.handleClearSearch}
               isClearTooltipOpeningDownward
             />
+
+            {stakePoolsDelegatingList.length > 0 && (
+              <Fragment>
+                <h2>{intl.formatMessage(messages.delegatingListTitle)}</h2>
+                <StakePoolsList
+                  listName="stakePoolsDelegatingList"
+                  stakePoolsList={stakePoolsDelegatingList}
+                  onOpenExternalLink={onOpenExternalLink}
+                  getPledgeAddressUrl={getPledgeAddressUrl}
+                  currentTheme={currentTheme}
+                  isListActive={selectedList === 'stakePoolsDelegatingList'}
+                  setListActive={this.handleSetListActive}
+                  containerClassName="StakingWithNavigation_page"
+                  onSelect={this.onDelegate}
+                  numberOfStakePools={stakePoolsList.length}
+                  showWithSelectButton
+                />
+              </Fragment>
+            )}
 
             <h2>
               <FormattedMessage
