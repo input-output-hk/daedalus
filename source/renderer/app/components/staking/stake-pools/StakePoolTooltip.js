@@ -428,13 +428,17 @@ export default class StakePoolTooltip extends Component<Props, State> {
             </div>
           )}
           <div className={styles.description}>{description}</div>
-          <button
-            className={styles.homepage}
+
+          <span
+            role="presentation"
+            aria-hidden
+            className={styles.homepageAddress}
             onClick={() => onOpenExternalLink(homepage)}
           >
-            <span className={styles.homepageContent}>{homepage}</span>
+            {homepage}
             <SVGInline svg={externalLinkIcon} />
-          </button>
+          </span>
+
           <dl className={styles.table}>
             <dt>{intl.formatMessage(messages.ranking)}</dt>
             <dd className={styles.ranking}>
@@ -518,12 +522,12 @@ export default class StakePoolTooltip extends Component<Props, State> {
               </span>
             </dd> */}
           <button
-            className={styles.homepage}
+            className={styles.pledgeAddress}
             onClick={() =>
               onOpenExternalLink(getPledgeAddressUrl(pledgeAddress))
             }
           >
-            <span className={styles.homepageContent}>
+            <span className={styles.pledgeAddressContent}>
               {intl.formatMessage(messages.pledgeAddressLabel)}
             </span>
             <SVGInline svg={externalLinkIcon} />
