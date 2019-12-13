@@ -19,6 +19,7 @@ Changelog
 
 ### Fixes
 
+- Fixed the display of headlines on the "Network" splash screen ([PR 1770](https://github.com/input-output-hk/daedalus/pull/1770))
 - Fixed spending password error handling ([PR 1767](https://github.com/input-output-hk/daedalus/pull/1767))
 - Fixed an issue where "Balance" wallet notification wasn't offering an option to create a "Rewards" wallet in case none are available ([PR 1761](https://github.com/input-output-hk/daedalus/pull/1761))
 - Fixed the middle ellipsis for different addresses lengths ([PR 1736](https://github.com/input-output-hk/daedalus/pull/1736))
