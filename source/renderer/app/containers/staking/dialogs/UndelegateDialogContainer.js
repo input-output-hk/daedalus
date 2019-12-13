@@ -40,7 +40,8 @@ export default class UndelegateDialogContainer extends Component<Props> {
 
     if (
       (!delegatedStakePoolId || !isDelegatioTransactionPending) &&
-      undelegateWalletSubmissionSuccess
+      undelegateWalletSubmissionSuccess &&
+      !quitStakePoolRequest.error
     ) {
       return (
         <UndelegateConfirmationResultDialog
