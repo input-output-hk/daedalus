@@ -5,21 +5,37 @@ import {
   LOVELACES_PER_ADA,
 } from '../config/numbersConfig';
 
-// Symbol	  Name	              Scientific Notation
-// K	      Thousand	          1.00E+03
-// M	      Million	            1.00E+06
-// B	      Billion	            1.00E+09
-// T	      Trillion	          1.00E+12
-// Q	      Quadrillion	        1.00E+15
 export const formattedWalletAmount = (
   amount: BigNumber,
   withCurrency: boolean = true,
   long: boolean = true
 ) => {
+  let formattedAmount = long
+    ? amount.toFormat(DECIMAL_PLACES_IN_ADA)
+    : shortNumber(amount);
+  const { decimalSeparator } = BigNumber.config().FORMAT;
+  if (!long && decimalSeparator !== '.') {
+    // Only BigNumber.toFormat() method is applying correct separators.
+    // Since this method is not used for condensed format (long = false)
+    // the correct number format has to be applied manually.
+    formattedAmount = formattedAmount.split('.').join(decimalSeparator);
+  }
+  if (withCurrency) {
+    formattedAmount = `${formattedAmount} ADA`;
+  }
+  return formattedAmount.toString();
+};
+
+// Symbol   Name                Scientific Notation
+// K        Thousand            1.00E+03
+// M        Million             1.00E+06
+// B        Billion             1.00E+09
+// T        Trillion            1.00E+12
+// Q        Quadrillion         1.00E+15
+export const shortNumber = (value: number | BigNumber): string => {
+  const amount = new BigNumber(value);
   let formattedAmount = '';
-  if (long) {
-    formattedAmount = amount.toFormat(DECIMAL_PLACES_IN_ADA);
-  } else if (amount.isZero()) {
+  if (amount.isZero()) {
     formattedAmount = '0';
   } else if (amount.lessThan(1000)) {
     formattedAmount = `${amount.round(
@@ -47,17 +63,7 @@ export const formattedWalletAmount = (
       .dividedBy(1000000000000000)
       .round(1, BigNumber.ROUND_DOWN)}Q`;
   }
-
-  const { decimalSeparator } = BigNumber.config().FORMAT;
-  if (!long && decimalSeparator !== '.') {
-    // Only BigNumber.toFormat() method is applying correct separators.
-    // Since this method is not used for condensed format (long = false)
-    // the correct number format has to be applied manually.
-    formattedAmount = formattedAmount.split('.').join(decimalSeparator);
-  }
-
-  if (withCurrency) formattedAmount += ' ADA';
-  return formattedAmount.toString();
+  return formattedAmount;
 };
 
 export const formattedAmountToNaturalUnits = (amount: string): string => {

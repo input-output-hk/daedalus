@@ -1,3 +1,8 @@
+/**
+ * It generates stake pool dummy json content
+ * Command to run: node source/renderer/app/config/generateStakePoolFakeData.js
+ */
+
 const faker = require('faker');
 const fs = require('fs');
 const path = require('path');
@@ -6,7 +11,7 @@ const BigNumber = require('bignumber.js');
 function generatStakePoolsFakeData() {
   const stakePools = [];
   for (let i = 1; i <= 300; i++) {
-    const controlledStake = faker.random.number(100);
+    const controlledStake = faker.random.number(10000000000000);
     const cost = new BigNumber(faker.random.number(100));
     const createdAt = faker.date.recent();
     const description = faker.lorem.words();
@@ -17,7 +22,7 @@ function generatStakePoolsFakeData() {
     const performance = faker.random.number(100);
     const pledge = new BigNumber(faker.random.number(100));
     const pledgeAddress = faker.internet.url();
-    const producedBlocks = faker.random.number(100);
+    const producedBlocks = faker.random.number(10000000);
     const profitMargin = faker.random.number(100);
     const ranking = i;
     const retiring = null;

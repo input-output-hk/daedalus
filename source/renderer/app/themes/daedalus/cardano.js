@@ -685,6 +685,9 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-staking-stake-pools-search-clear-button-background-color':
       'rgba(68, 91, 124, 0.05)',
     '--theme-staking-stake-pools-title-color': '#5e6066',
+    '--theme-staking-stake-pool-tooltip-neutral-background-color':
+      'rgba(32, 34, 37, .1)',
+    '--theme-staking-stake-pool-tooltip-neutral-text-color': '#5e6066',
   },
   staking: {
     '--theme-staking-content-background-color': '#ffffff',
