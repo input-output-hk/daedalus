@@ -37,6 +37,7 @@ Changelog
 
 ### Chores
 
+- Updated `react-polymorph` to version `0.9.0-rc.26` ([PR 1772](https://github.com/input-output-hk/daedalus/pull/1772))
 - Updated wallet delegation / undelegation ([PR 1766](https://github.com/input-output-hk/daedalus/pull/1766))
 - Updated `webpack` package to version `4.39.1` ([PR 1769](https://github.com/input-output-hk/daedalus/pull/1769))
 - Improved "Delegration Center" epoch countdown to use epoch info from the Api ([PR 1751](https://github.com/input-output-hk/daedalus/pull/1751))
