@@ -676,6 +676,9 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-staking-progress-label-light': '#2d2d2d',
     '--theme-staking-stake-pools-search-clear-button-background-color':
       'rgba(68, 91, 124, 0.05)',
+    '--theme-staking-stake-pool-tooltip-neutral-background-color':
+      'rgba(45, 45, 45, .1)',
+    '--theme-staking-stake-pool-tooltip-neutral-text-color': '#2d2d2d',
   },
   staking: {
     '--theme-staking-content-background-color': '#ffffff',
