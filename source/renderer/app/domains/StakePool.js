@@ -27,7 +27,7 @@ export type StakePoolProps = {
   // pledge: BigNumber,
   isCharity: boolean,
   name: string,
-  profitMargin: number,
+  // profitMargin: number,
   ranking: number,
   retiring?: ?Date,
 };
