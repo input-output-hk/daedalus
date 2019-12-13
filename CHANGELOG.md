@@ -21,6 +21,7 @@ Changelog
 ### Fixes
 
 - Fixed auto scrolling on wallet restore wizard when recovery phrase words field is focused ([PR 1077](https://github.com/input-output-hk/daedalus/pull/1077))
+- Fixed undelegation issue ([PR 1774](https://github.com/input-output-hk/daedalus/pull/1774))
 - Fixed the display of headlines on the "Network" splash screen ([PR 1770](https://github.com/input-output-hk/daedalus/pull/1770))
 - Fixed spending password error handling ([PR 1767](https://github.com/input-output-hk/daedalus/pull/1767))
 - Fixed an issue where "Balance" wallet notification wasn't offering an option to create a "Rewards" wallet in case none are available ([PR 1761](https://github.com/input-output-hk/daedalus/pull/1761))
