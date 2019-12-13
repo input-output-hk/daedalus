@@ -1110,13 +1110,11 @@ export default class AdaApi {
     Logger.debug('AdaApi::getStakePools called');
     try {
       const stakePools: AdaApiStakePools = await getStakePools(this.config);
+
       Logger.debug('AdaApi::getStakePools success');
-      return (
-        stakePools
-          // @API TODO: Filter Stake Pools without metadata, once metadata is present in the API response
-          // .filter(({ metadata }: AdaApiStakePool) => metadata !== undefined)
-          .map(_createStakePoolFromServerData)
-      );
+      return stakePools
+        .filter(({ metadata }: AdaApiStakePool) => metadata !== undefined)
+        .map(_createStakePoolFromServerData);
     } catch (error) {
       Logger.error('AdaApi::getStakePools error', { error });
       throw new GenericApiError();
@@ -1458,15 +1456,17 @@ const _createStakePoolFromServerData = action(
   'AdaApi::_createStakePoolFromServerData',
   (stakePool: AdaApiStakePool, index: number) => {
     // DATA FROM THE API
-    const { id, metrics, apparent_performance: performance } = stakePool;
+    const {
+      id,
+      metrics,
+      apparent_performance: performance,
+      metadata,
+    } = stakePool;
     let {
       controlled_stake: controlledStake,
       produced_blocks: producedBlocks,
     } = metrics; // eslint-disable-line
     const {
-      // MISSING DATA FROM THE API
-      // IT IS CONTAINED IN THE DOCS:
-      metadata,
       // MISSING DATA FROM THE API
       // NOT CONTAINED IN THE CURRENT API DOCS:
       // _cost: cost,
@@ -1479,7 +1479,7 @@ const _createStakePoolFromServerData = action(
     } = stakingStakePoolsMissingApiData[index];
     const {
       name,
-      description,
+      description = '',
       ticker,
       homepage,
       pledge_address: pledgeAddress,
