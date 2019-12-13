@@ -6,6 +6,8 @@ blockchain_configuration:
   # expected value in seconds since UNIX_EPOCH
   block0_date: 1556202057
 
+  block_content_max_size: 1024000
+
   # This is the type of dicrimination of the blockchain
   # of this blockchain is meant for production then
   # use 'production' instead.
@@ -34,15 +36,10 @@ blockchain_configuration:
   # BFT leaders encoded as bech32. The order in the list matters.
   consensus_leader_ids:
     - ed25519_pk192m4ytl5k357e2l666yleuwjlurmf0vxjyh4atxzu5m22q6mexlsp88k7x
-  # Genesis praos parameter D
-  bft_slots_ratio: 0
 
   # Genesis praos active slot coefficient
   # Determines minimum stake required to try becoming slot leader, must be in range (0,1]
   consensus_genesis_praos_active_slot_coeff: 1
-
-  # This is the max number of messages allowed in a given Block
-  max_number_of_transactions_per_block: 255
 
   # The fee calculations settings
   #
@@ -90,7 +87,8 @@ blockchain_configuration:
 
       # the rate at which the contribution is tweaked related to epoch.
       epoch_rate: 1
-
+  # set some reward constraints and limits
+  #
   # initial value the treasury will start with, if not set the treasury
   # starts at 0
   treasury: 0
@@ -112,6 +110,31 @@ blockchain_configuration:
     # to 10000. Uncomment the following line to apply a max limit:
     # max_limit: 10000
 
+  # this value is optional, the default is no constraints at all
+  reward_constraints:
+    # limit the epoch total reward drawing limit to a portion of the total
+    # active stake of the system.
+    #
+    # for example, if set to 10%, the reward drawn will be bounded by the
+    # 10% of the total active stake.
+    #
+    # this value is optional, the default is no reward drawing limit
+    reward_drawing_limit_max: "10/100"
+
+    # settings to incentivize the numbers of stake pool to be registered
+    # on the blockchain.
+    #
+    # These settings does not prevent more stake pool to be added. For example
+    # if there is already 1000 stake pools, someone can still register a new
+    # stake pool and affect the rewards of everyone else too.
+    #
+    # if the threshold is reached, the pool doesn't really have incentive to
+    # create more blocks than 1 / set-value-of-pools % of stake.
+    #
+    # this value is optional, the default is no pool participation capping
+    pool_participation_capping:
+      min: 1
+      max: 10
 # The initial deposits present in the blockchain.
 #
 # The last 10 addresses come from 10 different wallets. For the integration
