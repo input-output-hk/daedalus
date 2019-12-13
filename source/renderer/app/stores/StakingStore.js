@@ -28,9 +28,6 @@ export default class StakingStore extends Store {
   @observable isDelegatioTransactionPending = false;
   @observable fetchingStakePoolsFailed = false;
 
-  STAKE_POOLS_INITIAL_INTERVAL = 1000; // 1000 milliseconds
-  STAKE_POOLS_REFRESH_INTERVAL = 30 * 60 * 1000; // 30 minutes | unit: milliseconds;
-
   pollingStakePoolsInterval: ?IntervalID = null;
   refreshPooling: ?IntervalID = null;
   delegationCheckTimeInterval: ?IntervalID = null;
