@@ -3,6 +3,9 @@ import { spawn } from 'child_process';
 import { dirname } from 'path';
 import type { ChildProcess } from 'child_process';
 import { configureJormungandrDeps } from './nodes';
+import { STAKE_POOL_REGISTRY_URL } from '../config';
+import { environment } from '../environment';
+import { NIGHTLY, SELFNODE, QA } from '../../common/types/environment.types';
 
 export type WalletOpts = {
   path: string,
@@ -26,6 +29,15 @@ export async function CardanoWalletLauncher(
     path,
     walletArgs,
   } = walletOpts;
+  const walletStdio: string[] = ['pipe', 'pipe', 'pipe', 'ipc'];
+  const nodePath = dirname(nodeBin);
+  const PATH: string = (process.env.PATH: any);
+  const envVariables: {
+    PATH: string,
+    CARDANO_WALLET_STAKE_POOL_REGISTRY_URL?: string,
+  } = {
+    PATH: `${nodePath}:${PATH}`,
+  };
 
   // This switch statement handles any node specifc
   // configuration, prior to spawning the child process
@@ -37,21 +49,32 @@ export async function CardanoWalletLauncher(
       // The selfnode is identified by the unique genesis-block wallet arg
       if (walletArgs.findIndex(arg => arg === '--genesis-block') > -1) {
         await configureJormungandrDeps(cliBin, stateDir);
+        Object.assign(envVariables, {
+          CARDANO_WALLET_STAKE_POOL_REGISTRY_URL:
+            STAKE_POOL_REGISTRY_URL[SELFNODE],
+        });
+      }
+      if (environment.isIncentivizedTestnetNightly) {
+        Object.assign(envVariables, {
+          CARDANO_WALLET_STAKE_POOL_REGISTRY_URL:
+            STAKE_POOL_REGISTRY_URL[NIGHTLY],
+        });
+      }
+      if (environment.isIncentivizedTestnetQA) {
+        Object.assign(envVariables, {
+          CARDANO_WALLET_STAKE_POOL_REGISTRY_URL: STAKE_POOL_REGISTRY_URL[QA],
+        });
       }
       break;
     default:
       break;
   }
 
-  const walletStdio: string[] = ['pipe', 'pipe', 'pipe', 'ipc'];
-  const nodePath = dirname(nodeBin);
-  const PATH: string = (process.env.PATH: any);
-
   const childProcess = spawn(path, walletArgs, {
     stdio: walletStdio,
     env: {
       ...process.env,
-      PATH: `${nodePath}:${PATH}`,
+      ...envVariables,
     },
   });
 

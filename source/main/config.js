@@ -129,3 +129,13 @@ export const DISK_SPACE_CHECK_LONG_INTERVAL = 10 * 60 * 1000; // 10 minutes | un
 export const DISK_SPACE_CHECK_MEDIUM_INTERVAL = 60 * 1000; // 1 minute | unit: milliseconds
 export const DISK_SPACE_CHECK_SHORT_INTERVAL = isTest ? 2000 : 10 * 1000; // 10 seconds | unit: milliseconds
 export const DISK_SPACE_RECOMMENDED_PERCENTAGE = 15; // 15% of the total disk space
+
+// CardanoWallet config
+export const STAKE_POOL_REGISTRY_URL = {
+  selfnode:
+    'https://github.com/input-output-hk/daedalus/raw/selfnode/test-integration-registry.zip',
+  nightly:
+    'https://github.com/piotr-iohk/incentivized-testnet-stakepool-registry/archive/master.zip',
+  qa:
+    'https://explorer.qa.jormungandr-testnet.iohkdev.io/stakepool-registry/registry.zip',
+};
