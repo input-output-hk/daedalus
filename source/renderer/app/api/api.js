@@ -1470,10 +1470,7 @@ const _createStakePoolFromServerData = action(
     } = metrics; // eslint-disable-line
     const {
       // MISSING DATA FROM THE API
-      // IT IS CONTAINED IN THE DOCS:
-      // metadata,
       // NOT CONTAINED IN THE CURRENT API DOCS:
-      // _cost: cost,
       _createdAt: createdAt,
       _isCharity: isCharity,
       // _pledge: pledge,
