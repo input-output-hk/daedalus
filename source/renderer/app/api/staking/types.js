@@ -21,6 +21,14 @@ export type AdaApiStakePool = {
     },
   },
   apparent_performance: number,
+  cost: {
+    quantity: number,
+    unit: 'lovelace',
+  },
+  margin: {
+    quantity: number,
+    unit: 'percent',
+  },
   metadata: {
     owner: string,
     ticker: string, // [3 .. 5] characters

@@ -60,9 +60,9 @@ const messages = defineMessages({
     description: '"Retirement" for the Stake Pools Tooltip page.',
   },
   // cost: {
-  //   id: 'staking.stakePools.tooltip.cost',
-  //   defaultMessage: '!!!Cost:',
-  //   description: 'Cost" for the Stake Pools Tooltip page.',
+  //  id: 'staking.stakePools.tooltip.cost',
+  //  defaultMessage: '!!!Operating Costs:',
+  //  description: 'Cost" for the Stake Pools Tooltip page.',
   // },
   // pledge: {
   //   id: 'staking.stakePools.tooltip.pledge',
@@ -384,6 +384,8 @@ export default class StakePoolTooltip extends Component<Props, State> {
       producedBlocks,
       retiring,
       pledgeAddress,
+      cost,
+      profitMargin,
     } = stakePool;
 
     const componentClassnames = classnames([
@@ -454,7 +456,7 @@ export default class StakePoolTooltip extends Component<Props, State> {
                 )}
               </span>
             </dd>
-            {/* <dt>{intl.formatMessage(messages.profitMargin)}</dt>
+            <dt>{intl.formatMessage(messages.profitMargin)}</dt>
             <dd className={styles.profitMargin}>
               <span
                 style={{
@@ -465,9 +467,11 @@ export default class StakePoolTooltip extends Component<Props, State> {
                   }),
                 }}
               >
-                {parseFloat(profitMargin.toFixed(2))}%
+                {`${parseFloat(profitMargin.toFixed(2))}% + ${shortNumber(
+                  cost
+                )} ADA`}
               </span>
-            </dd> */}
+            </dd>
             <dt>{intl.formatMessage(messages.performance)}</dt>
             <dd className={styles.performance}>
               <span
@@ -486,22 +490,22 @@ export default class StakePoolTooltip extends Component<Props, State> {
             <dd className={styles.defaultColor}>
               <span>{shortNumber(producedBlocks)}</span>
             </dd>
-            {/*
-            <dt>{intl.formatMessage(messages.cost)}</dt>
+            {/* <dt>{intl.formatMessage(messages.cost)}</dt>
             <dd>
               <span
                 style={{
-                  background: getColorFromRange(cost, {
+                  background: getColorFromRange(shortNumber(cost), {
                     darken,
                     alpha,
                   }),
                 }}
               >
-                {formattedWalletAmount(cost)}
+                {formattedWalletAmount(shortNumber(cost))}
               </span>
-            </dd></dl>
-            <dt>{intl.formatMessage(messages.pledge)}</dt>
-            <dd>
+            </dd> */}
+          </dl>
+          {/* <dt>{intl.formatMessage(messages.pledge)}</dt> */}
+          {/* <dd>
               <span
                 style={{
                   background: getColorFromRange(pledge, {
@@ -512,9 +516,7 @@ export default class StakePoolTooltip extends Component<Props, State> {
               >
                 {formattedWalletAmount(pledge)}
               </span>
-            </dd>
-            */}
-          </dl>
+            </dd> */}
           <button
             className={styles.homepage}
             onClick={() =>

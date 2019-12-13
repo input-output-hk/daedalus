@@ -1458,7 +1458,13 @@ const _createStakePoolFromServerData = action(
   'AdaApi::_createStakePoolFromServerData',
   (stakePool: AdaApiStakePool, index: number) => {
     // DATA FROM THE API
-    const { id, metrics, apparent_performance: performance } = stakePool;
+    const {
+      id,
+      metrics,
+      apparent_performance: performance,
+      cost,
+      margin: profitMargin,
+    } = stakePool;
     let {
       controlled_stake: controlledStake,
       produced_blocks: producedBlocks,
@@ -1467,13 +1473,9 @@ const _createStakePoolFromServerData = action(
       // MISSING DATA FROM THE API
       // IT IS CONTAINED IN THE DOCS:
       metadata,
-      // MISSING DATA FROM THE API
-      // NOT CONTAINED IN THE CURRENT API DOCS:
-      // _cost: cost,
       _createdAt: createdAt,
       _isCharity: isCharity,
       // _pledge: pledge,
-      // _profitMargin: profitMargin,
       // _ranking: ranking,
       _retiring: retiring,
     } = stakingStakePoolsMissingApiData[index];
@@ -1486,6 +1488,8 @@ const _createStakePoolFromServerData = action(
     } = metadata;
     controlledStake = controlledStake.quantity;
     producedBlocks = producedBlocks.quantity;
+    const costQuantity = cost ? cost.quantity : 1100000000;
+    const profitMarginQuantity = profitMargin ? profitMargin.quantity : 33;
     return new StakePool({
       id,
       performance: performance * 100, // Percentage!
@@ -1494,14 +1498,13 @@ const _createStakePoolFromServerData = action(
       ticker,
       homepage,
       pledgeAddress,
-
-      // cost: new BigNumber(cost).dividedBy(LOVELACES_PER_ADA),
+      cost: new BigNumber(costQuantity).dividedBy(LOVELACES_PER_ADA),
       createdAt,
       description,
       isCharity,
       name,
       // pledge: new BigNumber(pledge).dividedBy(LOVELACES_PER_ADA),
-      // profitMargin,
+      profitMargin: profitMarginQuantity,
       ranking: index + 1,
       retiring,
     });
