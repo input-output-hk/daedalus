@@ -2,17 +2,17 @@
 import { defineMessages } from 'react-intl';
 
 export default defineMessages({
-  downloadLogsSuccess: {
-    id: 'notification.downloadLogsSuccess',
-    defaultMessage: '!!!Logs successfully downloaded',
-    description:
-      'Notification for download logs in the Loading and Settings pages.',
-  },
   downloadLogsProgress: {
     id: 'notification.downloadLogsProgress',
     defaultMessage: '!!!Preparing logs for download',
     description:
       'Notification for download logs in progress in the Loading and Settings pages.',
+  },
+  downloadLogsSuccess: {
+    id: 'notification.downloadLogsSuccess',
+    defaultMessage: '!!!Logs successfully downloaded',
+    description:
+      'Notification for download logs in the Loading and Settings pages.',
   },
   copyAddress: {
     id: 'notification.copyAddress',
