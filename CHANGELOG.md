@@ -19,6 +19,7 @@ Changelog
 
 ### Fixes
 
+- Fixed spending password error handling ([PR 1767](https://github.com/input-output-hk/daedalus/pull/1767))
 - Fixed an issue where "Balance" wallet notification wasn't offering an option to create a "Rewards" wallet in case none are available ([PR 1761](https://github.com/input-output-hk/daedalus/pull/1761))
 - Fixed the middle ellipsis for different addresses lengths ([PR 1736](https://github.com/input-output-hk/daedalus/pull/1736))
 - Fixed missing "hamburger" icon on wallet menu while there are only legacy wallets in the UI ([PR 1730](https://github.com/input-output-hk/daedalus/pull/1730))
