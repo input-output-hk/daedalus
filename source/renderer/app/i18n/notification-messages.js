@@ -21,8 +21,8 @@ export default defineMessages({
     description:
       'Notification for the wallet address copy success in the Wallet Receive page.',
   },
-  copyStateDirectory: {
-    id: 'notification.copyStateDirectory',
+  copyStateDirectoryPath: {
+    id: 'notification.copyStateDirectoryPath',
     defaultMessage: '!!!Daedalus state directory copied to clipboard',
     description:
       'Notification for the state directory copy success in the Diagnostics page.',

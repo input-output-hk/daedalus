@@ -175,7 +175,7 @@
   "noDiskSpace.error.overlayContent": "<b>ダイダロスを動作させるには、ハードディスクに少なくとも{diskSpaceRequired}の空き容量が必要です。お使いのコンピュータは、空き容量が{diskSpaceMissing}不足しています。ダイダロスのご利用を続けるためには、ファイルをいくつか削除して空き容量を増やしてください。 </b><br /><br />オペレーティングシステムとインストール済みプログラムを正常かつ安定した状態で動作させるには、ハードディスクに少なくとも15％（お使いのコンピュータの場合は{diskSpaceRecommended}）の空き容量が必要です。ハードディスクに少なくともこの程度の空き容量を確保することを強くお勧めします。",
   "noDiskSpace.error.overlayTitle": "ダイダロスを動作させるには、ハードディスクの空き容量が足りません",
   "notification.copyAddress": "ウォレットアドレスのコピーに成功しました",
-  "notification.copyStateDirectory": "Daedalusステータスディレクトリーをクリップボードにコピーしました",
+  "notification.copyStateDirectoryPath": "Daedalusステータスディレクトリーをクリップボードにコピーしました",
   "notification.downloadLogsProgress": "ダウンロード用のログを準備しています",
   "notification.downloadLogsSuccess": "ログのダウンロードに成功しました。",
   "paper.wallet.create.certificate.completion.dialog.addressCopiedLabel": "コピーされました",

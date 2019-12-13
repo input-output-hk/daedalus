@@ -144,15 +144,14 @@ export default class NetworkStatusStore extends Store {
 
     this._getStateDirectoryPath();
 
-    this.actions.notifications.registerNotification.trigger({
-      notificationConfig: {
-        id: 'copyStateDirectoryPath',
-        actionToListenAndOpen: networkStatusActions.copyStateDirectoryPath,
-      },
-      notificationMessage: {
-        icon: 'successIcon',
-      },
-    });
+    setTimeout(() => {
+      this.actions.notifications.registerNotification.trigger({
+        config: {
+          id: 'copyStateDirectoryPath',
+          actionToListenAndOpen: networkStatusActions.copyStateDirectoryPath,
+        },
+      });
+    }, 0);
   }
 
   // Setup network status polling interval

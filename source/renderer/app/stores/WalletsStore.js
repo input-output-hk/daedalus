@@ -264,12 +264,9 @@ export default class WalletsStore extends Store {
     );
 
     this.actions.notifications.registerNotification.trigger({
-      notificationConfig: {
+      config: {
         id: 'copyAddress',
         actionToListenAndOpen: walletsActions.copyAddress,
-      },
-      notificationMessage: {
-        icon: 'successIcon',
       },
     });
   }

@@ -10,7 +10,7 @@ export type NotificationConfig = {
 };
 
 export type StoredNotification = {
-  notificationConfig: NotificationConfig,
-  notificationMessage: NotificationMessageProps,
+  config: NotificationConfig,
+  notificationMessage?: NotificationMessageProps,
   labelValues?: Object,
 };

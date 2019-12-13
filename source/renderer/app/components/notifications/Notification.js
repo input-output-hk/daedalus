@@ -2,10 +2,9 @@
 import React, { Component, Fragment } from 'react';
 import type { Node } from 'react';
 import SVGInline from 'react-svg-inline';
-// import { CSSTransition } from 'react-transition-group';
+// import { Transition } from 'react-transition-group';
 import classNames from 'classnames';
 import styles from './Notification.scss';
-// import notificationTransitionsStyles from './NotificationTransitions.scss';
 import closeCross from '../../assets/images/close-cross.inline.svg';
 
 export type NotificationMessageProps = {
@@ -15,11 +14,12 @@ export type NotificationMessageProps = {
   hasEllipsis?: boolean,
   themeOverride?: 'grey', // if left empty, the noticiation will have its normal colors
   labelValues?: Object,
+  isVisible: boolean,
 };
 
 type Props = {
   ...$Exact<NotificationMessageProps>,
-  label?: Node,
+  children?: Node,
   onClose?: Function,
   order?: 'auto' | number | 'initial' | 'inherit',
 };
@@ -35,26 +35,23 @@ export default class Notification extends Component<Props> {
   render() {
     const {
       icon,
-      label,
+      children,
       clickToClose,
       hasCloseButton,
       hasEllipsis,
       onClose,
       order,
       themeOverride,
+      isVisible,
     } = this.props;
 
     const notificationMessageStyles = classNames([
       styles.component,
+      isVisible ? styles.isVisible : null,
       hasEllipsis ? styles.hasEllipsis : null,
       clickToClose ? styles.clickToClose : null,
       themeOverride ? styles[`theme-override-${themeOverride}`] : null,
     ]);
-
-    // const transitionsStyles = classNames([
-    //   styles.transition,
-    //   notificationTransitionsStyles,
-    // ]);
 
     return (
       <div
@@ -69,7 +66,7 @@ export default class Notification extends Component<Props> {
         <Fragment>
           {icon && <SVGInline svg={icon} className={styles.icon} />}
 
-          <div className={styles.message}>{label}</div>
+          <div className={styles.message}>{children}</div>
 
           {hasCloseButton && (
             <button

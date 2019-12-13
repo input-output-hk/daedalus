@@ -175,7 +175,7 @@
   "noDiskSpace.error.overlayContent": "!!!<b>There is not enough disk space left on your device.</b><br />Daedalus requires at least {diskSpaceRequired} to operate. Please free up some disk space to continue.",
   "noDiskSpace.error.overlayTitle": "!!!Not enough disk space",
   "notification.copyAddress": "!!!Address: <strong>{walletAddress}</strong> copied to clipboard",
-  "notification.copyStateDirectory": "Daedalus state directory copied to clipboard",
+  "notification.copyStateDirectoryPath": "Daedalus state directory copied to clipboard",
   "notification.downloadLogsProgress": "!!!Preparing logs for download",
   "notification.downloadLogsSuccess": "!!!Logs successfully downloaded",
   "paper.wallet.create.certificate.completion.dialog.addressCopiedLabel": "!!!copied",

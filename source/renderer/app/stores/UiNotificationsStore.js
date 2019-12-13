@@ -6,29 +6,32 @@ import type { StoredNotification } from '../types/notificationType';
 
 export default class UiNotificationsStore extends Store {
   @observable activeNotifications: {} = {};
+  @observable notifications: {} = {};
 
   setup() {
     this.actions.notifications.registerNotification.listen(
       this._registerNotification
     );
-    this.actions.notifications.closeActiveNotification.listen(this._onClose);
+    this.actions.notifications.closeNotification.listen(this._onClose);
   }
 
   isOpen = (id: string): boolean => !!this.activeNotifications[id];
 
-  @action _registerNotification = (storedNotification: StoredNotification) => {
-    const { actionToListenAndOpen } = storedNotification.notificationConfig;
+  @action _registerNotification = (notification: StoredNotification) => {
+    const { id } = notification.config;
+    this.notifications[id] = notification;
+    const { actionToListenAndOpen } = notification.config;
     actionToListenAndOpen.listen((labelValues?: Object) =>
-      this._openNotification(storedNotification, labelValues)
+      this._openNotification(notification, labelValues)
     );
   };
 
   @action _openNotification = (
-    storedNotification: StoredNotification,
+    notification: StoredNotification,
     labelValues?: Object
   ) => {
-    const { id, duration = 5000 } = storedNotification.notificationConfig;
-    this.activeNotifications[id] = { ...storedNotification, labelValues };
+    const { id, duration = 5000 } = notification.config;
+    this.activeNotifications[id] = { labelValues };
     setTimeout(() => this._onClose({ id }), duration);
   };
 

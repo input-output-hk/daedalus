@@ -3,13 +3,20 @@
 .component {
   background-color: var(--theme-notification-message-background-color);
   box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.25);
+  height: 0;
   left: 0;
   overflow: hidden;
   position: absolute;
   right: 0;
   text-align: center;
+  transition: all 200ms linear;
   top: 0;
   width: 100%;
+
+  &.isVisible {
+    height: 62px;
+    padding: 9px 0;
+  }
 
   &.theme-override-grey {
     background-color: rgba(94, 96, 102, 0.95);
@@ -23,10 +30,6 @@
       color: var(--rp-tooltip-text-color);
     }
   }
-}
-
-.transition {
-  transition: all 200ms linear;
 }
 
 .clickToClose {
