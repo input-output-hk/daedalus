@@ -1,3 +1,8 @@
+/**
+ * It generates stake pool dummy json content
+ * Command to run: node source/renderer/app/config/generateStakePoolFakeData.js
+ */
+
 const faker = require('faker');
 const fs = require('fs');
 const path = require('path');
