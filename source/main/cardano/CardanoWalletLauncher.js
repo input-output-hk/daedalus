@@ -52,6 +52,8 @@ export async function CardanoWalletLauncher(
     env: {
       ...process.env,
       PATH: `${nodePath}:${PATH}`,
+      CARDANO_WALLET_STAKE_POOL_REGISTRY_URL:
+        'https://github.com/input-output-hk/cardano-wallet/raw/master/lib/jormungandr/test/data/jormungandr/stake_pools/registry/test-integration-registry.zip',
     },
   });
 
