@@ -2,10 +2,13 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
-import { find, get } from 'lodash';
+import { find, get, take } from 'lodash';
 import BigNumber from 'bignumber.js';
 import DelegationSetupWizardDialog from '../../../components/staking/delegation-setup-wizard/DelegationSetupWizardDialog';
-import { MIN_DELEGATION_FUNDS } from '../../../config/stakingConfig';
+import {
+  MIN_DELEGATION_FUNDS,
+  RECENT_STAKE_POOLS_COUNT,
+} from '../../../config/stakingConfig';
 import { getNetworkExplorerUrlByType } from '../../../utils/network';
 import type { InjectedDialogContainerProps } from '../../../types/injectedPropsType';
 
@@ -184,7 +187,7 @@ export default class DelegationSetupWizardDialogContainer extends Component<
         selectedWallet={selectedWallet}
         selectedPool={selectedPool || null}
         stakePoolsList={stakePools}
-        recentStakePools={recentStakePools}
+        recentStakePools={take(recentStakePools, RECENT_STAKE_POOLS_COUNT)}
         stakePoolJoinFee={stakePoolJoinFee}
         futureEpochStartTime={futureEpochStartTime}
         currentLocale={currentLocale}
