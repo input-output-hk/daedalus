@@ -129,3 +129,7 @@ export const DISK_SPACE_CHECK_LONG_INTERVAL = 10 * 60 * 1000; // 10 minutes | un
 export const DISK_SPACE_CHECK_MEDIUM_INTERVAL = 60 * 1000; // 1 minute | unit: milliseconds
 export const DISK_SPACE_CHECK_SHORT_INTERVAL = isTest ? 2000 : 10 * 1000; // 10 seconds | unit: milliseconds
 export const DISK_SPACE_RECOMMENDED_PERCENTAGE = 15; // 15% of the total disk space
+
+// CardanoWallet config
+export const CARDANO_WALLET_STAKE_POOL_REGISTRY_URL =
+  'https://github.com/input-output-hk/cardano-wallet/raw/master/lib/jormungandr/test/data/jormungandr/stake_pools/registry/test-integration-registry.zip';
