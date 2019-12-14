@@ -1,12 +1,19 @@
 // @flow
 import { observable, action } from 'mobx';
-import { /* set, */ omit } from 'lodash';
+import { omit } from 'lodash';
 import Store from './lib/Store';
-import type { StoredNotification } from '../types/notificationType';
+import { NOTIFICATION_DEFAULT_DURATION } from '../config/timingConfig';
+import type {
+  NotificationConfig,
+  NotificationId,
+} from '../types/notificationTypes';
 
 export default class UiNotificationsStore extends Store {
-  @observable activeNotifications: {} = {};
-  @observable notifications: {} = {};
+  @observable activeNotifications: {
+    [key: NotificationId]: {
+      labelValues?: {},
+    },
+  } = {};
 
   setup() {
     this.actions.notifications.registerNotification.listen(
@@ -15,17 +22,16 @@ export default class UiNotificationsStore extends Store {
     this.actions.notifications.closeNotification.listen(this._onClose);
   }
 
-  isOpen = (id: string): boolean => !!this.activeNotifications[id];
+  isOpen = (id: NotificationId): boolean => !!this.activeNotifications[id];
 
-  @action _registerNotification = (notification: StoredNotification) => {
-    const { id } = notification.config;
-    this.notifications[id] = notification;
+  @action _registerNotification = (notificationConfig: NotificationConfig) => {
     const {
+      id,
       actionToListenAndOpen,
       actionToListenAndClose,
-    } = notification.config;
+    } = notificationConfig;
     actionToListenAndOpen.listen((labelValues?: Object) =>
-      this._openNotification(notification, labelValues)
+      this._openNotification(notificationConfig, labelValues)
     );
     if (actionToListenAndClose) {
       actionToListenAndClose.listen(() => this._onClose({ id }));
@@ -33,26 +39,17 @@ export default class UiNotificationsStore extends Store {
   };
 
   @action _openNotification = (
-    notification: StoredNotification,
+    notificationConfig: NotificationConfig,
     labelValues?: Object
   ) => {
-    const { id, duration = 5000 } = notification.config;
+    const { id, duration = NOTIFICATION_DEFAULT_DURATION } = notificationConfig;
     this.activeNotifications[id] = { labelValues };
     setTimeout(() => this._onClose({ id }), duration);
   };
 
-  @action _onClose = ({ id }: { id: string }) => {
-    const notification = this.activeNotifications[id];
-    if (notification) {
+  @action _onClose = ({ id }: { id: NotificationId }) => {
+    if (id in this.activeNotifications) {
       this.activeNotifications = omit(this.activeNotifications, id);
-    }
-  };
-
-  @action _updateSeconds = (id: string) => {
-    const notification = this.activeNotifications[id];
-    if (notification && notification.duration) {
-      notification.duration -= 1;
-      if (notification.duration === 0) this._onClose({ id });
     }
   };
 }

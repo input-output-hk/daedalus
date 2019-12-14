@@ -143,15 +143,6 @@ export default class NetworkStatusStore extends Store {
     this._checkDiskSpace();
 
     this._getStateDirectoryPath();
-
-    setTimeout(() => {
-      this.actions.notifications.registerNotification.trigger({
-        config: {
-          id: 'copyStateDirectoryPath',
-          actionToListenAndOpen: networkStatusActions.copyStateDirectoryPath,
-        },
-      });
-    }, 0);
   }
 
   // Setup network status polling interval

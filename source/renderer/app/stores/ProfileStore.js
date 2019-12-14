@@ -132,29 +132,6 @@ export default class ProfileStore extends Store {
     ]);
     this._getTermsOfUseAcceptance();
     this._getDataLayerMigrationAcceptance();
-
-    setTimeout(() => {
-      this.actions.notifications.registerNotification.trigger({
-        config: {
-          id: 'downloadLogsProgress',
-          actionToListenAndOpen: this.actions.profile.downloadLogs,
-          actionToListenAndClose: this.actions.profile.downloadLogsSuccess,
-        },
-        message: {
-          icon: 'spinner',
-          hasEllipsis: true,
-          clickToClose: false,
-          hasCloseButton: false,
-        },
-      });
-      this.actions.notifications.registerNotification.trigger({
-        config: {
-          id: 'downloadLogsSuccess',
-          actionToListenAndOpen: this.actions.profile.downloadLogsSuccess,
-          actionToListenAndClose: this.actions.profile.downloadLogs,
-        },
-      });
-    }, 0);
   }
 
   _updateBigNumberFormat = () => {

@@ -13,14 +13,14 @@ export type NotificationMessageProps = {
   hasEllipsis?: boolean,
   themeOverride?: 'grey', // if left empty, the noticiation will have its normal colors
   labelValues?: Object,
-  isVisible: boolean,
-  hasSpinner: boolean,
+  hasSpinner?: boolean,
 };
 
 type Props = {
   ...$Exact<NotificationMessageProps>,
   children?: Node,
   onClose?: Function,
+  isVisible: boolean,
   order?: 'auto' | number | 'initial' | 'inherit',
 };
 

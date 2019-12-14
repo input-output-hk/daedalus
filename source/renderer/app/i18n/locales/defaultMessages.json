@@ -9264,6 +9264,67 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Preparing logs for download",
+        "description": "Notification for download logs in progress in the Loading and Settings pages.",
+        "end": {
+          "column": 3,
+          "line": 23
+        },
+        "file": "source/renderer/app/containers/notifications/NotificationsContainer.js",
+        "id": "notification.downloadLogsProgress",
+        "start": {
+          "column": 24,
+          "line": 18
+        }
+      },
+      {
+        "defaultMessage": "!!!Logs successfully downloaded",
+        "description": "Notification for download logs in the Loading and Settings pages.",
+        "end": {
+          "column": 3,
+          "line": 29
+        },
+        "file": "source/renderer/app/containers/notifications/NotificationsContainer.js",
+        "id": "notification.downloadLogsSuccess",
+        "start": {
+          "column": 23,
+          "line": 24
+        }
+      },
+      {
+        "defaultMessage": "!!!Address: <strong>{walletAddress}</strong> copied to clipboard",
+        "description": "Notification for the wallet address copy success in the Wallet Receive page.",
+        "end": {
+          "column": 3,
+          "line": 36
+        },
+        "file": "source/renderer/app/containers/notifications/NotificationsContainer.js",
+        "id": "notification.copyAddress",
+        "start": {
+          "column": 15,
+          "line": 30
+        }
+      },
+      {
+        "defaultMessage": "!!!Daedalus state directory copied to clipboard",
+        "description": "Notification for the state directory copy success in the Diagnostics page.",
+        "end": {
+          "column": 3,
+          "line": 42
+        },
+        "file": "source/renderer/app/containers/notifications/NotificationsContainer.js",
+        "id": "notification.copyStateDirectoryPath",
+        "start": {
+          "column": 26,
+          "line": 37
+        }
+      }
+    ],
+    "path": "source/renderer/app/containers/notifications/NotificationsContainer.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/requests/new/",
         "description": "\"submit a support request\" link URL in the \"Report a problem\" section on the support settings page.",
         "end": {
@@ -10117,67 +10178,6 @@
       }
     ],
     "path": "source/renderer/app/i18n/global-messages.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Preparing logs for download",
-        "description": "Notification for download logs in progress in the Loading and Settings pages.",
-        "end": {
-          "column": 3,
-          "line": 10
-        },
-        "file": "source/renderer/app/i18n/notification-messages.js",
-        "id": "notification.downloadLogsProgress",
-        "start": {
-          "column": 24,
-          "line": 5
-        }
-      },
-      {
-        "defaultMessage": "!!!Logs successfully downloaded",
-        "description": "Notification for download logs in the Loading and Settings pages.",
-        "end": {
-          "column": 3,
-          "line": 16
-        },
-        "file": "source/renderer/app/i18n/notification-messages.js",
-        "id": "notification.downloadLogsSuccess",
-        "start": {
-          "column": 23,
-          "line": 11
-        }
-      },
-      {
-        "defaultMessage": "!!!Address: <strong>{walletAddress}</strong> copied to clipboard",
-        "description": "Notification for the wallet address copy success in the Wallet Receive page.",
-        "end": {
-          "column": 3,
-          "line": 23
-        },
-        "file": "source/renderer/app/i18n/notification-messages.js",
-        "id": "notification.copyAddress",
-        "start": {
-          "column": 15,
-          "line": 17
-        }
-      },
-      {
-        "defaultMessage": "!!!Daedalus state directory copied to clipboard",
-        "description": "Notification for the state directory copy success in the Diagnostics page.",
-        "end": {
-          "column": 3,
-          "line": 29
-        },
-        "file": "source/renderer/app/i18n/notification-messages.js",
-        "id": "notification.copyStateDirectoryPath",
-        "start": {
-          "column": 26,
-          "line": 24
-        }
-      }
-    ],
-    "path": "source/renderer/app/i18n/notification-messages.json"
   },
   {
     "descriptors": [

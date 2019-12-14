@@ -1,11 +1,14 @@
 // @flow
 import Action from './lib/Action';
-import type { StoredNotification } from '../types/notificationType';
+import type {
+  NotificationConfig,
+  NotificationId,
+} from '../types/notificationTypes';
 
 // ======= NOTIFICATIONS ACTIONS =======
 
 export default class NotificationsActions {
-  registerNotification: Action<StoredNotification> = new Action();
+  registerNotification: Action<NotificationConfig> = new Action();
   closeActiveNotification: Action<any> = new Action();
-  closeNotification: Action<{ id: string }> = new Action();
+  closeNotification: Action<{ id: NotificationId }> = new Action();
 }
