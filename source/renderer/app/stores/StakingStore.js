@@ -203,7 +203,8 @@ export default class StakingStore extends Store {
             this.stakePools,
             stakePool => stakePool.id === wallet.delegatedStakePoolId
           );
-          delegatedStakePools.push(delegatingStakePool);
+          if (delegatingStakePool)
+            delegatedStakePools.push(delegatingStakePool);
         }
       }
     });
