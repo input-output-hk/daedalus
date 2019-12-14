@@ -137,19 +137,21 @@ export default class ProfileStore extends Store {
       this.actions.notifications.registerNotification.trigger({
         config: {
           id: 'downloadLogsProgress',
-          actionToListenAndOpen: profileActions.downloadLogs,
-          actionToListenAndClose: profileActions.downloadLogsSuccess,
+          actionToListenAndOpen: this.actions.profile.downloadLogs,
+          actionToListenAndClose: this.actions.profile.downloadLogsSuccess,
         },
         message: {
-          hasEllipsis: true,
           icon: 'spinner',
+          hasEllipsis: true,
+          clickToClose: false,
+          hasCloseButton: false,
         },
       });
       this.actions.notifications.registerNotification.trigger({
         config: {
           id: 'downloadLogsSuccess',
-          actionToListenAndOpen: profileActions.downloadLogsSuccess,
-          actionToListenAndClose: profileActions.downloadLogs,
+          actionToListenAndOpen: this.actions.profile.downloadLogsSuccess,
+          actionToListenAndClose: this.actions.profile.downloadLogs,
         },
       });
     }, 0);
@@ -470,7 +472,7 @@ export default class ProfileStore extends Store {
           compressedLogsFilePath: this.compressedLogsFilePath,
           destinationPath: destination,
         });
-        profileActions.downloadLogsSuccess.trigger(false);
+        this.actions.profile.downloadLogsSuccess.trigger(false);
         this._reset();
       } catch (error) {
         throw error;

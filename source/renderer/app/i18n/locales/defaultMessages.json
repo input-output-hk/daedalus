@@ -10093,30 +10093,30 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Logs successfully downloaded",
-        "description": "Notification for download logs in the Loading and Settings pages.",
+        "defaultMessage": "!!!Preparing logs for download",
+        "description": "Notification for download logs in progress in the Loading and Settings pages.",
         "end": {
           "column": 3,
           "line": 10
         },
         "file": "source/renderer/app/i18n/notification-messages.js",
-        "id": "notification.downloadLogsSuccess",
+        "id": "notification.downloadLogsProgress",
         "start": {
-          "column": 23,
+          "column": 24,
           "line": 5
         }
       },
       {
-        "defaultMessage": "!!!Preparing logs for download",
-        "description": "Notification for download logs in progress in the Loading and Settings pages.",
+        "defaultMessage": "!!!Logs successfully downloaded",
+        "description": "Notification for download logs in the Loading and Settings pages.",
         "end": {
           "column": 3,
           "line": 16
         },
         "file": "source/renderer/app/i18n/notification-messages.js",
-        "id": "notification.downloadLogsProgress",
+        "id": "notification.downloadLogsSuccess",
         "start": {
-          "column": 24,
+          "column": 23,
           "line": 11
         }
       },

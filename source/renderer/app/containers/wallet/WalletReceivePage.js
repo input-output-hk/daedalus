@@ -8,6 +8,7 @@ import type { InjectedProps } from '../../types/injectedPropsType';
 import WalletAddress from '../../domains/WalletAddress';
 import Wallet from '../../domains/Wallet';
 import { generateFileNameWithTimestamp } from '../../../../common/utils/files';
+import { ellipsis } from '../../utils/strings';
 
 type Props = InjectedProps;
 
@@ -34,8 +35,10 @@ export default class WalletReceivePage extends Component<Props, State> {
 
   handleIsAddressValid = (index: number) => index < 3 || index > 7;
 
-  handleCopyAddress = (address: string) =>
+  handleCopyAddress = (copiedAddress: string) => {
+    const address = ellipsis(copiedAddress, 15, 15);
     this.props.actions.wallets.copyAddress.trigger({ address });
+  };
 
   handleShareAddress = (addressToShare: WalletAddress) => {
     this.setState({

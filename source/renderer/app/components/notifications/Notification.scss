@@ -9,8 +9,8 @@
   position: absolute;
   right: 0;
   text-align: center;
-  transition: all 200ms linear;
   top: 0;
+  transition: all 200ms linear;
   width: 100%;
 
   &.isVisible {
@@ -83,6 +83,25 @@
       fill: var(--theme-notification-message-close-icon-color);
     }
   }
+}
+
+.spinnerIcon {
+  flex-shrink: 0;
+  height: 22px;
+  margin-top: 10px;
+  width: 22px;
+  & > svg {
+    height: inherit;
+    width: inherit;
+    path {
+      fill: var(--theme-notification-message-text-color);
+    }
+  }
+}
+
+.spinnerIcon :global {
+  animation: loading-spin 1.5s linear;
+  animation-iteration-count: infinite;
 }
 
 .hasEllipsis {

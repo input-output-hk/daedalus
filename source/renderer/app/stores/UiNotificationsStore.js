@@ -20,10 +20,16 @@ export default class UiNotificationsStore extends Store {
   @action _registerNotification = (notification: StoredNotification) => {
     const { id } = notification.config;
     this.notifications[id] = notification;
-    const { actionToListenAndOpen } = notification.config;
+    const {
+      actionToListenAndOpen,
+      actionToListenAndClose,
+    } = notification.config;
     actionToListenAndOpen.listen((labelValues?: Object) =>
       this._openNotification(notification, labelValues)
     );
+    if (actionToListenAndClose) {
+      actionToListenAndClose.listen(() => this._onClose({ id }));
+    }
   };
 
   @action _openNotification = (

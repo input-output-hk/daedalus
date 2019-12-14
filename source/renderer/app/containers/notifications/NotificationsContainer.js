@@ -19,11 +19,12 @@ const ICONS = {
 export default class NotificationsContainer extends Component<InjectedProps> {
   static defaultProps = { actions: null, stores: null };
 
-  getIcon = (icon?: string) => (icon ? ICONS[icon] : icon);
+  getIcon = (icon?: string = 'success') => (icon ? ICONS[`${icon}Icon`] : icon);
 
-  getLabel = (id: string, labelValues?: ?Object = {}) => (
-    <FormattedHTMLMessage {...messages[id]} values={labelValues} />
-  );
+  getLabel = (id: string, labelValues?: ?Object) => {
+    const values = typeof labelValues === 'object' ? labelValues : {};
+    return <FormattedHTMLMessage {...messages[id]} values={values} />;
+  };
 
   render() {
     const { stores, actions } = this.props;
@@ -38,13 +39,16 @@ export default class NotificationsContainer extends Component<InjectedProps> {
           } = notifications[key];
           const isVisible = !!activeNotifications[id];
           const { labelValues } = isVisible ? activeNotifications[key] : {};
+          const { icon } = message || {};
+          const hasSpinner = icon === 'spinner';
           return (
             <Notification
               key={id}
               {...message}
               onClose={() => closeNotification.trigger({ id })}
-              icon={successIcon}
+              icon={this.getIcon(icon)}
               isVisible={isVisible}
+              hasSpinner={hasSpinner}
             >
               {isVisible ? this.getLabel(id, labelValues) : null}
             </Notification>

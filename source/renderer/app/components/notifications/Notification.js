@@ -15,6 +15,7 @@ export type NotificationMessageProps = {
   themeOverride?: 'grey', // if left empty, the noticiation will have its normal colors
   labelValues?: Object,
   isVisible: boolean,
+  hasSpinner: boolean,
 };
 
 type Props = {
@@ -30,6 +31,7 @@ export default class Notification extends Component<Props> {
     clickToClose: true,
     hasCloseButton: true,
     hasEllipsis: true,
+    hasSpinner: false,
   };
 
   render() {
@@ -43,6 +45,7 @@ export default class Notification extends Component<Props> {
       order,
       themeOverride,
       isVisible,
+      hasSpinner,
     } = this.props;
 
     const notificationMessageStyles = classNames([
@@ -51,6 +54,11 @@ export default class Notification extends Component<Props> {
       hasEllipsis ? styles.hasEllipsis : null,
       clickToClose ? styles.clickToClose : null,
       themeOverride ? styles[`theme-override-${themeOverride}`] : null,
+    ]);
+
+    const iconStyles = classNames([
+      styles.icon,
+      hasSpinner ? styles.spinnerIcon : null,
     ]);
 
     return (
@@ -64,7 +72,7 @@ export default class Notification extends Component<Props> {
         }}
       >
         <Fragment>
-          {icon && <SVGInline svg={icon} className={styles.icon} />}
+          {icon && <SVGInline svg={icon} className={iconStyles} />}
 
           <div className={styles.message}>{children}</div>
 
