@@ -2,7 +2,6 @@
 import React, { Component, Fragment } from 'react';
 import type { Node } from 'react';
 import SVGInline from 'react-svg-inline';
-// import { Transition } from 'react-transition-group';
 import classNames from 'classnames';
 import styles from './Notification.scss';
 import closeCross from '../../assets/images/close-cross.inline.svg';
