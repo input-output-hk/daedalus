@@ -1115,7 +1115,6 @@ export default class AdaApi {
       Logger.debug('AdaApi::getStakePools success', {
         stakePoolsTotal: response.length,
         stakePoolsWithMetadata: stakePools.length,
-        response,
       });
       return stakePools;
     } catch (error) {
@@ -1170,14 +1169,15 @@ export default class AdaApi {
           slot: get(network_tip, 'slot_number', 0),
         },
         nextEpoch: {
+          // N+1 epoch
           epochNumber: get(next_epoch, 'epoch_number', 0),
           epochStart: get(next_epoch, 'epoch_start_time', ''),
         },
         futureEpoch: {
+          // N+3 epoch
           epochNumber: get(next_epoch, 'epoch_number', 0) + 2,
           epochStart: moment(get(next_epoch, 'epoch_start_time', 0))
-            .add(EPOCH_LENGTH_ITN, 'seconds')
-            .add(EPOCH_LENGTH_ITN, 'seconds')
+            .add(EPOCH_LENGTH_ITN * 2, 'seconds')
             .toISOString(),
         },
       };
