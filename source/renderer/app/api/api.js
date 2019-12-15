@@ -1109,11 +1109,16 @@ export default class AdaApi {
   getStakePools = async (): Promise<Array<StakePool>> => {
     Logger.debug('AdaApi::getStakePools called');
     try {
-      const stakePools: AdaApiStakePools = await getStakePools(this.config);
-      Logger.debug('AdaApi::getStakePools success', { stakePools });
-      return stakePools
+      const response: AdaApiStakePools = await getStakePools(this.config);
+      const stakePools = response
         .filter(({ metadata }: AdaApiStakePool) => metadata !== undefined)
         .map(_createStakePoolFromServerData);
+      Logger.debug('AdaApi::getStakePools success', {
+        stakePoolsTotal: response.length,
+        stakePoolsWithMetadata: stakePools.length,
+        response,
+      });
+      return stakePools;
     } catch (error) {
       Logger.error('AdaApi::getStakePools error', { error });
       throw new GenericApiError();
