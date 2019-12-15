@@ -5133,11 +5133,11 @@
         }
       },
       {
-        "defaultMessage": "!!!Using your recovery phrase is the only way to recover your wallet if your computer is\n     lost, broken, stolen or stops working. You will also need this recovery phrase to receive\n     your ada rewards on the mainnet.",
+        "defaultMessage": "!!!Using your recovery phrase is the only way to recover\n     your wallet if your computer is lost, broken, stolen or stops working.\n     You will need this recovery phrase to receive your Incentivized Testnet ada\n      rewards on the mainnet.",
         "description": "Instructions for backing up wallet recovery phrase on dialog that displays wallet recovery phrase.",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 40
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletBackupPrivacyWarningDialog.js",
         "id": "wallet.backup.privacy.warning.dialog.recoveryPhraseInstructions3",
@@ -5151,13 +5151,13 @@
         "description": "Label for button \"Continue\" on wallet backup dialog",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 45
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletBackupPrivacyWarningDialog.js",
         "id": "wallet.backup.privacy.warning.dialog..button.labelContinue",
         "start": {
           "column": 23,
-          "line": 40
+          "line": 41
         }
       },
       {
@@ -5165,13 +5165,13 @@
         "description": "Label for the checkbox on wallet backup dialog describing that nobody should be watching when recovery phrase is shown",
         "end": {
           "column": 3,
-          "line": 51
+          "line": 52
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletBackupPrivacyWarningDialog.js",
         "id": "wallet.backup.privacy.warning.dialog.checkbox.label.nobodyWatching",
         "start": {
           "column": 22,
-          "line": 45
+          "line": 46
         }
       }
     ],
@@ -5180,17 +5180,17 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Please, make sure you have carefully written down your recovery phrase somewhere safe.\n    You will need this phrase later for next use and recover. Phrase is case sensitive.",
+        "defaultMessage": "!!!Please make sure you write down the {walletRecoveryPhraseWordCount} words\n     of your wallet recovery phrase on a piece of paper in the exact order as shown here.",
         "description": "Instructions for backing up wallet recovery phrase on dialog that displays wallet recovery phrase.",
         "end": {
           "column": 3,
-          "line": 20
+          "line": 21
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseDisplayDialog.js",
         "id": "wallet.backup.recovery.phrase.display.dialog.backup.instructions",
         "start": {
           "column": 22,
-          "line": 14
+          "line": 15
         }
       },
       {
@@ -5198,13 +5198,13 @@
         "description": "Label for button \"Yes, I’ve written it down\" on wallet backup dialog",
         "end": {
           "column": 3,
-          "line": 27
+          "line": 28
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseDisplayDialog.js",
         "id": "wallet.backup.recovery.phrase.display.dialog.button.label.iHaveWrittenItDown",
         "start": {
           "column": 33,
-          "line": 21
+          "line": 22
         }
       }
     ],
