@@ -13,11 +13,28 @@ import { WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../../../config/cryptoConfig'
 import styles from './WalletBackupPrivacyWarningDialog.scss';
 
 const messages = defineMessages({
-  recoveryPhraseInstructions: {
-    id: 'wallet.backup.privacy.warning.dialog.recoveryPhraseInstructions',
-    defaultMessage: `!!!On the following screen, you will see a set of X random words. This is
-    your wallet backup phrase. It can be entered in any version of Daedalus application in order
-    to back up or restore your wallet’s funds and private key.`,
+  recoveryPhraseInstructions1: {
+    id: 'wallet.backup.privacy.warning.dialog.recoveryPhraseInstructions1',
+    defaultMessage: `!!!On the following screen, you will be given a list of {walletRecoveryPhraseWordCount}
+      words to write down on paper and keep in a safe place. This list of words is the wallet recovery
+      phrase for the Rewards wallet you are creating.`,
+    description:
+      'Instructions for backing up wallet recovery phrase on dialog that displays wallet recovery phrase.',
+  },
+  recoveryPhraseInstructions2: {
+    id: 'wallet.backup.privacy.warning.dialog.recoveryPhraseInstructions2',
+    defaultMessage: `!!!The simplest way to keep your wallet recovery phrase secure is never to store it digitally
+     or online. If you decide to use an online service, such as a password manager with an encrypted database,
+     it is your responsibility to make sure that you use it correctly.`,
+    description:
+      'Instructions for backing up wallet recovery phrase on dialog that displays wallet recovery phrase.',
+  },
+  recoveryPhraseInstructions3: {
+    id: 'wallet.backup.privacy.warning.dialog.recoveryPhraseInstructions3',
+    defaultMessage: `!!!Using your recovery phrase is the only way to recover
+     your wallet if your computer is lost, broken, stolen or stops working.
+     You will need this recovery phrase to receive your Incentivized Testnet ada
+      rewards on the mainnet.`,
     description:
       'Instructions for backing up wallet recovery phrase on dialog that displays wallet recovery phrase.',
   },
@@ -28,8 +45,8 @@ const messages = defineMessages({
   },
   termNobodyWatching: {
     id: 'wallet.backup.privacy.warning.dialog.checkbox.label.nobodyWatching',
-    defaultMessage:
-      '!!!Make sure nobody looks into your screen unless you want them to have access to your funds.',
+    defaultMessage: `!!!TI confirm that nobody can see my screen, because anyone who knows my recovery
+     phrase will be able to spend the ada in my new wallet.`,
     description:
       'Label for the checkbox on wallet backup dialog describing that nobody should be watching when recovery phrase is shown',
   },
@@ -88,10 +105,20 @@ export default class WalletBackupPrivacyWarningDialog extends Component<Props> {
       >
         <WalletRecoveryInstructions
           instructionsText={intl.formatMessage(
-            messages.recoveryPhraseInstructions,
+            messages.recoveryPhraseInstructions1,
             {
               walletRecoveryPhraseWordCount: WALLET_RECOVERY_PHRASE_WORD_COUNT,
             }
+          )}
+        />
+        <WalletRecoveryInstructions
+          instructionsText={intl.formatMessage(
+            messages.recoveryPhraseInstructions2
+          )}
+        />
+        <WalletRecoveryInstructions
+          instructionsText={intl.formatMessage(
+            messages.recoveryPhraseInstructions3
           )}
         />
         <div className={styles.checkbox}>

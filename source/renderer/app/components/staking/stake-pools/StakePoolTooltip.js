@@ -42,6 +42,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Profit margin:',
     description: '"Profit margin" for the Stake Pools Tooltip page.',
   },
+  costPerEpoch: {
+    id: 'staking.stakePools.tooltip.costPerEpoch',
+    defaultMessage: '!!!Cost per epoch:',
+    description: '"Cost per epoch" for the Stake Pools Tooltip page.',
+  },
   performance: {
     id: 'staking.stakePools.tooltip.performance',
     defaultMessage: '!!!Performance:',
@@ -459,13 +464,23 @@ export default class StakePoolTooltip extends Component<Props, State> {
                   background: getColorFromRange(profitMargin, {
                     darken,
                     alpha,
-                    reverse,
                   }),
                 }}
               >
-                {`${parseFloat(
-                  profitMargin.toFixed(2)
-                )}% + ${formattedWalletAmount(cost, true, false)}`}
+                {`${parseFloat(profitMargin.toFixed(2))}%`}
+              </span>
+            </dd>
+            <dt>{intl.formatMessage(messages.costPerEpoch)}</dt>
+            <dd className={styles.profitMargin}>
+              <span
+                style={{
+                  background: getColorFromRange(profitMargin, {
+                    darken,
+                    alpha,
+                  }),
+                }}
+              >
+                {`${formattedWalletAmount(cost, true, false)}`}
               </span>
             </dd>
             <dt>{intl.formatMessage(messages.performance)}</dt>

@@ -33,12 +33,12 @@ const messages = defineMessages({
     defaultMessage: '!!!Clear',
     description: 'Label for button "Clear" on wallet backup dialog',
   },
-  termDevice: {
-    id: 'wallet.backup.recovery.phrase.entry.dialog.terms.and.condition.device',
+  termOffline: {
+    id:
+      'wallet.backup.recovery.phrase.entry.dialog.terms.and.condition.offline',
     defaultMessage:
-      '!!!I understand that my money are held securely on this device only, not on the company servers',
-    description:
-      'Term and condition on wallet backup dialog describing that wallet is on a users device, not on company servers',
+      '!!!I understand that the simplest way to keep my wallet recovery phrase secure...',
+    description: 'Term on wallet creation to store recovery phrase offline',
   },
   termRecovery: {
     id:
@@ -48,20 +48,29 @@ const messages = defineMessages({
     description:
       'Term and condition on wallet backup dialog describing that wallet can only be recovered with a security phrase',
   },
+  termRewards: {
+    id:
+      'wallet.backup.recovery.phrase.entry.dialog.terms.and.condition.rewards',
+    defaultMessage: `!!!I understand that I will need the wallet recovery phrase of this wallet to receive my Incentivized Testnet ada rewards on the mainnet.`,
+    description:
+      'Term and condition on wallet backup dialog describing that wallet can only be recovered with a security phrase',
+  },
 });
 
 type Props = {
   recoveryPhraseShuffled: Array<RecoveryPhraseWord>,
   enteredPhrase: Array<{ word: string }>,
   isValid: boolean,
-  isTermDeviceAccepted: boolean,
+  isTermOfflineAccepted: boolean,
   isTermRecoveryAccepted: boolean,
+  isTermRewardsAccepted: boolean,
   isSubmitting: boolean,
   onAddWord: Function,
   canFinishBackup: boolean,
   onClear: Function,
-  onAcceptTermDevice: Function,
+  onAcceptTermOffline: Function,
   onAcceptTermRecovery: Function,
+  onAcceptTermRewards: Function,
   onRestartBackup: Function,
   onCancelBackup: Function,
   onFinishBackup: Function,
@@ -79,13 +88,15 @@ export default class WalletRecoveryPhraseEntryDialog extends Component<Props> {
       recoveryPhraseShuffled,
       enteredPhrase,
       isValid,
-      isTermDeviceAccepted,
+      isTermOfflineAccepted,
       isTermRecoveryAccepted,
+      isTermRewardsAccepted,
       isSubmitting,
       onAddWord,
       onClear,
-      onAcceptTermDevice,
+      onAcceptTermOffline,
       onAcceptTermRecovery,
+      onAcceptTermRewards,
       canFinishBackup,
       onRestartBackup,
       onCancelBackup,
@@ -164,9 +175,9 @@ export default class WalletRecoveryPhraseEntryDialog extends Component<Props> {
           <div>
             <div className={styles.checkbox}>
               <Checkbox
-                label={<FormattedHTMLMessage {...messages.termDevice} />}
-                onChange={onAcceptTermDevice}
-                checked={isTermDeviceAccepted}
+                label={<FormattedHTMLMessage {...messages.termOffline} />}
+                onChange={onAcceptTermOffline}
+                checked={isTermOfflineAccepted}
                 skin={CheckboxSkin}
               />
             </div>
@@ -175,6 +186,14 @@ export default class WalletRecoveryPhraseEntryDialog extends Component<Props> {
                 label={intl.formatMessage(messages.termRecovery)}
                 onChange={onAcceptTermRecovery}
                 checked={isTermRecoveryAccepted}
+                skin={CheckboxSkin}
+              />
+            </div>
+            <div className={styles.checkbox}>
+              <Checkbox
+                label={intl.formatMessage(messages.termRewards)}
+                onChange={onAcceptTermRewards}
+                checked={isTermRewardsAccepted}
                 skin={CheckboxSkin}
               />
             </div>

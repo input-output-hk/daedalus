@@ -4012,17 +4012,31 @@
         }
       },
       {
-        "defaultMessage": "!!!Performance:",
-        "description": "\"Performance\" for the Stake Pools Tooltip page.",
+        "defaultMessage": "!!!Cost per epoch:",
+        "description": "\"Cost per epoch\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
           "line": 49
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
+        "id": "staking.stakePools.tooltip.costPerEpoch",
+        "start": {
+          "column": 16,
+          "line": 45
+        }
+      },
+      {
+        "defaultMessage": "!!!Performance:",
+        "description": "\"Performance\" for the Stake Pools Tooltip page.",
+        "end": {
+          "column": 3,
+          "line": 54
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
         "id": "staking.stakePools.tooltip.performance",
         "start": {
           "column": 15,
-          "line": 45
+          "line": 50
         }
       },
       {
@@ -4030,13 +4044,13 @@
         "description": "\"Produced blocks\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 54
+          "line": 59
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
         "id": "staking.stakePools.tooltip.producedBlocks",
         "start": {
           "column": 18,
-          "line": 50
+          "line": 55
         }
       },
       {
@@ -4044,13 +4058,13 @@
         "description": "\"Retirement\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 59
+          "line": 64
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
         "id": "staking.stakePools.tooltip.retirement",
         "start": {
           "column": 14,
-          "line": 55
+          "line": 60
         }
       },
       {
@@ -4058,13 +4072,13 @@
         "description": "\"pledgeAddressLabel\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 74
+          "line": 79
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
         "id": "staking.stakePools.tooltip.pledgeAddressLabel",
         "start": {
           "column": 22,
-          "line": 70
+          "line": 75
         }
       },
       {
@@ -4072,13 +4086,13 @@
         "description": "\"Delegate to this pool\" Button for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 80
+          "line": 85
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
         "id": "staking.stakePools.tooltip.delegateButton",
         "start": {
           "column": 18,
-          "line": 75
+          "line": 80
         }
       }
     ],
@@ -5091,17 +5105,45 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!On the following screen, you will see a set of X random words. This is\n    your wallet backup phrase. It can be entered in any version of Daedalus application in order\n    to back up or restore your wallet’s funds and private key.",
+        "defaultMessage": "!!!On the following screen, you will be given a list of {walletRecoveryPhraseWordCount}\n      words to write down on paper and keep in a safe place. This list of words is the wallet recovery\n      phrase for the Rewards wallet you are creating.",
         "description": "Instructions for backing up wallet recovery phrase on dialog that displays wallet recovery phrase.",
         "end": {
           "column": 3,
           "line": 23
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletBackupPrivacyWarningDialog.js",
-        "id": "wallet.backup.privacy.warning.dialog.recoveryPhraseInstructions",
+        "id": "wallet.backup.privacy.warning.dialog.recoveryPhraseInstructions1",
         "start": {
-          "column": 30,
+          "column": 31,
           "line": 16
+        }
+      },
+      {
+        "defaultMessage": "!!!The simplest way to keep your wallet recovery phrase secure is never to store it digitally\n     or online. If you decide to use an online service, such as a password manager with an encrypted database,\n     it is your responsibility to make sure that you use it correctly.",
+        "description": "Instructions for backing up wallet recovery phrase on dialog that displays wallet recovery phrase.",
+        "end": {
+          "column": 3,
+          "line": 31
+        },
+        "file": "source/renderer/app/components/wallet/backup-recovery/WalletBackupPrivacyWarningDialog.js",
+        "id": "wallet.backup.privacy.warning.dialog.recoveryPhraseInstructions2",
+        "start": {
+          "column": 31,
+          "line": 24
+        }
+      },
+      {
+        "defaultMessage": "!!!Using your recovery phrase is the only way to recover your wallet if your computer is\n     lost, broken, stolen or stops working. You will also need this recovery phrase to receive\n     your ada rewards on the mainnet.",
+        "description": "Instructions for backing up wallet recovery phrase on dialog that displays wallet recovery phrase.",
+        "end": {
+          "column": 3,
+          "line": 39
+        },
+        "file": "source/renderer/app/components/wallet/backup-recovery/WalletBackupPrivacyWarningDialog.js",
+        "id": "wallet.backup.privacy.warning.dialog.recoveryPhraseInstructions3",
+        "start": {
+          "column": 31,
+          "line": 32
         }
       },
       {
@@ -5109,27 +5151,27 @@
         "description": "Label for button \"Continue\" on wallet backup dialog",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 44
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletBackupPrivacyWarningDialog.js",
         "id": "wallet.backup.privacy.warning.dialog..button.labelContinue",
         "start": {
           "column": 23,
-          "line": 24
+          "line": 40
         }
       },
       {
-        "defaultMessage": "!!!Make sure nobody looks into your screen unless you want them to have access to your funds.",
+        "defaultMessage": "!!!TI confirm that nobody can see my screen, because anyone who knows my recovery\n     phrase will be able to spend the ada in my new wallet.",
         "description": "Label for the checkbox on wallet backup dialog describing that nobody should be watching when recovery phrase is shown",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 51
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletBackupPrivacyWarningDialog.js",
         "id": "wallet.backup.privacy.warning.dialog.checkbox.label.nobodyWatching",
         "start": {
           "column": 22,
-          "line": 29
+          "line": 45
         }
       }
     ],
@@ -5213,16 +5255,16 @@
         }
       },
       {
-        "defaultMessage": "!!!I understand that my money are held securely on this device only, not on the company servers",
-        "description": "Term and condition on wallet backup dialog describing that wallet is on a users device, not on company servers",
+        "defaultMessage": "!!!I understand that the simplest way to keep my wallet recovery phrase secure...",
+        "description": "Term on wallet creation to store recovery phrase offline",
         "end": {
           "column": 3,
           "line": 42
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
-        "id": "wallet.backup.recovery.phrase.entry.dialog.terms.and.condition.device",
+        "id": "wallet.backup.recovery.phrase.entry.dialog.terms.and.condition.offline",
         "start": {
-          "column": 14,
+          "column": 15,
           "line": 36
         }
       },
@@ -5238,6 +5280,20 @@
         "start": {
           "column": 16,
           "line": 43
+        }
+      },
+      {
+        "defaultMessage": "!!!I understand that I will need the wallet recovery phrase of this wallet to receive my Incentivized Testnet ada rewards on the mainnet.",
+        "description": "Term and condition on wallet backup dialog describing that wallet can only be recovered with a security phrase",
+        "end": {
+          "column": 3,
+          "line": 57
+        },
+        "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
+        "id": "wallet.backup.recovery.phrase.entry.dialog.terms.and.condition.rewards",
+        "start": {
+          "column": 15,
+          "line": 51
         }
       }
     ],
