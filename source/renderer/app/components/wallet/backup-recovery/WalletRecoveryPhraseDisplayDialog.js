@@ -9,12 +9,13 @@ import Dialog from '../../widgets/Dialog';
 import WalletRecoveryInstructions from './WalletRecoveryInstructions';
 import globalMessages from '../../../i18n/global-messages';
 import styles from './WalletRecoveryPhraseDisplayDialog.scss';
+import { WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../../../config/cryptoConfig';
 
 const messages = defineMessages({
   backupInstructions: {
     id: 'wallet.backup.recovery.phrase.display.dialog.backup.instructions',
-    defaultMessage: `!!!Please, make sure you have carefully written down your recovery phrase somewhere safe.
-    You will need this phrase later for next use and recover. Phrase is case sensitive.`,
+    defaultMessage: `!!!Please make sure you write down the {walletRecoveryPhraseWordCount} words
+     of your wallet recovery phrase on a piece of paper in the exact order as shown here.`,
     description:
       'Instructions for backing up wallet recovery phrase on dialog that displays wallet recovery phrase.',
   },
@@ -66,7 +67,12 @@ export default class WalletRecoveryPhraseDisplayDialog extends Component<Props> 
       >
         <WalletRecoveryInstructions
           instructionsText={
-            <FormattedHTMLMessage {...messages.backupInstructions} />
+            <FormattedHTMLMessage
+              {...messages.backupInstructions}
+              values={{
+                walletRecoveryPhraseWordCount: WALLET_RECOVERY_PHRASE_WORD_COUNT,
+              }}
+            />
           }
         />
         <WalletRecoveryPhraseMnemonic phrase={recoveryPhrase} />
