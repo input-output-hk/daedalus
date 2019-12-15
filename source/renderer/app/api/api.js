@@ -1174,8 +1174,9 @@ export default class AdaApi {
           epochStart: get(next_epoch, 'epoch_start_time', ''),
         },
         futureEpoch: {
-          epochNumber: get(next_epoch, 'epoch_number', 0) + 1,
+          epochNumber: get(next_epoch, 'epoch_number', 0) + 2,
           epochStart: moment(get(next_epoch, 'epoch_start_time', 0))
+            .add(EPOCH_LENGTH_ITN, 'seconds')
             .add(EPOCH_LENGTH_ITN, 'seconds')
             .toISOString(),
         },
