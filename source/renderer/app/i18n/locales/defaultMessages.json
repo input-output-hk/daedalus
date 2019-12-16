@@ -5133,7 +5133,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Using your recovery phrase is the only way to recover\n     your wallet if your computer is lost, broken, stolen or stops working.\n     You will need this recovery phrase to receive your Incentivized Testnet ada\n      rewards on the mainnet.",
+        "defaultMessage": "!!!<strong>Using your recovery phrase is the only way to recover\n     your wallet if your computer is lost, broken, stolen or stops working.\n     You will need this recovery phrase to receive your Incentivized Testnet ada\n      rewards on the mainnet.</strong>",
         "description": "Instructions for backing up wallet recovery phrase on dialog that displays wallet recovery phrase.",
         "end": {
           "column": 3,
@@ -5283,7 +5283,7 @@
         }
       },
       {
-        "defaultMessage": "!!!I understand that I will need the wallet recovery phrase of this wallet to receive my Incentivized Testnet ada rewards on the mainnet.",
+        "defaultMessage": "!!!<strong>I understand that I will need the wallet recovery phrase of this wallet to receive my Incentivized Testnet ada rewards on the mainnet.</strong>",
         "description": "Term and condition on wallet backup dialog describing that wallet can only be recovered with a security phrase",
         "end": {
           "column": 3,

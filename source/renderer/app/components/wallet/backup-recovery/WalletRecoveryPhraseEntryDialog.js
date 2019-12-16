@@ -51,7 +51,7 @@ const messages = defineMessages({
   termRewards: {
     id:
       'wallet.backup.recovery.phrase.entry.dialog.terms.and.condition.rewards',
-    defaultMessage: `!!!I understand that I will need the wallet recovery phrase of this wallet to receive my Incentivized Testnet ada rewards on the mainnet.`,
+    defaultMessage: `!!!<strong>I understand that I will need the wallet recovery phrase of this wallet to receive my Incentivized Testnet ada rewards on the mainnet.</strong>`,
     description:
       'Term and condition on wallet backup dialog describing that wallet can only be recovered with a security phrase',
   },
@@ -191,7 +191,7 @@ export default class WalletRecoveryPhraseEntryDialog extends Component<Props> {
             </div>
             <div className={styles.checkbox}>
               <Checkbox
-                label={intl.formatMessage(messages.termRewards)}
+                label={<FormattedHTMLMessage {...messages.termRewards} />}
                 onChange={onAcceptTermRewards}
                 checked={isTermRewardsAccepted}
                 skin={CheckboxSkin}

@@ -4,7 +4,7 @@ import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
-import { defineMessages, intlShape } from 'react-intl';
+import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import Dialog from '../../widgets/Dialog';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import WalletRecoveryInstructions from './WalletRecoveryInstructions';
@@ -31,10 +31,10 @@ const messages = defineMessages({
   },
   recoveryPhraseInstructions3: {
     id: 'wallet.backup.privacy.warning.dialog.recoveryPhraseInstructions3',
-    defaultMessage: `!!!Using your recovery phrase is the only way to recover
+    defaultMessage: `!!!<strong>Using your recovery phrase is the only way to recover
      your wallet if your computer is lost, broken, stolen or stops working.
      You will need this recovery phrase to receive your Incentivized Testnet ada
-      rewards on the mainnet.`,
+      rewards on the mainnet.</strong>`,
     description:
       'Instructions for backing up wallet recovery phrase on dialog that displays wallet recovery phrase.',
   },
@@ -117,9 +117,9 @@ export default class WalletBackupPrivacyWarningDialog extends Component<Props> {
           )}
         />
         <WalletRecoveryInstructions
-          instructionsText={intl.formatMessage(
-            messages.recoveryPhraseInstructions3
-          )}
+          instructionsText={
+            <FormattedHTMLMessage {...messages.recoveryPhraseInstructions3} />
+          }
         />
         <div className={styles.checkbox}>
           <Checkbox
