@@ -1,3 +1,4 @@
+// @flow
 import React from 'react';
 import { withKnobs } from '@storybook/addon-knobs';
 import { linkTo } from '@storybook/addon-links';
@@ -12,9 +13,23 @@ export default (story, context) => {
 
   const getItemFromContext = () =>
     context.story
-      .replace('Wallet UTXO distribution', 'utxo')
-      .replace('Wallet Summary', 'summary')
+      .replace('UTXO Distribution', 'settings')
+      .replace('Transactions - Grouped by days', 'transactions')
       .toLocaleLowerCase();
+
+  const getStoryName = (item: string) => {
+    if (item === 'transactions') return 'Transactions - Grouped by days';
+    if (item === 'utxo') return 'UTXO distribution';
+    return startCase(item);
+  };
+
+  const getStoryKind = (item: string) => {
+    const name =
+      item === 'transactions' || item === 'utxo'
+        ? 'Transactions'
+        : startCase(item);
+    return `Wallets|${name}`;
+  };
 
   return (
     <StoryDecorator>
@@ -23,10 +38,7 @@ export default (story, context) => {
           {context.story !== 'Empty' && context.story !== 'Wallet Add' ? (
             <WalletWithNavigation
               isActiveScreen={item => item === getItemFromContext()}
-              onWalletNavItemClick={linkTo(context.kind, item => {
-                if (item === 'utxo') return 'Wallet UTXO distribution';
-                return startCase(item);
-              })}
+              onWalletNavItemClick={linkTo(getStoryKind, getStoryName)}
               activeItem={getItemFromContext()}
             >
               {storyWithKnobs}

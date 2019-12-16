@@ -12,4 +12,4 @@ import './WalletDelete.stories';
 /* eslint-disable consistent-return */
 storiesOf('Wallets|Settings', module)
   .addDecorator(WalletsWrapper)
-  .add('Wallet Settings', props => <WalletSettingsScreen {...props} />);
+  .add('Settings', props => <WalletSettingsScreen {...props} />);

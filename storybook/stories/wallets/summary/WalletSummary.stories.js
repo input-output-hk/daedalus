@@ -13,7 +13,7 @@ import WalletSummary from '../../../../source/renderer/app/components/wallet/sum
 /* eslint-disable consistent-return */
 storiesOf('Wallets|Summary', module)
   .addDecorator(WalletsWrapper)
-  .add('Wallet Summary', () => (
+  .add('Summary', () => (
     <WalletSummary
       wallet={generateWallet('Wallet name', '45119903750165')}
       numberOfTransactions={number('Number of transactions', 100)}

@@ -28,8 +28,8 @@ export const themesIds = {
 };
 
 export const locales = {
-  English: 'en-US',
-  Japanese: 'ja-JP',
+  EN: 'en-US',
+  JP: 'ja-JP',
 };
 export const localeNames: Array<any> = Object.keys(locales);
 
