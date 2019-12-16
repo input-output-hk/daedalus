@@ -109,11 +109,12 @@ export default class AppStore extends Store {
         this.actions.router.goToRoute.trigger({ route: PAGES.SETTINGS });
         break;
       case PAGES.WALLET_SETTINGS:
-        if (!wallets.active || !wallets.active.id) break;
-        this.actions.router.goToRoute.trigger({
-          route: ROUTES.WALLETS.PAGE,
-          params: { id: wallets.active.id, page: 'settings' },
-        });
+        if (wallets.active && wallets.active.id) {
+          this.actions.router.goToRoute.trigger({
+            route: ROUTES.WALLETS.PAGE,
+            params: { id: wallets.active.id, page: 'settings' },
+          });
+        }
         break;
       default:
     }
