@@ -28,7 +28,7 @@ export default class Notification extends Component<Props> {
   static defaultProps = {
     clickToClose: true,
     hasCloseButton: true,
-    hasEllipsis: true,
+    hasEllipsis: false,
     hasSpinner: false,
   };
 
@@ -49,9 +49,13 @@ export default class Notification extends Component<Props> {
     const notificationMessageStyles = classNames([
       styles.component,
       isVisible ? styles.isVisible : null,
-      hasEllipsis ? styles.hasEllipsis : null,
       clickToClose ? styles.clickToClose : null,
       themeOverride ? styles[`theme-override-${themeOverride}`] : null,
+    ]);
+
+    const messageStyles = classNames([
+      styles.message,
+      hasEllipsis ? styles.hasEllipsis : null,
     ]);
 
     const iconStyles = classNames([
@@ -73,7 +77,7 @@ export default class Notification extends Component<Props> {
           <Fragment>
             {icon && <SVGInline svg={icon} className={iconStyles} />}
 
-            <div className={styles.message}>{children}</div>
+            <div className={messageStyles}>{children}</div>
 
             {hasCloseButton && (
               <button
