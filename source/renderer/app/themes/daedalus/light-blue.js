@@ -461,7 +461,7 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--rp-button-font-size': '14px',
   },
   rpCheckbox: {
-    '--rp-checkbox-border': '1px solid #2f496e',
+    '--rp-checkbox-border': '2px solid #2f496e',
     '--rp-checkbox-border-color': '#c6cdd6',
     '--rp-checkbox-border-color-disabled': 'rgba(47, 73, 110, 0.2)',
     '--rp-checkbox-check-bg-color': '#2f496e',
@@ -516,6 +516,7 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--rp-options-shadow': 'none',
   },
   rpRadio: {
+    '--rp-radio-border': '2px solid #2f496e',
     '--rp-radio-border-color': '#2f496e',
     '--rp-radio-color': '#fafbfc',
     '--rp-radio-label-margin': '0 0 0 10px',

@@ -446,7 +446,7 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--rp-button-width': '360px',
   },
   rpCheckbox: {
-    '--rp-checkbox-border': '1px solid #1fc1c3',
+    '--rp-checkbox-border': '2px solid #1fc1c3',
     '--rp-checkbox-border-color': 'rgba(255, 255, 255, 0.2)',
     '--rp-checkbox-border-color-disabled': '#1fc1c366',
     '--rp-checkbox-check-bg-color': '#1fc1c3',
@@ -501,6 +501,7 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--rp-options-shadow': 'none',
   },
   rpRadio: {
+    '--rp-radio-border': '2px solid #1fc1c3',
     '--rp-radio-border-color': '#1fc1c3',
     '--rp-radio-color': '#121326',
     '--rp-radio-label-margin': '0 0 0 10px',

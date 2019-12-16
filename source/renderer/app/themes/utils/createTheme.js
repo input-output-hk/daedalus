@@ -90,7 +90,7 @@ export const createReactPolymorphTheme = (
       '--rp-button-width': '360px',
     },
     rpCheckbox: {
-      '--rp-checkbox-border': `1px solid ${background.secondary.regular}`,
+      '--rp-checkbox-border': `2px solid ${background.secondary.regular}`,
       '--rp-checkbox-border-color': `${border}`,
       '--rp-checkbox-border-color-disabled': `${chroma(
         background.secondary.regular
@@ -151,6 +151,7 @@ export const createReactPolymorphTheme = (
       '--rp-options-shadow': 'none',
     },
     rpRadio: {
+      '--rp-checkbox-border': `2px solid ${background.secondary.regular}`,
       '--rp-radio-border-color': `${background.secondary.regular}`,
       '--rp-radio-color': '#ffffff',
       '--rp-radio-label-margin': '0 0 0 10px',

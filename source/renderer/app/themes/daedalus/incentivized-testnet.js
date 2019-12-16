@@ -446,7 +446,7 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--rp-button-width': '360px',
   },
   rpCheckbox: {
-    '--rp-checkbox-border': '1px solid #eb2256',
+    '--rp-checkbox-border': '2px solid #eb2256',
     '--rp-checkbox-border-color': 'rgba(255, 255, 255, 0.2)',
     '--rp-checkbox-border-color-disabled': '#eb225666',
     '--rp-checkbox-check-bg-color': '#eb2256',
@@ -501,6 +501,7 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--rp-options-shadow': 'none',
   },
   rpRadio: {
+    '--rp-radio-border': '2px solid #eb2256',
     '--rp-radio-border-color': '#eb2256',
     '--rp-radio-color': '#121326',
     '--rp-radio-label-margin': '0 0 0 10px',
