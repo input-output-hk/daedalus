@@ -17,6 +17,7 @@ import DelegationCenterNoWallets from '../../../source/renderer/app/components/s
 
 import { StakePoolsStory } from './StakePools.stories';
 import { StakingRewardsStory } from './Rewards.stories';
+import { StakingRewardsForIncentivizedTestnetStory } from './RewardsForIncentivizedTestnet.stories';
 import { StakingDelegationCenterStory } from './DelegationCenter.stories';
 import { StakingEpochsStory } from './Epochs.stories';
 import { StakingDelegationSteps } from './DelegationSteps.stories';
@@ -39,6 +40,7 @@ const pageNames = {
   'stake-pools': 'Pools Index',
   'stake-pools-tooltip': 'Tooltip',
   rewards: 'Rewards',
+  'rewards-itn': 'Rewards - ITN',
   epochs: 'Epochs',
   info: 'Info',
 };
@@ -131,6 +133,10 @@ storiesOf('Decentralization | Staking', module)
   )
 
   .add(pageNames.rewards, StakingRewardsStory, { id: 'rewards' })
+
+  .add(pageNames['rewards-itn'], StakingRewardsForIncentivizedTestnetStory, {
+    id: 'rewards-incentivized-testnet',
+  })
 
   .add(pageNames.epochs, StakingEpochsStory, { id: 'epochs' })
 

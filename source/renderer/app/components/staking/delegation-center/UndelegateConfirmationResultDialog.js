@@ -26,7 +26,7 @@ const messages = defineMessages({
   description2: {
     id: 'staking.delegationCenter.undelegate.result.dialog.description2',
     defaultMessage:
-      '!!!Your new delegation preferences are now posted on the blockchain <strong>and will take effect after the next two Cardano epochs have completed in {timeUntilNextEpochStart}</strong>. During this time, your previous delegation preferences are still active.',
+      '!!!Your new delegation preferences are now posted on the blockchain <strong>and will take effect after both the current and next Cardano epochs have completed in {timeUntilNextEpochStart}</strong>. During this time, your previous delegation preferences are still active.',
     description: 'Description 2 for the "Undelegate Result" dialog.',
   },
 });
