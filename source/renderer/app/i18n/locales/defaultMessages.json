@@ -5105,11 +5105,11 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!On the following screen, you will be given a list of {walletRecoveryPhraseWordCount}\n      words to write down on paper and keep in a safe place. This list of words is the wallet recovery\n      phrase for the Rewards wallet you are creating.",
+        "defaultMessage": "!!!On the following screen, you will be given a list of {walletRecoveryPhraseWordCount}  words to write down on paper and keep in a safe place. This list of words is the wallet recovery phrase for the Rewards wallet you are creating.",
         "description": "Instructions for backing up wallet recovery phrase on dialog that displays wallet recovery phrase.",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 22
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletBackupPrivacyWarningDialog.js",
         "id": "wallet.backup.privacy.warning.dialog.recoveryPhraseInstructions1",
@@ -5119,31 +5119,31 @@
         }
       },
       {
-        "defaultMessage": "!!!The simplest way to keep your wallet recovery phrase secure is never to store it digitally\n     or online. If you decide to use an online service, such as a password manager with an encrypted database,\n     it is your responsibility to make sure that you use it correctly.",
+        "defaultMessage": "!!!The simplest way to keep your wallet recovery phrase secure is to never store it digitally or online. If you decide to use an online service, such as a password manager with an encrypted database, it is your responsibility to make sure that you use it correctly.",
         "description": "Instructions for backing up wallet recovery phrase on dialog that displays wallet recovery phrase.",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 29
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletBackupPrivacyWarningDialog.js",
         "id": "wallet.backup.privacy.warning.dialog.recoveryPhraseInstructions2",
         "start": {
           "column": 31,
-          "line": 24
+          "line": 23
         }
       },
       {
-        "defaultMessage": "!!!<strong>Using your recovery phrase is the only way to recover\n     your wallet if your computer is lost, broken, stolen or stops working.\n     You will need this recovery phrase to receive your Incentivized Testnet ada\n      rewards on the mainnet.</strong>",
+        "defaultMessage": "!!!<strong>Using your recovery phrase is the only way to recover your wallet if your computer is lost, broken, stolen, or stops working. You will also need this recovery phrase to receive your Incentivized Testnet ada rewards on the Cardano mainnet.</strong>",
         "description": "Instructions for backing up wallet recovery phrase on dialog that displays wallet recovery phrase.",
         "end": {
           "column": 3,
-          "line": 40
+          "line": 36
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletBackupPrivacyWarningDialog.js",
         "id": "wallet.backup.privacy.warning.dialog.recoveryPhraseInstructions3",
         "start": {
           "column": 31,
-          "line": 32
+          "line": 30
         }
       },
       {
@@ -5151,27 +5151,27 @@
         "description": "Label for button \"Continue\" on wallet backup dialog",
         "end": {
           "column": 3,
-          "line": 45
+          "line": 41
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletBackupPrivacyWarningDialog.js",
         "id": "wallet.backup.privacy.warning.dialog..button.labelContinue",
         "start": {
           "column": 23,
-          "line": 41
+          "line": 37
         }
       },
       {
-        "defaultMessage": "!!!TI confirm that nobody can see my screen, because anyone who knows my recovery\n     phrase will be able to spend the ada in my new wallet.",
+        "defaultMessage": "!!!I confirm that nobody can see my screen, because anyone who knows my recovery phrase will be able to spend the ada in my new wallet.",
         "description": "Label for the checkbox on wallet backup dialog describing that nobody should be watching when recovery phrase is shown",
         "end": {
           "column": 3,
-          "line": 52
+          "line": 48
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletBackupPrivacyWarningDialog.js",
         "id": "wallet.backup.privacy.warning.dialog.checkbox.label.nobodyWatching",
         "start": {
           "column": 22,
-          "line": 46
+          "line": 42
         }
       }
     ],
@@ -5180,7 +5180,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Please make sure you write down the {walletRecoveryPhraseWordCount} words\n     of your wallet recovery phrase on a piece of paper in the exact order as shown here.",
+        "defaultMessage": "!!!Please make sure you write down the {walletRecoveryPhraseWordCount} words of your wallet recovery phrase <strong>on a piece of paper in the exact order shown here</strong>.",
         "description": "Instructions for backing up wallet recovery phrase on dialog that displays wallet recovery phrase.",
         "end": {
           "column": 3,
@@ -5255,7 +5255,7 @@
         }
       },
       {
-        "defaultMessage": "!!!I understand that the simplest way to keep my wallet recovery phrase secure...",
+        "defaultMessage": "!!!I understand that the simplest way to keep my wallet recovery phrase secure is to never store it digitally or online. If I decide to use an online service, such as a password manager with an encrypted database, it is my responsibility to make sure that I use it correctly.",
         "description": "Term on wallet creation to store recovery phrase offline",
         "end": {
           "column": 3,
@@ -5269,7 +5269,7 @@
         }
       },
       {
-        "defaultMessage": "!!!I understand that if this application is moved to another device or deleted, my money can\n    be only recovered with the backup phrase which were written down in a secure place",
+        "defaultMessage": "!!!I understand that the only way to recover my wallet if my computer is lost, broken, stolen, or stops working is to use my wallet recovery phrase.",
         "description": "Term and condition on wallet backup dialog describing that wallet can only be recovered with a security phrase",
         "end": {
           "column": 3,
@@ -5283,7 +5283,7 @@
         }
       },
       {
-        "defaultMessage": "!!!<strong>I understand that I will need the wallet recovery phrase of this wallet to receive my Incentivized Testnet ada rewards on the mainnet.</strong>",
+        "defaultMessage": "!!!<strong>I understand that I will need the wallet recovery phrase of this wallet to receive my Incentivized Testnet ada rewards on the Cardano mainnet.</strong>",
         "description": "Term and condition on wallet backup dialog describing that wallet can only be recovered with a security phrase",
         "end": {
           "column": 3,
@@ -8164,8 +8164,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Create a wallet for the balance check",
-        "description": "Description for the \"Create\" button on the wallet add dialog.",
+        "defaultMessage": "!!!Create a new Rewards wallet",
+        "description": "Description for the \"Create a new Rewards wallet\" button on the wallet add dialog.",
         "end": {
           "column": 3,
           "line": 30
@@ -8309,11 +8309,11 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Create a new wallet",
-        "description": "Title \"Create a new wallet\" in the wallet create form.",
+        "defaultMessage": "!!!Create a new Rewards wallet",
+        "description": "Title \"Create a new Rewards wallet\" in the wallet create form.",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 30
         },
         "file": "source/renderer/app/components/wallet/WalletCreateDialog.js",
         "id": "wallet.create.dialog.title",
@@ -8327,13 +8327,13 @@
         "description": "Label for the \"Wallet Name\" text input in the wallet create form.",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 36
         },
         "file": "source/renderer/app/components/wallet/WalletCreateDialog.js",
         "id": "wallet.create.dialog.name.label",
         "start": {
           "column": 14,
-          "line": 30
+          "line": 31
         }
       },
       {
@@ -8341,27 +8341,27 @@
         "description": "Hint for the \"Wallet Name\" text input in the wallet create form.",
         "end": {
           "column": 3,
-          "line": 41
+          "line": 42
         },
         "file": "source/renderer/app/components/wallet/WalletCreateDialog.js",
         "id": "wallet.create.dialog.walletNameHint",
         "start": {
           "column": 18,
-          "line": 36
+          "line": 37
         }
       },
       {
-        "defaultMessage": "!!!Create personal wallet",
-        "description": "Label for the \"Create personal wallet\" button on create wallet dialog.",
+        "defaultMessage": "!!!Create Rewards wallet",
+        "description": "Label for the \"Create Rewards wallet\" button on create wallet dialog.",
         "end": {
           "column": 3,
-          "line": 47
+          "line": 48
         },
         "file": "source/renderer/app/components/wallet/WalletCreateDialog.js",
         "id": "wallet.create.dialog.create.personal.wallet.button.label",
         "start": {
           "column": 24,
-          "line": 42
+          "line": 43
         }
       },
       {
@@ -8369,13 +8369,13 @@
         "description": "Password creation label.",
         "end": {
           "column": 3,
-          "line": 52
+          "line": 53
         },
         "file": "source/renderer/app/components/wallet/WalletCreateDialog.js",
         "id": "wallet.create.dialog.passwordSectionLabel",
         "start": {
           "column": 24,
-          "line": 48
+          "line": 49
         }
       },
       {
@@ -8383,13 +8383,13 @@
         "description": "Password creation description.",
         "end": {
           "column": 3,
-          "line": 58
+          "line": 59
         },
         "file": "source/renderer/app/components/wallet/WalletCreateDialog.js",
         "id": "wallet.create.dialog.passwordSectionDescription",
         "start": {
           "column": 30,
-          "line": 53
+          "line": 54
         }
       },
       {
@@ -8397,13 +8397,13 @@
         "description": "Label for the \"Wallet password\" input in the create wallet dialog.",
         "end": {
           "column": 3,
-          "line": 64
+          "line": 65
         },
         "file": "source/renderer/app/components/wallet/WalletCreateDialog.js",
         "id": "wallet.create.dialog.spendingPasswordLabel",
         "start": {
           "column": 25,
-          "line": 59
+          "line": 60
         }
       },
       {
@@ -8411,13 +8411,13 @@
         "description": "Label for the \"Repeat password\" input in the create wallet dialog.",
         "end": {
           "column": 3,
-          "line": 70
+          "line": 71
         },
         "file": "source/renderer/app/components/wallet/WalletCreateDialog.js",
         "id": "wallet.create.dialog.repeatPasswordLabel",
         "start": {
           "column": 23,
-          "line": 65
+          "line": 66
         }
       },
       {
@@ -8425,13 +8425,13 @@
         "description": "Placeholder for the \"Password\" inputs in the create wallet dialog.",
         "end": {
           "column": 3,
-          "line": 76
+          "line": 77
         },
         "file": "source/renderer/app/components/wallet/WalletCreateDialog.js",
         "id": "wallet.create.dialog.passwordFieldPlaceholder",
         "start": {
           "column": 28,
-          "line": 71
+          "line": 72
         }
       }
     ],

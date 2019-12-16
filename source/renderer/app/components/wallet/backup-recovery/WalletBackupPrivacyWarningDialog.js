@@ -15,26 +15,22 @@ import styles from './WalletBackupPrivacyWarningDialog.scss';
 const messages = defineMessages({
   recoveryPhraseInstructions1: {
     id: 'wallet.backup.privacy.warning.dialog.recoveryPhraseInstructions1',
-    defaultMessage: `!!!On the following screen, you will be given a list of {walletRecoveryPhraseWordCount}
-      words to write down on paper and keep in a safe place. This list of words is the wallet recovery
-      phrase for the Rewards wallet you are creating.`,
+    defaultMessage:
+      '!!!On the following screen, you will be given a list of {walletRecoveryPhraseWordCount}  words to write down on paper and keep in a safe place. This list of words is the wallet recovery phrase for the Rewards wallet you are creating.',
     description:
       'Instructions for backing up wallet recovery phrase on dialog that displays wallet recovery phrase.',
   },
   recoveryPhraseInstructions2: {
     id: 'wallet.backup.privacy.warning.dialog.recoveryPhraseInstructions2',
-    defaultMessage: `!!!The simplest way to keep your wallet recovery phrase secure is never to store it digitally
-     or online. If you decide to use an online service, such as a password manager with an encrypted database,
-     it is your responsibility to make sure that you use it correctly.`,
+    defaultMessage:
+      '!!!The simplest way to keep your wallet recovery phrase secure is to never store it digitally or online. If you decide to use an online service, such as a password manager with an encrypted database, it is your responsibility to make sure that you use it correctly.',
     description:
       'Instructions for backing up wallet recovery phrase on dialog that displays wallet recovery phrase.',
   },
   recoveryPhraseInstructions3: {
     id: 'wallet.backup.privacy.warning.dialog.recoveryPhraseInstructions3',
-    defaultMessage: `!!!<strong>Using your recovery phrase is the only way to recover
-     your wallet if your computer is lost, broken, stolen or stops working.
-     You will need this recovery phrase to receive your Incentivized Testnet ada
-      rewards on the mainnet.</strong>`,
+    defaultMessage:
+      '!!!<strong>Using your recovery phrase is the only way to recover your wallet if your computer is lost, broken, stolen, or stops working. You will also need this recovery phrase to receive your Incentivized Testnet ada rewards on the Cardano mainnet.</strong>',
     description:
       'Instructions for backing up wallet recovery phrase on dialog that displays wallet recovery phrase.',
   },
@@ -45,8 +41,8 @@ const messages = defineMessages({
   },
   termNobodyWatching: {
     id: 'wallet.backup.privacy.warning.dialog.checkbox.label.nobodyWatching',
-    defaultMessage: `!!!TI confirm that nobody can see my screen, because anyone who knows my recovery
-     phrase will be able to spend the ada in my new wallet.`,
+    defaultMessage:
+      '!!!I confirm that nobody can see my screen, because anyone who knows my recovery phrase will be able to spend the ada in my new wallet.',
     description:
       'Label for the checkbox on wallet backup dialog describing that nobody should be watching when recovery phrase is shown',
   },

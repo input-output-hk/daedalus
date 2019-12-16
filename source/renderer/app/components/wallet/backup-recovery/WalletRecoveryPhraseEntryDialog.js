@@ -37,21 +37,21 @@ const messages = defineMessages({
     id:
       'wallet.backup.recovery.phrase.entry.dialog.terms.and.condition.offline',
     defaultMessage:
-      '!!!I understand that the simplest way to keep my wallet recovery phrase secure...',
+      '!!!I understand that the simplest way to keep my wallet recovery phrase secure is to never store it digitally or online. If I decide to use an online service, such as a password manager with an encrypted database, it is my responsibility to make sure that I use it correctly.',
     description: 'Term on wallet creation to store recovery phrase offline',
   },
   termRecovery: {
     id:
       'wallet.backup.recovery.phrase.entry.dialog.terms.and.condition.recovery',
-    defaultMessage: `!!!I understand that if this application is moved to another device or deleted, my money can
-    be only recovered with the backup phrase which were written down in a secure place`,
+    defaultMessage:
+      '!!!I understand that the only way to recover my wallet if my computer is lost, broken, stolen, or stops working is to use my wallet recovery phrase.',
     description:
       'Term and condition on wallet backup dialog describing that wallet can only be recovered with a security phrase',
   },
   termRewards: {
     id:
       'wallet.backup.recovery.phrase.entry.dialog.terms.and.condition.rewards',
-    defaultMessage: `!!!<strong>I understand that I will need the wallet recovery phrase of this wallet to receive my Incentivized Testnet ada rewards on the mainnet.</strong>`,
+    defaultMessage: `!!!<strong>I understand that I will need the wallet recovery phrase of this wallet to receive my Incentivized Testnet ada rewards on the Cardano mainnet.</strong>`,
     description:
       'Term and condition on wallet backup dialog describing that wallet can only be recovered with a security phrase',
   },

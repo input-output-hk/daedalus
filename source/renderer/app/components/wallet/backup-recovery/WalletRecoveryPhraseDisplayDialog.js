@@ -14,8 +14,8 @@ import { WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../../../config/cryptoConfig'
 const messages = defineMessages({
   backupInstructions: {
     id: 'wallet.backup.recovery.phrase.display.dialog.backup.instructions',
-    defaultMessage: `!!!Please make sure you write down the {walletRecoveryPhraseWordCount} words
-     of your wallet recovery phrase on a piece of paper in the exact order as shown here.`,
+    defaultMessage:
+      '!!!Please make sure you write down the {walletRecoveryPhraseWordCount} words of your wallet recovery phrase <strong>on a piece of paper in the exact order shown here</strong>.',
     description:
       'Instructions for backing up wallet recovery phrase on dialog that displays wallet recovery phrase.',
   },
