@@ -970,7 +970,7 @@ export default class AdaApi {
         walletId,
         passphrase,
       });
-      Logger.debug('AdaApi::quitStakePool success');
+      Logger.debug('AdaApi::quitStakePool success', { result });
       return result;
     } catch (error) {
       Logger.error('AdaApi::quitStakePool error', { error });
@@ -1110,8 +1110,7 @@ export default class AdaApi {
     Logger.debug('AdaApi::getStakePools called');
     try {
       const stakePools: AdaApiStakePools = await getStakePools(this.config);
-
-      Logger.debug('AdaApi::getStakePools success');
+      Logger.debug('AdaApi::getStakePools success', { stakePools });
       return stakePools
         .filter(({ metadata }: AdaApiStakePool) => metadata !== undefined)
         .map(_createStakePoolFromServerData);
@@ -1266,11 +1265,11 @@ export default class AdaApi {
     Logger.debug('AdaApi::calculateDelegationFee called', {
       parameters: filterLogData(request),
     });
-
     try {
       const response: DelegationFee = await getDelegationFee(this.config, {
         walletId: request.walletId,
       });
+      Logger.debug('AdaApi::calculateDelegationFee success', { response });
       const delegationFee = _createDelegationFeeFromServerData(response);
       return delegationFee;
     } catch (error) {
@@ -1286,18 +1285,15 @@ export default class AdaApi {
       parameters: filterLogData(request),
     });
     const { walletId, stakePoolId, passphrase } = request;
-
     try {
       const response = await joinStakePool(this.config, {
         walletId,
         stakePoolId,
         passphrase,
       });
-
       Logger.debug('AdaApi::joinStakePool success', {
         stakePool: response,
       });
-
       return response;
     } catch (error) {
       Logger.error('AdaApi::joinStakePool error', { error });
