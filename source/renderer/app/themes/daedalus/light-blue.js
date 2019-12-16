@@ -287,9 +287,8 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-manual-update-overlay-button-label-color': '#fafbfc',
   },
   mnemonic: {
-    '--theme-mnemonic-background-color': '#e6e9ee',
-    '--theme-mnemonic-background-color-hover': '#eaecf1',
     '--theme-backup-mnemonic-background-color': 'rgba(68, 91, 124, 0.05)',
+    '--theme-mnemonic-background-color': '#e6e9ee',
   },
   modal: {
     '--theme-modal-overlay-background-color': 'rgba(0, 0, 0, 0.4)',

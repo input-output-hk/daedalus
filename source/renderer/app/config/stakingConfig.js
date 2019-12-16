@@ -25,5 +25,5 @@ export const RECENT_STAKE_POOLS_COUNT = 6;
 
 export const STAKE_POOL_TRANSACTION_CHECK_INTERVAL = 1 * 1000; // 1 second | unit: milliseconds;
 export const STAKE_POOL_TRANSACTION_CHECKER_TIMEOUT = 30 * 1000; // 30 seconds | unit: milliseconds;
-export const STAKE_POOLS_INTERVAL = 30 * 60 * 1000; // 30 minutes | unit: milliseconds;
-export const STAKE_POOLS_FAST_INTERVAL = 1000; // 1 second | unit: milliseconds;
+export const STAKE_POOLS_INTERVAL = 1 * 60 * 1000; // 1 minute | unit: milliseconds;
+export const STAKE_POOLS_FAST_INTERVAL = 1 * 1000; // 1 second | unit: milliseconds;

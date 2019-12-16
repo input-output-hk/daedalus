@@ -56,7 +56,6 @@ import { transferFunds } from './wallets/requests/transferFunds';
 
 // Staking
 import StakePool from '../domains/StakePool';
-import stakingStakePoolsMissingApiData from '../config/stakingStakePoolsMissingApiData.dummy.json';
 import { EPOCH_LENGTH_ITN } from '../config/epochsConfig';
 
 // News requests
@@ -1109,11 +1108,15 @@ export default class AdaApi {
   getStakePools = async (): Promise<Array<StakePool>> => {
     Logger.debug('AdaApi::getStakePools called');
     try {
-      const stakePools: AdaApiStakePools = await getStakePools(this.config);
-      Logger.debug('AdaApi::getStakePools success', { stakePools });
-      return stakePools
+      const response: AdaApiStakePools = await getStakePools(this.config);
+      const stakePools = response
         .filter(({ metadata }: AdaApiStakePool) => metadata !== undefined)
         .map(_createStakePoolFromServerData);
+      Logger.debug('AdaApi::getStakePools success', {
+        stakePoolsTotal: response.length,
+        stakePoolsWithMetadata: stakePools.length,
+      });
+      return stakePools;
     } catch (error) {
       Logger.error('AdaApi::getStakePools error', { error });
       throw new GenericApiError();
@@ -1166,10 +1169,12 @@ export default class AdaApi {
           slot: get(network_tip, 'slot_number', 0),
         },
         nextEpoch: {
+          // N+1 epoch
           epochNumber: get(next_epoch, 'epoch_number', 0),
           epochStart: get(next_epoch, 'epoch_start_time', ''),
         },
         futureEpoch: {
+          // N+2 epoch
           epochNumber: get(next_epoch, 'epoch_number', 0) + 1,
           epochStart: moment(get(next_epoch, 'epoch_start_time', 0))
             .add(EPOCH_LENGTH_ITN, 'seconds')
@@ -1451,7 +1456,6 @@ const _createMigrationFeeFromServerData = action(
 const _createStakePoolFromServerData = action(
   'AdaApi::_createStakePoolFromServerData',
   (stakePool: AdaApiStakePool, index: number) => {
-    // DATA FROM THE API
     const {
       id,
       metrics,
@@ -1465,15 +1469,6 @@ const _createStakePoolFromServerData = action(
       produced_blocks: producedBlocks,
     } = metrics; // eslint-disable-line
     const {
-      // MISSING DATA FROM THE API
-      // NOT CONTAINED IN THE CURRENT API DOCS:
-      _createdAt: createdAt,
-      _isCharity: isCharity,
-      // _pledge: pledge,
-      // _ranking: ranking,
-      _retiring: retiring,
-    } = stakingStakePoolsMissingApiData[index];
-    const {
       name,
       description = '',
       ticker,
@@ -1486,7 +1481,7 @@ const _createStakePoolFromServerData = action(
     const profitMarginPercentage = get(profitMargin, 'quantity', 0);
     return new StakePool({
       id,
-      performance: performance * 100, // Percentage!
+      performance: performance * 100,
       controlledStake: new BigNumber(controlledStakeQuantity).dividedBy(
         LOVELACES_PER_ADA
       ),
@@ -1495,14 +1490,13 @@ const _createStakePoolFromServerData = action(
       homepage,
       pledgeAddress,
       cost: new BigNumber(costQuantity).dividedBy(LOVELACES_PER_ADA),
-      createdAt,
       description,
-      isCharity,
+      isCharity: false,
       name,
       // pledge: new BigNumber(pledge).dividedBy(LOVELACES_PER_ADA),
       profitMargin: profitMarginPercentage,
       ranking: index + 1,
-      retiring,
+      retiring: null,
     });
   }
 );
