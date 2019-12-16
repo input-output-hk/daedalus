@@ -21,12 +21,11 @@ type Props = {
   children?: Node,
   onClose?: Function,
   isVisible: boolean,
-  order?: 'auto' | number | 'initial' | 'inherit',
+  index: number,
 };
 
 export default class Notification extends Component<Props> {
   static defaultProps = {
-    order: 9999999999999999,
     clickToClose: true,
     hasCloseButton: true,
     hasEllipsis: true,
@@ -41,7 +40,7 @@ export default class Notification extends Component<Props> {
       hasCloseButton,
       hasEllipsis,
       onClose,
-      order,
+      index,
       themeOverride,
       isVisible,
       hasSpinner,
@@ -67,23 +66,25 @@ export default class Notification extends Component<Props> {
         role="link"
         aria-hidden
         style={{
-          zIndex: order,
+          zIndex: 9999999 + index,
         }}
       >
-        <Fragment>
-          {icon && <SVGInline svg={icon} className={iconStyles} />}
+        {isVisible && (
+          <Fragment>
+            {icon && <SVGInline svg={icon} className={iconStyles} />}
 
-          <div className={styles.message}>{children}</div>
+            <div className={styles.message}>{children}</div>
 
-          {hasCloseButton && (
-            <button
-              className={styles.closeButton}
-              onClick={() => onClose && onClose()}
-            >
-              <SVGInline svg={closeCross} />
-            </button>
-          )}
-        </Fragment>
+            {hasCloseButton && (
+              <button
+                className={styles.closeButton}
+                onClick={() => onClose && onClose()}
+              >
+                <SVGInline svg={closeCross} />
+              </button>
+            )}
+          </Fragment>
+        )}
       </div>
     );
   }

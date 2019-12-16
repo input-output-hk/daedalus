@@ -112,7 +112,9 @@ export default class NotificationsContainer extends Component<InjectedProps> {
         {this.notificationsConfig.map(({ id }: NotificationConfig) => {
           const isVisible = id in activeNotifications;
           const message = this.notificationsMessage[id] || {};
-          const { labelValues } = isVisible ? activeNotifications[id] : {};
+          const { labelValues, index } = isVisible
+            ? activeNotifications[id]
+            : {};
           const { icon } = message || {};
           const hasSpinner = icon === 'spinner';
           return (
@@ -123,6 +125,7 @@ export default class NotificationsContainer extends Component<InjectedProps> {
               icon={this.getIcon(icon)}
               isVisible={isVisible}
               hasSpinner={hasSpinner}
+              index={index || 0}
             >
               {isVisible ? this.getLabel(id, labelValues) : null}
             </Notification>

@@ -12,7 +12,12 @@ export default class UiNotificationsStore extends Store {
   @observable activeNotifications: {
     [key: NotificationId]: {
       labelValues?: {},
+      index: number,
     },
+  } = {};
+
+  activeNotificationsTimeouts: {
+    [key: NotificationId]: TimeoutID,
   } = {};
 
   setup() {
@@ -43,8 +48,13 @@ export default class UiNotificationsStore extends Store {
     labelValues?: Object
   ) => {
     const { id, duration = NOTIFICATION_DEFAULT_DURATION } = notificationConfig;
-    this.activeNotifications[id] = { labelValues };
-    setTimeout(() => this._onClose({ id }), duration);
+    const index = Object.keys(this.activeNotifications).length + 1;
+    this.activeNotifications[id] = { labelValues, index };
+    clearTimeout(this.activeNotificationsTimeouts[id]);
+    this.activeNotificationsTimeouts[id] = setTimeout(
+      () => this._onClose({ id }),
+      duration
+    );
   };
 
   @action _onClose = ({ id }: { id: NotificationId }) => {

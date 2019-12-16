@@ -9268,13 +9268,13 @@
         "description": "Notification for download logs in progress in the Loading and Settings pages.",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 26
         },
         "file": "source/renderer/app/containers/notifications/NotificationsContainer.js",
         "id": "notification.downloadLogsProgress",
         "start": {
           "column": 24,
-          "line": 18
+          "line": 21
         }
       },
       {
@@ -9282,13 +9282,13 @@
         "description": "Notification for download logs in the Loading and Settings pages.",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 32
         },
         "file": "source/renderer/app/containers/notifications/NotificationsContainer.js",
         "id": "notification.downloadLogsSuccess",
         "start": {
           "column": 23,
-          "line": 24
+          "line": 27
         }
       },
       {
@@ -9296,13 +9296,13 @@
         "description": "Notification for the wallet address copy success in the Wallet Receive page.",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 39
         },
         "file": "source/renderer/app/containers/notifications/NotificationsContainer.js",
         "id": "notification.copyAddress",
         "start": {
           "column": 15,
-          "line": 30
+          "line": 33
         }
       },
       {
@@ -9310,13 +9310,13 @@
         "description": "Notification for the state directory copy success in the Diagnostics page.",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 45
         },
         "file": "source/renderer/app/containers/notifications/NotificationsContainer.js",
         "id": "notification.copyStateDirectoryPath",
         "start": {
           "column": 26,
-          "line": 37
+          "line": 40
         }
       }
     ],
