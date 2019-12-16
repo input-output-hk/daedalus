@@ -47,7 +47,7 @@ const messages = defineMessages({
   description: {
     id: 'staking.delegationCenter.description',
     defaultMessage:
-      '!!!Changes to delegation preferences will take effect after the next two Cardano epochs have completed. Epochs on the Incentivized Testnet last one day. Any changes made now will take effect in {timeUntilFutureEpoch}.',
+      '!!!Changes to delegation preferences will take effect after both the current and next Cardano epochs have completed. Epochs on the Incentivized Testnet last one day. Any changes made now will take effect in {timeUntilFutureEpoch}.',
     description: 'Delegation description for the Delegation center.',
   },
 });
