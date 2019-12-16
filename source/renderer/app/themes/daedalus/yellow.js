@@ -279,9 +279,8 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-manual-update-overlay-button-label-color-hover': '#ffffff',
   },
   mnemonic: {
-    '--theme-mnemonic-background-color': 'rgba(45, 45, 45, 0.07)',
-    '--theme-mnemonic-background-color-hover': '#d6d3ca',
     '--theme-backup-mnemonic-background-color': '#f1eee6',
+    '--theme-mnemonic-background-color': 'rgba(45, 45, 45, 0.07)',
   },
   modal: {
     '--theme-modal-overlay-background-color': 'rgba(0, 0, 0, 0.4)',

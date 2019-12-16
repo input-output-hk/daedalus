@@ -294,7 +294,6 @@ export const DARK_BLUE_THEME_OUTPUT = {
   mnemonic: {
     '--theme-backup-mnemonic-background-color': 'rgba(233, 244, 254, 0.05)',
     '--theme-mnemonic-background-color': 'rgba(83, 99, 112, 0.3)',
-    '--theme-mnemonic-background-color-hover': 'rgba(102, 122, 138, 0.3)',
   },
   modal: {
     '--theme-modal-overlay-background-color': 'rgba(0, 0, 0, 0.4)',
