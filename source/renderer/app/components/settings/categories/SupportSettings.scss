@@ -58,7 +58,7 @@
   button {
     cursor: pointer;
     &:disabled {
-      color: var(--rp-button-bg-color-disabled);
+      border-bottom-color: transparent;
       cursor: default;
       text-decoration: none;
     }
