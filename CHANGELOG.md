@@ -39,6 +39,7 @@ Changelog
 
 ### Chores
 
+- Updated `cardano-wallet` to revision `1b7fd510` ([PR 1779](https://github.com/input-output-hk/daedalus/pull/1779))
 - Reduced stake pools fetching interval to 1 minute ([PR 1779](https://github.com/input-output-hk/daedalus/pull/1779))
 - Updated `cardano-wallet` to version `2019.12.13` ([PR 1775](https://github.com/input-output-hk/daedalus/pull/1775))
 - Updated stake pool details tooltip with profit margin & cost ([PR 1773](https://github.com/input-output-hk/daedalus/pull/1773), [PR 1779](https://github.com/input-output-hk/daedalus/pull/1779))
