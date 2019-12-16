@@ -19,7 +19,7 @@ const messages = defineMessages({
   verificationInstructions: {
     id: 'wallet.backup.recovery.phrase.entry.dialog.verification.instructions',
     defaultMessage:
-      '!!!Tap each word in the correct order to verify your recovery phrase',
+      '!!!Click each word in the correct order to verify your recovery phrase',
     description:
       'Instructions for verifying wallet recovery phrase on dialog for entering wallet recovery phrase.',
   },

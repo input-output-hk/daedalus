@@ -32,7 +32,7 @@ const messages = defineMessages({
   descriptionLine2: {
     id: 'staking.delegationSetup.success.step.dialog.description.line2',
     defaultMessage:
-      '!!!Your new delegation preferences are now posted on the blockchain <span>and will take effect after the next two Cardano epochs have completed in {timeUntilNextEpochStart}</span>. During this time, your previous delegation preferences are still active.',
+      '!!!Your new delegation preferences are now posted on the blockchain <strong>and will take effect after both the current and next Cardano epochs have completed in {timeUntilNextEpochStart}</strong>. During this time, your previous delegation preferences are still active.',
     description:
       'Description "line 2" on the delegation setup "success" step dialog.',
   },

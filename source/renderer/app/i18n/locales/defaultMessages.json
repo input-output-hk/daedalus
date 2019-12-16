@@ -2283,7 +2283,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Changes to delegation preferences will take effect after the next two Cardano epochs have completed. Epochs on the Incentivized Testnet last one day. Any changes made now will take effect in {timeUntilFutureEpoch}.",
+        "defaultMessage": "!!!Changes to delegation preferences will take effect after both the current and next Cardano epochs have completed. Epochs on the Incentivized Testnet last one day. Any changes made now will take effect in {timeUntilFutureEpoch}.",
         "description": "Delegation description for the Delegation center.",
         "end": {
           "column": 3,
@@ -2550,7 +2550,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Your new delegation preferences are now posted on the blockchain <strong>and will take effect after the next two Cardano epochs have completed in {timeUntilNextEpochStart}</strong>. During this time, your previous delegation preferences are still active.",
+        "defaultMessage": "!!!Your new delegation preferences are now posted on the blockchain <strong>and will take effect after both the current and next Cardano epochs have completed in {timeUntilNextEpochStart}</strong>. During this time, your previous delegation preferences are still active.",
         "description": "Description 2 for the \"Undelegate Result\" dialog.",
         "end": {
           "column": 3,
@@ -3271,7 +3271,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Your new delegation preferences are now posted on the blockchain <span>and will take effect after the next two Cardano epochs have completed in {timeUntilNextEpochStart}</span>. During this time, your previous delegation preferences are still active.",
+        "defaultMessage": "!!!Your new delegation preferences are now posted on the blockchain <strong>and will take effect after both the current and next Cardano epochs have completed in {timeUntilNextEpochStart}</strong>. During this time, your previous delegation preferences are still active.",
         "description": "Description \"line 2\" on the delegation setup \"success\" step dialog.",
         "end": {
           "column": 3,
@@ -5213,7 +5213,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Tap each word in the correct order to verify your recovery phrase",
+        "defaultMessage": "!!!Click each word in the correct order to verify your recovery phrase",
         "description": "Instructions for verifying wallet recovery phrase on dialog for entering wallet recovery phrase.",
         "end": {
           "column": 3,
