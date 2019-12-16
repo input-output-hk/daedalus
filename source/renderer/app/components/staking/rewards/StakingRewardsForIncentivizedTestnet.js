@@ -244,7 +244,6 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
             </BorderedBox>
 
             <div className={styles.note}>
-              <div className={styles.asterisk}>*</div>
               <div className={styles.noteContent}>
                 <FormattedHTMLMessage {...messages.note} />
                 <button onClick={onLearnMoreClick}>

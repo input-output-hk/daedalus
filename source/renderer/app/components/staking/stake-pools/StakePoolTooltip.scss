@@ -11,7 +11,7 @@
   padding: 10px;
   position: absolute;
   user-select: text;
-  width: 240px;
+  width: 280px;
   z-index: 2;
 
   :global {
@@ -244,14 +244,14 @@
     font-size: 14px;
     line-height: 1.36;
     opacity: 0.8;
-    width: 60%;
+    width: 65%;
   }
 
   dd {
     line-height: 0;
     padding-top: 1px;
     text-align: right;
-    width: 40%;
+    width: 35%;
   }
 
   span {
