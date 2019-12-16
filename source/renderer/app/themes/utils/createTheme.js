@@ -636,9 +636,8 @@ export const createDaedalusComponentsTheme = (
       }`,
     },
     mnemonic: {
-      '--theme-mnemonic-background-color': `${background.primary.regular}`,
-      '--theme-mnemonic-background-color-hover': `${background.primary.dark}`,
       '--theme-backup-mnemonic-background-color': `${background.primary.light}`,
+      '--theme-mnemonic-background-color': `${background.primary.regular}`,
     },
     modal: {
       '--theme-modal-overlay-background-color': 'rgba(0, 0, 0, 0.4)',

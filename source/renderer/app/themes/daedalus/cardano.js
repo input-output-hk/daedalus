@@ -292,7 +292,6 @@ export const CARDANO_THEME_OUTPUT = {
   mnemonic: {
     '--theme-backup-mnemonic-background-color': 'rgba(68, 91, 124, 0.05)',
     '--theme-mnemonic-background-color': '#f0f3f5',
-    '--theme-mnemonic-background-color-hover': '#f3f5f7',
   },
   modal: {
     '--theme-modal-overlay-background-color': 'rgba(0, 0, 0, 0.4)',
