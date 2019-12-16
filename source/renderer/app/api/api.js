@@ -37,7 +37,6 @@ import { deleteLegacyTransaction } from './transactions/requests/deleteLegacyTra
 
 // Wallets requests
 import { changeSpendingPassword } from './wallets/requests/changeSpendingPassword';
-import { quitStakePool } from './wallets/requests/quitStakePool';
 import { deleteWallet } from './wallets/requests/deleteWallet';
 import { deleteLegacyWallet } from './wallets/requests/deleteLegacyWallet';
 import { exportWalletAsJSON } from './wallets/requests/exportWalletAsJSON';
@@ -56,17 +55,17 @@ import { transferFundsCalculateFee } from './wallets/requests/transferFundsCalcu
 import { transferFunds } from './wallets/requests/transferFunds';
 
 // Staking
-import { getStakePools } from './staking/requests/getStakePools';
-import { getDelegationFee } from './staking/requests/getDelegationFee';
 import StakePool from '../domains/StakePool';
-import stakingStakePoolsMissingApiData from '../config/stakingStakePoolsMissingApiData.dummy.json';
 import { EPOCH_LENGTH_ITN } from '../config/epochsConfig';
 
 // News requests
 import { getNews } from './news/requests/getNews';
 
 // Stake Pools request
+import { getStakePools } from './staking/requests/getStakePools';
+import { getDelegationFee } from './staking/requests/getDelegationFee';
 import { joinStakePool } from './staking/requests/joinStakePool';
+import { quitStakePool } from './staking/requests/quitStakePool';
 
 // Utility functions
 import {
@@ -145,8 +144,6 @@ import type {
   TransferFundsCalculateFeeResponse,
   TransferFundsRequest,
   TransferFundsResponse,
-  QuitStakePoolRequest,
-  QuitStakePoolResponse,
 } from './wallets/types';
 
 // News Types
@@ -159,6 +156,7 @@ import type {
   DelegationFee,
   AdaApiStakePools,
   AdaApiStakePool,
+  QuitStakePoolRequest,
 } from './staking/types';
 
 // Common errors
@@ -960,7 +958,7 @@ export default class AdaApi {
 
   quitStakePool = async (
     request: QuitStakePoolRequest
-  ): Promise<QuitStakePoolResponse> => {
+  ): Promise<Transaction> => {
     Logger.debug('AdaApi::quitStakePool called', {
       parameters: filterLogData(request),
     });
@@ -971,7 +969,7 @@ export default class AdaApi {
         walletId,
         passphrase,
       });
-      Logger.debug('AdaApi::quitStakePool success');
+      Logger.debug('AdaApi::quitStakePool success', { result });
       return result;
     } catch (error) {
       Logger.error('AdaApi::quitStakePool error', { error });
@@ -1110,14 +1108,15 @@ export default class AdaApi {
   getStakePools = async (): Promise<Array<StakePool>> => {
     Logger.debug('AdaApi::getStakePools called');
     try {
-      const stakePools: AdaApiStakePools = await getStakePools(this.config);
-      Logger.debug('AdaApi::getStakePools success');
-      return (
-        stakePools
-          // @API TODO: Filter Stake Pools without metadata, once metadata is present in the API response
-          // .filter(({ metadata }: AdaApiStakePool) => metadata !== undefined)
-          .map(_createStakePoolFromServerData)
-      );
+      const response: AdaApiStakePools = await getStakePools(this.config);
+      const stakePools = response
+        .filter(({ metadata }: AdaApiStakePool) => metadata !== undefined)
+        .map(_createStakePoolFromServerData);
+      Logger.debug('AdaApi::getStakePools success', {
+        stakePoolsTotal: response.length,
+        stakePoolsWithMetadata: stakePools.length,
+      });
+      return stakePools;
     } catch (error) {
       Logger.error('AdaApi::getStakePools error', { error });
       throw new GenericApiError();
@@ -1170,10 +1169,12 @@ export default class AdaApi {
           slot: get(network_tip, 'slot_number', 0),
         },
         nextEpoch: {
+          // N+1 epoch
           epochNumber: get(next_epoch, 'epoch_number', 0),
           epochStart: get(next_epoch, 'epoch_start_time', ''),
         },
         futureEpoch: {
+          // N+2 epoch
           epochNumber: get(next_epoch, 'epoch_number', 0) + 1,
           epochStart: moment(get(next_epoch, 'epoch_start_time', 0))
             .add(EPOCH_LENGTH_ITN, 'seconds')
@@ -1269,11 +1270,11 @@ export default class AdaApi {
     Logger.debug('AdaApi::calculateDelegationFee called', {
       parameters: filterLogData(request),
     });
-
     try {
       const response: DelegationFee = await getDelegationFee(this.config, {
         walletId: request.walletId,
       });
+      Logger.debug('AdaApi::calculateDelegationFee success', { response });
       const delegationFee = _createDelegationFeeFromServerData(response);
       return delegationFee;
     } catch (error) {
@@ -1289,18 +1290,15 @@ export default class AdaApi {
       parameters: filterLogData(request),
     });
     const { walletId, stakePoolId, passphrase } = request;
-
     try {
       const response = await joinStakePool(this.config, {
         walletId,
         stakePoolId,
         passphrase,
       });
-
       Logger.debug('AdaApi::joinStakePool success', {
         stakePool: response,
       });
-
       return response;
     } catch (error) {
       Logger.error('AdaApi::joinStakePool error', { error });
@@ -1458,53 +1456,47 @@ const _createMigrationFeeFromServerData = action(
 const _createStakePoolFromServerData = action(
   'AdaApi::_createStakePoolFromServerData',
   (stakePool: AdaApiStakePool, index: number) => {
-    // DATA FROM THE API
-    const { id, metrics, apparent_performance: performance } = stakePool;
-    let {
+    const {
+      id,
+      metrics,
+      apparent_performance: performance,
+      cost,
+      margin: profitMargin,
+      metadata,
+    } = stakePool;
+    const {
       controlled_stake: controlledStake,
       produced_blocks: producedBlocks,
     } = metrics; // eslint-disable-line
     const {
-      // MISSING DATA FROM THE API
-      // IT IS CONTAINED IN THE DOCS:
-      metadata,
-      // MISSING DATA FROM THE API
-      // NOT CONTAINED IN THE CURRENT API DOCS:
-      // _cost: cost,
-      _createdAt: createdAt,
-      _isCharity: isCharity,
-      // _pledge: pledge,
-      // _profitMargin: profitMargin,
-      // _ranking: ranking,
-      _retiring: retiring,
-    } = stakingStakePoolsMissingApiData[index];
-    const {
       name,
-      description,
+      description = '',
       ticker,
       homepage,
       pledge_address: pledgeAddress,
     } = metadata;
-    controlledStake = controlledStake.quantity;
-    producedBlocks = producedBlocks.quantity;
+    const controlledStakeQuantity = get(controlledStake, 'quantity', 0);
+    const producedBlocksCount = get(producedBlocks, 'quantity', 0);
+    const costQuantity = get(cost, 'quantity', 0);
+    const profitMarginPercentage = get(profitMargin, 'quantity', 0);
     return new StakePool({
       id,
-      performance: performance * 100, // Percentage!
-      controlledStake,
-      producedBlocks,
+      performance: performance * 100,
+      controlledStake: new BigNumber(controlledStakeQuantity).dividedBy(
+        LOVELACES_PER_ADA
+      ),
+      producedBlocks: producedBlocksCount,
       ticker,
       homepage,
       pledgeAddress,
-
-      // cost: new BigNumber(cost).dividedBy(LOVELACES_PER_ADA),
-      createdAt,
+      cost: new BigNumber(costQuantity).dividedBy(LOVELACES_PER_ADA),
       description,
-      isCharity,
+      isCharity: false,
       name,
       // pledge: new BigNumber(pledge).dividedBy(LOVELACES_PER_ADA),
-      // profitMargin,
+      profitMargin: profitMarginPercentage,
       ranking: index + 1,
-      retiring,
+      retiring: null,
     });
   }
 );

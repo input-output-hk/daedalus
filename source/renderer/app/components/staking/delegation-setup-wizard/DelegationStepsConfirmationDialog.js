@@ -180,7 +180,7 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
         label: intl.formatMessage(messages.confirmButtonLabel),
         onClick: this.submit,
         primary: true,
-        disabled: !spendingPasswordField.isValid,
+        disabled: !spendingPasswordField.isValid || isSubmitting,
       },
     ];
 

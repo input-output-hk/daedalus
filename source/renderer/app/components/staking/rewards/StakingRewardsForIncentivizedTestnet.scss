@@ -68,38 +68,30 @@
   }
 
   .note {
+    align-items: flex-start;
     color: var(--theme-staking-font-color-lighter);
     display: flex;
+    flex-direction: column;
     font-family: var(--font-regular);
     font-size: 14px;
     line-height: 1.43;
     padding: 10px 20px;
 
-    .asterisk {
-      margin-right: 12px;
+    p {
+      margin-bottom: 3px;
     }
 
-    .noteContent {
-      align-items: flex-start;
-      display: flex;
-      flex-direction: column;
+    button {
+      @include link(--theme-staking-link-color-light);
+      font-size: 14px;
+      margin-top: 3px;
 
-      p {
-        margin-bottom: 3px;
-      }
-
-      button {
-        @include link(--theme-staking-link-color-light);
-        font-size: 14px;
-        margin-top: 3px;
-
-        &:hover {
-          border-bottom: 1px solid var(--theme-staking-link-color);
-          color: var(--theme-staking-link-color);
-          svg {
-            g {
-              stroke: var(--theme-staking-link-color);
-            }
+      &:hover {
+        border-bottom: 1px solid var(--theme-staking-link-color);
+        color: var(--theme-staking-link-color);
+        svg {
+          g {
+            stroke: var(--theme-staking-link-color);
           }
         }
       }

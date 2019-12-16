@@ -276,9 +276,8 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--theme-manual-update-overlay-button-label-color-hover': '#000000',
   },
   mnemonic: {
-    '--theme-mnemonic-background-color': 'rgba(255, 255, 255, 0.07)',
-    '--theme-mnemonic-background-color-hover': '#101122',
     '--theme-backup-mnemonic-background-color': '#414251',
+    '--theme-mnemonic-background-color': 'rgba(255, 255, 255, 0.07)',
   },
   modal: {
     '--theme-modal-overlay-background-color': 'rgba(0, 0, 0, 0.4)',

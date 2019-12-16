@@ -24,9 +24,9 @@ const messages = defineMessages({
   },
   createDescription: {
     id: 'wallet.add.dialog.create.description',
-    defaultMessage: '!!!Create a wallet for the balance check',
+    defaultMessage: '!!!Create a new Rewards wallet',
     description:
-      'Description for the "Create" button on the wallet add dialog.',
+      'Description for the "Create a new Rewards wallet" button on the wallet add dialog.',
   },
   joinLabel: {
     id: 'wallet.add.dialog.join.label',
