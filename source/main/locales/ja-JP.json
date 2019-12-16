@@ -1,6 +1,8 @@
 {
   "menu.daedalus": "Daedalus",
   "menu.daedalus.about": "このDaedalusについて",
+  "menu.daedalus.settings": "設定",
+  "menu.daedalus.walletSettings": "ウォレットの設定",
   "menu.daedalus.hideDaedalus": "Daedalusを非表示",
   "menu.daedalus.hideOthers": "他を非表示",
   "menu.daedalus.showAll": "すべてを表示",
