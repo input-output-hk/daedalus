@@ -36,28 +36,6 @@ export const winLinuxMenu = (
         enabled: !isUpdateAvailable,
       },
       {
-        type: 'separator',
-      },
-      {
-        label: translation('daedalus.settings'),
-        accelerator: 'Ctrl+,',
-        click() {
-          actions.openSettingsPage();
-        },
-        enabled: !isUpdateAvailable,
-      },
-      {
-        label: translation('daedalus.walletSettings'),
-        accelerator: 'Ctrl+;',
-        click() {
-          actions.openWalletSettingsPage();
-        },
-        enabled: !isUpdateAvailable,
-      },
-      {
-        type: 'separator',
-      },
-      {
         label: translation('daedalus.close'),
         accelerator: 'Ctrl+W',
         click() {
@@ -113,6 +91,28 @@ export const winLinuxMenu = (
         click() {
           window.webContents.reload();
         },
+      },
+      {
+        type: 'separator',
+      },
+      {
+        label: translation('daedalus.settings'),
+        accelerator: 'Alt+S',
+        click() {
+          actions.openSettingsPage();
+        },
+        enabled: !isUpdateAvailable,
+      },
+      {
+        label: translation('daedalus.walletSettings'),
+        accelerator: 'Alt+Ctrl+S',
+        click() {
+          actions.openWalletSettingsPage();
+        },
+        enabled: !isUpdateAvailable,
+      },
+      {
+        type: 'separator',
       },
       isWindows
         ? {
