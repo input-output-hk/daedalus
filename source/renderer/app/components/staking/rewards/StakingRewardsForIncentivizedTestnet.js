@@ -13,7 +13,7 @@ import { StakingPageScrollContext } from '../layouts/StakingWithNavigation';
 import BorderedBox from '../../widgets/BorderedBox';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import sortIcon from '../../../assets/images/ascending.inline.svg';
-import externalLinkIcon from '../../../assets/images/link-ic.inline.svg';
+// import externalLinkIcon from '../../../assets/images/link-ic.inline.svg';
 import downloadIcon from '../../../assets/images/download-ic.inline.svg';
 import type { RewardForIncentivizedTestnet } from '../../../api/staking/types';
 import styles from './StakingRewardsForIncentivizedTestnet.scss';
@@ -68,7 +68,7 @@ type Props = {
   rewards: Array<RewardForIncentivizedTestnet>,
   isLoading: boolean,
   isExporting: boolean,
-  onLearnMoreClick: Function,
+  // onLearnMoreClick: Function,
   onExportCsv: Function,
 };
 
@@ -124,7 +124,12 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
   };
 
   render() {
-    const { rewards, isLoading, isExporting, onLearnMoreClick } = this.props;
+    const {
+      rewards,
+      isLoading,
+      isExporting,
+      // onLearnMoreClick,
+    } = this.props;
     const { rewardsOrder, rewardsSortBy } = this.state;
     const { intl } = this.context;
     const noRewards = !isLoading && ((rewards && !rewards.length) || !rewards);
@@ -246,10 +251,12 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
             <div className={styles.note}>
               <div className={styles.noteContent}>
                 <FormattedHTMLMessage {...messages.note} />
-                <button onClick={onLearnMoreClick}>
-                  {intl.formatMessage(messages.learnMoreButtonLabel)}
-                  <SVGInline svg={externalLinkIcon} />
-                </button>
+                {/*
+                  <button onClick={onLearnMoreClick}>
+                    {intl.formatMessage(messages.learnMoreButtonLabel)}
+                    <SVGInline svg={externalLinkIcon} />
+                  </button>
+                */}
               </div>
             </div>
           </div>
