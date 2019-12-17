@@ -44,9 +44,7 @@ export default class AppStore extends Store {
     });
 
     this.actions.app.downloadLogs.listen(this._downloadLogs);
-    this.actions.app.setNotificationVisibility.listen(
-      this._setDownloadNotification
-    );
+    this.actions.app.setIsDownloadingLogs.listen(this._setIsDownloadingLogs);
 
     this.actions.app.toggleNewsFeed.listen(this._toggleNewsFeed);
     this.actions.app.closeNewsFeed.listen(this._closeNewsFeed);
@@ -173,7 +171,7 @@ export default class AppStore extends Store {
             fresh: true,
           });
         } else {
-          this.actions.app.setNotificationVisibility.trigger(
+          this.actions.app.setIsDownloadingLogs.trigger(
             !this.isDownloadNotificationVisible
           );
         }
@@ -182,9 +180,7 @@ export default class AppStore extends Store {
     this.isDownloadNotificationVisible = true;
   };
 
-  @action _setDownloadNotification = (
-    isDownloadNotificationVisible: boolean
-  ) => {
+  @action _setIsDownloadingLogs = (isDownloadNotificationVisible: boolean) => {
     this.isDownloadNotificationVisible = isDownloadNotificationVisible;
   };
 }

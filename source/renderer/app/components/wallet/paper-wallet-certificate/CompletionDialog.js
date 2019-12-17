@@ -11,7 +11,7 @@ import { getNetworkExplorerUrl } from '../../../utils/network';
 import styles from './CompletionDialog.scss';
 import iconCopy from '../../../assets/images/clipboard-ic.inline.svg';
 import externalLinkIcon from '../../../assets/images/link-ic.inline.svg';
-import InlineNotification from '../../widgets/InlineNotification';
+import InlineNotification from '../../notifications/InlineNotification';
 import { DEVELOPMENT } from '../../../../../common/types/environment.types';
 
 const messages = defineMessages({

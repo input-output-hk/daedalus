@@ -6,6 +6,7 @@ Changelog
 ### Features
 
 - Implemented new menu shortcuts ([PR 1780](https://github.com/input-output-hk/daedalus/pull/1780))
+- Implemented all notifications to be on the top of the app and in front of any other element ([PR 1748](https://github.com/input-output-hk/daedalus/pull/1748))
 - Added stake pool metadata registry for "SelfNode" network ([PR 1771](https://github.com/input-output-hk/daedalus/pull/1771/))
 - Added list stake pools API endpoint errors handlers ([PR 1765](https://github.com/input-output-hk/daedalus/pull/1765))
 - Added "Terms of use" for the Incentivized Testnet v1 - Rewards network ([PR 1741](https://github.com/input-output-hk/daedalus/pull/1741))
