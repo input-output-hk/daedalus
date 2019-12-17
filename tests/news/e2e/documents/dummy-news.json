@@ -2,6 +2,7 @@
   "updatedAt": 1569324863299,
   "items": [
     {
+      "id": 1,
       "title": {
         "en-US": "Incident 1 in English",
         "ja-JP": "Incident 1 in Japanese"
@@ -24,10 +25,14 @@
           "ja-JP": "https://iohk.zendesk.com/hc/ja/articles/"
         }
       },
-      "date": 1569325866799,
+      "date": {
+        "en-US": 1569325866799,
+        "ja-JP": 1569325866799
+      },
       "type": "incident"
     },
     {
+      "id": 2,
       "title": {
         "en-US": "Alert 1 in English",
         "ja-JP": "Alert 1 in Japanese"
@@ -50,10 +55,14 @@
           "ja-JP": "https://iohk.zendesk.com/hc/ja/articles/"
         }
       },
-      "date": 1569152525812,
+      "date": {
+        "en-US": 1569152525812,
+        "ja-JP": 1569152525812
+      },
       "type": "alert"
     },
     {
+      "id": 3,
       "title": {
         "en-US": "Info 1 in English",
         "ja-JP": "Info 1 in Japanese"
@@ -76,10 +85,14 @@
           "ja-JP": "https://iohk.zendesk.com/hc/ja/articles/"
         }
       },
-      "date": 1569324863299,
+      "date": {
+        "en-US": 1569324863299,
+        "ja-JP": 1569324863299
+      },
       "type": "info"
     },
     {
+      "id": 4,
       "title": {
         "en-US": "Info 2 in English - a little bit longer title",
         "ja-JP": "Info 2 in Japanese"
@@ -102,10 +115,14 @@
           "ja-JP": "https://iohk.zendesk.com/hc/ja/articles/"
         }
       },
-      "date": 1568979341589,
+      "date": {
+        "en-US": 1568979341589,
+        "ja-JP": 1568979341589
+      },
       "type": "info"
     },
     {
+      "id": 5,
       "title": {
         "en-US": "Linux news 1 in English",
         "ja-JP": "Linux news 1 in Japanese"
@@ -128,10 +145,14 @@
           "ja-JP": "https://iohk.zendesk.com/hc/ja/articles/"
         }
       },
-      "date": 1569152115002,
+      "date": {
+        "en-US": 1569152115002,
+        "ja-JP": 1569152115002
+      },
       "type": "info"
     },
     {
+      "id": 6,
       "title": {
         "en-US": "Announcement 1 in English",
         "ja-JP": "Announcement 1 in Japanese"
@@ -154,10 +175,14 @@
           "ja-JP": "https://iohk.zendesk.com/hc/ja/articles/"
         }
       },
-      "date": 1569065729169,
+      "date": {
+        "en-US": 1569065729169,
+        "ja-JP": 1569065729169
+      },
       "type": "announcement"
     },
     {
+      "id": 7,
       "title": {
         "en-US": "Announcement 2 in English - a little bit longer title",
         "ja-JP": "Announcement 2 in Japanese"
@@ -180,10 +205,14 @@
           "ja-JP": "https://iohk.zendesk.com/hc/ja/articles/"
         }
       },
-      "date": 1569238489658,
+      "date": {
+        "en-US": 1569238489658,
+        "ja-JP": 1569238489658
+      },
       "type": "announcement"
     },
     {
+      "id": 8,
       "title": {
         "en-US": "Windows announcement 1 in English",
         "ja-JP": "Windows announcement 1 in Japanese"
@@ -206,7 +235,10 @@
           "ja-JP": "https://iohk.zendesk.com/hc/ja/articles/"
         }
       },
-      "date": 1568892951736,
+      "date": {
+        "en-US": 1568892951736,
+        "ja-JP": 1568892951736
+      },
       "type": "announcement"
     }
   ]
