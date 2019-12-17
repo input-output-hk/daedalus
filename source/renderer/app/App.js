@@ -13,7 +13,7 @@ import translations from './i18n/translations';
 import ThemeManager from './ThemeManager';
 import AboutDialog from './containers/static/AboutDialog';
 import DaedalusDiagnosticsDialog from './containers/status/DaedalusDiagnosticsDialog';
-import GenericNotificationContainer from './containers/notifications/GenericNotificationContainer';
+import NotificationsContainer from './containers/notifications/NotificationsContainer';
 import AutomaticUpdateNotificationDialog from './containers/notifications/AutomaticUpdateNotificationDialog';
 import NewsOverlayContainer from './containers/news/NewsOverlayContainer';
 import { DIALOGS } from '../../common/ipc/constants';
@@ -73,7 +73,7 @@ export default class App extends Component<{
                     isActiveDialog(DAEDALUS_DIAGNOSTICS) && (
                       <DaedalusDiagnosticsDialog key="daedalusDiagnosticsDialog" />
                     ),
-                    <GenericNotificationContainer key="genericNotification" />,
+                    <NotificationsContainer key="notificationsContainer" />,
                   ]
                 )}
                 {canShowNews && [
