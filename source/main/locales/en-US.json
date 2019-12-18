@@ -1,6 +1,8 @@
 {
   "menu.daedalus": "Daedalus",
   "menu.daedalus.about": "About Daedalus",
+  "menu.daedalus.settings": "Settings",
+  "menu.daedalus.walletSettings": "Wallet Settings",
   "menu.daedalus.hideDaedalus": "Hide Daedalus",
   "menu.daedalus.hideOthers": "Hide Others",
   "menu.daedalus.showAll": "Show All",

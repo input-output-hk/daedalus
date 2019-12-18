@@ -92,6 +92,28 @@ export const winLinuxMenu = (
           window.webContents.reload();
         },
       },
+      {
+        type: 'separator',
+      },
+      {
+        label: translation('daedalus.settings'),
+        accelerator: 'Alt+S',
+        click() {
+          actions.openSettingsPage();
+        },
+        enabled: !isUpdateAvailable,
+      },
+      {
+        label: translation('daedalus.walletSettings'),
+        accelerator: 'Alt+Ctrl+S',
+        click() {
+          actions.openWalletSettingsPage();
+        },
+        enabled: !isUpdateAvailable,
+      },
+      {
+        type: 'separator',
+      },
       isWindows
         ? {
             label: translation('view.toggleFullScreen'),
