@@ -1,80 +1,90 @@
 // @flow
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { observer, inject } from 'mobx-react';
-import WalletRestoreDialog from '../../../components/wallet/WalletRestoreDialog';
-import type { InjectedDialogContainerProps } from '../../../types/injectedPropsType';
-import validWords from '../../../../../common/crypto/valid-words.en';
-import { isValidMnemonic } from '../../../../../common/crypto/decrypt';
+import WalletTypeContainer from './wallet-restore/WalletTypeContainer';
+import MnemonicsContainer from './wallet-restore/MnemonicsContainer';
+import ConfigurationContainer from './wallet-restore/ConfigurationContainer';
+import SuccessContainer from './wallet-restore/SuccessContainer';
+import type { InjectedProps } from '../../../types/injectedPropsType';
+import { RESTORE_WALLET_STEPS } from '../../../config/walletsConfig';
 
-type Props = InjectedDialogContainerProps;
+type Props = InjectedProps;
+
+// TODO restore component;
+const RestoreWalletAbortConfirmation = () => <div>Are you sure</div>;
 
 @inject('stores', 'actions')
 @observer
-export default class WalletRestoreDialogContainer extends Component<Props> {
-  static defaultProps = {
-    actions: null,
-    stores: null,
-    children: null,
-    onClose: () => {},
-  };
+export default class WalletRestoreContainer extends Component<Props> {
+  static defaultProps = { actions: null, stores: null };
 
-  onSubmit = (values: {
-    recoveryPhrase: string,
-    walletName: string,
-    spendingPassword: string,
-    type?: string,
-  }) => {
-    this.props.actions.wallets.restoreWallet.trigger(values);
-  };
+  get containers() {
+    return {
+      type: WalletTypeContainer,
+      mnemonics: MnemonicsContainer,
+      configuration: ConfigurationContainer,
+      success: SuccessContainer,
+    };
+  }
 
-  onCancel = () => {
-    this.props.onClose();
-    this.resetRequests();
-  };
+  get shouldDisplayAbortAlert() {
+    return (
+      this.currentStep < 0 && this.currentStep > RESTORE_WALLET_STEPS.length
+    );
+  }
 
-  resetRequests = () => {
-    // Restore request should be reset only in case restore is finished/errored
-    const { wallets } = this.props.stores;
+  get currentStep() {
+    return this.props.stores.wallets.restoreWalletStep;
+  }
+
+  onContinue = () => {
     const {
-      restoreRequest,
-      restoreLegacyRequest,
-      getWalletRecoveryPhraseFromCertificateRequest,
-    } = wallets;
-    if (!restoreRequest.isExecuting) {
-      restoreRequest.reset();
-      restoreLegacyRequest.reset();
-      getWalletRecoveryPhraseFromCertificateRequest.reset();
+      restoreWalletChangeStep,
+      restoreWalletClose,
+    } = this.props.actions.wallets;
+    if (this.currentStep < RESTORE_WALLET_STEPS.length - 1) {
+      restoreWalletChangeStep.trigger();
+    } else {
+      restoreWalletClose.trigger();
     }
   };
 
-  render() {
-    const { wallets } = this.props.stores;
+  onBack = () => {
+    this.props.actions.wallets.restoreWalletChangeStep.trigger(true);
+  };
+
+  onClose = () => {
     const {
-      restoreRequest,
-      restoreLegacyRequest,
-      getWalletRecoveryPhraseFromCertificateRequest,
-    } = wallets;
+      restoreWalletAbort,
+      restoreWalletClose,
+    } = this.props.actions.wallets;
+    if (this.shouldDisplayAbortAlert) {
+      restoreWalletAbort.trigger();
+    } else {
+      restoreWalletClose.trigger();
+    }
+  };
 
-    const error =
-      restoreRequest.error ||
-      restoreLegacyRequest.error ||
-      getWalletRecoveryPhraseFromCertificateRequest.error;
+  onAbort = () => this.props.actions.wallets.restoreWalletAbort.trigger();
 
-    const isExecuting =
-      restoreRequest.isExecuting ||
-      restoreLegacyRequest.isExecuting ||
-      getWalletRecoveryPhraseFromCertificateRequest.isExecuting;
-
+  render() {
+    const {
+      restoreWalletStep,
+      restoreWalletShowAbortConfirmation,
+    } = this.props.stores.wallets;
+    const stepId = RESTORE_WALLET_STEPS[restoreWalletStep];
+    const CurrentContainer = this.containers[stepId];
     return (
-      <WalletRestoreDialog
-        mnemonicValidator={isValidMnemonic}
-        suggestedMnemonics={validWords}
-        isSubmitting={isExecuting}
-        onSubmit={this.onSubmit}
-        onCancel={this.onCancel}
-        onChoiceChange={this.resetRequests}
-        error={error}
-      />
+      <Fragment>
+        {restoreWalletShowAbortConfirmation && (
+          <RestoreWalletAbortConfirmation onAbort={this.onAbort} />
+        )}
+        <CurrentContainer
+          onContinue={this.onContinue}
+          onBack={this.onBack}
+          onClose={this.onClose}
+        />
+      </Fragment>
     );
   }
 }

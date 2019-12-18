@@ -8136,6 +8136,100 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Restore a wallet",
+        "description": "Title \"Create a new wallet\" in the wallet create form.",
+        "end": {
+          "column": 3,
+          "line": 16
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/WalletRestoreDialog.js",
+        "id": "wallet.restore.dialog.title",
+        "start": {
+          "column": 15,
+          "line": 12
+        }
+      },
+      {
+        "defaultMessage": "!!!Restore a wallet",
+        "description": "Title \"Create a new wallet\" in the wallet create form.",
+        "end": {
+          "column": 3,
+          "line": 21
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/WalletRestoreDialog.js",
+        "id": "wallet.restore.dialog.titleSuccess",
+        "start": {
+          "column": 22,
+          "line": 17
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/wallet-restore/WalletRestoreDialog.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Step {currentStep} of {totalSteps}",
+        "description": "Step couters in the wallet create dialog.",
+        "end": {
+          "column": 3,
+          "line": 18
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/WalletRestoreSteps.js",
+        "id": "wallet.restore.dialog.stepsCounter",
+        "start": {
+          "column": 16,
+          "line": 14
+        }
+      },
+      {
+        "defaultMessage": "!!!Type",
+        "description": "Step \"Type\" in the wallet create dialog.",
+        "end": {
+          "column": 3,
+          "line": 23
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/WalletRestoreSteps.js",
+        "id": "wallet.restore.dialog.typeStep",
+        "start": {
+          "column": 12,
+          "line": 19
+        }
+      },
+      {
+        "defaultMessage": "!!!Recovery Phrase",
+        "description": "Step \"Recovery Phrase\" in the wallet create dialog.",
+        "end": {
+          "column": 3,
+          "line": 28
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/WalletRestoreSteps.js",
+        "id": "wallet.restore.dialog.mnemonicsStep",
+        "start": {
+          "column": 17,
+          "line": 24
+        }
+      },
+      {
+        "defaultMessage": "!!!Configuration",
+        "description": "Step \"Configuration\" in the wallet create dialog.",
+        "end": {
+          "column": 3,
+          "line": 33
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/WalletRestoreSteps.js",
+        "id": "wallet.restore.dialog.configurationStep",
+        "start": {
+          "column": 21,
+          "line": 29
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/wallet-restore/WalletRestoreSteps.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Add wallet",
         "description": "Label for the \"Add wallet\" title on the wallet add dialog.",
         "end": {

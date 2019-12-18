@@ -150,7 +150,13 @@ export default class WalletsStore extends Store {
   @observable createWalletStep = null;
   @observable createWalletShowAbortConfirmation = false;
   // TODO: Remove once the new wallet creation process is ready
-  @observable useNewWalletCreationProcess = false;
+  @observable createWalletUseNewProcess = true; // false
+
+  /* ----------  Restore Wallet  ---------- */
+  @observable restoreWalletStep = null;
+  @observable restoreWalletShowAbortConfirmation = false;
+  // TODO: Remove once the new restore creation process is ready
+  @observable restoreWalletUseNewProcess = true; // false
 
   /* ----------  Export Wallet  ---------- */
   @observable walletExportType: walletExportTypeChoices = 'paperWallet';
@@ -210,13 +216,23 @@ export default class WalletsStore extends Store {
     walletsActions.createWalletAbort.listen(this._createWalletAbort);
     walletsActions.createWalletClose.listen(this._createWalletClose);
     // ---
+    // Restore Wallet Actions ---
+    walletsActions.restoreWallet.listen(this._restore);
+    walletsActions.restoreWalletBegin.listen(this._restoreWalletBegin);
+    walletsActions.restoreWalletChangeStep.listen(
+      this._restoreWalletChangeStep
+    );
+    walletsActions.restoreWalletAbort.listen(this._restoreWalletAbort);
+    walletsActions.restoreWalletClose.listen(this._restoreWalletClose);
+    // Todo: remove once the new Steps implementation is done
+    walletsActions.restoreWallet.listen(this._restoreWallet);
+    // ---
     walletsActions.deleteWallet.listen(this._deleteWallet);
     walletsActions.undelegateWallet.listen(this._undelegateWallet);
     walletsActions.setUndelegateWalletSubmissionSuccess.listen(
       this._setUndelegateWalletSubmissionSuccess
     );
     walletsActions.sendMoney.listen(this._sendMoney);
-    walletsActions.restoreWallet.listen(this._restoreWallet);
     walletsActions.importWalletFromFile.listen(this._importWalletFromFile);
     walletsActions.chooseWalletExportType.listen(this._chooseWalletExportType);
 
@@ -275,8 +291,8 @@ export default class WalletsStore extends Store {
   };
 
   // TODO: Remove once the new wallet creation process is ready
-  @action _toggleUseNewWalletCreationProcess = () => {
-    this.useNewWalletCreationProcess = !this.useNewWalletCreationProcess;
+  @action _togglecreateWalletUseNewProcess = () => {
+    this.createWalletUseNewProcess = !this.createWalletUseNewProcess;
   };
 
   @action _createWalletBegin = () => {
@@ -300,6 +316,29 @@ export default class WalletsStore extends Store {
 
   @action _createWalletAbort = () => {
     this.createWalletShowAbortConfirmation = true;
+  };
+
+  @action _restoreWalletBegin = () => {
+    this.restoreWalletStep = 0;
+    this.restoreWalletShowAbortConfirmation = false;
+  };
+
+  @action _restoreWalletChangeStep = (isBack: boolean = false) => {
+    const currrentRestoreWalletStep = this.restoreWalletStep || 0;
+    this.restoreWalletStep =
+      isBack === true
+        ? currrentRestoreWalletStep - 1
+        : currrentRestoreWalletStep + 1;
+    this.restoreWalletShowAbortConfirmation = false;
+  };
+
+  @action _restoreWalletClose = () => {
+    this.restoreWalletStep = null;
+    this.restoreWalletShowAbortConfirmation = false;
+  };
+
+  @action _restoreWalletAbort = () => {
+    this.restoreWalletShowAbortConfirmation = true;
   };
 
   _finishWalletBackup = async () => {
