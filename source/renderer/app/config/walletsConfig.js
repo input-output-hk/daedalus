@@ -1,3 +1,4 @@
+// @flow
 import {
   WALLET_RECOVERY_PHRASE_WORD_COUNT,
   PAPER_WALLET_RECOVERY_PHRASE_WORD_COUNT,
@@ -17,13 +18,6 @@ export const CREATE_WALLET_STEPS = [
 // WALLET RECOVERY PHRASE CHECKING
 export const RECOVERY_PHRASE_VERIFICATION_WARNING = 183; // days
 export const RECOVERY_PHRASE_VERIFICATION_NOTIFICATION = 365; // days
-
-export const RESTORE_WALLET_STEPS = [
-  'type',
-  'mnemonics',
-  'configuration',
-  'success',
-];
 
 export const WALLET_RESTORE_TYPES = {
   REGULAR: 'regular', // Shelley wallet

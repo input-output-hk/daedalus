@@ -18,5 +18,8 @@
     > div {
       margin-right: 40px;
     }
+    &.verticallyAligned {
+      flex-direction: column;
+    }
   }
 }

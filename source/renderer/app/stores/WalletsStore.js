@@ -30,6 +30,7 @@ import {
   RECOVERY_PHRASE_VERIFICATION_WARNING,
   WALLET_RESTORE_TYPES,
 } from '../config/walletsConfig';
+import { WALLET_KINDS } from '../config/walletRestoreConfig';
 import type { CsvRecord } from '../../../common/types/rewards-csv-request.types';
 import type { walletExportTypeChoices } from '../types/walletExportTypes';
 import type { WalletImportFromFileParams } from '../actions/wallets-actions';
@@ -155,6 +156,16 @@ export default class WalletsStore extends Store {
   /* ----------  Restore Wallet  ---------- */
   @observable restoreWalletStep = null;
   @observable restoreWalletShowAbortConfirmation = false;
+  // STEP: WALLET TYPE
+  @observable walletKind: string = WALLET_KINDS.DAEDALUS;
+  @observable walletKindDaedalus: ?string = null;
+  @observable walletKindYoroi: ?string = null;
+  @observable walletKindHardware: ?string = null;
+  // STEP: RECOVERY PHRASE
+  @observable mnemonics: ?Array<string> = null;
+  // STEP: CONFIGURATION
+  @observable walletName: ?string = null;
+  @observable spendingPassword: ?string = null;
   // TODO: Remove once the new restore creation process is ready
   @observable restoreWalletUseNewProcess = true; // false
 
@@ -224,6 +235,7 @@ export default class WalletsStore extends Store {
     );
     walletsActions.restoreWalletAbort.listen(this._restoreWalletAbort);
     walletsActions.restoreWalletClose.listen(this._restoreWalletClose);
+    walletsActions.restoreWalletSetKind.listen(this._restoreWalletSetKind);
     // Todo: remove once the new Steps implementation is done
     walletsActions.restoreWallet.listen(this._restoreWallet);
     // ---
@@ -339,6 +351,16 @@ export default class WalletsStore extends Store {
 
   @action _restoreWalletAbort = () => {
     this.restoreWalletShowAbortConfirmation = true;
+  };
+
+  @action _restoreWalletSetKind = ({
+    param,
+    kind,
+  }: {
+    param?: string,
+    kind: string,
+  }) => {
+    (this: any)[`walletKind${param || ''}`] = kind;
   };
 
   _finishWalletBackup = async () => {

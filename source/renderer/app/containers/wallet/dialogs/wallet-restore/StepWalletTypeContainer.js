@@ -13,8 +13,27 @@ const DefaultProps = InjectedDialogContainerStepDefaultProps;
 export default class WalletTypeDialogContainer extends Component<Props> {
   static defaultProps = DefaultProps;
 
+  handleSetWalletKind = (kind: string, param?: string) =>
+    this.props.actions.wallets.restoreWalletSetKind.trigger({ param, kind });
+
   render() {
-    const { onClose, onContinue } = this.props;
-    return <WalletTypeDialog onClose={onClose} onContinue={onContinue} />;
+    const { onClose, onContinue, stores } = this.props;
+    const {
+      walletKind,
+      walletKindDaedalus,
+      walletKindYoroi,
+      walletKindHardware,
+    } = stores.wallets;
+    return (
+      <WalletTypeDialog
+        onClose={onClose}
+        onContinue={onContinue}
+        walletKind={walletKind}
+        walletKindDaedalus={walletKindDaedalus}
+        walletKindYoroi={walletKindYoroi}
+        walletKindHardware={walletKindHardware}
+        onSetWalletKind={this.handleSetWalletKind}
+      />
+    );
   }
 }

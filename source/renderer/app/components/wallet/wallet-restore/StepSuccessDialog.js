@@ -8,7 +8,7 @@ type Props = {
   onClose: Function,
 };
 
-export default class SuccessDialog extends Component<Props> {
+export default class StepSuccessDialog extends Component<Props> {
   render() {
     const { onContinue, onClose } = this.props;
     return (

@@ -8,7 +8,7 @@ type Props = {
   onClose: Function,
 };
 
-export default class MnemonicsDialog extends Component<Props> {
+export default class StepMnemonicsDialog extends Component<Props> {
   render() {
     const { onContinue, onClose } = this.props;
     return (

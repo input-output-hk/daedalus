@@ -8023,13 +8023,13 @@
         "description": "Title \"Create a new wallet\" in the wallet create dialog.",
         "end": {
           "column": 3,
-          "line": 18
+          "line": 19
         },
         "file": "source/renderer/app/components/wallet/wallet-create/WalletCreateSteps.js",
         "id": "wallet.create.dialog.title",
         "start": {
           "column": 15,
-          "line": 14
+          "line": 15
         }
       },
       {
@@ -8037,13 +8037,13 @@
         "description": "Step couters in the wallet create dialog.",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 24
         },
         "file": "source/renderer/app/components/wallet/wallet-create/WalletCreateSteps.js",
         "id": "wallet.create.dialog.stepsCounter",
         "start": {
           "column": 16,
-          "line": 19
+          "line": 20
         }
       },
       {
@@ -8051,13 +8051,13 @@
         "description": "Step \"Instructions\" in the wallet create dialog.",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 29
         },
         "file": "source/renderer/app/components/wallet/wallet-create/WalletCreateSteps.js",
         "id": "wallet.create.dialog.instructionsStep",
         "start": {
           "column": 20,
-          "line": 24
+          "line": 25
         }
       },
       {
@@ -8065,13 +8065,13 @@
         "description": "Step \"Template\" in the wallet create dialog.",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 34
         },
         "file": "source/renderer/app/components/wallet/wallet-create/WalletCreateSteps.js",
         "id": "wallet.create.dialog.templateStep",
         "start": {
           "column": 16,
-          "line": 29
+          "line": 30
         }
       },
       {
@@ -8079,13 +8079,13 @@
         "description": "Step \"Mnemonics\" in the wallet create dialog.",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 39
         },
         "file": "source/renderer/app/components/wallet/wallet-create/WalletCreateSteps.js",
         "id": "wallet.create.dialog.mnemonicsStep",
         "start": {
           "column": 17,
-          "line": 34
+          "line": 35
         }
       },
       {
@@ -8093,13 +8093,13 @@
         "description": "Step \"Validate\" in the wallet create dialog.",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 44
         },
         "file": "source/renderer/app/components/wallet/wallet-create/WalletCreateSteps.js",
         "id": "wallet.create.dialog.validateStep",
         "start": {
           "column": 16,
-          "line": 39
+          "line": 40
         }
       },
       {
@@ -8107,13 +8107,13 @@
         "description": "Step \"HashImage\" in the wallet create dialog.",
         "end": {
           "column": 3,
-          "line": 48
+          "line": 49
         },
         "file": "source/renderer/app/components/wallet/wallet-create/WalletCreateSteps.js",
         "id": "wallet.create.dialog.hashImageStep",
         "start": {
           "column": 17,
-          "line": 44
+          "line": 45
         }
       },
       {
@@ -8121,17 +8121,218 @@
         "description": "Step \"Config\" in the wallet create dialog.",
         "end": {
           "column": 3,
-          "line": 53
+          "line": 54
         },
         "file": "source/renderer/app/components/wallet/wallet-create/WalletCreateSteps.js",
         "id": "wallet.create.dialog.configStep",
         "start": {
           "column": 14,
-          "line": 49
+          "line": 50
         }
       }
     ],
     "path": "source/renderer/app/components/wallet/wallet-create/WalletCreateSteps.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!What kind of wallet would you like to restore?",
+        "description": "Label for the \"labelwalletKind\" checkbox.",
+        "end": {
+          "column": 3,
+          "line": 21
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/StepWalletTypeDialog.js",
+        "id": "wallet.restore.dialog.step.WalletKind.label.walletKind",
+        "start": {
+          "column": 19,
+          "line": 17
+        }
+      },
+      {
+        "defaultMessage": "!!!Daedalus wallet",
+        "description": "Label for the \"labelWalletKindDaedalus\" checkbox.",
+        "end": {
+          "column": 3,
+          "line": 26
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/StepWalletTypeDialog.js",
+        "id": "wallet.restore.dialog.step.WalletKind.label.walletKindDaedalus",
+        "start": {
+          "column": 27,
+          "line": 22
+        }
+      },
+      {
+        "defaultMessage": "!!!Yoroi wallet",
+        "description": "Label for the \"labelWalletKindYoroi\" checkbox.",
+        "end": {
+          "column": 3,
+          "line": 31
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/StepWalletTypeDialog.js",
+        "id": "wallet.restore.dialog.step.WalletKind.label.walletKindYoroi",
+        "start": {
+          "column": 24,
+          "line": 27
+        }
+      },
+      {
+        "defaultMessage": "!!!Hardware wallet",
+        "description": "Label for the \"labelWalletKindHardware\" checkbox.",
+        "end": {
+          "column": 3,
+          "line": 36
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/StepWalletTypeDialog.js",
+        "id": "wallet.restore.dialog.step.WalletKind.label.walletKindHardware",
+        "start": {
+          "column": 27,
+          "line": 32
+        }
+      },
+      {
+        "defaultMessage": "!!!What kind of Daedalus wallet would you like to restore?",
+        "description": "Label for the \"labelDaedalusWalletKind\" checkbox.",
+        "end": {
+          "column": 3,
+          "line": 42
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/StepWalletTypeDialog.js",
+        "id": "wallet.restore.dialog.step.WalletKind.label.daedalusWalletKind",
+        "start": {
+          "column": 27,
+          "line": 37
+        }
+      },
+      {
+        "defaultMessage": "!!!12 words <span>(Balance wallet)</span>",
+        "description": "Label for the \"labelDaedalusWalletKindBalance12Word\" checkbox.",
+        "end": {
+          "column": 3,
+          "line": 49
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/StepWalletTypeDialog.js",
+        "id": "wallet.restore.dialog.step.WalletKind.label.daedalusWalletKindBalance12Word",
+        "start": {
+          "column": 40,
+          "line": 43
+        }
+      },
+      {
+        "defaultMessage": "!!!15 words <span>(Rewards wallet)</span>",
+        "description": "Label for the \"labelDaedalusWalletKindReward15Word\" checkbox.",
+        "end": {
+          "column": 3,
+          "line": 56
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/StepWalletTypeDialog.js",
+        "id": "wallet.restore.dialog.step.WalletKind.label.daedalusWalletKindReward15Word",
+        "start": {
+          "column": 39,
+          "line": 50
+        }
+      },
+      {
+        "defaultMessage": "!!!27 words <span>(Balance wallet)</span>",
+        "description": "Label for the \"labelDaedalusWalletKindBalance27Word\" checkbox.",
+        "end": {
+          "column": 3,
+          "line": 63
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/StepWalletTypeDialog.js",
+        "id": "wallet.restore.dialog.step.WalletKind.label.daedalusWalletKindBalance27Word",
+        "start": {
+          "column": 40,
+          "line": 57
+        }
+      },
+      {
+        "defaultMessage": "!!!What kind of Yoroi wallet would you like to restore?",
+        "description": "Label for the \"labelYoroiWalletKind\" checkbox.",
+        "end": {
+          "column": 3,
+          "line": 68
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/StepWalletTypeDialog.js",
+        "id": "wallet.restore.dialog.step.WalletKind.label.yoroiWalletKind",
+        "start": {
+          "column": 24,
+          "line": 64
+        }
+      },
+      {
+        "defaultMessage": "!!!15 words <span>(Balance wallet)</span>",
+        "description": "Label for the \"labelDaedalusWalletKindBalance15Word\" checkbox.",
+        "end": {
+          "column": 3,
+          "line": 75
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/StepWalletTypeDialog.js",
+        "id": "wallet.restore.dialog.step.WalletKind.label.yoroiWalletKindBalance15Word",
+        "start": {
+          "column": 37,
+          "line": 69
+        }
+      },
+      {
+        "defaultMessage": "!!!15 words <span>(Reward wallet)</span>",
+        "description": "Label for the \"labelDaedalusWalletKindReward15Word\" checkbox.",
+        "end": {
+          "column": 3,
+          "line": 81
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/StepWalletTypeDialog.js",
+        "id": "wallet.restore.dialog.step.WalletKind.label.yoroiWalletKindReward15Word",
+        "start": {
+          "column": 36,
+          "line": 76
+        }
+      },
+      {
+        "defaultMessage": "!!!What kind of hardware wallet would you like to restore?",
+        "description": "Label for the \"labelHardwareWalletKind\" checkbox.",
+        "end": {
+          "column": 3,
+          "line": 87
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/StepWalletTypeDialog.js",
+        "id": "wallet.restore.dialog.step.WalletKind.label.hardwareWalletKind",
+        "start": {
+          "column": 27,
+          "line": 82
+        }
+      },
+      {
+        "defaultMessage": "!!!24 words - Ledger Nano S or Nano X (Balance wallet)",
+        "description": "Label for the \"labelHardwareWalletKindNano\" checkbox.",
+        "end": {
+          "column": 3,
+          "line": 92
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/StepWalletTypeDialog.js",
+        "id": "wallet.restore.dialog.step.WalletKind.label.hardwareWalletKindNano",
+        "start": {
+          "column": 31,
+          "line": 88
+        }
+      },
+      {
+        "defaultMessage": "!!!24 words - Trezor (Balance wallet)",
+        "description": "Label for the \"labelHardwareWalletKindTrezor\" checkbox.",
+        "end": {
+          "column": 3,
+          "line": 97
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/StepWalletTypeDialog.js",
+        "id": "wallet.restore.dialog.step.WalletKind.label.hardwareWalletKindTrezor",
+        "start": {
+          "column": 33,
+          "line": 93
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/wallet-restore/StepWalletTypeDialog.json"
   },
   {
     "descriptors": [
@@ -8173,13 +8374,13 @@
         "description": "Step couters in the wallet create dialog.",
         "end": {
           "column": 3,
-          "line": 18
+          "line": 19
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/WalletRestoreSteps.js",
         "id": "wallet.restore.dialog.stepsCounter",
         "start": {
           "column": 16,
-          "line": 14
+          "line": 15
         }
       },
       {
@@ -8187,13 +8388,13 @@
         "description": "Step \"Type\" in the wallet create dialog.",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 24
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/WalletRestoreSteps.js",
         "id": "wallet.restore.dialog.typeStep",
         "start": {
           "column": 12,
-          "line": 19
+          "line": 20
         }
       },
       {
@@ -8201,13 +8402,13 @@
         "description": "Step \"Recovery Phrase\" in the wallet create dialog.",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 29
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/WalletRestoreSteps.js",
         "id": "wallet.restore.dialog.mnemonicsStep",
         "start": {
           "column": 17,
-          "line": 24
+          "line": 25
         }
       },
       {
@@ -8215,13 +8416,13 @@
         "description": "Step \"Configuration\" in the wallet create dialog.",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 34
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/WalletRestoreSteps.js",
         "id": "wallet.restore.dialog.configurationStep",
         "start": {
           "column": 21,
-          "line": 29
+          "line": 30
         }
       }
     ],

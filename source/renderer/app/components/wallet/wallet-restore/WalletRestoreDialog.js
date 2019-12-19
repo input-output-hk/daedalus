@@ -51,7 +51,7 @@ export default class WalletRestoreDialog extends Component<Props> {
         closeButton={<DialogCloseButton />}
       >
         {hasStep && <WalletRestoreSteps stepNumber={stepNumber || 0} />}
-        <div className={styles.content}>{children}</div>
+        {children}
       </Dialog>
     );
   }

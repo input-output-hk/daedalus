@@ -6,7 +6,7 @@ import StepMnemonicsContainer from './wallet-restore/StepMnemonicsContainer';
 import StepConfigurationContainer from './wallet-restore/StepConfigurationContainer';
 import StepSuccessContainer from './wallet-restore/StepSuccessContainer';
 import type { InjectedProps } from '../../../types/injectedPropsType';
-import { RESTORE_WALLET_STEPS } from '../../../config/walletsConfig';
+import { RESTORE_WALLET_STEPS } from '../../../config/walletRestoreConfig';
 
 type Props = InjectedProps;
 
