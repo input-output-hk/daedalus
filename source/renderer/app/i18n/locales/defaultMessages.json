@@ -8280,7 +8280,7 @@
         "description": "Label for the \"labelDaedalusWalletKindReward15Word\" checkbox.",
         "end": {
           "column": 3,
-          "line": 81
+          "line": 82
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/StepWalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.WalletKind.label.yoroiWalletKindReward15Word",
@@ -8294,13 +8294,13 @@
         "description": "Label for the \"labelHardwareWalletKind\" checkbox.",
         "end": {
           "column": 3,
-          "line": 87
+          "line": 88
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/StepWalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.WalletKind.label.hardwareWalletKind",
         "start": {
           "column": 27,
-          "line": 82
+          "line": 83
         }
       },
       {
@@ -8308,13 +8308,13 @@
         "description": "Label for the \"labelHardwareWalletKindNano\" checkbox.",
         "end": {
           "column": 3,
-          "line": 92
+          "line": 93
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/StepWalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.WalletKind.label.hardwareWalletKindNano",
         "start": {
           "column": 31,
-          "line": 88
+          "line": 89
         }
       },
       {
@@ -8322,13 +8322,13 @@
         "description": "Label for the \"labelHardwareWalletKindTrezor\" checkbox.",
         "end": {
           "column": 3,
-          "line": 97
+          "line": 98
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/StepWalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.WalletKind.label.hardwareWalletKindTrezor",
         "start": {
           "column": 33,
-          "line": 93
+          "line": 94
         }
       }
     ],
@@ -8341,13 +8341,13 @@
         "description": "Title \"Create a new wallet\" in the wallet create form.",
         "end": {
           "column": 3,
-          "line": 16
+          "line": 17
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.title",
         "start": {
           "column": 15,
-          "line": 12
+          "line": 13
         }
       },
       {
@@ -8355,13 +8355,13 @@
         "description": "Title \"Create a new wallet\" in the wallet create form.",
         "end": {
           "column": 3,
-          "line": 21
+          "line": 22
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.titleSuccess",
         "start": {
           "column": 22,
-          "line": 17
+          "line": 18
         }
       }
     ],
