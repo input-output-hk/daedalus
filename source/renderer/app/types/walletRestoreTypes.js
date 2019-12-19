@@ -18,3 +18,7 @@ export type WalletKinds =
   | WalletDaedalusKind
   | WalletYoroiKind
   | WalletHardwareKind;
+
+export type hardwareWalletAcceptance =
+  | 'hardwareWalletAcceptance1'
+  | 'hardwareWalletAcceptance2';

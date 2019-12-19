@@ -1,6 +1,9 @@
 // @flow
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
+import { set } from 'lodash';
+import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
+import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
 import RadioSet from '../../widgets/RadioSet';
 import WalletRestoreDialog from './WalletRestoreDialog';
 import globalMessages from '../../../i18n/global-messages';
@@ -11,7 +14,10 @@ import {
   WALLET_YOROI_KINDS,
   WALLET_HARDWARE_KINDS,
 } from '../../../config/walletRestoreConfig';
-import type { WalletKinds } from '../../../types/walletRestoreTypes';
+import type {
+  WalletKinds,
+  hardwareWalletAcceptance,
+} from '../../../types/walletRestoreTypes';
 
 const messages = defineMessages({
   labelWalletKind: {
@@ -96,9 +102,31 @@ const messages = defineMessages({
     defaultMessage: '!!!24 words - Trezor (Balance wallet)',
     description: 'Label for the "labelHardwareWalletKindTrezor" checkbox.',
   },
+  hardwareWalletDisclaimer1: {
+    id: 'wallet.restore.dialog.step.WalletKind.hardwareWalletDisclaimer1',
+    defaultMessage:
+      '!!!Hardware wallets keep your private keys stored securely on a physical device that is immune to common computer threats such as viruses and software bugs. Recovery phrases for hardware wallets should always be kept offline. By entering your hardware wallet recovery phrase in Daedalus, you are exposing your hardware wallet private keys to the security risks associated with computers and software.',
+    description: 'Label for the "hardwareWalletDisclaimer1" disclaimer.',
+  },
+  hardwareWalletDisclaimer2: {
+    id: 'wallet.restore.dialog.step.WalletKind.hardwareWalletDisclaimer2',
+    defaultMessage:
+      '!!!We strongly recommend that you delete the Balance wallet which is restored from your hardware wallet once you have moved any funds into a Rewards wallet.',
+    description: 'Label for the "hardwareWalletDisclaimer2" disclaimer.',
+  },
+  hardwareWalletCheckbox1: {
+    id: 'wallet.restore.dialog.step.WalletKind.hardwareWalletCheckbox1',
+    defaultMessage:
+      '!!!I understand and accept responsibility for the security concerns of restoring a hardware wallet on a computer.',
+    description: 'Label for the "hardwareWalletCheckbox1" disclaimer.',
+  },
+  hardwareWalletCheckbox2: {
+    id: 'wallet.restore.dialog.step.WalletKind.hardwareWalletCheckbox2',
+    defaultMessage:
+      '!!!I understand that I should delete the Balance wallet I am restoring from a hardware wallet after moving funds to a Rewards wallet.',
+    description: 'Label for the "hardwareWalletCheckbox2" disclaimer.',
+  },
 });
-
-messages.fieldIsRequired = globalMessages.fieldIsRequired;
 
 type Props = {
   onContinue: Function,
@@ -110,10 +138,22 @@ type Props = {
   walletKindHardware: ?string,
 };
 
-export default class StepWalletTypeDialog extends Component<Props> {
+type State = {
+  [key: hardwareWalletAcceptance]: boolean,
+};
+
+export default class StepWalletTypeDialog extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
+
+  state = {
+    hardwareWalletAcceptance1: false,
+    hardwareWalletAcceptance2: false,
+  };
+
+  toggleAcceptance = (param: hardwareWalletAcceptance) =>
+    this.setState(currentState => set({}, param, !currentState[param]));
 
   getWalletKind = (kinds: Object, value: ?string, kindParam?: string) => (
     <RadioSet
@@ -135,7 +175,29 @@ export default class StepWalletTypeDialog extends Component<Props> {
     />
   );
 
+  get isDisabled() {
+    const {
+      walletKind,
+      walletKindDaedalus,
+      walletKindYoroi,
+      walletKindHardware,
+    } = this.props;
+    const { hardwareWalletAcceptance1, hardwareWalletAcceptance2 } = this.state;
+    if (walletKind === WALLET_KINDS.DAEDALUS && !walletKindDaedalus)
+      return true;
+    if (walletKind === WALLET_KINDS.YOROI && !walletKindYoroi) return true;
+    if (
+      walletKind === WALLET_KINDS.HARDWARE &&
+      (!walletKindHardware ||
+        (!hardwareWalletAcceptance1 || !hardwareWalletAcceptance2))
+    ) {
+      return true;
+    }
+    return false;
+  }
+
   render() {
+    const { intl } = this.context;
     const {
       onClose,
       onContinue,
@@ -144,14 +206,16 @@ export default class StepWalletTypeDialog extends Component<Props> {
       walletKindYoroi,
       walletKindHardware,
     } = this.props;
+    const { hardwareWalletAcceptance1, hardwareWalletAcceptance2 } = this.state;
     return (
       <WalletRestoreDialog
         stepNumber={0}
         actions={[
           {
             primary: true,
-            label: 'Continue',
+            label: intl.formatMessage(globalMessages.dialogButtonContinueLabel),
             onClick: onContinue,
+            disabled: this.isDisabled,
           },
         ]}
         onClose={onClose}
@@ -171,12 +235,37 @@ export default class StepWalletTypeDialog extends Component<Props> {
             walletKindYoroi,
             WALLET_KINDS.YOROI
           )}
-        {walletKind === WALLET_KINDS.HARDWARE &&
-          this.getWalletKind(
-            WALLET_HARDWARE_KINDS,
-            walletKindHardware,
-            WALLET_KINDS.HARDWARE
-          )}
+        {walletKind === WALLET_KINDS.HARDWARE && (
+          <Fragment>
+            {this.getWalletKind(
+              WALLET_HARDWARE_KINDS,
+              walletKindHardware,
+              WALLET_KINDS.HARDWARE
+            )}
+            <p className={commonStyles.hardwareWalletAcceptance}>
+              {intl.formatMessage(messages.hardwareWalletDisclaimer1)}
+            </p>
+            <p className={commonStyles.hardwareWalletAcceptance}>
+              <b>{intl.formatMessage(messages.hardwareWalletDisclaimer2)}</b>
+            </p>
+            <Checkbox
+              label={intl.formatMessage(messages.hardwareWalletCheckbox1)}
+              onChange={() =>
+                this.toggleAcceptance('hardwareWalletAcceptance1')
+              }
+              checked={hardwareWalletAcceptance1}
+              skin={CheckboxSkin}
+            />
+            <Checkbox
+              label={intl.formatMessage(messages.hardwareWalletCheckbox2)}
+              onChange={() =>
+                this.toggleAcceptance('hardwareWalletAcceptance2')
+              }
+              checked={hardwareWalletAcceptance2}
+              skin={CheckboxSkin}
+            />
+          </Fragment>
+        )}
       </WalletRestoreDialog>
     );
   }
