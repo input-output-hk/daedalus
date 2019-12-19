@@ -1,19 +1,18 @@
 // @flow
 import React, { Component } from 'react';
 import WalletRestoreDialog from './WalletRestoreDialog';
-import commonStyles from './WalletRestoreStyles.scss';
+import commonStyles from './StepDialogStyles.scss';
 
 type Props = {
   onContinue: Function,
   onClose: Function,
 };
 
-export default class MnemonicsDialog extends Component<Props> {
+export default class SuccessDialog extends Component<Props> {
   render() {
     const { onContinue, onClose } = this.props;
     return (
       <WalletRestoreDialog
-        stepNumber={1}
         actions={[
           {
             primary: true,
@@ -23,7 +22,7 @@ export default class MnemonicsDialog extends Component<Props> {
         ]}
         onClose={onClose}
       >
-        <div className={commonStyles.component}>MNEMONICS STEP CONTENT</div>
+        <div className={commonStyles.component}>SUCCESS STEP CONTENT</div>
       </WalletRestoreDialog>
     );
   }

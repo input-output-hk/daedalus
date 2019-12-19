@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
-import WalletTypeDialog from '../../../../components/wallet/wallet-restore/WalletTypeDialog';
+import SuccessDialog from '../../../../components/wallet/wallet-restore/StepSuccessDialog';
 import type { InjectedDialogContainerStepProps } from '../../../../types/injectedPropsType';
 import { InjectedDialogContainerStepDefaultProps } from '../../../../types/injectedPropsType';
 
@@ -10,11 +10,11 @@ const DefaultProps = InjectedDialogContainerStepDefaultProps;
 
 @inject('stores', 'actions')
 @observer
-export default class WalletTypeDialogContainer extends Component<Props> {
+export default class SuccessDialogContainer extends Component<Props> {
   static defaultProps = DefaultProps;
 
   render() {
     const { onClose, onContinue } = this.props;
-    return <WalletTypeDialog onClose={onClose} onContinue={onContinue} />;
+    return <SuccessDialog onClose={onClose} onContinue={onContinue} />;
   }
 }

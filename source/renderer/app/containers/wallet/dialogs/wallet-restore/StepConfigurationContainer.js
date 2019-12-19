@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
-import ConfigurationDialog from '../../../../components/wallet/wallet-restore/ConfigurationDialog';
+import ConfigurationDialog from '../../../../components/wallet/wallet-restore/StepConfigurationDialog';
 import type { InjectedDialogContainerStepProps } from '../../../../types/injectedPropsType';
 import { InjectedDialogContainerStepDefaultProps } from '../../../../types/injectedPropsType';
 

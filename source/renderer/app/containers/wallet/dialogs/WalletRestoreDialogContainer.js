@@ -1,10 +1,10 @@
 // @flow
 import React, { Component, Fragment } from 'react';
 import { observer, inject } from 'mobx-react';
-import WalletTypeContainer from './wallet-restore/WalletTypeContainer';
-import MnemonicsContainer from './wallet-restore/MnemonicsContainer';
-import ConfigurationContainer from './wallet-restore/ConfigurationContainer';
-import SuccessContainer from './wallet-restore/SuccessContainer';
+import StepWalletTypeContainer from './wallet-restore/StepWalletTypeContainer';
+import StepMnemonicsContainer from './wallet-restore/StepMnemonicsContainer';
+import StepConfigurationContainer from './wallet-restore/StepConfigurationContainer';
+import StepSuccessContainer from './wallet-restore/StepSuccessContainer';
 import type { InjectedProps } from '../../../types/injectedPropsType';
 import { RESTORE_WALLET_STEPS } from '../../../config/walletsConfig';
 
@@ -20,10 +20,10 @@ export default class WalletRestoreContainer extends Component<Props> {
 
   get containers() {
     return {
-      type: WalletTypeContainer,
-      mnemonics: MnemonicsContainer,
-      configuration: ConfigurationContainer,
-      success: SuccessContainer,
+      type: StepWalletTypeContainer,
+      mnemonics: StepMnemonicsContainer,
+      configuration: StepConfigurationContainer,
+      success: StepSuccessContainer,
     };
   }
 
