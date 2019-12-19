@@ -484,6 +484,17 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--rp-input-text-color': '#ffffff',
     '--rp-input-text-color-disabled': '#ffffff80',
   },
+  rpLink: {
+    '--rp-link-color': '#eb2256',
+    // $link-color: var(--rp-link-color, rgb(41, 111, 208)) !default;
+    // $link-icon-color: var(--rp-link-icon-color, $link-color) !default;
+    // $link-icon-height: var(--rp-link-icon-height, 12px) !default;
+    // $link-icon-url: var(--rp-link-icon-url, url("#{$theme-assets-path}/link-ic.svg")) !default;
+    // $link-icon-width: var(--rp-link-icon-width, 12px) !default;
+    // $link-label-size: var(--rp-link-label-size, 14px) !default;
+    // $link-space-between-icon-and-label: var(--rp-link-space-between-icon-and-label, 2px) !default;
+    // $link-underline-color: var(--rp-link-underline-color, $link-color) !default;
+  },
   rpModal: {
     '--rp-modal-bg-color': '#1e1f31',
     '--rp-modal-max-height': '90%',
