@@ -4,6 +4,7 @@ import type { Node } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
+import DialogBackButton from '../../widgets/DialogBackButton';
 import WalletRestoreSteps from './WalletRestoreSteps';
 import styles from './WalletRestoreDialog.scss';
 import type { DialogAction } from '../../widgets/Dialog';
@@ -25,6 +26,7 @@ type Props = {
   stepNumber?: number,
   actions?: Array<DialogAction>,
   onClose?: Function,
+  onBack?: Function,
   children: Node,
 };
 
@@ -35,7 +37,7 @@ export default class WalletRestoreDialog extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { actions, children, stepNumber, onClose } = this.props;
+    const { actions, children, stepNumber, onClose, onBack } = this.props;
     const hasStep = stepNumber !== undefined;
     const title = hasStep
       ? intl.formatMessage(messages.dialogTitle)
@@ -49,6 +51,7 @@ export default class WalletRestoreDialog extends Component<Props> {
         closeOnOverlayClick
         onClose={onClose}
         closeButton={<DialogCloseButton />}
+        backButton={onBack && <DialogBackButton onBack={onBack} />}
       >
         {hasStep && <WalletRestoreSteps stepNumber={stepNumber || 0} />}
         {children}

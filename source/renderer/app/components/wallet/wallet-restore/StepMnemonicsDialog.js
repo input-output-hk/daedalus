@@ -6,11 +6,12 @@ import commonStyles from './StepDialogStyles.scss';
 type Props = {
   onContinue: Function,
   onClose: Function,
+  onBack: Function,
 };
 
 export default class StepMnemonicsDialog extends Component<Props> {
   render() {
-    const { onContinue, onClose } = this.props;
+    const { onContinue, onClose, onBack } = this.props;
     return (
       <WalletRestoreDialog
         stepNumber={1}
@@ -22,6 +23,7 @@ export default class StepMnemonicsDialog extends Component<Props> {
           },
         ]}
         onClose={onClose}
+        onBack={onBack}
       >
         <div className={commonStyles.component}>MNEMONICS STEP CONTENT</div>
       </WalletRestoreDialog>

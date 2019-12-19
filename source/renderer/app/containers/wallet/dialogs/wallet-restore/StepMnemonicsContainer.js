@@ -14,7 +14,13 @@ export default class MnemonicsDialogContainer extends Component<Props> {
   static defaultProps = DefaultProps;
 
   render() {
-    const { onClose, onContinue } = this.props;
-    return <MnemonicsDialog onClose={onClose} onContinue={onContinue} />;
+    const { onClose, onContinue, onBack } = this.props;
+    return (
+      <MnemonicsDialog
+        onClose={onClose}
+        onContinue={onContinue}
+        onBack={onBack}
+      />
+    );
   }
 }
