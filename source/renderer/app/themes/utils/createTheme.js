@@ -200,6 +200,7 @@ export const createReactPolymorphTheme = (
       '--rp-switch-label-width': '100%',
       '--rp-switch-opacity-off': '0.3',
       '--rp-switch-root-margin': '0 0 30px 0',
+      '--rp-switch-tiny-border-radius': '1px',
       '--rp-switch-thumb-bg-color': `${text.secondary}`,
       '--rp-switch-size': '22px',
     },

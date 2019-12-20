@@ -544,6 +544,7 @@ export const WHITE_THEME_OUTPUT = {
     '--rp-switch-label-width': '100%',
     '--rp-switch-opacity-off': '0.3',
     '--rp-switch-root-margin': '0 0 30px 0',
+    '--rp-switch-tiny-border-radius': '1px',
     '--rp-switch-thumb-bg-color': '#fafbfc',
     '--rp-switch-size': '22px',
   },

@@ -1,5 +1,5 @@
 $height: 12px !important;
-$width: 25px !important;
+$width: 24px !important;
 
 .component {
   flex-direction: row;
@@ -7,6 +7,10 @@ $width: 25px !important;
   :global {
     .SimpleSwitch_switch {
       margin-left: 6px;
+
+      span {
+        border-radius: var(--rp-switch-tiny-border-radius);
+      }
 
       &:not(.SimpleSwitch_checked) {
         height: $height;
@@ -23,7 +27,7 @@ $width: 25px !important;
         width: $width;
 
         span {
-          left: 13px !important;
+          left: 11px !important;
           top: 0;
         }
       }
