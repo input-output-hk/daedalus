@@ -15,6 +15,7 @@ import {
 
 // Screens
 import StepWalletTypeDialog from '../../../../source/renderer/app/components/wallet/wallet-restore/StepWalletTypeDialog';
+import StepMnemonicsDialog from '../../../../source/renderer/app/components/wallet/wallet-restore/StepMnemonicsDialog';
 
 storiesOf('Wallets|Add Wallet', module)
   .addDecorator(WalletsWrapper)
@@ -47,6 +48,43 @@ storiesOf('Wallets|Add Wallet', module)
         onContinue={action('onContinue')}
         onClose={action('onClose')}
         onSetWalletKind={action('onSetWalletKind')}
+        walletKind={walletKindSelect}
+        walletKindDaedalus={walletKindSpecificSelect}
+        walletKindYoroi={walletKindSpecificSelect}
+        walletKindHardware={walletKindSpecificSelect}
+      />
+    );
+  })
+  .add('Restore - Step 2', () => {
+    const walletKindSelect = select(
+      'Wallet Kind',
+      { '-': null, ...WALLET_KINDS },
+      null
+    );
+    let selectItems;
+    if (walletKindSelect === WALLET_KINDS.YOROI)
+      selectItems = WALLET_YOROI_KINDS;
+    else if (walletKindSelect === WALLET_KINDS.HARDWARE)
+      selectItems = WALLET_HARDWARE_KINDS;
+    else selectItems = WALLET_DAEDALUS_KINDS;
+
+    let walletKindSpecificSelect;
+    if (walletKindSelect)
+      walletKindSpecificSelect = select(
+        `Wallet Kind - ${walletKindSelect || 'Daedalus'}`,
+        {
+          '-': null,
+          ...selectItems,
+        },
+        null
+      );
+
+    return (
+      <StepMnemonicsDialog
+        onContinue={action('onContinue')}
+        onClose={action('onClose')}
+        onSetWalletKind={action('onSetWalletKind')}
+        onBack={action('onSetWalletKind')}
         walletKind={walletKindSelect}
         walletKindDaedalus={walletKindSpecificSelect}
         walletKindYoroi={walletKindSpecificSelect}

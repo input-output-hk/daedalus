@@ -2,7 +2,6 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import MnemonicsDialog from '../../../../components/wallet/wallet-restore/StepMnemonicsDialog';
-import validWords from '../../../../../../common/crypto/valid-words.en';
 import type { InjectedDialogContainerStepProps } from '../../../../types/injectedPropsType';
 import { InjectedDialogContainerStepDefaultProps } from '../../../../types/injectedPropsType';
 
@@ -38,7 +37,6 @@ export default class MnemonicsDialogContainer extends Component<Props> {
         walletKindDaedalus={walletKindDaedalus}
         walletKindYoroi={walletKindYoroi}
         walletKindHardware={walletKindHardware}
-        suggestedMnemonics={validWords}
       />
     );
   }

@@ -9,6 +9,7 @@ import commonStyles from './StepDialogStyles.scss';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import globalMessages from '../../../i18n/global-messages';
 import { isValidMnemonic } from '../../../../../common/crypto/decrypt';
+import validWords from '../../../../../common/crypto/valid-words.en';
 import {
   WALLET_KINDS,
   // WALLET_DAEDALUS_KINDS,
@@ -52,7 +53,6 @@ type Props = {
   walletKindDaedalus: ?WalletDaedalusKind,
   walletKindYoroi: ?WalletYoroiKind,
   walletKindHardware: ?WalletHardwareKind,
-  suggestedMnemonics: Array<string>,
 };
 
 export default class StepMnemonicsDialog extends Component<Props> {
@@ -147,7 +147,7 @@ export default class StepMnemonicsDialog extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { onClose, onBack, suggestedMnemonics } = this.props;
+    const { onClose, onBack } = this.props;
     const recoveryPhraseField = this.form.$('recoveryPhrase');
     const { expectedWordCount: numberOfWords } = this;
     return (
@@ -173,7 +173,7 @@ export default class StepMnemonicsDialog extends Component<Props> {
             placeholder={intl.formatMessage(messages.autocompletePlaceholder, {
               numberOfWords,
             })}
-            options={suggestedMnemonics}
+            options={validWords}
             maxSelections={this.expectedWordCount}
             error={recoveryPhraseField.error}
             maxVisibleOptions={5}
