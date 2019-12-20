@@ -49,7 +49,7 @@ const messages = defineMessages({
   syncIssueArticleUrlForITN: {
     id: 'loading.screen.readIssueArticle.syncIssueArticleUrl.itn',
     defaultMessage:
-      '!!!https://iohk.zendesk.com/knowledge/articles/900000048566/en-us?brand_id=7172167',
+      '!!!https://iohk.zendesk.com/hc/en-us/articles/900000048566',
     description: 'Link to sync issue article page for Incentivized TestNet',
   },
   connectivityIssueArticleUrl: {
