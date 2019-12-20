@@ -1,0 +1,14 @@
+:global {
+  .SimpleLink_root.SimpleLink_withIconBefore {
+    border-color: var(--theme-label-button-color);
+    color: var(--theme-label-button-color);
+    &:before {
+      background-color: var(--theme-label-button-color);
+      height: 15px;
+      margin-right: 12px;
+      -webkit-mask-size: 15px, 15px;
+      mask-size: 15px, 15px;
+      width: 15px;
+    }
+  }
+}
