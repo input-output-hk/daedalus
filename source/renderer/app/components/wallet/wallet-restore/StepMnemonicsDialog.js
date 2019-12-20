@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import { join } from 'lodash';
+// import { join } from 'lodash';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import { Autocomplete } from 'react-polymorph/lib/components/Autocomplete';
@@ -9,13 +9,10 @@ import WalletRestoreDialog from './WalletRestoreDialog';
 import commonStyles from './StepDialogStyles.scss';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import globalMessages from '../../../i18n/global-messages';
-import { isValidMnemonic } from '../../../../../common/crypto/decrypt';
+// import { isValidMnemonic } from '../../../../../common/crypto/decrypt';
 import validWords from '../../../../../common/crypto/valid-words.en';
 import {
   WALLET_KINDS,
-  // WALLET_DAEDALUS_KINDS,
-  // WALLET_YOROI_KINDS,
-  // WALLET_HARDWARE_KINDS,
   WALLET_DAEDALUS_WORD_COUNT,
   WALLET_YOROI_WORD_COUNT,
   WALLET_HARDWARE_WORD_COUNT,
@@ -96,7 +93,6 @@ export default class StepMnemonicsDialog extends Component<Props> {
             const { intl } = this.context;
             const enteredWords = field.value;
             const wordCount = enteredWords.length;
-            const value = join(enteredWords, ' ');
             const isPhraseComplete = wordCount === this.expectedWordCount;
             if (!isPhraseComplete) {
               return [
@@ -106,10 +102,12 @@ export default class StepMnemonicsDialog extends Component<Props> {
                 }),
               ];
             }
-            return [
-              isValidMnemonic(value, this.expectedWordCount),
-              intl.formatMessage(messages.REPLACE),
-            ];
+            // TODO: Check which wallets can have the mnemonics validated
+            // const value = join(enteredWords, ' ');
+            // return [
+            //   isValidMnemonic(value),
+            //   intl.formatMessage(messages.REPLACE),
+            // ];
           },
         },
       },

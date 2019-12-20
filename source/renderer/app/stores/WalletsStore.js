@@ -159,7 +159,7 @@ export default class WalletsStore extends Store {
   @observable createWalletUseNewProcess = true; // false
 
   /* ----------  Restore Wallet  ---------- */
-  @observable restoreWalletStep = null;
+  @observable restoreWalletStep = 2; // null;
   @observable restoreWalletShowAbortConfirmation = false;
   // STEP: WALLET TYPE
   @observable walletKind: ?WalletKind = null;
