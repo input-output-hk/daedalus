@@ -43,6 +43,11 @@ const messages = defineMessages({
     description:
       '"No results" message for the mnemonics autocomplete search results.',
   },
+  continueButtonLabel: {
+    id: 'wallet.restore.dialog.step.mnemonics.autocomplete.continueButtonLabel',
+    defaultMessage: '!!!Check recovery phrase',
+    description: 'Label for the mnemonics Continue button.',
+  },
 });
 
 type Props = {
@@ -156,7 +161,7 @@ export default class StepMnemonicsDialog extends Component<Props> {
         actions={[
           {
             primary: true,
-            label: 'Continue',
+            label: intl.formatMessage(messages.continueButtonLabel),
             onClick: this.submit,
           },
         ]}
