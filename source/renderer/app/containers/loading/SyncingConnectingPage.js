@@ -61,6 +61,7 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
         isNewAppVersionLoaded={isNewAppVersionLoaded}
         isIncentivizedTestnet={isIncentivizedTestnet}
         onIssueClick={this.handleIssueClick}
+        onOpenExternalLink={this.handleOpenExternalLink}
         onGetAvailableVersions={this.handleGetAvailableVersions}
         onStatusIconClick={this.openDaedalusDiagnosticsDialog}
         onDownloadLogs={this.handleDownloadLogs}
@@ -80,6 +81,10 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
       locale
     );
     this.props.stores.app.openExternalLink(supportUrl);
+  };
+
+  handleOpenExternalLink = (articleUrl: string) => {
+    this.props.stores.app.openExternalLink(articleUrl);
   };
 
   handleDownloadLogs = () => {

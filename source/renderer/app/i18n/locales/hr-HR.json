@@ -148,6 +148,7 @@
   "loading.screen.readArticle.buttonLabel": "!!!Read the article",
   "loading.screen.readIssueArticle.connectivityIssueArticleUrl": "!!!https://iohk.zendesk.com/hc/en-us/articles/360010522913",
   "loading.screen.readIssueArticle.syncIssueArticleUrl": "!!!https://iohk.zendesk.com/hc/en-us/articles/360011536933",
+  "loading.screen.readIssueArticle.syncIssueArticleUrl.itn": "!!!https://iohk.zendesk.com/knowledge/articles/900000048566/en-us?brand_id=7172167",
   "loading.screen.reconnectingToNetworkMessage": "!!!Network connection lost - reconnecting",
   "loading.screen.reportIssue.buttonLabel": "!!!Open support ticket",
   "loading.screen.reportIssue.connecting.text": "!!!Having trouble connecting to network?",
