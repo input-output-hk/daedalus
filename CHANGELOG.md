@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## vNext
+
+### Chores
+
+- Updated checkboxes, radio buttons and switchers sizes and borders ([PR 1793](https://github.com/input-output-hk/daedalus/pull/1793))
+
 ## 2.0.0-ITN1
 
 ### Features
