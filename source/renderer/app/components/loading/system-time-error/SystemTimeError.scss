@@ -55,12 +55,18 @@
     opacity: 0.8;
   }
 
-  a {
-    @include link(--theme-system-error-overlay-support-link-icon-color);
+
+  .supportPortalLink{
     border-bottom: 1px solid var(--theme-system-error-overlay-text-color);
     color: var(--theme-system-error-overlay-text-color);
-  }
+    font-size: 16px;
+    line-height: 1.38;
 
+    &:after {
+      background-color: var(--theme-system-error-overlay-support-link-icon-color);
+    }
+  }
+  
   .checkLink {
     border-bottom: 1px solid var(--theme-system-error-overlay-text-color);
     color: var(--theme-system-error-overlay-text-color);
@@ -69,8 +75,9 @@
     line-height: 1.36;
     margin-top: 30px;
     opacity: 0.8;
+    font-family: var(--font-regular);
 
-    &:disabled {
+    &.disabled {
       cursor: default;
       text-decoration: none;
       @include animated-ellipsis($width: 16px);

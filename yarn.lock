@@ -3964,6 +3964,7 @@ create-react-context@^0.2.1:
 create-react-ref@0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/create-react-ref/-/create-react-ref-0.1.0.tgz#0aa42aae4e66d8b164207ac8c468c35ce7bbd8eb"
+  integrity sha512-w/DDeTaFSaDVtlfLs4q9FVFcFq1jPZ62dBUAV24OKXrobtDlnXeJ5EsnK+z98Kmh9Zyxv24Edc26z8f7APVUYg==
   dependencies:
     fbjs "^0.8.16"
 
@@ -5349,6 +5350,7 @@ execall@^1.0.0:
 exenv@^1.2.0:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/exenv/-/exenv-1.2.2.tgz#2ae78e85d9894158670b03d47bec1f03bd91bb9d"
+  integrity sha1-KueOhdmJQVhnCwPUe+wfA72Ru50=
 
 expand-brackets@^0.1.4:
   version "0.1.5"
@@ -5671,6 +5673,7 @@ fill-range@^4.0.0:
 filter-react-dom-props@0.0.2:
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/filter-react-dom-props/-/filter-react-dom-props-0.0.2.tgz#d5c1e5a89c13534cebe3930a22afa9ae3238813b"
+  integrity sha1-1cHlqJwTU0zr45MKIq+prjI4gTs=
 
 finalhandler@~1.1.2:
   version "1.1.2"
@@ -10004,6 +10007,7 @@ postcss@^7.0.0, postcss@^7.0.1, postcss@^7.0.14, postcss@^7.0.17, postcss@^7.0.2
 postinstall-build@5.0.1:
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/postinstall-build/-/postinstall-build-5.0.1.tgz#b917a9079b26178d9a24af5a5cd8cb4a991d11b9"
+  integrity sha1-uRepB5smF42aJK9aXNjLSpkdEbk=
 
 prefix-style@2.0.1:
   version "2.0.1"
@@ -10546,6 +10550,7 @@ react-markdown@3.1.0:
 react-modal@3.1.12:
   version "3.1.12"
   resolved "https://registry.yarnpkg.com/react-modal/-/react-modal-3.1.12.tgz#e80ab4e553ce946a6c96faf85eb31e0f9bd07470"
+  integrity sha512-WuabHQDTkM5x9AQ9xRqfHrhrgVKnNhTFYOrIeZm5Eb8M/uLs0hrHsXP/BTCg7auuBZKectYmzPaG/ueJTG4zfA==
   dependencies:
     exenv "^1.2.0"
     prop-types "^15.5.10"
