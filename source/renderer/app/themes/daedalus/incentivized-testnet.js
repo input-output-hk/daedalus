@@ -452,6 +452,7 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--rp-checkbox-check-icon-color': '#121326',
     '--rp-checkbox-label-text-color': '#ffffff',
     '--rp-checkbox-label-text-color-disabled': '#ffffff4d',
+    '--rp-checkbox-size': '22px',
   },
   rpColors: {
     '--rp-theme-color-error': '#ea4c5b',
@@ -539,6 +540,7 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--rp-switch-opacity-off': '1',
     '--rp-switch-root-margin': '0 0 30px 0',
     '--rp-switch-thumb-bg-color': '#ffffff',
+    '--rp-switch-size': '22px',
   },
   rpTextArea: {
     '--rp-textarea-bg-color': '#121326',

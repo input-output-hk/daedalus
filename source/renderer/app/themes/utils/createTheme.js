@@ -101,6 +101,7 @@ export const createReactPolymorphTheme = (
       '--rp-checkbox-label-text-color-disabled': `${chroma(text.primary).alpha(
         0.3
       )}`,
+      '--rp-checkbox-size': '22px',
     },
     rpColors: {
       '--rp-theme-color-error': `${error.regular}`,
@@ -151,7 +152,7 @@ export const createReactPolymorphTheme = (
       '--rp-options-shadow': 'none',
     },
     rpRadio: {
-      '--rp-checkbox-border': `2px solid ${background.secondary.regular}`,
+      '--rp-radio-border': `2px solid ${background.secondary.regular}`,
       '--rp-radio-border-color': `${background.secondary.regular}`,
       '--rp-radio-color': '#ffffff',
       '--rp-radio-label-margin': '0 0 0 10px',
@@ -200,6 +201,7 @@ export const createReactPolymorphTheme = (
       '--rp-switch-opacity-off': '0.3',
       '--rp-switch-root-margin': '0 0 30px 0',
       '--rp-switch-thumb-bg-color': `${text.secondary}`,
+      '--rp-switch-size': '22px',
     },
     rpTextArea: {
       '--rp-textarea-bg-color': `${background.primary.regular}`,

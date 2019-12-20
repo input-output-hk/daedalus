@@ -467,6 +467,7 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--rp-checkbox-check-icon-color': '#fafbfc',
     '--rp-checkbox-label-text-color': '#5e6066',
     '--rp-checkbox-label-text-color-disabled': 'rgba(94, 96, 102, 0.3)',
+    '--rp-checkbox-size': '22px',
   },
   rpColors: {
     '--rp-theme-color-error': '#ea4c5b',
@@ -554,6 +555,7 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--rp-switch-opacity-off': '0.3',
     '--rp-switch-root-margin': '0 0 30px 0',
     '--rp-switch-thumb-bg-color': '#fff',
+    '--rp-switch-size': '22px',
   },
   rpTextArea: {
     '--rp-textarea-bg-color': '#fafbfc',
