@@ -55,10 +55,14 @@ export default class InstructionsDialogContainer extends Component<Props> {
     });
   };
 
+  handleOpenExternalLink = (url) => {
+    const { openExternalLink } = this.props.stores.app;
+    openExternalLink(url);
+  }
+
   render() {
     const { wallets, app } = this.props.stores;
     const {
-      openExternalLink,
       environment: { network, rawNetwork },
     } = app;
     return (
@@ -69,7 +73,7 @@ export default class InstructionsDialogContainer extends Component<Props> {
         rawNetwork={rawNetwork}
         onPrint={this.onPrint}
         onClose={this.props.onClose}
-        onOpenExternalLink={openExternalLink}
+        onOpenExternalLink={this.handleOpenExternalLink}
       />
     );
   }

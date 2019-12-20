@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
-import SVGInline from 'react-svg-inline';
 import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import Dialog from '../../widgets/Dialog';
@@ -162,10 +161,9 @@ export default class InstructionsDialog extends Component<Props> {
       },
     ];
 
-    const openNetworkExplorer = onOpenExternalLink.bind(
-      null,
+    const openNetworkExplorer = () => onOpenExternalLink(
       getNetworkExplorerUrl(network, rawNetwork)
-    );
+    )
 
     const cardanoExplorerLink = (
       <Link
