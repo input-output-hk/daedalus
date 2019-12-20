@@ -41,6 +41,7 @@ Changelog
 
 ### Chores
 
+- Changed Incentivized TestNet "Having trouble syncing" URL to point to one specific to TestNet ([PR 1795](https://github.com/input-output-hk/daedalus/pull/1795))
 - Updated `cardano-wallet` to revision `d3d93ba3` ([PR 1784](https://github.com/input-output-hk/daedalus/pull/1784))
 - Updated `cardano-wallet` to revision `e341d288` ([PR 1779](https://github.com/input-output-hk/daedalus/pull/1779))
 - Reduced stake pools fetching interval to 1 minute ([PR 1779](https://github.com/input-output-hk/daedalus/pull/1779))
