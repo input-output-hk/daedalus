@@ -58,8 +58,8 @@ storiesOf('Wallets|Add Wallet', module)
   .add('Restore - Step 2', () => {
     const walletKindSelect = select(
       'Wallet Kind',
-      { '-': null, ...WALLET_KINDS },
-      null
+      WALLET_KINDS,
+      WALLET_KINDS.DAEDALUS
     );
     let selectItems;
     if (walletKindSelect === WALLET_KINDS.YOROI)
@@ -72,11 +72,8 @@ storiesOf('Wallets|Add Wallet', module)
     if (walletKindSelect)
       walletKindSpecificSelect = select(
         `Wallet Kind - ${walletKindSelect || 'Daedalus'}`,
-        {
-          '-': null,
-          ...selectItems,
-        },
-        null
+        selectItems,
+        Object.values(WALLET_DAEDALUS_KINDS)[0]
       );
 
     return (

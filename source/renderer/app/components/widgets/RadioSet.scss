@@ -16,6 +16,7 @@
   .radiosContainer {
     display: flex;
     > div {
+      margin-bottom: 5px;
       margin-right: 40px;
     }
     &.verticallyAligned {
