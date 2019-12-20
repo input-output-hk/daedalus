@@ -30,7 +30,6 @@ import {
   RECOVERY_PHRASE_VERIFICATION_WARNING,
   WALLET_RESTORE_TYPES,
 } from '../config/walletsConfig';
-import { WALLET_KINDS } from '../config/walletRestoreConfig';
 import type {
   WalletKind,
   WalletDaedalusKind,
@@ -377,7 +376,6 @@ export default class WalletsStore extends Store {
   }: {
     mnemonics: Array<string>,
   }) => {
-    console.log('mnemonics', mnemonics);
     this.mnemonics = mnemonics;
   };
 

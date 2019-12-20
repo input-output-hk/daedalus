@@ -1,29 +1,24 @@
 // @flow
 import React, { Component } from 'react';
 import { join } from 'lodash';
-import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
-import classnames from 'classnames';
+import { defineMessages, intlShape } from 'react-intl';
 import { Autocomplete } from 'react-polymorph/lib/components/Autocomplete';
 import { AutocompleteSkin } from 'react-polymorph/lib/skins/simple/AutocompleteSkin';
 import WalletRestoreDialog from './WalletRestoreDialog';
 import commonStyles from './StepDialogStyles.scss';
-import ReactToolboxMobxForm, {
-  handleFormErrors,
-} from '../../../utils/ReactToolboxMobxForm';
+import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import globalMessages from '../../../i18n/global-messages';
-import LocalizableError from '../../../i18n/LocalizableError';
-import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 import { isValidMnemonic } from '../../../../../common/crypto/decrypt';
 import {
   WALLET_KINDS,
-  WALLET_DAEDALUS_KINDS,
-  WALLET_YOROI_KINDS,
-  WALLET_HARDWARE_KINDS,
+  // WALLET_DAEDALUS_KINDS,
+  // WALLET_YOROI_KINDS,
+  // WALLET_HARDWARE_KINDS,
   WALLET_DAEDALUS_WORD_COUNT,
   WALLET_YOROI_WORD_COUNT,
   WALLET_HARDWARE_WORD_COUNT,
 } from '../../../config/walletRestoreConfig';
-import {
+import type {
   WalletKind,
   WalletDaedalusKind,
   WalletYoroiKind,
@@ -53,7 +48,7 @@ type Props = {
   onContinue: Function,
   onClose: Function,
   onBack: Function,
-  walletKind?: WalletKind,
+  walletKind: ?WalletKind,
   walletKindDaedalus: ?WalletDaedalusKind,
   walletKindYoroi: ?WalletYoroiKind,
   walletKindHardware: ?WalletHardwareKind,
@@ -75,11 +70,11 @@ export default class StepMnemonicsDialog extends Component<Props> {
       walletKindHardware,
     } = this.props;
     let expectedWordCount = 0;
-    if (walletKind === WALLET_KINDS.DAEDALUS) {
+    if (walletKindDaedalus && walletKind === WALLET_KINDS.DAEDALUS) {
       expectedWordCount = WALLET_DAEDALUS_WORD_COUNT[walletKindDaedalus];
-    } else if (walletKind === WALLET_KINDS.YOROI) {
+    } else if (walletKindYoroi && walletKind === WALLET_KINDS.YOROI) {
       expectedWordCount = WALLET_YOROI_WORD_COUNT[walletKindYoroi];
-    } else {
+    } else if (walletKindHardware) {
       expectedWordCount = WALLET_HARDWARE_WORD_COUNT[walletKindHardware];
     }
     return expectedWordCount;
@@ -126,12 +121,7 @@ export default class StepMnemonicsDialog extends Component<Props> {
         const { recoveryPhrase } = form.values();
         onContinue(recoveryPhrase);
       },
-      onError: (a, b, c) => {
-        console.log('a', a);
-        console.log('b', b);
-        console.log('c', c);
-        // handleFormErrors('.error'),
-      },
+      onError: () => {},
     });
   };
 
