@@ -55,7 +55,7 @@ export default class InstructionsDialogContainer extends Component<Props> {
     });
   };
 
-  handleOpenExternalLink = (url) => {
+  handleOpenExternalLink = (url: string) => {
     const { openExternalLink } = this.props.stores.app;
     openExternalLink(url);
   }
