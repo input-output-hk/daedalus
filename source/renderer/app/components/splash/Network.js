@@ -4,9 +4,10 @@ import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
+import { Link } from 'react-polymorph/lib/components/Link';
+import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import backgroundImage from '../../assets/images/circle-bg-faded.inline.svg';
 import daedalusIcon from '../../assets/images/daedalus-logo-loading-grey.inline.svg';
-import externalLinkIcon from '../../assets/images/link-ic.inline.svg';
 import styles from './Network.scss';
 
 const messages = defineMessages({
@@ -97,12 +98,13 @@ export default class SplashNetwork extends Component<Props> {
               skin={ButtonSkin}
             />
           </div>
-          <div className={styles.learnMore}>
-            <button onClick={onLearnMoreClick}>
-              {intl.formatMessage(messages.learnMore)}
-              <SVGInline svg={externalLinkIcon} />
-            </button>
-          </div>
+
+          <Link
+            className={styles.learnMoreLink}
+            onClick={onLearnMoreClick}
+            label={intl.formatMessage(messages.learnMore)}
+            skin={LinkSkin}
+          />
         </div>
       </div>
     );

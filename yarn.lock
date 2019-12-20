@@ -3950,6 +3950,7 @@ create-react-class@^15.5.1:
 create-react-context@0.2.2, create-react-context@<=0.2.2:
   version "0.2.2"
   resolved "https://registry.yarnpkg.com/create-react-context/-/create-react-context-0.2.2.tgz#9836542f9aaa22868cd7d4a6f82667df38019dca"
+  integrity sha512-KkpaLARMhsTsgp0d2NA/R94F/eDLbhXERdIq3LvX2biCAXcDvHYoOqHfWCHf1+OLj+HKBotLG3KqaOOf+C1C+A==
   dependencies:
     fbjs "^0.8.0"
     gud "^1.0.0"
@@ -10556,9 +10557,9 @@ react-modal@3.1.12:
     prop-types "^15.5.10"
     warning "^3.0.0"
 
-react-polymorph@input-output-hk/react-polymorph#feature/ddw-924-link-component:
+react-polymorph@input-output-hk/react-polymorph#develop:
   version "0.9.0-rc.25"
-  resolved "https://codeload.github.com/input-output-hk/react-polymorph/tar.gz/826bed5b7b2058e4e7a39dc92e52ae8bf0a63d41"
+  resolved "https://codeload.github.com/input-output-hk/react-polymorph/tar.gz/1d1474be2441a194361969e167285a4b67af89ae"
   dependencies:
     create-react-context "0.2.2"
     create-react-ref "0.1.0"

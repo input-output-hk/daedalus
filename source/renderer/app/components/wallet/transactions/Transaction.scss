@@ -200,23 +200,8 @@
     margin-top: 20px;
 
     .articleLink {
-      @include link(--theme-link-main-color);
-      border-bottom: 1px solid transparent;
-      font-size: 16px;
       margin-left: 5px;
-      text-decoration-line: none;
-      &:hover {
-        border-bottom-color: var(--theme-link-main-color);
-      }
-    }
-  }
-
-  &.clickable {
-    .transactionId,
-    .address,
-    .explorerLink {
-      @include link(--theme-link-main-color);
-      border-bottom-color: var(--theme-link-main-color);
+      font-size: 16px;
     }
   }
 }

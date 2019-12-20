@@ -11,6 +11,17 @@
       outline: none;
     }
   }
+
+  .DaedalusDiagnostics_component {
+    .SimpleLink_withIconAfter {
+      color: var(--theme-network-window-white-color);
+      border-color: var(--theme-network-window-white-color);
+      line-height: 1.5;
+      &:after {
+        background-color: var(--theme-network-window-white-color);
+      }
+    }
+  }
 }
 
 .component {
@@ -351,8 +362,7 @@ button.cardanoNodeStatusBtn {
   padding-top: 0;
 }
 
-button.realTimeStatusBtn,
-button.unknownDiskSpaceBtn {
+button.realTimeStatusBtn {
   @include link(--theme-network-window-white-color);
   background: transparent !important;
   border-bottom: none;

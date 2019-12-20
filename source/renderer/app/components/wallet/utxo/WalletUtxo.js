@@ -2,7 +2,6 @@
 import React, { Component, Fragment } from 'react';
 import BigNumber from 'bignumber.js';
 import classnames from 'classnames';
-import SVGInline from 'react-svg-inline';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import {
   BarChart,
@@ -14,6 +13,8 @@ import {
   Bar,
   ResponsiveContainer,
 } from 'recharts';
+import { Link } from 'react-polymorph/lib/components/Link';
+import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import BorderedBox from '../../widgets/BorderedBox';
 import Tick from './WalletUtxoTick';
 import CustomTooltip from './WalletUtxoTooltip';
@@ -21,7 +22,6 @@ import Cursor from './WalletUtxoCursor';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import styles from './WalletUtxo.scss';
 import type { TickProps } from './WalletUtxoTick';
-import externalLinkIcon from '../../../assets/images/link-ic.inline.svg';
 
 export const messages = defineMessages({
   title: {
@@ -133,15 +133,13 @@ export default class WalletUtxo extends Component<Props, State> {
 
     const findOutMoreLinkUrl = intl.formatMessage(messages.findOutMoreLinkUrl);
     const findOutMoreLink = (
-      <a
+      <Link
         className={styles.externalLink}
-        href={findOutMoreLinkUrl}
         onClick={event => onExternalLinkClick(findOutMoreLinkUrl, event)}
-      >
-        {intl.formatMessage(messages.findOutMoreLink)}
-        <SVGInline svg={externalLinkIcon} />
-      </a>
-    );
+        label={intl.formatMessage(messages.findOutMoreLink)}
+        skin={LinkSkin}
+      />
+    )
 
     return (
       <div className={componentStyles}>

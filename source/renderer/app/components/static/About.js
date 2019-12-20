@@ -2,13 +2,14 @@
 import React, { Component } from 'react';
 import SVGInline from 'react-svg-inline';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
+import { Link } from 'react-polymorph/lib/components/Link';
+import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import globalMessages from '../../i18n/global-messages';
 import styles from './About.scss';
 import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
 import daedalusIcon from '../../assets/images/daedalus-logo-loading-grey.inline.svg';
 import cardanoIcon from '../../assets/images/cardano-logo.inline.svg';
-import externalLinkIcon from '../../assets/images/link-ic.inline.svg';
 
 const messages = defineMessages({
   aboutTitle: {
@@ -126,30 +127,25 @@ export default class About extends Component<Props> {
         </div>
 
         <div className={styles.footerWrapper}>
-          <span
-            onClick={() => onOpenExternalLink('https://daedaluswallet.io')}
+          <Link
             className={styles.link}
-            role="link"
-            aria-hidden
-          >
-            http://daedaluswallet.io
-            <SVGInline svg={externalLinkIcon} />
-          </span>
+            onClick={() => onOpenExternalLink('https://daedaluswallet.io')}
+            label='http://daedaluswallet.io'
+            skin={LinkSkin}
+          />
+
           <div className={styles.copyright}>
             {intl.formatMessage(messages.aboutCopyright)}&nbsp;
-            <span
+            <Link
+              className={styles.link}
               onClick={() =>
                 onOpenExternalLink(
                   'https://github.com/input-output-hk/daedalus/blob/master/LICENSE'
                 )
               }
-              className={styles.link}
-              role="link"
-              aria-hidden
-            >
-              {intl.formatMessage(messages.licenseLink)}
-              <SVGInline svg={externalLinkIcon} />
-            </span>
+              label={intl.formatMessage(messages.licenseLink)}
+              skin={LinkSkin}
+            />
           </div>
         </div>
       </div>
