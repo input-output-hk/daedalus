@@ -169,7 +169,7 @@ export default class InstructionsDialog extends Component<Props> {
 
     const cardanoExplorerLink = (
       <Link
-        className={styles.link2}
+        className={styles.link}
         onClick={openNetworkExplorer}
         label={intl.formatMessage(messages.cardanoExplorer)}
         skin={LinkSkin}

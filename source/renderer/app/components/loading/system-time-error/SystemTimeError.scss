@@ -68,6 +68,7 @@
   }
   
   .checkLink {
+    display: inline-block;
     border-bottom: 1px solid var(--theme-system-error-overlay-text-color);
     color: var(--theme-system-error-overlay-text-color);
     cursor: pointer;

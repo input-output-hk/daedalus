@@ -1,13 +1,13 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
 import { defineMessages, intlShape } from 'react-intl';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
+import { Link } from 'react-polymorph/lib/components/Link';
+import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import styles from './WalletRecoveryPhraseStepDialogs.scss';
-import externalLinkIcon from '../../../assets/images/link-ic.inline.svg';
 
 export const messages = defineMessages({
   recoveryPhraseStep4Title: {
@@ -90,22 +90,16 @@ export default class WalletRecoveryPhraseStep4 extends Component<Props> {
         <p>{intl.formatMessage(messages.recoveryPhraseStep4Paragraph1)}</p>
         <p>{intl.formatMessage(messages.recoveryPhraseStep4Paragraph2)}</p>
         <div className={styles.supportPortalContainer}>
-          <span
-            role="presentation"
+          <Link
             onClick={(event: MouseEvent) =>
               openExternalLink(
                 intl.formatMessage(messages.recoveryPhraseStep4SupportUrl),
                 event
               )
             }
-            className={styles.supportPortalLink}
-          >
-            {intl.formatMessage(messages.recoveryPhraseStep4SupportTitle)}
-            <SVGInline
-              svg={externalLinkIcon}
-              className={styles.externalLinkIcon}
-            />
-          </span>
+            label={intl.formatMessage(messages.recoveryPhraseStep4SupportTitle)}
+            skin={LinkSkin}
+          />
         </div>
       </Dialog>
     );
