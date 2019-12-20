@@ -8,17 +8,13 @@ $width: 24px !important;
     .SimpleSwitch_switch {
       margin-left: 6px;
 
-      span {
-        border-radius: var(--rp-switch-tiny-border-radius);
-      }
-
       &:not(.SimpleSwitch_checked) {
         height: $height;
         width: $width;
 
         span {
-          left: 0;
-          top: 0;
+          left: 2px;
+          top: 2px;
         }
       }
 
@@ -27,16 +23,17 @@ $width: 24px !important;
         width: $width;
 
         span {
-          left: 11px !important;
-          top: 0;
+          left: 14px !important;
+          top: 2px;
         }
       }
     }
   }
 
   span {
-    height: 12px !important;
-    width: 12px !important;
+    border-radius: var(--rp-switch-tiny-border-radius);
+    height: 8px !important;
+    width: 8px !important;
   }
 
   label {
