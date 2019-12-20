@@ -488,6 +488,9 @@ export const YELLOW_THEME_OUTPUT = {
     '--rp-input-text-color': '#2d2d2d',
     '--rp-input-text-color-disabled': 'rgba(45, 45, 45, 0.5)',
   },
+  rpLink: {
+    '--rp-link-color': '#d6902f',
+  },
   rpModal: {
     '--rp-modal-bg-color': '#ffffff',
     '--rp-modal-max-height': '90%',

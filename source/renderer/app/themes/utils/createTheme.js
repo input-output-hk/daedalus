@@ -135,6 +135,9 @@ export const createReactPolymorphTheme = (
       '--rp-input-text-color': `${text.primary}`,
       '--rp-input-text-color-disabled': `${chroma(text.primary).alpha(0.5)}`,
     },
+    rpLink: {
+      '--rp-link-color': `${background.secondary.regular}`,
+    },
     rpModal: {
       '--rp-modal-bg-color': `${background.primary.lightest}`,
       '--rp-modal-max-height': '90%',
