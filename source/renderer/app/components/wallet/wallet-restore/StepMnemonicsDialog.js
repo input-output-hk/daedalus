@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { join } from 'lodash';
+import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import { Autocomplete } from 'react-polymorph/lib/components/Autocomplete';
 import { AutocompleteSkin } from 'react-polymorph/lib/skins/simple/AutocompleteSkin';
@@ -60,6 +61,7 @@ type Props = {
   walletKindHardware: ?WalletHardwareKind,
 };
 
+@observer
 export default class StepMnemonicsDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -90,7 +92,7 @@ export default class StepMnemonicsDialog extends Component<Props> {
       fields: {
         recoveryPhrase: {
           value: [],
-          validatorsFIX: ({ field }) => {
+          validators: ({ field }) => {
             const { intl } = this.context;
             const enteredWords = field.value;
             const wordCount = enteredWords.length;
