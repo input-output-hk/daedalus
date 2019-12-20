@@ -53,21 +53,21 @@ const messages = defineMessages({
   labelDaedalusWalletKindBalance12Word: {
     id:
       'wallet.restore.dialog.step.walletKind.label.daedalusWalletKindBalance12Word',
-    defaultMessage: '!!!12 words <span>(Balance wallet)</span>',
+    defaultMessage: '!!!12 words <em>(Balance wallet)</em>',
     description:
       'Label for the "labelDaedalusWalletKindBalance12Word" checkbox.',
   },
   labelDaedalusWalletKindReward15Word: {
     id:
       'wallet.restore.dialog.step.walletKind.label.daedalusWalletKindReward15Word',
-    defaultMessage: '!!!15 words <span>(Rewards wallet)</span>',
+    defaultMessage: '!!!15 words <em>(Rewards wallet)</em>',
     description:
       'Label for the "labelDaedalusWalletKindReward15Word" checkbox.',
   },
   labelDaedalusWalletKindBalance27Word: {
     id:
       'wallet.restore.dialog.step.walletKind.label.daedalusWalletKindBalance27Word',
-    defaultMessage: '!!!27 words <span>(Balance wallet)</span>',
+    defaultMessage: '!!!27 words <em>(Balance wallet)</em>',
     description:
       'Label for the "labelDaedalusWalletKindBalance27Word" checkbox.',
   },
@@ -79,14 +79,14 @@ const messages = defineMessages({
   labelYoroiWalletKindBalance15Word: {
     id:
       'wallet.restore.dialog.step.walletKind.label.yoroiWalletKindBalance15Word',
-    defaultMessage: '!!!15 words <span>(Balance wallet)</span>',
+    defaultMessage: '!!!15 words <em>(Balance wallet)</em>',
     description:
       'Label for the "labelDaedalusWalletKindBalance15Word" checkbox.',
   },
   labelYoroiWalletKindReward15Word: {
     id:
       'wallet.restore.dialog.step.walletKind.label.yoroiWalletKindReward15Word',
-    defaultMessage: '!!!15 words <span>(Reward wallet)</span>',
+    defaultMessage: '!!!15 words <em>(Reward wallet)</em>',
     description:
       'Label for the "labelDaedalusWalletKindReward15Word" checkbox.',
   },

@@ -1,5 +1,5 @@
 .component {
-  margin-bottom: 20px;
+  margin-bottom: 14px;
   .label {
     color: var(--rp-formfield-label-text-color, #5e6066);
     display: block;
@@ -16,7 +16,7 @@
   .radiosContainer {
     display: flex;
     > div {
-      margin-bottom: 5px;
+      margin-bottom: 6px;
       margin-right: 40px;
     }
     &.verticallyAligned {

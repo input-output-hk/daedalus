@@ -1,5 +1,12 @@
 .component {
-  margin-bottom: 20px;
+  margin: 0 auto 20px;
+  width: 340px;
+
+  :global {
+    .SimpleStepper_wrapper .SimpleStepper_stepsWrapper li:after {
+      left: -43%;
+    }
+  }
 }
 
 .stepCounter {
