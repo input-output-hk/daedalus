@@ -315,7 +315,9 @@ export default class Transaction extends Component<Props, State> {
               onClick={() =>
                 onOpenExternalLink(getUrlByType('tx', transactionId))
               }
-              label={intl.formatMessage(messages.unresolvedInputAddressesLinkLabel)}
+              label={intl.formatMessage(
+                messages.unresolvedInputAddressesLinkLabel
+              )}
               skin={LinkSkin}
             />
             <span>

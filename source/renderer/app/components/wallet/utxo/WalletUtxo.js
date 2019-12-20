@@ -139,7 +139,7 @@ export default class WalletUtxo extends Component<Props, State> {
         label={intl.formatMessage(messages.findOutMoreLink)}
         skin={LinkSkin}
       />
-    )
+    );
 
     return (
       <div className={componentStyles}>

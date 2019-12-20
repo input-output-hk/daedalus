@@ -130,7 +130,7 @@ export default class About extends Component<Props> {
           <Link
             className={styles.link}
             onClick={() => onOpenExternalLink('https://daedaluswallet.io')}
-            label='http://daedaluswallet.io'
+            label="http://daedaluswallet.io"
             skin={LinkSkin}
           />
 

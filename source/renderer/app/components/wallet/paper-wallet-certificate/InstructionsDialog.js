@@ -161,9 +161,8 @@ export default class InstructionsDialog extends Component<Props> {
       },
     ];
 
-    const openNetworkExplorer = () => onOpenExternalLink(
-      getNetworkExplorerUrl(network, rawNetwork)
-    )
+    const openNetworkExplorer = () =>
+      onOpenExternalLink(getNetworkExplorerUrl(network, rawNetwork));
 
     const cardanoExplorerLink = (
       <Link
@@ -172,7 +171,7 @@ export default class InstructionsDialog extends Component<Props> {
         label={intl.formatMessage(messages.cardanoExplorer)}
         skin={LinkSkin}
       />
-    )
+    );
 
     return (
       <Dialog

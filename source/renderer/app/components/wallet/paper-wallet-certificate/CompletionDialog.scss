@@ -40,10 +40,16 @@
     .link {
       font-family: var(--font-mono);
       font-size: 16px;
-      color: var(--theme-paper-wallet-create-certificate-dialog-explorer-link-color);
-      border-color: var(--theme-paper-wallet-create-certificate-dialog-explorer-link-color);
+      color: var(
+        --theme-paper-wallet-create-certificate-dialog-explorer-link-color
+      );
+      border-color: var(
+        --theme-paper-wallet-create-certificate-dialog-explorer-link-color
+      );
       &:after {
-        background-color: var(--theme-paper-wallet-create-certificate-dialog-explorer-link-color);
+        background-color: var(
+          --theme-paper-wallet-create-certificate-dialog-explorer-link-color
+        );
       }
     }
   }

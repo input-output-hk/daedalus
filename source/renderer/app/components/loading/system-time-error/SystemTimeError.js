@@ -165,7 +165,9 @@ export default class SystemTimeError extends Component<Props> {
             <Link
               className={styles.checkLink}
               onClick={() => onContinueWithoutClockSyncCheck()}
-              label={intl.formatMessage(messages.onContinueWithoutClockSyncCheckLink)}
+              label={intl.formatMessage(
+                messages.onContinueWithoutClockSyncCheckLink
+              )}
               hasIconAfter={false}
               skin={LinkSkin}
             />

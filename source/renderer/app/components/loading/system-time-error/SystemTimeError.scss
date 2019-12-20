@@ -55,18 +55,19 @@
     opacity: 0.8;
   }
 
-
-  .supportPortalLink{
+  .supportPortalLink {
     border-bottom: 1px solid var(--theme-system-error-overlay-text-color);
     color: var(--theme-system-error-overlay-text-color);
     font-size: 16px;
     line-height: 1.38;
 
     &:after {
-      background-color: var(--theme-system-error-overlay-support-link-icon-color);
+      background-color: var(
+        --theme-system-error-overlay-support-link-icon-color
+      );
     }
   }
-  
+
   .checkLink {
     display: inline-block;
     border-bottom: 1px solid var(--theme-system-error-overlay-text-color);

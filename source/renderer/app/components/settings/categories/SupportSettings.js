@@ -101,7 +101,7 @@ export default class SupportSettings extends Component<Props> {
         label={intl.formatMessage(messages.faqLink)}
         skin={LinkSkin}
       />
-    )
+    );
 
     const downloadLogsClasses = classNames([
       styles.externalLink,
@@ -116,7 +116,7 @@ export default class SupportSettings extends Component<Props> {
         label={intl.formatMessage(messages.stepsDownloadLogsLink)}
         skin={LinkSkin}
       />
-    )
+    );
 
     const reportProblemLink = (
       <Link
