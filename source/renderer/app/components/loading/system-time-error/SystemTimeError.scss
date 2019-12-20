@@ -69,15 +69,15 @@
   }
 
   .checkLink {
-    display: inline-block;
     border-bottom: 1px solid var(--theme-system-error-overlay-text-color);
     color: var(--theme-system-error-overlay-text-color);
     cursor: pointer;
+    display: inline-block;
+    font-family: var(--font-regular);
     font-size: 14px;
     line-height: 1.36;
     margin-top: 30px;
     opacity: 0.8;
-    font-family: var(--font-regular);
 
     &.disabled {
       cursor: default;

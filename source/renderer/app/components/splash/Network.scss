@@ -159,9 +159,9 @@
     }
 
     .learnMoreLink {
-      margin-top: 20px;
       border-bottom: 1px solid var(--theme-splash-network-learn-more-color);
       color: var(--theme-splash-network-learn-more-color);
+      margin-top: 20px;
       opacity: 0.8;
       &:after {
         background-color: var(--theme-splash-network-learn-more-color);

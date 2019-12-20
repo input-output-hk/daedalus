@@ -14,8 +14,8 @@
 
   .DaedalusDiagnostics_component {
     .SimpleLink_withIconAfter {
-      color: var(--theme-network-window-white-color);
       border-color: var(--theme-network-window-white-color);
+      color: var(--theme-network-window-white-color);
       line-height: 1.5;
       &:after {
         background-color: var(--theme-network-window-white-color);
