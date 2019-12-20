@@ -4,11 +4,6 @@ import { defineMessages, intlShape } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
-
-
-import { Link } from 'react-polymorph/lib/components/Link';
-import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
-
 import styles from './DelegationCenterNoWallets.scss';
 import icon from '../../../assets/images/attention-big-thin.inline.svg';
 
@@ -51,12 +46,6 @@ export default class DelegationCenterNoWallets extends Component<Props> {
         <SVGInline svg={icon} className={styles.icon} />
         <h1>{intl.formatMessage(messages.headLine)}</h1>
         <p>{intl.formatMessage(messages.instructions)}</p>
-        <Link
-          onClick={() => {console.debug('CLICK')}}
-          label="HELLO link"
-          isUnderlined
-          skin={LinkSkin}
-        />
         <Button
           className="primary"
           onClick={onGoToCreateWalletClick}
