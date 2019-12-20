@@ -104,8 +104,10 @@ export default class NetworkStatusStore extends Store {
   setup() {
     // ========== IPC CHANNELS =========== //
 
-    this.actions.networkStatus.restartNode.listen(this._restartNode);
-    this.actions.networkStatus.toggleSplash.listen(this._toggleSplash);
+    const { networkStatus: networkStatusActions } = this.actions;
+
+    networkStatusActions.restartNode.listen(this._restartNode);
+    networkStatusActions.toggleSplash.listen(this._toggleSplash);
 
     // Request node state
     this._requestCardanoState();

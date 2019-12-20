@@ -4,7 +4,7 @@ import Store from './lib/Store';
 import LocalizableError from '../i18n/LocalizableError';
 import { buildRoute } from '../utils/routing';
 import { ROUTES } from '../routes-config';
-import { DIALOGS, NOTIFICATIONS } from '../../../common/ipc/constants';
+import { DIALOGS, PAGES, NOTIFICATIONS } from '../../../common/ipc/constants';
 import { openExternalUrlChannel } from '../ipc/open-external-url';
 import {
   toggleUiPartChannel,
@@ -44,9 +44,7 @@ export default class AppStore extends Store {
     });
 
     this.actions.app.downloadLogs.listen(this._downloadLogs);
-    this.actions.app.setNotificationVisibility.listen(
-      this._setDownloadNotification
-    );
+    this.actions.app.setIsDownloadingLogs.listen(this._setIsDownloadingLogs);
 
     this.actions.app.toggleNewsFeed.listen(this._toggleNewsFeed);
     this.actions.app.closeNewsFeed.listen(this._closeNewsFeed);
@@ -94,6 +92,7 @@ export default class AppStore extends Store {
    * Shows the screen specified by the constant string identifier.
    */
   showUiPart = (uiPart: string) => {
+    const { wallets } = this.stores;
     switch (uiPart) {
       case DIALOGS.ABOUT:
         this._updateActiveDialog(DIALOGS.ABOUT);
@@ -103,6 +102,17 @@ export default class AppStore extends Store {
         break;
       case NOTIFICATIONS.DOWNLOAD_LOGS:
         this._downloadLogs();
+        break;
+      case PAGES.SETTINGS:
+        this.actions.router.goToRoute.trigger({ route: PAGES.SETTINGS });
+        break;
+      case PAGES.WALLET_SETTINGS:
+        if (wallets.active && wallets.active.id) {
+          this.actions.router.goToRoute.trigger({
+            route: ROUTES.WALLETS.PAGE,
+            params: { id: wallets.active.id, page: 'settings' },
+          });
+        }
         break;
       default:
     }
@@ -161,7 +171,7 @@ export default class AppStore extends Store {
             fresh: true,
           });
         } else {
-          this.actions.app.setNotificationVisibility.trigger(
+          this.actions.app.setIsDownloadingLogs.trigger(
             !this.isDownloadNotificationVisible
           );
         }
@@ -170,9 +180,7 @@ export default class AppStore extends Store {
     this.isDownloadNotificationVisible = true;
   };
 
-  @action _setDownloadNotification = (
-    isDownloadNotificationVisible: boolean
-  ) => {
+  @action _setIsDownloadingLogs = (isDownloadNotificationVisible: boolean) => {
     this.isDownloadNotificationVisible = isDownloadNotificationVisible;
   };
 }

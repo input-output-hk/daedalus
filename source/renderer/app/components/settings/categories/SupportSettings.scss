@@ -58,9 +58,8 @@
   button {
     cursor: pointer;
     &:disabled {
-      color: var(--rp-button-bg-color-disabled);
       cursor: default;
-      text-decoration: none;
+      opacity: 0.3;
     }
   }
 
