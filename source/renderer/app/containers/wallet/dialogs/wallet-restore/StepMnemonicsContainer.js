@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import MnemonicsDialog from '../../../../components/wallet/wallet-restore/StepMnemonicsDialog';
+import validWords from '../../../../../../common/crypto/valid-words.en';
 import type { InjectedDialogContainerStepProps } from '../../../../types/injectedPropsType';
 import { InjectedDialogContainerStepDefaultProps } from '../../../../types/injectedPropsType';
 
@@ -13,8 +14,15 @@ const DefaultProps = InjectedDialogContainerStepDefaultProps;
 export default class MnemonicsDialogContainer extends Component<Props> {
   static defaultProps = DefaultProps;
 
+  handleContinue = (mnemonics: Array<string>) => {
+    const { onContinue, actions } = this.props;
+    const { restoreWalletSetMnemonics } = actions.wallets;
+    restoreWalletSetMnemonics.trigger({ mnemonics });
+    onContinue();
+  };
+
   render() {
-    const { onClose, onContinue, onBack, stores } = this.props;
+    const { onClose, onBack, stores } = this.props;
     const {
       walletKind,
       walletKindDaedalus,
@@ -24,12 +32,13 @@ export default class MnemonicsDialogContainer extends Component<Props> {
     return (
       <MnemonicsDialog
         onClose={onClose}
-        onContinue={onContinue}
+        onContinue={this.handleContinue}
         onBack={onBack}
         walletKind={walletKind}
         walletKindDaedalus={walletKindDaedalus}
         walletKindYoroi={walletKindYoroi}
         walletKindHardware={walletKindHardware}
+        suggestedMnemonics={validWords}
       />
     );
   }

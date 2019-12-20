@@ -575,6 +575,7 @@
   "wallet.restore.dialog.step.WalletKind.label.yoroiWalletKind": "What kind of Yoroi wallet would you like to restore?",
   "wallet.restore.dialog.step.WalletKind.label.yoroiWalletKindBalance15Word": "15 words <span>(Balance wallet)</span>",
   "wallet.restore.dialog.step.WalletKind.label.yoroiWalletKindReward15Word": "15 words <span>(Reward wallet)</span>",
+  "wallet.restore.dialog.step.mnemonics.autocomplete.placeholder": "Enter your {numberOfWords}-word recovery phrase",
   "wallet.restore.dialog.stepsCounter": "Step {currentStep} of {totalSteps}",
   "wallet.restore.dialog.tab.title.certificate": "Daedalus paper wallet",
   "wallet.restore.dialog.tab.title.recoveryPhrase": "Daedalus wallet",

@@ -2,6 +2,9 @@
 import React, { Component } from 'react';
 import { join } from 'lodash';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
+import classnames from 'classnames';
+import { Autocomplete } from 'react-polymorph/lib/components/Autocomplete';
+import { AutocompleteSkin } from 'react-polymorph/lib/skins/simple/AutocompleteSkin';
 import WalletRestoreDialog from './WalletRestoreDialog';
 import commonStyles from './StepDialogStyles.scss';
 import ReactToolboxMobxForm, {
@@ -10,7 +13,6 @@ import ReactToolboxMobxForm, {
 import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
-import { submitOnEnter } from '../../../utils/form';
 import { isValidMnemonic } from '../../../../../common/crypto/decrypt';
 import {
   WALLET_KINDS,
@@ -29,10 +31,21 @@ import {
 } from '../../../types/walletRestoreTypes';
 
 const messages = defineMessages({
-  labelWalletKind: {
-    id: 'wallet.restore.dialog.step.WalletKind.label.walletKind',
-    defaultMessage: '!!!What kind of wallet would you like to restore?',
-    description: 'Label for the "labelwalletKind" checkbox.',
+  REPLACE: {
+    id: 'REPLACE',
+    defaultMessage: '!!!REPLACE-ME',
+    description: 'TODO MSGS',
+  },
+  autocompletePlaceholder: {
+    id: 'wallet.restore.dialog.step.mnemonics.autocomplete.placeholder',
+    defaultMessage: '!!!Enter your {numberOfWords}-word recovery phrase',
+    description: 'Placeholder for the mnemonics autocomplete.',
+  },
+  autocompleteNoResults: {
+    id: 'wallet.restore.dialog.step.mnemonics.autocomplete.noResults',
+    defaultMessage: '!!!No results',
+    description:
+      '"No results" message for the mnemonics autocomplete search results.',
   },
 });
 
@@ -44,9 +57,16 @@ type Props = {
   walletKindDaedalus: ?WalletDaedalusKind,
   walletKindYoroi: ?WalletYoroiKind,
   walletKindHardware: ?WalletHardwareKind,
+  suggestedMnemonics: Array<string>,
 };
 
 export default class StepMnemonicsDialog extends Component<Props> {
+  static contextTypes = {
+    intl: intlShape.isRequired,
+  };
+
+  recoveryPhraseAutocomplete: Autocomplete;
+
   get expectedWordCount() {
     const {
       walletKind,
@@ -70,7 +90,7 @@ export default class StepMnemonicsDialog extends Component<Props> {
       fields: {
         recoveryPhrase: {
           value: [],
-          validators: ({ field }) => {
+          validatorsFIX: ({ field }) => {
             const { intl } = this.context;
             const enteredWords = field.value;
             const wordCount = enteredWords.length;
@@ -86,7 +106,7 @@ export default class StepMnemonicsDialog extends Component<Props> {
             }
             return [
               isValidMnemonic(value, this.expectedWordCount),
-              this.context.intl.formatMessage(messages.invalidRecoveryPhrase),
+              intl.formatMessage(messages.REPLACE),
             ];
           },
         },
@@ -94,8 +114,7 @@ export default class StepMnemonicsDialog extends Component<Props> {
     },
     {
       options: {
-        validateOnChange: true,
-        validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
+        validateOnChange: false,
       },
     }
   );
@@ -104,23 +123,17 @@ export default class StepMnemonicsDialog extends Component<Props> {
     this.form.submit({
       onSuccess: form => {
         const { onContinue } = this.props;
-        const { recoveryPhrase, walletName, spendingPassword } = form.values();
-        const walletData: Object = {
-          recoveryPhrase: join(recoveryPhrase, ' '),
-          walletName,
-          spendingPassword,
-        };
-
-        walletData.type = this.state.walletType;
-
-        onContinue(walletData);
+        const { recoveryPhrase } = form.values();
+        onContinue(recoveryPhrase);
       },
-      onError: () =>
-        handleFormErrors('.SimpleFormField_error', { focusElement: true }),
+      onError: (a, b, c) => {
+        console.log('a', a);
+        console.log('b', b);
+        console.log('c', c);
+        // handleFormErrors('.error'),
+      },
     });
   };
-
-  handleSubmitOnEnter = submitOnEnter.bind(this, this.submit);
 
   resetForm = () => {
     const { form } = this;
@@ -143,7 +156,10 @@ export default class StepMnemonicsDialog extends Component<Props> {
   };
 
   render() {
-    const { onContinue, onClose, onBack } = this.props;
+    const { intl } = this.context;
+    const { onClose, onBack, suggestedMnemonics } = this.props;
+    const recoveryPhraseField = this.form.$('recoveryPhrase');
+    const { expectedWordCount: numberOfWords } = this;
     return (
       <WalletRestoreDialog
         stepNumber={1}
@@ -151,13 +167,33 @@ export default class StepMnemonicsDialog extends Component<Props> {
           {
             primary: true,
             label: 'Continue',
-            onClick: onContinue,
+            onClick: this.submit,
           },
         ]}
         onClose={onClose}
         onBack={onBack}
       >
-        <div className={commonStyles.component}>MNEMONICS STEP CONTENT</div>
+        <div className={commonStyles.component}>
+          <Autocomplete
+            {...recoveryPhraseField.bind()}
+            ref={autocomplete => {
+              this.recoveryPhraseAutocomplete = autocomplete;
+            }}
+            label={intl.formatMessage(globalMessages.recoveryPhraseDialogTitle)}
+            placeholder={intl.formatMessage(messages.autocompletePlaceholder, {
+              numberOfWords,
+            })}
+            options={suggestedMnemonics}
+            maxSelections={this.expectedWordCount}
+            error={recoveryPhraseField.error}
+            maxVisibleOptions={5}
+            noResultsMessage={intl.formatMessage(
+              messages.autocompleteNoResults
+            )}
+            skin={AutocompleteSkin}
+          />
+          <div className="error" />
+        </div>
       </WalletRestoreDialog>
     );
   }

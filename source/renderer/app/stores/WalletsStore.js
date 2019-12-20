@@ -242,6 +242,9 @@ export default class WalletsStore extends Store {
     walletsActions.restoreWalletAbort.listen(this._restoreWalletAbort);
     walletsActions.restoreWalletClose.listen(this._restoreWalletClose);
     walletsActions.restoreWalletSetKind.listen(this._restoreWalletSetKind);
+    walletsActions.restoreWalletSetMnemonics.listen(
+      this._restoreWalletSetMnemonics
+    );
     // Todo: remove once the new Steps implementation is done
     walletsActions.restoreWallet.listen(this._restoreWallet);
     // ---
@@ -367,6 +370,15 @@ export default class WalletsStore extends Store {
     kind: string,
   }) => {
     (this: any)[`walletKind${param || ''}`] = kind;
+  };
+
+  @action _restoreWalletSetMnemonics = ({
+    mnemonics,
+  }: {
+    mnemonics: Array<string>,
+  }) => {
+    console.log('mnemonics', mnemonics);
+    this.mnemonics = mnemonics;
   };
 
   _finishWalletBackup = async () => {
