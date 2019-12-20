@@ -25,107 +25,107 @@ import type {
 
 const messages = defineMessages({
   labelWalletKind: {
-    id: 'wallet.restore.dialog.step.WalletKind.label.walletKind',
+    id: 'wallet.restore.dialog.step.walletKind.label.walletKind',
     defaultMessage: '!!!What kind of wallet would you like to restore?',
     description: 'Label for the "labelwalletKind" checkbox.',
   },
   labelWalletKindDaedalus: {
-    id: 'wallet.restore.dialog.step.WalletKind.label.walletKindDaedalus',
+    id: 'wallet.restore.dialog.step.walletKind.label.walletKindDaedalus',
     defaultMessage: '!!!Daedalus wallet',
     description: 'Label for the "labelWalletKindDaedalus" checkbox.',
   },
   labelWalletKindYoroi: {
-    id: 'wallet.restore.dialog.step.WalletKind.label.walletKindYoroi',
+    id: 'wallet.restore.dialog.step.walletKind.label.walletKindYoroi',
     defaultMessage: '!!!Yoroi wallet',
     description: 'Label for the "labelWalletKindYoroi" checkbox.',
   },
   labelWalletKindHardware: {
-    id: 'wallet.restore.dialog.step.WalletKind.label.walletKindHardware',
+    id: 'wallet.restore.dialog.step.walletKind.label.walletKindHardware',
     defaultMessage: '!!!Hardware wallet',
     description: 'Label for the "labelWalletKindHardware" checkbox.',
   },
   labelDaedalusWalletKind: {
-    id: 'wallet.restore.dialog.step.WalletKind.label.daedalusWalletKind',
+    id: 'wallet.restore.dialog.step.walletKind.label.daedalusWalletKind',
     defaultMessage:
       '!!!What kind of Daedalus wallet would you like to restore?',
     description: 'Label for the "labelDaedalusWalletKind" checkbox.',
   },
   labelDaedalusWalletKindBalance12Word: {
     id:
-      'wallet.restore.dialog.step.WalletKind.label.daedalusWalletKindBalance12Word',
+      'wallet.restore.dialog.step.walletKind.label.daedalusWalletKindBalance12Word',
     defaultMessage: '!!!12 words <span>(Balance wallet)</span>',
     description:
       'Label for the "labelDaedalusWalletKindBalance12Word" checkbox.',
   },
   labelDaedalusWalletKindReward15Word: {
     id:
-      'wallet.restore.dialog.step.WalletKind.label.daedalusWalletKindReward15Word',
+      'wallet.restore.dialog.step.walletKind.label.daedalusWalletKindReward15Word',
     defaultMessage: '!!!15 words <span>(Rewards wallet)</span>',
     description:
       'Label for the "labelDaedalusWalletKindReward15Word" checkbox.',
   },
   labelDaedalusWalletKindBalance27Word: {
     id:
-      'wallet.restore.dialog.step.WalletKind.label.daedalusWalletKindBalance27Word',
+      'wallet.restore.dialog.step.walletKind.label.daedalusWalletKindBalance27Word',
     defaultMessage: '!!!27 words <span>(Balance wallet)</span>',
     description:
       'Label for the "labelDaedalusWalletKindBalance27Word" checkbox.',
   },
   labelYoroiWalletKind: {
-    id: 'wallet.restore.dialog.step.WalletKind.label.yoroiWalletKind',
+    id: 'wallet.restore.dialog.step.walletKind.label.yoroiWalletKind',
     defaultMessage: '!!!What kind of Yoroi wallet would you like to restore?',
     description: 'Label for the "labelYoroiWalletKind" checkbox.',
   },
   labelYoroiWalletKindBalance15Word: {
     id:
-      'wallet.restore.dialog.step.WalletKind.label.yoroiWalletKindBalance15Word',
+      'wallet.restore.dialog.step.walletKind.label.yoroiWalletKindBalance15Word',
     defaultMessage: '!!!15 words <span>(Balance wallet)</span>',
     description:
       'Label for the "labelDaedalusWalletKindBalance15Word" checkbox.',
   },
   labelYoroiWalletKindReward15Word: {
     id:
-      'wallet.restore.dialog.step.WalletKind.label.yoroiWalletKindReward15Word',
+      'wallet.restore.dialog.step.walletKind.label.yoroiWalletKindReward15Word',
     defaultMessage: '!!!15 words <span>(Reward wallet)</span>',
     description:
       'Label for the "labelDaedalusWalletKindReward15Word" checkbox.',
   },
   labelHardwareWalletKind: {
-    id: 'wallet.restore.dialog.step.WalletKind.label.hardwareWalletKind',
+    id: 'wallet.restore.dialog.step.walletKind.label.hardwareWalletKind',
     defaultMessage:
       '!!!What kind of hardware wallet would you like to restore?',
     description: 'Label for the "labelHardwareWalletKind" checkbox.',
   },
   labelHardwareWalletKindNano: {
-    id: 'wallet.restore.dialog.step.WalletKind.label.hardwareWalletKindNano',
+    id: 'wallet.restore.dialog.step.walletKind.label.hardwareWalletKindNano',
     defaultMessage: '!!!24 words - Ledger Nano S or Nano X (Balance wallet)',
     description: 'Label for the "labelHardwareWalletKindNano" checkbox.',
   },
   labelHardwareWalletKindTrezor: {
-    id: 'wallet.restore.dialog.step.WalletKind.label.hardwareWalletKindTrezor',
+    id: 'wallet.restore.dialog.step.walletKind.label.hardwareWalletKindTrezor',
     defaultMessage: '!!!24 words - Trezor (Balance wallet)',
     description: 'Label for the "labelHardwareWalletKindTrezor" checkbox.',
   },
   hardwareWalletDisclaimer1: {
-    id: 'wallet.restore.dialog.step.WalletKind.hardwareWalletDisclaimer1',
+    id: 'wallet.restore.dialog.step.walletKind.hardwareWalletDisclaimer1',
     defaultMessage:
       '!!!Hardware wallets keep your private keys stored securely on a physical device that is immune to common computer threats such as viruses and software bugs. Recovery phrases for hardware wallets should always be kept offline. By entering your hardware wallet recovery phrase in Daedalus, you are exposing your hardware wallet private keys to the security risks associated with computers and software.',
     description: 'Label for the "hardwareWalletDisclaimer1" disclaimer.',
   },
   hardwareWalletDisclaimer2: {
-    id: 'wallet.restore.dialog.step.WalletKind.hardwareWalletDisclaimer2',
+    id: 'wallet.restore.dialog.step.walletKind.hardwareWalletDisclaimer2',
     defaultMessage:
       '!!!We strongly recommend that you delete the Balance wallet which is restored from your hardware wallet once you have moved any funds into a Rewards wallet.',
     description: 'Label for the "hardwareWalletDisclaimer2" disclaimer.',
   },
   hardwareWalletCheckbox1: {
-    id: 'wallet.restore.dialog.step.WalletKind.hardwareWalletCheckbox1',
+    id: 'wallet.restore.dialog.step.walletKind.hardwareWalletCheckbox1',
     defaultMessage:
       '!!!I understand and accept responsibility for the security concerns of restoring a hardware wallet on a computer.',
     description: 'Label for the "hardwareWalletCheckbox1" disclaimer.',
   },
   hardwareWalletCheckbox2: {
-    id: 'wallet.restore.dialog.step.WalletKind.hardwareWalletCheckbox2',
+    id: 'wallet.restore.dialog.step.walletKind.hardwareWalletCheckbox2',
     defaultMessage:
       '!!!I understand that I should delete the Balance wallet I am restoring from a hardware wallet after moving funds to a Rewards wallet.',
     description: 'Label for the "hardwareWalletCheckbox2" disclaimer.',
