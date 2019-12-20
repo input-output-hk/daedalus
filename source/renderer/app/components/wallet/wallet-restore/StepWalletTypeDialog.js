@@ -16,6 +16,10 @@ import {
 } from '../../../config/walletRestoreConfig';
 import type {
   WalletKinds,
+  WalletKind,
+  WalletDaedalusKind,
+  WalletYoroiKind,
+  WalletHardwareKind,
   hardwareWalletAcceptance,
 } from '../../../types/walletRestoreTypes';
 
@@ -132,10 +136,10 @@ type Props = {
   onContinue: Function,
   onClose: Function,
   onSetWalletKind: Function,
-  walletKind: string,
-  walletKindDaedalus: ?string,
-  walletKindYoroi: ?string,
-  walletKindHardware: ?string,
+  walletKind: ?WalletKind,
+  walletKindDaedalus: ?WalletDaedalusKind,
+  walletKindYoroi: ?WalletYoroiKind,
+  walletKindHardware: ?WalletHardwareKind,
 };
 
 type State = {
@@ -183,6 +187,7 @@ export default class StepWalletTypeDialog extends Component<Props, State> {
       walletKindHardware,
     } = this.props;
     const { hardwareWalletAcceptance1, hardwareWalletAcceptance2 } = this.state;
+    if (!walletKind) return true;
     if (walletKind === WALLET_KINDS.DAEDALUS && !walletKindDaedalus)
       return true;
     if (walletKind === WALLET_KINDS.YOROI && !walletKindYoroi) return true;

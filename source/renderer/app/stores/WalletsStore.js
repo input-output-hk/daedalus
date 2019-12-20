@@ -31,6 +31,12 @@ import {
   WALLET_RESTORE_TYPES,
 } from '../config/walletsConfig';
 import { WALLET_KINDS } from '../config/walletRestoreConfig';
+import type {
+  WalletKind,
+  WalletDaedalusKind,
+  WalletYoroiKind,
+  WalletHardwareKind,
+} from '../types/walletRestoreTypes';
 import type { CsvRecord } from '../../../common/types/rewards-csv-request.types';
 import type { walletExportTypeChoices } from '../types/walletExportTypes';
 import type { WalletImportFromFileParams } from '../actions/wallets-actions';
@@ -157,10 +163,10 @@ export default class WalletsStore extends Store {
   @observable restoreWalletStep = null;
   @observable restoreWalletShowAbortConfirmation = false;
   // STEP: WALLET TYPE
-  @observable walletKind: string = WALLET_KINDS.DAEDALUS;
-  @observable walletKindDaedalus: ?string = null;
-  @observable walletKindYoroi: ?string = null;
-  @observable walletKindHardware: ?string = null;
+  @observable walletKind: ?WalletKind = null;
+  @observable walletKindDaedalus: ?WalletDaedalusKind = null;
+  @observable walletKindYoroi: ?WalletYoroiKind = null;
+  @observable walletKindHardware: ?WalletHardwareKind = null;
   // STEP: RECOVERY PHRASE
   @observable mnemonics: ?Array<string> = null;
   // STEP: CONFIGURATION

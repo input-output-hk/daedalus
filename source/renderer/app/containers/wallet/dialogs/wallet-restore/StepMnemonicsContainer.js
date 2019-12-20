@@ -14,12 +14,22 @@ export default class MnemonicsDialogContainer extends Component<Props> {
   static defaultProps = DefaultProps;
 
   render() {
-    const { onClose, onContinue, onBack } = this.props;
+    const { onClose, onContinue, onBack, stores } = this.props;
+    const {
+      walletKind,
+      walletKindDaedalus,
+      walletKindYoroi,
+      walletKindHardware,
+    } = stores.wallets;
     return (
       <MnemonicsDialog
         onClose={onClose}
         onContinue={onContinue}
         onBack={onBack}
+        walletKind={walletKind}
+        walletKindDaedalus={walletKindDaedalus}
+        walletKindYoroi={walletKindYoroi}
+        walletKindHardware={walletKindHardware}
       />
     );
   }

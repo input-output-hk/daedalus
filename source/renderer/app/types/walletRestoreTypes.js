@@ -11,8 +11,11 @@ export type WalletDaedalusKind =
   | 'Balance12Word'
   | 'Reward15Word'
   | 'Balance27Word';
+
 export type WalletYoroiKind = 'Balance15Word' | 'Reward15Word';
+
 export type WalletHardwareKind = 'Nano' | 'Trezor';
+
 export type WalletKinds =
   | WalletKind
   | WalletDaedalusKind

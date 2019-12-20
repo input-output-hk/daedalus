@@ -36,3 +36,23 @@ export const WALLET_HARDWARE_KINDS: { [key: string]: WalletHardwareKind } = {
   NANO: 'Nano',
   TREZOR: 'Trezor',
 };
+
+export const WALLET_DAEDALUS_WORD_COUNT: {
+  [key: WalletDaedalusKind]: number,
+} = {
+  [WALLET_DAEDALUS_KINDS.BALANCE_12_WORD]: 12,
+  [WALLET_DAEDALUS_KINDS.REWARD_15_WORD]: 15,
+  [WALLET_DAEDALUS_KINDS.BALANCE_27_WORD]: 27,
+};
+
+export const WALLET_YOROI_WORD_COUNT: { [key: WalletYoroiKind]: number } = {
+  [WALLET_YOROI_KINDS.BALANCE_15_WORD]: 15,
+  [WALLET_YOROI_KINDS.REWARD_15_WORD]: 15,
+};
+
+export const WALLET_HARDWARE_WORD_COUNT: {
+  [key: WalletHardwareKind]: number,
+} = {
+  [WALLET_HARDWARE_KINDS.NANO]: 24,
+  [WALLET_HARDWARE_KINDS.TREZOR]: 24,
+};

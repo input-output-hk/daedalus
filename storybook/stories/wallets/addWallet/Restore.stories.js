@@ -23,7 +23,7 @@ storiesOf('Wallets|Add Wallet', module)
       onContinue={action('onContinue')}
       onClose={action('onClose')}
       onSetWalletKind={action('onSetWalletKind')}
-      walletKind={select('Wallet Kind', WALLET_KINDS, WALLET_KINDS.DAEDALUS)}
+      walletKind={select('Wallet Kind', WALLET_KINDS, null)}
       walletKindDaedalus={select(
         'Daedalus Wallet Kind',
         WALLET_DAEDALUS_KINDS,
