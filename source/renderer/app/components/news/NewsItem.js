@@ -5,10 +5,10 @@ import classNames from 'classnames';
 import ReactMarkdown from 'react-markdown';
 import moment from 'moment';
 import { get } from 'lodash';
-import SVGInline from 'react-svg-inline';
 import AnimateHeight from 'react-animate-height';
+import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import News, { NewsTypes } from '../../domains/News';
-import externalLinkIcon from '../../assets/images/link-ic.inline.svg';
+import ButtonLink from '../widgets/ButtonLink';
 import styles from './NewsItem.scss';
 
 type Props = {
@@ -142,13 +142,17 @@ export default class NewsItem extends Component<Props, State> {
                 ]}
               />
             </div>
-            <button
+            <ButtonLink
               className={styles.newsItemActionBtn}
               onClick={this.onProceedNewsAction.bind(this)}
-            >
-              {newsItem.action.label}
-              {url && <SVGInline svg={externalLinkIcon} />}
-            </button>
+              skin={ButtonSkin}
+              label={newsItem.action.label}
+              linkProps={{
+                className: styles.externalLink,
+                hasIconBefore: false,
+                hasIconAfter: url && true,
+              }}
+            />
           </AnimateHeight>
         </div>
       </div>
