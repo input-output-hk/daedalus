@@ -44,12 +44,14 @@
     .externalLink {
       color: var(--theme-legacy-notification-learn-more-button-text-color);
       &:after {
-        background-color: var(--theme-legacy-notification-learn-more-button-text-color);
+        background-color: var(
+          --theme-legacy-notification-learn-more-button-text-color
+        );
+        height: 14px;
         -webkit-mask-size: 14px, 14px;
         mask-size: 14px, 14px;
-        height: 14px;
-        width: 14px;
         vertical-align: sub;
+        width: 14px;
       }
     }
   }

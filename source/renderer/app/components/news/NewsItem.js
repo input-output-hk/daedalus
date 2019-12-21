@@ -108,7 +108,7 @@ export default class NewsItem extends Component<Props, State> {
       this.state.newsItemExpanded ? styles.expanded : null,
       newsItem.read ? styles.isRead : null,
     ]);
-    const { url } = newsItem.action;
+    const { url = '' } = newsItem.action;
     const title = this.generateTitleWithBadge(newsItem.title, newsItem.read);
 
     return (
@@ -144,13 +144,13 @@ export default class NewsItem extends Component<Props, State> {
             </div>
             <ButtonLink
               className={styles.newsItemActionBtn}
-              onClick={this.onProceedNewsAction.bind(this)}
+              onClick={e => this.onProceedNewsAction(e)}
               skin={ButtonSkin}
               label={newsItem.action.label}
               linkProps={{
                 className: styles.externalLink,
                 hasIconBefore: false,
-                hasIconAfter: url && true,
+                hasIconAfter: url.length > 0,
               }}
             />
           </AnimateHeight>
