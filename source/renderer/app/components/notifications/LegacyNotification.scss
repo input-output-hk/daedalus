@@ -28,7 +28,6 @@
     background-color: var(
       --theme-legacy-notification-learn-more-button-background-color
     );
-    color: var(--theme-legacy-notification-learn-more-button-text-color);
     padding: 0 42px;
 
     &:hover {
@@ -42,15 +41,15 @@
       ) !important;
     }
 
-    .externalLinkIcon {
-      @include link(--theme-legacy-notification-learn-more-button-text-color);
-      border-bottom: none;
-
-      svg {
-        margin-bottom: 1px;
-        margin-left: 5px;
-        vertical-align: sub;
+    .externalLink {
+      color: var(--theme-legacy-notification-learn-more-button-text-color);
+      &:after {
+        background-color: var(--theme-legacy-notification-learn-more-button-text-color);
+        -webkit-mask-size: 14px, 14px;
+        mask-size: 14px, 14px;
+        height: 14px;
         width: 14px;
+        vertical-align: sub;
       }
     }
   }

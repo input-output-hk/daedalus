@@ -5,6 +5,7 @@ import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
+import ButtonLink from '../widgets/ButtonLink';
 import externalLinkIcon from '../../assets/images/link-ic.inline.svg';
 import styles from './LegacyNotification.scss';
 import Wallet from '../../domains/Wallet';
@@ -158,19 +159,16 @@ export default class LegacyNotification extends Component<Props> {
           </p>
         </div>
         <div className={styles.actions}>
-          <Button
+          <ButtonLink
             className={styles.actionLearnMore}
-            label={
-              <p>
-                {intl.formatMessage(messages.actionLearnMore)}
-                <SVGInline
-                  svg={externalLinkIcon}
-                  className={styles.externalLinkIcon}
-                />
-              </p>
-            }
             onClick={this.onLearnMore}
             skin={ButtonSkin}
+            label={intl.formatMessage(messages.actionLearnMore)}
+            linkProps={{
+              className: styles.externalLink,
+              hasIconBefore: false,
+              hasIconAfter: true,
+            }}
           />
           {
             <Button
