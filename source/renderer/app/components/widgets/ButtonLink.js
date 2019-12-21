@@ -38,6 +38,7 @@ export default class ButtonLink extends Component<Props> {
         hasIconAfter={get(linkProps, 'hasIconAfter', false)}
         className={linkLabelClasses}
         skin={LinkSkin}
+        themeOverrides={styles}
       />
     );
 
