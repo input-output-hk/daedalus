@@ -1,5 +1,6 @@
 // @flow
 import React, { Component } from 'react';
+import { get } from 'lodash';
 import classNames from 'classnames';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { Link } from 'react-polymorph/lib/components/Link';
@@ -22,27 +23,19 @@ type Props = {
 
 export default class ButtonLink extends Component<Props> {
   render() {
-    const { label } = this.props;
-    let { linkProps } = this.props;
-    if (!linkProps) linkProps = {};
-
-    const {
-      isUnderlined,
-      underlineOnHover,
-      hasIconBefore,
-      hasIconAfter,
-      className,
-    } = linkProps;
-
-    const linkLabelClasses = classNames([styles.linkLabel, className || null]);
+    const { label, linkProps } = this.props;
+    const linkLabelClasses = classNames([
+      styles.linkLabel,
+      get(linkProps, 'className', null),
+    ]);
 
     const linkLabel = (
       <Link
         label={label}
-        isUnderlined={isUnderlined || false}
-        underlineOnHover={underlineOnHover || false}
-        hasIconBefore={hasIconBefore || true}
-        hasIconAfter={hasIconAfter || false}
+        isUnderlined={get(linkProps, 'isUnderlined', false)}
+        underlineOnHover={get(linkProps, 'underlineOnHover', false)}
+        hasIconBefore={get(linkProps, 'hasIconBefore', true)}
+        hasIconAfter={get(linkProps, 'hasIconAfter', false)}
         className={linkLabelClasses}
         skin={LinkSkin}
       />
