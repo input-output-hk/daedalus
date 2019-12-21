@@ -1,8 +1,11 @@
 :global {
-  .SimpleLink_root {
+  .SimpleLink_root.SimpleLink_withIconBefore,
+  .SimpleLink_root.SimpleLink_withIconAfter {
     border-color: var(--theme-label-button-color);
     color: var(--theme-label-button-color);
-    &.SimpleLink_withIconBefore {
+  }
+  .SimpleLink_root {
+    &.SimpleLink_root.SimpleLink_withIconBefore {
       &:before {
         background-color: var(--theme-label-button-color);
         height: 15px;
@@ -13,7 +16,7 @@
       }
     }
 
-    &.SimpleLink_withIconAfter {
+    &.SimpleLink_root.SimpleLink_withIconAfter {
       &:after {
         background-color: var(--theme-label-button-color);
         height: 13px;

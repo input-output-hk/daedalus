@@ -6,7 +6,6 @@ import SVGInline from 'react-svg-inline';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import ButtonLink from '../widgets/ButtonLink';
-import externalLinkIcon from '../../assets/images/link-ic.inline.svg';
 import styles from './LegacyNotification.scss';
 import Wallet from '../../domains/Wallet';
 
