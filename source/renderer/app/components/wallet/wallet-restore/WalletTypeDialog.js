@@ -5,9 +5,9 @@ import { set } from 'lodash';
 import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
 import RadioSet from '../../widgets/RadioSet';
-import WalletRestoreDialog from './WalletRestoreDialog';
+import WalletRestoreDialog from './widgets/WalletRestoreDialog';
 import globalMessages from '../../../i18n/global-messages';
-import commonStyles from './StepDialogStyles.scss';
+import styles from './WalletTypeDialog.scss';
 import {
   WALLET_KINDS,
   WALLET_DAEDALUS_KINDS,
@@ -146,7 +146,7 @@ type State = {
   [key: hardwareWalletAcceptance]: boolean,
 };
 
-export default class StepWalletTypeDialog extends Component<Props, State> {
+export default class WalletTypeDialog extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -225,7 +225,7 @@ export default class StepWalletTypeDialog extends Component<Props, State> {
         ]}
         onClose={onClose}
       >
-        <div className={commonStyles.component}>
+        <div className={styles.component}>
           {this.getWalletKind(WALLET_KINDS, walletKind)}
         </div>
         {walletKind === WALLET_KINDS.DAEDALUS &&
@@ -247,10 +247,10 @@ export default class StepWalletTypeDialog extends Component<Props, State> {
               walletKindHardware,
               WALLET_KINDS.HARDWARE
             )}
-            <p className={commonStyles.hardwareWalletAcceptance}>
+            <p className={styles.hardwareWalletAcceptance}>
               {intl.formatMessage(messages.hardwareWalletDisclaimer1)}
             </p>
-            <p className={commonStyles.hardwareWalletAcceptance}>
+            <p className={styles.hardwareWalletAcceptance}>
               <b>{intl.formatMessage(messages.hardwareWalletDisclaimer2)}</b>
             </p>
             <Checkbox

@@ -5,8 +5,8 @@ import classnames from 'classnames';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
-import WalletRestoreDialog from './WalletRestoreDialog';
-import commonStyles from './StepDialogStyles.scss';
+import WalletRestoreDialog from './widgets/WalletRestoreDialog';
+import styles from './ConfigurationDialog.scss';
 import ReactToolboxMobxForm, {
   handleFormErrors,
 } from '../../../utils/ReactToolboxMobxForm';
@@ -163,8 +163,6 @@ const messages = defineMessages({
   },
 });
 
-const styles = {};
-
 type Props = {
   onContinue: Function,
   onClose: Function,
@@ -173,7 +171,7 @@ type Props = {
 };
 
 @observer
-export default class StepConfigurationDialog extends Component<Props> {
+export default class ConfigurationDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -317,7 +315,7 @@ export default class StepConfigurationDialog extends Component<Props> {
         onClose={onClose}
         onBack={onBack}
       >
-        <div className={commonStyles.component}>
+        <div className={styles.component}>
           <p>
             Name your restored wallet and set a spending password to keep your
             wallet secure.

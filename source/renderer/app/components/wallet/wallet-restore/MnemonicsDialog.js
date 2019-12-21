@@ -5,8 +5,7 @@ import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import { Autocomplete } from 'react-polymorph/lib/components/Autocomplete';
 import { AutocompleteSkin } from 'react-polymorph/lib/skins/simple/AutocompleteSkin';
-import WalletRestoreDialog from './WalletRestoreDialog';
-import commonStyles from './StepDialogStyles.scss';
+import WalletRestoreDialog from './widgets/WalletRestoreDialog';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import globalMessages from '../../../i18n/global-messages';
 // import { isValidMnemonic } from '../../../../../common/crypto/decrypt';
@@ -59,7 +58,7 @@ type Props = {
 };
 
 @observer
-export default class StepMnemonicsDialog extends Component<Props> {
+export default class MnemonicsDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -102,7 +101,8 @@ export default class StepMnemonicsDialog extends Component<Props> {
                 }),
               ];
             }
-            // TODO: Check which wallets can have the mnemonics validated
+            return true;
+            // @WALLET-RESTORE TODO: Check which wallets can have the mnemonics validated
             // const value = join(enteredWords, ' ');
             // return [
             //   isValidMnemonic(value),
@@ -168,7 +168,7 @@ export default class StepMnemonicsDialog extends Component<Props> {
         onClose={onClose}
         onBack={onBack}
       >
-        <div className={commonStyles.component}>
+        <div>
           <Autocomplete
             {...recoveryPhraseField.bind()}
             ref={autocomplete => {

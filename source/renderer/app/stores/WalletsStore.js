@@ -156,10 +156,10 @@ export default class WalletsStore extends Store {
   @observable createWalletStep = null;
   @observable createWalletShowAbortConfirmation = false;
   // TODO: Remove once the new wallet creation process is ready
-  @observable createWalletUseNewProcess = true; // false
+  @observable createWalletUseNewProcess = true; // false @WALLET-RESTORE REVERT
 
   /* ----------  Restore Wallet  ---------- */
-  @observable restoreWalletStep = 2; // null;
+  @observable restoreWalletStep = 2; // null;  @WALLET-RESTORE REVERT
   @observable restoreWalletShowAbortConfirmation = false;
   // STEP: WALLET TYPE
   @observable walletKind: ?WalletKind = null;
@@ -172,7 +172,7 @@ export default class WalletsStore extends Store {
   @observable walletName: ?string = null;
   @observable spendingPassword: ?string = null;
   // TODO: Remove once the new restore creation process is ready
-  @observable restoreWalletUseNewProcess = true; // false
+  @observable restoreWalletUseNewProcess = true; // false @WALLET-RESTORE REVERT
 
   /* ----------  Export Wallet  ---------- */
   @observable walletExportType: walletExportTypeChoices = 'paperWallet';

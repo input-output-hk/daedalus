@@ -1,4 +1,9 @@
 .component {
+  font-family: var(--font-regular);
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 1.38;
+
   :global {
     .Dialog_title {
       margin-bottom: 0;

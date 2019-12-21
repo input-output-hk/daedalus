@@ -2,12 +2,12 @@
 import React, { Component } from 'react';
 import type { Node } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
-import DialogCloseButton from '../../widgets/DialogCloseButton';
-import Dialog from '../../widgets/Dialog';
-import DialogBackButton from '../../widgets/DialogBackButton';
+import DialogCloseButton from '../../../widgets/DialogCloseButton';
+import Dialog from '../../../widgets/Dialog';
+import DialogBackButton from '../../../widgets/DialogBackButton';
 import WalletRestoreSteps from './WalletRestoreSteps';
 import styles from './WalletRestoreDialog.scss';
-import type { DialogAction } from '../../widgets/Dialog';
+import type { DialogAction } from '../../../widgets/Dialog';
 
 const messages = defineMessages({
   dialogTitle: {
