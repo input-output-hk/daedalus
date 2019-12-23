@@ -13,6 +13,13 @@ const DefaultProps = InjectedDialogContainerStepDefaultProps;
 export default class ConfigurationDialogContainer extends Component<Props> {
   static defaultProps = DefaultProps;
 
+  handleContinue = (walletName: string, spendingPassword: string) => {
+    const { /* onContinue, */ actions } = this.props;
+    const { restoreWalletSetConfig } = actions.wallets;
+    restoreWalletSetConfig.trigger({ walletName, spendingPassword });
+    // onContinue();
+  };
+
   render() {
     const { onClose, onContinue, onBack } = this.props;
     return (

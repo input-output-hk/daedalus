@@ -14,10 +14,9 @@ export default class MnemonicsDialogContainer extends Component<Props> {
   static defaultProps = DefaultProps;
 
   handleContinue = (mnemonics: Array<string>) => {
-    const { onContinue, actions } = this.props;
+    const { actions } = this.props;
     const { restoreWalletSetMnemonics } = actions.wallets;
     restoreWalletSetMnemonics.trigger({ mnemonics });
-    onContinue();
   };
 
   render() {

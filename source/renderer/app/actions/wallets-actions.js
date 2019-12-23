@@ -35,8 +35,10 @@ export default class WalletsActions {
   restoreWalletSetMnemonics: Action<{
     mnemonics: Array<string>,
   }> = new Action();
-  restoreWalletSetName: Action<any> = new Action();
-  restoreWalletSetPassphrase: Action<any> = new Action();
+  restoreWalletSetConfig: Action<{
+    walletName: string,
+    spendingPassword: string,
+  }> = new Action();
 
   restoreWallet: Action<{
     recoveryPhrase: string,
