@@ -1,6 +1,11 @@
 Changelog
 =========
 
+## vNext
+
+### Chores
+- Fixed network screen responsiveness on all screens ([PR 1797](https://github.com/input-output-hk/daedalus/pull/1797))
+
 ## 2.0.0-ITN1
 
 ### Features
