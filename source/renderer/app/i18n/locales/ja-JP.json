@@ -148,6 +148,7 @@
   "loading.screen.readArticle.buttonLabel": "記事を読む",
   "loading.screen.readIssueArticle.connectivityIssueArticleUrl": "https://iohk.zendesk.com/hc/ja/articles/360010522913",
   "loading.screen.readIssueArticle.syncIssueArticleUrl": "https://iohk.zendesk.com/hc/ja/articles/360011536933",
+  "loading.screen.readIssueArticle.syncIssueArticleUrl.itn": "https://iohk.zendesk.com/hc/ja/articles/900000048566",
   "loading.screen.reconnectingToNetworkMessage": "接続失敗 - 再接続中",
   "loading.screen.reportIssue.buttonLabel": "サポートチケットを作成する",
   "loading.screen.reportIssue.connecting.text": "接続に問題がありますか？",
