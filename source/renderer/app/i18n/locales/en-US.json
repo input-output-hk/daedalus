@@ -1,5 +1,4 @@
 {
-  "REPLACE": "!!!REPLACE-ME",
   "api.errors.AllFundsAlreadyAtReceiverAddressError": "All your funds are already at the address you are trying send money to.",
   "api.errors.ApiMethodNotYetImplementedError": "This API method is not yet implemented.",
   "api.errors.CanNotCalculateTransactionFeesError": "Cannot calculate fees while there are pending transactions.",
@@ -558,6 +557,8 @@
   "wallet.restore.dialog.shielded.recovery.phrase.input.hint": "Enter your {numberOfWords}-word paper wallet recovery phrase",
   "wallet.restore.dialog.shielded.recovery.phrase.input.label": "27-word paper wallet recovery phrase",
   "wallet.restore.dialog.spendingPasswordLabel": "Enter password",
+  "wallet.restore.dialog.step.configuration.description1": "Name your restored wallet and set a spending password to keep your wallet secure.",
+  "wallet.restore.dialog.step.configuration.description2": "Wallet names and spending passwords are only stored locally and are not stored on the blockchain. You can give your restored wallet a new name and set a new spending password, you don’t need to match the wallet name and spending password you were using before. <b>Only the recovery phrase from your original wallet is needed to restore a wallet.</b>",
   "wallet.restore.dialog.step.mnemonics.autocomplete.noResults": "No results",
   "wallet.restore.dialog.step.mnemonics.autocomplete.placeholder": "Enter your {numberOfWords}-word recovery phrase",
   "wallet.restore.dialog.step.mnemonics.autocomplete.continueButtonLabel": "Check recovery phrase",

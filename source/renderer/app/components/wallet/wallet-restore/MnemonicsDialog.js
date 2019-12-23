@@ -24,11 +24,6 @@ import type {
 } from '../../../types/walletRestoreTypes';
 
 const messages = defineMessages({
-  REPLACE: {
-    id: 'REPLACE',
-    defaultMessage: '!!!REPLACE-ME',
-    description: 'TODO MSGS',
-  },
   autocompletePlaceholder: {
     id: 'wallet.restore.dialog.step.mnemonics.autocomplete.placeholder',
     defaultMessage: '!!!Enter your {numberOfWords}-word recovery phrase',

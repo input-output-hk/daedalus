@@ -21,10 +21,17 @@ import LocalizableError from '../../../i18n/LocalizableError';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 
 const messages = defineMessages({
-  title: {
-    id: 'wallet.restore.dialog.title.label',
-    defaultMessage: '!!!Restore a wallet',
-    description: 'Label "Restore wallet" on the wallet restore dialog.',
+  description1: {
+    id: 'wallet.restore.dialog.step.configuration.description1',
+    defaultMessage:
+      '!!!Name your restored wallet and set a spending password to keep your wallet secure.',
+    description: 'Description1 for Configuration Step',
+  },
+  description2: {
+    id: 'wallet.restore.dialog.step.configuration.description2',
+    defaultMessage:
+      '!!!Wallet names and spending passwords are only stored locally and are not stored on the blockchain. You can give your restored wallet a new name and set a new spending password, you don’t need to match the wallet name and spending password you were using before. <b>Only the recovery phrase from your original wallet is needed to restore a wallet.</b>',
+    description: 'Description2 for Configuration Step',
   },
   walletNameInputLabel: {
     id: 'wallet.restore.dialog.wallet.name.input.label',
@@ -74,22 +81,11 @@ const messages = defineMessages({
     description:
       'Hint "Enter recovery phrase" for the recovery phrase input on the wallet restore dialog.',
   },
-  newLabel: {
-    id: 'wallet.restore.dialog.recovery.phrase.newLabel',
-    defaultMessage: '!!!New',
-    description: 'Label "new" on the wallet restore dialog.',
-  },
   recoveryPhraseNoResults: {
     id: 'wallet.restore.dialog.recovery.phrase.input.noResults',
     defaultMessage: '!!!No results',
     description:
       '"No results" message for the recovery phrase input search results.',
-  },
-  importButtonLabel: {
-    id: 'wallet.restore.dialog.restore.wallet.button.label',
-    defaultMessage: '!!!Restore wallet',
-    description:
-      'Label for the "Restore wallet" button on the wallet restore dialog.',
   },
   invalidRecoveryPhrase: {
     id: 'wallet.restore.dialog.form.errors.invalidRecoveryPhrase',
@@ -101,12 +97,6 @@ const messages = defineMessages({
     id: 'wallet.restore.dialog.passwordSectionLabel',
     defaultMessage: '!!!Spending password',
     description: 'Password creation label.',
-  },
-  passwordSectionDescription: {
-    id: 'wallet.restore.dialog.passwordSectionDescription',
-    defaultMessage:
-      '!!!Keep your wallet secure by setting the spending password',
-    description: 'Password creation description.',
   },
   spendingPasswordLabel: {
     id: 'wallet.restore.dialog.spendingPasswordLabel',
@@ -321,17 +311,9 @@ export default class ConfigurationDialog extends Component<Props> {
         onBack={onBack}
       >
         <div className={styles.component}>
+          <p>{intl.formatMessage(messages.description1)}</p>
           <p>
-            Name your restored wallet and set a spending password to keep your
-            wallet secure.
-          </p>
-          <p>
-            Wallet names and spending passwords are only stored locally and are
-            not stored on the blockchain. You can give your restored wallet a
-            new name and set a new spending password, you don’t need to match
-            the wallet name and spending password you were using before. Only
-            the recovery phrase from your original wallet is needed to restore a
-            wallet.
+            <FormattedHTMLMessage {...messages.description2} />
           </p>
           <Input
             className={walletNameFieldClasses}
@@ -344,10 +326,6 @@ export default class ConfigurationDialog extends Component<Props> {
           <div className={styles.spendingPasswordWrapper}>
             <div className={styles.passwordSectionLabel}>
               {intl.formatMessage(messages.passwordSectionLabel)}
-            </div>
-
-            <div className={styles.passwordSectionDescription}>
-              {intl.formatMessage(messages.passwordSectionDescription)}
             </div>
 
             <div className={styles.spendingPasswordFields}>
