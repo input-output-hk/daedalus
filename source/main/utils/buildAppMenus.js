@@ -6,7 +6,7 @@ import { osxMenu } from '../menus/osx';
 import { Logger } from './logging';
 import { safeExitWithCode } from './safeExitWithCode';
 import { CardanoNode } from '../cardano/CardanoNode';
-import { DIALOGS } from '../../common/ipc/constants';
+import { DIALOGS, PAGES } from '../../common/ipc/constants';
 import { showUiPartChannel } from '../ipc/control-ui-parts';
 import { getTranslation } from './getTranslation';
 
@@ -19,6 +19,7 @@ export const buildAppMenus = async (
   }
 ) => {
   const { ABOUT, DAEDALUS_DIAGNOSTICS } = DIALOGS;
+  const { SETTINGS, WALLET_SETTINGS } = PAGES;
   const { isUpdateAvailable } = data;
 
   const { isMacOS, isBlankScreenFixActive } = environment;
@@ -30,6 +31,14 @@ export const buildAppMenus = async (
 
   const openDaedalusDiagnosticsDialog = () => {
     if (mainWindow) showUiPartChannel.send(DAEDALUS_DIAGNOSTICS, mainWindow);
+  };
+
+  const openSettingsPage = () => {
+    if (mainWindow) showUiPartChannel.send(SETTINGS, mainWindow);
+  };
+
+  const openWalletSettingsPage = () => {
+    if (mainWindow) showUiPartChannel.send(WALLET_SETTINGS, mainWindow);
   };
 
   const restartWithBlankScreenFix = async () => {
@@ -79,6 +88,8 @@ export const buildAppMenus = async (
   const menuActions = {
     openAboutDialog,
     openDaedalusDiagnosticsDialog,
+    openSettingsPage,
+    openWalletSettingsPage,
     toggleBlankScreenFix,
   };
 

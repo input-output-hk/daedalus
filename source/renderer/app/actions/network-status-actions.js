@@ -9,4 +9,5 @@ export default class NetworkStatusActions {
   restartNode: Action<any> = new Action();
   nodeImplementationUpdate: Action<any> = new Action();
   toggleSplash: Action<any> = new Action();
+  copyStateDirectoryPath: Action<any> = new Action();
 }

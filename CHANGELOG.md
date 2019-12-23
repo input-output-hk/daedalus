@@ -1,11 +1,21 @@
 Changelog
 =========
 
-## 2.0.0-ITN1
+## vNext
 
 ### Features
 
 - Added Yoroi wallets restoration to the "Restore Wallet" dialog ([PR 1740](https://github.com/input-output-hk/daedalus/pull/1740))
+- Implemented new menu shortcuts ([PR 1780](https://github.com/input-output-hk/daedalus/pull/1780))
+- Implemented all notifications to be on the top of the app and in front of any other element ([PR 1748](https://github.com/input-output-hk/daedalus/pull/1748))
+
+### Chores
+- Fixed network screen responsiveness on all screens ([PR 1797](https://github.com/input-output-hk/daedalus/pull/1797))
+
+## 2.0.0-ITN1
+
+### Features
+
 - Added stake pool metadata registry for "SelfNode" network ([PR 1771](https://github.com/input-output-hk/daedalus/pull/1771/))
 - Added list stake pools API endpoint errors handlers ([PR 1765](https://github.com/input-output-hk/daedalus/pull/1765))
 - Added "Terms of use" for the Incentivized Testnet v1 - Rewards network ([PR 1741](https://github.com/input-output-hk/daedalus/pull/1741))
@@ -40,6 +50,8 @@ Changelog
 
 ### Chores
 
+- Changed Incentivized TestNet "Having trouble syncing" URL to point to one specific to TestNet ([PR 1795](https://github.com/input-output-hk/daedalus/pull/1795))
+- Updated `cardano-wallet` to revision `d3d93ba3` ([PR 1784](https://github.com/input-output-hk/daedalus/pull/1784))
 - Updated `cardano-wallet` to revision `e341d288` ([PR 1779](https://github.com/input-output-hk/daedalus/pull/1779))
 - Reduced stake pools fetching interval to 1 minute ([PR 1779](https://github.com/input-output-hk/daedalus/pull/1779))
 - Updated `cardano-wallet` to version `2019.12.13` ([PR 1775](https://github.com/input-output-hk/daedalus/pull/1775))

@@ -76,6 +76,7 @@ export default action(
 
     // Create fresh instances of all stores
     stores = observable({
+      uiNotifications: createStoreInstanceOf(UiNotificationsStore),
       addresses: createStoreInstanceOf(AddressesStore),
       app: createStoreInstanceOf(AppStore),
       networkStatus: createStoreInstanceOf(NetworkStatusStore),
@@ -87,7 +88,6 @@ export default action(
       staking: createStoreInstanceOf(StakingStore),
       transactions: createStoreInstanceOf(TransactionsStore),
       uiDialogs: createStoreInstanceOf(UiDialogsStore),
-      uiNotifications: createStoreInstanceOf(UiNotificationsStore),
       wallets: createStoreInstanceOf(WalletsStore),
       walletBackup: createStoreInstanceOf(WalletBackupStore),
       walletSettings: createStoreInstanceOf(WalletSettingsStore),

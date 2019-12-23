@@ -72,6 +72,7 @@ export default class WalletsActions {
     note: string,
     filePath: string,
   }> = new Action();
+  copyAddress: Action<{ address: string }> = new Action();
   updateCertificateStep: Action<any> = new Action();
   closeCertificateGeneration: Action<any> = new Action();
   closeRewardsCsvGeneration: Action<any> = new Action();
