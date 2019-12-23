@@ -13,3 +13,15 @@
 .input {
   margin-bottom: 20px;
 }
+
+.spendingPasswordFields {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.spendingPasswordField {
+  flex: 1;
+  &:first-child {
+    margin-right: 10px;
+  }
+}

@@ -249,7 +249,7 @@ export default class ConfigurationDialog extends Component<Props> {
   submit = () => {
     this.form.submit({
       onSuccess: form => {
-        const { onSubmit } = this.props;
+        const { onContinue } = this.props;
         const { walletName, spendingPassword } = form.values();
         const walletData: Object = {
           // recoveryPhrase: join(recoveryPhrase, ' '),
@@ -259,7 +259,7 @@ export default class ConfigurationDialog extends Component<Props> {
 
         // walletData.type = this.state.walletType;
 
-        onSubmit(walletData);
+        onContinue(walletData);
       },
       onError: () =>
         handleFormErrors('.SimpleFormField_error', { focusElement: true }),
@@ -280,7 +280,7 @@ export default class ConfigurationDialog extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { onContinue, onClose, onBack, error } = this.props;
+    const { onClose, onBack, error } = this.props;
     const { form } = this;
 
     const walletNameField = form.$('walletName');
@@ -290,10 +290,12 @@ export default class ConfigurationDialog extends Component<Props> {
     const walletNameFieldClasses = classnames([styles.input, 'walletName']);
     const spendingPasswordFieldClasses = classnames([
       styles.input,
+      styles.spendingPasswordField,
       'spendingPassword',
     ]);
     const repeatedPasswordFieldClasses = classnames([
       styles.input,
+      styles.spendingPasswordField,
       'repeatedPassword',
     ]);
 
@@ -304,7 +306,7 @@ export default class ConfigurationDialog extends Component<Props> {
           {
             primary: true,
             label: 'Continue',
-            onClick: onContinue,
+            onClick: this.submit,
           },
         ]}
         onClose={onClose}
@@ -324,10 +326,6 @@ export default class ConfigurationDialog extends Component<Props> {
           />
 
           <div className={styles.spendingPasswordWrapper}>
-            <div className={styles.passwordSectionLabel}>
-              {intl.formatMessage(messages.passwordSectionLabel)}
-            </div>
-
             <div className={styles.spendingPasswordFields}>
               <Input
                 className={spendingPasswordFieldClasses}
