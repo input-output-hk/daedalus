@@ -21,7 +21,8 @@ const messages = defineMessages({
   },
   descriptionLine2: {
     id: 'wallet.restore.dialog.step.success.dialog.description.line2',
-    defaultMessage: '!!!Restored wallets should have all the funds and transaction history of the original wallet. <strong>If your restored wallet does not have the funds and transaction history you were expecting</strong>, please check that you have the correct wallet recovery phrase for the wallet you were intending to restore.',
+    defaultMessage:
+      '!!!Restored wallets should have all the funds and transaction history of the original wallet. <strong>If your restored wallet does not have the funds and transaction history you were expecting</strong>, please check that you have the correct wallet recovery phrase for the wallet you were intending to restore.',
     description:
       'Description "line 2" on the wallet restore "success" step dialog.',
   },
