@@ -34,14 +34,15 @@ export default class Root extends Component<Props> {
     // for all the screens except of the "Network status" screen.
     const isNodeInStoppingSequence = isNodeStopping || isNodeStopped;
 
-    if (
-      isCurrentLocaleSet &&
-      areTermsOfUseAccepted &&
-      !app.environment.isTest &&
-      isSplashShown
-    ) {
-      return <SplashNetworkPage />;
-    }
+    // @WALLET-RESTORE REVERT
+    // if (
+    //   isCurrentLocaleSet &&
+    //   areTermsOfUseAccepted &&
+    //   !app.environment.isTest &&
+    //   isSplashShown
+    // ) {
+    //   return <SplashNetworkPage />;
+    // }
 
     // Just render any page that doesn't require wallets to be loaded or node to be connected
     if (

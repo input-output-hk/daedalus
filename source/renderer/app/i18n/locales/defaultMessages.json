@@ -8150,31 +8150,120 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!REPLACE-ME",
-        "description": "TODO MSGS",
+        "defaultMessage": "!!!Name your restored wallet and set a spending password to keep your wallet secure.",
+        "description": "Description1 for Configuration Step",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 29
         },
-        "file": "source/renderer/app/components/wallet/wallet-restore/StepMnemonicsDialog.js",
-        "id": "REPLACE",
+        "file": "source/renderer/app/components/wallet/wallet-restore/ConfigurationDialog.js",
+        "id": "wallet.restore.dialog.step.configuration.description1",
         "start": {
-          "column": 11,
-          "line": 34
+          "column": 16,
+          "line": 24
         }
       },
+      {
+        "defaultMessage": "!!!Wallet names and spending passwords are only stored locally and are not stored on the blockchain. You can give your restored wallet a new name and set a new spending password, you don’t need to match the wallet name and spending password you were using before. <b>Only the recovery phrase from your original wallet is needed to restore a wallet.</b>",
+        "description": "Description2 for Configuration Step",
+        "end": {
+          "column": 3,
+          "line": 35
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/ConfigurationDialog.js",
+        "id": "wallet.restore.dialog.step.configuration.description2",
+        "start": {
+          "column": 16,
+          "line": 30
+        }
+      },
+      {
+        "defaultMessage": "!!!Wallet name",
+        "description": "Label for Wallet Name Input",
+        "end": {
+          "column": 3,
+          "line": 40
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/ConfigurationDialog.js",
+        "id": "wallet.restore.dialog.step.configuration.input.walletName.label",
+        "start": {
+          "column": 19,
+          "line": 36
+        }
+      },
+      {
+        "defaultMessage": "!!!Name the wallet you are restoring",
+        "description": "Placeholder for Wallet Name Input",
+        "end": {
+          "column": 3,
+          "line": 45
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/ConfigurationDialog.js",
+        "id": "wallet.restore.dialog.step.configuration.input.walletName.placeholder",
+        "start": {
+          "column": 25,
+          "line": 41
+        }
+      },
+      {
+        "defaultMessage": "!!!Enter password",
+        "description": "Label for the \"Wallet password\" input in the wallet restore dialog.",
+        "end": {
+          "column": 3,
+          "line": 51
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/ConfigurationDialog.js",
+        "id": "wallet.restore.dialog.step.configuration.input.spendingPassword.label",
+        "start": {
+          "column": 25,
+          "line": 46
+        }
+      },
+      {
+        "defaultMessage": "!!!Repeat password",
+        "description": "Label for the \"Repeat password\" input in the wallet restore dialog.",
+        "end": {
+          "column": 3,
+          "line": 57
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/ConfigurationDialog.js",
+        "id": "wallet.restore.dialog.step.configuration.input.repeatPassword.label",
+        "start": {
+          "column": 23,
+          "line": 52
+        }
+      },
+      {
+        "defaultMessage": "!!!Password",
+        "description": "Placeholder for the \"Password\" inputs in the wallet restore dialog.",
+        "end": {
+          "column": 3,
+          "line": 63
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/ConfigurationDialog.js",
+        "id": "wallet.restore.dialog.step.configuration.input.passwordFields.placeholder",
+        "start": {
+          "column": 29,
+          "line": 58
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/wallet-restore/ConfigurationDialog.json"
+  },
+  {
+    "descriptors": [
       {
         "defaultMessage": "!!!Enter your {numberOfWords}-word recovery phrase",
         "description": "Placeholder for the mnemonics autocomplete.",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 31
         },
-        "file": "source/renderer/app/components/wallet/wallet-restore/StepMnemonicsDialog.js",
+        "file": "source/renderer/app/components/wallet/wallet-restore/MnemonicsDialog.js",
         "id": "wallet.restore.dialog.step.mnemonics.autocomplete.placeholder",
         "start": {
           "column": 27,
-          "line": 39
+          "line": 27
         }
       },
       {
@@ -8182,17 +8271,31 @@
         "description": "\"No results\" message for the mnemonics autocomplete search results.",
         "end": {
           "column": 3,
-          "line": 49
+          "line": 37
         },
-        "file": "source/renderer/app/components/wallet/wallet-restore/StepMnemonicsDialog.js",
+        "file": "source/renderer/app/components/wallet/wallet-restore/MnemonicsDialog.js",
         "id": "wallet.restore.dialog.step.mnemonics.autocomplete.noResults",
         "start": {
           "column": 25,
-          "line": 44
+          "line": 32
+        }
+      },
+      {
+        "defaultMessage": "!!!Check recovery phrase",
+        "description": "Label for the mnemonics Continue button.",
+        "end": {
+          "column": 3,
+          "line": 42
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/MnemonicsDialog.js",
+        "id": "wallet.restore.dialog.step.mnemonics.autocomplete.continueButtonLabel",
+        "start": {
+          "column": 23,
+          "line": 38
         }
       }
     ],
-    "path": "source/renderer/app/components/wallet/wallet-restore/StepMnemonicsDialog.json"
+    "path": "source/renderer/app/components/wallet/wallet-restore/MnemonicsDialog.json"
   },
   {
     "descriptors": [
@@ -8203,7 +8306,7 @@
           "column": 3,
           "line": 31
         },
-        "file": "source/renderer/app/components/wallet/wallet-restore/StepWalletTypeDialog.js",
+        "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.walletKind.label.walletKind",
         "start": {
           "column": 19,
@@ -8217,7 +8320,7 @@
           "column": 3,
           "line": 36
         },
-        "file": "source/renderer/app/components/wallet/wallet-restore/StepWalletTypeDialog.js",
+        "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.walletKind.label.walletKindDaedalus",
         "start": {
           "column": 27,
@@ -8231,7 +8334,7 @@
           "column": 3,
           "line": 41
         },
-        "file": "source/renderer/app/components/wallet/wallet-restore/StepWalletTypeDialog.js",
+        "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.walletKind.label.walletKindYoroi",
         "start": {
           "column": 24,
@@ -8245,7 +8348,7 @@
           "column": 3,
           "line": 46
         },
-        "file": "source/renderer/app/components/wallet/wallet-restore/StepWalletTypeDialog.js",
+        "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.walletKind.label.walletKindHardware",
         "start": {
           "column": 27,
@@ -8259,7 +8362,7 @@
           "column": 3,
           "line": 52
         },
-        "file": "source/renderer/app/components/wallet/wallet-restore/StepWalletTypeDialog.js",
+        "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.walletKind.label.daedalusWalletKind",
         "start": {
           "column": 27,
@@ -8267,13 +8370,13 @@
         }
       },
       {
-        "defaultMessage": "!!!12 words <span>(Balance wallet)</span>",
+        "defaultMessage": "!!!12 words <em>(Balance wallet)</em>",
         "description": "Label for the \"labelDaedalusWalletKindBalance12Word\" checkbox.",
         "end": {
           "column": 3,
           "line": 59
         },
-        "file": "source/renderer/app/components/wallet/wallet-restore/StepWalletTypeDialog.js",
+        "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.walletKind.label.daedalusWalletKindBalance12Word",
         "start": {
           "column": 40,
@@ -8281,13 +8384,13 @@
         }
       },
       {
-        "defaultMessage": "!!!15 words <span>(Rewards wallet)</span>",
+        "defaultMessage": "!!!15 words <em>(Rewards wallet)</em>",
         "description": "Label for the \"labelDaedalusWalletKindReward15Word\" checkbox.",
         "end": {
           "column": 3,
           "line": 66
         },
-        "file": "source/renderer/app/components/wallet/wallet-restore/StepWalletTypeDialog.js",
+        "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.walletKind.label.daedalusWalletKindReward15Word",
         "start": {
           "column": 39,
@@ -8295,13 +8398,13 @@
         }
       },
       {
-        "defaultMessage": "!!!27 words <span>(Balance wallet)</span>",
+        "defaultMessage": "!!!27 words <em>(Balance wallet)</em>",
         "description": "Label for the \"labelDaedalusWalletKindBalance27Word\" checkbox.",
         "end": {
           "column": 3,
           "line": 73
         },
-        "file": "source/renderer/app/components/wallet/wallet-restore/StepWalletTypeDialog.js",
+        "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.walletKind.label.daedalusWalletKindBalance27Word",
         "start": {
           "column": 40,
@@ -8315,7 +8418,7 @@
           "column": 3,
           "line": 78
         },
-        "file": "source/renderer/app/components/wallet/wallet-restore/StepWalletTypeDialog.js",
+        "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.walletKind.label.yoroiWalletKind",
         "start": {
           "column": 24,
@@ -8323,13 +8426,13 @@
         }
       },
       {
-        "defaultMessage": "!!!15 words <span>(Balance wallet)</span>",
+        "defaultMessage": "!!!15 words <em>(Balance wallet)</em>",
         "description": "Label for the \"labelDaedalusWalletKindBalance15Word\" checkbox.",
         "end": {
           "column": 3,
           "line": 85
         },
-        "file": "source/renderer/app/components/wallet/wallet-restore/StepWalletTypeDialog.js",
+        "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.walletKind.label.yoroiWalletKindBalance15Word",
         "start": {
           "column": 37,
@@ -8337,13 +8440,13 @@
         }
       },
       {
-        "defaultMessage": "!!!15 words <span>(Reward wallet)</span>",
+        "defaultMessage": "!!!15 words <em>(Reward wallet)</em>",
         "description": "Label for the \"labelDaedalusWalletKindReward15Word\" checkbox.",
         "end": {
           "column": 3,
           "line": 92
         },
-        "file": "source/renderer/app/components/wallet/wallet-restore/StepWalletTypeDialog.js",
+        "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.walletKind.label.yoroiWalletKindReward15Word",
         "start": {
           "column": 36,
@@ -8357,7 +8460,7 @@
           "column": 3,
           "line": 98
         },
-        "file": "source/renderer/app/components/wallet/wallet-restore/StepWalletTypeDialog.js",
+        "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.walletKind.label.hardwareWalletKind",
         "start": {
           "column": 27,
@@ -8371,7 +8474,7 @@
           "column": 3,
           "line": 103
         },
-        "file": "source/renderer/app/components/wallet/wallet-restore/StepWalletTypeDialog.js",
+        "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.walletKind.label.hardwareWalletKindNano",
         "start": {
           "column": 31,
@@ -8385,7 +8488,7 @@
           "column": 3,
           "line": 108
         },
-        "file": "source/renderer/app/components/wallet/wallet-restore/StepWalletTypeDialog.js",
+        "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.walletKind.label.hardwareWalletKindTrezor",
         "start": {
           "column": 33,
@@ -8399,7 +8502,7 @@
           "column": 3,
           "line": 114
         },
-        "file": "source/renderer/app/components/wallet/wallet-restore/StepWalletTypeDialog.js",
+        "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.walletKind.hardwareWalletDisclaimer1",
         "start": {
           "column": 29,
@@ -8413,7 +8516,7 @@
           "column": 3,
           "line": 120
         },
-        "file": "source/renderer/app/components/wallet/wallet-restore/StepWalletTypeDialog.js",
+        "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.walletKind.hardwareWalletDisclaimer2",
         "start": {
           "column": 29,
@@ -8427,7 +8530,7 @@
           "column": 3,
           "line": 126
         },
-        "file": "source/renderer/app/components/wallet/wallet-restore/StepWalletTypeDialog.js",
+        "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.walletKind.hardwareWalletCheckbox1",
         "start": {
           "column": 27,
@@ -8441,7 +8544,7 @@
           "column": 3,
           "line": 132
         },
-        "file": "source/renderer/app/components/wallet/wallet-restore/StepWalletTypeDialog.js",
+        "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.walletKind.hardwareWalletCheckbox2",
         "start": {
           "column": 27,
@@ -8449,7 +8552,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/wallet/wallet-restore/StepWalletTypeDialog.json"
+    "path": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.json"
   },
   {
     "descriptors": [
@@ -8460,7 +8563,7 @@
           "column": 3,
           "line": 17
         },
-        "file": "source/renderer/app/components/wallet/wallet-restore/WalletRestoreDialog.js",
+        "file": "source/renderer/app/components/wallet/wallet-restore/widgets/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.title",
         "start": {
           "column": 15,
@@ -8474,7 +8577,7 @@
           "column": 3,
           "line": 22
         },
-        "file": "source/renderer/app/components/wallet/wallet-restore/WalletRestoreDialog.js",
+        "file": "source/renderer/app/components/wallet/wallet-restore/widgets/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.titleSuccess",
         "start": {
           "column": 22,
@@ -8482,7 +8585,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/wallet/wallet-restore/WalletRestoreDialog.json"
+    "path": "source/renderer/app/components/wallet/wallet-restore/widgets/WalletRestoreDialog.json"
   },
   {
     "descriptors": [
@@ -8493,7 +8596,7 @@
           "column": 3,
           "line": 19
         },
-        "file": "source/renderer/app/components/wallet/wallet-restore/WalletRestoreSteps.js",
+        "file": "source/renderer/app/components/wallet/wallet-restore/widgets/WalletRestoreSteps.js",
         "id": "wallet.restore.dialog.stepsCounter",
         "start": {
           "column": 16,
@@ -8507,7 +8610,7 @@
           "column": 3,
           "line": 24
         },
-        "file": "source/renderer/app/components/wallet/wallet-restore/WalletRestoreSteps.js",
+        "file": "source/renderer/app/components/wallet/wallet-restore/widgets/WalletRestoreSteps.js",
         "id": "wallet.restore.dialog.typeStep",
         "start": {
           "column": 12,
@@ -8521,7 +8624,7 @@
           "column": 3,
           "line": 29
         },
-        "file": "source/renderer/app/components/wallet/wallet-restore/WalletRestoreSteps.js",
+        "file": "source/renderer/app/components/wallet/wallet-restore/widgets/WalletRestoreSteps.js",
         "id": "wallet.restore.dialog.mnemonicsStep",
         "start": {
           "column": 17,
@@ -8535,7 +8638,7 @@
           "column": 3,
           "line": 34
         },
-        "file": "source/renderer/app/components/wallet/wallet-restore/WalletRestoreSteps.js",
+        "file": "source/renderer/app/components/wallet/wallet-restore/widgets/WalletRestoreSteps.js",
         "id": "wallet.restore.dialog.configurationStep",
         "start": {
           "column": 21,
@@ -8543,7 +8646,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/wallet/wallet-restore/WalletRestoreSteps.json"
+    "path": "source/renderer/app/components/wallet/wallet-restore/widgets/WalletRestoreSteps.json"
   },
   {
     "descriptors": [

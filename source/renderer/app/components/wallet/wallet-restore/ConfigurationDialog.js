@@ -33,123 +33,34 @@ const messages = defineMessages({
       '!!!Wallet names and spending passwords are only stored locally and are not stored on the blockchain. You can give your restored wallet a new name and set a new spending password, you don’t need to match the wallet name and spending password you were using before. <b>Only the recovery phrase from your original wallet is needed to restore a wallet.</b>',
     description: 'Description2 for Configuration Step',
   },
-  walletNameInputLabel: {
-    id: 'wallet.restore.dialog.wallet.name.input.label',
+  walletNameLabel: {
+    id: 'wallet.restore.dialog.step.configuration.input.walletName.label',
     defaultMessage: '!!!Wallet name',
-    description:
-      'Label for the wallet name input on the wallet restore dialog.',
+    description: 'Label for Wallet Name Input',
   },
-  walletNameInputHint: {
-    id: 'wallet.restore.dialog.wallet.name.input.hint',
+  walletNamePlaceholder: {
+    id: 'wallet.restore.dialog.step.configuration.input.walletName.placeholder',
     defaultMessage: '!!!Name the wallet you are restoring',
-    description:
-      'Hint "Name the wallet you are restoring" for the wallet name input on the wallet restore dialog.',
-  },
-  recoveryPhraseTypeLabel: {
-    id: 'wallet.restore.dialog.recovery.phrase.type.options.label',
-    defaultMessage: '!!!Number of words in the recovery phrase',
-    description:
-      'Label for the recovery phrase type options on the wallet restore dialog.',
-  },
-  recoveryPhraseTypeOptionWord: {
-    id: 'wallet.restore.dialog.recovery.phrase.type.word',
-    defaultMessage: '!!! words',
-    description:
-      'Word for the recovery phrase type on the wallet restore dialog.',
-  },
-  recoveryPhraseType15WordOption: {
-    id: 'wallet.restore.dialog.recovery.phrase.type.15word.option',
-    defaultMessage: '!!!Rewards wallet',
-    description:
-      'Label for the recovery phrase type 15-word option on the wallet restore dialog.',
-  },
-  recoveryPhraseType12WordOption: {
-    id: 'wallet.restore.dialog.recovery.phrase.type.12word.option',
-    defaultMessage: '!!!Balance wallet',
-    description:
-      'Label for the recovery phrase type 12-word option on the wallet restore dialog.',
-  },
-  recoveryPhraseInputLabel: {
-    id: 'wallet.restore.dialog.recovery.phrase.input.label',
-    defaultMessage: '!!!Recovery phrase',
-    description:
-      'Label for the recovery phrase input on the wallet restore dialog.',
-  },
-  recoveryPhraseInputHint: {
-    id: 'wallet.restore.dialog.recovery.phrase.input.hint',
-    defaultMessage: '!!!Enter recovery phrase',
-    description:
-      'Hint "Enter recovery phrase" for the recovery phrase input on the wallet restore dialog.',
-  },
-  recoveryPhraseNoResults: {
-    id: 'wallet.restore.dialog.recovery.phrase.input.noResults',
-    defaultMessage: '!!!No results',
-    description:
-      '"No results" message for the recovery phrase input search results.',
-  },
-  invalidRecoveryPhrase: {
-    id: 'wallet.restore.dialog.form.errors.invalidRecoveryPhrase',
-    defaultMessage: '!!!Invalid recovery phrase',
-    description:
-      'Error message shown when invalid recovery phrase was entered.',
-  },
-  passwordSectionLabel: {
-    id: 'wallet.restore.dialog.passwordSectionLabel',
-    defaultMessage: '!!!Spending password',
-    description: 'Password creation label.',
+    description: 'Placeholder for Wallet Name Input',
   },
   spendingPasswordLabel: {
-    id: 'wallet.restore.dialog.spendingPasswordLabel',
+    id: 'wallet.restore.dialog.step.configuration.input.spendingPassword.label',
     defaultMessage: '!!!Enter password',
     description:
       'Label for the "Wallet password" input in the wallet restore dialog.',
   },
   repeatPasswordLabel: {
-    id: 'wallet.restore.dialog.repeatPasswordLabel',
+    id: 'wallet.restore.dialog.step.configuration.input.repeatPassword.label',
     defaultMessage: '!!!Repeat password',
     description:
       'Label for the "Repeat password" input in the wallet restore dialog.',
   },
-  passwordFieldPlaceholder: {
-    id: 'wallet.restore.dialog.passwordFieldPlaceholder',
+  passwordFieldsPlaceholder: {
+    id:
+      'wallet.restore.dialog.step.configuration.input.passwordFields.placeholder',
     defaultMessage: '!!!Password',
     description:
       'Placeholder for the "Password" inputs in the wallet restore dialog.',
-  },
-  recoveryPhraseTabTitle: {
-    id: 'wallet.restore.dialog.tab.title.recoveryPhrase',
-    defaultMessage: '!!!Daedalus wallet',
-    description: 'Tab title "Daedalus wallet" in the wallet restore dialog.',
-  },
-  certificateTabTitle: {
-    id: 'wallet.restore.dialog.tab.title.certificate',
-    defaultMessage: '!!!Daedalus paper wallet',
-    description:
-      'Tab title "Daedalus paper wallet" in the wallet restore dialog.',
-  },
-  yoroiTabTitle: {
-    id: 'wallet.restore.dialog.tab.title.yoroi',
-    defaultMessage: '!!!Yoroi wallet',
-    description: 'Tab title "Yoroi wallet" in the wallet restore dialog.',
-  },
-  shieldedRecoveryPhraseInputLabel: {
-    id: 'wallet.restore.dialog.shielded.recovery.phrase.input.label',
-    defaultMessage: '!!!27-word paper wallet recovery phrase',
-    description:
-      'Label for the shielded recovery phrase input on the wallet restore dialog.',
-  },
-  shieldedRecoveryPhraseInputHint: {
-    id: 'wallet.restore.dialog.shielded.recovery.phrase.input.hint',
-    defaultMessage:
-      '!!!Enter your {numberOfWords}-word paper wallet recovery phrase',
-    description:
-      'Hint "Enter your 27-word paper wallet recovery phrase." for the recovery phrase input on the wallet restore dialog.',
-  },
-  restorePaperWalletButtonLabel: {
-    id: 'wallet.restore.dialog.paper.wallet.button.label',
-    defaultMessage: '!!!Restore paper wallet',
-    description:
-      'Label for the "Restore paper wallet" button on the wallet restore dialog.',
   },
 });
 
@@ -180,9 +91,9 @@ export default class ConfigurationDialog extends Component<Props> {
     {
       fields: {
         walletName: {
-          label: this.context.intl.formatMessage(messages.walletNameInputLabel),
+          label: this.context.intl.formatMessage(messages.walletNameLabel),
           placeholder: this.context.intl.formatMessage(
-            messages.walletNameInputHint
+            messages.walletNamePlaceholder
           ),
           value: '',
           validators: [
@@ -198,7 +109,7 @@ export default class ConfigurationDialog extends Component<Props> {
             messages.spendingPasswordLabel
           ),
           placeholder: this.context.intl.formatMessage(
-            messages.passwordFieldPlaceholder
+            messages.passwordFieldsPlaceholder
           ),
           value: '',
           validators: [
@@ -220,7 +131,7 @@ export default class ConfigurationDialog extends Component<Props> {
           type: 'password',
           label: this.context.intl.formatMessage(messages.repeatPasswordLabel),
           placeholder: this.context.intl.formatMessage(
-            messages.passwordFieldPlaceholder
+            messages.passwordFieldsPlaceholder
           ),
           value: '',
           validators: [
@@ -252,13 +163,9 @@ export default class ConfigurationDialog extends Component<Props> {
         const { onContinue } = this.props;
         const { walletName, spendingPassword } = form.values();
         const walletData: Object = {
-          // recoveryPhrase: join(recoveryPhrase, ' '),
           walletName,
           spendingPassword,
         };
-
-        // walletData.type = this.state.walletType;
-
         onContinue(walletData);
       },
       onError: () =>
