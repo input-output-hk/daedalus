@@ -20,7 +20,7 @@ import type {
   WalletDaedalusKind,
   WalletYoroiKind,
   WalletHardwareKind,
-  hardwareWalletAcceptance,
+  HardwareWalletAcceptance,
 } from '../../../types/walletRestoreTypes';
 
 const messages = defineMessages({
@@ -143,7 +143,7 @@ type Props = {
 };
 
 type State = {
-  [key: hardwareWalletAcceptance]: boolean,
+  [key: HardwareWalletAcceptance]: boolean,
 };
 
 export default class WalletTypeDialog extends Component<Props, State> {
@@ -156,7 +156,7 @@ export default class WalletTypeDialog extends Component<Props, State> {
     hardwareWalletAcceptance2: false,
   };
 
-  toggleAcceptance = (param: hardwareWalletAcceptance) =>
+  toggleAcceptance = (param: HardwareWalletAcceptance) =>
     this.setState(currentState => set({}, param, !currentState[param]));
 
   getWalletKind = (kinds: Object, value: ?string, kindParam?: string) => (
