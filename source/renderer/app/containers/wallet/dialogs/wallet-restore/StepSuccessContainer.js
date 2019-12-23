@@ -14,7 +14,7 @@ export default class SuccessDialogContainer extends Component<Props> {
   static defaultProps = DefaultProps;
 
   render() {
-    const { onClose, onContinue } = this.props;
-    return <SuccessDialog onClose={onClose} onContinue={onContinue} />;
+    const { onClose } = this.props;
+    return <SuccessDialog onClose={onClose} />;
   }
 }
