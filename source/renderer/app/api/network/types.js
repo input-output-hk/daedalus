@@ -9,11 +9,17 @@ export type NextEpoch = {
   epochStart: string,
 };
 
+export type FutureEpoch = {
+  epochNumber: number,
+  epochStart: string,
+};
+
 export type GetNetworkInfoResponse = {
   syncProgress: number,
   localTip: TipInfo,
   networkTip: TipInfo,
   nextEpoch: NextEpoch,
+  futureEpoch: FutureEpoch,
 };
 
 export type NetworkInfoResponse = {
@@ -38,6 +44,6 @@ export type NetworkInfoResponse = {
   },
   next_epoch: {
     epoch_number: number,
-    epoch_start: string,
+    epoch_start_time: string,
   },
 };

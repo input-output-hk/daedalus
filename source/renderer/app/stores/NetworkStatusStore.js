@@ -19,6 +19,7 @@ import { getStateDirectoryPathChannel } from '../ipc/getStateDirectoryPathChanne
 import type {
   GetNetworkInfoResponse,
   NextEpoch,
+  FutureEpoch,
   TipInfo,
 } from '../api/network/types';
 import type {
@@ -83,6 +84,7 @@ export default class NetworkStatusStore extends Store {
   @observable localTip: ?TipInfo = null;
   @observable networkTip: ?TipInfo = null;
   @observable nextEpoch: ?NextEpoch = null;
+  @observable futureEpoch: ?FutureEpoch = null;
   @observable
   getNetworkInfoRequest: Request<GetNetworkInfoResponse> = new Request(
     this.api.ada.getNetworkInfo
@@ -102,8 +104,10 @@ export default class NetworkStatusStore extends Store {
   setup() {
     // ========== IPC CHANNELS =========== //
 
-    this.actions.networkStatus.restartNode.listen(this._restartNode);
-    this.actions.networkStatus.toggleSplash.listen(this._toggleSplash);
+    const { networkStatus: networkStatusActions } = this.actions;
+
+    networkStatusActions.restartNode.listen(this._restartNode);
+    networkStatusActions.toggleSplash.listen(this._toggleSplash);
 
     // Request node state
     this._requestCardanoState();
@@ -355,18 +359,28 @@ export default class NetworkStatusStore extends Store {
         return;
       }
 
-      const { syncProgress, localTip, networkTip, nextEpoch } = networkStatus;
+      const {
+        syncProgress,
+        localTip,
+        networkTip,
+        nextEpoch,
+        futureEpoch,
+      } = networkStatus;
 
       // We got response which means node is responding
       runInAction('update isNodeResponding', () => {
         this.isNodeResponding = true;
       });
 
-      runInAction('update localTip, networkTip and nextEpoch', () => {
-        this.localTip = localTip;
-        this.networkTip = networkTip;
-        this.nextEpoch = nextEpoch;
-      });
+      runInAction(
+        'update localTip, networkTip, nextEpoch and futureEpoch',
+        () => {
+          this.localTip = localTip;
+          this.networkTip = networkTip;
+          this.nextEpoch = nextEpoch;
+          this.futureEpoch = futureEpoch;
+        }
+      );
 
       if (this._networkStatus === NETWORK_STATUS.CONNECTING) {
         // We are connected for the first time, move on to syncing stage

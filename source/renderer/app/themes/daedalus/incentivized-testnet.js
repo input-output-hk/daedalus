@@ -246,7 +246,7 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--theme-input-text-color': '#ffffff',
   },
   link: {
-    '--theme-link-main-color': '#f69ab2',
+    '--theme-link-main-color': 'rgb(246, 154, 178)',
   },
   loading: {
     '--theme-loading-background-color': '#121326',
@@ -276,9 +276,8 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--theme-manual-update-overlay-button-label-color-hover': '#000000',
   },
   mnemonic: {
-    '--theme-mnemonic-background-color': 'rgba(255, 255, 255, 0.07)',
-    '--theme-mnemonic-background-color-hover': '#101122',
     '--theme-backup-mnemonic-background-color': '#414251',
+    '--theme-mnemonic-background-color': 'rgba(255, 255, 255, 0.07)',
   },
   modal: {
     '--theme-modal-overlay-background-color': 'rgba(0, 0, 0, 0.4)',
@@ -581,6 +580,7 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
       'rgba(255, 255, 255, 0.07)',
     '--theme-settings-menu-item-left-border-color-active': '#eb2256',
     '--theme-settings-theme-select-title-color': '#ffffff',
+    '--theme-settings-theme-select-border-color': 'rgba(255, 255, 255, 0.2)',
   },
   sidebar: {
     '--theme-sidebar-background-color': '#36374d',
@@ -671,6 +671,9 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--theme-staking-progress-label-light': 'rgba(18, 19, 38, 1)',
     '--theme-staking-stake-pools-search-clear-button-background-color':
       'rgba(68, 91, 124, 0.05)',
+    '--theme-staking-stake-pool-tooltip-neutral-background-color':
+      'rgba(255, 255, 255, .1)',
+    '--theme-staking-stake-pool-tooltip-neutral-text-color': '#ffffff',
   },
   staking: {
     '--theme-staking-content-background-color': '#1e1f31',
@@ -678,11 +681,11 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--theme-staking-font-color-accent': '#ffffff',
     '--theme-staking-font-color-regular': '#ffffff',
     '--theme-staking-font-color-light': '#ffffffb3',
-    '--theme-staking-font-color-lighter': '#ffffff80',
+    '--theme-staking-font-color-lighter': 'rgba(255, 255, 255, 0.5)',
     '--theme-staking-table-head-background-color': 'rgba(255, 255, 255, 0.07)',
     '--theme-staking-table-border-color': 'rgba(255, 255, 255, 0.2)',
-    '--theme-staking-link-color': '#eb2256',
-    '--theme-staking-link-color-light': 'rgba(235, 34, 88, 0.5)',
+    '--theme-staking-link-color': 'rgba(246, 154, 178, 1)',
+    '--theme-staking-link-color-light': 'rgba(246, 154, 178, 0.7)',
     '--theme-staking-progress-bar-background-color':
       'rgba(255, 255, 255, 0.07)',
     '--theme-staking-progress-stripe-dark-1-background-color': '#eb2256',
@@ -712,6 +715,8 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--theme-staking-countdown-widget-field-label-color':
       'rgba(255, 255, 255, 0.7)',
     '--theme-staking-countdown-widget-field-value-color': '#ffffff',
+    '--theme-staking-export-button-shadow-color': '#1213262e',
+    '--theme-staking-export-button-color': '#a0a1a8',
   },
   support: {
     '--theme-support-settings-item-color': '#ffffff',

@@ -1,3 +1,4 @@
+// @flow
 import { defineMessages } from 'react-intl';
 
 export default defineMessages({
@@ -219,5 +220,35 @@ export default defineMessages({
     id: 'environment.network.nightly',
     defaultMessage: '!!!Nightly',
     description: '"nightly" Cardano network',
+  },
+  years: {
+    id: 'global.duration.years',
+    defaultMessage: '!!!years',
+    description: 'Label for years value in duration.',
+  },
+  months: {
+    id: 'global.duration.months',
+    defaultMessage: '!!!months',
+    description: 'Label for months value in duration.',
+  },
+  days: {
+    id: 'global.duration.days',
+    defaultMessage: '!!!days',
+    description: 'Label for days value in duration.',
+  },
+  hours: {
+    id: 'global.duration.hours',
+    defaultMessage: '!!!hours',
+    description: 'Label for hours value in duration.',
+  },
+  minutes: {
+    id: 'global.duration.minutes',
+    defaultMessage: '!!!minutes',
+    description: 'Label for minutes value in duration.',
+  },
+  seconds: {
+    id: 'global.duration.seconds',
+    defaultMessage: '!!!seconds',
+    description: 'Label for seconds value in duration.',
   },
 });

@@ -5,8 +5,17 @@ import { defineMessages, intlShape } from 'react-intl';
 import { get } from 'lodash';
 import styles from './DelegationCenterHeader.scss';
 import CountdownWidget from '../../widgets/CountdownWidget';
-import type { NextEpoch, TipInfo } from '../../../api/network/types';
-import { SLOTS_TOTAL } from '../../../config/epochsConfig';
+import humanizeDurationByLocale from '../../../utils/humanizeDurationByLocale';
+
+import type {
+  NextEpoch,
+  TipInfo,
+  FutureEpoch,
+} from '../../../api/network/types';
+import {
+  SLOTS_TOTAL,
+  EPOCH_COUNTDOWN_INTERVAL,
+} from '../../../config/epochsConfig';
 import { generateFieldPanel } from './helpers';
 
 const messages = defineMessages({
@@ -38,7 +47,7 @@ const messages = defineMessages({
   description: {
     id: 'staking.delegationCenter.description',
     defaultMessage:
-      'Changes to delegation preferences will take effect from the next epoch.',
+      '!!!Changes to delegation preferences will take effect after both the current and next Cardano epochs have completed. Epochs on the Incentivized Testnet last one day. Any changes made now will take effect in {timeUntilFutureEpoch}.',
     description: 'Delegation description for the Delegation center.',
   },
 });
@@ -46,13 +55,46 @@ const messages = defineMessages({
 type Props = {
   networkTip: ?TipInfo,
   nextEpoch: ?NextEpoch,
+  futureEpoch: ?FutureEpoch,
+  currentLocale: string,
 };
+type State = { timeUntilFutureEpoch: number };
 
 @observer
-export default class DelegationCenterHeader extends Component<Props> {
+export default class DelegationCenterHeader extends Component<Props, State> {
+  intervalHandler: ?IntervalID = null;
+  state = { timeUntilFutureEpoch: 0 };
+
   static contextTypes = {
     intl: intlShape.isRequired,
   };
+
+  componentDidMount() {
+    this.updateTimeUntilFutureEpoch();
+    this.intervalHandler = setInterval(
+      () => this.updateTimeUntilFutureEpoch(),
+      EPOCH_COUNTDOWN_INTERVAL
+    );
+  }
+
+  updateTimeUntilFutureEpoch = () => {
+    const { futureEpoch } = this.props;
+    if (!futureEpoch) return;
+    const { epochStart } = futureEpoch;
+    if (epochStart) {
+      const timeUntilFutureEpoch = Math.max(
+        0,
+        new Date(epochStart).getTime() - new Date().getTime()
+      );
+      this.setState({ timeUntilFutureEpoch });
+    }
+  };
+
+  componentWillUnmount() {
+    if (this.intervalHandler) {
+      clearInterval(this.intervalHandler);
+    }
+  }
 
   generateCurrentEpochPanels = (
     epoch: number,
@@ -84,7 +126,7 @@ export default class DelegationCenterHeader extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { networkTip, nextEpoch } = this.props;
+    const { networkTip, nextEpoch, currentLocale } = this.props;
     const epoch = get(networkTip, 'epoch', '-');
     const nextEpochStart = get(nextEpoch, 'epochStart', '');
     const nextEpochNumber = get(nextEpoch, 'epochNumber', 0);
@@ -94,15 +136,19 @@ export default class DelegationCenterHeader extends Component<Props> {
     const headingSecond = intl.formatMessage(messages.headingLeft, {
       nextEpochNumber,
     });
-    const description = intl.formatMessage(messages.description);
+    const timeUntilFutureEpoch = humanizeDurationByLocale(
+      this.state.timeUntilFutureEpoch,
+      currentLocale
+    );
+    const description = intl.formatMessage(messages.description, {
+      timeUntilFutureEpoch,
+    });
     const fieldPanels = this.generateCurrentEpochPanels(
       epoch,
       slot,
       totalSlots
     );
-
-    const showNextEpochCountdown =
-      nextEpochNumber > 0 && nextEpochStart.length > 0;
+    const showNextEpochCountdown = nextEpochNumber > 0;
 
     return (
       <div className={styles.component}>
@@ -118,8 +164,8 @@ export default class DelegationCenterHeader extends Component<Props> {
               <div className={styles.countdownContainer}>
                 <div className={styles.heading}>{headingSecond}</div>
                 <CountdownWidget
-                  nextEpochStart={nextEpochStart}
-                  showLoader={false}
+                  startDateTime={nextEpochStart}
+                  format="DD-HH-mm-ss"
                 />
               </div>
             )}

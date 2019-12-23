@@ -1580,8 +1580,8 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!I agree with terms of use",
-        "description": "Label for the \"I agree with terms of use\" checkbox.",
+        "defaultMessage": "!!!I agree with terms of service",
+        "description": "Label for the \"I agree with terms of service\" checkbox.",
         "end": {
           "column": 3,
           "line": 19
@@ -1595,7 +1595,7 @@
       },
       {
         "defaultMessage": "!!!I understand that the terms of use are only available in English and agree to the terms of use",
-        "description": "Label for the \"I agree with terms of use\" checkbox when terms of use are not translated.",
+        "description": "Label for the \"I agree with terms of service\" checkbox when terms of use are not translated.",
         "end": {
           "column": 3,
           "line": 26
@@ -1609,7 +1609,7 @@
       },
       {
         "defaultMessage": "!!!Continue",
-        "description": "Label for the \"Terms of use\" form submit button.",
+        "description": "Label for the \"Terms of service\" form submit button.",
         "end": {
           "column": 3,
           "line": 31
@@ -1917,8 +1917,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Terms of use",
-        "description": "Label for the \"Terms of use\" link in the settings menu.",
+        "defaultMessage": "!!!Terms of service",
+        "description": "Label for the \"Terms of service\" link in the settings menu.",
         "end": {
           "column": 3,
           "line": 24
@@ -2184,13 +2184,27 @@
         "description": "Title for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 16
+          "line": 18
         },
         "file": "source/renderer/app/components/staking/delegation-center/DelegationCenterBody.js",
         "id": "staking.delegationCenter.bodyTitle",
         "start": {
           "column": 13,
-          "line": 12
+          "line": 14
+        }
+      },
+      {
+        "defaultMessage": "!!!Loading stake pools",
+        "description": "Loading stake pool message for the Delegation center body section.",
+        "end": {
+          "column": 3,
+          "line": 24
+        },
+        "file": "source/renderer/app/components/staking/delegation-center/DelegationCenterBody.js",
+        "id": "staking.delegationCenter.loadingStakePoolsMessage",
+        "start": {
+          "column": 28,
+          "line": 19
         }
       }
     ],
@@ -2203,13 +2217,13 @@
         "description": "Headline for the Delegation center.",
         "end": {
           "column": 3,
-          "line": 17
+          "line": 26
         },
         "file": "source/renderer/app/components/staking/delegation-center/DelegationCenterHeader.js",
         "id": "staking.delegationCenter.epoch",
         "start": {
           "column": 9,
-          "line": 13
+          "line": 22
         }
       },
       {
@@ -2217,13 +2231,13 @@
         "description": "Headline for the Delegation center.",
         "end": {
           "column": 3,
-          "line": 22
+          "line": 31
         },
         "file": "source/renderer/app/components/staking/delegation-center/DelegationCenterHeader.js",
         "id": "staking.delegationCenter.currentSlot",
         "start": {
           "column": 15,
-          "line": 18
+          "line": 27
         }
       },
       {
@@ -2231,13 +2245,13 @@
         "description": "Headline for the Delegation center.",
         "end": {
           "column": 3,
-          "line": 27
+          "line": 36
         },
         "file": "source/renderer/app/components/staking/delegation-center/DelegationCenterHeader.js",
         "id": "staking.delegationCenter.totalSlots",
         "start": {
           "column": 14,
-          "line": 23
+          "line": 32
         }
       },
       {
@@ -2245,13 +2259,13 @@
         "description": "Headline for the Delegation center.",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 41
         },
         "file": "source/renderer/app/components/staking/delegation-center/DelegationCenterHeader.js",
         "id": "staking.delegationCenter.headingLeft",
         "start": {
           "column": 15,
-          "line": 28
+          "line": 37
         }
       },
       {
@@ -2259,27 +2273,27 @@
         "description": "Headline for the Delegation center.",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 46
         },
         "file": "source/renderer/app/components/staking/delegation-center/DelegationCenterHeader.js",
         "id": "staking.delegationCenter.headingRight",
         "start": {
           "column": 16,
-          "line": 33
+          "line": 42
         }
       },
       {
-        "defaultMessage": "Changes to delegation preferences will take effect from the next epoch.",
+        "defaultMessage": "!!!Changes to delegation preferences will take effect after both the current and next Cardano epochs have completed. Epochs on the Incentivized Testnet last one day. Any changes made now will take effect in {timeUntilFutureEpoch}.",
         "description": "Delegation description for the Delegation center.",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 52
         },
         "file": "source/renderer/app/components/staking/delegation-center/DelegationCenterHeader.js",
         "id": "staking.delegationCenter.description",
         "start": {
           "column": 15,
-          "line": 38
+          "line": 47
         }
       }
     ],
@@ -2370,10 +2384,24 @@
           "line": 40
         },
         "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
-        "id": "staking.delegationCenter.undelegate.dialog.description",
+        "id": "staking.delegationCenter.undelegate.dialog.descriptionWithTicker",
         "start": {
-          "column": 15,
+          "column": 25,
           "line": 35
+        }
+      },
+      {
+        "defaultMessage": "!!!<p>The stake from your wallet <strong>{walletName}</strong> is currently delegated to the <strong>{stakePoolTicker}</strong> stake pool.</p><p>Do you want to undelegate your stake and stop earning rewards?</p>",
+        "description": "Description for the \"Undelegate\" dialog.",
+        "end": {
+          "column": 3,
+          "line": 47
+        },
+        "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
+        "id": "staking.delegationCenter.undelegate.dialog.descriptionWithUnknownTicker",
+        "start": {
+          "column": 32,
+          "line": 41
         }
       },
       {
@@ -2381,13 +2409,13 @@
         "description": "Label for the unsupport confirmation check in the \"Undelegate\" dialog.",
         "end": {
           "column": 3,
-          "line": 47
+          "line": 54
         },
         "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
         "id": "staking.delegationCenter.undelegate.dialog.confirmUnsupportCheck",
         "start": {
           "column": 25,
-          "line": 41
+          "line": 48
         }
       },
       {
@@ -2395,13 +2423,13 @@
         "description": "Label for the uneligible confirmation check in the \"Undelegate\" dialog.",
         "end": {
           "column": 3,
-          "line": 54
+          "line": 61
         },
         "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
         "id": "staking.delegationCenter.undelegate.dialog.confirmUneligibleCheck",
         "start": {
           "column": 26,
-          "line": 48
+          "line": 55
         }
       },
       {
@@ -2409,13 +2437,13 @@
         "description": "Fees label in the \"Undelegate\" dialog.",
         "end": {
           "column": 3,
-          "line": 59
+          "line": 66
         },
         "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
         "id": "staking.delegationCenter.undelegate.dialog.feesLabel",
         "start": {
           "column": 13,
-          "line": 55
+          "line": 62
         }
       },
       {
@@ -2423,13 +2451,13 @@
         "description": "ADA label in the \"Undelegate\" dialog.",
         "end": {
           "column": 3,
-          "line": 64
+          "line": 71
         },
         "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
         "id": "staking.delegationCenter.undelegate.dialog.adaLabel",
         "start": {
           "column": 12,
-          "line": 60
+          "line": 67
         }
       },
       {
@@ -2437,13 +2465,13 @@
         "description": "Spending password label in the \"Undelegate\" dialog.",
         "end": {
           "column": 3,
-          "line": 69
+          "line": 76
         },
         "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
         "id": "staking.delegationCenter.undelegate.dialog.spendingPasswordLabel",
         "start": {
           "column": 25,
-          "line": 65
+          "line": 72
         }
       },
       {
@@ -2451,13 +2479,13 @@
         "description": "Spending password placeholder in the \"Undelegate\" dialog.",
         "end": {
           "column": 3,
-          "line": 75
+          "line": 82
         },
         "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
         "id": "staking.delegationCenter.undelegate.dialog.spendingPasswordPlaceholder",
         "start": {
           "column": 31,
-          "line": 70
+          "line": 77
         }
       },
       {
@@ -2465,13 +2493,27 @@
         "description": "Label for password error in the \"Undelegate\" dialog.",
         "end": {
           "column": 3,
-          "line": 80
+          "line": 87
         },
         "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
         "id": "staking.delegationCenter.undelegate.dialog.passwordError",
         "start": {
           "column": 24,
-          "line": 76
+          "line": 83
+        }
+      },
+      {
+        "defaultMessage": "!!!unknown",
+        "description": "unknown stake pool label in the \"Undelegate\" dialog.",
+        "end": {
+          "column": 3,
+          "line": 92
+        },
+        "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
+        "id": "staking.delegationCenter.undelegate.dialog.unknownStakePoolLabel",
+        "start": {
+          "column": 25,
+          "line": 88
         }
       }
     ],
@@ -2480,31 +2522,45 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Wallet Undelegated",
+        "defaultMessage": "!!!Wallet undelegated",
         "description": "Title for the \"Undelegate Result\" dialog.",
         "end": {
           "column": 3,
-          "line": 18
+          "line": 19
         },
         "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationResultDialog.js",
         "id": "staking.delegationCenter.undelegate.result.dialog.title",
         "start": {
           "column": 15,
-          "line": 14
+          "line": 15
         }
       },
       {
-        "defaultMessage": "!!!<p>The stake from your wallet <strong>{walletName}</strong> is no longer delegated and you will soon stop earning rewards for this wallet.</p><p>Your new delegation preferences are now posted on the blockchain <strong>and will take effect at the start of the next Cardano epoch in {timeUntilNextEpochStart}</strong>. For the rest of the current epoch, your previous delegation preferences are still active.</p>",
-        "description": "Description for the \"Undelegate Result\" dialog.",
+        "defaultMessage": "!!!The stake from your wallet <strong>{walletName}</strong> is no longer delegated and you will soon stop earning rewards for this wallet.",
+        "description": "Description 1 for the \"Undelegate Result\" dialog.",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 25
         },
         "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationResultDialog.js",
-        "id": "staking.delegationCenter.undelegate.result.dialog.description",
+        "id": "staking.delegationCenter.undelegate.result.dialog.description1",
         "start": {
-          "column": 15,
-          "line": 19
+          "column": 16,
+          "line": 20
+        }
+      },
+      {
+        "defaultMessage": "!!!Your new delegation preferences are now posted on the blockchain <strong>and will take effect after both the current and next Cardano epochs have completed in {timeUntilNextEpochStart}</strong>. During this time, your previous delegation preferences are still active.",
+        "description": "Description 2 for the \"Undelegate Result\" dialog.",
+        "end": {
+          "column": 3,
+          "line": 31
+        },
+        "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationResultDialog.js",
+        "id": "staking.delegationCenter.undelegate.result.dialog.description2",
+        "start": {
+          "column": 16,
+          "line": 26
         }
       }
     ],
@@ -2636,6 +2692,20 @@
         "start": {
           "column": 13,
           "line": 63
+        }
+      },
+      {
+        "defaultMessage": "!!!unknown",
+        "description": "unknown stake pool label for the Delegation center body section.",
+        "end": {
+          "column": 3,
+          "line": 73
+        },
+        "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
+        "id": "staking.delegationCenter.unknownStakePoolLabel",
+        "start": {
+          "column": 25,
+          "line": 68
         }
       }
     ],
@@ -3177,13 +3247,13 @@
         "description": "Title \"Wallet Delegated\" on the delegation setup \"success\" step dialog.",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 24
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsSuccessDialog.js",
         "id": "staking.delegationSetup.success.step.dialog.title",
         "start": {
           "column": 9,
-          "line": 18
+          "line": 19
         }
       },
       {
@@ -3191,27 +3261,27 @@
         "description": "Description \"line 1\" on the delegation setup \"success\" step dialog.",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 31
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsSuccessDialog.js",
         "id": "staking.delegationSetup.success.step.dialog.description.line1",
         "start": {
           "column": 20,
-          "line": 24
+          "line": 25
         }
       },
       {
-        "defaultMessage": "!!!Your new delegation preferences are now posted on the blockchain <span>and will take effect at the start of the next Cardano epoch in {timeUntilNextEpochStart}</span>. For the rest of the current epoch, your previous delegation preferences are still active.",
+        "defaultMessage": "!!!Your new delegation preferences are now posted on the blockchain <strong>and will take effect after both the current and next Cardano epochs have completed in {timeUntilNextEpochStart}</strong>. During this time, your previous delegation preferences are still active.",
         "description": "Description \"line 2\" on the delegation setup \"success\" step dialog.",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 38
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsSuccessDialog.js",
         "id": "staking.delegationSetup.success.step.dialog.description.line2",
         "start": {
           "column": 20,
-          "line": 31
+          "line": 32
         }
       },
       {
@@ -3219,13 +3289,13 @@
         "description": "Label for Close button on the delegation setup \"success\" step dialog.",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 44
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsSuccessDialog.js",
         "id": "staking.delegationSetup.success.step.dialog.closeButtonLabel",
         "start": {
           "column": 20,
-          "line": 38
+          "line": 39
         }
       }
     ],
@@ -3656,7 +3726,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Rewards from stake delegation are automatically collected into your reward account.",
+        "defaultMessage": "!!!<p>Rewards earned by delegating your stake are automatically collected into your reward account.</p><p>Rewards earned on the Incentivized Testnet are not added to your Rewards wallet balance. They will be paid to you in real ada on the Cardano mainnet after the end of the Incentivized Testnet.</p><p>If you are using funds from this wallet to operate a stake pool, the rewards displayed here may include your pledged stake, which will not be counted when reward balances are paid out on the Cardano mainnet.</p>",
         "description": "Rewards description text on staking rewards page",
         "end": {
           "column": 3,
@@ -3773,7 +3843,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Rewards from stake delegation are automatically collected into your reward account.",
+        "defaultMessage": "!!!<p>Rewards earned by delegating your stake are automatically collected into your reward account.</p><p>Rewards earned on the Incentivized Testnet are not added to your Rewards wallet balance. They will be paid to you in real ada on the Cardano mainnet after the end of the Incentivized Testnet.</p><p>If you are using funds from this wallet to operate a stake pool, the rewards displayed here may include your pledged stake, which will not be counted when reward balances are paid out on the Cardano mainnet.</p>",
         "description": "Rewards description text on staking rewards page",
         "end": {
           "column": 3,
@@ -3792,17 +3862,31 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Stake pools you are currently delegating to",
+        "description": "\"delegatingListTitlee\" for the Stake Pools page.",
+        "end": {
+          "column": 3,
+          "line": 19
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
+        "id": "staking.stakePools.delegatingListTitle",
+        "start": {
+          "column": 23,
+          "line": 15
+        }
+      },
+      {
         "defaultMessage": "!!!Stake pools ({pools})",
         "description": "\"listTitle\" for the Stake Pools page.",
         "end": {
           "column": 3,
-          "line": 17
+          "line": 24
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
         "id": "staking.stakePools.listTitle",
         "start": {
           "column": 13,
-          "line": 13
+          "line": 20
         }
       },
       {
@@ -3810,13 +3894,27 @@
         "description": "\"listTitle\" for the Stake Pools page.",
         "end": {
           "column": 3,
-          "line": 22
+          "line": 29
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
         "id": "staking.stakePools.listTitleWithSearch",
         "start": {
           "column": 23,
-          "line": 18
+          "line": 25
+        }
+      },
+      {
+        "defaultMessage": "!!!Loading stake pools",
+        "description": "Loading stake pool message for the Delegation center body section.",
+        "end": {
+          "column": 3,
+          "line": 35
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
+        "id": "staking.stakePools.loadingStakePoolsMessage",
+        "start": {
+          "column": 28,
+          "line": 30
         }
       }
     ],
@@ -3876,13 +3974,13 @@
         "description": "\"\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 34
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
         "id": "staking.stakePools.tooltip.ranking",
         "start": {
           "column": 11,
-          "line": 32
+          "line": 30
         }
       },
       {
@@ -3890,13 +3988,13 @@
         "description": "\"Controlled stake\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 41
+          "line": 39
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
         "id": "staking.stakePools.tooltip.controlledStake",
         "start": {
           "column": 19,
-          "line": 37
+          "line": 35
         }
       },
       {
@@ -3904,13 +4002,27 @@
         "description": "\"Profit margin\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 46
+          "line": 44
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
         "id": "staking.stakePools.tooltip.profitMargin",
         "start": {
           "column": 16,
-          "line": 42
+          "line": 40
+        }
+      },
+      {
+        "defaultMessage": "!!!Cost per epoch:",
+        "description": "\"Cost per epoch\" for the Stake Pools Tooltip page.",
+        "end": {
+          "column": 3,
+          "line": 49
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
+        "id": "staking.stakePools.tooltip.costPerEpoch",
+        "start": {
+          "column": 16,
+          "line": 45
         }
       },
       {
@@ -3918,13 +4030,27 @@
         "description": "\"Performance\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 51
+          "line": 54
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
         "id": "staking.stakePools.tooltip.performance",
         "start": {
           "column": 15,
-          "line": 47
+          "line": 50
+        }
+      },
+      {
+        "defaultMessage": "!!!Produced blocks:",
+        "description": "\"Produced blocks\" for the Stake Pools Tooltip page.",
+        "end": {
+          "column": 3,
+          "line": 59
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
+        "id": "staking.stakePools.tooltip.producedBlocks",
+        "start": {
+          "column": 18,
+          "line": 55
         }
       },
       {
@@ -3932,13 +4058,13 @@
         "description": "\"Retirement\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 56
+          "line": 64
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
         "id": "staking.stakePools.tooltip.retirement",
         "start": {
           "column": 14,
-          "line": 52
+          "line": 60
         }
       },
       {
@@ -3946,13 +4072,13 @@
         "description": "\"pledgeAddressLabel\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 71
+          "line": 79
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
         "id": "staking.stakePools.tooltip.pledgeAddressLabel",
         "start": {
           "column": 22,
-          "line": 67
+          "line": 75
         }
       },
       {
@@ -3960,13 +4086,13 @@
         "description": "\"Delegate to this pool\" Button for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 77
+          "line": 85
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
         "id": "staking.stakePools.tooltip.delegateButton",
         "start": {
           "column": 18,
-          "line": 72
+          "line": 80
         }
       }
     ],
@@ -4979,17 +5105,45 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!On the following screen, you will see a set of X random words. This is\n    your wallet backup phrase. It can be entered in any version of Daedalus application in order\n    to back up or restore your wallet’s funds and private key.",
+        "defaultMessage": "!!!On the following screen, you will be given a list of {walletRecoveryPhraseWordCount}  words to write down on paper and keep in a safe place. This list of words is the wallet recovery phrase for the Rewards wallet you are creating.",
         "description": "Instructions for backing up wallet recovery phrase on dialog that displays wallet recovery phrase.",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 22
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletBackupPrivacyWarningDialog.js",
-        "id": "wallet.backup.privacy.warning.dialog.recoveryPhraseInstructions",
+        "id": "wallet.backup.privacy.warning.dialog.recoveryPhraseInstructions1",
         "start": {
-          "column": 30,
+          "column": 31,
           "line": 16
+        }
+      },
+      {
+        "defaultMessage": "!!!The simplest way to keep your wallet recovery phrase secure is to never store it digitally or online. If you decide to use an online service, such as a password manager with an encrypted database, it is your responsibility to make sure that you use it correctly.",
+        "description": "Instructions for backing up wallet recovery phrase on dialog that displays wallet recovery phrase.",
+        "end": {
+          "column": 3,
+          "line": 29
+        },
+        "file": "source/renderer/app/components/wallet/backup-recovery/WalletBackupPrivacyWarningDialog.js",
+        "id": "wallet.backup.privacy.warning.dialog.recoveryPhraseInstructions2",
+        "start": {
+          "column": 31,
+          "line": 23
+        }
+      },
+      {
+        "defaultMessage": "!!!<strong>Using your recovery phrase is the only way to recover your wallet if your computer is lost, broken, stolen, or stops working. You will also need this recovery phrase to receive your Incentivized Testnet ada rewards on the Cardano mainnet.</strong>",
+        "description": "Instructions for backing up wallet recovery phrase on dialog that displays wallet recovery phrase.",
+        "end": {
+          "column": 3,
+          "line": 36
+        },
+        "file": "source/renderer/app/components/wallet/backup-recovery/WalletBackupPrivacyWarningDialog.js",
+        "id": "wallet.backup.privacy.warning.dialog.recoveryPhraseInstructions3",
+        "start": {
+          "column": 31,
+          "line": 30
         }
       },
       {
@@ -4997,27 +5151,27 @@
         "description": "Label for button \"Continue\" on wallet backup dialog",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 41
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletBackupPrivacyWarningDialog.js",
         "id": "wallet.backup.privacy.warning.dialog..button.labelContinue",
         "start": {
           "column": 23,
-          "line": 24
+          "line": 37
         }
       },
       {
-        "defaultMessage": "!!!Make sure nobody looks into your screen unless you want them to have access to your funds.",
+        "defaultMessage": "!!!I confirm that nobody can see my screen, because anyone who knows my recovery phrase will be able to spend the ada in my new wallet.",
         "description": "Label for the checkbox on wallet backup dialog describing that nobody should be watching when recovery phrase is shown",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 48
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletBackupPrivacyWarningDialog.js",
         "id": "wallet.backup.privacy.warning.dialog.checkbox.label.nobodyWatching",
         "start": {
           "column": 22,
-          "line": 29
+          "line": 42
         }
       }
     ],
@@ -5026,17 +5180,17 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Please, make sure you have carefully written down your recovery phrase somewhere safe.\n    You will need this phrase later for next use and recover. Phrase is case sensitive.",
+        "defaultMessage": "!!!Please make sure you write down the {walletRecoveryPhraseWordCount} words of your wallet recovery phrase <strong>on a piece of paper in the exact order shown here</strong>.",
         "description": "Instructions for backing up wallet recovery phrase on dialog that displays wallet recovery phrase.",
         "end": {
           "column": 3,
-          "line": 20
+          "line": 21
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseDisplayDialog.js",
         "id": "wallet.backup.recovery.phrase.display.dialog.backup.instructions",
         "start": {
           "column": 22,
-          "line": 14
+          "line": 15
         }
       },
       {
@@ -5044,13 +5198,13 @@
         "description": "Label for button \"Yes, I’ve written it down\" on wallet backup dialog",
         "end": {
           "column": 3,
-          "line": 27
+          "line": 28
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseDisplayDialog.js",
         "id": "wallet.backup.recovery.phrase.display.dialog.button.label.iHaveWrittenItDown",
         "start": {
           "column": 33,
-          "line": 21
+          "line": 22
         }
       }
     ],
@@ -5059,7 +5213,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Tap each word in the correct order to verify your recovery phrase",
+        "defaultMessage": "!!!Click each word in the correct order to verify your recovery phrase",
         "description": "Instructions for verifying wallet recovery phrase on dialog for entering wallet recovery phrase.",
         "end": {
           "column": 3,
@@ -5101,21 +5255,21 @@
         }
       },
       {
-        "defaultMessage": "!!!I understand that my money are held securely on this device only, not on the company servers",
-        "description": "Term and condition on wallet backup dialog describing that wallet is on a users device, not on company servers",
+        "defaultMessage": "!!!I understand that the simplest way to keep my wallet recovery phrase secure is to never store it digitally or online. If I decide to use an online service, such as a password manager with an encrypted database, it is my responsibility to make sure that I use it correctly.",
+        "description": "Term on wallet creation to store recovery phrase offline",
         "end": {
           "column": 3,
           "line": 42
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
-        "id": "wallet.backup.recovery.phrase.entry.dialog.terms.and.condition.device",
+        "id": "wallet.backup.recovery.phrase.entry.dialog.terms.and.condition.offline",
         "start": {
-          "column": 14,
+          "column": 15,
           "line": 36
         }
       },
       {
-        "defaultMessage": "!!!I understand that if this application is moved to another device or deleted, my money can\n    be only recovered with the backup phrase which were written down in a secure place",
+        "defaultMessage": "!!!I understand that the only way to recover my wallet if my computer is lost, broken, stolen, or stops working is to use my wallet recovery phrase.",
         "description": "Term and condition on wallet backup dialog describing that wallet can only be recovered with a security phrase",
         "end": {
           "column": 3,
@@ -5126,6 +5280,20 @@
         "start": {
           "column": 16,
           "line": 43
+        }
+      },
+      {
+        "defaultMessage": "!!!<strong>I understand that I will need the wallet recovery phrase of this wallet to receive my Incentivized Testnet ada rewards on the Cardano mainnet.</strong>",
+        "description": "Term and condition on wallet backup dialog describing that wallet can only be recovered with a security phrase",
+        "end": {
+          "column": 3,
+          "line": 57
+        },
+        "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
+        "id": "wallet.backup.recovery.phrase.entry.dialog.terms.and.condition.rewards",
+        "start": {
+          "column": 15,
+          "line": 51
         }
       }
     ],
@@ -7996,8 +8164,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Create a wallet for the balance check",
-        "description": "Description for the \"Create\" button on the wallet add dialog.",
+        "defaultMessage": "!!!Create a new Rewards wallet",
+        "description": "Description for the \"Create a new Rewards wallet\" button on the wallet add dialog.",
         "end": {
           "column": 3,
           "line": 30
@@ -8141,11 +8309,11 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Create a new wallet",
-        "description": "Title \"Create a new wallet\" in the wallet create form.",
+        "defaultMessage": "!!!Create a new Rewards wallet",
+        "description": "Title \"Create a new Rewards wallet\" in the wallet create form.",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 30
         },
         "file": "source/renderer/app/components/wallet/WalletCreateDialog.js",
         "id": "wallet.create.dialog.title",
@@ -8159,13 +8327,13 @@
         "description": "Label for the \"Wallet Name\" text input in the wallet create form.",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 36
         },
         "file": "source/renderer/app/components/wallet/WalletCreateDialog.js",
         "id": "wallet.create.dialog.name.label",
         "start": {
           "column": 14,
-          "line": 30
+          "line": 31
         }
       },
       {
@@ -8173,27 +8341,27 @@
         "description": "Hint for the \"Wallet Name\" text input in the wallet create form.",
         "end": {
           "column": 3,
-          "line": 41
+          "line": 42
         },
         "file": "source/renderer/app/components/wallet/WalletCreateDialog.js",
         "id": "wallet.create.dialog.walletNameHint",
         "start": {
           "column": 18,
-          "line": 36
+          "line": 37
         }
       },
       {
-        "defaultMessage": "!!!Create personal wallet",
-        "description": "Label for the \"Create personal wallet\" button on create wallet dialog.",
+        "defaultMessage": "!!!Create Rewards wallet",
+        "description": "Label for the \"Create Rewards wallet\" button on create wallet dialog.",
         "end": {
           "column": 3,
-          "line": 47
+          "line": 48
         },
         "file": "source/renderer/app/components/wallet/WalletCreateDialog.js",
         "id": "wallet.create.dialog.create.personal.wallet.button.label",
         "start": {
           "column": 24,
-          "line": 42
+          "line": 43
         }
       },
       {
@@ -8201,13 +8369,13 @@
         "description": "Password creation label.",
         "end": {
           "column": 3,
-          "line": 52
+          "line": 53
         },
         "file": "source/renderer/app/components/wallet/WalletCreateDialog.js",
         "id": "wallet.create.dialog.passwordSectionLabel",
         "start": {
           "column": 24,
-          "line": 48
+          "line": 49
         }
       },
       {
@@ -8215,13 +8383,13 @@
         "description": "Password creation description.",
         "end": {
           "column": 3,
-          "line": 58
+          "line": 59
         },
         "file": "source/renderer/app/components/wallet/WalletCreateDialog.js",
         "id": "wallet.create.dialog.passwordSectionDescription",
         "start": {
           "column": 30,
-          "line": 53
+          "line": 54
         }
       },
       {
@@ -8229,13 +8397,13 @@
         "description": "Label for the \"Wallet password\" input in the create wallet dialog.",
         "end": {
           "column": 3,
-          "line": 64
+          "line": 65
         },
         "file": "source/renderer/app/components/wallet/WalletCreateDialog.js",
         "id": "wallet.create.dialog.spendingPasswordLabel",
         "start": {
           "column": 25,
-          "line": 59
+          "line": 60
         }
       },
       {
@@ -8243,13 +8411,13 @@
         "description": "Label for the \"Repeat password\" input in the create wallet dialog.",
         "end": {
           "column": 3,
-          "line": 70
+          "line": 71
         },
         "file": "source/renderer/app/components/wallet/WalletCreateDialog.js",
         "id": "wallet.create.dialog.repeatPasswordLabel",
         "start": {
           "column": 23,
-          "line": 65
+          "line": 66
         }
       },
       {
@@ -8257,13 +8425,13 @@
         "description": "Placeholder for the \"Password\" inputs in the create wallet dialog.",
         "end": {
           "column": 3,
-          "line": 76
+          "line": 77
         },
         "file": "source/renderer/app/components/wallet/WalletCreateDialog.js",
         "id": "wallet.create.dialog.passwordFieldPlaceholder",
         "start": {
           "column": 28,
-          "line": 71
+          "line": 72
         }
       }
     ],
@@ -8936,95 +9104,6 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!years",
-        "description": "Label for years value in duration.",
-        "end": {
-          "column": 3,
-          "line": 17
-        },
-        "file": "source/renderer/app/components/widgets/CountdownWidget.js",
-        "id": "global.duration.years",
-        "start": {
-          "column": 9,
-          "line": 13
-        }
-      },
-      {
-        "defaultMessage": "!!!months",
-        "description": "Label for months value in duration.",
-        "end": {
-          "column": 3,
-          "line": 22
-        },
-        "file": "source/renderer/app/components/widgets/CountdownWidget.js",
-        "id": "global.duration.months",
-        "start": {
-          "column": 10,
-          "line": 18
-        }
-      },
-      {
-        "defaultMessage": "!!!days",
-        "description": "Label for days value in duration.",
-        "end": {
-          "column": 3,
-          "line": 27
-        },
-        "file": "source/renderer/app/components/widgets/CountdownWidget.js",
-        "id": "global.duration.days",
-        "start": {
-          "column": 8,
-          "line": 23
-        }
-      },
-      {
-        "defaultMessage": "!!!hours",
-        "description": "Label for hours value in duration.",
-        "end": {
-          "column": 3,
-          "line": 32
-        },
-        "file": "source/renderer/app/components/widgets/CountdownWidget.js",
-        "id": "global.duration.hours",
-        "start": {
-          "column": 9,
-          "line": 28
-        }
-      },
-      {
-        "defaultMessage": "!!!minutes",
-        "description": "Label for minutes value in duration.",
-        "end": {
-          "column": 3,
-          "line": 37
-        },
-        "file": "source/renderer/app/components/widgets/CountdownWidget.js",
-        "id": "global.duration.minutes",
-        "start": {
-          "column": 11,
-          "line": 33
-        }
-      },
-      {
-        "defaultMessage": "!!!seconds",
-        "description": "Label for seconds value in duration.",
-        "end": {
-          "column": 3,
-          "line": 42
-        },
-        "file": "source/renderer/app/components/widgets/CountdownWidget.js",
-        "id": "global.duration.seconds",
-        "start": {
-          "column": 11,
-          "line": 38
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/widgets/CountdownWidget.json"
-  },
-  {
-    "descriptors": [
-      {
         "defaultMessage": "!!!change",
         "description": "Label \"change\" on inline editing inputs in inactive state.",
         "end": {
@@ -9269,35 +9348,63 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Logs successfully downloaded",
-        "description": "Success message for download logs.",
+        "defaultMessage": "!!!Preparing logs for download",
+        "description": "Notification for download logs in progress in the Loading and Settings pages.",
         "end": {
           "column": 3,
-          "line": 14
+          "line": 26
         },
-        "file": "source/renderer/app/containers/notifications/GenericNotificationContainer.js",
-        "id": "loading.screen.reportIssue.downloadLogsSuccessMessage",
+        "file": "source/renderer/app/containers/notifications/NotificationsContainer.js",
+        "id": "notification.downloadLogsProgress",
         "start": {
-          "column": 23,
-          "line": 10
+          "column": 24,
+          "line": 21
         }
       },
       {
-        "defaultMessage": "!!!Preparing logs for download",
-        "description": "Progress message for download logs.",
+        "defaultMessage": "!!!Logs successfully downloaded",
+        "description": "Notification for download logs in the Loading and Settings pages.",
         "end": {
           "column": 3,
-          "line": 19
+          "line": 32
         },
-        "file": "source/renderer/app/containers/notifications/GenericNotificationContainer.js",
-        "id": "loading.screen.reportIssue.downloadLogsProgressMessage",
+        "file": "source/renderer/app/containers/notifications/NotificationsContainer.js",
+        "id": "notification.downloadLogsSuccess",
         "start": {
-          "column": 24,
-          "line": 15
+          "column": 23,
+          "line": 27
+        }
+      },
+      {
+        "defaultMessage": "!!!Address: <strong>{walletAddress}</strong> copied to clipboard",
+        "description": "Notification for the wallet address copy success in the Wallet Receive page.",
+        "end": {
+          "column": 3,
+          "line": 39
+        },
+        "file": "source/renderer/app/containers/notifications/NotificationsContainer.js",
+        "id": "notification.copyAddress",
+        "start": {
+          "column": 15,
+          "line": 33
+        }
+      },
+      {
+        "defaultMessage": "!!!Daedalus state directory copied to clipboard",
+        "description": "Notification for the state directory copy success in the Diagnostics page.",
+        "end": {
+          "column": 3,
+          "line": 45
+        },
+        "file": "source/renderer/app/containers/notifications/NotificationsContainer.js",
+        "id": "notification.copyStateDirectoryPath",
+        "start": {
+          "column": 26,
+          "line": 40
         }
       }
     ],
-    "path": "source/renderer/app/containers/notifications/GenericNotificationContainer.json"
+    "path": "source/renderer/app/containers/notifications/NotificationsContainer.json"
   },
   {
     "descriptors": [
@@ -9344,13 +9451,13 @@
         "description": "\"Learn more\" link URL on the delegation setup \"intro\" dialog.",
         "end": {
           "column": 3,
-          "line": 18
+          "line": 21
         },
         "file": "source/renderer/app/containers/staking/dialogs/DelegationSetupWizardDialogContainer.js",
         "id": "staking.delegationSetup.intro.step.dialog.learnMore.url",
         "start": {
           "column": 20,
-          "line": 13
+          "line": 16
         }
       },
       {
@@ -9358,13 +9465,13 @@
         "description": "Step 1 label text on delegation steps dialog.",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 26
         },
         "file": "source/renderer/app/containers/staking/dialogs/DelegationSetupWizardDialogContainer.js",
         "id": "staking.delegationSetup.steps.step.1.label",
         "start": {
           "column": 29,
-          "line": 19
+          "line": 22
         }
       },
       {
@@ -9372,13 +9479,13 @@
         "description": "Step 2 label text on delegation steps dialog.",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 31
         },
         "file": "source/renderer/app/containers/staking/dialogs/DelegationSetupWizardDialogContainer.js",
         "id": "staking.delegationSetup.steps.step.2.label",
         "start": {
           "column": 29,
-          "line": 24
+          "line": 27
         }
       },
       {
@@ -9386,13 +9493,13 @@
         "description": "Step 3 label text on delegation steps dialog.",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 36
         },
         "file": "source/renderer/app/containers/staking/dialogs/DelegationSetupWizardDialogContainer.js",
         "id": "staking.delegationSetup.steps.step.3.label",
         "start": {
           "column": 29,
-          "line": 29
+          "line": 32
         }
       }
     ],
@@ -9458,44 +9565,6 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Directory State Directory copied to clipboard",
-        "description": "Message for the wallet address copy success notification.",
-        "end": {
-          "column": 3,
-          "line": 18
-        },
-        "file": "source/renderer/app/containers/status/DaedalusDiagnosticsDialog.js",
-        "id": "daedalus.diagnostics.dialog.stateDirectoryCopyNotificationMessage",
-        "start": {
-          "column": 41,
-          "line": 14
-        }
-      }
-    ],
-    "path": "source/renderer/app/containers/status/DaedalusDiagnosticsDialog.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!You have successfully copied wallet address",
-        "description": "Message for the wallet address copy success notification.",
-        "end": {
-          "column": 3,
-          "line": 23
-        },
-        "file": "source/renderer/app/containers/wallet/WalletReceivePage.js",
-        "id": "wallet.receive.page.addressCopyNotificationMessage",
-        "start": {
-          "column": 11,
-          "line": 19
-        }
-      }
-    ],
-    "path": "source/renderer/app/containers/wallet/WalletReceivePage.json"
-  },
-  {
-    "descriptors": [
-      {
         "defaultMessage": "!!!No recent transactions",
         "description": "Message shown when wallet has no transactions on wallet summary page.",
         "end": {
@@ -9552,13 +9621,13 @@
         "description": "Error message when required fields are left empty.",
         "end": {
           "column": 3,
-          "line": 8
+          "line": 9
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.errors.fieldIsRequired",
         "start": {
           "column": 19,
-          "line": 4
+          "line": 5
         }
       },
       {
@@ -9566,13 +9635,13 @@
         "description": "Error message shown when incomplete bip39 mnemonic was entered.",
         "end": {
           "column": 3,
-          "line": 14
+          "line": 15
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.errors.incompleteMnemonic",
         "start": {
           "column": 22,
-          "line": 9
+          "line": 10
         }
       },
       {
@@ -9580,13 +9649,13 @@
         "description": "Error message shown when invalid bip39 mnemonic was entered.",
         "end": {
           "column": 3,
-          "line": 19
+          "line": 20
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.errors.invalidMnemonic",
         "start": {
           "column": 19,
-          "line": 15
+          "line": 16
         }
       },
       {
@@ -9594,13 +9663,13 @@
         "description": "Error message shown when invalid email was entered.",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 25
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.errors.invalidEmail",
         "start": {
           "column": 16,
-          "line": 20
+          "line": 21
         }
       },
       {
@@ -9608,13 +9677,13 @@
         "description": "Error message shown when invalid wallet name was entered in create wallet dialog.",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 32
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.errors.invalidWalletName",
         "start": {
           "column": 21,
-          "line": 25
+          "line": 26
         }
       },
       {
@@ -9622,13 +9691,13 @@
         "description": "Error message shown when invalid wallet password was entered in create wallet dialog.",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 38
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.errors.invalidSpendingPassword",
         "start": {
           "column": 27,
-          "line": 32
+          "line": 33
         }
       },
       {
@@ -9636,13 +9705,13 @@
         "description": "Error message shown when wallet password and repeat passwords don't match in create wallet dialog.",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 44
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.errors.invalidRepeatPassword",
         "start": {
           "column": 25,
-          "line": 38
+          "line": 39
         }
       },
       {
@@ -9650,13 +9719,13 @@
         "description": "Error message shown when the file the user tries to replace is open.",
         "end": {
           "column": 3,
-          "line": 50
+          "line": 51
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.errors.paperWalletOpenPdfError",
         "start": {
           "column": 27,
-          "line": 44
+          "line": 45
         }
       },
       {
@@ -9664,13 +9733,13 @@
         "description": "Error message shown when the file the user tries to replace is open.",
         "end": {
           "column": 3,
-          "line": 57
+          "line": 58
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.errors.rewardsOpenCsvError",
         "start": {
           "column": 23,
-          "line": 51
+          "line": 52
         }
       },
       {
@@ -9678,13 +9747,13 @@
         "description": "Password instructions note.",
         "end": {
           "column": 3,
-          "line": 63
+          "line": 64
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.passwordInstructions",
         "start": {
           "column": 24,
-          "line": 58
+          "line": 59
         }
       },
       {
@@ -9692,13 +9761,13 @@
         "description": "The word \"cancel\" reused at several places (like cancel buttons)",
         "end": {
           "column": 3,
-          "line": 69
+          "line": 70
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.cancel",
         "start": {
           "column": 10,
-          "line": 64
+          "line": 65
         }
       },
       {
@@ -9706,13 +9775,13 @@
         "description": "The word \"close\" reused at several places (like cancel buttons)",
         "end": {
           "column": 3,
-          "line": 75
+          "line": 76
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.close",
         "start": {
           "column": 9,
-          "line": 70
+          "line": 71
         }
       },
       {
@@ -9720,13 +9789,13 @@
         "description": "The word \"change\" reused at several places (like change buttons)",
         "end": {
           "column": 3,
-          "line": 81
+          "line": 82
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.change",
         "start": {
           "column": 10,
-          "line": 76
+          "line": 77
         }
       },
       {
@@ -9734,13 +9803,13 @@
         "description": "The word \"create\" reused at several places (like create buttons)",
         "end": {
           "column": 3,
-          "line": 87
+          "line": 88
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.create",
         "start": {
           "column": 10,
-          "line": 82
+          "line": 83
         }
       },
       {
@@ -9748,13 +9817,13 @@
         "description": "The word \"remove\" reused at several places (like remove buttons)",
         "end": {
           "column": 3,
-          "line": 93
+          "line": 94
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.remove",
         "start": {
           "column": 10,
-          "line": 88
+          "line": 89
         }
       },
       {
@@ -9762,13 +9831,13 @@
         "description": "The word \"save\" reused at several places (like save buttons)",
         "end": {
           "column": 3,
-          "line": 98
+          "line": 99
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.save",
         "start": {
           "column": 8,
-          "line": 94
+          "line": 95
         }
       },
       {
@@ -9776,13 +9845,13 @@
         "description": "Language name for \"English\" language.",
         "end": {
           "column": 3,
-          "line": 103
+          "line": 104
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.language.english",
         "start": {
           "column": 19,
-          "line": 99
+          "line": 100
         }
       },
       {
@@ -9790,13 +9859,13 @@
         "description": "Language name for \"Japanese\" language.",
         "end": {
           "column": 3,
-          "line": 108
+          "line": 109
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.language.japanese",
         "start": {
           "column": 20,
-          "line": 104
+          "line": 105
         }
       },
       {
@@ -9804,13 +9873,13 @@
         "description": "Language name for \"Chinese\" language.",
         "end": {
           "column": 3,
-          "line": 113
+          "line": 114
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.language.chinese",
         "start": {
           "column": 19,
-          "line": 109
+          "line": 110
         }
       },
       {
@@ -9818,13 +9887,13 @@
         "description": "Language name for \"Korean\" language.",
         "end": {
           "column": 3,
-          "line": 118
+          "line": 119
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.language.korean",
         "start": {
           "column": 18,
-          "line": 114
+          "line": 115
         }
       },
       {
@@ -9832,13 +9901,13 @@
         "description": "Language name for \"German\" language.",
         "end": {
           "column": 3,
-          "line": 123
+          "line": 124
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.language.german",
         "start": {
           "column": 18,
-          "line": 119
+          "line": 120
         }
       },
       {
@@ -9846,13 +9915,13 @@
         "description": "Language name for \"Croatian\" language.",
         "end": {
           "column": 3,
-          "line": 128
+          "line": 129
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.language.croatian",
         "start": {
           "column": 20,
-          "line": 124
+          "line": 125
         }
       },
       {
@@ -9860,13 +9929,13 @@
         "description": "Colon punctuation.",
         "end": {
           "column": 3,
-          "line": 133
+          "line": 134
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.punctuation.colon",
         "start": {
           "column": 20,
-          "line": 129
+          "line": 130
         }
       },
       {
@@ -9874,13 +9943,13 @@
         "description": "Final dot punctuation.",
         "end": {
           "column": 3,
-          "line": 138
+          "line": 139
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.punctuation.dot",
         "start": {
           "column": 18,
-          "line": 134
+          "line": 135
         }
       },
       {
@@ -9888,13 +9957,13 @@
         "description": "Name for \"ADA\" unit.",
         "end": {
           "column": 3,
-          "line": 143
+          "line": 144
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.unit.ada",
         "start": {
           "column": 11,
-          "line": 139
+          "line": 140
         }
       },
       {
@@ -9902,13 +9971,13 @@
         "description": "Title for the \"Recovery Phrase\" dialog.",
         "end": {
           "column": 3,
-          "line": 148
+          "line": 149
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "wallet.backup.recovery.phrase.dialog.title",
         "start": {
           "column": 29,
-          "line": 144
+          "line": 145
         }
       },
       {
@@ -9916,13 +9985,13 @@
         "description": "Label for the \"Wallet password\" input in the create wallet dialog.",
         "end": {
           "column": 3,
-          "line": 154
+          "line": 155
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.spendingPasswordLabel",
         "start": {
           "column": 25,
-          "line": 149
+          "line": 150
         }
       },
       {
@@ -9930,13 +9999,13 @@
         "description": "Placeholder for the \"Password\" inputs in the create wallet dialog.",
         "end": {
           "column": 3,
-          "line": 160
+          "line": 161
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.spendingPasswordPlaceholder",
         "start": {
           "column": 31,
-          "line": 155
+          "line": 156
         }
       },
       {
@@ -9944,13 +10013,13 @@
         "description": "Label \"Continue\" in dialogs.",
         "end": {
           "column": 3,
-          "line": 165
+          "line": 166
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.dialog.button.continue",
         "start": {
           "column": 29,
-          "line": 161
+          "line": 162
         }
       },
       {
@@ -9958,13 +10027,13 @@
         "description": "URL for the \"Known Issues\" link in the \"Help and support\" section on the support settings page",
         "end": {
           "column": 3,
-          "line": 172
+          "line": 173
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "settings.support.faq.faqLinkURL",
         "start": {
           "column": 14,
-          "line": 166
+          "line": 167
         }
       },
       {
@@ -9972,13 +10041,13 @@
         "description": "Name for \"Ada\" unit.",
         "end": {
           "column": 3,
-          "line": 177
+          "line": 178
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.currency.ada",
         "start": {
           "column": 12,
-          "line": 173
+          "line": 174
         }
       },
       {
@@ -9986,13 +10055,13 @@
         "description": "Name for \"Cardano\" client.",
         "end": {
           "column": 3,
-          "line": 182
+          "line": 183
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.apiName.cardano",
         "start": {
           "column": 11,
-          "line": 178
+          "line": 179
         }
       },
       {
@@ -10000,13 +10069,13 @@
         "description": "\"mainnet\" Cardano network",
         "end": {
           "column": 3,
-          "line": 187
+          "line": 188
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.mainnet",
         "start": {
           "column": 19,
-          "line": 183
+          "line": 184
         }
       },
       {
@@ -10014,13 +10083,13 @@
         "description": "\"staging\" Cardano network",
         "end": {
           "column": 3,
-          "line": 192
+          "line": 193
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.staging",
         "start": {
           "column": 19,
-          "line": 188
+          "line": 189
         }
       },
       {
@@ -10028,13 +10097,13 @@
         "description": "\"testnet\" Cardano network",
         "end": {
           "column": 3,
-          "line": 197
+          "line": 198
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.testnet",
         "start": {
           "column": 19,
-          "line": 193
+          "line": 194
         }
       },
       {
@@ -10042,13 +10111,13 @@
         "description": "\"development\" Cardano network",
         "end": {
           "column": 3,
-          "line": 202
+          "line": 203
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.development",
         "start": {
           "column": 23,
-          "line": 198
+          "line": 199
         }
       },
       {
@@ -10056,13 +10125,13 @@
         "description": "\"itn_rewards_v1\" Cardano network",
         "end": {
           "column": 3,
-          "line": 207
+          "line": 208
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.itn_rewards_v1",
         "start": {
           "column": 26,
-          "line": 203
+          "line": 204
         }
       },
       {
@@ -10070,13 +10139,13 @@
         "description": "\"selfnode\" Cardano network",
         "end": {
           "column": 3,
-          "line": 212
+          "line": 213
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.selfnode",
         "start": {
           "column": 20,
-          "line": 208
+          "line": 209
         }
       },
       {
@@ -10084,13 +10153,13 @@
         "description": "\"qa\" Cardano network",
         "end": {
           "column": 3,
-          "line": 217
+          "line": 218
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.qa",
         "start": {
           "column": 14,
-          "line": 213
+          "line": 214
         }
       },
       {
@@ -10098,13 +10167,97 @@
         "description": "\"nightly\" Cardano network",
         "end": {
           "column": 3,
-          "line": 222
+          "line": 223
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.nightly",
         "start": {
           "column": 19,
-          "line": 218
+          "line": 219
+        }
+      },
+      {
+        "defaultMessage": "!!!years",
+        "description": "Label for years value in duration.",
+        "end": {
+          "column": 3,
+          "line": 228
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "global.duration.years",
+        "start": {
+          "column": 9,
+          "line": 224
+        }
+      },
+      {
+        "defaultMessage": "!!!months",
+        "description": "Label for months value in duration.",
+        "end": {
+          "column": 3,
+          "line": 233
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "global.duration.months",
+        "start": {
+          "column": 10,
+          "line": 229
+        }
+      },
+      {
+        "defaultMessage": "!!!days",
+        "description": "Label for days value in duration.",
+        "end": {
+          "column": 3,
+          "line": 238
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "global.duration.days",
+        "start": {
+          "column": 8,
+          "line": 234
+        }
+      },
+      {
+        "defaultMessage": "!!!hours",
+        "description": "Label for hours value in duration.",
+        "end": {
+          "column": 3,
+          "line": 243
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "global.duration.hours",
+        "start": {
+          "column": 9,
+          "line": 239
+        }
+      },
+      {
+        "defaultMessage": "!!!minutes",
+        "description": "Label for minutes value in duration.",
+        "end": {
+          "column": 3,
+          "line": 248
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "global.duration.minutes",
+        "start": {
+          "column": 11,
+          "line": 244
+        }
+      },
+      {
+        "defaultMessage": "!!!seconds",
+        "description": "Label for seconds value in duration.",
+        "end": {
+          "column": 3,
+          "line": 253
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "global.duration.seconds",
+        "start": {
+          "column": 11,
+          "line": 249
         }
       }
     ],

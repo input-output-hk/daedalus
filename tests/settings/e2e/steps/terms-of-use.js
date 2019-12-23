@@ -23,7 +23,7 @@ Given(/^I am on the "Terms of use" screen$/, function() {
   return this.client.waitForVisible(TERMS_OF_USE_FORM);
 });
 
-When(/^I click on "I agree with terms of use" checkbox$/, function() {
+When(/^I click on "I agree with terms of service" checkbox$/, function() {
   return this.waitAndClick('.TermsOfUseForm_component .SimpleCheckbox_root');
 });
 

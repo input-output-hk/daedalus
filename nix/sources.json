@@ -29,12 +29,12 @@
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "cardano-wallet",
-        "rev": "d45719527cd6accf515486a154da417f52d5ff9f",
-        "sha256": "0chy1a60bhw60cvaq42h4mk384mm9w70y0xm29k8nsx6ap1g7hn6",
+        "rev": "d3d93ba356170b727cb7234c08f2809f9b613357",
+        "sha256": "13hacdjs09xykkl2360w2sqygw05zji90srs8vlg3aivf9iyg559",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-wallet/archive/d45719527cd6accf515486a154da417f52d5ff9f.tar.gz",
+        "url": "https://github.com/input-output-hk/cardano-wallet/archive/d3d93ba356170b727cb7234c08f2809f9b613357.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz",
-        "version": "v2019-11-18"
+        "version": "v2019-12-16"
     },
     "gitignore": {
         "branch": "master",
@@ -61,15 +61,15 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "iohk-nix": {
-        "branch": "itn_rewards_v1",
+        "branch": "master",
         "description": "nix scripts shared across projects",
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "iohk-nix",
-        "rev": "60c0c007ac06e75e3d8efadd391a6c5318e86b89",
-        "sha256": "0ilk585brflwc0q0758am2wi5qmmhkb8pvc3jwvaxgcz3jsvjbdk",
+        "rev": "911ffe9ab4f1c05685b56e2407e87d2373137930",
+        "sha256": "0dr2r1rjhddg3jxx13ny1slv3hnx2ai2h8qfxji89jx473p4ybqm",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/iohk-nix/archive/60c0c007ac06e75e3d8efadd391a6c5318e86b89.tar.gz",
+        "url": "https://github.com/input-output-hk/iohk-nix/archive/911ffe9ab4f1c05685b56e2407e87d2373137930.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "js-chain-libs": {

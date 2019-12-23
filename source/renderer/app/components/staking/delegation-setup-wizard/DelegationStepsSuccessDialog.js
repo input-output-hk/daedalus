@@ -5,7 +5,6 @@ import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import classNames from 'classnames';
 import { get } from 'lodash';
 import SVGInline from 'react-svg-inline';
-import humanizeDuration from 'humanize-duration';
 import commonStyles from './DelegationSteps.scss';
 import styles from './DelegationStepsSuccessDialog.scss';
 import Dialog from '../../widgets/Dialog';
@@ -13,6 +12,8 @@ import DialogCloseButton from '../../widgets/DialogCloseButton';
 import tadaImage from '../../../assets/images/tada-ic.inline.svg';
 import Wallet from '../../../domains/Wallet';
 import StakePool from '../../../domains/StakePool';
+import humanizeDurationByLocale from '../../../utils/humanizeDurationByLocale';
+import { EPOCH_COUNTDOWN_INTERVAL } from '../../../config/epochsConfig';
 
 const messages = defineMessages({
   title: {
@@ -31,7 +32,7 @@ const messages = defineMessages({
   descriptionLine2: {
     id: 'staking.delegationSetup.success.step.dialog.description.line2',
     defaultMessage:
-      '!!!Your new delegation preferences are now posted on the blockchain <span>and will take effect at the start of the next Cardano epoch in {timeUntilNextEpochStart}</span>. For the rest of the current epoch, your previous delegation preferences are still active.',
+      '!!!Your new delegation preferences are now posted on the blockchain <strong>and will take effect after both the current and next Cardano epochs have completed in {timeUntilNextEpochStart}</strong>. During this time, your previous delegation preferences are still active.',
     description:
       'Description "line 2" on the delegation setup "success" step dialog.',
   },
@@ -46,23 +47,51 @@ const messages = defineMessages({
 type Props = {
   delegatedWallet: ?Wallet,
   delegatedStakePool: ?StakePool,
-  nextEpochStartTime: string,
+  futureEpochStartTime: string,
   onClose: Function,
   currentLocale: string,
 };
+type State = { timeUntilNextEpochStart: number };
 
 @observer
-export default class DelegationStepsSuccessDialog extends Component<Props> {
+export default class DelegationStepsSuccessDialog extends Component<
+  Props,
+  State
+> {
+  intervalHandler: ?IntervalID = null;
+  state = { timeUntilNextEpochStart: 0 };
+
   static contextTypes = {
     intl: intlShape.isRequired,
   };
 
+  componentDidMount() {
+    this.updateTimeUntilNextEpochStart();
+    this.intervalHandler = setInterval(
+      () => this.updateTimeUntilNextEpochStart(),
+      EPOCH_COUNTDOWN_INTERVAL
+    );
+  }
+
+  updateTimeUntilNextEpochStart = () => {
+    const { futureEpochStartTime } = this.props;
+    const timeUntilNextEpochStart = Math.max(
+      0,
+      new Date(futureEpochStartTime).getTime() - new Date().getTime()
+    );
+    this.setState({ timeUntilNextEpochStart });
+  };
+
+  componentWillUnmount() {
+    if (this.intervalHandler) {
+      clearInterval(this.intervalHandler);
+    }
+  }
   render() {
     const { intl } = this.context;
     const {
       delegatedWallet,
       delegatedStakePool,
-      nextEpochStartTime,
       currentLocale,
       onClose,
     } = this.props;
@@ -86,36 +115,10 @@ export default class DelegationStepsSuccessDialog extends Component<Props> {
     const delegatedStakePoolName = get(delegatedStakePool, 'name');
     const delegatedStakePoolTicker = get(delegatedStakePool, 'ticker');
 
-    const timeLeft = Math.max(
-      0,
-      new Date(nextEpochStartTime).getTime() - new Date().getTime()
+    const timeUntilNextEpochStart = humanizeDurationByLocale(
+      this.state.timeUntilNextEpochStart,
+      currentLocale
     );
-
-    let humanizedDurationLanguage;
-    switch (currentLocale) {
-      case 'ja-JP':
-        humanizedDurationLanguage = 'ja';
-        break;
-      case 'zh-CN':
-        humanizedDurationLanguage = 'zh_CN';
-        break;
-      case 'ko-KR':
-        humanizedDurationLanguage = 'ko';
-        break;
-      case 'de-DE':
-        humanizedDurationLanguage = 'de';
-        break;
-      default:
-        humanizedDurationLanguage = 'en';
-    }
-
-    const timeUntilNextEpochStart = humanizeDuration(timeLeft || 0, {
-      round: true, // round seconds to prevent e.g. 1 day 3 hours *11,56 seconds*
-      language: humanizedDurationLanguage,
-      conjunction: ' and ',
-      units: ['d', 'h', 'm'],
-      serialComma: false,
-    });
 
     return (
       <Dialog

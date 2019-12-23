@@ -2,10 +2,13 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
-import { find, get } from 'lodash';
+import { find, get, take } from 'lodash';
 import BigNumber from 'bignumber.js';
 import DelegationSetupWizardDialog from '../../../components/staking/delegation-setup-wizard/DelegationSetupWizardDialog';
-import { MIN_DELEGATION_FUNDS } from '../../../config/stakingConfig';
+import {
+  MIN_DELEGATION_FUNDS,
+  RECENT_STAKE_POOLS_COUNT,
+} from '../../../config/stakingConfig';
 import { getNetworkExplorerUrlByType } from '../../../utils/network';
 import type { InjectedDialogContainerProps } from '../../../types/injectedPropsType';
 
@@ -143,16 +146,17 @@ export default class DelegationSetupWizardDialogContainer extends Component<
       stakePoolJoinFee,
     } = this.state;
     const { app, staking, wallets, profile, networkStatus } = this.props.stores;
-    const { nextEpoch } = networkStatus;
+    const { futureEpoch } = networkStatus;
     const { currentTheme, currentLocale, environment } = profile;
     const {
       stakePools,
       recentStakePools,
       joinStakePoolRequest,
       getStakePoolById,
+      isDelegatioTransactionPending,
     } = staking;
     const { network, rawNetwork } = environment;
-    const nextEpochStartTime = get(nextEpoch, 'epochStart', 0);
+    const futureEpochStartTime = get(futureEpoch, 'epochStart', 0);
     const selectedPool = find(stakePools, pool => pool.id === selectedPoolId);
 
     const selectedWallet = find(
@@ -184,9 +188,9 @@ export default class DelegationSetupWizardDialogContainer extends Component<
         selectedWallet={selectedWallet}
         selectedPool={selectedPool || null}
         stakePoolsList={stakePools}
-        recentStakePools={recentStakePools}
+        recentStakePools={take(recentStakePools, RECENT_STAKE_POOLS_COUNT)}
         stakePoolJoinFee={stakePoolJoinFee}
-        nextEpochStartTime={nextEpochStartTime}
+        futureEpochStartTime={futureEpochStartTime}
         currentLocale={currentLocale}
         onOpenExternalLink={app.openExternalLink}
         getPledgeAddressUrl={getPledgeAddressUrl}
@@ -199,7 +203,9 @@ export default class DelegationSetupWizardDialogContainer extends Component<
         onLearnMoreClick={this.handleLearnMoreClick}
         onConfirm={this.handleConfirm}
         getStakePoolById={getStakePoolById}
-        isSubmitting={joinStakePoolRequest.isExecuting}
+        isSubmitting={
+          joinStakePoolRequest.isExecuting || isDelegatioTransactionPending
+        }
         error={joinStakePoolRequest.error}
       />
     );

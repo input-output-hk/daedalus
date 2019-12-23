@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { defineMessages, intlShape } from 'react-intl';
+import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import { get, map, orderBy } from 'lodash';
 import classNames from 'classnames';
@@ -13,7 +13,7 @@ import { StakingPageScrollContext } from '../layouts/StakingWithNavigation';
 import BorderedBox from '../../widgets/BorderedBox';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import sortIcon from '../../../assets/images/ascending.inline.svg';
-import externalLinkIcon from '../../../assets/images/link-ic.inline.svg';
+// import externalLinkIcon from '../../../assets/images/link-ic.inline.svg';
 import downloadIcon from '../../../assets/images/download-ic.inline.svg';
 import type { RewardForIncentivizedTestnet } from '../../../api/staking/types';
 import styles from './StakingRewardsForIncentivizedTestnet.scss';
@@ -59,7 +59,7 @@ const messages = defineMessages({
   note: {
     id: 'staking.rewards.note',
     defaultMessage:
-      '!!!Rewards from stake delegation are automatically collected into your reward account.',
+      '!!!<p>Rewards earned by delegating your stake are automatically collected into your reward account.</p><p>Rewards earned on the Incentivized Testnet are not added to your Rewards wallet balance. They will be paid to you in real ada on the Cardano mainnet after the end of the Incentivized Testnet.</p><p>If you are using funds from this wallet to operate a stake pool, the rewards displayed here may include your pledged stake, which will not be counted when reward balances are paid out on the Cardano mainnet.</p>',
     description: 'Rewards description text on staking rewards page',
   },
 });
@@ -68,7 +68,7 @@ type Props = {
   rewards: Array<RewardForIncentivizedTestnet>,
   isLoading: boolean,
   isExporting: boolean,
-  onLearnMoreClick: Function,
+  // onLearnMoreClick: Function,
   onExportCsv: Function,
 };
 
@@ -124,7 +124,12 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
   };
 
   render() {
-    const { rewards, isLoading, isExporting, onLearnMoreClick } = this.props;
+    const {
+      rewards,
+      isLoading,
+      isExporting,
+      // onLearnMoreClick,
+    } = this.props;
     const { rewardsOrder, rewardsSortBy } = this.state;
     const { intl } = this.context;
     const noRewards = !isLoading && ((rewards && !rewards.length) || !rewards);
@@ -244,12 +249,15 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
             </BorderedBox>
 
             <div className={styles.note}>
-              <span>* {intl.formatMessage(messages.note)} </span>
-              <button onClick={onLearnMoreClick}>
-                {intl.formatMessage(messages.learnMoreButtonLabel)}
-                <SVGInline svg={externalLinkIcon} />
-              </button>
-              <span>.</span>
+              <div className={styles.noteContent}>
+                <FormattedHTMLMessage {...messages.note} />
+                {/*
+                  <button onClick={onLearnMoreClick}>
+                    {intl.formatMessage(messages.learnMoreButtonLabel)}
+                    <SVGInline svg={externalLinkIcon} />
+                  </button>
+                */}
+              </div>
             </div>
           </div>
         )}

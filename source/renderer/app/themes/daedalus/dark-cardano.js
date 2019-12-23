@@ -275,9 +275,8 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--theme-manual-update-overlay-button-label-color-hover': '#000000',
   },
   mnemonic: {
-    '--theme-mnemonic-background-color': 'rgba(255, 255, 255, 0.07)',
-    '--theme-mnemonic-background-color-hover': '#101122',
     '--theme-backup-mnemonic-background-color': '#414251',
+    '--theme-mnemonic-background-color': 'rgba(255, 255, 255, 0.07)',
   },
   modal: {
     '--theme-modal-overlay-background-color': 'rgba(0, 0, 0, 0.4)',
@@ -669,6 +668,9 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--theme-staking-progress-label-light': 'rgba(18, 19, 38, 1)',
     '--theme-staking-stake-pools-search-clear-button-background-color':
       'rgba(68, 91, 124, 0.05)',
+    '--theme-staking-stake-pool-tooltip-neutral-background-color':
+      'rgba(255, 255, 255, .1)',
+    '--theme-staking-stake-pool-tooltip-neutral-text-color': '#ffffff',
   },
   staking: {
     '--theme-staking-content-background-color': '#1e1f31',
@@ -676,11 +678,11 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--theme-staking-font-color-accent': '#ffffff',
     '--theme-staking-font-color-regular': '#ffffff',
     '--theme-staking-font-color-light': '#ffffffb3',
-    '--theme-staking-font-color-lighter': '#ffffff80',
+    '--theme-staking-font-color-lighter': 'rgba(255, 255, 255, 0.5)',
     '--theme-staking-table-head-background-color': 'rgba(255, 255, 255, 0.07)',
     '--theme-staking-table-border-color': 'rgba(255, 255, 255, 0.2)',
     '--theme-staking-link-color': '#1fc1c3',
-    '--theme-staking-link-color-light': 'rgba(31, 193, 195, 0.5)',
+    '--theme-staking-link-color-light': 'rgba(31, 193, 195, 0.7)',
     '--theme-staking-progress-bar-background-color':
       'rgba(255, 255, 255, 0.07)',
     '--theme-staking-progress-stripe-dark-1-background-color': '#1fc1c3',

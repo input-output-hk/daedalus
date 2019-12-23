@@ -20,7 +20,7 @@ const onToggleSubMenus = {
 
 storiesOf('Wallets|Receive', module)
   .addDecorator(WalletsWrapper)
-  .add('Receive', ({ currentLocale }: { currentLocale: string }) => {
+  .add('Receive', ({ locale }: { locale: string }) => {
     const isIncentivizedTestnet = boolean('isIncentivizedTestnet', false);
     const showDialog = boolean('showDialog', false);
     return (
@@ -38,7 +38,7 @@ storiesOf('Wallets|Receive', module)
           onCopyAddress={action('onCopyAddress')}
           isAddressValid={() => parseInt(Math.random() * 10, 10) > 3}
           isIncentivizedTestnet={isIncentivizedTestnet}
-          currentLocale={currentLocale}
+          currentLocale={locale}
           onToggleSubMenus={onToggleSubMenus}
           isShowingSubMenus
         />

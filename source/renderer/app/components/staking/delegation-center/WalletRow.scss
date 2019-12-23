@@ -99,6 +99,9 @@
     .action {
       @extend %regularText;
       font-size: 14px;
+      .unknown {
+        font-family: var(--font-bold);
+      }
     }
     .stakePoolRankingIndicator {
       border-radius: 2px;

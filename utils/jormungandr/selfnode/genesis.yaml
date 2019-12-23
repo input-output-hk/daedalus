@@ -6,6 +6,8 @@ blockchain_configuration:
   # expected value in seconds since UNIX_EPOCH
   block0_date: 1556202057
 
+  block_content_max_size: 1024000
+
   # This is the type of dicrimination of the blockchain
   # of this blockchain is meant for production then
   # use 'production' instead.
@@ -20,7 +22,8 @@ blockchain_configuration:
   block0_consensus: genesis_praos
 
   # Number of slots in each epoch
-  slots_per_epoch: 10
+  slots_per_epoch: 150
+  # ^^ Daedalus specific value!
 
   # The slot duration, in seconds, is the time between the creation
   # of 2 blocks
@@ -33,15 +36,10 @@ blockchain_configuration:
   # BFT leaders encoded as bech32. The order in the list matters.
   consensus_leader_ids:
     - ed25519_pk192m4ytl5k357e2l666yleuwjlurmf0vxjyh4atxzu5m22q6mexlsp88k7x
-  # Genesis praos parameter D
-  bft_slots_ratio: 0
 
   # Genesis praos active slot coefficient
   # Determines minimum stake required to try becoming slot leader, must be in range (0,1]
   consensus_genesis_praos_active_slot_coeff: 1
-
-  # This is the max number of messages allowed in a given Block
-  max_number_of_transactions_per_block: 255
 
   # The fee calculations settings
   #
@@ -89,7 +87,8 @@ blockchain_configuration:
 
       # the rate at which the contribution is tweaked related to epoch.
       epoch_rate: 1
-
+  # set some reward constraints and limits
+  #
   # initial value the treasury will start with, if not set the treasury
   # starts at 0
   treasury: 0
@@ -111,6 +110,31 @@ blockchain_configuration:
     # to 10000. Uncomment the following line to apply a max limit:
     # max_limit: 10000
 
+  # this value is optional, the default is no constraints at all
+  reward_constraints:
+    # limit the epoch total reward drawing limit to a portion of the total
+    # active stake of the system.
+    #
+    # for example, if set to 10%, the reward drawn will be bounded by the
+    # 10% of the total active stake.
+    #
+    # this value is optional, the default is no reward drawing limit
+    reward_drawing_limit_max: "10/100"
+
+    # settings to incentivize the numbers of stake pool to be registered
+    # on the blockchain.
+    #
+    # These settings does not prevent more stake pool to be added. For example
+    # if there is already 1000 stake pools, someone can still register a new
+    # stake pool and affect the rewards of everyone else too.
+    #
+    # if the threshold is reached, the pool doesn't really have incentive to
+    # create more blocks than 1 / set-value-of-pools % of stake.
+    #
+    # this value is optional, the default is no pool participation capping
+    pool_participation_capping:
+      min: 1
+      max: 10
 # The initial deposits present in the blockchain.
 #
 # The last 10 addresses come from 10 different wallets. For the integration
@@ -7713,3 +7737,42 @@ initial:
   - legacy_fund:
     - address: DdzFFzCqrht7QZSiR1kWkoBvF4sfVdifesg7aXzMy4c9AqSCkcfw94HstiHFqxNDd6dcEDRBgum4in41HztJ1JDuRsauLXagfJ41pF2y
       value: 1
+
+  # Additional faucet accounts that can be used to pay for registration certificate.
+  #
+  # -------- generate-account-faucet.sh
+  # | XPRV=$(jcli key generate --type ed25519)
+  # | XPUB=$(echo $XPRV | jcli key to-public)
+  # | ADDR=$(jcli address account --testing --prefix account $XPUB)
+  # |
+  # | echo "    - fund:"
+  # | echo "        # $XPRV"
+  # | echo "        # $XPUB"
+  # | echo "        - address: $ADDR"
+  # | echo "          value: 10000"
+
+  # These accounts have associated metadata in the owner registry
+  - fund:
+      # ed25519_sk1qm2de9sa6w5ccvrrh7dh7fgpzeupulsjkz3fdqanm2w7e6h0rgasxex46t
+      # ed25519_pk1kpudvc46w3nnwjfw5zzsrj7jxqwm4znhltkas8yzx9lcezs5e8cswtvx8t
+      - address: account1skc834nzhf6xwd6f96sg2qwt6gcpmw52wlawmkqusgchlry2znylzam4v5a
+        value: 10000
+
+  - fund:
+      # ed25519_sk103yerx2fq2juzpjda2c0ghz5646cwezd0gvmtxa2jg9qj7hgj0es604myw
+      # ed25519_pk1577ny3x5etp748l09l594t4lh3tlhxpekalhw0j4fe5ava2jam3shm08mf
+      - address: account1sknm6vjy6n9v865lauh7sk4wh77907uc8xmh7ae7248xn4n42thwxlc0c70
+        value: 10000
+
+  # These accounts have no associated metadata in the owner registry
+  - fund:
+      # ed25519_sk13q9azfkh99pc05saplefgdj79s0yf8tvhcvefjlj7jqyczxxv2dqk2yvax
+      # ed25519_pk1y0y0dd3hwhvftkds0j56ywsshkckfpsyf79ywwpl4uyn4dgxsd7sv6mjkq
+      - address: account1s53u3a4kxa6a39wekp72ng36zz7mzeyxq38c53ec87hsjw44q6ph6nekre5
+        value: 10000
+
+  - fund:
+      # ed25519_sk1ll8eg0wfskc5c8qflur3avssg73ety9e6m46ptpsqng8krpcyf7svmnys8
+      # ed25519_pk1cmh8yeuajjhzzw7lap58mmqkehedvv5tlwhmy70wdayklaufk3gqx2h708
+      - address: account1shrwuun8nk22ugfmml5xsl0vzmxl943j30a6lvneaeh5jmlh3x69qfyrr28
+        value: 10000

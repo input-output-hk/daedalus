@@ -21,9 +21,8 @@ export type StakePoolProps = {
   performance: number,
   controlledStake: BigNumber,
   producedBlocks: number,
-  createdAt: Date,
   description: string,
-  // cost: BigNumber,
+  cost: BigNumber,
   // pledge: BigNumber,
   isCharity: boolean,
   name: string,
@@ -39,10 +38,9 @@ export default class StakePool {
   @observable pledgeAddress: string;
   @observable performance: number;
   @observable producedBlocks: number;
-  @observable controlledStake: number;
+  @observable controlledStake: BigNumber;
   // @observable pledge: BigNumber;
-  // @observable cost: BigNumber;
-  @observable createdAt: Date;
+  @observable cost: BigNumber;
   @observable description: string = '';
   @observable isCharity: boolean;
   @observable name: string = '';

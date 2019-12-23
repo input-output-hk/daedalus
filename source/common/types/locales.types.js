@@ -4,7 +4,12 @@ export type Locales = {
   japanese: string,
 };
 
-export const LOCALES: Locales = {
+export const LOCALES = {
   english: 'en-US',
   japanese: 'ja-JP',
+};
+
+export const humanizedDurationLanguages = {
+  'en-US': 'en',
+  'ja-JP': 'ja',
 };

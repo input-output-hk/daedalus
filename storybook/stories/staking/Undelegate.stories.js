@@ -1,17 +1,20 @@
 // @flow
 import React from 'react';
 import BigNumber from 'bignumber.js';
+import moment from 'moment';
 import { linkTo } from '@storybook/addon-links';
 
 // Screens
 import UndelegateConfirmationDialog from '../../../source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog';
 import UndelegateConfirmationResultDialog from '../../../source/renderer/app/components/staking/delegation-center/UndelegateConfirmationResultDialog';
 
-export const StakingUndelegateConfirmationStory = () => (
+export const StakingUndelegateConfirmationStory = (props: {
+  unknownStakePool?: boolean,
+}) => (
   <UndelegateConfirmationDialog
     walletName="Darko's ADA"
-    stakePoolName="Lush 1"
-    stakePoolTicker="LSH1"
+    stakePoolName={!props.unknownStakePool ? 'Lush 1' : null}
+    stakePoolTicker={!props.unknownStakePool ? 'LSH1' : null}
     onConfirm={linkTo(
       'Decentralization | Staking',
       'Undelegate Confirmation Result'
@@ -24,11 +27,17 @@ export const StakingUndelegateConfirmationStory = () => (
   />
 );
 
-export const StakingUndelegateConfirmationResultStory = () => (
+export const StakingUndelegateConfirmationResultStory = ({
+  locale,
+}: {
+  locale: string,
+}) => (
   <UndelegateConfirmationResultDialog
     walletName="Darko's ADA"
     onClose={() => null}
-    currentLocale="en-US"
-    nextEpochStartTime="2019-12-09T00:00:00.161Z"
+    currentLocale={locale}
+    futureEpochStartTime={moment()
+      .add(35, 'hour')
+      .toString()}
   />
 );

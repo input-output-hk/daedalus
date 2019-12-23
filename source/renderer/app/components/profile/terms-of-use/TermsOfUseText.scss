@@ -3,16 +3,30 @@
   text-align: justify;
   user-select: text;
 
+  a {
+    color: var(--theme-support-settings-text-color);
+  }
+
+  hr {
+    border-color: var(--theme-support-settings-text-color);
+    margin: 25px 0 30px;
+    opacity: 0.15;
+  }
+
   h1,
   h2 {
     font-family: var(--font-medium);
-    font-size: 19px;
+  }
+
+  h1 {
+    font-size: 21px;
     margin-bottom: 11px;
   }
 
   h2 {
-    margin-bottom: 4px;
-    margin-top: 13px;
+    font-size: 19px;
+    margin-bottom: 11px;
+    margin-top: 22px;
   }
 
   ul {
@@ -33,12 +47,13 @@
 
   p,
   li {
-    font-family: var(--font-regular);
+    font-family: var(--font-light);
     line-height: 1.38;
     margin-bottom: 11px;
 
     strong {
-      font-weight: bold;
+      font-family: var(--font-medium);
+      font-weight: normal;
     }
   }
   li {

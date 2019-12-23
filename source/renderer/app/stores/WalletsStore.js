@@ -41,7 +41,6 @@ import type {
 import type {
   TransferFundsCalculateFeeRequest,
   TransferFundsRequest,
-  QuitStakePoolResponse,
 } from '../api/wallets/types';
 /* eslint-disable consistent-return */
 
@@ -91,10 +90,6 @@ export default class WalletsStore extends Store {
   @observable activeValue: ?BigNumber = null;
   @observable walletsRequest: Request<Array<Wallet>> = new Request(
     this.api.ada.getWallets
-  );
-  @observable
-  quitStakePoolRequest: Request<QuitStakePoolResponse> = new Request(
-    this.api.ada.quitStakePool
   );
   @observable importFromFileRequest: Request<Wallet> = new Request(
     this.api.ada.importWalletFromFile
@@ -358,13 +353,15 @@ export default class WalletsStore extends Store {
     stakePoolId: string,
     passphrase: string,
   }) => {
+    const { quitStakePoolRequest } = this.stores.staking;
+    const { quitStakePool } = this.actions.staking;
     const walletToUndelegate = this.getWalletById(params.walletId);
     if (!walletToUndelegate) {
       return;
     }
-    await this.quitStakePoolRequest.execute(params);
+    await quitStakePool.trigger(params);
     this._setUndelegateWalletSubmissionSuccess({ result: true });
-    this.quitStakePoolRequest.reset();
+    quitStakePoolRequest.reset();
     this.refreshWalletsData();
   };
 
@@ -531,6 +528,10 @@ export default class WalletsStore extends Store {
     return (
       this.walletsRequest.wasExecuted && this.walletsRequest.result.length > 0
     );
+  }
+
+  @computed get hasRewardsWallets(): boolean {
+    return this.allWallets.length > 0;
   }
 
   @computed get hasMaxWallets(): boolean {

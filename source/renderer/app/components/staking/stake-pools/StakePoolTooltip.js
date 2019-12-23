@@ -1,7 +1,6 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import BigNumber from 'bignumber.js';
 import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import classnames from 'classnames';
@@ -14,8 +13,7 @@ import StakePool from '../../../domains/StakePool';
 import closeCross from '../../../assets/images/close-cross.inline.svg';
 import externalLinkIcon from '../../../assets/images/link-ic.inline.svg';
 import { getColorFromRange } from '../../../utils/colors';
-import { formattedWalletAmount } from '../../../utils/formatters';
-import { LOVELACES_PER_ADA } from '../../../config/numbersConfig';
+import { formattedWalletAmount, shortNumber } from '../../../utils/formatters';
 import { rangeMap } from '../../../utils/rangeMap';
 import {
   THUMBNAIL_HEIGHT,
@@ -44,10 +42,20 @@ const messages = defineMessages({
     defaultMessage: '!!!Profit margin:',
     description: '"Profit margin" for the Stake Pools Tooltip page.',
   },
+  costPerEpoch: {
+    id: 'staking.stakePools.tooltip.costPerEpoch',
+    defaultMessage: '!!!Cost per epoch:',
+    description: '"Cost per epoch" for the Stake Pools Tooltip page.',
+  },
   performance: {
     id: 'staking.stakePools.tooltip.performance',
     defaultMessage: '!!!Performance:',
     description: '"Performance" for the Stake Pools Tooltip page.',
+  },
+  producedBlocks: {
+    id: 'staking.stakePools.tooltip.producedBlocks',
+    defaultMessage: '!!!Produced blocks:',
+    description: '"Produced blocks" for the Stake Pools Tooltip page.',
   },
   retirement: {
     id: 'staking.stakePools.tooltip.retirement',
@@ -55,9 +63,9 @@ const messages = defineMessages({
     description: '"Retirement" for the Stake Pools Tooltip page.',
   },
   // cost: {
-  //   id: 'staking.stakePools.tooltip.cost',
-  //   defaultMessage: '!!!Cost:',
-  //   description: 'Cost" for the Stake Pools Tooltip page.',
+  //  id: 'staking.stakePools.tooltip.cost',
+  //  defaultMessage: '!!!Operating Costs:',
+  //  description: 'Cost" for the Stake Pools Tooltip page.',
   // },
   // pledge: {
   //   id: 'staking.stakePools.tooltip.pledge',
@@ -375,12 +383,12 @@ export default class StakePoolTooltip extends Component<Props, State> {
       homepage,
       ranking,
       controlledStake,
-      profitMargin,
       performance,
+      producedBlocks,
       retiring,
-      // cost,
-      // pledge,
       pledgeAddress,
+      cost,
+      profitMargin,
     } = stakePool;
 
     const componentClassnames = classnames([
@@ -423,13 +431,17 @@ export default class StakePoolTooltip extends Component<Props, State> {
             </div>
           )}
           <div className={styles.description}>{description}</div>
-          <button
-            className={styles.homepage}
+
+          <span
+            role="presentation"
+            aria-hidden
+            className={styles.homepageAddress}
             onClick={() => onOpenExternalLink(homepage)}
           >
-            <span className={styles.homepageContent}>{homepage}</span>
+            {homepage}
             <SVGInline svg={externalLinkIcon} />
-          </button>
+          </span>
+
           <dl className={styles.table}>
             <dt>{intl.formatMessage(messages.ranking)}</dt>
             <dd className={styles.ranking}>
@@ -442,14 +454,8 @@ export default class StakePoolTooltip extends Component<Props, State> {
               </span>
             </dd>
             <dt>{intl.formatMessage(messages.controlledStake)}</dt>
-            <dd className={styles.controlledStake}>
-              <span>
-                {formattedWalletAmount(
-                  new BigNumber(controlledStake).dividedBy(LOVELACES_PER_ADA),
-                  true,
-                  false
-                )}
-              </span>
+            <dd className={styles.defaultColor}>
+              <span>{formattedWalletAmount(controlledStake, true, false)}</span>
             </dd>
             <dt>{intl.formatMessage(messages.profitMargin)}</dt>
             <dd className={styles.profitMargin}>
@@ -458,11 +464,23 @@ export default class StakePoolTooltip extends Component<Props, State> {
                   background: getColorFromRange(profitMargin, {
                     darken,
                     alpha,
-                    reverse,
                   }),
                 }}
               >
-                {parseFloat(profitMargin.toFixed(2))}%
+                {`${parseFloat(profitMargin.toFixed(2))}%`}
+              </span>
+            </dd>
+            <dt>{intl.formatMessage(messages.costPerEpoch)}</dt>
+            <dd className={styles.profitMargin}>
+              <span
+                style={{
+                  background: getColorFromRange(profitMargin, {
+                    darken,
+                    alpha,
+                  }),
+                }}
+              >
+                {`${formattedWalletAmount(cost, true, false)}`}
               </span>
             </dd>
             <dt>{intl.formatMessage(messages.performance)}</dt>
@@ -479,22 +497,26 @@ export default class StakePoolTooltip extends Component<Props, State> {
                 {parseFloat(performance.toFixed(2))}%
               </span>
             </dd>
-            {/*
-            <dt>{intl.formatMessage(messages.cost)}</dt>
+            <dt>{intl.formatMessage(messages.producedBlocks)}</dt>
+            <dd className={styles.defaultColor}>
+              <span>{shortNumber(producedBlocks)}</span>
+            </dd>
+            {/* <dt>{intl.formatMessage(messages.cost)}</dt>
             <dd>
               <span
                 style={{
-                  background: getColorFromRange(cost, {
+                  background: getColorFromRange(shortNumber(cost), {
                     darken,
                     alpha,
                   }),
                 }}
               >
-                {formattedWalletAmount(cost)}
+                {formattedWalletAmount(shortNumber(cost))}
               </span>
-            </dd></dl>
-            <dt>{intl.formatMessage(messages.pledge)}</dt>
-            <dd>
+            </dd> */}
+          </dl>
+          {/* <dt>{intl.formatMessage(messages.pledge)}</dt> */}
+          {/* <dd>
               <span
                 style={{
                   background: getColorFromRange(pledge, {
@@ -505,16 +527,14 @@ export default class StakePoolTooltip extends Component<Props, State> {
               >
                 {formattedWalletAmount(pledge)}
               </span>
-            </dd>
-            */}
-          </dl>
+            </dd> */}
           <button
-            className={styles.homepage}
+            className={styles.pledgeAddress}
             onClick={() =>
               onOpenExternalLink(getPledgeAddressUrl(pledgeAddress))
             }
           >
-            <span className={styles.homepageContent}>
+            <span className={styles.pledgeAddressContent}>
               {intl.formatMessage(messages.pledgeAddressLabel)}
             </span>
             <SVGInline svg={externalLinkIcon} />
