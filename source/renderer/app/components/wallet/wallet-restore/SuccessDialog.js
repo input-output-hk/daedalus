@@ -29,9 +29,23 @@ const messages = defineMessages({
   descriptionLine3: {
     id: 'wallet.restore.dialog.step.success.dialog.description.line3',
     defaultMessage:
-      '!!!Your new delegation preferences are now posted on the blockchain <strong>and will take effect after both the current and next Cardano epochs have completed in {timeUntilNextEpochStart}</strong>. During this time, your previous delegation preferences are still active.',
+      '!!!<strong>If your restored Balance wallet is empty, but you were expecting it to have funds</strong>, please check that you used the correct wallet recovery phrase during the restoration process.',
     description:
       'Description "line 3" on the wallet restore "success" step dialog.',
+  },
+  descriptionLine4: {
+    id: 'wallet.restore.dialog.step.success.dialog.description.line4',
+    defaultMessage:
+      '!!!If your restored Balance wallet is empty, but you were expecting it to have funds, please check that you used the correct wallet recovery phrase during the restoration process. <strong>The format of recovery phrases for paper wallets cannot be validated</strong>, so any combination of words is accepted as a potentially valid recovery phrase. Please take extra care when entering a paper wallet recovery phrase.',
+    description:
+      'Description "line 4" on the wallet restore "success" step dialog.',
+  },
+  descriptionLine5: {
+    id: 'wallet.restore.dialog.step.success.dialog.description.line5',
+    defaultMessage:
+      '!!!To participate in the Incentivized Testnet, the mainnet wallet you are restoring must have had funds at the time of the balance snapshot at 12.00 UTC, November 29, 2019. If you are sure that you used the correct wallet recovery phrase, then please check that you had funds in your mainnet wallet at this time.',
+    description:
+      'Description "line 5" on the wallet restore "success" step dialog.',
   },
 });
 
@@ -66,6 +80,15 @@ export default class SuccessDialog extends Component<Props> {
           </div>
           <div className={styles.description2}>
             <FormattedHTMLMessage {...messages.descriptionLine2} />
+          </div>
+          <div className={styles.description3}>
+            <FormattedHTMLMessage {...messages.descriptionLine3} />
+          </div>
+          <div className={styles.description4}>
+            <FormattedHTMLMessage {...messages.descriptionLine4} />
+          </div>
+          <div className={styles.description5}>
+            <FormattedHTMLMessage {...messages.descriptionLine5} />
           </div>
         </div>
       </WalletRestoreDialog>

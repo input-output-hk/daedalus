@@ -36,7 +36,10 @@
   }
 
   .description1,
-  .description2 {
+  .description2,
+  .description3,
+  .description4,
+  .description5 {
     color: var(--theme-delegation-steps-success-description-color);
     font-family: var(--font-light);
     font-size: 16px;
@@ -47,7 +50,10 @@
     }
   }
 
-  .description2 {
+  .description2,
+  .description3,
+  .description4,
+  .description5 {
     margin-top: 11px;
   }
 }
