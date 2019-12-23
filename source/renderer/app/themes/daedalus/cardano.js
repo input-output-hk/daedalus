@@ -817,6 +817,11 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-recovery-phrase-attention-background-color':
       'rgba(234, 76, 91, .1)',
   },
+  walletRestoreDialog: {
+    '--theme-wallet-restore-dialog-new-label-background-color':
+      'rgba(32, 34, 37, 0.1)',
+    '--theme-wallet-restore-dialog-new-label-color': '#5e6066',
+  },
 };
 
 const CARDANO_THEME_PARAMS: CreateThemeParams = {

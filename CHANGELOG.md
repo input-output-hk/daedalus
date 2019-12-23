@@ -5,11 +5,13 @@ Changelog
 
 ### Features
 
+- Added Yoroi wallets restoration to the "Restore Wallet" dialog ([PR 1740](https://github.com/input-output-hk/daedalus/pull/1740))
 - Implemented new menu shortcuts ([PR 1780](https://github.com/input-output-hk/daedalus/pull/1780))
 - Implemented all notifications to be on the top of the app and in front of any other element ([PR 1748](https://github.com/input-output-hk/daedalus/pull/1748))
+- Improved network screen with responsive main copy box ([PR 1797](https://github.com/input-output-hk/daedalus/pull/1797))
 
 ### Chores
-- Fixed network screen responsiveness on all screens ([PR 1797](https://github.com/input-output-hk/daedalus/pull/1797))
+- Updated `cardano-wallet` to revision `132a5faf8c076eb8e873857a15e80db56be7e6ca` ([PR 1740](https://github.com/input-output-hk/daedalus/pull/1740))
 
 ## 2.0.0-ITN1
 
