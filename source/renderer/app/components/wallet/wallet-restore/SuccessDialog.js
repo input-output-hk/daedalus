@@ -8,12 +8,12 @@ import styles from './SuccessDialog.scss';
 import type {
   WalletDaedalusKind,
   WalletKind,
-  WalletYoroiKind
+  WalletYoroiKind,
 } from '../../../types/walletRestoreTypes';
 import {
   WALLET_DAEDALUS_KINDS,
   WALLET_KINDS,
-  WALLET_YOROI_KINDS
+  WALLET_YOROI_KINDS,
 } from '../../../config/walletRestoreConfig';
 
 const messages = defineMessages({
@@ -81,10 +81,15 @@ export default class SuccessDialog extends Component<Props> {
     } = this.props;
 
     const isPaperWallet = walletKind === WALLET_KINDS.HARDWARE;
-    const isDaedalusBalanceWallet = (walletKindDaedalus === WALLET_DAEDALUS_KINDS.BALANCE_12_WORD) || (walletKindDaedalus === WALLET_DAEDALUS_KINDS.BALANCE_27_WORD);
-    const isDaedalusRewardsWallet = walletKindDaedalus === WALLET_DAEDALUS_KINDS.REWARD_15_WORD;
-    const isYoroiBalanceWallet = walletKindYoroi === WALLET_YOROI_KINDS.BALANCE_15_WORD;
-    const isYoroiRewardsWallet = walletKindYoroi === WALLET_YOROI_KINDS.REWARD_15_WORD;
+    const isDaedalusBalanceWallet =
+      walletKindDaedalus === WALLET_DAEDALUS_KINDS.BALANCE_12_WORD ||
+      walletKindDaedalus === WALLET_DAEDALUS_KINDS.BALANCE_27_WORD;
+    const isDaedalusRewardsWallet =
+      walletKindDaedalus === WALLET_DAEDALUS_KINDS.REWARD_15_WORD;
+    const isYoroiBalanceWallet =
+      walletKindYoroi === WALLET_YOROI_KINDS.BALANCE_15_WORD;
+    const isYoroiRewardsWallet =
+      walletKindYoroi === WALLET_YOROI_KINDS.REWARD_15_WORD;
 
     return (
       <WalletRestoreDialog
@@ -102,18 +107,28 @@ export default class SuccessDialog extends Component<Props> {
           <div className={styles.description1}>
             <FormattedHTMLMessage {...messages.descriptionLine1} />
           </div>
-          {(isDaedalusRewardsWallet || isYoroiRewardsWallet) && <div className={styles.description2}>
-            <FormattedHTMLMessage {...messages.descriptionLine2} />
-          </div>}
-          {(isDaedalusBalanceWallet || isYoroiBalanceWallet) && <div className={styles.description3}>
-            <FormattedHTMLMessage {...messages.descriptionLine3} />
-          </div>}
-          {isPaperWallet && <div className={styles.description4}>
-            <FormattedHTMLMessage {...messages.descriptionLine4} />
-          </div>}
-          {(isDaedalusBalanceWallet || isYoroiBalanceWallet || isPaperWallet) && <div className={styles.description5}>
-            <FormattedHTMLMessage {...messages.descriptionLine5} />
-          </div>}
+          {(isDaedalusRewardsWallet || isYoroiRewardsWallet) && (
+            <div className={styles.description2}>
+              <FormattedHTMLMessage {...messages.descriptionLine2} />
+            </div>
+          )}
+          {(isDaedalusBalanceWallet || isYoroiBalanceWallet) && (
+            <div className={styles.description3}>
+              <FormattedHTMLMessage {...messages.descriptionLine3} />
+            </div>
+          )}
+          {isPaperWallet && (
+            <div className={styles.description4}>
+              <FormattedHTMLMessage {...messages.descriptionLine4} />
+            </div>
+          )}
+          {(isDaedalusBalanceWallet ||
+            isYoroiBalanceWallet ||
+            isPaperWallet) && (
+            <div className={styles.description5}>
+              <FormattedHTMLMessage {...messages.descriptionLine5} />
+            </div>
+          )}
         </div>
       </WalletRestoreDialog>
     );

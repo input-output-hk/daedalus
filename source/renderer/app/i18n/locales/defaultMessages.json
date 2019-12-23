@@ -8238,7 +8238,7 @@
         "description": "Placeholder for the \"Password\" inputs in the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 63
+          "line": 64
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/ConfigurationDialog.js",
         "id": "wallet.restore.dialog.step.configuration.input.passwordFields.placeholder",
@@ -8296,6 +8296,95 @@
       }
     ],
     "path": "source/renderer/app/components/wallet/wallet-restore/MnemonicsDialog.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Close",
+        "description": "Label for Close button on the wallet restore \"success\" step dialog.",
+        "end": {
+          "column": 3,
+          "line": 25
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/SuccessDialog.js",
+        "id": "wallet.restore.dialog.step.success.dialog.close",
+        "start": {
+          "column": 20,
+          "line": 20
+        }
+      },
+      {
+        "defaultMessage": "!!!Your wallet has been successfully restored.",
+        "description": "Description \"line 1\" on the wallet restore \"success\" step dialog.",
+        "end": {
+          "column": 3,
+          "line": 31
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/SuccessDialog.js",
+        "id": "wallet.restore.dialog.step.success.dialog.description.line1",
+        "start": {
+          "column": 20,
+          "line": 26
+        }
+      },
+      {
+        "defaultMessage": "!!!Restored wallets should have all the funds and transaction history of the original wallet. <strong>If your restored wallet does not have the funds and transaction history you were expecting</strong>, please check that you have the correct wallet recovery phrase for the wallet you were intending to restore.",
+        "description": "Description \"line 2\" on the wallet restore \"success\" step dialog.",
+        "end": {
+          "column": 3,
+          "line": 38
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/SuccessDialog.js",
+        "id": "wallet.restore.dialog.step.success.dialog.description.line2",
+        "start": {
+          "column": 20,
+          "line": 32
+        }
+      },
+      {
+        "defaultMessage": "!!!<strong>If your restored Balance wallet is empty, but you were expecting it to have funds</strong>, please check that you used the correct wallet recovery phrase during the restoration process.",
+        "description": "Description \"line 3\" on the wallet restore \"success\" step dialog.",
+        "end": {
+          "column": 3,
+          "line": 45
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/SuccessDialog.js",
+        "id": "wallet.restore.dialog.step.success.dialog.description.line3",
+        "start": {
+          "column": 20,
+          "line": 39
+        }
+      },
+      {
+        "defaultMessage": "!!!If your restored Balance wallet is empty, but you were expecting it to have funds, please check that you used the correct wallet recovery phrase during the restoration process. <strong>The format of recovery phrases for paper wallets cannot be validated</strong>, so any combination of words is accepted as a potentially valid recovery phrase. Please take extra care when entering a paper wallet recovery phrase.",
+        "description": "Description \"line 4\" on the wallet restore \"success\" step dialog.",
+        "end": {
+          "column": 3,
+          "line": 52
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/SuccessDialog.js",
+        "id": "wallet.restore.dialog.step.success.dialog.description.line4",
+        "start": {
+          "column": 20,
+          "line": 46
+        }
+      },
+      {
+        "defaultMessage": "!!!To participate in the Incentivized Testnet, the mainnet wallet you are restoring must have had funds at the time of the balance snapshot at 12.00 UTC, November 29, 2019. If you are sure that you used the correct wallet recovery phrase, then please check that you had funds in your mainnet wallet at this time.",
+        "description": "Description \"line 5\" on the wallet restore \"success\" step dialog.",
+        "end": {
+          "column": 3,
+          "line": 59
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/SuccessDialog.js",
+        "id": "wallet.restore.dialog.step.success.dialog.description.line5",
+        "start": {
+          "column": 20,
+          "line": 53
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/wallet-restore/SuccessDialog.json"
   },
   {
     "descriptors": [
