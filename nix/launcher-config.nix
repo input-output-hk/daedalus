@@ -8,7 +8,10 @@
 }:
 let
   dirSep = if os == "windows" then "\\" else "/";
-  cfg = jormungandrLib.mkConfig jormungandrLib.environments.${environment};
+  envCfg = jormungandrLib.environments.${environment};
+  cfg = jormungandrLib.mkConfig (envCfg // {
+    trustedPeers = envCfg.daedalusPeers or envCfg.trustedPeers;
+  });
   jormungandrConfigForCluster = builtins.toFile "jormungandr-config-${environment}.yaml" (builtins.toJSON cfg);
 
   installDirectorySuffix.qa = "QA";
