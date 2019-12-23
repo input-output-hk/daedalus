@@ -21,8 +21,7 @@ const messages = defineMessages({
   },
   descriptionLine2: {
     id: 'wallet.restore.dialog.step.success.dialog.description.line2',
-    defaultMessage:
-      '!!!Your new delegation preferences are now posted on the blockchain <strong>and will take effect after both the current and next Cardano epochs have completed in {timeUntilNextEpochStart}</strong>. During this time, your previous delegation preferences are still active.',
+    defaultMessage: '!!!Restored wallets should have all the funds and transaction history of the original wallet. <strong>If your restored wallet does not have the funds and transaction history you were expecting</strong>, please check that you have the correct wallet recovery phrase for the wallet you were intending to restore.',
     description:
       'Description "line 2" on the wallet restore "success" step dialog.',
   },
