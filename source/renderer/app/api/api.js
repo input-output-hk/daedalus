@@ -270,7 +270,8 @@ export default class AdaApi {
     request: GetTransactionsRequest
   ): Promise<GetTransactionsResponse> => {
     Logger.debug('AdaApi::searchHistory called', { parameters: request });
-    const { walletId, order, fromDate, toDate, isLegacy } = request;
+    const { walletId: _walletId, order, fromDate, toDate, isLegacy } = request;
+    const walletId = _walletId.replace('legacy_', '');
 
     const params = Object.assign(
       {},
@@ -1336,7 +1337,7 @@ const _createWalletFromServerData = action(
   'AdaApi::_createWalletFromServerData',
   (data: AdaWallet) => {
     const {
-      id,
+      id: _id,
       address_pool_gap: addressPoolGap,
       balance,
       name,
@@ -1345,6 +1346,8 @@ const _createWalletFromServerData = action(
       delegation,
       isLegacy = false,
     } = data;
+    const idSufix = isLegacy ? 'legacy_' : '';
+    const id = `${idSufix}${_id}`;
     const passphraseLastUpdatedAt = get(passphrase, 'last_updated_at', null);
     const walletTotalAmount =
       balance.total.unit === WalletUnits.LOVELACE
