@@ -6,6 +6,8 @@ Changelog
 ### Chores
 - Updated `cardano-wallet` to revision `992161dff5aa11c86c80238a1ddf3c8674ce75f3`
 
+## 2.0.0-ITN1
+
 ### Features
 
 - Added stake pool metadata registry for "SelfNode" network ([PR 1771](https://github.com/input-output-hk/daedalus/pull/1771/))
