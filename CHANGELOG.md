@@ -11,7 +11,7 @@ Changelog
 - Improved network screen with responsive main copy box ([PR 1797](https://github.com/input-output-hk/daedalus/pull/1797))
 
 ### Fixes
-- Added wallet legacy/new types to the route path, in order to handle legacy and new wallets with same IDs ([PR 1803](https://github.com/input-output-hk/daedalus/pull/1803))
+- Added wallet legacy/new types to the route path, in order to handle legacy and new wallets with same IDs ([PR 1805](https://github.com/input-output-hk/daedalus/pull/1805))
 
 ### Chores
 - Updated `cardano-wallet` to revision `132a5faf8c076eb8e873857a15e80db56be7e6ca` ([PR 1740](https://github.com/input-output-hk/daedalus/pull/1740))
