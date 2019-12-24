@@ -4,7 +4,8 @@ Changelog
 ## 2.0.1-ITN1
 
 ### Chores
-- Updated `cardano-wallet` to revision `992161dff5aa11c86c80238a1ddf3c8674ce75f3`
+
+- Updated `cardano-wallet` to revision `398565cc1a65553827834520c5a95827a7c48d41`
 
 ## 2.0.0-ITN1
 
