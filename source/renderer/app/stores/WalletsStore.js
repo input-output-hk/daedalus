@@ -465,18 +465,32 @@ export default class WalletsStore extends Store {
   _restore = async () => {
     // reset getWalletRecoveryPhraseFromCertificateRequest to clear previous errors
     this.getWalletRecoveryPhraseFromCertificateRequest.reset();
-    let type: WALLET_RESTORE_TYPES = WALLET_RESTORE_TYPES.LEGACY;
-    if (this.walletKind === 'Daedalus' && this.walletKindDaedalus === 'Reward15Word') {
+    let type = WALLET_RESTORE_TYPES.LEGACY;
+    if (
+      this.walletKind === 'Daedalus' &&
+      this.walletKindDaedalus === 'Reward15Word'
+    ) {
       type = WALLET_RESTORE_TYPES.REGULAR;
-    } else if (this.walletKind === 'Yoroi' && this.walletKindYoroi === 'Balance15Word') {
+    } else if (
+      this.walletKind === 'Yoroi' &&
+      this.walletKindYoroi === 'Balance15Word'
+    ) {
       type = WALLET_RESTORE_TYPES.YOROI_LEGACY;
-    } else if (this.walletKind === 'Yoroi' && this.walletKindYoroi === 'Reward15Word') {
+    } else if (
+      this.walletKind === 'Yoroi' &&
+      this.walletKindYoroi === 'Reward15Word'
+    ) {
       type = WALLET_RESTORE_TYPES.YOROI_REGULAR;
-    } else if (this.walletKind === 'Hardware' && (this.walletKindHardware === 'Nano' || this.walletKindHardware === 'Trezor')) {
+    } else if (
+      this.walletKind === 'Hardware' &&
+      (this.walletKindHardware === 'Nano' ||
+        this.walletKindHardware === 'Trezor')
+    ) {
       type = WALLET_RESTORE_TYPES.CERTIFICATE;
     }
     const data = {
-      recoveryPhrase: this.mnemonics.join(' '),
+      recoveryPhrase:
+        this.mnemonics && this.mnemonics.length ? this.mnemonics.join(' ') : '',
       walletName: this.walletName,
       spendingPassword: this.spendingPassword,
       type,
