@@ -62,6 +62,13 @@ const messages = defineMessages({
     description:
       'Placeholder for the "Password" inputs in the wallet restore dialog.',
   },
+  continueButtonLabel: {
+    id:
+      'wallet.restore.dialog.step.configuration.continueButtonLabel',
+    defaultMessage: '!!!Continue',
+    description:
+      'Placeholder for the dialog "Continue" button',
+  },
 });
 
 type Props = {
@@ -212,7 +219,7 @@ export default class ConfigurationDialog extends Component<Props> {
         actions={[
           {
             primary: true,
-            label: 'Continue',
+            label: intl.formatMessage(messages.continueButtonLabel),
             onClick: this.submit,
           },
         ]}
