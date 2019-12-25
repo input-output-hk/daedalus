@@ -567,6 +567,7 @@
   "wallet.restore.dialog.step.configuration.input.walletName.label": "Wallet name",
   "wallet.restore.dialog.step.configuration.input.walletName.placeholder": "Name the wallet you are restoring",
   "wallet.restore.dialog.step.mnemonics.autocomplete.continueButtonLabel": "Check recovery phrase",
+  "wallet.restore.dialog.step.mnemonics.autocomplete.invalidRecoveryPhrase": "Invalid recovery phrase",
   "wallet.restore.dialog.step.mnemonics.autocomplete.noResults": "No results",
   "wallet.restore.dialog.step.mnemonics.autocomplete.placeholder": "Enter your {numberOfWords}-word recovery phrase",
   "wallet.restore.dialog.step.success.dialog.close": "Close",

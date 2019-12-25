@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-// import { join } from 'lodash';
+import { join } from 'lodash';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import { Autocomplete } from 'react-polymorph/lib/components/Autocomplete';
@@ -8,7 +8,7 @@ import { AutocompleteSkin } from 'react-polymorph/lib/skins/simple/AutocompleteS
 import WalletRestoreDialog from './widgets/WalletRestoreDialog';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import globalMessages from '../../../i18n/global-messages';
-// import { isValidMnemonic } from '../../../../../common/crypto/decrypt';
+import { isValidMnemonic } from '../../../../../common/crypto/decrypt';
 import validWords from '../../../../../common/crypto/valid-words.en';
 import {
   WALLET_KINDS,
@@ -39,6 +39,11 @@ const messages = defineMessages({
     id: 'wallet.restore.dialog.step.mnemonics.autocomplete.continueButtonLabel',
     defaultMessage: '!!!Check recovery phrase',
     description: 'Label for the mnemonics Continue button.',
+  },
+  invalidRecoveryPhrase: {
+    id: 'wallet.restore.dialog.step.mnemonics.autocomplete.invalidRecoveryPhrase',
+    defaultMessage: '!!!Invalid recovery phrase',
+    description: 'Label for invalid recovery phrase',
   },
 });
 
@@ -96,13 +101,11 @@ export default class MnemonicsDialog extends Component<Props> {
                 }),
               ];
             }
-            return true;
-            // @WALLET-RESTORE TODO: Check which wallets can have the mnemonics validated
-            // const value = join(enteredWords, ' ');
-            // return [
-            //   isValidMnemonic(value),
-            //   intl.formatMessage(messages.REPLACE),
-            // ];
+            const value = join(enteredWords, ' ');
+            return [
+               isValidMnemonic(value, this.expectedWordCount),
+               intl.formatMessage(messages.invalidRecoveryPhrase),
+            ];
           },
         },
       },
