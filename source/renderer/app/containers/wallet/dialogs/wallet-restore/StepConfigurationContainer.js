@@ -17,7 +17,7 @@ export default class ConfigurationDialogContainer extends Component<Props> {
     const { onContinue, actions } = this.props;
     const { restoreWalletSetConfig, restoreWallet } = actions.wallets;
     restoreWalletSetConfig.trigger({ walletName, spendingPassword });
-    restoreWallet.trigger({ walletName, spendingPassword });
+    restoreWallet.trigger();
     onContinue();
   };
 

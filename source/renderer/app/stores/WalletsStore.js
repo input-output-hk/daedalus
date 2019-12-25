@@ -462,10 +462,7 @@ export default class WalletsStore extends Store {
     );
   };
 
-  _restore = async (params: {
-    walletName: string,
-    spendingPassword: string
-  }) => {
+  _restore = async () => {
     // reset getWalletRecoveryPhraseFromCertificateRequest to clear previous errors
     this.getWalletRecoveryPhraseFromCertificateRequest.reset();
     let type: WALLET_RESTORE_TYPES = WALLET_RESTORE_TYPES.LEGACY;
@@ -480,8 +477,8 @@ export default class WalletsStore extends Store {
     }
     const data = {
       recoveryPhrase: this.mnemonics.join(' '),
-      walletName: params.walletName,
-      spendingPassword: params.spendingPassword,
+      walletName: this.walletName,
+      spendingPassword: this.spendingPassword,
       type,
     };
 
