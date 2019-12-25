@@ -23,10 +23,6 @@ export default class WalletsActions {
   createWalletAbort: Action<any> = new Action();
 
   /* ----------  Restore Wallet  ---------- */
-  restoreWallet: Action<{
-    name: string,
-    spendingPassword: string,
-  }> = new Action();
   restoreWalletBegin: Action<any> = new Action();
   restoreWalletChangeStep: Action<any> = new Action();
   restoreWalletClose: Action<any> = new Action();
@@ -40,12 +36,7 @@ export default class WalletsActions {
     spendingPassword: string,
   }> = new Action();
 
-  restoreWallet: Action<{
-    recoveryPhrase: string,
-    walletName: string,
-    spendingPassword: string,
-    type?: string,
-  }> = new Action();
+  restoreWallet: Action<any> = new Action();
   importWalletFromFile: Action<WalletImportFromFileParams> = new Action();
   deleteWallet: Action<{ walletId: string, isLegacy?: boolean }> = new Action();
   undelegateWallet: Action<{
