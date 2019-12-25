@@ -14,18 +14,19 @@ export default class ConfigurationDialogContainer extends Component<Props> {
   static defaultProps = DefaultProps;
 
   handleContinue = (walletName: string, spendingPassword: string) => {
-    const { /* onContinue, */ actions } = this.props;
-    const { restoreWalletSetConfig } = actions.wallets;
+    const { onContinue, actions } = this.props;
+    const { restoreWalletSetConfig, restoreWallet } = actions.wallets;
     restoreWalletSetConfig.trigger({ walletName, spendingPassword });
-    // onContinue();
+    restoreWallet.trigger({ walletName, spendingPassword });
+    onContinue();
   };
 
   render() {
-    const { onClose, onContinue, onBack } = this.props;
+    const { onClose, onBack } = this.props;
     return (
       <ConfigurationDialog
         onClose={onClose}
-        onContinue={onContinue}
+        onContinue={this.handleContinue}
         onBack={onBack}
       />
     );

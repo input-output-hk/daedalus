@@ -245,9 +245,6 @@ export default class WalletsStore extends Store {
       this._restoreWalletSetMnemonics
     );
     walletsActions.restoreWalletSetConfig.listen(this._restoreWalletSetConfig);
-    // Todo: remove once the new Steps implementation is done
-    walletsActions.restoreWallet.listen(this._restoreWallet);
-    // ---
     walletsActions.deleteWallet.listen(this._deleteWallet);
     walletsActions.undelegateWallet.listen(this._undelegateWallet);
     walletsActions.setUndelegateWalletSubmissionSuccess.listen(
@@ -466,11 +463,55 @@ export default class WalletsStore extends Store {
   };
 
   _restore = async (params: {
-    recoveryPhrase: string,
     walletName: string,
-    spendingPassword: string,
+    spendingPassword: string
   }) => {
-    const restoredWallet = await this.restoreRequest.execute(params).promise;
+    // reset getWalletRecoveryPhraseFromCertificateRequest to clear previous errors
+    this.getWalletRecoveryPhraseFromCertificateRequest.reset();
+    let type: WALLET_RESTORE_TYPES = WALLET_RESTORE_TYPES.LEGACY;
+    if (this.walletKind === 'Daedalus' && this.walletKindDaedalus === 'Reward15Word') {
+      type = WALLET_RESTORE_TYPES.REGULAR;
+    } else if (this.walletKind === 'Yoroi' && this.walletKindYoroi === 'Balance15Word') {
+      type = WALLET_RESTORE_TYPES.YOROI_LEGACY;
+    } else if (this.walletKind === 'Yoroi' && this.walletKindYoroi === 'Reward15Word') {
+      type = WALLET_RESTORE_TYPES.YOROI_REGULAR;
+    } else if (this.walletKind === 'Hardware' && (this.walletKindHardware === 'Nano' || this.walletKindHardware === 'Trezor')) {
+      type = WALLET_RESTORE_TYPES.CERTIFICATE;
+    }
+    const data = {
+      recoveryPhrase: this.mnemonics.join(' '),
+      walletName: params.walletName,
+      spendingPassword: params.spendingPassword,
+      type,
+    };
+
+    if (type === WALLET_RESTORE_TYPES.CERTIFICATE) {
+      // Split recovery phrase to 18 (scrambled mnemonics) + 9 (mnemonics seed) mnemonics
+      const recoveryPhraseArray = this.mnemonics;
+      const chunked = chunk(recoveryPhraseArray, 18);
+      const scrambledInput = chunked[0]; // first 18 mnemonics
+      const certificatePassword = chunked[1]; // last 9 mnemonics
+      const spendingPassword = mnemonicToSeedHex(certificatePassword.join(' '));
+
+      // Unscramble 18-word wallet certificate mnemonic to 12-word mnemonic
+      const unscrambledRecoveryPhrase: Array<string> = await this.getWalletRecoveryPhraseFromCertificateRequest.execute(
+        {
+          passphrase: spendingPassword,
+          scrambledInput: scrambledInput.join(' '),
+        }
+      ).promise;
+      data.recoveryPhrase = unscrambledRecoveryPhrase.join(' ');
+      this.getWalletRecoveryPhraseFromCertificateRequest.reset();
+    }
+
+    const request =
+      type === WALLET_RESTORE_TYPES.LEGACY ||
+      type === WALLET_RESTORE_TYPES.YOROI_LEGACY ||
+      type === WALLET_RESTORE_TYPES.CERTIFICATE
+        ? this.restoreLegacyRequest
+        : this.restoreRequest;
+
+    const restoredWallet = await request.execute(data).promise;
     if (!restoredWallet)
       throw new Error('Restored wallet was not received correctly');
     await this._createWalletLocalData(restoredWallet.id);
@@ -832,58 +873,6 @@ export default class WalletsStore extends Store {
     this.walletsRequest.reset();
     this.stores.addresses.addressesRequests = [];
     this.stores.transactions.transactionsRequests = [];
-  };
-
-  @action _restoreWallet = async (params: {
-    recoveryPhrase: string,
-    walletName: string,
-    spendingPassword: string,
-    type?: string,
-  }) => {
-    // reset getWalletRecoveryPhraseFromCertificateRequest to clear previous errors
-    this.getWalletRecoveryPhraseFromCertificateRequest.reset();
-
-    const data = {
-      recoveryPhrase: params.recoveryPhrase,
-      walletName: params.walletName,
-      spendingPassword: params.spendingPassword,
-      type: params.type,
-    };
-
-    if (params.type === WALLET_RESTORE_TYPES.CERTIFICATE) {
-      // Split recovery phrase to 18 (scrambled mnemonics) + 9 (mnemonics seed) mnemonics
-      const recoveryPhraseArray = params.recoveryPhrase.split(' ');
-      const chunked = chunk(recoveryPhraseArray, 18);
-      const scrambledInput = chunked[0]; // first 18 mnemonics
-      const certificatePassword = chunked[1]; // last 9 mnemonics
-      const spendingPassword = mnemonicToSeedHex(certificatePassword.join(' '));
-
-      // Unscramble 18-word wallet certificate mnemonic to 12-word mnemonic
-      const unscrambledRecoveryPhrase: Array<string> = await this.getWalletRecoveryPhraseFromCertificateRequest.execute(
-        {
-          passphrase: spendingPassword,
-          scrambledInput: scrambledInput.join(' '),
-        }
-      ).promise;
-      data.recoveryPhrase = unscrambledRecoveryPhrase.join(' ');
-      this.getWalletRecoveryPhraseFromCertificateRequest.reset();
-    }
-
-    const request =
-      params.type === WALLET_RESTORE_TYPES.LEGACY ||
-      params.type === WALLET_RESTORE_TYPES.YOROI_LEGACY ||
-      params.type === WALLET_RESTORE_TYPES.CERTIFICATE
-        ? this.restoreLegacyRequest
-        : this.restoreRequest;
-
-    const restoredWallet = await request.execute(data).promise;
-    if (!restoredWallet)
-      throw new Error('Restored wallet was not received correctly');
-    await this._patchWalletRequestWithNewWallet(restoredWallet);
-    this.actions.dialogs.closeActiveDialog.trigger();
-    this.restoreRequest.reset();
-    this.goToWalletRoute(restoredWallet.id);
-    this.refreshWalletsData();
   };
 
   @action _importWalletFromFile = async (
