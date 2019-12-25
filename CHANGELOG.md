@@ -10,6 +10,9 @@ Changelog
 - Implemented all notifications to be on the top of the app and in front of any other element ([PR 1748](https://github.com/input-output-hk/daedalus/pull/1748))
 - Improved network screen with responsive main copy box ([PR 1797](https://github.com/input-output-hk/daedalus/pull/1797))
 
+### Fixes
+- Fixed handling of duplicated wallet IDs when restoring both legacy and new wallets from the same wallet recovery phrase ([PR 1805](https://github.com/input-output-hk/daedalus/pull/1805))
+
 ### Chores
 - Updated `cardano-wallet` to revision `132a5faf8c076eb8e873857a15e80db56be7e6ca` ([PR 1740](https://github.com/input-output-hk/daedalus/pull/1740))
 
