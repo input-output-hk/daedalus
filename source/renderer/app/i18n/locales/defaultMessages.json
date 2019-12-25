@@ -8246,6 +8246,20 @@
           "column": 29,
           "line": 58
         }
+      },
+      {
+        "defaultMessage": "!!!Continue",
+        "description": "Placeholder for the dialog \"Continue\" button",
+        "end": {
+          "column": 3,
+          "line": 69
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/ConfigurationDialog.js",
+        "id": "wallet.restore.dialog.step.configuration.continueButtonLabel",
+        "start": {
+          "column": 23,
+          "line": 65
+        }
       }
     ],
     "path": "source/renderer/app/components/wallet/wallet-restore/ConfigurationDialog.json"
@@ -8292,6 +8306,20 @@
         "start": {
           "column": 23,
           "line": 38
+        }
+      },
+      {
+        "defaultMessage": "!!!Invalid recovery phrase",
+        "description": "Label for invalid recovery phrase",
+        "end": {
+          "column": 3,
+          "line": 48
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/MnemonicsDialog.js",
+        "id": "wallet.restore.dialog.step.mnemonics.autocomplete.invalidRecoveryPhrase",
+        "start": {
+          "column": 25,
+          "line": 43
         }
       }
     ],

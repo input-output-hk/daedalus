@@ -63,11 +63,9 @@ const messages = defineMessages({
       'Placeholder for the "Password" inputs in the wallet restore dialog.',
   },
   continueButtonLabel: {
-    id:
-      'wallet.restore.dialog.step.configuration.continueButtonLabel',
+    id: 'wallet.restore.dialog.step.configuration.continueButtonLabel',
     defaultMessage: '!!!Continue',
-    description:
-      'Placeholder for the dialog "Continue" button',
+    description: 'Placeholder for the dialog "Continue" button',
   },
 });
 

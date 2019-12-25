@@ -41,7 +41,8 @@ const messages = defineMessages({
     description: 'Label for the mnemonics Continue button.',
   },
   invalidRecoveryPhrase: {
-    id: 'wallet.restore.dialog.step.mnemonics.autocomplete.invalidRecoveryPhrase',
+    id:
+      'wallet.restore.dialog.step.mnemonics.autocomplete.invalidRecoveryPhrase',
     defaultMessage: '!!!Invalid recovery phrase',
     description: 'Label for invalid recovery phrase',
   },
@@ -103,8 +104,8 @@ export default class MnemonicsDialog extends Component<Props> {
             }
             const value = join(enteredWords, ' ');
             return [
-               isValidMnemonic(value, this.expectedWordCount),
-               intl.formatMessage(messages.invalidRecoveryPhrase),
+              isValidMnemonic(value, this.expectedWordCount),
+              intl.formatMessage(messages.invalidRecoveryPhrase),
             ];
           },
         },
