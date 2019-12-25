@@ -33,7 +33,6 @@ storiesOf('Wallets|Add Wallet', module)
     else if (walletKindSelect === WALLET_KINDS.HARDWARE)
       selectItems = WALLET_HARDWARE_KINDS;
     else selectItems = WALLET_DAEDALUS_KINDS;
-
     let walletKindSpecificSelect;
     if (walletKindSelect)
       walletKindSpecificSelect = select(
