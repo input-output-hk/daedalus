@@ -580,7 +580,7 @@
   "wallet.restore.dialog.step.walletKind.hardwareWalletDisclaimer2": "We strongly recommend that you delete the Balance wallet which is restored from your hardware wallet once you have moved any funds into a Rewards wallet.",
   "wallet.restore.dialog.step.walletKind.label.daedalusWalletKind": "What kind of Daedalus wallet would you like to restore?",
   "wallet.restore.dialog.step.walletKind.label.daedalusWalletKindBalance12Word": "12 words <em>(Balance wallet)</em>",
-  "wallet.restore.dialog.step.walletKind.label.daedalusWalletKindBalance27Word": "27 words <em>(Balance wallet)</em>",
+  "wallet.restore.dialog.step.walletKind.label.daedalusWalletKindBalance27Word": "27 words - paper wallet <em>(Balance wallet)</em>",
   "wallet.restore.dialog.step.walletKind.label.daedalusWalletKindReward15Word": "15 words <em>(Rewards wallet)</em>",
   "wallet.restore.dialog.step.walletKind.label.hardwareWalletKind": "What kind of hardware wallet would you like to restore?",
   "wallet.restore.dialog.step.walletKind.label.hardwareWalletKindNano": "24 words - Ledger Nano S or Nano X (Balance wallet)",
