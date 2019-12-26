@@ -251,4 +251,14 @@ export default defineMessages({
     defaultMessage: '!!!seconds',
     description: 'Label for seconds value in duration.',
   },
+  rangeFrom: {
+    id: 'global.range.from',
+    defaultMessage: '!!!from',
+    description: 'From label of range.',
+  },
+  rangeTo: {
+    id: 'global.range.to',
+    defaultMessage: '!!!to',
+    description: 'To label of range.',
+  },
 });

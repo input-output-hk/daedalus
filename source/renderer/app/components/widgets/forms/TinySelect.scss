@@ -1,0 +1,12 @@
+$height: 16px;
+$width: 16px;
+
+.component {
+  :global {
+    .SelectOverrides_selectInput {
+      input {
+        height: 33px;
+      }
+    }
+  }
+}

@@ -1,0 +1,27 @@
+$height: 16px;
+$width: 16px;
+
+.component {
+  :global {
+    .SimpleCheckbox_check {
+      &::after {
+        border-width: 0 1px 1px 0;
+        height: 8px;
+        margin-top: -2px;
+        width: 3.2px;
+      }
+      &:not(.SimpleCheckbox_checked),
+      &.SimpleCheckbox_checked {
+        height: $height;
+        width: $width;
+      }
+    }
+  }
+
+  label {
+    font-family: var(--font-regular);
+    font-size: 14px;
+    line-height: 16px;
+    margin: 0 0 0 10px;
+  }
+}

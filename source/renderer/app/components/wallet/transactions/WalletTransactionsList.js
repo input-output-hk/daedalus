@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import type { Node } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
+import BigNumber from 'bignumber.js';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { defineMessages, intlShape } from 'react-intl';
@@ -10,6 +11,7 @@ import moment from 'moment';
 import { set, omit, has } from 'lodash';
 import styles from './WalletTransactionsList.scss';
 import Transaction from './Transaction';
+import Filter from './Filter';
 import { WalletTransaction } from '../../../domains/WalletTransaction';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import { VirtualTransactionList } from './render-strategies/VirtualTransactionList';
@@ -289,6 +291,13 @@ export default class WalletTransactionsList extends Component<Props> {
     return (
       <div className={styles.component}>
         {syncingTransactionsSpinner}
+        <Filter
+          minDate={new Date('2019-09-23').getTime()}
+          maxDate={new Date('2019-12-19').getTime()}
+          minAmount={new BigNumber(200)}
+          maxAmount={new BigNumber(1200)}
+          onFilter={payload => console.log('---here--', payload)}
+        />
         {isRenderingAsVirtualList ? (
           <VirtualTransactionList
             getExpandedTransactions={this.getExpandedTransactions}

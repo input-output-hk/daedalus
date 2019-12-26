@@ -1,0 +1,74 @@
+.filter {
+  font-family: var(--font-regular);
+
+  & > .title {
+    align-items: center;
+    color: var(--theme-dialog-text-color);
+    display: flex;
+    justify-content: space-between;
+
+    .titleText {
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      line-height: 1.38;
+    }
+    .titleLink {
+      font-size: 12px;
+      line-height: 1.33;
+      opacity: 0.5;
+    }
+  }
+
+  & > .content {
+    .header {
+      align-items: center;
+      display: flex;
+      justify-content: space-between;
+      margin-top: 14px;
+
+      label {
+        color: var(--theme-dialog-text-color);
+        font-family: var(--font-regular);
+        font-size: 14px;
+        line-height: 1.36;
+      }
+    }
+
+    .body {
+      align-items: center;
+      color: var(--theme-dialog-text-color);
+      display: flex;
+      margin-top: 6px;
+    }
+
+    .type {
+      .body {
+        margin-top: 10px;
+
+        .typeCheckbox {
+          margin-right: 20px;
+        }
+      }
+    }
+
+    .dateRange {
+      margin-top: 14px;
+
+      :global {
+        .SimpleFormField_label {
+          font-size: 14px;
+        }
+      }
+    }
+
+    .customDateRange {
+    }
+
+    .amountRange {
+    }
+
+    .action {
+    }
+  }
+}
