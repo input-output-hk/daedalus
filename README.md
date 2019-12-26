@@ -9,6 +9,17 @@
 
 Daedalus - cryptocurrency wallet
 
+## Installation
+
+### Nix
+[Nix](https://nixos.org/nix/) is needed to run the Selfnode for Daedalus.
+
+**Note:** There are special instructions for 
+[installing Nix on Catalina](https://github.com/NixOS/nix/issues/2925#issuecomment-564149154).
+
+### Yarn
+[Yarn](https://yarnpkg.com/lang/en/docs/install) is required to install NPM dependencies to build Daedalus.
+
 ## Automated build
 
 ### CI/dev build scripts
