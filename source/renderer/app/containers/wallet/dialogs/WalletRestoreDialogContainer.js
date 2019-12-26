@@ -54,8 +54,11 @@ export default class WalletRestoreContainer extends Component<Props> {
     const {
       restoreWalletAbort,
       restoreWalletClose,
+      restoreWalletEnd,
     } = this.props.actions.wallets;
-    if (this.shouldDisplayAbortAlert) {
+    if (this.props.stores.wallets.restoredWalletId) {
+      restoreWalletEnd.trigger(this.props.stores.wallets.restoredWalletId);
+    } else if (this.shouldDisplayAbortAlert) {
       restoreWalletAbort.trigger();
     } else {
       restoreWalletClose.trigger();

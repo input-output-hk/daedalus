@@ -24,6 +24,7 @@ export default class WalletsActions {
 
   /* ----------  Restore Wallet  ---------- */
   restoreWalletBegin: Action<any> = new Action();
+  restoreWalletEnd: Action<any> = new Action();
   restoreWalletChangeStep: Action<any> = new Action();
   restoreWalletClose: Action<any> = new Action();
   restoreWalletAbort: Action<any> = new Action();

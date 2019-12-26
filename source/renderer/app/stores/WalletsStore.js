@@ -173,6 +173,7 @@ export default class WalletsStore extends Store {
   @observable spendingPassword: ?string = null;
   // TODO: Remove once the new restore creation process is ready
   @observable restoreWalletUseNewProcess = true;
+  @observable restoredWalletId: ?string = null;
 
   /* ----------  Export Wallet  ---------- */
   @observable walletExportType: walletExportTypeChoices = 'paperWallet';
@@ -235,6 +236,7 @@ export default class WalletsStore extends Store {
     // Restore Wallet Actions ---
     walletsActions.restoreWallet.listen(this._restore);
     walletsActions.restoreWalletBegin.listen(this._restoreWalletBegin);
+    walletsActions.restoreWalletEnd.listen(this._restoreWalletEnd);
     walletsActions.restoreWalletChangeStep.listen(
       this._restoreWalletChangeStep
     );
@@ -339,6 +341,13 @@ export default class WalletsStore extends Store {
   @action _restoreWalletBegin = () => {
     this.restoreWalletStep = 0;
     this.restoreWalletShowAbortConfirmation = false;
+  };
+
+  @action _restoreWalletEnd = (restoredWalletId: string) => {
+    this.actions.dialogs.closeActiveDialog.trigger();
+    this.restoreRequest.reset();
+    this.goToWalletRoute(restoredWalletId);
+    this.refreshWalletsData();
   };
 
   @action _restoreWalletChangeStep = (isBack: boolean = false) => {
@@ -529,10 +538,9 @@ export default class WalletsStore extends Store {
       throw new Error('Restored wallet was not received correctly');
     await this._createWalletLocalData(restoredWallet.id);
     await this._patchWalletRequestWithNewWallet(restoredWallet);
-    this.actions.dialogs.closeActiveDialog.trigger();
-    this.restoreRequest.reset();
-    this.goToWalletRoute(restoredWallet.id);
-    this.refreshWalletsData();
+    runInAction('set wallets local data', () => {
+      this.restoredWalletId = restoredWallet.id;
+    });
   };
 
   _createWalletLocalData = async (id: string) => {
