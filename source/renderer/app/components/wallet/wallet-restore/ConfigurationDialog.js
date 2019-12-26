@@ -167,11 +167,7 @@ export default class ConfigurationDialog extends Component<Props> {
       onSuccess: form => {
         const { onContinue } = this.props;
         const { walletName, spendingPassword } = form.values();
-        const walletData: Object = {
-          walletName,
-          spendingPassword,
-        };
-        onContinue(walletData);
+        onContinue(walletName, spendingPassword);
       },
       onError: () =>
         handleFormErrors('.SimpleFormField_error', { focusElement: true }),

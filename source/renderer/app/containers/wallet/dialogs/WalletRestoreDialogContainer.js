@@ -40,12 +40,9 @@ export default class WalletRestoreContainer extends Component<Props> {
   onContinue = () => {
     const {
       restoreWalletChangeStep,
-      restoreWalletClose,
     } = this.props.actions.wallets;
     if (this.currentStep < RESTORE_WALLET_STEPS.length - 1) {
       restoreWalletChangeStep.trigger();
-    } else {
-      restoreWalletClose.trigger();
     }
   };
 
