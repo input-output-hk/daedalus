@@ -172,6 +172,7 @@ export type RestoreLegacyWalletRequest = {
   recoveryPhrase: string,
   walletName: string,
   spendingPassword: string,
+  isLedger: boolean,
 };
 
 export type UpdateWalletRequest = {

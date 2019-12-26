@@ -483,12 +483,11 @@ export default class WalletsStore extends Store {
       type = WALLET_RESTORE_TYPES.YOROI_REGULAR;
     }
 
-    const data = {
+    let data = {
       recoveryPhrase:
         this.mnemonics && this.mnemonics.length ? this.mnemonics.join(' ') : '',
       walletName: this.walletName,
       spendingPassword: this.spendingPassword,
-      type,
     };
 
     if (
@@ -510,8 +509,13 @@ export default class WalletsStore extends Store {
           scrambledInput: scrambledInput.join(' '),
         }
       ).promise;
-      data.recoveryPhrase = unscrambledRecoveryPhrase.join(' ');
       this.getWalletRecoveryPhraseFromCertificateRequest.reset();
+
+      data = {
+        ...data,
+        recoveryPhrase: unscrambledRecoveryPhrase.join(' '),
+        isLedger: this.walletKindHardware === 'Nano',
+      };
     }
 
     const request =

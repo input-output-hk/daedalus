@@ -768,18 +768,17 @@ export default class AdaApi {
     Logger.debug('AdaApi::restoreLegacyWallet called', {
       parameters: filterLogData(request),
     });
-    const { recoveryPhrase, walletName, spendingPassword } = request;
+    const { recoveryPhrase, walletName, spendingPassword, isLedger } = request;
     const walletInitData = {
       name: walletName,
       mnemonic_sentence: split(recoveryPhrase, ' '),
       passphrase: spendingPassword,
     };
+
     try {
       const legacyWallet: LegacyAdaWallet = await restoreLegacyWallet(
         this.config,
-        {
-          walletInitData,
-        }
+        { walletInitData, isLedger }
       );
       const extraLegacyWalletProps = {
         address_pool_gap: 0, // Not needed for legacy wallets
