@@ -173,7 +173,7 @@ export default class WalletsStore extends Store {
   @observable spendingPassword: ?string = null;
   // TODO: Remove once the new restore creation process is ready
   @observable restoreWalletUseNewProcess = true;
-  @observable restoredWalletId: ?string = null;
+  @observable restoredWallet: ?Wallet = null;
 
   /* ----------  Export Wallet  ---------- */
   @observable walletExportType: walletExportTypeChoices = 'paperWallet';
@@ -343,11 +343,14 @@ export default class WalletsStore extends Store {
     this.restoreWalletShowAbortConfirmation = false;
   };
 
-  @action _restoreWalletEnd = (restoredWalletId: string) => {
-    this.actions.dialogs.closeActiveDialog.trigger();
-    this.restoreRequest.reset();
-    this.goToWalletRoute(restoredWalletId);
-    this.refreshWalletsData();
+  @action _restoreWalletEnd = async () => {
+    if (this.restoredWallet) {
+      await this._patchWalletRequestWithNewWallet(this.restoredWallet);
+      this.actions.dialogs.closeActiveDialog.trigger();
+      this.restoreRequest.reset();
+      this.goToWalletRoute(this.restoredWallet ? this.restoredWallet.id : '');
+      this.refreshWalletsData();
+    }
   };
 
   @action _restoreWalletChangeStep = (isBack: boolean = false) => {
@@ -361,7 +364,15 @@ export default class WalletsStore extends Store {
 
   @action _restoreWalletClose = () => {
     this.restoreWalletStep = null;
+    this.restoredWallet = null;
     this.restoreWalletShowAbortConfirmation = false;
+    this.walletKind = null;
+    this.walletKindDaedalus = null;
+    this.walletKindYoroi = null;
+    this.walletKindHardware = null;
+    this.mnemonics = null;
+    this.walletName = null;
+    this.spendingPassword = null;
   };
 
   @action _restoreWalletAbort = () => {
@@ -537,9 +548,8 @@ export default class WalletsStore extends Store {
     if (!restoredWallet)
       throw new Error('Restored wallet was not received correctly');
     await this._createWalletLocalData(restoredWallet.id);
-    await this._patchWalletRequestWithNewWallet(restoredWallet);
-    runInAction('set wallets local data', () => {
-      this.restoredWalletId = restoredWallet.id;
+    runInAction('set restoredWallet', () => {
+      this.restoredWallet = restoredWallet;
     });
   };
 
@@ -760,8 +770,10 @@ export default class WalletsStore extends Store {
   // ACTIONS
 
   goToWalletRoute(walletId: string) {
-    const route = this.getWalletRoute(walletId);
-    this.actions.router.goToRoute.trigger({ route });
+    if (walletId) {
+      const route = this.getWalletRoute(walletId);
+      this.actions.router.goToRoute.trigger({ route });
+    }
   }
 
   // =================== PRIVATE API ==================== //
@@ -774,22 +786,24 @@ export default class WalletsStore extends Store {
   }
 
   _patchWalletRequestWithNewWallet = async (wallet: Wallet) => {
-    // Only add the new wallet if it does not exist yet in the result!
-    await this.walletsRequest.patch(result => {
-      if (!find(result, { id: wallet.id })) {
-        if (wallet.isLegacy) {
-          // Legacy wallets are always added to the end of the list!
-          result.push(wallet);
-        } else {
-          const index = findIndex(result, 'isLegacy');
-          if (index >= 0) {
-            result.splice(index, 0, wallet);
-          } else {
+    if (wallet) {
+      // Only add the new wallet if it does not exist yet in the result!
+      await this.walletsRequest.patch(result => {
+        if (!find(result, { id: wallet.id })) {
+          if (wallet.isLegacy) {
+            // Legacy wallets are always added to the end of the list!
             result.push(wallet);
+          } else {
+            const index = findIndex(result, 'isLegacy');
+            if (index >= 0) {
+              result.splice(index, 0, wallet);
+            } else {
+              result.push(wallet);
+            }
           }
         }
-      }
-    });
+      });
+    }
   };
 
   _pollRefresh = async () => {

@@ -48,7 +48,7 @@ export default class WalletRestoreDialog extends Component<Props> {
         className={styles.component}
         title={title}
         actions={actions}
-        closeOnOverlayClick
+        closeOnOverlayClick={false}
         onClose={onClose}
         closeButton={<DialogCloseButton />}
         backButton={onBack && <DialogBackButton onBack={onBack} />}

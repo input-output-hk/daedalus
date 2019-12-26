@@ -14,11 +14,10 @@ export default class ConfigurationDialogContainer extends Component<Props> {
   static defaultProps = DefaultProps;
 
   handleContinue = (walletName: string, spendingPassword: string) => {
-    const { onContinue, actions } = this.props;
+    const { actions } = this.props;
     const { restoreWalletSetConfig, restoreWallet } = actions.wallets;
     restoreWalletSetConfig.trigger({ walletName, spendingPassword });
     restoreWallet.trigger();
-    onContinue();
   };
 
   render() {
