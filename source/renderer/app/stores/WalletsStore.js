@@ -481,13 +481,8 @@ export default class WalletsStore extends Store {
       this.walletKindYoroi === 'Reward15Word'
     ) {
       type = WALLET_RESTORE_TYPES.YOROI_REGULAR;
-    } else if (
-      this.walletKind === 'Hardware' &&
-      (this.walletKindHardware === 'Nano' ||
-        this.walletKindHardware === 'Trezor')
-    ) {
-      type = WALLET_RESTORE_TYPES.CERTIFICATE;
     }
+
     const data = {
       recoveryPhrase:
         this.mnemonics && this.mnemonics.length ? this.mnemonics.join(' ') : '',
@@ -496,7 +491,11 @@ export default class WalletsStore extends Store {
       type,
     };
 
-    if (type === WALLET_RESTORE_TYPES.CERTIFICATE) {
+    if (
+      this.walletKind === 'Hardware' &&
+      (this.walletKindHardware === 'Nano' ||
+        this.walletKindHardware === 'Trezor')
+    ) {
       // Split recovery phrase to 18 (scrambled mnemonics) + 9 (mnemonics seed) mnemonics
       const recoveryPhraseArray = this.mnemonics;
       const chunked = chunk(recoveryPhraseArray, 18);
@@ -517,8 +516,7 @@ export default class WalletsStore extends Store {
 
     const request =
       type === WALLET_RESTORE_TYPES.LEGACY ||
-      type === WALLET_RESTORE_TYPES.YOROI_LEGACY ||
-      type === WALLET_RESTORE_TYPES.CERTIFICATE
+      type === WALLET_RESTORE_TYPES.YOROI_LEGACY
         ? this.restoreLegacyRequest
         : this.restoreRequest;
 
