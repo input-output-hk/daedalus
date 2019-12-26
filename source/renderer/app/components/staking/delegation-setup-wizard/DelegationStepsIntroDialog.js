@@ -2,17 +2,17 @@
 import React, { Component } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
 import classNames from 'classnames';
-import SVGInline from 'react-svg-inline';
+// import SVGInline from 'react-svg-inline';
 import commonStyles from './DelegationSteps.scss';
 import styles from './DelegationStepsIntroDialog.scss';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
-import externalLinkIcon from '../../../assets/images/link-ic.inline.svg';
+// import externalLinkIcon from '../../../assets/images/link-ic.inline.svg';
 
 type Props = {
   onClose: Function,
   onContinue: Function,
-  onLearnMoreClick: Function,
+  // onLearnMoreClick: Function,
 };
 
 const messages = defineMessages({
@@ -73,7 +73,11 @@ export default class DelegationStepsIntroDialog extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { onClose, onContinue, onLearnMoreClick } = this.props;
+    const {
+      onClose,
+      onContinue,
+      // onLearnMoreClick,
+    } = this.props;
 
     const actions = [
       {
@@ -108,10 +112,12 @@ export default class DelegationStepsIntroDialog extends Component<Props> {
           <p className={styles.description}>
             {intl.formatMessage(messages.description)}
           </p>
-          <button className={styles.link} onClick={onLearnMoreClick}>
-            {intl.formatMessage(messages.learnMoreButtonLabel)}
-            <SVGInline svg={externalLinkIcon} />
-          </button>
+          {/*
+            <button className={styles.link} onClick={onLearnMoreClick}>
+              {intl.formatMessage(messages.learnMoreButtonLabel)}
+              <SVGInline svg={externalLinkIcon} />
+            </button>
+          */}
           <div className={styles.stepsExplanation}>
             <ol>
               <li>

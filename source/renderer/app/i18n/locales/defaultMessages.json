@@ -489,17 +489,31 @@
         }
       },
       {
-        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/articles/360010522913",
-        "description": "Link to connectivity issue article page",
+        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/articles/900000048566",
+        "description": "Link to sync issue article page for Incentivized TestNet",
         "end": {
           "column": 3,
           "line": 54
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/ReportIssue.js",
+        "id": "loading.screen.readIssueArticle.syncIssueArticleUrl.itn",
+        "start": {
+          "column": 29,
+          "line": 49
+        }
+      },
+      {
+        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/articles/360010522913",
+        "description": "Link to connectivity issue article page",
+        "end": {
+          "column": 3,
+          "line": 60
+        },
+        "file": "source/renderer/app/components/loading/syncing-connecting/ReportIssue.js",
         "id": "loading.screen.readIssueArticle.connectivityIssueArticleUrl",
         "start": {
           "column": 31,
-          "line": 49
+          "line": 55
         }
       }
     ],
@@ -8444,13 +8458,13 @@
         "description": "Label \"Restore wallet\" on the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 43
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.title.label",
         "start": {
           "column": 9,
-          "line": 33
+          "line": 39
         }
       },
       {
@@ -8458,41 +8472,41 @@
         "description": "Label for the wallet name input on the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 49
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.wallet.name.input.label",
         "start": {
           "column": 24,
-          "line": 38
-        }
-      },
-      {
-        "defaultMessage": "!!!Choose a name for the wallet you are about to restore",
-        "description": "Hint \"Name the wallet you are restoring\" for the wallet name input on the wallet restore dialog.",
-        "end": {
-          "column": 3,
-          "line": 49
-        },
-        "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
-        "id": "wallet.restore.dialog.wallet.name.input.hint",
-        "start": {
-          "column": 23,
           "line": 44
         }
       },
       {
-        "defaultMessage": "!!!Number of words in your recovery phrase",
-        "description": "Label for the recovery phrase type options on the wallet restore dialog.",
+        "defaultMessage": "!!!Name the wallet you are restoring",
+        "description": "Hint \"Name the wallet you are restoring\" for the wallet name input on the wallet restore dialog.",
         "end": {
           "column": 3,
           "line": 55
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
+        "id": "wallet.restore.dialog.wallet.name.input.hint",
+        "start": {
+          "column": 23,
+          "line": 50
+        }
+      },
+      {
+        "defaultMessage": "!!!Number of words in the recovery phrase",
+        "description": "Label for the recovery phrase type options on the wallet restore dialog.",
+        "end": {
+          "column": 3,
+          "line": 61
+        },
+        "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.recovery.phrase.type.options.label",
         "start": {
           "column": 27,
-          "line": 50
+          "line": 56
         }
       },
       {
@@ -8500,13 +8514,13 @@
         "description": "Word for the recovery phrase type on the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 61
+          "line": 67
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.recovery.phrase.type.word",
         "start": {
           "column": 32,
-          "line": 56
+          "line": 62
         }
       },
       {
@@ -8514,13 +8528,13 @@
         "description": "Label for the recovery phrase type 15-word option on the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 67
+          "line": 73
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.recovery.phrase.type.15word.option",
         "start": {
           "column": 34,
-          "line": 62
+          "line": 68
         }
       },
       {
@@ -8528,41 +8542,55 @@
         "description": "Label for the recovery phrase type 12-word option on the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 73
+          "line": 79
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.recovery.phrase.type.12word.option",
         "start": {
           "column": 34,
-          "line": 68
-        }
-      },
-      {
-        "defaultMessage": "!!!Wallet recovery phrase",
-        "description": "Label for the recovery phrase input on the wallet restore dialog.",
-        "end": {
-          "column": 3,
-          "line": 79
-        },
-        "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
-        "id": "wallet.restore.dialog.recovery.phrase.input.label",
-        "start": {
-          "column": 28,
           "line": 74
         }
       },
       {
-        "defaultMessage": "!!!Enter your {numberOfWords}-word wallet recovery phrase",
-        "description": "Hint \"Enter recovery phrase\" for the recovery phrase input on the wallet restore dialog.",
+        "defaultMessage": "!!!Recovery phrase",
+        "description": "Label for the recovery phrase input on the wallet restore dialog.",
         "end": {
           "column": 3,
           "line": 85
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
+        "id": "wallet.restore.dialog.recovery.phrase.input.label",
+        "start": {
+          "column": 28,
+          "line": 80
+        }
+      },
+      {
+        "defaultMessage": "!!!Enter recovery phrase",
+        "description": "Hint \"Enter recovery phrase\" for the recovery phrase input on the wallet restore dialog.",
+        "end": {
+          "column": 3,
+          "line": 91
+        },
+        "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.recovery.phrase.input.hint",
         "start": {
           "column": 27,
-          "line": 80
+          "line": 86
+        }
+      },
+      {
+        "defaultMessage": "!!!New",
+        "description": "Label \"new\" on the wallet restore dialog.",
+        "end": {
+          "column": 3,
+          "line": 96
+        },
+        "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
+        "id": "wallet.restore.dialog.recovery.phrase.newLabel",
+        "start": {
+          "column": 12,
+          "line": 92
         }
       },
       {
@@ -8570,13 +8598,13 @@
         "description": "\"No results\" message for the recovery phrase input search results.",
         "end": {
           "column": 3,
-          "line": 91
+          "line": 102
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.recovery.phrase.input.noResults",
         "start": {
           "column": 27,
-          "line": 86
+          "line": 97
         }
       },
       {
@@ -8584,13 +8612,13 @@
         "description": "Label for the \"Restore wallet\" button on the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 97
+          "line": 108
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.restore.wallet.button.label",
         "start": {
           "column": 21,
-          "line": 92
+          "line": 103
         }
       },
       {
@@ -8598,13 +8626,13 @@
         "description": "Error message shown when invalid recovery phrase was entered.",
         "end": {
           "column": 3,
-          "line": 103
+          "line": 114
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.form.errors.invalidRecoveryPhrase",
         "start": {
           "column": 25,
-          "line": 98
+          "line": 109
         }
       },
       {
@@ -8612,13 +8640,13 @@
         "description": "Password creation label.",
         "end": {
           "column": 3,
-          "line": 108
+          "line": 119
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.passwordSectionLabel",
         "start": {
           "column": 24,
-          "line": 104
+          "line": 115
         }
       },
       {
@@ -8626,13 +8654,13 @@
         "description": "Password creation description.",
         "end": {
           "column": 3,
-          "line": 114
+          "line": 125
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.passwordSectionDescription",
         "start": {
           "column": 30,
-          "line": 109
+          "line": 120
         }
       },
       {
@@ -8640,13 +8668,13 @@
         "description": "Label for the \"Wallet password\" input in the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 120
+          "line": 131
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.spendingPasswordLabel",
         "start": {
           "column": 25,
-          "line": 115
+          "line": 126
         }
       },
       {
@@ -8654,13 +8682,13 @@
         "description": "Label for the \"Repeat password\" input in the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 126
+          "line": 137
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.repeatPasswordLabel",
         "start": {
           "column": 23,
-          "line": 121
+          "line": 132
         }
       },
       {
@@ -8668,41 +8696,55 @@
         "description": "Placeholder for the \"Password\" inputs in the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 132
+          "line": 143
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.passwordFieldPlaceholder",
         "start": {
           "column": 28,
-          "line": 127
+          "line": 138
         }
       },
       {
-        "defaultMessage": "!!!Wallet recovery phrase",
-        "description": "Tab title \"Wallet recovery phrasee\" in the wallet restore dialog.",
+        "defaultMessage": "!!!Daedalus wallet",
+        "description": "Tab title \"Daedalus wallet\" in the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 138
+          "line": 148
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.tab.title.recoveryPhrase",
         "start": {
           "column": 26,
-          "line": 133
+          "line": 144
         }
       },
       {
-        "defaultMessage": "!!!Paper wallet recovery phrase",
-        "description": "Tab title \"Paper wallet recovery phrase\" in the wallet restore dialog.",
+        "defaultMessage": "!!!Daedalus paper wallet",
+        "description": "Tab title \"Daedalus paper wallet\" in the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 144
+          "line": 154
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.tab.title.certificate",
         "start": {
           "column": 23,
-          "line": 139
+          "line": 149
+        }
+      },
+      {
+        "defaultMessage": "!!!Yoroi wallet",
+        "description": "Tab title \"Yoroi wallet\" in the wallet restore dialog.",
+        "end": {
+          "column": 3,
+          "line": 159
+        },
+        "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
+        "id": "wallet.restore.dialog.tab.title.yoroi",
+        "start": {
+          "column": 17,
+          "line": 155
         }
       },
       {
@@ -8710,13 +8752,13 @@
         "description": "Label for the shielded recovery phrase input on the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 150
+          "line": 165
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.shielded.recovery.phrase.input.label",
         "start": {
           "column": 36,
-          "line": 145
+          "line": 160
         }
       },
       {
@@ -8724,13 +8766,13 @@
         "description": "Hint \"Enter your 27-word paper wallet recovery phrase.\" for the recovery phrase input on the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 157
+          "line": 172
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.shielded.recovery.phrase.input.hint",
         "start": {
           "column": 35,
-          "line": 151
+          "line": 166
         }
       },
       {
@@ -8738,13 +8780,13 @@
         "description": "Label for the \"Restore paper wallet\" button on the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 163
+          "line": 178
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.paper.wallet.button.label",
         "start": {
           "column": 33,
-          "line": 158
+          "line": 173
         }
       }
     ],
@@ -9320,35 +9362,63 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Logs successfully downloaded",
-        "description": "Success message for download logs.",
+        "defaultMessage": "!!!Preparing logs for download",
+        "description": "Notification for download logs in progress in the Loading and Settings pages.",
         "end": {
           "column": 3,
-          "line": 14
+          "line": 26
         },
-        "file": "source/renderer/app/containers/notifications/GenericNotificationContainer.js",
-        "id": "loading.screen.reportIssue.downloadLogsSuccessMessage",
+        "file": "source/renderer/app/containers/notifications/NotificationsContainer.js",
+        "id": "notification.downloadLogsProgress",
         "start": {
-          "column": 23,
-          "line": 10
+          "column": 24,
+          "line": 21
         }
       },
       {
-        "defaultMessage": "!!!Preparing logs for download",
-        "description": "Progress message for download logs.",
+        "defaultMessage": "!!!Logs successfully downloaded",
+        "description": "Notification for download logs in the Loading and Settings pages.",
         "end": {
           "column": 3,
-          "line": 19
+          "line": 32
         },
-        "file": "source/renderer/app/containers/notifications/GenericNotificationContainer.js",
-        "id": "loading.screen.reportIssue.downloadLogsProgressMessage",
+        "file": "source/renderer/app/containers/notifications/NotificationsContainer.js",
+        "id": "notification.downloadLogsSuccess",
         "start": {
-          "column": 24,
-          "line": 15
+          "column": 23,
+          "line": 27
+        }
+      },
+      {
+        "defaultMessage": "!!!Address: <strong>{walletAddress}</strong> copied to clipboard",
+        "description": "Notification for the wallet address copy success in the Wallet Receive page.",
+        "end": {
+          "column": 3,
+          "line": 39
+        },
+        "file": "source/renderer/app/containers/notifications/NotificationsContainer.js",
+        "id": "notification.copyAddress",
+        "start": {
+          "column": 15,
+          "line": 33
+        }
+      },
+      {
+        "defaultMessage": "!!!Daedalus state directory copied to clipboard",
+        "description": "Notification for the state directory copy success in the Diagnostics page.",
+        "end": {
+          "column": 3,
+          "line": 45
+        },
+        "file": "source/renderer/app/containers/notifications/NotificationsContainer.js",
+        "id": "notification.copyStateDirectoryPath",
+        "start": {
+          "column": 26,
+          "line": 40
         }
       }
     ],
-    "path": "source/renderer/app/containers/notifications/GenericNotificationContainer.json"
+    "path": "source/renderer/app/containers/notifications/NotificationsContainer.json"
   },
   {
     "descriptors": [
@@ -9509,44 +9579,6 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Directory State Directory copied to clipboard",
-        "description": "Message for the wallet address copy success notification.",
-        "end": {
-          "column": 3,
-          "line": 18
-        },
-        "file": "source/renderer/app/containers/status/DaedalusDiagnosticsDialog.js",
-        "id": "daedalus.diagnostics.dialog.stateDirectoryCopyNotificationMessage",
-        "start": {
-          "column": 41,
-          "line": 14
-        }
-      }
-    ],
-    "path": "source/renderer/app/containers/status/DaedalusDiagnosticsDialog.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!You have successfully copied wallet address",
-        "description": "Message for the wallet address copy success notification.",
-        "end": {
-          "column": 3,
-          "line": 23
-        },
-        "file": "source/renderer/app/containers/wallet/WalletReceivePage.js",
-        "id": "wallet.receive.page.addressCopyNotificationMessage",
-        "start": {
-          "column": 11,
-          "line": 19
-        }
-      }
-    ],
-    "path": "source/renderer/app/containers/wallet/WalletReceivePage.json"
-  },
-  {
-    "descriptors": [
-      {
         "defaultMessage": "!!!No recent transactions",
         "description": "Message shown when wallet has no transactions on wallet summary page.",
         "end": {
@@ -9603,13 +9635,13 @@
         "description": "Error message when required fields are left empty.",
         "end": {
           "column": 3,
-          "line": 8
+          "line": 9
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.errors.fieldIsRequired",
         "start": {
           "column": 19,
-          "line": 4
+          "line": 5
         }
       },
       {
@@ -9617,13 +9649,13 @@
         "description": "Error message shown when incomplete bip39 mnemonic was entered.",
         "end": {
           "column": 3,
-          "line": 14
+          "line": 15
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.errors.incompleteMnemonic",
         "start": {
           "column": 22,
-          "line": 9
+          "line": 10
         }
       },
       {
@@ -9631,13 +9663,13 @@
         "description": "Error message shown when invalid bip39 mnemonic was entered.",
         "end": {
           "column": 3,
-          "line": 19
+          "line": 20
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.errors.invalidMnemonic",
         "start": {
           "column": 19,
-          "line": 15
+          "line": 16
         }
       },
       {
@@ -9645,13 +9677,13 @@
         "description": "Error message shown when invalid email was entered.",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 25
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.errors.invalidEmail",
         "start": {
           "column": 16,
-          "line": 20
+          "line": 21
         }
       },
       {
@@ -9659,13 +9691,13 @@
         "description": "Error message shown when invalid wallet name was entered in create wallet dialog.",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 32
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.errors.invalidWalletName",
         "start": {
           "column": 21,
-          "line": 25
+          "line": 26
         }
       },
       {
@@ -9673,13 +9705,13 @@
         "description": "Error message shown when invalid wallet password was entered in create wallet dialog.",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 38
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.errors.invalidSpendingPassword",
         "start": {
           "column": 27,
-          "line": 32
+          "line": 33
         }
       },
       {
@@ -9687,13 +9719,13 @@
         "description": "Error message shown when wallet password and repeat passwords don't match in create wallet dialog.",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 44
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.errors.invalidRepeatPassword",
         "start": {
           "column": 25,
-          "line": 38
+          "line": 39
         }
       },
       {
@@ -9701,13 +9733,13 @@
         "description": "Error message shown when the file the user tries to replace is open.",
         "end": {
           "column": 3,
-          "line": 50
+          "line": 51
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.errors.paperWalletOpenPdfError",
         "start": {
           "column": 27,
-          "line": 44
+          "line": 45
         }
       },
       {
@@ -9715,27 +9747,27 @@
         "description": "Error message shown when the file the user tries to replace is open.",
         "end": {
           "column": 3,
-          "line": 57
+          "line": 58
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.errors.rewardsOpenCsvError",
         "start": {
           "column": 23,
-          "line": 51
+          "line": 52
         }
       },
       {
-        "defaultMessage": "!!!Note that password needs to be at least 10 characters long, and have at least 1 uppercase, 1 lowercase letter and 1 number.",
+        "defaultMessage": "!!!Note that password needs to be at least 7 characters long, and have at least 1 uppercase, 1 lowercase letter and 1 number.",
         "description": "Password instructions note.",
         "end": {
           "column": 3,
-          "line": 63
+          "line": 64
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.passwordInstructions",
         "start": {
           "column": 24,
-          "line": 58
+          "line": 59
         }
       },
       {
@@ -9743,13 +9775,13 @@
         "description": "The word \"cancel\" reused at several places (like cancel buttons)",
         "end": {
           "column": 3,
-          "line": 69
+          "line": 70
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.cancel",
         "start": {
           "column": 10,
-          "line": 64
+          "line": 65
         }
       },
       {
@@ -9757,13 +9789,13 @@
         "description": "The word \"close\" reused at several places (like cancel buttons)",
         "end": {
           "column": 3,
-          "line": 75
+          "line": 76
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.close",
         "start": {
           "column": 9,
-          "line": 70
+          "line": 71
         }
       },
       {
@@ -9771,13 +9803,13 @@
         "description": "The word \"change\" reused at several places (like change buttons)",
         "end": {
           "column": 3,
-          "line": 81
+          "line": 82
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.change",
         "start": {
           "column": 10,
-          "line": 76
+          "line": 77
         }
       },
       {
@@ -9785,13 +9817,13 @@
         "description": "The word \"create\" reused at several places (like create buttons)",
         "end": {
           "column": 3,
-          "line": 87
+          "line": 88
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.create",
         "start": {
           "column": 10,
-          "line": 82
+          "line": 83
         }
       },
       {
@@ -9799,13 +9831,13 @@
         "description": "The word \"remove\" reused at several places (like remove buttons)",
         "end": {
           "column": 3,
-          "line": 93
+          "line": 94
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.remove",
         "start": {
           "column": 10,
-          "line": 88
+          "line": 89
         }
       },
       {
@@ -9813,13 +9845,13 @@
         "description": "The word \"save\" reused at several places (like save buttons)",
         "end": {
           "column": 3,
-          "line": 98
+          "line": 99
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.save",
         "start": {
           "column": 8,
-          "line": 94
+          "line": 95
         }
       },
       {
@@ -9827,13 +9859,13 @@
         "description": "Language name for \"English\" language.",
         "end": {
           "column": 3,
-          "line": 103
+          "line": 104
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.language.english",
         "start": {
           "column": 19,
-          "line": 99
+          "line": 100
         }
       },
       {
@@ -9841,13 +9873,13 @@
         "description": "Language name for \"Japanese\" language.",
         "end": {
           "column": 3,
-          "line": 108
+          "line": 109
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.language.japanese",
         "start": {
           "column": 20,
-          "line": 104
+          "line": 105
         }
       },
       {
@@ -9855,13 +9887,13 @@
         "description": "Language name for \"Chinese\" language.",
         "end": {
           "column": 3,
-          "line": 113
+          "line": 114
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.language.chinese",
         "start": {
           "column": 19,
-          "line": 109
+          "line": 110
         }
       },
       {
@@ -9869,13 +9901,13 @@
         "description": "Language name for \"Korean\" language.",
         "end": {
           "column": 3,
-          "line": 118
+          "line": 119
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.language.korean",
         "start": {
           "column": 18,
-          "line": 114
+          "line": 115
         }
       },
       {
@@ -9883,13 +9915,13 @@
         "description": "Language name for \"German\" language.",
         "end": {
           "column": 3,
-          "line": 123
+          "line": 124
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.language.german",
         "start": {
           "column": 18,
-          "line": 119
+          "line": 120
         }
       },
       {
@@ -9897,13 +9929,13 @@
         "description": "Language name for \"Croatian\" language.",
         "end": {
           "column": 3,
-          "line": 128
+          "line": 129
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.language.croatian",
         "start": {
           "column": 20,
-          "line": 124
+          "line": 125
         }
       },
       {
@@ -9911,13 +9943,13 @@
         "description": "Colon punctuation.",
         "end": {
           "column": 3,
-          "line": 133
+          "line": 134
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.punctuation.colon",
         "start": {
           "column": 20,
-          "line": 129
+          "line": 130
         }
       },
       {
@@ -9925,13 +9957,13 @@
         "description": "Final dot punctuation.",
         "end": {
           "column": 3,
-          "line": 138
+          "line": 139
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.punctuation.dot",
         "start": {
           "column": 18,
-          "line": 134
+          "line": 135
         }
       },
       {
@@ -9939,13 +9971,13 @@
         "description": "Name for \"ADA\" unit.",
         "end": {
           "column": 3,
-          "line": 143
+          "line": 144
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.unit.ada",
         "start": {
           "column": 11,
-          "line": 139
+          "line": 140
         }
       },
       {
@@ -9953,13 +9985,13 @@
         "description": "Title for the \"Recovery Phrase\" dialog.",
         "end": {
           "column": 3,
-          "line": 148
+          "line": 149
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "wallet.backup.recovery.phrase.dialog.title",
         "start": {
           "column": 29,
-          "line": 144
+          "line": 145
         }
       },
       {
@@ -9967,13 +9999,13 @@
         "description": "Label for the \"Wallet password\" input in the create wallet dialog.",
         "end": {
           "column": 3,
-          "line": 154
+          "line": 155
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.spendingPasswordLabel",
         "start": {
           "column": 25,
-          "line": 149
+          "line": 150
         }
       },
       {
@@ -9981,13 +10013,13 @@
         "description": "Placeholder for the \"Password\" inputs in the create wallet dialog.",
         "end": {
           "column": 3,
-          "line": 160
+          "line": 161
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.spendingPasswordPlaceholder",
         "start": {
           "column": 31,
-          "line": 155
+          "line": 156
         }
       },
       {
@@ -9995,13 +10027,13 @@
         "description": "Label \"Continue\" in dialogs.",
         "end": {
           "column": 3,
-          "line": 165
+          "line": 166
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.dialog.button.continue",
         "start": {
           "column": 29,
-          "line": 161
+          "line": 162
         }
       },
       {
@@ -10009,13 +10041,13 @@
         "description": "URL for the \"Known Issues\" link in the \"Help and support\" section on the support settings page",
         "end": {
           "column": 3,
-          "line": 172
+          "line": 173
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "settings.support.faq.faqLinkURL",
         "start": {
           "column": 14,
-          "line": 166
+          "line": 167
         }
       },
       {
@@ -10023,13 +10055,13 @@
         "description": "Name for \"Ada\" unit.",
         "end": {
           "column": 3,
-          "line": 177
+          "line": 178
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.currency.ada",
         "start": {
           "column": 12,
-          "line": 173
+          "line": 174
         }
       },
       {
@@ -10037,13 +10069,13 @@
         "description": "Name for \"Cardano\" client.",
         "end": {
           "column": 3,
-          "line": 182
+          "line": 183
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.apiName.cardano",
         "start": {
           "column": 11,
-          "line": 178
+          "line": 179
         }
       },
       {
@@ -10051,13 +10083,13 @@
         "description": "\"mainnet\" Cardano network",
         "end": {
           "column": 3,
-          "line": 187
+          "line": 188
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.mainnet",
         "start": {
           "column": 19,
-          "line": 183
+          "line": 184
         }
       },
       {
@@ -10065,13 +10097,13 @@
         "description": "\"staging\" Cardano network",
         "end": {
           "column": 3,
-          "line": 192
+          "line": 193
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.staging",
         "start": {
           "column": 19,
-          "line": 188
+          "line": 189
         }
       },
       {
@@ -10079,13 +10111,13 @@
         "description": "\"testnet\" Cardano network",
         "end": {
           "column": 3,
-          "line": 197
+          "line": 198
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.testnet",
         "start": {
           "column": 19,
-          "line": 193
+          "line": 194
         }
       },
       {
@@ -10093,13 +10125,13 @@
         "description": "\"development\" Cardano network",
         "end": {
           "column": 3,
-          "line": 202
+          "line": 203
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.development",
         "start": {
           "column": 23,
-          "line": 198
+          "line": 199
         }
       },
       {
@@ -10107,13 +10139,13 @@
         "description": "\"itn_rewards_v1\" Cardano network",
         "end": {
           "column": 3,
-          "line": 207
+          "line": 208
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.itn_rewards_v1",
         "start": {
           "column": 26,
-          "line": 203
+          "line": 204
         }
       },
       {
@@ -10121,13 +10153,13 @@
         "description": "\"selfnode\" Cardano network",
         "end": {
           "column": 3,
-          "line": 212
+          "line": 213
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.selfnode",
         "start": {
           "column": 20,
-          "line": 208
+          "line": 209
         }
       },
       {
@@ -10135,13 +10167,13 @@
         "description": "\"qa\" Cardano network",
         "end": {
           "column": 3,
-          "line": 217
+          "line": 218
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.qa",
         "start": {
           "column": 14,
-          "line": 213
+          "line": 214
         }
       },
       {
@@ -10149,13 +10181,13 @@
         "description": "\"nightly\" Cardano network",
         "end": {
           "column": 3,
-          "line": 222
+          "line": 223
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.nightly",
         "start": {
           "column": 19,
-          "line": 218
+          "line": 219
         }
       },
       {
@@ -10163,13 +10195,13 @@
         "description": "Label for years value in duration.",
         "end": {
           "column": 3,
-          "line": 227
+          "line": 228
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.duration.years",
         "start": {
           "column": 9,
-          "line": 223
+          "line": 224
         }
       },
       {
@@ -10177,13 +10209,13 @@
         "description": "Label for months value in duration.",
         "end": {
           "column": 3,
-          "line": 232
+          "line": 233
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.duration.months",
         "start": {
           "column": 10,
-          "line": 228
+          "line": 229
         }
       },
       {
@@ -10191,13 +10223,13 @@
         "description": "Label for days value in duration.",
         "end": {
           "column": 3,
-          "line": 237
+          "line": 238
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.duration.days",
         "start": {
           "column": 8,
-          "line": 233
+          "line": 234
         }
       },
       {
@@ -10205,13 +10237,13 @@
         "description": "Label for hours value in duration.",
         "end": {
           "column": 3,
-          "line": 242
+          "line": 243
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.duration.hours",
         "start": {
           "column": 9,
-          "line": 238
+          "line": 239
         }
       },
       {
@@ -10219,13 +10251,13 @@
         "description": "Label for minutes value in duration.",
         "end": {
           "column": 3,
-          "line": 247
+          "line": 248
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.duration.minutes",
         "start": {
           "column": 11,
-          "line": 243
+          "line": 244
         }
       },
       {
@@ -10233,13 +10265,13 @@
         "description": "Label for seconds value in duration.",
         "end": {
           "column": 3,
-          "line": 252
+          "line": 253
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.duration.seconds",
         "start": {
           "column": 11,
-          "line": 248
+          "line": 249
         }
       }
     ],

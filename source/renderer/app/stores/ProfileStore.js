@@ -106,23 +106,20 @@ export default class ProfileStore extends Store {
   /* eslint-enable max-len */
 
   setup() {
-    this.actions.profile.finishInitialScreenSettings.listen(
+    const { profile: profileActions } = this.actions;
+    profileActions.finishInitialScreenSettings.listen(
       this._finishInitialScreenSettings
     );
-    this.actions.profile.updateUserLocalSetting.listen(
-      this._updateUserLocalSetting
-    );
-    this.actions.profile.acceptTermsOfUse.listen(this._acceptTermsOfUse);
-    this.actions.profile.acceptDataLayerMigration.listen(
+    profileActions.updateUserLocalSetting.listen(this._updateUserLocalSetting);
+    profileActions.acceptTermsOfUse.listen(this._acceptTermsOfUse);
+    profileActions.acceptDataLayerMigration.listen(
       this._acceptDataLayerMigration
     );
-    this.actions.profile.updateTheme.listen(this._updateTheme);
-    this.actions.profile.getLogs.listen(this._getLogs);
-    this.actions.profile.getLogsAndCompress.listen(this._getLogsAndCompress);
-    this.actions.profile.downloadLogs.listen(this._downloadLogs);
-    this.actions.profile.downloadLogsSuccess.listen(
-      this._toggleDisableDownloadLogs
-    );
+    profileActions.updateTheme.listen(this._updateTheme);
+    profileActions.getLogs.listen(this._getLogs);
+    profileActions.getLogsAndCompress.listen(this._getLogsAndCompress);
+    profileActions.downloadLogs.listen(this._downloadLogs);
+    profileActions.downloadLogsSuccess.listen(this._toggleDisableDownloadLogs);
     this.actions.app.initAppEnvironment.listen(() => {});
 
     this.registerReactions([
@@ -555,7 +552,7 @@ export default class ProfileStore extends Store {
 
   _toggleDisableDownloadLogs = action(
     async ({ isDownloadNotificationVisible }) => {
-      this.actions.app.setNotificationVisibility.trigger(
+      this.actions.app.setIsDownloadingLogs.trigger(
         isDownloadNotificationVisible
       );
     }

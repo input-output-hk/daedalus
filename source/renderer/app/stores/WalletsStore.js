@@ -756,6 +756,7 @@ export default class WalletsStore extends Store {
       recoveryPhrase: params.recoveryPhrase,
       walletName: params.walletName,
       spendingPassword: params.spendingPassword,
+      type: params.type,
     };
 
     if (params.type === WALLET_RESTORE_TYPES.CERTIFICATE) {
@@ -779,6 +780,7 @@ export default class WalletsStore extends Store {
 
     const request =
       params.type === WALLET_RESTORE_TYPES.LEGACY ||
+      params.type === WALLET_RESTORE_TYPES.YOROI_LEGACY ||
       params.type === WALLET_RESTORE_TYPES.CERTIFICATE
         ? this.restoreLegacyRequest
         : this.restoreRequest;

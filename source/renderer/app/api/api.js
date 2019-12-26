@@ -73,7 +73,7 @@ import {
   cardanoFaultInjectionChannel,
 } from '../ipc/cardano.ipc';
 import patchAdaApi from './utils/patchAdaApi';
-import { utcStringToDate } from './utils';
+import { getLegacyWalletId, utcStringToDate } from './utils';
 import { Logger } from '../utils/logging';
 import {
   unscrambleMnemonics,
@@ -251,7 +251,6 @@ export default class AdaApi {
     Logger.debug('AdaApi::getAddresses called', {
       parameters: filterLogData(request),
     });
-
     const { walletId, queryParams, isLegacy } = request;
     try {
       let response = [];
@@ -1336,7 +1335,7 @@ const _createWalletFromServerData = action(
   'AdaApi::_createWalletFromServerData',
   (data: AdaWallet) => {
     const {
-      id,
+      id: rawWalletId,
       address_pool_gap: addressPoolGap,
       balance,
       name,
@@ -1345,6 +1344,7 @@ const _createWalletFromServerData = action(
       delegation,
       isLegacy = false,
     } = data;
+    const id = isLegacy ? getLegacyWalletId(rawWalletId) : rawWalletId;
     const passphraseLastUpdatedAt = get(passphrase, 'last_updated_at', null);
     const walletTotalAmount =
       balance.total.unit === WalletUnits.LOVELACE
