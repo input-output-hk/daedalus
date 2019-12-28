@@ -104,7 +104,7 @@ export default class MnemonicsDialog extends Component<Props> {
             }
             const value = join(enteredWords, ' ');
             return [
-              isValidMnemonic(value, this.expectedWordCount),
+              this.expectedWordCount === 27 ? true : isValidMnemonic(value, this.expectedWordCount),
               intl.formatMessage(messages.invalidRecoveryPhrase),
             ];
           },
