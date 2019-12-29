@@ -488,7 +488,7 @@ export default class WalletsStore extends Store {
     let type = WALLET_RESTORE_TYPES.LEGACY;
     if (
       this.walletKind === 'Daedalus' &&
-      this.walletKindDaedalus === 'Reward15Word'
+      (this.walletKindDaedalus === 'Reward15Word' || this.walletKindDaedalus === 'Balance27Word')
     ) {
       type = WALLET_RESTORE_TYPES.REGULAR;
     } else if (

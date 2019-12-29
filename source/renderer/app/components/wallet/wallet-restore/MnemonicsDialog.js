@@ -22,6 +22,7 @@ import type {
   WalletYoroiKind,
   WalletHardwareKind,
 } from '../../../types/walletRestoreTypes';
+import { PAPER_WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../../../config/cryptoConfig';
 
 const messages = defineMessages({
   autocompletePlaceholder: {
@@ -104,7 +105,7 @@ export default class MnemonicsDialog extends Component<Props> {
             }
             const value = join(enteredWords, ' ');
             return [
-              this.expectedWordCount === 27 ? true : isValidMnemonic(value, this.expectedWordCount),
+              this.expectedWordCount === PAPER_WALLET_RECOVERY_PHRASE_WORD_COUNT ? true : isValidMnemonic(value, this.expectedWordCount),
               intl.formatMessage(messages.invalidRecoveryPhrase),
             ];
           },
