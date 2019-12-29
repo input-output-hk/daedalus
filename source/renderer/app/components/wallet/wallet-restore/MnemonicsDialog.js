@@ -105,7 +105,9 @@ export default class MnemonicsDialog extends Component<Props> {
             }
             const value = join(enteredWords, ' ');
             return [
-              this.expectedWordCount === PAPER_WALLET_RECOVERY_PHRASE_WORD_COUNT ? true : isValidMnemonic(value, this.expectedWordCount),
+              this.expectedWordCount === PAPER_WALLET_RECOVERY_PHRASE_WORD_COUNT
+                ? true
+                : isValidMnemonic(value, this.expectedWordCount),
               intl.formatMessage(messages.invalidRecoveryPhrase),
             ];
           },
