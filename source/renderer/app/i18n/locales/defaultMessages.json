@@ -8271,13 +8271,13 @@
         "description": "Placeholder for the mnemonics autocomplete.",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 32
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/MnemonicsDialog.js",
         "id": "wallet.restore.dialog.step.mnemonics.autocomplete.placeholder",
         "start": {
           "column": 27,
-          "line": 27
+          "line": 28
         }
       },
       {
@@ -8285,13 +8285,13 @@
         "description": "\"No results\" message for the mnemonics autocomplete search results.",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 38
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/MnemonicsDialog.js",
         "id": "wallet.restore.dialog.step.mnemonics.autocomplete.noResults",
         "start": {
           "column": 25,
-          "line": 32
+          "line": 33
         }
       },
       {
@@ -8299,13 +8299,13 @@
         "description": "Label for the mnemonics Continue button.",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 43
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/MnemonicsDialog.js",
         "id": "wallet.restore.dialog.step.mnemonics.autocomplete.continueButtonLabel",
         "start": {
           "column": 23,
-          "line": 38
+          "line": 39
         }
       },
       {
@@ -8313,13 +8313,13 @@
         "description": "Label for invalid recovery phrase",
         "end": {
           "column": 3,
-          "line": 48
+          "line": 49
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/MnemonicsDialog.js",
         "id": "wallet.restore.dialog.step.mnemonics.autocomplete.invalidRecoveryPhrase",
         "start": {
           "column": 25,
-          "line": 43
+          "line": 44
         }
       }
     ],
