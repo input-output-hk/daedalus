@@ -85,6 +85,13 @@ export default class MnemonicsDialog extends Component<Props> {
     return expectedWordCount;
   }
 
+  get maxWordCount() {
+    const { expectedWordCount } = this;
+    return Array.isArray(expectedWordCount)
+      ? Math.max(...expectedWordCount)
+      : expectedWordCount;
+  }
+
   form = new ReactToolboxMobxForm(
     {
       fields: {
@@ -92,14 +99,19 @@ export default class MnemonicsDialog extends Component<Props> {
           value: [],
           validators: ({ field }) => {
             const { intl } = this.context;
+            const { expectedWordCount } = this;
             const enteredWords = field.value;
             const wordCount = enteredWords.length;
-            const isPhraseComplete = wordCount === this.expectedWordCount;
+            const isPhraseComplete = Array.isArray(expectedWordCount)
+              ? expectedWordCount.includes(wordCount)
+              : wordCount === expectedWordCount;
             if (!isPhraseComplete) {
               return [
                 false,
                 intl.formatMessage(globalMessages.incompleteMnemonic, {
-                  expected: this.expectedWordCount,
+                  expected: Array.isArray(expectedWordCount)
+                    ? expectedWordCount.join(', ')
+                    : expectedWordCount,
                 }),
               ];
             }
@@ -107,7 +119,7 @@ export default class MnemonicsDialog extends Component<Props> {
             return [
               this.expectedWordCount === PAPER_WALLET_RECOVERY_PHRASE_WORD_COUNT
                 ? true
-                : isValidMnemonic(value, this.expectedWordCount),
+                : isValidMnemonic(value, wordCount),
               intl.formatMessage(messages.invalidRecoveryPhrase),
             ];
           },
@@ -156,7 +168,7 @@ export default class MnemonicsDialog extends Component<Props> {
     const { intl } = this.context;
     const { onClose, onBack } = this.props;
     const recoveryPhraseField = this.form.$('recoveryPhrase');
-    const { expectedWordCount: numberOfWords } = this;
+    const { expectedWordCount, maxWordCount } = this;
     return (
       <WalletRestoreDialog
         stepNumber={1}
@@ -178,10 +190,12 @@ export default class MnemonicsDialog extends Component<Props> {
             }}
             label={intl.formatMessage(globalMessages.recoveryPhraseDialogTitle)}
             placeholder={intl.formatMessage(messages.autocompletePlaceholder, {
-              numberOfWords,
+              numberOfWords: Array.isArray(expectedWordCount)
+                ? expectedWordCount.join(', ')
+                : expectedWordCount,
             })}
             options={validWords}
-            maxSelections={this.expectedWordCount}
+            maxSelections={maxWordCount}
             error={recoveryPhraseField.error}
             maxVisibleOptions={5}
             noResultsMessage={intl.formatMessage(
