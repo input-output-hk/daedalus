@@ -30,6 +30,12 @@ import {
   RECOVERY_PHRASE_VERIFICATION_WARNING,
   WALLET_RESTORE_TYPES,
 } from '../config/walletsConfig';
+import {
+  WALLET_KINDS,
+  WALLET_DAEDALUS_KINDS,
+  WALLET_YOROI_KINDS,
+  WALLET_HARDWARE_KINDS,
+} from '../config/walletRestoreConfig';
 import { ADA_CERTIFICATE_MNEMONIC_LENGTH } from '../config/cryptoConfig';
 import type {
   WalletKind,
@@ -345,17 +351,21 @@ export default class WalletsStore extends Store {
   };
 
   @action _restoreWalletEnd = async () => {
+    this._resumePolling();
     const { restoredWallet } = this;
     if (restoredWallet) {
       await this._createWalletLocalData(restoredWallet.id);
       await this._patchWalletRequestWithNewWallet(restoredWallet);
-      this.actions.dialogs.closeActiveDialog.trigger();
       this.goToWalletRoute(restoredWallet.id);
       this.refreshWalletsData();
     }
   };
 
   @action _restoreWalletChangeStep = (isBack: boolean = false) => {
+    // Reset restore requests to clear previous errors
+    this.restoreRequest.reset();
+    this.restoreLegacyRequest.reset();
+
     const currrentRestoreWalletStep = this.restoreWalletStep || 0;
     this.restoreWalletStep =
       isBack === true
@@ -365,6 +375,7 @@ export default class WalletsStore extends Store {
   };
 
   @action _restoreWalletClose = () => {
+    this.actions.dialogs.closeActiveDialog.trigger();
     this.restoreRequest.reset();
     this.restoreLegacyRequest.reset();
     this.restoreWalletStep = null;
@@ -411,7 +422,6 @@ export default class WalletsStore extends Store {
   }) => {
     this.walletName = walletName;
     this.spendingPassword = spendingPassword;
-    // this.restoreWalletStep = 3;
   };
 
   _finishWalletBackup = async () => {
@@ -512,6 +522,10 @@ export default class WalletsStore extends Store {
   };
 
   _restore = async () => {
+    // Pause polling in order to avoid fetching data for wallet we are about to restore
+    // so that we remain on the "Add wallet" screen until user closes the TADA screen
+    this._pausePolling();
+
     // Reset restore requests to clear previous errors
     this.restoreRequest.reset();
     this.restoreLegacyRequest.reset();
@@ -525,28 +539,28 @@ export default class WalletsStore extends Store {
     };
 
     if (
-      this.walletKind === 'Daedalus' &&
-      this.walletKindDaedalus === 'Reward15Word'
+      this.walletKind === WALLET_KINDS.DAEDALUS &&
+      this.walletKindDaedalus === WALLET_DAEDALUS_KINDS.REWARD_15_WORD
     ) {
       type = WALLET_RESTORE_TYPES.REGULAR;
     } else if (
-      this.walletKind === 'Daedalus' &&
-      this.walletKindDaedalus === 'Balance27Word'
+      this.walletKind === WALLET_KINDS.DAEDALUS &&
+      this.walletKindDaedalus === WALLET_DAEDALUS_KINDS.BALANCE_27_WORD
     ) {
       data.recoveryPhrase = await this._unscrambleMnemonics();
     } else if (
-      this.walletKind === 'Yoroi' &&
-      this.walletKindYoroi === 'Balance15Word'
+      this.walletKind === WALLET_KINDS.YOROI &&
+      this.walletKindYoroi === WALLET_YOROI_KINDS.BALANCE_15_WORD
     ) {
       type = WALLET_RESTORE_TYPES.YOROI_LEGACY;
     } else if (
-      this.walletKind === 'Yoroi' &&
-      this.walletKindYoroi === 'Reward15Word'
+      this.walletKind === WALLET_KINDS.YOROI &&
+      this.walletKindYoroi === WALLET_YOROI_KINDS.REWARD_15_WORD
     ) {
       type = WALLET_RESTORE_TYPES.YOROI_REGULAR;
     } else if (
-      this.walletKind === 'Hardware' &&
-      this.walletKindHardware === 'Nano'
+      this.walletKind === WALLET_KINDS.HARDWARE &&
+      this.walletKindHardware === WALLET_HARDWARE_KINDS.NANO
     ) {
       data.isLedger = true;
     }
@@ -557,14 +571,18 @@ export default class WalletsStore extends Store {
         ? this.restoreLegacyRequest
         : this.restoreRequest;
 
-    const restoredWallet = await request.execute(data).promise;
-    if (!restoredWallet)
-      throw new Error('Restored wallet was not received correctly');
+    try {
+      const restoredWallet = await request.execute(data).promise;
+      if (!restoredWallet)
+        throw new Error('Restored wallet was not received correctly');
 
-    runInAction('set restoredWallet', () => {
-      this.restoredWallet = restoredWallet;
-      this.restoreWalletStep = 3;
-    });
+      runInAction('set restoredWallet', () => {
+        this.restoredWallet = restoredWallet;
+        this.restoreWalletStep = 3;
+      });
+    } catch (error) {
+      this._resumePolling();
+    }
   };
 
   _createWalletLocalData = async (id: string) => {
