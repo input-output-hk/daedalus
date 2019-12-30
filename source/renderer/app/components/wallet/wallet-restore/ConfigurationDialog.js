@@ -70,6 +70,7 @@ const messages = defineMessages({
 });
 
 type Props = {
+  isSubmitting: boolean,
   onContinue: Function,
   onClose: Function,
   onBack: Function,
@@ -86,9 +87,9 @@ export default class ConfigurationDialog extends Component<Props> {
     error: null,
   };
 
-  componentWillReceiveProps(newProps: Props) {
-    if (newProps.error) {
-      handleFormErrors('.WalletRestoreDialog_error');
+  componentWillReceiveProps(nextProps: Props) {
+    if (nextProps.error) {
+      handleFormErrors('.ConfigurationDialog_error');
     }
   }
 
@@ -170,7 +171,7 @@ export default class ConfigurationDialog extends Component<Props> {
         onContinue(walletName, spendingPassword);
       },
       onError: () =>
-        handleFormErrors('.SimpleFormField_error', { focusElement: true }),
+        handleFormErrors('.ConfigurationDialog_error', { focusElement: true }),
     });
   };
 
@@ -188,7 +189,7 @@ export default class ConfigurationDialog extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { onClose, onBack, error } = this.props;
+    const { onClose, onBack, error, isSubmitting } = this.props;
     const { form } = this;
 
     const walletNameField = form.$('walletName');
@@ -212,6 +213,7 @@ export default class ConfigurationDialog extends Component<Props> {
         stepNumber={2}
         actions={[
           {
+            className: isSubmitting ? styles.isSubmitting : null,
             primary: true,
             label: intl.formatMessage(messages.continueButtonLabel),
             onClick: this.submit,

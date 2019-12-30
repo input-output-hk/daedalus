@@ -30,6 +30,7 @@ import {
   RECOVERY_PHRASE_VERIFICATION_WARNING,
   WALLET_RESTORE_TYPES,
 } from '../config/walletsConfig';
+import { ADA_CERTIFICATE_MNEMONIC_LENGTH } from '../config/cryptoConfig';
 import type {
   WalletKind,
   WalletDaedalusKind,
@@ -344,11 +345,12 @@ export default class WalletsStore extends Store {
   };
 
   @action _restoreWalletEnd = async () => {
-    if (this.restoredWallet) {
-      await this._patchWalletRequestWithNewWallet(this.restoredWallet);
+    const { restoredWallet } = this;
+    if (restoredWallet) {
+      await this._createWalletLocalData(restoredWallet.id);
+      await this._patchWalletRequestWithNewWallet(restoredWallet);
       this.actions.dialogs.closeActiveDialog.trigger();
-      this.restoreRequest.reset();
-      this.goToWalletRoute(this.restoredWallet ? this.restoredWallet.id : '');
+      this.goToWalletRoute(restoredWallet.id);
       this.refreshWalletsData();
     }
   };
@@ -363,6 +365,8 @@ export default class WalletsStore extends Store {
   };
 
   @action _restoreWalletClose = () => {
+    this.restoreRequest.reset();
+    this.restoreLegacyRequest.reset();
     this.restoreWalletStep = null;
     this.restoredWallet = null;
     this.restoreWalletShowAbortConfirmation = false;
@@ -407,7 +411,7 @@ export default class WalletsStore extends Store {
   }) => {
     this.walletName = walletName;
     this.spendingPassword = spendingPassword;
-    this.restoreWalletStep = 3;
+    // this.restoreWalletStep = 3;
   };
 
   _finishWalletBackup = async () => {
@@ -482,16 +486,54 @@ export default class WalletsStore extends Store {
     );
   };
 
-  _restore = async () => {
-    // reset getWalletRecoveryPhraseFromCertificateRequest to clear previous errors
+  _unscrambleMnemonics = async (): Array<string> => {
+    // Reset getWalletRecoveryPhraseFromCertificateRequest to clear previous errors
     this.getWalletRecoveryPhraseFromCertificateRequest.reset();
+
+    // Split recovery phrase to 18 (scrambled mnemonics) + 9 (mnemonics seed) mnemonics
+    const recoveryPhraseArray = this.mnemonics;
+    const chunked = chunk(recoveryPhraseArray, ADA_CERTIFICATE_MNEMONIC_LENGTH);
+    const scrambledInput = chunked[0]; // first 18 mnemonics
+    const certificatePassword = chunked[1]; // last 9 mnemonics
+    const spendingPassword = mnemonicToSeedHex(certificatePassword.join(' '));
+
+    // Unscramble 18-word wallet certificate mnemonic to 12-word mnemonic
+    const unscrambledRecoveryPhrase: Array<string> = await this.getWalletRecoveryPhraseFromCertificateRequest.execute(
+      {
+        passphrase: spendingPassword,
+        scrambledInput: scrambledInput.join(' '),
+      }
+    ).promise;
+
+    this.getWalletRecoveryPhraseFromCertificateRequest.reset();
+
+    // $FlowFixMe
+    return unscrambledRecoveryPhrase;
+  };
+
+  _restore = async () => {
+    // Reset restore requests to clear previous errors
+    this.restoreRequest.reset();
+    this.restoreLegacyRequest.reset();
+
     let type = WALLET_RESTORE_TYPES.LEGACY;
+    const data = {
+      recoveryPhrase: this.mnemonics,
+      walletName: this.walletName,
+      spendingPassword: this.spendingPassword,
+      isLedger: false,
+    };
+
     if (
       this.walletKind === 'Daedalus' &&
-      (this.walletKindDaedalus === 'Reward15Word' ||
-        this.walletKindDaedalus === 'Balance27Word')
+      this.walletKindDaedalus === 'Reward15Word'
     ) {
       type = WALLET_RESTORE_TYPES.REGULAR;
+    } else if (
+      this.walletKind === 'Daedalus' &&
+      this.walletKindDaedalus === 'Balance27Word'
+    ) {
+      data.recoveryPhrase = await this._unscrambleMnemonics();
     } else if (
       this.walletKind === 'Yoroi' &&
       this.walletKindYoroi === 'Balance15Word'
@@ -502,41 +544,11 @@ export default class WalletsStore extends Store {
       this.walletKindYoroi === 'Reward15Word'
     ) {
       type = WALLET_RESTORE_TYPES.YOROI_REGULAR;
-    }
-
-    let data = {
-      recoveryPhrase:
-        this.mnemonics && this.mnemonics.length ? this.mnemonics.join(' ') : '',
-      walletName: this.walletName,
-      spendingPassword: this.spendingPassword,
-    };
-
-    if (
+    } else if (
       this.walletKind === 'Hardware' &&
-      (this.walletKindHardware === 'Nano' ||
-        this.walletKindHardware === 'Trezor')
+      this.walletKindHardware === 'Nano'
     ) {
-      // Split recovery phrase to 18 (scrambled mnemonics) + 9 (mnemonics seed) mnemonics
-      const recoveryPhraseArray = this.mnemonics;
-      const chunked = chunk(recoveryPhraseArray, 18);
-      const scrambledInput = chunked[0]; // first 18 mnemonics
-      const certificatePassword = chunked[1]; // last 9 mnemonics
-      const spendingPassword = mnemonicToSeedHex(certificatePassword.join(' '));
-
-      // Unscramble 18-word wallet certificate mnemonic to 12-word mnemonic
-      const unscrambledRecoveryPhrase: Array<string> = await this.getWalletRecoveryPhraseFromCertificateRequest.execute(
-        {
-          passphrase: spendingPassword,
-          scrambledInput: scrambledInput.join(' '),
-        }
-      ).promise;
-      this.getWalletRecoveryPhraseFromCertificateRequest.reset();
-
-      data = {
-        ...data,
-        recoveryPhrase: unscrambledRecoveryPhrase.join(' '),
-        isLedger: this.walletKindHardware === 'Nano',
-      };
+      data.isLedger = true;
     }
 
     const request =
@@ -548,9 +560,10 @@ export default class WalletsStore extends Store {
     const restoredWallet = await request.execute(data).promise;
     if (!restoredWallet)
       throw new Error('Restored wallet was not received correctly');
-    await this._createWalletLocalData(restoredWallet.id);
+
     runInAction('set restoredWallet', () => {
       this.restoredWallet = restoredWallet;
+      this.restoreWalletStep = 3;
     });
   };
 
@@ -771,10 +784,8 @@ export default class WalletsStore extends Store {
   // ACTIONS
 
   goToWalletRoute(walletId: string) {
-    if (walletId) {
-      const route = this.getWalletRoute(walletId);
-      this.actions.router.goToRoute.trigger({ route });
-    }
+    const route = this.getWalletRoute(walletId);
+    this.actions.router.goToRoute.trigger({ route });
   }
 
   // =================== PRIVATE API ==================== //
@@ -787,24 +798,22 @@ export default class WalletsStore extends Store {
   }
 
   _patchWalletRequestWithNewWallet = async (wallet: Wallet) => {
-    if (wallet) {
-      // Only add the new wallet if it does not exist yet in the result!
-      await this.walletsRequest.patch(result => {
-        if (!find(result, { id: wallet.id })) {
-          if (wallet.isLegacy) {
-            // Legacy wallets are always added to the end of the list!
-            result.push(wallet);
+    // Only add the new wallet if it does not exist yet in the result!
+    await this.walletsRequest.patch(result => {
+      if (!find(result, { id: wallet.id })) {
+        if (wallet.isLegacy) {
+          // Legacy wallets are always added to the end of the list!
+          result.push(wallet);
+        } else {
+          const index = findIndex(result, 'isLegacy');
+          if (index >= 0) {
+            result.splice(index, 0, wallet);
           } else {
-            const index = findIndex(result, 'isLegacy');
-            if (index >= 0) {
-              result.splice(index, 0, wallet);
-            } else {
-              result.push(wallet);
-            }
+            result.push(wallet);
           }
         }
-      });
-    }
+      }
+    });
   };
 
   _pollRefresh = async () => {

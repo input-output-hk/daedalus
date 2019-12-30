@@ -92,6 +92,7 @@ storiesOf('Wallets|Add Wallet', module)
   })
   .add('Restore - Step 3', () => (
     <ConfigurationDialog
+      isSubmitting={false}
       onContinue={action('onContinue')}
       onClose={action('onClose')}
       onBack={action('onSetWalletKind')}

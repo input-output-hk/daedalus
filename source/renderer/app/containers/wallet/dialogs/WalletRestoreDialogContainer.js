@@ -67,10 +67,8 @@ export default class WalletRestoreContainer extends Component<Props> {
   onAbort = () => this.props.actions.wallets.restoreWalletAbort.trigger();
 
   render() {
-    const {
-      restoreWalletStep,
-      restoreWalletShowAbortConfirmation,
-    } = this.props.stores.wallets;
+    const { wallets } = this.props.stores;
+    const { restoreWalletStep, restoreWalletShowAbortConfirmation } = wallets;
     const stepId = RESTORE_WALLET_STEPS[restoreWalletStep];
     const CurrentContainer = this.containers[stepId];
     return (
