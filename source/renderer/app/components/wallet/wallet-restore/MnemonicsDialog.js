@@ -30,6 +30,12 @@ const messages = defineMessages({
     defaultMessage: '!!!Enter your {numberOfWords}-word recovery phrase',
     description: 'Placeholder for the mnemonics autocomplete.',
   },
+  autocompleteMultiLengthPhrase: {
+    id:
+      'wallet.restore.dialog.step.mnemonics.autocomplete.multiLengthPhrase.placeholder',
+    defaultMessage: '!!!Enter your 12, 18 or 24-word recovery phrase',
+    description: 'Placeholder for the multi-length mnemonics autocomplete.',
+  },
   autocompleteNoResults: {
     id: 'wallet.restore.dialog.step.mnemonics.autocomplete.noResults',
     defaultMessage: '!!!No results',
@@ -40,6 +46,12 @@ const messages = defineMessages({
     id: 'wallet.restore.dialog.step.mnemonics.autocomplete.continueButtonLabel',
     defaultMessage: '!!!Check recovery phrase',
     description: 'Label for the mnemonics Continue button.',
+  },
+  incompleteMultiLengthPhrase: {
+    id:
+      'wallet.restore.dialog.step.mnemonics.autocomplete.incompleteMultiLengthPhrase',
+    defaultMessage: '!!!12, 18 or 24 words',
+    description: 'Error message for incomplete multi-length recovery phrase',
   },
   invalidRecoveryPhrase: {
     id:
@@ -108,11 +120,11 @@ export default class MnemonicsDialog extends Component<Props> {
             if (!isPhraseComplete) {
               return [
                 false,
-                intl.formatMessage(globalMessages.incompleteMnemonic, {
-                  expected: Array.isArray(expectedWordCount)
-                    ? expectedWordCount.join(', ')
-                    : expectedWordCount,
-                }),
+                Array.isArray(expectedWordCount)
+                  ? intl.formatMessage(messages.incompleteMultiLengthPhrase)
+                  : intl.formatMessage(globalMessages.incompleteMnemonic, {
+                      expected: expectedWordCount,
+                    }),
               ];
             }
             const value = join(enteredWords, ' ');
@@ -189,11 +201,13 @@ export default class MnemonicsDialog extends Component<Props> {
               this.recoveryPhraseAutocomplete = autocomplete;
             }}
             label={intl.formatMessage(globalMessages.recoveryPhraseDialogTitle)}
-            placeholder={intl.formatMessage(messages.autocompletePlaceholder, {
-              numberOfWords: Array.isArray(expectedWordCount)
-                ? expectedWordCount.join(', ')
-                : expectedWordCount,
-            })}
+            placeholder={
+              Array.isArray(expectedWordCount)
+                ? intl.formatMessage(messages.autocompleteMultiLengthPhrase)
+                : intl.formatMessage(messages.autocompletePlaceholder, {
+                    numberOfWords: expectedWordCount,
+                  })
+            }
             options={validWords}
             maxSelections={maxWordCount}
             error={recoveryPhraseField.error}

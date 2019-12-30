@@ -8281,17 +8281,31 @@
         }
       },
       {
-        "defaultMessage": "!!!No results",
-        "description": "\"No results\" message for the mnemonics autocomplete search results.",
+        "defaultMessage": "!!!Enter your 12, 18 or 24-word recovery phrase",
+        "description": "Placeholder for the multi-length mnemonics autocomplete.",
         "end": {
           "column": 3,
           "line": 38
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/MnemonicsDialog.js",
+        "id": "wallet.restore.dialog.step.mnemonics.autocomplete.multiLengthPhrase.placeholder",
+        "start": {
+          "column": 33,
+          "line": 33
+        }
+      },
+      {
+        "defaultMessage": "!!!No results",
+        "description": "\"No results\" message for the mnemonics autocomplete search results.",
+        "end": {
+          "column": 3,
+          "line": 44
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/MnemonicsDialog.js",
         "id": "wallet.restore.dialog.step.mnemonics.autocomplete.noResults",
         "start": {
           "column": 25,
-          "line": 33
+          "line": 39
         }
       },
       {
@@ -8299,13 +8313,27 @@
         "description": "Label for the mnemonics Continue button.",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 49
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/MnemonicsDialog.js",
         "id": "wallet.restore.dialog.step.mnemonics.autocomplete.continueButtonLabel",
         "start": {
           "column": 23,
-          "line": 39
+          "line": 45
+        }
+      },
+      {
+        "defaultMessage": "!!!12, 18 or 24 words",
+        "description": "Error message for incomplete multi-length recovery phrase",
+        "end": {
+          "column": 3,
+          "line": 55
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/MnemonicsDialog.js",
+        "id": "wallet.restore.dialog.step.mnemonics.autocomplete.incompleteMultiLengthPhrase",
+        "start": {
+          "column": 31,
+          "line": 50
         }
       },
       {
@@ -8313,13 +8341,13 @@
         "description": "Label for invalid recovery phrase",
         "end": {
           "column": 3,
-          "line": 49
+          "line": 61
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/MnemonicsDialog.js",
         "id": "wallet.restore.dialog.step.mnemonics.autocomplete.invalidRecoveryPhrase",
         "start": {
           "column": 25,
-          "line": 44
+          "line": 56
         }
       }
     ],
