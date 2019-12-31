@@ -408,14 +408,17 @@ Then(
 Then(
   /^I click on option "([^"]*)"$/,
   async function(text) {
-    await this.waitAndClick(`//span[contains(text(), "${text}")]/..`);
+    await this.waitAndClick(`//*[contains(text(), "${text}")]/..`);
   }
 );
 
-When(/^I click "Daedalus wallet" radio button/, function() {
-  // return this.waitAndClick('.RadioSet_radiosContainer div:nth-child(1) label');
-  return this.waitAndClick('//*[contains(text(), "Daedalus wallet")]/..');
-});
+Then(
+  /^I confirm "([^"]*)"$/,
+  async function(text) {
+    //TODO: this item needs to be scrolled into position to work
+    await this.waitAndClick(`//label[contains(text(), "${text}")]`);
+  }
+);
 
 When(/^I click "12 words - Balance wallet" radio button/, function() {
   return this.waitAndClick('.RadioSet_radiosContainer div:nth-child(1) label');
