@@ -159,9 +159,14 @@ export default class WalletTypeDialog extends Component<Props, State> {
   toggleAcceptance = (param: HardwareWalletAcceptance) =>
     this.setState(currentState => set({}, param, !currentState[param]));
 
-  getWalletKind = (kinds: Object, value: ?string, kindParam?: string) => (
+  getWalletKind = (
+    kinds: Object,
+    message: string,
+    value: ?string,
+    kindParam?: string
+  ) => (
     <RadioSet
-      label={this.context.intl.formatMessage(messages.labelWalletKind)}
+      label={this.context.intl.formatMessage(message)}
       items={Object.keys(kinds).map((key: string) => {
         const kind: WalletKinds = kinds[key];
         return {
@@ -226,17 +231,23 @@ export default class WalletTypeDialog extends Component<Props, State> {
         onClose={onClose}
       >
         <div className={styles.component}>
-          {this.getWalletKind(WALLET_KINDS, walletKind)}
+          {this.getWalletKind(
+            WALLET_KINDS,
+            messages.labelWalletKind,
+            walletKind
+          )}
         </div>
         {walletKind === WALLET_KINDS.DAEDALUS &&
           this.getWalletKind(
             WALLET_DAEDALUS_KINDS,
+            messages.labelDaedalusWalletKind,
             walletKindDaedalus,
             WALLET_KINDS.DAEDALUS
           )}
         {walletKind === WALLET_KINDS.YOROI &&
           this.getWalletKind(
             WALLET_YOROI_KINDS,
+            messages.labelYoroiWalletKind,
             walletKindYoroi,
             WALLET_KINDS.YOROI
           )}
@@ -244,6 +255,7 @@ export default class WalletTypeDialog extends Component<Props, State> {
           <Fragment>
             {this.getWalletKind(
               WALLET_HARDWARE_KINDS,
+              messages.labelHardwareWalletKind,
               walletKindHardware,
               WALLET_KINDS.HARDWARE
             )}
