@@ -1,3 +1,8 @@
+.walletKindSubSelection {
+  margin-bottom: initial;
+  //TODO: This was added just to have a class for testing, discuss with the team and fix
+}
+
 .hardwareWalletAcceptance {
   color: var(
     --theme-wallet-restore-dialog-step-walletType-hardwareWalletDisclaimer-text-color
