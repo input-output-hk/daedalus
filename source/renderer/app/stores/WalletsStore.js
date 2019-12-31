@@ -138,6 +138,18 @@ export default class WalletsStore extends Store {
   @observable restoreLegacyRequest: Request<Wallet> = new Request(
     this.api.ada.restoreLegacyWallet
   );
+  @observable restoreByronRandomWalletRequest: Request<Wallet> = new Request(
+    this.api.ada.restoreByronRandomWallet
+  );
+  @observable restoreByronIcarusWalletRequest: Request<Wallet> = new Request(
+    this.api.ada.restoreByronIcarusWallet
+  );
+  @observable restoreByronTrezorWalletRequest: Request<Wallet> = new Request(
+    this.api.ada.restoreByronTrezorWallet
+  );
+  @observable restoreByronLedgerWalletRequest: Request<Wallet> = new Request(
+    this.api.ada.restoreByronLedgerWallet
+  );
   @observable
   transferFundsCalculateFeeRequest: Request<TransferFundsCalculateFeeRequest> = new Request(
     this.api.ada.transferFundsCalculateFee
@@ -530,7 +542,6 @@ export default class WalletsStore extends Store {
     this.restoreRequest.reset();
     this.restoreLegacyRequest.reset();
 
-    let type = WALLET_RESTORE_TYPES.LEGACY;
     const data = {
       recoveryPhrase: this.mnemonics,
       walletName: this.walletName,
@@ -538,38 +549,39 @@ export default class WalletsStore extends Store {
       isLedger: false,
     };
 
-    if (
-      this.walletKind === WALLET_KINDS.DAEDALUS &&
-      this.walletKindDaedalus === WALLET_DAEDALUS_KINDS.REWARD_15_WORD
-    ) {
-      type = WALLET_RESTORE_TYPES.REGULAR;
-    } else if (
-      this.walletKind === WALLET_KINDS.DAEDALUS &&
-      this.walletKindDaedalus === WALLET_DAEDALUS_KINDS.BALANCE_27_WORD
-    ) {
-      data.recoveryPhrase = await this._unscrambleMnemonics();
-    } else if (
-      this.walletKind === WALLET_KINDS.YOROI &&
-      this.walletKindYoroi === WALLET_YOROI_KINDS.BALANCE_15_WORD
-    ) {
-      type = WALLET_RESTORE_TYPES.YOROI_LEGACY;
-    } else if (
-      this.walletKind === WALLET_KINDS.YOROI &&
-      this.walletKindYoroi === WALLET_YOROI_KINDS.REWARD_15_WORD
-    ) {
-      type = WALLET_RESTORE_TYPES.YOROI_REGULAR;
-    } else if (
-      this.walletKind === WALLET_KINDS.HARDWARE &&
-      this.walletKindHardware === WALLET_HARDWARE_KINDS.NANO
-    ) {
-      data.isLedger = true;
-    }
+    let request;
 
-    const request =
-      type === WALLET_RESTORE_TYPES.LEGACY ||
-      type === WALLET_RESTORE_TYPES.YOROI_LEGACY
-        ? this.restoreLegacyRequest
-        : this.restoreRequest;
+    switch (this.walletKind) {
+      case WALLET_KINDS.DAEDALUS:
+        if (this.walletKindDaedalus === WALLET_DAEDALUS_KINDS.BALANCE_12_WORD) {
+          request = this.restoreByronRandomWalletRequest;
+        } else if (
+          this.walletKindDaedalus === WALLET_DAEDALUS_KINDS.REWARD_15_WORD
+        ) {
+          request = this.restoreRequest;
+        } else if (
+          this.walletKindDaedalus === WALLET_DAEDALUS_KINDS.BALANCE_27_WORD
+        ) {
+          data.recoveryPhrase = await this._unscrambleMnemonics();
+          request = this.restoreByronRandomWalletRequest;
+        }
+        break;
+      case WALLET_KINDS.YOROI:
+        if (this.walletKindYoroi === WALLET_YOROI_KINDS.BALANCE_15_WORD) {
+          request = this.restoreByronIcarusWalletRequest;
+        } else if (this.walletKindYoroi === WALLET_YOROI_KINDS.REWARD_15_WORD) {
+          request = this.restoreRequest;
+        }
+        break;
+      case WALLET_KINDS.HARDWARE:
+        if (this.walletKindHardware === WALLET_HARDWARE_KINDS.NANO) {
+          request = this.restoreByronLedgerWalletRequest;
+        } else if (this.walletKindHardware === WALLET_HARDWARE_KINDS.TREZOR) {
+          request = this.restoreByronTrezorWalletRequest;
+        }
+        break;
+      default:
+    }
 
     try {
       const restoredWallet = await request.execute(data).promise;
