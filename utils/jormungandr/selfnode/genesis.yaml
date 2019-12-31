@@ -10877,6 +10877,106 @@ initial:
       - address: Ae2tdPwUPEZFbUA2eji7qzph7Mug3v9HVSWvhSExvUDez3CzKB1grupYBAL
         value: 100000000000
 
+  #
+  # Legacy Funds (Ledger)
+  #
+
+  # (12 words) "struggle", "section", "scissors", "siren", "garbage", "yellow", "maximum", "finger", "duty", "require", "mule", "earn"
+  - legacy_fund:
+      - address: "Ae2tdPwUPEZ4Gs4s2recjNjQHBKfuBTkeuqbHJJrC6CuyjGyUD44cCTq4sJ"
+        value: 100000000000
+  - legacy_fund:
+      - address: "Ae2tdPwUPEZ8ozZuJWsLVb7aEb5p9ntcja47B9i68GV3y9by1eY5C2y6WUT"
+        value: 100000000000
+  - legacy_fund:
+      - address: "Ae2tdPwUPEZJoUCoyoCxUAKAbn2vFo6nu6B7aTWL1Pv9MRKm8unG9ixLurg"
+        value: 100000000000
+  - legacy_fund:
+      - address: "Ae2tdPwUPEYwFNKLxqF8s31nbaNt5MZisVqsQ5qsiY763HY5wsBN3mSzPRa"
+        value: 100000000000
+  - legacy_fund:
+      - address: "Ae2tdPwUPEZ4ZXzzehKoWWC9QYVqJfEL9x63zjH6wyEJbNRsZ9eccR6nSpv"
+        value: 100000000000
+  - legacy_fund:
+      - address: "Ae2tdPwUPEYyX7ug8zm6K7nLWhgEEBo7Ewf1qALxkvqyHHSC5jMFzH418Q1"
+        value: 100000000000
+  - legacy_fund:
+      - address: "Ae2tdPwUPEZ95eCwDjNQjReRkeLZFv6kBs3vwaKPHJsw2cxXc3HaCD2jzqw"
+        value: 100000000000
+  - legacy_fund:
+      - address: "Ae2tdPwUPEZDHGbQ9sbLZuw3cfhcSzqqdK8Xj3dhAzmWZGeVgJhncu5LR9N"
+        value: 100000000000
+  - legacy_fund:
+      - address: "Ae2tdPwUPEYyDca1eVbeEea6CjihoMAgt6mPiNuC1hEpy5U2qQ1Tzt6E8q8"
+        value: 100000000000
+  - legacy_fund:
+      - address: "Ae2tdPwUPEZHRMjjXMT2icJXp5h2k2j3Ph6dB5iGRashA2QxHLgFZbHzdms"
+        value: 100000000000
+
+  # (18 words) "vague" , "wrist" , "poet" , "crazy" , "danger" , "dinner", "grace" , "home" , "naive" , "unfold" , "april" , "exile", "relief" , "rifle" , "ranch" , "tone" , "betray" , "wrong"
+  - legacy_fund:
+      - address: "Ae2tdPwUPEZMCGyPAK85FrcserPvzVZZUcbFk5TvDmL9LrUyq2KPYubPcru"
+        value: 100000000000
+  - legacy_fund:
+      - address: "Ae2tdPwUPEZ6drrnNd1KW3UoiU3U1ZK3mxSpQpFAdXzJHuwvDcYB7Wzxkp1"
+        value: 100000000000
+  - legacy_fund:
+      - address: "Ae2tdPwUPEZ7Jaw9qt1q2CjCcds6zpHMyzmPGDh9tBeyQG28AdRGHcaWYx7"
+        value: 100000000000
+  - legacy_fund:
+      - address: "Ae2tdPwUPEZ9SW4qxWkFoozTux5i7F9jVpHQFQUycQuNanSUScyMTYrnQXK"
+        value: 100000000000
+  - legacy_fund:
+      - address: "Ae2tdPwUPEZ6YegpN8XurGfWyKqkNHLgdbHpdohumKt5QpkNVJhw4FCSRdo"
+        value: 100000000000
+  - legacy_fund:
+      - address: "Ae2tdPwUPEZLgrXt3zJeHgFWM2stxRjdm6wWATSoUzJ1CmUxKqgbYQXR8cC"
+        value: 100000000000
+  - legacy_fund:
+      - address: "Ae2tdPwUPEZ6axGCfo5nCLn5hEoRo4yNmQKBzn12B2quPncgQRFP6JBZ2ex"
+        value: 100000000000
+  - legacy_fund:
+      - address: "Ae2tdPwUPEYzdHGmJDL9tEWXfzyshohvzyS3K9wmLc5qMrwRNFPQA611uzB"
+        value: 100000000000
+  - legacy_fund:
+      - address: "Ae2tdPwUPEYxLNQJXcT3XUh54BXn5w53pPe5EHMXo6qo47gpNM9QyJsaXz4"
+        value: 100000000000
+  - legacy_fund:
+      - address: "Ae2tdPwUPEYvq2fnzqs9EWxFF2j87nZzBAZZ7y3qoj5oTce1ZGvsc4potp3"
+        value: 100000000000
+
+  # (24 words) "recall" , "grace" , "sport" , "punch" , "exhibit" , "mad", "harbor" , "stand" , "obey" , "short" , "width" , "stem", "awkward" , "used" , "stairs" , "wool" , "ugly" , "trap", "season" , "stove" , "worth" , "toward" , "congress" , "jaguar"
+  - legacy_fund:
+      - address: "Ae2tdPwUPEZFvG914wGXtCsb9hCr9aKjJC2ZciLKSNRqAKtjnduH7XtPn78"
+        value: 1000000000000
+  - legacy_fund:
+      - address: "Ae2tdPwUPEZ8rVsdBE6EMZpac32MLzciY75MrwrPs8ikjf6MWYFJUHkGaw5"
+        value: 1000000000000
+  - legacy_fund:
+      - address: "Ae2tdPwUPEZADQdQy2cbHDwwFRYUcrfreiu82Ngm9Bxdw1pJqJFUnFoQmNL"
+        value: 1000000000000
+  - legacy_fund:
+      - address: "Ae2tdPwUPEZ3NULtb3fK6qtJYwJbVnmhDeWzoMbjzPbCsEC9MyB4foBABhz"
+        value: 1000000000000
+  - legacy_fund:
+      - address: "Ae2tdPwUPEZ3rGvPCdzCPrVRvzEfpUp8XnZ861nss3XfLun5wA3c3YMA41v"
+        value: 1000000000000
+  - legacy_fund:
+      - address: "Ae2tdPwUPEZ575pMY9TBJyPdrwGkq2kr49V9fuqRWpF6wM9JbuZLmxHDo2N"
+        value: 1000000000000
+  - legacy_fund:
+      - address: "Ae2tdPwUPEZFaVKwy9bcN81ZPVL8uHRfsrCj7ZZhbm2uqiwLrzsy9Bs1rBN"
+        value: 1000000000000
+  - legacy_fund:
+      - address: "Ae2tdPwUPEZ4K16qFm6qVRWTEGpq5TJiyt8ZojmRANTSpPDAWZuH2Ge85uB"
+        value: 1000000000000
+  - legacy_fund:
+      - address: "Ae2tdPwUPEZMMYd8JP9F16HJgCsDsPjUoERWoFzZugN4mNjhR9ZnFwPonCs"
+        value: 1000000000000
+  - legacy_fund:
+      - address: "Ae2tdPwUPEZ3anXo172NFuumSGjrvbk1pHK9LiF82nGmPKC52NMYR77V2dM"
+        value: 1000000000000
+
   # Additional faucet accounts that can be used to pay for registration certificate.
   #
   # -------- generate-account-faucet.sh
