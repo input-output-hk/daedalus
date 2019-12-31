@@ -10976,6 +10976,105 @@ initial:
   - legacy_fund:
       - address: "Ae2tdPwUPEZ3anXo172NFuumSGjrvbk1pHK9LiF82nGmPKC52NMYR77V2dM"
         value: 1000000000000
+  #
+  # Legacy Funds (Trezor)
+  #
+
+  # (12 words) "walk", "license", "firm", "dwarf", "hundred", "pride", "ensure", "midnight", "unit", "keen", "warfare", "east"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ9W3XajXS7ypra9BBYkwfvTz1PinD1eSCxHCQjTmw99wBz39y
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZEhg3LiSAMZmtosbQcAgSU4jvLhWSRyph8hwYqv9CzrFy6vQo
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ2zpcZVpVoBtGnncG3qSCMQGQ6M4pV2H2K5YyDhqZ7424GKyz
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ7tEnAvFtc3v7eP195XrS3pFgZSSCoa5S8oBFk6ztxVwmUcxA
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZHanmRFbXA1f4pYrFRoBcDMG88CeV4Z57XpMUjqsc8jRz8GE3
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZAyvGMHqdRfLcMuP6Ez6RgYjdyGUFBCeqzPqHbkn4wd3WQrgJ
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ2CdZbNdzsbu8yBU5ZK3XLEQa2pYwsZzgagKCMMdpRLKQKFfX
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYzrrpt2NccDnv72v1noz2vTXt17UeHPtXuZztcqYM57ncCvfD
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZFyBM66NYnCREpZy43gEpUKwyvYBdf8nK38N6VeKJoawNsVQC
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ7tNoEkK58MrWdR6q6unhSqDgXQvEc2XyRtNLgSWbCe3QZghK
+        value: 100000000000
+
+  # (18 words) "hen", "idea", "mimic", "frog", "second", "magnet", "egg", "indicate", "jar", "girl", "broccoli", "heart", "verify", "person", "present", "toe", "vibrant", "unable"
+  - legacy_fund:
+      - address: Ae2tdPwUPEYzx9hEnPZKT14SfPmsQvpwL46yPRFqzkqBPTDpwwDBiSQSe5H
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZJYmMs1z8Gh2eGZZR3uBqgcQxBevA3rsvWft3U9d6a8dGkcZ8
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYw6pDMLtHTxBq8LnYCbXeey8AkPeL9DNkibDz4i1SssCTH8R5
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ4wqGZtptW4LxngfZjdmCRaLrsdo3H31CqFkrKH5fxF3GAUdm
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYxyHGuNmABqY4P7uzzGd6UWVeguwgUrF3tV9AEptExgAbb2Ds
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ9wCuUSgeHEC7jMhiHS8hXWx8w1Vtt9ZxrzYoKDPbTKhdPAfJ
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ8Vt43wsBaAzHnEdvjwPnjAoWLC1xeJeNeWAvvZnNDAMwZ22b
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYx21tKjtE2WzQsmsxNdVZQxCCgojUxMFtmCYR9gqqwXhBPm57
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYxVQrJm6PuWkjgNadiUV3YfC2sCmQFDZqwuzNFGj7Tgp8n1Bi
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYwBbU6ghpjWkNw81wZ6LdyWdZVMdoScDPiSV5ZhwSJzkZqus3
+        value: 100000000000
+
+  # (24 words) "slot", "young", "shoot", "surround", "equal", "trouble", "rice", "update", "rare", "dinosaur", "drastic", "kitten", "mom", "actress", "salon", "abuse", "happy", "satisfy"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZBvaca39j3KRRikqY3AGFseAtgBLdnV8pDArUS5pqyMAzXUzY
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ4MemwEvUPeHWHckYjfYGiU7qyLCJ6MumaU5c64YVboeVBU4o
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZHwVZCJ9ntZM6w5XJ2z9QtZKwkuPUMBusiVx5q31KpqGR9FcJ
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYygErppRsoEqXEyPGxEFsKVoa2BFKMG3prWh6sFi8VSgW4h3k
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZCWwt43jbnf3RjEBqixpjkzMdTB9cyt7zJjVnq8PTnF55rHQL
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYzbmFy6Mbn1WjwtQJyj71Wqj27jz9QpPty1KoyJL3tQh4XBkW
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ4m5XyBU9c41sareSBsLMoSn97co3XMnaGtuQDCPRywXp6bt5
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZNLXT48whvAoRTn9bMeZweHhPqG7xFDzCrKfzGu8Ku8myrRcj
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZMpnbSJauTkyFvaxzmcxbz29h4ogiQemoMDEwun5tAEQnHaV2
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZEaxZqj8oXrCPuA3Ehaa5fa9kPAgpdLmgoSeKipZEPWo5qeQF
+        value: 100000000000
 
   # Additional faucet accounts that can be used to pay for registration certificate.
   #
