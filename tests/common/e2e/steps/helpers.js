@@ -88,7 +88,7 @@ export const waitAndClick = async (
 
 export const waitUntilTextInSelector = async (
   client: Object,
-  { selector, text, ignoreCase = false }: { selector: string, text: string, ignoreCase: boolean }
+  { selector, text, ignoreCase = false }: { selector: string, text: string, ignoreCase?: boolean }
 ) =>
   client.waitUntil(async () => {
     await client.waitForText(selector);
