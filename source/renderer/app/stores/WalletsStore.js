@@ -131,7 +131,7 @@ export default class WalletsStore extends Store {
   @observable getWalletRecoveryPhraseFromCertificateRequest: Request<
     Array<string>
   > = new Request(this.api.ada.getWalletRecoveryPhraseFromCertificate);
-  @observable restoreRequest: Request<Wallet> = new Request(
+  @observable restoreDaedalusRequest: Request<Wallet> = new Request(
     this.api.ada.restoreWallet
   );
   @observable restoreLegacyRequest: Request<Wallet> = new Request(
@@ -374,7 +374,7 @@ export default class WalletsStore extends Store {
 
   @action _restoreWalletChangeStep = (isBack: boolean = false) => {
     // Reset restore requests to clear previous errors
-    this.restoreRequest.reset();
+    this.restoreDaedalusRequest.reset();
     this.restoreLegacyRequest.reset();
 
     const currrentRestoreWalletStep = this.restoreWalletStep || 0;
@@ -387,7 +387,7 @@ export default class WalletsStore extends Store {
 
   @action _restoreWalletClose = () => {
     this.actions.dialogs.closeActiveDialog.trigger();
-    this.restoreRequest.reset();
+    this.restoreDaedalusRequest.reset();
     this.restoreLegacyRequest.reset();
     this.restoreWalletStep = null;
     this.restoredWallet = null;
@@ -538,7 +538,7 @@ export default class WalletsStore extends Store {
     this._pausePolling();
 
     // Reset restore requests to clear previous errors
-    this.restoreRequest.reset();
+    this.restoreDaedalusRequest.reset();
     this.restoreLegacyRequest.reset();
 
     const data = {
@@ -547,38 +547,13 @@ export default class WalletsStore extends Store {
       spendingPassword: this.spendingPassword,
     };
 
-    let request;
+    const request = this.restoreRequest;
 
-    switch (this.walletKind) {
-      case WALLET_KINDS.DAEDALUS:
-        if (this.walletKindDaedalus === WALLET_DAEDALUS_KINDS.BALANCE_12_WORD) {
-          request = this.restoreByronRandomWalletRequest;
-        } else if (
-          this.walletKindDaedalus === WALLET_DAEDALUS_KINDS.REWARD_15_WORD
-        ) {
-          request = this.restoreRequest;
-        } else if (
-          this.walletKindDaedalus === WALLET_DAEDALUS_KINDS.BALANCE_27_WORD
-        ) {
-          data.recoveryPhrase = await this._unscrambleMnemonics();
-          request = this.restoreByronRandomWalletRequest;
-        }
-        break;
-      case WALLET_KINDS.YOROI:
-        if (this.walletKindYoroi === WALLET_YOROI_KINDS.BALANCE_15_WORD) {
-          request = this.restoreByronIcarusWalletRequest;
-        } else if (this.walletKindYoroi === WALLET_YOROI_KINDS.REWARD_15_WORD) {
-          request = this.restoreRequest;
-        }
-        break;
-      case WALLET_KINDS.HARDWARE:
-        if (this.walletKindHardware === WALLET_HARDWARE_KINDS.LEDGER) {
-          request = this.restoreByronLedgerWalletRequest;
-        } else if (this.walletKindHardware === WALLET_HARDWARE_KINDS.TREZOR) {
-          request = this.restoreByronTrezorWalletRequest;
-        }
-        break;
-      default:
+    if (
+      WALLET_KINDS.DAEDALUS &&
+      this.walletKindDaedalus === WALLET_DAEDALUS_KINDS.BALANCE_27_WORD
+    ) {
+      data.recoveryPhrase = await this._unscrambleMnemonics();
     }
 
     try {
@@ -775,6 +750,28 @@ export default class WalletsStore extends Store {
   @computed get isWalletRoute(): boolean {
     const { currentRoute } = this.stores.app;
     return matchRoute(`${ROUTES.WALLETS.ROOT}(/*rest)`, currentRoute);
+  }
+
+  @computed get restoreRequest(): Request {
+    switch (this.walletKind) {
+      case WALLET_KINDS.DAEDALUS:
+        if (this.walletKindDaedalus === WALLET_DAEDALUS_KINDS.REWARD_15_WORD) {
+          return this.restoreDaedalusRequest;
+        }
+        return this.restoreByronRandomWalletRequest;
+      case WALLET_KINDS.YOROI:
+        if (this.walletKindYoroi === WALLET_YOROI_KINDS.BALANCE_15_WORD) {
+          return this.restoreByronIcarusWalletRequest;
+        }
+        return this.restoreDaedalusRequest;
+      case WALLET_KINDS.HARDWARE:
+        if (this.walletKindHardware === WALLET_HARDWARE_KINDS.LEDGER) {
+          return this.restoreByronLedgerWalletRequest;
+        }
+        return this.restoreByronTrezorWalletRequest;
+      default:
+        return this.restoreDaedalusRequest;
+    }
   }
 
   @computed get restoreProgress(): number {
