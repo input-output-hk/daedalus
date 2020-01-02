@@ -547,7 +547,7 @@ export default class WalletsStore extends Store {
       spendingPassword: this.spendingPassword,
     };
 
-    const request = this.getRestoreRequest;
+    const request = this.restoreRequest;
 
     if (
       WALLET_KINDS.DAEDALUS &&
