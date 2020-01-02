@@ -171,7 +171,7 @@ export type RestoreWalletRequest = {
 export type RestoreLegacyWalletRequest = {
   recoveryPhrase: Array<string>,
   walletName: string,
-  spendingPassword: string
+  spendingPassword: string,
 };
 
 export type UpdateWalletRequest = {

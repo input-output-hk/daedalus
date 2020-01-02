@@ -9,7 +9,7 @@ export const restoreLegacyWallet = (
     walletInitData,
   }: { walletInitData: LegacyWalletInitData, isLedger?: boolean }
 ): Promise<LegacyAdaWallet> => {
-  const queryParams = { };
+  const queryParams = {};
 
   return request(
     {
