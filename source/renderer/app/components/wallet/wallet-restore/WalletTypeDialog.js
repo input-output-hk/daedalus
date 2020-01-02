@@ -96,10 +96,10 @@ const messages = defineMessages({
       '!!!What kind of hardware wallet would you like to restore?',
     description: 'Label for the "labelHardwareWalletKind" checkbox.',
   },
-  labelHardwareWalletKindNano: {
-    id: 'wallet.restore.dialog.step.walletKind.label.hardwareWalletKindNano',
+  labelHardwareWalletKindLedger: {
+    id: 'wallet.restore.dialog.step.walletKind.label.hardwareWalletKindLedger',
     defaultMessage: '!!!24 words - Ledger Nano S or Nano X (Balance wallet)',
-    description: 'Label for the "labelHardwareWalletKindNano" checkbox.',
+    description: 'Label for the "labelHardwareWalletKindLedger" checkbox.',
   },
   labelHardwareWalletKindTrezor: {
     id: 'wallet.restore.dialog.step.walletKind.label.hardwareWalletKindTrezor',

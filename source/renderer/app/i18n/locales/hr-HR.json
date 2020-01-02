@@ -587,7 +587,7 @@
   "wallet.restore.dialog.step.walletKind.label.daedalusWalletKindBalance27Word": "!!!27 words <span>(Balance wallet)</span>",
   "wallet.restore.dialog.step.walletKind.label.daedalusWalletKindReward15Word": "!!!15 words <span>(Rewards wallet)</span>",
   "wallet.restore.dialog.step.walletKind.label.hardwareWalletKind": "!!!What kind of hardware wallet would you like to restore?",
-  "wallet.restore.dialog.step.walletKind.label.hardwareWalletKindNano": "!!!24 words - Ledger Nano S or Nano X (Balance wallet)",
+  "wallet.restore.dialog.step.walletKind.label.hardwareWalletKindLedger": "!!!24 words - Ledger Nano S or Nano X (Balance wallet)",
   "wallet.restore.dialog.step.walletKind.label.hardwareWalletKindTrezor": "!!!24 words - Trezor (Balance wallet)",
   "wallet.restore.dialog.step.walletKind.label.walletKind": "!!!What kind of wallet would you like to restore?",
   "wallet.restore.dialog.step.walletKind.label.walletKindDaedalus": "!!!Daedalus wallet",

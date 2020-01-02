@@ -7,10 +7,9 @@ export const restoreLegacyWallet = (
   config: RequestConfig,
   {
     walletInitData,
-    isLedger,
   }: { walletInitData: LegacyWalletInitData, isLedger?: boolean }
 ): Promise<LegacyAdaWallet> => {
-  const queryParams = isLedger ? { seed_generation: 'ledger' } : {};
+  const queryParams = { };
 
   return request(
     {

@@ -33,7 +33,7 @@ export const WALLET_YOROI_KINDS: { [key: string]: WalletYoroiKind } = {
 };
 
 export const WALLET_HARDWARE_KINDS: { [key: string]: WalletHardwareKind } = {
-  NANO: 'Nano',
+  LEDGER: 'Ledger',
   TREZOR: 'Trezor',
 };
 
@@ -53,6 +53,6 @@ export const WALLET_YOROI_WORD_COUNT: { [key: WalletYoroiKind]: number } = {
 export const WALLET_HARDWARE_WORD_COUNT: {
   [key: WalletHardwareKind]: Array<number>,
 } = {
-  [WALLET_HARDWARE_KINDS.NANO]: [12, 18, 24],
+  [WALLET_HARDWARE_KINDS.LEDGER]: [12, 18, 24],
   [WALLET_HARDWARE_KINDS.TREZOR]: [12, 18, 24],
 };

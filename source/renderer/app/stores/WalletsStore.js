@@ -545,7 +545,6 @@ export default class WalletsStore extends Store {
       recoveryPhrase: this.mnemonics,
       walletName: this.walletName,
       spendingPassword: this.spendingPassword,
-      isLedger: false,
     };
 
     let request;
@@ -573,7 +572,7 @@ export default class WalletsStore extends Store {
         }
         break;
       case WALLET_KINDS.HARDWARE:
-        if (this.walletKindHardware === WALLET_HARDWARE_KINDS.NANO) {
+        if (this.walletKindHardware === WALLET_HARDWARE_KINDS.LEDGER) {
           request = this.restoreByronLedgerWalletRequest;
         } else if (this.walletKindHardware === WALLET_HARDWARE_KINDS.TREZOR) {
           request = this.restoreByronTrezorWalletRequest;

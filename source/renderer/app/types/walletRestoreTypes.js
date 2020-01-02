@@ -15,7 +15,7 @@ export type WalletDaedalusKind =
 
 export type WalletYoroiKind = 'Balance15Word' | 'Reward15Word';
 
-export type WalletHardwareKind = 'Nano' | 'Trezor';
+export type WalletHardwareKind = 'Ledger' | 'Trezor';
 
 export type WalletSubKind =
   | WalletDaedalusKind
