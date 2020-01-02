@@ -1,0 +1,10 @@
+.component {
+  :global {
+    .SimpleInput_input {
+      font-family: var(--font-regular);
+      font-size: 14px;
+      height: 33px;
+      padding: 7px 10px;
+    }
+  }
+}

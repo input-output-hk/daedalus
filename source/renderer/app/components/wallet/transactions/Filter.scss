@@ -1,5 +1,7 @@
 .filter {
   font-family: var(--font-regular);
+  position: relative;
+  width: 500px;
 
   & > .title {
     align-items: center;

@@ -7,13 +7,11 @@ import BigNumber from 'bignumber.js';
 import { defineMessages, intlShape } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import classNames from 'classnames';
-import { Input } from 'react-polymorph/lib/components/Input';
-import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
-import { Button } from 'react-polymorph/lib/components/Button';
-import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import TinyCheckbox from '../../widgets/forms/TinyCheckbox';
 import TinySelect from '../../widgets/forms/TinySelect';
+import TinyInput from '../../widgets/forms/TinyInput';
+import TinyButton from '../../widgets/forms/TinyButton';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import globalMessages from '../../../i18n/global-messages';
 import filterIcon from '../../../assets/images/filter-dis-ic.inline.svg';
@@ -258,12 +256,20 @@ export default class Filter extends Component<Props> {
         <div className={styles.header}>
           <label>{intl.formatMessage(messages.customDateRange)}</label>
           <DialogCloseButton
-            onClick={() => form.get('dateRange').set(this.dateRangeOptions[1])}
+            onClose={() => form.select('dateRange').set(messages.thisWeek.id)}
           />
         </div>
         <div className={styles.body}>
-          <Input type="date" {...customFromDateField.bind()} skin={InputSkin} />
-          <Input type="date" {...customToDateField.bind()} skin={InputSkin} />
+          <div className={styles.dateRangeInput}>
+            <TinyInput
+              type="date"
+              {...customFromDateField.bind()}
+              contentInReadMode={<div>Test</div>}
+            />
+          </div>
+          <div className={styles.dateRangeInput}>
+            <TinyInput type="date" {...customToDateField.bind()} />
+          </div>
         </div>
       </div>
     );
@@ -281,8 +287,8 @@ export default class Filter extends Component<Props> {
           <label>{intl.formatMessage(messages.amountRange)}</label>
         </div>
         <div className={styles.body}>
-          <Input type="number" {...fromAmountField.bind()} skin={InputSkin} />
-          <Input type="number" {...toAmountField.bind()} skin={InputSkin} />
+          <TinyInput type="number" {...fromAmountField.bind()} />
+          <TinyInput type="number" {...toAmountField.bind()} />
         </div>
       </div>
     );
@@ -290,10 +296,9 @@ export default class Filter extends Component<Props> {
 
   renderActionButton = () => (
     <div className={styles.action}>
-      <Button
+      <TinyButton
         label={this.context.intl.formatMessage(messages.filter)}
         onClick={this.handleSubmit}
-        skin={ButtonSkin}
       />
     </div>
   );
