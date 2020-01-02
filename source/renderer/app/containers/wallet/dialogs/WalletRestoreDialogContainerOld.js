@@ -36,12 +36,12 @@ export default class WalletRestoreDialogContainer extends Component<Props> {
     // Restore request should be reset only in case restore is finished/errored
     const { wallets } = this.props.stores;
     const {
-      restoreRequest,
+      restoreDaedalusRequest,
       restoreLegacyRequest,
       getWalletRecoveryPhraseFromCertificateRequest,
     } = wallets;
-    if (!restoreRequest.isExecuting) {
-      restoreRequest.reset();
+    if (!restoreDaedalusRequest.isExecuting) {
+      restoreDaedalusRequest.reset();
       restoreLegacyRequest.reset();
       getWalletRecoveryPhraseFromCertificateRequest.reset();
     }
@@ -50,18 +50,18 @@ export default class WalletRestoreDialogContainer extends Component<Props> {
   render() {
     const { wallets } = this.props.stores;
     const {
-      restoreRequest,
+      restoreDaedalusRequest,
       restoreLegacyRequest,
       getWalletRecoveryPhraseFromCertificateRequest,
     } = wallets;
 
     const error =
-      restoreRequest.error ||
+      restoreDaedalusRequest.error ||
       restoreLegacyRequest.error ||
       getWalletRecoveryPhraseFromCertificateRequest.error;
 
     const isExecuting =
-      restoreRequest.isExecuting ||
+      restoreDaedalusRequest.isExecuting ||
       restoreLegacyRequest.isExecuting ||
       getWalletRecoveryPhraseFromCertificateRequest.isExecuting;
 

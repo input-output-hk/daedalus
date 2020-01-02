@@ -22,19 +22,7 @@ export default class ConfigurationDialogContainer extends Component<Props> {
 
   render() {
     const { onClose, onBack, stores } = this.props;
-    const {
-      restoreRequest,
-      restoreLegacyRequest,
-      getWalletRecoveryPhraseFromCertificateRequest,
-    } = stores.wallets;
-    const error =
-      restoreRequest.error ||
-      restoreLegacyRequest.error ||
-      getWalletRecoveryPhraseFromCertificateRequest.error;
-    const isExecuting =
-      restoreRequest.isExecuting ||
-      restoreLegacyRequest.isExecuting ||
-      getWalletRecoveryPhraseFromCertificateRequest.isExecuting;
+    const { error, isExecuting } = stores.wallets.restoreRequest;
     return (
       <ConfigurationDialog
         isSubmitting={isExecuting}
