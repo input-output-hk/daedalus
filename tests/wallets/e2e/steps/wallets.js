@@ -15,7 +15,6 @@ import {
   restoreWalletWithFunds,
   waitUntilUrlEquals,
   navigateTo,
-  sidebar,
   i18n,
   waitForActiveRestoreNotification,
 } from './helpers';
@@ -388,7 +387,7 @@ Then(
   /^I should see section "([^"]*)"$/,
   async function(text) {
     await waitUntilTextInSelector(this.client, {
-      selector: '.WalletTypeDialog_walletKindSubSelection .RadioSet_label',
+      selector: '.WalletRestoreDialog_component .Dialog_content > div:last-child .RadioSet_label',
       text,
     });
   }

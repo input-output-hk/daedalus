@@ -237,7 +237,7 @@ export default class WalletTypeDialog extends Component<Props, State> {
             walletKind
           )}
         </div>
-        <div className={styles.walletKindSubSelection}>
+        <div>
           {walletKind === WALLET_KINDS.DAEDALUS &&
             this.getWalletKind(
               WALLET_DAEDALUS_KINDS,
