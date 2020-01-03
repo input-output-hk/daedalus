@@ -8614,15 +8614,15 @@
       },
       {
         "defaultMessage": "!!!24 words - Ledger Nano S or Nano X (Balance wallet)",
-        "description": "Label for the \"labelHardwareWalletKindNano\" checkbox.",
+        "description": "Label for the \"labelHardwareWalletKindLedger\" checkbox.",
         "end": {
           "column": 3,
           "line": 103
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
-        "id": "wallet.restore.dialog.step.walletKind.label.hardwareWalletKindNano",
+        "id": "wallet.restore.dialog.step.walletKind.label.hardwareWalletKindLedger",
         "start": {
-          "column": 31,
+          "column": 33,
           "line": 99
         }
       },
