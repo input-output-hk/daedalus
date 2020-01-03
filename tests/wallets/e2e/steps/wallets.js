@@ -424,7 +424,7 @@ Then(
           target,
           window.document,
           null,
-          XPathResult.FIRST_ORDERED_NODE_TYPE,
+          window.XPathResult.FIRST_ORDERED_NODE_TYPE,
           null
         ).singleNodeValue;
         targetElement.scrollIntoView();
