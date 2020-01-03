@@ -102,3 +102,7 @@ export const waitUntilTextInSelector = async (
       return textOnScreen[0] === text;
     }
   });
+
+export const timeout = (ms: number) => {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
