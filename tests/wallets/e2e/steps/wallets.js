@@ -18,7 +18,7 @@ import {
   i18n,
   waitForActiveRestoreNotification,
 } from './helpers';
-import { waitUntilTextInSelector } from '../../../common/e2e/steps/helpers';
+import { waitUntilTextInSelector, timeout } from '../../../common/e2e/steps/helpers';
 import {
   sidebarHelpers,
 } from '../../../navigation/e2e/steps/helpers';
@@ -414,8 +414,24 @@ Then(
 Then(
   /^I confirm "([^"]*)"$/,
   async function(text) {
-    //TODO: this item needs to be scrolled into position to work
-    await this.waitAndClick(`//label[contains(text(), "${text}")]`);
+    const targetSelector = `//label[contains(text(), "${text}")]`;
+    await this.client.waitForVisible(targetSelector);
+    const isVisibleWithinViewport = await this.client.isVisibleWithinViewport(targetSelector);
+    if (!isVisibleWithinViewport) {
+      await this.client.execute((target) => {
+        const targetElement = window.document.evaluate(
+          target,
+          window.document,
+          null,
+          window.XPathResult.FIRST_ORDERED_NODE_TYPE,
+          null
+        ).singleNodeValue;
+        targetElement.scrollIntoView();
+      }, targetSelector);
+      // awaits for smooth scroll-behavior
+      await timeout(500);
+    }
+    await this.client.click(targetSelector);
   }
 );
 
