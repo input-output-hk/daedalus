@@ -47,10 +47,7 @@ import { importWalletAsKey } from './wallets/requests/importWalletAsKey';
 import { createWallet } from './wallets/requests/createWallet';
 import { restoreWallet } from './wallets/requests/restoreWallet';
 import { restoreLegacyWallet } from './wallets/requests/restoreLegacyWallet';
-import { restoreByronRandomWallet } from './wallets/requests/restoreByronRandomWallet';
-import { restoreByronIcarusWallet } from './wallets/requests/restoreByronIcarusWallet';
-import { restoreByronTrezorWallet } from './wallets/requests/restoreByronTrezorWallet';
-import { restoreByronLedgerWallet } from './wallets/requests/restoreByronLedgerWallet';
+import { restoreByronWallet } from './wallets/requests/restoreByronWallet';
 import { updateWallet } from './wallets/requests/updateWallet';
 import { getWalletUtxos } from './wallets/requests/getWalletUtxos';
 import { getWallet } from './wallets/requests/getWallet';
@@ -193,6 +190,7 @@ import { TlsCertificateNotValidError } from './nodes/errors';
 import { getSHA256HexForString } from './utils/hashing';
 import { getNewsHash } from './news/requests/getNewsHash';
 import { deleteTransaction } from './transactions/requests/deleteTransaction';
+import { WALLET_BYRON_KINDS } from '../config/walletRestoreConfig';
 
 export default class AdaApi {
   config: RequestConfig;
@@ -826,10 +824,12 @@ export default class AdaApi {
       mnemonic_sentence: recoveryPhrase,
       passphrase: spendingPassword,
     };
+    const type = WALLET_BYRON_KINDS.RANDOM;
     try {
-      const legacyWallet: LegacyAdaWallet = await restoreByronRandomWallet(
+      const legacyWallet: LegacyAdaWallet = await restoreByronWallet(
         this.config,
-        { walletInitData }
+        { walletInitData },
+        type
       );
       const extraLegacyWalletProps = {
         address_pool_gap: 0, // Not needed for legacy wallets
@@ -874,10 +874,12 @@ export default class AdaApi {
       mnemonic_sentence: recoveryPhrase,
       passphrase: spendingPassword,
     };
+    const type = WALLET_BYRON_KINDS.ICARUS;
     try {
-      const legacyWallet: LegacyAdaWallet = await restoreByronIcarusWallet(
+      const legacyWallet: LegacyAdaWallet = await restoreByronWallet(
         this.config,
-        { walletInitData }
+        { walletInitData },
+        type
       );
       const extraLegacyWalletProps = {
         address_pool_gap: 0, // Not needed for legacy wallets
@@ -922,10 +924,12 @@ export default class AdaApi {
       mnemonic_sentence: recoveryPhrase,
       passphrase: spendingPassword,
     };
+    const type = WALLET_BYRON_KINDS.TREZOR;
     try {
-      const legacyWallet: LegacyAdaWallet = await restoreByronTrezorWallet(
+      const legacyWallet: LegacyAdaWallet = await restoreByronWallet(
         this.config,
-        { walletInitData }
+        { walletInitData },
+        type
       );
       const extraLegacyWalletProps = {
         address_pool_gap: 0, // Not needed for legacy wallets
@@ -970,10 +974,12 @@ export default class AdaApi {
       mnemonic_sentence: recoveryPhrase,
       passphrase: spendingPassword,
     };
+    const type = WALLET_BYRON_KINDS.LEDGER;
     try {
-      const legacyWallet: LegacyAdaWallet = await restoreByronLedgerWallet(
+      const legacyWallet: LegacyAdaWallet = await restoreByronWallet(
         this.config,
-        { walletInitData }
+        { walletInitData },
+        type
       );
       const extraLegacyWalletProps = {
         address_pool_gap: 0, // Not needed for legacy wallets

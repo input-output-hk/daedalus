@@ -6,6 +6,7 @@ import type {
   WalletDaedalusKind,
   WalletYoroiKind,
   WalletHardwareKind,
+  WalletByronKind,
 } from '../types/walletRestoreTypes';
 
 export const RESTORE_WALLET_STEPS: Array<RestoreWalletStep> = [
@@ -55,4 +56,11 @@ export const WALLET_HARDWARE_WORD_COUNT: {
 } = {
   [WALLET_HARDWARE_KINDS.LEDGER]: [12, 18, 24],
   [WALLET_HARDWARE_KINDS.TREZOR]: [12, 18, 24],
+};
+
+export const WALLET_BYRON_KINDS: { [key: string]: WalletByronKind } = {
+  ICARUS: 'icarus',
+  LEDGER: 'ledger',
+  RANDOM: 'random',
+  TREZOR: 'trezor',
 };
