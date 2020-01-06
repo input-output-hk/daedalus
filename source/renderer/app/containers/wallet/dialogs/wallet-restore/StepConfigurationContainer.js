@@ -23,13 +23,16 @@ export default class ConfigurationDialogContainer extends Component<Props> {
   render() {
     const { onClose, onBack, stores } = this.props;
     const { error, isExecuting } = stores.wallets.restoreRequest;
+    const {
+      error: certificateError,
+    } = stores.wallets.getWalletRecoveryPhraseFromCertificateRequest;
     return (
       <ConfigurationDialog
         isSubmitting={isExecuting}
         onClose={onClose}
         onContinue={this.handleContinue}
         onBack={onBack}
-        error={error}
+        error={error || certificateError}
       />
     );
   }

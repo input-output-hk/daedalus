@@ -376,6 +376,7 @@ export default class WalletsStore extends Store {
     // Reset restore requests to clear previous errors
     this.restoreDaedalusRequest.reset();
     this.restoreLegacyRequest.reset();
+    this.getWalletRecoveryPhraseFromCertificateRequest.reset();
 
     const currrentRestoreWalletStep = this.restoreWalletStep || 0;
     this.restoreWalletStep =

@@ -847,7 +847,7 @@ export default class AdaApi {
       if (error.code === 'wallet_already_exists') {
         throw new WalletAlreadyRestoredError();
       }
-      // @API TOOD - improve once error is handled by v2 API (REPORT to BE team)
+      // @API TODO - improve once error is handled by v2 API (REPORT to BE team)
       if (error.message === 'JSONValidationFailed') {
         const validationError = get(error, 'diagnostic.validationError', '');
         if (
