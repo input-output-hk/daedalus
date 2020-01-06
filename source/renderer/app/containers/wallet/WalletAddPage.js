@@ -15,7 +15,7 @@ import type { InjectedProps } from '../../types/injectedPropsType';
 import WalletCreateDialogContainerOld from './dialogs/WalletCreateDialogContainerOld';
 import WalletCreateDialog from '../../components/wallet/WalletCreateDialog';
 
-// TODO: Remove once the new wallet creation process is ready
+// TODO: Remove once the new wallet restoration process is ready
 import WalletRestoreDialogContainerOld from './dialogs/WalletRestoreDialogContainerOld';
 import WalletRestoreDialog from '../../components/wallet/WalletRestoreDialog';
 
