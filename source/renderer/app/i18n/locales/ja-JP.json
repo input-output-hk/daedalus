@@ -512,7 +512,7 @@
   "wallet.legacy.notification.learnMore.url": "https://iohk.zendesk.com/hc/ja/articles/360038726373",
   "wallet.legacy.notification.moveFundsDescription.line1": "「{activeWalletName}」は残高ウォレットです。現在模擬スナップショットでメインネットからコピーしたテストネット用ADAが入っています。",
   "wallet.legacy.notification.moveFundsDescription.line2": "テストネット用ADAのステークを委任して報酬を得るためには、テストネット用ADAを「報酬ウォレット」に移し替えてください。",
-  "wallet.legacy.notification.moveFundsTitle": "「{activeWalletName}」のテストネット用仇を移し替えてください",
+  "wallet.legacy.notification.moveFundsTitle": "「{activeWalletName}」のテストネット用ADAを移し替えてください",
   "wallet.navigation.more": "その他",
   "wallet.navigation.receive": "入金",
   "wallet.navigation.send": "送金",
