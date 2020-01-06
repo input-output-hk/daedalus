@@ -636,3 +636,13 @@ Then(/^I should see the wallets in the following order:$/, async function(
     expect(wallet).to.equal(expectedWallets[index].name)
   );
 });
+
+Given(/^I go back to the previous step$/, function() {
+  return this.waitAndClick('.DialogBackButton_component');
+});
+
+Then(/^The error message should be (hidden|visible)$/, function(state) {
+  const isVisible = state === 'visible';
+  return this.client.waitForVisible('.ConfigurationDialog_error', null, !isVisible);
+});
+
