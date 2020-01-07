@@ -2,6 +2,7 @@
 import type { RequestConfig } from '../../common/types';
 import type { Transactions } from '../types';
 import { request } from '../../utils/request';
+import { getRawWalletId } from '../../utils';
 
 export type GetTransactionsQueryParams = {
   start?: string,
@@ -17,7 +18,7 @@ export const getLegacyWalletTransactionHistory = (
   request(
     {
       method: 'GET',
-      path: `/v2/byron-wallets/${walletId}/transactions`,
+      path: `/v2/byron-wallets/${getRawWalletId(walletId)}/transactions`,
       ...config,
     },
     queryParams,

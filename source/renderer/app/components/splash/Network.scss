@@ -61,6 +61,7 @@
     height: 100%;
     justify-content: center;
     left: 0;
+    padding: 20px 0;
     position: absolute;
     top: 0;
     width: 100%;
@@ -116,10 +117,13 @@
       font-size: 14px;
       line-height: 1.43;
       margin-bottom: 30px;
-      max-height: 190px;
       max-width: 608px;
       overflow-y: scroll;
       padding: 12px 24px;
+
+      @media (max-height: 650px) {
+        max-height: 190px;
+      }
 
       p {
         color: var(--theme-splash-network-description-color);

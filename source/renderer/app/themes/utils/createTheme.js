@@ -1192,6 +1192,14 @@ export const createDaedalusComponentsTheme = (
       '--theme-utxo-tooltip-shadow-color': 'rgba(0, 0, 0, 0.18)',
       '--theme-utxo-tooltip-text-color': `${text.secondary}`,
     },
+    walletRestoreDialog: {
+      '--theme-wallet-restore-dialog-new-label-background-color': `${chroma(
+        background.primary.regular
+      ).alpha(0.1)}`,
+      '--theme-wallet-restore-dialog-new-label-color': `${chroma(
+        text.primary
+      )}`,
+    },
   };
 };
 

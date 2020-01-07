@@ -458,6 +458,15 @@ export default class NetworkStatusStore extends Store {
     }
   };
 
+  @action _setSyncing = () => {
+    clearInterval(this._networkStatusPollingInterval);
+    this._updateNetworkStatus = () => {};
+    this.isNodeSyncing = true;
+    this.isNodeInSync = false;
+    this.syncProgress = 0;
+    this.teardown();
+  };
+
   openStateDirectory(path: string, event?: MouseEvent): void {
     if (event) event.preventDefault();
     openLocalDirectoryChannel.send(path);

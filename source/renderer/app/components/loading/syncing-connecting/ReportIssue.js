@@ -47,6 +47,12 @@ const messages = defineMessages({
       '!!!https://iohk.zendesk.com/hc/en-us/articles/360011536933',
     description: 'Link to sync issue article page',
   },
+  syncIssueArticleUrlForITN: {
+    id: 'loading.screen.readIssueArticle.syncIssueArticleUrl.itn',
+    defaultMessage:
+      '!!!https://iohk.zendesk.com/hc/en-us/articles/900000048566',
+    description: 'Link to sync issue article page for Incentivized TestNet',
+  },
   connectivityIssueArticleUrl: {
     id: 'loading.screen.readIssueArticle.connectivityIssueArticleUrl',
     defaultMessage:
@@ -58,10 +64,12 @@ const messages = defineMessages({
 type Props = {
   isConnected: boolean,
   onIssueClick: Function,
+  onOpenExternalLink: Function,
   onDownloadLogs: Function,
   disableDownloadLogs: boolean,
   isConnecting: boolean,
   isSyncing: boolean,
+  isIncentivizedTestnet: boolean,
 };
 
 export default class ReportIssue extends Component<Props> {
@@ -74,10 +82,12 @@ export default class ReportIssue extends Component<Props> {
     const {
       isConnected,
       onIssueClick,
+      onOpenExternalLink,
       onDownloadLogs,
       disableDownloadLogs,
       isConnecting,
       isSyncing,
+      isIncentivizedTestnet,
     } = this.props;
 
     const componentStyles = classNames([
@@ -102,8 +112,11 @@ export default class ReportIssue extends Component<Props> {
       disableDownloadLogs ? styles.disabled : null,
     ]);
 
+    const syncIssueArticleUrl = isIncentivizedTestnet
+      ? messages.syncIssueArticleUrlForITN
+      : messages.syncIssueArticleUrl;
     const readArticleButtonUrl = isConnected
-      ? messages.syncIssueArticleUrl
+      ? syncIssueArticleUrl
       : messages.connectivityIssueArticleUrl;
 
     return (
@@ -124,7 +137,9 @@ export default class ReportIssue extends Component<Props> {
               {intl.formatMessage(messages.readArticleButtonLabel)}
             </p>
           }
-          onClick={() => onIssueClick(intl.formatMessage(readArticleButtonUrl))}
+          onClick={() =>
+            onOpenExternalLink(intl.formatMessage(readArticleButtonUrl))
+          }
           skin={ButtonSkin}
         />
         <Button

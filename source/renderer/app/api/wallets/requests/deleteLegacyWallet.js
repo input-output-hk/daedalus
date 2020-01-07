@@ -1,6 +1,7 @@
 // @flow
 import type { RequestConfig } from '../../common/types';
 import { request } from '../../utils/request';
+import { getRawWalletId } from '../../utils';
 
 export const deleteLegacyWallet = (
   config: RequestConfig,
@@ -8,6 +9,6 @@ export const deleteLegacyWallet = (
 ): Promise<*> =>
   request({
     method: 'DELETE',
-    path: `/v2/byron-wallets/${walletId}`,
+    path: `/v2/byron-wallets/${getRawWalletId(walletId)}`,
     ...config,
   });
