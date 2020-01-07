@@ -374,9 +374,7 @@ export default class WalletsStore extends Store {
 
   @action _restoreWalletChangeStep = (isBack: boolean = false) => {
     // Reset restore requests to clear previous errors
-    this.restoreDaedalusRequest.reset();
-    this.restoreLegacyRequest.reset();
-    this.getWalletRecoveryPhraseFromCertificateRequest.reset();
+    this._restoreWalletResetRequests();
 
     const currrentRestoreWalletStep = this.restoreWalletStep || 0;
     this.restoreWalletStep =
@@ -388,8 +386,7 @@ export default class WalletsStore extends Store {
 
   @action _restoreWalletClose = () => {
     this.actions.dialogs.closeActiveDialog.trigger();
-    this.restoreDaedalusRequest.reset();
-    this.restoreLegacyRequest.reset();
+    this._restoreWalletResetRequests();
     this.restoreWalletStep = null;
     this.restoredWallet = null;
     this.restoreWalletShowAbortConfirmation = false;
@@ -400,6 +397,15 @@ export default class WalletsStore extends Store {
     this.mnemonics = null;
     this.walletName = null;
     this.spendingPassword = null;
+  };
+
+  _restoreWalletResetRequests = () => {
+    this.restoreDaedalusRequest.reset();
+    this.restoreByronIcarusWalletRequest.reset();
+    this.restoreByronLedgerWalletRequest.reset();
+    this.restoreByronRandomWalletRequest.reset();
+    this.restoreByronTrezorWalletRequest.reset();
+    this.getWalletRecoveryPhraseFromCertificateRequest.reset();
   };
 
   @action _restoreWalletAbort = () => {
@@ -539,8 +545,7 @@ export default class WalletsStore extends Store {
     this._pausePolling();
 
     // Reset restore requests to clear previous errors
-    this.restoreDaedalusRequest.reset();
-    this.restoreLegacyRequest.reset();
+    this._restoreWalletResetRequests();
 
     const data = {
       recoveryPhrase: this.mnemonics,
