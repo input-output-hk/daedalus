@@ -41,6 +41,7 @@ export const DefaultSyncingConnectingStory = (props: {
     isNewAppVersionLoading={boolean('isNewAppVersionLoading', false)}
     isNewAppVersionLoaded={boolean('isNewAppVersionLoaded', false)}
     onIssueClick={action('onIssueClick')}
+    onOpenExternalLink={action('onOpenExternalLink')}
     onDownloadLogs={action('onDownloadLogs')}
     onGetAvailableVersions={action('onGetAvailableVersions')}
     onStatusIconClick={linkTo('Diagnostics', () => 'default')}
@@ -80,6 +81,7 @@ export const ConnectivityIssuesSyncingConnectingStory = (props: {
     isNewAppVersionLoading={false}
     isNewAppVersionLoaded
     onIssueClick={action('onIssueClick')}
+    onOpenExternalLink={action('onOpenExternalLink')}
     onDownloadLogs={action('onDownloadLogs')}
     onGetAvailableVersions={action('onGetAvailableVersions')}
     onStatusIconClick={linkTo('Diagnostics', () => 'default')}
@@ -119,6 +121,7 @@ export const SyncIssuesSyncingConnectingStory = (props: {
     isNewAppVersionLoading={false}
     isNewAppVersionLoaded
     onIssueClick={action('onIssueClick')}
+    onOpenExternalLink={action('onOpenExternalLink')}
     onDownloadLogs={action('onDownloadLogs')}
     onGetAvailableVersions={action('onGetAvailableVersions')}
     onStatusIconClick={linkTo('Diagnostics', () => 'default')}
