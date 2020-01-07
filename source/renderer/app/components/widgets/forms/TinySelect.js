@@ -27,12 +27,13 @@ type Props = {
 export default class TinySelect extends Component<Props> {
   render() {
     return (
-      <Select
-        className={styles.component}
-        themeId={IDENTIFIERS.SELECT}
-        skin={SelectSkin}
-        {...this.props}
-      />
+      <div className={styles.component}>
+        <Select
+          themeId={IDENTIFIERS.SELECT}
+          skin={SelectSkin}
+          {...this.props}
+        />
+      </div>
     );
   }
 }

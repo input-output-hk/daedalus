@@ -1,6 +1,6 @@
 .component {
   :global {
-    .SelectOverrides_selectInput {
+    .SimpleSelect_selectInput {
       input {
         font-family: var(--font-regular);
         font-size: 14px;
@@ -9,11 +9,16 @@
         padding: 0 10px;
       }
     }
-    .SelectOverrides_selectInput:after {
-      bottom: 13px;
-      left: auto;
-      right: 10px;
+
+    .SimpleSelect_selectInput,
+    .SimpleSelect_isOpen .SimpleSelect_selectInput {
+      &::after {
+        bottom: 13px;
+        left: auto;
+        right: 10px;
+      }
     }
+
     .SimpleOptions_option {
       font-family: var(--font-regular);
       font-size: 14px;

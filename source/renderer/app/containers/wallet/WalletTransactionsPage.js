@@ -3,14 +3,19 @@ import React, { Component } from 'react';
 import { get } from 'lodash';
 import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
+import BigNumber from 'bignumber.js';
+import SVGInline from 'react-svg-inline';
 import WalletTransactionsList from '../../components/wallet/transactions/WalletTransactionsList';
-// import WalletTransactionsSearch from '../../components/wallet/summary/WalletTransactionsSearch';
 import WalletNoTransactions from '../../components/wallet/transactions/WalletNoTransactions';
 import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer';
+import FilterDialogContainer from './dialogs/FilterDialogContainer';
+import FilterDialog from '../../components/wallet/transactions/FilterDialog';
+import filterIcon from '../../assets/images/filter-dis-ic.inline.svg';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import { formattedWalletAmount } from '../../utils/formatters';
 import { WalletSyncStateStatuses } from '../../domains/Wallet';
 import { getNetworkExplorerUrlByType } from '../../utils/network';
+import globalMessages from '../../i18n/global-messages';
 
 export const messages = defineMessages({
   noTransactions: {
@@ -37,14 +42,26 @@ export default class WalletTransactionsPage extends Component<Props> {
     intl: intlShape.isRequired,
   };
 
-  // _handleSearchInputChange = (value: string, event: Object) => {
-  //   this.props.actions.transactions.filterTransactions({ searchTerm: event.target.value });
-  // };
+  openFilterDialog = () => {
+    const { dialogs } = this.props.actions;
+
+    dialogs.open.trigger({ dialog: FilterDialog });
+    dialogs.updateDataForActiveDialog.trigger({
+      data: {
+        // minDate: new Date('2019-09-23').getTime(),
+        // maxDate: new Date('2019-12-19').getTime(),
+        // minAmount: new BigNumber(200),
+        // maxAmount: new BigNumber(1200),
+        isFiltering: true,
+        onFilter: payload => console.log('---here--', payload),
+      },
+    });
+  };
 
   render() {
     const { intl } = this.context;
     const { actions, stores } = this.props;
-    const { app, wallets, profile } = stores;
+    const { app, uiDialogs, wallets, profile } = stores;
     const {
       openExternalLink,
       environment: { network, rawNetwork },
@@ -68,7 +85,6 @@ export default class WalletTransactionsPage extends Component<Props> {
     const { searchLimit, searchTerm } = searchOptions;
     const wasSearched = searchTerm !== '';
     let walletTransactions = null;
-    // let transactionSearch = null;
     const noTransactionsLabel = intl.formatMessage(messages.noTransactions);
     const noTransactionsFoundLabel = intl.formatMessage(
       messages.noTransactionsFound
@@ -88,17 +104,6 @@ export default class WalletTransactionsPage extends Component<Props> {
         rawNetwork,
         currentLocale
       );
-
-    // if (wasSearched || hasAny) {
-    //   transactionSearch = (
-    //     <div style={{ flexShrink: 0 }}>
-    //       <WalletTransactionsSearch
-    //         searchTerm={searchTerm}
-    //         onChange={this._handleSearchInputChange}
-    //       />
-    //     </div>
-    //   );
-    // }
 
     // Straight away show recent transactions if filtered ones are not loaded yet
     const transactions = recent.length && !filtered.length ? recent : filtered;
@@ -132,7 +137,8 @@ export default class WalletTransactionsPage extends Component<Props> {
 
     return (
       <VerticalFlexContainer>
-        {/* transactionSearch */}
+        <button onClick={() => this.openFilterDialog()}>Filter</button>
+        {uiDialogs.isOpen(FilterDialog) && <FilterDialogContainer />}
         {walletTransactions}
       </VerticalFlexContainer>
     );

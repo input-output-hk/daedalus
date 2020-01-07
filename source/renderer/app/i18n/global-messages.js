@@ -261,4 +261,9 @@ export default defineMessages({
     defaultMessage: '!!!to',
     description: 'To label of range.',
   },
+  filter: {
+    id: 'global.labels.filter',
+    defaultMessage: '!!!Filter',
+    description: 'Filter label.',
+  },
 });

@@ -1,45 +1,29 @@
 // @flow
 import React, { Component } from 'react';
 // $FlowFixMe
-import type { ComponentType, Element } from 'react';
-import { Input } from 'react-polymorph/lib/components/Input';
-import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
+import type { Element } from 'react';
+import { Button } from 'react-polymorph/lib/components/Button';
+import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { IDENTIFIERS } from 'react-polymorph/lib/themes/API';
-import styles from './TinyInput.scss';
+import styles from './TinyButton.scss';
 
 type Props = {
-  autoFocus: boolean,
-  className?: ?string,
   disabled?: boolean,
-  error: string | Element<any>,
   label?: string | Element<any>,
-  maxLength?: number,
-  minLength?: number,
-  onBlur?: Function,
-  onChange?: Function,
-  onFocus?: Function,
-  onKeyPress?: Function,
-  placeholder?: string,
-  readOnly: boolean,
-  setError?: Function,
-  selectedOption?: any,
-  selectionRenderer?: Function,
-  skin?: ComponentType<any>,
-  theme: ?Object, // will take precedence over theme in context if passed
-  themeId: string,
-  themeOverrides: Object,
-  value: string,
+  loading: boolean,
+  onClick?: Function,
 };
 
 export default class TinyButton extends Component<Props> {
   render() {
     return (
-      <Input
-        className={styles.component}
-        themeId={IDENTIFIERS.INPUT}
-        skin={InputSkin}
-        {...this.props}
-      />
+      <div className={styles.component}>
+        <Button
+          themeId={IDENTIFIERS.BUTTON}
+          skin={ButtonSkin}
+          {...this.props}
+        />
+      </div>
     );
   }
 }

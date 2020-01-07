@@ -1,13 +1,25 @@
-.filter {
-  font-family: var(--font-regular);
-  position: relative;
-  width: 500px;
+:global {
+  .SimpleModal_modal {
+    &.ModalOverrides_modal {
+      border-radius: 4px;
+      min-width: auto;
+    }
+  }
+}
 
-  & > .title {
+.component {
+  flex: initial;
+  font-family: var(--font-regular);
+  margin: 0 -20px -10px;
+  position: relative;
+  width: 360px;
+
+  .title {
     align-items: center;
     color: var(--theme-dialog-text-color);
     display: flex;
     justify-content: space-between;
+    margin: 0 10px;
 
     .titleText {
       font-size: 16px;
@@ -16,18 +28,20 @@
       line-height: 1.38;
     }
     .titleLink {
+      color: var(--rp-input-placeholder-color);
+      cursor: pointer;
       font-size: 12px;
       line-height: 1.33;
-      opacity: 0.5;
     }
   }
 
-  & > .content {
+  .content {
     .header {
       align-items: center;
       display: flex;
       justify-content: space-between;
       margin-top: 14px;
+      position: relative;
 
       label {
         color: var(--theme-dialog-text-color);
@@ -45,6 +59,8 @@
     }
 
     .type {
+      margin: 0 10px;
+
       .body {
         margin-top: 10px;
 
@@ -55,22 +71,58 @@
     }
 
     .dateRange {
-      margin-top: 14px;
+      margin: 14px 10px 0;
 
       :global {
         .SimpleFormField_label {
           font-size: 14px;
+          margin-bottom: 6px;
         }
       }
     }
 
     .customDateRange {
+      margin: 0 10px;
+
+      .header {
+        :global {
+          .DialogCloseButton_component {
+            bottom: 6.5px;
+            right: 10px;
+            top: auto;
+
+            svg {
+              height: 6px;
+              width: 6px;
+            }
+          }
+          .DialogCloseButton_disabled {
+            svg {
+              height: 6px;
+              width: 6px;
+            }
+          }
+        }
+      }
+      .body {
+        .dateRangeInput {
+          margin-right: 10px;
+        }
+      }
     }
 
     .amountRange {
+      margin: 0 10px;
+
+      .body {
+        .amountRangeInput {
+          margin-right: 10px;
+        }
+      }
     }
 
     .action {
+      margin-top: 24px;
     }
   }
 }

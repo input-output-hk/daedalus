@@ -10,9 +10,11 @@ import styles from './TinyInput.scss';
 type Props = {
   autoFocus: boolean,
   className?: ?string,
-  contentInReadMode?: Element<any>,
   disabled?: boolean,
   error: string | Element<any>,
+  innerLabelPrefix?: string,
+  innerLabelSuffix?: string,
+  innerValue?: string,
   label?: string | Element<any>,
   maxLength?: number,
   minLength?: number,
@@ -29,6 +31,7 @@ type Props = {
   theme: ?Object, // will take precedence over theme in context if passed
   themeId: string,
   themeOverrides: Object,
+  useReadMode?: boolean,
   value: string,
 };
 
@@ -44,36 +47,41 @@ export default class TinyInput extends Component<Props, State> {
   setEditMode = (isEditMode: boolean) => this.setState({ isEditMode });
 
   render() {
-    const { contentInReadMode, ...restProps } = this.props;
+    const {
+      autoFocus,
+      innerLabelPrefix,
+      innerLabelSuffix,
+      innerValue,
+      useReadMode,
+      ...restProps
+    } = this.props;
     const { isEditMode } = this.state;
-    const editPanel = (
-      <Input
-        themeId={IDENTIFIERS.INPUT}
-        skin={InputSkin}
-        {...restProps}
-        autoFocus
-      />
-    );
 
-    if (!contentInReadMode) {
-      return <div className={styles.component}>{editPanel}</div>;
-    }
-
-    if (isEditMode) {
-      return (
-        <div
-          className={styles.component}
-          onBlur={() => this.setEditMode(false)}
-        >
-          {editPanel}
-        </div>
-      );
-    }
-
+    /* eslint-disable */
     return (
-      <div className={styles.component} onClick={() => this.setEditMode(true)}>
-        {contentInReadMode}
+      <div
+        className={styles.component}
+        onClick={() => this.setEditMode(true)}
+        onBlur={() => this.setEditMode(false)}
+        role="contentinfo"
+      >
+        {useReadMode && !isEditMode && (
+          <div className={styles.contentInReadMode}>
+            <span className={styles.innerLabelPrefix}>{innerLabelPrefix}</span>
+            <span className={styles.innerValue}>{innerValue}</span>
+            <span className={styles.innerLabelSuffix}>{innerLabelSuffix}</span>
+          </div>
+        )}
+        {(!useReadMode || isEditMode) && (
+          <Input
+            themeId={IDENTIFIERS.INPUT}
+            skin={InputSkin}
+            {...restProps}
+            autoFocus={useReadMode ? true : autoFocus}
+          />
+        )}
       </div>
     );
+    /* eslint-enable */
   }
 }
