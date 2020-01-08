@@ -106,3 +106,22 @@ export const waitUntilTextInSelector = async (
 export const timeout = (ms: number) => {
   return new Promise<void>(resolve => setTimeout(resolve, ms));
 }
+
+export const scrollIntoView = async (client: Object, targetSelector: string) => {
+  const isVisibleWithinViewport = await client.isVisibleWithinViewport(targetSelector);
+  if (!isVisibleWithinViewport) {
+    await client.execute((target) => {
+      const targetElement = window.document.evaluate(
+        target,
+        window.document,
+        null,
+        window.XPathResult.FIRST_ORDERED_NODE_TYPE,
+        null
+      ).singleNodeValue;
+      targetElement.scrollIntoView();
+    }, targetSelector);
+    // awaits for smooth scroll-behavior
+    await timeout(500);
+  }
+}
+

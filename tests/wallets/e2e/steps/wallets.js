@@ -18,7 +18,7 @@ import {
   i18n,
   waitForActiveRestoreNotification,
 } from './helpers';
-import { waitUntilTextInSelector, timeout } from '../../../common/e2e/steps/helpers';
+import { waitUntilTextInSelector, scrollIntoView } from '../../../common/e2e/steps/helpers';
 import {
   sidebarHelpers,
 } from '../../../navigation/e2e/steps/helpers';
@@ -265,7 +265,7 @@ When(/^I enter wallet password in restore wallet dialog:$/, async function(
     fields.password
   );
   await this.client.setValue(
-    '.repeatedPassword input',
+    '.repeatPassword input',
     fields.repeatedPassword
   );
 });
@@ -416,21 +416,7 @@ Then(
   async function(text) {
     const targetSelector = `//label[contains(text(), "${text}")]`;
     await this.client.waitForVisible(targetSelector);
-    const isVisibleWithinViewport = await this.client.isVisibleWithinViewport(targetSelector);
-    if (!isVisibleWithinViewport) {
-      await this.client.execute((target) => {
-        const targetElement = window.document.evaluate(
-          target,
-          window.document,
-          null,
-          window.XPathResult.FIRST_ORDERED_NODE_TYPE,
-          null
-        ).singleNodeValue;
-        targetElement.scrollIntoView();
-      }, targetSelector);
-      // awaits for smooth scroll-behavior
-      await timeout(500);
-    }
+    await scrollIntoView(this.client, targetSelector);
     await this.client.click(targetSelector);
   }
 );
