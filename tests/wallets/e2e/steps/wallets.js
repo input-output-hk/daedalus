@@ -239,6 +239,14 @@ When(/^I enter wallet name "([^"]*)" in restore wallet dialog$/, async function(
   );
 });
 
+When(/^I clear the recovery phrase in restore wallet dialog$/, async function() {
+  const words = await this.client.elements('.SimpleAutocomplete_selectedWordRemoveButton');
+  for (let i = words.value.length-1; i > -1; i--) {
+    const wordId = words.value[i].ELEMENT;
+    await this.client.elementIdClick(wordId);
+  }
+});
+
 When(/^I enter recovery phrase in restore wallet dialog:$/, async function(
   table
 ) {

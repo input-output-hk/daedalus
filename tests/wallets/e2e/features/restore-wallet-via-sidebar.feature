@@ -81,6 +81,7 @@ Feature: Add Wallet via Sidebar
     And I click continue
     Then The error message should be visible
     Given I go back to the previous step
+    And I clear the recovery phrase in restore wallet dialog
     And I enter recovery phrase in restore wallet dialog:
       | recoveryPhrase                                                                                                                                                  |
       | season nice police near blame dress deal congress unusual more giggle pull general list crash gravity fashion notable voice resemble auto smart flat party thought unique amused |
