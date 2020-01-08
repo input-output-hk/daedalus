@@ -8702,6 +8702,67 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Are you sure?",
+        "description": "Headline for the wallet restoration cancellation confirmation dialog.",
+        "end": {
+          "column": 3,
+          "line": 15
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/widgets/ConfirmationDialog.js",
+        "id": "wallet.restore.dialog.confirmation.headline",
+        "start": {
+          "column": 12,
+          "line": 10
+        }
+      },
+      {
+        "defaultMessage": "!!!You haven’t submitted this information yet. If you close the window now, you will lose your progress and have to start again.",
+        "description": "Content for the wallet restoration cancellation confirmation dialog.",
+        "end": {
+          "column": 3,
+          "line": 22
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/widgets/ConfirmationDialog.js",
+        "id": "wallet.restore.dialog.confirmation.content",
+        "start": {
+          "column": 11,
+          "line": 16
+        }
+      },
+      {
+        "defaultMessage": "!!!Back to wallet restoration",
+        "description": "\"Cancel\" button label for the wallet restoration cancellation confirmation dialog.",
+        "end": {
+          "column": 3,
+          "line": 28
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/widgets/ConfirmationDialog.js",
+        "id": "wallet.restore.dialog.confirmation.button.cancelButtonLabel",
+        "start": {
+          "column": 21,
+          "line": 23
+        }
+      },
+      {
+        "defaultMessage": "!!!Close window",
+        "description": "\"Abort\" button label for the wallet restoration cancellation confirmation dialog.",
+        "end": {
+          "column": 3,
+          "line": 34
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/widgets/ConfirmationDialog.js",
+        "id": "wallet.restore.dialog.confirmation.button.confirmButtonLabel",
+        "start": {
+          "column": 22,
+          "line": 29
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/wallet-restore/widgets/ConfirmationDialog.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Restore a wallet",
         "description": "Title \"Create a new wallet\" in the wallet create form.",
         "end": {
