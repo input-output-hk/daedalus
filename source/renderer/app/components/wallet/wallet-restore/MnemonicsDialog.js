@@ -65,6 +65,8 @@ type Props = {
   onContinue: Function,
   onClose: Function,
   onBack: Function,
+  onSetWalletMnemonics: Function,
+  mnemonics: Array<string>,
   walletKind: ?WalletKind,
   walletKindDaedalus: ?WalletDaedalusKind,
   walletKindYoroi: ?WalletYoroiKind,
@@ -108,11 +110,11 @@ export default class MnemonicsDialog extends Component<Props> {
     {
       fields: {
         recoveryPhrase: {
-          value: [],
-          validators: ({ field }) => {
+          value: this.props.mnemonics,
+          validators: () => {
             const { intl } = this.context;
+            const { mnemonics: enteredWords } = this.props;
             const { expectedWordCount } = this;
-            const enteredWords = field.value;
             const wordCount = enteredWords.length;
             const isPhraseComplete = Array.isArray(expectedWordCount)
               ? expectedWordCount.includes(wordCount)
@@ -147,38 +149,14 @@ export default class MnemonicsDialog extends Component<Props> {
 
   submit = () => {
     this.form.submit({
-      onSuccess: form => {
-        const { onContinue } = this.props;
-        const { recoveryPhrase } = form.values();
-        onContinue(recoveryPhrase);
-      },
+      onSuccess: this.props.onContinue,
       onError: () => {},
     });
   };
 
-  resetForm = () => {
-    const { form } = this;
-    // Cancel all debounced field validations
-    form.each(field => {
-      field.debouncedValidation.cancel();
-    });
-    form.reset();
-    form.showErrors(false);
-  };
-
-  resetMnemonics = () => {
-    const recoveryPhraseField = this.form.$('recoveryPhrase');
-    recoveryPhraseField.debouncedValidation.cancel();
-    recoveryPhraseField.reset();
-    recoveryPhraseField.showErrors(false);
-
-    // Autocomplete has to be reset manually
-    this.recoveryPhraseAutocomplete.clear();
-  };
-
   render() {
     const { intl } = this.context;
-    const { onClose, onBack } = this.props;
+    const { onClose, onBack, mnemonics, onSetWalletMnemonics } = this.props;
     const recoveryPhraseField = this.form.$('recoveryPhrase');
     const { expectedWordCount, maxWordCount } = this;
     return (
@@ -216,6 +194,8 @@ export default class MnemonicsDialog extends Component<Props> {
               messages.autocompleteNoResults
             )}
             skin={AutocompleteSkin}
+            onChange={onSetWalletMnemonics}
+            preselectedOptions={[...mnemonics]}
           />
           <div className="error" />
         </div>

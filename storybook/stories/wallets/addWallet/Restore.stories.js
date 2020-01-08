@@ -83,10 +83,12 @@ storiesOf('Wallets|Add Wallet', module)
         onClose={action('onClose')}
         onSetWalletKind={action('onSetWalletKind')}
         onBack={action('onSetWalletKind')}
+        onSetWalletMnemonics={action('onSetWalletMnemonics')}
         walletKind={walletKindSelect}
         walletKindDaedalus={walletKindSpecificSelect}
         walletKindYoroi={walletKindSpecificSelect}
         walletKindHardware={walletKindSpecificSelect}
+        mnemonics={[]}
       />
     );
   })

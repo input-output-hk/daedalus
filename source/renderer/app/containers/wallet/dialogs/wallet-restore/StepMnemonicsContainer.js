@@ -13,29 +13,29 @@ const DefaultProps = InjectedDialogContainerStepDefaultProps;
 export default class MnemonicsDialogContainer extends Component<Props> {
   static defaultProps = DefaultProps;
 
-  handleContinue = (mnemonics: Array<string>) => {
-    const { actions } = this.props;
-    const { restoreWalletSetMnemonics } = actions.wallets;
-    restoreWalletSetMnemonics.trigger({ mnemonics });
-  };
+  handleSetWalletMnemonics = (mnemonics: Array<string>) =>
+    this.props.actions.wallets.restoreWalletSetMnemonics.trigger({ mnemonics });
 
   render() {
-    const { onClose, onBack, stores } = this.props;
+    const { onContinue, onClose, onBack, stores } = this.props;
     const {
       walletKind,
       walletKindDaedalus,
       walletKindYoroi,
       walletKindHardware,
+      mnemonics,
     } = stores.wallets;
     return (
       <MnemonicsDialog
         onClose={onClose}
-        onContinue={this.handleContinue}
+        onContinue={onContinue}
         onBack={onBack}
         walletKind={walletKind}
         walletKindDaedalus={walletKindDaedalus}
         walletKindYoroi={walletKindYoroi}
         walletKindHardware={walletKindHardware}
+        onSetWalletMnemonics={this.handleSetWalletMnemonics}
+        mnemonics={mnemonics}
       />
     );
   }

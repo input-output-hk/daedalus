@@ -51,7 +51,7 @@ export default class WalletAddPage extends Component<Props> {
 
     const onRestoreWallet = restoreWalletUseNewProcess
       ? () => actions.wallets.restoreWalletBegin.trigger()
-      : // TODO: Remove once the new wallet creation process is ready
+      : // TODO: Remove once the new wallet restoration process is ready
         () => actions.dialogs.open.trigger({ dialog: WalletRestoreDialog });
 
     let content = null;

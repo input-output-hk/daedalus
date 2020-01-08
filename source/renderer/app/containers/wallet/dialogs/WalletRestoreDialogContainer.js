@@ -7,11 +7,9 @@ import StepConfigurationContainer from './wallet-restore/StepConfigurationContai
 import StepSuccessContainer from './wallet-restore/StepSuccessContainer';
 import type { InjectedProps } from '../../../types/injectedPropsType';
 import { RESTORE_WALLET_STEPS } from '../../../config/walletRestoreConfig';
+import ConfirmationDialog from '../../../components/wallet/wallet-restore/widgets/ConfirmationDialog';
 
 type Props = InjectedProps;
-
-// TODO restore component;
-const RestoreWalletAbortConfirmation = () => <div>Are you sure</div>;
 
 @inject('stores', 'actions')
 @observer
@@ -27,59 +25,31 @@ export default class WalletRestoreContainer extends Component<Props> {
     };
   }
 
-  get shouldDisplayAbortAlert() {
-    return (
-      this.currentStep < 0 && this.currentStep > RESTORE_WALLET_STEPS.length
-    );
-  }
-
-  get currentStep() {
-    return this.props.stores.wallets.restoreWalletStep;
-  }
-
-  onContinue = () => {
-    const { restoreWalletChangeStep } = this.props.actions.wallets;
-    if (this.currentStep < RESTORE_WALLET_STEPS.length - 1) {
-      restoreWalletChangeStep.trigger();
-    }
-  };
-
-  onBack = () => {
-    this.props.actions.wallets.restoreWalletChangeStep.trigger(true);
-  };
-
-  onClose = () => {
-    const {
-      restoreWalletAbort,
-      restoreWalletClose,
-      restoreWalletEnd,
-    } = this.props.actions.wallets;
-    if (this.shouldDisplayAbortAlert) {
-      restoreWalletAbort.trigger();
-    } else {
-      if (this.props.stores.wallets.restoredWallet) {
-        restoreWalletEnd.trigger();
-      }
-      restoreWalletClose.trigger();
-    }
-  };
-
-  onAbort = () => this.props.actions.wallets.restoreWalletAbort.trigger();
-
   render() {
-    const { wallets } = this.props.stores;
-    const { restoreWalletStep, restoreWalletShowAbortConfirmation } = wallets;
+    const { stores, actions } = this.props;
+    const {
+      restoreWalletStep,
+      restoreWalletShowAbortConfirmation,
+    } = stores.wallets;
+    const {
+      restoreWalletClose,
+      restoreWalletCancelClose,
+      restoreWalletChangeStep,
+    } = actions.wallets;
     const stepId = RESTORE_WALLET_STEPS[restoreWalletStep];
     const CurrentContainer = this.containers[stepId];
     return (
       <Fragment>
         {restoreWalletShowAbortConfirmation && (
-          <RestoreWalletAbortConfirmation onAbort={this.onAbort} />
+          <ConfirmationDialog
+            onConfirm={() => restoreWalletClose.trigger()}
+            onCancel={() => restoreWalletCancelClose.trigger()}
+          />
         )}
         <CurrentContainer
-          onContinue={this.onContinue}
-          onBack={this.onBack}
-          onClose={this.onClose}
+          onContinue={() => restoreWalletChangeStep.trigger()}
+          onBack={() => restoreWalletChangeStep.trigger(true)}
+          onClose={() => restoreWalletClose.trigger()}
         />
       </Fragment>
     );

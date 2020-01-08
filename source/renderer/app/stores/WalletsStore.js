@@ -34,6 +34,7 @@ import {
   WALLET_DAEDALUS_KINDS,
   WALLET_YOROI_KINDS,
   WALLET_HARDWARE_KINDS,
+  RESTORE_WALLET_STEPS,
 } from '../config/walletRestoreConfig';
 import { ADA_CERTIFICATE_MNEMONIC_LENGTH } from '../config/cryptoConfig';
 import type {
@@ -185,10 +186,23 @@ export default class WalletsStore extends Store {
   @observable walletKindYoroi: ?WalletYoroiKind = null;
   @observable walletKindHardware: ?WalletHardwareKind = null;
   // STEP: RECOVERY PHRASE
-  @observable mnemonics: ?Array<string> = null;
+  @observable mnemonics: Array<string> = [
+    'prison',
+    'census',
+    'discover',
+    'give',
+    'sound',
+    'behave',
+    'hundred',
+    'cave',
+    'someone',
+    'orchard',
+    'just',
+    'wild',
+  ];
   // STEP: CONFIGURATION
-  @observable walletName: ?string = null;
-  @observable spendingPassword: ?string = null;
+  @observable walletName: string = '';
+  @observable spendingPassword: string = '';
   // TODO: Remove once the new restore creation process is ready
   @observable restoreWalletUseNewProcess = true;
   @observable restoredWallet: ?Wallet = null;
@@ -258,8 +272,10 @@ export default class WalletsStore extends Store {
     walletsActions.restoreWalletChangeStep.listen(
       this._restoreWalletChangeStep
     );
-    walletsActions.restoreWalletAbort.listen(this._restoreWalletAbort);
     walletsActions.restoreWalletClose.listen(this._restoreWalletClose);
+    walletsActions.restoreWalletCancelClose.listen(
+      this._restoreWalletCancelClose
+    );
     walletsActions.restoreWalletSetKind.listen(this._restoreWalletSetKind);
     walletsActions.restoreWalletSetMnemonics.listen(
       this._restoreWalletSetMnemonics
@@ -382,21 +398,38 @@ export default class WalletsStore extends Store {
         ? currrentRestoreWalletStep - 1
         : currrentRestoreWalletStep + 1;
     this.restoreWalletShowAbortConfirmation = false;
+
+    if (currrentRestoreWalletStep === RESTORE_WALLET_STEPS.length - 1) {
+      this._restoreWalletEnd();
+    }
   };
 
   @action _restoreWalletClose = () => {
-    this.actions.dialogs.closeActiveDialog.trigger();
-    this._restoreWalletResetRequests();
-    this.restoreWalletStep = null;
-    this.restoredWallet = null;
+    const { mnemonics, walletName, spendingPassword } = this;
+    const shouldDisplayAbortAlert =
+      (mnemonics.length || walletName.length || spendingPassword.length) &&
+      (this.restoreWalletStep &&
+        this.restoreWalletStep > RESTORE_WALLET_STEPS.length);
+    if (shouldDisplayAbortAlert && !this.restoreWalletShowAbortConfirmation) {
+      this.restoreWalletShowAbortConfirmation = true;
+    } else {
+      this.restoreWalletShowAbortConfirmation = false;
+      this._restoreWalletResetRequests();
+      this.actions.dialogs.closeActiveDialog.trigger();
+      this.restoreWalletStep = null;
+      this.restoredWallet = null;
+      this.walletKind = null;
+      this.walletKindDaedalus = null;
+      this.walletKindYoroi = null;
+      this.walletKindHardware = null;
+      this.mnemonics = [];
+      this.walletName = '';
+      this.spendingPassword = '';
+    }
+  };
+
+  @action _restoreWalletCancelClose = () => {
     this.restoreWalletShowAbortConfirmation = false;
-    this.walletKind = null;
-    this.walletKindDaedalus = null;
-    this.walletKindYoroi = null;
-    this.walletKindHardware = null;
-    this.mnemonics = null;
-    this.walletName = null;
-    this.spendingPassword = null;
   };
 
   _restoreWalletResetRequests = () => {
@@ -406,10 +439,6 @@ export default class WalletsStore extends Store {
     this.restoreByronRandomWalletRequest.reset();
     this.restoreByronTrezorWalletRequest.reset();
     this.getWalletRecoveryPhraseFromCertificateRequest.reset();
-  };
-
-  @action _restoreWalletAbort = () => {
-    this.restoreWalletShowAbortConfirmation = true;
   };
 
   @action _restoreWalletSetKind = ({
@@ -428,7 +457,6 @@ export default class WalletsStore extends Store {
     mnemonics: Array<string>,
   }) => {
     this.mnemonics = mnemonics;
-    this.restoreWalletStep = 2;
   };
 
   @action _restoreWalletSetConfig = ({

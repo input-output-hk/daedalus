@@ -27,7 +27,7 @@ export default class WalletsActions {
   restoreWalletEnd: Action<any> = new Action();
   restoreWalletChangeStep: Action<any> = new Action();
   restoreWalletClose: Action<any> = new Action();
-  restoreWalletAbort: Action<any> = new Action();
+  restoreWalletCancelClose: Action<any> = new Action();
   restoreWalletSetKind: Action<{ param?: string, kind: string }> = new Action();
   restoreWalletSetMnemonics: Action<{
     mnemonics: Array<string>,
