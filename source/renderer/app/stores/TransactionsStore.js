@@ -1,4 +1,5 @@
 // @flow
+/* eslint-disable consistent-return */
 import {
   observable,
   computed,
@@ -15,14 +16,24 @@ import type {
   GetTransactionsResponse,
 } from '../api/transactions/types';
 import { isValidAmountInLovelaces } from '../utils/validations';
-// import { WalletSyncStateStatuses } from '../domains/Wallet';
-
-/* eslint-disable consistent-return */
+import {
+  generateFilterEdgesOfTransactions,
+  isTransactionDateInFilterRange,
+  isTransactionAmountInFilterRange,
+  isTransactionTypeInFilterRange,
+  isTransactionTitleInFilterRange,
+} from '../utils/transaction';
 
 export type TransactionSearchOptionsStruct = {
-  searchTerm: string,
-  searchLimit: number,
-  searchSkip: number,
+  searchTerm?: string,
+  searchLimit?: number,
+  searchSkip?: number,
+  fromDate?: string,
+  toDate?: string,
+  fromAmount?: number,
+  toAmount?: number,
+  incomingChecked?: boolean,
+  outgoingChecked?: boolean,
 };
 
 type TransactionFeeRequest = {
@@ -43,6 +54,7 @@ export default class TransactionsStore extends Store {
     recentRequest: Request<GetTransactionsResponse>,
     allRequest: Request<GetTransactionsResponse>,
   }> = [];
+
   @observable
   deleteTransactionRequest: Request<DeleteTransactionRequest> = new Request(
     this.api.ada.deleteTransaction
@@ -51,8 +63,8 @@ export default class TransactionsStore extends Store {
   @observable _searchOptionsForWallets = {};
 
   setup() {
-    // const actions = this.actions.transactions;
-    // actions.filterTransactions.listen(this._updateSearchTerm);
+    const { transactions: actions } = this.actions;
+    actions.filterTransactions.listen(this._updateSearchOptions);
     // actions.loadMoreTransactions.listen(this._increaseSearchLimit);
     this.registerReactions([this._ensureSearchOptionsForActiveWallet]);
   }
@@ -77,18 +89,49 @@ export default class TransactionsStore extends Store {
     return this._searchOptionsForWallets[wallet.id];
   }
 
-  @computed get filtered(): Array<WalletTransaction> {
+  @computed get all(): Array<WalletTransaction> {
     const wallet = this.stores.wallets.active;
-    if (!wallet || !this.searchOptions) return [];
-    const { searchTerm } = this.searchOptions;
+    if (!wallet) return [];
     const request = this._getTransactionsAllRequest(wallet.id);
-    if (searchTerm && request.result && request.result.transactions) {
-      return request.result.transactions.filter(
-        transaction =>
-          transaction.title.search(new RegExp(searchTerm, 'i')) !== -1
-      );
+
+    if (!request.result) {
+      return [];
     }
-    return request.result ? request.result.transactions : [];
+
+    return request.result.transactions || [];
+  }
+
+  @computed get filtered(): Array<WalletTransaction> {
+    const {
+      searchTerm = '',
+      fromDate = '',
+      toDate = '',
+      fromAmount = 0,
+      toAmount = 0,
+      incomingChecked = true,
+      outgoingChecked = true,
+    } = this.searchOptions || {};
+
+    return this.all.filter(
+      transaction =>
+        isTransactionTitleInFilterRange(searchTerm, transaction) &&
+        isTransactionDateInFilterRange(fromDate, toDate, transaction) &&
+        isTransactionAmountInFilterRange(fromAmount, toAmount, transaction) &&
+        isTransactionTypeInFilterRange(
+          incomingChecked,
+          outgoingChecked,
+          transaction
+        )
+    );
+  }
+
+  @computed get filterEdges(): {
+    minDate: ?number,
+    maxDate: ?number,
+    minAmount: ?number,
+    maxAmount: ?number,
+  } {
+    return generateFilterEdgesOfTransactions(this.all);
   }
 
   @computed get recent(): Array<WalletTransaction> {
@@ -216,10 +259,16 @@ export default class TransactionsStore extends Store {
 
   // ======================= PRIVATE ========================== //
 
-  @action _updateSearchTerm = ({ searchTerm }: { searchTerm: string }) => {
-    if (this.searchOptions != null) {
-      this.searchOptions.searchTerm = searchTerm;
-    }
+  @action _updateSearchOptions = (
+    searchOptions: TransactionSearchOptionsStruct
+  ) => {
+    const wallet = this.stores.wallets.active;
+    if (!wallet) return;
+    const currentSearchOptions = this._searchOptionsForWallets[wallet.id];
+    this._searchOptionsForWallets[wallet.id] = {
+      ...currentSearchOptions,
+      ...searchOptions,
+    };
   };
 
   _getTransactionsRecentRequest = (
@@ -260,6 +309,12 @@ export default class TransactionsStore extends Store {
             searchTerm: '',
             searchLimit: this.INITIAL_SEARCH_LIMIT,
             searchSkip: this.SEARCH_SKIP,
+            fromDate: '',
+            toDate: '',
+            fromAmount: 0,
+            toAmount: 0,
+            incomingChecked: true,
+            outgoingChecked: true,
           },
         });
       });

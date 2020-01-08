@@ -43,6 +43,7 @@ const messages = defineMessages({
 });
 
 type Props = {
+  openFilterDialog?: Function,
   deletePendingTransaction: Function,
   formattedWalletAmount: Function,
   hasMoreToLoad: boolean,

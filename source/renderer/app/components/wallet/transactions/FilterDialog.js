@@ -112,11 +112,10 @@ const calculateDateRange = (
 };
 
 type Props = {
-  minDate?: number,
-  maxDate?: number,
-  minAmount?: BigNumber,
-  maxAmount?: BigNumber,
-  isFiltering: boolean,
+  minDate?: ?number,
+  maxDate?: ?number,
+  minAmount?: ?number,
+  maxAmount?: ?number,
   onFilter: Function,
   onClose: Function,
 };
@@ -179,12 +178,12 @@ export default class FilterDialog extends Component<Props> {
       fromAmount: {
         type: 'number',
         label: '',
-        value: this.props.minAmount ? this.props.minAmount.toNumber() : 0,
+        value: this.props.minAmount ? this.props.minAmount : 0,
       },
       toAmount: {
         type: 'number',
         label: '',
-        value: this.props.maxAmount ? this.props.maxAmount.toNumber() : 0,
+        value: this.props.maxAmount ? this.props.maxAmount : 0,
       },
     },
   });
@@ -209,6 +208,8 @@ export default class FilterDialog extends Component<Props> {
         onFilter({
           ...rest,
           ...dateRangePayload,
+          fromAmount: Number(rest.fromAmount),
+          toAmount: Number(rest.toAmount),
         });
       },
       onError: () => null,
@@ -349,13 +350,12 @@ export default class FilterDialog extends Component<Props> {
 
   renderActionButton = () => {
     const { intl } = this.context;
-    const { isFiltering } = this.props;
 
     return (
       <div className={styles.action}>
         <TinyButton
           label={intl.formatMessage(messages.filter)}
-          loading={isFiltering}
+          loading={false}
           onClick={this.handleSubmit}
         />
       </div>

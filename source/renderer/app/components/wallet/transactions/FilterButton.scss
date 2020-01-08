@@ -1,0 +1,42 @@
+.component {
+  .actionButton {
+    border-radius: 5px;
+    box-shadow: 0 1.5px 5px 0 var(--theme-staking-export-button-shadow-color);
+    display: flex;
+    padding: 7px 12px;
+    position: fixed;
+    right: 10px;
+    top: 144px;
+    width: auto;
+    z-index: 100;
+
+    &:focus {
+      box-shadow: 0 1.5px 5px 0 var(--theme-staking-export-button-shadow-color) !important;
+    }
+
+    &.actionButtonFaded {
+      opacity: 0.5;
+
+      &:hover {
+        opacity: 1;
+      }
+    }
+
+    .actionLabel {
+      color: var(--theme-staking-learn-more-button-color);
+      font-family: var(--font-regular);
+      font-size: 14px;
+      line-height: 1.36;
+      margin-right: 12px;
+    }
+
+    .filterIcon {
+      height: 11px;
+      width: 11px;
+
+      g {
+        stroke: var(--theme-staking-learn-more-button-color);
+      }
+    }
+  }
+}

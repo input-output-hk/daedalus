@@ -2,21 +2,23 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import FilterDialog from '../../../components/wallet/transactions/FilterDialog';
-import type { InjectedDialogContainerProps } from '../../../types/injectedPropsType';
+import type { InjectedDialogContainerFilterProps } from '../../../types/injectedPropsType';
 
-type Props = InjectedDialogContainerProps;
+type Props = InjectedDialogContainerFilterProps;
 
 @inject('stores', 'actions')
 @observer
 export default class FilterDialogContainer extends Component<Props> {
   render() {
-    const { dialogs } = this.props.actions;
-    const { uiDialogs } = this.props.stores;
+    const { actions, stores, onFilter } = this.props;
+    const { closeActiveDialog } = actions.dialogs;
+    const { dataForActiveDialog } = stores.uiDialogs;
 
     return (
       <FilterDialog
-        onClose={() => dialogs.closeActiveDialog.trigger()}
-        {...uiDialogs.dataForActiveDialog}
+        onFilter={onFilter}
+        onClose={() => closeActiveDialog.trigger()}
+        {...dataForActiveDialog}
       />
     );
   }

@@ -3,19 +3,15 @@ import React, { Component } from 'react';
 import { get } from 'lodash';
 import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
-import BigNumber from 'bignumber.js';
-import SVGInline from 'react-svg-inline';
 import WalletTransactionsList from '../../components/wallet/transactions/WalletTransactionsList';
 import WalletNoTransactions from '../../components/wallet/transactions/WalletNoTransactions';
 import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer';
 import FilterDialogContainer from './dialogs/FilterDialogContainer';
 import FilterDialog from '../../components/wallet/transactions/FilterDialog';
-import filterIcon from '../../assets/images/filter-dis-ic.inline.svg';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import { formattedWalletAmount } from '../../utils/formatters';
 import { WalletSyncStateStatuses } from '../../domains/Wallet';
 import { getNetworkExplorerUrlByType } from '../../utils/network';
-import globalMessages from '../../i18n/global-messages';
 
 export const messages = defineMessages({
   noTransactions: {
@@ -36,26 +32,30 @@ type Props = InjectedProps;
 @inject('stores', 'actions')
 @observer
 export default class WalletTransactionsPage extends Component<Props> {
-  static defaultProps = { actions: null, stores: null };
-
   static contextTypes = {
     intl: intlShape.isRequired,
   };
 
   openFilterDialog = () => {
     const { dialogs } = this.props.actions;
+    const { filterEdges } = this.props.stores.transactions;
 
     dialogs.open.trigger({ dialog: FilterDialog });
     dialogs.updateDataForActiveDialog.trigger({
-      data: {
-        // minDate: new Date('2019-09-23').getTime(),
-        // maxDate: new Date('2019-12-19').getTime(),
-        // minAmount: new BigNumber(200),
-        // maxAmount: new BigNumber(1200),
-        isFiltering: true,
-        onFilter: payload => console.log('---here--', payload),
-      },
+      data: filterEdges,
     });
+  };
+
+  onFilter = (filterProps: {
+    fromDate: string,
+    toDate: string,
+    fromAmount: number,
+    toAmount: number,
+    incomingChecked: boolean,
+    outgoingChecked: boolean,
+  }) => {
+    const { transactions: actions } = this.props.actions;
+    actions.filterTransactions.trigger(filterProps);
   };
 
   render() {
@@ -82,15 +82,17 @@ export default class WalletTransactionsPage extends Component<Props> {
     // Guard against potential null values
     if (!searchOptions || !activeWallet) return null;
 
+    let walletTransactions = null;
     const { searchLimit, searchTerm } = searchOptions;
     const wasSearched = searchTerm !== '';
-    let walletTransactions = null;
     const noTransactionsLabel = intl.formatMessage(messages.noTransactions);
     const noTransactionsFoundLabel = intl.formatMessage(
       messages.noTransactionsFound
     );
     const hasMoreToLoad = () =>
-      searchLimit !== null && totalAvailable > searchLimit;
+      searchLimit !== null &&
+      searchLimit !== undefined &&
+      totalAvailable > searchLimit;
 
     const isRestoreActive =
       get(activeWallet, ['syncState', 'status']) ===
@@ -111,6 +113,7 @@ export default class WalletTransactionsPage extends Component<Props> {
     if (searchRequest.isExecutingFirstTime || hasAny || isRestoreActive) {
       walletTransactions = (
         <WalletTransactionsList
+          openFilterDialog={this.openFilterDialog}
           transactions={transactions}
           deletePendingTransaction={deletePendingTransaction}
           isLoadingTransactions={searchRequest.isExecutingFirstTime}
@@ -137,8 +140,9 @@ export default class WalletTransactionsPage extends Component<Props> {
 
     return (
       <VerticalFlexContainer>
-        <button onClick={() => this.openFilterDialog()}>Filter</button>
-        {uiDialogs.isOpen(FilterDialog) && <FilterDialogContainer />}
+        {uiDialogs.isOpen(FilterDialog) && (
+          <FilterDialogContainer onFilter={this.onFilter} />
+        )}
         {walletTransactions}
       </VerticalFlexContainer>
     );

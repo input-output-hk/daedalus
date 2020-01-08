@@ -8,6 +8,7 @@ import { IDENTIFIERS } from 'react-polymorph/lib/themes/API';
 import styles from './TinyButton.scss';
 
 type Props = {
+  className?: string,
   disabled?: boolean,
   label?: string | Element<any>,
   loading: boolean,
