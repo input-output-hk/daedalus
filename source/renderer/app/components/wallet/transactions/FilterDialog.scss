@@ -3,6 +3,9 @@
     &.ModalOverrides_modal {
       border-radius: 4px;
       min-width: auto;
+      position: absolute;
+      right: 10px;
+      top: 190px;
     }
   }
 }

@@ -6,6 +6,7 @@ import { observer } from 'mobx-react';
 import { AutoSizer, List } from 'react-virtualized';
 import { throttle, debounce } from 'lodash';
 import { WalletTransaction } from '../../../../domains/WalletTransaction';
+import FilterButton from '../FilterButton';
 import type { Row } from '../types';
 import styles from './VirtualTransactionList.scss';
 import { TransactionInfo, TransactionsGroup } from '../types';
@@ -18,6 +19,11 @@ type Props = {
   rows: Row[],
   isLoadingSpinnerShown?: boolean,
   isSyncingSpinnerShown?: boolean,
+  onFilterButtonClick?: Function,
+};
+
+type State = {
+  isFilterButtonFaded: boolean,
 };
 
 type RowHeight = number;
@@ -31,10 +37,15 @@ const TX_ADDRESS_SELECTOR = '.Transaction_address';
 const TX_ID_SELECTOR = '.Transaction_transactionId';
 
 @observer
-export class VirtualTransactionList extends Component<Props> {
+export class VirtualTransactionList extends Component<Props, State> {
   static defaultProps = {
     isLoadingSpinnerShown: false,
     isSyncingSpinnerShown: false,
+    onFilterButtonClick: () => null,
+  };
+
+  state = {
+    isFilterButtonFaded: false,
   };
 
   componentWillReceiveProps(nextProps: Props) {
@@ -273,10 +284,24 @@ export class VirtualTransactionList extends Component<Props> {
     </div>
   );
 
+  onListScroll = ({ scrollTop }: { scrollTop: number }) => {
+    if (scrollTop > 10 && !this.state.isFilterButtonFaded) {
+      this.setState({ isFilterButtonFaded: true });
+    } else if (scrollTop <= 10 && this.state.isFilterButtonFaded) {
+      this.setState({ isFilterButtonFaded: false });
+    }
+  };
+
   // =============== REACT LIFECYCLE ================= //
 
   render() {
-    const { rows, isLoadingSpinnerShown, isSyncingSpinnerShown } = this.props;
+    const {
+      rows,
+      isLoadingSpinnerShown,
+      isSyncingSpinnerShown,
+      onFilterButtonClick,
+    } = this.props;
+    const { isFilterButtonFaded } = this.state;
 
     // Prevent List rendering if we have no rows to render
     if (!rows.length) return false;
@@ -289,6 +314,10 @@ export class VirtualTransactionList extends Component<Props> {
 
     return (
       <div className={componentStyles}>
+        <FilterButton
+          faded={isFilterButtonFaded}
+          onClick={onFilterButtonClick}
+        />
         <AutoSizer
           onResize={throttle(this.onResize, 100, {
             leading: true,
@@ -313,6 +342,7 @@ export class VirtualTransactionList extends Component<Props> {
               }
               rowRenderer={this.rowRenderer}
               style={{ overflowY: 'scroll' }}
+              onScroll={this.onListScroll}
             />
           )}
         </AutoSizer>

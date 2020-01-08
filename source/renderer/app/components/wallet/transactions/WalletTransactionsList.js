@@ -74,6 +74,7 @@ export default class WalletTransactionsList extends Component<Props> {
     showMoreTransactionsButton: false,
     onShowMoreTransactions: () => {},
     onOpenExternalLink: () => {},
+    openFilterDialog: () => null,
   };
 
   expandedTransactions: { string: string } = {};
@@ -229,6 +230,7 @@ export default class WalletTransactionsList extends Component<Props> {
       showMoreTransactionsButton,
       transactions,
       walletId,
+      openFilterDialog,
     } = this.props;
 
     const { intl } = this.context;
@@ -292,6 +294,7 @@ export default class WalletTransactionsList extends Component<Props> {
         {syncingTransactionsSpinner}
         {isRenderingAsVirtualList ? (
           <VirtualTransactionList
+            onFilterButtonClick={openFilterDialog}
             getExpandedTransactions={this.getExpandedTransactions}
             ref={list => {
               this.virtualList = list;
@@ -303,6 +306,7 @@ export default class WalletTransactionsList extends Component<Props> {
           />
         ) : (
           <SimpleTransactionList
+            onFilterButtonClick={openFilterDialog}
             ref={list => {
               this.simpleList = list;
             }}
