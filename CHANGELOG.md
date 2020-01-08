@@ -14,6 +14,7 @@ Changelog
 - Fixed handling of duplicated wallet IDs when restoring both legacy and new wallets from the same wallet recovery phrase ([PR 1805](https://github.com/input-output-hk/daedalus/pull/1805))
 
 ### Chores
+- Updated `cardano-wallet` to revision `132a5faf8c076eb8e873857a15e80db56be7e6ca` ([PR 1812](https://github.com/input-output-hk/daedalus/pull/1812))
 - Updated `cardano-wallet` to revision `132a5faf8c076eb8e873857a15e80db56be7e6ca` ([PR 1740](https://github.com/input-output-hk/daedalus/pull/1740))
 
 ## 2.0.0-ITN1
