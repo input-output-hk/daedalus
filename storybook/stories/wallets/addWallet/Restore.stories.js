@@ -98,6 +98,10 @@ storiesOf('Wallets|Add Wallet', module)
       onContinue={action('onContinue')}
       onClose={action('onClose')}
       onBack={action('onSetWalletKind')}
+      onChange={action('onSetWalletKind')}
+      repeatPassword=""
+      spendingPassword=""
+      walletName=""
     />
   ))
   .add('Restore - Step 4', () => {

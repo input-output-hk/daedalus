@@ -186,23 +186,11 @@ export default class WalletsStore extends Store {
   @observable walletKindYoroi: ?WalletYoroiKind = null;
   @observable walletKindHardware: ?WalletHardwareKind = null;
   // STEP: RECOVERY PHRASE
-  @observable mnemonics: Array<string> = [
-    'prison',
-    'census',
-    'discover',
-    'give',
-    'sound',
-    'behave',
-    'hundred',
-    'cave',
-    'someone',
-    'orchard',
-    'just',
-    'wild',
-  ];
+  @observable mnemonics: Array<string> = [];
   // STEP: CONFIGURATION
   @observable walletName: string = '';
   @observable spendingPassword: string = '';
+  @observable repeatPassword: string = '';
   // TODO: Remove once the new restore creation process is ready
   @observable restoreWalletUseNewProcess = true;
   @observable restoredWallet: ?Wallet = null;
@@ -385,46 +373,37 @@ export default class WalletsStore extends Store {
       await this._patchWalletRequestWithNewWallet(restoredWallet);
       this.goToWalletRoute(restoredWallet.id);
       this.refreshWalletsData();
+      this._restoreWalletResetRequests();
+      this._restoreWalletResetData();
     }
   };
 
   @action _restoreWalletChangeStep = (isBack: boolean = false) => {
     // Reset restore requests to clear previous errors
-    this._restoreWalletResetRequests();
-
     const currrentRestoreWalletStep = this.restoreWalletStep || 0;
+    this._restoreWalletResetRequests();
+    if (this.restoreWalletStep === null) {
+      this._restoreWalletResetData();
+    }
     this.restoreWalletStep =
       isBack === true
         ? currrentRestoreWalletStep - 1
         : currrentRestoreWalletStep + 1;
     this.restoreWalletShowAbortConfirmation = false;
-
-    if (currrentRestoreWalletStep === RESTORE_WALLET_STEPS.length - 1) {
-      this._restoreWalletEnd();
-    }
   };
 
   @action _restoreWalletClose = () => {
     const { mnemonics, walletName, spendingPassword } = this;
     const shouldDisplayAbortAlert =
       (mnemonics.length || walletName.length || spendingPassword.length) &&
-      (this.restoreWalletStep &&
-        this.restoreWalletStep > RESTORE_WALLET_STEPS.length);
+      (this.restoreWalletStep !== null &&
+        this.restoreWalletStep < RESTORE_WALLET_STEPS.length - 1);
     if (shouldDisplayAbortAlert && !this.restoreWalletShowAbortConfirmation) {
       this.restoreWalletShowAbortConfirmation = true;
     } else {
-      this.restoreWalletShowAbortConfirmation = false;
       this._restoreWalletResetRequests();
+      this._restoreWalletResetData();
       this.actions.dialogs.closeActiveDialog.trigger();
-      this.restoreWalletStep = null;
-      this.restoredWallet = null;
-      this.walletKind = null;
-      this.walletKindDaedalus = null;
-      this.walletKindYoroi = null;
-      this.walletKindHardware = null;
-      this.mnemonics = [];
-      this.walletName = '';
-      this.spendingPassword = '';
     }
   };
 
@@ -441,6 +420,20 @@ export default class WalletsStore extends Store {
     this.getWalletRecoveryPhraseFromCertificateRequest.reset();
   };
 
+  @action _restoreWalletResetData = () => {
+    this.restoreWalletStep = null;
+    this.restoreWalletShowAbortConfirmation = false;
+    this.restoredWallet = null;
+    this.walletKind = null;
+    this.walletKindDaedalus = null;
+    this.walletKindYoroi = null;
+    this.walletKindHardware = null;
+    this.mnemonics = [];
+    this.walletName = '';
+    this.spendingPassword = '';
+    this.repeatPassword = '';
+  };
+
   @action _restoreWalletSetKind = ({
     param,
     kind,
@@ -449,6 +442,7 @@ export default class WalletsStore extends Store {
     kind: string,
   }) => {
     (this: any)[`walletKind${param || ''}`] = kind;
+    this.mnemonics = [];
   };
 
   @action _restoreWalletSetMnemonics = ({
@@ -460,14 +454,19 @@ export default class WalletsStore extends Store {
   };
 
   @action _restoreWalletSetConfig = ({
-    walletName,
-    spendingPassword,
+    param,
+    value,
   }: {
-    walletName: string,
-    spendingPassword: string,
+    param: string,
+    value: string,
   }) => {
-    this.walletName = walletName;
-    this.spendingPassword = spendingPassword;
+    if (param === 'walletName') {
+      this.walletName = value;
+    } else if (param === 'spendingPassword') {
+      this.spendingPassword = value;
+    } else if (param === 'repeatPassword') {
+      this.repeatPassword = value;
+    }
   };
 
   _finishWalletBackup = async () => {

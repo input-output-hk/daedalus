@@ -33,8 +33,8 @@ export default class WalletsActions {
     mnemonics: Array<string>,
   }> = new Action();
   restoreWalletSetConfig: Action<{
-    walletName: string,
-    spendingPassword: string,
+    param: string,
+    value: string,
   }> = new Action();
 
   restoreWallet: Action<any> = new Action();

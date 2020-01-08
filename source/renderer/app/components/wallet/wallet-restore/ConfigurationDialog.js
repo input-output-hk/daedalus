@@ -74,6 +74,10 @@ type Props = {
   onContinue: Function,
   onClose: Function,
   onBack: Function,
+  onChange: Function,
+  walletName: string,
+  spendingPassword: string,
+  repeatPassword: string,
   error?: ?LocalizableError,
 };
 
@@ -101,13 +105,16 @@ export default class ConfigurationDialog extends Component<Props> {
           placeholder: this.context.intl.formatMessage(
             messages.walletNamePlaceholder
           ),
-          value: '',
+          value: this.props.walletName,
           validators: [
             ({ field }) => [
               isValidWalletName(field.value),
               this.context.intl.formatMessage(globalMessages.invalidWalletName),
             ],
           ],
+          hooks: {
+            onChange: this.props.onChange.bind(this, 'walletName'),
+          },
         },
         spendingPassword: {
           type: 'password',
@@ -117,7 +124,7 @@ export default class ConfigurationDialog extends Component<Props> {
           placeholder: this.context.intl.formatMessage(
             messages.passwordFieldsPlaceholder
           ),
-          value: '',
+          value: this.props.spendingPassword,
           validators: [
             ({ field, form }) => {
               const repeatPasswordField = form.$('repeatPassword');
@@ -132,6 +139,9 @@ export default class ConfigurationDialog extends Component<Props> {
               ];
             },
           ],
+          hooks: {
+            onChange: this.props.onChange.bind(this, 'spendingPassword'),
+          },
         },
         repeatPassword: {
           type: 'password',
@@ -139,7 +149,7 @@ export default class ConfigurationDialog extends Component<Props> {
           placeholder: this.context.intl.formatMessage(
             messages.passwordFieldsPlaceholder
           ),
-          value: '',
+          value: this.props.repeatPassword,
           validators: [
             ({ field, form }) => {
               const spendingPassword = form.$('spendingPassword').value;
@@ -152,6 +162,9 @@ export default class ConfigurationDialog extends Component<Props> {
               ];
             },
           ],
+          hooks: {
+            onChange: this.props.onChange.bind(this, 'repeatPassword'),
+          },
         },
       },
     },
@@ -194,7 +207,7 @@ export default class ConfigurationDialog extends Component<Props> {
 
     const walletNameField = form.$('walletName');
     const spendingPasswordField = form.$('spendingPassword');
-    const repeatedPasswordField = form.$('repeatPassword');
+    const repeatPasswordField = form.$('repeatPassword');
 
     const walletNameFieldClasses = classnames([styles.input, 'walletName']);
     const spendingPasswordFieldClasses = classnames([
@@ -202,10 +215,10 @@ export default class ConfigurationDialog extends Component<Props> {
       styles.spendingPasswordField,
       'spendingPassword',
     ]);
-    const repeatedPasswordFieldClasses = classnames([
+    const repeatPasswordFieldClasses = classnames([
       styles.input,
       styles.spendingPasswordField,
-      'repeatedPassword',
+      'repeatPassword',
     ]);
 
     return (
@@ -245,10 +258,10 @@ export default class ConfigurationDialog extends Component<Props> {
                 skin={InputSkin}
               />
               <Input
-                className={repeatedPasswordFieldClasses}
+                className={repeatPasswordFieldClasses}
                 onKeyPress={this.handleSubmitOnEnter}
-                {...repeatedPasswordField.bind()}
-                error={repeatedPasswordField.error}
+                {...repeatPasswordField.bind()}
+                error={repeatPasswordField.error}
                 skin={InputSkin}
               />
               <p className={styles.passwordInstructions}>
