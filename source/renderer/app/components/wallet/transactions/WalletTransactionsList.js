@@ -43,7 +43,7 @@ const messages = defineMessages({
 });
 
 type Props = {
-  openFilterDialog?: Function,
+  onFilterButtonClick?: Function,
   deletePendingTransaction: Function,
   formattedWalletAmount: Function,
   hasMoreToLoad: boolean,
@@ -74,7 +74,7 @@ export default class WalletTransactionsList extends Component<Props> {
     showMoreTransactionsButton: false,
     onShowMoreTransactions: () => {},
     onOpenExternalLink: () => {},
-    openFilterDialog: () => null,
+    onFilterButtonClick: () => null,
   };
 
   expandedTransactions: { string: string } = {};
@@ -230,7 +230,7 @@ export default class WalletTransactionsList extends Component<Props> {
       showMoreTransactionsButton,
       transactions,
       walletId,
-      openFilterDialog,
+      onFilterButtonClick,
     } = this.props;
 
     const { intl } = this.context;
@@ -294,7 +294,7 @@ export default class WalletTransactionsList extends Component<Props> {
         {syncingTransactionsSpinner}
         {isRenderingAsVirtualList ? (
           <VirtualTransactionList
-            onFilterButtonClick={openFilterDialog}
+            onFilterButtonClick={onFilterButtonClick}
             getExpandedTransactions={this.getExpandedTransactions}
             ref={list => {
               this.virtualList = list;
@@ -306,7 +306,7 @@ export default class WalletTransactionsList extends Component<Props> {
           />
         ) : (
           <SimpleTransactionList
-            onFilterButtonClick={openFilterDialog}
+            onFilterButtonClick={onFilterButtonClick}
             ref={list => {
               this.simpleList = list;
             }}

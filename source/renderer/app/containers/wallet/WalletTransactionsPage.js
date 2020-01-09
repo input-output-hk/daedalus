@@ -10,6 +10,8 @@ import FilterDialogContainer from './dialogs/FilterDialogContainer';
 import FilterDialog from '../../components/wallet/transactions/FilterDialog';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import { formattedWalletAmount } from '../../utils/formatters';
+import { isFilterApplied } from '../../utils/transaction';
+import type { TransactionFilterOptionsStruct } from '../../stores/TransactionsStore';
 import { WalletSyncStateStatuses } from '../../domains/Wallet';
 import { getNetworkExplorerUrlByType } from '../../utils/network';
 
@@ -38,24 +40,21 @@ export default class WalletTransactionsPage extends Component<Props> {
 
   openFilterDialog = () => {
     const { dialogs } = this.props.actions;
-    const { filterEdges } = this.props.stores.transactions;
+    const { populatedFilterOptions } = this.props.stores.transactions;
 
     dialogs.open.trigger({ dialog: FilterDialog });
     dialogs.updateDataForActiveDialog.trigger({
-      data: filterEdges,
+      data: populatedFilterOptions,
     });
   };
 
-  onFilter = (filterProps: {
-    fromDate: string,
-    toDate: string,
-    fromAmount: number,
-    toAmount: number,
-    incomingChecked: boolean,
-    outgoingChecked: boolean,
-  }) => {
-    const { transactions: actions } = this.props.actions;
-    actions.filterTransactions.trigger(filterProps);
+  onFilter = (filterProps: TransactionFilterOptionsStruct) => {
+    const {
+      transactions: transactionActions,
+      dialogs: dialogActions,
+    } = this.props.actions;
+    transactionActions.filterTransactions.trigger(filterProps);
+    dialogActions.closeActiveDialog.trigger();
   };
 
   render() {
@@ -68,23 +67,23 @@ export default class WalletTransactionsPage extends Component<Props> {
     } = app;
     const activeWallet = wallets.active;
     const {
-      searchOptions,
+      filterOptions,
       searchRequest,
       hasAny,
       totalAvailable,
-      filtered,
-      recent,
+      allFiltered,
+      recentFiltered,
       deletePendingTransaction,
       deleteTransactionRequest,
     } = stores.transactions;
     const { currentTimeFormat, currentDateFormat, currentLocale } = profile;
 
     // Guard against potential null values
-    if (!searchOptions || !activeWallet) return null;
+    if (!filterOptions || !activeWallet) return null;
 
     let walletTransactions = null;
-    const { searchLimit, searchTerm } = searchOptions;
-    const wasSearched = searchTerm !== '';
+    const { searchLimit } = filterOptions;
+    const wasFiltered = isFilterApplied(filterOptions);
     const noTransactionsLabel = intl.formatMessage(messages.noTransactions);
     const noTransactionsFoundLabel = intl.formatMessage(
       messages.noTransactionsFound
@@ -107,13 +106,29 @@ export default class WalletTransactionsPage extends Component<Props> {
         currentLocale
       );
 
-    // Straight away show recent transactions if filtered ones are not loaded yet
-    const transactions = recent.length && !filtered.length ? recent : filtered;
+    // Straight away show recent filtered transactions if all filtered ones are not loaded yet
+    const transactions =
+      recentFiltered.length && !allFiltered.length
+        ? recentFiltered
+        : allFiltered;
 
-    if (searchRequest.isExecutingFirstTime || hasAny || isRestoreActive) {
+    if (!hasAny) {
+      walletTransactions = <WalletNoTransactions label={noTransactionsLabel} />;
+    } else if (wasFiltered && !transactions.length) {
+      walletTransactions = (
+        <WalletNoTransactions
+          onFilterButtonClick={this.openFilterDialog}
+          label={noTransactionsFoundLabel}
+        />
+      );
+    } else if (
+      searchRequest.isExecutingFirstTime ||
+      hasAny ||
+      isRestoreActive
+    ) {
       walletTransactions = (
         <WalletTransactionsList
-          openFilterDialog={this.openFilterDialog}
+          onFilterButtonClick={this.openFilterDialog}
           transactions={transactions}
           deletePendingTransaction={deletePendingTransaction}
           isLoadingTransactions={searchRequest.isExecutingFirstTime}
@@ -130,12 +145,6 @@ export default class WalletTransactionsPage extends Component<Props> {
           isRenderingAsVirtualList
         />
       );
-    } else if (wasSearched && !hasAny) {
-      walletTransactions = (
-        <WalletNoTransactions label={noTransactionsFoundLabel} />
-      );
-    } else if (!hasAny) {
-      walletTransactions = <WalletNoTransactions label={noTransactionsLabel} />;
     }
 
     return (

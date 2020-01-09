@@ -4,20 +4,35 @@ import {
   WalletTransaction,
   TransactionTypes,
 } from '../domains/WalletTransaction';
+import type { TransactionFilterOptionsStruct } from '../stores/TransactionsStore';
+import { DateRangeTypes } from '../stores/TransactionsStore';
 
-export const generateFilterEdgesOfTransactions = (
+export const generateFilterOptions = (
   transactions: Array<WalletTransaction>
 ) => {
   const dates = transactions.map(({ date }) =>
     date ? date.getTime() : new Date().getTime()
   );
   const amounts = transactions.map(({ amount }) => amount.toNumber());
-  const minDate = dates.length > 0 ? Math.min(...dates) : null;
-  const maxDate = dates.length > 0 ? Math.max(...dates) : null;
-  const minAmount = amounts.length > 0 ? Math.min(...amounts) : null;
-  const maxAmount = amounts.length > 0 ? Math.max(...amounts) : null;
+  const dateRange = DateRangeTypes.THIS_WEEK;
+  const fromDate =
+    dates.length > 0 ? moment(Math.min(...dates)).format('YYYY-MM-DD') : '';
+  const toDate =
+    dates.length > 0 ? moment(Math.max(...dates)).format('YYYY-MM-DD') : '';
+  const fromAmount = amounts.length > 0 ? Math.min(...amounts) : 0;
+  const toAmount = amounts.length > 0 ? Math.max(...amounts) : 0;
+  const incomingChecked = true;
+  const outgoingChecked = true;
 
-  return { minDate, maxDate, minAmount, maxAmount };
+  return {
+    dateRange,
+    fromDate,
+    toDate,
+    fromAmount,
+    toAmount,
+    incomingChecked,
+    outgoingChecked,
+  };
 };
 
 export const isTransactionDateInFilterRange = (
@@ -91,4 +106,54 @@ export const isTransactionTitleInFilterRange = (
   }
 
   return transaction.title.search(new RegExp(searchTerm, 'i')) !== -1;
+};
+
+export const isTransactionInFilterRange = (
+  filterOptions: ?TransactionFilterOptionsStruct,
+  transaction: WalletTransaction
+) => {
+  const {
+    searchTerm = '',
+    fromDate = '',
+    toDate = '',
+    fromAmount = 0,
+    toAmount = 0,
+    incomingChecked = true,
+    outgoingChecked = true,
+  } = filterOptions || {};
+
+  return !!(
+    isTransactionTitleInFilterRange(searchTerm, transaction) &&
+    isTransactionDateInFilterRange(fromDate, toDate, transaction) &&
+    isTransactionAmountInFilterRange(fromAmount, toAmount, transaction) &&
+    isTransactionTypeInFilterRange(
+      incomingChecked,
+      outgoingChecked,
+      transaction
+    )
+  );
+};
+
+export const isFilterApplied = (
+  filterOptions: ?TransactionFilterOptionsStruct
+) => {
+  const {
+    searchTerm,
+    fromDate,
+    toDate,
+    fromAmount,
+    toAmount,
+    incomingChecked = true,
+    outgoingChecked = true,
+  } = filterOptions || {};
+
+  return !!(
+    searchTerm ||
+    fromDate ||
+    toDate ||
+    fromAmount ||
+    toAmount ||
+    !incomingChecked ||
+    !outgoingChecked
+  );
 };

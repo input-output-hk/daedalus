@@ -1,19 +1,10 @@
 // @flow
 import Action from './lib/Action';
+import type { TransactionFilterOptionsStruct } from '../stores/TransactionsStore';
 
 // ======= TRANSACTIONS ACTIONS =======
 
 export default class TransactionsActions {
-  filterTransactions: Action<{
-    searchTerm?: string,
-    searchLimit?: number,
-    searchSkip?: number,
-    fromDate?: string,
-    toDate?: string,
-    fromAmount?: number,
-    toAmount?: number,
-    incomingChecked?: boolean,
-    outgoingChecked?: boolean,
-  }> = new Action();
+  filterTransactions: Action<TransactionFilterOptionsStruct> = new Action();
   loadMoreTransactions: Action<any> = new Action();
 }

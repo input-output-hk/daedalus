@@ -266,4 +266,9 @@ export default defineMessages({
     defaultMessage: '!!!Filter',
     description: 'Filter label.',
   },
+  all: {
+    id: 'global.labels.all',
+    defaultMessage: '!!!All',
+    description: 'All label.',
+  },
 });

@@ -6,6 +6,8 @@ import moment from 'moment';
 import BigNumber from 'bignumber.js';
 import { defineMessages, intlShape } from 'react-intl';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
+import type { DateRangeType } from '../../../stores/TransactionsStore';
+import { DateRangeTypes } from '../../../stores/TransactionsStore';
 import TinyCheckbox from '../../widgets/forms/TinyCheckbox';
 import TinySelect from '../../widgets/forms/TinySelect';
 import TinyInput from '../../widgets/forms/TinyInput';
@@ -91,15 +93,18 @@ const calculateDateRange = (
   let fromDate = null;
   let toDate = null;
 
-  if (dateRange === messages.customDateRange.id) {
+  if (dateRange === DateRangeTypes.ALL) {
+    fromDate = '';
+    toDate = '';
+  } else if (dateRange === DateRangeTypes.CUSTOM_DATE_RANGE) {
     fromDate = customFromDate;
     toDate = customToDate;
   } else {
-    if (dateRange === messages.thisWeek.id) {
+    if (dateRange === DateRangeTypes.THIS_WEEK) {
       fromDate = moment().startOf('week');
-    } else if (dateRange === messages.thisMonth.id) {
+    } else if (dateRange === DateRangeTypes.THIS_MONTH) {
       fromDate = moment().startOf('month');
-    } else if (dateRange === messages.thisYear.id) {
+    } else if (dateRange === DateRangeTypes.THIS_YEAR) {
       fromDate = moment().startOf('year');
     } else {
       fromDate = moment();
@@ -112,10 +117,13 @@ const calculateDateRange = (
 };
 
 type Props = {
-  minDate?: ?number,
-  maxDate?: ?number,
-  minAmount?: ?number,
-  maxAmount?: ?number,
+  dateRange?: DateRangeType,
+  fromDate?: string,
+  toDate?: string,
+  fromAmount?: number,
+  toAmount?: number,
+  incomingChecked?: boolean,
+  outgoingChecked?: boolean,
   onFilter: Function,
   onClose: Function,
 };
@@ -128,20 +136,24 @@ export default class FilterDialog extends Component<Props> {
 
   dateRangeOptions = [
     {
+      label: this.context.intl.formatMessage(globalMessages.all),
+      value: DateRangeTypes.ALL,
+    },
+    {
       label: this.context.intl.formatMessage(messages.thisWeek),
-      value: messages.thisWeek.id,
+      value: DateRangeTypes.THIS_WEEK,
     },
     {
       label: this.context.intl.formatMessage(messages.thisMonth),
-      value: messages.thisMonth.id,
+      value: DateRangeTypes.THIS_MONTH,
     },
     {
       label: this.context.intl.formatMessage(messages.thisYear),
-      value: messages.thisYear.id,
+      value: DateRangeTypes.THIS_YEAR,
     },
     {
       label: this.context.intl.formatMessage(messages.customDateRange),
-      value: messages.customDateRange.id,
+      value: DateRangeTypes.CUSTOM_DATE_RANGE,
     },
   ];
 
@@ -150,45 +162,47 @@ export default class FilterDialog extends Component<Props> {
       incomingChecked: {
         type: 'checkbox',
         label: this.context.intl.formatMessage(messages.incoming),
-        value: true,
+        value: this.props.incomingChecked,
       },
       outgoingChecked: {
         type: 'checkbox',
         label: this.context.intl.formatMessage(messages.outgoing),
-        value: true,
+        value: this.props.outgoingChecked,
       },
       dateRange: {
         label: this.context.intl.formatMessage(messages.dateRange),
-        value: messages.thisWeek.id,
+        value: this.props.dateRange,
       },
       customFromDate: {
         type: 'date',
         label: '',
-        value: this.props.minDate
-          ? moment(this.props.minDate).format('YYYY-MM-DD')
-          : '',
+        value: this.props.fromDate,
       },
       customToDate: {
         type: 'date',
         label: '',
-        value: this.props.maxDate
-          ? moment(this.props.maxDate).format('YYYY-MM-DD')
-          : '',
+        value: this.props.toDate,
       },
       fromAmount: {
         type: 'number',
         label: '',
-        value: this.props.minAmount ? this.props.minAmount : 0,
+        value: this.props.fromAmount,
       },
       toAmount: {
         type: 'number',
         label: '',
-        value: this.props.maxAmount ? this.props.maxAmount : 0,
+        value: this.props.toAmount,
       },
     },
   });
 
-  resetForm = () => this.form.reset();
+  resetForm = () => {
+    this.form.select('dateRange').set(DateRangeTypes.ALL);
+    this.form.select('fromAmount').set(0);
+    this.form.select('toAmount').set(0);
+    this.form.select('incomingChecked').set(true);
+    this.form.select('outgoingChecked').set(true);
+  };
 
   handleSubmit = () =>
     this.form.submit({
@@ -208,6 +222,7 @@ export default class FilterDialog extends Component<Props> {
         onFilter({
           ...rest,
           ...dateRangePayload,
+          dateRange,
           fromAmount: Number(rest.fromAmount),
           toAmount: Number(rest.toAmount),
         });
@@ -273,7 +288,9 @@ export default class FilterDialog extends Component<Props> {
         <div className={styles.header}>
           <label>{intl.formatMessage(messages.customDateRange)}</label>
           <DialogCloseButton
-            onClose={() => form.select('dateRange').set(messages.thisWeek.id)}
+            onClose={() =>
+              form.select('dateRange').set(DateRangeTypes.THIS_WEEK)
+            }
           />
         </div>
         <div className={styles.body}>
@@ -366,7 +383,8 @@ export default class FilterDialog extends Component<Props> {
     const { intl } = this.context;
     const { onClose } = this.props;
     const { dateRange } = this.form.values();
-    const isCustomDateRangeSelected = dateRange === messages.customDateRange.id;
+    const isCustomDateRangeSelected =
+      dateRange === DateRangeTypes.CUSTOM_DATE_RANGE;
 
     return (
       <Dialog
@@ -378,7 +396,7 @@ export default class FilterDialog extends Component<Props> {
           <h4 className={styles.titleText}>
             {intl.formatMessage(messages.filterBy)}
           </h4>
-          <button className={styles.titleLink} onClick={() => this.resetForm()}>
+          <button className={styles.titleLink} onClick={this.resetForm}>
             {intl.formatMessage(messages.reset)}
           </button>
         </div>
