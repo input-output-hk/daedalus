@@ -46,18 +46,24 @@ Example:
 generates and validates mnemonics as long as you keep it 
 running (the number of executions is updated in the terminal)
 
-### Run end-to-end tests
+### Run end-to-end tests with Jörmungandr self-node
 
 1. Make sure Daedalus is properly installed (see above).
-2. Build and run the backend (Cardano SL) following the instructions from [Daedalus](https://github.com/input-output-hk/daedalus/blob/master/README.md#development---with-cardano-wallet) README file.
+2. Make sure your state directory is clean (`rm -rf ~/Library/Application\ Support/Daedalus\ SelfNode/`)
 3. Run Daedalus frontend tests:
 
 ```bash
 $ cd daedalus/
-$ yarn nix:dev XXX # XXX = cardano system startup time
+$ yarn nix:dev
 $ yarn build
 $ yarn test:e2e
 ```
+
+### Running tests for development
+1. Mark the test or scenario you are working with @watch annotation
+2. Make sure you are in the nix console (`yarn nix:dev`)
+3. Make sure your state is clean (`rm -rf ~/Library/Application\ Support/Daedalus\ SelfNode/`)
+4. Run tests with `yarn test:e2e:watch:once`
 
 ### Run all tests
 

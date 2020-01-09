@@ -88,7 +88,7 @@ export const waitAndClick = async (
 
 export const waitUntilTextInSelector = async (
   client: Object,
-  { selector, text }: { selector: string, text: string }
+  { selector, text, ignoreCase = false }: { selector: string, text: string, ignoreCase?: boolean }
 ) =>
   client.waitUntil(async () => {
     await client.waitForText(selector);
@@ -96,5 +96,32 @@ export const waitUntilTextInSelector = async (
     // The selector could exist multiple times in the DOM
     if (typeof textOnScreen === 'string') textOnScreen = [textOnScreen];
     // We only compare the first result
-    return textOnScreen[0] === text;
+    if (ignoreCase) {
+      return textOnScreen[0].toLowerCase() === text.toLowerCase();
+    } else {
+      return textOnScreen[0] === text;
+    }
   });
+
+export const timeout = (ms: number) => {
+  return new Promise<void>(resolve => setTimeout(resolve, ms));
+}
+
+export const scrollIntoView = async (client: Object, targetSelector: string) => {
+  const isVisibleWithinViewport = await client.isVisibleWithinViewport(targetSelector);
+  if (!isVisibleWithinViewport) {
+    await client.execute((target) => {
+      const targetElement = window.document.evaluate(
+        target,
+        window.document,
+        null,
+        window.XPathResult.FIRST_ORDERED_NODE_TYPE,
+        null
+      ).singleNodeValue;
+      targetElement.scrollIntoView();
+    }, targetSelector);
+    // awaits for smooth scroll-behavior
+    await timeout(500);
+  }
+}
+

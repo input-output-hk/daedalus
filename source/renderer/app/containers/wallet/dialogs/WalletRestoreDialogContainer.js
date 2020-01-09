@@ -1,80 +1,57 @@
 // @flow
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { observer, inject } from 'mobx-react';
-import WalletRestoreDialog from '../../../components/wallet/WalletRestoreDialog';
-import type { InjectedDialogContainerProps } from '../../../types/injectedPropsType';
-import validWords from '../../../../../common/crypto/valid-words.en';
-import { isValidMnemonic } from '../../../../../common/crypto/decrypt';
+import StepWalletTypeContainer from './wallet-restore/StepWalletTypeContainer';
+import StepMnemonicsContainer from './wallet-restore/StepMnemonicsContainer';
+import StepConfigurationContainer from './wallet-restore/StepConfigurationContainer';
+import StepSuccessContainer from './wallet-restore/StepSuccessContainer';
+import type { InjectedProps } from '../../../types/injectedPropsType';
+import { RESTORE_WALLET_STEPS } from '../../../config/walletRestoreConfig';
+import ConfirmationDialog from '../../../components/wallet/wallet-restore/widgets/ConfirmationDialog';
 
-type Props = InjectedDialogContainerProps;
+type Props = InjectedProps;
 
 @inject('stores', 'actions')
 @observer
-export default class WalletRestoreDialogContainer extends Component<Props> {
-  static defaultProps = {
-    actions: null,
-    stores: null,
-    children: null,
-    onClose: () => {},
-  };
+export default class WalletRestoreContainer extends Component<Props> {
+  static defaultProps = { actions: null, stores: null };
 
-  onSubmit = (values: {
-    recoveryPhrase: string,
-    walletName: string,
-    spendingPassword: string,
-    type?: string,
-  }) => {
-    this.props.actions.wallets.restoreWallet.trigger(values);
-  };
-
-  onCancel = () => {
-    this.props.onClose();
-    this.resetRequests();
-  };
-
-  resetRequests = () => {
-    // Restore request should be reset only in case restore is finished/errored
-    const { wallets } = this.props.stores;
-    const {
-      restoreRequest,
-      restoreLegacyRequest,
-      getWalletRecoveryPhraseFromCertificateRequest,
-    } = wallets;
-    if (!restoreRequest.isExecuting) {
-      restoreRequest.reset();
-      restoreLegacyRequest.reset();
-      getWalletRecoveryPhraseFromCertificateRequest.reset();
-    }
-  };
+  get containers() {
+    return {
+      type: StepWalletTypeContainer,
+      mnemonics: StepMnemonicsContainer,
+      configuration: StepConfigurationContainer,
+      success: StepSuccessContainer,
+    };
+  }
 
   render() {
-    const { wallets } = this.props.stores;
+    const { stores, actions } = this.props;
     const {
-      restoreRequest,
-      restoreLegacyRequest,
-      getWalletRecoveryPhraseFromCertificateRequest,
-    } = wallets;
-
-    const error =
-      restoreRequest.error ||
-      restoreLegacyRequest.error ||
-      getWalletRecoveryPhraseFromCertificateRequest.error;
-
-    const isExecuting =
-      restoreRequest.isExecuting ||
-      restoreLegacyRequest.isExecuting ||
-      getWalletRecoveryPhraseFromCertificateRequest.isExecuting;
-
+      restoreWalletStep,
+      restoreWalletShowAbortConfirmation,
+    } = stores.wallets;
+    const {
+      restoreWalletClose,
+      restoreWalletCancelClose,
+      restoreWalletChangeStep,
+    } = actions.wallets;
+    const stepId = RESTORE_WALLET_STEPS[restoreWalletStep];
+    const CurrentContainer = this.containers[stepId];
     return (
-      <WalletRestoreDialog
-        mnemonicValidator={isValidMnemonic}
-        suggestedMnemonics={validWords}
-        isSubmitting={isExecuting}
-        onSubmit={this.onSubmit}
-        onCancel={this.onCancel}
-        onChoiceChange={this.resetRequests}
-        error={error}
-      />
+      <Fragment>
+        {restoreWalletShowAbortConfirmation && (
+          <ConfirmationDialog
+            onConfirm={() => restoreWalletClose.trigger()}
+            onCancel={() => restoreWalletCancelClose.trigger()}
+          />
+        )}
+        <CurrentContainer
+          onContinue={() => restoreWalletChangeStep.trigger()}
+          onBack={() => restoreWalletChangeStep.trigger(true)}
+          onClose={() => restoreWalletClose.trigger()}
+        />
+      </Fragment>
     );
   }
 }

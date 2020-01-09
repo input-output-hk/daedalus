@@ -3,20 +3,17 @@ import type { RequestConfig } from '../../common/types';
 import type { LegacyAdaWallet, LegacyWalletInitData } from '../types';
 import { request } from '../../utils/request';
 
-export const restoreLegacyWallet = (
+export const restoreByronWallet = (
   config: RequestConfig,
   { walletInitData }: { walletInitData: LegacyWalletInitData },
-  type?: string = ''
-): Promise<LegacyAdaWallet> => {
-  const queryParams = {};
-
-  return request(
+  type: string
+): Promise<LegacyAdaWallet> =>
+  request(
     {
       method: 'POST',
-      path: `/v2/byron-wallets${type}`,
+      path: `/v2/byron-wallets/${type}`,
       ...config,
     },
-    queryParams,
+    {},
     walletInitData
   );
-};
