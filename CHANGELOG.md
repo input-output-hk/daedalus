@@ -12,6 +12,7 @@ Changelog
 - Improved network screen with responsive main copy box ([PR 1797](https://github.com/input-output-hk/daedalus/pull/1797))
 
 ### Fixes
+- Fixed Daedalus ITN Terms of Service typo ([PR 1809](https://github.com/input-output-hk/daedalus/pull/1809))
 - Fixed handling of duplicated wallet IDs when restoring both legacy and new wallets from the same wallet recovery phrase ([PR 1805](https://github.com/input-output-hk/daedalus/pull/1805))
 
 ### Chores
