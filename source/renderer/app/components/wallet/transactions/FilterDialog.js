@@ -116,6 +116,31 @@ const calculateDateRange = (
   return { fromDate, toDate };
 };
 
+const validateForm = (values: {
+  dateRange: DateRangeType,
+  customFromDate: string,
+  customToDate: string,
+  fromAmount: string,
+  toAmount: string,
+}) => {
+  const {
+    dateRange,
+    customFromDate,
+    customToDate,
+    fromAmount,
+    toAmount,
+  } = values;
+  if (
+    (dateRange === DateRangeTypes.CUSTOM_DATE_RANGE &&
+      moment(customFromDate).valueOf() > moment(customToDate).valueOf()) ||
+    Number(fromAmount) > Number(toAmount)
+  ) {
+    return false;
+  }
+
+  return true;
+};
+
 type Props = {
   dateRange?: DateRangeType,
   fromDate?: string,
@@ -365,12 +390,14 @@ export default class FilterDialog extends Component<Props> {
 
   renderActionButton = () => {
     const { intl } = this.context;
+    const isFormValid = validateForm(this.form.values());
 
     return (
       <div className={styles.action}>
         <TinyButton
           label={intl.formatMessage(messages.filter)}
           loading={false}
+          disabled={!isFormValid}
           onClick={this.handleSubmit}
         />
       </div>
