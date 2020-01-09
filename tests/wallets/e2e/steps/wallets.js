@@ -32,6 +32,12 @@ Given(/^I have a "([^"]*)" wallet with funds$/, async function(walletName) {
   addOrSetWalletsForScenario.call(this, wallet);
 });
 
+
+
+Given(/^I have the following legacy wallets:$/, async function(table) {
+  await createWallets(table.hashes(), this, { isLegacy: true });
+});
+
 Given(/^I have the following wallets:$/, async function(table) {
   await createWallets(table.hashes(), this);
 });

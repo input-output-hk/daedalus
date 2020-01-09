@@ -178,22 +178,31 @@ export const expectActiveWallet = async function(walletName: string) {
   );
 };
 
-const createWalletsAsync = async (table, context: Object) => {
-  const result = await context.client.executeAsync((wallets, done) => {
+const createWalletsAsync = async (table, context: Object, isLegacy?: boolean) => {
+  const result = await context.client.executeAsync((wallets, isLegacyWallet, done) => {
     const mnemonics = {};
+    const request = isLegacyWallet
+      ? daedalus.stores.wallets.restoreLegacyRequest
+      : daedalus.stores.wallets.walletsRequest;
+    const apiEndpoint = isLegacyWallet
+      ? daedalus.api.ada.restoreLegacyWallet
+      : daedalus.api.ada.createWallet;
     window.Promise.all(
       wallets.map(wallet => {
         const mnemonic = daedalus.utils.crypto.generateMnemonic();
+        const recoveryPhrase = mnemonic;
         mnemonics[wallet.name] = mnemonic.split(' ');
-        return daedalus.api.ada.createWallet({
+        return apiEndpoint({
           name: wallet.name,
+          walletName: wallet.name,
           mnemonic,
+          recoveryPhrase,
           spendingPassword: wallet.password || 'Secret1234',
         });
       })
     )
       .then(() =>
-        daedalus.stores.wallets.walletsRequest
+        request
           .execute()
           .then(storeWallets =>
             daedalus.stores.wallets
@@ -204,7 +213,7 @@ const createWalletsAsync = async (table, context: Object) => {
           .catch(error => done(error))
       )
       .catch(error => done(error.stack));
-  }, table);
+  }, table, isLegacy);
   // Add or set the wallets for this scenario
   if (context.wallets != null) {
     context.wallets.push(...result.value.storeWallets);
@@ -218,14 +227,20 @@ const createWalletsAsync = async (table, context: Object) => {
   }
 };
 
-export const createWallets = async (wallets: Array<any>, context: Object, options: { sequentially?: boolean } = {}) => {
+export const createWallets = async (
+  wallets: Array<any>,
+  context: Object,
+  options: {
+    sequentially?: boolean,
+    isLegacy?: boolean,
+  } = {}
+) => {
   if (options.sequentially === true) {
     await createWalletsSequentially(wallets, context);
   } else {
-    await createWalletsAsync(wallets, context);
+    await createWalletsAsync(wallets, context, options.isLegacy);
   }
 };
-
 
 export const getCurrentAppRoute = async function() {
   const url = (await this.client.url()).value;
