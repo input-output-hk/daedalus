@@ -321,12 +321,12 @@ export default class FilterDialog extends Component<Props> {
     const fromAmountField = form.$('fromAmount');
     const toAmountField = form.$('toAmount');
     const { fromAmount, toAmount } = form.values();
-    const fromAmountInnerValue = fromAmount ? (
+    const fromAmountInnerValue = Number(fromAmount) ? (
       new BigNumber(fromAmount).toFormat()
     ) : (
       <span className="undefined">0</span>
     );
-    const toAmountInnerValue = toAmount ? (
+    const toAmountInnerValue = Number(toAmount) ? (
       new BigNumber(toAmount).toFormat()
     ) : (
       <span className="undefined">0</span>
