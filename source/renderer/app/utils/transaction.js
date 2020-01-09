@@ -14,7 +14,7 @@ export const generateFilterOptions = (
     date ? date.getTime() : new Date().getTime()
   );
   const amounts = transactions.map(({ amount }) => amount.toNumber());
-  const dateRange = DateRangeTypes.THIS_WEEK;
+  const dateRange = DateRangeTypes.ALL;
   const fromDate =
     dates.length > 0 ? moment(Math.min(...dates)).format('YYYY-MM-DD') : '';
   const toDate =

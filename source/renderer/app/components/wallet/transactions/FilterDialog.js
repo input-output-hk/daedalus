@@ -288,9 +288,7 @@ export default class FilterDialog extends Component<Props> {
         <div className={styles.header}>
           <label>{intl.formatMessage(messages.customDateRange)}</label>
           <DialogCloseButton
-            onClose={() =>
-              form.select('dateRange').set(DateRangeTypes.THIS_WEEK)
-            }
+            onClose={() => form.select('dateRange').set(DateRangeTypes.ALL)}
           />
         </div>
         <div className={styles.body}>
