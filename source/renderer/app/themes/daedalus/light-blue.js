@@ -817,6 +817,8 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-wallet-restore-dialog-new-label-background-color':
       'rgba(47, 73, 110, 0.1)',
     '--theme-wallet-restore-dialog-new-label-color': '#5e6066',
+    '--theme-wallet-restore-dialog-step-walletType-hardwareWalletDisclaimer-text-color':
+      '#ea4c5b',
   },
 };
 

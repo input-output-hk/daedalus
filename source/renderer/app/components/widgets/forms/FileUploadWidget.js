@@ -11,7 +11,7 @@ type Props = {
   placeholder: string,
   onFileSelected: Function,
   selectedFile: string,
-  acceptedFileTypes: [string],
+  acceptedFileTypes: Array<string>,
 };
 
 @observer
