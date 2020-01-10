@@ -3,11 +3,14 @@ import React, { Component } from 'react';
 import { get } from 'lodash';
 import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
-import WalletTransactionsList from '../../components/wallet/transactions/WalletTransactionsList';
+import WalletTransactionsList, {
+  WalletTransactionsListScrollContext,
+} from '../../components/wallet/transactions/WalletTransactionsList';
 import WalletNoTransactions from '../../components/wallet/transactions/WalletNoTransactions';
 import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer';
 import FilterDialogContainer from './dialogs/FilterDialogContainer';
 import FilterDialog from '../../components/wallet/transactions/FilterDialog';
+import FilterButton from '../../components/wallet/transactions/FilterButton';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import { formattedWalletAmount } from '../../utils/formatters';
 import { isFilterApplied } from '../../utils/transaction';
@@ -30,12 +33,19 @@ export const messages = defineMessages({
 });
 
 type Props = InjectedProps;
+type State = {
+  isFilterButtonFaded: boolean,
+};
 
 @inject('stores', 'actions')
 @observer
-export default class WalletTransactionsPage extends Component<Props> {
+export default class WalletTransactionsPage extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
+  };
+
+  state = {
+    isFilterButtonFaded: false,
   };
 
   openFilterDialog = () => {
@@ -57,9 +67,13 @@ export default class WalletTransactionsPage extends Component<Props> {
     dialogActions.closeActiveDialog.trigger();
   };
 
+  setFilterButtonFaded = (isFilterButtonFaded: boolean) =>
+    this.setState({ isFilterButtonFaded });
+
   render() {
     const { intl } = this.context;
     const { actions, stores } = this.props;
+    const { isFilterButtonFaded } = this.state;
     const { app, uiDialogs, wallets, profile } = stores;
     const {
       openExternalLink,
@@ -116,10 +130,7 @@ export default class WalletTransactionsPage extends Component<Props> {
       walletTransactions = <WalletNoTransactions label={noTransactionsLabel} />;
     } else if (wasFiltered && !transactions.length) {
       walletTransactions = (
-        <WalletNoTransactions
-          onFilterButtonClick={this.openFilterDialog}
-          label={noTransactionsFoundLabel}
-        />
+        <WalletNoTransactions label={noTransactionsFoundLabel} />
       );
     } else if (
       searchRequest.isExecutingFirstTime ||
@@ -128,7 +139,6 @@ export default class WalletTransactionsPage extends Component<Props> {
     ) {
       walletTransactions = (
         <WalletTransactionsList
-          onFilterButtonClick={this.openFilterDialog}
           transactions={transactions}
           deletePendingTransaction={deletePendingTransaction}
           isLoadingTransactions={searchRequest.isExecutingFirstTime}
@@ -148,12 +158,20 @@ export default class WalletTransactionsPage extends Component<Props> {
     }
 
     return (
-      <VerticalFlexContainer>
-        {uiDialogs.isOpen(FilterDialog) && (
-          <FilterDialogContainer onFilter={this.onFilter} />
-        )}
-        {walletTransactions}
-      </VerticalFlexContainer>
+      <WalletTransactionsListScrollContext.Provider
+        value={{ setFilterButtonFaded: this.setFilterButtonFaded }}
+      >
+        <VerticalFlexContainer>
+          <FilterButton
+            faded={isFilterButtonFaded}
+            onClick={this.openFilterDialog}
+          />
+          {uiDialogs.isOpen(FilterDialog) && (
+            <FilterDialogContainer onFilter={this.onFilter} />
+          )}
+          {walletTransactions}
+        </VerticalFlexContainer>
+      </WalletTransactionsListScrollContext.Provider>
     );
   }
 }

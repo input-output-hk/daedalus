@@ -3,54 +3,51 @@ import React, { Component } from 'react';
 import type { Node } from 'react';
 import { observer } from 'mobx-react';
 import type { Row } from '../types';
-import FilterButton from '../FilterButton';
+import type { ScrollContextType } from '../WalletTransactionsList';
+import { WalletTransactionsListScrollContext } from '../WalletTransactionsList';
 import styles from './SimpleTransactionList.scss';
 
 type Props = {
   renderRow: Row => Node,
   rows: Row[],
-  onFilterButtonClick?: Function,
-};
-
-type State = {
-  isFilterButtonFaded: boolean,
 };
 
 @observer
-export class SimpleTransactionList extends Component<Props, State> {
+export class SimpleTransactionList extends Component<Props> {
   static defaultProps = {
     onOpenExternalLink: () => {},
-    onFilterButtonClick: () => null,
   };
 
-  state = {
-    isFilterButtonFaded: false,
-  };
-
-  onListScroll = (evt: SyntheticEvent<HTMLElement>) => {
+  onListScroll = (
+    context: ScrollContextType,
+    evt: SyntheticEvent<HTMLElement>
+  ) => {
     const { scrollTop } = evt.currentTarget;
-    if (scrollTop > 10 && !this.state.isFilterButtonFaded) {
-      this.setState({ isFilterButtonFaded: true });
-    } else if (scrollTop <= 10 && this.state.isFilterButtonFaded) {
-      this.setState({ isFilterButtonFaded: false });
+    if (scrollTop > 10) {
+      context.setFilterButtonFaded(true);
+    } else {
+      context.setFilterButtonFaded(false);
     }
   };
 
   render() {
-    const { rows, renderRow, onFilterButtonClick } = this.props;
-    const { isFilterButtonFaded } = this.state;
+    const { rows, renderRow } = this.props;
+
     return (
-      <div className={styles.component} onScroll={this.onListScroll}>
-        <FilterButton
-          faded={isFilterButtonFaded}
-          onClick={onFilterButtonClick}
-        />
-        {rows.map((row, index) => (
-          // eslint-disable-next-line react/jsx-no-bind
-          // eslint-disable-next-line react/no-array-index-key
-          <div key={index}>{renderRow(row)}</div>
-        ))}
-      </div>
+      <WalletTransactionsListScrollContext.Consumer>
+        {context => (
+          <div
+            className={styles.component}
+            onScroll={evt => this.onListScroll(context, evt)}
+          >
+            {rows.map((row, index) => (
+              // eslint-disable-next-line react/jsx-no-bind
+              // eslint-disable-next-line react/no-array-index-key
+              <div key={index}>{renderRow(row)}</div>
+            ))}
+          </div>
+        )}
+      </WalletTransactionsListScrollContext.Consumer>
     );
   }
 }

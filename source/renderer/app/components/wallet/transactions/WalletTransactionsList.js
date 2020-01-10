@@ -13,9 +13,9 @@ import Transaction from './Transaction';
 import { WalletTransaction } from '../../../domains/WalletTransaction';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import { VirtualTransactionList } from './render-strategies/VirtualTransactionList';
+import { SimpleTransactionList } from './render-strategies/SimpleTransactionList';
 import { TransactionInfo, TransactionsGroup } from './types';
 import type { Row } from './types';
-import { SimpleTransactionList } from './render-strategies/SimpleTransactionList';
 
 const messages = defineMessages({
   today: {
@@ -42,8 +42,15 @@ const messages = defineMessages({
   },
 });
 
+export type ScrollContextType = {
+  setFilterButtonFaded: Function,
+};
+
+export const WalletTransactionsListScrollContext = React.createContext<ScrollContextType>(
+  { setFilterButtonFaded: () => null }
+);
+
 type Props = {
-  onFilterButtonClick?: Function,
   deletePendingTransaction: Function,
   formattedWalletAmount: Function,
   hasMoreToLoad: boolean,
@@ -74,7 +81,6 @@ export default class WalletTransactionsList extends Component<Props> {
     showMoreTransactionsButton: false,
     onShowMoreTransactions: () => {},
     onOpenExternalLink: () => {},
-    onFilterButtonClick: () => null,
   };
 
   expandedTransactions: { string: string } = {};
@@ -230,7 +236,6 @@ export default class WalletTransactionsList extends Component<Props> {
       showMoreTransactionsButton,
       transactions,
       walletId,
-      onFilterButtonClick,
     } = this.props;
 
     const { intl } = this.context;
@@ -294,7 +299,6 @@ export default class WalletTransactionsList extends Component<Props> {
         {syncingTransactionsSpinner}
         {isRenderingAsVirtualList ? (
           <VirtualTransactionList
-            onFilterButtonClick={onFilterButtonClick}
             getExpandedTransactions={this.getExpandedTransactions}
             ref={list => {
               this.virtualList = list;
@@ -306,7 +310,6 @@ export default class WalletTransactionsList extends Component<Props> {
           />
         ) : (
           <SimpleTransactionList
-            onFilterButtonClick={onFilterButtonClick}
             ref={list => {
               this.simpleList = list;
             }}

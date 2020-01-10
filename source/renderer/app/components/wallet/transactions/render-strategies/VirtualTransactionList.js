@@ -6,10 +6,11 @@ import { observer } from 'mobx-react';
 import { AutoSizer, List } from 'react-virtualized';
 import { throttle, debounce } from 'lodash';
 import { WalletTransaction } from '../../../../domains/WalletTransaction';
-import FilterButton from '../FilterButton';
+import type { ScrollContextType } from '../WalletTransactionsList';
+import { WalletTransactionsListScrollContext } from '../WalletTransactionsList';
 import type { Row } from '../types';
-import styles from './VirtualTransactionList.scss';
 import { TransactionInfo, TransactionsGroup } from '../types';
+import styles from './VirtualTransactionList.scss';
 
 /* eslint-disable react/no-unused-prop-types */
 
@@ -19,11 +20,6 @@ type Props = {
   rows: Row[],
   isLoadingSpinnerShown?: boolean,
   isSyncingSpinnerShown?: boolean,
-  onFilterButtonClick?: Function,
-};
-
-type State = {
-  isFilterButtonFaded: boolean,
 };
 
 type RowHeight = number;
@@ -37,15 +33,10 @@ const TX_ADDRESS_SELECTOR = '.Transaction_address';
 const TX_ID_SELECTOR = '.Transaction_transactionId';
 
 @observer
-export class VirtualTransactionList extends Component<Props, State> {
+export class VirtualTransactionList extends Component<Props> {
   static defaultProps = {
     isLoadingSpinnerShown: false,
     isSyncingSpinnerShown: false,
-    onFilterButtonClick: () => null,
-  };
-
-  state = {
-    isFilterButtonFaded: false,
   };
 
   componentWillReceiveProps(nextProps: Props) {
@@ -284,24 +275,21 @@ export class VirtualTransactionList extends Component<Props, State> {
     </div>
   );
 
-  onListScroll = ({ scrollTop }: { scrollTop: number }) => {
-    if (scrollTop > 10 && !this.state.isFilterButtonFaded) {
-      this.setState({ isFilterButtonFaded: true });
-    } else if (scrollTop <= 10 && this.state.isFilterButtonFaded) {
-      this.setState({ isFilterButtonFaded: false });
+  onListScroll = (
+    context: ScrollContextType,
+    { scrollTop }: { scrollTop: number }
+  ) => {
+    if (scrollTop > 10) {
+      context.setFilterButtonFaded(true);
+    } else {
+      context.setFilterButtonFaded(false);
     }
   };
 
   // =============== REACT LIFECYCLE ================= //
 
   render() {
-    const {
-      rows,
-      isLoadingSpinnerShown,
-      isSyncingSpinnerShown,
-      onFilterButtonClick,
-    } = this.props;
-    const { isFilterButtonFaded } = this.state;
+    const { rows, isLoadingSpinnerShown, isSyncingSpinnerShown } = this.props;
 
     // Prevent List rendering if we have no rows to render
     if (!rows.length) return false;
@@ -313,40 +301,40 @@ export class VirtualTransactionList extends Component<Props, State> {
     ]);
 
     return (
-      <div className={componentStyles}>
-        <FilterButton
-          faded={isFilterButtonFaded}
-          onClick={onFilterButtonClick}
-        />
-        <AutoSizer
-          onResize={throttle(this.onResize, 100, {
-            leading: true,
-            trailing: true,
-          })}
-        >
-          {({ width, height }) => (
-            <List
-              className={styles.list}
-              ref={list => {
-                this.list = list;
-              }}
-              width={width}
-              height={height}
-              onRowsRendered={throttle(this.onRowsRendered, 100, {
+      <WalletTransactionsListScrollContext.Consumer>
+        {context => (
+          <div className={componentStyles}>
+            <AutoSizer
+              onResize={throttle(this.onResize, 100, {
                 leading: true,
                 trailing: true,
               })}
-              rowCount={rows.length}
-              rowHeight={({ index }) =>
-                this.rowHeights[index] || TX_CONTRACTED_ROW_HEIGHT
-              }
-              rowRenderer={this.rowRenderer}
-              style={{ overflowY: 'scroll' }}
-              onScroll={this.onListScroll}
-            />
-          )}
-        </AutoSizer>
-      </div>
+            >
+              {({ width, height }) => (
+                <List
+                  className={styles.list}
+                  ref={list => {
+                    this.list = list;
+                  }}
+                  width={width}
+                  height={height}
+                  onRowsRendered={throttle(this.onRowsRendered, 100, {
+                    leading: true,
+                    trailing: true,
+                  })}
+                  rowCount={rows.length}
+                  rowHeight={({ index }) =>
+                    this.rowHeights[index] || TX_CONTRACTED_ROW_HEIGHT
+                  }
+                  rowRenderer={this.rowRenderer}
+                  style={{ overflowY: 'scroll' }}
+                  onScroll={param => this.onListScroll(context, param)}
+                />
+              )}
+            </AutoSizer>
+          </div>
+        )}
+      </WalletTransactionsListScrollContext.Consumer>
     );
   }
 }

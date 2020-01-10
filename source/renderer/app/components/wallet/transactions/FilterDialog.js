@@ -6,6 +6,7 @@ import moment from 'moment';
 import BigNumber from 'bignumber.js';
 import { defineMessages, intlShape } from 'react-intl';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
+import { formattedWalletAmount } from '../../../utils/formatters';
 import type { DateRangeType } from '../../../stores/TransactionsStore';
 import { DateRangeTypes } from '../../../stores/TransactionsStore';
 import TinyCheckbox from '../../widgets/forms/TinyCheckbox';
@@ -114,6 +115,24 @@ const calculateDateRange = (
   }
 
   return { fromDate, toDate };
+};
+
+const formatAmountValue = (amount: string) => {
+  if (!amount) {
+    return null;
+  }
+
+  const amountBigNumber = new BigNumber(amount);
+
+  if (!Number(amount)) {
+    return <span className="undefined">0</span>;
+  }
+
+  if (amount.length > 8) {
+    return formattedWalletAmount(amountBigNumber, false, false);
+  }
+
+  return amountBigNumber.toFormat();
 };
 
 const validateForm = (values: {
@@ -345,17 +364,9 @@ export default class FilterDialog extends Component<Props> {
     const { intl } = this.context;
     const fromAmountField = form.$('fromAmount');
     const toAmountField = form.$('toAmount');
-    const { fromAmount, toAmount } = form.values();
-    const fromAmountInnerValue = Number(fromAmount) ? (
-      new BigNumber(fromAmount).toFormat()
-    ) : (
-      <span className="undefined">0</span>
-    );
-    const toAmountInnerValue = Number(toAmount) ? (
-      new BigNumber(toAmount).toFormat()
-    ) : (
-      <span className="undefined">0</span>
-    );
+    const { fromAmount = '', toAmount = '' } = form.values();
+    const fromAmountInnerValue = formatAmountValue(fromAmount.toString());
+    const toAmountInnerValue = formatAmountValue(toAmount.toString());
 
     return (
       <div className={styles.amountRange}>
