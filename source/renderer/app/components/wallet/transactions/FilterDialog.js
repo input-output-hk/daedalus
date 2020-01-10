@@ -152,7 +152,9 @@ const validateForm = (values: {
   if (
     (dateRange === DateRangeTypes.CUSTOM_DATE_RANGE &&
       moment(customFromDate).valueOf() > moment(customToDate).valueOf()) ||
-    Number(fromAmount) > Number(toAmount)
+    (Number(fromAmount) !== 0 &&
+      Number(toAmount) !== 0 &&
+      Number(fromAmount) > Number(toAmount))
   ) {
     return false;
   }
@@ -239,6 +241,27 @@ export default class FilterDialog extends Component<Props> {
       },
     },
   });
+
+  handleSelfRef = (selfRef: any) => {
+    if (
+      selfRef &&
+      selfRef.parentElement &&
+      selfRef.parentElement.parentElement
+    ) {
+      const {
+        parentElement: modalElement,
+      } = selfRef.parentElement.parentElement;
+      const { parentElement: overlayElement } = modalElement || {};
+      modalElement.style.borderRadius = '4px';
+      modalElement.style.minWidth = 'auto';
+      modalElement.style.position = 'absolute';
+      modalElement.style.right = '10px';
+      modalElement.style.top = '190px';
+      if (overlayElement) {
+        overlayElement.style.backgroundColor = 'transparent';
+      }
+    }
+  };
 
   resetForm = () => {
     this.form.select('dateRange').set(DateRangeTypes.ALL);
@@ -428,20 +451,22 @@ export default class FilterDialog extends Component<Props> {
         className={styles.component}
         onClose={onClose}
       >
-        <div className={styles.title}>
-          <h4 className={styles.titleText}>
-            {intl.formatMessage(messages.filterBy)}
-          </h4>
-          <button className={styles.titleLink} onClick={this.resetForm}>
-            {intl.formatMessage(messages.reset)}
-          </button>
-        </div>
-        <div className={styles.content}>
-          {this.renderTypeField()}
-          {!isCustomDateRangeSelected && this.renderDateRangeField()}
-          {isCustomDateRangeSelected && this.renderCustomDateRangeField()}
-          {this.renderAmountRangeField()}
-          {this.renderActionButton()}
+        <div ref={this.handleSelfRef}>
+          <div className={styles.title}>
+            <h4 className={styles.titleText}>
+              {intl.formatMessage(messages.filterBy)}
+            </h4>
+            <button className={styles.titleLink} onClick={this.resetForm}>
+              {intl.formatMessage(messages.reset)}
+            </button>
+          </div>
+          <div className={styles.content}>
+            {this.renderTypeField()}
+            {!isCustomDateRangeSelected && this.renderDateRangeField()}
+            {isCustomDateRangeSelected && this.renderCustomDateRangeField()}
+            {this.renderAmountRangeField()}
+            {this.renderActionButton()}
+          </div>
         </div>
       </Dialog>
     );
