@@ -7,7 +7,7 @@ Feature: Wallets ordering
       | name        |
       | Test Wallet |
 
-  Scenario: Balance wallet is shown on the bottom of the list below Rewards wallet in order of creation
+  Scenario: "Daedalus Balance" wallet is shown on the bottom of the list below "Daedalus Rewards" wallet in order of creation
     Given The sidebar shows the "wallets" category
     When I click on the add wallet button in the sidebar
     And I see the add wallet page

@@ -1,6 +1,6 @@
 @e2e @skip
 # @API TODO - We don't have API endpoint for import wallet from key
-Feature: Import Wallet via Sidebar
+Feature: Import a wallet
 
   Background:
     Given I have completed the basic setup

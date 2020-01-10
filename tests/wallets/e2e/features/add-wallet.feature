@@ -1,5 +1,5 @@
 @e2e
-Feature: Add Wallet via Sidebar
+Feature: Add a wallet
 
   Background:
     Given I have completed the basic setup

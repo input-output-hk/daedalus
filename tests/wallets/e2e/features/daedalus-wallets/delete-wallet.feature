@@ -1,5 +1,5 @@
-@e2e @watch
-Feature: Wallets ordering
+@e2e
+Feature: Delete Daedalus wallet
 
   Background:
     Given I have completed the basic setup

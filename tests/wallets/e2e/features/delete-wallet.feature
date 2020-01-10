@@ -1,5 +1,5 @@
 @e2e
-Feature: Delete Wallet via Settings
+Feature: Delete a wallet
 
   Background:
     Given I have completed the basic setup

@@ -1,5 +1,5 @@
 @e2e
-Feature: Restore a wallet
+Feature: Restore Daedalus wallet
 
   Background:
     Given I have completed the basic setup

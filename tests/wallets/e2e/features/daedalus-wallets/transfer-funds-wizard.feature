@@ -4,7 +4,7 @@ Feature: Transfer funds wizard
   Background:
     Given I have completed the basic setup
 
-  Scenario: Balance wallet is shown on the bottom of the list below Rewards wallet in order of creation
+  Scenario: Successfully transfering funds from "Daedalus Balance" wallet to "Daedalus Rewards" wallet
     When I restore "Daedalus Balance Wallet" balance wallet with funds
     And I restore "Rewards Wallet" wallet with funds
     And I should see the restore status notification while restore is running
