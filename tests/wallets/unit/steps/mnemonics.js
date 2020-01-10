@@ -1,9 +1,5 @@
 // @flow
-// TODO: Merge review
-// HEAD:features/tests/unit/steps/mnemonics-steps.js
-// =======
 import readline from 'readline';
-// >>>>>>> develop:tests/wallets/unit/steps/mnemonics.js
 import { Given, Then } from 'cucumber';
 import { range } from 'lodash';
 import { generateAccountMnemonics } from '../../../../source/renderer/app/api/utils/mnemonics';
@@ -41,13 +37,8 @@ Given(
         throw new Error(`"${mnemonic}" is not valid`);
       }
       numberOfTestsExecuted++;
-//  HEAD:features/tests/unit/steps/mnemonics-steps.js
-      // process.stdout.clearLine();
-      // process.stdout.cursorTo(0);
-// =======
       readline.clearLine(process.stdout, 0);
       readline.cursorTo(process.stdout, 0);
-// >>>>>>> develop:tests/wallets/unit/steps/mnemonics.js
       process.stdout.write(`${numberOfTestsExecuted} mnemonics validated.`);
     }
   }

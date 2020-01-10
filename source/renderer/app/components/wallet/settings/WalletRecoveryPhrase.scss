@@ -49,6 +49,7 @@
   }
   .validationStatusWarning {
     background-color: var(--theme-recovery-phrase-warning-background-color);
+    line-height: 1.38;
   }
   .validationStatusNotification {
     background-color: var(--theme-recovery-phrase-attention-background-color);
