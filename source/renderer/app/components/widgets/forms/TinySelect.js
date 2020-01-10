@@ -1,5 +1,6 @@
 // @flow
 import React, { Component } from 'react';
+import type { Element } from 'react';
 import { Select } from 'react-polymorph/lib/components/Select';
 import { SelectSkin } from 'react-polymorph/lib/skins/simple/SelectSkin';
 import { IDENTIFIERS } from 'react-polymorph/lib/themes/API';
@@ -8,7 +9,7 @@ import styles from './TinySelect.scss';
 type Props = {
   allowBlank: boolean,
   autoFocus: boolean,
-  context: ThemeContextProp,
+  context: any,
   error?: string | Element<any>,
   label?: string | Element<any>,
   isOpeningUpward: boolean,

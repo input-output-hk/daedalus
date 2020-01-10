@@ -9,6 +9,8 @@ type Props = InjectedDialogContainerFilterProps;
 @inject('stores', 'actions')
 @observer
 export default class FilterDialogContainer extends Component<Props> {
+  static defaultProps = { actions: null, stores: null, children: null };
+
   render() {
     const { actions, stores, onFilter } = this.props;
     const { closeActiveDialog } = actions.dialogs;

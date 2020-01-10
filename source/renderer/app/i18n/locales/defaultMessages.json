@@ -7298,6 +7298,193 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Filter by",
+        "description": "Title of filter panel.",
+        "end": {
+          "column": 3,
+          "line": 26
+        },
+        "file": "source/renderer/app/components/wallet/transactions/FilterDialog.js",
+        "id": "wallet.transaction.filter.filterBy",
+        "start": {
+          "column": 12,
+          "line": 22
+        }
+      },
+      {
+        "defaultMessage": "!!!reset",
+        "description": "Reset link text on filter panel.",
+        "end": {
+          "column": 3,
+          "line": 31
+        },
+        "file": "source/renderer/app/components/wallet/transactions/FilterDialog.js",
+        "id": "wallet.transaction.filter.reset",
+        "start": {
+          "column": 9,
+          "line": 27
+        }
+      },
+      {
+        "defaultMessage": "!!!Type",
+        "description": "Filter Type.",
+        "end": {
+          "column": 3,
+          "line": 36
+        },
+        "file": "source/renderer/app/components/wallet/transactions/FilterDialog.js",
+        "id": "wallet.transaction.filter.type",
+        "start": {
+          "column": 8,
+          "line": 32
+        }
+      },
+      {
+        "defaultMessage": "!!!Incoming",
+        "description": "Incoming filter type.",
+        "end": {
+          "column": 3,
+          "line": 41
+        },
+        "file": "source/renderer/app/components/wallet/transactions/FilterDialog.js",
+        "id": "wallet.transaction.filter.incoming",
+        "start": {
+          "column": 12,
+          "line": 37
+        }
+      },
+      {
+        "defaultMessage": "!!!Outgoing",
+        "description": "Outgoing filter type.",
+        "end": {
+          "column": 3,
+          "line": 46
+        },
+        "file": "source/renderer/app/components/wallet/transactions/FilterDialog.js",
+        "id": "wallet.transaction.filter.outgoing",
+        "start": {
+          "column": 12,
+          "line": 42
+        }
+      },
+      {
+        "defaultMessage": "!!!Date range",
+        "description": "Date range of filter.",
+        "end": {
+          "column": 3,
+          "line": 51
+        },
+        "file": "source/renderer/app/components/wallet/transactions/FilterDialog.js",
+        "id": "wallet.transaction.filter.dateRange",
+        "start": {
+          "column": 13,
+          "line": 47
+        }
+      },
+      {
+        "defaultMessage": "!!!This week",
+        "description": "This week date range of filter.",
+        "end": {
+          "column": 3,
+          "line": 56
+        },
+        "file": "source/renderer/app/components/wallet/transactions/FilterDialog.js",
+        "id": "wallet.transaction.filter.thisWeek",
+        "start": {
+          "column": 12,
+          "line": 52
+        }
+      },
+      {
+        "defaultMessage": "!!!This month",
+        "description": "This month date range of filter.",
+        "end": {
+          "column": 3,
+          "line": 61
+        },
+        "file": "source/renderer/app/components/wallet/transactions/FilterDialog.js",
+        "id": "wallet.transaction.filter.thisMonth",
+        "start": {
+          "column": 13,
+          "line": 57
+        }
+      },
+      {
+        "defaultMessage": "!!!This year",
+        "description": "This year date range of filter.",
+        "end": {
+          "column": 3,
+          "line": 66
+        },
+        "file": "source/renderer/app/components/wallet/transactions/FilterDialog.js",
+        "id": "wallet.transaction.filter.thisYear",
+        "start": {
+          "column": 12,
+          "line": 62
+        }
+      },
+      {
+        "defaultMessage": "!!!Custom date range",
+        "description": "Custom date range of filter.",
+        "end": {
+          "column": 3,
+          "line": 71
+        },
+        "file": "source/renderer/app/components/wallet/transactions/FilterDialog.js",
+        "id": "wallet.transaction.filter.customDateRange",
+        "start": {
+          "column": 19,
+          "line": 67
+        }
+      },
+      {
+        "defaultMessage": "!!!Amount range",
+        "description": "Amount range of filter.",
+        "end": {
+          "column": 3,
+          "line": 76
+        },
+        "file": "source/renderer/app/components/wallet/transactions/FilterDialog.js",
+        "id": "wallet.transaction.filter.amountRange",
+        "start": {
+          "column": 15,
+          "line": 72
+        }
+      },
+      {
+        "defaultMessage": "!!!ADA",
+        "description": "Amount unit.",
+        "end": {
+          "column": 3,
+          "line": 81
+        },
+        "file": "source/renderer/app/components/wallet/transactions/FilterDialog.js",
+        "id": "global.unit.ada",
+        "start": {
+          "column": 14,
+          "line": 77
+        }
+      },
+      {
+        "defaultMessage": "!!!Filter",
+        "description": "Filter button label.",
+        "end": {
+          "column": 3,
+          "line": 86
+        },
+        "file": "source/renderer/app/components/wallet/transactions/FilterDialog.js",
+        "id": "wallet.transaction.filter.filter",
+        "start": {
+          "column": 10,
+          "line": 82
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/transactions/FilterDialog.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Card payment",
         "description": "Transaction type shown for credit card payments.",
         "end": {
@@ -9560,13 +9747,13 @@
         "description": "Message shown when wallet has no transactions yet.",
         "end": {
           "column": 3,
-          "line": 20
+          "line": 26
         },
         "file": "source/renderer/app/containers/wallet/WalletTransactionsPage.js",
         "id": "wallet.transactions.no.transactions",
         "start": {
           "column": 18,
-          "line": 16
+          "line": 22
         }
       },
       {
@@ -9574,13 +9761,13 @@
         "description": "Message shown when wallet transaction search returns zero results.",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 32
         },
         "file": "source/renderer/app/containers/wallet/WalletTransactionsPage.js",
         "id": "wallet.transactions.no.transactions.found",
         "start": {
           "column": 23,
-          "line": 21
+          "line": 27
         }
       }
     ],
@@ -10230,6 +10417,62 @@
         "start": {
           "column": 11,
           "line": 249
+        }
+      },
+      {
+        "defaultMessage": "!!!from",
+        "description": "From label of range.",
+        "end": {
+          "column": 3,
+          "line": 258
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "global.range.from",
+        "start": {
+          "column": 13,
+          "line": 254
+        }
+      },
+      {
+        "defaultMessage": "!!!to",
+        "description": "To label of range.",
+        "end": {
+          "column": 3,
+          "line": 263
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "global.range.to",
+        "start": {
+          "column": 11,
+          "line": 259
+        }
+      },
+      {
+        "defaultMessage": "!!!Filter",
+        "description": "Filter label.",
+        "end": {
+          "column": 3,
+          "line": 268
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "global.labels.filter",
+        "start": {
+          "column": 10,
+          "line": 264
+        }
+      },
+      {
+        "defaultMessage": "!!!All",
+        "description": "All label.",
+        "end": {
+          "column": 3,
+          "line": 273
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "global.labels.all",
+        "start": {
+          "column": 7,
+          "line": 269
         }
       }
     ],
