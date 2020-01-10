@@ -781,6 +781,8 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
       'rgba(255, 255, 255, 0.5)',
     '--theme-transactions-state-pending-warning-background-color': '#eb4a22',
     '--theme-transactions-state-text-color': '#121326',
+    '--theme-transactions-filter-button-shadow-color': '#1213262e',
+    '--theme-transactions-filter-button-color': '#a0a1a8',
   },
   uploader: {
     '--theme-uploader-text-color': '#ffffff',

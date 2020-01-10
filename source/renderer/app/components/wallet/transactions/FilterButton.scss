@@ -1,7 +1,8 @@
 .component {
   .actionButton {
     border-radius: 5px;
-    box-shadow: 0 1.5px 5px 0 var(--theme-staking-export-button-shadow-color);
+    box-shadow: 0 1.5px 5px 0
+      var(--theme-transactions-filter-button-shadow-color);
     display: flex;
     padding: 7px 12px;
     position: fixed;
@@ -11,7 +12,8 @@
     z-index: 100;
 
     &:focus {
-      box-shadow: 0 1.5px 5px 0 var(--theme-staking-export-button-shadow-color) !important;
+      box-shadow: 0 1.5px 5px 0
+        var(--theme-transactions-filter-button-shadow-color) !important;
     }
 
     &.actionButtonFaded {
@@ -23,7 +25,7 @@
     }
 
     .actionLabel {
-      color: var(--theme-staking-learn-more-button-color);
+      color: var(--theme-transactions-filter-button-color);
       font-family: var(--font-regular);
       font-size: 14px;
       line-height: 1.36;
@@ -35,7 +37,7 @@
       width: 11px;
 
       g {
-        stroke: var(--theme-staking-learn-more-button-color);
+        stroke: var(--theme-transactions-filter-button-color);
       }
     }
   }

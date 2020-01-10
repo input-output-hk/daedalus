@@ -782,6 +782,8 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-transactions-icon-type-pending-warning-background-color':
       'rgba(236, 93, 107, 0.8)',
     '--theme-transactions-state-pending-warning-background-color': '#ec5d6b',
+    '--theme-transactions-filter-button-shadow-color': 'rgba(0, 0, 0, 0.18)',
+    '--theme-transactions-filter-button-color': '#fff',
   },
   uploader: {
     '--theme-uploader-text-color': '#2d2d2d',

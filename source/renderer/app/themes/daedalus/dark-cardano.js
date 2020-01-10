@@ -778,6 +778,9 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--theme-transactions-icon-type-pending-warning-background-color':
       'rgba(236, 93, 107, 0.8)',
     '--theme-transactions-state-pending-warning-background-color': '#ec5d6b',
+    '--theme-transactions-filter-button-shadow-color':
+      'rgba(31, 193, 195, 0.18)',
+    '--theme-transactions-filter-button-color': 'rgba(18, 19, 38, 1)',
   },
   uploader: {
     '--theme-uploader-text-color': '#ffffff',
