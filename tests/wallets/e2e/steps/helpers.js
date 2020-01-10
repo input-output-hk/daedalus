@@ -38,6 +38,25 @@ export const restoreWalletWithFunds = async (client: Object, { walletName }: { w
       .catch(error => done(error));
   }, walletName);
 
+export const restoreLegacyWallet = async (client: Object, { walletName, hasFunds }: { walletName: string, hasFunds?: boolean }) =>
+  client.executeAsync((name, withFunds, done) => {
+    daedalus.api.ada
+      .restoreByronRandomWallet({
+        walletName: name,
+        recoveryPhrase:
+          withFunds ? ['arctic', 'decade', 'pink', 'easy', 'jar', 'index', 'base', 'bright', 'vast', 'ocean', 'hard', 'pizza'] :
+          ['judge', 'sting', 'fish', 'script', 'silent', 'soup', 'chef', 'very', 'employ', 'wage', 'cloud', 'tourist'],
+        spendingPassword: 'Secret1234',
+      })
+      .then(() =>
+        daedalus.stores.wallets
+          .refreshWalletsData()
+          .then(done)
+          .catch(error => done(error))
+      )
+      .catch(error => done(error));
+  }, walletName, hasFunds);
+
 const createWalletsSequentially = async (wallets: Array<any>, context: Object) => {
   context.wallets = [];
   for (const walletData of wallets) {
@@ -225,7 +244,6 @@ export const createWallets = async (wallets: Array<any>, context: Object, option
     await createWalletsAsync(wallets, context);
   }
 };
-
 
 export const getCurrentAppRoute = async function() {
   const url = (await this.client.url()).value;

@@ -13,6 +13,7 @@ import {
   waitUntilWalletIsLoaded,
   addOrSetWalletsForScenario,
   restoreWalletWithFunds,
+  restoreLegacyWallet,
   waitUntilUrlEquals,
   navigateTo,
   i18n,
@@ -548,6 +549,42 @@ Then(/^"([^"]*)" wallet should have "([^"]*)" as id$/, async function(
   expect(wallet.id).to.equal(walletId);
 });
 
+
+When(
+  /^"Balance" wallet badge should be visible in the wallet sidebar$/,
+  async function() {
+    return this.client.waitForVisible('.SidebarWalletMenuItem_active .LegacyBadge_component');
+  }
+);
+
+When(
+  /^"Balance" wallet "([^"]*)" action should be visible in the top bar notification$/,
+  async function(action) {
+    await this.client.waitForVisible('.LegacyNotification_component');
+    const notificationAction = await this.client.getText('.LegacyNotification_actions button:nth-child(2)');
+    expect(notificationAction).to.equal(action);
+  }
+);
+
+When(
+  /^"Balance" wallet notification should not be displayed in the wallet top bar$/,
+  async function() {
+    return this.client.waitForVisible('.LegacyNotification_component', null, true);
+  }
+);
+
+When(/^I click "Balance" wallet top bar notification action$/, function() {
+  return this.waitAndClick('.LegacyNotification_actions button:nth-child(2)');
+});
+
+Then(/^I should see "Add wallet" wizard$/, async function() {
+  return this.client.waitForVisible('.TransferFundsStep1Dialog_label');
+});
+
+Then(/^I should see "Transfer ada" wizard$/, async function() {
+  return this.client.waitForVisible('.TransferFundsStep1Dialog_label');
+});
+
 Then(/^I should be on the "([^"]*)" screen$/, async function(screenName) {
   return waitUntilUrlEquals.call(this, `/${screenName}`);
 });
@@ -639,4 +676,101 @@ Then(/^The error message should be (hidden|visible)$/, function(state) {
   const isVisible = state === 'visible';
   return this.client.waitForVisible('.ConfigurationDialog_error', null, !isVisible);
 });
+
+When(/^I restore "([^"]*)" wallet with funds$/, async function(walletName) {
+  await restoreWalletWithFunds(this.client, { walletName });
+  const wallet = await waitUntilWalletIsLoaded.call(this, walletName);
+  addOrSetWalletsForScenario.call(this, wallet);
+});
+
+
+Given(/^I restore "([^"]*)" balance wallet without funds$/, async function(walletName) {
+  await restoreLegacyWallet(this.client, { walletName, hasFunds: false });
+  const wallet = await waitUntilWalletIsLoaded.call(this, walletName);
+  addOrSetWalletsForScenario.call(this, wallet);
+});
+
+Given(/^I restore "([^"]*)" balance wallet with funds$/, async function(walletName) {
+  await restoreLegacyWallet(this.client, { walletName, hasFunds: true });
+  const wallet = await waitUntilWalletIsLoaded.call(this, walletName);
+  addOrSetWalletsForScenario.call(this, wallet);
+});
+
+Then(/^"([^"]*)" wallet should show on the bottom of the list below Rewards wallet$/, async function(
+  walletName
+) {
+  const menuItemTitle = await this.client.getText('.SidebarWalletsMenu_wallets button:nth-child(3) .SidebarWalletMenuItem_title');
+  expect(walletName).to.equal(menuItemTitle);
+});
+
+When(/^I open "Rewards wallet" selection dropdown$/, function() {
+  return this.waitAndClick(
+    '.SimpleSelect_select .SimpleInput_input'
+  );
+});
+
+When(/^I select "([^"]*)" wallet$/, function(walletName) {
+  return this.waitAndClick('.SimpleBubble_bubble li:nth-child(1)');
+});
+
+When(/^I click continue button on "Transfer ada" wizard$/, function() {
+  return this.waitAndClick('.Dialog_actions .SimpleButton_root');
+});
+
+Then(/^I should see "Transfer ada" wizard step 2 dialog$/, function() {
+  return this.client.waitForVisible('.TransferFundsStep2Dialog_dialog');
+});
+
+When(/^I enter spending password in "Transfer ada" wizard step 2 dialog:$/, async function(
+  table
+) {
+  const fields = table.hashes()[0];
+  await this.client.setValue(
+    '.TransferFundsStep2Dialog_dialog input',
+    fields.password
+  );
+});
+
+Then(/^"Transfer ada" wizard step 2 dialog continue button should be disabled$/, async function() {
+  await this.client.waitForEnabled('.TransferFundsStep2Dialog_dialog .confirmButton');
+});
+
+When(/^I click continue button on "Transfer ada" wizard step 2 dialog$/, function() {
+  return this.waitAndClick('.TransferFundsStep2Dialog_dialog .confirmButton');
+});
+
+When(/^I see "Transfer ada" wizard step 2 transfer funds button disabled and spinner$/, async function() {
+  const isEnabled = await this.client.isEnabled('.TransferFundsStep2Dialog_submitButtonSpinning');
+  expect(isEnabled).to.equal(false);
+});
+
+Then(
+  /^I should not see "Transfer ada" wizard step 2 wizard dialog anymore$/,
+  function() {
+    return this.client.waitForVisible(
+      '.TransferFundsStep2Dialog_dialog',
+      null,
+      true
+    );
+  }
+);
+
+When(/^I see initial wallets balance$/, async function() {
+  const rewardsWalletBalance = await this.client.getText('.SidebarWalletsMenu_wallets button:nth-child(1) .SidebarWalletMenuItem_info');
+  expect(rewardsWalletBalance).to.equal('1M ADA');
+  const balanceWalletBalance = await this.client.getText('.SidebarWalletsMenu_wallets button:nth-child(2) .SidebarWalletMenuItem_info');
+  expect(balanceWalletBalance).to.equal('1M ADA');
+});
+
+Then(
+  /^I should see increased rewards wallet balance and 0 ADA in Daedalus Balance wallet$/,
+  { timeout: 60000 },
+  async function() {
+    this.client.waitUntil(async () => {
+      const rewardsWalletBalance = await this.client.getText('.SidebarWalletsMenu_wallets button:nth-child(1) .SidebarWalletMenuItem_info');
+      const balanceWalletBalance = await this.client.getText('.SidebarWalletsMenu_wallets button:nth-child(2) .SidebarWalletMenuItem_info');
+      return rewardsWalletBalance === '1.9M ADA' && balanceWalletBalance === '0 ADA';
+    }, 60000);
+  }
+);
 
