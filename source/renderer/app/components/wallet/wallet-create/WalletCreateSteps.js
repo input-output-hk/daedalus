@@ -3,8 +3,9 @@ import React, { Component } from 'react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import { Stepper } from 'react-polymorph/lib/components/Stepper';
 import { StepperSkin } from 'react-polymorph/lib/skins/simple/StepperSkin';
-import { CREATE_WALLET_STEPS } from '../../../config/walletsConfig';
 import styles from './WalletCreateSteps.scss';
+import { CREATE_WALLET_STEPS } from '../../../config/walletsConfig';
+import type { RestoreWalletStep } from '../../../types/walletRestoreTypes';
 
 type Props = {
   stepNumber: number,
@@ -58,7 +59,7 @@ export default class WalletCreateSteps extends Component<Props> {
     intl: intlShape.isRequired,
   };
 
-  get stepsList() {
+  get stepsList(): Array<RestoreWalletStep> {
     return CREATE_WALLET_STEPS.map(stepId =>
       this.context.intl.formatMessage(messages[`${stepId}Step`])
     );

@@ -28,8 +28,21 @@ import {
 import {
   RECOVERY_PHRASE_VERIFICATION_NOTIFICATION,
   RECOVERY_PHRASE_VERIFICATION_WARNING,
-  WALLET_RESTORE_TYPES,
 } from '../config/walletsConfig';
+import {
+  WALLET_KINDS,
+  WALLET_DAEDALUS_KINDS,
+  WALLET_YOROI_KINDS,
+  WALLET_HARDWARE_KINDS,
+  RESTORE_WALLET_STEPS,
+} from '../config/walletRestoreConfig';
+import { ADA_CERTIFICATE_MNEMONIC_LENGTH } from '../config/cryptoConfig';
+import type {
+  WalletKind,
+  WalletDaedalusKind,
+  WalletYoroiKind,
+  WalletHardwareKind,
+} from '../types/walletRestoreTypes';
 import type { CsvRecord } from '../../../common/types/rewards-csv-request.types';
 import type { walletExportTypeChoices } from '../types/walletExportTypes';
 import type { WalletImportFromFileParams } from '../actions/wallets-actions';
@@ -119,11 +132,23 @@ export default class WalletsStore extends Store {
   @observable getWalletRecoveryPhraseFromCertificateRequest: Request<
     Array<string>
   > = new Request(this.api.ada.getWalletRecoveryPhraseFromCertificate);
-  @observable restoreRequest: Request<Wallet> = new Request(
+  @observable restoreDaedalusRequest: Request<Wallet> = new Request(
     this.api.ada.restoreWallet
   );
   @observable restoreLegacyRequest: Request<Wallet> = new Request(
     this.api.ada.restoreLegacyWallet
+  );
+  @observable restoreByronRandomWalletRequest: Request<Wallet> = new Request(
+    this.api.ada.restoreByronRandomWallet
+  );
+  @observable restoreByronIcarusWalletRequest: Request<Wallet> = new Request(
+    this.api.ada.restoreByronIcarusWallet
+  );
+  @observable restoreByronTrezorWalletRequest: Request<Wallet> = new Request(
+    this.api.ada.restoreByronTrezorWallet
+  );
+  @observable restoreByronLedgerWalletRequest: Request<Wallet> = new Request(
+    this.api.ada.restoreByronLedgerWallet
   );
   @observable
   transferFundsCalculateFeeRequest: Request<TransferFundsCalculateFeeRequest> = new Request(
@@ -150,7 +175,25 @@ export default class WalletsStore extends Store {
   @observable createWalletStep = null;
   @observable createWalletShowAbortConfirmation = false;
   // TODO: Remove once the new wallet creation process is ready
-  @observable useNewWalletCreationProcess = false;
+  @observable createWalletUseNewProcess = false;
+
+  /* ----------  Restore Wallet  ---------- */
+  @observable restoreWalletStep = null;
+  @observable restoreWalletShowAbortConfirmation = false;
+  // STEP: WALLET TYPE
+  @observable walletKind: ?WalletKind = null;
+  @observable walletKindDaedalus: ?WalletDaedalusKind = null;
+  @observable walletKindYoroi: ?WalletYoroiKind = null;
+  @observable walletKindHardware: ?WalletHardwareKind = null;
+  // STEP: RECOVERY PHRASE
+  @observable mnemonics: Array<string> = [];
+  // STEP: CONFIGURATION
+  @observable walletName: string = '';
+  @observable spendingPassword: string = '';
+  @observable repeatPassword: string = '';
+  // TODO: Remove once the new restore creation process is ready
+  @observable restoreWalletUseNewProcess = true;
+  @observable restoredWallet: ?Wallet = null;
 
   /* ----------  Export Wallet  ---------- */
   @observable walletExportType: walletExportTypeChoices = 'paperWallet';
@@ -210,13 +253,28 @@ export default class WalletsStore extends Store {
     walletsActions.createWalletAbort.listen(this._createWalletAbort);
     walletsActions.createWalletClose.listen(this._createWalletClose);
     // ---
+    // Restore Wallet Actions ---
+    walletsActions.restoreWallet.listen(this._restore);
+    walletsActions.restoreWalletBegin.listen(this._restoreWalletBegin);
+    walletsActions.restoreWalletEnd.listen(this._restoreWalletEnd);
+    walletsActions.restoreWalletChangeStep.listen(
+      this._restoreWalletChangeStep
+    );
+    walletsActions.restoreWalletClose.listen(this._restoreWalletClose);
+    walletsActions.restoreWalletCancelClose.listen(
+      this._restoreWalletCancelClose
+    );
+    walletsActions.restoreWalletSetKind.listen(this._restoreWalletSetKind);
+    walletsActions.restoreWalletSetMnemonics.listen(
+      this._restoreWalletSetMnemonics
+    );
+    walletsActions.restoreWalletSetConfig.listen(this._restoreWalletSetConfig);
     walletsActions.deleteWallet.listen(this._deleteWallet);
     walletsActions.undelegateWallet.listen(this._undelegateWallet);
     walletsActions.setUndelegateWalletSubmissionSuccess.listen(
       this._setUndelegateWalletSubmissionSuccess
     );
     walletsActions.sendMoney.listen(this._sendMoney);
-    walletsActions.restoreWallet.listen(this._restoreWallet);
     walletsActions.importWalletFromFile.listen(this._importWalletFromFile);
     walletsActions.chooseWalletExportType.listen(this._chooseWalletExportType);
 
@@ -275,8 +333,8 @@ export default class WalletsStore extends Store {
   };
 
   // TODO: Remove once the new wallet creation process is ready
-  @action _toggleUseNewWalletCreationProcess = () => {
-    this.useNewWalletCreationProcess = !this.useNewWalletCreationProcess;
+  @action _togglecreateWalletUseNewProcess = () => {
+    this.createWalletUseNewProcess = !this.createWalletUseNewProcess;
   };
 
   @action _createWalletBegin = () => {
@@ -300,6 +358,115 @@ export default class WalletsStore extends Store {
 
   @action _createWalletAbort = () => {
     this.createWalletShowAbortConfirmation = true;
+  };
+
+  @action _restoreWalletBegin = () => {
+    this.restoreWalletStep = 0;
+    this.restoreWalletShowAbortConfirmation = false;
+  };
+
+  @action _restoreWalletEnd = async () => {
+    this._resumePolling();
+    const { restoredWallet } = this;
+    if (restoredWallet) {
+      await this._createWalletLocalData(restoredWallet.id);
+      await this._patchWalletRequestWithNewWallet(restoredWallet);
+      this.goToWalletRoute(restoredWallet.id);
+      this.refreshWalletsData();
+      this._restoreWalletResetRequests();
+      this._restoreWalletResetData();
+    }
+  };
+
+  @action _restoreWalletChangeStep = (isBack: boolean = false) => {
+    // Reset restore requests to clear previous errors
+    const currrentRestoreWalletStep = this.restoreWalletStep || 0;
+    this._restoreWalletResetRequests();
+    if (this.restoreWalletStep === null) {
+      this._restoreWalletResetData();
+    }
+    this.restoreWalletStep =
+      isBack === true
+        ? currrentRestoreWalletStep - 1
+        : currrentRestoreWalletStep + 1;
+    this.restoreWalletShowAbortConfirmation = false;
+  };
+
+  @action _restoreWalletClose = () => {
+    const { mnemonics, walletName, spendingPassword } = this;
+    const shouldDisplayAbortAlert =
+      (mnemonics.length || walletName.length || spendingPassword.length) &&
+      (this.restoreWalletStep !== null &&
+        this.restoreWalletStep < RESTORE_WALLET_STEPS.length - 1);
+    if (shouldDisplayAbortAlert && !this.restoreWalletShowAbortConfirmation) {
+      this.restoreWalletShowAbortConfirmation = true;
+    } else {
+      this._restoreWalletResetRequests();
+      this._restoreWalletResetData();
+      this.actions.dialogs.closeActiveDialog.trigger();
+    }
+  };
+
+  @action _restoreWalletCancelClose = () => {
+    this.restoreWalletShowAbortConfirmation = false;
+  };
+
+  _restoreWalletResetRequests = () => {
+    this.restoreDaedalusRequest.reset();
+    this.restoreByronIcarusWalletRequest.reset();
+    this.restoreByronLedgerWalletRequest.reset();
+    this.restoreByronRandomWalletRequest.reset();
+    this.restoreByronTrezorWalletRequest.reset();
+    this.getWalletRecoveryPhraseFromCertificateRequest.reset();
+  };
+
+  @action _restoreWalletResetData = () => {
+    this.restoreWalletStep = null;
+    this.restoreWalletShowAbortConfirmation = false;
+    this.restoredWallet = null;
+    this.walletKind = null;
+    this.walletKindDaedalus = null;
+    this.walletKindYoroi = null;
+    this.walletKindHardware = null;
+    this.mnemonics = [];
+    this.walletName = '';
+    this.spendingPassword = '';
+    this.repeatPassword = '';
+  };
+
+  @action _restoreWalletSetKind = ({
+    param,
+    kind,
+  }: {
+    param?: string,
+    kind: string,
+  }) => {
+    (this: any)[`walletKind${param || ''}`] = kind;
+    this.mnemonics = [];
+  };
+
+  @action _restoreWalletSetMnemonics = ({
+    mnemonics,
+  }: {
+    mnemonics: Array<string>,
+  }) => {
+    this.mnemonics = mnemonics;
+  };
+
+  @action _restoreWalletSetConfig = ({
+    param,
+    value,
+  }: {
+    param: string,
+    value: string,
+  }) => {
+    if (param === 'walletName') {
+      this.walletName = value;
+    } else if (param === 'spendingPassword') {
+      this.spendingPassword = value;
+    } else if (param === 'repeatPassword') {
+      this.repeatPassword = value;
+    }
   };
 
   _finishWalletBackup = async () => {
@@ -374,20 +541,66 @@ export default class WalletsStore extends Store {
     );
   };
 
-  _restore = async (params: {
-    recoveryPhrase: string,
-    walletName: string,
-    spendingPassword: string,
-  }) => {
-    const restoredWallet = await this.restoreRequest.execute(params).promise;
-    if (!restoredWallet)
-      throw new Error('Restored wallet was not received correctly');
-    await this._createWalletLocalData(restoredWallet.id);
-    await this._patchWalletRequestWithNewWallet(restoredWallet);
-    this.actions.dialogs.closeActiveDialog.trigger();
-    this.restoreRequest.reset();
-    this.goToWalletRoute(restoredWallet.id);
-    this.refreshWalletsData();
+  _unscrambleMnemonics = async (): Array<string> => {
+    // Reset getWalletRecoveryPhraseFromCertificateRequest to clear previous errors
+    this.getWalletRecoveryPhraseFromCertificateRequest.reset();
+
+    // Split recovery phrase to 18 (scrambled mnemonics) + 9 (mnemonics seed) mnemonics
+    const recoveryPhraseArray = this.mnemonics;
+    const chunked = chunk(recoveryPhraseArray, ADA_CERTIFICATE_MNEMONIC_LENGTH);
+    const scrambledInput = chunked[0]; // first 18 mnemonics
+    const certificatePassword = chunked[1]; // last 9 mnemonics
+    const spendingPassword = mnemonicToSeedHex(certificatePassword.join(' '));
+
+    // Unscramble 18-word wallet certificate mnemonic to 12-word mnemonic
+    const unscrambledRecoveryPhrase: Array<string> = await this.getWalletRecoveryPhraseFromCertificateRequest.execute(
+      {
+        passphrase: spendingPassword,
+        scrambledInput: scrambledInput.join(' '),
+      }
+    ).promise;
+
+    this.getWalletRecoveryPhraseFromCertificateRequest.reset();
+
+    // $FlowFixMe
+    return unscrambledRecoveryPhrase;
+  };
+
+  _restore = async () => {
+    // Pause polling in order to avoid fetching data for wallet we are about to restore
+    // so that we remain on the "Add wallet" screen until user closes the TADA screen
+    this._pausePolling();
+
+    // Reset restore requests to clear previous errors
+    this._restoreWalletResetRequests();
+
+    const data = {
+      recoveryPhrase: this.mnemonics,
+      walletName: this.walletName,
+      spendingPassword: this.spendingPassword,
+    };
+
+    const request = this.restoreRequest;
+
+    if (
+      WALLET_KINDS.DAEDALUS &&
+      this.walletKindDaedalus === WALLET_DAEDALUS_KINDS.BALANCE_27_WORD
+    ) {
+      data.recoveryPhrase = await this._unscrambleMnemonics();
+    }
+
+    try {
+      const restoredWallet = await request.execute(data).promise;
+      if (!restoredWallet)
+        throw new Error('Restored wallet was not received correctly');
+
+      runInAction('set restoredWallet', () => {
+        this.restoredWallet = restoredWallet;
+        this.restoreWalletStep = 3;
+      });
+    } catch (error) {
+      this._resumePolling();
+    }
   };
 
   _createWalletLocalData = async (id: string) => {
@@ -572,6 +785,28 @@ export default class WalletsStore extends Store {
     return matchRoute(`${ROUTES.WALLETS.ROOT}(/*rest)`, currentRoute);
   }
 
+  @computed get restoreRequest(): Request {
+    switch (this.walletKind) {
+      case WALLET_KINDS.DAEDALUS:
+        if (this.walletKindDaedalus === WALLET_DAEDALUS_KINDS.REWARD_15_WORD) {
+          return this.restoreDaedalusRequest;
+        }
+        return this.restoreByronRandomWalletRequest;
+      case WALLET_KINDS.YOROI:
+        if (this.walletKindYoroi === WALLET_YOROI_KINDS.BALANCE_15_WORD) {
+          return this.restoreByronIcarusWalletRequest;
+        }
+        return this.restoreDaedalusRequest;
+      case WALLET_KINDS.HARDWARE:
+        if (this.walletKindHardware === WALLET_HARDWARE_KINDS.LEDGER) {
+          return this.restoreByronLedgerWalletRequest;
+        }
+        return this.restoreByronTrezorWalletRequest;
+      default:
+        return this.restoreDaedalusRequest;
+    }
+  }
+
   @computed get restoreProgress(): number {
     return get(this.active, 'syncState.data.percentage.quantity', 0);
   }
@@ -741,58 +976,6 @@ export default class WalletsStore extends Store {
     this.walletsRequest.reset();
     this.stores.addresses.addressesRequests = [];
     this.stores.transactions.transactionsRequests = [];
-  };
-
-  @action _restoreWallet = async (params: {
-    recoveryPhrase: string,
-    walletName: string,
-    spendingPassword: string,
-    type?: string,
-  }) => {
-    // reset getWalletRecoveryPhraseFromCertificateRequest to clear previous errors
-    this.getWalletRecoveryPhraseFromCertificateRequest.reset();
-
-    const data = {
-      recoveryPhrase: params.recoveryPhrase,
-      walletName: params.walletName,
-      spendingPassword: params.spendingPassword,
-      type: params.type,
-    };
-
-    if (params.type === WALLET_RESTORE_TYPES.CERTIFICATE) {
-      // Split recovery phrase to 18 (scrambled mnemonics) + 9 (mnemonics seed) mnemonics
-      const recoveryPhraseArray = params.recoveryPhrase.split(' ');
-      const chunked = chunk(recoveryPhraseArray, 18);
-      const scrambledInput = chunked[0]; // first 18 mnemonics
-      const certificatePassword = chunked[1]; // last 9 mnemonics
-      const spendingPassword = mnemonicToSeedHex(certificatePassword.join(' '));
-
-      // Unscramble 18-word wallet certificate mnemonic to 12-word mnemonic
-      const unscrambledRecoveryPhrase: Array<string> = await this.getWalletRecoveryPhraseFromCertificateRequest.execute(
-        {
-          passphrase: spendingPassword,
-          scrambledInput: scrambledInput.join(' '),
-        }
-      ).promise;
-      data.recoveryPhrase = unscrambledRecoveryPhrase.join(' ');
-      this.getWalletRecoveryPhraseFromCertificateRequest.reset();
-    }
-
-    const request =
-      params.type === WALLET_RESTORE_TYPES.LEGACY ||
-      params.type === WALLET_RESTORE_TYPES.YOROI_LEGACY ||
-      params.type === WALLET_RESTORE_TYPES.CERTIFICATE
-        ? this.restoreLegacyRequest
-        : this.restoreRequest;
-
-    const restoredWallet = await request.execute(data).promise;
-    if (!restoredWallet)
-      throw new Error('Restored wallet was not received correctly');
-    await this._patchWalletRequestWithNewWallet(restoredWallet);
-    this.actions.dialogs.closeActiveDialog.trigger();
-    this.restoreRequest.reset();
-    this.goToWalletRoute(restoredWallet.id);
-    this.refreshWalletsData();
   };
 
   @action _importWalletFromFile = async (
