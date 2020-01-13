@@ -5,12 +5,14 @@ Changelog
 
 ### Features
 
+- Implemented Hardware wallets restoration ([PR 1801](https://github.com/input-output-hk/daedalus/pull/1801))
 - Added Yoroi wallets restoration to the "Restore Wallet" dialog ([PR 1740](https://github.com/input-output-hk/daedalus/pull/1740))
 - Implemented new menu shortcuts ([PR 1780](https://github.com/input-output-hk/daedalus/pull/1780))
 - Implemented all notifications to be on the top of the app and in front of any other element ([PR 1748](https://github.com/input-output-hk/daedalus/pull/1748))
 - Improved network screen with responsive main copy box ([PR 1797](https://github.com/input-output-hk/daedalus/pull/1797))
 
 ### Fixes
+- Fixed Daedalus ITN Terms of Service typo ([PR 1809](https://github.com/input-output-hk/daedalus/pull/1809))
 - Fixed handling of duplicated wallet IDs when restoring both legacy and new wallets from the same wallet recovery phrase ([PR 1805](https://github.com/input-output-hk/daedalus/pull/1805))
 
 ### Chores

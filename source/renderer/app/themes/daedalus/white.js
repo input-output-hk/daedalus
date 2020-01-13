@@ -813,6 +813,8 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-wallet-restore-dialog-new-label-background-color':
       'rgba(45, 45, 45, 0.1)',
     '--theme-wallet-restore-dialog-new-label-color': '#2d2d2d',
+    '--theme-wallet-restore-dialog-step-walletType-hardwareWalletDisclaimer-text-color':
+      '#ea4c5b',
   },
 };
 

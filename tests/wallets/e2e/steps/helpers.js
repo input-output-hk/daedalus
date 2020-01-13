@@ -26,7 +26,7 @@ export const restoreWalletWithFunds = async (client: Object, { walletName }: { w
       .restoreWallet({
         walletName: name,
         recoveryPhrase:
-          'awkward electric strong early rose abuse mutual limit ketchup child limb exist hurry business whisper',
+          ['awkward', 'electric', 'strong', 'early', 'rose', 'abuse', 'mutual', 'limit', 'ketchup', 'child', 'limb', 'exist', 'hurry', 'business', 'whisper'],
         spendingPassword: 'Secret1234',
       })
       .then(() =>

@@ -5,14 +5,18 @@ import { request } from '../../utils/request';
 
 export const restoreLegacyWallet = (
   config: RequestConfig,
-  { walletInitData }: { walletInitData: LegacyWalletInitData }
-): Promise<LegacyAdaWallet> =>
-  request(
+  { walletInitData }: { walletInitData: LegacyWalletInitData },
+  type?: string = ''
+): Promise<LegacyAdaWallet> => {
+  const queryParams = {};
+
+  return request(
     {
       method: 'POST',
-      path: '/v2/byron-wallets',
+      path: `/v2/byron-wallets${type}`,
       ...config,
     },
-    {},
+    queryParams,
     walletInitData
   );
+};
