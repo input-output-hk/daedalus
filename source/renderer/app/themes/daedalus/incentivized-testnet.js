@@ -537,6 +537,7 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--rp-switch-label-opacity': '1',
     '--rp-switch-label-text-color': '#ffffff',
     '--rp-switch-label-width': '100%',
+    '--rp-switch-normal-border-radius': '2px',
     '--rp-switch-opacity-off': '1',
     '--rp-switch-root-margin': '0 0 30px 0',
     '--rp-switch-tiny-border-radius': '1px',
