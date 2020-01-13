@@ -1,0 +1,34 @@
+.component {
+  flex-direction: row;
+  margin: 10px;
+
+  :global {
+    .SimpleSwitch_switch {
+      height: 22px;
+      width: 44px;
+
+      &:not(.SimpleSwitch_checked) {
+        span {
+          left: 2px;
+          top: 2px;
+        }
+      }
+
+      &.SimpleSwitch_checked {
+        span {
+          left: 24px !important;
+          top: 2px;
+        }
+      }
+    }
+  }
+
+  span {
+    border-radius: var(--rp-switch-tiny-border-radius);
+  }
+
+  label {
+    font-family: var(--font-regular);
+    margin: 0 0 0 6px !important;
+  }
+}
