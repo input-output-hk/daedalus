@@ -77,10 +77,7 @@ storiesOf('Common|Widgets', module)
 
   .add('NormalSwitch', () => (
     <div>
-      <NormalSwitch
-        onChange={action('onChange')}/>
-      <NormalSwitch
-        onChange={action('onChange')}
-        checked/>
+      <NormalSwitch onChange={action('onChange')} />
+      <NormalSwitch onChange={action('onChange')} checked />
     </div>
   ));
