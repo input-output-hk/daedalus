@@ -10554,7 +10554,6 @@ react-modal@3.1.12:
 react-polymorph@0.9.1:
   version "0.9.1"
   resolved "https://registry.yarnpkg.com/react-polymorph/-/react-polymorph-0.9.1.tgz#80c26de87f586d8e7dda1274e784a846d729acd1"
-  integrity sha512-3tk70sOD1lQ7n49uAw/N8yLGSLXHVNj7Mhjy+PYwSkQimzmrnGTO0FOAp0FEqOY/6V6xIDYT2xi6HTe6OFicSg==
   dependencies:
     create-react-context "0.2.2"
     create-react-ref "0.1.0"
