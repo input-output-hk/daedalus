@@ -47,6 +47,7 @@ import { importWalletAsKey } from './wallets/requests/importWalletAsKey';
 import { createWallet } from './wallets/requests/createWallet';
 import { restoreWallet } from './wallets/requests/restoreWallet';
 import { restoreLegacyWallet } from './wallets/requests/restoreLegacyWallet';
+import { restoreByronWallet } from './wallets/requests/restoreByronWallet';
 import { updateWallet } from './wallets/requests/updateWallet';
 import { getWalletUtxos } from './wallets/requests/getWalletUtxos';
 import { getWallet } from './wallets/requests/getWallet';
@@ -73,7 +74,7 @@ import {
   cardanoFaultInjectionChannel,
 } from '../ipc/cardano.ipc';
 import patchAdaApi from './utils/patchAdaApi';
-import { utcStringToDate } from './utils';
+import { getLegacyWalletId, utcStringToDate } from './utils';
 import { Logger } from '../utils/logging';
 import {
   unscrambleMnemonics,
@@ -189,6 +190,7 @@ import { TlsCertificateNotValidError } from './nodes/errors';
 import { getSHA256HexForString } from './utils/hashing';
 import { getNewsHash } from './news/requests/getNewsHash';
 import { deleteTransaction } from './transactions/requests/deleteTransaction';
+import { WALLET_BYRON_KINDS } from '../config/walletRestoreConfig';
 
 export default class AdaApi {
   config: RequestConfig;
@@ -251,7 +253,6 @@ export default class AdaApi {
     Logger.debug('AdaApi::getAddresses called', {
       parameters: filterLogData(request),
     });
-
     const { walletId, queryParams, isLegacy } = request;
     try {
       let response = [];
@@ -734,7 +735,7 @@ export default class AdaApi {
     const { recoveryPhrase, walletName, spendingPassword } = request;
     const walletInitData = {
       name: walletName,
-      mnemonic_sentence: split(recoveryPhrase, ' '),
+      mnemonic_sentence: recoveryPhrase,
       passphrase: spendingPassword,
     };
     try {
@@ -748,7 +749,7 @@ export default class AdaApi {
       if (error.code === 'wallet_already_exists') {
         throw new WalletAlreadyRestoredError();
       }
-      // @API TOOD - improve once error is handled by v2 API (REPORT to BE team)
+      // @API TODO - improve once error is handled by v2 API (REPORT to BE team)
       if (error.message === 'JSONValidationFailed') {
         const validationError = get(error, 'diagnostic.validationError', '');
         if (
@@ -772,15 +773,13 @@ export default class AdaApi {
     const { recoveryPhrase, walletName, spendingPassword } = request;
     const walletInitData = {
       name: walletName,
-      mnemonic_sentence: split(recoveryPhrase, ' '),
+      mnemonic_sentence: recoveryPhrase,
       passphrase: spendingPassword,
     };
     try {
       const legacyWallet: LegacyAdaWallet = await restoreLegacyWallet(
         this.config,
-        {
-          walletInitData,
-        }
+        { walletInitData }
       );
       const extraLegacyWalletProps = {
         address_pool_gap: 0, // Not needed for legacy wallets
@@ -798,7 +797,207 @@ export default class AdaApi {
       if (error.code === 'wallet_already_exists') {
         throw new WalletAlreadyRestoredError();
       }
-      // @API TOOD - improve once error is handled by v2 API (REPORT to BE team)
+      // @API TODO - improve once error is handled by v2 API (REPORT to BE team)
+      if (error.message === 'JSONValidationFailed') {
+        const validationError = get(error, 'diagnostic.validationError', '');
+        if (
+          validationError.includes(
+            'Forbidden Mnemonic: an example Mnemonic has been submitted'
+          )
+        ) {
+          throw new ForbiddenMnemonicError();
+        }
+      }
+      throw new GenericApiError();
+    }
+  };
+
+  restoreByronRandomWallet = async (
+    request: RestoreLegacyWalletRequest
+  ): Promise<Wallet> => {
+    Logger.debug('AdaApi::restoreByronRandomWallet called', {
+      parameters: filterLogData(request),
+    });
+    const { recoveryPhrase, walletName, spendingPassword } = request;
+    const walletInitData = {
+      name: walletName,
+      mnemonic_sentence: recoveryPhrase,
+      passphrase: spendingPassword,
+    };
+    const type = WALLET_BYRON_KINDS.RANDOM;
+    try {
+      const legacyWallet: LegacyAdaWallet = await restoreByronWallet(
+        this.config,
+        { walletInitData },
+        type
+      );
+      const extraLegacyWalletProps = {
+        address_pool_gap: 0, // Not needed for legacy wallets
+        delegation: WalletDelegationStatuses.NOT_DELEGATING,
+        isLegacy: true,
+      };
+      const wallet = {
+        ...legacyWallet,
+        ...extraLegacyWalletProps,
+      };
+      Logger.debug('AdaApi::restoreByronRandomWallet success', { wallet });
+      return _createWalletFromServerData(wallet);
+    } catch (error) {
+      Logger.error('AdaApi::restoreByronRandomWallet error', { error });
+      if (error.code === 'wallet_already_exists') {
+        throw new WalletAlreadyRestoredError();
+      }
+      // @API TODO - improve once error is handled by v2 API (REPORT to BE team)
+      if (error.message === 'JSONValidationFailed') {
+        const validationError = get(error, 'diagnostic.validationError', '');
+        if (
+          validationError.includes(
+            'Forbidden Mnemonic: an example Mnemonic has been submitted'
+          )
+        ) {
+          throw new ForbiddenMnemonicError();
+        }
+      }
+      throw new GenericApiError();
+    }
+  };
+
+  restoreByronIcarusWallet = async (
+    request: RestoreLegacyWalletRequest
+  ): Promise<Wallet> => {
+    Logger.debug('AdaApi::restoreByronIcarusWallet called', {
+      parameters: filterLogData(request),
+    });
+    const { recoveryPhrase, walletName, spendingPassword } = request;
+    const walletInitData = {
+      name: walletName,
+      mnemonic_sentence: recoveryPhrase,
+      passphrase: spendingPassword,
+    };
+    const type = WALLET_BYRON_KINDS.ICARUS;
+    try {
+      const legacyWallet: LegacyAdaWallet = await restoreByronWallet(
+        this.config,
+        { walletInitData },
+        type
+      );
+      const extraLegacyWalletProps = {
+        address_pool_gap: 0, // Not needed for legacy wallets
+        delegation: WalletDelegationStatuses.NOT_DELEGATING,
+        isLegacy: true,
+      };
+      const wallet = {
+        ...legacyWallet,
+        ...extraLegacyWalletProps,
+      };
+      Logger.debug('AdaApi::restoreByronIcarusWallet success', { wallet });
+      return _createWalletFromServerData(wallet);
+    } catch (error) {
+      Logger.error('AdaApi::restoreByronIcarusWallet error', { error });
+      if (error.code === 'wallet_already_exists') {
+        throw new WalletAlreadyRestoredError();
+      }
+      // @API TODO - improve once error is handled by v2 API (REPORT to BE team)
+      if (error.message === 'JSONValidationFailed') {
+        const validationError = get(error, 'diagnostic.validationError', '');
+        if (
+          validationError.includes(
+            'Forbidden Mnemonic: an example Mnemonic has been submitted'
+          )
+        ) {
+          throw new ForbiddenMnemonicError();
+        }
+      }
+      throw new GenericApiError();
+    }
+  };
+
+  restoreByronTrezorWallet = async (
+    request: RestoreLegacyWalletRequest
+  ): Promise<Wallet> => {
+    Logger.debug('AdaApi::restoreByronTrezorWallet called', {
+      parameters: filterLogData(request),
+    });
+    const { recoveryPhrase, walletName, spendingPassword } = request;
+    const walletInitData = {
+      name: walletName,
+      mnemonic_sentence: recoveryPhrase,
+      passphrase: spendingPassword,
+    };
+    const type = WALLET_BYRON_KINDS.TREZOR;
+    try {
+      const legacyWallet: LegacyAdaWallet = await restoreByronWallet(
+        this.config,
+        { walletInitData },
+        type
+      );
+      const extraLegacyWalletProps = {
+        address_pool_gap: 0, // Not needed for legacy wallets
+        delegation: WalletDelegationStatuses.NOT_DELEGATING,
+        isLegacy: true,
+      };
+      const wallet = {
+        ...legacyWallet,
+        ...extraLegacyWalletProps,
+      };
+      Logger.debug('AdaApi::restoreByronTrezorWallet success', { wallet });
+      return _createWalletFromServerData(wallet);
+    } catch (error) {
+      Logger.error('AdaApi::restoreByronTrezorWallet error', { error });
+      if (error.code === 'wallet_already_exists') {
+        throw new WalletAlreadyRestoredError();
+      }
+      // @API TODO - improve once error is handled by v2 API (REPORT to BE team)
+      if (error.message === 'JSONValidationFailed') {
+        const validationError = get(error, 'diagnostic.validationError', '');
+        if (
+          validationError.includes(
+            'Forbidden Mnemonic: an example Mnemonic has been submitted'
+          )
+        ) {
+          throw new ForbiddenMnemonicError();
+        }
+      }
+      throw new GenericApiError();
+    }
+  };
+
+  restoreByronLedgerWallet = async (
+    request: RestoreLegacyWalletRequest
+  ): Promise<Wallet> => {
+    Logger.debug('AdaApi::restoreByronLedgerWallet called', {
+      parameters: filterLogData(request),
+    });
+    const { recoveryPhrase, walletName, spendingPassword } = request;
+    const walletInitData = {
+      name: walletName,
+      mnemonic_sentence: recoveryPhrase,
+      passphrase: spendingPassword,
+    };
+    const type = WALLET_BYRON_KINDS.LEDGER;
+    try {
+      const legacyWallet: LegacyAdaWallet = await restoreByronWallet(
+        this.config,
+        { walletInitData },
+        type
+      );
+      const extraLegacyWalletProps = {
+        address_pool_gap: 0, // Not needed for legacy wallets
+        delegation: WalletDelegationStatuses.NOT_DELEGATING,
+        isLegacy: true,
+      };
+      const wallet = {
+        ...legacyWallet,
+        ...extraLegacyWalletProps,
+      };
+      Logger.debug('AdaApi::restoreByronLedgerWallet success', { wallet });
+      return _createWalletFromServerData(wallet);
+    } catch (error) {
+      Logger.error('AdaApi::restoreByronLedgerWallet error', { error });
+      if (error.code === 'wallet_already_exists') {
+        throw new WalletAlreadyRestoredError();
+      }
+      // @API TODO - improve once error is handled by v2 API (REPORT to BE team)
       if (error.message === 'JSONValidationFailed') {
         const validationError = get(error, 'diagnostic.validationError', '');
         if (
@@ -1336,7 +1535,7 @@ const _createWalletFromServerData = action(
   'AdaApi::_createWalletFromServerData',
   (data: AdaWallet) => {
     const {
-      id,
+      id: rawWalletId,
       address_pool_gap: addressPoolGap,
       balance,
       name,
@@ -1345,6 +1544,7 @@ const _createWalletFromServerData = action(
       delegation,
       isLegacy = false,
     } = data;
+    const id = isLegacy ? getLegacyWalletId(rawWalletId) : rawWalletId;
     const passphraseLastUpdatedAt = get(passphrase, 'last_updated_at', null);
     const walletTotalAmount =
       balance.total.unit === WalletUnits.LOVELACE

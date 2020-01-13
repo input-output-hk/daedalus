@@ -810,6 +810,13 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-recovery-phrase-attention-background-color':
       'rgba(234, 76, 91, .1)',
   },
+  walletRestoreDialog: {
+    '--theme-wallet-restore-dialog-new-label-background-color':
+      'rgba(45, 45, 45, 0.1)',
+    '--theme-wallet-restore-dialog-new-label-color': '#2d2d2d',
+    '--theme-wallet-restore-dialog-step-walletType-hardwareWalletDisclaimer-text-color':
+      '#ea4c5b',
+  },
 };
 
 const WHITE_THEME_PARAMS: CreateThemeParams = {
