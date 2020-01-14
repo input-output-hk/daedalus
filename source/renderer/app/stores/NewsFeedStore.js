@@ -1,6 +1,6 @@
 // @flow
 import { observable, action, runInAction, computed } from 'mobx';
-import { map, get, find, filter } from 'lodash';
+import { map, get, find } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import {
@@ -232,7 +232,7 @@ export default class NewsFeedStore extends Store {
           },
           date: get(item, ['updatedAt', currentLocale], item.date),
           read: readNews.includes(mainIdentificator),
-        }
+        };
       });
     }
     return new News.NewsCollection(news);

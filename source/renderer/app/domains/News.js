@@ -1,6 +1,6 @@
 // @flow
 import { observable, computed, runInAction } from 'mobx';
-import { get, filter, orderBy, includes, map } from 'lodash';
+import { get, filter, orderBy, includes } from 'lodash';
 import semver from 'semver';
 import type { NewsTarget, NewsType } from '../api/news/types';
 
