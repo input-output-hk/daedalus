@@ -29,7 +29,7 @@ export type InjectedDialogContainerStepProps = {
   stores: any | StoresMap,
   actions: any | ActionsMap,
   children: Node,
-  isVideoWatched: boolean,
+  isVideoWatched?: boolean,
   onClose: Function,
   onContinue: Function,
   onBack: Function,

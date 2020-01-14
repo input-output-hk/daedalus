@@ -7,11 +7,14 @@ export type TlsConfig = {
   key: Uint8Array,
 };
 
+export type CardanoNodeImplementation = 'jormungandr' | 'cardano-node';
+
 export type NetworkNames =
   | 'mainnet'
   | 'staging'
   | 'testnet'
   | 'development'
+  | 'itn_rewards_v1'
   | string;
 
 export type PlatformNames = 'win32' | 'linux' | 'darwin' | string;
@@ -21,6 +24,7 @@ export const NetworkNameOptions = {
   staging: 'staging',
   testnet: 'testnet',
   development: 'development',
+  itn_rewards_v1: 'itn_rewards_v1',
 };
 
 export type CardanoNodeState =
@@ -64,13 +68,16 @@ export type CardanoPidOptions =
   | 'staging-PREVIOUS-CARDANO-PID'
   | 'testnet-PREVIOUS-CARDANO-PID'
   | 'development-PREVIOUS-CARDANO-PID'
+  | 'itn_rewards_v1-PREVIOUS-CARDANO-PID'
   | string;
 
 export type CardanoNodeStorageKeys = {
   PREVIOUS_CARDANO_PID: CardanoPidOptions,
 };
 
-export type CardanoNodeProcessNames = 'cardano-node' | 'cardano-node.exe';
+export type CardanoNodeProcessNames =
+  | 'cardano-wallet-jormungandr'
+  | 'cardano-wallet-jormungandr.exe';
 
 export type ProcessNames = {
   CARDANO_PROCESS_NAME: CardanoNodeProcessNames,
@@ -81,9 +88,9 @@ export const CardanoProcessNameOptions: {
   linux: CardanoNodeProcessNames,
   darwin: CardanoNodeProcessNames,
 } = {
-  win32: 'cardano-node.exe',
-  linux: 'cardano-node',
-  darwin: 'cardano-node',
+  win32: 'cardano-wallet-jormungandr.exe',
+  linux: 'cardano-wallet-jormungandr',
+  darwin: 'cardano-wallet-jormungandr',
 };
 
 /**
@@ -113,7 +120,6 @@ export type FaultInjectionIpcRequest = [FaultInjection, boolean];
 
 export type CardanoStatus = {
   isNodeResponding: boolean,
-  isNodeSubscribed: boolean,
   isNodeSyncing: boolean,
   isNodeInSync: boolean,
   hasBeenConnected: boolean,

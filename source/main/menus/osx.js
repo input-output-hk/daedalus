@@ -10,7 +10,7 @@ import { NOTIFICATIONS } from '../../common/ipc/constants';
 import { generateSupportRequestLink } from '../../common/utils/reporting';
 
 const id = 'menu';
-const { isBlankScreenFixActive } = environment;
+const { isBlankScreenFixActive, isIncentivizedTestnet } = environment;
 
 export const osxMenu = (
   app: App,
@@ -120,14 +120,16 @@ export const osxMenu = (
           shell.openExternal(faqLink);
         },
       },
-      {
-        label: translation('helpSupport.blankScreenFix'),
-        type: 'checkbox',
-        checked: isBlankScreenFixActive,
-        click(item) {
-          actions.toggleBlankScreenFix(item);
-        },
-      },
+      !isIncentivizedTestnet
+        ? {
+            label: translation('helpSupport.blankScreenFix'),
+            type: 'checkbox',
+            checked: isBlankScreenFixActive,
+            click(item) {
+              actions.toggleBlankScreenFix(item);
+            },
+          }
+        : null,
       { type: 'separator' },
       {
         label: translation('helpSupport.safetyTips'),
@@ -167,14 +169,6 @@ export const osxMenu = (
         enabled: !isUpdateAvailable,
       },
       { type: 'separator' },
-      {
-        label: translation('helpSupport.blockConsolidationStatus'),
-        accelerator: 'Command+B',
-        click() {
-          actions.openBlockConsolidationStatusDialog();
-        },
-        enabled: !isUpdateAvailable,
-      },
       {
         label: translation('helpSupport.daedalusDiagnostics'),
         accelerator: 'Command+D',

@@ -11,7 +11,7 @@
   padding: 10px;
   position: absolute;
   user-select: text;
-  width: 240px;
+  width: 280px;
   z-index: 2;
 
   :global {
@@ -162,7 +162,7 @@
   }
 }
 
-.slug {
+.ticker {
   color: var(--theme-staking-stake-pool-tooltip-text-color);
   display: inline-block;
   font-size: 14px;
@@ -196,14 +196,22 @@
   text-overflow: ellipsis;
 }
 
-.url {
-  @include link(--theme-staking-stake-pool-tooltip-link-color);
+.homepageAddress {
+  @include link(--theme-link-main-color);
+  border-bottom-color: var(--theme-link-main-color);
   font-size: 14px;
   line-height: 1.36;
-  margin-bottom: 18px;
+  word-break: break-all;
+}
+
+.pledgeAddress {
+  @include link(--theme-link-main-color);
+  font-size: 14px;
+  line-height: 1.36;
+  margin-bottom: 14px;
   max-width: 100%;
 
-  .urlContent {
+  .pledgeAddressContent {
     display: inline-block;
     max-width: calc(100% - 14px);
     overflow: hidden;
@@ -212,9 +220,6 @@
 
   & > span {
     vertical-align: text-top;
-    svg {
-      vertical-align: baseline;
-    }
   }
 }
 
@@ -222,7 +227,7 @@
   @extend %regularText;
   display: flex;
   flex-wrap: wrap;
-  margin-bottom: 14px;
+  margin: 18px 0 6px 0;
 
   dt,
   dd {
@@ -239,14 +244,14 @@
     font-size: 14px;
     line-height: 1.36;
     opacity: 0.8;
-    width: 60%;
+    width: 65%;
   }
 
   dd {
     line-height: 0;
     padding-top: 1px;
     text-align: right;
-    width: 40%;
+    width: 35%;
   }
 
   span {
@@ -258,5 +263,14 @@
     height: 16px;
     line-height: 16px;
     padding: 0 9px;
+  }
+}
+
+.defaultColor {
+  span {
+    background: var(
+      --theme-staking-stake-pool-tooltip-neutral-background-color
+    );
+    color: var(--theme-staking-stake-pool-tooltip-neutral-text-color);
   }
 }

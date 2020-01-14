@@ -99,6 +99,9 @@
     .action {
       @extend %regularText;
       font-size: 14px;
+      .unknown {
+        font-family: var(--font-bold);
+      }
     }
     .stakePoolRankingIndicator {
       border-radius: 2px;
@@ -110,7 +113,7 @@
 
   b,
   .actionLink {
-    color: var(--theme-staking-link-color);
+    color: var(--theme-link-main-color);
     cursor: pointer;
   }
 }

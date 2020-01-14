@@ -15,9 +15,10 @@ type Props = {
   canPhraseBeShown: boolean,
   isPrivacyNoticeAccepted: boolean,
   countdownRemaining: number,
-  isTermDeviceAccepted: boolean,
+  isTermOfflineAccepted: boolean,
   canFinishBackup: boolean,
   isTermRecoveryAccepted: boolean,
+  isTermRewardsAccepted: boolean,
   isValid: boolean,
   isSubmitting: boolean,
   recoveryPhrase: string,
@@ -27,8 +28,9 @@ type Props = {
   onAcceptPrivacyNotice: Function,
   onContinue: Function,
   onStartWalletBackup: Function,
-  onAcceptTermDevice: Function,
+  onAcceptTermOffline: Function,
   onAcceptTermRecovery: Function,
+  onAcceptTermRewards: Function,
   onAddWord: Function,
   onClear: Function,
   onFinishBackup: Function,
@@ -48,14 +50,16 @@ export default class WalletBackupDialog extends Component<Props> {
       onContinue,
       recoveryPhrase,
       onStartWalletBackup,
-      isTermDeviceAccepted,
+      isTermOfflineAccepted,
       enteredPhrase,
       canFinishBackup,
       isTermRecoveryAccepted,
+      isTermRewardsAccepted,
       isValid,
       isSubmitting,
-      onAcceptTermDevice,
+      onAcceptTermOffline,
       onAcceptTermRecovery,
+      onAcceptTermRewards,
       onAddWord,
       onClear,
       onFinishBackup,
@@ -87,14 +91,16 @@ export default class WalletBackupDialog extends Component<Props> {
     if (currentStep === WALLET_BACKUP_STEPS.RECOVERY_PHRASE_ENTRY) {
       return (
         <WalletRecoveryPhraseEntryDialog
-          isTermDeviceAccepted={isTermDeviceAccepted}
+          isTermOfflineAccepted={isTermOfflineAccepted}
           enteredPhrase={enteredPhrase}
           canFinishBackup={canFinishBackup}
           isTermRecoveryAccepted={isTermRecoveryAccepted}
+          isTermRewardsAccepted={isTermRewardsAccepted}
           isValid={isValid}
           isSubmitting={isSubmitting}
-          onAcceptTermDevice={onAcceptTermDevice}
+          onAcceptTermOffline={onAcceptTermOffline}
           onAcceptTermRecovery={onAcceptTermRecovery}
+          onAcceptTermRewards={onAcceptTermRewards}
           onAddWord={onAddWord}
           onCancelBackup={onCancelBackup}
           onClear={onClear}

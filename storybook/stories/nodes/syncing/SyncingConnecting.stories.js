@@ -3,11 +3,14 @@ import React from 'react';
 import { number, boolean, radios } from '@storybook/addon-knobs';
 import { linkTo } from '@storybook/addon-links';
 import { action } from '@storybook/addon-actions';
+import { isIncentivizedTestnetTheme } from '../../_support/utils';
 
 import SyncingConnecting from '../../../../source/renderer/app/components/loading/syncing-connecting/SyncingConnecting';
 import { CardanoNodeStates } from '../../../../source/common/types/cardano-node.types';
 
-export const DefaultSyncingConnectingStory = () => (
+export const DefaultSyncingConnectingStory = (props: {
+  currentTheme: string,
+}) => (
   <SyncingConnecting
     hasUnreadAlerts={false}
     hasUnreadAnnouncements={false}
@@ -43,10 +46,13 @@ export const DefaultSyncingConnectingStory = () => (
     onStatusIconClick={linkTo('Diagnostics', () => 'default')}
     disableDownloadLogs={boolean('disableDownloadLogs', true)}
     showNewsFeedIcon
+    isIncentivizedTestnet={isIncentivizedTestnetTheme(props.currentTheme)}
   />
 );
 
-export const ConnectivityIssuesSyncingConnectingStory = () => (
+export const ConnectivityIssuesSyncingConnectingStory = (props: {
+  currentTheme: string,
+}) => (
   <SyncingConnecting
     hasUnreadAlerts={false}
     hasUnreadAnnouncements={false}
@@ -79,10 +85,13 @@ export const ConnectivityIssuesSyncingConnectingStory = () => (
     onStatusIconClick={linkTo('Diagnostics', () => 'default')}
     disableDownloadLogs={boolean('disableDownloadLogs', false)}
     showNewsFeedIcon
+    isIncentivizedTestnet={isIncentivizedTestnetTheme(props.currentTheme)}
   />
 );
 
-export const SyncIssuesSyncingConnectingStory = () => (
+export const SyncIssuesSyncingConnectingStory = (props: {
+  currentTheme: string,
+}) => (
   <SyncingConnecting
     hasUnreadAlerts={false}
     hasUnreadAnnouncements={false}
@@ -115,5 +124,6 @@ export const SyncIssuesSyncingConnectingStory = () => (
     onStatusIconClick={linkTo('Diagnostics', () => 'default')}
     disableDownloadLogs={boolean('disableDownloadLogs', false)}
     showNewsFeedIcon
+    isIncentivizedTestnet={isIncentivizedTestnetTheme(props.currentTheme)}
   />
 );

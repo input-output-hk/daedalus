@@ -1,13 +1,15 @@
 // @flow
+import { expect } from 'chai';
 import { expectTextInSelector, waitAndClick } from '../../../common/e2e/steps/helpers';
-import { WalletSyncStateTags } from '../../../../source/renderer/app/domains/Wallet';
-import type { Daedalus, WebdriverClient } from '../../../types';
+import { WalletSyncStateStatuses } from '../../../../source/renderer/app/domains/Wallet';
+import type { Daedalus } from '../../../types';
 
 declare var daedalus: Daedalus;
 
 const ADD_WALLET = '.WalletAdd';
 const IMPORT_WALLET_BUTTON = '.importWalletButton';
 const IMPORT_WALLET_DIALOG = '.WalletFileImportDialog';
+const DEFAULT_LANGUAGE = 'en-US';
 
 export const addOrSetWalletsForScenario = function(wallet: Object) {
   this.wallet = wallet;
@@ -18,69 +20,25 @@ export const addOrSetWalletsForScenario = function(wallet: Object) {
   }
 };
 
-export const addWalletHelpers = {
-  waitForVisible: (
-    client: WebdriverClient,
-    { isHidden } : { isHidden: boolean } = {}
-  ) =>
-    client.waitForVisible(ADD_WALLET, null, isHidden),
-  clickImportButton: (client: WebdriverClient) =>
-    waitAndClick(client, `${ADD_WALLET} ${IMPORT_WALLET_BUTTON}`),
-};
-
-const createWalletsAsync = async (table, context) => {
-  const result = await context.client.executeAsync((wallets, done) => {
-    const mnemonics = {};
-    window.Promise.all(
-      wallets.map(wallet => {
-        const mnemonic = daedalus.utils.crypto.generateMnemonic();
-        mnemonics[wallet.name] = mnemonic.split(' ');
-        return daedalus.api.ada.createWallet({
-          name: wallet.name,
-          mnemonic,
-          spendingPassword: wallet.password || null,
-        });
+export const restoreWalletWithFunds = async (client: Object, { walletName }: { walletName: string }) =>
+  client.executeAsync((name, done) => {
+    daedalus.api.ada
+      .restoreWallet({
+        walletName: name,
+        recoveryPhrase:
+          'awkward electric strong early rose abuse mutual limit ketchup child limb exist hurry business whisper',
+        spendingPassword: 'Secret1234',
       })
-    )
       .then(() =>
-        daedalus.stores.wallets.walletsRequest
-          .execute()
-          .then(storeWallets =>
-            daedalus.stores.wallets
-              .refreshWalletsData()
-              .then(() => done({ storeWallets, mnemonics }))
-              .catch(error => done(error))
-          )
+        daedalus.stores.wallets
+          .refreshWalletsData()
+          .then(done)
           .catch(error => done(error))
       )
-      .catch(error => done(error.stack));
-  }, table);
-  // Add or set the wallets for this scenario
-  if (context.wallets != null) {
-    context.wallets.push(...result.value.storeWallets);
-  } else {
-    context.wallets = result.value.storeWallets;
-  }
-  if (context.mnemonics != null) {
-    context.mnemonics.push(...result.value.mnemonics);
-  } else {
-    context.mnemonics = result.value.mnemonics;
-  }
-};
+      .catch(error => done(error));
+  }, walletName);
 
-export const createWallets = async (
-  wallets: Array<{}>,
-  context: Object,
-  options: Object = {}
-) => {
-  if (options.sequentially === true) {
-    await createWalletsSequentially(wallets, context);
-  } else {
-    await createWalletsAsync(wallets, context);
-  }
-};
-
-const createWalletsSequentially = async (wallets, context) => {
+const createWalletsSequentially = async (wallets: Array<any>, context: Object) => {
   context.wallets = [];
   for (const walletData of wallets) {
     const result = await context.client.executeAsync((wallet, done) => {
@@ -88,7 +46,7 @@ const createWalletsSequentially = async (wallets, context) => {
         .createWallet({
           name: wallet.name,
           mnemonic: daedalus.utils.crypto.generateMnemonic(),
-          spendingPassword: wallet.password || null,
+          spendingPassword: wallet.password || 'Secret1234',
         })
         .then(() =>
           daedalus.stores.wallets.walletsRequest
@@ -139,16 +97,16 @@ export const getWalletByName = function(walletName: string) {
 
 export const importWalletHelpers = {
   waitForDialog: (
-    client: WebdriverClient,
+    client: Object,
     { isHidden } : { isHidden: boolean } = {}
   ) =>
     client.waitForVisible(IMPORT_WALLET_DIALOG, null, isHidden),
   clickImport: (
-    client: WebdriverClient
+    client: Object
   ) =>
     waitAndClick(client, `${IMPORT_WALLET_DIALOG} .primary`),
   expectError: (
-    client: WebdriverClient,
+    client: Object,
     { error }: { error: string }
   ) =>
     expectTextInSelector(client, {
@@ -158,7 +116,7 @@ export const importWalletHelpers = {
 };
 
 export const importWalletWithFunds = async (
-  client: WebdriverClient,
+  client: Object,
   { keyFilePath, password }: { keyFilePath: string, password: ?string }
 ) =>
   client.executeAsync(
@@ -177,20 +135,13 @@ export const importWalletWithFunds = async (
     password
   );
 
-export const isActiveWalletBeingRestored = async (client: WebdriverClient) => {
+export const isActiveWalletBeingRestored = async (client: Object) => {
   const result = await client.execute(
-    (expectedSyncTag: string) => {
-      if (
-        daedalus.stores.wallets.active &&
-        daedalus.stores.wallets.active.syncState
-      ) {
-        return daedalus.stores.wallets.active.syncState.tag === expectedSyncTag;
-      }
-      return false;
-    },
-    WalletSyncStateTags.RESTORING
+    expectedSyncTag =>
+      daedalus.stores.wallets.active === expectedSyncTag,
+    WalletSyncStateStatuses.RESTORING
   );
-  return result.value;
+  return result.value ? result.value.syncState.tag : false;
 };
 
 export const waitUntilWalletIsLoaded = async function(walletName: string): Promise<any> {
@@ -198,7 +149,7 @@ export const waitUntilWalletIsLoaded = async function(walletName: string): Promi
   const context = this;
   await context.client.waitUntil(async () => {
     const result = await context.client.execute(
-      name => daedalus.stores.wallets.getWalletByName(name),
+      (name) => daedalus.stores.wallets.getWalletByName(name),
       walletName
     );
     if (result.value) {
@@ -219,3 +170,151 @@ export const waitUntilWaletNamesEqual = function(walletName: string) {
     return currentWalletName === walletName;
   });
 };
+
+export const expectActiveWallet = async function(walletName: string) {
+  const displayedWalletName = await getNameOfActiveWalletInSidebar.call(this);
+  expect(displayedWalletName.toLowerCase().trim()).to.equal(
+    walletName.toLowerCase().trim()
+  );
+};
+
+const createWalletsAsync = async (table, context: Object) => {
+  const result = await context.client.executeAsync((wallets, done) => {
+    const mnemonics = {};
+    window.Promise.all(
+      wallets.map(wallet => {
+        const mnemonic = daedalus.utils.crypto.generateMnemonic();
+        mnemonics[wallet.name] = mnemonic.split(' ');
+        return daedalus.api.ada.createWallet({
+          name: wallet.name,
+          mnemonic,
+          spendingPassword: wallet.password || 'Secret1234',
+        });
+      })
+    )
+      .then(() =>
+        daedalus.stores.wallets.walletsRequest
+          .execute()
+          .then(storeWallets =>
+            daedalus.stores.wallets
+              .refreshWalletsData()
+              .then(() => done({ storeWallets, mnemonics }))
+              .catch(error => done(error))
+          )
+          .catch(error => done(error))
+      )
+      .catch(error => done(error.stack));
+  }, table);
+  // Add or set the wallets for this scenario
+  if (context.wallets != null) {
+    context.wallets.push(...result.value.storeWallets);
+  } else {
+    context.wallets = result.value.storeWallets;
+  }
+  if (context.mnemonics != null) {
+    context.mnemonics.push(...result.value.mnemonics);
+  } else {
+    context.mnemonics = result.value.mnemonics;
+  }
+};
+
+export const createWallets = async (wallets: Array<any>, context: Object, options: { sequentially?: boolean } = {}) => {
+  if (options.sequentially === true) {
+    await createWalletsSequentially(wallets, context);
+  } else {
+    await createWalletsAsync(wallets, context);
+  }
+};
+
+
+export const getCurrentAppRoute = async function() {
+  const url = (await this.client.url()).value;
+  return url.substring(url.indexOf('#/') + 1); // return without the hash
+};
+
+export const waitUntilUrlEquals = function(expectedUrl: string) {
+  const context = this;
+  return context.client.waitUntil(async () => {
+    const url = await getCurrentAppRoute.call(context);
+    return url === expectedUrl;
+  });
+};
+
+export const navigateTo = function(requestedRoute: string) {
+  return this.client.execute(route => {
+    daedalus.actions.router.goToRoute.trigger({ route });
+  }, requestedRoute);
+};
+
+export const sidebar = {
+  activateCategory: async (client: Object, { category }: { category: string }) => {
+    await client.execute(cat => {
+      daedalus.actions.sidebar.activateSidebarCategory.trigger({
+        category: cat,
+        showSubMenu: true,
+      });
+    }, `/${category}`);
+    return client.waitForVisible(`.SidebarCategory_active.${category}`);
+  },
+  clickAddWalletButton: (client: Object) =>
+    waitAndClick(client, '.SidebarWalletsMenu_addWalletButton'),
+};
+
+export const addWalletPage = {
+  waitForVisible: (client: Object, { isHidden }: { isHidden?: boolean } = {}) =>
+    client.waitForVisible(ADD_WALLET, null, isHidden),
+  clickImportButton: (client: Object) =>
+    waitAndClick(client, `${ADD_WALLET} ${IMPORT_WALLET_BUTTON}`),
+};
+
+export default {
+  waitForDialog: (client: Object, { isHidden }: { isHidden?: boolean } = {}) =>
+    client.waitForVisible(IMPORT_WALLET_DIALOG, null, isHidden),
+  selectFile: (client: Object, { filePath }: { filePath: string }) =>
+    client.chooseFile(
+      `${IMPORT_WALLET_DIALOG} .FileUploadWidget_dropZone input`,
+      filePath
+    ),
+  clickImport: (client: Object) =>
+    waitAndClick(client, `${IMPORT_WALLET_DIALOG} .primary`),
+  expectError: (client: Object, { error }: { error: string }) =>
+    expectTextInSelector(client, {
+      selector: `${IMPORT_WALLET_DIALOG}_error`,
+      text: error,
+    }),
+};
+
+export const i18n = {
+  formatMessage: async (
+    client: Object,
+    { id, values }: { id: string, values?: Object }
+  ) => {
+    const translation = await client.execute(
+      (translationId, translationValues) => {
+        const IntlProvider = require('react-intl').IntlProvider; // eslint-disable-line
+        const locale = daedalus.stores.profile.currentLocale;
+        const messages = daedalus.translations;
+        const intlProvider = new IntlProvider(
+          { locale, messages: messages[locale] },
+          {}
+        );
+        return intlProvider
+          .getChildContext()
+          .intl.formatMessage({ id: translationId }, translationValues);
+      },
+      id,
+      values || {}
+    );
+    return translation.value;
+  },
+  setActiveLanguage: async (
+    client: Object,
+    { language }: { language: string } = {}
+  ) =>
+    client.execute(value => {
+      daedalus.actions.profile.updateUserLocalSetting.trigger({ param: 'locale', value });
+    }, language || DEFAULT_LANGUAGE),
+};
+
+export const waitForActiveRestoreNotification = (client: Object, { isHidden }: { isHidden?: boolean } = {}) =>
+  client.waitForVisible('.ActiveRestoreNotification', null, isHidden);

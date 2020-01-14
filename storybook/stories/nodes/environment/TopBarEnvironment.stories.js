@@ -34,6 +34,29 @@ const topBarTestEnv = (
   </TopBar>
 );
 
+const topBarItnEnv = (
+  <TopBar
+    formattedWalletAmount={formattedWalletAmount}
+    currentRoute=""
+    showSubMenuToggle={false}
+    leftIcon={menuIconClosed}
+  >
+    <WalletTestEnvironmentLabel network="itn_rewards_v1" />
+    <NodeSyncStatusIcon
+      networkStatus={{
+        isSynced: true,
+        syncPercentage: 100,
+      }}
+      isProduction={false}
+      isMainnet={false}
+    />
+    <NewsFeedIcon
+      onNewsFeedIconClick={action('onNewsFeedIconClick')}
+      showDot={false}
+    />
+  </TopBar>
+);
+
 const topBarProductionEnv = (
   <TopBar
     formattedWalletAmount={formattedWalletAmount}
@@ -61,10 +84,12 @@ storiesOf('Nodes|Environment', module)
 
   // ====== Stories ======
 
-  .add('Test Environment label', () => (
+  .add('Testnet', () => (
     <SidebarLayout topbar={topBarTestEnv} sidebar={<noscript />} />
   ))
-
-  .add('Production Environment', () => (
+  .add('Incentivized Testnet', () => (
+    <SidebarLayout topbar={topBarItnEnv} sidebar={<noscript />} />
+  ))
+  .add('Production', () => (
     <SidebarLayout topbar={topBarProductionEnv} sidebar={<noscript />} />
   ));

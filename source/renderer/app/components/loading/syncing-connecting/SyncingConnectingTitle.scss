@@ -1,32 +1,37 @@
-@import '../../../themes/mixins/animations';
-
 .component {
-  bottom: 64px;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  left: 0;
   position: absolute;
-  text-align: center;
+  top: calc(50% + 67.5px);
   width: 100%;
-}
 
-.syncing {
-  color: var(--theme-syncing-text-color);
-}
-
-.headline {
-  font-family: var(--font-regular);
-  font-size: 18px;
-}
-
-.connecting {
-  color: var(--theme-connecting-text-color);
-  .headline {
-    overflow: visible;
-    &:not(.withoutAnimation) {
-      @include animated-ellipsis($width: 20px);
-    }
+  .textContent {
+    font-family: var(--font-semibold);
+    font-size: 20px;
+    letter-spacing: 1px;
+    line-height: 1.2;
+    text-transform: uppercase;
   }
-}
 
-.component,
-.headline {
-  -webkit-backface-visibility: hidden;
+  .title {
+    color: var(--theme-syncing-connecting-title-color);
+    margin-bottom: 5px;
+    margin-top: 30px;
+  }
+
+  .subTitle1 {
+    color: var(--theme-syncing-connecting-subTitle1-color);
+    margin-bottom: 5px;
+    text-transform: none;
+  }
+
+  .subTitle2 {
+    color: var(--theme-syncing-connecting-subTitle2-color);
+    font-size: 16px;
+    letter-spacing: 0.8px;
+    line-height: 1.38;
+    margin-bottom: 20px;
+  }
 }

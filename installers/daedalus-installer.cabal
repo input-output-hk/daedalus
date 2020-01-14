@@ -2,10 +2,10 @@ name:                daedalus-installer
 version:             0.1.0.0
 synopsis:            Daedalus Installer Builder
 description:         Please see README.md
-license:             MIT
-author:              Serokell
-maintainer:          Serokell <hi@serokell.io>
-copyright:           2016 IOHK
+license:             Apache-2.0
+author:              IOHK
+maintainer:          DevOps <devops@iohk.io>
+copyright:           2019 IOHK
 build-type:          Simple
 extra-source-files:  README.md
 cabal-version:       >=1.10
@@ -29,8 +29,6 @@ library
                      , bytestring
                      , unordered-containers
                      , containers
-                     , dhall
-                     , dhall-json
                      , directory
                      , github
                      , lens-aeson
@@ -52,19 +50,20 @@ executable make-installer
   build-depends:       base
                      , bytestring
                      , containers
+                     , daedalus-installer
                      , directory
-                     , foldl
                      , filepath
+                     , foldl
+                     , optional-args
                      , optparse-applicative
                      , optparse-generic
-                     , optional-args
                      , split
                      , system-filepath
                      , temporary
                      , text
                      , turtle
                      , universum
-                     , daedalus-installer
+                     , yaml
 
   default-language:    Haskell2010
   ghc-options:         -threaded -rtsopts
@@ -85,8 +84,6 @@ test-suite test-make-installer
                      , aeson
                      , bytestring
                      , containers
-                     , dhall
-                     , dhall-json
                      , directory
                      , filepath
                      , foldl

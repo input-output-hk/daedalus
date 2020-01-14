@@ -1,14 +1,17 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
+import { get } from 'lodash';
 import MainLayout from '../MainLayout';
 import WalletWithNavigation from '../../components/wallet/layouts/WalletWithNavigation';
 import LoadingSpinner from '../../components/widgets/LoadingSpinner';
 import RestoreNotification from '../../components/notifications/RestoreNotification';
 import { buildRoute } from '../../utils/routing';
 import { ROUTES } from '../../routes-config';
+import { WalletSyncStateStatuses } from '../../domains/Wallet';
 import type { InjectedContainerProps } from '../../types/injectedPropsType';
 import type { NavDropdownProps } from '../../components/navigation/Navigation';
+import { WalletRecoveryPhraseVerificationStatuses } from '../../stores/WalletsStore';
 
 type Props = InjectedContainerProps;
 
@@ -48,10 +51,11 @@ export default class Wallet extends Component<Props> {
   };
 
   render() {
-    const { wallets, profile, app } = this.props.stores;
-    const { currentLocale } = profile;
+    const { wallets, app, networkStatus } = this.props.stores;
 
-    if (!wallets.active) {
+    const { active: activeWallet } = wallets;
+
+    if (!activeWallet) {
       return (
         <MainLayout>
           <LoadingSpinner />
@@ -59,28 +63,36 @@ export default class Wallet extends Component<Props> {
       );
     }
 
+    const isRestoreActive =
+      get(wallets, ['active', 'syncState', 'status']) ===
+      WalletSyncStateStatuses.RESTORING;
+    const restoreProgress = get(
+      activeWallet,
+      ['syncState', 'progress', 'quantity'],
+      0
+    );
+
     const {
-      hasActiveWalletNotification,
-      isActiveWalletRestoring,
-      restoreETA,
-      restoreProgress,
-    } = wallets;
+      recoveryPhraseVerificationStatus,
+    } = wallets.getWalletRecoveryPhraseVerification(activeWallet.id);
+    const { isIncentivizedTestnet } = networkStatus;
+    const hasNotification =
+      recoveryPhraseVerificationStatus ===
+        WalletRecoveryPhraseVerificationStatuses.NOTIFICATION &&
+      !isIncentivizedTestnet;
 
     return (
       <MainLayout>
-        {isActiveWalletRestoring ? (
-          <RestoreNotification
-            currentLocale={currentLocale}
-            restoreProgress={restoreProgress}
-            restoreETA={restoreETA}
-          />
+        {isRestoreActive ? (
+          <RestoreNotification restoreProgress={restoreProgress} />
         ) : null}
 
         <WalletWithNavigation
           isActiveScreen={this.isActiveScreen}
           onWalletNavItemClick={this.handleWalletNavItemClick}
           activeItem={app.currentPage}
-          hasNotification={hasActiveWalletNotification}
+          isLegacy={activeWallet.isLegacy}
+          hasNotification={hasNotification}
         >
           {this.props.children}
         </WalletWithNavigation>

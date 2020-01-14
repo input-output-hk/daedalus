@@ -118,7 +118,7 @@ export default class StakingEpochsPreviousEpochData extends Component<
     const tableBody = (
       <tbody>
         {map(sortedData, (row, key) => {
-          const poolSlug = get(row, ['pool', 'slug'], '');
+          const poolTicker = get(row, ['pool', 'ticker'], '');
           const poolName = get(row, ['pool', 'name'], '');
           const slotsElected = get(row, 'slotsElected', [0, 0]);
           const performance = get(row, 'performance', [0, 0, 0]);
@@ -129,7 +129,7 @@ export default class StakingEpochsPreviousEpochData extends Component<
               <td>
                 <p>
                   <span className={styles.stakePoolReference}>
-                    [{poolSlug}]
+                    [{poolTicker}]
                   </span>{' '}
                   {poolName}
                 </p>

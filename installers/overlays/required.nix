@@ -1,17 +1,11 @@
 { pkgs }:
 
-with import ../../lib.nix;
-
 with pkgs.haskell.lib;
 
-self: super: rec {
-      dhall-json = doJailbreak (self.callPackage ../../installers/dhall-json.nix {});
-      dhall = doJailbreak (self.callPackage ../../installers/dhall-haskell.nix {});
-      daedalus-installer = self.callPackage ../../installers/daedalus-installer.nix {};
-      nsis = self.callCabal2nix "nsis" (pkgs.fetchFromGitHub {
-        owner = "input-output-hk";
-        repo = "haskell-nsis";
-        rev = "020e61eced93eaa6ab86ac603617e93aa6bf5af0";
-        sha256 = "0l0naknnyyrmkrn41mn7ggnjdagld0isdji98khn2iasbcllyip5";
-      }) {};
+self: super: {
+  daedalus-installer = self.callPackage ../daedalus-installer.nix {};
+  dhall-json = self.callPackage ./dhall-json.nix {};
+  dhall = dontCheck (doJailbreak (self.callPackage ./dhall.nix {}));
+  universum = dontCheck (self.callPackage ./universum.nix {});
+  nsis = self.callPackage ./nsis.nix {};
 }

@@ -1,0 +1,161 @@
+{
+  "updatedAt": 1569324863299,
+  "items": [
+    {
+      "title": {
+        "en-US": "Info 1 in English",
+        "ja-JP": "Info 1 in Japanese"
+      },
+      "content": {
+        "en-US": "# h1 English info content 1\nUt consequat semper viverra nam libero justo laoreet sit.",
+        "ja-JP": "# h1 Japanese info content 1\nUt consequat semper viverra nam libero justo laoreet sit."
+      },
+      "target": {
+        "daedalusVersion": "0.12.0 - 0.14.0",
+        "platforms": ["darwin", "win32", "linux"]
+      },
+      "action": {
+        "label": {
+          "en-US": "Visit en-US",
+          "ja-JP": "Visit ja-JP"
+        },
+        "url": {
+          "en-US": "https://iohk.zendesk.com/hc/en-us/articles/",
+          "ja-JP": "https://iohk.zendesk.com/hc/ja/articles/"
+        }
+      },
+      "date": 1569324863299,
+      "type": "info"
+    },
+    {
+      "title": {
+        "en-US": "Info 2 in English - a little bit longer title",
+        "ja-JP": "Info 2 in Japanese"
+      },
+      "content": {
+        "en-US": "# h1 English info content 2\n",
+        "ja-JP": "# h1 Japanese info content 2\n."
+      },
+      "target": {
+        "daedalusVersion": "0.12.0 - 0.14.0",
+        "platforms": ["darwin", "win32", "linux"]
+      },
+      "action": {
+        "label": {
+          "en-US": "Visit en-US",
+          "ja-JP": "Visit ja-JP"
+        },
+        "url": {
+          "en-US": "https://iohk.zendesk.com/hc/en-us/articles/",
+          "ja-JP": "https://iohk.zendesk.com/hc/ja/articles/"
+        }
+      },
+      "date": 1568979341589,
+      "type": "info"
+    },
+    {
+      "title": {
+        "en-US": "Linux news 1 in English",
+        "ja-JP": "Linux news 1 in Japanese"
+      },
+      "content": {
+        "en-US": "# h1 English info content 3\nUt consequat semper viverra nam libero justo laoreet sit.",
+        "ja-JP": "# h1 Japanese info content 3\nUt consequat semper viverra nam libero justo laoreet sit."
+      },
+      "target": {
+        "daedalusVersion": "0.12.0 - 0.14.0",
+        "platforms": ["linux"]
+      },
+      "action": {
+        "label": {
+          "en-US": "Visit en-US",
+          "ja-JP": "Visit ja-JP"
+        },
+        "url": {
+          "en-US": "https://iohk.zendesk.com/hc/en-us/articles/",
+          "ja-JP": "https://iohk.zendesk.com/hc/ja/articles/"
+        }
+      },
+      "date": 1569152115002,
+      "type": "info"
+    },
+    {
+      "title": {
+        "en-US": "Announcement 1 in English",
+        "ja-JP": "Announcement 1 in Japanese"
+      },
+      "content": {
+        "en-US": "# h1 English announcement content 1\nUt consequat semper viverra nam libero justo laoreet sit.",
+        "ja-JP": "# h1 Japanese announcement content 1\nUt consequat semper viverra nam libero justo laoreet sit."
+      },
+      "target": {
+        "daedalusVersion": "0.12.0 - 0.14.0",
+        "platforms": ["darwin", "win32", "linux"]
+      },
+      "action": {
+        "label": {
+          "en-US": "Visit en-US",
+          "ja-JP": "Visit ja-JP"
+        },
+        "url": {
+          "en-US": "https://iohk.zendesk.com/hc/en-us/articles/",
+          "ja-JP": "https://iohk.zendesk.com/hc/ja/articles/"
+        }
+      },
+      "date": 1569065729169,
+      "type": "announcement"
+    },
+    {
+      "title": {
+        "en-US": "Announcement 2 in English - a little bit longer title",
+        "ja-JP": "Announcement 2 in Japanese"
+      },
+      "content": {
+        "en-US": "# h1 English announcement content 2\n",
+        "ja-JP": "# h1 Japanese announcement content 2\n."
+      },
+      "target": {
+        "daedalusVersion": "0.12.0 - 0.14.0",
+        "platforms": ["darwin", "win32", "linux"]
+      },
+      "action": {
+        "label": {
+          "en-US": "Visit en-US",
+          "ja-JP": "Visit ja-JP"
+        },
+        "url": {
+          "en-US": "https://iohk.zendesk.com/hc/en-us/articles/",
+          "ja-JP": "https://iohk.zendesk.com/hc/ja/articles/"
+        }
+      },
+      "date": 1569238489658,
+      "type": "announcement"
+    },
+    {
+      "title": {
+        "en-US": "Windows announcement 1 in English",
+        "ja-JP": "Windows announcement 1 in Japanese"
+      },
+      "content": {
+        "en-US": "# h1 English announcement content 3\nUt consequat semper viverra nam libero justo laoreet sit.",
+        "ja-JP": "# h1 Japanese announcement content 3\nUt consequat semper viverra nam libero justo laoreet sit."
+      },
+      "target": {
+        "daedalusVersion": "0.12.0 - 0.14.0",
+        "platforms": ["linux"]
+      },
+      "action": {
+        "label": {
+          "en-US": "Visit en-US",
+          "ja-JP": "Visit ja-JP"
+        },
+        "url": {
+          "en-US": "https://iohk.zendesk.com/hc/en-us/articles/",
+          "ja-JP": "https://iohk.zendesk.com/hc/ja/articles/"
+        }
+      },
+      "date": 1568892951736,
+      "type": "announcement"
+    }
+  ]
+}

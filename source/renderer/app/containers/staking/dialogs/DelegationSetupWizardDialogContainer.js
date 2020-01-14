@@ -2,10 +2,14 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
-import { map, find, get } from 'lodash';
+import { find, get, take } from 'lodash';
+import BigNumber from 'bignumber.js';
 import DelegationSetupWizardDialog from '../../../components/staking/delegation-setup-wizard/DelegationSetupWizardDialog';
-import { formattedWalletAmount } from '../../../utils/formatters';
-import { MIN_DELEGATION_FUNDS } from '../../../config/stakingConfig';
+import {
+  MIN_DELEGATION_FUNDS,
+  RECENT_STAKE_POOLS_COUNT,
+} from '../../../config/stakingConfig';
+import { getNetworkExplorerUrlByType } from '../../../utils/network';
 import type { InjectedDialogContainerProps } from '../../../types/injectedPropsType';
 
 const messages = defineMessages({
@@ -27,20 +31,16 @@ const messages = defineMessages({
   },
   delegationSetupStep3Label: {
     id: 'staking.delegationSetup.steps.step.3.label',
-    defaultMessage: '!!!Delegation',
+    defaultMessage: '!!!Confirmation',
     description: 'Step 3 label text on delegation steps dialog.',
-  },
-  delegationSetupStep4Label: {
-    id: 'staking.delegationSetup.steps.step.4.label',
-    defaultMessage: '!!!Activation',
-    description: 'Step 4 label text on delegation steps dialog.',
   },
 });
 
 type State = {
   activeStep: number,
-  selectedWalletId: ?string,
-  selectedPoolId: ?string,
+  selectedWalletId: string,
+  selectedPoolId: string,
+  stakePoolJoinFee: ?BigNumber,
 };
 
 type Props = InjectedDialogContainerProps;
@@ -62,28 +62,40 @@ export default class DelegationSetupWizardDialogContainer extends Component<
     onClose: () => {},
   };
 
-  state = {
-    activeStep: 0,
-    selectedWalletId: get(
+  handleIsWalletAcceptable = (walletAmount: BigNumber) =>
+    walletAmount.gte(new BigNumber(MIN_DELEGATION_FUNDS));
+
+  get selectedWalletId() {
+    return get(
       this.props,
       ['stores', 'uiDialogs', 'dataForActiveDialog', 'walletId'],
       null
-    ),
-    selectedPoolId: get(
+    );
+  }
+
+  get selectedPoolId() {
+    return get(
       this.props,
       ['stores', 'uiDialogs', 'dataForActiveDialog', 'poolId'],
       null
-    ),
+    );
+  }
+
+  state = {
+    activeStep: 0,
+    selectedWalletId: this.selectedWalletId,
+    selectedPoolId: this.selectedPoolId,
+    stakePoolJoinFee: new BigNumber(0),
   };
 
   STEPS_LIST = [
     this.context.intl.formatMessage(messages.delegationSetupStep1Label),
     this.context.intl.formatMessage(messages.delegationSetupStep2Label),
     this.context.intl.formatMessage(messages.delegationSetupStep3Label),
-    this.context.intl.formatMessage(messages.delegationSetupStep4Label),
   ];
 
   handleDialogClose = () => {
+    this.props.stores.staking.joinStakePoolRequest.reset();
     this.props.actions.dialogs.closeActiveDialog.trigger();
   };
 
@@ -94,6 +106,7 @@ export default class DelegationSetupWizardDialogContainer extends Component<
 
   onBack = () => {
     const { activeStep } = this.state;
+    this.props.stores.staking.joinStakePoolRequest.reset();
     this.setState({ activeStep: activeStep - 1 });
   };
 
@@ -104,14 +117,14 @@ export default class DelegationSetupWizardDialogContainer extends Component<
     this.props.stores.app.openExternalLink(learnMoreLinkUrl);
   };
 
-  handleConfirm = () => {
-    // @TODO - proceed confirmation data
-    this.handleContinue();
-  };
-
-  handleActivate = () => {
-    // @TODO - proceed activation data
-    this.handleDialogClose();
+  handleConfirm = (spendingPassword: string) => {
+    const { selectedPoolId, selectedWalletId } = this.state;
+    this.props.stores.staking.joinStakePoolRequest.reset();
+    this.props.actions.staking.joinStakePool.trigger({
+      stakePoolId: selectedPoolId,
+      walletId: selectedWalletId,
+      passphrase: spendingPassword,
+    });
   };
 
   handleSelectWallet = (walletId: string) => {
@@ -120,54 +133,67 @@ export default class DelegationSetupWizardDialogContainer extends Component<
   };
 
   handleSelectPool = (poolId: string) => {
+    this._handleCalculateTransactionFee();
     this.setState({ selectedPoolId: poolId });
     this.handleContinue();
   };
 
   render() {
-    const { activeStep, selectedWalletId, selectedPoolId } = this.state;
-    const { app, staking, wallets, profile } = this.props.stores;
-    const { currentTheme } = profile;
-    const { stakePools, delegatingStakePools } = staking;
-
-    let setupDisabled = true;
-    const walletsData = map(wallets.all, wallet => {
-      const value = formattedWalletAmount(wallet.amount);
-      const isAcceptableSetupWallet = parseFloat(value) >= MIN_DELEGATION_FUNDS;
-
-      // Setup enabled if at least one wallet has more that 1 ADA
-      if (isAcceptableSetupWallet) {
-        setupDisabled = false;
-      }
-
-      return {
-        id: wallet.id,
-        label: wallet.name,
-        value,
-        isAcceptableSetupWallet,
-        hasPassword: wallet.hasPassword,
-      };
-    });
+    const {
+      activeStep,
+      selectedWalletId,
+      selectedPoolId,
+      stakePoolJoinFee,
+    } = this.state;
+    const { app, staking, wallets, profile, networkStatus } = this.props.stores;
+    const { futureEpoch } = networkStatus;
+    const { currentTheme, currentLocale, environment } = profile;
+    const {
+      stakePools,
+      recentStakePools,
+      joinStakePoolRequest,
+      getStakePoolById,
+      isDelegatioTransactionPending,
+    } = staking;
+    const { network, rawNetwork } = environment;
+    const futureEpochStartTime = get(futureEpoch, 'epochStart', 0);
+    const selectedPool = find(stakePools, pool => pool.id === selectedPoolId);
 
     const selectedWallet = find(
-      walletsData,
+      wallets.allWallets,
       wallet => wallet.id === selectedWalletId
     );
 
-    const selectedPool = find(stakePools, pool => pool.id === selectedPoolId);
+    const acceptableWallets = find(wallets.allWallets, wallet =>
+      this.handleIsWalletAcceptable(wallet.amount)
+    );
+
+    const getPledgeAddressUrl = (pledgeAddress: string) =>
+      getNetworkExplorerUrlByType(
+        'address',
+        pledgeAddress,
+        network,
+        rawNetwork,
+        currentLocale
+      );
 
     return (
       <DelegationSetupWizardDialog
-        wallets={walletsData}
+        wallets={wallets.allWallets}
         stepsList={this.STEPS_LIST}
         activeStep={activeStep}
         minDelegationFunds={MIN_DELEGATION_FUNDS}
-        isDisabled={activeStep === 1 && setupDisabled}
-        selectedWallet={selectedWallet || null}
+        isDisabled={activeStep === 1 && !acceptableWallets}
+        isWalletAcceptable={this.handleIsWalletAcceptable}
+        selectedWallet={selectedWallet}
         selectedPool={selectedPool || null}
         stakePoolsList={stakePools}
-        stakePoolsDelegatingList={delegatingStakePools}
+        recentStakePools={take(recentStakePools, RECENT_STAKE_POOLS_COUNT)}
+        stakePoolJoinFee={stakePoolJoinFee}
+        futureEpochStartTime={futureEpochStartTime}
+        currentLocale={currentLocale}
         onOpenExternalLink={app.openExternalLink}
+        getPledgeAddressUrl={getPledgeAddressUrl}
         currentTheme={currentTheme}
         onClose={this.handleDialogClose}
         onContinue={this.handleContinue}
@@ -176,8 +202,21 @@ export default class DelegationSetupWizardDialogContainer extends Component<
         onBack={this.onBack}
         onLearnMoreClick={this.handleLearnMoreClick}
         onConfirm={this.handleConfirm}
-        onActivate={this.handleActivate}
+        getStakePoolById={getStakePoolById}
+        isSubmitting={
+          joinStakePoolRequest.isExecuting || isDelegatioTransactionPending
+        }
+        error={joinStakePoolRequest.error}
       />
     );
+  }
+
+  async _handleCalculateTransactionFee() {
+    const { calculateDelegationFee } = this.props.stores.staking;
+    const { selectedWalletId } = this.state;
+    const stakePoolJoinFee = await calculateDelegationFee({
+      walletId: selectedWalletId,
+    });
+    this.setState({ stakePoolJoinFee });
   }
 }

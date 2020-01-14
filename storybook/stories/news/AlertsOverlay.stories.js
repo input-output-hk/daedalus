@@ -1,12 +1,14 @@
 // @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import { select, withKnobs } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
+import { select, withKnobs } from '@storybook/addon-knobs';
+
 import StoryDecorator from '../_support/StoryDecorator';
-import AlertsOverlay from '../../../source/renderer/app/components/news/AlertsOverlay';
 import { dateOptions } from '../_support/profileSettings';
 import { DATE_ENGLISH_OPTIONS } from '../../../source/renderer/app/config/profileConfig';
+
+import AlertsOverlay from '../../../source/renderer/app/components/news/AlertsOverlay';
 
 storiesOf('News|Alerts', module)
   .addDecorator(story => (

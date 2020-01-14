@@ -1,27 +1,18 @@
 // @flow
 import React, { Component, Fragment } from 'react';
 import { observer } from 'mobx-react';
-import {
-  defineMessages,
-  intlShape,
-  FormattedMessage,
-  FormattedHTMLMessage,
-} from 'react-intl';
+import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import isNil from 'lodash/isNil';
 import Wallet from '../../../domains/Wallet';
+import StakePool, { DelegationActions } from '../../../domains/StakePool';
 import { getColorFromRange } from '../../../utils/colors';
 import settingsIcon from '../../../assets/images/settings-ic.inline.svg';
-import { SIMPLE_DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
+import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import DropdownMenu from './DropdownMenu';
-import DonutRing from './DonutRing';
 import styles from './WalletRow.scss';
 
-export const DELEGATION_ACTIONS = {
-  CHANGE_DELEGATION: 'changeDelegation',
-  REMOVE_DELEGATION: 'removeDelegation',
-  DELEGATE: 'delegate',
-};
+import type { DelegationAction } from '../../../api/staking/types';
 
 const messages = defineMessages({
   walletAmount: {
@@ -29,13 +20,6 @@ const messages = defineMessages({
     defaultMessage: '!!!{amount} ADA',
     description:
       'Amount of each wallet for the Delegation center body section.',
-  },
-  inactiveStakePercentageActivate: {
-    id: 'staking.delegationCenter.inactiveStakePercentageActivate',
-    defaultMessage:
-      '!!!<b>activate {inactiveStakePercentage}% of inactive stake</b>',
-    description:
-      'Inactive stake percentage of each wallet for the Delegation center body section.',
   },
   delegated: {
     id: 'staking.delegationCenter.delegated',
@@ -49,21 +33,27 @@ const messages = defineMessages({
   },
   changeDelegation: {
     id: 'staking.delegationCenter.changeDelegation',
-    defaultMessage: '!!!Change delegation',
+    defaultMessage: '!!!Change stake pool',
     description:
       'Change delegation label for the Delegation center body section.',
   },
   removeDelegation: {
     id: 'staking.delegationCenter.removeDelegation',
-    defaultMessage: '!!!Remove delegation',
+    defaultMessage: '!!!Undelegate',
     description:
       'Remove delegation label for the Delegation center body section.',
   },
-  toStakePoolSlug: {
-    id: 'staking.delegationCenter.toStakePoolSlug',
-    defaultMessage: '!!!To <b>[{delegatedStakePoolSlug}]</b> stake pool',
+  toStakePoolTickerPart1: {
+    id: 'staking.delegationCenter.toStakePoolTickerPart1',
+    defaultMessage: '!!!To',
     description:
-      'Delegated stake pool slug for the Delegation center body section.',
+      'Delegated stake pool ticker for the Delegation center body section.',
+  },
+  toStakePoolTickerPart2: {
+    id: 'staking.delegationCenter.toStakePoolTickerPart2',
+    defaultMessage: '!!!stake pool',
+    description:
+      'Delegated stake pool ticker for the Delegation center body section.',
   },
   delegate: {
     id: 'staking.delegationCenter.delegate',
@@ -75,12 +65,20 @@ const messages = defineMessages({
     defaultMessage: '!!!your stake',
     description: 'Your stake label for the Delegation center body section.',
   },
+  unknownStakePoolLabel: {
+    id: 'staking.delegationCenter.unknownStakePoolLabel',
+    defaultMessage: '!!!unknown',
+    description:
+      'unknown stake pool label for the Delegation center body section.',
+  },
 });
 
 type Props = {
   wallet: Wallet,
-  index?: number,
+  delegatedStakePool?: ?StakePool,
+  numberOfStakePools: number,
   onDelegate: Function,
+  onMenuItemClick: Function,
 };
 
 @observer
@@ -90,26 +88,29 @@ export default class WalletRow extends Component<Props> {
   };
 
   onDelegate = () => {
+    const { wallet, onDelegate } = this.props;
+    onDelegate(wallet.id);
+  };
+
+  onMenuItemClick = ({ value }: { value: DelegationAction }) => {
     const { wallet } = this.props;
-    this.props.onDelegate(wallet.id);
+    this.props.onMenuItemClick(value, wallet.id);
   };
 
   render() {
     const { intl } = this.context;
     const {
-      wallet: {
-        name,
-        amount,
-        inactiveStakePercentage,
-        isDelegated,
-        delegatedStakePool,
-      },
-      index,
+      wallet: { name, amount, delegatedStakePoolId },
+      delegatedStakePool,
+      numberOfStakePools,
     } = this.props;
 
-    const inactiveStakePercentageValue = inactiveStakePercentage || 0;
+    const { ranking } = delegatedStakePool || {};
+
     const color =
-      isDelegated && !isNil(index) ? getColorFromRange(index) : 'transparent';
+      delegatedStakePoolId && delegatedStakePool && !isNil(ranking)
+        ? getColorFromRange(ranking, numberOfStakePools)
+        : null;
 
     const delegated = intl.formatMessage(messages.delegated);
     const notDelegated = intl.formatMessage(messages.notDelegated);
@@ -117,16 +118,19 @@ export default class WalletRow extends Component<Props> {
     const removeDelegation = intl.formatMessage(messages.removeDelegation);
     const delegate = intl.formatMessage(messages.delegate);
     const yourStake = intl.formatMessage(messages.yourStake);
+    const delegatedStakePoolTicker = delegatedStakePool
+      ? `[${delegatedStakePool.ticker}]`
+      : intl.formatMessage(messages.unknownStakePoolLabel);
 
     const delegatedWalletActionOptions = [
       {
         label: changeDelegation,
-        value: DELEGATION_ACTIONS.CHANGE_DELEGATION,
+        value: DelegationActions.CHANGE_DELEGATION,
         className: styles.normalOption,
       },
       {
         label: removeDelegation,
-        value: DELEGATION_ACTIONS.REMOVE_DELEGATION,
+        value: DelegationActions.REMOVE_DELEGATION,
         className: styles.removeOption,
       },
     ];
@@ -139,50 +143,38 @@ export default class WalletRow extends Component<Props> {
             <FormattedMessage
               {...messages.walletAmount}
               values={{
-                amount: amount.toFormat(SIMPLE_DECIMAL_PLACES_IN_ADA),
+                amount: amount.toFormat(DECIMAL_PLACES_IN_ADA),
               }}
             />
-            {inactiveStakePercentageValue > 0 && (
-              <Fragment>
-                <span className={styles.donutRing}>
-                  <DonutRing
-                    percentage={100 - inactiveStakePercentageValue}
-                    sqSize={11}
-                    strokeWidth={3}
-                  />
-                </span>
-                <FormattedHTMLMessage
-                  {...messages.inactiveStakePercentageActivate}
-                  values={{
-                    inactiveStakePercentage: inactiveStakePercentageValue,
-                  }}
-                />
-              </Fragment>
-            )}
           </div>
         </div>
         <div className={styles.right}>
           <div>
             <div className={styles.status}>
-              <span>{isDelegated ? delegated : notDelegated}</span>
-              {isDelegated && (
+              <span>{delegatedStakePoolId ? delegated : notDelegated}</span>
+              {delegatedStakePoolId && (
                 <DropdownMenu
                   label={
                     <SVGInline svg={settingsIcon} className={styles.gearIcon} />
                   }
                   menuItems={delegatedWalletActionOptions}
-                  onMenuItemClick={() => null}
+                  onMenuItemClick={this.onMenuItemClick}
                 />
               )}
             </div>
             <div className={styles.action}>
-              {isDelegated && delegatedStakePool ? (
-                <FormattedHTMLMessage
-                  {...messages.toStakePoolSlug}
-                  values={{
-                    delegatedStakePoolSlug: delegatedStakePool.slug,
-                  }}
-                />
+              {delegatedStakePoolId ? (
+                <Fragment>
+                  {intl.formatMessage(messages.toStakePoolTickerPart1)}
+                  <span
+                    className={!delegatedStakePool ? styles.unknown : null}
+                    style={{ color }}
+                  >
+                    {' '}
+                    {delegatedStakePoolTicker}{' '}
+                  </span>
+                  {intl.formatMessage(messages.toStakePoolTickerPart2)}
+                </Fragment>
               ) : (
                 <span>
                   <span

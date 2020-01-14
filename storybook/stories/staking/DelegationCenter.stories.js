@@ -1,8 +1,8 @@
 // @flow
 import React from 'react';
 import { action } from '@storybook/addon-actions';
+import { find } from 'lodash';
 import BigNumber from 'bignumber.js';
-import { number } from '@storybook/addon-knobs';
 import DelegationCenter from '../../../source/renderer/app/components/staking/delegation-center/DelegationCenter';
 import STAKE_POOLS from '../../../source/renderer/app/config/stakingStakePools.dummy.json';
 import Wallet from '../../../source/renderer/app/domains/Wallet';
@@ -10,29 +10,51 @@ import {
   WalletRecoveryPhraseVerificationStatuses,
   WalletRecoveryPhraseVerificationTypes,
 } from '../../../source/renderer/app/stores/WalletsStore';
+import type {
+  NextEpoch,
+  TipInfo,
+} from '../../../source/renderer/app/api/network/types';
 
-const defaultAdaValue = 82650.15;
-const defaultPercentage = 33.123456;
+const walletSyncedStateReady = { status: 'ready' };
 
-const adaValueKnob = (name, defaultValue) => {
-  const value = number(name, defaultValue);
+const walletSyncedStateRestoring = {
+  status: 'restoring',
+  progress: {
+    quantity: 25,
+    unit: 'percentage',
+  },
+};
 
-  return new BigNumber(value);
+const networkTip: TipInfo = {
+  epoch: 1232,
+  slot: 123,
+};
+
+const nextEpoch: NextEpoch = {
+  epochNumber: 1233,
+  epochStart: new Date('2019-12-29').toUTCString(),
+};
+
+const futureEpoch: NextEpoch = {
+  epochNumber: 1234,
+  epochStart: new Date('2019-12-30').toUTCString(),
 };
 
 // Dummy data initialization
 const wallets = [
   new Wallet({
     id: 'wallet1',
+    addressPoolGap: 20,
     name: 'Main wallet',
     amount: new BigNumber(100100),
-    assurance: 'normal',
+    availableAmount: new BigNumber(100100),
+    reward: new BigNumber(100),
     hasPassword: true,
     passwordUpdateDate: new Date(),
     isLegacy: false,
     inactiveStakePercentage: 24,
-    isDelegated: true,
-    delegatedStakePool: STAKE_POOLS[0],
+    syncState: walletSyncedStateReady,
+    delegatedStakePoolId: STAKE_POOLS[0].id,
     createdAt: new Date(),
     recoveryPhraseVerificationDate: new Date(),
     recoveryPhraseVerificationStatus:
@@ -42,15 +64,17 @@ const wallets = [
   }),
   new Wallet({
     id: 'wallet2',
+    addressPoolGap: 20,
     name: 'Spending money',
     amount: new BigNumber(10100.2),
-    assurance: 'normal',
+    availableAmount: new BigNumber(10100.2),
+    reward: new BigNumber(50),
     hasPassword: true,
     passwordUpdateDate: new Date(),
     isLegacy: false,
     inactiveStakePercentage: 35,
-    isDelegated: true,
-    delegatedStakePool: STAKE_POOLS[1],
+    syncState: walletSyncedStateReady,
+    delegatedStakePoolId: '800',
     createdAt: new Date(),
     recoveryPhraseVerificationDate: new Date(),
     recoveryPhraseVerificationStatus:
@@ -60,14 +84,16 @@ const wallets = [
   }),
   new Wallet({
     id: 'wallet3',
+    addressPoolGap: 20,
     name: 'Savings',
     amount: new BigNumber(5001000),
-    assurance: 'normal',
+    availableAmount: new BigNumber(5001000),
+    reward: new BigNumber(30),
     hasPassword: true,
     passwordUpdateDate: new Date(),
     isLegacy: false,
     inactiveStakePercentage: 0,
-    isDelegated: false,
+    syncState: walletSyncedStateRestoring,
     createdAt: new Date(),
     recoveryPhraseVerificationDate: new Date(),
     recoveryPhraseVerificationStatus:
@@ -77,16 +103,25 @@ const wallets = [
   }),
 ];
 
-export const StakingDelegationCenterStory = () => (
+export const StakingDelegationCenterStory = ({
+  locale,
+  isLoading,
+}: {
+  locale: string,
+  isLoading: boolean,
+}) => (
   <DelegationCenter
-    adaValue={adaValueKnob('ADA Value', defaultAdaValue)}
-    percentage={number('Percentage', defaultPercentage, {
-      min: 0,
-      max: 100,
-      step: 1,
-      range: true,
-    })}
     wallets={wallets}
     onDelegate={action('onDelegate')}
+    onUndelegate={action('onUndelegate')}
+    getStakePoolById={poolId =>
+      find(STAKE_POOLS, stakePool => stakePool.id === poolId)
+    }
+    numberOfStakePools={STAKE_POOLS.length}
+    networkTip={networkTip}
+    nextEpoch={nextEpoch}
+    fetchingStakePoolsFailed={isLoading}
+    futureEpoch={futureEpoch}
+    currentLocale={locale}
   />
 );

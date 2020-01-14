@@ -1,6 +1,6 @@
 .delegationStepsChooseStakePoolDialogWrapper {
   :global {
-    .StakePoolThumbnail_component {
+    .StakePoolThumbnail_content {
       background-color: 1px solid
         var(--theme-delegation-steps-choose-stake-pool-thumb-background-color);
       border: 1px solid
@@ -17,43 +17,43 @@
   }
 
   .stakePoolsListWrapper {
-    margin-top: 20px;
+    margin-top: 14px;
   }
 
   .content {
     color: var(--theme-delegation-steps-choose-stake-pool-title-color);
 
     .description {
-      margin: 0 auto 20px;
+      font-family: var(--font-medium);
+      line-height: 1.38;
+      margin: 0 auto 10px;
     }
 
-    .delegatedStakePoolsWrapper {
+    .selectStakePoolWrapper {
+      align-items: center;
       display: flex;
 
-      .selectedPoolBlock {
-        background-color: transparent;
+      .selectedPoolBlock,
+      .selectPoolBlockPlaceholder {
+        border-radius: 5.8px;
+        height: 71px;
+        width: 80px;
+
+        &.alreadyDelegated {
+          opacity: 0.3;
+        }
+      }
+
+      .selectPoolBlockPlaceholder {
         border: 2px solid
           var(--theme-delegation-steps-choose-stake-pool-thumb-border-color);
-        border-radius: 5.8px;
         border-style: dashed;
-        height: 103px;
-        width: 116px;
-
-        .label {
-          color: var(--theme-delegation-steps-choose-stake-pool-slug-color);
-          font-family: var(--font-semibold);
-          font-size: 20.3px;
-          font-weight: 600;
-          margin-top: 12px;
+        .questionmarkWrapper {
+          margin-top: 24.5px;
           text-align: center;
-        }
-
-        .checkmarkWrapper {
-          margin-top: 14px;
-          text-align: center;
-          .checkmarkImage {
+          .questionmarkImage {
             svg {
-              width: 22.5px;
+              height: 16px;
               path {
                 stroke: var(
                   --theme-delegation-steps-choose-stake-pool-checkmark-icon-color
@@ -62,21 +62,30 @@
             }
           }
         }
+      }
 
-        &.selected {
-          background-color: var(
-            --theme-staking-stake-pool-selected-background-color
+      .selectedPoolBlock {
+        border: 1px solid
+          var(--theme-delegation-steps-choose-stake-pool-thumb-border-color);
+        .ticker {
+          color: var(
+            --theme-delegation-steps-choose-stake-pool-selected-ticker-color
           );
-          border: 2px solid
-            var(--theme-delegation-steps-choose-stake-pool-thumb-border-color);
+          font-family: var(--font-semibold);
+          font-size: 14px;
+          letter-spacing: -0.5px;
+          line-height: 1.57;
+          margin-top: 8px;
+          text-align: center;
+        }
 
-          .label {
-            color: var(
-              --theme-delegation-steps-choose-stake-pool-selected-slug-color
-            );
-          }
+        .checkmarkWrapper {
+          margin-top: 10px;
+          text-align: center;
           .checkmarkImage {
             svg {
+              vertical-align: top;
+              width: 15.5px;
               path {
                 stroke: var(
                   --theme-delegation-steps-choose-stake-pool-selected-checkmark-icon-color
@@ -87,27 +96,28 @@
         }
       }
 
-      .delegatedStakePoolsList {
+      .selectStakePoolLabel {
+        color: var(
+          --theme-delegation-steps-choose-stake-pool-delegated-pools-label-color
+        );
         flex: 1;
-        margin-left: 20px;
-
-        .stakePoolsDelegatingListLabel {
-          color: var(
-            --theme-delegation-steps-choose-stake-pool-delegated-pools-label-color
-          );
-          font-family: var(--font-medium);
-          font-size: 16px;
-          font-weight: 500;
-          line-height: 1.38;
-          margin-bottom: 10px;
-        }
-
-        :global {
-          .StakePoolsList_component {
-            grid-gap: 20px;
-            justify-content: left;
+        font-family: var(--font-light);
+        font-size: 16px;
+        line-height: 1.38;
+        margin-left: 19px;
+        span {
+          span {
+            font-family: var(--font-medium);
           }
         }
+      }
+    }
+
+    .recentStakePoolsWrapper {
+      margin-top: 20px;
+      .recentStakePoolsLabel {
+        font-family: var(--font-medium);
+        margin-bottom: 10px;
       }
     }
   }

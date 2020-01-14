@@ -1,7 +1,5 @@
 // @flow
-import AddressesActions from './addresses-actions';
 import AppActions from './app-actions';
-import BlockConsolidationActions from './block-consolidation-actions';
 import DialogsActions from './dialogs-actions';
 import NetworkStatusActions from './network-status-actions';
 import NodeUpdateActions from './node-update-actions';
@@ -17,9 +15,7 @@ import WalletSettingsActions from './wallet-settings-actions';
 import WindowActions from './window-actions';
 
 export type ActionsMap = {
-  addresses: AddressesActions,
   app: AppActions,
-  blockConsolidation: BlockConsolidationActions,
   dialogs: DialogsActions,
   networkStatus: NetworkStatusActions,
   nodeUpdate: NodeUpdateActions,
@@ -36,9 +32,7 @@ export type ActionsMap = {
 };
 
 const actionsMap: ActionsMap = {
-  addresses: new AddressesActions(),
   app: new AppActions(),
-  blockConsolidation: new BlockConsolidationActions(),
   dialogs: new DialogsActions(),
   networkStatus: new NetworkStatusActions(),
   nodeUpdate: new NodeUpdateActions(),

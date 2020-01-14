@@ -5,6 +5,8 @@ import { observable, runInAction } from 'mobx';
 import { observer, inject } from 'mobx-react';
 import { get } from 'lodash';
 import { action } from '@storybook/addon-actions';
+import { boolean } from '@storybook/addon-knobs';
+import { isIncentivizedTestnetTheme } from './utils';
 
 // Assets and helpers
 import { CATEGORIES_BY_NAME } from '../../../source/renderer/app/config/sidebarConfig';
@@ -32,8 +34,9 @@ export type StoriesProps = {
 
 type Props = {
   activeSidebarCategory: string,
+  currentTheme: string,
   storiesProps: any | StoriesProps,
-  storyName?: string,
+  story?: string,
   children?: any | Node,
   stores?: ?{},
 };
@@ -50,9 +53,6 @@ const CATEGORIES = [
   CATEGORIES_BY_NAME.SETTINGS,
 ];
 
-let currentTheme = sessionStorage.getItem('themeName') || 'light-blue';
-currentTheme = currentTheme.toLowerCase();
-
 @inject('stores', 'storiesProps')
 @observer
 export default class StoryLayout extends Component<Props> {
@@ -61,16 +61,16 @@ export default class StoryLayout extends Component<Props> {
   render() {
     const {
       activeSidebarCategory,
-      storyName = '',
+      currentTheme,
+      story = '',
       storiesProps = {},
       stores,
       children,
     } = this.props;
-
     const { wallets, activeWalletId, setActiveWalletId } = storiesProps;
 
     const activeWallet: Wallet = wallets[parseInt(activeWalletId, 10)];
-    const activeNavItem = storyName.split(' ')[0].toLowerCase();
+    const activeNavItem = story.split(' ')[0].toLowerCase();
     const sidebarMenus = this.getSidebarMenus(
       this.getSidebarWallets(wallets),
       activeWalletId,
@@ -85,9 +85,10 @@ export default class StoryLayout extends Component<Props> {
       >
         <SidebarLayout
           sidebar={this.getSidebar(
-            storyName,
+            story,
             activeSidebarCategory,
-            sidebarMenus
+            sidebarMenus,
+            currentTheme
           )}
           topbar={this.getTopbar(
             activeSidebarCategory,
@@ -135,12 +136,13 @@ export default class StoryLayout extends Component<Props> {
   });
 
   getSidebar = (
-    storyName: string,
+    story: string,
     activeSidebarCategory: string,
-    sidebarMenus: SidebarMenus
+    sidebarMenus: SidebarMenus,
+    currentTheme: string
   ) => {
     const sidebarCategories =
-      storyName === 'Decentralization Start Info'
+      story === 'Decentralization Start Info'
         ? CATEGORIES_COUNTDOWN
         : CATEGORIES;
 
@@ -150,13 +152,15 @@ export default class StoryLayout extends Component<Props> {
         activeSidebarCategory={activeSidebarCategory}
         menus={sidebarMenus}
         isShowingSubMenus={this.isShowingSubMenus}
-        onCategoryClicked={action('onCategoryClicked')}
+        onActivateCategory={action('onActivateCategory')}
         isDialogOpen={() => false}
         onAddWallet={action('onAddWallet')}
-        openDialogAction={action('openDialog')}
+        onOpenDialog={action('onOpenDialog')}
         onSubmitSupportRequest={() => {}}
         pathname="/"
         currentTheme={currentTheme}
+        network="testnet"
+        isIncentivizedTestnet={isIncentivizedTestnetTheme(currentTheme)}
       />
     );
   };
@@ -182,6 +186,9 @@ export default class StoryLayout extends Component<Props> {
       showSubMenuToggle
       showSubMenus={this.isShowingSubMenus}
       leftIcon={this.isShowingSubMenus ? menuIconOpened : menuIconClosed}
+      onTransferFunds={action('onTransferFunds')}
+      onWalletAdd={action('onWalletAdd')}
+      hasRewardsWallets={boolean('hasRewardsWallets', true)}
     >
       <NodeSyncStatusIcon
         networkStatus={{

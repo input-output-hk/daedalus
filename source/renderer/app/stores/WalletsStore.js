@@ -1,32 +1,47 @@
 // @flow
 import { observable, action, computed, runInAction, flow } from 'mobx';
-import { get, chunk, find, isEqual } from 'lodash';
+import { get, chunk, find, findIndex, isEqual } from 'lodash';
 import moment from 'moment';
 import { BigNumber } from 'bignumber.js';
+import { Address } from 'cardano-js';
+import { AddressGroup } from 'cardano-js/dist/Address/AddressGroup';
+import { ChainSettings } from 'cardano-js/dist/ChainSettings';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
-import Wallet, { WalletSyncStateTags } from '../domains/Wallet';
-import type {
-  WalletLocalData,
-  WalletsLocalData,
-} from '../api/utils/localStorage';
+import Wallet from '../domains/Wallet';
+import WalletAddress from '../domains/WalletAddress';
 import { WalletTransaction } from '../domains/WalletTransaction';
 import { MAX_ADA_WALLETS_COUNT } from '../config/numbersConfig';
 import { i18nContext } from '../utils/i18nContext';
 import { mnemonicToSeedHex } from '../utils/crypto';
-import { downloadPaperWalletCertificate } from '../utils/paperWalletPdfGenerator';
+import { paperWalletPdfGenerator } from '../utils/paperWalletPdfGenerator';
+import { addressPDFGenerator } from '../utils/addressPDFGenerator';
+import { downloadRewardsCsv } from '../utils/rewardsCsvGenerator';
 import { buildRoute, matchRoute } from '../utils/routing';
 import { asyncForEach } from '../utils/asyncForEach';
 import { ROUTES } from '../routes-config';
-import type { walletExportTypeChoices } from '../types/walletExportTypes';
-import type { WalletImportFromFileParams } from '../actions/wallets-actions';
-import type LocalizableError from '../i18n/LocalizableError';
 import { formattedWalletAmount } from '../utils/formatters';
-import { WalletPaperWalletOpenPdfError } from '../i18n/errors';
+import {
+  WalletPaperWalletOpenPdfError,
+  WalletRewardsOpenCsvError,
+} from '../i18n/errors';
 import {
   RECOVERY_PHRASE_VERIFICATION_NOTIFICATION,
   RECOVERY_PHRASE_VERIFICATION_WARNING,
+  WALLET_RESTORE_TYPES,
 } from '../config/walletsConfig';
+import type { CsvRecord } from '../../../common/types/rewards-csv-request.types';
+import type { walletExportTypeChoices } from '../types/walletExportTypes';
+import type { WalletImportFromFileParams } from '../actions/wallets-actions';
+import type LocalizableError from '../i18n/LocalizableError';
+import type {
+  WalletLocalData,
+  WalletsLocalData,
+} from '../api/utils/localStorage';
+import type {
+  TransferFundsCalculateFeeRequest,
+  TransferFundsRequest,
+} from '../api/wallets/types';
 /* eslint-disable consistent-return */
 
 export const WalletRecoveryPhraseVerificationStatuses = {
@@ -52,8 +67,7 @@ type RecoveryPhraseVerificationData = {
 };
 
 /**
- * The base wallet store that contains the shared logic
- * dealing with wallets / accounts.
+ * The base wallet store that contains logic for dealing with wallets
  */
 
 export default class WalletsStore extends Store {
@@ -70,12 +84,10 @@ export default class WalletsStore extends Store {
     ALREADY_CHECKED: 'alreadyChecked',
   };
 
+  @observable undelegateWalletSubmissionSuccess: ?boolean = null;
   // REQUESTS
-  /* eslint-disable max-len */
   @observable active: ?Wallet = null;
   @observable activeValue: ?BigNumber = null;
-  @observable isRestoreActive: boolean = false;
-  @observable restoringWalletId: ?string = null;
   @observable walletsRequest: Request<Array<Wallet>> = new Request(
     this.api.ada.getWallets
   );
@@ -85,7 +97,8 @@ export default class WalletsStore extends Store {
   @observable createWalletRequest: Request<Wallet> = new Request(
     this.api.ada.createWallet
   );
-  @observable getWalletAddressesRequest: Request<any> = new Request(
+  @observable
+  getWalletAddressesRequest: Request<Array<WalletAddress>> = new Request(
     this.api.ada.getAddresses
   );
   @observable deleteWalletRequest: Request<boolean> = new Request(
@@ -109,6 +122,16 @@ export default class WalletsStore extends Store {
   @observable restoreRequest: Request<Wallet> = new Request(
     this.api.ada.restoreWallet
   );
+  @observable restoreLegacyRequest: Request<Wallet> = new Request(
+    this.api.ada.restoreLegacyWallet
+  );
+  @observable
+  transferFundsCalculateFeeRequest: Request<TransferFundsCalculateFeeRequest> = new Request(
+    this.api.ada.transferFundsCalculateFee
+  );
+  @observable transferFundsRequest: Request<TransferFundsRequest> = new Request(
+    this.api.ada.transferFunds
+  );
   @observable
   getWalletsLocalDataRequest: Request<WalletsLocalData> = new Request(
     this.api.localStorage.getWalletsLocalData
@@ -122,36 +145,49 @@ export default class WalletsStore extends Store {
   @observable unsetWalletLocalDataRequest: Request<any> = new Request(
     this.api.localStorage.unsetWalletLocalData
   );
-  /* eslint-enable max-len */
 
+  /* ----------  Create Wallet  ---------- */
+  @observable createWalletStep = null;
+  @observable createWalletShowAbortConfirmation = false;
+  // TODO: Remove once the new wallet creation process is ready
+  @observable useNewWalletCreationProcess = false;
+
+  /* ----------  Export Wallet  ---------- */
   @observable walletExportType: walletExportTypeChoices = 'paperWallet';
   @observable walletExportMnemonic =
     'marine joke dry silk ticket thing sugar stereo aim';
+
+  /* ----------  Paper Wallet  ---------- */
   @observable createPaperWalletCertificateStep = 0;
   @observable walletCertificatePassword = null;
   @observable walletCertificateAddress = null;
   @observable walletCertificateRecoveryPhrase = null;
   @observable generatingCertificateInProgress = false;
   @observable generatingCertificateError: ?LocalizableError = null;
+  @observable generatingRewardsCsvInProgress = false;
+  @observable generatingRewardsCsvError: ?LocalizableError = null;
   @observable certificateStep = null;
   @observable certificateTemplate = null;
   @observable additionalMnemonicWords = null;
-  @observable createWalletStep = null;
-  @observable createWalletShowAbortConfirmation = false;
+
+  /* ----------  Transfer Funds  ---------- */
+  @observable transferFundsSourceWalletId: string = '';
+  @observable transferFundsTargetWalletId: string = '';
+  @observable transferFundsStep: number = 0;
+  @observable transferFundsFee: ?number = null;
+
+  /* ----------  Other  ---------- */
   @observable
   recoveryPhraseVerificationData: RecoveryPhraseVerificationData = {};
-
-  // TODO: Remove once the new wallet creation process is ready
-  @observable useNewWalletCreationProcess = false;
 
   _newWalletDetails: {
     name: string,
     mnemonic: string,
-    spendingPassword: ?string,
+    spendingPassword: string,
   } = {
     name: '',
     mnemonic: '',
-    spendingPassword: null,
+    spendingPassword: '',
   };
   _pollingBlocked = false;
 
@@ -175,28 +211,55 @@ export default class WalletsStore extends Store {
     walletsActions.createWalletClose.listen(this._createWalletClose);
     // ---
     walletsActions.deleteWallet.listen(this._deleteWallet);
+    walletsActions.undelegateWallet.listen(this._undelegateWallet);
+    walletsActions.setUndelegateWalletSubmissionSuccess.listen(
+      this._setUndelegateWalletSubmissionSuccess
+    );
     walletsActions.sendMoney.listen(this._sendMoney);
     walletsActions.restoreWallet.listen(this._restoreWallet);
     walletsActions.importWalletFromFile.listen(this._importWalletFromFile);
     walletsActions.chooseWalletExportType.listen(this._chooseWalletExportType);
+
     walletsActions.generateCertificate.listen(this._generateCertificate);
+    walletsActions.generateAddressPDF.listen(this._generateAddressPDF);
     walletsActions.updateCertificateStep.listen(this._updateCertificateStep);
     walletsActions.closeCertificateGeneration.listen(
       this._closeCertificateGeneration
     );
+
+    walletsActions.generateRewardsCsv.listen(this._generateRewardsCsv);
+    walletsActions.closeRewardsCsvGeneration.listen(
+      this._closeRewardsCsvGeneration
+    );
+
     walletsActions.setCertificateTemplate.listen(this._setCertificateTemplate);
     walletsActions.finishCertificate.listen(this._finishCertificate);
+    walletsActions.finishRewardsCsv.listen(this._finishRewardsCsv);
     router.goToRoute.listen(this._onRouteChange);
     walletBackup.finishWalletBackup.listen(this._finishWalletBackup);
     app.initAppEnvironment.listen(() => {});
     networkStatus.restartNode.listen(this._updateGeneratingCertificateError);
+    networkStatus.restartNode.listen(this._updateGeneratingRewardsCsvError);
     walletsActions.updateRecoveryPhraseVerificationDate.listen(
       this._updateRecoveryPhraseVerificationDate
     );
-    walletsActions.updateWalletLocalData.listen(this._updateWalletLocalData);
+    walletsActions.transferFundsNextStep.listen(this._transferFundsNextStep);
+    walletsActions.transferFundsPrevStep.listen(this._transferFundsPrevStep);
+    walletsActions.transferFunds.listen(this._transferFunds);
+    walletsActions.transferFundsSetSourceWalletId.listen(
+      this._transferFundsSetSourceWalletId
+    );
+    walletsActions.transferFundsSetTargetWalletId.listen(
+      this._transferFundsSetTargetWalletId
+    );
+    walletsActions.transferFundsRedeem.listen(this._transferFundsRedeem);
+    walletsActions.transferFundsClose.listen(this._transferFundsClose);
+    walletsActions.transferFundsCalculateFee.listen(
+      this._transferFundsCalculateFee
+    );
   }
 
-  _create = async (params: { name: string, spendingPassword: ?string }) => {
+  _create = async (params: { name: string, spendingPassword: string }) => {
     Object.assign(this._newWalletDetails, params);
     try {
       const recoveryPhrase: ?Array<string> = await this.getWalletRecoveryPhraseRequest.execute()
@@ -248,22 +311,23 @@ export default class WalletsStore extends Store {
     ).promise;
     if (wallet) {
       await this._createWalletLocalData(wallet.id);
-      await this.walletsRequest.patch(result => {
-        result.push(wallet);
-      });
+      await this._patchWalletRequestWithNewWallet(wallet);
       this.actions.dialogs.closeActiveDialog.trigger();
       this.goToWalletRoute(wallet.id);
     }
   };
 
-  _deleteWallet = async (params: { walletId: string }) => {
+  _deleteWallet = async (params: { walletId: string, isLegacy?: boolean }) => {
     // Pause polling in order to avoid fetching data for wallet we are about to delete
     this._pausePolling();
 
     const walletToDelete = this.getWalletById(params.walletId);
     if (!walletToDelete) return;
     const indexOfWalletToDelete = this.all.indexOf(walletToDelete);
-    await this.deleteWalletRequest.execute({ walletId: params.walletId });
+    await this.deleteWalletRequest.execute({
+      walletId: params.walletId,
+      isLegacy: params.isLegacy || false,
+    });
     await this.walletsRequest.patch(result => {
       result.splice(indexOfWalletToDelete, 1);
     });
@@ -284,14 +348,41 @@ export default class WalletsStore extends Store {
     this.refreshWalletsData();
   };
 
+  _undelegateWallet = async (params: {
+    walletId: string,
+    stakePoolId: string,
+    passphrase: string,
+  }) => {
+    const { quitStakePoolRequest } = this.stores.staking;
+    const { quitStakePool } = this.actions.staking;
+    const walletToUndelegate = this.getWalletById(params.walletId);
+    if (!walletToUndelegate) {
+      return;
+    }
+    await quitStakePool.trigger(params);
+    this._setUndelegateWalletSubmissionSuccess({ result: true });
+    quitStakePoolRequest.reset();
+    this.refreshWalletsData();
+  };
+
+  _setUndelegateWalletSubmissionSuccess = ({ result }: { result: boolean }) => {
+    runInAction(
+      'AdaWalletsStore::_setUndelegateWalletSubmissionSuccess',
+      () => {
+        this.undelegateWalletSubmissionSuccess = result;
+      }
+    );
+  };
+
   _restore = async (params: {
     recoveryPhrase: string,
     walletName: string,
-    spendingPassword: ?string,
+    spendingPassword: string,
   }) => {
     const restoredWallet = await this.restoreRequest.execute(params).promise;
     if (!restoredWallet)
       throw new Error('Restored wallet was not received correctly');
+    await this._createWalletLocalData(restoredWallet.id);
     await this._patchWalletRequestWithNewWallet(restoredWallet);
     this.actions.dialogs.closeActiveDialog.trigger();
     this.restoreRequest.reset();
@@ -310,29 +401,114 @@ export default class WalletsStore extends Store {
   _sendMoney = async ({
     receiver,
     amount,
-    password,
+    passphrase,
   }: {
     receiver: string,
     amount: string,
-    password: ?string,
+    passphrase: string,
   }) => {
     const wallet = this.active;
     if (!wallet) throw new Error('Active wallet required before sending.');
-    const accountIndex = await this.stores.addresses.getAccountIndexByWalletId(
-      wallet.id
-    );
-
     await this.sendMoneyRequest.execute({
       address: receiver,
       amount: parseInt(amount, 10),
-      spendingPassword: password,
-      accountIndex,
+      passphrase,
       walletId: wallet.id,
     });
     this.refreshWalletsData();
     this.actions.dialogs.closeActiveDialog.trigger();
     this.sendMoneyRequest.reset();
     this.goToWalletRoute(wallet.id);
+  };
+
+  @action _transferFundsNextStep = () => {
+    const {
+      transferFundsStep,
+      transferFundsSourceWalletId,
+      transferFundsTargetWalletId,
+    } = this;
+    let nextStep = 0;
+    if (transferFundsStep === 0 && transferFundsSourceWalletId) {
+      nextStep = 1;
+    }
+    if (
+      transferFundsStep === 1 &&
+      transferFundsSourceWalletId &&
+      transferFundsTargetWalletId
+    ) {
+      nextStep = 2;
+      this._transferFundsCalculateFee({
+        sourceWalletId: transferFundsSourceWalletId,
+      });
+    }
+    this.transferFundsStep = nextStep;
+  };
+
+  @action _transferFundsPrevStep = () => {
+    const { transferFundsStep } = this;
+    const prevStep = transferFundsStep > 0 ? transferFundsStep - 1 : 0;
+    this.transferFundsStep = prevStep;
+  };
+
+  @action _transferFunds = async ({
+    spendingPassword,
+  }: {
+    spendingPassword: string,
+  }) => {
+    const { transferFundsSourceWalletId, transferFundsTargetWalletId } = this;
+    await this.transferFundsRequest.execute({
+      sourceWalletId: transferFundsSourceWalletId,
+      targetWalletId: transferFundsTargetWalletId,
+      passphrase: spendingPassword,
+    });
+    this.refreshWalletsData();
+    this._transferFundsClose();
+    this.transferFundsRequest.reset();
+    this.goToWalletRoute(transferFundsSourceWalletId);
+  };
+
+  @action _transferFundsSetSourceWalletId = ({
+    sourceWalletId,
+  }: {
+    sourceWalletId: string,
+  }) => {
+    this.transferFundsSourceWalletId = sourceWalletId;
+    // Sets the target wallet to the first wallet
+    const { allWallets } = this;
+    this.transferFundsTargetWalletId = get(allWallets, [0, 'id'], '');
+    // Sets to first step
+    this.transferFundsStep = 1;
+  };
+
+  @action _transferFundsSetTargetWalletId = ({
+    targetWalletId,
+  }: {
+    targetWalletId: string,
+  }) => {
+    this.transferFundsTargetWalletId = targetWalletId;
+  };
+
+  @action _transferFundsRedeem = () => {
+    this.transferFundsStep = 0;
+    // TODO: Call API method
+  };
+
+  @action _transferFundsClose = () => {
+    this.transferFundsStep = 0;
+    this.transferFundsFee = null;
+  };
+
+  @action _transferFundsCalculateFee = async ({
+    sourceWalletId,
+  }: {
+    sourceWalletId: string,
+  }) => {
+    const fee = await this.transferFundsCalculateFeeRequest.execute({
+      sourceWalletId,
+    }).promise;
+    runInAction('set migration fee', () => {
+      this.transferFundsFee = fee;
+    });
   };
 
   // =================== PUBLIC API ==================== //
@@ -354,12 +530,28 @@ export default class WalletsStore extends Store {
     );
   }
 
+  @computed get hasRewardsWallets(): boolean {
+    return this.allWallets.length > 0;
+  }
+
   @computed get hasMaxWallets(): boolean {
     return this.all.length >= MAX_ADA_WALLETS_COUNT;
   }
 
   @computed get all(): Array<Wallet> {
-    return this.walletsRequest.result ? this.walletsRequest.result : [];
+    return [...this.allWallets, ...this.allLegacyWallets];
+  }
+
+  @computed get allWallets(): Array<Wallet> {
+    return this.walletsRequest.result
+      ? this.walletsRequest.result.filter(({ isLegacy }: Wallet) => !isLegacy)
+      : [];
+  }
+
+  @computed get allLegacyWallets(): Array<Wallet> {
+    return this.walletsRequest.result
+      ? this.walletsRequest.result.filter(({ isLegacy }: Wallet) => isLegacy)
+      : [];
   }
 
   @computed get first(): ?Wallet {
@@ -378,10 +570,6 @@ export default class WalletsStore extends Store {
   @computed get isWalletRoute(): boolean {
     const { currentRoute } = this.stores.app;
     return matchRoute(`${ROUTES.WALLETS.ROOT}(/*rest)`, currentRoute);
-  }
-
-  @computed get isActiveWalletRestoring(): boolean {
-    return get(this.active, 'syncState.tag') === WalletSyncStateTags.RESTORING;
   }
 
   @computed get restoreProgress(): number {
@@ -435,7 +623,19 @@ export default class WalletsStore extends Store {
   _patchWalletRequestWithNewWallet = async (wallet: Wallet) => {
     // Only add the new wallet if it does not exist yet in the result!
     await this.walletsRequest.patch(result => {
-      if (!find(result, { id: wallet.id })) result.push(wallet);
+      if (!find(result, { id: wallet.id })) {
+        if (wallet.isLegacy) {
+          // Legacy wallets are always added to the end of the list!
+          result.push(wallet);
+        } else {
+          const index = findIndex(result, 'isLegacy');
+          if (index >= 0) {
+            result.splice(index, 0, wallet);
+          } else {
+            result.push(wallet);
+          }
+        }
+      }
     });
   };
 
@@ -479,18 +679,25 @@ export default class WalletsStore extends Store {
     });
   };
 
-  isValidAddress = (address: string) => this.api.ada.isValidAddress(address);
-
-  isValidMnemonic = (mnemonic: string) =>
-    this.api.ada.isValidMnemonic(mnemonic);
+  isValidAddress = (address: string) => {
+    const { app, networkStatus } = this.stores;
+    const { isMainnet, isTest } = app.environment;
+    const addressGroup =
+      networkStatus.isIncentivizedTestnet || isTest
+        ? AddressGroup.jormungandr
+        : AddressGroup.byron;
+    const chainSettings = isMainnet
+      ? ChainSettings.mainnet
+      : ChainSettings.testnet;
+    try {
+      return Address.Util.isAddress(address, chainSettings, addressGroup);
+    } catch (error) {
+      return false;
+    }
+  };
 
   isValidCertificateMnemonic = (mnemonic: string) =>
     this.api.ada.isValidCertificateMnemonic(mnemonic);
-
-  // TODO - call endpoint to check if private key is valid
-  isValidPrivateKey = () => {
-    return true;
-  }; // eslint-disable-line
 
   @action refreshWalletsData = async () => {
     // Prevent wallets data refresh if polling is blocked
@@ -501,18 +708,10 @@ export default class WalletsStore extends Store {
       if (!result) return;
       const walletIds = result.map((wallet: Wallet) => wallet.id);
       await this._setWalletsRecoveryPhraseVerificationData(walletIds);
-      let restoredWalletId = null; // id of a wallet which has just been restored
       runInAction('refresh active wallet', () => {
         if (this.active) {
           this._setActiveWallet({ walletId: this.active.id });
         }
-      });
-      runInAction('refresh active wallet restore', () => {
-        const restoringWallet = find(result, ['syncState.tag', 'restoring']);
-        const restoringWalletId = get(restoringWallet, 'id', null);
-        restoredWalletId =
-          (restoringWalletId === null && this.restoringWalletId) || null;
-        this._setIsRestoreActive(restoringWalletId);
       });
       runInAction('refresh address data', () => {
         this.stores.addresses.addressesRequests = walletIds.map(walletId => ({
@@ -533,7 +732,7 @@ export default class WalletsStore extends Store {
             ),
           })
         );
-        this.stores.transactions._refreshTransactionData(restoredWalletId);
+        this.stores.transactions._refreshTransactionData();
       });
     }
   };
@@ -544,15 +743,10 @@ export default class WalletsStore extends Store {
     this.stores.transactions.transactionsRequests = [];
   };
 
-  @action _setIsRestoreActive = (restoringWalletId: ?string) => {
-    this.isRestoreActive = restoringWalletId !== null;
-    this.restoringWalletId = restoringWalletId;
-  };
-
   @action _restoreWallet = async (params: {
     recoveryPhrase: string,
     walletName: string,
-    spendingPassword: ?string,
+    spendingPassword: string,
     type?: string,
   }) => {
     // reset getWalletRecoveryPhraseFromCertificateRequest to clear previous errors
@@ -564,7 +758,7 @@ export default class WalletsStore extends Store {
       spendingPassword: params.spendingPassword,
     };
 
-    if (params.type === 'certificate') {
+    if (params.type === WALLET_RESTORE_TYPES.CERTIFICATE) {
       // Split recovery phrase to 18 (scrambled mnemonics) + 9 (mnemonics seed) mnemonics
       const recoveryPhraseArray = params.recoveryPhrase.split(' ');
       const chunked = chunk(recoveryPhraseArray, 18);
@@ -583,7 +777,13 @@ export default class WalletsStore extends Store {
       this.getWalletRecoveryPhraseFromCertificateRequest.reset();
     }
 
-    const restoredWallet = await this.restoreRequest.execute(data).promise;
+    const request =
+      params.type === WALLET_RESTORE_TYPES.LEGACY ||
+      params.type === WALLET_RESTORE_TYPES.CERTIFICATE
+        ? this.restoreLegacyRequest
+        : this.restoreRequest;
+
+    const restoredWallet = await request.execute(data).promise;
     if (!restoredWallet)
       throw new Error('Restored wallet was not received correctly');
     await this._patchWalletRequestWithNewWallet(restoredWallet);
@@ -619,7 +819,6 @@ export default class WalletsStore extends Store {
       const hasActiveWalletBeenUpdated = !isEqual(this.active, newActiveWallet);
       if (hasActiveWalletBeenChanged) {
         // Active wallet has been replaced or removed
-        this.stores.addresses.lastGeneratedAddress = null;
         this.active = newActiveWallet || null;
         if (this.active) {
           this.activeValue = formattedWalletAmount(this.active.amount);
@@ -634,7 +833,6 @@ export default class WalletsStore extends Store {
   @action _unsetActiveWallet = () => {
     this.active = null;
     this.activeValue = null;
-    this.stores.addresses.lastGeneratedAddress = null;
   };
 
   @action _onRouteChange = (options: { route: string, params: ?Object }) => {
@@ -720,7 +918,10 @@ export default class WalletsStore extends Store {
         }).promise;
 
         // delete temporary wallet
-        yield this.deleteWalletRequest.execute({ walletId: wallet.id });
+        yield this.deleteWalletRequest.execute({
+          walletId: wallet.id,
+          isLegacy: wallet.isLegacy,
+        });
       }
 
       // Set wallet certificate address
@@ -755,7 +956,7 @@ export default class WalletsStore extends Store {
     const intl = i18nContext(locale);
     const { isMainnet, buildLabel } = this.environment;
     try {
-      await downloadPaperWalletCertificate({
+      await paperWalletPdfGenerator({
         address,
         mnemonics: recoveryPhrase,
         intl,
@@ -778,6 +979,39 @@ export default class WalletsStore extends Store {
     }
   };
 
+  _generateAddressPDF = async ({
+    address,
+    note,
+    filePath,
+  }: {
+    address: string,
+    note: string,
+    filePath: string,
+  }) => {
+    const {
+      currentLocale,
+      currentDateFormat,
+      currentTimeFormat,
+    } = this.stores.profile;
+    const { network, isMainnet } = this.environment;
+    const intl = i18nContext(currentLocale);
+    try {
+      await addressPDFGenerator({
+        address,
+        note,
+        filePath,
+        currentLocale,
+        currentDateFormat,
+        currentTimeFormat,
+        network,
+        isMainnet,
+        intl,
+      });
+    } catch (error) {
+      throw new Error(error);
+    }
+  };
+
   _updateCertificateCreationState = action(
     (state: boolean, error?: ?Object) => {
       this.generatingCertificateInProgress = state;
@@ -791,6 +1025,61 @@ export default class WalletsStore extends Store {
       this.generatingCertificateError = new WalletPaperWalletOpenPdfError();
     } else {
       this.generatingCertificateError = null;
+    }
+  });
+
+  /**
+   * Generates a rewards csv and saves it to the user selected file location.
+   *
+   * Using mobx flows: https://mobx.js.org/best/actions.html#flows
+   * @private
+   */
+  _generateRewardsCsv = flow(function* generateRewardsCsv(params: {
+    rewards: Array<CsvRecord>,
+    filePath: string,
+  }) {
+    try {
+      this._pausePolling();
+
+      // Set inProgress state to show spinner if is needed
+      this._updateRewardsCsvCreationState(true);
+
+      // download rewards csv
+      yield this._downloadRewardsCsv(params.rewards, params.filePath);
+    } catch (error) {
+      throw error;
+    } finally {
+      this._resumePolling();
+    }
+  }).bind(this);
+
+  _downloadRewardsCsv = async (rewards: Array<CsvRecord>, filePath: string) => {
+    try {
+      await downloadRewardsCsv({
+        rewards,
+        filePath,
+      });
+      runInAction('handle successful rewards csv download', () => {
+        this._updateRewardsCsvCreationState(false);
+      });
+    } catch (error) {
+      runInAction('handle failed rewards csv download', () => {
+        this._updateRewardsCsvCreationState(false, error);
+      });
+    }
+  };
+
+  _updateRewardsCsvCreationState = action((state: boolean, error?: ?Object) => {
+    this.generatingRewardsCsvInProgress = state;
+    this._updateGeneratingRewardsCsvError(error);
+  });
+
+  _updateGeneratingRewardsCsvError = action((error?: ?Object) => {
+    if (error && error.syscall && error.syscall === 'open') {
+      // User tries to replace a file that is open
+      this.generatingRewardsCsvError = new WalletRewardsOpenCsvError();
+    } else {
+      this.generatingRewardsCsvError = null;
     }
   });
 
@@ -895,6 +1184,11 @@ export default class WalletsStore extends Store {
     this._closeCertificateGeneration();
   };
 
+  @action _finishRewardsCsv = () => {
+    this._updateGeneratingRewardsCsvError();
+    this._closeRewardsCsvGeneration();
+  };
+
   @action _updateCertificateStep = (isBack: boolean = false) => {
     this._updateGeneratingCertificateError();
     const currrentCertificateStep = this.certificateStep || 0;
@@ -908,6 +1202,11 @@ export default class WalletsStore extends Store {
     this._resetCertificateData();
   };
 
+  @action _closeRewardsCsvGeneration = () => {
+    this.actions.dialogs.closeActiveDialog.trigger();
+    this._resetRewardsCsvData();
+  };
+
   @action _resetCertificateData = () => {
     this.walletCertificatePassword = null;
     this.walletCertificateAddress = null;
@@ -916,6 +1215,11 @@ export default class WalletsStore extends Store {
     this.certificateTemplate = false;
     this.certificateStep = null;
     this._updateGeneratingCertificateError();
+  };
+
+  @action _resetRewardsCsvData = () => {
+    this.generatingRewardsCsvInProgress = false;
+    this._updateGeneratingRewardsCsvError();
   };
 
   _getWalletsLocalData = async () => {

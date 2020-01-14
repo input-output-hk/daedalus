@@ -29,17 +29,14 @@ export default class WalletAddPage extends Component<Props> {
 
   render() {
     const { actions, stores } = this.props;
-    const { wallets, uiDialogs, app } = stores;
-    const {
-      isRestoreActive,
-      createWalletStep,
-      useNewWalletCreationProcess,
-    } = wallets;
+    const { wallets, uiDialogs, app, networkStatus } = stores;
+    const { createWalletStep, useNewWalletCreationProcess } = wallets;
+    const { isIncentivizedTestnet } = networkStatus;
     const {
       environment: { isMainnet, isTestnet },
     } = app;
 
-    const walletCreationAction = useNewWalletCreationProcess
+    const onWalletAdd = useNewWalletCreationProcess
       ? () => actions.wallets.createWalletBegin.trigger()
       : // TODO: Remove once the new wallet creation process is ready
         () => actions.dialogs.open.trigger({ dialog: WalletCreateDialog });
@@ -63,15 +60,15 @@ export default class WalletAddPage extends Component<Props> {
         <WalletAdd
           isMainnet={isMainnet}
           isTestnet={isTestnet}
-          onCreate={walletCreationAction}
+          onCreate={onWalletAdd}
           onRestore={() =>
             actions.dialogs.open.trigger({ dialog: WalletRestoreDialog })
           }
           onImportFile={() =>
             actions.dialogs.open.trigger({ dialog: WalletFileImportDialog })
           }
-          isRestoreActive={isRestoreActive}
           isMaxNumberOfWalletsReached={wallets.hasMaxWallets}
+          isIncentivizedTestnet={isIncentivizedTestnet}
         />
       );
     }

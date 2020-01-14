@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="122px" height="122px" viewBox="0 0 122 122" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="styles" transform="translate(-60.000000, -5380.000000)" fill="#243E62">
+        <g id="styles" transform="translate(-60.000000, -5380.000000)" fill="#121326">
             <g id="spinner-dark" transform="translate(60.000000, 5380.000000)">
                 <path d="M18.5735931,18.5735931 C-4.85786437,42.0050506 -4.85786437,79.9949494 18.5735931,103.426407 C42.0050506,126.857864 79.9949494,126.857864 103.426407,103.426407 L97.7695526,97.7695526 C77.4622895,118.076816 44.5377105,118.076816 24.2304474,97.7695526 C3.92318421,77.4622895 3.92318421,44.5377105 24.2304474,24.2304474 L18.5735931,18.5735931 L18.5735931,18.5735931 L18.5735931,18.5735931 Z" id="spinner"></path>
             </g>

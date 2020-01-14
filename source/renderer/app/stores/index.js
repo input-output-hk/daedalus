@@ -3,7 +3,6 @@ import { observable, action } from 'mobx';
 import type Store from './lib/Store';
 import AddressesStore from './AddressesStore';
 import AppStore from './AppStore';
-import BlockConsolidationStore from './BlockConsolidationStore';
 import NetworkStatusStore from './NetworkStatusStore';
 import NewsFeedStore from './NewsFeedStore';
 import NodeUpdateStore from './NodeUpdateStore';
@@ -21,7 +20,6 @@ import WindowStore from './WindowStore';
 export const storeClasses = {
   addresses: AddressesStore,
   app: AppStore,
-  blockConsolidation: BlockConsolidationStore,
   networkStatus: NetworkStatusStore,
   newsFeed: NewsFeedStore,
   nodeUpdate: NodeUpdateStore,
@@ -40,7 +38,6 @@ export const storeClasses = {
 export type StoresMap = {
   addresses: AddressesStore,
   app: AppStore,
-  blockConsolidation: BlockConsolidationStore,
   networkStatus: NetworkStatusStore,
   newsFeed: NewsFeedStore,
   nodeUpdate: NodeUpdateStore,
@@ -79,9 +76,9 @@ export default action(
 
     // Create fresh instances of all stores
     stores = observable({
+      uiNotifications: createStoreInstanceOf(UiNotificationsStore),
       addresses: createStoreInstanceOf(AddressesStore),
       app: createStoreInstanceOf(AppStore),
-      blockConsolidation: createStoreInstanceOf(BlockConsolidationStore),
       networkStatus: createStoreInstanceOf(NetworkStatusStore),
       newsFeed: createStoreInstanceOf(NewsFeedStore),
       nodeUpdate: createStoreInstanceOf(NodeUpdateStore),
@@ -91,7 +88,6 @@ export default action(
       staking: createStoreInstanceOf(StakingStore),
       transactions: createStoreInstanceOf(TransactionsStore),
       uiDialogs: createStoreInstanceOf(UiDialogsStore),
-      uiNotifications: createStoreInstanceOf(UiNotificationsStore),
       wallets: createStoreInstanceOf(WalletsStore),
       walletBackup: createStoreInstanceOf(WalletBackupStore),
       walletSettings: createStoreInstanceOf(WalletSettingsStore),

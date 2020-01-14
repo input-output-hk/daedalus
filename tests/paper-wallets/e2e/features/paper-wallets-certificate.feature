@@ -1,9 +1,10 @@
-@e2e
+@e2e @skip
+# @API TODO - We don't have API endpoint for paper wallets and whole feature existence needs to be discussed
 Feature: Paper Wallets Certificate generation
 
   Background:
     Given I have completed the basic setup
-    And I have a "Imported Wallet" with funds
+    And I have a "Test wallet" wallet with funds
 
   Scenario: Paper wallets certificate success generation
     Given The sidebar shows the "wallets" category
@@ -25,8 +26,8 @@ Feature: Paper Wallets Certificate generation
     And Cardano explorer link and wallet address should be valid
     And I click on the finish button
     And I should not see the create paper wallet certificate dialog anymore
-    When I click on the "Imported Wallet" wallet in the sidebar
-    And I am on the "Imported Wallet" wallet "send" screen
+    When I click on the "Test wallet" wallet in the sidebar
+    And I am on the "Test wallet" wallet "send" screen
     And I fill out the send form:
       | amount   |
       | 0.000010 |
@@ -34,7 +35,7 @@ Feature: Paper Wallets Certificate generation
     And I click on the next button in the wallet send form
     And I see send money confirmation dialog
     And I submit the wallet send form
-    Then I should be on the "Imported Wallet" wallet "summary" screen
+    Then I should be on the "Test wallet" wallet "summary" screen
     And the latest transaction should show:
       | title                   | amountWithoutFees |
       | wallet.transaction.sent | -0.000010         |
@@ -46,14 +47,13 @@ Feature: Paper Wallets Certificate generation
     And I see "Restore wallet with certificate" form
     And I enter wallet name "Restored CERTIFICATE wallet" in restore wallet dialog
     And I enter paper wallet recovery phrase
-    And I toggle "Spending password" switch on the restore wallet with certificate dialog
     And I submit the restore wallet dialog
     Then I should not see the restore wallet dialog anymore
     And I should have newly created "Restored CERTIFICATE wallet" wallet loaded
     And I should be on the "Restored CERTIFICATE wallet" wallet "summary" screen
     And the balance of "Restored CERTIFICATE wallet" wallet should be:
-      | balance  |
-      | 0.000010 |
+      | balance |
+      | 0.00001 |
     And I should see the restore status notification while restore is running
     And I should not see the restore status notification once restore is finished
     When I click the wallet receive button

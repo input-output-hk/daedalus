@@ -1,4 +1,5 @@
-@e2e
+@e2e @skip
+# @API TODO - We don't have app update endpoints
 Feature: Node Update Exit
 
   Background:
@@ -15,7 +16,7 @@ Feature: Node Update Exit
 
   # TODO: clarify what should happen when cardano exits with wrong code!
   # Currently Daedalus thinks that cardano-node crashed and restarts it …
-  @skip @slow @restartApp
+  @slow @restartApp @skip
   Scenario: apply-update endpoint triggered, and node exits with wrong exit code, that's still handled
     When I inject fault named "FInjApplyUpdateWrongExitCode"
     When I trigger the apply-update endpoint
@@ -23,7 +24,7 @@ Feature: Node Update Exit
     And Daedalus should quit
 
   # TODO: Daedalus doesn't handle ignored api calls atm
-  @skip @slow @restartApp
+  @slow @restartApp @skip
   Scenario: apply-update endpoint triggered, and node ignores the endpoint call, that's still handled
     Given Daedalus is running
     And cardano-node is running

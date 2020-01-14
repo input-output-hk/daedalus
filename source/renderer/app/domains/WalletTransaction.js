@@ -1,35 +1,23 @@
 // @flow
 import { observable } from 'mobx';
 import BigNumber from 'bignumber.js';
-import type { WalletAssuranceMode } from '../api/wallets/types';
 import type {
-  TxnAssuranceLevel,
-  TransactionState,
   TrasactionAddresses,
   TransactionType,
+  TransactionDepth,
+  TransactionState,
 } from '../api/transactions/types';
 
-export const transactionStates: {
+export const TransactionStates: {
   PENDING: TransactionState,
-  FAILED: TransactionState,
   OK: TransactionState,
 } = {
   PENDING: 'pending',
-  FAILED: 'failed',
-  OK: 'ok',
+  OK: 'in_ledger',
+  IN_LEDGER: 'in_ledger',
 };
 
-export const TxnAssuranceLevelOptions: {
-  LOW: TxnAssuranceLevel,
-  MEDIUM: TxnAssuranceLevel,
-  HIGH: TxnAssuranceLevel,
-} = {
-  LOW: 'low',
-  MEDIUM: 'medium',
-  HIGH: 'high',
-};
-
-export const transactionTypes: {
+export const TransactionTypes: {
   CARD: TransactionType,
   EXPEND: TransactionType,
   INCOME: TransactionType,
@@ -46,33 +34,27 @@ export class WalletTransaction {
   @observable type: TransactionType;
   @observable title: string = '';
   @observable amount: BigNumber;
-  @observable date: Date;
+  @observable date: ?Date;
   @observable description: string = '';
-  @observable numberOfConfirmations: number = 0;
   @observable addresses: TrasactionAddresses = { from: [], to: [] };
   @observable state: TransactionState;
+  @observable depth: TransactionDepth;
+  @observable slotNumber: ?number;
+  @observable epochNumber: ?number;
 
   constructor(data: {
     id: string,
     type: TransactionType,
     title: string,
     amount: BigNumber,
-    date: Date,
+    date: ?Date,
     description: string,
-    numberOfConfirmations: number,
     addresses: TrasactionAddresses,
     state: TransactionState,
+    depth: TransactionDepth,
+    slotNumber: ?number,
+    epochNumber: ?number,
   }) {
     Object.assign(this, data);
-  }
-
-  getAssuranceLevelForMode(mode: WalletAssuranceMode): TxnAssuranceLevel {
-    if (this.numberOfConfirmations < mode.low) {
-      return TxnAssuranceLevelOptions.LOW;
-    }
-    if (this.numberOfConfirmations < mode.medium) {
-      return TxnAssuranceLevelOptions.MEDIUM;
-    }
-    return TxnAssuranceLevelOptions.HIGH;
   }
 }

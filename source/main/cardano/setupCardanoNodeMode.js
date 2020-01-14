@@ -23,21 +23,37 @@ import {
   cardanoFaultInjectionChannel,
   cardanoRestartChannel,
   cardanoStateChangeChannel,
+  cardanoNodeImplementationChannel,
   getCachedCardanoStatusChannel,
   cardanoTlsConfigChannel,
   setCachedCardanoStatusChannel,
 } from '../ipc/cardano.ipc';
 import { safeExitWithCode } from '../utils/safeExitWithCode';
 
-const startCardanoNode = (node: CardanoNode, launcherConfig: Object) => {
-  const { nodePath, tlsPath, logsPrefix } = launcherConfig;
-  const nodeArgs = prepareArgs(launcherConfig);
-  const logFilePath = `${logsPrefix}/cardano-node.log`;
+const startCardanoNode = (
+  node: CardanoNode,
+  launcherConfig: LauncherConfig
+) => {
+  const {
+    walletBin,
+    tlsPath,
+    logsPrefix,
+    workingDir,
+    cliBin,
+    nodeBin,
+    nodeImplementation,
+  } = launcherConfig;
+  const walletArgs = prepareArgs(launcherConfig);
+  const logFilePath = `${logsPrefix}/pub/`;
   const config = {
-    nodePath,
+    walletBin,
+    nodeBin,
+    cliBin,
+    nodeImplementation,
     logFilePath,
     tlsPath,
-    nodeArgs,
+    walletArgs,
+    workingDir,
     startupTimeout: NODE_STARTUP_TIMEOUT,
     startupMaxRetries: NODE_STARTUP_MAX_RETRIES,
     shutdownTimeout: NODE_SHUTDOWN_TIMEOUT,
@@ -104,6 +120,16 @@ export const setupCardanoNodeMode = (
       status: cardanoNode.status,
     });
     return Promise.resolve(cardanoNode.status);
+  });
+
+  cardanoNodeImplementationChannel.onRequest(() => {
+    Logger.info(
+      'ipcMain: Received request from renderer for cardano node implementation',
+      {
+        nodeImplementation: cardanoNode.config.nodeImplementation,
+      }
+    );
+    return Promise.resolve(cardanoNode.config.nodeImplementation);
   });
 
   setCachedCardanoStatusChannel.onReceive((status: ?CardanoStatus) => {

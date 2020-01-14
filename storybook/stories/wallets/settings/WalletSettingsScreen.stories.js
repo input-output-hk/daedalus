@@ -4,10 +4,10 @@ import { text, boolean, number, select } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
 import moment from 'moment';
 import wordlist from 'bip39/wordlists/english';
+import { isIncentivizedTestnetTheme } from '../../_support/utils';
 
 // Screens
 import WalletSettings from '../../../../source/renderer/app/components/wallet/settings/WalletSettings';
-import { WalletAssuranceModeOptions } from '../../../../source/renderer/app/domains/Wallet';
 import ChangeSpendingPasswordDialog from '../../../../source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog';
 import DeleteWalletConfirmationDialog from '../../../../source/renderer/app/components/wallet/settings/DeleteWalletConfirmationDialog';
 import WalletRecoveryPhraseStep1Dialog from '../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep1Dialog';
@@ -85,7 +85,9 @@ const getWalletDates = (type: string, status: string) => {
   };
 };
 
-export default () => {
+export default (props: { currentTheme: string, locale: string }) => {
+  const { currentTheme, locale } = props;
+
   const { type, status } = select(
     'Wallet Recovery Phrase Verification',
     recoveryPhraseVerificationDateOptions,
@@ -107,6 +109,8 @@ export default () => {
 
   return (
     <WalletSettings
+      isIncentivizedTestnet={isIncentivizedTestnetTheme(currentTheme)}
+      isLegacy={boolean('isLegacy', false)}
       isDialogOpen={dialog => {
         if (dialog === ChangeSpendingPasswordDialog) {
           return boolean(
@@ -133,24 +137,6 @@ export default () => {
         return false;
       }}
       activeField={null}
-      assuranceLevels={[
-        {
-          value: WalletAssuranceModeOptions.NORMAL,
-          label: {
-            id: 'global.assuranceLevel.normal',
-            defaultMessage: '!!!Normal',
-            description: '',
-          },
-        },
-        {
-          value: WalletAssuranceModeOptions.STRICT,
-          label: {
-            id: 'global.assuranceLevel.strict',
-            defaultMessage: '!!!Strict',
-            description: '',
-          },
-        },
-      ]}
       isInvalid={false}
       isSubmitting={false}
       lastUpdatedField={null}
@@ -160,7 +146,6 @@ export default () => {
       onStartEditing={() => {}}
       onStopEditing={() => {}}
       openDialogAction={() => {}}
-      walletAssurance={WalletAssuranceModeOptions.NORMAL}
       walletName={text('Wallet Name', 'Wallet Name', basicSettingsId)}
       spendingPasswordUpdateDate={moment()
         .subtract(1, 'month')
@@ -261,6 +246,7 @@ export default () => {
       recoveryPhraseVerificationStatusType={
         type || WalletRecoveryPhraseVerificationTypes.NEVER_CHECKED
       }
+      locale={locale}
     />
   );
 };

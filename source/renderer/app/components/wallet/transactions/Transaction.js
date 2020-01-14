@@ -1,23 +1,25 @@
 // @flow
-import React, { Component } from 'react';
-import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
+import React, { Component, Fragment } from 'react';
+import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
+import { includes } from 'lodash';
 import SVGInline from 'react-svg-inline';
 import classNames from 'classnames';
+import CancelTransactionButton from './CancelTransactionButton';
 import styles from './Transaction.scss';
 import TransactionTypeIcon from './TransactionTypeIcon.js';
 import adaSymbol from '../../../assets/images/ada-symbol.inline.svg';
 import arrow from '../../../assets/images/collapse-arrow.inline.svg';
 import externalLinkIcon from '../../../assets/images/link-ic.inline.svg';
 import {
-  transactionStates,
-  transactionTypes,
-  TxnAssuranceLevelOptions,
+  TransactionStates,
+  TransactionTypes,
   WalletTransaction,
 } from '../../../domains/WalletTransaction';
 import globalMessages from '../../../i18n/global-messages';
 import type { TransactionState } from '../../../api/transactions/types';
-import { getNetworkExplorerUrl } from '../../../utils/network';
+import { PENDING_TIME_LIMIT } from '../../../config/txnsConfig';
+import CancelTransactionConfirmationDialog from './CancelTransactionConfirmationDialog';
 
 /* eslint-disable consistent-return */
 
@@ -37,17 +39,6 @@ const messages = defineMessages({
     defaultMessage: '!!!Exchange',
     description:
       'Transaction type shown for money exchanges between currencies.',
-  },
-  assuranceLevel: {
-    id: 'wallet.transaction.assuranceLevel',
-    defaultMessage: '!!!Transaction assurance level',
-    description: 'Transaction assurance level.',
-  },
-  confirmations: {
-    id: 'wallet.transaction.confirmations',
-    defaultMessage:
-      '{confirmationsNumber, plural, one {# confirmation} =21 {20+ confirmations} other {# confirmations}}',
-    description: 'Transaction confirmations.',
   },
   transactionId: {
     id: 'wallet.transaction.transactionId',
@@ -94,56 +85,80 @@ const messages = defineMessages({
     defaultMessage: '!!!Transaction amount',
     description: 'Transaction amount.',
   },
-});
-
-const assuranceLevelTranslations = defineMessages({
-  [TxnAssuranceLevelOptions.LOW]: {
-    id: 'wallet.transaction.assuranceLevel.low',
-    defaultMessage: '!!!low',
-    description: 'Transaction assurance level "low".',
+  cancelPendingTxnNote: {
+    id: 'wallet.transaction.pending.cancelPendingTxnNote',
+    defaultMessage:
+      '!!!This transaction has been pending for a long time. To release the funds used by this transaction, you can try canceling it.',
+    description: 'Note to cancel a transaction that has been pending too long',
   },
-  [TxnAssuranceLevelOptions.MEDIUM]: {
-    id: 'wallet.transaction.assuranceLevel.medium',
-    defaultMessage: '!!!medium',
-    description: 'Transaction assurance level "medium".',
+  supportArticleLink: {
+    id: 'wallet.transaction.pending.supportArticleLink',
+    defaultMessage: '!!!Why should I cancel this transaction?',
+    description: 'Link to support article for canceling a pending transaction',
   },
-  [TxnAssuranceLevelOptions.HIGH]: {
-    id: 'wallet.transaction.assuranceLevel.high',
-    defaultMessage: '!!!high',
-    description: 'Transaction assurance level "high".',
+  supportArticleUrl: {
+    id: 'wallet.transaction.pending.supportArticleUrl',
+    defaultMessage:
+      '!!!https://iohk.zendesk.com/hc/en-us/articles/360038113814',
+    description: 'Url to support article for canceling a pending transaction',
+  },
+  noInputAddressesLabel: {
+    id: 'wallet.transaction.noInputAddressesLabel',
+    defaultMessage: '!!!No addresses',
+    description: 'Input Addresses label.',
+  },
+  unresolvedInputAddressesLinkLabel: {
+    id: 'wallet.transaction.unresolvedInputAddressesLinkLabel',
+    defaultMessage: '!!!Open this transaction in Cardano explorer',
+    description: 'Unresolved Input Addresses link label.',
+  },
+  unresolvedInputAddressesAdditionalLabel: {
+    id: 'wallet.transaction.unresolvedInputAddressesAdditionalLabel',
+    defaultMessage: '!!!to see these addresses.',
+    description: 'Unresolved Input Addresses additional label.',
   },
 });
 
 const stateTranslations = defineMessages({
-  [transactionStates.PENDING]: {
+  [TransactionStates.OK]: {
+    id: 'wallet.transaction.state.confirmed',
+    defaultMessage: '!!!Transaction confirmed',
+    description: 'Transaction state "confirmed"',
+  },
+  [TransactionStates.PENDING]: {
     id: 'wallet.transaction.state.pending',
     defaultMessage: '!!!Transaction pending',
-    description: 'Transaction state "pending"',
-  },
-  [transactionStates.FAILED]: {
-    id: 'wallet.transaction.state.failed',
-    defaultMessage: '!!!Transaction failed',
     description: 'Transaction state "pending"',
   },
 });
 
 type Props = {
   data: WalletTransaction,
+  deletePendingTransaction: Function,
   state: TransactionState,
-  assuranceLevel: string,
   isExpanded: boolean,
   isRestoreActive: boolean,
   isLastInList: boolean,
   formattedWalletAmount: Function,
-  network: string,
   onDetailsToggled: ?Function,
-  onOpenExternalLink: ?Function,
+  onOpenExternalLink: Function,
+  getUrlByType: Function,
   currentTimeFormat: string,
+  walletId: string,
+  isDeletingTransaction: boolean,
 };
 
-export default class Transaction extends Component<Props> {
+type State = {
+  showConfirmationDialog: boolean,
+};
+
+export default class Transaction extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
+  };
+
+  state = {
+    showConfirmationDialog: false,
   };
 
   toggleDetails() {
@@ -151,45 +166,116 @@ export default class Transaction extends Component<Props> {
     if (onDetailsToggled) onDetailsToggled();
   }
 
-  handleOpenExplorer(type: string, param: string, e: Event) {
-    const { onOpenExternalLink, network } = this.props;
-    if (onOpenExternalLink) {
-      e.stopPropagation();
-      const link = `${getNetworkExplorerUrl(network)}/${type}/${param}`;
-      onOpenExternalLink(link);
+  handleOpenSupportArticle = () => {
+    const { intl } = this.context;
+    const { onOpenExternalLink } = this.props;
+    const supportArticleUrl = intl.formatMessage(messages.supportArticleUrl);
+    return onOpenExternalLink(supportArticleUrl);
+  };
+
+  deletePendingTransaction = async () => {
+    const { data, walletId } = this.props;
+    const { id: transactionId, state } = data;
+    if (state !== TransactionStates.PENDING) {
+      return this.hideConfirmationDialog();
     }
-  }
+    await this.props.deletePendingTransaction({
+      walletId,
+      transactionId,
+    });
+    return this.hideConfirmationDialog();
+  };
+
+  showConfirmationDialog = () => {
+    this.setState({ showConfirmationDialog: true });
+  };
+
+  hideConfirmationDialog = () => {
+    this.setState({ showConfirmationDialog: false });
+  };
+
+  getTimePending = (txnDate: Date): number => {
+    // right now (milliseconds) minus txn created_at date (milliseconds)
+    const NOW = moment().valueOf();
+    const TXN_CREATED_AT = moment(txnDate).valueOf();
+    return NOW - TXN_CREATED_AT;
+  };
+
+  hasExceededPendingTimeLimit = (): boolean => {
+    const {
+      data: { date },
+      isRestoreActive,
+      state,
+    } = this.props;
+
+    const isPendingTxn = state === TransactionStates.PENDING;
+    if (!isPendingTxn || isRestoreActive || !date) return false;
+
+    const TOTAL_TIME_PENDING = this.getTimePending(date);
+    return TOTAL_TIME_PENDING > PENDING_TIME_LIMIT;
+  };
+
+  renderCancelPendingTxnContent = () => {
+    const { intl } = this.context;
+    const overPendingTimeLimit = this.hasExceededPendingTimeLimit();
+
+    if (!overPendingTimeLimit) return null;
+
+    return (
+      <Fragment>
+        <div className={styles.pendingTxnNote}>
+          {intl.formatMessage(messages.cancelPendingTxnNote)}
+          <span
+            role="presentation"
+            aria-hidden
+            className={styles.articleLink}
+            onClick={this.handleOpenSupportArticle}
+          >
+            {intl.formatMessage(messages.supportArticleLink)}
+            <SVGInline svg={externalLinkIcon} />
+          </span>
+        </div>
+        <div>
+          <CancelTransactionButton onClick={this.showConfirmationDialog} />
+        </div>
+      </Fragment>
+    );
+  };
+
+  renderTxnStateTag = () => {
+    const { intl } = this.context;
+    const { state } = this.props;
+    const styleLabel = this.hasExceededPendingTimeLimit()
+      ? `${state}WarningLabel`
+      : `${state}Label`;
+
+    return (
+      <div className={styles[styleLabel]}>
+        {intl.formatMessage(stateTranslations[state])}
+      </div>
+    );
+  };
 
   render() {
     const {
       data,
       isLastInList,
       state,
-      assuranceLevel,
       formattedWalletAmount,
       onOpenExternalLink,
-      isRestoreActive,
+      getUrlByType,
       isExpanded,
+      isDeletingTransaction,
       currentTimeFormat,
     } = this.props;
     const { intl } = this.context;
 
-    const canOpenExplorer = onOpenExternalLink;
+    const { showConfirmationDialog } = this.state;
 
-    const hasConfirmations = data.numberOfConfirmations > 0;
-    const isFailedTransaction = state === transactionStates.FAILED;
-    const isPendingTransaction =
-      state === transactionStates.PENDING ||
-      (state === transactionStates.OK && !hasConfirmations);
-
-    // transaction state is mutated in order to capture zero-confirmations status as pending state
-    const transactionState = isPendingTransaction
-      ? transactionStates.PENDING
-      : state;
+    const isPendingTransaction = state === TransactionStates.PENDING;
 
     const componentStyles = classNames([
       styles.component,
-      isFailedTransaction ? styles.failed : null,
       isExpanded ? 'Transaction_expanded' : null,
     ]);
 
@@ -201,13 +287,8 @@ export default class Transaction extends Component<Props> {
 
     const detailsStyles = classNames([
       styles.details,
-      canOpenExplorer ? styles.clickable : null,
+      styles.clickable,
       isExpanded ? styles.detailsExpanded : styles.detailsClosed,
-    ]);
-
-    const assuranceLevelRowStyles = classNames([
-      styles.row,
-      styles.retainHeight,
     ]);
 
     const arrowStyles = classNames([
@@ -215,160 +296,164 @@ export default class Transaction extends Component<Props> {
       isExpanded ? styles.arrowExpanded : null,
     ]);
 
-    const status = intl.formatMessage(
-      assuranceLevelTranslations[assuranceLevel]
-    );
     const currency = intl.formatMessage(globalMessages.currency);
     const symbol = adaSymbol;
 
-    const transactionStateTag = () => {
-      if (isRestoreActive) return;
-      return transactionState === transactionStates.OK ? (
-        <div className={styles[assuranceLevel]}>{status}</div>
-      ) : (
-        <div className={styles[`${transactionState}Label`]}>
-          {intl.formatMessage(stateTranslations[transactionState])}
-        </div>
-      );
+    const iconType = isPendingTransaction
+      ? TransactionStates.PENDING
+      : data.type;
+
+    const exceedsPendingTimeLimit = this.hasExceededPendingTimeLimit();
+
+    const includesUnresolvedAddresses = addresses => includes(addresses, null);
+
+    const fromAddresses = (addresses, transactionId) => {
+      if (addresses.length > 0) {
+        return includesUnresolvedAddresses(addresses) ? (
+          <div className={styles.explorerLinkRow}>
+            <span
+              role="presentation"
+              aria-hidden
+              className={styles.explorerLink}
+              onClick={() =>
+                onOpenExternalLink(getUrlByType('tx', transactionId))
+              }
+            >
+              {intl.formatMessage(messages.unresolvedInputAddressesLinkLabel)}
+              <SVGInline svg={externalLinkIcon} />
+            </span>
+            <span>
+              {intl.formatMessage(
+                messages.unresolvedInputAddressesAdditionalLabel
+              )}
+            </span>
+          </div>
+        ) : (
+          addresses.map((address, addressIndex) => (
+            <div
+              // eslint-disable-next-line react/no-array-index-key
+              key={`${data.id}-from-${address || ''}-${addressIndex}`}
+              className={styles.addressRow}
+            >
+              <span
+                role="presentation"
+                aria-hidden
+                className={styles.address}
+                onClick={() =>
+                  onOpenExternalLink(getUrlByType('address', address))
+                }
+              >
+                {address}
+                <SVGInline svg={externalLinkIcon} />
+              </span>
+            </div>
+          ))
+        );
+      }
+      return <span>{intl.formatMessage(messages.noInputAddressesLabel)}</span>;
     };
 
     return (
-      <div
-        onClick={this.toggleDetails.bind(this)}
-        className={componentStyles}
-        role="presentation"
-        aria-hidden
-      >
-        <div className={styles.toggler}>
-          <TransactionTypeIcon
-            iconType={
-              isFailedTransaction ? transactionStates.FAILED : data.type
-            }
+      <Fragment>
+        <div
+          onClick={this.toggleDetails.bind(this)}
+          className={componentStyles}
+          role="presentation"
+          aria-hidden
+        >
+          <div className={styles.toggler}>
+            <TransactionTypeIcon
+              exceedsPendingTimeLimit={exceedsPendingTimeLimit}
+              iconType={iconType}
+            />
+
+            <div className={styles.togglerContent}>
+              <div className={styles.header}>
+                <div className={styles.title}>
+                  {data.type === TransactionTypes.EXPEND
+                    ? intl.formatMessage(messages.sent, { currency })
+                    : intl.formatMessage(messages.received, { currency })}
+                </div>
+                <div className={styles.amount}>
+                  {// hide currency (we are showing symbol instead)
+                  formattedWalletAmount(data.amount, false)}
+                  <SVGInline svg={symbol} className={styles.currencySymbol} />
+                </div>
+              </div>
+
+              <div className={styles.details}>
+                <div className={styles.type}>
+                  {intl.formatMessage(messages.type, { currency })},{' '}
+                  {moment(data.date).format(currentTimeFormat)}
+                </div>
+                {this.renderTxnStateTag()}
+              </div>
+            </div>
+          </div>
+
+          {/* ==== Toggleable Transaction Details ==== */}
+          <div className={contentStyles}>
+            <div
+              className={detailsStyles}
+              onClick={event => event.stopPropagation()}
+              role="presentation"
+              aria-hidden
+            >
+              <div>
+                <h2>{intl.formatMessage(messages.fromAddresses)}</h2>
+
+                {fromAddresses(data.addresses.from, data.id)}
+
+                <h2>{intl.formatMessage(messages.toAddresses)}</h2>
+                {data.addresses.to.map((address, addressIndex) => (
+                  <div
+                    // eslint-disable-next-line react/no-array-index-key
+                    key={`${data.id}-to-${address}-${addressIndex}`}
+                    className={styles.addressRow}
+                  >
+                    <span
+                      role="presentation"
+                      aria-hidden
+                      className={styles.address}
+                      onClick={() =>
+                        onOpenExternalLink(getUrlByType('address', address))
+                      }
+                    >
+                      {address}
+                      <SVGInline svg={externalLinkIcon} />
+                    </span>
+                  </div>
+                ))}
+
+                <h2>{intl.formatMessage(messages.transactionId)}</h2>
+                <div className={styles.transactionIdRow}>
+                  <span
+                    role="presentation"
+                    aria-hidden
+                    className={styles.transactionId}
+                    onClick={() =>
+                      onOpenExternalLink(getUrlByType('tx', data.id))
+                    }
+                  >
+                    {data.id}
+                    <SVGInline svg={externalLinkIcon} />
+                  </span>
+                </div>
+                {this.renderCancelPendingTxnContent()}
+              </div>
+            </div>
+            <SVGInline svg={arrow} className={arrowStyles} />
+          </div>
+        </div>
+
+        {showConfirmationDialog && (
+          <CancelTransactionConfirmationDialog
+            isSubmitting={isDeletingTransaction}
+            onCancel={this.hideConfirmationDialog}
+            onConfirm={this.deletePendingTransaction}
           />
-
-          <div className={styles.togglerContent}>
-            <div className={styles.header}>
-              <div className={styles.title}>
-                {data.type === transactionTypes.EXPEND
-                  ? intl.formatMessage(messages.sent, { currency })
-                  : intl.formatMessage(messages.received, { currency })}
-              </div>
-              <div className={styles.amount}>
-                {// hide currency (we are showing symbol instead)
-                formattedWalletAmount(data.amount, false)}
-                <SVGInline svg={symbol} className={styles.currencySymbol} />
-              </div>
-            </div>
-
-            <div className={styles.details}>
-              <div className={styles.type}>
-                {intl.formatMessage(messages.type, { currency })},{' '}
-                {moment(data.date).format(currentTimeFormat)}
-              </div>
-              {transactionStateTag()}
-            </div>
-          </div>
-        </div>
-
-        {/* ==== Toggleable Transaction Details ==== */}
-        <div className={contentStyles}>
-          <div
-            className={detailsStyles}
-            onClick={event => event.stopPropagation()}
-            role="presentation"
-            aria-hidden
-          >
-            <div>
-              <h2>{intl.formatMessage(messages.fromAddresses)}</h2>
-              {data.addresses.from.map((address, addressIndex) => (
-                <div
-                  // eslint-disable-next-line react/no-array-index-key
-                  key={`${data.id}-from-${address}-${addressIndex}`}
-                  className={styles.addressRow}
-                >
-                  <span
-                    role="presentation"
-                    aria-hidden
-                    className={styles.address}
-                    onClick={this.handleOpenExplorer.bind(
-                      this,
-                      'address',
-                      address
-                    )}
-                  >
-                    {address}
-                    <SVGInline svg={externalLinkIcon} />
-                  </span>
-                </div>
-              ))}
-
-              <h2>{intl.formatMessage(messages.toAddresses)}</h2>
-              {data.addresses.to.map((address, addressIndex) => (
-                <div
-                  // eslint-disable-next-line react/no-array-index-key
-                  key={`${data.id}-to-${address}-${addressIndex}`}
-                  className={styles.addressRow}
-                >
-                  <span
-                    role="presentation"
-                    aria-hidden
-                    className={styles.address}
-                    onClick={this.handleOpenExplorer.bind(
-                      this,
-                      'address',
-                      address
-                    )}
-                  >
-                    {address}
-                    <SVGInline svg={externalLinkIcon} />
-                  </span>
-                </div>
-              ))}
-
-              <div className={assuranceLevelRowStyles}>
-                <h2>{intl.formatMessage(messages.assuranceLevel)}</h2>
-                {!isRestoreActive &&
-                (transactionState === transactionStates.OK ||
-                  transactionState === transactionStates.PENDING) ? (
-                  <span>
-                    {transactionState === transactionStates.OK && (
-                      <span className={styles.assuranceLevel}>
-                        {status}.&nbsp;
-                      </span>
-                    )}
-                    <FormattedMessage
-                      {...messages.confirmations}
-                      values={{
-                        confirmationsNumber: data.numberOfConfirmations,
-                      }}
-                    />
-                  </span>
-                ) : null}
-              </div>
-
-              <h2>{intl.formatMessage(messages.transactionId)}</h2>
-              <div className={styles.transactionIdRow}>
-                <span
-                  role="presentation"
-                  aria-hidden
-                  className={styles.transactionId}
-                  onClick={this.handleOpenExplorer.bind(this, 'tx', data.id)}
-                >
-                  {data.id}
-                  <SVGInline svg={externalLinkIcon} />
-                </span>
-              </div>
-            </div>
-            {/*
-            <div>
-              <h2>Description</h2>
-              <span>{data.description !== '' ? data.description : 'No description yet'}</span>
-            </div>
-            */}
-          </div>
-          <SVGInline svg={arrow} className={arrowStyles} />
-        </div>
-      </div>
+        )}
+      </Fragment>
     );
   }
 }

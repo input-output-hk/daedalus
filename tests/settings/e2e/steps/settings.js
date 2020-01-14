@@ -27,18 +27,6 @@ When(/^I click on the "([^"]*)" password label$/, function(label) {
   return this.client.click(selector);
 });
 
-When(/^I enter wallet password:$/, async function(table) {
-  const fields = table.hashes()[0];
-  await this.client.setValue(
-    '.createPasswordDialog .newPassword input',
-    fields.password
-  );
-  await this.client.setValue(
-    '.createPasswordDialog .repeatedPassword input',
-    fields.repeatedPassword
-  );
-});
-
 When(/^I submit the wallet password dialog$/, function() {
   return this.client.click('.confirmButton');
 });
@@ -46,15 +34,15 @@ When(/^I submit the wallet password dialog$/, function() {
 When(/^I change wallet password:$/, async function(table) {
   const fields = table.hashes()[0];
   await this.client.setValue(
-    '.changePasswordDialog .currentPassword input',
+    '.ChangeSpendingPasswordDialog_currentPassword input',
     fields.currentPassword
   );
   await this.client.setValue(
-    '.changePasswordDialog .newPassword input',
+    '.ChangeSpendingPasswordDialog_newPassword input',
     fields.password
   );
   await this.client.setValue(
-    '.changePasswordDialog .repeatedPassword input',
+    '.ChangeSpendingPasswordDialog_repeatedPassword input',
     fields.repeatedPassword
   );
 });
@@ -63,17 +51,10 @@ Then(/^I should not see the change password dialog anymore$/, function() {
   return this.client.waitForVisible('.changePasswordDialog', null, true);
 });
 
-When(
-  /^I toggle "Check to deactivate password" switch on the change wallet password dialog$/,
-  function() {
-    return this.waitAndClick('.changePasswordDialog .SimpleSwitch_switch');
-  }
-);
-
 When(/^I enter current wallet password:$/, async function(table) {
   const fields = table.hashes()[0];
   await this.client.setValue(
-    '.changePasswordDialog .currentPassword input',
+    '.ChangeSpendingPasswordDialog_currentPassword input',
     fields.currentPassword
   );
 });
@@ -96,36 +77,6 @@ When(/^I click outside "name" input field$/, function() {
   return this.client.click('.WalletSettings_component');
 });
 
-When(
-  /^I open "Transaction assurance security level" selection dropdown$/,
-  function() {
-    return this.waitAndClick(
-      '.WalletSettings_component .walletAssuranceLevel input'
-    );
-  }
-);
-
-When(/^I select "Strict" assurance level$/, function() {
-  return this.waitAndClick(
-    '//*[@class="SimpleOptions_option"]//*[contains(text(), "Strict")]'
-  );
-});
-
-Then(
-  /^I should have wallet with "Strict" assurance level set$/,
-  async function() {
-    const activeWalletName = await getNameOfActiveWalletInSidebar.call(this);
-    const wallets = await this.client.executeAsync(done => {
-      daedalus.stores.wallets.walletsRequest
-        .execute()
-        .then(done)
-        .catch(error => done(error));
-    });
-    const activeWallet = wallets.value.find(w => w.name === activeWalletName);
-    expect(activeWallet.assurance).to.equal('strict');
-  }
-);
-
 Then(/^I should see new wallet name "([^"]*)"$/, async function(walletName) {
   return waitUntilWaletNamesEqual.call(this, walletName);
 });
@@ -144,3 +95,10 @@ Then(/^I should see the following error messages:$/, async function(data) {
   const expectedError = await this.intl(error.message);
   expect(errorsOnScreen).to.equal(expectedError);
 });
+
+Then(
+  /^I should see error message that old password is not correct$/,
+  function() {
+    return this.client.waitForVisible('.ChangeSpendingPasswordDialog_error');
+  }
+);

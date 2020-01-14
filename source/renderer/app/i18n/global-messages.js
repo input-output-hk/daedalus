@@ -1,3 +1,4 @@
+// @flow
 import { defineMessages } from 'react-intl';
 
 export default defineMessages({
@@ -48,10 +49,17 @@ export default defineMessages({
     description:
       'Error message shown when the file the user tries to replace is open.',
   },
+  rewardsOpenCsvError: {
+    id: 'global.errors.rewardsOpenCsvError',
+    defaultMessage:
+      '!!!The file you are trying to replace is open. Please close it and try again.',
+    description:
+      'Error message shown when the file the user tries to replace is open.',
+  },
   passwordInstructions: {
     id: 'global.passwordInstructions',
     defaultMessage:
-      '!!!Note that password needs to be at least 7 characters long, and have at least 1 uppercase, 1 lowercase letter and 1 number.',
+      '!!!Note that password needs to be at least 10 characters long, and have at least 1 uppercase, 1 lowercase letter and 1 number.',
     description: 'Password instructions note.',
   },
   cancel: {
@@ -59,6 +67,12 @@ export default defineMessages({
     defaultMessage: '!!!Cancel',
     description:
       'The word "cancel" reused at several places (like cancel buttons)',
+  },
+  close: {
+    id: 'global.labels.close',
+    defaultMessage: '!!!Close',
+    description:
+      'The word "close" reused at several places (like cancel buttons)',
   },
   change: {
     id: 'global.labels.change',
@@ -113,15 +127,15 @@ export default defineMessages({
     defaultMessage: '!!!Croatian',
     description: 'Language name for "Croatian" language.',
   },
-  assuranceLevelNormal: {
-    id: 'global.assuranceLevel.normal',
-    defaultMessage: '!!!Normal',
-    description: 'Name for "Normal" transaction assurance security level.',
+  punctuationColon: {
+    id: 'global.punctuation.colon',
+    defaultMessage: '!!!:',
+    description: 'Colon punctuation.',
   },
-  assuranceLevelStrict: {
-    id: 'global.assuranceLevel.strict',
-    defaultMessage: '!!!Strict',
-    description: 'Name for "Strict" transaction assurance security level.',
+  punctuationDot: {
+    id: 'global.punctuation.dot',
+    defaultMessage: '!!!.',
+    description: 'Final dot punctuation.',
   },
   unitAda: {
     id: 'global.unit.ada',
@@ -166,5 +180,75 @@ export default defineMessages({
     id: 'environment.apiName.cardano',
     defaultMessage: '!!!Cardano',
     description: 'Name for "Cardano" client.',
+  },
+  network_mainnet: {
+    id: 'environment.network.mainnet',
+    defaultMessage: '!!!mainnet',
+    description: '"mainnet" Cardano network',
+  },
+  network_staging: {
+    id: 'environment.network.staging',
+    defaultMessage: '!!!Staging',
+    description: '"staging" Cardano network',
+  },
+  network_testnet: {
+    id: 'environment.network.testnet',
+    defaultMessage: '!!!Testnet',
+    description: '"testnet" Cardano network',
+  },
+  network_development: {
+    id: 'environment.network.development',
+    defaultMessage: '!!!Development',
+    description: '"development" Cardano network',
+  },
+  network_itn_rewards_v1: {
+    id: 'environment.network.itn_rewards_v1',
+    defaultMessage: '!!!Incentivized Testnet v1 - Rewards',
+    description: '"itn_rewards_v1" Cardano network',
+  },
+  network_selfnode: {
+    id: 'environment.network.selfnode',
+    defaultMessage: '!!!SelfNode',
+    description: '"selfnode" Cardano network',
+  },
+  network_qa: {
+    id: 'environment.network.qa',
+    defaultMessage: '!!!QA',
+    description: '"qa" Cardano network',
+  },
+  network_nightly: {
+    id: 'environment.network.nightly',
+    defaultMessage: '!!!Nightly',
+    description: '"nightly" Cardano network',
+  },
+  years: {
+    id: 'global.duration.years',
+    defaultMessage: '!!!years',
+    description: 'Label for years value in duration.',
+  },
+  months: {
+    id: 'global.duration.months',
+    defaultMessage: '!!!months',
+    description: 'Label for months value in duration.',
+  },
+  days: {
+    id: 'global.duration.days',
+    defaultMessage: '!!!days',
+    description: 'Label for days value in duration.',
+  },
+  hours: {
+    id: 'global.duration.hours',
+    defaultMessage: '!!!hours',
+    description: 'Label for hours value in duration.',
+  },
+  minutes: {
+    id: 'global.duration.minutes',
+    defaultMessage: '!!!minutes',
+    description: 'Label for minutes value in duration.',
+  },
+  seconds: {
+    id: 'global.duration.seconds',
+    defaultMessage: '!!!seconds',
+    description: 'Label for seconds value in duration.',
   },
 });

@@ -75,11 +75,9 @@ ci-url
 commit-id
 mainnet
 staging
-cardano-node
 configuration.yaml
 log-config-prod.yaml
 mainnet-genesis-dryrun-with-stakeholders.json
-wallet-topology.yaml
 
 # nix-build results
 result*
@@ -90,3 +88,14 @@ package-lock.json
 # cardano public keys
 public.key
 public.key.lock
+
+# Development executables
+cardano-wallet-jormungandr
+cardano-wallet-http-bridge
+jcli
+/jormungandr
+cardano-http-bridge
+cardano-node
+
+# JS Launcher
+utils/js-launcher/state

@@ -6,6 +6,7 @@ import type { InjectedProps } from '../../types/injectedPropsType';
 import { isValidWalletName } from '../../utils/validations';
 import ChangeSpendingPasswordDialogContainer from './dialogs/settings/ChangeSpendingPasswordDialogContainer';
 import DeleteWalletDialogContainer from './dialogs/settings/DeleteWalletDialogContainer';
+import ExportWalletToFileDialogContainer from './dialogs/settings/ExportWalletToFileDialogContainer';
 import WalletRecoveryPhraseStep1Container from './dialogs/settings/WalletRecoveryPhraseStep1Container';
 import WalletRecoveryPhraseStep2Container from './dialogs/settings/WalletRecoveryPhraseStep2Container';
 import WalletRecoveryPhraseStep3Container from './dialogs/settings/WalletRecoveryPhraseStep3Container';
@@ -19,8 +20,19 @@ export default class WalletSettingsPage extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
   render() {
-    const { uiDialogs, walletSettings, wallets } = this.props.stores;
+    const {
+      uiDialogs,
+      walletSettings,
+      app,
+      wallets,
+      networkStatus,
+      profile,
+    } = this.props.stores;
     const activeWallet = wallets.active;
+    let isLegacyWallet: boolean = false;
+    if (activeWallet) {
+      isLegacyWallet = activeWallet.isLegacy;
+    }
 
     // Guard against potential null values
     if (!activeWallet)
@@ -28,7 +40,9 @@ export default class WalletSettingsPage extends Component<Props> {
 
     const { actions } = this.props;
     const {
-      WALLET_ASSURANCE_LEVEL_OPTIONS,
+      environment: { isProduction },
+    } = app;
+    const {
       updateWalletRequest,
       lastUpdatedWalletField,
       walletFieldBeingEdited,
@@ -47,13 +61,12 @@ export default class WalletSettingsPage extends Component<Props> {
       recoveryPhraseVerificationStatusType,
     } = getWalletRecoveryPhraseVerification(activeWallet.id);
 
+    const locale = profile.currentLocale;
+
     return (
       <WalletSettings
-        assuranceLevels={WALLET_ASSURANCE_LEVEL_OPTIONS}
-        walletAssurance={activeWallet.assurance}
         error={updateWalletRequest.error}
         openDialogAction={actions.dialogs.open.trigger}
-        isSpendingPasswordSet={activeWallet.hasPassword}
         spendingPasswordUpdateDate={activeWallet.passwordUpdateDate}
         recoveryPhraseVerificationDate={recoveryPhraseVerificationDate}
         recoveryPhraseVerificationStatus={recoveryPhraseVerificationStatus}
@@ -61,14 +74,17 @@ export default class WalletSettingsPage extends Component<Props> {
           recoveryPhraseVerificationStatusType
         }
         isDialogOpen={uiDialogs.isOpen}
+        isLegacy={isLegacyWallet}
         walletId={activeWallet.id}
         walletName={activeWallet.name}
         creationDate={creationDate}
+        isIncentivizedTestnet={networkStatus.isIncentivizedTestnet}
         isSubmitting={updateWalletRequest.isExecuting}
         isInvalid={
           updateWalletRequest.wasExecuted &&
           updateWalletRequest.result === false
         }
+        showExportLink={!isProduction}
         lastUpdatedField={lastUpdatedWalletField}
         onFieldValueChange={(field, value) =>
           updateWalletField.trigger({ field, value })
@@ -80,6 +96,7 @@ export default class WalletSettingsPage extends Component<Props> {
         nameValidator={name => isValidWalletName(name)}
         changeSpendingPasswordDialog={<ChangeSpendingPasswordDialogContainer />}
         deleteWalletDialogContainer={<DeleteWalletDialogContainer />}
+        exportWalletDialogContainer={<ExportWalletToFileDialogContainer />}
         walletRecoveryPhraseStep1Container={
           <WalletRecoveryPhraseStep1Container />
         }
@@ -92,6 +109,7 @@ export default class WalletSettingsPage extends Component<Props> {
         walletRecoveryPhraseStep4Container={
           <WalletRecoveryPhraseStep4Container />
         }
+        locale={locale}
       />
     );
   }

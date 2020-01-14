@@ -1,0 +1,22 @@
+.component {
+  margin-bottom: 20px;
+  .label {
+    color: var(--rp-formfield-label-text-color, #5e6066);
+    display: block;
+    font-family: var(
+        --rp-formfield-label-font-family,
+        var(--rp-theme-font-medium, 'NotoSans-Medium, NotoSansCJKjp-Medium'),
+        sans-serif
+      ),
+      sans-serif;
+    font-size: var(--rp-formfield-label-font-size, 16px);
+    line-height: 1.38;
+    margin: var(--rp-formfield-label-margin, 0 0 10px 0);
+  }
+  .radiosContainer {
+    display: flex;
+    > div {
+      margin-right: 40px;
+    }
+  }
+}

@@ -3,7 +3,8 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import StoryDecorator from '../_support/StoryDecorator';
-import WalletsWrapper from '../wallets/utils/WalletsWrapper';
+import { isIncentivizedTestnetTheme } from '../_support/utils';
+import WalletsWrapper from '../wallets/_utils/WalletsWrapper';
 import SidebarWalletsMenu from '../../../source/renderer/app/components/sidebar/wallets/SidebarWalletsMenu';
 import {
   WalletRecoveryPhraseVerificationStatuses,
@@ -20,18 +21,19 @@ storiesOf('Navigation|Wallets Menu', module)
 
   // ====== Stories ======
 
-  .add('Empty', () => (
+  .add('Empty', (props: { currentTheme: string }) => (
     <SidebarWalletsMenu
       wallets={[]}
       onAddWallet={action('addWallet')}
       onWalletItemClick={() => {}}
       isActiveWallet={() => false}
       isAddWalletButtonActive={false}
+      isIncentivizedTestnet={isIncentivizedTestnetTheme(props.currentTheme)}
       visible
     />
   ))
 
-  .add('With Wallets', () => (
+  .add('With Wallets', (props: { currentTheme: string }) => (
     <SidebarWalletsMenu
       wallets={[
         {
@@ -99,6 +101,7 @@ storiesOf('Navigation|Wallets Menu', module)
       onWalletItemClick={action('walletItemClick')}
       onAddWallet={action('addWallet')}
       isAddWalletButtonActive={false}
+      isIncentivizedTestnet={isIncentivizedTestnetTheme(props.currentTheme)}
       visible
     />
   ));

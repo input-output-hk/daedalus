@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { defineMessages, intlShape } from 'react-intl';
+import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import { get, map, orderBy } from 'lodash';
 import classNames from 'classnames';
@@ -12,13 +12,14 @@ import sortIcon from '../../../assets/images/ascending.inline.svg';
 import externalLinkIcon from '../../../assets/images/link-ic.inline.svg';
 import type { Reward } from '../../../api/staking/types';
 import styles from './StakingRewards.scss';
-import { SIMPLE_DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
+import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 
 const messages = defineMessages({
   title: {
     id: 'staking.rewards.title',
-    defaultMessage: '!!!Earned Rewards',
-    description: 'Title "Earned Rewards" label on the staking rewards page.',
+    defaultMessage: '!!!Earned delegation rewards',
+    description:
+      'Title "Earned delegation rewards" label on the staking rewards page.',
   },
   exportButtonLabel: {
     id: 'staking.rewards.exportButtonLabel',
@@ -46,10 +47,10 @@ const messages = defineMessages({
     defaultMessage: '!!!Wallet',
     description: 'Table header "Wallet" label on staking rewards page',
   },
-  tableHeaderAmount: {
-    id: 'staking.rewards.tableHeader.amount',
-    defaultMessage: '!!!Amount',
-    description: 'Table header "Amount" label on staking rewards page',
+  tableHeaderReward: {
+    id: 'staking.rewards.tableHeader.reward',
+    defaultMessage: '!!!Reward',
+    description: 'Table header "Reward" label on staking rewards page',
   },
   learnMoreButtonLabel: {
     id: 'staking.rewards.learnMore.ButtonLabel',
@@ -59,7 +60,7 @@ const messages = defineMessages({
   note: {
     id: 'staking.rewards.note',
     defaultMessage:
-      '!!!Rewards from stake delegation are automatically collected into your reward account.',
+      '!!!<p>Rewards earned by delegating your stake are automatically collected into your reward account.</p><p>Rewards earned on the Incentivized Testnet are not added to your Rewards wallet balance. They will be paid to you in real ada on the Cardano mainnet after the end of the Incentivized Testnet.</p><p>If you are using funds from this wallet to operate a stake pool, the rewards displayed here may include your pledged stake, which will not be counted when reward balances are paid out on the Cardano mainnet.</p>',
     description: 'Rewards description text on staking rewards page',
   },
 });
@@ -124,8 +125,8 @@ export default class StakingRewards extends Component<Props, State> {
         title: intl.formatMessage(messages.tableHeaderWallet),
       },
       {
-        name: 'amount',
-        title: intl.formatMessage(messages.tableHeaderAmount),
+        name: 'reward',
+        title: intl.formatMessage(messages.tableHeaderReward),
       },
     ];
 
@@ -178,17 +179,17 @@ export default class StakingRewards extends Component<Props, State> {
               <tbody>
                 {map(sortedRewards, (reward, key) => {
                   const rewardDate = get(reward, 'date', '');
-                  const rewardPoolSlug = get(reward, ['pool', 'slug'], '');
+                  const rewardPoolTicker = get(reward, ['pool', 'ticker'], '');
                   const rewardPoolName = get(reward, ['pool', 'name'], '');
                   const rewardWallet = get(reward, 'wallet', '');
-                  const rewardAmount = get(reward, 'amount', '');
+                  const rewardAmount = get(reward, 'reward', '');
                   return (
                     <tr key={key}>
                       <td>{rewardDate}</td>
                       <td>
                         <p>
                           <span className={styles.stakePoolReference}>
-                            [{rewardPoolSlug}]
+                            [{rewardPoolTicker}]
                           </span>{' '}
                           {rewardPoolName}
                         </p>
@@ -196,7 +197,7 @@ export default class StakingRewards extends Component<Props, State> {
                       <td>{rewardWallet}</td>
                       <td>
                         {new BigNumber(rewardAmount).toFormat(
-                          SIMPLE_DECIMAL_PLACES_IN_ADA
+                          DECIMAL_PLACES_IN_ADA
                         )}{' '}
                         ADA
                       </td>
@@ -215,12 +216,14 @@ export default class StakingRewards extends Component<Props, State> {
         </BorderedBox>
 
         <div className={styles.note}>
-          <span>* {intl.formatMessage(messages.note)} </span>
-          <button onClick={onLearnMoreClick}>
-            {intl.formatMessage(messages.learnMoreButtonLabel)}
-            <SVGInline svg={externalLinkIcon} />
-          </button>
-          <span>.</span>
+          <div className={styles.asterisk}>*</div>
+          <div className={styles.noteContent}>
+            <FormattedHTMLMessage {...messages.note} />
+            <button onClick={onLearnMoreClick}>
+              {intl.formatMessage(messages.learnMoreButtonLabel)}
+              <SVGInline svg={externalLinkIcon} />
+            </button>
+          </div>
         </div>
       </div>
     );

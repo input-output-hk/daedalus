@@ -9,10 +9,11 @@ import moment from 'moment';
 import SVGInline from 'react-svg-inline';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import styles from './StakePoolTooltip.scss';
-import type { StakePool } from '../../../api/staking/types';
+import StakePool from '../../../domains/StakePool';
 import closeCross from '../../../assets/images/close-cross.inline.svg';
 import externalLinkIcon from '../../../assets/images/link-ic.inline.svg';
 import { getColorFromRange } from '../../../utils/colors';
+import { formattedWalletAmount, shortNumber } from '../../../utils/formatters';
 import { rangeMap } from '../../../utils/rangeMap';
 import {
   THUMBNAIL_HEIGHT,
@@ -41,15 +42,40 @@ const messages = defineMessages({
     defaultMessage: '!!!Profit margin:',
     description: '"Profit margin" for the Stake Pools Tooltip page.',
   },
+  costPerEpoch: {
+    id: 'staking.stakePools.tooltip.costPerEpoch',
+    defaultMessage: '!!!Cost per epoch:',
+    description: '"Cost per epoch" for the Stake Pools Tooltip page.',
+  },
   performance: {
     id: 'staking.stakePools.tooltip.performance',
     defaultMessage: '!!!Performance:',
     description: '"Performance" for the Stake Pools Tooltip page.',
   },
+  producedBlocks: {
+    id: 'staking.stakePools.tooltip.producedBlocks',
+    defaultMessage: '!!!Produced blocks:',
+    description: '"Produced blocks" for the Stake Pools Tooltip page.',
+  },
   retirement: {
     id: 'staking.stakePools.tooltip.retirement',
     defaultMessage: '!!!Retirement in {retirementFromNow}',
     description: '"Retirement" for the Stake Pools Tooltip page.',
+  },
+  // cost: {
+  //  id: 'staking.stakePools.tooltip.cost',
+  //  defaultMessage: '!!!Operating Costs:',
+  //  description: 'Cost" for the Stake Pools Tooltip page.',
+  // },
+  // pledge: {
+  //   id: 'staking.stakePools.tooltip.pledge',
+  //   defaultMessage: '!!!Pledge:',
+  //   description: '"Pledge" for the Stake Pools Tooltip page.',
+  // },
+  pledgeAddressLabel: {
+    id: 'staking.stakePools.tooltip.pledgeAddressLabel',
+    defaultMessage: '!!!Pledge address',
+    description: '"pledgeAddressLabel" for the Stake Pools Tooltip page.',
   },
   delegateButton: {
     id: 'staking.stakePools.tooltip.delegateButton',
@@ -65,6 +91,7 @@ type Props = {
   currentTheme: string,
   onClick: Function,
   onOpenExternalLink: Function,
+  getPledgeAddressUrl: Function,
   onSelect?: Function,
   showWithSelectButton?: boolean,
   top: number,
@@ -337,6 +364,7 @@ export default class StakePoolTooltip extends Component<Props, State> {
       currentTheme,
       onClick,
       onOpenExternalLink,
+      getPledgeAddressUrl,
       onSelect,
       showWithSelectButton,
     } = this.props;
@@ -351,13 +379,16 @@ export default class StakePoolTooltip extends Component<Props, State> {
     const {
       name,
       description,
-      slug,
-      url,
+      ticker,
+      homepage,
       ranking,
       controlledStake,
-      profitMargin,
       performance,
+      producedBlocks,
       retiring,
+      pledgeAddress,
+      cost,
+      profitMargin,
     } = stakePool;
 
     const componentClassnames = classnames([
@@ -390,7 +421,7 @@ export default class StakePoolTooltip extends Component<Props, State> {
           <button className={styles.closeButton} onClick={onClick}>
             <SVGInline svg={closeCross} />
           </button>
-          <div className={styles.slug}>{slug}</div>
+          <div className={styles.ticker}>{ticker}</div>
           {retiring && (
             <div className={styles.retirement}>
               <FormattedMessage
@@ -400,13 +431,17 @@ export default class StakePoolTooltip extends Component<Props, State> {
             </div>
           )}
           <div className={styles.description}>{description}</div>
-          <button
-            className={styles.url}
-            onClick={() => onOpenExternalLink(url)}
+
+          <span
+            role="presentation"
+            aria-hidden
+            className={styles.homepageAddress}
+            onClick={() => onOpenExternalLink(homepage)}
           >
-            <span className={styles.urlContent}>{url}</span>
+            {homepage}
             <SVGInline svg={externalLinkIcon} />
-          </button>
+          </span>
+
           <dl className={styles.table}>
             <dt>{intl.formatMessage(messages.ranking)}</dt>
             <dd className={styles.ranking}>
@@ -419,17 +454,8 @@ export default class StakePoolTooltip extends Component<Props, State> {
               </span>
             </dd>
             <dt>{intl.formatMessage(messages.controlledStake)}</dt>
-            <dd className={styles.controlledStake}>
-              <span
-                style={{
-                  background: getColorFromRange(controlledStake, {
-                    darken,
-                    alpha,
-                  }),
-                }}
-              >
-                {controlledStake}%
-              </span>
+            <dd className={styles.defaultColor}>
+              <span>{formattedWalletAmount(controlledStake, true, false)}</span>
             </dd>
             <dt>{intl.formatMessage(messages.profitMargin)}</dt>
             <dd className={styles.profitMargin}>
@@ -438,11 +464,23 @@ export default class StakePoolTooltip extends Component<Props, State> {
                   background: getColorFromRange(profitMargin, {
                     darken,
                     alpha,
-                    reverse,
                   }),
                 }}
               >
-                {profitMargin}%
+                {`${parseFloat(profitMargin.toFixed(2))}%`}
+              </span>
+            </dd>
+            <dt>{intl.formatMessage(messages.costPerEpoch)}</dt>
+            <dd className={styles.profitMargin}>
+              <span
+                style={{
+                  background: getColorFromRange(profitMargin, {
+                    darken,
+                    alpha,
+                  }),
+                }}
+              >
+                {`${formattedWalletAmount(cost, true, false)}`}
               </span>
             </dd>
             <dt>{intl.formatMessage(messages.performance)}</dt>
@@ -456,10 +494,51 @@ export default class StakePoolTooltip extends Component<Props, State> {
                   }),
                 }}
               >
-                {performance}%
+                {parseFloat(performance.toFixed(2))}%
               </span>
             </dd>
+            <dt>{intl.formatMessage(messages.producedBlocks)}</dt>
+            <dd className={styles.defaultColor}>
+              <span>{shortNumber(producedBlocks)}</span>
+            </dd>
+            {/* <dt>{intl.formatMessage(messages.cost)}</dt>
+            <dd>
+              <span
+                style={{
+                  background: getColorFromRange(shortNumber(cost), {
+                    darken,
+                    alpha,
+                  }),
+                }}
+              >
+                {formattedWalletAmount(shortNumber(cost))}
+              </span>
+            </dd> */}
           </dl>
+          {/* <dt>{intl.formatMessage(messages.pledge)}</dt> */}
+          {/* <dd>
+              <span
+                style={{
+                  background: getColorFromRange(pledge, {
+                    darken,
+                    alpha,
+                  }),
+                }}
+              >
+                {formattedWalletAmount(pledge)}
+              </span>
+            </dd> */}
+          <button
+            className={styles.pledgeAddress}
+            onClick={() =>
+              onOpenExternalLink(getPledgeAddressUrl(pledgeAddress))
+            }
+          >
+            <span className={styles.pledgeAddressContent}>
+              {intl.formatMessage(messages.pledgeAddressLabel)}
+            </span>
+            <SVGInline svg={externalLinkIcon} />
+          </button>
         </div>
         {onSelect && showWithSelectButton && (
           <Button

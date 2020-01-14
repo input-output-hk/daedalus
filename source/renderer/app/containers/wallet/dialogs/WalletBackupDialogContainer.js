@@ -29,8 +29,9 @@ export default class WalletBackupDialogContainer extends Component<Props> {
       isRecoveryPhraseValid,
       countdownRemaining,
       recoveryPhraseShuffled,
-      isTermDeviceAccepted,
+      isTermOfflineAccepted,
       isTermRecoveryAccepted,
+      isTermRewardsAccepted,
       isPrivacyNoticeAccepted,
       currentStep,
     } = stores.walletBackup;
@@ -38,8 +39,9 @@ export default class WalletBackupDialogContainer extends Component<Props> {
       startWalletBackup,
       addWordToWalletBackupVerification,
       clearEnteredRecoveryPhrase,
-      acceptWalletBackupTermDevice,
+      acceptWalletBackupTermOffline,
       acceptWalletBackupTermRecovery,
+      acceptWalletBackupTermRewards,
       restartWalletBackup,
       finishWalletBackup,
       acceptPrivacyNoticeForWalletBackup,
@@ -64,18 +66,21 @@ export default class WalletBackupDialogContainer extends Component<Props> {
         )}
         onStartWalletBackup={startWalletBackup.trigger}
         // Props for WalletRecoveryPhraseEntryDialog
-        isTermDeviceAccepted={isTermDeviceAccepted}
+        isTermOfflineAccepted={isTermOfflineAccepted}
         enteredPhrase={enteredPhrase}
         canFinishBackup={
           isRecoveryPhraseValid &&
-          isTermDeviceAccepted &&
-          isTermRecoveryAccepted
+          isTermOfflineAccepted &&
+          isTermRecoveryAccepted &&
+          isTermRewardsAccepted
         }
         isTermRecoveryAccepted={isTermRecoveryAccepted}
+        isTermRewardsAccepted={isTermRewardsAccepted}
         isValid={isRecoveryPhraseValid}
         isSubmitting={createWalletRequest.isExecuting}
-        onAcceptTermDevice={acceptWalletBackupTermDevice.trigger}
+        onAcceptTermOffline={acceptWalletBackupTermOffline.trigger}
         onAcceptTermRecovery={acceptWalletBackupTermRecovery.trigger}
+        onAcceptTermRewards={acceptWalletBackupTermRewards.trigger}
         onAddWord={addWordToWalletBackupVerification.trigger}
         onClear={clearEnteredRecoveryPhrase.trigger}
         onFinishBackup={() => {

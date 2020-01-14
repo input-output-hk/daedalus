@@ -12,6 +12,19 @@
     .SimpleFormField_label {
       color: var(--theme-input-label-color);
     }
+
+    .walletName {
+      .SimpleInput_input {
+        padding-right: 120px;
+      }
+    }
+  }
+
+  .deleteWalletLabel {
+    color: var(--theme-input-label-color);
+    font-size: 16px;
+    font-weight: 500;
+    padding-bottom: 14px;
   }
 
   .deleteWalletBox {
@@ -19,6 +32,10 @@
     margin-top: 20px;
     padding-bottom: 30px;
     padding-top: 30px;
+
+    &.legacyWallet {
+      margin-top: 0;
+    }
 
     span {
       color: var(--theme-input-label-color);

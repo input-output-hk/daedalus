@@ -9,7 +9,8 @@ import WalletNoTransactions from '../../components/wallet/transactions/WalletNoT
 import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import { formattedWalletAmount } from '../../utils/formatters';
-import { WalletSyncStateTags } from '../../domains/Wallet';
+import { WalletSyncStateStatuses } from '../../domains/Wallet';
+import { getNetworkExplorerUrlByType } from '../../utils/network';
 
 export const messages = defineMessages({
   noTransactions: {
@@ -46,7 +47,7 @@ export default class WalletTransactionsPage extends Component<Props> {
     const { app, wallets, profile } = stores;
     const {
       openExternalLink,
-      environment: { network },
+      environment: { network, rawNetwork },
     } = app;
     const activeWallet = wallets.active;
     const {
@@ -56,8 +57,10 @@ export default class WalletTransactionsPage extends Component<Props> {
       totalAvailable,
       filtered,
       recent,
+      deletePendingTransaction,
+      deleteTransactionRequest,
     } = stores.transactions;
-    const { currentTimeFormat, currentDateFormat } = profile;
+    const { currentTimeFormat, currentDateFormat, currentLocale } = profile;
 
     // Guard against potential null values
     if (!searchOptions || !activeWallet) return null;
@@ -74,7 +77,17 @@ export default class WalletTransactionsPage extends Component<Props> {
       searchLimit !== null && totalAvailable > searchLimit;
 
     const isRestoreActive =
-      get(activeWallet, 'syncState.tag') === WalletSyncStateTags.RESTORING;
+      get(activeWallet, ['syncState', 'status']) ===
+      WalletSyncStateStatuses.RESTORING;
+
+    const getUrlByType = (type: 'tx' | 'address', param: string) =>
+      getNetworkExplorerUrlByType(
+        type,
+        param,
+        network,
+        rawNetwork,
+        currentLocale
+      );
 
     // if (wasSearched || hasAny) {
     //   transactionSearch = (
@@ -93,16 +106,17 @@ export default class WalletTransactionsPage extends Component<Props> {
     if (searchRequest.isExecutingFirstTime || hasAny || isRestoreActive) {
       walletTransactions = (
         <WalletTransactionsList
-          network={network}
           transactions={transactions}
+          deletePendingTransaction={deletePendingTransaction}
           isLoadingTransactions={searchRequest.isExecutingFirstTime}
           isRestoreActive={isRestoreActive}
           hasMoreToLoad={hasMoreToLoad()}
           onLoadMore={actions.transactions.loadMoreTransactions.trigger}
-          assuranceMode={activeWallet.assuranceMode}
           walletId={activeWallet.id}
+          isDeletingTransaction={deleteTransactionRequest.isExecuting}
           formattedWalletAmount={formattedWalletAmount}
           onOpenExternalLink={openExternalLink}
+          getUrlByType={getUrlByType}
           currentTimeFormat={currentTimeFormat}
           currentDateFormat={currentDateFormat}
           isRenderingAsVirtualList

@@ -7,7 +7,7 @@ import ensureDirectoryExists from '../../../../source/main/utils/ensureDirectory
 import type { WebdriverClient } from '../../../types';
 
 export const expectTextInSelector = async (
-  client: WebdriverClient,
+  client: Object,
   { selector, text }: { selector: string, text: string }
 ) => {
   await client.waitForText(selector);
@@ -32,7 +32,7 @@ export const generateScreenshotFilePath = (prefix: string) => {
 export const getTestNameFromTestFile = (testFile: string) => testFile.split('.feature').join('');
 
 export const getVisibleElementsCountForSelector = async (
-  client: WebdriverClient,
+  client: Object,
   selectSelector: string,
   waitSelector: string = selectSelector,
   ...waitArgs: Array<*>
@@ -47,7 +47,7 @@ export const getVisibleElementsCountForSelector = async (
 };
 
 export const getVisibleElementsForSelector = async (
-  client: WebdriverClient,
+  client: Object,
   selectSelector: string,
   waitSelector: string = selectSelector,
   ...waitArgs: Array<*>
@@ -57,7 +57,7 @@ export const getVisibleElementsForSelector = async (
 };
 
 export const getVisibleTextsForSelector = async (
-  client: WebdriverClient,
+  client: Object,
   selector: string
 ): Promise<Array<string>> => {
   await client.waitForVisible(selector);
@@ -77,7 +77,7 @@ export const saveScreenshot = async (
       });
 
 export const waitAndClick = async (
-  client: WebdriverClient,
+  client: Object,
   selector: string,
   ...waitArgs: Array<*>
 ) => {
@@ -87,7 +87,7 @@ export const waitAndClick = async (
 };
 
 export const waitUntilTextInSelector = async (
-  client: WebdriverClient,
+  client: Object,
   { selector, text }: { selector: string, text: string }
 ) =>
   client.waitUntil(async () => {

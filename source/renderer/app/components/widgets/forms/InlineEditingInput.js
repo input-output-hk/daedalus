@@ -40,6 +40,8 @@ type Props = {
   isValid: Function,
   validationErrorMessage: string,
   successfullyUpdated: boolean,
+  inputBlocked?: boolean,
+  maxLength?: number,
 };
 
 type State = {
@@ -124,8 +126,9 @@ export default class InlineEditingInput extends Component<Props, State> {
 
   componentDidUpdate() {
     if (this.props.isActive) {
+      const { inputBlocked } = this.props;
       // eslint-disable-next-line no-unused-expressions
-      this.inputField && this.inputField.focus();
+      this.inputField && !inputBlocked && this.inputField.focus();
     }
   }
 
@@ -137,8 +140,9 @@ export default class InlineEditingInput extends Component<Props, State> {
       className,
       inputFieldLabel,
       isActive,
-      inputFieldValue,
       successfullyUpdated,
+      inputBlocked,
+      maxLength,
     } = this.props;
     const { intl } = this.context;
     const inputField = validator.$('inputField');
@@ -164,13 +168,14 @@ export default class InlineEditingInput extends Component<Props, State> {
           className={inputStyles}
           themeOverrides={styles}
           type="text"
+          maxLength={maxLength}
           label={inputFieldLabel}
-          value={isActive ? inputField.value : inputFieldValue}
+          value={inputField.value}
           onChange={inputField.onChange}
           onFocus={inputField.onFocus}
           onBlur={inputField.onBlur}
           onKeyDown={event => this.handleInputKeyDown(event)}
-          error={isActive ? inputField.error : null}
+          error={isActive || inputBlocked ? inputField.error : null}
           disabled={!isActive}
           ref={input => {
             this.inputField = input;

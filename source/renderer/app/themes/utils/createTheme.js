@@ -70,6 +70,8 @@ export const createReactPolymorphTheme = (
       '--rp-bubble-bg-color': `${background.primary.lightest}`,
       '--rp-bubble-border-color': `${border}`,
       '--rp-bubble-border-radius': '2px',
+      '--rp-bubble-box-shadow':
+        '0 4px 16px 0 rgba(0, 0, 0, 0.12), 0 0 8px 0 rgba(0, 0, 0, 0.06)',
       '--rp-bubble-arrow-bg-color': `${background.primary.regular}`,
     },
     rpButton: {
@@ -94,6 +96,7 @@ export const createReactPolymorphTheme = (
         background.secondary.regular
       ).alpha(0.4)}`,
       '--rp-checkbox-check-bg-color': `${background.secondary.regular}`,
+      '--rp-checkbox-check-icon-color': `${text.secondary}`,
       '--rp-checkbox-label-text-color': `${text.primary}`,
       '--rp-checkbox-label-text-color-disabled': `${chroma(text.primary).alpha(
         0.3
@@ -146,6 +149,13 @@ export const createReactPolymorphTheme = (
       '--rp-option-text-color': `${text.primary}`,
       '--rp-options-border-color': `${border}`,
       '--rp-options-shadow': 'none',
+    },
+    rpRadio: {
+      '--rp-radio-border-color': `${background.secondary.regular}`,
+      '--rp-radio-color': '#ffffff',
+      '--rp-radio-label-margin': '0 0 0 10px',
+      '--rp-radio-label-text-color': `${text.primary}`,
+      '--rp-radio-size': '22px',
     },
     rpSelect: {
       '--rp-select-arrow-bg-color': `${border}`,
@@ -290,62 +300,6 @@ export const createDaedalusComponentsTheme = (
         background.secondary.dark
       }`,
     },
-    blockConsolidation: {
-      '--theme-block-consolidation-background-color': `${
-        background.secondary.regular
-      }`,
-      '--theme-block-consolidation-title-text-color': `${text.secondary}`,
-      '--theme-block-consolidation-text-color': `${text.secondary}`,
-      '--theme-block-consolidation-text-highlight-color': `${text.secondary}`,
-      '--theme-block-consolidation-epochs-text-color': `${
-        background.secondary.regular
-      }`,
-      '--theme-block-consolidation-indicator-text-color': `${text.secondary}`,
-      '--theme-block-consolidation-indicator-container-background-color':
-        'rgba(0, 0, 0, 0.1)',
-      '--theme-block-consolidation-indicator-epochs-behind-background-color-1': `${
-        background.primary.lightest
-      }`,
-      '--theme-block-consolidation-indicator-epochs-behind-background-color-2': `${
-        background.secondary.regular
-      }`,
-      '--theme-block-consolidation-stripe-dark-1-background-color': `${
-        background.primary.regular
-      }`,
-      '--theme-block-consolidation-stripe-dark-2-background-color': `${
-        background.primary.dark
-      }`,
-      '--theme-block-consolidation-stripe-light-1-background-color': `${
-        background.secondary.lightest
-      }`,
-      '--theme-block-consolidation-stripe-light-2-background-color': `${
-        background.primary.light
-      }`,
-      '--theme-block-consolidation-button-background-color': `${
-        background.secondary.dark
-      }`,
-      '--theme-block-consolidation-button-background-color-active': `${
-        background.secondary.darkest
-      }`,
-      '--theme-block-consolidation-button-background-color-hover': `${
-        background.primary.lightest
-      }`,
-      '--theme-block-consolidation-button-icon-color': `${text.secondary}`,
-      '--theme-block-consolidation-button-icon-color-hover': `${
-        background.secondary.regular
-      }`,
-      '--theme-block-consolidation-button-text-color': `${text.secondary}`,
-      '--theme-block-consolidation-button-text-color-hover': `${
-        background.secondary.regular
-      }`,
-      '--theme-block-consolidation-button-border-color': `${
-        background.primary.lightest
-      }`,
-      '--theme-block-consolidation-button-border-color-hover': 'transparent',
-      '--theme-block-consolidation-epochs-image-color': `${chroma(
-        text.secondary
-      ).alpha(0.6)}`,
-    },
     body: {
       '--theme-main-body-background-color': `${background.primary.regular}`,
       '--theme-main-body-messages-color': `${text.primary}`,
@@ -363,10 +317,7 @@ export const createDaedalusComponentsTheme = (
       '--theme-button-attention-background-color': `${error.regular}`,
       '--theme-button-attention-background-color-hover': `${error.light}`,
       '--theme-button-attention-background-color-active': `${error.darkest}`,
-      '--theme-button-attention-background-color-disabled': `${
-        error.ultralight
-      }`,
-
+      '--theme-button-attention-background-color-disabled': `${error.regular}`,
       '--theme-button-attention-text-color': `${text.secondary}`,
       '--theme-button-attention-text-color-disabled': `${text.secondary}`,
       '--theme-button-attention-outline-color': `${error.lighter}`,
@@ -419,6 +370,30 @@ export const createDaedalusComponentsTheme = (
     },
     connecting: {
       '--theme-connecting-background-color': `${background.secondary.regular}`,
+      '--theme-connecting-background-color1': `${chroma(
+        background.secondary.regular
+      ).alpha(1)}`,
+      '--theme-connecting-background-color2': `${chroma(
+        background.secondary.regular
+      ).alpha(0.91)}`,
+      '--theme-connecting-background-color3': `${chroma(
+        background.secondary.regular
+      ).alpha(0.31)}`,
+      '--theme-connecting-background-color4': `${chroma(
+        background.secondary.regular
+      ).alpha(0)}`,
+      '--theme-connecting-background-color5': `${chroma(
+        background.secondary.regular
+      ).alpha(0)}`,
+      '--theme-connecting-background-color6': `${chroma(
+        background.secondary.regular
+      ).alpha(0.31)}`,
+      '--theme-connecting-background-color7': `${chroma(
+        background.secondary.regular
+      ).alpha(0.91)}`,
+      '--theme-connecting-background-color8': `${chroma(
+        background.secondary.regular
+      ).alpha(1)}`,
       '--theme-connecting-text-color': `${text.secondary}`,
     },
     dataMigration: {
@@ -444,26 +419,19 @@ export const createDaedalusComponentsTheme = (
       '--theme-delegation-steps-activation-steps-indicator-color': `${
         text.primary
       }`,
-      '--theme-delegation-steps-activation-description-color': `${chroma(
+      '--theme-delegation-steps-success-description-color': `${chroma(
         text.primary
       ).alpha(0.8)}`,
-      '--theme-delegation-steps-activation-fees-label-color': `${text.primary}`,
-      '--theme-delegation-steps-activation-fees-amount-color': `${
-        error.regular
-      }`,
-      '--theme-delegation-steps-activation-address-value-color': `${
-        text.primary
-      }`,
       '--theme-delegation-steps-choose-stake-pool-checkmark-icon-color': `${border}`,
       '--theme-delegation-steps-choose-stake-pool-delegated-pools-label-color': `${
         text.primary
       }`,
-      '--theme-delegation-steps-choose-stake-pool-slug-color': `${border}`,
+      '--theme-delegation-steps-choose-stake-pool-ticker-color': `${border}`,
       '--theme-delegation-steps-choose-stake-pool-select-box-placeholder-color': `${border}`,
       '--theme-delegation-steps-choose-stake-pool-selected-checkmark-icon-color': `${
         text.secondary
       }`,
-      '--theme-delegation-steps-choose-stake-pool-selected-slug-color': `${
+      '--theme-delegation-steps-choose-stake-pool-selected-ticker-color': `${
         text.secondary
       }`,
       '--theme-delegation-steps-choose-stake-pool-thumb-background-color': `${
@@ -472,9 +440,9 @@ export const createDaedalusComponentsTheme = (
       '--theme-delegation-steps-choose-stake-pool-thumb-border-color': `${chroma(
         border
       ).alpha(0.2)}`,
-      '--theme-delegation-steps-choose-stake-pool-title-color': `${chroma(
+      '--theme-delegation-steps-choose-stake-pool-title-color': `${
         text.primary
-      ).alpha(0.8)}`,
+      }`,
       '--theme-delegation-steps-choose-stake-pool-tooltip-arrow-color': `${chroma(
         text.primary
       ).alpha(0.9)}`,
@@ -486,7 +454,7 @@ export const createDaedalusComponentsTheme = (
       '--theme-delegation-steps-choose-stake-pool-tooltip-description-color': `${
         text.secondary
       }`,
-      '--theme-delegation-steps-choose-stake-pool-tooltip-slug-color': `${chroma(
+      '--theme-delegation-steps-choose-stake-pool-tooltip-ticker-color': `${chroma(
         text.primary
       ).alpha(0.6)}`,
       '--theme-delegation-steps-choose-stake-pool-tooltip-table-label-color': `${
@@ -591,9 +559,6 @@ export const createDaedalusComponentsTheme = (
       '--theme-icon-node-update-notification-arrow-color': `${text.primary}`,
       '--theme-icon-add-wallet-from-sidebar-color': `${text.secondary}`,
       '--theme-icon-ada-summary-wallet-amount-symbol-color': `${text.primary}`,
-      '--theme-icon-ada-summary-wallet-pending-confirmation-symbol-color': `${
-        text.primary
-      }`,
       '--theme-icon-add-wallet-dialog-big-button-color': `${
         background.primary.darker
       }`,
@@ -671,9 +636,8 @@ export const createDaedalusComponentsTheme = (
       }`,
     },
     mnemonic: {
-      '--theme-mnemonic-background-color': `${background.primary.regular}`,
-      '--theme-mnemonic-background-color-hover': `${background.primary.dark}`,
       '--theme-backup-mnemonic-background-color': `${background.primary.light}`,
+      '--theme-mnemonic-background-color': `${background.primary.regular}`,
     },
     modal: {
       '--theme-modal-overlay-background-color': 'rgba(0, 0, 0, 0.4)',
@@ -843,6 +807,11 @@ export const createDaedalusComponentsTheme = (
       '--theme-receive-qr-code-foreground-color': '#000',
     },
     recoveryPhrase: {
+      '--theme-recovery-phrase-normal-background-color':
+        'rgba(32, 34, 37, 0.05)',
+      '--theme-recovery-phrase-normal-border-color': 'rgba(68, 91, 124, .07)',
+      '--theme-recovery-phrase-warning-background-color':
+        'rgba(68, 91, 124, 0.05)',
       '--theme-recovery-phrase-attention-background-color': `${
         background.primary.light
       }`,
@@ -884,6 +853,12 @@ export const createDaedalusComponentsTheme = (
     },
     settings: {
       '--theme-settings-body-background-color': `${background.primary.regular}`,
+      '--theme-settings-delete-button-legacy-background-color': `${
+        background.primary.light
+      }`,
+      '--theme-settings-delete-button-legacy-background-color-hover': `${
+        background.primary.lighter
+      }`,
       '--theme-settings-pane-background-color': `${
         background.primary.lightest
       }`,
@@ -915,6 +890,8 @@ export const createDaedalusComponentsTheme = (
         background.secondary.darker
       }`,
       '--theme-sidebar-category-text-color': `${text.secondary}`,
+      '--theme-sidebar-category-networkInfo-background-color': '#eb2256',
+      '--theme-sidebar-category-networkInfo-text-color': '#121326',
       '--theme-sidebar-layout-shadow-color': 'rgba(0, 0, 0, 0.25)',
       '--theme-sidebar-layout-topbar-shadow-color': 'rgba(0, 0, 0, 0.25)',
       '--theme-sidebar-menu-background-color': `${background.secondary.darker}`,
@@ -943,6 +920,25 @@ export const createDaedalusComponentsTheme = (
       '--theme-sidebar-wallets-scrollbar-background-color-hover':
         'rgba(255, 255, 255, 0.3)',
     },
+    splash: {
+      '--theme-splash-network-background-color': 'rgba(36, 62, 98, 0.96)',
+      '--theme-splash-network-background-color1': 'rgba(18, 19, 38, 1)',
+      '--theme-splash-network-background-color2': 'rgba(18, 19, 38, 0.91)',
+      '--theme-splash-network-background-color3': 'rgba(18, 19, 38, 0.31)',
+      '--theme-splash-network-background-color4': 'rgba(18, 19, 38, 0)',
+      '--theme-splash-network-background-color5': 'rgba(18, 19, 38, 0)',
+      '--theme-splash-network-background-color6': 'rgba(18, 19, 38, 0.31)',
+      '--theme-splash-network-background-color7': 'rgba(18, 19, 38, 0.91)',
+      '--theme-splash-network-background-color8': 'rgba(18, 19, 38, 1)',
+      '--theme-splash-network-logo-fill-color': '#fff',
+      '--theme-splash-network-title-color': '#fafbfc',
+      '--theme-splash-network-subTitle1-color': `${background.secondary}`,
+      '--theme-splash-network-subTitle2-color': `${background.secondary}`,
+      '--theme-splash-network-description-background-color':
+        'rgba(255, 255, 255, 0.1)',
+      '--theme-splash-network-description-color': `${text.primary}`,
+      '--theme-splash-network-learn-more-color': `${text.primary}`,
+    },
     stakePools: {
       '--theme-staking-stake-pools-title-color': `${text.primary}`,
       '--theme-staking-stake-pools-search-button-color': `${text.primary}`,
@@ -960,8 +956,8 @@ export const createDaedalusComponentsTheme = (
       '--theme-staking-stake-pool-selected-checkmark-icon-color': `${
         text.secondary
       }`,
-      '--theme-staking-stake-pool-selected-slug-color': `${text.secondary}`,
-      '--theme-staking-stake-pool-slug-color': `${text.primary}`,
+      '--theme-staking-stake-pool-selected-ticker-color': `${text.secondary}`,
+      '--theme-staking-stake-pool-ticker-color': `${text.primary}`,
       '--theme-staking-stake-pool-retirement-background-color': `${
         error.regular
       }`,
@@ -974,6 +970,10 @@ export const createDaedalusComponentsTheme = (
       '--theme-staking-stake-pool-tooltip-link-color': `${
         background.secondary.dark
       }`,
+      '--theme-staking-stake-pool-tooltip-neutral-background-color': `${chroma(
+        background.secondary.regular
+      ).alpha(0.1)}`,
+      '--theme-staking-stake-pool-tooltip-neutral-text-color': text.primary,
       '--theme-staking-stake-pool-tooltip-table-title-color': `${text.primary}`,
       '--theme-staking-stake-pool-tooltip-table-param-color': `${text.primary}`,
       '--theme-staking-stake-pool-tooltip-retirement-text-color': '#fafbfc',
@@ -1055,6 +1055,8 @@ export const createDaedalusComponentsTheme = (
       '--theme-staking-delegation-center-no-wallets-instructions-color': `${
         text.primary
       }`,
+      '--theme-staking-delegation-center-divider-border-color': `${border}`,
+      '--theme-staking-delegation-center-fees-amount-color': `${error.regular}`,
       '--theme-staking-countdown-widget-background-color': `${
         background.primary.regular
       }`,
@@ -1065,6 +1067,10 @@ export const createDaedalusComponentsTheme = (
         background.primary.light
       ).alpha(0.7)}`,
       '--theme-staking-countdown-widget-field-value-color': `${text.primary}`,
+      '--theme-staking-export-button-shadow-color': `${chroma(
+        background.primary.regular
+      ).alpha(0.18)}`,
+      '--theme-staking-export-button-color': `${background.primary.lightest}`,
     },
     support: {
       '--theme-support-settings-item-color': `${text.primary}`,
@@ -1073,7 +1079,36 @@ export const createDaedalusComponentsTheme = (
     },
     syncing: {
       '--theme-syncing-background-color': `${background.primary.regular}`,
+      '--theme-syncing-background-color1': `${chroma(
+        background.primary.regular
+      ).alpha(1)}`,
+      '--theme-syncing-background-color2': `${chroma(
+        background.primary.regular
+      ).alpha(0.91)}`,
+      '--theme-syncing-background-color3': `${chroma(
+        background.primary.regular
+      ).alpha(0.31)}`,
+      '--theme-syncing-background-color4': `${chroma(
+        background.primary.regular
+      ).alpha(0)}`,
+      '--theme-syncing-background-color5': `${chroma(
+        background.primary.regular
+      ).alpha(0)}`,
+      '--theme-syncing-background-color6': `${chroma(
+        background.primary.regular
+      ).alpha(0.31)}`,
+      '--theme-syncing-background-color7': `${chroma(
+        background.primary.regular
+      ).alpha(0.91)}`,
+      '--theme-syncing-background-color8': `${chroma(
+        background.primary.regular
+      ).alpha(1)}`,
       '--theme-syncing-text-color': `${text.primary}`,
+    },
+    syncingConnecting: {
+      '--theme-syncing-connecting-title-color': `${text.primary}`,
+      '--theme-syncing-connecting-subTitle1-color': `${text.secondary}`,
+      '--theme-syncing-connecting-subTitle2-color': `${text.primary}`,
     },
     systemError: {
       '--theme-system-error-overlay-attention-icon-color': `${text.secondary}`,
@@ -1108,33 +1143,25 @@ export const createDaedalusComponentsTheme = (
       '--theme-transactions-list-border-color': `${border}`,
       '--theme-transactions-list-group-date-color': `${text.primary}`,
       '--theme-transactions-list-item-details-color': `${text.primary}`,
-      '--theme-transactions-state-failed-background-color': `${
-        background.primary.dark
-      }`,
-      '--theme-transactions-state-failed-text-color': `${text.primary}`,
+      '--theme-transactions-state-ok-background-color': '#007600',
       '--theme-transactions-state-pending-background-color': `${
         background.primary.dark
       }`,
-      '--theme-transactions-state-pending-stripes-color': `${
-        background.primary.darker
-      }`,
-      '--theme-transactions-priority-color': `${background.primary.regular}`,
-      '--theme-transactions-priority-low-background-color': `${error.dark}`,
-      '--theme-transactions-priority-medium-background-color': '#e6aa00',
-      '--theme-transactions-priority-high-background-color': '#007600',
+      '--theme-transactions-state-pending-warning-background-color': '#ec5d6b',
+      '--theme-transactions-state-text-color': `${background.primary.regular}`,
       '--theme-transactions-search-background-color': `${
         background.primary.regular
       }`,
       '--theme-transactions-icon-type-expend-background-color': '#84a2d2',
       '--theme-transactions-icon-type-income-background-color': '#2dc06c',
       '--theme-transactions-icon-type-exchange-background-color': '#10aca4',
-      '--theme-transactions-icon-type-failed-background-color': `${
-        error.light
-      }`,
+      '--theme-transactions-icon-type-pending-regular-background-color': `
+        ${chroma(text.primary).alpha(0.5)}
+      `,
+      '--theme-transactions-icon-type-pending-warning-background-color': `
+        ${chroma(error.regular).alpha(0.8)}
+      `,
       '--theme-transactions-arrow-stroke-color': `${text.primary}`,
-      '--theme-transactions-state-failed-text-secondary-color': `${chroma(
-        text.secondary
-      ).alpha(0.8)}`,
     },
     uploader: {
       '--theme-uploader-text-color': `${text.primary}`,

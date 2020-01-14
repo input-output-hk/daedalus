@@ -5,7 +5,7 @@ Feature: Toggle Sidebar Submenus
     Given I have completed the basic setup
     And I have the following wallets:
       | name        |
-      | Test wallet |
+      | Test Wallet |
 
   Scenario: Hide Sidebar Submenus
     Given the sidebar submenu is visible

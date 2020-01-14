@@ -1,0 +1,123 @@
+{
+    "cardano-shell": {
+        "branch": "master",
+        "description": "Node shell, a thin layer for running the node and it's modules.",
+        "homepage": null,
+        "owner": "input-output-hk",
+        "repo": "cardano-shell",
+        "rev": "604bc748a668da45fe6812ae57b01937de545beb",
+        "sha256": "08x4v9ak978b1fbqhykhzvpvzdii3c1h9r74qy0agfi7h2fv0l0d",
+        "type": "tarball",
+        "url": "https://github.com/input-output-hk/cardano-shell/archive/604bc748a668da45fe6812ae57b01937de545beb.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "cardano-sl": {
+        "branch": "develop",
+        "description": "Cryptographic currency implementing Ouroboros PoS protocol",
+        "homepage": "",
+        "owner": "input-output-hk",
+        "repo": "cardano-sl",
+        "rev": "1a792d7cd0f0c93a0f0c28f66372bce3c3808dbd",
+        "sha256": "1vk71zn9bnkgkhgcyj59wzrp28crjwcd0lgnm013mhzpvxycgn61",
+        "type": "tarball",
+        "url": "https://github.com/input-output-hk/cardano-sl/archive/1a792d7cd0f0c93a0f0c28f66372bce3c3808dbd.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "cardano-wallet": {
+        "branch": "master",
+        "description": "Official Wallet Backend & API for Cardano decentralized",
+        "homepage": null,
+        "owner": "input-output-hk",
+        "repo": "cardano-wallet",
+        "rev": "d3d93ba356170b727cb7234c08f2809f9b613357",
+        "sha256": "13hacdjs09xykkl2360w2sqygw05zji90srs8vlg3aivf9iyg559",
+        "type": "tarball",
+        "url": "https://github.com/input-output-hk/cardano-wallet/archive/d3d93ba356170b727cb7234c08f2809f9b613357.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz",
+        "version": "v2019-12-16"
+    },
+    "gitignore": {
+        "branch": "master",
+        "description": "Nix function for filtering local git sources",
+        "homepage": "",
+        "owner": "hercules-ci",
+        "repo": "gitignore",
+        "rev": "f9e996052b5af4032fe6150bba4a6fe4f7b9d698",
+        "sha256": "0jrh5ghisaqdd0vldbywags20m2cxpkbbk5jjjmwaw0gr8nhsafv",
+        "type": "tarball",
+        "url": "https://github.com/hercules-ci/gitignore/archive/f9e996052b5af4032fe6150bba4a6fe4f7b9d698.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "haskell.nix": {
+        "branch": "master",
+        "description": "Alternative Haskell Infrastructure for Nixpkgs",
+        "homepage": "https://input-output-hk.github.io/haskell.nix",
+        "owner": "input-output-hk",
+        "repo": "haskell.nix",
+        "rev": "6260dcb06b7d2855cbcd0a0f36483453c311248e",
+        "sha256": "1q9bqgf41ch3dpghsvh74xqnj98h3khj4gxk9n2kq9qai12720yv",
+        "type": "tarball",
+        "url": "https://github.com/input-output-hk/haskell.nix/archive/6260dcb06b7d2855cbcd0a0f36483453c311248e.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "iohk-nix": {
+        "branch": "master",
+        "description": "nix scripts shared across projects",
+        "homepage": null,
+        "owner": "input-output-hk",
+        "repo": "iohk-nix",
+        "rev": "cd09cb5be3cd3f041eddefce6d13b3ec750d6a95",
+        "sha256": "0cgfrvs4iq8sj9c9pbvbdw7k6cyw2yzjkrd2amx3jipnq78wxafs",
+        "type": "tarball",
+        "url": "https://github.com/input-output-hk/iohk-nix/archive/cd09cb5be3cd3f041eddefce6d13b3ec750d6a95.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "js-chain-libs": {
+        "branch": "master",
+        "description": "chain-libs javascript SDK",
+        "homepage": null,
+        "owner": "input-output-hk",
+        "repo": "js-chain-libs",
+        "rev": "1f1bbc5557ed5356a5fac89a3224d3449ef98ba3",
+        "sha256": "14v7zm2h3v4vb7f15i4mk6f5jsdd6akqv2pzqmj52hprh076p0hd",
+        "type": "tarball",
+        "url": "https://github.com/input-output-hk/js-chain-libs/archive/1f1bbc5557ed5356a5fac89a3224d3449ef98ba3.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "niv": {
+        "branch": "iohk",
+        "description": "Easy dependency management for Nix projects",
+        "homepage": "https://github.com/nmattia/niv",
+        "owner": "input-output-hk",
+        "repo": "niv",
+        "rev": "4229fbcf62997467c34283a2f353702359e78e5a",
+        "sha256": "1y1h6aj0rxrrhvp9jpr6xw3zsa1l8ac25ng4xzjskr5kg620pxqr",
+        "type": "tarball",
+        "url": "https://github.com/input-output-hk/niv/archive/4229fbcf62997467c34283a2f353702359e78e5a.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "nixpkgs": {
+        "branch": "nixos-19.09",
+        "description": "A read-only mirror of NixOS/nixpkgs tracking the released channels. Send issues and PRs to",
+        "homepage": "https://github.com/NixOS/nixpkgs",
+        "owner": "NixOS",
+        "repo": "nixpkgs-channels",
+        "rev": "c5aabb0d603e2c1ea05f5a93b3be82437f5ebf31",
+        "sha256": "15fwszhn6078sbrb8qk83g8afvh4qnmvff0qbkbvq3cm1fxni2w1",
+        "type": "tarball",
+        "url": "https://github.com/NixOS/nixpkgs-channels/archive/c5aabb0d603e2c1ea05f5a93b3be82437f5ebf31.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "nixpkgs-nsis": {
+        "branch": "nsis",
+        "description": "A read-only mirror of NixOS/nixpkgs tracking the released channels. Send issues and PRs to",
+        "homepage": "https://github.com/NixOS/nixpkgs",
+        "owner": "input-output-hk",
+        "repo": "nixpkgs",
+        "rev": "be445a9074f139d63e704fa82610d25456562c3d",
+        "sha256": "15dc7gdspimavcwyw9nif4s59v79gk18rwsafylffs9m1ld2dxwa",
+        "type": "tarball",
+        "url": "https://github.com/input-output-hk/nixpkgs/archive/be445a9074f139d63e704fa82610d25456562c3d.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    }
+}

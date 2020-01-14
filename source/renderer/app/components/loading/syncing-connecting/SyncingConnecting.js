@@ -5,7 +5,9 @@ import classNames from 'classnames';
 import StatusIcons from './StatusIcons';
 import ReportIssue from './ReportIssue';
 import LogosDisplay from './LogosDisplay';
+import SyncingConnectingBackground from './SyncingConnectingBackground';
 import SyncingConnectingTitle from './SyncingConnectingTitle';
+import SyncingConnectingStatus from './SyncingConnectingStatus';
 import { CardanoNodeStates } from '../../../../../common/types/cardano-node.types';
 import styles from './SyncingConnecting.scss';
 import type { CardanoNodeState } from '../../../../../common/types/cardano-node.types';
@@ -37,16 +39,14 @@ type Props = {
   hasLoadedCurrentLocale: boolean,
   hasLoadedCurrentTheme: boolean,
   hasUnreadNews: boolean,
-  isCheckingSystemTime: boolean,
   isNodeResponding: boolean,
-  isNodeSubscribed: boolean,
   isNodeSyncing: boolean,
-  isNodeTimeCorrect: boolean,
   isNewAppVersionAvailable: boolean,
   isNewAppVersionLoading: boolean,
   isNewAppVersionLoaded: boolean,
   disableDownloadLogs: boolean,
   showNewsFeedIcon: boolean,
+  isIncentivizedTestnet: boolean,
   onIssueClick: Function,
   onDownloadLogs: Function,
   onGetAvailableVersions: Function,
@@ -78,6 +78,7 @@ export default class SyncingConnecting extends Component<Props, State> {
       onGetAvailableVersions,
       isNewAppVersionLoading,
       isNewAppVersionLoaded,
+      isIncentivizedTestnet,
     } = this.props;
     const canResetSyncing = this._syncingTimerShouldStop(isSynced);
     const canResetConnecting = this._connectingTimerShouldStop(isConnected);
@@ -94,7 +95,8 @@ export default class SyncingConnecting extends Component<Props, State> {
     if (
       isAppLoadingStuck &&
       !isNewAppVersionLoaded &&
-      !isNewAppVersionLoading
+      !isNewAppVersionLoading &&
+      !isIncentivizedTestnet
     ) {
       onGetAvailableVersions();
     }
@@ -172,6 +174,7 @@ export default class SyncingConnecting extends Component<Props, State> {
       cardanoNodeState,
       isNewAppVersionLoaded,
       isNewAppVersionAvailable,
+      isIncentivizedTestnet,
       forceConnectivityIssue,
       forceSyncIssue,
     } = this.props;
@@ -184,6 +187,11 @@ export default class SyncingConnecting extends Component<Props, State> {
     const canReportSyncingIssue =
       forceSyncIssue ||
       (isConnected && !isSynced && syncingTime >= REPORT_ISSUE_TIME_TRIGGER);
+
+    if (isIncentivizedTestnet) {
+      return canReportConnectingIssue || canReportSyncingIssue;
+    }
+
     return (
       isNewAppVersionLoaded &&
       !isNewAppVersionAvailable &&
@@ -204,11 +212,9 @@ export default class SyncingConnecting extends Component<Props, State> {
       onIssueClick,
       onDownloadLogs,
       disableDownloadLogs,
+      isIncentivizedTestnet,
       isNodeResponding,
-      isNodeSubscribed,
       isNodeSyncing,
-      isNodeTimeCorrect,
-      isCheckingSystemTime,
       hasBeenConnected,
       isTlsCertInvalid,
       isNodeStopping,
@@ -219,39 +225,41 @@ export default class SyncingConnecting extends Component<Props, State> {
       showNewsFeedIcon,
     } = this.props;
 
-    const componentStyles = classNames([
-      styles.component,
-      hasLoadedCurrentTheme ? null : styles['is-loading-theme'],
-      isConnecting ? styles['is-connecting'] : null,
-      isSyncing ? styles['is-syncing'] : null,
-    ]);
-
     const newsFeedIconStyles = classNames([
       isConnecting ? 'connectingScreen' : null,
       isSyncing || isSynced ? 'syncingScreen' : null,
     ]);
 
     return (
-      <div className={componentStyles}>
-        {this.showReportIssue && (
-          <ReportIssue
-            isConnected={isConnected}
-            onIssueClick={onIssueClick}
-            onDownloadLogs={onDownloadLogs}
-            disableDownloadLogs={disableDownloadLogs}
-            isConnecting={isConnecting}
-            isSyncing={isSyncing}
-          />
-        )}
-        {showNewsFeedIcon && (
-          <NewsFeedIcon
-            onNewsFeedIconClick={onToggleNewsFeedIconClick}
-            newsFeedIconClass={newsFeedIconStyles}
-            showDot={hasUnreadNews}
-          />
-        )}
-        <LogosDisplay isConnected={isConnected} />
-        <SyncingConnectingTitle
+      <div className={styles.component}>
+        <SyncingConnectingBackground
+          hasLoadedCurrentTheme={hasLoadedCurrentTheme}
+          isIncentivizedTestnet={isIncentivizedTestnet}
+          isConnecting={isConnecting}
+          isSyncing={isSyncing}
+        />
+        <div className={styles.content}>
+          {this.showReportIssue && (
+            <ReportIssue
+              isConnected={isConnected}
+              onIssueClick={onIssueClick}
+              onDownloadLogs={onDownloadLogs}
+              disableDownloadLogs={disableDownloadLogs}
+              isConnecting={isConnecting}
+              isSyncing={isSyncing}
+            />
+          )}
+          {showNewsFeedIcon && (
+            <NewsFeedIcon
+              onNewsFeedIconClick={onToggleNewsFeedIconClick}
+              newsFeedIconClass={newsFeedIconStyles}
+              showDot={hasUnreadNews}
+            />
+          )}
+          <LogosDisplay isConnected={isConnected} />
+          {isIncentivizedTestnet && <SyncingConnectingTitle />}
+        </div>
+        <SyncingConnectingStatus
           cardanoNodeState={cardanoNodeState}
           hasLoadedCurrentLocale={hasLoadedCurrentLocale}
           hasBeenConnected={hasBeenConnected}
@@ -266,10 +274,6 @@ export default class SyncingConnecting extends Component<Props, State> {
           onIconClick={onStatusIconClick}
           nodeState={cardanoNodeState}
           isNodeResponding={isNodeResponding}
-          isNodeSubscribed={isNodeSubscribed}
-          isNodeTimeCorrect={
-            isCheckingSystemTime ? undefined : isNodeTimeCorrect
-          }
           isNodeSyncing={isNodeSyncing}
         />
       </div>

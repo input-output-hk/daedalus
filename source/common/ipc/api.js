@@ -5,8 +5,11 @@ import type {
 } from '../types/bug-report-request.types';
 import type { GenerateFileMetaParams } from '../types/file-meta-request.types';
 import type { GeneratePaperWalletParams } from '../types/paper-wallet-request.types';
+import type { GenerateAddressPDFParams } from '../types/address-pdf-request.types';
+import type { GenerateRewardsCsvParams } from '../types/rewards-csv-request.types';
 import type {
   CardanoNodeState,
+  CardanoNodeImplementation,
   CardanoStatus,
   FaultInjectionIpcRequest,
   TlsConfig,
@@ -121,14 +124,6 @@ export type RebuildAppMenuRendererRequest = { isUpdateAvailable: boolean };
 export type RebuildAppMenuMainResponse = void;
 
 /**
- * Channel to get the number of epochs consolidated
- */
-export const GET_CONSOLIDATED_EPOCHS_COUNT_CHANNEL =
-  'GET_CONSOLIDATED_EPOCHS_COUNT_CHANNEL';
-export type GetConsolidatedEpochsCountRendererRequest = void;
-export type GetConsolidatedEpochsCountMainResponse = number;
-
-/**
  * Channel to generate file blob
  */
 export const GENERATE_FILE_META_CHANNEL = 'GENERATE_FILE_META_CHANNEL';
@@ -141,6 +136,20 @@ export type GenerateFileMetaMainResponse = any;
 export const GENERATE_PAPER_WALLET_CHANNEL = 'GENERATE_PAPER_WALLET_CHANNEL';
 export type GeneratePaperWalletRendererRequest = GeneratePaperWalletParams;
 export type GeneratePaperWalletMainResponse = void;
+
+/**
+ * Channel to generate and save a share address PDF
+ */
+export const GENERATE_ADDRESS_PDF_CHANNEL = 'GENERATE_ADDRESS_PDF_CHANNEL';
+export type GenerateAddressPDFRendererRequest = GenerateAddressPDFParams;
+export type GenerateAddressPDFMainResponse = void;
+
+/**
+ * Channel to generate and save a rewards csv
+ */
+export const GENERATE_REWARDS_CSV_CHANNEL = 'GENERATE_REWARDS_CSV_CHANNEL';
+export type GenerateRewardsCsvRendererRequest = GenerateRewardsCsvParams;
+export type GenerateRewardsCsvMainResponse = void;
 
 /**
  * ====================== CARDANO IPC CHANNELS ======================
@@ -162,6 +171,14 @@ export type CardanoAwaitUpdateMainResponse = void;
 export const CARDANO_STATE_CHANNEL = 'CARDANO_STATE_CHANNEL';
 export type CardanoStateRendererRequest = void;
 export type CardanoStateRendererResponse = CardanoNodeState;
+
+/**
+ * Channel where main process tells the renderer about the specific cardano node implementation
+ */
+export const CARDANO_NODE_IMPLEMENTATION_CHANNEL =
+  'CARDANO_NODE_IMPLEMENTATION_CHANNEL';
+export type CardanoNodeImplementationRendererRequest = void;
+export type CardanoNodeImplementationRendererResponse = CardanoNodeImplementation;
 
 /**
  * Channel to exchange tls config between main and renderer process

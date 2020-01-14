@@ -35,6 +35,12 @@ export default class AlertsOverlay extends Component<Props, State> {
     };
   }
 
+  localizedDateFormat: 'MM/DD/YYYY';
+
+  componentWillMount() {
+    this.localizedDateFormat = moment.localeData().longDateFormat('L');
+  }
+
   contentClickHandler(event: SyntheticMouseEvent<HTMLElement>) {
     const linkUrl = get(event, ['target', 'href']);
     if (linkUrl) {
@@ -46,12 +52,12 @@ export default class AlertsOverlay extends Component<Props, State> {
   onClose = () => {
     const { alerts } = this.props;
     if (alerts.length <= 1) {
-      this.props.onMarkNewsAsRead(alerts[0].date);
+      this.props.onMarkNewsAsRead([alerts[0].date]);
       this.props.onCloseOpenAlert();
       this.setState({ showOverlay: false });
       return;
     }
-    this.props.onMarkNewsAsRead(alerts[0].date);
+    this.props.onMarkNewsAsRead([alerts[0].date]);
   };
 
   onProceedNewsAction = (event: SyntheticMouseEvent<HTMLElement>) => {
@@ -86,7 +92,8 @@ export default class AlertsOverlay extends Component<Props, State> {
   render() {
     const { showOverlay } = this.state;
     const { alerts, currentDateFormat } = this.props;
-    const { content, date, action, title } = alerts[0];
+    const [alert] = alerts;
+    const { content, date, action, title } = alert;
     return (
       showOverlay && (
         <div className={styles.component}>

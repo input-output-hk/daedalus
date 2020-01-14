@@ -4,19 +4,6 @@
   color: var(--theme-transactions-list-item-details-color);
   cursor: pointer;
   position: relative;
-
-  &.failed {
-    .title,
-    .amount,
-    .details {
-      color: var(--theme-transactions-state-failed-text-color);
-    }
-    .currencySymbol {
-      & > svg > g > g {
-        stroke: var(--theme-transactions-state-failed-text-color);
-      }
-    }
-  }
 }
 
 // ========= TOGGLER =========
@@ -92,12 +79,12 @@
 }
 
 .pendingLabel,
-.failedLabel,
-.low,
-.medium,
-.high {
+.okLabel,
+.in_ledgerLabel,
+.pendingWarningLabel {
+  background-color: var(--theme-transactions-state-pending-background-color);
   border-radius: 3px;
-  color: var(--theme-transactions-priority-color);
+  color: var(--theme-transactions-state-text-color);
   display: inline-block;
   font-family: var(--font-bold);
   font-size: 8px;
@@ -108,53 +95,15 @@
   text-transform: uppercase;
 }
 
-.pendingLabel {
-  :global {
-    @keyframes pending-label-animation {
-      0% {
-        background-position: 0 0;
-      }
-      100% {
-        background-position: 50px 50px;
-      }
-    }
-  }
-  animation: pending-label-animation 2s linear infinite;
+.okLabel,
+.in_ledgerLabel {
+  background-color: var(--theme-transactions-state-ok-background-color);
+}
 
-  background-color: var(--theme-transactions-state-pending-background-color);
-  background-image: linear-gradient(
-    -45deg,
-    var(--theme-transactions-state-pending-stripes-color) 25%,
-    transparent 25%,
-    transparent 50%,
-    var(--theme-transactions-state-pending-stripes-color) 50%,
-    var(--theme-transactions-state-pending-stripes-color) 75%,
-    transparent 75%,
-    transparent
+.pendingWarningLabel {
+  background-color: var(
+    --theme-transactions-state-pending-warning-background-color
   );
-  background-size: 50px 50px;
-  overflow: hidden;
-}
-
-.failedLabel {
-  background-color: var(--theme-transactions-state-failed-background-color);
-  color: var(--theme-transactions-state-failed-text-secondary-color);
-}
-
-.low {
-  background-color: var(--theme-transactions-priority-low-background-color);
-}
-
-.medium {
-  background-color: var(--theme-transactions-priority-medium-background-color);
-}
-
-.high {
-  background-color: var(--theme-transactions-priority-high-background-color);
-}
-
-.assuranceLevel {
-  text-transform: capitalize;
 }
 
 .type {
@@ -201,40 +150,73 @@
     margin-bottom: 8px;
   }
 
-  .addressRow {
+  .addressRow,
+  .explorerLinkRow {
     padding-bottom: 6px;
   }
 
   .addressRow,
-  .transactionIdRow {
+  .transactionIdRow,
+  .explorerLinkRow {
     line-height: 17px;
+  }
+
+  .explorerLinkRow {
+    span:nth-child(2) {
+      color: var(--theme-transactions-list-item-details-color);
+      font-family: var(--font-light);
+      font-size: 16px;
+      line-height: 1.38;
+      margin-left: 6px;
+      word-break: break-word;
+    }
   }
 
   span {
     font-family: var(--font-light);
-    font-size: 14px;
+    font-size: 15px;
     user-select: text;
     word-break: break-all;
 
     &.address,
     &.transactionId {
       font-family: var(--font-mono);
+      letter-spacing: 0.5px;
+      line-height: 1.4;
+    }
+
+    &.explorerLink {
+      font-family: var(--font-regular);
+      font-size: 16px;
       letter-spacing: -0.4px;
     }
   }
 
-  &.clickable {
-    .transactionId {
-      @include link(--theme-transactions-list-item-details-color);
+  .pendingTxnNote {
+    font-family: var(--font-light);
+    font-size: 16px;
+    line-height: 1.4;
+    margin-bottom: 20px;
+    margin-top: 20px;
+
+    .articleLink {
+      @include link(--theme-link-main-color);
       border-bottom: 1px solid transparent;
+      font-size: 16px;
+      margin-left: 5px;
+      text-decoration-line: none;
       &:hover {
-        border-bottom-color: var(--theme-transactions-list-item-details-color);
+        border-bottom-color: var(--theme-link-main-color);
       }
     }
+  }
 
-    .address {
+  &.clickable {
+    .transactionId,
+    .address,
+    .explorerLink {
       @include link(--theme-link-main-color);
-      border-bottom: 1px solid var(--theme-link-main-color);
+      border-bottom-color: var(--theme-link-main-color);
     }
   }
 }

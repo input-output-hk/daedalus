@@ -10,61 +10,68 @@ import tooltipStyles from './StatusIcons-tooltip.scss';
 import { CardanoNodeStates } from '../../../../../common/types/cardano-node.types';
 import nodeStateIcon from '../../../assets/images/node-state-icon.inline.svg';
 import isNodeRespondingIcon from '../../../assets/images/is-node-responding-icon.inline.svg';
-import isNodeSubscribedIcon from '../../../assets/images/is-node-subscribed-icon.inline.svg';
-import isNodeTimeCorrectIcon from '../../../assets/images/is-node-time-correct-icon.inline.svg';
+// import isNodeSubscribedIcon from '../../../assets/images/is-node-subscribed-icon.inline.svg';
+// import isNodeTimeCorrectIcon from '../../../assets/images/is-node-time-correct-icon.inline.svg';
 import isNodeSyncingIcon from '../../../assets/images/is-node-syncing-icon.inline.svg';
 import type { CardanoNodeState } from '../../../../../common/types/cardano-node.types';
 
 const messages = defineMessages({
   nodeIsRunning: {
     id: 'status.icons.nodeIsRunning',
-    defaultMessage: '!!!Node is running!',
-    description: 'Message "Node is running" on the status icon tooltip',
+    defaultMessage: '!!!Cardano node is running!',
+    description: 'Message "Cardano node is running" on the status icon tooltip',
   },
   nodeIsStarting: {
     id: 'status.icons.nodeIsStarting',
-    defaultMessage: '!!!Node is starting!',
+    defaultMessage: '!!!Cardano node is starting!',
     description: 'Message "Node is starting" on the status icon tooltip',
   },
   nodeIsExiting: {
     id: 'status.icons.nodeIsExiting',
-    defaultMessage: '!!!Node is exiting!',
-    description: 'Message "Node is exiting" on the status icon tooltip',
+    defaultMessage: '!!!Cardano node is exiting!',
+    description: 'Message "Cardano node is exiting" on the status icon tooltip',
   },
   nodeIsStopping: {
     id: 'status.icons.nodeIsStopping',
-    defaultMessage: '!!!Node is stopping!',
-    description: 'Message "Node is stopping" on the status icon tooltip',
+    defaultMessage: '!!!Cardano node is stopping!',
+    description:
+      'Message "Cardano node is stopping" on the status icon tooltip',
   },
   nodeHasStopped: {
     id: 'status.icons.nodeHasStopped',
-    defaultMessage: '!!!Node has stopped!',
-    description: 'Message "Node has stopped" on the status icon tooltip',
+    defaultMessage: '!!!Cardano node has stopped!',
+    description:
+      'Message "Cardano node has stopped" on the status icon tooltip',
   },
   nodeIsUpdating: {
     id: 'status.icons.nodeIsUpdating',
-    defaultMessage: '!!!Node is updating!',
-    description: 'Message "Node is updating" on the status icon tooltip',
+    defaultMessage: '!!!Cardano node is updating!',
+    description:
+      'Message "Cardano node is updating" on the status icon tooltip',
   },
   nodeHasBeenUpdated: {
     id: 'status.icons.nodeHasBeenUpdated',
-    defaultMessage: '!!!Node has been updated!',
-    description: 'Message "Node has been updated" on the status icon tooltip',
+    defaultMessage: '!!!Cardano node has been updated!',
+    description:
+      'Message "Cardano node has been updated" on the status icon tooltip',
   },
   nodeHasCrashed: {
     id: 'status.icons.nodeHasCrashed',
-    defaultMessage: '!!!Node has crashed!',
-    description: 'Message "Node has crashed" on the status icon tooltip',
+    defaultMessage: '!!!Cardano node has crashed!',
+    description:
+      'Message "Cardano node has crashed" on the status icon tooltip',
   },
   nodeHasErrored: {
     id: 'status.icons.nodeHasErrored',
-    defaultMessage: '!!!Node has errored!',
-    description: 'Message "Node has errored" on the status icon tooltip',
+    defaultMessage: '!!!Cardano node has errored!',
+    description:
+      'Message "Cardano node has errored" on the status icon tooltip',
   },
   nodeIsUnrecoverable: {
     id: 'status.icons.nodeIsUnrecoverable',
-    defaultMessage: '!!!Node is unrecoverable!',
-    description: 'Message "Node is unrecoverable" on the status icon tooltip',
+    defaultMessage: '!!!Cardano node is unrecoverable!',
+    description:
+      'Message "Cardano node is unrecoverable" on the status icon tooltip',
   },
   checkYourInternetConnection: {
     id: 'status.icons.checkYourInternetConnection',
@@ -74,68 +81,74 @@ const messages = defineMessages({
   },
   isNodeRespondingOn: {
     id: 'status.icons.isNodeRespondingOn',
-    defaultMessage: '!!!Node is responding!',
-    description: 'Message "Node is responding" on the status icon tooltip',
+    defaultMessage: '!!!Cardano node is responding!',
+    description:
+      'Message "Cardano node is responding" on the status icon tooltip',
   },
   isNodeRespondingOff: {
     id: 'status.icons.isNodeRespondingOff',
-    defaultMessage: '!!!Node is not responding!',
-    description: 'Message "Node is not responding" on the status icon tooltip',
+    defaultMessage: '!!!Cardano node is not responding!',
+    description:
+      'Message "Cardano node is not responding" on the status icon tooltip',
   },
   isNodeRespondingLoading: {
     id: 'status.icons.isNodeRespondingLoading',
-    defaultMessage: '!!!Checking if Node is responding!',
+    defaultMessage: '!!!Checking if Cardano node is responding!',
     description:
-      'Message "Checking if Node is responding" on the status icon tooltip',
+      'Message "Checking if Cardano node is responding" on the status icon tooltip',
   },
   isNodeSubscribedOn: {
     id: 'status.icons.isNodeSubscribedOn',
-    defaultMessage: '!!!Node is subscribed!',
-    description: 'Message "Node is subscribed" on the status icon tooltip',
+    defaultMessage: '!!!Cardano node is subscribed!',
+    description:
+      'Message "Cardano node is subscribed" on the status icon tooltip',
   },
   isNodeSubscribedOff: {
     id: 'status.icons.isNodeSubscribedOff',
-    defaultMessage: '!!!Node is not subscribed!',
-    description: 'Message "Node is not subscribed" on the status icon tooltip',
+    defaultMessage: '!!!Cardano node is not subscribed!',
+    description:
+      'Message "Cardano node is not subscribed" on the status icon tooltip',
   },
   isNodeSubscribedLoading: {
     id: 'status.icons.isNodeSubscribedLoading',
-    defaultMessage: '!!!Checking if Node is subscribed!',
+    defaultMessage: '!!!Checking if Cardano node is subscribed!',
     description:
-      'Message "Checking if Node is subscribed" on the status icon tooltip',
+      'Message "Checking if Cardano node is subscribed" on the status icon tooltip',
   },
   isNodeTimeCorrectOn: {
     id: 'status.icons.isNodeTimeCorrectOn',
-    defaultMessage: '!!!Node time is correct!',
-    description: 'Message "Node time is correct" on the status icon tooltip',
+    defaultMessage: '!!!Cardano node time is correct!',
+    description:
+      'Message "Cardano node time is correct" on the status icon tooltip',
   },
   isNodeTimeCorrectOff: {
     id: 'status.icons.isNodeTimeCorrectOff',
-    defaultMessage: '!!!Node time is not correct!',
+    defaultMessage: '!!!Cardano node time is not correct!',
     description:
-      'Message "Node time is not correct" on the status icon tooltip',
+      'Message "Cardano node time is not correct" on the status icon tooltip',
   },
   isNodeTimeCorrectLoading: {
     id: 'status.icons.isNodeTimeCorrectLoading',
-    defaultMessage: '!!!Checking if Node time is correct!',
+    defaultMessage: '!!!Checking if Cardano node time is correct!',
     description:
-      'Message "Checking if Node time is correct" on the status icon tooltip',
+      'Message "Checking if Cardano node time is correct" on the status icon tooltip',
   },
   isNodeSyncingOn: {
     id: 'status.icons.isNodeSyncingOn',
-    defaultMessage: '!!!Node is syncing!',
-    description: 'Message "Node is syncing" on the status icon tooltip',
+    defaultMessage: '!!!Cardano node is syncing!',
+    description: 'Message "Cardano node is syncing" on the status icon tooltip',
   },
   isNodeSyncingOff: {
     id: 'status.icons.isNodeSyncingOff',
-    defaultMessage: '!!!Node is not syncing!',
-    description: 'Message "Node is not syncing" on the status icon tooltip',
+    defaultMessage: '!!!Cardano node is not syncing!',
+    description:
+      'Message "Cardano node is not syncing" on the status icon tooltip',
   },
   isNodeSyncingLoading: {
     id: 'status.icons.isNodeSyncingLoading',
-    defaultMessage: '!!!Checking if Node is syncing!',
+    defaultMessage: '!!!Checking if Cardano node is syncing!',
     description:
-      'Message "Checking if Node is syncing" on the status icon tooltip',
+      'Message "Checking if Cardano node is syncing" on the status icon tooltip',
   },
 });
 
@@ -162,7 +175,7 @@ const STATUS_CLASSNAMES: Object = {
   [CardanoNodeStates.ERRORED]: 'off',
   [CardanoNodeStates.UNRECOVERABLE]: 'off',
   true: 'on',
-  false: 'off',
+  false: 'unknown',
   undefined: 'unloaded',
 };
 
@@ -251,8 +264,8 @@ export default class StatusIcons extends Component<Props> {
         {[
           this.getIconWithToolTip(nodeStateIcon, 'nodeState'),
           this.getIconWithToolTip(isNodeRespondingIcon, 'isNodeResponding'),
-          this.getIconWithToolTip(isNodeSubscribedIcon, 'isNodeSubscribed'),
-          this.getIconWithToolTip(isNodeTimeCorrectIcon, 'isNodeTimeCorrect'),
+          // this.getIconWithToolTip(isNodeSubscribedIcon, 'isNodeSubscribed'),
+          // this.getIconWithToolTip(isNodeTimeCorrectIcon, 'isNodeTimeCorrect'),
           this.getIconWithToolTip(isNodeSyncingIcon, 'isNodeSyncing'),
         ]}
       </div>

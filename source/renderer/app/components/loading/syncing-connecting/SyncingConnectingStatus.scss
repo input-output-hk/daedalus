@@ -1,0 +1,33 @@
+@import '../../../themes/mixins/animations';
+
+.component {
+  bottom: 64px;
+  position: absolute;
+  text-align: center;
+  width: 100%;
+  z-index: 2500;
+}
+
+.syncing {
+  color: var(--theme-syncing-text-color);
+}
+
+.headline {
+  font-family: var(--font-regular);
+  font-size: 18px;
+}
+
+.connecting {
+  color: var(--theme-connecting-text-color);
+  .headline {
+    overflow: visible;
+    &:not(.withoutAnimation) {
+      @include animated-ellipsis($width: 20px);
+    }
+  }
+}
+
+.component,
+.headline {
+  -webkit-backface-visibility: hidden;
+}

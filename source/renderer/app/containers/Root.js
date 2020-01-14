@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import WalletAddPage from './wallet/WalletAddPage';
 import LoadingPage from './loading/LoadingPage';
+import SplashNetworkPage from './splash/NetworkPage';
 import type { InjectedContainerProps } from '../types/injectedPropsType';
 
 type Props = InjectedContainerProps;
@@ -12,7 +13,7 @@ type Props = InjectedContainerProps;
 export default class Root extends Component<Props> {
   render() {
     const { stores, actions, children } = this.props;
-    const { networkStatus, profile, wallets, staking } = stores;
+    const { app, networkStatus, profile, wallets, staking } = stores;
     const { isStakingPage } = staking;
     const { isProfilePage, isSettingsPage } = profile;
     const { hasLoadedWallets } = wallets;
@@ -20,9 +21,10 @@ export default class Root extends Component<Props> {
       isSynced,
       isNodeStopping,
       isNodeStopped,
-      isSystemTimeCorrect,
       isNotEnoughDiskSpace,
+      isSplashShown,
     } = networkStatus;
+    const { isCurrentLocaleSet, areTermsOfUseAccepted } = profile;
 
     const isPageThatDoesntNeedWallets =
       (isStakingPage || isSettingsPage) && hasLoadedWallets && isSynced;
@@ -32,6 +34,15 @@ export default class Root extends Component<Props> {
     // for all the screens except of the "Network status" screen.
     const isNodeInStoppingSequence = isNodeStopping || isNodeStopped;
 
+    if (
+      isCurrentLocaleSet &&
+      areTermsOfUseAccepted &&
+      !app.environment.isTest &&
+      isSplashShown
+    ) {
+      return <SplashNetworkPage />;
+    }
+
     // Just render any page that doesn't require wallets to be loaded or node to be connected
     if (
       (isPageThatDoesntNeedWallets && !isNodeInStoppingSequence) ||
@@ -40,12 +51,7 @@ export default class Root extends Component<Props> {
       return React.Children.only(children);
     }
 
-    if (
-      !isSynced ||
-      !hasLoadedWallets ||
-      !isSystemTimeCorrect ||
-      isNotEnoughDiskSpace
-    ) {
+    if (!isSynced || !hasLoadedWallets || isNotEnoughDiskSpace) {
       return <LoadingPage stores={stores} actions={actions} />;
     }
 

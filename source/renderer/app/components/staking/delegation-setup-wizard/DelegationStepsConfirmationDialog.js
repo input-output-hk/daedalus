@@ -1,7 +1,13 @@
 // @flow
 import React, { Component } from 'react';
-import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
+import {
+  defineMessages,
+  intlShape,
+  FormattedMessage,
+  FormattedHTMLMessage,
+} from 'react-intl';
 import classNames from 'classnames';
+import { get } from 'lodash';
 import { observer } from 'mobx-react';
 import { Stepper } from 'react-polymorph/lib/components/Stepper';
 import { StepperSkin } from 'react-polymorph/lib/skins/simple/StepperSkin';
@@ -16,8 +22,11 @@ import Dialog from '../../widgets/Dialog';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import { submitOnEnter } from '../../../utils/form';
 import globalMessages from '../../../i18n/global-messages';
+import LocalizableError from '../../../i18n/LocalizableError';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
-import { formattedWalletAmount } from '../../../utils/formatters';
+import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
+import Wallet from '../../../domains/Wallet';
+import StakePool from '../../../domains/StakePool';
 
 const messages = defineMessages({
   title: {
@@ -35,7 +44,7 @@ const messages = defineMessages({
   description: {
     id: 'staking.delegationSetup.confirmation.step.dialog.description',
     defaultMessage:
-      '!!!Confirm your delegation to publish your delegation preferences on Cardano blockchain.',
+      '!!!Confirm your delegation for <span>{selectedWalletName}<span> wallet to <span>[{selectedPoolTicker}]<span> stake pool by posting your delegation preferences on the Cardano blockchain.',
     description:
       'Description on the delegation setup "confirmation" step dialog.',
   },
@@ -48,7 +57,7 @@ const messages = defineMessages({
   spendingPasswordPlaceholder: {
     id:
       'staking.delegationSetup.confirmation.step.dialog.spendingPasswordPlaceholder',
-    defaultMessage: '!!!Password',
+    defaultMessage: '!!!Spending password',
     description: 'Placeholder for "spending password"',
   },
   spendingPasswordLabel: {
@@ -74,12 +83,15 @@ const messages = defineMessages({
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
 
 type Props = {
-  isSpendingPasswordSet?: boolean,
   onBack: Function,
   onClose: Function,
   onConfirm: Function,
-  fees: BigNumber,
+  transactionFee: BigNumber,
+  selectedWallet: ?Wallet,
+  selectedPool: ?StakePool,
   stepsList: Array<string>,
+  isSubmitting: boolean,
+  error: ?LocalizableError,
 };
 
 @observer
@@ -102,9 +114,8 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
           value: '',
           validators: [
             ({ field }) => {
-              const { isSpendingPasswordSet } = this.props;
               const password = field.value;
-              if (isSpendingPasswordSet && password === '') {
+              if (password === '') {
                 return [
                   false,
                   this.context.intl.formatMessage(messages.fieldIsRequired),
@@ -127,14 +138,8 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
   submit = () => {
     this.form.submit({
       onSuccess: form => {
-        const { isSpendingPasswordSet } = this.props;
         const { spendingPassword } = form.values();
-        const password = isSpendingPasswordSet ? spendingPassword : null;
-        const data = {
-          fees: 0.172081,
-          password,
-        };
-        this.props.onConfirm(data);
+        this.props.onConfirm(spendingPassword);
       },
       onError: () => {},
     });
@@ -146,26 +151,36 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
     const { form } = this;
     const { intl } = this.context;
     const {
-      isSpendingPasswordSet,
       onBack,
       onClose,
       stepsList,
-      fees,
+      transactionFee,
+      selectedPool,
+      selectedWallet,
+      error,
+      isSubmitting,
     } = this.props;
-
+    const selectedWalletName = get(selectedWallet, 'name');
+    const selectedPoolTicker = get(selectedPool, 'ticker');
     const spendingPasswordField = form.$('spendingPassword');
+
+    const confirmButtonClasses = classNames([
+      'confirmButton',
+      isSubmitting ? styles.submitButtonSpinning : null,
+    ]);
 
     const actions = [
       {
         className: 'cancelButton',
         label: intl.formatMessage(messages.cancelButtonLabel),
-        onClick: onClose,
+        onClick: !isSubmitting ? onClose : () => {},
       },
       {
-        className: 'confirmButton',
+        className: confirmButtonClasses,
         label: intl.formatMessage(messages.confirmButtonLabel),
         onClick: this.submit,
         primary: true,
+        disabled: !spendingPasswordField.isValid || isSubmitting,
       },
     ];
 
@@ -185,13 +200,15 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
       />
     );
 
+    const fees = transactionFee.toFormat(DECIMAL_PLACES_IN_ADA);
+
     return (
       <Dialog
         title={intl.formatMessage(messages.title)}
         subtitle={stepsIndicatorLabel}
         actions={actions}
         closeOnOverlayClick
-        onClose={onClose}
+        onClose={!isSubmitting ? onClose : () => {}}
         className={dialogClassName}
         closeButton={<DialogCloseButton onClose={onClose} />}
         backButton={<DialogBackButton onBack={onBack} />}
@@ -207,7 +224,13 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
 
         <div className={contentClassName}>
           <p className={styles.description}>
-            {intl.formatMessage(messages.description)}
+            <FormattedHTMLMessage
+              {...messages.description}
+              values={{
+                selectedWalletName,
+                selectedPoolTicker,
+              }}
+            />
           </p>
 
           <div className={styles.feesWrapper}>
@@ -215,21 +238,23 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
               {intl.formatMessage(messages.feesLabel)}
             </p>
             <p className={styles.feesAmount}>
-              {formattedWalletAmount(fees, false)}
+              {fees}
               <span> ADA</span>
             </p>
           </div>
 
-          {isSpendingPasswordSet && (
-            <Input
-              className={styles.spendingPassword}
-              {...spendingPasswordField.bind()}
-              skin={InputSkin}
-              error={spendingPasswordField.error}
-              onKeyPress={this.handleSubmitOnEnter}
-            />
-          )}
+          <Input
+            className={styles.spendingPassword}
+            {...spendingPasswordField.bind()}
+            skin={InputSkin}
+            error={spendingPasswordField.error}
+            onKeyPress={this.handleSubmitOnEnter}
+          />
         </div>
+
+        {error ? (
+          <p className={styles.error}>{intl.formatMessage(error)}</p>
+        ) : null}
       </Dialog>
     );
   }

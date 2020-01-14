@@ -1,0 +1,48 @@
+:global {
+  .Dialog_actions {
+    margin-top: 10px;
+  }
+}
+.qrCode {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 30px;
+  canvas {
+    border: 4px solid var(--theme-receive-qr-code-background-color);
+    box-sizing: content-box;
+  }
+}
+.address {
+  font-family: var(--font-mono);
+  font-size: 19px;
+  line-height: 1.37;
+  margin-bottom: 10px;
+  text-align: center;
+  word-wrap: break-word;
+}
+.copyAddress {
+  display: block;
+  margin-bottom: 20px;
+  text-align: center;
+  width: 100%;
+}
+.copyAddressLabel {
+  color: var(--theme-label-button-color);
+  cursor: pointer;
+  font-family: var(--font-regular);
+  font-size: 14px;
+  opacity: 0.5;
+  padding-left: 6px;
+}
+.copyIcon {
+  cursor: pointer;
+  margin-left: 4px;
+  object-fit: contain;
+  & > svg {
+    height: 12px;
+    width: 10px;
+    path {
+      fill: var(--theme-icon-copy-address-color);
+    }
+  }
+}

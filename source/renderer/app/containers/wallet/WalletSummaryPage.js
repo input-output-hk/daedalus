@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import { take } from 'lodash';
+import { take, get } from 'lodash';
 import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import { MAX_TRANSACTIONS_ON_SUMMARY_PAGE } from '../../config/numbersConfig';
@@ -11,6 +11,8 @@ import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer
 import { ROUTES } from '../../routes-config';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import { formattedWalletAmount } from '../../utils/formatters';
+import { WalletSyncStateStatuses } from '../../domains/Wallet';
+import { getNetworkExplorerUrlByType } from '../../utils/network';
 
 export const messages = defineMessages({
   noTransactions: {
@@ -44,18 +46,19 @@ export default class WalletSummaryPage extends Component<Props> {
     const { app, wallets, transactions, profile } = this.props.stores;
     const {
       openExternalLink,
-      environment: { network },
+      environment: { network, rawNetwork },
     } = app;
     const {
       hasAny,
       totalAvailable,
       recent,
       recentTransactionsRequest,
-      unconfirmedAmount,
+      deletePendingTransaction,
+      deleteTransactionRequest,
+      pendingTransactionsCount,
     } = transactions;
-    const { isActiveWalletRestoring } = wallets;
     const wallet = wallets.active;
-    const { currentTimeFormat, currentDateFormat } = profile;
+    const { currentTimeFormat, currentDateFormat, currentLocale } = profile;
     // Guard against potential null values
     if (!wallet)
       throw new Error('Active wallet required for WalletSummaryPage.');
@@ -63,10 +66,23 @@ export default class WalletSummaryPage extends Component<Props> {
     let walletTransactions = null;
     const noTransactionsLabel = intl.formatMessage(messages.noTransactions);
 
+    const isRestoreActive =
+      get(wallet, ['syncState', 'status'], '') ===
+      WalletSyncStateStatuses.RESTORING;
+
+    const getUrlByType = (type: 'tx' | 'address', param: string) =>
+      getNetworkExplorerUrlByType(
+        type,
+        param,
+        network,
+        rawNetwork,
+        currentLocale
+      );
+
     if (
       recentTransactionsRequest.isExecutingFirstTime ||
       hasAny ||
-      isActiveWalletRestoring
+      isRestoreActive
     ) {
       walletTransactions = (
         <WalletTransactionsList
@@ -74,15 +90,16 @@ export default class WalletSummaryPage extends Component<Props> {
           transactions={take(recent, MAX_TRANSACTIONS_ON_SUMMARY_PAGE)}
           isLoadingTransactions={recentTransactionsRequest.isExecutingFirstTime}
           hasMoreToLoad={false}
-          assuranceMode={wallet.assuranceMode}
+          deletePendingTransaction={deletePendingTransaction}
           walletId={wallet.id}
-          isRestoreActive={isActiveWalletRestoring}
+          isDeletingTransaction={deleteTransactionRequest.isExecuting}
+          isRestoreActive={isRestoreActive}
           formattedWalletAmount={formattedWalletAmount}
           showMoreTransactionsButton={
             recent.length > MAX_TRANSACTIONS_ON_SUMMARY_PAGE
           }
-          network={network}
           onOpenExternalLink={openExternalLink}
+          getUrlByType={getUrlByType}
           onShowMoreTransactions={this.handleShowMoreTransaction}
           totalAvailable={totalAvailable}
           currentTimeFormat={currentTimeFormat}
@@ -99,9 +116,8 @@ export default class WalletSummaryPage extends Component<Props> {
           wallet={wallet}
           numberOfRecentTransactions={recent.length}
           numberOfTransactions={totalAvailable}
-          pendingAmount={unconfirmedAmount}
+          numberOfPendingTransactions={pendingTransactionsCount}
           isLoadingTransactions={recentTransactionsRequest.isExecutingFirstTime}
-          isRestoreActive={isActiveWalletRestoring}
         />
         {walletTransactions}
       </VerticalFlexContainer>

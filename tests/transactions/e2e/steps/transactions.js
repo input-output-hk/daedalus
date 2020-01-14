@@ -22,35 +22,23 @@ Given(
       walletId: getWalletByName.call(this, t.source).id,
       destinationWalletId: getWalletByName.call(this, t.destination).id,
       amount: parseInt(new BigNumber(t.amount).times(LOVELACES_PER_ADA), 10),
-      spendingPassword: t.password || null,
+      passphrase: 'Secret1234',
     }));
     this.transactions = [];
     // Sequentially (and async) create transactions with for loop
     for (const tx of txData) {
-      const txResponse = await this.client.executeAsync(
-        (transaction, done) =>
-          new window.Promise(resolve =>
-            // Need to fetch the wallets data async and wait for all results
-            window.Promise.all([
-              daedalus.stores.addresses.getAccountIndexByWalletId(
-                transaction.walletId
-              ),
-              daedalus.stores.addresses.getAddressesByWalletId(
-                transaction.destinationWalletId
-              ),
-            ]).then(results =>
-              daedalus.api.ada
-                .createTransaction(
-                  window.Object.assign(transaction, {
-                    accountIndex: results[0], // Account index of sender wallet
-                    address: results[1][0].id, // First address of receiving wallet
-                  })
-                )
-                .then(resolve)
+      const txResponse = await this.client.executeAsync((transaction, done) => {
+        daedalus.stores.addresses
+          .getAddressesByWalletId(transaction.destinationWalletId)
+          .then(addresses =>
+            daedalus.api.ada.createTransaction(
+              window.Object.assign(transaction, {
+                address: addresses[0].id, // First address of receiving wallet
+              })
             )
-          ).then(done),
-        tx
-      );
+          )
+          .then(done);
+      }, tx);
       this.transactions.push(txResponse);
     }
   }
@@ -80,7 +68,7 @@ Then(/^I should see the following transactions:$/, async function(table) {
           throw new Error('unknown transaction type');
       }
       return {
-        title: await this.intl(title, { currency: 'ADA' }),
+        title: await this.intl(title, { currency: 'Ada' }),
         amount: new BigNumber(tx.amount).toFormat(DECIMAL_PLACES_IN_ADA),
       };
     })

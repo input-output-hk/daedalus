@@ -1,4 +1,4 @@
-@e2e @skip
+@e2e
 Feature: Select Language
 
   Scenario: User Selects Language

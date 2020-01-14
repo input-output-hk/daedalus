@@ -5,5 +5,5 @@
 , installDirectorySuffix = " Staging"
 , macPackageSuffix       = "Staging"
 , walletPort             = 8092
-, extraNodeArgs          = [ "--metrics", "--ekg-server", "localhost:8082", "+RTS", "-T", "-RTS" ] : List Text
+, extraNodeArgs          = [ "--network", "staging" ] : List Text
 }

@@ -1,7 +1,7 @@
 // @flow
-import { size, has, get, omit } from 'lodash';
+import { size, omit, includes } from 'lodash';
 import querystring from 'querystring';
-import { encryptPassphrase, getContentLength } from '.';
+import { getContentLength } from '.';
 
 export type RequestOptions = {
   hostname: string,
@@ -17,41 +17,24 @@ export type RequestOptions = {
   },
 };
 
+const ALLOWED_ERROR_EXCEPTION_PATHS = [
+  '/api/internal/next-update', // when nextAdaUpdate receives a 404, it isn't an error
+];
+
 function typedRequest<Response>(
   httpOptions: RequestOptions,
   queryParams?: {},
-  rawBodyParams?: any,
-  requestOptions?: { returnMeta: boolean }
+  rawBodyParams?: any
+  // requestOptions?: { returnMeta: boolean }
 ): Promise<Response> {
   return new Promise((resolve, reject) => {
     const options: RequestOptions = Object.assign({}, httpOptions);
-    const { returnMeta } = Object.assign({}, requestOptions);
+    // const { returnMeta } = Object.assign({}, requestOptions);
     let hasRequestBody = false;
     let requestBody = '';
 
-    let queryString = '';
     if (queryParams && size(queryParams) > 0) {
-      // Handle passphrase
-      if (has(queryParams, 'passphrase')) {
-        const passphrase = get(queryParams, 'passphrase');
-
-        // If passphrase is present it must be encrypted and included in options.path
-        if (passphrase) {
-          const encryptedPassphrase = encryptPassphrase(passphrase);
-          queryString = `?passphrase=${encryptedPassphrase}`;
-        }
-
-        // Passphrase must be ommited from rest query params
-        queryParams = omit(queryParams, 'passphrase');
-
-        if (size(queryParams > 1) && passphrase) {
-          queryString += `&${querystring.stringify(queryParams)}`;
-        }
-      } else {
-        queryString = `?${querystring.stringify(queryParams)}`;
-      }
-
-      if (queryString) options.path += queryString;
+      options.path += `?${querystring.stringify(queryParams)}`;
     }
 
     // Handle raw body params
@@ -65,7 +48,13 @@ function typedRequest<Response>(
       };
     }
 
-    const httpsRequest = global.https.request(options);
+    // @API TODO: Uncomment / switch once HTTPS is supported by the new API
+    // const httpsRequest = global.https.request(options);
+
+    // @API TODO:  Delete once HTTPS is supported by the new API
+    const httpOnlyOptions = omit(options, ['ca', 'cert', 'key']);
+    const httpsRequest = global.http.request(httpOnlyOptions);
+
     if (hasRequestBody) {
       httpsRequest.write(requestBody);
     }
@@ -80,42 +69,37 @@ function typedRequest<Response>(
       // Resolve JSON results and handle backend errors
       response.on('end', () => {
         try {
-          // When deleting a wallet, the API does not return any data in body
-          // even if it was successful
           const { statusCode, statusMessage } = response;
+          const isSuccessResponse =
+            (statusCode >= 200 && statusCode <= 206) ||
+            (statusCode === 404 &&
+              includes(ALLOWED_ERROR_EXCEPTION_PATHS, options.path));
 
-          if (!body && statusCode >= 200 && statusCode <= 206) {
-            // adds status and data properties so JSON.parse doesn't throw an error
-            body = `{
-              "status": "success",
-              "data": "statusCode: ${statusCode} -- statusMessage: ${statusMessage}"
-            }`;
-          } else if (
-            options.path === '/api/internal/next-update' &&
-            statusCode === 404
-          ) {
-            // when nextAdaUpdate receives a 404, it isn't an error
-            // it means no updates are available
-            body = `{
-              "status": "success",
-              "data": null
-            }`;
-          }
-
-          const parsedBody = JSON.parse(body);
-          const status = get(parsedBody, 'status', false);
-          if (status) {
-            if (status === 'success') {
-              resolve(returnMeta ? parsedBody : parsedBody.data);
-            } else if (status === 'error' || status === 'fail') {
+          if (isSuccessResponse) {
+            const data =
+              statusCode === 404
+                ? 'null'
+                : `"statusCode: ${statusCode} -- statusMessage: ${statusMessage}"`;
+            // When deleting a wallet, the API does not return any data in body
+            // even if it was successful
+            if (!body) {
+              body = `{
+                "status": ${statusCode},
+                "data": ${data}
+              }`;
+            }
+            resolve(JSON.parse(body));
+          } else if (body) {
+            // Error response with a body
+            const parsedBody = JSON.parse(body);
+            if (parsedBody.code && parsedBody.message) {
               reject(parsedBody);
             } else {
-              // TODO: find a way to record this case and report to the backend team
-              reject(new Error('Unknown response from backend.'));
+              reject(new Error('Unknown API response'));
             }
           } else {
-            // TODO: find a way to record this case and report to the backend team
-            reject(new Error('Unknown response from backend.'));
+            // Error response without a body
+            reject(new Error('Unknown API response'));
           }
         } catch (error) {
           // Handle internal server errors (e.g. HTTP 500 - 'Something went wrong')

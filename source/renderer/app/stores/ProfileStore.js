@@ -1,7 +1,6 @@
 // @flow
 import { action, observable, computed, toJS, runInAction } from 'mobx';
 import BigNumber from 'bignumber.js';
-import moment from 'moment/moment';
 import { includes, camelCase } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
@@ -13,7 +12,6 @@ import { generateFileNameWithTimestamp } from '../../../common/utils/files';
 import { formattedBytesToSize } from '../utils/formatters';
 import { Logger } from '../utils/logging';
 import { setStateSnapshotLogChannel } from '../ipc/setStateSnapshotLogChannel';
-import { detectSystemLocaleChannel } from '../ipc/detect-system-locale';
 import { LOCALES } from '../../../common/types/locales.types';
 import {
   compressLogsChannel,
@@ -40,9 +38,6 @@ import {
   PROFILE_SETTINGS,
 } from '../config/profileConfig';
 
-// TODO: refactor all parts that rely on this to ipc channels!
-const { ipcRenderer } = global;
-
 export default class ProfileStore extends Store {
   @observable systemLocale: string = LOCALES.english;
   @observable systemNumberFormat: string = NUMBER_OPTIONS[0].value;
@@ -50,7 +45,6 @@ export default class ProfileStore extends Store {
   @observable systemDateFormatJapanese: string = DATE_JAPANESE_OPTIONS[0].value;
   @observable systemTimeFormat: string = TIME_OPTIONS[0].value;
 
-  /* eslint-disable max-len */
   @observable getProfileLocaleRequest: Request<string> = new Request(
     this.api.localStorage.getUserLocale
   );
@@ -112,36 +106,30 @@ export default class ProfileStore extends Store {
   /* eslint-enable max-len */
 
   setup() {
-    this.actions.profile.finishInitialScreenSettings.listen(
+    const { profile: profileActions } = this.actions;
+    profileActions.finishInitialScreenSettings.listen(
       this._finishInitialScreenSettings
     );
-    this.actions.profile.updateUserLocalSetting.listen(
-      this._updateUserLocalSetting
-    );
-    this.actions.profile.acceptTermsOfUse.listen(this._acceptTermsOfUse);
-    this.actions.profile.acceptDataLayerMigration.listen(
+    profileActions.updateUserLocalSetting.listen(this._updateUserLocalSetting);
+    profileActions.acceptTermsOfUse.listen(this._acceptTermsOfUse);
+    profileActions.acceptDataLayerMigration.listen(
       this._acceptDataLayerMigration
     );
-    this.actions.profile.updateTheme.listen(this._updateTheme);
-    this.actions.profile.getLogs.listen(this._getLogs);
-    this.actions.profile.getLogsAndCompress.listen(this._getLogsAndCompress);
-    this.actions.profile.downloadLogs.listen(this._downloadLogs);
-    this.actions.profile.downloadLogsSuccess.listen(
-      this._toggleDisableDownloadLogs
-    );
+    profileActions.updateTheme.listen(this._updateTheme);
+    profileActions.getLogs.listen(this._getLogs);
+    profileActions.getLogsAndCompress.listen(this._getLogsAndCompress);
+    profileActions.downloadLogs.listen(this._downloadLogs);
+    profileActions.downloadLogsSuccess.listen(this._toggleDisableDownloadLogs);
     this.actions.app.initAppEnvironment.listen(() => {});
 
     this.registerReactions([
       this._updateBigNumberFormat,
-      // this._updateMomentJsLocaleAfterLocaleChange,
-      // this._reloadAboutWindowOnLocaleChange,
       this._redirectToInitialSettingsIfNoLocaleSet,
       this._redirectToTermsOfUseScreenIfTermsNotAccepted,
       this._redirectToDataLayerMigrationScreenIfMigrationHasNotAccepted,
       this._redirectToMainUiAfterTermsAreAccepted,
       this._redirectToMainUiAfterDataLayerMigrationIsAccepted,
     ]);
-    // this._getSystemLocale();
     this._getTermsOfUseAcceptance();
     this._getDataLayerMigrationAcceptance();
   }
@@ -167,6 +155,10 @@ export default class ProfileStore extends Store {
   }
 
   @computed get currentTheme(): string {
+    // Force "Incentivized Testnet" theme for the Incentivized Testnet Daedalus version
+    const { isIncentivizedTestnet } = this.stores.networkStatus;
+    if (isIncentivizedTestnet) return THEMES.INCENTIVIZED_TESTNET;
+    // Default theme handling
     const systemValue = this.environment.isMainnet
       ? THEMES.DARK_BLUE
       : THEMES.LIGHT_BLUE; // defaults
@@ -220,6 +212,11 @@ export default class ProfileStore extends Store {
   }
 
   @computed get termsOfUse(): string {
+    const { isIncentivizedTestnet } = this.stores.networkStatus;
+    if (isIncentivizedTestnet)
+      return require(`../i18n/locales/terms-of-use/itn-rewards-v1/${
+        this.currentLocale
+      }.md`);
     const network = this.environment.isMainnet ? 'mainnet' : 'other';
     return require(`../i18n/locales/terms-of-use/${network}/${
       this.currentLocale
@@ -258,10 +255,6 @@ export default class ProfileStore extends Store {
     return includes(ROUTES.SETTINGS, currentRoute);
   }
 
-  _getSystemLocale = async () => {
-    this._onReceiveSystemLocale(await detectSystemLocaleChannel.request());
-  };
-
   _finishInitialScreenSettings = action(() => {
     this._consolidateUserSettings();
     this.isInitialScreen = false;
@@ -286,15 +279,15 @@ export default class ProfileStore extends Store {
     const { set, get } = getRequestKeys(param, this.currentLocale);
     await (this: any)[set].execute(consolidatedValue);
     await (this: any)[get].execute();
+    if (param === 'numberFormat') {
+      // Force re-rendering of the sidebar in order to apply new number format
+      this.stores.wallets.refreshWalletsData();
+    }
   };
 
   _updateTheme = async ({ theme }: { theme: string }) => {
     await this.setThemeRequest.execute(theme);
     await this.getThemeRequest.execute();
-  };
-
-  _updateMomentJsLocaleAfterLocaleChange = () => {
-    moment.locale(this.currentLocale);
   };
 
   _acceptTermsOfUse = async () => {
@@ -358,9 +351,12 @@ export default class ProfileStore extends Store {
       this.stores.wallets.hasLoadedWallets &&
       dataLayerMigrationNotAccepted
     ) {
-      if (!this.stores.wallets.hasAnyWallets) {
-        // There are no wallets to migrate so we just need
-        // to set the data layer migration acceptance to true
+      if (
+        !this.stores.wallets.hasAnyWallets ||
+        this.stores.networkStatus.isIncentivizedTestnet
+      ) {
+        // There are no wallets to migrate or it's Incentivized Testnet:
+        // set the data layer migration acceptance to true
         // in order to prevent future data migration checks
         this._acceptDataLayerMigration();
       } else {
@@ -391,13 +387,6 @@ export default class ProfileStore extends Store {
 
   _redirectToRoot = () => {
     this.actions.router.goToRoute.trigger({ route: ROUTES.ROOT });
-  };
-
-  _reloadAboutWindowOnLocaleChange = () => {
-    // register mobx observer for currentLocale in order to trigger reaction on change
-    this.currentLocale; // eslint-disable-line
-    // TODO: refactor to ipc channel
-    ipcRenderer.send('reload-about-window');
   };
 
   _setLogFiles = action((files: LogFiles) => {
@@ -485,21 +474,14 @@ export default class ProfileStore extends Store {
         diskSpaceAvailable,
         cardanoNodeState,
         isConnected,
-        forceCheckTimeDifferenceRequest,
         isNodeInSync,
         isNodeResponding,
-        isNodeSubscribed,
         isNodeSyncing,
-        isNodeTimeCorrect,
         isSynced,
-        isSystemTimeCorrect,
-        isSystemTimeIgnored,
-        latestLocalBlockTimestamp,
-        latestNetworkBlockTimestamp,
-        localBlockHeight,
-        localTimeDifference,
-        networkBlockHeight,
         syncPercentage,
+        localTip,
+        networkTip,
+        isIncentivizedTestnet,
       } = networkStatus;
 
       const {
@@ -546,29 +528,18 @@ export default class ProfileStore extends Store {
         currentLocale: this.currentLocale,
         isConnected,
         isDev,
-        isForceCheckingNodeTime: forceCheckTimeDifferenceRequest.isExecuting,
         isMainnet,
         isNodeInSync,
         isNodeResponding,
-        isNodeSubscribed,
         isNodeSyncing,
-        isNodeTimeCorrect,
         isStaging,
         isSynced,
-        isSystemTimeCorrect,
-        isSystemTimeIgnored,
         isTestnet,
-        latestLocalBlockTimestamp: moment(Date.now()).diff(
-          moment(latestLocalBlockTimestamp)
-        ),
-        latestNetworkBlockTimestamp: moment(Date.now()).diff(
-          moment(latestNetworkBlockTimestamp)
-        ),
-        localBlockHeight,
-        localTimeDifference,
-        networkBlockHeight,
+        isIncentivizedTestnet,
         currentTime: new Date().toISOString(),
         syncPercentage: syncPercentage.toFixed(2),
+        localTip,
+        networkTip,
       };
 
       await setStateSnapshotLogChannel.send(stateSnapshotData);
@@ -581,7 +552,7 @@ export default class ProfileStore extends Store {
 
   _toggleDisableDownloadLogs = action(
     async ({ isDownloadNotificationVisible }) => {
-      this.actions.app.setNotificationVisibility.trigger(
+      this.actions.app.setIsDownloadingLogs.trigger(
         isDownloadNotificationVisible
       );
     }

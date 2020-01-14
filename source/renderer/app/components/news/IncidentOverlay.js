@@ -18,6 +18,12 @@ type Props = {
 
 @observer
 export default class IncidentOverlay extends Component<Props> {
+  localizedDateFormat: 'MM/DD/YYYY';
+
+  componentWillMount() {
+    this.localizedDateFormat = moment.localeData().longDateFormat('L');
+  }
+
   contentClickHandler(event: SyntheticMouseEvent<HTMLElement>) {
     const linkUrl = get(event, ['target', 'href']);
     if (linkUrl) {

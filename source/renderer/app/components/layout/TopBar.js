@@ -2,11 +2,12 @@
 import React, { Component } from 'react';
 import SVGInline from 'react-svg-inline';
 import type { Node } from 'react';
+import { get } from 'lodash';
 import classNames from 'classnames';
 import { observer } from 'mobx-react';
 import LegacyBadge, { LEGACY_BADGE_MODES } from '../notifications/LegacyBadge';
 import LegacyNotification from '../notifications/LegacyNotification';
-import Wallet from '../../domains/Wallet';
+import Wallet, { WalletSyncStateStatuses } from '../../domains/Wallet';
 import styles from './TopBar.scss';
 import { formattedWalletAmount } from '../../utils/formatters';
 import headerLogo from '../../assets/images/header-logo.inline.svg';
@@ -16,17 +17,46 @@ type Props = {
   leftIcon?: ?string,
   children?: ?Node,
   activeWallet?: ?Wallet,
+  onTransferFunds?: Function,
+  onWalletAdd?: Function,
+  hasRewardsWallets?: boolean,
+  onLearnMore?: Function,
 };
 
 @observer
 export default class TopBar extends Component<Props> {
   render() {
-    const { onLeftIconClick, leftIcon, activeWallet, children } = this.props;
+    const {
+      onLeftIconClick,
+      leftIcon,
+      activeWallet,
+      children,
+      hasRewardsWallets,
+      onTransferFunds,
+      onWalletAdd,
+      onLearnMore,
+    } = this.props;
 
     const topBarStyles = classNames([
       styles.topBar,
       activeWallet ? styles.withWallet : styles.withoutWallet,
     ]);
+
+    const isRestoreActive =
+      get(activeWallet, ['syncState', 'status'], '') ===
+      WalletSyncStateStatuses.RESTORING;
+
+    const hasLegacyNotification =
+      activeWallet &&
+      activeWallet.isLegacy &&
+      activeWallet.amount.gt(0) &&
+      !isRestoreActive &&
+      ((hasRewardsWallets && onTransferFunds) || onWalletAdd);
+
+    const onTransferFundsFn =
+      onTransferFunds && activeWallet
+        ? () => onTransferFunds(activeWallet.id)
+        : () => {};
 
     const topBarTitle = activeWallet ? (
       <span className={styles.walletInfo}>
@@ -38,7 +68,7 @@ export default class TopBar extends Component<Props> {
         </span>
         <span className={styles.walletAmount}>
           {// show currency and use long format
-          formattedWalletAmount(activeWallet.amount, true)}
+          formattedWalletAmount(activeWallet.amount)}
         </span>
       </span>
     ) : null;
@@ -62,8 +92,14 @@ export default class TopBar extends Component<Props> {
           )}
           {children}
         </div>
-        {activeWallet && activeWallet.isLegacy && (
-          <LegacyNotification onLearnMore={() => null} onMove={() => null} />
+        {hasLegacyNotification && activeWallet && (
+          <LegacyNotification
+            activeWallet={activeWallet}
+            onLearnMore={onLearnMore}
+            onTransferFunds={onTransferFundsFn}
+            hasRewardsWallets={hasRewardsWallets}
+            onWalletAdd={onWalletAdd}
+          />
         )}
       </header>
     );

@@ -35,7 +35,7 @@
           color: var(--theme-staking-countdown-widget-field-label-color);
           display: flex;
           font-family: var(--font-medium);
-          font-size: 12px;
+          font-size: 10px;
           height: 22px;
           justify-content: center;
           text-transform: uppercase;
@@ -49,6 +49,10 @@
           font-size: 36px;
           height: 44px;
           justify-content: center;
+
+          span {
+            opacity: 0.3;
+          }
         }
       }
 

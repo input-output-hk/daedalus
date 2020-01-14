@@ -9,13 +9,6 @@ let
     run = "/bin/installer";
     nixUserChrootFlags = "-c -m /home:/home -p HOME";
   };
-  nixSrc = pkgs.fetchFromGitHub {
-    owner = "nixos";
-    repo = "nix";
-    rev = "16551f54c94f2b551ebaf00a7bd0245dc3b0b9e4";
-    sha256 = "0kd13v4xl4imwb3141pnn0lqx0xfcmgnwd026c10kmvjhm848pwx";
-  };
-  nixFix = pkgs.nixUnstable.overrideDerivation (drv: { src = nixSrc; });
   utils = pkgs.writeText "utils.sh" ''
     function rmrf {
       chmod -R +w "$*" || true
@@ -121,7 +114,7 @@ let
 
     trap "exitHandler" EXIT
 
-    export PATH=${lib.makeBinPath [ coreutils pv xz gnutar nixFix gnused which gnugrep ]}
+    export PATH=${lib.makeBinPath [ coreutils pv xz gnutar nix gnused which gnugrep ]}
     export DIR=$HOME/${installationSlug}
 
     ${if preInstall == null then "" else ''
@@ -159,7 +152,7 @@ let
   firstGeneration = with pkgs; buildEnv {
     name = "profile";
     paths = [
-      nixFix
+      nix
       bashInteractive
       enter
       coreutils

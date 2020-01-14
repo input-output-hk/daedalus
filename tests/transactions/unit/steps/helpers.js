@@ -1,6 +1,5 @@
-// @flow
-export const getHistogramFromTable = (data: Object) => {
-  let histogram = {};
+export const getHistogramFromTable = data => {
+  const histogram = {};
   data.hashes().forEach(({ walletAmount, walletUtxosAmount }) => {
     histogram[walletAmount] = walletUtxosAmount;
   });

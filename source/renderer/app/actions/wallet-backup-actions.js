@@ -15,8 +15,9 @@ export default class WalletBackupActions {
     index: number,
   }> = new Action();
   clearEnteredRecoveryPhrase: Action<any> = new Action();
-  acceptWalletBackupTermDevice: Action<any> = new Action();
+  acceptWalletBackupTermOffline: Action<any> = new Action();
   acceptWalletBackupTermRecovery: Action<any> = new Action();
+  acceptWalletBackupTermRewards: Action<any> = new Action();
   restartWalletBackup: Action<any> = new Action();
   cancelWalletBackup: Action<any> = new Action();
   finishWalletBackup: Action<any> = new Action();

@@ -3,35 +3,24 @@ import { observable, action } from 'mobx';
 import { findIndex } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
-import globalMessages from '../i18n/global-messages';
-import Wallet, { WalletAssuranceModeOptions } from '../domains/Wallet';
+import Wallet from '../domains/Wallet';
+import type { WalletExportToFileParams } from '../actions/wallet-settings-actions';
 import type { WalletUtxos } from '../api/wallets/types';
 import { WALLET_UTXO_API_REQUEST_INTERVAL } from '../config/timingConfig';
 
 export default class WalletSettingsStore extends Store {
-  WALLET_ASSURANCE_LEVEL_OPTIONS = [
-    {
-      value: WalletAssuranceModeOptions.NORMAL,
-      label: globalMessages.assuranceLevelNormal,
-    },
-    {
-      value: WalletAssuranceModeOptions.STRICT,
-      label: globalMessages.assuranceLevelStrict,
-    },
-  ];
-
-  /* eslint-disable max-len */
   @observable updateWalletRequest: Request<Wallet> = new Request(
     this.api.ada.updateWallet
   );
   @observable updateSpendingPasswordRequest: Request<boolean> = new Request(
     this.api.ada.updateSpendingPassword
   );
+  @observable exportWalletToFileRequest: Request<Promise<[]>> = new Request(
+    this.api.ada.exportWalletToFile
+  );
   @observable getWalletUtxosRequest: Request<WalletUtxos> = new Request(
     this.api.ada.getWalletUtxos
   );
-
-  /* eslint-enable max-len */
 
   @observable walletFieldBeingEdited = null;
   @observable lastUpdatedWalletField = null;
@@ -57,6 +46,7 @@ export default class WalletSettingsStore extends Store {
     walletSettingsActions.updateSpendingPassword.listen(
       this._updateSpendingPassword
     );
+    walletSettingsActions.exportToFile.listen(this._exportToFile);
 
     walletSettingsActions.startWalletUtxoPolling.listen(
       this._startWalletUtxoPolling
@@ -90,8 +80,8 @@ export default class WalletSettingsStore extends Store {
     newPassword,
   }: {
     walletId: string,
-    oldPassword: ?string,
-    newPassword: ?string,
+    oldPassword: string,
+    newPassword: string,
   }) => {
     await this.updateSpendingPasswordRequest.execute({
       walletId,
@@ -113,14 +103,13 @@ export default class WalletSettingsStore extends Store {
     const activeWallet = this.stores.wallets.active;
     if (!activeWallet) return;
 
-    const { id: walletId, name, assurance } = activeWallet;
-    const walletData = { walletId, name, assurance };
+    const { id: walletId, name } = activeWallet;
+    const walletData = { walletId, name };
     walletData[field] = value;
 
     const wallet = await this.updateWalletRequest.execute({
       walletId: walletData.walletId,
       name: walletData.name,
-      assuranceLevel: walletData.assurance,
     }).promise;
 
     if (!wallet) return;
@@ -131,6 +120,16 @@ export default class WalletSettingsStore extends Store {
     });
     this.updateWalletRequest.reset();
     this.stores.wallets.refreshWalletsData();
+  };
+
+  @action _exportToFile = async (params: WalletExportToFileParams) => {
+    const { walletId, filePath, password } = params;
+    await this.exportWalletToFileRequest.execute({
+      walletId,
+      filePath,
+      password,
+    });
+    this.actions.dialogs.closeActiveDialog.trigger();
   };
 
   @action _startWalletUtxoPolling = () => {

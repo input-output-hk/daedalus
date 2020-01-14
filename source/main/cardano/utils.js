@@ -67,5 +67,6 @@ export const deriveStorageKeys = (
 });
 
 export const deriveProcessNames = (platform: PlatformNames): ProcessNames => ({
-  CARDANO_PROCESS_NAME: CardanoProcessNameOptions[platform] || 'cardano-node',
+  CARDANO_PROCESS_NAME:
+    CardanoProcessNameOptions[platform] || 'cardano-wallet-jormungandr',
 });

@@ -3,6 +3,7 @@
 .component {
   position: fixed;
   text-align: center;
+  top: 0;
   width: 100%;
 
   &.is-connecting {

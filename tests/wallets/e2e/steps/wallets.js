@@ -1,11 +1,10 @@
 // @flow
 import { Given, When, Then } from 'cucumber';
 import { expect } from 'chai';
-import path from 'path';
 import BigNumber from 'bignumber.js';
 import { DECIMAL_PLACES_IN_ADA } from '../../../../source/renderer/app/config/numbersConfig';
 import {
-  addWalletHelpers,
+  addWalletPage,
   importWalletHelpers,
   isActiveWalletBeingRestored,
   createWallets,
@@ -13,58 +12,24 @@ import {
   getWalletByName,
   waitUntilWalletIsLoaded,
   addOrSetWalletsForScenario,
-  importWalletWithFunds,
+  restoreWalletWithFunds,
+  waitUntilUrlEquals,
+  navigateTo,
+  sidebar,
+  i18n,
+  waitForActiveRestoreNotification,
 } from './helpers';
-import { navigateTo, sidebarHelpers, waitUntilUrlEquals } from '../../../navigation/e2e/steps/helpers';
-import { waitForActiveRestoreNotification } from '../../../nodes/e2e/steps/helpers';
-import { i18nHelpers } from '../../../settings/e2e/steps/helpers';
+import {
+  sidebarHelpers,
+} from '../../../navigation/e2e/steps/helpers';
 import type { Daedalus } from '../../../types';
 
 declare var daedalus: Daedalus;
 
-const { formatMessage } = i18nHelpers;
-const defaultWalletKeyFilePath = path.resolve(
-  __dirname,
-  '../documents/default-wallet.key'
-);
-// const defaultWalletJSONFilePath = path.resolve(__dirname, '../support/default-wallet.json');
-// ^^ JSON wallet file import is currently not working due to missing JSON import V1 API endpoint
-
-Given(/^I have a "Imported Wallet" with funds$/, async function() {
-  await importWalletWithFunds(this.client, {
-    keyFilePath: defaultWalletKeyFilePath,
-    password: null,
-  });
-  const wallet = await waitUntilWalletIsLoaded.call(this, 'Imported Wallet');
+Given(/^I have a "([^"]*)" wallet with funds$/, async function(walletName) {
+  await restoreWalletWithFunds(this.client, { walletName });
+  const wallet = await waitUntilWalletIsLoaded.call(this, walletName);
   addOrSetWalletsForScenario.call(this, wallet);
-});
-
-// V1 API endpoint for importing a wallet with a spending-password is currently broken
-// As a temporary workaround we import the wallet without a spending-password
-// and then create a spending-password in a separate call
-Given(/^I have a "Imported Wallet" with funds and password$/, async function() {
-  await importWalletWithFunds(this.client, {
-    keyFilePath: defaultWalletKeyFilePath,
-    password: null, // 'Secret123',
-  });
-  const wallet = await waitUntilWalletIsLoaded.call(this, 'Imported Wallet');
-  addOrSetWalletsForScenario.call(this, wallet);
-
-  // Create a spending-password in a separate call
-  await this.client.executeAsync((walletId, done) => {
-    daedalus.api.ada
-      .updateSpendingPassword({
-        walletId,
-        newPassword: 'Secret123',
-      })
-      .then(() =>
-        daedalus.stores.wallets
-          .refreshWalletsData()
-          .then(done)
-          .catch(error => done(error))
-      )
-      .catch(error => done(error));
-  }, wallet.id);
 });
 
 Given(/^I have the following wallets:$/, async function(table) {
@@ -85,7 +50,7 @@ Given(/^I am on the "([^"]*)" wallet "([^"]*)" screen$/, async function(
 });
 
 Given(/^I see the add wallet page/, function() {
-  return addWalletHelpers.waitForVisible(this.client);
+  return addWalletPage.waitForVisible(this.client);
 });
 
 Given(/^I see delete wallet dialog$/, function() {
@@ -109,7 +74,7 @@ When(/^I click on the create wallet button on the add wallet page/, function() {
 });
 
 When(/^I click on the import wallet button on the add wallet page/, function() {
-  return addWalletHelpers.clickImportButton(this.client);
+  return addWalletPage.clickImportButton(this.client);
 });
 
 When(/^I see the import wallet dialog$/, function() {
@@ -119,13 +84,6 @@ When(/^I see the import wallet dialog$/, function() {
 When(/^I select a valid wallet import key file$/, function() {
   this.waitAndClick('.WalletFileImportDialog .FileUploadWidget_dropZone');
 });
-
-When(
-  /^I toggle "Activate to create password" switch on the import wallet key dialog$/,
-  function() {
-    return this.waitAndClick('.WalletFileImportDialog .SimpleSwitch_switch');
-  }
-);
 
 When(/^I enter wallet spending password:$/, async function(table) {
   const fields = table.hashes()[0];
@@ -153,7 +111,7 @@ When(/^I should see wallet spending password inputs$/, function() {
 });
 
 When(/^I have one wallet address$/, function() {
-  return this.client.waitForVisible('.generatedAddress-1');
+  return this.client.waitForVisible('.receiveAddress-1');
 });
 
 When(/^I enter spending password "([^"]*)"$/, function(password) {
@@ -161,10 +119,6 @@ When(/^I enter spending password "([^"]*)"$/, function(password) {
     '.WalletReceive_spendingPassword input',
     password
   );
-});
-
-When(/^I click on the "Generate new address" button$/, function() {
-  return this.client.click('.generateAddressButton');
 });
 
 When(
@@ -195,8 +149,8 @@ When(
     const walletId = getWalletByName.call(this, walletName).id;
     const walletAddress = await this.client.executeAsync((id, done) => {
       daedalus.api.ada
-        .getAddresses({ walletId: id })
-        .then(response => done(response.addresses[0].id))
+        .getAddresses({ walletId: id, isLegacy: false })
+        .then(response => done(response[0].id))
         .catch(error => done(error));
     }, walletId);
     values.address = walletAddress.value;
@@ -229,7 +183,7 @@ When(
   /^I enter wallet spending password in confirmation dialog "([^"]*)"$/,
   async function(password) {
     await this.client.setValue(
-      '.WalletSendConfirmationDialog_spendingPassword input',
+      '.WalletSendConfirmationDialog_passphrase input',
       password
     );
   }
@@ -243,20 +197,6 @@ When(/^I submit the wallet send form$/, async function() {
     '.WalletSendConfirmationDialog_dialog .confirmButton'
   );
 });
-
-When(
-  /^I toggle "Spending password" switch on the create wallet dialog$/,
-  function() {
-    return this.waitAndClick('.WalletCreateDialog .SimpleSwitch_switch');
-  }
-);
-
-When(
-  /^I toggle "Spending password" switch on the restore wallet dialog$/,
-  function() {
-    return this.waitAndClick('.WalletRestoreDialog .SimpleSwitch_switch');
-  }
-);
 
 When(
   /^I submit the create wallet dialog with the following inputs:$/,
@@ -425,17 +365,21 @@ When(/^I submit the delete wallet dialog$/, function() {
 When(/^I try to import the wallet with funds again$/, async function() {
   await sidebarHelpers.activateCategory(this.client, { category: 'wallets' });
   await sidebarHelpers.clickAddWalletButton(this.client);
-  await addWalletHelpers.waitForVisible(this.client);
-  await addWalletHelpers.clickImportButton(this.client);
+  await addWalletPage.waitForVisible(this.client);
+  await addWalletPage.clickImportButton(this.client);
   this.waitAndClick('.WalletFileImportDialog .FileUploadWidget_dropZone');
   this.waitAndClick('.Dialog_actions button');
+});
+
+When(/^I click on "Rewards wallet" radio button/, function() {
+  return this.waitAndClick('.RadioSet_radiosContainer div:nth-child(2) label');
 });
 
 Then(
   /^I see the import wallet dialog with an error that the wallet already exists$/,
   async function() {
     return importWalletHelpers.expectError(this.client, {
-      error: await formatMessage(this.client, {
+      error: await i18n.formatMessage(this.client, {
         id: 'api.errors.WalletAlreadyImportedError',
       }),
     });
@@ -600,7 +544,7 @@ Then(
     return this.client.waitUntil(async () => {
       const activeAddress = await this.client.getText('.WalletReceive_hash');
       const generatedAddress = await this.client.getText(
-        '.generatedAddress-1 .Address_addressId'
+        '.receiveAddress-1 .Address_addressId'
       );
       return generatedAddress === activeAddress;
     });

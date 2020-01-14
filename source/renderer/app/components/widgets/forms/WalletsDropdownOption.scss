@@ -1,0 +1,44 @@
+.component {
+  align-items: flex-start;
+  color: var(--theme-delegation-steps-choose-wallet-error-select-options-color);
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-regular);
+  justify-content: flex-start;
+  :global {
+    .SimpleOptions_option {
+      padding: 8px 20px;
+    }
+  }
+}
+
+.label {
+  font-size: 14px;
+  line-height: 18px;
+}
+
+.topRow {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+
+  .ticker {
+    font-size: 14px;
+    line-height: 18px;
+    margin-right: 6px;
+    text-transform: uppercase;
+  }
+}
+
+.detail {
+  font-size: 12px;
+  line-height: 16px;
+  opacity: 0.5;
+}
+
+.selected {
+  color: var(--theme-delegation-steps-choose-wallet-custom-value-color);
+  height: 100%;
+  padding: 8px 20px;
+}

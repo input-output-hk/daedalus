@@ -29,7 +29,7 @@ export const navigateTo = function(requestedRoute: string) {
 
 export const sidebarHelpers =  {
   activateCategory: async (
-    client: WebdriverClient,
+    client: Object,
     { category }: { category: string }
   ) => {
     await client.execute(cat => {
@@ -40,6 +40,6 @@ export const sidebarHelpers =  {
     }, `/${category}`);
     return client.waitForVisible(`${SELECTORS.ACTIVE_CATEGORY}.${category}`);
   },
-  clickAddWalletButton: (client: WebdriverClient) =>
+  clickAddWalletButton: (client: Object) =>
     waitAndClick(client, SELECTORS.ADD_WALLET_BTN),
 };

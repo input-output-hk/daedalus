@@ -9,6 +9,7 @@ import SimpleInput from 'react-polymorph/lib/themes/simple/SimpleInput.scss';
 import SimpleLoadingSpinner from 'react-polymorph/lib/themes/simple/SimpleLoadingSpinner.scss';
 import SimpleModal from 'react-polymorph/lib/themes/simple/SimpleModal.scss';
 import SimpleOptions from 'react-polymorph/lib/themes/simple/SimpleOptions.scss';
+import SimpleRadio from 'react-polymorph/lib/themes/simple/SimpleRadio.scss';
 import SimpleSelect from 'react-polymorph/lib/themes/simple/SimpleSelect.scss';
 import SimpleStepper from 'react-polymorph/lib/themes/simple/SimpleStepper.scss';
 import SimpleSwitch from 'react-polymorph/lib/themes/simple/SimpleSwitch.scss';
@@ -27,6 +28,7 @@ const {
   LOADING_SPINNER,
   MODAL,
   OPTIONS,
+  RADIO,
   SELECT,
   STEPPER,
   SWITCH,
@@ -45,6 +47,7 @@ export const daedalusTheme = {
   [LOADING_SPINNER]: SimpleLoadingSpinner,
   [MODAL]: SimpleModal,
   [OPTIONS]: SimpleOptions,
+  [RADIO]: SimpleRadio,
   [SELECT]: SimpleSelect,
   [STEPPER]: SimpleStepper,
   [SWITCH]: SimpleSwitch,
