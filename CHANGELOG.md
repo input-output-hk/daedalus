@@ -12,6 +12,7 @@ Changelog
 - Improved network screen with responsive main copy box ([PR 1797](https://github.com/input-output-hk/daedalus/pull/1797))
 
 ### Fixes
+- Fixed a typo in the Staking Pools section ([PR 1785](https://github.com/input-output-hk/daedalus/pull/1785))
 - Fixed Daedalus ITN Terms of Service typo ([PR 1809](https://github.com/input-output-hk/daedalus/pull/1809))
 - Fixed handling of duplicated wallet IDs when restoring both legacy and new wallets from the same wallet recovery phrase ([PR 1805](https://github.com/input-output-hk/daedalus/pull/1805))
 
@@ -38,7 +39,6 @@ Changelog
 
 ### Fixes
 
-- Fixed a typo in the Staking Pools section ([PR 1785](https://github.com/input-output-hk/daedalus/pull/1785))
 - Fixed undelegation issue ([PR 1774](https://github.com/input-output-hk/daedalus/pull/1774))
 - Fixed the display of headlines on the "Network" splash screen ([PR 1770](https://github.com/input-output-hk/daedalus/pull/1770))
 - Fixed spending password error handling ([PR 1767](https://github.com/input-output-hk/daedalus/pull/1767))
