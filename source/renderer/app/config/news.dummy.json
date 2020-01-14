@@ -25,10 +25,11 @@
           "ja-JP": "https://iohk.zendesk.com/hc/ja/articles/"
         }
       },
-      "date": {
+      "updatedAt": {
         "en-US": 1569152525812,
         "ja-JP": 1569152525812
       },
+      "date": 1569152525812,
       "type": "alert"
     },
     {
@@ -55,10 +56,11 @@
           "ja-JP": "https://iohk.zendesk.com/hc/ja/articles/"
         }
       },
-      "date": {
+      "updatedAt": {
         "en-US": 1569238907194,
         "ja-JP": 1569238907194
       },
+      "date": 1569238907194,
       "type": "alert"
     },
     {
@@ -85,10 +87,11 @@
           "ja-JP": ""
         }
       },
-      "date": {
+      "updatedAt": {
         "en-US": 1569325284166,
         "ja-JP": 1569325284166
       },
+      "date": 1569325284166,
       "type": "alert"
     },
     {
@@ -115,10 +118,11 @@
           "ja-JP": "https://iohk.zendesk.com/hc/ja/articles/"
         }
       },
-      "date": {
+      "updatedAt": {
         "en-US": 1569429144746,
         "ja-JP": 1569429144746
       },
+      "date": 1569429144746,
       "type": "announcement"
     },
     {
@@ -145,10 +149,11 @@
           "ja-JP": "https://iohk.zendesk.com/hc/ja/articles/"
         }
       },
-      "date": {
+      "updatedAt": {
         "en-US": 1569342749091,
         "ja-JP": 1569342749091
       },
+      "date": 1569342749091,
       "type": "announcement"
     },
     {
@@ -175,10 +180,11 @@
           "ja-JP": "https://iohk.zendesk.com/hc/ja/articles/"
         }
       },
-      "date": {
+      "updatedAt": {
         "en-US": 1569256354107,
         "ja-JP": 1569256354107
       },
+      "date": 1569256354107,
       "type": "info"
     },
     {
@@ -205,10 +211,11 @@
           "ja-JP": "https://iohk.zendesk.com/hc/ja/articles/"
         }
       },
-      "date": {
+      "updatedAt": {
         "en-US": 1569169958620,
         "ja-JP": 1569169958620
       },
+      "date": 1569169958620,
       "type": "info"
     },
     {
@@ -233,9 +240,10 @@
           "ja-JP": "https://iohk.zendesk.com/hc/ja/articles/"
         }
       },
-      "date": {
+      "updatedAt": {
         "en-US": 1568724201141
       },
+      "date": 1568724201141,
       "type": "info"
     }
   ]

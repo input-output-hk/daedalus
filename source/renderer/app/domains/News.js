@@ -1,6 +1,6 @@
 // @flow
 import { observable, computed, runInAction } from 'mobx';
-import { get, filter, orderBy, includes } from 'lodash';
+import { get, filter, orderBy, includes, map } from 'lodash';
 import semver from 'semver';
 import type { NewsTarget, NewsType } from '../api/news/types';
 
@@ -63,16 +63,22 @@ class NewsCollection {
       const availableTargetVersionRange = get(
         newsItem,
         ['target', 'daedalusVersion'],
-        null
+        ''
       );
       const targetPlatforms = get(newsItem, ['target', 'platforms']);
       return (
         (!availableTargetVersionRange ||
           (availableTargetVersionRange &&
             semver.satisfies(version, availableTargetVersionRange))) &&
-        (platform === 'browser' || includes(targetPlatforms, platform))
+        (platform === 'browser' || includes(targetPlatforms, platform)) &&
+        newsItem.id &&
+        newsItem.title &&
+        newsItem.content &&
+        newsItem.action.label &&
+        newsItem.date
       );
     });
+
     const orderedNews = orderBy(filteredNews, 'date', 'desc');
 
     runInAction(() => {

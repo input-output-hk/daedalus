@@ -198,7 +198,7 @@ export default class NewsFeedStore extends Store {
     }
   };
 
-  @action setFakesNewsfeed = () => {
+  @action setFakedNewsfeed = () => {
     if (isDev) {
       if (this.pollingNewsIntervalId) {
         clearInterval(this.pollingNewsIntervalId);
@@ -216,29 +216,24 @@ export default class NewsFeedStore extends Store {
     let news = [];
 
     if (this.getNewsRequest.wasExecuted) {
-      // Filter by selected language
-      const filteredNews = filter(
-        this.rawNews,
-        item =>
-          item.title[currentLocale] &&
-          item.content[currentLocale] &&
-          item.action.label[currentLocale] &&
-          item.date[currentLocale]
-      );
-
-      news = map(filteredNews, item => ({
-        ...item,
-        title: item.title[currentLocale],
-        content: item.content[currentLocale],
-        action: {
-          label: get(item, ['action', 'label', currentLocale]),
-          url: get(item, ['action', 'url', currentLocale]),
-          route: get(item, ['action', 'route', currentLocale]),
-          event: get(item, ['action', 'event', currentLocale]),
-        },
-        date: item.date[currentLocale],
-        read: readNews.includes(item.id),
-      }));
+      news = map(this.rawNews, item => {
+        // match old and new newsfeed JSON format
+        const mainIdentificator = item.id || item.date;
+        return {
+          ...item,
+          id: mainIdentificator,
+          title: item.title[currentLocale],
+          content: item.content[currentLocale],
+          action: {
+            label: get(item, ['action', 'label', currentLocale]),
+            url: get(item, ['action', 'url', currentLocale]),
+            route: get(item, ['action', 'route', currentLocale]),
+            event: get(item, ['action', 'event', currentLocale]),
+          },
+          date: get(item, ['updatedAt', currentLocale], item.date),
+          read: readNews.includes(mainIdentificator),
+        }
+      });
     }
     return new News.NewsCollection(news);
   }
