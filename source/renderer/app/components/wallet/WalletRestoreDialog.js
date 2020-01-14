@@ -28,6 +28,12 @@ import {
   WALLET_RESTORE_TYPES,
   RECOVERY_PHRASE_WORD_COUNT_OPTIONS,
 } from '../../config/walletsConfig';
+import {
+  LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT,
+  PAPER_WALLET_RECOVERY_PHRASE_WORD_COUNT,
+  WALLET_RECOVERY_PHRASE_WORD_COUNT,
+  YOROI_WALLET_RECOVERY_PHRASE_WORD_COUNT,
+} from '../../config/cryptoConfig';
 
 const messages = defineMessages({
   title: {
@@ -43,13 +49,13 @@ const messages = defineMessages({
   },
   walletNameInputHint: {
     id: 'wallet.restore.dialog.wallet.name.input.hint',
-    defaultMessage: '!!!Choose a name for the wallet you are about to restore',
+    defaultMessage: '!!!Name the wallet you are restoring',
     description:
       'Hint "Name the wallet you are restoring" for the wallet name input on the wallet restore dialog.',
   },
   recoveryPhraseTypeLabel: {
     id: 'wallet.restore.dialog.recovery.phrase.type.options.label',
-    defaultMessage: '!!!Number of words in your recovery phrase',
+    defaultMessage: '!!!Number of words in the recovery phrase',
     description:
       'Label for the recovery phrase type options on the wallet restore dialog.',
   },
@@ -73,15 +79,20 @@ const messages = defineMessages({
   },
   recoveryPhraseInputLabel: {
     id: 'wallet.restore.dialog.recovery.phrase.input.label',
-    defaultMessage: '!!!Wallet recovery phrase',
+    defaultMessage: '!!!Recovery phrase',
     description:
       'Label for the recovery phrase input on the wallet restore dialog.',
   },
   recoveryPhraseInputHint: {
     id: 'wallet.restore.dialog.recovery.phrase.input.hint',
-    defaultMessage: '!!!Enter your {numberOfWords}-word wallet recovery phrase',
+    defaultMessage: '!!!Enter recovery phrase',
     description:
       'Hint "Enter recovery phrase" for the recovery phrase input on the wallet restore dialog.',
+  },
+  newLabel: {
+    id: 'wallet.restore.dialog.recovery.phrase.newLabel',
+    defaultMessage: '!!!New',
+    description: 'Label "new" on the wallet restore dialog.',
   },
   recoveryPhraseNoResults: {
     id: 'wallet.restore.dialog.recovery.phrase.input.noResults',
@@ -132,15 +143,19 @@ const messages = defineMessages({
   },
   recoveryPhraseTabTitle: {
     id: 'wallet.restore.dialog.tab.title.recoveryPhrase',
-    defaultMessage: '!!!Wallet recovery phrase',
-    description:
-      'Tab title "Wallet recovery phrasee" in the wallet restore dialog.',
+    defaultMessage: '!!!Daedalus wallet',
+    description: 'Tab title "Daedalus wallet" in the wallet restore dialog.',
   },
   certificateTabTitle: {
     id: 'wallet.restore.dialog.tab.title.certificate',
-    defaultMessage: '!!!Paper wallet recovery phrase',
+    defaultMessage: '!!!Daedalus paper wallet',
     description:
-      'Tab title "Paper wallet recovery phrase" in the wallet restore dialog.',
+      'Tab title "Daedalus paper wallet" in the wallet restore dialog.',
+  },
+  yoroiTabTitle: {
+    id: 'wallet.restore.dialog.tab.title.yoroi',
+    defaultMessage: '!!!Yoroi wallet',
+    description: 'Tab title "Yoroi wallet" in the wallet restore dialog.',
   },
   shieldedRecoveryPhraseInputLabel: {
     id: 'wallet.restore.dialog.shielded.recovery.phrase.input.label',
@@ -190,7 +205,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
   };
 
   state = {
-    walletType: WALLET_RESTORE_TYPES.LEGACY, // regular | certificate | legacy
+    walletType: WALLET_RESTORE_TYPES.LEGACY, // regular | certificate | legacy | yoroi
   };
 
   recoveryPhraseAutocomplete: Autocomplete;
@@ -380,12 +395,17 @@ export default class WalletRestoreDialog extends Component<Props, State> {
 
     const regularTabClasses = classnames([
       'regularTab',
-      !this.isCertificate() ? styles.activeButton : '',
+      this.isRegular() || this.isLegacy() ? styles.activeButton : '',
     ]);
 
     const certificateTabClasses = classnames([
       'certificateTab',
       this.isCertificate() ? styles.activeButton : '',
+    ]);
+
+    const yoroiTabClasses = classnames([
+      'yoroiTab',
+      this.isYoroi() ? styles.activeButton : '',
     ]);
 
     return (
@@ -414,6 +434,14 @@ export default class WalletRestoreDialog extends Component<Props, State> {
           >
             {intl.formatMessage(messages.certificateTabTitle)}
           </button>
+          <button
+            className={yoroiTabClasses}
+            onClick={() =>
+              this.onSelectWalletType(WALLET_RESTORE_TYPES.YOROI_LEGACY, true)
+            }
+          >
+            {intl.formatMessage(messages.yoroiTabTitle)}
+          </button>
         </div>
 
         <Input
@@ -424,7 +452,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
           skin={InputSkin}
         />
 
-        {!this.isCertificate() && (
+        {(this.isRegular() || this.isLegacy()) && (
           <RadioSet
             label={intl.formatMessage(messages.recoveryPhraseTypeLabel)}
             items={[
@@ -432,7 +460,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
                 key: WALLET_RESTORE_TYPES.LEGACY,
                 label: (
                   <Fragment>
-                    12
+                    {LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT}
                     {intl.formatMessage(
                       messages.recoveryPhraseTypeOptionWord
                     )}{' '}
@@ -453,7 +481,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
                 key: WALLET_RESTORE_TYPES.REGULAR,
                 label: (
                   <Fragment>
-                    15
+                    {WALLET_RECOVERY_PHRASE_WORD_COUNT}
                     {intl.formatMessage(
                       messages.recoveryPhraseTypeOptionWord
                     )}{' '}
@@ -464,11 +492,67 @@ export default class WalletRestoreDialog extends Component<Props, State> {
                       )}
                       )
                     </span>
+                    <span className={styles.newLabel}>
+                      {intl.formatMessage(messages.newLabel)}
+                    </span>
                   </Fragment>
                 ),
                 selected: !this.isLegacy(),
                 onChange: () =>
                   this.onSelectWalletType(WALLET_RESTORE_TYPES.REGULAR),
+              },
+            ]}
+          />
+        )}
+
+        {this.isYoroi() && (
+          <RadioSet
+            label={intl.formatMessage(messages.recoveryPhraseTypeLabel)}
+            items={[
+              {
+                key: WALLET_RESTORE_TYPES.YOROI_LEGACY,
+                label: (
+                  <Fragment>
+                    {YOROI_WALLET_RECOVERY_PHRASE_WORD_COUNT}
+                    {intl.formatMessage(
+                      messages.recoveryPhraseTypeOptionWord
+                    )}{' '}
+                    <span>
+                      (
+                      {intl.formatMessage(
+                        messages.recoveryPhraseType12WordOption
+                      )}
+                      )
+                    </span>
+                  </Fragment>
+                ),
+                selected: this.isYoroiLegacy(),
+                onChange: () =>
+                  this.onSelectWalletType(WALLET_RESTORE_TYPES.YOROI_LEGACY),
+              },
+              {
+                key: WALLET_RESTORE_TYPES.YOROI_REGULAR,
+                label: (
+                  <Fragment>
+                    {YOROI_WALLET_RECOVERY_PHRASE_WORD_COUNT}
+                    {intl.formatMessage(
+                      messages.recoveryPhraseTypeOptionWord
+                    )}{' '}
+                    <span>
+                      (
+                      {intl.formatMessage(
+                        messages.recoveryPhraseType15WordOption
+                      )}
+                      )
+                    </span>
+                    <span className={styles.newLabel}>
+                      {intl.formatMessage(messages.newLabel)}
+                    </span>
+                  </Fragment>
+                ),
+                selected: this.isYoroiRegular(),
+                onChange: () =>
+                  this.onSelectWalletType(WALLET_RESTORE_TYPES.YOROI_REGULAR),
               },
             ]}
           />
@@ -486,12 +570,9 @@ export default class WalletRestoreDialog extends Component<Props, State> {
           }
           placeholder={
             !this.isCertificate()
-              ? intl.formatMessage(messages.recoveryPhraseInputHint, {
-                  numberOfWords:
-                    walletType === WALLET_RESTORE_TYPES.LEGACY ? '12' : '15',
-                })
+              ? intl.formatMessage(messages.recoveryPhraseInputHint)
               : intl.formatMessage(messages.shieldedRecoveryPhraseInputHint, {
-                  numberOfWords: 27,
+                  numberOfWords: PAPER_WALLET_RECOVERY_PHRASE_WORD_COUNT,
                 })
           }
           options={suggestedMnemonics}
@@ -549,6 +630,18 @@ export default class WalletRestoreDialog extends Component<Props, State> {
 
   isLegacy() {
     return this.state.walletType === WALLET_RESTORE_TYPES.LEGACY;
+  }
+
+  isYoroiLegacy() {
+    return this.state.walletType === WALLET_RESTORE_TYPES.YOROI_LEGACY;
+  }
+
+  isYoroiRegular() {
+    return this.state.walletType === WALLET_RESTORE_TYPES.YOROI_REGULAR;
+  }
+
+  isYoroi() {
+    return this.isYoroiLegacy() || this.isYoroiRegular();
   }
 
   onSelectWalletType = (walletType: string, shouldResetForm?: boolean) => {

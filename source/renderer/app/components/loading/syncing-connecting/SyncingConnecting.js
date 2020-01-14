@@ -48,6 +48,7 @@ type Props = {
   showNewsFeedIcon: boolean,
   isIncentivizedTestnet: boolean,
   onIssueClick: Function,
+  onOpenExternalLink: Function,
   onDownloadLogs: Function,
   onGetAvailableVersions: Function,
   onStatusIconClick: Function,
@@ -210,6 +211,7 @@ export default class SyncingConnecting extends Component<Props, State> {
       hasLoadedCurrentTheme,
       hasUnreadNews,
       onIssueClick,
+      onOpenExternalLink,
       onDownloadLogs,
       disableDownloadLogs,
       isIncentivizedTestnet,
@@ -243,10 +245,12 @@ export default class SyncingConnecting extends Component<Props, State> {
             <ReportIssue
               isConnected={isConnected}
               onIssueClick={onIssueClick}
+              onOpenExternalLink={onOpenExternalLink}
               onDownloadLogs={onDownloadLogs}
               disableDownloadLogs={disableDownloadLogs}
               isConnecting={isConnecting}
               isSyncing={isSyncing}
+              isIncentivizedTestnet={isIncentivizedTestnet}
             />
           )}
           {showNewsFeedIcon && (

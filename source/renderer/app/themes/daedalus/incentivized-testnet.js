@@ -445,13 +445,14 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--rp-button-width': '360px',
   },
   rpCheckbox: {
-    '--rp-checkbox-border': '1px solid #eb2256',
+    '--rp-checkbox-border': '2px solid #eb2256',
     '--rp-checkbox-border-color': 'rgba(255, 255, 255, 0.2)',
     '--rp-checkbox-border-color-disabled': '#eb225666',
     '--rp-checkbox-check-bg-color': '#eb2256',
     '--rp-checkbox-check-icon-color': '#121326',
     '--rp-checkbox-label-text-color': '#ffffff',
     '--rp-checkbox-label-text-color-disabled': '#ffffff4d',
+    '--rp-checkbox-size': '22px',
   },
   rpColors: {
     '--rp-theme-color-error': '#ea4c5b',
@@ -500,6 +501,7 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--rp-options-shadow': 'none',
   },
   rpRadio: {
+    '--rp-radio-border': '2px solid #eb2256',
     '--rp-radio-border-color': '#eb2256',
     '--rp-radio-color': '#121326',
     '--rp-radio-label-margin': '0 0 0 10px',
@@ -535,9 +537,12 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--rp-switch-label-opacity': '1',
     '--rp-switch-label-text-color': '#ffffff',
     '--rp-switch-label-width': '100%',
+    '--rp-switch-normal-border-radius': '2px',
     '--rp-switch-opacity-off': '1',
     '--rp-switch-root-margin': '0 0 30px 0',
+    '--rp-switch-tiny-border-radius': '1px',
     '--rp-switch-thumb-bg-color': '#ffffff',
+    '--rp-switch-size': '22px',
   },
   rpTextArea: {
     '--rp-textarea-bg-color': '#121326',
@@ -806,6 +811,13 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
       'rgba(255, 255, 255, .1)',
     '--theme-recovery-phrase-attention-background-color':
       'rgba(235, 74, 34, 0.2)',
+  },
+  walletRestoreDialog: {
+    '--theme-wallet-restore-dialog-new-label-background-color':
+      'rgba(255, 255, 255, 0.1)',
+    '--theme-wallet-restore-dialog-new-label-color': '#ffffff',
+    '--theme-wallet-restore-dialog-step-walletType-hardwareWalletDisclaimer-text-color':
+      '#ea4c5b',
   },
 };
 

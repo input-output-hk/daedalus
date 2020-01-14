@@ -7,3 +7,8 @@ export const DIALOGS = {
 export const NOTIFICATIONS = {
   DOWNLOAD_LOGS: 'DOWNLOAD_LOGS_NOTIFICATION',
 };
+
+export const PAGES = {
+  SETTINGS: 'SETTINGS',
+  WALLET_SETTINGS: 'WALLET_SETTINGS',
+};

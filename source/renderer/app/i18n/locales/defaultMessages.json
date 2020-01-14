@@ -489,17 +489,31 @@
         }
       },
       {
-        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/articles/360010522913",
-        "description": "Link to connectivity issue article page",
+        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/articles/900000048566",
+        "description": "Link to sync issue article page for Incentivized TestNet",
         "end": {
           "column": 3,
           "line": 54
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/ReportIssue.js",
+        "id": "loading.screen.readIssueArticle.syncIssueArticleUrl.itn",
+        "start": {
+          "column": 29,
+          "line": 49
+        }
+      },
+      {
+        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/articles/360010522913",
+        "description": "Link to connectivity issue article page",
+        "end": {
+          "column": 3,
+          "line": 60
+        },
+        "file": "source/renderer/app/components/loading/syncing-connecting/ReportIssue.js",
         "id": "loading.screen.readIssueArticle.connectivityIssueArticleUrl",
         "start": {
           "column": 31,
-          "line": 49
+          "line": 55
         }
       }
     ],
@@ -8023,13 +8037,13 @@
         "description": "Title \"Create a new wallet\" in the wallet create dialog.",
         "end": {
           "column": 3,
-          "line": 18
+          "line": 19
         },
         "file": "source/renderer/app/components/wallet/wallet-create/WalletCreateSteps.js",
         "id": "wallet.create.dialog.title",
         "start": {
           "column": 15,
-          "line": 14
+          "line": 15
         }
       },
       {
@@ -8037,13 +8051,13 @@
         "description": "Step couters in the wallet create dialog.",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 24
         },
         "file": "source/renderer/app/components/wallet/wallet-create/WalletCreateSteps.js",
         "id": "wallet.create.dialog.stepsCounter",
         "start": {
           "column": 16,
-          "line": 19
+          "line": 20
         }
       },
       {
@@ -8051,13 +8065,13 @@
         "description": "Step \"Instructions\" in the wallet create dialog.",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 29
         },
         "file": "source/renderer/app/components/wallet/wallet-create/WalletCreateSteps.js",
         "id": "wallet.create.dialog.instructionsStep",
         "start": {
           "column": 20,
-          "line": 24
+          "line": 25
         }
       },
       {
@@ -8065,13 +8079,13 @@
         "description": "Step \"Template\" in the wallet create dialog.",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 34
         },
         "file": "source/renderer/app/components/wallet/wallet-create/WalletCreateSteps.js",
         "id": "wallet.create.dialog.templateStep",
         "start": {
           "column": 16,
-          "line": 29
+          "line": 30
         }
       },
       {
@@ -8079,13 +8093,13 @@
         "description": "Step \"Mnemonics\" in the wallet create dialog.",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 39
         },
         "file": "source/renderer/app/components/wallet/wallet-create/WalletCreateSteps.js",
         "id": "wallet.create.dialog.mnemonicsStep",
         "start": {
           "column": 17,
-          "line": 34
+          "line": 35
         }
       },
       {
@@ -8093,13 +8107,13 @@
         "description": "Step \"Validate\" in the wallet create dialog.",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 44
         },
         "file": "source/renderer/app/components/wallet/wallet-create/WalletCreateSteps.js",
         "id": "wallet.create.dialog.validateStep",
         "start": {
           "column": 16,
-          "line": 39
+          "line": 40
         }
       },
       {
@@ -8107,13 +8121,13 @@
         "description": "Step \"HashImage\" in the wallet create dialog.",
         "end": {
           "column": 3,
-          "line": 48
+          "line": 49
         },
         "file": "source/renderer/app/components/wallet/wallet-create/WalletCreateSteps.js",
         "id": "wallet.create.dialog.hashImageStep",
         "start": {
           "column": 17,
-          "line": 44
+          "line": 45
         }
       },
       {
@@ -8121,17 +8135,724 @@
         "description": "Step \"Config\" in the wallet create dialog.",
         "end": {
           "column": 3,
-          "line": 53
+          "line": 54
         },
         "file": "source/renderer/app/components/wallet/wallet-create/WalletCreateSteps.js",
         "id": "wallet.create.dialog.configStep",
         "start": {
           "column": 14,
-          "line": 49
+          "line": 50
         }
       }
     ],
     "path": "source/renderer/app/components/wallet/wallet-create/WalletCreateSteps.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Name your restored wallet and set a spending password to keep your wallet secure.",
+        "description": "Description1 for Configuration Step",
+        "end": {
+          "column": 3,
+          "line": 29
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/ConfigurationDialog.js",
+        "id": "wallet.restore.dialog.step.configuration.description1",
+        "start": {
+          "column": 16,
+          "line": 24
+        }
+      },
+      {
+        "defaultMessage": "!!!Wallet names and spending passwords are only stored locally and are not stored on the blockchain. You can give your restored wallet a new name and set a new spending password, you don’t need to match the wallet name and spending password you were using before. <b>Only the recovery phrase from your original wallet is needed to restore a wallet.</b>",
+        "description": "Description2 for Configuration Step",
+        "end": {
+          "column": 3,
+          "line": 35
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/ConfigurationDialog.js",
+        "id": "wallet.restore.dialog.step.configuration.description2",
+        "start": {
+          "column": 16,
+          "line": 30
+        }
+      },
+      {
+        "defaultMessage": "!!!Wallet name",
+        "description": "Label for Wallet Name Input",
+        "end": {
+          "column": 3,
+          "line": 40
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/ConfigurationDialog.js",
+        "id": "wallet.restore.dialog.step.configuration.input.walletName.label",
+        "start": {
+          "column": 19,
+          "line": 36
+        }
+      },
+      {
+        "defaultMessage": "!!!Name the wallet you are restoring",
+        "description": "Placeholder for Wallet Name Input",
+        "end": {
+          "column": 3,
+          "line": 45
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/ConfigurationDialog.js",
+        "id": "wallet.restore.dialog.step.configuration.input.walletName.placeholder",
+        "start": {
+          "column": 25,
+          "line": 41
+        }
+      },
+      {
+        "defaultMessage": "!!!Enter password",
+        "description": "Label for the \"Wallet password\" input in the wallet restore dialog.",
+        "end": {
+          "column": 3,
+          "line": 51
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/ConfigurationDialog.js",
+        "id": "wallet.restore.dialog.step.configuration.input.spendingPassword.label",
+        "start": {
+          "column": 25,
+          "line": 46
+        }
+      },
+      {
+        "defaultMessage": "!!!Repeat password",
+        "description": "Label for the \"Repeat password\" input in the wallet restore dialog.",
+        "end": {
+          "column": 3,
+          "line": 57
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/ConfigurationDialog.js",
+        "id": "wallet.restore.dialog.step.configuration.input.repeatPassword.label",
+        "start": {
+          "column": 23,
+          "line": 52
+        }
+      },
+      {
+        "defaultMessage": "!!!Password",
+        "description": "Placeholder for the \"Password\" inputs in the wallet restore dialog.",
+        "end": {
+          "column": 3,
+          "line": 64
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/ConfigurationDialog.js",
+        "id": "wallet.restore.dialog.step.configuration.input.passwordFields.placeholder",
+        "start": {
+          "column": 29,
+          "line": 58
+        }
+      },
+      {
+        "defaultMessage": "!!!Continue",
+        "description": "Placeholder for the dialog \"Continue\" button",
+        "end": {
+          "column": 3,
+          "line": 69
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/ConfigurationDialog.js",
+        "id": "wallet.restore.dialog.step.configuration.continueButtonLabel",
+        "start": {
+          "column": 23,
+          "line": 65
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/wallet-restore/ConfigurationDialog.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Enter your {numberOfWords}-word recovery phrase",
+        "description": "Placeholder for the mnemonics autocomplete.",
+        "end": {
+          "column": 3,
+          "line": 32
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/MnemonicsDialog.js",
+        "id": "wallet.restore.dialog.step.mnemonics.autocomplete.placeholder",
+        "start": {
+          "column": 27,
+          "line": 28
+        }
+      },
+      {
+        "defaultMessage": "!!!Enter your 12, 18 or 24-word recovery phrase",
+        "description": "Placeholder for the multi-length mnemonics autocomplete.",
+        "end": {
+          "column": 3,
+          "line": 38
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/MnemonicsDialog.js",
+        "id": "wallet.restore.dialog.step.mnemonics.autocomplete.multiLengthPhrase.placeholder",
+        "start": {
+          "column": 33,
+          "line": 33
+        }
+      },
+      {
+        "defaultMessage": "!!!No results",
+        "description": "\"No results\" message for the mnemonics autocomplete search results.",
+        "end": {
+          "column": 3,
+          "line": 44
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/MnemonicsDialog.js",
+        "id": "wallet.restore.dialog.step.mnemonics.autocomplete.noResults",
+        "start": {
+          "column": 25,
+          "line": 39
+        }
+      },
+      {
+        "defaultMessage": "!!!Check recovery phrase",
+        "description": "Label for the mnemonics Continue button.",
+        "end": {
+          "column": 3,
+          "line": 49
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/MnemonicsDialog.js",
+        "id": "wallet.restore.dialog.step.mnemonics.autocomplete.continueButtonLabel",
+        "start": {
+          "column": 23,
+          "line": 45
+        }
+      },
+      {
+        "defaultMessage": "!!!12, 18 or 24 words",
+        "description": "Error message for incomplete multi-length recovery phrase",
+        "end": {
+          "column": 3,
+          "line": 55
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/MnemonicsDialog.js",
+        "id": "wallet.restore.dialog.step.mnemonics.autocomplete.incompleteMultiLengthPhrase",
+        "start": {
+          "column": 31,
+          "line": 50
+        }
+      },
+      {
+        "defaultMessage": "!!!Invalid recovery phrase",
+        "description": "Label for invalid recovery phrase",
+        "end": {
+          "column": 3,
+          "line": 61
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/MnemonicsDialog.js",
+        "id": "wallet.restore.dialog.step.mnemonics.autocomplete.invalidRecoveryPhrase",
+        "start": {
+          "column": 25,
+          "line": 56
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/wallet-restore/MnemonicsDialog.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Close",
+        "description": "Label for Close button on the wallet restore \"success\" step dialog.",
+        "end": {
+          "column": 3,
+          "line": 25
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/SuccessDialog.js",
+        "id": "wallet.restore.dialog.step.success.dialog.close",
+        "start": {
+          "column": 20,
+          "line": 20
+        }
+      },
+      {
+        "defaultMessage": "!!!Your wallet has been successfully restored.",
+        "description": "Description \"line 1\" on the wallet restore \"success\" step dialog.",
+        "end": {
+          "column": 3,
+          "line": 31
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/SuccessDialog.js",
+        "id": "wallet.restore.dialog.step.success.dialog.description.line1",
+        "start": {
+          "column": 20,
+          "line": 26
+        }
+      },
+      {
+        "defaultMessage": "!!!Restored wallets should have all the funds and transaction history of the original wallet. <strong>If your restored wallet does not have the funds and transaction history you were expecting</strong>, please check that you have the correct wallet recovery phrase for the wallet you were intending to restore.",
+        "description": "Description \"line 2\" on the wallet restore \"success\" step dialog.",
+        "end": {
+          "column": 3,
+          "line": 38
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/SuccessDialog.js",
+        "id": "wallet.restore.dialog.step.success.dialog.description.line2",
+        "start": {
+          "column": 20,
+          "line": 32
+        }
+      },
+      {
+        "defaultMessage": "!!!<strong>If your restored Balance wallet is empty, but you were expecting it to have funds</strong>, please check that you used the correct wallet recovery phrase during the restoration process.",
+        "description": "Description \"line 3\" on the wallet restore \"success\" step dialog.",
+        "end": {
+          "column": 3,
+          "line": 45
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/SuccessDialog.js",
+        "id": "wallet.restore.dialog.step.success.dialog.description.line3",
+        "start": {
+          "column": 20,
+          "line": 39
+        }
+      },
+      {
+        "defaultMessage": "!!!If your restored Balance wallet is empty, but you were expecting it to have funds, please check that you used the correct wallet recovery phrase during the restoration process. <strong>The format of recovery phrases for paper wallets cannot be validated</strong>, so any combination of words is accepted as a potentially valid recovery phrase. Please take extra care when entering a paper wallet recovery phrase.",
+        "description": "Description \"line 4\" on the wallet restore \"success\" step dialog.",
+        "end": {
+          "column": 3,
+          "line": 52
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/SuccessDialog.js",
+        "id": "wallet.restore.dialog.step.success.dialog.description.line4",
+        "start": {
+          "column": 20,
+          "line": 46
+        }
+      },
+      {
+        "defaultMessage": "!!!To participate in the Incentivized Testnet, the mainnet wallet you are restoring must have had funds at the time of the balance snapshot at 12.00 UTC, November 29, 2019. If you are sure that you used the correct wallet recovery phrase, then please check that you had funds in your mainnet wallet at this time.",
+        "description": "Description \"line 5\" on the wallet restore \"success\" step dialog.",
+        "end": {
+          "column": 3,
+          "line": 59
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/SuccessDialog.js",
+        "id": "wallet.restore.dialog.step.success.dialog.description.line5",
+        "start": {
+          "column": 20,
+          "line": 53
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/wallet-restore/SuccessDialog.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!What kind of wallet would you like to restore?",
+        "description": "Label for the \"labelwalletKind\" checkbox.",
+        "end": {
+          "column": 3,
+          "line": 31
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
+        "id": "wallet.restore.dialog.step.walletKind.label.walletKind",
+        "start": {
+          "column": 19,
+          "line": 27
+        }
+      },
+      {
+        "defaultMessage": "!!!Daedalus wallet",
+        "description": "Label for the \"labelWalletKindDaedalus\" checkbox.",
+        "end": {
+          "column": 3,
+          "line": 36
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
+        "id": "wallet.restore.dialog.step.walletKind.label.walletKindDaedalus",
+        "start": {
+          "column": 27,
+          "line": 32
+        }
+      },
+      {
+        "defaultMessage": "!!!Yoroi wallet",
+        "description": "Label for the \"labelWalletKindYoroi\" checkbox.",
+        "end": {
+          "column": 3,
+          "line": 41
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
+        "id": "wallet.restore.dialog.step.walletKind.label.walletKindYoroi",
+        "start": {
+          "column": 24,
+          "line": 37
+        }
+      },
+      {
+        "defaultMessage": "!!!Hardware wallet",
+        "description": "Label for the \"labelWalletKindHardware\" checkbox.",
+        "end": {
+          "column": 3,
+          "line": 46
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
+        "id": "wallet.restore.dialog.step.walletKind.label.walletKindHardware",
+        "start": {
+          "column": 27,
+          "line": 42
+        }
+      },
+      {
+        "defaultMessage": "!!!What kind of Daedalus wallet would you like to restore?",
+        "description": "Label for the \"labelDaedalusWalletKind\" checkbox.",
+        "end": {
+          "column": 3,
+          "line": 52
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
+        "id": "wallet.restore.dialog.step.walletKind.label.daedalusWalletKind",
+        "start": {
+          "column": 27,
+          "line": 47
+        }
+      },
+      {
+        "defaultMessage": "!!!12 words <em>(Balance wallet)</em>",
+        "description": "Label for the \"labelDaedalusWalletKindBalance12Word\" checkbox.",
+        "end": {
+          "column": 3,
+          "line": 59
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
+        "id": "wallet.restore.dialog.step.walletKind.label.daedalusWalletKindBalance12Word",
+        "start": {
+          "column": 40,
+          "line": 53
+        }
+      },
+      {
+        "defaultMessage": "!!!15 words <em>(Rewards wallet)</em>",
+        "description": "Label for the \"labelDaedalusWalletKindReward15Word\" checkbox.",
+        "end": {
+          "column": 3,
+          "line": 66
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
+        "id": "wallet.restore.dialog.step.walletKind.label.daedalusWalletKindReward15Word",
+        "start": {
+          "column": 39,
+          "line": 60
+        }
+      },
+      {
+        "defaultMessage": "!!!27 words <em>(Balance wallet)</em>",
+        "description": "Label for the \"labelDaedalusWalletKindBalance27Word\" checkbox.",
+        "end": {
+          "column": 3,
+          "line": 73
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
+        "id": "wallet.restore.dialog.step.walletKind.label.daedalusWalletKindBalance27Word",
+        "start": {
+          "column": 40,
+          "line": 67
+        }
+      },
+      {
+        "defaultMessage": "!!!What kind of Yoroi wallet would you like to restore?",
+        "description": "Label for the \"labelYoroiWalletKind\" checkbox.",
+        "end": {
+          "column": 3,
+          "line": 78
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
+        "id": "wallet.restore.dialog.step.walletKind.label.yoroiWalletKind",
+        "start": {
+          "column": 24,
+          "line": 74
+        }
+      },
+      {
+        "defaultMessage": "!!!15 words <em>(Balance wallet)</em>",
+        "description": "Label for the \"labelDaedalusWalletKindBalance15Word\" checkbox.",
+        "end": {
+          "column": 3,
+          "line": 85
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
+        "id": "wallet.restore.dialog.step.walletKind.label.yoroiWalletKindBalance15Word",
+        "start": {
+          "column": 37,
+          "line": 79
+        }
+      },
+      {
+        "defaultMessage": "!!!15 words <em>(Reward wallet)</em>",
+        "description": "Label for the \"labelDaedalusWalletKindReward15Word\" checkbox.",
+        "end": {
+          "column": 3,
+          "line": 92
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
+        "id": "wallet.restore.dialog.step.walletKind.label.yoroiWalletKindReward15Word",
+        "start": {
+          "column": 36,
+          "line": 86
+        }
+      },
+      {
+        "defaultMessage": "!!!What kind of hardware wallet would you like to restore?",
+        "description": "Label for the \"labelHardwareWalletKind\" checkbox.",
+        "end": {
+          "column": 3,
+          "line": 98
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
+        "id": "wallet.restore.dialog.step.walletKind.label.hardwareWalletKind",
+        "start": {
+          "column": 27,
+          "line": 93
+        }
+      },
+      {
+        "defaultMessage": "!!!24 words - Ledger Nano S or Nano X (Balance wallet)",
+        "description": "Label for the \"labelHardwareWalletKindLedger\" checkbox.",
+        "end": {
+          "column": 3,
+          "line": 103
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
+        "id": "wallet.restore.dialog.step.walletKind.label.hardwareWalletKindLedger",
+        "start": {
+          "column": 33,
+          "line": 99
+        }
+      },
+      {
+        "defaultMessage": "!!!24 words - Trezor (Balance wallet)",
+        "description": "Label for the \"labelHardwareWalletKindTrezor\" checkbox.",
+        "end": {
+          "column": 3,
+          "line": 108
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
+        "id": "wallet.restore.dialog.step.walletKind.label.hardwareWalletKindTrezor",
+        "start": {
+          "column": 33,
+          "line": 104
+        }
+      },
+      {
+        "defaultMessage": "!!!Hardware wallets keep your private keys stored securely on a physical device that is immune to common computer threats such as viruses and software bugs. Recovery phrases for hardware wallets should always be kept offline. By entering your hardware wallet recovery phrase in Daedalus, you are exposing your hardware wallet private keys to the security risks associated with computers and software.",
+        "description": "Label for the \"hardwareWalletDisclaimer1\" disclaimer.",
+        "end": {
+          "column": 3,
+          "line": 114
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
+        "id": "wallet.restore.dialog.step.walletKind.hardwareWalletDisclaimer1",
+        "start": {
+          "column": 29,
+          "line": 109
+        }
+      },
+      {
+        "defaultMessage": "!!!We strongly recommend that you delete the Balance wallet which is restored from your hardware wallet once you have moved any funds into a Rewards wallet.",
+        "description": "Label for the \"hardwareWalletDisclaimer2\" disclaimer.",
+        "end": {
+          "column": 3,
+          "line": 120
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
+        "id": "wallet.restore.dialog.step.walletKind.hardwareWalletDisclaimer2",
+        "start": {
+          "column": 29,
+          "line": 115
+        }
+      },
+      {
+        "defaultMessage": "!!!I understand and accept responsibility for the security concerns of restoring a hardware wallet on a computer.",
+        "description": "Label for the \"hardwareWalletCheckbox1\" disclaimer.",
+        "end": {
+          "column": 3,
+          "line": 126
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
+        "id": "wallet.restore.dialog.step.walletKind.hardwareWalletCheckbox1",
+        "start": {
+          "column": 27,
+          "line": 121
+        }
+      },
+      {
+        "defaultMessage": "!!!I understand that I should delete the Balance wallet I am restoring from a hardware wallet after moving funds to a Rewards wallet.",
+        "description": "Label for the \"hardwareWalletCheckbox2\" disclaimer.",
+        "end": {
+          "column": 3,
+          "line": 132
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
+        "id": "wallet.restore.dialog.step.walletKind.hardwareWalletCheckbox2",
+        "start": {
+          "column": 27,
+          "line": 127
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Are you sure?",
+        "description": "Headline for the wallet restoration cancellation confirmation dialog.",
+        "end": {
+          "column": 3,
+          "line": 15
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/widgets/ConfirmationDialog.js",
+        "id": "wallet.restore.dialog.confirmation.headline",
+        "start": {
+          "column": 12,
+          "line": 10
+        }
+      },
+      {
+        "defaultMessage": "!!!You haven’t submitted this information yet. If you close the window now, you will lose your progress and have to start again.",
+        "description": "Content for the wallet restoration cancellation confirmation dialog.",
+        "end": {
+          "column": 3,
+          "line": 22
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/widgets/ConfirmationDialog.js",
+        "id": "wallet.restore.dialog.confirmation.content",
+        "start": {
+          "column": 11,
+          "line": 16
+        }
+      },
+      {
+        "defaultMessage": "!!!Back to wallet restoration",
+        "description": "\"Cancel\" button label for the wallet restoration cancellation confirmation dialog.",
+        "end": {
+          "column": 3,
+          "line": 28
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/widgets/ConfirmationDialog.js",
+        "id": "wallet.restore.dialog.confirmation.button.cancelButtonLabel",
+        "start": {
+          "column": 21,
+          "line": 23
+        }
+      },
+      {
+        "defaultMessage": "!!!Close window",
+        "description": "\"Abort\" button label for the wallet restoration cancellation confirmation dialog.",
+        "end": {
+          "column": 3,
+          "line": 34
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/widgets/ConfirmationDialog.js",
+        "id": "wallet.restore.dialog.confirmation.button.confirmButtonLabel",
+        "start": {
+          "column": 22,
+          "line": 29
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/wallet-restore/widgets/ConfirmationDialog.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Restore a wallet",
+        "description": "Title \"Create a new wallet\" in the wallet create form.",
+        "end": {
+          "column": 3,
+          "line": 17
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/widgets/WalletRestoreDialog.js",
+        "id": "wallet.restore.dialog.title",
+        "start": {
+          "column": 15,
+          "line": 13
+        }
+      },
+      {
+        "defaultMessage": "!!!Restore a wallet",
+        "description": "Title \"Create a new wallet\" in the wallet create form.",
+        "end": {
+          "column": 3,
+          "line": 22
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/widgets/WalletRestoreDialog.js",
+        "id": "wallet.restore.dialog.titleSuccess",
+        "start": {
+          "column": 22,
+          "line": 18
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/wallet-restore/widgets/WalletRestoreDialog.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Step {currentStep} of {totalSteps}",
+        "description": "Step couters in the wallet create dialog.",
+        "end": {
+          "column": 3,
+          "line": 19
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/widgets/WalletRestoreSteps.js",
+        "id": "wallet.restore.dialog.stepsCounter",
+        "start": {
+          "column": 16,
+          "line": 15
+        }
+      },
+      {
+        "defaultMessage": "!!!Type",
+        "description": "Step \"Type\" in the wallet create dialog.",
+        "end": {
+          "column": 3,
+          "line": 24
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/widgets/WalletRestoreSteps.js",
+        "id": "wallet.restore.dialog.typeStep",
+        "start": {
+          "column": 12,
+          "line": 20
+        }
+      },
+      {
+        "defaultMessage": "!!!Recovery Phrase",
+        "description": "Step \"Recovery Phrase\" in the wallet create dialog.",
+        "end": {
+          "column": 3,
+          "line": 29
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/widgets/WalletRestoreSteps.js",
+        "id": "wallet.restore.dialog.mnemonicsStep",
+        "start": {
+          "column": 17,
+          "line": 25
+        }
+      },
+      {
+        "defaultMessage": "!!!Configuration",
+        "description": "Step \"Configuration\" in the wallet create dialog.",
+        "end": {
+          "column": 3,
+          "line": 34
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/widgets/WalletRestoreSteps.js",
+        "id": "wallet.restore.dialog.configurationStep",
+        "start": {
+          "column": 21,
+          "line": 30
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/wallet-restore/widgets/WalletRestoreSteps.json"
   },
   {
     "descriptors": [
@@ -8444,13 +9165,13 @@
         "description": "Label \"Restore wallet\" on the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 43
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.title.label",
         "start": {
           "column": 9,
-          "line": 33
+          "line": 39
         }
       },
       {
@@ -8458,41 +9179,41 @@
         "description": "Label for the wallet name input on the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 49
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.wallet.name.input.label",
         "start": {
           "column": 24,
-          "line": 38
-        }
-      },
-      {
-        "defaultMessage": "!!!Choose a name for the wallet you are about to restore",
-        "description": "Hint \"Name the wallet you are restoring\" for the wallet name input on the wallet restore dialog.",
-        "end": {
-          "column": 3,
-          "line": 49
-        },
-        "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
-        "id": "wallet.restore.dialog.wallet.name.input.hint",
-        "start": {
-          "column": 23,
           "line": 44
         }
       },
       {
-        "defaultMessage": "!!!Number of words in your recovery phrase",
-        "description": "Label for the recovery phrase type options on the wallet restore dialog.",
+        "defaultMessage": "!!!Name the wallet you are restoring",
+        "description": "Hint \"Name the wallet you are restoring\" for the wallet name input on the wallet restore dialog.",
         "end": {
           "column": 3,
           "line": 55
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
+        "id": "wallet.restore.dialog.wallet.name.input.hint",
+        "start": {
+          "column": 23,
+          "line": 50
+        }
+      },
+      {
+        "defaultMessage": "!!!Number of words in the recovery phrase",
+        "description": "Label for the recovery phrase type options on the wallet restore dialog.",
+        "end": {
+          "column": 3,
+          "line": 61
+        },
+        "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.recovery.phrase.type.options.label",
         "start": {
           "column": 27,
-          "line": 50
+          "line": 56
         }
       },
       {
@@ -8500,13 +9221,13 @@
         "description": "Word for the recovery phrase type on the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 61
+          "line": 67
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.recovery.phrase.type.word",
         "start": {
           "column": 32,
-          "line": 56
+          "line": 62
         }
       },
       {
@@ -8514,13 +9235,13 @@
         "description": "Label for the recovery phrase type 15-word option on the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 67
+          "line": 73
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.recovery.phrase.type.15word.option",
         "start": {
           "column": 34,
-          "line": 62
+          "line": 68
         }
       },
       {
@@ -8528,41 +9249,55 @@
         "description": "Label for the recovery phrase type 12-word option on the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 73
+          "line": 79
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.recovery.phrase.type.12word.option",
         "start": {
           "column": 34,
-          "line": 68
-        }
-      },
-      {
-        "defaultMessage": "!!!Wallet recovery phrase",
-        "description": "Label for the recovery phrase input on the wallet restore dialog.",
-        "end": {
-          "column": 3,
-          "line": 79
-        },
-        "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
-        "id": "wallet.restore.dialog.recovery.phrase.input.label",
-        "start": {
-          "column": 28,
           "line": 74
         }
       },
       {
-        "defaultMessage": "!!!Enter your {numberOfWords}-word wallet recovery phrase",
-        "description": "Hint \"Enter recovery phrase\" for the recovery phrase input on the wallet restore dialog.",
+        "defaultMessage": "!!!Recovery phrase",
+        "description": "Label for the recovery phrase input on the wallet restore dialog.",
         "end": {
           "column": 3,
           "line": 85
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
+        "id": "wallet.restore.dialog.recovery.phrase.input.label",
+        "start": {
+          "column": 28,
+          "line": 80
+        }
+      },
+      {
+        "defaultMessage": "!!!Enter recovery phrase",
+        "description": "Hint \"Enter recovery phrase\" for the recovery phrase input on the wallet restore dialog.",
+        "end": {
+          "column": 3,
+          "line": 91
+        },
+        "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.recovery.phrase.input.hint",
         "start": {
           "column": 27,
-          "line": 80
+          "line": 86
+        }
+      },
+      {
+        "defaultMessage": "!!!New",
+        "description": "Label \"new\" on the wallet restore dialog.",
+        "end": {
+          "column": 3,
+          "line": 96
+        },
+        "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
+        "id": "wallet.restore.dialog.recovery.phrase.newLabel",
+        "start": {
+          "column": 12,
+          "line": 92
         }
       },
       {
@@ -8570,13 +9305,13 @@
         "description": "\"No results\" message for the recovery phrase input search results.",
         "end": {
           "column": 3,
-          "line": 91
+          "line": 102
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.recovery.phrase.input.noResults",
         "start": {
           "column": 27,
-          "line": 86
+          "line": 97
         }
       },
       {
@@ -8584,13 +9319,13 @@
         "description": "Label for the \"Restore wallet\" button on the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 97
+          "line": 108
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.restore.wallet.button.label",
         "start": {
           "column": 21,
-          "line": 92
+          "line": 103
         }
       },
       {
@@ -8598,13 +9333,13 @@
         "description": "Error message shown when invalid recovery phrase was entered.",
         "end": {
           "column": 3,
-          "line": 103
+          "line": 114
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.form.errors.invalidRecoveryPhrase",
         "start": {
           "column": 25,
-          "line": 98
+          "line": 109
         }
       },
       {
@@ -8612,13 +9347,13 @@
         "description": "Password creation label.",
         "end": {
           "column": 3,
-          "line": 108
+          "line": 119
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.passwordSectionLabel",
         "start": {
           "column": 24,
-          "line": 104
+          "line": 115
         }
       },
       {
@@ -8626,13 +9361,13 @@
         "description": "Password creation description.",
         "end": {
           "column": 3,
-          "line": 114
+          "line": 125
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.passwordSectionDescription",
         "start": {
           "column": 30,
-          "line": 109
+          "line": 120
         }
       },
       {
@@ -8640,13 +9375,13 @@
         "description": "Label for the \"Wallet password\" input in the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 120
+          "line": 131
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.spendingPasswordLabel",
         "start": {
           "column": 25,
-          "line": 115
+          "line": 126
         }
       },
       {
@@ -8654,13 +9389,13 @@
         "description": "Label for the \"Repeat password\" input in the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 126
+          "line": 137
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.repeatPasswordLabel",
         "start": {
           "column": 23,
-          "line": 121
+          "line": 132
         }
       },
       {
@@ -8668,41 +9403,55 @@
         "description": "Placeholder for the \"Password\" inputs in the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 132
+          "line": 143
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.passwordFieldPlaceholder",
         "start": {
           "column": 28,
-          "line": 127
+          "line": 138
         }
       },
       {
-        "defaultMessage": "!!!Wallet recovery phrase",
-        "description": "Tab title \"Wallet recovery phrasee\" in the wallet restore dialog.",
+        "defaultMessage": "!!!Daedalus wallet",
+        "description": "Tab title \"Daedalus wallet\" in the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 138
+          "line": 148
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.tab.title.recoveryPhrase",
         "start": {
           "column": 26,
-          "line": 133
+          "line": 144
         }
       },
       {
-        "defaultMessage": "!!!Paper wallet recovery phrase",
-        "description": "Tab title \"Paper wallet recovery phrase\" in the wallet restore dialog.",
+        "defaultMessage": "!!!Daedalus paper wallet",
+        "description": "Tab title \"Daedalus paper wallet\" in the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 144
+          "line": 154
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.tab.title.certificate",
         "start": {
           "column": 23,
-          "line": 139
+          "line": 149
+        }
+      },
+      {
+        "defaultMessage": "!!!Yoroi wallet",
+        "description": "Tab title \"Yoroi wallet\" in the wallet restore dialog.",
+        "end": {
+          "column": 3,
+          "line": 159
+        },
+        "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
+        "id": "wallet.restore.dialog.tab.title.yoroi",
+        "start": {
+          "column": 17,
+          "line": 155
         }
       },
       {
@@ -8710,13 +9459,13 @@
         "description": "Label for the shielded recovery phrase input on the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 150
+          "line": 165
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.shielded.recovery.phrase.input.label",
         "start": {
           "column": 36,
-          "line": 145
+          "line": 160
         }
       },
       {
@@ -8724,13 +9473,13 @@
         "description": "Hint \"Enter your 27-word paper wallet recovery phrase.\" for the recovery phrase input on the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 157
+          "line": 172
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.shielded.recovery.phrase.input.hint",
         "start": {
           "column": 35,
-          "line": 151
+          "line": 166
         }
       },
       {
@@ -8738,13 +9487,13 @@
         "description": "Label for the \"Restore paper wallet\" button on the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 163
+          "line": 178
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.paper.wallet.button.label",
         "start": {
           "column": 33,
-          "line": 158
+          "line": 173
         }
       }
     ],
@@ -9715,7 +10464,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Note that password needs to be at least 10 characters long, and have at least 1 uppercase, 1 lowercase letter and 1 number.",
+        "defaultMessage": "!!!Note that password needs to be at least 7 characters long, and have at least 1 uppercase, 1 lowercase letter and 1 number.",
         "description": "Password instructions note.",
         "end": {
           "column": 3,
