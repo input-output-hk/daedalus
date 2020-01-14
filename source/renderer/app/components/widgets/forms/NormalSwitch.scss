@@ -1,18 +1,13 @@
-$height: 12px !important;
-$width: 24px !important;
-
 .component {
   flex-direction: row;
+  margin: 10px;
 
   :global {
     .SimpleSwitch_switch {
-      border-radius: var(--rp-switch-normal-border-radius);
-      margin-left: 6px;
+      height: 22px;
+      width: 44px;
 
       &:not(.SimpleSwitch_checked) {
-        height: $height;
-        width: $width;
-
         span {
           left: 2px;
           top: 2px;
@@ -20,11 +15,8 @@ $width: 24px !important;
       }
 
       &.SimpleSwitch_checked {
-        height: $height;
-        width: $width;
-
         span {
-          left: 14px !important;
+          left: 24px !important;
           top: 2px;
         }
       }
@@ -32,9 +24,7 @@ $width: 24px !important;
   }
 
   span {
-    border-radius: var(--rp-switch-tiny-border-radius);
-    height: 8px !important;
-    width: 8px !important;
+    border-radius: var(--rp-switch-normal-border-radius);
   }
 
   label {
