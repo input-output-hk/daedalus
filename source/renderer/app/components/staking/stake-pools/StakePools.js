@@ -12,7 +12,7 @@ import type { StakePoolsListType } from '../../../api/staking/types';
 const messages = defineMessages({
   delegatingListTitle: {
     id: 'staking.stakePools.delegatingListTitle',
-    defaultMessage: '!!!Stake pools you are currently delegating to',
+    defaultMessage: '!!!Staking pools you are delegating to',
     description: '"delegatingListTitlee" for the Stake Pools page.',
   },
   listTitle: {

@@ -3314,7 +3314,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Stake pools you are currently delegating to",
+        "defaultMessage": "!!!Staking pools you are delegating to",
         "description": "\"delegatingListTitlee\" for the Stake Pools page.",
         "end": {
           "column": 3,
@@ -3375,7 +3375,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Stake pools you are currently delegating to",
+        "defaultMessage": "!!!Staking pools you are delegating to",
         "description": "\"delegatingListTitlee\" for the Stake Pools search.",
         "end": {
           "column": 3,
