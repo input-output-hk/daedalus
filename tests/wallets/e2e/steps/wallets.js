@@ -87,6 +87,24 @@ When(/^I click close$/, function() {
   return this.waitAndClick('.primary');
 });
 
+When(/^I restore "([^"]*)" rewards wallet with funds$/, async function(walletName) {
+  await restoreWalletWithFunds(this.client, { walletName });
+  const wallet = await waitUntilWalletIsLoaded.call(this, walletName);
+  addOrSetWalletsForScenario.call(this, wallet);
+});
+
+When(/^I restore "([^"]*)" balance wallet without funds$/, async function(walletName) {
+  await restoreLegacyWallet(this.client, { walletName, hasFunds: false });
+  const wallet = await waitUntilWalletIsLoaded.call(this, walletName);
+  addOrSetWalletsForScenario.call(this, wallet);
+});
+
+When(/^I restore "([^"]*)" balance wallet with funds$/, async function(walletName) {
+  await restoreLegacyWallet(this.client, { walletName, hasFunds: true });
+  const wallet = await waitUntilWalletIsLoaded.call(this, walletName);
+  addOrSetWalletsForScenario.call(this, wallet);
+});
+
 Then(/^I should have newly created "([^"]*)" wallet loaded$/, async function(
   walletName
 ) {

@@ -38,14 +38,14 @@ export const restoreWalletWithFunds = async (client: Object, { walletName }: { w
       .catch(error => done(error));
   }, walletName);
 
-export const restoreLegacyWallet = async (client: Object, { walletName, hasFunds }: { walletName: string, hasFunds?: boolean }) =>
-  client.executeAsync((name, withFunds, done) => {
+export const restoreLegacyWallet = async (client: Object, { walletName, hasFunds, recoveryPhrase }: { walletName: string, hasFunds?: boolean, recoveryPhrase?: Array<string> }) =>
+  client.executeAsync((name, withFunds, recoveryPhrase, done) => {
     daedalus.api.ada
       .restoreByronRandomWallet({
         walletName: name,
         recoveryPhrase:
-          withFunds ? ['arctic', 'decade', 'pink', 'easy', 'jar', 'index', 'base', 'bright', 'vast', 'ocean', 'hard', 'pizza'] :
-          ['judge', 'sting', 'fish', 'script', 'silent', 'soup', 'chef', 'very', 'employ', 'wage', 'cloud', 'tourist'],
+          recoveryPhrase || (withFunds ? ['arctic', 'decade', 'pink', 'easy', 'jar', 'index', 'base', 'bright', 'vast', 'ocean', 'hard', 'pizza'] :
+          ['judge', 'sting', 'fish', 'script', 'silent', 'soup', 'chef', 'very', 'employ', 'wage', 'cloud', 'tourist']),
         spendingPassword: 'Secret1234',
       })
       .then(() =>
@@ -55,7 +55,7 @@ export const restoreLegacyWallet = async (client: Object, { walletName, hasFunds
           .catch(error => done(error))
       )
       .catch(error => done(error));
-  }, walletName, hasFunds);
+  }, walletName, hasFunds, recoveryPhrase);
 
 const createWalletsSequentially = async (wallets: Array<any>, context: Object) => {
   context.wallets = [];

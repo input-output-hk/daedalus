@@ -3,6 +3,8 @@ import { When, Then } from 'cucumber';
 import { expect } from 'chai';
 import type { Daedalus } from '../../../types';
 
+import { restoreLegacyWallet, waitUntilWalletIsLoaded, addOrSetWalletsForScenario } from './helpers';
+
 declare var daedalus: Daedalus;
 
 When(/^I click "Balance" wallet top bar notification action$/, function() {
@@ -50,6 +52,12 @@ When(/^I see initial wallets balance$/, async function() {
   expect(balanceWalletBalance).to.equal('1M ADA');
 });
 
+When(/^I restore "([^"]*)" for transfer funds$/, async function(walletName) {
+  await restoreLegacyWallet(this.client, { walletName, recoveryPhrase: ['collect', 'fold', 'file', 'clown', 'injury', 'sun', 'brass', 'diet', 'exist', 'spike', 'behave', 'clip'] });
+  const wallet = await waitUntilWalletIsLoaded.call(this, walletName);
+  addOrSetWalletsForScenario.call(this, wallet);
+});
+
 Then(/^"Transfer ada" wizard step 2 dialog continue button should be disabled$/, async function() {
   await this.client.waitForEnabled('.TransferFundsStep2Dialog_dialog .confirmButton');
 });
@@ -89,3 +97,22 @@ Then(
   }
 );
 
+Then(
+  /^I should see the following error messages on transfer wizard step 2 dialog:$/,
+  async function(data) {
+    const errorSelector = '.TransferFundsStep2Dialog_dialog .TransferFundsStep2Dialog_error';
+    await this.client.waitForText(errorSelector);
+    let errorsOnScreen = await this.client.getText(errorSelector);
+    if (typeof errorsOnScreen === 'string') errorsOnScreen = [errorsOnScreen];
+    const errors = data.hashes();
+    for (let i = 0; i < errors.length; i++) {
+      const expectedError = await this.intl(errors[i].message);
+      expect(errorsOnScreen[i]).to.equal(expectedError);
+    }
+  }
+);
+
+Then(/^"Transfer ada" wizard step 2 dialog continue button should not be disabled anymore$/, async function() {
+  const isEnabled = await this.client.isEnabled('.TransferFundsStep2Dialog_dialog .confirmButton');
+  expect(isEnabled).to.equal(true);
+});
