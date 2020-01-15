@@ -3,7 +3,13 @@
   font-family: var(--font-regular);
   margin: 0 -20px -10px;
   position: relative;
-  width: 360px;
+  width: 300px;
+
+  :global {
+    .Dialog_content {
+      overflow: visible;
+    }
+  }
 
   .title {
     align-items: center;

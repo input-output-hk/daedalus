@@ -1,7 +1,13 @@
 @import '~react-virtualized/styles.css';
+@import '~react-datetime/css/react-datetime.css';
 
 // ============ RESET ===========
 // http://meyerweb.com/eric/tools/css/reset
+
+html,
+body {
+  height: 100%;
+}
 
 html,
 body,

@@ -784,6 +784,10 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-transactions-state-pending-warning-background-color': '#ec5d6b',
     '--theme-transactions-filter-button-shadow-color': 'rgba(0, 0, 0, 0.18)',
     '--theme-transactions-filter-button-color': '#fff',
+    '--theme-transactions-date-picker-button-background-color':
+      'rgba(41, 181, 149, 0.07)',
+    '--theme-transactions-date-picker-button-background-color-active':
+      'rgba(41, 181, 149, 0.14)',
   },
   uploader: {
     '--theme-uploader-text-color': '#2d2d2d',

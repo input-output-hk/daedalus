@@ -12,6 +12,7 @@ import { DateRangeTypes } from '../../../stores/TransactionsStore';
 import TinyCheckbox from '../../widgets/forms/TinyCheckbox';
 import TinySelect from '../../widgets/forms/TinySelect';
 import TinyInput from '../../widgets/forms/TinyInput';
+import TinyDatePicker from '../../widgets/forms/TinyDatePicker';
 import TinyButton from '../../widgets/forms/TinyButton';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
@@ -128,7 +129,7 @@ const formatAmountValue = (amount: string) => {
     return <span className="undefined">0</span>;
   }
 
-  if (amount.length > 8) {
+  if (amount.length > 5) {
     return formattedWalletAmount(amountBigNumber, false, false);
   }
 
@@ -220,12 +221,10 @@ export default class FilterDialog extends Component<Props> {
         value: this.props.dateRange,
       },
       customFromDate: {
-        type: 'date',
         label: '',
         value: this.props.fromDate,
       },
       customToDate: {
-        type: 'date',
         label: '',
         value: this.props.toDate,
       },
@@ -340,12 +339,12 @@ export default class FilterDialog extends Component<Props> {
     const customToDateField = form.$('customToDate');
     const { customFromDate, customToDate } = form.values();
     const customFromDateInnerValue = customFromDate ? (
-      moment(customFromDate).format('MM.DD.YYYY')
+      moment(customFromDate).format('DD.MM.YYYY')
     ) : (
       <span className="undefined">mm.dd.yyyy</span>
     );
     const customToDateInnerValue = customToDate ? (
-      moment(customToDate).format('MM.DD.YYYY')
+      moment(customToDate).format('DD.MM.YYYY')
     ) : (
       <span className="undefined">mm.dd.yyyy</span>
     );
@@ -360,21 +359,19 @@ export default class FilterDialog extends Component<Props> {
         </div>
         <div className={styles.body}>
           <div className={styles.dateRangeInput}>
-            <TinyInput
-              type="date"
+            <TinyDatePicker
               {...customFromDateField.bind()}
-              useReadMode
               innerLabelPrefix={intl.formatMessage(globalMessages.rangeFrom)}
               innerValue={customFromDateInnerValue}
+              pickerPanelPosition="left"
             />
           </div>
           <div className={styles.dateRangeInput}>
-            <TinyInput
-              type="date"
+            <TinyDatePicker
               {...customToDateField.bind()}
-              useReadMode
               innerLabelPrefix={intl.formatMessage(globalMessages.rangeTo)}
               innerValue={customToDateInnerValue}
+              pickerPanelPosition="right"
             />
           </div>
         </div>

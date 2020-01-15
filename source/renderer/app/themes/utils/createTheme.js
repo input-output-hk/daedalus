@@ -1168,6 +1168,12 @@ export const createDaedalusComponentsTheme = (
       '--theme-transactions-filter-button-shadow-color': `${chroma(
         background.primary.regular
       ).alpha(0.18)}`,
+      '--theme-transactions-date-picker-button-background-color': `${
+        background.primary.lightest
+      }`,
+      '--theme-transactions-date-picker-button-background-color-active': `${
+        background.primary.regular
+      }`,
     },
     uploader: {
       '--theme-uploader-text-color': `${text.primary}`,

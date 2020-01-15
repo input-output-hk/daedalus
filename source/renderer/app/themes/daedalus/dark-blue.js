@@ -797,6 +797,10 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-transactions-state-pending-warning-background-color': '#ec5d6b',
     '--theme-transactions-filter-button-shadow-color': 'rgba(0, 0, 0, 0.18)',
     '--theme-transactions-filter-button-color': '#fafbfc',
+    '--theme-transactions-date-picker-button-background-color':
+      'rgba(233, 244, 254, 0.07)',
+    '--theme-transactions-date-picker-button-background-color-active':
+      'rgba(233, 244, 254, 0.14)',
   },
   uploader: {
     '--theme-uploader-text-color': '#e9f4fe',

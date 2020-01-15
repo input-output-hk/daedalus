@@ -783,6 +783,10 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--theme-transactions-state-text-color': '#121326',
     '--theme-transactions-filter-button-shadow-color': '#1213262e',
     '--theme-transactions-filter-button-color': 'rgba(18, 19, 38, 1)',
+    '--theme-transactions-date-picker-button-background-color':
+      'rgba(255, 255, 255, 0.07)',
+    '--theme-transactions-date-picker-button-background-color-active':
+      'rgba(255, 255, 255, 0.14)',
   },
   uploader: {
     '--theme-uploader-text-color': '#ffffff',

@@ -794,6 +794,10 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-transactions-state-pending-warning-background-color': '#ec5d6b',
     '--theme-transactions-filter-button-shadow-color': 'rgba(0, 0, 0, 0.18)',
     '--theme-transactions-filter-button-color': '#fafbfc',
+    '--theme-transactions-date-picker-button-background-color':
+      'rgba(32, 34, 37, 0.07)',
+    '--theme-transactions-date-picker-button-background-color-active':
+      'rgba(32, 34, 37, 0.14)',
   },
   uploader: {
     '--theme-uploader-text-color': '#5e6066',

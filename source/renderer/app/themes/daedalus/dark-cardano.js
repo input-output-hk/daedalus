@@ -781,6 +781,10 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--theme-transactions-filter-button-shadow-color':
       'rgba(31, 193, 195, 0.18)',
     '--theme-transactions-filter-button-color': 'rgba(18, 19, 38, 1)',
+    '--theme-transactions-date-picker-button-background-color':
+      'rgba(255, 255, 255, 0.07)',
+    '--theme-transactions-date-picker-button-background-color-active':
+      'rgba(255, 255, 255, 0.14)',
   },
   uploader: {
     '--theme-uploader-text-color': '#ffffff',
