@@ -74,7 +74,7 @@
         "ja-JP": ""
       },
       "target": {
-        "daedalusVersion": "",
+        "daedalusVersion": ">=2.0.0-ITN1",
         "platforms": ["darwin", "win32", "linux"]
       },
       "action": {
@@ -227,7 +227,7 @@
         "en-US": "# h1 English info content 3\n"
       },
       "target": {
-        "daedalusVersion": "",
+        "daedalusVersion": ">=2.0.0-ITN1",
         "platforms": ["darwin", "win32", "linux"]
       },
       "action": {
