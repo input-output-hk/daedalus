@@ -12,10 +12,12 @@ Changelog
 - Improved network screen with responsive main copy box ([PR 1797](https://github.com/input-output-hk/daedalus/pull/1797))
 
 ### Fixes
+- Fixed a typo in the Staking Pools section ([PR 1785](https://github.com/input-output-hk/daedalus/pull/1785))
 - Fixed Daedalus ITN Terms of Service typo ([PR 1809](https://github.com/input-output-hk/daedalus/pull/1809))
 - Fixed handling of duplicated wallet IDs when restoring both legacy and new wallets from the same wallet recovery phrase ([PR 1805](https://github.com/input-output-hk/daedalus/pull/1805))
 
 ### Chores
+- Updated checkboxes, radio buttons and switchers sizes and borders ([PR 1793](https://github.com/input-output-hk/daedalus/pull/1793))
 - Updated `cardano-wallet` to revision `132a5faf8c076eb8e873857a15e80db56be7e6ca` ([PR 1740](https://github.com/input-output-hk/daedalus/pull/1740))
 
 ## 2.0.0-ITN1
