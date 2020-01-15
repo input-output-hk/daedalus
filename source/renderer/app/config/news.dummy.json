@@ -2,7 +2,7 @@
   "updatedAt": 1569169958620,
   "items": [
     {
-      "id": 1,
+      "id": 1569152525812,
       "title": {
         "en-US": "Alert 1 in English",
         "ja-JP": "Alert 1 in Japanese"
@@ -33,7 +33,7 @@
       "type": "alert"
     },
     {
-      "id": 2,
+      "id": 1569238907194,
       "title": {
         "en-US": "Alert 2 in English",
         "ja-JP": "Alert 2 in Japanese"
@@ -64,7 +64,7 @@
       "type": "alert"
     },
     {
-      "id": 3,
+      "id": 1569325284166,
       "title": {
         "en-US": "Alert 3 in English",
         "ja-JP": ""
@@ -95,7 +95,7 @@
       "type": "alert"
     },
     {
-      "id": 4,
+      "id": 1569429144746,
       "title": {
         "en-US": "Announcement 1 in English",
         "ja-JP": "Announcement 1 in Japanese"
@@ -126,7 +126,7 @@
       "type": "announcement"
     },
     {
-      "id": 5,
+      "id": 1569342749091,
       "title": {
         "en-US": "Announcement 2 in English",
         "ja-JP": "Announcement 2 in Japanese"
@@ -157,7 +157,7 @@
       "type": "announcement"
     },
     {
-      "id": 6,
+      "id": 1569256354107,
       "title": {
         "en-US": "Info 1 in English",
         "ja-JP": "Info 1 in Japanese"
@@ -188,7 +188,7 @@
       "type": "info"
     },
     {
-      "id": 7,
+      "id": 1569169958620,
       "title": {
         "en-US": "Info 2 in English - a little bit longer title",
         "ja-JP": "Info 2 in Japanese"
@@ -219,7 +219,7 @@
       "type": "info"
     },
     {
-      "id": 8,
+      "id": 1568724201141,
       "title": {
         "en-US": "Info 3 in English - a little bit longer title"
       },
@@ -245,6 +245,84 @@
       },
       "date": 1568724201141,
       "type": "info"
+    },
+    {
+      "title": {
+        "en-US": "OLD FORMAT English Info - a little bit longer title",
+        "ja-JP": "OLD FORMAT Japanese Info - a little bit longer title"
+      },
+      "content": {
+        "en-US": "# h1 OLD FORMAT English info content\n",
+        "ja-JP": "# h1 OLD FORMAT Japanese info content\n"
+      },
+      "target": {
+        "daedalusVersion": "",
+        "platforms": ["darwin", "win32", "linux"]
+      },
+      "action": {
+        "label": {
+          "en-US": "Visit en-US",
+          "ja-JP": "Visit ja-JP"
+        },
+        "url": {
+          "en-US": "https://iohk.zendesk.com/hc/en-us/articles/",
+          "ja-JP": "https://iohk.zendesk.com/hc/ja/articles/"
+        }
+      },
+      "date": 1568540661347,
+      "type": "info"
+    },
+    {
+      "title": {
+        "en-US": "OLD FORMAT English announcement - a little bit longer title",
+        "ja-JP": "OLD FORMAT Japanese announcement - a little bit longer title"
+      },
+      "content": {
+        "en-US": "# h1 OLD FORMAT English announcement content\n",
+        "ja-JP": "# h1 OLD FORMAT Japanese announcement content\n"
+      },
+      "target": {
+        "daedalusVersion": "",
+        "platforms": ["darwin", "win32", "linux"]
+      },
+      "action": {
+        "label": {
+          "en-US": "Visit en-US",
+          "ja-JP": "Visit ja-JP"
+        },
+        "url": {
+          "en-US": "https://iohk.zendesk.com/hc/en-us/articles/",
+          "ja-JP": "https://iohk.zendesk.com/hc/ja/articles/"
+        }
+      },
+      "date": 1565862326241,
+      "type": "announcement"
+    },
+    {
+      "title": {
+        "en-US": "OLD FORMAT English ALERT - a little bit longer title",
+        "ja-JP": "OLD FORMAT Japanese ALERT - a little bit longer title"
+      },
+      "content": {
+        "en-US": "# h1 OLD FORMAT English alert content\n",
+        "ja-JP": "# h1 OLD FORMAT Japanese alert content\n"
+      },
+      "target": {
+        "daedalusVersion": "",
+        "platforms": ["darwin", "win32", "linux"]
+      },
+      "action": {
+        "label": {
+          "en-US": "Visit en-US",
+          "ja-JP": "Visit ja-JP"
+        },
+        "url": {
+          "en-US": "https://iohk.zendesk.com/hc/en-us/articles/",
+          "ja-JP": "https://iohk.zendesk.com/hc/ja/articles/"
+        }
+      },
+      "date": 1563183947774,
+      "type": "alert"
     }
   ]
 }
