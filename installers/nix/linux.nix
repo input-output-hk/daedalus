@@ -38,7 +38,7 @@ let
 
     test -z "$XDG_DATA_HOME" && { XDG_DATA_HOME="''${HOME}/.local/share"; }
     export           CLUSTER=${cluster}
-    export      DAEDALUS_DIR="''${XDG_DATA_HOME}/Daedalus"
+    export      DAEDALUS_DIR="''${XDG_DATA_HOME}/Daedalus-AR"
     export   DAEDALUS_CONFIG=${if sandboxed then "/nix/var/nix/profiles/profile-${cluster}/etc" else daedalus-config}
 
     mkdir -p "''${DAEDALUS_DIR}/${cluster}/"{Logs/pub,Secrets}
