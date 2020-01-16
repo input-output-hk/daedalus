@@ -277,8 +277,8 @@ export default class FilterDialog extends Component<Props> {
 
   resetForm = () => {
     this.form.select('dateRange').set(DateRangeTypes.ALL);
-    this.form.select('fromAmount').set('');
-    this.form.select('toAmount').set('');
+    this.form.select('fromAmount').set(this.props.fromAmount || '');
+    this.form.select('toAmount').set(this.props.toAmount || '');
     this.form.select('incomingChecked').set(true);
     this.form.select('outgoingChecked').set(true);
   };
@@ -373,7 +373,9 @@ export default class FilterDialog extends Component<Props> {
               innerLabelPrefix={intl.formatMessage(globalMessages.rangeFrom)}
               innerValue={customFromDateInnerValue}
               pickerPanelPosition="left"
-              onReset={() => null}
+              onReset={() =>
+                form.select('customFromDate').set(this.props.fromDate)
+              }
             />
           </div>
           <div className={styles.dateRangeInput}>
@@ -382,7 +384,7 @@ export default class FilterDialog extends Component<Props> {
               innerLabelPrefix={intl.formatMessage(globalMessages.rangeTo)}
               innerValue={customToDateInnerValue}
               pickerPanelPosition="right"
-              onReset={() => null}
+              onReset={() => form.select('customToDate').set(this.props.toDate)}
             />
           </div>
         </div>
