@@ -31,7 +31,11 @@ storiesOf('Wallets|Transactions', module)
     'Transactions - With filter dialog open',
     ({ locale }: { locale: string }) => (
       <div>
-        <FilterButton faded={false} onClick={() => null} />
+        <FilterButton
+          numberOfFilterDimensionsApplied={1}
+          faded={false}
+          onClick={() => null}
+        />
         <FilterDialog
           dateRange={DateRangeTypes.ALL}
           onFilter={() => null}

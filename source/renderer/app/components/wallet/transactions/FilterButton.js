@@ -10,7 +10,7 @@ import globalMessages from '../../../i18n/global-messages';
 import styles from './FilterButton.scss';
 
 type Props = {
-  numberOfFilterDimensionsApplied?: number,
+  numberOfFilterDimensionsApplied: number,
   faded: boolean,
   onClick: Function,
 };

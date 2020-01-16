@@ -12,7 +12,7 @@ export const generateFilterOptions = (
 ) => {
   const dates = transactions
     .filter(({ date }) => !!date)
-    .map(({ date }) => date.getTime());
+    .map(({ date }) => (date ? date.getTime() : 0));
   const amounts = transactions.map(({ amount }) => amount.toNumber());
   const dateRange = DateRangeTypes.ALL;
   const fromDate =

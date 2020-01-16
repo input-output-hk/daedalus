@@ -30,6 +30,7 @@ export default class TinyDatePicker extends Component<Props> {
 
   static defaultProps = {
     onReset: () => null,
+    onChange: () => null,
   };
 
   selfRef: any;
@@ -97,10 +98,10 @@ export default class TinyDatePicker extends Component<Props> {
           onChange={selectedDate => {
             if (typeof selectedDate === 'string') {
               if (!selectedDate) {
-                onChange(selectedDate);
+                onChange && onChange(selectedDate);
               }
             } else {
-              onChange(selectedDate.format('YYYY-MM-DD'));
+              onChange && onChange(selectedDate.format('YYYY-MM-DD'));
             }
           }}
           renderInput={props => (
