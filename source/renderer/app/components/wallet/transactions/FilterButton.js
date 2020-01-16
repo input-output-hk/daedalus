@@ -10,6 +10,7 @@ import globalMessages from '../../../i18n/global-messages';
 import styles from './FilterButton.scss';
 
 type Props = {
+  numberOfFilterDimensionsApplied?: number,
   faded: boolean,
   onClick: Function,
 };
@@ -22,11 +23,16 @@ export default class FilterButton extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { faded, onClick } = this.props;
+    const { numberOfFilterDimensionsApplied, faded, onClick } = this.props;
     const buttonLabel = (
       <>
         <div className={styles.actionLabel}>
           {intl.formatMessage(globalMessages.filter)}
+          {numberOfFilterDimensionsApplied > 0 && (
+            <span className={styles.numberIndicator}>
+              ({numberOfFilterDimensionsApplied})
+            </span>
+          )}
         </div>
         <SVGInline svg={filterIcon} className={styles.filterIcon} />
       </>

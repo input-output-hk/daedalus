@@ -97,7 +97,9 @@ export default class WalletTransactionsPage extends Component<Props, State> {
 
     let walletTransactions = null;
     const { searchLimit } = filterOptions;
-    const wasFiltered = getNumberOfFilterDimensionsApplied(filterOptions) > 0;
+    const numberOfFilterDimensionsApplied = getNumberOfFilterDimensionsApplied(
+      filterOptions
+    );
     const noTransactionsLabel = intl.formatMessage(messages.noTransactions);
     const noTransactionsFoundLabel = intl.formatMessage(
       messages.noTransactionsFound
@@ -128,7 +130,7 @@ export default class WalletTransactionsPage extends Component<Props, State> {
 
     if (!hasAny) {
       walletTransactions = <WalletNoTransactions label={noTransactionsLabel} />;
-    } else if (wasFiltered && !transactions.length) {
+    } else if (numberOfFilterDimensionsApplied > 0 && !transactions.length) {
       walletTransactions = (
         <WalletNoTransactions label={noTransactionsFoundLabel} />
       );
@@ -163,6 +165,7 @@ export default class WalletTransactionsPage extends Component<Props, State> {
       >
         <VerticalFlexContainer>
           <FilterButton
+            numberOfFilterDimensionsApplied={numberOfFilterDimensionsApplied}
             faded={isFilterButtonFaded}
             onClick={this.openFilterDialog}
           />
