@@ -96,7 +96,9 @@ export default class TinyDatePicker extends Component<Props> {
                 props.onFocus(...args);
                 this.ensureResetButtonExistence();
               }}
-              value={moment(props.value).format('DD.MM.YYYY')}
+              value={
+                props.value ? moment(props.value).format('DD.MM.YYYY') : ''
+              }
               useReadMode
               innerLabelPrefix={innerLabelPrefix}
               innerValue={innerValue}
