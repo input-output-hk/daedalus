@@ -1,5 +1,5 @@
 @e2e
-Feature: Add Wallet via Sidebar
+Feature: Restore Wallet via Sidebar
 
   Background:
     Given I have completed the basic setup
