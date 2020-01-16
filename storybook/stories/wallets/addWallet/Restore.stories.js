@@ -89,6 +89,9 @@ storiesOf('Wallets|Add Wallet', module)
         walletKindYoroi={walletKindSpecificSelect}
         walletKindHardware={walletKindSpecificSelect}
         mnemonics={[]}
+        expectedWordCount={0}
+        maxWordCount={0}
+        onValidateMnemonics={action('onValidateMnemonics')}
       />
     );
   })
