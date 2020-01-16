@@ -10,17 +10,17 @@ import { DateRangeTypes } from '../stores/TransactionsStore';
 export const generateFilterOptions = (
   transactions: Array<WalletTransaction>
 ) => {
-  const dates = transactions.map(({ date }) =>
-    date ? date.getTime() : new Date().getTime()
-  );
+  const dates = transactions
+    .filter(({ date }) => !!date)
+    .map(({ date }) => date.getTime());
   const amounts = transactions.map(({ amount }) => amount.toNumber());
   const dateRange = DateRangeTypes.ALL;
   const fromDate =
     dates.length > 0 ? moment(Math.min(...dates)).format('YYYY-MM-DD') : '';
   const toDate =
     dates.length > 0 ? moment(Math.max(...dates)).format('YYYY-MM-DD') : '';
-  const fromAmount = amounts.length > 0 ? Math.min(...amounts) : 0;
-  const toAmount = amounts.length > 0 ? Math.max(...amounts) : 0;
+  const fromAmount = amounts.length > 0 ? Math.min(...amounts).toString() : '';
+  const toAmount = amounts.length > 0 ? Math.max(...amounts).toString() : '';
   const incomingChecked = true;
   const outgoingChecked = true;
 
@@ -41,43 +41,37 @@ export const isTransactionDateInFilterRange = (
   transaction: WalletTransaction
 ) => {
   const { date } = transaction;
-  if ((!fromDate && !toDate) || !date) {
+  if (!date) {
     return true;
   }
-  const fromMoment = moment(fromDate)
-    .startOf('day')
-    .valueOf();
-  const toMoment = moment(toDate)
-    .endOf('day')
-    .valueOf();
-  const compareFrom = date.getTime() >= fromMoment;
-  const compareTo = date.getTime() <= toMoment;
-  if (!fromDate) {
-    return compareTo;
-  }
-  if (!toDate) {
-    return compareFrom;
-  }
+
+  const compareFrom = fromDate
+    ? date.getTime() >=
+      moment(fromDate)
+        .startOf('day')
+        .valueOf()
+    : true;
+  const compareTo = toDate
+    ? date.getTime() <=
+      moment(toDate)
+        .endOf('day')
+        .valueOf()
+    : true;
+
   return compareFrom && compareTo;
 };
 
 export const isTransactionAmountInFilterRange = (
-  fromAmount: number,
-  toAmount: number,
+  fromAmount: string,
+  toAmount: string,
   transaction: WalletTransaction
 ) => {
   const { amount } = transaction;
-  if (!fromAmount && !toAmount) {
-    return true;
-  }
-  const compareFrom = amount.toNumber() >= fromAmount;
-  const compareTo = amount.toNumber() <= toAmount;
-  if (!fromAmount) {
-    return compareTo;
-  }
-  if (!toAmount) {
-    return compareFrom;
-  }
+  const compareFrom = fromAmount
+    ? amount.toNumber() >= Number(fromAmount)
+    : true;
+  const compareTo = toAmount ? amount.toNumber() <= Number(toAmount) : true;
+
   return compareFrom && compareTo;
 };
 
@@ -116,8 +110,8 @@ export const isTransactionInFilterRange = (
     searchTerm = '',
     fromDate = '',
     toDate = '',
-    fromAmount = 0,
-    toAmount = 0,
+    fromAmount = '',
+    toAmount = '',
     incomingChecked = true,
     outgoingChecked = true,
   } = filterOptions || {};
@@ -134,7 +128,7 @@ export const isTransactionInFilterRange = (
   );
 };
 
-export const isFilterApplied = (
+export const getNumberOfFilterDimensionsApplied = (
   filterOptions: ?TransactionFilterOptionsStruct
 ) => {
   const {
@@ -146,14 +140,20 @@ export const isFilterApplied = (
     incomingChecked = true,
     outgoingChecked = true,
   } = filterOptions || {};
+  let result = 0;
 
-  return !!(
-    searchTerm ||
-    fromDate ||
-    toDate ||
-    fromAmount ||
-    toAmount ||
-    !incomingChecked ||
-    !outgoingChecked
-  );
+  if (searchTerm) {
+    result++;
+  }
+  if (fromDate || toDate) {
+    result++;
+  }
+  if (fromAmount || toAmount) {
+    result++;
+  }
+  if (!incomingChecked || !outgoingChecked) {
+    result++;
+  }
+
+  return result;
 };

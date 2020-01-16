@@ -73,6 +73,8 @@ export default class TinyDatePicker extends Component<Props> {
   render() {
     const {
       onReset, // eslint-disable-line
+      onChange,
+      value,
       innerLabelPrefix,
       innerValue,
       pickerPanelPosition,
@@ -84,21 +86,32 @@ export default class TinyDatePicker extends Component<Props> {
       pickerPanelPosition === 'right' ? styles.pickerPanelOnRight : null,
     ]);
 
+    /* eslint-disable */
     return (
       <div className={componentClassNames} ref={this.selfRef}>
         <Datetime
+          dateFormat="DD.MM.YYYY"
           timeFormat={false}
+          value={value ? moment(value).toDate() : null}
           onViewModeChange={this.ensureResetButtonExistence}
+          onChange={selectedDate => {
+            if (typeof selectedDate === 'string') {
+              if (!selectedDate) {
+                onChange(selectedDate);
+              }
+            } else {
+              onChange(selectedDate.format('YYYY-MM-DD'));
+            }
+          }}
           renderInput={props => (
             <TinyInput
               {...props}
+              onChange={(value, evt) => props.onChange(evt)}
               onFocus={(...args) => {
                 props.onFocus(...args);
                 this.ensureResetButtonExistence();
               }}
-              value={
-                props.value ? moment(props.value).format('DD.MM.YYYY') : ''
-              }
+              value={value ? moment(value).format('DD.MM.YYYY') : ''}
               useReadMode
               innerLabelPrefix={innerLabelPrefix}
               innerValue={innerValue}
@@ -108,5 +121,6 @@ export default class TinyDatePicker extends Component<Props> {
         />
       </div>
     );
+    /* eslint-enable */
   }
 }

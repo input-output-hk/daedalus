@@ -13,7 +13,7 @@ import FilterDialog from '../../components/wallet/transactions/FilterDialog';
 import FilterButton from '../../components/wallet/transactions/FilterButton';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import { formattedWalletAmount } from '../../utils/formatters';
-import { isFilterApplied } from '../../utils/transaction';
+import { getNumberOfFilterDimensionsApplied } from '../../utils/transaction';
 import type { TransactionFilterOptionsStruct } from '../../stores/TransactionsStore';
 import { WalletSyncStateStatuses } from '../../domains/Wallet';
 import { getNetworkExplorerUrlByType } from '../../utils/network';
@@ -97,7 +97,7 @@ export default class WalletTransactionsPage extends Component<Props, State> {
 
     let walletTransactions = null;
     const { searchLimit } = filterOptions;
-    const wasFiltered = isFilterApplied(filterOptions);
+    const wasFiltered = getNumberOfFilterDimensionsApplied(filterOptions) > 0;
     const noTransactionsLabel = intl.formatMessage(messages.noTransactions);
     const noTransactionsFoundLabel = intl.formatMessage(
       messages.noTransactionsFound

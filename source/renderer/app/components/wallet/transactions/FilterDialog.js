@@ -118,16 +118,28 @@ const calculateDateRange = (
   return { fromDate, toDate };
 };
 
-const formatAmountValue = (amount: string) => {
+const formatDateValue = (date: string, defaultDate: string) => {
+  if (!date) {
+    const formattedDefaultDate = moment(defaultDate).format('DD.MM.YYYY');
+
+    return <span className="undefined">{formattedDefaultDate}</span>;
+  }
+
+  return moment(date).format('DD.MM.YYYY');
+};
+
+const formatAmountValue = (amount: string, defaultAmount: string) => {
   if (!amount) {
-    return null;
+    const formattedDefaultAmount = formattedWalletAmount(
+      new BigNumber(defaultAmount),
+      false,
+      false
+    );
+
+    return <span className="undefined">{formattedDefaultAmount}</span>;
   }
 
   const amountBigNumber = new BigNumber(amount);
-
-  if (!Number(amount)) {
-    return <span className="undefined">0</span>;
-  }
 
   if (amount.length > 5) {
     return formattedWalletAmount(amountBigNumber, false, false);
@@ -150,12 +162,13 @@ const validateForm = (values: {
     fromAmount,
     toAmount,
   } = values;
+
   if (
     (dateRange === DateRangeTypes.CUSTOM_DATE_RANGE &&
+      customFromDate &&
+      customToDate &&
       moment(customFromDate).valueOf() > moment(customToDate).valueOf()) ||
-    (Number(fromAmount) !== 0 &&
-      Number(toAmount) !== 0 &&
-      Number(fromAmount) > Number(toAmount))
+    (fromAmount && toAmount && Number(fromAmount) > Number(toAmount))
   ) {
     return false;
   }
@@ -167,8 +180,8 @@ type Props = {
   dateRange?: DateRangeType,
   fromDate?: string,
   toDate?: string,
-  fromAmount?: number,
-  toAmount?: number,
+  fromAmount?: string,
+  toAmount?: string,
   incomingChecked?: boolean,
   outgoingChecked?: boolean,
   onFilter: Function,
@@ -264,8 +277,8 @@ export default class FilterDialog extends Component<Props> {
 
   resetForm = () => {
     this.form.select('dateRange').set(DateRangeTypes.ALL);
-    this.form.select('fromAmount').set(0);
-    this.form.select('toAmount').set(0);
+    this.form.select('fromAmount').set('');
+    this.form.select('toAmount').set('');
     this.form.select('incomingChecked').set(true);
     this.form.select('outgoingChecked').set(true);
   };
@@ -289,8 +302,6 @@ export default class FilterDialog extends Component<Props> {
           ...rest,
           ...dateRangePayload,
           dateRange,
-          fromAmount: Number(rest.fromAmount),
-          toAmount: Number(rest.toAmount),
         });
       },
       onError: () => null,
@@ -335,19 +346,17 @@ export default class FilterDialog extends Component<Props> {
   renderCustomDateRangeField = () => {
     const { form } = this;
     const { intl } = this.context;
+    const { fromDate, toDate } = this.props;
+    const defaultFromDate = fromDate || '1970-01-01';
+    const defaultToDate = toDate || moment().format('YYYY-MM-DD');
     const customFromDateField = form.$('customFromDate');
     const customToDateField = form.$('customToDate');
     const { customFromDate, customToDate } = form.values();
-    const customFromDateInnerValue = customFromDate ? (
-      moment(customFromDate).format('DD.MM.YYYY')
-    ) : (
-      <span className="undefined">mm.dd.yyyy</span>
+    const customFromDateInnerValue = formatDateValue(
+      customFromDate,
+      defaultFromDate
     );
-    const customToDateInnerValue = customToDate ? (
-      moment(customToDate).format('DD.MM.YYYY')
-    ) : (
-      <span className="undefined">mm.dd.yyyy</span>
-    );
+    const customToDateInnerValue = formatDateValue(customToDate, defaultToDate);
 
     return (
       <div className={styles.customDateRange}>
@@ -384,11 +393,17 @@ export default class FilterDialog extends Component<Props> {
   renderAmountRangeField = () => {
     const { form } = this;
     const { intl } = this.context;
+    const { fromAmount, toAmount } = this.props;
+    const defaultFromAmount = fromAmount || '0';
+    const defaultToAmount = toAmount || '10000';
     const fromAmountField = form.$('fromAmount');
     const toAmountField = form.$('toAmount');
-    const { fromAmount = '', toAmount = '' } = form.values();
-    const fromAmountInnerValue = formatAmountValue(fromAmount.toString());
-    const toAmountInnerValue = formatAmountValue(toAmount.toString());
+    const { fromAmount: fromValue, toAmount: toValue } = form.values();
+    const fromAmountInnerValue = formatAmountValue(
+      fromValue,
+      defaultFromAmount
+    );
+    const toAmountInnerValue = formatAmountValue(toValue, defaultToAmount);
 
     return (
       <div className={styles.amountRange}>

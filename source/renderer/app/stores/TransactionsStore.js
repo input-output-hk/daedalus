@@ -19,7 +19,7 @@ import { isValidAmountInLovelaces } from '../utils/validations';
 import {
   generateFilterOptions,
   isTransactionInFilterRange,
-  isFilterApplied,
+  getNumberOfFilterDimensionsApplied,
 } from '../utils/transaction';
 
 export type DateRangeType =
@@ -43,8 +43,8 @@ export type TransactionFilterOptionsStruct = {
   dateRange?: DateRangeType,
   fromDate?: string,
   toDate?: string,
-  fromAmount?: number,
-  toAmount?: number,
+  fromAmount?: string,
+  toAmount?: string,
   incomingChecked?: boolean,
   outgoingChecked?: boolean,
 };
@@ -121,7 +121,7 @@ export default class TransactionsStore extends Store {
   }
 
   @computed get populatedFilterOptions(): ?TransactionFilterOptionsStruct {
-    if (isFilterApplied(this.filterOptions)) {
+    if (getNumberOfFilterDimensionsApplied(this.filterOptions) > 0) {
       return this.filterOptions;
     }
     return generateFilterOptions(this.all);
@@ -311,8 +311,8 @@ export default class TransactionsStore extends Store {
             dateRange: DateRangeTypes.ALL,
             fromDate: '',
             toDate: '',
-            fromAmount: 0,
-            toAmount: 0,
+            fromAmount: '',
+            toAmount: '',
             incomingChecked: true,
             outgoingChecked: true,
           },
