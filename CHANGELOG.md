@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 
+- Improved the paper wallet recovery phrase validation ([PR 1818](https://github.com/input-output-hk/daedalus/pull/1818))
 - Implemented React-Polymorph "Link" component ([PR 1799](https://github.com/input-output-hk/daedalus/pull/1799))
 - Implemented Hardware wallets restoration ([PR 1801](https://github.com/input-output-hk/daedalus/pull/1801))
 - Added Yoroi wallets restoration to the "Restore Wallet" dialog ([PR 1740](https://github.com/input-output-hk/daedalus/pull/1740))
