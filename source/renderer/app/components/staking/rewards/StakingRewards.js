@@ -6,10 +6,11 @@ import SVGInline from 'react-svg-inline';
 import { get, map, orderBy } from 'lodash';
 import classNames from 'classnames';
 import { BigNumber } from 'bignumber.js';
+import { Link } from 'react-polymorph/lib/components/Link';
+import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import BorderedBox from '../../widgets/BorderedBox';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import sortIcon from '../../../assets/images/ascending.inline.svg';
-import externalLinkIcon from '../../../assets/images/link-ic.inline.svg';
 import type { Reward } from '../../../api/staking/types';
 import styles from './StakingRewards.scss';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
@@ -219,10 +220,12 @@ export default class StakingRewards extends Component<Props, State> {
           <div className={styles.asterisk}>*</div>
           <div className={styles.noteContent}>
             <FormattedHTMLMessage {...messages.note} />
-            <button onClick={onLearnMoreClick}>
-              {intl.formatMessage(messages.learnMoreButtonLabel)}
-              <SVGInline svg={externalLinkIcon} />
-            </button>
+            <Link
+              className={styles.externalLink}
+              onClick={onLearnMoreClick}
+              label={intl.formatMessage(messages.learnMoreButtonLabel)}
+              skin={LinkSkin}
+            />
           </div>
         </div>
       </div>

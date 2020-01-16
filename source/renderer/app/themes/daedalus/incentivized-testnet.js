@@ -485,6 +485,9 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--rp-input-text-color': '#ffffff',
     '--rp-input-text-color-disabled': '#ffffff80',
   },
+  rpLink: {
+    '--rp-link-color': 'rgb(246, 154, 178)',
+  },
   rpModal: {
     '--rp-modal-bg-color': '#1e1f31',
     '--rp-modal-max-height': '90%',

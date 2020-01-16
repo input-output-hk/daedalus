@@ -10,6 +10,7 @@ import createIcon from '../../../source/renderer/app/assets/images/create-ic.inl
 import importIcon from '../../../source/renderer/app/assets/images/import-ic.inline.svg';
 import joinSharedIcon from '../../../source/renderer/app/assets/images/join-shared-ic.inline.svg';
 import TinySwitch from '../../../source/renderer/app/components/widgets/forms/TinySwitch';
+import ButtonLink from '../../../source/renderer/app/components/widgets/ButtonLink';
 import NormalSwitch from '../../../source/renderer/app/components/widgets/forms/NormalSwitch';
 
 storiesOf('Common|Widgets', module)
@@ -74,6 +75,13 @@ storiesOf('Common|Widgets', module)
   .add('TinySwitch', () => <TinySwitch />)
 
   .add('TinySwitch - short label', () => <TinySwitch label="My switch" />)
+
+  .add('ButtonLink', () => (
+    <ButtonLink
+      label="Follow instructions and manually update"
+      onClick={action('onClick')}
+    />
+  ))
 
   .add('NormalSwitch', () => (
     <div>
