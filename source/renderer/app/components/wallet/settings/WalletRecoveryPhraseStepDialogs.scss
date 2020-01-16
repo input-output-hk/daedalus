@@ -17,6 +17,15 @@
     .Dialog_actions {
       margin-bottom: 50px;
     }
+
+    .SimpleLink_root.SimpleLink_withIconAfter {
+      border-color: 1px solid var(--theme-bordered-box-text-color);
+      color: var(--theme-bordered-box-text-color);
+      font-family: var(--font-regular);
+      &:after {
+        background-color: var(--theme-bordered-box-text-color);
+      }
+    }
   }
 }
 
@@ -49,29 +58,4 @@ button {
   position: absolute;
   text-align: center;
   width: 100%;
-}
-
-.supportPortalLink {
-  border-bottom: 1px solid var(--theme-bordered-box-text-color) !important;
-  color: var(--theme-bordered-box-text-color);
-  cursor: pointer;
-  font-family: var(--font-regular);
-  font-size: 14px;
-  line-height: 1.36;
-  text-align: center;
-}
-
-.externalLinkIcon {
-  @include link(--theme-bordered-box-text-color);
-  padding-left: 2px;
-  vertical-align: baseline;
-  width: 15px;
-  svg {
-    margin-left: 0;
-    vertical-align: sub;
-    width: 15px;
-    g {
-      stroke-width: 2px;
-    }
-  }
 }

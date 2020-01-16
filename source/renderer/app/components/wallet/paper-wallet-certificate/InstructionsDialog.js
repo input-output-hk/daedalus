@@ -3,7 +3,8 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
-import SVGInline from 'react-svg-inline';
+import { Link } from 'react-polymorph/lib/components/Link';
+import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import Dialog from '../../widgets/Dialog';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import { getNetworkExplorerUrl } from '../../../utils/network';
@@ -16,7 +17,6 @@ import {
   WALLET_RECOVERY_PHRASE_WORD_COUNT,
 } from '../../../config/cryptoConfig';
 import { DEVELOPMENT } from '../../../../../common/types/environment.types';
-import externalLinkIcon from '../../../assets/images/link-ic.inline.svg';
 
 const messages = defineMessages({
   headline: {
@@ -161,21 +161,16 @@ export default class InstructionsDialog extends Component<Props> {
       },
     ];
 
-    const openNetworkExplorer = onOpenExternalLink.bind(
-      null,
-      getNetworkExplorerUrl(network, rawNetwork)
-    );
+    const openNetworkExplorer = () =>
+      onOpenExternalLink(getNetworkExplorerUrl(network, rawNetwork));
 
     const cardanoExplorerLink = (
-      <span
+      <Link
         className={styles.link}
         onClick={openNetworkExplorer}
-        role="link"
-        aria-hidden
-      >
-        {intl.formatMessage(messages.cardanoExplorer)}
-        <SVGInline svg={externalLinkIcon} />
-      </span>
+        label={intl.formatMessage(messages.cardanoExplorer)}
+        skin={LinkSkin}
+      />
     );
 
     return (

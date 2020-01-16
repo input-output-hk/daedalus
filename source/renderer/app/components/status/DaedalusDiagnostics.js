@@ -8,13 +8,14 @@ import classNames from 'classnames';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
 import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
+import { Link } from 'react-polymorph/lib/components/Link';
+import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import SVGInline from 'react-svg-inline';
 import { BigNumber } from 'bignumber.js';
 import globalMessages from '../../i18n/global-messages';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
 import iconCopy from '../../assets/images/clipboard-ic.inline.svg';
-import externalLinkIcon from '../../assets/images/link-ic.inline.svg';
 import LocalizableError from '../../i18n/LocalizableError';
 import { CardanoNodeStates } from '../../../../common/types/cardano-node.types';
 import styles from './DaedalusDiagnostics.scss';
@@ -609,18 +610,13 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
               {getRow(
                 'availableDiskSpace',
                 availableDiskSpace || (
-                  <button
-                    className={styles.unknownDiskSpaceBtn}
+                  <Link
                     onClick={() =>
                       onOpenExternalLink(unknownDiskSpaceSupportUrl)
                     }
-                  >
-                    {intl.formatMessage(messages.unknownDiskSpace)}
-                    <SVGInline
-                      svg={externalLinkIcon}
-                      className={styles.externalLinkIcon}
-                    />
-                  </button>
+                    label={intl.formatMessage(messages.unknownDiskSpace)}
+                    skin={LinkSkin}
+                  />
                 )
               )}
             </tbody>

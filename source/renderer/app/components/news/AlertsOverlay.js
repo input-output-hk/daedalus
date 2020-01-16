@@ -4,11 +4,11 @@ import moment from 'moment';
 import { observer } from 'mobx-react';
 import { get } from 'lodash';
 import ReactMarkdown from 'react-markdown';
-import SVGInline from 'react-svg-inline';
+import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import News from '../../domains/News';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
-import externalLinkIcon from '../../assets/images/link-ic.inline.svg';
+import ButtonLink from '../widgets/ButtonLink';
 import styles from './AlertsOverlay.scss';
 
 type State = {
@@ -68,10 +68,17 @@ export default class AlertsOverlay extends Component<Props, State> {
   renderAction = (action: Object) => {
     if (action && (action.url || action.event)) {
       return (
-        <button className={styles.actionBtn} onClick={this.onProceedNewsAction}>
-          {action.label}
-          {action.url && <SVGInline svg={externalLinkIcon} />}
-        </button>
+        <ButtonLink
+          className={styles.actionBtn}
+          onClick={this.onProceedNewsAction}
+          skin={ButtonSkin}
+          label={action.label}
+          linkProps={{
+            className: styles.externalLink,
+            hasIconBefore: false,
+            hasIconAfter: action.url && true,
+          }}
+        />
       );
     }
     return null;
@@ -114,6 +121,7 @@ export default class AlertsOverlay extends Component<Props, State> {
           >
             <ReactMarkdown escapeHtml={false} source={content} />
           </div>
+
           {this.renderAction(action)}
         </div>
       )
