@@ -105,6 +105,12 @@
       td.rdtActive.rdtToday:before {
         border-bottom-color: var(--rp-modal-bg-color);
       }
+
+      .reset {
+        background: var(--rp-button-bg-color, #243e62);
+        border: var(--rp-button-border, none);
+        margin-top: 12px;
+      }
     }
   }
 }

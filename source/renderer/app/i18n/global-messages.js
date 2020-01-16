@@ -271,4 +271,9 @@ export default defineMessages({
     defaultMessage: '!!!All',
     description: 'All label.',
   },
+  reset: {
+    id: 'global.labels.reset',
+    defaultMessage: '!!!Reset',
+    description: 'Reset label.',
+  },
 });

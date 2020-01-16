@@ -364,6 +364,7 @@ export default class FilterDialog extends Component<Props> {
               innerLabelPrefix={intl.formatMessage(globalMessages.rangeFrom)}
               innerValue={customFromDateInnerValue}
               pickerPanelPosition="left"
+              onReset={() => null}
             />
           </div>
           <div className={styles.dateRangeInput}>
@@ -372,6 +373,7 @@ export default class FilterDialog extends Component<Props> {
               innerLabelPrefix={intl.formatMessage(globalMessages.rangeTo)}
               innerValue={customToDateInnerValue}
               pickerPanelPosition="right"
+              onReset={() => null}
             />
           </div>
         </div>
