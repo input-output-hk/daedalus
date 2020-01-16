@@ -5,7 +5,8 @@ import { defineMessages, intlShape } from 'react-intl';
 import classNames from 'classnames';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
-
+import { Link } from 'react-polymorph/lib/components/Link';
+import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import styles from './ReportIssue.scss';
 import externalLinkIcon from '../../../assets/images/link-ic.inline.svg';
 
@@ -108,6 +109,7 @@ export default class ReportIssue extends Component<Props> {
     const downloadLogsButtonClasses = classNames([
       styles.downloadLogsButton,
       !isConnected ? styles.downloadLogsButtonConnecting : null,
+      disableDownloadLogs ? styles.disabled : null,
     ]);
 
     const syncIssueArticleUrl = isIncentivizedTestnet
@@ -157,13 +159,14 @@ export default class ReportIssue extends Component<Props> {
           skin={ButtonSkin}
         />
         <br />
-        <button
+
+        <Link
           className={downloadLogsButtonClasses}
-          onClick={onDownloadLogs}
-          disabled={disableDownloadLogs}
-        >
-          {intl.formatMessage(messages.reportIssueDownloadLogsLinkLabel)}
-        </button>
+          onClick={!disableDownloadLogs ? onDownloadLogs : null}
+          hasIconAfter={false}
+          label={intl.formatMessage(messages.reportIssueDownloadLogsLinkLabel)}
+          skin={LinkSkin}
+        />
       </div>
     );
   }

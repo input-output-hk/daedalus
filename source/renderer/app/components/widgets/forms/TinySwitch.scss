@@ -1,31 +1,40 @@
 $height: 12px !important;
-$width: 25px !important;
+$width: 24px !important;
 
 .component {
   flex-direction: row;
 
   :global {
     .SimpleSwitch_switch {
+      border-radius: var(--rp-switch-normal-border-radius);
       margin-left: 6px;
 
       &:not(.SimpleSwitch_checked) {
         height: $height;
         width: $width;
+
+        span {
+          left: 2px;
+          top: 2px;
+        }
       }
 
       &.SimpleSwitch_checked {
         height: $height;
         width: $width;
+
         span {
-          left: 13px !important;
+          left: 14px !important;
+          top: 2px;
         }
       }
     }
   }
 
   span {
-    height: 12px !important;
-    width: 12px !important;
+    border-radius: var(--rp-switch-tiny-border-radius);
+    height: 8px !important;
+    width: 8px !important;
   }
 
   label {

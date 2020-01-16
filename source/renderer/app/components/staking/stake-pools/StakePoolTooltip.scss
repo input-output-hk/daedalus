@@ -24,6 +24,7 @@
       border-radius: 2px;
       color: var(--theme-staking-stake-pool-tooltip-delegate-button-text-color);
       height: 33px;
+      margin-top: 14px;
       user-select: none;
       width: 100%;
 
@@ -194,33 +195,6 @@
   max-height: 79px;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-.homepageAddress {
-  @include link(--theme-link-main-color);
-  border-bottom-color: var(--theme-link-main-color);
-  font-size: 14px;
-  line-height: 1.36;
-  word-break: break-all;
-}
-
-.pledgeAddress {
-  @include link(--theme-link-main-color);
-  font-size: 14px;
-  line-height: 1.36;
-  margin-bottom: 14px;
-  max-width: 100%;
-
-  .pledgeAddressContent {
-    display: inline-block;
-    max-width: calc(100% - 14px);
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  & > span {
-    vertical-align: text-top;
-  }
 }
 
 .table {

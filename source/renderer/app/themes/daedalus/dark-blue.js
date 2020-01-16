@@ -465,13 +465,14 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--rp-button-font-size': '14px',
   },
   rpCheckbox: {
-    '--rp-checkbox-border': '1px solid #536370',
+    '--rp-checkbox-border': '2px solid #536370',
     '--rp-checkbox-border-color': 'rgba(102, 122, 138, 0.3)',
     '--rp-checkbox-border-color-disabled': 'rgba(83, 99, 112, 0.4)',
     '--rp-checkbox-check-bg-color': '#536370',
     '--rp-checkbox-check-icon-color': '#e9f4fe',
     '--rp-checkbox-label-text-color': '#e9f4fe',
     '--rp-checkbox-label-text-color-disabled': 'rgba(233, 244, 254, 0.3)',
+    '--rp-checkbox-size': '22px',
   },
   rpColors: {
     '--rp-theme-color-error': '#ea4c5b',
@@ -504,6 +505,9 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--rp-input-text-color': 'rgba(233, 244, 254, 1)',
     '--rp-input-text-color-disabled': 'rgba(233, 244, 254, 0.5)',
   },
+  rpLink: {
+    '--rp-link-color': 'rgb(32, 181, 107)',
+  },
   rpModal: {
     '--rp-modal-bg-color': '#263345',
     '--rp-modal-max-height': '90%',
@@ -520,6 +524,7 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--rp-options-shadow': 'none',
   },
   rpRadio: {
+    '--rp-radio-border': '2px solid #536370',
     '--rp-radio-border-color': '#536370',
     '--rp-radio-color': '#e9f4fe',
     '--rp-radio-label-margin': '0 0 0 10px',
@@ -555,9 +560,12 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--rp-switch-label-opacity': '1',
     '--rp-switch-label-text-color': '#e9f4fe',
     '--rp-switch-label-width': '100%',
+    '--rp-switch-normal-border-radius': '2px',
     '--rp-switch-opacity-off': '0.3',
     '--rp-switch-root-margin': '0 0 30px 0',
+    '--rp-switch-tiny-border-radius': '1px',
     '--rp-switch-thumb-bg-color': '#fff',
+    '--rp-switch-size': '22px',
   },
   rpTextArea: {
     '--rp-textarea-bg-color': '#263345',
@@ -823,6 +831,8 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-wallet-restore-dialog-new-label-background-color':
       'rgba(233, 244, 254, 0.1)',
     '--theme-wallet-restore-dialog-new-label-color': '#e9f4fe',
+    '--theme-wallet-restore-dialog-step-walletType-hardwareWalletDisclaimer-text-color':
+      '#ea4c5b',
   },
 };
 

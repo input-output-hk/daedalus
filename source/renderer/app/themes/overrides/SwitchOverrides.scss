@@ -1,8 +1,31 @@
 .root {
   flex-direction: row-reverse;
+
+  .switch {
+    border-radius: 3px;
+    height: var(--rp-switch-size);
+  }
+
+  .thumb {
+    box-shadow: none !important;
+    height: 18px;
+    top: 2px;
+    width: 18px;
+  }
+
   &:not(.checked) {
     .switch {
       box-shadow: 0 2px 0 -1px transparent; // fix for cut-off bottom
+    }
+
+    .thumb {
+      left: 2px;
+    }
+  }
+
+  &.checked {
+    .thumb {
+      left: calc(50px - 20px);
     }
   }
 }

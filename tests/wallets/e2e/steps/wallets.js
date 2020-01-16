@@ -15,10 +15,10 @@ import {
   restoreWalletWithFunds,
   waitUntilUrlEquals,
   navigateTo,
-  sidebar,
   i18n,
   waitForActiveRestoreNotification,
 } from './helpers';
+import { waitUntilTextInSelector, scrollIntoView } from '../../../common/e2e/steps/helpers';
 import {
   sidebarHelpers,
 } from '../../../navigation/e2e/steps/helpers';
@@ -68,7 +68,7 @@ Given(/^I see the create wallet dialog$/, function() {
 });
 
 Given(/^I see the restore wallet dialog$/, function() {
-  return this.client.waitForVisible('.WalletRestoreDialog');
+  return this.client.waitForVisible('.WalletRestoreDialog_component');
 });
 
 Given(/^I dont see the create wallet dialog(?: anymore)?$/, function() {
@@ -240,9 +240,17 @@ When(/^I enter wallet name "([^"]*)" in restore wallet dialog$/, async function(
   walletName
 ) {
   return this.client.setValue(
-    '.WalletRestoreDialog .walletName input',
+    '.ConfigurationDialog_input.walletName input',
     walletName
   );
+});
+
+When(/^I clear the recovery phrase in restore wallet dialog$/, async function() {
+  const words = await this.client.elements('.SimpleAutocomplete_selectedWordRemoveButton');
+  for (let i = words.value.length-1; i > -1; i--) {
+    const wordId = words.value[i].ELEMENT;
+    await this.client.elementIdClick(wordId);
+  }
 });
 
 When(/^I enter recovery phrase in restore wallet dialog:$/, async function(
@@ -267,17 +275,29 @@ When(/^I enter wallet password in restore wallet dialog:$/, async function(
 ) {
   const fields = table.hashes()[0];
   await this.client.setValue(
-    '.WalletRestoreDialog .spendingPassword input',
+    '.spendingPassword input',
     fields.password
   );
   await this.client.setValue(
-    '.WalletRestoreDialog .repeatedPassword input',
+    '.repeatPassword input',
     fields.repeatedPassword
   );
 });
 
 When(/^I submit the restore wallet dialog$/, function() {
   return this.client.click('.WalletRestoreDialog .primary');
+});
+
+When(/^I click continue$/, function() {
+  return this.waitAndClick('.primary');
+});
+
+When(/^I click close$/, function() {
+  return this.waitAndClick('.primary');
+});
+
+When(/^I click Check recovery phrase button$/, function() {
+  return this.waitAndClick('.primary');
 });
 
 When(/^I see the create wallet privacy dialog$/, function() {
@@ -375,6 +395,48 @@ When(/^I try to import the wallet with funds again$/, async function() {
   await addWalletPage.clickImportButton(this.client);
   this.waitAndClick('.WalletFileImportDialog .FileUploadWidget_dropZone');
   this.waitAndClick('.Dialog_actions button');
+});
+
+Then(
+  /^I should see section "([^"]*)"$/,
+  async function(text) {
+    await waitUntilTextInSelector(this.client, {
+      selector: '.WalletRestoreDialog_component .Dialog_content > div:last-child .RadioSet_label',
+      text,
+    });
+  }
+);
+
+Then(
+  /^I should see a screen titled "([^"]*)"$/,
+  async function(text) {
+    await waitUntilTextInSelector(this.client, {
+      selector: '.Dialog_title h1',
+      text,
+      ignoreCase: true
+    });
+  }
+);
+
+Then(
+  /^I click on option "([^"]*)"$/,
+  async function(text) {
+    await this.waitAndClick(`//*[contains(text(), "${text}")]/..`);
+  }
+);
+
+Then(
+  /^I confirm "([^"]*)"$/,
+  async function(text) {
+    const targetSelector = `//label[contains(text(), "${text}")]`;
+    await this.client.waitForVisible(targetSelector);
+    await scrollIntoView(this.client, targetSelector);
+    await this.client.click(targetSelector);
+  }
+);
+
+When(/^I click "12 words - Balance wallet" radio button/, function() {
+  return this.waitAndClick('.RadioSet_radiosContainer div:nth-child(1) label');
 });
 
 When(/^I click on "Rewards wallet" radio button/, function() {
@@ -484,6 +546,14 @@ Then(/^I should be on the "([^"]*)" wallet "([^"]*)" screen$/, async function(
   return waitUntilUrlEquals.call(this, `/wallets/${wallet.id}/${screenName}`);
 });
 
+Then(/^"([^"]*)" wallet should have "([^"]*)" as id$/, async function(
+  walletName,
+  walletId
+) {
+  const wallet = getWalletByName.call(this, walletName);
+  expect(wallet.id).to.equal(walletId);
+});
+
 Then(/^I should be on the "([^"]*)" screen$/, async function(screenName) {
   return waitUntilUrlEquals.call(this, `/${screenName}`);
 });
@@ -566,3 +636,13 @@ Then(/^I should see the wallets in the following order:$/, async function(
     expect(wallet).to.equal(expectedWallets[index].name)
   );
 });
+
+Given(/^I go back to the previous step$/, function() {
+  return this.waitAndClick('.DialogBackButton_component');
+});
+
+Then(/^The error message should be (hidden|visible)$/, function(state) {
+  const isVisible = state === 'visible';
+  return this.client.waitForVisible('.ConfigurationDialog_error', null, !isVisible);
+});
+
