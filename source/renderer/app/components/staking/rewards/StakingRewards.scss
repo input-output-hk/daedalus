@@ -54,19 +54,12 @@
         margin-bottom: 3px;
       }
 
-      button {
-        @include link(--theme-staking-link-color-light);
+      .externalLink {
         font-size: 14px;
         margin-top: 3px;
-
+        opacity: 0.7;
         &:hover {
-          border-bottom: 1px solid var(--theme-staking-link-color);
-          color: var(--theme-staking-link-color);
-          svg {
-            g {
-              stroke: var(--theme-staking-link-color);
-            }
-          }
+          opacity: 1;
         }
       }
     }

@@ -5,12 +5,13 @@ import moment from 'moment';
 import { includes } from 'lodash';
 import SVGInline from 'react-svg-inline';
 import classNames from 'classnames';
+import { Link } from 'react-polymorph/lib/components/Link';
+import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import CancelTransactionButton from './CancelTransactionButton';
 import styles from './Transaction.scss';
 import TransactionTypeIcon from './TransactionTypeIcon.js';
 import adaSymbol from '../../../assets/images/ada-symbol.inline.svg';
 import arrow from '../../../assets/images/collapse-arrow.inline.svg';
-import externalLinkIcon from '../../../assets/images/link-ic.inline.svg';
 import {
   TransactionStates,
   TransactionTypes,
@@ -225,15 +226,13 @@ export default class Transaction extends Component<Props, State> {
       <Fragment>
         <div className={styles.pendingTxnNote}>
           {intl.formatMessage(messages.cancelPendingTxnNote)}
-          <span
-            role="presentation"
-            aria-hidden
+          <Link
             className={styles.articleLink}
             onClick={this.handleOpenSupportArticle}
-          >
-            {intl.formatMessage(messages.supportArticleLink)}
-            <SVGInline svg={externalLinkIcon} />
-          </span>
+            label={intl.formatMessage(messages.supportArticleLink)}
+            underlineOnHover
+            skin={LinkSkin}
+          />
         </div>
         <div>
           <CancelTransactionButton onClick={this.showConfirmationDialog} />
@@ -311,17 +310,16 @@ export default class Transaction extends Component<Props, State> {
       if (addresses.length > 0) {
         return includesUnresolvedAddresses(addresses) ? (
           <div className={styles.explorerLinkRow}>
-            <span
-              role="presentation"
-              aria-hidden
+            <Link
               className={styles.explorerLink}
               onClick={() =>
                 onOpenExternalLink(getUrlByType('tx', transactionId))
               }
-            >
-              {intl.formatMessage(messages.unresolvedInputAddressesLinkLabel)}
-              <SVGInline svg={externalLinkIcon} />
-            </span>
+              label={intl.formatMessage(
+                messages.unresolvedInputAddressesLinkLabel
+              )}
+              skin={LinkSkin}
+            />
             <span>
               {intl.formatMessage(
                 messages.unresolvedInputAddressesAdditionalLabel
@@ -335,17 +333,14 @@ export default class Transaction extends Component<Props, State> {
               key={`${data.id}-from-${address || ''}-${addressIndex}`}
               className={styles.addressRow}
             >
-              <span
-                role="presentation"
-                aria-hidden
+              <Link
                 className={styles.address}
                 onClick={() =>
                   onOpenExternalLink(getUrlByType('address', address))
                 }
-              >
-                {address}
-                <SVGInline svg={externalLinkIcon} />
-              </span>
+                label={address}
+                skin={LinkSkin}
+              />
             </div>
           ))
         );
@@ -411,33 +406,27 @@ export default class Transaction extends Component<Props, State> {
                     key={`${data.id}-to-${address}-${addressIndex}`}
                     className={styles.addressRow}
                   >
-                    <span
-                      role="presentation"
-                      aria-hidden
+                    <Link
                       className={styles.address}
                       onClick={() =>
                         onOpenExternalLink(getUrlByType('address', address))
                       }
-                    >
-                      {address}
-                      <SVGInline svg={externalLinkIcon} />
-                    </span>
+                      label={address}
+                      skin={LinkSkin}
+                    />
                   </div>
                 ))}
 
                 <h2>{intl.formatMessage(messages.transactionId)}</h2>
                 <div className={styles.transactionIdRow}>
-                  <span
-                    role="presentation"
-                    aria-hidden
+                  <Link
                     className={styles.transactionId}
                     onClick={() =>
                       onOpenExternalLink(getUrlByType('tx', data.id))
                     }
-                  >
-                    {data.id}
-                    <SVGInline svg={externalLinkIcon} />
-                  </span>
+                    label={data.id}
+                    skin={LinkSkin}
+                  />
                 </div>
                 {this.renderCancelPendingTxnContent()}
               </div>

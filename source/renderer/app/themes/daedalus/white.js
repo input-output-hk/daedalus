@@ -450,13 +450,14 @@ export const WHITE_THEME_OUTPUT = {
     '--rp-button-width': '360px',
   },
   rpCheckbox: {
-    '--rp-checkbox-border': '1px solid #29b595',
+    '--rp-checkbox-border': '2px solid #29b595',
     '--rp-checkbox-border-color': '#29b595',
     '--rp-checkbox-border-color-disabled': 'rgba(41, 181, 149, 0.3)',
     '--rp-checkbox-check-bg-color': '#29b595',
     '--rp-checkbox-check-icon-color': '#ffffff',
     '--rp-checkbox-label-text-color': '#2d2d2d',
     '--rp-checkbox-label-text-color-disabled': '#2d2d2d4d',
+    '--rp-checkbox-size': '22px',
   },
   rpColors: {
     '--rp-theme-color-error': '#ea4c5b',
@@ -489,6 +490,9 @@ export const WHITE_THEME_OUTPUT = {
     '--rp-input-text-color': '#2d2d2d',
     '--rp-input-text-color-disabled': 'rgba(45, 45, 45, 0.5)',
   },
+  rpLink: {
+    '--rp-link-color': '#29b595',
+  },
   rpModal: {
     '--rp-modal-bg-color': '#fff',
     '--rp-modal-max-height': '90%',
@@ -505,6 +509,7 @@ export const WHITE_THEME_OUTPUT = {
     '--rp-options-shadow': 'none',
   },
   rpRadio: {
+    '--rp-radio-border': '2px solid #29b595',
     '--rp-radio-border-color': '#29b595',
     '--rp-radio-color': '#ffffff',
     '--rp-radio-label-margin': '0 0 0 10px',
@@ -540,9 +545,12 @@ export const WHITE_THEME_OUTPUT = {
     '--rp-switch-label-opacity': '1',
     '--rp-switch-label-text-color': '#2d2d2d',
     '--rp-switch-label-width': '100%',
+    '--rp-switch-normal-border-radius': '2px',
     '--rp-switch-opacity-off': '0.3',
     '--rp-switch-root-margin': '0 0 30px 0',
+    '--rp-switch-tiny-border-radius': '1px',
     '--rp-switch-thumb-bg-color': '#fafbfc',
+    '--rp-switch-size': '22px',
   },
   rpTextArea: {
     '--rp-textarea-bg-color': '#f9f9f9',

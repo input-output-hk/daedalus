@@ -8,10 +8,11 @@ import { capitalize } from 'lodash';
 import moment from 'moment';
 import SVGInline from 'react-svg-inline';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
+import { Link } from 'react-polymorph/lib/components/Link';
+import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import styles from './StakePoolTooltip.scss';
 import StakePool from '../../../domains/StakePool';
 import closeCross from '../../../assets/images/close-cross.inline.svg';
-import externalLinkIcon from '../../../assets/images/link-ic.inline.svg';
 import { getColorFromRange } from '../../../utils/colors';
 import { formattedWalletAmount, shortNumber } from '../../../utils/formatters';
 import { rangeMap } from '../../../utils/rangeMap';
@@ -432,15 +433,11 @@ export default class StakePoolTooltip extends Component<Props, State> {
           )}
           <div className={styles.description}>{description}</div>
 
-          <span
-            role="presentation"
-            aria-hidden
-            className={styles.homepageAddress}
+          <Link
             onClick={() => onOpenExternalLink(homepage)}
-          >
-            {homepage}
-            <SVGInline svg={externalLinkIcon} />
-          </span>
+            label={homepage}
+            skin={LinkSkin}
+          />
 
           <dl className={styles.table}>
             <dt>{intl.formatMessage(messages.ranking)}</dt>
@@ -528,17 +525,13 @@ export default class StakePoolTooltip extends Component<Props, State> {
                 {formattedWalletAmount(pledge)}
               </span>
             </dd> */}
-          <button
-            className={styles.pledgeAddress}
+          <Link
             onClick={() =>
               onOpenExternalLink(getPledgeAddressUrl(pledgeAddress))
             }
-          >
-            <span className={styles.pledgeAddressContent}>
-              {intl.formatMessage(messages.pledgeAddressLabel)}
-            </span>
-            <SVGInline svg={externalLinkIcon} />
-          </button>
+            label={intl.formatMessage(messages.pledgeAddressLabel)}
+            skin={LinkSkin}
+          />
         </div>
         {onSelect && showWithSelectButton && (
           <Button
