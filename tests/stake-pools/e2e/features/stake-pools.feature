@@ -9,17 +9,17 @@ Feature: Stake Pools Loading
       | Target Wallet |
 
   Scenario: "Loading stake pools" message is shown during initial loading of stake pool data
-    Given The sidebar shows "Delegation Center" page icon
+    Given The sidebar shows "Delegation Center" staking page icon
     When I click on the "Delegation Center" staking page button
-    And I see the "Delegation Center" page
+    And I see the "Delegation Center" staking page
     And I click on the "Stake Pools" tab
     And I see the "Stake Pools" page
     Then I should see the "Loading stake pools" message
 
   Scenario: Stake pools load error handling works as expected
-    Given The sidebar shows "Delegation Center" page icon
+    Given The sidebar shows "Delegation Center" staking page icon
     When I click on the "Delegation Center" staking page button
-    And I see the "Delegation Center" page
+    And I see the "Delegation Center" staking page
     And I click on the "Stake Pools" tab
     And I see the "Stake Pools" page
     And I see the "Loading stake pools" message
@@ -28,9 +28,9 @@ Feature: Stake Pools Loading
     And I should not see any stake pools
 
   Scenario: Stake pools are correctly ordered by rank
-    Given The sidebar shows "Delegation Center" page icon
-    When I click on the "Delegation Center" staking page button
-    And I see the "Delegation Center" page
+    Given The sidebar shows "Delegation Center" staking page icon
+    When I click on the "Delegation Center" staking staking page button
+    And I see the "Delegation Center" staking page
     And I click on the "Stake Pools" tab
     And I see the "Stake Pools" page
     And I see the "Loading stake pools" message
@@ -38,9 +38,9 @@ Feature: Stake Pools Loading
     Then I should see stake pools ordered by rank
 
   Scenario: Stake pools search works as expected
-    Given The sidebar shows "Delegation Center" page icon
+    Given The sidebar shows "Delegation Center" staking page icon
     When I click on the "Delegation Center" staking page button
-    And I see the "Delegation Center" page
+    And I see the "Delegation Center" staking page
     And I click on the "Stake Pools" tab
     And I see the "Stake Pools" page
     And I see the stake pools search input field
@@ -49,17 +49,17 @@ Feature: Stake Pools Loading
     Then I should see filtered stake pools as results
 
   Scenario: Stake pools user is already delegating to are correctly displayed
-    Given The sidebar shows "Delegation Center" page icon
+    Given The sidebar shows "Delegation Center" staking page icon
     When I click on the "Delegation Center" staking page button
-    And I see the "Delegation Center" page
+    And I see the "Delegation Center" staking page
     And I see list of wallets
     And If the user is already delegating to any of stake pools
     Then I should see the "You are already delegating..." message next to the wallet which is already delegating
 
   Scenario: Stake pool tooltip is correctly displayed and shows correct data
-    Given The sidebar shows "Delegation Center" page icon
+    Given The sidebar shows "Delegation Center" staking page icon
     When I click on the "Delegation Center" staking page button
-    And I see the "Delegation Center" page
+    And I see the "Delegation Center" staking page
     And I click on the "Stake Pools" tab
     And I see the "Stake Pools" page
     And I see any stake pool
@@ -68,11 +68,9 @@ Feature: Stake Pools Loading
     And Stake pool tooltip shows correct data
 
   Scenario: Delegating to stake pool from "Stake pools" screen works as expected
-    Given The sidebar shows "Delegation Center" page icon
+    Given The sidebar shows "Delegation Center" staking page icon
     When I click on the "Delegation Center" staking page button
-    And I see the "Delegation Center" page
-    And I click on the "Stake Pools" tab
-    And I see the "Stake Pools" page
+    And I see the "Delegation Center" staking page
     And I see Not-delegated label
     And I click on "Delegate your stake"
     Then I should see "Delegate Wallet" modal

@@ -16,7 +16,7 @@ Given(/^I have the following wallets:$/, async function (table) {
   await createWallets(table.hashes(), this);
 });
 
-Given(/^The sidebar shows "Delegation Center" page icon/, function () {
+Given(/^The sidebar shows "Delegation Center" staking page icon/, function () {
   return this.client.waitForVisible('.SidebarCategory_stakingIcon');
 });
 
@@ -24,6 +24,14 @@ When(/^I click on the "Delegation Center" staking page button/, function() {
   return this.waitAndClick('.SidebarCategory_component.staking');
 });
 
-Then(/^I see the "Delegation Center" page$/, function() {
-  return this.client.waitForVisible('.StakingWithNavigation_page', null, true);
+Then(/^I see the "Delegation Center" staking page/, function() {
+  return this.client.waitForVisible('.StakingWithNavigation_page');
+});
+
+When(/^I click on the "Stake Pools" tab/, function() {
+  return this.waitAndClick('.stake-pools.NavButton_component.NavButton_normal');
+});
+
+Then(/^I see the "Stake Pools" page/, function() {
+  return this.client.waitForVisible('.StakePools_component');
 });
