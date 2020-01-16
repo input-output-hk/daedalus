@@ -145,7 +145,7 @@ export default class NewsFeed extends Component<Props, State> {
             <div className={styles.newsFeedItemsContainer}>
               {news.all.map(newsItem => (
                 <NewsItem
-                  key={newsItem.date}
+                  key={newsItem.id}
                   newsItem={newsItem}
                   isNewsFeedOpen={isNewsFeedOpen}
                   onMarkNewsAsRead={onMarkNewsAsRead}
