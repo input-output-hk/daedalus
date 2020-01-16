@@ -89,15 +89,17 @@ const messages = defineMessages({
 
 const calculateDateRange = (
   dateRange: string,
-  customDateRange: { customFromDate: string, customToDate: string }
+  customDateRange: { customFromDate: string, customToDate: string },
+  defaultDateRange: { defaultFromDate: string, defaultToDate: string }
 ) => {
   const { customFromDate, customToDate } = customDateRange;
+  const { defaultFromDate = '', defaultToDate = '' } = defaultDateRange || {};
   let fromDate = null;
   let toDate = null;
 
   if (dateRange === DateRangeTypes.ALL) {
-    fromDate = '';
-    toDate = '';
+    fromDate = defaultFromDate;
+    toDate = defaultToDate;
   } else if (dateRange === DateRangeTypes.CUSTOM_DATE_RANGE) {
     fromDate = customFromDate;
     toDate = customToDate;
@@ -286,17 +288,18 @@ export default class FilterDialog extends Component<Props> {
   handleSubmit = () =>
     this.form.submit({
       onSuccess: form => {
-        const { onFilter } = this.props;
+        const { onFilter, fromDate, toDate } = this.props;
         const {
           dateRange,
           customFromDate,
           customToDate,
           ...rest
         } = form.values();
-        const dateRangePayload = calculateDateRange(dateRange, {
-          customFromDate,
-          customToDate,
-        });
+        const dateRangePayload = calculateDateRange(
+          dateRange,
+          { customFromDate, customToDate },
+          { defaultFromDate: fromDate || '', defaultToDate: toDate || '' }
+        );
 
         onFilter({
           ...rest,

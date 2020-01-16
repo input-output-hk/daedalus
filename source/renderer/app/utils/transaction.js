@@ -133,6 +133,7 @@ export const getNumberOfFilterDimensionsApplied = (
 ) => {
   const {
     searchTerm,
+    dateRange,
     fromDate,
     toDate,
     fromAmount,
@@ -145,7 +146,7 @@ export const getNumberOfFilterDimensionsApplied = (
   if (searchTerm) {
     result++;
   }
-  if (fromDate || toDate) {
+  if (dateRange !== DateRangeTypes.ALL && (fromDate || toDate)) {
     result++;
   }
   if (fromAmount || toAmount) {
