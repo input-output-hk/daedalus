@@ -10,7 +10,7 @@ Feature: Stake Pools Loading
 
   Scenario: "Loading stake pools" message is shown during initial loading of stake pool data
     Given The sidebar shows "Delegation Center" page icon
-    When I click on the "Delegation Center" page icon
+    When I click on the "Delegation Center" staking page button
     And I see the "Delegation Center" page
     And I click on the "Stake Pools" tab
     And I see the "Stake Pools" page
@@ -18,7 +18,7 @@ Feature: Stake Pools Loading
 
   Scenario: Stake pools load error handling works as expected
     Given The sidebar shows "Delegation Center" page icon
-    When I click on the "Delegation Center" page icon
+    When I click on the "Delegation Center" staking page button
     And I see the "Delegation Center" page
     And I click on the "Stake Pools" tab
     And I see the "Stake Pools" page
@@ -29,7 +29,7 @@ Feature: Stake Pools Loading
 
   Scenario: Stake pools are correctly ordered by rank
     Given The sidebar shows "Delegation Center" page icon
-    When I click on the "Delegation Center" page icon
+    When I click on the "Delegation Center" staking page button
     And I see the "Delegation Center" page
     And I click on the "Stake Pools" tab
     And I see the "Stake Pools" page
@@ -39,7 +39,7 @@ Feature: Stake Pools Loading
 
   Scenario: Stake pools search works as expected
     Given The sidebar shows "Delegation Center" page icon
-    When I click on the "Delegation Center" page icon
+    When I click on the "Delegation Center" staking page button
     And I see the "Delegation Center" page
     And I click on the "Stake Pools" tab
     And I see the "Stake Pools" page
@@ -50,7 +50,7 @@ Feature: Stake Pools Loading
 
   Scenario: Stake pools user is already delegating to are correctly displayed
     Given The sidebar shows "Delegation Center" page icon
-    When I click on the "Delegation Center" page icon
+    When I click on the "Delegation Center" staking page button
     And I see the "Delegation Center" page
     And I see list of wallets
     And If the user is already delegating to any of stake pools
@@ -58,7 +58,7 @@ Feature: Stake Pools Loading
 
   Scenario: Stake pool tooltip is correctly displayed and shows correct data
     Given The sidebar shows "Delegation Center" page icon
-    When I click on the "Delegation Center" page icon
+    When I click on the "Delegation Center" staking page button
     And I see the "Delegation Center" page
     And I click on the "Stake Pools" tab
     And I see the "Stake Pools" page
@@ -69,7 +69,7 @@ Feature: Stake Pools Loading
 
   Scenario: Delegating to stake pool from "Stake pools" screen works as expected
     Given The sidebar shows "Delegation Center" page icon
-    When I click on the "Delegation Center" page icon
+    When I click on the "Delegation Center" staking page button
     And I see the "Delegation Center" page
     And I click on the "Stake Pools" tab
     And I see the "Stake Pools" page
