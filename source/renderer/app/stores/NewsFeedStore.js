@@ -217,7 +217,7 @@ export default class NewsFeedStore extends Store {
 
     if (this.getNewsRequest.wasExecuted) {
       news = map(this.rawNews, item => {
-        // match old and new newsfeed JSON format
+        // Match old and new newsfeed JSON format
         const mainIdentificator = item.id || item.date;
         return {
           ...item,
@@ -230,7 +230,7 @@ export default class NewsFeedStore extends Store {
             route: get(item, ['action', 'route', currentLocale]),
             event: get(item, ['action', 'event', currentLocale]),
           },
-          date: get(item, ['updatedAt', currentLocale], item.date),
+          date: get(item, ['publishedAt', currentLocale], item.date),
           read: readNews.includes(mainIdentificator),
         };
       });
