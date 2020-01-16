@@ -505,6 +505,9 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--rp-input-text-color': 'rgba(233, 244, 254, 1)',
     '--rp-input-text-color-disabled': 'rgba(233, 244, 254, 0.5)',
   },
+  rpLink: {
+    '--rp-link-color': 'rgb(32, 181, 107)',
+  },
   rpModal: {
     '--rp-modal-bg-color': '#263345',
     '--rp-modal-max-height': '90%',

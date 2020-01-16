@@ -18,6 +18,28 @@
       color: var(--theme-report-issue-syncing-text-color);
     }
   }
+
+  .downloadLogsButton {
+    border-color: var(--theme-report-issue-syncing-download-logs-text-color);
+    color: var(--theme-report-issue-syncing-download-logs-text-color);
+    display: inline-block;
+    font-family: var(--font-regular);
+    margin-bottom: 20px;
+    opacity: 0.8;
+    &.downloadLogsButtonConnecting {
+      border-color: var(
+        --theme-report-issue-syncing-download-logs-text-color-connecting
+      );
+      color: var(
+        --theme-report-issue-syncing-download-logs-text-color-connecting
+      );
+    }
+    &.disabled {
+      border-color: transparent;
+      cursor: default;
+      text-decoration: none;
+    }
+  }
 }
 
 .reportIssueText {
@@ -58,27 +80,4 @@
       }
     }
   }
-}
-
-.downloadLogsButton {
-  border-bottom: 1px solid
-    var(--theme-report-issue-syncing-download-logs-text-color);
-  color: var(--theme-report-issue-syncing-download-logs-text-color);
-  cursor: pointer;
-  font-family: var(--font-regular);
-  font-size: 14px;
-  line-height: 1.36;
-  margin-bottom: 20px;
-  opacity: 0.8;
-  &:disabled {
-    border-bottom-color: transparent;
-    cursor: default;
-    text-decoration: none;
-  }
-}
-
-.downloadLogsButtonConnecting {
-  border-bottom: 1px solid
-    var(--theme-report-issue-syncing-download-logs-text-color-connecting);
-  color: var(--theme-report-issue-syncing-download-logs-text-color-connecting);
 }

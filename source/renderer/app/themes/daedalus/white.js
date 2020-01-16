@@ -490,6 +490,9 @@ export const WHITE_THEME_OUTPUT = {
     '--rp-input-text-color': '#2d2d2d',
     '--rp-input-text-color-disabled': 'rgba(45, 45, 45, 0.5)',
   },
+  rpLink: {
+    '--rp-link-color': '#29b595',
+  },
   rpModal: {
     '--rp-modal-bg-color': '#fff',
     '--rp-modal-max-height': '90%',

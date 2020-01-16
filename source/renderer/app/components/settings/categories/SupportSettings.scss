@@ -31,33 +31,18 @@
     padding-left: 6.5px;
   }
 
-  button,
-  p,
-  .externalLink,
-  .externalLinkNotWrapped {
+  p {
     color: var(--theme-support-settings-text-color);
     font-family: var(--font-regular);
     font-size: 16px;
   }
 
-  button,
-  .externalLink,
-  .externalLinkNotWrapped {
-    @include link(--theme-link-main-color);
-  }
-
-  .externalLink,
-  .externalLinkNotWrapped {
+  .externalLink {
+    font-family: var(--font-regular);
+    font-size: 16px;
     margin-right: 4px;
-  }
 
-  .externalLinkNotWrapped {
-    white-space: nowrap;
-  }
-
-  button {
-    cursor: pointer;
-    &:disabled {
+    &.disabled {
       cursor: default;
       opacity: 0.3;
     }
@@ -70,8 +55,5 @@
     & + h1 {
       margin-top: 24px;
     }
-  }
-
-  .link {
   }
 }

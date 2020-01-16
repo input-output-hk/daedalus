@@ -2,10 +2,11 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
-import SVGInline from 'react-svg-inline';
+import classNames from 'classnames';
+import { Link } from 'react-polymorph/lib/components/Link';
+import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import styles from './SupportSettings.scss';
 import globalMessages from '../../../i18n/global-messages';
-import externalLinkIcon from '../../../assets/images/link-ic.inline.svg';
 
 const messages = defineMessages({
   faqTitle: {
@@ -94,31 +95,36 @@ export default class SupportSettings extends Component<Props> {
     const faqLinkUrl = intl.formatMessage(globalMessages.faqLinkUrl);
 
     const faqLink = (
-      <a
-        className={styles.externalLinkNotWrapped}
-        href={faqLinkUrl}
+      <Link
+        className={styles.externalLink}
         onClick={event => onExternalLinkClick(faqLinkUrl, event)}
-      >
-        {intl.formatMessage(messages.faqLink)}
-        <SVGInline svg={externalLinkIcon} />
-      </a>
+        label={intl.formatMessage(messages.faqLink)}
+        skin={LinkSkin}
+      />
     );
 
+    const downloadLogsClasses = classNames([
+      styles.externalLink,
+      disableDownloadLogs ? styles.disabled : null,
+    ]);
+
     const stepsDownloadLogsLink = (
-      <button onClick={onDownloadLogs} disabled={disableDownloadLogs}>
-        {intl.formatMessage(messages.stepsDownloadLogsLink)}
-      </button>
+      <Link
+        className={downloadLogsClasses}
+        onClick={onDownloadLogs}
+        hasIconAfter={false}
+        label={intl.formatMessage(messages.stepsDownloadLogsLink)}
+        skin={LinkSkin}
+      />
     );
 
     const reportProblemLink = (
-      <span
+      <Link
         className={styles.externalLink}
-        role="presentation"
         onClick={onSupportRequestClick}
-      >
-        {intl.formatMessage(messages.stepsReportProblemLink)}
-        <SVGInline svg={externalLinkIcon} />
-      </span>
+        label={intl.formatMessage(messages.stepsReportProblemLink)}
+        skin={LinkSkin}
+      />
     );
 
     return (

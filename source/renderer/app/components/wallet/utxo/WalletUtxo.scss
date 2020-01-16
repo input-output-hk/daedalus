@@ -109,7 +109,6 @@
 }
 
 .externalLink {
-  @include link(--theme-link-main-color);
   font-family: var(--font-regular);
   font-size: 16px;
 }

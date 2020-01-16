@@ -162,37 +162,13 @@
       }
     }
 
-    .learnMore {
+    .learnMoreLink {
+      border-bottom: 1px solid var(--theme-splash-network-learn-more-color);
+      color: var(--theme-splash-network-learn-more-color);
       margin-top: 20px;
-
-      button {
-        align-items: center;
-        border-bottom: 1px solid var(--theme-splash-network-learn-more-color);
-        color: var(--theme-splash-network-learn-more-color);
-        cursor: pointer;
-        display: flex;
-        font-size: 14px;
-        line-height: 1.36;
-        opacity: 0.8;
-        padding-bottom: 1px;
-
-        :global {
-          .SVGInline {
-            height: 15px;
-          }
-        }
-
-        svg {
-          height: 13px;
-          margin-left: 2px;
-          object-fit: contain;
-          width: 13px;
-
-          & > g {
-            fill: transparent;
-            stroke: var(--theme-splash-network-learn-more-color);
-          }
-        }
+      opacity: 0.8;
+      &:after {
+        background-color: var(--theme-splash-network-learn-more-color);
       }
     }
   }
