@@ -5,7 +5,7 @@ Changelog
 
 ### Features
 
-- Implemented "Resync wallet" feature ([PR XYZ](https://github.com/input-output-hk/daedalus/pull/XYZ))
+- Implemented "Resync wallet" feature ([PR 1822](https://github.com/input-output-hk/daedalus/pull/1822))
 - Improved the paper wallet recovery phrase validation ([PR 1818](https://github.com/input-output-hk/daedalus/pull/1818))
 - Implemented React-Polymorph "Link" component ([PR 1799](https://github.com/input-output-hk/daedalus/pull/1799))
 - Implemented Hardware wallets restoration ([PR 1801](https://github.com/input-output-hk/daedalus/pull/1801))
