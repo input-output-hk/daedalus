@@ -82,7 +82,7 @@ export default class WalletSettingsPage extends Component<Props> {
         creationDate={creationDate}
         isIncentivizedTestnet={networkStatus.isIncentivizedTestnet}
         isSubmitting={updateWalletRequest.isExecuting}
-        isResyncing={forceWalletResyncRequest.isExecuting}
+        isResyncRequestExecuting={forceWalletResyncRequest.isExecuting}
         isInvalid={
           updateWalletRequest.wasExecuted &&
           updateWalletRequest.result === false
