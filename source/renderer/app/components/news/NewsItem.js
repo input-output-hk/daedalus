@@ -5,10 +5,10 @@ import classNames from 'classnames';
 import ReactMarkdown from 'react-markdown';
 import moment from 'moment';
 import { get } from 'lodash';
-import SVGInline from 'react-svg-inline';
 import AnimateHeight from 'react-animate-height';
+import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import News, { NewsTypes } from '../../domains/News';
-import externalLinkIcon from '../../assets/images/link-ic.inline.svg';
+import ButtonLink from '../widgets/ButtonLink';
 import styles from './NewsItem.scss';
 
 type Props = {
@@ -56,7 +56,7 @@ export default class NewsItem extends Component<Props, State> {
       event.preventDefault();
       this.props.onOpenExternalLink(linkUrl);
     } else {
-      const { type, date } = this.props.newsItem;
+      const { type, id } = this.props.newsItem;
       const { newsItemCollapsible } = this.state;
       if (type === NewsTypes.INFO || type === NewsTypes.ANNOUNCEMENT) {
         if (newsItemCollapsible) {
@@ -68,9 +68,9 @@ export default class NewsItem extends Component<Props, State> {
         }
       }
       if (NewsTypes.ALERT && this.props.onOpenAlert) {
-        this.props.onOpenAlert(date);
+        this.props.onOpenAlert(id);
       }
-      this.props.onMarkNewsAsRead(date);
+      this.props.onMarkNewsAsRead(id);
     }
   }
 
@@ -108,7 +108,7 @@ export default class NewsItem extends Component<Props, State> {
       this.state.newsItemExpanded ? styles.expanded : null,
       newsItem.read ? styles.isRead : null,
     ]);
-    const { url } = newsItem.action;
+    const { url = '' } = newsItem.action;
     const title = this.generateTitleWithBadge(newsItem.title, newsItem.read);
 
     return (
@@ -142,13 +142,17 @@ export default class NewsItem extends Component<Props, State> {
                 ]}
               />
             </div>
-            <button
+            <ButtonLink
               className={styles.newsItemActionBtn}
-              onClick={this.onProceedNewsAction.bind(this)}
-            >
-              {newsItem.action.label}
-              {url && <SVGInline svg={externalLinkIcon} />}
-            </button>
+              onClick={e => this.onProceedNewsAction(e)}
+              skin={ButtonSkin}
+              label={newsItem.action.label}
+              linkProps={{
+                className: styles.externalLink,
+                hasIconBefore: false,
+                hasIconAfter: url.length > 0,
+              }}
+            />
           </AnimateHeight>
         </div>
       </div>

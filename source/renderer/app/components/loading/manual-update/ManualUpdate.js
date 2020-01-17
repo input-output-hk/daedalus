@@ -1,13 +1,11 @@
 // @flow
 import React, { Component } from 'react';
-import SVGInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import ReactModal from 'react-modal';
-import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
-import linkNewWindow from '../../../assets/images/link-ic.inline.svg';
 import styles from './ManualUpdate.scss';
+import ButtonLink from '../../widgets/ButtonLink';
 
 const messages = defineMessages({
   title: {
@@ -85,28 +83,17 @@ export default class ManualUpdate extends Component<Props> {
             </p>
           </div>
 
-          <div>
-            <Button
-              className={styles.actionButton}
-              label={
-                <p>
-                  <SVGInline
-                    svg={linkNewWindow}
-                    className={styles.linkNewWindow}
-                  />
-                  <span className={styles.btnLabel}>
-                    {formatMessage(messages.actionButtonLabel)}
-                  </span>
-                </p>
-              }
-              onClick={() =>
-                onExternalLinkClick(
-                  formatMessage(messages.manualUpdateButtonUrl)
-                )
-              }
-              skin={ButtonSkin}
-            />
-          </div>
+          <ButtonLink
+            className={styles.actionButton}
+            onClick={() =>
+              onExternalLinkClick(formatMessage(messages.manualUpdateButtonUrl))
+            }
+            skin={ButtonSkin}
+            label={formatMessage(messages.actionButtonLabel)}
+            linkProps={{
+              className: styles.btnLabel,
+            }}
+          />
         </div>
       </ReactModal>
     );

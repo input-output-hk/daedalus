@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 
+- Implemented React-Polymorph "Link" component ([PR 1799](https://github.com/input-output-hk/daedalus/pull/1799))
 - Implemented Hardware wallets restoration ([PR 1801](https://github.com/input-output-hk/daedalus/pull/1801))
 - Added Yoroi wallets restoration to the "Restore Wallet" dialog ([PR 1740](https://github.com/input-output-hk/daedalus/pull/1740))
 - Implemented new menu shortcuts ([PR 1780](https://github.com/input-output-hk/daedalus/pull/1780))
@@ -58,6 +59,7 @@ Changelog
 
 ### Chores
 
+- Updated newsfeed ([PR 1786](https://github.com/input-output-hk/daedalus/pull/1786))
 - Changed Incentivized TestNet "Having trouble syncing" URL to point to one specific to TestNet ([PR 1795](https://github.com/input-output-hk/daedalus/pull/1795))
 - Updated `cardano-wallet` to revision `d3d93ba3` ([PR 1784](https://github.com/input-output-hk/daedalus/pull/1784))
 - Updated `cardano-wallet` to revision `e341d288` ([PR 1779](https://github.com/input-output-hk/daedalus/pull/1779))

@@ -485,6 +485,9 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--rp-input-text-color': '#ffffff',
     '--rp-input-text-color-disabled': 'rgba(255, 255, 255, 0.5)',
   },
+  rpLink: {
+    '--rp-link-color': '#1fc1c3',
+  },
   rpModal: {
     '--rp-modal-bg-color': '#1e1f31',
     '--rp-modal-max-height': '90%',

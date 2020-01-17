@@ -500,6 +500,9 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--rp-input-text-color': '#5e6066',
     '--rp-input-text-color-disabled': 'rgba(94, 96, 102, 0.5)',
   },
+  rpLink: {
+    '--rp-link-color': 'rgb(41, 111, 208)',
+  },
   rpModal: {
     '--rp-modal-bg-color': '#fafbfc',
     '--rp-modal-max-height': '90%',

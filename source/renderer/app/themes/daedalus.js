@@ -15,6 +15,7 @@ import SimpleStepper from 'react-polymorph/lib/themes/simple/SimpleStepper.scss'
 import SimpleSwitch from 'react-polymorph/lib/themes/simple/SimpleSwitch.scss';
 import SimpleTextArea from 'react-polymorph/lib/themes/simple/SimpleTextArea.scss';
 import SimpleTooltip from 'react-polymorph/lib/themes/simple/SimpleTooltip.scss';
+import SimpleLink from 'react-polymorph/lib/themes/simple/SimpleLink.scss';
 import { IDENTIFIERS } from 'react-polymorph/lib/themes/API';
 
 const {
@@ -25,6 +26,7 @@ const {
   DROPDOWN,
   FORM_FIELD,
   INPUT,
+  LINK,
   LOADING_SPINNER,
   MODAL,
   OPTIONS,
@@ -44,6 +46,7 @@ export const daedalusTheme = {
   [DROPDOWN]: SimpleDropdown,
   [FORM_FIELD]: SimpleFormField,
   [INPUT]: SimpleInput,
+  [LINK]: SimpleLink,
   [LOADING_SPINNER]: SimpleLoadingSpinner,
   [MODAL]: SimpleModal,
   [OPTIONS]: SimpleOptions,

@@ -503,6 +503,9 @@ export const CARDANO_THEME_OUTPUT = {
     '--rp-input-text-color': '#5e6066',
     '--rp-input-text-color-disabled': 'rgba(94, 96, 102, 0.5)',
   },
+  rpLink: {
+    '--rp-link-color': '#26AB5F',
+  },
   rpModal: {
     '--rp-modal-bg-color': '#ffffff',
     '--rp-modal-max-height': '90%',

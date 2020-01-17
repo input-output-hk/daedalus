@@ -287,13 +287,13 @@
         "description": "Title for \"Manual update\" overlay",
         "end": {
           "column": 3,
-          "line": 17
+          "line": 15
         },
         "file": "source/renderer/app/components/loading/manual-update/ManualUpdate.js",
         "id": "manualUpdate.title",
         "start": {
           "column": 9,
-          "line": 13
+          "line": 11
         }
       },
       {
@@ -301,13 +301,13 @@
         "description": "Description line 1 of \"Manual update\" overlay",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 21
         },
         "file": "source/renderer/app/components/loading/manual-update/ManualUpdate.js",
         "id": "manualUpdate.description1",
         "start": {
           "column": 20,
-          "line": 18
+          "line": 16
         }
       },
       {
@@ -315,13 +315,13 @@
         "description": "Description line 2 of \"Manual update\" overlay",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 27
         },
         "file": "source/renderer/app/components/loading/manual-update/ManualUpdate.js",
         "id": "manualUpdate.description2",
         "start": {
           "column": 20,
-          "line": 24
+          "line": 22
         }
       },
       {
@@ -329,13 +329,13 @@
         "description": "Label for \"Follow instructions and manually update\" action button on \"Manual update\" overlay",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 33
         },
         "file": "source/renderer/app/components/loading/manual-update/ManualUpdate.js",
         "id": "manualUpdate.button.label",
         "start": {
           "column": 21,
-          "line": 30
+          "line": 28
         }
       },
       {
@@ -343,13 +343,13 @@
         "description": "Follow instructions and manually update link on \"Manual update\" overlay",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 40
         },
         "file": "source/renderer/app/components/loading/manual-update/ManualUpdate.js",
         "id": "manualUpdate.button.url",
         "start": {
           "column": 25,
-          "line": 36
+          "line": 34
         }
       }
     ],
@@ -395,13 +395,13 @@
         "description": "Report connecting issue text on the loading screen.",
         "end": {
           "column": 3,
-          "line": 17
+          "line": 18
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/ReportIssue.js",
         "id": "loading.screen.reportIssue.connecting.text",
         "start": {
           "column": 29,
-          "line": 13
+          "line": 14
         }
       },
       {
@@ -409,13 +409,13 @@
         "description": "Report syncing issue text on the loading screen.",
         "end": {
           "column": 3,
-          "line": 22
+          "line": 23
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/ReportIssue.js",
         "id": "loading.screen.reportIssue.syncing.text",
         "start": {
           "column": 26,
-          "line": 18
+          "line": 19
         }
       },
       {
@@ -423,13 +423,13 @@
         "description": "Open support ticket button label on the loading.",
         "end": {
           "column": 3,
-          "line": 27
+          "line": 28
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/ReportIssue.js",
         "id": "loading.screen.reportIssue.buttonLabel",
         "start": {
           "column": 26,
-          "line": 23
+          "line": 24
         }
       },
       {
@@ -437,13 +437,13 @@
         "description": "Read the article button label on the loading.",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 33
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/ReportIssue.js",
         "id": "loading.screen.readArticle.buttonLabel",
         "start": {
           "column": 26,
-          "line": 28
+          "line": 29
         }
       },
       {
@@ -451,13 +451,13 @@
         "description": "Download logs button label on the loading.",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 38
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/ReportIssue.js",
         "id": "loading.screen.reportIssue.downloadLogsLinkLabel",
         "start": {
           "column": 36,
-          "line": 33
+          "line": 34
         }
       },
       {
@@ -465,13 +465,13 @@
         "description": "Link to Open Support page",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 43
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/ReportIssue.js",
         "id": "loading.screen.reportIssue.reportIssueButtonUrl",
         "start": {
           "column": 24,
-          "line": 38
+          "line": 39
         }
       },
       {
@@ -479,13 +479,13 @@
         "description": "Link to sync issue article page",
         "end": {
           "column": 3,
-          "line": 48
+          "line": 49
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/ReportIssue.js",
         "id": "loading.screen.readIssueArticle.syncIssueArticleUrl",
         "start": {
           "column": 23,
-          "line": 43
+          "line": 44
         }
       },
       {
@@ -493,13 +493,13 @@
         "description": "Link to sync issue article page for Incentivized TestNet",
         "end": {
           "column": 3,
-          "line": 54
+          "line": 55
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/ReportIssue.js",
         "id": "loading.screen.readIssueArticle.syncIssueArticleUrl.itn",
         "start": {
           "column": 29,
-          "line": 49
+          "line": 50
         }
       },
       {
@@ -507,13 +507,13 @@
         "description": "Link to connectivity issue article page",
         "end": {
           "column": 3,
-          "line": 60
+          "line": 61
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/ReportIssue.js",
         "id": "loading.screen.readIssueArticle.connectivityIssueArticleUrl",
         "start": {
           "column": 31,
-          "line": 55
+          "line": 56
         }
       }
     ],
@@ -1073,13 +1073,13 @@
         "description": "Title of Sync error overlay",
         "end": {
           "column": 3,
-          "line": 17
+          "line": 19
         },
         "file": "source/renderer/app/components/loading/system-time-error/SystemTimeError.js",
         "id": "systemTime.error.overlayTitle",
         "start": {
           "column": 16,
-          "line": 13
+          "line": 15
         }
       },
       {
@@ -1087,13 +1087,13 @@
         "description": "First paragraph of Sync error overlay",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 25
         },
         "file": "source/renderer/app/components/loading/system-time-error/SystemTimeError.js",
         "id": "systemTime.error.overlayTextP1",
         "start": {
           "column": 17,
-          "line": 18
+          "line": 20
         }
       },
       {
@@ -1101,13 +1101,13 @@
         "description": "Second paragraph of Sync error overlay",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 31
         },
         "file": "source/renderer/app/components/loading/system-time-error/SystemTimeError.js",
         "id": "systemTime.error.overlayTextP2",
         "start": {
           "column": 17,
-          "line": 24
+          "line": 26
         }
       },
       {
@@ -1115,13 +1115,13 @@
         "description": "Text of Sync error overlay when NTP service is unreachable",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 37
         },
         "file": "source/renderer/app/components/loading/system-time-error/SystemTimeError.js",
         "id": "systemTime.error.ntpUnreachableTextP1",
         "start": {
           "column": 24,
-          "line": 30
+          "line": 32
         }
       },
       {
@@ -1129,13 +1129,13 @@
         "description": "Text of Sync error overlay when NTP service is unreachable",
         "end": {
           "column": 3,
-          "line": 41
+          "line": 43
         },
         "file": "source/renderer/app/components/loading/system-time-error/SystemTimeError.js",
         "id": "systemTime.error.ntpUnreachableTextP2",
         "start": {
           "column": 24,
-          "line": 36
+          "line": 38
         }
       },
       {
@@ -1143,13 +1143,13 @@
         "description": "\"Support Portal\" link text",
         "end": {
           "column": 3,
-          "line": 46
+          "line": 48
         },
         "file": "source/renderer/app/components/loading/system-time-error/SystemTimeError.js",
         "id": "systemTime.error.supportPortalLink",
         "start": {
           "column": 21,
-          "line": 42
+          "line": 44
         }
       },
       {
@@ -1157,13 +1157,13 @@
         "description": "Link to \"Machine clock out of sync with Cardano network\" support page",
         "end": {
           "column": 3,
-          "line": 53
+          "line": 55
         },
         "file": "source/renderer/app/components/loading/system-time-error/SystemTimeError.js",
         "id": "systemTime.error.supportPortalLinkUrl",
         "start": {
           "column": 24,
-          "line": 47
+          "line": 49
         }
       },
       {
@@ -1171,13 +1171,13 @@
         "description": "Text of Check the time again button",
         "end": {
           "column": 3,
-          "line": 58
+          "line": 60
         },
         "file": "source/renderer/app/components/loading/system-time-error/SystemTimeError.js",
         "id": "systemTime.error.onCheckTheTimeAgainLink",
         "start": {
           "column": 27,
-          "line": 54
+          "line": 56
         }
       },
       {
@@ -1185,13 +1185,13 @@
         "description": "Text of \"Continue without clock synchronization checks\" button",
         "end": {
           "column": 3,
-          "line": 64
+          "line": 66
         },
         "file": "source/renderer/app/components/loading/system-time-error/SystemTimeError.js",
         "id": "systemTime.error.onContinueWithoutClockSyncCheckLink",
         "start": {
           "column": 39,
-          "line": 59
+          "line": 61
         }
       }
     ],
@@ -1359,13 +1359,13 @@
         "description": "Title \"Move funds from the legacy wallet\" on the legacy notification.",
         "end": {
           "column": 3,
-          "line": 18
+          "line": 17
         },
         "file": "source/renderer/app/components/notifications/LegacyNotification.js",
         "id": "wallet.legacy.notification.moveFundsTitle",
         "start": {
           "column": 18,
-          "line": 13
+          "line": 12
         }
       },
       {
@@ -1373,13 +1373,13 @@
         "description": "Title \"Create a Rewards wallet\" on the legacy notification.",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 22
         },
         "file": "source/renderer/app/components/notifications/LegacyNotification.js",
         "id": "wallet.legacy.notification.addWalletTitle",
         "start": {
           "column": 18,
-          "line": 19
+          "line": 18
         }
       },
       {
@@ -1387,13 +1387,13 @@
         "description": "Legacy notification description.",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 28
         },
         "file": "source/renderer/app/components/notifications/LegacyNotification.js",
         "id": "wallet.legacy.notification.moveFundsDescription.line1",
         "start": {
           "column": 29,
-          "line": 24
+          "line": 23
         }
       },
       {
@@ -1401,13 +1401,13 @@
         "description": "Legacy notification description.",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 34
         },
         "file": "source/renderer/app/components/notifications/LegacyNotification.js",
         "id": "wallet.legacy.notification.moveFundsDescription.line2",
         "start": {
           "column": 29,
-          "line": 30
+          "line": 29
         }
       },
       {
@@ -1415,13 +1415,13 @@
         "description": "Legacy notification description.",
         "end": {
           "column": 3,
-          "line": 41
+          "line": 40
         },
         "file": "source/renderer/app/components/notifications/LegacyNotification.js",
         "id": "wallet.legacy.notification.addWalletDescription.line1",
         "start": {
           "column": 29,
-          "line": 36
+          "line": 35
         }
       },
       {
@@ -1429,13 +1429,13 @@
         "description": "Legacy notification description.",
         "end": {
           "column": 3,
-          "line": 47
+          "line": 46
         },
         "file": "source/renderer/app/components/notifications/LegacyNotification.js",
         "id": "wallet.legacy.notification.addWalletDescription.line2",
         "start": {
           "column": 29,
-          "line": 42
+          "line": 41
         }
       },
       {
@@ -1443,13 +1443,13 @@
         "description": "Learn more action of legacy notification.",
         "end": {
           "column": 3,
-          "line": 52
+          "line": 51
         },
         "file": "source/renderer/app/components/notifications/LegacyNotification.js",
         "id": "wallet.legacy.notification.actionLearnMore",
         "start": {
           "column": 19,
-          "line": 48
+          "line": 47
         }
       },
       {
@@ -1457,13 +1457,13 @@
         "description": "Move testnet ada action of legacy notification.",
         "end": {
           "column": 3,
-          "line": 57
+          "line": 56
         },
         "file": "source/renderer/app/components/notifications/LegacyNotification.js",
         "id": "wallet.legacy.notification.actionMove",
         "start": {
           "column": 14,
-          "line": 53
+          "line": 52
         }
       },
       {
@@ -1471,13 +1471,13 @@
         "description": "Create a new Rewards wallet action of legacy notification.",
         "end": {
           "column": 3,
-          "line": 62
+          "line": 61
         },
         "file": "source/renderer/app/components/notifications/LegacyNotification.js",
         "id": "wallet.legacy.notification.addWallet",
         "start": {
           "column": 13,
-          "line": 58
+          "line": 57
         }
       },
       {
@@ -1485,13 +1485,13 @@
         "description": "\"Learn more\" link URL",
         "end": {
           "column": 3,
-          "line": 68
+          "line": 67
         },
         "file": "source/renderer/app/components/notifications/LegacyNotification.js",
         "id": "wallet.legacy.notification.learnMore.url",
         "start": {
           "column": 20,
-          "line": 63
+          "line": 62
         }
       }
     ],
@@ -1762,13 +1762,13 @@
         "description": "Title \"Help and support\" on the support settings page.",
         "end": {
           "column": 3,
-          "line": 15
+          "line": 16
         },
         "file": "source/renderer/app/components/settings/categories/SupportSettings.js",
         "id": "settings.support.faq.title",
         "start": {
           "column": 12,
-          "line": 11
+          "line": 12
         }
       },
       {
@@ -1776,13 +1776,13 @@
         "description": "Content for the \"Help and support\" section on the support settings page.",
         "end": {
           "column": 3,
-          "line": 22
+          "line": 23
         },
         "file": "source/renderer/app/components/settings/categories/SupportSettings.js",
         "id": "settings.support.faq.content",
         "start": {
           "column": 14,
-          "line": 16
+          "line": 17
         }
       },
       {
@@ -1790,13 +1790,13 @@
         "description": "\"Known Issues\" link in the \"Help and support\" section on the support settings page",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 29
         },
         "file": "source/renderer/app/components/settings/categories/SupportSettings.js",
         "id": "settings.support.faq.faqLink",
         "start": {
           "column": 11,
-          "line": 23
+          "line": 24
         }
       },
       {
@@ -1804,13 +1804,13 @@
         "description": "Title \"Steps for creating a support request\" on the support settings page.",
         "end": {
           "column": 3,
-          "line": 34
+          "line": 35
         },
         "file": "source/renderer/app/components/settings/categories/SupportSettings.js",
         "id": "settings.support.steps.title",
         "start": {
           "column": 14,
-          "line": 29
+          "line": 30
         }
       },
       {
@@ -1818,13 +1818,13 @@
         "description": "Title \"Download the logs\" on the support settings page.",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 40
         },
         "file": "source/renderer/app/components/settings/categories/SupportSettings.js",
         "id": "settings.support.steps.downloadLogs.title",
         "start": {
           "column": 26,
-          "line": 35
+          "line": 36
         }
       },
       {
@@ -1832,13 +1832,13 @@
         "description": "Description of \"Download the logs\" on the support settings page.",
         "end": {
           "column": 3,
-          "line": 46
+          "line": 47
         },
         "file": "source/renderer/app/components/settings/categories/SupportSettings.js",
         "id": "settings.support.steps.downloadLogs.description",
         "start": {
           "column": 32,
-          "line": 40
+          "line": 41
         }
       },
       {
@@ -1846,13 +1846,13 @@
         "description": "\"download your logs here\" link in the Logs section on the support settings page",
         "end": {
           "column": 3,
-          "line": 52
+          "line": 53
         },
         "file": "source/renderer/app/components/settings/categories/SupportSettings.js",
         "id": "settings.support.steps.downloadLogs.link",
         "start": {
           "column": 25,
-          "line": 47
+          "line": 48
         }
       },
       {
@@ -1860,13 +1860,13 @@
         "description": "Title \"Report a problem\" on the support settings page.",
         "end": {
           "column": 3,
-          "line": 57
+          "line": 58
         },
         "file": "source/renderer/app/components/settings/categories/SupportSettings.js",
         "id": "settings.support.steps.reportProblem.title",
         "start": {
           "column": 27,
-          "line": 53
+          "line": 54
         }
       },
       {
@@ -1874,13 +1874,13 @@
         "description": "Description of \"Download the logs\" on the support settings page.",
         "end": {
           "column": 3,
-          "line": 64
+          "line": 65
         },
         "file": "source/renderer/app/components/settings/categories/SupportSettings.js",
         "id": "settings.support.steps.reportProblem.description",
         "start": {
           "column": 33,
-          "line": 58
+          "line": 59
         }
       },
       {
@@ -1888,13 +1888,13 @@
         "description": "\"download your logs here\" link in the Logs section on the support settings page",
         "end": {
           "column": 3,
-          "line": 70
+          "line": 71
         },
         "file": "source/renderer/app/components/settings/categories/SupportSettings.js",
         "id": "settings.support.steps.reportProblem.link",
         "start": {
           "column": 26,
-          "line": 65
+          "line": 66
         }
       }
     ],
@@ -2048,13 +2048,13 @@
         "description": "Daedalus",
         "end": {
           "column": 3,
-          "line": 17
+          "line": 18
         },
         "file": "source/renderer/app/components/splash/Network.js",
         "id": "static.splash.network.title",
         "start": {
           "column": 9,
-          "line": 13
+          "line": 14
         }
       },
       {
@@ -2062,13 +2062,13 @@
         "description": "INCENTIVIZED TESTNET v1",
         "end": {
           "column": 3,
-          "line": 22
+          "line": 23
         },
         "file": "source/renderer/app/components/splash/Network.js",
         "id": "static.splash.network.incentivizedTestnet",
         "start": {
           "column": 23,
-          "line": 18
+          "line": 19
         }
       },
       {
@@ -2076,13 +2076,13 @@
         "description": "Rewards",
         "end": {
           "column": 3,
-          "line": 27
+          "line": 28
         },
         "file": "source/renderer/app/components/splash/Network.js",
         "id": "static.splash.network.rewards",
         "start": {
           "column": 16,
-          "line": 23
+          "line": 24
         }
       },
       {
@@ -2090,13 +2090,13 @@
         "description": "This version of Daedalus has been created specifically for the balance check, the first stage in the roll-out of the Incentivized Testnet. It is not compatible with the Cardano mainnet. The balance check is a practice run for the official balance snapshot that is currently planned for later in November. This initial test will allow us to test core functionality, while enabling users to validate that the value of their mainnet ada balances is accurately captured ahead of the Incentivized Testnet.",
         "end": {
           "column": 3,
-          "line": 34
+          "line": 35
         },
         "file": "source/renderer/app/components/splash/Network.js",
         "id": "static.splash.network.incentivizedTestnetDescription",
         "start": {
           "column": 34,
-          "line": 28
+          "line": 29
         }
       },
       {
@@ -2104,13 +2104,13 @@
         "description": "I understand",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 40
         },
         "file": "source/renderer/app/components/splash/Network.js",
         "id": "static.splash.network.actionLabel",
         "start": {
           "column": 15,
-          "line": 35
+          "line": 36
         }
       },
       {
@@ -2118,13 +2118,13 @@
         "description": "Learn more",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 45
         },
         "file": "source/renderer/app/components/splash/Network.js",
         "id": "static.splash.network.learnMore",
         "start": {
           "column": 13,
-          "line": 40
+          "line": 41
         }
       }
     ],
@@ -2137,13 +2137,13 @@
         "description": "Headline for the Decentralisation notification.",
         "end": {
           "column": 3,
-          "line": 17
+          "line": 15
         },
         "file": "source/renderer/app/components/staking/countdown/StakingCountdown.js",
         "id": "staking.delegationCountdown.heading",
         "start": {
           "column": 11,
-          "line": 13
+          "line": 11
         }
       },
       {
@@ -2151,13 +2151,13 @@
         "description": "Info for the Decentralisation notification.",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 21
         },
         "file": "source/renderer/app/components/staking/countdown/StakingCountdown.js",
         "id": "staking.delegationCountdown.description",
         "start": {
           "column": 15,
-          "line": 18
+          "line": 16
         }
       },
       {
@@ -2165,13 +2165,13 @@
         "description": "Description for the Decentralisation notification.",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 26
         },
         "file": "source/renderer/app/components/staking/countdown/StakingCountdown.js",
         "id": "staking.delegationCountdown.timeLeftDesc",
         "start": {
           "column": 16,
-          "line": 24
+          "line": 22
         }
       },
       {
@@ -2179,13 +2179,13 @@
         "description": "Button Label for the Decentralisation notification.",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 31
         },
         "file": "source/renderer/app/components/staking/countdown/StakingCountdown.js",
         "id": "staking.delegationCountdown.buttonLabel",
         "start": {
           "column": 15,
-          "line": 29
+          "line": 27
         }
       }
     ],
@@ -2320,13 +2320,13 @@
         "description": "\"No wallets\" headLine on the Delegation centre Page.",
         "end": {
           "column": 3,
-          "line": 17
+          "line": 16
         },
         "file": "source/renderer/app/components/staking/delegation-center/DelegationCenterNoWallets.js",
         "id": "staking.delegationCenter.noWallets.headLine",
         "start": {
           "column": 12,
-          "line": 12
+          "line": 11
         }
       },
       {
@@ -2334,13 +2334,13 @@
         "description": "\"No wallets\" instructions on the Delegation centre Page.",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 22
         },
         "file": "source/renderer/app/components/staking/delegation-center/DelegationCenterNoWallets.js",
         "id": "staking.delegationCenter.noWallets.instructions",
         "start": {
           "column": 16,
-          "line": 18
+          "line": 17
         }
       },
       {
@@ -2348,13 +2348,13 @@
         "description": "Label for \"Create New Wallet\" button on the Delegation centre Page.",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 28
         },
         "file": "source/renderer/app/components/staking/delegation-center/DelegationCenterNoWallets.js",
         "id": "staking.delegationCenter.noWallets.createWalletButtonLabel",
         "start": {
           "column": 27,
-          "line": 24
+          "line": 23
         }
       }
     ],
@@ -3496,13 +3496,13 @@
         "description": "Headline for the Decentralization progress notification.",
         "end": {
           "column": 3,
-          "line": 16
+          "line": 14
         },
         "file": "source/renderer/app/components/staking/info/StakingInfo.js",
         "id": "staking.info.heading",
         "start": {
           "column": 11,
-          "line": 12
+          "line": 10
         }
       },
       {
@@ -3510,13 +3510,13 @@
         "description": "Info description for the Decentralization progress notification.",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 21
         },
         "file": "source/renderer/app/components/staking/info/StakingInfo.js",
         "id": "staking.info.description",
         "start": {
           "column": 15,
-          "line": 17
+          "line": 15
         }
       },
       {
@@ -3524,13 +3524,13 @@
         "description": "Percentage info description for the Decentralization progress notification.",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 28
         },
         "file": "source/renderer/app/components/staking/info/StakingInfo.js",
         "id": "staking.info.percentage",
         "start": {
           "column": 14,
-          "line": 24
+          "line": 22
         }
       },
       {
@@ -3538,13 +3538,13 @@
         "description": "Button Label for the Decentralization progress notification.",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 33
         },
         "file": "source/renderer/app/components/staking/info/StakingInfo.js",
         "id": "staking.info.buttonLabel",
         "start": {
           "column": 15,
-          "line": 31
+          "line": 29
         }
       }
     ],
@@ -3632,13 +3632,13 @@
         "description": "Title \"Earned delegation rewards\" label on the staking rewards page.",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 24
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.title",
         "start": {
           "column": 9,
-          "line": 18
+          "line": 19
         }
       },
       {
@@ -3646,13 +3646,13 @@
         "description": "Label for the \"Export CSV\" button on the staking rewards page.",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 30
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.exportButtonLabel",
         "start": {
           "column": 21,
-          "line": 24
+          "line": 25
         }
       },
       {
@@ -3660,13 +3660,13 @@
         "description": "\"No rewards\" rewards label on staking rewards page.",
         "end": {
           "column": 3,
-          "line": 34
+          "line": 35
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.no.rewards",
         "start": {
           "column": 13,
-          "line": 30
+          "line": 31
         }
       },
       {
@@ -3674,13 +3674,13 @@
         "description": "Table header \"Date\" label on staking rewards page",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 40
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.tableHeader.date",
         "start": {
           "column": 19,
-          "line": 35
+          "line": 36
         }
       },
       {
@@ -3688,13 +3688,13 @@
         "description": "Table header \"Stake pool\" label on staking rewards page",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 45
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.tableHeader.pool",
         "start": {
           "column": 19,
-          "line": 40
+          "line": 41
         }
       },
       {
@@ -3702,13 +3702,13 @@
         "description": "Table header \"Wallet\" label on staking rewards page",
         "end": {
           "column": 3,
-          "line": 49
+          "line": 50
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.tableHeader.wallet",
         "start": {
           "column": 21,
-          "line": 45
+          "line": 46
         }
       },
       {
@@ -3716,13 +3716,13 @@
         "description": "Table header \"Reward\" label on staking rewards page",
         "end": {
           "column": 3,
-          "line": 54
+          "line": 55
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.tableHeader.reward",
         "start": {
           "column": 21,
-          "line": 50
+          "line": 51
         }
       },
       {
@@ -3730,13 +3730,13 @@
         "description": "Label for \"Learn more\" button on staking rewards page",
         "end": {
           "column": 3,
-          "line": 59
+          "line": 60
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.learnMore.ButtonLabel",
         "start": {
           "column": 24,
-          "line": 55
+          "line": 56
         }
       },
       {
@@ -3744,13 +3744,13 @@
         "description": "Rewards description text on staking rewards page",
         "end": {
           "column": 3,
-          "line": 65
+          "line": 66
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.note",
         "start": {
           "column": 8,
-          "line": 60
+          "line": 61
         }
       }
     ],
@@ -3988,13 +3988,13 @@
         "description": "\"\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 34
+          "line": 35
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
         "id": "staking.stakePools.tooltip.ranking",
         "start": {
           "column": 11,
-          "line": 30
+          "line": 31
         }
       },
       {
@@ -4002,13 +4002,13 @@
         "description": "\"Controlled stake\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 40
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
         "id": "staking.stakePools.tooltip.controlledStake",
         "start": {
           "column": 19,
-          "line": 35
+          "line": 36
         }
       },
       {
@@ -4016,13 +4016,13 @@
         "description": "\"Profit margin\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 45
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
         "id": "staking.stakePools.tooltip.profitMargin",
         "start": {
           "column": 16,
-          "line": 40
+          "line": 41
         }
       },
       {
@@ -4030,13 +4030,13 @@
         "description": "\"Cost per epoch\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 49
+          "line": 50
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
         "id": "staking.stakePools.tooltip.costPerEpoch",
         "start": {
           "column": 16,
-          "line": 45
+          "line": 46
         }
       },
       {
@@ -4044,13 +4044,13 @@
         "description": "\"Performance\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 54
+          "line": 55
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
         "id": "staking.stakePools.tooltip.performance",
         "start": {
           "column": 15,
-          "line": 50
+          "line": 51
         }
       },
       {
@@ -4058,13 +4058,13 @@
         "description": "\"Produced blocks\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 59
+          "line": 60
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
         "id": "staking.stakePools.tooltip.producedBlocks",
         "start": {
           "column": 18,
-          "line": 55
+          "line": 56
         }
       },
       {
@@ -4072,13 +4072,13 @@
         "description": "\"Retirement\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 64
+          "line": 65
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
         "id": "staking.stakePools.tooltip.retirement",
         "start": {
           "column": 14,
-          "line": 60
+          "line": 61
         }
       },
       {
@@ -4086,13 +4086,13 @@
         "description": "\"pledgeAddressLabel\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 79
+          "line": 80
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
         "id": "staking.stakePools.tooltip.pledgeAddressLabel",
         "start": {
           "column": 22,
-          "line": 75
+          "line": 76
         }
       },
       {
@@ -4100,13 +4100,13 @@
         "description": "\"Delegate to this pool\" Button for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 85
+          "line": 86
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
         "id": "staking.stakePools.tooltip.delegateButton",
         "start": {
           "column": 18,
-          "line": 80
+          "line": 81
         }
       }
     ],
@@ -4119,13 +4119,13 @@
         "description": "About \"title\"",
         "end": {
           "column": 3,
-          "line": 18
+          "line": 19
         },
         "file": "source/renderer/app/components/static/About.js",
         "id": "static.about.title",
         "start": {
           "column": 14,
-          "line": 14
+          "line": 15
         }
       },
       {
@@ -4133,13 +4133,13 @@
         "description": "About page daedalus team headline",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 24
         },
         "file": "source/renderer/app/components/static/About.js",
         "id": "static.about.content.daedalus.headline",
         "start": {
           "column": 32,
-          "line": 19
+          "line": 20
         }
       },
       {
@@ -4147,13 +4147,13 @@
         "description": "About page cardano team headline",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 29
         },
         "file": "source/renderer/app/components/static/About.js",
         "id": "static.about.content.cardano.headline",
         "start": {
           "column": 31,
-          "line": 24
+          "line": 25
         }
       },
       {
@@ -4161,13 +4161,13 @@
         "description": "About page daedalus team members",
         "end": {
           "column": 3,
-          "line": 34
+          "line": 35
         },
         "file": "source/renderer/app/components/static/About.js",
         "id": "static.about.content.daedalus.members",
         "start": {
           "column": 31,
-          "line": 29
+          "line": 30
         }
       },
       {
@@ -4175,13 +4175,13 @@
         "description": "About page cardano team members",
         "end": {
           "column": 3,
-          "line": 40
+          "line": 41
         },
         "file": "source/renderer/app/components/static/About.js",
         "id": "static.about.content.cardano.members",
         "start": {
           "column": 30,
-          "line": 35
+          "line": 36
         }
       },
       {
@@ -4189,13 +4189,13 @@
         "description": "About \"copyright\"",
         "end": {
           "column": 3,
-          "line": 45
+          "line": 46
         },
         "file": "source/renderer/app/components/static/About.js",
         "id": "static.about.copyright",
         "start": {
           "column": 18,
-          "line": 41
+          "line": 42
         }
       },
       {
@@ -4203,13 +4203,13 @@
         "description": "About page license name",
         "end": {
           "column": 3,
-          "line": 50
+          "line": 51
         },
         "file": "source/renderer/app/components/static/About.js",
         "id": "static.about.license",
         "start": {
           "column": 15,
-          "line": 46
+          "line": 47
         }
       },
       {
@@ -4217,13 +4217,13 @@
         "description": "About page build information",
         "end": {
           "column": 3,
-          "line": 55
+          "line": 56
         },
         "file": "source/renderer/app/components/static/About.js",
         "id": "static.about.buildInfo",
         "start": {
           "column": 18,
-          "line": 51
+          "line": 52
         }
       }
     ],
@@ -4236,13 +4236,13 @@
         "description": "System info",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 32
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.system.info",
         "start": {
           "column": 14,
-          "line": 27
+          "line": 28
         }
       },
       {
@@ -4250,13 +4250,13 @@
         "description": "Platform",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 37
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.platform",
         "start": {
           "column": 12,
-          "line": 32
+          "line": 33
         }
       },
       {
@@ -4264,13 +4264,13 @@
         "description": "Platform version",
         "end": {
           "column": 3,
-          "line": 41
+          "line": 42
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.platform.version",
         "start": {
           "column": 19,
-          "line": 37
+          "line": 38
         }
       },
       {
@@ -4278,13 +4278,13 @@
         "description": "CPU",
         "end": {
           "column": 3,
-          "line": 46
+          "line": 47
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cpu",
         "start": {
           "column": 7,
-          "line": 42
+          "line": 43
         }
       },
       {
@@ -4292,13 +4292,13 @@
         "description": "RAM",
         "end": {
           "column": 3,
-          "line": 51
+          "line": 52
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.ram",
         "start": {
           "column": 7,
-          "line": 47
+          "line": 48
         }
       },
       {
@@ -4306,13 +4306,13 @@
         "description": "Available disk space",
         "end": {
           "column": 3,
-          "line": 56
+          "line": 57
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.availableDiskSpace",
         "start": {
           "column": 22,
-          "line": 52
+          "line": 53
         }
       },
       {
@@ -4320,13 +4320,13 @@
         "description": "Unknown amount of disk space",
         "end": {
           "column": 3,
-          "line": 61
+          "line": 62
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.unknownDiskSpace",
         "start": {
           "column": 20,
-          "line": 57
+          "line": 58
         }
       },
       {
@@ -4334,13 +4334,13 @@
         "description": "\"Support\" link URL while disk space is unknown",
         "end": {
           "column": 3,
-          "line": 66
+          "line": 67
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.unknownDiskSpaceSupportUrl",
         "start": {
           "column": 30,
-          "line": 62
+          "line": 63
         }
       },
       {
@@ -4348,13 +4348,13 @@
         "description": "CORE INFO",
         "end": {
           "column": 3,
-          "line": 71
+          "line": 72
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.coreInfo",
         "start": {
           "column": 12,
-          "line": 67
+          "line": 68
         }
       },
       {
@@ -4362,13 +4362,13 @@
         "description": "Daedalus version",
         "end": {
           "column": 3,
-          "line": 76
+          "line": 77
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.daedalusVersion",
         "start": {
           "column": 19,
-          "line": 72
+          "line": 73
         }
       },
       {
@@ -4376,13 +4376,13 @@
         "description": "Daedalus main process ID",
         "end": {
           "column": 3,
-          "line": 81
+          "line": 82
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.daedalusMainProcessID",
         "start": {
           "column": 25,
-          "line": 77
+          "line": 78
         }
       },
       {
@@ -4390,13 +4390,13 @@
         "description": "Daedalus renderer process ID",
         "end": {
           "column": 3,
-          "line": 86
+          "line": 87
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.daedalusProcessID",
         "start": {
           "column": 21,
-          "line": 82
+          "line": 83
         }
       },
       {
@@ -4404,13 +4404,13 @@
         "description": "Daedalus 'Blank Screen Fix' active",
         "end": {
           "column": 3,
-          "line": 91
+          "line": 92
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.blankScreenFix",
         "start": {
           "column": 18,
-          "line": 87
+          "line": 88
         }
       },
       {
@@ -4418,13 +4418,13 @@
         "description": "Cardano node version",
         "end": {
           "column": 3,
-          "line": 96
+          "line": 97
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoVersion",
         "start": {
           "column": 18,
-          "line": 92
+          "line": 93
         }
       },
       {
@@ -4432,13 +4432,13 @@
         "description": "Cardano node process ID",
         "end": {
           "column": 3,
-          "line": 101
+          "line": 102
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoProcessID",
         "start": {
           "column": 20,
-          "line": 97
+          "line": 98
         }
       },
       {
@@ -4446,13 +4446,13 @@
         "description": "Cardano node API port",
         "end": {
           "column": 3,
-          "line": 106
+          "line": 107
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoApiPort",
         "start": {
           "column": 18,
-          "line": 102
+          "line": 103
         }
       },
       {
@@ -4460,13 +4460,13 @@
         "description": "Cardano network",
         "end": {
           "column": 3,
-          "line": 111
+          "line": 112
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNetwork",
         "start": {
           "column": 18,
-          "line": 107
+          "line": 108
         }
       },
       {
@@ -4474,13 +4474,13 @@
         "description": "Daedalus state directory",
         "end": {
           "column": 3,
-          "line": 116
+          "line": 117
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.stateDirectory",
         "start": {
           "column": 22,
-          "line": 112
+          "line": 113
         }
       },
       {
@@ -4488,13 +4488,13 @@
         "description": "Open",
         "end": {
           "column": 3,
-          "line": 121
+          "line": 122
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.stateDirectoryPathOpenBtn",
         "start": {
           "column": 29,
-          "line": 117
+          "line": 118
         }
       },
       {
@@ -4502,13 +4502,13 @@
         "description": "CONNECTION ERROR",
         "end": {
           "column": 3,
-          "line": 126
+          "line": 127
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.connectionError",
         "start": {
           "column": 19,
-          "line": 122
+          "line": 123
         }
       },
       {
@@ -4516,13 +4516,13 @@
         "description": "DAEDALUS STATUS",
         "end": {
           "column": 3,
-          "line": 131
+          "line": 132
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.daedalusStatus",
         "start": {
           "column": 18,
-          "line": 127
+          "line": 128
         }
       },
       {
@@ -4530,13 +4530,13 @@
         "description": "Connected",
         "end": {
           "column": 3,
-          "line": 136
+          "line": 137
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.connected",
         "start": {
           "column": 13,
-          "line": 132
+          "line": 133
         }
       },
       {
@@ -4544,13 +4544,13 @@
         "description": "Synced",
         "end": {
           "column": 3,
-          "line": 141
+          "line": 142
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.synced",
         "start": {
           "column": 10,
-          "line": 137
+          "line": 138
         }
       },
       {
@@ -4558,13 +4558,13 @@
         "description": "Sync percentage",
         "end": {
           "column": 3,
-          "line": 146
+          "line": 147
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.syncPercentage",
         "start": {
           "column": 18,
-          "line": 142
+          "line": 143
         }
       },
       {
@@ -4572,13 +4572,13 @@
         "description": "Remaining unsynced blocks",
         "end": {
           "column": 3,
-          "line": 151
+          "line": 152
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.remainingUnsyncedBlocks",
         "start": {
           "column": 27,
-          "line": 147
+          "line": 148
         }
       },
       {
@@ -4586,13 +4586,13 @@
         "description": "Latest local block age",
         "end": {
           "column": 3,
-          "line": 156
+          "line": 157
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.latestLocalBlockAge",
         "start": {
           "column": 23,
-          "line": 152
+          "line": 153
         }
       },
       {
@@ -4600,13 +4600,13 @@
         "description": "Latest network block age",
         "end": {
           "column": 3,
-          "line": 161
+          "line": 162
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.latestNetworkBlockAge",
         "start": {
           "column": 25,
-          "line": 157
+          "line": 158
         }
       },
       {
@@ -4614,13 +4614,13 @@
         "description": "Local time difference",
         "end": {
           "column": 3,
-          "line": 166
+          "line": 167
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.localTimeDifference",
         "start": {
           "column": 23,
-          "line": 162
+          "line": 163
         }
       },
       {
@@ -4628,13 +4628,13 @@
         "description": "System time correct",
         "end": {
           "column": 3,
-          "line": 171
+          "line": 172
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.systemTimeCorrect",
         "start": {
           "column": 21,
-          "line": 167
+          "line": 168
         }
       },
       {
@@ -4642,13 +4642,13 @@
         "description": "System time ignored",
         "end": {
           "column": 3,
-          "line": 176
+          "line": 177
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.systemTimeIgnored",
         "start": {
           "column": 21,
-          "line": 172
+          "line": 173
         }
       },
       {
@@ -4656,13 +4656,13 @@
         "description": "Checking Cardano node time",
         "end": {
           "column": 3,
-          "line": 181
+          "line": 182
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.checkingNodeTime",
         "start": {
           "column": 20,
-          "line": 177
+          "line": 178
         }
       },
       {
@@ -4670,13 +4670,13 @@
         "description": "CARDANO NODE STATUS",
         "end": {
           "column": 3,
-          "line": 186
+          "line": 187
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNodeStatus",
         "start": {
           "column": 21,
-          "line": 182
+          "line": 183
         }
       },
       {
@@ -4684,13 +4684,13 @@
         "description": "Restarting Cardano node...",
         "end": {
           "column": 3,
-          "line": 191
+          "line": 192
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNodeStatusRestarting",
         "start": {
           "column": 31,
-          "line": 187
+          "line": 188
         }
       },
       {
@@ -4698,13 +4698,13 @@
         "description": "Restart Cardano node",
         "end": {
           "column": 3,
-          "line": 196
+          "line": 197
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNodeStatusRestart",
         "start": {
           "column": 28,
-          "line": 192
+          "line": 193
         }
       },
       {
@@ -4712,13 +4712,13 @@
         "description": "Cardano node diagnostics",
         "end": {
           "column": 3,
-          "line": 201
+          "line": 202
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNodeDiagnostics",
         "start": {
           "column": 26,
-          "line": 197
+          "line": 198
         }
       },
       {
@@ -4726,13 +4726,13 @@
         "description": "Realtime statistics monitor",
         "end": {
           "column": 3,
-          "line": 206
+          "line": 207
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.realtimeStatisticsMonitor",
         "start": {
           "column": 29,
-          "line": 202
+          "line": 203
         }
       },
       {
@@ -4740,13 +4740,13 @@
         "description": "Cardano node state",
         "end": {
           "column": 3,
-          "line": 211
+          "line": 212
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNodeState",
         "start": {
           "column": 20,
-          "line": 207
+          "line": 208
         }
       },
       {
@@ -4754,13 +4754,13 @@
         "description": "Updated",
         "end": {
           "column": 3,
-          "line": 216
+          "line": 217
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.nodeHasBeenUpdated",
         "start": {
           "column": 22,
-          "line": 212
+          "line": 213
         }
       },
       {
@@ -4768,13 +4768,13 @@
         "description": "Crashed",
         "end": {
           "column": 3,
-          "line": 221
+          "line": 222
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.nodeHasCrashed",
         "start": {
           "column": 18,
-          "line": 217
+          "line": 218
         }
       },
       {
@@ -4782,13 +4782,13 @@
         "description": "Errored",
         "end": {
           "column": 3,
-          "line": 226
+          "line": 227
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.nodeHasErrored",
         "start": {
           "column": 18,
-          "line": 222
+          "line": 223
         }
       },
       {
@@ -4796,13 +4796,13 @@
         "description": "Stopped",
         "end": {
           "column": 3,
-          "line": 231
+          "line": 232
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.nodeHasStopped",
         "start": {
           "column": 18,
-          "line": 227
+          "line": 228
         }
       },
       {
@@ -4810,13 +4810,13 @@
         "description": "Exiting",
         "end": {
           "column": 3,
-          "line": 236
+          "line": 237
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.nodeIsExiting",
         "start": {
           "column": 17,
-          "line": 232
+          "line": 233
         }
       },
       {
@@ -4824,13 +4824,13 @@
         "description": "Running",
         "end": {
           "column": 3,
-          "line": 241
+          "line": 242
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.nodeIsRunning",
         "start": {
           "column": 17,
-          "line": 237
+          "line": 238
         }
       },
       {
@@ -4838,13 +4838,13 @@
         "description": "Starting",
         "end": {
           "column": 3,
-          "line": 246
+          "line": 247
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.nodeIsStarting",
         "start": {
           "column": 18,
-          "line": 242
+          "line": 243
         }
       },
       {
@@ -4852,13 +4852,13 @@
         "description": "Stopping",
         "end": {
           "column": 3,
-          "line": 251
+          "line": 252
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.nodeIsStopping",
         "start": {
           "column": 18,
-          "line": 247
+          "line": 248
         }
       },
       {
@@ -4866,13 +4866,13 @@
         "description": "Unrecoverable",
         "end": {
           "column": 3,
-          "line": 256
+          "line": 257
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.nodeIsUnrecoverable",
         "start": {
           "column": 23,
-          "line": 252
+          "line": 253
         }
       },
       {
@@ -4880,13 +4880,13 @@
         "description": "Updating",
         "end": {
           "column": 3,
-          "line": 261
+          "line": 262
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.nodeIsUpdating",
         "start": {
           "column": 18,
-          "line": 257
+          "line": 258
         }
       },
       {
@@ -4894,13 +4894,13 @@
         "description": "Cardano node responding",
         "end": {
           "column": 3,
-          "line": 266
+          "line": 267
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNodeResponding",
         "start": {
           "column": 25,
-          "line": 262
+          "line": 263
         }
       },
       {
@@ -4908,13 +4908,13 @@
         "description": "Cardano node subscribed",
         "end": {
           "column": 3,
-          "line": 271
+          "line": 272
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNodeSubscribed",
         "start": {
           "column": 25,
-          "line": 267
+          "line": 268
         }
       },
       {
@@ -4922,13 +4922,13 @@
         "description": "Cardano node time correct",
         "end": {
           "column": 3,
-          "line": 276
+          "line": 277
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNodeTimeCorrect",
         "start": {
           "column": 26,
-          "line": 272
+          "line": 273
         }
       },
       {
@@ -4936,13 +4936,13 @@
         "description": "Cardano node syncing",
         "end": {
           "column": 3,
-          "line": 281
+          "line": 282
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNodeSyncing",
         "start": {
           "column": 22,
-          "line": 277
+          "line": 278
         }
       },
       {
@@ -4950,13 +4950,13 @@
         "description": "Cardano node in sync",
         "end": {
           "column": 3,
-          "line": 286
+          "line": 287
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNodeInSync",
         "start": {
           "column": 21,
-          "line": 282
+          "line": 283
         }
       },
       {
@@ -4964,13 +4964,13 @@
         "description": "Checking...",
         "end": {
           "column": 3,
-          "line": 291
+          "line": 292
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.localTimeDifferenceChecking",
         "start": {
           "column": 31,
-          "line": 287
+          "line": 288
         }
       },
       {
@@ -4978,13 +4978,13 @@
         "description": "Check time",
         "end": {
           "column": 3,
-          "line": 296
+          "line": 297
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.localTimeDifferenceCheckTime",
         "start": {
           "column": 32,
-          "line": 292
+          "line": 293
         }
       },
       {
@@ -4992,13 +4992,13 @@
         "description": "YES",
         "end": {
           "column": 3,
-          "line": 301
+          "line": 302
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.statusOn",
         "start": {
           "column": 12,
-          "line": 297
+          "line": 298
         }
       },
       {
@@ -5006,13 +5006,13 @@
         "description": "NO",
         "end": {
           "column": 3,
-          "line": 306
+          "line": 307
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.statusOff",
         "start": {
           "column": 13,
-          "line": 302
+          "line": 303
         }
       },
       {
@@ -5020,13 +5020,13 @@
         "description": "NTP service unreachable",
         "end": {
           "column": 3,
-          "line": 311
+          "line": 312
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.serviceUnreachable",
         "start": {
           "column": 22,
-          "line": 307
+          "line": 308
         }
       },
       {
@@ -5034,13 +5034,13 @@
         "description": "message",
         "end": {
           "column": 3,
-          "line": 316
+          "line": 317
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.message",
         "start": {
           "column": 11,
-          "line": 312
+          "line": 313
         }
       },
       {
@@ -5048,13 +5048,13 @@
         "description": "code",
         "end": {
           "column": 3,
-          "line": 321
+          "line": 322
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.code",
         "start": {
           "column": 8,
-          "line": 317
+          "line": 318
         }
       },
       {
@@ -5062,13 +5062,13 @@
         "description": "Last network block",
         "end": {
           "column": 3,
-          "line": 326
+          "line": 327
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.lastNetworkBlock",
         "start": {
           "column": 20,
-          "line": 322
+          "line": 323
         }
       },
       {
@@ -5076,13 +5076,13 @@
         "description": "Last synchronized block",
         "end": {
           "column": 3,
-          "line": 331
+          "line": 332
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.lastSynchronizedBlock",
         "start": {
           "column": 25,
-          "line": 327
+          "line": 328
         }
       },
       {
@@ -5090,13 +5090,13 @@
         "description": "epoch",
         "end": {
           "column": 3,
-          "line": 336
+          "line": 337
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.epoch",
         "start": {
           "column": 9,
-          "line": 332
+          "line": 333
         }
       },
       {
@@ -5104,13 +5104,13 @@
         "description": "slot",
         "end": {
           "column": 3,
-          "line": 341
+          "line": 342
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.slot",
         "start": {
           "column": 8,
-          "line": 337
+          "line": 338
         }
       }
     ],
@@ -5554,13 +5554,13 @@
         "description": "Headline for the \"Paper wallet create certificate completion dialog\" headline.",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 24
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/CompletionDialog.js",
         "id": "paper.wallet.create.certificate.completion.dialog.headline",
         "start": {
           "column": 12,
-          "line": 18
+          "line": 19
         }
       },
       {
@@ -5568,13 +5568,13 @@
         "description": "Headline for the \"Paper wallet create certificate completion dialog\" subtitle.",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 31
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/CompletionDialog.js",
         "id": "paper.wallet.create.certificate.completion.dialog.subtitle",
         "start": {
           "column": 12,
-          "line": 24
+          "line": 25
         }
       },
       {
@@ -5582,13 +5582,13 @@
         "description": "Headline for the \"Paper wallet create certificate completion dialog\" link instructions.",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 38
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/CompletionDialog.js",
         "id": "paper.wallet.create.certificate.completion.dialog.linkInstructions",
         "start": {
           "column": 20,
-          "line": 31
+          "line": 32
         }
       },
       {
@@ -5596,13 +5596,13 @@
         "description": "Headline for the \"Paper wallet create certificate completion dialog\" address instructions.",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 45
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/CompletionDialog.js",
         "id": "paper.wallet.create.certificate.completion.dialog.addressInstructions",
         "start": {
           "column": 23,
-          "line": 38
+          "line": 39
         }
       },
       {
@@ -5610,13 +5610,13 @@
         "description": "\"Paper wallet create certificate completion dialog\" cardano link label.",
         "end": {
           "column": 3,
-          "line": 50
+          "line": 51
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/CompletionDialog.js",
         "id": "paper.wallet.create.certificate.completion.dialog.cardanoLinkLabel",
         "start": {
           "column": 20,
-          "line": 45
+          "line": 46
         }
       },
       {
@@ -5624,13 +5624,13 @@
         "description": "\"Paper wallet create certificate completion dialog\" address copied.",
         "end": {
           "column": 3,
-          "line": 56
+          "line": 57
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/CompletionDialog.js",
         "id": "paper.wallet.create.certificate.completion.dialog.addressCopiedLabel",
         "start": {
           "column": 22,
-          "line": 51
+          "line": 52
         }
       },
       {
@@ -5638,13 +5638,13 @@
         "description": "\"Paper wallet create certificate completion dialog\" wallet address label.",
         "end": {
           "column": 3,
-          "line": 62
+          "line": 63
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/CompletionDialog.js",
         "id": "paper.wallet.create.certificate.completion.dialog.addressLabel",
         "start": {
           "column": 16,
-          "line": 57
+          "line": 58
         }
       },
       {
@@ -5652,13 +5652,13 @@
         "description": "\"Paper wallet create certificate completion dialog\" finish button label.",
         "end": {
           "column": 3,
-          "line": 68
+          "line": 69
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/CompletionDialog.js",
         "id": "paper.wallet.create.certificate.completion.dialog.finishButtonLabel",
         "start": {
           "column": 21,
-          "line": 63
+          "line": 64
         }
       }
     ],
@@ -7316,13 +7316,13 @@
         "description": "Transaction type shown for credit card payments.",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 32
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.type.card",
         "start": {
           "column": 8,
-          "line": 27
+          "line": 28
         }
       },
       {
@@ -7330,13 +7330,13 @@
         "description": "Transaction type shown for {currency} transactions.",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 37
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.type",
         "start": {
           "column": 8,
-          "line": 32
+          "line": 33
         }
       },
       {
@@ -7344,13 +7344,13 @@
         "description": "Transaction type shown for money exchanges between currencies.",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 43
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.type.exchange",
         "start": {
           "column": 12,
-          "line": 37
+          "line": 38
         }
       },
       {
@@ -7358,13 +7358,13 @@
         "description": "Transaction ID.",
         "end": {
           "column": 3,
-          "line": 47
+          "line": 48
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.transactionId",
         "start": {
           "column": 17,
-          "line": 43
+          "line": 44
         }
       },
       {
@@ -7372,13 +7372,13 @@
         "description": "Conversion rate.",
         "end": {
           "column": 3,
-          "line": 52
+          "line": 53
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.conversion.rate",
         "start": {
           "column": 18,
-          "line": 48
+          "line": 49
         }
       },
       {
@@ -7386,13 +7386,13 @@
         "description": "Label \"{currency} sent\" for the transaction.",
         "end": {
           "column": 3,
-          "line": 57
+          "line": 58
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.sent",
         "start": {
           "column": 8,
-          "line": 53
+          "line": 54
         }
       },
       {
@@ -7400,13 +7400,13 @@
         "description": "Label \"{currency} received\" for the transaction.",
         "end": {
           "column": 3,
-          "line": 62
+          "line": 63
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.received",
         "start": {
           "column": 12,
-          "line": 58
+          "line": 59
         }
       },
       {
@@ -7414,13 +7414,13 @@
         "description": "From address",
         "end": {
           "column": 3,
-          "line": 67
+          "line": 68
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.address.from",
         "start": {
           "column": 15,
-          "line": 63
+          "line": 64
         }
       },
       {
@@ -7428,13 +7428,13 @@
         "description": "From addresses",
         "end": {
           "column": 3,
-          "line": 72
+          "line": 73
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.addresses.from",
         "start": {
           "column": 17,
-          "line": 68
+          "line": 69
         }
       },
       {
@@ -7442,13 +7442,13 @@
         "description": "To address",
         "end": {
           "column": 3,
-          "line": 77
+          "line": 78
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.address.to",
         "start": {
           "column": 13,
-          "line": 73
+          "line": 74
         }
       },
       {
@@ -7456,13 +7456,13 @@
         "description": "To addresses",
         "end": {
           "column": 3,
-          "line": 82
+          "line": 83
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.addresses.to",
         "start": {
           "column": 15,
-          "line": 78
+          "line": 79
         }
       },
       {
@@ -7470,13 +7470,13 @@
         "description": "Transaction amount.",
         "end": {
           "column": 3,
-          "line": 87
+          "line": 88
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.transactionAmount",
         "start": {
           "column": 21,
-          "line": 83
+          "line": 84
         }
       },
       {
@@ -7484,13 +7484,13 @@
         "description": "Note to cancel a transaction that has been pending too long",
         "end": {
           "column": 3,
-          "line": 93
+          "line": 94
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.pending.cancelPendingTxnNote",
         "start": {
           "column": 24,
-          "line": 88
+          "line": 89
         }
       },
       {
@@ -7498,13 +7498,13 @@
         "description": "Link to support article for canceling a pending transaction",
         "end": {
           "column": 3,
-          "line": 98
+          "line": 99
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.pending.supportArticleLink",
         "start": {
           "column": 22,
-          "line": 94
+          "line": 95
         }
       },
       {
@@ -7512,13 +7512,13 @@
         "description": "Url to support article for canceling a pending transaction",
         "end": {
           "column": 3,
-          "line": 104
+          "line": 105
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.pending.supportArticleUrl",
         "start": {
           "column": 21,
-          "line": 99
+          "line": 100
         }
       },
       {
@@ -7526,13 +7526,13 @@
         "description": "Input Addresses label.",
         "end": {
           "column": 3,
-          "line": 109
+          "line": 110
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.noInputAddressesLabel",
         "start": {
           "column": 25,
-          "line": 105
+          "line": 106
         }
       },
       {
@@ -7540,13 +7540,13 @@
         "description": "Unresolved Input Addresses link label.",
         "end": {
           "column": 3,
-          "line": 114
+          "line": 115
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.unresolvedInputAddressesLinkLabel",
         "start": {
           "column": 37,
-          "line": 110
+          "line": 111
         }
       },
       {
@@ -7554,13 +7554,13 @@
         "description": "Unresolved Input Addresses additional label.",
         "end": {
           "column": 3,
-          "line": 119
+          "line": 120
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.unresolvedInputAddressesAdditionalLabel",
         "start": {
           "column": 43,
-          "line": 115
+          "line": 116
         }
       },
       {
@@ -7568,13 +7568,13 @@
         "description": "Transaction state \"confirmed\"",
         "end": {
           "column": 3,
-          "line": 127
+          "line": 128
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.state.confirmed",
         "start": {
           "column": 26,
-          "line": 123
+          "line": 124
         }
       },
       {
@@ -7582,13 +7582,13 @@
         "description": "Transaction state \"pending\"",
         "end": {
           "column": 3,
-          "line": 132
+          "line": 133
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.state.pending",
         "start": {
           "column": 31,
-          "line": 128
+          "line": 129
         }
       }
     ],
