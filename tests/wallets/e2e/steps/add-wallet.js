@@ -7,6 +7,7 @@ import {
   restoreWalletWithFunds,
   restoreLegacyWallet,
   waitForActiveRestoreNotification,
+  addWalletPage,
 } from './helpers';
 import { waitUntilTextInSelector } from '../../../common/e2e/steps/helpers';
 import type { Daedalus } from '../../../types';

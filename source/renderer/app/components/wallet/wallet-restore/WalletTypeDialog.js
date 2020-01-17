@@ -267,6 +267,7 @@ export default class WalletTypeDialog extends Component<Props, State> {
                 <b>{intl.formatMessage(messages.hardwareWalletDisclaimer2)}</b>
               </p>
               <Checkbox
+                className='restoreSecurityNote'
                 label={intl.formatMessage(messages.hardwareWalletCheckbox1)}
                 onChange={() =>
                   this.toggleAcceptance('hardwareWalletAcceptance1')
@@ -275,6 +276,7 @@ export default class WalletTypeDialog extends Component<Props, State> {
                 skin={CheckboxSkin}
               />
               <Checkbox
+                className='walletDeleteNote'
                 label={intl.formatMessage(messages.hardwareWalletCheckbox2)}
                 onChange={() =>
                   this.toggleAcceptance('hardwareWalletAcceptance2')

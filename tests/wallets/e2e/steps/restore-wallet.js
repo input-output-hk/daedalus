@@ -1,5 +1,6 @@
 // @flow
 import { Given, When, Then } from 'cucumber';
+import { expect } from 'chai';
 import {
   isActiveWalletBeingRestored,
   waitUntilWalletIsLoaded,
@@ -7,8 +8,9 @@ import {
   restoreWalletWithFunds,
   restoreLegacyWallet,
   waitForActiveRestoreNotification,
+  getWalletByName,
 } from './helpers';
-import { waitUntilTextInSelector } from '../../../common/e2e/steps/helpers';
+import { waitUntilTextInSelector, scrollIntoView } from '../../../common/e2e/steps/helpers';
 import type { Daedalus } from '../../../types';
 
 declare var daedalus: Daedalus;
@@ -130,14 +132,39 @@ Then(
 );
 
 Then(
-  /^I confirm "([^"]*)"$/,
-  async function(text) {
-    const targetSelector = `//label[contains(text(), "${text}")]`;
-    await this.client.waitForVisible(targetSelector);
-    await scrollIntoView(this.client, targetSelector);
-    await this.client.click(targetSelector);
+  /^I scroll to "Restore Wallet Dialog" checkboxes$/,
+  async function() {
+    // const targetSelector = '.Dialog_content .walletDeleteNote label'
+    // await this.client.waitForVisible(targetSelector);
+    // return scrollIntoView,(this.client, targetSelector);
+
+    await this.client.waitForVisible('.Dialog_content');
+
+      await this.client.execute(() => {
+        const scrollableListContainer = window.document.getElementsByClassName(
+          'Dialog_content'
+        );
+        const scrollableList = window.document.getElementsByClassName(
+          'Dialog_content'
+        );
+        const listHeight = scrollableListContainer[0].getBoundingClientRect()
+          .height;
+
+        console.debug('HEIGHT: ', listHeight);
+        // Scroll to bottom
+        scrollableList[0].scroll(0, listHeight);
+      });
   }
 );
+
+When(/^I check all "Restore Wallet Dialog" checkboxes$/, async function() {
+   const targetSelector = '.Dialog_content .restoreSecurityNote'
+   const targetSelector2 = '.Dialog_content .walletDeleteNote label'
+   await this.client.waitForVisible(targetSelector);
+   await this.client.waitForVisible(targetSelector2);
+   this.client.click(targetSelector);
+   await this.client.click(targetSelector2);
+});
 
 Then(/^"([^"]*)" wallet should have "([^"]*)" as id$/, async function(
   walletName,
