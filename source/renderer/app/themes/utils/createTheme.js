@@ -1212,6 +1212,7 @@ export const createDaedalusComponentsTheme = (
       '--theme-wallet-settings-section-separator-color': `${chroma(
         text.primary
       ).alpha(0.1)}`,
+      '--theme-wallet-settings-resync-button-label-color': `${text.primary}`,
     },
   };
 };

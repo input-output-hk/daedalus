@@ -835,6 +835,7 @@ export const CARDANO_THEME_OUTPUT = {
   walletSettings: {
     '--theme-wallet-settings-section-separator-color':
       'rgba(94, 96, 102, 0.15)',
+    '--theme-wallet-settings-resync-button-label-color': 'rgba(94, 96, 102, 1)',
   },
 };
 

@@ -824,6 +824,7 @@ export const YELLOW_THEME_OUTPUT = {
   },
   walletSettings: {
     '--theme-wallet-settings-section-separator-color': 'rgba(45, 45, 45, 0.15)',
+    '--theme-wallet-settings-resync-button-label-color': 'rgba(45, 45, 45, 1)',
   },
 };
 

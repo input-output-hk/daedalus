@@ -825,6 +825,8 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
   walletSettings: {
     '--theme-wallet-settings-section-separator-color':
       'rgba(255, 255, 255, 0.15)',
+    '--theme-wallet-settings-resync-button-label-color':
+      'rgba(255, 255, 255, 1)',
   },
 };
 

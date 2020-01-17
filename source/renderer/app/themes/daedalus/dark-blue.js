@@ -837,6 +837,8 @@ export const DARK_BLUE_THEME_OUTPUT = {
   walletSettings: {
     '--theme-wallet-settings-section-separator-color':
       'rgba(233, 244, 254, 0.15)',
+    '--theme-wallet-settings-resync-button-label-color':
+      'rgba(233, 244, 254, 1)',
   },
 };
 
