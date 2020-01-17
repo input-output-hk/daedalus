@@ -166,8 +166,14 @@ export default class WalletSettingsStore extends Store {
     this._updateWalletUtxos(null);
   };
 
-  @action _forceWalletResync = async ({ walletId }: { walletId: string }) => {
-    await this.forceWalletResyncRequest.execute({ walletId });
+  @action _forceWalletResync = async ({
+    walletId,
+    isLegacy,
+  }: {
+    walletId: string,
+    isLegacy: boolean,
+  }) => {
+    await this.forceWalletResyncRequest.execute({ walletId, isLegacy });
     this.forceWalletResyncRequest.reset();
     this.stores.wallets.refreshWalletsData();
   };

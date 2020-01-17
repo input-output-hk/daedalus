@@ -22,5 +22,8 @@ export default class WalletSettingsActions {
   exportToFile: Action<WalletExportToFileParams> = new Action();
   startWalletUtxoPolling: Action<any> = new Action();
   stopWalletUtxoPolling: Action<any> = new Action();
-  forceWalletResync: Action<{ walletId: string }> = new Action();
+  forceWalletResync: Action<{
+    walletId: string,
+    isLegacy: boolean,
+  }> = new Action();
 }

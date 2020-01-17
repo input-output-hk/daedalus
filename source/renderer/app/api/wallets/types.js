@@ -181,6 +181,7 @@ export type UpdateWalletRequest = {
 
 export type ForceWalletResyncRequest = {
   walletId: string,
+  isLegacy: boolean,
 };
 
 export type ImportWalletFromKeyRequest = {

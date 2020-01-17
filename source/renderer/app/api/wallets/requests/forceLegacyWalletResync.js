@@ -1,15 +1,16 @@
 // @flow
 import type { RequestConfig } from '../../common/types';
 import { request } from '../../utils/request';
+import { getRawWalletId } from '../../utils';
 
-export const forceWalletResync = (
+export const forceLegacyWalletResync = (
   config: RequestConfig,
   { walletId }: { walletId: string }
 ): Promise<*> =>
   request(
     {
       method: 'PUT',
-      path: `/v2/wallets/${walletId}/tip`,
+      path: `/v2/byron-wallets/${getRawWalletId(walletId)}/tip`,
       ...config,
     },
     {},

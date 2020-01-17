@@ -96,7 +96,10 @@ export default class WalletSettingsPage extends Component<Props> {
         onStopEditing={stopEditingWalletField.trigger}
         onCancelEditing={cancelEditingWalletField.trigger}
         onResyncWallet={() =>
-          forceWalletResync.trigger({ walletId: activeWallet.id })
+          forceWalletResync.trigger({
+            walletId: activeWallet.id,
+            isLegacy: activeWallet.isLegacy,
+          })
         }
         activeField={walletFieldBeingEdited}
         nameValidator={name => isValidWalletName(name)}

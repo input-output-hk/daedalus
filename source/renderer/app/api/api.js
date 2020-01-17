@@ -50,6 +50,7 @@ import { restoreLegacyWallet } from './wallets/requests/restoreLegacyWallet';
 import { restoreByronWallet } from './wallets/requests/restoreByronWallet';
 import { updateWallet } from './wallets/requests/updateWallet';
 import { forceWalletResync } from './wallets/requests/forceWalletResync';
+import { forceLegacyWalletResync } from './wallets/requests/forceLegacyWalletResync';
 import { getWalletUtxos } from './wallets/requests/getWalletUtxos';
 import { getWallet } from './wallets/requests/getWallet';
 import { getWalletIdAndBalance } from './wallets/requests/getWalletIdAndBalance';
@@ -1258,14 +1259,15 @@ export default class AdaApi {
   forceWalletResync = async (
     request: ForceWalletResyncRequest
   ): Promise<void> => {
-    const { walletId } = request;
-    Logger.debug('AdaApi::forceWalletResync called', {
-      walletId,
-    });
+    Logger.debug('AdaApi::forceWalletResync called', { parameters: request });
     try {
-      const response = await forceWalletResync(this.config, {
-        walletId,
-      });
+      const { walletId, isLegacy } = request;
+      let response;
+      if (isLegacy) {
+        response = await forceLegacyWalletResync(this.config, { walletId });
+      } else {
+        response = await forceWalletResync(this.config, { walletId });
+      }
       Logger.debug('AdaApi::forceWalletResync success', { response });
     } catch (error) {
       Logger.error('AdaApi::forceWalletResync error', { error });
