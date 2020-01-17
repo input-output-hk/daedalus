@@ -46,12 +46,14 @@ export default class WalletSettingsPage extends Component<Props> {
       updateWalletRequest,
       lastUpdatedWalletField,
       walletFieldBeingEdited,
+      forceWalletResyncRequest,
     } = walletSettings;
     const {
       startEditingWalletField,
       stopEditingWalletField,
       cancelEditingWalletField,
       updateWalletField,
+      forceWalletResync,
     } = actions.walletSettings;
     const { getWalletRecoveryPhraseVerification } = wallets;
     const {
@@ -80,7 +82,7 @@ export default class WalletSettingsPage extends Component<Props> {
         creationDate={creationDate}
         isIncentivizedTestnet={networkStatus.isIncentivizedTestnet}
         isSubmitting={updateWalletRequest.isExecuting}
-        isResyncing={false}
+        isResyncing={forceWalletResyncRequest.isExecuting}
         isInvalid={
           updateWalletRequest.wasExecuted &&
           updateWalletRequest.result === false
@@ -93,7 +95,9 @@ export default class WalletSettingsPage extends Component<Props> {
         onStartEditing={field => startEditingWalletField.trigger({ field })}
         onStopEditing={stopEditingWalletField.trigger}
         onCancelEditing={cancelEditingWalletField.trigger}
-        onResyncWallet={() => {}}
+        onResyncWallet={() =>
+          forceWalletResync.trigger({ walletId: activeWallet.id })
+        }
         activeField={walletFieldBeingEdited}
         nameValidator={name => isValidWalletName(name)}
         changeSpendingPasswordDialog={<ChangeSpendingPasswordDialogContainer />}
