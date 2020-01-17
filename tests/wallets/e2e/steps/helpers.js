@@ -181,12 +181,10 @@ export const expectActiveWallet = async function(walletName: string) {
 const createWalletsAsync = async (table, context: Object, isLegacy?: boolean) => {
   const result = await context.client.executeAsync((wallets, isLegacyWallet, done) => {
     const mnemonics = {};
-    const request = isLegacyWallet
-      ? daedalus.stores.wallets.restoreLegacyRequest
-      : daedalus.stores.wallets.walletsRequest;
-    const apiEndpoint = isLegacyWallet
-      ? daedalus.api.ada.restoreLegacyWallet
-      : daedalus.api.ada.createWallet;
+    const { restoreLegacyRequest, walletsRequest } = daedalus.stores.wallets;
+    const { restoreLegacyWallet, createWallet } = daedalus.api.ada;
+    const request = isLegacyWallet ? restoreLegacyRequest : walletsRequest;
+    const apiEndpoint = isLegacyWallet ? restoreLegacyWallet : createWallet;
     window.Promise.all(
       wallets.map(wallet => {
         const mnemonic = daedalus.utils.crypto.generateMnemonic();
