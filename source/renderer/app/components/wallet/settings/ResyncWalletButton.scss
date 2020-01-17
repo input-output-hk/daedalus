@@ -1,0 +1,15 @@
+@import '../../../themes/mixins/loading-spinner';
+
+.root {
+  color: var(--theme-bordered-box-text-color) !important;
+  font-weight: 500 !important;
+  height: 36px !important;
+  line-height: 36px !important;
+  margin-left: 20px;
+  min-width: 160px !important;
+  width: 160px !important;
+  &.isSubmitting {
+    box-shadow: none !important;
+    @include loading-spinner('../../../assets/images/spinner-light.svg');
+  }
+}

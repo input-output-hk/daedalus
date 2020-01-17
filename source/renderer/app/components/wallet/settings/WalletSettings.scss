@@ -33,10 +33,6 @@
     padding-bottom: 30px;
     padding-top: 30px;
 
-    &.legacyWallet {
-      margin-top: 0;
-    }
-
     span {
       color: var(--theme-input-label-color);
       font-family: var(--font-medium);
@@ -57,6 +53,33 @@
       p:first-child {
         margin-bottom: 15px;
       }
+    }
+  }
+
+  .resyncWalletBox {
+    border-top: 1px solid var(--theme-input-border-color);
+    color: var(--theme-bordered-box-text-color);
+    margin-top: 20px;
+    padding-bottom: 10px;
+    padding-top: 30px;
+
+    &.legacyWallet {
+      border-top: none;
+      margin-top: 0;
+      padding-bottom: 30px;
+    }
+
+    span {
+      font-family: var(--font-medium);
+    }
+    .contentBox {
+      align-items: center;
+      display: flex;
+      flex-direction: row;
+      font-family: var(--font-light);
+      justify-content: space-between;
+      line-height: 1.38;
+      padding-top: 14px;
     }
   }
 }

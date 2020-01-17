@@ -15,6 +15,7 @@ import ChangeSpendingPasswordDialog from './ChangeSpendingPasswordDialog';
 import globalMessages from '../../../i18n/global-messages';
 import styles from './WalletSettings.scss';
 import WalletRecoveryPhrase from './WalletRecoveryPhrase';
+import ResyncWalletButton from './ResyncWalletButton';
 
 export const messages = defineMessages({
   assuranceLevelLabel: {
@@ -39,6 +40,17 @@ export const messages = defineMessages({
     defaultMessage:
       '!!!You may wish to verify your recovery phrase before deletion to ensure that you can restore this wallet in the future, if desired.',
     description: 'Delete wallet warning explaining the consequences.',
+  },
+  resyncWalletHeader: {
+    id: 'wallet.settings.resyncWallet.header',
+    defaultMessage: '!!!Resync wallet with the blockchain',
+    description: 'Resync wallet header on the wallet settings page.',
+  },
+  resyncWalletDescription: {
+    id: 'wallet.settings.resyncWallet.description',
+    defaultMessage:
+      '!!!If you are experiencing issues with your wallet, or think you have an incorrect balance or transaction history, you can delete the local data stored by Daedalus and resync with the blockchain.',
+    description: 'Resync wallet description.',
   },
   name: {
     id: 'wallet.settings.name.label',
@@ -68,9 +80,11 @@ type Props = {
   onStartEditing: Function,
   onStopEditing: Function,
   onCancelEditing: Function,
+  onResyncWallet: Function,
   nameValidator: Function,
   activeField: ?string,
   isSubmitting: boolean,
+  isResyncing: boolean,
   isIncentivizedTestnet: boolean,
   isInvalid: boolean,
   isLegacy: boolean,
@@ -140,9 +154,11 @@ export default class WalletSettings extends Component<Props, State> {
       onStartEditing,
       onStopEditing,
       onCancelEditing,
+      onResyncWallet,
       nameValidator,
       activeField,
       isSubmitting,
+      isResyncing,
       isIncentivizedTestnet,
       isInvalid,
       isLegacy,
@@ -172,8 +188,23 @@ export default class WalletSettings extends Component<Props, State> {
         styles.deleteWalletBox,
         styles.legacyWallet,
       ]);
+      const resyncWalletBoxStyles = classNames([
+        styles.resyncWalletBox,
+        styles.legacyWallet,
+      ]);
       return (
         <div className={styles.component}>
+          <BorderedBox className={resyncWalletBoxStyles}>
+            <span>{intl.formatMessage(messages.resyncWalletHeader)}</span>
+            <div className={styles.contentBox}>
+              <p>{intl.formatMessage(messages.resyncWalletDescription)}</p>
+              <ResyncWalletButton
+                isSubmitting={isResyncing}
+                onClick={onResyncWallet}
+              />
+            </div>
+          </BorderedBox>
+
           <BorderedBox className={deleteWalletBoxStyles}>
             <span>{intl.formatMessage(messages.deleteWalletHeader)}</span>
             <div className={styles.contentBox}>
@@ -262,6 +293,17 @@ export default class WalletSettings extends Component<Props, State> {
               }
             />
           )}
+
+          <div className={styles.resyncWalletBox}>
+            <span>{intl.formatMessage(messages.resyncWalletHeader)}</span>
+            <div className={styles.contentBox}>
+              <p>{intl.formatMessage(messages.resyncWalletDescription)}</p>
+              <ResyncWalletButton
+                isSubmitting={isResyncing}
+                onClick={onResyncWallet}
+              />
+            </div>
+          </div>
 
           {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
         </BorderedBox>

@@ -247,6 +247,8 @@ export default (props: { currentTheme: string, locale: string }) => {
         type || WalletRecoveryPhraseVerificationTypes.NEVER_CHECKED
       }
       locale={locale}
+      isResyncing={false}
+      onResyncWallet={action('onResyncWallet')}
     />
   );
 };
