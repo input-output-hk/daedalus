@@ -56,7 +56,7 @@ export default class NewsItem extends Component<Props, State> {
       event.preventDefault();
       this.props.onOpenExternalLink(linkUrl);
     } else {
-      const { type, date } = this.props.newsItem;
+      const { type, id } = this.props.newsItem;
       const { newsItemCollapsible } = this.state;
       if (type === NewsTypes.INFO || type === NewsTypes.ANNOUNCEMENT) {
         if (newsItemCollapsible) {
@@ -68,9 +68,9 @@ export default class NewsItem extends Component<Props, State> {
         }
       }
       if (NewsTypes.ALERT && this.props.onOpenAlert) {
-        this.props.onOpenAlert(date);
+        this.props.onOpenAlert(id);
       }
-      this.props.onMarkNewsAsRead(date);
+      this.props.onMarkNewsAsRead(id);
     }
   }
 

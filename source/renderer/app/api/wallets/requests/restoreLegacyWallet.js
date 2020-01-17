@@ -9,7 +9,6 @@ export const restoreLegacyWallet = (
   type?: string = ''
 ): Promise<LegacyAdaWallet> => {
   const queryParams = {};
-
   return request(
     {
       method: 'POST',
