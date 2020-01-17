@@ -21,6 +21,9 @@ export default class WalletSettingsStore extends Store {
   @observable getWalletUtxosRequest: Request<WalletUtxos> = new Request(
     this.api.ada.getWalletUtxos
   );
+  @observable forceWalletResyncRequest: Request<void> = new Request(
+    this.api.ada.forceWalletResync
+  );
 
   @observable walletFieldBeingEdited = null;
   @observable lastUpdatedWalletField = null;
@@ -54,6 +57,7 @@ export default class WalletSettingsStore extends Store {
     walletSettingsActions.stopWalletUtxoPolling.listen(
       this._stopWalletUtxoPolling
     );
+    walletSettingsActions.forceWalletResync.listen(this._forceWalletResync);
 
     sidebarActions.walletSelected.listen(this._onWalletSelected);
   }
@@ -160,5 +164,11 @@ export default class WalletSettingsStore extends Store {
 
   @action _onWalletSelected = () => {
     this._updateWalletUtxos(null);
+  };
+
+  @action _forceWalletResync = async ({ walletId }: { walletId: string }) => {
+    await this.forceWalletResyncRequest.execute({ walletId });
+    this.forceWalletResyncRequest.reset();
+    this.stores.wallets.refreshWalletsData();
   };
 }
