@@ -1,7 +1,7 @@
 // @flow
-import {Given, When, Then} from 'cucumber';
-import {expect} from 'chai';
-import type {Daedalus} from '../../../types';
+import { Given, When, Then } from 'cucumber';
+import { expect } from 'chai';
+import type { Daedalus } from '../../../types';
 
 declare var daedalus: Daedalus;
 
@@ -25,14 +25,14 @@ Then(/^I see the "Stake Pools" page/, function () {
   return this.client.waitForVisible('.StakePools_component');
 });
 
-Then(/^I should see "([^"]*)" stake pools loaded$/, async function (numberOfStakePools) {
-  const stakePools = await this.client.executeAsync((done) => {
+Then(/^I should see "([^"]*)" stake pools loaded by rank$/, async function (numberOfStakePools) {
+  const stakePools = await this.client.executeAsync(done => {
     daedalus.stores.staking.stakePoolsRequest
       .execute()
       .then(done)
       .catch(error => done(error));
   });
   // const stakePools2 = await this.client.execute(() => daedalus.stores.staking.stakePoolsRequest);
-  const result = stakePools && stakePools.result ? stakePools.result : [];
-  expect(result.length).to.equal(numberOfStakePools);
+  const result = stakePools && stakePools.value ? stakePools.value : [];
+  expect(result.length).to.equal(parseInt(numberOfStakePools));
 });

@@ -7,6 +7,7 @@ Feature: Stake Pools Loading
       | name          |
       | Test Wallet |
 
+  @watch
   Scenario: "Loading stake pools" message is shown during initial loading of stake pool data
     Given The sidebar shows "Delegation Center" staking page icon
     When I click on the "Delegation Center" staking page button
@@ -22,11 +23,9 @@ Feature: Stake Pools Loading
     And I click on the "Stake Pools" tab
     And I see the "Stake Pools" page
     And I see the "Loading stake pools" message
-    And Loading of stake pools was unsuccessful
     Then I should see loading stake pools error message
     And I should not see any stake pools
 
-  @watch
   Scenario: Stake pools are correctly ordered by rank
     Given The sidebar shows "Delegation Center" staking page icon
     When I click on the "Delegation Center" staking page button
@@ -34,8 +33,7 @@ Feature: Stake Pools Loading
     And I click on the "Stake Pools" tab
     And I see the "Stake Pools" page
     #And I see the "Loading stake pools" message
-    And I should see "3" stake pools loaded
-    #Then I should see stake pools ordered by rank
+    And I should see "3" stake pools loaded by rank
 
   Scenario: Stake pools search works as expected
     Given The sidebar shows "Delegation Center" staking page icon
