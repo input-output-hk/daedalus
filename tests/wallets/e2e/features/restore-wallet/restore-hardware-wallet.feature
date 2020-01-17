@@ -1,4 +1,4 @@
-@e2e
+@e2e @watch
 Feature: Restore Hardware wallet
 
   Background:
@@ -7,7 +7,6 @@ Feature: Restore Hardware wallet
       | name        |
       | Test Wallet |
   
-  @watch
   Scenario: Successfully restoring 12-word Ledger wallet
     Given The sidebar shows the "wallets" category
     When I click on the add wallet button in the sidebar
@@ -17,8 +16,8 @@ Feature: Restore Hardware wallet
     Then I click on option "Hardware wallet"
     Then I should see section "What kind of hardware wallet would you like to restore?"
     Then I click on option "Ledger Nano"
-    And I scroll to "Restore Wallet Dialog" checkboxes
-    I check all "Restore Wallet Dialog" checkboxes
+    Then I confirm "I understand and accept responsibility for the security concerns"
+    Then I confirm "I understand that I should delete the Balance wallet"
     And I click continue
     And I enter recovery phrase in restore wallet dialog: 
       | recoveryPhrase                                                                                                                                                                   |
