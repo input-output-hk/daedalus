@@ -49,6 +49,7 @@ import { restoreWallet } from './wallets/requests/restoreWallet';
 import { restoreLegacyWallet } from './wallets/requests/restoreLegacyWallet';
 import { restoreByronWallet } from './wallets/requests/restoreByronWallet';
 import { updateWallet } from './wallets/requests/updateWallet';
+import { forceWalletResync } from './wallets/requests/forceWalletResync';
 import { getWalletUtxos } from './wallets/requests/getWalletUtxos';
 import { getWallet } from './wallets/requests/getWallet';
 import { getWalletIdAndBalance } from './wallets/requests/getWalletIdAndBalance';
@@ -136,7 +137,7 @@ import type {
   GetWalletRecoveryPhraseFromCertificateRequest,
   ImportWalletFromKeyRequest,
   ImportWalletFromFileRequest,
-  UpdateWalletRequest,
+  ForceWalletResyncRequest,
   GetWalletUtxosRequest,
   GetWalletRequest,
   GetWalletIdAndBalanceRequest,
@@ -145,6 +146,7 @@ import type {
   TransferFundsCalculateFeeResponse,
   TransferFundsRequest,
   TransferFundsResponse,
+  UpdateWalletRequest,
 } from './wallets/types';
 
 // News Types
@@ -1249,6 +1251,24 @@ export default class AdaApi {
       };
     } catch (error) {
       Logger.error('AdaApi::getWalletIdAndBalance error', { error });
+      throw new GenericApiError();
+    }
+  };
+
+  forceWalletResync = async (
+    request: ForceWalletResyncRequest
+  ): Promise<void> => {
+    const { walletId } = request;
+    Logger.debug('AdaApi::forceWalletResync called', {
+      walletId,
+    });
+    try {
+      const response = await forceWalletResync(this.config, {
+        walletId,
+      });
+      Logger.debug('AdaApi::forceWalletResync success', { response });
+    } catch (error) {
+      Logger.error('AdaApi::forceWalletResync error', { error });
       throw new GenericApiError();
     }
   };

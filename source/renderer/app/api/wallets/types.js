@@ -178,6 +178,11 @@ export type UpdateWalletRequest = {
   walletId: string,
   name: string,
 };
+
+export type ForceWalletResyncRequest = {
+  walletId: string,
+};
+
 export type ImportWalletFromKeyRequest = {
   filePath: string,
   spendingPassword: string,
