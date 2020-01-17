@@ -822,6 +822,10 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--theme-wallet-restore-dialog-step-walletType-hardwareWalletDisclaimer-text-color':
       '#ea4c5b',
   },
+  walletSettings: {
+    '--theme-wallet-settings-section-separator-color':
+      'rgba(255, 255, 255, 0.15)',
+  },
 };
 
 const INCENTIVIZED_TESTNET_THEME_PARAMS: CreateThemeParams = {

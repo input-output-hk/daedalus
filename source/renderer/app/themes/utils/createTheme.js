@@ -1208,6 +1208,11 @@ export const createDaedalusComponentsTheme = (
         error.regular
       }`,
     },
+    walletSettings: {
+      '--theme-wallet-settings-section-separator-color': `${chroma(
+        text.primary
+      ).alpha(0.1)}`,
+    },
   };
 };
 
