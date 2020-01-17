@@ -7105,17 +7105,31 @@
         }
       },
       {
-        "defaultMessage": "!!!Once you delete a wallet, there is no going back. The only way to restore your wallet is to use your recovery phrase.",
+        "defaultMessage": "!!!Once you delete this wallet it will be removed from the Daedalus interface and you will lose access to any remaining funds in the wallet. The only way to regain access after deletion is by restoring it using your wallet recovery phrase.",
         "description": "Delete wallet warning explaining the consequences.",
         "end": {
           "column": 3,
           "line": 36
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
-        "id": "wallet.settings.deleteWallet.warning",
+        "id": "wallet.settings.deleteWallet.warning1",
         "start": {
-          "column": 23,
+          "column": 24,
           "line": 31
+        }
+      },
+      {
+        "defaultMessage": "!!!You may wish to verify your recovery phrase before deletion to ensure that you can restore this wallet in the future, if desired.",
+        "description": "Delete wallet warning explaining the consequences.",
+        "end": {
+          "column": 3,
+          "line": 42
+        },
+        "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
+        "id": "wallet.settings.deleteWallet.warning2",
+        "start": {
+          "column": 24,
+          "line": 37
         }
       },
       {
@@ -7123,13 +7137,13 @@
         "description": "Label for the \"Name\" text input on the wallet settings page.",
         "end": {
           "column": 3,
-          "line": 41
+          "line": 47
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.name.label",
         "start": {
           "column": 8,
-          "line": 37
+          "line": 43
         }
       },
       {
@@ -7137,13 +7151,13 @@
         "description": "Label for the \"Password\" field.",
         "end": {
           "column": 3,
-          "line": 46
+          "line": 52
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.password",
         "start": {
           "column": 17,
-          "line": 42
+          "line": 48
         }
       },
       {
@@ -7151,13 +7165,13 @@
         "description": "Last updated X time ago message.",
         "end": {
           "column": 3,
-          "line": 51
+          "line": 57
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.passwordLastUpdated",
         "start": {
           "column": 23,
-          "line": 47
+          "line": 53
         }
       }
     ],

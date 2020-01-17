@@ -28,10 +28,16 @@ export const messages = defineMessages({
     defaultMessage: '!!!Delete wallet',
     description: 'Delete wallet header on the wallet settings page.',
   },
-  deleteWalletWarning: {
-    id: 'wallet.settings.deleteWallet.warning',
+  deleteWalletWarning1: {
+    id: 'wallet.settings.deleteWallet.warning1',
     defaultMessage:
-      '!!!Once you delete a wallet, there is no going back. The only way to restore your wallet is to use your recovery phrase.',
+      '!!!Once you delete this wallet it will be removed from the Daedalus interface and you will lose access to any remaining funds in the wallet. The only way to regain access after deletion is by restoring it using your wallet recovery phrase.',
+    description: 'Delete wallet warning explaining the consequences.',
+  },
+  deleteWalletWarning2: {
+    id: 'wallet.settings.deleteWallet.warning2',
+    defaultMessage:
+      '!!!You may wish to verify your recovery phrase before deletion to ensure that you can restore this wallet in the future, if desired.',
     description: 'Delete wallet warning explaining the consequences.',
   },
   name: {
@@ -171,7 +177,10 @@ export default class WalletSettings extends Component<Props, State> {
           <BorderedBox className={deleteWalletBoxStyles}>
             <span>{intl.formatMessage(messages.deleteWalletHeader)}</span>
             <div className={styles.contentBox}>
-              <p>{intl.formatMessage(messages.deleteWalletWarning)}</p>
+              <div>
+                <p>{intl.formatMessage(messages.deleteWalletWarning1)}</p>
+                <p>{intl.formatMessage(messages.deleteWalletWarning2)}</p>
+              </div>
               <DeleteWalletButton
                 onClick={() =>
                   openDialogAction({
@@ -260,7 +269,10 @@ export default class WalletSettings extends Component<Props, State> {
         <BorderedBox className={styles.deleteWalletBox}>
           <span>{intl.formatMessage(messages.deleteWalletHeader)}</span>
           <div className={styles.contentBox}>
-            <p>{intl.formatMessage(messages.deleteWalletWarning)}</p>
+            <div>
+              <p>{intl.formatMessage(messages.deleteWalletWarning1)}</p>
+              <p>{intl.formatMessage(messages.deleteWalletWarning2)}</p>
+            </div>
             <DeleteWalletButton
               onClick={() => {
                 this.onBlockForm();
