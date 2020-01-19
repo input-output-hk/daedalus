@@ -3,7 +3,7 @@ import { Given, When, Then } from 'cucumber';
 import { expect } from 'chai';
 import { delegationCentreStakingHelper } from './helpers';
 import type { Daedalus } from '../../../types';
-import {getVisibleElementsCountForSelector} from "../../../common/e2e/steps/helpers";
+import {getVisibleElementsCountForSelector, getVisibleElementsForSelector} from '../../../common/e2e/steps/helpers';
 
 declare var daedalus: Daedalus;
 
@@ -20,7 +20,11 @@ const STAKE_POOLS_LIST_SELECTOR = '.StakePoolsList_component';
 const STAKE_POOLS_SEARCH_SELECTOR = '.StakePoolsSearch_component .StakePoolsSearch_searchInput.SimpleFormField_root input';
 const SEARCH_RESULTS_LABEL_SELECTOR = '.StakePools_component h2 span';
 const STAKE_POOL_SELECTOR = '.StakePoolsList_component .StakePoolThumbnail_component';
+const SECOND_STAKE_POOL_ITEM_SELECTOR = '.StakePoolsList_component .StakePoolThumbnail_component:nth-child(2)';
 const STAKE_POOL_SLUG_SELECTOR = '.StakePoolsList_component .StakePoolThumbnail_component .StakePoolThumbnail_ticker';
+const STAKE_POOL_TOOLTIP = '.StakePoolTooltip_component.StakePoolTooltip_isVisible';
+const STAKE_POOL_TOOLTIP_RANKING = '.StakePoolTooltip_component.StakePoolTooltip_isVisible .StakePoolTooltip_ranking span';
+const STAKE_POOL_TOOLTIP_DESCRIPTION = '.StakePoolTooltip_component.StakePoolTooltip_isVisible .StakePoolTooltip_description';
 
 Given(/^I am on the Delegation Centre staking page/, async function () {
   await stakingButtonVisible(this.client);
@@ -48,9 +52,8 @@ Then(/^I should see the following loading message:$/, async function (message) {
     }
   );
   const loadingMsg = message.hashes()[0];
-  const loadingSelector = LOADING_MESSAGE_SELECTOR;
-  await this.client.waitForText(loadingSelector);
-  const loadingMsgOnScreen = await this.client.getText(loadingSelector);
+  await this.client.waitForText(LOADING_MESSAGE_SELECTOR);
+  const loadingMsgOnScreen = await this.client.getText(LOADING_MESSAGE_SELECTOR);
   const expectedLoadingMsg = await this.intl(loadingMsg.message);
   expect(loadingMsgOnScreen).to.equal(expectedLoadingMsg);
 });
@@ -73,9 +76,8 @@ Then(/^I should see loading stake pools error message:$/, async function (messag
     }
   );
   const loadingMsg = message.hashes()[0];
-  const loadingSelector = LOADING_MESSAGE_SELECTOR;
-  await this.client.waitForText(loadingSelector);
-  const loadingMsgOnScreen = await this.client.getText(loadingSelector);
+  await this.client.waitForText(LOADING_MESSAGE_SELECTOR);
+  const loadingMsgOnScreen = await this.client.getText(LOADING_MESSAGE_SELECTOR);
   const expectedLoadingMsg = await this.intl(loadingMsg.message);
   expect(loadingMsgOnScreen).to.equal(expectedLoadingMsg);
 });
@@ -104,9 +106,42 @@ Then(/^I should see "([^"]*)" stake pool with slug "([^"]*)"$/, async function (
     this.client,
     STAKE_POOL_SELECTOR
   );
-  const stakePoolSlugSelector = STAKE_POOL_SLUG_SELECTOR;
-  await this.client.waitForText(stakePoolSlugSelector);
-  const stakePoolSlug = await this.client.getText(stakePoolSlugSelector);
+  await this.client.waitForText(STAKE_POOL_SLUG_SELECTOR);
+  const stakePoolSlug = await this.client.getText(STAKE_POOL_SLUG_SELECTOR);
   expect(stakePoolsCount).to.equal(parseInt(numberOfStakePools));
   expect(stakePoolSlug[0]).to.equal(slug);
+});
+
+When(/^I see "([^"]*)" stake pools loaded by rank$/, async function (numberOfStakePools) {
+  const stakePoolsCount = await getVisibleElementsCountForSelector(
+    this.client,
+    STAKE_POOL_SELECTOR
+  );
+  expect(stakePoolsCount).to.equal(parseInt(numberOfStakePools));
+});
+
+When(/^I click on stake pool on second place/, function () {
+  return this.client.click(SECOND_STAKE_POOL_ITEM_SELECTOR);
+});
+
+Then(/^I should see second stake pool tooltip/, async function () {
+  const stakePools = await this.client.executeAsync(done => {
+    daedalus.stores.staking.stakePoolsRequest
+      .execute()
+      .then(done)
+      .catch(error => done(error));
+  });
+  const result = stakePools && stakePools.value ? stakePools.value : [];
+  const secondStakePool = result[1];
+  await this.client.waitForVisible(STAKE_POOL_TOOLTIP);
+  await this.client.waitForText(STAKE_POOL_TOOLTIP_RANKING);
+  const stakePoolRanking = await this.client.getText(STAKE_POOL_TOOLTIP_RANKING);
+  await this.client.waitForText(STAKE_POOL_TOOLTIP_DESCRIPTION);
+  const stakePoolDescription = await this.client.getText(STAKE_POOL_TOOLTIP_DESCRIPTION);
+  expect(secondStakePool.ranking.toString()).to.equal(stakePoolRanking);
+  expect(secondStakePool.description).to.equal(stakePoolDescription);
+});
+
+Then(/^Stake pool "([^"]*)" tooltip shows correct data$/, async function (positionOfStakePool) {
+
 });

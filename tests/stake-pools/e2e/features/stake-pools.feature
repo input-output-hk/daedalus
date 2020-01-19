@@ -36,21 +36,17 @@ Feature: Stake Pools Loading
     And I should see "3" stake pool with slug "ROOT"
 
   @watch
-  Scenario: Stake pools user is already delegating to are correctly displayed
-    And I see list of wallets
-    And If the user is already delegating to any of stake pools
-    Then I should see the "You are already delegating..." message next to the wallet which is already delegating
-
   Scenario: Stake pool tooltip is correctly displayed and shows correct data
-    And I see any stake pool
-    And I click on any stake pool
-    Then I should see stake pool tooltip
-    And Stake pool tooltip shows correct data
+    When I see "3" stake pools loaded by rank
+    And I click on stake pool on second place
+    Then I should see second stake pool tooltip
+    And Stake pool "2" tooltip shows correct data
 
   Scenario: Delegating to stake pool from "Stake pools" screen works as expected
+    Given I have a "Test Wallet" wallet with funds
     And I see Not-delegated label
     And I click on "Delegate your stake"
-    Then I should see "Delegate Wallet" modal
+    Then I should see "Delegate Wallet" dialog
     And I click "continue" button
     Then I should see step 1 of 3 screen
     And I choose the wallet which i want to delegate
