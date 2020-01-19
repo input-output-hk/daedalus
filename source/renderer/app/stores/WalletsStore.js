@@ -801,18 +801,6 @@ export default class WalletsStore extends Store {
     }
   }
 
-  @computed get restoreProgress(): number {
-    return get(this.active, 'syncState.data.percentage.quantity', 0);
-  }
-
-  @computed get restoreETA(): number {
-    return get(
-      this.active,
-      'syncState.data.estimatedCompletionTime.quantity',
-      0
-    );
-  }
-
   @computed get hasActiveWalletNotification(): boolean {
     const { active } = this;
     if (!active) return false;

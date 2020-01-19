@@ -10351,13 +10351,13 @@
         "description": "Message shown when wallet has no transactions on wallet summary page.",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 22
         },
         "file": "source/renderer/app/containers/wallet/WalletSummaryPage.js",
         "id": "wallet.summary.no.transactions",
         "start": {
           "column": 18,
-          "line": 18
+          "line": 17
         }
       }
     ],
@@ -10370,13 +10370,13 @@
         "description": "Message shown when wallet has no transactions yet.",
         "end": {
           "column": 3,
-          "line": 20
+          "line": 18
         },
         "file": "source/renderer/app/containers/wallet/WalletTransactionsPage.js",
         "id": "wallet.transactions.no.transactions",
         "start": {
           "column": 18,
-          "line": 16
+          "line": 14
         }
       },
       {
@@ -10384,13 +10384,13 @@
         "description": "Message shown when wallet transaction search returns zero results.",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 24
         },
         "file": "source/renderer/app/containers/wallet/WalletTransactionsPage.js",
         "id": "wallet.transactions.no.transactions.found",
         "start": {
           "column": 23,
-          "line": 21
+          "line": 19
         }
       }
     ],

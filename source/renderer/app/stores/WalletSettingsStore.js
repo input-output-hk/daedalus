@@ -1,5 +1,5 @@
 // @flow
-import { observable, action } from 'mobx';
+import { observable, action, runInAction } from 'mobx';
 import { findIndex } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
@@ -28,6 +28,7 @@ export default class WalletSettingsStore extends Store {
   @observable walletFieldBeingEdited = null;
   @observable lastUpdatedWalletField = null;
   @observable walletUtxos: ?WalletUtxos = null;
+  @observable isForcedWalletResyncStarting = false;
 
   pollingApiInterval: ?IntervalID = null;
 
@@ -173,8 +174,22 @@ export default class WalletSettingsStore extends Store {
     walletId: string,
     isLegacy: boolean,
   }) => {
-    await this.forceWalletResyncRequest.execute({ walletId, isLegacy });
+    const {
+      _pausePolling,
+      _resumePolling,
+      refreshWalletsData,
+    } = this.stores.wallets;
+    _pausePolling();
+    this.isForcedWalletResyncStarting = true;
     this.forceWalletResyncRequest.reset();
-    this.stores.wallets.refreshWalletsData();
+    try {
+      await this.forceWalletResyncRequest.execute({ walletId, isLegacy });
+    } finally {
+      _resumePolling();
+      await refreshWalletsData();
+      runInAction('set isForcedWalletResyncStarting', () => {
+        this.isForcedWalletResyncStarting = false;
+      });
+    }
   };
 }

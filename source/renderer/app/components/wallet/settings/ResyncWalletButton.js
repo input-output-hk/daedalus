@@ -35,7 +35,7 @@ export default class ResyncWalletButton extends Component<Props> {
     return (
       <Button
         className={buttonClasses}
-        disabled={false}
+        disabled={isSubmitting}
         label={label}
         onClick={onClick}
         skin={ButtonSkin}

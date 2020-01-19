@@ -213,6 +213,7 @@ export type GetWalletRecoveryPhraseFromCertificateRequest = {
 
 export type GetWalletRequest = {
   walletId: string,
+  isLegacy?: boolean,
 };
 
 export type TransferFundsCalculateFeeRequest = {

@@ -84,7 +84,7 @@ type Props = {
   nameValidator: Function,
   activeField: ?string,
   isSubmitting: boolean,
-  isResyncRequestExecuting: boolean,
+  isForcedWalletResyncStarting: boolean,
   isIncentivizedTestnet: boolean,
   isInvalid: boolean,
   isLegacy: boolean,
@@ -158,7 +158,7 @@ export default class WalletSettings extends Component<Props, State> {
       nameValidator,
       activeField,
       isSubmitting,
-      isResyncRequestExecuting,
+      isForcedWalletResyncStarting,
       isIncentivizedTestnet,
       isInvalid,
       isLegacy,
@@ -199,7 +199,7 @@ export default class WalletSettings extends Component<Props, State> {
             <div className={styles.contentBox}>
               <p>{intl.formatMessage(messages.resyncWalletDescription)}</p>
               <ResyncWalletButton
-                isSubmitting={isResyncRequestExecuting}
+                isSubmitting={isForcedWalletResyncStarting}
                 onClick={onResyncWallet}
               />
             </div>
@@ -299,7 +299,7 @@ export default class WalletSettings extends Component<Props, State> {
             <div className={styles.contentBox}>
               <p>{intl.formatMessage(messages.resyncWalletDescription)}</p>
               <ResyncWalletButton
-                isSubmitting={isResyncRequestExecuting}
+                isSubmitting={isForcedWalletResyncStarting}
                 onClick={onResyncWallet}
               />
             </div>

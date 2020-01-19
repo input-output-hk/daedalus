@@ -46,7 +46,7 @@ export default class WalletSettingsPage extends Component<Props> {
       updateWalletRequest,
       lastUpdatedWalletField,
       walletFieldBeingEdited,
-      forceWalletResyncRequest,
+      isForcedWalletResyncStarting,
     } = walletSettings;
     const {
       startEditingWalletField,
@@ -82,7 +82,7 @@ export default class WalletSettingsPage extends Component<Props> {
         creationDate={creationDate}
         isIncentivizedTestnet={networkStatus.isIncentivizedTestnet}
         isSubmitting={updateWalletRequest.isExecuting}
-        isResyncRequestExecuting={forceWalletResyncRequest.isExecuting}
+        isForcedWalletResyncStarting={isForcedWalletResyncStarting}
         isInvalid={
           updateWalletRequest.wasExecuted &&
           updateWalletRequest.result === false
