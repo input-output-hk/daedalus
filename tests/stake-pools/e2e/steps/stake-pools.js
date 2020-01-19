@@ -3,7 +3,7 @@ import { Given, When, Then } from 'cucumber';
 import { expect } from 'chai';
 import { delegationCentreStakingHelper } from './helpers';
 import type { Daedalus } from '../../../types';
-import {getVisibleElementsCountForSelector, getVisibleElementsForSelector} from '../../../common/e2e/steps/helpers';
+import { getVisibleElementsCountForSelector } from '../../../common/e2e/steps/helpers';
 
 declare var daedalus: Daedalus;
 
@@ -22,9 +22,11 @@ const SEARCH_RESULTS_LABEL_SELECTOR = '.StakePools_component h2 span';
 const STAKE_POOL_SELECTOR = '.StakePoolsList_component .StakePoolThumbnail_component';
 const SECOND_STAKE_POOL_ITEM_SELECTOR = '.StakePoolsList_component .StakePoolThumbnail_component:nth-child(2)';
 const STAKE_POOL_SLUG_SELECTOR = '.StakePoolsList_component .StakePoolThumbnail_component .StakePoolThumbnail_ticker';
-const STAKE_POOL_TOOLTIP = '.StakePoolTooltip_component.StakePoolTooltip_isVisible';
-const STAKE_POOL_TOOLTIP_RANKING = '.StakePoolTooltip_component.StakePoolTooltip_isVisible .StakePoolTooltip_ranking span';
-const STAKE_POOL_TOOLTIP_DESCRIPTION = '.StakePoolTooltip_component.StakePoolTooltip_isVisible .StakePoolTooltip_description';
+const STAKE_POOL_TOOLTIP_SELECTOR = '.StakePoolTooltip_component.StakePoolTooltip_isVisible';
+const STAKE_POOL_TOOLTIP_RANKING_SELECTOR = '.StakePoolTooltip_component.StakePoolTooltip_isVisible .StakePoolTooltip_ranking span';
+const STAKE_POOL_TOOLTIP_DESCRIPTION_SELECTOR = '.StakePoolTooltip_component.StakePoolTooltip_isVisible .StakePoolTooltip_description';
+const STAKE_POOL_TOOLTIP_BUTTON_SELECTOR = '.StakePoolTooltip_component.StakePoolTooltip_isVisible button:last-child';
+const DELEGATE_WALLET_SELECTOR = '.DelegationSteps_delegationSteps.DelegationStepsIntroDialog_delegationStepsIntroDialogWrapper';
 
 Given(/^I am on the Delegation Centre staking page/, async function () {
   await stakingButtonVisible(this.client);
@@ -90,7 +92,7 @@ When(/^I see the stake pools search input field/, function () {
   return this.client.waitForVisible(STAKE_POOLS_SEARCH_SELECTOR);
 });
 
-When(/^I enter "([^"]*)" in search input field$/, function (data) {
+When(/^I enter "([^"]*)" in search input field/, function (data) {
   return this.client.setValue(STAKE_POOLS_SEARCH_SELECTOR, data);
 });
 
@@ -124,7 +126,11 @@ When(/^I click on stake pool on second place/, function () {
   return this.client.click(SECOND_STAKE_POOL_ITEM_SELECTOR);
 });
 
-Then(/^I should see second stake pool tooltip/, async function () {
+Then(/^I should see second stake pool tooltip/, function () {
+  return this.client.waitForVisible(STAKE_POOL_TOOLTIP_SELECTOR);
+});
+
+Then(/^Stake pool "([^"]*)" tooltip shows correct data$/, async function (positionOfStakePool) {
   const stakePools = await this.client.executeAsync(done => {
     daedalus.stores.staking.stakePoolsRequest
       .execute()
@@ -132,16 +138,20 @@ Then(/^I should see second stake pool tooltip/, async function () {
       .catch(error => done(error));
   });
   const result = stakePools && stakePools.value ? stakePools.value : [];
-  const secondStakePool = result[1];
-  await this.client.waitForVisible(STAKE_POOL_TOOLTIP);
-  await this.client.waitForText(STAKE_POOL_TOOLTIP_RANKING);
-  const stakePoolRanking = await this.client.getText(STAKE_POOL_TOOLTIP_RANKING);
-  await this.client.waitForText(STAKE_POOL_TOOLTIP_DESCRIPTION);
-  const stakePoolDescription = await this.client.getText(STAKE_POOL_TOOLTIP_DESCRIPTION);
+  const secondStakePool = result[parseInt(positionOfStakePool)-1];
+  await this.client.waitForVisible(STAKE_POOL_TOOLTIP_SELECTOR);
+  await this.client.waitForText(STAKE_POOL_TOOLTIP_RANKING_SELECTOR);
+  const stakePoolRanking = await this.client.getText(STAKE_POOL_TOOLTIP_RANKING_SELECTOR);
+  await this.client.waitForText(STAKE_POOL_TOOLTIP_DESCRIPTION_SELECTOR);
+  const stakePoolDescription = await this.client.getText(STAKE_POOL_TOOLTIP_DESCRIPTION_SELECTOR);
   expect(secondStakePool.ranking.toString()).to.equal(stakePoolRanking);
   expect(secondStakePool.description).to.equal(stakePoolDescription);
 });
 
-Then(/^Stake pool "([^"]*)" tooltip shows correct data$/, async function (positionOfStakePool) {
+When(/^I click on "Delegate to this pool"/, function () {
+  return this.client.click(STAKE_POOL_TOOLTIP_BUTTON_SELECTOR);
+});
 
+Then(/^I should see "Delegate Wallet" dialog/, function () {
+  return this.client.waitForVisible(DELEGATE_WALLET_SELECTOR);
 });
