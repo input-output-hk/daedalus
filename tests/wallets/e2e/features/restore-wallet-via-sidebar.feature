@@ -1,5 +1,5 @@
 @e2e
-Feature: Add Wallet via Sidebar
+Feature: Restore Wallet via Sidebar
 
   Background:
     Given I have completed the basic setup
@@ -59,34 +59,6 @@ Feature: Add Wallet via Sidebar
     Then I should not see the restore wallet dialog anymore
     And I should have newly created "Daedalus Rewards wallet" wallet loaded
     And "Daedalus Rewards wallet" wallet should have "c2ebd8b727cc760fe2f0fb3d06a8630ccc8c70f5" as id
-
-  Scenario: Error is cleared after entering the correct recovery phrase
-    Given The sidebar shows the "wallets" category
-    When I click on the add wallet button in the sidebar
-    And I see the add wallet page
-    And I click on the restore wallet button on the add wallet page
-    And I see the restore wallet dialog
-    Then I click on option "Daedalus wallet"
-    Then I should see section "What kind of Daedalus wallet would you like to restore?"
-    Then I click on option "27 words"
-    And I click continue
-    And I enter recovery phrase in restore wallet dialog:
-      | recoveryPhrase                                                                                                                                                                   |
-      | worry pluck anchor recycle predict grow inner inside face face subway meat away once february family rug make hub violin riot around coast play pluck grow face |
-    And I click Check recovery phrase button
-    And I enter wallet name "Incorrect Daedalus paper wallet" in restore wallet dialog
-    And I enter wallet password in restore wallet dialog:
-      | password  | repeatedPassword |
-      | Secret1234 | Secret1234      |
-    And I click continue
-    Then The error message should be visible
-    Given I go back to the previous step
-    And I clear the recovery phrase in restore wallet dialog
-    And I enter recovery phrase in restore wallet dialog:
-      | recoveryPhrase                                                                                                                                                  |
-      | season nice police near blame dress deal congress unusual more giggle pull general list crash gravity fashion notable voice resemble auto smart flat party thought unique amused |
-    And I click Check recovery phrase button
-    Then The error message should be hidden
 
   Scenario: Successfully restoring Daedalus paper wallet
     Given The sidebar shows the "wallets" category

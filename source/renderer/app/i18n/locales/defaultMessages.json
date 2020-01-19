@@ -7105,17 +7105,31 @@
         }
       },
       {
-        "defaultMessage": "!!!Once you delete a wallet, there is no going back. The only way to restore your wallet is to use your recovery phrase.",
+        "defaultMessage": "!!!Once you delete this wallet it will be removed from the Daedalus interface and you will lose access to any remaining funds in the wallet. The only way to regain access after deletion is by restoring it using your wallet recovery phrase.",
         "description": "Delete wallet warning explaining the consequences.",
         "end": {
           "column": 3,
           "line": 36
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
-        "id": "wallet.settings.deleteWallet.warning",
+        "id": "wallet.settings.deleteWallet.warning1",
         "start": {
-          "column": 23,
+          "column": 24,
           "line": 31
+        }
+      },
+      {
+        "defaultMessage": "!!!You may wish to verify your recovery phrase before deletion to ensure that you can restore this wallet in the future, if desired.",
+        "description": "Delete wallet warning explaining the consequences.",
+        "end": {
+          "column": 3,
+          "line": 42
+        },
+        "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
+        "id": "wallet.settings.deleteWallet.warning2",
+        "start": {
+          "column": 24,
+          "line": 37
         }
       },
       {
@@ -7123,13 +7137,13 @@
         "description": "Label for the \"Name\" text input on the wallet settings page.",
         "end": {
           "column": 3,
-          "line": 41
+          "line": 47
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.name.label",
         "start": {
           "column": 8,
-          "line": 37
+          "line": 43
         }
       },
       {
@@ -7137,13 +7151,13 @@
         "description": "Label for the \"Password\" field.",
         "end": {
           "column": 3,
-          "line": 46
+          "line": 52
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.password",
         "start": {
           "column": 17,
-          "line": 42
+          "line": 48
         }
       },
       {
@@ -7151,13 +7165,13 @@
         "description": "Last updated X time ago message.",
         "end": {
           "column": 3,
-          "line": 51
+          "line": 57
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.passwordLastUpdated",
         "start": {
           "column": 23,
-          "line": 47
+          "line": 53
         }
       }
     ],
@@ -8271,13 +8285,13 @@
         "description": "Placeholder for the mnemonics autocomplete.",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 23
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/MnemonicsDialog.js",
         "id": "wallet.restore.dialog.step.mnemonics.autocomplete.placeholder",
         "start": {
           "column": 27,
-          "line": 28
+          "line": 19
         }
       },
       {
@@ -8285,13 +8299,13 @@
         "description": "Placeholder for the multi-length mnemonics autocomplete.",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 29
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/MnemonicsDialog.js",
         "id": "wallet.restore.dialog.step.mnemonics.autocomplete.multiLengthPhrase.placeholder",
         "start": {
           "column": 33,
-          "line": 33
+          "line": 24
         }
       },
       {
@@ -8299,13 +8313,13 @@
         "description": "\"No results\" message for the mnemonics autocomplete search results.",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 35
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/MnemonicsDialog.js",
         "id": "wallet.restore.dialog.step.mnemonics.autocomplete.noResults",
         "start": {
           "column": 25,
-          "line": 39
+          "line": 30
         }
       },
       {
@@ -8313,13 +8327,13 @@
         "description": "Label for the mnemonics Continue button.",
         "end": {
           "column": 3,
-          "line": 49
+          "line": 40
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/MnemonicsDialog.js",
         "id": "wallet.restore.dialog.step.mnemonics.autocomplete.continueButtonLabel",
         "start": {
           "column": 23,
-          "line": 45
+          "line": 36
         }
       },
       {
@@ -8327,13 +8341,13 @@
         "description": "Error message for incomplete multi-length recovery phrase",
         "end": {
           "column": 3,
-          "line": 55
+          "line": 46
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/MnemonicsDialog.js",
         "id": "wallet.restore.dialog.step.mnemonics.autocomplete.incompleteMultiLengthPhrase",
         "start": {
           "column": 31,
-          "line": 50
+          "line": 41
         }
       },
       {
@@ -8341,13 +8355,13 @@
         "description": "Label for invalid recovery phrase",
         "end": {
           "column": 3,
-          "line": 61
+          "line": 52
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/MnemonicsDialog.js",
         "id": "wallet.restore.dialog.step.mnemonics.autocomplete.invalidRecoveryPhrase",
         "start": {
           "column": 25,
-          "line": 56
+          "line": 47
         }
       }
     ],
