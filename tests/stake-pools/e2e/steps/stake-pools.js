@@ -25,11 +25,24 @@ Then(/^I see the "Stake Pools" page/, function () {
   return this.client.waitForVisible('.StakePools_component');
 });
 
-Then(/^I should see the "Loading stake pools" message/, async function () {
-  await this.client.executeAsync(() => {
-    daedalus.stores.staking.fetchingStakePoolsFailed = true;
-  });
-  return this.client.waitForVisible('.StakePools_component.isLoading');
+Then(/^I should see the following loading message:$/, async function (message) {
+  await this.client.executeAsync((done) => {
+      daedalus.actions.staking.fakeStakePoolLoading.trigger(true);
+      done();
+    }
+  );
+  const loadingMsg = message.hashes()[0];
+  const loadingSelector =
+    '.StakePools_component.StakePools_isLoading .StakePools_loadingBlockWrapper p';
+  await this.client.waitForText(loadingSelector);
+  const loadingMsgOnScreen = await this.client.getText(loadingSelector);
+  const expectedLoadingMsg = await this.intl(loadingMsg.message);
+  expect(loadingMsgOnScreen).to.equal(expectedLoadingMsg);
+  await this.client.executeAsync((done) => {
+      daedalus.actions.staking.fakeStakePoolLoading.trigger();
+      done();
+    }
+  );
 });
 
 Then(/^I should see "([^"]*)" stake pools loaded by rank$/, async function (numberOfStakePools) {

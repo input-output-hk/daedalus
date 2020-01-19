@@ -9,9 +9,12 @@
     display: flex;
     flex: 1;
     margin: auto;
-    p {
-      margin-bottom: 20px;
-      opacity: 0.5;
+
+    .loadingBlockWrapper {
+      p {
+        margin-bottom: 20px;
+        opacity: 0.5;
+      }
     }
   }
 
