@@ -15,7 +15,7 @@ import ChangeSpendingPasswordDialog from './ChangeSpendingPasswordDialog';
 import globalMessages from '../../../i18n/global-messages';
 import styles from './WalletSettings.scss';
 import WalletRecoveryPhrase from './WalletRecoveryPhrase';
-import ResyncWalletButton from './ResyncWalletButton';
+import ResyncWallet from './ResyncWallet';
 
 export const messages = defineMessages({
   assuranceLevelLabel: {
@@ -188,21 +188,13 @@ export default class WalletSettings extends Component<Props, State> {
         styles.deleteWalletBox,
         styles.legacyWallet,
       ]);
-      const resyncWalletBoxStyles = classNames([
-        styles.resyncWalletBox,
-        styles.legacyWallet,
-      ]);
       return (
         <div className={styles.component}>
-          <BorderedBox className={resyncWalletBoxStyles}>
-            <span>{intl.formatMessage(messages.resyncWalletHeader)}</span>
-            <div className={styles.contentBox}>
-              <p>{intl.formatMessage(messages.resyncWalletDescription)}</p>
-              <ResyncWalletButton
-                isSubmitting={isForcedWalletResyncStarting}
-                onClick={onResyncWallet}
-              />
-            </div>
+          <BorderedBox>
+            <ResyncWallet
+              isForcedWalletResyncStarting={isForcedWalletResyncStarting}
+              onResyncWallet={onResyncWallet}
+            />
           </BorderedBox>
 
           <BorderedBox className={deleteWalletBoxStyles}>
@@ -295,14 +287,10 @@ export default class WalletSettings extends Component<Props, State> {
           )}
 
           <div className={styles.resyncWalletBox}>
-            <span>{intl.formatMessage(messages.resyncWalletHeader)}</span>
-            <div className={styles.contentBox}>
-              <p>{intl.formatMessage(messages.resyncWalletDescription)}</p>
-              <ResyncWalletButton
-                isSubmitting={isForcedWalletResyncStarting}
-                onClick={onResyncWallet}
-              />
-            </div>
+            <ResyncWallet
+              isForcedWalletResyncStarting={isForcedWalletResyncStarting}
+              onResyncWallet={onResyncWallet}
+            />
           </div>
 
           {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}

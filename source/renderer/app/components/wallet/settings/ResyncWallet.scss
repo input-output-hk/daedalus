@@ -1,0 +1,19 @@
+.component {
+  color: var(--theme-bordered-box-text-color);
+  font-family: var(--font-regular);
+  padding: 10px 0;
+
+  span {
+    font-family: var(--font-medium);
+  }
+
+  .contentBox {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    font-family: var(--font-light);
+    justify-content: space-between;
+    line-height: 1.38;
+    padding-top: 14px;
+  }
+}

@@ -6632,6 +6632,39 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Resync wallet with the blockchain",
+        "description": "Resync wallet header on the wallet settings page.",
+        "end": {
+          "column": 3,
+          "line": 13
+        },
+        "file": "source/renderer/app/components/wallet/settings/ResyncWallet.js",
+        "id": "wallet.settings.resyncWallet.header",
+        "start": {
+          "column": 22,
+          "line": 9
+        }
+      },
+      {
+        "defaultMessage": "!!!If you are experiencing issues with your wallet, or think you have an incorrect balance or transaction history, you can delete the local data stored by Daedalus and resync with the blockchain.",
+        "description": "Resync wallet description.",
+        "end": {
+          "column": 3,
+          "line": 19
+        },
+        "file": "source/renderer/app/components/wallet/settings/ResyncWallet.js",
+        "id": "wallet.settings.resyncWallet.description",
+        "start": {
+          "column": 27,
+          "line": 14
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/settings/ResyncWallet.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Resync wallet",
         "description": "Label for the resync button on wallet settings",
         "end": {

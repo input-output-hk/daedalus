@@ -58,30 +58,8 @@
 
   .resyncWalletBox {
     border-top: 1px solid var(--theme-wallet-settings-section-separator-color);
-    color: var(--theme-bordered-box-text-color);
     margin-top: 20px;
-    padding-bottom: 10px;
-    padding-top: 30px;
-
-    &.legacyWallet {
-      border-top: none;
-      margin-top: 0;
-      padding-bottom: 30px;
-    }
-
-    span {
-      font-family: var(--font-medium);
-    }
-
-    .contentBox {
-      align-items: center;
-      display: flex;
-      flex-direction: row;
-      font-family: var(--font-light);
-      justify-content: space-between;
-      line-height: 1.38;
-      padding-top: 14px;
-    }
+    padding-top: 20px;
   }
 }
 
