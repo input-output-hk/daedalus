@@ -30,12 +30,6 @@
   .deleteWalletBox {
     margin-bottom: 37px;
     margin-top: 20px;
-    padding-bottom: 30px;
-    padding-top: 30px;
-
-    &.legacyWallet {
-      margin-top: 0;
-    }
 
     span {
       color: var(--theme-input-label-color);
@@ -58,6 +52,12 @@
         margin-bottom: 15px;
       }
     }
+  }
+
+  .resyncWalletBox {
+    border-top: 1px solid var(--theme-wallet-settings-section-separator-color);
+    margin-top: 20px;
+    padding-top: 20px;
   }
 }
 

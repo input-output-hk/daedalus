@@ -178,6 +178,12 @@ export type UpdateWalletRequest = {
   walletId: string,
   name: string,
 };
+
+export type ForceWalletResyncRequest = {
+  walletId: string,
+  isLegacy: boolean,
+};
+
 export type ImportWalletFromKeyRequest = {
   filePath: string,
   spendingPassword: string,
@@ -207,6 +213,7 @@ export type GetWalletRecoveryPhraseFromCertificateRequest = {
 
 export type GetWalletRequest = {
   walletId: string,
+  isLegacy?: boolean,
 };
 
 export type TransferFundsCalculateFeeRequest = {

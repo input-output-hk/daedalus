@@ -1,6 +1,5 @@
 // @flow
 import React, { Component } from 'react';
-import { get } from 'lodash';
 import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import WalletTransactionsList from '../../components/wallet/transactions/WalletTransactionsList';
@@ -9,7 +8,6 @@ import WalletNoTransactions from '../../components/wallet/transactions/WalletNoT
 import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import { formattedWalletAmount } from '../../utils/formatters';
-import { WalletSyncStateStatuses } from '../../domains/Wallet';
 import { getNetworkExplorerUrlByType } from '../../utils/network';
 
 export const messages = defineMessages({
@@ -76,10 +74,6 @@ export default class WalletTransactionsPage extends Component<Props> {
     const hasMoreToLoad = () =>
       searchLimit !== null && totalAvailable > searchLimit;
 
-    const isRestoreActive =
-      get(activeWallet, ['syncState', 'status']) ===
-      WalletSyncStateStatuses.RESTORING;
-
     const getUrlByType = (type: 'tx' | 'address', param: string) =>
       getNetworkExplorerUrlByType(
         type,
@@ -103,13 +97,17 @@ export default class WalletTransactionsPage extends Component<Props> {
     // Straight away show recent transactions if filtered ones are not loaded yet
     const transactions = recent.length && !filtered.length ? recent : filtered;
 
-    if (searchRequest.isExecutingFirstTime || hasAny || isRestoreActive) {
+    if (
+      searchRequest.isExecutingFirstTime ||
+      hasAny ||
+      activeWallet.isRestoring
+    ) {
       walletTransactions = (
         <WalletTransactionsList
           transactions={transactions}
           deletePendingTransaction={deletePendingTransaction}
           isLoadingTransactions={searchRequest.isExecutingFirstTime}
-          isRestoreActive={isRestoreActive}
+          isRestoreActive={activeWallet.isRestoring}
           hasMoreToLoad={hasMoreToLoad()}
           onLoadMore={actions.transactions.loadMoreTransactions.trigger}
           walletId={activeWallet.id}
