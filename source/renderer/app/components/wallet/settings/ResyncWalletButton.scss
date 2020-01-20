@@ -11,5 +11,13 @@
   &.isSubmitting {
     box-shadow: none !important;
     @include loading-spinner('../../../assets/images/spinner-light.svg');
+
+    &::after {
+      background-size: 24px;
+      height: 24px;
+      left: calc(50% - 12px);
+      top: calc(50% - 12px);
+      width: 24px;
+    }
   }
 }
