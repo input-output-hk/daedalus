@@ -55,6 +55,7 @@ export default class WalletTransactionsPage extends Component<Props, State> {
       populatedFilterOptions,
     } = this.props.stores.transactions;
 
+    this.setState({ isFilterButtonFaded: false });
     dialogs.open.trigger({ dialog: FilterDialog });
     dialogs.updateDataForActiveDialog.trigger({
       data: { defaultFilterOptions, populatedFilterOptions },
