@@ -51,7 +51,6 @@ export default class WalletSettingsStore extends Store {
       this._updateSpendingPassword
     );
     walletSettingsActions.exportToFile.listen(this._exportToFile);
-
     walletSettingsActions.startWalletUtxoPolling.listen(
       this._startWalletUtxoPolling
     );
@@ -153,7 +152,7 @@ export default class WalletSettingsStore extends Store {
 
   @action _getWalletUtxoApiData = async () => {
     const activeWallet = this.stores.wallets.active;
-    if (!activeWallet) return;
+    if (!activeWallet || this.isForcedWalletResyncStarting) return;
     const { id: walletId } = activeWallet;
     const walletUtxos = await this.getWalletUtxosRequest.execute({ walletId });
     this._updateWalletUtxos(walletUtxos);
@@ -189,6 +188,7 @@ export default class WalletSettingsStore extends Store {
       await refreshWalletsData();
       runInAction('set isForcedWalletResyncStarting', () => {
         this.isForcedWalletResyncStarting = false;
+        this._getWalletUtxoApiData();
       });
     }
   };
