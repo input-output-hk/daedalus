@@ -44,7 +44,7 @@ export default class TinyDatePicker extends Component<Props> {
     this.resetButtonContainer = document.createElement('div');
     this.resetButton = document.createElement('button');
 
-    this.resetButton.className = 'SimpleButton_root ButtonOverrides_root';
+    this.resetButton.className = 'flat SimpleButton_root ButtonOverrides_root';
     this.resetButton.onclick = props.onReset;
     this.resetButtonContainer.className = 'reset TinyButton_component';
     this.resetButtonContainer.appendChild(this.resetButton);

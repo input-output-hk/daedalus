@@ -11,6 +11,17 @@
       overflow: visible;
     }
 
+    .TinySelect_component {
+      .SimpleBubble_root {
+        .SimpleBubble_bubble {
+          background-color: var(--theme-transactions-filter-modal-bg-color);
+        }
+      }
+      .SimpleOptions_option:not(.SimpleOptions_highlightedOption) {
+        background-color: var(--theme-transactions-filter-modal-bg-color);
+      }
+    }
+
     .TinyInput_component {
       .TinyInput_contentInReadMode,
       .SimpleInput_input {

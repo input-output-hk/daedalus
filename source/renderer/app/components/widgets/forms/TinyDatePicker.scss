@@ -77,6 +77,12 @@
         line-height: 1.29;
       }
 
+      td.rdtOld,
+      td.rdtNew {
+        color: var(--theme-dialog-text-color);
+        opacity: 0.3;
+      }
+
       tr {
         td.rdtActive,
         td.rdtActive:hover {
@@ -111,8 +117,6 @@
       }
 
       .reset {
-        background: var(--rp-button-bg-color, #243e62);
-        border: var(--rp-button-border, none);
         margin-top: 12px;
       }
     }
