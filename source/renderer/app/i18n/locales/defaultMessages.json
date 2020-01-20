@@ -6632,6 +6632,58 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Resync wallet with the blockchain",
+        "description": "Resync wallet header on the wallet settings page.",
+        "end": {
+          "column": 3,
+          "line": 13
+        },
+        "file": "source/renderer/app/components/wallet/settings/ResyncWallet.js",
+        "id": "wallet.settings.resyncWallet.header",
+        "start": {
+          "column": 22,
+          "line": 9
+        }
+      },
+      {
+        "defaultMessage": "!!!If you are experiencing issues with your wallet, or think you have an incorrect balance or transaction history, you can delete the local data stored by Daedalus and resync with the blockchain.",
+        "description": "Resync wallet description.",
+        "end": {
+          "column": 3,
+          "line": 19
+        },
+        "file": "source/renderer/app/components/wallet/settings/ResyncWallet.js",
+        "id": "wallet.settings.resyncWallet.description",
+        "start": {
+          "column": 27,
+          "line": 14
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/settings/ResyncWallet.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Resync wallet",
+        "description": "Label for the resync button on wallet settings",
+        "end": {
+          "column": 3,
+          "line": 14
+        },
+        "file": "source/renderer/app/components/wallet/settings/ResyncWalletButton.js",
+        "id": "wallet.settings.resyncWalletButtonLabel",
+        "start": {
+          "column": 9,
+          "line": 10
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/settings/ResyncWalletButton.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Do you have your wallet recovery phrase?",
         "description": "Label for the recoveryPhraseVerificationTitle on wallet settings.",
         "end": {
@@ -7081,13 +7133,13 @@
         "description": "Label for the \"Transaction assurance security level\" dropdown.",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 26
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.assurance",
         "start": {
           "column": 23,
-          "line": 20
+          "line": 21
         }
       },
       {
@@ -7095,13 +7147,13 @@
         "description": "Delete wallet header on the wallet settings page.",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 31
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.deleteWallet.header",
         "start": {
           "column": 22,
-          "line": 26
+          "line": 27
         }
       },
       {
@@ -7109,13 +7161,13 @@
         "description": "Delete wallet warning explaining the consequences.",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 37
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.deleteWallet.warning1",
         "start": {
           "column": 24,
-          "line": 31
+          "line": 32
         }
       },
       {
@@ -7123,13 +7175,41 @@
         "description": "Delete wallet warning explaining the consequences.",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 43
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.deleteWallet.warning2",
         "start": {
           "column": 24,
-          "line": 37
+          "line": 38
+        }
+      },
+      {
+        "defaultMessage": "!!!Resync wallet with the blockchain",
+        "description": "Resync wallet header on the wallet settings page.",
+        "end": {
+          "column": 3,
+          "line": 48
+        },
+        "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
+        "id": "wallet.settings.resyncWallet.header",
+        "start": {
+          "column": 22,
+          "line": 44
+        }
+      },
+      {
+        "defaultMessage": "!!!If you are experiencing issues with your wallet, or think you have an incorrect balance or transaction history, you can delete the local data stored by Daedalus and resync with the blockchain.",
+        "description": "Resync wallet description.",
+        "end": {
+          "column": 3,
+          "line": 54
+        },
+        "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
+        "id": "wallet.settings.resyncWallet.description",
+        "start": {
+          "column": 27,
+          "line": 49
         }
       },
       {
@@ -7137,13 +7217,13 @@
         "description": "Label for the \"Name\" text input on the wallet settings page.",
         "end": {
           "column": 3,
-          "line": 47
+          "line": 59
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.name.label",
         "start": {
           "column": 8,
-          "line": 43
+          "line": 55
         }
       },
       {
@@ -7151,13 +7231,13 @@
         "description": "Label for the \"Password\" field.",
         "end": {
           "column": 3,
-          "line": 52
+          "line": 64
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.password",
         "start": {
           "column": 17,
-          "line": 48
+          "line": 60
         }
       },
       {
@@ -7165,13 +7245,13 @@
         "description": "Last updated X time ago message.",
         "end": {
           "column": 3,
-          "line": 57
+          "line": 69
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.passwordLastUpdated",
         "start": {
           "column": 23,
-          "line": 53
+          "line": 65
         }
       }
     ],
@@ -10304,13 +10384,13 @@
         "description": "Message shown when wallet has no transactions on wallet summary page.",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 22
         },
         "file": "source/renderer/app/containers/wallet/WalletSummaryPage.js",
         "id": "wallet.summary.no.transactions",
         "start": {
           "column": 18,
-          "line": 18
+          "line": 17
         }
       }
     ],
@@ -10323,13 +10403,13 @@
         "description": "Message shown when wallet has no transactions yet.",
         "end": {
           "column": 3,
-          "line": 20
+          "line": 18
         },
         "file": "source/renderer/app/containers/wallet/WalletTransactionsPage.js",
         "id": "wallet.transactions.no.transactions",
         "start": {
           "column": 18,
-          "line": 16
+          "line": 14
         }
       },
       {
@@ -10337,13 +10417,13 @@
         "description": "Message shown when wallet transaction search returns zero results.",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 24
         },
         "file": "source/renderer/app/containers/wallet/WalletTransactionsPage.js",
         "id": "wallet.transactions.no.transactions.found",
         "start": {
           "column": 23,
-          "line": 21
+          "line": 19
         }
       }
     ],

@@ -501,13 +501,16 @@ export default class WalletsStore extends Store {
       if (this.hasAnyWallets) {
         const nextIndexInList = Math.max(indexOfWalletToDelete - 1, 0);
         const nextWalletInList = this.all[nextIndexInList];
-        this.actions.dialogs.closeActiveDialog.trigger();
         this.goToWalletRoute(nextWalletInList.id);
       } else {
         this.active = null;
         this.activeValue = null;
+        this.actions.router.goToRoute.trigger({
+          route: ROUTES.WALLETS.ADD,
+        });
       }
     });
+    this.actions.dialogs.closeActiveDialog.trigger();
     this._unsetWalletLocalData(params.walletId);
     this._resumePolling();
     this.deleteWalletRequest.reset();
@@ -575,7 +578,7 @@ export default class WalletsStore extends Store {
     const request = this.restoreRequest;
 
     if (
-      WALLET_KINDS.DAEDALUS &&
+      this.walletKind === WALLET_KINDS.DAEDALUS &&
       this.walletKindDaedalus === WALLET_DAEDALUS_KINDS.BALANCE_27_WORD
     ) {
       // Reset getWalletRecoveryPhraseFromCertificateRequest to clear previous errors
@@ -799,18 +802,6 @@ export default class WalletsStore extends Store {
       default:
         return this.restoreDaedalusRequest;
     }
-  }
-
-  @computed get restoreProgress(): number {
-    return get(this.active, 'syncState.data.percentage.quantity', 0);
-  }
-
-  @computed get restoreETA(): number {
-    return get(
-      this.active,
-      'syncState.data.estimatedCompletionTime.quantity',
-      0
-    );
   }
 
   @computed get hasActiveWalletNotification(): boolean {

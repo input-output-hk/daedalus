@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 
+- Implemented "Resync wallet" feature ([PR 1822](https://github.com/input-output-hk/daedalus/pull/1822))
 - Improved the paper wallet recovery phrase validation ([PR 1818](https://github.com/input-output-hk/daedalus/pull/1818))
 - Implemented React-Polymorph "Link" component ([PR 1799](https://github.com/input-output-hk/daedalus/pull/1799))
 - Implemented Hardware wallets restoration ([PR 1801](https://github.com/input-output-hk/daedalus/pull/1801))
@@ -14,11 +15,14 @@ Changelog
 - Improved network screen with responsive main copy box ([PR 1797](https://github.com/input-output-hk/daedalus/pull/1797))
 
 ### Fixes
+
+- Fixed a routing issue connected to deleting Yoroi Balance/Rewards wallets restored from the same recovery phrase ([PR 1823](https://github.com/input-output-hk/daedalus/pull/1823))
 - Fixed a typo in the Staking Pools section ([PR 1785](https://github.com/input-output-hk/daedalus/pull/1785))
 - Fixed Daedalus ITN Terms of Service typo ([PR 1809](https://github.com/input-output-hk/daedalus/pull/1809))
 - Fixed handling of duplicated wallet IDs when restoring both legacy and new wallets from the same wallet recovery phrase ([PR 1805](https://github.com/input-output-hk/daedalus/pull/1805))
 
 ### Chores
+
 - Implemented acceptance tests for stake pools loading ([PR 1820](https://github.com/input-output-hk/daedalus/pull/1820))
 - Updated `cardano-wallet` to revision `254575e4` which includes Jormungandr 0.8.6 ([PR 1821](https://github.com/input-output-hk/daedalus/pull/1821))
 - Improved delete wallet text copy ([PR 1819](https://github.com/input-output-hk/daedalus/pull/1819))
