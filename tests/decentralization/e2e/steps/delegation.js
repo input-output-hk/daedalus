@@ -32,21 +32,42 @@ Then(/^the current and next epoch countdown are correctly displayed$/, async fun
 // Then(/^the current and next epoch countdown have correct data$/, async function() {
 // })
 
+let wallet;
+let pool;
+
 Then(/^I should see the "delegate" option$/, async function() {
+  // Makes sure the wallet is not delegate, in case the test restarts
+  await this.client.waitUntil(async () => {
+    const wallets = await this.client.execute(() => daedalus.stores.wallets.all);
+    const pools = await this.client.execute(() => daedalus.stores.staking.stakePools);
+    const isLoaded = wallets.value.length > 0 && pools.value.length > 0;
+    if (!isLoaded) return false;
+    pool = pools.value[0];
+    wallet = wallets.value[0];
+    try {
+      await this.client.execute((stakePoolId, walletId, passphrase) => {
+        daedalus.actions.staking.quitStakePool.trigger({ stakePoolId, walletId, passphrase })
+      }, pool.id, wallet.id, 'Secret1234');
+    } catch(e) {}
+    return true;
+  });
   await this.client.waitForVisible(`//span[@class="WalletRow_actionLink" and text()="Delegate"]`);
 })
 
-Given(/^I delegate the wallet$/, { timeout: 60000 }, async function() {
-  await this.waitAndClick('//span[@class="WalletRow_actionLink" and text()="Delegate"]');
-  await this.waitAndClick('.continueButton');
-  await this.waitAndClick('.continueButton');
-  await this.waitAndClick('.StakePoolThumbnail_component');
-  await this.waitAndClick('.continueButton');
-  const input = this.client.element('.SimpleInput_input');
-  input.setValue('Secret1234');
-  await timeout(2000);
-  this.client.click('.confirmButton');
-  await this.waitAndClick('.closeButton');
+Given(/^I delegate the wallet$/, async function() {
+  await this.client.execute((stakePoolId, walletId, passphrase) => {
+    daedalus.actions.staking.joinStakePool.trigger({ stakePoolId, walletId, passphrase })
+  }, pool.id, wallet.id, 'Secret1234');
 })
+
+Then(/^I should see the delegated pool name$/, async function() {
+  await this.client.waitForVisible(`//span[text()="[${pool.ticker}]"]`);
+})
+
+Then(/^I should see the delegated menu$/, async function() {
+  await this.client.waitForVisible('.DropdownMenu_dropdownToggle');
+})
+
+
 
 
