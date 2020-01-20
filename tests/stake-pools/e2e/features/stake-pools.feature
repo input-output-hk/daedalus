@@ -4,10 +4,7 @@ Feature: Stake Pools Loading
   Background:
     Given I have completed the basic setup
     Given I am on the Delegation Centre staking page
-    Given I have a "Test Wallet" wallet with funds
-    And I have the following wallets:
-      | name          |
-      | Test Wallet |
+    And I have a "Test Wallet" wallet with funds
 
   Scenario: "Loading stake pools" message is shown during initial loading of stake pool data
     Then I should see the following loading message:
@@ -42,7 +39,6 @@ Feature: Stake Pools Loading
     Then I should see second stake pool tooltip
     And Stake pool "2" tooltip shows correct data
 
-  @watch
   Scenario: Delegating to stake pool from "Stake pools" screen works as expected
     When I see "3" stake pools loaded by rank
     And I click on stake pool on second place
@@ -50,37 +46,10 @@ Feature: Stake Pools Loading
     And Stake pool "2" tooltip shows correct data
     And I click on "Delegate to this pool"
     Then I should see "Delegate Wallet" dialog
-    #And I click "continue" button
-    #Then I should see step 1 of 3 screen
-    #And I choose the wallet which i want to delegate
-    #And I click "continue" button
-    #Then I should see step 2 of 3 screen
-    #And I pick one of stake pools
-    #And I click on "continue" button
-    #Then I should see step 3 of 3 screen
-    #And I type spending password
-    #And I click "continue" button
-    #Then I should see "Wallet Delegated" confirmation screen
-    #And I click "close" button
-    #Then I should see "Delegated to..." message next to wallet which has been delegated
-
-  Scenario: Delegating to stake pool from "Stake pools" screen works as expected with different selection
-    When I see "3" stake pools loaded by rank
-    And I click on stake pool on second place
-    Then I should see second stake pool tooltip
-    And Stake pool "2" tooltip shows correct data
-    And I click on "Delegate to this pool"
-    Then I should see "Delegate Wallet" dialog
-    #And I click "continue" button
-    #Then I should see step 1 of 3 screen
-    #And I choose the wallet which i want to delegate
-    #And I click "continue" button
-    #Then I should see step 2 of 3 screen
-    #And I pick one of stake pools
-    #And I click on "continue" button
-    #Then I should see step 3 of 3 screen
-    #And I type spending password
-    #And I click "continue" button
-    #Then I should see "Wallet Delegated" confirmation screen
-    #And I click "close" button
-    #Then I should see "Delegated to..." message next to wallet which has been delegated
+    And I click "continue" button
+    Then I should see step 1 of 3 screen
+    And I open the wallet dropdown
+    And I choose "Test Wallet"
+    And I click "continue" button
+    Then I should see step 2 of 3 screen
+    And I see following label on the dialog: "You have selected [ROOT] stake pool to delegate to for Test Wallet wallet."

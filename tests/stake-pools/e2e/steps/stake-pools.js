@@ -27,6 +27,11 @@ const STAKE_POOL_TOOLTIP_RANKING_SELECTOR = '.StakePoolTooltip_component.StakePo
 const STAKE_POOL_TOOLTIP_DESCRIPTION_SELECTOR = '.StakePoolTooltip_component.StakePoolTooltip_isVisible .StakePoolTooltip_description';
 const STAKE_POOL_TOOLTIP_BUTTON_SELECTOR = '.StakePoolTooltip_component.StakePoolTooltip_isVisible button:last-child';
 const DELEGATE_WALLET_SELECTOR = '.DelegationSteps_delegationSteps.DelegationStepsIntroDialog_delegationStepsIntroDialogWrapper';
+const DIALOG_CONTINUE_SELECTOR = '.DelegationSteps_delegationSteps .Dialog_actions .continueButton';
+const DELEGATION_WALLET_FIRST_STEP_SELECTOR = '.DelegationSteps_delegationSteps.DelegationStepsChooseWalletDialog_delegationStepsChooseWalletDialogWrapper';
+const DELEGATION_WALLET_SECOND_STEP_SELECTOR = '.DelegationSteps_delegationSteps.DelegationStepsChooseStakePoolDialog_delegationStepsChooseStakePoolDialogWrapper';
+const DELEGATION_WALLET_DROPDOWN_SELECTOR = '.DelegationSteps_delegationSteps.DelegationStepsChooseWalletDialog_delegationStepsChooseWalletDialogWrapper .DelegationStepsChooseWalletDialog_walletSelect';
+const SELECTED_STAKE_POOLS_DELEGATION_WALLET_DIALOG_SELECTOR = '.DelegationStepsChooseStakePoolDialog_selectStakePoolLabel span';
 
 Given(/^I am on the Delegation Centre staking page/, async function () {
   await stakingButtonVisible(this.client);
@@ -123,7 +128,7 @@ When(/^I see "([^"]*)" stake pools loaded by rank$/, async function (numberOfSta
 });
 
 When(/^I click on stake pool on second place/, function () {
-  return this.client.click(SECOND_STAKE_POOL_ITEM_SELECTOR);
+  return this.waitAndClick(SECOND_STAKE_POOL_ITEM_SELECTOR);
 });
 
 Then(/^I should see second stake pool tooltip/, function () {
@@ -149,9 +154,37 @@ Then(/^Stake pool "([^"]*)" tooltip shows correct data$/, async function (positi
 });
 
 When(/^I click on "Delegate to this pool"/, function () {
-  return this.client.click(STAKE_POOL_TOOLTIP_BUTTON_SELECTOR);
+  return this.waitAndClick(STAKE_POOL_TOOLTIP_BUTTON_SELECTOR);
 });
 
 Then(/^I should see "Delegate Wallet" dialog/, function () {
   return this.client.waitForVisible(DELEGATE_WALLET_SELECTOR);
+});
+
+When(/^I click "continue" button/, function () {
+  return this.waitAndClick(DIALOG_CONTINUE_SELECTOR);
+});
+
+Then(/^I should see step 1 of 3 screen/, function () {
+  return this.client.waitForVisible(DELEGATION_WALLET_FIRST_STEP_SELECTOR);
+});
+
+Then(/^I open the wallet dropdown/, function () {
+  return this.waitAndClick(DELEGATION_WALLET_DROPDOWN_SELECTOR);
+});
+
+Then(/^I choose "([^"]*)"$/, function (walletName) {
+  return this.waitAndClick(
+    `//*[text()[contains(.,"${walletName}")]]`
+  );
+});
+
+Then(/^I should see step 2 of 3 screen/, function () {
+  return this.client.waitForVisible(DELEGATION_WALLET_SECOND_STEP_SELECTOR);
+});
+
+Then(/^I see following label on the dialog: "([^"]*)"$/, async function (message) {
+  await this.client.waitForText(SELECTED_STAKE_POOLS_DELEGATION_WALLET_DIALOG_SELECTOR);
+  const selectedStakePoolLabel = await this.client.getText(SELECTED_STAKE_POOLS_DELEGATION_WALLET_DIALOG_SELECTOR);
+  expect(selectedStakePoolLabel[0]).to.equal(message);
 });
