@@ -472,7 +472,7 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--rp-formfield-error-text-opacity': '0.75',
   },
   rpInput: {
-    '--rp-input-bg-color': '#3f404f',
+    '--rp-input-bg-color': '#1e1f31',
     '--rp-input-bg-color-disabled': 'rgba(255, 255, 255, 0.05)',
     '--rp-input-border-color': 'rgba(255, 255, 255, 0.2)',
     '--rp-input-border-color-disabled': 'rgba(255, 255, 255, 0.05)',
@@ -489,12 +489,12 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--rp-link-color': 'rgb(246, 154, 178)',
   },
   rpModal: {
-    '--rp-modal-bg-color': '#3f404f',
+    '--rp-modal-bg-color': '#1e1f31',
     '--rp-modal-max-height': '90%',
     '--rp-modal-overlay-bg-color': 'rgba(0, 0, 0, 0.4)',
   },
   rpOptions: {
-    '--rp-option-bg-color': '#3f404f',
+    '--rp-option-bg-color': '#1e1f31',
     '--rp-option-bg-color-highlighted': 'rgba(255, 255, 255, 0.07)',
     '--rp-option-border-color': 'rgba(255, 255, 255, 0.2)',
     '--rp-option-checkmark-color': 'rgba(255, 255, 255, 0.7)',
@@ -515,7 +515,7 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--rp-select-arrow-bg-color': 'rgba(255, 255, 255, 0.3)',
     '--rp-select-arrow-bg-color-open': 'rgba(255, 255, 255, 0.7)',
     '--rp-select-input-bg-color': 'transparent',
-    '--rp-select-input-border-color': 'rgba(255, 255, 255, 0.2)',
+    '--rp-select-input-border-color': 'rgba(255, 255, 255, 0.3)',
     '--rp-select-input-border-color-focus': 'rgba(255, 255, 255, 0.7)',
     '--rp-select-input-text-color': '#ffffff',
     '--rp-select-input-placeholder-color': 'rgba(255, 255, 255, 0.5)',
@@ -795,6 +795,7 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
       'rgba(255, 255, 255, 0.07)',
     '--theme-transactions-date-picker-button-background-color-active':
       'rgba(255, 255, 255, 0.14)',
+    '--theme-transactions-filter-modal-bg-color': '#3f404f',
   },
   uploader: {
     '--theme-uploader-text-color': '#ffffff',

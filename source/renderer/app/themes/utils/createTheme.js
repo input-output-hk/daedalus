@@ -1182,6 +1182,9 @@ export const createDaedalusComponentsTheme = (
       '--theme-transactions-date-picker-button-background-color-active': `${
         background.primary.regular
       }`,
+      '--theme-transactions-filter-modal-bg-color': `${
+        background.primary.lightest
+      }`,
     },
     uploader: {
       '--theme-uploader-text-color': `${text.primary}`,

@@ -802,6 +802,7 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
       'rgba(68, 91, 124, 0.07)',
     '--theme-transactions-date-picker-button-background-color-active':
       'rgba(68, 91, 124, 0.14)',
+    '--theme-transactions-filter-modal-bg-color': '#fafbfc',
   },
   uploader: {
     '--theme-uploader-text-color': '#5e6066',

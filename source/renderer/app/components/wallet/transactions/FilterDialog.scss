@@ -1,4 +1,5 @@
 .component {
+  background-color: var(--theme-transactions-filter-modal-bg-color);
   flex: initial;
   font-family: var(--font-regular);
   margin: 0 -20px -10px;
@@ -8,6 +9,13 @@
   :global {
     .Dialog_content {
       overflow: visible;
+    }
+
+    .TinyInput_component {
+      .TinyInput_contentInReadMode,
+      .SimpleInput_input {
+        background-color: transparent;
+      }
     }
   }
 

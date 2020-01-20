@@ -809,6 +809,7 @@ export const DARK_BLUE_THEME_OUTPUT = {
       'rgba(233, 244, 254, 0.07)',
     '--theme-transactions-date-picker-button-background-color-active':
       'rgba(233, 244, 254, 0.14)',
+    '--theme-transactions-filter-modal-bg-color': '#263345',
   },
   uploader: {
     '--theme-uploader-text-color': '#e9f4fe',

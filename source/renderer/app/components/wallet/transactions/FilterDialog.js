@@ -266,6 +266,8 @@ export default class FilterDialog extends Component<Props> {
         parentElement: modalElement,
       } = selfRef.parentElement.parentElement;
       const { parentElement: overlayElement } = modalElement || {};
+      modalElement.style.backgroundColor =
+        'var(--theme-transactions-filter-modal-bg-color)';
       modalElement.style.borderRadius = '4px';
       modalElement.style.minWidth = 'auto';
       modalElement.style.position = 'absolute';

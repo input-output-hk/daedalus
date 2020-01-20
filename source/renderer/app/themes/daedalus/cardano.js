@@ -806,6 +806,7 @@ export const CARDANO_THEME_OUTPUT = {
       'rgba(32, 34, 37, 0.07)',
     '--theme-transactions-date-picker-button-background-color-active':
       'rgba(32, 34, 37, 0.14)',
+    '--theme-transactions-filter-modal-bg-color': '#ffffff',
   },
   uploader: {
     '--theme-uploader-text-color': '#5e6066',

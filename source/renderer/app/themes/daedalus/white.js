@@ -796,6 +796,7 @@ export const WHITE_THEME_OUTPUT = {
       'rgba(41, 181, 149, 0.07)',
     '--theme-transactions-date-picker-button-background-color-active':
       'rgba(41, 181, 149, 0.14)',
+    '--theme-transactions-filter-modal-bg-color': '#fff',
   },
   uploader: {
     '--theme-uploader-text-color': '#2d2d2d',
