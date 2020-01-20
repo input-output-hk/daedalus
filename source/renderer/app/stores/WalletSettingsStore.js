@@ -188,7 +188,15 @@ export default class WalletSettingsStore extends Store {
       await refreshWalletsData();
       runInAction('set isForcedWalletResyncStarting', () => {
         this.isForcedWalletResyncStarting = false;
-        this._getWalletUtxoApiData();
+        const activeWallet = this.stores.wallets.active;
+        if (
+          this.pollingApiInterval && // Is "true" if UTXO screen is active
+          activeWallet &&
+          activeWallet.id === walletId &&
+          !isLegacy
+        ) {
+          this._getWalletUtxoApiData();
+        }
       });
     }
   };
