@@ -1,5 +1,5 @@
 // @flow
-import { pick } from 'lodash';
+import { get, pick } from 'lodash';
 import { observable, computed, action } from 'mobx';
 import BigNumber from 'bignumber.js';
 import type {
@@ -84,5 +84,13 @@ export default class Wallet {
 
   @computed get hasFunds(): boolean {
     return this.amount.gt(0);
+  }
+
+  @computed get isRestoring(): boolean {
+    return get(this, 'syncState.status') === WalletSyncStateStatuses.RESTORING;
+  }
+
+  @computed get restorationProgress(): number {
+    return get(this, 'syncState.progress.quantity', 0);
   }
 }

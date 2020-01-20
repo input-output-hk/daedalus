@@ -834,6 +834,12 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-wallet-restore-dialog-step-walletType-hardwareWalletDisclaimer-text-color':
       '#ea4c5b',
   },
+  walletSettings: {
+    '--theme-wallet-settings-section-separator-color':
+      'rgba(233, 244, 254, 0.15)',
+    '--theme-wallet-settings-resync-button-label-color':
+      'rgba(233, 244, 254, 1)',
+  },
 };
 
 const DARK_BLUE_THEME_PARAMS: CreateThemeParams = {

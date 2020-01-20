@@ -1,0 +1,23 @@
+@import '../../../themes/mixins/loading-spinner';
+
+.root {
+  color: var(--theme-wallet-settings-resync-button-label-color) !important;
+  font-weight: 500 !important;
+  height: 36px !important;
+  line-height: 36px !important;
+  margin-left: 20px;
+  min-width: 160px !important;
+  width: 160px !important;
+  &.isSubmitting {
+    box-shadow: none !important;
+    @include loading-spinner('../../../assets/images/spinner-light.svg');
+
+    &::after {
+      background-size: 24px;
+      height: 24px;
+      left: calc(50% - 12px);
+      top: calc(50% - 12px);
+      width: 24px;
+    }
+  }
+}

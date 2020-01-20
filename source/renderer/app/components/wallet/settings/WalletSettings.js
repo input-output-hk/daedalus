@@ -15,6 +15,7 @@ import ChangeSpendingPasswordDialog from './ChangeSpendingPasswordDialog';
 import globalMessages from '../../../i18n/global-messages';
 import styles from './WalletSettings.scss';
 import WalletRecoveryPhrase from './WalletRecoveryPhrase';
+import ResyncWallet from './ResyncWallet';
 
 export const messages = defineMessages({
   assuranceLevelLabel: {
@@ -39,6 +40,17 @@ export const messages = defineMessages({
     defaultMessage:
       '!!!You may wish to verify your recovery phrase before deletion to ensure that you can restore this wallet in the future, if desired.',
     description: 'Delete wallet warning explaining the consequences.',
+  },
+  resyncWalletHeader: {
+    id: 'wallet.settings.resyncWallet.header',
+    defaultMessage: '!!!Resync wallet with the blockchain',
+    description: 'Resync wallet header on the wallet settings page.',
+  },
+  resyncWalletDescription: {
+    id: 'wallet.settings.resyncWallet.description',
+    defaultMessage:
+      '!!!If you are experiencing issues with your wallet, or think you have an incorrect balance or transaction history, you can delete the local data stored by Daedalus and resync with the blockchain.',
+    description: 'Resync wallet description.',
   },
   name: {
     id: 'wallet.settings.name.label',
@@ -68,9 +80,11 @@ type Props = {
   onStartEditing: Function,
   onStopEditing: Function,
   onCancelEditing: Function,
+  onResyncWallet: Function,
   nameValidator: Function,
   activeField: ?string,
   isSubmitting: boolean,
+  isForcedWalletResyncStarting: boolean,
   isIncentivizedTestnet: boolean,
   isInvalid: boolean,
   isLegacy: boolean,
@@ -140,9 +154,11 @@ export default class WalletSettings extends Component<Props, State> {
       onStartEditing,
       onStopEditing,
       onCancelEditing,
+      onResyncWallet,
       nameValidator,
       activeField,
       isSubmitting,
+      isForcedWalletResyncStarting,
       isIncentivizedTestnet,
       isInvalid,
       isLegacy,
@@ -174,6 +190,13 @@ export default class WalletSettings extends Component<Props, State> {
       ]);
       return (
         <div className={styles.component}>
+          <BorderedBox>
+            <ResyncWallet
+              isForcedWalletResyncStarting={isForcedWalletResyncStarting}
+              onResyncWallet={onResyncWallet}
+            />
+          </BorderedBox>
+
           <BorderedBox className={deleteWalletBoxStyles}>
             <span>{intl.formatMessage(messages.deleteWalletHeader)}</span>
             <div className={styles.contentBox}>
@@ -262,6 +285,13 @@ export default class WalletSettings extends Component<Props, State> {
               }
             />
           )}
+
+          <div className={styles.resyncWalletBox}>
+            <ResyncWallet
+              isForcedWalletResyncStarting={isForcedWalletResyncStarting}
+              onResyncWallet={onResyncWallet}
+            />
+          </div>
 
           {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
         </BorderedBox>

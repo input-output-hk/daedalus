@@ -13,6 +13,7 @@ import {
   waitUntilWalletIsLoaded,
   addOrSetWalletsForScenario,
   restoreWalletWithFunds,
+  restoreLegacyWallet,
   waitUntilUrlEquals,
   navigateTo,
   i18n,
@@ -389,6 +390,12 @@ When(/^I try to import the wallet with funds again$/, async function() {
   await addWalletPage.clickImportButton(this.client);
   this.waitAndClick('.WalletFileImportDialog .FileUploadWidget_dropZone');
   this.waitAndClick('.Dialog_actions button');
+});
+
+Given(/^I restore "([^"]*)" balance wallet with funds$/, async function(walletName) {
+  await restoreLegacyWallet(this.client, { walletName });
+  const wallet = await waitUntilWalletIsLoaded.call(this, walletName);
+  addOrSetWalletsForScenario.call(this, wallet);
 });
 
 Then(

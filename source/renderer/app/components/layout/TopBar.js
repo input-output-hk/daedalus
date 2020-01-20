@@ -2,12 +2,11 @@
 import React, { Component } from 'react';
 import SVGInline from 'react-svg-inline';
 import type { Node } from 'react';
-import { get } from 'lodash';
 import classNames from 'classnames';
 import { observer } from 'mobx-react';
 import LegacyBadge, { LEGACY_BADGE_MODES } from '../notifications/LegacyBadge';
 import LegacyNotification from '../notifications/LegacyNotification';
-import Wallet, { WalletSyncStateStatuses } from '../../domains/Wallet';
+import Wallet from '../../domains/Wallet';
 import styles from './TopBar.scss';
 import { formattedWalletAmount } from '../../utils/formatters';
 import headerLogo from '../../assets/images/header-logo.inline.svg';
@@ -42,15 +41,11 @@ export default class TopBar extends Component<Props> {
       activeWallet ? styles.withWallet : styles.withoutWallet,
     ]);
 
-    const isRestoreActive =
-      get(activeWallet, ['syncState', 'status'], '') ===
-      WalletSyncStateStatuses.RESTORING;
-
     const hasLegacyNotification =
       activeWallet &&
       activeWallet.isLegacy &&
       activeWallet.amount.gt(0) &&
-      !isRestoreActive &&
+      !activeWallet.isRestoring &&
       ((hasRewardsWallets && onTransferFunds) || onWalletAdd);
 
     const onTransferFundsFn =
