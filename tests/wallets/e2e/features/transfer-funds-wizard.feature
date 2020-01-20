@@ -5,8 +5,8 @@ Feature: Transfer funds wizard
     Given I have completed the basic setup
 
   Scenario: Successfully transfering funds from "Daedalus Balance" wallet to "Daedalus Rewards" wallet
-    When I restore "Daedalus Balance Wallet" balance wallet with funds
-    And I restore "Rewards Wallet" rewards wallet with funds
+    Given I have a "Balance Wallet" balance wallet with funds
+    And I have a "Test Wallet" rewards wallet with funds
     And I should see the restore status notification while restore is running
     And I should not see the restore status notification once restore is finished
     And I see initial wallets balance
@@ -29,7 +29,7 @@ Feature: Transfer funds wizard
 
   Scenario: User enters wrong spending password
     When I restore "Daedalus Transfer Balance Wallet" for transfer funds
-    And I restore "Rewards Wallet" rewards wallet with funds
+    Given I have a "Test Wallet" rewards wallet with funds
     And I should see the restore status notification while restore is running
     And I should not see the restore status notification once restore is finished
     And "Balance" wallet badge should be visible in the wallet sidebar

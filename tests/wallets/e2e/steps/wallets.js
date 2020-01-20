@@ -27,19 +27,33 @@ import type { Daedalus } from '../../../types';
 
 declare var daedalus: Daedalus;
 
-Given(/^I have a "([^"]*)" wallet with funds$/, async function(walletName) {
+// Create "Rewards" wallets
+Given(/^I have the following "Rewards" wallets:$/, async function(table) {
+  await createWallets(table.hashes(), this);
+});
+
+// Creates them sequentially
+Given(/^I have created the following "Rewards" wallets:$/, async function(table) {
+  await createWallets(table.hashes(), this, { sequentially: true });
+});
+
+Given(/^I have a "([^"]*)" rewards wallet with funds$/, async function(walletName) {
   await restoreWalletWithFunds(this.client, { walletName });
   const wallet = await waitUntilWalletIsLoaded.call(this, walletName);
   addOrSetWalletsForScenario.call(this, wallet);
 });
 
-Given(/^I have the following wallets:$/, async function(table) {
-  await createWallets(table.hashes(), this);
+// Create "Balance" wallets
+Given(/^I have a "([^"]*)" balance wallet$/, async function(walletName) {
+  await restoreLegacyWallet(this.client, { walletName, hasFunds: false });
+  const wallet = await waitUntilWalletIsLoaded.call(this, walletName);
+  addOrSetWalletsForScenario.call(this, wallet);
 });
 
-// Creates them sequentially
-Given(/^I have created the following wallets:$/, async function(table) {
-  await createWallets(table.hashes(), this, { sequentially: true });
+Given(/^I have a "([^"]*)" balance wallet with funds$/, async function(walletName) {
+  await restoreLegacyWallet(this.client, { walletName, hasFunds: true });
+  const wallet = await waitUntilWalletIsLoaded.call(this, walletName);
+  addOrSetWalletsForScenario.call(this, wallet);
 });
 
 Given(/^I am on the "([^"]*)" wallet "([^"]*)" screen$/, async function(
@@ -87,23 +101,6 @@ When(/^I click close$/, function() {
   return this.waitAndClick('.primary');
 });
 
-When(/^I restore "([^"]*)" rewards wallet with funds$/, async function(walletName) {
-  await restoreWalletWithFunds(this.client, { walletName });
-  const wallet = await waitUntilWalletIsLoaded.call(this, walletName);
-  addOrSetWalletsForScenario.call(this, wallet);
-});
-
-When(/^I restore "([^"]*)" balance wallet without funds$/, async function(walletName) {
-  await restoreLegacyWallet(this.client, { walletName, hasFunds: false });
-  const wallet = await waitUntilWalletIsLoaded.call(this, walletName);
-  addOrSetWalletsForScenario.call(this, wallet);
-});
-
-When(/^I restore "([^"]*)" balance wallet with funds$/, async function(walletName) {
-  await restoreLegacyWallet(this.client, { walletName, hasFunds: true });
-  const wallet = await waitUntilWalletIsLoaded.call(this, walletName);
-  addOrSetWalletsForScenario.call(this, wallet);
-});
 
 Then(/^I should have newly created "([^"]*)" wallet loaded$/, async function(
   walletName

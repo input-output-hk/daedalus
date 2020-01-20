@@ -3,7 +3,7 @@ Feature: Restore Yoroi wallet
 
   Background:
     Given I have completed the basic setup
-    And I have the following wallets:
+    And I have the following "Rewards" wallets:
       | name        |
       | Test Wallet |
 

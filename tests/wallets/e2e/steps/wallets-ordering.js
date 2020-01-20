@@ -14,10 +14,3 @@ Then(/^I should see the wallets in the following order:$/, async function(
     expect(wallet).to.equal(expectedWallets[index].name)
   );
 });
-
-Then(/^"([^"]*)" balance wallet should show on the bottom of the list below Rewards wallet$/, async function(
-  walletName
-) {
-  const menuItemTitle = await this.client.getText('.SidebarWalletsMenu_wallets button:nth-child(3) .SidebarWalletMenuItem_title');
-  expect(walletName).to.equal(menuItemTitle);
-});
