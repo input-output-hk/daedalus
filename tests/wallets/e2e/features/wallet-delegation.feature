@@ -23,7 +23,7 @@ Feature: Wallet Delegation
     And I am on the Delegation "delegation-center" screen
     Then I should only see Reward wallets listed
 
-  Scenario: Delegation screen current and next epoch countdown are correctly displayed and have correct data
+  Scenario: "Delegation screen" current and next epoch countdown are correctly displayed and have correct data
     Given I have the following wallets:
       | name   |
       | Wallet |
@@ -33,14 +33,14 @@ Feature: Wallet Delegation
     # And the current and next epoch countdown have correct data
 
     @watch
-  Scenario: "Delegate", "Change delegation" "Undelegate" options are correctly displayed on the "Delegation center" screen
-    Given I have the following wallets:
-      | name   |
-      | Wallet |
+  Scenario: "Delegation center" correctly displays delegated and undelegated options and information
+    Given I have a "Test Wallet" wallet with funds
     And I am on the Delegation "delegation-center" screen
     Then I should see the "delegate" option
+    Given I delegate the wallet
 
-  # Scenario: Delegated wallets information is correctly displayed on the "Delegation center" screen (Stake pool ticker is correctly shown and the "Change delegation" / "Undelegate" options are available
+  Scenario: Delegated wallets information is correctly displayed on the "Delegation center" screen
+   # (Stake pool ticker is correctly shown and the "Change delegation" / "Undelegate" options are available
 
   # Scenario: "Unknown" stake pool is shown for the wallets being delegated to stake pools for which we don't have metadata
   # Scenario: "Delegation" wizard displays the "Delegation is unavailable" message if all of the Rewards wallet user has are empty
