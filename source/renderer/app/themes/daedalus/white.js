@@ -793,10 +793,12 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-transactions-filter-button-shadow-color': 'rgba(0, 0, 0, 0.18)',
     '--theme-transactions-filter-button-color': '#fff',
     '--theme-transactions-date-picker-button-background-color':
-      'rgba(41, 181, 149, 0.07)',
-    '--theme-transactions-date-picker-button-background-color-active':
       'rgba(41, 181, 149, 0.14)',
+    '--theme-transactions-date-picker-button-background-color-hover':
+      'rgba(41, 181, 149, 0.07)',
     '--theme-transactions-filter-modal-bg-color': '#fff',
+    '--theme-transactions-filter-date-picker-shadow':
+      '0 5px 20px 0 rgba(0, 0, 0, 0.25)',
   },
   uploader: {
     '--theme-uploader-text-color': '#2d2d2d',

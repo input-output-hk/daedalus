@@ -50,11 +50,14 @@ export default class WalletTransactionsPage extends Component<Props, State> {
 
   openFilterDialog = () => {
     const { dialogs } = this.props.actions;
-    const { populatedFilterOptions } = this.props.stores.transactions;
+    const {
+      defaultFilterOptions,
+      populatedFilterOptions,
+    } = this.props.stores.transactions;
 
     dialogs.open.trigger({ dialog: FilterDialog });
     dialogs.updateDataForActiveDialog.trigger({
-      data: populatedFilterOptions,
+      data: { defaultFilterOptions, populatedFilterOptions },
     });
   };
 

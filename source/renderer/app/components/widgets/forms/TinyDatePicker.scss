@@ -5,6 +5,7 @@
       border: 0;
       border-radius: 4px;
       box-shadow: var(--rp-modal-box-shadow, 0 5px 20px 0 rgba(0, 0, 0, 0.25));
+      margin-top: 5px;
       padding: 12px;
       width: 276px;
 
@@ -58,7 +59,7 @@
 
       thead tr:first-child th:hover {
         background-color: var(
-          --theme-transactions-date-picker-button-background-color
+          --theme-transactions-date-picker-button-background-color-hover
         );
       }
 
@@ -76,12 +77,15 @@
         line-height: 1.29;
       }
 
-      td.rdtActive,
-      td.rdtActive:hover {
-        background-color: var(
-          --theme-transactions-date-picker-button-background-color-active
-        );
-        border-radius: 2px;
+      tr {
+        td.rdtActive,
+        td.rdtActive:hover {
+          background-color: var(
+            --theme-transactions-date-picker-button-background-color
+          );
+          border-radius: 2px;
+          font-weight: 600;
+        }
       }
 
       td.rdtYear:hover,
@@ -92,13 +96,13 @@
       td.rdtSecond:hover,
       .rdtTimeToggle:hover {
         background-color: var(
-          --theme-transactions-date-picker-button-background-color
+          --theme-transactions-date-picker-button-background-color-hover
         );
       }
 
       td.rdtToday:before {
         border-bottom-color: var(
-          --theme-transactions-date-picker-button-background-color-active
+          --theme-transactions-date-picker-button-background-color
         );
       }
 

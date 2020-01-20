@@ -806,10 +806,12 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-transactions-filter-button-shadow-color': 'rgba(0, 0, 0, 0.18)',
     '--theme-transactions-filter-button-color': '#fafbfc',
     '--theme-transactions-date-picker-button-background-color':
-      'rgba(233, 244, 254, 0.07)',
-    '--theme-transactions-date-picker-button-background-color-active':
       'rgba(233, 244, 254, 0.14)',
+    '--theme-transactions-date-picker-button-background-color-hover':
+      'rgba(233, 244, 254, 0.07)',
     '--theme-transactions-filter-modal-bg-color': '#263345',
+    '--theme-transactions-filter-date-picker-shadow':
+      '0 0 20px 0 rgba(0, 0, 0, 0.4)',
   },
   uploader: {
     '--theme-uploader-text-color': '#e9f4fe',

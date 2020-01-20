@@ -17,6 +17,13 @@
         background-color: transparent;
       }
     }
+
+    .TinyDatePicker_component {
+      .rdtPicker {
+        background-color: var(--theme-transactions-filter-modal-bg-color);
+        box-shadow: var(--theme-transactions-filter-date-picker-shadow);
+      }
+    }
   }
 
   .title {

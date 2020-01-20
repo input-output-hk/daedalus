@@ -22,12 +22,18 @@ import {
   getNumberOfFilterDimensionsApplied,
 } from '../utils/transaction';
 
+const INITIAL_SEARCH_LIMIT = null; // 'null' value stands for 'load all'
+const SEARCH_LIMIT_INCREASE = 500;
+const SEARCH_SKIP = 0;
+const RECENT_TRANSACTIONS_LIMIT = 50;
+
 export type DateRangeType =
   | 'all'
   | 'thisWeek'
   | 'thisMonth'
   | 'thisYear'
   | 'customDateRange';
+
 export const DateRangeTypes = {
   ALL: 'all',
   THIS_WEEK: 'thisWeek',
@@ -49,6 +55,19 @@ export type TransactionFilterOptionsStruct = {
   outgoingChecked?: boolean,
 };
 
+export const emptyTransactionFilterOptions = {
+  searchTerm: '',
+  searchLimit: INITIAL_SEARCH_LIMIT,
+  searchSkip: SEARCH_SKIP,
+  dateRange: DateRangeTypes.ALL,
+  fromDate: '',
+  toDate: '',
+  fromAmount: '',
+  toAmount: '',
+  incomingChecked: true,
+  outgoingChecked: true,
+};
+
 type TransactionFeeRequest = {
   walletId: string,
   address: string,
@@ -56,11 +75,6 @@ type TransactionFeeRequest = {
 };
 
 export default class TransactionsStore extends Store {
-  INITIAL_SEARCH_LIMIT = null; // 'null' value stands for 'load all'
-  SEARCH_LIMIT_INCREASE = 500;
-  SEARCH_SKIP = 0;
-  RECENT_TRANSACTIONS_LIMIT = 50;
-
   @observable transactionsRequests: Array<{
     walletId: string,
     isLegacy: boolean,
@@ -120,11 +134,16 @@ export default class TransactionsStore extends Store {
     );
   }
 
-  @computed get populatedFilterOptions(): ?TransactionFilterOptionsStruct {
-    if (getNumberOfFilterDimensionsApplied(this.filterOptions) > 0) {
-      return this.filterOptions;
-    }
+  @computed get defaultFilterOptions(): TransactionFilterOptionsStruct {
     return generateFilterOptions(this.all);
+  }
+
+  @computed get populatedFilterOptions(): TransactionFilterOptionsStruct {
+    if (getNumberOfFilterDimensionsApplied(this.filterOptions) > 0) {
+      return this.filterOptions || emptyTransactionFilterOptions;
+    }
+
+    return this.defaultFilterOptions;
   }
 
   @computed get recent(): Array<WalletTransaction> {
@@ -304,18 +323,7 @@ export default class TransactionsStore extends Store {
       // Setup options for active wallet
       runInAction('setFilterOptionsForActiveWallet', () => {
         extendObservable(this._filterOptionsForWallets, {
-          [wallet.id]: {
-            searchTerm: '',
-            searchLimit: this.INITIAL_SEARCH_LIMIT,
-            searchSkip: this.SEARCH_SKIP,
-            dateRange: DateRangeTypes.ALL,
-            fromDate: '',
-            toDate: '',
-            fromAmount: '',
-            toAmount: '',
-            incomingChecked: true,
-            outgoingChecked: true,
-          },
+          [wallet.id]: emptyTransactionFilterOptions,
         });
       });
     }

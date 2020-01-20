@@ -7,7 +7,10 @@ import BigNumber from 'bignumber.js';
 import { defineMessages, intlShape } from 'react-intl';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import { formattedWalletAmount } from '../../../utils/formatters';
-import type { DateRangeType } from '../../../stores/TransactionsStore';
+import type {
+  DateRangeType,
+  TransactionFilterOptionsStruct,
+} from '../../../stores/TransactionsStore';
 import { DateRangeTypes } from '../../../stores/TransactionsStore';
 import TinyCheckbox from '../../widgets/forms/TinyCheckbox';
 import TinySelect from '../../widgets/forms/TinySelect';
@@ -179,13 +182,8 @@ const validateForm = (values: {
 };
 
 type Props = {
-  dateRange?: DateRangeType,
-  fromDate?: string,
-  toDate?: string,
-  fromAmount?: string,
-  toAmount?: string,
-  incomingChecked?: boolean,
-  outgoingChecked?: boolean,
+  defaultFilterOptions: TransactionFilterOptionsStruct,
+  populatedFilterOptions: TransactionFilterOptionsStruct,
   onFilter: Function,
   onClose: Function,
 };
@@ -224,34 +222,34 @@ export default class FilterDialog extends Component<Props> {
       incomingChecked: {
         type: 'checkbox',
         label: this.context.intl.formatMessage(messages.incoming),
-        value: this.props.incomingChecked,
+        value: this.props.populatedFilterOptions.incomingChecked,
       },
       outgoingChecked: {
         type: 'checkbox',
         label: this.context.intl.formatMessage(messages.outgoing),
-        value: this.props.outgoingChecked,
+        value: this.props.populatedFilterOptions.outgoingChecked,
       },
       dateRange: {
         label: this.context.intl.formatMessage(messages.dateRange),
-        value: this.props.dateRange,
+        value: this.props.populatedFilterOptions.dateRange,
       },
       customFromDate: {
         label: '',
-        value: this.props.fromDate,
+        value: this.props.populatedFilterOptions.fromDate,
       },
       customToDate: {
         label: '',
-        value: this.props.toDate,
+        value: this.props.populatedFilterOptions.toDate,
       },
       fromAmount: {
         type: 'number',
         label: '',
-        value: this.props.fromAmount,
+        value: this.props.populatedFilterOptions.fromAmount,
       },
       toAmount: {
         type: 'number',
         label: '',
-        value: this.props.toAmount,
+        value: this.props.populatedFilterOptions.toAmount,
       },
     },
   });
@@ -280,17 +278,29 @@ export default class FilterDialog extends Component<Props> {
   };
 
   resetForm = () => {
-    this.form.select('dateRange').set(DateRangeTypes.ALL);
-    this.form.select('fromAmount').set(this.props.fromAmount || '');
-    this.form.select('toAmount').set(this.props.toAmount || '');
-    this.form.select('incomingChecked').set(true);
-    this.form.select('outgoingChecked').set(true);
+    const { defaultFilterOptions } = this.props;
+    const {
+      dateRange,
+      fromAmount,
+      toAmount,
+      incomingChecked,
+      outgoingChecked,
+    } = defaultFilterOptions;
+
+    this.form.select('dateRange').set(dateRange);
+    this.form.select('fromAmount').set(fromAmount);
+    this.form.select('toAmount').set(toAmount);
+    this.form.select('incomingChecked').set(incomingChecked);
+    this.form.select('outgoingChecked').set(outgoingChecked);
   };
 
   handleSubmit = () =>
     this.form.submit({
       onSuccess: form => {
-        const { onFilter, fromDate, toDate } = this.props;
+        const {
+          onFilter,
+          defaultFilterOptions: { fromDate, toDate },
+        } = this.props;
         const {
           dateRange,
           customFromDate,
@@ -300,7 +310,7 @@ export default class FilterDialog extends Component<Props> {
         const dateRangePayload = calculateDateRange(
           dateRange,
           { customFromDate, customToDate },
-          { defaultFromDate: fromDate || '', defaultToDate: toDate || '' }
+          { defaultFromDate: fromDate, defaultToDate: toDate }
         );
 
         onFilter({
@@ -351,7 +361,9 @@ export default class FilterDialog extends Component<Props> {
   renderCustomDateRangeField = () => {
     const { form } = this;
     const { intl } = this.context;
-    const { fromDate, toDate } = this.props;
+    const {
+      defaultFilterOptions: { fromDate, toDate },
+    } = this.props;
     const defaultFromDate = fromDate || '1970-01-01';
     const defaultToDate = toDate || moment().format('YYYY-MM-DD');
     const customFromDateField = form.$('customFromDate');
@@ -378,9 +390,7 @@ export default class FilterDialog extends Component<Props> {
               innerLabelPrefix={intl.formatMessage(globalMessages.rangeFrom)}
               innerValue={customFromDateInnerValue}
               pickerPanelPosition="left"
-              onReset={() =>
-                form.select('customFromDate').set(this.props.fromDate)
-              }
+              onReset={() => form.select('customFromDate').set(fromDate)}
             />
           </div>
           <div className={styles.dateRangeInput}>
@@ -389,7 +399,7 @@ export default class FilterDialog extends Component<Props> {
               innerLabelPrefix={intl.formatMessage(globalMessages.rangeTo)}
               innerValue={customToDateInnerValue}
               pickerPanelPosition="right"
-              onReset={() => form.select('customToDate').set(this.props.toDate)}
+              onReset={() => form.select('customToDate').set(toDate)}
             />
           </div>
         </div>
@@ -400,7 +410,9 @@ export default class FilterDialog extends Component<Props> {
   renderAmountRangeField = () => {
     const { form } = this;
     const { intl } = this.context;
-    const { fromAmount, toAmount } = this.props;
+    const {
+      defaultFilterOptions: { fromAmount, toAmount },
+    } = this.props;
     const defaultFromAmount = fromAmount || '0';
     const defaultToAmount = toAmount || '10000';
     const fromAmountField = form.$('fromAmount');

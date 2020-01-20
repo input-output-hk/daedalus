@@ -803,10 +803,12 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-transactions-filter-button-shadow-color': 'rgba(0, 0, 0, 0.18)',
     '--theme-transactions-filter-button-color': '#fafbfc',
     '--theme-transactions-date-picker-button-background-color':
-      'rgba(32, 34, 37, 0.07)',
-    '--theme-transactions-date-picker-button-background-color-active':
       'rgba(32, 34, 37, 0.14)',
+    '--theme-transactions-date-picker-button-background-color-hover':
+      'rgba(32, 34, 37, 0.07)',
     '--theme-transactions-filter-modal-bg-color': '#ffffff',
+    '--theme-transactions-filter-date-picker-shadow':
+      '0 5px 20px 0 rgba(0, 0, 0, 0.25)',
   },
   uploader: {
     '--theme-uploader-text-color': '#5e6066',

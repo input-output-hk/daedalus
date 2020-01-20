@@ -1179,12 +1179,14 @@ export const createDaedalusComponentsTheme = (
       '--theme-transactions-date-picker-button-background-color': `${
         background.primary.lightest
       }`,
-      '--theme-transactions-date-picker-button-background-color-active': `${
+      '--theme-transactions-date-picker-button-background-color-hover': `${
         background.primary.regular
       }`,
       '--theme-transactions-filter-modal-bg-color': `${
         background.primary.lightest
       }`,
+      '--theme-transactions-filter-date-picker-shadow':
+        '0 5px 20px 0 rgba(0, 0, 0, 0.25)',
     },
     uploader: {
       '--theme-uploader-text-color': `${text.primary}`,
