@@ -19,6 +19,7 @@ Changelog
 - Fixed handling of duplicated wallet IDs when restoring both legacy and new wallets from the same wallet recovery phrase ([PR 1805](https://github.com/input-output-hk/daedalus/pull/1805))
 
 ### Chores
+- Implemented acceptance tests for stake pools loading ([PR 1820](https://github.com/input-output-hk/daedalus/pull/1820))
 - Updated `cardano-wallet` to revision `254575e4` which includes Jormungandr 0.8.6 ([PR 1821](https://github.com/input-output-hk/daedalus/pull/1821))
 - Improved delete wallet text copy ([PR 1819](https://github.com/input-output-hk/daedalus/pull/1819))
 - Updated checkboxes, radio buttons and switchers sizes and borders ([PR 1793](https://github.com/input-output-hk/daedalus/pull/1793))
