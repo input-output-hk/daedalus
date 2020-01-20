@@ -575,7 +575,7 @@ export default class WalletsStore extends Store {
     const request = this.restoreRequest;
 
     if (
-      WALLET_KINDS.DAEDALUS &&
+      this.walletKind === WALLET_KINDS.DAEDALUS &&
       this.walletKindDaedalus === WALLET_DAEDALUS_KINDS.BALANCE_27_WORD
     ) {
       // Reset getWalletRecoveryPhraseFromCertificateRequest to clear previous errors
