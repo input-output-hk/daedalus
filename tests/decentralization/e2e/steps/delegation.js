@@ -74,6 +74,17 @@ Then(/^I should see the delegated menu with "Change delegation" and "Undelegate"
   );
 })
 
+Given(/^I try to delegate the wallet$/, async function() {
+  await this.waitAndClick(
+    '//span[@class="WalletRow_actionLink" and text()="Delegate"]'
+  );
+  await this.waitAndClick(
+    '//button[text()="Continue"]'
+  );
+})
 
-
-
+Then(/^I should see a "([^"]*)" message$/, async function(message) {
+  await this.waitAndClick(
+    `//*[text()="${message}"]`
+  );
+})

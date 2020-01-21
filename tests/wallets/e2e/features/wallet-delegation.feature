@@ -4,7 +4,6 @@ Feature: Wallet Delegation
   Background:
     Given I have completed the basic setup
 
-  # TODO:
   # Scenario: "Loading stake pools" message is shown on the "Delegation center" screen until we load Stake pools
 
   Scenario: "Create rewards wallet" notification when no Rewards wallets
@@ -40,11 +39,16 @@ Feature: Wallet Delegation
     Then I should see the delegated pool name
     And I should see the delegated menu with "Change delegation" and "Undelegate" options
 
-    @watch
-  Scenario: "Unknown" stake pool is shown for the wallets being delegated to stake pools for which we don't have metadata
+  # Scenario: "Unknown" stake pool is shown for the wallets being delegated to stake pools for which we don't have metadata
 
+  Scenario: "Delegation" wizard displays the "Delegation is unavailable" for empty Rewards wallets
+    Given I have the following wallets:
+      | name      |
+      | Wallet  1 |
+    And I am on the Delegation "delegation-center" screen
+    And I try to delegate the wallet
+    Then I should see a "Delegation not available" message
 
-  # Scenario: "Delegation" wizard displays the "Delegation is unavailable" message if all of the Rewards wallet user has are empty
   # Scenario: "Delegation" wizard is not allowing delegation if the user selects a wallet which has less than 10 ADA
   # Scenario: "Delegation" wizard is working correctly if the user selects wallet with enough funds (including a check for fees estimation)
   # Scenario: "Delegation" wizard is showing the correct error message if the user submits wrong spending password
