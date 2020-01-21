@@ -1706,7 +1706,7 @@ const _createStakePoolFromServerData = action(
       cost,
       margin: profitMargin,
       metadata,
-      saturation,
+      saturation = 0,
     } = stakePool;
     const {
       controlled_stake: controlledStake,
