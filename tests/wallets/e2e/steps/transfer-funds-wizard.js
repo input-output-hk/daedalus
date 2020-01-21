@@ -1,9 +1,12 @@
 // @flow
 import { When, Then } from 'cucumber';
 import { expect } from 'chai';
+import BigNumber from 'bignumber.js/bignumber';
+import { waitUntilTextInSelector } from '../../../common/e2e/steps/helpers';
+import { formattedWalletAmount } from '../../../../source/renderer/app/utils/formatters';
 import type { Daedalus } from '../../../types';
 
-import { restoreLegacyWallet, waitUntilWalletIsLoaded, addOrSetWalletsForScenario } from './helpers';
+import { restoreLegacyWallet, waitUntilWalletIsLoaded, addOrSetWalletsForScenario, getWalletByName } from './helpers';
 
 declare var daedalus: Daedalus;
 
@@ -46,10 +49,15 @@ When(/^I see "Transfer ada" wizard step 2 transfer funds button disabled and spi
 });
 
 When(/^I see initial wallets balance$/, async function() {
-  const rewardsWalletBalance = await this.client.getText('.SidebarWalletsMenu_wallets button:nth-child(1) .SidebarWalletMenuItem_info');
-  expect(rewardsWalletBalance).to.equal('1M ADA');
-  const balanceWalletBalance = await this.client.getText('.SidebarWalletsMenu_wallets button:nth-child(2) .SidebarWalletMenuItem_info');
-  expect(balanceWalletBalance).to.equal('1M ADA');
+  // Wait for balance to be visible
+  const rewardsWalletName = await this.client.getText('.SidebarWalletsMenu_wallets button:nth-child(1) .SidebarWalletMenuItem_title');
+  const balanceWalletName = await this.client.getText('.SidebarWalletsMenu_wallets button:nth-child(2) .SidebarWalletMenuItem_title');
+
+  // Set initial values for further use
+  const rewardsWallet = getWalletByName.call(this, rewardsWalletName);
+  const balanceWallet = getWalletByName.call(this, balanceWalletName);
+  this.rewardsWalletBalance = new BigNumber(rewardsWallet.amount.c);
+  this.balanceWalletBalance = new BigNumber(balanceWallet.amount.c);
 });
 
 When(/^I restore "([^"]*)" for transfer funds$/, async function(walletName) {
@@ -62,8 +70,11 @@ Then(/^"Transfer ada" wizard step 2 dialog continue button should be disabled$/,
   await this.client.waitForEnabled('.TransferFundsStep2Dialog_dialog .confirmButton');
 });
 
-Then(/^I should see "Transfer ada" wizard step 2 dialog$/, function() {
-  return this.client.waitForVisible('.TransferFundsStep2Dialog_dialog');
+Then(/^I should see "Transfer ada" wizard step 2 dialog$/, async function() {
+  await this.client.waitForVisible('.TransferFundsStep2Dialog_dialog');
+  // Set transfer funds fee
+  const transferFee = await this.client.getText('.TransferFundsStep2Dialog_dialog .Dialog_content div:nth-child(3) .TransferFundsStep2Dialog_amount');
+  this.transferFee = transferFee.replace('+ ', '');
 });
 
 Then(
@@ -85,15 +96,20 @@ Then(/^I should see "Transfer ada" wizard$/, async function() {
   return this.client.waitForVisible('.TransferFundsStep1Dialog_label');
 });
 
-Then(
-  /^I should see increased rewards wallet balance and 0 ADA in Daedalus Balance wallet$/,
-  { timeout: 60000 },
+
+Then(/^I should see increased rewards wallet balance and 0 ADA in Daedalus Balance wallet$/,
   async function() {
-    this.client.waitUntil(async () => {
-      const rewardsWalletBalance = await this.client.getText('.SidebarWalletsMenu_wallets button:nth-child(1) .SidebarWalletMenuItem_info');
-      const balanceWalletBalance = await this.client.getText('.SidebarWalletsMenu_wallets button:nth-child(2) .SidebarWalletMenuItem_info');
-      return rewardsWalletBalance === '1.9M ADA' && balanceWalletBalance === '0 ADA';
-    }, 60000);
+    const transferSumWithoutFees = this.rewardsWalletBalance.add(this.balanceWalletBalance);
+    const transferSumWithFees = transferSumWithoutFees.minus(this.transferFee);
+    const formattedTransferSum = formattedWalletAmount(transferSumWithFees, true, false);
+    await waitUntilTextInSelector(this.client, {
+      selector: '.SidebarWalletsMenu_wallets button:nth-child(1) .SidebarWalletMenuItem_info',
+      text: formattedTransferSum,
+    });
+    await waitUntilTextInSelector(this.client, {
+      selector: '.SidebarWalletsMenu_wallets button:nth-child(2) .SidebarWalletMenuItem_info',
+      text: '0 ADA',
+    });
   }
 );
 
