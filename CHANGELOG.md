@@ -23,6 +23,7 @@ Changelog
 
 ### Chores
 
+- Updated `cardano-wallet` to revision `e7260d3c` ([PR 1824](https://github.com/input-output-hk/daedalus/pull/1824))
 - Updated `cardano-wallet` to revision `254575e4` which includes Jormungandr 0.8.6 ([PR 1821](https://github.com/input-output-hk/daedalus/pull/1821))
 - Improved delete wallet text copy ([PR 1819](https://github.com/input-output-hk/daedalus/pull/1819))
 - Updated checkboxes, radio buttons and switchers sizes and borders ([PR 1793](https://github.com/input-output-hk/daedalus/pull/1793))
