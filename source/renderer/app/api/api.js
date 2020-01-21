@@ -3,6 +3,7 @@ import { split, get, includes, map } from 'lodash';
 import { action } from 'mobx';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
+import faker from 'faker';
 
 // domains
 import Wallet, {
@@ -1706,6 +1707,11 @@ const _createStakePoolFromServerData = action(
       cost,
       margin: profitMargin,
       metadata,
+      saturation = faker.random.number({
+        min: 0,
+        max: 3,
+        precision: 0.000000000001,
+      }),
     } = stakePool;
     const {
       controlled_stake: controlledStake,
@@ -1740,6 +1746,7 @@ const _createStakePoolFromServerData = action(
       profitMargin: profitMarginPercentage,
       ranking: index + 1,
       retiring: null,
+      saturation: saturation * 100,
     });
   }
 );

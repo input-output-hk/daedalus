@@ -63,6 +63,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Retirement in {retirementFromNow}',
     description: '"Retirement" for the Stake Pools Tooltip page.',
   },
+  saturation: {
+    id: 'staking.stakePools.tooltip.saturation',
+    defaultMessage: '!!!Saturation:',
+    description: '"Saturation" for the Stake Pools Tooltip page.',
+  },
   // cost: {
   //  id: 'staking.stakePools.tooltip.cost',
   //  defaultMessage: '!!!Operating Costs:',
@@ -390,6 +395,7 @@ export default class StakePoolTooltip extends Component<Props, State> {
       pledgeAddress,
       cost,
       profitMargin,
+      saturation,
     } = stakePool;
 
     const componentClassnames = classnames([
@@ -440,6 +446,16 @@ export default class StakePoolTooltip extends Component<Props, State> {
           />
 
           <dl className={styles.table}>
+            <dt>{intl.formatMessage(messages.saturation)}</dt>
+            <dd className={styles.saturation}>
+              <span
+                style={{
+                  background: getColorFromRange(saturation, { darken, alpha }),
+                }}
+              >
+                {`${parseFloat(saturation.toFixed(2))}%`}
+              </span>
+            </dd>
             <dt>{intl.formatMessage(messages.ranking)}</dt>
             <dd className={styles.ranking}>
               <span

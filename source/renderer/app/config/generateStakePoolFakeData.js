@@ -26,6 +26,11 @@ function generatStakePoolsFakeData() {
     const profitMargin = faker.random.number(100);
     const ranking = i;
     const retiring = null;
+    const saturation = faker.random.number({
+      min: 0,
+      max: 300,
+      precision: 0.01,
+    });
     const ticker = faker.helpers.replaceSymbols('????');
     stakePools.push({
       controlledStake,
@@ -43,6 +48,7 @@ function generatStakePoolsFakeData() {
       profitMargin,
       ranking,
       retiring,
+      saturation,
       ticker,
     });
   }
