@@ -37,7 +37,6 @@ Feature: Stake Pools Loading
     Then I should see message "Stake pools. Search results: (3)"
     And I should see number 3 stake pool with slug "ROOT"
 
-  @watch
   Scenario: Stake pool tooltip is correctly displayed and shows correct data
     And I see "3" stake pools
     And I click on stake pool with order number 2
@@ -61,3 +60,32 @@ Feature: Stake Pools Loading
     And I see following label on the dialog: "You have selected [ROOT] stake pool to delegate to for Test Wallet wallet.,[ROOT],Test Wallet"
 
   Scenario: Stake pools user is already delegating to are correctly displayed
+    And I see "3" stake pools
+    And I should see "3" stake pools loaded by rank
+    And I click on stake pool with order number 2
+    Then I should see stake pool tooltip with order number "2"
+    And Stake pool "2" tooltip shows correct data
+    And I click on "Delegate to this pool"
+    Then I should see "Delegate Wallet" dialog
+    And I click "continue" button
+    Then I should see step 1 of 3 screen
+    And I open the wallet dropdown
+    And I choose "Test Wallet"
+    And I click "continue" button
+    Then I should see step 2 of 3 screen
+    And I see following label on the dialog: "You have selected [ROOT] stake pool to delegate to for Test Wallet wallet"
+    And I click "continue" button
+    And I enter staking pool spending password "Secret1234" and click "confirm" button
+    Then I should see label: "Staking pools you are delegating to"
+    And I click on stake pool with order number 2
+    Then I should see stake pool tooltip with order number "2"
+    And Stake pool "2" tooltip shows correct data
+    And I click on "Delegate to this pool"
+    Then I should see "Delegate Wallet" dialog
+    And I click "continue" button
+    Then I should see step 1 of 3 screen
+    And I open the wallet dropdown
+    And I choose "Test Wallet"
+    And I click "continue" button
+    Then I should see step 2 of 3 screen
+    And I see following label for already delegated stake pools: "You are already delegating Test Wallet wallet to [ROOT] stake pool"

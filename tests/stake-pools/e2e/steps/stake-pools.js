@@ -3,7 +3,6 @@ import { Given, When, Then } from 'cucumber';
 import { expect } from 'chai';
 import { delegationCentreStakingHelper } from './helpers';
 import type { Daedalus } from '../../../types';
-import BigNumber from 'bignumber.js';
 
 declare var daedalus: Daedalus;
 
@@ -33,10 +32,14 @@ const STAKE_POOL_TOOLTIP_NAME_SELECTOR = '.StakePoolTooltip_component.StakePoolT
 const STAKE_POOL_TOOLTIP_BUTTON_SELECTOR = '.StakePoolTooltip_component.StakePoolTooltip_isVisible button:last-child';
 const DELEGATE_WALLET_SELECTOR = '.DelegationSteps_delegationSteps.DelegationStepsIntroDialog_delegationStepsIntroDialogWrapper';
 const DIALOG_CONTINUE_SELECTOR = '.DelegationSteps_delegationSteps .Dialog_actions .continueButton';
+const DIALOG_CONFIRM_SELECTOR = '.DelegationSteps_delegationSteps .DialogCloseButton_component';
 const DELEGATION_WALLET_FIRST_STEP_SELECTOR = '.DelegationSteps_delegationSteps.DelegationStepsChooseWalletDialog_delegationStepsChooseWalletDialogWrapper';
 const DELEGATION_WALLET_SECOND_STEP_SELECTOR = '.DelegationSteps_delegationSteps.DelegationStepsChooseStakePoolDialog_delegationStepsChooseStakePoolDialogWrapper';
 const DELEGATION_WALLET_DROPDOWN_SELECTOR = '.DelegationSteps_delegationSteps.DelegationStepsChooseWalletDialog_delegationStepsChooseWalletDialogWrapper .DelegationStepsChooseWalletDialog_walletSelect';
 const SELECTED_STAKE_POOLS_DELEGATION_WALLET_DIALOG_SELECTOR = '.DelegationStepsChooseStakePoolDialog_selectStakePoolLabel span';
+const DELEGATION_WALLET_LAST_STEP_SELECTOR = '.DelegationSteps_content.DelegationStepsConfirmationDialog_content #spendingPassword--1';
+const STAKE_POOLS_DELEGATING_LABEL = '.StakePools_component .StakePools_listTitle';
+const STAKE_POOLS_DELEGATING_TO_MESSAGE = '.DelegationStepsChooseStakePoolDialog_selectStakePoolLabel span';
 
 Given(/^I am on the Delegation Center screen/, async function () {
   await stakingButtonVisible(this.client);
@@ -199,6 +202,10 @@ When(/^I click "continue" button/, function () {
   return this.waitAndClick(DIALOG_CONTINUE_SELECTOR);
 });
 
+When(/^I click "confirm" button/, function () {
+  return this.waitAndClick(DIALOG_CONFIRM_SELECTOR);
+});
+
 Then(/^I should see step 1 of 3 screen/, function () {
   return this.client.waitForVisible(DELEGATION_WALLET_FIRST_STEP_SELECTOR);
 });
@@ -220,5 +227,25 @@ Then(/^I should see step 2 of 3 screen/, function () {
 Then(/^I see following label on the dialog: "([^"]*)"$/, async function (message) {
   await this.client.waitForText(SELECTED_STAKE_POOLS_DELEGATION_WALLET_DIALOG_SELECTOR);
   const selectedStakePoolLabel = await this.client.getText(SELECTED_STAKE_POOLS_DELEGATION_WALLET_DIALOG_SELECTOR);
-  expect(selectedStakePoolLabel.toString()).to.equal(message);
+  expect(selectedStakePoolLabel.toString().split('.')[0]).to.equal(message);
+});
+
+When(/^I enter staking pool spending password "([^"]*)" and click "confirm" button$/, async function(password) {
+  await this.client.setValue(
+    DELEGATION_WALLET_LAST_STEP_SELECTOR,
+    password
+  );
+  return this.waitAndClick(DIALOG_CONFIRM_SELECTOR);
+});
+
+Then(/^I should see label: "([^"]*)"$/, async function (message) {
+  await this.client.waitForText(STAKE_POOLS_DELEGATING_LABEL);
+  const delegatedStakePoolLabel = await this.client.getText(STAKE_POOLS_DELEGATING_LABEL);
+  expect(delegatedStakePoolLabel).to.equal(message);
+});
+
+Then(/^I see following label for already delegated stake pools: "([^"]*)"$/, async function (message) {
+  await this.client.waitForText(STAKE_POOLS_DELEGATING_TO_MESSAGE);
+  const delegatedStakePoolLabel = await this.client.getText(STAKE_POOLS_DELEGATING_TO_MESSAGE);
+  expect(delegatedStakePoolLabel.toString().split('.')[0]).to.equal(message);
 });
