@@ -2,13 +2,12 @@
 import { Given, When, Then } from 'cucumber';
 import {
   isActiveWalletBeingRestored,
-  waitUntilWalletIsLoaded,
-  addOrSetWalletsForScenario,
-  restoreWalletWithFunds,
-  restoreLegacyWallet,
   waitForActiveRestoreNotification,
+  addWalletPage,
+  importWalletHelpers,
+  i18n,
 } from './helpers';
-import { waitUntilTextInSelector } from '../../../common/e2e/steps/helpers';
+import { sidebarHelpers } from '../../../navigation/e2e/steps/helpers';
 import type { Daedalus } from '../../../types';
 
 declare var daedalus: Daedalus;

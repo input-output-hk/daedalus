@@ -3,10 +3,6 @@ import { Given, When, Then } from 'cucumber';
 import { expect } from 'chai';
 import {
   isActiveWalletBeingRestored,
-  waitUntilWalletIsLoaded,
-  addOrSetWalletsForScenario,
-  restoreWalletWithFunds,
-  restoreLegacyWallet,
   waitForActiveRestoreNotification,
   getWalletByName,
 } from './helpers';

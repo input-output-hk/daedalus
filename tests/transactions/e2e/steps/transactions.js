@@ -2,12 +2,9 @@
 import { Given, When, Then } from 'cucumber';
 import { expect } from 'chai';
 import BigNumber from 'bignumber.js/bignumber';
-import {
-  DECIMAL_PLACES_IN_ADA,
-  LOVELACES_PER_ADA,
-} from '../../../../source/renderer/app/config/numbersConfig';
+import { DECIMAL_PLACES_IN_ADA, LOVELACES_PER_ADA } from '../../../../source/renderer/app/config/numbersConfig';
 import { getVisibleTextsForSelector } from '../../../common/e2e/steps/helpers';
-import { getWalletByName } from '../../../wallets/e2e/steps/helpers';
+import { getWalletByName, fillOutWalletSendForm } from '../../../wallets/e2e/steps/helpers';
 import type { Daedalus } from '../../../types';
 
 declare var daedalus: Daedalus;
@@ -43,53 +40,6 @@ Given(
     }
   }
 );
-
-Then(/^I should not see any transactions$/, async function() {
-  await this.client.waitForVisible('.Transaction_component', null, true);
-});
-
-Then(/^I should see the no recent transactions message$/, async function() {
-  await this.client.waitForVisible('.WalletNoTransactions_label');
-});
-
-Then(/^I should see the following transactions:$/, async function(table) {
-  // Prepare expected transaction data
-  const expectedTxs = await Promise.all(
-    table.hashes().map(async tx => {
-      let title;
-      switch (tx.type) {
-        case 'income':
-          title = 'wallet.transaction.received';
-          break;
-        case 'expend':
-          title = 'wallet.transaction.sent';
-          break;
-        default:
-          throw new Error('unknown transaction type');
-      }
-      return {
-        title: await this.intl(title, { currency: 'Ada' }),
-        amount: new BigNumber(tx.amount).toFormat(DECIMAL_PLACES_IN_ADA),
-      };
-    })
-  );
-
-  // Collect data of visible transactions on screen
-  const txTitles = await getVisibleTextsForSelector(
-    this.client,
-    '.Transaction_title'
-  );
-  const txAmounts = await getVisibleTextsForSelector(
-    this.client,
-    '.Transaction_amount'
-  );
-  const visibleTxs = txTitles.map((title, index) => ({
-    title,
-    amount: txAmounts[index],
-  }));
-
-  expect(expectedTxs).to.deep.equal(visibleTxs);
-});
 
 When(/^I click on the show more transactions button$/, async function() {
   await this.waitAndClick('.WalletTransactionsList_showMoreTransactionsButton');
@@ -194,4 +144,51 @@ Then(/^the latest transaction should show:$/, async function(table) {
     .add(this.fees)
     .toFormat(DECIMAL_PLACES_IN_ADA);
   expect(expectedData.amountWithoutFees).to.equal(transactionAmountWithoutFees);
+});
+
+Then(/^I should not see any transactions$/, async function() {
+  await this.client.waitForVisible('.Transaction_component', null, true);
+});
+
+Then(/^I should see the no recent transactions message$/, async function() {
+  await this.client.waitForVisible('.WalletNoTransactions_label');
+});
+
+Then(/^I should see the following transactions:$/, async function(table) {
+  // Prepare expected transaction data
+  const expectedTxs = await Promise.all(
+    table.hashes().map(async tx => {
+      let title;
+      switch (tx.type) {
+        case 'income':
+          title = 'wallet.transaction.received';
+          break;
+        case 'expend':
+          title = 'wallet.transaction.sent';
+          break;
+        default:
+          throw new Error('unknown transaction type');
+      }
+      return {
+        title: await this.intl(title, { currency: 'Ada' }),
+        amount: new BigNumber(tx.amount).toFormat(DECIMAL_PLACES_IN_ADA),
+      };
+    })
+  );
+
+  // Collect data of visible transactions on screen
+  const txTitles = await getVisibleTextsForSelector(
+    this.client,
+    '.Transaction_title'
+  );
+  const txAmounts = await getVisibleTextsForSelector(
+    this.client,
+    '.Transaction_amount'
+  );
+  const visibleTxs = txTitles.map((title, index) => ({
+    title,
+    amount: txAmounts[index],
+  }));
+
+  expect(expectedTxs).to.deep.equal(visibleTxs);
 });

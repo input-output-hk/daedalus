@@ -1,14 +1,8 @@
 // @flow
 import { Given, When, Then } from 'cucumber';
 import { expect } from 'chai';
-import BigNumber from 'bignumber.js';
-import { DECIMAL_PLACES_IN_ADA } from '../../../../source/renderer/app/config/numbersConfig';
 import {
-  addWalletPage,
-  importWalletHelpers,
-  isActiveWalletBeingRestored,
   createWallets,
-  fillOutWalletSendForm,
   getWalletByName,
   waitUntilWalletIsLoaded,
   addOrSetWalletsForScenario,
@@ -16,13 +10,7 @@ import {
   restoreLegacyWallet,
   waitUntilUrlEquals,
   navigateTo,
-  i18n,
-  waitForActiveRestoreNotification,
 } from './helpers';
-import { waitUntilTextInSelector, scrollIntoView } from '../../../common/e2e/steps/helpers';
-import {
-  sidebarHelpers,
-} from '../../../navigation/e2e/steps/helpers';
 import type { Daedalus } from '../../../types';
 
 declare var daedalus: Daedalus;

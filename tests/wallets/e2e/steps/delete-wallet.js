@@ -1,14 +1,5 @@
 // @flow
 import { Given, When, Then } from 'cucumber';
-import {
-  isActiveWalletBeingRestored,
-  waitUntilWalletIsLoaded,
-  addOrSetWalletsForScenario,
-  restoreWalletWithFunds,
-  restoreLegacyWallet,
-  waitForActiveRestoreNotification,
-} from './helpers';
-import { waitUntilTextInSelector } from '../../../common/e2e/steps/helpers';
 import type { Daedalus } from '../../../types';
 
 declare var daedalus: Daedalus;
