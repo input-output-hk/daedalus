@@ -41,6 +41,7 @@ Feature: Wallet Delegation
 
   # Scenario: "Unknown" stake pool is shown for the wallets being delegated to stake pools for which we don't have metadata
 
+  @watch
   Scenario: "Delegation" wizard displays the "Delegation is unavailable" for empty Rewards wallets
     Given I have the following wallets:
       | name      |
@@ -48,6 +49,11 @@ Feature: Wallet Delegation
     And I am on the Delegation "delegation-center" screen
     And I try to delegate the wallet
     Then I should see a "Delegation not available" message
+    Then I close the wizard
+    Given I have a "Test Wallet" wallet with funds
+    And I send 9 ADA to the "Wallet 1" wallet
+    And I try to delegate the wallet
+    Then I should see a "This wallet does not contain the minimum amount of 10 ADA which is required for delegation to be available. Please select a wallet with " message
 
   # Scenario: "Delegation" wizard is not allowing delegation if the user selects a wallet which has less than 10 ADA
   # Scenario: "Delegation" wizard is working correctly if the user selects wallet with enough funds (including a check for fees estimation)

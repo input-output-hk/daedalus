@@ -84,7 +84,22 @@ Given(/^I try to delegate the wallet$/, async function() {
 })
 
 Then(/^I should see a "([^"]*)" message$/, async function(message) {
-  await this.waitAndClick(
+  await this.client.waitForVisible(
     `//*[text()="${message}"]`
   );
 })
+
+Then(/^I close the wizard$/, async function() {
+  await this.waitAndClick('.closeButton');
+})
+
+
+Given('I send {int} ADA to the {string} wallet', async function(adaAmount, walletName) {
+  console.log('adaAmount', adaAmount);
+  console.log('walletName', walletName);
+  // await this.waitAndClick(
+  //   `//*[text()="${message}"]`
+  // );
+})
+
+
