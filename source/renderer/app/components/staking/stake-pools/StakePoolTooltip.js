@@ -13,7 +13,7 @@ import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import styles from './StakePoolTooltip.scss';
 import StakePool from '../../../domains/StakePool';
 import closeCross from '../../../assets/images/close-cross.inline.svg';
-import { getColorFromRange } from '../../../utils/colors';
+import { getColorFromRange, getSaturationColor } from '../../../utils/colors';
 import { formattedWalletAmount, shortNumber } from '../../../utils/formatters';
 import { rangeMap } from '../../../utils/rangeMap';
 import {
@@ -62,6 +62,11 @@ const messages = defineMessages({
     id: 'staking.stakePools.tooltip.retirement',
     defaultMessage: '!!!Retirement in {retirementFromNow}',
     description: '"Retirement" for the Stake Pools Tooltip page.',
+  },
+  saturation: {
+    id: 'staking.stakePools.tooltip.saturation',
+    defaultMessage: '!!!Saturation:',
+    description: '"Saturation" for the Stake Pools Tooltip page.',
   },
   // cost: {
   //  id: 'staking.stakePools.tooltip.cost',
@@ -390,6 +395,7 @@ export default class StakePoolTooltip extends Component<Props, State> {
       pledgeAddress,
       cost,
       profitMargin,
+      saturation,
     } = stakePool;
 
     const componentClassnames = classnames([
@@ -406,6 +412,11 @@ export default class StakePoolTooltip extends Component<Props, State> {
     const alpha = 0.3;
     const reverse = true;
     const retirementFromNow = retiring ? moment(retiring).fromNow(true) : '';
+
+    const saturationBarClassnames = classnames([
+      styles.saturationBar,
+      styles[getSaturationColor(saturation)],
+    ]);
 
     return (
       <div
@@ -440,6 +451,21 @@ export default class StakePoolTooltip extends Component<Props, State> {
           />
 
           <dl className={styles.table}>
+            <dt className={styles.saturationLabel}>
+              {intl.formatMessage(messages.saturation)}
+            </dt>
+            <dd className={styles.saturationValue}>
+              <span>
+                <span className={saturationBarClassnames}>
+                  <span
+                    style={{
+                      width: `${parseFloat(saturation.toFixed(2))}%`,
+                    }}
+                  />
+                </span>
+                {`${parseFloat(saturation.toFixed(2))}%`}
+              </span>
+            </dd>
             <dt>{intl.formatMessage(messages.ranking)}</dt>
             <dd className={styles.ranking}>
               <span
