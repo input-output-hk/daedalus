@@ -152,18 +152,19 @@ export class StakePoolThumbnail extends Component<Props, State> {
               />
             </div>
           ) : (
-            <div className={styles.ranking} style={{ color }}>
-              {ranking}
-            </div>
+            <>
+              <div className={styles.ranking} style={{ color }}>
+                {ranking}
+              </div>
+              <div className={saturationClassnames}>
+                <span
+                  style={{
+                    width: `${parseFloat(saturation.toFixed(2))}%`,
+                  }}
+                />
+              </div>
+            </>
           )}
-
-          <div className={saturationClassnames}>
-            <span
-              style={{
-                width: `${parseFloat(saturation.toFixed(2))}%`,
-              }}
-            />
-          </div>
 
           {retiring && (
             <div className={styles.clock}>
