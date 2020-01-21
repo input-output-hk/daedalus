@@ -55,7 +55,9 @@ Then(/^I should see "([^"]*)" stake pools loaded by rank$/, async function (numb
       .catch(error => done(error));
   });
   const result = stakePools && stakePools.value ? stakePools.value : [];
+  const orderCorrect = result.every(({ ranking }, i) => parseInt(ranking) === i + 1);
   expect(result.length).to.equal(parseInt(numberOfStakePools));
+  expect(orderCorrect).to.be.true;
 });
 
 Then(/^I should see the following loading message:$/, async function (message) {
@@ -149,7 +151,7 @@ Then(/^Stake pool "([^"]*)" tooltip shows correct data$/, async function (positi
       .catch(error => done(error));
   });
   const result = stakePools && stakePools.value ? stakePools.value : [];
-  const secondStakePool = result[parseInt(positionOfStakePool)-1];
+  const secondStakePool = result[parseInt(positionOfStakePool) - 1];
   await this.client.waitForVisible(STAKE_POOL_TOOLTIP_SELECTOR);
   await this.client.waitForText(STAKE_POOL_TOOLTIP_RANKING_SELECTOR);
   const stakePoolRanking = await this.client.getText(STAKE_POOL_TOOLTIP_RANKING_SELECTOR);
@@ -159,7 +161,10 @@ Then(/^Stake pool "([^"]*)" tooltip shows correct data$/, async function (positi
   expect(secondStakePool.description).to.equal(stakePoolDescription);
 });
 
-When(/^I click on "([^"]*)"$/, function () {
+When(/^I click on "([^"]*)"$/, async function (buttonLabel) {
+  await this.client.waitForText(STAKE_POOL_TOOLTIP_BUTTON_SELECTOR);
+  const selectedStakePoolLabel = await this.client.getText(STAKE_POOL_TOOLTIP_BUTTON_SELECTOR);
+  expect(selectedStakePoolLabel).to.equal(buttonLabel);
   return this.waitAndClick(STAKE_POOL_TOOLTIP_BUTTON_SELECTOR);
 });
 
