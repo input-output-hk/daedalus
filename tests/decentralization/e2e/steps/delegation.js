@@ -15,10 +15,10 @@ Then(/^I should see a "Create rewards wallet" notification$/, async function() {
 
 Then(/^I should only see Reward wallets listed$/, async function() {
   await this.client.waitForVisible(
-    `//div[@class="WalletRow_title" and starts-with(text(), "Reward Wallet")]`
+    '//div[@class="WalletRow_title" and starts-with(text(), "Reward Wallet")]'
   );
   await this.client.waitForVisible(
-    `//div[@class="WalletRow_title" and starts-with(text(), "Legacy Wallet")]`
+    '//div[@class="WalletRow_title" and starts-with(text(), "Legacy Wallet")]'
   , null, true);
 })
 
@@ -64,8 +64,14 @@ Then(/^I should see the delegated pool name$/, async function() {
   await this.client.waitForVisible(`//span[text()="[${pool.ticker}]"]`);
 })
 
-Then(/^I should see the delegated menu$/, async function() {
-  await this.client.waitForVisible('.DropdownMenu_dropdownToggle');
+Then(/^I should see the delegated menu with "Change delegation" and "Undelegate" options$/, async function() {
+  await this.waitAndClick('.DropdownMenu_dropdownToggle');
+  await this.client.waitForVisible(
+    '//span[@class="WalletRow_normalOption" and text()="Change stake pool"]'
+  );
+  await this.client.waitForVisible(
+    '//span[@class="WalletRow_removeOption" and text()="Undelegate"]'
+  );
 })
 
 
