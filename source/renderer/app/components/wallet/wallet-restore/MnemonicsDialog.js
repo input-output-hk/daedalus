@@ -1,6 +1,5 @@
 // @flow
 import React, { Component } from 'react';
-import { join } from 'lodash';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import { Autocomplete } from 'react-polymorph/lib/components/Autocomplete';
@@ -8,21 +7,13 @@ import { AutocompleteSkin } from 'react-polymorph/lib/skins/simple/AutocompleteS
 import WalletRestoreDialog from './widgets/WalletRestoreDialog';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import globalMessages from '../../../i18n/global-messages';
-import { isValidMnemonic } from '../../../../../common/crypto/decrypt';
 import validWords from '../../../../../common/crypto/valid-words.en';
-import {
-  WALLET_KINDS,
-  WALLET_DAEDALUS_WORD_COUNT,
-  WALLET_YOROI_WORD_COUNT,
-  WALLET_HARDWARE_WORD_COUNT,
-} from '../../../config/walletRestoreConfig';
 import type {
   WalletKind,
   WalletDaedalusKind,
   WalletYoroiKind,
   WalletHardwareKind,
 } from '../../../types/walletRestoreTypes';
-import { PAPER_WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../../../config/cryptoConfig';
 
 const messages = defineMessages({
   autocompletePlaceholder: {
@@ -66,11 +57,14 @@ type Props = {
   onClose: Function,
   onBack: Function,
   onSetWalletMnemonics: Function,
+  onValidateMnemonics: Function,
   mnemonics: Array<string>,
   walletKind: ?WalletKind,
   walletKindDaedalus: ?WalletDaedalusKind,
   walletKindYoroi: ?WalletYoroiKind,
   walletKindHardware: ?WalletHardwareKind,
+  expectedWordCount: Array<number> | number,
+  maxWordCount: number,
 };
 
 @observer
@@ -81,31 +75,6 @@ export default class MnemonicsDialog extends Component<Props> {
 
   recoveryPhraseAutocomplete: Autocomplete;
 
-  get expectedWordCount() {
-    const {
-      walletKind,
-      walletKindDaedalus,
-      walletKindYoroi,
-      walletKindHardware,
-    } = this.props;
-    let expectedWordCount = 0;
-    if (walletKindDaedalus && walletKind === WALLET_KINDS.DAEDALUS) {
-      expectedWordCount = WALLET_DAEDALUS_WORD_COUNT[walletKindDaedalus];
-    } else if (walletKindYoroi && walletKind === WALLET_KINDS.YOROI) {
-      expectedWordCount = WALLET_YOROI_WORD_COUNT[walletKindYoroi];
-    } else if (walletKindHardware) {
-      expectedWordCount = WALLET_HARDWARE_WORD_COUNT[walletKindHardware];
-    }
-    return expectedWordCount;
-  }
-
-  get maxWordCount() {
-    const { expectedWordCount } = this;
-    return Array.isArray(expectedWordCount)
-      ? Math.max(...expectedWordCount)
-      : expectedWordCount;
-  }
-
   form = new ReactToolboxMobxForm(
     {
       fields: {
@@ -113,9 +82,12 @@ export default class MnemonicsDialog extends Component<Props> {
           value: this.props.mnemonics,
           validators: () => {
             const { intl } = this.context;
-            const { mnemonics: enteredWords } = this.props;
-            const { expectedWordCount } = this;
-            const wordCount = enteredWords.length;
+            const {
+              mnemonics,
+              onValidateMnemonics,
+              expectedWordCount,
+            } = this.props;
+            const wordCount = mnemonics.length;
             const isPhraseComplete = Array.isArray(expectedWordCount)
               ? expectedWordCount.includes(wordCount)
               : wordCount === expectedWordCount;
@@ -129,11 +101,8 @@ export default class MnemonicsDialog extends Component<Props> {
                     }),
               ];
             }
-            const value = join(enteredWords, ' ');
             return [
-              this.expectedWordCount === PAPER_WALLET_RECOVERY_PHRASE_WORD_COUNT
-                ? true
-                : isValidMnemonic(value, wordCount),
+              onValidateMnemonics(mnemonics, wordCount),
               intl.formatMessage(messages.invalidRecoveryPhrase),
             ];
           },
@@ -156,9 +125,15 @@ export default class MnemonicsDialog extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { onClose, onBack, mnemonics, onSetWalletMnemonics } = this.props;
+    const {
+      onClose,
+      onBack,
+      mnemonics,
+      onSetWalletMnemonics,
+      maxWordCount,
+      expectedWordCount,
+    } = this.props;
     const recoveryPhraseField = this.form.$('recoveryPhrase');
-    const { expectedWordCount, maxWordCount } = this;
     return (
       <WalletRestoreDialog
         stepNumber={1}

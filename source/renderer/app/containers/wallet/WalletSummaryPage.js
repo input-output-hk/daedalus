@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import { take, get } from 'lodash';
+import { take } from 'lodash';
 import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import { MAX_TRANSACTIONS_ON_SUMMARY_PAGE } from '../../config/numbersConfig';
@@ -11,7 +11,6 @@ import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer
 import { ROUTES } from '../../routes-config';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import { formattedWalletAmount } from '../../utils/formatters';
-import { WalletSyncStateStatuses } from '../../domains/Wallet';
 import { getNetworkExplorerUrlByType } from '../../utils/network';
 
 export const messages = defineMessages({
@@ -66,10 +65,6 @@ export default class WalletSummaryPage extends Component<Props> {
     let walletTransactions = null;
     const noTransactionsLabel = intl.formatMessage(messages.noTransactions);
 
-    const isRestoreActive =
-      get(wallet, ['syncState', 'status'], '') ===
-      WalletSyncStateStatuses.RESTORING;
-
     const getUrlByType = (type: 'tx' | 'address', param: string) =>
       getNetworkExplorerUrlByType(
         type,
@@ -82,7 +77,7 @@ export default class WalletSummaryPage extends Component<Props> {
     if (
       recentTransactionsRequest.isExecutingFirstTime ||
       hasAny ||
-      isRestoreActive
+      wallet.isRestoring
     ) {
       walletTransactions = (
         <WalletTransactionsList
@@ -93,7 +88,7 @@ export default class WalletSummaryPage extends Component<Props> {
           deletePendingTransaction={deletePendingTransaction}
           walletId={wallet.id}
           isDeletingTransaction={deleteTransactionRequest.isExecuting}
-          isRestoreActive={isRestoreActive}
+          isRestoreActive={wallet.isRestoring}
           formattedWalletAmount={formattedWalletAmount}
           showMoreTransactionsButton={
             recent.length > MAX_TRANSACTIONS_ON_SUMMARY_PAGE

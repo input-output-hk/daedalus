@@ -1,6 +1,6 @@
 // @flow
 import { observable, action, computed, runInAction, flow } from 'mobx';
-import { get, chunk, find, findIndex, isEqual } from 'lodash';
+import { get, find, findIndex, isEqual } from 'lodash';
 import moment from 'moment';
 import { BigNumber } from 'bignumber.js';
 import { Address } from 'cardano-js';
@@ -13,7 +13,7 @@ import WalletAddress from '../domains/WalletAddress';
 import { WalletTransaction } from '../domains/WalletTransaction';
 import { MAX_ADA_WALLETS_COUNT } from '../config/numbersConfig';
 import { i18nContext } from '../utils/i18nContext';
-import { mnemonicToSeedHex } from '../utils/crypto';
+import { mnemonicToSeedHex, getScrambledInput } from '../utils/crypto';
 import { paperWalletPdfGenerator } from '../utils/paperWalletPdfGenerator';
 import { addressPDFGenerator } from '../utils/addressPDFGenerator';
 import { downloadRewardsCsv } from '../utils/rewardsCsvGenerator';
@@ -36,7 +36,6 @@ import {
   WALLET_HARDWARE_KINDS,
   RESTORE_WALLET_STEPS,
 } from '../config/walletRestoreConfig';
-import { ADA_CERTIFICATE_MNEMONIC_LENGTH } from '../config/cryptoConfig';
 import type {
   WalletKind,
   WalletDaedalusKind,
@@ -502,13 +501,16 @@ export default class WalletsStore extends Store {
       if (this.hasAnyWallets) {
         const nextIndexInList = Math.max(indexOfWalletToDelete - 1, 0);
         const nextWalletInList = this.all[nextIndexInList];
-        this.actions.dialogs.closeActiveDialog.trigger();
         this.goToWalletRoute(nextWalletInList.id);
       } else {
         this.active = null;
         this.activeValue = null;
+        this.actions.router.goToRoute.trigger({
+          route: ROUTES.WALLETS.ADD,
+        });
       }
     });
+    this.actions.dialogs.closeActiveDialog.trigger();
     this._unsetWalletLocalData(params.walletId);
     this._resumePolling();
     this.deleteWalletRequest.reset();
@@ -542,21 +544,14 @@ export default class WalletsStore extends Store {
   };
 
   _unscrambleMnemonics = async (): Array<string> => {
-    // Reset getWalletRecoveryPhraseFromCertificateRequest to clear previous errors
-    this.getWalletRecoveryPhraseFromCertificateRequest.reset();
-
     // Split recovery phrase to 18 (scrambled mnemonics) + 9 (mnemonics seed) mnemonics
-    const recoveryPhraseArray = this.mnemonics;
-    const chunked = chunk(recoveryPhraseArray, ADA_CERTIFICATE_MNEMONIC_LENGTH);
-    const scrambledInput = chunked[0]; // first 18 mnemonics
-    const certificatePassword = chunked[1]; // last 9 mnemonics
-    const spendingPassword = mnemonicToSeedHex(certificatePassword.join(' '));
+    const { passphrase, scrambledInput } = getScrambledInput(this.mnemonics);
 
     // Unscramble 18-word wallet certificate mnemonic to 12-word mnemonic
     const unscrambledRecoveryPhrase: Array<string> = await this.getWalletRecoveryPhraseFromCertificateRequest.execute(
       {
-        passphrase: spendingPassword,
-        scrambledInput: scrambledInput.join(' '),
+        passphrase,
+        scrambledInput,
       }
     ).promise;
 
@@ -583,9 +578,11 @@ export default class WalletsStore extends Store {
     const request = this.restoreRequest;
 
     if (
-      WALLET_KINDS.DAEDALUS &&
+      this.walletKind === WALLET_KINDS.DAEDALUS &&
       this.walletKindDaedalus === WALLET_DAEDALUS_KINDS.BALANCE_27_WORD
     ) {
+      // Reset getWalletRecoveryPhraseFromCertificateRequest to clear previous errors
+      this.getWalletRecoveryPhraseFromCertificateRequest.reset();
       data.recoveryPhrase = await this._unscrambleMnemonics();
     }
 
@@ -805,18 +802,6 @@ export default class WalletsStore extends Store {
       default:
         return this.restoreDaedalusRequest;
     }
-  }
-
-  @computed get restoreProgress(): number {
-    return get(this.active, 'syncState.data.percentage.quantity', 0);
-  }
-
-  @computed get restoreETA(): number {
-    return get(
-      this.active,
-      'syncState.data.estimatedCompletionTime.quantity',
-      0
-    );
   }
 
   @computed get hasActiveWalletNotification(): boolean {

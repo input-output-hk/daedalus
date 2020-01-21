@@ -1,9 +1,7 @@
 // @flow
 import { action, computed, observable } from 'mobx';
-import { get } from 'lodash';
 import Store from './lib/Store';
 import { sidebarConfig } from '../config/sidebarConfig';
-import { WalletSyncStateStatuses } from '../domains/Wallet';
 import { formattedWalletAmount } from '../utils/formatters';
 import type { SidebarWalletType } from '../types/sidebarTypes';
 
@@ -38,9 +36,8 @@ export default class SidebarStore extends Store {
         title: wallet.name,
         info: formattedWalletAmount(wallet.amount, true, false),
         isConnected: networkStatus.isConnected,
-        isRestoreActive:
-          get(wallet, 'syncState.status') === WalletSyncStateStatuses.RESTORING,
-        restoreProgress: get(wallet, 'syncState.progress.quantity', 0),
+        isRestoreActive: wallet.isRestoring,
+        restoreProgress: wallet.restorationProgress,
         isLegacy: wallet.isLegacy,
         recoveryPhraseVerificationStatus,
       };

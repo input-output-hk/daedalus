@@ -1,6 +1,5 @@
 // @flow
 import React, { Component } from 'react';
-import { get } from 'lodash';
 import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import WalletTransactionsList, {
@@ -113,10 +112,6 @@ export default class WalletTransactionsPage extends Component<Props, State> {
       searchLimit !== undefined &&
       totalAvailable > searchLimit;
 
-    const isRestoreActive =
-      get(activeWallet, ['syncState', 'status']) ===
-      WalletSyncStateStatuses.RESTORING;
-
     const getUrlByType = (type: 'tx' | 'address', param: string) =>
       getNetworkExplorerUrlByType(
         type,
@@ -141,14 +136,14 @@ export default class WalletTransactionsPage extends Component<Props, State> {
     } else if (
       searchRequest.isExecutingFirstTime ||
       hasAny ||
-      isRestoreActive
+      activeWallet.isRestoring
     ) {
       walletTransactions = (
         <WalletTransactionsList
           transactions={transactions}
           deletePendingTransaction={deletePendingTransaction}
           isLoadingTransactions={searchRequest.isExecutingFirstTime}
-          isRestoreActive={isRestoreActive}
+          isRestoreActive={activeWallet.isRestoring}
           hasMoreToLoad={hasMoreToLoad()}
           onLoadMore={actions.transactions.loadMoreTransactions.trigger}
           walletId={activeWallet.id}

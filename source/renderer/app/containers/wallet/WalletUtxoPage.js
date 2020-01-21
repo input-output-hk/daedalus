@@ -20,7 +20,7 @@ export default class WalletSettingsPage extends Component<Props> {
     this.props.actions.walletSettings.startWalletUtxoPolling.trigger();
   }
 
-  componeneWillUnmount() {
+  componentWillUnmount() {
     this.props.actions.walletSettings.stopWalletUtxoPolling.trigger();
   }
 

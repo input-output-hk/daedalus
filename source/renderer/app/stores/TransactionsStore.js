@@ -288,7 +288,6 @@ export default class TransactionsStore extends Store {
     walletId: string
   ): Request<GetTransactionsResponse> => {
     const foundRequest = find(this.transactionsRequests, { walletId });
-
     if (foundRequest && foundRequest.recentRequest)
       return foundRequest.recentRequest;
     return new Request(this.api.ada.getTransactions);
@@ -298,7 +297,6 @@ export default class TransactionsStore extends Store {
     walletId: string
   ): Request<GetTransactionsResponse> => {
     const foundRequest = find(this.transactionsRequests, { walletId });
-
     if (foundRequest && foundRequest.allRequest) return foundRequest.allRequest;
     return new Request(this.api.ada.getTransactions);
   };
