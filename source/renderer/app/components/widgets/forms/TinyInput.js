@@ -18,10 +18,13 @@ type Props = {
   label?: string | Element<any>,
   maxLength?: number,
   minLength?: number,
+  notNegative?: boolean,
   onBlur?: Function,
   onChange?: Function,
   onFocus?: Function,
+  onInput?: Function,
   onKeyPress?: Function,
+  onPaste?: Function,
   placeholder?: string,
   readOnly: boolean,
   setError?: Function,
@@ -31,20 +34,77 @@ type Props = {
   theme: ?Object, // will take precedence over theme in context if passed
   themeId: string,
   themeOverrides: Object,
+  type?: string,
   useReadMode?: boolean,
   value: string,
 };
 
 type State = {
   isEditMode: boolean,
+  prevValue: string,
 };
 
 export default class TinyInput extends Component<Props, State> {
   state = {
     isEditMode: false,
+    prevValue: '',
   };
 
   setEditMode = (isEditMode: boolean) => this.setState({ isEditMode });
+
+  validate = (value: string) => {
+    const { notNegative, type } = this.props;
+    const numberRegex = new RegExp(/^-?\d*\.?\d*$/);
+    const notNegativeNumberRegex = new RegExp(/^\d*\.?\d*$/);
+    let result = null;
+
+    if (type !== 'number') {
+      return true;
+    }
+
+    if (notNegative) {
+      result = notNegativeNumberRegex.test(value);
+    } else {
+      result = numberRegex.test(value);
+    }
+
+    if (result) {
+      if (value !== '.' && Number(value).toFixed(2).length > 15) {
+        return false;
+      }
+    }
+
+    return result;
+  };
+
+  onInput = (evt: any) => {
+    const { onInput } = this.props;
+    const { prevValue } = this.state;
+    const { value } = evt.target;
+
+    if (this.validate(value)) {
+      this.setState({ prevValue: value });
+      if (onInput) {
+        onInput(evt);
+      }
+    } else {
+      evt.target.value = prevValue;
+    }
+  };
+
+  onPaste = (evt: any) => {
+    const { onPaste } = this.props;
+    const value = evt.clipboardData.getData('text/plain');
+
+    if (this.validate(value)) {
+      this.setState({ prevValue: value });
+      if (onPaste) {
+        onPaste(evt);
+      }
+    } else {
+      evt.preventDefault();
+    }
+  };
 
   render() {
     const {
@@ -53,6 +113,7 @@ export default class TinyInput extends Component<Props, State> {
       innerLabelSuffix,
       innerValue,
       useReadMode,
+      type,
       ...restProps
     } = this.props;
     const { isEditMode } = this.state;
@@ -78,6 +139,9 @@ export default class TinyInput extends Component<Props, State> {
             skin={InputSkin}
             {...restProps}
             autoFocus={useReadMode ? true : autoFocus}
+            onInput={this.onInput}
+            onPaste={this.onPaste}
+            type={type === 'number' ? 'string' : type}
           />
         )}
       </div>

@@ -67,10 +67,10 @@ export const isTransactionAmountInFilterRange = (
   transaction: WalletTransaction
 ) => {
   const { amount } = transaction;
-  const compareFrom = fromAmount
-    ? amount.toNumber() >= Number(fromAmount)
-    : true;
-  const compareTo = toAmount ? amount.toNumber() <= Number(toAmount) : true;
+  const min = fromAmount === '.' ? 0 : Number(fromAmount);
+  const max = toAmount === '.' ? 0 : Number(toAmount);
+  const compareFrom = fromAmount ? amount.toNumber() >= min : true;
+  const compareTo = toAmount ? amount.toNumber() <= max : true;
 
   return compareFrom && compareTo;
 };

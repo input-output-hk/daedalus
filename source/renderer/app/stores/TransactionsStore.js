@@ -44,8 +44,8 @@ export const DateRangeTypes = {
 
 export type TransactionFilterOptionsStruct = {
   searchTerm?: string,
-  searchLimit?: number,
-  searchSkip?: number,
+  searchLimit?: ?number,
+  searchSkip?: ?number,
   dateRange?: DateRangeType,
   fromDate?: string,
   toDate?: string,
@@ -139,11 +139,7 @@ export default class TransactionsStore extends Store {
   }
 
   @computed get populatedFilterOptions(): TransactionFilterOptionsStruct {
-    if (getNumberOfFilterDimensionsApplied(this.filterOptions) > 0) {
-      return this.filterOptions || emptyTransactionFilterOptions;
-    }
-
-    return this.defaultFilterOptions;
+    return this.filterOptions || emptyTransactionFilterOptions;
   }
 
   @computed get recent(): Array<WalletTransaction> {

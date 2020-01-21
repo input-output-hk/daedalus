@@ -11,7 +11,10 @@ import type {
   DateRangeType,
   TransactionFilterOptionsStruct,
 } from '../../../stores/TransactionsStore';
-import { DateRangeTypes } from '../../../stores/TransactionsStore';
+import {
+  DateRangeTypes,
+  emptyTransactionFilterOptions,
+} from '../../../stores/TransactionsStore';
 import TinyCheckbox from '../../widgets/forms/TinyCheckbox';
 import TinySelect from '../../widgets/forms/TinySelect';
 import TinyInput from '../../widgets/forms/TinyInput';
@@ -92,17 +95,15 @@ const messages = defineMessages({
 
 const calculateDateRange = (
   dateRange: string,
-  customDateRange: { customFromDate: string, customToDate: string },
-  defaultDateRange: { defaultFromDate: string, defaultToDate: string }
+  customDateRange: { customFromDate: string, customToDate: string }
 ) => {
   const { customFromDate, customToDate } = customDateRange;
-  const { defaultFromDate = '', defaultToDate = '' } = defaultDateRange || {};
   let fromDate = null;
   let toDate = null;
 
   if (dateRange === DateRangeTypes.ALL) {
-    fromDate = defaultFromDate;
-    toDate = defaultToDate;
+    fromDate = '';
+    toDate = '';
   } else if (dateRange === DateRangeTypes.CUSTOM_DATE_RANGE) {
     fromDate = customFromDate;
     toDate = customToDate;
@@ -136,7 +137,7 @@ const formatDateValue = (date: string, defaultDate: string) => {
 const formatAmountValue = (amount: string, defaultAmount: string) => {
   if (!amount) {
     const formattedDefaultAmount = formattedWalletAmount(
-      new BigNumber(defaultAmount),
+      new BigNumber(Number(defaultAmount).toFixed(2)),
       false,
       false
     );
@@ -144,7 +145,18 @@ const formatAmountValue = (amount: string, defaultAmount: string) => {
     return <span className="undefined">{formattedDefaultAmount}</span>;
   }
 
-  const amountBigNumber = new BigNumber(amount);
+  let inputAmount = null;
+  if (amount === '.') {
+    inputAmount = '0';
+  } else if (amount[0] === '.') {
+    inputAmount = `0${amount}`;
+  } else if (amount[amount.length - 1] === '.') {
+    inputAmount = `${amount}0`;
+  } else {
+    inputAmount = amount;
+  }
+
+  const amountBigNumber = new BigNumber(Number(inputAmount).toFixed(2));
 
   if (amount.length > 5) {
     return formattedWalletAmount(amountBigNumber, false, false);
@@ -278,14 +290,13 @@ export default class FilterDialog extends Component<Props> {
   };
 
   resetForm = () => {
-    const { defaultFilterOptions } = this.props;
     const {
       dateRange,
       fromAmount,
       toAmount,
       incomingChecked,
       outgoingChecked,
-    } = defaultFilterOptions;
+    } = emptyTransactionFilterOptions;
 
     this.form.select('dateRange').set(dateRange);
     this.form.select('fromAmount').set(fromAmount);
@@ -297,21 +308,17 @@ export default class FilterDialog extends Component<Props> {
   handleSubmit = () =>
     this.form.submit({
       onSuccess: form => {
-        const {
-          onFilter,
-          defaultFilterOptions: { fromDate, toDate },
-        } = this.props;
+        const { onFilter } = this.props;
         const {
           dateRange,
           customFromDate,
           customToDate,
           ...rest
         } = form.values();
-        const dateRangePayload = calculateDateRange(
-          dateRange,
-          { customFromDate, customToDate },
-          { defaultFromDate: fromDate, defaultToDate: toDate }
-        );
+        const dateRangePayload = calculateDateRange(dateRange, {
+          customFromDate,
+          customToDate,
+        });
 
         onFilter({
           ...rest,
@@ -390,7 +397,8 @@ export default class FilterDialog extends Component<Props> {
               innerLabelPrefix={intl.formatMessage(globalMessages.rangeFrom)}
               innerValue={customFromDateInnerValue}
               pickerPanelPosition="left"
-              onReset={() => form.select('customFromDate').set(fromDate)}
+              closeOnSelect
+              onReset={() => form.select('customFromDate').set('')}
             />
           </div>
           <div className={styles.dateRangeInput}>
@@ -399,7 +407,8 @@ export default class FilterDialog extends Component<Props> {
               innerLabelPrefix={intl.formatMessage(globalMessages.rangeTo)}
               innerValue={customToDateInnerValue}
               pickerPanelPosition="right"
-              onReset={() => form.select('customToDate').set(toDate)}
+              closeOnSelect
+              onReset={() => form.select('customToDate').set('')}
             />
           </div>
         </div>
@@ -432,9 +441,9 @@ export default class FilterDialog extends Component<Props> {
         <div className={styles.body}>
           <div className={styles.amountRangeInput}>
             <TinyInput
-              type="number"
               {...fromAmountField.bind()}
               useReadMode
+              notNegative
               innerLabelPrefix={intl.formatMessage(globalMessages.rangeFrom)}
               innerLabelSuffix={intl.formatMessage(messages.amountUnit)}
               innerValue={fromAmountInnerValue}
@@ -442,9 +451,9 @@ export default class FilterDialog extends Component<Props> {
           </div>
           <div className={styles.amountRangeInput}>
             <TinyInput
-              type="number"
               {...toAmountField.bind()}
               useReadMode
+              notNegative
               innerLabelPrefix={intl.formatMessage(globalMessages.rangeTo)}
               innerLabelSuffix={intl.formatMessage(messages.amountUnit)}
               innerValue={toAmountInnerValue}
