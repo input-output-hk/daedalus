@@ -19,13 +19,12 @@ import { isValidAmountInLovelaces } from '../utils/validations';
 import {
   generateFilterOptions,
   isTransactionInFilterRange,
-  getNumberOfFilterDimensionsApplied,
 } from '../utils/transaction';
 
 const INITIAL_SEARCH_LIMIT = null; // 'null' value stands for 'load all'
-const SEARCH_LIMIT_INCREASE = 500;
+const SEARCH_LIMIT_INCREASE = 500; // eslint-disable-line
 const SEARCH_SKIP = 0;
-const RECENT_TRANSACTIONS_LIMIT = 50;
+const RECENT_TRANSACTIONS_LIMIT = 50; // eslint-disable-line
 
 export type DateRangeType =
   | 'all'
