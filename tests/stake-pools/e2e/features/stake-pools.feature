@@ -3,7 +3,9 @@ Feature: Stake Pools Loading
 
   Background:
     Given I have completed the basic setup
-    Given I am on the Delegation Centre staking page
+    Given I am on the Delegation Center screen
+    And I click on stake pools tab button
+    And I am on the Staking pool screen
     And I have a "Test Wallet" wallet with funds
 
   Scenario: "Loading stake pools" message is shown during initial loading of stake pool data
@@ -53,3 +55,5 @@ Feature: Stake Pools Loading
     And I click "continue" button
     Then I should see step 2 of 3 screen
     And I see following label on the dialog: "You have selected [ROOT] stake pool to delegate to for Test Wallet wallet."
+
+  Scenario: Stake pools user is already delegating to are correctly displayed

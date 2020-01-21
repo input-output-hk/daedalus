@@ -11,11 +11,11 @@ const {
   stakingButtonVisible,
   clickStakingButton,
   delegationCenterVisible,
-  clickStakePoolsTab,
-  stakingPoolVisible
 } = delegationCentreStakingHelper;
 
 const LOADING_MESSAGE_SELECTOR = '.StakePools_component.StakePools_isLoading .StakePools_loadingBlockWrapper p';
+const STAKE_POOL_TAB_BUTTON = '.stake-pools.NavButton_component.NavButton_normal';
+const STAKE_POOL_PAGE = '.StakePools_component';
 const STAKE_POOLS_LIST_SELECTOR = '.StakePoolsList_component';
 const STAKE_POOLS_SEARCH_SELECTOR = '.StakePoolsSearch_component .StakePoolsSearch_searchInput.SimpleFormField_root input';
 const SEARCH_RESULTS_LABEL_SELECTOR = '.StakePools_component h2 span';
@@ -33,12 +33,18 @@ const DELEGATION_WALLET_SECOND_STEP_SELECTOR = '.DelegationSteps_delegationSteps
 const DELEGATION_WALLET_DROPDOWN_SELECTOR = '.DelegationSteps_delegationSteps.DelegationStepsChooseWalletDialog_delegationStepsChooseWalletDialogWrapper .DelegationStepsChooseWalletDialog_walletSelect';
 const SELECTED_STAKE_POOLS_DELEGATION_WALLET_DIALOG_SELECTOR = '.DelegationStepsChooseStakePoolDialog_selectStakePoolLabel span';
 
-Given(/^I am on the Delegation Centre staking page/, async function () {
+Given(/^I am on the Delegation Center screen/, async function () {
   await stakingButtonVisible(this.client);
   await clickStakingButton(this.client);
   await delegationCenterVisible(this.client);
-  await clickStakePoolsTab(this.client);
-  await stakingPoolVisible(this.client);
+});
+
+Then(/^I click on stake pools tab button/, async function () {
+  return this.waitAndClick(STAKE_POOL_TAB_BUTTON);
+});
+
+Then(/^I am on the Staking pool screen/, async function () {
+  return this.client.waitForVisible(STAKE_POOL_PAGE);
 });
 
 Then(/^I should see "([^"]*)" stake pools loaded by rank$/, async function (numberOfStakePools) {
@@ -153,7 +159,7 @@ Then(/^Stake pool "([^"]*)" tooltip shows correct data$/, async function (positi
   expect(secondStakePool.description).to.equal(stakePoolDescription);
 });
 
-When(/^I click on "Delegate to this pool"/, function () {
+When(/^I click on "([^"]*)"$/, function () {
   return this.waitAndClick(STAKE_POOL_TOOLTIP_BUTTON_SELECTOR);
 });
 
