@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 
+- Added stake pools saturation info and ordering based on desirability ([PR 1826](https://github.com/input-output-hk/daedalus/pull/1826))
 - Implemented "Resync wallet" feature ([PR 1822](https://github.com/input-output-hk/daedalus/pull/1822))
 - Implemented "Hardware wallets" restoration ([PR 1801](https://github.com/input-output-hk/daedalus/pull/1801))
 - Implemented "Yoroi wallets" restoration ([PR 1740](https://github.com/input-output-hk/daedalus/pull/1740))
@@ -25,6 +26,7 @@ Changelog
 - Improved the paper wallet recovery phrase validation ([PR 1818](https://github.com/input-output-hk/daedalus/pull/1818))
 - Improved network screen with responsive main copy box ([PR 1797](https://github.com/input-output-hk/daedalus/pull/1797))
 - Updated checkboxes, radio buttons and switchers sizes and borders ([PR 1793](https://github.com/input-output-hk/daedalus/pull/1793))
+- Updated `cardano-wallet` to revision `e6316404` ([PR 1826](https://github.com/input-output-hk/daedalus/pull/1826))
 - Updated `cardano-wallet` to revision `254575e4` which includes Jormungandr 0.8.6 ([PR 1821](https://github.com/input-output-hk/daedalus/pull/1821))
 - Updated `cardano-wallet` to revision `132a5faf` ([PR 1740](https://github.com/input-output-hk/daedalus/pull/1740))
 
