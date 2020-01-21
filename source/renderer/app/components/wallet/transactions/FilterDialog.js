@@ -329,6 +329,10 @@ export default class FilterDialog extends Component<Props> {
       onError: () => null,
     });
 
+  isValidDate = (date: Object) => {
+    return date.isSameOrBefore(moment().endOf('day'));
+  };
+
   renderTypeField = () => {
     const { form } = this;
     const { intl } = this.context;
@@ -399,6 +403,7 @@ export default class FilterDialog extends Component<Props> {
               pickerPanelPosition="left"
               closeOnSelect
               onReset={() => form.select('customFromDate').set('')}
+              isValidDate={this.isValidDate}
             />
           </div>
           <div className={styles.dateRangeInput}>
@@ -409,6 +414,7 @@ export default class FilterDialog extends Component<Props> {
               pickerPanelPosition="right"
               closeOnSelect
               onReset={() => form.select('customToDate').set('')}
+              isValidDate={this.isValidDate}
             />
           </div>
         </div>
