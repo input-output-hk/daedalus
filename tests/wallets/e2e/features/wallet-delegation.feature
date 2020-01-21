@@ -32,8 +32,7 @@ Feature: Wallet Delegation
     # TODO:
     # And the current and next epoch countdown have correct data
 
-    @watch
-  Scenario: "Delegation center" correctly displays delegated and undelegated options and information
+  Scenario: "Delegation center" correctly displays undelegated and delegated information and options
     Given I have a "Test Wallet" wallet with funds
     And I am on the Delegation "delegation-center" screen
     Then I should see the "delegate" option
@@ -41,10 +40,10 @@ Feature: Wallet Delegation
     Then I should see the delegated pool name
     And I should see the delegated menu with "Change delegation" and "Undelegate" options
 
-  Scenario: Delegated wallets information is correctly displayed on the "Delegation center" screen
-   # (Stake pool ticker is correctly shown and the "Change delegation" / "Undelegate" options are available
+    @watch
+  Scenario: "Unknown" stake pool is shown for the wallets being delegated to stake pools for which we don't have metadata
 
-  # Scenario: "Unknown" stake pool is shown for the wallets being delegated to stake pools for which we don't have metadata
+
   # Scenario: "Delegation" wizard displays the "Delegation is unavailable" message if all of the Rewards wallet user has are empty
   # Scenario: "Delegation" wizard is not allowing delegation if the user selects a wallet which has less than 10 ADA
   # Scenario: "Delegation" wizard is working correctly if the user selects wallet with enough funds (including a check for fees estimation)
