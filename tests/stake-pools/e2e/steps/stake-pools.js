@@ -3,7 +3,7 @@ import { Given, When, Then } from 'cucumber';
 import { expect } from 'chai';
 import { delegationCentreStakingHelper } from './helpers';
 import type { Daedalus } from '../../../types';
-import { getVisibleElementsCountForSelector } from '../../../common/e2e/steps/helpers';
+import BigNumber from 'bignumber.js';
 
 declare var daedalus: Daedalus;
 
@@ -19,12 +19,17 @@ const STAKE_POOL_PAGE = '.StakePools_component';
 const STAKE_POOLS_LIST_SELECTOR = '.StakePoolsList_component';
 const STAKE_POOLS_SEARCH_SELECTOR = '.StakePoolsSearch_component .StakePoolsSearch_searchInput.SimpleFormField_root input';
 const SEARCH_RESULTS_LABEL_SELECTOR = '.StakePools_component h2 span';
-const STAKE_POOL_SELECTOR = '.StakePoolsList_component .StakePoolThumbnail_component';
 const SECOND_STAKE_POOL_ITEM_SELECTOR = '.StakePoolsList_component .StakePoolThumbnail_component:nth-child(2)';
-const STAKE_POOL_SLUG_SELECTOR = '.StakePoolsList_component .StakePoolThumbnail_component .StakePoolThumbnail_ticker';
+const STAKE_POOL_SLUG_SELECTOR = '.StakePoolsList_component .StakePoolThumbnail_component:nth-child(3) .StakePoolThumbnail_ticker';
 const STAKE_POOL_TOOLTIP_SELECTOR = '.StakePoolTooltip_component.StakePoolTooltip_isVisible';
-const STAKE_POOL_TOOLTIP_RANKING_SELECTOR = '.StakePoolTooltip_component.StakePoolTooltip_isVisible .StakePoolTooltip_ranking span';
 const STAKE_POOL_TOOLTIP_DESCRIPTION_SELECTOR = '.StakePoolTooltip_component.StakePoolTooltip_isVisible .StakePoolTooltip_description';
+const STAKE_POOL_TOOLTIP_TICKER_SELECTOR = '.StakePoolTooltip_component.StakePoolTooltip_isVisible .StakePoolTooltip_ticker';
+const STAKE_POOL_TOOLTIP_HOMEPAGE_SELECTOR = '.StakePoolTooltip_component.StakePoolTooltip_isVisible .StakePoolTooltip_homepage';
+const STAKE_POOL_TOOLTIP_RANKING_SELECTOR = '.StakePoolTooltip_component.StakePoolTooltip_isVisible .StakePoolTooltip_ranking span';
+const STAKE_POOL_TOOLTIP_PROFIT_MARGIN_SELECTOR = '.StakePoolTooltip_component.StakePoolTooltip_isVisible .StakePoolTooltip_profitMargin span';
+const STAKE_POOL_TOOLTIP_COST_SELECTOR = '.StakePoolTooltip_component.StakePoolTooltip_isVisible .StakePoolTooltip_cost span';
+const STAKE_POOL_TOOLTIP_PERFORMANCE_SELECTOR = '.StakePoolTooltip_component.StakePoolTooltip_isVisible .StakePoolTooltip_performance span';
+const STAKE_POOL_TOOLTIP_NAME_SELECTOR = '.StakePoolTooltip_component.StakePoolTooltip_isVisible .StakePoolTooltip_name';
 const STAKE_POOL_TOOLTIP_BUTTON_SELECTOR = '.StakePoolTooltip_component.StakePoolTooltip_isVisible button:last-child';
 const DELEGATE_WALLET_SELECTOR = '.DelegationSteps_delegationSteps.DelegationStepsIntroDialog_delegationStepsIntroDialogWrapper';
 const DIALOG_CONTINUE_SELECTOR = '.DelegationSteps_delegationSteps .Dialog_actions .continueButton';
@@ -45,6 +50,17 @@ Then(/^I click on stake pools tab button/, async function () {
 
 Then(/^I am on the Staking pool screen/, async function () {
   return this.client.waitForVisible(STAKE_POOL_PAGE);
+});
+
+Then(/^I see "([^"]*)" stake pools$/, async function (numberOfStakePools) {
+  const stakePools = await this.client.executeAsync(done => {
+    daedalus.stores.staking.stakePoolsRequest
+      .execute()
+      .then(done)
+      .catch(error => done(error));
+  });
+  const result = stakePools && stakePools.value ? stakePools.value : [];
+  expect(result.length).to.equal(parseInt(numberOfStakePools));
 });
 
 Then(/^I should see "([^"]*)" stake pools loaded by rank$/, async function (numberOfStakePools) {
@@ -75,21 +91,14 @@ Then(/^I should see the following loading message:$/, async function (message) {
 
 When(/^Stake pools loading failed/, async function () {
   const stakePools = await this.client.executeAsync(done => {
-    daedalus.stores.staking.stakePoolsRequest
-      .execute()
-      .then(done)
-      .catch(error => done(error));
+    daedalus.actions.staking.fakeStakePoolLoading.trigger(true);
+    done();
   });
   const result = stakePools && stakePools.value ? stakePools.value : [];
-  expect(result.length).to.not.equal(0);
+  expect(result.length).to.equal(0);
 });
 
 Then(/^I should see loading stake pools error message:$/, async function (message) {
-  await this.client.executeAsync((done) => {
-      daedalus.actions.staking.fakeStakePoolLoading.trigger(true);
-      done();
-    }
-  );
   const loadingMsg = message.hashes()[0];
   await this.client.waitForText(LOADING_MESSAGE_SELECTOR);
   const loadingMsgOnScreen = await this.client.getText(LOADING_MESSAGE_SELECTOR);
@@ -110,37 +119,33 @@ When(/^I enter "([^"]*)" in search input field/, function (data) {
 });
 
 Then(/^I should see message "([^"]*)"$/, async function (message) {
-  const searchResultsLabelSelector = SEARCH_RESULTS_LABEL_SELECTOR;
-  await this.client.waitForText(searchResultsLabelSelector);
-  const searchResultsMessages = await this.client.getText(searchResultsLabelSelector);
+  await this.client.waitForText(SEARCH_RESULTS_LABEL_SELECTOR);
+  const searchResultsMessages = await this.client.getText(SEARCH_RESULTS_LABEL_SELECTOR);
   expect(searchResultsMessages).to.equal(message);
 });
 
-Then(/^I should see "([^"]*)" stake pool with slug "([^"]*)"$/, async function (numberOfStakePools, slug) {
-  const stakePoolsCount = await getVisibleElementsCountForSelector(
-    this.client,
-    STAKE_POOL_SELECTOR
-  );
+Then(/^I should see number 3 stake pool with slug "([^"]*)"$/, async function (slug) {
   await this.client.waitForText(STAKE_POOL_SLUG_SELECTOR);
   const stakePoolSlug = await this.client.getText(STAKE_POOL_SLUG_SELECTOR);
-  expect(stakePoolsCount).to.equal(parseInt(numberOfStakePools));
-  expect(stakePoolSlug[0]).to.equal(slug);
+  expect(stakePoolSlug).to.equal(slug);
 });
 
-When(/^I see "([^"]*)" stake pools loaded by rank$/, async function (numberOfStakePools) {
-  const stakePoolsCount = await getVisibleElementsCountForSelector(
-    this.client,
-    STAKE_POOL_SELECTOR
-  );
-  expect(stakePoolsCount).to.equal(parseInt(numberOfStakePools));
-});
-
-When(/^I click on stake pool on second place/, function () {
+When(/^I click on stake pool with order number 2/, function () {
   return this.waitAndClick(SECOND_STAKE_POOL_ITEM_SELECTOR);
 });
 
-Then(/^I should see second stake pool tooltip/, function () {
-  return this.client.waitForVisible(STAKE_POOL_TOOLTIP_SELECTOR);
+Then(/^I should see stake pool tooltip with order number "([^"]*)"/, async function (positionOfStakePool) {
+  const allStakePools = await this.client.executeAsync(done => {
+    daedalus.stores.staking.stakePoolsRequest
+      .execute()
+      .then(done)
+      .catch(error => done(error));
+  });
+  const result = allStakePools && allStakePools.value ? allStakePools.value : [];
+  const secondStakePool = result[parseInt(positionOfStakePool) - 1];
+  await this.client.waitForText(STAKE_POOL_TOOLTIP_RANKING_SELECTOR);
+  const stakePoolRanking = await this.client.getText(STAKE_POOL_TOOLTIP_RANKING_SELECTOR);
+  expect(secondStakePool.ranking.toString()).to.equal(stakePoolRanking);
 });
 
 Then(/^Stake pool "([^"]*)" tooltip shows correct data$/, async function (positionOfStakePool) {
@@ -153,12 +158,30 @@ Then(/^Stake pool "([^"]*)" tooltip shows correct data$/, async function (positi
   const result = stakePools && stakePools.value ? stakePools.value : [];
   const secondStakePool = result[parseInt(positionOfStakePool) - 1];
   await this.client.waitForVisible(STAKE_POOL_TOOLTIP_SELECTOR);
-  await this.client.waitForText(STAKE_POOL_TOOLTIP_RANKING_SELECTOR);
-  const stakePoolRanking = await this.client.getText(STAKE_POOL_TOOLTIP_RANKING_SELECTOR);
   await this.client.waitForText(STAKE_POOL_TOOLTIP_DESCRIPTION_SELECTOR);
   const stakePoolDescription = await this.client.getText(STAKE_POOL_TOOLTIP_DESCRIPTION_SELECTOR);
-  expect(secondStakePool.ranking.toString()).to.equal(stakePoolRanking);
+  await this.client.waitForText(STAKE_POOL_TOOLTIP_TICKER_SELECTOR);
+  const stakePoolTicker = await this.client.getText(STAKE_POOL_TOOLTIP_TICKER_SELECTOR);
+  await this.client.waitForText(STAKE_POOL_TOOLTIP_HOMEPAGE_SELECTOR);
+  const stakePoolHomepage = await this.client.getText(STAKE_POOL_TOOLTIP_HOMEPAGE_SELECTOR);
+  await this.client.waitForText(STAKE_POOL_TOOLTIP_PERFORMANCE_SELECTOR);
+  const stakePoolPerformance = await this.client.getText(STAKE_POOL_TOOLTIP_PERFORMANCE_SELECTOR);
+  await this.client.waitForText(STAKE_POOL_TOOLTIP_COST_SELECTOR);
+  const stakePoolCost = await this.client.getText(STAKE_POOL_TOOLTIP_COST_SELECTOR);
+  await this.client.waitForText(STAKE_POOL_TOOLTIP_NAME_SELECTOR);
+  const stakePoolName = await this.client.getText(STAKE_POOL_TOOLTIP_NAME_SELECTOR);
+  await this.client.waitForText(STAKE_POOL_TOOLTIP_PROFIT_MARGIN_SELECTOR);
+  const stakePoolProfitMargin = await this.client.getText(STAKE_POOL_TOOLTIP_PROFIT_MARGIN_SELECTOR);
+  await this.client.waitForText(STAKE_POOL_TOOLTIP_RANKING_SELECTOR);
+  const stakePoolRanking = await this.client.getText(STAKE_POOL_TOOLTIP_RANKING_SELECTOR);
+  expect(secondStakePool.ticker).to.equal(stakePoolTicker);
+  expect(secondStakePool.homepage).to.equal(stakePoolHomepage);
+  expect(`${secondStakePool.performance}%`).to.equal(stakePoolPerformance);
+  expect(`${secondStakePool.cost.c[0]} ADA`).to.equal(stakePoolCost);
   expect(secondStakePool.description).to.equal(stakePoolDescription);
+  expect(secondStakePool.name).to.equal(stakePoolName);
+  expect(`${secondStakePool.profitMargin}%`).to.equal(stakePoolProfitMargin);
+  expect(secondStakePool.ranking).to.equal(parseInt(stakePoolRanking));
 });
 
 When(/^I click on "([^"]*)"$/, async function (buttonLabel) {
@@ -197,5 +220,5 @@ Then(/^I should see step 2 of 3 screen/, function () {
 Then(/^I see following label on the dialog: "([^"]*)"$/, async function (message) {
   await this.client.waitForText(SELECTED_STAKE_POOLS_DELEGATION_WALLET_DIALOG_SELECTOR);
   const selectedStakePoolLabel = await this.client.getText(SELECTED_STAKE_POOLS_DELEGATION_WALLET_DIALOG_SELECTOR);
-  expect(selectedStakePoolLabel[0]).to.equal(message);
+  expect(selectedStakePoolLabel.toString()).to.equal(message);
 });

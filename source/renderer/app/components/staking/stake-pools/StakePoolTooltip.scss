@@ -65,6 +65,10 @@
   width: 100%;
 }
 
+.homepage {
+  width: initial;
+}
+
 .arrow {
   border-color: transparent;
   border-style: solid;
@@ -239,7 +243,10 @@
     padding: 0 9px;
   }
 
-  .ranking {
+  .ranking,
+  .profitMargin,
+  .cost,
+  .performance {
     width: 35%;
   }
 }
