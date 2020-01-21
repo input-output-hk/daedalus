@@ -398,6 +398,7 @@
   "staking.stakePools.tooltip.profitMargin": "!!!Profit margin",
   "staking.stakePools.tooltip.ranking": "!!!Rank",
   "staking.stakePools.tooltip.retirement": "!!!Retirement",
+  "staking.stakePools.tooltip.saturation": "!!!Saturation:",
   "static.about.buildInfo": "!!!MacOS build 3769, with Cardano 1.0.4",
   "static.about.content.cardano.headline": "!!!Cardano Team:",
   "static.about.content.cardano.members": "!!!Alexander Sukhoverkhov, Alexander Vieth, Alexandre Rodrigues Baldé, Alfredo Di Napoli, Anastasiya Besman, Andrzej Rybczak, Ante Kegalj, Anton Belyy, Anupam Jain, Arseniy Seroka, Artyom Kazak, Carlos D'Agostino, Charles Hoskinson, Dan Friedman, Denis Shevchenko, Dmitry Kovanikov, Dmitry Mukhutdinov, Dmitry Nikulin, Domen Kožar, Duncan Coutts, Edsko de Vries, Eileen Fitzgerald, George Agapov, Hiroto Shioi, Ilya Lubimov, Ilya Peresadin, Ivan Gromakovskii, Jake Mitchell, Jane Wild, Jens Krause, Jeremy Wood, Joel Mislov Kunst, Jonn Mostovoy, Konstantin Ivanov, Kristijan Šarić, Lars Brünjes, Laurie Wang, Lionel Miller, Michael Bishop, Mikhail Volkhov, Niklas Hambüchen, Peter Gaži, Philipp Kant, Serge Kosyrev, Vincent Hanquez",

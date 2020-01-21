@@ -37,6 +37,8 @@ export type AdaApiStakePool = {
     homepage: string,
     pledge_address: string,
   },
+  saturation: number,
+  desirability: number,
 };
 export type AdaApiStakePools = Array<AdaApiStakePool>;
 

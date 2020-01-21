@@ -55,3 +55,17 @@ export const getColorFromRange = (
     .alpha(alpha)
     .hex();
 };
+
+export const getSaturationColor = (saturation: number): string => {
+  let color;
+  if (saturation >= 100) {
+    color = 'red';
+  } else if (saturation >= 90) {
+    color = 'orange';
+  } else if (saturation >= 80) {
+    color = 'yellow';
+  } else {
+    color = 'green';
+  }
+  return color;
+};
