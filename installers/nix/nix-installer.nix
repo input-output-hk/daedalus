@@ -149,7 +149,7 @@ let
     unset UNPACK
     export NIX_PROFILE=$DIR/nix/var/nix/profiles/profile
     nix-env --set ${builtins.unsafeDiscardStringContext firstGeneration}
-    nix-env -p $DIR/nix/var/nix/profiles/profile-${cluster} --set ${builtins.unsafeDiscardStringContext firstGeneration}
+    nix-env -p $DIR/nix/var/nix/profiles/profile-${cluster}-ar --set ${builtins.unsafeDiscardStringContext firstGeneration}
 
     ${if postInstall == null then "" else ''
     exec ${postInstall}/bin/post-install
