@@ -40,7 +40,6 @@ Feature: Wallet Delegation
     Given I delegate the wallet
     Then I should see the delegated pool name
     And I should see the delegated menu with "Change delegation" and "Undelegate" options
-    And I freeze
 
   Scenario: Delegated wallets information is correctly displayed on the "Delegation center" screen
    # (Stake pool ticker is correctly shown and the "Change delegation" / "Undelegate" options are available
