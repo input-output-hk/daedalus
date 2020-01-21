@@ -69,7 +69,7 @@ export default class TinyInput extends Component<Props, State> {
     }
 
     if (result) {
-      if (value !== '.' && Number(value).toFixed(2).length > 19) {
+      if (value !== '.' && Number(value).toFixed(2).length > 23) {
         return false;
       }
     }

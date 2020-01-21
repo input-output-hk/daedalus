@@ -17,6 +17,7 @@ type Props = {
   onClick?: Function,
   onFocus?: Function,
   onKeyDown?: Function,
+  dateFormat: string,
   value: string,
   innerLabelPrefix: string,
   innerValue: any,
@@ -75,6 +76,7 @@ export default class TinyDatePicker extends Component<Props> {
     const {
       onReset, // eslint-disable-line
       onChange,
+      dateFormat,
       value,
       innerLabelPrefix,
       innerValue,
@@ -91,7 +93,7 @@ export default class TinyDatePicker extends Component<Props> {
     return (
       <div className={componentClassNames} ref={this.selfRef}>
         <Datetime
-          dateFormat="DD.MM.YYYY"
+          dateFormat={dateFormat}
           timeFormat={false}
           value={value ? moment(value).toDate() : null}
           onViewModeChange={this.ensureResetButtonExistence}
@@ -112,7 +114,7 @@ export default class TinyDatePicker extends Component<Props> {
                 props.onFocus(...args);
                 this.ensureResetButtonExistence();
               }}
-              value={value ? moment(value).format('DD.MM.YYYY') : ''}
+              value={value ? moment(value).format(dateFormat) : ''}
               useReadMode
               innerLabelPrefix={innerLabelPrefix}
               innerValue={innerValue}

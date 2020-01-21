@@ -124,14 +124,18 @@ const calculateDateRange = (
   return { fromDate, toDate };
 };
 
-const formatDateValue = (date: string, defaultDate: string) => {
+const formatDateValue = (
+  date: string,
+  defaultDate: string,
+  dateFormat: string
+) => {
   if (!date) {
-    const formattedDefaultDate = moment(defaultDate).format('DD.MM.YYYY');
+    const formattedDefaultDate = moment(defaultDate).format(dateFormat);
 
     return <span className="undefined">{formattedDefaultDate}</span>;
   }
 
-  return moment(date).format('DD.MM.YYYY');
+  return moment(date).format(dateFormat);
 };
 
 const formatAmountValue = (amount: string, defaultAmount: string) => {
@@ -194,6 +198,7 @@ const validateForm = (values: {
 };
 
 type Props = {
+  dateFormat: string,
   defaultFilterOptions: TransactionFilterOptionsStruct,
   populatedFilterOptions: TransactionFilterOptionsStruct,
   onFilter: Function,
@@ -373,6 +378,7 @@ export default class FilterDialog extends Component<Props> {
     const { form } = this;
     const { intl } = this.context;
     const {
+      dateFormat,
       defaultFilterOptions: { fromDate, toDate },
     } = this.props;
     const defaultFromDate = fromDate || '1970-01-01';
@@ -382,9 +388,14 @@ export default class FilterDialog extends Component<Props> {
     const { customFromDate, customToDate } = form.values();
     const customFromDateInnerValue = formatDateValue(
       customFromDate,
-      defaultFromDate
+      defaultFromDate,
+      dateFormat
     );
-    const customToDateInnerValue = formatDateValue(customToDate, defaultToDate);
+    const customToDateInnerValue = formatDateValue(
+      customToDate,
+      defaultToDate,
+      dateFormat
+    );
 
     return (
       <div className={styles.customDateRange}>
@@ -404,6 +415,7 @@ export default class FilterDialog extends Component<Props> {
               closeOnSelect
               onReset={() => form.select('customFromDate').set('')}
               isValidDate={this.isValidDate}
+              dateFormat={dateFormat}
             />
           </div>
           <div className={styles.dateRangeInput}>
@@ -415,6 +427,7 @@ export default class FilterDialog extends Component<Props> {
               closeOnSelect
               onReset={() => form.select('customToDate').set('')}
               isValidDate={this.isValidDate}
+              dateFormat={dateFormat}
             />
           </div>
         </div>

@@ -37,7 +37,9 @@ storiesOf('Wallets|Transactions', module)
           onClick={() => null}
         />
         <FilterDialog
-          dateRange={DateRangeTypes.ALL}
+          dateFormat="MM/DD/YYYY"
+          defaultFilterOptions={{}}
+          populatedFilterOptions={{ dateRange: DateRangeTypes.ALL }}
           onFilter={() => null}
           onClose={() => null}
         />
