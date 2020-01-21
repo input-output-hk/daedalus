@@ -28,7 +28,7 @@ function generatStakePoolsFakeData() {
     const retiring = null;
     const saturation = faker.random.number({
       min: 0,
-      max: 300,
+      max: 120,
       precision: 0.01,
     });
     const ticker = faker.helpers.replaceSymbols('????');
