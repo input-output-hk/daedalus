@@ -13,7 +13,7 @@ import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import styles from './StakePoolTooltip.scss';
 import StakePool from '../../../domains/StakePool';
 import closeCross from '../../../assets/images/close-cross.inline.svg';
-import { getColorFromRange } from '../../../utils/colors';
+import { getColorFromRange, getSaturationColor } from '../../../utils/colors';
 import { formattedWalletAmount, shortNumber } from '../../../utils/formatters';
 import { rangeMap } from '../../../utils/rangeMap';
 import {
@@ -413,6 +413,11 @@ export default class StakePoolTooltip extends Component<Props, State> {
     const reverse = true;
     const retirementFromNow = retiring ? moment(retiring).fromNow(true) : '';
 
+    const saturationBarClassnames = classnames([
+      styles.saturationBar,
+      styles[getSaturationColor(saturation)],
+    ]);
+
     return (
       <div
         className={componentClassnames}
@@ -446,13 +451,18 @@ export default class StakePoolTooltip extends Component<Props, State> {
           />
 
           <dl className={styles.table}>
-            <dt>{intl.formatMessage(messages.saturation)}</dt>
-            <dd className={styles.saturation}>
-              <span
-                style={{
-                  background: getColorFromRange(saturation, { darken, alpha }),
-                }}
-              >
+            <dt className={styles.saturationLabel}>
+              {intl.formatMessage(messages.saturation)}
+            </dt>
+            <dd className={styles.saturationValue}>
+              <span>
+                <span className={saturationBarClassnames}>
+                  <span
+                    style={{
+                      width: `${parseFloat(saturation.toFixed(2))}%`,
+                    }}
+                  />
+                </span>
                 {`${parseFloat(saturation.toFixed(2))}%`}
               </span>
             </dd>

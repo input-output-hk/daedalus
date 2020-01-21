@@ -5,7 +5,7 @@ import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
 import clockIcon from '../../../assets/images/clock.inline.svg';
 import styles from './StakePoolThumbnail.scss';
-import { getColorFromRange } from '../../../utils/colors';
+import { getColorFromRange, getSaturationColor } from '../../../utils/colors';
 import StakePoolTooltip from './StakePoolTooltip';
 import checkmarkImage from '../../../assets/images/check-w.inline.svg';
 import StakePool from '../../../domains/StakePool';
@@ -106,7 +106,7 @@ export class StakePoolThumbnail extends Component<Props, State> {
     } = this.props;
     const { top, left } = this.state;
 
-    const { ranking, ticker, retiring, id } = stakePool;
+    const { ranking, ticker, retiring, id, saturation } = stakePool;
     const color = getColorFromRange(ranking, numberOfStakePools);
     const isDisabled = disabledStakePoolId === id;
 
@@ -120,6 +120,11 @@ export class StakePoolThumbnail extends Component<Props, State> {
       isHighlighted ? styles.isHighlighted : null,
       onHover ? styles.isOnHover : null,
       isDisabled ? styles.disabled : null,
+    ]);
+
+    const saturationClassnames = classnames([
+      styles.saturationBar,
+      styles[getSaturationColor(saturation)],
     ]);
 
     return (
@@ -151,6 +156,14 @@ export class StakePoolThumbnail extends Component<Props, State> {
               {ranking}
             </div>
           )}
+
+          <div className={saturationClassnames}>
+            <span
+              style={{
+                width: `${parseFloat(saturation.toFixed(2))}%`,
+              }}
+            />
+          </div>
 
           {retiring && (
             <div className={styles.clock}>
