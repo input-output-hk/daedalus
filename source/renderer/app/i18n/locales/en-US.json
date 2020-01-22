@@ -403,6 +403,7 @@
   "staking.stakePools.tooltip.profitMargin": "Profit margin:",
   "staking.stakePools.tooltip.ranking": "Rank:",
   "staking.stakePools.tooltip.retirement": "Retirement in {retirementFromNow}",
+  "staking.stakePools.tooltip.saturation": "Saturation:",
   "static.about.buildInfo": "{platform} build <strong>{build}</strong>, with {apiName} <strong>{apiVersion}</strong>",
   "static.about.content.cardano.headline": "Cardano Team:",
   "static.about.content.cardano.members": "Alan McNicholas, Alejandro Garcia, Alexander Diemand, Alexander Vieth, Anatoli Ivanou, Andreas Triantafyllos, Ante Kegalj, Ben Ford, Charles Hoskinson, Dan Friedman, Deepak Kapiswe, Denis Shevchenko, Dorin Solomon, Duncan Coutts, Edsko de Vries, Erik de Castro Lopo, Gerard Moroney, Hiroto Shioi, Jane Wild, Jean-Christophe Mincke, Jeremy Wood, Johannes Lund, Jordan Millar, Karl Knutsson, Kristijan Šarić, Lars Brünjes, Laurie Wang, Liz Bancroft, Luke Nadur, Marc Fontaine, Marcin Szamotulski, Matt Parsons, Matthias Benkort, Michael Bishop, Michael Hueschen, Moritz Angermann, Neil Davis, Niamh Ahern, Nicholas Clarke, Nicolas Di Prima, Noel Rimbert, Patrick Kelly, Pawel Jakubas, Peter Gaži, Peter Thompson, Philipp Kant, Piotr Stachyra, Ravi Patel, Richard Wild, Rob Cohen, Rodney Lorrimar, Ryan Lemmer, Samuel Leathers, Serge Kosyrev, Tatyana Valkevych, Tom Flynn, Vasileios Gkoumas, Vincent Hanquez",

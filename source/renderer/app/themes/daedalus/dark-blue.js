@@ -665,6 +665,12 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-staking-stake-pool-glow-color': '#7cfeb54c',
     '--theme-staking-progress-label-light': '#fafbfc',
     '--theme-staking-stake-pool-retirement-background-color': '#ea4c5b',
+    '--theme-staking-stake-pool-saturation-background-color':
+      'rgba(233, 244, 254, 0.2)',
+    '--theme-staking-stake-pool-saturation-green-color': '#1ccc5d',
+    '--theme-staking-stake-pool-saturation-orange-color': '#ff8800',
+    '--theme-staking-stake-pool-saturation-red-color': '#ea4c5b',
+    '--theme-staking-stake-pool-saturation-yellow-color': '#ffcc00',
     '--theme-staking-stake-pool-selected-background-color': '#5da377',
     '--theme-staking-stake-pool-selected-checkmark-icon-color': '#fafbfc',
     '--theme-staking-stake-pool-selected-ticker-color': '#fafbfc',
