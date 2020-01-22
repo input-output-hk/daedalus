@@ -3,32 +3,38 @@ Changelog
 
 ## vNext
 
+### Chores
+
+- Implemented acceptance tests for stake pools loading ([PR 1820](https://github.com/input-output-hk/daedalus/pull/1820))
+
+## 2.1.0-ITN1
+
 ### Features
 
 - Added stake pools saturation info and ordering based on desirability ([PR 1826](https://github.com/input-output-hk/daedalus/pull/1826))
 - Implemented "Resync wallet" feature ([PR 1822](https://github.com/input-output-hk/daedalus/pull/1822))
-- Improved the paper wallet recovery phrase validation ([PR 1818](https://github.com/input-output-hk/daedalus/pull/1818))
-- Implemented React-Polymorph "Link" component ([PR 1799](https://github.com/input-output-hk/daedalus/pull/1799))
-- Implemented Hardware wallets restoration ([PR 1801](https://github.com/input-output-hk/daedalus/pull/1801))
-- Added Yoroi wallets restoration to the "Restore Wallet" dialog ([PR 1740](https://github.com/input-output-hk/daedalus/pull/1740))
+- Implemented "Hardware wallets" restoration ([PR 1801](https://github.com/input-output-hk/daedalus/pull/1801))
+- Implemented "Yoroi wallets" restoration ([PR 1740](https://github.com/input-output-hk/daedalus/pull/1740))
 - Implemented new menu shortcuts ([PR 1780](https://github.com/input-output-hk/daedalus/pull/1780))
-- Implemented all notifications to be on the top of the app and in front of any other element ([PR 1748](https://github.com/input-output-hk/daedalus/pull/1748))
-- Improved network screen with responsive main copy box ([PR 1797](https://github.com/input-output-hk/daedalus/pull/1797))
+- Implemented React-Polymorph "Link" component ([PR 1799](https://github.com/input-output-hk/daedalus/pull/1799))
 
 ### Fixes
 
-- Fixed a routing issue connected to deleting Yoroi Balance/Rewards wallets restored from the same recovery phrase ([PR 1823](https://github.com/input-output-hk/daedalus/pull/1823))
-- Fixed a typo in the Staking Pools section ([PR 1785](https://github.com/input-output-hk/daedalus/pull/1785))
-- Fixed Daedalus ITN Terms of Service typo ([PR 1809](https://github.com/input-output-hk/daedalus/pull/1809))
-- Fixed handling of duplicated wallet IDs when restoring both legacy and new wallets from the same wallet recovery phrase ([PR 1805](https://github.com/input-output-hk/daedalus/pull/1805))
+- Fixed a routing issue after wallet deletion ([PR 1823](https://github.com/input-output-hk/daedalus/pull/1823))
+- Fixed a typo on the "Staking pools" screen ([PR 1785](https://github.com/input-output-hk/daedalus/pull/1785))
+- Fixed a typo in the Daedalus ITN "Terms of Service" ([PR 1809](https://github.com/input-output-hk/daedalus/pull/1809))
+- Fixed handling of duplicated wallet IDs when restoring Yoroi Balance and Rewards wallets from the same wallet recovery phrase ([PR 1805](https://github.com/input-output-hk/daedalus/pull/1805))
 
 ### Chores
 
-- Implemented acceptance tests for stake pools loading ([PR 1820](https://github.com/input-output-hk/daedalus/pull/1820))
+- Improved notification display ([PR 1748](https://github.com/input-output-hk/daedalus/pull/1748))
+- Improved delete wallet text copy ([PR 1819](https://github.com/input-output-hk/daedalus/pull/1819))
+- Improved the paper wallet recovery phrase validation ([PR 1818](https://github.com/input-output-hk/daedalus/pull/1818))
+- Improved network screen with responsive main copy box ([PR 1797](https://github.com/input-output-hk/daedalus/pull/1797))
+- Updated checkboxes, radio buttons and switchers sizes and borders ([PR 1793](https://github.com/input-output-hk/daedalus/pull/1793))
+- Updated `cardano-wallet` to revision `d188a5fc` ([PR 1825](https://github.com/input-output-hk/daedalus/pull/1825))
 - Updated `cardano-wallet` to revision `e6316404` ([PR 1826](https://github.com/input-output-hk/daedalus/pull/1826))
 - Updated `cardano-wallet` to revision `254575e4` which includes Jormungandr 0.8.6 ([PR 1821](https://github.com/input-output-hk/daedalus/pull/1821))
-- Improved delete wallet text copy ([PR 1819](https://github.com/input-output-hk/daedalus/pull/1819))
-- Updated checkboxes, radio buttons and switchers sizes and borders ([PR 1793](https://github.com/input-output-hk/daedalus/pull/1793))
 - Updated `cardano-wallet` to revision `132a5faf` ([PR 1740](https://github.com/input-output-hk/daedalus/pull/1740))
 
 ## 2.0.0-ITN1
