@@ -53,7 +53,6 @@ export default class WalletsActions {
     receiver: string,
     amount: string,
     passphrase: string,
-    walletSender?: Wallet,
   }> = new Action();
   chooseWalletExportType: Action<{
     walletExportType: walletExportTypeChoices,

@@ -35,7 +35,7 @@ Feature: Wallet Delegation
     Given I have a "Test Wallet" wallet with funds
     And I am on the Delegation "delegation-center" screen
     Then I should see the "delegate" option
-    Given I delegate the wallet
+    Given My wallet was delegated
     Then I should see the delegated pool name
     And I should see the delegated menu with "Change delegation" and "Undelegate" options
 
@@ -54,9 +54,10 @@ Feature: Wallet Delegation
     And I send 9 ADA from the "Wallet Sender" wallet to the "Wallet Receiver" wallet
     And I try to delegate the wallet
     Then I should see a "This wallet does not contain the minimum amount of 10 ADA which is required for delegation to be available. Please select a wallet with " message
-    Then I freeze
+    Given I close the wizard
+    And I send 11 ADA from the "Wallet Sender" wallet to the "Wallet Receiver" wallet
+    Then I sucessfully delegate my wallet
 
-  # Scenario: "Delegation" wizard is not allowing delegation if the user selects a wallet which has less than 10 ADA
   # Scenario: "Delegation" wizard is working correctly if the user selects wallet with enough funds (including a check for fees estimation)
   # Scenario: "Delegation" wizard is showing the correct error message if the user submits wrong spending password
   # Scenario: "Delegation" wizard is showing correct stake pool tickers for the wallets in the wallet dropdown in case wallets are already delegated

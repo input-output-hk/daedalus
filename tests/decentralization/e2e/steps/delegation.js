@@ -57,7 +57,7 @@ Then(/^I should see the "delegate" option$/, async function() {
   await this.client.waitForVisible(`//span[@class="WalletRow_actionLink" and text()="Delegate"]`);
 })
 
-Given(/^I delegate the wallet$/, async function() {
+Given(/^My wallet was delegated$/, async function() {
   await this.client.execute((stakePoolId, walletId, passphrase) => {
     daedalus.actions.staking.joinStakePool.trigger({ stakePoolId, walletId, passphrase })
   }, pool.id, wallet.id, 'Secret1234');
@@ -86,6 +86,24 @@ Given(/^I try to delegate the wallet$/, async function() {
   );
 })
 
+Given(/^I sucessfully delegate my wallet$/, async function() {
+  await this.waitAndClick('//span[@class="WalletRow_actionLink" and text()="Delegate"]');
+  await timeout(2000);
+  await this.waitAndClick('//button[text()="Continue"]');
+  await timeout(2000);
+  await this.waitAndClick('//button[text()="Continue"]');
+  await timeout(2000);
+  await this.waitAndClick('//button[text()="Continue"]');
+  await this.waitAndClick('.StakePoolThumbnail_component');
+  await this.waitAndClick('//button[text()="Continue"]');
+  await this.client.waitForVisible('.SimpleInput_input');
+  const input = this.client.element('.SimpleInput_input');
+  input.setValue('Secret1234');
+  await timeout(2000);
+  this.client.click('.confirmButton');
+  await this.waitAndClick('.closeButton');
+})
+
 Then(/^I should see a "([^"]*)" message$/, async function(message) {
   await this.client.waitForVisible(
     `//*[text()="${message}"]`
@@ -93,21 +111,24 @@ Then(/^I should see a "([^"]*)" message$/, async function(message) {
 })
 
 Then(/^I close the wizard$/, async function() {
-  await this.waitAndClick('.closeButton');
+  await this.waitAndClick('.DialogCloseButton_component');
 })
 
 Given('I send {int} ADA from the {string} wallet to the {string} wallet', async function(adaAmount, walletFrom, walletTo) {
-  this.client.execute((amount, sender, receiver) => {
+  await timeout(2000);
+  await this.client.executeAsync((amount, sender, receiver, done) => {
     const walletSender = daedalus.stores.wallets.getWalletByName('Wallet Sender');
     const walletReceiver = daedalus.stores.wallets.getWalletByName('Wallet Receiver');
     daedalus.stores.addresses
       .getAddressesByWalletId(walletReceiver.id)
-      .then(addresses => daedalus.actions.wallets.sendMoney.trigger({
-        receiver: addresses[0].id,
-        amount: `${amount * 1000000}`,
-        passphrase: 'Secret1234',
-        walletSender
-      }));
+      .then(addresses => {
+        daedalus.stores.wallets.sendMoneyRequest.execute({
+          address: addresses[0].id,
+          amount: amount * 1000000,
+          passphrase: 'Secret1234',
+          walletId: walletSender.id,
+        }).then(done);
+      });
   }, adaAmount, walletFrom, walletTo);
 })
 
