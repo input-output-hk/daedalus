@@ -1,6 +1,5 @@
 // @flow
 import React, { Component } from 'react';
-// $FlowFixMe
 import type { ComponentType, Element } from 'react';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';

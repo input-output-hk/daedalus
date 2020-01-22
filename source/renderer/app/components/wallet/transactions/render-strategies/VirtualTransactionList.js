@@ -279,11 +279,7 @@ export class VirtualTransactionList extends Component<Props> {
     context: ScrollContextType,
     { scrollTop }: { scrollTop: number }
   ) => {
-    if (scrollTop > 10) {
-      context.setFilterButtonFaded(true);
-    } else {
-      context.setFilterButtonFaded(false);
-    }
+    context.setFilterButtonFaded(scrollTop > 10);
   };
 
   // =============== REACT LIFECYCLE ================= //
