@@ -4082,17 +4082,31 @@
         }
       },
       {
+        "defaultMessage": "!!!Saturation:",
+        "description": "\"Saturation\" for the Stake Pools Tooltip page.",
+        "end": {
+          "column": 3,
+          "line": 70
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
+        "id": "staking.stakePools.tooltip.saturation",
+        "start": {
+          "column": 14,
+          "line": 66
+        }
+      },
+      {
         "defaultMessage": "!!!Pledge address",
         "description": "\"pledgeAddressLabel\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 80
+          "line": 85
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
         "id": "staking.stakePools.tooltip.pledgeAddressLabel",
         "start": {
           "column": 22,
-          "line": 76
+          "line": 81
         }
       },
       {
@@ -4100,13 +4114,13 @@
         "description": "\"Delegate to this pool\" Button for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 86
+          "line": 91
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
         "id": "staking.stakePools.tooltip.delegateButton",
         "start": {
           "column": 18,
-          "line": 81
+          "line": 86
         }
       }
     ],

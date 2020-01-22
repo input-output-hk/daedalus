@@ -248,3 +248,55 @@
     color: var(--theme-staking-stake-pool-tooltip-neutral-text-color);
   }
 }
+
+.saturationLabel {
+  width: 50% !important;
+}
+
+.saturationValue {
+  width: 50% !important;
+
+  & > span {
+    background: var(
+      --theme-staking-stake-pool-tooltip-neutral-background-color
+    );
+    white-space: nowrap;
+  }
+
+  .saturationBar {
+    background: var(--theme-staking-stake-pool-saturation-background-color);
+    border-radius: 2px;
+    height: 5px;
+    margin: 0 6px 0 0;
+    overflow: hidden;
+    padding: 0;
+    position: relative;
+    width: 40px;
+
+    span {
+      border-radius: 2px;
+      bottom: 0;
+      height: inherit;
+      left: 0;
+      padding: 0;
+      position: absolute;
+      top: 0;
+    }
+
+    &.green span {
+      background: var(--theme-staking-stake-pool-saturation-green-color);
+    }
+
+    &.orange span {
+      background: var(--theme-staking-stake-pool-saturation-orange-color);
+    }
+
+    &.red span {
+      background: var(--theme-staking-stake-pool-saturation-red-color);
+    }
+
+    &.yellow span {
+      background: var(--theme-staking-stake-pool-saturation-yellow-color);
+    }
+  }
+}
