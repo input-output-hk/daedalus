@@ -21,7 +21,6 @@ import WalletTransactionsList from '../../../../source/renderer/app/components/w
 import FilterButton from '../../../../source/renderer/app/components/wallet/transactions/FilterButton';
 import FilterDialog from '../../../../source/renderer/app/components/wallet/transactions/FilterDialog';
 
-/* eslint-disable consistent-return */
 storiesOf('Wallets|Transactions', module)
   .addDecorator(WalletsWrapper)
 
@@ -37,6 +36,7 @@ storiesOf('Wallets|Transactions', module)
           onClick={() => null}
         />
         <FilterDialog
+          locale={locale}
           dateFormat="MM/DD/YYYY"
           defaultFilterOptions={{}}
           populatedFilterOptions={{ dateRange: DateRangeTypes.ALL }}
