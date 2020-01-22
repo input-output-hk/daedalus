@@ -14,7 +14,6 @@ import type { InjectedProps } from '../../types/injectedPropsType';
 import { formattedWalletAmount } from '../../utils/formatters';
 import { getNumberOfFilterDimensionsApplied } from '../../utils/transaction';
 import type { TransactionFilterOptionsStruct } from '../../stores/TransactionsStore';
-import { WalletSyncStateStatuses } from '../../domains/Wallet';
 import { getNetworkExplorerUrlByType } from '../../utils/network';
 
 export const messages = defineMessages({
