@@ -195,3 +195,15 @@
     }
   }
 }
+
+:global {
+  .small-height-screen {
+    .FilterDialog_component {
+      .rdtPicker {
+        left: -281px;
+        right: auto;
+        top: -178px;
+      }
+    }
+  }
+}
