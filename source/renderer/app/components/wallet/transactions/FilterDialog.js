@@ -465,7 +465,7 @@ export default class FilterDialog extends Component<Props> {
           <div className={styles.amountRangeInput}>
             <TinyInput
               {...fromAmountFieldProps}
-              onBlur={(evt: Event<HTMLElement>) => {
+              onBlur={(evt: SyntheticEvent<EventTarget>) => {
                 fromAmountFieldProps.onBlur(evt);
                 this.onAmountFieldBlur('from');
               }}
@@ -480,7 +480,7 @@ export default class FilterDialog extends Component<Props> {
           <div className={styles.amountRangeInput}>
             <TinyInput
               {...toAmountFieldProps}
-              onBlur={(evt: Event<HTMLElement>) => {
+              onBlur={(evt: SyntheticEvent<EventTarget>) => {
                 toAmountFieldProps.onBlur(evt);
                 this.onAmountFieldBlur('to');
               }}

@@ -48,7 +48,7 @@ export default class TinyInput extends Component<Props, State> {
     return numberRegex.test(value);
   };
 
-  onInput = (evt: Event<HTMLElement>) => {
+  onInput = (evt: SyntheticInputEvent<EventTarget>) => {
     const { type, onInput } = this.props;
     const { prevValue } = this.state;
 
@@ -69,7 +69,7 @@ export default class TinyInput extends Component<Props, State> {
     }
   };
 
-  onPaste = (evt: Event<HTMLElement>) => {
+  onPaste = (evt: SyntheticClipboardEvent<EventTarget>) => {
     const { onPaste } = this.props;
     const value = evt.clipboardData.getData('text/plain');
 
