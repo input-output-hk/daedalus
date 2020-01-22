@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import type { Node } from 'react';
 import { observer } from 'mobx-react';
+import { uniqueId } from 'lodash';
 import type { Row } from '../types';
 import type { ScrollContextType } from '../WalletTransactionsList';
 import { WalletTransactionsListScrollContext } from '../WalletTransactionsList';
@@ -40,10 +41,8 @@ export class SimpleTransactionList extends Component<Props> {
             className={styles.component}
             onScroll={evt => this.onListScroll(context, evt)}
           >
-            {rows.map((row, index) => (
-              // eslint-disable-next-line react/jsx-no-bind
-              // eslint-disable-next-line react/no-array-index-key
-              <div key={index}>{renderRow(row)}</div>
+            {rows.map(row => (
+              <div key={uniqueId()}>{renderRow(row)}</div>
             ))}
           </div>
         )}
