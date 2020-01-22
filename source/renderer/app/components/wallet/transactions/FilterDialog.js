@@ -9,7 +9,7 @@ import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import { formattedWalletAmount } from '../../../utils/formatters';
 import type {
   DateRangeType,
-  TransactionFilterOptionsStruct,
+  TransactionFilterOptionsType,
 } from '../../../stores/TransactionsStore';
 import {
   DateRangeTypes,
@@ -200,8 +200,8 @@ const validateForm = (values: {
 type Props = {
   locale: string,
   dateFormat: string,
-  defaultFilterOptions: TransactionFilterOptionsStruct,
-  populatedFilterOptions: TransactionFilterOptionsStruct,
+  defaultFilterOptions: TransactionFilterOptionsType,
+  populatedFilterOptions: TransactionFilterOptionsType,
   onFilter: Function,
   onClose: Function,
 };

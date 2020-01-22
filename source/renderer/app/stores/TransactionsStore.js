@@ -41,7 +41,7 @@ export const DateRangeTypes = {
   CUSTOM_DATE_RANGE: 'customDateRange',
 };
 
-export type TransactionFilterOptionsStruct = {
+export type TransactionFilterOptionsType = {
   searchTerm?: string,
   searchLimit?: ?number,
   searchSkip?: ?number,
@@ -109,7 +109,7 @@ export default class TransactionsStore extends Store {
     return this._getTransactionsAllRequest(wallet.id);
   }
 
-  @computed get filterOptions(): ?TransactionFilterOptionsStruct {
+  @computed get filterOptions(): ?TransactionFilterOptionsType {
     const wallet = this.stores.wallets.active;
     if (!wallet) return null;
     return this._filterOptionsForWallets[wallet.id];
@@ -133,11 +133,11 @@ export default class TransactionsStore extends Store {
     );
   }
 
-  @computed get defaultFilterOptions(): TransactionFilterOptionsStruct {
+  @computed get defaultFilterOptions(): TransactionFilterOptionsType {
     return generateFilterOptions(this.all);
   }
 
-  @computed get populatedFilterOptions(): TransactionFilterOptionsStruct {
+  @computed get populatedFilterOptions(): TransactionFilterOptionsType {
     return this.filterOptions || emptyTransactionFilterOptions;
   }
 
@@ -273,7 +273,7 @@ export default class TransactionsStore extends Store {
   // ======================= PRIVATE ========================== //
 
   @action _updateFilterOptions = (
-    filterOptions: TransactionFilterOptionsStruct
+    filterOptions: TransactionFilterOptionsType
   ) => {
     const wallet = this.stores.wallets.active;
     if (!wallet) return;

@@ -13,7 +13,7 @@ import FilterButton from '../../components/wallet/transactions/FilterButton';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import { formattedWalletAmount } from '../../utils/formatters';
 import { getNumberOfFilterDimensionsApplied } from '../../utils/transaction';
-import type { TransactionFilterOptionsStruct } from '../../stores/TransactionsStore';
+import type { TransactionFilterOptionsType } from '../../stores/TransactionsStore';
 import { getNetworkExplorerUrlByType } from '../../utils/network';
 
 export const messages = defineMessages({
@@ -60,7 +60,7 @@ export default class WalletTransactionsPage extends Component<Props, State> {
     });
   };
 
-  onFilter = (filterProps: TransactionFilterOptionsStruct) => {
+  onFilter = (filterProps: TransactionFilterOptionsType) => {
     const {
       transactions: transactionActions,
       dialogs: dialogActions,

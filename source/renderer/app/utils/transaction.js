@@ -4,7 +4,7 @@ import {
   WalletTransaction,
   TransactionTypes,
 } from '../domains/WalletTransaction';
-import type { TransactionFilterOptionsStruct } from '../stores/TransactionsStore';
+import type { TransactionFilterOptionsType } from '../stores/TransactionsStore';
 import { DateRangeTypes } from '../stores/TransactionsStore';
 
 export const generateFilterOptions = (
@@ -103,7 +103,7 @@ export const isTransactionTitleInFilterRange = (
 };
 
 export const isTransactionInFilterRange = (
-  filterOptions: ?TransactionFilterOptionsStruct,
+  filterOptions: ?TransactionFilterOptionsType,
   transaction: WalletTransaction
 ) => {
   const {
@@ -129,7 +129,7 @@ export const isTransactionInFilterRange = (
 };
 
 export const getNumberOfFilterDimensionsApplied = (
-  filterOptions: ?TransactionFilterOptionsStruct
+  filterOptions: ?TransactionFilterOptionsType
 ) => {
   const {
     searchTerm,
