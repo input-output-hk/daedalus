@@ -2,6 +2,7 @@
 import { Given, When, Then } from 'cucumber';
 import { expect } from 'chai';
 import { delegationCentreStakingHelper } from './helpers';
+import stakingStakePoolsDummyJson from '../documents/stakingStakePools.dummy.json';
 import type { Daedalus } from '../../../types';
 
 declare var daedalus: Daedalus;
@@ -52,6 +53,11 @@ Then(/^I click on stake pools tab button/, async function () {
 });
 
 Then(/^I am on the Staking pool screen/, async function () {
+  // Set fake stake pools
+  await this.client.executeAsync((stakePools, done) => {
+    daedalus.api.ada.setFakeStakePoolsJsonForTesting(stakePools);
+    done();
+  }, stakingStakePoolsDummyJson);
   return this.client.waitForVisible(STAKE_POOL_PAGE);
 });
 
@@ -64,6 +70,14 @@ Then(/^I see "([^"]*)" stake pools$/, async function (numberOfStakePools) {
   });
   const result = stakePools && stakePools.value ? stakePools.value : [];
   expect(result.length).to.equal(parseInt(numberOfStakePools));
+});
+
+Given(/^I set stake pools fetch failed$/, async function () {
+  // Set fake stake pools fetch failed state
+  await this.client.executeAsync(done => {
+    daedalus.api.ada.setStakePoolsFetchingFailed();
+    done();
+  });
 });
 
 Then(/^I should see "([^"]*)" stake pools loaded by rank$/, async function (numberOfStakePools) {
@@ -110,6 +124,7 @@ Then(/^I should see loading stake pools error message:$/, async function (messag
 });
 
 Then(/^I should not see any stake pool/, function () {
+  // @TODO - set some time interval and check that whole time spinner is visible
   return this.client.waitForVisible(STAKE_POOLS_LIST_SELECTOR, null, true);
 });
 
@@ -249,3 +264,13 @@ Then(/^I see following label for already delegated stake pools: "([^"]*)"$/, asy
   const delegatedStakePoolLabel = await this.client.getText(STAKE_POOLS_DELEGATING_TO_MESSAGE);
   expect(delegatedStakePoolLabel.toString().split('.')[0]).to.equal(message);
 });
+
+Given(/^I delegate the wallet$/, async function(pool, wallet, passphrase) {
+  await this.client.execute((stakePoolId, walletId, delegationPassphrase) => {
+    daedalus.actions.staking.joinStakePool.trigger({
+      stakePoolId,
+      walletId,
+      passphrase: delegationPassphrase || 'Secret1234',
+    })
+  }, pool.id, wallet.id, passphrase);
+})

@@ -13,6 +13,7 @@ import type {
 import type {
   LatestAppVersionInfoResponse,
   GetLatestAppVersionResponse,
+  AdaApiStakePools,
 } from '../nodes/types';
 import type { GetNewsResponse } from '../news/types';
 import { EPOCH_LENGTH_ITN } from '../../config/epochsConfig';
@@ -22,6 +23,8 @@ let SYNC_PROGRESS = null;
 let NEXT_ADA_UPDATE = null;
 let APPLICATION_VERSION = null;
 let FAKE_NEWSFEED_JSON: ?GetNewsResponse;
+let FAKE_STAKE_POOLS_JSON: ?any;
+let STAKE_POOLS_FETCH_FAILED = false;
 
 export default (api: AdaApi) => {
   api.getNetworkInfo = async (): Promise<GetNetworkInfoResponse> => {
@@ -154,22 +157,20 @@ export default (api: AdaApi) => {
     });
   };
 
-  api.resetTestOverrides = () => {
-    LATEST_APP_VERSION = null;
-    NEXT_ADA_UPDATE = null;
-    APPLICATION_VERSION = null;
+  api.setFakeStakePoolsJsonForTesting = (fakeStakePoolsJson: ?AdaApiStakePools) => {
+    FAKE_STAKE_POOLS_JSON = fakeStakePoolsJson;
   };
 
-  api.setFakeNewsFeedJsonForTesting = (fakeNewsfeedJson: ?GetNewsResponse) => {
-    FAKE_NEWSFEED_JSON = fakeNewsfeedJson;
+  api.setStakePoolsFetchingFailed = () => {
+    STAKE_POOLS_FETCH_FAILED = true;
   };
 
-  api.getNews = (): Promise<GetNewsResponse> => {
+  api.getStakePools = (): Promise<AdaApiStakePools> => {
     return new Promise((resolve, reject) => {
-      if (!FAKE_NEWSFEED_JSON) {
-        reject(new Error('Unable to fetch news'));
+      if (STAKE_POOLS_FETCH_FAILED) {
+        reject(new Error('Unable to fetch stake pools'));
       } else {
-        resolve(FAKE_NEWSFEED_JSON);
+        resolve(FAKE_STAKE_POOLS_JSON);
       }
     });
   };
