@@ -2,6 +2,9 @@
 import { Given, Then } from 'cucumber';
 import { navigateTo, waitUntilUrlEquals } from '../../../navigation/e2e/steps/helpers';
 import { timeout } from '../../../common/e2e/steps/helpers';
+import type { Daedalus } from '../../../types';
+
+declare var daedalus: Daedalus;
 
 Given(/^I am on the Delegation "([^"]*)" screen$/, async function(
   screenName
@@ -93,13 +96,18 @@ Then(/^I close the wizard$/, async function() {
   await this.waitAndClick('.closeButton');
 })
 
-
-Given('I send {int} ADA to the {string} wallet', async function(adaAmount, walletName) {
-  console.log('adaAmount', adaAmount);
-  console.log('walletName', walletName);
-  // await this.waitAndClick(
-  //   `//*[text()="${message}"]`
-  // );
+Given('I send {int} ADA from the {string} wallet to the {string} wallet', async function(adaAmount, walletFrom, walletTo) {
+  this.client.execute((amount, sender, receiver) => {
+    const walletSender = daedalus.stores.wallets.getWalletByName('Wallet Sender');
+    const walletReceiver = daedalus.stores.wallets.getWalletByName('Wallet Receiver');
+    daedalus.stores.addresses
+      .getAddressesByWalletId(walletReceiver.id)
+      .then(addresses => daedalus.actions.wallets.sendMoney.trigger({
+        receiver: addresses[0].id,
+        amount: `${amount * 1000000}`,
+        passphrase: 'Secret1234',
+        walletSender
+      }));
+  }, adaAmount, walletFrom, walletTo);
 })
-
 

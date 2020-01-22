@@ -1,5 +1,6 @@
 // @flow
 import Action from './lib/Action';
+import Wallet from '../domains/Wallet';
 import type { walletExportTypeChoices } from '../types/walletExportTypes';
 import type { CsvRecord } from '../../../common/types/rewards-csv-request.types';
 
@@ -52,6 +53,7 @@ export default class WalletsActions {
     receiver: string,
     amount: string,
     passphrase: string,
+    walletSender?: Wallet,
   }> = new Action();
   chooseWalletExportType: Action<{
     walletExportType: walletExportTypeChoices,

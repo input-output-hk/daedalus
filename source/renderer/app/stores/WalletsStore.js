@@ -615,12 +615,15 @@ export default class WalletsStore extends Store {
     receiver,
     amount,
     passphrase,
+    walletSender,
   }: {
     receiver: string,
     amount: string,
     passphrase: string,
+    walletSender?: Wallet,
   }) => {
-    const wallet = this.active;
+    console.log('amount', amount);
+    const wallet = this.active || walletSender;
     if (!wallet) throw new Error('Active wallet required before sending.');
     await this.sendMoneyRequest.execute({
       address: receiver,
