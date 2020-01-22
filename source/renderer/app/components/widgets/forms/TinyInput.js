@@ -12,6 +12,7 @@ type Props = {
   innerLabelSuffix?: string,
   innerValue?: Node,
   notNegative?: boolean,
+  onBlur?: Function,
   onInput?: Function,
   onPaste?: Function,
   type?: string,
@@ -35,51 +36,51 @@ export default class TinyInput extends Component<Props, State> {
     const { notNegative, type } = this.props;
     const numberRegex = new RegExp(/^-?\d*\.?\d*$/);
     const notNegativeNumberRegex = new RegExp(/^\d*\.?\d*$/);
-    let result = null;
 
     if (type !== 'number') {
       return true;
     }
 
     if (notNegative) {
-      result = notNegativeNumberRegex.test(value);
-    } else {
-      result = numberRegex.test(value);
+      return notNegativeNumberRegex.test(value);
     }
 
-    if (result && value !== '.' && Number(value).toFixed(2).length > 23) {
-      return false;
-    }
-
-    return result;
+    return numberRegex.test(value);
   };
 
-  onInput = (evt: any) => {
-    const { onInput } = this.props;
+  onInput = (evt: Event<HTMLElement>) => {
+    const { type, onInput } = this.props;
     const { prevValue } = this.state;
+
+    if (type === 'number' && evt.target.value === '.') {
+      evt.target.value = '0.';
+    }
+
     const { value } = evt.target;
 
     if (this.validate(value)) {
       this.setState({ prevValue: value });
-      if (onInput) {
-        onInput(evt);
-      }
     } else {
       evt.target.value = prevValue;
     }
+
+    if (onInput) {
+      onInput(evt);
+    }
   };
 
-  onPaste = (evt: any) => {
+  onPaste = (evt: Event<HTMLElement>) => {
     const { onPaste } = this.props;
     const value = evt.clipboardData.getData('text/plain');
 
     if (this.validate(value)) {
       this.setState({ prevValue: value });
-      if (onPaste) {
-        onPaste(evt);
-      }
     } else {
       evt.preventDefault();
+    }
+
+    if (onPaste) {
+      onPaste(evt);
     }
   };
 

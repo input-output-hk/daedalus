@@ -162,11 +162,13 @@ export default class WalletTransactionsPage extends Component<Props, State> {
         value={{ setFilterButtonFaded: this.setFilterButtonFaded }}
       >
         <VerticalFlexContainer>
-          <FilterButton
-            numberOfFilterDimensionsApplied={numberOfFilterDimensionsApplied}
-            faded={isFilterButtonFaded}
-            onClick={this.openFilterDialog}
-          />
+          {hasAny && (
+            <FilterButton
+              numberOfFilterDimensionsApplied={numberOfFilterDimensionsApplied}
+              faded={isFilterButtonFaded}
+              onClick={this.openFilterDialog}
+            />
+          )}
           {uiDialogs.isOpen(FilterDialog) && (
             <FilterDialogContainer onFilter={this.onFilter} />
           )}

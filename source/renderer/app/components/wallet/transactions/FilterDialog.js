@@ -88,6 +88,9 @@ const messages = defineMessages({
   },
 });
 
+const MIN_AMOUNT = 0.000001;
+const AMOUNT_RAW_LENGTH_LIMIT = 10;
+
 const calculateDateRange = (
   dateRange: string,
   customDateRange: { customFromDate: string, customToDate: string }
@@ -134,34 +137,23 @@ const formatDateValue = (
 };
 
 const formatAmountValue = (amount: string, defaultAmount: string) => {
-  if (!amount) {
-    const formattedDefaultAmount = formattedWalletAmount(
-      new BigNumber(Number(defaultAmount).toFixed(2)),
-      false,
-      false
-    );
-
-    return <span className="undefined">{formattedDefaultAmount}</span>;
-  }
-
-  let inputAmount = null;
-  if (amount === '.') {
+  let inputAmount = amount || defaultAmount;
+  if (inputAmount === '.') {
     inputAmount = '0';
-  } else if (amount[0] === '.') {
-    inputAmount = `0${amount}`;
-  } else if (amount[amount.length - 1] === '.') {
-    inputAmount = `${amount}0`;
-  } else {
-    inputAmount = amount;
+  } else if (inputAmount[0] === '.') {
+    inputAmount = `0${inputAmount}`;
+  } else if (inputAmount[inputAmount.length - 1] === '.') {
+    inputAmount = `${inputAmount}0`;
   }
 
-  const amountBigNumber = new BigNumber(Number(inputAmount).toFixed(2));
+  const amountBigNumber = new BigNumber(inputAmount);
+  const amountClassName = amount ? '' : 'undefined';
+  const content =
+    inputAmount.length > AMOUNT_RAW_LENGTH_LIMIT
+      ? formattedWalletAmount(amountBigNumber, false, false)
+      : amountBigNumber.toFormat();
 
-  if (amount.length > 5) {
-    return formattedWalletAmount(amountBigNumber, false, false);
-  }
-
-  return amountBigNumber.toFormat();
+  return <span className={amountClassName}>{content}</span>;
 };
 
 const validateForm = (values: {
@@ -434,6 +426,17 @@ export default class FilterDialog extends Component<Props> {
     );
   };
 
+  onAmountFieldBlur = (selector: string) => {
+    const { form } = this;
+    const { fromAmount, toAmount } = form.values();
+
+    if (selector === 'from' && fromAmount < MIN_AMOUNT) {
+      form.select('fromAmount').set(MIN_AMOUNT.toString());
+    } else if (selector === 'to' && toAmount < MIN_AMOUNT) {
+      form.select('toAmount').set(MIN_AMOUNT.toString());
+    }
+  };
+
   renderAmountRangeField = () => {
     const { form } = this;
     const { intl } = this.context;
@@ -450,6 +453,8 @@ export default class FilterDialog extends Component<Props> {
       defaultFromAmount
     );
     const toAmountInnerValue = formatAmountValue(toValue, defaultToAmount);
+    const fromAmountFieldProps = fromAmountField.bind();
+    const toAmountFieldProps = toAmountField.bind();
 
     return (
       <div className={styles.amountRange}>
@@ -459,9 +464,14 @@ export default class FilterDialog extends Component<Props> {
         <div className={styles.body}>
           <div className={styles.amountRangeInput}>
             <TinyInput
-              {...fromAmountField.bind()}
+              {...fromAmountFieldProps}
+              onBlur={(evt: Event<HTMLElement>) => {
+                fromAmountFieldProps.onBlur(evt);
+                this.onAmountFieldBlur('from');
+              }}
               useReadMode
               notNegative
+              maxLength={20}
               innerLabelPrefix={intl.formatMessage(globalMessages.rangeFrom)}
               innerLabelSuffix={intl.formatMessage(globalMessages.unitAda)}
               innerValue={fromAmountInnerValue}
@@ -469,9 +479,14 @@ export default class FilterDialog extends Component<Props> {
           </div>
           <div className={styles.amountRangeInput}>
             <TinyInput
-              {...toAmountField.bind()}
+              {...toAmountFieldProps}
+              onBlur={(evt: Event<HTMLElement>) => {
+                toAmountFieldProps.onBlur(evt);
+                this.onAmountFieldBlur('to');
+              }}
               useReadMode
               notNegative
+              maxLength={20}
               innerLabelPrefix={intl.formatMessage(globalMessages.rangeTo)}
               innerLabelSuffix={intl.formatMessage(globalMessages.unitAda)}
               innerValue={toAmountInnerValue}
