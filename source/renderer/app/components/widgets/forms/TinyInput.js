@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import type { ComponentType, Element } from 'react';
+import type { Node } from 'react';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { IDENTIFIERS } from 'react-polymorph/lib/themes/API';
@@ -8,34 +8,14 @@ import styles from './TinyInput.scss';
 
 type Props = {
   autoFocus: boolean,
-  className?: ?string,
-  disabled?: boolean,
-  error: string | Element<any>,
   innerLabelPrefix?: string,
   innerLabelSuffix?: string,
-  innerValue?: string,
-  label?: string | Element<any>,
-  maxLength?: number,
-  minLength?: number,
+  innerValue?: Node,
   notNegative?: boolean,
-  onBlur?: Function,
-  onChange?: Function,
-  onFocus?: Function,
   onInput?: Function,
-  onKeyPress?: Function,
   onPaste?: Function,
-  placeholder?: string,
-  readOnly: boolean,
-  setError?: Function,
-  selectedOption?: any,
-  selectionRenderer?: Function,
-  skin?: ComponentType<any>,
-  theme: ?Object, // will take precedence over theme in context if passed
-  themeId: string,
-  themeOverrides: Object,
   type?: string,
   useReadMode?: boolean,
-  value: string,
 };
 
 type State = {
@@ -67,10 +47,8 @@ export default class TinyInput extends Component<Props, State> {
       result = numberRegex.test(value);
     }
 
-    if (result) {
-      if (value !== '.' && Number(value).toFixed(2).length > 23) {
-        return false;
-      }
+    if (result && value !== '.' && Number(value).toFixed(2).length > 23) {
+      return false;
     }
 
     return result;
@@ -117,13 +95,13 @@ export default class TinyInput extends Component<Props, State> {
     } = this.props;
     const { isEditMode } = this.state;
 
-    /* eslint-disable */
     return (
       <div
         className={styles.component}
-        onClick={() => this.setEditMode(true)}
+        onFocus={() => this.setEditMode(true)}
         onBlur={() => this.setEditMode(false)}
-        role="contentinfo"
+        role="button"
+        tabIndex={0}
       >
         {useReadMode && !isEditMode && (
           <div className={styles.contentInReadMode}>
@@ -145,6 +123,5 @@ export default class TinyInput extends Component<Props, State> {
         )}
       </div>
     );
-    /* eslint-enable */
   }
 }

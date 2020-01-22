@@ -1,5 +1,4 @@
 // @flow
-/* eslint-disable consistent-return */
 import {
   observable,
   computed,
@@ -276,12 +275,13 @@ export default class TransactionsStore extends Store {
     filterOptions: TransactionFilterOptionsType
   ) => {
     const wallet = this.stores.wallets.active;
-    if (!wallet) return;
+    if (!wallet) return false;
     const currentFilterOptions = this._filterOptionsForWallets[wallet.id];
     this._filterOptionsForWallets[wallet.id] = {
       ...currentFilterOptions,
       ...filterOptions,
     };
+    return true;
   };
 
   _getTransactionsRecentRequest = (
@@ -310,7 +310,7 @@ export default class TransactionsStore extends Store {
    */
   _ensureFilterOptionsForActiveWallet = () => {
     const wallet = this.stores.wallets.active;
-    if (!wallet) return;
+    if (!wallet) return false;
     const options = this._filterOptionsForWallets[wallet.id];
     if (!options) {
       // Setup options for active wallet
@@ -320,5 +320,6 @@ export default class TransactionsStore extends Store {
         });
       });
     }
+    return true;
   };
 }
