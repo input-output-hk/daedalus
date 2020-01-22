@@ -16,7 +16,7 @@ const {
 const LOADING_MESSAGE_SELECTOR = '.StakePools_component.StakePools_isLoading .StakePools_loadingBlockWrapper p';
 const STAKE_POOL_TAB_BUTTON = '.stake-pools.NavButton_component.NavButton_normal';
 const STAKE_POOL_PAGE = '.StakePools_component';
-const STAKE_POOLS_LIST_SELECTOR = '.StakePoolsList_component';
+const STAKE_POOLS_LIST_SELECTOR = '.StakePoolsList_component .StakePoolThumbnail_component';
 const STAKE_POOLS_SEARCH_SELECTOR = '.StakePoolsSearch_component .StakePoolsSearch_searchInput.SimpleFormField_root input';
 const SEARCH_RESULTS_LABEL_SELECTOR = '.StakePools_component h2 span';
 const SECOND_STAKE_POOL_ITEM_SELECTOR = '.StakePoolsList_component .StakePoolThumbnail_component:nth-child(2)';
@@ -59,6 +59,14 @@ Then(/^I am on the Staking pool screen/, async function () {
     done();
   }, stakingStakePoolsDummyJson);
   return this.client.waitForVisible(STAKE_POOL_PAGE);
+});
+
+Then(/^I should't see loading message anymore/, function () {
+  return this.client.waitForVisible(LOADING_MESSAGE_SELECTOR, null, true);
+});
+
+Then(/^I should see stake pools listed/, async function () {
+  return this.client.waitForVisible(STAKE_POOLS_LIST_SELECTOR);
 });
 
 Then(/^I see "([^"]*)" stake pools$/, async function (numberOfStakePools) {
@@ -124,8 +132,9 @@ Then(/^I should see loading stake pools error message:$/, async function (messag
 });
 
 Then(/^I should not see any stake pool/, function () {
-  // @TODO - set some time interval and check that whole time spinner is visible
-  return this.client.waitForVisible(STAKE_POOLS_LIST_SELECTOR, null, true);
+  setInterval(() => {
+    return this.client.waitForVisible(LOADING_MESSAGE_SELECTOR);
+  },1000);
 });
 
 When(/^I see the stake pools search input field/, function () {
@@ -142,7 +151,7 @@ Then(/^I should see message "([^"]*)"$/, async function (message) {
   expect(searchResultsMessages).to.equal(message);
 });
 
-Then(/^I should see number 3 stake pool with slug "([^"]*)"$/, async function (slug) {
+Then(/^I should see stake pool with slug "([^"]*)"$/, async function (slug) {
   await this.client.waitForText(STAKE_POOL_SLUG_SELECTOR);
   const stakePoolSlug = await this.client.getText(STAKE_POOL_SLUG_SELECTOR);
   expect(stakePoolSlug).to.equal(slug);
@@ -195,7 +204,7 @@ Then(/^Stake pool "([^"]*)" tooltip shows correct data$/, async function (positi
   expect(secondStakePool.ticker).to.equal(stakePoolTicker);
   expect(secondStakePool.homepage).to.equal(stakePoolHomepage);
   expect(`${secondStakePool.performance}%`).to.equal(stakePoolPerformance);
-  expect(`${secondStakePool.cost.c[0]} ADA`).to.equal(stakePoolCost);
+  expect(`${secondStakePool.cost} ADA`).to.equal(stakePoolCost);
   expect(secondStakePool.description).to.equal(stakePoolDescription);
   expect(secondStakePool.name).to.equal(stakePoolName);
   expect(`${secondStakePool.profitMargin}%`).to.equal(stakePoolProfitMargin);
