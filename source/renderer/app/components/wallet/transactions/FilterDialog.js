@@ -81,11 +81,6 @@ const messages = defineMessages({
     defaultMessage: '!!!Amount range',
     description: 'Amount range of filter.',
   },
-  amountUnit: {
-    id: 'global.unit.ada',
-    defaultMessage: '!!!ADA',
-    description: 'Amount unit.',
-  },
   filter: {
     id: 'wallet.transaction.filter.filter',
     defaultMessage: '!!!Filter',
@@ -468,7 +463,7 @@ export default class FilterDialog extends Component<Props> {
               useReadMode
               notNegative
               innerLabelPrefix={intl.formatMessage(globalMessages.rangeFrom)}
-              innerLabelSuffix={intl.formatMessage(messages.amountUnit)}
+              innerLabelSuffix={intl.formatMessage(globalMessages.unitAda)}
               innerValue={fromAmountInnerValue}
             />
           </div>
@@ -478,7 +473,7 @@ export default class FilterDialog extends Component<Props> {
               useReadMode
               notNegative
               innerLabelPrefix={intl.formatMessage(globalMessages.rangeTo)}
-              innerLabelSuffix={intl.formatMessage(messages.amountUnit)}
+              innerLabelSuffix={intl.formatMessage(globalMessages.unitAda)}
               innerValue={toAmountInnerValue}
             />
           </div>
