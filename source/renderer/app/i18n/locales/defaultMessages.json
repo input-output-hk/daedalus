@@ -7560,31 +7560,17 @@
         }
       },
       {
-        "defaultMessage": "!!!ADA",
-        "description": "Amount unit.",
+        "defaultMessage": "!!!Filter",
+        "description": "Filter button label.",
         "end": {
           "column": 3,
           "line": 88
         },
         "file": "source/renderer/app/components/wallet/transactions/FilterDialog.js",
-        "id": "global.unit.ada",
-        "start": {
-          "column": 14,
-          "line": 84
-        }
-      },
-      {
-        "defaultMessage": "!!!Filter",
-        "description": "Filter button label.",
-        "end": {
-          "column": 3,
-          "line": 93
-        },
-        "file": "source/renderer/app/components/wallet/transactions/FilterDialog.js",
         "id": "wallet.transaction.filter.filter",
         "start": {
           "column": 10,
-          "line": 89
+          "line": 84
         }
       }
     ],
