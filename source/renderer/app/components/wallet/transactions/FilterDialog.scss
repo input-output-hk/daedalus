@@ -33,6 +33,52 @@
       .rdtPicker {
         background-color: var(--theme-transactions-filter-modal-bg-color);
         box-shadow: var(--theme-transactions-filter-date-picker-shadow);
+
+        .rdtMonths .rdtSwitch {
+          background-color: var(
+            --theme-transactions-date-picker-button-background-color
+          );
+          pointer-events: none;
+        }
+
+        thead tr:first-child th:hover {
+          background-color: var(
+            --theme-transactions-date-picker-button-background-color-hover
+          );
+        }
+
+        tr {
+          td.rdtActive,
+          td.rdtActive:hover {
+            background-color: var(
+              --theme-transactions-date-picker-button-background-color
+            );
+            border-radius: 2px;
+            font-family: var(--font-semibold);
+          }
+        }
+
+        td.rdtYear:hover,
+        td.rdtMonth:hover,
+        td.rdtDay:hover,
+        td.rdtHour:hover,
+        td.rdtMinute:hover,
+        td.rdtSecond:hover,
+        .rdtTimeToggle:hover {
+          background-color: var(
+            --theme-transactions-date-picker-button-background-color-hover
+          );
+        }
+
+        td.rdtToday:before {
+          border-bottom-color: var(
+            --theme-transactions-date-picker-button-background-color
+          );
+        }
+
+        td.rdtActive.rdtToday:before {
+          border-bottom-color: var(--theme-transactions-filter-modal-bg-color);
+        }
       }
     }
   }

@@ -21,13 +21,6 @@
         }
       }
 
-      .rdtMonths .rdtSwitch {
-        background-color: var(
-          --theme-transactions-date-picker-button-background-color
-        );
-        pointer-events: none;
-      }
-
       th.rdtSwitch,
       th.rdtNext,
       th.rdtPrev {
@@ -57,12 +50,6 @@
         vertical-align: middle;
       }
 
-      thead tr:first-child th:hover {
-        background-color: var(
-          --theme-transactions-date-picker-button-background-color-hover
-        );
-      }
-
       th.dow {
         font-family: var(--font-regular);
         font-size: 12px;
@@ -81,35 +68,6 @@
       td.rdtNew {
         color: var(--theme-dialog-text-color);
         opacity: 0.3;
-      }
-
-      tr {
-        td.rdtActive,
-        td.rdtActive:hover {
-          background-color: var(
-            --theme-transactions-date-picker-button-background-color
-          );
-          border-radius: 2px;
-          font-weight: 600;
-        }
-      }
-
-      td.rdtYear:hover,
-      td.rdtMonth:hover,
-      td.rdtDay:hover,
-      td.rdtHour:hover,
-      td.rdtMinute:hover,
-      td.rdtSecond:hover,
-      .rdtTimeToggle:hover {
-        background-color: var(
-          --theme-transactions-date-picker-button-background-color-hover
-        );
-      }
-
-      td.rdtToday:before {
-        border-bottom-color: var(
-          --theme-transactions-date-picker-button-background-color
-        );
       }
 
       td.rdtActive.rdtToday:before {

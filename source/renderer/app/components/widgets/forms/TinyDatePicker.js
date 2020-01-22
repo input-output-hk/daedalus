@@ -17,6 +17,7 @@ type Props = {
   onClick?: Function,
   onFocus?: Function,
   onKeyDown?: Function,
+  locale?: string,
   dateFormat: string,
   value: string,
   innerLabelPrefix: string,
@@ -32,6 +33,7 @@ export default class TinyDatePicker extends Component<Props> {
   static defaultProps = {
     onReset: () => null,
     onChange: () => null,
+    locale: 'en-us',
   };
 
   selfRef: any;

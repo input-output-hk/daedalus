@@ -15,10 +15,11 @@ export default class FilterDialogContainer extends Component<Props> {
     const { actions, stores, onFilter } = this.props;
     const { closeActiveDialog } = actions.dialogs;
     const { dataForActiveDialog } = stores.uiDialogs;
-    const { currentDateFormat } = stores.profile;
+    const { currentLocale, currentDateFormat } = stores.profile;
 
     return (
       <FilterDialog
+        locale={currentLocale}
         dateFormat={currentDateFormat}
         onFilter={onFilter}
         onClose={() => closeActiveDialog.trigger()}

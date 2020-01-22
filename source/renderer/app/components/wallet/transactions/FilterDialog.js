@@ -198,6 +198,7 @@ const validateForm = (values: {
 };
 
 type Props = {
+  locale: string,
   dateFormat: string,
   defaultFilterOptions: TransactionFilterOptionsStruct,
   populatedFilterOptions: TransactionFilterOptionsStruct,
@@ -378,6 +379,7 @@ export default class FilterDialog extends Component<Props> {
     const { form } = this;
     const { intl } = this.context;
     const {
+      locale,
       dateFormat,
       defaultFilterOptions: { fromDate, toDate },
     } = this.props;
@@ -415,6 +417,7 @@ export default class FilterDialog extends Component<Props> {
               closeOnSelect
               onReset={() => form.select('customFromDate').set('')}
               isValidDate={this.isValidDate}
+              locale={locale}
               dateFormat={dateFormat}
             />
           </div>
@@ -427,6 +430,7 @@ export default class FilterDialog extends Component<Props> {
               closeOnSelect
               onReset={() => form.select('customToDate').set('')}
               isValidDate={this.isValidDate}
+              locale={locale}
               dateFormat={dateFormat}
             />
           </div>
