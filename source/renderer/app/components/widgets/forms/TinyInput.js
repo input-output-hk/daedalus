@@ -15,6 +15,7 @@ type Props = {
   onBlur?: Function,
   onInput?: Function,
   onPaste?: Function,
+  onKeyPress?: Function,
   type?: string,
   useReadMode?: boolean,
 };
@@ -84,6 +85,19 @@ export default class TinyInput extends Component<Props, State> {
     }
   };
 
+  onKeyPress = (evt: SyntheticKeyboardEvent<EventTarget>) => {
+    const { onKeyPress } = this.props;
+    const { charCode } = evt;
+
+    if (charCode === 13) {
+      this.setEditMode(false);
+    }
+
+    if (onKeyPress) {
+      onKeyPress(evt);
+    }
+  };
+
   render() {
     const {
       autoFocus,
@@ -119,6 +133,7 @@ export default class TinyInput extends Component<Props, State> {
             autoFocus={useReadMode ? true : autoFocus}
             onInput={this.onInput}
             onPaste={this.onPaste}
+            onKeyPress={this.onKeyPress}
             type={type === 'number' ? 'string' : type}
           />
         )}
