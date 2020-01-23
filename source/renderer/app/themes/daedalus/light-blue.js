@@ -460,13 +460,14 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--rp-button-font-size': '14px',
   },
   rpCheckbox: {
-    '--rp-checkbox-border': '1px solid #2f496e',
+    '--rp-checkbox-border': '2px solid #2f496e',
     '--rp-checkbox-border-color': '#c6cdd6',
     '--rp-checkbox-border-color-disabled': 'rgba(47, 73, 110, 0.2)',
     '--rp-checkbox-check-bg-color': '#2f496e',
     '--rp-checkbox-check-icon-color': '#fafbfc',
     '--rp-checkbox-label-text-color': '#5e6066',
     '--rp-checkbox-label-text-color-disabled': 'rgba(94, 96, 102, 0.3)',
+    '--rp-checkbox-size': '22px',
   },
   rpColors: {
     '--rp-theme-color-error': '#ea4c5b',
@@ -499,6 +500,9 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--rp-input-text-color': '#5e6066',
     '--rp-input-text-color-disabled': 'rgba(94, 96, 102, 0.5)',
   },
+  rpLink: {
+    '--rp-link-color': 'rgb(41, 111, 208)',
+  },
   rpModal: {
     '--rp-modal-bg-color': '#fafbfc',
     '--rp-modal-max-height': '90%',
@@ -515,6 +519,7 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--rp-options-shadow': 'none',
   },
   rpRadio: {
+    '--rp-radio-border': '2px solid #2f496e',
     '--rp-radio-border-color': '#2f496e',
     '--rp-radio-color': '#fafbfc',
     '--rp-radio-label-margin': '0 0 0 10px',
@@ -550,9 +555,12 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--rp-switch-label-opacity': '1',
     '--rp-switch-label-text-color': '#5e6066',
     '--rp-switch-label-width': '100%',
+    '--rp-switch-normal-border-radius': '2px',
     '--rp-switch-opacity-off': '0.3',
     '--rp-switch-root-margin': '0 0 30px 0',
+    '--rp-switch-tiny-border-radius': '1px',
     '--rp-switch-thumb-bg-color': '#fff',
+    '--rp-switch-size': '22px',
   },
   rpTextArea: {
     '--rp-textarea-bg-color': '#fafbfc',
@@ -650,6 +658,12 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-staking-stake-pool-glow-color': 'rgba(0, 149, 255, 0.3)',
     '--theme-staking-progress-label-light': '#fafbfc',
     '--theme-staking-stake-pool-retirement-background-color': '#ea4c5b',
+    '--theme-staking-stake-pool-saturation-background-color':
+      'rgba(94, 96, 102, 0.2)',
+    '--theme-staking-stake-pool-saturation-green-color': '#1ccc5d',
+    '--theme-staking-stake-pool-saturation-orange-color': '#ff8800',
+    '--theme-staking-stake-pool-saturation-red-color': '#ea4c5b',
+    '--theme-staking-stake-pool-saturation-yellow-color': '#ffcc00',
     '--theme-staking-stake-pool-selected-background-color': '#5da377',
     '--theme-staking-stake-pool-selected-checkmark-icon-color': '#fafbfc',
     '--theme-staking-stake-pool-selected-ticker-color': '#fafbfc',
@@ -812,6 +826,18 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
       'rgba(68, 91, 124, 0.05)',
     '--theme-recovery-phrase-attention-background-color':
       'rgba(234, 76, 91, .1)',
+  },
+  walletRestoreDialog: {
+    '--theme-wallet-restore-dialog-new-label-background-color':
+      'rgba(47, 73, 110, 0.1)',
+    '--theme-wallet-restore-dialog-new-label-color': '#5e6066',
+    '--theme-wallet-restore-dialog-step-walletType-hardwareWalletDisclaimer-text-color':
+      '#ea4c5b',
+  },
+  walletSettings: {
+    '--theme-wallet-settings-section-separator-color':
+      'rgba(94, 96, 102, 0.15)',
+    '--theme-wallet-settings-resync-button-label-color': 'rgba(94, 96, 102, 1)',
   },
 };
 

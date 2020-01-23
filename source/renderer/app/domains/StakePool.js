@@ -29,6 +29,7 @@ export type StakePoolProps = {
   profitMargin: number,
   ranking: number,
   retiring?: ?Date,
+  saturation: number,
 };
 
 export default class StakePool {
@@ -47,6 +48,7 @@ export default class StakePool {
   @observable profitMargin: number;
   @observable ranking: number;
   @observable retiring: ?Date;
+  @observable saturation: number;
 
   constructor(data: StakePoolProps) {
     Object.assign(this, data);

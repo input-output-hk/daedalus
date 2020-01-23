@@ -26,8 +26,9 @@
     padding: 10px;
   }
   .validationStatusIcon {
-    margin-right: 25px;
+    margin-right: 20px;
     svg {
+      display: block;
       height: 28px;
       width: 28px;
     }
@@ -49,6 +50,7 @@
   }
   .validationStatusWarning {
     background-color: var(--theme-recovery-phrase-warning-background-color);
+    line-height: 1.38;
   }
   .validationStatusNotification {
     background-color: var(--theme-recovery-phrase-attention-background-color);

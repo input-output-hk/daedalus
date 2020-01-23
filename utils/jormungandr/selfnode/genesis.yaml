@@ -22,6 +22,7 @@ blockchain_configuration:
   block0_consensus: genesis_praos
 
   # Number of slots in each epoch
+  # slots_per_epoch: 10
   slots_per_epoch: 150
   # ^^ Daedalus specific value!
 
@@ -46,7 +47,7 @@ blockchain_configuration:
   # fee(num_bytes, has_certificate) = constant + num_bytes * coefficient + has_certificate * certificate
   linear_fees:
     constant: 14
-    coefficient: 1
+    coefficient: 3
     certificate: 42
 
   # The speed to update the KES Key in seconds
@@ -3176,7 +3177,7 @@ initial:
     - address: addr1swuhudzu5xyacw44wfut4m58lym9v25hf40pghnrya59efdd90czu2fx5yh
       value: 100000000000
 
-  # Legacy Funds
+  # Legacy Funds (Byron)
   - legacy_fund:
     - address: DdzFFzCqrht5TM5GznWhJ3GTpKawtJuA295F8igwXQXyt2ih1TL1XKnZqRBQBoLpyYVKfNKgCXPBUYruUneC83KjGK6QNAoBSqRJovbG
       value: 100000000000
@@ -6177,6 +6178,3344 @@ initial:
   - legacy_fund:
     - address: DdzFFzCqrhsdwALkqZUNTYvqq1cM1HDP9iXzWfEwJktgnutkDDzhEKRYa5u6DLf2Qbgo8bSEhNjrjVAFRK5CrHH9tvxhSDoV3u3xG1P7
       value: 100000000000
+
+  # Legacy Funds (Icarus)
+  # "public", "wild", "salad", "cereal", "when", "zone", "ship", "circle", "other", "second", "time", "priority", "select", "apart", "social"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ9CbZnamvZsqj5vpQe6TwUNgVtFzTUeMjvk99BwtvMeSe9KRS
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZCjKWc4sRBRHhWtJyyvAE8P5jk1zGJL7sVivMrbEminDtE3AS
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZBT6m1fWaekRtXtKnTk4oyDC3mrDZoLSmsdmFBswdUEyVTD1N
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ6FGr7qJQzsjmAis4TH9p5PiccaSzDy3epNfnijigXhvqjuRV
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYzLXeB3NuYYouNwF3ut9CoZUHTnV9BaWMXR9ELnn2VEYMtJLy
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ2hRRf7qxoetRqCqWcoekNVdWgeMDvcycUYvTwFgxnSj3tv71
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ84xfQnTBg2of8xvP3auzM2NsxttaWikFeGWHXXhDLPPHWYtX
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZAeXYwmaSwKb7cj1smTacYE1y3BHzgCKreLBgccWqNEqzADvB
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYxFW1qHXvrWBEwNXhKMYxSdGcouVxW6S1udSCsGsZzcP5AG4K
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZJbgFPzLxpQ66FkKpusPCTMuQJeHTP6VEFTgUVHqy9oAKRTKi
+        value: 100000000000
+  # "report", "weird", "border", "gesture", "since", "earn", "motor", "elbow", "huge", "pilot", "cool", "civil", "duty", "outer", "exhaust"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ9t9fA55Ky6Kheo7fp1CadoPBLV9sGFMAz37hbDuYbprfqG8H
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZMZF9obmh6qQyUpV9Prw2njh21r4LCbUvJ4dLBM8W6wbqoBTz
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ3vjD7tijceV5nofKJPCbo38ALCcJ96yrbFxjUHZRqEEFVUp7
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZEMydxoUBCYJst1gZSuqPtvzTDs27vDURrMaUXzztoBH54aRD
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZBkPn3hNNsD9mgFxDFHbALb9fh9fXZaqmYk1M9PgCoWxVgv9v
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZCwCFGbbdprQqKUc57PoxBipLwVhVw45buSQAMmEKZN5rUxcH
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZEXQ89XLfn2vuTvv8cAFoBA9cutYtNMa2FY5p9vNdq8x7CgBH
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZKEwDyJHFeZYNKwCZG3ZDKugj2epNJ4QJvt8HvKhxQomzKX8N
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZCPH41CHRo6ydFnq3b4WwE2wvYwLULWMAXgTyfrVFsqYuckUf
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ6gpdpSwcQncGLkdk4RAfco5aApfaSUNZaQdxwYS4Kecz95SE
+        value: 100000000000
+  # "illegal", "uncover", "fruit", "april", "snap", "army", "brown", "sister", "situate", "lunch", "they", "fog", "isolate", "earn", "vocal"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZJ5BCs5wCMTo5w9PugHdwCGQHt5Ezv6jzib4qH2NPYZNtnYFg
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ53mQaXLxW9w4C4K5RGu4MyVbtMhhhCqUnub1HYyVVNnK9v3K
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ7QzV64AccYzKZU7UhejzQ8QH4FUJbCHqp9ApccoAtSCzAPvj
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZNFTfSVZVB6GnMuf3zEBPUednPwX9fttdLZAhpDJZm3Hr7Kx1
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ6hmBiNFqRdpG1o1rZ5akRnVfdgSECD1A6d9FnMF4nq2MwzPy
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZCBVAkDmX5xLAmHgTJY33mU7ATKg3eau1MFPu4iALGSdR2UfP
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYz2ryynipU2cM8qpkMyDya85dBpDUFaG4KPnVBjwCUrHQUSH5
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZHbbFsAxgxNBBLdfYpmQH23xmMnxANrCXKu5PEcsPnUC834aL
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZKvTGfva3r5k1BjnSU1mwgX35sob4AL9fvJnvwot2aCLonkPN
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZM4hC9yXZUuf2V9w5uE5Urozt9R51j4dKRyC3rW31SZfQ5wZT
+        value: 100000000000
+  # "knife", "satisfy", "measure", "around", "time", "thought", "cigar", "boss", "truck", "bar", "mushroom", "hold", "raccoon", "asset", "canvas"
+  - legacy_fund:
+      - address: Ae2tdPwUPEYyUapnFvgSr7cHEGYqVfGSkS8QLA9d6zC8ESu2ULTD3uPsSDR
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZLpnoNNUf1Zgssgnq3M2Py7vYWaXtCaa2mKjVbqeaaCdmh8CD
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZFoT54DRvCDTM2dffDcwy75srTAwqV3JQ8WPXZdJU65zTSeL7
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYxqxw6CYgrdgvW8iBbYtP5RpVHoewWpnWUc1HxP2zEryVAYdf
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ72idRngV4tz2LTDYqpJWAgrrb7hsGN36wWYFQH7dRkZzh8Vr
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZHk3FoJtJ1nq4LP6Ajme9MtznQZn6AXXigjGSm4ypoJ6q5EHp
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ2CB6bhGuV3E2gJ8wVBZFnW8MWZ9gtTUq1kLRBvBty6u6YNkc
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZD1hu4Dkq5ExcntDEGjHTt8JH1zT5ijPkmhdiVeCbZo9po3SD
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ3f9bQ8XRwKzMbmLnBUE14REw5PuaWzCXGtS2X3fMSzuzZuqM
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZJTZH1J5oCnLXeVPyBwkbuddMRuMuauZ1t7txkT1ynpQZJvi1
+        value: 100000000000
+  # "amazing", "pole", "kiss", "expose", "whip", "unfair", "example", "slice", "great", "they", "element", "claw", "photo", "dwarf", "green"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZHDNbJuTCebMCxMSNytbRbbtmrXTCdJGEJez1BhZhEBoAHMp2
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZG87YBDmuacpg6kQV7LLZEio28LXkbSeLz6oUqsjWdowDa3Wf
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZBXw9gywojwx2bXYHk3gKBhSKK1S7xrF2BgMcEk3ab3Bb3P8P
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ9rZH8FVtHdT2g6LbyU3wv9PZVUS9MpMj5jrrpnyskDgnfbmf
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZDrbgo3gBvRzJncARkVysRniLTp26QuRYnsp9QeReKRAFiMs4
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZFaiMZkRnArEdD5tLF2mK1v1Jz6ocuQLdjzR1UZ4yL8tDenUb
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZLoDUMrpV4bvVHMrcef28CxED9oCeWVHPmBjmi25QG86JkAER
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZJjN8qes1hxWYPRzeQoVBmzoHL87dW9ZZTo4DURTcV4VJzSjp
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZHisqwXFgcegTeeEVkbPWknFeexujv4AhFBpDLEQDt37VEpPZ
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYzQTSyqGffL97S42p4Kn4151CbpNPkNy6HhD95mDgVC42FcAw
+        value: 100000000000
+  # "round", "trend", "rescue", "flight", "awkward", "enemy", "luggage", "range", "eagle", "shaft", "giggle", "double", "pencil", "jazz", "home"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZKoKVCyUfvuh7dD6sb4nME361R2d8LiDFDtKcgQLyDH6o6ZJv
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYzgHhxnLQWo7LWuxSEHaageDhRqzLJGVPJcp13oN9XvFDrvpj
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ7hX79gagSogoHmgqvYfTVbE1QenjBWTDeWSXRj74caV6Ybzd
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZGu6E1q6VQNTH5AUU5WxKKC5p18gBjX382oEuRn9rw4BL7QqW
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZJGKJJdH7vmjXDnEGE2mnvJpmmzkgPA9wqwQusiaNu9zK5tbb
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ7yRuj5Ufd1H4JfQfpDeJUz9UwTBRQiW114wKMv1EbwXc3CzF
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYzVFgja8tieWubwKUSnxPTZgogN1n3eQR4MRgtBWoxdZjpS69
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ3yuDr9bUjQsqYwuQ6fsU2uRMrtetUmUddQ3js36Fvo6fPQMs
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ9YPk5PkhbNeQnbGae38V3k5vXrpMR4kMXLdUNQGRFDTmdn1y
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZHwYNYYtDUXJRqb1ssVu3QnPqKfkQ5SeC6SPHZWpnf7ioa4hS
+        value: 100000000000
+  # "talent", "example", "renew", "true", "amused", "alcohol", "immune", "exclude", "cat", "ceiling", "squeeze", "cover", "slender", "pond", "turkey"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ1UYrjuQ87Y6PGnETHeduWxWkrhv7nWRrMywBRUYCgAnshEVt
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZFV7UWLNKHHLkeibYnjpLmYknUMSabeMQQUSThxegqewFnmQA
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ18qDPCBnuUZmoX7sHjqt4SkTXdEysaiLrTaDFiiVKmmRpbrz
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ1DZfhPiqgJmLQ1cFq6WbtRNcppQrajNfYG7EUMC9fz4a8Wjo
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZLqUBNRwSeAtdHRjBGMwcZKeuawfZd3kkJi7d2kWujki9FzEs
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ7LndjRSUmsJQaA9uQB4hFgAAdzsbSniXdzYZYYwFaEQ2aXF4
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYxTXUvPJUGGkVi22fmGBRnqib5mZLuZpef8P9NRxfAKZmiUmd
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZBorBxQ3LNZtuvwtGJgxigk8Qtr3z191yKvpVHmghgETxLZjA
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZFP9XDgqvEfyxxA5fwNC2foMAYP8i2tJ7iAw9HcS1deQAyzNV
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ98cfPdpJszzo7NX2oyqnntXevBVTsTKQfAJm5EThF7bK93VF
+        value: 100000000000
+  # "box", "elegant", "raccoon", "brick", "uphold", "behind", "blame", "marble", "tip", "move", "gift", "juice", "crystal", "circle", "sound"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZFayinWxke6wYgHrEGZj8c6PH1kvWAcZtnHiBo538ZH9Z1u54
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZJhDM1zkiZYyehsEJPPHBX7RkT3g8CuqqYV6RZsD4bu6v3uF5
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZJH3cD6rZcxcuYffzoYX2f6nnVanQEcXgridHjafR8ExnjEfp
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZKREfBnaR2Dsggw8EkVWGnZVa2BT56Knifxy55ZXpCmwrqQiW
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZCEEuSQGATQir8GavQykyWKM6c2e4m8VEmsBbJ8NY7Vz8VTNf
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYxHGAwkPtNW8qW63Na7RzNaD5HW9amgagByg1hd6pmRiDEwmJ
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZKLEBt2AMF3z5ng7tqeHcjs8oWgvV9eXnFKANMzXnP7fdY8Cm
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ97snjrcU36viZhV7GQGNEFUdvB3TgJ2KqZb5vTf734LAV7nj
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZJhkmTnn8j9AHVRjCzdGJdr8rCcip1Pc4Wz1ZjBR3kytRVgGH
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZJHw1SqqJdG5HkpQx8K7hKCBY3v8McntQoKERgZGqrgtvP6xE
+        value: 100000000000
+  # "mango", "street", "flush", "universe", "clap", "system", "talk", "steel", "tray", "target", "forum", "dust", "brisk", "expose", "prevent"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZKye4tAhvu7EyojYtLt1f2YhD1bzaWJsPnK7bnQ89ebWrxiNa
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYzo1SMdPsSVheagaxMDCS36SM6DGi4rzpYy5pqxW67PD9R8mY
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ92siraj8GpXTRoKgS2Q4UQSdy6UXTiBJ3AsjpfbiYqK8fzeM
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZHxGS9WQiQWKb2bYHQwqjwB5UiPhR7SyvoEE4VroDzP4cqGbg
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ6F7S6R4hyC3bMx9unr55mH32FdfyzxywFnHU2xwTpeGWmX41
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZF9wESGBLARRTFqj8SyUyqEtFeDt98wvUUKkjhetx6tmo7VRi
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ6VbCbFSw8vednot75f3pqSitccu9mfL8PtY2a4ApqXt5gDei
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZDCr7WL6efn3Zszup6mqnHAeh6BZ4tpR38VRFirMzrkzZje9U
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ3hajHbGabZGMWV1jeHChUpxiHRmoFcF2RMbp7LtDFAjNyzR2
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYwnD9hKk8Ju3uQFaPfrZeCM8eLcNGuSBw6HDCEpnRMAoVk4Yh
+        value: 100000000000
+  # "behind", "rib", "say", "absorb", "enroll", "pyramid", "balance", "strategy", "response", "evolve", "pipe", "dolphin", "shift", "flag", "history"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZAMx6daGaFA5AqmsUbLgXvdBZdvbYNabc5HwuH4HSR4FArgCv
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYxkewyCrzUrSE573rnbJJU82vnCaV7gLgoMDxurHwRDLWCbGi
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZCTmkTcNnhpQRR6Y4T3gSSgLX45RkgdMgEkWWCSVQind4BQGv
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYxJNjS9G1CWZZ7oK3dE9Lj3zr9v9FqvNHuQVTzv2L3Za5cUSe
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZGLkUU4xVqcn53hBraSyxxm4JwiMxPMnZd8t4w4kCKRrrGt1r
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZK4tJHCDj5ZPmh9GkMVBK8LB9viUXinWKNum2zeN2Wwe27G7B
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZBJucvYyV8Tw1tFsLsLBNM3ryfuME65kpBQBn8eGUs2dKrLDt
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ6A1QwNygXpdtV16WvihLJ4kcf4sMDM5coC54JHaTf1KZHB9T
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZKzCY55tHrSw3d27ibdH8Jhu5bmhqCwryA86gcJeRTSZqYnSA
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ4tyQR1CmmsZtNy4BUx7nP4GkNMYS5BwUNRq3rcdDudMksn5j
+        value: 100000000000
+  # "pipe", "weekend", "master", "nice", "museum", "endless", "cancel", "animal", "end", "aware", "unaware", "submit", "mind", "alert", "oblige"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ44dZvh3Z26i7tURh66UgsYzq3HatD8E2eLqe7iRVUhRyWgqq
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZAxF82KqfQobHK3N5cp81BpXsT3pKRK49fdKEDv5aErbhHAnf
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZBQgC63vHEq8Pia7GnThMkZj2fLL1ct41rySaZ3cbaCG5eLWk
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ5V9UaqSYNQrDHajyCMFmNwQF47FgzXDrSAJm8UnKpia2n41Z
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ2jRrynT9an1BhJDWRMzuPq2o4SbcrwEfp547jhi5KBQfSjqz
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZAWdcTqJBm3WU1NEvVdEF7Np9E3Menad8eXuEQLmCfAKPcuVJ
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZNJZa8SyZd4Bpfh2K5E7SU4ha965wLG5ppUwB3WsTGz4V7wyc
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYz2bX1Cjng4gdQgWLJztL92kdCVzoP7cv3LssgUfksKeBuqjV
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYzTJj2S4FKbyxDazf5pLF8wWTCy92zq2tPyyVXogc3tsX6VA9
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ5DjrpQYgcdBNZ5QbsbNBFLkcHQfjqakJ7jLJGLhwumNKCQMm
+        value: 100000000000
+  # "surge", "fan", "diary", "forget", "lobster", "south", "auto", "slim", "display", "yellow", "caution", "victory", "wreck", "silver", "direct"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZESZekewoEvS4Gu2CXePzN8S5jzMrQzitpUGrQjMiAcE16mtj
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZKfTpxjHXxTnkSd5KDKHqZoXzzQ6dP7gWW5qViVLvWz8E49GG
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ9dYypZ8MujGzohGUFth6jRm2zpsve17Uc5VF4ik3YLV8j4t5
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ17zd3GSobgex9apxwXUsPesezueFvdzkKX5S1m11mbiTeSfV
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZEKs2YqyduGgngU2o2veqrk6fZjGDnW7GdexBF6Sfo3SLt5BD
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZAw6JSmz4oLYn6AFGTXTx2mN41jZFUEYtfCzPLa9DFrn4VU2F
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ4SogTJgoPViU8MH6NrBLXECCNJGpVTLavPbJzsAJfNrAH3Qs
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYz8wxMLTWuRcPLkh1KWWYbgMA6VNyKbc6YT64WyCBtpPigfTv
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ43fSQtVLfKpKgzo3avdDCNsZNWFphtumcr9dpk9BvVR72Bpd
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZDV62Rgc4HL8A2wVNfhLgjQW8Pip3gRZgMY33AYKer8vTSa3E
+        value: 100000000000
+  # "mean", "slide", "heavy", "science", "south", "delay", "divorce", "design", "example", "swim", "dog", "neck", "disorder", "drip", "wet"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ2uF4wHtZeHieavknWfo8wK6oJ7EKQuhPivCQdWchEMBidwrp
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ3AdJWunrCm9DvBWNweoa7V3sG6hEkyYjo8Lx6ifQmy1PmM7m
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYzoNQQUCaiW8aWQpatgpBNpLbLx7NUKFqqbBNcJQWxGdUKsVk
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYy2qgZAS3JqDKjAYrRq9d72JBjo7MsMh1ufzELtRQbU3DfxD7
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZGEFvshtd5RXEyTQukbBbirLDr7H1nG3eX8iYXFutetPkRLf4
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZJZ3ntYzKwMiJ2NvvoVDVbBDGY1A8SieFV54f4QnHQtQhBqWq
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYzbLk4qz4J2zRYKk7GD3STC62W6VwvEQs5xXPehP2nhC6ZJuV
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZEQRpoinX1kBxbmxPEEiBohJbw7byuzu7zmD8r7n47gvuxHiw
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ3U4wjcH8jfsZhByQsJmcc4cAUcPXYwoAgjygL2bZsZQfo2yz
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ9C9jvGbgBhob5UjkvTrbniWBfZJPHjBaUvkf7QzokMEjvyA2
+        value: 100000000000
+  # "crumble", "dog", "ordinary", "always", "mention", "lunch", "corn", "key", "color", "veteran", "item", "chapter", "winter", "flee", "shoe"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZMjeQZAR2zVuXDxmbYCJZYwqEs4u8c1BBL2urxKU1Eg47qqdn
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ1wjde935ncT9xZa9Prwmqi1AAg77mHVSyYARpbrZhqToxNfY
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZAXmspP3SJGsFjEL8FFEeajb6NJGRjQRYDMEYHY8Uy7Rfc8mw
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZB6Vq9YbkPnCD8vyWbWbpTb3bHnh1NTTGZnrbUN2mBt2oK2FT
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZDqP1ooXnVj8K1iSoAep6YFXvBdxkAqpQDYUvkF6T7zBX9Gr8
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZKKe93c1DSP3jdGaLLf1QV25P5KGS9GTpR2DR7VB2E7ZbpVUT
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ8v3EN8AaLk4u3JBwxopVr9eA1EYSKQZ6ZTUkx2WbvvYVxWhJ
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ4UQ1TiCtBMkEXUbQHpxvAVJMMqYacjgQ5an2oRFLE6ZaCqvm
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ6NLB2T9MpHqi4yHSFiMetTGXGsLKzHgdfDTx7SH4kTVhB3zB
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZFq9QNV7QjyhRHf1j7ZAKraJGCRvYgLEmJ9CCp3hXYRK7xHaH
+        value: 100000000000
+  # "toddler", "print", "pave", "venue", "mind", "program", "ocean", "purchase", "embody", "super", "exchange", "ignore", "artist", "party", "economy"
+  - legacy_fund:
+      - address: Ae2tdPwUPEYxETqTVLXf5QewsMYddgztYR4q4RTQv2ZgcHRcinFgfCE75vg
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ8QeqaTzBKjzYMx6nPv1fNfHDPen3DCGuPeAqwEJLnjPXrwzn
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYxUePM3oHmkrvyn8K8o64bnPZQD33LW2GxDgn7YGkDeiXg5Jz
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYz1ZH2X7ZpAJagbWDW2HDJbqixbw1w5PYtk8PTY72o5xZ51HL
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ7agbynn2exuo1y6CPEsJCuWFzzdWDp4WwN9ZVHuWrBhus7yp
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZBLcoTDJdnefFiF39U9DhzMDaC7Yzti2N3fmqJ95dqaLdBJNv
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYwzJsYYTkbWJoPvXkcn7hfp4FRi3xHvbcLAewub8DZXX7CSSi
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ7ZSFv6YrRs2F5wPH9iCfudBjfwrWJr2p2YtT19bcT1cuDXAJ
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZHA2Bgr6XT8ZwEkiUQvzFK71gya7ED2K6v6pi1jFXaT7GdmKn
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ9tVtyj1cC7WKknx3WC2Wq56uZoZGuwKM6GahsaGiiSeAHt6m
+        value: 100000000000
+  # "survey", "slim", "girl", "raccoon", "valley", "clever", "wide", "assault", "blood", "copy", "uncover", "bachelor", "face", "cart", "style"
+  - legacy_fund:
+      - address: Ae2tdPwUPEYxWxA66PhgAV3GYuG32jptf5MVgCPHxPZaLFMNpEXH48HLDTk
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZN6BwCB5hoqFm3oK8qC2xjtEkSv52UeK3vaRsJiB6RL9GNYXE
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ8zraXmkS2qPuJJDoqohSh7uoTAMUpdLXHdFMiFUFyYhyCuWx
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ9X3e3qWK3XQHgM86hQ1oeL9dXu8c5zr4VY95CgHp7MgCLDN1
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ4Qp5V7LwHCXrZbWFkiA4ksJNHceHEcdtazKiRUQiT4hurkRH
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYwU73nG7Szf2cw16o4oVVSogArjrmb57BHoMYksDNFJemy63P
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYvy3bpvbX4XU9TzRxtQzuX5qB7KmTKX4quQmDRgATTWqb2AAJ
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ5Zjac6pucQcez81iCUTnCp7xUpDjtJfStUjLGK5biHFUiSiu
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZFUHhBy3baagWZY3pAzTSmecL1DaSR4CinhFXsn1LdVQcfPUq
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ8biBAsW2pzoPVrUmEussYCKQK8ohqR8Juf1BBr97zmoL24FX
+        value: 100000000000
+  # "vast", "toast", "supreme", "grid", "sniff", "ecology", "eternal", "agent", "cable", "mind", "step", "gravity", "gloom", "process", "couch"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZF3G1hWedaTDy7z5nmi9T7wH6q8zpmtmcdTUX4LPkYM54F7jP
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZCqnehWJedr1cAhEh3PndtepQZDZWXAnEH6CmoCyQp36MmVib
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZJsgsQ8EywLdrCkWchoSw4dtQ5B29W6kajMoL6HhBHZXbPtR5
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYyzou9NfTcGn9HMEsQPQaFotZiTuDNTCj9viKCqqLTHJf9kMR
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZJPEJ3NM2Do8V5P61AYLGtpxc27rrGE33eQCqmVzv6kmBzhAE
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZCjtQAmSvSFBJa9tLDUVKV2zNfR4xhkCCE8B71vjPPNej9erU
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ5Bt9dTKqD8iHTtJpzttGRPMSLLVraXCfSYAFewLruvSSXkQw
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZLjVEJAkF7JVK1NrkEdtEpcvtFnd56bf28CwGfEMHpamk2R1N
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ4MxjzgeAVts5xkA3a3KXFw7Hi7gQjBaGVxLUFjZd9bJiqCz6
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZHgYmjSPK4mqErqEPCYrCaGp9MBxsLNLNfFVFj31ZPR2vZWnP
+        value: 100000000000
+  # "civil", "near", "wrist", "stuff", "draw", "nature", "second", "supreme", "minute", "kit", "document", "dolphin", "same", "extend", "rookie"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ3DDG4G1rnGGbWj2yhrsgi4LW64rV7D7hdRZ1w9iDPzaBkw81
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ3M79mNDBaZm3Xxx1yTxmGPzwmEx1nSfvj125n8UKghW32Vps
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZEURY5ybR8TWu2z9iVMbJR3A5TpvcHpW2L6KodfR61TshTM4g
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZJbnq4XxL8B9c1LHmG3VQ6WnVHzHjck1fu32ZxmwgCknawaDU
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZM4S8WznaspXyaNCz7oYc3ED4XEFaTNS9uaDk5eCzaczwNyeJ
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZJ7cysTFLJ38GAQQYDKyh7bF7QTNZutixaCWmGjJqUtzgc63T
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZBVNnUh1HBwTogJiwW2ZpVpJ5SofHv1uBtSJnUJHyf1qk7TYn
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ6ZnSp8kJkL88MwAWYnvy2a3p3cbvEYj3RFhH3CTJVHgjuJNP
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ8qsU6yNkZbDgPAgGEya53ER5haQHEyYMqb4gAfRaMCLcSiJL
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZMmCSrPtibGN7zCfENiUu4DjqgWKnTdBRwxnwpVRLm87oRwin
+        value: 100000000000
+  # "account", "spend", "broom", "soon", "swim", "maid", "bring", "trust", "turtle", "hire", "room", "clutch", "copper", "mixture", "early"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZL71mCQ3Zcb5EgC1Vy2oaWhSFLZki67uxWcdFJ4LzApPxpjVL
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYxDeiSegEFJAJJg645mjn9EDhbTpdcB4CwPT9aPFPo1xhQfMi
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ6WA45qamy1G2fyeT4SKFrLWNDAhUup1CgrLw9B8pFbw39Gm6
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYwYiEZTKhCQa7U9KeRkK95toRBkR365WDFqoVZf1Ak19F52kV
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZNA4M3Mw3TFvQqWxet94LTrjbiFHH51jnU2ikycMmUKcqTPvD
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZH9yAjkpjaqCK7jNwPiKUdDN1rm9XmLWZ4QHa7M2sk8P2rer7
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZHvqGg2oN4QJ2zuqsbkkZnZ2Y2PwLHsW1yEukC9StikdRUAEY
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZGAenMEmMDzEbfDoTmPpcJnhAZu3LsQS5WeXpkx9V3F1hruuX
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZHsJt8TtbyoGQuxaMQzKrFJz1upBVHoGn6qy2f1KFtSoAFW1K
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ2WgP6WUAHaXjuU4Mg5GourmRaviT7JdJKQmC7B18mdo9rvnk
+        value: 100000000000
+  # "neck", "soup", "learn", "tag", "skull", "seek", "face", "vessel", "leopard", "rebel", "engine", "expand", "hat", "magic", "liquid"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZHpAm3AZ9oqMjStD6me6nw6Bzs5fpA83f6yNnQYV7FY54k3fM
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ91uU32wM6Qb7cxV8uU1Wsibfwn3WJBZaiWxYuLe6pTVi787w
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYw6waL6WVGsBTHU8DJCQt1KVbdaTDDpCeaGJ8X1Kguat1FrC7
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZMNHYd6486pwdYiyvHWxkvBtd5RMoUP9cG72N6TmDxmH7utFC
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ4MAt66BNoieVMxpBsWY8GjGrvdGi1xPtzYfHfY8bzR1AQYQ4
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZGD7NjNauzvvf5VWu7X9KjsKP7iHWT4xYkgwCvjNienbFpR87
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZGdWobiLjyqTtvKJXEymuaygUfxb8ekACjf742UPxKMgw8J2Q
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZJAnKz2m7QeYWQZ3rq3VHwjnWW8cp277FQ1oWVM9oxaxf1Yer
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ43Rseb8dzgxJ7o8BeJyFDKKVWupkSvwzLiMRbxnGbri7bBao
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ81jqJDQ56PXGAvXj11C1AF6C54LsYHwq3X36x7rTxEUFt4ht
+        value: 100000000000
+  # "media", "tackle", "govern", "play", "snap", "cheap", "fit", "uniform", "welcome", "record", "measure", "lottery", "spoil", "group", "host"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZCBfkMi5X8bRV91RCKfJwM9EYWQ4eTUA9Wi2mtSBPCSQgDeJD
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ7yyWmfooy6E87GZX3WXQoq4tFkgMTqQ4i8gHYvQQ66TWF8NJ
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ4B3UUq52fMj5AEMpSiudYYvkYV9WEUfh56BHQRLqaEiHrZ3U
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZHPGatFrcenhvBrWzxGN9bz4xxfN2JZmtPJadXCRqmqiUGcM9
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ8XJSS4wcJtWaEN1crSCx2NPcutwUDcQCQBZGH7Rn4ktWxogV
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZCt25tJ6xeeWJmaxrS198o3G2WCu59grjKMa6zzdST1Spgkmg
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZCzG5Bq9Mca99S2xC2AS3AKa2HYKe3zUfwisQaAywWKf39HVA
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ5wgLfsuc9qbDsTRneU8miVKDd4VVnChYnc2PccQfwpMELSwt
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ1RFG81KCTxgLFZJPxFxAgdcwfMQGEbektxusUp61XNEb9G8B
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZDbFkB7g1rDbWZE5F7PgJEzbj7J4F6XfEU1R9DKpiF9rmJCez
+        value: 100000000000
+  # "enhance", "luxury", "left", "inch", "together", "strike", "hotel", "fossil", "exhibit", "above", "unusual", "mutual", "hint", "shield", "moral"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZJMVJK9bENjToka83ioUyetLvNMfGXfmGuSaK17oJPtY19Hmj
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZEBNARZnMGANKpCUXrunwJQDd7fCkKfCwsAdRJd5TbeC5Hzfh
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYydLNMtNNeiLEFArMzbrfAhUEhms9TggfSX2HZpKvn19JpUWm
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ4WFLyntPbTpk2fGRaV7ZXjVFH9Q2tQLgGLfC2biU5zks8DvM
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZESzAfNGmBhK7rHJd9ZcR4G1usLqT17vdfDdF2XCJCQzExPm6
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZCjNmQo2gvGWbdcFte7Msv8HU8B5B6MMbx5mczFzFq66ZdJQ5
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ3Tc48SwqCSiUBBkcNaUXsbr3hSB2cTqrGGN1FL3pviv8TUCf
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZKJ2tuoz5hSe2varQ94jdW8RVZUyoqcminPkcDwRrFJYz9V9P
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ4poJvNPT773s7SYuRRH9mWMDG4Eva7RWLxdq5uybgqNbGnoR
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZCy3jyej8FAyqAudArSGbd7o28kRdy5AspprdRM9ntwiTpwQP
+        value: 100000000000
+  # "moral", "abandon", "depend", "tip", "soap", "mushroom", "grab", "worry", "royal", "strike", "scrub", "walnut", "summer", "that", "poet"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ5s1VJbFsdnS5D9vA3VzPZDJxkdBC8472zHSguKAoLMntKzmY
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ8jGNVJUZLwthZKtDvDbMhkp8o69yjbqUxk5NHCqHhjxRL9xT
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ4dFtsNLvezT1rf7wF3Yq6zRshUWkU4pjvPtVCMR3HTLE7RjR
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZM38W7d5ZppbX8Zg3uEAzpVmY8PNdwXNzZw8rGhmyCrPRwXpb
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZDcy47uhHy56DtZ3RL1Gh9ykEzij4HkfN1nRNB5VFhx9huXdY
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ89D2J23b7KePqnh5dXMdLgXc4LsYJBuXKQcncSWzzLHPfZgB
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZN6huac62PMqAsJfWLmBEAAKwKR7mGexMWUJrHm7c3hUHuQ4J
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ5auFwdyGfBHvDSYXwdFDv93QdkQTNK13VRG83r4Rp62JbpHq
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZE2FfDA8RScRBthjRE1X111S1Loc46bsFSf4WwUg5AP8eig5n
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZG4X6p59Tc6bdWtF5KT8ZybAhM6KV9eJ7Q9576J47a6zjA6pC
+        value: 100000000000
+  # "fuel", "twice", "camera", "control", "custom", "oil", "puppy", "scissors", "will", "comic", "general", "cry", "assault", "debate", "whale"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZBZMV1mMGXBAaLmkebkLsHyfsskUrSLVsyYV3J38sMHMP4CVG
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZFQ3KCXx1SPg28jaKU4VBLbf7MdXmPk4jGq7HBfLubrmPUikD
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYz8c2d1oAhwHsSjxjHahcQ6T6D4NHj3VoPH6AhVvBTKUcYZRW
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ2YHh5cDQL4MBwk7761Lf3miKpNDSYqiEZkyxjH3ZQvEKeFP6
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZD9MjaLL4cKHYcCxrTgD717EW1pMMYt1wJoKHjg4W9T79y1pM
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ78o5pKwU4zq7tGoPUrXhpLc5N6q4vf4xwLtbJV78XrXrrp7x
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYvyo6BtkHXyMHQW3mpbY5jw6adkRVuBEjdbQvPMwtqB5F6SyL
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZDTNbb7nwVyyKAeGZEPqKUTbzU5c6fo2M8KfqAqp22HBx4qJp
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ2t5sdV6UwuUxvfLjF2jTCj6xsxmDa2rmVcJu2qDv91ZQoF1g
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZG4m83wkwfei4CRVuqHMAWPtLvF4pPzWrbnmdBPJQMBjZ6X2a
+        value: 100000000000
+  # "lizard", "burden", "tortoise", "ring", "monkey", "senior", "little", "endless", "increase", "quote", "flat", "repair", "snake", "asset", "brand"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ9gqJdt4Smy3UZbbTaHbimnk5EmtQtyupLgoUeX6YH7oBvfnn
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ7XhNKJ3Q5Wd6T7UGCoxjW8EQFJis2M6eturuJCssBhkDZump
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYyYS5rXxkssATS1UQATyhk3gPusGbm7fmh3R8uvVRyBRYgkrR
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZDCF1b2F5z5RkhQprm1HEsDrZ9gWXLEn5DYR6PAwxZ6qQihcR
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZLh7L5PNqNtZyC7kuevJRBdXRaboAwnVgo97zAhsMzcxHSDwf
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZLUkWS2gFqUq54iNoa2rAbPtjiRwRqKYvbrZtts3UzVV8zaM8
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZAmbnXWAAexP2P6d6FxJ1KHALKNkqgkP8KF2mY7Ry4TCwSEq8
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZHQ1bg4QNidpiGcZLUdaFcWGFpj1WBZ47gCsFPsSPHX7WzWXY
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ3fzeis4aTbaekV2MF85C3tGMW2iMHeXDuXtJsrbir4t5Lwya
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ3crEQ5hStZ6zEK6H3ejMWU8yP988JbiqgvgtvHqG8c9CYiL7
+        value: 100000000000
+  # "border", "receive", "task", "october", "weird", "palm", "gather", "claw", "either", "matter", "avocado", "pioneer", "borrow", "that", "cash"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ3xg1CTyJe3viw8guBo4g8p6YbCi5fnStsZhKbrCnyk1hjfwp
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZNDT1HQrdfo7NVqkejhhv7f3NXYBY5yuGieB8K1HcEanCPFL2
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ7zuDhuZfQuCJ59AvWEZQH6Q2tcYYkQuUUbt5RwLNqc3YCet3
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZMo5ExHFPhrAo5JNaA45hBtpfbw9uUFEsHcY5iQbL8S9CRUAg
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ3FtUBTxnyucxs1uesPzD3tcGsPU1PdTvouTMXgLNn3BKjiL5
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYxE7cNbfJguDBGZ249MRzdmtHEmmyTkFzHsawtyJSkXjXNVW6
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZCqizdNW1izYYzuqRmCWLPrGwjXivpvpaY3yG2tdVN1iHTMFb
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZMGNUf9vyyB5tVZLXpHpw7f5fUnfWLMGyrfqSYyW6uArHbUVP
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYwuDDDQhgwbq5mZ338srdAWzSmHwwyqXF1tkqhZKLAxABBqTs
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZGAn3KG8aNRoTXUP9QCi4FeG5V9cRYYxTaWfm1vLMvWHF91EH
+        value: 100000000000
+  # "camp", "hawk", "gift", "swear", "steel", "evolve", "coconut", "sight", "sustain", "tube", "diagram", "treat", "reason", "tiny", "wear"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ1EzGZmZZvpu8mvshMcrJRACavoJQPihU47mH3kJSkzzmPgdo
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYwZaPBzd3NzofZ5xq9FLgWsAzGL8hmmgty3GLXkQtP4Wm5NmN
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZMRoAJXEWs6EYtQ2iPCArTRhsX7dLJrduYQUA4ao7m2TV77dg
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZBxWJFBYhVfwGzhsEVah3LFYe47HTYPDVToQFZXH1pfgVhLfu
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ6mjX6ESZtXoV3HCbbwYgjTW5ZRGcMuZnTbxMnB3Z3RQ7CmFY
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ2R2R2XkM6GVwPCmYSUBcuYmVpVHHd1AJiwrSAT8rpT3q3yzs
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZBMCP4GygT5jacFHctQ9QxnkRU7cs3TSyvM1G2X4guWCLM4Zs
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZLrzZdA2FFAMPrjTzh2BHCc6KEuEXuNwdKuQRtNEDWHzLRDT5
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZGGaCowLNQGE8NrV3bQbrSDbhfCrsmgEsYXiFA6sTKgy6n5EK
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZBqnXzZJAZfGEwpKsk4dezw79kuV66T1hLbymEVgou8tg1Wns
+        value: 100000000000
+  # "water", "wood", "forest", "also", "exile", "settle", "city", "dance", "shine", "maze", "fish", "attract", "verb", "laptop", "hair"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZDTuVTxZHknpaGPRETKt35fmfu6NumLqmWZd3kiib48oFxRVU
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZKUdeNDnNskBfNrr7GK7FNdYm4DVTXiNdBXQYBfK1ZfrGj7vC
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ2D3XWnHnwaQ8WXFvASyS9zUWD5E6EF36GrxoBqrFARDeK13m
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ1X4fckx4MozBFaqpsFuE5fWBqhQw9UANFaum8sTYEhe8pYDm
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYw5nyCBLuGSWHW4tRRGEuKDjXYwCxJ8CDoPwu7HzbHCZPJAn4
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ7fth7NCF5U3fMAooFqK3wuSzXkb7FEn7sRFUbNcUzxmPZzXe
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZKBx3FSL1okH9eQyLsjg6yF48jp2CpfkrfLtoaxtdfetuph6F
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYya56MhSDa1SxLX1kyqjCGWKCY3ybrKWVpK6GQPNr9TsRfNyz
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYwK8GArkU3sd1FrXsTJSj77QqCwM57p9ciGpEvaYZGghegAjM
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZAR1XByfgkgDf1iv2GHeUH4XVfK9vs93rxkHnBGE4Ff2QAVSM
+        value: 100000000000
+  # "body", "soldier", "pony", "flame", "cave", "brave", "earth", "team", "symptom", "library", "write", "warrior", "certain", "gentle", "cool"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZDpGznRRpVoTiNsqjRXqBXS6tddPSnM8ikJb42UCeDegJfsqg
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZJJ4d9vocjJCcnusesxu7mxzqWtbGZQDFA3SL5GN3y4UujQN5
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ3jwQJ7nxhWU6UwzvikdcQpkt5dYrCePpBa613miSf9JYL8Jd
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYxrnDxc2fe7v2xfhue6BREW8ysQpP7bjePjuJccakNWsxCz6B
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZMMuLmLFweVGvQoEs76RCKVVD4TdUooeUDQsdQpnTpZnpxCDp
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ13crmX7Ea1u2WMrBYHLjKC4345L76NNWcKPqqfPCNpkPUYDy
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ25DQAqG8ECh1PCF4k8GcxAHtyvvd3gQZav2aWzgytoHq9U4w
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ46w2tq2T9VgfwNLSKFn4MjDvGMcHMY9tBERRaMEcFvT6Gwuz
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZGJBEPxNgyWLjx5z6nm8AyFJApGbCYgeC7UkVuTJ7aHarq11K
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYyFfHi25EMFC3QaR2KLEQVfN1Q4PHpspr4zy1P54MwKzCzCoE
+        value: 100000000000
+  # "project", "document", "thought", "dentist", "card", "main", "afraid", "cliff", "crucial", "debate", "raise", "anger", "hundred", "lunar", "final"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZGE3keyCPnPp3kiGLHbArJPrw29tbtAxBDprGrjPwB689dwqV
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ4kwuedCjS51N8DU9t2FdxHtNMB5mZbFwHDyic61H8ADLFRpi
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZFPjnKmFhRUCBa12YwLMgBbfrav7iqqNa2iRFSPKJuRU89126
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ46DC1J25Ydqvw4vv2QfsyQ3YXXJLuEFxxzYz1RohkwdPVXXe
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ3QKC5AKpuPbDVBAtXLYtmJNAoKqzk21zysmVK2j2XQTktCiM
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZFKv6KXgaCiA1zXJoDs28njnesWD1cupFYQMJsymbqQht5UVC
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ56raE14SucxceZnBB5v4JatYKzK9UFnCRU8no5wBo3X6SD5x
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZKDBqEfrKvRx6KjdKEjhsw1Rm9eBGNtEAaar66CiV1S55vwXo
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ7tG1hd2YGUjJYqTTZytcbxGDhYyQBQK4E9isJ9NAuEFx933D
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYxpuYgmbEdtqdLxpf9bVc2rG8VTLSRmiaBF1pWmrZKbP4qKGQ
+        value: 100000000000
+  # "sun", "someone", "emotion", "replace", "error", "surge", "mobile", "depth", "soft", "anger", "clog", "sing", "fabric", "decline", "output"
+  - legacy_fund:
+      - address: Ae2tdPwUPEYy13QE3a2DGcJaeibwXy6jGDM3vvnaXhLGBV4sduCVedjRmdA
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZBFomEuQ9RwkjiUMbvVPysFqTowS9ZuGKfgqpDRm2Lbg9fWzW
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ1DzPArFeppQ8mjgV61m4oNupUf6Y95yquUMhZ1DZswRUTF2e
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ88V4RbwFa67PDu31x4LMqvvv6qpRCcoZhQa1jkuok5egBto7
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZHwPUk5g4HFqM2qFAvqzwGyH8U9QTZkZyAnD6geKqZTqbqiTy
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ3SP2NhwRnqkoYZY9t8icFkKj7h16MEnTpa7fTnVn6SfdCPeQ
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ6NbyM3PbPnGx7Z3do9QjcmLgbL15Gc6Z2TGt3VLLuiyp3Smu
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ4niF6Q2HvuCLvoNxgUVzzqi161Lbx4MhBLi6UJR66YyUunEV
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ3ern826FfTxiPTDVz7oXzug1MtoS9bqrA4xar8iDUy4igqVM
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZBiLGAPdXDnwfdsxVudSEUHVVKWz8uCJyPFQjT5aW5WxwBTe8
+        value: 100000000000
+  # "behind", "jump", "convince", "spread", "lobster", "six", "tooth", "feel", "error", "jar", "reopen", "save", "rotate", "jealous", "dutch"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ4nbpbFDmbocwfykydyvtJyEPETxQ3CUHuarHjZWSEoQuEHoa
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ89jgUR3c8XuLNii9QN5nb4LUQ7HC9sVYUNrBEJp4raRtp2VC
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYvyPh4q8suUZyLrLHJabDi8Hq4kkC3KmCDTKdN2vtrj4H73sZ
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZFCxJsCyXFfP6cPgKUz8b6LFq6UewJCcVAtrjq6e4NP3pnVoA
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ8EfXXu23343aKDgcxpP8oZA3zkRJxkZRRvr2yKoce8QtgcEg
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZChWR9u5zN3NcR4exqgjsMVPDfbbu5zvHjCd22kkuaN2aw8gk
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZF5H2V6svN6io75oeiFucxLYUdQhpNDuEcg5vtXTES2QSurpQ
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ31KkH1KTwM2PzncJW43UB8MGYD8zyNsiRDo2q5AZzzjYSRiC
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZERL2eCLpbAFmA4dkvpAAkBBbmDa3nJeBgiJTXtJRPonJSFuh
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZNK4iVzTjkogxZcJdSYvHt56xyKheAn1mv7Lzs8ZwhkytprPC
+        value: 100000000000
+  # "title", "primary", "loan", "peasant", "reduce", "tooth", "warm", "way", "daring", "accident", "replace", "pact", "yellow", "mammal", "strategy"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZD9Zu6swkcMigHxi7GiQ17qcyDa777jUwBbtXeedx4yGg6hn7
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZN9jV1D2fBMoFs8DiWcocwDcwfzk4n3KSgGQMWBPVHLMzrdib
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ8kLAE9bLNTVsCVUJdC9Xfm2o3dum6WCECfeTcoasLwyEM3my
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ7ceYmnUBVGoDrHV1pNs6YRgkYzFQUMQVJcUGkeBG5hMkBUF5
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ7UKYc4F6btGCg6h7tNTRua8c74AQT5oLejMHftkVonCqmxtF
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZHpziVD7ksyQaQ4dtKGkB8NyGW8kZRihZt8sVHZHR9gtTzUoH
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZFZ4UnjdbKuYqjoXUZTYJ7kJpHvyEkXj6Q2WLQdfb2QmmcPV5
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ1Cbg2ym2YcF84iKxdfxrTtUTbep3r6gc71NQbbuxShDgXdM6
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ59CyAoFEbJJMR8KMFrfVnnb8Dp8qp8PSAwf1Q6itoFpSvNya
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ8Uv8owFy2dnacZ3Wsbd8KdpBixvoUDm7LRaNyXuqF2ZUYvS6
+        value: 100000000000
+  # "focus", "fortune", "foster", "cattle", "split", "just", "sorry", "phone", "field", "proud", "patch", "expose", "toward", "garment", "now"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ7jmwUBsotNoVeV6AUNhmhYKWDRhaUk5QPf9XBuFNaDBuH8JS
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYyBB7uSUatNL7EG644onyGBEyNGvxkjoJKSyDvQ3Ew9WsFfhn
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ6SYoCxNgcg8ztAAsXB4bzGifGzTSFNrS9YuCTWZi3LgCkrqz
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZL4kbxsCLVRnvE2wL8aQWEk5k8YQKhxqWPzeYUq5fQ3SFNBfR
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYyu4WTaBS9bYw2P4bB9bFTwK217FyYnFPTWuxEgSJLzWCb9X1
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ9147MgzAgnRvUo4gMbZyxBpSdSQZTaHKESpQhHTm7sEicRGE
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ53ytiak4fHVCQgUYg6rVG2buWmBFb5mBDsFtXRN5MremGsBC
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZEuNVUBkf4WGxHPuQ9cQ1GfWmLg2o1TCWj35hWqqpcEapXoS2
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYvxXFR5ScY6J35xH9ZK6dUzUHpKo7aF6usmAjJKFgjAMUZSXM
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYzuELo8zE6C1tKWv53KsAehShc9pbBMTwjpKyTSNbkBXDiJSF
+        value: 100000000000
+  # "dust", "wheel", "blossom", "describe", "spray", "pipe", "broom", "corn", "vintage", "switch", "isolate", "disagree", "over", "ski", "truth"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZEkp6nKiCC7ha4eAS7KdsEmVtLPnKg1mrUxcBWwBd1ksKvbSV
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ5rnspVLgL9fwex7aY99MXGgxUn5PTez4kqY4QmY3oqxtvQqB
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZAKsM6crrriAGf9dhjakPYsopJz2sVu1FHoCCRDr7QeJnj1zK
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ5VNAEm71feVGjcYWdekv376syPodd7934BgB8ccpmYvNuiFo
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYw5eBFkSx1mUp3nkA7MuAXGw8yFzFtpPm9TZNHdCbJQo8KsF8
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ5z22Z4uCXc64osax6ENEnhbYv7P75GyHD43mnumUeReiJbFK
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ43i4wkWjnvsQZvT5ammnuqFyo3q38My3vrqRvRNYTF1S8u5Q
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZC37NZXejuUa2xbWRz43WZrsJaMJEVgnTsojG5S4gvyPEW2S2
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYxuAtDEJj4UsYeMYnvVgD6b3CbKsaz4wEwcm5P7742HcCq2WR
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZDVHSWfxyyUHEeZ1iL3Ed4KXGqfqULbvQXnY5sQFfhdjjhkrB
+        value: 100000000000
+  # "toast", "claim", "assault", "sword", "scorpion", "emotion", "weasel", "detect", "bounce", "mixture", "various", "warrior", "believe", "wing", "celery"
+  - legacy_fund:
+      - address: Ae2tdPwUPEYzAca7B5LaSbgEnWieSgzYntSqKnbcaEsE6t63rxj5fAXteY4
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZG7UEhBtmqL1ky7DusRHAFkjHfnjvuCQLQKr2NFz32EGgfVfU
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZCNrHcAXxQbMedZ7cesYVXeitW6PMvDMytohPqxgAyvYkd1aB
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZANcctpoj9vQg5r5zuoCfC4Za9o4TX2jHm3fqqQqqM493iJ2u
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZHNZZfmfiwou5xEnajYcNYs1cfGtTUPaYnWeU3iQbbBcEAPCy
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYvy6p4rzW5jdWJhsWB67D4JLTtgx1zNjZHLrGxM6V2sxuTGCH
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZMvLqcUAwJyHvjC12j5iXQXG3qTxyNY2HMy7Nrk3KkQAVsiQn
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZEZCBRnYgMXHijysd1QuHGifD8WWHWZWK5G8pZVXbhpwgzDAV
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ2zmS7RFJLV97JrL1CZkwRBp4nkQNS6emHwuUMrieG29U6RUX
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZErUVUMXnChqoeHRNmTkrypXFXHmzNPxJ2VDxmEyVRv5x8Nsf
+        value: 100000000000
+  # "donor", "casual", "mention", "media", "erosion", "tail", "pass", "camp", "raven", "accident", "nothing", "option", "lobster", "accident", "magnet"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ8ebtP5yLvnvz9QpnU9MdzbbLMVdkEU7jg2nNkJPBXLqAFwMT
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZE54GTpXRZPjty6x6fZccgy94tiyEXgRqzmSsdnrnhLhUwGrE
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZJ74CyQxBmJk6Sg1nbdLYhFWeAdNQ9xpyn5Q45J9PE9Jxx92u
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ3vixYtx92ZQbJeuaJ9kKoXViMP3StyAv1DrNDV5erk4w4Tx8
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ5f31q9oPtNSXRFvF84eSiU3xjJY8SnopBV6TNfmYRoMqFZp2
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZMHzvJz4bFYURDTG8G9zFgjcBHFUDyjZa5Q2etdrjd3qWxDey
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZHRASZgqVnWSqKxavKfqc192Wn3Wy9LX565qvhFvaAgqtuBGF
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ88tqAzyv1mr7g4Aozq1oxS53Pxjm46Hy9BYETB3iGYTXv1a2
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZKMQuZZUfTzbgZcUBW8JA5AVC5Fu7mKDTghuwNPHPc4D3aCDx
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZEENhfCDUtvRrDrx7PsQAuvrf7PcZ7XJ8U7xgZkyzAW1Vaazx
+        value: 100000000000
+  # "remove", "limit", "okay", "garment", "cat", "long", "steak", "since", "follow", "caution", "forward", "april", "nest", "grab", "height"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZNAqKk6PRS6gpzGPwXGmxdWCuohu7Kjf6VYDHMz2XSgb99yEA
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZDgm4ZoU2uRtHaHik2V3KmwsgPSbyeMvF23a9VW7M3G5bq31P
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZL6LYQ7MP9ERqHMyUUd1PkTRwCjAwfAcq9D4rPN1T6Qi2A6f2
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZDgPg9uyqoF8nqPQLvqGGVxLLKfCgtm9njuwAZJRMiAjg13DU
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZEeqihENetKejKQ6HRbwhqUg9VSSSqJdkdzhMxnjLSDQMksMR
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYyo3egDtEnk8Wb6Z74mLFjZJV5jZx2JkkNsGq5urzivHzQkGE
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ29MxnpS1cwy8BUdGztoLGwQcfofBHPs6x6KAL1ZtbigR1p6x
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZJhTW4ymcMTedrjGqajjT4MkPBhwL2vaUWvJLv57G5HjvPYRH
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZBHMB7jsNaA85E3dcmheVtZmzbtZj5CPZhaBHNTYT5oADiiQi
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZG2sLRZiWWxCqwNMqTVjYTDyMfv4S251EqnKLDHoosvqnH5fC
+        value: 100000000000
+  # "nature", "weekend", "medal", "neither", "upgrade", "urban", "book", "swear", "ketchup", "enable", "enter", "oblige", "sport", "cat", "drink"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZFoJoe3cAowR8awBiTgpidKSM7jq17bbdCRmKRoH4xoaNCa1v
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ5x41wUp9fvvGKee93aCVoZbzy7du2JAtunkCBWpX4y5c6oyt
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZELtacz6AfGpR6ksGtUUMb6FopGupMbyEWKm5EsFtvzkFUsTu
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ794iXyVB54CHdH9c7V9y4hsCDwBh8YESk85XK2EGgXSpEME1
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ5tQPRd1abuUQHMqwPMyUUN7trD6QCcjm18pQNRUwiNSkGQh7
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYzbHgN93mBt5MapP51HKT1Wg1qD8cVWw36A1GZkZ1VeEg9xm8
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYyyQ7Jfj1K1MJQr18E7Xpfwq56eg6BqcAopK19c5633jyhe2h
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ5rUoM2NySqyVKqYovHPmu8qFWBKsfAxABwgTVKFPsvZTGkiB
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYxFSD2BcVNLshc5ma7nvSYkXW9fy7UftmH7kMRjsRNYNsgTnx
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZJFag3c9i2Q5diXV7ddP1uyqTK2D8b39SBkjnfksyy6kK6W1U
+        value: 100000000000
+  # "wheel", "pair", "used", "radar", "rate", "mail", "execute", "february", "decline", "weasel", "exchange", "visit", "slam", "trap", "globe"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZCFCLevrxUrMHD5ki1zPwW49eBPQHnnt9MUbgyTap3kaXpU8U
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ5PS2jeYyER5CmUMdGVMUtNJ5yQc8xYdoswSznM7QWURMVXo6
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ1wQ8iC3hGspf15DN3za3z4ou4Je8qFt9GgeRjFjaErNxHdeE
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZD4Yv2j365jRdvj2viVYG3mEqpr4aHPYsAwC5fMtFAGasHCVH
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZBoZugiAfSpx1nckzEAsguJq5kENa3wAjLTFaif4qTRAykESa
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ4WSPCCYRV59emZyuLrXUDQpq8j2fa7LUJN4PZkxS6okF5Bi5
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZKyvDUrBcPvh89cYTs1urkSqb9NwGtdUYjSqnpLCKrMjuHiZJ
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZAzjyZC75HHhkTq7nDxTaHxqc9GqeWXS1yxzuLNBA1xKexr8h
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ2go5PX9rrC46yesPC6wQDAMEBbPmuNNEnXa6pF4GYyinPGRg
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZJqStRx8pyVhW2FnfmAU7rh5xZZm7oiXUJmAnMg8mLFrnMn68
+        value: 100000000000
+  # "session", "outside", "dash", "whisper", "prize", "frost", "used", "dune", "dust", "diamond", "expose", "hamster", "object", "home", "web"
+  - legacy_fund:
+      - address: Ae2tdPwUPEYyt79Lo85dSmBpPhNNDZWn3fnuUjAX4UUfXNQ2X1LnSXUdQPj
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZKZGCFao6ZHS7Ast5v9T8K1JWv7wFaZmQiFNU36Fs7Rcq54FH
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ4etrSY1cxdA9q5uHzSVwbvD8ashufPcbkmRgpJXVCzv1si1M
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZJpa28YX5BpywUkJ5mcNq9Xx1jy2SNwhkgE6NQih25Xpx2GUC
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZJCY8nnhzhE63MmrnwdKVrwAieutUHojxz68dQVtVAFpy7GQZ
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ44otc4nD544HLERbf8Du7RRD2sP4276kSpzYTp6GRV1RTc7y
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ6aDQ9AUMt73sAEEucThgCs9vxTGXE9LH2byoacgxLZWtPm3z
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZFrAuBp1kVTKBJvZUa7iYATh7PjuFFVKb9AEAFPmRvf57fLRu
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZFXCW4QqiMUmo3UqKcyZ328NjsnbXZXq7yp8NwTbdDDLhQmSB
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ8U9MCjDkTeq2tct17YXVn7eixE7NkR35afqbvJsbYexk74RK
+        value: 100000000000
+  # "visa", "furnace", "shy", "fun", "quarter", "buffalo", "rough", "october", "cry", "push", "marriage", "around", "pony", "spike", "struggle"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ1R7vkdmpaEzfJf64X2tBm98eZFy2zHvwwm5ZdyNVHfCds4v9
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZJnA9yKBNXnHC7FfTA9bPRTRf3zNNPJPpp7DS2N2jckscmr8k
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZGWeABA6jTneu7G2LmuAMobUanuowaCaEuHnmWZRPEGhpqNbL
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZK2nm3QLMmZ9CCkCYMMpsZmDtfhwyKz7ov3FKmgYvZDksU1LB
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZHKJNysj3g43iACQHjyaBsgDGYkHKKwJWqLKMoLJGrPkWAxYy
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZB4GDYmNfAEAc9iGMM8CVigVRWvc4Agiya2taFpLbhAbNPhnG
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYvqJSmg7PFGck66m4RrmVikeKMoQUietuHDMGTAFoCLz5rHjS
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZDwNzwhb2V8irmSMNsAJ2FkjJP5xmsHXqBv19dQKWHcoRZngR
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ5cYocyXpEytvbdKmdDSv3g27UfzR5EudJH2AxSz8spDPzRvh
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYvov4qsXNuDJiP53YBvbqwQcoFrUWkDM7PzxC9GyEVGB8ZPyr
+        value: 100000000000
+  # "river", "verb", "deny", "tobacco", "release", "game", "culture", "trash", "essay", "excess", "citizen", "ignore", "home", "hawk", "purse"
+  - legacy_fund:
+      - address: Ae2tdPwUPEYymTKtPU4mCRhqxDksnd33qTiWsFVtoyX1XsGkWXXombKHYsE
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZCAVTJib2PNSNDqxB43GzCafDxEELBYh1ffhRq8wn3k5CR38D
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ2ter2zfgPbMPJHGcqmhgpYM3ucsRmxtCuE4HSkDnNkd9Hpaa
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ9zxPjYDbLPYmf6vRuj77rNSH4nzsMNuAx8HVcxJEQPGmxJrW
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZF23c58GHUhNy5wDpGkTU9pzdt6q9d3aoJFPUtx7uXjvdmbWV
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZDJyjtvbY8XB1C4ho1tz4Hz251oHiu9e9Hwwc2pJa28fB5gvq
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZHCZ9Wavb8xPmqtkXF21a77aFk1yx3oDKRVsFL4okyUgXMEmp
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYy4NZWXVkGekFyAE1QVBeHEx65Lwu6JqqDCe67t7MyGp8HwAE
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ58HopWJ1ybMXnZ3mnc6qMwNBBSyvLXzspad5RBuCxVZXc6um
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ7d9t5WFRsyusjcKNokWE64jG8ZbGtUCXcBars5RMWj4Z7HDH
+        value: 100000000000
+  # "erode", "father", "violin", "afraid", "satisfy", "supreme", "tag", "flip", "tuition", "satoshi", "two", "wagon", "embody", "area", "good"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ1RzdYk3dk5PYw5aQrUkTatFZ5ecUMWK4UFAu1RgcybqA1poE
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ6nPGLRhSphdG9WnfLF7ZDia6geKwbrrq16bi3KnmEgyyGp6j
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZMyVN1HGvByrgGjCm14HJ8RZnBQSMt997cd7ZPJWXFykbpQwG
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZFnSGD5Ry4TLVWYS5vSJ24QRFKNmTJMc1hhwg7oaX2j4hYci9
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZAkVTJZkLNXmcx2A4hnxkDRA8r88MTsm2osWRsse2fxj8PKYr
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ817Wd8eVcmwx1fDBCJUgAWphKhTvUYvvUNHaaZRdFRn1xtAW
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYyRtGppkaT38My6up9qwxNVaBKWvaYkSAmHhZqdL8iQgWQw22
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZCepQh6o2eKjwwskrJ7u7kTCHUfWWYpLa1shRmqdPUGaT4L2o
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZA9rTKkP3ZjJ2fBczHWQaFiSPsWXpd8Zhx5L44PqjKGAov8oe
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ9ETnXzdeVSgM932qPta38NRuTd4LHSvuNUKdHdjrdVkQ69VV
+        value: 100000000000
+  # "repair", "resemble", "appear", "clown", "coconut", "truck", "trade", "ship", "fly", "hat", "layer", "gift", "camera", "else", "spawn"
+  - legacy_fund:
+      - address: Ae2tdPwUPEYzn3EjuGqbinDNnpXHktpctCnrjqxNuisG2DE36xHSTs3eRe1
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ1hgMqHp16Lcek2Yya7mtKHPY9ERgcmpNfw41SXM2E6zyrmWi
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ5V7V33SPoTQdcLtpPuhesMZJWskty1THSAaC6H6cDYoe8dDy
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ8Dk5wCfxAqfDqAE6VBriDfnxNhpZFTPAGeJSnca3Vaj2mK8R
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ4LpZe3THwFh3WC1L4rCqBNyDjAxpnHxSneoPWxL9NdFqAGuS
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZAkdytYKhgzG8P6rVhZWuoD6V4DBcvBfTLQx9yZHgsNFcjZCn
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ1ACQBxLAAK3HPxSbmnpGsSpLbwbCNTAqrDFu8y12pgnSHKjV
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZEuod1rhr7TU2f39maXDBtbJWVFpm84cWEWdnHnLKvL5ikGeg
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ8pt7Pv1KYJDGd12G5tW6KDNS4Nfyb2SXLXBkySGctTPYiCpJ
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZJsQVWL7AUT1R4UWKVWgU83Ne3UigKANdLeNGimcu5AhWPFhj
+        value: 100000000000
+  # "vast", "garment", "debate", "industry", "tennis", "private", "else", "lazy", "thumb", "arm", "wrong", "mesh", "mushroom", "diet", "feature"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ6mLhxJBF4xvJs4Nn1mCrGpESnuWJNvLgB9WNjpF82nbMKRjw
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZDnbB5QhjKuDLJtSLpYijfCQRKs8AVNZq99a8sHDjXRT8oi9Q
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZCW5AZDx9sK2irEtWRYybEmPSTgQVMZAwKhLjcrzfiiqyZzpM
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZD4nhxDVYSDsQEFf32weouEtvagMWALs7NQLQFHmZir8ULsUS
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ8oSsuTZYvWJcJVUi5ZYdouT7f5PF3QVKZGErs9Kxvu6nakLc
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZBx5NBU4Ja4C69DQzeVMaEwW8pb4VqxQPjatt9tTek5DP71n1
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ2M3nQK3dEcRjG3Np9CTCKxEkXhmt4wVcsytuLU1qHZFY6D9J
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ9GD9AtEtJffpuY1V7MtuZ19VNvv4sB3vWPsc8QaBBDupfvRX
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYz6kHBDcFujUxZJtRGk31hjfLrUQKG8qhkRX9KG1rUfWWdGre
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ3gQVUhBC2tWpVARdSBWshdMACLsketBVHAMQM9SJwupY7tKK
+        value: 100000000000
+  # "enjoy", "brave", "away", "fold", "denial", "unique", "garage", "blouse", "shuffle", "across", "core", "rich", "cash", "day", "large"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZKk1ay1FVHXrq7TikPUXaN57ugqHG7JqKtipoaoopbx3CpWNt
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYzxV6jJo37mTrr1dTpahzqM8FSmLkYgtLinjzXicwDmEt65Pf
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZELGoNGmUr1QAbNoaaQpuiAFdLR2YVfAKZZQCsXkypGMvccEi
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZAH5Vh4T4D4aHeBWBuFTzccoiQkN56RPDkCWo3kNimqJPVvpW
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYx8L4VPbNQPpUkBhtgLK6HTe5Bis2t5s3na2y657ghUL3Coo4
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYxgiCkHM4vvR6ZgExWi9x1icupe7k35UFg1mPrpNg2iQPQJz3
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZGo8rprmThXMacgbZWv7yE6oZFqqTdh5hQVdstXwLsoPgH4EZ
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZKUZRDxVXaiKWHdUPXdoJt1EQR7yAEmGu3t1kFdSRLdwfXka5
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ8nXHubodagrQmZGQsggbxoyhJpZPsBGsYkGUmgX5tgVD2HW8
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZA8uRLUY1bcFKu8zRLGBPnUJk1pMzyLtMGXKx5L6bVYGGYejY
+        value: 100000000000
+  # "clean", "riot", "orbit", "scheme", "supreme", "copy", "farm", "fetch", "filter", "saddle", "grain", "destroy", "pyramid", "false", "jewel"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZMgsg38BfjUp1YiDKjAyyF8oMMCBVjjHppAGEj4J1geA9ryAs
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZFzgVJLcaLUkc8WNfattXi4tLjdvp8Z2SvZ9S9WnnvjzytQNK
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ3bDM6ijEE16WjPNoGSVKQdR5oNMVzp62ihKfjEG5xDonBPPP
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYxj92Zq5nqKP6GskZRKbdsmYN6fSER7CZLZZah8PtmghVv8Px
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZCkR2LLixyVmK89XCoc9cJ6pXsbSRgG6JkkfiswAYRhdhLFuR
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ4dbdebXv7Y3eDm6gJs6ZXDTfwUH3rSLwGrAxwPGWvdXxrR4y
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZMu4iQuM5WN4NTbv6stfwVN7KjQTN4o8DJZA8k34spdD5n2hX
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ8u9QL3YyXDsTAky2bFZCz997sbUrJCdGzmDaQtWxd5oWCHv2
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYyNoLn4LdkJn4bqTJrd883jWa6rweFgMShbRJKeFD3N53emj8
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ4fszZ9QhnP1CEy17FsXA7dWkdvinxWQA97p6mZ1ewzQrYiqJ
+        value: 100000000000
+  # "flavor", "any", "wish", "cry", "lion", "asset", "easily", "tired", "brass", "language", "multiply", "obvious", "cradle", "disorder", "green"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ1vTCrJQYAemoXwezted46NstSMjYWKDyFhDqF7H4qMMuvgvd
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ5hfpyogjLRfWUUsotoUqkrDFNGwgbYBH7hpkuJbVQjZySEwU
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZHGy82xAgyoEYc37DyqkLe7pWzEx2MdxCEwXP2TwU3hG57bWm
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ7VEDceyz99aX7CuRs1LhC9dA1NnDz844qDd5DekVZLDSfZux
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZGrTVGHo6joxndf73xzfGgwh6DYH97sNyXsLsJmNtHW6QNFiQ
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYwXoqGSP5noGZwQqtxreDEMcGCvpTLvRWpAjTLZBkyKoKJAeu
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZH6M29UnLYQJCsj6DaCAY87RzyCXUGQeFkbVU9QMJDgzg2xXT
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYzKg8YnsHScSB2nV9Y1t1bMdLWhegthzD8XEPm36uVmXSLngE
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZApTr5DTA6WZN88oo9cXBYQPS5Yv7gqqXJmkaeFYs6xrFNjtP
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ68xMJMNmR9NS564rWUV9eEUdyTfxCM1SSeBhhNLRgj1ZUzLf
+        value: 100000000000
+  # "mobile", "boost", "husband", "between", "open", "illegal", "kitten", "evil", "gallery", "sheriff", "excess", "october", "hope", "example", "artwork"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZDvQApaEytrGqMme2UTU1YehaVgY4snHJEHEryz9R6wLece4S
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ1y7VZAvt9LxWimoUVM6Bk3GbbXE3AfhAVHemAEQfZejZxd8k
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ6wXNEinkg3ojy8F4PbS1pjZwkqd3ewPpB21tJdeTb71uCDF9
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZGxstKHepJQwo3SSkHsZwXEdPnNLgd3rd2DHciuP8qvuNJMiU
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZJba42PS2e3xgD5i2WHBe9JYxgnVep64Ud8Wx16o4Kwp1p2Qv
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYyEshwRhjXJUHn33xZNeYJp8ySP99DLyisgJPY9NK5sDoCBRL
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZGpRmPxWpHSNJRvTQXhARCYgqyCK62xXzCaYMyRdWmkprxfxr
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ3yoK7GCwrwdiMQcDGMkVcDF5QmJ18L7cLxo9k9RkTJJVCmRx
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZHapZEXuqVB64tJBtcupit3P1SDj1xUzjmrc1ANU9rzocsHq8
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZLsht9t1VaszK6NceJC3SaXDXGJedEo1d8WHi7vT4HXWbu6k1
+        value: 100000000000
+  # "nothing", "garlic", "length", "vacant", "beyond", "eagle", "odor", "verify", "fire", "ignore", "woman", "march", "plastic", "smart", "exact"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ922BJ21MxoRWshnAQGKw4bsHyShd6xPSR4vMgFGQBVFViaku
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ6JFEcaY1jy5LZJpP8Yu9WPTfriZi4rFGbRqTScNmhXChxjZA
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYxAyELpSWvTA9bhxn84uYu7uWf2KvuoAegJyiCLJNZxmvfCEa
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZKW6syqzBgAWWebh3n8UstPukZNR7ZTxVzts3UfMaioZsweYJ
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZGS87ojKH28sdbf2FhvhXQo5EaHcHnQiRwm93t3ckBk6LeGa5
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZCBndw8dH3T6ebanAgmSRS6iut5yuYbhQwrZvqUc3MiBTcUwK
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ9iPN9w2P5xCcbZitH3H5uhH8vHMwcoikuW2z8fuETxnzBAX7
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZFAF4qdAPLLm7juXYY6kBtNGk59WPwmExNf881UeXh832P41r
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZJjV6ehFK6ttCk3KsHe6KaRko3jDcaa7YGfkWXGADxGHHDXLo
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ1wo8wY7V9FyMXZsNg95dmJbRX6RVGJdjhrCacKcpVNb39say
+        value: 100000000000
+  # "dial", "athlete", "script", "fee", "reduce", "identify", "deer", "grab", "raw", "patrol", "cheese", "stock", "prepare", "wolf", "urban"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZBV3CuELwNwPNagjH2BXYCS8fEVNfX5Bmy7kXiAq3gRSEHDV4
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYz1y5UuB6qfMXpR1Xj4FiErhWDDWdevJbP6PLeDczfa3bKB5e
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZJ3QqoL8Tr7vcMoAo7oUBb2yaXS6R1j43SSxKeKzCt6wvafVr
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZE2F8rMYs5MNGdpK9qHytsdiwGCLH1Grg6N1pVP6b6YXFDMQs
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYziyQpAVfdZ6UCoesnEvAn8spLRJLsJHMnzhqnyTGPjJgMtTC
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ5mVQ8qhZ4b4SRB5ADita8pb1gJfvREQoEJoM2rXPwWqAHgYW
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ6ycwrDkUF1sfo6usrZWQ7LuKd7F4CKFJ74vdjSD5A5jaasRM
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ3ub2HHLy1bwt6HNSUGN1wbcZ6GqJr2yWUx73bfSFB32PBEPV
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ6KF7DyGay3sf7WsDGi4UQiUtFBU4KZmkDAEkX4x7qLC7qNxZ
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZFqbrJeQGFTdL3EuaE5DRq598ZyfPPrTtFqAfsnzE6zLd8ghd
+        value: 100000000000
+  # "cross", "shed", "mountain", "okay", "copper", "long", "bus", "offer", "dawn", "decide", "maze", "swing", "basket", "wine", "change"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZEbsQozN4jWPcgVruFEX5iUWgq2wHbeLskEiWnVWmm93v8W5b
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZHEpFFaQU9FrbezrSMTL9C3BTbc83SRMTPDfj6AViNKtEsKwz
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ2WYZcz6SU8N1EVVmsREbdpSQgPHDYUyFtP9JhznBQ82uGqjA
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ5RuAUgbYY8TZEmwEX6ttLB6CNxirwNVLeRLKzrZ9NfF7R7tP
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ7ZSsejr1gx7YKLX2R9sua5xPpaDVgREAumRczGwCDLvXJkxv
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYz4YvmhXqjYWMZNqGapmo1pYxTSBebtULsRQCAJepn4fXWM43
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYwSivYSvPwTKPdbCZabvuqAxJcLETLQhH1ssaqAVZtAa1sMRV
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZLfUNWNBHNxCUgfj98BnWwA9RmDHeLoLDJXT3qPbDBTG4sG6c
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZGk5xRu5rTBjmipvfTGK7N93zoB5kgSiUBvjJ6QNN31VTAZc4
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ3CEUaMHEPL7Th8N3mDzBqMofxaGyfdKzfqy61AF66jxvcbyH
+        value: 100000000000
+  # "bachelor", "sniff", "mixed", "chunk", "convince", "base", "agent", "pretty", "proud", "name", "mind", "magnet", "swap", "rookie", "moon"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZBpSUGiG4F3dQZ55zoct827kM3nkNh3xCAXNpSUd2pmq7g4iF
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ46KN1zTn6g8r3cwhfy2XRwuxhThybNG7QoocsYPpwr2L6VmN
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ52nq68ibgzAywbCfeGiJz1RNtTQcxSrkzq9LurXnsPJj3Sfo
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ323oZCWCJTpWBByjEoCzPRXunXohagdNSRDBpVBhk6BbBXjF
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ7ZKVS4z7CzzoiJyofEcRRRjfdepNtwSeFYhYNTz2Zzp1Bhdq
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYwGHGkGGnBcyxmi2jWNr8Bhh3GPy7zwk2U516LsFkVkx8KQxT
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZFhhQAeFmHXE9VgxoKYetVUA9FrsjWuAhSVvhyhLy6zZbPGts
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZFbSxefymE9M3DVjEdRxrtFdLd69kHHvXKFASpZMkrCEHQqEL
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ8L4HyV7E6XPCde2mRFTiw62dd4mEZmbv2yy2Zy2RvoGHE2CE
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZL9EHqU2bi84zzywUNf1AngSvupLzmRK3G5ej3SzfFoAmKgc5
+        value: 100000000000
+  # "lazy", "gorilla", "famous", "lunch", "summer", "share", "sketch", "width", "section", "bundle", "problem", "expect", "pulp", "vintage", "tray"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZDYfBSwxEtiDFiZ2uj2W1ZFJTCcw7noUJUAMzAWwh5FzruPA5
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ75mzmESVGv2NikTgMkXhLLzCS1zKrcDgLxDworJfqR5aEnPm
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ17rurZnLR8JbkY8NnL8KsDGWu2Zq9A6AWRE5BnGGUpKV5cRQ
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZGr7hcnV3FCjhMHk6bbf4FoDf94CbLtsTT7vThM8HrNvRs8mu
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYzChGiHuFDbcRHSHF4j5HE2xnEVq1URvYJVdJtp9K4UoVM9Wp
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZANjQ4CfGpk5h5wi4qFwUVbzRZHc9euPrnMWcxh62zZy6y6PC
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZDK4sEXDpii6VKnMFW4YamJnjKd1FSwkwEuGd3aXT7YVm6mw9
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ26bkJ8vQ6j7eGwnag3iRXsubCqDUJm3k19nR5qA3Uq5KH6EU
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYxT6vqP8CEUBsFwoNW4NtGXKci71JVwCmcFUDGhF68oTRUMrx
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ7ReC86k8yytwUNwAZvgyafkHjR9gwNAmdbs2twEjWRZbB2Go
+        value: 100000000000
+  # "just", "symbol", "fragile", "saddle", "easy", "proud", "imitate", "system", "comic", "avocado", "trash", "ketchup", "hen", "idea", "solve"
+  - legacy_fund:
+      - address: Ae2tdPwUPEYx6ZrqAtW9MW8ajR7v81Aps8TcbcXgMwjuB1QqkoDjnjJ19ZX
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZDpAgMVGYuGZwYdnCcY3GdKm157xnhcAZrPMGncPAsXAp1oS2
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZFLHZ5pzDno22duSXtBvvLjXVy6QRoV26J5UhXCLLQyMeSGhM
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZK5e9fJ16JKH8SP6BmKjTzQLQbKC7XQdgUNzF8PK4REGofXkv
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYzRQ8fDPgkM8n9y3ASiyPgS956BauwS7LTog2VC4GmZPs4URz
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZCig9cdGbay4jYJyxgpKqCveLMic5oEcjZtzLhrovV6atpiJU
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZKgmRxTqmvR3Sz2nvS9BLN4rvo1PUx19q5i3MbUbChY8Zp1g3
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZLGucJvjhVbuffKWnb9N7cV4SE2nEhrnm8M5RKXq4mfDh7Cqc
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ6imbAhsFQYtmVjAY1njZGKswv8FwqtgVfMmcZWcda8fLCLb6
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZFptM9jGFbr9RjHBVF6BuBJPXf5phCNXfAQTa5EpxuQsPhpEG
+        value: 100000000000
+  # "midnight", "light", "axis", "green", "frog", "catch", "dice", "small", "knife", "lunch", "tennis", "love", "path", "happy", "squirrel"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZJvGgmcDAgaboLJZyPWAqtL8DV8oa5SjsVotnNeTPDFWE32Ey
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYxSJKKTPYMMQq7RCpBfTtmtH4uo47EhEy4jKepYhcCEW1pn6D
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ2PDcCbvvCeDCbcnxQo6dfUpu4Aop4kxabjdWkB9DK9QmhSD7
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ49gecr1eLKrdRyeQYt72sTfU8VFpAwpJE5hZ2BU8fpZPKnZg
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZF1rSQtctMxFA52UiZjHGSrsMQ5eBJXLQCrJ9YgXTMA6pJDVJ
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ51SX8DhZnhEzuaDaooxeYPegmNpzkQvmy43MqrV2ikycLkuY
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ4cphH3Eac6B7Z25XEaGzB8ozvWieTktTVjDYAY3gzTfPZiKo
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZCMvvpULP2dg64eML1zcWS9bie7Xcbp8oGvPFwEyYrDtyevzX
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZBRi9zpG5fZUVF4wPJM89wZ2gS4FV9rcweyhkaCm4JoUrmcW5
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZL4Edj6Uyxj2iqneqCkymP3G82wRQD1DWeCtpS1KsDxGGLsp8
+        value: 100000000000
+  # "roast", "hint", "fresh", "fork", "floor", "afford", "deputy", "negative", "armor", "evidence", "ice", "arena", "flock", "moral", "relief"
+  - legacy_fund:
+      - address: Ae2tdPwUPEYx66tnvjg7Pyycg9EHiuAZq3uNYqhKnvjsXQvDoaH62wQsxS8
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYyidPXSzu3y4Ez6XUGKjZfEM6oL8sWsLFiCJqxgjoVpkyUAZY
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZJNb9rNog3v8xSqUTkFB5yB7rMxDr9ni6jV7R4PyXAAEKad73
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZF43jN7VVqZhTZvHg4FKzdKzy7RvkuqSDsfP5NFfpWGwu3tPE
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZBQ45uKrxDJspmhj1kN9ow5VDWmff3Mzk2GKj7UECtzWPAMXd
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZFFDYKQ8RPryzRgqVwUCVAsvkH3o71qKujcPmYHBZ2cbFSnNr
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYxwn8YnS4q9xMbvpz42L57DdfhtHYwiqqLFWNWRwqoXhY5Z4c
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ7dkiWzvPhGF92Tgyxd5ABSEUmV8pPj1PxpDsHn2fBuEMoUT9
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ1d1yq92zUT3nqZs9PQBN1tZiF3rKfXGvAkeR8E1bjFsHjYHn
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZLeLQPWPdWR3nAji3yFtp1DNdDnhqXf1oqPjwERQuBnurESnp
+        value: 100000000000
+  # "obey", "wage", "truly", "weird", "sense", "mimic", "expect", "ten", "random", "engine", "creek", "ivory", "example", "mixed", "pigeon"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ5Kd4NCyCz5ogJVCEq7QQvf31nAJgaEAvHo2qUd8jRTwxnYDE
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZHBhKs5FLrCaBGSp4pvDmkf1jttpcr7tekzDaE8pYFkcpBhPm
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ8chT6uZkDtDQ8xroBRffwbajxEDpzYMgHzRBMVnDGAaw26cG
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZJBKSFyGnqKoGBPqTBk1RQfbVXJQRpUtYchamzXEssXoKQz7T
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZECgworJHL5iBVSknP443U8tKMomDNRMdGfFUo5aVW1ypQmE9
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZB1SHQkMzAuf44qA3giZ8MgSsP4y1CFF5LSuYoV1iSxBQdVMu
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ1wdaz6H9hBYjqwKSbqNthsLfZ3nX3VvVm7jNGGL8YrQMsBVH
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ496hoyvHgCoAFrcB3rkNqfBEMrwhGjfWhPgu99u6w9txUkx7
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ5FKdFgfR66MLFFZ8xUWeqcUQg9az5G2JUe4chyGGBy2e2eGA
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYwE4jmWM41qyA8XDeaRUUMsrDBQwsM7LukPTS6Pwtb4qbwW6z
+        value: 100000000000
+  # "usual", "purity", "order", "make", "diamond", "jealous", "gap", "illness", "cliff", "wonder", "nature", "normal", "high", "hood", "balcony"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZBr5dMsPkuDWcMLPraZcvCNpDjKiYQyfdQzsvwnBHgzZvd1CZ
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZMT9Bd3kgzFor584N6ckWKA9tMxKyDMWbHRsZMiFTvB4xeWFV
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZJPaN7Bb5d6LoLDQsNfrjuBBGLGHWc2Zx9geLg3yUHDsVSMAD
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ7xGmTzbaufs5k5eTcfH85tB6tKewTgqNBdyDXBcojhckfGTU
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZHnaVPvDLfp9ALs7yAkihUxBwGX2KVcUxpReBJQJhu5FxYhvr
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZBN2SMJ88d1N8uGNJbKPgyPTbmWHh4zM4iTd2mH2yoNhFCNXn
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ4LMYQ7uG9yi1YPAmDGpfjGcR93jHKAbEQzFTZy4CJEhkBgTf
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZKRAZemEWm7RosQahbdXY6gYoP56fcU4QQFf2LRyzGucwx79u
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZASdWZ6Y828MRXb9TgqjJ2EjdL2tBNz2SzLQ41g2taRMHpr6i
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZBRMGTDnMj8MrXLQT5NrjixodheCWfXwcgWYyjbBxbA25U4tu
+        value: 100000000000
+  # "brush", "busy", "steel", "pride", "vendor", "hurt", "lava", "salute", "season", "unknown", "announce", "area", "begin", "fashion", "section"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ7Efktfq9QCq6qvtnmtE6dwbVWqCUUENDsU4qgpwGy4ms9QgT
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ4Rtyrf35bLjFBNXvZVawEeQ5m4rKao4RfMEGje73fgrCH6L9
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ9WgcLhmGaXeqnRZKAoMUYgzkitTnY4w3wTR4eJCrpxyxePH1
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ4VCtTCxHEcVsaRNczU77myPxteyMACZKXKkc3AFkDFE5Nozt
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ1bXAc6t45KVNZ1K7CDfZXMYagkTjmVp8T1zZwwsi8Lbw36hW
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZHRHGRFatEqmaZUYyaiQ8u6wm1F4NbPnc31Kx4pSKHhmnqtf8
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZDnTGUVyouXCzcAQNaDHbBcNQh9wxrjmyXZZKdo9rgWpAgPNE
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ6xHtgXRYpgSYtpD5FjaGq6pya81HZmG4k5ybQgrC9c18Vx2Q
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ4HEPMZQojTkYXoqM6emJKS331csUw7BTqRguModgRz9QfiTB
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ33Yby6MUGuoaGAmcWtoxGn7fn7cmN33o83wDziQL6p6YDogi
+        value: 100000000000
+  # "shadow", "online", "parrot", "rough", "among", "decide", "spare", "cupboard", "actor", "pumpkin", "caught", "fit", "planet", "bleak", "trick"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ18hcCwpAg2s9oETj8kejkkBkx3AQCKjsc46UEXAjw9Xd5gnV
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZGPtVeVc6q1tR4aLb7MJmY8STi6Xmiuw9dsUHnVXsmtP7M1Fs
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ4xVsDdPozUd7Z3teJL84FLBEL99UefcFKBSHgv6GLHudg2z8
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYzYrLF1MrBQCGdmAbbBFtu1AqRH4oohfnxePTjwAZLsg1h3jX
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZJL79ZEiTzaATEddT7H7mMXvHj5JvJjPmYaVRGEwU8htYC14a
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ6bA93GjEAebH4xkvSCnkYYLPTKkvYisXjoiVaERPQnu6sSDe
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYyY9Lh8ArzQUrJxMMyitGcYWskBXPwvXT7zWV3XzM8X6BsBHF
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZFfQ1nSPt2YfQomJCrf65SoRExCZ5tusjLTQKXRiibHkVXsJh
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZGk4i9j35Bpef5mowoTohQb843QxexToQJCdsUbBYY8RQbiVx
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ9xmZURDTzmwQRpABGeVs4z4mpzgC8ztdwVxqL5PCxzhcSz6g
+        value: 100000000000
+  # "gym", "ability", "silent", "pipe", "tragic", "slice", "poet", "stairs", "swarm", "party", "cruise", "waste", "prefer", "trash", "boy"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ8mYikh7Vpoe9fRwM9HAxXP4rSh1mgAt3Ym2yg99kCsrDM13x
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZF51KnYRGxXBum2TdQJehUGzaP6Hqdxmewvr8U33vp9KEK1sW
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ8sqZjExaJmvbLuGMZgLsWfhDQHfe7KKyhtRBNFy9USLoEmFb
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZMQXFATLpkx6Tn9uR4HGwGXdeTW57PVQafduh4qo1Nvo3uvmN
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZHp3W1XRLVGJ4oRgqm3CPtUk9StCdQKowwdob6y77Gc8b9e9F
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZC5tKu7EVtG6zZPfrZtbN1xvinVADXKrYgmoeRWYK6um1CGHb
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZCM7C6ARR5hf88RGdMFecNyWn5BweXbXt8Uf8R5g73EJidSfL
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZKTdWcFco4fJjeKdFaj1s49FeJEkAH64LU7GKvcGX2WG6JFYR
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ4SxZvoRBH99Qe5DmZY7qzseTPKxSe79tZGpgap6gvnR3xvvG
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZK52bP87UdNHK5uWmv79h5NsHGwPSqwoggEcsQCosQX3hdx3Y
+        value: 100000000000
+  # "leader", "bitter", "era", "crawl", "tiger", "destroy", "sword", "enrich", "angry", "pull", "kitchen", "hold", "sea", "sock", "giraffe"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZDTjaXYuhY1fBvhr37d9c8VnK7392Yc7dkfBW8cdGq12u5dXL
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZBaoB1JefVKtA3VGk2eM5qcwvVQQvTQAhJwEhGBqqyzWjKftY
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZKSQiJBpcTC6HcyGUJTks8UXdbeo5Xvtd4sPsopD3Rv3tLh12
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ5cf9wx85gwoTij79i1dyNcse7daujFSMR3fGTKByC818xQba
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ63wPWaj3xmT8JkBvd7ZDrWC5UkKVsGB9r7QoukHghrT7ZAjY
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ7Vi2faNy2M7kULFgukmbeHU5Si2ZoyhenR83eUSHJuKy3SH9
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYw91WTetobvbfbVFu9DudduwAvmmsambmv2P989qYcNMtBLT5
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZLbhaongPApXtGQ6aZyQTSncVLSXNqqoSDJJivcTN5UgCxJF4
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZMgBHHdB4uj73pAu8zgSoEGJhRMfpyesUJebJomFybFXGhH4g
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZJYpRA5TcWaVB122YLkoadggtTWa86vvK4Tmc6DKd5CKuGaxZ
+        value: 100000000000
+  # "defense", "brush", "fiscal", "cactus", "rotate", "trouble", "mean", "quantum", "shrug", "slight", "dignity", "corn", "immense", "first", "citizen"
+  - legacy_fund:
+      - address: Ae2tdPwUPEYxSkyoTTcxeEqpCZzYsCLY2navAeFCkjNiSG4bSP5T4fQnhQu
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZLV9Rx63N2HkXvj8LttaaVryK9fLUZDt9Cna9bbcEvbDHWLEr
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ2pyN58t7iNWFtifqaxkPRvEw5fvMykL2fuMjzMCQ19yAe22g
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZMBgaR49mSYGBbHifbcvDzpBsg7xUkbj1xx9wagdqWtL7Y9Zz
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZEsMsCmfCFdUX6RA1DWg7ncUAAFeT2UXZvkKTuEhyb2Q6LGqr
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYy5r4FDHJxzokphy952KDCTa4C3Pk5n4nZ7rGpocFQ7qRhYLG
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ4CxvJTGg3DK8Fo1QUAZV3zghdVfkGKzkGW44oSHm2EvWGusR
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ7nZ8vF21oMiLm6KQkSX8pes6JRgUvYGNTBNQ5839WjJjDYtj
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ83kRM1xbLQKeLCc7LPTYBFMqEL61Ef8xTfb7g7qz4SBHU3sX
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZMyga1QxtEYaswU8yCvad4VLSJHReGMdxXijzn4bRKMr6bRiQ
+        value: 100000000000
+  # "wedding", "size", "surprise", "split", "circle", "angry", "silver", "flame", "usage", "light", "stock", "innocent", "novel", "modify", "mushroom"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ76WDAraZcH74uWgXyRVEZNBPzYm14v42LZjPrDjDAefnSwQP
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZBXCbQLR4sCs32y4AHcSp7EYxsJXTB911VV5UD99p7GD89mjq
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ8XMQxdpAmrqXs9rdWehKSduXezRR6esprs5EovyBCf8hVywV
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ9GmEHu5E1YqKf42VfqgNDXipiCxjLcCnqGqHFr7R4kXA2eC9
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYy2n1ZyyJE1VCBbLq5BCzPTLA6yHz3pbKqazJ7nW8wPG9VLbs
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZA4hBjdVnmrUnjjnau2xAj9Ezfa1dqdjtkrkvuM6ydveuguPe
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ91Jqh1tetZMh1YVB61zTgADdHbjsB2mvnFyzYmzhjeppSrRn
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZKjbhkYGFt8KpNfBHsHko2zWoyTL2sNwYGcduCQCDBNhEt3Xm
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ85zE5t4byntUuEvDdMpjRVLBX74JHCFLZ5uLyLsHyVoFX17A
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZFU62cHp9fYzgNC21TosTsoLxSzD22dBZ6RxDp9aHo6G82xGo
+        value: 100000000000
+  # "multiply", "affair", "bargain", "response", "shop", "behave", "name", "box", "piano", "isolate", "play", "perfect", "shoe", "often", "depart"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZEBADxGQpSrMieRXfvz46VTMtM5CB5UQjMDMtKEdmE9dHYUtJ
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZBHfh8c2V3Xr6gsKV1SPYo2PBo1oGj6kG1fZQ2WizbJXnt98K
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZKg4Y9p18z3BR5qGdbrnYV5qBbGBYHkJqEZi8Ur67yJG9WMxs
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYxPUhRwTeEZXjD1Z5HkPgSeV3Ku7WyVnfcKqRF8p92DAeMVpi
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZCTjyViyDg2Ws6pT2q26WiGvUXfs8kWKxZV2qp67qjTWoEpwb
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ14ybwmRGnGCyYTcVs3gMcep5rFp7FsfPqRhbYdkiukh16Pgu
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ1dBGjbd6WuxDeaTjtbY9G7hYFUZ6s9GgE9r15G6foJYasjZ3
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZEV6oViBK2guboRFxFAr5ZDYeVj9hTPXXDY6jyTJ4xVrWRjYw
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYzHq4VbnAvFHH2DwxVptDXPoUPFfCFm3vRirT2cgMKtjvfU5i
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ4pVGZymoUiH3gSUtBjPMcxfaqXt5Kt8wLaYtp7FW2qrjnc7C
+        value: 100000000000
+  # "like", "hedgehog", "theme", "letter", "first", "output", "special", "that", "boost", "pupil", "coil", "indicate", "arctic", "swing", "bonus"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ3r58STrCwpQGFey25cpj8By4SNterMCFurW7RAQUnzBzQBbt
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZKUwJYKyUXbUZBZqcEbuSBvu2ANsNVB7L8Xp2rkV7V1DziMuP
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ9nfEDZr3DHTDFuYcY52gN8Qm3sxU3fLDEtBAZuqKi5rxruaK
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZGzXPGcN7j75TTb7kiNLz4SUYQGrQFRfvomfM5o1nMrWheS1m
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZEcRML3yeSiuDmd5U3mPQwAJGCeJTdLJ3ujupPYh1wE7sVTcb
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ46zno9nb4wJL3rZVB5WAB5jN4hMuWx5JsPv86MgRY4VHfQpA
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ3JHXPjVfKKbfpWT75dz2VJ5mFoW1md2P6rrbDRAxCyTE3xZY
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZCnmAmLUroHXJ5vBMmM2KamBJmVvMZyyPbsce6jjixGtLWZck
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZBoHJ79ZzgdMXHLQXADN4kn66zpUwHPcDbTKoSetcpnVr6hU5
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ9hPDAkNcuHgCHxYk7aNd86rRwY1qxcqsM2cmmbHUTUm9WnSz
+        value: 100000000000
+  # "bus", "enlist", "leaf", "spider", "fun", "joke", "step", "main", "abstract", "frequent", "flash", "erosion", "forward", "infant", "whisper"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZCsfbt7myzCXYLRwdHW3riEHd7eM3MgZFgUK8VXEoGggik4fY
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZDbe9s18AxDUy7X9y4jxSxbBApv3MqfRVZB4PkiNtXH6GGKdo
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZB5nf3Dhvn9REc3BMbstXhPVzSWN48XzVpkDKDJzxKt99CqCP
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ7cYeZvJuVRuZ5qCAvPUGLYvm9aNzfdT8hXe1KbbxBFGLtcmB
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZMHEb2QVRAjcKs4jEwkMnyp1L9BHKtwzatf5WKFNskXzXE1mo
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYxfoP6tvfiEz2XAhFNpBuqfdMPRKqHru86it341sYbT5yJaD7
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZDeR5K1Gx1oYnqEU3BReHGCHXK53a6F6LBRPnHrnyVp5kVn2k
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ23HVxCLEWQByYvhZkpeEdCa8NSe2jwqFyC32C2smx29uJNPT
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZABeUoGmwZ532ofYyTmiGBtFZ3QKYP9hoMaJtW79u1fpmRBvo
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYy6cRNLgSP2cst3ot5TmVUUgeXsiCA7Tm8vG2R985onW38MQ4
+        value: 100000000000
+  # "cheese", "volume", "image", "misery", "dragon", "border", "garage", "occur", "minute", "zero", "forget", "outer", "sport", "salt", "same"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZKULp3T5nrCCuEaiqhDHKqiVBopd5mgZKUvKnis66kHA7mE5R
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ4owDgDvt9BEZmwyuXAbYn7B7MXdbTm11agYCNVWNYmy1CPDx
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ7rtRtUBLv2zJGSrKDEXp3yMNNJFdk1R6E8QzBZQTauyAkRV6
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ2ZLd4Ld9rcZQtisK39nBTHC1FzbVB4zcGfhgrmY8fHrVYQdE
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYzZ7psyppHBPsicdDoYXasnqFpR4kXMJomSKzpPJNYkCc1s69
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZJyTmY7UQJju4BLKPB1G9G7Fq28joMiDgQTkn6QyBDVzW8EYK
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYyGYA8MZVMGnmrSpLZWBiWB4Jhkzoi2k4v1dqVCSpd8cZLghu
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYzeQ9PaaCLGJxd2FuFv4RKxJXZPQHPxW13fynNdFgCtHzCgCV
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYytUuZ9hJQrNXc1H3qsdQGMdeEWBxafL1E8uoAFQpnhSEu7aa
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZJP6oxMxayhiBzkLqXoA7mjyq5RFS6o9hDSq3UdkHbqDnTTBp
+        value: 100000000000
+  # "access", "prison", "immense", "olympic", "fall", "manual", "soccer", "nasty", "object", "attract", "tail", "decade", "index", "play", "risk"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ7YuarjjrXh9WwqsW5yC5G1MmVTH3Mi1LCm3wjcZkLppa3YP7
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZKxSA8gYv9eV44TBmGXtp4Y988bJusYgqHEUyVKAy8ZAeTBgS
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ9efjN2wk8NepR3FEmgJQZBj8HEFNe9Rdipc1XJjy6CoJC9TH
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ74hTQxC2ePnFQvkcPUvRcprtSDRgPLpo2tQ2NNWWFQaXe9Gx
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZDkMBVEAey5sLPEszVXLwYhwcyXNedBnTCaxm5s1Hw8nk4iPr
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZLcAN2oFb4YMCSY9pAFmYP49q23NRaUaqjt6cbJyPwZWzYo8V
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZGSRYyKNkJftoSmjnRwjULiUSu8VANkzfjYhMfq5BACpRTEob
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZMpfEAHQgC6vTmnpfySyHmUa3c2C67pUhmb1aZcQEF81MEfeE
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ8TK3dydjiVEi2SXjfCcxuLfimBGqWA3f86Efhrhqa2tAfKtB
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ6hmaqv52tMhXDnxErbpycQ4tSgpredA3PyKqd8VrvQANohYE
+        value: 100000000000
+  # "top", "fashion", "salt", "gown", "dilemma", "price", "permit", "isolate", "hedgehog", "december", "attack", "identify", "august", "naive", "effort"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ6Ln9vFxXWSjMvJhULbn9QfKG662aQ1Lj7Lav1MTZTiuF3Rmy
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ59UvfWLH6Jep7ZNUoxUhRGn4mcGHHb98zA4ZSuJDdF2AR7yb
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYwz12sBtQ4YkQv8LzCTpiRC2y7y7D1fsxsBfYih43s5XTwCro
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZFWUqbEuBAaHsc2Ne1CBf7dM3JQgGv6vksx79tqys9mQBxDb3
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZF869bbWvNTwnTagnLhGVBmH12Tj7A8KkDHeGX79daYP7NUND
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZDkwXJ3ZXZMGtaj7nFn8fyH1Gj49DUkaJH4pRpToWKoS6HM8n
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ8pBfNYBujUbrFQyTF47LSuMpK76Ux4AUjfvm2AECk9r4qFyd
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYwbD1M5TfdjQvaP8pToc2ZA5BBjjULChaKrLgKJnQDj6JoH6Q
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ7Hu5GZbYvbUjKdRdgp8WUncrGyX8LE5Ct5zg5HyTzCL4iXtn
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ4W1ocZ2KFAe9YtYiaDEA2KboKhHVnFCraqdzAHTgiVY86RiU
+        value: 100000000000
+  # "ticket", "pudding", "crane", "kangaroo", "nice", "security", "patient", "arrest", "pass", "motion", "bring", "cabin", "visual", "hospital", "half"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZGevz51cU19G837F89gyDqbQVc66JR1QWPeCAJ6H6vB5x18LW
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ4XFdcwGoiTYAZNX6tDVYFFxdL7fMSrMsMUwe8tBhoCN9d125
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ8JgkqaJQJZNYhAbKVqNcgdwjbrPeDpEgugAeZ4sufBu7B3qM
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZK9kaMF4DCPEKBsMFgQArqNQosamFJbntLx4qbxZJVKPpybLX
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZDoYN6BHMJsowpmos2wN9DDAyGRn74cAv7U6P6GvQDdZJpQYW
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ6GjqdhPpSYa82MuDaQ4AdHp99q1y7mXy4xFcSaZ36L3xMQAJ
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ9gkH3SL9RsExnPT2u4uvd5vobWFN2VqwFmL2MDZ1pJ3avNuC
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ5TzQAyQcKn6NyhtMHnBPhoZVK7HcAN1X6HY6ButR1FEkSCsn
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZCHNjsUvHr2sEsGY3tHKw513RFZ6gEVsWPeiHw3xRvRs5s5Lb
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ9ww5xjpzfWfQZvfRMuCGz3rEMSctbeAj1nSU74U8vgeySfTA
+        value: 100000000000
+  # "isolate", "base", "oak", "bronze", "wish", "alarm", "height", "olive", "clog", "balcony", "rhythm", "spell", "refuse", "various", "fire"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ91XTvWQjTs678nEubKpdNmijBWzQ284m4QmyjYUVJVsJB5Le
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZAXWeS4kTx98CgCwxxeeyk77sdCXgtis6dPTibkkNYxy9h685
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZJMAnP3UiznuqS182Q1Ciy4WtsUxtUT9rW9JTwh2kbVZjbHHy
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZBWxWetYqN3cXVa6VxL37KuE9g4fYuCHxzcEyUweyLShnXpsR
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZDMSAMN4vrtPCuM1FkivRL5gb6wR2UZhNGH5sqTKifRYiwMJw
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZFvdHVj6vUUEVkChLqK1wFC5tYy3eUwgpVjEz11mhPbm57QmS
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYzzsGJmP9WHG3M7f64ecu8mga25WBg93diQipnukQwhtM7qEn
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ8vE3DuvtAVvzG6RmxKgnANEqkxVoVRty61yZprQFcZgf7t8q
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ2Ct21TrzaVgz3tEBbSFU9CjNXCgGhwYqQBqLwcBymuTwJevC
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZCc8dasxJJD1BFzCHK9ULESu2cgTDgXzyJhjAwv1nYCGEzkwh
+        value: 100000000000
+  # "flag", "super", "pet", "impact", "impose", "anger", "cook", "verb", "laundry", "embrace", "uncover", "mercy", "orbit", "fall", "cycle"
+  - legacy_fund:
+      - address: Ae2tdPwUPEYwP11rHrn5xgAWPMasT823xRTPQTtAeFTA6qvuhnz7xdpMNRk
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZGrvJRYDbxREDuSk48DLvfyKfV1NaZHUVfsbQqcWuHC6dYecM
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZCHibWTjAndMwXDyPGJQjY54zPJvfb4Gx8ggkpDUczsatZpaz
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZHt2wCW8nX8Tn8ebEDvLfowgL9V9QAaWGdbHvY1s73H7VKbzw
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZHMwXMBsL5BYbH69rA2D3nJpUcURn2mZPe9iXnq1XZvYJ2HDE
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZHkrw4wXi3Y4Pk75jCVP8QYSXpwZtygCuAgRdoPwVw8j5SNbj
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZMupHyK6AgPAKSTSZ5fcDRzet2FncmAgqVDizgvJQ5NqysLbP
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZBLnbve3bo2NKER3b3vLCkfxNzJgeiFPUt33sZgnji3Bz7YBV
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ1vPsmkZfqckougrkz53MnLd6gBahWe5koWQ7DgmdxHNv2NsU
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYzaDAgk3zN2sqkHYeG9M8CmqCKmE8adSgYq3114wCynkb8Mbj
+        value: 100000000000
+  # "occur", "surprise", "world", "boy", "mouse", "pilot", "sibling", "float", "clump", "matrix", "field", "sauce", "umbrella", "exchange", "sponsor"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZLcpRqXzanRY69a7scsryiygpBHgvdpPHvWD34fjQMZE6MYLA
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZJB87GNHZfFJcs1Ei6djhj4HKLufc6FYViqeCc8FoATyKaPPB
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYwdeYNWaPT71jhnbZSQesV9gzz22vydfvXtWhC5B2djs8sxyD
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZAvzE1xXpgNCmHYWPwATb6LALZ5bDcapuwpxPXmBn2uz2irWL
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZAMGei2LYdmRVtBtZHFhK7g71TV8ooXxe9ZztkaYabomhPTTP
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ3EsV15t7ZG8AHqE8kvvxGuzEJwYZkrHmx1CzoAdpwaayFgSz
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ8mWnL5CUJ4KeRpEvqphR55h3ZV1NRoiBPx5jWYV4UPByeqN4
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ7LqyFESUyn2yhgNybSACag6hb2Qh81sAxGSKS8to1skwG9Us
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYwG6qzvxuBXZbQZNM7ouc6VDZyM6iMpJLL8z6GDD1ZHWWy91L
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ8A4ZYi4yegF21KmBbFgcCgHSWqc3LDYJHUsQRd3aoqxpLNhX
+        value: 100000000000
+  # "announce", "employ", "holiday", "easy", "van", "risk", "cause", "exist", "absorb", "object", "bus", "rigid", "deny", "slot", "ginger"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZLd9tnEHHVZX8wSF1BfwkxTLmXM8M6ZKVnHcDSUkbSeMpb3bH
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZMujdBbhYJdU7czhhNKsPNYB6SXXbvpqmYx2hwqVqyd1eNmE9
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZMkWBzgxwD6emaajTQM6CJtbWAMrbR4eC9ma9rEoj1xFuhkmN
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZGEMwn3SaDfeuAFfFPLLzLW9uuaPraF2PrKtCpDo1xtLXApJK
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ6q8wQufb5E4s5qKUe7uSTMN4mJfLXKgkfVySzPMbqX2wAxwe
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZGNP7rCTdMT2K645118hQEwq346G1HiJrs8y9JtxdbFZT1UqC
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ3p8qiAv9rZcNnqHupvS5FGY6AfxkA3NeAqbMK4QHWYwDAYsd
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZJcDo5j1qv1RhTKau7Ns32Kzk7WY8gMo2u4vT2VXBEcDgUDmT
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYz7oNcpbfkQrYbm6sP2R239Yx4remK8vY35Xn2HnJDVzuh34o
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZJvEnYsAYGXSQxXpPydWFQLWKewGpAE1DunZURhfCW8SbncFF
+        value: 100000000000
+  # "maximum", "annual", "target", "vague", "patch", "humble", "canvas", "bone", "robust", "try", "puzzle", "clerk", "lunar", "theory", "black"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ3At4hac395zvqYMVjze5a3hHvGnctKGNrwB7Yxf2Wqd52H47
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ1MSdnXbdHdD7uBNkqXGtVYANSTZvXdacKpS1hNcvQM8rqL1x
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ7taSV1G9rgNh92NrJpV7yEA8EsAGNg898HVR1fBkR5wC1fA4
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZEDXj16fiG5aQg6vvEnPG9HvQJV7UDpSkmN3cLgUwzk2ghGRX
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ5pHMPPvL1wAVFR8gcJcqMLJtRGtjzSyf35P9pY2MaYUC5DP3
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZH87zCxrTZnWJpjQ5QnjY265PE219isMzVB1zh1RehV9PDkHn
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZAtVWzKqkbtHUUvkxh7XvHrVr8o31APTUsru4oizT7t1pHKJj
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ3bF93iFsmUjQoVjUE8JjiKJdWsh7SsVbjR8NXzmeqZ1jTiQE
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZCPDrbDU4qusE4yhjLfk571RynMFwxrj5icqRyBZeHGWnAs7m
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ5dABVHbfzBHhvQEjujEJ7GL3cVCBU5YubhuTr2h5cMHGxB3n
+        value: 100000000000
+  # "soldier", "seat", "waste", "symptom", "token", "fiber", "fury", "wear", "nut", "wood", "tackle", "clog", "will", "dynamic", "depend"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZFbvcPe3zomByRbCEcpoZfZ3eyHdoeGysgresyrzN47qDawvc
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZGHx7EAZY71WWpG9Tn8Ww4j1uuHvemqECjERSnuP5sx9VyW34
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ9zBw4UxLE1Y3RQfvvZF5mzCgNyfg1STiTr58gxUyPWPQG1mQ
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ6ahnDES88dSVat78TqwiYsffR8y5vX4dDkDtyGTEDK6veVxD
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZFVE753Bn4K67Acs7HUUgB7s1jhu3c4mWAQjJDuBJMB1btUYQ
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ3NNXpNA77KnNxVnkrVjwakjh4h3zWvffK7d3eHeHi9hLDabh
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZMYj3znfx3UH99H88eXXDcmg7hnXtsqFJwCnVENFoaV6DfCWz
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYw1kewNHsH4iTLz8hNbCw1JDT1XhELsEW7dLtgyHetfc9dDav
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZLgpPCrqyR7BpgApJxZbdTJzhqAr1scjXdGUmE4ShJnn4keJH
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZGtdimxpnZC7us214h7QMUcSzRNuT9Tb5SpBJTR96kqT2Jzx5
+        value: 100000000000
+  # "large", "convince", "pear", "tube", "view", "rely", "prepare", "joy", "gadget", "mail", "chaos", "zebra", "reject", "example", "taste"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ4yxCTWMK9WXMniVbCtGmT3rp4SmjvsQApL5PdrhhmqCcdZK7
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ7RKtd7x5zwt3qTaDhaYTwSD5ioE7aRHDg7KcxrMWxyCqefKp
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZGEMcmPeH2nadvmj249gVsXhaSpJXxNZWJhDr7DZbpoLRCR52
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ4N9U6QspKLAa2UV6LUG4DcUotA7AktCcTot9SMirob7cV5yw
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYyV3EooWPmd1fECtgwHJurJ7JgcVPnsWr7RTeXoNJFD2MUuP7
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZFMj3B7R3BUabTNN5ctwh5ovhpRRahvmRsHJ1Sj8pwbujQEmi
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ4K84XiKnnR87iBJMNRX7WXxQcybjTThVpCfFvCVVsqnH21Q1
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZBQDyhXvnBV582n4KHrE9YoLHV9fSgKkmYBbXg7tEp1HLYSmF
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZFZSTmpdBTcS2UZVcKghv9aMBbZtwt1k8epj9EJEYUVHpzdLe
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZB9XZ7YXZ45tH8DCe1HwCmY9gKdWA3EzPKQtV8RS77p37YsD8
+        value: 100000000000
+  # "detect", "glare", "pass", "virtual", "rigid", "someone", "transfer", "proud", "feel", "melt", "fever", "travel", "uniform", "lemon", "crop"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ5Rdw233T24RhvegGQZ45EfSghHBztak5WZ9fSugB85HUpBFv
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZJ11pM8xBEWNvp2QjkWwy8xj9XXbz52RPrfDJPFA9xmksZqic
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZDiggeuD5JFi16JqSqENV5qXeSbWEWeU5dzWjRY2JUtDQp56U
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZGVfzkdfXkfariW7CpxpEeeQfWXhXP5st3NzMPj3PC1BTrCYm
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZKCJfHVxCxxnYFJcvUB3PAeisfPGBdbx2eCCAW8pxrPBZDp6a
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYxUu6UdVLZBNxvkPhGKzwqDwGrcrXwmXZj9HthX7691r1f2ou
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ7P2B5yqvxMH5Zy7CKPES3mwgaLQQ2dPQ26fAt9drJfa1A3Vv
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZELdQWr8ZseGDJRMKRm1b3mh6bNZMMG2MWh2F1MQ5ZTJX4iEc
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ2b6UxgNELwMvtUn94x45bjAe91tYzFRMYZhWyNYtE8KUAYz3
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYxK7tL3jgP6hJBzpxog1t9r9depsdCm8k7xL5ucoYqs2zS8jz
+        value: 100000000000
+  # "join", "fever", "gossip", "someone", "state", "wheel", "galaxy", "season", "action", "patient", "install", "client", "chapter", "ethics", "lunar"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZKhnDkfAUV23pghKwUGoWsq55HLcVrzJXiADmgLcDKQMFq7eg
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZMJUxV6uxYtSvkruafyhJg1SWJdbZ8GZoVFJARHgxrKFk77c2
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ4NDxqhgx2uYtU7YR8PA3vTkaZWVoQ57pLE8jpYGf6LnwGQss
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZM2RP3V3wT71g3AnTmrHQfu9dXGUU7JEGzbuYXp1Rr8BXD3ik
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ5XJZX331mVbardNUgtriPYy87kFt6XSzhAJZmcYESnyPQTMg
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYz6sqZ4WYZUh3h7jmwA45EtVWkdfwGEwkqUXGRH8ukVnzcVQr
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ9K9WHN5ZQGcYTXrZ5aVgnjojBCeT5LP3WcNMZagnaApHVwpA
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYyQndV92UcWm8bCdX7TsRJuA5hqVq2HYuFHATdpnToZQoxCUH
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYythZh57NUkadgMVbD2fSJnKHDP41bWHbZAfQ37UhYBpzvXVq
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZAN9wbLkdu8SU5xaNFJZoLUmQvP7AvZZuq5Fpgkq4JEh4pTW8
+        value: 100000000000
+  # "deer", "mushroom", "law", "below", "mimic", "miracle", "tobacco", "frost", "response", "ivory", "captain", "moment", "digital", "car", "wide"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZH8TVjchLtCeYmig61Pafd5JU5qj6izAUuBCCN23Gjgkyf4VU
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ4jhhgGhA9shyJ91ZgUdT23Gdk9BszQrmwwvDuTaH4UGJSgTK
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZMWw5qNCYrc6GHCD1TEvgtNBt9gZVFsdwsk5frGpbxE4HBZzx
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYzcx5X8R1L78ajAXkDEWNQpxKPbuxiRqVqtZXwBmW1hw5d78W
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ3qjEmFHVrBoNiExKuqCq2wDeSM3fsHvZA235RrQLmRJNZJ5B
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ2TbvHWS8iqUUkbMet8XprC3492aE1BebMFfp8PWYpEihdi5N
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ3KXygpAB5ySYPqHfWTNqMkhUTEdVYueqSshwT8yQqmt4crUM
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZJvJTfWgJhUMppZeonnaT2ZpwFrBxSYkh3t8kBRVbgz8ngcFd
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZBdxbCA194iKBoNVrPoDQyfxRTuPnMBjqojNqJzRQ95efGNDz
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZDq3hGvEzWTt6txPuM7hoYnZRMxvrfvqAoE9RdZ4SCFiupq3H
+        value: 100000000000
+  # "sugar", "maximum", "custom", "entire", "minor", "act", "real", "fire", "balance", "that", "slow", "shuffle", "angry", "gentle", "tattoo"
+  - legacy_fund:
+      - address: Ae2tdPwUPEYyDb2e4yE3hzapCSMhdaXQvojPJ2dxC5ZLUz15Ry5UdQfJggU
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ8FFJoEvjfsWxXUwpsYH5mSaqNJWvfSDNfsgaapHooKXTFoSf
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZCQH6VHymHcjxhGrv3bQV6zkBfhHhS57uFY4kWaH4BSzUJkzq
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYvp2GFyDRUtAx2YYosFfaCtYFJtQsGfXnDNCtGwuPByXmqzP6
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZCNxbrLBRfNyzrcxPoGn4E4bPnR9N7zFpK9ddj3UjpER5ay9V
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYzk6y3hpZjfC2xeHxceaLyiumYJXDECZSyZP8SZaXG2B5aNCF
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ2q8AwouwaeCJTJqY2ZbDC5jTARLseVJAKNKyAeYeJNFEoFEp
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZHtXyMoD31N3VCojHQWHTqGFbhy2fCQjQWab1TNyyvG7BRiDy
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYxvGAmXnU6tHuTiB6MUCr88QhSr6QgbvoSJuBzKugHHcQeFKZ
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZMFd9fRJqhvh9KQhefNxyyDFb8rziER7rhCk4u7HR7aTQUWXF
+        value: 100000000000
+  # "dad", "citizen", "merge", "bunker", "organ", "chicken", "stable", "tiger", "judge", "also", "marble", "corn", "tuna", "stay", "slush"
+  - legacy_fund:
+      - address: Ae2tdPwUPEYybwErVB1h5SeHW8wARx21KbBuhiJQd5zwwwCKUyhi5kLwGwz
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ2jyADZdkxJGHjLtmqY3DVpgfPzeq6Upe85KcQXxUBktLf8zv
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ2RFahkUugaBLcBHyJ3bWc7X92yG9YNvazguVfgKEjGTFyGJu
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ87DsaXtGcyCne84GVGjKGruzDbX5QqCSNgA6WeW1VoSWihrm
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZEjgyRTVZJc9CZiEoGRPiCJmGEsHWndj8odNdHq1RmNncj6fT
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ2N3x1ELxEhoBVvb917kSK6rKRPQP4hMFWEeMa2JRm3Cjn8ST
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZMLQV9ygYcBqqBwA4yUSYppuQvNhHdjrgAHbvQN1rxFRNPjrD
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYy6b3XydEUTztJELJygyLHLaDvBe1YRN3XbKYCo4avxyYvi5D
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ69LzWFSLc4kWktnY5gtdWN1eWNdPK5jvq29gRXEAgAhVpwy3
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZCQzfdKe1486wXAiz8Ysnv1fx6CiqjdCm3JAnUP5waRJyQWEW
+        value: 100000000000
+  # "globe", "air", "indicate", "dry", "latin", "gospel", "book", "grit", "wrap", "toward", "begin", "pretty", "fade", "adjust", "drill"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZMA8X4rMwovnjaRx1ndmFQX52dq8wkzWDZjYa1Tt1THZbRhjq
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ1DxkbPTFHibGNGT53LstXmwcXwDvRKcL9pFSfn8L6f9v9Vmi
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ7EfLhBqZvXJ5CkY2rhon8ic7rRrTorZVV3Bn2GKWo8bTX4yM
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ2BR6xHsoaqWj8SL3HaHuFcsBeVaZ1pT3R5NqR1PdG5kmtxoc
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZA33ArbNrW4cQrQPspHutfvxaNoV8tuaGa3AwNyaWa4ieqQoz
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYziHXFqYub2GXnbtyM4tfTp2hoEVfVSqf5GVi2P56Vv2p6hvG
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYvuqX9tZqqAkDDP7afsCvgFujfXxZHTz1PKeQwrh7gbjGFQ2d
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZGwXEmQgFjUkQWRipq7AGsCpiMHq3rFfVSPFFSXTRwELizrfo
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ9BAxwfpZFGnK2g2TfYkRKnCo2U5wdyYGtNbP1pEsaxi8AnHg
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZALSuJYXrUNfdVPef3B8JmeFZN3qLL7NsrvZhdcrwoaF31NQB
+        value: 100000000000
+  # "among", "garbage", "survey", "unfair", "between", "advice", "dismiss", "tree", "buddy", "climb", "early", "venture", "later", "mule", "season"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ93Gu6c9TBcjSZMMsYRqZvtetdvNC39xWRh6uKwqjMmpkzrq9
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYzcvDX756wJHLbWqM7PtfqEHnFbnNy48w1ApaYGEuEA3MPCw6
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZK63M1TwrMijav8ZxSVsDusTTSmndc7u4J7Nv9FRPWwTE4FEZ
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ34oTAZoo37HmkacJ91SnS9Qa6C38AAKoiVyDeCkv6LSWeBCN
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZJwMKhpij16Fk3Vvwky2iYqJZgsmG5WcV9DQ9ic7N2rSqdEwd
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZJ18GpEJEv96UNEaHpCRh8eJQmeetBmg3XhewuCzyXdRnNrXQ
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ6hD8AUzwEGAfyc5PThCDZQHktfqYGCebxiK7jqcBiaxrS1hr
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ8jaQAnhLoz6FMcw8h217BmHvNTytqSjJtQR3WhSvcGynm9Ee
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYw99Hz37zU5D7WiDmaPDQMRACzM6sx8WYDHhR25Dp2FrAHCyU
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYzKmGanjFGuD5V3gH6VG5qV1QvregiKdrJceUpWQQiFMQZruP
+        value: 100000000000
+  # "squeeze", "expire", "meat", "mixture", "whisper", "retreat", "siege", "beef", "absent", "double", "rotate", "citizen", "neither", "stereo", "accuse"
+  - legacy_fund:
+      - address: Ae2tdPwUPEYyC6vFbWeLNxHXmP4omZRpcJ4HzASaY2wzZkzsBBcJzw4WGFy
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZGNuzQnUrzAMQWPowcDF2rVXZin3MXR8PFzACURzQ76NLM1mK
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZD7SfaobKSba9pbFjh8ZnPoDdsbGzaANKWvCbYUqNPVWjh4Ma
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZD8zhkg6qn5cBqRuo7JK5zuycSdN8QnivPm53vKcfvMee3SpJ
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ93EkFiNPmJGYVxCtCTwyFxFAGqYgVXXF24TuJ6kVTAEqcJDB
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZJBgtVWWSqNjp4KdtnSeMjfyUbrYtKRZVrqDQ9QnyEdkr2rC7
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZLwjWp67wCj6vtTd6zAjRBtna4SKJco4UYizWuKzMizKDktbU
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ5k2M3LzdnGdijwa2PK9MU3piNA2aU9Nr4PtHDCM8BjsUusq4
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZD1neex1GiaT3CiA2icFPaDVxbNWUDMdgGNdrevYAcjjNA2Nj
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZLoAS77y5vg4zawjfDCvfJRukaQB9DuXrq1ceYjh1fixwj5tQ
+        value: 100000000000
+  # "improve", "make", "wrong", "tiger", "ten", "panther", "duty", "ring", "pull", "exotic", "milk", "chimney", "source", "present", "panther"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ6CqiRL8Eyja7pzm2vheaUWb4PtpuzFaEQz3WSffGWHnkCMoh
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZL82pcDJx9EgxY2619buYMbtG7hfhUgC765KqNmbdivKXbB2s
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZKMpRR8qoe9wfM8sQcfYPp2oRmtumGB6Y2xMghmscz8wRqPq4
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZLvFUcFHk9QKVAYthaREiEj8QrqhtAWqyfUGGQGf32SCvBYfP
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ87wPWbY4q9hArZzJikVdFs2JoHKNJEojkjxy8Vp9zLJ51muG
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ7fkQ36m3UFj2RdrynWpadFvKFZAUxvQe6D9SFFbexeTyMuJE
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ8TJXYXt7EJkzZA1YS4MxyjQ5pVxKxVtV6jZ9dHr99Yjbq4hs
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZLoABxB2XkjSsJ2ZTkHpR2qJ5qhCoawXiBfgBuFw41oTn1WQD
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZFXnqxxggvgGcsSNkjkXvy9MtdKT9kPcZoiWHg6WpJqTidTdD
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZBtTiXjHCAZLWYWf6jsuh6xvqy2NAYDsuWnbsSxJAxM7iLgW9
+        value: 100000000000
+  # "busy", "devote", "dirt", "timber", "tumble", "away", "famous", "spatial", "economy", "hub", "near", "spike", "sock", "fee", "head"
+  - legacy_fund:
+      - address: Ae2tdPwUPEYwPNnfohiWmX4gBdXSPvbS7yXnje2RLSpAiMFC4gs8QndqHeF
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ13sHbK1QbjL5n3DdauAEfQs12uvwyQaWGFSuDbqtBjLNnuqg
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZHXU6Ci9uEzp653gTbe5TQ7gb3AK9TLtF1MttBfr5KjdrEBHk
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ8VAi986YfPxkYuTQmLMnfYsPEwkj4ob6mnzSpPC8a7eM4ajk
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ3yoeyvrM9N5J5nPug7kX49eKKsJFm7JNwQeCadWbMzsvw5uZ
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZHvzmTM8aagizNsrGrabgeuHbWRAQEpHAsSUzVPEJpbEJZsrX
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZBR7kZfwscTkBrtYV8Ff5bajNnUmdcrMhBV9dedeT3wVyFdG4
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZChNirPh9QzubG52AWoRaNhofa3TbGf6eGLUvzEi3g8s28Rov
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ3AV95GkjRJCjGPab7DGDKLHecHfebJeNnmSzKFLso1b2zRDn
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ8wwWByYZm27Tbk3ZP4CRvJmWsGWYikdFvhC5tvgW3rf8ueB6
+        value: 100000000000
+  # "cost", "giant", "matter", "divide", "yard", "pluck", "distance", "once", "life", "wool", "ritual", "stage", "banner", "notable", "deposit"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ7zLi2zvzCDuz3kEjw97FPBTLqaFKS6Xc5n8yhKLh6D4xiXhY
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ8ncxRKKQjBqKtUCYdcvxBc2iC2PqznWcV7UAwdSoAD8DyAYt
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZMqP4RPxdmMhi3JU8h8cqzVRjpk56HCjvoJ6mjuCbV28bf14e
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ8FuKmYNKksVxg5t6arfx9HkdLgT7oKf4qA5bsin8eXG59pYb
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ9jDSQyS259HRGSwkQDHSutLwNpaYxpwcayHcqvhUaGjNHQQQ
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ5dSDJ8BbkTMVcoGY7vgYdMVuaDiKZSVRknZndpWAxHXTSEYJ
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZJSoZX79C6V3W5cuytGH3yK1DEnEezuCGWnvrsJxVTFaxqTKs
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ4BGksrCA7GFohmRJxML8bYdiPfYHzRAH1ZeehTHWwoaKUPUj
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ4CkT654whww9MPPz5AwzxEhb8QbDynh99C3VChvcW7dmyBif
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ6w8X6Y9z7Cz74nmnkKnjJWqfCSn4S5tXYYyqMhCvpGoHDnfA
+        value: 100000000000
+  # "notable", "drill", "dust", "jump", "task", "immense", "very", "tide", "humor", "north", "cream", "behind", "upgrade", "gaze", "about"
+  - legacy_fund:
+      - address: Ae2tdPwUPEYwPChJ1zr8hB7QUvyzpDesUp4to3JZbsLN57PLH7ZWEq4yYVk
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ7Cx68hJx7ZZZ5P4s4vu2tpmeWzVP5zSEi6wC5WM1qc3PzioQ
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ5WFJgC6Mdxegq95JxtEXWLbRwsbivBkvaLTNqoDBPAbQ1ypB
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ7WGiJu4a17o5fRvA9Jxy1AWk2uZuhWb9FRUXZG4cPUw98d2f
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ9t9BVAKsHmA9gkUGpRSeeYZDV4oY5bjShjo3V7KDBqYbiUNW
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ3Qd85yPhvpH1zW3T34cfJyvjinwbi9odxowZwmm4aoJGczDN
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZNJiJnsy6DttDVkmCDRMsSrjcdo2cVbZooSYyUcb2SjcmV5jR
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZKxr8pmCZ8WwbuBQ4B6ow1EFdPNYKFLqWnJsGpDaUCdDVKnHa
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ1Pz3k53z5UbN6LvCCTczn8dJsVuk9ZRTN6Wt86FmkUGc1Doq
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZHrU42ZDpm6deQHHtvNuBopoz6tV35eb571cBnFbEeUiN3sw2
+        value: 100000000000
+  # "relax", "faculty", "bundle", "replace", "mercy", "find", "walk", "remove", "clinic", "glove", "session", "truly", "guess", "range", "skirt"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ61HSMuRvL9qKocuPPEciqGw88eZrepNWhLdTG5s29EpyA4Cy
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZJctCftDzEDGzr226gY782YukcHE1KHqrApV1wi1JNhKESVSS
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ43WjWQrTk1mQCmofyiQJsN3dBuabaRtrr9kcxqRAKkYu35L9
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ7TMGPjHcsQhy5ZFkixdpkCvrKF5GJLinm1XYn9UuSKkDwxe6
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYx5UAX28QmV1fBvr5fhUd7c6uokLu43JcxTYUK3LnBALT1Ycd
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ7tf4SnwQNPBEhZS2fKVKk53SH4gkfZzh9TUWLXL4DBLB8HTd
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYybP1TecLtjztuUo64J1hxiYXhrojcbmN9nQhTdraQKvtjPao
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYyEt37tDBMPTQthSpVWMmP3i79kWiV4sxrGTyg2tk67sgGRvq
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ3eXAzcgVu3To6stLGceEJmafZez8tbLMxbDbYfRqepqoSTvH
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ6A4FzdpC5n2E4jhEvRcz5Pk1fa2sqWtDr1BxWz7k5KQfytM5
+        value: 100000000000
+  # "wheel", "unlock", "spice", "monster", "swarm", "lion", "parrot", "pause", "figure", "rude", "jewel", "borrow", "law", "curve", "sport"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZHxkEqg2cijMqdYq2h569ALyLD2e1iDb6RbhTLJ5isWiBMWvK
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZJcAsq2pgr94xhQp7m5KC7S9RsBaCN7aauttwNSBoXB6utxCx
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ8zkm8J4QjQ685ejAiwP1J5S6s6bVcfUFrJw8shD6GeC3oFa8
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZCGEXr5CCvxDHvMqGVyZcHXCmtGL7u1BV2Vy6hPJ7VeTEiQZd
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZE2eThpHN641QoUkg66UMjdoE7Q3yLrCDLYtBgsuZkdCQddmm
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ4bozW48zMym8kKaLnR6MAKbgSsifqqWwA1xHM1ozVkhFUj1D
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZKp8fMNbmWgL1XFFfRtFj56E2sX7Hw1UP6bQH4TiWb31z2wLP
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYweitdnXpbPTvVXVEn4ZzhmpvfBvnbyDrgjBNtcFgTKKNBN6A
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ62uW1TrYnB5ueZ2Wk9cg5poFco6N43VWJuLi8t5SJFjjt6Hb
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ6bjoU9zALeZuYJNzgZyQrJvx5ciFcz5TDdDSJDUz248VdU4N
+        value: 100000000000
+  # "merry", "battle", "blind", "analyst", "milk", "owner", "business", "decide", "glue", "wagon", "perfect", "expire", "razor", "list", "catalog"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ8BCtfUU91FhumMMNWp9z9UTfLRneruNkChuZr6YDBwU7aG6k
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZMdaUvXZ2aXF7ZXYsXyQnRDNxLFKQXqK3vwjaMaqws4GHxiim
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZCe3snREFsBJUYp7BUu4HTDxrr8hkjmtoEJWqEgb2h9oKTidP
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZFU4FdqvRkgMfcyct4QumN9VgZbBEQVtmecEWmBuJtuPx2G9T
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ9ViHaTSrKKfLxr8mf6TdeiFzA1UjMzr6baruxib1HcMRPfmr
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZCcDwhHSvmw3eVvD6LoaGSAhBo9yBhMiBk4M1A3sH924Z8mmP
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZKn6mM2ChAREkMwHxGwdHRBDU9NWANWLvGByFeSu2WyxCcst6
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ5FTU77xdpyyEZTsHEWqA4SkuYBvFtCbSskoMzC1ft8WTYEui
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ555CLvYqhHRE1XKjkSBKqneLpEJ9v6sjsV4NfdmS1vmm6mN4
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZHUwuEkHm1eon6wYnWmt6ksFFRTt1XQuP5MHHnmvi4NJijWJA
+        value: 100000000000
+  # "dust", "inner", "time", "daring", "donate", "script", "small", "race", "chase", "crawl", "asthma", "captain", "hawk", "subject", "culture"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZMXz8bacHcxvRXaR63VsDvz5uhRWPaq3Cu61Xhpa9zd5MeM5M
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYzh48Qk3ohSe5XnNdoNcqZuYvCgsEMASuWPB5n4perL1BSujx
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYzBDp8a6d5xdm1xXpvgNqKVEh3k5z9pMpykrFFiWjp6FaXd2u
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYyckp6oURgGFXd9jG69n78zCee4B9SEQ2bZXyjxbUq3R5HMU4
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYycp9vuzZHXQtGrgTM1gCPjszoS1SzqBWjuoAgyUCG2XjN9ku
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZBMNmzqSXZsUDqry7aF47NPvT43LxMWGKmviEUJzN9Smeguxg
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZDa8wGNQ11jonhjok3ehzyWsbkFVBij4iPcQd2CJihWjyYZ5S
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYzxrpydczZyQ5AeY3qAXCngijc5yZNHNAhoGddCSgm5Lnkqnh
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ3Vn2gGxXRpvZX5uXjqHSXAAzQTstzsaMCWCt5ooSt7cyRH4w
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZF2UPCuoSq3ivvovpBjXc5taAqLrUw5vgGh6zx3ckpK2Fi7FD
+        value: 100000000000
+  # "grass", "sail", "visit", "merry", "raven", "fault", "soda", "isolate", "echo", "tortoise", "pride", "game", "person", "project", "apple"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZFa1ssXJN4sgukaGBDtst2jcA49ZGzXa2Hr1C5vuZP7CuCybW
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZEMZ2a3tcUU4bvb6hoM9w3defNmMti7ja6wigjCdSxkJNDwZC
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZFKJDXx4Fsp91ZgpaAgKNNZWB13jkYXW6wPEey36chKL3NDwe
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZBCkARDHPo852i6XfT58pw2Pjvirgkva1EPw6PwEaYGuTNwLb
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZARA9MeBQwoccSYDUj9YChXLyh7AtHMvwvqG9ayZ625ArKUxM
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ2SsnM8YH4Hf38XvLidHoZ4DPmTiEDtMPmE1MzEnPfbssXNJK
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZHKAokswWkYgcpD7xafPndkRqpUgQaZHsarap1JAgFjRDGfXQ
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZM4tzjPRCcjKSj7BTNika8my9DRRAjY1EHi1oo24Tm2XsS2tg
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ1JqaUF8MTCB7b8CtKXYm21fTKSa6yYL1RF2s79Ti9ZbThbKk
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ1KgqFrnvMZxDFimrPpLmdwMPzHERU6vH5twNVwGoWNnPo2ua
+        value: 100000000000
+  # "idle", "absent", "exile", "youth", "magic", "reopen", "tilt", "panther", "human", "citizen", "bubble", "solution", "amused", "gauge", "piece"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZAwJp8YhT57SFdGsxYcdNH8tTX2zRqdTxg43FPaPp9JCJp8Mf
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ25AXK3R5hJkV21NFPHWGqgGR2xcnHcbPT5p1hGeTyN29i7Kk
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ5UJfgzYLuadaTe1woBSkBM8utqJnQzRB7UyfjN9RP6788oSd
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZAWahctBMQNS3W4BXtYzwkDiaMoMRBwky7dTV2Ex7uvjqJfs1
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ3Gaq2hSnXQsxtnTuFaXMFmj2DZd2fvuQ438w6QewyFiWGhBF
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZFxrHZD4xbVj6rbRDSUenw5cqrETC9FdU1c3V5MB8CBA64rwW
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ17Pp5q5Uk6nuoVZaLL3sV2tsMfC7gJqhm2ejLY5MNoWNw7Dt
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZKuZDoFKaajmAEQ9kdhMxihkg6EHHHXa4ZudLLbKCjX3Hq6dK
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZKhn8uCm9phfy2Lq4GJAymiZyakBtzky3fyqjst76gfu6qVCY
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZF5pDQEGx91dJwRhniHsJfQa3hN54NZibuKw39r3LnA76bzPV
+        value: 100000000000
+  # "cost", "link", "fatal", "puppy", "direct", "under", "fitness", "wrestle", "egg", "token", "yard", "later", "net", "swap", "day"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ5gC5x7zz8K2XBjb1EP9UMgXMQtGTefJFdwsqUKYfFQfFwnQH
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ42KPbxKa3oWvgGAMNyuLJiChHuqhK3xr6cpMyvtm61TQWWsc
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZN5Uij8nGQZZPS6aAG116Lk9Fficg3HyNnZBMX7uE1vUrWy9k
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZGYm1TLWoAr9bnz8E1uquebQpFu2hQvgZsTonU6BzAqyBRiTs
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYxXAL3ZDYMEQRBWnEdPUKua1VN7kzjPPCftRSCJ8fH1Rtwiqe
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZDzUGRJZzF1ULkP9NuGvnx1eqPhPdsRR9jEjYA1JucvWCpgYs
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZCrm6p2guL2YpegrsznYJCYjoTXWqXFiVGvkXGqE9rUgB2kbp
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYwNeXui4QEN6wcBmYYzfbxY7Z4bVQLWnNv7d1gjKmeACPYzCM
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZF1rWkHBWPKEBcbG3tS7MUZfZ9HZGbcJLb1PYenysWX4MXnVY
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ8qstsN6TLqP6UHGMP1Eo4iVzoNr6WqeEYFdBz8wHKCL7wxvH
+        value: 100000000000
+  # "grain", "left", "kitchen", "attend", "merry", "slim", "wait", "sudden", "gas", "close", "drink", "deputy", "family", "crash", "virus"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ8cVvmKvAutGSseymQScV7ot2jd3HpeddcygXTkUBwQxF3Tqm
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZAaKFF3dYu4SSXz2npmhWQ49bwbZanRWjTLU7yyihrV4VnE5D
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZMgkVA1gXHNwqYZKEYqEiBhkXXRwZU8QYRvwPtgv5seiNg54w
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ4wCrqVNbZyVYjt6ZN4rM12iPRSSCdR46tpmKgUGqsK6NvhiE
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZBMR1jky8fkFR6mtBpir25PXoS3R4wCKWpytHZNwUzSAW792F
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ4iQaHPshodNHD6TKTjvkBtn9AWyv4NJBLDX2sky2Efsox87W
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZCqTNGRt2U2TiUAds6Bsh1YpZBe8ED9s3Xjkq4zKTfBisFaYu
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYzZhAHMPqpXcEZr7nXxj5BgVaUdJR5DPawBC5RkUEGnhn5bPE
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZBy4idd7minN27Ygb9xsNjQTaFi8x6bsTwQPUGPo8jvqLaSgZ
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ2S6AbCeAHSLF87HNdT7JQN9NGBg26SYHfMEPDYLZyTAZnKpr
+        value: 100000000000
+
+  # Special High Indexes Icarus Wallet
+  #
+  # Address indexes below are #501, #502, ..., #510
+  #
+  # "erosion", "ahead", "vibrant", "air", "day", "timber", "thunder", "general", "dice", "into", "chest", "enrich", "social", "neck", "shine"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZB1rJ7Hgrvywn8zETWcv95csnqZ8UhxM74CrQ48VeEq3vjAai
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZLDsoZbe9FKwsCDhRQhGUxkGvrMH17Go3EtGNSMp6AutniqQh
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZLBfW9r9E6XcfZq9WsPJ1ufE9txTvMYUu8kLtwTAbEZdncEMc
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ55N1WJFJSQbFuKbKGdbFZRVTS3PyNJ84VGZiecuqy8PAZfLE
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZBShWX3hTsErG1Fx9YRM85aNcqiMZ6VFn8TNA1ocgUddTC5qT
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ8kzoviC5H9y39rb6mykNhiZqTz592zPFUb8TGU9mBa6ycrbo
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZJSoRXrbFXYaJEnZcBaBj137JWAzgG366H1oxupQPVd5daCFd
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ8g2f5hJUnMGmro3dpwW9DfQSDpNfLk5tfE7hxZKtNzwwTHgc
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZFux7F1Cthr49tWitNF2vqwEL3A9R4cgvKFDSFkzGBBKv1a6W
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZFbUA2eji7qzph7Mug3v9HVSWvhSExvUDez3CzKB1grupYBAL
+        value: 100000000000
+
+  #
+  # Legacy Funds (Trezor)
+  #
+
+  # (12 words) "walk", "license", "firm", "dwarf", "hundred", "pride", "ensure", "midnight", "unit", "keen", "warfare", "east"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ9W3XajXS7ypra9BBYkwfvTz1PinD1eSCxHCQjTmw99wBz39y
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZEhg3LiSAMZmtosbQcAgSU4jvLhWSRyph8hwYqv9CzrFy6vQo
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ2zpcZVpVoBtGnncG3qSCMQGQ6M4pV2H2K5YyDhqZ7424GKyz
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ7tEnAvFtc3v7eP195XrS3pFgZSSCoa5S8oBFk6ztxVwmUcxA
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZHanmRFbXA1f4pYrFRoBcDMG88CeV4Z57XpMUjqsc8jRz8GE3
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZAyvGMHqdRfLcMuP6Ez6RgYjdyGUFBCeqzPqHbkn4wd3WQrgJ
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ2CdZbNdzsbu8yBU5ZK3XLEQa2pYwsZzgagKCMMdpRLKQKFfX
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYzrrpt2NccDnv72v1noz2vTXt17UeHPtXuZztcqYM57ncCvfD
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZFyBM66NYnCREpZy43gEpUKwyvYBdf8nK38N6VeKJoawNsVQC
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ7tNoEkK58MrWdR6q6unhSqDgXQvEc2XyRtNLgSWbCe3QZghK
+        value: 100000000000
+
+  # (18 words) "hen", "idea", "mimic", "frog", "second", "magnet", "egg", "indicate", "jar", "girl", "broccoli", "heart", "verify", "person", "present", "toe", "vibrant", "unable"
+  - legacy_fund:
+      - address: Ae2tdPwUPEYzx9hEnPZKT14SfPmsQvpwL46yPRFqzkqBPTDpwwDBiSQSe5H
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZJYmMs1z8Gh2eGZZR3uBqgcQxBevA3rsvWft3U9d6a8dGkcZ8
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYw6pDMLtHTxBq8LnYCbXeey8AkPeL9DNkibDz4i1SssCTH8R5
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ4wqGZtptW4LxngfZjdmCRaLrsdo3H31CqFkrKH5fxF3GAUdm
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYxyHGuNmABqY4P7uzzGd6UWVeguwgUrF3tV9AEptExgAbb2Ds
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ9wCuUSgeHEC7jMhiHS8hXWx8w1Vtt9ZxrzYoKDPbTKhdPAfJ
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ8Vt43wsBaAzHnEdvjwPnjAoWLC1xeJeNeWAvvZnNDAMwZ22b
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYx21tKjtE2WzQsmsxNdVZQxCCgojUxMFtmCYR9gqqwXhBPm57
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYxVQrJm6PuWkjgNadiUV3YfC2sCmQFDZqwuzNFGj7Tgp8n1Bi
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYwBbU6ghpjWkNw81wZ6LdyWdZVMdoScDPiSV5ZhwSJzkZqus3
+        value: 100000000000
+
+  # (24 words) "slot", "young", "shoot", "surround", "equal", "trouble", "rice", "update", "rare", "dinosaur", "drastic", "kitten", "mom", "actress", "salon", "abuse", "happy", "satisfy"
+  - legacy_fund:
+      - address: Ae2tdPwUPEZBvaca39j3KRRikqY3AGFseAtgBLdnV8pDArUS5pqyMAzXUzY
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ4MemwEvUPeHWHckYjfYGiU7qyLCJ6MumaU5c64YVboeVBU4o
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZHwVZCJ9ntZM6w5XJ2z9QtZKwkuPUMBusiVx5q31KpqGR9FcJ
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYygErppRsoEqXEyPGxEFsKVoa2BFKMG3prWh6sFi8VSgW4h3k
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZCWwt43jbnf3RjEBqixpjkzMdTB9cyt7zJjVnq8PTnF55rHQL
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEYzbmFy6Mbn1WjwtQJyj71Wqj27jz9QpPty1KoyJL3tQh4XBkW
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZ4m5XyBU9c41sareSBsLMoSn97co3XMnaGtuQDCPRywXp6bt5
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZNLXT48whvAoRTn9bMeZweHhPqG7xFDzCrKfzGu8Ku8myrRcj
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZMpnbSJauTkyFvaxzmcxbz29h4ogiQemoMDEwun5tAEQnHaV2
+        value: 100000000000
+  - legacy_fund:
+      - address: Ae2tdPwUPEZEaxZqj8oXrCPuA3Ehaa5fa9kPAgpdLmgoSeKipZEPWo5qeQF
+        value: 100000000000
+
+  #
+  # Legacy Funds (Ledger)
+  #
+
+  # (12 words) "struggle", "section", "scissors", "siren", "garbage", "yellow", "maximum", "finger", "duty", "require", "mule", "earn"
+  - legacy_fund:
+      - address: "Ae2tdPwUPEZ4Gs4s2recjNjQHBKfuBTkeuqbHJJrC6CuyjGyUD44cCTq4sJ"
+        value: 100000000000
+  - legacy_fund:
+      - address: "Ae2tdPwUPEZ8ozZuJWsLVb7aEb5p9ntcja47B9i68GV3y9by1eY5C2y6WUT"
+        value: 100000000000
+  - legacy_fund:
+      - address: "Ae2tdPwUPEZJoUCoyoCxUAKAbn2vFo6nu6B7aTWL1Pv9MRKm8unG9ixLurg"
+        value: 100000000000
+  - legacy_fund:
+      - address: "Ae2tdPwUPEYwFNKLxqF8s31nbaNt5MZisVqsQ5qsiY763HY5wsBN3mSzPRa"
+        value: 100000000000
+  - legacy_fund:
+      - address: "Ae2tdPwUPEZ4ZXzzehKoWWC9QYVqJfEL9x63zjH6wyEJbNRsZ9eccR6nSpv"
+        value: 100000000000
+  - legacy_fund:
+      - address: "Ae2tdPwUPEYyX7ug8zm6K7nLWhgEEBo7Ewf1qALxkvqyHHSC5jMFzH418Q1"
+        value: 100000000000
+  - legacy_fund:
+      - address: "Ae2tdPwUPEZ95eCwDjNQjReRkeLZFv6kBs3vwaKPHJsw2cxXc3HaCD2jzqw"
+        value: 100000000000
+  - legacy_fund:
+      - address: "Ae2tdPwUPEZDHGbQ9sbLZuw3cfhcSzqqdK8Xj3dhAzmWZGeVgJhncu5LR9N"
+        value: 100000000000
+  - legacy_fund:
+      - address: "Ae2tdPwUPEYyDca1eVbeEea6CjihoMAgt6mPiNuC1hEpy5U2qQ1Tzt6E8q8"
+        value: 100000000000
+  - legacy_fund:
+      - address: "Ae2tdPwUPEZHRMjjXMT2icJXp5h2k2j3Ph6dB5iGRashA2QxHLgFZbHzdms"
+        value: 100000000000
+
+  # (18 words) "vague" , "wrist" , "poet" , "crazy" , "danger" , "dinner", "grace" , "home" , "naive" , "unfold" , "april" , "exile", "relief" , "rifle" , "ranch" , "tone" , "betray" , "wrong"
+  - legacy_fund:
+      - address: "Ae2tdPwUPEZMCGyPAK85FrcserPvzVZZUcbFk5TvDmL9LrUyq2KPYubPcru"
+        value: 100000000000
+  - legacy_fund:
+      - address: "Ae2tdPwUPEZ6drrnNd1KW3UoiU3U1ZK3mxSpQpFAdXzJHuwvDcYB7Wzxkp1"
+        value: 100000000000
+  - legacy_fund:
+      - address: "Ae2tdPwUPEZ7Jaw9qt1q2CjCcds6zpHMyzmPGDh9tBeyQG28AdRGHcaWYx7"
+        value: 100000000000
+  - legacy_fund:
+      - address: "Ae2tdPwUPEZ9SW4qxWkFoozTux5i7F9jVpHQFQUycQuNanSUScyMTYrnQXK"
+        value: 100000000000
+  - legacy_fund:
+      - address: "Ae2tdPwUPEZ6YegpN8XurGfWyKqkNHLgdbHpdohumKt5QpkNVJhw4FCSRdo"
+        value: 100000000000
+  - legacy_fund:
+      - address: "Ae2tdPwUPEZLgrXt3zJeHgFWM2stxRjdm6wWATSoUzJ1CmUxKqgbYQXR8cC"
+        value: 100000000000
+  - legacy_fund:
+      - address: "Ae2tdPwUPEZ6axGCfo5nCLn5hEoRo4yNmQKBzn12B2quPncgQRFP6JBZ2ex"
+        value: 100000000000
+  - legacy_fund:
+      - address: "Ae2tdPwUPEYzdHGmJDL9tEWXfzyshohvzyS3K9wmLc5qMrwRNFPQA611uzB"
+        value: 100000000000
+  - legacy_fund:
+      - address: "Ae2tdPwUPEYxLNQJXcT3XUh54BXn5w53pPe5EHMXo6qo47gpNM9QyJsaXz4"
+        value: 100000000000
+  - legacy_fund:
+      - address: "Ae2tdPwUPEYvq2fnzqs9EWxFF2j87nZzBAZZ7y3qoj5oTce1ZGvsc4potp3"
+        value: 100000000000
+
+  # (24 words) "recall" , "grace" , "sport" , "punch" , "exhibit" , "mad", "harbor" , "stand" , "obey" , "short" , "width" , "stem", "awkward" , "used" , "stairs" , "wool" , "ugly" , "trap", "season" , "stove" , "worth" , "toward" , "congress" , "jaguar"
+  - legacy_fund:
+      - address: "Ae2tdPwUPEZFvG914wGXtCsb9hCr9aKjJC2ZciLKSNRqAKtjnduH7XtPn78"
+        value: 1000000000000
+  - legacy_fund:
+      - address: "Ae2tdPwUPEZ8rVsdBE6EMZpac32MLzciY75MrwrPs8ikjf6MWYFJUHkGaw5"
+        value: 1000000000000
+  - legacy_fund:
+      - address: "Ae2tdPwUPEZADQdQy2cbHDwwFRYUcrfreiu82Ngm9Bxdw1pJqJFUnFoQmNL"
+        value: 1000000000000
+  - legacy_fund:
+      - address: "Ae2tdPwUPEZ3NULtb3fK6qtJYwJbVnmhDeWzoMbjzPbCsEC9MyB4foBABhz"
+        value: 1000000000000
+  - legacy_fund:
+      - address: "Ae2tdPwUPEZ3rGvPCdzCPrVRvzEfpUp8XnZ861nss3XfLun5wA3c3YMA41v"
+        value: 1000000000000
+  - legacy_fund:
+      - address: "Ae2tdPwUPEZ575pMY9TBJyPdrwGkq2kr49V9fuqRWpF6wM9JbuZLmxHDo2N"
+        value: 1000000000000
+  - legacy_fund:
+      - address: "Ae2tdPwUPEZFaVKwy9bcN81ZPVL8uHRfsrCj7ZZhbm2uqiwLrzsy9Bs1rBN"
+        value: 1000000000000
+  - legacy_fund:
+      - address: "Ae2tdPwUPEZ4K16qFm6qVRWTEGpq5TJiyt8ZojmRANTSpPDAWZuH2Ge85uB"
+        value: 1000000000000
+  - legacy_fund:
+      - address: "Ae2tdPwUPEZMMYd8JP9F16HJgCsDsPjUoERWoFzZugN4mNjhR9ZnFwPonCs"
+        value: 1000000000000
+  - legacy_fund:
+      - address: "Ae2tdPwUPEZ3anXo172NFuumSGjrvbk1pHK9LiF82nGmPKC52NMYR77V2dM"
+        value: 1000000000000
 
   # Funds & certificates for a single stake pool.
   # https://input-output-hk.github.io/jormungandr/advanced/03_starting_genesis_praos_blockchain.html

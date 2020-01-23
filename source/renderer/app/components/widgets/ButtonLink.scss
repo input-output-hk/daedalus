@@ -1,0 +1,32 @@
+.root {
+  &.root {
+    border-color: var(--theme-label-button-color);
+    color: var(--theme-label-button-color);
+    &.withIconBefore {
+      border-color: var(--theme-label-button-color);
+      color: var(--theme-label-button-color);
+      &:before {
+        background-color: var(--theme-label-button-color);
+        height: 15px;
+        margin-right: 12px;
+        margin-top: -2px;
+        -webkit-mask-size: 15px, 15px;
+        mask-size: 15px, 15px;
+        vertical-align: middle;
+        width: 15px;
+      }
+    }
+    &.withIconAfter {
+      &:after {
+        background-color: var(--theme-label-button-color);
+        height: 13px;
+        margin-left: 5px;
+        margin-top: -2px;
+        -webkit-mask-size: 13px, 13px;
+        mask-size: 13px, 13px;
+        vertical-align: middle;
+        width: 13px;
+      }
+    }
+  }
+}

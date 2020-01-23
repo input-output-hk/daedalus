@@ -90,7 +90,7 @@ export const createReactPolymorphTheme = (
       '--rp-button-width': '360px',
     },
     rpCheckbox: {
-      '--rp-checkbox-border': `1px solid ${background.secondary.regular}`,
+      '--rp-checkbox-border': `2px solid ${background.secondary.regular}`,
       '--rp-checkbox-border-color': `${border}`,
       '--rp-checkbox-border-color-disabled': `${chroma(
         background.secondary.regular
@@ -101,6 +101,7 @@ export const createReactPolymorphTheme = (
       '--rp-checkbox-label-text-color-disabled': `${chroma(text.primary).alpha(
         0.3
       )}`,
+      '--rp-checkbox-size': '22px',
     },
     rpColors: {
       '--rp-theme-color-error': `${error.regular}`,
@@ -135,6 +136,9 @@ export const createReactPolymorphTheme = (
       '--rp-input-text-color': `${text.primary}`,
       '--rp-input-text-color-disabled': `${chroma(text.primary).alpha(0.5)}`,
     },
+    rpLink: {
+      '--rp-link-color': `${background.secondary.regular}`,
+    },
     rpModal: {
       '--rp-modal-bg-color': `${background.primary.lightest}`,
       '--rp-modal-max-height': '90%',
@@ -151,6 +155,7 @@ export const createReactPolymorphTheme = (
       '--rp-options-shadow': 'none',
     },
     rpRadio: {
+      '--rp-radio-border': `2px solid ${background.secondary.regular}`,
       '--rp-radio-border-color': `${background.secondary.regular}`,
       '--rp-radio-color': '#ffffff',
       '--rp-radio-label-margin': '0 0 0 10px',
@@ -196,9 +201,12 @@ export const createReactPolymorphTheme = (
       '--rp-switch-label-opacity': '1',
       '--rp-switch-label-text-color': `${text.primary}`,
       '--rp-switch-label-width': '100%',
+      '--rp-switch-normal-border-radius': '2px',
       '--rp-switch-opacity-off': '0.3',
       '--rp-switch-root-margin': '0 0 30px 0',
+      '--rp-switch-tiny-border-radius': '1px',
       '--rp-switch-thumb-bg-color': `${text.secondary}`,
+      '--rp-switch-size': '22px',
     },
     rpTextArea: {
       '--rp-textarea-bg-color': `${background.primary.regular}`,
@@ -949,6 +957,13 @@ export const createDaedalusComponentsTheme = (
       '--theme-staking-stake-pool-glow-color': `${
         background.secondary.lightest
       }`,
+      '--theme-staking-stake-pool-saturation-background-color': `${chroma(
+        text.secondary
+      ).alpha(0.2)}`,
+      '--theme-staking-stake-pool-saturation-green-color': '#1ccc5d',
+      '--theme-staking-stake-pool-saturation-orange-color': '#ff8800',
+      '--theme-staking-stake-pool-saturation-red-color': `${error.regular}`,
+      '--theme-staking-stake-pool-saturation-yellow-color': '#ffcc00',
       '--theme-staking-stake-pools-search-icon-color': `${text.primary}`,
       '--theme-staking-stake-pools-search-clear-button-background-color':
         'rgba(68, 91, 124, 0.05)',
@@ -1188,6 +1203,23 @@ export const createDaedalusComponentsTheme = (
       )}`,
       '--theme-utxo-tooltip-shadow-color': 'rgba(0, 0, 0, 0.18)',
       '--theme-utxo-tooltip-text-color': `${text.secondary}`,
+    },
+    walletRestoreDialog: {
+      '--theme-wallet-restore-dialog-new-label-background-color': `${chroma(
+        background.primary.regular
+      ).alpha(0.1)}`,
+      '--theme-wallet-restore-dialog-new-label-color': `${chroma(
+        text.primary
+      )}`,
+      '--theme-wallet-restore-dialog-step-walletType-hardwareWalletDisclaimer-text-color': `${
+        error.regular
+      }`,
+    },
+    walletSettings: {
+      '--theme-wallet-settings-section-separator-color': `${chroma(
+        text.primary
+      ).alpha(0.1)}`,
+      '--theme-wallet-settings-resync-button-label-color': `${text.primary}`,
     },
   };
 };

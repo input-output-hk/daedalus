@@ -12,6 +12,7 @@ import { DATE_ENGLISH_OPTIONS } from '../../../source/renderer/app/config/profil
 
 const news = [
   new News.News({
+    id: 1,
     title: 'Some title 1 in English',
     content: 'Some title 1 in English',
     target: { daedalusVersion: null, platform: 'darwin' },
@@ -24,6 +25,7 @@ const news = [
     read: false,
   }),
   new News.News({
+    id: 2,
     title: 'Some title 2 in English',
     content: 'Some title 2 in English',
     target: { daedalusVersion: null, platform: 'win32' },
@@ -36,6 +38,7 @@ const news = [
     read: false,
   }),
   new News.News({
+    id: 3,
     title: 'Some title 3 in English',
     content: 'Some title 3 in English',
     target: { daedalusVersion: null, platform: 'linux' },
@@ -45,6 +48,7 @@ const news = [
     read: false,
   }),
   new News.News({
+    id: 4,
     title: 'Some title 4 in English',
     content: 'Some title 4 in English',
     target: { daedalusVersion: null, platform: 'darwin' },
@@ -57,6 +61,7 @@ const news = [
     read: false,
   }),
   new News.News({
+    id: 5,
     title: 'Some title 5 in English',
     content: 'Some title 5 in English',
     target: { daedalusVersion: null, platform: 'darwin' },
@@ -66,6 +71,7 @@ const news = [
     read: false,
   }),
   new News.News({
+    id: 6,
     title: 'Some title 6 in English',
     content: 'Some title 6 in English',
     target: { daedalusVersion: null, platform: 'win32' },
@@ -78,6 +84,7 @@ const news = [
     read: false,
   }),
   new News.News({
+    id: 7,
     title: 'Some title 7 in English',
     content: 'Some title 7 in English',
     target: { daedalusVersion: null, platform: 'darwin' },
@@ -87,6 +94,7 @@ const news = [
     read: false,
   }),
   new News.News({
+    id: 8,
     title: 'Some title 8 in English',
     content: 'Some title 8 in English',
     target: { daedalusVersion: null, platform: 'linux' },
@@ -99,6 +107,7 @@ const news = [
     read: false,
   }),
   new News.News({
+    id: 9,
     title: 'Some title 9 in English',
     content: 'Some title 9 in English',
     target: { daedalusVersion: null, platform: 'darwin' },

@@ -22,12 +22,22 @@ export default class WalletsActions {
   createWalletClose: Action<any> = new Action();
   createWalletAbort: Action<any> = new Action();
 
-  restoreWallet: Action<{
-    recoveryPhrase: string,
-    walletName: string,
-    spendingPassword: string,
-    type?: string,
+  /* ----------  Restore Wallet  ---------- */
+  restoreWalletBegin: Action<any> = new Action();
+  restoreWalletEnd: Action<any> = new Action();
+  restoreWalletChangeStep: Action<any> = new Action();
+  restoreWalletClose: Action<any> = new Action();
+  restoreWalletCancelClose: Action<any> = new Action();
+  restoreWalletSetKind: Action<{ param?: string, kind: string }> = new Action();
+  restoreWalletSetMnemonics: Action<{
+    mnemonics: Array<string>,
   }> = new Action();
+  restoreWalletSetConfig: Action<{
+    param: string,
+    value: string,
+  }> = new Action();
+
+  restoreWallet: Action<any> = new Action();
   importWalletFromFile: Action<WalletImportFromFileParams> = new Action();
   deleteWallet: Action<{ walletId: string, isLegacy?: boolean }> = new Action();
   undelegateWallet: Action<{
@@ -56,6 +66,7 @@ export default class WalletsActions {
     note: string,
     filePath: string,
   }> = new Action();
+  copyAddress: Action<{ address: string }> = new Action();
   updateCertificateStep: Action<any> = new Action();
   closeCertificateGeneration: Action<any> = new Action();
   closeRewardsCsvGeneration: Action<any> = new Action();

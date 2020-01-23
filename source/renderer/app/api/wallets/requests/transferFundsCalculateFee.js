@@ -5,6 +5,7 @@ import type {
   TransferFundsCalculateFeeResponse,
 } from '../types';
 import { request } from '../../utils/request';
+import { getRawWalletId } from '../../utils';
 
 export const transferFundsCalculateFee = (
   config: RequestConfig,
@@ -12,6 +13,6 @@ export const transferFundsCalculateFee = (
 ): Promise<TransferFundsCalculateFeeResponse> =>
   request({
     method: 'GET',
-    path: `/v2/byron-wallets/${sourceWalletId}/migrations`,
+    path: `/v2/byron-wallets/${getRawWalletId(sourceWalletId)}/migrations`,
     ...config,
   });

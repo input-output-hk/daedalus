@@ -2,12 +2,10 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
-import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
-import SVGInline from 'react-svg-inline';
 import CountdownWidget from '../../widgets/CountdownWidget';
 import styles from './StakingCountdown.scss';
-import externalLinkIcon from '../../../assets/images/link-ic.inline.svg';
+import ButtonLink from '../../widgets/ButtonLink';
 
 const messages = defineMessages({
   heading: {
@@ -67,19 +65,14 @@ export default class StakingCountdown extends Component<Props> {
             startDateTime={startDateTime}
             redirectOnEnd={redirectToStakingInfo}
           />
-          <Button
+          <ButtonLink
             className={styles.learnMoreButton}
-            label={
-              <p>
-                <SVGInline
-                  svg={externalLinkIcon}
-                  className={styles.externalLinkIcon}
-                />
-                {buttonLabel}
-              </p>
-            }
-            skin={ButtonSkin}
             onClick={onLearnMoreClick}
+            skin={ButtonSkin}
+            label={buttonLabel}
+            linkProps={{
+              className: styles.externalLinkIcon,
+            }}
           />
         </div>
       </div>

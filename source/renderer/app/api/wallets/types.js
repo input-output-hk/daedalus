@@ -111,15 +111,15 @@ export type WalletUtxos = {
 
 export type WalletInitData = {
   name: string,
-  mnemonic_sentence: [string], // [ 15 .. 24 ] words
-  mnemonic_second_factor?: [string], // [ 9 .. 12 ] words
+  mnemonic_sentence: Array<string>, // [ 15 .. 24 ] words
+  mnemonic_second_factor?: Array<string>, // [ 9 .. 12 ] words
   passphrase: string,
   address_pool_gap?: number, // 20
 };
 
 export type LegacyWalletInitData = {
   name: string,
-  mnemonic_sentence: [string], // [ 12 ] words
+  mnemonic_sentence: Array<string>, // [ 12 ] words
   passphrase: string,
 };
 
@@ -131,8 +131,8 @@ export type WalletIdAndBalance = {
 // req/res Wallet types
 export type CreateWalletRequest = {
   name: string,
-  mnemonic: [string],
-  mnemonicPassphrase?: [string],
+  mnemonic: Array<string>,
+  mnemonicPassphrase?: Array<string>,
   spendingPassword: string,
   addressPoolGap?: number,
 };
@@ -163,13 +163,13 @@ export type GetWalletIdAndBalanceResponse = {
 };
 
 export type RestoreWalletRequest = {
-  recoveryPhrase: string,
+  recoveryPhrase: Array<string>,
   walletName: string,
   spendingPassword: string,
 };
 
 export type RestoreLegacyWalletRequest = {
-  recoveryPhrase: string,
+  recoveryPhrase: Array<string>,
   walletName: string,
   spendingPassword: string,
 };
@@ -178,6 +178,12 @@ export type UpdateWalletRequest = {
   walletId: string,
   name: string,
 };
+
+export type ForceWalletResyncRequest = {
+  walletId: string,
+  isLegacy: boolean,
+};
+
 export type ImportWalletFromKeyRequest = {
   filePath: string,
   spendingPassword: string,
@@ -207,6 +213,7 @@ export type GetWalletRecoveryPhraseFromCertificateRequest = {
 
 export type GetWalletRequest = {
   walletId: string,
+  isLegacy?: boolean,
 };
 
 export type TransferFundsCalculateFeeRequest = {

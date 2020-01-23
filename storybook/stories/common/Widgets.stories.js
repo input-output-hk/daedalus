@@ -6,12 +6,12 @@ import { action } from '@storybook/addon-actions';
 import StoryDecorator from '../_support/StoryDecorator';
 import BigButtonForDialogs from '../../../source/renderer/app/components/widgets/BigButtonForDialogs';
 import MnemonicInputWidget from '../../../source/renderer/app/components/widgets/forms/MnemonicInputWidget';
-import NotificationMessage from '../../../source/renderer/app/components/widgets/NotificationMessage';
 import createIcon from '../../../source/renderer/app/assets/images/create-ic.inline.svg';
 import importIcon from '../../../source/renderer/app/assets/images/import-ic.inline.svg';
 import joinSharedIcon from '../../../source/renderer/app/assets/images/join-shared-ic.inline.svg';
-import NotificationIcon from '../../../source/renderer/app/assets/images/success-small.inline.svg';
 import TinySwitch from '../../../source/renderer/app/components/widgets/forms/TinySwitch';
+import ButtonLink from '../../../source/renderer/app/components/widgets/ButtonLink';
+import NormalSwitch from '../../../source/renderer/app/components/widgets/forms/NormalSwitch';
 
 storiesOf('Common|Widgets', module)
   .addDecorator(story => {
@@ -72,16 +72,20 @@ storiesOf('Common|Widgets', module)
     );
   })
 
-  .add('NotificationMessage', () => (
-    <div>
-      <NotificationMessage icon={NotificationIcon} show>
-        Address:
-        <strong>1gGHFU9VsXV89kcJNzibNo8wJugxNtWsaqbjWaZEKzLtMGD</strong>
-        copied to clipboard
-      </NotificationMessage>
-    </div>
-  ))
-
   .add('TinySwitch', () => <TinySwitch />)
 
-  .add('TinySwitch - short label', () => <TinySwitch label="My switch" />);
+  .add('TinySwitch - short label', () => <TinySwitch label="My switch" />)
+
+  .add('ButtonLink', () => (
+    <ButtonLink
+      label="Follow instructions and manually update"
+      onClick={action('onClick')}
+    />
+  ))
+
+  .add('NormalSwitch', () => (
+    <div>
+      <NormalSwitch onChange={action('onChange')} />
+      <NormalSwitch onChange={action('onChange')} checked />
+    </div>
+  ));

@@ -1,42 +1,3 @@
-.actionBtn {
-  background-color: rgba(0, 0, 0, 0.1);
-  border: 1px solid #fff;
-  border-radius: 5px;
-  box-sizing: border-box;
-  color: #fff;
-  font-family: var(--font-medium);
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 1.36;
-  margin-bottom: 22.5px;
-  min-height: 50px;
-  width: 360px;
-  svg {
-    height: 13px;
-    margin: -1px 5px;
-    width: 13px;
-
-    g {
-      path {
-        stroke: #fff;
-      }
-    }
-  }
-
-  &:hover {
-    background-color: #fff;
-    color: #ab1700;
-    cursor: pointer;
-    svg {
-      g {
-        path {
-          stroke: #ab1700;
-        }
-      }
-    }
-  }
-}
-
 .component {
   align-items: center;
   background-color: rgba(171, 23, 0, 0.98);
@@ -50,94 +11,136 @@
   top: 0px;
   width: 100vw;
   z-index: 22;
-}
 
-.content {
-  background-color: rgba(0, 0, 0, 0.1);
-  font-size: 16px;
-  line-height: 1.2;
-  margin-bottom: 30px;
-  max-height: 464px;
-  max-width: 600px;
-  min-width: 600px;
-  opacity: 0.8;
-  overflow-y: scroll;
-  padding: 12px 20px;
-  word-break: break-word;
-  &::-webkit-scrollbar-thumb {
-    background-color: rgba(255, 255, 255, 0.3);
-    outline: none;
-    width: 4px;
+  .actionBtn {
+    background-color: rgba(0, 0, 0, 0.1);
+    border: 1px solid #fff;
+    border-radius: 5px;
+    box-sizing: border-box;
+    line-height: 1.36;
+    margin-bottom: 22.5px;
+    min-height: 50px;
+    width: 360px;
 
     &:hover {
-      background-color: rgba(255, 255, 255, 0.5);
+      background-color: #fff;
+      color: #ab1700;
+      cursor: pointer;
+      svg {
+        g {
+          path {
+            stroke: #ab1700;
+          }
+        }
+      }
+    }
+
+    .externalLink {
+      color: #fff;
+      font-family: var(--font-medium);
+      &:after {
+        background-color: #fff;
+      }
+    }
+
+    &:hover {
+      background-color: #fff;
+      .externalLink {
+        color: #ab1700;
+        &:after {
+          background-color: #ab1700;
+        }
+      }
     }
   }
 
-  h1,
-  h2 {
-    font-family: var(--font-medium);
-    margin-bottom: 6px;
-  }
-
-  h1 {
-    font-size: 18px;
-  }
-
-  h2 {
+  .content {
+    background-color: rgba(0, 0, 0, 0.1);
     font-size: 16px;
-  }
+    line-height: 1.2;
+    margin-bottom: 30px;
+    max-height: 464px;
+    max-width: 600px;
+    min-width: 600px;
+    opacity: 0.8;
+    overflow-y: scroll;
+    padding: 12px 20px;
+    word-break: break-word;
+    &::-webkit-scrollbar-thumb {
+      background-color: rgba(255, 255, 255, 0.3);
+      outline: none;
+      width: 4px;
 
-  * + h2 {
-    margin-top: 16px;
-  }
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.5);
+      }
+    }
 
-  ol,
-  ul {
-    list-style: disc;
-    margin-left: 20px;
-  }
+    h1,
+    h2 {
+      font-family: var(--font-medium);
+      margin-bottom: 6px;
+    }
 
-  ol {
-    list-style-type: decimal;
-  }
+    h1 {
+      font-size: 18px;
+    }
 
-  p,
-  li {
-    color: rgba(255, 255, 255, 0.7);
-    font-family: var(--font-regular);
-    font-size: 14px;
-    line-height: 1.5;
-    margin-bottom: 6px;
+    h2 {
+      font-size: 16px;
+    }
 
-    strong {
-      color: rgba(255, 255, 255, 1);
-      font-weight: 500;
+    * + h2 {
+      margin-top: 16px;
+    }
+
+    ol,
+    ul {
+      list-style: disc;
+      margin-left: 20px;
+    }
+
+    ol {
+      list-style-type: decimal;
+    }
+
+    p,
+    li {
+      color: rgba(255, 255, 255, 0.7);
+      font-family: var(--font-regular);
+      font-size: 14px;
+      line-height: 1.5;
+      margin-bottom: 6px;
+
+      strong {
+        color: rgba(255, 255, 255, 1);
+        font-weight: 500;
+      }
+    }
+
+    a {
+      border-bottom: 1px solid #fff;
+      color: #fff;
+      text-decoration: none;
+    }
+
+    em {
+      font-style: italic;
     }
   }
 
-  a {
-    border-bottom: 1px solid #fff;
-    color: #fff;
-    text-decoration: none;
+  .date {
+    font-family: var(--font-medium);
+    font-size: 14px;
+    line-height: 1.43;
+    margin-bottom: 16px;
+    opacity: 0.5;
   }
 
-  em {
-    font-style: italic;
+  .title {
+    font-size: 20px;
+    line-height: 1.2;
+    margin-bottom: 0;
+    margin-top: 22.5px;
   }
-}
-
-.date {
-  font-family: var(--font-medium);
-  font-size: 14px;
-  line-height: 1.43;
-  margin-bottom: 16px;
-  opacity: 0.5;
-}
-
-.title {
-  font-size: 20px;
-  line-height: 1.2;
-  margin-bottom: 0;
-  margin-top: 22.5px;
 }

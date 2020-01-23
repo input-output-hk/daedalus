@@ -24,6 +24,7 @@
       border-radius: 2px;
       color: var(--theme-staking-stake-pool-tooltip-delegate-button-text-color);
       height: 33px;
+      margin-top: 14px;
       user-select: none;
       width: 100%;
 
@@ -196,33 +197,6 @@
   text-overflow: ellipsis;
 }
 
-.homepageAddress {
-  @include link(--theme-link-main-color);
-  border-bottom-color: var(--theme-link-main-color);
-  font-size: 14px;
-  line-height: 1.36;
-  word-break: break-all;
-}
-
-.pledgeAddress {
-  @include link(--theme-link-main-color);
-  font-size: 14px;
-  line-height: 1.36;
-  margin-bottom: 14px;
-  max-width: 100%;
-
-  .pledgeAddressContent {
-    display: inline-block;
-    max-width: calc(100% - 14px);
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  & > span {
-    vertical-align: text-top;
-  }
-}
-
 .table {
   @extend %regularText;
   display: flex;
@@ -272,5 +246,57 @@
       --theme-staking-stake-pool-tooltip-neutral-background-color
     );
     color: var(--theme-staking-stake-pool-tooltip-neutral-text-color);
+  }
+}
+
+.saturationLabel {
+  width: 50% !important;
+}
+
+.saturationValue {
+  width: 50% !important;
+
+  & > span {
+    background: var(
+      --theme-staking-stake-pool-tooltip-neutral-background-color
+    );
+    white-space: nowrap;
+  }
+
+  .saturationBar {
+    background: var(--theme-staking-stake-pool-saturation-background-color);
+    border-radius: 2px;
+    height: 5px;
+    margin: 0 6px 0 0;
+    overflow: hidden;
+    padding: 0;
+    position: relative;
+    width: 40px;
+
+    span {
+      border-radius: 2px;
+      bottom: 0;
+      height: inherit;
+      left: 0;
+      padding: 0;
+      position: absolute;
+      top: 0;
+    }
+
+    &.green span {
+      background: var(--theme-staking-stake-pool-saturation-green-color);
+    }
+
+    &.orange span {
+      background: var(--theme-staking-stake-pool-saturation-orange-color);
+    }
+
+    &.red span {
+      background: var(--theme-staking-stake-pool-saturation-red-color);
+    }
+
+    &.yellow span {
+      background: var(--theme-staking-stake-pool-saturation-yellow-color);
+    }
   }
 }

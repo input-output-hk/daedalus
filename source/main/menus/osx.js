@@ -33,6 +33,23 @@ export const osxMenu = (
       },
       { type: 'separator' },
       {
+        label: translation('daedalus.settings'),
+        accelerator: 'Command+,',
+        click() {
+          actions.openSettingsPage();
+        },
+        enabled: !isUpdateAvailable,
+      },
+      {
+        label: translation('daedalus.walletSettings'),
+        accelerator: 'Command+;',
+        click() {
+          actions.openWalletSettingsPage();
+        },
+        enabled: !isUpdateAvailable,
+      },
+      { type: 'separator' },
+      {
         label: translation('daedalus.hideDaedalus'),
         role: 'hide',
       },
