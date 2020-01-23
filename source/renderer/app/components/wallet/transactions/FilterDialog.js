@@ -1,16 +1,19 @@
 // @flow
 /* eslint-disable jsx-a11y/label-has-associated-control, jsx-a11y/label-has-for */
 import React, { Component } from 'react';
+import type { ElementRef } from 'react';
 import { observer } from 'mobx-react';
 import moment from 'moment';
-import BigNumber from 'bignumber.js';
 import { defineMessages, intlShape } from 'react-intl';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
-import { formattedWalletAmount } from '../../../utils/formatters';
-import type {
-  DateRangeType,
-  TransactionFilterOptionsType,
-} from '../../../stores/TransactionsStore';
+import { i18nContext } from '../../../utils/i18nContext';
+import {
+  calculateDateRange,
+  formatDateValue,
+  formatAmountValue,
+  validateFilterForm,
+} from '../../../utils/transaction';
+import type { TransactionFilterOptionsType } from '../../../stores/TransactionsStore';
 import {
   DateRangeTypes,
   emptyTransactionFilterOptions,
@@ -89,99 +92,43 @@ const messages = defineMessages({
 });
 
 const MIN_AMOUNT = 0.000001;
-const AMOUNT_RAW_LENGTH_LIMIT = 10;
+const FILTER_PANEL_OFFSET = 105;
+const FILTER_DIALOG_HEIGHT = 312;
+const FILTER_DIALOG_WITH_DATE_PICKER_HEIGHT = 521;
 
-const calculateDateRange = (
-  dateRange: string,
-  customDateRange: { customFromDate: string, customToDate: string }
-) => {
-  const { customFromDate, customToDate } = customDateRange;
-  let fromDate = null;
-  let toDate = null;
+const applyDialogStyles = () => {
+  const dialogElement = window.document.querySelector('.ReactModal__Content');
+  const dialogOverlayElement = dialogElement.parentElement;
+  const sidebarLayoutContentWrapper = window.document.querySelector(
+    '.SidebarLayout_contentWrapper'
+  );
+  const windowHeight = window.document.body.clientHeight;
+  const filterDialogOffsetTop =
+    sidebarLayoutContentWrapper.offsetTop + FILTER_PANEL_OFFSET;
 
-  if (dateRange === DateRangeTypes.ALL) {
-    fromDate = '';
-    toDate = '';
-  } else if (dateRange === DateRangeTypes.CUSTOM_DATE_RANGE) {
-    fromDate = customFromDate;
-    toDate = customToDate;
+  dialogOverlayElement.style.backgroundColor = 'transparent';
+  dialogElement.style.backgroundColor =
+    'var(--theme-transactions-filter-modal-bg-color)';
+  dialogElement.style.borderRadius = '4px';
+  dialogElement.style.minWidth = 'auto';
+  dialogElement.style.position = 'absolute';
+
+  if (windowHeight - filterDialogOffsetTop < FILTER_DIALOG_HEIGHT) {
+    dialogElement.style.right = '102px';
+    dialogElement.style.top = `${sidebarLayoutContentWrapper.offsetTop -
+      78.5}px`;
   } else {
-    if (dateRange === DateRangeTypes.THIS_WEEK) {
-      fromDate = moment().startOf('week');
-    } else if (dateRange === DateRangeTypes.THIS_MONTH) {
-      fromDate = moment().startOf('month');
-    } else if (dateRange === DateRangeTypes.THIS_YEAR) {
-      fromDate = moment().startOf('year');
-    } else {
-      fromDate = moment();
-    }
-    fromDate = fromDate.format('YYYY-MM-DD');
-    toDate = moment().format('YYYY-MM-DD');
+    dialogElement.style.right = '10px';
+    dialogElement.style.top = `${filterDialogOffsetTop}px`;
   }
-
-  return { fromDate, toDate };
-};
-
-const formatDateValue = (
-  date: string,
-  defaultDate: string,
-  dateFormat: string
-) => {
-  if (!date) {
-    const formattedDefaultDate = moment(defaultDate).format(dateFormat);
-
-    return <span className="undefined">{formattedDefaultDate}</span>;
-  }
-
-  return moment(date).format(dateFormat);
-};
-
-const formatAmountValue = (amount: string, defaultAmount: string) => {
-  let inputAmount = amount || defaultAmount;
-  if (inputAmount === '.') {
-    inputAmount = '0';
-  } else if (inputAmount[0] === '.') {
-    inputAmount = `0${inputAmount}`;
-  } else if (inputAmount[inputAmount.length - 1] === '.') {
-    inputAmount = `${inputAmount}0`;
-  }
-
-  const amountBigNumber = new BigNumber(inputAmount);
-  const amountClassName = amount ? '' : 'undefined';
-  const content =
-    inputAmount.length > AMOUNT_RAW_LENGTH_LIMIT
-      ? formattedWalletAmount(amountBigNumber, false, false)
-      : amountBigNumber.toFormat();
-
-  return <span className={amountClassName}>{content}</span>;
-};
-
-const validateForm = (values: {
-  dateRange: DateRangeType,
-  customFromDate: string,
-  customToDate: string,
-  fromAmount: string,
-  toAmount: string,
-}) => {
-  const {
-    dateRange,
-    customFromDate,
-    customToDate,
-    fromAmount,
-    toAmount,
-  } = values;
-
   if (
-    (dateRange === DateRangeTypes.CUSTOM_DATE_RANGE &&
-      customFromDate &&
-      customToDate &&
-      moment(customFromDate).valueOf() > moment(customToDate).valueOf()) ||
-    (fromAmount && toAmount && Number(fromAmount) > Number(toAmount))
+    windowHeight - filterDialogOffsetTop <
+    FILTER_DIALOG_WITH_DATE_PICKER_HEIGHT
   ) {
-    return false;
+    dialogElement.classList.add(['small-height-for-date-picker']);
+  } else {
+    dialogElement.classList.remove(['small-height-for-date-picker']);
   }
-
-  return true;
 };
 
 type Props = {
@@ -199,86 +146,97 @@ export default class FilterDialog extends Component<Props> {
     intl: intlShape.isRequired,
   };
 
-  dateRangeOptions = [
-    {
-      label: this.context.intl.formatMessage(globalMessages.all),
-      value: DateRangeTypes.ALL,
-    },
-    {
-      label: this.context.intl.formatMessage(messages.thisWeek),
-      value: DateRangeTypes.THIS_WEEK,
-    },
-    {
-      label: this.context.intl.formatMessage(messages.thisMonth),
-      value: DateRangeTypes.THIS_MONTH,
-    },
-    {
-      label: this.context.intl.formatMessage(messages.thisYear),
-      value: DateRangeTypes.THIS_YEAR,
-    },
-    {
-      label: this.context.intl.formatMessage(messages.customDateRange),
-      value: DateRangeTypes.CUSTOM_DATE_RANGE,
-    },
-  ];
+  dateRangeOptions: Array<{ label: string, value: string }>;
+  form: ReactToolboxMobxForm;
 
-  form = new ReactToolboxMobxForm({
-    fields: {
-      incomingChecked: {
-        type: 'checkbox',
-        label: this.context.intl.formatMessage(messages.incoming),
-        value: this.props.populatedFilterOptions.incomingChecked,
-      },
-      outgoingChecked: {
-        type: 'checkbox',
-        label: this.context.intl.formatMessage(messages.outgoing),
-        value: this.props.populatedFilterOptions.outgoingChecked,
-      },
-      dateRange: {
-        label: this.context.intl.formatMessage(messages.dateRange),
-        value: this.props.populatedFilterOptions.dateRange,
-      },
-      customFromDate: {
-        label: '',
-        value: this.props.populatedFilterOptions.fromDate,
-      },
-      customToDate: {
-        label: '',
-        value: this.props.populatedFilterOptions.toDate,
-      },
-      fromAmount: {
-        type: 'number',
-        label: '',
-        value: this.props.populatedFilterOptions.fromAmount,
-      },
-      toAmount: {
-        type: 'number',
-        label: '',
-        value: this.props.populatedFilterOptions.toAmount,
-      },
-    },
-  });
+  constructor(props: Props) {
+    super(props);
 
-  handleSelfRef = (selfRef: any) => {
-    if (
-      selfRef &&
-      selfRef.parentElement &&
-      selfRef.parentElement.parentElement
-    ) {
-      const {
-        parentElement: modalElement,
-      } = selfRef.parentElement.parentElement;
-      const { parentElement: overlayElement } = modalElement || {};
-      modalElement.style.backgroundColor =
-        'var(--theme-transactions-filter-modal-bg-color)';
-      modalElement.style.borderRadius = '4px';
-      modalElement.style.minWidth = 'auto';
-      modalElement.style.position = 'absolute';
-      modalElement.style.right = '10px';
-      modalElement.style.top = `189px`;
-      if (overlayElement) {
-        overlayElement.style.backgroundColor = 'transparent';
-      }
+    const {
+      locale,
+      populatedFilterOptions: {
+        incomingChecked,
+        outgoingChecked,
+        dateRange,
+        fromDate,
+        toDate,
+        fromAmount,
+        toAmount,
+      },
+    } = props;
+    const intl = i18nContext(locale);
+
+    this.dateRangeOptions = [
+      {
+        label: intl.formatMessage(globalMessages.all),
+        value: DateRangeTypes.ALL,
+      },
+      {
+        label: intl.formatMessage(messages.thisWeek),
+        value: DateRangeTypes.THIS_WEEK,
+      },
+      {
+        label: intl.formatMessage(messages.thisMonth),
+        value: DateRangeTypes.THIS_MONTH,
+      },
+      {
+        label: intl.formatMessage(messages.thisYear),
+        value: DateRangeTypes.THIS_YEAR,
+      },
+      {
+        label: intl.formatMessage(messages.customDateRange),
+        value: DateRangeTypes.CUSTOM_DATE_RANGE,
+      },
+    ];
+    this.form = new ReactToolboxMobxForm({
+      fields: {
+        incomingChecked: {
+          type: 'checkbox',
+          label: intl.formatMessage(messages.incoming),
+          value: incomingChecked,
+        },
+        outgoingChecked: {
+          type: 'checkbox',
+          label: intl.formatMessage(messages.outgoing),
+          value: outgoingChecked,
+        },
+        dateRange: {
+          label: intl.formatMessage(messages.dateRange),
+          value: dateRange,
+        },
+        customFromDate: {
+          label: '',
+          value: fromDate,
+        },
+        customToDate: {
+          label: '',
+          value: toDate,
+        },
+        fromAmount: {
+          type: 'number',
+          label: '',
+          value: fromAmount,
+        },
+        toAmount: {
+          type: 'number',
+          label: '',
+          value: toAmount,
+        },
+      },
+    });
+  }
+
+  componentDidMount() {
+    window.addEventListener('resize', applyDialogStyles);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', applyDialogStyles);
+  }
+
+  handleSelfRef = (ref: ElementRef<'div'>) => {
+    if (ref) {
+      applyDialogStyles();
     }
   };
 
@@ -499,7 +457,7 @@ export default class FilterDialog extends Component<Props> {
 
   renderActionButton = () => {
     const { intl } = this.context;
-    const isFormValid = validateForm(this.form.values());
+    const isFormValid = validateFilterForm(this.form.values());
 
     return (
       <div className={styles.action}>

@@ -30,38 +30,6 @@ export const messages = defineMessages({
   },
 });
 
-const handleBodyClass = () => {
-  const sidebarLayoutContentWrapper = window.document.querySelector(
-    '.SidebarLayout_contentWrapper'
-  );
-  const windowHeight = window.document.body.clientHeight;
-  const filterDialogOffsetTop = sidebarLayoutContentWrapper.offsetTop + 105;
-  const filterDialogHeight = 312;
-  const filterDialogWithDatePickerHeight = 521;
-  let smallHeightForFilterDialog = false;
-  let smallHeightForDatePicker = false;
-
-  if (windowHeight - filterDialogOffsetTop < filterDialogHeight) {
-    smallHeightForFilterDialog = true;
-  }
-
-  if (windowHeight - filterDialogOffsetTop < filterDialogWithDatePickerHeight) {
-    smallHeightForDatePicker = true;
-  }
-
-  if (smallHeightForFilterDialog) {
-    window.document.body.classList.add(['small-height-for-filter-dialog']);
-  } else {
-    window.document.body.classList.remove(['small-height-for-filter-dialog']);
-  }
-
-  if (smallHeightForDatePicker) {
-    window.document.body.classList.add(['small-height-for-date-picker']);
-  } else {
-    window.document.body.classList.remove(['small-height-for-date-picker']);
-  }
-};
-
 type Props = InjectedProps;
 type State = {
   isFilterButtonFaded: boolean,

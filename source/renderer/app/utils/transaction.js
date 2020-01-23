@@ -1,11 +1,19 @@
 // @flow
+import React from 'react';
 import moment from 'moment';
+import BigNumber from 'bignumber.js';
 import {
   WalletTransaction,
   TransactionTypes,
 } from '../domains/WalletTransaction';
-import type { TransactionFilterOptionsType } from '../stores/TransactionsStore';
+import { formattedWalletAmount } from './formatters';
+import type {
+  DateRangeType,
+  TransactionFilterOptionsType,
+} from '../stores/TransactionsStore';
 import { DateRangeTypes } from '../stores/TransactionsStore';
+
+const AMOUNT_RAW_LENGTH_LIMIT = 10;
 
 export const generateFilterOptions = (
   transactions: Array<WalletTransaction>
@@ -157,4 +165,97 @@ export const getNumberOfFilterDimensionsApplied = (
   }
 
   return result;
+};
+
+export const calculateDateRange = (
+  dateRange: string,
+  customDateRange: { customFromDate: string, customToDate: string }
+) => {
+  const { customFromDate, customToDate } = customDateRange;
+  let fromDate = null;
+  let toDate = null;
+
+  if (dateRange === DateRangeTypes.ALL) {
+    fromDate = '';
+    toDate = '';
+  } else if (dateRange === DateRangeTypes.CUSTOM_DATE_RANGE) {
+    fromDate = customFromDate;
+    toDate = customToDate;
+  } else {
+    if (dateRange === DateRangeTypes.THIS_WEEK) {
+      fromDate = moment().startOf('week');
+    } else if (dateRange === DateRangeTypes.THIS_MONTH) {
+      fromDate = moment().startOf('month');
+    } else if (dateRange === DateRangeTypes.THIS_YEAR) {
+      fromDate = moment().startOf('year');
+    } else {
+      fromDate = moment();
+    }
+    fromDate = fromDate.format('YYYY-MM-DD');
+    toDate = moment().format('YYYY-MM-DD');
+  }
+
+  return { fromDate, toDate };
+};
+
+export const formatDateValue = (
+  date: string,
+  defaultDate: string,
+  dateFormat: string
+) => {
+  if (!date) {
+    const formattedDefaultDate = moment(defaultDate).format(dateFormat);
+
+    return <span className="undefined">{formattedDefaultDate}</span>;
+  }
+
+  return moment(date).format(dateFormat);
+};
+
+export const formatAmountValue = (amount: string, defaultAmount: string) => {
+  let inputAmount = amount || defaultAmount;
+  if (inputAmount === '.') {
+    inputAmount = '0';
+  } else if (inputAmount[0] === '.') {
+    inputAmount = `0${inputAmount}`;
+  } else if (inputAmount[inputAmount.length - 1] === '.') {
+    inputAmount = `${inputAmount}0`;
+  }
+
+  const amountBigNumber = new BigNumber(inputAmount);
+  const amountClassName = amount ? '' : 'undefined';
+  const content =
+    inputAmount.length > AMOUNT_RAW_LENGTH_LIMIT
+      ? formattedWalletAmount(amountBigNumber, false, false)
+      : amountBigNumber.toFormat();
+
+  return <span className={amountClassName}>{content}</span>;
+};
+
+export const validateFilterForm = (values: {
+  dateRange: DateRangeType,
+  customFromDate: string,
+  customToDate: string,
+  fromAmount: string,
+  toAmount: string,
+}) => {
+  const {
+    dateRange,
+    customFromDate,
+    customToDate,
+    fromAmount,
+    toAmount,
+  } = values;
+
+  if (
+    (dateRange === DateRangeTypes.CUSTOM_DATE_RANGE &&
+      customFromDate &&
+      customToDate &&
+      moment(customFromDate).valueOf() > moment(customToDate).valueOf()) ||
+    (fromAmount && toAmount && Number(fromAmount) > Number(toAmount))
+  ) {
+    return false;
+  }
+
+  return true;
 };
