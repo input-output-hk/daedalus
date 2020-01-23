@@ -21,7 +21,7 @@ export const generateFilterOptions = (
   const dates = transactions
     .filter(({ date }) => !!date)
     .map(({ date }) => (date ? date.getTime() : 0));
-  const amounts = transactions.map(({ amount }) => amount.toNumber());
+  const amounts = transactions.map(({ amount }) => Math.abs(amount.toNumber()));
   const dateRange = DateRangeTypes.ALL;
   const fromDate =
     dates.length > 0 ? moment(Math.min(...dates)).format('YYYY-MM-DD') : '';
@@ -77,8 +77,8 @@ export const isTransactionAmountInFilterRange = (
   const { amount } = transaction;
   const min = fromAmount === '.' ? 0 : Number(fromAmount);
   const max = toAmount === '.' ? 0 : Number(toAmount);
-  const compareFrom = fromAmount ? amount.toNumber() >= min : true;
-  const compareTo = toAmount ? amount.toNumber() <= max : true;
+  const compareFrom = fromAmount ? Math.abs(amount.toNumber()) >= min : true;
+  const compareTo = toAmount ? Math.abs(amount.toNumber()) <= max : true;
 
   return compareFrom && compareTo;
 };

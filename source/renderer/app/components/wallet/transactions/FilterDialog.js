@@ -234,7 +234,7 @@ export default class FilterDialog extends Component<Props> {
     window.removeEventListener('resize', applyDialogStyles);
   }
 
-  handleSelfRef = (ref: ElementRef<'div'>) => {
+  handleSelfRef = (ref: ?ElementRef<'div'>) => {
     if (ref) {
       applyDialogStyles();
     }
