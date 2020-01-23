@@ -187,6 +187,7 @@ const validateForm = (values: {
 type Props = {
   locale: string,
   dateFormat: string,
+  offsetTop: number,
   defaultFilterOptions: TransactionFilterOptionsType,
   populatedFilterOptions: TransactionFilterOptionsType,
   onFilter: Function,
@@ -265,6 +266,7 @@ export default class FilterDialog extends Component<Props> {
       selfRef.parentElement &&
       selfRef.parentElement.parentElement
     ) {
+      const { offsetTop } = this.props;
       const {
         parentElement: modalElement,
       } = selfRef.parentElement.parentElement;
@@ -275,7 +277,7 @@ export default class FilterDialog extends Component<Props> {
       modalElement.style.minWidth = 'auto';
       modalElement.style.position = 'absolute';
       modalElement.style.right = '10px';
-      modalElement.style.top = '190px';
+      modalElement.style.top = `${offsetTop}px`;
       if (overlayElement) {
         overlayElement.style.backgroundColor = 'transparent';
       }

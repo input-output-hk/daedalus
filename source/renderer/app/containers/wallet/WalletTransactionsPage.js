@@ -46,17 +46,25 @@ export default class WalletTransactionsPage extends Component<Props, State> {
     isFilterButtonFaded: false,
   };
 
-  openFilterDialog = () => {
+  openFilterDialog = (evt: SyntheticEvent<EventTarget>) => {
     const { dialogs } = this.props.actions;
     const {
       defaultFilterOptions,
       populatedFilterOptions,
     } = this.props.stores.transactions;
+    const filterButtonElement: { closest?: Function } = evt.target;
+    const sidebarLayoutContentWrapper = filterButtonElement.closest
+      ? filterButtonElement.closest('.SidebarLayout_contentWrapper')
+      : window.document.querySelector('.SidebarLayout_contentWrapper');
 
     this.setState({ isFilterButtonFaded: false });
     dialogs.open.trigger({ dialog: FilterDialog });
     dialogs.updateDataForActiveDialog.trigger({
-      data: { defaultFilterOptions, populatedFilterOptions },
+      data: {
+        offsetTop: sidebarLayoutContentWrapper.offsetTop + 105,
+        defaultFilterOptions,
+        populatedFilterOptions,
+      },
     });
   };
 
