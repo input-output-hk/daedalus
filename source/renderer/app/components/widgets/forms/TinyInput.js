@@ -12,6 +12,7 @@ type Props = {
   innerLabelSuffix?: string,
   innerValue?: Node,
   notNegative?: boolean,
+  digitCountAfterDecimalPoint?: number,
   onBlur?: Function,
   onInput?: Function,
   onPaste?: Function,
@@ -34,19 +35,34 @@ export default class TinyInput extends Component<Props, State> {
   setEditMode = (isEditMode: boolean) => this.setState({ isEditMode });
 
   validate = (value: string) => {
-    const { notNegative, type } = this.props;
+    const { notNegative, type, digitCountAfterDecimalPoint } = this.props;
     const numberRegex = new RegExp(/^-?\d*\.?\d*$/);
     const notNegativeNumberRegex = new RegExp(/^\d*\.?\d*$/);
+    const numValue = Number(value);
+    const decimalPointPosition = value.indexOf('.');
+    let result = null;
 
     if (type !== 'number') {
       return true;
     }
 
     if (notNegative) {
-      return notNegativeNumberRegex.test(value);
+      result = notNegativeNumberRegex.test(value);
+    } else {
+      result = numberRegex.test(value);
     }
 
-    return numberRegex.test(value);
+    if (
+      result &&
+      !Number.isNaN(numValue) &&
+      decimalPointPosition > -1 &&
+      digitCountAfterDecimalPoint &&
+      value.length - decimalPointPosition - 1 > digitCountAfterDecimalPoint
+    ) {
+      result = false;
+    }
+
+    return result;
   };
 
   onInput = (evt: SyntheticInputEvent<EventTarget>) => {

@@ -91,7 +91,6 @@ const messages = defineMessages({
   },
 });
 
-const MIN_AMOUNT = 0.000001;
 const FILTER_PANEL_OFFSET = 105;
 const FILTER_DIALOG_HEIGHT = 312;
 const FILTER_DIALOG_WITH_DATE_PICKER_HEIGHT = 521;
@@ -387,11 +386,13 @@ export default class FilterDialog extends Component<Props> {
   onAmountFieldBlur = (selector: string) => {
     const { form } = this;
     const { fromAmount, toAmount } = form.values();
+    const fromValue = Number(fromAmount);
+    const toValue = Number(toAmount);
 
-    if (selector === 'from' && fromAmount && Number(fromAmount) < MIN_AMOUNT) {
-      form.select('fromAmount').set(MIN_AMOUNT.toString());
-    } else if (selector === 'to' && toAmount && Number(toAmount) < MIN_AMOUNT) {
-      form.select('toAmount').set(MIN_AMOUNT.toString());
+    if (selector === 'from' && fromAmount && Number.isNaN(fromValue)) {
+      form.select('fromAmount').set('');
+    } else if (selector === 'to' && toAmount && Number.isNaN(toValue)) {
+      form.select('toAmount').set('');
     }
   };
 
@@ -429,6 +430,7 @@ export default class FilterDialog extends Component<Props> {
               }}
               useReadMode
               notNegative
+              digitCountAfterDecimalPoint={6}
               maxLength={20}
               innerLabelPrefix={intl.formatMessage(globalMessages.rangeFrom)}
               innerLabelSuffix={intl.formatMessage(globalMessages.unitAda)}
@@ -444,6 +446,7 @@ export default class FilterDialog extends Component<Props> {
               }}
               useReadMode
               notNegative
+              digitCountAfterDecimalPoint={6}
               maxLength={20}
               innerLabelPrefix={intl.formatMessage(globalMessages.rangeTo)}
               innerLabelSuffix={intl.formatMessage(globalMessages.unitAda)}
