@@ -1572,8 +1572,10 @@ export default class AdaApi {
   setFakeNewsFeedJsonForTesting: (fakeNewsfeedJson: GetNewsResponse) => void;
 
   // Stake pools testing utility
-  setFakeStakePoolsJsonForTesting: (fakeStakePoolsJson: Array<StakePool>) => void;
-  setStakePoolsFetchingFailed: () => void
+  setFakeStakePoolsJsonForTesting: (
+    fakeStakePoolsJson: Array<StakePool>
+  ) => void;
+  setStakePoolsFetchingFailed: () => void;
 }
 
 // ========== TRANSFORM SERVER DATA INTO FRONTEND MODELS =========

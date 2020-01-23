@@ -1,11 +1,13 @@
 // @flow
-import { get } from 'lodash';
+import { get, map } from 'lodash';
 import moment from 'moment';
 import AdaApi from '../api';
 import { getNetworkInfo } from '../network/requests/getNetworkInfo';
 import { getLatestAppVersion } from '../nodes/requests/getLatestAppVersion';
 import { GenericApiError } from '../common/errors';
 import { Logger } from '../../utils/logging';
+import packageJson from '../../../../../package.json';
+import StakePool from '../../domains/StakePool';
 import type {
   GetNetworkInfoResponse,
   NetworkInfoResponse,
@@ -13,7 +15,6 @@ import type {
 import type {
   LatestAppVersionInfoResponse,
   GetLatestAppVersionResponse,
-  AdaApiStakePools,
 } from '../nodes/types';
 import type { GetNewsResponse } from '../news/types';
 import { EPOCH_LENGTH_ITN } from '../../config/epochsConfig';
@@ -144,7 +145,27 @@ export default (api: AdaApi) => {
   };
 
   api.setFakeNewsFeedJsonForTesting = (fakeNewsfeedJson: ?GetNewsResponse) => {
-    FAKE_NEWSFEED_JSON = fakeNewsfeedJson;
+    const { version: packageJsonVersion } = packageJson;
+    if (!fakeNewsfeedJson) {
+      FAKE_NEWSFEED_JSON = null;
+      return;
+    }
+    // Always mutate newsfeed target version to current app version
+    const newsFeedItems = map(fakeNewsfeedJson.items, item => {
+      return {
+        ...item,
+        target: {
+          ...item.target,
+          daedalusVersion: item.target.daedalusVersion
+            ? packageJsonVersion
+            : '',
+        },
+      };
+    });
+    FAKE_NEWSFEED_JSON = {
+      ...fakeNewsfeedJson,
+      items: newsFeedItems,
+    };
   };
 
   api.getNews = (): Promise<GetNewsResponse> => {
@@ -157,7 +178,9 @@ export default (api: AdaApi) => {
     });
   };
 
-  api.setFakeStakePoolsJsonForTesting = (fakeStakePoolsJson: ?AdaApiStakePools) => {
+  api.setFakeStakePoolsJsonForTesting = (
+    fakeStakePoolsJson: Array<StakePool>
+  ) => {
     FAKE_STAKE_POOLS_JSON = fakeStakePoolsJson;
   };
 
@@ -165,7 +188,7 @@ export default (api: AdaApi) => {
     STAKE_POOLS_FETCH_FAILED = true;
   };
 
-  api.getStakePools = (): Promise<AdaApiStakePools> => {
+  api.getStakePools = (): Promise<?Array<StakePool>> => {
     return new Promise((resolve, reject) => {
       if (STAKE_POOLS_FETCH_FAILED) {
         reject(new Error('Unable to fetch stake pools'));
