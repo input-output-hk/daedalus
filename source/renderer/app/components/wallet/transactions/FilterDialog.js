@@ -388,9 +388,9 @@ export default class FilterDialog extends Component<Props> {
     const { form } = this;
     const { fromAmount, toAmount } = form.values();
 
-    if (selector === 'from' && fromAmount < MIN_AMOUNT) {
+    if (selector === 'from' && fromAmount && Number(fromAmount) < MIN_AMOUNT) {
       form.select('fromAmount').set(MIN_AMOUNT.toString());
-    } else if (selector === 'to' && toAmount < MIN_AMOUNT) {
+    } else if (selector === 'to' && toAmount && Number(toAmount) < MIN_AMOUNT) {
       form.select('toAmount').set(MIN_AMOUNT.toString());
     }
   };
