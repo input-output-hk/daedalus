@@ -49,8 +49,11 @@ import { restoreWallet } from './wallets/requests/restoreWallet';
 import { restoreLegacyWallet } from './wallets/requests/restoreLegacyWallet';
 import { restoreByronWallet } from './wallets/requests/restoreByronWallet';
 import { updateWallet } from './wallets/requests/updateWallet';
+import { forceWalletResync } from './wallets/requests/forceWalletResync';
+import { forceLegacyWalletResync } from './wallets/requests/forceLegacyWalletResync';
 import { getWalletUtxos } from './wallets/requests/getWalletUtxos';
 import { getWallet } from './wallets/requests/getWallet';
+import { getLegacyWallet } from './wallets/requests/getLegacyWallet';
 import { getWalletIdAndBalance } from './wallets/requests/getWalletIdAndBalance';
 import { transferFundsCalculateFee } from './wallets/requests/transferFundsCalculateFee';
 import { transferFunds } from './wallets/requests/transferFunds';
@@ -69,6 +72,7 @@ import { joinStakePool } from './staking/requests/joinStakePool';
 import { quitStakePool } from './staking/requests/quitStakePool';
 
 // Utility functions
+import { wait } from './utils/apiHelpers';
 import {
   awaitUpdateChannel,
   cardanoFaultInjectionChannel,
@@ -87,6 +91,7 @@ import { filterLogData } from '../../../common/utils/logging';
 // Config constants
 import { LOVELACES_PER_ADA } from '../config/numbersConfig';
 import { ADA_CERTIFICATE_MNEMONIC_LENGTH } from '../config/cryptoConfig';
+import { FORCED_WALLET_RESYNC_WAIT } from '../config/timingConfig';
 
 // Addresses Types
 import type { Address, GetAddressesRequest } from './addresses/types';
@@ -136,7 +141,7 @@ import type {
   GetWalletRecoveryPhraseFromCertificateRequest,
   ImportWalletFromKeyRequest,
   ImportWalletFromFileRequest,
-  UpdateWalletRequest,
+  ForceWalletResyncRequest,
   GetWalletUtxosRequest,
   GetWalletRequest,
   GetWalletIdAndBalanceRequest,
@@ -145,6 +150,7 @@ import type {
   TransferFundsCalculateFeeResponse,
   TransferFundsRequest,
   TransferFundsResponse,
+  UpdateWalletRequest,
 } from './wallets/types';
 
 // News Types
@@ -237,8 +243,25 @@ export default class AdaApi {
       parameters: filterLogData(request),
     });
     try {
-      const { walletId } = request;
-      const wallet: AdaWallet = await getWallet(this.config, { walletId });
+      const { walletId, isLegacy } = request;
+      let wallet;
+      if (isLegacy) {
+        const legacyWallet: LegacyAdaWallet = await getLegacyWallet(
+          this.config,
+          { walletId }
+        );
+        const extraLegacyWalletProps = {
+          address_pool_gap: 0, // Not needed for legacy wallets
+          delegation: WalletDelegationStatuses.NOT_DELEGATING,
+          isLegacy: true,
+        };
+        wallet = {
+          ...legacyWallet,
+          ...extraLegacyWalletProps,
+        };
+      } else {
+        wallet = await getWallet(this.config, { walletId });
+      }
       Logger.debug('AdaApi::getWallet success', { wallet });
       return _createWalletFromServerData(wallet);
     } catch (error) {
@@ -1253,6 +1276,26 @@ export default class AdaApi {
     }
   };
 
+  forceWalletResync = async (
+    request: ForceWalletResyncRequest
+  ): Promise<void> => {
+    await wait(FORCED_WALLET_RESYNC_WAIT); // API request throttling
+    Logger.debug('AdaApi::forceWalletResync called', { parameters: request });
+    try {
+      const { walletId, isLegacy } = request;
+      let response;
+      if (isLegacy) {
+        response = await forceLegacyWalletResync(this.config, { walletId });
+      } else {
+        response = await forceWalletResync(this.config, { walletId });
+      }
+      Logger.debug('AdaApi::forceWalletResync success', { response });
+    } catch (error) {
+      Logger.error('AdaApi::forceWalletResync error', { error });
+      throw new GenericApiError();
+    }
+  };
+
   transferFundsCalculateFee = async (
     request: TransferFundsCalculateFeeRequest
   ): Promise<BigNumber> => {
@@ -1663,6 +1706,7 @@ const _createStakePoolFromServerData = action(
       cost,
       margin: profitMargin,
       metadata,
+      saturation,
     } = stakePool;
     const {
       controlled_stake: controlledStake,
@@ -1697,6 +1741,7 @@ const _createStakePoolFromServerData = action(
       profitMargin: profitMarginPercentage,
       ranking: index + 1,
       retiring: null,
+      saturation: saturation * 100,
     });
   }
 );

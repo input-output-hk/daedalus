@@ -65,6 +65,24 @@ const createWalletsSequentially = async (wallets: Array<any>, context: Object) =
   }
 };
 
+export const restoreLegacyWallet = async (client: Object, { walletName, recoveryPhrase }: { walletName: string, hasFunds?: boolean, recoveryPhrase?: Array<string> }) =>
+  client.executeAsync((name, recoveryPhrase, done) => {
+    daedalus.api.ada
+      .restoreByronRandomWallet({
+        walletName: name,
+        recoveryPhrase:
+          recoveryPhrase || ['arctic', 'decade', 'pink', 'easy', 'jar', 'index', 'base', 'bright', 'vast', 'ocean', 'hard', 'pizza'],
+        spendingPassword: 'Secret1234',
+      })
+      .then(() =>
+        daedalus.stores.wallets
+          .refreshWalletsData()
+          .then(done)
+          .catch(error => done(error))
+      )
+      .catch(error => done(error));
+  }, walletName, recoveryPhrase);
+
 export const fillOutWalletSendForm = async function(values: Object) {
   const formSelector = '.WalletSendForm_component';
   await this.client.setValue(

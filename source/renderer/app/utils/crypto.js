@@ -1,10 +1,12 @@
 // @flow
 import bip39 from 'bip39';
 import { Buffer } from 'safe-buffer';
+import { chunk } from 'lodash';
 import { pbkdf2Sync as pbkdf2 } from 'pbkdf2';
 import * as unorm from 'unorm';
 import CardanoCrypto from 'rust-cardano-crypto';
 import validWords from '../../../common/crypto/valid-words.en';
+import { ADA_CERTIFICATE_MNEMONIC_LENGTH } from '../config/cryptoConfig';
 
 /**
   CS = ENT / 32
@@ -56,6 +58,14 @@ export const scramblePaperWalletMnemonic = (
     input
   );
   return scrambledInput.split(' ');
+};
+
+export const getScrambledInput = (mnemonics: Array<string>) => {
+  const chunked = chunk(mnemonics, ADA_CERTIFICATE_MNEMONIC_LENGTH);
+  const scrambledInput = chunked[0].join(' '); // first 18 mnemonics
+  const certificatePassword = chunked[1]; // last 9 mnemonics
+  const passphrase = mnemonicToSeedHex(certificatePassword.join(' '));
+  return { passphrase, scrambledInput };
 };
 
 export const unscramblePaperWalletMnemonic = (

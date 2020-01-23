@@ -9,10 +9,10 @@ import type { InjectedProps } from '../../types/injectedPropsType';
 export default class NewsFeedContainer extends Component<InjectedProps> {
   static defaultProps = { actions: null, stores: null };
 
-  handleMarkNewsAsRead = (newsTimestamps: number) => {
+  handleMarkNewsAsRead = (newsId: number) => {
     const { stores } = this.props;
     const { markNewsAsRead } = stores.newsFeed;
-    markNewsAsRead([newsTimestamps]);
+    markNewsAsRead([newsId]);
   };
 
   render() {

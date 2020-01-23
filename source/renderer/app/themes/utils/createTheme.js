@@ -957,6 +957,13 @@ export const createDaedalusComponentsTheme = (
       '--theme-staking-stake-pool-glow-color': `${
         background.secondary.lightest
       }`,
+      '--theme-staking-stake-pool-saturation-background-color': `${chroma(
+        text.secondary
+      ).alpha(0.2)}`,
+      '--theme-staking-stake-pool-saturation-green-color': '#1ccc5d',
+      '--theme-staking-stake-pool-saturation-orange-color': '#ff8800',
+      '--theme-staking-stake-pool-saturation-red-color': `${error.regular}`,
+      '--theme-staking-stake-pool-saturation-yellow-color': '#ffcc00',
       '--theme-staking-stake-pools-search-icon-color': `${text.primary}`,
       '--theme-staking-stake-pools-search-clear-button-background-color':
         'rgba(68, 91, 124, 0.05)',
@@ -1207,6 +1214,12 @@ export const createDaedalusComponentsTheme = (
       '--theme-wallet-restore-dialog-step-walletType-hardwareWalletDisclaimer-text-color': `${
         error.regular
       }`,
+    },
+    walletSettings: {
+      '--theme-wallet-settings-section-separator-color': `${chroma(
+        text.primary
+      ).alpha(0.1)}`,
+      '--theme-wallet-settings-resync-button-label-color': `${text.primary}`,
     },
   };
 };
