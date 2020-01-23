@@ -38,7 +38,6 @@ storiesOf('Wallets|Transactions', module)
         <FilterDialog
           locale={locale}
           dateFormat="MM/DD/YYYY"
-          offsetTop={189}
           defaultFilterOptions={{}}
           populatedFilterOptions={{ dateRange: DateRangeTypes.ALL }}
           onFilter={() => null}

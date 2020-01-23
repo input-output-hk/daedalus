@@ -30,6 +30,38 @@ export const messages = defineMessages({
   },
 });
 
+const handleBodyClass = () => {
+  const sidebarLayoutContentWrapper = window.document.querySelector(
+    '.SidebarLayout_contentWrapper'
+  );
+  const windowHeight = window.document.body.clientHeight;
+  const filterDialogOffsetTop = sidebarLayoutContentWrapper.offsetTop + 105;
+  const filterDialogHeight = 312;
+  const filterDialogWithDatePickerHeight = 521;
+  let smallHeightForFilterDialog = false;
+  let smallHeightForDatePicker = false;
+
+  if (windowHeight - filterDialogOffsetTop < filterDialogHeight) {
+    smallHeightForFilterDialog = true;
+  }
+
+  if (windowHeight - filterDialogOffsetTop < filterDialogWithDatePickerHeight) {
+    smallHeightForDatePicker = true;
+  }
+
+  if (smallHeightForFilterDialog) {
+    window.document.body.classList.add(['small-height-for-filter-dialog']);
+  } else {
+    window.document.body.classList.remove(['small-height-for-filter-dialog']);
+  }
+
+  if (smallHeightForDatePicker) {
+    window.document.body.classList.add(['small-height-for-date-picker']);
+  } else {
+    window.document.body.classList.remove(['small-height-for-date-picker']);
+  }
+};
+
 type Props = InjectedProps;
 type State = {
   isFilterButtonFaded: boolean,
@@ -46,25 +78,17 @@ export default class WalletTransactionsPage extends Component<Props, State> {
     isFilterButtonFaded: false,
   };
 
-  openFilterDialog = (evt: SyntheticEvent<EventTarget>) => {
+  openFilterDialog = () => {
     const { dialogs } = this.props.actions;
     const {
       defaultFilterOptions,
       populatedFilterOptions,
     } = this.props.stores.transactions;
-    const filterButtonElement: { closest?: Function } = evt.target;
-    const sidebarLayoutContentWrapper = filterButtonElement.closest
-      ? filterButtonElement.closest('.SidebarLayout_contentWrapper')
-      : window.document.querySelector('.SidebarLayout_contentWrapper');
 
     this.setState({ isFilterButtonFaded: false });
     dialogs.open.trigger({ dialog: FilterDialog });
     dialogs.updateDataForActiveDialog.trigger({
-      data: {
-        offsetTop: sidebarLayoutContentWrapper.offsetTop + 105,
-        defaultFilterOptions,
-        populatedFilterOptions,
-      },
+      data: { defaultFilterOptions, populatedFilterOptions },
     });
   };
 

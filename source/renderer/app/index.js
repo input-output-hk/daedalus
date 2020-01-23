@@ -27,14 +27,6 @@ addLocaleData([...en, ...ja]);
 const { environment } = global;
 const { isTest, network } = environment;
 
-const handleBodyClass = () => {
-  if (window.document.body.clientHeight < 750) {
-    window.document.body.classList.add(['small-height-screen']);
-  } else {
-    window.document.body.classList.remove(['small-height-screen']);
-  }
-};
-
 const initializeDaedalus = () => {
   const api = setupApi(isTest, String(network));
   const router = new RouterStore();
@@ -53,7 +45,6 @@ const initializeDaedalus = () => {
       setupStores(api, actions, router);
     }),
   };
-  handleBodyClass();
 
   const rootElement = document.getElementById('root');
   if (!rootElement) throw new Error('No #root element found.');
@@ -66,4 +57,3 @@ const initializeDaedalus = () => {
 window.addEventListener('load', initializeDaedalus);
 window.addEventListener('dragover', event => event.preventDefault());
 window.addEventListener('drop', event => event.preventDefault());
-window.addEventListener('resize', handleBodyClass);
