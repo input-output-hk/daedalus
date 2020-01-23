@@ -1,11 +1,16 @@
 Changelog
 =========
 
+## vNext
+
+### Features
+
+- Implemented transactions filtering dialog on wallet "Transactions" screen ([PR 1815](https://github.com/input-output-hk/daedalus/pull/1815))
+
 ## 2.1.0-ITN1
 
 ### Features
 
-- Implemented filtering dialog on Wallet Transactions screen ([PR 1815](https://github.com/input-output-hk/daedalus/pull/1815))
 - Added stake pools saturation info and ordering based on desirability ([PR 1826](https://github.com/input-output-hk/daedalus/pull/1826))
 - Implemented "Resync wallet" feature ([PR 1822](https://github.com/input-output-hk/daedalus/pull/1822))
 - Implemented "Hardware wallets" restoration ([PR 1801](https://github.com/input-output-hk/daedalus/pull/1801))
