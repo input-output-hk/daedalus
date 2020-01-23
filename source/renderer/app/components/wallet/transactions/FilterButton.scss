@@ -1,15 +1,15 @@
 .component {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  z-index: 98;
+
   .actionButton {
     border-radius: 5px;
     box-shadow: 0 1.5px 5px 0
       var(--theme-transactions-filter-button-shadow-color);
     display: flex;
     padding: 7px 12px;
-    position: absolute;
-    right: 10px;
-    top: 10px;
-    width: auto;
-    z-index: 98;
 
     &:focus {
       box-shadow: 0 1.5px 5px 0
