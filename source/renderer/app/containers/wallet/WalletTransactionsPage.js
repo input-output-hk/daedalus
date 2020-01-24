@@ -162,18 +162,18 @@ export default class WalletTransactionsPage extends Component<Props, State> {
         value={{ setFilterButtonFaded: this.setFilterButtonFaded }}
       >
         <VerticalFlexContainer>
-          {hasAny && (
-            <FilterButton
-              numberOfFilterDimensionsApplied={numberOfFilterDimensionsApplied}
-              faded={isFilterButtonFaded}
-              onClick={this.openFilterDialog}
-            />
-          )}
           {uiDialogs.isOpen(FilterDialog) && (
             <FilterDialogContainer onFilter={this.onFilter} />
           )}
           {walletTransactions}
         </VerticalFlexContainer>
+        {hasAny && (
+          <FilterButton
+            numberOfFilterDimensionsApplied={numberOfFilterDimensionsApplied}
+            faded={isFilterButtonFaded}
+            onClick={this.openFilterDialog}
+          />
+        )}
       </WalletTransactionsListScrollContext.Provider>
     );
   }
