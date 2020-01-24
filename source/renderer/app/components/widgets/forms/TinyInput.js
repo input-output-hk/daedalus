@@ -13,6 +13,7 @@ type Props = {
   innerValue?: Node,
   notNegative?: boolean,
   digitCountAfterDecimalPoint?: number,
+  maxLength?: number,
   onBlur?: Function,
   onInput?: Function,
   onPaste?: Function,
@@ -67,25 +68,29 @@ export default class TinyInput extends Component<Props, State> {
   };
 
   onInput = (evt: SyntheticInputEvent<EventTarget>) => {
-    const { type, onInput } = this.props;
+    const { type, onInput, maxLength } = this.props;
     const { prevValue } = this.state;
     const onlyZerosRegex = new RegExp(/^00+$/);
 
-    if (type === 'number') {
-      if (evt.target.value === '.') {
-        evt.target.value = '0.';
-      }
-      if (onlyZerosRegex.test(evt.target.value)) {
-        evt.target.value = `0.${evt.target.value.substring(1)}`;
-      }
-    }
-
-    const { value } = evt.target;
-
-    if (this.validate(value)) {
-      this.setState({ prevValue: value });
-    } else {
+    if (maxLength && prevValue.length === maxLength) {
       evt.target.value = prevValue;
+    } else {
+      if (type === 'number') {
+        if (evt.target.value === '.') {
+          evt.target.value = '0.';
+        }
+        if (onlyZerosRegex.test(evt.target.value)) {
+          evt.target.value = `0.${evt.target.value.substring(1)}`;
+        }
+      }
+
+      const { value } = evt.target;
+
+      if (this.validate(value)) {
+        this.setState({ prevValue: value });
+      } else {
+        evt.target.value = prevValue;
+      }
     }
 
     if (onInput) {
