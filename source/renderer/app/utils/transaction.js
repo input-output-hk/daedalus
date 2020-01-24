@@ -212,7 +212,11 @@ export const formatDateValue = (
   return moment(date).format(dateFormat);
 };
 
-export const formatAmountValue = (amount: string, defaultAmount: string) => {
+export const formatAmountValue = (
+  amount: string,
+  defaultAmount: string,
+  shrinkIfLong?: boolean
+) => {
   let inputAmount = amount || defaultAmount;
   if (inputAmount === '.') {
     inputAmount = '0';
@@ -225,7 +229,7 @@ export const formatAmountValue = (amount: string, defaultAmount: string) => {
   const amountBigNumber = new BigNumber(inputAmount);
   const amountClassName = amount ? '' : 'undefined';
   const content =
-    inputAmount.length > AMOUNT_RAW_LENGTH_LIMIT
+    shrinkIfLong && inputAmount.length > AMOUNT_RAW_LENGTH_LIMIT
       ? formattedWalletAmount(amountBigNumber, false, false)
       : amountBigNumber.toFormat();
 

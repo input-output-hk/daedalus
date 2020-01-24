@@ -91,8 +91,7 @@ const messages = defineMessages({
   },
 });
 
-const FILTER_PANEL_OFFSET = 105;
-const FILTER_DIALOG_HEIGHT = 312;
+const FILTER_PANEL_OFFSET = 103;
 const FILTER_DIALOG_WITH_DATE_PICKER_HEIGHT = 521;
 
 const applyDialogStyles = () => {
@@ -101,7 +100,11 @@ const applyDialogStyles = () => {
   const sidebarLayoutContentWrapper = window.document.querySelector(
     '.SidebarLayout_contentWrapper'
   );
+  const filterButtonElement = window.document.querySelector(
+    '.FilterButton_component'
+  );
   const windowHeight = window.document.body.clientHeight;
+  const filterDialogHeight = dialogElement.clientHeight;
   const filterDialogOffsetTop =
     sidebarLayoutContentWrapper.offsetTop + FILTER_PANEL_OFFSET;
 
@@ -112,21 +115,25 @@ const applyDialogStyles = () => {
   dialogElement.style.minWidth = 'auto';
   dialogElement.style.position = 'absolute';
 
-  if (windowHeight - filterDialogOffsetTop < FILTER_DIALOG_HEIGHT) {
-    dialogElement.style.right = '102px';
-    dialogElement.style.top = `${sidebarLayoutContentWrapper.offsetTop -
-      78.5}px`;
+  if (windowHeight - filterDialogOffsetTop < filterDialogHeight) {
+    dialogElement.style.right = `${filterButtonElement.clientWidth + 20}px`;
+    dialogElement.style.top = `${Math.max(
+      sidebarLayoutContentWrapper.offsetTop + 75 - filterDialogHeight / 2,
+      40
+    )}px`;
   } else {
     dialogElement.style.right = '10px';
     dialogElement.style.top = `${filterDialogOffsetTop}px`;
   }
   if (
-    windowHeight - filterDialogOffsetTop <
-    FILTER_DIALOG_WITH_DATE_PICKER_HEIGHT
+    dialogElement.offsetTop + FILTER_DIALOG_WITH_DATE_PICKER_HEIGHT >=
+    windowHeight
   ) {
-    dialogElement.classList.add(['small-height-for-date-picker']);
+    dialogElement.children[0].classList.add(['small-height-for-date-picker']);
   } else {
-    dialogElement.classList.remove(['small-height-for-date-picker']);
+    dialogElement.children[0].classList.remove([
+      'small-height-for-date-picker',
+    ]);
   }
 };
 

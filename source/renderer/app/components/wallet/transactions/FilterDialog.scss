@@ -184,8 +184,22 @@
       margin: 0 10px;
 
       .body {
+        align-items: stretch;
+        flex-direction: column;
+
         .amountRangeInput {
-          margin-right: 10px;
+          margin-bottom: 6px;
+
+          &:last-child {
+            margin-bottom: 0;
+          }
+
+          :global {
+            .TinyInput_component .TinyInput_contentInReadMode,
+            .TinyInput_component .SimpleInput_input {
+              width: 100%;
+            }
+          }
         }
       }
     }
@@ -198,7 +212,7 @@
 
 :global {
   .small-height-for-date-picker {
-    .FilterDialog_component {
+    &.FilterDialog_component {
       .rdtPicker {
         left: -281px;
         right: auto;
