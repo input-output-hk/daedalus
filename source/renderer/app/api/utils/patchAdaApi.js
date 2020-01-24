@@ -7,7 +7,6 @@ import { getLatestAppVersion } from '../nodes/requests/getLatestAppVersion';
 import { GenericApiError } from '../common/errors';
 import { Logger } from '../../utils/logging';
 import packageJson from '../../../../../package.json';
-import StakePool from '../../domains/StakePool';
 import type {
   GetNetworkInfoResponse,
   NetworkInfoResponse,
@@ -24,8 +23,6 @@ let SYNC_PROGRESS = null;
 let NEXT_ADA_UPDATE = null;
 let APPLICATION_VERSION = null;
 let FAKE_NEWSFEED_JSON: ?GetNewsResponse;
-let FAKE_STAKE_POOLS_JSON: ?any;
-let STAKE_POOLS_FETCH_FAILED = false;
 
 export default (api: AdaApi) => {
   api.getNetworkInfo = async (): Promise<GetNetworkInfoResponse> => {
@@ -174,26 +171,6 @@ export default (api: AdaApi) => {
         reject(new Error('Unable to fetch news'));
       } else {
         resolve(FAKE_NEWSFEED_JSON);
-      }
-    });
-  };
-
-  api.setFakeStakePoolsJsonForTesting = (
-    fakeStakePoolsJson: Array<StakePool>
-  ) => {
-    FAKE_STAKE_POOLS_JSON = fakeStakePoolsJson;
-  };
-
-  api.setStakePoolsFetchingFailed = () => {
-    STAKE_POOLS_FETCH_FAILED = true;
-  };
-
-  api.getStakePools = (): Promise<?Array<StakePool>> => {
-    return new Promise((resolve, reject) => {
-      if (STAKE_POOLS_FETCH_FAILED) {
-        reject(new Error('Unable to fetch stake pools'));
-      } else {
-        resolve(FAKE_STAKE_POOLS_JSON);
       }
     });
   };
