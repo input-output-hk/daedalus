@@ -1,4 +1,4 @@
-@e2e @watch
+@e2e
 Feature: Stake Pools Loading
 
   Background:
