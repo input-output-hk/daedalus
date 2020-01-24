@@ -3,7 +3,6 @@ import { Given, When, Then } from 'cucumber';
 import { expect } from 'chai';
 import BigNumber from 'bignumber.js/bignumber';
 import { delegationCentreStakingHelper, getStakePoolByRanking } from './helpers';
-import stakingStakePoolsDummyJson from '../documents/stakingStakePools.dummy.json';
 import type { Daedalus } from '../../../types';
 import { getWalletByName } from '../../../wallets/e2e/steps/helpers';
 import { formattedWalletAmount } from '../../../../source/renderer/app/utils/formatters';
