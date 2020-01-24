@@ -17,6 +17,7 @@ type Props = {
   onInput?: Function,
   onPaste?: Function,
   onKeyPress?: Function,
+  onSubmit?: Function,
   type?: string,
   useReadMode?: boolean,
 };
@@ -68,9 +69,15 @@ export default class TinyInput extends Component<Props, State> {
   onInput = (evt: SyntheticInputEvent<EventTarget>) => {
     const { type, onInput } = this.props;
     const { prevValue } = this.state;
+    const onlyZerosRegex = new RegExp(/^00+$/);
 
-    if (type === 'number' && evt.target.value === '.') {
-      evt.target.value = '0.';
+    if (type === 'number') {
+      if (evt.target.value === '.') {
+        evt.target.value = '0.';
+      }
+      if (onlyZerosRegex.test(evt.target.value)) {
+        evt.target.value = `0.${evt.target.value.substring(1)}`;
+      }
     }
 
     const { value } = evt.target;
@@ -102,15 +109,19 @@ export default class TinyInput extends Component<Props, State> {
   };
 
   onKeyPress = (evt: SyntheticKeyboardEvent<EventTarget>) => {
-    const { onKeyPress } = this.props;
+    const { onKeyPress, onSubmit } = this.props;
     const { charCode } = evt;
-
-    if (charCode === 13) {
-      this.setEditMode(false);
-    }
+    const control: { blur?: Function } = evt.target;
 
     if (onKeyPress) {
       onKeyPress(evt);
+    }
+
+    if (charCode === 13 && control.blur) {
+      control.blur();
+      if (onSubmit) {
+        onSubmit();
+      }
     }
   };
 

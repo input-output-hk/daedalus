@@ -436,6 +436,7 @@ export default class FilterDialog extends Component<Props> {
                 fromAmountFieldProps.onBlur(evt);
                 this.onAmountFieldBlur('from');
               }}
+              onSubmit={this.handleSubmit}
               useReadMode
               notNegative
               digitCountAfterDecimalPoint={6}
@@ -452,6 +453,7 @@ export default class FilterDialog extends Component<Props> {
                 toAmountFieldProps.onBlur(evt);
                 this.onAmountFieldBlur('to');
               }}
+              onSubmit={this.handleSubmit}
               useReadMode
               notNegative
               digitCountAfterDecimalPoint={6}
