@@ -389,10 +389,18 @@ export default class FilterDialog extends Component<Props> {
     const fromValue = Number(fromAmount);
     const toValue = Number(toAmount);
 
-    if (selector === 'from' && fromAmount && Number.isNaN(fromValue)) {
-      form.select('fromAmount').set('');
-    } else if (selector === 'to' && toAmount && Number.isNaN(toValue)) {
-      form.select('toAmount').set('');
+    if (selector === 'from' && fromAmount) {
+      if (Number.isNaN(fromValue)) {
+        form.select('fromAmount').set('');
+      } else {
+        form.select('fromAmount').set(fromValue.toString());
+      }
+    } else if (selector === 'to' && toAmount) {
+      if (Number.isNaN(toValue)) {
+        form.select('toAmount').set('');
+      } else {
+        form.select('toAmount').set(toValue.toString());
+      }
     }
   };
 
