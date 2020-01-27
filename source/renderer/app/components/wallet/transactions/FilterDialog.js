@@ -281,16 +281,18 @@ export default class FilterDialog extends Component<Props> {
           customToDate,
           ...rest
         } = form.values();
-        const dateRangePayload = calculateDateRange(dateRange, {
-          customFromDate,
-          customToDate,
-        });
+        if (validateFilterForm(form.values())) {
+          const dateRangePayload = calculateDateRange(dateRange, {
+            customFromDate,
+            customToDate,
+          });
 
-        onFilter({
-          ...rest,
-          ...dateRangePayload,
-          dateRange,
-        });
+          onFilter({
+            ...rest,
+            ...dateRangePayload,
+            dateRange,
+          });
+        }
       },
       onError: () => null,
     });
