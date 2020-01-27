@@ -87,6 +87,13 @@ export default class TinyInput extends Component<Props, State> {
         if (onlyZerosRegex.test(evt.target.value)) {
           evt.target.value = `0.${evt.target.value.substring(1)}`;
         }
+        if (
+          maxLength &&
+          evt.target.value.length === maxLength &&
+          evt.target.value[evt.target.value.length - 1] === '.'
+        ) {
+          evt.target.value = prevValue;
+        }
       }
 
       const { value } = evt.target;
