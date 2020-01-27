@@ -530,9 +530,9 @@ export const CARDANO_THEME_OUTPUT = {
     '--rp-radio-size': '22px',
   },
   rpScrollBar: {
-    '--scrollbar-thumb-bg-color:': 'rgba(255, 255, 255, 0.1)',
-    '--scrollbar-thumb-bg-color-active': 'rgba(255, 255, 255, 0.3)',
-    '--scrollbar-thumb-bg-color-hover': 'rgba(255, 255, 255, 0.3)',
+    '--rp-scrollbar-thumb-bg-color:': 'rgba(255, 255, 255, 0.1)',
+    '--rp-scrollbar-thumb-bg-color-active': 'rgba(255, 255, 255, 0.3)',
+    '--rp-scrollbar-thumb-bg-color-hover': 'rgba(255, 255, 255, 0.3)',
   },
   rpSelect: {
     '--rp-select-arrow-bg-color': 'rgba(94, 96, 102, 0.3)',
