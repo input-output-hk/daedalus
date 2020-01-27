@@ -515,6 +515,11 @@ export const YELLOW_THEME_OUTPUT = {
     '--rp-radio-label-text-color': '#2d2d2d',
     '--rp-radio-size': '22px',
   },
+  rpScrollBar: {
+    '--rp-scrollbar-thumb-bg-color:': 'rgba(255, 255, 255, 0.1)',
+    '--rp-scrollbar-thumb-bg-color-active': 'rgba(255, 255, 255, 0.3)',
+    '--rp-scrollbar-thumb-bg-color-hover': 'rgba(255, 255, 255, 0.3)',
+  },
   rpSelect: {
     '--rp-select-arrow-bg-color': 'rgba(45, 45, 45, 0.2)',
     '--rp-select-arrow-bg-color-open': '#2d2d2d',
