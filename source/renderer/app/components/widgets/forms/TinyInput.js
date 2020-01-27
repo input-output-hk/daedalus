@@ -21,6 +21,7 @@ type Props = {
   onSubmit?: Function,
   type?: string,
   useReadMode?: boolean,
+  disablePaste?: boolean,
 };
 
 type State = {
@@ -72,7 +73,11 @@ export default class TinyInput extends Component<Props, State> {
     const { prevValue } = this.state;
     const onlyZerosRegex = new RegExp(/^00+$/);
 
-    if (maxLength && prevValue.length === maxLength) {
+    if (
+      maxLength &&
+      prevValue.length === maxLength &&
+      evt.target.value.length > maxLength
+    ) {
       evt.target.value = prevValue;
     } else {
       if (type === 'number') {
@@ -99,16 +104,12 @@ export default class TinyInput extends Component<Props, State> {
   };
 
   onPaste = (evt: SyntheticClipboardEvent<EventTarget>) => {
-    const { onPaste } = this.props;
+    const { onPaste, disablePaste } = this.props;
     const value = evt.clipboardData.getData('text/plain');
 
-    if (this.validate(value)) {
-      this.setState({ prevValue: value });
-    } else {
+    if (disablePaste || !this.validate(value)) {
       evt.preventDefault();
-    }
-
-    if (onPaste) {
+    } else if (onPaste) {
       onPaste(evt);
     }
   };

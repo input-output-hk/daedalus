@@ -17,8 +17,10 @@ type Props = {
   onClick?: Function,
   onFocus?: Function,
   onKeyDown?: Function,
+  isValidDate?: Function,
   locale?: string,
   dateFormat: string,
+  disablePaste?: boolean,
   value: string,
   innerLabelPrefix: string,
   innerValue: any,
@@ -78,7 +80,9 @@ export default class TinyDatePicker extends Component<Props> {
     const {
       onReset, // eslint-disable-line
       onChange,
+      isValidDate,
       dateFormat,
+      disablePaste,
       value,
       innerLabelPrefix,
       innerValue,
@@ -99,6 +103,7 @@ export default class TinyDatePicker extends Component<Props> {
           timeFormat={false}
           value={value ? moment(value).toDate() : null}
           onViewModeChange={this.ensureResetButtonExistence}
+          isValidDate={isValidDate}
           onChange={selectedDate => {
             if (typeof selectedDate === 'string') {
               if (!selectedDate) {
@@ -116,8 +121,21 @@ export default class TinyDatePicker extends Component<Props> {
                 props.onFocus(...args);
                 this.ensureResetButtonExistence();
               }}
+              onInput={evt => {
+                const inputDate = moment(evt.target.value, dateFormat);
+                if (
+                  !inputDate.isValid() ||
+                  (isValidDate && !isValidDate(inputDate))
+                ) {
+                  evt.target.value = '';
+                }
+                if (props.onInput) {
+                  props.onInput(evt);
+                }
+              }}
               value={value ? moment(value).format(dateFormat) : ''}
               useReadMode
+              disablePaste={disablePaste}
               innerLabelPrefix={innerLabelPrefix}
               innerValue={innerValue}
             />

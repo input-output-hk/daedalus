@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import type { ElementRef } from 'react';
 import { observer } from 'mobx-react';
 import moment from 'moment';
+import BigNumber from 'bignumber.js';
 import { defineMessages, intlShape } from 'react-intl';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import { i18nContext } from '../../../utils/i18nContext';
@@ -249,12 +250,20 @@ export default class FilterDialog extends Component<Props> {
   resetForm = () => {
     const {
       dateRange,
+      fromDate,
+      toDate,
       fromAmount,
       toAmount,
       incomingChecked,
       outgoingChecked,
     } = emptyTransactionFilterOptions;
 
+    if (this.form.select('customFromDate')) {
+      this.form.select('customFromDate').set(fromDate);
+    }
+    if (this.form.select('customToDate')) {
+      this.form.select('customToDate').set(toDate);
+    }
     this.form.select('dateRange').set(dateRange);
     this.form.select('fromAmount').set(fromAmount);
     this.form.select('toAmount').set(toAmount);
@@ -393,20 +402,20 @@ export default class FilterDialog extends Component<Props> {
   onAmountFieldBlur = (selector: string) => {
     const { form } = this;
     const { fromAmount, toAmount } = form.values();
-    const fromValue = Number(fromAmount);
-    const toValue = Number(toAmount);
 
     if (selector === 'from' && fromAmount) {
-      if (Number.isNaN(fromValue)) {
+      if (Number.isNaN(Number(fromAmount))) {
         form.select('fromAmount').set('');
       } else {
-        form.select('fromAmount').set(fromValue.toString());
+        const fromValue = new BigNumber(fromAmount).toString();
+        form.select('fromAmount').set(fromValue);
       }
     } else if (selector === 'to' && toAmount) {
-      if (Number.isNaN(toValue)) {
+      if (Number.isNaN(Number(toAmount))) {
         form.select('toAmount').set('');
       } else {
-        form.select('toAmount').set(toValue.toString());
+        const toValue = new BigNumber(toAmount).toString();
+        form.select('toAmount').set(toValue);
       }
     }
   };
