@@ -55,7 +55,7 @@ async function prepareNewsOfType(
       const { api } = daedalus;
       api.ada.setFakeNewsFeedJsonForTesting(news);
       if (isRead) {
-        api.localStorage.markNewsAsRead(news.items.map(i => i.date)).then(done);
+        api.localStorage.markNewsAsRead(news.items.map(i => i.id)).then(done);
       } else {
         done();
       }
