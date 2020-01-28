@@ -12,6 +12,25 @@ Given(/^I am on the Delegation "([^"]*)" screen$/, async function(
   return navigateTo.call(this, `/staking/${screenName}`);
 });
 
+Given(/^the "([^"]*)" wallet is not delegating$/, async function(wallet) {
+  // TODO: Improve this
+  await timeout(7000);
+  await this.client.executeAsync((walletName, passphrase, done) => {
+    const {id: walletId, delegatedStakePoolId: stakePoolId } = daedalus.stores.wallets.getWalletByName(walletName);
+    if (stakePoolId) {
+      try {
+        daedalus.actions.staking.quitStakePool
+          .trigger({ stakePoolId, walletId, passphrase })
+          .then(done)
+      } catch(e) {
+        done(new Error(e))
+      }
+    } else {
+      done();
+    }
+  }, wallet, 'Secret1234');
+})
+
 Then(/^I should see a "Create rewards wallet" notification$/, async function() {
   await this.client.waitForVisible('.DelegationCenterNoWallets_component');
 })
@@ -39,7 +58,7 @@ let wallet;
 let pool;
 
 Then(/^I should see the "delegate" option$/, async function() {
-  // Makes sure the wallet is not delegate, in case the test restarts
+  // Makes sure the wallet is not delegating, in case the test restarts
   await this.client.waitUntil(async () => {
     const wallets = await this.client.execute(() => daedalus.stores.wallets.all);
     const pools = await this.client.execute(() => daedalus.stores.staking.stakePools);

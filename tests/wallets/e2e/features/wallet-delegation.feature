@@ -32,13 +32,15 @@ Feature: Wallet Delegation
     # And the current and next epoch countdown have correct data
 
   Scenario: "Delegation center" correctly displays undelegated and delegated information and options
-    Given I have a "Test Wallet" wallet with funds
-    And I am on the Delegation "delegation-center" screen
+    Given I am on the Delegation "delegation-center" screen
+    And I have a "Test Wallet" wallet with funds
+    And the "Test Wallet" wallet is not delegating
     Then I should see the "delegate" option
     Given My wallet was delegated
     Then I should see the delegated pool name
     And I should see the delegated menu with "Change delegation" and "Undelegate" options
-    Then I freeze
+    # TODO: Include this scenarion ☝️
+  # Scenario: "Delegation" wizard is showing correct stake pool tickers for the wallets in the wallet dropdown in case wallets are already delegated
 
   # Scenario: "Unknown" stake pool is shown for the wallets being delegated to stake pools for which we don't have metadata
 
@@ -58,7 +60,6 @@ Feature: Wallet Delegation
     And I send 11 ADA from the "Wallet Sender" wallet to the "Wallet Receiver" wallet
     Then I sucessfully delegate my wallet
 
-  @watch
   Scenario: "Delegation" wizard is showing the correct error message if the user submits wrong spending password
     Given I have the following wallets:
       | name            |
@@ -71,6 +72,6 @@ Feature: Wallet Delegation
     And I enter "INCORRECT" as the spending password
     Then I should see a "Incorrect wallet password." message
 
-  # Scenario: "Delegation" wizard is showing correct stake pool tickers for the wallets in the wallet dropdown in case wallets are already delegated
+
   # Scenario: "Delegation" wizard is working correctly when the user is changing delegation preference (including a check for messages on the "Select stake pool" step)
   # Scenario: "Undelegate" wizard is working correctly (including showing the correct error message if the user submits a wrong spending password)
