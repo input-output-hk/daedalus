@@ -10551,14 +10551,15 @@ react-modal@3.1.12:
     prop-types "^15.5.10"
     warning "^3.0.0"
 
-react-polymorph@0.9.1:
+react-polymorph@input-output-hk/react-polymorph#feature/ddw-829-use-custom-scrollbars-in-react-polymorph:
   version "0.9.1"
-  resolved "https://registry.yarnpkg.com/react-polymorph/-/react-polymorph-0.9.1.tgz#80c26de87f586d8e7dda1274e784a846d729acd1"
+  resolved "https://codeload.github.com/input-output-hk/react-polymorph/tar.gz/c0fa7f2023a758d19320b364bf6fb20f907bacdd"
   dependencies:
     create-react-context "0.2.2"
     create-react-ref "0.1.0"
     filter-react-dom-props "0.0.2"
     postinstall-build "5.0.1"
+    react-custom-scrollbars "4.2.1"
     react-modal "3.1.12"
 
 react-popper-tooltip@^2.8.3:
