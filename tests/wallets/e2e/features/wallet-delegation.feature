@@ -38,28 +38,39 @@ Feature: Wallet Delegation
     Given My wallet was delegated
     Then I should see the delegated pool name
     And I should see the delegated menu with "Change delegation" and "Undelegate" options
+    Then I freeze
 
   # Scenario: "Unknown" stake pool is shown for the wallets being delegated to stake pools for which we don't have metadata
 
-  @watch
-  Scenario: "Delegation" wizard displays the "Delegation is unavailable" for empty Rewards wallets
+  Scenario: "Delegation" wizard displays correct availability
     Given I have the following wallets:
       | name            |
       | Wallet Receiver |
     And I am on the Delegation "delegation-center" screen
-    And I try to delegate the wallet
+    And I start the wallet delegation process
     Then I should see a "Delegation not available" message
     Then I close the wizard
     Given I have a "Wallet Sender" wallet with funds
     And I send 9 ADA from the "Wallet Sender" wallet to the "Wallet Receiver" wallet
-    And I try to delegate the wallet
+    And I start the wallet delegation process
     Then I should see a "This wallet does not contain the minimum amount of 10 ADA which is required for delegation to be available. Please select a wallet with " message
     Given I close the wizard
     And I send 11 ADA from the "Wallet Sender" wallet to the "Wallet Receiver" wallet
     Then I sucessfully delegate my wallet
 
-  # Scenario: "Delegation" wizard is working correctly if the user selects wallet with enough funds (including a check for fees estimation)
-  # Scenario: "Delegation" wizard is showing the correct error message if the user submits wrong spending password
+  @watch
+  Scenario: "Delegation" wizard is showing the correct error message if the user submits wrong spending password
+    Given I have the following wallets:
+      | name            |
+      | Wallet Receiver |
+    And I have a "Wallet Sender" wallet with funds
+    And I am on the Delegation "delegation-center" screen
+    And I start the wallet delegation process
+    And I choose the "Wallet Sender" wallet
+    And I choose the first stake pool
+    And I enter "INCORRECT" as the spending password
+    Then I should see a "Incorrect wallet password." message
+
   # Scenario: "Delegation" wizard is showing correct stake pool tickers for the wallets in the wallet dropdown in case wallets are already delegated
   # Scenario: "Delegation" wizard is working correctly when the user is changing delegation preference (including a check for messages on the "Select stake pool" step)
   # Scenario: "Undelegate" wizard is working correctly (including showing the correct error message if the user submits a wrong spending password)

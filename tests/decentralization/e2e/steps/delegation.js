@@ -77,7 +77,7 @@ Then(/^I should see the delegated menu with "Change delegation" and "Undelegate"
   );
 })
 
-Given(/^I try to delegate the wallet$/, async function() {
+Given(/^I start the wallet delegation process$/, async function() {
   await this.waitAndClick(
     '//span[@class="WalletRow_actionLink" and text()="Delegate"]'
   );
@@ -131,4 +131,25 @@ Given('I send {int} ADA from the {string} wallet to the {string} wallet', async 
       });
   }, adaAmount, walletFrom, walletTo);
 })
+
+Then(/^I choose the "([^"]*)" wallet$/, async function(walletName) {
+  await this.waitAndClick('.SimpleFormField_inputWrapper');
+  await this.waitAndClick(`//div[@class="WalletsDropdownOption_label" and text()="${walletName}"]`);
+  await this.waitAndClick('//button[text()="Continue"]');
+})
+
+Then(/^I choose the first stake pool$/, async function() {
+  await this.waitAndClick('.StakePoolThumbnail_component');
+  await this.waitAndClick('//button[text()="Continue"]');
+})
+
+Then(/^I enter "([^"]*)" as the spending password$/, async function(spendingPassword) {
+  await this.client.waitForVisible('.SimpleInput_input');
+  const input = this.client.element('.SimpleInput_input');
+  input.setValue(spendingPassword);
+  await timeout(2000);
+  this.client.click('.confirmButton');
+})
+
+
 
