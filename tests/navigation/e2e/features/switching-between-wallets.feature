@@ -5,7 +5,7 @@ Feature: Switching Between Wallets
     Given I have completed the basic setup
 
   Scenario Outline: Using the Sidebar to Switch Wallets
-    Given I have the following wallets:
+    Given I have the following "Rewards" wallets:
       | name   |
       | first  |
       | second |

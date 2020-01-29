@@ -446,6 +446,7 @@ export default class StakePoolTooltip extends Component<Props, State> {
 
           <Link
             onClick={() => onOpenExternalLink(homepage)}
+            className={styles.homepage}
             label={homepage}
             skin={LinkSkin}
           />
@@ -494,7 +495,7 @@ export default class StakePoolTooltip extends Component<Props, State> {
               </span>
             </dd>
             <dt>{intl.formatMessage(messages.costPerEpoch)}</dt>
-            <dd className={styles.profitMargin}>
+            <dd className={styles.cost}>
               <span
                 style={{
                   background: getColorFromRange(profitMargin, {

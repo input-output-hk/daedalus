@@ -1,10 +1,10 @@
 @e2e @skip
 # @API TODO - We don't have API endpoint for import wallet from key
-Feature: Import Wallet via Sidebar
+Feature: Import a wallet
 
   Background:
     Given I have completed the basic setup
-    And I have the following wallets:
+    And I have the following "Rewards" wallets:
       | name        |
       | Test Wallet |
 
@@ -27,6 +27,6 @@ Feature: Import Wallet via Sidebar
     And I should not see the restore status notification once import is finished
 
   Scenario: Wallet Already Imported Error
-    Given I have a "Test Wallet" wallet with funds
+    Given I have a "Test Wallet" rewards wallet with funds
     When I try to import the wallet with funds again
     Then I see the import wallet dialog with an error that the wallet already exists

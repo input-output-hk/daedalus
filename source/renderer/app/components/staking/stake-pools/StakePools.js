@@ -15,7 +15,7 @@ const messages = defineMessages({
   delegatingListTitle: {
     id: 'staking.stakePools.delegatingListTitle',
     defaultMessage: '!!!Staking pools you are delegating to',
-    description: '"delegatingListTitlee" for the Stake Pools page.',
+    description: '"delegatingListTitle" for the Stake Pools page.',
   },
   listTitle: {
     id: 'staking.stakePools.listTitle',
@@ -135,7 +135,9 @@ export default class StakePools extends Component<Props, State> {
 
             {stakePoolsDelegatingList.length > 0 && (
               <Fragment>
-                <h2>{intl.formatMessage(messages.delegatingListTitle)}</h2>
+                <h2 className={styles.listTitle}>
+                  {intl.formatMessage(messages.delegatingListTitle)}
+                </h2>
                 <StakePoolsList
                   listName="stakePoolsDelegatingList"
                   stakePoolsList={stakePoolsDelegatingList}
