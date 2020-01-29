@@ -46,6 +46,11 @@ export default class WalletTransactionsPage extends Component<Props, State> {
     isFilterButtonFaded: false,
   };
 
+  componentDidMount() {
+    const { dialogs } = this.props.actions;
+    dialogs.closeActiveDialog.trigger();
+  }
+
   openFilterDialog = () => {
     const { dialogs } = this.props.actions;
     const {
