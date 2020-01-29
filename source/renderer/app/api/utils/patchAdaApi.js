@@ -159,6 +159,7 @@ export default (api: AdaApi) => {
         },
       };
     });
+
     FAKE_NEWSFEED_JSON = {
       ...fakeNewsfeedJson,
       items: newsFeedItems,
