@@ -49,6 +49,7 @@ export default class StakingStore extends Store {
     );
     staking.joinStakePool.listen(this._joinStakePool);
     staking.quitStakePool.listen(this._quitStakePool);
+    staking.fakeStakePoolLoading.listen(this._setFakePoller);
   }
 
   // REQUESTS
@@ -275,7 +276,7 @@ export default class StakingStore extends Store {
     const { _pollingBlocked } = wallets;
 
     // Enable faker only for development node (NODE_ENV = 'development')
-    if (environment.isDev) {
+    if (environment.isDev || environment.isTest) {
       if (forceLoading) {
         // Reset all staking pollers
         if (this.refreshPooling) {
