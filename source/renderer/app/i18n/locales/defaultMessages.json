@@ -3877,7 +3877,7 @@
     "descriptors": [
       {
         "defaultMessage": "!!!Staking pools you are delegating to",
-        "description": "\"delegatingListTitlee\" for the Stake Pools page.",
+        "description": "\"delegatingListTitle\" for the Stake Pools page.",
         "end": {
           "column": 3,
           "line": 19

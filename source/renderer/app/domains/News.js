@@ -69,7 +69,9 @@ class NewsCollection {
       return (
         (!availableTargetVersionRange ||
           (availableTargetVersionRange &&
-            semver.satisfies(version, availableTargetVersionRange))) &&
+            semver.satisfies(version, availableTargetVersionRange, {
+              includePrerelease: true,
+            }))) &&
         (platform === 'browser' || includes(targetPlatforms, platform)) &&
         newsItem.id &&
         newsItem.title &&
