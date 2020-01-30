@@ -169,5 +169,11 @@ Then(/^I enter "([^"]*)" as the spending password$/, async function(spendingPass
   this.client.click('.confirmButton');
 })
 
+Then('the current and next epoch countdown have correct data', async function() {
+  const currentEpoch = await this.client.getText(`(//div[@class="DelegationCenterHeader_heading"])[1]//following-sibling::div//div[text()="Epoch"]//following-sibling::div[@class="DelegationCenterHeader_fieldValue"]`);
+  console.log('currentEpoch', currentEpoch);
+
+})
+
 
 
