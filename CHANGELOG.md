@@ -3,6 +3,10 @@ Changelog
 
 ## vNext
 
+### Fixes
+
+- Fixed stake pool descriptions text size on stake pool tooltip ([PR 1832](https://github.com/input-output-hk/daedalus/pull/1832))
+
 ### Chores
 
 - Implemented acceptance tests for Daedalus Balance wallets ([PR 1816](https://github.com/input-output-hk/daedalus/pull/1816), [PR 1828](https://github.com/input-output-hk/daedalus/pull/1828))
