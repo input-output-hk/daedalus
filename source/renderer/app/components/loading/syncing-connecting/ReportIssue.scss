@@ -31,7 +31,7 @@
     &.downloadLogsButtonConnecting {
       border-color: var(
         --theme-report-issue-syncing-download-logs-text-color-connecting
-      );
+      ) !important;
       color: var(
         --theme-report-issue-syncing-download-logs-text-color-connecting
       );
