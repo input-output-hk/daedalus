@@ -12,25 +12,6 @@ Given(/^I am on the Delegation "([^"]*)" screen$/, async function(
   return navigateTo.call(this, `/staking/${screenName}`);
 });
 
-Given(/^the "([^"]*)" wallet is not delegating$/, async function(wallet) {
-  // TODO: Improve this
-  await timeout(7000);
-  await this.client.executeAsync((walletName, passphrase, done) => {
-    const {id: walletId, delegatedStakePoolId: stakePoolId } = daedalus.stores.wallets.getWalletByName(walletName);
-    if (stakePoolId) {
-      try {
-        daedalus.actions.staking.quitStakePool
-          .trigger({ stakePoolId, walletId, passphrase })
-          .then(done)
-      } catch(e) {
-        done(new Error(e))
-      }
-    } else {
-      done();
-    }
-  }, wallet, 'Secret1234');
-})
-
 Then(/^I should see a "Create rewards wallet" notification$/, async function() {
   await this.client.waitForVisible('.DelegationCenterNoWallets_component');
 })
@@ -57,33 +38,37 @@ Then(/^the current and next epoch countdown are correctly displayed$/, async fun
 let wallet;
 let pool;
 
-Then(/^I should see the "delegate" option$/, async function() {
-  // Makes sure the wallet is not delegating, in case the test restarts
+Then(/^the "([^"]*)" wallet should display the "([^"]*)" option$/, async function(walletName, optionText) {
+  await this.client.waitForVisible(`//div[@class="WalletRow_title" and text()="${walletName}"]//parent::div//following-sibling::div[@class="WalletRow_right"]//span[@class="WalletRow_actionLink" and text()="${optionText}"]`);
+})
+
+Given(/^the "([^"]*)" wallet was delegated to the first Stake Pool$/, async function(walletName) {
   await this.client.waitUntil(async () => {
-    const wallets = await this.client.execute(() => daedalus.stores.wallets.all);
-    const pools = await this.client.execute(() => daedalus.stores.staking.stakePools);
-    const isLoaded = wallets.value.length > 0 && pools.value.length > 0;
-    if (!isLoaded) return false;
-    pool = pools.value[0];
-    wallet = wallets.value[0];
-    try {
-      await this.client.execute((stakePoolId, walletId, passphrase) => {
-        daedalus.actions.staking.quitStakePool.trigger({ stakePoolId, walletId, passphrase })
-      }, pool.id, wallet.id, 'Secret1234');
-    } catch(e) {}
-    return true;
+    const { value: stakePoolsListIsLoaded} = await this.client.executeAsync((done) => done(daedalus.stores.staking.stakePools.length > 0));
+    return stakePoolsListIsLoaded;
   });
-  await this.client.waitForVisible(`//span[@class="WalletRow_actionLink" and text()="Delegate"]`);
+  const data = await this.client.executeAsync((walletName, passphrase, done) => {
+    const { id: walletId } = daedalus.stores.wallets.getWalletByName(walletName);
+    const pool = daedalus.stores.staking.stakePools[0];
+    const { id: stakePoolId } = pool;
+    daedalus.actions.staking.joinStakePool.trigger({ stakePoolId, walletId, passphrase });
+    done(pool);
+  }, walletName, 'Secret1234');
+  pool = data.value;
 })
 
-Given(/^My wallet was delegated$/, async function() {
-  await this.client.execute((stakePoolId, walletId, passphrase) => {
-    daedalus.actions.staking.joinStakePool.trigger({ stakePoolId, walletId, passphrase })
-  }, pool.id, wallet.id, 'Secret1234');
+Then(/^the "([^"]*)" wallet should display the delegated Stake Pool ticker$/, async function(walletName) {
+  await this.client.waitForVisible(`//div[@class="WalletRow_title" and text()="${walletName}"]//parent::div//following-sibling::div[@class="WalletRow_right"]//span[text()="[${pool.ticker}]"]`);
 })
 
-Then(/^I should see the delegated pool name$/, async function() {
-  await this.client.waitForVisible(`//span[text()="[${pool.ticker}]"]`);
+Given(/^the "([^"]*)" wallet is undelegated$/, async function(wallet) {
+  await this.client.executeAsync((walletName, passphrase, done) => {
+    const { id: walletId } = daedalus.stores.wallets.getWalletByName(walletName);
+    const pool = daedalus.stores.staking.stakePools[0];
+    const { id: stakePoolId } = pool;
+    daedalus.actions.staking.quitStakePool.trigger({ stakePoolId, walletId, passphrase });
+    done(pool)
+  }, wallet, 'Secret1234');
 })
 
 Then(/^I should see the delegated menu with "Change delegation" and "Undelegate" options$/, async function() {
@@ -96,13 +81,27 @@ Then(/^I should see the delegated menu with "Change delegation" and "Undelegate"
   );
 })
 
-Given(/^I start the wallet delegation process$/, async function() {
+Given(/^I start the wallet delegation process for the "([^"]*)" wallet$/, async function(walletName) {
   await this.waitAndClick(
-    '//span[@class="WalletRow_actionLink" and text()="Delegate"]'
+    `//div[@class="WalletRow_title" and text()="${walletName}"]//parent::div//parent::div//span[@class="WalletRow_actionLink" and text()="Delegate"]`
   );
   await this.waitAndClick(
     '//button[text()="Continue"]'
   );
+})
+
+Given('I click the wallet selector', async function() {
+  await this.waitAndClick('.SimpleFormField_inputWrapper');
+})
+
+Then(/^The "([^"]*)" wallet option should display the correct Stake Pool ticker$/, async function(walletName) {
+  await this.client.waitForVisible(
+    `//div[@class="WalletsDropdownOption_label" and text()="${walletName}"]//preceding-sibling::div[@class="WalletsDropdownOption_ticker" and contains(.,"${pool.ticker}")]`
+  );
+})
+
+Then('I close the delegation process dialog', async function() {
+  await this.waitAndClick('.DialogCloseButton_component');
 })
 
 Given(/^I sucessfully delegate my wallet$/, async function() {
@@ -134,10 +133,9 @@ Then(/^I close the wizard$/, async function() {
 })
 
 Given('I send {int} ADA from the {string} wallet to the {string} wallet', async function(adaAmount, walletFrom, walletTo) {
-  await timeout(2000);
-  await this.client.executeAsync((amount, sender, receiver, done) => {
-    const walletSender = daedalus.stores.wallets.getWalletByName('Wallet Sender');
-    const walletReceiver = daedalus.stores.wallets.getWalletByName('Wallet Receiver');
+  const DATA = await this.client.executeAsync((amount, senderName, receiverName, done) => {
+    const walletSender = daedalus.stores.wallets.getWalletByName(senderName);
+    const walletReceiver = daedalus.stores.wallets.getWalletByName(receiverName);
     daedalus.stores.addresses
       .getAddressesByWalletId(walletReceiver.id)
       .then(addresses => {
@@ -146,9 +144,10 @@ Given('I send {int} ADA from the {string} wallet to the {string} wallet', async 
           amount: amount * 1000000,
           passphrase: 'Secret1234',
           walletId: walletSender.id,
-        }).then(done);
-      });
+        }).then(done)
+      })
   }, adaAmount, walletFrom, walletTo);
+  await this.client.waitForVisible(`//div[@class="WalletRow_title" and text()="${walletTo}"]//following-sibling::div[@class="WalletRow_description"]//span`);
 })
 
 Then(/^I choose the "([^"]*)" wallet$/, async function(walletName) {

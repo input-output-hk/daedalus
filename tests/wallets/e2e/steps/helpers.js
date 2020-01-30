@@ -20,13 +20,22 @@ export const addOrSetWalletsForScenario = function(wallet: Object) {
   }
 };
 
-export const restoreWalletWithFunds = async (client: Object, { walletName }: { walletName: string }) =>
-  client.executeAsync((name, done) => {
+let restoredWallets = 0;
+
+export const restoreWalletWithFunds = async (client: Object, { walletName }: { walletName: string }) => {
+  client.executeAsync((name, mnemonicsIndex, done) => {
+    console.log('mnemonicsIndex', mnemonicsIndex);
+    const mnemonics = [
+      ['awkward', 'electric', 'strong', 'early', 'rose', 'abuse', 'mutual', 'limit', 'ketchup', 'child', 'limb', 'exist', 'hurry', 'business', 'whisper'],
+      ['blood', 'limit', 'pumpkin', 'fringe', 'order', 'trick', 'answer', 'festival', 'ethics', 'educate', 'luggage', 'dinner', 'record', 'fox', 'truth'],
+      ['bridge', 'joke', 'jeans', 'width', 'social', 'banner', 'visit', 'enlist', 'reason', 'hand', 'license', 'subway', 'butter', 'render', 'absent'],
+      ['bless', 'turkey', 'install', 'across', 'bronze', 'check', 'true', 'icon', 'treat', 'that', 'tuition', 'flush', 'panther', 'powder', 'ecology'],
+      ['trick', 'razor', 'bicycle', 'front', 'hollow', 'liberty', 'swift', 'coconut', 'pull', 'raccoon', 'level', 'woman', 'awful', 'sound', 'swarm'],
+    ];
     daedalus.api.ada
       .restoreWallet({
         walletName: name,
-        recoveryPhrase:
-          ['awkward', 'electric', 'strong', 'early', 'rose', 'abuse', 'mutual', 'limit', 'ketchup', 'child', 'limb', 'exist', 'hurry', 'business', 'whisper'],
+        recoveryPhrase: mnemonics[mnemonicsIndex],
         spendingPassword: 'Secret1234',
       })
       .then(() =>
@@ -36,7 +45,9 @@ export const restoreWalletWithFunds = async (client: Object, { walletName }: { w
           .catch(error => done(error))
       )
       .catch(error => done(error));
-  }, walletName);
+  }, walletName, restoredWallets);
+  restoredWallets++;
+}
 
 const createWalletsSequentially = async (wallets: Array<any>, context: Object) => {
   context.wallets = [];

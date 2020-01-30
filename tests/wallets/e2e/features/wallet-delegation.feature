@@ -32,15 +32,18 @@ Feature: Wallet Delegation
     # And the current and next epoch countdown have correct data
 
   Scenario: "Delegation center" correctly displays undelegated and delegated information and options
+    And I have a "First Wallet" rewards wallet with funds
+    And I have a "Second Wallet" rewards wallet with funds
     Given I am on the Delegation "delegation-center" screen
-    And I have a "Test Wallet" wallet with funds
-    And the "Test Wallet" wallet is not delegating
-    Then I should see the "delegate" option
-    Given My wallet was delegated
-    Then I should see the delegated pool name
+    Given the "First Wallet" wallet was delegated to the first Stake Pool
+    Then the "First Wallet" wallet should display the delegated Stake Pool ticker
     And I should see the delegated menu with "Change delegation" and "Undelegate" options
-    # TODO: Include this scenarion ☝️
-  # Scenario: "Delegation" wizard is showing correct stake pool tickers for the wallets in the wallet dropdown in case wallets are already delegated
+    Given I start the wallet delegation process for the "Second Wallet" wallet
+    And I click the wallet selector
+    Then The "First Wallet" wallet option should display the correct Stake Pool ticker
+    And I close the delegation process dialog
+    Given the "First Wallet" wallet is undelegated
+    Then the "First Wallet" wallet should display the "Delegate" option
 
   # Scenario: "Unknown" stake pool is shown for the wallets being delegated to stake pools for which we don't have metadata
 
@@ -49,12 +52,12 @@ Feature: Wallet Delegation
       | name            |
       | Wallet Receiver |
     And I am on the Delegation "delegation-center" screen
-    And I start the wallet delegation process
+    And I start the wallet delegation process for the "Wallet Receiver" wallet
     Then I should see a "Delegation not available" message
     Then I close the wizard
     Given I have a "Wallet Sender" wallet with funds
     And I send 9 ADA from the "Wallet Sender" wallet to the "Wallet Receiver" wallet
-    And I start the wallet delegation process
+    And I start the wallet delegation process for the "Wallet Receiver" wallet
     Then I should see a "This wallet does not contain the minimum amount of 10 ADA which is required for delegation to be available. Please select a wallet with " message
     Given I close the wizard
     And I send 11 ADA from the "Wallet Sender" wallet to the "Wallet Receiver" wallet
@@ -66,7 +69,7 @@ Feature: Wallet Delegation
       | Wallet Receiver |
     And I have a "Wallet Sender" wallet with funds
     And I am on the Delegation "delegation-center" screen
-    And I start the wallet delegation process
+    And I start the wallet delegation process for the "Wallet Receiver" wallet
     And I choose the "Wallet Sender" wallet
     And I choose the first stake pool
     And I enter "INCORRECT" as the spending password

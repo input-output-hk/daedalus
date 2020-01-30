@@ -588,7 +588,6 @@ export default class WalletsStore extends Store {
 
     try {
       const restoredWallet = await request.execute(data).promise;
-      console.log('restoredWallet', restoredWallet);
       if (!restoredWallet)
         throw new Error('Restored wallet was not received correctly');
 
@@ -926,7 +925,6 @@ export default class WalletsStore extends Store {
 
     if (this.stores.networkStatus.isConnected) {
       const result = await this.walletsRequest.execute().promise;
-      console.log('result', result);
       if (!result) return;
       const walletIds = result.map((wallet: Wallet) => wallet.id);
       await this._setWalletsRecoveryPhraseVerificationData(walletIds);
