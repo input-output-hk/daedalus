@@ -3,6 +3,10 @@ Changelog
 
 ## vNext
 
+### Fixes
+
+- Fixed low disk space alert message not being displayed for incentivized testnet ([PR 1833](https://github.com/input-output-hk/daedalus/pull/1833))
+
 ### Chores
 
 - Implemented acceptance tests for Daedalus Balance wallets ([PR 1816](https://github.com/input-output-hk/daedalus/pull/1816), [PR 1828](https://github.com/input-output-hk/daedalus/pull/1828))
