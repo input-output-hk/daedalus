@@ -193,11 +193,31 @@
 
 .description {
   color: var(--theme-staking-stake-pool-tooltip-text-color);
+  display: -webkit-box;
   font-size: 14px;
-  line-height: 1.36;
+  line-height: 16px;
   margin-bottom: 4px;
+  max-height: 64px;
   overflow: hidden;
   text-overflow: ellipsis;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+
+  > span {
+    display: block !important;
+    position: initial !important;
+
+    > div {
+      left: 350px !important;
+      top: 120px !important;
+      white-space: initial !important;
+
+      > div {
+        text-align: center !important;
+        width: 192px !important;
+      }
+    }
+  }
 }
 
 .table {
