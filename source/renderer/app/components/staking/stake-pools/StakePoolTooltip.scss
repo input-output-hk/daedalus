@@ -197,11 +197,11 @@
   font-size: 14px;
   line-height: 16px;
   margin-bottom: 4px;
-  max-height: 64px;
+  max-height: 48px;
   overflow: hidden;
   text-overflow: ellipsis;
-  -webkit-line-clamp: 4;
   -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
 
   > span {
     display: block !important;
@@ -209,7 +209,7 @@
 
     > div {
       left: 350px !important;
-      top: 120px !important;
+      top: calc(35% + var(--rp-bubble-distance, 14px)) !important;
       white-space: initial !important;
 
       > div {

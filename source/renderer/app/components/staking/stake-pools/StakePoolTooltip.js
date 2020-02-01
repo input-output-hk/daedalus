@@ -27,6 +27,7 @@ import {
   TOOLTIP_DELTA,
   TOOLTIP_MAX_HEIGHT,
   TOOLTIP_WIDTH,
+  TOOLTIP_DESCRIPTION_LENGTH,
 } from '../../../config/stakingConfig';
 
 const messages = defineMessages({
@@ -420,6 +421,8 @@ export default class StakePoolTooltip extends Component<Props, State> {
       styles[getSaturationColor(saturation)],
     ]);
 
+    const descriptionLength = description.length;
+
     return (
       <div
         className={componentClassnames}
@@ -445,11 +448,15 @@ export default class StakePoolTooltip extends Component<Props, State> {
             </div>
           )}
           <div className={styles.description}>
+            {descriptionLength > TOOLTIP_DESCRIPTION_LENGTH &&
             <Tooltip skin={TooltipSkin} tip={<div>{description}</div>}>
               {description}
             </Tooltip>
+            }
+            {descriptionLength <= TOOLTIP_DESCRIPTION_LENGTH &&
+              description
+            }
           </div>
-
           <Link
             onClick={() => onOpenExternalLink(homepage)}
             className={styles.homepage}
