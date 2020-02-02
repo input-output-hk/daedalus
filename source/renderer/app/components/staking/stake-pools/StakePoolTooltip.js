@@ -448,14 +448,12 @@ export default class StakePoolTooltip extends Component<Props, State> {
             </div>
           )}
           <div className={styles.description}>
-            {descriptionLength > TOOLTIP_DESCRIPTION_LENGTH &&
-            <Tooltip skin={TooltipSkin} tip={<div>{description}</div>}>
-              {description}
-            </Tooltip>
-            }
-            {descriptionLength <= TOOLTIP_DESCRIPTION_LENGTH &&
-              description
-            }
+            {descriptionLength > TOOLTIP_DESCRIPTION_LENGTH && (
+              <Tooltip skin={TooltipSkin} tip={<div>{description}</div>}>
+                {description}
+              </Tooltip>
+            )}
+            {descriptionLength <= TOOLTIP_DESCRIPTION_LENGTH && description}
           </div>
           <Link
             onClick={() => onOpenExternalLink(homepage)}
