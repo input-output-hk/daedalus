@@ -20,7 +20,9 @@
   }
 
   .downloadLogsButton {
-    border-color: var(--theme-report-issue-syncing-download-logs-text-color);
+    border-color: var(
+      --theme-report-issue-syncing-download-logs-text-color
+    ) !important;
     color: var(--theme-report-issue-syncing-download-logs-text-color);
     display: inline-block;
     font-family: var(--font-regular);
@@ -29,7 +31,7 @@
     &.downloadLogsButtonConnecting {
       border-color: var(
         --theme-report-issue-syncing-download-logs-text-color-connecting
-      );
+      ) !important;
       color: var(
         --theme-report-issue-syncing-download-logs-text-color-connecting
       );

@@ -7,6 +7,10 @@ Changelog
 
 - Implemented transactions filtering dialog on wallet "Transactions" screen ([PR 1815](https://github.com/input-output-hk/daedalus/pull/1815))
 
+### Fixes
+
+- Fixed download logs link underline color ([PR 1831](https://github.com/input-output-hk/daedalus/pull/1831))
+
 ### Chores
 
 - Implemented acceptance tests for Daedalus Balance wallets ([PR 1816](https://github.com/input-output-hk/daedalus/pull/1816), [PR 1828](https://github.com/input-output-hk/daedalus/pull/1828))
