@@ -24,7 +24,6 @@ let restoredWallets = 0;
 
 export const restoreWalletWithFunds = async (client: Object, { walletName }: { walletName: string }) => {
   client.executeAsync((name, mnemonicsIndex, done) => {
-    console.log('mnemonicsIndex', mnemonicsIndex);
     const mnemonics = [
       ['awkward', 'electric', 'strong', 'early', 'rose', 'abuse', 'mutual', 'limit', 'ketchup', 'child', 'limb', 'exist', 'hurry', 'business', 'whisper'],
       ['blood', 'limit', 'pumpkin', 'fringe', 'order', 'trick', 'answer', 'festival', 'ethics', 'educate', 'luggage', 'dinner', 'record', 'fox', 'truth'],

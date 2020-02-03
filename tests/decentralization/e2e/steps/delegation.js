@@ -173,6 +173,15 @@ Then(/^I enter "([^"]*)" as the spending password$/, async function(spendingPass
   this.client.click('.confirmButton');
 })
 
+Then(/^I should see a "Loading stake pools" message until the Stake Pools are loaded$/, async function() {
+  const { value: stakePoolsLength} = await this.client.execute(() => daedalus.stores.staking.stakePools.length);
+  if (!stakePoolsLength) {
+    await this.client.waitForVisible('.DelegationCenterBody_isLoading');
+  }
+})
+
+
+
 
 
 

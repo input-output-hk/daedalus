@@ -70,8 +70,10 @@ Feature: Wallet Delegation
     Then the current and next epoch countdown are correctly displayed
     And the current and next epoch countdown have correct data
 
-  @skip
-  Scenario: "Loading stake pools" message is shown on the "Delegation center" screen until we load Stake pools
+  Scenario: "Delegation center" displays screen until the Stake Pools are loaded
+    Given I have a "Wallet Sender" rewards wallet with funds
+    And I am on the Delegation "delegation-center" screen
+    Then I should see a "Loading stake pools" message until the Stake Pools are loaded
 
   @skip
   Scenario: "Unknown" stake pool is shown for the wallets being delegated to stake pools for which we don't have metadata
