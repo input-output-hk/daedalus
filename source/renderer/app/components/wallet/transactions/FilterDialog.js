@@ -247,6 +247,21 @@ export default class FilterDialog extends Component<Props> {
     }
   };
 
+  setFilterType = (
+    field: 'incomingChecked' | 'outgoingChecked',
+    value: boolean
+  ) => {
+    this.form.select(field).set(value);
+    if (value === false) {
+      const otherFieldName =
+        field === 'incomingChecked' ? 'outgoingChecked' : 'incomingChecked';
+      const otherField = this.form.select(otherFieldName);
+      if (otherField.value === false) {
+        otherField.set(true);
+      }
+    }
+  };
+
   resetForm = () => {
     const {
       dateRange,
@@ -314,10 +329,20 @@ export default class FilterDialog extends Component<Props> {
         </div>
         <div className={styles.body}>
           <div className={styles.typeCheckbox}>
-            <TinyCheckbox {...incomingCheckboxField.bind()} />
+            <TinyCheckbox
+              {...incomingCheckboxField.bind()}
+              onChange={isSelected =>
+                this.setFilterType('incomingChecked', isSelected)
+              }
+            />
           </div>
           <div className={styles.typeCheckbox}>
-            <TinyCheckbox {...outgoingCheckboxField.bind()} />
+            <TinyCheckbox
+              {...outgoingCheckboxField.bind()}
+              onChange={isSelected =>
+                this.setFilterType('outgoingChecked', isSelected)
+              }
+            />
           </div>
         </div>
       </div>
