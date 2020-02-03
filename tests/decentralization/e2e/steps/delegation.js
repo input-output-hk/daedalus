@@ -1,5 +1,6 @@
 // @flow
 import { Given, Then } from 'cucumber';
+import BigNumber from 'bignumber.js';
 import { navigateTo, waitUntilUrlEquals } from '../../../navigation/e2e/steps/helpers';
 import { timeout } from '../../../common/e2e/steps/helpers';
 import { getCurrentEpoch, getNextEpoch } from './helpers';
@@ -60,6 +61,51 @@ Given(/^the "([^"]*)" wallet was delegated to the first Stake Pool$/, async func
   }, walletName, 'Secret1234');
   pool = data.value;
 })
+
+
+Given(/^the "([^"]*)" wallet was delegated to a Stake Pool with no metadata$/, async function(walletName) {
+  const walletWithNoMetadata = {
+    id: 'walletWithNoMetadata',
+    addressPoolGap: 0,
+    name: 'Wallet - No Metadata',
+    amount: new BigNumber(500),
+    availableAmount: new BigNumber(500),
+    reward: new BigNumber(500),
+    passwordUpdateDate: new Date(),
+    syncState: {
+      status: {
+        quantity: 10,
+        unit: 'percentage',
+      },
+    },
+    isLegacy: false,
+    delegatedStakePoolId: 'stakePoolWithNoMetadata',
+  };
+  const stakePoolWithNoMetadata = {
+    id: 'stakePoolWithNoMetadata',
+    ticker: '',
+    homepage: '',
+    pledgeAddress: '',
+    performance: 100,
+    producedBlocks: 1,
+    controlledStake: '100',
+    cost: '0',
+    description: 'Stake Pool with no metadata',
+    isCharity: false,
+    name: 'SP No Metadata',
+    profitMargin: 0,
+    ranking: 1,
+    retiring: null,
+    saturation: 999.9000161273987,
+  };
+  await this.client.execute((wallet, stakePool) => {
+    daedalus.api.ada.setTestingWallets([wallet]);
+    daedalus.api.ada.setTestingStakePools([stakePool]);
+  }, walletWithNoMetadata, stakePoolWithNoMetadata);
+})
+
+
+
 
 Then(/^the "([^"]*)" wallet should display the delegated Stake Pool ticker$/, async function(walletName) {
   await this.client.waitForVisible(`//div[@class="WalletRow_title" and text()="${walletName}"]//parent::div//following-sibling::div[@class="WalletRow_right"]//span[text()="[${pool.ticker}]"]`);

@@ -1569,7 +1569,9 @@ export default class AdaApi {
   resetTestOverrides: Function;
 
   // Newsfeed testing utility
-  setFakeNewsFeedJsonForTesting: (fakeNewsfeedJson: GetNewsResponse) => void;
+  setTestingNewsFeed: (testingNewsFeedData: GetNewsResponse) => void;
+  setTestingWallets: (testingWalletsData: GetNewsResponse) => void;
+  setTestingStakePools: (testingStakePoolsData: GetNewsResponse) => void;
 
   // Stake pools testing utility
   setFakeStakePoolsJsonForTesting: (

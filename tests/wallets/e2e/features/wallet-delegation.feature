@@ -1,4 +1,4 @@
-@e2e
+@e2e @watch
 Feature: Wallet Delegation
 
   Background:
@@ -76,7 +76,10 @@ Feature: Wallet Delegation
     Then I should see a "Incorrect wallet password." message
 
   @skip
+  # We are currently not displaying stake pools with no metadata
+  # And have no Unknown state for delegated wallets
   Scenario: "Unknown" stake pool is shown for the wallets being delegated to stake pools for which we don't have metadata
-
-  @skip
-  Scenario: "Delegation" wizard is working correctly when the user is changing delegation preference (including a check for messages on the "Select stake pool" step)
+    And I have a "Wallet - No Metadata" rewards wallet with funds
+    And the "Wallet - No Metadata" wallet was delegated to a Stake Pool with no metadata
+    And I am on the Delegation "delegation-center" screen
+    Then I should see a "Unknown" stake pool ticker for the delegated wallet
