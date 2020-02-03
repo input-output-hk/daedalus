@@ -1,6 +1,5 @@
 // @flow
 import Action from './lib/Action';
-import Wallet from '../domains/Wallet';
 import type { walletExportTypeChoices } from '../types/walletExportTypes';
 import type { CsvRecord } from '../../../common/types/rewards-csv-request.types';
 
