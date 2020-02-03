@@ -3,6 +3,10 @@ Changelog
 
 ## vNext
 
+### Fixes
+
+- Fixed download logs link underline color ([PR 1831](https://github.com/input-output-hk/daedalus/pull/1831))
+
 ### Chores
 
 - Implemented acceptance tests for wallet delegation ([PR 1814](https://github.com/input-output-hk/daedalus/pull/1814))
