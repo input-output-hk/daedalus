@@ -20,16 +20,6 @@ Feature: Wallet Delegation
     And I am on the Delegation "delegation-center" screen
     Then I should only see Reward wallets listed
 
-     @watch
-  Scenario: "Delegation screen" current and next epoch countdown are correctly displayed and have correct data
-    Given I have the following wallets:
-      | name   |
-      | Wallet |
-    And I am on the Delegation "delegation-center" screen
-    Then the current and next epoch countdown are correctly displayed
-    And the current and next epoch countdown have correct data
-    Then I freeze
-
   Scenario: "Delegation center" correctly displays undelegated and delegated information and options
     And I have a "First Wallet" rewards wallet with funds
     And I have a "Second Wallet" rewards wallet with funds
@@ -72,7 +62,22 @@ Feature: Wallet Delegation
     And I enter "INCORRECT" as the spending password
     Then I should see a "Incorrect wallet password." message
 
-  # Scenario: "Loading stake pools" message is shown on the "Delegation center" screen until we load Stake pools
-  # Scenario: "Unknown" stake pool is shown for the wallets being delegated to stake pools for which we don't have metadata
-  # Scenario: "Delegation" wizard is working correctly when the user is changing delegation preference (including a check for messages on the "Select stake pool" step)
-  # Scenario: "Undelegate" wizard is working correctly (including showing the correct error message if the user submits a wrong spending password)
+  Scenario: "Delegation screen" current and next epoch countdown are correctly displayed and have correct data
+    Given I have the following wallets:
+      | name   |
+      | Wallet |
+    And I am on the Delegation "delegation-center" screen
+    Then the current and next epoch countdown are correctly displayed
+    And the current and next epoch countdown have correct data
+
+  @skip
+  Scenario: "Loading stake pools" message is shown on the "Delegation center" screen until we load Stake pools
+
+  @skip
+  Scenario: "Unknown" stake pool is shown for the wallets being delegated to stake pools for which we don't have metadata
+
+  @skip
+  Scenario: "Delegation" wizard is working correctly when the user is changing delegation preference (including a check for messages on the "Select stake pool" step)
+
+  @skip
+  Scenario: "Undelegate" wizard is working correctly (including showing the correct error message if the user submits a wrong spending password)

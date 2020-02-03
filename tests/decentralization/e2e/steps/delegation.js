@@ -2,6 +2,7 @@
 import { Given, Then } from 'cucumber';
 import { navigateTo, waitUntilUrlEquals } from '../../../navigation/e2e/steps/helpers';
 import { timeout } from '../../../common/e2e/steps/helpers';
+import { getCurrentEpoch, getNextEpoch } from './helpers';
 import type { Daedalus } from '../../../types';
 
 declare var daedalus: Daedalus;
@@ -32,8 +33,11 @@ Then(/^the current and next epoch countdown are correctly displayed$/, async fun
   await this.client.waitForVisible('.CountdownWidget_timeLeftContainer');
 })
 
-// Then(/^the current and next epoch countdown have correct data$/, async function() {
-// })
+Then(/^the current and next epoch countdown have correct data$/, async function() {
+  const currentEpoch = await getCurrentEpoch.call(this);
+  const nextEpoch = await getNextEpoch.call(this);
+  return nextEpoch === currentEpoch + 1;
+})
 
 let wallet;
 let pool;
@@ -169,11 +173,6 @@ Then(/^I enter "([^"]*)" as the spending password$/, async function(spendingPass
   this.client.click('.confirmButton');
 })
 
-Then('the current and next epoch countdown have correct data', async function() {
-  const currentEpoch = await this.client.getText(`(//div[@class="DelegationCenterHeader_heading"])[1]//following-sibling::div//div[text()="Epoch"]//following-sibling::div[@class="DelegationCenterHeader_fieldValue"]`);
-  console.log('currentEpoch', currentEpoch);
-
-})
 
 
 
