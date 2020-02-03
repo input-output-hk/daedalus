@@ -10,8 +10,6 @@ import SVGInline from 'react-svg-inline';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
-import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
-import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
 import styles from './StakePoolTooltip.scss';
 import StakePool from '../../../domains/StakePool';
 import closeCross from '../../../assets/images/close-cross.inline.svg';
@@ -423,6 +421,13 @@ export default class StakePoolTooltip extends Component<Props, State> {
 
     const descriptionLength = description.length;
 
+    const descriptionClassnames = classnames([
+      styles.description,
+      descriptionLength >= TOOLTIP_DESCRIPTION_LENGTH
+        ? styles.scrollableDescription
+        : null,
+    ]);
+
     return (
       <div
         className={componentClassnames}
@@ -447,14 +452,7 @@ export default class StakePoolTooltip extends Component<Props, State> {
               />
             </div>
           )}
-          <div className={styles.description}>
-            {descriptionLength > TOOLTIP_DESCRIPTION_LENGTH && (
-              <Tooltip skin={TooltipSkin} tip={<div>{description}</div>}>
-                {description}
-              </Tooltip>
-            )}
-            {descriptionLength <= TOOLTIP_DESCRIPTION_LENGTH && description}
-          </div>
+          <div className={descriptionClassnames}>{description}</div>
           <Link
             onClick={() => onOpenExternalLink(homepage)}
             className={styles.homepage}

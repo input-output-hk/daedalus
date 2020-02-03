@@ -193,30 +193,14 @@
 
 .description {
   color: var(--theme-staking-stake-pool-tooltip-text-color);
-  display: -webkit-box;
   font-size: 14px;
-  line-height: 16px;
+  line-height: 1.36;
   margin-bottom: 4px;
-  max-height: 48px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
+  max-height: 57px;
 
-  > span {
-    display: block !important;
-    position: initial !important;
-
-    > div {
-      left: 350px !important;
-      top: calc(35% + var(--rp-bubble-distance, 14px)) !important;
-      white-space: initial !important;
-
-      > div {
-        text-align: center !important;
-        width: 192px !important;
-      }
-    }
+  &.scrollableDescription {
+    overflow-y: scroll;
+    width: 244px;
   }
 }
 
