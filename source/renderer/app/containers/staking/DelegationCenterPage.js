@@ -80,8 +80,7 @@ export default class DelegationCenterPage extends Component<Props> {
           nextEpoch={nextEpoch}
           futureEpoch={futureEpoch}
           getStakePoolById={getStakePoolById}
-          isLoading1={fetchingStakePoolsFailed || !stakePools.length}
-          isLoading
+          isLoading={fetchingStakePoolsFailed || !stakePools.length}
           currentLocale={currentLocale}
         />
         {uiDialogs.isOpen(UndelegateConfirmationDialog) ? (

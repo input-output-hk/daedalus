@@ -4,6 +4,19 @@ Feature: Wallet Delegation
   Background:
     Given I have completed the basic setup
 
+  Scenario: "Delegation screen" current and next epoch countdown are correctly displayed and have correct data
+    Given I have the following wallets:
+      | name   |
+      | Wallet |
+    And I am on the Delegation "delegation-center" screen
+    Then the current and next epoch countdown are correctly displayed
+    And the current and next epoch countdown have correct data
+
+  Scenario: "Delegation center" displays screen until the Stake Pools are loaded
+    Given I have a "Wallet Sender" rewards wallet with funds
+    And I am on the Delegation "delegation-center" screen
+    Then I should see a "Loading stake pools" message until the Stake Pools are loaded
+
   Scenario: "Create rewards wallet" notification when no Rewards wallets
     Given I am on the Delegation "delegation-center" screen
     Then I should see a "Create rewards wallet" notification
@@ -62,24 +75,8 @@ Feature: Wallet Delegation
     And I enter "INCORRECT" as the spending password
     Then I should see a "Incorrect wallet password." message
 
-  Scenario: "Delegation screen" current and next epoch countdown are correctly displayed and have correct data
-    Given I have the following wallets:
-      | name   |
-      | Wallet |
-    And I am on the Delegation "delegation-center" screen
-    Then the current and next epoch countdown are correctly displayed
-    And the current and next epoch countdown have correct data
-
-  Scenario: "Delegation center" displays screen until the Stake Pools are loaded
-    Given I have a "Wallet Sender" rewards wallet with funds
-    And I am on the Delegation "delegation-center" screen
-    Then I should see a "Loading stake pools" message until the Stake Pools are loaded
-
   @skip
   Scenario: "Unknown" stake pool is shown for the wallets being delegated to stake pools for which we don't have metadata
 
   @skip
   Scenario: "Delegation" wizard is working correctly when the user is changing delegation preference (including a check for messages on the "Select stake pool" step)
-
-  @skip
-  Scenario: "Undelegate" wizard is working correctly (including showing the correct error message if the user submits a wrong spending password)
