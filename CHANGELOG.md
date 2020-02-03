@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## vNext
+
+### Chores
+
+- Implemented acceptance tests for Daedalus Balance wallets ([PR 1816](https://github.com/input-output-hk/daedalus/pull/1816), [PR 1828](https://github.com/input-output-hk/daedalus/pull/1828))
+- Implemented acceptance tests for stake pools loading ([PR 1820](https://github.com/input-output-hk/daedalus/pull/1820))
+
 ## 2.1.0-ITN1
 
 ### Features

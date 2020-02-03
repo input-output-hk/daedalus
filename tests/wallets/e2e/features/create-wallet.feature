@@ -1,13 +1,13 @@
 @e2e
-Feature: Add Wallet via Sidebar
+Feature: Create a wallet
 
   Background:
     Given I have completed the basic setup
-    And I have the following wallets:
+    And I have the following "Rewards" wallets:
       | name        |
       | Test Wallet |
 
-  Scenario: Successfully Adding a Wallet with spending password
+  Scenario: Successfully Creating a Wallet
     Given The sidebar shows the "wallets" category
     When I click on the add wallet button in the sidebar
     And I see the add wallet page

@@ -1,11 +1,12 @@
 // @flow
-import { get } from 'lodash';
+import { get, map } from 'lodash';
 import moment from 'moment';
 import AdaApi from '../api';
 import { getNetworkInfo } from '../network/requests/getNetworkInfo';
 import { getLatestAppVersion } from '../nodes/requests/getLatestAppVersion';
 import { GenericApiError } from '../common/errors';
 import { Logger } from '../../utils/logging';
+import packageJson from '../../../../../package.json';
 import type {
   GetNetworkInfoResponse,
   NetworkInfoResponse,
@@ -141,7 +142,28 @@ export default (api: AdaApi) => {
   };
 
   api.setFakeNewsFeedJsonForTesting = (fakeNewsfeedJson: ?GetNewsResponse) => {
-    FAKE_NEWSFEED_JSON = fakeNewsfeedJson;
+    const { version: packageJsonVersion } = packageJson;
+    if (!fakeNewsfeedJson) {
+      FAKE_NEWSFEED_JSON = null;
+      return;
+    }
+    // Always mutate newsfeed target version to current app version
+    const newsFeedItems = map(fakeNewsfeedJson.items, item => {
+      return {
+        ...item,
+        target: {
+          ...item.target,
+          daedalusVersion: item.target.daedalusVersion
+            ? packageJsonVersion
+            : '',
+        },
+      };
+    });
+
+    FAKE_NEWSFEED_JSON = {
+      ...fakeNewsfeedJson,
+      items: newsFeedItems,
+    };
   };
 
   api.getNews = (): Promise<GetNewsResponse> => {
