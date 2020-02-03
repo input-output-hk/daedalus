@@ -3,7 +3,7 @@ Feature: Wallet Settings
 
   Background:
     Given I have completed the basic setup
-    And I have the following wallets:
+    And I have the following "Rewards" wallets:
       | name   |
       | first  |
       | second |
@@ -87,8 +87,8 @@ Feature: Wallet Settings
     And I should not see "Resync wallet" button spinner anymore
 
   Scenario: User force Balance Wallet resync
-    Given I restore "Test Balance Wallet" balance wallet with funds
-    And I am on the "Test Balance Wallet" wallet "settings" screen
+    Given I have a "Balance Wallet" balance wallet with funds
+    And I am on the "Balance Wallet" wallet "settings" screen
     And I should not see the restore status notification once restore is finished
     When I click "Resync wallet" button
     And I see "Resync wallet" button spinner
