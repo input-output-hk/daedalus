@@ -33,6 +33,7 @@ Changelog
 - Improved the paper wallet recovery phrase validation ([PR 1818](https://github.com/input-output-hk/daedalus/pull/1818))
 - Improved network screen with responsive main copy box ([PR 1797](https://github.com/input-output-hk/daedalus/pull/1797))
 - Updated checkboxes, radio buttons and switchers sizes and borders ([PR 1793](https://github.com/input-output-hk/daedalus/pull/1793))
+- Updated `cardano-wallet` to revision `b89cfa19` which includes Jormungandr 0.8.9 ([PR 1834](https://github.com/input-output-hk/daedalus/pull/1834))
 - Updated `cardano-wallet` to revision `23e12d1a` which includes Jormungandr 0.8.7 ([PR 1828](https://github.com/input-output-hk/daedalus/pull/1828))
 - Updated `cardano-wallet` to revision `d188a5fc` ([PR 1825](https://github.com/input-output-hk/daedalus/pull/1825))
 - Updated `cardano-wallet` to revision `e6316404` ([PR 1826](https://github.com/input-output-hk/daedalus/pull/1826))
