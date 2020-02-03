@@ -196,10 +196,11 @@
   font-size: 14px;
   line-height: 1.36;
   margin-bottom: 4px;
+  margin-right: -5px;
   max-height: 57px;
+  overflow-y: auto;
 
   &.scrollableDescription {
-    overflow-y: scroll;
     width: 244px;
   }
 }
