@@ -347,7 +347,7 @@ let
       cat ${self.desktopItem}/share/applications/Daedalus*.desktop | sed \
         -e "s+INSERT_PATH_HERE+''${DAEDALUS_DIR}/namespaceHelper+g" \
         -e "s+INSERT_ICON_PATH_HERE+''${DAEDALUS_DIR}/icon_large.png+g" \
-        > "''${XDG_DATA_HOME}/applications/Daedalus${if cluster != "mainnet" then "-${cluster}" else ""}.desktop"
+        > "''${XDG_DATA_HOME}/applications/Daedalus${if cluster != "mainnet" then "-${cluster}" else ""}-AR.desktop"
     '';
     xdg-open = pkgs.writeScriptBin "xdg-open" ''
       #!${pkgs.stdenv.shell}
