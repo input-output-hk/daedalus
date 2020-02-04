@@ -451,11 +451,10 @@ export default class FilterDialog extends Component<Props> {
     fieldName: 'fromAmount' | 'toAmount',
     newValue: string
   ) => {
-    const field = this.form.select(fieldName);
-    const oldValue = field.value;
-    let value = newValue;
-    if (newValue === '0') value = oldValue === '0.' ? '' : '0.';
-    field.set(value);
+    const value = /^(0)([0-9])$/.test(newValue)
+      ? newValue.replace(/^0/, '0.')
+      : newValue;
+    this.form.select(fieldName).set(value);
   };
 
   renderAmountRangeField = () => {
