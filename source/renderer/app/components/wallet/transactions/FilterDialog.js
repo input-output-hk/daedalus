@@ -447,6 +447,11 @@ export default class FilterDialog extends Component<Props> {
     }
   };
 
+  onAmountFieldChange = (field: 'fromAmount' | 'toAmount', _value: string) => {
+    const value = _value === '0' ? '0.' : _value;
+    this.form.select(field).set(value);
+  };
+
   renderAmountRangeField = () => {
     const { form } = this;
     const { intl } = this.context;
@@ -479,6 +484,9 @@ export default class FilterDialog extends Component<Props> {
                 fromAmountFieldProps.onBlur(evt);
                 this.onAmountFieldBlur('from');
               }}
+              onChange={(value: string) =>
+                this.onAmountFieldChange('fromAmount', value)
+              }
               onSubmit={this.handleSubmit}
               useReadMode
               notNegative
@@ -496,6 +504,9 @@ export default class FilterDialog extends Component<Props> {
                 toAmountFieldProps.onBlur(evt);
                 this.onAmountFieldBlur('to');
               }}
+              onChange={(value: string) =>
+                this.onAmountFieldChange('toAmount', value)
+              }
               onSubmit={this.handleSubmit}
               useReadMode
               notNegative
