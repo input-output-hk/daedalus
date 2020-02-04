@@ -1713,6 +1713,7 @@ const _createStakePoolFromServerData = action(
       margin: profitMargin,
       metadata,
       saturation,
+      desirability,
     } = stakePool;
     const {
       controlled_stake: controlledStake,
@@ -1748,6 +1749,7 @@ const _createStakePoolFromServerData = action(
       ranking: index + 1,
       retiring: null,
       saturation: saturation * 100,
+      desirability,
     });
   }
 );

@@ -68,6 +68,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Saturation:',
     description: '"Saturation" for the Stake Pools Tooltip page.',
   },
+  desirability: {
+    id: 'staking.stakePools.tooltip.desirability',
+    defaultMessage: '!!!Desirability:',
+    description: '"Desirability" for the Stake Pools Tooltip page.',
+  },
   // cost: {
   //  id: 'staking.stakePools.tooltip.cost',
   //  defaultMessage: '!!!Operating Costs:',
@@ -396,6 +401,7 @@ export default class StakePoolTooltip extends Component<Props, State> {
       cost,
       profitMargin,
       saturation,
+      desirability,
     } = stakePool;
 
     const componentClassnames = classnames([
@@ -476,6 +482,10 @@ export default class StakePoolTooltip extends Component<Props, State> {
               >
                 {ranking}
               </span>
+            </dd>
+            <dt>{intl.formatMessage(messages.desirability)}</dt>
+            <dd className={styles.defaultColor}>
+              <span>{desirability}</span>
             </dd>
             <dt>{intl.formatMessage(messages.controlledStake)}</dt>
             <dd className={styles.defaultColor}>

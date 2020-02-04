@@ -3,6 +3,10 @@ Changelog
 
 ## vNext
 
+### Features
+
+- Added "desirability" info to the stake pool tooltip ([PR 1839](https://github.com/input-output-hk/daedalus/pull/1839))
+
 ### Fixes
 
 - Fixed download logs link underline color ([PR 1831](https://github.com/input-output-hk/daedalus/pull/1831))

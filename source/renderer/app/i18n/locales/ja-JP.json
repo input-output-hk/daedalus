@@ -392,6 +392,7 @@
   "staking.stakePools.tooltip.controlledStake": "管理下のステーク：",
   "staking.stakePools.tooltip.costPerEpoch": "エポックごとのコスト：",
   "staking.stakePools.tooltip.delegateButton": "このプールに委任する",
+  "staking.stakePools.tooltip.desirability": "!!!Desirability:",
   "staking.stakePools.tooltip.performance": "パフォーマンス：",
   "staking.stakePools.tooltip.pledgeAddressLabel": "出資アドレス",
   "staking.stakePools.tooltip.producedBlocks": "生成ブロック数：",
