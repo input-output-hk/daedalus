@@ -278,9 +278,9 @@ let
       sha256 = "07wnmdadchf73p03wk51abzgd3zm2xz5khwadz1ypbvv3cqlzp5m";
     }) { nixpkgs = pkgs; };
     desktopItem = pkgs.makeDesktopItem {
-      name = "Daedalus${if cluster != "mainnet" then "-${cluster}" else ""}";
+      name = "Daedalus-AR${if cluster != "mainnet" then "-${cluster}" else ""}";
       exec = "INSERT_PATH_HERE";
-      desktopName = "Daedalus${if cluster != "mainnet" then " ${cluster}" else ""}";
+      desktopName = "Daedalus ADA redemption${if cluster != "mainnet" then " ${cluster}" else ""}";
       genericName = "Crypto-Currency Wallet";
       categories = "Application;Network;";
       icon = "INSERT_ICON_PATH_HERE";
