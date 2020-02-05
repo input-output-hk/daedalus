@@ -84,10 +84,6 @@ Given(
   'the `getUtxoWalletPrettyAmount` function receives the following {float}',
   getUtxoChartDataReceivesAWalletAmount
 );
-Given(
-  'the `getUtxoWalletPrettyAmount` function receives the following {int}',
-  getUtxoChartDataReceivesAWalletAmount
-);
 
 Then('the response should have type {string}', function(type) {
   const { response } = this.context;
