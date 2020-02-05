@@ -430,31 +430,21 @@ export default class FilterDialog extends Component<Props> {
     const { form } = this;
     const { fromAmount, toAmount } = form.values();
 
-    if (selector === 'from' && fromAmount) {
+    if (selector === 'fromAmount' && fromAmount) {
       if (Number.isNaN(Number(fromAmount))) {
-        form.select('fromAmount').set('');
+        form.select(selector).set('');
       } else {
         const fromValue = new BigNumber(fromAmount).toString();
-        form.select('fromAmount').set(fromValue);
+        form.select(selector).set(fromValue);
       }
-    } else if (selector === 'to' && toAmount) {
+    } else if (selector === 'toAmount' && toAmount) {
       if (Number.isNaN(Number(toAmount))) {
-        form.select('toAmount').set('');
+        form.select(selector).set('');
       } else {
         const toValue = new BigNumber(toAmount).toString();
-        form.select('toAmount').set(toValue);
+        form.select(selector).set(toValue);
       }
     }
-  };
-
-  onAmountFieldChange = (
-    fieldName: 'fromAmount' | 'toAmount',
-    newValue: string
-  ) => {
-    const value = /^(0)([0-9])$/.test(newValue)
-      ? newValue.replace(/^0/, '0.')
-      : newValue;
-    this.form.select(fieldName).set(value);
   };
 
   renderAmountRangeField = () => {
@@ -487,11 +477,8 @@ export default class FilterDialog extends Component<Props> {
               {...fromAmountFieldProps}
               onBlur={(evt: SyntheticEvent<EventTarget>) => {
                 fromAmountFieldProps.onBlur(evt);
-                this.onAmountFieldBlur('from');
+                this.onAmountFieldBlur('fromAmount');
               }}
-              onChange={(value: string) =>
-                this.onAmountFieldChange('fromAmount', value)
-              }
               onSubmit={this.handleSubmit}
               useReadMode
               notNegative
@@ -507,11 +494,8 @@ export default class FilterDialog extends Component<Props> {
               {...toAmountFieldProps}
               onBlur={(evt: SyntheticEvent<EventTarget>) => {
                 toAmountFieldProps.onBlur(evt);
-                this.onAmountFieldBlur('to');
+                this.onAmountFieldBlur('toAmount');
               }}
-              onChange={(value: string) =>
-                this.onAmountFieldChange('toAmount', value)
-              }
               onSubmit={this.handleSubmit}
               useReadMode
               notNegative

@@ -71,7 +71,7 @@ export default class TinyInput extends Component<Props, State> {
   onInput = (evt: SyntheticInputEvent<EventTarget>) => {
     const { type, onInput, maxLength } = this.props;
     const { prevValue } = this.state;
-    const onlyZerosRegex = new RegExp(/^00+$/);
+    const zeroLeadingDigitsRegex = new RegExp(/^0\d+$/);
 
     if (
       maxLength &&
@@ -84,7 +84,7 @@ export default class TinyInput extends Component<Props, State> {
         if (evt.target.value === '.') {
           evt.target.value = '0.';
         }
-        if (onlyZerosRegex.test(evt.target.value)) {
+        if (zeroLeadingDigitsRegex.test(evt.target.value)) {
           evt.target.value = `0.${evt.target.value.substring(1)}`;
         }
         if (
