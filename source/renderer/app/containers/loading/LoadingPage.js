@@ -42,8 +42,8 @@ export default class LoadingPage extends Component<InjectedProps> {
   render() {
     return (
       <CenteredLayout>
-        {this.activeOverlay}
         <SyncingConnectingPage />
+        {this.activeOverlay}
       </CenteredLayout>
     );
   }
