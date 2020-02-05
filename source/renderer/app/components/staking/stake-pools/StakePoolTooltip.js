@@ -443,7 +443,6 @@ export default class StakePoolTooltip extends Component<Props, State> {
             </div>
           )}
           <div className={styles.description}>{description}</div>
-
           <Link
             onClick={() => onOpenExternalLink(homepage)}
             className={styles.homepage}
