@@ -88,9 +88,13 @@ export default class TransactionsStore extends Store {
   @observable _filterOptionsForWallets = {};
 
   setup() {
-    const { transactions: actions } = this.actions;
-    actions.filterTransactions.listen(this._updateFilterOptions);
-    // actions.loadMoreTransactions.listen(this._increaseSearchLimit);
+    const {
+      transactions: transactionActions,
+      networkStatus: networkStatusActions,
+    } = this.actions;
+    transactionActions.filterTransactions.listen(this._updateFilterOptions);
+    // transactionActions.loadMoreTransactions.listen(this._increaseSearchLimit);
+    networkStatusActions.restartNode.listen(this._clearFilterOptions);
     this.registerReactions([this._ensureFilterOptionsForActiveWallet]);
   }
 
@@ -280,6 +284,15 @@ export default class TransactionsStore extends Store {
     this._filterOptionsForWallets[wallet.id] = {
       ...currentFilterOptions,
       ...filterOptions,
+    };
+    return true;
+  };
+
+  @action _clearFilterOptions = () => {
+    const wallet = this.stores.wallets.active;
+    if (!wallet) return false;
+    this._filterOptionsForWallets[wallet.id] = {
+      ...emptyTransactionFilterOptions,
     };
     return true;
   };
