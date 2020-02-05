@@ -10,12 +10,10 @@ Changelog
 
 ### Chores
 
+- Removed unused locales and translation files ([PR 1840](https://github.com/input-output-hk/daedalus/pull/1840))
 - Improved acceptance tests setup with "rerun" feature ([PR 1835](https://github.com/input-output-hk/daedalus/pull/1835)
 - Implemented acceptance tests for Daedalus Balance wallets ([PR 1816](https://github.com/input-output-hk/daedalus/pull/1816), [PR 1828](https://github.com/input-output-hk/daedalus/pull/1828))
 - Implemented acceptance tests for stake pools loading ([PR 1820](https://github.com/input-output-hk/daedalus/pull/1820))
-
-### Features
-- Delete unused locales and translation files ([PR 1840](https://github.com/input-output-hk/daedalus/pull/1840))
 
 ## 2.1.0-ITN1
 
