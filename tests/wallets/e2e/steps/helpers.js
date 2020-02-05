@@ -65,13 +65,13 @@ const createWalletsSequentially = async (wallets: Array<any>, context: Object) =
   }
 };
 
-export const restoreLegacyWallet = async (client: Object, { walletName, recoveryPhrase }: { walletName: string, hasFunds?: boolean, recoveryPhrase?: Array<string> }) =>
-  client.executeAsync((name, recoveryPhrase, done) => {
+export const restoreLegacyWallet = async (client: Object, { walletName, hasFunds, recoveryPhrase }: { walletName: string, hasFunds?: boolean, recoveryPhrase?: Array<string> }) =>
+  client.executeAsync((name, withFunds, recoveryPhrase, done) => {
     daedalus.api.ada
       .restoreByronRandomWallet({
         walletName: name,
         recoveryPhrase:
-          recoveryPhrase || ['arctic', 'decade', 'pink', 'easy', 'jar', 'index', 'base', 'bright', 'vast', 'ocean', 'hard', 'pizza'],
+          recoveryPhrase || (withFunds ? ['arctic', 'decade', 'pink', 'easy', 'jar', 'index', 'base', 'bright', 'vast', 'ocean', 'hard', 'pizza'] : ['judge', 'sting', 'fish', 'script', 'silent', 'soup', 'chef', 'very', 'employ', 'wage', 'cloud', 'tourist']),
         spendingPassword: 'Secret1234',
       })
       .then(() =>
@@ -81,7 +81,7 @@ export const restoreLegacyWallet = async (client: Object, { walletName, recovery
           .catch(error => done(error))
       )
       .catch(error => done(error));
-  }, walletName, recoveryPhrase);
+  }, walletName, hasFunds, recoveryPhrase);
 
 export const fillOutWalletSendForm = async function(values: Object) {
   const formSelector = '.WalletSendForm_component';
@@ -243,7 +243,6 @@ export const createWallets = async (wallets: Array<any>, context: Object, option
     await createWalletsAsync(wallets, context);
   }
 };
-
 
 export const getCurrentAppRoute = async function() {
   const url = (await this.client.url()).value;

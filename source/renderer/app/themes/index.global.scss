@@ -5,7 +5,8 @@
 // http://meyerweb.com/eric/tools/css/reset
 
 html,
-body {
+body,
+body > div:nth-child(1) {
   height: 100%;
 }
 

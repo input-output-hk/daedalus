@@ -59,6 +59,13 @@ $ yarn build
 $ yarn test:e2e
 ```
 
+#### Re-running in case of failing test cases
+
+If one test case fails, it + all remaining test cases are immediately skipped and saved into `tests/@rerun.txt`. 
+This list can then be re-run with `yarn test:unit:rerun` or `yarn test:e2e:rerun` depending on what kind of test 
+failed. This way you don't have to re-run all the passing tests again just to see if the one that failed is 
+still broken.
+
 ### Running tests for development
 1. Mark the test or scenario you are working with @watch annotation
 2. Make sure you are in the nix console (`yarn nix:dev`)

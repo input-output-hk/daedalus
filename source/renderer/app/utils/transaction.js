@@ -27,7 +27,7 @@ export const generateFilterOptions = (
     dates.length > 0 ? moment(Math.min(...dates)).format('YYYY-MM-DD') : '';
   const toDate =
     dates.length > 0 ? moment(Math.max(...dates)).format('YYYY-MM-DD') : '';
-  const fromAmount = amounts.length > 0 ? Math.min(...amounts).toString() : '';
+  const fromAmount = '';
   const toAmount = amounts.length > 0 ? Math.max(...amounts).toString() : '';
   const incomingChecked = true;
   const outgoingChecked = true;

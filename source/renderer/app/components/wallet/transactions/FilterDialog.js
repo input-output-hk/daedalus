@@ -247,6 +247,21 @@ export default class FilterDialog extends Component<Props> {
     }
   };
 
+  setFilterType = (
+    field: 'incomingChecked' | 'outgoingChecked',
+    value: boolean
+  ) => {
+    this.form.select(field).set(value);
+    if (value === false) {
+      const otherFieldName =
+        field === 'incomingChecked' ? 'outgoingChecked' : 'incomingChecked';
+      const otherField = this.form.select(otherFieldName);
+      if (otherField.value === false) {
+        otherField.set(true);
+      }
+    }
+  };
+
   resetForm = () => {
     const {
       dateRange,
@@ -314,10 +329,20 @@ export default class FilterDialog extends Component<Props> {
         </div>
         <div className={styles.body}>
           <div className={styles.typeCheckbox}>
-            <TinyCheckbox {...incomingCheckboxField.bind()} />
+            <TinyCheckbox
+              {...incomingCheckboxField.bind()}
+              onChange={isSelected =>
+                this.setFilterType('incomingChecked', isSelected)
+              }
+            />
           </div>
           <div className={styles.typeCheckbox}>
-            <TinyCheckbox {...outgoingCheckboxField.bind()} />
+            <TinyCheckbox
+              {...outgoingCheckboxField.bind()}
+              onChange={isSelected =>
+                this.setFilterType('outgoingChecked', isSelected)
+              }
+            />
           </div>
         </div>
       </div>
@@ -422,6 +447,16 @@ export default class FilterDialog extends Component<Props> {
     }
   };
 
+  onAmountFieldChange = (
+    fieldName: 'fromAmount' | 'toAmount',
+    newValue: string
+  ) => {
+    const value = /^(0)([0-9])$/.test(newValue)
+      ? newValue.replace(/^0/, '0.')
+      : newValue;
+    this.form.select(fieldName).set(value);
+  };
+
   renderAmountRangeField = () => {
     const { form } = this;
     const { intl } = this.context;
@@ -454,6 +489,9 @@ export default class FilterDialog extends Component<Props> {
                 fromAmountFieldProps.onBlur(evt);
                 this.onAmountFieldBlur('from');
               }}
+              onChange={(value: string) =>
+                this.onAmountFieldChange('fromAmount', value)
+              }
               onSubmit={this.handleSubmit}
               useReadMode
               notNegative
@@ -471,6 +509,9 @@ export default class FilterDialog extends Component<Props> {
                 toAmountFieldProps.onBlur(evt);
                 this.onAmountFieldBlur('to');
               }}
+              onChange={(value: string) =>
+                this.onAmountFieldChange('toAmount', value)
+              }
               onSubmit={this.handleSubmit}
               useReadMode
               notNegative
