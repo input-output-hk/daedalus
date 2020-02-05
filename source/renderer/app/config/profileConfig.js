@@ -10,10 +10,6 @@ export const PROFILE_SETTINGS = [
 export const LANGUAGE_OPTIONS = [
   { value: 'en-US', label: globalMessages.languageEnglish },
   { value: 'ja-JP', label: globalMessages.languageJapanese },
-  // { value: 'zh-CN', label: globalMessages.languageChinese },
-  // { value: 'ko-KR', label: globalMessages.languageKorean },
-  // { value: 'de-DE', label: globalMessages.languageGerman },
-  // { value: 'hr-HR', label: globalMessages.languageCroatian },
 ];
 
 export const NUMBER_OPTIONS = [
