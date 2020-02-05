@@ -44,7 +44,7 @@ export const osNames: Array<any> = Object.keys(operatingSystems);
 export const osMinWindowHeights = {
   Windows: '541px',
   Linux: '560px',
-  Mac: '600px',
+  Mac: '700px',
 };
 
 /* eslint-disable no-restricted-globals */
