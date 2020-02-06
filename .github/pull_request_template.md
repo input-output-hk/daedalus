@@ -23,7 +23,10 @@ This PR CHANGES.
 
 - [ ] PR has been assigned and has appropriate labels (`feature`/`bug`/`chore`, `release-x.x.x`)
 - [ ] PR is updated to the most recent version of the target branch (and there are no conflicts)
-- [ ] PR has a good description that summarizes all changes and shows some screenshots or animated GIFs of important UI changes
+- [ ] PR has a good description that summarizes all changes
+- [ ] PR has default-sized Daedalus window screenshots or animated GIFs of important UI changes:
+  - [ ] In English
+  - [ ] In Japanese
 - [ ] CHANGELOG entry has been added to the top of the appropriate section (*Features*, *Fixes*, *Chores*) and is linked to the correct PR on GitHub
 - [ ] Automated tests: All acceptance and unit tests are passing (`yarn test`)
 - [ ] Manual tests (minimum tests should cover newly added feature/fix): App works correctly in *development* build (`yarn dev`)
