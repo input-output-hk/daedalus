@@ -5,7 +5,7 @@ Changelog
 
 ### Features
 
-- Implemented pending delegation preferences ([PR 1841](https://github.com/input-output-hk/daedalus/pull/1841))
+- Implemented pending delegation preferences ([PR 1842](https://github.com/input-output-hk/daedalus/pull/1842))
 
 ### Fixes
 
@@ -15,7 +15,7 @@ Changelog
 
 ### Chores
 
-- Updated `cardano-wallet` to revision `599c8839` ([PR 1841](https://github.com/input-output-hk/daedalus/pull/1841))
+- Updated `cardano-wallet` to revision `599c8839` ([PR 1842](https://github.com/input-output-hk/daedalus/pull/1842))
 - Removed unused locales and translation files ([PR 1840](https://github.com/input-output-hk/daedalus/pull/1840))
 - Improved acceptance tests setup with "rerun" feature ([PR 1835](https://github.com/input-output-hk/daedalus/pull/1835)
 - Implemented acceptance tests for Daedalus Balance wallets ([PR 1816](https://github.com/input-output-hk/daedalus/pull/1816), [PR 1828](https://github.com/input-output-hk/daedalus/pull/1828))
