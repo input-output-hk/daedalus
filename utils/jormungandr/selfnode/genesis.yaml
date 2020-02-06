@@ -9525,15 +9525,15 @@ initial:
       # account1
       # $ jcli address account $(cat funds/account1.pub) --testing --prefix "account"
       - address: account1skkalz75s4vtw2e9wsy2q9jvsu3qtz6d2vm3xj4e5q4ufejpjjfn5wlnrsk
-        value: 1
+        value: 1000
       # account2
       # $ jcli address account $(cat funds/account2.pub) --testing --prefix "account"
       - address: account1shqtmpgefmhlwrwlm48kxq43hpkxnvz8fey2jlmce5lea3mxnskfqjd87kq
-        value: 1
+        value: 1000
       # account3
       # $ jcli address account $(cat funds/account3.pub) --testing --prefix "account"
       - address: account1skzn99jx8a2rw80gp9uea47tmcndv7gm28vy9as6akevy32204aqwnfj0ln
-        value: 1
+        value: 1000
 
   # Stake pool registration certificates
   # $ cat stake_pools/{a,b,c}/stake_pool.cert.signed

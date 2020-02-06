@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { debounce } from 'lodash';
+import classNames from 'classnames';
 import styles from './StakePoolsList.scss';
 import StakePool from '../../../domains/StakePool';
 import { StakePoolThumbnail } from './StakePoolThumbnail';
@@ -103,10 +104,13 @@ export class StakePoolsList extends Component<Props, State> {
       containerClassName,
       numberOfStakePools,
       disabledStakePoolId,
+      listName,
     } = this.props;
 
+    const componentClasses = classNames([styles.component, listName]);
+
     return (
-      <div className={styles.component}>
+      <div className={componentClasses}>
         {stakePoolsList.map(stakePool => {
           const isHighlighted = this.getIsHighlighted(stakePool.id);
           const isSelected = selectedPoolId && stakePool.id === selectedPoolId;

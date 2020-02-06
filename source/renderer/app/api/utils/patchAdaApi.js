@@ -1,11 +1,12 @@
 // @flow
-import { get } from 'lodash';
+import { get, map } from 'lodash';
 import moment from 'moment';
 import AdaApi from '../api';
 import { getNetworkInfo } from '../network/requests/getNetworkInfo';
 import { getLatestAppVersion } from '../nodes/requests/getLatestAppVersion';
 import { GenericApiError } from '../common/errors';
 import { Logger } from '../../utils/logging';
+import packageJson from '../../../../../package.json';
 import type {
   GetNetworkInfoResponse,
   NetworkInfoResponse,
@@ -141,27 +142,28 @@ export default (api: AdaApi) => {
   };
 
   api.setFakeNewsFeedJsonForTesting = (fakeNewsfeedJson: ?GetNewsResponse) => {
-    FAKE_NEWSFEED_JSON = fakeNewsfeedJson;
-  };
-
-  api.getNews = (): Promise<GetNewsResponse> => {
-    return new Promise((resolve, reject) => {
-      if (!FAKE_NEWSFEED_JSON) {
-        reject(new Error('Unable to fetch news'));
-      } else {
-        resolve(FAKE_NEWSFEED_JSON);
-      }
+    const { version: packageJsonVersion } = packageJson;
+    if (!fakeNewsfeedJson) {
+      FAKE_NEWSFEED_JSON = null;
+      return;
+    }
+    // Always mutate newsfeed target version to current app version
+    const newsFeedItems = map(fakeNewsfeedJson.items, item => {
+      return {
+        ...item,
+        target: {
+          ...item.target,
+          daedalusVersion: item.target.daedalusVersion
+            ? packageJsonVersion
+            : '',
+        },
+      };
     });
-  };
 
-  api.resetTestOverrides = () => {
-    LATEST_APP_VERSION = null;
-    NEXT_ADA_UPDATE = null;
-    APPLICATION_VERSION = null;
-  };
-
-  api.setFakeNewsFeedJsonForTesting = (fakeNewsfeedJson: ?GetNewsResponse) => {
-    FAKE_NEWSFEED_JSON = fakeNewsfeedJson;
+    FAKE_NEWSFEED_JSON = {
+      ...fakeNewsfeedJson,
+      items: newsFeedItems,
+    };
   };
 
   api.getNews = (): Promise<GetNewsResponse> => {

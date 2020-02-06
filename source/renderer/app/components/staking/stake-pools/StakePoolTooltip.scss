@@ -65,6 +65,10 @@
   width: 100%;
 }
 
+.homepage {
+  width: initial;
+}
+
 .arrow {
   border-color: transparent;
   border-style: solid;
@@ -192,9 +196,10 @@
   font-size: 14px;
   line-height: 1.36;
   margin-bottom: 4px;
-  max-height: 79px;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  margin-right: -5px;
+  max-height: 57px;
+  overflow-y: auto;
+  word-break: break-word;
 }
 
 .table {
@@ -237,6 +242,13 @@
     height: 16px;
     line-height: 16px;
     padding: 0 9px;
+  }
+
+  .ranking,
+  .profitMargin,
+  .cost,
+  .performance {
+    width: 35%;
   }
 }
 
