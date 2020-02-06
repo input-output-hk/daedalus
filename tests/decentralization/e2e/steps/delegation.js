@@ -62,7 +62,6 @@ Given(/^the "([^"]*)" wallet was delegated to the first Stake Pool$/, async func
   pool = data.value;
 })
 
-
 Given(/^the "([^"]*)" wallet was delegated to a Stake Pool with no metadata$/, async function(walletName) {
   const walletWithNoMetadata = {
     id: 'walletWithNoMetadata',
@@ -103,9 +102,6 @@ Given(/^the "([^"]*)" wallet was delegated to a Stake Pool with no metadata$/, a
     daedalus.api.ada.setTestingStakePools([stakePool]);
   }, walletWithNoMetadata, stakePoolWithNoMetadata);
 })
-
-
-
 
 Then(/^the "([^"]*)" wallet should display the delegated Stake Pool ticker$/, async function(walletName) {
   await this.client.waitForVisible(`//div[@class="WalletRow_title" and text()="${walletName}"]//parent::div//following-sibling::div[@class="WalletRow_right"]//span[text()="[${pool.ticker}]"]`);
@@ -154,13 +150,13 @@ Then('I close the delegation process dialog', async function() {
   await this.waitAndClick('.DialogCloseButton_component');
 })
 
-Given(/^I sucessfully delegate my wallet$/, async function() {
+Given(/^I sucessfully delegate my wallet$/, { timeout: 60000 }, async function() {
   await this.waitAndClick('//span[@class="WalletRow_actionLink" and text()="Delegate"]');
-  await timeout(2000);
+  await timeout(1000);
   await this.waitAndClick('//button[text()="Continue"]');
-  await timeout(2000);
+  await timeout(1000);
   await this.waitAndClick('//button[text()="Continue"]');
-  await timeout(2000);
+  await timeout(1000);
   await this.waitAndClick('//button[text()="Continue"]');
   await this.waitAndClick('.StakePoolThumbnail_component');
   await this.waitAndClick('//button[text()="Continue"]');
@@ -225,9 +221,5 @@ Then(/^I should see a "Loading stake pools" message until the Stake Pools are lo
     await this.client.waitForVisible('.DelegationCenterBody_isLoading');
   }
 })
-
-
-
-
 
 

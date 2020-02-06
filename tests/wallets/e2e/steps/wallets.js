@@ -15,9 +15,10 @@ import type { Daedalus } from '../../../types';
 
 declare var daedalus: Daedalus;
 
-// Create "Rewards" wallets
-Given(/^I have the following "Rewards" wallets:$/, async function(table) {
-  await createWallets(table.hashes(), this);
+// Create "Rewards" or "Balance" wallets
+Given(/^I have the following "([^"]*)" wallets:$/, async function(type, table) {
+  const isLegacy = type === 'Balance';
+  await createWallets(table.hashes(), this, { isLegacy });
 });
 
 // Creates them sequentially
@@ -29,14 +30,6 @@ Given(/^I have a "([^"]*)" rewards wallet with funds$/, async function(walletNam
   await restoreWalletWithFunds(this.client, { walletName });
   const wallet = await waitUntilWalletIsLoaded.call(this, walletName);
   addOrSetWalletsForScenario.call(this, wallet);
-});
-
-Given(/^I have the following legacy wallets:$/, async function(table) {
-  await createWallets(table.hashes(), this, { isLegacy: true });
-});
-
-Given(/^I have the following wallets:$/, async function(table) {
-  await createWallets(table.hashes(), this);
 });
 
 // Create "Balance" wallets

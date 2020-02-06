@@ -5,7 +5,7 @@ Feature: Wallet Delegation
     Given I have completed the basic setup
 
   Scenario: "Delegation screen" current and next epoch countdown are correctly displayed and have correct data
-    Given I have the following wallets:
+    Given I have the following "Rewards" wallets:
       | name   |
       | Wallet |
     And I am on the Delegation "delegation-center" screen
@@ -22,11 +22,11 @@ Feature: Wallet Delegation
     Then I should see a "Create rewards wallet" notification
 
   Scenario: Only Rewards wallets are listed on the "Delegation center" screen
-    Given I have the following legacy wallets:
+    Given I have the following "Balance" wallets:
       | name            |
       | Legacy Wallet 1 |
       | Legacy Wallet 2 |
-    And I have the following wallets:
+    And I have the following "Rewards" wallets:
       | name            |
       | Reward Wallet 1 |
       | Reward Wallet 2 |
@@ -48,7 +48,7 @@ Feature: Wallet Delegation
     Then the "First Wallet" wallet should display the "Delegate" option
 
   Scenario: "Delegation" wizard displays correct availability
-    Given I have the following wallets:
+    Given I have the following "Rewards" wallets:
       | name            |
       | Wallet Receiver |
     And I am on the Delegation "delegation-center" screen
@@ -64,7 +64,7 @@ Feature: Wallet Delegation
     Then I sucessfully delegate my wallet
 
   Scenario: "Delegation" wizard is showing the correct error message if the user submits wrong spending password
-    Given I have the following wallets:
+    Given I have the following "Rewards" wallets:
       | name            |
       | Wallet Receiver |
     And I have a "Wallet Sender" rewards wallet with funds
