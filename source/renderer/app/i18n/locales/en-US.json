@@ -395,7 +395,7 @@
   "staking.stakePools.tooltip.performance": "Performance:",
   "staking.stakePools.tooltip.pledgeAddressLabel": "Pledge address",
   "staking.stakePools.tooltip.producedBlocks": "Produced blocks:",
-  "staking.stakePools.tooltip.profitMargin": "Profit margin:",
+  "staking.stakePools.tooltip.profitMargin": "Pool margin:",
   "staking.stakePools.tooltip.ranking": "Rank:",
   "staking.stakePools.tooltip.retirement": "Retirement in {retirementFromNow}",
   "staking.stakePools.tooltip.saturation": "Saturation:",

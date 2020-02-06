@@ -3,6 +3,9 @@ Changelog
 
 ## vNext
 
+### Feature
+- Renamed "Profit margin" into "Pool margin" on the stake pool tooltip ([PR 1841](https://github.com/input-output-hk/daedalus/pull/1841))
+
 ### Fixes
 
 - Fixed stake pool descriptions text clipping on stake pool tooltip ([PR 1832](https://github.com/input-output-hk/daedalus/pull/1832))
