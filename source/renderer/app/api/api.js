@@ -1610,7 +1610,7 @@ const _createWalletFromServerData = action(
           ? new BigNumber(balance.reward.quantity).dividedBy(LOVELACES_PER_ADA)
           : new BigNumber(balance.reward.quantity);
     }
-    const delegatedStakePoolId = isLegacy ? null : delegation.target;
+    const delegatedStakePoolId = isLegacy ? null : delegation.active.target;
 
     return new Wallet({
       id,

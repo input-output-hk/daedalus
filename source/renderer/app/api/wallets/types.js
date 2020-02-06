@@ -38,7 +38,10 @@ export type AdaWallet = {
     total: WalletBalance,
     reward: WalletBalance,
   },
-  delegation: WalletDelegation,
+  delegation: {
+    active: WalletDelegation,
+    next?: WalletDelegation,
+  },
   name: string,
   passphrase?: {
     last_updated_at: string,
