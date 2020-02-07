@@ -46,7 +46,7 @@ export const restoreWalletWithFunds = async (client: Object, { walletName }: { w
       .catch(error => done(error));
   }, walletName, restoredWallets);
   restoredWallets++;
-}
+};
 
 const createWalletsSequentially = async (wallets: Array<any>, context: Object) => {
   context.wallets = [];

@@ -7,11 +7,11 @@ declare var daedalus: Daedalus;
 export const getCardanoEpochData = async function(epoch: 'current' | 'next', param: string) {
   const headerIndex = epoch === 'current' ? 1 : 2;
   return await this.client.getText(`(//div[@class="DelegationCenterHeader_heading"])[${headerIndex}]//following-sibling::div//div[text()="${param}"]//following-sibling::div[@class="DelegationCenterHeader_fieldValue"]`);
-}
+};
 
 export const getCurrentEpoch = async function() {
   return await getCardanoEpochData.call(this, 'current', 'Epoch');
-}
+};
 
 export const getNextEpoch = async function() {
   const headerText = await this.client.getText(`(//div[@class="DelegationCenterHeader_heading"])[2]`);
@@ -20,5 +20,4 @@ export const getNextEpoch = async function() {
   } catch(err) {
     return new Error(err);
   }
-}
-
+};
