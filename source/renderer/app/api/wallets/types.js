@@ -40,7 +40,7 @@ export type AdaWallet = {
   },
   delegation: {
     active: WalletDelegation,
-    next?: WalletDelegation,
+    next?: WalletNextDelegation,
   },
   name: string,
   passphrase?: {
@@ -90,9 +90,20 @@ export type WalletBalance = {
   unit: WalletUnits.LOVELACE | WalletUnits.ADA,
 };
 
+export type WalletNextDelegationEpoch = {
+  epoch_number: number,
+  epoch_start_time: string,
+};
+
 export type WalletDelegation = {
   status: DelegationStatus,
   target?: string,
+};
+
+export type WalletNextDelegation = {
+  status: DelegationStatus,
+  target?: string,
+  changes_at: WalletNextDelegationEpoch,
 };
 
 export type Histogram = {
