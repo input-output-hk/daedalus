@@ -280,7 +280,7 @@ let
     desktopItem = pkgs.makeDesktopItem {
       name = "Daedalus-AR${if cluster != "mainnet" then "-${cluster}" else ""}";
       exec = "INSERT_PATH_HERE";
-      desktopName = "Daedalus ADA redemption${if cluster != "mainnet" then " ${cluster}" else ""}";
+      desktopName = "Daedalus ADA Redemption${if cluster != "mainnet" then " ${cluster}" else ""}";
       genericName = "Crypto-Currency Wallet";
       categories = "Application;Network;";
       icon = "INSERT_ICON_PATH_HERE";
