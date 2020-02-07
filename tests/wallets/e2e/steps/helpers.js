@@ -22,15 +22,17 @@ export const addOrSetWalletsForScenario = function(wallet: Object) {
 
 let restoredWallets = 0;
 
+const mnemonics = [
+  ['awkward', 'electric', 'strong', 'early', 'rose', 'abuse', 'mutual', 'limit', 'ketchup', 'child', 'limb', 'exist', 'hurry', 'business', 'whisper'],
+  ['blood', 'limit', 'pumpkin', 'fringe', 'order', 'trick', 'answer', 'festival', 'ethics', 'educate', 'luggage', 'dinner', 'record', 'fox', 'truth'],
+  ['bridge', 'joke', 'jeans', 'width', 'social', 'banner', 'visit', 'enlist', 'reason', 'hand', 'license', 'subway', 'butter', 'render', 'absent'],
+  ['bless', 'turkey', 'install', 'across', 'bronze', 'check', 'true', 'icon', 'treat', 'that', 'tuition', 'flush', 'panther', 'powder', 'ecology'],
+  ['trick', 'razor', 'bicycle', 'front', 'hollow', 'liberty', 'swift', 'coconut', 'pull', 'raccoon', 'level', 'woman', 'awful', 'sound', 'swarm'],
+];
+
 export const restoreWalletWithFunds = async (client: Object, { walletName }: { walletName: string }) => {
-  client.executeAsync((name, mnemonicsIndex, done) => {
-    const mnemonics = [
-      ['awkward', 'electric', 'strong', 'early', 'rose', 'abuse', 'mutual', 'limit', 'ketchup', 'child', 'limb', 'exist', 'hurry', 'business', 'whisper'],
-      ['blood', 'limit', 'pumpkin', 'fringe', 'order', 'trick', 'answer', 'festival', 'ethics', 'educate', 'luggage', 'dinner', 'record', 'fox', 'truth'],
-      ['bridge', 'joke', 'jeans', 'width', 'social', 'banner', 'visit', 'enlist', 'reason', 'hand', 'license', 'subway', 'butter', 'render', 'absent'],
-      ['bless', 'turkey', 'install', 'across', 'bronze', 'check', 'true', 'icon', 'treat', 'that', 'tuition', 'flush', 'panther', 'powder', 'ecology'],
-      ['trick', 'razor', 'bicycle', 'front', 'hollow', 'liberty', 'swift', 'coconut', 'pull', 'raccoon', 'level', 'woman', 'awful', 'sound', 'swarm'],
-    ];
+  client.executeAsync((name, mnemonicsIndex, mnemonics, done) => {
+
     daedalus.api.ada
       .restoreWallet({
         walletName: name,
@@ -44,8 +46,9 @@ export const restoreWalletWithFunds = async (client: Object, { walletName }: { w
           .catch(error => done(error))
       )
       .catch(error => done(error));
-  }, walletName, restoredWallets);
+  }, walletName, restoredWallets, mnemonics);
   restoredWallets++;
+  if (restoredWallets === mnemonics.length) restoredWallets = 0
 };
 
 const createWalletsSequentially = async (wallets: Array<any>, context: Object) => {
