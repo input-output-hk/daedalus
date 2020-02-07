@@ -5,6 +5,8 @@ import { navigateTo, waitUntilUrlEquals } from '../../../navigation/e2e/steps/he
 import { timeout } from '../../../common/e2e/steps/helpers';
 import { getCurrentEpoch, getNextEpoch } from './helpers';
 import type { Daedalus } from '../../../types';
+import type { WalletProps } from '../../../../source/renderer/app/domains/Wallet'
+import type { StakePoolProps } from '../../../../source/renderer/app/domains/StakePool'
 
 declare var daedalus: Daedalus;
 
@@ -80,6 +82,7 @@ Given(/^the "([^"]*)" wallet was delegated to a Stake Pool with no metadata$/, a
     isLegacy: false,
     delegatedStakePoolId: 'stakePoolWithNoMetadata',
   };
+
   const stakePoolWithNoMetadata = {
     id: 'stakePoolWithNoMetadata',
     ticker: '',

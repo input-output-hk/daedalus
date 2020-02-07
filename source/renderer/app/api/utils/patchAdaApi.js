@@ -182,12 +182,12 @@ export default (api: AdaApi) => {
   };
 
   api.setTestingWallets = (testingWalletsData: Array<Object>): void => {
-    api.getWallets = () =>
+    api.getWallets = (): Array<Wallet> =>
       testingWalletsData.map((wallet: Object) => new Wallet(wallet));
   };
 
   api.setTestingStakePools = (testingStakePoolsData: Array<Object>): void => {
-    api.getStakePools = () =>
+    api.getStakePools = (): Array<StakePool> =>
       testingStakePoolsData.map(
         (stakePool: Object) => new StakePool(stakePool)
       );
