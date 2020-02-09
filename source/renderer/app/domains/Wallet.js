@@ -7,7 +7,6 @@ import type {
   SyncStateStatus,
   DelegationStatus,
   WalletUnit,
-  DelegationStakePool,
   WalletNextDelegationEpoch,
 } from '../api/wallets/types';
 
