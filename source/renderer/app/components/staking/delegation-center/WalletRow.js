@@ -198,7 +198,13 @@ export default class WalletRow extends Component<Props> {
                     <Fragment>
                       {', '}
                       {intl.formatMessage(messages.toStakePoolTickerPart2)}{' '}
-                      {nextEpochNumber}
+                      <span
+                        className={
+                          !nextDelegatedStakePool ? styles.unknown : null
+                        }
+                      >
+                        {nextEpochNumber}
+                      </span>
                       {': '}
                       {nextDelegationStakePoolId ? (
                         <span
@@ -210,7 +216,13 @@ export default class WalletRow extends Component<Props> {
                           {nextDelegatedStakePoolTicker}
                         </span>
                       ) : (
-                        notDelegated.toLowerCase()
+                        <span
+                          className={
+                            !nextDelegatedStakePool ? styles.unknown : null
+                          }
+                        >
+                          {notDelegated}
+                        </span>
                       )}
                     </Fragment>
                   )}
