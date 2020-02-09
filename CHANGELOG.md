@@ -3,9 +3,10 @@ Changelog
 
 ## vNext
 
-### Features
+### Feature
 
 - Implemented pending delegation preferences ([PR 1842](https://github.com/input-output-hk/daedalus/pull/1842))
+- Renamed "Profit margin" into "Pool margin" on the stake pool tooltip ([PR 1841](https://github.com/input-output-hk/daedalus/pull/1841))
 
 ### Fixes
 
@@ -16,6 +17,7 @@ Changelog
 ### Chores
 
 - Updated `cardano-wallet` to revision `599c8839` ([PR 1842](https://github.com/input-output-hk/daedalus/pull/1842))
+- Improved GitHub pull request template ([PR 1843](https://github.com/input-output-hk/daedalus/pull/1843))
 - Removed unused locales and translation files ([PR 1840](https://github.com/input-output-hk/daedalus/pull/1840))
 - Improved acceptance tests setup with "rerun" feature ([PR 1835](https://github.com/input-output-hk/daedalus/pull/1835)
 - Implemented acceptance tests for Daedalus Balance wallets ([PR 1816](https://github.com/input-output-hk/daedalus/pull/1816), [PR 1828](https://github.com/input-output-hk/daedalus/pull/1828))
