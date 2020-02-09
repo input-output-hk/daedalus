@@ -1,6 +1,7 @@
 // @flow
 import React, { Component, Fragment } from 'react';
 import { observer } from 'mobx-react';
+import { get } from 'lodash';
 import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import isNil from 'lodash/isNil';
@@ -13,6 +14,7 @@ import DropdownMenu from './DropdownMenu';
 import styles from './WalletRow.scss';
 
 import type { DelegationAction } from '../../../api/staking/types';
+import type { WalletNextDelegationEpoch } from '../../../api/wallets/types';
 
 const messages = defineMessages({
   walletAmount: {
@@ -28,8 +30,8 @@ const messages = defineMessages({
   },
   notDelegated: {
     id: 'staking.delegationCenter.notDelegated',
-    defaultMessage: '!!!Not-delegated',
-    description: 'Not-delegated label for the Delegation center body section.',
+    defaultMessage: '!!!Undelegated',
+    description: 'Undelegated label for the Delegation center body section.',
   },
   changeDelegation: {
     id: 'staking.delegationCenter.changeDelegation',
@@ -45,13 +47,13 @@ const messages = defineMessages({
   },
   toStakePoolTickerPart1: {
     id: 'staking.delegationCenter.toStakePoolTickerPart1',
-    defaultMessage: '!!!To',
+    defaultMessage: '!!!currently',
     description:
       'Delegated stake pool ticker for the Delegation center body section.',
   },
   toStakePoolTickerPart2: {
     id: 'staking.delegationCenter.toStakePoolTickerPart2',
-    defaultMessage: '!!!stake pool',
+    defaultMessage: '!!!from epoch',
     description:
       'Delegated stake pool ticker for the Delegation center body section.',
   },
@@ -76,6 +78,8 @@ const messages = defineMessages({
 type Props = {
   wallet: Wallet,
   delegatedStakePool?: ?StakePool,
+  nextDelegatedStakePool?: ?StakePool,
+  nextDelegatedStakePoolEpoch?: ?WalletNextDelegationEpoch,
   numberOfStakePools: number,
   onDelegate: Function,
   onMenuItemClick: Function,
@@ -100,16 +104,30 @@ export default class WalletRow extends Component<Props> {
   render() {
     const { intl } = this.context;
     const {
-      wallet: { name, amount, delegatedStakePoolId },
+      wallet: { name, amount, delegatedStakePoolId, nextDelegationStakePoolId },
       delegatedStakePool,
+      nextDelegatedStakePool,
+      nextDelegatedStakePoolEpoch,
       numberOfStakePools,
     } = this.props;
 
+    const nextEpochNumber = get(
+      nextDelegatedStakePoolEpoch,
+      'epoch_number',
+      null
+    );
+
     const { ranking } = delegatedStakePool || {};
+    const nextRanking = get(nextDelegatedStakePool, 'ranking', {});
 
     const color =
       delegatedStakePoolId && delegatedStakePool && !isNil(ranking)
         ? getColorFromRange(ranking, numberOfStakePools)
+        : null;
+
+    const nextColor =
+      nextDelegationStakePoolId && nextDelegatedStakePool && !isNil(nextRanking)
+        ? getColorFromRange(nextRanking, numberOfStakePools)
         : null;
 
     const delegated = intl.formatMessage(messages.delegated);
@@ -120,6 +138,9 @@ export default class WalletRow extends Component<Props> {
     const yourStake = intl.formatMessage(messages.yourStake);
     const delegatedStakePoolTicker = delegatedStakePool
       ? `[${delegatedStakePool.ticker}]`
+      : intl.formatMessage(messages.unknownStakePoolLabel);
+    const nextDelegatedStakePoolTicker = nextDelegatedStakePool
+      ? `[${nextDelegatedStakePool.ticker}]`
       : intl.formatMessage(messages.unknownStakePoolLabel);
 
     const delegatedWalletActionOptions = [
@@ -166,14 +187,33 @@ export default class WalletRow extends Component<Props> {
               {delegatedStakePoolId ? (
                 <Fragment>
                   {intl.formatMessage(messages.toStakePoolTickerPart1)}
+                  {': '}
                   <span
                     className={!delegatedStakePool ? styles.unknown : null}
                     style={{ color }}
                   >
-                    {' '}
-                    {delegatedStakePoolTicker}{' '}
+                    {delegatedStakePoolTicker}
                   </span>
-                  {intl.formatMessage(messages.toStakePoolTickerPart2)}
+                  {nextDelegatedStakePoolEpoch && (
+                    <Fragment>
+                      {', '}
+                      {intl.formatMessage(messages.toStakePoolTickerPart2)}{' '}
+                      {nextEpochNumber}
+                      {': '}
+                      {nextDelegationStakePoolId ? (
+                        <span
+                          className={
+                            !nextDelegatedStakePool ? styles.unknown : null
+                          }
+                          style={{ nextColor }}
+                        >
+                          {nextDelegatedStakePoolTicker}
+                        </span>
+                      ) : (
+                        notDelegated.toLowerCase()
+                      )}
+                    </Fragment>
+                  )}
                 </Fragment>
               ) : (
                 <span>

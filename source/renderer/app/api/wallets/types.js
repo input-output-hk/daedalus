@@ -90,6 +90,11 @@ export type WalletBalance = {
   unit: WalletUnits.LOVELACE | WalletUnits.ADA,
 };
 
+export type DelegationStakePool = {
+  active: WalletDelegation,
+  next?: WalletNextDelegation,
+};
+
 export type WalletNextDelegationEpoch = {
   epoch_number: number,
   epoch_start_time: string,

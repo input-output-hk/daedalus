@@ -1610,7 +1610,15 @@ const _createWalletFromServerData = action(
           ? new BigNumber(balance.reward.quantity).dividedBy(LOVELACES_PER_ADA)
           : new BigNumber(balance.reward.quantity);
     }
-    const delegatedStakePoolId = isLegacy ? null : delegation.active.target;
+
+    const { next, active } = delegation;
+    const { target } = active;
+    const nextTarget = get(next, 'target', null);
+    const nextEpoch = get(next, 'changes_at', null);
+
+    const delegatedStakePoolId = isLegacy ? null : target;
+    const nextDelegationStakePoolId = isLegacy ? null : nextTarget;
+    const nextDelegationStakePoolEpoch = isLegacy ? null : nextEpoch;
 
     return new Wallet({
       id,
@@ -1624,6 +1632,8 @@ const _createWalletFromServerData = action(
       syncState: state,
       isLegacy,
       delegatedStakePoolId,
+      nextDelegationStakePoolId,
+      nextDelegationStakePoolEpoch,
     });
   }
 );
