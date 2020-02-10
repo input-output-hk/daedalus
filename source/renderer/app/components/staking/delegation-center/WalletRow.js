@@ -211,7 +211,7 @@ export default class WalletRow extends Component<Props> {
                           className={
                             !nextDelegatedStakePool ? styles.unknown : null
                           }
-                          style={{ nextColor }}
+                          style={{ color: nextColor }}
                         >
                           {nextDelegatedStakePoolTicker}
                         </span>
