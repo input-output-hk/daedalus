@@ -1,0 +1,104 @@
+.component {
+  background-color: var(--theme-automatic-update-overlay-background-color);
+  height: 100%;
+  position: absolute;
+  width: 100%;
+  z-index: 3;
+
+  .content {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    font-family: var(--font-regular);
+    height: 100%;
+    justify-content: center;
+
+    .testnetBulbIcon {
+      height: 120px;
+      margin-bottom: 36px;
+      object-fit: contain;
+      width: 70px;
+
+      svg {
+        path {
+          fill: var(--theme-experimental-data-overlay-logo-fill-color);
+        }
+      }
+    }
+
+    .title {
+      color: var(--theme-experimental-data-overlay-title-color);
+      font-size: 20px;
+      line-height: 1.2;
+      margin-bottom: 16px;
+    }
+
+    .description {
+      background-color: var(
+        --theme-experimental-data-overlay-description-background-color
+      );
+      border-radius: 4px;
+      font-size: 14px;
+      line-height: 1.43;
+      margin-bottom: 30px;
+      max-width: 608px;
+      overflow-y: scroll;
+      padding: 12px 24px;
+
+      @media (max-height: 650px) {
+        max-height: 190px;
+      }
+
+      p {
+        color: var(--theme-experimental-data-overlay-description-color);
+        margin-bottom: 12px;
+
+        span {
+          display: inline-block;
+          height: 13.5px;
+          width: 14.5px;
+
+          &:after {
+            background-color: var(--theme-experimental-data-overlay-logo-fill-color);
+            content: '';
+            height: 14.5px;
+            -webkit-mask: url('../../../assets/images/experiment-icon.svg')
+              no-repeat center;
+            mask: url('../../../assets/images/experiment-icon.svg') no-repeat
+              center;
+            -webkit-mask-size: 10px;
+            mask-size: 10px;
+            position: absolute;
+            width: 14.5px;
+          }
+        }
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+
+    .action {
+      .actionButton {
+        background-color: var(
+          --theme-experimental-data-overlay-overlay-button-background-color
+        );
+        border: solid 1px
+          var(--theme-experimental-data-overlay-overlay-button-border-color);
+        color: var(--theme-experimental-data-overlay-overlay-button-text-color);
+        font-weight: 500;
+        line-height: 1.36;
+        margin: 0 auto;
+
+        &:hover {
+          background-color: var(
+            --theme-experimental-data-overlay-overlay-button-background-color-hover
+          );
+          border: none;
+          color: var(--theme-experimental-data-overlay-overlay-button-text-color-hover);
+        }
+      }
+    }
+  }
+}

@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import MainLayout from '../MainLayout';
 import StakingWithNavigation from '../../components/staking/layouts/StakingWithNavigation';
+import ExperimentalDataOverlay from '../../components/staking/delegation-center/ExperimentalDataOverlay';
 import { ROUTES } from '../../routes-config';
 import { buildRoute } from '../../utils/routing';
 import type { InjectedContainerProps } from '../../types/injectedPropsType';
@@ -65,15 +66,27 @@ export default class Staking extends Component<Props> {
     });
   };
 
+  handleCloseExperimentalDataOverlay = () => {
+    const { stores } = this.props;
+    const { markStakingExperimentAsRead } = stores.staking;
+    markStakingExperimentAsRead();
+  };
+
   render() {
     const {
       stores: { app, staking, networkStatus },
       children,
     } = this.props;
+    const { isStakingExperimentRead, isStakingDelegationCountdown } = staking;
 
     return (
       <MainLayout>
-        {staking.isStakingDelegationCountdown ? (
+        {!isStakingExperimentRead && (
+          <ExperimentalDataOverlay
+            onClose={this.handleCloseExperimentalDataOverlay}
+          />
+        )}
+        {isStakingDelegationCountdown ? (
           children
         ) : (
           <StakingWithNavigation
