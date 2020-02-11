@@ -1612,17 +1612,6 @@ const _createWalletFromServerData = action(
     }
     const delegatedStakePoolId = isLegacy ? null : delegation.target;
 
-    const syncState =
-      name === 'Jason'
-        ? {
-            status: 'syncing',
-            progress: {
-              quantity: 40,
-              unit: 'percentage',
-            },
-          }
-        : state;
-
     return new Wallet({
       id,
       addressPoolGap,
@@ -1632,7 +1621,7 @@ const _createWalletFromServerData = action(
       reward: walletRewardAmount,
       passwordUpdateDate:
         passphraseLastUpdatedAt && new Date(passphraseLastUpdatedAt),
-      syncState,
+      syncState: state,
       isLegacy,
       delegatedStakePoolId,
     });
