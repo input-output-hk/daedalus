@@ -706,7 +706,10 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-staking-progress-label-light': '#2d2d2d',
     '--theme-staking-stake-pools-search-clear-button-background-color':
       'rgba(68, 91, 124, 0.05)',
-    '--theme-staking-stake-pool-tooltip-experimental-icon-color': '#2d2d2d',
+    '--theme-staking-stake-pool-tooltip-experimental-icon-background-color':
+      '#fff',
+    '--theme-staking-stake-pool-tooltip-experimental-icon-lines-color':
+      'rgba(45, 45, 45, 0.8)',
     '--theme-staking-stake-pool-tooltip-neutral-background-color':
       'rgba(45, 45, 45, .1)',
     '--theme-staking-stake-pool-tooltip-neutral-text-color': '#2d2d2d',

@@ -68,8 +68,17 @@
       svg {
         height: 14.5px;
         width: 10px;
-        path {
-          fill: var(--theme-staking-stake-pool-tooltip-experimental-icon-color);
+        g {
+          path:nth-child(1) {
+            fill: var(
+              --theme-staking-stake-pool-tooltip-experimental-icon-background-color
+            );
+          }
+          path:nth-child(2) {
+            fill: var(
+              --theme-staking-stake-pool-tooltip-experimental-icon-lines-color
+            );
+          }
         }
       }
     }

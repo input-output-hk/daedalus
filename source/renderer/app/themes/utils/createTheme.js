@@ -1004,9 +1004,12 @@ export const createDaedalusComponentsTheme = (
       '--theme-staking-stake-pool-retirement-background-color': `${
         error.regular
       }`,
-      '--theme-staking-stake-pool-tooltip-background-color': `${chroma(
-        background.primary.lightest
-      ).alpha(0.97)}`,
+      '--theme-staking-stake-pool-tooltip-experimental-icon-background-color': `${
+        background.primary.regular
+      }`,
+      '--theme-staking-stake-pool-tooltip-experimental-icon-lines-color': `${chroma(
+        text.primary
+      ).alpha(0.8)}`,
       '--theme-staking-stake-pool-tooltip-border-color': `${border}`,
       '--theme-staking-stake-pool-tooltip-shadow-color': 'rgba(0, 0, 0, 0.25)',
       '--theme-staking-stake-pool-tooltip-text-color': `${text.primary}`,
