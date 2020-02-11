@@ -14,7 +14,7 @@ import StakingWithNavigation from '../../../source/renderer/app/components/staki
 import StakingCountdown from '../../../source/renderer/app/components/staking/countdown/StakingCountdown';
 import StakingInfo from '../../../source/renderer/app/components/staking/info/StakingInfo';
 import DelegationCenterNoWallets from '../../../source/renderer/app/components/staking/delegation-center/DelegationCenterNoWallets';
-import ExperimentalDataOverlay from '../../../source/renderer/app/components/staking/delegation-center/ExperimentalDataOverlay';
+import ExperimentalDataOverlay from '../../../source/renderer/app/components/notifications/ExperimentalDataOverlay';
 
 import { StakePoolsStory } from './StakePools.stories';
 import { StakingRewardsStory } from './Rewards.stories';

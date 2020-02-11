@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import MainLayout from '../MainLayout';
 import StakingWithNavigation from '../../components/staking/layouts/StakingWithNavigation';
-import ExperimentalDataOverlay from '../../components/staking/delegation-center/ExperimentalDataOverlay';
+import ExperimentalDataOverlay from '../../components/notifications/ExperimentalDataOverlay';
 import { ROUTES } from '../../routes-config';
 import { buildRoute } from '../../utils/routing';
 import type { InjectedContainerProps } from '../../types/injectedPropsType';
