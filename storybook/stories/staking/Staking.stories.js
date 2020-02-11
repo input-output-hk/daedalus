@@ -38,6 +38,7 @@ const startDateTimeKnob = (name, defaultValue) => {
 const pageNames = {
   countdown: 'Decentralization Countdown',
   'delegation-center': 'Delegation Center',
+  'delegation-center-experiment': 'Delegation Center - experimental feature',
   'stake-pools': 'Pools Index',
   'stake-pools-tooltip': 'Tooltip',
   rewards: 'Rewards',
@@ -63,20 +64,39 @@ const decorator = (story, context) => {
       <StoryProvider>
         <StoryLayout activeSidebarCategory={activeSidebarCategory} {...context}>
           {context.parameters.id === 'countdown' ||
-          context.parameters.id === 'wizard' ? (
-            storyWithKnobs
-          ) : (
-            <StakingWithNavigation
-              isActiveNavItem={item => item === getItemFromContext()}
-              activeItem={getItemFromContext()}
-              onNavItemClick={() => {}}
-              isIncentivizedTestnet={isIncentivizedTestnetTheme(
-                context.currentTheme
-              )}
-            >
-              {storyWithKnobs}
-            </StakingWithNavigation>
-          )}
+          context.parameters.id === 'wizard'
+            ? [
+                context.parameters.experiment ? (
+                  <ExperimentalDataOverlay
+                    key="experimentalDataOverlay"
+                    onClose={action('onCloseExperimentalDataOverlay')}
+                  />
+                ) : (
+                  <div />
+                ),
+                storyWithKnobs,
+              ]
+            : [
+                context.parameters.experiment ? (
+                  <ExperimentalDataOverlay
+                    key="experimentalDataOverlay"
+                    onClose={action('onCloseExperimentalDataOverlay')}
+                  />
+                ) : (
+                  <div />
+                ),
+                <StakingWithNavigation
+                  key="stakingWithNavigation"
+                  isActiveNavItem={item => item === getItemFromContext()}
+                  activeItem={getItemFromContext()}
+                  onNavItemClick={() => {}}
+                  isIncentivizedTestnet={isIncentivizedTestnetTheme(
+                    context.currentTheme
+                  )}
+                >
+                  {storyWithKnobs}
+                </StakingWithNavigation>,
+              ]}
         </StoryLayout>
       </StoryProvider>
     </StoryDecorator>
@@ -108,6 +128,15 @@ storiesOf('Decentralization | Staking', module)
   .add(pageNames['delegation-center'], StakingDelegationCenterStory, {
     id: 'delegation-center',
   })
+
+  .add(
+    pageNames['delegation-center-experiment'],
+    StakingDelegationCenterStory,
+    {
+      id: 'delegation-center',
+      experiment: true,
+    }
+  )
 
   .add(
     'Delegation Center - Loading',
@@ -185,13 +214,5 @@ storiesOf('Decentralization | Staking', module)
     StakingUndelegateConfirmationResultStory,
     {
       id: 'undelegate-confirmation-result',
-    }
-  )
-
-  .add(
-    'Experimental Data Overlay',
-    props => <ExperimentalDataOverlay {...props} />,
-    {
-      id: 'experimental-data-overlay',
     }
   );
