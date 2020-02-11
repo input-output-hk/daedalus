@@ -77,7 +77,7 @@ const messages = defineMessages({
   },
   syncingTooltipLabel: {
     id: 'staking.delegationCenter.syncingTooltipLabel',
-    defaultMessage: '!!!Syncing {syncing}%',
+    defaultMessage: '!!!Syncing {syncingProgress}%',
     description:
       'unknown stake pool label for the Delegation center body section.',
   },
@@ -115,7 +115,7 @@ export default class WalletRow extends Component<Props> {
       numberOfStakePools,
     } = this.props;
 
-    const syncing = get(syncState, 'progress.quantity', '');
+    const syncingProgress = get(syncState, 'progress.quantity', '');
 
     const { ranking } = delegatedStakePool || {};
 
@@ -218,7 +218,7 @@ export default class WalletRow extends Component<Props> {
               skin={TooltipSkin}
               themeOverrides={tooltipStyles}
               tip={intl.formatMessage(messages.syncingTooltipLabel, {
-                syncing,
+                syncingProgress,
               })}
             >
               <LoadingSpinner medium />

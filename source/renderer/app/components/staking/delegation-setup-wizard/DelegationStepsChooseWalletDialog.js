@@ -149,7 +149,7 @@ export default class DelegationStepsChooseWalletDialog extends Component<
         </p>
       );
 
-    const errorRestoringWallet = selectedWalletId &&
+    const errorRestoringWallet = selectedWallet &&
       selectedWallet.isRestoring && (
         <p className={styles.errorMessage}>
           {intl.formatMessage(messages.errorRestoringWallet)}
@@ -168,7 +168,9 @@ export default class DelegationStepsChooseWalletDialog extends Component<
         onClick: this.onSelectWallet.bind(this),
         primary: true,
         disabled:
-          !selectedWalletId || errorMinDelegationFunds || errorRestoringWallet,
+          !selectedWalletId ||
+          !!errorMinDelegationFunds ||
+          !!errorRestoringWallet,
       },
     ];
 

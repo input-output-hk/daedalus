@@ -5,6 +5,8 @@ import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import { get, map, orderBy } from 'lodash';
 import classNames from 'classnames';
+import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
+import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
 import moment from 'moment';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
@@ -61,6 +63,11 @@ const messages = defineMessages({
     defaultMessage:
       '!!!<p>Rewards earned by delegating your stake are automatically collected into your reward account.</p><p>Rewards earned on the Incentivized Testnet are not added to your Rewards wallet balance. They will be paid to you in real ada on the Cardano mainnet after the end of the Incentivized Testnet.</p><p>If you are using funds from this wallet to operate a stake pool, the rewards displayed here may include your pledged stake, which will not be counted when reward balances are paid out on the Cardano mainnet.</p>',
     description: 'Rewards description text on staking rewards page',
+  },
+  syncingTooltipLabel: {
+    id: 'staking.delegationCenter.syncingTooltipLabel',
+    defaultMessage: '!!!Syncing {syncingProgress}%',
+    description: 'unknown stake pool label on staking rewards page.',
   },
 });
 
@@ -226,6 +233,8 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
                   <tbody>
                     {map(sortedRewards, (reward, key) => {
                       const rewardWallet = get(reward, 'wallet');
+                      const isRestoring = get(reward, 'isRestoring');
+                      const syncingProgress = get(reward, 'syncingProgress');
                       const rewardAmount = get(reward, 'reward').toFormat(
                         DECIMAL_PLACES_IN_ADA
                       );
@@ -233,7 +242,24 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
                       return (
                         <tr key={key}>
                           <td>{rewardWallet}</td>
-                          <td>{rewardAmount} ADA</td>
+                          <td>
+                            {rewardAmount} ADA
+                            {isRestoring && (
+                              <div className={styles.syncingProgress}>
+                                <Tooltip
+                                  skin={TooltipSkin}
+                                  tip={intl.formatMessage(
+                                    messages.syncingTooltipLabel,
+                                    {
+                                      syncingProgress,
+                                    }
+                                  )}
+                                >
+                                  <LoadingSpinner medium />
+                                </Tooltip>
+                              </div>
+                            )}
+                          </td>
                         </tr>
                       );
                     })}
