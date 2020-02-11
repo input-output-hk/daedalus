@@ -301,6 +301,7 @@
   "staking.delegationCenter.undelegate.result.dialog.description2": "Your new delegation preferences are now posted on the blockchain <strong>and will take effect after both the current and next Cardano epochs have completed in {timeUntilNextEpochStart}</strong>. During this time, your previous delegation preferences are still active.",
   "staking.delegationCenter.undelegate.result.dialog.title": "Wallet undelegated",
   "staking.delegationCenter.unknownStakePoolLabel": "unknown",
+  "staking.delegationCenter.syncingTooltipLabel": "Syncing {syncing}%",
   "staking.delegationCenter.walletAmount": "{amount} ADA",
   "staking.delegationCenter.yourStake": "your stake",
   "staking.delegationCountdown.buttonLabel": "Learn more",

@@ -3,7 +3,9 @@ import React, { Component, Fragment } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import SVGInline from 'react-svg-inline';
-import isNil from 'lodash/isNil';
+import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
+import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
+import { isNil, get } from 'lodash';
 import Wallet from '../../../domains/Wallet';
 import StakePool, { DelegationActions } from '../../../domains/StakePool';
 import { getColorFromRange } from '../../../utils/colors';
@@ -11,6 +13,8 @@ import settingsIcon from '../../../assets/images/settings-ic.inline.svg';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import DropdownMenu from './DropdownMenu';
 import styles from './WalletRow.scss';
+import tooltipStyles from './WalletRowTooltip.scss';
+import LoadingSpinner from '../../widgets/LoadingSpinner';
 
 import type { DelegationAction } from '../../../api/staking/types';
 
@@ -71,6 +75,12 @@ const messages = defineMessages({
     description:
       'unknown stake pool label for the Delegation center body section.',
   },
+  syncingTooltipLabel: {
+    id: 'staking.delegationCenter.syncingTooltipLabel',
+    defaultMessage: '!!!Syncing {syncing}%',
+    description:
+      'unknown stake pool label for the Delegation center body section.',
+  },
 });
 
 type Props = {
@@ -100,10 +110,12 @@ export default class WalletRow extends Component<Props> {
   render() {
     const { intl } = this.context;
     const {
-      wallet: { name, amount, delegatedStakePoolId },
+      wallet: { name, amount, delegatedStakePoolId, isRestoring, syncState },
       delegatedStakePool,
       numberOfStakePools,
     } = this.props;
+
+    const syncing = get(syncState, 'progress.quantity', '');
 
     const { ranking } = delegatedStakePool || {};
 
@@ -149,52 +161,69 @@ export default class WalletRow extends Component<Props> {
           </div>
         </div>
         <div className={styles.right}>
-          <div>
-            <div className={styles.status}>
-              <span>{delegatedStakePoolId ? delegated : notDelegated}</span>
-              {delegatedStakePoolId && (
-                <DropdownMenu
-                  label={
-                    <SVGInline svg={settingsIcon} className={styles.gearIcon} />
-                  }
-                  menuItems={delegatedWalletActionOptions}
-                  onMenuItemClick={this.onMenuItemClick}
+          {!isRestoring ? (
+            <Fragment>
+              <div>
+                <div className={styles.status}>
+                  <span>{delegatedStakePoolId ? delegated : notDelegated}</span>
+                  {delegatedStakePoolId && (
+                    <DropdownMenu
+                      label={
+                        <SVGInline
+                          svg={settingsIcon}
+                          className={styles.gearIcon}
+                        />
+                      }
+                      menuItems={delegatedWalletActionOptions}
+                      onMenuItemClick={this.onMenuItemClick}
+                    />
+                  )}
+                </div>
+                <div className={styles.action}>
+                  {delegatedStakePoolId ? (
+                    <Fragment>
+                      {intl.formatMessage(messages.toStakePoolTickerPart1)}
+                      <span
+                        className={!delegatedStakePool ? styles.unknown : null}
+                        style={{ color }}
+                      >
+                        {' '}
+                        {delegatedStakePoolTicker}{' '}
+                      </span>
+                      {intl.formatMessage(messages.toStakePoolTickerPart2)}
+                    </Fragment>
+                  ) : (
+                    <span>
+                      <span
+                        className={styles.actionLink}
+                        role="presentation"
+                        onClick={this.onDelegate}
+                      >
+                        {delegate}
+                      </span>
+                      {` ${yourStake}`}
+                    </span>
+                  )}
+                </div>
+              </div>
+              <div>
+                <div
+                  className={styles.stakePoolRankingIndicator}
+                  style={{ background: color }}
                 />
-              )}
-            </div>
-            <div className={styles.action}>
-              {delegatedStakePoolId ? (
-                <Fragment>
-                  {intl.formatMessage(messages.toStakePoolTickerPart1)}
-                  <span
-                    className={!delegatedStakePool ? styles.unknown : null}
-                    style={{ color }}
-                  >
-                    {' '}
-                    {delegatedStakePoolTicker}{' '}
-                  </span>
-                  {intl.formatMessage(messages.toStakePoolTickerPart2)}
-                </Fragment>
-              ) : (
-                <span>
-                  <span
-                    className={styles.actionLink}
-                    role="presentation"
-                    onClick={this.onDelegate}
-                  >
-                    {delegate}
-                  </span>
-                  {` ${yourStake}`}
-                </span>
-              )}
-            </div>
-          </div>
-          <div>
-            <div
-              className={styles.stakePoolRankingIndicator}
-              style={{ background: color }}
-            />
-          </div>
+              </div>
+            </Fragment>
+          ) : (
+            <Tooltip
+              skin={TooltipSkin}
+              themeOverrides={tooltipStyles}
+              tip={intl.formatMessage(messages.syncingTooltipLabel, {
+                syncing,
+              })}
+            >
+              <LoadingSpinner medium />
+            </Tooltip>
+          )}
         </div>
       </div>
     );
