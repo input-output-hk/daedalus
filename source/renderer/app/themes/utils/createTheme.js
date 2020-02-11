@@ -1038,6 +1038,9 @@ export const createDaedalusComponentsTheme = (
       '--theme-staking-stake-pool-tooltip-delegate-button-inverse-text-color': `${
         text.secondary
       }`,
+      '--theme-staking-stake-pool-tooltip-experimental-icon-color': `${
+        text.primary
+      }`,
       '--theme-staking-stake-pool-tooltip-delegate-button-border-color':
         'transparent',
       '--theme-staking-progress-label-light': `${text.secondary}`,

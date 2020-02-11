@@ -49,6 +49,28 @@
       }
     }
   }
+
+  .experimentalTooltip {
+    height: 14.5px;
+    padding: 0px;
+    position: absolute;
+    right: -5px;
+    top: -6px;
+    width: 10px;
+    .experimentalIcon {
+      padding: 0;
+      svg {
+        height: 14.5px;
+        width: 10px;
+        path {
+          fill: var(--theme-staking-stake-pool-tooltip-experimental-icon-color);
+        }
+      }
+    }
+    .iconButton {
+      cursor: pointer;
+    }
+  }
 }
 
 .container {
@@ -249,6 +271,11 @@
   .cost,
   .performance {
     width: 35%;
+  }
+
+  .ranking,
+  .performance {
+    position: relative;
   }
 }
 

@@ -4035,13 +4035,13 @@
         "description": "\"\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 39
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
         "id": "staking.stakePools.tooltip.ranking",
         "start": {
           "column": 11,
-          "line": 31
+          "line": 35
         }
       },
       {
@@ -4049,13 +4049,13 @@
         "description": "\"Controlled stake\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 40
+          "line": 44
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
         "id": "staking.stakePools.tooltip.controlledStake",
         "start": {
           "column": 19,
-          "line": 36
+          "line": 40
         }
       },
       {
@@ -4063,13 +4063,13 @@
         "description": "\"Profit margin\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 45
+          "line": 49
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
         "id": "staking.stakePools.tooltip.profitMargin",
         "start": {
           "column": 16,
-          "line": 41
+          "line": 45
         }
       },
       {
@@ -4077,13 +4077,13 @@
         "description": "\"Cost per epoch\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 50
+          "line": 54
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
         "id": "staking.stakePools.tooltip.costPerEpoch",
         "start": {
           "column": 16,
-          "line": 46
+          "line": 50
         }
       },
       {
@@ -4091,13 +4091,13 @@
         "description": "\"Performance\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 55
+          "line": 59
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
         "id": "staking.stakePools.tooltip.performance",
         "start": {
           "column": 15,
-          "line": 51
+          "line": 55
         }
       },
       {
@@ -4105,13 +4105,13 @@
         "description": "\"Produced blocks\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 60
+          "line": 64
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
         "id": "staking.stakePools.tooltip.producedBlocks",
         "start": {
           "column": 18,
-          "line": 56
+          "line": 60
         }
       },
       {
@@ -4119,13 +4119,13 @@
         "description": "\"Retirement\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 65
+          "line": 69
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
         "id": "staking.stakePools.tooltip.retirement",
         "start": {
           "column": 14,
-          "line": 61
+          "line": 65
         }
       },
       {
@@ -4133,13 +4133,13 @@
         "description": "\"Saturation\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 70
+          "line": 74
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
         "id": "staking.stakePools.tooltip.saturation",
         "start": {
           "column": 14,
-          "line": 66
+          "line": 70
         }
       },
       {
@@ -4147,13 +4147,13 @@
         "description": "\"pledgeAddressLabel\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 85
+          "line": 89
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
         "id": "staking.stakePools.tooltip.pledgeAddressLabel",
         "start": {
           "column": 22,
-          "line": 81
+          "line": 85
         }
       },
       {
@@ -4161,13 +4161,27 @@
         "description": "\"Delegate to this pool\" Button for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 91
+          "line": 95
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
         "id": "staking.stakePools.tooltip.delegateButton",
         "start": {
           "column": 18,
-          "line": 86
+          "line": 90
+        }
+      },
+      {
+        "defaultMessage": "!!!Experimental feature, data may be inaccurate.",
+        "description": "Experimental tooltip label",
+        "end": {
+          "column": 3,
+          "line": 100
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
+        "id": "staking.stakePools.tooltip.experimentalTooltipLabel",
+        "start": {
+          "column": 28,
+          "line": 96
         }
       }
     ],
