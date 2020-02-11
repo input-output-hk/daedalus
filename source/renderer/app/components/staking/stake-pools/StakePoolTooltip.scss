@@ -48,6 +48,12 @@
         );
       }
     }
+
+    .SimpleBubble_root {
+      .SimpleBubble_bubble {
+        margin-left: -40px;
+      }
+    }
   }
 
   .experimentalTooltip {
