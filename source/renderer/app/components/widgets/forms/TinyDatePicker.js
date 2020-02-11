@@ -1,5 +1,6 @@
 // @flow
 import React, { Component, createRef } from 'react';
+import type { Element } from 'react';
 import Datetime from 'react-datetime';
 import { intlShape } from 'react-intl';
 import classNames from 'classnames';
@@ -22,9 +23,13 @@ type Props = {
   dateFormat: string,
   disablePaste?: boolean,
   value: string,
+  label?: string,
+  placeholder?: string,
   innerLabelPrefix: string,
-  innerValue: any,
+  innerValue: string | Element<any>,
   pickerPanelPosition: PickerPanelPosition,
+  useReadMode?: boolean,
+  error?: string | Element<any>,
 };
 
 export default class TinyDatePicker extends Component<Props> {
@@ -84,9 +89,13 @@ export default class TinyDatePicker extends Component<Props> {
       dateFormat,
       disablePaste,
       value,
+      label,
+      placeholder,
       innerLabelPrefix,
       innerValue,
       pickerPanelPosition,
+      useReadMode,
+      error,
       ...rest
     } = this.props;
     const componentClassNames = classNames([
@@ -114,31 +123,36 @@ export default class TinyDatePicker extends Component<Props> {
             }
           }}
           renderInput={props => (
-            <TinyInput
-              {...props}
-              onChange={(value, evt) => props.onChange(evt)}
-              onFocus={(...args) => {
-                props.onFocus(...args);
-                this.ensureResetButtonExistence();
-              }}
-              onInput={evt => {
-                const inputDate = moment(evt.target.value, dateFormat);
-                if (
-                  !inputDate.isValid() ||
-                  (isValidDate && !isValidDate(inputDate))
-                ) {
-                  evt.target.value = '';
-                }
-                if (props.onInput) {
-                  props.onInput(evt);
-                }
-              }}
-              value={value ? moment(value).format(dateFormat) : ''}
-              useReadMode
-              disablePaste={disablePaste}
-              innerLabelPrefix={innerLabelPrefix}
-              innerValue={innerValue}
-            />
+            <>
+              <TinyInput
+                {...props}
+                label={label}
+                placeholder={placeholder}
+                onChange={(value, evt) => props.onChange(evt)}
+                onFocus={(...args) => {
+                  props.onFocus(...args);
+                  this.ensureResetButtonExistence();
+                }}
+                onInput={evt => {
+                  const inputDate = moment(evt.target.value, dateFormat);
+                  if (
+                    !inputDate.isValid() ||
+                    (isValidDate && !isValidDate(inputDate))
+                  ) {
+                    evt.target.value = '';
+                  }
+                  if (props.onInput) {
+                    props.onInput(evt);
+                  }
+                }}
+                value={value ? moment(value).format(dateFormat) : ''}
+                disablePaste={disablePaste}
+                innerLabelPrefix={innerLabelPrefix}
+                innerValue={innerValue}
+                useReadMode={useReadMode}
+                error={error}
+              />
+            </>
           )}
           {...rest}
         />

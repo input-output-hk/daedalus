@@ -21,14 +21,15 @@ export const generateFilterOptions = (
   const dates = transactions
     .filter(({ date }) => !!date)
     .map(({ date }) => (date ? date.getTime() : 0));
-  const amounts = transactions.map(({ amount }) => Math.abs(amount.toNumber()));
-  const dateRange = DateRangeTypes.ALL;
+  const amounts = transactions.map(({ amount }) => amount.absoluteValue());
+  const dateRange = DateRangeTypes.ANY_TIME;
   const fromDate =
     dates.length > 0 ? moment(Math.min(...dates)).format('YYYY-MM-DD') : '';
   const toDate =
     dates.length > 0 ? moment(Math.max(...dates)).format('YYYY-MM-DD') : '';
   const fromAmount = '';
-  const toAmount = amounts.length > 0 ? Math.max(...amounts).toString() : '';
+  const toAmount =
+    amounts.length > 0 ? BigNumber.max(...amounts).toString() : '';
   const incomingChecked = true;
   const outgoingChecked = true;
 
@@ -164,7 +165,7 @@ export const getNumberOfFilterDimensionsApplied = (
   if (searchTerm) {
     result++;
   }
-  if (dateRange !== DateRangeTypes.ALL && (fromDate || toDate)) {
+  if (dateRange !== DateRangeTypes.ANY_TIME && (fromDate || toDate)) {
     result++;
   }
   if (fromAmount || toAmount) {
@@ -179,23 +180,25 @@ export const getNumberOfFilterDimensionsApplied = (
 
 export const calculateDateRange = (
   dateRange: string,
-  customDateRange: { customFromDate: string, customToDate: string }
+  dateRangeFromTo: { fromDate: string, toDate: string }
 ) => {
-  const { customFromDate, customToDate } = customDateRange;
+  const { fromDate: fromValue, toDate: toValue } = dateRangeFromTo;
   let fromDate = null;
   let toDate = null;
 
-  if (dateRange === DateRangeTypes.ALL) {
+  if (dateRange === DateRangeTypes.ANY_TIME) {
     fromDate = '';
     toDate = '';
-  } else if (dateRange === DateRangeTypes.CUSTOM_DATE_RANGE) {
-    fromDate = customFromDate;
-    toDate = customToDate;
+  } else if (dateRange === DateRangeTypes.CUSTOM) {
+    fromDate = fromValue;
+    toDate = toValue;
   } else {
-    if (dateRange === DateRangeTypes.THIS_WEEK) {
-      fromDate = moment().startOf('week');
-    } else if (dateRange === DateRangeTypes.THIS_MONTH) {
-      fromDate = moment().startOf('month');
+    if (dateRange === DateRangeTypes.LAST_7_DAYS) {
+      fromDate = moment().subtract(6, 'days');
+    } else if (dateRange === DateRangeTypes.LAST_30_DAYS) {
+      fromDate = moment().subtract(29, 'days');
+    } else if (dateRange === DateRangeTypes.LAST_90_DAYS) {
+      fromDate = moment().subtract(89, 'days');
     } else if (dateRange === DateRangeTypes.THIS_YEAR) {
       fromDate = moment().startOf('year');
     } else {
@@ -247,29 +250,31 @@ export const formatAmountValue = (
 };
 
 export const validateFilterForm = (values: {
-  dateRange: DateRangeType,
-  customFromDate: string,
-  customToDate: string,
+  fromDate: string,
+  toDate: string,
   fromAmount: string,
   toAmount: string,
 }) => {
-  const {
-    dateRange,
-    customFromDate,
-    customToDate,
-    fromAmount,
-    toAmount,
-  } = values;
+  const { fromDate, toDate, fromAmount, toAmount } = values;
+  const invalidFields = { toDate: false, toAmount: false };
 
   if (
-    (dateRange === DateRangeTypes.CUSTOM_DATE_RANGE &&
-      customFromDate &&
-      customToDate &&
-      moment(customFromDate).valueOf() > moment(customToDate).valueOf()) ||
-    (fromAmount && toAmount && Number(fromAmount) > Number(toAmount))
+    fromDate &&
+    toDate &&
+    moment(fromDate).valueOf() > moment(toDate).valueOf()
   ) {
-    return false;
+    invalidFields.toDate = true;
+  }
+  if (
+    fromAmount &&
+    toAmount &&
+    new BigNumber(fromAmount).greaterThan(new BigNumber(toAmount))
+  ) {
+    invalidFields.toAmount = true;
   }
 
-  return true;
+  return {
+    isValid: !invalidFields.toDate && !invalidFields.toAmount,
+    invalidFields,
+  };
 };

@@ -6,11 +6,11 @@ import { observer } from 'mobx-react';
 import moment from 'moment';
 import BigNumber from 'bignumber.js';
 import { defineMessages, intlShape } from 'react-intl';
+import classNames from 'classnames';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import { i18nContext } from '../../../utils/i18nContext';
 import {
   calculateDateRange,
-  formatDateValue,
   formatAmountValue,
   validateFilterForm,
 } from '../../../utils/transaction';
@@ -24,70 +24,64 @@ import TinySelect from '../../widgets/forms/TinySelect';
 import TinyInput from '../../widgets/forms/TinyInput';
 import TinyDatePicker from '../../widgets/forms/TinyDatePicker';
 import TinyButton from '../../widgets/forms/TinyButton';
-import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
 import globalMessages from '../../../i18n/global-messages';
 import styles from './FilterDialog.scss';
 
 const messages = defineMessages({
-  filterBy: {
-    id: 'wallet.transaction.filter.filterBy',
-    defaultMessage: '!!!Filter by',
-    description: 'Title of filter panel.',
-  },
-  reset: {
-    id: 'wallet.transaction.filter.reset',
-    defaultMessage: '!!!reset',
-    description: 'Reset link text on filter panel.',
-  },
-  type: {
-    id: 'wallet.transaction.filter.type',
-    defaultMessage: '!!!Type',
-    description: 'Filter Type.',
-  },
   incoming: {
     id: 'wallet.transaction.filter.incoming',
-    defaultMessage: '!!!Incoming',
+    defaultMessage: '!!!Ada received',
     description: 'Incoming filter type.',
   },
   outgoing: {
     id: 'wallet.transaction.filter.outgoing',
-    defaultMessage: '!!!Outgoing',
+    defaultMessage: '!!!Ada sent',
     description: 'Outgoing filter type.',
   },
   dateRange: {
     id: 'wallet.transaction.filter.dateRange',
-    defaultMessage: '!!!Date range',
+    defaultMessage: '!!!Time',
     description: 'Date range of filter.',
   },
-  thisWeek: {
-    id: 'wallet.transaction.filter.thisWeek',
-    defaultMessage: '!!!This week',
-    description: 'This week date range of filter.',
+  anyTime: {
+    id: 'wallet.transaction.filter.anyTime',
+    defaultMessage: '!!!Any time',
+    description: 'All date range of filter.',
   },
-  thisMonth: {
-    id: 'wallet.transaction.filter.thisMonth',
-    defaultMessage: '!!!This month',
-    description: 'This month date range of filter.',
+  last7Days: {
+    id: 'wallet.transaction.filter.last7Days',
+    defaultMessage: '!!!Last 7 days',
+    description: 'Last 7 days range of filter.',
+  },
+  last30Days: {
+    id: 'wallet.transaction.filter.last30Days',
+    defaultMessage: '!!!Last 30 days',
+    description: 'Last 30 days range of filter.',
+  },
+  last90Days: {
+    id: 'wallet.transaction.filter.last90Days',
+    defaultMessage: '!!!Last 90 days',
+    description: 'Last 90 days range of filter.',
   },
   thisYear: {
     id: 'wallet.transaction.filter.thisYear',
     defaultMessage: '!!!This year',
     description: 'This year date range of filter.',
   },
-  customDateRange: {
-    id: 'wallet.transaction.filter.customDateRange',
-    defaultMessage: '!!!Custom date range',
+  custom: {
+    id: 'wallet.transaction.filter.custom',
+    defaultMessage: '!!!Custom',
     description: 'Custom date range of filter.',
   },
   amountRange: {
     id: 'wallet.transaction.filter.amountRange',
-    defaultMessage: '!!!Amount range',
+    defaultMessage: '!!!Amount of ada',
     description: 'Amount range of filter.',
   },
-  filter: {
-    id: 'wallet.transaction.filter.filter',
-    defaultMessage: '!!!Filter',
+  apply: {
+    id: 'wallet.transaction.filter.apply',
+    defaultMessage: '!!!Apply',
     description: 'Filter button label.',
   },
 });
@@ -175,24 +169,28 @@ export default class FilterDialog extends Component<Props> {
 
     this.dateRangeOptions = [
       {
-        label: intl.formatMessage(globalMessages.all),
-        value: DateRangeTypes.ALL,
+        label: intl.formatMessage(messages.anyTime),
+        value: DateRangeTypes.ANY_TIME,
       },
       {
-        label: intl.formatMessage(messages.thisWeek),
-        value: DateRangeTypes.THIS_WEEK,
+        label: intl.formatMessage(messages.last7Days),
+        value: DateRangeTypes.LAST_7_DAYS,
       },
       {
-        label: intl.formatMessage(messages.thisMonth),
-        value: DateRangeTypes.THIS_MONTH,
+        label: intl.formatMessage(messages.last30Days),
+        value: DateRangeTypes.LAST_30_DAYS,
+      },
+      {
+        label: intl.formatMessage(messages.last90Days),
+        value: DateRangeTypes.LAST_90_DAYS,
       },
       {
         label: intl.formatMessage(messages.thisYear),
         value: DateRangeTypes.THIS_YEAR,
       },
       {
-        label: intl.formatMessage(messages.customDateRange),
-        value: DateRangeTypes.CUSTOM_DATE_RANGE,
+        label: intl.formatMessage(messages.custom),
+        value: DateRangeTypes.CUSTOM,
       },
     ];
     this.form = new ReactToolboxMobxForm({
@@ -211,11 +209,11 @@ export default class FilterDialog extends Component<Props> {
           label: intl.formatMessage(messages.dateRange),
           value: dateRange,
         },
-        customFromDate: {
+        fromDate: {
           label: '',
           value: fromDate,
         },
-        customToDate: {
+        toDate: {
           label: '',
           value: toDate,
         },
@@ -273,12 +271,8 @@ export default class FilterDialog extends Component<Props> {
       outgoingChecked,
     } = emptyTransactionFilterOptions;
 
-    if (this.form.select('customFromDate')) {
-      this.form.select('customFromDate').set(fromDate);
-    }
-    if (this.form.select('customToDate')) {
-      this.form.select('customToDate').set(toDate);
-    }
+    this.form.select('fromDate').set(fromDate);
+    this.form.select('toDate').set(toDate);
     this.form.select('dateRange').set(dateRange);
     this.form.select('fromAmount').set(fromAmount);
     this.form.select('toAmount').set(toAmount);
@@ -290,16 +284,11 @@ export default class FilterDialog extends Component<Props> {
     this.form.submit({
       onSuccess: form => {
         const { onFilter } = this.props;
-        const {
-          dateRange,
-          customFromDate,
-          customToDate,
-          ...rest
-        } = form.values();
-        if (validateFilterForm(form.values())) {
+        const { dateRange, fromDate, toDate, ...rest } = form.values();
+        if (validateFilterForm(form.values()).isValid) {
           const dateRangePayload = calculateDateRange(dateRange, {
-            customFromDate,
-            customToDate,
+            fromDate,
+            toDate,
           });
 
           onFilter({
@@ -312,21 +301,25 @@ export default class FilterDialog extends Component<Props> {
       onError: () => null,
     });
 
-  isValidDate = (date: Object) => {
+  isValidFromDate = (date: Object) => {
     return date.isSameOrBefore(moment().endOf('day'));
+  };
+
+  isValidToDate = (date: Object) => {
+    const { fromDate } = this.form.values();
+    return (
+      date.isSameOrBefore(moment().endOf('day')) &&
+      date.isSameOrAfter(moment(fromDate).startOf('day'))
+    );
   };
 
   renderTypeField = () => {
     const { form } = this;
-    const { intl } = this.context;
     const incomingCheckboxField = form.$('incomingChecked');
     const outgoingCheckboxField = form.$('outgoingChecked');
 
     return (
       <div className={styles.type}>
-        <div className={styles.header}>
-          <label>{intl.formatMessage(messages.type)}</label>
-        </div>
         <div className={styles.body}>
           <div className={styles.typeCheckbox}>
             <TinyCheckbox
@@ -362,7 +355,7 @@ export default class FilterDialog extends Component<Props> {
     );
   };
 
-  renderCustomDateRangeField = () => {
+  renderDateRangeFromToField = () => {
     const { form } = this;
     const { intl } = this.context;
     const {
@@ -370,55 +363,48 @@ export default class FilterDialog extends Component<Props> {
       dateFormat,
       defaultFilterOptions: { fromDate, toDate },
     } = this.props;
+    const { invalidFields } = validateFilterForm(form.values());
     const defaultFromDate = fromDate || '1970-01-01';
     const defaultToDate = toDate || moment().format('YYYY-MM-DD');
-    const customFromDateField = form.$('customFromDate');
-    const customToDateField = form.$('customToDate');
-    const { customFromDate, customToDate } = form.values();
-    const customFromDateInnerValue = formatDateValue(
-      customFromDate,
-      defaultFromDate,
-      dateFormat
-    );
-    const customToDateInnerValue = formatDateValue(
-      customToDate,
-      defaultToDate,
-      dateFormat
-    );
+    const fromDateField = form.$('fromDate');
+    const toDateField = form.$('toDate');
+    const fromDateClassNames = classNames([
+      styles.dateRangeInput,
+      styles.fromDateInput,
+    ]);
+    const toDateClassNames = classNames([
+      styles.dateRangeInput,
+      styles.toDateInput,
+    ]);
 
     return (
-      <div className={styles.customDateRange}>
-        <div className={styles.header}>
-          <label>{intl.formatMessage(messages.customDateRange)}</label>
-          <DialogCloseButton
-            onClose={() => form.select('dateRange').set(DateRangeTypes.ALL)}
-          />
-        </div>
+      <div className={styles.dateRangeFromTo}>
         <div className={styles.body}>
-          <div className={styles.dateRangeInput}>
+          <div className={fromDateClassNames}>
             <TinyDatePicker
-              {...customFromDateField.bind()}
-              innerLabelPrefix={intl.formatMessage(globalMessages.rangeFrom)}
-              innerValue={customFromDateInnerValue}
+              {...fromDateField.bind()}
+              label={intl.formatMessage(globalMessages.rangeFrom)}
+              placeholder={moment(defaultFromDate).format(dateFormat)}
               pickerPanelPosition="left"
               closeOnSelect
-              onReset={() => form.select('customFromDate').set('')}
-              isValidDate={this.isValidDate}
+              onReset={() => form.select('fromDate').set('')}
+              isValidDate={this.isValidFromDate}
               locale={locale}
               dateFormat={dateFormat}
             />
           </div>
-          <div className={styles.dateRangeInput}>
+          <div className={toDateClassNames}>
             <TinyDatePicker
-              {...customToDateField.bind()}
-              innerLabelPrefix={intl.formatMessage(globalMessages.rangeTo)}
-              innerValue={customToDateInnerValue}
+              {...toDateField.bind()}
+              label={intl.formatMessage(globalMessages.rangeTo)}
+              placeholder={moment(defaultToDate).format(dateFormat)}
               pickerPanelPosition="right"
               closeOnSelect
-              onReset={() => form.select('customToDate').set('')}
-              isValidDate={this.isValidDate}
+              onReset={() => form.select('toDate').set('')}
+              isValidDate={this.isValidToDate}
               locale={locale}
               dateFormat={dateFormat}
+              error={invalidFields.toDate}
             />
           </div>
         </div>
@@ -453,6 +439,7 @@ export default class FilterDialog extends Component<Props> {
     const {
       defaultFilterOptions: { fromAmount, toAmount },
     } = this.props;
+    const { invalidFields } = validateFilterForm(form.values());
     const defaultFromAmount = fromAmount || '0';
     const defaultToAmount = toAmount || '10000';
     const fromAmountField = form.$('fromAmount');
@@ -504,6 +491,7 @@ export default class FilterDialog extends Component<Props> {
               innerLabelPrefix={intl.formatMessage(globalMessages.rangeTo)}
               innerLabelSuffix={intl.formatMessage(globalMessages.unitAda)}
               innerValue={toAmountInnerValue}
+              error={invalidFields.toAmount}
             />
           </div>
         </div>
@@ -513,14 +501,14 @@ export default class FilterDialog extends Component<Props> {
 
   renderActionButton = () => {
     const { intl } = this.context;
-    const isFormValid = validateFilterForm(this.form.values());
+    const { isValid } = validateFilterForm(this.form.values());
 
     return (
       <div className={styles.action}>
         <TinyButton
-          label={intl.formatMessage(messages.filter)}
+          label={intl.formatMessage(messages.apply)}
           loading={false}
-          disabled={!isFormValid}
+          disabled={!isValid}
           onClick={this.handleSubmit}
         />
       </div>
@@ -530,9 +518,6 @@ export default class FilterDialog extends Component<Props> {
   render() {
     const { intl } = this.context;
     const { onClose } = this.props;
-    const { dateRange } = this.form.values();
-    const isCustomDateRangeSelected =
-      dateRange === DateRangeTypes.CUSTOM_DATE_RANGE;
 
     return (
       <Dialog
@@ -543,16 +528,16 @@ export default class FilterDialog extends Component<Props> {
         <div ref={this.handleSelfRef}>
           <div className={styles.title}>
             <h4 className={styles.titleText}>
-              {intl.formatMessage(messages.filterBy)}
+              {intl.formatMessage(globalMessages.filter)}
             </h4>
             <button className={styles.titleLink} onClick={this.resetForm}>
-              {intl.formatMessage(messages.reset)}
+              {intl.formatMessage(globalMessages.reset)}
             </button>
           </div>
           <div className={styles.content}>
             {this.renderTypeField()}
-            {!isCustomDateRangeSelected && this.renderDateRangeField()}
-            {isCustomDateRangeSelected && this.renderCustomDateRangeField()}
+            {this.renderDateRangeField()}
+            {this.renderDateRangeFromToField()}
             {this.renderAmountRangeField()}
             {this.renderActionButton()}
           </div>

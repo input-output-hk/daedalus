@@ -26,18 +26,20 @@ const SEARCH_SKIP = 0;
 const RECENT_TRANSACTIONS_LIMIT = 50; // eslint-disable-line
 
 export type DateRangeType =
-  | 'all'
-  | 'thisWeek'
-  | 'thisMonth'
+  | 'anyTime'
+  | 'last7Days'
+  | 'last30Days'
+  | 'last90Days'
   | 'thisYear'
-  | 'customDateRange';
+  | 'custom';
 
 export const DateRangeTypes = {
-  ALL: 'all',
-  THIS_WEEK: 'thisWeek',
-  THIS_MONTH: 'thisMonth',
+  ANY_TIME: 'anyTime',
+  LAST_7_DAYS: 'last7Days',
+  LAST_30_DAYS: 'last30Days',
+  LAST_90_DAYS: 'last90Days',
   THIS_YEAR: 'thisYear',
-  CUSTOM_DATE_RANGE: 'customDateRange',
+  CUSTOM: 'custom',
 };
 
 export type TransactionFilterOptionsType = {
@@ -57,7 +59,7 @@ export const emptyTransactionFilterOptions = {
   searchTerm: '',
   searchLimit: INITIAL_SEARCH_LIMIT,
   searchSkip: SEARCH_SKIP,
-  dateRange: DateRangeTypes.ALL,
+  dateRange: DateRangeTypes.ANY_TIME,
   fromDate: '',
   toDate: '',
   fromAmount: '',

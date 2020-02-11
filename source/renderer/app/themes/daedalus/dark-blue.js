@@ -818,6 +818,13 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-transactions-filter-modal-bg-color': '#314259',
     '--theme-transactions-filter-date-picker-shadow':
       '0 0 20px 0 rgba(0, 0, 0, 0.4)',
+    '--theme-transactions-filter-reset-button-text-color': '#282c31',
+    '--theme-transactions-filter-reset-button-background-color':
+      'rgba(250, 251, 252, 0.4)',
+    '--theme-transactions-filter-reset-button-background-color-hover':
+      'rgba(250, 251, 252, 0.6)',
+    '--theme-transactions-filter-reset-button-background-color-active':
+      'rgba(250, 251, 252, 0.8)',
   },
   uploader: {
     '--theme-uploader-text-color': '#e9f4fe',

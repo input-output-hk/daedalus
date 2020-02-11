@@ -805,6 +805,13 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-transactions-filter-modal-bg-color': '#fff',
     '--theme-transactions-filter-date-picker-shadow':
       '0 5px 20px 0 rgba(0, 0, 0, 0.25)',
+    '--theme-transactions-filter-reset-button-text-color': '#fafbfc',
+    '--theme-transactions-filter-reset-button-background-color':
+      'rgba(94, 96, 102, 0.4)',
+    '--theme-transactions-filter-reset-button-background-color-hover':
+      'rgba(94, 96, 102, 0.6)',
+    '--theme-transactions-filter-reset-button-background-color-active':
+      'rgba(94, 96, 102, 0.8)',
   },
   uploader: {
     '--theme-uploader-text-color': '#2d2d2d',

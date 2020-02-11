@@ -1194,6 +1194,18 @@ export const createDaedalusComponentsTheme = (
       }`,
       '--theme-transactions-filter-date-picker-shadow':
         '0 5px 20px 0 rgba(0, 0, 0, 0.25)',
+      '--theme-transactions-filter-reset-button-text-color': `${
+        background.primary.lightest
+      }`,
+      '--theme-transactions-filter-reset-button-background-color': `${
+        background.primary.regular
+      }`,
+      '--theme-transactions-filter-reset-button-background-color-hover': `${chroma(
+        background.primary.regular
+      ).alpha(0.5)}`,
+      '--theme-transactions-filter-reset-button-background-color-active': `${
+        background.primary.regular
+      }`,
     },
     uploader: {
       '--theme-uploader-text-color': `${text.primary}`,
