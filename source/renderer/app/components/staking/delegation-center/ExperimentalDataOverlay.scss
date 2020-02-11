@@ -21,13 +21,13 @@
 
       svg {
         path {
-          fill: var(--theme-experimental-data-overlay-logo-fill-color);
+          fill: var(--theme-splash-network-logo-fill-color);
         }
       }
     }
 
     .title {
-      color: var(--theme-experimental-data-overlay-title-color);
+      color: var(--theme-splash-network-title-color);
       font-size: 20px;
       line-height: 1.2;
       margin-bottom: 16px;
@@ -35,7 +35,7 @@
 
     .description {
       background-color: var(
-        --theme-experimental-data-overlay-description-background-color
+        --theme-splash-network-description-background-color
       );
       border-radius: 4px;
       font-size: 14px;
@@ -50,7 +50,7 @@
       }
 
       p {
-        color: var(--theme-experimental-data-overlay-description-color);
+        color: var(--theme-splash-network-description-color);
         margin-bottom: 12px;
 
         span {
@@ -59,7 +59,7 @@
           width: 14.5px;
 
           &:after {
-            background-color: var(--theme-experimental-data-overlay-logo-fill-color);
+            background-color: var(--theme-splash-network-logo-fill-color);
             content: '';
             height: 14.5px;
             -webkit-mask: url('../../../assets/images/experiment-icon.svg')
@@ -82,21 +82,21 @@
     .action {
       .actionButton {
         background-color: var(
-          --theme-experimental-data-overlay-overlay-button-background-color
+          --theme-splash-network-overlay-button-background-color
         );
         border: solid 1px
-          var(--theme-experimental-data-overlay-overlay-button-border-color);
-        color: var(--theme-experimental-data-overlay-overlay-button-text-color);
+          var(--theme-splash-network-overlay-button-border-color);
+        color: var(--theme-splash-network-overlay-button-text-color);
         font-weight: 500;
         line-height: 1.36;
         margin: 0 auto;
 
         &:hover {
           background-color: var(
-            --theme-experimental-data-overlay-overlay-button-background-color-hover
+            --theme-splash-network-overlay-button-background-color-hover
           );
           border: none;
-          color: var(--theme-experimental-data-overlay-overlay-button-text-color-hover);
+          color: var(--theme-splash-network-overlay-button-text-color-hover);
         }
       }
     }
