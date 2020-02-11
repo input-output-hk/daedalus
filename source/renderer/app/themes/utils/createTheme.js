@@ -548,6 +548,9 @@ export const createDaedalusComponentsTheme = (
       '--theme-color-error': `${error.regular}`,
     },
     experimentalDataOverlay: {
+      '--theme-experimental-data-overlay-background-color': `${chroma(
+        background.secondary.regular
+      ).alpha(0.96)}`,
       '--theme-experimental-data-overlay-button-background-color': `${
         background.secondary.dark
       }`,
