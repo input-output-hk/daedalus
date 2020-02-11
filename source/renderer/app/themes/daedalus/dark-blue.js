@@ -212,6 +212,8 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-color-error': '#ea4c5b',
   },
   experimentalDataOverlay: {
+    '--theme-experimental-data-overlay-background-color':
+      'rgba(38, 51, 69, 0.96)',
     '--theme-experimental-data-overlay-button-background-color':
       'rgba(0, 0, 0, 0.1)',
     '--theme-experimental-data-overlay-button-background-color-hover':

@@ -199,6 +199,7 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-color-error': '#ea4c5b',
   },
   experimentalDataOverlay: {
+    '--theme-experimental-data-overlay-background-color': '#fffffff5',
     '--theme-experimental-data-overlay-button-background-color':
       'rgba(41, 181, 149, 0.1)',
     '--theme-experimental-data-overlay-button-background-color-hover':

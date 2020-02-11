@@ -200,6 +200,7 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--theme-color-error': '#ea4c5b',
   },
   experimentalDataOverlay: {
+    '--theme-experimental-data-overlay-background-color': '#36374df5',
     '--theme-experimental-data-overlay-logo-fill-color': '#fff',
     '--theme-experimental-data-overlay-title-color': '#fff',
     '--theme-experimental-data-overlay-description-background-color':
