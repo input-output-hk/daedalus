@@ -4,6 +4,7 @@ Changelog
 ## vNext
 
 ### Feature
+- Implemented experimental data UI ([PR 1845](https://github.com/input-output-hk/daedalus/pull/1845))
 - Renamed "Profit margin" into "Pool margin" on the stake pool tooltip ([PR 1841](https://github.com/input-output-hk/daedalus/pull/1841))
 
 ### Fixes
