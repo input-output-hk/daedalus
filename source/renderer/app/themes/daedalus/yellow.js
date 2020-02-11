@@ -199,6 +199,21 @@ export const YELLOW_THEME_OUTPUT = {
   errors: {
     '--theme-color-error': '#ea4c5b',
   },
+  experimentalDataOverlay: {
+    '--theme-experimental-data-overlay-button-background-color':
+      'rgba(0, 0, 0, 0.1)',
+    '--theme-experimental-data-overlay-button-background-color-hover':
+      '#2d2d2d',
+    '--theme-experimental-data-overlay-button-border-color': '#2d2d2d',
+    '--theme-experimental-data-overlay-button-text-color': '#2d2d2d',
+    '--theme-experimental-data-overlay-button-text-color-hover': '#fff',
+    '--theme-experimental-data-overlay-description-background-color':
+      'rgba(0, 0, 0, 0.1)',
+    '--theme-experimental-data-overlay-description-color':
+      'rgba(45, 45, 45, 0.7)',
+    '--theme-experimental-data-overlay-logo-fill-color': '#2d2d2d',
+    '--theme-experimental-data-overlay-title-color': '#2d2d2d',
+  },
   fonts: {
     '--font-ultralight': 'NotoSans-ExtraLight, NotoSansCJKjp-Thin',
     '--font-thin': 'NotoSans-Thin, NotoSansCJKjp-Thin',

@@ -14,6 +14,7 @@ import StakingWithNavigation from '../../../source/renderer/app/components/staki
 import StakingCountdown from '../../../source/renderer/app/components/staking/countdown/StakingCountdown';
 import StakingInfo from '../../../source/renderer/app/components/staking/info/StakingInfo';
 import DelegationCenterNoWallets from '../../../source/renderer/app/components/staking/delegation-center/DelegationCenterNoWallets';
+import ExperimentalDataOverlay from '../../../source/renderer/app/components/staking/delegation-center/ExperimentalDataOverlay';
 
 import { StakePoolsStory } from './StakePools.stories';
 import { StakingRewardsStory } from './Rewards.stories';
@@ -184,5 +185,13 @@ storiesOf('Decentralization | Staking', module)
     StakingUndelegateConfirmationResultStory,
     {
       id: 'undelegate-confirmation-result',
+    }
+  )
+
+  .add(
+    'Experimental Data Overlay',
+    props => <ExperimentalDataOverlay {...props} />,
+    {
+      id: 'experimental-data-overlay',
     }
   );

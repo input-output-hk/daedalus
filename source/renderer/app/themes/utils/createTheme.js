@@ -547,6 +547,31 @@ export const createDaedalusComponentsTheme = (
     errors: {
       '--theme-color-error': `${error.regular}`,
     },
+    experimentalDataOverlay: {
+      '--theme-experimental-data-overlay-button-background-color': `${
+        background.secondary.dark
+      }`,
+      '--theme-experimental-data-overlay-button-background-color-hover': `${
+        text.secondary
+      }`,
+      '--theme-experimental-data-overlay-button-border-color': `${
+        text.secondary
+      }`,
+      '--theme-experimental-data-overlay-button-text-color': `${
+        text.secondary
+      }`,
+      '--theme-experimental-data-overlay-button-text-color-hover': `${
+        background.secondary.regular
+      }`,
+      '--theme-experimental-data-overlay-description-background-color': `${chroma(
+        background.secondary.regular
+      ).alpha(0.96)}`,
+      '--theme-experimental-data-overlay-description-color': `${chroma(
+        text.secondary
+      ).alpha(0.7)}`,
+      '--theme-experimental-data-overlay-logo-fill-color': `${text.secondary}`,
+      '--theme-experimental-data-overlay-title-color': `${text.secondary}`,
+    },
     fonts: {
       '--font-ultralight': `${fonts.ultralight}`,
       '--font-thin': `${fonts.thin}`,

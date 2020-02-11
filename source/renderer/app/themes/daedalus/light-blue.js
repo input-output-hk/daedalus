@@ -208,6 +208,21 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
   errors: {
     '--theme-color-error': '#ea4c5b',
   },
+  experimentalDataOverlay: {
+    '--theme-experimental-data-overlay-button-background-color':
+      'rgba(0, 0, 0, 0.1)',
+    '--theme-experimental-data-overlay-button-background-color-hover':
+      '#fafbfc',
+    '--theme-experimental-data-overlay-button-border-color': '#fafbfc',
+    '--theme-experimental-data-overlay-button-text-color': '#fafbfc',
+    '--theme-experimental-data-overlay-button-text-color-hover': '#243e62',
+    '--theme-experimental-data-overlay-description-background-color':
+      'rgba(0, 0, 0, 0.1)',
+    '--theme-experimental-data-overlay-description-color':
+      'rgba(250, 251, 252, 0.7)',
+    '--theme-experimental-data-overlay-logo-fill-color': '#fafbfc',
+    '--theme-experimental-data-overlay-title-color': '#fafbfc',
+  },
   fonts: {
     '--font-ultralight': 'NotoSans-ExtraLight, NotoSansCJKjp-Thin',
     '--font-thin': 'NotoSans-Thin, NotoSansCJKjp-Thin',

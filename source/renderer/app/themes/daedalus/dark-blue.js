@@ -211,6 +211,21 @@ export const DARK_BLUE_THEME_OUTPUT = {
   errors: {
     '--theme-color-error': '#ea4c5b',
   },
+  experimentalDataOverlay: {
+    '--theme-experimental-data-overlay-button-background-color':
+      'rgba(0, 0, 0, 0.1)',
+    '--theme-experimental-data-overlay-button-background-color-hover':
+      '#e9f4fe',
+    '--theme-experimental-data-overlay-button-border-color': '#e9f4fe',
+    '--theme-experimental-data-overlay-button-text-color': '#e9f4fe',
+    '--theme-experimental-data-overlay-button-text-color-hover': '#263345',
+    '--theme-experimental-data-overlay-description-background-color':
+      'rgba(0, 0, 0, 0.1)',
+    '--theme-experimental-data-overlay-description-color':
+      'rgba(233, 244, 254, 0.7)',
+    '--theme-experimental-data-overlay-logo-fill-color': '#e9f4fe',
+    '--theme-experimental-data-overlay-title-color': '#e9f4fe',
+  },
   fonts: {
     '--font-ultralight': 'NotoSans-ExtraLight, NotoSansCJKjp-Thin',
     '--font-thin': 'NotoSans-Thin, NotoSansCJKjp-Thin',

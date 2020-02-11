@@ -199,6 +199,20 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
   errors: {
     '--theme-color-error': '#ea4c5b',
   },
+  experimentalDataOverlay: {
+    '--theme-experimental-data-overlay-logo-fill-color': '#fff',
+    '--theme-experimental-data-overlay-title-color': '#fff',
+    '--theme-experimental-data-overlay-description-background-color':
+      'rgba(255, 255, 255, 0.1)',
+    '--theme-experimental-data-overlay-description-color':
+      'rgba(255, 255, 255, 0.7)',
+    '--theme-experimental-data-overlay-button-background-color':
+      'rgba(255, 255, 255, 0.1)',
+    '--theme-experimental-data-overlay-button-background-color-hover': '#fff',
+    '--theme-experimental-data-overlay-button-border-color': '#fff',
+    '--theme-experimental-data-overlay-button-text-color': '#fff',
+    '--theme-experimental-data-overlay-button-text-color-hover': '#2a2b3c',
+  },
   fonts: {
     '--font-ultralight': 'NotoSans-ExtraLight, NotoSansCJKjp-Thin',
     '--font-thin': 'NotoSans-Thin, NotoSansCJKjp-Thin',
