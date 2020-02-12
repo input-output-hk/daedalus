@@ -7420,114 +7420,114 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Filter by",
-        "description": "Title of filter panel.",
+        "defaultMessage": "!!!All Transactions",
+        "description": "All Transactions button label.",
         "end": {
           "column": 3,
           "line": 37
         },
         "file": "source/renderer/app/components/wallet/transactions/FilterDialog.js",
-        "id": "wallet.transaction.filter.filterBy",
+        "id": "wallet.transaction.filter.allTransactions",
         "start": {
-          "column": 12,
+          "column": 19,
           "line": 33
         }
       },
       {
-        "defaultMessage": "!!!reset",
-        "description": "Reset link text on filter panel.",
+        "defaultMessage": "!!!Ada received",
+        "description": "Incoming filter type.",
         "end": {
           "column": 3,
           "line": 42
         },
         "file": "source/renderer/app/components/wallet/transactions/FilterDialog.js",
-        "id": "wallet.transaction.filter.reset",
+        "id": "wallet.transaction.filter.incoming",
         "start": {
-          "column": 9,
+          "column": 12,
           "line": 38
         }
       },
       {
-        "defaultMessage": "!!!Type",
-        "description": "Filter Type.",
+        "defaultMessage": "!!!Ada sent",
+        "description": "Outgoing filter type.",
         "end": {
           "column": 3,
           "line": 47
         },
         "file": "source/renderer/app/components/wallet/transactions/FilterDialog.js",
-        "id": "wallet.transaction.filter.type",
+        "id": "wallet.transaction.filter.outgoing",
         "start": {
-          "column": 8,
+          "column": 12,
           "line": 43
         }
       },
       {
-        "defaultMessage": "!!!Incoming",
-        "description": "Incoming filter type.",
+        "defaultMessage": "!!!Time",
+        "description": "Date range of filter.",
         "end": {
           "column": 3,
           "line": 52
         },
         "file": "source/renderer/app/components/wallet/transactions/FilterDialog.js",
-        "id": "wallet.transaction.filter.incoming",
+        "id": "wallet.transaction.filter.dateRange",
         "start": {
-          "column": 12,
+          "column": 13,
           "line": 48
         }
       },
       {
-        "defaultMessage": "!!!Outgoing",
-        "description": "Outgoing filter type.",
+        "defaultMessage": "!!!Select time range",
+        "description": "Select time range indication of filter.",
         "end": {
           "column": 3,
           "line": 57
         },
         "file": "source/renderer/app/components/wallet/transactions/FilterDialog.js",
-        "id": "wallet.transaction.filter.outgoing",
+        "id": "wallet.transaction.filter.selectTimeRange",
         "start": {
-          "column": 12,
+          "column": 19,
           "line": 53
         }
       },
       {
-        "defaultMessage": "!!!Date range",
-        "description": "Date range of filter.",
+        "defaultMessage": "!!!Last 7 days",
+        "description": "Last 7 days range of filter.",
         "end": {
           "column": 3,
           "line": 62
         },
         "file": "source/renderer/app/components/wallet/transactions/FilterDialog.js",
-        "id": "wallet.transaction.filter.dateRange",
+        "id": "wallet.transaction.filter.last7Days",
         "start": {
           "column": 13,
           "line": 58
         }
       },
       {
-        "defaultMessage": "!!!This week",
-        "description": "This week date range of filter.",
+        "defaultMessage": "!!!Last 30 days",
+        "description": "Last 30 days range of filter.",
         "end": {
           "column": 3,
           "line": 67
         },
         "file": "source/renderer/app/components/wallet/transactions/FilterDialog.js",
-        "id": "wallet.transaction.filter.thisWeek",
+        "id": "wallet.transaction.filter.last30Days",
         "start": {
-          "column": 12,
+          "column": 14,
           "line": 63
         }
       },
       {
-        "defaultMessage": "!!!This month",
-        "description": "This month date range of filter.",
+        "defaultMessage": "!!!Last 90 days",
+        "description": "Last 90 days range of filter.",
         "end": {
           "column": 3,
           "line": 72
         },
         "file": "source/renderer/app/components/wallet/transactions/FilterDialog.js",
-        "id": "wallet.transaction.filter.thisMonth",
+        "id": "wallet.transaction.filter.last90Days",
         "start": {
-          "column": 13,
+          "column": 14,
           "line": 68
         }
       },
@@ -7546,21 +7546,21 @@
         }
       },
       {
-        "defaultMessage": "!!!Custom date range",
+        "defaultMessage": "!!!Custom",
         "description": "Custom date range of filter.",
         "end": {
           "column": 3,
           "line": 82
         },
         "file": "source/renderer/app/components/wallet/transactions/FilterDialog.js",
-        "id": "wallet.transaction.filter.customDateRange",
+        "id": "wallet.transaction.filter.custom",
         "start": {
-          "column": 19,
+          "column": 10,
           "line": 78
         }
       },
       {
-        "defaultMessage": "!!!Amount range",
+        "defaultMessage": "!!!Amount of ada",
         "description": "Amount range of filter.",
         "end": {
           "column": 3,
@@ -7574,16 +7574,16 @@
         }
       },
       {
-        "defaultMessage": "!!!Filter",
+        "defaultMessage": "!!!Apply",
         "description": "Filter button label.",
         "end": {
           "column": 3,
           "line": 92
         },
         "file": "source/renderer/app/components/wallet/transactions/FilterDialog.js",
-        "id": "wallet.transaction.filter.filter",
+        "id": "wallet.transaction.filter.apply",
         "start": {
-          "column": 10,
+          "column": 9,
           "line": 88
         }
       }

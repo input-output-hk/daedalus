@@ -7,10 +7,7 @@ import {
   TransactionTypes,
 } from '../domains/WalletTransaction';
 import { formattedWalletAmount } from './formatters';
-import type {
-  DateRangeType,
-  TransactionFilterOptionsType,
-} from '../stores/TransactionsStore';
+import type { TransactionFilterOptionsType } from '../stores/TransactionsStore';
 import { DateRangeTypes } from '../stores/TransactionsStore';
 
 const AMOUNT_RAW_LENGTH_LIMIT = 10;

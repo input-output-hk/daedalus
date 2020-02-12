@@ -14,7 +14,6 @@ import {
   DATE_ENGLISH_OPTIONS,
   TIME_OPTIONS,
 } from '../../../../source/renderer/app/config/profileConfig';
-import { DateRangeTypes } from '../../../../source/renderer/app/stores/TransactionsStore';
 
 // Screens
 import WalletTransactionsList from '../../../../source/renderer/app/components/wallet/transactions/WalletTransactionsList';
@@ -28,7 +27,7 @@ storiesOf('Wallets|Transactions', module)
 
   .add(
     'Transactions - With filter dialog open',
-    ({ locale }: { locale: string }) => (
+    ({ locale, numberFormat }: { locale: string, numberFormat: string }) => (
       <div>
         <FilterButton
           numberOfFilterDimensionsApplied={1}
@@ -38,8 +37,9 @@ storiesOf('Wallets|Transactions', module)
         <FilterDialog
           locale={locale}
           dateFormat="MM/DD/YYYY"
+          numberFormat={numberFormat}
           defaultFilterOptions={{}}
-          populatedFilterOptions={{ dateRange: DateRangeTypes.ALL }}
+          populatedFilterOptions={{ dateRange: '' }}
           onFilter={() => null}
           onClose={() => null}
         />

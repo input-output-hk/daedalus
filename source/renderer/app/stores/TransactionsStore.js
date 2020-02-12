@@ -26,6 +26,7 @@ const SEARCH_SKIP = 0;
 const RECENT_TRANSACTIONS_LIMIT = 50; // eslint-disable-line
 
 export type DateRangeType =
+  | ''
   | 'last7Days'
   | 'last30Days'
   | 'last90Days'
