@@ -10,6 +10,7 @@ import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer
 import FilterDialogContainer from './dialogs/FilterDialogContainer';
 import FilterDialog from '../../components/wallet/transactions/FilterDialog';
 import FilterButton from '../../components/wallet/transactions/FilterButton';
+import FilterResultInfo from '../../components/wallet/transactions/FilterResultInfo';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import { formattedWalletAmount } from '../../utils/formatters';
 import { getNumberOfFilterDimensionsApplied } from '../../utils/transaction';
@@ -21,12 +22,6 @@ export const messages = defineMessages({
     id: 'wallet.transactions.no.transactions',
     defaultMessage: '!!!No transactions',
     description: 'Message shown when wallet has no transactions yet.',
-  },
-  noTransactionsFound: {
-    id: 'wallet.transactions.no.transactions.found',
-    defaultMessage: '!!!No transactions found',
-    description:
-      'Message shown when wallet transaction search returns zero results.',
   },
 });
 
@@ -113,9 +108,6 @@ export default class WalletTransactionsPage extends Component<Props, State> {
       filterOptions
     );
     const noTransactionsLabel = intl.formatMessage(messages.noTransactions);
-    const noTransactionsFoundLabel = intl.formatMessage(
-      messages.noTransactionsFound
-    );
     const hasMoreToLoad = () =>
       searchLimit !== null &&
       searchLimit !== undefined &&
@@ -140,7 +132,7 @@ export default class WalletTransactionsPage extends Component<Props, State> {
       walletTransactions = <WalletNoTransactions label={noTransactionsLabel} />;
     } else if (numberOfFilterDimensionsApplied > 0 && !transactions.length) {
       walletTransactions = (
-        <WalletNoTransactions label={noTransactionsFoundLabel} />
+        <FilterResultInfo filtered={0} total={totalAvailable} />
       );
     } else if (
       searchRequest.isExecutingFirstTime ||

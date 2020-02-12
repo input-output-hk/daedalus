@@ -7593,6 +7593,25 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!<b>{filtered}</b> out of <b>{total}</b> transactions match your filter.",
+        "description": "Filter result info.",
+        "end": {
+          "column": 3,
+          "line": 13
+        },
+        "file": "source/renderer/app/components/wallet/transactions/FilterResultInfo.js",
+        "id": "wallet.transaction.filter.resultInfo",
+        "start": {
+          "column": 14,
+          "line": 8
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/transactions/FilterResultInfo.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Card payment",
         "description": "Transaction type shown for credit card payments.",
         "end": {
@@ -10590,27 +10609,13 @@
         "description": "Message shown when wallet has no transactions yet.",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 25
         },
         "file": "source/renderer/app/containers/wallet/WalletTransactionsPage.js",
         "id": "wallet.transactions.no.transactions",
         "start": {
           "column": 18,
-          "line": 20
-        }
-      },
-      {
-        "defaultMessage": "!!!No transactions found",
-        "description": "Message shown when wallet transaction search returns zero results.",
-        "end": {
-          "column": 3,
-          "line": 30
-        },
-        "file": "source/renderer/app/containers/wallet/WalletTransactionsPage.js",
-        "id": "wallet.transactions.no.transactions.found",
-        "start": {
-          "column": 23,
-          "line": 25
+          "line": 21
         }
       }
     ],
