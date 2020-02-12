@@ -99,15 +99,16 @@
 
     .titleLink {
       background: var(
-        --theme-transactions-filter-reset-button-background-color
+        --theme-transactions-filter-title-button-background-color
       );
       border-radius: 4px;
-      color: var(--theme-transactions-filter-reset-button-text-color);
+      color: var(--theme-transactions-filter-title-button-text-color);
       cursor: pointer;
       font-size: 10px;
       font-weight: 500;
       height: 20px;
       line-height: 1.5;
+      margin-left: 10px;
       padding: 0 8px;
       position: relative;
       text-transform: uppercase;
@@ -124,19 +125,19 @@
 
       &:disabled:hover {
         background: var(
-          --theme-transactions-filter-reset-button-background-color
+          --theme-transactions-filter-title-button-background-color
         );
       }
 
       &:hover {
         background: var(
-          --theme-transactions-filter-reset-button-background-color-hover
+          --theme-transactions-filter-title-button-background-color-hover
         );
       }
 
       &:active {
         background: var(
-          --theme-transactions-filter-reset-button-background-color-active
+          --theme-transactions-filter-title-button-background-color-active
         );
       }
     }

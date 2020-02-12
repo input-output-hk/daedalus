@@ -26,7 +26,6 @@ const SEARCH_SKIP = 0;
 const RECENT_TRANSACTIONS_LIMIT = 50; // eslint-disable-line
 
 export type DateRangeType =
-  | 'anyTime'
   | 'last7Days'
   | 'last30Days'
   | 'last90Days'
@@ -34,7 +33,6 @@ export type DateRangeType =
   | 'custom';
 
 export const DateRangeTypes = {
-  ANY_TIME: 'anyTime',
   LAST_7_DAYS: 'last7Days',
   LAST_30_DAYS: 'last30Days',
   LAST_90_DAYS: 'last90Days',
@@ -59,7 +57,7 @@ export const emptyTransactionFilterOptions = {
   searchTerm: '',
   searchLimit: INITIAL_SEARCH_LIMIT,
   searchSkip: SEARCH_SKIP,
-  dateRange: DateRangeTypes.ANY_TIME,
+  dateRange: '',
   fromDate: '',
   toDate: '',
   fromAmount: '',

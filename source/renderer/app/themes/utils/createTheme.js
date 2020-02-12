@@ -1194,16 +1194,16 @@ export const createDaedalusComponentsTheme = (
       }`,
       '--theme-transactions-filter-date-picker-shadow':
         '0 5px 20px 0 rgba(0, 0, 0, 0.25)',
-      '--theme-transactions-filter-reset-button-text-color': `${
+      '--theme-transactions-filter-title-button-text-color': `${
         background.primary.lightest
       }`,
-      '--theme-transactions-filter-reset-button-background-color': `${
+      '--theme-transactions-filter-title-button-background-color': `${
         background.primary.regular
       }`,
-      '--theme-transactions-filter-reset-button-background-color-hover': `${chroma(
+      '--theme-transactions-filter-title-button-background-color-hover': `${chroma(
         background.primary.regular
       ).alpha(0.5)}`,
-      '--theme-transactions-filter-reset-button-background-color-active': `${
+      '--theme-transactions-filter-title-button-background-color-active': `${
         background.primary.regular
       }`,
     },

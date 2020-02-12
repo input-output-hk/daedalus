@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import type { ElementRef } from 'react';
 import { observer } from 'mobx-react';
 import moment from 'moment';
-import BigNumber from 'bignumber.js';
+import { isEqual, pick } from 'lodash';
 import { defineMessages, intlShape } from 'react-intl';
 import classNames from 'classnames';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
@@ -30,6 +30,11 @@ import globalMessages from '../../../i18n/global-messages';
 import styles from './FilterDialog.scss';
 
 const messages = defineMessages({
+  allTransactions: {
+    id: 'wallet.transaction.filter.allTransactions',
+    defaultMessage: '!!!All Transactions',
+    description: 'All Transactions button label.',
+  },
   incoming: {
     id: 'wallet.transaction.filter.incoming',
     defaultMessage: '!!!Ada received',
@@ -45,10 +50,10 @@ const messages = defineMessages({
     defaultMessage: '!!!Time',
     description: 'Date range of filter.',
   },
-  anyTime: {
-    id: 'wallet.transaction.filter.anyTime',
-    defaultMessage: '!!!Any time',
-    description: 'All date range of filter.',
+  selectTimeRange: {
+    id: 'wallet.transaction.filter.selectTimeRange',
+    defaultMessage: '!!!Select time range',
+    description: 'Select time range indication of filter.',
   },
   last7Days: {
     id: 'wallet.transaction.filter.last7Days',
@@ -171,10 +176,6 @@ export default class FilterDialog extends Component<Props> {
 
     this.dateRangeOptions = [
       {
-        label: intl.formatMessage(messages.anyTime),
-        value: DateRangeTypes.ANY_TIME,
-      },
-      {
         label: intl.formatMessage(messages.last7Days),
         value: DateRangeTypes.LAST_7_DAYS,
       },
@@ -222,12 +223,12 @@ export default class FilterDialog extends Component<Props> {
         fromAmount: {
           type: 'number',
           label: '',
-          value: fromAmount,
+          value: fromAmount ? Number(fromAmount) : '',
         },
         toAmount: {
           type: 'number',
           label: '',
-          value: toAmount,
+          value: toAmount ? Number(toAmount) : '',
         },
       },
     });
@@ -262,7 +263,7 @@ export default class FilterDialog extends Component<Props> {
     }
   };
 
-  resetForm = () => {
+  fillFormFields = (filterOptions: TransactionFilterOptionsType) => {
     const {
       dateRange,
       fromDate,
@@ -271,33 +272,48 @@ export default class FilterDialog extends Component<Props> {
       toAmount,
       incomingChecked,
       outgoingChecked,
-    } = emptyTransactionFilterOptions;
+    } = filterOptions;
 
+    this.form.select('dateRange').set(dateRange);
     this.form.select('fromDate').set(fromDate);
     this.form.select('toDate').set(toDate);
-    this.form.select('dateRange').set(dateRange);
-    this.form.select('fromAmount').set(fromAmount);
-    this.form.select('toAmount').set(toAmount);
+    this.form.select('fromAmount').set(fromAmount ? Number(fromAmount) : '');
+    this.form.select('toAmount').set(toAmount ? Number(toAmount) : '');
     this.form.select('incomingChecked').set(incomingChecked);
     this.form.select('outgoingChecked').set(outgoingChecked);
   };
 
+  resetForm = () => this.fillFormFields(emptyTransactionFilterOptions);
+
+  generateDefaultFilterOptions = () =>
+    this.fillFormFields(this.props.defaultFilterOptions);
+
+  isFormValuesEqualTo = (
+    comparedFilterOptions: TransactionFilterOptionsType
+  ) => {
+    const formFieldNames = Object.keys(this.form.fields.toJSON());
+    return isEqual(
+      this.getComposedFormValues(),
+      pick(comparedFilterOptions, formFieldNames)
+    );
+  };
+
+  getComposedFormValues = () => {
+    const formValues = this.form.values();
+    return {
+      ...formValues,
+      fromAmount: formValues.fromAmount.toString(),
+      toAmount: formValues.toAmount.toString(),
+    };
+  };
+
   handleSubmit = () =>
     this.form.submit({
-      onSuccess: form => {
+      onSuccess: () => {
         const { onFilter } = this.props;
-        const { dateRange, fromDate, toDate, ...rest } = form.values();
-        if (validateFilterForm(form.values()).isValid) {
-          const dateRangePayload = calculateDateRange(dateRange, {
-            fromDate,
-            toDate,
-          });
-
-          onFilter({
-            ...rest,
-            ...dateRangePayload,
-            dateRange,
-          });
+        const formValues = this.getComposedFormValues();
+        if (validateFilterForm(formValues).isValid) {
+          onFilter(formValues);
         }
       },
       onError: () => null,
@@ -345,12 +361,24 @@ export default class FilterDialog extends Component<Props> {
   };
 
   renderDateRangeField = () => {
-    const dateRangeField = this.form.$('dateRange');
+    const { intl } = this.context;
+    const dateRangeFieldBindProps = this.form.$('dateRange').bind();
+    const { fromDate, toDate } = this.form.values();
 
     return (
       <div className={styles.dateRange}>
         <TinySelect
-          {...dateRangeField.bind()}
+          {...dateRangeFieldBindProps}
+          onChange={(...args) => {
+            dateRangeFieldBindProps.onChange(...args);
+            const calculatedDateRange = calculateDateRange(args[0], {
+              fromDate,
+              toDate,
+            });
+            this.form.select('fromDate').set(calculatedDateRange.fromDate);
+            this.form.select('toDate').set(calculatedDateRange.toDate);
+          }}
+          placeholder={intl.formatMessage(messages.selectTimeRange)}
           options={this.dateRangeOptions}
         />
       </div>
@@ -360,16 +388,10 @@ export default class FilterDialog extends Component<Props> {
   renderDateRangeFromToField = () => {
     const { form } = this;
     const { intl } = this.context;
-    const {
-      locale,
-      dateFormat,
-      defaultFilterOptions: { fromDate, toDate },
-    } = this.props;
-    const { invalidFields } = validateFilterForm(form.values());
-    const defaultFromDate = fromDate || '1970-01-01';
-    const defaultToDate = toDate || moment().format('YYYY-MM-DD');
-    const fromDateField = form.$('fromDate');
-    const toDateField = form.$('toDate');
+    const { locale, dateFormat } = this.props;
+    const { invalidFields } = validateFilterForm(this.getComposedFormValues());
+    const fromDateFieldBindProps = form.$('fromDate').bind();
+    const toDateFieldBindProps = form.$('toDate').bind();
     const fromDateClassNames = classNames([
       styles.dateRangeInput,
       styles.fromDateInput,
@@ -384,9 +406,12 @@ export default class FilterDialog extends Component<Props> {
         <div className={styles.body}>
           <div className={fromDateClassNames}>
             <TinyDatePicker
-              {...fromDateField.bind()}
+              {...fromDateFieldBindProps}
+              onChange={(...args) => {
+                fromDateFieldBindProps.onChange(...args);
+                this.form.select('dateRange').set(DateRangeTypes.CUSTOM);
+              }}
               label={intl.formatMessage(globalMessages.rangeFrom)}
-              placeholder={moment(defaultFromDate).format(dateFormat)}
               pickerPanelPosition="left"
               closeOnSelect
               onReset={() => form.select('fromDate').set('')}
@@ -397,9 +422,12 @@ export default class FilterDialog extends Component<Props> {
           </div>
           <div className={toDateClassNames}>
             <TinyDatePicker
-              {...toDateField.bind()}
+              {...toDateFieldBindProps}
+              onChange={(...args) => {
+                toDateFieldBindProps.onChange(...args);
+                this.form.select('dateRange').set(DateRangeTypes.CUSTOM);
+              }}
               label={intl.formatMessage(globalMessages.rangeTo)}
-              placeholder={moment(defaultToDate).format(dateFormat)}
               pickerPanelPosition="right"
               closeOnSelect
               onReset={() => form.select('toDate').set('')}
@@ -417,13 +445,8 @@ export default class FilterDialog extends Component<Props> {
   renderAmountRangeField = () => {
     const { form } = this;
     const { intl } = this.context;
-    const {
-      numberFormat,
-      defaultFilterOptions: { fromAmount, toAmount },
-    } = this.props;
-    const { invalidFields } = validateFilterForm(form.values());
-    const defaultFromAmount = fromAmount || '0';
-    const defaultToAmount = toAmount || '10000';
+    const { numberFormat } = this.props;
+    const { invalidFields } = validateFilterForm(this.getComposedFormValues());
     const fromAmountField = form.$('fromAmount');
     const toAmountField = form.$('toAmount');
     const fromAmountClassNames = classNames([
@@ -446,10 +469,9 @@ export default class FilterDialog extends Component<Props> {
               {...fromAmountField.bind()}
               onSubmit={this.handleSubmit}
               label={intl.formatMessage(globalMessages.rangeFrom)}
-              placeholder={new BigNumber(defaultFromAmount).toFormat()}
               numberFormat={NUMBER_FORMATS[numberFormat]}
               numberLocaleOptions={{
-                maximumFractionDigits: DECIMAL_PLACES_IN_ADA,
+                minimumFractionDigits: DECIMAL_PLACES_IN_ADA,
               }}
               allowSigns={false}
             />
@@ -459,10 +481,9 @@ export default class FilterDialog extends Component<Props> {
               {...toAmountField.bind()}
               onSubmit={this.handleSubmit}
               label={intl.formatMessage(globalMessages.rangeTo)}
-              placeholder={new BigNumber(defaultToAmount).toFormat()}
               numberFormat={NUMBER_FORMATS[numberFormat]}
               numberLocaleOptions={{
-                maximumFractionDigits: DECIMAL_PLACES_IN_ADA,
+                minimumFractionDigits: DECIMAL_PLACES_IN_ADA,
               }}
               allowSigns={false}
               error={invalidFields.toAmount}
@@ -475,14 +496,16 @@ export default class FilterDialog extends Component<Props> {
 
   renderActionButton = () => {
     const { intl } = this.context;
-    const { isValid } = validateFilterForm(this.form.values());
+    const { isValid } = validateFilterForm(this.getComposedFormValues());
 
     return (
       <div className={styles.action}>
         <TinyButton
           label={intl.formatMessage(messages.apply)}
           loading={false}
-          disabled={!isValid}
+          disabled={
+            this.isFormValuesEqualTo(emptyTransactionFilterOptions) || !isValid
+          }
           onClick={this.handleSubmit}
         />
       </div>
@@ -491,7 +514,7 @@ export default class FilterDialog extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { onClose } = this.props;
+    const { defaultFilterOptions, onClose } = this.props;
 
     return (
       <Dialog
@@ -504,9 +527,24 @@ export default class FilterDialog extends Component<Props> {
             <h4 className={styles.titleText}>
               {intl.formatMessage(globalMessages.filter)}
             </h4>
-            <button className={styles.titleLink} onClick={this.resetForm}>
-              {intl.formatMessage(globalMessages.reset)}
-            </button>
+            <div>
+              <button
+                className={styles.titleLink}
+                onClick={this.generateDefaultFilterOptions}
+                disabled={this.isFormValuesEqualTo(defaultFilterOptions)}
+              >
+                {intl.formatMessage(messages.allTransactions)}
+              </button>
+              <button
+                className={styles.titleLink}
+                onClick={this.resetForm}
+                disabled={this.isFormValuesEqualTo(
+                  emptyTransactionFilterOptions
+                )}
+              >
+                {intl.formatMessage(globalMessages.reset)}
+              </button>
+            </div>
           </div>
           <div className={styles.content}>
             {this.renderTypeField()}

@@ -802,11 +802,11 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--theme-transactions-filter-modal-bg-color': '#3f404f',
     '--theme-transactions-filter-date-picker-shadow':
       '0 0 20px 0 rgba(0, 0, 0, 0.4)',
-    '--theme-transactions-filter-reset-button-text-color': '#ffffff',
-    '--theme-transactions-filter-reset-button-background-color': '#afafb866',
-    '--theme-transactions-filter-reset-button-background-color-hover':
+    '--theme-transactions-filter-title-button-text-color': '#ffffff',
+    '--theme-transactions-filter-title-button-background-color': '#afafb866',
+    '--theme-transactions-filter-title-button-background-color-hover':
       '#afafb899',
-    '--theme-transactions-filter-reset-button-background-color-active':
+    '--theme-transactions-filter-title-button-background-color-active':
       '#afafb8cc',
   },
   uploader: {

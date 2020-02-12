@@ -22,12 +22,13 @@ export const generateFilterOptions = (
     .filter(({ date }) => !!date)
     .map(({ date }) => (date ? date.getTime() : 0));
   const amounts = transactions.map(({ amount }) => amount.absoluteValue());
-  const dateRange = DateRangeTypes.ANY_TIME;
+  const dateRange = DateRangeTypes.CUSTOM;
   const fromDate =
     dates.length > 0 ? moment(Math.min(...dates)).format('YYYY-MM-DD') : '';
   const toDate =
     dates.length > 0 ? moment(Math.max(...dates)).format('YYYY-MM-DD') : '';
-  const fromAmount = '';
+  const fromAmount =
+    amounts.length > 0 ? BigNumber.min(...amounts).toString() : '';
   const toAmount =
     amounts.length > 0 ? BigNumber.max(...amounts).toString() : '';
   const incomingChecked = true;
@@ -165,7 +166,7 @@ export const getNumberOfFilterDimensionsApplied = (
   if (searchTerm) {
     result++;
   }
-  if (dateRange !== DateRangeTypes.ANY_TIME && (fromDate || toDate)) {
+  if (dateRange && (fromDate || toDate)) {
     result++;
   }
   if (fromAmount || toAmount) {
@@ -186,7 +187,7 @@ export const calculateDateRange = (
   let fromDate = null;
   let toDate = null;
 
-  if (dateRange === DateRangeTypes.ANY_TIME) {
+  if (!dateRange) {
     fromDate = '';
     toDate = '';
   } else if (dateRange === DateRangeTypes.CUSTOM) {
