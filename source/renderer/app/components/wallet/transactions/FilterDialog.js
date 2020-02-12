@@ -93,7 +93,7 @@ const messages = defineMessages({
 });
 
 const FILTER_PANEL_OFFSET = 103;
-const FILTER_DIALOG_WITH_DATE_PICKER_HEIGHT = 521;
+const FILTER_DIALOG_WITH_DATE_PICKER_HEIGHT = 545;
 
 const applyDialogStyles = () => {
   const dialogElement = window.document.querySelector('.ReactModal__Content');
