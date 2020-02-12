@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import type { Node } from 'react';
+import { NumericInput } from 'react-polymorph/lib/components/NumericInput';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { IDENTIFIERS } from 'react-polymorph/lib/themes/API';
@@ -11,115 +12,22 @@ type Props = {
   innerLabelPrefix?: string,
   innerLabelSuffix?: string,
   innerValue?: Node,
-  notNegative?: boolean,
-  digitCountAfterDecimalPoint?: number,
-  maxLength?: number,
-  onBlur?: Function,
-  onInput?: Function,
-  onPaste?: Function,
   onKeyPress?: Function,
   onSubmit?: Function,
   type?: string,
   useReadMode?: boolean,
-  disablePaste?: boolean,
 };
 
 type State = {
   isEditMode: boolean,
-  prevValue: string,
 };
 
 export default class TinyInput extends Component<Props, State> {
   state = {
     isEditMode: false,
-    prevValue: '',
   };
 
   setEditMode = (isEditMode: boolean) => this.setState({ isEditMode });
-
-  validate = (value: string) => {
-    const { notNegative, type, digitCountAfterDecimalPoint } = this.props;
-    const numberRegex = new RegExp(/^-?\d*\.?\d*$/);
-    const notNegativeNumberRegex = new RegExp(/^\d*\.?\d*$/);
-    const numValue = Number(value);
-    const decimalPointPosition = value.indexOf('.');
-    let result = null;
-
-    if (type !== 'number') {
-      return true;
-    }
-
-    if (notNegative) {
-      result = notNegativeNumberRegex.test(value);
-    } else {
-      result = numberRegex.test(value);
-    }
-
-    if (
-      result &&
-      !Number.isNaN(numValue) &&
-      decimalPointPosition > -1 &&
-      digitCountAfterDecimalPoint &&
-      value.length - decimalPointPosition - 1 > digitCountAfterDecimalPoint
-    ) {
-      result = false;
-    }
-
-    return result;
-  };
-
-  onInput = (evt: SyntheticInputEvent<EventTarget>) => {
-    const { type, onInput, maxLength } = this.props;
-    const { prevValue } = this.state;
-    const zeroLeadingDigitsRegex = new RegExp(/^0\d+$/);
-
-    if (
-      maxLength &&
-      prevValue.length === maxLength &&
-      evt.target.value.length > maxLength
-    ) {
-      evt.target.value = prevValue;
-    } else {
-      if (type === 'number') {
-        if (evt.target.value === '.') {
-          evt.target.value = '0.';
-        }
-        if (zeroLeadingDigitsRegex.test(evt.target.value)) {
-          evt.target.value = `0.${evt.target.value.substring(1)}`;
-        }
-        if (
-          maxLength &&
-          evt.target.value.length === maxLength &&
-          evt.target.value[evt.target.value.length - 1] === '.'
-        ) {
-          evt.target.value = prevValue;
-        }
-      }
-
-      const { value } = evt.target;
-
-      if (this.validate(value)) {
-        this.setState({ prevValue: value });
-      } else {
-        evt.target.value = prevValue;
-      }
-    }
-
-    if (onInput) {
-      onInput(evt);
-    }
-  };
-
-  onPaste = (evt: SyntheticClipboardEvent<EventTarget>) => {
-    const { onPaste, disablePaste } = this.props;
-    const value = evt.clipboardData.getData('text/plain');
-
-    if (disablePaste || !this.validate(value)) {
-      evt.preventDefault();
-    } else if (onPaste) {
-      onPaste(evt);
-    }
-  };
 
   onKeyPress = (evt: SyntheticKeyboardEvent<EventTarget>) => {
     const { onKeyPress, onSubmit } = this.props;
@@ -166,16 +74,26 @@ export default class TinyInput extends Component<Props, State> {
           </div>
         )}
         {(!useReadMode || isEditMode) && (
-          <Input
-            themeId={IDENTIFIERS.INPUT}
-            skin={InputSkin}
-            {...restProps}
-            autoFocus={useReadMode ? true : autoFocus}
-            onInput={this.onInput}
-            onPaste={this.onPaste}
-            onKeyPress={this.onKeyPress}
-            type={type === 'number' ? 'string' : type}
-          />
+          <>
+            {type === 'number' ? (
+              <NumericInput
+                themeId={IDENTIFIERS.INPUT}
+                skin={InputSkin}
+                {...restProps}
+                autoFocus={autoFocus}
+                onKeyPress={this.onKeyPress}
+              />
+            ) : (
+              <Input
+                themeId={IDENTIFIERS.INPUT}
+                skin={InputSkin}
+                {...restProps}
+                autoFocus={useReadMode ? true : autoFocus}
+                onKeyPress={this.onKeyPress}
+                type={type}
+              />
+            )}
+          </>
         )}
       </div>
     );

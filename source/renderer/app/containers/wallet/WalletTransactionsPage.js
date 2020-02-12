@@ -57,11 +57,16 @@ export default class WalletTransactionsPage extends Component<Props, State> {
       defaultFilterOptions,
       populatedFilterOptions,
     } = this.props.stores.transactions;
+    const { currentNumberFormat: numberFormat } = this.props.stores.profile;
 
     this.setState({ isFilterButtonFaded: false });
     dialogs.open.trigger({ dialog: FilterDialog });
     dialogs.updateDataForActiveDialog.trigger({
-      data: { defaultFilterOptions, populatedFilterOptions },
+      data: {
+        defaultFilterOptions,
+        populatedFilterOptions,
+        numberFormat,
+      },
     });
   };
 

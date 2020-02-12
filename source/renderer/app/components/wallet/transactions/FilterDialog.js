@@ -9,9 +9,9 @@ import { defineMessages, intlShape } from 'react-intl';
 import classNames from 'classnames';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import { i18nContext } from '../../../utils/i18nContext';
+import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import {
   calculateDateRange,
-  formatAmountValue,
   validateFilterForm,
 } from '../../../utils/transaction';
 import type { TransactionFilterOptionsType } from '../../../stores/TransactionsStore';
@@ -19,6 +19,7 @@ import {
   DateRangeTypes,
   emptyTransactionFilterOptions,
 } from '../../../stores/TransactionsStore';
+import { NUMBER_FORMATS } from '../../../../../common/types/number.types';
 import TinyCheckbox from '../../widgets/forms/TinyCheckbox';
 import TinySelect from '../../widgets/forms/TinySelect';
 import TinyInput from '../../widgets/forms/TinyInput';
@@ -135,6 +136,7 @@ const applyDialogStyles = () => {
 type Props = {
   locale: string,
   dateFormat: string,
+  numberFormat: string,
   defaultFilterOptions: TransactionFilterOptionsType,
   populatedFilterOptions: TransactionFilterOptionsType,
   onFilter: Function,
@@ -412,31 +414,11 @@ export default class FilterDialog extends Component<Props> {
     );
   };
 
-  onAmountFieldBlur = (selector: string) => {
-    const { form } = this;
-    const { fromAmount, toAmount } = form.values();
-
-    if (selector === 'fromAmount' && fromAmount) {
-      if (Number.isNaN(Number(fromAmount))) {
-        form.select(selector).set('');
-      } else {
-        const fromValue = new BigNumber(fromAmount).toString();
-        form.select(selector).set(fromValue);
-      }
-    } else if (selector === 'toAmount' && toAmount) {
-      if (Number.isNaN(Number(toAmount))) {
-        form.select(selector).set('');
-      } else {
-        const toValue = new BigNumber(toAmount).toString();
-        form.select(selector).set(toValue);
-      }
-    }
-  };
-
   renderAmountRangeField = () => {
     const { form } = this;
     const { intl } = this.context;
     const {
+      numberFormat,
       defaultFilterOptions: { fromAmount, toAmount },
     } = this.props;
     const { invalidFields } = validateFilterForm(form.values());
@@ -444,14 +426,14 @@ export default class FilterDialog extends Component<Props> {
     const defaultToAmount = toAmount || '10000';
     const fromAmountField = form.$('fromAmount');
     const toAmountField = form.$('toAmount');
-    const { fromAmount: fromValue, toAmount: toValue } = form.values();
-    const fromAmountInnerValue = formatAmountValue(
-      fromValue,
-      defaultFromAmount
-    );
-    const toAmountInnerValue = formatAmountValue(toValue, defaultToAmount);
-    const fromAmountFieldProps = fromAmountField.bind();
-    const toAmountFieldProps = toAmountField.bind();
+    const fromAmountClassNames = classNames([
+      styles.amountRangeInput,
+      styles.fromAmountInput,
+    ]);
+    const toAmountClassNames = classNames([
+      styles.amountRangeInput,
+      styles.toAmountInput,
+    ]);
 
     return (
       <div className={styles.amountRange}>
@@ -459,38 +441,30 @@ export default class FilterDialog extends Component<Props> {
           <label>{intl.formatMessage(messages.amountRange)}</label>
         </div>
         <div className={styles.body}>
-          <div className={styles.amountRangeInput}>
+          <div className={fromAmountClassNames}>
             <TinyInput
-              {...fromAmountFieldProps}
-              onBlur={(evt: SyntheticEvent<EventTarget>) => {
-                fromAmountFieldProps.onBlur(evt);
-                this.onAmountFieldBlur('fromAmount');
-              }}
+              {...fromAmountField.bind()}
               onSubmit={this.handleSubmit}
-              useReadMode
-              notNegative
-              digitCountAfterDecimalPoint={6}
-              maxLength={20}
-              innerLabelPrefix={intl.formatMessage(globalMessages.rangeFrom)}
-              innerLabelSuffix={intl.formatMessage(globalMessages.unitAda)}
-              innerValue={fromAmountInnerValue}
+              label={intl.formatMessage(globalMessages.rangeFrom)}
+              placeholder={new BigNumber(defaultFromAmount).toFormat()}
+              numberFormat={NUMBER_FORMATS[numberFormat]}
+              numberLocaleOptions={{
+                maximumFractionDigits: DECIMAL_PLACES_IN_ADA,
+              }}
+              allowSigns={false}
             />
           </div>
-          <div className={styles.amountRangeInput}>
+          <div className={toAmountClassNames}>
             <TinyInput
-              {...toAmountFieldProps}
-              onBlur={(evt: SyntheticEvent<EventTarget>) => {
-                toAmountFieldProps.onBlur(evt);
-                this.onAmountFieldBlur('toAmount');
-              }}
+              {...toAmountField.bind()}
               onSubmit={this.handleSubmit}
-              useReadMode
-              notNegative
-              digitCountAfterDecimalPoint={6}
-              maxLength={20}
-              innerLabelPrefix={intl.formatMessage(globalMessages.rangeTo)}
-              innerLabelSuffix={intl.formatMessage(globalMessages.unitAda)}
-              innerValue={toAmountInnerValue}
+              label={intl.formatMessage(globalMessages.rangeTo)}
+              placeholder={new BigNumber(defaultToAmount).toFormat()}
+              numberFormat={NUMBER_FORMATS[numberFormat]}
+              numberLocaleOptions={{
+                maximumFractionDigits: DECIMAL_PLACES_IN_ADA,
+              }}
+              allowSigns={false}
               error={invalidFields.toAmount}
             />
           </div>
