@@ -1,7 +1,7 @@
 // @flow
 import { computed, action, observable } from 'mobx';
 import BigNumber from 'bignumber.js';
-import { orderBy, find, map } from 'lodash';
+import { orderBy, find, map, get } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import { ROUTES } from '../routes-config';
@@ -62,6 +62,7 @@ export default class StakingStore extends Store {
   @observable stakePoolsRequest: Request<Array<StakePool>> = new Request(
     this.api.ada.getStakePools
   );
+  @observable isStakingExperimentRead: boolean = false;
 
   // =================== PUBLIC API ==================== //
 
@@ -157,6 +158,10 @@ export default class StakingStore extends Store {
     }
     this.stores.wallets.refreshWalletsData();
     this.isDelegatioTransactionPending = false;
+  };
+
+  @action markStakingExperimentAsRead = () => {
+    this.isStakingExperimentRead = true;
   };
 
   calculateDelegationFee = async (
@@ -343,8 +348,9 @@ export default class StakingStore extends Store {
   };
 
   _transformWalletToRewardForIncentivizedTestnet = (inputWallet: Wallet) => {
-    const { name: wallet, reward } = inputWallet;
-    return { wallet, reward };
+    const { name: wallet, isRestoring, reward, syncState } = inputWallet;
+    const syncingProgress = get(syncState, 'progress.quantity', '');
+    return { wallet, reward, isRestoring, syncingProgress };
   };
 
   getStakePoolById = (stakePoolId: string) =>

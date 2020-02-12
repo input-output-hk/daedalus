@@ -3,6 +3,8 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
+import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
+import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
 import classnames from 'classnames';
 import { capitalize } from 'lodash';
 import moment from 'moment';
@@ -11,8 +13,10 @@ import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import styles from './StakePoolTooltip.scss';
+import experimentalTooltipStyles from './StakePoolTooltip-experimental-tooltip.scss';
 import StakePool from '../../../domains/StakePool';
 import closeCross from '../../../assets/images/close-cross.inline.svg';
+import experimentalIcon from '../../../assets/images/experiment-icon.inline.svg';
 import { getColorFromRange, getSaturationColor } from '../../../utils/colors';
 import { formattedWalletAmount, shortNumber } from '../../../utils/formatters';
 import { rangeMap } from '../../../utils/rangeMap';
@@ -88,6 +92,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Delegate to this pool',
     description:
       '"Delegate to this pool" Button for the Stake Pools Tooltip page.',
+  },
+  experimentalTooltipLabel: {
+    id: 'staking.stakePools.tooltip.experimentalTooltipLabel',
+    defaultMessage: '!!!Experimental feature, data may be inaccurate.',
+    description: 'Experimental tooltip label',
   },
 });
 
@@ -475,6 +484,20 @@ export default class StakePoolTooltip extends Component<Props, State> {
               >
                 {ranking}
               </span>
+              <Tooltip
+                className={styles.experimentalTooltip}
+                key="experimentalTooltip"
+                themeOverrides={experimentalTooltipStyles}
+                skin={TooltipSkin}
+                tip={intl.formatMessage(messages.experimentalTooltipLabel)}
+              >
+                <button className={styles.iconButton}>
+                  <SVGInline
+                    svg={experimentalIcon}
+                    className={styles.experimentalIcon}
+                  />
+                </button>
+              </Tooltip>
             </dd>
             <dt>{intl.formatMessage(messages.controlledStake)}</dt>
             <dd className={styles.defaultColor}>
@@ -519,6 +542,20 @@ export default class StakePoolTooltip extends Component<Props, State> {
               >
                 {parseFloat(performance.toFixed(2))}%
               </span>
+              <Tooltip
+                className={styles.experimentalTooltip}
+                key="experimentalTooltip"
+                themeOverrides={experimentalTooltipStyles}
+                skin={TooltipSkin}
+                tip={intl.formatMessage(messages.experimentalTooltipLabel)}
+              >
+                <button className={styles.iconButton}>
+                  <SVGInline
+                    svg={experimentalIcon}
+                    className={styles.experimentalIcon}
+                  />
+                </button>
+              </Tooltip>
             </dd>
             <dt>{intl.formatMessage(messages.producedBlocks)}</dt>
             <dd className={styles.defaultColor}>
