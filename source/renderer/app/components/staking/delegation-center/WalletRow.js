@@ -1,10 +1,9 @@
 // @flow
 import React, { Component, Fragment } from 'react';
 import { observer } from 'mobx-react';
-import { get } from 'lodash';
+import { isNil, get } from 'lodash';
 import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import SVGInline from 'react-svg-inline';
-import isNil from 'lodash/isNil';
 import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
 import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
 import Wallet from '../../../domains/Wallet';
@@ -15,6 +14,8 @@ import sandClockIcon from '../../../assets/images/sand-clock.inline.svg';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import DropdownMenu from './DropdownMenu';
 import styles from './WalletRow.scss';
+import tooltipStyles from './WalletRowTooltip.scss';
+import LoadingSpinner from '../../widgets/LoadingSpinner';
 
 import type { DelegationAction } from '../../../api/staking/types';
 import type { WalletNextDelegationEpoch } from '../../../api/wallets/types';
@@ -76,6 +77,12 @@ const messages = defineMessages({
     description:
       'unknown stake pool label for the Delegation center body section.',
   },
+  syncingTooltipLabel: {
+    id: 'staking.delegationCenter.syncingTooltipLabel',
+    defaultMessage: '!!!Syncing {syncingProgress}%',
+    description:
+      'unknown stake pool label for the Delegation center body section.',
+  },
 });
 
 type Props = {
@@ -107,12 +114,21 @@ export default class WalletRow extends Component<Props> {
   render() {
     const { intl } = this.context;
     const {
-      wallet: { name, amount, delegatedStakePoolId, nextDelegationStakePoolId },
+      wallet: {
+        name,
+        amount,
+        delegatedStakePoolId,
+        nextDelegationStakePoolId,
+        isRestoring,
+        syncState,
+      },
       delegatedStakePool,
       nextDelegatedStakePool,
       nextDelegatedStakePoolEpoch,
       numberOfStakePools,
     } = this.props;
+
+    const syncingProgress = get(syncState, 'progress.quantity', '');
 
     const nextEpochNumber = get(
       nextDelegatedStakePoolEpoch,
@@ -173,140 +189,165 @@ export default class WalletRow extends Component<Props> {
           </div>
         </div>
         <div className={styles.right}>
-          <div>
-            <div className={styles.status}>
-              <span>{delegatedStakePoolId ? delegated : notDelegated}</span>
-              {delegatedStakePoolId && (
-                <DropdownMenu
-                  label={
-                    <SVGInline svg={settingsIcon} className={styles.gearIcon} />
-                  }
-                  menuItems={delegatedWalletActionOptions}
-                  onMenuItemClick={this.onMenuItemClick}
-                />
-              )}
-            </div>
-            <div className={styles.action}>
-              {delegatedStakePoolId ? (
-                <Fragment>
-                  <Tooltip
-                    skin={TooltipSkin}
-                    tip={
-                      <div className={styles.tooltipLabelWrapper}>
-                        {intl.formatMessage(messages.toStakePoolTickerPart1)}
-                        {': '}
-                        <span
-                          className={delegatedStakePool ? styles.unknown : null}
-                        >
-                          {delegatedStakePoolTicker}
-                        </span>
-                        {nextDelegatedStakePoolEpoch && (
-                          <Fragment>
-                            {', '}
+          {!isRestoring ? (
+            <Fragment>
+              <div>
+                <div className={styles.status}>
+                  <span>{delegatedStakePoolId ? delegated : notDelegated}</span>
+                  {delegatedStakePoolId && (
+                    <DropdownMenu
+                      label={
+                        <SVGInline
+                          svg={settingsIcon}
+                          className={styles.gearIcon}
+                        />
+                      }
+                      menuItems={delegatedWalletActionOptions}
+                      onMenuItemClick={this.onMenuItemClick}
+                    />
+                  )}
+                </div>
+                <div className={styles.action}>
+                  {delegatedStakePoolId ? (
+                    <Fragment>
+                      <Tooltip
+                        skin={TooltipSkin}
+                        tip={
+                          <div className={styles.tooltipLabelWrapper}>
                             {intl.formatMessage(
-                              messages.toStakePoolTickerPart2
-                            )}{' '}
+                              messages.toStakePoolTickerPart1
+                            )}
+                            {': '}
+                            <span
+                              className={
+                                delegatedStakePool ? styles.unknown : null
+                              }
+                            >
+                              {delegatedStakePoolTicker}
+                            </span>
+                            {nextDelegatedStakePoolEpoch && (
+                              <Fragment>
+                                {', '}
+                                {intl.formatMessage(
+                                  messages.toStakePoolTickerPart2
+                                )}{' '}
+                                <span
+                                  className={
+                                    !nextDelegatedStakePool
+                                      ? styles.unknown
+                                      : null
+                                  }
+                                >
+                                  {nextEpochNumber}
+                                </span>
+                                {': '}
+                                {nextDelegationStakePoolId ? (
+                                  <span
+                                    className={
+                                      !nextDelegatedStakePool
+                                        ? styles.unknown
+                                        : null
+                                    }
+                                    style={{ color: nextColor }}
+                                  >
+                                    {nextDelegatedStakePoolTicker}
+                                  </span>
+                                ) : (
+                                  <span
+                                    className={
+                                      !nextDelegatedStakePool
+                                        ? styles.unknown
+                                        : null
+                                    }
+                                  >
+                                    {notDelegated}
+                                  </span>
+                                )}
+                              </Fragment>
+                            )}
+                          </div>
+                        }
+                      >
+                        <SVGInline
+                          svg={sandClockIcon}
+                          className={styles.sandClockIcon}
+                        />
+                      </Tooltip>
+                      {intl.formatMessage(messages.toStakePoolTickerPart1)}
+                      {': '}
+                      <span
+                        className={!delegatedStakePool ? styles.unknown : null}
+                        style={{ color }}
+                      >
+                        {delegatedStakePoolTicker}
+                      </span>
+                      {nextDelegatedStakePoolEpoch && (
+                        <Fragment>
+                          {', '}
+                          {intl.formatMessage(
+                            messages.toStakePoolTickerPart2
+                          )}{' '}
+                          <span
+                            className={
+                              !nextDelegatedStakePool ? styles.unknown : null
+                            }
+                          >
+                            {nextEpochNumber}
+                          </span>
+                          {': '}
+                          {nextDelegationStakePoolId ? (
+                            <span
+                              className={
+                                !nextDelegatedStakePool ? styles.unknown : null
+                              }
+                              style={{ color: nextColor }}
+                            >
+                              {nextDelegatedStakePoolTicker}
+                            </span>
+                          ) : (
                             <span
                               className={
                                 !nextDelegatedStakePool ? styles.unknown : null
                               }
                             >
-                              {nextEpochNumber}
+                              {notDelegated}
                             </span>
-                            {': '}
-                            {nextDelegationStakePoolId ? (
-                              <span
-                                className={
-                                  !nextDelegatedStakePool
-                                    ? styles.unknown
-                                    : null
-                                }
-                                style={{ color: nextColor }}
-                              >
-                                {nextDelegatedStakePoolTicker}
-                              </span>
-                            ) : (
-                              <span
-                                className={
-                                  !nextDelegatedStakePool
-                                    ? styles.unknown
-                                    : null
-                                }
-                              >
-                                {notDelegated}
-                              </span>
-                            )}
-                          </Fragment>
-                        )}
-                      </div>
-                    }
-                  >
-                    <SVGInline
-                      svg={sandClockIcon}
-                      className={styles.sandClockIcon}
-                    />
-                  </Tooltip>
-                  {intl.formatMessage(messages.toStakePoolTickerPart1)}
-                  {': '}
-                  <span
-                    className={!delegatedStakePool ? styles.unknown : null}
-                    style={{ color }}
-                  >
-                    {delegatedStakePoolTicker}
-                  </span>
-                  {nextDelegatedStakePoolEpoch && (
-                    <Fragment>
-                      {', '}
-                      {intl.formatMessage(messages.toStakePoolTickerPart2)}{' '}
-                      <span
-                        className={
-                          !nextDelegatedStakePool ? styles.unknown : null
-                        }
-                      >
-                        {nextEpochNumber}
-                      </span>
-                      {': '}
-                      {nextDelegationStakePoolId ? (
-                        <span
-                          className={
-                            !nextDelegatedStakePool ? styles.unknown : null
-                          }
-                          style={{ color: nextColor }}
-                        >
-                          {nextDelegatedStakePoolTicker}
-                        </span>
-                      ) : (
-                        <span
-                          className={
-                            !nextDelegatedStakePool ? styles.unknown : null
-                          }
-                        >
-                          {notDelegated}
-                        </span>
+                          )}
+                        </Fragment>
                       )}
                     </Fragment>
+                  ) : (
+                    <span>
+                      <span
+                        className={styles.actionLink}
+                        role="presentation"
+                        onClick={this.onDelegate}
+                      >
+                        {delegate}
+                      </span>
+                      {` ${yourStake}`}
+                    </span>
                   )}
-                </Fragment>
-              ) : (
-                <span>
-                  <span
-                    className={styles.actionLink}
-                    role="presentation"
-                    onClick={this.onDelegate}
-                  >
-                    {delegate}
-                  </span>
-                  {` ${yourStake}`}
-                </span>
-              )}
-            </div>
-          </div>
-          <div>
-            <div
-              className={styles.stakePoolRankingIndicator}
-              style={{ background: color }}
-            />
-          </div>
+                </div>
+              </div>
+              <div>
+                <div
+                  className={styles.stakePoolRankingIndicator}
+                  style={{ background: color }}
+                />
+              </div>
+            </Fragment>
+          ) : (
+            <Tooltip
+              skin={TooltipSkin}
+              themeOverrides={tooltipStyles}
+              tip={intl.formatMessage(messages.syncingTooltipLabel, {
+                syncingProgress,
+              })}
+            >
+              <LoadingSpinner medium />
+            </Tooltip>
+          )}
         </div>
       </div>
     );

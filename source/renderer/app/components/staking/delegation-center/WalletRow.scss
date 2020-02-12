@@ -156,4 +156,9 @@
     color: var(--theme-link-main-color);
     cursor: pointer;
   }
+  :global {
+    .LoadingSpinner_component.LoadingSpinner_medium {
+      margin-top: 10px;
+    }
+  }
 }
