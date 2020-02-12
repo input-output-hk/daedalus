@@ -19,6 +19,7 @@ import sortIcon from '../../../assets/images/ascending.inline.svg';
 import downloadIcon from '../../../assets/images/download-ic.inline.svg';
 import type { RewardForIncentivizedTestnet } from '../../../api/staking/types';
 import styles from './StakingRewardsForIncentivizedTestnet.scss';
+import tooltipStyles from './StakingRewardsForIncentivizedTestnetTooltip.scss';
 
 const messages = defineMessages({
   title: {
@@ -248,6 +249,7 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
                               <div className={styles.syncingProgress}>
                                 <Tooltip
                                   skin={TooltipSkin}
+                                  themeOverrides={tooltipStyles}
                                   tip={intl.formatMessage(
                                     messages.syncingTooltipLabel,
                                     {
