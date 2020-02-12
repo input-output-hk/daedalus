@@ -20,6 +20,7 @@ Changelog
 - Improved acceptance tests setup with "rerun" feature ([PR 1835](https://github.com/input-output-hk/daedalus/pull/1835)
 - Implemented acceptance tests for Daedalus Balance wallets ([PR 1816](https://github.com/input-output-hk/daedalus/pull/1816), [PR 1828](https://github.com/input-output-hk/daedalus/pull/1828))
 - Implemented acceptance tests for stake pools loading ([PR 1820](https://github.com/input-output-hk/daedalus/pull/1820))
+- Bumped cardano-wallet dependecy to edc42a9c9a79dc3d6e76363f9c03e8e6009de993 ([PR 1848](https://github.com/input-output-hk/daedalus/pull/1848))
 
 ## 2.1.0-ITN1
 
