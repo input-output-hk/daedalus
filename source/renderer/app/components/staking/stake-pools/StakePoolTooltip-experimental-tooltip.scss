@@ -1,0 +1,15 @@
+.root {
+  .bubble {
+    background-color: transparent;
+    > div {
+      bottom: 0;
+      font-family: var(--font-regular);
+      font-size: 13px;
+      font-weight: normal;
+      padding: 4px 12px;
+      text-align: center;
+      white-space: normal;
+      width: 171.5px;
+    }
+  }
+}
