@@ -48,6 +48,43 @@
         );
       }
     }
+
+    .SimpleBubble_root {
+      .SimpleBubble_bubble {
+        margin-left: -40px;
+      }
+    }
+  }
+
+  .experimentalTooltip {
+    height: 14.5px;
+    padding: 0px;
+    position: absolute;
+    right: -5px;
+    top: -6px;
+    width: 10px;
+    .experimentalIcon {
+      padding: 0;
+      svg {
+        height: 14.5px;
+        width: 10px;
+        g {
+          path:nth-child(1) {
+            fill: var(
+              --theme-staking-stake-pool-tooltip-experimental-icon-background-color
+            );
+          }
+          path:nth-child(2) {
+            fill: var(
+              --theme-staking-stake-pool-tooltip-experimental-icon-lines-color
+            );
+          }
+        }
+      }
+    }
+    .iconButton {
+      cursor: pointer;
+    }
   }
 }
 
@@ -196,9 +233,10 @@
   font-size: 14px;
   line-height: 1.36;
   margin-bottom: 4px;
-  max-height: 79px;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  margin-right: -5px;
+  max-height: 57px;
+  overflow-y: auto;
+  word-break: break-word;
 }
 
 .table {
@@ -248,6 +286,11 @@
   .cost,
   .performance {
     width: 35%;
+  }
+
+  .ranking,
+  .performance {
+    position: relative;
   }
 }
 

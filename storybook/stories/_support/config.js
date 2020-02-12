@@ -42,9 +42,9 @@ export const osNames: Array<any> = Object.keys(operatingSystems);
 
 // These differences are due to the different menu heights on each OS
 export const osMinWindowHeights = {
-  Windows: '541px',
-  Linux: '560px',
-  Mac: '600px',
+  Windows: '641px',
+  Linux: '660px',
+  Mac: '700px',
 };
 
 /* eslint-disable no-restricted-globals */
