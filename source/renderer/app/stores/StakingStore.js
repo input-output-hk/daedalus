@@ -62,6 +62,7 @@ export default class StakingStore extends Store {
   @observable stakePoolsRequest: Request<Array<StakePool>> = new Request(
     this.api.ada.getStakePools
   );
+  @observable isStakingExperimentRead: boolean = false;
 
   // =================== PUBLIC API ==================== //
 
@@ -157,6 +158,10 @@ export default class StakingStore extends Store {
     }
     this.stores.wallets.refreshWalletsData();
     this.isDelegatioTransactionPending = false;
+  };
+
+  @action markStakingExperimentAsRead = () => {
+    this.isStakingExperimentRead = true;
   };
 
   calculateDelegationFee = async (
