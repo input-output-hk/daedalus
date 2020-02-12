@@ -16,7 +16,6 @@ Given('I generate {int} wallet recovery mnemonics', function(
   this.context.mnemonics = range(numberOfMnemonics).map(() =>
     generateAccountMnemonics().join(' ')
   );
-  console.log('>>> 1. MNEMONICS: ', this.context.mnemonics); // 15-words
 });
 
 Then('all generated wallet recovery mnemonics should be valid', function() {
@@ -47,33 +46,17 @@ Given(
 );
 
 When('I generate additional mnemonic words', function() {
-  this.context.additionalMnemonicWords = generateAdditionalMnemonics().join(' '); // 9-words
-  console.log('>>> 2. additionalMnemonicWords: ', this.context.additionalMnemonicWords);
+  this.context.additionalMnemonicWords = generateAdditionalMnemonics().join(' ');
 });
 
 When('I generate spending password from 9-word mnemonic', function() {
-  this.context.spendingPassword = mnemonicToSeedHex(this.context.additionalMnemonicWords); // spending password
-  console.log('>>> 3. spendingPassword from 9-words mnemonic: ', this.context.spendingPassword);
+  this.context.spendingPassword = mnemonicToSeedHex(this.context.additionalMnemonicWords);
 });
 
 When('I scramble mnemonics', function() {
-  // this.context.spendingPassword = mnemonicToSeedHex(this.context.additionalMnemonicWords); // spending password
-  // try {
-  //   this.context.scrambledMnemonics = scramblePaperWalletMnemonic(this.context.spendingPassword, this.context.mnemonics[0]);
-  // } catch(e) {
-  //   console.log('ERROR: ', e)
-  // }
   const scrambledMnemonics = scrambleMnemonics({ passphrase: this.context.spendingPassword, scrambledInput: this.context.mnemonics[0] })
-  console.log('>>>>> scrambledMnemonics: ', scrambledMnemonics);
-  // console.log('>>> 3. spendingPassword from 9-words mnemonic: ', this.context.scrambledMnemonics);
-
-  console.log('>>>>> UNSCRAMBLE');
-
+  // Split recovery phrase to 18 (scrambled mnemonics) + 9 (mnemonics seed) mnemonics
   const { passphrase, scrambledInput } = getScrambledInput(scrambledMnemonics);
-//
-  console.log('>>>>> UNSCRAMBLED passphrase: ', passphrase);
-  console.log('>>>>> UNSCRAMBLED scrambledInput: ', scrambledInput);
-//
+  // Unscramble 18-word wallet certificate mnemonic to 12-word mnemonic
   const unscrambledMnemonics = unscrambleMnemonics({ passphrase, scrambledInput });
-  console.log('>>>>> DONE: ', unscrambledMnemonics);
 });

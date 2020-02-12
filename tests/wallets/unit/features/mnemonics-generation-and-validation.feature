@@ -12,7 +12,7 @@ Feature: Mnemonics generation and validation
   Scenario: Unbound manual test run gives no invalid mnemeonics
     Given I generate and validate an unbound number of wallet recovery mnemonics
 
-  @unit @watch
+  @unit
   Scenario: Scramble mnemonics
     Given I generate 1 wallet recovery mnemonics
     And I generate additional mnemonic words

@@ -51,23 +51,18 @@ export const scramblePaperWalletMnemonic = (
   passphrase: string,
   input: string
 ) => {
-  // console.log('+++++ SCRABLE: ', global)
-
-  const iv = crypto.randomBytes(8).toJSON().data
-
-
-  // const iv = crypto.randomBytes(8)
-
-  // const iv = new Uint8Array(8);
-  // window.crypto.getRandomValues(iv);
-
+  let iv;
+  if (window && window.crypto && window.crypto.getRandomValues) {
+    iv = new Uint8Array(8);
+    window.crypto.getRandomValues(iv);
+  } else {
+    iv = crypto.randomBytes(8).toJSON().data
+  }
   const scrambledInput = CardanoCrypto.PaperWallet.scrambleStrings(
     iv,
     passphrase,
     input
   );
-  // console.log('HERE')
-  // console.log('+++++ scrambledInput: ', scrambledInput)
   return scrambledInput.split(' ');
 };
 
