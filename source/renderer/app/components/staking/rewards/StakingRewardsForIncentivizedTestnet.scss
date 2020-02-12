@@ -1,4 +1,6 @@
 @import '../../../themes/mixins/link';
+@import '../../../themes/mixins/loading-spinner';
+
 .component {
   padding: 20px;
 
@@ -173,6 +175,7 @@
       font-size: 14px;
       line-height: 1.3;
       padding: 14px 20px;
+      position: relative;
       text-align: left;
       width: 25%;
 
@@ -187,6 +190,12 @@
         .stakePoolReference {
           font-family: var(--font-medium);
         }
+      }
+
+      .syncingProgress {
+        position: absolute;
+        right: 10px;
+        top: 10px;
       }
     }
   }
