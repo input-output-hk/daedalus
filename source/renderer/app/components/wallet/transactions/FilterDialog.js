@@ -392,13 +392,19 @@ export default class FilterDialog extends Component<Props> {
     const { invalidFields } = validateFilterForm(this.getComposedFormValues());
     const fromDateFieldBindProps = form.$('fromDate').bind();
     const toDateFieldBindProps = form.$('toDate').bind();
+    const fromDateLocaleClassName =
+      locale === 'ja-JP' ? styles.japaneseFromDateInput : null;
+    const toDateLocaleClassName =
+      locale === 'ja-JP' ? styles.japaneseToDateInput : null;
     const fromDateClassNames = classNames([
       styles.dateRangeInput,
       styles.fromDateInput,
+      fromDateLocaleClassName,
     ]);
     const toDateClassNames = classNames([
       styles.dateRangeInput,
       styles.toDateInput,
+      toDateLocaleClassName,
     ]);
 
     return (
@@ -445,17 +451,23 @@ export default class FilterDialog extends Component<Props> {
   renderAmountRangeField = () => {
     const { form } = this;
     const { intl } = this.context;
-    const { numberFormat } = this.props;
+    const { locale, numberFormat } = this.props;
     const { invalidFields } = validateFilterForm(this.getComposedFormValues());
     const fromAmountField = form.$('fromAmount');
     const toAmountField = form.$('toAmount');
+    const fromAmountLocaleClassName =
+      locale === 'ja-JP' ? styles.japaneseFromAmountInput : null;
+    const toAmountLocaleClassName =
+      locale === 'ja-JP' ? styles.japaneseToAmountInput : null;
     const fromAmountClassNames = classNames([
       styles.amountRangeInput,
       styles.fromAmountInput,
+      fromAmountLocaleClassName,
     ]);
     const toAmountClassNames = classNames([
       styles.amountRangeInput,
       styles.toAmountInput,
+      toAmountLocaleClassName,
     ]);
 
     return (

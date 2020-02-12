@@ -231,11 +231,28 @@
               padding-left: 46px;
             }
           }
+
+          &.japaneseFromDateInput {
+            :global {
+              .TinyInput_component .SimpleInput_input {
+                padding-left: 56px;
+              }
+            }
+          }
         }
+
         .toDateInput {
           :global {
             .TinyInput_component .SimpleInput_input {
               padding-left: 28px;
+            }
+          }
+
+          &.japaneseToDateInput {
+            :global {
+              .TinyInput_component .SimpleInput_input {
+                padding-left: 56px;
+              }
             }
           }
         }
@@ -278,11 +295,27 @@
               padding-left: 46px;
             }
           }
+
+          &.japaneseFromAmountInput {
+            :global {
+              .TinyInput_component .SimpleInput_input {
+                padding-left: 56px;
+              }
+            }
+          }
         }
         .toAmountInput {
           :global {
             .TinyInput_component .SimpleInput_input {
               padding-left: 28px;
+            }
+          }
+
+          &.japaneseToAmountInput {
+            :global {
+              .TinyInput_component .SimpleInput_input {
+                padding-left: 56px;
+              }
             }
           }
         }
