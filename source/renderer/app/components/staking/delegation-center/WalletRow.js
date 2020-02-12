@@ -5,10 +5,13 @@ import { get } from 'lodash';
 import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import isNil from 'lodash/isNil';
+import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
+import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
 import Wallet from '../../../domains/Wallet';
 import StakePool, { DelegationActions } from '../../../domains/StakePool';
 import { getColorFromRange } from '../../../utils/colors';
 import settingsIcon from '../../../assets/images/settings-ic.inline.svg';
+import sandClockIcon from '../../../assets/images/sand-clock.inline.svg';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import DropdownMenu from './DropdownMenu';
 import styles from './WalletRow.scss';
@@ -186,6 +189,63 @@ export default class WalletRow extends Component<Props> {
             <div className={styles.action}>
               {delegatedStakePoolId ? (
                 <Fragment>
+                  <Tooltip
+                    skin={TooltipSkin}
+                    tip={
+                      <div className={styles.tooltipLabelWrapper}>
+                        {intl.formatMessage(messages.toStakePoolTickerPart1)}
+                        {': '}
+                        <span
+                          className={delegatedStakePool ? styles.unknown : null}
+                        >
+                          {delegatedStakePoolTicker}
+                        </span>
+                        {nextDelegatedStakePoolEpoch && (
+                          <Fragment>
+                            {', '}
+                            {intl.formatMessage(
+                              messages.toStakePoolTickerPart2
+                            )}{' '}
+                            <span
+                              className={
+                                !nextDelegatedStakePool ? styles.unknown : null
+                              }
+                            >
+                              {nextEpochNumber}
+                            </span>
+                            {': '}
+                            {nextDelegationStakePoolId ? (
+                              <span
+                                className={
+                                  !nextDelegatedStakePool
+                                    ? styles.unknown
+                                    : null
+                                }
+                                style={{ color: nextColor }}
+                              >
+                                {nextDelegatedStakePoolTicker}
+                              </span>
+                            ) : (
+                              <span
+                                className={
+                                  !nextDelegatedStakePool
+                                    ? styles.unknown
+                                    : null
+                                }
+                              >
+                                {notDelegated}
+                              </span>
+                            )}
+                          </Fragment>
+                        )}
+                      </div>
+                    }
+                  >
+                    <SVGInline
+                      svg={sandClockIcon}
+                      className={styles.sandClockIcon}
+                    />
+                  </Tooltip>
                   {intl.formatMessage(messages.toStakePoolTickerPart1)}
                   {': '}
                   <span
