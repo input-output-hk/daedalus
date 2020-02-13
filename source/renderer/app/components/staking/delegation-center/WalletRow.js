@@ -51,7 +51,7 @@ const messages = defineMessages({
   },
   toStakePoolTickerPart1: {
     id: 'staking.delegationCenter.toStakePoolTickerPart1',
-    defaultMessage: '!!!currently',
+    defaultMessage: '!!!To',
     description:
       'Delegated stake pool ticker for the Delegation center body section.',
   },
@@ -65,11 +65,6 @@ const messages = defineMessages({
     id: 'staking.delegationCenter.delegate',
     defaultMessage: '!!!Delegate',
     description: 'Delegate label for the Delegation center body section.',
-  },
-  yourStake: {
-    id: 'staking.delegationCenter.yourStake',
-    defaultMessage: '!!!your stake',
-    description: 'Your stake label for the Delegation center body section.',
   },
   unknownStakePoolLabel: {
     id: 'staking.delegationCenter.unknownStakePoolLabel',
@@ -158,7 +153,6 @@ export default class WalletRow extends Component<Props> {
     const changeDelegation = intl.formatMessage(messages.changeDelegation);
     const removeDelegation = intl.formatMessage(messages.removeDelegation);
     const delegate = intl.formatMessage(messages.delegate);
-    const yourStake = intl.formatMessage(messages.yourStake);
     const delegatedStakePoolTicker = delegatedStakePool
       ? `[${delegatedStakePool.ticker}]`
       : intl.formatMessage(messages.unknownStakePoolLabel);
@@ -287,6 +281,8 @@ export default class WalletRow extends Component<Props> {
                       >
                         {delegatedStakePoolTicker}
                       </span>
+                      {' '}
+                      {intl.formatMessage(messages.toStakePoolTickerPart2)}
                       {nextDelegatedStakePoolEpoch && (
                         <Fragment>
                           {', '}
@@ -331,7 +327,6 @@ export default class WalletRow extends Component<Props> {
                       >
                         {delegate}
                       </span>
-                      {` ${yourStake}`}
                     </span>
                   )}
                 </div>
