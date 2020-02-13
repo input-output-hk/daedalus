@@ -130,6 +130,10 @@ export default class WalletRow extends Component<Props> {
 
     const syncingProgress = get(syncState, 'progress.quantity', '');
 
+    const walletStateStatus = get(syncState, 'status', '');
+
+    const isWalletPending = walletStateStatus && walletStateStatus !== 'ready';
+
     const nextEpochNumber = get(
       nextDelegatedStakePoolEpoch,
       'epoch_number',
@@ -210,49 +214,28 @@ export default class WalletRow extends Component<Props> {
                 <div className={styles.action}>
                   {delegatedStakePoolId ? (
                     <Fragment>
-                      <Tooltip
-                        skin={TooltipSkin}
-                        tip={
-                          <div className={styles.tooltipLabelWrapper}>
-                            {intl.formatMessage(
-                              messages.toStakePoolTickerPart1
-                            )}
-                            {': '}
-                            <span
-                              className={
-                                delegatedStakePool ? styles.unknown : null
-                              }
-                            >
-                              {delegatedStakePoolTicker}
-                            </span>
-                            {nextDelegatedStakePoolEpoch && (
-                              <Fragment>
-                                {', '}
-                                {intl.formatMessage(
-                                  messages.toStakePoolTickerPart2
-                                )}{' '}
-                                <span
-                                  className={
-                                    !nextDelegatedStakePool
-                                      ? styles.unknown
-                                      : null
-                                  }
-                                >
-                                  {nextEpochNumber}
-                                </span>
-                                {': '}
-                                {nextDelegationStakePoolId ? (
-                                  <span
-                                    className={
-                                      !nextDelegatedStakePool
-                                        ? styles.unknown
-                                        : null
-                                    }
-                                    style={{ color: nextColor }}
-                                  >
-                                    {nextDelegatedStakePoolTicker}
-                                  </span>
-                                ) : (
+                      {isWalletPending && (
+                        <Tooltip
+                          skin={TooltipSkin}
+                          tip={
+                            <div className={styles.tooltipLabelWrapper}>
+                              {intl.formatMessage(
+                                messages.toStakePoolTickerPart1
+                              )}
+                              {': '}
+                              <span
+                                className={
+                                  delegatedStakePool ? styles.unknown : null
+                                }
+                              >
+                                {delegatedStakePoolTicker}
+                              </span>
+                              {nextDelegatedStakePoolEpoch && (
+                                <Fragment>
+                                  {', '}
+                                  {intl.formatMessage(
+                                    messages.toStakePoolTickerPart2
+                                  )}{' '}
                                   <span
                                     className={
                                       !nextDelegatedStakePool
@@ -260,19 +243,42 @@ export default class WalletRow extends Component<Props> {
                                         : null
                                     }
                                   >
-                                    {notDelegated}
+                                    {nextEpochNumber}
                                   </span>
-                                )}
-                              </Fragment>
-                            )}
-                          </div>
-                        }
-                      >
-                        <SVGInline
-                          svg={sandClockIcon}
-                          className={styles.sandClockIcon}
-                        />
-                      </Tooltip>
+                                  {': '}
+                                  {nextDelegationStakePoolId ? (
+                                    <span
+                                      className={
+                                        !nextDelegatedStakePool
+                                          ? styles.unknown
+                                          : null
+                                      }
+                                      style={{ color: nextColor }}
+                                    >
+                                      {nextDelegatedStakePoolTicker}
+                                    </span>
+                                  ) : (
+                                    <span
+                                      className={
+                                        !nextDelegatedStakePool
+                                          ? styles.unknown
+                                          : null
+                                      }
+                                    >
+                                      {notDelegated}
+                                    </span>
+                                  )}
+                                </Fragment>
+                              )}
+                            </div>
+                          }
+                        >
+                          <SVGInline
+                            svg={sandClockIcon}
+                            className={styles.sandClockIcon}
+                          />
+                        </Tooltip>
+                      )}
                       {intl.formatMessage(messages.toStakePoolTickerPart1)}
                       {': '}
                       <span
