@@ -108,24 +108,16 @@
 
       > span {
         display: initial !important;
+        margin-right: 0 !important;
 
         > div {
           > div {
+            font-size: 13px;
+            left: -30px !important;
+            padding: 4px 12px;
             text-align: right !important;
             white-space: normal !important;
-            width: 160px !important;
-          }
-
-          > span:after {
-            left: calc(
-              150% -
-                calc(
-                  var(
-                      --rp-bubble-arrow-width,
-                      calc(2 * var(--rp-bubble-arrow-size, 10px))
-                    ) - 2px
-                ) / 2 - 1px
-            ) !important;
+            width: 185px !important;
           }
         }
       }
@@ -142,6 +134,7 @@
       svg {
         height: 12px;
         margin-bottom: -2px;
+        margin-right: 3px;
         width: 12px;
 
         path {

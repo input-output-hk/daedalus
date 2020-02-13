@@ -32,6 +32,13 @@ const messages = defineMessages({
     description:
       '"Forbidden Mnemonic: an example Mnemonic has been submitted." error message',
   },
+  incorrectStakePoolDelegationError: {
+    id: 'api.errors.IncorrectStakePoolDelegationError',
+    defaultMessage:
+      '!!!Invalid stake pool join. This stake pool is already pending for delegation',
+    description:
+      '"Stake pool join: an example stake pool join error." error message',
+  },
 });
 
 export class GenericApiError extends LocalizableError {
@@ -85,6 +92,15 @@ export class ApiMethodNotYetImplementedError extends LocalizableError {
     super({
       id: messages.apiMethodNotYetImplementedError.id,
       defaultMessage: messages.apiMethodNotYetImplementedError.defaultMessage,
+    });
+  }
+}
+
+export class IncorrectStakePoolDelegationError extends LocalizableError {
+  constructor() {
+    super({
+      id: messages.incorrectStakePoolDelegationError.id,
+      defaultMessage: messages.incorrectStakePoolDelegationError.defaultMessage,
     });
   }
 }
