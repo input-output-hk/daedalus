@@ -291,15 +291,67 @@ export default class WalletRow extends Component<Props> {
                       )}
                     </Fragment>
                   ) : (
-                    <span>
-                      <span
-                        className={styles.actionLink}
-                        role="presentation"
-                        onClick={this.onDelegate}
-                      >
-                        {delegate}
-                      </span>
-                    </span>
+                    <Fragment>
+                      {nextDelegatedStakePoolEpoch ? (
+                        <Fragment>
+                          <Tooltip
+                            skin={TooltipSkin}
+                            tip={
+                              <div className={styles.tooltipLabelWrapper}>
+                                <Fragment>
+                                  {intl.formatMessage(
+                                    messages.toStakePoolTooltipTickerPart2
+                                  )}{' '}
+                                  {nextEpochNumber}
+                                  {': '}
+                                  {nextDelegationStakePoolId ? (
+                                    <span
+                                      className={
+                                        nextDelegatedStakePool
+                                          ? styles.unknown
+                                          : null
+                                      }
+                                    >
+                                      {nextDelegatedStakePoolTicker}
+                                    </span>
+                                  ) : (
+                                    <span
+                                      className={
+                                        !nextDelegatedStakePool
+                                          ? styles.unknown
+                                          : null
+                                      }
+                                    >
+                                      {notDelegated}
+                                    </span>
+                                  )}
+                                </Fragment>
+                              </div>
+                            }
+                          >
+                            <SVGInline
+                              svg={sandClockIcon}
+                              className={styles.sandClockIcon}
+                            />
+                          </Tooltip>
+                          <span
+                            className={styles.actionLink}
+                            role="presentation"
+                            onClick={this.onDelegate}
+                          >
+                            {delegate}
+                          </span>
+                        </Fragment>
+                      ) : (
+                        <span
+                          className={styles.actionLink}
+                          role="presentation"
+                          onClick={this.onDelegate}
+                        >
+                          {delegate}
+                        </span>
+                      )}
+                    </Fragment>
                   )}
                 </div>
               </div>
