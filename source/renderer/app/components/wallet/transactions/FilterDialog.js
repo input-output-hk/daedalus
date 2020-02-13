@@ -508,6 +508,7 @@ export default class FilterDialog extends Component<Props> {
 
   renderActionButton = () => {
     const { intl } = this.context;
+    const { populatedFilterOptions } = this.props;
     const { isValid } = validateFilterForm(this.getComposedFormValues());
 
     return (
@@ -516,7 +517,7 @@ export default class FilterDialog extends Component<Props> {
           label={intl.formatMessage(messages.apply)}
           loading={false}
           disabled={
-            this.isFormValuesEqualTo(emptyTransactionFilterOptions) || !isValid
+            this.isFormValuesEqualTo(populatedFilterOptions) || !isValid
           }
           onClick={this.handleSubmit}
         />
