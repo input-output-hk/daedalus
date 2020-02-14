@@ -128,14 +128,12 @@ export default class WalletRow extends Component<Props> {
         name,
         amount,
         delegatedStakePoolId,
-        nextDelegationStakePoolId,
         lastDelegationStakePoolId,
         isRestoring,
         syncState,
         pendingDelegations
       },
       delegatedStakePool,
-      nextDelegatedStakePool,
       nextDelegatedStakePoolEpoch,
       lastDelegatedStakePool,
       lastDelegatedStakePoolEpoch,
@@ -145,11 +143,6 @@ export default class WalletRow extends Component<Props> {
 
     const syncingProgress = get(syncState, 'progress.quantity', '');
 
-    const nextEpochNumber = get(
-      nextDelegatedStakePoolEpoch,
-      'epoch_number',
-      null
-    );
     const lastEpochNumber = get(
       lastDelegatedStakePoolEpoch,
       'epoch_number',
@@ -177,9 +170,6 @@ export default class WalletRow extends Component<Props> {
       : notDelegated.toLowerCase();
     const lastDelegatedStakePoolTicker = lastDelegatedStakePool
       ? `[${lastDelegatedStakePool.ticker}]`
-      : notDelegated.toLowerCase();
-    const nextDelegatedStakePoolTicker = nextDelegatedStakePool
-      ? `[${nextDelegatedStakePool.ticker}]`
       : notDelegated.toLowerCase();
     const delegatedWalletActionOptions = [
       {

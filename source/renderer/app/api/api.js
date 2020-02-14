@@ -1,5 +1,5 @@
 // @flow
-import { split, get, includes, map, isArray, last, head } from 'lodash';
+import { split, get, includes, map, last, head } from 'lodash';
 import { action } from 'mobx';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
@@ -1611,8 +1611,6 @@ const _createWalletFromServerData = action(
           ? new BigNumber(balance.reward.quantity).dividedBy(LOVELACES_PER_ADA)
           : new BigNumber(balance.reward.quantity);
     }
-
-    console.debug('_createWalletFromServerData: ', data);
 
     const { next, active } = delegation;
 

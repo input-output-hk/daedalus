@@ -8,7 +8,6 @@ import type {
   DelegationStatus,
   WalletUnit,
   WalletNextDelegationEpoch,
-  WalletNextDelegation,
 } from '../api/wallets/types';
 
 export const WalletSyncStateStatuses: {
