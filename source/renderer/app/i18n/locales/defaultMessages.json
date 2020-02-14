@@ -1350,7 +1350,7 @@
         }
       },
       {
-        "defaultMessage": "<p>!!!The goal of the Incentivized Testnet is to test and improve the stake delegation features of the Shelley era, including new Daedalus features, before their release on the Cardano mainnet. Due to the nature of the testnet, some of these features may be unreliable or subject to change as they are iterated upon by the development team.</p><p>Any new Daedalus features which are considered experimental will be marked with a <span class=\"experimentalIcon\"></span> icon. Take care when using information from experimental features to make delegation decisions, as the data could be inaccurate. The <span class=\"experimentalIcon\"></span> icon will be removed when a feature is considered stable and reliable to use.</p>",
+        "defaultMessage": "<p>!!!The goal of the Incentivized Testnet is to test and improve the stake delegation features of the Shelley era, including new Daedalus features, before their release on the Cardano mainnet. Due to the nature of the testnet, some of these features may be unreliable or subject to change as they are iterated upon by the development team.</p><p>Any new Daedalus features which are considered experimental will be marked with a <span class=\"experimentalIcon\"></span> icon. Take care when using information solely from experimental features to make delegation decisions, as the data could be inaccurate. The <span class=\"experimentalIcon\"></span> icon will be removed when a feature is considered stable and reliable to use.</p>",
         "description": "Experimental data description",
         "end": {
           "column": 3,
@@ -3838,13 +3838,13 @@
         "description": "Title \"Earned delegation rewards\" label on the staking rewards page.",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 30
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
         "id": "staking.rewards.title",
         "start": {
           "column": 9,
-          "line": 24
+          "line": 25
         }
       },
       {
@@ -3852,13 +3852,13 @@
         "description": "Label for the \"Export CSV\" button on the staking rewards page.",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 36
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
         "id": "staking.rewards.exportButtonLabel",
         "start": {
           "column": 21,
-          "line": 30
+          "line": 31
         }
       },
       {
@@ -3866,13 +3866,13 @@
         "description": "\"No rewards\" rewards label on staking rewards page.",
         "end": {
           "column": 3,
-          "line": 40
+          "line": 41
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
         "id": "staking.rewards.no.rewards",
         "start": {
           "column": 13,
-          "line": 36
+          "line": 37
         }
       },
       {
@@ -3880,13 +3880,13 @@
         "description": "Table header \"Wallet\" label on staking rewards page",
         "end": {
           "column": 3,
-          "line": 45
+          "line": 46
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
         "id": "staking.rewards.tableHeader.wallet",
         "start": {
           "column": 21,
-          "line": 41
+          "line": 42
         }
       },
       {
@@ -3894,13 +3894,13 @@
         "description": "Table header \"Reward\" label on staking rewards page",
         "end": {
           "column": 3,
-          "line": 50
+          "line": 51
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
         "id": "staking.rewards.tableHeader.reward",
         "start": {
           "column": 21,
-          "line": 46
+          "line": 47
         }
       },
       {
@@ -3908,13 +3908,13 @@
         "description": "Table header \"Date\" label in exported csv file",
         "end": {
           "column": 3,
-          "line": 55
+          "line": 56
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
         "id": "staking.rewards.tableHeader.date",
         "start": {
           "column": 19,
-          "line": 51
+          "line": 52
         }
       },
       {
@@ -3922,13 +3922,13 @@
         "description": "Label for \"Learn more\" button on staking rewards page",
         "end": {
           "column": 3,
-          "line": 60
+          "line": 61
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
         "id": "staking.rewards.learnMore.ButtonLabel",
         "start": {
           "column": 24,
-          "line": 56
+          "line": 57
         }
       },
       {
@@ -3936,13 +3936,13 @@
         "description": "Rewards description text on staking rewards page",
         "end": {
           "column": 3,
-          "line": 66
+          "line": 67
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
         "id": "staking.rewards.note",
         "start": {
           "column": 8,
-          "line": 61
+          "line": 62
         }
       },
       {
@@ -3950,13 +3950,13 @@
         "description": "unknown stake pool label on staking rewards page.",
         "end": {
           "column": 3,
-          "line": 71
+          "line": 72
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
         "id": "staking.delegationCenter.syncingTooltipLabel",
         "start": {
           "column": 23,
-          "line": 67
+          "line": 68
         }
       }
     ],

@@ -6,7 +6,7 @@ Changelog
 ### Feature
 - Implemented transactions filtering dialog on wallet "Transactions" screen ([PR 1815](https://github.com/input-output-hk/daedalus/pull/1815))
 - Implemented a spinner on Wallet delegation screens for wallets in the restoration process ([PR 1847](https://github.com/input-output-hk/daedalus/pull/1847))
-- Implemented experimental data UI ([PR 1845](https://github.com/input-output-hk/daedalus/pull/1845))
+- Implemented experimental data UI ([PR 1845](https://github.com/input-output-hk/daedalus/pull/1845), [PR 1850](https://github.com/input-output-hk/daedalus/pull/1850))
 - Renamed "Profit margin" into "Pool margin" on the stake pool tooltip ([PR 1841](https://github.com/input-output-hk/daedalus/pull/1841))
 
 ### Fixes

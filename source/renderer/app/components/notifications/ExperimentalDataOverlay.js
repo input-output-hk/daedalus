@@ -17,7 +17,7 @@ const messages = defineMessages({
   description: {
     id: 'experimentalData.overlay.description',
     defaultMessage:
-      '<p>!!!The goal of the Incentivized Testnet is to test and improve the stake delegation features of the Shelley era, including new Daedalus features, before their release on the Cardano mainnet. Due to the nature of the testnet, some of these features may be unreliable or subject to change as they are iterated upon by the development team.</p><p>Any new Daedalus features which are considered experimental will be marked with a <span class="experimentalIcon"></span> icon. Take care when using information from experimental features to make delegation decisions, as the data could be inaccurate. The <span class="experimentalIcon"></span> icon will be removed when a feature is considered stable and reliable to use.</p>',
+      '<p>!!!The goal of the Incentivized Testnet is to test and improve the stake delegation features of the Shelley era, including new Daedalus features, before their release on the Cardano mainnet. Due to the nature of the testnet, some of these features may be unreliable or subject to change as they are iterated upon by the development team.</p><p>Any new Daedalus features which are considered experimental will be marked with a <span class="experimentalIcon"></span> icon. Take care when using information solely from experimental features to make delegation decisions, as the data could be inaccurate. The <span class="experimentalIcon"></span> icon will be removed when a feature is considered stable and reliable to use.</p>',
     description: 'Experimental data description',
   },
   actionLabel: {
