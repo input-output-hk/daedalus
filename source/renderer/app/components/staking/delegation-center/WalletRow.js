@@ -161,10 +161,10 @@ export default class WalletRow extends Component<Props> {
     const delegate = intl.formatMessage(messages.delegate);
     const delegatedStakePoolTicker = delegatedStakePool
       ? `[${delegatedStakePool.ticker}]`
-      : intl.formatMessage(messages.unknownStakePoolLabel);
+      : intl.formatMessage(messages.notDelegated).toLowerCase();
     const nextDelegatedStakePoolTicker = nextDelegatedStakePool
       ? `[${nextDelegatedStakePool.ticker}]`
-      : intl.formatMessage(messages.unknownStakePoolLabel);
+      : intl.formatMessage(messages.notDelegated).toLowerCase();
 
     const delegatedWalletActionOptions = [
       {
