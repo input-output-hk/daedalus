@@ -1620,6 +1620,7 @@ const _createWalletFromServerData = action(
     const { target } = active;
 
     const nextTarget = get(nextPendingStakePool, 'target', null);
+    const nextStatus = get(nextPendingStakePool, 'status', null);
     const nextEpoch = get(nextPendingStakePool, 'changes_at', null);
 
     const lastTarget = get(lastPendingStakePool, 'target', null);
@@ -1627,6 +1628,7 @@ const _createWalletFromServerData = action(
 
     const delegatedStakePoolId = isLegacy ? null : target;
     const nextDelegationStakePoolId = isLegacy ? null : nextTarget;
+    const nextDelegationStakePoolStatus = isLegacy ? null : nextStatus;
     const nextDelegationStakePoolEpoch = isLegacy ? null : nextEpoch;
 
     const lastDelegationStakePoolId = isLegacy ? null : lastTarget;
@@ -1645,6 +1647,7 @@ const _createWalletFromServerData = action(
       isLegacy,
       delegatedStakePoolId,
       nextDelegationStakePoolId,
+      nextDelegationStakePoolStatus,
       nextDelegationStakePoolEpoch,
       lastDelegationStakePoolId,
       lastDelegationStakePoolEpoch,
