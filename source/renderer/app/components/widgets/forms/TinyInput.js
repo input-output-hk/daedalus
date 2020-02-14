@@ -64,7 +64,7 @@ export default class TinyInput extends Component<Props, State> {
         onFocus={() => this.setEditMode(true)}
         onBlur={() => this.setEditMode(false)}
         role="button"
-        tabIndex={0}
+        tabIndex={-1}
       >
         {useReadMode && !isEditMode && (
           <div className={styles.contentInReadMode}>
