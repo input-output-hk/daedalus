@@ -43,11 +43,7 @@ export default class UndelegateDialogContainer extends Component<Props> {
       delegatedStakePoolId,
     } = walletToBeUndelegated;
 
-    const stakePoolId = get(
-      walletToBeUndelegated,
-      'lastDelegationStakePoolId',
-      'delegatedStakePoolId'
-    );
+    const stakePoolId = lastDelegationStakePoolId || delegatedStakePoolId;
 
     if (
       (!stakePoolId || !isDelegatioTransactionPending) &&
