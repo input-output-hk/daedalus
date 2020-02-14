@@ -172,7 +172,6 @@ import {
   IncorrectSpendingPasswordError,
   InvalidMnemonicError,
   ForbiddenMnemonicError,
-  IncorrectStakePoolDelegationError,
 } from './common/errors';
 
 // Wallets errors
@@ -1551,8 +1550,6 @@ export default class AdaApi {
           error.message.includes('passphrase is too short'))
       ) {
         throw new IncorrectSpendingPasswordError();
-      } else if (error.code === 'pool_already_joined') {
-        throw new IncorrectStakePoolDelegationError();
       }
       throw new GenericApiError();
     }

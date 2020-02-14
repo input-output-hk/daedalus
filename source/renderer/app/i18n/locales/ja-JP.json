@@ -5,7 +5,6 @@
   "api.errors.ForbiddenMnemonicError": "ウォレットの復元パスフレーズが無効です。送信された復元パスフレーズは、ドキュメントの復元パスフレーズの一つですので、資金を保持するウォレットには使用しないでください。",
   "api.errors.GenericApiError": "エラーが発生しました。",
   "api.errors.IncorrectPasswordError": "無効なウォレットパスワード",
-  "api.errors.IncorrectStakePoolDelegationError": "Invalid stake pool join. This stake pool is already pending for delegation",
   "api.errors.NotAllowedToSendMoneyToRedeemAddressError": "Ada還元アドレスに送金することはできません。",
   "api.errors.NotAllowedToSendMoneyToSameAddressError": "送金元と入金先が同じアドレスである場合にはトランザクションは行えません。このウォレットに十分なアドレスがあることを確認するか、別のアドレスに送金を行なってください。",
   "api.errors.NotEnoughFundsForTransactionError": "Adaが足りません。より少額の送金を試みてください。",
