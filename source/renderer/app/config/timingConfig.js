@@ -2,7 +2,7 @@
 const { isTest } = global.environment;
 
 // All configuration values for timeouts / intervals should go here
-export const REPORT_ISSUE_TIME_TRIGGER = isTest ? 12 : 20 * 60; // 20 minutes / 12 seconds (isTest = true) | unit: seconds
+export const REPORT_ISSUE_TIME_TRIGGER = isTest ? 12 : 10 * 60; // 10 minutes / 12 seconds (isTest = true) | unit: seconds
 export const NOTIFICATION_DEFAULT_DURATION = 10 * 1000; // 10 seconds / unit: milliseconds
 export const ADDRESS_COPY_NOTIFICATION_SMALL_DURATION = 3; // unit: seconds
 export const DELETE_WALLET_COUNTDOWN = 10; // unit: seconds

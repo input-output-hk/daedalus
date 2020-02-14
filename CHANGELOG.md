@@ -18,7 +18,6 @@ Changelog
 
 ### Chores
 
-- Increased Sync and Report sync-issue threshold to 20 mins ([PR 1842](https://github.com/input-output-hk/daedalus/pull/1842))
 - Updated `cardano-wallet` to revision `edc42a9c` ([PR 1842](https://github.com/input-output-hk/daedalus/pull/1842))
 - Improved GitHub pull request template ([PR 1843](https://github.com/input-output-hk/daedalus/pull/1843))
 - Removed unused locales and translation files ([PR 1840](https://github.com/input-output-hk/daedalus/pull/1840))
