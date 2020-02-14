@@ -255,7 +255,7 @@ export default class WalletRow extends Component<Props> {
                                     );
 
                                     return (
-                                      <Fragment>
+                                      <Fragment key={pendingDelegation.target}>
                                         <br />
                                         {intl.formatMessage(
                                           messages.toStakePoolTooltipTickerPart2
