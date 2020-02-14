@@ -229,8 +229,8 @@ export default class WalletRow extends Component<Props> {
                         <Fragment>
                           <Tooltip
                             skin={TooltipSkin}
+                            // Show current delegation
                             tip={
-                              // Show current delegation
                               <div className={styles.tooltipLabelWrapper}>
                                 {intl.formatMessage(
                                   messages.toStakePoolTooltipTickerPart1

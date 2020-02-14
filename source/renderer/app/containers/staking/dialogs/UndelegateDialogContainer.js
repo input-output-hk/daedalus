@@ -36,10 +36,21 @@ export default class UndelegateDialogContainer extends Component<Props> {
     const walletToBeUndelegated = getWalletById(walletId);
     if (!walletToBeUndelegated) return null;
 
-    const { name: walletName, delegatedStakePoolId } = walletToBeUndelegated;
+    const { name: walletName } = walletToBeUndelegated;
+
+    const {
+      lastDelegationStakePoolId,
+      delegatedStakePoolId,
+    } = walletToBeUndelegated;
+
+    const stakePoolId = get(
+      walletToBeUndelegated,
+      'lastDelegationStakePoolId',
+      'delegatedStakePoolId'
+    );
 
     if (
-      (!delegatedStakePoolId || !isDelegatioTransactionPending) &&
+      (!stakePoolId || !isDelegatioTransactionPending) &&
       undelegateWalletSubmissionSuccess &&
       !quitStakePoolRequest.error
     ) {
@@ -59,8 +70,7 @@ export default class UndelegateDialogContainer extends Component<Props> {
       );
     }
 
-    const delegatedStakePool = getStakePoolById(delegatedStakePoolId);
-    const stakePoolId = get(walletToBeUndelegated, 'delegatedStakePoolId');
+    const delegatedStakePool = getStakePoolById(stakePoolId);
     const stakePoolName = get(delegatedStakePool, 'name', '');
     const stakePoolTicker = get(delegatedStakePool, 'ticker');
 
