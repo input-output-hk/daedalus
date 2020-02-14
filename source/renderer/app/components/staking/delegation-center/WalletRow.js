@@ -143,10 +143,14 @@ export default class WalletRow extends Component<Props> {
       null
     );
 
-    const { ranking } = delegatedStakePool || {};
+    const stakePoolToShow = nextDelegationStakePoolId
+      ? nextDelegatedStakePool
+      : delegatedStakePool;
+
+    const { ranking } = stakePoolToShow || {};
 
     const color =
-      delegatedStakePoolId && delegatedStakePool && !isNil(ranking)
+      stakePoolToShow && !isNil(ranking)
         ? getColorFromRange(ranking, numberOfStakePools)
         : null;
 
@@ -175,6 +179,9 @@ export default class WalletRow extends Component<Props> {
       },
     ];
 
+    const isDelegationActive =
+      delegatedStakePoolId || nextDelegationStakePoolId;
+
     return (
       <div className={styles.component}>
         <div className={styles.left}>
@@ -193,8 +200,8 @@ export default class WalletRow extends Component<Props> {
             <Fragment>
               <div>
                 <div className={styles.status}>
-                  <span>{delegatedStakePoolId ? delegated : notDelegated}</span>
-                  {delegatedStakePoolId && (
+                  <span>{isDelegationActive ? delegated : notDelegated}</span>
+                  {isDelegationActive && (
                     <DropdownMenu
                       label={
                         <SVGInline
@@ -208,7 +215,7 @@ export default class WalletRow extends Component<Props> {
                   )}
                 </div>
                 <div className={styles.action}>
-                  {delegatedStakePoolId ? (
+                  {isDelegationActive ? (
                     <Fragment>
                       {nextDelegatedStakePoolEpoch ? (
                         <Fragment>
@@ -266,6 +273,7 @@ export default class WalletRow extends Component<Props> {
                               className={styles.sandClockIcon}
                             />
                           </Tooltip>
+                          {intl.formatMessage(messages.toStakePoolTickerPart1)}{' '}
                           <span
                             className={
                               nextDelegatedStakePool ? styles.unknown : null
@@ -273,7 +281,8 @@ export default class WalletRow extends Component<Props> {
                             style={{ color }}
                           >
                             {nextDelegatedStakePoolTicker}
-                          </span>
+                          </span>{' '}
+                          {intl.formatMessage(messages.toStakePoolTickerPart2)}
                         </Fragment>
                       ) : (
                         <Fragment>

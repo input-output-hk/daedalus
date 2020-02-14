@@ -1,5 +1,5 @@
 // @flow
-import { split, get, includes, map } from 'lodash';
+import { split, get, includes, map, isArray, last } from 'lodash';
 import { action } from 'mobx';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
@@ -1593,6 +1593,7 @@ const _createWalletFromServerData = action(
       delegation,
       isLegacy = false,
     } = data;
+
     const id = isLegacy ? getLegacyWalletId(rawWalletId) : rawWalletId;
     const passphraseLastUpdatedAt = get(passphrase, 'last_updated_at', null);
     const walletTotalAmount =
@@ -1612,9 +1613,11 @@ const _createWalletFromServerData = action(
     }
 
     const { next, active } = delegation;
+    const pendingStakePool = isArray(next) ? last(next) : next;
+
     const { target } = active;
-    const nextTarget = get(next, 'target', null);
-    const nextEpoch = get(next, 'changes_at', null);
+    const nextTarget = get(pendingStakePool, 'target', null);
+    const nextEpoch = get(pendingStakePool, 'changes_at', null);
 
     const delegatedStakePoolId = isLegacy ? null : target;
     const nextDelegationStakePoolId = isLegacy ? null : nextTarget;

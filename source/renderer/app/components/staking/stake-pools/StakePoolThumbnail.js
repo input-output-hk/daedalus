@@ -23,14 +23,11 @@ type Props = {
   onSelect: Function,
   showWithSelectButton?: boolean,
   showSelected?: boolean,
-  showNextSelected?: boolean,
   stakePool: StakePool,
   isSelected?: ?Function,
-  isNextSelected?: ?Function,
   containerClassName: string,
   numberOfStakePools: number,
   disabledStakePoolId: ?string,
-  disabledNextStakePoolId: ?string,
 };
 
 type State = {
@@ -96,31 +93,26 @@ export class StakePoolThumbnail extends Component<Props, State> {
       currentTheme,
       isHighlighted,
       isSelected,
-      isNextSelected,
       onClose,
       onHover,
       onOpenExternalLink,
       getPledgeAddressUrl,
       showWithSelectButton,
       showSelected,
-      showNextSelected,
       stakePool,
       containerClassName,
       numberOfStakePools,
       disabledStakePoolId,
-      disabledNextStakePoolId,
     } = this.props;
     const { top, left } = this.state;
 
     const { ranking, ticker, retiring, id, saturation } = stakePool;
     const color = getColorFromRange(ranking, numberOfStakePools);
-    const isDisabled =
-      disabledStakePoolId === id || disabledNextStakePoolId === id;
+    const isDisabled = disabledStakePoolId === id;
 
     const componentClassnames = classnames([
       styles.component,
       isSelected && showSelected ? styles.isSelected : null,
-      isNextSelected && showNextSelected ? styles.isNextSelected : null,
     ]);
 
     const contentClassnames = classnames([
@@ -152,8 +144,7 @@ export class StakePoolThumbnail extends Component<Props, State> {
         >
           <div className={styles.ticker}>{ticker}</div>
 
-          {(isSelected && showSelected) ||
-          (isNextSelected && showNextSelected) ? (
+          {isSelected && showSelected ? (
             <div className={styles.checkmarkWrapper}>
               <SVGInline
                 svg={checkmarkImage}

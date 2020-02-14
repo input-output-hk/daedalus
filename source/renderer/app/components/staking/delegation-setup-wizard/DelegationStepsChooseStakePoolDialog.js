@@ -187,12 +187,12 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
       'delegatedStakePoolId',
       null
     );
+
+    const activeStakePoolId = nextDelegatedStakePoolId || delegatedStakePoolId;
+
     const selectedPoolTicker = get(selectedPool, 'ticker');
     const canSubmit =
-      !delegatedStakePoolId || delegatedStakePoolId !== selectedPoolId;
-
-    const canSubmitNext =
-      !nextDelegatedStakePoolId || nextDelegatedStakePoolId !== selectedPoolId;
+      !activeStakePoolId || activeStakePoolId !== selectedPoolId;
 
     const actions = [
       {
@@ -200,7 +200,7 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
         label: intl.formatMessage(messages.continueButtonLabel),
         onClick: this.onAcceptPool,
         primary: true,
-        disabled: !selectedPoolId || !canSubmit || !canSubmitNext,
+        disabled: !selectedPoolId || !canSubmit,
       },
     ];
 
@@ -254,7 +254,11 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
     const selectionPoolLabel = () => {
       let label = '';
       // Label when selected wallet already delegating to selected stake pool
-      if (selectedPoolId && delegatedStakePoolId === selectedPoolId) {
+      if (
+        selectedPoolId &&
+        activeStakePoolId === delegatedStakePoolId &&
+        delegatedStakePoolId === selectedPoolId
+      ) {
         label = (
           <FormattedHTMLMessage
             {...messages.delegatedStakePoolLabel}
@@ -266,6 +270,7 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
         );
       } else if (
         selectedPoolId &&
+        activeStakePoolId === nextDelegatedStakePoolId &&
         nextDelegatedStakePoolId === selectedPoolId
       ) {
         label = (
@@ -372,8 +377,7 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
               onSelect={this.handleSelect}
               selectedPoolId={selectedPoolId}
               numberOfStakePools={stakePoolsList.length}
-              disabledNextStakePoolId={nextDelegatedStakePoolId}
-              disabledStakePoolId={delegatedStakePoolId}
+              disabledStakePoolId={activeStakePoolId}
               showSelected
               highlightOnHover
             />
@@ -387,7 +391,7 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
               onSearch={this.handleSearch}
               onClearSearch={this.handleClearSearch}
               scrollableElementClassName="Dialog_content"
-              disabledStakePoolId={delegatedStakePoolId}
+              disabledStakePoolId={activeStakePoolId}
             />
           </div>
 
@@ -402,12 +406,10 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
               setListActive={this.handleSetListActive}
               onSelect={this.handleSelect}
               selectedPoolId={selectedPoolId}
-              nextSelectedPoolId={nextDelegatedStakePoolId}
               containerClassName="Dialog_content"
               numberOfStakePools={stakePoolsList.length}
-              disabledStakePoolId={delegatedStakePoolId}
+              disabledStakePoolId={activeStakePoolId}
               showSelected
-              showNextSelected
               highlightOnHover
             />
           </div>

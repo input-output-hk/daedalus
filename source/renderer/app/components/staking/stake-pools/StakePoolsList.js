@@ -16,7 +16,6 @@ type Props = {
   onSelect?: Function,
   showWithSelectButton?: boolean,
   showSelected?: boolean,
-  showNextSelected?: boolean,
   containerClassName: string,
   numberOfStakePools: number,
   /**
@@ -30,9 +29,7 @@ type Props = {
   isListActive?: boolean,
   setListActive?: Function,
   selectedPoolId?: ?number,
-  nextSelectedPoolId?: ?number,
   disabledStakePoolId?: ?string,
-  disabledNextStakePoolId?: ?string,
 };
 
 type State = {
@@ -101,15 +98,12 @@ export class StakePoolsList extends Component<Props, State> {
       onOpenExternalLink,
       getPledgeAddressUrl,
       showSelected,
-      showNextSelected,
       showWithSelectButton,
       stakePoolsList,
       selectedPoolId,
-      nextSelectedPoolId,
       containerClassName,
       numberOfStakePools,
       disabledStakePoolId,
-      disabledNextStakePoolId,
       listName,
     } = this.props;
 
@@ -120,8 +114,6 @@ export class StakePoolsList extends Component<Props, State> {
         {stakePoolsList.map(stakePool => {
           const isHighlighted = this.getIsHighlighted(stakePool.id);
           const isSelected = selectedPoolId && stakePool.id === selectedPoolId;
-          const isNextSelected =
-            nextSelectedPoolId && stakePool.id === nextSelectedPoolId;
 
           return (
             <StakePoolThumbnail
@@ -137,13 +129,10 @@ export class StakePoolsList extends Component<Props, State> {
               showWithSelectButton={showWithSelectButton}
               currentTheme={currentTheme}
               isSelected={isSelected}
-              isNextSelected={isNextSelected}
               showSelected={showSelected}
-              showNextSelected={showNextSelected}
               containerClassName={containerClassName}
               numberOfStakePools={numberOfStakePools}
               disabledStakePoolId={disabledStakePoolId}
-              disabledNextStakePoolId={disabledNextStakePoolId}
             />
           );
         })}
