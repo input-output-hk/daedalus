@@ -70,20 +70,6 @@
           "column": 26,
           "line": 28
         }
-      },
-      {
-        "defaultMessage": "!!!Invalid stake pool join. This stake pool is already pending for delegation",
-        "description": "\"Stake pool join: an example stake pool join error.\" error message",
-        "end": {
-          "column": 3,
-          "line": 41
-        },
-        "file": "source/renderer/app/api/common/errors.js",
-        "id": "api.errors.IncorrectStakePoolDelegationError",
-        "start": {
-          "column": 37,
-          "line": 35
-        }
       }
     ],
     "path": "source/renderer/app/api/common/errors.json"
