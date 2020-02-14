@@ -131,7 +131,7 @@ export default class WalletRow extends Component<Props> {
         lastDelegationStakePoolId,
         isRestoring,
         syncState,
-        pendingDelegations
+        pendingDelegations,
       },
       delegatedStakePool,
       nextDelegatedStakePoolEpoch,
@@ -187,7 +187,8 @@ export default class WalletRow extends Component<Props> {
     const isDelegationActive =
       delegatedStakePoolId || lastDelegationStakePoolId;
 
-    const hasPendingDelegations = nextDelegatedStakePoolEpoch || lastDelegatedStakePoolEpoch;
+    const hasPendingDelegations =
+      nextDelegatedStakePoolEpoch || lastDelegatedStakePoolEpoch;
 
     return (
       <div className={styles.component}>
@@ -242,12 +243,18 @@ export default class WalletRow extends Component<Props> {
                                 >
                                   {delegatedStakePoolTicker}
                                 </span>
-                                {hasPendingDelegations && (
+                                {hasPendingDelegations &&
                                   // Show pending epochs
                                   // @TODO - map
                                   map(pendingDelegations, pendingDelegation => {
-                                    const pendingStakePool = getStakePoolById(pendingDelegation.target);
-                                    const stakePoolEpoch = get(pendingDelegation, 'changes_at', null);
+                                    const pendingStakePool = getStakePoolById(
+                                      pendingDelegation.target
+                                    );
+                                    const stakePoolEpoch = get(
+                                      pendingDelegation,
+                                      'changes_at',
+                                      null
+                                    );
                                     const epochNumber = get(
                                       stakePoolEpoch,
                                       'epoch_number',
@@ -285,8 +292,7 @@ export default class WalletRow extends Component<Props> {
                                         )}
                                       </Fragment>
                                     );
-                                  })
-                                )}
+                                  })}
                               </div>
                             }
                           >
