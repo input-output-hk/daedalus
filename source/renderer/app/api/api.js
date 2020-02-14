@@ -1614,17 +1614,26 @@ const _createWalletFromServerData = action(
 
     const { next, active } = delegation;
 
-    const lastPendingStakePool = isArray(next) ? last(next) : next;
+    const nextPendingStakePool = next[0];
+    const lastPendingStakePool = next[1];
 
-    const nextPendingStakePool = isArray(next) ? head(next) : next;
-
+    console.log(nextPendingStakePool);
+    console.log(lastPendingStakePool);
     const { target } = active;
 
     const nextTarget = get(nextPendingStakePool, 'target', null);
-    const nextEpoch = get(nextPendingStakePool, 'changes_at', null);
+    const nextEpoch = get(
+      nextPendingStakePool,
+      'changes_at.epoch_number',
+      null
+    );
 
     const lastTarget = get(lastPendingStakePool, 'target', null);
-    const lastEpoch = get(lastPendingStakePool, 'changes_at', null);
+    const lastEpoch = get(
+      lastPendingStakePool,
+      'changes_at.epoch_number',
+      null
+    );
 
     const delegatedStakePoolId = isLegacy ? null : target;
     const nextDelegationStakePoolId = isLegacy ? null : nextTarget;
@@ -1632,6 +1641,10 @@ const _createWalletFromServerData = action(
 
     const lastDelegationStakePoolId = isLegacy ? null : lastTarget;
     const lastDelegationStakePoolEpoch = isLegacy ? null : lastEpoch;
+
+    console.log(
+      `Current ${target}, next: ${nextDelegationStakePoolId}, epoch: ${nextDelegationStakePoolEpoch} last: ${lastDelegationStakePoolId}, epoch: ${lastDelegationStakePoolEpoch}`
+    );
 
     return new Wallet({
       id,
