@@ -8,6 +8,7 @@ import type {
   DelegationStatus,
   WalletUnit,
   WalletNextDelegationEpoch,
+  WalletNextDelegation,
 } from '../api/wallets/types';
 
 export const WalletSyncStateStatuses: {
@@ -49,6 +50,8 @@ export type WalletProps = {
   delegatedStakePoolId?: ?string,
   nextDelegationStakePoolId?: ?string,
   nextDelegationStakePoolEpoch?: ?WalletNextDelegationEpoch,
+  lastDelegationStakePoolId?: ?string,
+  lastDelegationStakePoolEpoch?: ?WalletNextDelegationEpoch,
 };
 
 export default class Wallet {
@@ -64,6 +67,8 @@ export default class Wallet {
   @observable delegatedStakePoolId: ?string;
   @observable nextDelegationStakePoolId: ?string;
   @observable nextDelegationStakePoolEpoch: ?WalletNextDelegationEpoch;
+  @observable lastDelegationStakePoolId: ?string;
+  @observable lastDelegationStakePoolEpoch: ?WalletNextDelegationEpoch;
 
   constructor(data: WalletProps) {
     Object.assign(this, data);

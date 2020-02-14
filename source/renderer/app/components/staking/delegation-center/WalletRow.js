@@ -97,6 +97,8 @@ type Props = {
   delegatedStakePool?: ?StakePool,
   nextDelegatedStakePool?: ?StakePool,
   nextDelegatedStakePoolEpoch?: ?WalletNextDelegationEpoch,
+  lastDelegatedStakePool?: ?StakePool,
+  lastDelegatedStakePoolEpoch?: ?WalletNextDelegationEpoch,
   numberOfStakePools: number,
   onDelegate: Function,
   onMenuItemClick: Function,
@@ -126,12 +128,15 @@ export default class WalletRow extends Component<Props> {
         amount,
         delegatedStakePoolId,
         nextDelegationStakePoolId,
+        lastDelegationStakePoolId,
         isRestoring,
         syncState,
       },
       delegatedStakePool,
       nextDelegatedStakePool,
       nextDelegatedStakePoolEpoch,
+      lastDelegatedStakePool,
+      lastDelegatedStakePoolEpoch,
       numberOfStakePools,
     } = this.props;
 
@@ -143,8 +148,8 @@ export default class WalletRow extends Component<Props> {
       null
     );
 
-    const stakePoolToShow = nextDelegationStakePoolId
-      ? nextDelegatedStakePool
+    const stakePoolToShow = lastDelegationStakePoolId
+      ? lastDelegatedStakePool
       : delegatedStakePool;
 
     const { ranking } = stakePoolToShow || {};
@@ -162,10 +167,12 @@ export default class WalletRow extends Component<Props> {
     const delegatedStakePoolTicker = delegatedStakePool
       ? `[${delegatedStakePool.ticker}]`
       : notDelegated.toLowerCase();
+    const lastDelegatedStakePoolTicker = lastDelegatedStakePool
+      ? `[${lastDelegatedStakePool.ticker}]`
+      : notDelegated.toLowerCase();
     const nextDelegatedStakePoolTicker = nextDelegatedStakePool
       ? `[${nextDelegatedStakePool.ticker}]`
       : notDelegated.toLowerCase();
-
     const delegatedWalletActionOptions = [
       {
         label: changeDelegation,
@@ -276,11 +283,11 @@ export default class WalletRow extends Component<Props> {
                           {intl.formatMessage(messages.toStakePoolTickerPart1)}{' '}
                           <span
                             className={
-                              nextDelegatedStakePool ? styles.unknown : null
+                              lastDelegatedStakePool ? styles.unknown : null
                             }
                             style={{ color }}
                           >
-                            {nextDelegatedStakePoolTicker}
+                            {lastDelegatedStakePoolTicker}
                           </span>{' '}
                           {intl.formatMessage(messages.toStakePoolTickerPart2)}
                         </Fragment>
@@ -301,7 +308,7 @@ export default class WalletRow extends Component<Props> {
                     </Fragment>
                   ) : (
                     <Fragment>
-                      {nextDelegatedStakePoolEpoch ? (
+                      {lastDelegatedStakePoolEpoch ? (
                         <Fragment>
                           <Tooltip
                             skin={TooltipSkin}
@@ -316,17 +323,17 @@ export default class WalletRow extends Component<Props> {
                                   {nextDelegationStakePoolId ? (
                                     <span
                                       className={
-                                        nextDelegatedStakePool
+                                        lastDelegatedStakePool
                                           ? styles.unknown
                                           : null
                                       }
                                     >
-                                      {nextDelegatedStakePoolTicker}
+                                      {lastDelegatedStakePoolTicker}
                                     </span>
                                   ) : (
                                     <span
                                       className={
-                                        !nextDelegatedStakePool
+                                        !lastDelegatedStakePool
                                           ? styles.unknown
                                           : null
                                       }

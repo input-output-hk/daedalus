@@ -111,6 +111,12 @@ export default class DelegationCenterBody extends Component<Props> {
                   nextDelegatedStakePoolEpoch={
                     wallet.nextDelegationStakePoolEpoch
                   }
+                  lastDelegatedStakePool={getStakePoolById(
+                    wallet.lastDelegationStakePoolId
+                  )}
+                  lastDelegatedStakePoolEpoch={
+                    wallet.lastDelegationStakePoolEpoch
+                  }
                 />
               ))}
             </div>

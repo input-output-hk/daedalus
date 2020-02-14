@@ -1,5 +1,5 @@
 // @flow
-import { split, get, includes, map, isArray, last } from 'lodash';
+import { split, get, includes, map, isArray, last, head } from 'lodash';
 import { action } from 'mobx';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
@@ -1613,15 +1613,25 @@ const _createWalletFromServerData = action(
     }
 
     const { next, active } = delegation;
-    const pendingStakePool = isArray(next) ? last(next) : next;
+
+    const lastPendingStakePool = isArray(next) ? last(next) : next;
+
+    const nextPendingStakePool = isArray(next) ? head(next) : next;
 
     const { target } = active;
-    const nextTarget = get(pendingStakePool, 'target', null);
-    const nextEpoch = get(pendingStakePool, 'changes_at', null);
+
+    const nextTarget = get(nextPendingStakePool, 'target', null);
+    const nextEpoch = get(nextPendingStakePool, 'changes_at', null);
+
+    const lastTarget = get(lastPendingStakePool, 'target', null);
+    const lastEpoch = get(lastPendingStakePool, 'changes_at', null);
 
     const delegatedStakePoolId = isLegacy ? null : target;
     const nextDelegationStakePoolId = isLegacy ? null : nextTarget;
     const nextDelegationStakePoolEpoch = isLegacy ? null : nextEpoch;
+
+    const lastDelegationStakePoolId = isLegacy ? null : lastTarget;
+    const lastDelegationStakePoolEpoch = isLegacy ? null : lastEpoch;
 
     return new Wallet({
       id,
@@ -1637,6 +1647,8 @@ const _createWalletFromServerData = action(
       delegatedStakePoolId,
       nextDelegationStakePoolId,
       nextDelegationStakePoolEpoch,
+      lastDelegationStakePoolId,
+      lastDelegationStakePoolEpoch,
     });
   }
 );
