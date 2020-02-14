@@ -177,9 +177,9 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
       stakePoolsList,
       stakePool => stakePool.id === selectedPoolId
     );
-    const nextDelegatedStakePoolId = get(
+    const lastDelegatedStakePoolId = get(
       selectedWallet,
-      'nextDelegationStakePoolId',
+      'lastDelegationStakePoolId',
       null
     );
     const delegatedStakePoolId = get(
@@ -188,7 +188,7 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
       null
     );
 
-    const activeStakePoolId = nextDelegatedStakePoolId || delegatedStakePoolId;
+    const activeStakePoolId = lastDelegatedStakePoolId || delegatedStakePoolId;
 
     const selectedPoolTicker = get(selectedPool, 'ticker');
     const canSubmit =
@@ -270,8 +270,8 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
         );
       } else if (
         selectedPoolId &&
-        activeStakePoolId === nextDelegatedStakePoolId &&
-        nextDelegatedStakePoolId === selectedPoolId
+        activeStakePoolId === lastDelegatedStakePoolId &&
+        lastDelegatedStakePoolId === selectedPoolId
       ) {
         label = (
           <FormattedHTMLMessage

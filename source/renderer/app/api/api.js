@@ -1612,6 +1612,8 @@ const _createWalletFromServerData = action(
           : new BigNumber(balance.reward.quantity);
     }
 
+    console.debug('_createWalletFromServerData: ', data);
+
     const { next, active } = delegation;
 
     const lastPendingStakePool = isArray(next) ? last(next) : next;
@@ -1649,6 +1651,7 @@ const _createWalletFromServerData = action(
       nextDelegationStakePoolEpoch,
       lastDelegationStakePoolId,
       lastDelegationStakePoolEpoch,
+      pendingDelegations: next,
     });
   }
 );

@@ -1,7 +1,7 @@
 // @flow
 import React, { Component, Fragment } from 'react';
 import { observer } from 'mobx-react';
-import { isNil, get } from 'lodash';
+import { isNil, get, map } from 'lodash';
 import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
@@ -102,6 +102,7 @@ type Props = {
   numberOfStakePools: number,
   onDelegate: Function,
   onMenuItemClick: Function,
+  getStakePoolById: Function,
 };
 
 @observer
@@ -131,6 +132,7 @@ export default class WalletRow extends Component<Props> {
         lastDelegationStakePoolId,
         isRestoring,
         syncState,
+        pendingDelegations
       },
       delegatedStakePool,
       nextDelegatedStakePool,
@@ -138,12 +140,18 @@ export default class WalletRow extends Component<Props> {
       lastDelegatedStakePool,
       lastDelegatedStakePoolEpoch,
       numberOfStakePools,
+      getStakePoolById,
     } = this.props;
 
     const syncingProgress = get(syncState, 'progress.quantity', '');
 
     const nextEpochNumber = get(
       nextDelegatedStakePoolEpoch,
+      'epoch_number',
+      null
+    );
+    const lastEpochNumber = get(
+      lastDelegatedStakePoolEpoch,
       'epoch_number',
       null
     );
@@ -187,7 +195,9 @@ export default class WalletRow extends Component<Props> {
     ];
 
     const isDelegationActive =
-      delegatedStakePoolId || nextDelegationStakePoolId;
+      delegatedStakePoolId || lastDelegationStakePoolId;
+
+    const hasPendingDelegations = nextDelegatedStakePoolEpoch || lastDelegatedStakePoolEpoch;
 
     return (
       <div className={styles.component}>
@@ -224,11 +234,12 @@ export default class WalletRow extends Component<Props> {
                 <div className={styles.action}>
                   {isDelegationActive ? (
                     <Fragment>
-                      {nextDelegatedStakePoolEpoch ? (
+                      {hasPendingDelegations ? (
                         <Fragment>
                           <Tooltip
                             skin={TooltipSkin}
                             tip={
+                              // Show current delegation
                               <div className={styles.tooltipLabelWrapper}>
                                 {intl.formatMessage(
                                   messages.toStakePoolTooltipTickerPart1
@@ -241,36 +252,50 @@ export default class WalletRow extends Component<Props> {
                                 >
                                   {delegatedStakePoolTicker}
                                 </span>
-                                {nextDelegatedStakePoolEpoch && (
-                                  <Fragment>
-                                    <br />
-                                    {intl.formatMessage(
-                                      messages.toStakePoolTooltipTickerPart2
-                                    )}{' '}
-                                    {nextEpochNumber}
-                                    {': '}
-                                    {nextDelegationStakePoolId ? (
-                                      <span
-                                        className={
-                                          nextDelegatedStakePool
-                                            ? styles.unknown
-                                            : null
-                                        }
-                                      >
-                                        {nextDelegatedStakePoolTicker}
-                                      </span>
-                                    ) : (
-                                      <span
-                                        className={
-                                          !nextDelegatedStakePool
-                                            ? styles.unknown
-                                            : null
-                                        }
-                                      >
-                                        {notDelegated}
-                                      </span>
-                                    )}
-                                  </Fragment>
+                                {hasPendingDelegations && (
+                                  // Show pending epochs
+                                  // @TODO - map
+                                  map(pendingDelegations, pendingDelegation => {
+                                    const pendingStakePool = getStakePoolById(pendingDelegation.target);
+                                    const stakePoolEpoch = get(pendingDelegation, 'changes_at', null);
+                                    const epochNumber = get(
+                                      stakePoolEpoch,
+                                      'epoch_number',
+                                      null
+                                    );
+
+                                    return (
+                                      <Fragment>
+                                        <br />
+                                        {intl.formatMessage(
+                                          messages.toStakePoolTooltipTickerPart2
+                                        )}{' '}
+                                        {epochNumber}
+                                        {': '}
+                                        {pendingDelegation.target ? (
+                                          <span
+                                            className={
+                                              pendingStakePool
+                                                ? styles.unknown
+                                                : null
+                                            }
+                                          >
+                                            {pendingStakePool.ticker}
+                                          </span>
+                                        ) : (
+                                          <span
+                                            className={
+                                              !pendingStakePool
+                                                ? styles.unknown
+                                                : null
+                                            }
+                                          >
+                                            {notDelegated}
+                                          </span>
+                                        )}
+                                      </Fragment>
+                                    );
+                                  })
                                 )}
                               </div>
                             }
@@ -318,9 +343,9 @@ export default class WalletRow extends Component<Props> {
                                   {intl.formatMessage(
                                     messages.toStakePoolTooltipTickerPart2
                                   )}{' '}
-                                  {nextEpochNumber}
+                                  {lastEpochNumber}
                                   {': '}
-                                  {nextDelegationStakePoolId ? (
+                                  {lastDelegationStakePoolId ? (
                                     <span
                                       className={
                                         lastDelegatedStakePool
