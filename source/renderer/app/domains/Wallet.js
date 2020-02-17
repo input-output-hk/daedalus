@@ -52,6 +52,7 @@ export type WalletProps = {
   nextDelegationStakePoolStatus?: ?string,
   nextDelegationStakePoolEpoch?: ?WalletNextDelegationEpoch,
   lastDelegationStakePoolId?: ?string,
+  lastDelegationStakePoolStatus?: ?string,
   lastDelegationStakePoolEpoch?: ?WalletNextDelegationEpoch,
   pendingDelegations?: WalletNextDelegation,
 };
@@ -71,6 +72,7 @@ export default class Wallet {
   @observable nextDelegationStakePoolStatus: ?string;
   @observable nextDelegationStakePoolEpoch: ?WalletNextDelegationEpoch;
   @observable lastDelegationStakePoolId: ?string;
+  @observable lastDelegationStakePoolStatus: ?string;
   @observable lastDelegationStakePoolEpoch: ?WalletNextDelegationEpoch;
   @observable pendingDelegations: ?WalletNextDelegation;
 
