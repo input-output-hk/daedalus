@@ -3,6 +3,10 @@ Changelog
 
 ## 2.1.1-ITN1
 
+### Fixes
+
+- Fixed pending delegation preferences handling ([PR 1856](https://github.com/input-output-hk/daedalus/pull/1856))
+
 ## 2.1.0-ITN1
 
 ### Features

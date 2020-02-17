@@ -1612,12 +1612,12 @@ const _createWalletFromServerData = action(
           : new BigNumber(balance.reward.quantity);
     }
 
-    const { next, active } = delegation;
+    const active = get(delegation, 'active', null);
+    const target = get(active, 'target', null);
 
-    const lastPendingStakePool = last(next);
-    const nextPendingStakePool = head(next);
-
-    const { target } = active;
+    const next = get(delegation, 'next', null);
+    const lastPendingStakePool = next ? last(next) : null;
+    const nextPendingStakePool = next ? head(next) : null;
 
     const nextTarget = get(nextPendingStakePool, 'target', null);
     const nextStatus = get(nextPendingStakePool, 'status', null);
