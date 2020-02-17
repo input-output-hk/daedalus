@@ -2414,13 +2414,13 @@
         "description": "Title for the \"Undelegate\" dialog.",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 29
         },
         "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
         "id": "staking.delegationCenter.undelegate.dialog.title",
         "start": {
           "column": 15,
-          "line": 24
+          "line": 25
         }
       },
       {
@@ -2428,13 +2428,13 @@
         "description": "Label for the \"Undelegate\" button in the \"Undelegate\" dialog.",
         "end": {
           "column": 3,
-          "line": 34
+          "line": 35
         },
         "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
         "id": "staking.delegationCenter.undelegate.dialog.confirmButtonLabel",
         "start": {
           "column": 22,
-          "line": 29
+          "line": 30
         }
       },
       {
@@ -2442,13 +2442,13 @@
         "description": "Description for the \"Undelegate\" dialog.",
         "end": {
           "column": 3,
-          "line": 40
+          "line": 41
         },
         "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
         "id": "staking.delegationCenter.undelegate.dialog.descriptionWithTicker",
         "start": {
           "column": 25,
-          "line": 35
+          "line": 36
         }
       },
       {
@@ -2456,13 +2456,13 @@
         "description": "Description for the \"Undelegate\" dialog.",
         "end": {
           "column": 3,
-          "line": 47
+          "line": 48
         },
         "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
         "id": "staking.delegationCenter.undelegate.dialog.descriptionWithUnknownTicker",
         "start": {
           "column": 32,
-          "line": 41
+          "line": 42
         }
       },
       {
@@ -2470,13 +2470,13 @@
         "description": "Label for the unsupport confirmation check in the \"Undelegate\" dialog.",
         "end": {
           "column": 3,
-          "line": 54
+          "line": 55
         },
         "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
         "id": "staking.delegationCenter.undelegate.dialog.confirmUnsupportCheck",
         "start": {
           "column": 25,
-          "line": 48
+          "line": 49
         }
       },
       {
@@ -2484,13 +2484,13 @@
         "description": "Label for the uneligible confirmation check in the \"Undelegate\" dialog.",
         "end": {
           "column": 3,
-          "line": 61
+          "line": 62
         },
         "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
         "id": "staking.delegationCenter.undelegate.dialog.confirmUneligibleCheck",
         "start": {
           "column": 26,
-          "line": 55
+          "line": 56
         }
       },
       {
@@ -2498,13 +2498,13 @@
         "description": "Fees label in the \"Undelegate\" dialog.",
         "end": {
           "column": 3,
-          "line": 66
+          "line": 67
         },
         "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
         "id": "staking.delegationCenter.undelegate.dialog.feesLabel",
         "start": {
           "column": 13,
-          "line": 62
+          "line": 63
         }
       },
       {
@@ -2512,13 +2512,13 @@
         "description": "ADA label in the \"Undelegate\" dialog.",
         "end": {
           "column": 3,
-          "line": 71
+          "line": 72
         },
         "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
         "id": "staking.delegationCenter.undelegate.dialog.adaLabel",
         "start": {
           "column": 12,
-          "line": 67
+          "line": 68
         }
       },
       {
@@ -2526,13 +2526,13 @@
         "description": "Spending password label in the \"Undelegate\" dialog.",
         "end": {
           "column": 3,
-          "line": 76
+          "line": 77
         },
         "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
         "id": "staking.delegationCenter.undelegate.dialog.spendingPasswordLabel",
         "start": {
           "column": 25,
-          "line": 72
+          "line": 73
         }
       },
       {
@@ -2540,13 +2540,13 @@
         "description": "Spending password placeholder in the \"Undelegate\" dialog.",
         "end": {
           "column": 3,
-          "line": 82
+          "line": 83
         },
         "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
         "id": "staking.delegationCenter.undelegate.dialog.spendingPasswordPlaceholder",
         "start": {
           "column": 31,
-          "line": 77
+          "line": 78
         }
       },
       {
@@ -2554,13 +2554,13 @@
         "description": "Label for password error in the \"Undelegate\" dialog.",
         "end": {
           "column": 3,
-          "line": 87
+          "line": 88
         },
         "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
         "id": "staking.delegationCenter.undelegate.dialog.passwordError",
         "start": {
           "column": 24,
-          "line": 83
+          "line": 84
         }
       },
       {
@@ -2568,13 +2568,13 @@
         "description": "unknown stake pool label in the \"Undelegate\" dialog.",
         "end": {
           "column": 3,
-          "line": 92
+          "line": 93
         },
         "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
         "id": "staking.delegationCenter.undelegate.dialog.unknownStakePoolLabel",
         "start": {
           "column": 25,
-          "line": 88
+          "line": 89
         }
       }
     ],
