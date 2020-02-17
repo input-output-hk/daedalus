@@ -128,9 +128,10 @@ export default class WalletRow extends Component<Props> {
         name,
         amount,
         delegatedStakePoolId,
+        nextDelegationStakePoolId,
+        nextDelegationStakePoolStatus,
         lastDelegationStakePoolId,
         lastDelegationStakePoolStatus,
-        nextDelegationStakePoolId,
         isRestoring,
         syncState,
         pendingDelegations,
@@ -189,7 +190,7 @@ export default class WalletRow extends Component<Props> {
       lastDelegationStakePoolStatus !== 'not_delegating';
 
     const displayPendingDelegationInfo =
-      !!nextDelegationStakePoolId || !!lastDelegationStakePoolId;
+      !!lastDelegationStakePoolStatus || !!nextDelegationStakePoolStatus;
 
     const hasPendingDelegations =
       nextDelegatedStakePoolEpoch || lastDelegatedStakePoolEpoch;
