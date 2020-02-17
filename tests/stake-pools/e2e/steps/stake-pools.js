@@ -31,9 +31,9 @@ const STAKE_POOL_TOOLTIP_PROFIT_MARGIN_SELECTOR = '.StakePoolTooltip_component.S
 const STAKE_POOL_TOOLTIP_COST_SELECTOR = '.StakePoolTooltip_component.StakePoolTooltip_isVisible .StakePoolTooltip_cost span';
 const STAKE_POOL_TOOLTIP_PERFORMANCE_SELECTOR = '.StakePoolTooltip_component.StakePoolTooltip_isVisible .StakePoolTooltip_performance span';
 const STAKE_POOL_TOOLTIP_NAME_SELECTOR = '.StakePoolTooltip_component.StakePoolTooltip_isVisible .StakePoolTooltip_name';
-const STAKE_POOL_TOOLTIP_BUTTON_SELECTOR = '.StakePoolTooltip_component.StakePoolTooltip_isVisible button:last-child';
+const STAKE_POOL_TOOLTIP_BUTTON_SELECTOR = '//button[text()="Delegate to this pool"]';
 const DELEGATE_WALLET_SELECTOR = '.DelegationSteps_delegationSteps.DelegationStepsIntroDialog_delegationStepsIntroDialogWrapper';
-const DIALOG_CONTINUE_SELECTOR = '.DelegationSteps_delegationSteps .Dialog_actions .continueButton';
+const DIALOG_CONTINUE_SELECTOR = '//button[text()="Continue"]';
 const DIALOG_CONFIRM_SELECTOR = '.DelegationSteps_delegationSteps .DialogCloseButton_component';
 const DELEGATION_WALLET_FIRST_STEP_SELECTOR = '.DelegationSteps_delegationSteps.DelegationStepsChooseWalletDialog_delegationStepsChooseWalletDialogWrapper';
 const DELEGATION_WALLET_SECOND_STEP_SELECTOR = '.DelegationSteps_delegationSteps.DelegationStepsChooseStakePoolDialog_delegationStepsChooseStakePoolDialogWrapper';
@@ -84,7 +84,8 @@ When(/^I click on stake pool with order number "([^"]*)"/, function (rankNumber)
   return this.waitAndClick(`.StakePoolsList_component .StakePoolThumbnail_component:nth-child(${rankNumber})`);
 });
 
-When(/^I click "continue" button/, function () {
+When(/^I click "continue" button/, async function () {
+  await this.client.waitForEnabled(DIALOG_CONTINUE_SELECTOR);
   return this.waitAndClick(DIALOG_CONTINUE_SELECTOR);
 });
 
@@ -99,7 +100,8 @@ When(/^I mark experimental feature as read/, async function () {
 
 Then(/^I should see stake pool tooltip with order number "([^"]*)"/, async function (rankNumber) {
   await this.client.waitForText(STAKE_POOL_TOOLTIP_RANKING_SELECTOR);
-  const stakePoolRanking = await this.client.getText(STAKE_POOL_TOOLTIP_RANKING_SELECTOR);
+  const stakePoolRankingText = await this.client.getText(STAKE_POOL_TOOLTIP_RANKING_SELECTOR);
+  const stakePoolRanking = Array.isArray(stakePoolRankingText) ? stakePoolRankingText[0] : stakePoolRankingText;
   expect(stakePoolRanking).to.equal(rankNumber);
 });
 
@@ -130,7 +132,7 @@ Then(/^Stake pool with rank "([^"]*)" tooltip shows correct data$/, async functi
   await this.client.waitForText(STAKE_POOL_TOOLTIP_HOMEPAGE_SELECTOR);
   const stakePoolHomepage = await this.client.getText(STAKE_POOL_TOOLTIP_HOMEPAGE_SELECTOR);
   await this.client.waitForText(STAKE_POOL_TOOLTIP_PERFORMANCE_SELECTOR);
-  const stakePoolPerformance = await this.client.getText(STAKE_POOL_TOOLTIP_PERFORMANCE_SELECTOR);
+  const stakePoolPerformanceText = await this.client.getText(STAKE_POOL_TOOLTIP_PERFORMANCE_SELECTOR);
   await this.client.waitForText(STAKE_POOL_TOOLTIP_COST_SELECTOR);
   const stakePoolCost = await this.client.getText(STAKE_POOL_TOOLTIP_COST_SELECTOR);
   await this.client.waitForText(STAKE_POOL_TOOLTIP_NAME_SELECTOR);
@@ -141,6 +143,8 @@ Then(/^Stake pool with rank "([^"]*)" tooltip shows correct data$/, async functi
   const stakePoolRanking = await this.client.getText(STAKE_POOL_TOOLTIP_RANKING_SELECTOR);
   const cost = new BigNumber(stakePool.cost.c)
   const formattedCost = formattedWalletAmount(cost, true, false);
+  const stakePoolPerformance = Array.isArray(stakePoolPerformanceText) ? stakePoolPerformanceText[0] : stakePoolPerformanceText;
+
   expect(stakePool.ticker).to.equal(stakePoolTicker);
   expect(stakePool.homepage).to.equal(stakePoolHomepage);
   expect(`${stakePool.performance}%`).to.equal(stakePoolPerformance);
@@ -149,6 +153,7 @@ Then(/^Stake pool with rank "([^"]*)" tooltip shows correct data$/, async functi
   expect(stakePool.name).to.equal(stakePoolName);
   expect(`${stakePool.profitMargin}%`).to.equal(stakePoolProfitMargin);
   expect(stakePool.ranking).to.equal(parseInt(stakePoolRanking));
+
 });
 
 Then(/^I should see "Delegate Wallet" dialog/, function () {
