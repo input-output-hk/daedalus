@@ -7,6 +7,14 @@
   overflow: visible;
   padding: 20px 0;
 
+  :global {
+    .SimpleBubble_root {
+      .SimpleBubble_bubble {
+        margin-left: -24px;
+      }
+    }
+  }
+
   &:last-child {
     border-bottom: 0;
   }
@@ -34,6 +42,35 @@
 
     .status {
       @extend %regularText;
+
+      .ticker {
+        background-color: var(--theme-staking-countdown-widget-background-color);
+        padding: 3px 8px;
+        text-transform: uppercase;
+        color: var(--theme-staking-countdown-widget-field-value-color);
+        font-size: 11px;
+        font-family: var(--font-semibold);
+        border-radius: 2px;
+        line-height: 1.27;
+        position: relative;
+        .activeAdaSymbol {
+          svg {
+            width: 9px;
+            height: 9px;
+            margin-right: 8px;
+            & > g {
+              & > g {
+                stroke: var(--theme-staking-delegation-center-gear-icon-fill-color);
+              }
+            }
+          }
+        }
+        .tooltipLabelWrapper {
+          font-size: 13px;
+          font-family: var(--font-regular);
+          text-transform: initial;
+        }
+      }
 
       align-items: center;
       display: flex;
@@ -160,11 +197,21 @@
     }
   }
 
-  b,
-  .actionLink {
+  b {
     color: var(--theme-link-main-color);
     cursor: pointer;
   }
+
+  .actionDelegate {
+    color: var(--theme-link-main-color);
+    cursor: pointer;
+  }
+
+  .actionUndelegate {
+    color: var(--theme-staking-stake-pool-retirement-background-color);
+    cursor: pointer;
+  }
+
   :global {
     .LoadingSpinner_component.LoadingSpinner_medium {
       margin-top: 10px;
