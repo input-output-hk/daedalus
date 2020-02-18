@@ -3600,7 +3600,6 @@ cloneable-readable@^1.0.0:
 cnbuilder@^1.1.7:
   version "1.1.7"
   resolved "https://registry.yarnpkg.com/cnbuilder/-/cnbuilder-1.1.7.tgz#04ef08d278efd69bc65a95b087328455a85a2eef"
-  integrity sha512-8D9dpabOVOh7GX/qPZ60sJpqxHaiLqSDsuZOYH1TvoNkgMrO7BJHCbNepHHoglSdU//M2sjLHaL9Vu0qibSV2A==
 
 co@^4.6.0:
   version "4.6.0"
@@ -10492,7 +10491,6 @@ react-draggable@^3.1.1:
 react-draggable@^3.3.2:
   version "3.3.2"
   resolved "https://registry.yarnpkg.com/react-draggable/-/react-draggable-3.3.2.tgz#966ef1d90f2387af3c2d8bd3516f601ea42ca359"
-  integrity sha512-oaz8a6enjbPtx5qb0oDWxtDNuybOylvto1QLydsXgKmwT7e3GXC2eMVDwEMIUYJIFqVG72XpOv673UuuAq6LhA==
   dependencies:
     classnames "^2.2.5"
     prop-types "^15.6.0"
@@ -10599,7 +10597,6 @@ react-modal@3.1.12:
 react-polymorph@0.9.2-rc.2:
   version "0.9.2-rc.2"
   resolved "https://registry.yarnpkg.com/react-polymorph/-/react-polymorph-0.9.2-rc.2.tgz#1cc473f93b365b113100640130ee4db37b41c5dc"
-  integrity sha512-sAtTSgwtUHLjJ59VEHbk5MsllhkkFkEb7bqMPsT/pAI4isipzqgQIQzltQB9n5tQ4v7Ec/zFZ8nrpKox379HBg==
   dependencies:
     create-react-context "0.2.2"
     create-react-ref "0.1.0"
@@ -10660,7 +10657,6 @@ react-router@3.2.1:
 react-scrollbars-custom@4.0.21:
   version "4.0.21"
   resolved "https://registry.yarnpkg.com/react-scrollbars-custom/-/react-scrollbars-custom-4.0.21.tgz#daab3104b9707033a5be29fdc5b7408dee41a5ad"
-  integrity sha512-EwIVXBYsZG91Wm90a8ajSjpclXMu3XehcSGz+QbnLDQbmc+Rj/Uj+gP9bgbhyvQTKlhfjoka77VEWu9/DxOwBg==
   dependencies:
     cnbuilder "^1.1.7"
     react-draggable "^3.3.2"
@@ -13736,4 +13732,3 @@ zip-stream@^1.2.0:
 zoom-level@^1.2.4:
   version "1.2.4"
   resolved "https://registry.yarnpkg.com/zoom-level/-/zoom-level-1.2.4.tgz#52bc5ae3af945cac82f9f685e8707fa2c9b962e2"
-  integrity sha512-nGFUhyU3Y4jWh6l+hYCVVUxu3vrD0i/RkumJRzYGU0COMWMs2Szs84mltacd64R9zJcxwKckWQN/KKbfB1btVA==
