@@ -87,8 +87,16 @@ export default class WalletsDropdown extends Component<Props> {
       ...props
     } = this.props;
     const walletsData = wallets.map(
-      ({ name: label, id: value, amount, delegatedStakePoolId }: Wallet) => {
-        const delegatedStakePool = getStakePoolById(delegatedStakePoolId);
+      ({
+        name: label,
+        id: value,
+        amount,
+        delegatedStakePoolId,
+        lastDelegationStakePoolId,
+      }: Wallet) => {
+        const currentStakePoolId =
+          lastDelegationStakePoolId || delegatedStakePoolId;
+        const delegatedStakePool = getStakePoolById(currentStakePoolId);
         const detail = formattedWalletAmount(amount);
         return {
           detail,

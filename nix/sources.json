@@ -29,10 +29,10 @@
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "cardano-wallet",
-        "rev": "edc42a9c9a79dc3d6e76363f9c03e8e6009de993",
-        "sha256": "1iw41vhxfnwa83bj8rij7w1mrzvz2hp3cr7mxq3lwgliwzi4xh26",
+        "rev": "a6ad7d3827fa8062d20c26a3b9a4d25ba9071d29",
+        "sha256": "1c444099zk4z0jm5khcr3rp3rln79pjaz5wac5wi1nks9hlc5j90",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-wallet/archive/edc42a9c9a79dc3d6e76363f9c03e8e6009de993.tar.gz",
+        "url": "https://github.com/input-output-hk/cardano-wallet/archive/a6ad7d3827fa8062d20c26a3b9a4d25ba9071d29.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz",
         "version": "v2020-01-27"
     },
@@ -61,15 +61,15 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "iohk-nix": {
-        "branch": "master",
+        "branch": "jorm-version-0.8.10",
         "description": "nix scripts shared across projects",
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "iohk-nix",
-        "rev": "911ffe9ab4f1c05685b56e2407e87d2373137930",
-        "sha256": "0dr2r1rjhddg3jxx13ny1slv3hnx2ai2h8qfxji89jx473p4ybqm",
+        "rev": "15e22b07388d24bf6aa2a67fb7f41a7dd4b746a5",
+        "sha256": "1jz7sj2pwp7l4y2i2qp5j0jymjqj2a3v65khp7wsfwnvg1giswzm",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/iohk-nix/archive/911ffe9ab4f1c05685b56e2407e87d2373137930.tar.gz",
+        "url": "https://github.com/input-output-hk/iohk-nix/archive/15e22b07388d24bf6aa2a67fb7f41a7dd4b746a5.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "js-chain-libs": {
