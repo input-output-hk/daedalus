@@ -192,23 +192,20 @@ export default class WalletRow extends Component<Props> {
     const displayPendingDelegationInfo =
       !!lastDelegationStakePoolStatus || !!nextDelegationStakePoolStatus;
 
-    // const hasPendingDelegations =
-    //   nextDelegatedStakePoolEpoch || lastDelegatedStakePoolEpoch;
-
     // @TODO - remove comment - NEW PART
     const hasActiveDelegation = delegatedStakePoolId && delegationStakePoolStatus !== 'not_delegating';
-    // const hasPendingDelegations = nextDelegationStakePoolId || lastDelegationStakePoolId;
     const hasPendingDelegations = pendingDelegations && pendingDelegations.length > 0;
     const isDelegating = hasActiveDelegation || hasPendingDelegations;
     const delegatedStakePoolColor = delegatedStakePool && !isNil(delegatedStakePool.ranking)
       ? getColorFromRange(delegatedStakePool.ranking, numberOfStakePools)
       : null;
-    // const canUndelegate = (!lastDelegationStakePoolId && !!delegatedStakePoolId && delegationStakePoolStatus !== 'not_delegating') || (!!lastDelegationStakePoolId && lastDelegationStakePoolStatus !== 'not_delegating')
 
+
+    // @TODO - @Danilo - remove comment
     // Check last
     // if last exist
       // check if is delegated
-        // // yes - TRUE
+        // yes - TRUE
     // else
       // check if current is delegated
         // yes - TRUE
@@ -242,7 +239,7 @@ export default class WalletRow extends Component<Props> {
 
                         <Tooltip
                           skin={TooltipSkin}
-                          // TIP: Currently earning rewards
+                          // @TODO - TIP: Currently earning rewards - Ask for translations
                           tip={
                             <div className={styles.tooltipLabelWrapper}>
                               Currently earning rewards
@@ -267,6 +264,8 @@ export default class WalletRow extends Component<Props> {
                     const pendingDelegationStakePool = getStakePoolById(pendingDelegation.target);
                     const isLast = (key + 1) === pendingDelegations.length;
 
+                    // @TODO - fetch epoch number on same way as stake pool and show
+
                     if (!pendingDelegationStakePool) {
                       return ([
                         <span className={styles.ticker}>{notDelegated}</span>,
@@ -283,8 +282,6 @@ export default class WalletRow extends Component<Props> {
                     ]);
                   })}
                 </div>
-
-
 
                 {/* Actions */}
                 <div className={styles.action}>
