@@ -6,8 +6,6 @@ import { defineMessages, intlShape } from 'react-intl';
 import Wallet from '../../../domains/Wallet';
 import WalletRow from './WalletRow';
 import styles from './DelegationCenterBody.scss';
-import { DelegationActions } from '../../../domains/StakePool';
-import type { DelegationAction } from '../../../api/staking/types';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 
 const messages = defineMessages({
@@ -41,27 +39,13 @@ export default class DelegationCenterBody extends Component<Props> {
     intl: intlShape.isRequired,
   };
 
-  handleMenuItemClick = (item: DelegationAction, walletId: string) => {
-    const { onDelegate, onUndelegate } = this.props;
-
-    switch (item) {
-      case DelegationActions.CHANGE_DELEGATION:
-        onDelegate(walletId);
-        break;
-      case DelegationActions.REMOVE_DELEGATION:
-        onUndelegate(walletId);
-        break;
-      default:
-        break;
-    }
-  };
-
   render() {
     const { intl } = this.context;
     const {
       wallets,
       numberOfStakePools,
       onDelegate,
+      onUndelegate,
       getStakePoolById,
       isLoading,
     } = this.props;
@@ -100,8 +84,8 @@ export default class DelegationCenterBody extends Component<Props> {
                   key={wallet.id}
                   wallet={wallet}
                   numberOfStakePools={numberOfStakePools}
-                  onDelegate={onDelegate}
-                  onMenuItemClick={this.handleMenuItemClick}
+                  onDelegate={() => onDelegate(wallet.id)}
+                  onUndelegate={() => onUndelegate(wallet.id)}
                   delegatedStakePool={getStakePoolById(
                     wallet.delegatedStakePoolId
                   )}

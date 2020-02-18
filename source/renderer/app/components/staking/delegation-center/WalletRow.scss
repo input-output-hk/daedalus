@@ -19,6 +19,12 @@
     border-bottom: 0;
   }
 
+  &:hover {
+    .undelegateActions {
+      opacity: 1 !important;
+    }
+  }
+
   .left {
     .title {
       @extend %accentText;
@@ -42,40 +48,48 @@
 
     .status {
       @extend %regularText;
+      align-items: center;
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 7px;
+      :global {
+        .SimpleTooltip_root {
+          margin-right: 0;
+        }
+      }
 
       .ticker {
-        background-color: var(--theme-staking-countdown-widget-background-color);
-        padding: 3px 8px;
-        text-transform: uppercase;
-        color: var(--theme-staking-countdown-widget-field-value-color);
-        font-size: 11px;
-        font-family: var(--font-semibold);
+        background-color: var(
+          --theme-staking-countdown-widget-background-color
+        );
         border-radius: 2px;
+        color: var(--theme-staking-countdown-widget-field-value-color);
+        font-family: var(--font-semibold);
+        font-size: 11px;
         line-height: 1.27;
+        padding: 3px 8px;
         position: relative;
+        text-transform: uppercase;
         .activeAdaSymbol {
           svg {
-            width: 9px;
-            height: 9px;
+            height: 8px;
             margin-right: 8px;
+            width: 7px;
             & > g {
               & > g {
-                stroke: var(--theme-staking-delegation-center-gear-icon-fill-color);
+                stroke: var(
+                  --theme-staking-delegation-center-gear-icon-fill-color
+                );
               }
             }
           }
         }
         .tooltipLabelWrapper {
-          font-size: 13px;
           font-family: var(--font-regular);
+          font-size: 13px;
           text-transform: initial;
         }
       }
-
-      align-items: center;
-      display: flex;
-      justify-content: flex-end;
-      margin-bottom: 3px;
 
       .normalOption {
         @extend %regularText;
@@ -153,10 +167,10 @@
           > div {
             font-size: 13px;
             left: -30px !important;
+            min-width: 200px !important;
             padding: 4px 12px;
             text-align: right !important;
             white-space: normal !important;
-            min-width: 200px !important;
 
             > span:after {
               left: calc(
@@ -172,6 +186,11 @@
           }
         }
       }
+    }
+
+    .undelegateActions {
+      opacity: 0;
+      transition: opacity 0.15s ease-in;
     }
 
     .stakePoolRankingIndicator {
@@ -215,6 +234,20 @@
   :global {
     .LoadingSpinner_component.LoadingSpinner_medium {
       margin-top: 10px;
+    }
+  }
+
+  .arrow {
+    height: 7px;
+    margin: -2px 6px 0;
+    position: relative;
+    width: 3.5px;
+    > svg {
+      height: 3.5px;
+      transform: rotate(90deg) translate(-11px, 2px);
+      path {
+        stroke: var(--theme-staking-font-color-regular);
+      }
     }
   }
 }

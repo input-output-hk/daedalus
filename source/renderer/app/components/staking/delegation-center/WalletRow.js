@@ -4,22 +4,18 @@ import { observer } from 'mobx-react';
 import { isNil, get, map } from 'lodash';
 import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import SVGInline from 'react-svg-inline';
+import classnames from 'classnames';
 import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
 import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
 import Wallet from '../../../domains/Wallet';
-import StakePool, { DelegationActions } from '../../../domains/StakePool';
+import StakePool from '../../../domains/StakePool';
 import { getColorFromRange } from '../../../utils/colors';
-import settingsIcon from '../../../assets/images/settings-ic.inline.svg';
-import sandClockIcon from '../../../assets/images/sand-clock.inline.svg';
 import adaIcon from '../../../assets/images/ada-symbol.inline.svg';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
-import DropdownMenu from './DropdownMenu';
 import styles from './WalletRow.scss';
 import tooltipStyles from './WalletRowTooltip.scss';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
-
-import type { DelegationAction } from '../../../api/staking/types';
-import type { WalletNextDelegationEpoch } from '../../../api/wallets/types';
+import arrow from '../../../assets/images/collapse-arrow.inline.svg';
 
 const messages = defineMessages({
   walletAmount: {
@@ -50,6 +46,11 @@ const messages = defineMessages({
     description:
       'Remove delegation label for the Delegation center body section.',
   },
+  or: {
+    id: 'staking.delegationCenter.or',
+    defaultMessage: '!!!or',
+    description: '"or" text for the Delegation center body section.',
+  },
   toStakePoolTickerPart1: {
     id: 'staking.delegationCenter.toStakePoolTickerPart1',
     defaultMessage: '!!!to',
@@ -71,6 +72,12 @@ const messages = defineMessages({
   toStakePoolTooltipTickerPart2: {
     id: 'staking.delegationCenter.toStakePoolTooltipTickerPart2',
     defaultMessage: '!!!from epoch',
+    description:
+      'Delegated stake pool tooltip ticker for the Delegation center body section.',
+  },
+  stakePoolTooltipTickerEarningRewards: {
+    id: 'staking.delegationCenter.stakePoolTooltipTickerEarningRewards',
+    defaultMessage: '!!!Currently earning rewards',
     description:
       'Delegated stake pool tooltip ticker for the Delegation center body section.',
   },
@@ -96,13 +103,10 @@ const messages = defineMessages({
 type Props = {
   wallet: Wallet,
   delegatedStakePool?: ?StakePool,
-  nextDelegatedStakePool?: ?StakePool,
-  nextDelegatedStakePoolEpoch?: ?WalletNextDelegationEpoch,
   lastDelegatedStakePool?: ?StakePool,
-  lastDelegatedStakePoolEpoch?: ?WalletNextDelegationEpoch,
   numberOfStakePools: number,
   onDelegate: Function,
-  onMenuItemClick: Function,
+  onUndelegate: Function,
   getStakePoolById: Function,
 };
 
@@ -110,17 +114,6 @@ type Props = {
 export default class WalletRow extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
-  };
-
-  onDelegate = () => {
-    const { wallet, onDelegate } = this.props;
-    onDelegate(wallet.id);
-  };
-
-  onMenuItemClick = ({ value }: { value: DelegationAction }) => {
-    console.debug('onMenuItemClick: ', value);
-    const { wallet } = this.props;
-    this.props.onMenuItemClick(value, wallet.id);
   };
 
   render() {
@@ -131,8 +124,6 @@ export default class WalletRow extends Component<Props> {
         amount,
         delegatedStakePoolId,
         delegationStakePoolStatus,
-        nextDelegationStakePoolId,
-        nextDelegationStakePoolStatus,
         lastDelegationStakePoolId,
         lastDelegationStakePoolStatus,
         isRestoring,
@@ -140,11 +131,11 @@ export default class WalletRow extends Component<Props> {
         pendingDelegations,
       },
       delegatedStakePool,
-      nextDelegatedStakePoolEpoch,
       lastDelegatedStakePool,
-      lastDelegatedStakePoolEpoch,
       numberOfStakePools,
       getStakePoolById,
+      onDelegate,
+      onUndelegate,
     } = this.props;
 
     const syncingProgress = get(syncState, 'progress.quantity', '');
@@ -162,55 +153,40 @@ export default class WalletRow extends Component<Props> {
         ? getColorFromRange(ranking, numberOfStakePools)
         : null;
 
-    const delegated = intl.formatMessage(messages.delegated);
-    const notDelegated = intl.formatMessage(messages.notDelegated);
-    const changeDelegation = intl.formatMessage(messages.changeDelegation);
-    const removeDelegation = intl.formatMessage(messages.removeDelegation);
-    const delegate = intl.formatMessage(messages.delegate);
-    const delegatedStakePoolTicker = delegatedStakePool
-      ? `[${delegatedStakePool.ticker}]`
-      : notDelegated.toLowerCase();
-    const stakePoolToShowTicker = stakePoolToShow
-      ? `[${stakePoolToShow.ticker}]`
-      : notDelegated.toLowerCase();
-    const delegatedWalletActionOptions = [
-      {
-        label: changeDelegation,
-        value: DelegationActions.CHANGE_DELEGATION,
-        className: styles.normalOption,
-      },
-      {
-        label: removeDelegation,
-        value: DelegationActions.REMOVE_DELEGATION,
-        className: styles.removeOption,
-      },
-    ];
+    const notDelegatedText = intl.formatMessage(messages.notDelegated);
+    const removeDelegationText = intl.formatMessage(messages.removeDelegation);
+    const delegateText = intl.formatMessage(messages.delegate);
+    const orText = intl.formatMessage(messages.or);
 
-    const displayAsDelegated =
-      (!!delegatedStakePoolId || !!lastDelegationStakePoolId) && lastDelegationStakePoolStatus !== 'not_delegating';
-
-    const displayPendingDelegationInfo =
-      !!lastDelegationStakePoolStatus || !!nextDelegationStakePoolStatus;
-
-    // @TODO - remove comment - NEW PART
-    const hasActiveDelegation = delegatedStakePoolId && delegationStakePoolStatus !== 'not_delegating';
-    const hasPendingDelegations = pendingDelegations && pendingDelegations.length > 0;
-    const isDelegating = hasActiveDelegation || hasPendingDelegations;
-    const delegatedStakePoolColor = delegatedStakePool && !isNil(delegatedStakePool.ranking)
-      ? getColorFromRange(delegatedStakePool.ranking, numberOfStakePools)
-      : null;
-
+    const hasPendingDelegations =
+      pendingDelegations && pendingDelegations.length > 0;
+    // const isDelegating = hasActiveDelegation || hasPendingDelegations;
+    const delegatedStakePoolColor =
+      delegatedStakePool && !isNil(delegatedStakePool.ranking)
+        ? getColorFromRange(delegatedStakePool.ranking, numberOfStakePools)
+        : null;
 
     // @TODO - @Danilo - remove comment
     // Check last
     // if last exist
-      // check if is delegated
-        // yes - TRUE
+    // check if is delegated
+    // yes - TRUE
     // else
-      // check if current is delegated
-        // yes - TRUE
+    // check if current is delegated
+    // yes - TRUE
 
-    const canUndelegate = (hasPendingDelegations && pendingDelegations[pendingDelegations.length - 1].status !== 'not_delegating') || (!hasPendingDelegations && !!delegatedStakePoolId && delegationStakePoolStatus !== 'not_delegating')
+    const canUndelegate =
+      (hasPendingDelegations &&
+        pendingDelegations[pendingDelegations.length - 1].status !==
+          'not_delegating') ||
+      (!hasPendingDelegations &&
+        !!delegatedStakePoolId &&
+        delegationStakePoolStatus !== 'not_delegating');
+
+    const actionStyles = classnames([
+      styles.action,
+      canUndelegate ? styles.undelegateActions : null,
+    ]);
 
     return (
       <div className={styles.component}>
@@ -234,80 +210,129 @@ export default class WalletRow extends Component<Props> {
                 {/* Statuses */}
                 <div className={styles.status}>
                   {/* Current (active) delegation */}
-                  <span style={{ color: delegatedStakePoolColor }} className={styles.ticker}>{
-                    delegatedStakePool ?
-
-                        <Tooltip
-                          skin={TooltipSkin}
-                          // @TODO - TIP: Currently earning rewards - Ask for translations
-                          tip={
-                            <div className={styles.tooltipLabelWrapper}>
-                              Currently earning rewards
-                            </div>
-                          }
-                        >
-                          <div>
+                  <span
+                    style={{ color: delegatedStakePoolColor }}
+                    className={styles.ticker}
+                  >
+                    {delegatedStakePool ? (
+                      <Tooltip
+                        skin={TooltipSkin}
+                        tip={
+                          <div className={styles.tooltipLabelWrapper}>
+                            {intl.formatMessage(
+                              messages.stakePoolTooltipTickerEarningRewards
+                            )}
+                          </div>
+                        }
+                      >
+                        <div>
                           <SVGInline
                             svg={adaIcon}
                             className={styles.activeAdaSymbol}
                           />
                           [{delegatedStakePool.ticker}]
-                          </div>
-                        </Tooltip>
-                      :
-                      notDelegated
-                  }</span>
+                        </div>
+                      </Tooltip>
+                    ) : (
+                      notDelegatedText
+                    )}
+                  </span>
 
                   {/* Pending (next) delegations */}
-                  {hasPendingDelegations && ' > '}
-                  {hasPendingDelegations && map(pendingDelegations, (pendingDelegation, key) => {
-                    const pendingDelegationStakePool = getStakePoolById(pendingDelegation.target);
-                    const isLast = (key + 1) === pendingDelegations.length;
+                  {hasPendingDelegations && (
+                    <SVGInline
+                      key="arrow"
+                      svg={arrow}
+                      className={styles.arrow}
+                    />
+                  )}
+                  {hasPendingDelegations &&
+                    map(pendingDelegations, (pendingDelegation, key) => {
+                      const pendingDelegationStakePool = getStakePoolById(
+                        pendingDelegation.target
+                      );
+                      const isLast = key + 1 === pendingDelegations.length;
+                      const fromEpoch = get(
+                        pendingDelegation,
+                        'changes_at.epoch_number',
+                        0
+                      );
 
-                    // @TODO - fetch epoch number on same way as stake pool and show
+                      if (!pendingDelegationStakePool) {
+                        return [
+                          <span key="ticker" className={styles.ticker}>
+                            {notDelegatedText}
+                          </span>,
+                          !isLast && (
+                            <SVGInline
+                              key="arrow"
+                              svg={arrow}
+                              className={styles.arrow}
+                            />
+                          ),
+                        ];
+                      }
 
-                    if (!pendingDelegationStakePool) {
-                      return ([
-                        <span className={styles.ticker}>{notDelegated}</span>,
-                        !isLast && ' > '
-                      ]);
-                    }
-
-                    const pendingStakePoolColor = pendingDelegationStakePool && !isNil(pendingDelegationStakePool.ranking)
-                      ? getColorFromRange(pendingDelegationStakePool.ranking, numberOfStakePools)
-                      : null;
-                    return ([
-                      <span className={styles.ticker} style={{ color: pendingStakePoolColor }}>[{pendingDelegationStakePool.ticker}]</span>,
-                      !isLast && ' > '
-                    ]);
-                  })}
+                      const pendingStakePoolColor =
+                        pendingDelegationStakePool &&
+                        !isNil(pendingDelegationStakePool.ranking)
+                          ? getColorFromRange(
+                              pendingDelegationStakePool.ranking,
+                              numberOfStakePools
+                            )
+                          : null;
+                      return [
+                        <Tooltip
+                          skin={TooltipSkin}
+                          key="ticker"
+                          tip={
+                            <div className={styles.tooltipLabelWrapper}>
+                              {intl.formatMessage(
+                                messages.toStakePoolTooltipTickerPart2
+                              )}{' '}
+                              {fromEpoch}
+                            </div>
+                          }
+                        >
+                          <span
+                            className={styles.ticker}
+                            style={{ color: pendingStakePoolColor }}
+                          >
+                            [{pendingDelegationStakePool.ticker}]
+                          </span>
+                        </Tooltip>,
+                        !isLast && (
+                          <SVGInline
+                            key="arrow"
+                            svg={arrow}
+                            className={styles.arrow}
+                          />
+                        ),
+                      ];
+                    })}
                 </div>
 
                 {/* Actions */}
-                <div className={styles.action}>
-                  {canUndelegate &&
+                <div className={actionStyles}>
+                  {canUndelegate && [
                     <span
                       className={styles.actionUndelegate}
                       role="presentation"
-                      // @TODO - change handler onMenuItemClick to somethin more specific outside menu
-                      onClick={this.onMenuItemClick.bind(this, {value: DelegationActions.REMOVE_DELEGATION})}
+                      onClick={onUndelegate}
+                      key="undelegate"
                     >
-                      {/* @TODO - add translations for "OR" */}
-                      {removeDelegation}
-                    </span>
-                  }
-                  {canUndelegate && <span> or </span>}
+                      {removeDelegationText}
+                    </span>,
+                    <span key="or"> {orText} </span>,
+                  ]}
                   <span
                     className={styles.actionDelegate}
                     role="presentation"
-                    // @TODO - change handler onMenuItemClick to somethin more specific outside menu
-                    onClick={(!delegatedStakePool && !hasPendingDelegations) ? this.onDelegate : this.onMenuItemClick.bind(this, {value: DelegationActions.CHANGE_DELEGATION})}
+                    onClick={onDelegate}
                   >
-                    {delegate}
+                    {delegateText}
                   </span>
                 </div>
-
-
               </div>
               <div>
                 <div

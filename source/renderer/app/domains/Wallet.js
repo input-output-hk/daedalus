@@ -8,7 +8,7 @@ import type {
   DelegationStatus,
   WalletUnit,
   WalletNextDelegationEpoch,
-  WalletNextDelegation,
+  WalletPendingDelegations,
 } from '../api/wallets/types';
 
 export const WalletSyncStateStatuses: {
@@ -48,13 +48,14 @@ export type WalletProps = {
   syncState: WalletSyncState,
   isLegacy: boolean,
   delegatedStakePoolId?: ?string,
+  delegationStakePoolStatus?: ?string,
   nextDelegationStakePoolId?: ?string,
   nextDelegationStakePoolStatus?: ?string,
   nextDelegationStakePoolEpoch?: ?WalletNextDelegationEpoch,
   lastDelegationStakePoolId?: ?string,
   lastDelegationStakePoolStatus?: ?string,
   lastDelegationStakePoolEpoch?: ?WalletNextDelegationEpoch,
-  pendingDelegations?: WalletNextDelegation,
+  pendingDelegations?: WalletPendingDelegations,
 };
 
 export default class Wallet {
@@ -68,13 +69,14 @@ export default class Wallet {
   @observable syncState: WalletSyncState;
   @observable isLegacy: boolean;
   @observable delegatedStakePoolId: ?string;
+  @observable delegationStakePoolStatus: ?string;
   @observable nextDelegationStakePoolId: ?string;
   @observable nextDelegationStakePoolStatus: ?string;
   @observable nextDelegationStakePoolEpoch: ?WalletNextDelegationEpoch;
   @observable lastDelegationStakePoolId: ?string;
   @observable lastDelegationStakePoolStatus: ?string;
   @observable lastDelegationStakePoolEpoch: ?WalletNextDelegationEpoch;
-  @observable pendingDelegations: ?WalletNextDelegation;
+  @observable pendingDelegations: WalletPendingDelegations;
 
   constructor(data: WalletProps) {
     Object.assign(this, data);

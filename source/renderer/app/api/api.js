@@ -1,5 +1,5 @@
 // @flow
-import { split, get, includes, map, last, head } from 'lodash';
+import { split, get, includes, map } from 'lodash';
 import { action } from 'mobx';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
@@ -1592,11 +1592,148 @@ const _createWalletFromServerData = action(
       name,
       state,
       passphrase,
-      delegation,
+      // delegation,
       isLegacy = false,
     } = data;
 
-    console.debug('_createWalletFromServerData: ', data);
+    // console.debug('_createWalletFromServerData: ', data);
+
+    // 712dd028687560506e3b0b3874adbd929ab892591bfdee1221b5ee3796b79b70
+    // 345ccb86e4285fff73e01cc3dbc315243d2f3da2878e049fc6dcd4318c17829e
+    // 494b7852eb34d39e0c46b5ced94d3e5b34dd70da225a38cc6dfd8a2af7dde9d7
+
+    let { delegation } = data;
+
+    if (name === 'Jane') {
+      delegation = {
+        next: [
+          {
+            status: 'delegating',
+            changes_at: {
+              epoch_start_time: '2020-02-17T18:10:57Z',
+              epoch_number: 429350,
+            },
+            target:
+              '345ccb86e4285fff73e01cc3dbc315243d2f3da2878e049fc6dcd4318c17829e',
+          },
+          {
+            status: 'not_delegating',
+            changes_at: {
+              epoch_start_time: '2020-02-17T18:11:57Z',
+              epoch_number: 429351,
+            },
+          },
+        ],
+        active: {
+          status: 'not_delegating',
+        },
+      };
+    }
+
+    if (name === 'Bob') {
+      delegation = {
+        next: [
+          {
+            status: 'delegating',
+            changes_at: {
+              epoch_start_time: '2020-02-17T18:10:57Z',
+              epoch_number: 429350,
+            },
+            target:
+              '345ccb86e4285fff73e01cc3dbc315243d2f3da2878e049fc6dcd4318c17829e',
+          },
+          {
+            status: 'delegating',
+            changes_at: {
+              epoch_start_time: '2020-02-17T18:10:57Z',
+              epoch_number: 429351,
+            },
+            target:
+              '494b7852eb34d39e0c46b5ced94d3e5b34dd70da225a38cc6dfd8a2af7dde9d7',
+          },
+        ],
+        active: {
+          status: 'delegating',
+          target:
+            '712dd028687560506e3b0b3874adbd929ab892591bfdee1221b5ee3796b79b70',
+        },
+      };
+    }
+
+    if (name === 'Charles') {
+      delegation = {
+        next: [
+          {
+            status: 'not_delegating',
+            changes_at: {
+              epoch_start_time: '2020-02-17T21:20:57Z',
+              epoch_number: 85908,
+            },
+          },
+        ],
+        active: {
+          status: 'delegating',
+          target:
+            '712dd028687560506e3b0b3874adbd929ab892591bfdee1221b5ee3796b79b70',
+        },
+      };
+    }
+
+    if (name === 'Alice') {
+      delegation = {
+        next: [
+          {
+            status: 'delegating',
+            changes_at: {
+              epoch_start_time: '2020-02-17T18:10:57Z',
+              epoch_number: 429350,
+            },
+            target:
+              '345ccb86e4285fff73e01cc3dbc315243d2f3da2878e049fc6dcd4318c17829e',
+          },
+          {
+            status: 'not_delegating',
+            changes_at: {
+              epoch_start_time: '2020-02-17T18:11:57Z',
+              epoch_number: 429351,
+            },
+          },
+        ],
+        active: {
+          status: 'delegating',
+          target:
+            '712dd028687560506e3b0b3874adbd929ab892591bfdee1221b5ee3796b79b70',
+        },
+      };
+    }
+
+    if (name === 'Jason') {
+      delegation = {
+        next: [
+          {
+            status: 'not_delegating',
+            changes_at: {
+              epoch_start_time: '2020-02-17T18:10:57Z',
+              epoch_number: 429350,
+            },
+          },
+          {
+            status: 'delegating',
+            changes_at: {
+              epoch_start_time: '2020-02-17T18:11:57Z',
+              epoch_number: 429351,
+            },
+            target:
+              '345ccb86e4285fff73e01cc3dbc315243d2f3da2878e049fc6dcd4318c17829e',
+          },
+        ],
+        active: {
+          status: 'delegating',
+          target:
+            '712dd028687560506e3b0b3874adbd929ab892591bfdee1221b5ee3796b79b70',
+        },
+      };
+    }
 
     const id = isLegacy ? getLegacyWalletId(rawWalletId) : rawWalletId;
     const passphraseLastUpdatedAt = get(passphrase, 'last_updated_at', null);
