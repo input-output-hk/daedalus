@@ -128,7 +128,6 @@ export default class WalletRow extends Component<Props> {
         name,
         amount,
         delegatedStakePoolId,
-        nextDelegationStakePoolId,
         nextDelegationStakePoolStatus,
         lastDelegationStakePoolId,
         lastDelegationStakePoolStatus,
