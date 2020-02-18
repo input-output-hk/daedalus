@@ -6,6 +6,7 @@ import { delegationCentreStakingHelper, getStakePoolByRanking } from './helpers'
 import type { Daedalus } from '../../../types';
 import { getWalletByName } from '../../../wallets/e2e/steps/helpers';
 import { formattedWalletAmount } from '../../../../source/renderer/app/utils/formatters';
+import { navigateTo } from '../../../navigation/e2e/steps/helpers';
 
 declare var daedalus: Daedalus;
 
@@ -46,6 +47,12 @@ Given(/^I am on the Delegation Center screen/, async function () {
   await stakingButtonVisible(this.client);
   await clickStakingButton(this.client);
   await delegationCenterVisible(this.client);
+});
+
+Given(/^I am on the Delegation "([^"]*)" screen$/, async function(
+  screenName
+) {
+  return navigateTo.call(this, `/staking/${screenName}`);
 });
 
 Given(/^I set stake pools fetch failed$/, async function () {

@@ -1571,6 +1571,8 @@ export default class AdaApi {
   // Newsfeed testing utility
   setFakeNewsFeedJsonForTesting: (fakeNewsfeedJson: GetNewsResponse) => void;
 
+  setWalletForPendingDelegation: (testingWallet: Object) => Promise<Wallet>;
+
   // Stake pools testing utility
   setFakeStakePoolsJsonForTesting: (
     fakeStakePoolsJson: Array<StakePool>
