@@ -2634,13 +2634,13 @@
         "description": "Amount of each wallet for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 27
+          "line": 29
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.walletAmount",
         "start": {
           "column": 16,
-          "line": 22
+          "line": 24
         }
       },
       {
@@ -2648,27 +2648,27 @@
         "description": "Delegated label for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 34
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.delegated",
         "start": {
           "column": 13,
-          "line": 28
+          "line": 30
         }
       },
       {
-        "defaultMessage": "!!!Not-delegated",
-        "description": "Not-delegated label for the Delegation center body section.",
+        "defaultMessage": "!!!Undelegated",
+        "description": "Undelegated label for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 39
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.notDelegated",
         "start": {
           "column": 16,
-          "line": 33
+          "line": 35
         }
       },
       {
@@ -2676,13 +2676,13 @@
         "description": "Change delegation label for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 45
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.changeDelegation",
         "start": {
           "column": 20,
-          "line": 38
+          "line": 40
         }
       },
       {
@@ -2690,41 +2690,69 @@
         "description": "Remove delegation label for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 49
+          "line": 51
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.removeDelegation",
         "start": {
           "column": 20,
-          "line": 44
+          "line": 46
         }
       },
       {
-        "defaultMessage": "!!!To",
+        "defaultMessage": "!!!to",
         "description": "Delegated stake pool ticker for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 55
+          "line": 57
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.toStakePoolTickerPart1",
         "start": {
           "column": 26,
-          "line": 50
+          "line": 52
         }
       },
       {
-        "defaultMessage": "!!!stake pool",
+        "defaultMessage": "!!!from epoch",
         "description": "Delegated stake pool ticker for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 61
+          "line": 63
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.toStakePoolTickerPart2",
         "start": {
           "column": 26,
-          "line": 56
+          "line": 58
+        }
+      },
+      {
+        "defaultMessage": "!!!currently",
+        "description": "Delegated stake pool tooltip ticker for the Delegation center body section.",
+        "end": {
+          "column": 3,
+          "line": 69
+        },
+        "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
+        "id": "staking.delegationCenter.toStakePoolTooltipTickerPart1",
+        "start": {
+          "column": 33,
+          "line": 64
+        }
+      },
+      {
+        "defaultMessage": "!!!from epoch",
+        "description": "Delegated stake pool tooltip ticker for the Delegation center body section.",
+        "end": {
+          "column": 3,
+          "line": 75
+        },
+        "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
+        "id": "staking.delegationCenter.toStakePoolTooltipTickerPart2",
+        "start": {
+          "column": 33,
+          "line": 70
         }
       },
       {
@@ -2732,27 +2760,13 @@
         "description": "Delegate label for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 66
+          "line": 80
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.delegate",
         "start": {
           "column": 12,
-          "line": 62
-        }
-      },
-      {
-        "defaultMessage": "!!!your stake",
-        "description": "Your stake label for the Delegation center body section.",
-        "end": {
-          "column": 3,
-          "line": 71
-        },
-        "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
-        "id": "staking.delegationCenter.yourStake",
-        "start": {
-          "column": 13,
-          "line": 67
+          "line": 76
         }
       },
       {
@@ -2760,13 +2774,13 @@
         "description": "unknown stake pool label for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 77
+          "line": 86
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.unknownStakePoolLabel",
         "start": {
           "column": 25,
-          "line": 72
+          "line": 81
         }
       },
       {
@@ -2774,13 +2788,13 @@
         "description": "unknown stake pool label for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 83
+          "line": 92
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.syncingTooltipLabel",
         "start": {
           "column": 23,
-          "line": 78
+          "line": 87
         }
       }
     ],
@@ -2859,17 +2873,31 @@
         }
       },
       {
+        "defaultMessage": "!!!You are already pending delegation <span>{selectedWalletName}</span> wallet to <span>[{selectedPoolTicker}]</span> stake pool. <span>If you wish to re-delegate your stake, please select a different pool.</span>",
+        "description": "\"You are already delegating to stake pool\" label on the delegation setup \"choose stake pool\" dialog.",
+        "end": {
+          "column": 3,
+          "line": 74
+        },
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
+        "id": "staking.delegationSetup.chooseStakePool.step.dialog.delegatedStakePoolNextLabel",
+        "start": {
+          "column": 31,
+          "line": 67
+        }
+      },
+      {
         "defaultMessage": "!!!Pick one of your recent stake pool choices:",
         "description": "Recent \"Pool\" choice section label on the delegation setup \"choose stake pool\" dialog.",
         "end": {
           "column": 3,
-          "line": 72
+          "line": 80
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.recentPoolsLabel",
         "start": {
           "column": 20,
-          "line": 67
+          "line": 75
         }
       },
       {
@@ -2877,13 +2905,13 @@
         "description": "Search \"Pools\" input label on the delegation setup \"choose stake pool\" dialog.",
         "end": {
           "column": 3,
-          "line": 79
+          "line": 87
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.searchInput.label",
         "start": {
           "column": 20,
-          "line": 73
+          "line": 81
         }
       },
       {
@@ -2891,13 +2919,13 @@
         "description": "Search \"Pools\" input placeholder on the delegation setup \"choose stake pool\" dialog.",
         "end": {
           "column": 3,
-          "line": 86
+          "line": 94
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.searchInput.placeholder",
         "start": {
           "column": 26,
-          "line": 80
+          "line": 88
         }
       },
       {
@@ -2905,13 +2933,13 @@
         "description": "Label for continue button on the delegation setup \"choose stake pool\" dialog.",
         "end": {
           "column": 3,
-          "line": 93
+          "line": 101
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.continueButtonLabel",
         "start": {
           "column": 23,
-          "line": 87
+          "line": 95
         }
       },
       {
@@ -2919,13 +2947,13 @@
         "description": "Step indicator labe on the delegation setup \"choose wallet\" step dialog.",
         "end": {
           "column": 3,
-          "line": 100
+          "line": 108
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.stepIndicatorLabel",
         "start": {
           "column": 22,
-          "line": 94
+          "line": 102
         }
       }
     ],
