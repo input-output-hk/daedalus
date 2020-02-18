@@ -549,9 +549,9 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--rp-radio-size': '22px',
   },
   rpScrollBar: {
-    '--rp-scrollbar-thumb-bg-color:': 'rgba(255, 255, 255, 0.1)',
-    '--rp-scrollbar-thumb-bg-color-active': 'rgba(255, 255, 255, 0.3)',
-    '--rp-scrollbar-thumb-bg-color-hover': 'rgba(255, 255, 255, 0.3)',
+    '--rp-scrollbar-thumb-bg-color:': 'rgba(233, 244, 254, 0.1)',
+    '--rp-scrollbar-thumb-bg-color-active': 'rgba(233, 244, 254, 0.3)',
+    '--rp-scrollbar-thumb-bg-color-hover': 'rgba(233, 244, 254, 0.3)',
   },
   rpSelect: {
     '--rp-select-arrow-bg-color': 'rgba(233, 244, 254, 0.3)',
