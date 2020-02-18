@@ -7,6 +7,10 @@ Changelog
 
 - Fixed pending delegation preferences handling ([PR 1856](https://github.com/input-output-hk/daedalus/pull/1856))
 
+### Chores
+
+- Updated `cardano-wallet` to version `2020-02-17` ([PR 1856](https://github.com/input-output-hk/daedalus/pull/1856))
+
 ## 2.1.0-ITN1
 
 ### Features
