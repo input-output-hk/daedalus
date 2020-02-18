@@ -116,10 +116,10 @@
           > div {
             font-size: 13px;
             left: -30px !important;
+            min-width: 200px !important;
             padding: 4px 12px;
             text-align: right !important;
             white-space: normal !important;
-            min-width: 200px !important;
 
             > span:after {
               left: calc(
