@@ -1571,6 +1571,8 @@ export default class AdaApi {
   // Newsfeed testing utility
   setFakeNewsFeedJsonForTesting: (fakeNewsfeedJson: GetNewsResponse) => void;
 
+  setWalletForPendingDelegation: (testingWallet: Object) => Promise<Wallet>;
+
   // Stake pools testing utility
   setFakeStakePoolsJsonForTesting: (
     fakeStakePoolsJson: Array<StakePool>
@@ -1624,6 +1626,7 @@ const _createWalletFromServerData = action(
     const nextEpoch = get(nextPendingStakePool, 'changes_at', null);
 
     const lastTarget = get(lastPendingStakePool, 'target', null);
+    const lastStatus = get(lastPendingStakePool, 'status', null);
     const lastEpoch = get(lastPendingStakePool, 'changes_at', null);
 
     const delegatedStakePoolId = isLegacy ? null : target;
@@ -1632,6 +1635,7 @@ const _createWalletFromServerData = action(
     const nextDelegationStakePoolEpoch = isLegacy ? null : nextEpoch;
 
     const lastDelegationStakePoolId = isLegacy ? null : lastTarget;
+    const lastDelegationStakePoolStatus = isLegacy ? null : lastStatus;
     const lastDelegationStakePoolEpoch = isLegacy ? null : lastEpoch;
 
     return new Wallet({
@@ -1650,6 +1654,7 @@ const _createWalletFromServerData = action(
       nextDelegationStakePoolStatus,
       nextDelegationStakePoolEpoch,
       lastDelegationStakePoolId,
+      lastDelegationStakePoolStatus,
       lastDelegationStakePoolEpoch,
       pendingDelegations: next,
     });

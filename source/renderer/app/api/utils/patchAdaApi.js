@@ -1,6 +1,8 @@
 // @flow
 import { get, map } from 'lodash';
 import moment from 'moment';
+import { action } from 'mobx';
+import BigNumber from 'bignumber.js/bignumber';
 import AdaApi from '../api';
 import { getNetworkInfo } from '../network/requests/getNetworkInfo';
 import { getLatestAppVersion } from '../nodes/requests/getLatestAppVersion';
@@ -17,6 +19,9 @@ import type {
 } from '../nodes/types';
 import type { GetNewsResponse } from '../news/types';
 import { EPOCH_LENGTH_ITN } from '../../config/epochsConfig';
+
+// domains
+import Wallet from '../../domains/Wallet';
 
 let LATEST_APP_VERSION = null;
 let SYNC_PROGRESS = null;
@@ -174,6 +179,25 @@ export default (api: AdaApi) => {
         resolve(FAKE_NEWSFEED_JSON);
       }
     });
+  };
+
+  api.setWalletForPendingDelegation = async (
+    modifiedWallet: Object
+  ): Promise<Wallet> => {
+    const [baseWallet] = await api.getWallets();
+    const getModifiedWallet = action(
+      () =>
+        new Wallet({
+          ...{ ...baseWallet },
+          ...modifiedWallet,
+          name: 'Modified Wallet',
+          amount: new BigNumber(100000),
+          availableAmount: new BigNumber(100000),
+        })
+    );
+    const wallet = getModifiedWallet();
+    api.getWallets = async (): Promise<Array<Wallet>> => [wallet];
+    return wallet;
   };
 
   api.resetTestOverrides = () => {
