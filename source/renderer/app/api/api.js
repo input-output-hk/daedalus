@@ -1,5 +1,5 @@
 // @flow
-import { split, get, includes, map } from 'lodash';
+import { split, get, includes, map, last } from 'lodash';
 import { action } from 'mobx';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
@@ -1622,29 +1622,14 @@ const _createWalletFromServerData = action(
     const active = get(delegation, 'active', null);
     const target = get(active, 'target', null);
     const status = get(active, 'status', null);
-    const epoch = get(active, 'changes_at', null);
     const delegatedStakePoolId = isLegacy ? null : target;
     const delegationStakePoolStatus = isLegacy ? null : status;
-    const delegationStakePoolEpoch = isLegacy ? null : epoch;
-
-    // Next
-    const next = get(delegation, 'next', null);
-    const nextPendingStakePool = next ? next[0] : null;
-    const nextTarget = get(nextPendingStakePool, 'target', null);
-    const nextStatus = get(nextPendingStakePool, 'status', null);
-    const nextEpoch = get(nextPendingStakePool, 'changes_at', null);
-    const nextDelegationStakePoolId = isLegacy ? null : nextTarget;
-    const nextDelegationStakePoolStatus = isLegacy ? null : nextStatus;
-    const nextDelegationStakePoolEpoch = isLegacy ? null : nextEpoch;
 
     // Last
-    const lastPendingStakePool = next ? next[1] : null;
+    const next = get(delegation, 'next', null);
+    const lastPendingStakePool = next ? last(next) : null;
     const lastTarget = get(lastPendingStakePool, 'target', null);
-    const lastStatus = get(lastPendingStakePool, 'status', null);
-    const lastEpoch = get(lastPendingStakePool, 'changes_at', null);
     const lastDelegationStakePoolId = isLegacy ? null : lastTarget;
-    const lastDelegationStakePoolStatus = isLegacy ? null : lastStatus;
-    const lastDelegationStakePoolEpoch = isLegacy ? null : lastEpoch;
 
     return new Wallet({
       id,
@@ -1657,18 +1642,9 @@ const _createWalletFromServerData = action(
         passphraseLastUpdatedAt && new Date(passphraseLastUpdatedAt),
       syncState: state,
       isLegacy,
-      // current
       delegatedStakePoolId,
       delegationStakePoolStatus,
-      delegationStakePoolEpoch,
-      // next
-      nextDelegationStakePoolId,
-      nextDelegationStakePoolStatus,
-      nextDelegationStakePoolEpoch,
-      // last
       lastDelegationStakePoolId,
-      lastDelegationStakePoolStatus,
-      lastDelegationStakePoolEpoch,
       pendingDelegations: next,
     });
   }

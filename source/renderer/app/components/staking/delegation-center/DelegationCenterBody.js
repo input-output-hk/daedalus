@@ -89,18 +89,6 @@ export default class DelegationCenterBody extends Component<Props> {
                   delegatedStakePool={getStakePoolById(
                     wallet.delegatedStakePoolId
                   )}
-                  nextDelegatedStakePool={getStakePoolById(
-                    wallet.nextDelegationStakePoolId
-                  )}
-                  nextDelegatedStakePoolEpoch={
-                    wallet.nextDelegationStakePoolEpoch
-                  }
-                  lastDelegatedStakePool={getStakePoolById(
-                    wallet.lastDelegationStakePoolId
-                  )}
-                  lastDelegatedStakePoolEpoch={
-                    wallet.lastDelegationStakePoolEpoch
-                  }
                   getStakePoolById={getStakePoolById}
                 />
               ))}
