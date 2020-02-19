@@ -1,4 +1,4 @@
-@e2e
+@e2e @watch
 Feature: Wallet Delegation
 
   Background:
@@ -83,20 +83,24 @@ Feature: Wallet Delegation
       | Unmodified Wallet |
     And I am on the Delegation "delegation-center" screen
     And I mark experimental feature as read
-    Given the wallet has <CURRENT_EPOCH>, <NEXT_EPOCH> and <LAST_EPOCH> delegation data
-    Then the Pending Delegation information should be <PENDING_MENU_VISIBILITY>
-    And the wallet should be displayed as <DISPLAY_AS>
+    Given the wallet has the following <DELEGATION_SCENARIO>
+    Then the wallet should correctly display the correct stake pool tickers
+    And the ADA logo should be <ACTIVE_POOL_VISIBILITY>
+    And the tickers should display the correct <TOOLTIPS>
+    And the wallet should display the correct <LINKS>
 
     Examples:
-    | CURRENT_EPOCH  | NEXT_EPOCH     | LAST_EPOCH     | PENDING_MENU_VISIBILITY | DISPLAY_AS     |
-    | not_delegating | none           | none           | hidden                  | not_delegating |
-    | delegating     | none           | none           | hidden                  | delegating     |
-    | delegating     | delegating     | none           | visible                 | delegating     |
-    | delegating     | not_delegating | none           | visible                 | not_delegating |
-    | not_delegating | delegating     | not_delegating | visible                 | not_delegating |
-    | not_delegating | delegating     | delegating     | visible                 | delegating     |
-    | delegating     | not_delegating | delegating     | visible                 | delegating     |
-    | delegating     | delegating     | not_delegating | visible                 | not_delegating |
+    | DELEGATION_SCENARIO                   | ACTIVE_POOL_VISIBILITY | TOOLTIPS                                  | LINKS                    |
+    | undelegated                           | hidden                 | none                                      | Delegate                 |
+    | undelegated > delegated               | hidden                 | none > from_epoch                         | Undelegate or Redelegate |
+    | undelegated > delegated > undelegated | hidden                 | none > from_epoch > from_epoch            | Delegate                 |
+    | undelegated > delegated > delegated   | hidden                 | none > from_epoch > from_epoch            | Undelegate or Redelegate |
+    | delegated                             | visible                | earning_rewards                           | Undelegate or Redelegate |
+    | delegated > undelegated               | visible                | earning_rewards > from_epoch              | Delegate                 |
+    | delegated > delegated                 | visible                | earning_rewards > from_epoch              | Undelegate or Redelegate |
+    | delegated > delegated > undelegated   | visible                | earning_rewards > from_epoch > from_epoch | Delegate                 |
+    | delegated > delegated > delegated     | visible                | earning_rewards > from_epoch > from_epoch | Undelegate or Redelegate |
+
 
   @skip
   # We are currently not displaying stake pools with no metadata
