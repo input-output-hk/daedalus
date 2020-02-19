@@ -489,7 +489,7 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
   rpInput: {
     '--rp-input-bg-color': '#1e1f31',
     '--rp-input-bg-color-disabled': 'rgba(255, 255, 255, 0.05)',
-    '--rp-input-border-color': 'rgba(255, 255, 255, 0.2)',
+    '--rp-input-border-color': 'rgba(255, 255, 255, 0.3)',
     '--rp-input-border-color-disabled': 'rgba(255, 255, 255, 0.05)',
     '--rp-input-border-color-errored': '#ea4c5b',
     '--rp-input-border-color-focus': 'rgba(255, 255, 255, 0.7)',
@@ -819,6 +819,21 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
       'rgba(255, 255, 255, 0.5)',
     '--theme-transactions-state-pending-warning-background-color': '#eb4a22',
     '--theme-transactions-state-text-color': '#121326',
+    '--theme-transactions-filter-button-shadow-color': '#1213262e',
+    '--theme-transactions-filter-button-color': 'rgba(18, 19, 38, 1)',
+    '--theme-transactions-date-picker-button-background-color':
+      'rgba(255, 255, 255, 0.14)',
+    '--theme-transactions-date-picker-button-background-color-hover':
+      'rgba(255, 255, 255, 0.07)',
+    '--theme-transactions-filter-modal-bg-color': '#3f404f',
+    '--theme-transactions-filter-date-picker-shadow':
+      '0 0 20px 0 rgba(0, 0, 0, 0.4)',
+    '--theme-transactions-filter-title-button-text-color': '#ffffff',
+    '--theme-transactions-filter-title-button-background-color': '#afafb866',
+    '--theme-transactions-filter-title-button-background-color-hover':
+      '#afafb899',
+    '--theme-transactions-filter-title-button-background-color-active':
+      '#afafb8cc',
   },
   uploader: {
     '--theme-uploader-text-color': '#ffffff',

@@ -3,26 +3,15 @@ Changelog
 
 ## vNext
 
-### Feature
-- Implemented a spinner on Wallet delegation screens for wallets in the restoration process ([PR 1847](https://github.com/input-output-hk/daedalus/pull/1847))
-- Implemented experimental data UI ([PR 1845](https://github.com/input-output-hk/daedalus/pull/1845))
-- Renamed "Profit margin" into "Pool margin" on the stake pool tooltip ([PR 1841](https://github.com/input-output-hk/daedalus/pull/1841))
+### Features
 
-### Fixes
-
-- Fixed stake pool descriptions text clipping on stake pool tooltip ([PR 1832](https://github.com/input-output-hk/daedalus/pull/1832))
-- Fixed "Low disk space" notification not being shown for Incentivized testnet ([PR 1833](https://github.com/input-output-hk/daedalus/pull/1833))
-- Fixed download logs link underline color ([PR 1831](https://github.com/input-output-hk/daedalus/pull/1831))
+- Implemented transactions filtering dialog on wallet "Transactions" screen ([PR 1815](https://github.com/input-output-hk/daedalus/pull/1815))
 
 ### Chores
 
-- Integrated react-polymorph ScrollBar CSS vars into each theme ([PR 1827](https://github.com/input-output-hk/daedalus/pull/1827))
-- Improved GitHub pull request template ([PR 1843](https://github.com/input-output-hk/daedalus/pull/1843))
-- Removed unused locales and translation files ([PR 1840](https://github.com/input-output-hk/daedalus/pull/1840))
-- Improved acceptance tests setup with "rerun" feature ([PR 1835](https://github.com/input-output-hk/daedalus/pull/1835)
-- Implemented acceptance tests for Daedalus Balance wallets ([PR 1816](https://github.com/input-output-hk/daedalus/pull/1816), [PR 1828](https://github.com/input-output-hk/daedalus/pull/1828))
-- Implemented acceptance tests for stake pools loading ([PR 1820](https://github.com/input-output-hk/daedalus/pull/1820))
-- Bumped cardano-wallet dependecy to edc42a9c9a79dc3d6e76363f9c03e8e6009de993 ([PR 1848](https://github.com/input-output-hk/daedalus/pull/1848))
+- Integrated React-Polymorph "ScrollBar" CSS variables ([PR 1827](https://github.com/input-output-hk/daedalus/pull/1827))
+- Implemented acceptance tests for wallet delegation ([PR 1814](https://github.com/input-output-hk/daedalus/pull/1814))
+- Improved loading state of the "Stake pools" screen ([PR 1814](https://github.com/input-output-hk/daedalus/pull/1814))
 
 ## 2.1.0-ITN1
 

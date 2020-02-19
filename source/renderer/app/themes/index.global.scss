@@ -1,7 +1,14 @@
 @import '~react-virtualized/styles.css';
+@import '~react-datetime/css/react-datetime.css';
 
 // ============ RESET ===========
 // http://meyerweb.com/eric/tools/css/reset
+
+html,
+body,
+body > div:nth-child(1) {
+  height: 100%;
+}
 
 html,
 body,
@@ -274,6 +281,14 @@ body,
       background-color: var(--theme-scrollbar-thumb-background-hover);
     }
   }
+}
+
+// ====== GLOBAL NUMBER INPUT STYLE ======
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 // General text formatting

@@ -46,7 +46,7 @@ export default class StakePoolsListPage extends Component<Props> {
           getPledgeAddressUrl={getPledgeAddressUrl}
           currentTheme={currentTheme}
           onDelegate={this.handleDelegate}
-          isLoading={fetchingStakePoolsFailed}
+          isLoading={fetchingStakePoolsFailed || !stakePools.length}
         />
         {uiDialogs.isOpen(DelegationSetupWizardDialog) ? (
           <DelegationSetupWizardDialogContainer />
