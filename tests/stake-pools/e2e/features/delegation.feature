@@ -85,21 +85,21 @@ Feature: Wallet Delegation
     And I mark experimental feature as read
     Given the wallet has the following <DELEGATION_SCENARIO>
     Then the wallet should correctly display the correct stake pool tickers
-    And the <ACTIVE_POOL> should display the ADA logo
+    And the ADA logo should be <ACTIVE_POOL_VISIBILITY>
     And the tickers should display the correct <TOOLTIPS>
     And the wallet should display the correct <LINKS>
 
     Examples:
-    | DELEGATION_SCENARIO                   | ACTIVE_POOL | TOOLTIPS | LINKS                    |
-    | undelegated                           | none        | none     | Delegate                 |
-    | undelegated > delegated               | none        | none     | Undelegate or Redelegate |
-    | undelegated > delegated > undelegated | none        | none     | Delegate                 |
-    | undelegated > delegated > delegated   | none        | none     | Undelegate or Redelegate |
-    | delegated                             | none        | none     | Undelegate or Redelegate |
-    | delegated > undelegated               | none        | none     | Delegate                 |
-    | delegated > delegated                 | none        | none     | Undelegate or Redelegate |
-    | delegated > delegated > undelegated   | none        | none     | Delegate                 |
-    | delegated > delegated > delegated     | none        | none     | Undelegate or Redelegate |
+    | DELEGATION_SCENARIO                   | ACTIVE_POOL_VISIBILITY | TOOLTIPS                                  | LINKS                    |
+    | undelegated                           | hidden                 | none                                      | Delegate                 |
+    | undelegated > delegated               | hidden                 | none > from_epoch                         | Undelegate or Redelegate |
+    | undelegated > delegated > undelegated | hidden                 | none > from_epoch > from_epoch            | Delegate                 |
+    | undelegated > delegated > delegated   | hidden                 | none > from_epoch > from_epoch            | Undelegate or Redelegate |
+    | delegated                             | visible                | earning_rewards                           | Undelegate or Redelegate |
+    | delegated > undelegated               | visible                | earning_rewards > from_epoch              | Delegate                 |
+    | delegated > delegated                 | visible                | earning_rewards > from_epoch              | Undelegate or Redelegate |
+    | delegated > delegated > undelegated   | visible                | earning_rewards > from_epoch > from_epoch | Delegate                 |
+    | delegated > delegated > delegated     | visible                | earning_rewards > from_epoch > from_epoch | Undelegate or Redelegate |
 
 
   @skip
