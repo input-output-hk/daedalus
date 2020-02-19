@@ -198,6 +198,22 @@ export const WHITE_THEME_OUTPUT = {
   errors: {
     '--theme-color-error': '#ea4c5b',
   },
+  experimentalDataOverlay: {
+    '--theme-experimental-data-overlay-background-color': '#fffffff5',
+    '--theme-experimental-data-overlay-button-background-color':
+      'rgba(41, 181, 149, 0.1)',
+    '--theme-experimental-data-overlay-button-background-color-hover':
+      '#29b595',
+    '--theme-experimental-data-overlay-button-border-color': '#29b595',
+    '--theme-experimental-data-overlay-button-text-color': '#29b595',
+    '--theme-experimental-data-overlay-button-text-color-hover': '#fff',
+    '--theme-experimental-data-overlay-description-background-color':
+      'rgba(41, 181, 149, 0.1)',
+    '--theme-experimental-data-overlay-description-color':
+      'rgba(45, 45, 45, 0.7)',
+    '--theme-experimental-data-overlay-logo-fill-color': '#29b595',
+    '--theme-experimental-data-overlay-title-color': '#2d2d2d',
+  },
   fonts: {
     '--font-ultralight': 'NotoSans-ExtraLight, NotoSansCJKjp-Thin',
     '--font-thin': 'NotoSans-Thin, NotoSansCJKjp-Thin',
@@ -687,6 +703,10 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-staking-progress-label-light': '#fafbfc',
     '--theme-staking-stake-pools-search-clear-button-background-color':
       'rgba(68, 91, 124, 0.05)',
+    '--theme-staking-stake-pool-tooltip-experimental-icon-background-color':
+      '#fff',
+    '--theme-staking-stake-pool-tooltip-experimental-icon-lines-color':
+      'rgba(45, 45, 45, 0.8)',
     '--theme-staking-stake-pool-tooltip-neutral-background-color':
       'rgba(45, 45, 45, .1)',
     '--theme-staking-stake-pool-tooltip-neutral-text-color': '#2d2d2d',
@@ -796,6 +816,22 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-transactions-icon-type-pending-warning-background-color':
       'rgba(236, 93, 107, 0.8)',
     '--theme-transactions-state-pending-warning-background-color': '#ec5d6b',
+    '--theme-transactions-filter-button-shadow-color': 'rgba(0, 0, 0, 0.18)',
+    '--theme-transactions-filter-button-color': '#fff',
+    '--theme-transactions-date-picker-button-background-color':
+      'rgba(41, 181, 149, 0.14)',
+    '--theme-transactions-date-picker-button-background-color-hover':
+      'rgba(41, 181, 149, 0.07)',
+    '--theme-transactions-filter-modal-bg-color': '#fff',
+    '--theme-transactions-filter-date-picker-shadow':
+      '0 5px 20px 0 rgba(0, 0, 0, 0.25)',
+    '--theme-transactions-filter-title-button-text-color': '#fafbfc',
+    '--theme-transactions-filter-title-button-background-color':
+      'rgba(94, 96, 102, 0.4)',
+    '--theme-transactions-filter-title-button-background-color-hover':
+      'rgba(94, 96, 102, 0.6)',
+    '--theme-transactions-filter-title-button-background-color-active':
+      'rgba(94, 96, 102, 0.8)',
   },
   uploader: {
     '--theme-uploader-text-color': '#2d2d2d',
