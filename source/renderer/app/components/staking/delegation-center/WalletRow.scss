@@ -96,18 +96,67 @@
         }
       }
     }
+
     .action {
       @extend %regularText;
       font-size: 14px;
+      text-align: right;
+
       .unknown {
         font-family: var(--font-bold);
       }
+
+      > span {
+        display: initial !important;
+        margin-right: 0 !important;
+
+        > div {
+          bottom: calc(73% + var(--rp-bubble-distance, 14px));
+
+          > div {
+            font-size: 13px;
+            left: -30px !important;
+            padding: 4px 12px;
+            text-align: right !important;
+            white-space: normal !important;
+            min-width: 200px !important;
+
+            > span:after {
+              left: calc(
+                100% -
+                  calc(
+                    var(
+                        --rp-bubble-arrow-width,
+                        calc(2 * var(--rp-bubble-arrow-size, 10px))
+                      ) - 2px
+                  ) / 2 - 1px
+              ) !important;
+            }
+          }
+        }
+      }
     }
+
     .stakePoolRankingIndicator {
       border-radius: 2px;
       height: 100%;
       transform: translate(20px);
       width: 4px;
+    }
+
+    .sandClockIcon {
+      svg {
+        height: 12px;
+        margin-bottom: -1px;
+        margin-right: 4px;
+        width: 12px;
+
+        path {
+          fill: var(
+            --theme-staking-delegation-center-gear-icon-fill-color-active
+          );
+        }
+      }
     }
   }
 

@@ -130,7 +130,8 @@
   width: 100%;
 }
 
-.isSelected {
+.isSelected,
+.isNextSelected {
   .colorBand,
   .ranking {
     visibility: hidden;
