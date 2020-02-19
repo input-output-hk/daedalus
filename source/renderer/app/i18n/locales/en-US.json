@@ -735,6 +735,7 @@
   "wallet.transaction.filter.last7Days": "Last 7 days",
   "wallet.transaction.filter.last90Days": "Last 90 days",
   "wallet.transaction.filter.outgoing": "Ada sent",
+  "wallet.transaction.filter.resetFilter": "Reset Filter",
   "wallet.transaction.filter.resultInfo": "<b>{filtered}</b> out of <b>{total}</b> transactions match your filter.",
   "wallet.transaction.filter.selectTimeRange": "Select time range",
   "wallet.transaction.filter.thisYear": "This year",

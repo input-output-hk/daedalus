@@ -735,6 +735,7 @@
   "wallet.transaction.filter.last7Days": "過去7日",
   "wallet.transaction.filter.last90Days": "過去90日",
   "wallet.transaction.filter.outgoing": "送金",
+  "wallet.transaction.filter.resetFilter": "フィルターをリセット",
   "wallet.transaction.filter.resultInfo": "フィルター条件と一致するのは<b>{total}</b>トランザクション中<b>{filtered}</b>件です。",
   "wallet.transaction.filter.selectTimeRange": "期間を選択してください",
   "wallet.transaction.filter.thisYear": "今年",

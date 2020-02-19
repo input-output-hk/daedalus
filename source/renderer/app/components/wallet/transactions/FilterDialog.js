@@ -35,6 +35,11 @@ const messages = defineMessages({
     defaultMessage: '!!!All Transactions',
     description: 'All Transactions button label.',
   },
+  resetFilter: {
+    id: 'wallet.transaction.filter.resetFilter',
+    defaultMessage: '!!!Reset Filter',
+    description: 'Reset Filter button label.',
+  },
   incoming: {
     id: 'wallet.transaction.filter.incoming',
     defaultMessage: '!!!Ada received',
@@ -555,7 +560,7 @@ export default class FilterDialog extends Component<Props> {
                   emptyTransactionFilterOptions
                 )}
               >
-                {intl.formatMessage(globalMessages.reset)}
+                {intl.formatMessage(messages.resetFilter)}
               </button>
             </div>
           </div>
