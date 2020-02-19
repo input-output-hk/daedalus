@@ -101,6 +101,7 @@ export default class WalletRow extends Component<Props> {
         syncState,
         delegationStakePoolStatus,
         pendingDelegations,
+        lastDelegationStakePoolId,
       },
       delegatedStakePool,
       numberOfStakePools,
@@ -123,10 +124,24 @@ export default class WalletRow extends Component<Props> {
       : delegationStakePoolStatus;
     const isLastDelegationDelegating =
       lastDelegationStatus !== WalletDelegationStatuses.NOT_DELEGATING;
+
     const delegatedStakePoolColor =
       delegatedStakePool && !isNil(delegatedStakePool.ranking)
         ? getColorFromRange(delegatedStakePool.ranking, numberOfStakePools)
         : null;
+
+    let stakePoolRankingIndicatorColor = delegatedStakePoolColor;
+    if (hasPendingDelegations) {
+      const pendingDerlegationStakePool = getStakePoolById(
+        lastDelegationStakePoolId
+      );
+      stakePoolRankingIndicatorColor = !pendingDerlegationStakePool
+        ? null
+        : getColorFromRange(
+            pendingDerlegationStakePool.ranking,
+            numberOfStakePools
+          );
+    }
 
     const actionStyles = classnames([
       styles.action,
@@ -274,7 +289,7 @@ export default class WalletRow extends Component<Props> {
               <div>
                 <div
                   className={styles.stakePoolRankingIndicator}
-                  style={{ background: delegatedStakePoolColor }}
+                  style={{ background: stakePoolRankingIndicatorColor }}
                 />
               </div>
             </Fragment>

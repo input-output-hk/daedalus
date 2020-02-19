@@ -57,11 +57,11 @@ const wallets = [
     inactiveStakePercentage: 24,
     syncState: walletSyncedStateReady,
     delegatedStakePoolId: null,
-    lastDelegationStakePoolId: STAKE_POOLS[1].id,
+    lastDelegationStakePoolId: STAKE_POOLS[250].id,
     pendingDelegations: [
       {
         status: 'delegating',
-        target: STAKE_POOLS[1].id,
+        target: STAKE_POOLS[250].id,
         changes_at: {
           epoch_number: nextEpoch.epochNumber,
           epoch_start_time: nextEpoch.epochStart,
@@ -87,7 +87,7 @@ const wallets = [
     isLegacy: false,
     inactiveStakePercentage: 24,
     syncState: walletSyncedStateReady,
-    delegatedStakePoolId: STAKE_POOLS[1].id,
+    delegatedStakePoolId: STAKE_POOLS[250].id,
     lastDelegationStakePoolId: STAKE_POOLS[0].id,
     pendingDelegations: [
       {
