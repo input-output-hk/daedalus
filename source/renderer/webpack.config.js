@@ -134,6 +134,7 @@ module.exports = {
           'qrcode.react',
           'react',
           'react-copy-to-clipboard',
+          'react-datetime',
           'react-dom',
           'react-router',
           'react-svg-inline',
