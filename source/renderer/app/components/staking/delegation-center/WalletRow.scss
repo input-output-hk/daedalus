@@ -52,6 +52,7 @@
       display: flex;
       justify-content: flex-end;
       margin-bottom: 7px;
+
       :global {
         .SimpleTooltip_root {
           margin-right: 0;
@@ -92,14 +93,18 @@
       }
     }
 
+    .status,
+    .action {
+      .unknown {
+        font-family: var(--font-bold);
+        text-transform: initial;
+      }
+    }
+
     .action {
       @extend %regularText;
       font-size: 14px;
       text-align: right;
-
-      .unknown {
-        font-family: var(--font-bold);
-      }
 
       > span {
         display: initial !important;
