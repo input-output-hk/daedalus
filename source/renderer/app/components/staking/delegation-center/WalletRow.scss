@@ -10,7 +10,7 @@
   :global {
     .SimpleBubble_root {
       .SimpleBubble_bubble {
-        margin-left: -24px;
+        margin-left: 0px;
       }
     }
   }
@@ -84,11 +84,11 @@
             }
           }
         }
-        .tooltipLabelWrapper {
-          font-family: var(--font-regular);
-          font-size: 13px;
-          text-transform: initial;
-        }
+      }
+      .tooltipLabelWrapper {
+        font-family: var(--font-regular);
+        font-size: 13px;
+        text-transform: initial;
       }
     }
 
