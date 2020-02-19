@@ -225,6 +225,7 @@ makeInstaller opts@Options{oOutputDir} darwinConfig@DarwinConfig{dcPkgName} comp
            , tempPkg1
            ]
     run "ls" [ "-ltrh", scriptsDir ]
+    run "/tmp/codesignFn.sh" [ (tt componentRoot) ]
     run "pkgbuild" pkgargs
 
   run "productbuild" [ "--product", "data/plist"
