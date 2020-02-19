@@ -1,0 +1,98 @@
+.component {
+  :global {
+    .rdtPicker {
+      background: var(--rp-modal-bg-color, white);
+      border: 0;
+      border-radius: 4px;
+      box-shadow: var(--rp-modal-box-shadow, 0 5px 20px 0 rgba(0, 0, 0, 0.25));
+      margin-top: 5px;
+      padding: 12px;
+      width: 276px;
+
+      .rdtYears,
+      .rdtMonths {
+        table:first-child {
+          margin-bottom: 6px;
+        }
+
+        td.rdtYear,
+        td.rdtMonth {
+          height: 46px;
+        }
+      }
+
+      th.rdtSwitch,
+      th.rdtNext,
+      th.rdtPrev {
+        font-family: var(--font-regular);
+        font-weight: 600;
+        line-height: 1.29;
+      }
+
+      th.rdtSwitch {
+        font-size: 14px;
+      }
+
+      th.rdtNext,
+      th.rdtPrev {
+        font-size: 20px;
+        vertical-align: middle;
+        width: 36px;
+      }
+
+      th {
+        border-bottom: 0;
+      }
+
+      th,
+      td {
+        height: 36px;
+        vertical-align: middle;
+      }
+
+      th.dow {
+        font-family: var(--font-regular);
+        font-size: 12px;
+        font-weight: normal;
+        line-height: 1.17;
+      }
+
+      td.rdtDay {
+        font-family: var(--font-regular);
+        font-size: 14px;
+        font-weight: normal;
+        line-height: 1.29;
+      }
+
+      td.rdtOld,
+      td.rdtNew {
+        color: var(--theme-dialog-text-color);
+        opacity: 0.3;
+      }
+
+      td.rdtActive.rdtToday:before {
+        border-bottom-color: var(--rp-modal-bg-color);
+      }
+
+      .reset {
+        margin-top: 12px;
+      }
+    }
+  }
+}
+
+.pickerPanelOnLeft {
+  :global {
+    .rdtPicker {
+      left: 0;
+    }
+  }
+}
+
+.pickerPanelOnRight {
+  :global {
+    .rdtPicker {
+      right: 0;
+    }
+  }
+}

@@ -123,5 +123,6 @@ export const StakingDelegationCenterStory = ({
     fetchingStakePoolsFailed={isLoading}
     futureEpoch={futureEpoch}
     currentLocale={locale}
+    isLoading={false}
   />
 );

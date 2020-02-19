@@ -3,6 +3,15 @@ Changelog
 
 ## 2.1.1-ITN1
 
+### Features
+
+- Implemented transactions filtering dialog on wallet "Transactions" screen ([PR 1815](https://github.com/input-output-hk/daedalus/pull/1815))
+
+### Chores
+
+- Implemented acceptance tests for wallet delegation ([PR 1814](https://github.com/input-output-hk/daedalus/pull/1814))
+- Improved loading state of the "Stake pools" screen ([PR 1814](https://github.com/input-output-hk/daedalus/pull/1814))
+
 ## 2.1.0-ITN1
 
 ### Features
