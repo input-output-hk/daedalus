@@ -251,4 +251,29 @@ export default defineMessages({
     defaultMessage: '!!!seconds',
     description: 'Label for seconds value in duration.',
   },
+  rangeFrom: {
+    id: 'global.range.from',
+    defaultMessage: '!!!from',
+    description: 'From label of range.',
+  },
+  rangeTo: {
+    id: 'global.range.to',
+    defaultMessage: '!!!to',
+    description: 'To label of range.',
+  },
+  filter: {
+    id: 'global.labels.filter',
+    defaultMessage: '!!!Filter',
+    description: 'Filter label.',
+  },
+  all: {
+    id: 'global.labels.all',
+    defaultMessage: '!!!All',
+    description: 'All label.',
+  },
+  reset: {
+    id: 'global.labels.reset',
+    defaultMessage: '!!!Reset',
+    description: 'Reset label.',
+  },
 });

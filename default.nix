@@ -20,7 +20,7 @@ let
     x86_64-windows = lib.systems.examples.mingwW64;
   };
   system = systemTable.${target} or target;
-  pkgs = localLib.iohkNix.getPkgs { inherit system config; };
+  pkgs = localLib.iohkNix.getPkgsDefault { inherit system config; };
   crossSystem = crossSystemTable.${target} or null;
   # TODO, nsis cant cross-compile with the nixpkgs daedalus currently uses
   nsisNixPkgs = import localLib.sources.nixpkgs-nsis {};

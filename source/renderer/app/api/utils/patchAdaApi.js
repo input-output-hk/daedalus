@@ -7,6 +7,11 @@ import { getLatestAppVersion } from '../nodes/requests/getLatestAppVersion';
 import { GenericApiError } from '../common/errors';
 import { Logger } from '../../utils/logging';
 import packageJson from '../../../../../package.json';
+
+// domains
+import Wallet from '../../domains/Wallet';
+import StakePool from '../../domains/StakePool';
+
 import type {
   GetNetworkInfoResponse,
   NetworkInfoResponse,
@@ -141,14 +146,14 @@ export default (api: AdaApi) => {
     APPLICATION_VERSION = applicationVersion;
   };
 
-  api.setFakeNewsFeedJsonForTesting = (fakeNewsfeedJson: ?GetNewsResponse) => {
+  api.setTestingNewsFeed = (testingNewsFeedData: ?GetNewsResponse) => {
     const { version: packageJsonVersion } = packageJson;
-    if (!fakeNewsfeedJson) {
+    if (!testingNewsFeedData) {
       FAKE_NEWSFEED_JSON = null;
       return;
     }
     // Always mutate newsfeed target version to current app version
-    const newsFeedItems = map(fakeNewsfeedJson.items, item => {
+    const newsFeedItems = map(testingNewsFeedData.items, item => {
       return {
         ...item,
         target: {
@@ -161,7 +166,7 @@ export default (api: AdaApi) => {
     });
 
     FAKE_NEWSFEED_JSON = {
-      ...fakeNewsfeedJson,
+      ...testingNewsFeedData,
       items: newsFeedItems,
     };
   };
@@ -174,6 +179,18 @@ export default (api: AdaApi) => {
         resolve(FAKE_NEWSFEED_JSON);
       }
     });
+  };
+
+  api.setTestingWallets = (testingWalletsData: Array<Object>): void => {
+    api.getWallets = (): Array<Wallet> =>
+      testingWalletsData.map((wallet: Object) => new Wallet(wallet));
+  };
+
+  api.setTestingStakePools = (testingStakePoolsData: Array<Object>): void => {
+    api.getStakePools = (): Array<StakePool> =>
+      testingStakePoolsData.map(
+        (stakePool: Object) => new StakePool(stakePool)
+      );
   };
 
   api.resetTestOverrides = () => {

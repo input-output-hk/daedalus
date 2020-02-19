@@ -2,6 +2,7 @@
 /* eslint-disable jsx-a11y/label-has-associated-control, jsx-a11y/label-has-for */
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
+import { get } from 'lodash';
 import BigNumber from 'bignumber.js';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import classnames from 'classnames';
@@ -226,7 +227,7 @@ export default class UndelegateConfirmationDialog extends Component<Props> {
       return null;
     }
 
-    const errorHasLink = !!error.values.linkLabel;
+    const errorHasLink = !!get(error, 'values.linkLabel', false);
     const result = errorHasLink ? (
       <FormattedHTMLMessageWithLink
         message={error}

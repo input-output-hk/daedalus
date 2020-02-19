@@ -64,6 +64,14 @@ const messages = defineMessages({
     description:
       '"You are already delegating to stake pool" label on the delegation setup "choose stake pool" dialog.',
   },
+  delegatedStakePoolNextLabel: {
+    id:
+      'staking.delegationSetup.chooseStakePool.step.dialog.delegatedStakePoolNextLabel',
+    defaultMessage:
+      '!!!You are already pending delegation <span>{selectedWalletName}</span> wallet to <span>[{selectedPoolTicker}]</span> stake pool. <span>If you wish to re-delegate your stake, please select a different pool.</span>',
+    description:
+      '"You are already delegating to stake pool" label on the delegation setup "choose stake pool" dialog.',
+  },
   recentPoolsLabel: {
     id: 'staking.delegationSetup.chooseStakePool.step.dialog.recentPoolsLabel',
     defaultMessage: '!!!Pick one of your recent stake pool choices:',
@@ -169,14 +177,22 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
       stakePoolsList,
       stakePool => stakePool.id === selectedPoolId
     );
+    const lastDelegatedStakePoolId = get(
+      selectedWallet,
+      'lastDelegationStakePoolId',
+      null
+    );
     const delegatedStakePoolId = get(
       selectedWallet,
       'delegatedStakePoolId',
       null
     );
+
+    const activeStakePoolId = lastDelegatedStakePoolId || delegatedStakePoolId;
+
     const selectedPoolTicker = get(selectedPool, 'ticker');
     const canSubmit =
-      !delegatedStakePoolId || delegatedStakePoolId !== selectedPoolId;
+      !activeStakePoolId || activeStakePoolId !== selectedPoolId;
 
     const actions = [
       {
@@ -238,10 +254,28 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
     const selectionPoolLabel = () => {
       let label = '';
       // Label when selected wallet already delegating to selected stake pool
-      if (selectedPoolId && delegatedStakePoolId === selectedPoolId) {
+      if (
+        selectedPoolId &&
+        activeStakePoolId === delegatedStakePoolId &&
+        delegatedStakePoolId === selectedPoolId
+      ) {
         label = (
           <FormattedHTMLMessage
             {...messages.delegatedStakePoolLabel}
+            values={{
+              selectedWalletName,
+              selectedPoolTicker,
+            }}
+          />
+        );
+      } else if (
+        selectedPoolId &&
+        activeStakePoolId === lastDelegatedStakePoolId &&
+        lastDelegatedStakePoolId === selectedPoolId
+      ) {
+        label = (
+          <FormattedHTMLMessage
+            {...messages.delegatedStakePoolNextLabel}
             values={{
               selectedWalletName,
               selectedPoolTicker,
@@ -343,7 +377,7 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
               onSelect={this.handleSelect}
               selectedPoolId={selectedPoolId}
               numberOfStakePools={stakePoolsList.length}
-              disabledStakePoolId={delegatedStakePoolId}
+              disabledStakePoolId={activeStakePoolId}
               showSelected
               highlightOnHover
             />
@@ -357,7 +391,7 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
               onSearch={this.handleSearch}
               onClearSearch={this.handleClearSearch}
               scrollableElementClassName="Dialog_content"
-              disabledStakePoolId={delegatedStakePoolId}
+              disabledStakePoolId={activeStakePoolId}
             />
           </div>
 
@@ -374,7 +408,7 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
               selectedPoolId={selectedPoolId}
               containerClassName="Dialog_content"
               numberOfStakePools={stakePoolsList.length}
-              disabledStakePoolId={delegatedStakePoolId}
+              disabledStakePoolId={activeStakePoolId}
               showSelected
               highlightOnHover
             />

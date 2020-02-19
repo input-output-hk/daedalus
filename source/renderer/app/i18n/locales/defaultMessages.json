@@ -2414,13 +2414,13 @@
         "description": "Title for the \"Undelegate\" dialog.",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 29
         },
         "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
         "id": "staking.delegationCenter.undelegate.dialog.title",
         "start": {
           "column": 15,
-          "line": 24
+          "line": 25
         }
       },
       {
@@ -2428,13 +2428,13 @@
         "description": "Label for the \"Undelegate\" button in the \"Undelegate\" dialog.",
         "end": {
           "column": 3,
-          "line": 34
+          "line": 35
         },
         "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
         "id": "staking.delegationCenter.undelegate.dialog.confirmButtonLabel",
         "start": {
           "column": 22,
-          "line": 29
+          "line": 30
         }
       },
       {
@@ -2442,13 +2442,13 @@
         "description": "Description for the \"Undelegate\" dialog.",
         "end": {
           "column": 3,
-          "line": 40
+          "line": 41
         },
         "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
         "id": "staking.delegationCenter.undelegate.dialog.descriptionWithTicker",
         "start": {
           "column": 25,
-          "line": 35
+          "line": 36
         }
       },
       {
@@ -2456,13 +2456,13 @@
         "description": "Description for the \"Undelegate\" dialog.",
         "end": {
           "column": 3,
-          "line": 47
+          "line": 48
         },
         "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
         "id": "staking.delegationCenter.undelegate.dialog.descriptionWithUnknownTicker",
         "start": {
           "column": 32,
-          "line": 41
+          "line": 42
         }
       },
       {
@@ -2470,13 +2470,13 @@
         "description": "Label for the unsupport confirmation check in the \"Undelegate\" dialog.",
         "end": {
           "column": 3,
-          "line": 54
+          "line": 55
         },
         "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
         "id": "staking.delegationCenter.undelegate.dialog.confirmUnsupportCheck",
         "start": {
           "column": 25,
-          "line": 48
+          "line": 49
         }
       },
       {
@@ -2484,13 +2484,13 @@
         "description": "Label for the uneligible confirmation check in the \"Undelegate\" dialog.",
         "end": {
           "column": 3,
-          "line": 61
+          "line": 62
         },
         "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
         "id": "staking.delegationCenter.undelegate.dialog.confirmUneligibleCheck",
         "start": {
           "column": 26,
-          "line": 55
+          "line": 56
         }
       },
       {
@@ -2498,13 +2498,13 @@
         "description": "Fees label in the \"Undelegate\" dialog.",
         "end": {
           "column": 3,
-          "line": 66
+          "line": 67
         },
         "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
         "id": "staking.delegationCenter.undelegate.dialog.feesLabel",
         "start": {
           "column": 13,
-          "line": 62
+          "line": 63
         }
       },
       {
@@ -2512,13 +2512,13 @@
         "description": "ADA label in the \"Undelegate\" dialog.",
         "end": {
           "column": 3,
-          "line": 71
+          "line": 72
         },
         "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
         "id": "staking.delegationCenter.undelegate.dialog.adaLabel",
         "start": {
           "column": 12,
-          "line": 67
+          "line": 68
         }
       },
       {
@@ -2526,13 +2526,13 @@
         "description": "Spending password label in the \"Undelegate\" dialog.",
         "end": {
           "column": 3,
-          "line": 76
+          "line": 77
         },
         "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
         "id": "staking.delegationCenter.undelegate.dialog.spendingPasswordLabel",
         "start": {
           "column": 25,
-          "line": 72
+          "line": 73
         }
       },
       {
@@ -2540,13 +2540,13 @@
         "description": "Spending password placeholder in the \"Undelegate\" dialog.",
         "end": {
           "column": 3,
-          "line": 82
+          "line": 83
         },
         "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
         "id": "staking.delegationCenter.undelegate.dialog.spendingPasswordPlaceholder",
         "start": {
           "column": 31,
-          "line": 77
+          "line": 78
         }
       },
       {
@@ -2554,13 +2554,13 @@
         "description": "Label for password error in the \"Undelegate\" dialog.",
         "end": {
           "column": 3,
-          "line": 87
+          "line": 88
         },
         "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
         "id": "staking.delegationCenter.undelegate.dialog.passwordError",
         "start": {
           "column": 24,
-          "line": 83
+          "line": 84
         }
       },
       {
@@ -2568,13 +2568,13 @@
         "description": "unknown stake pool label in the \"Undelegate\" dialog.",
         "end": {
           "column": 3,
-          "line": 92
+          "line": 93
         },
         "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
         "id": "staking.delegationCenter.undelegate.dialog.unknownStakePoolLabel",
         "start": {
           "column": 25,
-          "line": 88
+          "line": 89
         }
       }
     ],
@@ -2634,13 +2634,13 @@
         "description": "Amount of each wallet for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 27
+          "line": 29
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.walletAmount",
         "start": {
           "column": 16,
-          "line": 22
+          "line": 24
         }
       },
       {
@@ -2648,27 +2648,27 @@
         "description": "Delegated label for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 34
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.delegated",
         "start": {
           "column": 13,
-          "line": 28
+          "line": 30
         }
       },
       {
-        "defaultMessage": "!!!Not-delegated",
-        "description": "Not-delegated label for the Delegation center body section.",
+        "defaultMessage": "!!!Undelegated",
+        "description": "Undelegated label for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 39
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.notDelegated",
         "start": {
           "column": 16,
-          "line": 33
+          "line": 35
         }
       },
       {
@@ -2676,13 +2676,13 @@
         "description": "Change delegation label for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 45
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.changeDelegation",
         "start": {
           "column": 20,
-          "line": 38
+          "line": 40
         }
       },
       {
@@ -2690,41 +2690,69 @@
         "description": "Remove delegation label for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 49
+          "line": 51
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.removeDelegation",
         "start": {
           "column": 20,
-          "line": 44
+          "line": 46
         }
       },
       {
-        "defaultMessage": "!!!To",
+        "defaultMessage": "!!!to",
         "description": "Delegated stake pool ticker for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 55
+          "line": 57
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.toStakePoolTickerPart1",
         "start": {
           "column": 26,
-          "line": 50
+          "line": 52
         }
       },
       {
-        "defaultMessage": "!!!stake pool",
+        "defaultMessage": "!!!from epoch",
         "description": "Delegated stake pool ticker for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 61
+          "line": 63
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.toStakePoolTickerPart2",
         "start": {
           "column": 26,
-          "line": 56
+          "line": 58
+        }
+      },
+      {
+        "defaultMessage": "!!!currently",
+        "description": "Delegated stake pool tooltip ticker for the Delegation center body section.",
+        "end": {
+          "column": 3,
+          "line": 69
+        },
+        "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
+        "id": "staking.delegationCenter.toStakePoolTooltipTickerPart1",
+        "start": {
+          "column": 33,
+          "line": 64
+        }
+      },
+      {
+        "defaultMessage": "!!!from epoch",
+        "description": "Delegated stake pool tooltip ticker for the Delegation center body section.",
+        "end": {
+          "column": 3,
+          "line": 75
+        },
+        "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
+        "id": "staking.delegationCenter.toStakePoolTooltipTickerPart2",
+        "start": {
+          "column": 33,
+          "line": 70
         }
       },
       {
@@ -2732,27 +2760,13 @@
         "description": "Delegate label for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 66
+          "line": 80
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.delegate",
         "start": {
           "column": 12,
-          "line": 62
-        }
-      },
-      {
-        "defaultMessage": "!!!your stake",
-        "description": "Your stake label for the Delegation center body section.",
-        "end": {
-          "column": 3,
-          "line": 71
-        },
-        "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
-        "id": "staking.delegationCenter.yourStake",
-        "start": {
-          "column": 13,
-          "line": 67
+          "line": 76
         }
       },
       {
@@ -2760,13 +2774,13 @@
         "description": "unknown stake pool label for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 77
+          "line": 86
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.unknownStakePoolLabel",
         "start": {
           "column": 25,
-          "line": 72
+          "line": 81
         }
       },
       {
@@ -2774,13 +2788,13 @@
         "description": "unknown stake pool label for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 83
+          "line": 92
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.syncingTooltipLabel",
         "start": {
           "column": 23,
-          "line": 78
+          "line": 87
         }
       }
     ],
@@ -2859,17 +2873,31 @@
         }
       },
       {
+        "defaultMessage": "!!!You are already pending delegation <span>{selectedWalletName}</span> wallet to <span>[{selectedPoolTicker}]</span> stake pool. <span>If you wish to re-delegate your stake, please select a different pool.</span>",
+        "description": "\"You are already delegating to stake pool\" label on the delegation setup \"choose stake pool\" dialog.",
+        "end": {
+          "column": 3,
+          "line": 74
+        },
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
+        "id": "staking.delegationSetup.chooseStakePool.step.dialog.delegatedStakePoolNextLabel",
+        "start": {
+          "column": 31,
+          "line": 67
+        }
+      },
+      {
         "defaultMessage": "!!!Pick one of your recent stake pool choices:",
         "description": "Recent \"Pool\" choice section label on the delegation setup \"choose stake pool\" dialog.",
         "end": {
           "column": 3,
-          "line": 72
+          "line": 80
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.recentPoolsLabel",
         "start": {
           "column": 20,
-          "line": 67
+          "line": 75
         }
       },
       {
@@ -2877,13 +2905,13 @@
         "description": "Search \"Pools\" input label on the delegation setup \"choose stake pool\" dialog.",
         "end": {
           "column": 3,
-          "line": 79
+          "line": 87
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.searchInput.label",
         "start": {
           "column": 20,
-          "line": 73
+          "line": 81
         }
       },
       {
@@ -2891,13 +2919,13 @@
         "description": "Search \"Pools\" input placeholder on the delegation setup \"choose stake pool\" dialog.",
         "end": {
           "column": 3,
-          "line": 86
+          "line": 94
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.searchInput.placeholder",
         "start": {
           "column": 26,
-          "line": 80
+          "line": 88
         }
       },
       {
@@ -2905,13 +2933,13 @@
         "description": "Label for continue button on the delegation setup \"choose stake pool\" dialog.",
         "end": {
           "column": 3,
-          "line": 93
+          "line": 101
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.continueButtonLabel",
         "start": {
           "column": 23,
-          "line": 87
+          "line": 95
         }
       },
       {
@@ -2919,13 +2947,13 @@
         "description": "Step indicator labe on the delegation setup \"choose wallet\" step dialog.",
         "end": {
           "column": 3,
-          "line": 100
+          "line": 108
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.stepIndicatorLabel",
         "start": {
           "column": 22,
-          "line": 94
+          "line": 102
         }
       }
     ],
@@ -7523,6 +7551,212 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!All Transactions",
+        "description": "All Transactions button label.",
+        "end": {
+          "column": 3,
+          "line": 37
+        },
+        "file": "source/renderer/app/components/wallet/transactions/FilterDialog.js",
+        "id": "wallet.transaction.filter.allTransactions",
+        "start": {
+          "column": 19,
+          "line": 33
+        }
+      },
+      {
+        "defaultMessage": "!!!Reset Filter",
+        "description": "Reset Filter button label.",
+        "end": {
+          "column": 3,
+          "line": 42
+        },
+        "file": "source/renderer/app/components/wallet/transactions/FilterDialog.js",
+        "id": "wallet.transaction.filter.resetFilter",
+        "start": {
+          "column": 15,
+          "line": 38
+        }
+      },
+      {
+        "defaultMessage": "!!!Ada received",
+        "description": "Incoming filter type.",
+        "end": {
+          "column": 3,
+          "line": 47
+        },
+        "file": "source/renderer/app/components/wallet/transactions/FilterDialog.js",
+        "id": "wallet.transaction.filter.incoming",
+        "start": {
+          "column": 12,
+          "line": 43
+        }
+      },
+      {
+        "defaultMessage": "!!!Ada sent",
+        "description": "Outgoing filter type.",
+        "end": {
+          "column": 3,
+          "line": 52
+        },
+        "file": "source/renderer/app/components/wallet/transactions/FilterDialog.js",
+        "id": "wallet.transaction.filter.outgoing",
+        "start": {
+          "column": 12,
+          "line": 48
+        }
+      },
+      {
+        "defaultMessage": "!!!Time",
+        "description": "Date range of filter.",
+        "end": {
+          "column": 3,
+          "line": 57
+        },
+        "file": "source/renderer/app/components/wallet/transactions/FilterDialog.js",
+        "id": "wallet.transaction.filter.dateRange",
+        "start": {
+          "column": 13,
+          "line": 53
+        }
+      },
+      {
+        "defaultMessage": "!!!Select time range",
+        "description": "Select time range indication of filter.",
+        "end": {
+          "column": 3,
+          "line": 62
+        },
+        "file": "source/renderer/app/components/wallet/transactions/FilterDialog.js",
+        "id": "wallet.transaction.filter.selectTimeRange",
+        "start": {
+          "column": 19,
+          "line": 58
+        }
+      },
+      {
+        "defaultMessage": "!!!Last 7 days",
+        "description": "Last 7 days range of filter.",
+        "end": {
+          "column": 3,
+          "line": 67
+        },
+        "file": "source/renderer/app/components/wallet/transactions/FilterDialog.js",
+        "id": "wallet.transaction.filter.last7Days",
+        "start": {
+          "column": 13,
+          "line": 63
+        }
+      },
+      {
+        "defaultMessage": "!!!Last 30 days",
+        "description": "Last 30 days range of filter.",
+        "end": {
+          "column": 3,
+          "line": 72
+        },
+        "file": "source/renderer/app/components/wallet/transactions/FilterDialog.js",
+        "id": "wallet.transaction.filter.last30Days",
+        "start": {
+          "column": 14,
+          "line": 68
+        }
+      },
+      {
+        "defaultMessage": "!!!Last 90 days",
+        "description": "Last 90 days range of filter.",
+        "end": {
+          "column": 3,
+          "line": 77
+        },
+        "file": "source/renderer/app/components/wallet/transactions/FilterDialog.js",
+        "id": "wallet.transaction.filter.last90Days",
+        "start": {
+          "column": 14,
+          "line": 73
+        }
+      },
+      {
+        "defaultMessage": "!!!This year",
+        "description": "This year date range of filter.",
+        "end": {
+          "column": 3,
+          "line": 82
+        },
+        "file": "source/renderer/app/components/wallet/transactions/FilterDialog.js",
+        "id": "wallet.transaction.filter.thisYear",
+        "start": {
+          "column": 12,
+          "line": 78
+        }
+      },
+      {
+        "defaultMessage": "!!!Custom",
+        "description": "Custom date range of filter.",
+        "end": {
+          "column": 3,
+          "line": 87
+        },
+        "file": "source/renderer/app/components/wallet/transactions/FilterDialog.js",
+        "id": "wallet.transaction.filter.custom",
+        "start": {
+          "column": 10,
+          "line": 83
+        }
+      },
+      {
+        "defaultMessage": "!!!Amount of ada",
+        "description": "Amount range of filter.",
+        "end": {
+          "column": 3,
+          "line": 92
+        },
+        "file": "source/renderer/app/components/wallet/transactions/FilterDialog.js",
+        "id": "wallet.transaction.filter.amountRange",
+        "start": {
+          "column": 15,
+          "line": 88
+        }
+      },
+      {
+        "defaultMessage": "!!!Apply",
+        "description": "Filter button label.",
+        "end": {
+          "column": 3,
+          "line": 97
+        },
+        "file": "source/renderer/app/components/wallet/transactions/FilterDialog.js",
+        "id": "wallet.transaction.filter.apply",
+        "start": {
+          "column": 9,
+          "line": 93
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/transactions/FilterDialog.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!<b>{filtered}</b> out of <b>{total}</b> transactions match your filter.",
+        "description": "Filter result info.",
+        "end": {
+          "column": 3,
+          "line": 13
+        },
+        "file": "source/renderer/app/components/wallet/transactions/FilterResultInfo.js",
+        "id": "wallet.transaction.filter.resultInfo",
+        "start": {
+          "column": 14,
+          "line": 8
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/transactions/FilterResultInfo.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Card payment",
         "description": "Transaction type shown for credit card payments.",
         "end": {
@@ -10520,27 +10754,13 @@
         "description": "Message shown when wallet has no transactions yet.",
         "end": {
           "column": 3,
-          "line": 18
+          "line": 25
         },
         "file": "source/renderer/app/containers/wallet/WalletTransactionsPage.js",
         "id": "wallet.transactions.no.transactions",
         "start": {
           "column": 18,
-          "line": 14
-        }
-      },
-      {
-        "defaultMessage": "!!!No transactions found",
-        "description": "Message shown when wallet transaction search returns zero results.",
-        "end": {
-          "column": 3,
-          "line": 24
-        },
-        "file": "source/renderer/app/containers/wallet/WalletTransactionsPage.js",
-        "id": "wallet.transactions.no.transactions.found",
-        "start": {
-          "column": 23,
-          "line": 19
+          "line": 21
         }
       }
     ],
@@ -11190,6 +11410,76 @@
         "start": {
           "column": 11,
           "line": 249
+        }
+      },
+      {
+        "defaultMessage": "!!!from",
+        "description": "From label of range.",
+        "end": {
+          "column": 3,
+          "line": 258
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "global.range.from",
+        "start": {
+          "column": 13,
+          "line": 254
+        }
+      },
+      {
+        "defaultMessage": "!!!to",
+        "description": "To label of range.",
+        "end": {
+          "column": 3,
+          "line": 263
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "global.range.to",
+        "start": {
+          "column": 11,
+          "line": 259
+        }
+      },
+      {
+        "defaultMessage": "!!!Filter",
+        "description": "Filter label.",
+        "end": {
+          "column": 3,
+          "line": 268
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "global.labels.filter",
+        "start": {
+          "column": 10,
+          "line": 264
+        }
+      },
+      {
+        "defaultMessage": "!!!All",
+        "description": "All label.",
+        "end": {
+          "column": 3,
+          "line": 273
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "global.labels.all",
+        "start": {
+          "column": 7,
+          "line": 269
+        }
+      },
+      {
+        "defaultMessage": "!!!Reset",
+        "description": "Reset label.",
+        "end": {
+          "column": 3,
+          "line": 278
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "global.labels.reset",
+        "start": {
+          "column": 9,
+          "line": 274
         }
       }
     ],
