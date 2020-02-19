@@ -99,6 +99,7 @@ export default class WalletRow extends Component<Props> {
         amount,
         isRestoring,
         syncState,
+        delegatedStakePoolId,
         delegationStakePoolStatus,
         pendingDelegations,
         lastDelegationStakePoolId,
@@ -174,7 +175,7 @@ export default class WalletRow extends Component<Props> {
                     style={{ color: delegatedStakePoolColor }}
                     className={styles.ticker}
                   >
-                    {delegatedStakePool ? (
+                    {delegatedStakePoolId ? (
                       <Tooltip
                         skin={TooltipSkin}
                         tip={
@@ -185,12 +186,22 @@ export default class WalletRow extends Component<Props> {
                           </div>
                         }
                       >
-                        <div>
+                        <div
+                          className={
+                            !delegatedStakePool ? styles.unknown : null
+                          }
+                        >
                           <SVGInline
                             svg={adaIcon}
                             className={styles.activeAdaSymbol}
                           />
-                          [{delegatedStakePool.ticker}]
+                          [
+                          {delegatedStakePool
+                            ? delegatedStakePool.ticker
+                            : intl.formatMessage(
+                                messages.unknownStakePoolLabel
+                              )}
+                          ]
                         </div>
                       </Tooltip>
                     ) : (
@@ -211,6 +222,9 @@ export default class WalletRow extends Component<Props> {
                       const pendingDelegationStakePool = getStakePoolById(
                         pendingDelegation.target
                       );
+                      const isUnknown =
+                        !!pendingDelegation.target &&
+                        !pendingDelegationStakePool;
                       const isLast = key + 1 === pendingDelegations.length;
                       const fromEpoch = get(
                         pendingDelegation,
@@ -227,6 +241,10 @@ export default class WalletRow extends Component<Props> {
                             )
                           : null;
 
+                      const tickerClasses = classnames([
+                        styles.ticker,
+                        isUnknown ? styles.unknown : null,
+                      ]);
                       return [
                         <Tooltip
                           skin={TooltipSkin}
@@ -243,11 +261,17 @@ export default class WalletRow extends Component<Props> {
                           }
                         >
                           <span
-                            className={styles.ticker}
+                            className={tickerClasses}
                             style={{ color: pendingStakePoolColor }}
                           >
-                            {pendingDelegationStakePool
-                              ? `[${pendingDelegationStakePool.ticker}]`
+                            {pendingDelegation.target
+                              ? `[${
+                                  isUnknown
+                                    ? intl.formatMessage(
+                                        messages.unknownStakePoolLabel
+                                      )
+                                    : pendingDelegationStakePool.ticker
+                                }]`
                               : notDelegatedText}
                           </span>
                         </Tooltip>,

@@ -122,7 +122,7 @@ const wallets = [
     lastDelegationStakePoolId: null,
     pendingDelegations: [
       {
-        status: 'not_delegating',
+        status: WalletDelegationStatuses.NOT_DELEGATING,
         changes_at: {
           epoch_number: nextEpoch.epochNumber,
           epoch_start_time: nextEpoch.epochStart,
@@ -150,6 +150,58 @@ const wallets = [
     syncState: walletSyncedStateRestoring,
     delegationStakePoolStatus: WalletDelegationStatuses.NOT_DELEGATING,
     delegatedStakePoolId: null,
+    createdAt: new Date(),
+    recoveryPhraseVerificationDate: new Date(),
+    recoveryPhraseVerificationStatus:
+      WalletRecoveryPhraseVerificationStatuses.OK,
+    recoveryPhraseVerificationStatusType:
+      WalletRecoveryPhraseVerificationTypes.NEVER_CHECKED,
+  }),
+  new Wallet({
+    id: 'wallet5',
+    addressPoolGap: 20,
+    name: 'Savings 2',
+    amount: new BigNumber(5001000),
+    availableAmount: new BigNumber(5001000),
+    reward: new BigNumber(30),
+    hasPassword: true,
+    passwordUpdateDate: new Date(),
+    isLegacy: false,
+    inactiveStakePercentage: 0,
+    syncState: walletSyncedStateRestoring,
+    delegationStakePoolStatus: WalletDelegationStatuses.DELEGATING,
+    delegatedStakePoolId: '90000',
+    createdAt: new Date(),
+    recoveryPhraseVerificationDate: new Date(),
+    recoveryPhraseVerificationStatus:
+      WalletRecoveryPhraseVerificationStatuses.OK,
+    recoveryPhraseVerificationStatusType:
+      WalletRecoveryPhraseVerificationTypes.NEVER_CHECKED,
+  }),
+  new Wallet({
+    id: 'wallet6',
+    addressPoolGap: 20,
+    name: 'Spending money 3',
+    amount: new BigNumber(10100.2),
+    availableAmount: new BigNumber(10100.2),
+    reward: new BigNumber(50),
+    hasPassword: true,
+    passwordUpdateDate: new Date(),
+    isLegacy: false,
+    inactiveStakePercentage: 35,
+    syncState: walletSyncedStateReady,
+    delegatedStakePoolId: STAKE_POOLS[0].id,
+    lastDelegationStakePoolId: '90000',
+    pendingDelegations: [
+      {
+        target: '90000',
+        status: WalletDelegationStatuses.DELEGATING,
+        changes_at: {
+          epoch_number: nextEpoch.epochNumber,
+          epoch_start_time: nextEpoch.epochStart,
+        },
+      },
+    ],
     createdAt: new Date(),
     recoveryPhraseVerificationDate: new Date(),
     recoveryPhraseVerificationStatus:
