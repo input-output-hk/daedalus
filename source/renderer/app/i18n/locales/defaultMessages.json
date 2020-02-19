@@ -2704,7 +2704,7 @@
         "description": "\"or\" text for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 54
+          "line": 53
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.or",
@@ -2718,13 +2718,13 @@
         "description": "Delegated stake pool ticker for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 60
+          "line": 59
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.toStakePoolTickerPart1",
         "start": {
           "column": 26,
-          "line": 55
+          "line": 54
         }
       },
       {
@@ -2732,13 +2732,13 @@
         "description": "Delegated stake pool ticker for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 66
+          "line": 65
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.toStakePoolTickerPart2",
         "start": {
           "column": 26,
-          "line": 61
+          "line": 60
         }
       },
       {
@@ -2746,13 +2746,13 @@
         "description": "Delegated stake pool tooltip ticker for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 72
+          "line": 71
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.toStakePoolTooltipTickerPart1",
         "start": {
           "column": 33,
-          "line": 67
+          "line": 66
         }
       },
       {
@@ -2760,13 +2760,13 @@
         "description": "Delegated stake pool tooltip ticker for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 78
+          "line": 77
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.toStakePoolTooltipTickerPart2",
         "start": {
           "column": 33,
-          "line": 73
+          "line": 72
         }
       },
       {
@@ -2774,13 +2774,13 @@
         "description": "Delegated stake pool tooltip ticker for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 84
+          "line": 83
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.stakePoolTooltipTickerEarningRewards",
         "start": {
           "column": 40,
-          "line": 79
+          "line": 78
         }
       },
       {
@@ -2788,13 +2788,13 @@
         "description": "Delegate label for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 89
+          "line": 88
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.delegate",
         "start": {
           "column": 12,
-          "line": 85
+          "line": 84
         }
       },
       {
@@ -2802,13 +2802,13 @@
         "description": "unknown stake pool label for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 95
+          "line": 94
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.unknownStakePoolLabel",
         "start": {
           "column": 25,
-          "line": 90
+          "line": 89
         }
       },
       {
@@ -2816,13 +2816,13 @@
         "description": "unknown stake pool label for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 101
+          "line": 100
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.syncingTooltipLabel",
         "start": {
           "column": 23,
-          "line": 96
+          "line": 95
         }
       }
     ],
