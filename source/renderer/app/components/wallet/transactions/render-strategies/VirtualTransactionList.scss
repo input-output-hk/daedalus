@@ -21,6 +21,7 @@
 
 .list {
   overflow-y: scroll;
+  padding-top: 8px;
   will-change: none !important;
 
   &:focus {

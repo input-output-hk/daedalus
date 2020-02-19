@@ -6,9 +6,11 @@ import { observer } from 'mobx-react';
 import { AutoSizer, List } from 'react-virtualized';
 import { throttle, debounce } from 'lodash';
 import { WalletTransaction } from '../../../../domains/WalletTransaction';
+import type { ScrollContextType } from '../WalletTransactionsList';
+import { WalletTransactionsListScrollContext } from '../WalletTransactionsList';
 import type { Row } from '../types';
-import styles from './VirtualTransactionList.scss';
 import { TransactionInfo, TransactionsGroup } from '../types';
+import styles from './VirtualTransactionList.scss';
 
 /* eslint-disable react/no-unused-prop-types */
 
@@ -273,6 +275,13 @@ export class VirtualTransactionList extends Component<Props> {
     </div>
   );
 
+  onListScroll = (
+    context: ScrollContextType,
+    { scrollTop }: { scrollTop: number }
+  ) => {
+    context.setFilterButtonFaded(scrollTop > 10);
+  };
+
   // =============== REACT LIFECYCLE ================= //
 
   render() {
@@ -288,35 +297,40 @@ export class VirtualTransactionList extends Component<Props> {
     ]);
 
     return (
-      <div className={componentStyles}>
-        <AutoSizer
-          onResize={throttle(this.onResize, 100, {
-            leading: true,
-            trailing: true,
-          })}
-        >
-          {({ width, height }) => (
-            <List
-              className={styles.list}
-              ref={list => {
-                this.list = list;
-              }}
-              width={width}
-              height={height}
-              onRowsRendered={throttle(this.onRowsRendered, 100, {
+      <WalletTransactionsListScrollContext.Consumer>
+        {context => (
+          <div className={componentStyles}>
+            <AutoSizer
+              onResize={throttle(this.onResize, 100, {
                 leading: true,
                 trailing: true,
               })}
-              rowCount={rows.length}
-              rowHeight={({ index }) =>
-                this.rowHeights[index] || TX_CONTRACTED_ROW_HEIGHT
-              }
-              rowRenderer={this.rowRenderer}
-              style={{ overflowY: 'scroll' }}
-            />
-          )}
-        </AutoSizer>
-      </div>
+            >
+              {({ width, height }) => (
+                <List
+                  className={styles.list}
+                  ref={list => {
+                    this.list = list;
+                  }}
+                  width={width}
+                  height={height}
+                  onRowsRendered={throttle(this.onRowsRendered, 100, {
+                    leading: true,
+                    trailing: true,
+                  })}
+                  rowCount={rows.length}
+                  rowHeight={({ index }) =>
+                    this.rowHeights[index] || TX_CONTRACTED_ROW_HEIGHT
+                  }
+                  rowRenderer={this.rowRenderer}
+                  style={{ overflowY: 'scroll' }}
+                  onScroll={param => this.onListScroll(context, param)}
+                />
+              )}
+            </AutoSizer>
+          </div>
+        )}
+      </WalletTransactionsListScrollContext.Consumer>
     );
   }
 }
