@@ -29,7 +29,8 @@ let LATEST_APP_VERSION = null;
 let SYNC_PROGRESS = null;
 let NEXT_ADA_UPDATE = null;
 let APPLICATION_VERSION = null;
-let FAKE_NEWSFEED_JSON: ?GetNewsResponse;
+let TESTING_NEWSFEED_JSON: ?GetNewsResponse;
+let TESTING_WALLETS_DATA: Object = {};
 
 export default (api: AdaApi) => {
   api.getNetworkInfo = async (): Promise<GetNetworkInfoResponse> => {
@@ -82,7 +83,7 @@ export default (api: AdaApi) => {
     SYNC_PROGRESS = syncProgress;
   };
 
-  api.nextUpdate = async () => {
+  api.nextUpdate = async (): Promise<Object> => {
     let nodeUpdate = null;
 
     if (NEXT_ADA_UPDATE) {
@@ -151,7 +152,7 @@ export default (api: AdaApi) => {
   api.setTestingNewsFeed = (testingNewsFeedData: ?GetNewsResponse) => {
     const { version: packageJsonVersion } = packageJson;
     if (!testingNewsFeedData) {
-      FAKE_NEWSFEED_JSON = null;
+      TESTING_NEWSFEED_JSON = null;
       return;
     }
     // Always mutate newsfeed target version to current app version
@@ -167,7 +168,7 @@ export default (api: AdaApi) => {
       };
     });
 
-    FAKE_NEWSFEED_JSON = {
+    TESTING_NEWSFEED_JSON = {
       ...testingNewsFeedData,
       items: newsFeedItems,
     };
@@ -175,36 +176,52 @@ export default (api: AdaApi) => {
 
   api.getNews = (): Promise<GetNewsResponse> => {
     return new Promise((resolve, reject) => {
-      if (!FAKE_NEWSFEED_JSON) {
+      if (!TESTING_NEWSFEED_JSON) {
         reject(new Error('Unable to fetch news'));
       } else {
-        resolve(FAKE_NEWSFEED_JSON);
+        resolve(TESTING_NEWSFEED_JSON);
       }
     });
   };
 
-  api.setWalletForPendingDelegation = async (
-    modifiedWallet: Object
-  ): Promise<Wallet> => {
-    const [baseWallet] = await api.getWallets();
-    const getModifiedWallet = action(
-      () =>
-        new Wallet({
-          ...{ ...baseWallet },
-          ...modifiedWallet,
-          name: 'Modified Wallet',
-          amount: new BigNumber(100000),
-          availableAmount: new BigNumber(100000),
-        })
-    );
-    const wallet = getModifiedWallet();
-    api.getWallets = async (): Promise<Array<Wallet>> => [wallet];
-    return wallet;
+  api.setTestingWallet = (
+    testingWalletData: Object,
+    walletIndex?: number = 0
+  ): void => {
+    TESTING_WALLETS_DATA[walletIndex] = testingWalletData;
   };
 
   api.setTestingWallets = (testingWalletsData: Array<Object>): void => {
-    api.getWallets = (): Array<Wallet> =>
-      testingWalletsData.map((wallet: Object) => new Wallet(wallet));
+    TESTING_WALLETS_DATA = testingWalletsData;
+  };
+
+  const originalGetWallets = api.getWallets.bind();
+
+  const getModifiedWallet = action((wallet: Object) => {
+    let { amount = 100000, availableAmount = 100000 } = wallet;
+    if (typeof amount !== 'object') amount = new BigNumber(amount);
+    if (typeof availableAmount !== 'object')
+      availableAmount = new BigNumber(availableAmount);
+    return new Wallet({
+      ...wallet,
+      amount,
+      availableAmount,
+    });
+  });
+
+  api.getWallets = async (): Promise<Array<Wallet>> => {
+    const originalWallets = await originalGetWallets();
+    const modifiedWallets = originalWallets.map(
+      (originalWallet: Wallet, index: number) => {
+        const testingWallet = TESTING_WALLETS_DATA[index] || {};
+        const modifiedWallet = {
+          ...originalWallet,
+          ...testingWallet,
+        };
+        return getModifiedWallet(modifiedWallet);
+      }
+    );
+    return Promise.resolve(modifiedWallets);
   };
 
   api.setTestingStakePools = (testingStakePoolsData: Array<Object>): void => {

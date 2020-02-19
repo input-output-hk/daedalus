@@ -49,12 +49,6 @@ Given(/^I am on the Delegation Center screen/, async function () {
   await delegationCenterVisible(this.client);
 });
 
-Given(/^I am on the Delegation "([^"]*)" screen$/, async function(
-  screenName
-) {
-  return navigateTo.call(this, `/staking/${screenName}`);
-});
-
 Given(/^I set stake pools fetch failed$/, async function () {
   const stakePools = await this.client.executeAsync(done => {
     daedalus.actions.staking.fakeStakePoolLoading.trigger(true);

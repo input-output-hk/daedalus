@@ -1,6 +1,7 @@
 // @flow
 import { waitAndClick } from '../../../common/e2e/steps/helpers';
 import type { Daedalus, WebdriverClient } from '../../../types';
+import BigNumber from 'bignumber.js';
 
 declare var daedalus: Daedalus;
 
@@ -46,4 +47,22 @@ export const getNextEpoch = async function() {
   } catch(err) {
     return new Error(err);
   }
+};
+
+export const baseWalletData = {
+  id: 'modified-wallet-id',
+  addressPoolGap: 0,
+  name: 'Modified Wallet',
+  amount: new BigNumber(50000),
+  availableAmount: new BigNumber(50000),
+  reward: new BigNumber(50000),
+  passwordUpdateDate: new Date(),
+  syncState: {
+    status: {
+      quantity: 10,
+      unit: 'percentage',
+    },
+  },
+  isLegacy: false,
+  delegatedStakePoolId: null,
 };
