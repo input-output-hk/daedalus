@@ -40,9 +40,9 @@ const messages = defineMessages({
     defaultMessage: '!!!or',
     description: '"or" text for the Delegation center body section.',
   },
-  toStakePoolTooltipTickerPart2: {
-    id: 'staking.delegationCenter.toStakePoolTooltipTickerPart2',
-    defaultMessage: '!!!from epoch',
+  stakePoolTooltipTickerEpoch: {
+    id: 'staking.delegationCenter.stakePoolTooltipTickerEpoch',
+    defaultMessage: '!!!From epoch {fromEpoch}',
     description:
       'Delegated stake pool tooltip ticker for the Delegation center body section.',
   },
@@ -203,21 +203,6 @@ export default class WalletRow extends Component<Props> {
                         0
                       );
 
-                      if (!pendingDelegationStakePool) {
-                        return [
-                          <span key="ticker" className={styles.ticker}>
-                            {notDelegatedText}
-                          </span>,
-                          !isLast && (
-                            <SVGInline
-                              key="arrow"
-                              svg={arrow}
-                              className={styles.arrow}
-                            />
-                          ),
-                        ];
-                      }
-
                       const pendingStakePoolColor =
                         pendingDelegationStakePool &&
                         !isNil(pendingDelegationStakePool.ranking)
@@ -226,16 +211,19 @@ export default class WalletRow extends Component<Props> {
                               numberOfStakePools
                             )
                           : null;
+
                       return [
                         <Tooltip
                           skin={TooltipSkin}
                           key="ticker"
                           tip={
                             <div className={styles.tooltipLabelWrapper}>
-                              {intl.formatMessage(
-                                messages.toStakePoolTooltipTickerPart2
-                              )}{' '}
-                              {fromEpoch}
+                              <FormattedMessage
+                                {...messages.stakePoolTooltipTickerEpoch}
+                                values={{
+                                  fromEpoch,
+                                }}
+                              />
                             </div>
                           }
                         >
@@ -243,7 +231,9 @@ export default class WalletRow extends Component<Props> {
                             className={styles.ticker}
                             style={{ color: pendingStakePoolColor }}
                           >
-                            [{pendingDelegationStakePool.ticker}]
+                            {pendingDelegationStakePool
+                              ? `[${pendingDelegationStakePool.ticker}]`
+                              : notDelegatedText}
                           </span>
                         </Tooltip>,
                         !isLast && (
