@@ -60,10 +60,10 @@
 
       .ticker {
         background-color: var(
-          --theme-staking-countdown-widget-background-color
+          --theme-staking-wallet-row-ticker-background-color
         );
         border-radius: 2px;
-        color: var(--theme-staking-countdown-widget-field-value-color);
+        color: var(--theme-staking-wallet-row-ticker-text-color);
         font-family: var(--font-semibold);
         font-size: 11px;
         line-height: 1.27;
@@ -78,7 +78,7 @@
             & > g {
               & > g {
                 stroke: var(
-                  --theme-staking-delegation-center-gear-icon-fill-color
+                  --theme-staking-wallet-row-ticker-ada-icon-fill-color
                 );
               }
             }
@@ -88,62 +88,6 @@
           font-family: var(--font-regular);
           font-size: 13px;
           text-transform: initial;
-        }
-      }
-
-      .normalOption {
-        @extend %regularText;
-        font-size: 13px;
-      }
-      .removeOption {
-        @extend %regularText;
-        color: var(--theme-input-remove-color-light);
-        font-size: 13px;
-      }
-      li:hover {
-        .normalOption {
-          color: var(--theme-staking-dropdown-item-text-color-hover);
-        }
-      }
-
-      .gearIcon {
-        cursor: pointer;
-
-        svg {
-          height: 12px;
-          width: 12px;
-
-          path {
-            fill: var(--theme-staking-delegation-center-gear-icon-fill-color);
-          }
-        }
-      }
-
-      :global {
-        .SimpleSelect_isOpen {
-          .WalletRow_gearIcon {
-            svg {
-              path {
-                fill: var(
-                  --theme-staking-delegation-center-gear-icon-fill-color-active
-                );
-              }
-            }
-          }
-        }
-
-        .SimpleSelect_select {
-          &:hover {
-            .WalletRow_gearIcon {
-              svg {
-                path {
-                  fill: var(
-                    --theme-staking-delegation-center-gear-icon-fill-color-active
-                  );
-                }
-              }
-            }
-          }
         }
       }
     }
@@ -222,12 +166,12 @@
   }
 
   .actionDelegate {
-    color: var(--theme-link-main-color);
+    color: var(--theme-staking-wallet-row-action-delegate-text-color);
     cursor: pointer;
   }
 
   .actionUndelegate {
-    color: var(--theme-staking-stake-pool-retirement-background-color);
+    color: var(--theme-staking-wallet-row-action-undelegate-text-color);
     cursor: pointer;
   }
 
