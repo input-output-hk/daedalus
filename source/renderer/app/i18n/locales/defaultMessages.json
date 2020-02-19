@@ -2686,16 +2686,16 @@
         }
       },
       {
-        "defaultMessage": "!!!from epoch",
+        "defaultMessage": "!!!From epoch {fromEpoch}",
         "description": "Delegated stake pool tooltip ticker for the Delegation center body section.",
         "end": {
           "column": 3,
           "line": 48
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
-        "id": "staking.delegationCenter.toStakePoolTooltipTickerPart2",
+        "id": "staking.delegationCenter.stakePoolTooltipTickerEpoch",
         "start": {
-          "column": 33,
+          "column": 31,
           "line": 43
         }
       },
