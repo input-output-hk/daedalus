@@ -48,6 +48,7 @@ export type LauncherConfig = {
   logsPrefix: string,
   nodeLogConfig: string,
   nodeTimeoutSec: number,
+  cluster: string,
   configuration: {
     filePath: string,
     key: string,

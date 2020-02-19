@@ -15,6 +15,7 @@ export type WalletOpts = {
   nodeImplementation: 'jormungandr' | 'cardano-node',
   stateDir: string,
   logStream: any,
+  cluster: string,
 };
 
 export async function CardanoWalletLauncher(
@@ -28,6 +29,7 @@ export async function CardanoWalletLauncher(
     stateDir,
     path,
     walletArgs,
+    cluster,
   } = walletOpts;
   const walletStdio: string[] = ['pipe', 'pipe', 'pipe', 'ipc'];
   const nodePath = dirname(nodeBin);
@@ -47,7 +49,7 @@ export async function CardanoWalletLauncher(
     case 'jormungandr':
       // This configuration is for the selfnode only
       // The selfnode is identified by the unique genesis-block wallet arg
-      if (walletArgs.findIndex(arg => arg === '--genesis-block') > -1) {
+      if (cluster === "selfnode") {
         await configureJormungandrDeps(cliBin, stateDir);
         Object.assign(envVariables, {
           CARDANO_WALLET_STAKE_POOL_REGISTRY_URL:

@@ -143,6 +143,9 @@ pushd installers
                          "  --out-dir          ${APP_NAME}")
           nix-build .. -A launcherConfigs.cfg-files --argstr os macos64 --argstr cluster "${cluster}" -o cfg-files
           cp -v cfg-files/{installer-config.json,launcher-config.yaml} .
+          if [ -f cfg-files/block-0.bin ]; then
+            cp -v cfg-files/block-0.bin .
+          fi
           cp -vf ../utils/jormungandr/selfnode/genesis.yaml .
           if [ "${cluster}" != selfnode ]; then
             cp -v cfg-files/jormungandr-config.yaml .
