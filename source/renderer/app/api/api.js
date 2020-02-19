@@ -152,6 +152,7 @@ import type {
   TransferFundsResponse,
   UpdateWalletRequest,
 } from './wallets/types';
+import type { WalletProps } from '../domains/Wallet';
 
 // News Types
 import type { GetNewsResponse } from './news/types';
@@ -165,6 +166,7 @@ import type {
   AdaApiStakePool,
   QuitStakePoolRequest,
 } from './staking/types';
+import type { StakePoolProps } from '../domains/StakePool';
 
 // Common errors
 import {
@@ -1569,7 +1571,9 @@ export default class AdaApi {
   resetTestOverrides: Function;
 
   // Newsfeed testing utility
-  setFakeNewsFeedJsonForTesting: (fakeNewsfeedJson: GetNewsResponse) => void;
+  setTestingNewsFeed: (testingNewsFeedData: GetNewsResponse) => void;
+  setTestingWallets: (testingWalletsData: Array<WalletProps>) => void;
+  setTestingStakePools: (testingStakePoolsData: Array<StakePoolProps>) => void;
 
   // Stake pools testing utility
   setFakeStakePoolsJsonForTesting: (
