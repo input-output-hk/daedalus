@@ -53,7 +53,7 @@ async function prepareNewsOfType(
     newsFeed,
     (news, isRead, done) => {
       const { api } = daedalus;
-      api.ada.setFakeNewsFeedJsonForTesting(news);
+      api.ada.setTestingNewsFeed(news);
       if (isRead) {
         api.localStorage.markNewsAsRead(news.items.map(i => i.id)).then(done);
       } else {
@@ -76,7 +76,7 @@ export function setNewsFeedIsOpen(client: Object, flag) {
 // Reset the fake news before each newsfeed step
 export function resetTestNews(client) {
   return client.executeAsync(done => {
-    daedalus.api.ada.setFakeNewsFeedJsonForTesting({
+    daedalus.api.ada.setTestingNewsFeed({
       updatedAt: Date.now(),
       items: [],
     });
@@ -101,7 +101,7 @@ Given(/^there (?:are|is)\s?(\d+)? (read|unread) (\w+?)s?$/, async function(
 
 Given('there is no news', async function() {
   await prepareFakeNews(this, newsDummyJson, (news, done) => {
-    daedalus.api.ada.setFakeNewsFeedJsonForTesting({
+    daedalus.api.ada.setTestingNewsFeed({
       updatedAt: Date.now(),
       items: [],
     });
@@ -112,7 +112,7 @@ Given('there is no news', async function() {
 Given('there is an incident', async function() {
   await prepareFakeNews(this, newsDummyJson, (news, done) => {
     const incident = news.items.find(i => i.type === 'incident');
-    daedalus.api.ada.setFakeNewsFeedJsonForTesting({
+    daedalus.api.ada.setTestingNewsFeed({
       updatedAt: Date.now(),
       items: [incident],
     });
@@ -122,7 +122,7 @@ Given('there is an incident', async function() {
 
 Given('the newsfeed server is unreachable', async function() {
   this.client.executeAsync(done => {
-    daedalus.api.ada.setFakeNewsFeedJsonForTesting(null);
+    daedalus.api.ada.setTestingNewsFeed(null);
     daedalus.stores.newsFeed.getNews().then(done);
   });
   this.news = [];

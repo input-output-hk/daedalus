@@ -13,9 +13,9 @@ import Transaction from './Transaction';
 import { WalletTransaction } from '../../../domains/WalletTransaction';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import { VirtualTransactionList } from './render-strategies/VirtualTransactionList';
+import { SimpleTransactionList } from './render-strategies/SimpleTransactionList';
 import { TransactionInfo, TransactionsGroup } from './types';
 import type { Row } from './types';
-import { SimpleTransactionList } from './render-strategies/SimpleTransactionList';
 
 const messages = defineMessages({
   today: {
@@ -41,6 +41,14 @@ const messages = defineMessages({
     description: 'Syncing transactions message on async wallet restore.',
   },
 });
+
+export type ScrollContextType = {
+  setFilterButtonFaded: Function,
+};
+
+export const WalletTransactionsListScrollContext = React.createContext<ScrollContextType>(
+  { setFilterButtonFaded: () => null }
+);
 
 type Props = {
   deletePendingTransaction: Function,
