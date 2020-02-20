@@ -49,7 +49,7 @@ export async function CardanoWalletLauncher(
     case 'jormungandr':
       // This configuration is for the selfnode only
       // The selfnode is identified by the unique genesis-block wallet arg
-      if (cluster === "selfnode") {
+      if (cluster === 'selfnode') {
         await configureJormungandrDeps(cliBin, stateDir);
         Object.assign(envVariables, {
           CARDANO_WALLET_STAKE_POOL_REGISTRY_URL:
