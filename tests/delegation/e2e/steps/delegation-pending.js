@@ -130,7 +130,7 @@ Then(/^the tooltips should be displayed as follows:$/, async function(tooltipsTa
   }
 });
 
-Then(/^the wallets should display the links as follows:$/, async function(linksTable) {
+Then(/^the action links should be displayed as follows:$/, async function(linksTable) {
   const linksScenarios = linksTable.hashes();
   for (let index = 0; index < linksScenarios.length; index++) {
     const expectedLinkExcerpts = linksScenarios[index].LINKS.split(' or ');

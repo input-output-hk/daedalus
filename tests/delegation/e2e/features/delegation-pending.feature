@@ -57,7 +57,7 @@ Feature: Wallet Pending Delegations
       | earning_rewards > from_epoch              |
       | earning_rewards > from_epoch > from_epoch |
       | earning_rewards > from_epoch > from_epoch |
-    And the wallets should display the links as follows:
+    And the action links should be displayed as follows:
       | LINKS                    |
       | Delegate                 |
       | Undelegate or Redelegate |
