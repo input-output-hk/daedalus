@@ -187,8 +187,14 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
       'delegatedStakePoolId',
       null
     );
+    const pendingDelegations = get(selectedWallet, 'pendingDelegations', null);
 
-    const activeStakePoolId = lastDelegatedStakePoolId || delegatedStakePoolId;
+    const hasPendingDelegations =
+      pendingDelegations && pendingDelegations.length > 0;
+    let activeStakePoolId = delegatedStakePoolId;
+    if (hasPendingDelegations) {
+      activeStakePoolId = lastDelegatedStakePoolId;
+    }
 
     const selectedPoolTicker = get(selectedPool, 'ticker');
     const canSubmit =
