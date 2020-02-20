@@ -1,4 +1,4 @@
-@e2e @watch
+@e2e
 Feature: Wallet Pending Delegations
 
   Scenario: Pending delegations
