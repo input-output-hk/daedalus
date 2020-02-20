@@ -76,5 +76,5 @@ Feature: Stake Pools Loading
     And I choose "Test Wallet" wallet
     And I click "continue" button
     Then I should see step 2 of 3 screen
-    And I see following label on the dialog: "You are already delegating Test Wallet wallet to [ROOT] stake pool"
+    And I see delegation status message for stake pool with rank "2"
     And Continue button should be disabled

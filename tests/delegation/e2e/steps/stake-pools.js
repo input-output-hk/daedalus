@@ -170,6 +170,7 @@ Then(/^I open the wallet dropdown/, function () {
 });
 
 Then(/^I choose "([^"]*)" wallet$/, function (walletName) {
+  this.walletName = walletName;
   return this.waitAndClick(
     `//*[text()[contains(.,"${walletName}")]]`
   );
@@ -180,6 +181,26 @@ Then(/^I should see step 2 of 3 screen/, function () {
 });
 
 Then(/^I see following label on the dialog: "([^"]*)"$/, async function (message) {
+  await this.client.waitForText(SELECTED_STAKE_POOLS_DELEGATION_WALLET_DIALOG_SELECTOR);
+  const selectedStakePoolLabel = await this.client.getText(SELECTED_STAKE_POOLS_DELEGATION_WALLET_DIALOG_SELECTOR);
+  expect(selectedStakePoolLabel.toString().split('.')[0]).to.equal(message);
+});
+
+Then(/^I see delegation status message for stake pool with rank "([^"]*)"$/, async function (stakePoolRank) {
+  const stakePool = await getStakePoolByRanking(this.client, stakePoolRank);
+  const selectedWallet = await this.client.executeAsync((walletName, done) => {
+    const wallet = daedalus.stores.wallets.getWalletByName(walletName);
+    done(wallet);
+  }, this.walletName);
+  const { pendingDelegations } = selectedWallet.value;
+  const hasPendingDelegations = pendingDelegations && pendingDelegations.length > 0;
+
+  let message;
+  if (hasPendingDelegations) {
+    message = `You are already pending delegation ${this.walletName} wallet to [${stakePool.ticker}] stake pool`
+  } else {
+    message = `You are already delegating ${this.walletName} wallet to [${stakePool.ticker}] stake pool`
+  }
   await this.client.waitForText(SELECTED_STAKE_POOLS_DELEGATION_WALLET_DIALOG_SELECTOR);
   const selectedStakePoolLabel = await this.client.getText(SELECTED_STAKE_POOLS_DELEGATION_WALLET_DIALOG_SELECTOR);
   expect(selectedStakePoolLabel.toString().split('.')[0]).to.equal(message);
