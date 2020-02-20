@@ -173,16 +173,18 @@ export default class WalletRow extends Component<Props> {
                   {/* Active (current) delegation */}
                   <span
                     style={{ color: delegatedStakePoolColor }}
-                    className={styles.ticker}
+                    className={classnames([styles.ticker, 'tickerText'])}
                   >
                     {delegatedStakePoolId ? (
                       <Tooltip
                         skin={TooltipSkin}
                         tip={
                           <div className={styles.tooltipLabelWrapper}>
-                            {intl.formatMessage(
-                              messages.stakePoolTooltipTickerEarningRewards
-                            )}
+                            <span>
+                              {intl.formatMessage(
+                                messages.stakePoolTooltipTickerEarningRewards
+                              )}
+                            </span>
                           </div>
                         }
                       >
@@ -244,6 +246,7 @@ export default class WalletRow extends Component<Props> {
                       const tickerClasses = classnames([
                         styles.ticker,
                         isUnknown ? styles.unknown : null,
+                        'tickerText',
                       ]);
                       return [
                         <Tooltip

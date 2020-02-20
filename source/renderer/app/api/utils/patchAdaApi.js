@@ -195,7 +195,7 @@ export default (api: AdaApi) => {
     TESTING_WALLETS_DATA = testingWalletsData;
   };
 
-  const originalGetWallets = api.getWallets.bind();
+  const originalGetWallets: Function = api.getWallets;
 
   const getModifiedWallet = action((wallet: Object) => {
     let { amount = 100000, availableAmount = 100000 } = wallet;
