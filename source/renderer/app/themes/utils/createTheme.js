@@ -1088,6 +1088,19 @@ export const createDaedalusComponentsTheme = (
       '--theme-staking-donut-ring-completed-color': `${error.regular}`,
       '--theme-staking-donut-ring-remaining-color': `${error.ultralight}`,
       '--theme-staking-wallet-row-border-color': `${border}`,
+      '--theme-staking-wallet-row-action-delegate-text-color': `${
+        background.secondary.regular
+      }`,
+      '--theme-staking-wallet-row-action-undelegate-text-color': `${
+        error.regular
+      }`,
+      '--theme-staking-wallet-row-ticker-background-color': `${
+        background.primary.regular
+      }`,
+      '--theme-staking-wallet-row-ticker-text-color': `${text.primary}`,
+      '--theme-staking-wallet-row-ticker-ada-icon-fill-color': `${chroma(
+        text.primary
+      ).alpha(0.5)}`,
       '--theme-staking-dropdown-item-text-color-hover': `${text.primary}`,
       '--theme-staking-dropdown-item-background-color': `${
         background.primary.lightest

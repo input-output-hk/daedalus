@@ -16,7 +16,7 @@ Feature: Restore Daedalus wallet
     Then I click on option "Daedalus wallet"
     Then I should see section "What kind of Daedalus wallet would you like to restore?"
     Then I click on option "12 words"
-    And I click continue 
+    And I click continue
     And I enter recovery phrase in restore wallet dialog:
       | recoveryPhrase                                                                  |
       | prison census discover give sound behave hundred cave someone orchard just wild |

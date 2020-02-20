@@ -7,8 +7,7 @@ import type {
   SyncStateStatus,
   DelegationStatus,
   WalletUnit,
-  WalletNextDelegationEpoch,
-  WalletNextDelegation,
+  WalletPendingDelegations,
 } from '../api/wallets/types';
 
 export const WalletSyncStateStatuses: {
@@ -48,12 +47,9 @@ export type WalletProps = {
   syncState: WalletSyncState,
   isLegacy: boolean,
   delegatedStakePoolId?: ?string,
-  nextDelegationStakePoolId?: ?string,
-  nextDelegationStakePoolStatus?: ?string,
-  nextDelegationStakePoolEpoch?: ?WalletNextDelegationEpoch,
+  delegationStakePoolStatus?: ?string,
   lastDelegationStakePoolId?: ?string,
-  lastDelegationStakePoolEpoch?: ?WalletNextDelegationEpoch,
-  pendingDelegations?: WalletNextDelegation,
+  pendingDelegations?: WalletPendingDelegations,
 };
 
 export default class Wallet {
@@ -67,12 +63,9 @@ export default class Wallet {
   @observable syncState: WalletSyncState;
   @observable isLegacy: boolean;
   @observable delegatedStakePoolId: ?string;
-  @observable nextDelegationStakePoolId: ?string;
-  @observable nextDelegationStakePoolStatus: ?string;
-  @observable nextDelegationStakePoolEpoch: ?WalletNextDelegationEpoch;
+  @observable delegationStakePoolStatus: ?string;
   @observable lastDelegationStakePoolId: ?string;
-  @observable lastDelegationStakePoolEpoch: ?WalletNextDelegationEpoch;
-  @observable pendingDelegations: ?WalletNextDelegation;
+  @observable pendingDelegations: WalletPendingDelegations;
 
   constructor(data: WalletProps) {
     Object.assign(this, data);
@@ -91,8 +84,10 @@ export default class Wallet {
         'passwordUpdateDate',
         'syncState',
         'isLegacy',
-        'delegationStakePool',
         'delegatedStakePoolId',
+        'delegationStakePoolStatus',
+        'lastDelegationStakePoolId',
+        'pendingDelegations',
       ])
     );
   }
