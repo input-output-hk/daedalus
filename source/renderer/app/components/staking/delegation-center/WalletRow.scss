@@ -67,7 +67,7 @@
         color: var(--theme-staking-wallet-row-ticker-text-color);
         font-family: var(--font-semibold);
         font-size: 11px;
-        line-height: 1.27;
+        line-height: 14px;
         padding: 3px 8px;
         position: relative;
         text-transform: uppercase;
@@ -86,6 +86,7 @@
           }
         }
       }
+
       .tooltipLabelWrapper {
         font-family: var(--font-regular);
         font-size: 13px;
@@ -189,6 +190,7 @@
   .arrow {
     height: 7px;
     margin: -2px 6px 0;
+    opacity: 0.3;
     position: relative;
     width: 3.5px;
     > svg {
