@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 
+- Added "block-0" to the installers in order to speed up the initial bootstrap phase ([PR 1857](https://github.com/input-output-hk/daedalus/pull/1857))
 - Implemented transactions filtering dialog on wallet "Transactions" screen ([PR 1815](https://github.com/input-output-hk/daedalus/pull/1815))
 
 ### Fixes
