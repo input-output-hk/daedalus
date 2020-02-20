@@ -1,7 +1,7 @@
 {
   "name": "daedalus",
   "productName": "Daedalus",
-  "version": "2.1.1-ITN1",
+  "version": "2.2.0-ITN1",
   "description": "Cryptocurrency Wallet",
   "main": "./dist/main/index.js",
   "scripts": {

@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## 2.1.1-ITN1
+## 2.2.0-ITN1
 
 ### Features
 
