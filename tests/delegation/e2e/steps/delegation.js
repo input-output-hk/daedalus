@@ -231,7 +231,10 @@ Given('I send {int} ADA from the {string} wallet to the {string} wallet', async 
 Then(/^I choose the "([^"]*)" wallet$/, async function(walletName) {
   await this.waitAndClick('.SimpleFormField_inputWrapper');
   await this.waitAndClick(`//div[@class="WalletsDropdownOption_label" and text()="${walletName}"]`);
-  await this.waitAndClick('//button[text()="Continue"]');
+  const selector = '//button[text()="Continue"]';
+  await this.client.waitForVisible(selector);
+  await this.client.waitForEnabled(selector);
+  await this.client.click(selector);
 });
 
 Then(/^I choose the first stake pool$/, async function() {
