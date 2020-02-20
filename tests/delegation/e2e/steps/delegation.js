@@ -162,6 +162,7 @@ Then(/^I should not see delegation actions for "([^"]*)" wallet$/, async functio
 Then(/^The "([^"]*)" wallet option should display the correct Stake Pool ticker$/, async function(walletName) {
   const selector = `//div[@class="WalletsDropdownOption_label" and text()="${walletName}"]//preceding-sibling::div[@class="WalletsDropdownOption_ticker"]`
   await this.client.waitForVisible(selector);
+  await this.client.waitForEnabled(selector);
   const visibleStakePoolTicker = await this.client.getText(selector);
   expect(visibleStakePoolTicker).to.equal(`[${pool.ticker}]`);
 });
