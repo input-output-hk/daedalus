@@ -154,6 +154,11 @@ Given('I click the wallet selector', async function() {
   await this.waitAndClick('.SimpleFormField_inputWrapper');
 });
 
+Then(/^I should not see delegation actions for "([^"]*)" wallet$/, async function(walletName) {
+  const selector = `//div[@class="WalletRow_title" and text()="${walletName}"]//parent::div//parent::div//span[@class="WalletRow_actionDelegate"]`;
+  await this.client.waitForVisible(selector, null, true);
+});
+
 Then(/^The "([^"]*)" wallet option should display the correct Stake Pool ticker$/, async function(walletName) {
   const selector = `//div[@class="WalletsDropdownOption_label" and text()="${walletName}"]//preceding-sibling::div[@class="WalletsDropdownOption_ticker"]`
   await this.client.waitForVisible(selector);

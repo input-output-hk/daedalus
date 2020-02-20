@@ -44,7 +44,9 @@ Feature: Wallet Delegation
     And I mark experimental feature as read
     Given the "First Wallet" wallet was delegated to the first Stake Pool
     Then the "First Wallet" wallet should display the delegated Stake Pool ticker
+    And I should not see delegation actions for "First Wallet" wallet
     And I should see the "Second Wallet" wallet undelegated
+    And I hover "First Wallet" wallet row
     Given I start the wallet delegation process for the "Second Wallet" wallet
     And I click the wallet selector
     Then The "First Wallet" wallet option should display the correct Stake Pool ticker
