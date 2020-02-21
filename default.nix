@@ -152,6 +152,7 @@ let
       mkdir $out
       cp daedalus.nsi uninstaller.nsi $out/
       cp $launcherConfigPath $out/launcher-config.yaml
+      ${lib.optionalString self.launcherConfigs.installerConfig.hasBlock0 "cp ${self.launcherConfigs.installerConfig.block0} $out/block-0.bin"}
       ${lib.optionalString (cluster != "selfnode") "cp ${self.launcherConfigs.jormungandr-config} $out/jormungandr-config.yaml"}
     '';
 
@@ -216,6 +217,9 @@ let
       cp -v ${self.nsisFiles}/{daedalus.nsi,launcher-config.yaml} .
       if [ -f ${self.nsisFiles}/jormungandr-config.yaml ]; then
         cp -v ${self.nsisFiles}/jormungandr-config.yaml .
+      fi
+      if [ -f ${self.nsisFiles}/block-0.bin ]; then
+        cp -v ${self.nsisFiles}/block-0.bin .
       fi
       cp -v ${./utils/jormungandr/selfnode/genesis.yaml} genesis.yaml
       chmod -R +w .

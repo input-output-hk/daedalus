@@ -21,7 +21,7 @@ Feature: Stake Pools Loading
       | message                                     |
       | staking.stakePools.loadingStakePoolsMessage |
     And I should not see any stake pool
-  
+
   Scenario: Stake pools search works as expected
     When I click on stake pools tab button
     And I am on the Staking pool screen
@@ -39,12 +39,15 @@ Feature: Stake Pools Loading
     Then I should see stake pool tooltip with order number "2"
     And Stake pool with rank "2" tooltip shows correct data
 
+  @skip
+  # TODO: Undelegate before ending the test,
+  # otherwise it will fail in the second execution
   Scenario: Delegating to stake pool from "Stake pools" screen works as expected
     When I click on stake pools tab button
     And I am on the Staking pool screen
     Then I should see stake pools listed
     When I click on stake pool with order number "2"
-    Then I should see stake pool tooltip with order number "2" 
+    Then I should see stake pool tooltip with order number "2"
     And Stake pool with rank "2" tooltip shows correct data
     And I click on "Delegate to this pool"
     Then I should see "Delegate Wallet" dialog
@@ -73,5 +76,5 @@ Feature: Stake Pools Loading
     And I choose "Test Wallet" wallet
     And I click "continue" button
     Then I should see step 2 of 3 screen
-    And I see following label on the dialog: "You are already delegating Test Wallet wallet to [ROOT] stake pool"
+    And I see delegation status message for stake pool with rank "2"
     And Continue button should be disabled

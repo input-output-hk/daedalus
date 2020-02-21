@@ -198,16 +198,22 @@ export default class StakingStore extends Store {
   @computed get recentStakePools(): Array<StakePool> {
     const delegatedStakePools = [];
     map(this.stores.wallets.all, wallet => {
-      if (wallet.delegatedStakePoolId) {
+      const hasPendingDelegations =
+        wallet.pendingDelegations && wallet.pendingDelegations.length > 0;
+      let lastDelegatedStakePoolId = wallet.delegatedStakePoolId;
+      if (hasPendingDelegations) {
+        lastDelegatedStakePoolId = wallet.lastDelegationStakePoolId;
+      }
+      if (lastDelegatedStakePoolId) {
         const delegatingStakePoolExistInList = find(
           delegatedStakePools,
           delegatedStakePool =>
-            delegatedStakePool.id === wallet.delegatedStakePoolId
+            delegatedStakePool.id === lastDelegatedStakePoolId
         );
         if (!delegatingStakePoolExistInList) {
           const delegatingStakePool = find(
             this.stakePools,
-            stakePool => stakePool.id === wallet.delegatedStakePoolId
+            stakePool => stakePool.id === lastDelegatedStakePoolId
           );
           if (delegatingStakePool)
             delegatedStakePools.push(delegatingStakePool);

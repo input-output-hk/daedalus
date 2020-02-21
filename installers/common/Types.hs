@@ -142,6 +142,7 @@ data InstallerConfig = InstallerConfig {
     , spacedName :: Text
     , macPackageName :: Text
     , dataDir :: Text
+    , hasBlock0 :: Bool
     } deriving (Generic, Show)
 
 instance FromJSON InstallerConfig where
