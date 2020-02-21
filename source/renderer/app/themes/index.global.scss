@@ -6,12 +6,6 @@
 
 html,
 body,
-body > div:nth-child(1) {
-  height: 100%;
-}
-
-html,
-body,
 div,
 span,
 applet,
@@ -242,8 +236,14 @@ button {
 
 html,
 body,
-:global(#root),
-:global(#root) > [data-reactroot] {
+body > div:nth-child(1) {
+  height: 100%;
+}
+
+html,
+body,
+#root,
+#root > [data-reactroot] {
   // Make the default font ugly so we immediately see when something
   // is not yet defined correctly in our UI
   font-family: 'Times New Roman', serif;

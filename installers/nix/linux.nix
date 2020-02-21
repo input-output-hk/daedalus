@@ -11,7 +11,7 @@ let
   daedalus-config = runCommand "daedalus-config" {} ''
     mkdir -pv $out
     cd $out
-    cp ${builtins.toFile "launcher-config.yaml" (builtins.toJSON launcherConfigs.launcherConfig)} $out/launcher-config.yaml
+    cp ${writeText "launcher-config.yaml" (builtins.toJSON launcherConfigs.launcherConfig)} $out/launcher-config.yaml
   '';
   # closure size TODO list
   # electron depends on cups, which depends on avahi

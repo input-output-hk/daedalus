@@ -1,5 +1,7 @@
 {-# LANGUAGE RecordWildCards, LambdaCase #-}
 {-# LANGUAGE OverloadedStrings   #-}
+{-# LANGUAGE NamedFieldPuns    #-}
+
 module WindowsInstaller
     ( main
     , writeInstallerNSIS
@@ -131,7 +133,7 @@ parseVersion ver =
         _              -> ["0", "0", "0", "0"]
 
 writeInstallerNSIS :: FilePath -> Version -> InstallerConfig -> Cluster -> IO ()
-writeInstallerNSIS outName (Version fullVersion') installerConfig clusterName = do
+writeInstallerNSIS outName (Version fullVersion') InstallerConfig{hasBlock0,installDirectory,spacedName} clusterName = do
     tempDir <- getTempDir
     let fullVersion = unpack fullVersion'
         viProductVersion = L.intercalate "." $ parseVersion fullVersion'
@@ -140,8 +142,8 @@ writeInstallerNSIS outName (Version fullVersion') installerConfig clusterName = 
     IO.writeFile "daedalus.nsi" $ nsis $ do
         _ <- constantStr "Version" (str fullVersion)
         _ <- constantStr "Cluster" (str $ lshow clusterName)
-        _ <- constantStr "InstallDir" (str $ unpack $ installDirectory installerConfig)
-        _ <- constantStr "SpacedName" (str $ unpack $ spacedName installerConfig)
+        _ <- constantStr "InstallDir" (str $ unpack installDirectory)
+        _ <- constantStr "SpacedName" (str $ unpack spacedName)
         name "$SpacedName ($Version)"                  -- The name of the installer
         outFile $ str $ encodeString outName        -- Where to produce the installer
         unsafeInjectGlobal $ "!define MUI_ICON \"icons\\" ++ lshow clusterName ++ "\\" ++ lshow clusterName ++ ".ico\""
@@ -179,7 +181,7 @@ writeInstallerNSIS outName (Version fullVersion') installerConfig clusterName = 
                 createDirectory "$APPDATA\\$InstallDir\\Logs\\pub"
                 onError (delete [] "$APPDATA\\$InstallDir\\launcher.lock") $
                     --abort "$SpacedName $(AlreadyRunning)"
-                    unsafeInject $ unpack $ "Abort \" " <> (installDirectory installerConfig) <> "$(AlreadyRunning)\""
+                    unsafeInject $ unpack $ "Abort \" " <> installDirectory <> "$(AlreadyRunning)\""
                 iff_ (fileExists "$APPDATA\\$InstallDir\\Wallet-1.0\\open\\*.*") $
                     rmdir [] "$APPDATA\\$InstallDir\\Wallet-1.0\\open"
                 file [] "jormungandr.exe"
@@ -193,6 +195,8 @@ writeInstallerNSIS outName (Version fullVersion') installerConfig clusterName = 
                 --file [] "configuration.yaml"
                 --file [] "*genesis*.json"
                 file [] "launcher-config.yaml"
+                when hasBlock0 $
+                  file [] "block-0.bin"
                 when (clusterName /= Selfnode) $
                   file [] "jormungandr-config.yaml"
                 when (clusterName == Selfnode) $
@@ -206,7 +210,7 @@ writeInstallerNSIS outName (Version fullVersion') installerConfig clusterName = 
                     , "DetailPrint \"liteFirewall::AddRule: $0\""
                     ]
 
-                createShortcut "$DESKTOP\\$SpacedName.lnk" (daedalusShortcut $ spacedName installerConfig)
+                createShortcut "$DESKTOP\\$SpacedName.lnk" (daedalusShortcut spacedName)
 
                 -- Uninstaller
                 let
@@ -230,7 +234,7 @@ writeInstallerNSIS outName (Version fullVersion') installerConfig clusterName = 
                 createDirectory "$SMPROGRAMS/$SpacedName"
                 createShortcut "$SMPROGRAMS/$SpacedName/Uninstall $SpacedName.lnk"
                     [Target "$INSTDIR/uninstall.exe", IconFile "$INSTDIR/uninstall.exe", IconIndex 0]
-                createShortcut "$SMPROGRAMS/$SpacedName/$SpacedName.lnk" (daedalusShortcut $ installDirectory installerConfig)
+                createShortcut "$SMPROGRAMS/$SpacedName/$SpacedName.lnk" (daedalusShortcut installDirectory)
         return ()
 
 lshow :: Show a => a -> String
