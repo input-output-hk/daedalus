@@ -46,6 +46,10 @@ let
   logsPrefix.windows = "Logs";
   logsPrefix.macos64 = "${dataDir.${os}}/Logs";
 
+  block0Bin.linux = envCfg.block0bin;
+  block0Bin.windows = "\${DAEDALUS_INSTALL_DIRECTORY}\\block-0.bin";
+  block0Bin.macos64 = "\${DAEDALUS_INSTALL_DIRECTORY}/block-0.bin";
+
   cfgPathForOs = {
     windows = "\${DAEDALUS_INSTALL_DIRECTORY}\\jormungandr-config.yaml";
     macos64 = "\${DAEDALUS_INSTALL_DIRECTORY}/jormungandr-config.yaml";
@@ -54,8 +58,12 @@ let
   finalJormungandrCfgPath = if devShell then jormungandrConfigForCluster else cfgPathForOs.${os};
 
   walletArgs = [
-    "launch"
+    "launch" ] ++
+  (if (envCfg ? block0bin) then [
+    "--genesis-block" block0Bin.${os}
+  ] else [
     "--genesis-block-hash" "${jormungandrLib.environments.${environment}.genesisHash}"
+  ]) ++ [
     "--state-dir" dataDir.${os}
     "--sync-tolerance" "${jormungandrLib.environments.${environment}.syncTolerance}"
     "--random-port"
@@ -94,18 +102,23 @@ let
     nodeTimeoutSec = 60;
     tlsPath = null;
     x509ToolPath = null;
+    cluster = environment;
 
     updateWindowsRunner = if os == "windows" then "Installer.bat" else "";
     updaterPath = "/foo";
     updaterArgs = [];
     updateArchive = "/bar";
   };
+  hasBlock0 = (environment != "selfnode") && envCfg ? block0bin;
   installerConfig = {
     installDirectory = if os == "linux" then "Daedalus/${environment}" else spacedName;
     inherit spacedName;
     macPackageName = "Daedalus${environment}";
     dataDir = dataDir.${os};
-  };
+    inherit hasBlock0;
+  } // (lib.optionalAttrs hasBlock0 {
+    block0 = envCfg.block0bin;
+  });
 in {
   inherit launcherConfig installerConfig;
   jormungandr-config = jormungandrConfigForCluster;
@@ -119,5 +132,6 @@ in {
     ${lib.optionalString (environment != "selfnode") "cp ${jormungandrConfigForCluster} jormungandr-config.yaml"}
     cp $installerConfigPath installer-config.json
     cp $launcherConfigPath launcher-config.yaml
+    ${lib.optionalString (installerConfig.hasBlock0) "cp ${installerConfig.block0} block-0.bin"}
   '';
 }

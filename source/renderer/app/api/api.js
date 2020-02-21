@@ -1,5 +1,5 @@
 // @flow
-import { split, get, includes, map, last, head } from 'lodash';
+import { split, get, includes, map, last } from 'lodash';
 import { action } from 'mobx';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
@@ -1572,8 +1572,9 @@ export default class AdaApi {
 
   // Newsfeed testing utility
   setTestingNewsFeed: (testingNewsFeedData: GetNewsResponse) => void;
-  setTestingWallets: (testingWalletsData: Array<WalletProps>) => void;
   setTestingStakePools: (testingStakePoolsData: Array<StakePoolProps>) => void;
+  setTestingWallets: (testingWalletsData: Array<WalletProps>) => void;
+  setTestingWallet: (testingWalletData: Object, walletIndex?: 0) => void;
 
   // Stake pools testing utility
   setFakeStakePoolsJsonForTesting: (
@@ -1616,27 +1617,18 @@ const _createWalletFromServerData = action(
           : new BigNumber(balance.reward.quantity);
     }
 
-    const { next, active } = delegation;
-
-    const lastPendingStakePool = last(next);
-    const nextPendingStakePool = head(next);
-
-    const { target } = active;
-
-    const nextTarget = get(nextPendingStakePool, 'target', null);
-    const nextStatus = get(nextPendingStakePool, 'status', null);
-    const nextEpoch = get(nextPendingStakePool, 'changes_at', null);
-
-    const lastTarget = get(lastPendingStakePool, 'target', null);
-    const lastEpoch = get(lastPendingStakePool, 'changes_at', null);
-
+    // Current (Active)
+    const active = get(delegation, 'active', null);
+    const target = get(active, 'target', null);
+    const status = get(active, 'status', null);
     const delegatedStakePoolId = isLegacy ? null : target;
-    const nextDelegationStakePoolId = isLegacy ? null : nextTarget;
-    const nextDelegationStakePoolStatus = isLegacy ? null : nextStatus;
-    const nextDelegationStakePoolEpoch = isLegacy ? null : nextEpoch;
+    const delegationStakePoolStatus = isLegacy ? null : status;
 
+    // Last
+    const next = get(delegation, 'next', null);
+    const lastPendingStakePool = next ? last(next) : null;
+    const lastTarget = get(lastPendingStakePool, 'target', null);
     const lastDelegationStakePoolId = isLegacy ? null : lastTarget;
-    const lastDelegationStakePoolEpoch = isLegacy ? null : lastEpoch;
 
     return new Wallet({
       id,
@@ -1650,11 +1642,8 @@ const _createWalletFromServerData = action(
       syncState: state,
       isLegacy,
       delegatedStakePoolId,
-      nextDelegationStakePoolId,
-      nextDelegationStakePoolStatus,
-      nextDelegationStakePoolEpoch,
+      delegationStakePoolStatus,
       lastDelegationStakePoolId,
-      lastDelegationStakePoolEpoch,
       pendingDelegations: next,
     });
   }

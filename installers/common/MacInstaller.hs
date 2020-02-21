@@ -69,7 +69,7 @@ main opts@Options{oBackend, oCluster, oBuildJob, oOutputDir, oTestInstaller, oSi
 
   buildIcons oCluster
   appRoot <- buildElectronApp darwinConfig installerConfig
-  makeComponentRoot opts appRoot darwinConfig
+  makeComponentRoot opts appRoot darwinConfig installerConfig
   daedalusVer <- getDaedalusVersion "../package.json"
 
   let pkg = packageFileName Macos64 oCluster daedalusVer oBackend ver oBuildJob
@@ -153,8 +153,8 @@ getBackendVersion :: Backend -> IO Text
 getBackendVersion (Cardano bridge) = readCardanoVersionFile bridge
 getBackendVersion Mantis = pure "DEVOPS-533"
 
-makeComponentRoot :: Options -> FilePath -> DarwinConfig -> IO ()
-makeComponentRoot Options{oBackend,oCluster} appRoot darwinConfig@DarwinConfig{dcAppName} = do
+makeComponentRoot :: Options -> FilePath -> DarwinConfig -> InstallerConfig -> IO ()
+makeComponentRoot Options{oBackend,oCluster} appRoot darwinConfig@DarwinConfig{dcAppName} InstallerConfig{hasBlock0} = do
   let dir     = appRoot </> "Contents/MacOS"
 
   echo "~~~ Preparing files ..."
@@ -171,6 +171,8 @@ makeComponentRoot Options{oBackend,oCluster} appRoot darwinConfig@DarwinConfig{d
         cp "jormungandr-config.yaml" (dir </> "jormungandr-config.yaml")
       when (oCluster == Selfnode) $
         cp "genesis.yaml" (dir </> "genesis.yaml")
+      when hasBlock0 $
+        cp "block-0.bin" (dir </> "block-0.bin")
 
       -- Genesis (from daedalus-bridge)
       --genesisFiles <- glob . encodeString $ bridge </> "config" </> "*genesis*.json"

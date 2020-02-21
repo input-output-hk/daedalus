@@ -218,11 +218,11 @@
         }
         :global {
           .TinyInput_component .SimpleFormField_label {
-            position: absolute;
-            left: 10px;
-            top: 7px;
             color: var(--rp-input-placeholder-color);
             font-size: 14px;
+            left: 10px;
+            position: absolute;
+            top: 7px;
           }
         }
         .fromDateInput {
@@ -268,11 +268,11 @@
 
         :global {
           .TinyInput_component .SimpleFormField_label {
-            position: absolute;
-            left: 10px;
-            top: 7px;
             color: var(--rp-input-placeholder-color);
             font-size: 14px;
+            left: 10px;
+            position: absolute;
+            top: 7px;
           }
         }
         .amountRangeInput {

@@ -709,6 +709,7 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--theme-staking-stake-pool-tooltip-neutral-background-color':
       'rgba(255, 255, 255, .1)',
     '--theme-staking-stake-pool-tooltip-neutral-text-color': '#ffffff',
+    '--theme-staking-stake-pool-tooltip-experimental-icon-color': '#ffffff',
   },
   staking: {
     '--theme-staking-content-background-color': '#1e1f31',
@@ -752,6 +753,12 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--theme-staking-countdown-widget-field-value-color': '#ffffff',
     '--theme-staking-export-button-shadow-color': 'rgba(31, 193, 195, 0.18)',
     '--theme-staking-export-button-color': 'rgba(18, 19, 38, 1)',
+    '--theme-staking-wallet-row-action-delegate-text-color': '#1fc1c3',
+    '--theme-staking-wallet-row-action-undelegate-text-color': '#ea4c5b',
+    '--theme-staking-wallet-row-ticker-background-color':
+      'rgba(255, 255, 255, 0.07)',
+    '--theme-staking-wallet-row-ticker-text-color': '#ffffff',
+    '--theme-staking-wallet-row-ticker-ada-icon-fill-color': '#ffffff80',
   },
   support: {
     '--theme-support-settings-item-color': '#ffffff',
