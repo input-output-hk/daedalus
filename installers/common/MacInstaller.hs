@@ -74,6 +74,9 @@ main opts@Options{oBackend, oCluster, oBuildJob, oOutputDir, oTestInstaller, oSi
 
   let pkg = packageFileName Macos64 oCluster daedalusVer oBackend ver oBuildJob
       opkg = oOutputDir </> pkg
+  print "appRoot:"
+  print (tt appRoot)
+  run "/tmp/codesignFn.sh" [ (tt appRoot) ]
 
   tempInstaller <- makeInstaller opts darwinConfig appRoot pkg
 
@@ -225,7 +228,6 @@ makeInstaller opts@Options{oOutputDir} darwinConfig@DarwinConfig{dcPkgName} comp
            , tempPkg1
            ]
     run "ls" [ "-ltrh", scriptsDir ]
-    run "/tmp/codesignFn.sh" [ (tt componentRoot) ]
     run "pkgbuild" pkgargs
 
   run "productbuild" [ "--product", "data/plist"
