@@ -46,10 +46,18 @@ data DarwinConfig = DarwinConfig {
 
 -- | The contract of `main` is not to produce unsigned installer binaries.
 main :: Options -> IO ()
-main opts@Options{oBackend, oCluster, oBuildJob, oOutputDir, oTestInstaller, oSigningConfigPath} = do
-  hSetBuffering stdout NoBuffering
+main opts@Options{oCodeSigningConfigPath,oSigningConfigPath,oCluster,oBackend,oBuildJob,oOutputDir,oTestInstaller} = do
 
   installerConfig <- decodeFileThrow "installer-config.json"
+
+  hSetBuffering stdout NoBuffering
+
+  mCodeSigningConfig <- case oCodeSigningConfigPath of
+    Just path -> do
+      decodeFileStrict' $ encodeString path
+    Nothing -> do
+      pure Nothing
+
   mSigningConfig <- case oSigningConfigPath of
     Just path -> do
       decodeFileStrict' $ encodeString path
@@ -74,9 +82,13 @@ main opts@Options{oBackend, oCluster, oBuildJob, oOutputDir, oTestInstaller, oSi
 
   let pkg = packageFileName Macos64 oCluster daedalusVer oBackend ver oBuildJob
       opkg = oOutputDir </> pkg
+
   print "appRoot:"
   print (tt appRoot)
-  run "/tmp/codesignFn.sh" [ (tt appRoot) ]
+
+  case mCodeSigningConfig of
+    Just codeSigningConfig -> codeSignComponent codeSigningConfig appRoot
+    Nothing -> pure ()
 
   tempInstaller <- makeInstaller opts darwinConfig appRoot pkg
 
@@ -263,14 +275,27 @@ writeLauncherFile dir DarwinConfig{dcDataDir,dcAppName} = do
       , "\"$(dirname \"$0\")/cardano-launcher\""
       ]
 
+data CodeSigningConfig = CodeSigningConfig
+  { codeSigningIdentity     :: T.Text
+  , codeSigningKeyChain     :: T.Text
+  } deriving (Show, Eq, Generic)
+
 data SigningConfig = SigningConfig
   { signingIdentity         :: T.Text
   , signingKeyChain         :: Maybe T.Text
   , signingKeyChainPassword :: Maybe T.Text
   } deriving (Show, Eq, Generic)
 
+instance FromJSON CodeSigningConfig where
+  parseJSON = genericParseJSON defaultOptions
+
 instance FromJSON SigningConfig where
   parseJSON = genericParseJSON defaultOptions
+
+-- | Code sign a component.
+codeSignComponent :: CodeSigningConfig -> FilePath -> IO ()
+codeSignComponent CodeSigningConfig{codeSigningIdentity,codeSigningKeyChain} component =
+  run "/tmp/codesignFnBk.sh" [ codeSigningIdentity, codeSigningKeyChain, (tt component) ]
 
 -- | Creates a new installer package with signature added.
 signInstaller :: SigningConfig -> FilePath -> FilePath -> IO ()
