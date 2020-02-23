@@ -60,14 +60,15 @@ data Command
   deriving (Eq, Show)
 
 data Options = Options
-  { oBackend        :: Backend
-  , oBuildJob       :: Maybe BuildJob
-  , oOS             :: OS
-  , oCluster        :: Cluster
-  , oAppName        :: AppName
-  , oOutputDir      :: FilePath
-  , oTestInstaller  :: TestInstaller
-  , oSigningConfigPath :: Maybe FilePath
+  { oBackend               :: Backend
+  , oBuildJob              :: Maybe BuildJob
+  , oOS                    :: OS
+  , oCluster               :: Cluster
+  , oAppName               :: AppName
+  , oOutputDir             :: FilePath
+  , oTestInstaller         :: TestInstaller
+  , oCodeSigningConfigPath :: Maybe FilePath
+  , oSigningConfigPath     :: Maybe FilePath
   } deriving Show
 
 commandParser :: Parser Command
@@ -93,7 +94,8 @@ optionsParser detectedOS = Options
   <*>                   optPath "out-dir"             'o' "Installer output directory"
   <*> (testInstaller
                     <$> switch  "test-installer"      't' "Test installers after building")
-  <*> (optional $ optPath       "signing-config"      'k' "the path to the json file describing the signing config")
+  <*> (optional $ optPath       "code-signing-config" 's' "the path to the json file describing the code signing config")
+  <*> (optional $ optPath       "signing-config"      'k' "the path to the json file describing the product signing config")
 
 backendOptionParser :: Parser Backend
 backendOptionParser = cardano <|> bool (Cardano "") Mantis <$> enableMantis
