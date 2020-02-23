@@ -37,6 +37,7 @@ library
                      , network-uri
                      , nsis
                      , optional-args
+                     , raw-strings-qq
                      , system-filepath
                      , text
                      , turtle
@@ -95,6 +96,7 @@ test-suite test-make-installer
                      , optional-args
                      , optparse-applicative
                      , optparse-generic
+                     , raw-strings-qq
                      , split
                      , system-filepath
                      , temporary

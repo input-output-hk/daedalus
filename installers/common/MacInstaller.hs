@@ -4,6 +4,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE NamedFieldPuns    #-}
 {-# LANGUAGE DeriveGeneric     #-}
+{-# LANGUAGE QuasiQuotes       #-}
 
 module MacInstaller
   ( main
@@ -22,6 +23,7 @@ import           Data.Text                 (Text)
 import qualified Data.Text                 as T
 import           Data.Aeson                (FromJSON(parseJSON), genericParseJSON, defaultOptions, decodeFileStrict')
 import           Data.Yaml                 (decodeFileThrow)
+import           Text.RawString.QQ
 import           Filesystem.Path           (FilePath, dropExtension, (<.>),
                                             (</>))
 import           Filesystem.Path.CurrentOS (encodeString)
@@ -31,6 +33,7 @@ import           System.IO.Error           (IOError, isDoesNotExistError)
 import           System.Environment        (getEnv)
 import           Turtle                    hiding (e, prefix, stdout)
 import           Turtle.Line               (unsafeTextToLine)
+
 
 import           Config
 import           RewriteLibs               (chain)
@@ -110,6 +113,40 @@ main opts@Options{oCodeSigningConfigPath,oSigningConfigPath,oCluster,oBackend,oB
         SignedOK -> pure ()
         NotSigned -> rm opkg
     Nothing -> pure ()
+
+codeSignScriptContents :: String
+codeSignScriptContents = [r|#!/run/current-system/sw/bin/bash
+set -x
+SIGN_ID="$1"
+KEYCHAIN="$2"
+REL_PATH="$3"
+ABS_PATH="$(pwd)/$REL_PATH"
+SIGN_CMD="codesign --verbose=4 --deep --strict --timestamp --options=runtime --sign $SIGN_ID"
+VERIFY_CMD="codesign --verbose=4 --verify --deep --strict"
+TS="$(date +%Y-%m-%d_%H-%M-%S)"
+LOG="2>&1 | tee -a /tmp/codesign-output-${TS}.txt"
+
+# Remove symlinks pointing outside of the project build folder:
+rm -f "$ABS_PATH/Contents/Resources/app/result"
+eval "security show-keychain-info \"$KEYCHAIN\" $LOG"
+eval "security find-identity -v -p codesigning \"$KEYCHAIN\" $LOG"
+eval "security list-keychains -d user -s \"$KEYCHAIN\" $LOG"
+
+# Sign framework executables not signed by the deep sign command:
+eval "$SIGN_CMD \"$ABS_PATH/Contents/Frameworks/Squirrel.framework/Versions/A/Resources/ShipIt\" $LOG"
+eval "$SIGN_CMD \"$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Versions/Current/Resources/crashpad_handler\" $LOG"
+eval "$SIGN_CMD \"$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Versions/Current/Libraries/libnode.dylib\" $LOG"
+eval "$SIGN_CMD \"$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Versions/Current/Libraries/libffmpeg.dylib\" $LOG"
+
+# Sign JSON and YAML files that don't get signed by the regular command:
+#for i in $(ls -1 "$ABS_PATH"/Contents/MacOS/*.json); do eval "$SIGN_CMD \"$i\" $LOG"; done
+#for i in $(ls -1 "$ABS_PATH"/Contents/MacOS/*.yaml); do eval "$SIGN_CMD \"$i\" $LOG"; done
+
+# Sign the whole component deeply
+eval "$SIGN_CMD \"$ABS_PATH\" $LOG"
+eval "$VERIFY_CMD \"$ABS_PATH\" $LOG"
+eval "$VERIFY_CMD --display -r- \"$ABS_PATH\""
+set +x|]
 
 makePostInstall :: Format a (Text -> a)
 makePostInstall = "#!/usr/bin/env bash\n" %
@@ -294,7 +331,8 @@ instance FromJSON SigningConfig where
 
 -- | Code sign a component.
 codeSignComponent :: CodeSigningConfig -> FilePath -> IO ()
-codeSignComponent CodeSigningConfig{codeSigningIdentity,codeSigningKeyChain} component =
+codeSignComponent CodeSigningConfig{codeSigningIdentity,codeSigningKeyChain} component = do
+  putStrLn codeSignScriptContents
   run "/tmp/codesignFnBk.sh" [ codeSigningIdentity, codeSigningKeyChain, (tt component) ]
 
 -- | Creates a new installer package with signature added.
