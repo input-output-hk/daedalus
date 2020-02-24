@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## vNext
+
+### Chores
+
+- Implemented acceptance tests for staking rewards screen ([PR 1861](https://github.com/input-output-hk/daedalus/pull/1861))
+
 ## 2.2.0-ITN1
 
 ### Features
