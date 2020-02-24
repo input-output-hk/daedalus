@@ -13,7 +13,6 @@ import {
 } from '../config/stakingConfig';
 import type {
   Reward,
-  RewardForIncentivizedTestnet,
   JoinStakePoolRequest,
   GetDelegationFeeRequest,
   QuitStakePoolRequest,
@@ -21,7 +20,6 @@ import type {
 import Wallet from '../domains/Wallet';
 import StakePool from '../domains/StakePool';
 import { TransactionStates } from '../domains/WalletTransaction';
-import REWARDS from '../config/stakingRewards.dummy.json';
 
 export default class StakingStore extends Store {
   @observable isDelegatioTransactionPending = false;
@@ -229,15 +227,8 @@ export default class StakingStore extends Store {
   }
 
   @computed get rewards(): Array<Reward> {
-    return REWARDS;
-  }
-
-  @computed
-  get rewardsForIncentivizedTestnet(): Array<RewardForIncentivizedTestnet> {
     const { wallets } = this.stores;
-    return wallets.allWallets.map(
-      this._transformWalletToRewardForIncentivizedTestnet
-    );
+    return wallets.allWallets.map(this._transformWalletToReward);
   }
 
   @action showCountdown(): boolean {
@@ -321,6 +312,26 @@ export default class StakingStore extends Store {
     }
   };
 
+  // For testing only
+  @action _setFakedStakePools = () => {
+    if (this.environment.isDev) {
+      if (this.refreshPooling) {
+        clearInterval(this.refreshPooling);
+        this.refreshPooling = null;
+      }
+      if (this.pollingStakePoolsInterval) {
+        clearInterval(this.pollingStakePoolsInterval);
+        this.pollingStakePoolsInterval = null;
+      }
+      const newStakePools = [
+        this.stakePoolsRequest.result[1],
+        this.stakePoolsRequest.result[2],
+      ];
+      this.stakePoolsRequest.reset();
+      this.stakePoolsRequest.result = newStakePools;
+    }
+  };
+
   _goToStakingInfoPage = () => {
     this.actions.router.goToRoute.trigger({
       route: ROUTES.STAKING.INFO,
@@ -333,7 +344,7 @@ export default class StakingStore extends Store {
     });
   };
 
-  _transformWalletToRewardForIncentivizedTestnet = (inputWallet: Wallet) => {
+  _transformWalletToReward = (inputWallet: Wallet) => {
     const { name: wallet, isRestoring, reward, syncState } = inputWallet;
     const syncingProgress = get(syncState, 'progress.quantity', '');
     return { wallet, reward, isRestoring, syncingProgress };

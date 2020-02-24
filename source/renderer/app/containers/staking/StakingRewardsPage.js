@@ -59,7 +59,7 @@ export default class StakingRewardsPage extends Component<Props> {
 
   render() {
     const {
-      staking: { rewards, rewardsForIncentivizedTestnet },
+      staking: { rewards },
       networkStatus,
       wallets,
     } = this.props.stores;
@@ -67,7 +67,7 @@ export default class StakingRewardsPage extends Component<Props> {
     if (networkStatus.isIncentivizedTestnet) {
       return (
         <StakingRewardsForIncentivizedTestnet
-          rewards={rewardsForIncentivizedTestnet}
+          rewards={rewards}
           isLoading={false}
           isExporting={wallets.generatingRewardsCsvInProgress}
           onLearnMoreClick={this.handleLearnMoreClick}

@@ -1574,6 +1574,7 @@ export default class AdaApi {
   setTestingNewsFeed: (testingNewsFeedData: GetNewsResponse) => void;
   setTestingStakePools: (testingStakePoolsData: Array<StakePoolProps>) => void;
   setTestingWallets: (testingWalletsData: Array<WalletProps>) => void;
+  setTestingEmptyWallets: () => void;
   setTestingWallet: (testingWalletData: Object, walletIndex?: 0) => void;
 
   // Stake pools testing utility

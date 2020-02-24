@@ -43,15 +43,10 @@ export type AdaApiStakePool = {
 export type AdaApiStakePools = Array<AdaApiStakePool>;
 
 export type Reward = {
-  date: string,
+  date?: string,
   wallet: string,
   reward: BigNumber,
-  pool: StakePool,
-};
-
-export type RewardForIncentivizedTestnet = {
-  wallet: string,
-  reward: BigNumber,
+  pool?: StakePool,
 };
 
 export type EpochData = {

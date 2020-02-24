@@ -195,6 +195,10 @@ export default (api: AdaApi) => {
     TESTING_WALLETS_DATA = testingWalletsData;
   };
 
+  api.setTestingEmptyWallets = (): void => {
+    TESTING_WALLETS_DATA = null;
+  };
+
   const originalGetWallets: Function = api.getWallets;
 
   const getModifiedWallet = action((wallet: Object) => {
@@ -210,6 +214,9 @@ export default (api: AdaApi) => {
   });
 
   api.getWallets = async (): Promise<Array<Wallet>> => {
+    if (TESTING_WALLETS_DATA === null) {
+      return Promise.resolve([]);
+    }
     const originalWallets = await originalGetWallets();
     const modifiedWallets = originalWallets.map(
       (originalWallet: Wallet, index: number) => {
