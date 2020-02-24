@@ -17,17 +17,6 @@ const REWARDS_TAB_BUTTON = '.rewards.NavButton_component.NavButton_normal';
 const REWARDS_PAGE = '.StakingRewardsForIncentivizedTestnet_component';
 const REWARDS_LIST_SELECTOR = '.StakingRewardsForIncentivizedTestnet_component .BorderedBox_component table';
 
-Given(/^I am on the Delegation Center screen/, async function () {
-  await stakingButtonVisible(this.client);
-  await clickStakingButton(this.client);
-  await delegationCenterVisible(this.client);
-});
-
-When(/^I mark experimental feature as read/, async function () {
-  await this.client.waitForVisible('.ExperimentalDataOverlay_component');
-  return this.waitAndClick('.ExperimentalDataOverlay_actionButton');
-});
-
 Then(/^I click on rewards tab button/, async function () {
   return this.waitAndClick(REWARDS_TAB_BUTTON);
 });
