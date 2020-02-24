@@ -199,8 +199,8 @@
     "validator": "9.1.2"
   },
   "devEngines": {
-    "node": ">=8.9.4",
-    "yarn": "1.10.0"
+    "node": ">=10.13.0",
+    "yarn": "1.13.0"
   },
   "husky": {
     "hooks": {
@@ -215,8 +215,6 @@
     "**/**/lodash.template": "^4.5.0",
     "**/**/lodash": "^4.17.14",
     "**/**/unicode-properties": "1.1.0",
-    "**/**/terser-webpack-plugin": "1.4.2",
-    "**/**/parse-json": "^4.0.0",
-    "**/**/minimist": "^1.2.0"
+    "**/**/terser-webpack-plugin": "1.4.2"
   }
 }
