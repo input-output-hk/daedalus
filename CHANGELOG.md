@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## vNext
+
+### Chores
+
+- Updated stylelint and stylelint-order dependencies ([PR 1864](https://github.com/input-output-hk/daedalus/pull/1864))
+
 ## 2.2.0-ITN1
 
 ### Features
