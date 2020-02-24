@@ -12,10 +12,10 @@ const {
   delegationCenterVisible,
 } = delegationCentreStakingHelper;
 
-const LOADING_SPINNER_SELECTOR = '.StakingRewardsForIncentivizedTestnet_component .StakingRewardsForIncentivizedTestnet_loadingSpinnerWrapper';
+const LOADING_SPINNER_SELECTOR = '.StakingRewards_component .StakingRewards_loadingSpinnerWrapper';
 const REWARDS_TAB_BUTTON = '.rewards.NavButton_component.NavButton_normal';
-const REWARDS_PAGE = '.StakingRewardsForIncentivizedTestnet_component';
-const REWARDS_LIST_SELECTOR = '.StakingRewardsForIncentivizedTestnet_component .BorderedBox_component table';
+const REWARDS_PAGE = '.StakingRewards_component';
+const REWARDS_LIST_SELECTOR = '.StakingRewards_component .BorderedBox_component table';
 
 Then(/^I click on rewards tab button/, async function () {
   return this.waitAndClick(REWARDS_TAB_BUTTON);
