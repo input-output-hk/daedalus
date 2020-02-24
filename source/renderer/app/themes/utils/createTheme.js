@@ -1088,6 +1088,19 @@ export const createDaedalusComponentsTheme = (
       '--theme-staking-donut-ring-completed-color': `${error.regular}`,
       '--theme-staking-donut-ring-remaining-color': `${error.ultralight}`,
       '--theme-staking-wallet-row-border-color': `${border}`,
+      '--theme-staking-wallet-row-action-delegate-text-color': `${
+        background.secondary.regular
+      }`,
+      '--theme-staking-wallet-row-action-undelegate-text-color': `${
+        error.regular
+      }`,
+      '--theme-staking-wallet-row-ticker-background-color': `${
+        background.primary.regular
+      }`,
+      '--theme-staking-wallet-row-ticker-text-color': `${text.primary}`,
+      '--theme-staking-wallet-row-ticker-ada-icon-fill-color': `${chroma(
+        text.primary
+      ).alpha(0.5)}`,
       '--theme-staking-dropdown-item-text-color-hover': `${text.primary}`,
       '--theme-staking-dropdown-item-background-color': `${
         background.primary.lightest
@@ -1211,6 +1224,35 @@ export const createDaedalusComponentsTheme = (
         ${chroma(error.regular).alpha(0.8)}
       `,
       '--theme-transactions-arrow-stroke-color': `${text.primary}`,
+      '--theme-transactions-filter-button-color': `${
+        background.primary.lightest
+      }`,
+      '--theme-transactions-filter-button-shadow-color': `${chroma(
+        background.primary.regular
+      ).alpha(0.18)}`,
+      '--theme-transactions-date-picker-button-background-color': `${
+        background.primary.lightest
+      }`,
+      '--theme-transactions-date-picker-button-background-color-hover': `${
+        background.primary.regular
+      }`,
+      '--theme-transactions-filter-modal-bg-color': `${
+        background.primary.lightest
+      }`,
+      '--theme-transactions-filter-date-picker-shadow':
+        '0 5px 20px 0 rgba(0, 0, 0, 0.25)',
+      '--theme-transactions-filter-title-button-text-color': `${
+        background.primary.lightest
+      }`,
+      '--theme-transactions-filter-title-button-background-color': `${
+        background.primary.regular
+      }`,
+      '--theme-transactions-filter-title-button-background-color-hover': `${chroma(
+        background.primary.regular
+      ).alpha(0.5)}`,
+      '--theme-transactions-filter-title-button-background-color-active': `${
+        background.primary.regular
+      }`,
     },
     uploader: {
       '--theme-uploader-text-color': `${text.primary}`,

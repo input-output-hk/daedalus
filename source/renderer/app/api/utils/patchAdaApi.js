@@ -1,12 +1,19 @@
 // @flow
 import { get, map } from 'lodash';
 import moment from 'moment';
+import { action } from 'mobx';
+import BigNumber from 'bignumber.js/bignumber';
 import AdaApi from '../api';
 import { getNetworkInfo } from '../network/requests/getNetworkInfo';
 import { getLatestAppVersion } from '../nodes/requests/getLatestAppVersion';
 import { GenericApiError } from '../common/errors';
 import { Logger } from '../../utils/logging';
 import packageJson from '../../../../../package.json';
+
+// domains
+import Wallet from '../../domains/Wallet';
+import StakePool from '../../domains/StakePool';
+
 import type {
   GetNetworkInfoResponse,
   NetworkInfoResponse,
@@ -22,7 +29,8 @@ let LATEST_APP_VERSION = null;
 let SYNC_PROGRESS = null;
 let NEXT_ADA_UPDATE = null;
 let APPLICATION_VERSION = null;
-let FAKE_NEWSFEED_JSON: ?GetNewsResponse;
+let TESTING_NEWSFEED_JSON: ?GetNewsResponse;
+let TESTING_WALLETS_DATA: Object = {};
 
 export default (api: AdaApi) => {
   api.getNetworkInfo = async (): Promise<GetNetworkInfoResponse> => {
@@ -75,7 +83,7 @@ export default (api: AdaApi) => {
     SYNC_PROGRESS = syncProgress;
   };
 
-  api.nextUpdate = async () => {
+  api.nextUpdate = async (): Promise<Object> => {
     let nodeUpdate = null;
 
     if (NEXT_ADA_UPDATE) {
@@ -141,14 +149,14 @@ export default (api: AdaApi) => {
     APPLICATION_VERSION = applicationVersion;
   };
 
-  api.setFakeNewsFeedJsonForTesting = (fakeNewsfeedJson: ?GetNewsResponse) => {
+  api.setTestingNewsFeed = (testingNewsFeedData: ?GetNewsResponse) => {
     const { version: packageJsonVersion } = packageJson;
-    if (!fakeNewsfeedJson) {
-      FAKE_NEWSFEED_JSON = null;
+    if (!testingNewsFeedData) {
+      TESTING_NEWSFEED_JSON = null;
       return;
     }
     // Always mutate newsfeed target version to current app version
-    const newsFeedItems = map(fakeNewsfeedJson.items, item => {
+    const newsFeedItems = map(testingNewsFeedData.items, item => {
       return {
         ...item,
         target: {
@@ -160,20 +168,67 @@ export default (api: AdaApi) => {
       };
     });
 
-    FAKE_NEWSFEED_JSON = {
-      ...fakeNewsfeedJson,
+    TESTING_NEWSFEED_JSON = {
+      ...testingNewsFeedData,
       items: newsFeedItems,
     };
   };
 
   api.getNews = (): Promise<GetNewsResponse> => {
     return new Promise((resolve, reject) => {
-      if (!FAKE_NEWSFEED_JSON) {
+      if (!TESTING_NEWSFEED_JSON) {
         reject(new Error('Unable to fetch news'));
       } else {
-        resolve(FAKE_NEWSFEED_JSON);
+        resolve(TESTING_NEWSFEED_JSON);
       }
     });
+  };
+
+  api.setTestingWallet = (
+    testingWalletData: Object,
+    walletIndex?: number = 0
+  ): void => {
+    TESTING_WALLETS_DATA[walletIndex] = testingWalletData;
+  };
+
+  api.setTestingWallets = (testingWalletsData: Array<Object>): void => {
+    TESTING_WALLETS_DATA = testingWalletsData;
+  };
+
+  const originalGetWallets: Function = api.getWallets;
+
+  const getModifiedWallet = action((wallet: Object) => {
+    let { amount = 100000, availableAmount = 100000 } = wallet;
+    if (typeof amount !== 'object') amount = new BigNumber(amount);
+    if (typeof availableAmount !== 'object')
+      availableAmount = new BigNumber(availableAmount);
+    return new Wallet({
+      ...wallet,
+      amount,
+      availableAmount,
+    });
+  });
+
+  api.getWallets = async (): Promise<Array<Wallet>> => {
+    const originalWallets = await originalGetWallets();
+    const modifiedWallets = originalWallets.map(
+      (originalWallet: Wallet, index: number) => {
+        const testingWallet = TESTING_WALLETS_DATA[index] || {};
+        const modifiedWallet = {
+          ...originalWallet,
+          ...testingWallet,
+        };
+        return getModifiedWallet(modifiedWallet);
+      }
+    );
+    return Promise.resolve(modifiedWallets);
+  };
+
+  api.setTestingStakePools = (testingStakePoolsData: Array<Object>): void => {
+    api.getStakePools = (): Array<StakePool> =>
+      testingStakePoolsData.map(
+        (stakePool: Object) => new StakePool(stakePool)
+      );
   };
 
   api.resetTestOverrides = () => {

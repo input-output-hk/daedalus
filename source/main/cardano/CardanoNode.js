@@ -77,6 +77,7 @@ export type CardanoNodeConfig = {
   shutdownTimeout: number, // Milliseconds to wait for cardano-node to gracefully shutdown
   killTimeout: number, // Milliseconds to wait for cardano-node to be killed
   updateTimeout: number, // Milliseconds to wait for cardano-node to update itself
+  cluster: string,
 };
 
 const CARDANO_UPDATE_EXIT_CODE = 20;
@@ -305,6 +306,7 @@ export class CardanoNode {
         nodeImplementation,
         cliBin,
         stateDir: config.workingDir,
+        cluster: config.cluster,
       });
 
       this._node = node;

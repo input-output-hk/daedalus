@@ -725,6 +725,7 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-staking-stake-pool-tooltip-neutral-background-color':
       'rgba(233, 244, 254, .1)',
     '--theme-staking-stake-pool-tooltip-neutral-text-color': '#e9f4fe',
+    '--theme-staking-stake-pool-tooltip-experimental-icon-color': '#e9f4fe',
   },
   staking: {
     '--theme-staking-content-background-color': '#263345',
@@ -766,6 +767,12 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-staking-countdown-widget-field-value-color': '#e9f4fe',
     '--theme-staking-export-button-shadow-color': 'rgba(0, 0, 0, 0.18)',
     '--theme-staking-export-button-color': '#fafbfc',
+    '--theme-staking-wallet-row-action-delegate-text-color': '#2ab467',
+    '--theme-staking-wallet-row-action-undelegate-text-color': '#ea4c5b',
+    '--theme-staking-wallet-row-ticker-background-color':
+      'rgba(233, 244, 254, 0.07)',
+    '--theme-staking-wallet-row-ticker-text-color': '#e9f4fe',
+    '--theme-staking-wallet-row-ticker-ada-icon-fill-color': '#e9f4fe80',
   },
   support: {
     '--theme-support-settings-item-color': 'rgba(233, 244, 254, 0.5)',
@@ -830,6 +837,22 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-transactions-icon-type-pending-warning-background-color':
       'rgba(236, 93, 107, 0.8)',
     '--theme-transactions-state-pending-warning-background-color': '#ec5d6b',
+    '--theme-transactions-filter-button-shadow-color': 'rgba(0, 0, 0, 0.18)',
+    '--theme-transactions-filter-button-color': '#fafbfc',
+    '--theme-transactions-date-picker-button-background-color':
+      'rgba(233, 244, 254, 0.14)',
+    '--theme-transactions-date-picker-button-background-color-hover':
+      'rgba(233, 244, 254, 0.07)',
+    '--theme-transactions-filter-modal-bg-color': '#314259',
+    '--theme-transactions-filter-date-picker-shadow':
+      '0 0 20px 0 rgba(0, 0, 0, 0.4)',
+    '--theme-transactions-filter-title-button-text-color': '#282c31',
+    '--theme-transactions-filter-title-button-background-color':
+      'rgba(250, 251, 252, 0.4)',
+    '--theme-transactions-filter-title-button-background-color-hover':
+      'rgba(250, 251, 252, 0.6)',
+    '--theme-transactions-filter-title-button-background-color-active':
+      'rgba(250, 251, 252, 0.8)',
   },
   uploader: {
     '--theme-uploader-text-color': '#e9f4fe',

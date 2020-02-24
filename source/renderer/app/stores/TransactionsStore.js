@@ -15,13 +15,56 @@ import type {
   GetTransactionsResponse,
 } from '../api/transactions/types';
 import { isValidAmountInLovelaces } from '../utils/validations';
+import {
+  generateFilterOptions,
+  isTransactionInFilterRange,
+} from '../utils/transaction';
 
-/* eslint-disable consistent-return */
+const INITIAL_SEARCH_LIMIT = null; // 'null' value stands for 'load all'
+const SEARCH_LIMIT_INCREASE = 500; // eslint-disable-line
+const SEARCH_SKIP = 0;
+const RECENT_TRANSACTIONS_LIMIT = 50; // eslint-disable-line
 
-export type TransactionSearchOptionsStruct = {
-  searchTerm: string,
-  searchLimit: number,
-  searchSkip: number,
+export type DateRangeType =
+  | ''
+  | 'last7Days'
+  | 'last30Days'
+  | 'last90Days'
+  | 'thisYear'
+  | 'custom';
+
+export const DateRangeTypes = {
+  LAST_7_DAYS: 'last7Days',
+  LAST_30_DAYS: 'last30Days',
+  LAST_90_DAYS: 'last90Days',
+  THIS_YEAR: 'thisYear',
+  CUSTOM: 'custom',
+};
+
+export type TransactionFilterOptionsType = {
+  searchTerm?: string,
+  searchLimit?: ?number,
+  searchSkip?: ?number,
+  dateRange?: DateRangeType,
+  fromDate?: string,
+  toDate?: string,
+  fromAmount?: string,
+  toAmount?: string,
+  incomingChecked?: boolean,
+  outgoingChecked?: boolean,
+};
+
+export const emptyTransactionFilterOptions = {
+  searchTerm: '',
+  searchLimit: INITIAL_SEARCH_LIMIT,
+  searchSkip: SEARCH_SKIP,
+  dateRange: '',
+  fromDate: '',
+  toDate: '',
+  fromAmount: '',
+  toAmount: '',
+  incomingChecked: true,
+  outgoingChecked: true,
 };
 
 type TransactionFeeRequest = {
@@ -31,29 +74,29 @@ type TransactionFeeRequest = {
 };
 
 export default class TransactionsStore extends Store {
-  INITIAL_SEARCH_LIMIT = null; // 'null' value stands for 'load all'
-  SEARCH_LIMIT_INCREASE = 500;
-  SEARCH_SKIP = 0;
-  RECENT_TRANSACTIONS_LIMIT = 50;
-
   @observable transactionsRequests: Array<{
     walletId: string,
     isLegacy: boolean,
     recentRequest: Request<GetTransactionsResponse>,
     allRequest: Request<GetTransactionsResponse>,
   }> = [];
+
   @observable
   deleteTransactionRequest: Request<DeleteTransactionRequest> = new Request(
     this.api.ada.deleteTransaction
   );
 
-  @observable _searchOptionsForWallets = {};
+  @observable _filterOptionsForWallets = {};
 
   setup() {
-    // const actions = this.actions.transactions;
-    // actions.filterTransactions.listen(this._updateSearchTerm);
-    // actions.loadMoreTransactions.listen(this._increaseSearchLimit);
-    this.registerReactions([this._ensureSearchOptionsForActiveWallet]);
+    const {
+      transactions: transactionActions,
+      networkStatus: networkStatusActions,
+    } = this.actions;
+    transactionActions.filterTransactions.listen(this._updateFilterOptions);
+    // transactionActions.loadMoreTransactions.listen(this._increaseSearchLimit);
+    networkStatusActions.restartNode.listen(this._clearFilterOptions);
+    this.registerReactions([this._ensureFilterOptionsForActiveWallet]);
   }
 
   @computed get recentTransactionsRequest(): Request<GetTransactionsResponse> {
@@ -70,24 +113,36 @@ export default class TransactionsStore extends Store {
     return this._getTransactionsAllRequest(wallet.id);
   }
 
-  @computed get searchOptions(): ?TransactionSearchOptionsStruct {
+  @computed get filterOptions(): ?TransactionFilterOptionsType {
     const wallet = this.stores.wallets.active;
     if (!wallet) return null;
-    return this._searchOptionsForWallets[wallet.id];
+    return this._filterOptionsForWallets[wallet.id];
   }
 
-  @computed get filtered(): Array<WalletTransaction> {
+  @computed get all(): Array<WalletTransaction> {
     const wallet = this.stores.wallets.active;
-    if (!wallet || !this.searchOptions) return [];
-    const { searchTerm } = this.searchOptions;
+    if (!wallet) return [];
     const request = this._getTransactionsAllRequest(wallet.id);
-    if (searchTerm && request.result && request.result.transactions) {
-      return request.result.transactions.filter(
-        transaction =>
-          transaction.title.search(new RegExp(searchTerm, 'i')) !== -1
-      );
+
+    if (!request.result) {
+      return [];
     }
-    return request.result ? request.result.transactions : [];
+
+    return request.result.transactions || [];
+  }
+
+  @computed get allFiltered(): Array<WalletTransaction> {
+    return this.all.filter(transaction =>
+      isTransactionInFilterRange(this.filterOptions, transaction)
+    );
+  }
+
+  @computed get defaultFilterOptions(): TransactionFilterOptionsType {
+    return generateFilterOptions(this.all);
+  }
+
+  @computed get populatedFilterOptions(): TransactionFilterOptionsType {
+    return this.filterOptions || emptyTransactionFilterOptions;
   }
 
   @computed get recent(): Array<WalletTransaction> {
@@ -95,6 +150,12 @@ export default class TransactionsStore extends Store {
     if (!wallet) return [];
     const results = this._getTransactionsRecentRequest(wallet.id).result;
     return results ? results.transactions : [];
+  }
+
+  @computed get recentFiltered(): Array<WalletTransaction> {
+    return this.recent.filter(transaction =>
+      isTransactionInFilterRange(this.filterOptions, transaction)
+    );
   }
 
   @computed get hasAnyFiltered(): boolean {
@@ -215,10 +276,26 @@ export default class TransactionsStore extends Store {
 
   // ======================= PRIVATE ========================== //
 
-  @action _updateSearchTerm = ({ searchTerm }: { searchTerm: string }) => {
-    if (this.searchOptions != null) {
-      this.searchOptions.searchTerm = searchTerm;
-    }
+  @action _updateFilterOptions = (
+    filterOptions: TransactionFilterOptionsType
+  ) => {
+    const wallet = this.stores.wallets.active;
+    if (!wallet) return false;
+    const currentFilterOptions = this._filterOptionsForWallets[wallet.id];
+    this._filterOptionsForWallets[wallet.id] = {
+      ...currentFilterOptions,
+      ...filterOptions,
+    };
+    return true;
+  };
+
+  @action _clearFilterOptions = () => {
+    const wallet = this.stores.wallets.active;
+    if (!wallet) return false;
+    this._filterOptionsForWallets[wallet.id] = {
+      ...emptyTransactionFilterOptions,
+    };
+    return true;
   };
 
   _getTransactionsRecentRequest = (
@@ -245,21 +322,18 @@ export default class TransactionsStore extends Store {
    * search options for the active wallet.
    * @private
    */
-  _ensureSearchOptionsForActiveWallet = () => {
+  _ensureFilterOptionsForActiveWallet = () => {
     const wallet = this.stores.wallets.active;
-    if (!wallet) return;
-    const options = this._searchOptionsForWallets[wallet.id];
+    if (!wallet) return false;
+    const options = this._filterOptionsForWallets[wallet.id];
     if (!options) {
       // Setup options for active wallet
-      runInAction('setSearchOptionsForActiveWallet', () => {
-        extendObservable(this._searchOptionsForWallets, {
-          [wallet.id]: {
-            searchTerm: '',
-            searchLimit: this.INITIAL_SEARCH_LIMIT,
-            searchSkip: this.SEARCH_SKIP,
-          },
+      runInAction('setFilterOptionsForActiveWallet', () => {
+        extendObservable(this._filterOptionsForWallets, {
+          [wallet.id]: emptyTransactionFilterOptions,
         });
       });
     }
+    return true;
   };
 }

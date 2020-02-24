@@ -1,0 +1,49 @@
+.component {
+  :global {
+    .SimpleInput_input {
+      font-family: var(--font-regular);
+      font-size: 14px;
+      height: 33px;
+      padding: 7px 10px;
+      width: 185px;
+    }
+  }
+
+  .contentInReadMode {
+    background-color: var(--rp-input-bg-color, #fafbfc);
+    border: var(
+      --rp-input-border,
+      1px solid var(--rp-input-border-color, #c6cdd6)
+    );
+    border-radius: var(--rp-input-border-radius, 2px);
+    box-sizing: border-box;
+    color: var(--rp-input-text-color, #5e6066);
+    font-family: var(--font-regular);
+    font-size: 14px;
+    height: 33px;
+    line-height: 17px;
+    padding: 7px 10px;
+    width: 185px;
+
+    .innerLabelPrefix,
+    .innerLabelSuffix {
+      color: var(--rp-input-placeholder-color);
+    }
+
+    .innerLabelPrefix {
+      margin-right: 5px;
+    }
+
+    .innerLabelSuffix {
+      margin-left: 5px;
+    }
+
+    .innerValue {
+      :global {
+        .undefined {
+          color: var(--rp-input-placeholder-color);
+        }
+      }
+    }
+  }
+}

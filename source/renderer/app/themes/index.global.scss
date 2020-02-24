@@ -1,4 +1,5 @@
 @import '~react-virtualized/styles.css';
+@import '~react-datetime/css/react-datetime.css';
 
 // ============ RESET ===========
 // http://meyerweb.com/eric/tools/css/reset
@@ -235,8 +236,14 @@ button {
 
 html,
 body,
-:global(#root),
-:global(#root) > [data-reactroot] {
+body > div:nth-child(1) {
+  height: 100%;
+}
+
+html,
+body,
+#root,
+#root > [data-reactroot] {
   // Make the default font ugly so we immediately see when something
   // is not yet defined correctly in our UI
   font-family: 'Times New Roman', serif;
@@ -274,6 +281,14 @@ body,
       background-color: var(--theme-scrollbar-thumb-background-hover);
     }
   }
+}
+
+// ====== GLOBAL NUMBER INPUT STYLE ======
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 // General text formatting

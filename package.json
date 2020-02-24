@@ -1,7 +1,7 @@
 {
   "name": "daedalus",
   "productName": "Daedalus",
-  "version": "2.1.0-ITN1",
+  "version": "2.2.0-ITN1",
   "description": "Cryptocurrency Wallet",
   "main": "./dist/main/index.js",
   "scripts": {
@@ -178,6 +178,7 @@
     "react-animate-height": "2.0.15",
     "react-copy-to-clipboard": "5.0.1",
     "react-custom-scrollbars": "4.2.1",
+    "react-datetime": "2.16.3",
     "react-dom": "16.6.3",
     "react-intl": "2.7.2",
     "react-lottie": "1.2.3",
