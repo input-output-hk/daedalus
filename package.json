@@ -199,8 +199,8 @@
     "validator": "9.1.2"
   },
   "devEngines": {
-    "node": ">=10.13.0",
-    "yarn": "1.13.0"
+    "node": ">=8.9.4",
+    "yarn": "1.10.0"
   },
   "husky": {
     "hooks": {
