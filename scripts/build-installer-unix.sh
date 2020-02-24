@@ -126,19 +126,6 @@ upload_artifacts_public() {
 # Build/get cardano bridge which is used by make-installer
 DAEDALUS_BRIDGE=$(nix-build --no-out-link -A daedalus-bridge)
 
-#set -x
-#
-#eval "$(ssh-agent)"
-#ssh-keygen -N "" -f ~/.ssh/tmate-key-$$
-#ssh-add ~/.ssh/tmate-key-$$
-#nix-build 'channel:nixos-unstable' -A tmate
-#SOCKET="/tmp/socket-$$"
-#result/bin/tmate -S $SOCKET new-session -d
-#sleep 10
-#result/bin/tmate -S $SOCKET wait tmate-ready
-#result/bin/tmate -S $SOCKET display -p '#{tmate_ssh}' > /tmp/tmate-file-$$
-#while true; do sleep 60; done
-
 pushd installers
     echo '~~~ Prebuilding dependencies for cardano-installer, quietly..'
     $nix_shell ../default.nix -A daedalus-installer --run true || echo "Prebuild failed!"
