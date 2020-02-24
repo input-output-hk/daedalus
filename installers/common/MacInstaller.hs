@@ -114,6 +114,7 @@ main opts@Options{oCodeSigningConfigPath,oSigningConfigPath,oCluster,oBackend,oB
         NotSigned -> rm opkg
     Nothing -> pure ()
 
+-- | Define the code signing script to be used for code signing
 codeSignScriptContents :: String
 codeSignScriptContents = [r|#!/run/current-system/sw/bin/bash
 set -x
@@ -121,13 +122,15 @@ SIGN_ID="$1"
 KEYCHAIN="$2"
 REL_PATH="$3"
 ABS_PATH="$(pwd)/$REL_PATH"
-SIGN_CMD="codesign --verbose=4 --deep --strict --timestamp --options=runtime --sign $SIGN_ID"
+SIGN_CMD="codesign --verbose=4 --deep --strict --timestamp --options=runtime --sign \"$SIGN_ID\""
 VERIFY_CMD="codesign --verbose=4 --verify --deep --strict"
 TS="$(date +%Y-%m-%d_%H-%M-%S)"
 LOG="2>&1 | tee -a /tmp/codesign-output-${TS}.txt"
 
 # Remove symlinks pointing outside of the project build folder:
 rm -f "$ABS_PATH/Contents/Resources/app/result"
+
+# Ensure the code signing identity is found and set the keychain search path:
 eval "security show-keychain-info \"$KEYCHAIN\" $LOG"
 eval "security find-identity -v -p codesigning \"$KEYCHAIN\" $LOG"
 eval "security list-keychains -d user -s \"$KEYCHAIN\" $LOG"
@@ -137,10 +140,6 @@ eval "$SIGN_CMD \"$ABS_PATH/Contents/Frameworks/Squirrel.framework/Versions/A/Re
 eval "$SIGN_CMD \"$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Versions/Current/Resources/crashpad_handler\" $LOG"
 eval "$SIGN_CMD \"$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Versions/Current/Libraries/libnode.dylib\" $LOG"
 eval "$SIGN_CMD \"$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Versions/Current/Libraries/libffmpeg.dylib\" $LOG"
-
-# Sign JSON and YAML files that don't get signed by the regular command:
-#for i in $(ls -1 "$ABS_PATH"/Contents/MacOS/*.json); do eval "$SIGN_CMD \"$i\" $LOG"; done
-#for i in $(ls -1 "$ABS_PATH"/Contents/MacOS/*.yaml); do eval "$SIGN_CMD \"$i\" $LOG"; done
 
 # Sign the whole component deeply
 eval "$SIGN_CMD \"$ABS_PATH\" $LOG"
@@ -312,6 +311,17 @@ writeLauncherFile dir DarwinConfig{dcDataDir,dcAppName} = do
       , "\"$(dirname \"$0\")/cardano-launcher\""
       ]
 
+writeCodesignScriptFile :: String -> IO FilePath
+writeCodesignScriptFile codesignScriptContents = do
+  writeTextFile codesignScript $ T.pack codesignScriptContents
+  run "chmod" [ "+x", codesignScriptRef ]
+  run "ls" [ "-la", codesignScriptRef ]
+  run "cat" [ codesignScriptRef ]
+  pure codesignScript
+  where
+    codesignScript = "/tmp/codesignFnGen.sh"
+    codesignScriptRef = T.pack $ encodeString codesignScript
+
 data CodeSigningConfig = CodeSigningConfig
   { codeSigningIdentity     :: T.Text
   , codeSigningKeyChain     :: T.Text
@@ -332,8 +342,8 @@ instance FromJSON SigningConfig where
 -- | Code sign a component.
 codeSignComponent :: CodeSigningConfig -> FilePath -> IO ()
 codeSignComponent CodeSigningConfig{codeSigningIdentity,codeSigningKeyChain} component = do
-  putStrLn codeSignScriptContents
-  run "/tmp/codesignFnBk.sh" [ codeSigningIdentity, codeSigningKeyChain, (tt component) ]
+  codeSignScript <- writeCodesignScriptFile codeSignScriptContents
+  run (T.pack $ encodeString $ codeSignScript) [ codeSigningIdentity, codeSigningKeyChain, (tt component) ]
 
 -- | Creates a new installer package with signature added.
 signInstaller :: SigningConfig -> FilePath -> FilePath -> IO ()
