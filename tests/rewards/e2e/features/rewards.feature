@@ -12,7 +12,16 @@ Feature: Rewards
     And I am on the rewards screen
     Then I should see rewards listed
 
-  Scenario: Export is working correctly
+  Scenario: Rewards load error handling works as expected
+    Given I set rewards fetch failed
+    When I click on rewards tab button
+    And I am on the rewards screen
+    Then I should see the following loading message:
+      | message                                     |
+      | staking.rewards.loadingRewardsMessage       |
+    And I should not see any rewards
+
+  Scenario: Export is working as expected
     When I click on rewards tab button
     And I am on the rewards screen
     And I click on "Export" button

@@ -49,7 +49,7 @@ export default class StakingStore extends Store {
     );
     staking.joinStakePool.listen(this._joinStakePool);
     staking.quitStakePool.listen(this._quitStakePool);
-    staking.fakeStakePoolLoading.listen(this._setFakePoller);
+    staking.fakeStakePoolsLoading.listen(this._setFakePoller);
   }
 
   // REQUESTS
@@ -312,26 +312,6 @@ export default class StakingStore extends Store {
           this._resetPolling(true);
         }
       }
-    }
-  };
-
-  // For testing only
-  @action _setFakedStakePools = () => {
-    if (this.environment.isDev) {
-      if (this.refreshPooling) {
-        clearInterval(this.refreshPooling);
-        this.refreshPooling = null;
-      }
-      if (this.pollingStakePoolsInterval) {
-        clearInterval(this.pollingStakePoolsInterval);
-        this.pollingStakePoolsInterval = null;
-      }
-      const newStakePools = [
-        this.stakePoolsRequest.result[1],
-        this.stakePoolsRequest.result[2],
-      ];
-      this.stakePoolsRequest.reset();
-      this.stakePoolsRequest.result = newStakePools;
     }
   };
 

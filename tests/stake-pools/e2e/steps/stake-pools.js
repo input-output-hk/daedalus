@@ -50,7 +50,7 @@ Given(/^I am on the Delegation Center screen/, async function () {
 
 Given(/^I set stake pools fetch failed$/, async function () {
   const stakePools = await this.client.executeAsync(done => {
-    daedalus.actions.staking.fakeStakePoolLoading.trigger(true);
+    daedalus.actions.staking.fakeStakePoolsLoading.trigger(true);
     done();
   });
 });
@@ -65,7 +65,7 @@ Given(/^I have a wallet "([^"]*)" delegated to stake pool with rank "([^"]*)"$/,
 
 When(/^Stake pools loading failed/, async function () {
   const stakePools = await this.client.executeAsync(done => {
-    daedalus.actions.staking.fakeStakePoolLoading.trigger(true);
+    daedalus.actions.staking.fakeStakePoolsLoading.trigger(true);
     done();
   });
   const result = stakePools && stakePools.value ? stakePools.value : [];
@@ -220,7 +220,7 @@ Then(/^I should see stake pools ordered by rank$/, async function () {
 
 Then(/^I should see the following loading message:$/, async function (message) {
   await this.client.executeAsync((done) => {
-      daedalus.actions.staking.fakeStakePoolLoading.trigger();
+      daedalus.actions.staking.fakeStakePoolsLoading.trigger();
       done();
     }
   );
