@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## vNext
+
+### Chores
+
+- Updated `husky` dependency ([PR 1865](https://github.com/input-output-hk/daedalus/pull/1865))
+
 ## 2.2.0-ITN1
 
 ### Features
