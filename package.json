@@ -200,7 +200,7 @@
   },
   "devEngines": {
     "node": ">=8.9.4",
-    "yarn": "1.10.0"
+    "yarn": "1.22.0"
   },
   "husky": {
     "hooks": {
