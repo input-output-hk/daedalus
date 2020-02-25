@@ -13,6 +13,7 @@ import {
 } from '../config/stakingConfig';
 import type {
   Reward,
+  RewardForIncentivizedTestnet,
   JoinStakePoolRequest,
   GetDelegationFeeRequest,
   QuitStakePoolRequest,
@@ -20,6 +21,7 @@ import type {
 import Wallet from '../domains/Wallet';
 import StakePool from '../domains/StakePool';
 import { TransactionStates } from '../domains/WalletTransaction';
+import REWARDS from '../config/stakingRewards.dummy.json';
 
 export default class StakingStore extends Store {
   @observable isDelegatioTransactionPending = false;
@@ -227,8 +229,15 @@ export default class StakingStore extends Store {
   }
 
   @computed get rewards(): Array<Reward> {
+    return REWARDS;
+  }
+
+  @computed
+  get rewardsForIncentivizedTestnet(): Array<RewardForIncentivizedTestnet> {
     const { wallets } = this.stores;
-    return wallets.allWallets.map(this._transformWalletToReward);
+    return wallets.allWallets.map(
+      this._transformWalletToRewardForIncentivizedTestnet
+    );
   }
 
   @action showCountdown(): boolean {
@@ -344,7 +353,7 @@ export default class StakingStore extends Store {
     });
   };
 
-  _transformWalletToReward = (inputWallet: Wallet) => {
+  _transformWalletToRewardForIncentivizedTestnet = (inputWallet: Wallet) => {
     const { name: wallet, isRestoring, reward, syncState } = inputWallet;
     const syncingProgress = get(syncState, 'progress.quantity', '');
     return { wallet, reward, isRestoring, syncingProgress };

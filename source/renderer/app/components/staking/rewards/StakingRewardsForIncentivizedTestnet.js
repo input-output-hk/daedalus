@@ -17,7 +17,7 @@ import LoadingSpinner from '../../widgets/LoadingSpinner';
 import sortIcon from '../../../assets/images/ascending.inline.svg';
 // import externalLinkIcon from '../../../assets/images/link-ic.inline.svg';
 import downloadIcon from '../../../assets/images/download-ic.inline.svg';
-import type { Reward } from '../../../api/staking/types';
+import type { RewardForIncentivizedTestnet } from '../../../api/staking/types';
 import styles from './StakingRewardsForIncentivizedTestnet.scss';
 import tooltipStyles from './StakingRewardsForIncentivizedTestnetTooltip.scss';
 
@@ -73,7 +73,7 @@ const messages = defineMessages({
 });
 
 type Props = {
-  rewards: Array<Reward>,
+  rewards: Array<RewardForIncentivizedTestnet>,
   isLoading: boolean,
   isExporting: boolean,
   // onLearnMoreClick: Function,
@@ -109,7 +109,7 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
 
   handleExportCsv = (
     availableTableHeaders: Array<any>,
-    sortedRewards: Array<Reward>
+    sortedRewards: Array<RewardForIncentivizedTestnet>
   ) => {
     const { onExportCsv } = this.props;
     const { intl } = this.context;
