@@ -22,10 +22,10 @@ let
   system = systemTable.${target} or target;
   pkgs = localLib.iohkNix.getPkgsDefault { inherit system config; };
   sources = localLib.sources;
-  walletPkgs = import (import "${sources.cardano-wallet}/nix/sources.nix").nixpkgs {};
-  shellPkgs = import (import "${sources.cardano-shell}/nix/sources.nix").nixpkgs {};
+  walletPkgs = import "${sources.cardano-wallet}/nix" {};
+  shellPkgs = (import "${sources.cardano-shell}/nix/iohk-common.nix").getPkgs {};
   inherit (pkgs.lib) optionalString optional;
-  crossSystem = lib: (crossSystemTable.${target} or (x: null)) lib;
+  crossSystem = lib: (crossSystemTable lib).${target} or null;
   # TODO, nsis cant cross-compile with the nixpkgs daedalus currently uses
   nsisNixPkgs = import localLib.sources.nixpkgs-nsis {};
   installPath = ".daedalus";
