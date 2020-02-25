@@ -23,6 +23,7 @@ let
   pkgs = localLib.iohkNix.getPkgsDefault { inherit system config; };
   sources = localLib.sources;
   walletPkgs = import (import "${sources.cardano-wallet}/nix/sources.nix").nixpkgs {};
+  shellPkgs = import (import "${sources.cardano-shell}/nix/sources.nix").nixpkgs {};
   inherit (pkgs.lib) optionalString optional;
   crossSystem = lib: (crossSystemTable.${target} or (x: null)) lib;
   # TODO, nsis cant cross-compile with the nixpkgs daedalus currently uses
@@ -46,7 +47,7 @@ let
       jormungandr = self.callPackage ./nix/jormungandr-bridge.nix {};
     };
     cardano-wallet = import self.sources.cardano-wallet { inherit system; gitrev = self.sources.cardano-wallet.rev; crossSystem = crossSystem walletPkgs.lib; };
-    cardano-shell = import self.sources.cardano-shell { inherit system; crossSystem = crossSystem pkgs.lib; };
+    cardano-shell = import self.sources.cardano-shell { inherit system; crossSystem = crossSystem shellPkgs.lib; };
 
     # a cross-compiled fastlist for the ps-list package
     fastlist = pkgs.pkgsCross.mingwW64.callPackage ./nix/fastlist.nix {};
