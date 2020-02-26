@@ -28,7 +28,8 @@ import {
 } from './Undelegate.stories';
 
 const defaultPercentage = 10;
-const defaultStartDateTime = new Date('2019-12-31');
+const defaultStartDateTime = new Date();
+defaultStartDateTime.setDate(defaultStartDateTime.getDate() + 2);
 const startDateTimeKnob = (name, defaultValue) => {
   const stringTimestamp = date(name, defaultValue);
 
