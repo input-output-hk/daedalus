@@ -1,4 +1,5 @@
 // @flow
+import fs from 'fs';
 import { When, Then } from 'cucumber';
 import path from 'path';
 import moment from 'moment';
@@ -48,11 +49,17 @@ Then(/^I click on the Export to CSV button$/, async function () {
       filePath: params.filePath,
     });
   }, data);
+  this.exportedCSVPath = exportedCSVPath;
 });
 
 Then(/^I should see the CSV file exported$/, async function () {
-  /**
-   * Check manually if CSV file was exported successfully in the specified path
-   */
-  return true;
+  try {
+    if (fs.existsSync(this.exportedCSVPath)) {
+      //file exists
+      return true;
+    }
+    return false;
+  } catch(err) {
+    return false;
+  }
 });
