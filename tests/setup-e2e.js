@@ -205,13 +205,9 @@ After({ tags: '@e2e' }, async function({ sourceLocation, result }) {
 
 After({ tags: '@rewards' }, async function() {
   // Remove exported rewards csv
-  const directory = 'tests/delegation/e2e/documents';
-  fs.readdir(directory, (err, files) => {
-    for (const file of files) {
-      fs.unlink(path.join(directory, file), err => {
-        if (err) throw err;
-      });
-    }
+  const file = 'tests/delegation/e2e/documents/rewards_exported.csv';
+  fs.unlink(file, err => {
+    if (err) throw err;
   });
 });
 
