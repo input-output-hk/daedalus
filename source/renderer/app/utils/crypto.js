@@ -1,6 +1,7 @@
 // @flow
 import bip39 from 'bip39';
 import { Buffer } from 'safe-buffer';
+import crypto from 'crypto';
 import { chunk } from 'lodash';
 import { pbkdf2Sync as pbkdf2 } from 'pbkdf2';
 import * as unorm from 'unorm';
@@ -50,8 +51,15 @@ export const scramblePaperWalletMnemonic = (
   passphrase: string,
   input: string
 ) => {
-  const iv = new Uint8Array(8);
-  window.crypto.getRandomValues(iv);
+  let iv;
+  if (typeof window !== 'undefined') {
+    iv = new Uint8Array(8);
+    window.crypto.getRandomValues(iv);
+  } else {
+    // Window is not defined for UNIT test
+    iv = crypto.randomBytes(8).toJSON().data;
+  }
+
   const scrambledInput = CardanoCrypto.PaperWallet.scrambleStrings(
     iv,
     passphrase,
