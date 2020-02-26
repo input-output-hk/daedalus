@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## vNext
+
+### Fixes
+
+- Fixed decentralization countdown storybook story ([PR 1863](https://github.com/input-output-hk/daedalus/pull/1863))
+
 ## 2.2.0-ITN1
 
 ### Features
