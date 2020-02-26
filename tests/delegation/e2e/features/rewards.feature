@@ -16,7 +16,7 @@ Feature: Rewards
     When I click on rewards tab button
     And I am on the rewards screen
     Then I should see no rewards label
-  @watch
+
   Scenario: Export to CSV feature is working
     Given I have a "Test Wallet" rewards wallet with funds
     When I click on rewards tab button
