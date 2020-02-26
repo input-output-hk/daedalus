@@ -32,14 +32,20 @@ const networkTip: TipInfo = {
   slot: 123,
 };
 
+const nextEpochDate = new Date();
+nextEpochDate.setDate(nextEpochDate.getDate() + 1);
+
+const futureEpochDate = new Date();
+futureEpochDate.setDate(futureEpochDate.getDate() + 2);
+
 const nextEpoch: NextEpoch = {
   epochNumber: 1233,
-  epochStart: new Date('2019-12-29').toUTCString(),
+  epochStart: nextEpochDate.toUTCString(),
 };
 
 const futureEpoch: NextEpoch = {
   epochNumber: 1234,
-  epochStart: new Date('2019-12-30').toUTCString(),
+  epochStart: futureEpochDate.toUTCString(),
 };
 
 // Dummy data initialization

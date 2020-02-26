@@ -16,16 +16,19 @@ let
   systemTable = {
     x86_64-windows = builtins.currentSystem;
   };
-  crossSystemTable = {
+  crossSystemTable = lib: {
     x86_64-windows = lib.systems.examples.mingwW64;
   };
   system = systemTable.${target} or target;
   pkgs = localLib.iohkNix.getPkgsDefault { inherit system config; };
-  crossSystem = crossSystemTable.${target} or null;
+  sources = localLib.sources;
+  walletPkgs = import "${sources.cardano-wallet}/nix" {};
+  shellPkgs = (import "${sources.cardano-shell}/nix/iohk-common.nix").getPkgs {};
+  inherit (pkgs.lib) optionalString optional;
+  crossSystem = lib: (crossSystemTable lib).${target} or null;
   # TODO, nsis cant cross-compile with the nixpkgs daedalus currently uses
   nsisNixPkgs = import localLib.sources.nixpkgs-nsis {};
   installPath = ".daedalus";
-  lib = pkgs.lib;
   cardanoSL = localLib.cardanoSL { inherit target; };
   needSignedBinaries = (signingKeys != null) || (HSMServer != null);
   buildNumSuffix = if buildNum == null then "" else ("-${builtins.toString buildNum}");
@@ -43,8 +46,8 @@ let
     bridgeTable = {
       jormungandr = self.callPackage ./nix/jormungandr-bridge.nix {};
     };
-    cardano-wallet = import self.sources.cardano-wallet { inherit system crossSystem; gitrev = self.sources.cardano-wallet.rev; };
-    cardano-shell = import self.sources.cardano-shell { inherit system crossSystem; };
+    cardano-wallet = import self.sources.cardano-wallet { inherit system; gitrev = self.sources.cardano-wallet.rev; crossSystem = crossSystem walletPkgs.lib; };
+    cardano-shell = import self.sources.cardano-shell { inherit system; crossSystem = crossSystem shellPkgs.lib; };
 
     # a cross-compiled fastlist for the ps-list package
     fastlist = pkgs.pkgsCross.mingwW64.callPackage ./nix/fastlist.nix {};
@@ -147,13 +150,13 @@ let
 
       cp $installerConfigPath installer-config.json
       export LANG=en_US.UTF-8
-      make-installer --os win64 -o $out --cluster ${cluster} ${lib.optionalString (buildNum != null) "--build-job ${buildNum}"} buildkite-cross
+      make-installer --os win64 -o $out --cluster ${cluster} ${optionalString (buildNum != null) "--build-job ${buildNum}"} buildkite-cross
 
       mkdir $out
       cp daedalus.nsi uninstaller.nsi $out/
       cp $launcherConfigPath $out/launcher-config.yaml
-      ${lib.optionalString self.launcherConfigs.installerConfig.hasBlock0 "cp ${self.launcherConfigs.installerConfig.block0} $out/block-0.bin"}
-      ${lib.optionalString (cluster != "selfnode") "cp ${self.launcherConfigs.jormungandr-config} $out/jormungandr-config.yaml"}
+      ${optionalString self.launcherConfigs.installerConfig.hasBlock0 "cp ${self.launcherConfigs.installerConfig.block0} $out/block-0.bin"}
+      ${optionalString (cluster != "selfnode") "cp ${self.launcherConfigs.jormungandr-config} $out/jormungandr-config.yaml"}
     '';
 
     unsignedUninstaller = pkgs.runCommand "uninstaller" { buildInputs = [ self.nsis self.wine ]; } ''
@@ -189,7 +192,7 @@ let
     in pkgs.runCommand "win64-installer-${cluster}" {
       buildInputs = [
         self.daedalus-installer self.nsis pkgs.unzip pkgs.jq self.yaml2json
-      ] ++ lib.optional (fudgeConfig != null) self.configMutator;
+      ] ++ optional (fudgeConfig != null) self.configMutator;
     } ''
       echo '~~~ Preparing files for installer'
       mkdir home
@@ -223,7 +226,7 @@ let
       fi
       cp -v ${./utils/jormungandr/selfnode/genesis.yaml} genesis.yaml
       chmod -R +w .
-      ${lib.optionalString (fudgeConfig != null) ''
+      ${optionalString (fudgeConfig != null) ''
         set -x
         KEY=$(yaml2json launcher-config.yaml | jq .configuration.key -r)
         config-mutator configuration.yaml ''${KEY} ${toString fudgeConfig.applicationVersion} > temp
