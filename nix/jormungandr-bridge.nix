@@ -2,7 +2,7 @@
 
 let
   commonLib = import ../lib.nix {};
-  pkgsCross = import cardano-wallet.pkgs.path { crossSystem = pkgs.lib.systems.examples.mingwW64; config = {}; overlays = []; };
+  pkgsCross = import cardano-wallet.pkgs.path { crossSystem = cardano-wallet.pkgs.lib.systems.examples.mingwW64; config = {}; overlays = []; };
 in pkgs.runCommandCC "daedalus-bridge" {
   passthru = {
     node-version = cardano-wallet.jormungandr.version;
