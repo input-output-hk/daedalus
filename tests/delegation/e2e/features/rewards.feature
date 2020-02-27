@@ -1,4 +1,4 @@
-@e2e @rewards
+@e2e
 Feature: Rewards
 
   Background:
@@ -17,6 +17,7 @@ Feature: Rewards
     And I am on the rewards screen
     Then I should see no rewards label
 
+  @rewardsCsv
   Scenario: Export to CSV feature is working
     Given I have a "Test Wallet" rewards wallet with funds
     When I click on rewards tab button
