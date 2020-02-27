@@ -10,6 +10,7 @@ Changelog
 ### Chores
 
 - Updated Flow and EsLint dependencies ([PR 1866](https://github.com/input-output-hk/daedalus/pull/1866))
+- Updated `husky` dependency ([PR 1865](https://github.com/input-output-hk/daedalus/pull/1865))
 - Updated stylelint and stylelint-order dependencies ([PR 1864](https://github.com/input-output-hk/daedalus/pull/1864))
 - Implemented acceptance tests for staking rewards screen ([PR 1861](https://github.com/input-output-hk/daedalus/pull/1861))
 
