@@ -54,8 +54,7 @@ Then(/^I click on the Export to CSV button$/, async function () {
 
 Then(/^I should see the CSV file exported$/, async function () {
   try {
-    if (fs.existsSync(this.exportedCSVPath)) {
-      //file exists
+    if (fs.existsSync(this.exportedCSVPath)) { //file exists
       return true;
     }
     return false;
