@@ -5,6 +5,7 @@ Changelog
 
 ### Fixes
 
+- Removed locale specific rules from the css files ([PR 1871](https://github.com/input-output-hk/daedalus/pull/1871))
 - Fixed decentralization countdown storybook story ([PR 1863](https://github.com/input-output-hk/daedalus/pull/1863))
 
 ## 2.2.0-ITN1
