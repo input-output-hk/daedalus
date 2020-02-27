@@ -50,8 +50,10 @@ export type Reward = {
 };
 
 export type RewardForIncentivizedTestnet = {
+  date?: string,
   wallet: string,
   reward: BigNumber,
+  pool?: StakePool,
 };
 
 export type EpochData = {
