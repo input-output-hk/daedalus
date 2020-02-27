@@ -17,7 +17,7 @@ export const getTransactionFee = (
   request(
     {
       method: 'POST',
-      path: `/v2/wallets/${walletId}/transactions/fees`,
+      path: `/v2/wallets/${walletId}/payment-fees`,
       ...config,
     },
     {},
