@@ -4,7 +4,9 @@ import path from 'path';
 import { expect } from 'chai';
 import { generateFileNameWithTimestamp } from '../../../../source/common/utils/files';
 import ensureDirectoryExists from '../../../../source/main/utils/ensureDirectoryExists';
-import type { WebdriverClient } from '../../../types';
+import { i18nHelpers } from '../../../settings/e2e/steps/helpers';
+const { setActiveLanguage } = i18nHelpers;
+import { When } from 'cucumber';
 
 export const expectTextInSelector = async (
   client: Object,
@@ -125,3 +127,15 @@ export const scrollIntoView = async (client: Object, targetSelector: string) => 
   }
 };
 
+When(/^take feature screenshots to file "([^"]*)"$/, async function(fileName) {
+  await setActiveLanguage(this.client, {
+    language: 'ja-JP',
+  });
+  await timeout(500);
+  await this.client.saveScreenshot(`feature-screenshots/${fileName}-japanese.png`);
+  await setActiveLanguage(this.client, {
+    language: 'en-US',
+  });
+  await timeout(500);
+  await this.client.saveScreenshot(`feature-screenshots/${fileName}-english.png`);
+});

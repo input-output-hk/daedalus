@@ -1,12 +1,9 @@
 @e2e
 @watch
-Feature: Wallet Pending Delegations
+Feature: Wallet Pending Delegations - Feature Screenshot
 
-  Scenario: Pending delegations
+  Scenario: Pending delegations - English
     Given I have completed the basic setup
-    # The wallets don't need to be sequentially created,
-    # as their data is changed by the patched api
-    # so it doesn't matter their original names & data
     And I have the following "Rewards" wallets:
       | name           |
       | Test Wallet 1  |

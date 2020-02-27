@@ -1,9 +1,10 @@
 // @flow
-import { Given, Then } from 'cucumber';
+import { Given, Then, When } from 'cucumber';
 import { expect } from 'chai';
 import { set, last } from 'lodash';
 import type { Daedalus } from '../../../types';
 import type { WalletPendingDelegations } from '../../../../source/renderer/app/api/wallets/types';
+import path from "path";
 
 declare var daedalus: Daedalus;
 
