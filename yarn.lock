@@ -1575,10 +1575,6 @@
   version "8.10.51"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-8.10.51.tgz#80600857c0a47a8e8bafc2dae6daed6db58e3627"
 
-"@types/parse-json@^4.0.0":
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/@types/parse-json/-/parse-json-4.0.0.tgz#2f8bb441434d163b35fb8ffdccd7138927ffb8c0"
-
 "@types/q@^1.5.1":
   version "1.5.2"
   resolved "https://registry.yarnpkg.com/@types/q/-/q-1.5.2.tgz#690a1475b84f2a884fd07cd797c00f5f31356ea8"
@@ -3941,7 +3937,6 @@ cosmiconfig@^6.0.0:
   version "6.0.0"
   resolved "https://registry.yarnpkg.com/cosmiconfig/-/cosmiconfig-6.0.0.tgz#da4fee853c52f6b1e6935f41c1a2fc50bd4a9982"
   dependencies:
-    "@types/parse-json" "^4.0.0"
     import-fresh "^3.1.0"
     parse-json "^5.0.0"
     path-type "^4.0.0"
@@ -4824,7 +4819,6 @@ electron-download@^4.1.0, electron-download@^4.1.1:
     debug "^3.0.0"
     env-paths "^1.0.0"
     fs-extra "^4.0.1"
-    minimist "^1.2.0"
     nugget "^2.0.1"
     path-exists "^3.0.0"
     rc "^1.2.1"
@@ -4854,7 +4848,6 @@ electron-osx-sign@^0.4.11:
     compare-version "^0.1.2"
     debug "^2.6.8"
     isbinaryfile "^3.0.2"
-    minimist "^1.2.0"
     plist "^3.0.1"
 
 electron-packager@13.0.1:
@@ -7959,14 +7952,10 @@ json5@^0.5.0, json5@^0.5.1:
 json5@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/json5/-/json5-1.0.1.tgz#779fb0018604fa854eacbf6252180d83543e3dbe"
-  dependencies:
-    minimist "^1.2.0"
 
 json5@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/json5/-/json5-2.1.0.tgz#e7a0c62c48285c628d20a10b85c89bb807c32850"
-  dependencies:
-    minimist "^1.2.0"
 
 jsonfile@^2.1.0:
   version "2.4.0"
@@ -10465,7 +10454,6 @@ rc@^1.0.1, rc@^1.1.6, rc@^1.2.1, rc@^1.2.7:
   dependencies:
     deep-extend "^0.6.0"
     ini "~1.3.0"
-    minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
 rcedit@^1.0.0:
