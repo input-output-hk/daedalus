@@ -256,41 +256,25 @@ td.stateDirectoryPath {
     cursor: pointer;
     display: inline-block;
     position: relative;
-    &.locale-en-US {
-      p {
-        @media (max-width: 1490px) {
-          max-width: 285px;
-        }
-        @media (max-width: 1300px) {
-          max-width: 189px;
-        }
-        @media (max-width: 1100px) {
-          max-width: 135px;
-        }
-        @media (max-width: 1000px) {
-          max-width: 100%;
-        }
+
+    p {
+      @media (max-width: 1585px) {
+        max-width: 285px;
+      }
+      @media (max-width: 1370px) {
+        max-width: 189px;
+      }
+      @media (max-width: 1180px) {
+        max-width: 135px;
+      }
+      @media (max-width: 1070px) {
+        max-width: 115px;
+      }
+      @media (max-width: 1000px) {
+        max-width: 100%;
       }
     }
-    &.locale-ja-JP {
-      p {
-        @media (max-width: 1585px) {
-          max-width: 285px;
-        }
-        @media (max-width: 1370px) {
-          max-width: 189px;
-        }
-        @media (max-width: 1180px) {
-          max-width: 135px;
-        }
-        @media (max-width: 1070px) {
-          max-width: 115px;
-        }
-        @media (max-width: 1000px) {
-          max-width: 100%;
-        }
-      }
-    }
+
     &:hover {
       p {
         &:after {

@@ -4,7 +4,6 @@ import type { Node } from 'react';
 import { observer } from 'mobx-react';
 import { get, includes, upperFirst } from 'lodash';
 import { defineMessages, intlShape } from 'react-intl';
-import classNames from 'classnames';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
 import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
@@ -369,7 +368,6 @@ type Props = {
   networkTip: ?TipInfo,
   // localBlockHeight: number,
   // networkBlockHeight: number,
-  currentLocale: string,
   // onForceCheckLocalTimeDifference: Function,
   onOpenStateDirectory: Function,
   onOpenExternalLink: Function,
@@ -488,7 +486,6 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
       // isTestnet,
       // isStaging,
       // isMainnet,
-      currentLocale,
     } = this.props;
 
     const {
@@ -563,11 +560,6 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
     //         isStaging,
     //         isTestnet,
     //       });
-
-    const stateDirectoryPathStyles = classNames([
-      styles.stateDirectoryPath,
-      styles[`locale-${currentLocale}`],
-    ]);
 
     const unknownDiskSpaceSupportUrl = intl.formatMessage(
       messages.unknownDiskSpaceSupportUrl
@@ -646,7 +638,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                     text={daedalusStateDirectoryPath}
                     onCopy={onCopyStateDirectoryPath}
                   >
-                    <div className={stateDirectoryPathStyles}>
+                    <div className={styles.stateDirectoryPath}>
                       <Tooltip
                         skin={TooltipSkin}
                         tip={
