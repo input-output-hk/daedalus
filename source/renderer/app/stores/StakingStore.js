@@ -49,7 +49,7 @@ export default class StakingStore extends Store {
     );
     staking.joinStakePool.listen(this._joinStakePool);
     staking.quitStakePool.listen(this._quitStakePool);
-    staking.fakeStakePoolLoading.listen(this._setFakePoller);
+    staking.fakeStakePoolsLoading.listen(this._setFakePoller);
   }
 
   // REQUESTS

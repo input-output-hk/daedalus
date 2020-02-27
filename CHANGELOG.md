@@ -10,7 +10,10 @@ Changelog
 ### Chores
 
 - Integrated React-Polymorph "ScrollBar" CSS variables ([PR 1827](https://github.com/input-output-hk/daedalus/pull/1827))
-- Implemented unit tests for scrambling and unscrambling mnemonics ([PR 1849](https://github.com/input-output-hk/daedalus/pull/1849))
+- Updated test environment dependencies ([PR 1867](https://github.com/input-output-hk/daedalus/pull/1867))
+- Updated `husky` dependency ([PR 1865](https://github.com/input-output-hk/daedalus/pull/1865))
+- Updated stylelint and stylelint-order dependencies ([PR 1864](https://github.com/input-output-hk/daedalus/pull/1864))
+- Implemented acceptance tests for staking rewards screen ([PR 1861](https://github.com/input-output-hk/daedalus/pull/1861))
 
 ## 2.2.0-ITN1
 
@@ -25,6 +28,7 @@ Changelog
 
 ### Chores
 
+- Implemented unit tests for scrambling and unscrambling mnemonics ([PR 1849](https://github.com/input-output-hk/daedalus/pull/1849))
 - Implemented acceptance tests for wallet delegation ([PR 1814](https://github.com/input-output-hk/daedalus/pull/1814))
 - Improved loading state of the "Stake pools" screen ([PR 1814](https://github.com/input-output-hk/daedalus/pull/1814))
 - Updated `cardano-wallet` to version `2020-02-17` ([PR 1856](https://github.com/input-output-hk/daedalus/pull/1856))
