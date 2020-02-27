@@ -63,8 +63,9 @@ export default class StakingRewardsPage extends Component<Props> {
       networkStatus,
       wallets,
     } = this.props.stores;
+    const { isTest } = networkStatus.environment;
 
-    if (networkStatus.isIncentivizedTestnet) {
+    if (networkStatus.isIncentivizedTestnet || isTest) {
       return (
         <StakingRewardsForIncentivizedTestnet
           rewards={rewardsForIncentivizedTestnet}
