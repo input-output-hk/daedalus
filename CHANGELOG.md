@@ -7,6 +7,12 @@ Changelog
 
 - Fixed decentralization countdown storybook story ([PR 1863](https://github.com/input-output-hk/daedalus/pull/1863))
 
+### Chores
+
+- Updated Flow and EsLint dependencies ([PR 1866](https://github.com/input-output-hk/daedalus/pull/1866))
+- Updated stylelint and stylelint-order dependencies ([PR 1864](https://github.com/input-output-hk/daedalus/pull/1864))
+- Implemented acceptance tests for staking rewards screen ([PR 1861](https://github.com/input-output-hk/daedalus/pull/1861))
+
 ## 2.2.0-ITN1
 
 ### Features
