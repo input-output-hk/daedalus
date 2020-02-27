@@ -1,5 +1,6 @@
 // @flow
 import path from 'path';
+import fs from 'fs';
 import { Application } from 'spectron';
 import {
   BeforeAll,
@@ -200,6 +201,14 @@ After({ tags: '@e2e' }, async function({ sourceLocation, result }) {
     await saveScreenshot(context.app, file);
     await printMainProcessLogs();
   }
+});
+
+After({ tags: '@rewardsCsv' }, async function() {
+  // Remove exported rewards csv
+  const file = 'tests/delegation/e2e/documents/rewards_exported.csv';
+  fs.unlink(file, err => {
+    if (err) throw err;
+  });
 });
 
 // eslint-disable-next-line prefer-arrow-callback
