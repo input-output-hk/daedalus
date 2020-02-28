@@ -1,4 +1,10 @@
 // @flow
+import { expect } from 'chai';
+import {
+  clickInputByLabel,
+  clickOptionByIndex,
+  getInputValueByLabel,
+} from '../../../common/e2e/steps/helpers';
 import type { Daedalus } from '../../../types';
 
 const DATA_LAYER_MIGRATION_ACCEPTANCE_COMPONENT = '.DataLayerMigrationForm_component';
@@ -89,3 +95,41 @@ export const termsOfUseHelpers = {
     await termsOfUseHelpers.waitForVisible(client, { isHidden: true });
   },
 };
+
+export const chooseCustomOptions = async function(
+  numberIndex: number,
+  dateIndex: number,
+  timeIndex: number
+) {
+  await clickInputByLabel.call(this, 'Number format');
+  await clickOptionByIndex.call(this, numberIndex);
+  await clickInputByLabel.call(this, 'Date format');
+  await clickOptionByIndex.call(this, dateIndex);
+  await clickInputByLabel.call(this, 'Time format');
+  await clickOptionByIndex.call(this, timeIndex);
+}
+
+export const getSelectedCustomOptions = async function() {
+  const selectedValues = await this.client.execute(function() {
+    const {
+      currentNumberFormat,
+      currentDateFormat,
+      currentTimeFormat,
+    } = daedalus.stores.profile;
+    return {
+      currentNumberFormat,
+      currentDateFormat,
+      currentTimeFormat,
+    };
+  });
+  const {
+    currentNumberFormat: selectedNumber,
+    currentDateFormat: selectedDate,
+    currentTimeFormat: selectedTime,
+  } = selectedValues.value;
+  return {
+    selectedNumber,
+    selectedDate,
+    selectedTime,
+  }
+}

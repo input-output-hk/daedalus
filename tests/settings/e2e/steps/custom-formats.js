@@ -1,34 +1,45 @@
 // @flow
 import { Given, When, Then } from 'cucumber';
 import { expect } from 'chai';
-import { termsOfUseHelpers } from './helpers';
-import {
-  clickInputByLabel,
-  clickOptionByIndex,
-  getInputValueByLabel,
-} from '../../../common/e2e/steps/helpers';
+import { termsOfUseHelpers, chooseCustomOptions, getSelectedCustomOptions } from './helpers';
 import type { Daedalus } from '../../../types';
 
 declare var daedalus: Daedalus;
 
 Given(/^I have chosen custom number, date and time formats$/, async function() {
-  await clickInputByLabel.call(this, 'Number format');
-  await clickOptionByIndex.call(this, 1);
-  await clickInputByLabel.call(this, 'Date format');
-  await clickOptionByIndex.call(this, 1);
-  await clickInputByLabel.call(this, 'Time format');
-  await clickOptionByIndex.call(this, 1);
+  await chooseCustomOptions.call(this, 1, 1, 1);
+});
+
+Given(/^I have chosen new custom number, date and time formats$/, async function() {
+  await chooseCustomOptions.call(this, 2, 2, 0);
 });
 
 Then (/^I should see the correct chosen options$/, async function() {
-  const selectedNumber = await getInputValueByLabel.call(this, 'Number format')
-  console.log('selectedNumber', selectedNumber);
-  const selectedDate = await getInputValueByLabel.call(this, 'Date format')
-  console.log('selectedDate', selectedDate);
-  const selectedTime = await getInputValueByLabel.call(this, 'Time format')
-  console.log('selectedTime', selectedTime);
-  return true;
+  const {
+    selectedNumber,
+    selectedDate,
+    selectedTime,
+  } = await getSelectedCustomOptions.call(this);
+  const expectedNumber = 'number-2';
+  const expectedDate = 'DD/MM/YYYY';
+  const expectedTime = 'HH:mm:ss';
+  expect(selectedNumber).to.equal(expectedNumber);
+  expect(selectedDate).to.equal(expectedDate);
+  expect(selectedTime).to.equal(expectedTime);
 })
 
+Then (/^I should see the correct new chosen options$/, async function() {
+  const {
+    selectedNumber,
+    selectedDate,
+    selectedTime,
+  } = await getSelectedCustomOptions.call(this);
+  const expectedNumber = 'number-3';
+  const expectedDate = 'YYYY/MM/DD';
+  const expectedTime = 'hh:mm:ss A';
+  expect(selectedNumber).to.equal(expectedNumber);
+  expect(selectedDate).to.equal(expectedDate);
+  expect(selectedTime).to.equal(expectedTime);
+})
 
 

@@ -146,7 +146,6 @@ export const getInputValueByLabel = async function(label: string, isExactText?: 
     : `contains(text(),'${label}'`;
   const selector = `//label[@class="${className}" and ${textSelector}]//following-sibling::div//input`;
   await this.client.waitForVisible(selector);
-  const text = await this.client.getText(selector);
-  console.log('text - ' + label, text);
+  const text = await this.client.getValue(selector);
   return text;
 }
