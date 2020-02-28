@@ -2,6 +2,7 @@
 import { Given, When, Then } from 'cucumber';
 import { expect } from 'chai';
 import { termsOfUseHelpers, chooseCustomOptionsByValue, getSelectedCustomOptions } from './helpers';
+import { timeout } from '../../../common/e2e/steps/helpers';
 import type { Daedalus } from '../../../types';
 
 declare var daedalus: Daedalus;
@@ -14,6 +15,25 @@ Given(/^I have chosen the following custom formats:$/, async function(formatsTab
     { value: timeValue },
   ] = chosenFormats;
   await chooseCustomOptionsByValue.call(this, numberValue, dateValue, timeValue);
+});
+
+Given(/^I have changed the following custom formats:$/, async function(formatsTable) {
+  const chosenFormats = formatsTable.hashes();
+  const [
+    { value: numberValue },
+    { value: dateValue },
+    { value: timeValue },
+  ] = chosenFormats;
+  await this.client.executeAsync((numberValue, dateValue, timeValue, done) => {
+    const fn = (param, value) =>
+      daedalus.stores.profile._updateUserLocalSetting({ param, value })
+    Promise.all([
+      fn('numberFormat', numberValue),
+      fn('dateFormat', dateValue),
+      fn('timeFormat', timeValue),
+    ]).then(done);
+  }, numberValue, dateValue, timeValue);
+  await timeout(1500);
 });
 
 Then(/^I should see the following chosen options:$/, async function(expectedTable) {
@@ -49,6 +69,7 @@ const screenElementSelectors = {
   transaction: {
     date: '.WalletTransactionsList_groupDate',
     time: '.Transaction_type em',
+    number: '.Transaction_amount',
   },
   'transaction filter': {
     date: '.FilterDialog_fromDateInput input',
@@ -62,8 +83,12 @@ const paramsMatchersValues = {
       .replace('DD', '(0[1-9]|[12]\\d|3[01])')
       .replace('YYYY', '\\d{4}'),
   time: (expectedValue: string) => expectedValue === 'hh:mm:ss A'
-    ? '[0-2]\\d:[0-5]\\d [AP]M'
-    : '[0-2]\\d:[0-5]\\d:[0-5]\\d',
+    ? '[0-1]\\d:[0-5]\\d(:[0-5]\\d)? [AP]M'
+    : '[0-2]\\d:[0-5]\\d:([0-5]\\d)?',
+  number: (expectedValue: string) => {
+    const [ thousandsSeparator, decimalSeparator ] = expectedValue.split('');
+    return `((${thousandsSeparator})?\\d+)+${decimalSeparator}\\d{6}$`;
+  }
 }
 
 Then(/^The "([^"]*)" should display the following custom formats:$/, async function(screenElement, expectedTable) {
