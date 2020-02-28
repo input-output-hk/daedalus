@@ -1,4 +1,4 @@
-@e2e @watch
+@e2e
 Feature: Custom number, date and time formats
 
   Background:
@@ -30,8 +30,19 @@ Feature: Custom number, date and time formats
       | date   | YYYY/MM/DD |
       | time   | hh:mm:ss A |
 
+  Scenario: Newsfeed alert displays the correct user date preference format
+    Given there is 1 unread alert
+    Then The "alert" should display the following custom formats:
+      | PARAM  | VALUE      |
+      | date   | DD/MM/YYYY |
 
-  # Scenario: Dates are displayed in the correct user preference format
+  Scenario: Newsfeed incident displays the correct user date preference format
+    Given there is an incident
+    Then The "incident" should display the following custom formats:
+      | PARAM  | VALUE      |
+      | date   | DD/MM/YYYY |
+
+  # Dates are displayed in the correct user preference format
 
   # Scenario: Time is displayed in the correct user preference format
 

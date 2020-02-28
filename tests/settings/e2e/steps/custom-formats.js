@@ -33,3 +33,32 @@ Then (/^I should see the following chosen options:$/, async function(expectedTab
   expect(selectedDate).to.equal(expectedDate);
   expect(selectedTime).to.equal(expectedTime);
 });
+
+const screenElementSelectors = {
+  alert: {
+    date: '.AlertsOverlay_date',
+  },
+  incident: {
+    date: '.IncidentOverlay_date',
+  }
+}
+
+const paramsMatchersValues = {
+  date: (expectedValue: string) =>
+    expectedValue
+      .replace('MM', '(0[1-9]|1[0-2])')
+      .replace('DD', '(0[1-9]|[12][0-9]|3[01])')
+      .replace('YYYY', '[0-9]{4}'),
+}
+
+Then (/^The "([^"]*)" should display the following custom formats:$/, async function(screenElement, expectedTable) {
+  const expectedValues = expectedTable.hashes();
+  for (let i = 0; i < expectedValues.length; i++) {
+    const { PARAM: expectedParam, VALUE: expectedValue } = expectedValues[i];
+    const selector = screenElementSelectors[screenElement][expectedParam];
+    const currentValue = await this.client.getText(selector);
+    const expectedMatcher = new RegExp(paramsMatchersValues[expectedParam](expectedValue));
+    const matcher = expectedMatcher.test(currentValue)
+    expect(matcher).to.be.true;
+  }
+});
