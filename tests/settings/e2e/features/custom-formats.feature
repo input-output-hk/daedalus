@@ -2,17 +2,33 @@
 Feature: Custom number, date and time formats
 
   Background:
-    Given I have chosen custom number, date and time formats
+    Given I have chosen the following custom formats:
+      | PARAM  | VALUE                |
+      | number | 8.638.301.639,283542 |
+      | date   | dd/mm/yyyy           |
+      | time   | 14:00                |
     And I have completed the basic setup
 
   Scenario: Initial profile setup is working as expected
     Given I am on the General Settings "general" screen
-    Then I should see the correct chosen options
+    Then I should see the following chosen options:
+      | PARAM  | VALUE      |
+      | number | number-2   |
+      | date   | DD/MM/YYYY |
+      | time   | HH:mm:ss   |
 
   Scenario: Changing number/date/time format on the "Settings > General" screen works as expected
     Given I am on the General Settings "general" screen
-    And I have chosen new custom number, date and time formats
-    Then I should see the correct new chosen options
+    Given I have chosen the following custom formats:
+      | PARAM  | VALUE                |
+      | number | 8 638 301 639.283542 |
+      | date   | yyyy/mm/dd           |
+      | time   | 02:00 PM             |
+    Then I should see the following chosen options:
+      | PARAM  | VALUE      |
+      | number | number-3   |
+      | date   | YYYY/MM/DD |
+      | time   | hh:mm:ss A |
 
 
   # Scenario: Dates are displayed in the correct user preference format

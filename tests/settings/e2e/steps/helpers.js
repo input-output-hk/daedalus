@@ -2,6 +2,7 @@
 import { expect } from 'chai';
 import {
   clickInputByLabel,
+  clickOptionByValue,
   clickOptionByIndex,
   getInputValueByLabel,
 } from '../../../common/e2e/steps/helpers';
@@ -96,7 +97,20 @@ export const termsOfUseHelpers = {
   },
 };
 
-export const chooseCustomOptions = async function(
+export const chooseCustomOptionsByValue = async function(
+  numberValue: string,
+  dateValue: string,
+  timeValue: string,
+) {
+  await clickInputByLabel.call(this, 'Number format');
+  await clickOptionByValue.call(this, numberValue);
+  await clickInputByLabel.call(this, 'Date format');
+  await clickOptionByValue.call(this, dateValue);
+  await clickInputByLabel.call(this, 'Time format');
+  await clickOptionByValue.call(this, timeValue);
+}
+
+export const chooseCustomOptionsByIndex = async function(
   numberIndex: number,
   dateIndex: number,
   timeIndex: number

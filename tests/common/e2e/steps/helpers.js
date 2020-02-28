@@ -134,6 +134,11 @@ export const clickInputByLabel = async function(label: string, isExactText?: boo
   await this.waitAndClick(selector);
 }
 
+export const clickOptionByValue = async function(value: string) {
+  const selector = `(//li[contains(@class, 'SimpleOptions_option')]//span[text()="${value}"])`;
+  await this.waitAndClick(selector);
+}
+
 export const clickOptionByIndex = async function(index: number) {
   const selector = `(//div[contains(@class, 'SimpleSelect_isOpen')]//li[contains(@class, 'SimpleOptions_option')])[${index + 1}]`;
   await this.waitAndClick(selector);
