@@ -32,15 +32,30 @@ Feature: Custom number, date and time formats
 
   Scenario: Newsfeed alert displays the correct user date preference format
     Given there is 1 unread alert
-    Then The "alert" should display the following custom formats:
+    Then The alert should display the following custom formats:
       | PARAM  | VALUE      |
       | date   | DD/MM/YYYY |
 
   Scenario: Newsfeed incident displays the correct user date preference format
     Given there is an incident
-    Then The "incident" should display the following custom formats:
+    Then The incident should display the following custom formats:
       | PARAM  | VALUE      |
       | date   | DD/MM/YYYY |
+
+  Scenario: Newsfeed announcement displays the correct user date preference format
+    Given there is 1 unread announcement
+    When I open the newsfeed
+    Then The announcement should display the following custom formats:
+      | PARAM  | VALUE      |
+      | date   | DD/MM/YYYY |
+
+  Scenario: Newsfeed info displays the correct user date preference format
+    Given there is 1 unread info
+    When I open the newsfeed
+    Then The info should display the following custom formats:
+      | PARAM  | VALUE      |
+      | date   | DD/MM/YYYY |
+
 
   # Dates are displayed in the correct user preference format
 

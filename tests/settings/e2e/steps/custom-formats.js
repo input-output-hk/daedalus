@@ -40,7 +40,14 @@ const screenElementSelectors = {
   },
   incident: {
     date: '.IncidentOverlay_date',
+  },
+  announcement: {
+    date: '.NewsItem_newsItemDate',
+  },
+  info: {
+    date: '.NewsItem_newsItemDate',
   }
+
 }
 
 const paramsMatchersValues = {
@@ -51,7 +58,7 @@ const paramsMatchersValues = {
       .replace('YYYY', '[0-9]{4}'),
 }
 
-Then (/^The "([^"]*)" should display the following custom formats:$/, async function(screenElement, expectedTable) {
+Then (/^The (\w+?)s? should display the following custom formats:$/, async function(screenElement, expectedTable) {
   const expectedValues = expectedTable.hashes();
   for (let i = 0; i < expectedValues.length; i++) {
     const { PARAM: expectedParam, VALUE: expectedValue } = expectedValues[i];
