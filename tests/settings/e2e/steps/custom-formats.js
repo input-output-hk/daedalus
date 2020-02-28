@@ -6,23 +6,22 @@ import type { Daedalus } from '../../../types';
 
 declare var daedalus: Daedalus;
 
-
 Given(/^I have chosen the following custom formats:$/, async function(formatsTable) {
   const chosenFormats = formatsTable.hashes();
   const [
-    { VALUE: numberValue },
-    { VALUE: dateValue },
-    { VALUE: timeValue },
+    { value: numberValue },
+    { value: dateValue },
+    { value: timeValue },
   ] = chosenFormats;
   await chooseCustomOptionsByValue.call(this, numberValue, dateValue, timeValue);
 });
 
-Then (/^I should see the following chosen options:$/, async function(expectedTable) {
+Then(/^I should see the following chosen options:$/, async function(expectedTable) {
   const expectedValues = expectedTable.hashes();
   const [
-    { VALUE: expectedNumber },
-    { VALUE: expectedDate },
-    { VALUE: expectedTime },
+    { value: expectedNumber },
+    { value: expectedDate },
+    { value: expectedTime },
   ] = expectedValues;
   const {
     selectedNumber,
@@ -46,24 +45,40 @@ const screenElementSelectors = {
   },
   info: {
     date: '.NewsItem_newsItemDate',
-  }
-
-}
+  },
+  transaction: {
+    date: '.WalletTransactionsList_groupDate',
+    time: '.Transaction_type em',
+  },
+  'transaction filter': {
+    date: '.FilterDialog_fromDateInput input',
+  },
+};
 
 const paramsMatchersValues = {
   date: (expectedValue: string) =>
     expectedValue
       .replace('MM', '(0[1-9]|1[0-2])')
-      .replace('DD', '(0[1-9]|[12][0-9]|3[01])')
-      .replace('YYYY', '[0-9]{4}'),
+      .replace('DD', '(0[1-9]|[12]\\d|3[01])')
+      .replace('YYYY', '\\d{4}'),
+  time: (expectedValue: string) => expectedValue === 'hh:mm:ss A'
+    ? '[0-2]\\d:[0-5]\\d [AP]M'
+    : '[0-2]\\d:[0-5]\\d:[0-5]\\d',
 }
 
-Then (/^The (\w+?)s? should display the following custom formats:$/, async function(screenElement, expectedTable) {
+Then(/^The "([^"]*)" should display the following custom formats:$/, async function(screenElement, expectedTable) {
   const expectedValues = expectedTable.hashes();
   for (let i = 0; i < expectedValues.length; i++) {
-    const { PARAM: expectedParam, VALUE: expectedValue } = expectedValues[i];
+    const { param: expectedParam, value: expectedValue } = expectedValues[i];
     const selector = screenElementSelectors[screenElement][expectedParam];
-    const currentValue = await this.client.getText(selector);
+    const tagName = await this.client.getTagName(selector);
+    let currentValue;
+    if (tagName === 'input') {
+      currentValue = await this.client.getValue(selector);
+    } else {
+      currentValue = await this.client.getText(selector);
+      if (Array.isArray(currentValue)) currentValue = currentValue[0];
+    }
     const expectedMatcher = new RegExp(paramsMatchersValues[expectedParam](expectedValue));
     const matcher = expectedMatcher.test(currentValue)
     expect(matcher).to.be.true;
