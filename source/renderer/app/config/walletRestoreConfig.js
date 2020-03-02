@@ -9,8 +9,6 @@ import type {
   WalletByronKind,
 } from '../types/walletRestoreTypes';
 
-type EnumMap<K: string, V, O: Object = *> = O & { [K]: V & $ElementType<O, K> };
-
 export const RESTORE_WALLET_STEPS: Array<RestoreWalletStep> = [
   'type',
   'mnemonics',

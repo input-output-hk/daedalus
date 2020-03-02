@@ -27,41 +27,19 @@ export const NetworkNameOptions = {
   itn_rewards_v1: 'itn_rewards_v1',
 };
 
-export type CardanoNodeStateStarting = 'starting';
-export type CardanoNodeStateRunning = 'running';
-export type CardanoNodeStateExiting = 'exiting';
-export type CardanoNodeStateStopping = 'stopping';
-export type CardanoNodeStateStopped = 'stopped';
-export type CardanoNodeStateUpdating = 'updating';
-export type CardanoNodeStateUpdated = 'updated';
-export type CardanoNodeStateCrashed = 'crashed';
-export type CardanoNodeStateErrored = 'errored';
-export type CardanoNodeStateUnrecoverable = 'unrecoverable';
-
 export type CardanoNodeState =
-  | CardanoNodeStateStarting
-  | CardanoNodeStateRunning
-  | CardanoNodeStateExiting
-  | CardanoNodeStateStopping
-  | CardanoNodeStateStopped
-  | CardanoNodeStateUpdating
-  | CardanoNodeStateUpdated
-  | CardanoNodeStateCrashed
-  | CardanoNodeStateErrored
-  | CardanoNodeStateUnrecoverable;
+  | 'starting'
+  | 'running'
+  | 'exiting'
+  | 'stopping'
+  | 'stopped'
+  | 'updating'
+  | 'updated'
+  | 'crashed'
+  | 'errored'
+  | 'unrecoverable';
 
-export const CardanoNodeStates: {
-  STARTING: CardanoNodeStateStarting,
-  RUNNING: CardanoNodeStateRunning,
-  EXITING: CardanoNodeStateExiting,
-  STOPPING: CardanoNodeStateStopping,
-  STOPPED: CardanoNodeStateStopped,
-  UPDATING: CardanoNodeStateUpdating,
-  UPDATED: CardanoNodeStateUpdated,
-  CRASHED: CardanoNodeStateCrashed,
-  ERRORED: CardanoNodeStateErrored,
-  UNRECOVERABLE: CardanoNodeStateUnrecoverable,
-} = {
+export const CardanoNodeStates: EnumMap<string, CardanoNodeState> = {
   STARTING: 'starting',
   RUNNING: 'running',
   EXITING: 'exiting',

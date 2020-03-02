@@ -5,9 +5,9 @@ import { SelectSkin } from 'react-polymorph/lib/skins/simple/SelectSkin';
 import { IDENTIFIERS } from 'react-polymorph/lib/themes/API';
 import styles from './TinySelect.scss';
 
-type Props = { value: string };
+type Props = $Exact<{ value: string }>;
 
-export default class TinySelect extends Component<$Exact<Props>> {
+export default class TinySelect extends Component<Props> {
   render() {
     return (
       <div className={styles.component}>

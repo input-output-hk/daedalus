@@ -6,25 +6,15 @@ import type {
   TransactionType,
   TransactionDepth,
   TransactionState,
-  TransactionStatePending,
-  TransactionStateOk,
 } from '../api/transactions/types';
 
-export const TransactionStates: {
-  PENDING: TransactionStatePending,
-  OK: TransactionStateOk,
-} = {
+export const TransactionStates: EnumMap<string, TransactionState> = {
   PENDING: 'pending',
   OK: 'in_ledger',
   IN_LEDGER: 'in_ledger',
 };
 
-export const TransactionTypes: {
-  CARD: TransactionType,
-  EXPEND: TransactionType,
-  INCOME: TransactionType,
-  EXCHANGE: TransactionType,
-} = {
+export const TransactionTypes: EnumMap<string, TransactionType> = {
   CARD: 'card',
   EXPEND: 'expend',
   INCOME: 'income',

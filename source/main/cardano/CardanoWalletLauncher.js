@@ -34,10 +34,10 @@ export async function CardanoWalletLauncher(
   const walletStdio: string[] = ['pipe', 'pipe', 'pipe', 'ipc'];
   const nodePath = dirname(nodeBin);
   const PATH: string = (process.env.PATH: any);
-  const envVariables: {|
+  const envVariables: $Exact<{
     PATH: string,
     CARDANO_WALLET_STAKE_POOL_REGISTRY_URL?: string,
-  |} = {
+  }> = {
     PATH: `${nodePath}:${PATH}`,
   };
 
