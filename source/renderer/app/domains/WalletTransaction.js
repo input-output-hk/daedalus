@@ -6,11 +6,13 @@ import type {
   TransactionType,
   TransactionDepth,
   TransactionState,
+  TransactionStatePending,
+  TransactionStateOk,
 } from '../api/transactions/types';
 
 export const TransactionStates: {
-  PENDING: TransactionState,
-  OK: TransactionState,
+  PENDING: TransactionStatePending,
+  OK: TransactionStateOk,
 } = {
   PENDING: 'pending',
   OK: 'in_ledger',

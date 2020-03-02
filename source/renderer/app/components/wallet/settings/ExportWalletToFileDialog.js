@@ -52,10 +52,10 @@ const EXPORT_TYPE = {
   READ_ONLY: 'readOnly',
 };
 
-export type OnSubmitParams = {
+export type OnSubmitParams = {|
   exportType: ExportType,
   password: ?string,
-};
+|};
 
 type Props = {
   walletName: string,

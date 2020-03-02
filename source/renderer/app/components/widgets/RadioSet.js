@@ -14,7 +14,7 @@ type Props = {
   verticallyAligned?: boolean,
 };
 
-type RadioProps = {
+type RadioProps = {|
   key: string,
   disabled?: boolean,
   label?: Node,
@@ -25,7 +25,7 @@ type RadioProps = {
   skin?: Node,
   theme: ?Object,
   themeOverrides: Object,
-};
+|};
 
 @observer
 export default class RadioSet extends Component<Props> {

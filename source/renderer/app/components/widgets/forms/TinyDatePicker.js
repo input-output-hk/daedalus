@@ -11,7 +11,7 @@ import styles from './TinyDatePicker.scss';
 
 type PickerPanelPosition = 'left' | 'right';
 
-type Props = {
+type Props = {|
   onBlur?: Function,
   onChange?: Function,
   onReset?: Function,
@@ -30,7 +30,7 @@ type Props = {
   pickerPanelPosition: PickerPanelPosition,
   useReadMode?: boolean,
   error?: string | Element<any>,
-};
+|};
 
 export default class TinyDatePicker extends Component<Props> {
   static contextTypes = {

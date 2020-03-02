@@ -56,7 +56,9 @@ export type TransactionOutputs = {
   amount: TransactionAmount,
 };
 
-export type TransactionState = 'pending' | 'in_ledger';
+export type TransactionStatePending = 'pending';
+export type TransactionStateOk = 'in_ledger';
+export type TransactionState = TransactionStatePending | TransactionStateOk;
 
 export type TrasactionAddresses = { from: Array<?string>, to: Array<string> };
 
