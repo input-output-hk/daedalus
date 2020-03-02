@@ -39,7 +39,7 @@ Feature: Custom number, date and time formats
     And I have made the following transactions:
       | source      | destination   | amount |
       | Test Wallet | Target Wallet | 100000 |
-    Then The "transaction" should display the following custom formats:
+    Then the "transaction" should display the following custom formats:
       | param  | value      |
       | number | .,         |
       | date   | DD/MM/YYYY |
@@ -49,12 +49,11 @@ Feature: Custom number, date and time formats
       | number | number-1   |
       | date   | YYYY/MM/DD |
       | time   | hh:mm:ss A |
-    Then The "transaction" should display the following custom formats:
+    Then the "transaction" should display the following custom formats:
       | param  | value      |
       | number | ,.         |
       | date   | YYYY/MM/DD |
       | time   | hh:mm:ss A |
-    Then I freeze
 
   Scenario: Transactions list displays the correct user date preference format
     Given I have a "Test Wallet" rewards wallet with funds
@@ -71,7 +70,7 @@ Feature: Custom number, date and time formats
       | param      | value |
       | fromAmount | 12,34 |
       | toAmount   | 12.34 |
-    Then The "transaction filter" should display the following custom formats:
+    Then the "transaction filter" should display the following custom formats:
       | param | value      |
       | date  | DD/MM/YYYY |
     And I should see the following filter values:
@@ -82,33 +81,58 @@ Feature: Custom number, date and time formats
 
   Scenario: Newsfeed alert displays the correct user date preference format
     Given there is 1 unread alert
-    Then The "alert" should display the following custom formats:
+    Then the "alert" should display the following custom formats:
       | param | value      |
       | date  | DD/MM/YYYY |
 
   Scenario: Newsfeed incident displays the correct user date preference format
     Given there is an incident
-    Then The "incident" should display the following custom formats:
+    Then the "incident" should display the following custom formats:
       | param | value      |
       | date  | DD/MM/YYYY |
 
   Scenario: Newsfeed announcement displays the correct user date preference format
     Given there is 1 unread announcement
     When I open the newsfeed
-    Then The "announcement" should display the following custom formats:
+    Then the "announcement" should display the following custom formats:
       | param | value      |
       | date  | DD/MM/YYYY |
 
   Scenario: Newsfeed info displays the correct user date preference format
     Given there is 1 unread info
     When I open the newsfeed
-    Then The "info" should display the following custom formats:
+    Then the "info" should display the following custom formats:
       | param | value      |
       | date  | DD/MM/YYYY |
 
-  @skip
   Scenario: Sidebar wallets display the correct user number preference format
+    Given I have a "Test Wallet" rewards wallet with funds
+    And I have the following "Rewards" wallets:
+      | name          |
+      | Target Wallet |
+    And I am on the "Test Wallet" wallet "transactions" screen
+    And I have made the following transactions:
+      | source      | destination   | amount |
+      | Test Wallet | Target Wallet | 123456 |
+    Then the "Target Wallet" wallet on the sidebar should display the amount of "123,4K ADA"
 
-  @skip
+  @watch
   Scenario: Users can create transactions regardless of their number format preference
   # (including testing amounts bigger than 1 million ada)
+    Given I have a "Test Wallet" rewards wallet with funds
+    And I have the following "Rewards" wallets:
+      | name          |
+      | Target Wallet |
+    And I am on the "Test Wallet" wallet "send" screen
+    And I can see the send form
+    When I fill out the send form with a transaction to "Target Wallet" wallet:
+      | amount   |
+      | 0.000010 |
+    And I have changed the following custom formats:
+      | param  | value      |
+      | number | number-1   |
+    Then I freeze
+    When I fill out the send form with a transaction to "Target Wallet" wallet:
+      | amount   |
+      | 0,000010 |
+    Then I freeze

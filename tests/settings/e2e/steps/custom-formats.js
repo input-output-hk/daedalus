@@ -19,20 +19,12 @@ Given(/^I have chosen the following custom formats:$/, async function(formatsTab
 
 Given(/^I have changed the following custom formats:$/, async function(formatsTable) {
   const chosenFormats = formatsTable.hashes();
-  const [
-    { value: numberValue },
-    { value: dateValue },
-    { value: timeValue },
-  ] = chosenFormats;
-  await this.client.executeAsync((numberValue, dateValue, timeValue, done) => {
-    const fn = (param, value) =>
-      daedalus.stores.profile._updateUserLocalSetting({ param, value })
-    Promise.all([
-      fn('numberFormat', numberValue),
-      fn('dateFormat', dateValue),
-      fn('timeFormat', timeValue),
-    ]).then(done);
-  }, numberValue, dateValue, timeValue);
+  await this.client.executeAsync((chosenFormats, done) => {
+    Promise.all(
+      chosenFormats.map(({ param, value }) =>
+        daedalus.stores.profile._updateUserLocalSetting({ param: `${param}Format`, value }))
+    ).then(done);
+  }, chosenFormats);
   await timeout(1500);
 });
 
@@ -91,7 +83,7 @@ const paramsMatchersValues = {
   }
 }
 
-Then(/^The "([^"]*)" should display the following custom formats:$/, async function(screenElement, expectedTable) {
+Then(/^the "([^"]*)" should display the following custom formats:$/, async function(screenElement, expectedTable) {
   const expectedValues = expectedTable.hashes();
   for (let i = 0; i < expectedValues.length; i++) {
     const { param: expectedParam, value: expectedValue } = expectedValues[i];
@@ -108,4 +100,17 @@ Then(/^The "([^"]*)" should display the following custom formats:$/, async funct
     const matcher = expectedMatcher.test(currentValue)
     expect(matcher).to.be.true;
   }
+});
+
+Then(/^the "([^"]*)" wallet on the sidebar should display the amount of "([^"]*)"$/, async function(walletName, expectedAmount) {
+  const className1 = 'SidebarWalletMenuItem_title';
+  const className2 = 'SidebarWalletMenuItem_info';
+  const selector = `//*[@class="${className1}" and text()="${walletName}"]//following-sibling::div[@class="${className2}"]`;
+  await this.client.waitForVisible(selector);
+  let currentAmount;
+  await this.client.waitUntil(async () => {
+    currentAmount = await this.client.getText(selector);
+    return currentAmount !== '0 ADA';
+  });
+  expect(currentAmount).to.equal(expectedAmount);
 });
