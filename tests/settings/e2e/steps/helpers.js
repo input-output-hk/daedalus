@@ -13,6 +13,36 @@ const DEFAULT_LANGUAGE = 'en-US';
 const INITIAL_SETTINGS_FORM = '.InitialSettings_component';
 const TERMS_OF_USE_FORM = '.TermsOfUseForm_component';
 
+export const screenElementSelectors = {
+  alert: {
+    date: '.AlertsOverlay_date',
+  },
+  incident: {
+    date: '.IncidentOverlay_date',
+  },
+  announcement: {
+    date: '.NewsItem_newsItemDate',
+  },
+  info: {
+    date: '.NewsItem_newsItemDate',
+  },
+  transaction: {
+    date: '.WalletTransactionsList_groupDate',
+    time: '.Transaction_type em',
+    number: '.Transaction_amount',
+  },
+  'transaction filter': {
+    date: '.FilterDialog_fromDateInput input',
+  },
+  'send form': {
+    number: '.SimpleInput_input[name="amount"]',
+  },
+  'Target Wallet': {
+    number: '//*[@class="SidebarWalletMenuItem_title" and text()="Target Wallet"]//following-sibling::div[@class="SidebarWalletMenuItem_info"]',
+  },
+};
+
+
 declare var daedalus: Daedalus;
 
 export const i18nHelpers = {
@@ -147,3 +177,18 @@ export const getSelectedCustomOptions = async function() {
     selectedTime,
   }
 }
+
+export const getValueFromSelector = async function  (screenElement: string, expectedParam: string) {
+  const selector = screenElementSelectors[screenElement][expectedParam];
+  // await this.client.waitForVisible(selector);
+  const tagName = await this.client.getTagName(selector);
+  let value;
+  if (tagName === 'input') {
+    value = await this.client.getValue(selector);
+  } else {
+    value = await this.client.getText(selector);
+    if (Array.isArray(value)) value = value[0];
+  }
+  return value;
+}
+

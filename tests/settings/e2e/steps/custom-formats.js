@@ -1,13 +1,13 @@
 // @flow
 import { Given, When, Then } from 'cucumber';
 import { expect } from 'chai';
-import { termsOfUseHelpers, chooseCustomOptionsByValue, getSelectedCustomOptions } from './helpers';
+import { termsOfUseHelpers, chooseCustomOptionsByValue, getSelectedCustomOptions, getValueFromSelector, screenElementSelectors } from './helpers';
 import { timeout } from '../../../common/e2e/steps/helpers';
 import type { Daedalus } from '../../../types';
 
 declare var daedalus: Daedalus;
 
-Given(/^I have chosen the following custom formats:$/, async function(formatsTable) {
+Given(/^I choose the following custom formats:$/, async function(formatsTable) {
   const chosenFormats = formatsTable.hashes();
   const [
     { value: numberValue },
@@ -45,29 +45,6 @@ Then(/^I should see the following chosen options:$/, async function(expectedTabl
   expect(selectedTime).to.equal(expectedTime);
 });
 
-const screenElementSelectors = {
-  alert: {
-    date: '.AlertsOverlay_date',
-  },
-  incident: {
-    date: '.IncidentOverlay_date',
-  },
-  announcement: {
-    date: '.NewsItem_newsItemDate',
-  },
-  info: {
-    date: '.NewsItem_newsItemDate',
-  },
-  transaction: {
-    date: '.WalletTransactionsList_groupDate',
-    time: '.Transaction_type em',
-    number: '.Transaction_amount',
-  },
-  'transaction filter': {
-    date: '.FilterDialog_fromDateInput input',
-  },
-};
-
 const paramsMatchersValues = {
   date: (expectedValue: string) =>
     expectedValue
@@ -78,7 +55,11 @@ const paramsMatchersValues = {
     ? '[0-1]\\d:[0-5]\\d(:[0-5]\\d)? [AP]M'
     : '[0-2]\\d:[0-5]\\d:([0-5]\\d)?',
   number: (expectedValue: string) => {
-    const [ thousandsSeparator, decimalSeparator ] = expectedValue.split('');
+    let [ thousandsSeparator, decimalSeparator ] = expectedValue.split('');
+    if (!decimalSeparator) {
+      decimalSeparator = thousandsSeparator;
+      thousandsSeparator = ' ';
+    }
     return `((${thousandsSeparator})?\\d+)+${decimalSeparator}\\d{6}$`;
   }
 }
@@ -87,30 +68,23 @@ Then(/^the "([^"]*)" should display the following custom formats:$/, async funct
   const expectedValues = expectedTable.hashes();
   for (let i = 0; i < expectedValues.length; i++) {
     const { param: expectedParam, value: expectedValue } = expectedValues[i];
-    const selector = screenElementSelectors[screenElement][expectedParam];
-    const tagName = await this.client.getTagName(selector);
-    let currentValue;
-    if (tagName === 'input') {
-      currentValue = await this.client.getValue(selector);
-    } else {
-      currentValue = await this.client.getText(selector);
-      if (Array.isArray(currentValue)) currentValue = currentValue[0];
-    }
+    const currentValue = await getValueFromSelector.call(this, screenElement, expectedParam)
     const expectedMatcher = new RegExp(paramsMatchersValues[expectedParam](expectedValue));
     const matcher = expectedMatcher.test(currentValue)
     expect(matcher).to.be.true;
   }
 });
 
-Then(/^the "([^"]*)" wallet on the sidebar should display the amount of "([^"]*)"$/, async function(walletName, expectedAmount) {
-  const className1 = 'SidebarWalletMenuItem_title';
-  const className2 = 'SidebarWalletMenuItem_info';
-  const selector = `//*[@class="${className1}" and text()="${walletName}"]//following-sibling::div[@class="${className2}"]`;
-  await this.client.waitForVisible(selector);
-  let currentAmount;
+Then(/^the "([^"]*)" should display the "([^"]*)" of value "([^"]*)"$/, async function(screenElement, expectedParam, expectedValue) {
+  const currentValue = await getValueFromSelector.call(this, screenElement, expectedParam)
+  expect(currentValue).to.equal(expectedValue);
+});
+
+When(/^the "([^"]*)" wallet has received the transaction amount$/, async function(walletName) {
   await this.client.waitUntil(async () => {
-    currentAmount = await this.client.getText(selector);
+    const currentAmount = await getValueFromSelector.call(this, walletName, 'number')
+    console.log('currentAmount', currentAmount);
     return currentAmount !== '0 ADA';
   });
-  expect(currentAmount).to.equal(expectedAmount);
 });
+

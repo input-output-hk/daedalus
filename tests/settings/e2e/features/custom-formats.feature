@@ -1,8 +1,8 @@
-@e2e
+@e2e  @watch
 Feature: Custom number, date and time formats
 
   Background:
-    Given I have chosen the following custom formats:
+    Given I choose the following custom formats:
       | param  | value                |
       | number | 8.638.301.639,283542 |
       | date   | dd/mm/yyyy           |
@@ -19,7 +19,7 @@ Feature: Custom number, date and time formats
 
   Scenario: Changing number/date/time format on the "Settings > General" screen works as expected
     Given I am on the General Settings "general" screen
-    And I have chosen the following custom formats:
+    And I choose the following custom formats:
       | param  | value                |
       | number | 8 638 301 639.283542 |
       | date   | yyyy/mm/dd           |
@@ -114,25 +114,44 @@ Feature: Custom number, date and time formats
     And I have made the following transactions:
       | source      | destination   | amount |
       | Test Wallet | Target Wallet | 123456 |
-    Then the "Target Wallet" wallet on the sidebar should display the amount of "123,4K ADA"
+    When the "Target Wallet" wallet has received the transaction amount
+    Then the "Target Wallet" should display the "number" of value "123,4K ADA"
 
-  @watch
   Scenario: Users can create transactions regardless of their number format preference
-  # (including testing amounts bigger than 1 million ada)
     Given I have a "Test Wallet" rewards wallet with funds
     And I have the following "Rewards" wallets:
       | name          |
       | Target Wallet |
     And I am on the "Test Wallet" wallet "send" screen
-    And I can see the send form
     When I fill out the send form with a transaction to "Target Wallet" wallet:
       | amount   |
-      | 0.000010 |
+      | 123456789,123456 |
+    Then the "send form" should display the "number" of value "123.456.789,123456"
+    And the "send form" should display the following custom formats:
+      | param  | value    |
+      | number | ., |
+    And I am on the "Test Wallet" wallet "summary" screen
     And I have changed the following custom formats:
-      | param  | value      |
-      | number | number-1   |
-    Then I freeze
+      | param  | value    |
+      | number | number-1 |
+    And I am on the "Test Wallet" wallet "send" screen
     When I fill out the send form with a transaction to "Target Wallet" wallet:
-      | amount   |
-      | 0,000010 |
-    Then I freeze
+      | amount           |
+      | 123456789.123456 |
+    Then the "send form" should display the "number" of value "123,456,789.123456"
+    And the "send form" should display the following custom formats:
+      | param  | value            |
+      | number | ,. |
+    And I am on the "Test Wallet" wallet "summary" screen
+    And I have changed the following custom formats:
+      | param  | value    |
+      | number | number-3 |
+    And I am on the "Test Wallet" wallet "send" screen
+    When I fill out the send form with a transaction to "Target Wallet" wallet:
+      | amount           |
+      | 123456789.123456 |
+    Then the "send form" should display the "number" of value "123 456 789.123456"
+    And the "send form" should display the following custom formats:
+      | param  | value            |
+      | number | . |
+
