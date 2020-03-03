@@ -52,11 +52,6 @@ Then(/^I should see the following chosen options:$/, async function(expectedTabl
     { value: expectedDate },
     { value: expectedTime },
   ] = expectedValues;
-  const {
-    selectedNumber,
-    selectedDate,
-    selectedTime,
-  } = await getSelectedCustomOptions.call(this);
   await this.client.waitUntil(async () => {
     const {
       selectedNumber,
@@ -68,7 +63,12 @@ Then(/^I should see the following chosen options:$/, async function(expectedTabl
       selectedDate === expectedDate &&
       selectedTime === expectedTime
     )
-  })
+  });
+  const {
+    selectedNumber,
+    selectedDate,
+    selectedTime,
+  } = await getSelectedCustomOptions.call(this);
   expect(selectedNumber).to.equal(expectedNumber);
   expect(selectedDate).to.equal(expectedDate);
   expect(selectedTime).to.equal(expectedTime);
