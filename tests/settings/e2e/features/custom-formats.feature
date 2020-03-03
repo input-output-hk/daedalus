@@ -110,7 +110,7 @@ Feature: Custom number, date and time formats
     And I have the following "Rewards" wallets:
       | name          |
       | Target Wallet |
-    And I am on the "Test Wallet" wallet "transactions" screen
+    And I am on the "Target Wallet" wallet "transactions" screen
     And I have made the following transactions:
       | source      | destination   | amount |
       | Test Wallet | Target Wallet | 123456 |

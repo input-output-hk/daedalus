@@ -35,8 +35,12 @@ Given(/^I have changed the following custom formats:$/, async function(formatsTa
 
 When(/^the "([^"]*)" wallet has received the transaction amount$/, async function(walletName) {
   await this.client.waitUntil(async () => {
-    const currentAmount = await getValueFromSelector.call(this, walletName, 'number')
-    return currentAmount !== '0 ADA';
+    const walletHasAmount =
+      await this.client.execute(
+        () => daedalus.stores.wallets.active &&
+        !daedalus.stores.wallets.active.amount.isZero()
+      );
+    return walletHasAmount.value;
   });
 });
 
