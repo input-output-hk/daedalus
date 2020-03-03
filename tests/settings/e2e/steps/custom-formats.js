@@ -1,8 +1,14 @@
 // @flow
 import { Given, When, Then } from 'cucumber';
 import { expect } from 'chai';
-import { termsOfUseHelpers, chooseCustomOptionsByValue, getSelectedCustomOptions, getValueFromSelector, screenElementSelectors } from './helpers';
-import { timeout } from '../../../common/e2e/steps/helpers';
+import {
+  termsOfUseHelpers,
+  chooseCustomOptionsByValue,
+  getSelectedCustomOptions,
+  getValueFromSelector,
+  screenElementSelectors,
+  doesMatchExpectedValue,
+} from './helpers';
 import type { Daedalus } from '../../../types';
 
 declare var daedalus: Daedalus;
@@ -25,8 +31,15 @@ Given(/^I have changed the following custom formats:$/, async function(formatsTa
         daedalus.stores.profile._updateUserLocalSetting({ param: `${param}Format`, value }))
     ).then(done);
   }, chosenFormats);
-  await timeout(1500);
 });
+
+When(/^the "([^"]*)" wallet has received the transaction amount$/, async function(walletName) {
+  await this.client.waitUntil(async () => {
+    const currentAmount = await getValueFromSelector.call(this, walletName, 'number')
+    return currentAmount !== '0 ADA';
+  });
+});
+
 
 Then(/^I should see the following chosen options:$/, async function(expectedTable) {
   const expectedValues = expectedTable.hashes();
@@ -40,37 +53,26 @@ Then(/^I should see the following chosen options:$/, async function(expectedTabl
     selectedDate,
     selectedTime,
   } = await getSelectedCustomOptions.call(this);
+  await this.client.waitUntil(async () => {
+    const [{ value: expectedNumber }] = expectedValues;
+    const { selectedNumber } = await getSelectedCustomOptions.call(this);
+    return selectedNumber === expectedNumber
+  })
   expect(selectedNumber).to.equal(expectedNumber);
   expect(selectedDate).to.equal(expectedDate);
   expect(selectedTime).to.equal(expectedTime);
 });
 
-const paramsMatchersValues = {
-  date: (expectedValue: string) =>
-    expectedValue
-      .replace('MM', '(0[1-9]|1[0-2])')
-      .replace('DD', '(0[1-9]|[12]\\d|3[01])')
-      .replace('YYYY', '\\d{4}'),
-  time: (expectedValue: string) => expectedValue === 'hh:mm:ss A'
-    ? '[0-1]\\d:[0-5]\\d(:[0-5]\\d)? [AP]M'
-    : '[0-2]\\d:[0-5]\\d:([0-5]\\d)?',
-  number: (expectedValue: string) => {
-    let [ thousandsSeparator, decimalSeparator ] = expectedValue.split('');
-    if (!decimalSeparator) {
-      decimalSeparator = thousandsSeparator;
-      thousandsSeparator = ' ';
-    }
-    return `((${thousandsSeparator})?\\d+)+${decimalSeparator}\\d{6}$`;
-  }
-}
-
 Then(/^the "([^"]*)" should display the following custom formats:$/, async function(screenElement, expectedTable) {
   const expectedValues = expectedTable.hashes();
+  await this.client.waitUntil(async () => {
+    const { param: expectedParam, value: expectedValue } = expectedValues[0];
+    const matcher = await doesMatchExpectedValue.call(this,screenElement, expectedParam, expectedValue);
+    return matcher;
+  })
   for (let i = 0; i < expectedValues.length; i++) {
     const { param: expectedParam, value: expectedValue } = expectedValues[i];
-    const currentValue = await getValueFromSelector.call(this, screenElement, expectedParam)
-    const expectedMatcher = new RegExp(paramsMatchersValues[expectedParam](expectedValue));
-    const matcher = expectedMatcher.test(currentValue)
+    const matcher = await doesMatchExpectedValue.call(this,screenElement, expectedParam, expectedValue);
     expect(matcher).to.be.true;
   }
 });
@@ -79,11 +81,3 @@ Then(/^the "([^"]*)" should display the "([^"]*)" of value "([^"]*)"$/, async fu
   const currentValue = await getValueFromSelector.call(this, screenElement, expectedParam)
   expect(currentValue).to.equal(expectedValue);
 });
-
-When(/^the "([^"]*)" wallet has received the transaction amount$/, async function(walletName) {
-  await this.client.waitUntil(async () => {
-    const currentAmount = await getValueFromSelector.call(this, walletName, 'number')
-    return currentAmount !== '0 ADA';
-  });
-});
-

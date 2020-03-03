@@ -8,6 +8,8 @@ import {
 } from '../../../common/e2e/steps/helpers';
 import type { Daedalus } from '../../../types';
 
+declare var daedalus: Daedalus;
+
 const DATA_LAYER_MIGRATION_ACCEPTANCE_COMPONENT = '.DataLayerMigrationForm_component';
 const DEFAULT_LANGUAGE = 'en-US';
 const INITIAL_SETTINGS_FORM = '.InitialSettings_component';
@@ -28,8 +30,11 @@ export const screenElementSelectors = {
   },
   transaction: {
     date: '.WalletTransactionsList_groupDate',
-    time: '.Transaction_type em',
+    time: '.Transaction_type',
     number: '.Transaction_amount',
+    transform: {
+      time: (value: string) => value.split(',')[1],
+    }
   },
   'transaction filter': {
     date: '.FilterDialog_fromDateInput input',
@@ -42,8 +47,24 @@ export const screenElementSelectors = {
   },
 };
 
-
-declare var daedalus: Daedalus;
+const paramsMatchersValues = {
+  date: (expectedValue: string) =>
+    expectedValue
+      .replace('MM', '(0[1-9]|1[0-2])')
+      .replace('DD', '(0[1-9]|[12]\\d|3[01])')
+      .replace('YYYY', '\\d{4}'),
+  time: (expectedValue: string) => expectedValue === 'hh:mm:ss A'
+    ? '[0-1]\\d:[0-5]\\d(:[0-5]\\d)? [AP]M'
+    : '[0-2]\\d:[0-5]\\d:([0-5]\\d)?',
+  number: (expectedValue: string) => {
+    let [ thousandsSeparator, decimalSeparator ] = expectedValue.split('');
+    if (!decimalSeparator) {
+      decimalSeparator = thousandsSeparator;
+      thousandsSeparator = ' ';
+    }
+    return `((${thousandsSeparator})?\\d+)+${decimalSeparator}\\d{6}$`;
+  }
+}
 
 export const i18nHelpers = {
   formatMessage: async (
@@ -180,7 +201,7 @@ export const getSelectedCustomOptions = async function() {
 
 export const getValueFromSelector = async function  (screenElement: string, expectedParam: string) {
   const selector = screenElementSelectors[screenElement][expectedParam];
-  // await this.client.waitForVisible(selector);
+  const transform = screenElementSelectors[screenElement].transform;
   const tagName = await this.client.getTagName(selector);
   let value;
   if (tagName === 'input') {
@@ -189,6 +210,18 @@ export const getValueFromSelector = async function  (screenElement: string, expe
     value = await this.client.getText(selector);
     if (Array.isArray(value)) value = value[0];
   }
+  if (transform && transform[expectedParam]) value = transform[expectedParam](value);
   return value;
 }
+
+export const doesMatchExpectedValue = async function(
+  screenElement: string,
+  expectedParam: string,
+  expectedValue: string,
+) {
+  const currentValue = await getValueFromSelector.call(this, screenElement, expectedParam);
+  const expectedMatcher = new RegExp(paramsMatchersValues[expectedParam](expectedValue));
+  return expectedMatcher.test(currentValue);
+}
+
 

@@ -379,7 +379,7 @@ export default class Transaction extends Component<Props, State> {
               <div className={styles.details}>
                 <div className={styles.type}>
                   {intl.formatMessage(messages.type, { currency })},{' '}
-                  <em>{moment(data.date).format(currentTimeFormat)}</em>
+                  {moment(data.date).format(currentTimeFormat)}
                 </div>
                 {this.renderTxnStateTag()}
               </div>
