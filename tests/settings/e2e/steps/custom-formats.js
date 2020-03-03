@@ -83,7 +83,6 @@ Then(/^the "([^"]*)" should display the "([^"]*)" of value "([^"]*)"$/, async fu
 When(/^the "([^"]*)" wallet has received the transaction amount$/, async function(walletName) {
   await this.client.waitUntil(async () => {
     const currentAmount = await getValueFromSelector.call(this, walletName, 'number')
-    console.log('currentAmount', currentAmount);
     return currentAmount !== '0 ADA';
   });
 });
