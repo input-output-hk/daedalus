@@ -10,6 +10,7 @@ Changelog
 ### Chores
 
 - Implemented acceptance tests for custom number, date and time formats ([PR 1868](https://github.com/input-output-hk/daedalus/pull/1868))
+- Updated Flow and EsLint dependencies ([PR 1866](https://github.com/input-output-hk/daedalus/pull/1866))
 - Updated test environment dependencies ([PR 1867](https://github.com/input-output-hk/daedalus/pull/1867))
 - Updated `husky` dependency ([PR 1865](https://github.com/input-output-hk/daedalus/pull/1865))
 - Updated stylelint and stylelint-order dependencies ([PR 1864](https://github.com/input-output-hk/daedalus/pull/1864))

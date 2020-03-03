@@ -28,29 +28,18 @@ export const NetworkNameOptions = {
 };
 
 export type CardanoNodeState =
-  | 'stopped'
   | 'starting'
   | 'running'
+  | 'exiting'
   | 'stopping'
+  | 'stopped'
   | 'updating'
   | 'updated'
   | 'crashed'
   | 'errored'
-  | 'exiting'
   | 'unrecoverable';
 
-export const CardanoNodeStates: {
-  STARTING: CardanoNodeState,
-  RUNNING: CardanoNodeState,
-  EXITING: CardanoNodeState,
-  STOPPING: CardanoNodeState,
-  STOPPED: CardanoNodeState,
-  UPDATING: CardanoNodeState,
-  UPDATED: CardanoNodeState,
-  CRASHED: CardanoNodeState,
-  ERRORED: CardanoNodeState,
-  UNRECOVERABLE: CardanoNodeState,
-} = {
+export const CardanoNodeStates: EnumMap<string, CardanoNodeState> = {
   STARTING: 'starting',
   RUNNING: 'running',
   EXITING: 'exiting',
