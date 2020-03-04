@@ -90,7 +90,7 @@ export const waitAndClick = async (
   selector: string,
   ...waitArgs: Array<*>
 ) => {
-  await waitAnd.call(this, selector, ...waitArgs);
+  await waitAnd.call(client, selector, ...waitArgs);
   return client.click(selector);
 };
 
@@ -99,7 +99,7 @@ export const waitAndGetText = async (
   selector: string,
   ...waitArgs: Array<*>
 ) => {
-  await waitAnd.call(this, selector, ...waitArgs);
+  await waitAnd.call(client, selector, ...waitArgs);
   return client.getText(selector);
 };
 
