@@ -74,7 +74,7 @@ When(/^Stake pools loading failed/, async function () {
 });
 
 When(/^I see the stake pools search input field/, function () {
-  return this.client.waitForVisible(STAKE_POOLS_SEARCH_SELECTOR);
+  return this.waitForVisible(STAKE_POOLS_SEARCH_SELECTOR);
 });
 
 When(/^I enter "([^"]*)" in search input field/, function (data) {
@@ -95,13 +95,13 @@ When(/^I click "confirm" button/, function () {
 });
 
 When(/^I mark experimental feature as read/, async function () {
-  await this.client.waitForVisible('.ExperimentalDataOverlay_component');
+  await this.waitForVisible('.ExperimentalDataOverlay_component');
   return this.waitAndClick('.ExperimentalDataOverlay_actionButton');
 });
 
 Then(/^I should see stake pool tooltip with order number "([^"]*)"/, async function (rankNumber) {
   await this.client.waitForText(STAKE_POOL_TOOLTIP_RANKING_SELECTOR);
-  const stakePoolRankingText = await this.client.getText(STAKE_POOL_TOOLTIP_RANKING_SELECTOR);
+  const stakePoolRankingText = await this.waitAndGetText.call(this, STAKE_POOL_TOOLTIP_RANKING_SELECTOR);
   const stakePoolRanking = Array.isArray(stakePoolRankingText) ? stakePoolRankingText[0] : stakePoolRankingText;
   expect(stakePoolRanking).to.equal(rankNumber);
 });
@@ -125,23 +125,23 @@ When(/^I click on delegated stake pool/, async function () {
 Then(/^Stake pool with rank "([^"]*)" tooltip shows correct data$/, async function (stakePoolRank) {
   const stakePool = await getStakePoolByRanking(this.client, stakePoolRank);
 
-  await this.client.waitForVisible(STAKE_POOL_TOOLTIP_SELECTOR);
+  await this.waitForVisible(STAKE_POOL_TOOLTIP_SELECTOR);
   await this.client.waitForText(STAKE_POOL_TOOLTIP_DESCRIPTION_SELECTOR);
-  const stakePoolDescription = await this.client.getText(STAKE_POOL_TOOLTIP_DESCRIPTION_SELECTOR);
+  const stakePoolDescription = await this.waitAndGetText.call(this, STAKE_POOL_TOOLTIP_DESCRIPTION_SELECTOR);
   await this.client.waitForText(STAKE_POOL_TOOLTIP_TICKER_SELECTOR);
-  const stakePoolTicker = await this.client.getText(STAKE_POOL_TOOLTIP_TICKER_SELECTOR);
+  const stakePoolTicker = await this.waitAndGetText.call(this, STAKE_POOL_TOOLTIP_TICKER_SELECTOR);
   await this.client.waitForText(STAKE_POOL_TOOLTIP_HOMEPAGE_SELECTOR);
-  const stakePoolHomepage = await this.client.getText(STAKE_POOL_TOOLTIP_HOMEPAGE_SELECTOR);
+  const stakePoolHomepage = await this.waitAndGetText.call(this, STAKE_POOL_TOOLTIP_HOMEPAGE_SELECTOR);
   await this.client.waitForText(STAKE_POOL_TOOLTIP_PERFORMANCE_SELECTOR);
-  const stakePoolPerformanceText = await this.client.getText(STAKE_POOL_TOOLTIP_PERFORMANCE_SELECTOR);
+  const stakePoolPerformanceText = await this.waitAndGetText.call(this, STAKE_POOL_TOOLTIP_PERFORMANCE_SELECTOR);
   await this.client.waitForText(STAKE_POOL_TOOLTIP_COST_SELECTOR);
-  const stakePoolCost = await this.client.getText(STAKE_POOL_TOOLTIP_COST_SELECTOR);
+  const stakePoolCost = await this.waitAndGetText.call(this, STAKE_POOL_TOOLTIP_COST_SELECTOR);
   await this.client.waitForText(STAKE_POOL_TOOLTIP_NAME_SELECTOR);
-  const stakePoolName = await this.client.getText(STAKE_POOL_TOOLTIP_NAME_SELECTOR);
+  const stakePoolName = await this.waitAndGetText.call(this, STAKE_POOL_TOOLTIP_NAME_SELECTOR);
   await this.client.waitForText(STAKE_POOL_TOOLTIP_PROFIT_MARGIN_SELECTOR);
-  const stakePoolProfitMargin = await this.client.getText(STAKE_POOL_TOOLTIP_PROFIT_MARGIN_SELECTOR);
+  const stakePoolProfitMargin = await this.waitAndGetText.call(this, STAKE_POOL_TOOLTIP_PROFIT_MARGIN_SELECTOR);
   await this.client.waitForText(STAKE_POOL_TOOLTIP_RANKING_SELECTOR);
-  const stakePoolRanking = await this.client.getText(STAKE_POOL_TOOLTIP_RANKING_SELECTOR);
+  const stakePoolRanking = await this.waitAndGetText.call(this, STAKE_POOL_TOOLTIP_RANKING_SELECTOR);
   const cost = new BigNumber(stakePool.cost.c)
   const formattedCost = formattedWalletAmount(cost, true, false);
   const stakePoolPerformance = Array.isArray(stakePoolPerformanceText) ? stakePoolPerformanceText[0] : stakePoolPerformanceText;
@@ -158,11 +158,11 @@ Then(/^Stake pool with rank "([^"]*)" tooltip shows correct data$/, async functi
 });
 
 Then(/^I should see "Delegate Wallet" dialog/, function () {
-  return this.client.waitForVisible(DELEGATE_WALLET_SELECTOR);
+  return this.waitForVisible(DELEGATE_WALLET_SELECTOR);
 });
 
 Then(/^I should see step 1 of 3 screen/, function () {
-  return this.client.waitForVisible(DELEGATION_WALLET_FIRST_STEP_SELECTOR);
+  return this.waitForVisible(DELEGATION_WALLET_FIRST_STEP_SELECTOR);
 });
 
 Then(/^I open the wallet dropdown/, function () {
@@ -177,12 +177,12 @@ Then(/^I choose "([^"]*)" wallet$/, function (walletName) {
 });
 
 Then(/^I should see step 2 of 3 screen/, function () {
-  return this.client.waitForVisible(DELEGATION_WALLET_SECOND_STEP_SELECTOR);
+  return this.waitForVisible(DELEGATION_WALLET_SECOND_STEP_SELECTOR);
 });
 
 Then(/^I see following label on the dialog: "([^"]*)"$/, async function (message) {
   await this.client.waitForText(SELECTED_STAKE_POOLS_DELEGATION_WALLET_DIALOG_SELECTOR);
-  const selectedStakePoolLabel = await this.client.getText(SELECTED_STAKE_POOLS_DELEGATION_WALLET_DIALOG_SELECTOR);
+  const selectedStakePoolLabel = await this.waitAndGetText.call(this, SELECTED_STAKE_POOLS_DELEGATION_WALLET_DIALOG_SELECTOR);
   expect(selectedStakePoolLabel.toString().split('.')[0]).to.equal(message);
 });
 
@@ -197,13 +197,13 @@ Then(/^I see delegation status message for stake pool with rank "([^"]*)"$/, asy
   const messageWithPendingDelegation = `You are already pending delegation ${this.walletName} wallet to [${stakePool.ticker}] stake pool`
   const messageWithNoPendingDelegation = `You are already delegating ${this.walletName} wallet to [${stakePool.ticker}] stake pool`
   await this.client.waitForText(SELECTED_STAKE_POOLS_DELEGATION_WALLET_DIALOG_SELECTOR);
-  const selectedStakePoolLabel = await this.client.getText(SELECTED_STAKE_POOLS_DELEGATION_WALLET_DIALOG_SELECTOR);
+  const selectedStakePoolLabel = await this.waitAndGetText.call(this, SELECTED_STAKE_POOLS_DELEGATION_WALLET_DIALOG_SELECTOR);
   expect(selectedStakePoolLabel.toString().split('.')[0]).to.oneOf([messageWithPendingDelegation, messageWithNoPendingDelegation]);
 });
 
 Then(/^I should see label: "([^"]*)"$/, async function (message) {
   await this.client.waitForText(STAKE_POOLS_DELEGATING_LABEL);
-  const delegatedStakePoolLabel = await this.client.getText(STAKE_POOLS_DELEGATING_LABEL);
+  const delegatedStakePoolLabel = await this.waitAndGetText.call(this, STAKE_POOLS_DELEGATING_LABEL);
   expect(delegatedStakePoolLabel).to.equal(message);
 });
 
@@ -212,19 +212,19 @@ Then(/^I click on stake pools tab button/, async function () {
 });
 
 Then(/^I am on the Staking pool screen/, async function () {
-  await this.client.waitForVisible(STAKE_POOL_PAGE);
+  await this.waitForVisible(STAKE_POOL_PAGE);
 });
 
 Then(/^I should't see loading message anymore/, function () {
-  return this.client.waitForVisible(LOADING_MESSAGE_SELECTOR, null, true);
+  return this.waitForVisible(LOADING_MESSAGE_SELECTOR, null, true);
 });
 
 Then(/^I should see stake pools listed/, async function () {
-  await this.client.waitForVisible(STAKE_POOLS_LIST_SELECTOR);
+  await this.waitForVisible(STAKE_POOLS_LIST_SELECTOR);
 });
 
 Then(/^I should not see any stake pool$/, async function () {
-  return this.client.waitForVisible(STAKE_POOLS_LIST_SELECTOR, null, true);
+  return this.waitForVisible(STAKE_POOLS_LIST_SELECTOR, null, true);
 });
 
 Then(/^I should see stake pools ordered by rank$/, async function () {
@@ -248,19 +248,19 @@ Then(/^I should see the following loading message:$/, async function (message) {
   );
   const loadingMsg = message.hashes()[0];
   await this.client.waitForText(LOADING_MESSAGE_SELECTOR);
-  const loadingMsgOnScreen = await this.client.getText(LOADING_MESSAGE_SELECTOR);
+  const loadingMsgOnScreen = await this.waitAndGetText.call(this, LOADING_MESSAGE_SELECTOR);
   const expectedLoadingMsg = await this.intl(loadingMsg.message);
   expect(loadingMsgOnScreen).to.equal(expectedLoadingMsg);
 });
 
 Then(/^I should see search label with text: "([^"]*)"$/, async function (message) {
   await this.client.waitForText(SEARCH_RESULTS_LABEL_SELECTOR);
-  const searchResultsMessages = await this.client.getText(SEARCH_RESULTS_LABEL_SELECTOR);
+  const searchResultsMessages = await this.waitAndGetText.call(this, SEARCH_RESULTS_LABEL_SELECTOR);
   expect(searchResultsMessages).to.equal(message);
 });
 
 Then(/^I should see stake pool with slug "([^"]*)"$/, async function (slug) {
   await this.client.waitForText(STAKE_POOL_SLUG_SELECTOR);
-  const stakePoolSlug = await this.client.getText(STAKE_POOL_SLUG_SELECTOR);
+  const stakePoolSlug = await this.waitAndGetText.call(this, STAKE_POOL_SLUG_SELECTOR);
   expect(stakePoolSlug).to.equal(slug);
 });

@@ -83,17 +83,17 @@ Given(/^the wallets have the following pending delegations:$/, async function(de
 Then(/^the wallets should correctly display the correct stake pool tickers$/, { timeout: 60000 }, async function() {
   const walletNameSelector = '.WalletRow_title';
   const lastWalletTickers = last(walletsTickers);
-  await this.client.waitForVisible(walletNameSelector);
+  await this.waitForVisible(walletNameSelector);
   // Waits for the patchAdaApi to transform the wallet values
   await this.client.waitUntil(async () => {
-    const walletNames = await this.client.getText(walletNameSelector);
+    const walletNames = await this.waitAndGetText.call(this, walletNameSelector);
     return last(walletNames) === `Modified Wallet ${walletsTickers.length}`;
   });
   const tickerSelector = '.tickerText';
-  await this.client.waitForVisible(tickerSelector);
+  await this.waitForVisible(tickerSelector);
   for (let index = 0; index < walletsTickers.length; index++) {
     const expectedTickers = walletsTickers[index];
-    let tickerTexts = await this.client.getText(`.WalletRow_component:nth-child(${index + 1}) ${tickerSelector}`);
+    let tickerTexts = await this.waitAndGetText.call(this, `.WalletRow_component:nth-child(${index + 1}) ${tickerSelector}`);
     if (!Array.isArray(tickerTexts)) tickerTexts = [tickerTexts];
     expect(tickerTexts.length).to.equal(expectedTickers.length);
     tickerTexts.forEach((tickerText, index) => {
@@ -107,7 +107,7 @@ Then(/^the ADA logo should be displayed as follows:$/, async function(visibility
   const visibility = visibilityTable.hashes();
   for (let index = 0; index < visibility.length; index++) {
     const shouldBeVisible = visibility[index].ADA_LOGO === 'visible';
-    await this.client.waitForVisible(`.WalletRow_component:nth-child(${index + 1}) .WalletRow_activeAdaSymbol`, null, !shouldBeVisible);
+    await this.waitForVisible(`.WalletRow_component:nth-child(${index + 1}) .WalletRow_activeAdaSymbol`, null, !shouldBeVisible);
   }
 });
 

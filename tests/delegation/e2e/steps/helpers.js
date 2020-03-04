@@ -33,7 +33,7 @@ export const getStakePoolByRanking = async (client: Object, ranking: number) => 
 
 export const getCardanoEpochData = async function(epoch: 'current' | 'next', param: string) {
   const headerIndex = epoch === 'current' ? 1 : 2;
-  return await this.client.getText(`(//div[@class="DelegationCenterHeader_heading"])[${headerIndex}]//following-sibling::div//div[text()="${param}"]//following-sibling::div[@class="DelegationCenterHeader_fieldValue"]`);
+  return await this.waitAndGetText.call(this, `(//div[@class="DelegationCenterHeader_heading"])[${headerIndex}]//following-sibling::div//div[text()="${param}"]//following-sibling::div[@class="DelegationCenterHeader_fieldValue"]`);
 };
 
 export const getCurrentEpoch = async function() {
@@ -41,7 +41,7 @@ export const getCurrentEpoch = async function() {
 };
 
 export const getNextEpoch = async function() {
-  const headerText = await this.client.getText(`(//div[@class="DelegationCenterHeader_heading"])[2]`);
+  const headerText = await this.waitAndGetText.call(this, `(//div[@class="DelegationCenterHeader_heading"])[2]`);
   try {
     return headerText.match(/[1-9]+/)[0];
   } catch(err) {

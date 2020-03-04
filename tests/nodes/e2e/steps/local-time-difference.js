@@ -26,7 +26,7 @@ Then(/^the system time error overlay should be (hidden|visible)$/, function(
   state
 ) {
   const isVisible = state === 'visible';
-  return this.client.waitForVisible(
+  return this.waitForVisible(
     SELECTORS.ERROR_COMPONENT,
     null,
     !isVisible

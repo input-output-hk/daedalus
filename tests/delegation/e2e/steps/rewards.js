@@ -22,15 +22,15 @@ When(/^I click on rewards tab button$/, async function () {
 });
 
 Then(/^I am on the rewards screen$/, async function () {
-  await this.client.waitForVisible(REWARDS_PAGE);
+  await this.waitForVisible(REWARDS_PAGE);
 });
 
 Then(/^I should see rewards listed$/, async function () {
-  await this.client.waitForVisible(REWARDS_LIST_SELECTOR);
+  await this.waitForVisible(REWARDS_LIST_SELECTOR);
 });
 
 Then(/^I should see no rewards label$/, async function () {
-  return this.client.waitForVisible(NO_REWARDS_SELECTOR);
+  return this.waitForVisible(NO_REWARDS_SELECTOR);
 });
 
 Then(/^I click on the Export to CSV button$/, async function () {

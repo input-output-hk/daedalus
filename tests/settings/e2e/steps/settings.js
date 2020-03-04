@@ -12,14 +12,14 @@ declare var daedalus: Daedalus;
 
 Given(/^I am on the settings screen$/, async function() {
   await navigateTo.call(this, '/settings');
-  return this.client.waitForVisible('.SettingsLayout_component');
+  return this.waitForVisible('.SettingsLayout_component');
 });
 
 Given(/^I should see the "([^"]*)" wallet password dialog$/, function(
   dialogType
 ) {
   const selector = `.${dialogType}PasswordDialog`;
-  return this.client.waitForVisible(selector);
+  return this.waitForVisible(selector);
 });
 
 When(/^I click on the "([^"]*)" password label$/, function(label) {
@@ -48,7 +48,7 @@ When(/^I change wallet password:$/, async function(table) {
 });
 
 Then(/^I should not see the change password dialog anymore$/, function() {
-  return this.client.waitForVisible('.changePasswordDialog', null, true);
+  return this.waitForVisible('.changePasswordDialog', null, true);
 });
 
 When(/^I enter current wallet password:$/, async function(table) {
@@ -83,7 +83,7 @@ Then(/^I should see new wallet name "([^"]*)"$/, async function(walletName) {
 
 Then(/^I should see "([^"]*)" label in password field$/, function(label) {
   const selector = `.${label}Label`;
-  return this.client.waitForVisible(selector);
+  return this.waitForVisible(selector);
 });
 
 Then(/^I should see the following error messages:$/, async function(data) {
@@ -91,7 +91,7 @@ Then(/^I should see the following error messages:$/, async function(data) {
   const errorSelector =
     '.ChangeSpendingPasswordDialog_newPassword .SimpleFormField_error';
   await this.client.waitForText(errorSelector);
-  const errorsOnScreen = await this.client.getText(errorSelector);
+  const errorsOnScreen = await this.waitAndGetText.call(this, errorSelector);
   const expectedError = await this.intl(error.message);
   expect(errorsOnScreen).to.equal(expectedError);
 });
@@ -99,7 +99,7 @@ Then(/^I should see the following error messages:$/, async function(data) {
 Then(
   /^I should see error message that old password is not correct$/,
   function() {
-    return this.client.waitForVisible('.ChangeSpendingPasswordDialog_error');
+    return this.waitForVisible('.ChangeSpendingPasswordDialog_error');
   }
 );
 
@@ -108,9 +108,9 @@ When(/^I click "Resync wallet" button$/, function() {
 });
 
 When(/^I see "Resync wallet" button spinner$/, function() {
-  return this.client.waitForVisible('.ResyncWalletButton_isSubmitting');
+  return this.waitForVisible('.ResyncWalletButton_isSubmitting');
 });
 
 When(/^I should not see "Resync wallet" button spinner anymore$/, function() {
-  return this.client.waitForVisible('.ResyncWalletButton_isSubmitting', null, true);
+  return this.waitForVisible('.ResyncWalletButton_isSubmitting', null, true);
 });

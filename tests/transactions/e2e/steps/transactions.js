@@ -46,7 +46,7 @@ When(/^I click on the show more transactions button$/, async function() {
 });
 
 When(/^I can see the send form$/, function() {
-  return this.client.waitForVisible('.WalletSendForm');
+  return this.waitForVisible('.WalletSendForm');
 });
 
 When(/^I fill out the wallet send form with:$/, function(table) {
@@ -72,7 +72,7 @@ When(
 When(/^the transaction fees are calculated$/, async function() {
   this.fees = await this.client.waitUntil(async () => {
     // Expected transactionFeeText format "+ 0.000001 of fees"
-    const transactionFeeText = await this.client.getText(
+    const transactionFeeText = await this.waitAndGetText.call(this,
       '.AmountInputSkin_fees'
     );
     const transactionFeeAmount = new BigNumber(transactionFeeText.substr(2, 8));
@@ -82,12 +82,12 @@ When(/^the transaction fees are calculated$/, async function() {
 
 When(/^I click on the next button in the wallet send form$/, async function() {
   const submitButton = '.WalletSendForm_nextButton';
-  await this.client.waitForVisible(submitButton);
+  await this.waitForVisible(submitButton);
   return this.client.click(submitButton);
 });
 
 When(/^I see send money confirmation dialog$/, function() {
-  return this.client.waitForVisible('.WalletSendConfirmationDialog_dialog');
+  return this.waitForVisible('.WalletSendConfirmationDialog_dialog');
 });
 
 When(
@@ -114,7 +114,7 @@ Then(
   async function(data) {
     const errorSelector = '.WalletSendForm_component .SimpleFormField_error';
     await this.client.waitForText(errorSelector);
-    let errorsOnScreen = await this.client.getText(errorSelector);
+    let errorsOnScreen = await this.waitAndGetText.call(this, errorSelector);
     if (typeof errorsOnScreen === 'string') errorsOnScreen = [errorsOnScreen];
     const errors = data.hashes();
     for (let i = 0; i < errors.length; i++) {
@@ -127,14 +127,14 @@ Then(
 // TODO: refactor this to a less hackish solution (fees cannot easily be calculated atm)
 Then(/^the latest transaction should show:$/, async function(table) {
   const expectedData = table.hashes()[0];
-  await this.client.waitForVisible('.Transaction_title');
-  let transactionTitles = await this.client.getText('.Transaction_title');
+  await this.waitForVisible('.Transaction_title');
+  let transactionTitles = await this.waitAndGetText.call(this, '.Transaction_title');
   transactionTitles = [].concat(transactionTitles);
   const expectedTransactionTitle = await this.intl(expectedData.title, {
     currency: 'Ada',
   });
   expect(expectedTransactionTitle).to.equal(transactionTitles[0]);
-  let transactionAmounts = await this.client.getText('.Transaction_amount');
+  let transactionAmounts = await this.waitAndGetText.call(this, '.Transaction_amount');
   transactionAmounts = [].concat(transactionAmounts);
   // Transaction amount includes transaction fees so we need to
   // substract them in order to get a match with expectedData.amountWithoutFees.
@@ -147,11 +147,11 @@ Then(/^the latest transaction should show:$/, async function(table) {
 });
 
 Then(/^I should not see any transactions$/, async function() {
-  await this.client.waitForVisible('.Transaction_component', null, true);
+  await this.waitForVisible('.Transaction_component', null, true);
 });
 
 Then(/^I should see the no recent transactions message$/, async function() {
-  await this.client.waitForVisible('.WalletNoTransactions_label');
+  await this.waitForVisible('.WalletNoTransactions_label');
 });
 
 Then(/^I should see the following transactions:$/, async function(table) {

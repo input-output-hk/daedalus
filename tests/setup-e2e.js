@@ -18,6 +18,7 @@ import {
 } from './common/e2e/steps/helpers';
 import { setNewsFeedIsOpen, resetTestNews } from './news/e2e/steps/newsfeed-steps';
 import { refreshClient } from './nodes/e2e/steps/helpers';
+import { waitAndClick, waitAndGetText } from './common/e2e/steps/helpers';
 import { TEST } from '../source/common/types/environment.types';
 import type { Daedalus } from './types';
 
@@ -25,7 +26,7 @@ import type { Daedalus } from './types';
 
 declare var daedalus: Daedalus;
 const context = {};
-const DEFAULT_TIMEOUT = 20000;
+const DEFAULT_TIMEOUT = 30000;
 let scenariosCount = 0;
 
 const printMainProcessLogs = () =>
@@ -142,10 +143,9 @@ Before({ tags: '@newsfeed' }, function() {
 
 // adds waitAndClick method to webdriver
 Before(function() {
-  this.waitAndClick = async (selector, ...waitArgs) => {
-    await this.client.waitForVisible(selector, ...waitArgs);
-    return this.client.click(selector);
-  };
+  this.waitAndClick = waitAndClick;
+  this.waitAndGetText = waitAndGetText;
+  this.waitForVisible = this.client.waitForVisible;
 });
 
 // ads intl method to webdriver

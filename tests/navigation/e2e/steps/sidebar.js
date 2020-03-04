@@ -17,7 +17,7 @@ const SELECTORS = {
 
 Given(/^the sidebar submenu is (hidden|visible)/, async function(state) {
   const isVisible = state === 'visible';
-  await this.client.waitForVisible(SELECTORS.SIDEBAR_COMPONENT);
+  await this.waitForVisible(SELECTORS.SIDEBAR_COMPONENT);
   await this.client.executeAsync((visible, SELECTORS, done) => {
     const { isShowingSubMenus } = daedalus.stores.sidebar;
     let sidebarWillAnimate = false;
@@ -67,7 +67,7 @@ When(/^I click on the "([^"]*)" wallet in the sidebar$/, function(walletName) {
 
 Then(/^the sidebar submenu should be (hidden|visible)/, function(state) {
   const waitForHidden = state === 'hidden';
-  return this.client.waitForVisible(
+  return this.waitForVisible(
     SELECTORS.MENU_COMPONENT,
     null,
     waitForHidden
@@ -75,9 +75,9 @@ Then(/^the sidebar submenu should be (hidden|visible)/, function(state) {
 });
 
 Then(/^The "([^"]*)" category should be active$/, function(category) {
-  return this.client.waitForVisible(`${SELECTORS.CATEGORY_ACTIVE}.${category}`);
+  return this.waitForVisible(`${SELECTORS.CATEGORY_ACTIVE}.${category}`);
 });
 
 Then(/^I should see the initial screen$/, function() {
-  return this.client.waitForVisible(SELECTORS.LAYOUT_COMPONENT);
+  return this.waitForVisible(SELECTORS.LAYOUT_COMPONENT);
 });

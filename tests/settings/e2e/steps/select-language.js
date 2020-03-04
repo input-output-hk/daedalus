@@ -21,7 +21,7 @@ Given(/^I dont have a language set$/, async function() {
 });
 
 When(/^I am on the language selection screen$/, function() {
-  return this.client.waitForVisible('.InitialSettings_component');
+  return this.waitForVisible('.InitialSettings_component');
 });
 
 When(/^I open language selection dropdown$/, function() {
@@ -41,7 +41,7 @@ When(/^I submit the language selection form$/, function() {
 });
 
 Then(/^I should not see the language selection screen anymore$/, function() {
-  return this.client.waitForVisible(INITIAL_SETTINGS_FORM, null, true);
+  return this.waitForVisible(INITIAL_SETTINGS_FORM, null, true);
 });
 
 Then(/^I should have Japanese language set$/, async function() {

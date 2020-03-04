@@ -50,8 +50,8 @@ When(/^I see "Transfer ada" wizard step 2 transfer funds button disabled and spi
 
 When(/^I see initial wallets balance$/, async function() {
   // Wait for balance to be visible
-  const rewardsWalletName = await this.client.getText('.SidebarWalletsMenu_wallets button:nth-child(1) .SidebarWalletMenuItem_title');
-  const balanceWalletName = await this.client.getText('.SidebarWalletsMenu_wallets button:nth-child(2) .SidebarWalletMenuItem_title');
+  const rewardsWalletName = await this.waitAndGetText.call(this, '.SidebarWalletsMenu_wallets button:nth-child(1) .SidebarWalletMenuItem_title');
+  const balanceWalletName = await this.waitAndGetText.call(this, '.SidebarWalletsMenu_wallets button:nth-child(2) .SidebarWalletMenuItem_title');
 
   // Set initial values for further use
   const rewardsWallet = getWalletByName.call(this, rewardsWalletName);
@@ -71,16 +71,16 @@ Then(/^"Transfer ada" wizard step 2 dialog continue button should be disabled$/,
 });
 
 Then(/^I should see "Transfer ada" wizard step 2 dialog$/, async function() {
-  await this.client.waitForVisible('.TransferFundsStep2Dialog_dialog');
+  await this.waitForVisible('.TransferFundsStep2Dialog_dialog');
   // Set transfer funds fee
-  const transferFee = await this.client.getText('.TransferFundsStep2Dialog_dialog .Dialog_content div:nth-child(3) .TransferFundsStep2Dialog_amount');
+  const transferFee = await this.waitAndGetText.call(this, '.TransferFundsStep2Dialog_dialog .Dialog_content div:nth-child(3) .TransferFundsStep2Dialog_amount');
   this.transferFee = transferFee.replace('+ ', '');
 });
 
 Then(
   /^I should not see "Transfer ada" wizard step 2 wizard dialog anymore$/,
   function() {
-    return this.client.waitForVisible(
+    return this.waitForVisible(
       '.TransferFundsStep2Dialog_dialog',
       null,
       true
@@ -89,11 +89,11 @@ Then(
 );
 
 Then(/^I should see "Add wallet" wizard$/, async function() {
-  return this.client.waitForVisible('.TransferFundsStep1Dialog_label');
+  return this.waitForVisible('.TransferFundsStep1Dialog_label');
 });
 
 Then(/^I should see "Transfer ada" wizard$/, async function() {
-  return this.client.waitForVisible('.TransferFundsStep1Dialog_label');
+  return this.waitForVisible('.TransferFundsStep1Dialog_label');
 });
 
 
@@ -118,7 +118,7 @@ Then(
   async function(data) {
     const errorSelector = '.TransferFundsStep2Dialog_dialog .TransferFundsStep2Dialog_error';
     await this.client.waitForText(errorSelector);
-    let errorsOnScreen = await this.client.getText(errorSelector);
+    let errorsOnScreen = await this.waitAndGetText.call(this, errorSelector);
     if (typeof errorsOnScreen === 'string') errorsOnScreen = [errorsOnScreen];
     const errors = data.hashes();
     for (let i = 0; i < errors.length; i++) {

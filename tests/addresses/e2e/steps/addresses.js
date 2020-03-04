@@ -32,7 +32,7 @@ When('I click the ShowUsed switch', async function() {
 Then('I should see {int} used addresses', { timeout: 60000 }, async function(
   numberOfAddresses
 ) {
-  await this.client.waitForVisible('.VirtualAddressesList_list');
+  await this.waitForVisible('.VirtualAddressesList_list');
 
   await this.client.execute(() => {
     const scrollableListContainer = window.document.getElementsByClassName(
@@ -58,7 +58,7 @@ Then('I should see {int} used addresses', { timeout: 60000 }, async function(
 });
 
 Then('I should not see any used addresses', { timeout: 60000 }, async function() {
-  await this.client.waitForVisible('.VirtualAddressesList_list');
+  await this.waitForVisible('.VirtualAddressesList_list');
 
   await this.client.execute(() => {
     const scrollableListContainer = window.document.getElementsByClassName(
@@ -74,7 +74,7 @@ Then('I should not see any used addresses', { timeout: 60000 }, async function()
     scrollableList[0].scroll(0, listHeight);
   });
 
-  await this.client.waitForVisible(SELECTORS.ADDRESS_USED, null, true);
+  await this.waitForVisible(SELECTORS.ADDRESS_USED, null, true);
 });
 
 Then('I should see {int} addresses', async function(numberOfAddresses) {

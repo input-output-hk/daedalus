@@ -20,7 +20,7 @@ Given(/^I didnt accept "Terms of use"$/, async function() {
 });
 
 Given(/^I am on the "Terms of use" screen$/, function() {
-  return this.client.waitForVisible(TERMS_OF_USE_FORM);
+  return this.waitForVisible(TERMS_OF_USE_FORM);
 });
 
 When(/^I click on "I agree with terms of service" checkbox$/, function() {
@@ -32,7 +32,7 @@ When(/^I submit the "Terms of use" form$/, function() {
 });
 
 Then(/^I should not see the "Terms of use" screen anymore$/, function() {
-  return this.client.waitForVisible(TERMS_OF_USE_FORM, null, true);
+  return this.waitForVisible(TERMS_OF_USE_FORM, null, true);
 });
 
 Then(/^I should have "Terms of use" accepted$/, async function() {

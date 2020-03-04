@@ -10,11 +10,11 @@ Given(/^I see the add wallet page/, function() {
 });
 
 Given(/^I see the create wallet dialog$/, function() {
-  return this.client.waitForVisible('.WalletCreateDialog');
+  return this.waitForVisible('.WalletCreateDialog');
 });
 
 Given(/^I dont see the create wallet dialog(?: anymore)?$/, function() {
-  return this.client.waitForVisible('.WalletCreateDialog', null, true);
+  return this.waitForVisible('.WalletCreateDialog', null, true);
 });
 
 When(/^I click on the create wallet button on the add wallet page/, function() {
@@ -42,7 +42,7 @@ When(
 );
 
 When(/^I see the create wallet privacy dialog$/, function() {
-  return this.client.waitForVisible('.WalletBackupPrivacyWarningDialog');
+  return this.waitForVisible('.WalletBackupPrivacyWarningDialog');
 });
 
 When(
@@ -59,11 +59,11 @@ When(/^I submit the create wallet privacy dialog$/, function() {
 });
 
 When(/^I see the create wallet recovery phrase display dialog$/, function() {
-  return this.client.waitForVisible('.WalletRecoveryPhraseDisplayDialog');
+  return this.waitForVisible('.WalletRecoveryPhraseDisplayDialog');
 });
 
 When(/^I note down the recovery phrase$/, async function() {
-  const recoveryPhrase = await this.client.getText(
+  const recoveryPhrase = await this.waitAndGetText.call(this,
     '.WalletRecoveryPhraseMnemonic_component'
   );
   this.recoveryPhrase = recoveryPhrase.split(' ');
@@ -74,7 +74,7 @@ When(/^I submit the create wallet recovery phrase display dialog$/, function() {
 });
 
 When(/^I see the create wallet recovery phrase entry dialog$/, function() {
-  return this.client.waitForVisible('.WalletRecoveryPhraseEntryDialog');
+  return this.waitForVisible('.WalletRecoveryPhraseEntryDialog');
 });
 
 When(
@@ -106,7 +106,7 @@ When(/^I submit the create wallet recovery phrase entry dialog$/, function() {
 Then(
   /^I should not see the create wallet recovery phrase entry dialog anymore$/,
   function() {
-    return this.client.waitForVisible(
+    return this.waitForVisible(
       '.WalletRecoveryPhraseEntryDialog',
       null,
       true

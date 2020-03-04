@@ -7,7 +7,7 @@ When(/^I click on secondary menu (.*) item$/, async function(buttonName) {
   const buttonSelector = `.SettingsMenuItem_component.${camelCase(
     buttonName
   )}`;
-  await this.client.waitForVisible(buttonSelector);
+  await this.waitForVisible(buttonSelector);
   await this.client.click(buttonSelector);
 });
 
@@ -30,7 +30,7 @@ Then(/^I should see Japanese language as selected$/, async function() {
 });
 
 Then(/^I should see second theme as selected$/, async function() {
-  await this.client.waitForVisible(
+  await this.waitForVisible(
     '.DisplaySettings_component button:nth-child(2).DisplaySettings_active'
   );
 });
@@ -38,7 +38,7 @@ Then(/^I should see second theme as selected$/, async function() {
 Then(
   /^I should see the page with Frequency asked questions title$/,
   async function() {
-    return this.client.waitForVisible(
+    return this.waitForVisible(
       await this.intl('settings.support.faq.title'),
       null,
       true

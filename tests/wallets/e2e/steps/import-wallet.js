@@ -45,7 +45,7 @@ When(
 );
 
 When(/^I should see wallet spending password inputs$/, function() {
-  return this.client.waitForVisible(
+  return this.waitForVisible(
     '.WalletFileImportDialog .spendingPassword input'
   );
 });
