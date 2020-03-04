@@ -9,6 +9,7 @@ Changelog
 
 ### Chores
 
+- Optimizes E2E tests ([PR 1874](https://github.com/input-output-hk/daedalus/pull/1874))
 - Updated Flow and EsLint dependencies ([PR 1866](https://github.com/input-output-hk/daedalus/pull/1866))
 - Updated test environment dependencies ([PR 1867](https://github.com/input-output-hk/daedalus/pull/1867))
 - Updated `husky` dependency ([PR 1865](https://github.com/input-output-hk/daedalus/pull/1865))
