@@ -194,16 +194,11 @@ Then(/^I see delegation status message for stake pool with rank "([^"]*)"$/, asy
   }, this.walletName);
   const { pendingDelegations } = selectedWallet.value;
   const hasPendingDelegations = pendingDelegations && pendingDelegations.length > 0;
-
-  let message;
-  if (hasPendingDelegations) {
-    message = `You are already pending delegation ${this.walletName} wallet to [${stakePool.ticker}] stake pool`
-  } else {
-    message = `You are already delegating ${this.walletName} wallet to [${stakePool.ticker}] stake pool`
-  }
+  const messageWithPendingDelegation = `You are already pending delegation ${this.walletName} wallet to [${stakePool.ticker}] stake pool`
+  const messageWithNoPendingDelegation = `You are already delegating ${this.walletName} wallet to [${stakePool.ticker}] stake pool`
   await this.client.waitForText(SELECTED_STAKE_POOLS_DELEGATION_WALLET_DIALOG_SELECTOR);
   const selectedStakePoolLabel = await this.client.getText(SELECTED_STAKE_POOLS_DELEGATION_WALLET_DIALOG_SELECTOR);
-  expect(selectedStakePoolLabel.toString().split('.')[0]).to.equal(message);
+  expect(selectedStakePoolLabel.toString().split('.')[0]).to.oneOf([messageWithPendingDelegation, messageWithNoPendingDelegation]);
 });
 
 Then(/^I should see label: "([^"]*)"$/, async function (message) {
