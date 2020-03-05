@@ -6,6 +6,7 @@ Changelog
 ### Chores
 
 - Integrated React-Polymorph "ScrollBar" CSS variables ([PR 1827](https://github.com/input-output-hk/daedalus/pull/1827))
+- Re-enabled theme selection on the "Settings" screen ([PR 1872](https://github.com/input-output-hk/daedalus/pull/1872))
 - Implemented acceptance tests for custom number, date and time formats ([PR 1868](https://github.com/input-output-hk/daedalus/pull/1868))
 
 ## 2.3.0-ITN1

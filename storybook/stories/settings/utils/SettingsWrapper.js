@@ -30,7 +30,6 @@ export default (story: Object, context: Object) => {
           .replace(/ /g, '-');
         return item === `/settings/${itemName}`;
       }}
-      showDisplaySettings
     />
   );
 
