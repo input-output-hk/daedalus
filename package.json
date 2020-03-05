@@ -68,6 +68,7 @@
     "@storybook/addon-knobs": "5.3.14",
     "@storybook/addon-links": "5.3.14",
     "@storybook/addons": "5.3.14",
+    "@storybook/core": "5.3.14",
     "@storybook/react": "5.3.14",
     "asar": "0.14.6",
     "autodll-webpack-plugin": "0.4.2",
@@ -174,12 +175,12 @@
     "ps-list": "6.0.0",
     "qr-image": "3.2.0",
     "qrcode.react": "0.8.0",
-    "react": "16.6.3",
+    "react": "16.8.0",
     "react-animate-height": "2.0.15",
     "react-copy-to-clipboard": "5.0.1",
     "react-custom-scrollbars": "4.2.1",
     "react-datetime": "2.16.3",
-    "react-dom": "16.6.3",
+    "react-dom": "16.8.0",
     "react-intl": "2.7.2",
     "react-lottie": "1.2.3",
     "react-markdown": "3.1.0",
@@ -215,6 +216,7 @@
     "**/**/lodash.template": "^4.5.0",
     "**/**/lodash": "^4.17.14",
     "**/**/unicode-properties": "1.1.0",
-    "**/**/terser-webpack-plugin": "1.4.2"
+    "@storybook/core/**/terser-webpack-plugin": "2.1.2",
+    "webpack/**/terser-webpack-plugin": "1.4.3"
   }
 }
