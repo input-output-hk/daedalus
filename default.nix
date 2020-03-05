@@ -47,6 +47,7 @@ let
       jormungandr = self.callPackage ./nix/jormungandr-bridge.nix {};
     };
     cardano-wallet = import self.sources.cardano-wallet { inherit system; gitrev = self.sources.cardano-wallet.rev; crossSystem = crossSystem walletPkgs.lib; };
+    cardano-wallet-native = import self.sources.cardano-wallet { inherit system; gitrev = self.sources.cardano-wallet.rev; };
     cardano-shell = import self.sources.cardano-shell { inherit system; crossSystem = crossSystem shellPkgs.lib; };
 
     # a cross-compiled fastlist for the ps-list package
@@ -156,7 +157,12 @@ let
       cp daedalus.nsi uninstaller.nsi $out/
       cp $launcherConfigPath $out/launcher-config.yaml
       ${optionalString self.launcherConfigs.installerConfig.hasBlock0 "cp ${self.launcherConfigs.installerConfig.block0} $out/block-0.bin"}
-      ${optionalString (cluster != "selfnode") "cp ${self.launcherConfigs.jormungandr-config} $out/jormungandr-config.yaml"}
+      ${if (cluster == "selfnode") then ''
+        cp ${self.launcherConfigs.cfg-files}/config.yaml $out/
+        cp ${self.launcherConfigs.cfg-files}/secret.yaml $out/
+        cp ${self.launcherConfigs.cfg-files}/genesis.yaml $out/
+      '' else "cp ${self.launcherConfigs.jormungandr-config} $out/jormungandr-config.yaml"}
+      ls -lR $out
     '';
 
     unsignedUninstaller = pkgs.runCommand "uninstaller" { buildInputs = [ self.nsis self.wine ]; } ''
@@ -194,7 +200,7 @@ let
         self.daedalus-installer self.nsis pkgs.unzip pkgs.jq self.yaml2json
       ] ++ optional (fudgeConfig != null) self.configMutator;
     } ''
-      echo '~~~ Preparing files for installer'
+      echo '~~~   Preparing files for installer'
       mkdir home
       export HOME=$(realpath home)
 
@@ -215,16 +221,12 @@ let
       pushd dlls
       ${if dummyInstaller then "touch foo" else "unzip ${self.dlls}"}
       popd
-      cp -v ${self.unpackedCardano}/{bin,config}/* .
+      cp -v ${self.unpackedCardano}/bin/* .
+      cp -v ${self.nsisFiles}/{*.yaml,daedalus.nsi} .
       cp ${self.uninstaller}/uninstall.exe ../uninstall.exe
-      cp -v ${self.nsisFiles}/{daedalus.nsi,launcher-config.yaml} .
-      if [ -f ${self.nsisFiles}/jormungandr-config.yaml ]; then
-        cp -v ${self.nsisFiles}/jormungandr-config.yaml .
-      fi
       if [ -f ${self.nsisFiles}/block-0.bin ]; then
         cp -v ${self.nsisFiles}/block-0.bin .
       fi
-      cp -v ${./utils/jormungandr/selfnode/genesis.yaml} genesis.yaml
       chmod -R +w .
       ${optionalString (fudgeConfig != null) ''
         set -x
@@ -234,10 +236,10 @@ let
         set +x
       ''}
 
-      echo '~~~ Generating installer'
+      echo '~~~   Generating installer'
       makensis daedalus.nsi -V4
 
-      echo '~~~ Copying to $out'
+      echo '~~~   Copying to $out'
       cp daedalus-*-cardano-wallet-*-windows*.exe $out/
       cp *.yaml $out/cfg-files/
       echo file installer $out/*.exe > $out/nix-support/hydra-build-products
