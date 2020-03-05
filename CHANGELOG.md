@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## vNext
+
+### Chores
+
+- Implemented acceptance tests for custom number, date and time formats ([PR 1868](https://github.com/input-output-hk/daedalus/pull/1868))
+
 ## 2.3.0-ITN1
 
 ### Fixes

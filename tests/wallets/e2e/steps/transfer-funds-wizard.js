@@ -1,6 +1,7 @@
 // @flow
 import { When, Then } from 'cucumber';
 import { expect } from 'chai';
+import { get } from 'lodash'
 import BigNumber from 'bignumber.js/bignumber';
 import { waitUntilTextInSelector } from '../../../common/e2e/steps/helpers';
 import { formattedWalletAmount } from '../../../../source/renderer/app/utils/formatters';
@@ -56,8 +57,10 @@ When(/^I see initial wallets balance$/, async function() {
   // Set initial values for further use
   const rewardsWallet = getWalletByName.call(this, rewardsWalletName);
   const balanceWallet = getWalletByName.call(this, balanceWalletName);
-  this.rewardsWalletBalance = new BigNumber(rewardsWallet.amount.c);
-  this.balanceWalletBalance = new BigNumber(balanceWallet.amount.c);
+  const rewardsWalletAmount = get(rewardsWallet, 'amount.c', [0]);
+  const balanceWalletAmount = get(balanceWallet, 'amount.c', [0]);
+  this.rewardsWalletBalance = new BigNumber(rewardsWalletAmount);
+  this.balanceWalletBalance = new BigNumber(balanceWalletAmount);
 });
 
 When(/^I restore "([^"]*)" for transfer funds$/, async function(walletName) {

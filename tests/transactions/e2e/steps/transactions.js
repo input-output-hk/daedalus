@@ -3,7 +3,13 @@ import { Given, When, Then } from 'cucumber';
 import { expect } from 'chai';
 import BigNumber from 'bignumber.js/bignumber';
 import { DECIMAL_PLACES_IN_ADA, LOVELACES_PER_ADA } from '../../../../source/renderer/app/config/numbersConfig';
-import { getVisibleTextsForSelector } from '../../../common/e2e/steps/helpers';
+import {
+  getVisibleTextsForSelector,
+  clickInputByLabel,
+  clickOptionByValue,
+  clickOptionByIndex,
+  getInputValueByLabel,
+} from '../../../common/e2e/steps/helpers';
 import { getWalletByName, fillOutWalletSendForm } from '../../../wallets/e2e/steps/helpers';
 import type { Daedalus } from '../../../types';
 
@@ -107,6 +113,40 @@ When(/^I submit the wallet send form$/, async function() {
   return this.client.click(
     '.WalletSendConfirmationDialog_dialog .confirmButton'
   );
+});
+
+When(/^I open the transactions filter$/, async function() {
+  return this.waitAndClick('.FilterButton_actionButton');
+});
+
+When(/^I choose the first time filter option$/, async function() {
+  await clickInputByLabel.call(this, 'Time');
+  await clickOptionByIndex.call(this, 0);
+});
+
+const screenElementSelectors = {
+  fromAmount: 'input[name="fromAmount"]',
+  toAmount: 'input[name="toAmount"]',
+};
+
+When(/^I enter the following filter values:$/, async function(filterTable) {
+  const filterValues = filterTable.hashes();
+  for (let i = 0; i < filterValues.length; i++) {
+    const { param: filterParam, value: filterValue } = filterValues[i];
+    const selector = screenElementSelectors[filterParam];
+    await this.client.setValue(selector, filterValue);
+  }
+});
+
+Then(/^I should see the following filter values:$/, async function(filterTable) {
+  const filterValues = filterTable.hashes();
+  for (let i = 0; i < filterValues.length; i++) {
+    const { param: filterParam, value: expectedValue } = filterValues[i];
+    const selector = screenElementSelectors[filterParam];
+    let currentValue = await this.client.getValue(selector);
+    if (Array.isArray(currentValue)) currentValue = currentValue[0];
+    expect(currentValue).to.equal(expectedValue);
+  }
 });
 
 Then(

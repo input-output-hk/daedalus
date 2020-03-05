@@ -26,7 +26,6 @@ Given(/^the wallets have the following pending delegations:$/, async function(de
     let modifiedWallets = [];
     for (let index = 0; index < delegationScenarios.length; index++) {
       const delegationQueue = delegationScenarios[index].DELEGATION_SCENARIO.split(' > ');
-      console.log('delegationQueue', delegationQueue);
       const modifiedWallet: {
         name: string,
         delegatedStakePoolId?: string,

@@ -142,3 +142,32 @@ export const scrollIntoView = async (client: Object, targetSelector: string) => 
   }
 };
 
+export const clickInputByLabel = async function(label: string, isExactText?: boolean = true) {
+  const className = 'SimpleFormField_label'
+  const textSelector = isExactText
+    ? `text()="${label}"`
+    : `contains(text(),'${label}'`;
+  const selector = `//label[@class="${className}" and ${textSelector}]//following-sibling::div//input`;
+  await this.waitAndClick(selector);
+}
+
+export const clickOptionByValue = async function(value: string) {
+  const selector = `(//li[contains(@class, 'SimpleOptions_option')]//span[text()="${value}"])`;
+  await this.waitAndClick(selector);
+}
+
+export const clickOptionByIndex = async function(index: number) {
+  const selector = `(//div[contains(@class, 'SimpleSelect_isOpen')]//li[contains(@class, 'SimpleOptions_option')])[${index + 1}]`;
+  await this.waitAndClick(selector);
+}
+
+export const getInputValueByLabel = async function(label: string, isExactText?: boolean = true) {
+  const className = 'SimpleFormField_label'
+  const textSelector = isExactText
+    ? `text()="${label}"`
+    : `contains(text(),'${label}'`;
+  const selector = `//label[@class="${className}" and ${textSelector}]//following-sibling::div//input`;
+  await this.client.waitForVisible(selector);
+  const text = await this.client.getValue(selector);
+  return text;
+}
