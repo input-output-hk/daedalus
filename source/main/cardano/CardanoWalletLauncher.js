@@ -2,7 +2,6 @@
 import { spawn } from 'child_process';
 import { dirname } from 'path';
 import type { ChildProcess } from 'child_process';
-import { configureJormungandrDeps } from './nodes';
 import { STAKE_POOL_REGISTRY_URL } from '../config';
 import { environment } from '../environment';
 import { NIGHTLY, SELFNODE, QA } from '../../common/types/environment.types';
@@ -46,7 +45,6 @@ export async function CardanoWalletLauncher(
       break;
     case 'jormungandr':
       if (cluster === 'selfnode') {
-        configureJormungandrDeps();
         Object.assign(envVariables, {
           CARDANO_WALLET_STAKE_POOL_REGISTRY_URL:
             STAKE_POOL_REGISTRY_URL[SELFNODE],
