@@ -1186,10 +1186,9 @@ export default class AdaApi {
     Logger.debug('AdaApi::quitStakePool called', {
       parameters: filterLogData(request),
     });
-    const { stakePoolId, walletId, passphrase } = request;
+    const { walletId, passphrase } = request;
     try {
       const result = await quitStakePool(this.config, {
-        stakePoolId,
         walletId,
         passphrase,
       });

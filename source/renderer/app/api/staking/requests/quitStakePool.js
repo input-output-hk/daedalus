@@ -6,12 +6,12 @@ import { request } from '../../utils/request';
 
 export const quitStakePool = (
   config: RequestConfig,
-  { stakePoolId, walletId, passphrase }: QuitStakePoolRequest
+  { walletId, passphrase }: QuitStakePoolRequest
 ): Promise<Transaction> =>
   request(
     {
       method: 'DELETE',
-      path: `/v2/stake-pools/${stakePoolId}/wallets/${walletId}`,
+      path: `/v2/stake-pools/*/wallets/${walletId}`,
       ...config,
     },
     {},

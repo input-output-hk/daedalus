@@ -5,6 +5,7 @@
 , runCommand
 , lib
 , devShell ? false
+, cardano-wallet-native
 }:
 let
   dirSep = if os == "windows" then "\\" else "/";
@@ -50,6 +51,22 @@ let
   block0Bin.windows = "\${DAEDALUS_INSTALL_DIRECTORY}\\block-0.bin";
   block0Bin.macos64 = "\${DAEDALUS_INSTALL_DIRECTORY}/block-0.bin";
 
+  genesisPath.linux = ../utils/jormungandr/selfnode/genesis.yaml;
+  genesisPath.windows = "\${DAEDALUS_INSTALL_DIRECTORY}\\genesis.yaml";
+  genesisPath.macos64 = "\${DAEDALUS_INSTALL_DIRECTORY}/../Resources/genesis.yaml";
+
+  secretPath.linux = ../utils/jormungandr/selfnode/secret.yaml;
+  secretPath.windows = "\${DAEDALUS_INSTALL_DIRECTORY}\\secret.yaml";
+  secretPath.macos64 = "\${DAEDALUS_INSTALL_DIRECTORY}/../Resources/secret.yaml";
+
+  configPath.linux = ../utils/jormungandr/selfnode/config.yaml;
+  configPath.windows = "\${DAEDALUS_INSTALL_DIRECTORY}\\config.yaml";
+  configPath.macos64 = "\${DAEDALUS_INSTALL_DIRECTORY}/../Resources/config.yaml";
+
+  selfnodeBlock0 = runCommand "selfnode-block0.bin" { buildInputs = [ cardano-wallet-native.jormungandr-cli ]; } ''
+    jcli genesis encode --input ${genesisPath.linux} --output $out
+  '';
+
   cfgPathForOs = {
     windows = "\${DAEDALUS_INSTALL_DIRECTORY}\\jormungandr-config.yaml";
     macos64 = "\${DAEDALUS_INSTALL_DIRECTORY}/jormungandr-config.yaml";
@@ -75,10 +92,11 @@ let
     "--node-port" "8888"
     "--port" "8088"
     "--state-dir" dataDir.${os}
-    "--genesis-block" "${dataDir.${os}}${dirSep}block0.bin"
+    "--genesis-block" (if ((os == "linux") || devShell) then selfnodeBlock0 else block0Bin.${os})
     "--sync-tolerance" "600s"
     "--"
-    "--secret" "${dataDir.${os}}${dirSep}secret.yaml"
+    "--secret" (if devShell then secretPath.linux else secretPath.${os})
+    "--config" (if devShell then configPath.linux else configPath.${os})
   ];
 
   launcherConfig = {
@@ -92,7 +110,6 @@ let
     walletLogging = true;
     stateDir = dataDir.${os};
     launcherLogsPrefix = launcherLogsPrefix.${os};
-    cliBin = cliBin.${os};
     workingDir = dataDir.${os};
     frontendOnlyMode = true;
     nodeLogPath = null;
@@ -118,6 +135,12 @@ let
     inherit hasBlock0;
   } // (lib.optionalAttrs hasBlock0 {
     block0 = envCfg.block0bin;
+  }) // (lib.optionalAttrs (environment == "selfnode") {
+    genesisPath = genesisPath.linux;
+    secretPath = secretPath.linux;
+    configPath = configPath.linux;
+    block0 = selfnodeBlock0;
+    hasBlock0 = true;
   });
 in {
   inherit launcherConfig installerConfig;
@@ -129,7 +152,11 @@ in {
   } ''
     mkdir $out
     cd $out
-    ${lib.optionalString (environment != "selfnode") "cp ${jormungandrConfigForCluster} jormungandr-config.yaml"}
+    ${if (environment == "selfnode") then ''
+      cp ${../utils/jormungandr/selfnode/config.yaml} config.yaml
+      cp ${../utils/jormungandr/selfnode/genesis.yaml} genesis.yaml
+      cp ${../utils/jormungandr/selfnode/secret.yaml} secret.yaml
+    '' else "cp ${jormungandrConfigForCluster} jormungandr-config.yaml"}
     cp $installerConfigPath installer-config.json
     cp $launcherConfigPath launcher-config.yaml
     ${lib.optionalString (installerConfig.hasBlock0) "cp ${installerConfig.block0} block-0.bin"}

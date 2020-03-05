@@ -89,7 +89,6 @@ export type DelegationFee = {
 };
 
 export type QuitStakePoolRequest = {
-  stakePoolId: string,
   walletId: string,
   passphrase: string,
 };
