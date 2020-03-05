@@ -67,7 +67,6 @@ export type CardanoNodeConfig = {
   workingDir: string, // Path to the state directory
   walletBin: string, // Path to jormungandr or cardano-node executable
   nodeBin: string,
-  cliBin: string, // Path to node CLI tool. Jormungandr only
   nodeImplementation: CardanoNodeImplementation,
   logFilePath: string, // Log file path for cardano-sl
   tlsPath: string, // Path to cardano-node TLS folder
@@ -259,7 +258,6 @@ export class CardanoNode {
     const {
       walletBin,
       nodeBin,
-      cliBin,
       walletArgs,
       startupTimeout,
       nodeImplementation,
@@ -304,7 +302,6 @@ export class CardanoNode {
         walletArgs,
         logStream: logFile,
         nodeImplementation,
-        cliBin,
         stateDir: config.workingDir,
         cluster: config.cluster,
       });

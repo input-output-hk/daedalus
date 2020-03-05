@@ -2,18 +2,16 @@
 import { spawn } from 'child_process';
 import { dirname } from 'path';
 import type { ChildProcess } from 'child_process';
-import { configureJormungandrDeps } from './nodes';
 import { STAKE_POOL_REGISTRY_URL } from '../config';
 import { environment } from '../environment';
 import { NIGHTLY, SELFNODE, QA } from '../../common/types/environment.types';
+import { Logger } from '../utils/logging';
 
 export type WalletOpts = {
   path: string,
   walletArgs: string[],
-  cliBin: string,
   nodeBin: string,
   nodeImplementation: 'jormungandr' | 'cardano-node',
-  stateDir: string,
   logStream: any,
   cluster: string,
 };
@@ -25,8 +23,6 @@ export async function CardanoWalletLauncher(
     logStream,
     nodeImplementation,
     nodeBin,
-    cliBin,
-    stateDir,
     path,
     walletArgs,
     cluster,
@@ -43,14 +39,12 @@ export async function CardanoWalletLauncher(
 
   // This switch statement handles any node specifc
   // configuration, prior to spawning the child process
+  Logger.info('Node implementation', { nodeImplementation });
   switch (nodeImplementation) {
     case 'cardano-node':
       break;
     case 'jormungandr':
-      // This configuration is for the selfnode only
-      // The selfnode is identified by the unique genesis-block wallet arg
       if (cluster === 'selfnode') {
-        await configureJormungandrDeps(cliBin, stateDir);
         Object.assign(envVariables, {
           CARDANO_WALLET_STAKE_POOL_REGISTRY_URL:
             STAKE_POOL_REGISTRY_URL[SELFNODE],
@@ -72,6 +66,7 @@ export async function CardanoWalletLauncher(
       break;
   }
 
+  Logger.info('Starting Node now...', { path, walletArgs });
   const childProcess = spawn(path, walletArgs, {
     stdio: walletStdio,
     env: {
