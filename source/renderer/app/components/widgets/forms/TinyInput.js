@@ -7,7 +7,7 @@ import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { IDENTIFIERS } from 'react-polymorph/lib/themes/API';
 import styles from './TinyInput.scss';
 
-type Props = {
+type Props = $Exact<{
   autoFocus: boolean,
   innerLabelPrefix?: string,
   innerLabelSuffix?: string,
@@ -16,7 +16,7 @@ type Props = {
   onSubmit?: Function,
   type?: string,
   useReadMode?: boolean,
-};
+}>;
 
 type State = {
   isEditMode: boolean,
