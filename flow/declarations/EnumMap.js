@@ -1,0 +1,1 @@
+declare type EnumMap<K: string, V, O: Object = *> = O & { [K]: V & $ElementType<O, K> };
