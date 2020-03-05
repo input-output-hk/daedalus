@@ -1,19 +1,20 @@
 // @flow
 import type { RequestConfig } from '../../common/types';
 import type { LegacyAdaWallet, LegacyWalletInitData } from '../types';
+import type { WalletByronKind } from '../../../types/walletRestoreTypes';
 import { request } from '../../utils/request';
 
 export const restoreByronWallet = (
   config: RequestConfig,
   { walletInitData }: { walletInitData: LegacyWalletInitData },
-  type: string
+  type: WalletByronKind
 ): Promise<LegacyAdaWallet> =>
   request(
     {
       method: 'POST',
-      path: `/v2/byron-wallets/${type}`,
+      path: '/v2/byron-wallets',
       ...config,
     },
     {},
-    walletInitData
+    { ...walletInitData, style: type }
   );
