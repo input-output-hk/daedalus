@@ -9,6 +9,6 @@ export const getDelegationFee = (
 ): Promise<DelegationFee> =>
   request({
     method: 'GET',
-    path: `/v2/wallets/${walletId}/delegations/fees`,
+    path: `/v2/wallets/${walletId}/delegation-fees`,
     ...config,
   });

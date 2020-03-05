@@ -39,7 +39,6 @@ const startCardanoNode = (
     tlsPath,
     logsPrefix,
     workingDir,
-    cliBin,
     nodeBin,
     nodeImplementation,
     cluster,
@@ -49,7 +48,6 @@ const startCardanoNode = (
   const config = {
     walletBin,
     nodeBin,
-    cliBin,
     nodeImplementation,
     logFilePath,
     tlsPath,
