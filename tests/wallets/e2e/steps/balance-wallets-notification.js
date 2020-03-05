@@ -8,9 +8,7 @@ declare var daedalus: Daedalus;
 Then(
   /^"Balance" wallet "([^"]*)" action should be visible in the top bar notification$/,
   async function(action) {
-    console.time('LegacyNotification_component');
     await this.waitForVisible('.LegacyNotification_component');
-    console.timeEnd('LegacyNotification_component');
     const notificationAction = await this.waitAndGetText.call(this, '.LegacyNotification_actions button:nth-child(2)');
     expect(notificationAction).to.equal(action);
   }

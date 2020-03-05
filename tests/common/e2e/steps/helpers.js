@@ -76,31 +76,28 @@ export const saveScreenshot = async (
         console.log(err);
       });
 
-export const waitAnd = async (
-  client: Object,
+export const waitAnd = async function(
   selector: string,
   ...waitArgs: Array<*>
-) => {
-  await client.waitForVisible(selector, ...waitArgs);
-  await client.waitForEnabled(selector, ...waitArgs);
+) {
+  await this.client.waitForVisible(selector, ...waitArgs);
+  await this.client.waitForEnabled(selector, ...waitArgs);
 };
 
-export const waitAndClick = async (
-  client: Object,
+export const waitAndClick = async function(
   selector: string,
   ...waitArgs: Array<*>
-) => {
-  await waitAnd(client, selector, ...waitArgs);
-  return client.click(selector);
+) {
+  await waitAnd.call(this, selector, ...waitArgs);
+  return this.client.click(selector);
 };
 
-export const waitAndGetText = async (
-  client: Object,
+export const waitAndGetText = async function(
   selector: string,
   ...waitArgs: Array<*>
-) => {
-  await waitAnd(client, selector, ...waitArgs);
-  return client.getText(selector);
+) {
+  await waitAnd.call(this, selector, ...waitArgs);
+  return this.client.getText(selector);
 };
 
 export const waitUntilTextInSelector = async (

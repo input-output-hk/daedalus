@@ -117,6 +117,7 @@ Feature: Custom number, date and time formats
     When the "Target Wallet" wallet has received the transaction amount
     Then the "Target Wallet" should display the "number" of value "123,4K ADA"
 
+    # @watch
   Scenario: Users can create transactions regardless of their number format preference
     Given I have a "Test Wallet" rewards wallet with funds
     And I have the following "Rewards" wallets:

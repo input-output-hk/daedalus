@@ -25,9 +25,9 @@ Feature: "Daedalus Balance" wallet top bar notification
     And I should not see the restore status notification once restore is finished
     And "Balance" wallet badge should be visible in the wallet sidebar
     And "Balance" wallet "Create a new Rewards wallet" action should be visible in the top bar notification
-    Then I freeze
     When I click "Balance" wallet top bar notification action
     Then I should be on the "wallets/add" screen
+    Then I freeze
 
   Scenario: Balance wallet "Move testnet ada" notification is shown when "Balance" wallet is NOT empty and I have a Rewards wallet in the UI
     Given I have the following "Rewards" wallets:

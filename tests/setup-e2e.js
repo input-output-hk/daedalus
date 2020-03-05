@@ -143,8 +143,8 @@ Before({ tags: '@newsfeed' }, function() {
 
 // adds waitAndClick method to webdriver
 Before(function() {
-  this.waitAndClick = waitAndClick;
-  this.waitAndGetText = waitAndGetText;
+  this.waitAndClick = waitAndClick.bind(this);
+  this.waitAndGetText = waitAndGetText.bind(this);
   this.waitForVisible = this.client.waitForVisible;
 });
 
