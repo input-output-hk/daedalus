@@ -78,7 +78,7 @@ export default class NotificationsContainer extends Component<InjectedProps> {
   ];
 
   notificationsMessage: {
-    [key: NotificationId]: NotificationMessageProps,
+    [key: NotificationId]: $Exact<NotificationMessageProps>,
   } = {
     downloadLogsProgress: {
       icon: 'spinner',

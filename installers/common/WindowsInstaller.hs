@@ -185,7 +185,6 @@ writeInstallerNSIS outName (Version fullVersion') InstallerConfig{hasBlock0,inst
                 iff_ (fileExists "$APPDATA\\$InstallDir\\Wallet-1.0\\open\\*.*") $
                     rmdir [] "$APPDATA\\$InstallDir\\Wallet-1.0\\open"
                 file [] "jormungandr.exe"
-                file [] "jcli.exe"
                 file [] "cardano-wallet-jormungandr.exe"
                 file [] "cardano-launcher.exe"
                 file [] "libffi-6.dll"
@@ -199,8 +198,10 @@ writeInstallerNSIS outName (Version fullVersion') InstallerConfig{hasBlock0,inst
                   file [] "block-0.bin"
                 when (clusterName /= Selfnode) $
                   file [] "jormungandr-config.yaml"
-                when (clusterName == Selfnode) $
+                when (clusterName == Selfnode) $ do
+                  file [] "config.yaml"
                   file [] "genesis.yaml"
+                  file [] "secret.yaml"
                 file [Recursive] "dlls\\"
                 file [Recursive] "..\\release\\win32-x64\\$SpacedName-win32-x64\\"
 

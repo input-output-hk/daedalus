@@ -7,13 +7,13 @@ import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { IDENTIFIERS } from 'react-polymorph/lib/themes/API';
 import styles from './TinyButton.scss';
 
-type Props = {
+type Props = $Exact<{
   className?: string,
   disabled?: boolean,
   label?: string | Element<any>,
   loading: boolean,
   onClick?: Function,
-};
+}>;
 
 export default class TinyButton extends Component<Props> {
   render() {
