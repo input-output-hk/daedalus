@@ -32,7 +32,6 @@ const messages = defineMessages({
 type Props = {
   isActiveItem: Function,
   onItemClick: Function,
-  showDisplaySettings: boolean,
 };
 
 @observer
@@ -43,7 +42,7 @@ export default class SettingsMenu extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { onItemClick, isActiveItem, showDisplaySettings } = this.props;
+    const { onItemClick, isActiveItem } = this.props;
     return (
       <div>
         <div className={styles.component}>
@@ -54,14 +53,12 @@ export default class SettingsMenu extends Component<Props> {
             className="general"
           />
 
-          {showDisplaySettings ? (
-            <SettingsMenuItem
-              label={intl.formatMessage(messages.display)}
-              onClick={() => onItemClick(ROUTES.SETTINGS.DISPLAY)}
-              active={isActiveItem(ROUTES.SETTINGS.DISPLAY)}
-              className="display"
-            />
-          ) : null}
+          <SettingsMenuItem
+            label={intl.formatMessage(messages.display)}
+            onClick={() => onItemClick(ROUTES.SETTINGS.DISPLAY)}
+            active={isActiveItem(ROUTES.SETTINGS.DISPLAY)}
+            className="display"
+          />
 
           <SettingsMenuItem
             label={intl.formatMessage(messages.termsOfUse)}
