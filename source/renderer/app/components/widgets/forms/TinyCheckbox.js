@@ -5,11 +5,11 @@ import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
 import { IDENTIFIERS } from 'react-polymorph/lib/themes/API';
 import styles from './TinyCheckbox.scss';
 
-type Props = {
+type Props = $Exact<{
   checked?: boolean,
   label?: string,
   onChange?: Function,
-};
+}>;
 
 export default class TinyCheckbox extends Component<Props> {
   render() {

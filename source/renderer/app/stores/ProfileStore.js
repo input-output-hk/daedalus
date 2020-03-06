@@ -155,13 +155,17 @@ export default class ProfileStore extends Store {
   }
 
   @computed get currentTheme(): string {
-    // Force "Incentivized Testnet" theme for the Incentivized Testnet Daedalus version
     const { isIncentivizedTestnet } = this.stores.networkStatus;
-    if (isIncentivizedTestnet) return THEMES.INCENTIVIZED_TESTNET;
     // Default theme handling
-    const systemValue = this.environment.isMainnet
-      ? THEMES.DARK_BLUE
-      : THEMES.LIGHT_BLUE; // defaults
+    let systemValue;
+    if (isIncentivizedTestnet) {
+      // Force "Incentivized Testnet" as default theme for the Incentivized Testnet Daedalus version
+      systemValue = THEMES.INCENTIVIZED_TESTNET;
+    } else {
+      systemValue = this.environment.isMainnet
+        ? THEMES.DARK_BLUE
+        : THEMES.LIGHT_BLUE;
+    }
     return requestGetter(this.getThemeRequest, systemValue);
   }
 

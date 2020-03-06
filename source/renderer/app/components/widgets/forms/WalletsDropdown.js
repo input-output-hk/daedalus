@@ -11,24 +11,24 @@ import Wallet from '../../../domains/Wallet';
 import StakePool from '../../../domains/StakePool';
 
 type SelectProps = {
-  allowBlank: boolean,
-  autoFocus: boolean,
+  allowBlank?: boolean,
+  autoFocus?: boolean,
   className?: string,
-  context: any,
+  context?: any,
   error?: string | Element<any>,
   label?: string | Element<any>,
-  isOpeningUpward: boolean,
+  isOpeningUpward?: boolean,
   onBlur?: Function,
   onChange?: Function,
   onFocus?: Function,
   optionRenderer?: Function,
-  options: Array<any>,
+  options?: Array<any>,
   placeholder?: string,
   selectionRenderer?: Function,
   skin?: Element<any>,
-  theme: ?Object, // will take precedence over theme in context if passed
-  themeId: string,
-  themeOverrides: Object,
+  theme?: ?Object, // will take precedence over theme in context if passed
+  themeId?: string,
+  themeOverrides?: Object,
   value: ?string,
 };
 

@@ -13,6 +13,7 @@
   margin-bottom: 20px;
 
   .themeImageWrapper {
+    width: calc(33.33% - 80px / 3);
     &.active {
       img,
       span {

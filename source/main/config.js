@@ -39,7 +39,6 @@ export type LauncherConfig = {
   walletBin: string,
   walletArgs: Array<string>,
   nodeBin: string,
-  cliBin: string,
   nodeImplementation: 'jormungandr' | 'cardano-node',
   nodeArgs: Array<string>,
   tlsPath: string,

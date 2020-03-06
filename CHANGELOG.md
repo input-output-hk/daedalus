@@ -6,14 +6,26 @@ Changelog
 ### Fixes
 
 - Removed locale specific rules from the css files ([PR 1871](https://github.com/input-output-hk/daedalus/pull/1871))
-- Fixed decentralization countdown storybook story ([PR 1863](https://github.com/input-output-hk/daedalus/pull/1863))
 
 ### Chores
 
+- Re-enabled theme selection on the "Settings" screen ([PR 1872](https://github.com/input-output-hk/daedalus/pull/1872))
+- Implemented acceptance tests for custom number, date and time formats ([PR 1868](https://github.com/input-output-hk/daedalus/pull/1868))
+
+## 2.3.0-ITN1
+
+### Fixes
+
+- Fixed "Decentralization countdown" Storybook story ([PR 1863](https://github.com/input-output-hk/daedalus/pull/1863))
+
+### Chores
+
+- Implemented acceptance tests for "Rewards" screen ([PR 1861](https://github.com/input-output-hk/daedalus/pull/1861))
 - Updated test environment dependencies ([PR 1867](https://github.com/input-output-hk/daedalus/pull/1867))
+- Updated `Flow` and `ESLint` dependencies ([PR 1866](https://github.com/input-output-hk/daedalus/pull/1866))
 - Updated `husky` dependency ([PR 1865](https://github.com/input-output-hk/daedalus/pull/1865))
-- Updated stylelint and stylelint-order dependencies ([PR 1864](https://github.com/input-output-hk/daedalus/pull/1864))
-- Implemented acceptance tests for staking rewards screen ([PR 1861](https://github.com/input-output-hk/daedalus/pull/1861))
+- Updated `stylelint` and `stylelint-order` dependencies ([PR 1864](https://github.com/input-output-hk/daedalus/pull/1864))
+- Updated `cardano-wallet` to version `2020-03-03` which includes Jormungandr 0.8.13 ([PR 1870](https://github.com/input-output-hk/daedalus/pull/1870))
 
 ## 2.2.0-ITN1
 

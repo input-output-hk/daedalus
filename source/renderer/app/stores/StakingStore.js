@@ -96,7 +96,7 @@ export default class StakingStore extends Store {
   };
 
   @action _quitStakePool = async (request: QuitStakePoolRequest) => {
-    const { walletId, stakePoolId, passphrase } = request;
+    const { walletId, passphrase } = request;
 
     // Set quit transaction in "PENDING" state
     this.isDelegatioTransactionPending = true;
@@ -104,7 +104,6 @@ export default class StakingStore extends Store {
     try {
       const quitTransaction = await this.quitStakePoolRequest.execute({
         walletId,
-        stakePoolId,
         passphrase,
       });
       // Start interval to check transaction state every second
