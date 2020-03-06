@@ -9708,6 +9708,7 @@ node-libs-browser@2.2.1, node-libs-browser@^2.2.1:
     constants-browserify "^1.0.0"
     crypto-browserify "^3.11.0"
     domain-browser "^1.1.1"
+    events "^3.0.0"
     https-browserify "^1.0.0"
     os-browserify "^0.3.0"
     path-browserify "0.0.1"
