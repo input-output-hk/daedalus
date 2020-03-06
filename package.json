@@ -112,7 +112,7 @@
     "minimist": "1.2.0",
     "mobx-react-devtools": "6.0.3",
     "node-forge": "0.9.1",
-    "node-libs-browser": "2.2.0",
+    "node-libs-browser": "2.2.1",
     "node-sass": "4.13.1",
     "nodemon": "2.0.2",
     "postcss": "7.0.27",
@@ -187,7 +187,7 @@
     "react-router": "3.2.1",
     "react-svg-inline": "2.1.1",
     "react-virtualized": "9.21.2",
-    "recharts": "1.8.5",
+    "recharts": "2.0.0-beta.1",
     "rotating-file-stream": "1.4.6",
     "route-parser": "0.0.5",
     "rust-cardano-crypto": "0.2.0",
@@ -209,7 +209,7 @@
     }
   },
   "resolutions": {
-    "**/**/marked": "^0.6.1",
+    "**/**/marked": "^0.7.0",
     "**/**/minimatch": "^3.0.2",
     "**/**/lodash.template": "^4.5.0",
     "**/**/lodash": "^4.17.14",
