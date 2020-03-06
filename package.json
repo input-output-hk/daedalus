@@ -142,7 +142,7 @@
   "dependencies": {
     "aes-js": "3.1.2",
     "bignumber.js": "5.0.0",
-    "bip39": "3.0.2",
+    "bip39": "2.3.0",
     "blakejs": "1.1.0",
     "bs58": "4.0.1",
     "cardano-js": "0.3.0",
@@ -187,7 +187,7 @@
     "react-router": "3.2.1",
     "react-svg-inline": "2.1.1",
     "react-virtualized": "9.21.2",
-    "recharts": "2.0.0-beta.1",
+    "recharts": "1.8.5",
     "rotating-file-stream": "1.4.6",
     "route-parser": "0.0.5",
     "rust-cardano-crypto": "0.2.0",
@@ -212,7 +212,6 @@
     "**/**/marked": "^0.7.0",
     "**/**/minimatch": "^3.0.2",
     "**/**/lodash.template": "^4.5.0",
-    "**/**/lodash": "^4.17.14",
-    "**/**/bip39": "2.3.0"
+    "**/**/lodash": "^4.17.14"
   }
 }
