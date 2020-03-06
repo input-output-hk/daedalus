@@ -162,7 +162,7 @@
     "humanize-duration": "3.22.0",
     "lodash": "4.17.15",
     "mime-types": "2.1.26",
-    "mkdirp": "1.0.3",
+    "mkdirp": "0.5.1",
     "mobx": "5.14.0",
     "mobx-react": "5.4.2",
     "mobx-react-form": "1.35.1",
