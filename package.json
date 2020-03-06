@@ -118,6 +118,7 @@
     "node-libs-browser": "2.1.0",
     "node-sass": "4.11.0",
     "nodemon": "1.18.9",
+    "npmlog": "4.1.2",
     "postcss": "7.0.7",
     "postcss-modules": "1.4.1",
     "prettier": "1.16.4",
@@ -215,6 +216,8 @@
   "resolutions": {
     "**/**/marked": "^0.6.1",
     "**/**/minimatch": "^3.0.2",
+    "**/**/minimist": "1.2.0",
+    "**/**/npmlog": "4.1.2",
     "**/**/lodash.mergewith": "^4.6.2",
     "**/**/lodash.template": "^4.5.0",
     "**/**/lodash": "^4.17.14",
