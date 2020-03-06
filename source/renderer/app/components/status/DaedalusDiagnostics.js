@@ -1,6 +1,7 @@
 // @flow
 import React, { Component, Fragment } from 'react';
 import type { Node } from 'react';
+import classNames from 'classnames';
 import { observer } from 'mobx-react';
 import { get, includes, upperFirst } from 'lodash';
 import { defineMessages, intlShape } from 'react-intl';
@@ -419,13 +420,13 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
 
   getSectionRow = (messageId: string, content?: Node) => {
     return (
-      <tr>
-        <th className={styles.sectionTitle} colSpan={2}>
+      <div className={styles.layoutRow}>
+        <div className={styles.sectionTitle}>
           <span>{this.context.intl.formatMessage(messages[messageId])}</span>
           {content}
           <hr />
-        </th>
-      </tr>
+        </div>
+      </div>
     );
   };
 
@@ -434,7 +435,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
     const key = intl.formatMessage(messages[messageId]);
     const colon = intl.formatMessage(globalMessages.punctuationColon);
     let content = value;
-    let className = styles[messageId];
+    let className = classNames([styles[messageId], styles.layoutData]);
     if (typeof value === 'boolean') {
       content = value
         ? intl.formatMessage(messages.statusOn)
@@ -442,13 +443,13 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
       className = value ? styles.green : styles.red;
     }
     return (
-      <tr>
-        <th>
+      <div className={styles.layoutRow}>
+        <div className={styles.layoutHeader}>
           {key}
           {colon}
-        </th>
-        <td className={className}>{content}</td>
-      </tr>
+        </div>
+        <div className={className}>{content}</div>
+      </div>
     );
   };
 
@@ -527,6 +528,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
     //   remainingUnsyncedBlocks > UNSYNCED_BLOCKS_ALLOWED
     //     ? styles.red
     //     : styles.green,
+    //   styles.layoutData
     // ]);
 
     // const latestLocalBlockAge = moment(Date.now()).diff(
@@ -538,6 +540,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
     //   latestLocalBlockTimestamp > 0 && !isLocalBlockHeightStalling
     //     ? styles.green
     //     : styles.red,
+    //   styles.layoutData
     // ]);
 
     // const latestNetworkBlockAge = moment(Date.now()).diff(
@@ -549,6 +552,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
     //   latestNetworkBlockTimestamp > 0 && !isNetworkBlockHeightStalling
     //     ? styles.green
     //     : styles.red,
+    //   styles.layoutData
     // ]);
 
     // Cardano Node EKG server is not enabled for the Mainnet and Testnet builds!
@@ -576,6 +580,10 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
       cardanoNetworkValue += ` (${cardanoRawNetworkValue})`;
     }
 
+    // const localTimeDifferenceClasses = classNames([styles.layoutData, styles.localTimeDifferenceItem]);
+    // const isSystemTimeCorrectClasses = classNames([styles.layoutData, this.getClassName(isSystemTimeCorrect)]);
+    // const isSystemTimeIgnoredClasses = classNames([styles.layoutData, this.getClassName(!isSystemTimeIgnored)]);
+
     const { getSectionRow, getRow } = this;
 
     return (
@@ -587,8 +595,8 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
         />
 
         <div className={styles.tables}>
-          <table className={styles.table}>
-            <tbody>
+          <div className={styles.table}>
+            <div>
               {getSectionRow('cardanoNodeStatus')}
               {getRow('platform', platform)}
               {getRow('platformVersion', platformVersion)}
@@ -611,8 +619,8 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                   />
                 )
               )}
-            </tbody>
-            <tbody>
+            </div>
+            <div>
               {getSectionRow('coreInfo')}
               {getRow('daedalusVersion', daedalusVersion)}
               {getRow('daedalusMainProcessID', daedalusMainProcessID)}
@@ -647,7 +655,9 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                           </div>
                         }
                       >
-                        <p>{daedalusStateDirectoryPath}</p>
+                        <div className={styles.daedalusStateDirectoryPath}>
+                          {daedalusStateDirectoryPath}
+                        </div>
                         <SVGInline svg={iconCopy} />
                       </Tooltip>
                     </div>
@@ -658,25 +668,25 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
               {getRow('cardanoProcessID', cardanoProcessID)}
               {getRow('cardanoApiPort', cardanoAPIPort || '-')}
               {getRow('cardanoNetwork', cardanoNetworkValue)}
-            </tbody>
+            </div>
             {isConnected && nodeConnectionError ? (
-              <tbody>
+              <div>
                 {getSectionRow('connectionError')}
-                <tr>
-                  <th>
+                <div className={styles.layoutRow}>
+                  <div className={styles.layoutHeader}>
                     <div className={styles.error}>
                       {intl.formatMessage(messages.message)}: {message || '-'}
                       <br />
                       {intl.formatMessage(messages.code)}: {code || '-'}
                     </div>
-                  </th>
-                </tr>
-              </tbody>
+                  </div>
+                </div>
+              </div>
             ) : null}
-          </table>
+          </div>
 
-          <table className={styles.table}>
-            <tbody>
+          <div className={styles.table}>
+            <div>
               {getSectionRow('daedalusStatus')}
               {getRow('connected', isConnected)}
               {getRow('synced', isSynced)}
@@ -705,31 +715,31 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                 </Fragment>
               )}
               {/*
-                <tr>
-                  <th>{intl.formatMessage(messages.remainingUnsyncedBlocks)}:</th>
-                  <td className={remainingUnsyncedBlocksClasses}>
+                <div className={styles.layoutRow}>
+                  <div className={styles.layoutHeader}>{intl.formatMessage(messages.remainingUnsyncedBlocks)}:</div>
+                  <div className={remainingUnsyncedBlocksClasses}>
                     {remainingUnsyncedBlocks >= 0 ? remainingUnsyncedBlocks : '-'}
-                  </td>
-                </tr>
-                <tr>
-                  <th>{intl.formatMessage(messages.latestLocalBlockAge)}:</th>
-                  <td className={latestLocalBlockAgeClasses}>
+                  </div>
+                </div>
+                <div className={styles.layoutRow}>
+                  <div className={styles.layoutHeader}>{intl.formatMessage(messages.latestLocalBlockAge)}:</div>
+                  <div className={latestLocalBlockAgeClasses}>
                     {latestLocalBlockTimestamp > 0
                       ? `${latestLocalBlockAge} ms`
                       : '-'}
-                  </td>
-                </tr>
-                <tr>
-                  <th>{intl.formatMessage(messages.latestNetworkBlockAge)}:</th>
-                  <td className={latestNetworkBlockAgeClasses}>
+                  </div>
+                </div>
+                <div className={styles.layoutRow}>
+                  <div className={styles.layoutHeader}>{intl.formatMessage(messages.latestNetworkBlockAge)}:</div>
+                  <div className={latestNetworkBlockAgeClasses}>
                     {latestNetworkBlockTimestamp > 0
                       ? `${latestNetworkBlockAge} ms`
                       : '-'}
-                  </td>
-                </tr>
-                <tr>
-                  <th>{intl.formatMessage(messages.localTimeDifference)}:</th>
-                  <td className={styles.localTimeDifferenceItem}>
+                  </div>
+                </div>
+                <div className={styles.layoutRow}>
+                  <div className={styles.layoutHeader}>{intl.formatMessage(messages.localTimeDifference)}:</div>
+                  <div className={localTimeDifferenceClasses}>
                     <button
                       onClick={() => this.checkTime()}
                       disabled={isForceCheckingNodeTime || !isConnected}
@@ -745,35 +755,35 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                         ? `${localTimeDifference || 0} μs`
                         : intl.formatMessage(messages.serviceUnreachable)}
                     </span>
-                  </td>
-                </tr>
-                <tr>
-                  <th>{intl.formatMessage(messages.systemTimeCorrect)}:</th>
-                  <td className={this.getClassName(isSystemTimeCorrect)}>
+                  </div>
+                </div>
+                <div className={styles.layoutRow}>
+                  <div className={styles.layoutHeader}>{intl.formatMessage(messages.systemTimeCorrect)}:</div>
+                  <div className={isSystemTimeCorrectClasses}>
                     {isSystemTimeCorrect
                       ? intl.formatMessage(messages.statusOn)
                       : intl.formatMessage(messages.statusOff)}
-                  </td>
-                </tr>
-                <tr>
-                  <th>{intl.formatMessage(messages.systemTimeIgnored)}:</th>
-                  <td className={this.getClassName(!isSystemTimeIgnored)}>
+                  </div>
+                </div>
+                <div className={styles.layoutRow}>
+                  <div className={styles.layoutHeader}>{intl.formatMessage(messages.systemTimeIgnored)}:</div>
+                  <div className={isSystemTimeIgnoredClasses}>
                     {isSystemTimeIgnored
                       ? intl.formatMessage(messages.statusOn)
                       : intl.formatMessage(messages.statusOff)}
-                  </td>
-                </tr>
-                <tr>
-                  <th>{intl.formatMessage(messages.checkingNodeTime)}:</th>
-                  <td>
+                  </div>
+                </div>
+                <div className={styles.layoutRow}>
+                  <div className={styles.layoutHeader}>{intl.formatMessage(messages.checkingNodeTime)}:</div>
+                  <div className={styles.layoutData}>
                     {isForceCheckingNodeTime
                       ? intl.formatMessage(messages.statusOn)
                       : intl.formatMessage(messages.statusOff)}
-                  </td>
-                </tr>
+                  </div>
+                </div>
               */}
-            </tbody>
-            <tbody>
+            </div>
+            <div>
               {getSectionRow(
                 'cardanoNodeStatus',
                 <button
@@ -788,11 +798,11 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
               )}
               {/*
                 {showCardanoNodeEkgLink ? (
-                  <tr>
-                    <th>
+                  <div className={styles.layoutRow}>
+                    <div className={styles.layoutHeader}>
                       {intl.formatMessage(messages.cardanoNodeDiagnostics)}:
-                    </th>
-                    <td>
+                    </div>
+                    <div className={styles.layoutData}>
                       <button
                         className={styles.realTimeStatusBtn}
                         onClick={() => onOpenExternalLink(showCardanoNodeEkgLink)}
@@ -803,8 +813,8 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                           className={styles.externalLinkIcon}
                         />
                       </button>
-                    </td>
-                  </tr>
+                    </div>
+                  </div>
                 ) : null}
               */}
               {getRow(
@@ -824,8 +834,8 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
               */}
               {getRow('cardanoNodeSyncing', isNodeSyncing)}
               {getRow('cardanoNodeInSync', isNodeInSync)}
-            </tbody>
-          </table>
+            </div>
+          </div>
         </div>
       </div>
     );
