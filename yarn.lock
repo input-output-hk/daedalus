@@ -5310,7 +5310,6 @@ electron-download@^4.1.0, electron-download@^4.1.1:
     debug "^3.0.0"
     env-paths "^1.0.0"
     fs-extra "^4.0.1"
-    minimist "^1.2.0"
     nugget "^2.0.1"
     path-exists "^3.0.0"
     rc "^1.2.1"
@@ -5340,7 +5339,6 @@ electron-osx-sign@^0.4.11:
     compare-version "^0.1.2"
     debug "^2.6.8"
     isbinaryfile "^3.0.2"
-    minimist "^1.2.0"
     plist "^3.0.1"
 
 electron-packager@13.0.1:
@@ -8642,14 +8640,10 @@ json5@^0.5.1:
 json5@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/json5/-/json5-1.0.1.tgz#779fb0018604fa854eacbf6252180d83543e3dbe"
-  dependencies:
-    minimist "^1.2.0"
 
 json5@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/json5/-/json5-2.1.0.tgz#e7a0c62c48285c628d20a10b85c89bb807c32850"
-  dependencies:
-    minimist "^1.2.0"
 
 jsonfile@^2.1.0:
   version "2.4.0"
