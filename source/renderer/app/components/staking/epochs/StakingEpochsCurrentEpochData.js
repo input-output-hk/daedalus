@@ -112,9 +112,9 @@ export default class StakingEpochsCurrentEpochData extends Component<
                 </p>
               </td>
               <td>
-                <span className={styles.mediumText}>{`${
-                  slotsElected[0]
-                }%`}</span>
+                <span
+                  className={styles.mediumText}
+                >{`${slotsElected[0]}%`}</span>
               </td>
             </tr>
           );

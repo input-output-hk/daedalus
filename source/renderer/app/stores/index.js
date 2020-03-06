@@ -65,39 +65,37 @@ function executeOnEveryStore(fn: (store: Store) => void) {
 }
 
 // Set up and return the stores for this app -> also used to reset all stores to defaults
-export default action(
-  (api, actions, router): StoresMap => {
-    function createStoreInstanceOf<T: Store>(StoreSubClass: Class<T>): T {
-      return new StoreSubClass(api, actions);
-    }
-
-    // Teardown existing stores
-    if (stores) executeOnEveryStore(store => store.teardown());
-
-    // Create fresh instances of all stores
-    stores = observable({
-      uiNotifications: createStoreInstanceOf(UiNotificationsStore),
-      addresses: createStoreInstanceOf(AddressesStore),
-      app: createStoreInstanceOf(AppStore),
-      networkStatus: createStoreInstanceOf(NetworkStatusStore),
-      newsFeed: createStoreInstanceOf(NewsFeedStore),
-      nodeUpdate: createStoreInstanceOf(NodeUpdateStore),
-      profile: createStoreInstanceOf(ProfileStore),
-      router,
-      sidebar: createStoreInstanceOf(SidebarStore),
-      staking: createStoreInstanceOf(StakingStore),
-      transactions: createStoreInstanceOf(TransactionsStore),
-      uiDialogs: createStoreInstanceOf(UiDialogsStore),
-      wallets: createStoreInstanceOf(WalletsStore),
-      walletBackup: createStoreInstanceOf(WalletBackupStore),
-      walletSettings: createStoreInstanceOf(WalletSettingsStore),
-      window: createStoreInstanceOf(WindowStore),
-    });
-    // Configure and initialize all stores
-    executeOnEveryStore(store => {
-      if (stores) store.configure(stores);
-    });
-    executeOnEveryStore(store => store.initialize());
-    return stores;
+export default action((api, actions, router): StoresMap => {
+  function createStoreInstanceOf<T: Store>(StoreSubClass: Class<T>): T {
+    return new StoreSubClass(api, actions);
   }
-);
+
+  // Teardown existing stores
+  if (stores) executeOnEveryStore(store => store.teardown());
+
+  // Create fresh instances of all stores
+  stores = observable({
+    uiNotifications: createStoreInstanceOf(UiNotificationsStore),
+    addresses: createStoreInstanceOf(AddressesStore),
+    app: createStoreInstanceOf(AppStore),
+    networkStatus: createStoreInstanceOf(NetworkStatusStore),
+    newsFeed: createStoreInstanceOf(NewsFeedStore),
+    nodeUpdate: createStoreInstanceOf(NodeUpdateStore),
+    profile: createStoreInstanceOf(ProfileStore),
+    router,
+    sidebar: createStoreInstanceOf(SidebarStore),
+    staking: createStoreInstanceOf(StakingStore),
+    transactions: createStoreInstanceOf(TransactionsStore),
+    uiDialogs: createStoreInstanceOf(UiDialogsStore),
+    wallets: createStoreInstanceOf(WalletsStore),
+    walletBackup: createStoreInstanceOf(WalletBackupStore),
+    walletSettings: createStoreInstanceOf(WalletSettingsStore),
+    window: createStoreInstanceOf(WindowStore),
+  });
+  // Configure and initialize all stores
+  executeOnEveryStore(store => {
+    if (stores) store.configure(stores);
+  });
+  executeOnEveryStore(store => store.initialize());
+  return stores;
+});
