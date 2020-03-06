@@ -1557,10 +1557,8 @@
   version "5.3.14"
   resolved "https://registry.yarnpkg.com/@storybook/node-logger/-/node-logger-5.3.14.tgz#5e4e02585b37754bbebb8810ffb17c8ce706a1f8"
   dependencies:
-    "@types/npmlog" "^4.1.2"
     chalk "^3.0.0"
     core-js "^3.0.1"
-    npmlog "^4.1.2"
     pretty-hrtime "^1.0.3"
     regenerator-runtime "^0.13.3"
 
@@ -5197,7 +5195,6 @@ electron-download@^4.1.0, electron-download@^4.1.1:
     debug "^3.0.0"
     env-paths "^1.0.0"
     fs-extra "^4.0.1"
-    minimist "^1.2.0"
     nugget "^2.0.1"
     path-exists "^3.0.0"
     rc "^1.2.1"
@@ -5227,7 +5224,6 @@ electron-osx-sign@^0.4.11:
     compare-version "^0.1.2"
     debug "^2.6.8"
     isbinaryfile "^3.0.2"
-    minimist "^1.2.0"
     plist "^3.0.1"
 
 electron-packager@13.0.1:
@@ -6962,8 +6958,6 @@ glogg@^1.0.0:
 gonzales-pe@^4.2.4:
   version "4.2.4"
   resolved "https://registry.yarnpkg.com/gonzales-pe/-/gonzales-pe-4.2.4.tgz#356ae36a312c46fe0f1026dd6cb539039f8500d2"
-  dependencies:
-    minimist "1.1.x"
 
 good-listener@^1.2.2:
   version "1.2.2"
@@ -7082,7 +7076,6 @@ gulp-util@^3.0.0, gulp-util@^3.0.8:
     lodash._reevaluate "^3.0.0"
     lodash._reinterpolate "^3.0.0"
     lodash.template "^3.0.0"
-    minimist "^1.1.0"
     multipipe "^0.1.2"
     object-assign "^3.0.0"
     replace-ext "0.0.1"
@@ -7108,7 +7101,6 @@ gulp@^3.9.1:
     gulp-util "^3.0.0"
     interpret "^1.0.0"
     liftoff "^2.1.0"
-    minimist "^1.1.0"
     orchestrator "^0.3.0"
     pretty-hrtime "^1.0.0"
     semver "^4.1.0"
@@ -8567,20 +8559,14 @@ json5@^0.5.0, json5@^0.5.1:
 json5@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/json5/-/json5-1.0.1.tgz#779fb0018604fa854eacbf6252180d83543e3dbe"
-  dependencies:
-    minimist "^1.2.0"
 
 json5@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/json5/-/json5-2.1.0.tgz#e7a0c62c48285c628d20a10b85c89bb807c32850"
-  dependencies:
-    minimist "^1.2.0"
 
 json5@^2.1.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/json5/-/json5-2.1.1.tgz#81b6cb04e9ba496f1c7005d07b4368a2638f90b6"
-  dependencies:
-    minimist "^1.2.0"
 
 jsonfile@^2.1.0:
   version "2.4.0"
@@ -9167,7 +9153,6 @@ meow@^3.1.0, meow@^3.7.0:
     decamelize "^1.1.2"
     loud-rejection "^1.0.0"
     map-obj "^1.0.1"
-    minimist "^1.1.3"
     normalize-package-data "^2.3.4"
     object-assign "^4.0.1"
     read-pkg-up "^1.0.1"
@@ -9178,7 +9163,6 @@ meow@^6.0.0:
   version "6.0.1"
   resolved "https://registry.yarnpkg.com/meow/-/meow-6.0.1.tgz#f9b3f912c9aa039142cebcf74315129f4cd1ce1c"
   dependencies:
-    "@types/minimist" "^1.2.0"
     camelcase-keys "^6.1.1"
     decamelize-keys "^1.1.0"
     hard-rejection "^2.0.0"
@@ -9449,8 +9433,6 @@ mixin-object@^2.0.1:
 mkdirp@0.5.1, "mkdirp@>=0.5 0", mkdirp@^0.5.0, mkdirp@^0.5.1, mkdirp@~0.5.1:
   version "0.5.1"
   resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-0.5.1.tgz#30057438eac6cf7f8c4767f38648d6697d75c903"
-  dependencies:
-    minimist "0.0.8"
 
 mkpath@^0.1.0:
   version "0.1.0"
@@ -9651,7 +9633,6 @@ node-gyp@^3.8.0:
     graceful-fs "^4.1.2"
     mkdirp "^0.5.0"
     nopt "2 || 3"
-    npmlog "0 || 1 || 2 || 3 || 4"
     osenv "0"
     request "^2.87.0"
     rimraf "2"
@@ -9750,7 +9731,6 @@ node-pre-gyp@^0.12.0:
     needle "^2.2.1"
     nopt "^4.0.1"
     npm-packlist "^1.1.6"
-    npmlog "^4.0.2"
     rc "^1.2.7"
     rimraf "^2.6.1"
     semver "^5.3.0"
@@ -9786,7 +9766,6 @@ node-sass@4.11.0:
     mkdirp "^0.5.1"
     nan "^2.10.0"
     node-gyp "^3.8.0"
-    npmlog "^4.0.0"
     request "^2.88.0"
     sass-graph "^2.2.4"
     stdout-stream "^1.4.0"
@@ -9949,7 +9928,6 @@ nugget@^2.0.1:
   resolved "https://registry.yarnpkg.com/nugget/-/nugget-2.0.1.tgz#201095a487e1ad36081b3432fa3cada4f8d071b0"
   dependencies:
     debug "^2.1.3"
-    minimist "^1.1.0"
     pretty-bytes "^1.0.2"
     progress-stream "^1.1.0"
     request "^2.45.0"
@@ -10175,7 +10153,6 @@ optimist@^0.6.1, optimist@~0.6.1:
   version "0.6.1"
   resolved "https://registry.yarnpkg.com/optimist/-/optimist-0.6.1.tgz#da3ea74686fa21a19a111c326e90eb15a0196686"
   dependencies:
-    minimist "~0.0.1"
     wordwrap "~0.0.2"
 
 optionator@^0.8.1:
@@ -11253,7 +11230,6 @@ quote-stream@^1.0.1, quote-stream@~1.0.2:
   resolved "https://registry.yarnpkg.com/quote-stream/-/quote-stream-1.0.2.tgz#84963f8c9c26b942e153feeb53aae74652b7e0b2"
   dependencies:
     buffer-equal "0.0.1"
-    minimist "^1.1.3"
     through2 "^2.0.0"
 
 raf@^3.1.0, raf@^3.4.0:
@@ -11320,7 +11296,6 @@ rc@^1.0.1, rc@^1.1.6, rc@^1.2.1, rc@^1.2.7:
   dependencies:
     deep-extend "^0.6.0"
     ini "~1.3.0"
-    minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
 rcedit@^1.0.0:
@@ -12414,7 +12389,6 @@ sane@~1.6.0:
     exec-sh "^0.2.0"
     fb-watchman "^1.8.0"
     minimatch "^3.0.2"
-    minimist "^1.1.1"
     walker "~1.0.5"
     watch "~0.10.0"
 
