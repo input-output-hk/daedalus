@@ -31,7 +31,7 @@ When('I click the ShowUsed switch', async function() {
   await this.waitAndClick(SELECTORS.SHOW_USED_SWITCH);
 });
 
-Then('I should see {int} used addresses', { timeout: 10000 }, async function(
+Then('I should see {int} used addresses', { timeout: 60000 }, async function(
   numberOfAddresses
 ) {
   await this.client.waitForVisible('.VirtualAddressesList_list');
@@ -50,16 +50,12 @@ Then('I should see {int} used addresses', { timeout: 10000 }, async function(
     scrollableList[0].scroll(0, listHeight);
   });
 
-  const addressesFound = await avoidTimeout(
-    getVisibleElementsCountForSelector(
-      this.client,
-      '.12345',
-      '.12345',
-      60000
-    ),
-    numberOfAddresses,
-    3000,
-  )
+  const addressesFound = await getVisibleElementsCountForSelector(
+    this.client,
+    SELECTORS.ADDRESS_USED,
+    SELECTORS.ADDRESS_USED,
+    60000
+  );
   expect(addressesFound).to.equal(numberOfAddresses);
 });
 

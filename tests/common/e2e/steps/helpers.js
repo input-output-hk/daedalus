@@ -117,21 +117,8 @@ export const waitUntilTextInSelector = async (
     }
   });
 
-export const timeout = (ms: number, valueToReturn?: any = true) => {
-  return new Promise<void>(resolve => setTimeout(() => resolve(valueToReturn), ms));
-};
-
-/**
- *
- * This function is meant to be used in situations where a timeout
- * should not stop the tests, which means this step will be skipped
- *
- */
-export const avoidTimeout = async function(promiseToWait: Promise<any>, valueToReturn: any, milisecondsToWait: number) {
-  return await Promise.race([
-    promiseToWait,
-    timeout(milisecondsToWait, valueToReturn)
-  ]);
+export const timeout = (ms: number) => {
+  return new Promise<void>(resolve => setTimeout(resolve, ms));
 };
 
 export const scrollIntoView = async (client: Object, targetSelector: string) => {
