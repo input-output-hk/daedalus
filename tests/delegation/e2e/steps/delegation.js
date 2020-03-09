@@ -47,7 +47,7 @@ let pool;
 Then(/^the "([^"]*)" wallet should display the "([^"]*)" option$/, async function(walletName, optionText) {
   const selector = `//div[@class="WalletRow_title" and text()="${walletName}"]//parent::div//parent::div//span[@class="WalletRow_actionDelegate"]`;
   await this.client.waitForVisible(selector);
-  const visibleOption = await this.waitAndGetText.call(this, selector);
+  const visibleOption = await this.waitAndGetText(selector);
   expect(visibleOption).to.equal(optionText);
 });
 
@@ -113,7 +113,7 @@ Then(/^the "([^"]*)" wallet should display the delegated Stake Pool ticker$/, as
   const el = await this.client.element(selector);
   console.log('el', el);
   await this.client.waitForVisible(selector);
-  const visibleStakePoolTicker = await this.waitAndGetText.call(this, selector);
+  const visibleStakePoolTicker = await this.waitAndGetText(selector);
   expect(visibleStakePoolTicker).to.equal(`[${pool.ticker}]`);
 });
 
@@ -140,7 +140,7 @@ Then(/^I should see the "([^"]*)" wallet as undelegated$/, async function(wallet
   await this.client.waitForVisible(`//div[@class="WalletRow_title" and text()="${walletName}"]//parent::div//parent::div//span[@class="WalletRow_actionDelegate"]`);
   const selector = `//div[@class="WalletRow_title" and text()="${walletName}"]//parent::div//parent::div//span[@class="WalletRow_ticker tickerText"]`;
   await this.client.waitForVisible(selector);
-  const visibleStakePoolTicker = await this.waitAndGetText.call(this, selector);
+  const visibleStakePoolTicker = await this.waitAndGetText(selector);
   expect(visibleStakePoolTicker).to.equal('UNDELEGATED');
 });
 
@@ -165,7 +165,7 @@ Then(/^The "([^"]*)" wallet option should display the correct Stake Pool ticker$
   const selector = `//div[@class="WalletsDropdownOption_label" and text()="${walletName}"]//preceding-sibling::div[@class="WalletsDropdownOption_ticker"]`
   await this.client.waitForVisible(selector);
   await this.client.waitForEnabled(selector);
-  const visibleStakePoolTicker = await this.waitAndGetText.call(this, selector);
+  const visibleStakePoolTicker = await this.waitAndGetText(selector);
   expect(visibleStakePoolTicker).to.equal(`[${pool.ticker}]`);
 });
 

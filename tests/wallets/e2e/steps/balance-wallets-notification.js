@@ -9,7 +9,7 @@ Then(
   /^"Balance" wallet "([^"]*)" action should be visible in the top bar notification$/,
   async function(action) {
     await this.client.waitForVisible('.LegacyNotification_component');
-    const notificationAction = await this.waitAndGetText.call(this, '.LegacyNotification_actions button:nth-child(2)');
+    const notificationAction = await this.waitAndGetText('.LegacyNotification_actions button:nth-child(2)');
     expect(notificationAction).to.equal(action);
   }
 );

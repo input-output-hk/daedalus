@@ -154,7 +154,7 @@ Then(
   async function(data) {
     const errorSelector = '.WalletSendForm_component .SimpleFormField_error';
     await this.client.waitForText(errorSelector);
-    let errorsOnScreen = await this.waitAndGetText.call(this, errorSelector);
+    let errorsOnScreen = await this.waitAndGetText(errorSelector);
     if (typeof errorsOnScreen === 'string') errorsOnScreen = [errorsOnScreen];
     const errors = data.hashes();
     for (let i = 0; i < errors.length; i++) {
@@ -168,13 +168,13 @@ Then(
 Then(/^the latest transaction should show:$/, async function(table) {
   const expectedData = table.hashes()[0];
   await this.client.waitForVisible('.Transaction_title');
-  let transactionTitles = await this.waitAndGetText.call(this, '.Transaction_title');
+  let transactionTitles = await this.waitAndGetText('.Transaction_title');
   transactionTitles = [].concat(transactionTitles);
   const expectedTransactionTitle = await this.intl(expectedData.title, {
     currency: 'Ada',
   });
   expect(expectedTransactionTitle).to.equal(transactionTitles[0]);
-  let transactionAmounts = await this.waitAndGetText.call(this, '.Transaction_amount');
+  let transactionAmounts = await this.waitAndGetText('.Transaction_amount');
   transactionAmounts = [].concat(transactionAmounts);
   // Transaction amount includes transaction fees so we need to
   // substract them in order to get a match with expectedData.amountWithoutFees.

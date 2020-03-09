@@ -85,14 +85,14 @@ Then(/^the wallets should correctly display the correct stake pool tickers$/, { 
   await this.client.waitForVisible(walletNameSelector);
   // Waits for the patchAdaApi to transform the wallet values
   await this.client.waitUntil(async () => {
-    const walletNames = await this.waitAndGetText.call(this, walletNameSelector);
+    const walletNames = await this.waitAndGetText(walletNameSelector);
     return last(walletNames) === `Modified Wallet ${walletsTickers.length}`;
   });
   const tickerSelector = '.tickerText';
   await this.client.waitForVisible(tickerSelector);
   for (let index = 0; index < walletsTickers.length; index++) {
     const expectedTickers = walletsTickers[index];
-    let tickerTexts = await this.waitAndGetText.call(this, `.WalletRow_component:nth-child(${index + 1}) ${tickerSelector}`);
+    let tickerTexts = await this.waitAndGetText(`.WalletRow_component:nth-child(${index + 1}) ${tickerSelector}`);
     if (!Array.isArray(tickerTexts)) tickerTexts = [tickerTexts];
     expect(tickerTexts.length).to.equal(expectedTickers.length);
     tickerTexts.forEach((tickerText, index) => {
