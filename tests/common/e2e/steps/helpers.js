@@ -10,7 +10,7 @@ export const expectTextInSelector = async (
   client: Object,
   { selector, text }: { selector: string, text: string }
 ) => {
-  let textOnScreen = await waitAndGetText.call(client, selector);
+  let textOnScreen = await waitAndGetText.call({ client }, selector);
   // The selector could exist multiple times in the DOM
   if (typeof textOnScreen === 'string') textOnScreen = [textOnScreen];
   // We only compare the first result
@@ -59,7 +59,7 @@ export const getVisibleTextsForSelector = async (
   client: Object,
   selector: string
 ): Promise<Array<string>> => {
-  const texts = await waitAndGetText.call(client, selector);
+  const texts = await waitAndGetText.call({ client }, selector);
   return [].concat(texts);
 };
 
@@ -96,7 +96,7 @@ export const waitUntilTextInSelector = async (
   { selector, text, ignoreCase = false }: { selector: string, text: string, ignoreCase?: boolean }
 ) =>
   client.waitUntil(async () => {
-    let textOnScreen = await waitAndGetText.call(client, selector);
+    let textOnScreen = await waitAndGetText.call({ client }, selector);
     // The selector could exist multiple times in the DOM
     if (typeof textOnScreen === 'string') textOnScreen = [textOnScreen];
     // We only compare the first result
