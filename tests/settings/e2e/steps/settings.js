@@ -90,7 +90,6 @@ Then(/^I should see the following error messages:$/, async function(data) {
   const error = data.hashes()[0];
   const errorSelector =
     '.ChangeSpendingPasswordDialog_newPassword .SimpleFormField_error';
-  await this.client.waitForText(errorSelector);
   const errorsOnScreen = await this.waitAndGetText(errorSelector);
   const expectedError = await this.intl(error.message);
   expect(errorsOnScreen).to.equal(expectedError);

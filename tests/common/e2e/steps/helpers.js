@@ -10,8 +10,7 @@ export const expectTextInSelector = async (
   client: Object,
   { selector, text }: { selector: string, text: string }
 ) => {
-  await client.waitForText(selector);
-  let textOnScreen = await client.getText(selector);
+  let textOnScreen = await waitAndGetText.call(client, selector);
   // The selector could exist multiple times in the DOM
   if (typeof textOnScreen === 'string') textOnScreen = [textOnScreen];
   // We only compare the first result
@@ -60,8 +59,7 @@ export const getVisibleTextsForSelector = async (
   client: Object,
   selector: string
 ): Promise<Array<string>> => {
-  await client.waitForVisible(selector);
-  const texts = await client.getText(selector);
+  const texts = await waitAndGetText.call(client, selector);
   return [].concat(texts);
 };
 
@@ -76,19 +74,12 @@ export const saveScreenshot = async (
         console.log(err);
       });
 
-export const waitAnd = async function(
+export const waitAndClick = async function(
   selector: string,
   ...waitArgs: Array<*>
 ) {
   await this.client.waitForVisible(selector, ...waitArgs);
   await this.client.waitForEnabled(selector, ...waitArgs);
-};
-
-export const waitAndClick = async function(
-  selector: string,
-  ...waitArgs: Array<*>
-) {
-  await waitAnd.call(this, selector, ...waitArgs);
   return this.client.click(selector);
 };
 
@@ -96,7 +87,7 @@ export const waitAndGetText = async function(
   selector: string,
   ...waitArgs: Array<*>
 ) {
-  await waitAnd.call(this, selector, ...waitArgs);
+  await this.client.waitForText(selector);
   return this.client.getText(selector);
 };
 
@@ -105,8 +96,7 @@ export const waitUntilTextInSelector = async (
   { selector, text, ignoreCase = false }: { selector: string, text: string, ignoreCase?: boolean }
 ) =>
   client.waitUntil(async () => {
-    await client.waitForText(selector);
-    let textOnScreen = await client.getText(selector);
+    let textOnScreen = await waitAndGetText.call(client, selector);
     // The selector could exist multiple times in the DOM
     if (typeof textOnScreen === 'string') textOnScreen = [textOnScreen];
     // We only compare the first result

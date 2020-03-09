@@ -152,7 +152,7 @@ When(/^I see the "Paper Wallet Certificate" dialog$/, function() {
 When(
   /^Cardano explorer link and wallet address should be valid$/,
   async function() {
-    const visibleCardanoExplorerLink = await this.waitAndGetText.call(this,
+    const visibleCardanoExplorerLink = await this.waitAndGetText(
       '.CompletionDialog_linkInstructionsWrapper .CompletionDialog_infoBox .CompletionDialog_link'
     );
     const walletCertificateAddress = await this.client.execute(
@@ -163,7 +163,7 @@ When(
     }`;
     this.certificateWalletAddress = walletCertificateAddress.value;
 
-    const visibleWalletAddress = await this.waitAndGetText.call(this,
+    const visibleWalletAddress = await this.waitAndGetText(
       '.CompletionDialog_addressInstructionsWrapper .CompletionDialog_infoBox'
     );
 
@@ -195,7 +195,6 @@ When(/^I see "Restore wallet with certificate" form$/, function() {
 
 Then(/^I should see that address was used$/, async function() {
   const addressSelector = '.Address_usedWalletAddress .Address_addressId';
-  await this.client.waitForVisible(addressSelector);
   const usedAddress = await this.waitAndGetText(addressSelector);
   expect(usedAddress).to.equal(this.certificateWalletAddress);
 });

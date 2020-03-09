@@ -120,7 +120,6 @@ Then(
   /^I should see the following error messages on transfer wizard step 2 dialog:$/,
   async function(data) {
     const errorSelector = '.TransferFundsStep2Dialog_dialog .TransferFundsStep2Dialog_error';
-    await this.client.waitForText(errorSelector);
     let errorsOnScreen = await this.waitAndGetText(errorSelector);
     if (typeof errorsOnScreen === 'string') errorsOnScreen = [errorsOnScreen];
     const errors = data.hashes();

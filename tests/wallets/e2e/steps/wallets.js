@@ -135,7 +135,7 @@ Then(
     const expectedData = table.hashes()[0];
     const receiverWallet = getWalletByName.call(this, walletName);
     return this.client.waitUntil(async () => {
-      const receiverWalletBalance = await this.waitAndGetText.call(this,
+      const receiverWalletBalance = await this.waitAndGetText(
         `.SidebarWalletsMenu_wallets .Wallet_${
           receiverWallet.id
         } .SidebarWalletMenuItem_info`
