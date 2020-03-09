@@ -17,7 +17,7 @@ let
   canUseFetchGit = dotGitExists && isNix2;
   origPackage = builtins.fromJSON (builtins.readFile ./package.json);
   nameTable = {
-    mainnet = "Daedalus";
+    mainnet = "Daedalus ADA Redemption";
     staging = "Daedalus Staging";
     testnet = "Daedalus Testnet";
   };
