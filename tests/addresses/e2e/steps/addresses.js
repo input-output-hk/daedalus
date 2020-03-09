@@ -4,8 +4,6 @@ import { expect } from 'chai';
 import {
   getVisibleElementsCountForSelector,
   waitAndClick,
-  timeout,
-  avoidTimeout,
 } from '../../../common/e2e/steps/helpers';
 import type { Daedalus } from '../../../types';
 
