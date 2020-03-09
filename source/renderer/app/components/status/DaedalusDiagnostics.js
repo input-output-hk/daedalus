@@ -436,6 +436,10 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
     const colon = intl.formatMessage(globalMessages.punctuationColon);
     let content = value;
     let className = classNames([styles[messageId], styles.layoutData]);
+    const classNameHeader = classNames([
+      styles[messageId],
+      styles.layoutHeader,
+    ]);
     if (typeof value === 'boolean') {
       content = value
         ? intl.formatMessage(messages.statusOn)
@@ -444,7 +448,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
     }
     return (
       <div className={styles.layoutRow}>
-        <div className={styles.layoutHeader}>
+        <div className={classNameHeader}>
           {key}
           {colon}
         </div>
