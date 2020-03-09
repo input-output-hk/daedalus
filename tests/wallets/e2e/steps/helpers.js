@@ -116,7 +116,7 @@ export const fillOutWalletSendForm = async function(values: Object) {
 };
 
 export const getNameOfActiveWalletInSidebar = async function() {
-  await this.waitForVisible('.SidebarWalletMenuItem_active');
+  await this.client.waitForVisible('.SidebarWalletMenuItem_active');
   return this.waitAndGetText.call(this,
     '.SidebarWalletMenuItem_active .SidebarWalletMenuItem_title'
   );

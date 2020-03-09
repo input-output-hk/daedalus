@@ -26,7 +26,7 @@ When(/^I check the disk space$/, function() {
 
 Then(/^The No Disk Space overlay should be (hidden|visible)$/, function(state) {
   const waitForHidden = state === 'hidden';
-  return this.waitForVisible(
+  return this.client.waitForVisible(
     NO_DISK_SPACE_COMPONENT,
     null,
     waitForHidden

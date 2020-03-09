@@ -12,7 +12,7 @@ const SELECTORS = {
 };
 
 Then(/^I should not see the loading screen$/, async function() {
-  await this.waitForVisible(
+  await this.client.waitForVisible(
     SELECTORS.SYNCING_CONNECTING_COMPONENT,
     null,
     true
@@ -30,14 +30,14 @@ Then(
 );
 
 Then(/^I should not see the report issue notification$/, async function() {
-  await this.waitForVisible(SELECTORS.REPORT_ISSUE_HEADER, null, true);
+  await this.client.waitForVisible(SELECTORS.REPORT_ISSUE_HEADER, null, true);
 });
 
 Then(/^The report issue button should be (hidden|visible)$/, async function(
   state
 ) {
   const waitForHidden = state === 'hidden';
-  await this.waitForVisible(
+  await this.client.waitForVisible(
     SELECTORS.REPORT_ISSUE_BTN,
     null,
     waitForHidden

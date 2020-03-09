@@ -68,5 +68,5 @@ Then(
 
 Then(/^the UTXOs chart is (hidden|visible)/, async function(state) {
   const isVisible = state === 'visible';
-  await this.waitForVisible(selectors.chart, null, !isVisible);
+  await this.client.waitForVisible(selectors.chart, null, !isVisible);
 });

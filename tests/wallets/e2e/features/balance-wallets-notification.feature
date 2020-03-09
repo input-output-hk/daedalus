@@ -16,7 +16,6 @@ Feature: "Daedalus Balance" wallet top bar notification
     And "Balance" wallet badge should be visible in the wallet sidebar
     And "Balance" wallet notification should not be displayed in the wallet top bar
 
-    @watch
   Scenario: Balance wallet "Create a Rewards wallet" notification is displayed if the wallet is NOT empty and I don't have a Rewards wallet in the UI
     Given I have a "Balance Wallet" balance wallet with funds
     Then I should have newly created "Balance Wallet" wallet loaded
@@ -27,7 +26,6 @@ Feature: "Daedalus Balance" wallet top bar notification
     And "Balance" wallet "Create a new Rewards wallet" action should be visible in the top bar notification
     When I click "Balance" wallet top bar notification action
     Then I should be on the "wallets/add" screen
-    Then I freeze
 
   Scenario: Balance wallet "Move testnet ada" notification is shown when "Balance" wallet is NOT empty and I have a Rewards wallet in the UI
     Given I have the following "Rewards" wallets:

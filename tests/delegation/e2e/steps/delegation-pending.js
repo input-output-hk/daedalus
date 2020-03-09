@@ -82,14 +82,14 @@ Given(/^the wallets have the following pending delegations:$/, async function(de
 Then(/^the wallets should correctly display the correct stake pool tickers$/, { timeout: 60000 }, async function() {
   const walletNameSelector = '.WalletRow_title';
   const lastWalletTickers = last(walletsTickers);
-  await this.waitForVisible(walletNameSelector);
+  await this.client.waitForVisible(walletNameSelector);
   // Waits for the patchAdaApi to transform the wallet values
   await this.client.waitUntil(async () => {
     const walletNames = await this.waitAndGetText.call(this, walletNameSelector);
     return last(walletNames) === `Modified Wallet ${walletsTickers.length}`;
   });
   const tickerSelector = '.tickerText';
-  await this.waitForVisible(tickerSelector);
+  await this.client.waitForVisible(tickerSelector);
   for (let index = 0; index < walletsTickers.length; index++) {
     const expectedTickers = walletsTickers[index];
     let tickerTexts = await this.waitAndGetText.call(this, `.WalletRow_component:nth-child(${index + 1}) ${tickerSelector}`);
@@ -106,7 +106,7 @@ Then(/^the ADA logo should be displayed as follows:$/, async function(visibility
   const visibility = visibilityTable.hashes();
   for (let index = 0; index < visibility.length; index++) {
     const shouldBeVisible = visibility[index].ADA_LOGO === 'visible';
-    await this.waitForVisible(`.WalletRow_component:nth-child(${index + 1}) .WalletRow_activeAdaSymbol`, null, !shouldBeVisible);
+    await this.client.waitForVisible(`.WalletRow_component:nth-child(${index + 1}) .WalletRow_activeAdaSymbol`, null, !shouldBeVisible);
   }
 });
 

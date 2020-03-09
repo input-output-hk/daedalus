@@ -163,41 +163,41 @@ When('I click on the alert in the newsfeed', async function() {
 // THEN STEPS
 
 Then('i should see the newsfeed icon', async function() {
-  await this.waitForVisible('.NewsFeedIcon_component');
+  await this.client.waitForVisible('.NewsFeedIcon_component');
 });
 
 Then('the newsfeed icon is highlighted', async function() {
-  await this.waitForVisible('.NewsFeedIcon_withDot');
+  await this.client.waitForVisible('.NewsFeedIcon_withDot');
 });
 
 Then('the newsfeed icon is not highlighted', async function() {
-  await this.waitForVisible('.NewsFeedIcon_withDot', null, true);
+  await this.client.waitForVisible('.NewsFeedIcon_withDot', null, true);
 });
 
 Then('the newsfeed is open', async function() {
-  await this.waitForVisible('.NewsFeed_component');
+  await this.client.waitForVisible('.NewsFeed_component');
 });
 
 Then('the newsfeed is empty', async function() {
   setNewsFeedIsOpen(this.client, true);
-  await this.waitForVisible('.NewsFeed_newsFeedEmpty');
+  await this.client.waitForVisible('.NewsFeed_newsFeedEmpty');
 });
 
 Then('no news are available', async function() {
   setNewsFeedIsOpen(this.client, true);
-  await this.waitForVisible('.NewsFeed_newsFeedNoFetch');
+  await this.client.waitForVisible('.NewsFeed_newsFeedNoFetch');
 });
 
 Then('the incident will cover the screen', async function() {
-  await this.waitForVisible('.IncidentOverlay_component');
+  await this.client.waitForVisible('.IncidentOverlay_component');
 });
 
 Then('the alert disappears', async function() {
-  await this.waitForVisible('.AlertsOverlay_component', null, true);
+  await this.client.waitForVisible('.AlertsOverlay_component', null, true);
 });
 
 Then('the alert overlay opens', async function() {
-  await this.waitForVisible('.AlertsOverlay_component');
+  await this.client.waitForVisible('.AlertsOverlay_component');
 });
 
 Then(/^the newsfeed contains (\d+) read (\w+?)s$/, async function(
@@ -214,12 +214,12 @@ Then(/^the newsfeed contains (\d+) read (\w+?)s$/, async function(
 
 Then(/^the (\w+?) content is shown$/, async function(type) {
   setNewsFeedIsOpen(this.client, true);
-  await this.waitForVisible(
+  await this.client.waitForVisible(
     `.NewsItem_${type} .NewsItem_newsItemContentContainer`
   );
 });
 
 Then(/^the (\w+?) is marked as read$/, async function(type) {
   setNewsFeedIsOpen(this.client, true);
-  await this.waitForVisible(`.NewsItem_${type}.NewsItem_isRead`);
+  await this.client.waitForVisible(`.NewsItem_${type}.NewsItem_isRead`);
 });

@@ -12,7 +12,7 @@ import type { Daedalus } from '../../../types';
 declare var daedalus: Daedalus;
 
 Given(/^I see the restore wallet dialog$/, function() {
-  return this.waitForVisible('.WalletRestoreDialog_component');
+  return this.client.waitForVisible('.WalletRestoreDialog_component');
 });
 
 When(
@@ -50,9 +50,9 @@ When(/^I enter recovery phrase in restore wallet dialog:$/, async function(
       '.AutocompleteOverrides_autocompleteWrapper input',
       word
     );
-    await this.waitForVisible(`//li[text()="${word}"]`);
+    await this.client.waitForVisible(`//li[text()="${word}"]`);
     await this.waitAndClick(`//li[text()="${word}"]`);
-    await this.waitForVisible(`//span[text()="${word}"]`);
+    await this.client.waitForVisible(`//span[text()="${word}"]`);
   }
 });
 
@@ -85,7 +85,7 @@ Then(
 );
 
 Then(/^I should not see the restore wallet dialog anymore$/, function() {
-  return this.waitForVisible('.WalletRestoreDialog', null, true);
+  return this.client.waitForVisible('.WalletRestoreDialog', null, true);
 });
 
 Then(
@@ -131,7 +131,7 @@ Then(
   /^I confirm "([^"]*)"$/,
   async function(text) {
     const targetSelector = `//label[contains(text(), "${text}")]`;
-    await this.waitForVisible(targetSelector);
+    await this.client.waitForVisible(targetSelector);
     await scrollIntoView(this.client, targetSelector);
     await this.client.click(targetSelector);
   }
@@ -151,5 +151,5 @@ Given(/^I go back to the previous step$/, function() {
 
 Then(/^The error message should be (hidden|visible)$/, function(state) {
   const isVisible = state === 'visible';
-  return this.waitForVisible('.ConfigurationDialog_error', null, !isVisible);
+  return this.client.waitForVisible('.ConfigurationDialog_error', null, !isVisible);
 });

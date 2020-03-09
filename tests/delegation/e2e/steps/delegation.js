@@ -16,23 +16,23 @@ Given(/^I am on the Delegation "([^"]*)" screen$/, async function(
 });
 
 Then(/^I should see a "Create rewards wallet" notification$/, async function() {
-  await this.waitForVisible('.DelegationCenterNoWallets_component');
+  await this.client.waitForVisible('.DelegationCenterNoWallets_component');
 });
 
 Then(/^I should only see Reward wallets listed$/, async function() {
-  await this.waitForVisible(
+  await this.client.waitForVisible(
     '//div[@class="WalletRow_title" and starts-with(text(), "Reward Wallet")]'
   );
-  await this.waitForVisible(
+  await this.client.waitForVisible(
     '//div[@class="WalletRow_title" and starts-with(text(), "Legacy Wallet")]'
   , null, true);
 });
 
 Then(/^the current and next epoch countdown are correctly displayed$/, async function() {
-  await this.waitForVisible('.DelegationCenterHeader_countdownContainer');
-  await this.waitForVisible('.DelegationCenterHeader_heading');
-  await this.waitForVisible('.DelegationCenterHeader_epochsContainer');
-  await this.waitForVisible('.CountdownWidget_timeLeftContainer');
+  await this.client.waitForVisible('.DelegationCenterHeader_countdownContainer');
+  await this.client.waitForVisible('.DelegationCenterHeader_heading');
+  await this.client.waitForVisible('.DelegationCenterHeader_epochsContainer');
+  await this.client.waitForVisible('.CountdownWidget_timeLeftContainer');
 });
 
 Then(/^the current and next epoch countdown have correct data$/, async function() {
@@ -46,7 +46,7 @@ let pool;
 
 Then(/^the "([^"]*)" wallet should display the "([^"]*)" option$/, async function(walletName, optionText) {
   const selector = `//div[@class="WalletRow_title" and text()="${walletName}"]//parent::div//parent::div//span[@class="WalletRow_actionDelegate"]`;
-  await this.waitForVisible(selector);
+  await this.client.waitForVisible(selector);
   const visibleOption = await this.waitAndGetText.call(this, selector);
   expect(visibleOption).to.equal(optionText);
 });
@@ -110,7 +110,9 @@ Given(/^the "([^"]*)" wallet was delegated to a Stake Pool with no metadata$/, a
 
 Then(/^the "([^"]*)" wallet should display the delegated Stake Pool ticker$/, async function(walletName) {
   const selector = `//div[@class="WalletRow_title" and text()="${walletName}"]//parent::div//parent::div//span[@class="SimpleTooltip_root TooltipOverrides_root"]//span[@class="WalletRow_ticker tickerText"]`;
-  await this.waitForVisible(selector);
+  const el = await this.client.element(selector);
+  console.log('el', el);
+  await this.client.waitForVisible(selector);
   const visibleStakePoolTicker = await this.waitAndGetText.call(this, selector);
   expect(visibleStakePoolTicker).to.equal(`[${pool.ticker}]`);
 });
@@ -130,14 +132,14 @@ Then(/^I hover "([^"]*)" wallet row$/, async function(walletName) {
 });
 
 Then(/^I should see the "([^"]*)" wallet with "Undelegate" and "Redelegate" actions$/, async function(walletName) {
-  await this.waitForVisible(`//div[@class="WalletRow_title" and text()="${walletName}"]//parent::div//parent::div//span[@class="WalletRow_actionDelegate"]`);
-  await this.waitForVisible(`//div[@class="WalletRow_title" and text()="${walletName}"]//parent::div//parent::div//span[@class="WalletRow_actionUndelegate"]`);
+  await this.client.waitForVisible(`//div[@class="WalletRow_title" and text()="${walletName}"]//parent::div//parent::div//span[@class="WalletRow_actionDelegate"]`);
+  await this.client.waitForVisible(`//div[@class="WalletRow_title" and text()="${walletName}"]//parent::div//parent::div//span[@class="WalletRow_actionUndelegate"]`);
 });
 
-Then(/^I should see the "([^"]*)" wallet undelegated$/, async function(walletName) {
-  await this.waitForVisible(`//div[@class="WalletRow_title" and text()="${walletName}"]//parent::div//parent::div//span[@class="WalletRow_actionDelegate"]`);
+Then(/^I should see the "([^"]*)" wallet as undelegated$/, async function(walletName) {
+  await this.client.waitForVisible(`//div[@class="WalletRow_title" and text()="${walletName}"]//parent::div//parent::div//span[@class="WalletRow_actionDelegate"]`);
   const selector = `//div[@class="WalletRow_title" and text()="${walletName}"]//parent::div//parent::div//span[@class="WalletRow_ticker tickerText"]`;
-  await this.waitForVisible(selector);
+  await this.client.waitForVisible(selector);
   const visibleStakePoolTicker = await this.waitAndGetText.call(this, selector);
   expect(visibleStakePoolTicker).to.equal('UNDELEGATED');
 });
@@ -156,12 +158,12 @@ Given('I click the wallet selector', async function() {
 
 Then(/^I should not see delegation actions for "([^"]*)" wallet$/, async function(walletName) {
   const selector = `//div[@class="WalletRow_title" and text()="${walletName}"]//parent::div//parent::div//span[@class="WalletRow_actionDelegate"]`;
-  await this.waitForVisible(selector, null, true);
+  await this.client.waitForVisible(selector, null, true);
 });
 
 Then(/^The "([^"]*)" wallet option should display the correct Stake Pool ticker$/, async function(walletName) {
   const selector = `//div[@class="WalletsDropdownOption_label" and text()="${walletName}"]//preceding-sibling::div[@class="WalletsDropdownOption_ticker"]`
-  await this.waitForVisible(selector);
+  await this.client.waitForVisible(selector);
   await this.client.waitForEnabled(selector);
   const visibleStakePoolTicker = await this.waitAndGetText.call(this, selector);
   expect(visibleStakePoolTicker).to.equal(`[${pool.ticker}]`);
@@ -178,27 +180,27 @@ Given(/^I sucessfully delegate my "([^"]*)" wallet$/, { timeout: 60000 }, async 
   const confirmButtonSelector = '.confirmButton';
 
   // Intro step
-  await this.waitForVisible(continueButtonSelector);
+  await this.client.waitForVisible(continueButtonSelector);
   await this.client.click(continueButtonSelector);
 
   // Choose wallet step
-  await this.waitForVisible(continueButtonSelector);
+  await this.client.waitForVisible(continueButtonSelector);
   await this.client.waitForEnabled(continueButtonSelector);
   await this.client.click(continueButtonSelector);
 
   // Select pool step
   await this.waitAndClick('.StakePoolThumbnail_component');
-  await this.waitForVisible(continueButtonSelector);
+  await this.client.waitForVisible(continueButtonSelector);
   await this.client.waitForEnabled(continueButtonSelector);
   await this.client.click(continueButtonSelector);
 
   // Enter password step
-  await this.waitForVisible('.SimpleInput_input');
+  await this.client.waitForVisible('.SimpleInput_input');
   const input = this.client.element('.SimpleInput_input');
   input.setValue('Secret1234');
 
   // Confirmation step
-  await this.waitForVisible(confirmButtonSelector);
+  await this.client.waitForVisible(confirmButtonSelector);
   await this.client.waitForEnabled(confirmButtonSelector);
   await this.client.click(confirmButtonSelector);
 
@@ -206,7 +208,7 @@ Given(/^I sucessfully delegate my "([^"]*)" wallet$/, { timeout: 60000 }, async 
 });
 
 Then(/^I should see a "([^"]*)" message$/, async function(message) {
-  await this.waitForVisible(
+  await this.client.waitForVisible(
     `//*[text()="${message}"]`
   );
 });
@@ -230,14 +232,14 @@ Given('I send {int} ADA from the {string} wallet to the {string} wallet', async 
         }).then(done)
       })
   }, adaAmount, walletFrom, walletTo);
-  await this.waitForVisible(`//div[@class="WalletRow_title" and text()="${walletTo}"]//following-sibling::div[@class="WalletRow_description"]//span`);
+  await this.client.waitForVisible(`//div[@class="WalletRow_title" and text()="${walletTo}"]//following-sibling::div[@class="WalletRow_description"]//span`);
 });
 
 Then(/^I choose the "([^"]*)" wallet$/, async function(walletName) {
   await this.waitAndClick('.SimpleFormField_inputWrapper');
   await this.waitAndClick(`//div[@class="WalletsDropdownOption_label" and text()="${walletName}"]`);
   const selector = '//button[text()="Continue"]';
-  await this.waitForVisible(selector);
+  await this.client.waitForVisible(selector);
   await this.client.waitForEnabled(selector);
   await this.client.click(selector);
 });
@@ -248,7 +250,7 @@ Then(/^I choose the first stake pool$/, async function() {
 });
 
 Then(/^I enter "([^"]*)" as the spending password$/, async function(spendingPassword) {
-  await this.waitForVisible('.SimpleInput_input');
+  await this.client.waitForVisible('.SimpleInput_input');
   const input = this.client.element('.SimpleInput_input');
   input.setValue(spendingPassword);
   await timeout(2000);
@@ -258,6 +260,6 @@ Then(/^I enter "([^"]*)" as the spending password$/, async function(spendingPass
 Then(/^I should see a "Loading stake pools" message until the Stake Pools are loaded$/, async function() {
   const { value: stakePoolsLength} = await this.client.execute(() => daedalus.stores.staking.stakePools.length);
   if (!stakePoolsLength) {
-    await this.waitForVisible('.DelegationCenterBody_isLoading');
+    await this.client.waitForVisible('.DelegationCenterBody_isLoading');
   }
 });

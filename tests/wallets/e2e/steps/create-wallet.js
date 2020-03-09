@@ -10,11 +10,11 @@ Given(/^I see the add wallet page/, function() {
 });
 
 Given(/^I see the create wallet dialog$/, function() {
-  return this.waitForVisible('.WalletCreateDialog');
+  return this.client.waitForVisible('.WalletCreateDialog');
 });
 
 Given(/^I dont see the create wallet dialog(?: anymore)?$/, function() {
-  return this.waitForVisible('.WalletCreateDialog', null, true);
+  return this.client.waitForVisible('.WalletCreateDialog', null, true);
 });
 
 When(/^I click on the create wallet button on the add wallet page/, function() {
@@ -42,7 +42,7 @@ When(
 );
 
 When(/^I see the create wallet privacy dialog$/, function() {
-  return this.waitForVisible('.WalletBackupPrivacyWarningDialog');
+  return this.client.waitForVisible('.WalletBackupPrivacyWarningDialog');
 });
 
 When(
@@ -59,7 +59,7 @@ When(/^I submit the create wallet privacy dialog$/, function() {
 });
 
 When(/^I see the create wallet recovery phrase display dialog$/, function() {
-  return this.waitForVisible('.WalletRecoveryPhraseDisplayDialog');
+  return this.client.waitForVisible('.WalletRecoveryPhraseDisplayDialog');
 });
 
 When(/^I note down the recovery phrase$/, async function() {
@@ -74,7 +74,7 @@ When(/^I submit the create wallet recovery phrase display dialog$/, function() {
 });
 
 When(/^I see the create wallet recovery phrase entry dialog$/, function() {
-  return this.waitForVisible('.WalletRecoveryPhraseEntryDialog');
+  return this.client.waitForVisible('.WalletRecoveryPhraseEntryDialog');
 });
 
 When(
@@ -106,7 +106,7 @@ When(/^I submit the create wallet recovery phrase entry dialog$/, function() {
 Then(
   /^I should not see the create wallet recovery phrase entry dialog anymore$/,
   function() {
-    return this.waitForVisible(
+    return this.client.waitForVisible(
       '.WalletRecoveryPhraseEntryDialog',
       null,
       true

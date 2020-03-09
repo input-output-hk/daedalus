@@ -50,7 +50,7 @@ Then(
 
     sidebarHelpers.clickAddWalletButton(this.client);
 
-    await this.waitForVisible(
+    await this.client.waitForVisible(
       '.WalletAdd_buttonsContainer .BigButtonForDialogs_component'
     );
 

@@ -18,7 +18,7 @@ Given('im on the syncing screen', async function() {
     daedalus.api.ada.setSyncProgress(10);
     daedalus.stores.networkStatus._updateNetworkStatus().then(done);
   });
-  await this.waitForVisible('.SyncingConnecting_is-syncing');
+  await this.client.waitForVisible('.SyncingConnecting_is-syncing');
 });
 
 Given('im on the connecting screen', async function() {
@@ -28,7 +28,7 @@ Given('im on the connecting screen', async function() {
     daedalus.api.ada.setSyncProgress(0);
     daedalus.stores.networkStatus._updateNetworkStatus().then(done);
   });
-  await this.waitForVisible('.SyncingConnecting_is-connecting');
+  await this.client.waitForVisible('.SyncingConnecting_is-connecting');
 });
 
 When(/^I refresh the main window$/, async function() {
@@ -58,5 +58,5 @@ Then(/^I should see the loading screen with "([^"]*)"$/, async function(
 });
 
 Then(/^I should see the main ui/, function() {
-  return this.waitForVisible('.SidebarLayout_component');
+  return this.client.waitForVisible('.SidebarLayout_component');
 });

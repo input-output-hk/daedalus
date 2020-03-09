@@ -33,7 +33,7 @@ Then(
   'I should see a {string} recovery phrase veryfication feature',
   async function(status) {
     const statusClassname = `${SETTINGS_PAGE_STATUS_SELECTOR}${status}`;
-    return this.waitForVisible(statusClassname);
+    return this.client.waitForVisible(statusClassname);
   }
 );
 
@@ -70,15 +70,15 @@ When(/^I enter the recovery phrase mnemonics incorrectly$/, async function() {
 });
 
 When(/^I should see the confirmation dialog$/, async function() {
-  return this.waitForVisible(DIALOG_SUCCESSFUL_SELECTOR);
+  return this.client.waitForVisible(DIALOG_SUCCESSFUL_SELECTOR);
 });
 
 When(/^I should see the error dialog$/, async function() {
-  return this.waitForVisible(DIALOG_UNSUCCESSFUL_SELECTOR);
+  return this.client.waitForVisible(DIALOG_UNSUCCESSFUL_SELECTOR);
 });
 
 When(/^I should not see any dialog$/, async function() {
-  return this.waitForVisible(DIALOG_SELECTOR, null, true);
+  return this.client.waitForVisible(DIALOG_SELECTOR, null, true);
 });
 When(/^I click the Verify again button$/, async function() {
   return this.waitAndClick(DIALOG_VERIFY_AGAIN_BUTTON_SELECTOR);

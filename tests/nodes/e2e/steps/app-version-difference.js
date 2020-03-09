@@ -32,7 +32,7 @@ Given(/^There is a newer application version available$/, async function() {
 // });
 
 Then(/^I should see the "Manual Update" overlay$/, function() {
-  return this.waitForVisible(SELECTORS.OVERLAY);
+  return this.client.waitForVisible(SELECTORS.OVERLAY);
 });
 
 Then(

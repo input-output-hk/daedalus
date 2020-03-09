@@ -5,7 +5,7 @@ import type { Daedalus } from '../../../types';
 declare var daedalus: Daedalus;
 
 Given(/^I see delete wallet dialog$/, function() {
-  return this.waitForVisible('.DeleteWalletConfirmationDialog_dialog');
+  return this.client.waitForVisible('.DeleteWalletConfirmationDialog_dialog');
 });
 
 When(/^I click on delete wallet button$/, async function() {
@@ -35,7 +35,7 @@ When(/^I submit the delete wallet dialog$/, function() {
 });
 
 Then(/^I should not see the delete wallet dialog anymore$/, function() {
-  return this.waitForVisible(
+  return this.client.waitForVisible(
     '.DeleteWalletConfirmationDialog_dialog',
     null,
     true

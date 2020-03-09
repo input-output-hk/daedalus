@@ -74,7 +74,7 @@ Then(/^"Transfer ada" wizard step 2 dialog continue button should be disabled$/,
 });
 
 Then(/^I should see "Transfer ada" wizard step 2 dialog$/, async function() {
-  await this.waitForVisible('.TransferFundsStep2Dialog_dialog');
+  await this.client.waitForVisible('.TransferFundsStep2Dialog_dialog');
   // Set transfer funds fee
   const transferFee = await this.waitAndGetText.call(this, '.TransferFundsStep2Dialog_dialog .Dialog_content div:nth-child(3) .TransferFundsStep2Dialog_amount');
   this.transferFee = transferFee.replace('+ ', '');
@@ -83,7 +83,7 @@ Then(/^I should see "Transfer ada" wizard step 2 dialog$/, async function() {
 Then(
   /^I should not see "Transfer ada" wizard step 2 wizard dialog anymore$/,
   function() {
-    return this.waitForVisible(
+    return this.client.waitForVisible(
       '.TransferFundsStep2Dialog_dialog',
       null,
       true
@@ -92,11 +92,11 @@ Then(
 );
 
 Then(/^I should see "Add wallet" wizard$/, async function() {
-  return this.waitForVisible('.TransferFundsStep1Dialog_label');
+  return this.client.waitForVisible('.TransferFundsStep1Dialog_label');
 });
 
 Then(/^I should see "Transfer ada" wizard$/, async function() {
-  return this.waitForVisible('.TransferFundsStep1Dialog_label');
+  return this.client.waitForVisible('.TransferFundsStep1Dialog_label');
 });
 
 

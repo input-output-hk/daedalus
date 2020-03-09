@@ -14,7 +14,7 @@ const paperWalletCertificatePath = path.resolve(
 );
 
 Given(/^I see the "Certificate Generation Instructions" dialog$/, function() {
-  return this.waitForVisible('.instructionsDialog');
+  return this.client.waitForVisible('.instructionsDialog');
 });
 
 When(/^I click on the print button$/, async function() {
@@ -38,7 +38,7 @@ When(/^I click on the continue button$/, function() {
 });
 
 When(/^I see the "Certificate Generation Complete" dialog$/, function() {
-  return this.waitForVisible('.printDialog');
+  return this.client.waitForVisible('.printDialog');
 });
 
 When(/^I check all "Print Dialog" checkboxes$/, async function() {
@@ -48,7 +48,7 @@ When(/^I check all "Print Dialog" checkboxes$/, async function() {
 });
 
 When(/^I see the "Securing Additional mnemonics" dialog$/, function() {
-  return this.waitForVisible('.SecuringPasswordDialog');
+  return this.client.waitForVisible('.SecuringPasswordDialog');
 });
 
 When(
@@ -59,7 +59,7 @@ When(
 );
 
 When(/^I see the "Verify Certificate" dialog$/, function() {
-  return this.waitForVisible('.verificationDialog');
+  return this.client.waitForVisible('.verificationDialog');
 });
 
 When(/^I enter paper wallet recovery phrase$/, async function() {
@@ -84,9 +84,9 @@ When(/^I enter paper wallet recovery phrase$/, async function() {
       '.AutocompleteOverrides_autocompleteWrapper input',
       word
     );
-    await this.waitForVisible(`//li[text()="${word}"]`);
+    await this.client.waitForVisible(`//li[text()="${word}"]`);
     await this.waitAndClick(`//li[text()="${word}"]`);
-    await this.waitForVisible(`//span[text()="${word}"]`);
+    await this.client.waitForVisible(`//span[text()="${word}"]`);
   }
 });
 
@@ -99,9 +99,9 @@ When(/^I enter wrong paper wallet recovery phrase:$/, async function(table) {
       '.AutocompleteOverrides_autocompleteWrapper input',
       word
     );
-    await this.waitForVisible(`//li[text()="${word}"]`);
+    await this.client.waitForVisible(`//li[text()="${word}"]`);
     await this.waitAndClick(`//li[text()="${word}"]`);
-    await this.waitForVisible(`//span[text()="${word}"]`);
+    await this.client.waitForVisible(`//span[text()="${word}"]`);
   }
 });
 
@@ -146,7 +146,7 @@ When(/^I check all "Verify Certificate" checkboxes$/, async function() {
 });
 
 When(/^I see the "Paper Wallet Certificate" dialog$/, function() {
-  return this.waitForVisible('.completionDialog');
+  return this.client.waitForVisible('.completionDialog');
 });
 
 When(
@@ -179,7 +179,7 @@ When(/^I click on the finish button$/, function() {
 When(
   /^I should not see the create paper wallet certificate dialog anymore$/,
   function() {
-    return this.waitForVisible('.completionDialog', null, true);
+    return this.client.waitForVisible('.completionDialog', null, true);
   }
 );
 
@@ -188,14 +188,14 @@ When(/^I click "Paper wallet certificate" tab$/, function() {
 });
 
 When(/^I see "Restore wallet with certificate" form$/, function() {
-  return this.waitForVisible(
+  return this.client.waitForVisible(
     '.WalletRestoreDialog_dialogWithCertificateRestore'
   );
 });
 
 Then(/^I should see that address was used$/, async function() {
   const addressSelector = '.Address_usedWalletAddress .Address_addressId';
-  await this.waitForVisible(addressSelector);
+  await this.client.waitForVisible(addressSelector);
   const usedAddress = await this.waitAndGetText.call(this, addressSelector);
   expect(usedAddress).to.equal(this.certificateWalletAddress);
 });

@@ -54,7 +54,7 @@ Given(/^I am on the "([^"]*)" wallet "([^"]*)" screen$/, async function(
 });
 
 When(/^I have one wallet address$/, function() {
-  return this.waitForVisible('.receiveAddress-1');
+  return this.client.waitForVisible('.receiveAddress-1');
 });
 
 When(/^I enter spending password "([^"]*)"$/, function(password) {
@@ -66,7 +66,7 @@ When(/^I enter spending password "([^"]*)"$/, function(password) {
 
 When(/^I click the wallet (.*) button$/, async function(buttonName) {
   const buttonSelector = `.NavButton_component.${buttonName}`;
-  await this.waitForVisible(buttonSelector);
+  await this.client.waitForVisible(buttonSelector);
   await this.client.click(buttonSelector);
 });
 
@@ -111,7 +111,7 @@ Then(/^I should have newly created "([^"]*)" wallet loaded$/, async function(
 });
 
 Then(/^I should be on some wallet page$/, async function() {
-  return this.waitForVisible('.Navigation_component');
+  return this.client.waitForVisible('.Navigation_component');
 });
 
 Then(/^I should be on the "([^"]*)" wallet "([^"]*)" screen$/, async function(
@@ -148,6 +148,6 @@ Then(
 Then(
   /^"Balance" wallet badge should be visible in the wallet sidebar$/,
   async function() {
-    return this.waitForVisible('.SidebarWalletMenuItem_active .LegacyBadge_component');
+    return this.client.waitForVisible('.SidebarWalletMenuItem_active .LegacyBadge_component');
   }
 );

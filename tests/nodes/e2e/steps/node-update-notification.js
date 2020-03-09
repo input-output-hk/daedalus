@@ -20,7 +20,7 @@ const SELECTORS = {
 };
 
 Then('I should see the node update notification overlay', async function() {
-  return this.waitForVisible(SELECTORS.nodeUpdateOverlay);
+  return this.client.waitForVisible(SELECTORS.nodeUpdateOverlay);
 });
 
 When(/^I set next update version to "([^"]*)"$/, async function(applicationVersion) {
@@ -47,8 +47,8 @@ When(
     );
     expect(newAppVersionInfo.replace('v ', '')).to.equal(nextVersion);
     expect(currentAppVersionInfo.replace('v ', '')).to.equal(currentAppVersion);
-    this.waitForVisible(SELECTORS.acceptButton);
-    this.waitForVisible(SELECTORS.postponeButton);
+    this.client.waitForVisible(SELECTORS.acceptButton);
+    this.client.waitForVisible(SELECTORS.postponeButton);
   }
 );
 
@@ -69,7 +69,7 @@ When(/^I click the accept update button$/, function() {
 });
 
 Then(/^I should not see the notification component anymore$/, function() {
-  return this.waitForVisible(
+  return this.client.waitForVisible(
     SELECTORS.nodeUpdateComponent,
     null,
     true

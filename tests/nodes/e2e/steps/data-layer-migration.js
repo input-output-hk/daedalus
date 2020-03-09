@@ -16,11 +16,11 @@ Given(/^I haven't accepted the data layer migration$/, async function() {
 });
 
 Then(/^I should see the Data Layer Migration screen$/, function() {
-  return this.waitForVisible(SELECTORS.COMPONENT);
+  return this.client.waitForVisible(SELECTORS.COMPONENT);
 });
 
 Then(/^I should not see the Data Layer Migration screen$/, function() {
-  return this.waitForVisible(
+  return this.client.waitForVisible(
     SELECTORS.COMPONENT,
     null,
     true

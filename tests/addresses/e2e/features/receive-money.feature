@@ -8,6 +8,7 @@ Feature: Receive money
       | name          |
       | Target Wallet |
 
+      @watch
   Scenario: Hide/show used addresses
     Given I am on the "Target Wallet" wallet "receive" screen
     And I have made the following transactions:

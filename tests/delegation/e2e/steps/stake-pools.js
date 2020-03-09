@@ -74,7 +74,7 @@ When(/^Stake pools loading failed/, async function () {
 });
 
 When(/^I see the stake pools search input field/, function () {
-  return this.waitForVisible(STAKE_POOLS_SEARCH_SELECTOR);
+  return this.client.waitForVisible(STAKE_POOLS_SEARCH_SELECTOR);
 });
 
 When(/^I enter "([^"]*)" in search input field/, function (data) {
@@ -95,7 +95,7 @@ When(/^I click "confirm" button/, function () {
 });
 
 When(/^I mark experimental feature as read/, async function () {
-  await this.waitForVisible('.ExperimentalDataOverlay_component');
+  await this.client.waitForVisible('.ExperimentalDataOverlay_component');
   return this.waitAndClick('.ExperimentalDataOverlay_actionButton');
 });
 
@@ -125,7 +125,7 @@ When(/^I click on delegated stake pool/, async function () {
 Then(/^Stake pool with rank "([^"]*)" tooltip shows correct data$/, async function (stakePoolRank) {
   const stakePool = await getStakePoolByRanking(this.client, stakePoolRank);
 
-  await this.waitForVisible(STAKE_POOL_TOOLTIP_SELECTOR);
+  await this.client.waitForVisible(STAKE_POOL_TOOLTIP_SELECTOR);
   await this.client.waitForText(STAKE_POOL_TOOLTIP_DESCRIPTION_SELECTOR);
   const stakePoolDescription = await this.waitAndGetText.call(this, STAKE_POOL_TOOLTIP_DESCRIPTION_SELECTOR);
   await this.client.waitForText(STAKE_POOL_TOOLTIP_TICKER_SELECTOR);
@@ -158,11 +158,11 @@ Then(/^Stake pool with rank "([^"]*)" tooltip shows correct data$/, async functi
 });
 
 Then(/^I should see "Delegate Wallet" dialog/, function () {
-  return this.waitForVisible(DELEGATE_WALLET_SELECTOR);
+  return this.client.waitForVisible(DELEGATE_WALLET_SELECTOR);
 });
 
 Then(/^I should see step 1 of 3 screen/, function () {
-  return this.waitForVisible(DELEGATION_WALLET_FIRST_STEP_SELECTOR);
+  return this.client.waitForVisible(DELEGATION_WALLET_FIRST_STEP_SELECTOR);
 });
 
 Then(/^I open the wallet dropdown/, function () {
@@ -177,7 +177,7 @@ Then(/^I choose "([^"]*)" wallet$/, function (walletName) {
 });
 
 Then(/^I should see step 2 of 3 screen/, function () {
-  return this.waitForVisible(DELEGATION_WALLET_SECOND_STEP_SELECTOR);
+  return this.client.waitForVisible(DELEGATION_WALLET_SECOND_STEP_SELECTOR);
 });
 
 Then(/^I see following label on the dialog: "([^"]*)"$/, async function (message) {
@@ -212,19 +212,19 @@ Then(/^I click on stake pools tab button/, async function () {
 });
 
 Then(/^I am on the Staking pool screen/, async function () {
-  await this.waitForVisible(STAKE_POOL_PAGE);
+  await this.client.waitForVisible(STAKE_POOL_PAGE);
 });
 
 Then(/^I should't see loading message anymore/, function () {
-  return this.waitForVisible(LOADING_MESSAGE_SELECTOR, null, true);
+  return this.client.waitForVisible(LOADING_MESSAGE_SELECTOR, null, true);
 });
 
 Then(/^I should see stake pools listed/, async function () {
-  await this.waitForVisible(STAKE_POOLS_LIST_SELECTOR);
+  await this.client.waitForVisible(STAKE_POOLS_LIST_SELECTOR);
 });
 
 Then(/^I should not see any stake pool$/, async function () {
-  return this.waitForVisible(STAKE_POOLS_LIST_SELECTOR, null, true);
+  return this.client.waitForVisible(STAKE_POOLS_LIST_SELECTOR, null, true);
 });
 
 Then(/^I should see stake pools ordered by rank$/, async function () {

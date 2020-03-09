@@ -52,7 +52,7 @@ When(/^I click on the show more transactions button$/, async function() {
 });
 
 When(/^I can see the send form$/, function() {
-  return this.waitForVisible('.WalletSendForm');
+  return this.client.waitForVisible('.WalletSendForm');
 });
 
 When(/^I fill out the wallet send form with:$/, function(table) {
@@ -88,12 +88,12 @@ When(/^the transaction fees are calculated$/, async function() {
 
 When(/^I click on the next button in the wallet send form$/, async function() {
   const submitButton = '.WalletSendForm_nextButton';
-  await this.waitForVisible(submitButton);
+  await this.client.waitForVisible(submitButton);
   return this.client.click(submitButton);
 });
 
 When(/^I see send money confirmation dialog$/, function() {
-  return this.waitForVisible('.WalletSendConfirmationDialog_dialog');
+  return this.client.waitForVisible('.WalletSendConfirmationDialog_dialog');
 });
 
 When(
@@ -167,7 +167,7 @@ Then(
 // TODO: refactor this to a less hackish solution (fees cannot easily be calculated atm)
 Then(/^the latest transaction should show:$/, async function(table) {
   const expectedData = table.hashes()[0];
-  await this.waitForVisible('.Transaction_title');
+  await this.client.waitForVisible('.Transaction_title');
   let transactionTitles = await this.waitAndGetText.call(this, '.Transaction_title');
   transactionTitles = [].concat(transactionTitles);
   const expectedTransactionTitle = await this.intl(expectedData.title, {
@@ -187,11 +187,11 @@ Then(/^the latest transaction should show:$/, async function(table) {
 });
 
 Then(/^I should not see any transactions$/, async function() {
-  await this.waitForVisible('.Transaction_component', null, true);
+  await this.client.waitForVisible('.Transaction_component', null, true);
 });
 
 Then(/^I should see the no recent transactions message$/, async function() {
-  await this.waitForVisible('.WalletNoTransactions_label');
+  await this.client.waitForVisible('.WalletNoTransactions_label');
 });
 
 Then(/^I should see the following transactions:$/, async function(table) {

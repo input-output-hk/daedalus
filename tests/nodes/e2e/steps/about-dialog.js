@@ -20,7 +20,7 @@ When(/^I close the About dialog$/, function() {
 
 Then(/^the About dialog is (hidden|visible)/, async function(state) {
   const isVisible = state === 'visible';
-  return this.waitForVisible(SELECTORS.CONTAINER, null, !isVisible);
+  return this.client.waitForVisible(SELECTORS.CONTAINER, null, !isVisible);
 });
 
 Then(

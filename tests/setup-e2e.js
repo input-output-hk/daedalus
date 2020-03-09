@@ -145,7 +145,6 @@ Before({ tags: '@newsfeed' }, function() {
 Before(function() {
   this.waitAndClick = waitAndClick.bind(this);
   this.waitAndGetText = waitAndGetText.bind(this);
-  this.waitForVisible = this.client.waitForVisible;
 });
 
 // ads intl method to webdriver
