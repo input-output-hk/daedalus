@@ -95,6 +95,7 @@
 
   .layoutHeader {
     opacity: 0.7;
+    white-space: nowrap;
   }
 
   .sectionTitle {
@@ -224,7 +225,7 @@
 =======================================*/
 
 .layoutHeader.stateDirectoryPath {
-  width: 175px;
+  width: 244px;
 }
 
 .layoutData.platformVersion {
@@ -300,8 +301,8 @@
     width: 11px;
   }
 
-  @media (min-width: 1001px) and (max-width: 1430px) {
-    max-width: calc(100% - 175px);
+  @media (min-width: 1001px) and (max-width: 1560px) {
+    max-width: calc(100% - 244px);
 
     .stateDirectoryPath {
       width: calc(100% - 60px);
