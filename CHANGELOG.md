@@ -5,6 +5,7 @@ Changelog
 
 ### Chores
 
+- Updated small 3rd party dependencies ([PR 1877](https://github.com/input-output-hk/daedalus/pull/1877))
 - Updated React dependencies ([PR 1873](https://github.com/input-output-hk/daedalus/pull/1873))
 - Updated Storybook dependencies ([PR 1873](https://github.com/input-output-hk/daedalus/pull/1873))
 - Re-enabled theme selection on the "Settings" screen ([PR 1872](https://github.com/input-output-hk/daedalus/pull/1872))
