@@ -29,7 +29,6 @@ const mnemonics = [
   ['trick', 'razor', 'bicycle', 'front', 'hollow', 'liberty', 'swift', 'coconut', 'pull', 'raccoon', 'level', 'woman', 'awful', 'sound', 'swarm'],
 ];
 
-let restoredWalletForFunds = false;
 export const legacyMnemonicsWithFunds = [
   ['collect', 'fold', 'file', 'clown', 'injury', 'sun', 'brass', 'diet', 'exist', 'spike', 'behave', 'clip'],
   ['arctic', 'decade', 'pink', 'easy', 'jar', 'index', 'base', 'bright', 'vast', 'ocean', 'hard', 'pizza'],
@@ -99,16 +98,11 @@ export const restoreLegacyWallet = async (
     transferFunds?: boolean,
   }
 ) => {
-  let walletIndex = 0;
-  if (transferFunds) {
-    if (restoredWalletForFunds) throw new Error(noWalletsErrorMessage);
-    walletIndex = 1;
-    restoredWalletForFunds = true;
-  }
+  let walletIndex = transferFunds ? 1 : 0;
   const recoveryPhrase = hasFunds
     ? legacyMnemonicsWithFunds[walletIndex]
     : legacyMnemonicsWithNoFunds;
-  await client.executeAsync((name, recoveryPhrase, done) => {
+  await client.executeAsync((name, recoveryPhrase, transferFunds, noWalletsErrorMessage, done) => {
     daedalus.api.ada
       .restoreByronRandomWallet({
         walletName: name,
@@ -118,11 +112,17 @@ export const restoreLegacyWallet = async (
       .then(() =>
         daedalus.stores.wallets
           .refreshWalletsData()
-          .then(done)
+          .then(() => {
+            const wallet = daedalus.stores.wallets.getWalletByName(name);
+            if (transferFunds && wallet.amount.isZero()) {
+              throw new Error(noWalletsErrorMessage);
+            }
+            done();
+          })
           .catch(error => done(error))
       )
       .catch(error => done(error));
-  }, walletName, recoveryPhrase);
+  }, walletName, recoveryPhrase, transferFunds, noWalletsErrorMessage);
 }
 
 export const fillOutWalletSendForm = async function(values: Object) {
