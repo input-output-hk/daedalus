@@ -213,7 +213,7 @@ storiesOf('Wallets|Transfer Funds', module)
     return (
       <TransferFundsStep2Dialog
         addresses={step2Addresses}
-        transferFundsFee={faker.finance.amount(1, 20)}
+        transferFundsFee={new BigNumber(faker.finance.amount(1, 20))}
         onBack={action('onBack')}
         onClose={action('onClose')}
         onContinue={action('onContinue')}
