@@ -301,11 +301,11 @@
     width: 11px;
   }
 
-  @media (min-width: 1001px) and (max-width: 1560px) {
+  @media (min-width: 1001px) and (max-width: 1595px) {
     max-width: calc(100% - 244px);
 
     .stateDirectoryPath {
-      width: calc(100% - 60px);
+      width: calc(100% - 71px);
     }
   }
 }
@@ -365,5 +365,8 @@ button.realTimeStatusBtn {
 }
 
 button.stateDirectoryOpenBtn {
+  margin-left: 18px;
   margin-right: 16px;
+  padding: 0;
+  width: 36px;
 }
