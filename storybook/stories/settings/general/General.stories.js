@@ -61,13 +61,9 @@ storiesOf('Settings|General', module)
   .add('Terms of Service', props => {
     let termsOfUseSource = null;
     if (props.currentTheme === 'incentivized-testnet') {
-      termsOfUseSource = require(`../../../../source/renderer/app/i18n/locales/terms-of-use/itn-rewards-v1/${
-        props.locale
-      }.md`);
+      termsOfUseSource = require(`../../../../source/renderer/app/i18n/locales/terms-of-use/itn-rewards-v1/${props.locale}.md`);
     } else {
-      termsOfUseSource = require(`../../../../source/renderer/app/i18n/locales/terms-of-use/mainnet/${
-        props.locale
-      }.md`);
+      termsOfUseSource = require(`../../../../source/renderer/app/i18n/locales/terms-of-use/mainnet/${props.locale}.md`);
     }
     return (
       <TermsOfUseSettings

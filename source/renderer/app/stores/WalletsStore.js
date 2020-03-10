@@ -216,7 +216,7 @@ export default class WalletsStore extends Store {
   @observable transferFundsSourceWalletId: string = '';
   @observable transferFundsTargetWalletId: string = '';
   @observable transferFundsStep: number = 0;
-  @observable transferFundsFee: ?number = null;
+  @observable transferFundsFee: ?BigNumber = null;
 
   /* ----------  Other  ---------- */
   @observable
@@ -395,8 +395,8 @@ export default class WalletsStore extends Store {
     const { mnemonics, walletName, spendingPassword } = this;
     const shouldDisplayAbortAlert =
       (mnemonics.length || walletName.length || spendingPassword.length) &&
-      (this.restoreWalletStep !== null &&
-        this.restoreWalletStep < RESTORE_WALLET_STEPS.length - 1);
+      this.restoreWalletStep !== null &&
+        this.restoreWalletStep < RESTORE_WALLET_STEPS.length - 1;
     if (shouldDisplayAbortAlert && !this.restoreWalletShowAbortConfirmation) {
       this.restoreWalletShowAbortConfirmation = true;
     } else {

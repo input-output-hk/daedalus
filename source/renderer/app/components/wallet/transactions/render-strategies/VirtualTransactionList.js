@@ -66,13 +66,11 @@ export class VirtualTransactionList extends Component<Props> {
   /**
    * Recomputes virtual row heights only once per tick (debounced)
    */
-  recomputeVirtualRowHeights = debounce(
-    (startIndex: number = 0): void => {
-      const { list } = this;
-      if (!list) return;
-      list.recomputeRowHeights(startIndex);
-    }
-  );
+  recomputeVirtualRowHeights = debounce((startIndex: number = 0): void => {
+    const { list } = this;
+    if (!list) return;
+    list.recomputeRowHeights(startIndex);
+  });
 
   /**
    * Calculates the number of lines of the addresses and id from the first expanded tx
