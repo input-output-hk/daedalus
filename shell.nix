@@ -15,7 +15,7 @@ let
   daedalusPkgs = import ./. { inherit cluster; target = system; devShell = true; };
   hostPkgs = import pkgs.path { config = {}; overlays = []; };
   yarn = pkgs.yarn.override { inherit nodejs; };
-  nodejs = pkgs.nodejs-10_x;
+  nodejs = pkgs.nodejs-12_x;
   fullExtraArgs = walletExtraArgs ++ pkgs.lib.optional allowFaultInjection "--allow-fault-injection";
   launcherConfig' = "${daedalusPkgs.daedalus.cfg}/etc/launcher-config.yaml";
   fixYarnLock = pkgs.stdenv.mkDerivation {
