@@ -7,7 +7,7 @@ import { waitUntilTextInSelector } from '../../../common/e2e/steps/helpers';
 import { formattedWalletAmount } from '../../../../source/renderer/app/utils/formatters';
 import type { Daedalus } from '../../../types';
 
-import { restoreLegacyWallet, waitUntilWalletIsLoaded, addOrSetWalletsForScenario, getWalletByName } from './helpers';
+import { noWalletsErrorMessage, getWalletByName } from './helpers';
 
 declare var daedalus: Daedalus;
 
@@ -59,14 +59,15 @@ When(/^I see initial wallets balance$/, async function() {
   const balanceWallet = getWalletByName.call(this, balanceWalletName);
   const rewardsWalletAmount = get(rewardsWallet, 'amount.c', [0]);
   const balanceWalletAmount = get(balanceWallet, 'amount.c', [0]);
+  const isZeroAmount = await this.client.execute((balanceWalletName) => {
+    const balanceWallet = daedalus.stores.wallets.getWalletByName(balanceWalletName);
+    return balanceWallet.amount.isZero();
+  }, balanceWalletName);
+  if (isZeroAmount.value === true) {
+    throw new Error(noWalletsErrorMessage);
+  }
   this.rewardsWalletBalance = new BigNumber(rewardsWalletAmount);
   this.balanceWalletBalance = new BigNumber(balanceWalletAmount);
-});
-
-When(/^I restore "([^"]*)" for transfer funds$/, async function(walletName) {
-  await restoreLegacyWallet(this.client, { walletName, recoveryPhrase: ['collect', 'fold', 'file', 'clown', 'injury', 'sun', 'brass', 'diet', 'exist', 'spike', 'behave', 'clip'] });
-  const wallet = await waitUntilWalletIsLoaded.call(this, walletName);
-  addOrSetWalletsForScenario.call(this, wallet);
 });
 
 Then(/^"Transfer ada" wizard step 2 dialog continue button should be disabled$/, async function() {

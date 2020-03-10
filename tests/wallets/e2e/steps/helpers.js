@@ -21,7 +21,6 @@ export const addOrSetWalletsForScenario = function(wallet: Object) {
 };
 
 let restoredWallets = 0;
-
 const mnemonics = [
   ['awkward', 'electric', 'strong', 'early', 'rose', 'abuse', 'mutual', 'limit', 'ketchup', 'child', 'limb', 'exist', 'hurry', 'business', 'whisper'],
   ['blood', 'limit', 'pumpkin', 'fringe', 'order', 'trick', 'answer', 'festival', 'ethics', 'educate', 'luggage', 'dinner', 'record', 'fox', 'truth'],
@@ -29,6 +28,16 @@ const mnemonics = [
   ['bless', 'turkey', 'install', 'across', 'bronze', 'check', 'true', 'icon', 'treat', 'that', 'tuition', 'flush', 'panther', 'powder', 'ecology'],
   ['trick', 'razor', 'bicycle', 'front', 'hollow', 'liberty', 'swift', 'coconut', 'pull', 'raccoon', 'level', 'woman', 'awful', 'sound', 'swarm'],
 ];
+
+let restoredLegacyWallets = 0;
+export const legacyMnemonicsWithFunds = [
+  ['arctic', 'decade', 'pink', 'easy', 'jar', 'index', 'base', 'bright', 'vast', 'ocean', 'hard', 'pizza'],
+  ['collect', 'fold', 'file', 'clown', 'injury', 'sun', 'brass', 'diet', 'exist', 'spike', 'behave', 'clip'],
+];
+export const noWalletsErrorMessage = `All ${legacyMnemonicsWithFunds.length} legacyMnemonicsWithFunds have been used and the wallets have no longer funds.
+    Remove the "Daedalus SelfNode" directory and run \`nix:dev\` again.`;
+
+const legacyMnemonicsWithNoFunds = ['judge', 'sting', 'fish', 'script', 'silent', 'soup', 'chef', 'very', 'employ', 'wage', 'cloud', 'tourist'];
 
 export const restoreWalletWithFunds = async (client: Object, { walletName }: { walletName: string }) => {
   client.executeAsync((name, mnemonicsIndex, mnemonics, done) => {
@@ -78,23 +87,33 @@ const createWalletsSequentially = async (wallets: Array<any>, context: Object) =
   }
 };
 
-export const restoreLegacyWallet = async (client: Object, { walletName, hasFunds, recoveryPhrase }: { walletName: string, hasFunds?: boolean, recoveryPhrase?: Array<string> }) =>
-  client.executeAsync((name, withFunds, recoveryPhrase, done) => {
-    daedalus.api.ada
-      .restoreByronRandomWallet({
-        walletName: name,
-        recoveryPhrase:
-          recoveryPhrase || (withFunds ? ['arctic', 'decade', 'pink', 'easy', 'jar', 'index', 'base', 'bright', 'vast', 'ocean', 'hard', 'pizza'] : ['judge', 'sting', 'fish', 'script', 'silent', 'soup', 'chef', 'very', 'employ', 'wage', 'cloud', 'tourist']),
-        spendingPassword: 'Secret1234',
-      })
-      .then(() =>
-        daedalus.stores.wallets
-          .refreshWalletsData()
-          .then(done)
-          .catch(error => done(error))
-      )
-      .catch(error => done(error));
-  }, walletName, hasFunds, recoveryPhrase);
+export const restoreLegacyWallet = async (
+  client: Object,
+  { walletName, hasFunds }: { walletName: string, hasFunds?: boolean }
+) => {
+    if (restoredLegacyWallets >= noWalletsErrorMessage.length -1) {
+      throw new Error(noWalletsErrorMessage);
+    }
+    const recoveryPhrase = hasFunds
+      ? legacyMnemonicsWithFunds[restoredLegacyWallets]
+      : legacyMnemonicsWithNoFunds;
+    await client.executeAsync((name, recoveryPhrase, done) => {
+      daedalus.api.ada
+        .restoreByronRandomWallet({
+          walletName: name,
+          recoveryPhrase,
+          spendingPassword: 'Secret1234',
+        })
+        .then(() =>
+          daedalus.stores.wallets
+            .refreshWalletsData()
+            .then(done)
+            .catch(error => done(error))
+        )
+        .catch(error => done(error));
+    }, walletName, recoveryPhrase);
+    if (hasFunds) restoredLegacyWallets++
+}
 
 export const fillOutWalletSendForm = async function(values: Object) {
   const formSelector = '.WalletSendForm_component';
