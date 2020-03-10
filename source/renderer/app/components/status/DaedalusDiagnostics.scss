@@ -65,7 +65,7 @@
   @media (max-width: 1000px) {
     width: 100%;
 
-    &:first-child tr {
+    &:first-child .layoutRow {
       max-width: inherit;
     }
   }
@@ -76,15 +76,13 @@
     }
   }
 
-  // Row
-  tr {
+  .layoutRow {
     display: flex;
     justify-content: space-between;
   }
 
-  // Cells Header and Data
-  th,
-  td {
+  .layoutHeader,
+  .layoutData {
     color: var(--theme-network-window-text-color);
     font-family: var(--font-regular);
     font-size: 14px;
@@ -95,43 +93,40 @@
     line-height: 2;
   }
 
-  // Cell type Header
-  th {
+  .layoutHeader {
     opacity: 0.7;
     white-space: nowrap;
+  }
 
-    &.sectionTitle {
-      color: var(--theme-network-window-text-color);
-      display: inline-block;
-      font-family: var(--font-medium);
-      font-size: 14px;
-      font-stretch: normal;
-      font-style: normal;
-      font-weight: 500;
-      letter-spacing: 1px;
-      line-height: normal;
+  .sectionTitle {
+    color: var(--theme-network-window-text-color);
+    display: inline-block;
+    font-family: var(--font-medium);
+    font-size: 14px;
+    font-stretch: normal;
+    font-style: normal;
+    font-weight: 500;
+    letter-spacing: 1px;
+    line-height: normal;
+    opacity: 1;
+    padding-top: 30px;
+    text-align: left;
+    white-space: nowrap;
+    width: 100%;
+
+    span {
       opacity: 1;
-      padding-top: 30px;
-      text-align: left;
-      white-space: nowrap;
-      width: 100%;
+    }
 
-      span {
-        opacity: 1;
-      }
-
-      *:not(button) {
-        opacity: 0.7;
-      }
+    *:not(button) {
+      opacity: 0.7;
     }
   }
 
-  // Cell type Data
-  td {
+  .layoutData {
     font-weight: 500;
     text-align: right;
     user-select: text;
-    // Status row type
     &.red {
       color: var(--theme-network-window-red-color);
     }
@@ -151,7 +146,6 @@
     line-height: 1.5;
     margin-right: 10px;
     padding: 0 8px;
-    padding-top: 2px;
     position: relative;
     text-transform: uppercase;
     user-select: none;
@@ -230,7 +224,11 @@
 =            SPECIFIC STYLES            =
 =======================================*/
 
-td.platformVersion {
+.layoutHeader.stateDirectoryPath {
+  width: 244px;
+}
+
+.layoutData.platformVersion {
   max-width: 435px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -250,49 +248,22 @@ td.platformVersion {
   }
 }
 
-td.stateDirectoryPath {
+.layoutData.stateDirectoryPath {
+  align-items: center;
+  display: flex;
   user-select: none;
+
   .stateDirectoryPath {
-    cursor: pointer;
-    display: inline-block;
-    position: relative;
-    &.locale-en-US {
-      p {
-        @media (max-width: 1490px) {
-          max-width: 285px;
-        }
-        @media (max-width: 1300px) {
-          max-width: 189px;
-        }
-        @media (max-width: 1100px) {
-          max-width: 135px;
-        }
-        @media (max-width: 1000px) {
-          max-width: 100%;
-        }
-      }
+    > span {
+      align-items: center;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
     }
-    &.locale-ja-JP {
-      p {
-        @media (max-width: 1585px) {
-          max-width: 285px;
-        }
-        @media (max-width: 1370px) {
-          max-width: 189px;
-        }
-        @media (max-width: 1180px) {
-          max-width: 135px;
-        }
-        @media (max-width: 1070px) {
-          max-width: 115px;
-        }
-        @media (max-width: 1000px) {
-          max-width: 100%;
-        }
-      }
-    }
+
     &:hover {
-      p {
+      .daedalusStateDirectoryPath {
         &:after {
           border-top: 1px solid var(--theme-network-window-white-color);
           bottom: 6px;
@@ -312,16 +283,14 @@ td.stateDirectoryPath {
     text-align: center;
   }
 
-  p {
-    display: inline-block;
+  .daedalusStateDirectoryPath {
     font-size: 14px;
     margin: 0 6px 0 0;
-    max-width: 400px;
+    min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
     user-select: none;
     white-space: nowrap;
-    width: 100%;
   }
 
   svg {
@@ -331,9 +300,17 @@ td.stateDirectoryPath {
     transition: 0.15s opacity;
     width: 11px;
   }
+
+  @media (min-width: 1001px) and (max-width: 1595px) {
+    max-width: calc(100% - 244px);
+
+    .stateDirectoryPath {
+      width: calc(100% - 71px);
+    }
+  }
 }
 
-td.localTimeDifferenceItem {
+.layoutData.localTimeDifferenceItem {
   align-items: center;
   display: flex;
 
@@ -342,8 +319,8 @@ td.localTimeDifferenceItem {
   }
 }
 
-td.lastNetworkBlock,
-td.lastSynchronizedBlock {
+.layoutData.lastNetworkBlock,
+.layoutData.lastSynchronizedBlock {
   span {
     opacity: 0.7;
 
@@ -388,5 +365,8 @@ button.realTimeStatusBtn {
 }
 
 button.stateDirectoryOpenBtn {
+  margin-left: 18px;
   margin-right: 16px;
+  padding: 0;
+  width: 36px;
 }
