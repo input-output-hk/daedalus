@@ -45,6 +45,12 @@ Given(/^I have a "([^"]*)" balance wallet with funds$/, async function(walletNam
   addOrSetWalletsForScenario.call(this, wallet);
 });
 
+Given(/^I have a "([^"]*)" balance wallet for transfering funds$/, async function(walletName) {
+  await restoreLegacyWallet(this.client, { walletName, hasFunds: true, transferFunds: true });
+  const wallet = await waitUntilWalletIsLoaded.call(this, walletName);
+  addOrSetWalletsForScenario.call(this, wallet);
+});
+
 Given(/^I am on the "([^"]*)" wallet "([^"]*)" screen$/, async function(
   walletName,
   screen

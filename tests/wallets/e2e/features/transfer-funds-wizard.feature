@@ -5,7 +5,7 @@ Feature: Transfer funds wizard
     Given I have completed the basic setup
 
   Scenario: Successfully transfering funds from "Daedalus Balance" wallet to "Daedalus Rewards" wallet
-    Given I have a "Balance Wallet" balance wallet with funds
+    Given I have a "Balance Wallet" balance wallet for transfering funds
     And I have a "Test Wallet" rewards wallet with funds
     And I should see the restore status notification while restore is running
     And I should not see the restore status notification once restore is finished
