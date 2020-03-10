@@ -80,6 +80,7 @@ export default class StoryLayout extends Component<Props> {
     return (
       <div
         style={{
+          minHeight: '100%',
           height: '100vh',
         }}
       >

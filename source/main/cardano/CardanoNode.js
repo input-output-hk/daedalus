@@ -268,9 +268,7 @@ export class CardanoNode {
     this._startupTries++;
     this._changeToState(CardanoNodeStates.STARTING);
     _log.info(
-      `CardanoNode#start: trying to start cardano-node for the ${
-        this._startupTries
-      } time`,
+      `CardanoNode#start: trying to start cardano-node for the ${this._startupTries} time`,
       { startupTries: this._startupTries }
     );
 
@@ -317,9 +315,7 @@ export class CardanoNode {
         // Request cardano-node to reply with port
         node.send({ QueryPort: [] });
         _log.info(
-          `CardanoNode#start: cardano-node child process spawned with PID ${
-            node.pid
-          }`,
+          `CardanoNode#start: cardano-node child process spawned with PID ${node.pid}`,
           { pid: node.pid }
         );
         resolve();
@@ -576,9 +572,7 @@ export class CardanoNode {
       await this._waitForNodeProcessToExit(_config.shutdownTimeout);
     } catch (_) {
       _log.error(
-        `CardanoNode: sent exit code ${code} but was still running after ${
-          _config.shutdownTimeout
-        }ms. Killing it now.`,
+        `CardanoNode: sent exit code ${code} but was still running after ${_config.shutdownTimeout}ms. Killing it now.`,
         { code, shutdownTimeout: _config.shutdownTimeout }
       );
       try {
