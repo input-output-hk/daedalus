@@ -55,6 +55,7 @@
   "devDependencies": {
     "@babel/cli": "7.2.0",
     "@babel/core": "7.4.5",
+    "@babel/helper-create-regexp-features-plugin": "7.7.0",
     "@babel/plugin-proposal-class-properties": "7.2.1",
     "@babel/plugin-proposal-decorators": "7.2.0",
     "@babel/plugin-proposal-object-rest-spread": "7.2.0",
