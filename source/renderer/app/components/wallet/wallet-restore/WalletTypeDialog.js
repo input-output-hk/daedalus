@@ -199,7 +199,8 @@ export default class WalletTypeDialog extends Component<Props, State> {
     if (
       walletKind === WALLET_KINDS.HARDWARE &&
       (!walletKindHardware ||
-        !hardwareWalletAcceptance1 || !hardwareWalletAcceptance2)
+        !hardwareWalletAcceptance1 ||
+        !hardwareWalletAcceptance2)
     ) {
       return true;
     }
