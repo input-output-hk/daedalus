@@ -36,12 +36,11 @@ storiesOf('Nodes|Status', module)
 
   // ====== Stories ======
 
-  .add('Daedalus Diagnostics', ({ locale }: { locale: string }) => (
+  .add('Daedalus Diagnostics', () => (
     <DaedalusDiagnostics
       systemInfo={systemInfo}
       coreInfo={coreInfo}
       cardanoNodeState="running"
-      currentLocale={locale}
       isDev={false}
       isMainnet
       isStaging={false}

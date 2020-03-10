@@ -3,6 +3,10 @@ Changelog
 
 ## vNext
 
+### Fixes
+
+- Removed locale specific rules from the CSS files ([PR 1871](https://github.com/input-output-hk/daedalus/pull/1871))
+
 ### Chores
 
 - Optimized e2e tests ([PR 1874](https://github.com/input-output-hk/daedalus/pull/1874))
