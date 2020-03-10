@@ -216,7 +216,7 @@ export default class WalletsStore extends Store {
   @observable transferFundsSourceWalletId: string = '';
   @observable transferFundsTargetWalletId: string = '';
   @observable transferFundsStep: number = 0;
-  @observable transferFundsFee: ?number = null;
+  @observable transferFundsFee: ?BigNumber = null;
 
   /* ----------  Other  ---------- */
   @observable
