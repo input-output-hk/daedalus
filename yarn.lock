@@ -4098,7 +4098,6 @@ clsx@^1.0.1:
 cnbuilder@^1.1.7:
   version "1.3.2"
   resolved "https://registry.yarnpkg.com/cnbuilder/-/cnbuilder-1.3.2.tgz#f8ade3986543e6736fc2c8a304d74a244c36d541"
-  integrity sha512-4WygslpZg+W4uVGF4dzN/Vbz0q4arACdMfgPJlx2EZA6+/OhfRT7KFIX6MuN3P+0MUwx8R7sNe+xOKINatwJrg==
 
 co@^4.6.0:
   version "4.6.0"
