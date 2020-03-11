@@ -1,0 +1,341 @@
+.component {
+  background-color: var(--theme-transactions-filter-modal-bg-color);
+  flex: initial;
+  font-family: var(--font-regular);
+  margin: 0 -20px -10px;
+  position: relative;
+  width: 400px;
+
+  :global {
+    .Dialog_content {
+      overflow: visible;
+    }
+
+    .TinySelect_component {
+      .SimpleBubble_root {
+        .SimpleBubble_bubble {
+          background-color: var(--theme-transactions-filter-modal-bg-color);
+        }
+      }
+      .SimpleOptions_option:not(.SimpleOptions_highlightedOption) {
+        background-color: var(--theme-transactions-filter-modal-bg-color);
+      }
+    }
+
+    .TinyInput_component {
+      .TinyInput_contentInReadMode,
+      .SimpleInput_input {
+        background-color: transparent;
+      }
+    }
+
+    .TinyDatePicker_component {
+      .rdtPicker {
+        background-color: var(--theme-transactions-filter-modal-bg-color);
+        box-shadow: var(--theme-transactions-filter-date-picker-shadow);
+
+        .rdtMonths .rdtSwitch {
+          background-color: var(
+            --theme-transactions-date-picker-button-background-color
+          );
+          pointer-events: none;
+        }
+
+        thead tr:first-child th:hover {
+          background-color: var(
+            --theme-transactions-date-picker-button-background-color-hover
+          );
+        }
+
+        tr {
+          td.rdtActive,
+          td.rdtActive:hover {
+            background-color: var(
+              --theme-transactions-date-picker-button-background-color
+            );
+            border-radius: 2px;
+            font-family: var(--font-semibold);
+          }
+        }
+
+        td.rdtYear:hover,
+        td.rdtMonth:hover,
+        td.rdtDay:hover,
+        td.rdtHour:hover,
+        td.rdtMinute:hover,
+        td.rdtSecond:hover,
+        .rdtTimeToggle:hover {
+          background-color: var(
+            --theme-transactions-date-picker-button-background-color-hover
+          );
+        }
+
+        td.rdtToday:before {
+          border-bottom-color: var(
+            --theme-transactions-date-picker-button-background-color
+          );
+        }
+
+        td.rdtActive.rdtToday:before {
+          border-bottom-color: var(--theme-transactions-filter-modal-bg-color);
+        }
+      }
+    }
+  }
+
+  .title {
+    align-items: center;
+    color: var(--theme-dialog-text-color);
+    display: flex;
+    justify-content: space-between;
+    margin: 0 10px;
+
+    .titleText {
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      line-height: 1.38;
+    }
+
+    .titleLink {
+      background: var(
+        --theme-transactions-filter-title-button-background-color
+      );
+      border-radius: 4px;
+      color: var(--theme-transactions-filter-title-button-text-color);
+      cursor: pointer;
+      font-size: 10px;
+      font-weight: 500;
+      height: 20px;
+      line-height: 1.5;
+      margin-left: 10px;
+      padding: 0 8px;
+      position: relative;
+      text-transform: uppercase;
+      user-select: none;
+
+      &:disabled {
+        cursor: default;
+        opacity: 0.5;
+
+        &:after {
+          display: none;
+        }
+      }
+
+      &:disabled:hover {
+        background: var(
+          --theme-transactions-filter-title-button-background-color
+        );
+      }
+
+      &:hover {
+        background: var(
+          --theme-transactions-filter-title-button-background-color-hover
+        );
+      }
+
+      &:active {
+        background: var(
+          --theme-transactions-filter-title-button-background-color-active
+        );
+      }
+    }
+  }
+
+  .content {
+    .header {
+      align-items: center;
+      display: flex;
+      justify-content: space-between;
+      margin-top: 14px;
+      position: relative;
+
+      label {
+        color: var(--theme-dialog-text-color);
+        font-family: var(--font-regular);
+        font-size: 14px;
+        line-height: 1.36;
+      }
+    }
+
+    .body {
+      align-items: center;
+      color: var(--theme-dialog-text-color);
+      display: flex;
+      margin-top: 6px;
+    }
+
+    .type {
+      margin: 14px 10px 0;
+
+      .body {
+        margin-top: 10px;
+
+        .typeCheckbox {
+          margin-right: 20px;
+        }
+      }
+    }
+
+    .dateRange {
+      margin: 14px 10px 0;
+
+      :global {
+        .SimpleFormField_label {
+          font-size: 14px;
+          margin-bottom: 6px;
+        }
+      }
+    }
+
+    .dateRangeFromTo {
+      margin: 0 10px;
+
+      .header {
+        :global {
+          .DialogCloseButton_component {
+            bottom: 6.5px;
+            right: 10px;
+            top: auto;
+
+            svg {
+              height: 6px;
+              width: 6px;
+            }
+          }
+          .DialogCloseButton_disabled {
+            svg {
+              height: 6px;
+              width: 6px;
+            }
+          }
+        }
+      }
+      .body {
+        .dateRangeInput {
+          margin-right: 10px;
+        }
+        :global {
+          .TinyInput_component .SimpleFormField_label {
+            color: var(--rp-input-placeholder-color);
+            font-size: 14px;
+            left: 10px;
+            position: absolute;
+            top: 7px;
+          }
+        }
+        .fromDateInput {
+          :global {
+            .TinyInput_component .SimpleInput_input {
+              padding-left: 46px;
+            }
+          }
+
+          &.japaneseFromDateInput {
+            :global {
+              .TinyInput_component .SimpleInput_input {
+                padding-left: 56px;
+              }
+            }
+          }
+        }
+
+        .toDateInput {
+          :global {
+            .TinyInput_component .SimpleInput_input {
+              padding-left: 28px;
+            }
+          }
+
+          &.japaneseToDateInput {
+            :global {
+              .TinyInput_component .SimpleInput_input {
+                padding-left: 56px;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .amountRange {
+      margin: 0 10px;
+
+      .body {
+        align-items: stretch;
+        flex-direction: column;
+
+        :global {
+          .TinyInput_component .SimpleFormField_label {
+            color: var(--rp-input-placeholder-color);
+            font-size: 14px;
+            left: 10px;
+            position: absolute;
+            top: 7px;
+          }
+        }
+        .amountRangeInput {
+          margin-bottom: 6px;
+
+          &:last-child {
+            margin-bottom: 0;
+          }
+
+          :global {
+            .TinyInput_component .TinyInput_contentInReadMode,
+            .TinyInput_component .SimpleInput_input {
+              width: 100%;
+            }
+          }
+        }
+        .fromAmountInput {
+          :global {
+            .TinyInput_component .SimpleInput_input {
+              padding-left: 46px;
+            }
+          }
+
+          &.japaneseFromAmountInput {
+            :global {
+              .TinyInput_component .SimpleInput_input {
+                padding-left: 56px;
+              }
+            }
+          }
+        }
+        .toAmountInput {
+          :global {
+            .TinyInput_component .SimpleInput_input {
+              padding-left: 28px;
+            }
+          }
+
+          &.japaneseToAmountInput {
+            :global {
+              .TinyInput_component .SimpleInput_input {
+                padding-left: 56px;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .action {
+      margin-top: 24px;
+    }
+  }
+}
+
+:global {
+  .small-height-for-date-picker {
+    &.FilterDialog_component {
+      .rdtPicker {
+        left: -281px;
+        right: auto;
+        top: -178px;
+      }
+    }
+  }
+}

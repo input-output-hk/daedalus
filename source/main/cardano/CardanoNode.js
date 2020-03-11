@@ -67,7 +67,6 @@ export type CardanoNodeConfig = {
   workingDir: string, // Path to the state directory
   walletBin: string, // Path to jormungandr or cardano-node executable
   nodeBin: string,
-  cliBin: string, // Path to node CLI tool. Jormungandr only
   nodeImplementation: CardanoNodeImplementation,
   logFilePath: string, // Log file path for cardano-sl
   tlsPath: string, // Path to cardano-node TLS folder
@@ -77,6 +76,7 @@ export type CardanoNodeConfig = {
   shutdownTimeout: number, // Milliseconds to wait for cardano-node to gracefully shutdown
   killTimeout: number, // Milliseconds to wait for cardano-node to be killed
   updateTimeout: number, // Milliseconds to wait for cardano-node to update itself
+  cluster: string,
 };
 
 const CARDANO_UPDATE_EXIT_CODE = 20;
@@ -258,7 +258,6 @@ export class CardanoNode {
     const {
       walletBin,
       nodeBin,
-      cliBin,
       walletArgs,
       startupTimeout,
       nodeImplementation,
@@ -269,9 +268,7 @@ export class CardanoNode {
     this._startupTries++;
     this._changeToState(CardanoNodeStates.STARTING);
     _log.info(
-      `CardanoNode#start: trying to start cardano-node for the ${
-        this._startupTries
-      } time`,
+      `CardanoNode#start: trying to start cardano-node for the ${this._startupTries} time`,
       { startupTries: this._startupTries }
     );
 
@@ -303,8 +300,8 @@ export class CardanoNode {
         walletArgs,
         logStream: logFile,
         nodeImplementation,
-        cliBin,
         stateDir: config.workingDir,
+        cluster: config.cluster,
       });
 
       this._node = node;
@@ -318,9 +315,7 @@ export class CardanoNode {
         // Request cardano-node to reply with port
         node.send({ QueryPort: [] });
         _log.info(
-          `CardanoNode#start: cardano-node child process spawned with PID ${
-            node.pid
-          }`,
+          `CardanoNode#start: cardano-node child process spawned with PID ${node.pid}`,
           { pid: node.pid }
         );
         resolve();
@@ -577,9 +572,7 @@ export class CardanoNode {
       await this._waitForNodeProcessToExit(_config.shutdownTimeout);
     } catch (_) {
       _log.error(
-        `CardanoNode: sent exit code ${code} but was still running after ${
-          _config.shutdownTimeout
-        }ms. Killing it now.`,
+        `CardanoNode: sent exit code ${code} but was still running after ${_config.shutdownTimeout}ms. Killing it now.`,
         { code, shutdownTimeout: _config.shutdownTimeout }
       );
       try {

@@ -11,24 +11,24 @@ import Wallet from '../../../domains/Wallet';
 import StakePool from '../../../domains/StakePool';
 
 type SelectProps = {
-  allowBlank: boolean,
-  autoFocus: boolean,
+  allowBlank?: boolean,
+  autoFocus?: boolean,
   className?: string,
-  context: any,
+  context?: any,
   error?: string | Element<any>,
   label?: string | Element<any>,
-  isOpeningUpward: boolean,
+  isOpeningUpward?: boolean,
   onBlur?: Function,
   onChange?: Function,
   onFocus?: Function,
   optionRenderer?: Function,
-  options: Array<any>,
+  options?: Array<any>,
   placeholder?: string,
   selectionRenderer?: Function,
   skin?: Element<any>,
-  theme: ?Object, // will take precedence over theme in context if passed
-  themeId: string,
-  themeOverrides: Object,
+  theme?: ?Object, // will take precedence over theme in context if passed
+  themeId?: string,
+  themeOverrides?: Object,
   value: ?string,
 };
 
@@ -93,9 +93,14 @@ export default class WalletsDropdown extends Component<Props> {
         amount,
         delegatedStakePoolId,
         lastDelegationStakePoolId,
+        pendingDelegations,
       }: Wallet) => {
-        const currentStakePoolId =
-          lastDelegationStakePoolId || delegatedStakePoolId;
+        const hasPendingDelegations =
+          pendingDelegations && pendingDelegations.length > 0;
+        let currentStakePoolId = delegatedStakePoolId;
+        if (hasPendingDelegations) {
+          currentStakePoolId = lastDelegationStakePoolId;
+        }
         const delegatedStakePool = getStakePoolById(currentStakePoolId);
         const detail = formattedWalletAmount(amount);
         return {

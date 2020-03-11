@@ -105,6 +105,8 @@ export type WalletDelegation = {
   target?: string,
 };
 
+export type WalletPendingDelegations = Array<WalletNextDelegation>;
+
 export type WalletNextDelegation = {
   status: DelegationStatus,
   target?: string,

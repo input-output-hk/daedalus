@@ -139,17 +139,17 @@ export default class StakingEpochsPreviousEpochData extends Component<
                 <span>{` ${intl.formatMessage(
                   messages.tableBodySlots
                 )} - `}</span>
-                <span className={styles.mediumText}>{`${
-                  slotsElected[1]
-                }%`}</span>
+                <span
+                  className={styles.mediumText}
+                >{`${slotsElected[1]}%`}</span>
               </td>
               <td>
                 <span>{`${performance[0]} ${intl.formatMessage(
                   messages.tableBodyOf
                 )} ${performance[1]} - `}</span>
-                <span className={styles.mediumText}>{`${
-                  performance[2]
-                }%`}</span>
+                <span
+                  className={styles.mediumText}
+                >{`${performance[2]}%`}</span>
               </td>
               <td>
                 <span className={styles.mediumText}>{sharedRewards[0]}</span>

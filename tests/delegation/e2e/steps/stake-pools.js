@@ -6,6 +6,7 @@ import { delegationCentreStakingHelper, getStakePoolByRanking } from './helpers'
 import type { Daedalus } from '../../../types';
 import { getWalletByName } from '../../../wallets/e2e/steps/helpers';
 import { formattedWalletAmount } from '../../../../source/renderer/app/utils/formatters';
+import { navigateTo } from '../../../navigation/e2e/steps/helpers';
 
 declare var daedalus: Daedalus;
 
@@ -31,9 +32,9 @@ const STAKE_POOL_TOOLTIP_PROFIT_MARGIN_SELECTOR = '.StakePoolTooltip_component.S
 const STAKE_POOL_TOOLTIP_COST_SELECTOR = '.StakePoolTooltip_component.StakePoolTooltip_isVisible .StakePoolTooltip_cost span';
 const STAKE_POOL_TOOLTIP_PERFORMANCE_SELECTOR = '.StakePoolTooltip_component.StakePoolTooltip_isVisible .StakePoolTooltip_performance span';
 const STAKE_POOL_TOOLTIP_NAME_SELECTOR = '.StakePoolTooltip_component.StakePoolTooltip_isVisible .StakePoolTooltip_name';
-const STAKE_POOL_TOOLTIP_BUTTON_SELECTOR = '.StakePoolTooltip_component.StakePoolTooltip_isVisible button:last-child';
+const STAKE_POOL_TOOLTIP_BUTTON_SELECTOR = '//button[text()="Delegate to this pool"]';
 const DELEGATE_WALLET_SELECTOR = '.DelegationSteps_delegationSteps.DelegationStepsIntroDialog_delegationStepsIntroDialogWrapper';
-const DIALOG_CONTINUE_SELECTOR = '.DelegationSteps_delegationSteps .Dialog_actions .continueButton';
+const DIALOG_CONTINUE_SELECTOR = '//button[text()="Continue"]';
 const DIALOG_CONFIRM_SELECTOR = '.DelegationSteps_delegationSteps .DialogCloseButton_component';
 const DELEGATION_WALLET_FIRST_STEP_SELECTOR = '.DelegationSteps_delegationSteps.DelegationStepsChooseWalletDialog_delegationStepsChooseWalletDialogWrapper';
 const DELEGATION_WALLET_SECOND_STEP_SELECTOR = '.DelegationSteps_delegationSteps.DelegationStepsChooseStakePoolDialog_delegationStepsChooseStakePoolDialogWrapper';
@@ -50,7 +51,7 @@ Given(/^I am on the Delegation Center screen/, async function () {
 
 Given(/^I set stake pools fetch failed$/, async function () {
   const stakePools = await this.client.executeAsync(done => {
-    daedalus.actions.staking.fakeStakePoolLoading.trigger(true);
+    daedalus.actions.staking.fakeStakePoolsLoading.trigger(true);
     done();
   });
 });
@@ -65,7 +66,7 @@ Given(/^I have a wallet "([^"]*)" delegated to stake pool with rank "([^"]*)"$/,
 
 When(/^Stake pools loading failed/, async function () {
   const stakePools = await this.client.executeAsync(done => {
-    daedalus.actions.staking.fakeStakePoolLoading.trigger(true);
+    daedalus.actions.staking.fakeStakePoolsLoading.trigger(true);
     done();
   });
   const result = stakePools && stakePools.value ? stakePools.value : [];
@@ -84,7 +85,8 @@ When(/^I click on stake pool with order number "([^"]*)"/, function (rankNumber)
   return this.waitAndClick(`.StakePoolsList_component .StakePoolThumbnail_component:nth-child(${rankNumber})`);
 });
 
-When(/^I click "continue" button/, function () {
+When(/^I click "continue" button/, async function () {
+  await this.client.waitForEnabled(DIALOG_CONTINUE_SELECTOR);
   return this.waitAndClick(DIALOG_CONTINUE_SELECTOR);
 });
 
@@ -99,7 +101,8 @@ When(/^I mark experimental feature as read/, async function () {
 
 Then(/^I should see stake pool tooltip with order number "([^"]*)"/, async function (rankNumber) {
   await this.client.waitForText(STAKE_POOL_TOOLTIP_RANKING_SELECTOR);
-  const stakePoolRanking = await this.client.getText(STAKE_POOL_TOOLTIP_RANKING_SELECTOR);
+  const stakePoolRankingText = await this.client.getText(STAKE_POOL_TOOLTIP_RANKING_SELECTOR);
+  const stakePoolRanking = Array.isArray(stakePoolRankingText) ? stakePoolRankingText[0] : stakePoolRankingText;
   expect(stakePoolRanking).to.equal(rankNumber);
 });
 
@@ -130,7 +133,7 @@ Then(/^Stake pool with rank "([^"]*)" tooltip shows correct data$/, async functi
   await this.client.waitForText(STAKE_POOL_TOOLTIP_HOMEPAGE_SELECTOR);
   const stakePoolHomepage = await this.client.getText(STAKE_POOL_TOOLTIP_HOMEPAGE_SELECTOR);
   await this.client.waitForText(STAKE_POOL_TOOLTIP_PERFORMANCE_SELECTOR);
-  const stakePoolPerformance = await this.client.getText(STAKE_POOL_TOOLTIP_PERFORMANCE_SELECTOR);
+  const stakePoolPerformanceText = await this.client.getText(STAKE_POOL_TOOLTIP_PERFORMANCE_SELECTOR);
   await this.client.waitForText(STAKE_POOL_TOOLTIP_COST_SELECTOR);
   const stakePoolCost = await this.client.getText(STAKE_POOL_TOOLTIP_COST_SELECTOR);
   await this.client.waitForText(STAKE_POOL_TOOLTIP_NAME_SELECTOR);
@@ -141,6 +144,8 @@ Then(/^Stake pool with rank "([^"]*)" tooltip shows correct data$/, async functi
   const stakePoolRanking = await this.client.getText(STAKE_POOL_TOOLTIP_RANKING_SELECTOR);
   const cost = new BigNumber(stakePool.cost.c)
   const formattedCost = formattedWalletAmount(cost, true, false);
+  const stakePoolPerformance = Array.isArray(stakePoolPerformanceText) ? stakePoolPerformanceText[0] : stakePoolPerformanceText;
+
   expect(stakePool.ticker).to.equal(stakePoolTicker);
   expect(stakePool.homepage).to.equal(stakePoolHomepage);
   expect(`${stakePool.performance}%`).to.equal(stakePoolPerformance);
@@ -149,6 +154,7 @@ Then(/^Stake pool with rank "([^"]*)" tooltip shows correct data$/, async functi
   expect(stakePool.name).to.equal(stakePoolName);
   expect(`${stakePool.profitMargin}%`).to.equal(stakePoolProfitMargin);
   expect(stakePool.ranking).to.equal(parseInt(stakePoolRanking));
+
 });
 
 Then(/^I should see "Delegate Wallet" dialog/, function () {
@@ -164,6 +170,7 @@ Then(/^I open the wallet dropdown/, function () {
 });
 
 Then(/^I choose "([^"]*)" wallet$/, function (walletName) {
+  this.walletName = walletName;
   return this.waitAndClick(
     `//*[text()[contains(.,"${walletName}")]]`
   );
@@ -174,6 +181,26 @@ Then(/^I should see step 2 of 3 screen/, function () {
 });
 
 Then(/^I see following label on the dialog: "([^"]*)"$/, async function (message) {
+  await this.client.waitForText(SELECTED_STAKE_POOLS_DELEGATION_WALLET_DIALOG_SELECTOR);
+  const selectedStakePoolLabel = await this.client.getText(SELECTED_STAKE_POOLS_DELEGATION_WALLET_DIALOG_SELECTOR);
+  expect(selectedStakePoolLabel.toString().split('.')[0]).to.equal(message);
+});
+
+Then(/^I see delegation status message for stake pool with rank "([^"]*)"$/, async function (stakePoolRank) {
+  const stakePool = await getStakePoolByRanking(this.client, stakePoolRank);
+  const selectedWallet = await this.client.executeAsync((walletName, done) => {
+    const wallet = daedalus.stores.wallets.getWalletByName(walletName);
+    done(wallet);
+  }, this.walletName);
+  const { pendingDelegations } = selectedWallet.value;
+  const hasPendingDelegations = pendingDelegations && pendingDelegations.length > 0;
+
+  let message;
+  if (hasPendingDelegations) {
+    message = `You are already pending delegation ${this.walletName} wallet to [${stakePool.ticker}] stake pool`
+  } else {
+    message = `You are already delegating ${this.walletName} wallet to [${stakePool.ticker}] stake pool`
+  }
   await this.client.waitForText(SELECTED_STAKE_POOLS_DELEGATION_WALLET_DIALOG_SELECTOR);
   const selectedStakePoolLabel = await this.client.getText(SELECTED_STAKE_POOLS_DELEGATION_WALLET_DIALOG_SELECTOR);
   expect(selectedStakePoolLabel.toString().split('.')[0]).to.equal(message);
@@ -220,7 +247,7 @@ Then(/^I should see stake pools ordered by rank$/, async function () {
 
 Then(/^I should see the following loading message:$/, async function (message) {
   await this.client.executeAsync((done) => {
-      daedalus.actions.staking.fakeStakePoolLoading.trigger();
+      daedalus.actions.staking.fakeStakePoolsLoading.trigger();
       done();
     }
   );

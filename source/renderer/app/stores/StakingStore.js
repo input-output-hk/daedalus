@@ -49,7 +49,7 @@ export default class StakingStore extends Store {
     );
     staking.joinStakePool.listen(this._joinStakePool);
     staking.quitStakePool.listen(this._quitStakePool);
-    staking.fakeStakePoolLoading.listen(this._setFakePoller);
+    staking.fakeStakePoolsLoading.listen(this._setFakePoller);
   }
 
   // REQUESTS
@@ -96,7 +96,7 @@ export default class StakingStore extends Store {
   };
 
   @action _quitStakePool = async (request: QuitStakePoolRequest) => {
-    const { walletId, stakePoolId, passphrase } = request;
+    const { walletId, passphrase } = request;
 
     // Set quit transaction in "PENDING" state
     this.isDelegatioTransactionPending = true;
@@ -104,7 +104,6 @@ export default class StakingStore extends Store {
     try {
       const quitTransaction = await this.quitStakePoolRequest.execute({
         walletId,
-        stakePoolId,
         passphrase,
       });
       // Start interval to check transaction state every second
@@ -198,16 +197,22 @@ export default class StakingStore extends Store {
   @computed get recentStakePools(): Array<StakePool> {
     const delegatedStakePools = [];
     map(this.stores.wallets.all, wallet => {
-      if (wallet.delegatedStakePoolId) {
+      const hasPendingDelegations =
+        wallet.pendingDelegations && wallet.pendingDelegations.length > 0;
+      let lastDelegatedStakePoolId = wallet.delegatedStakePoolId;
+      if (hasPendingDelegations) {
+        lastDelegatedStakePoolId = wallet.lastDelegationStakePoolId;
+      }
+      if (lastDelegatedStakePoolId) {
         const delegatingStakePoolExistInList = find(
           delegatedStakePools,
           delegatedStakePool =>
-            delegatedStakePool.id === wallet.delegatedStakePoolId
+            delegatedStakePool.id === lastDelegatedStakePoolId
         );
         if (!delegatingStakePoolExistInList) {
           const delegatingStakePool = find(
             this.stakePools,
-            stakePool => stakePool.id === wallet.delegatedStakePoolId
+            stakePool => stakePool.id === lastDelegatedStakePoolId
           );
           if (delegatingStakePool)
             delegatedStakePools.push(delegatingStakePool);
