@@ -15,10 +15,13 @@ import {
   generateScreenshotFilePath,
   getTestNameFromTestFile,
   saveScreenshot,
+  waitAndClick,
+  waitAndGetText,
+  skippablePromise,
 } from './common/e2e/steps/helpers';
+import { DEFAULT_TIMEOUT } from './common/e2e/steps/config';
 import { setNewsFeedIsOpen, resetTestNews } from './news/e2e/steps/newsfeed-steps';
 import { refreshClient } from './nodes/e2e/steps/helpers';
-import { waitAndClick, waitAndGetText } from './common/e2e/steps/helpers';
 import { TEST } from '../source/common/types/environment.types';
 import type { Daedalus } from './types';
 
@@ -26,7 +29,6 @@ import type { Daedalus } from './types';
 
 declare var daedalus: Daedalus;
 const context = {};
-const DEFAULT_TIMEOUT = 30000;
 let scenariosCount = 0;
 
 const printMainProcessLogs = () =>
@@ -141,8 +143,11 @@ Before({ tags: '@newsfeed' }, function() {
   resetTestNews(this.client);
 });
 
+
 // adds waitAndClick method to webdriver
-Before(function() {
+Before(function(testCase) {
+  const { name } = testCase.pickle;
+  this.skippablePromise = skippablePromise.bind(this, name)
   this.waitAndClick = waitAndClick.bind(this);
   this.waitAndGetText = waitAndGetText.bind(this);
 });

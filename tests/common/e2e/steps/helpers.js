@@ -4,6 +4,7 @@ import path from 'path';
 import { expect } from 'chai';
 import { generateFileNameWithTimestamp } from '../../../../source/common/utils/files';
 import ensureDirectoryExists from '../../../../source/main/utils/ensureDirectoryExists';
+import { DEFAULT_TIMEOUT } from './config';
 import type { WebdriverClient } from '../../../types';
 
 export const expectTextInSelector = async (
@@ -157,4 +158,16 @@ export const getInputValueByLabel = async function(label: string, isExactText?: 
   await this.client.waitForVisible(selector);
   const text = await this.client.getValue(selector);
   return text;
+}
+
+const avoidTimeout = async (description: string) => {
+  await timeout(DEFAULT_TIMEOUT - 1000);
+  return 'skipped';
+};
+
+export const skippablePromise = async (testCaseName: string, pm: Promise<*>) => {
+  return await Promise.race([
+    avoidTimeout(testCaseName),
+    pm,
+  ]);
 }
