@@ -130,7 +130,6 @@ pushd installers
     echo '~~~ Prebuilding dependencies for cardano-installer, quietly..'
     $nix_shell ../default.nix -A daedalus-installer --run true || echo "Prebuild failed!"
     echo '~~~ Building the cardano installer generator..'
-    INSTALLER=$(nix-build -j 2 --no-out-link ../ -A daedalus-installer)
 
     for cluster in ${CLUSTERS}
     do
@@ -139,7 +138,7 @@ pushd installers
           APP_NAME="csl-daedalus"
           rm -rf "${APP_NAME}"
 
-          INSTALLER_CMD=("$INSTALLER/bin/make-installer"
+          INSTALLER_CMD=("make-installer"
                          "${test_installer}"
                          "${code_signing_config}"
                          "${signing_config}"

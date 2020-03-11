@@ -42,6 +42,7 @@ library
                      , text
                      , turtle
                      , universum
+                     , unix
                      , wreq
                      , yaml
                      , zip-archive
@@ -76,6 +77,13 @@ executable make-installer
   default-extensions: NoImplicitPrelude
                       OverloadedStrings
 
+executable darwin-launcher
+  main-is:             DarwinLauncher.hs
+  default-language:    Haskell2010
+  build-depends:       base
+                     , turtle
+                     , unix
+  ghc-options:        -Weverything
 
 test-suite test-make-installer
   type:              exitcode-stdio-1.0
