@@ -3,6 +3,10 @@ Changelog
 
 ## vNext
 
+### Fixes
+
+- Removed locale specific rules from the CSS files ([PR 1871](https://github.com/input-output-hk/daedalus/pull/1871))
+
 ### Chores
 
 - Updated `react-polymorph` dependency ([PR 1882](https://github.com/input-output-hk/daedalus/pull/1882))
