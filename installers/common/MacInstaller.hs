@@ -207,6 +207,8 @@ getBackendVersion Mantis = pure "DEVOPS-533"
 makeComponentRoot :: Options -> FilePath -> DarwinConfig -> InstallerConfig -> IO ()
 makeComponentRoot Options{oBackend,oCluster} appRoot darwinConfig@DarwinConfig{dcAppName} InstallerConfig{hasBlock0,genesisPath,secretPath,configPath} = do
   let dir     = appRoot </> "Contents/MacOS"
+      dataDir = appRoot </> "Contents/Resources"
+      maybeCopyToResources (maybePath,name) = maybe (pure ()) (\path -> cp (fromText path) (dir </> "../Resources/" <> name)) maybePath
 
   echo "~~~     Preparing files ..."
   case oBackend of
@@ -216,20 +218,12 @@ makeComponentRoot Options{oBackend,oCluster} appRoot darwinConfig@DarwinConfig{d
         cp (bridge </> "bin" </> f) (dir </> f)
 
       -- Config files (from daedalus-bridge)
-      --cp (bridge </> "config/configuration.yaml") (dir </> "configuration.yaml")
-      --cp (bridge </> "config/log-config-prod.yaml") (dir </> "log-config-prod.yaml")
       when (oCluster /= Selfnode) $
-        cp "jormungandr-config.yaml" (dir </> "jormungandr-config.yaml")
-      when (oCluster == Selfnode) $ do
-        cp "cfg-files/config.yaml" (dir </> "config.yaml")
-        cp "cfg-files/genesis.yaml" (dir </> "genesis.yaml")
-        cp "cfg-files/secret.yaml" (dir </> "secret.yaml")
+        cp "jormungandr-config.yaml" (dataDir </> "jormungandr-config.yaml")
 
       when hasBlock0 $
-        cp "block-0.bin" (dir </> "block-0.bin")
+        cp "block-0.bin" (dataDir </> "block-0.bin")
 
-      let
-        maybeCopyToResources (maybePath,name) = maybe (pure ()) (\path -> cp (fromText path) (dir </> "../Resources/" <> name)) maybePath
       mapM_ maybeCopyToResources [ (genesisPath,"genesis.yaml"), (secretPath,"secret.yaml"), (configPath,"config.yaml") ]
 
       -- Genesis (from daedalus-bridge)
