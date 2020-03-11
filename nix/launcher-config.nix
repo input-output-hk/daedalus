@@ -125,7 +125,14 @@ let
     updaterPath = "/foo";
     updaterArgs = [];
     updateArchive = "/bar";
-  };
+  } // (lib.optionalAttrs (environment == "selfnode") {
+    block0Path = selfnodeBlock0;
+    block0Hash = builtins.replaceStrings ["\n"] [""] (builtins.readFile (runCommand "selfnode-block0.hash" { buildInputs = [ cardano-wallet-native.jormungandr-cli ]; } ''
+      jcli genesis hash --input ${selfnodeBlock0} > $out
+    ''));
+    secretPath = secretPath.linux;
+    configPath = configPath.linux;
+  });
   hasBlock0 = (environment != "selfnode") && envCfg ? block0bin;
   installerConfig = {
     installDirectory = if os == "linux" then "Daedalus/${environment}" else spacedName;

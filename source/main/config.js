@@ -54,6 +54,10 @@ export type LauncherConfig = {
     systemStart: string,
     seed: string,
   },
+  block0Path: string,
+  block0Hash: string,
+  secretPath: string,
+  configPath: string,
 };
 
 type WindowOptionsType = {

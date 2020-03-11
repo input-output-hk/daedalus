@@ -77,6 +77,10 @@ export type CardanoNodeConfig = {
   killTimeout: number, // Milliseconds to wait for cardano-node to be killed
   updateTimeout: number, // Milliseconds to wait for cardano-node to update itself
   cluster: string,
+  block0Path: string,
+  block0Hash: string,
+  secretPath: string,
+  configPath: string,
 };
 
 const CARDANO_UPDATE_EXIT_CODE = 20;
@@ -259,8 +263,14 @@ export class CardanoNode {
       walletBin,
       nodeBin,
       walletArgs,
-      startupTimeout,
+      // startupTimeout,
       nodeImplementation,
+      workingDir,
+      cluster,
+      block0Path,
+      block0Hash,
+      secretPath,
+      configPath,
     } = config;
 
     this._config = config;
@@ -300,35 +310,57 @@ export class CardanoNode {
         walletArgs,
         logStream: logFile,
         nodeImplementation,
-        stateDir: config.workingDir,
-        cluster: config.cluster,
+        stateDir: workingDir,
+        cluster,
+        block0Path,
+        block0Hash,
+        secretPath,
+        configPath,
       });
 
       this._node = node;
 
-      try {
-        await promisedCondition(() => node.connected, startupTimeout);
-        // Setup livecycle event handlers
-        node.on('message', this._handleCardanoNodeMessage);
-        node.on('exit', this._handleCardanoNodeExit);
-        node.on('error', this._handleCardanoNodeError);
-        // Request cardano-node to reply with port
-        node.send({ QueryPort: [] });
-        _log.info(
-          `CardanoNode#start: cardano-node child process spawned with PID ${node.pid}`,
-          { pid: node.pid }
-        );
-        resolve();
-      } catch (_) {
-        reject(
-          new Error('CardanoNode#start: Error while spawning cardano-node')
-        );
-      }
+      node
+        .start()
+        .then(api => {
+          _log.info(
+            `CardanoNode#start: cardano-node child process spawned with PID ${node.pid}`,
+            { pid: node.pid }
+          );
+          node.pid = 0; // TODO: Add real PID here
+          node.connected = true;
+          this._handleCardanoNodeMessage({ ReplyPort: api.requestParams.port });
+          resolve();
+        })
+        .catch(exitStatus => {
+          const error = node.exitStatusMessage(exitStatus);
+          this._handleCardanoNodeError(error);
+          reject(
+            new Error('CardanoNode#start: Error while spawning cardano-node')
+          );
+        });
+
+      // try {
+      //   await promisedCondition(() => node.connected, startupTimeout);
+      //   // Setup livecycle event handlers
+      //   node.on('message', this._handleCardanoNodeMessage);
+      //   node.on('exit', this._handleCardanoNodeExit);
+      //   node.on('error', this._handleCardanoNodeError);
+      //   _log.info(
+      //     `CardanoNode#start: cardano-node child process spawned with PID ${node.pid}`,
+      //     { pid: node.pid }
+      //   );
+      //   resolve();
+      // } catch (_) {
+      //   reject(
+      //     new Error('CardanoNode#start: Error while spawning cardano-node')
+      //   );
+      // }
     });
   };
 
   /**
-   * Stops cardano-node, first by disconnecting and waiting up to `shutdownTimeout`
+   * Stops cardano-node, first by stopping and waiting up to `shutdownTimeout`
    * for the node to shutdown itself properly. If that doesn't work as expected the
    * node is killed.
    *
@@ -340,9 +372,9 @@ export class CardanoNode {
       _log.info('CardanoNode#stop: process is not running anymore');
       return Promise.resolve();
     }
-    _log.info('CardanoNode#stop: disconnecting from cardano-node process');
+    _log.info('CardanoNode#stop: stopping cardano-node process');
     try {
-      if (_node) _node.disconnect();
+      if (_node) _node.stop(_config.shutdownTimeout);
       this._changeToState(CardanoNodeStates.STOPPING);
       await this._waitForNodeProcessToExit(_config.shutdownTimeout);
       await this._storeProcessStates();
@@ -604,7 +636,8 @@ export class CardanoNode {
 
   _reset = () => {
     if (this._cardanoLogFile) this._cardanoLogFile.end();
-    if (this._node) this._node.removeAllListeners();
+    // if (this._node) this._node.removeAllListeners();
+    if (this._node) this._node = null;
     this._tlsConfig = null;
   };
 
