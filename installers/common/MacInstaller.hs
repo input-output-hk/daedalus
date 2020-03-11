@@ -31,6 +31,7 @@ import           System.IO                 (BufferMode (NoBuffering),
                                             hSetBuffering)
 import           System.IO.Error           (IOError, isDoesNotExistError)
 import           System.Environment        (getEnv)
+import           System.Posix.Files
 import           Turtle                    hiding (e, prefix, stdout)
 import           Turtle.Line               (unsafeTextToLine)
 
@@ -122,7 +123,7 @@ SIGN_ID="$1"
 KEYCHAIN="$2"
 REL_PATH="$3"
 ABS_PATH="$(pwd)/$REL_PATH"
-SIGN_CMD="codesign --verbose=4 --deep --strict --timestamp --options=runtime --sign \"$SIGN_ID\""
+SIGN_CMD="codesign --verbose=4 --deep --strict --timestamp --options=runtime --entitlements /tmp/entitlements.xml --sign \"$SIGN_ID\""
 VERIFY_CMD="codesign --verbose=4 --verify --deep --strict"
 TS="$(date +%Y-%m-%d_%H-%M-%S)"
 LOG="2>&1 | tee -a /tmp/codesign-output-${TS}.txt"
@@ -163,7 +164,7 @@ makeScriptsDir Options{oBackend} DarwinConfig{dcAppNameApp} = case oBackend of
     liftIO $ do
       cp "data/scripts/dockutil" (tempdir </> "dockutil")
       writeTextFile (tempdir </> "postinstall") (format makePostInstall dcAppNameApp)
-      run "chmod" ["+x", tt (tempdir </> "postinstall")]
+      chmod executable (tempdir </> "postinstall")
     pure $ tt tempdir
   Mantis    -> pure "[DEVOPS-533]"
 
@@ -233,9 +234,11 @@ makeComponentRoot Options{oBackend,oCluster} appRoot darwinConfig@DarwinConfig{d
       --procs "cp" (map T.pack genesisFiles ++ [tt dir]) mempty
 
       -- Config yaml (generated from dhall files)
-      cp "launcher-config.yaml" (dir </> "launcher-config.yaml")
+      cp "launcher-config.yaml" (dataDir </> "launcher-config.yaml")
 
       procs "chmod" ["-R", "+w", tt dir] empty
+
+      rmtree $ dataDir </> "app/installers"
 
       -- Rewrite libs paths and bundle them
       void $ chain (encodeString dir) $ fmap tt [dir </> "cardano-launcher", dir </> "cardano-wallet-jormungandr", dir </> "jormungandr" ]
@@ -245,8 +248,19 @@ makeComponentRoot Options{oBackend,oCluster} appRoot darwinConfig@DarwinConfig{d
   -- Prepare launcher
   de <- testdir (dir </> "Frontend")
   unless de $ mv (dir </> (fromString $ T.unpack $ dcAppName)) (dir </> "Frontend")
-  run "chmod" ["+x", tt (dir </> "Frontend")]
-  void $ writeLauncherFile dir darwinConfig
+  chmod executable (dir </> "Frontend")
+  void $ writeLauncherFile dataDir darwinConfig
+  maybeDarwinLauncher <- which "darwin-launcher"
+  case maybeDarwinLauncher of
+    Just darwinLauncher -> do
+      let
+        dest = dir </> (fromString $ T.unpack $ dcAppName)
+      cp darwinLauncher dest
+      chmod writable dest
+      void $ chain (encodeString dir) [ tt dest ]
+    Nothing -> do
+      print "darwin-launcher was not found in $PATH"
+      exit $ ExitFailure 1
 
 
 makeInstaller :: Options -> DarwinConfig -> FilePath -> FilePath -> IO FilePath
@@ -291,28 +305,29 @@ readCardanoVersionFile bridge = prefix <$> handle handler (readTextFile verFile)
               | otherwise = throwM e
 
 writeLauncherFile :: FilePath -> DarwinConfig -> IO FilePath
-writeLauncherFile dir DarwinConfig{dcDataDir,dcAppName} = do
+writeLauncherFile dir DarwinConfig{dcDataDir} = do
   writeTextFile path $ T.unlines contents
-  run "chmod" ["+x", tt path]
+  chmod executable path
+  setFileMode (encodeString path) anyReadExecute
   pure path
   where
-    path = dir </> (fromString $ T.unpack dcAppName)
-    dataDir = dcDataDir
+    anyReadExecute = foldl unionFileModes nullFileMode [ ownerExecuteMode, ownerReadMode, groupExecuteMode, groupReadMode, otherExecuteMode, otherReadMode ]
+    path = dir </> "helper"
     contents =
       [ "#!/usr/bin/env bash"
-      , "mkdir -p \"" <> dataDir <> "/Secrets-1.0\""
-      , "mkdir -p \"" <> dataDir <> "/Logs/pub\""
-      , "\"$(dirname \"$0\")/cardano-launcher\""
+      , "mkdir -p \"" <> dcDataDir <> "/Secrets-1.0\""
+      , "mkdir -p \"" <> dcDataDir <> "/Logs/pub\""
       ]
 
 writeCodesignScriptFile :: String -> IO FilePath
 writeCodesignScriptFile codesignScriptContents = do
   writeTextFile codesignScript $ T.pack codesignScriptContents
-  run "chmod" [ "+x", codesignScriptRef ]
+  chmod executable codesignScript
   run "ls" [ "-la", codesignScriptRef ]
   run "cat" [ codesignScriptRef ]
   pure codesignScript
   where
+    codesignScript :: FilePath
     codesignScript = "/tmp/codesignFnGen.sh"
     codesignScriptRef = T.pack $ encodeString codesignScript
 
