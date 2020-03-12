@@ -49,7 +49,9 @@ let
       chromedriver
     ] ++ (localLib.optionals autoStartBackend [
       daedalusPkgs.daedalus-bridge
-    ]) ++ (localLib.optionals (pkgs.stdenv.hostPlatform.system != "x86_64-darwin") [
+    ]) ++ (if (pkgs.stdenv.hostPlatform.system == "x86_64-darwin") then [
+      darwin.apple_sdk.frameworks.CoreServices
+    ] else [
       daedalusPkgs.electron3
       winePackages.minimal
     ])
