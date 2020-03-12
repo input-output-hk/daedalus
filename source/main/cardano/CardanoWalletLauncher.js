@@ -1,13 +1,11 @@
 // @flow
-// import { spawn } from 'child_process';
+import * as cardanoLauncher from 'cardano-launcher';
 import { dirname } from 'path';
 import type { ChildProcess } from 'child_process';
 import { STAKE_POOL_REGISTRY_URL } from '../config';
 import { environment } from '../environment';
 import { NIGHTLY, SELFNODE, QA } from '../../common/types/environment.types';
 import { Logger } from '../utils/logging';
-
-const cardanoLauncher = require('cardano-launcher');
 
 export type WalletOpts = {
   path: string,
@@ -97,7 +95,8 @@ export async function CardanoWalletLauncher(
         secretFile: [secretPath],
       },
     },
-    // TODO: pass in --sync-tolerance 600s
+    syncToleranceSeconds: 600, // TODO: pass in --sync-tolerance from walletArgs
+    stakePoolRegistryUrl: envVariables.CARDANO_WALLET_STAKE_POOL_REGISTRY_URL,
   });
 
   return launcher;

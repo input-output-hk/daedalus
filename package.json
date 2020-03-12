@@ -48,7 +48,7 @@
     "create-news-verification-hashes": "node utils/create-news-verification-hashes/index.js",
     "lockfile:check": "node utils/lockfile-checker/index.js --check",
     "lockfile:fix": "node utils/lockfile-checker/index.js --fix",
-    "postinstall": "npx tsdx build --tsconfig ./node_modules/cardano-launcher/tsconfig.json"
+    "postinstall": "cd node_modules/cardano-launcher && npx tsdx build --tsconfig tsconfig.json"
   },
   "bin": {
     "electron": "./node_modules/.bin/electron"
@@ -152,7 +152,7 @@
     "blakejs": "1.1.0",
     "bs58": "4.0.1",
     "cardano-js": "0.3.0",
-    "cardano-launcher": "input-output-hk/cardano-launcher#9136bbf70eb8e118c1087b7feb5007ce4dc445db",
+    "cardano-launcher": "input-output-hk/cardano-launcher#02481ee804974838901a3c00c39a7ac8a01254f1",
     "check-disk-space": "2.1.0",
     "chroma-js": "2.1.0",
     "classnames": "2.2.6",
