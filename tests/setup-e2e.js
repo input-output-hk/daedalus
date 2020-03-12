@@ -147,7 +147,7 @@ Before({ tags: '@newsfeed' }, function() {
 // adds waitAndClick method to webdriver
 Before(function(testCase) {
   const { name } = testCase.pickle;
-  this.skippablePromise = skippablePromise.bind(this, name)
+  this.skippablePromise = skippablePromise.bind(this, name);
   this.waitAndClick = waitAndClick.bind(this);
   this.waitAndGetText = waitAndGetText.bind(this);
 });
