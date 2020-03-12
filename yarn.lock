@@ -3790,8 +3790,9 @@ cardano-js@0.3.0:
     cbor "^4.3.0"
     ts-custom-error "^3.1.1"
 
-cardano-launcher@../cardano-launcher:
+cardano-launcher@input-output-hk/cardano-launcher#9136bbf70eb8e118c1087b7feb5007ce4dc445db:
   version "0.202001014.0"
+  resolved "https://codeload.github.com/input-output-hk/cardano-launcher/tar.gz/9136bbf70eb8e118c1087b7feb5007ce4dc445db"
   dependencies:
     "@types/lodash" "^4.14.149"
     "@types/node" "^13.1.8"
@@ -11907,17 +11908,7 @@ react-svg-inline@2.1.1:
     classnames "^2.2.1"
     prop-types "^15.5.8"
 
-react-syntax-highlighter@11.0.2:
-  version "11.0.2"
-  resolved "https://registry.yarnpkg.com/react-syntax-highlighter/-/react-syntax-highlighter-11.0.2.tgz#4e3f376e752b20d2f54e4c55652fd663149e4029"
-  dependencies:
-    "@babel/runtime" "^7.3.1"
-    highlight.js "~9.13.0"
-    lowlight "~1.11.0"
-    prismjs "^1.8.4"
-    refractor "^2.4.1"
-
-react-syntax-highlighter@^11.0.2:
+react-syntax-highlighter@11.0.2, react-syntax-highlighter@^11.0.2:
   version "11.0.2"
   resolved "https://registry.yarnpkg.com/react-syntax-highlighter/-/react-syntax-highlighter-11.0.2.tgz#4e3f376e752b20d2f54e4c55652fd663149e4029"
   dependencies:
