@@ -113,6 +113,6 @@ export default class WalletsDropdown extends Component<Props> {
       }
     );
     const selectOptions = omit(props, 'options');
-    return <Select options={walletsData} {...selectOptions} />;
+    return <Select options={walletsData} {...selectOptions} optionHeight={62} />;
   }
 }
