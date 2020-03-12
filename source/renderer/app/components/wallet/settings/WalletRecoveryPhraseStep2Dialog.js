@@ -155,6 +155,7 @@ export default class WalletRecoveryPhraseStep2 extends Component<Props> {
             messages.recoveryPhraseNoResults
           )}
           skin={AutocompleteSkin}
+          optionHeight={50}
         />
       </Dialog>
     );
