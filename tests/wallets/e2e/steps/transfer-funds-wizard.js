@@ -7,7 +7,7 @@ import { waitUntilTextInSelector } from '../../../common/e2e/steps/helpers';
 import { formattedWalletAmount } from '../../../../source/renderer/app/utils/formatters';
 import type { Daedalus } from '../../../types';
 
-import { noWalletsErrorMessage, getWalletByName } from './helpers';
+import { noWalletsErrorMessage, getWalletByName, getFixedAmountByName } from './helpers';
 
 declare var daedalus: Daedalus;
 
@@ -55,19 +55,13 @@ When(/^I see initial wallets balance$/, async function() {
   const balanceWalletName = await this.waitAndGetText('.SidebarWalletsMenu_wallets button:nth-child(2) .SidebarWalletMenuItem_title');
 
   // Set initial values for further use
-  const rewardsWallet = getWalletByName.call(this, rewardsWalletName);
-  const balanceWallet = getWalletByName.call(this, balanceWalletName);
-  const rewardsWalletAmount = get(rewardsWallet, 'amount.c', [0]);
-  const balanceWalletAmount = get(balanceWallet, 'amount.c', [0]);
-  const isZeroAmount = await this.client.execute((balanceWalletName) => {
-    const balanceWallet = daedalus.stores.wallets.getWalletByName(balanceWalletName);
-    return balanceWallet.amount.isZero();
-  }, balanceWalletName);
-  if (isZeroAmount.value === true) {
-    throw new Error(noWalletsErrorMessage);
-  }
-  this.rewardsWalletBalance = new BigNumber(rewardsWalletAmount);
-  this.balanceWalletBalance = new BigNumber(balanceWalletAmount);
+  const rewardsFixeddWalletAmount = await getFixedAmountByName.call(this, rewardsWalletName);
+  const balanceFixeddWalletAmount = await getFixedAmountByName.call(this, balanceWalletName);
+  const rewardsWalletAmount = new BigNumber(rewardsFixeddWalletAmount);
+  const balanceWalletAmount = new BigNumber(balanceFixeddWalletAmount);
+  if (balanceWalletAmount.isZero()) throw new Error(noWalletsErrorMessage);
+  this.rewardsWalletAmount = rewardsWalletAmount;
+  this.balanceWalletAmount = balanceWalletAmount;
 });
 
 Then(/^"Transfer ada" wizard step 2 dialog continue button should be disabled$/, async function() {
@@ -100,20 +94,28 @@ Then(/^I should see "Transfer ada" wizard$/, async function() {
   return this.client.waitForVisible('.TransferFundsStep1Dialog_label');
 });
 
-
 Then(/^I should see increased rewards wallet balance and 0 ADA in Daedalus Balance wallet$/,
   async function() {
-    const transferSumWithoutFees = this.rewardsWalletBalance.add(this.balanceWalletBalance);
+    const rewardsSelector = '.SidebarWalletsMenu_wallets button:nth-child(1) .SidebarWalletMenuItem_info';
+    const balanceSelector = '.SidebarWalletsMenu_wallets button:nth-child(2) .SidebarWalletMenuItem_info';
+    const transferSumWithoutFees = this.rewardsWalletAmount.add(this.balanceWalletAmount);
     const transferSumWithFees = transferSumWithoutFees.minus(this.transferFee);
-    const formattedTransferSum = formattedWalletAmount(transferSumWithFees, true, false);
-    await waitUntilTextInSelector(this.client, {
-      selector: '.SidebarWalletsMenu_wallets button:nth-child(1) .SidebarWalletMenuItem_info',
-      text: formattedTransferSum,
-    });
-    await waitUntilTextInSelector(this.client, {
-      selector: '.SidebarWalletsMenu_wallets button:nth-child(2) .SidebarWalletMenuItem_info',
-      text: '0 ADA',
-    });
+    const initialRewardsFormattedAmount = formattedWalletAmount(this.rewardsWalletAmount, true, false);
+    const initialBallanceFormattedAmount = formattedWalletAmount(this.balanceWalletAmount, true, false);
+    const expectedRewardsAmount = formattedWalletAmount(transferSumWithFees, true, false);
+    const expectedBalanceAmount = '0 ADA';
+    let rewardsWalletFormattedAmount;
+    let balanceWalletFormattedAmount;
+    await this.client.waitUntil(async () => {
+      rewardsWalletFormattedAmount = await this.waitAndGetText(rewardsSelector);
+      balanceWalletFormattedAmount = await this.waitAndGetText(balanceSelector);
+      return(
+        rewardsWalletFormattedAmount !== initialRewardsFormattedAmount &&
+        balanceWalletFormattedAmount !== initialBallanceFormattedAmount
+      );
+    })
+    expect(rewardsWalletFormattedAmount).to.equal(expectedRewardsAmount);
+    expect(balanceWalletFormattedAmount).to.equal(expectedBalanceAmount);
   }
 );
 
