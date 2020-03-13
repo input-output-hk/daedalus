@@ -178,6 +178,9 @@
       position: relative;
       text-align: left;
       width: 25%;
+      user-select: none;
+      -ms-user-select: none;
+      -webkit-user-select: none;
 
       p {
         -webkit-box-orient: vertical;
