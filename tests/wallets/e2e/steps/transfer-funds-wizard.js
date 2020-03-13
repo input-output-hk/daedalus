@@ -57,11 +57,9 @@ When(/^I see initial wallets balance$/, async function() {
   // Set initial values for further use
   const rewardsFixedWalletAmount = await getFixedAmountByName.call(this, rewardsWalletName);
   const balanceFixedWalletAmount = await getFixedAmountByName.call(this, balanceWalletName);
-  const rewardsWalletAmount = new BigNumber(rewardsFixedWalletAmount);
-  const balanceWalletAmount = new BigNumber(balanceFixedWalletAmount);
-  if (balanceWalletAmount.isZero()) throw new Error(noWalletsErrorMessage);
-  this.rewardsWalletAmount = rewardsWalletAmount;
-  this.balanceWalletAmount = balanceWalletAmount;
+  this.rewardsWalletAmount = new BigNumber(rewardsFixedWalletAmount);;
+  this.balanceWalletAmount = new BigNumber(balanceFixedWalletAmount);;
+  if (this.balanceWalletAmount.isZero()) throw new Error(noWalletsErrorMessage);
 });
 
 Then(/^"Transfer ada" wizard step 2 dialog continue button should be disabled$/, async function() {
