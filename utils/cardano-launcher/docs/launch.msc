@@ -1,0 +1,57 @@
+msc {
+  hscale = "2";
+  daedalus, cardano_launcher, cardano_wallet, cardano_node;
+
+  |||;
+
+  daedalus rbox daedalus [ label = "User runs Daedalus Frontend" ];
+  daedalus=>cardano_launcher [ label = "var wallet = new Launcher(config);" ];
+
+  # cardano_launcher=>cardano_launcher [ label = "create socket file" ]; ## todo
+  cardano_launcher=>cardano_launcher [ label = "find a free TCP port" ];
+
+  cardano_launcher=>cardano_wallet [ label = "spawn cardano-wallet cli" ];
+  cardano_launcher=>cardano_node [ label = "spawn cardano-node cli" ];
+
+  ---;
+
+  
+  cardano_launcher box cardano_launcher [ label = "poll TCP port until connection accepted" ];
+  cardano_launcher=>cardano_launcher [ label = "sock.connect()" ];
+  cardano_launcher->daedalus [ label = "wallet is ready event" ];
+
+  ...;
+
+  daedalus=>cardano_wallet [ label = "GET /v2/wallets" ];
+  daedalus<<cardano_wallet [ label = "200 OK" ];
+
+  ...;
+
+  cardano_wallet->cardano_node [ label = "Find intersection" ];
+  cardano_wallet<-cardano_node [ label = "Intersection is ..." ];
+
+  ...;
+
+  daedalus=>cardano_wallet [ label = "GET /v2/network/information (polling)" ];
+  daedalus<<cardano_wallet [ label = "200 OK" ];
+
+  ...;
+  |||;
+
+  daedalus rbox daedalus [ label = "User exits Daedalus Frontend" ];
+  daedalus=>cardano_launcher [ label = "var promise = wallet.stop();" ];
+  cardano_launcher=>cardano_wallet [ label = "close handle of stdin" ];
+  cardano_launcher=>cardano_node [ label = "close handle of stdin" ];
+  
+  cardano_wallet box cardano_wallet [ label = "shut down" ];
+  cardano_wallet->cardano_launcher [ label = "exit status 0" ];
+  cardano_launcher->daedalus [ label = "wallet backend status changed event" ];
+
+  cardano_node box cardano_node [ label = "shut down" ];
+  cardano_node->cardano_launcher [ label = "exit status 0" ];
+  cardano_launcher->daedalus [ label = "node status changed event" ];
+
+  daedalus<<cardano_launcher [ label = "promise is completed" ];
+  daedalus box cardano_launcher [ label = "shut down" ];
+
+}

@@ -151,7 +151,6 @@
     "blakejs": "1.1.0",
     "bs58": "4.0.1",
     "cardano-js": "0.3.0",
-    "cardano-launcher": "input-output-hk/cardano-launcher#15bb2db48076d07cdf657ea8144679de8d0d6a40",
     "check-disk-space": "2.1.0",
     "chroma-js": "2.1.0",
     "classnames": "2.2.6",

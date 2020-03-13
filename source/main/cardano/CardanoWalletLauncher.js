@@ -1,5 +1,5 @@
 // @flow
-import * as cardanoLauncher from 'cardano-launcher';
+import * as cardanoLauncher from '../../../utils/cardano-launcher/dist/index.js';
 import { dirname } from 'path';
 import type { ChildProcess } from 'child_process';
 import { STAKE_POOL_REGISTRY_URL } from '../config';

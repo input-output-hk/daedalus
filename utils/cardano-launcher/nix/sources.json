@@ -1,0 +1,51 @@
+{
+    "cardano-wallet": {
+        "branch": "master",
+        "description": "Official Wallet Backend & API for Cardano decentralized",
+        "homepage": null,
+        "owner": "input-output-hk",
+        "repo": "cardano-wallet",
+        "rev": "85baad638b318ec58f26ad40959c143498e81b2c",
+        "sha256": "13ckjmbjrlym3csplis0jk31zzqgf6xld7lnnjnhsq5ifl6f7gpv",
+        "type": "tarball",
+        "url": "https://github.com/input-output-hk/cardano-wallet/archive/85baad638b318ec58f26ad40959c143498e81b2c.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz",
+        "version": "0c17bb046335f43a8facfbf82a588820360f9514"
+    },
+    "iohk-nix": {
+        "branch": "master",
+        "description": "nix scripts shared across projects",
+        "homepage": null,
+        "owner": "input-output-hk",
+        "repo": "iohk-nix",
+        "rev": "4e47de68bcb7cb15efc42bada9e3ad63cef11635",
+        "sha256": "04f9gaxj5i29i6rz9q242rpw5r4i9nz6lsgjp090mh6k9hwj632c",
+        "type": "tarball",
+        "url": "https://github.com/input-output-hk/iohk-nix/archive/4e47de68bcb7cb15efc42bada9e3ad63cef11635.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "niv": {
+        "branch": "master",
+        "description": "Easy dependency management for Nix projects",
+        "homepage": "https://github.com/nmattia/niv",
+        "owner": "nmattia",
+        "repo": "niv",
+        "rev": "49157afd2298749b8a5062fd21079542a6b2de35",
+        "sha256": "0q7ymfrcgagcsw6kr93kprag7k358qj8znyzyri53ci1mrsak5y1",
+        "type": "tarball",
+        "url": "https://github.com/nmattia/niv/archive/49157afd2298749b8a5062fd21079542a6b2de35.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "nixpkgs": {
+        "branch": "nixos-19.09",
+        "description": "A read-only mirror of NixOS/nixpkgs tracking the released channels. Send issues and PRs to",
+        "homepage": "https://github.com/NixOS/nixpkgs",
+        "owner": "NixOS",
+        "repo": "nixpkgs-channels",
+        "rev": "0fe895ae112a5063b2a9acbbaeb2179a4be10ba9",
+        "sha256": "0hqa81jlc396qjj8a6xs6dfs1qrajryqwbn743826lgzx1zlggdi",
+        "type": "tarball",
+        "url": "https://github.com/NixOS/nixpkgs-channels/archive/0fe895ae112a5063b2a9acbbaeb2179a4be10ba9.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    }
+}
