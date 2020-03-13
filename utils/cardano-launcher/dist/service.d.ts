@@ -5,6 +5,8 @@
  *
  * @packageDocumentation
  */
+/// <reference types="node" />
+import { ChildProcess } from 'child_process';
 import { EventEmitter } from 'tsee';
 import { Logger } from './logging';
 export interface ServiceExitStatus {
@@ -68,6 +70,10 @@ export interface Service {
      * @return the status of this process.
      */
     getStatus(): ServiceStatus;
+    /**
+     * @return the ChildProcess running the service, or null if the service has not been started yet.
+     */
+    getProcess(): ChildProcess | null;
     /**
      * An [[EventEmitter]] that can be used to register handlers when
      * the process changes status.

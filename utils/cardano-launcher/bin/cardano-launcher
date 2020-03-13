@@ -1,4 +1,0 @@
-#!/usr/bin/env node
-
-// fixme: figure out how to put cli in separate module
-require('../dist/index').cli(process.argv);

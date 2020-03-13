@@ -1,6 +1,0 @@
-steps:
-  - label: 'npm build'
-    command: "nix-shell --pure --run .buildkite/npm-build.sh"
-    timeout_in_minutes: 30
-    agents:
-      system: x86_64-linux

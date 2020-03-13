@@ -46,7 +46,6 @@ let
       baseName == "gulpfile.js" ||
       (lib.hasPrefix "/source" sansPrefix) ||
       (lib.hasPrefix "/flow" sansPrefix) ||
-      (lib.hasPrefix "/utils" sansPrefix) ||
       baseName == ".babelrc" ||
       sansPrefix == "/scripts" ||
       sansPrefix == "/scripts/package.js" ||

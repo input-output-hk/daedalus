@@ -322,6 +322,9 @@ function setupService(cfgPromise, logger) {
     getStatus: function getStatus() {
       return status;
     },
+    getProcess: function getProcess() {
+      return proc;
+    },
     events: events
   };
 }
