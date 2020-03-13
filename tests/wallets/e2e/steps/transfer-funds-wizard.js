@@ -55,10 +55,10 @@ When(/^I see initial wallets balance$/, async function() {
   const balanceWalletName = await this.waitAndGetText('.SidebarWalletsMenu_wallets button:nth-child(2) .SidebarWalletMenuItem_title');
 
   // Set initial values for further use
-  const rewardsFixeddWalletAmount = await getFixedAmountByName.call(this, rewardsWalletName);
-  const balanceFixeddWalletAmount = await getFixedAmountByName.call(this, balanceWalletName);
-  const rewardsWalletAmount = new BigNumber(rewardsFixeddWalletAmount);
-  const balanceWalletAmount = new BigNumber(balanceFixeddWalletAmount);
+  const rewardsFixedWalletAmount = await getFixedAmountByName.call(this, rewardsWalletName);
+  const balanceFixedWalletAmount = await getFixedAmountByName.call(this, balanceWalletName);
+  const rewardsWalletAmount = new BigNumber(rewardsFixedWalletAmount);
+  const balanceWalletAmount = new BigNumber(balanceFixedWalletAmount);
   if (balanceWalletAmount.isZero()) throw new Error(noWalletsErrorMessage);
   this.rewardsWalletAmount = rewardsWalletAmount;
   this.balanceWalletAmount = balanceWalletAmount;
