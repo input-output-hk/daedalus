@@ -177,6 +177,9 @@
       padding: 14px 20px;
       position: relative;
       text-align: left;
+      -ms-user-select: none;
+      -webkit-user-select: none;
+      user-select: none;
       width: 25%;
 
       p {
