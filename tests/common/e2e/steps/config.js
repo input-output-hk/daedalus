@@ -109,6 +109,7 @@ export const balanceMnemonics = [
   ['safe', 'wrap', 'order', 'affair', 'fiber', 'walnut', 'skill', 'timber', 'rookie', 'ghost', 'spot', 'napkin'],
   ['jaguar', 'bitter', 'merry', 'destroy', 'frozen', 'dune', 'embody', 'pull', 'cradle', 'peasant', 'sail', 'whisper'],
 ];
+export const balanceMnemonicsWithNoFunds = ['judge', 'sting', 'fish', 'script', 'silent', 'soup', 'chef', 'very', 'employ', 'wage', 'cloud', 'tourist'];
 export const testStorageKeys = {
   BALANCE_MNEMONICS_INDEX: 'balance-mnemonics-index',
 }

@@ -2,7 +2,7 @@
 import { expect } from 'chai';
 import BigNumber from 'bignumber.js/bignumber';
 import { expectTextInSelector, waitAndClick } from '../../../common/e2e/steps/helpers';
-import { rewardsMnemonics, balanceMnemonics, testStorageKeys } from '../../../common/e2e/steps/config';
+import { rewardsMnemonics, balanceMnemonics, balanceMnemonicsWithNoFunds, testStorageKeys } from '../../../common/e2e/steps/config';
 import { WalletSyncStateStatuses } from '../../../../source/renderer/app/domains/Wallet';
 import type { Daedalus } from '../../../types';
 
@@ -74,6 +74,20 @@ const createWalletsSequentially = async (wallets: Array<any>, context: Object) =
   }
 };
 
+const getMnemonicsIndex = async function() {
+  let index = await this.localStorage('GET', testStorageKeys.BALANCE_MNEMONICS_INDEX) || 0;
+  index = index.value;
+  index = (!isNaN(index)) ? parseInt(index, 10) : 0;
+  const newIndex = (index < balanceMnemonics.length - 1)
+    ? index + 1
+    : 0;
+  await this.localStorage('POST', {
+    key: testStorageKeys.BALANCE_MNEMONICS_INDEX,
+    value: String(newIndex),
+  });
+  return index;
+}
+
 export const restoreLegacyWallet = async (
   client: Object,
   {
@@ -86,11 +100,14 @@ export const restoreLegacyWallet = async (
     transferFunds?: boolean,
   }
 ) => {
-  let balanceMnemonicsIndex = await client.localStorage('GET', testStorageKeys.BALANCE_MNEMONICS_INDEX) || 0;
-  balanceMnemonicsIndex = balanceMnemonicsIndex.value;
-  balanceMnemonicsIndex = (!isNaN(balanceMnemonicsIndex)) ? parseInt(balanceMnemonicsIndex, 10) : 0;
-  const recoveryPhrase = balanceMnemonics[balanceMnemonicsIndex++];
-  if (balanceMnemonicsIndex === balanceMnemonics.length) balanceMnemonicsIndex = 0;
+
+  let recoveryPhrase;
+  if (hasFunds) {
+    const mnemonicsIndex = await getMnemonicsIndex.call(client);
+    recoveryPhrase = balanceMnemonics[mnemonicsIndex]
+  } else {
+    recoveryPhrase = balanceMnemonicsWithNoFunds;
+  }
   await client.executeAsync((name, recoveryPhrase, transferFunds, noWalletsErrorMessage, done) => {
     daedalus.api.ada
       .restoreByronRandomWallet({
@@ -112,10 +129,6 @@ export const restoreLegacyWallet = async (
       )
       .catch(error => done(error));
   }, walletName, recoveryPhrase, transferFunds, noWalletsErrorMessage);
-  const SET = await client.localStorage('POST', {
-    key: testStorageKeys.BALANCE_MNEMONICS_INDEX,
-    value: String(balanceMnemonicsIndex),
-  });
 }
 
 export const fillOutWalletSendForm = async function(values: Object) {
@@ -154,6 +167,16 @@ export const getWalletByName = function(walletName: string) {
  * which can safely be used to create a BigNumber.
  */
 export const getFixedAmountByName = async function(walletName: string) {
+  await this.client.waitUntil(async () => {
+    const isRestoring = await this.client.execute(
+      (walletName) => {
+        const { isRestoring } = daedalus.stores.wallets.getWalletByName(walletName);
+        return isRestoring;
+      },
+      walletName,
+    );
+    return !isRestoring.value;
+  });
   const walletAmount =
     await this.client.execute(
       (walletName) => {
