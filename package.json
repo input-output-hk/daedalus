@@ -187,7 +187,7 @@
     "react-dom": "16.8.0",
     "react-intl": "2.7.2",
     "react-lottie": "1.2.3",
-    "react-polymorph": "input-output-hk/react-polymorph#chore/ddw-1227-fix-options-component-dimensions",
+    "react-polymorph": "0.9.3-rc.1",
     "react-markdown": "4.3.1",
     "react-router": "3.2.1",
     "react-svg-inline": "2.1.1",

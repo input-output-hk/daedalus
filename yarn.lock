@@ -11770,9 +11770,9 @@ react-onclickoutside@^6.5.0:
   version "6.9.0"
   resolved "https://registry.yarnpkg.com/react-onclickoutside/-/react-onclickoutside-6.9.0.tgz#a54bc317ae8cf6131a5d78acea55a11067f37a1f"
 
-react-polymorph@input-output-hk/react-polymorph#chore/ddw-1227-fix-options-component-dimensions:
-  version "0.9.2-rc.2"
-  resolved "https://codeload.github.com/input-output-hk/react-polymorph/tar.gz/12db300913adc1157d7d55129bbc8812d9b55cb5"
+react-polymorph@0.9.3-rc.1:
+  version "0.9.3-rc.1"
+  resolved "https://registry.yarnpkg.com/react-polymorph/-/react-polymorph-0.9.3-rc.1.tgz#eccbe47cc231980b3fc31578044ee58c96588ae0"
   dependencies:
     create-react-context "0.2.2"
     create-react-ref "0.1.0"
