@@ -122,9 +122,11 @@ set -x
 SIGN_ID="$1"
 KEYCHAIN="$2"
 REL_PATH="$3"
+XML_PATH="$4"
 ABS_PATH="$(pwd)/$REL_PATH"
-SIGN_CMD="codesign --verbose=4 --deep --strict --timestamp --options=runtime --entitlements /tmp/entitlements.xml --sign \"$SIGN_ID\""
+SIGN_CMD="codesign --verbose=4 --deep --strict --timestamp --options=runtime --entitlements $XML_PATH --sign \"$SIGN_ID\""
 VERIFY_CMD="codesign --verbose=4 --verify --deep --strict"
+ENTITLEMENT_CMD="codesign -d --entitlements :-"
 TS="$(date +%Y-%m-%d_%H-%M-%S)"
 LOG="2>&1 | tee -a /tmp/codesign-output-${TS}.txt"
 
@@ -144,9 +146,23 @@ eval "$SIGN_CMD \"$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Ver
 
 # Sign the whole component deeply
 eval "$SIGN_CMD \"$ABS_PATH\" $LOG"
+
+# Verify the signing
 eval "$VERIFY_CMD \"$ABS_PATH\" $LOG"
-eval "$VERIFY_CMD --display -r- \"$ABS_PATH\""
+eval "$VERIFY_CMD --display -r- \"$ABS_PATH\"" "$LOG"
+eval "$ENTITLEMENT_CMD \"$ABS_PATH\"" "$LOG"
 set +x|]
+
+-- | Define the code signing entitlements to be used for code signing
+codeSignEntitlements :: String
+codeSignEntitlements = [r|<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <key>com.apple.security.cs.allow-unsigned-executable-memory</key>
+    <true/>
+  </dict>
+</plist>|]
 
 makePostInstall :: Format a (Text -> a)
 makePostInstall = "#!/usr/bin/env bash\n" %
@@ -167,6 +183,19 @@ makeScriptsDir Options{oBackend} DarwinConfig{dcAppNameApp} = case oBackend of
       chmod executable (tempdir </> "postinstall")
     pure $ tt tempdir
   Mantis    -> pure "[DEVOPS-533]"
+
+makeSigningDir :: Managed (T.Text, T.Text)
+makeSigningDir = do
+    tmp <- fromString <$> (liftIO $ getEnv "TMP")
+    tempdir <- mktempdir tmp "codeScripts"
+    let
+      codesignScriptPath = tempdir </> "codesignFnGen.sh"
+      entitlementsPath = tempdir </> "entitlements.xml"
+    liftIO $ do
+      writeTextFile codesignScriptPath $ T.pack codeSignScriptContents
+      chmod executable codesignScriptPath
+      writeTextFile entitlementsPath $ T.pack codeSignEntitlements
+    pure $ (tt codesignScriptPath, tt entitlementsPath)
 
 buildIcons :: Cluster -> IO ()
 buildIcons cluster = do
@@ -262,7 +291,6 @@ makeComponentRoot Options{oBackend,oCluster} appRoot darwinConfig@DarwinConfig{d
       print "darwin-launcher was not found in $PATH"
       exit $ ExitFailure 1
 
-
 makeInstaller :: Options -> DarwinConfig -> FilePath -> FilePath -> IO FilePath
 makeInstaller opts@Options{oOutputDir} darwinConfig@DarwinConfig{dcPkgName} componentRoot pkg = do
   echo "~~~     Making installer ..."
@@ -319,18 +347,6 @@ writeLauncherFile dir DarwinConfig{dcDataDir} = do
       , "mkdir -p \"" <> dcDataDir <> "/Logs/pub\""
       ]
 
-writeCodesignScriptFile :: String -> IO FilePath
-writeCodesignScriptFile codesignScriptContents = do
-  writeTextFile codesignScript $ T.pack codesignScriptContents
-  chmod executable codesignScript
-  run "ls" [ "-la", codesignScriptRef ]
-  run "cat" [ codesignScriptRef ]
-  pure codesignScript
-  where
-    codesignScript :: FilePath
-    codesignScript = "/tmp/codesignFnGen.sh"
-    codesignScriptRef = T.pack $ encodeString codesignScript
-
 data CodeSigningConfig = CodeSigningConfig
   { codeSigningIdentity     :: T.Text
   , codeSigningKeyChain     :: T.Text
@@ -351,8 +367,11 @@ instance FromJSON SigningConfig where
 -- | Code sign a component.
 codeSignComponent :: CodeSigningConfig -> FilePath -> IO ()
 codeSignComponent CodeSigningConfig{codeSigningIdentity,codeSigningKeyChain} component = do
-  codeSignScript <- writeCodesignScriptFile codeSignScriptContents
-  run (T.pack $ encodeString $ codeSignScript) [ codeSigningIdentity, codeSigningKeyChain, (tt component) ]
+  with makeSigningDir $ \(codesignScriptPath, entitlementsPath) -> do
+    run codesignScriptPath [ codeSigningIdentity
+                           , codeSigningKeyChain
+                           , (tt component)
+                           , entitlementsPath ]
 
 -- | Creates a new installer package with signature added.
 signInstaller :: SigningConfig -> FilePath -> FilePath -> IO ()
