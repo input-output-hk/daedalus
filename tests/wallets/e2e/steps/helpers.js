@@ -133,16 +133,16 @@ export const restoreLegacyWallet = async (
 
 export const fillOutWalletSendForm = async function(values: Object) {
   const formSelector = '.WalletSendForm_component';
-  await this.client.setValue(
+  await this.waitAndSetValue(
     `${formSelector} .receiver .SimpleInput_input`,
     values.address
   );
-  await this.client.setValue(
+  await this.waitAndSetValue(
     `${formSelector} .amount .SimpleInput_input`,
     values.amount
   );
   if (values.spendingPassword) {
-    await this.client.setValue(
+    await this.waitAndSetValue(
       `${formSelector} .spendingPassword .SimpleInput_input`,
       values.spendingPassword
     );

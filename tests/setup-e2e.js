@@ -17,6 +17,7 @@ import {
   saveScreenshot,
   waitAndClick,
   waitAndGetText,
+  waitAndSetValue,
   skippablePromise,
 } from './common/e2e/steps/helpers';
 import { DEFAULT_TIMEOUT } from './common/e2e/steps/config';
@@ -150,6 +151,7 @@ Before(function(testCase) {
   this.skippablePromise = skippablePromise.bind(this, name);
   this.waitAndClick = waitAndClick.bind(this);
   this.waitAndGetText = waitAndGetText.bind(this);
+  this.waitAndSetValue = waitAndSetValue.bind(this);
 });
 
 // ads intl method to webdriver

@@ -86,10 +86,17 @@ export const waitAndClick = async function(
 
 export const waitAndGetText = async function(
   selector: string,
-  ...waitArgs: Array<*>
 ) {
   await this.client.waitForText(selector);
   return this.client.getText(selector);
+};
+
+export const waitAndSetValue = async function(
+  selector: string,
+  value: string,
+) {
+  await this.client.waitForExist(selector);
+  return this.client.setValue(selector, value);
 };
 
 export const waitUntilTextInSelector = async (
