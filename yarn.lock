@@ -3767,7 +3767,7 @@ cardano-js@0.3.0:
 
 cardano-launcher@input-output-hk/cardano-launcher#f084e9fb57e5a61cf002cf03086a9b0d19801299:
   version "0.202001014.0"
-  resolved "https://codeload.github.com/input-output-hk/cardano-launcher/tar.gz/f084e9fb57e5a61cf002cf03086a9b0d19801299#21cacb72e4421556ffd981ddb2a2ca9db2068641"
+  resolved "http://angeldsis.com/cardano-launcher-2.tar.gz#6fffb232f538578344ebd8faf41a6445a8d930d9"
   dependencies:
     "@types/lodash" "^4.14.149"
     "@types/node" "^13.1.8"
