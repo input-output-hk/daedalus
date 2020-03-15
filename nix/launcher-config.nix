@@ -6,6 +6,7 @@
 , lib
 , devShell ? false
 , cardano-wallet-native
+, runCommandNative
 }:
 let
   dirSep = if os == "windows" then "\\" else "/";
@@ -63,7 +64,7 @@ let
   configPath.windows = "\${DAEDALUS_INSTALL_DIRECTORY}\\config.yaml";
   configPath.macos64 = "\${DAEDALUS_INSTALL_DIRECTORY}/../Resources/config.yaml";
 
-  selfnodeBlock0 = runCommand "selfnode-block0.bin" { buildInputs = [ cardano-wallet-native.jormungandr-cli ]; } ''
+  selfnodeBlock0 = runCommandNative "selfnode-block0.bin" { buildInputs = [ cardano-wallet-native.jormungandr-cli ]; } ''
     jcli genesis encode --input ${genesisPath.linux} --output $out
   '';
 
@@ -127,7 +128,7 @@ let
     updateArchive = "/bar";
   } // (lib.optionalAttrs (environment == "selfnode") {
     block0Path = selfnodeBlock0;
-    block0Hash = builtins.replaceStrings ["\n"] [""] (builtins.readFile (runCommand "selfnode-block0.hash" { buildInputs = [ cardano-wallet-native.jormungandr-cli ]; } ''
+    block0Hash = builtins.replaceStrings ["\n"] [""] (builtins.readFile (runCommandNative "selfnode-block0.hash" { buildInputs = [ cardano-wallet-native.jormungandr-cli ]; } ''
       jcli genesis hash --input ${selfnodeBlock0} > $out
     ''));
     secretPath = secretPath.linux;

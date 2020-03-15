@@ -21,6 +21,7 @@ let
   };
   system = systemTable.${target} or target;
   pkgs = localLib.iohkNix.getPkgsDefault { inherit system config; };
+  pkgsNative = localLib.iohkNix.getPkgsDefault {};
   sources = localLib.sources;
   walletPkgs = import "${sources.cardano-wallet}/nix" {};
   shellPkgs = (import "${sources.cardano-shell}/nix/iohk-common.nix").getPkgs {};
@@ -68,6 +69,7 @@ let
       environment = cluster;
       os = ostable.${target};
       backend = nodeImplementation;
+      runCommandNative = pkgsNative.runCommand;
     };
 
     unsignedUnpackedCardano = self.daedalus-bridge; # TODO
