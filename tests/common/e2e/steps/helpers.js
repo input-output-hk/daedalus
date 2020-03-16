@@ -22,7 +22,7 @@ export const generateScreenshotFilePath = (prefix: string) => {
   const prefixParts = prefix.split('/');
   const testName = prefixParts.pop();
   const testPath = prefixParts.slice(1).join('/');
-  const filePath = path.resolve(__dirname, '../../../screenshots/', testPath);
+  const filePath = path.resolve(__dirname, '../../../../tests-report/screenshots/', testPath);
   const extension = 'png';
   const fileName = generateFileNameWithTimestamp({ prefix: testName, extension });
   ensureDirectoryExists(filePath);

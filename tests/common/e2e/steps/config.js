@@ -1,4 +1,4 @@
-export const DEFAULT_TIMEOUT = 30000;
+export const DEFAULT_TIMEOUT = 20000;
 export const rewardsMnemonics = [
   ['awkward', 'electric', 'strong', 'early', 'rose', 'abuse', 'mutual', 'limit', 'ketchup', 'child', 'limb', 'exist', 'hurry', 'business', 'whisper'],
   ['blood', 'limit', 'pumpkin', 'fringe', 'order', 'trick', 'answer', 'festival', 'ethics', 'educate', 'luggage', 'dinner', 'record', 'fox', 'truth'],
