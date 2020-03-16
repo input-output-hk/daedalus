@@ -2,6 +2,7 @@
 , environment ? "staging"
 , os ? "linux"
 , jormungandrLib ? (import ../. {}).jormungandrLib
+, cardanoLib
 , runCommand
 , lib
 , devShell ? false
@@ -10,7 +11,7 @@
 }:
 let
   dirSep = if os == "windows" then "\\" else "/";
-  envCfg = jormungandrLib.environments.${environment};
+  envCfg = (if (backend == "cardano") then cardanoLib else jormungandrLib).environments.${environment};
   cfg = jormungandrLib.mkConfig (envCfg // {
     trustedPeers = envCfg.daedalusPeers or envCfg.trustedPeers;
   });
@@ -21,7 +22,7 @@ let
   installDirectorySuffix.nightly = "Nightly";
   installDirectorySuffix.itn_rewards_v1 = "- Rewards v1";
 
-  spacedName = "Daedalus ${installDirectorySuffix.${environment}}";
+  spacedName = if environment == "mainnet" then "Daedalus" else "Daedalus ${installDirectorySuffix.${environment}}";
 
   dataDir.linux = "\${XDG_DATA_HOME}/Daedalus/${environment}";
   dataDir.macos64 = "\${HOME}/Library/Application Support/${spacedName}";
@@ -75,6 +76,28 @@ let
   };
   finalJormungandrCfgPath = if devShell then jormungandrConfigForCluster else cfgPathForOs.${os};
 
+  tier2-cfg-files = runCommand "tier2-cfg-files" {
+    nodeConfig = builtins.toJSON (envCfg.nodeConfig // { GenesisFile = finalGenesisLocation.${os}; });
+    topologyFile = cardanoLib.mkEdgeTopology {
+      inherit (envCfg) edgePort;
+      edgeNodes = [ envCfg.relaysNew ];
+    };
+    passAsFile = [ "nodeConfig" ];
+  } ''
+    mkdir $out
+    cp ${envCfg.genesisFile} $out/${environment}-genesis.json
+    cp $nodeConfigPath $out/configuration-${environment}.yaml
+    cp $topologyFile $out/${environment}-topology.yaml
+  '';
+
+  finalGenesisLocation.linux = envCfg.genesisFile;
+  finalGenesisLocation.macos64 = envCfg.genesisFile;
+
+  byronConfigDir = {
+    linux = tier2-cfg-files;
+    macos64 = tier2-cfg-files;
+  };
+
   walletArgs = [
     "launch" ] ++
   (if (envCfg ? block0bin) then [
@@ -101,12 +124,6 @@ let
   ];
 
   launcherConfig = {
-    walletBin = walletBin.${os};
-    walletArgs = if environment == "selfnode" then walletArgsSelfnode else walletArgs;
-
-    nodeBin = nodeBin.${os};
-    nodeArgs = [];
-
     daedalusBin = daedalusBin.${os};
     walletLogging = true;
     stateDir = dataDir.${os};
@@ -133,6 +150,23 @@ let
     ''));
     secretPath = secretPath.linux;
     configPath = configPath.linux;
+  }) // (lib.optionalAttrs (backend == "cardano") {
+    networkName = environment;
+    nodeConfig = {
+      kind = "byron";
+      configurationDir = byronConfigDir.${os};
+      network = {
+        configFile = "configuration-${environment}.yaml";
+        genesisFile = "${environment}-genesis.json";
+        genesisHash = envCfg.genesisHash;
+        topologyFile = "${environment}-topology.yaml";
+      };
+    };
+  }) // (lib.optionalAttrs (backend == "jormungandr") {
+    walletBin = walletBin.${os};
+    walletArgs = if environment == "selfnode" then walletArgsSelfnode else walletArgs;
+    nodeBin = nodeBin.${os};
+    nodeArgs = [];
   });
   hasBlock0 = (environment != "selfnode") && envCfg ? block0bin;
   installerConfig = {
@@ -140,8 +174,9 @@ let
     inherit spacedName;
     macPackageName = "Daedalus${environment}";
     dataDir = dataDir.${os};
+  } // (lib.optionalAttrs (backend == "jormungandr") {
     inherit hasBlock0;
-  } // (lib.optionalAttrs hasBlock0 {
+  }) // (lib.optionalAttrs ((backend == "jormungandr") && hasBlock0) {
     block0 = envCfg.block0bin;
   }) // (lib.optionalAttrs (environment == "selfnode") {
     genesisPath = genesisPath.linux;
@@ -160,13 +195,17 @@ in {
   } ''
     mkdir $out
     cd $out
-    ${if (environment == "selfnode") then ''
-      cp ${../utils/jormungandr/selfnode/config.yaml} config.yaml
-      cp ${../utils/jormungandr/selfnode/genesis.yaml} genesis.yaml
-      cp ${../utils/jormungandr/selfnode/secret.yaml} secret.yaml
-    '' else "cp ${jormungandrConfigForCluster} jormungandr-config.yaml"}
+    ${if (backend == "jormungandr") then ''
+      ${lib.optionalString (installerConfig.hasBlock0) "cp ${installerConfig.block0} block-0.bin"}
+      ${if (environment == "selfnode") then ''
+        cp ${../utils/jormungandr/selfnode/config.yaml} config.yaml
+        cp ${../utils/jormungandr/selfnode/genesis.yaml} genesis.yaml
+        cp ${../utils/jormungandr/selfnode/secret.yaml} secret.yaml
+      '' else "cp ${jormungandrConfigForCluster} jormungandr-config.yaml"}
+    ''
+    else ""
+    }
     cp $installerConfigPath installer-config.json
     cp $launcherConfigPath launcher-config.yaml
-    ${lib.optionalString (installerConfig.hasBlock0) "cp ${installerConfig.block0} block-0.bin"}
   '';
 }
