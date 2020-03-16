@@ -55,6 +55,7 @@
   "devDependencies": {
     "@babel/cli": "7.2.0",
     "@babel/core": "7.4.5",
+    "@babel/helper-create-regexp-features-plugin": "7.7.0",
     "@babel/plugin-proposal-class-properties": "7.2.1",
     "@babel/plugin-proposal-decorators": "7.2.0",
     "@babel/plugin-proposal-object-rest-spread": "7.2.0",
@@ -85,10 +86,10 @@
     "cucumber": "6.0.5",
     "cucumber-pretty": "6.0.0",
     "del": "5.1.0",
-    "electron-chromedriver": "4.0.0-beta.1",
+    "electron-chromedriver": "8.0.0",
     "electron-connect": "0.6.3",
     "electron-devtools-installer": "2.2.4",
-    "electron-packager": "13.0.1",
+    "electron-packager": "14.2.1",
     "eslint": "6.8.0",
     "eslint-config-airbnb": "18.0.1",
     "eslint-config-prettier": "6.10.0",
@@ -155,10 +156,10 @@
     "chroma-js": "2.1.0",
     "classnames": "2.2.6",
     "csv-stringify": "5.3.6",
-    "electron": "3.0.14",
+    "electron": "8.1.1",
     "electron-log-daedalus": "2.2.20",
-    "electron-store": "2.0.0",
-    "electron-unhandled": "2.1.0",
+    "electron-store": "5.1.1",
+    "electron-unhandled": "3.0.2",
     "es6-error": "4.1.1",
     "form-data": "3.0.0",
     "fs-extra": "8.1.0",
@@ -204,8 +205,8 @@
     "validator": "12.2.0"
   },
   "devEngines": {
-    "node": ">=8.9.4",
-    "yarn": "1.10.0"
+    "node": ">=12.13.0",
+    "yarn": "1.22.4"
   },
   "husky": {
     "hooks": {
