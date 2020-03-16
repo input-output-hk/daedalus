@@ -71,7 +71,6 @@
     "@storybook/addons": "5.3.14",
     "@storybook/core": "5.3.14",
     "@storybook/react": "5.3.14",
-    "@types/react-syntax-highlighter": "11.0.2",
     "asar": "2.1.0",
     "autodll-webpack-plugin": "0.4.2",
     "axios": "0.19.2",
