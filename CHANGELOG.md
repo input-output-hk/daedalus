@@ -1,6 +1,8 @@
 Changelog
 =========
 
+## 2.3.1-ITN1
+
 ## 2.3.0-ITN1
 
 ### Fixes
