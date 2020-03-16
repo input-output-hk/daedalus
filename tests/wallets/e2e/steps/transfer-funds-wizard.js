@@ -75,6 +75,7 @@ Then(/^I should see "Transfer ada" wizard step 2 dialog$/, async function() {
 
 Then(
   /^I should not see "Transfer ada" wizard step 2 wizard dialog anymore$/,
+  { timeout: 60000 }, // Transfering funds sometimes last more than "Default" test timeout
   function() {
     return this.client.waitForVisible(
       '.TransferFundsStep2Dialog_dialog',
