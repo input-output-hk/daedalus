@@ -3,6 +3,14 @@ Changelog
 
 ## 2.3.1-ITN1
 
+### Fixes
+
+- Fixed issues with loading stake pools on the "Stake pools" screen ([PR 1888](https://github.com/input-output-hk/daedalus/pull/1888))
+
+### Chores
+
+- Updated `cardano-wallet` to version `2020-03-16` which includes Jormungandr 0.8.14 ([PR 1888](https://github.com/input-output-hk/daedalus/pull/1888))
+
 ## 2.3.0-ITN1
 
 ### Fixes
