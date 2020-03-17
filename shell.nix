@@ -50,7 +50,7 @@ let
     ] ++ (localLib.optionals autoStartBackend [
       daedalusPkgs.daedalus-bridge
     ]) ++ (localLib.optionals (pkgs.stdenv.hostPlatform.system != "x86_64-darwin") [
-      daedalusPkgs.electron3
+      daedalusPkgs.electron8
       winePackages.minimal
     ])
     );
@@ -97,7 +97,7 @@ let
       }
       yarn install
       ${pkgs.lib.optionalString (pkgs.stdenv.hostPlatform.system != "x86_64-darwin") ''
-        ln -svf ${daedalusPkgs.electron3}/bin/electron ./node_modules/electron/dist/electron
+        ln -svf ${daedalusPkgs.electron8}/bin/electron ./node_modules/electron/dist/electron
         ln -svf ${pkgs.chromedriver}/bin/chromedriver ./node_modules/electron-chromedriver/bin/chromedriver
       ''}
     '';

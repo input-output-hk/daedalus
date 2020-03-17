@@ -27,19 +27,19 @@ let
     main = "main/index.js";
   };
   newPackagePath = builtins.toFile "package.json" (builtins.toJSON newPackage);
-  windowsElectronVersion = "3.0.14";
+  windowsElectronVersion = "8.1.1";
   windowsElectron = fetchurl {
     url = "https://github.com/electron/electron/releases/download/v${windowsElectronVersion}/electron-v${windowsElectronVersion}-win32-x64.zip";
-    sha256 = "0cqwjmv1ymwa309v025szs6681f891s6ks653jd5mh55hp1vpn0b";
+    sha256 = "647299fa9f9a4a487efaaaf6e35b2438f4dc354b";
   };
   checksums = fetchurl {
     url = "https://github.com/electron/electron/releases/download/v${windowsElectronVersion}/SHASUMS256.txt";
-    sha256 = "103m5kxgb64clx68qqfvxdz2pah249lk344mjxqj94i83v9bxd2j";
+    sha256 = "647299fa9f9a4a487efaaaf6e35b2438f4dc354b";
   };
   electron-cache = runCommand "electron-cache" {} ''
     mkdir $out
-    ln -s ${windowsElectron} $out/electron-v3.0.14-win32-x64.zip
-    ln -s ${checksums} $out/SHASUMS256.txt-3.0.14
+    ln -s ${windowsElectron} $out/electron-v8.1.1-win32-x64.zip
+    ln -s ${checksums} $out/SHASUMS256.txt-8.1.1
   '';
   filter = name: type: let
     baseName = baseNameOf (toString name);
