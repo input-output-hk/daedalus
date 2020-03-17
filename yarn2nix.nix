@@ -1,4 +1,7 @@
-{ lib, pkgs, nodejs-12_x, python, api, apiVersion, cluster, buildNum, nukeReferences, fetchzip, daedalus, stdenv, win64 ? false, wine, runCommand, fetchurl }:
+{ lib, pkgs, nodejs-12_x, python, api, apiVersion
+, cluster, buildNum, nukeReferences, fetchzip
+, daedalus, stdenv, win64 ? false, wine64, runCommand
+, fetchurl, unzip }:
 let
   nodejs = nodejs-12_x;
   yarn2nix = import (fetchzip {
@@ -38,8 +41,10 @@ let
   };
   electron-cache = runCommand "electron-cache" {} ''
     mkdir $out
-    ln -s ${windowsElectron} $out/electron-v8.1.1-win32-x64.zip
-    ln -s ${checksums} $out/SHASUMS256.txt-8.1.1
+    mkdir $out/httpsgithub.comelectronelectronreleasesdownloadv8.1.1SHASUMS256.txt
+    mkdir $out/httpsgithub.comelectronelectronreleasesdownloadv8.1.1electron-v8.1.1-win32-x64.zip
+    ln -s ${windowsElectron} $out/httpsgithub.comelectronelectronreleasesdownloadv8.1.1electron-v8.1.1-win32-x64.zip/electron-v8.1.1-win32-x64.zip
+    ln -s ${checksums} $out/httpsgithub.comelectronelectronreleasesdownloadv8.1.1SHASUMS256.txt/SHASUMS256.txt
   '';
   filter = name: type: let
     baseName = baseNameOf (toString name);
@@ -65,7 +70,7 @@ yarn2nix.mkYarnPackage {
   NETWORK = cluster;
   BUILD_NUMBER = "${toString buildNum}";
   NODE_ENV = "production";
-  extraBuildInputs = if win64 then [ wine nukeReferences ] else [ nukeReferences ];
+  extraBuildInputs = if win64 then [ unzip wine64 nukeReferences ] else [ nukeReferences ];
   installPhase = let
     nukeAllRefs = ''
       # the webpack utils embed the original source paths into map files, so backtraces from the 1 massive index.js can be converted back to multiple files
@@ -76,9 +81,10 @@ yarn2nix.mkYarnPackage {
       done
     '';
   in if win64 then ''
-    export ELECTRON_CACHE=${electron-cache}
-    mkdir home
+    mkdir -pv home/.cache/
     export HOME=$(realpath home)
+    ln -sv ${electron-cache} $HOME/.cache/electron
+    export DEBUG='@electron/get:*'
     cp ${newPackagePath} package.json
     yarn --offline package --win64 --icon installers/icons/${cluster}/${cluster}
     ls -ltrh release/win32-x64/Daedalus*-win32-x64/
