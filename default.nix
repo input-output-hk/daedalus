@@ -45,6 +45,7 @@ let
     cardanoLib = localLib.iohkNix.cardanoLib;
     daedalus-bridge = self.bridgeTable.${nodeImplementation};
     export-wallets = cardanoSL.nix-tools.cexes.cardano-wallet.export-wallets;
+    db-converter = self.cardano-node.db-converter;
 
     sources = localLib.sources;
     bridgeTable = {
