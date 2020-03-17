@@ -30,11 +30,11 @@ let
   windowsElectronVersion = "8.1.1";
   windowsElectron = fetchurl {
     url = "https://github.com/electron/electron/releases/download/v${windowsElectronVersion}/electron-v${windowsElectronVersion}-win32-x64.zip";
-    sha256 = "647299fa9f9a4a487efaaaf6e35b2438f4dc354b";
+    sha256 = "01j1bvq5ynbjsg3ii22j0srwq14bjbcnq9r65iqr0g8yz3bw51l0";
   };
   checksums = fetchurl {
     url = "https://github.com/electron/electron/releases/download/v${windowsElectronVersion}/SHASUMS256.txt";
-    sha256 = "647299fa9f9a4a487efaaaf6e35b2438f4dc354b";
+    sha256 = "13hyf7vgg8vnfih85xvkqsnfa6pzq7hyjm768zy1xpqvypl3n3qz";
   };
   electron-cache = runCommand "electron-cache" {} ''
     mkdir $out

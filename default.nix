@@ -282,7 +282,7 @@ let
       src = {
         x86_64-linux = pkgs.fetchurl {
           url = "https://github.com/electron/electron/releases/download/v${version}/electron-v${version}-linux-x64.zip";
-          sha256 = "647299fa9f9a4a487efaaaf6e35b2438f4dc354b";
+          sha256 = "0fyqxi5m7vakahq3wls1f8wwx97cpknldd1s06viak2kiv9yk02i";
         };
       }.${pkgs.stdenv.hostPlatform.system} or throwSystem;
     });
