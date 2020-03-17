@@ -47,8 +47,7 @@
     "js-launcher": "node utils/js-launcher/index.js",
     "create-news-verification-hashes": "node utils/create-news-verification-hashes/index.js",
     "lockfile:check": "node utils/lockfile-checker/index.js --check",
-    "lockfile:fix": "node utils/lockfile-checker/index.js --fix",
-    "postinstall": "cp -R utils/cardano-launcher/dist node_modules/cardano-launcher"
+    "lockfile:fix": "node utils/lockfile-checker/index.js --fix"
   },
   "bin": {
     "electron": "./node_modules/.bin/electron"
