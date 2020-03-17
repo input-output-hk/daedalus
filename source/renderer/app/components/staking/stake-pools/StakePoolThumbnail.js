@@ -193,6 +193,7 @@ export class StakePoolThumbnail extends Component<Props, State> {
             onSelect={this.handleSelect}
             showWithSelectButton={showWithSelectButton}
             containerClassName={containerClassName}
+            numberOfStakePools={numberOfStakePools}
           />
         )}
       </div>
