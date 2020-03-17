@@ -5,6 +5,7 @@ Changelog
 
 ### Fixes
 
+- Fixed missing notarization on macOS installers ([PR 1890](https://github.com/input-output-hk/daedalus/pull/1890))
 - Fixed issues with loading stake pools on the "Stake pools" screen ([PR 1888](https://github.com/input-output-hk/daedalus/pull/1888))
 
 ### Chores
