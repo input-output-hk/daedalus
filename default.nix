@@ -44,6 +44,7 @@ let
     jormungandrLib = localLib.iohkNix.jormungandrLib;
     cardanoLib = localLib.iohkNix.cardanoLib;
     daedalus-bridge = self.bridgeTable.${nodeImplementation};
+    export-wallets = cardanoSL.nix-tools.cexes.cardano-wallet.export-wallets;
 
     sources = localLib.sources;
     bridgeTable = {
