@@ -53,6 +53,7 @@ let
     # a cross-compiled fastlist for the ps-list package
     fastlist = pkgs.pkgsCross.mingwW64.callPackage ./nix/fastlist.nix {};
     wine = pkgs.wine.override { wineBuild = "wine32"; };
+    wine64 = pkgs.wine.override { wineBuild = "wineWow"; };
 
     dlls = pkgs.fetchurl {
       url = "https://s3.eu-central-1.amazonaws.com/daedalus-ci-binaries/DLLs.zip";
