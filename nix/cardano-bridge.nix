@@ -1,4 +1,4 @@
-{ runCommand, cardano-wallet, cardano-node, cardano-shell, export-wallets }:
+{ runCommand, cardano-wallet, cardano-node, cardano-shell, export-wallets, db-converter }:
 
 runCommand "daedalus-haskell-bridge" {
 } ''
@@ -8,4 +8,5 @@ runCommand "daedalus-haskell-bridge" {
   cp ${cardano-shell.nix-tools.cexes.cardano-launcher.cardano-launcher}/bin/cardano-launcher* .
   cp ${cardano-node.cardano-node}/bin/cardano-node* .
   cp ${export-wallets}/bin/export-wallets* .
+  cp ${db-converter}/bin/db-converter* .
 ''
