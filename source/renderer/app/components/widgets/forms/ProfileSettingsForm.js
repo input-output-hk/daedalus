@@ -115,6 +115,7 @@ export default class ProfileSettingsForm extends Component<ProfileSettingsFormPr
         skin={SelectSkin}
         className={styles.select}
         key={id}
+        optionHeight={50}
       />
     );
   };

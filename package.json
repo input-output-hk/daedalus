@@ -188,8 +188,8 @@
     "react-dom": "16.8.0",
     "react-intl": "2.7.2",
     "react-lottie": "1.2.3",
+    "react-polymorph": "0.9.3-rc.1",
     "react-markdown": "4.3.1",
-    "react-polymorph": "0.9.1",
     "react-router": "3.2.1",
     "react-svg-inline": "2.1.1",
     "react-virtualized": "9.21.2",
@@ -220,6 +220,7 @@
     "**/**/lodash.template": "^4.5.0",
     "**/**/lodash": "^4.17.14",
     "**/**/unicode-properties": "1.1.0",
+    "**/**/handlebars": "4.5.3",
     "@storybook/core/**/terser-webpack-plugin": "^2.1.2",
     "webpack/**/terser-webpack-plugin": "1.4.1"
   }
