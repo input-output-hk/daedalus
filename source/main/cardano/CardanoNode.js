@@ -263,8 +263,8 @@ export class CardanoNode {
     const {
       walletBin,
       nodeBin,
-      walletArgs,
       // startupTimeout,
+      walletArgs,
       nodeImplementation,
       workingDir,
       cluster,
@@ -351,7 +351,7 @@ export class CardanoNode {
           });
 
           node.pid = processes.wallet.pid; // TODO: expose node pid too
-          node.connected = true;
+          node.connected = true; // TODO: use processes.wallet.connected here
           _log.info(
             `CardanoNode#start: cardano-node child process spawned with PID ${processes.node.pid}`,
             { pid: processes.node.pid }
@@ -365,7 +365,8 @@ export class CardanoNode {
         })
         .catch(exitStatus => {
           const { code, signal } = exitStatus.wallet;
-          this._handleCardanoNodeError(code, signal);
+          // this._handleCardanoNodeError(code, signal);
+          this._handleCardanoNodeExit(code, signal);
           reject(
             new Error('CardanoNode#start: Error while spawning cardano-node')
           );
@@ -460,7 +461,9 @@ export class CardanoNode {
       _log.error('CardanoNode#restart: Could not restart cardano-node', {
         error,
       });
-      this._changeToState(CardanoNodeStates.ERRORED);
+      if (this._state !== CardanoNodeStates.UNRECOVERABLE) {
+        this._changeToState(CardanoNodeStates.ERRORED);
+      }
       return Promise.reject(error);
     }
   }
