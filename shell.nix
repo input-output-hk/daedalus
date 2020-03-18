@@ -41,6 +41,7 @@ let
   daedalusShellBuildInputs = [
       nodejs yarn
       daedalusPkgs.daedalus-bridge
+      daedalusPkgs.daedalus-installer
     ] ++ (with pkgs; [
       nix bash binutils coreutils curl gnutar
       git python27 curl jq
