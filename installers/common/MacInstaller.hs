@@ -106,9 +106,8 @@ makePostInstall = "#!/usr/bin/env bash\n" %
 
 makeScriptsDir :: Options -> DarwinConfig -> Managed T.Text
 makeScriptsDir Options{oBackend} DarwinConfig{dcAppNameApp} = case oBackend of
-    Cardano _ -> common
+    Cardano     _ -> common
     Jormungandr _ -> common
-    Mantis    -> pure "[DEVOPS-533]"
   where
     common = do
       tmp <- fromString <$> (liftIO $ getEnv "TMP")
@@ -153,9 +152,8 @@ npmPackage DarwinConfig{dcAppName} = do
   printf ("Size of Electron app is " % l % "\n") size
 
 getBackendVersion :: Backend -> IO Text
-getBackendVersion (Cardano bridge) = readCardanoVersionFile bridge
+getBackendVersion (Cardano     bridge) = readCardanoVersionFile bridge
 getBackendVersion (Jormungandr bridge) = readCardanoVersionFile bridge
-getBackendVersion Mantis = pure "DEVOPS-533"
 
 makeComponentRoot :: Options -> FilePath -> DarwinConfig -> InstallerConfig -> IO ()
 makeComponentRoot Options{oBackend,oCluster} appRoot darwinConfig@DarwinConfig{dcAppName} InstallerConfig{hasBlock0,genesisPath,secretPath,configPath} = do
@@ -213,8 +211,6 @@ makeComponentRoot Options{oBackend,oCluster} appRoot darwinConfig@DarwinConfig{d
 
       -- Rewrite libs paths and bundle them
       void $ chain (encodeString dir) $ fmap tt [dir </> "cardano-launcher", dir </> "cardano-wallet-jormungandr", dir </> "jormungandr" ]
-
-    Mantis -> pure () -- DEVOPS-533
 
   -- Prepare launcher
   de <- testdir (dir </> "Frontend")

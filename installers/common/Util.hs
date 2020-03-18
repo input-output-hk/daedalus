@@ -38,7 +38,6 @@ exportBuildVars Options{oBackend, oBuildJob, oCluster} backendVersion = do
     where
         apiName (Cardano _) = "ada"
         apiName (Jormungandr _) = "ada"
-        apiName Mantis      = "etc"
 
 rewritePackageJson :: FilePath -> Text -> IO ()
 rewritePackageJson path name = do
