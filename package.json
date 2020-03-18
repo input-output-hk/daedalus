@@ -161,7 +161,7 @@
     "chroma-js": "2.1.0",
     "classnames": "2.2.6",
     "csv-stringify": "5.3.6",
-    "cucumber-html-reporter": "^5.1.0",
+    "cucumber-html-reporter": "5.1.0",
     "electron": "3.0.14",
     "electron-log-daedalus": "2.2.20",
     "electron-store": "2.0.0",
