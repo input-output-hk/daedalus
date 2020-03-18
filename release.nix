@@ -54,7 +54,7 @@ in {
     jormungandr = [ "x86_64-linux" "x86_64-darwin" "x86_64-windows" ];
     cardano = [ "x86_64-linux" "x86_64-darwin" "x86_64-windows" ];
   };
-  cardano-node.cardano-node = [ "x86_64-linux" "x86_64-darwin" "x86_64-windows" ];
+  cardano-node = [ "x86_64-linux" "x86_64-darwin" "x86_64-windows" ];
   export-wallets = [ "x86_64-linux" "x86_64-darwin" "x86_64-windows" ];
   db-converter = [ "x86_64-linux" "x86_64-darwin" "x86_64-windows" ];
 })
