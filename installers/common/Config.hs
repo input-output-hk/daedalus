@@ -96,10 +96,11 @@ optionsParser detectedOS = Options
   <*> (optional $ optPath       "signing-config"      'k' "the path to the json file describing the signing config")
 
 backendOptionParser :: Parser Backend
-backendOptionParser = cardano <|> bool (Cardano "") Mantis <$> enableMantis
+backendOptionParser = enableJormungandr <|> cardano <|> bool (Cardano "") Mantis <$> enableMantis
   where
     cardano = Cardano <$> optPath "cardano" 'C'
       "Use Cardano backend with given Daedalus bridge path"
+    enableJormungandr = Jormungandr <$> optPath  "jormungandr" 'j' "use Jormungandr backend"
     enableMantis = switch "mantis" 'M' "Use Mantis (ETC) backend"
 
 -- | Render a FilePath with POSIX-style forward slashes, which is the

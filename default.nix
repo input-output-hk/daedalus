@@ -1,5 +1,8 @@
+let
+  getDefaultBackend = cluster: if (builtins.elem cluster [ "mainnet" "staging" "testnet" ]) then "cardano" else "jormungandr";
+in
 { target ? builtins.currentSystem
-, nodeImplementation ? "cardano"
+, nodeImplementation ? (getDefaultBackend cluster)
 , localLib ? import ./lib.nix { inherit nodeImplementation; }
 , config ? {}
 , cluster ? "mainnet"
@@ -159,17 +162,20 @@ let
 
       cp $installerConfigPath installer-config.json
       export LANG=en_US.UTF-8
-      make-installer --os win64 -o $out --cluster ${cluster} ${optionalString (buildNum != null) "--build-job ${buildNum}"} buildkite-cross
+      make-installer --${nodeImplementation} dummy --os win64 -o $out --cluster ${cluster} ${optionalString (buildNum != null) "--build-job ${buildNum}"} buildkite-cross
 
       mkdir $out
       cp daedalus.nsi uninstaller.nsi $out/
       cp $launcherConfigPath $out/launcher-config.yaml
-      ${optionalString self.launcherConfigs.installerConfig.hasBlock0 "cp ${self.launcherConfigs.installerConfig.block0} $out/block-0.bin"}
-      ${if (cluster == "selfnode") then ''
-        cp ${self.launcherConfigs.cfg-files}/config.yaml $out/
-        cp ${self.launcherConfigs.cfg-files}/secret.yaml $out/
-        cp ${self.launcherConfigs.cfg-files}/genesis.yaml $out/
-      '' else "cp ${self.launcherConfigs.jormungandr-config} $out/jormungandr-config.yaml"}
+      ${optionalString (self.launcherConfigs.installerConfig.hasBlock0 or false) "cp ${self.launcherConfigs.installerConfig.block0} $out/block-0.bin"}
+      ${if (nodeImplementation == "jormungandr") then ''
+        ${if (cluster == "selfnode") then ''
+          cp ${self.launcherConfigs.cfg-files}/config.yaml $out/
+          cp ${self.launcherConfigs.cfg-files}/secret.yaml $out/
+          cp ${self.launcherConfigs.cfg-files}/genesis.yaml $out/
+        '' else "cp ${self.launcherConfigs.jormungandr-config} $out/jormungandr-config.yaml"}
+      '' else ''
+      ''}
       ls -lR $out
     '';
 
@@ -248,7 +254,7 @@ let
       makensis daedalus.nsi -V4
 
       echo '~~~   Copying to $out'
-      cp daedalus-*-cardano-wallet-*-windows*.exe $out/
+      cp daedalus-*-*-wallet-*-windows*.exe $out/
       cp *.yaml $out/cfg-files/
       echo file installer $out/*.exe > $out/nix-support/hydra-build-products
     '';
