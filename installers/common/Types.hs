@@ -64,7 +64,6 @@ data Cluster
 data Backend
   = Cardano FilePath -- ^ Cardano SL with the given daedalus-bridge.
   | Jormungandr FilePath -- ^ Rust node with haskell wallet
-  | Mantis           -- ^ Mantis, to be implemented in DEVOPS-533.
   deriving (Eq, Show)
 
 data SigningResult
@@ -118,8 +117,7 @@ packageFileName os cluster ver backend backendVer build = fromText name <.> ext
     parts = ["daedalus", fromVer ver, backend', backendVer, lshowText cluster, os'] ++ build'
     backend' = case backend of
                  Cardano _ -> "cardano-wallet"
-                 Jormungandr _ -> "Jormungandr-wallet"
-                 Mantis    -> "mantis"
+                 Jormungandr _ -> "jormungandr-wallet"
     ext = case os of
             Win64   -> "exe"
             Macos64 -> "pkg"

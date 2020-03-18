@@ -194,7 +194,6 @@ writeInstallerNSIS outName (Version fullVersion') InstallerConfig{hasBlock0,inst
                   Cardano _ -> do
                     file [] "cardano-node.exe"
                     file [] "cardano-wallet-byron.exe"
-                  _ -> pure ()
                 file [] "cardano-launcher.exe"
                 --file [] "cardano-x509-certificates.exe"
                 --file [] "log-config-prod.yaml"
