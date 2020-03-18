@@ -232,6 +232,7 @@ export default (api: AdaApi) => {
   };
 
   api.resetTestOverrides = () => {
+    TESTING_WALLETS_DATA = {};
     LATEST_APP_VERSION = null;
     NEXT_ADA_UPDATE = null;
     APPLICATION_VERSION = null;
