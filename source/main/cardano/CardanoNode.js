@@ -3,6 +3,7 @@ import Store from 'electron-store';
 import { spawn, exec } from 'child_process';
 import type { ChildProcess } from 'child_process';
 import type { WriteStream } from 'fs';
+import type { Launcher } from 'cardano-launcher';
 import { toInteger } from 'lodash';
 import moment from 'moment';
 import rfs from 'rotating-file-stream';
@@ -104,7 +105,7 @@ export class CardanoNode {
    * The managed cardano-node child process
    * @private
    */
-  _node: ?ChildProcess;
+  _node: ?Launcher;
 
   /**
    * The ipc channel used for broadcasting messages to the outside world
@@ -329,9 +330,23 @@ export class CardanoNode {
       node
         .start()
         .then(api => {
+          const processes: {
+            wallet: ChildProcess,
+            node: ChildProcess,
+          } = {
+            wallet: node.walletService.getProcess(),
+            node: node.nodeService.getProcess(),
+          };
+
+          // Setup logging
+          // processes.wallet.stdout.on('data', data => logFile.write(data));
+          // processes.wallet.stderr.on('data', data => logFile.write(data));
+          // processes.node.stdout.on('data', data => logFile.write(data));
+          // processes.node.stderr.on('data', data => logFile.write(data));
+
           const PIDs = {
-            wallet: node.walletService.getProcess().pid,
-            node: node.nodeService.getProcess().pid,
+            wallet: processes.wallet.pid,
+            node: processes.node.pid,
           };
           node.pid = PIDs.wallet; // TODO: expose node pid too
           node.connected = true;
@@ -353,23 +368,6 @@ export class CardanoNode {
             new Error('CardanoNode#start: Error while spawning cardano-node')
           );
         });
-
-      // try {
-      //   await promisedCondition(() => node.connected, startupTimeout);
-      //   // Setup livecycle event handlers
-      //   node.on('message', this._handleCardanoNodeMessage);
-      //   node.on('exit', this._handleCardanoNodeExit);
-      //   node.on('error', this._handleCardanoNodeError);
-      //   _log.info(
-      //     `CardanoNode#start: cardano-node child process spawned with PID ${node.pid}`,
-      //     { pid: node.pid }
-      //   );
-      //   resolve();
-      // } catch (_) {
-      //   reject(
-      //     new Error('CardanoNode#start: Error while spawning cardano-node')
-      //   );
-      // }
     });
   };
 

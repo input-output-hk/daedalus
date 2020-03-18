@@ -1,7 +1,7 @@
 // @flow
 import * as cardanoLauncher from 'cardano-launcher';
+import type { Launcher } from 'cardano-launcher';
 import { dirname } from 'path';
-import type { ChildProcess } from 'child_process';
 import { STAKE_POOL_REGISTRY_URL } from '../config';
 import { environment } from '../environment';
 import { NIGHTLY, SELFNODE, QA } from '../../common/types/environment.types';
@@ -21,9 +21,7 @@ export type WalletOpts = {
   configPath: string,
 };
 
-export async function CardanoWalletLauncher(
-  walletOpts: WalletOpts
-): Promise<ChildProcess> {
+export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
   const {
     // logStream,
     nodeImplementation,
