@@ -45,6 +45,12 @@ Given(/^I have a "([^"]*)" balance wallet with funds$/, async function(walletNam
   addOrSetWalletsForScenario.call(this, wallet);
 });
 
+Given(/^I have a "([^"]*)" balance wallet for transfering funds$/, async function(walletName) {
+  await restoreLegacyWallet(this.client, { walletName, hasFunds: true, transferFunds: true });
+  const wallet = await waitUntilWalletIsLoaded.call(this, walletName);
+  addOrSetWalletsForScenario.call(this, wallet);
+});
+
 Given(/^I am on the "([^"]*)" wallet "([^"]*)" screen$/, async function(
   walletName,
   screen
@@ -135,7 +141,7 @@ Then(
     const expectedData = table.hashes()[0];
     const receiverWallet = getWalletByName.call(this, walletName);
     return this.client.waitUntil(async () => {
-      const receiverWalletBalance = await this.client.getText(
+      const receiverWalletBalance = await this.waitAndGetText(
         `.SidebarWalletsMenu_wallets .Wallet_${
           receiverWallet.id
         } .SidebarWalletMenuItem_info`

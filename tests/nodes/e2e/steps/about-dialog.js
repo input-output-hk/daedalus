@@ -27,7 +27,7 @@ Then(
   /^the About dialog and package.json show the same Daedalus version/,
   async function() {
     const { version: packageJsonVersion } = packageJson;
-    const aboutVersion = await this.client.getText(SELECTORS.VERSION);
+    const aboutVersion = await this.waitAndGetText(SELECTORS.VERSION);
     expect(aboutVersion).to.equal(packageJsonVersion);
   }
 );

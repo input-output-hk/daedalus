@@ -46,8 +46,7 @@ let pool;
 
 Then(/^the "([^"]*)" wallet should display the "([^"]*)" option$/, async function(walletName, optionText) {
   const selector = `//div[@class="WalletRow_title" and text()="${walletName}"]//parent::div//parent::div//span[@class="WalletRow_actionDelegate"]`;
-  await this.client.waitForVisible(selector);
-  const visibleOption = await this.client.getText(selector);
+  const visibleOption = await this.waitAndGetText(selector);
   expect(visibleOption).to.equal(optionText);
 });
 
@@ -110,8 +109,7 @@ Given(/^the "([^"]*)" wallet was delegated to a Stake Pool with no metadata$/, a
 
 Then(/^the "([^"]*)" wallet should display the delegated Stake Pool ticker$/, async function(walletName) {
   const selector = `//div[@class="WalletRow_title" and text()="${walletName}"]//parent::div//parent::div//span[@class="SimpleTooltip_root TooltipOverrides_root"]//span[@class="WalletRow_ticker tickerText"]`;
-  await this.client.waitForVisible(selector);
-  const visibleStakePoolTicker = await this.client.getText(selector);
+  const visibleStakePoolTicker = await this.waitAndGetText(selector);
   expect(visibleStakePoolTicker).to.equal(`[${pool.ticker}]`);
 });
 
@@ -134,11 +132,10 @@ Then(/^I should see the "([^"]*)" wallet with "Undelegate" and "Redelegate" acti
   await this.client.waitForVisible(`//div[@class="WalletRow_title" and text()="${walletName}"]//parent::div//parent::div//span[@class="WalletRow_actionUndelegate"]`);
 });
 
-Then(/^I should see the "([^"]*)" wallet undelegated$/, async function(walletName) {
+Then(/^I should see the "([^"]*)" wallet as undelegated$/, async function(walletName) {
   await this.client.waitForVisible(`//div[@class="WalletRow_title" and text()="${walletName}"]//parent::div//parent::div//span[@class="WalletRow_actionDelegate"]`);
   const selector = `//div[@class="WalletRow_title" and text()="${walletName}"]//parent::div//parent::div//span[@class="WalletRow_ticker tickerText"]`;
-  await this.client.waitForVisible(selector);
-  const visibleStakePoolTicker = await this.client.getText(selector);
+  const visibleStakePoolTicker = await this.waitAndGetText(selector);
   expect(visibleStakePoolTicker).to.equal('UNDELEGATED');
 });
 
@@ -161,9 +158,7 @@ Then(/^I should not see delegation actions for "([^"]*)" wallet$/, async functio
 
 Then(/^The "([^"]*)" wallet option should display the correct Stake Pool ticker$/, async function(walletName) {
   const selector = `//div[@class="WalletsDropdownOption_label" and text()="${walletName}"]//preceding-sibling::div[@class="WalletsDropdownOption_ticker"]`
-  await this.client.waitForVisible(selector);
-  await this.client.waitForEnabled(selector);
-  const visibleStakePoolTicker = await this.client.getText(selector);
+  const visibleStakePoolTicker = await this.waitAndGetText(selector);
   expect(visibleStakePoolTicker).to.equal(`[${pool.ticker}]`);
 });
 
