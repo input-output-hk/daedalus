@@ -171,6 +171,7 @@ export default class MnemonicsDialog extends Component<Props> {
             skin={AutocompleteSkin}
             onChange={onSetWalletMnemonics}
             preselectedOptions={[...mnemonics]}
+            optionHeight={50}
           />
           <div className="error" />
         </div>

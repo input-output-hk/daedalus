@@ -1,5 +1,6 @@
 .component {
   margin: 20px auto;
+  pointer-events: none;
 
   &.big {
     height: 44px;

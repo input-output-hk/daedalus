@@ -51,7 +51,7 @@ let
 
   block0Bin.linux = envCfg.block0bin;
   block0Bin.windows = "\${DAEDALUS_INSTALL_DIRECTORY}\\block-0.bin";
-  block0Bin.macos64 = "\${DAEDALUS_INSTALL_DIRECTORY}/block-0.bin";
+  block0Bin.macos64 = "\${DAEDALUS_INSTALL_DIRECTORY}/../Resources/block-0.bin";
 
   genesisPath.linux = ../utils/jormungandr/selfnode/genesis.yaml;
   genesisPath.windows = "\${DAEDALUS_INSTALL_DIRECTORY}\\genesis.yaml";
@@ -71,7 +71,7 @@ let
 
   cfgPathForOs = {
     windows = "\${DAEDALUS_INSTALL_DIRECTORY}\\jormungandr-config.yaml";
-    macos64 = "\${DAEDALUS_INSTALL_DIRECTORY}/jormungandr-config.yaml";
+    macos64 = "\${DAEDALUS_INSTALL_DIRECTORY}/../Resources/jormungandr-config.yaml";
     linux = jormungandrConfigForCluster;
   };
   finalJormungandrCfgPath = if devShell then jormungandrConfigForCluster else cfgPathForOs.${os};

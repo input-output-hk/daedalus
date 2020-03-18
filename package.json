@@ -1,7 +1,7 @@
 {
   "name": "daedalus",
   "productName": "Daedalus",
-  "version": "2.3.0-ITN1",
+  "version": "2.3.1-ITN1",
   "description": "Cryptocurrency Wallet",
   "main": "./dist/main/index.js",
   "scripts": {
@@ -59,6 +59,7 @@
   "devDependencies": {
     "@babel/cli": "7.2.0",
     "@babel/core": "7.4.5",
+    "@babel/helper-create-regexp-features-plugin": "7.7.0",
     "@babel/plugin-proposal-class-properties": "7.2.1",
     "@babel/plugin-proposal-decorators": "7.2.0",
     "@babel/plugin-proposal-object-rest-spread": "7.2.0",
@@ -193,8 +194,8 @@
     "react-dom": "16.8.0",
     "react-intl": "2.7.2",
     "react-lottie": "1.2.3",
+    "react-polymorph": "0.9.3-rc.1",
     "react-markdown": "4.3.1",
-    "react-polymorph": "0.9.1",
     "react-router": "3.2.1",
     "react-svg-inline": "2.1.1",
     "react-virtualized": "9.21.2",
@@ -210,8 +211,8 @@
     "validator": "12.2.0"
   },
   "devEngines": {
-    "node": ">=8.9.4",
-    "yarn": "1.10.0"
+    "node": ">=12.13.0",
+    "yarn": "1.22.4"
   },
   "husky": {
     "hooks": {
@@ -225,6 +226,7 @@
     "**/**/lodash.template": "^4.5.0",
     "**/**/lodash": "^4.17.14",
     "**/**/unicode-properties": "1.1.0",
+    "**/**/handlebars": "4.5.3",
     "@storybook/core/**/terser-webpack-plugin": "^2.1.2",
     "webpack/**/terser-webpack-plugin": "1.4.1"
   }
