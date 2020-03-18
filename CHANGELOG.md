@@ -17,6 +17,18 @@ Changelog
 - Re-enabled theme selection on the "Settings" screen ([PR 1872](https://github.com/input-output-hk/daedalus/pull/1872))
 - Implemented acceptance tests for custom number, date and time formats ([PR 1868](https://github.com/input-output-hk/daedalus/pull/1868))
 
+## 2.3.1-ITN1
+
+### Fixes
+
+- Fixed stake pool rank coloring within the stake pool tooltip ([PR 1891](https://github.com/input-output-hk/daedalus/pull/1891))
+- Fixed missing notarization on macOS installers ([PR 1890](https://github.com/input-output-hk/daedalus/pull/1890))
+- Fixed issues with loading stake pools on the "Stake pools" screen ([PR 1888](https://github.com/input-output-hk/daedalus/pull/1888))
+
+### Chores
+
+- Updated `cardano-wallet` to version `2020-03-16` which includes Jormungandr 0.8.14 ([PR 1888](https://github.com/input-output-hk/daedalus/pull/1888))
+
 ## 2.3.0-ITN1
 
 ### Fixes
