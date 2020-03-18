@@ -6,6 +6,7 @@ let
     inherit buildNum cluster;
     target = system;
     version = "${version}${suffix}";
+    nodeImplementation = "jormungandr";
   };
   shellEnvs = {
     linux = import ./shell.nix { system = "x86_64-linux"; autoStartBackend = true; };
@@ -13,20 +14,20 @@ let
   };
   suffix = if buildNum == null then "" else "-${toString buildNum}";
   version = (builtins.fromJSON (builtins.readFile ./package.json)).version;
-  daedalusPkgsWithSystem = system: import ./. { target = system; };
-  yaml2json = {
-    x86_64-linux = (daedalusPkgsWithSystem "x86_64-linux").yaml2json;
-    x86_64-darwin = (daedalusPkgsWithSystem "x86_64-darwin").yaml2json;
-  };
-  daedalus-installer = {
-    x86_64-linux = (daedalusPkgsWithSystem "x86_64-linux").daedalus-installer;
-    x86_64-darwin = (daedalusPkgsWithSystem "x86_64-darwin").daedalus-installer;
-  };
+  daedalusPkgsWithSystem = system:
+  let
+    table = {
+      x86_64-linux = import ./. { target = "x86_64-linux"; };
+      x86_64-windows = import ./. { target = "x86_64-windows"; };
+      x86_64-darwin = import ./. { target = "x86_64-darwin"; };
+    };
+  in
+    table.${system};
 
   makeJobs = cluster: with daedalusPkgs { inherit cluster; }; {
     daedalus.x86_64-linux = daedalus;
     installer.x86_64-linux = wrappedBundle newBundle pkgs cluster daedalus-bridge.wallet-version;
-    installer.x86_64-windows = (import ./. { inherit cluster; target = "x86_64-windows"; }).windows-installer;
+    installer.x86_64-windows = (import ./. { inherit cluster; target = "x86_64-windows"; nodeImplementation = "jormungandr"; }).windows-installer;
   };
   wrappedBundle = newBundle: pkgs: cluster: cardanoVersion: let
     backend = "cardano-wallet-${cardanoVersion}";
@@ -40,9 +41,21 @@ let
   '';
   lib = (import ./. {}).pkgs.lib;
   clusters = lib.splitString " " (builtins.replaceStrings ["\n"] [""] (builtins.readFile ./installer-clusters.cfg));
+  mapOverArches = supportedTree: lib.mapAttrsRecursive (path: value: lib.listToAttrs (map (arch: { name = arch; value = lib.attrByPath path null (daedalusPkgsWithSystem arch); }) value)) supportedTree;
 in {
-  inherit shellEnvs yaml2json daedalus-installer;
+  inherit shellEnvs;
   inherit ((daedalusPkgs {}).pkgs) mono;
   wine = (daedalusPkgs {}).pkgs.wine.override { wineBuild = "wine32"; };
   tests = (daedalusPkgs {}).tests;
-} // builtins.listToAttrs (map (x: { name = x; value = makeJobs x; }) clusters)
+} // (builtins.listToAttrs (map (x: { name = x; value = makeJobs x; }) clusters))
+// (mapOverArches {
+  daedalus-installer = [ "x86_64-linux" "x86_64-darwin" ];
+  yaml2json = [ "x86_64-linux" "x86_64-darwin" ];
+  bridgeTable = {
+    jormungandr = [ "x86_64-linux" "x86_64-darwin" "x86_64-windows" ];
+    cardano = [ "x86_64-linux" "x86_64-darwin" "x86_64-windows" ];
+  };
+  cardano-node.cardano-node = [ "x86_64-linux" "x86_64-darwin" "x86_64-windows" ];
+  export-wallets = [ "x86_64-linux" "x86_64-darwin" "x86_64-windows" ];
+  db-converter = [ "x86_64-linux" "x86_64-darwin" "x86_64-windows" ];
+})

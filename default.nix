@@ -1,5 +1,5 @@
 { target ? builtins.currentSystem
-, nodeImplementation ? "jormungandr"
+, nodeImplementation ? "cardano"
 , localLib ? import ./lib.nix { inherit nodeImplementation; }
 , config ? {}
 , cluster ? "mainnet"
@@ -25,6 +25,7 @@ let
   sources = localLib.sources;
   walletPkgs = import "${sources.cardano-wallet}/nix" {};
   shellPkgs = (import "${sources.cardano-shell}/nix/iohk-common.nix").getPkgs {};
+  nodePkgs = import "${sources.cardano-wallet}/nix" {};
   inherit (pkgs.lib) optionalString optional;
   crossSystem = lib: (crossSystemTable lib).${target} or null;
   # TODO, nsis cant cross-compile with the nixpkgs daedalus currently uses
@@ -41,15 +42,20 @@ let
   packages = self: {
     inherit cluster pkgs version target nodeImplementation;
     jormungandrLib = localLib.iohkNix.jormungandrLib;
+    cardanoLib = localLib.iohkNix.cardanoLib;
     daedalus-bridge = self.bridgeTable.${nodeImplementation};
+    export-wallets = cardanoSL.nix-tools.cexes.cardano-wallet.export-wallets;
+    db-converter = self.cardano-node.db-converter;
 
     sources = localLib.sources;
     bridgeTable = {
       jormungandr = self.callPackage ./nix/jormungandr-bridge.nix {};
+      cardano = self.callPackage ./nix/cardano-bridge.nix {};
     };
     cardano-wallet = import self.sources.cardano-wallet { inherit system; gitrev = self.sources.cardano-wallet.rev; crossSystem = crossSystem walletPkgs.lib; };
     cardano-wallet-native = import self.sources.cardano-wallet { inherit system; gitrev = self.sources.cardano-wallet.rev; };
     cardano-shell = import self.sources.cardano-shell { inherit system; crossSystem = crossSystem shellPkgs.lib; };
+    cardano-node = import self.sources.cardano-node { inherit system; crossSystem = crossSystem nodePkgs.lib; };
 
     # a cross-compiled fastlist for the ps-list package
     fastlist = pkgs.pkgsCross.mingwW64.callPackage ./nix/fastlist.nix {};
