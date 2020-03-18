@@ -52,7 +52,7 @@ type StateTransitions = {
   onUpdating: () => void,
   onUpdated: () => void,
   onCrashed: (code: number, signal: string) => void,
-  onError: (error: Error) => void,
+  onError: (code: number, signal: string) => void,
   onUnrecoverable: () => void,
 };
 
@@ -321,6 +321,8 @@ export class CardanoNode {
 
       _log.info('Starting cardano-node now...');
 
+      // await promisedCondition(() => node.connected, startupTimeout);
+
       node
         .start()
         .then(api => {
@@ -344,31 +346,26 @@ export class CardanoNode {
 
           // Setup event handling
           node.walletBackend.events.on('exit', exitStatus => {
-            _log.info('CardanoNode#exit', { exitStatus });
             const { code, signal } = exitStatus.wallet;
             this._handleCardanoNodeExit(code, signal);
           });
 
-          const PIDs = {
-            wallet: processes.wallet.pid,
-            node: processes.node.pid,
-          };
-          node.pid = PIDs.wallet; // TODO: expose node pid too
+          node.pid = processes.wallet.pid; // TODO: expose node pid too
           node.connected = true;
           _log.info(
-            `CardanoNode#start: cardano-node child process spawned with PID ${PIDs.node}`,
-            { pid: PIDs.node }
+            `CardanoNode#start: cardano-node child process spawned with PID ${processes.node.pid}`,
+            { pid: processes.node.pid }
           );
           _log.info(
-            `CardanoNode#start: cardano-wallet child process spawned with PID ${PIDs.wallet}`,
-            { pid: PIDs.wallet }
+            `CardanoNode#start: cardano-wallet child process spawned with PID ${processes.wallet.pid}`,
+            { pid: processes.wallet.pid }
           );
           this._handleCardanoNodeMessage({ ReplyPort: api.requestParams.port });
           resolve();
         })
         .catch(exitStatus => {
-          _log.error('CardanoNode#error', { exitStatus });
-          this._handleCardanoNodeError(exitStatus);
+          const { code, signal } = exitStatus.wallet;
+          this._handleCardanoNodeError(code, signal);
           reject(
             new Error('CardanoNode#start: Error while spawning cardano-node')
           );
@@ -601,11 +598,11 @@ export class CardanoNode {
     this._injectedFaults = response;
   };
 
-  _handleCardanoNodeError = async (error: Error) => {
+  _handleCardanoNodeError = async (code: number, signal: string) => {
     const { _log } = this;
-    _log.error('CardanoNode: error', { error });
+    _log.error('CardanoNode: error', { code, signal });
     this._changeToState(CardanoNodeStates.ERRORED);
-    this._transitionListeners.onError(error);
+    this._transitionListeners.onError(code, signal);
     await this.restart();
   };
 
