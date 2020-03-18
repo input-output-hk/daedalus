@@ -10,6 +10,7 @@ Changelog
 
 ### Chores
 
+- Optimized e2e tests ([PR 1874](https://github.com/input-output-hk/daedalus/pull/1874))
 - Updated `react-polymorph` dependency ([PR 1882](https://github.com/input-output-hk/daedalus/pull/1882))
 - Updated small 3rd party dependencies ([PR 1877](https://github.com/input-output-hk/daedalus/pull/1877))
 - Updated React dependencies ([PR 1873](https://github.com/input-output-hk/daedalus/pull/1873))

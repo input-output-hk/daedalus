@@ -3,7 +3,7 @@ Feature: "Daedalus Balance" wallet top bar notification
 
   Background:
     Given I have completed the basic setup
-  
+
   Scenario: Balance wallet "Create a Rewards wallet" / "Move ada" notification is NOT shown when "Balance" wallet is empty
     Given I have the following "Rewards" wallets:
       | name           |
