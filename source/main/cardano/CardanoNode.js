@@ -299,33 +299,27 @@ export class CardanoNode {
       );
 
       this._cardanoLogFile = logFile;
-      // Spawning cardano-node
+
       _log.info('CardanoNode path with args', {
-        path: walletBin,
+        nodePath: nodeBin,
+        walletPath: walletBin,
         args: walletArgs,
       });
 
-      const node = await CardanoWalletLauncher({
-        path: walletBin,
-        nodeBin,
-        walletArgs,
-        logStream: logFile,
+      const node = CardanoWalletLauncher({
         nodeImplementation,
-        stateDir: workingDir,
         cluster,
+        stateDir: workingDir,
         block0Path,
         block0Hash,
         secretPath,
         configPath,
+        walletArgs,
       });
 
       this._node = node;
 
-      node.walletBackend.events.on('exit', exitStatus => {
-        _log.info('CardanoNode#exit', { exitStatus });
-        const { code, signal } = exitStatus.wallet;
-        this._handleCardanoNodeExit(code, signal);
-      });
+      _log.info('Starting cardano-node now...');
 
       node
         .start()
@@ -339,10 +333,21 @@ export class CardanoNode {
           };
 
           // Setup logging
-          // processes.wallet.stdout.on('data', data => logFile.write(data));
-          // processes.wallet.stderr.on('data', data => logFile.write(data));
-          // processes.node.stdout.on('data', data => logFile.write(data));
-          // processes.node.stderr.on('data', data => logFile.write(data));
+          try {
+            processes.wallet.stdout.on('data', data => logFile.write(data));
+            processes.wallet.stderr.on('data', data => logFile.write(data));
+            processes.node.stdout.on('data', data => logFile.write(data));
+            processes.node.stderr.on('data', data => logFile.write(data));
+          } catch (error) {
+            _log.error('Setting cardano-node logging failed', { error });
+          }
+
+          // Setup event handling
+          node.walletBackend.events.on('exit', exitStatus => {
+            _log.info('CardanoNode#exit', { exitStatus });
+            const { code, signal } = exitStatus.wallet;
+            this._handleCardanoNodeExit(code, signal);
+          });
 
           const PIDs = {
             wallet: processes.wallet.pid,
@@ -362,7 +367,7 @@ export class CardanoNode {
           resolve();
         })
         .catch(exitStatus => {
-          _log.info('CardanoNode#error', { exitStatus });
+          _log.error('CardanoNode#error', { exitStatus });
           this._handleCardanoNodeError(exitStatus);
           reject(
             new Error('CardanoNode#start: Error while spawning cardano-node')
