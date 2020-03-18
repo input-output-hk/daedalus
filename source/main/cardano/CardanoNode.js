@@ -320,21 +320,35 @@ export class CardanoNode {
 
       this._node = node;
 
+      node.walletBackend.events.on('exit', exitStatus => {
+        _log.info('CardanoNode#exit', { exitStatus });
+        const { code, signal } = exitStatus.wallet;
+        this._handleCardanoNodeExit(code, signal);
+      });
+
       node
         .start()
         .then(api => {
-          _log.info(
-            `CardanoNode#start: cardano-node child process spawned with PID ${node.pid}`,
-            { pid: node.pid }
-          );
-          node.pid = 0; // TODO: Add real PID here
+          const PIDs = {
+            wallet: node.walletService.getProcess().pid,
+            node: node.nodeService.getProcess().pid,
+          };
+          node.pid = PIDs.wallet; // TODO: expose node pid too
           node.connected = true;
+          _log.info(
+            `CardanoNode#start: cardano-node child process spawned with PID ${PIDs.node}`,
+            { pid: PIDs.node }
+          );
+          _log.info(
+            `CardanoNode#start: cardano-wallet child process spawned with PID ${PIDs.wallet}`,
+            { pid: PIDs.wallet }
+          );
           this._handleCardanoNodeMessage({ ReplyPort: api.requestParams.port });
           resolve();
         })
         .catch(exitStatus => {
-          const error = node.exitStatusMessage(exitStatus);
-          this._handleCardanoNodeError(error);
+          _log.info('CardanoNode#error', { exitStatus });
+          this._handleCardanoNodeError(exitStatus);
           reject(
             new Error('CardanoNode#start: Error while spawning cardano-node')
           );
