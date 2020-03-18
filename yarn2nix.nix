@@ -1,10 +1,13 @@
-{ lib, pkgs, nodejs-10_x, python, api, apiVersion, cluster, buildNum, nukeReferences, fetchzip, daedalus, stdenv, win64 ? false, wine, runCommand, fetchurl }:
+{ lib, pkgs, nodejs-12_x, python, api, apiVersion, cluster, buildNum, nukeReferences, fetchzip, daedalus, stdenv, win64 ? false, wine, runCommand, fetchurl }:
 let
-  nodejs = nodejs-10_x;
+  nodejs = nodejs-12_x;
   yarn2nix = import (fetchzip {
     url = "https://github.com/moretea/yarn2nix/archive/v1.0.0.tar.gz";
     sha256 = "02bzr9j83i1064r1r34cn74z7ccb84qb5iaivwdplaykyyydl1k8";
-  }) { inherit pkgs nodejs; };
+  }) {
+    inherit pkgs nodejs;
+    yarn = pkgs.yarn.override { inherit nodejs; };
+  };
   dotGitExists = builtins.pathExists ./.git;
   isNix2 = 0 <= builtins.compareVersions builtins.nixVersion "1.12";
   canUseFetchGit = dotGitExists && isNix2;

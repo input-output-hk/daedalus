@@ -26,9 +26,8 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
     const { actions, stores } = this.props;
     const { closeDaedalusDiagnosticsDialog } = actions.app;
     const { restartNode } = actions.networkStatus;
-    const { app, networkStatus, profile } = stores;
+    const { app, networkStatus } = stores;
     const { openExternalLink } = app;
-    const { currentLocale } = profile;
     const {
       // Node state
       cardanoNodeState,
@@ -114,7 +113,6 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
           onRestartNode={restartNode}
           onClose={closeDaedalusDiagnosticsDialog.trigger}
           onCopyStateDirectoryPath={this.handleCopyStateDirectoryPath}
-          currentLocale={currentLocale}
         />
       </ReactModal>
     );
