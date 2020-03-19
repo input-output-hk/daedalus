@@ -110,6 +110,7 @@ export function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
             network: {
               genesisBlock: {
                 file: block0Path,
+                hash: block0Hash,
               },
             },
           },

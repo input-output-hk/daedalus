@@ -160,7 +160,7 @@ let
     syncTolerance = "300s";
   }) // (lib.optionalAttrs (backend == "jormungandr") {
     block0Path = if (envCfg ? block0bin) then block0Bin.${os} else "";
-    block0Hash = if (envCfg ? block0bin) then "" else jormungandrLib.environments.${environment}.genesisHash;
+    block0Hash = jormungandrLib.environments.${environment}.genesisHash;
     configPath = finalJormungandrCfgPath;
     walletBin = walletBin.${os};
     walletArgs = if environment == "selfnode" then walletArgsSelfnode else walletArgs;
