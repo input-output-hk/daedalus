@@ -16,7 +16,7 @@ export const ensureXDGDataIsSet = () => {
  * @private
  */
 export const prepareArgs = (config: LauncherConfig) => {
-  const args: Array<string> = Array.from(config.walletArgs);
+  const args: Array<string> = Array.from(config.walletArgs || '');
   if (config.nodeDbPath) args.push('--db-path', config.nodeDbPath);
   if (config.nodeLogConfig) args.push('--log-config', config.nodeLogConfig);
   // if (config.logsPrefix) args.push('--logs-prefix', config.logsPrefix);

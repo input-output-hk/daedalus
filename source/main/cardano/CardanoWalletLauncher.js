@@ -1,7 +1,8 @@
 // @flow
-import { indexOf, merge } from 'lodash';
+import { merge } from 'lodash';
 import * as cardanoLauncher from 'cardano-launcher';
 import type { Launcher } from 'cardano-launcher';
+import type { NodeConfig } from '../config';
 import { STAKE_POOL_REGISTRY_URL } from '../config';
 import {
   NIGHTLY,
@@ -13,31 +14,30 @@ import { Logger } from '../utils/logging';
 
 export type WalletOpts = {
   nodeImplementation: 'jormungandr' | 'cardano-node',
+  nodeConfig: NodeConfig,
   cluster: string,
   stateDir: string,
   block0Path: string,
   block0Hash: string,
   secretPath: string,
   configPath: string,
-  walletArgs: string[],
+  syncTolerance: string,
 };
 
 export function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
   const {
     nodeImplementation,
+    nodeConfig, // For cardano-node / byron only!
     cluster,
     stateDir,
     block0Path,
     block0Hash,
     secretPath,
     configPath,
-    walletArgs,
+    syncTolerance,
   } = walletOpts;
-  // Extract '--sync-tolerance' from walletArgs
-  const syncToleranceSeconds = parseInt(
-    walletArgs[indexOf(walletArgs, '--sync-tolerance') + 1].replace('s', ''),
-    10
-  );
+  // TODO: Update launcher config to pass number
+  const syncToleranceSeconds = parseInt(syncTolerance.replace('s', ''), 10);
 
   // Shared launcher config (node implementations agnostic)
   const launcherConfig = {
@@ -57,7 +57,8 @@ export function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
   // configuration, prior to spawning the child process
   Logger.info('Node implementation', { nodeImplementation });
   switch (nodeImplementation) {
-    case 'cardano-node':
+    case 'cardano':
+      merge(launcherConfig, { nodeConfig });
       break;
     case 'jormungandr':
       if (cluster === SELFNODE) {

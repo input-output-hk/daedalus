@@ -155,6 +155,7 @@ let
         topologyFile = "${environment}-topology.yaml";
       };
     };
+    syncTolerance = "300s";
   }) // (lib.optionalAttrs (backend == "jormungandr") {
     block0Path = if (envCfg ? block0bin) then block0Bin.${os} else "";
     block0Hash = if (envCfg ? block0bin) then "" else jormungandrLib.environments.${environment}.genesisHash;
@@ -163,6 +164,7 @@ let
     walletArgs = if environment == "selfnode" then walletArgsSelfnode else walletArgs;
     nodeBin = nodeBin.${os};
     nodeArgs = [];
+    syncTolerance = jormungandrLib.environments.${environment}.syncTolerance;
   }) // (lib.optionalAttrs (environment == "selfnode") {
     block0Path = if ((os == "linux") || devShell) then selfnodeBlock0 else block0Bin.${os};
     block0Hash = builtins.replaceStrings ["\n"] [""] (builtins.readFile (runCommandNative "selfnode-block0.hash" { buildInputs = [ cardano-wallet-native.jormungandr-cli ]; } ''

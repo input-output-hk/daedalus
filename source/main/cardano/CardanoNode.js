@@ -26,6 +26,7 @@ import type {
 import { CardanoNodeStates } from '../../common/types/cardano-node.types';
 import { CardanoWalletLauncher } from './CardanoWalletLauncher';
 import { launcherConfig } from '../config';
+import type { NodeConfig } from '../config';
 
 /* eslint-disable consistent-return */
 
@@ -69,6 +70,7 @@ export type CardanoNodeConfig = {
   walletBin: string, // Path to jormungandr or cardano-node executable
   nodeBin: string,
   nodeImplementation: CardanoNodeImplementation,
+  nodeConfig: NodeConfig,
   logFilePath: string, // Log file path for cardano-sl
   tlsPath: string, // Path to cardano-node TLS folder
   walletArgs: NodeArgs, // Arguments that are used to spwan cardano-node
@@ -82,6 +84,7 @@ export type CardanoNodeConfig = {
   block0Hash: string,
   secretPath: string,
   configPath: string,
+  syncTolerance: string,
 };
 
 const CARDANO_UPDATE_EXIT_CODE = 20;
@@ -261,17 +264,19 @@ export class CardanoNode {
     // Setup
     const { _log } = this;
     const {
-      walletBin,
-      nodeBin,
+      // walletBin,
+      // nodeBin,
       // startupTimeout,
-      walletArgs,
+      // walletArgs,
       nodeImplementation,
+      nodeConfig,
       workingDir,
       cluster,
       block0Path,
       block0Hash,
       secretPath,
       configPath,
+      syncTolerance,
     } = config;
 
     this._config = config;
@@ -300,21 +305,16 @@ export class CardanoNode {
 
       this._cardanoLogFile = logFile;
 
-      _log.info('CardanoNode path with args', {
-        nodePath: nodeBin,
-        walletPath: walletBin,
-        args: walletArgs,
-      });
-
       const node = CardanoWalletLauncher({
         nodeImplementation,
+        nodeConfig,
         cluster,
         stateDir: workingDir,
         block0Path,
         block0Hash,
         secretPath,
         configPath,
-        walletArgs,
+        syncTolerance,
       });
 
       this._node = node;
@@ -563,7 +563,8 @@ export class CardanoNode {
     const { _actions } = this;
     const { tlsPath } = this._config;
     this._tlsConfig =
-      launcherConfig.nodeImplementation === 'jormungandr'
+      launcherConfig.nodeImplementation === 'jormungandr' ||
+      launcherConfig.nodeImplementation === 'cardano'
         ? {
             ca: ('': any),
             key: ('': any),
