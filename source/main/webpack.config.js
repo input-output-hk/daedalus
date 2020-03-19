@@ -80,7 +80,7 @@ module.exports = {
               // Only bake in NODE_ENV value for production builds.
               'process.env.NODE_ENV': '"production"',
               'process.env.PATH': JSON.stringify(
-                [process.env.PATH, process.env.DAEDALUS_INSTALL_DIR].join(
+                [process.env.PATH, process.env.DAEDALUS_INSTALL_DIRECTORY].join(
                   path.delimiter
                 )
               ),
