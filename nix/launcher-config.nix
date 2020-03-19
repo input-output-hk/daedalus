@@ -17,6 +17,8 @@ let
   });
   jormungandrConfigForCluster = builtins.toFile "jormungandr-config-${environment}.yaml" (builtins.toJSON cfg);
 
+  installDirectorySuffix.testnet = "Testnet";
+  installDirectorySuffix.staging = "Staging";
   installDirectorySuffix.qa = "QA";
   installDirectorySuffix.selfnode = "SelfNode";
   installDirectorySuffix.nightly = "Nightly";
