@@ -146,7 +146,7 @@ let
   } // (lib.optionalAttrs (environment == "selfnode") {
     block0Path = if ((os == "linux") || devShell) then selfnodeBlock0 else block0Bin.${os};
     block0Hash = builtins.replaceStrings ["\n"] [""] (builtins.readFile (runCommandNative "selfnode-block0.hash" { buildInputs = [ cardano-wallet-native.jormungandr-cli ]; } ''
-      jcli genesis hash --input ${if ((os == "linux") || devShell) then selfnodeBlock0 else block0Bin.${os}} > $out
+      jcli genesis hash --input ${selfnodeBlock0} > $out
     ''));
     secretPath = if devShell then secretPath.linux else secretPath.${os};
     configPath = if devShell then configPath.linux else configPath.${os};
