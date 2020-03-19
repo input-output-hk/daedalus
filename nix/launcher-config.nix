@@ -144,12 +144,12 @@ let
     updaterArgs = [];
     updateArchive = "/bar";
   } // (lib.optionalAttrs (environment == "selfnode") {
-    block0Path = selfnodeBlock0;
+    block0Path = if ((os == "linux") || devShell) then selfnodeBlock0 else block0Bin.${os};
     block0Hash = builtins.replaceStrings ["\n"] [""] (builtins.readFile (runCommandNative "selfnode-block0.hash" { buildInputs = [ cardano-wallet-native.jormungandr-cli ]; } ''
-      jcli genesis hash --input ${selfnodeBlock0} > $out
+      jcli genesis hash --input ${if ((os == "linux") || devShell) then selfnodeBlock0 else block0Bin.${os}} > $out
     ''));
-    secretPath = secretPath.linux;
-    configPath = configPath.linux;
+    secretPath = if devShell then secretPath.linux else secretPath.${os};
+    configPath = if devShell then configPath.linux else configPath.${os};
   }) // (lib.optionalAttrs (backend == "cardano") {
     networkName = environment;
     nodeConfig = {
