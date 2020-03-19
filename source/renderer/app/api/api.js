@@ -1370,12 +1370,18 @@ export default class AdaApi {
     Logger.debug('AdaApi::testReset called');
     try {
       const wallets: AdaWallets = await getWallets(this.config);
-      wallets.map(wallet => deleteWallet(this.config, { walletId: wallet.id }));
+      Promise.all(
+        wallets.map(wallet =>
+          deleteWallet(this.config, { walletId: wallet.id })
+        )
+      );
       const legacyWallets: LegacyAdaWallets = await getLegacyWallets(
         this.config
       );
-      legacyWallets.map(wallet =>
-        deleteLegacyWallet(this.config, { walletId: wallet.id })
+      Promise.all(
+        legacyWallets.map(wallet =>
+          deleteLegacyWallet(this.config, { walletId: wallet.id })
+        )
       );
       Logger.debug('AdaApi::testReset success');
     } catch (error) {

@@ -113,6 +113,7 @@ type Props = {
   left: number,
   color: string,
   containerClassName: string,
+  numberOfStakePools: number,
 };
 
 type State = {
@@ -382,6 +383,7 @@ export default class StakePoolTooltip extends Component<Props, State> {
       getPledgeAddressUrl,
       onSelect,
       showWithSelectButton,
+      numberOfStakePools,
     } = this.props;
 
     const {
@@ -479,7 +481,11 @@ export default class StakePoolTooltip extends Component<Props, State> {
             <dd className={styles.ranking}>
               <span
                 style={{
-                  background: getColorFromRange(ranking, { darken, alpha }),
+                  background: getColorFromRange(ranking, {
+                    darken,
+                    alpha,
+                    numberOfItems: numberOfStakePools,
+                  }),
                 }}
               >
                 {ranking}

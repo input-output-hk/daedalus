@@ -297,6 +297,7 @@ export default class VerificationDialog extends Component<Props, State> {
                 messages.recoveryPhraseNoResults
               )}
               skin={AutocompleteSkin}
+              optionHeight={50}
             />
 
             <Checkbox

@@ -26,7 +26,7 @@ Given('I generate {int} addresses', async function(numberOfAddresses) {
 });
 
 When('I click the ShowUsed switch', async function() {
-  await waitAndClick(this.client, SELECTORS.SHOW_USED_SWITCH);
+  await this.waitAndClick(SELECTORS.SHOW_USED_SWITCH);
 });
 
 Then('I should see {int} used addresses', { timeout: 60000 }, async function(
