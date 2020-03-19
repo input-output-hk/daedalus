@@ -124,7 +124,12 @@ upload_artifacts_public() {
 }
 
 # Build/get cardano bridge which is used by make-installer
-DAEDALUS_BRIDGE=$(nix-build --no-out-link -A daedalus-bridge --argstr nodeImplementation jormungandr)
+echo '~~~ Prebuilding cardano bridge'
+CARDANO_BRIDGE=$(nix-build --no-out-link -A daedalus-bridge --argstr nodeImplementation cardano)
+echo '~~~ Prebuilding jormungandr bridge'
+JORMUNGANDR_BRIDGE=$(nix-build --no-out-link -A daedalus-bridge --argstr nodeImplementation jormungandr)
+
+cardanoClusters=" mainnet staging testnet "
 
 pushd installers
     echo '~~~ Prebuilding dependencies for cardano-installer, quietly..'
@@ -138,20 +143,28 @@ pushd installers
           APP_NAME="csl-daedalus"
           rm -rf "${APP_NAME}"
 
+          if [[ "$cardanoClusters" =~ " $cluster " ]]; then
+            BRIDGE_FLAG="--cardano ${CARDANO_BRIDGE}"
+            BACKEND=cardano
+          else
+            BRIDGE_FLAG="--jormungandr ${JORMUNGANDR_BRIDGE}"
+            BACKEND=jormungandr
+          fi
+
           INSTALLER_CMD=("make-installer"
                          "${test_installer}"
                          "${code_signing_config}"
                          "${signing_config}"
-                         "  --cardano          ${DAEDALUS_BRIDGE}"
+                         "${BRIDGE_FLAG}"
                          "  --build-job        ${build_id}"
                          "  --cluster          ${cluster}"
                          "  --out-dir          ${APP_NAME}")
-          nix-build .. -A launcherConfigs.cfg-files --argstr os macos64 --argstr cluster "${cluster}" -o cfg-files --argstr nodeImplementation jormungandr
+          nix-build .. -A launcherConfigs.cfg-files --argstr os macos64 --argstr cluster "${cluster}" -o cfg-files --argstr nodeImplementation "${BACKEND}"
           cp -v cfg-files/{installer-config.json,launcher-config.yaml} .
           if [ -f cfg-files/block-0.bin ]; then
             cp -v cfg-files/block-0.bin .
           fi
-          if [ "${cluster}" != selfnode ]; then
+          if [ -f cfg-files/jormungandr-config.yaml ]; then
             cp -v cfg-files/jormungandr-config.yaml .
           fi
           chmod -R +w .

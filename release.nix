@@ -6,7 +6,6 @@ let
     inherit buildNum cluster;
     target = system;
     version = "${version}${suffix}";
-    nodeImplementation = "jormungandr";
   };
   shellEnvs = {
     linux = import ./shell.nix { system = "x86_64-linux"; autoStartBackend = true; };
@@ -27,7 +26,7 @@ let
   makeJobs = cluster: with daedalusPkgs { inherit cluster; }; {
     daedalus.x86_64-linux = daedalus;
     installer.x86_64-linux = wrappedBundle newBundle pkgs cluster daedalus-bridge.wallet-version;
-    installer.x86_64-windows = (import ./. { inherit cluster; target = "x86_64-windows"; nodeImplementation = "jormungandr"; }).windows-installer;
+    installer.x86_64-windows = (import ./. { inherit cluster; target = "x86_64-windows"; }).windows-installer;
   };
   wrappedBundle = newBundle: pkgs: cluster: cardanoVersion: let
     backend = "cardano-wallet-${cardanoVersion}";
