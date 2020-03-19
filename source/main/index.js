@@ -104,7 +104,12 @@ const onAppReady = async () => {
 
   Logger.info('Updating System-info.json file', { ...systemInfo.data });
 
-  Logger.info('DEBUG PATH', { path: process.env.PATH });
+  // We need DAEDALUS_INSTALL_DIRECTORY in PATH
+  // in order for the cardano-launcher to find wallet and node bins
+  process.env.PATH = [
+    process.env.PATH,
+    process.env.DAEDALUS_INSTALL_DIRECTORY,
+  ].join(path.delimiter);
 
   ensureXDGDataIsSet();
   await installChromeExtensions(isDev);
