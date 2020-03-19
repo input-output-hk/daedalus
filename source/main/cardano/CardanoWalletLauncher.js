@@ -22,6 +22,7 @@ export type WalletOpts = {
   secretPath: string,
   configPath: string,
   syncTolerance: string,
+  logFile: any,
 };
 
 export function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
@@ -35,6 +36,7 @@ export function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
     secretPath,
     configPath,
     syncTolerance,
+    logFile,
   } = walletOpts;
   // TODO: Update launcher config to pass number
   const syncToleranceSeconds = parseInt(syncTolerance.replace('s', ''), 10);
@@ -51,6 +53,7 @@ export function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
       },
     },
     syncToleranceSeconds,
+    // childProcessLogWriteStream: logFile,
   };
 
   // This switch statement handles any node specifc

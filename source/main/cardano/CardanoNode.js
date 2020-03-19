@@ -315,6 +315,7 @@ export class CardanoNode {
         secretPath,
         configPath,
         syncTolerance,
+        logFile,
       });
 
       this._node = node;
@@ -333,16 +334,6 @@ export class CardanoNode {
             wallet: node.walletService.getProcess(),
             node: node.nodeService.getProcess(),
           };
-
-          // Setup logging
-          try {
-            processes.wallet.stdout.on('data', data => logFile.write(data));
-            processes.wallet.stderr.on('data', data => logFile.write(data));
-            processes.node.stdout.on('data', data => logFile.write(data));
-            processes.node.stderr.on('data', data => logFile.write(data));
-          } catch (error) {
-            _log.error('Setting cardano-node logging failed', { error });
-          }
 
           // Setup event handling
           node.walletBackend.events.on('exit', exitStatus => {
