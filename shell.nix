@@ -14,8 +14,8 @@
 let
   daedalusPkgs = import ./. { inherit cluster; target = system; devShell = true; };
   hostPkgs = import pkgs.path { config = {}; overlays = []; };
+  nodejs = pkgs.nodejs-12_x;
   yarn = pkgs.yarn.override { inherit nodejs; };
-  nodejs = pkgs.nodejs-10_x;
   fullExtraArgs = walletExtraArgs ++ pkgs.lib.optional allowFaultInjection "--allow-fault-injection";
   launcherConfig' = "${daedalusPkgs.daedalus.cfg}/etc/launcher-config.yaml";
   fixYarnLock = pkgs.stdenv.mkDerivation {
@@ -50,7 +50,7 @@ let
     ] ++ (localLib.optionals autoStartBackend [
       daedalusPkgs.daedalus-bridge
     ]) ++ (localLib.optionals (pkgs.stdenv.hostPlatform.system != "x86_64-darwin") [
-      daedalusPkgs.electron3
+      daedalusPkgs.electron8
       winePackages.minimal
     ])
     );
@@ -97,7 +97,7 @@ let
       }
       yarn install
       ${pkgs.lib.optionalString (pkgs.stdenv.hostPlatform.system != "x86_64-darwin") ''
-        ln -svf ${daedalusPkgs.electron3}/bin/electron ./node_modules/electron/dist/electron
+        ln -svf ${daedalusPkgs.electron8}/bin/electron ./node_modules/electron/dist/electron
         ln -svf ${pkgs.chromedriver}/bin/chromedriver ./node_modules/electron-chromedriver/bin/chromedriver
       ''}
     '';

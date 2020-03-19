@@ -1,6 +1,6 @@
 // @flow
 import React from 'react';
-import { Route, IndexRedirect } from 'react-router';
+import { Route, Redirect } from 'react-router';
 import { ROUTES } from './routes-config';
 
 // PAGES
@@ -32,7 +32,11 @@ import WalletUtxoPage from './containers/wallet/WalletUtxoPage';
 
 export const Routes = (
   <Route path={ROUTES.ROOT} component={Root}>
-    <IndexRedirect to={ROUTES.WALLETS.ROOT} />
+    <Route
+      exact
+      path={ROUTES.ROOT}
+      component={() => <Redirect to={ROUTES.WALLETS.ROOT} />}
+    />
     <Route
       path={ROUTES.PROFILE.INITIAL_SETTINGS}
       component={InitialSettingsPage}
@@ -55,7 +59,11 @@ export const Routes = (
       <Route path={ROUTES.WALLETS.UTXO} component={WalletUtxoPage} />
     </Route>
     <Route path={ROUTES.SETTINGS.ROOT} component={Settings}>
-      <IndexRedirect to={ROUTES.SETTINGS.GENERAL} />
+      <Route
+        exact
+        path={ROUTES.SETTINGS.ROOT}
+        component={() => <Redirect to={ROUTES.SETTINGS.GENERAL} />}
+      />
       <Route path={ROUTES.SETTINGS.GENERAL} component={GeneralSettingsPage} />
       <Route
         path={ROUTES.SETTINGS.TERMS_OF_USE}
@@ -69,7 +77,11 @@ export const Routes = (
       component={PaperWalletCreateCertificatePage}
     />
     <Route path={ROUTES.STAKING.ROOT} component={Staking}>
-      <IndexRedirect to={ROUTES.STAKING.INFO} />
+      <Route
+        exact
+        path={ROUTES.STAKING.ROOT}
+        component={() => <Redirect to={ROUTES.STAKING.INFO} />}
+      />
       <Route path={ROUTES.STAKING.COUNTDOWN} component={StakingCountdownPage} />
       <Route
         path={ROUTES.STAKING.DELEGATION_CENTER}

@@ -53,6 +53,7 @@ let
     # a cross-compiled fastlist for the ps-list package
     fastlist = pkgs.pkgsCross.mingwW64.callPackage ./nix/fastlist.nix {};
     wine = pkgs.wine.override { wineBuild = "wine32"; };
+    wine64 = pkgs.wine.override { wineBuild = "wineWow"; };
 
     dlls = pkgs.fetchurl {
       url = "https://s3.eu-central-1.amazonaws.com/daedalus-ci-binaries/DLLs.zip";
@@ -276,13 +277,13 @@ let
     yaml2json = pkgs.haskell.lib.disableCabalFlag pkgs.haskellPackages.yaml "no-exe";
 
     electron4 = pkgs.callPackage ./installers/nix/electron.nix {};
-    electron3 = self.electron4.overrideAttrs (old: rec {
+    electron8 = self.electron4.overrideAttrs (old: rec {
       name = "electron-${version}";
-      version = "3.0.14";
+      version = "8.1.1";
       src = {
         x86_64-linux = pkgs.fetchurl {
           url = "https://github.com/electron/electron/releases/download/v${version}/electron-v${version}-linux-x64.zip";
-          sha256 = "0wha13dbb8553h9c7kvpnrjj5c6wizr441s81ynmkfbfybg697p7";
+          sha256 = "0fyqxi5m7vakahq3wls1f8wwx97cpknldd1s06viak2kiv9yk02i";
         };
       }.${pkgs.stdenv.hostPlatform.system} or throwSystem;
     });
