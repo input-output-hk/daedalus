@@ -47,6 +47,7 @@
     "nix:dev": "nix-shell --argstr nodeImplementation jormungandr",
     "nix:qa": "nix-shell --argstr nodeImplementation jormungandr --argstr cluster qa",
     "nix:nightly": "nix-shell --argstr nodeImplementation jormungandr --argstr cluster nightly",
+    "nix:itn": "nix-shell --argstr nodeImplementation jormungandr --argstr cluster itn_rewards_v1",
     "nix:mainnet": "nix-shell --argstr nodeImplementation cardano --argstr cluster mainnet",
     "nix:testnet": "nix-shell --argstr nodeImplementation cardano --argstr cluster testnet",
     "nix:staging": "nix-shell --argstr nodeImplementation cardano --argstr cluster staging",

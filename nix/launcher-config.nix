@@ -143,14 +143,7 @@ let
     updaterPath = "/foo";
     updaterArgs = [];
     updateArchive = "/bar";
-  } // (lib.optionalAttrs (environment == "selfnode") {
-    block0Path = if ((os == "linux") || devShell) then selfnodeBlock0 else block0Bin.${os};
-    block0Hash = builtins.replaceStrings ["\n"] [""] (builtins.readFile (runCommandNative "selfnode-block0.hash" { buildInputs = [ cardano-wallet-native.jormungandr-cli ]; } ''
-      jcli genesis hash --input ${selfnodeBlock0} > $out
-    ''));
-    secretPath = if devShell then secretPath.linux else secretPath.${os};
-    configPath = if devShell then configPath.linux else configPath.${os};
-  }) // (lib.optionalAttrs (backend == "cardano") {
+  } // (lib.optionalAttrs (backend == "cardano") {
     networkName = environment;
     nodeConfig = {
       kind = "byron";
@@ -163,12 +156,24 @@ let
       };
     };
   }) // (lib.optionalAttrs (backend == "jormungandr") {
+    block0Path = if (envCfg ? block0bin) then block0Bin.${os} else "";
+    block0Hash = if (envCfg ? block0bin) then "" else jormungandrLib.environments.${environment}.genesisHash;
+    configPath = finalJormungandrCfgPath;
     walletBin = walletBin.${os};
     walletArgs = if environment == "selfnode" then walletArgsSelfnode else walletArgs;
     nodeBin = nodeBin.${os};
     nodeArgs = [];
+  }) // (lib.optionalAttrs (environment == "selfnode") {
+    block0Path = if ((os == "linux") || devShell) then selfnodeBlock0 else block0Bin.${os};
+    block0Hash = builtins.replaceStrings ["\n"] [""] (builtins.readFile (runCommandNative "selfnode-block0.hash" { buildInputs = [ cardano-wallet-native.jormungandr-cli ]; } ''
+      jcli genesis hash --input ${selfnodeBlock0} > $out
+    ''));
+    secretPath = if devShell then secretPath.linux else secretPath.${os};
+    configPath = if devShell then configPath.linux else configPath.${os};
   });
+
   hasBlock0 = (environment != "selfnode") && envCfg ? block0bin;
+
   installerConfig = {
     installDirectory = if os == "linux" then "Daedalus/${environment}" else spacedName;
     inherit spacedName;

@@ -3,8 +3,12 @@ import { indexOf, merge } from 'lodash';
 import * as cardanoLauncher from 'cardano-launcher';
 import type { Launcher } from 'cardano-launcher';
 import { STAKE_POOL_REGISTRY_URL } from '../config';
-import { environment } from '../environment';
-import { NIGHTLY, SELFNODE, QA } from '../../common/types/environment.types';
+import {
+  NIGHTLY,
+  SELFNODE,
+  QA,
+  ITN_REWARDS_V1,
+} from '../../common/types/environment.types';
 import { Logger } from '../utils/logging';
 
 export type WalletOpts = {
@@ -72,17 +76,41 @@ export function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
           stakePoolRegistryUrl: STAKE_POOL_REGISTRY_URL[SELFNODE],
         });
       }
-      if (environment.isIncentivizedTestnetNightly) {
+      if (cluster === NIGHTLY) {
         merge(launcherConfig, {
+          nodeConfig: {
+            network: {
+              genesisBlock: {
+                hash: block0Hash,
+              },
+            },
+          },
           stakePoolRegistryUrl: STAKE_POOL_REGISTRY_URL[NIGHTLY],
         });
       }
-      if (environment.isIncentivizedTestnetQA) {
+      if (cluster === QA) {
         merge(launcherConfig, {
+          nodeConfig: {
+            network: {
+              genesisBlock: {
+                hash: block0Hash,
+              },
+            },
+          },
           stakePoolRegistryUrl: STAKE_POOL_REGISTRY_URL[QA],
         });
       }
-      // if (environment.isIncentivizedTestnet) {}
+      if (cluster === ITN_REWARDS_V1) {
+        merge(launcherConfig, {
+          nodeConfig: {
+            network: {
+              genesisBlock: {
+                file: block0Path,
+              },
+            },
+          },
+        });
+      }
       break;
     default:
       break;
