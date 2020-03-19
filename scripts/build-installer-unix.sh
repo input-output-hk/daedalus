@@ -124,7 +124,7 @@ upload_artifacts_public() {
 }
 
 # Build/get cardano bridge which is used by make-installer
-DAEDALUS_BRIDGE=$(nix-build --no-out-link -A daedalus-bridge)
+DAEDALUS_BRIDGE=$(nix-build --no-out-link -A daedalus-bridge --argstr nodeImplementation jormungandr)
 
 pushd installers
     echo '~~~ Prebuilding dependencies for cardano-installer, quietly..'
@@ -146,7 +146,7 @@ pushd installers
                          "  --build-job        ${build_id}"
                          "  --cluster          ${cluster}"
                          "  --out-dir          ${APP_NAME}")
-          nix-build .. -A launcherConfigs.cfg-files --argstr os macos64 --argstr cluster "${cluster}" -o cfg-files
+          nix-build .. -A launcherConfigs.cfg-files --argstr os macos64 --argstr cluster "${cluster}" -o cfg-files --argstr nodeImplementation jormungandr
           cp -v cfg-files/{installer-config.json,launcher-config.yaml} .
           if [ -f cfg-files/block-0.bin ]; then
             cp -v cfg-files/block-0.bin .

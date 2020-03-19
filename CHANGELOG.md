@@ -3,6 +3,10 @@ Changelog
 
 ## vNext
 
+### Features
+
+- Integrated new `cardano-launcher` ([PR 1886](https://github.com/input-output-hk/daedalus/pull/1886))
+
 ### Fixes
 
 - Removed the click and mark from spinner component ([PR 1885](https://github.com/input-output-hk/daedalus/pull/1885))
