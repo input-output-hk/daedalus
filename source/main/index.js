@@ -104,6 +104,8 @@ const onAppReady = async () => {
 
   Logger.info('Updating System-info.json file', { ...systemInfo.data });
 
+  Logger.info('DEBUG PATH', { path: process.env.PATH });
+
   ensureXDGDataIsSet();
   await installChromeExtensions(isDev);
 
