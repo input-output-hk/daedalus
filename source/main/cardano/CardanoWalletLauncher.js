@@ -53,7 +53,7 @@ export function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
       },
     },
     syncToleranceSeconds,
-    // childProcessLogWriteStream: logFile,
+    childProcessLogWriteStream: logFile,
   };
 
   // This switch statement handles any node specifc
