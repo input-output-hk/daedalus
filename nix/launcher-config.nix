@@ -221,7 +221,7 @@ in {
       ${lib.optionalString (installerConfig.hasBlock0) "cp ${installerConfig.block0} block-0.bin"}
       ${if (environment == "itn_selfnode") then ''
         cp ${../utils/jormungandr/selfnode/config.yaml} config.yaml
-        cp ${../utils/jormungandr/selfnode/genesis.yaml} genesis.yaml
+        cp ${../utils/jormungandr/selfnode/genesis.json} genesis.json
         cp ${../utils/jormungandr/selfnode/secret.yaml} secret.yaml
       '' else "cp ${jormungandrConfigForCluster} jormungandr-config.yaml"}
     ''
