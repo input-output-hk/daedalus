@@ -23,6 +23,7 @@ import { ADA_CERTIFICATE_MNEMONIC_LENGTH } from '../config/cryptoConfig';
   |  256  |  8 |   264  |  24  |
 */
 export const generateMnemonic = (ms: ?number = 15) => {
+  console.debug('WORDS: ', ms)
   let ent;
   switch (ms) {
     case 9:

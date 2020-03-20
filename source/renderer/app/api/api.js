@@ -90,7 +90,7 @@ import { filterLogData } from '../../../common/utils/logging';
 
 // Config constants
 import { LOVELACES_PER_ADA } from '../config/numbersConfig';
-import { ADA_CERTIFICATE_MNEMONIC_LENGTH } from '../config/cryptoConfig';
+import { ADA_CERTIFICATE_MNEMONIC_LENGTH, WALLET_RECOVERY_PHRASE_WORD_COUNT, LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../config/cryptoConfig';
 import { FORCED_WALLET_RESYNC_WAIT } from '../config/timingConfig';
 
 // Addresses Types
@@ -497,12 +497,16 @@ export default class AdaApi {
         mnemonic_sentence: split(mnemonic, ' '),
         passphrase: spendingPassword,
       };
-      const wallet: AdaWallet = isIncentivizedTestnet
-        ? await createWallet(this.config, { walletInitData })
-        : await restoreByronWallet(this.config, { walletInitData }, 'random');
 
-      Logger.debug('AdaApi::createWallet success', { wallet });
-      return _createWalletFromServerData(wallet);
+      if (isIncentivizedTestnet) {
+        const shelleyWallet: AdaWallet = await createWallet(this.config, { walletInitData });
+        Logger.debug('AdaApi::createWallet (Shelley) success', { wallet });
+      } else {
+        const byronWallet: AdaWallet = await restoreByronWallet(this.config, { walletInitData }, 'random');
+        Logger.debug('AdaApi::createWallet (Byron) success', { wallet });
+        byronWallet.isLegacy = true
+      }
+      return _createWalletFromServerData(shelleyWallet || byronWallet);
     } catch (error) {
       Logger.error('AdaApi::createWallet error', { error });
       throw new GenericApiError();
@@ -696,7 +700,7 @@ export default class AdaApi {
     Logger.debug('AdaApi::getWalletRecoveryPhrase called');
     try {
       const response: Promise<Array<string>> = new Promise(resolve =>
-        resolve(generateAccountMnemonics())
+        resolve(generateAccountMnemonics(isIncentivizedTestnet ? WALLET_RECOVERY_PHRASE_WORD_COUNT : LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT))
       );
       Logger.debug('AdaApi::getWalletRecoveryPhrase success');
       return response;
@@ -1398,6 +1402,34 @@ export default class AdaApi {
   getNetworkInfo = async (): Promise<GetNetworkInfoResponse> => {
     Logger.debug('AdaApi::getNetworkInfo called');
     try {
+      if (!isIncentivizedTestnet) {
+        const response = new Promise(resolve =>
+          resolve({
+            syncProgress: 100,
+            localTip: {
+              epoch: 123,
+              slot: 456,
+            },
+            networkTip: {
+              epoch: 123,
+              slot: 456,
+            },
+            nextEpoch: {
+              // N+1 epoch
+              epochNumber: 124,
+              epochStart: '',
+            },
+            futureEpoch: {
+              // N+2 epoch
+              epochNumber: 125,
+              epochStart: '',
+            },
+          })
+        );
+        Logger.error('AdaApi::getNetworkInfo success', { error });
+        return response;
+      }
+
       const networkInfo: NetworkInfoResponse = await getNetworkInfo(
         this.config
       );
@@ -1434,32 +1466,6 @@ export default class AdaApi {
       };
     } catch (error) {
       Logger.error('AdaApi::getNetworkInfo error', { error });
-      if (!isIncentivizedTestnet) {
-        const response = new Promise(resolve =>
-          resolve({
-            syncProgress: 100,
-            localTip: {
-              epoch: 123,
-              slot: 456,
-            },
-            networkTip: {
-              epoch: 123,
-              slot: 456,
-            },
-            nextEpoch: {
-              // N+1 epoch
-              epochNumber: 124,
-              epochStart: '',
-            },
-            futureEpoch: {
-              // N+2 epoch
-              epochNumber: 125,
-              epochStart: '',
-            },
-          })
-        );
-        return response;
-      }
       if (error.code === TlsCertificateNotValidError.API_ERROR) {
         throw new TlsCertificateNotValidError();
       }
@@ -1648,7 +1654,7 @@ export default class AdaApi {
 
 const _createWalletFromServerData = action(
   'AdaApi::_createWalletFromServerData',
-  (data: AdaWallet) => {
+  (wallet: AdaWallet) => {
     const {
       id: rawWalletId,
       address_pool_gap: addressPoolGap,
@@ -1658,7 +1664,7 @@ const _createWalletFromServerData = action(
       passphrase,
       delegation,
       isLegacy = false,
-    } = data;
+    } = wallet;
 
     const id = isLegacy ? getLegacyWalletId(rawWalletId) : rawWalletId;
     const passphraseLastUpdatedAt = get(passphrase, 'last_updated_at', null);
