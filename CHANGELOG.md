@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 
+- Add support for building both `cardano-node` and `jormungandr` installers ([PR 1894](https://github.com/input-output-hk/daedalus/pull/1894))
 - Integrated new `cardano-launcher` ([PR 1886](https://github.com/input-output-hk/daedalus/pull/1886))
 
 ### Fixes

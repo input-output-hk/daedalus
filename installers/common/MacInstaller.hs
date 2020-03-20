@@ -174,15 +174,17 @@ makePostInstall = "#!/usr/bin/env bash\n" %
 
 makeScriptsDir :: Options -> DarwinConfig -> Managed T.Text
 makeScriptsDir Options{oBackend} DarwinConfig{dcAppNameApp} = case oBackend of
-  Cardano _ -> do
-    tmp <- fromString <$> (liftIO $ getEnv "TMP")
-    tempdir <- mktempdir tmp "scripts"
-    liftIO $ do
-      cp "data/scripts/dockutil" (tempdir </> "dockutil")
-      writeTextFile (tempdir </> "postinstall") (format makePostInstall dcAppNameApp)
-      chmod executable (tempdir </> "postinstall")
-    pure $ tt tempdir
-  Mantis    -> pure "[DEVOPS-533]"
+    Cardano     _ -> common
+    Jormungandr _ -> common
+  where
+    common = do
+      tmp <- fromString <$> (liftIO $ getEnv "TMP")
+      tempdir <- mktempdir tmp "scripts"
+      liftIO $ do
+        cp "data/scripts/dockutil" (tempdir </> "dockutil")
+        writeTextFile (tempdir </> "postinstall") (format makePostInstall dcAppNameApp)
+        chmod executable (tempdir </> "postinstall")
+      pure $ tt tempdir
 
 makeSigningDir :: Managed (T.Text, T.Text)
 makeSigningDir = do
@@ -231,8 +233,8 @@ npmPackage DarwinConfig{dcAppName} = do
   printf ("Size of Electron app is " % l % "\n") size
 
 getBackendVersion :: Backend -> IO Text
-getBackendVersion (Cardano bridge) = readCardanoVersionFile bridge
-getBackendVersion Mantis = pure "DEVOPS-533"
+getBackendVersion (Cardano     bridge) = readCardanoVersionFile bridge
+getBackendVersion (Jormungandr bridge) = readCardanoVersionFile bridge
 
 makeComponentRoot :: Options -> FilePath -> DarwinConfig -> InstallerConfig -> IO ()
 makeComponentRoot Options{oBackend,oCluster} appRoot darwinConfig@DarwinConfig{dcAppName} InstallerConfig{hasBlock0,genesisPath,secretPath,configPath} = do
@@ -241,10 +243,28 @@ makeComponentRoot Options{oBackend,oCluster} appRoot darwinConfig@DarwinConfig{d
       maybeCopyToResources (maybePath,name) = maybe (pure ()) (\path -> cp (fromText path) (dir </> "../Resources/" <> name)) maybePath
 
   echo "~~~     Preparing files ..."
+  let
+    common :: FilePath -> IO ()
+    common bridge = do
+      -- Executables (from daedalus-bridge)
+      forM ["cardano-launcher" ] $ \f ->
+        cp (bridge </> "bin" </> f) (dir </> f)
+
+      -- Config yaml
+      cp "launcher-config.yaml" (dataDir </> "launcher-config.yaml")
   case oBackend of
     Cardano bridge -> do
+      common bridge
       -- Executables (from daedalus-bridge)
-      forM ["cardano-launcher", "cardano-wallet-jormungandr", "jormungandr" ] $ \f ->
+      forM ["cardano-wallet-byron", "cardano-node" ] $ \f ->
+        cp (bridge </> "bin" </> f) (dir </> f)
+      procs "chmod" ["-R", "+w", tt dir] empty
+      -- Rewrite libs paths and bundle them
+      void $ chain (encodeString dir) $ fmap tt [dir </> "cardano-launcher", dir </> "cardano-wallet-byron", dir </> "cardano-node" ]
+    Jormungandr bridge -> do
+      common bridge
+      -- Executables (from daedalus-bridge)
+      forM ["cardano-wallet-jormungandr", "jormungandr" ] $ \f ->
         cp (bridge </> "bin" </> f) (dir </> f)
 
       -- Config files (from daedalus-bridge)
@@ -262,17 +282,12 @@ makeComponentRoot Options{oBackend,oCluster} appRoot darwinConfig@DarwinConfig{d
       --  error "Cardano package carries no genesis files."
       --procs "cp" (map T.pack genesisFiles ++ [tt dir]) mempty
 
-      -- Config yaml (generated from dhall files)
-      cp "launcher-config.yaml" (dataDir </> "launcher-config.yaml")
-
       procs "chmod" ["-R", "+w", tt dir] empty
 
       rmtree $ dataDir </> "app/installers"
 
       -- Rewrite libs paths and bundle them
       void $ chain (encodeString dir) $ fmap tt [dir </> "cardano-launcher", dir </> "cardano-wallet-jormungandr", dir </> "jormungandr" ]
-
-    Mantis -> pure () -- DEVOPS-533
 
   -- Prepare launcher
   de <- testdir (dir </> "Frontend")

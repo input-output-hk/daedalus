@@ -55,12 +55,15 @@ data Cluster
   | ITn_Rewards_v1
   | QA
   | Selfnode
+  | Mainnet
+  | Staging
+  | Testnet
   deriving (Bounded, Enum, Eq, Read, Show)
 
 -- | The wallet backend to include in the installer.
 data Backend
   = Cardano FilePath -- ^ Cardano SL with the given daedalus-bridge.
-  | Mantis           -- ^ Mantis, to be implemented in DEVOPS-533.
+  | Jormungandr FilePath -- ^ Rust node with haskell wallet
   deriving (Eq, Show)
 
 data SigningResult
@@ -103,6 +106,9 @@ clusterNetwork Nightly = "nightly"
 clusterNetwork ITn_Rewards_v1 = "itn_rewards_v1"
 clusterNetwork QA = "qa"
 clusterNetwork Selfnode = "selfnode"
+clusterNetwork Mainnet = "mainnet"
+clusterNetwork Staging = "staging"
+clusterNetwork Testnet = "testnet"
 
 packageFileName :: OS -> Cluster -> Version -> Backend -> Text -> Maybe BuildJob -> FilePath
 packageFileName os cluster ver backend backendVer build = fromText name <.> ext
@@ -111,7 +117,7 @@ packageFileName os cluster ver backend backendVer build = fromText name <.> ext
     parts = ["daedalus", fromVer ver, backend', backendVer, lshowText cluster, os'] ++ build'
     backend' = case backend of
                  Cardano _ -> "cardano-wallet"
-                 Mantis    -> "mantis"
+                 Jormungandr _ -> "jormungandr-wallet"
     ext = case os of
             Win64   -> "exe"
             Macos64 -> "pkg"
