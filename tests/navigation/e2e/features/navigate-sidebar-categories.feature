@@ -5,7 +5,7 @@ Feature: Navigate Sidebar Categories
     Given I have completed the basic setup
     And I have the following "Rewards" wallets:
       | name        |
-      | Rewards Wallet |
+      | Test Wallet |
 
   Scenario Outline: Navigate Between Sidebar Categories
     Given The sidebar shows the "<FROM>" category
@@ -17,15 +17,15 @@ Feature: Navigate Sidebar Categories
     | wallets        | settings       |
     | settings       | wallets        |
 
-  Scenario: Navigate from "Rewards" Wallet to Settings screen
-    Given I am on the "Rewards Wallet" wallet "summary" screen
+  Scenario: Navigate from a Wallet to Settings screen
+    Given I am on the "Test Wallet" wallet "summary" screen
     And The sidebar shows the "wallets" category
     When I click on the "settings" category in the sidebar
     Then I should be on the "settings/general" screen
 
-  Scenario: Open "Rewards" Wallets Menu from Settings Screen
+  Scenario: Open Wallets Menu from Settings Screen
     Given I am on the settings screen
     And The sidebar shows the "settings" category
     When I click on the "wallets" category in the sidebar
     Then The "wallets" category should be active
-    But I should be on the "Rewards Wallet" wallet "summary" screen
+    But I should be on the "Test Wallet" wallet "summary" screen
