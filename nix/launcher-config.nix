@@ -17,12 +17,14 @@ let
   });
   jormungandrConfigForCluster = builtins.toFile "jormungandr-config-${environment}.yaml" (builtins.toJSON cfg);
 
-  installDirectorySuffix.testnet = "Testnet";
-  installDirectorySuffix.staging = "Staging";
-  installDirectorySuffix.qa = "QA";
-  installDirectorySuffix.selfnode = "SelfNode";
-  installDirectorySuffix.nightly = "Nightly";
-  installDirectorySuffix.itn_rewards_v1 = "- Rewards v1";
+  installDirectorySuffix = {
+    qa = "QA";
+    selfnode = "SelfNode";
+    nightly = "Nightly";
+    itn_rewards_v1 = "- Rewards v1";
+    staging = "Staging";
+    testnet = "Testnet";
+  };
 
   spacedName = if environment == "mainnet" then "Daedalus" else "Daedalus ${installDirectorySuffix.${environment}}";
 
@@ -98,6 +100,7 @@ let
   byronConfigDir = {
     linux = tier2-cfg-files;
     macos64 = tier2-cfg-files;
+    windows = "\${DAEDALUS_INSTALL_DIRECTORY}";
   };
 
   walletArgs = [
@@ -183,6 +186,7 @@ let
     inherit spacedName;
     macPackageName = "Daedalus${environment}";
     dataDir = dataDir.${os};
+    hasBlock0 = false;
   } // (lib.optionalAttrs (backend == "jormungandr") {
     inherit hasBlock0;
   }) // (lib.optionalAttrs ((backend == "jormungandr") && hasBlock0) {

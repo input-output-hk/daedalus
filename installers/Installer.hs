@@ -41,7 +41,7 @@ main = do
       ver <- T.strip <$> T.readFile "version" -- TODO
       let fullName = packageFileName Win64 (oCluster options') fullVersion (oBackend options') ver (oBuildJob options')
       installerConfig <- decodeFileThrow "installer-config.json"
-      WindowsInstaller.writeInstallerNSIS fullName fullVersion installerConfig (oCluster options')
+      WindowsInstaller.writeInstallerNSIS fullName fullVersion installerConfig options' (oCluster options')
       WindowsInstaller.writeUninstallerNSIS fullVersion installerConfig
     Appveyor -> do
         buildNumber <- getEnv "APPVEYOR_BUILD_NUMBER"

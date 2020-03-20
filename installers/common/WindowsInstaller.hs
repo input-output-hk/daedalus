@@ -132,8 +132,8 @@ parseVersion ver =
         v@[_, _, _, _] -> map toString v
         _              -> ["0", "0", "0", "0"]
 
-writeInstallerNSIS :: FilePath -> Version -> InstallerConfig -> Cluster -> IO ()
-writeInstallerNSIS outName (Version fullVersion') InstallerConfig{hasBlock0,installDirectory,spacedName} clusterName = do
+writeInstallerNSIS :: FilePath -> Version -> InstallerConfig -> Options -> Cluster -> IO ()
+writeInstallerNSIS outName (Version fullVersion') InstallerConfig{hasBlock0,installDirectory,spacedName} Options{oBackend} clusterName = do
     tempDir <- getTempDir
     let fullVersion = unpack fullVersion'
         viProductVersion = L.intercalate "." $ parseVersion fullVersion'
@@ -184,10 +184,17 @@ writeInstallerNSIS outName (Version fullVersion') InstallerConfig{hasBlock0,inst
                     unsafeInject $ unpack $ "Abort \" " <> installDirectory <> "$(AlreadyRunning)\""
                 iff_ (fileExists "$APPDATA\\$InstallDir\\Wallet-1.0\\open\\*.*") $
                     rmdir [] "$APPDATA\\$InstallDir\\Wallet-1.0\\open"
-                file [] "jormungandr.exe"
-                file [] "cardano-wallet-jormungandr.exe"
+                case oBackend of
+                  Jormungandr _ -> do
+                    file [] "jormungandr.exe"
+                    file [] "cardano-wallet-jormungandr.exe"
+                    file [] "libffi-6.dll"
+                    when (clusterName /= Selfnode) $
+                      file [] "jormungandr-config.yaml"
+                  Cardano _ -> do
+                    file [] "cardano-node.exe"
+                    file [] "cardano-wallet-byron.exe"
                 file [] "cardano-launcher.exe"
-                file [] "libffi-6.dll"
                 --file [] "cardano-x509-certificates.exe"
                 --file [] "log-config-prod.yaml"
                 --file [] "wallet-topology.yaml"
@@ -196,8 +203,6 @@ writeInstallerNSIS outName (Version fullVersion') InstallerConfig{hasBlock0,inst
                 file [] "launcher-config.yaml"
                 when hasBlock0 $
                   file [] "block-0.bin"
-                when (clusterName /= Selfnode) $
-                  file [] "jormungandr-config.yaml"
                 when (clusterName == Selfnode) $ do
                   file [] "config.yaml"
                   file [] "genesis.yaml"
@@ -287,7 +292,7 @@ main opts@Options{..}  = do
     signUninstaller opts
 
     echo "Writing daedalus.nsi"
-    writeInstallerNSIS fullName fullVersion installerConfig oCluster
+    writeInstallerNSIS fullName fullVersion installerConfig opts oCluster
 
     rawnsi <- readFile "daedalus.nsi"
     putStr rawnsi

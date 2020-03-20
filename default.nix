@@ -1,5 +1,8 @@
+let
+  getDefaultBackend = cluster: if (builtins.elem cluster [ "mainnet" "staging" "testnet" ]) then "cardano" else "jormungandr";
+in
 { target ? builtins.currentSystem
-, nodeImplementation ? "cardano"
+, nodeImplementation ? (getDefaultBackend cluster)
 , localLib ? import ./lib.nix { inherit nodeImplementation; }
 , config ? {}
 , cluster ? "mainnet"
@@ -25,7 +28,6 @@ let
   sources = localLib.sources;
   walletPkgs = import "${sources.cardano-wallet}/nix" {};
   shellPkgs = (import "${sources.cardano-shell}/nix/iohk-common.nix").getPkgs {};
-  nodePkgs = import "${sources.cardano-wallet}/nix" {};
   inherit (pkgs.lib) optionalString optional;
   crossSystem = lib: (crossSystemTable lib).${target} or null;
   # TODO, nsis cant cross-compile with the nixpkgs daedalus currently uses
@@ -45,7 +47,7 @@ let
     cardanoLib = localLib.iohkNix.cardanoLib;
     daedalus-bridge = self.bridgeTable.${nodeImplementation};
     export-wallets = cardanoSL.nix-tools.cexes.cardano-wallet.export-wallets;
-    db-converter = self.cardano-node.db-converter;
+    db-converter = self.cardano-wallet.db-converter;
 
     sources = localLib.sources;
     bridgeTable = {
@@ -55,7 +57,7 @@ let
     cardano-wallet = import self.sources.cardano-wallet { inherit system; gitrev = self.sources.cardano-wallet.rev; crossSystem = crossSystem walletPkgs.lib; };
     cardano-wallet-native = import self.sources.cardano-wallet { inherit system; gitrev = self.sources.cardano-wallet.rev; };
     cardano-shell = import self.sources.cardano-shell { inherit system; crossSystem = crossSystem shellPkgs.lib; };
-    cardano-node = import self.sources.cardano-node { inherit system; crossSystem = crossSystem nodePkgs.lib; };
+    cardano-node = self.cardano-wallet.cardano-node;
 
     # a cross-compiled fastlist for the ps-list package
     fastlist = pkgs.pkgsCross.mingwW64.callPackage ./nix/fastlist.nix {};
@@ -159,17 +161,20 @@ let
 
       cp $installerConfigPath installer-config.json
       export LANG=en_US.UTF-8
-      make-installer --os win64 -o $out --cluster ${cluster} ${optionalString (buildNum != null) "--build-job ${buildNum}"} buildkite-cross
+      make-installer --${nodeImplementation} dummy --os win64 -o $out --cluster ${cluster} ${optionalString (buildNum != null) "--build-job ${buildNum}"} buildkite-cross
 
       mkdir $out
       cp daedalus.nsi uninstaller.nsi $out/
       cp $launcherConfigPath $out/launcher-config.yaml
-      ${optionalString self.launcherConfigs.installerConfig.hasBlock0 "cp ${self.launcherConfigs.installerConfig.block0} $out/block-0.bin"}
-      ${if (cluster == "selfnode") then ''
-        cp ${self.launcherConfigs.cfg-files}/config.yaml $out/
-        cp ${self.launcherConfigs.cfg-files}/secret.yaml $out/
-        cp ${self.launcherConfigs.cfg-files}/genesis.yaml $out/
-      '' else "cp ${self.launcherConfigs.jormungandr-config} $out/jormungandr-config.yaml"}
+      ${optionalString (self.launcherConfigs.installerConfig.hasBlock0 or false) "cp ${self.launcherConfigs.installerConfig.block0} $out/block-0.bin"}
+      ${if (nodeImplementation == "jormungandr") then ''
+        ${if (cluster == "selfnode") then ''
+          cp ${self.launcherConfigs.cfg-files}/config.yaml $out/
+          cp ${self.launcherConfigs.cfg-files}/secret.yaml $out/
+          cp ${self.launcherConfigs.cfg-files}/genesis.yaml $out/
+        '' else "cp ${self.launcherConfigs.jormungandr-config} $out/jormungandr-config.yaml"}
+      '' else ''
+      ''}
       ls -lR $out
     '';
 
@@ -248,7 +253,7 @@ let
       makensis daedalus.nsi -V4
 
       echo '~~~   Copying to $out'
-      cp daedalus-*-cardano-wallet-*-windows*.exe $out/
+      cp daedalus-*-*-wallet-*-windows*.exe $out/
       cp *.yaml $out/cfg-files/
       echo file installer $out/*.exe > $out/nix-support/hydra-build-products
     '';
