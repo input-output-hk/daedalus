@@ -1,5 +1,5 @@
 let
-  getDefaultBackend = cluster: if (builtins.elem cluster [ "mainnet" "staging" "testnet" ]) then "cardano" else "jormungandr";
+  getDefaultBackend = cluster: if (builtins.elem cluster [ "mainnet" "staging" "testnet" "selfnode" ]) then "cardano" else "jormungandr";
 in
 { target ? builtins.currentSystem
 , nodeImplementation ? (getDefaultBackend cluster)

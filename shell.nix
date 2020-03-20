@@ -1,6 +1,6 @@
 { system ? builtins.currentSystem
 , config ? {}
-, nodeImplementation ? "jormungandr"
+, nodeImplementation ? "cardano"
 , localLib ? import ./lib.nix { inherit nodeImplementation; }
 , pkgs ? localLib.iohkNix.getPkgs { inherit system config; }
 , cluster ? "selfnode"

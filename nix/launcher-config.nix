@@ -1,4 +1,4 @@
-{ backend ? "jormungandr"
+{ backend ? "cardano"
 , environment ? "staging"
 , os ? "linux"
 , jormungandrLib ? (import ../. {}).jormungandrLib
@@ -20,6 +20,7 @@ let
   installDirectorySuffix = {
     qa = "QA";
     selfnode = "SelfNode";
+    itn_selfnode = "SelfNode (ITN)";
     nightly = "Nightly";
     itn_rewards_v1 = "- Rewards v1";
     staging = "Staging";
@@ -80,18 +81,24 @@ let
   };
   finalJormungandrCfgPath = if devShell then jormungandrConfigForCluster else cfgPathForOs.${os};
 
-  tier2-cfg-files = runCommand "tier2-cfg-files" {
+  tier2-cfg-files = let
+    genesisFile = if (environment == "selfnode") then ../utils/cardano/selfnode/genesis.json else envCfg.genesisFile;
+  in runCommand "tier2-cfg-files" {
     nodeConfig = builtins.toJSON (envCfg.nodeConfig // { GenesisFile = finalGenesisLocation.${os}; });
-    topologyFile = cardanoLib.mkEdgeTopology {
+    topologyFile = if environment == "selfnode" then envCfg.topology else cardanoLib.mkEdgeTopology {
       inherit (envCfg) edgePort;
       edgeNodes = [ envCfg.relaysNew ];
     };
     passAsFile = [ "nodeConfig" ];
   } ''
     mkdir $out
-    cp ${envCfg.genesisFile} $out/${environment}-genesis.json
+    cp ${genesisFile} $out/${environment}-genesis.json
     cp $nodeConfigPath $out/configuration-${environment}.yaml
     cp $topologyFile $out/${environment}-topology.yaml
+    ${lib.optionalString (environment == "selfnode") ''
+      cp ${envCfg.cert} $out/${environment}.cert
+      cp ${envCfg.key} $out/${environment}.key
+    ''}
   '';
 
   finalGenesisLocation.linux = envCfg.genesisFile;
@@ -156,9 +163,11 @@ let
       network = {
         configFile = "configuration-${environment}.yaml";
         genesisFile = "${environment}-genesis.json";
-        genesisHash = envCfg.genesisHash;
         topologyFile = "${environment}-topology.yaml";
       };
+    } // lib.optionalAttrs (environment == "selfnode") {
+      cert = "${environment}.cert";
+      key = "${environment}.key";
     };
     syncTolerance = "300s";
   }) // (lib.optionalAttrs (backend == "jormungandr") {
