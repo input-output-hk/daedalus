@@ -539,7 +539,7 @@ export default class AdaApi {
     Logger.debug('AdaApi::createTransaction called', {
       parameters: filterLogData(request),
     });
-    const { walletId, address, amount, passphrase } = request;
+    const { walletId, address, amount, passphrase, isLegacy } = request;
 
     try {
       const data = {
@@ -555,10 +555,18 @@ export default class AdaApi {
         passphrase,
       };
 
-      const response: Transaction = await createTransaction(this.config, {
-        walletId,
-        data,
-      });
+      let response;
+      if (isLegacy) {
+        response: Transaction = await createByronWalletTransaction(this.config, {
+          walletId,
+          data,
+        });
+      } else {
+        response: Transaction = await createTransaction(this.config, {
+          walletId,
+          data,
+        });
+      }
 
       Logger.debug('AdaApi::createTransaction success', {
         transaction: response,
@@ -602,6 +610,7 @@ export default class AdaApi {
       amount,
       walletBalance,
       availableBalance,
+      isLegacy,
     } = request;
 
     try {
@@ -617,10 +626,18 @@ export default class AdaApi {
         ],
       };
 
-      const response: TransactionFee = await getTransactionFee(this.config, {
-        walletId,
-        data,
-      });
+      let response;
+      if (isLegacy) {
+        response: TransactionFee = await getByronWalletTransactionFee(this.config, {
+          walletId,
+          data,
+        });
+      } else {
+        response: TransactionFee = await getTransactionFee(this.config, {
+          walletId,
+          data,
+        });
+      }
 
       const formattedTxAmount = new BigNumber(amount).dividedBy(
         LOVELACES_PER_ADA
@@ -1401,6 +1418,7 @@ export default class AdaApi {
 
   getNetworkInfo = async (): Promise<GetNetworkInfoResponse> => {
     Logger.debug('AdaApi::getNetworkInfo called');
+
     try {
       const networkInfo: NetworkInfoResponse = await getNetworkInfo(
         this.config
