@@ -57,6 +57,11 @@
               );
             }
           }
+
+          .ScrollbarsCustom-Wrapper,
+          .ScrollbarsCustom-Scroller {
+            position: initial !important;
+          }
         }
       }
     }

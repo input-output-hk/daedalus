@@ -396,7 +396,7 @@ export default class WalletsStore extends Store {
     const shouldDisplayAbortAlert =
       (mnemonics.length || walletName.length || spendingPassword.length) &&
       this.restoreWalletStep !== null &&
-        this.restoreWalletStep < RESTORE_WALLET_STEPS.length - 1;
+      this.restoreWalletStep < RESTORE_WALLET_STEPS.length - 1;
     if (shouldDisplayAbortAlert && !this.restoreWalletShowAbortConfirmation) {
       this.restoreWalletShowAbortConfirmation = true;
     } else {

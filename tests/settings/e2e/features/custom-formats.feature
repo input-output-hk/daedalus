@@ -154,4 +154,3 @@ Feature: Custom number, date and time formats
     And the "send form" should display the following custom formats:
       | param  | value            |
       | number | . |
-

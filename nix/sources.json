@@ -1,4 +1,16 @@
 {
+    "cardano-node": {
+        "branch": "expose-db-converter",
+        "description": null,
+        "homepage": null,
+        "owner": "input-output-hk",
+        "repo": "cardano-node",
+        "rev": "db4134ec8320382bdfe6199c72d13473bb0a4ac8",
+        "sha256": "1iib1314hk8hy173jhqir1wn1dpvss44nlah5pgxxxnp0z7f9pz6",
+        "type": "tarball",
+        "url": "https://github.com/input-output-hk/cardano-node/archive/db4134ec8320382bdfe6199c72d13473bb0a4ac8.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
     "cardano-shell": {
         "branch": "master",
         "description": "Node shell, a thin layer for running the node and it's modules.",
@@ -12,15 +24,15 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "cardano-sl": {
-        "branch": "develop",
+        "branch": "KtorZ/export-wallets",
         "description": "Cryptographic currency implementing Ouroboros PoS protocol",
         "homepage": "",
         "owner": "input-output-hk",
         "repo": "cardano-sl",
-        "rev": "1a792d7cd0f0c93a0f0c28f66372bce3c3808dbd",
-        "sha256": "1vk71zn9bnkgkhgcyj59wzrp28crjwcd0lgnm013mhzpvxycgn61",
+        "rev": "787e72e93c90a97f2b3e470c84abe0f91402319f",
+        "sha256": "04s56bannd5rqskjbhvyncj8sb5p1n6qfpvnyjivaa8xwwils1xm",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-sl/archive/1a792d7cd0f0c93a0f0c28f66372bce3c3808dbd.tar.gz",
+        "url": "https://github.com/input-output-hk/cardano-sl/archive/787e72e93c90a97f2b3e470c84abe0f91402319f.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "cardano-wallet": {
@@ -29,12 +41,12 @@
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "cardano-wallet",
-        "rev": "3dcfee19e351e269302513eba4b5414f93ebe673",
-        "sha256": "1spskh26chprdcc96fmqrrfyr0s3rdj6q90silyrqgyywc166x4i",
+        "rev": "15d6b4e4d6a33fab19550581ddc967d2121ae537",
+        "sha256": "0q0b4r235qpqf05x7gjgl4sh8rh99isxsg1b826jd0v9swxn35fb",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-wallet/archive/3dcfee19e351e269302513eba4b5414f93ebe673.tar.gz",
+        "url": "https://github.com/input-output-hk/cardano-wallet/archive/15d6b4e4d6a33fab19550581ddc967d2121ae537.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz",
-        "version": "v2020-03-03"
+        "version": "v2020-03-16"
     },
     "gitignore": {
         "branch": "master",

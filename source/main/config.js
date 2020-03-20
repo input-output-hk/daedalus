@@ -30,6 +30,17 @@ if (!isStartedByLauncher) {
   }
 }
 
+export type NodeConfig = {
+  configurationDir: string,
+  kind: 'byron',
+  network: {
+    configFile: string,
+    genesisFile: string,
+    genesisHash: string,
+    topologyFile: string,
+  },
+};
+
 /**
  * The shape of the config params, usually provided to the cadano-node launcher
  */
@@ -40,6 +51,7 @@ export type LauncherConfig = {
   walletArgs: Array<string>,
   nodeBin: string,
   nodeImplementation: 'jormungandr' | 'cardano-node',
+  nodeConfig: NodeConfig,
   nodeArgs: Array<string>,
   tlsPath: string,
   nodeDbPath: string,
@@ -54,6 +66,11 @@ export type LauncherConfig = {
     systemStart: string,
     seed: string,
   },
+  block0Path: string,
+  block0Hash: string,
+  secretPath: string,
+  configPath: string,
+  syncTolerance: string,
 };
 
 type WindowOptionsType = {

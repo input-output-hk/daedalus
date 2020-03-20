@@ -55,6 +55,7 @@ fast_impure=
 verbose=true
 build_id=0
 test_installer=
+code_signing_config=
 signing_config=
 
 # Parallel build options for Buildkite agents only
@@ -95,6 +96,10 @@ if test -n "${verbose}"
 then set -x
 fi
 
+if [ -f /var/lib/buildkite-agent/code-signing-config.json ]; then
+  code_signing_config="--code-signing-config /var/lib/buildkite-agent/code-signing-config.json"
+fi
+
 if [ -f /var/lib/buildkite-agent/signing-config.json ]; then
   signing_config="--signing-config /var/lib/buildkite-agent/signing-config.json"
 fi
@@ -119,13 +124,12 @@ upload_artifacts_public() {
 }
 
 # Build/get cardano bridge which is used by make-installer
-DAEDALUS_BRIDGE=$(nix-build --no-out-link -A daedalus-bridge)
+DAEDALUS_BRIDGE=$(nix-build --no-out-link -A daedalus-bridge --argstr nodeImplementation jormungandr)
 
 pushd installers
     echo '~~~ Prebuilding dependencies for cardano-installer, quietly..'
     $nix_shell ../default.nix -A daedalus-installer --run true || echo "Prebuild failed!"
     echo '~~~ Building the cardano installer generator..'
-    INSTALLER=$(nix-build -j 2 --no-out-link ../ -A daedalus-installer)
 
     for cluster in ${CLUSTERS}
     do
@@ -134,14 +138,15 @@ pushd installers
           APP_NAME="csl-daedalus"
           rm -rf "${APP_NAME}"
 
-          INSTALLER_CMD=("$INSTALLER/bin/make-installer"
+          INSTALLER_CMD=("make-installer"
                          "${test_installer}"
+                         "${code_signing_config}"
                          "${signing_config}"
                          "  --cardano          ${DAEDALUS_BRIDGE}"
                          "  --build-job        ${build_id}"
                          "  --cluster          ${cluster}"
                          "  --out-dir          ${APP_NAME}")
-          nix-build .. -A launcherConfigs.cfg-files --argstr os macos64 --argstr cluster "${cluster}" -o cfg-files
+          nix-build .. -A launcherConfigs.cfg-files --argstr os macos64 --argstr cluster "${cluster}" -o cfg-files --argstr nodeImplementation jormungandr
           cp -v cfg-files/{installer-config.json,launcher-config.yaml} .
           if [ -f cfg-files/block-0.bin ]; then
             cp -v cfg-files/block-0.bin .

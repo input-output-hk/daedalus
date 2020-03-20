@@ -78,7 +78,7 @@ When(
 When(/^the transaction fees are calculated$/, async function() {
   this.fees = await this.client.waitUntil(async () => {
     // Expected transactionFeeText format "+ 0.000001 of fees"
-    const transactionFeeText = await this.client.getText(
+    const transactionFeeText = await this.waitAndGetText(
       '.AmountInputSkin_fees'
     );
     const transactionFeeAmount = new BigNumber(transactionFeeText.substr(2, 8));
@@ -153,8 +153,7 @@ Then(
   /^I should see the following error messages on the wallet send form:$/,
   async function(data) {
     const errorSelector = '.WalletSendForm_component .SimpleFormField_error';
-    await this.client.waitForText(errorSelector);
-    let errorsOnScreen = await this.client.getText(errorSelector);
+    let errorsOnScreen = await this.waitAndGetText(errorSelector);
     if (typeof errorsOnScreen === 'string') errorsOnScreen = [errorsOnScreen];
     const errors = data.hashes();
     for (let i = 0; i < errors.length; i++) {
@@ -167,14 +166,13 @@ Then(
 // TODO: refactor this to a less hackish solution (fees cannot easily be calculated atm)
 Then(/^the latest transaction should show:$/, async function(table) {
   const expectedData = table.hashes()[0];
-  await this.client.waitForVisible('.Transaction_title');
-  let transactionTitles = await this.client.getText('.Transaction_title');
+  let transactionTitles = await this.waitAndGetText('.Transaction_title');
   transactionTitles = [].concat(transactionTitles);
   const expectedTransactionTitle = await this.intl(expectedData.title, {
     currency: 'Ada',
   });
   expect(expectedTransactionTitle).to.equal(transactionTitles[0]);
-  let transactionAmounts = await this.client.getText('.Transaction_amount');
+  let transactionAmounts = await this.waitAndGetText('.Transaction_amount');
   transactionAmounts = [].concat(transactionAmounts);
   // Transaction amount includes transaction fees so we need to
   // substract them in order to get a match with expectedData.amountWithoutFees.

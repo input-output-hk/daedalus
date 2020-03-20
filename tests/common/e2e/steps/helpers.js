@@ -4,14 +4,14 @@ import path from 'path';
 import { expect } from 'chai';
 import { generateFileNameWithTimestamp } from '../../../../source/common/utils/files';
 import ensureDirectoryExists from '../../../../source/main/utils/ensureDirectoryExists';
+import { DEFAULT_TIMEOUT } from './config';
 import type { WebdriverClient } from '../../../types';
 
 export const expectTextInSelector = async (
   client: Object,
   { selector, text }: { selector: string, text: string }
 ) => {
-  await client.waitForText(selector);
-  let textOnScreen = await client.getText(selector);
+  let textOnScreen = await waitAndGetText.call({ client }, selector);
   // The selector could exist multiple times in the DOM
   if (typeof textOnScreen === 'string') textOnScreen = [textOnScreen];
   // We only compare the first result
@@ -22,7 +22,7 @@ export const generateScreenshotFilePath = (prefix: string) => {
   const prefixParts = prefix.split('/');
   const testName = prefixParts.pop();
   const testPath = prefixParts.slice(1).join('/');
-  const filePath = path.resolve(__dirname, '../../../screenshots/', testPath);
+  const filePath = path.resolve(__dirname, '../../../../tests-report/screenshots/', testPath);
   const extension = 'png';
   const fileName = generateFileNameWithTimestamp({ prefix: testName, extension });
   ensureDirectoryExists(filePath);
@@ -60,8 +60,7 @@ export const getVisibleTextsForSelector = async (
   client: Object,
   selector: string
 ): Promise<Array<string>> => {
-  await client.waitForVisible(selector);
-  const texts = await client.getText(selector);
+  const texts = await waitAndGetText.call({ client }, selector);
   return [].concat(texts);
 };
 
@@ -76,14 +75,28 @@ export const saveScreenshot = async (
         console.log(err);
       });
 
-export const waitAndClick = async (
-  client: Object,
+export const waitAndClick = async function(
   selector: string,
   ...waitArgs: Array<*>
-) => {
-  await client.waitForVisible(selector, ...waitArgs);
-  await client.waitForEnabled(selector, ...waitArgs);
-  return client.click(selector);
+) {
+  await this.client.waitForVisible(selector, ...waitArgs);
+  await this.client.waitForEnabled(selector, ...waitArgs);
+  return this.client.click(selector);
+};
+
+export const waitAndGetText = async function(
+  selector: string,
+) {
+  await this.client.waitForText(selector);
+  return this.client.getText(selector);
+};
+
+export const waitAndSetValue = async function(
+  selector: string,
+  value: string,
+) {
+  await this.client.waitForExist(selector);
+  return this.client.setValue(selector, value);
 };
 
 export const waitUntilTextInSelector = async (
@@ -91,8 +104,7 @@ export const waitUntilTextInSelector = async (
   { selector, text, ignoreCase = false }: { selector: string, text: string, ignoreCase?: boolean }
 ) =>
   client.waitUntil(async () => {
-    await client.waitForText(selector);
-    let textOnScreen = await client.getText(selector);
+    let textOnScreen = await waitAndGetText.call({ client }, selector);
     // The selector could exist multiple times in the DOM
     if (typeof textOnScreen === 'string') textOnScreen = [textOnScreen];
     // We only compare the first result
@@ -153,4 +165,16 @@ export const getInputValueByLabel = async function(label: string, isExactText?: 
   await this.client.waitForVisible(selector);
   const text = await this.client.getValue(selector);
   return text;
+}
+
+const avoidTimeout = async (description: string) => {
+  await timeout(DEFAULT_TIMEOUT - 1000);
+  return 'skipped';
+};
+
+export const skippablePromise = async (testCaseName: string, pm: Promise<*>) => {
+  return await Promise.race([
+    avoidTimeout(testCaseName),
+    pm,
+  ]);
 }

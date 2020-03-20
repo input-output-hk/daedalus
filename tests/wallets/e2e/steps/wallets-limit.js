@@ -72,7 +72,7 @@ Then(
 Then(
   'I should see a disclaimer saying I have reached the maximum number of wallets',
   async function() {
-    const disclaimer = await this.client.getText('.WalletAdd_notification');
+    const disclaimer = await this.waitAndGetText('.WalletAdd_notification');
     expect(disclaimer.replace(/\n/, ' ')).to.equal(
       `You have reached the maximum of ${MAX_ADA_WALLETS_COUNT} wallets. No more wallets can be added.`
     );
