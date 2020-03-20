@@ -9,6 +9,7 @@
 <PROJECT_ROOT>/git/.*
 <PROJECT_ROOT>/.cache-loader/.*
 <PROJECT_ROOT>/utils/js-launcher/.*
+<PROJECT_ROOT>/tests-report/.*
 
 [include]
 

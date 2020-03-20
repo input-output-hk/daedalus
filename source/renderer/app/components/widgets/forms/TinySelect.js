@@ -14,6 +14,7 @@ export default class TinySelect extends Component<Props> {
         <Select
           themeId={IDENTIFIERS.SELECT}
           skin={SelectSkin}
+          optionHeight={33}
           {...this.props}
         />
       </div>

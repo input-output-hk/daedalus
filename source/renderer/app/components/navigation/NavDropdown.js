@@ -61,6 +61,7 @@ export default class NavDropdown extends Component<Props> {
           items={filteredOptions}
           activeItem={options.find(o => o.value === activeItem)}
           noArrow
+          optionHeight={32}
         />
       </div>
     );
