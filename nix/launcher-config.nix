@@ -96,8 +96,8 @@ let
     cp $nodeConfigPath $out/configuration-${environment}.yaml
     cp $topologyFile $out/${environment}-topology.yaml
     ${lib.optionalString (environment == "selfnode") ''
-      cp ${envCfg.cert} $out/${environment}.cert
-      cp ${envCfg.key} $out/${environment}.key
+      cp ${envCfg.delegationCertificate} $out/${environment}.cert
+      cp ${envCfg.signingKey} $out/${environment}.key
     ''}
   '';
 
@@ -166,8 +166,8 @@ let
         topologyFile = "${environment}-topology.yaml";
       };
     } // lib.optionalAttrs (environment == "selfnode") {
-      cert = "${environment}.cert";
-      key = "${environment}.key";
+      delegationCertificate = "${environment}.cert";
+      signingKey = "${environment}.key";
     };
     syncTolerance = "300s";
   }) // (lib.optionalAttrs (backend == "jormungandr") {
@@ -175,10 +175,10 @@ let
     block0Hash = jormungandrLib.environments.${environment}.genesisHash;
     configPath = finalJormungandrCfgPath;
     walletBin = walletBin.${os};
-    walletArgs = if environment == "selfnode" then walletArgsSelfnode else walletArgs;
+    walletArgs = if environment == "itn_selfnode" then walletArgsSelfnode else walletArgs;
     nodeBin = nodeBin.${os};
     nodeArgs = [];
-    syncTolerance = if (environment == "selfnode") then "600s" else jormungandrLib.environments.${environment}.syncTolerance;
+    syncTolerance = if (environment == "itn_selfnode") then "600s" else jormungandrLib.environments.${environment}.syncTolerance;
   }) // (lib.optionalAttrs (environment == "selfnode") {
     block0Path = if ((os == "linux") || devShell) then selfnodeBlock0 else block0Bin.${os};
     block0Hash = builtins.replaceStrings ["\n"] [""] (builtins.readFile (runCommandNative "selfnode-block0.hash" { buildInputs = [ cardano-wallet-native.jormungandr-cli ]; } ''
@@ -188,7 +188,7 @@ let
     configPath = if devShell then configPath.linux else configPath.${os};
   });
 
-  hasBlock0 = (environment != "selfnode") && envCfg ? block0bin;
+  hasBlock0 = (environment != "itn_selfnode") && envCfg ? block0bin;
 
   installerConfig = {
     installDirectory = if os == "linux" then "Daedalus/${environment}" else spacedName;
@@ -200,7 +200,7 @@ let
     inherit hasBlock0;
   }) // (lib.optionalAttrs ((backend == "jormungandr") && hasBlock0) {
     block0 = envCfg.block0bin;
-  }) // (lib.optionalAttrs (environment == "selfnode") {
+  }) // (lib.optionalAttrs (environment == "itn_selfnode") {
     genesisPath = genesisPath.linux;
     secretPath = secretPath.linux;
     configPath = configPath.linux;
@@ -219,7 +219,7 @@ in {
     cd $out
     ${if (backend == "jormungandr") then ''
       ${lib.optionalString (installerConfig.hasBlock0) "cp ${installerConfig.block0} block-0.bin"}
-      ${if (environment == "selfnode") then ''
+      ${if (environment == "itn_selfnode") then ''
         cp ${../utils/jormungandr/selfnode/config.yaml} config.yaml
         cp ${../utils/jormungandr/selfnode/genesis.yaml} genesis.yaml
         cp ${../utils/jormungandr/selfnode/secret.yaml} secret.yaml
