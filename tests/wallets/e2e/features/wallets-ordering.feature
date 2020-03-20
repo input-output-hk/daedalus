@@ -1,4 +1,4 @@
-@e2e @byron
+@e2e
 Feature: Wallets ordering
 
   Background:

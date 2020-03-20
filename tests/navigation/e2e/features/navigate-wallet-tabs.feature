@@ -23,21 +23,3 @@ Feature: Navigate Wallet Tabs
     | receive | summary      |
     | receive | send         |
     | receive | transactions |
-
-  @byron
-  Scenario Outline: Switching Between "Balance" Wallet Tabs
-    Given I have the following "Balance" wallets:
-      | name        |
-      | Balance wallet |
-    And I am on the "Balance wallet" wallet "<FROM>" screen
-    When I click the wallet <TO> button
-    Then I should be on the "Balance wallet" wallet "<TO>" screen
-
-    Examples:
-    | FROM     | TO           |
-    | summary  | transactions |
-    | summary  | settings     |
-    | send     | summary      |
-    | send     | settings     |
-    | settings | summary      |
-    | settings | transactions |

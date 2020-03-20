@@ -6,11 +6,7 @@ Feature: Navigate Sidebar Categories
     And I have the following "Rewards" wallets:
       | name        |
       | Rewards Wallet |
-    And I have the following "Balance" wallets:
-      | name        |
-      | Balance Wallet |
 
-  @byron
   Scenario Outline: Navigate Between Sidebar Categories
     Given The sidebar shows the "<FROM>" category
     When I click on the "<TO>" category in the sidebar
@@ -33,18 +29,3 @@ Feature: Navigate Sidebar Categories
     When I click on the "wallets" category in the sidebar
     Then The "wallets" category should be active
     But I should be on the "Rewards Wallet" wallet "summary" screen
-
-  @byron
-  Scenario: Navigate from "Balance" Wallet to Settings screen
-    Given I am on the "Balance Wallet" wallet "summary" screen
-    And The sidebar shows the "wallets" category
-    When I click on the "settings" category in the sidebar
-    Then I should be on the "settings/general" screen
-
-  @byron
-  Scenario: Open "Balance" Wallets Menu from Settings Screen
-    Given I am on the settings screen
-    And The sidebar shows the "settings" category
-    When I click on the "wallets" category in the sidebar
-    Then The "wallets" category should be active
-    But I should be on the "Balance Wallet" wallet "summary" screen

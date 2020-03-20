@@ -14,6 +14,7 @@ Changelog
 
 ### Chores
 
+- Updated test configuration to cover Byron features only ([PR 1895](https://github.com/input-output-hk/daedalus/pull/1895))
 - Optimized e2e tests ([PR 1874](https://github.com/input-output-hk/daedalus/pull/1874))
 - Updated `react-polymorph` dependency ([PR 1882](https://github.com/input-output-hk/daedalus/pull/1882))
 - Updated small 3rd party dependencies ([PR 1877](https://github.com/input-output-hk/daedalus/pull/1877))
