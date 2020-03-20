@@ -1,4 +1,4 @@
-@e2e
+@e2e @shelley
 Feature: Restore Daedalus wallet
 
   Background:
@@ -7,7 +7,6 @@ Feature: Restore Daedalus wallet
       | name        |
       | Test Wallet |
 
-  @byron
   Scenario: Successfully restoring "Daedalus Balance" wallet
     Given The sidebar shows the "wallets" category
     When I click on the add wallet button in the sidebar
@@ -38,7 +37,6 @@ Feature: Restore Daedalus wallet
     And "Balance" wallet badge should be visible in the wallet sidebar
     And "Balance" wallet "Move testnet ada" action should be visible in the top bar notification
 
-  @byron
   Scenario: Successfully restoring "Daedalus Balance" paper wallet
     Given The sidebar shows the "wallets" category
     When I click on the add wallet button in the sidebar

@@ -1,4 +1,4 @@
-@e2e @byron
+@e2e @shelley
 Feature: Transfer funds wizard
 
   Background:

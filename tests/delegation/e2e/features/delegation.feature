@@ -1,4 +1,4 @@
-@e2e
+@e2e shelley
 Feature: Wallet Delegation
 
   Background:
