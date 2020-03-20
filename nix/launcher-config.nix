@@ -159,6 +159,7 @@ let
         genesisHash = envCfg.genesisHash;
         topologyFile = "${environment}-topology.yaml";
       };
+      socketDir = dataDir.${os};
     };
     syncTolerance = "300s";
   }) // (lib.optionalAttrs (backend == "jormungandr") {
