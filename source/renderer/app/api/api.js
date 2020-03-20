@@ -200,6 +200,8 @@ import { getNewsHash } from './news/requests/getNewsHash';
 import { deleteTransaction } from './transactions/requests/deleteTransaction';
 import { WALLET_BYRON_KINDS } from '../config/walletRestoreConfig';
 
+const { isIncentivizedTestnet } = global;
+
 export default class AdaApi {
   config: RequestConfig;
 
@@ -215,9 +217,7 @@ export default class AdaApi {
   getWallets = async (): Promise<Array<Wallet>> => {
     Logger.debug('AdaApi::getWallets called');
     try {
-      // @API - FAKE getNetworkInfo
-      // const wallets: AdaWallets = await getWallets(this.config);
-      const wallets: AdaWallets = [];
+      const wallets: AdaWallets = isIncentivizedTestnet ? await getWallets(this.config) : [];
       const legacyWallets: LegacyAdaWallets = await getLegacyWallets(
         this.config
       );
@@ -1392,56 +1392,76 @@ export default class AdaApi {
     }
   };
 
-  // @API - comment out once endpoint is ready
-  // getNetworkInfo = async (): Promise<GetNetworkInfoResponse> => {
-  //   Logger.debug('AdaApi::getNetworkInfo called');
-  //   try {
-  //     const networkInfo: NetworkInfoResponse = await getNetworkInfo(
-  //       this.config
-  //     );
-  //     Logger.debug('AdaApi::getNetworkInfo success', { networkInfo });
-  //
-  //     /* eslint-disable-next-line camelcase */
-  //     const { sync_progress, node_tip, network_tip, next_epoch } = networkInfo;
-  //
-  //     const syncProgress =
-  //       get(sync_progress, 'status') === 'ready'
-  //         ? 100
-  //         : get(sync_progress, 'progress.quantity', 0);
-  //
-  //     // extract relevant data before sending to NetworkStatusStore
-  //     return {
-  //       syncProgress,
-  //       localTip: {
-  //         epoch: get(node_tip, 'epoch_number', 0),
-  //         slot: get(node_tip, 'slot_number', 0),
-  //       },
-  //       networkTip: {
-  //         epoch: get(network_tip, 'epoch_number', 0),
-  //         slot: get(network_tip, 'slot_number', 0),
-  //       },
-  //       nextEpoch: {
-  //         // N+1 epoch
-  //         epochNumber: get(next_epoch, 'epoch_number', 0),
-  //         epochStart: get(next_epoch, 'epoch_start_time', ''),
-  //       },
-  //       futureEpoch: {
-  //         // N+2 epoch
-  //         epochNumber: get(next_epoch, 'epoch_number', 0) + 1,
-  //         epochStart: moment(get(next_epoch, 'epoch_start_time', 0))
-  //           .add(EPOCH_LENGTH_ITN, 'seconds')
-  //           .toISOString(),
-  //       },
-  //     };
-  //   } catch (error) {
-  //     Logger.error('AdaApi::getNetworkInfo error', { error });
-  //     // @API TODO - Inspect this implementation once TLS support is implemented on the BE
-  //     if (error.code === TlsCertificateNotValidError.API_ERROR) {
-  //       throw new TlsCertificateNotValidError();
-  //     }
-  //     throw new GenericApiError(error);
-  //   }
-  // };
+  getNetworkInfo = async (): Promise<GetNetworkInfoResponse> => {
+    Logger.debug('AdaApi::getNetworkInfo called');
+    try {
+      const networkInfo: NetworkInfoResponse = await getNetworkInfo(
+        this.config
+      );
+      Logger.debug('AdaApi::getNetworkInfo success', { networkInfo });
+          /* eslint-disable-next-line camelcase */
+      const { sync_progress, node_tip, network_tip, next_epoch } = networkInfo;
+          const syncProgress =
+        get(sync_progress, 'status') === 'ready'
+          ? 100
+          : get(sync_progress, 'progress.quantity', 0);
+          // extract relevant data before sending to NetworkStatusStore
+      return {
+        syncProgress,
+        localTip: {
+          epoch: get(node_tip, 'epoch_number', 0),
+          slot: get(node_tip, 'slot_number', 0),
+        },
+        networkTip: {
+          epoch: get(network_tip, 'epoch_number', 0),
+          slot: get(network_tip, 'slot_number', 0),
+        },
+        nextEpoch: {
+          // N+1 epoch
+          epochNumber: get(next_epoch, 'epoch_number', 0),
+          epochStart: get(next_epoch, 'epoch_start_time', ''),
+        },
+        futureEpoch: {
+          // N+2 epoch
+          epochNumber: get(next_epoch, 'epoch_number', 0) + 1,
+          epochStart: moment(get(next_epoch, 'epoch_start_time', 0))
+            .add(EPOCH_LENGTH_ITN, 'seconds')
+            .toISOString(),
+        },
+      };
+    } catch (error) {
+      Logger.error('AdaApi::getNetworkInfo error', { error });
+      if (!isIncentivizedTestnet) {
+        const response = new Promise(resolve =>
+          resolve({
+            syncProgress: 100,
+            localTip: {
+              epoch: 123,
+              slot: 456,
+            },
+            networkTip: {
+              epoch: 123,
+              slot: 456,
+            },
+            nextEpoch: {
+              // N+1 epoch
+              epochNumber: 124,
+              epochStart: '',
+            },
+            futureEpoch: {
+              // N+2 epoch
+              epochNumber: 125,
+              epochStart: '',
+            },
+          })
+        );
+        return response;
+      } else if (error.code === TlsCertificateNotValidError.API_ERROR) {
+        throw new TlsCertificateNotValidError();
+      }
+      throw new GenericApiError(error);
+    }
+  };
 
   // @API - FAKE getNetworkInfo
   getNetworkInfo = async (): Promise<GetNetworkInfoResponse> => {

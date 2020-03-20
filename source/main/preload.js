@@ -6,7 +6,7 @@ import { ipcRenderer as _ipcRenderer, remote as _remote } from 'electron';
 import _electronLog from 'electron-log-daedalus';
 import ElectronStore from 'electron-store';
 import { environment } from './environment';
-import { nodeImplementation } from './config';
+import { nodeImplementation, cluster } from './config';
 
 const _process = process;
 const _electronStore = new ElectronStore();
