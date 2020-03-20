@@ -7,6 +7,7 @@ Feature: Restore Yoroi wallet
       | name        |
       | Test Wallet |
 
+  @byron
   Scenario: Successfully restoring "Yoroi Balance" paper wallet
     Given The sidebar shows the "wallets" category
     When I click on the add wallet button in the sidebar

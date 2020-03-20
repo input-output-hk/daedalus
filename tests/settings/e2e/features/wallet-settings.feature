@@ -86,6 +86,7 @@ Feature: Wallet Settings
     And I should not see the restore status notification once restore is finished
     And I should not see "Resync wallet" button spinner anymore
 
+  @byron
   Scenario: User force Balance Wallet resync
     Given I have a "Balance Wallet" balance wallet
     And I am on the "Balance Wallet" wallet "settings" screen

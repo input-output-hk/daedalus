@@ -1,4 +1,4 @@
-@e2e
+@e2e @byron
 Feature: Transfer funds wizard
 
   Background:

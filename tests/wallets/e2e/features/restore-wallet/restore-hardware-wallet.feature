@@ -1,4 +1,4 @@
-@e2e
+@e2e @byron
 Feature: Restore Hardware wallet
 
   Background:
