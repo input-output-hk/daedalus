@@ -900,10 +900,10 @@ export default class WalletsStore extends Store {
   };
 
   isValidAddress = (address: string) => {
-    const { app, networkStatus } = this.stores;
+    const { app } = this.stores;
     const { isMainnet, isTest } = app.environment;
     const addressGroup =
-      networkStatus.isIncentivizedTestnet || isTest
+      global.isIncentivizedTestnet || isTest
         ? AddressGroup.jormungandr
         : AddressGroup.byron;
     const chainSettings = isMainnet

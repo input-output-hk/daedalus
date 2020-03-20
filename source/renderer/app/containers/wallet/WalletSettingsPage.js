@@ -25,7 +25,6 @@ export default class WalletSettingsPage extends Component<Props> {
       walletSettings,
       app,
       wallets,
-      networkStatus,
       profile,
     } = this.props.stores;
     const activeWallet = wallets.active;
@@ -80,7 +79,7 @@ export default class WalletSettingsPage extends Component<Props> {
         walletId={activeWallet.id}
         walletName={activeWallet.name}
         creationDate={creationDate}
-        isIncentivizedTestnet={networkStatus.isIncentivizedTestnet}
+        isIncentivizedTestnet={global.isIncentivizedTestnet}
         isSubmitting={updateWalletRequest.isExecuting}
         isForcedWalletResyncStarting={isForcedWalletResyncStarting}
         isInvalid={

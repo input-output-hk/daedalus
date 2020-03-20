@@ -1459,7 +1459,8 @@ export default class AdaApi {
           })
         );
         return response;
-      } else if (error.code === TlsCertificateNotValidError.API_ERROR) {
+      }
+      if (error.code === TlsCertificateNotValidError.API_ERROR) {
         throw new TlsCertificateNotValidError();
       }
       throw new GenericApiError(error);

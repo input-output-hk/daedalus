@@ -32,14 +32,14 @@ export default class WalletAddPage extends Component<Props> {
 
   render() {
     const { actions, stores } = this.props;
-    const { wallets, uiDialogs, app, networkStatus } = stores;
+    const { wallets, uiDialogs, app } = stores;
     const {
       createWalletStep,
       createWalletUseNewProcess,
       restoreWalletStep,
       restoreWalletUseNewProcess,
     } = wallets;
-    const { isIncentivizedTestnet } = networkStatus;
+    const { isIncentivizedTestnet } = global;
     const {
       environment: { isMainnet, isTestnet },
     } = app;

@@ -34,11 +34,10 @@ export default class SplashNetworkPage extends Component<Props> {
 
   render() {
     const { networkStatus: networkStatusActions } = this.props.actions;
-    const { networkStatus: networkStatusStore } = this.props.stores;
 
     return (
       <SplashNetwork
-        isIncentivizedTestnet={networkStatusStore.isIncentivizedTestnet}
+        isIncentivizedTestnet={global.isIncentivizedTestnet}
         onClose={() => networkStatusActions.toggleSplash.trigger()}
         onLearnMoreClick={this.handleLearnMoreClick}
       />
