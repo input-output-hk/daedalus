@@ -73,6 +73,7 @@ export default class WalletNavigation extends Component<Props> {
       hasNotification,
     } = this.props;
     const { intl } = this.context;
+    const { isIncentivizedTestnet } = global;
     return (
       <Navigation
         activeItem={activeItem}
@@ -88,13 +89,13 @@ export default class WalletNavigation extends Component<Props> {
             id: 'send',
             label: intl.formatMessage(messages.send),
             icon: sendIcon,
-            isLegacy,
+            isLegacy: isLegacy && isIncentivizedTestnet,
           },
           {
             id: 'receive',
             label: intl.formatMessage(messages.receive),
             icon: receiveIcon,
-            isLegacy,
+            isLegacy: isLegacy && isIncentivizedTestnet,
           },
           {
             id: 'transactions',
