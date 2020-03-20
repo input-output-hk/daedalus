@@ -238,6 +238,8 @@
     "**/**/lodash": "^4.17.14",
     "**/**/unicode-properties": "1.1.0",
     "**/**/handlebars": "4.5.3",
+    "**/**/minimist": "^1.2.2",
+    "**/**/acorn": "^6.4.1",
     "@storybook/core/**/terser-webpack-plugin": "^2.1.2",
     "webpack/**/terser-webpack-plugin": "1.4.1"
   }
