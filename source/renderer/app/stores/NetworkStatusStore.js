@@ -472,11 +472,6 @@ export default class NetworkStatusStore extends Store {
     });
   };
 
-  // DEFINE COMPUTED VALUES
-  @computed get isIncentivizedTestnet(): boolean {
-    return global.nodeImplementation === 'jormungandr';
-  }
-
   @computed get isConnected(): boolean {
     return this.isNodeResponding && this.isNodeSyncing;
   }

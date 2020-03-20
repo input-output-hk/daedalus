@@ -13,6 +13,7 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
   static defaultProps = { stores: null, actions: null };
 
   render() {
+    const { isIncentivizedTestnet } = global;
     const { stores } = this.props;
     const {
       cardanoNodeState,
@@ -26,7 +27,6 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
       isNodeStopped,
       isNotEnoughDiskSpace,
       isTlsCertInvalid,
-      isIncentivizedTestnet,
     } = stores.networkStatus;
     const {
       isNewAppVersionAvailable,

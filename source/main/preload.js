@@ -50,8 +50,6 @@ process.once('loaded', () => {
       platform: os.platform(),
     },
     isIncentivizedTestnet,
-    nodeImplementation,
-    cluster,
   });
   // Expose require for Spectron!
   if (_process.env.NODE_ENV === 'test') {
