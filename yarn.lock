@@ -1830,17 +1830,13 @@
   version "13.7.4"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-13.7.4.tgz#76c3cb3a12909510f52e5dc04a6298cdf9504ffd"
 
-"@types/node@^12.7.2":
+"@types/node@^12.0.12", "@types/node@^12.7.2":
   version "12.12.30"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-12.12.30.tgz#3501e6f09b954de9c404671cefdbcc5d9d7c45f6"
 
 "@types/node@^13.1.8":
   version "13.9.1"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-13.9.1.tgz#96f606f8cd67fb018847d9b61e93997dabdefc72"
-
-"@types/node@^8.0.24":
-  version "8.10.51"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-8.10.51.tgz#80600857c0a47a8e8bafc2dae6daed6db58e3627"
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.0"
@@ -3799,8 +3795,6 @@ cardano-launcher@0.202003019.0:
   version "0.202003019.0"
   resolved "https://registry.yarnpkg.com/cardano-launcher/-/cardano-launcher-0.202003019.0.tgz#c8b1d4160a12714bfa0ef8eb213676f4d16578f5"
   dependencies:
-    "@types/lodash" "^4.14.149"
-    "@types/node" "^13.1.8"
     get-port "^5.1.1"
     lodash "^4.17.15"
     mkdirp "^1.0.3"
@@ -9943,18 +9937,6 @@ mkdirp@^1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-1.0.3.tgz#4cf2e30ad45959dddea53ad97d518b6c8205e1ea"
 
-mkpath@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/mkpath/-/mkpath-0.1.0.tgz#7554a6f8d871834cc97b5462b122c4c124d6de91"
-
-mksnapshot@^0.3.4:
-  version "0.3.5"
-  resolved "https://registry.yarnpkg.com/mksnapshot/-/mksnapshot-0.3.5.tgz#c63a9f91138ca9392e42b9979c31179ac900d4c0"
-  dependencies:
-    decompress-zip "0.3.x"
-    fs-extra "0.26.7"
-    request "2.x"
-
 mobx-react-devtools@6.0.3:
   version "6.0.3"
   resolved "https://registry.yarnpkg.com/mobx-react-devtools/-/mobx-react-devtools-6.0.3.tgz#4d536c8cdd77d9f4b81f5e8415d7bedccc6a2a99"
@@ -14437,10 +14419,6 @@ transform-loader@0.2.4:
 traverse-chain@~0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/traverse-chain/-/traverse-chain-0.1.0.tgz#61dbc2d53b69ff6091a12a168fd7d433107e40f1"
-
-"traverse@>=0.3.0 <0.4":
-  version "0.3.9"
-  resolved "https://registry.yarnpkg.com/traverse/-/traverse-0.3.9.tgz#717b8f220cc0bb7b44e40514c22b2e8bbc70d8b9"
 
 tree-kill@^1.1.0:
   version "1.2.1"
