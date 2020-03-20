@@ -82,6 +82,8 @@ type RecoveryPhraseVerificationData = {
  * The base wallet store that contains logic for dealing with wallets
  */
 
+const { isIncentivizedTestnet } = global;
+
 export default class WalletsStore extends Store {
   WALLET_REFRESH_INTERVAL = 5000;
 
@@ -182,7 +184,9 @@ export default class WalletsStore extends Store {
   // STEP: WALLET TYPE
   @observable walletKind: ?WalletKind = null;
   @observable walletKindDaedalus: ?WalletDaedalusKind = null;
-  @observable walletKindYoroi: ?WalletYoroiKind = null;
+  @observable walletKindYoroi: ?WalletYoroiKind = isIncentivizedTestnet
+    ? null
+    : WALLET_YOROI_KINDS.BALANCE_15_WORD;
   @observable walletKindHardware: ?WalletHardwareKind = null;
   // STEP: RECOVERY PHRASE
   @observable mnemonics: Array<string> = [];
@@ -425,7 +429,9 @@ export default class WalletsStore extends Store {
     this.restoredWallet = null;
     this.walletKind = null;
     this.walletKindDaedalus = null;
-    this.walletKindYoroi = null;
+    this.walletKindYoroi = isIncentivizedTestnet
+      ? null
+      : WALLET_YOROI_KINDS.BALANCE_15_WORD;
     this.walletKindHardware = null;
     this.mnemonics = [];
     this.walletName = '';
@@ -903,7 +909,7 @@ export default class WalletsStore extends Store {
     const { app } = this.stores;
     const { isMainnet, isTest } = app.environment;
     const addressGroup =
-      global.isIncentivizedTestnet || isTest
+      isIncentivizedTestnet || isTest
         ? AddressGroup.jormungandr
         : AddressGroup.byron;
     const chainSettings = isMainnet
