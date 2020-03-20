@@ -126,5 +126,5 @@ export function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
     launcherConfig,
   });
 
-  return new cardanoLauncher.Launcher(launcherConfig);
+  return new cardanoLauncher.Launcher(launcherConfig, Logger);
 }
