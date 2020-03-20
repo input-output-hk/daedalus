@@ -3772,9 +3772,9 @@ cardano-js@0.3.0:
     cbor "^4.3.0"
     ts-custom-error "^3.1.1"
 
-cardano-launcher@0.202003019.0:
-  version "0.202003019.0"
-  resolved "https://registry.yarnpkg.com/cardano-launcher/-/cardano-launcher-0.202003019.0.tgz#c8b1d4160a12714bfa0ef8eb213676f4d16578f5"
+cardano-launcher@0.20200320.0:
+  version "0.20200320.0"
+  resolved "https://registry.yarnpkg.com/cardano-launcher/-/cardano-launcher-0.20200320.0.tgz#8c6af1552591655f5d909e0f35003704b04d6d11"
   dependencies:
     "@types/lodash" "^4.14.149"
     "@types/node" "^13.1.8"
