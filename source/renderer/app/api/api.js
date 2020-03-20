@@ -217,7 +217,9 @@ export default class AdaApi {
   getWallets = async (): Promise<Array<Wallet>> => {
     Logger.debug('AdaApi::getWallets called');
     try {
-      const wallets: AdaWallets = isIncentivizedTestnet ? await getWallets(this.config) : [];
+      const wallets: AdaWallets = isIncentivizedTestnet
+        ? await getWallets(this.config)
+        : [];
       const legacyWallets: LegacyAdaWallets = await getLegacyWallets(
         this.config
       );
@@ -1399,13 +1401,13 @@ export default class AdaApi {
         this.config
       );
       Logger.debug('AdaApi::getNetworkInfo success', { networkInfo });
-          /* eslint-disable-next-line camelcase */
+      /* eslint-disable-next-line camelcase */
       const { sync_progress, node_tip, network_tip, next_epoch } = networkInfo;
-          const syncProgress =
+      const syncProgress =
         get(sync_progress, 'status') === 'ready'
           ? 100
           : get(sync_progress, 'progress.quantity', 0);
-          // extract relevant data before sending to NetworkStatusStore
+      // extract relevant data before sending to NetworkStatusStore
       return {
         syncProgress,
         localTip: {
@@ -1456,7 +1458,8 @@ export default class AdaApi {
           })
         );
         return response;
-      } else if (error.code === TlsCertificateNotValidError.API_ERROR) {
+      }
+      if (error.code === TlsCertificateNotValidError.API_ERROR) {
         throw new TlsCertificateNotValidError();
       }
       throw new GenericApiError(error);
