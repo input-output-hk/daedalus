@@ -1,4 +1,4 @@
-@e2e @shelley
+@e2e
 Feature: Restore Yoroi wallet
 
   Background:
@@ -34,6 +34,7 @@ Feature: Restore Yoroi wallet
     And "Balance" wallet badge should be visible in the wallet sidebar
     And "Balance" wallet "Move testnet ada" action should be visible in the top bar notification
 
+  @shelley
   Scenario: Successfully restoring "Yoroi Rewards" paper wallet
     Given The sidebar shows the "wallets" category
     When I click on the add wallet button in the sidebar

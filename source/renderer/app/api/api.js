@@ -1461,7 +1461,7 @@ export default class AdaApi {
             },
           })
         );
-        Logger.error('AdaApi::getNetworkInfo (SET FAKED) success', { error });
+        Logger.debug('AdaApi::getNetworkInfo (SET FAKED) success');
         return response;
       }
       Logger.error('AdaApi::getNetworkInfo error', { error });
