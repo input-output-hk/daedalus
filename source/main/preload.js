@@ -6,10 +6,11 @@ import { ipcRenderer as _ipcRenderer, remote as _remote } from 'electron';
 import _electronLog from 'electron-log-daedalus';
 import ElectronStore from 'electron-store';
 import { environment } from './environment';
-import { nodeImplementation, cluster } from './config';
+import { nodeImplementation } from './config';
 
 const _process = process;
 const _electronStore = new ElectronStore();
+const isIncentivizedTestnet = nodeImplementation === 'jormungandr';
 
 process.once('loaded', () => {
   Object.assign(global, {
@@ -48,9 +49,9 @@ process.once('loaded', () => {
     os: {
       platform: os.platform(),
     },
+    isIncentivizedTestnet,
     nodeImplementation,
     cluster,
-    isIncentivizedTestnet: nodeImplementation === 'jormungandr',
   });
   // Expose require for Spectron!
   if (_process.env.NODE_ENV === 'test') {
