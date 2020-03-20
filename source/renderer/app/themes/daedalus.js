@@ -12,7 +12,6 @@ import SimpleOptions from 'react-polymorph/lib/themes/simple/SimpleOptions.scss'
 import SimpleRadio from 'react-polymorph/lib/themes/simple/SimpleRadio.scss';
 import SimpleScrollBar from 'react-polymorph/lib/themes/simple/SimpleScrollBar.scss';
 import SimpleSelect from 'react-polymorph/lib/themes/simple/SimpleSelect.scss';
-import SimpleScrollBar from 'react-polymorph/lib/themes/simple/SimpleScrollBar.scss';
 import SimpleStepper from 'react-polymorph/lib/themes/simple/SimpleStepper.scss';
 import SimpleSwitch from 'react-polymorph/lib/themes/simple/SimpleSwitch.scss';
 import SimpleTextArea from 'react-polymorph/lib/themes/simple/SimpleTextArea.scss';
