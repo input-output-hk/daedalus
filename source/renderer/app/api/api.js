@@ -1403,31 +1403,28 @@ export default class AdaApi {
     Logger.debug('AdaApi::getNetworkInfo called');
     try {
       if (!isIncentivizedTestnet) {
-        const response = new Promise(resolve =>
-          resolve({
-            syncProgress: 100,
-            localTip: {
-              epoch: 123,
-              slot: 456,
-            },
-            networkTip: {
-              epoch: 123,
-              slot: 456,
-            },
-            nextEpoch: {
-              // N+1 epoch
-              epochNumber: 124,
-              epochStart: '',
-            },
-            futureEpoch: {
-              // N+2 epoch
-              epochNumber: 125,
-              epochStart: '',
-            },
-          })
-        );
-        Logger.error('AdaApi::getNetworkInfo success', { error });
-        return response;
+        Logger.debug('AdaApi::getNetworkInfo (FAKED) success');
+        return {
+          syncProgress: 100,
+          localTip: {
+            epoch: 123,
+            slot: 456,
+          },
+          networkTip: {
+            epoch: 123,
+            slot: 456,
+          },
+          nextEpoch: {
+            // N+1 epoch
+            epochNumber: 124,
+            epochStart: '',
+          },
+          futureEpoch: {
+            // N+2 epoch
+            epochNumber: 125,
+            epochStart: '',
+          },
+        };
       }
 
       const networkInfo: NetworkInfoResponse = await getNetworkInfo(
