@@ -143,7 +143,7 @@ pushd installers
           APP_NAME="csl-daedalus"
           rm -rf "${APP_NAME}"
 
-          if [[ "$cardanoClusters" =~ " $cluster " ]]; then
+          if [[ "$cardanoClusters" =~ $cluster ]]; then
             BRIDGE_FLAG="--cardano ${CARDANO_BRIDGE}"
             BACKEND=cardano
           else
