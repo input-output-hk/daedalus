@@ -260,7 +260,7 @@ makeComponentRoot Options{oBackend,oCluster} appRoot darwinConfig@DarwinConfig{d
         cp (bridge </> "bin" </> f) (dir </> f)
       procs "chmod" ["-R", "+w", tt dir] empty
       -- Rewrite libs paths and bundle them
-      void $ chain (encodeString dir) $ fmap tt [dir </> "cardano-launcher", dir </> "cardano-wallet-byron", dir </> "cardano-noder" ]
+      void $ chain (encodeString dir) $ fmap tt [dir </> "cardano-launcher", dir </> "cardano-wallet-byron", dir </> "cardano-node" ]
     Jormungandr bridge -> do
       common bridge
       -- Executables (from daedalus-bridge)
