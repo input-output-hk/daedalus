@@ -1402,31 +1402,6 @@ export default class AdaApi {
   getNetworkInfo = async (): Promise<GetNetworkInfoResponse> => {
     Logger.debug('AdaApi::getNetworkInfo called');
     try {
-      if (!isIncentivizedTestnet) {
-        Logger.debug('AdaApi::getNetworkInfo (FAKED) success');
-        return {
-          syncProgress: 100,
-          localTip: {
-            epoch: 123,
-            slot: 456,
-          },
-          networkTip: {
-            epoch: 123,
-            slot: 456,
-          },
-          nextEpoch: {
-            // N+1 epoch
-            epochNumber: 124,
-            epochStart: '',
-          },
-          futureEpoch: {
-            // N+2 epoch
-            epochNumber: 125,
-            epochStart: '',
-          },
-        };
-      }
-
       const networkInfo: NetworkInfoResponse = await getNetworkInfo(
         this.config
       );
@@ -1462,6 +1437,33 @@ export default class AdaApi {
         },
       };
     } catch (error) {
+      if (!isIncentivizedTestnet) {
+        const response = new Promise(resolve =>
+          resolve({
+            syncProgress: 100,
+            localTip: {
+              epoch: 123,
+              slot: 456,
+            },
+            networkTip: {
+              epoch: 123,
+              slot: 456,
+            },
+            nextEpoch: {
+              // N+1 epoch
+              epochNumber: 124,
+              epochStart: '',
+            },
+            futureEpoch: {
+              // N+2 epoch
+              epochNumber: 125,
+              epochStart: '',
+            },
+          })
+        );
+        Logger.error('AdaApi::getNetworkInfo (SET FAKED) success', { error });
+        return response;
+      }
       Logger.error('AdaApi::getNetworkInfo error', { error });
       if (error.code === TlsCertificateNotValidError.API_ERROR) {
         throw new TlsCertificateNotValidError();
