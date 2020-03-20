@@ -146,6 +146,8 @@ type State = {
   [key: HardwareWalletAcceptance]: boolean,
 };
 
+const { isIncentivizedTestnet } = global;
+
 export default class WalletTypeDialog extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -193,9 +195,18 @@ export default class WalletTypeDialog extends Component<Props, State> {
     } = this.props;
     const { hardwareWalletAcceptance1, hardwareWalletAcceptance2 } = this.state;
     if (!walletKind) return true;
-    if (walletKind === WALLET_KINDS.DAEDALUS && !walletKindDaedalus)
+    if (
+      walletKind === WALLET_KINDS.DAEDALUS &&
+      !walletKindDaedalus &&
+      isIncentivizedTestnet
+    )
       return true;
-    if (walletKind === WALLET_KINDS.YOROI && !walletKindYoroi) return true;
+    if (
+      walletKind === WALLET_KINDS.YOROI &&
+      !walletKindYoroi &&
+      isIncentivizedTestnet
+    )
+      return true;
     if (
       walletKind === WALLET_KINDS.HARDWARE &&
       (!walletKindHardware ||
@@ -246,14 +257,15 @@ export default class WalletTypeDialog extends Component<Props, State> {
               walletKindDaedalus,
               WALLET_KINDS.DAEDALUS
             )}
-          {walletKind === WALLET_KINDS.YOROI &&
+          {isIncentivizedTestnet &&
+            walletKind === WALLET_KINDS.YOROI &&
             this.getWalletKind(
               WALLET_YOROI_KINDS,
               messages.labelYoroiWalletKind,
               walletKindYoroi,
               WALLET_KINDS.YOROI
             )}
-          {walletKind === WALLET_KINDS.HARDWARE && (
+          {isIncentivizedTestnet && walletKind === WALLET_KINDS.HARDWARE && (
             <Fragment>
               {this.getWalletKind(
                 WALLET_HARDWARE_KINDS,

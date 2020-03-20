@@ -32,17 +32,13 @@ export default class WalletAddPage extends Component<Props> {
 
   render() {
     const { actions, stores } = this.props;
-    const { wallets, uiDialogs, app } = stores;
+    const { wallets, uiDialogs } = stores;
     const {
       createWalletStep,
       createWalletUseNewProcess,
       restoreWalletStep,
       restoreWalletUseNewProcess,
     } = wallets;
-    const { isIncentivizedTestnet } = global;
-    const {
-      environment: { isMainnet, isTestnet },
-    } = app;
 
     const onCreateWallet = createWalletUseNewProcess
       ? () => actions.wallets.createWalletBegin.trigger()
@@ -73,15 +69,12 @@ export default class WalletAddPage extends Component<Props> {
     } else {
       content = (
         <WalletAdd
-          isMainnet={isMainnet}
-          isTestnet={isTestnet}
           onCreate={onCreateWallet}
           onRestore={onRestoreWallet}
           onImportFile={() =>
             actions.dialogs.open.trigger({ dialog: WalletFileImportDialog })
           }
           isMaxNumberOfWalletsReached={wallets.hasMaxWallets}
-          isIncentivizedTestnet={isIncentivizedTestnet}
         />
       );
     }
