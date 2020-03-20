@@ -25,7 +25,7 @@ do
   nix-build -Q release.nix -A "${cluster}.installer.x86_64-linux" --argstr buildNum "$BUILDKITE_BUILD_NUMBER" -o csl-daedalus
   if [ -n "${BUILDKITE_JOB_ID:-}" ]; then
     upload_artifacts_public csl-daedalus/daedalus*.bin
-    nix-build -A daedalus.cfg  --argstr cluster "${cluster}"
+    nix-build -A daedalus.cfg  --argstr cluster "${cluster}" --argstr nodeImplementation jormungandr
     cp result/etc/launcher-config.yaml  "launcher-config-${cluster}.linux.yaml"
     upload_artifacts "launcher-config-${cluster}.linux.yaml"
   fi
