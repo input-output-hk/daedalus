@@ -1,4 +1,4 @@
-@e2e @shelley
+@e2e
 Feature: Restore Daedalus wallet
 
   Background:
@@ -64,6 +64,7 @@ Feature: Restore Daedalus wallet
     And "Balance" wallet badge should be visible in the wallet sidebar
     And "Balance" wallet notification should not be displayed in the wallet top bar
 
+  @shelley
   Scenario: Successfully restoring "Daedalus Rewards" wallet
     Given The sidebar shows the "wallets" category
     When I click on the add wallet button in the sidebar

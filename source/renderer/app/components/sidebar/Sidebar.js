@@ -63,14 +63,6 @@ export default class Sidebar extends Component<Props> {
       name: CATEGORIES_BY_NAME.WALLETS.name,
     }).route;
 
-    if (isIncentivizedTestnet) {
-      categories = categories.filter(
-        category =>
-          category.name !==
-          CATEGORIES_BY_NAME.PAPER_WALLET_CREATE_CERTIFICATE.name
-      );
-    }
-
     if (menus && activeSidebarCategory === walletsCategory) {
       subMenu = (
         <SidebarWalletsMenu

@@ -90,7 +90,7 @@ import { filterLogData } from '../../../common/utils/logging';
 
 // Config constants
 import { LOVELACES_PER_ADA } from '../config/numbersConfig';
-import { ADA_CERTIFICATE_MNEMONIC_LENGTH } from '../config/cryptoConfig';
+import { ADA_CERTIFICATE_MNEMONIC_LENGTH, WALLET_RECOVERY_PHRASE_WORD_COUNT, LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../config/cryptoConfig';
 import { FORCED_WALLET_RESYNC_WAIT } from '../config/timingConfig';
 
 // Addresses Types
@@ -497,11 +497,16 @@ export default class AdaApi {
         mnemonic_sentence: split(mnemonic, ' '),
         passphrase: spendingPassword,
       };
-      const wallet: AdaWallet = await createWallet(this.config, {
-        walletInitData,
-      });
-      Logger.debug('AdaApi::createWallet success', { wallet });
-      return _createWalletFromServerData(wallet);
+
+      if (isIncentivizedTestnet) {
+        const shelleyWallet: AdaWallet = await createWallet(this.config, { walletInitData });
+        Logger.debug('AdaApi::createWallet (Shelley) success', { wallet });
+      } else {
+        const byronWallet: AdaWallet = await restoreByronWallet(this.config, { walletInitData }, 'random');
+        Logger.debug('AdaApi::createWallet (Byron) success', { wallet });
+        byronWallet.isLegacy = true
+      }
+      return _createWalletFromServerData(shelleyWallet || byronWallet);
     } catch (error) {
       Logger.error('AdaApi::createWallet error', { error });
       throw new GenericApiError();
@@ -534,7 +539,7 @@ export default class AdaApi {
     Logger.debug('AdaApi::createTransaction called', {
       parameters: filterLogData(request),
     });
-    const { walletId, address, amount, passphrase } = request;
+    const { walletId, address, amount, passphrase, isLegacy } = request;
 
     try {
       const data = {
@@ -550,10 +555,18 @@ export default class AdaApi {
         passphrase,
       };
 
-      const response: Transaction = await createTransaction(this.config, {
-        walletId,
-        data,
-      });
+      let response;
+      if (isLegacy) {
+        response: Transaction = await createByronWalletTransaction(this.config, {
+          walletId,
+          data,
+        });
+      } else {
+        response: Transaction = await createTransaction(this.config, {
+          walletId,
+          data,
+        });
+      }
 
       Logger.debug('AdaApi::createTransaction success', {
         transaction: response,
@@ -597,6 +610,7 @@ export default class AdaApi {
       amount,
       walletBalance,
       availableBalance,
+      isLegacy,
     } = request;
 
     try {
@@ -612,10 +626,18 @@ export default class AdaApi {
         ],
       };
 
-      const response: TransactionFee = await getTransactionFee(this.config, {
-        walletId,
-        data,
-      });
+      let response;
+      if (isLegacy) {
+        response: TransactionFee = await getByronWalletTransactionFee(this.config, {
+          walletId,
+          data,
+        });
+      } else {
+        response: TransactionFee = await getTransactionFee(this.config, {
+          walletId,
+          data,
+        });
+      }
 
       const formattedTxAmount = new BigNumber(amount).dividedBy(
         LOVELACES_PER_ADA
@@ -695,7 +717,7 @@ export default class AdaApi {
     Logger.debug('AdaApi::getWalletRecoveryPhrase called');
     try {
       const response: Promise<Array<string>> = new Promise(resolve =>
-        resolve(generateAccountMnemonics())
+        resolve(generateAccountMnemonics(isIncentivizedTestnet ? WALLET_RECOVERY_PHRASE_WORD_COUNT : LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT))
       );
       Logger.debug('AdaApi::getWalletRecoveryPhrase success');
       return response;
@@ -1396,6 +1418,7 @@ export default class AdaApi {
 
   getNetworkInfo = async (): Promise<GetNetworkInfoResponse> => {
     Logger.debug('AdaApi::getNetworkInfo called');
+
     try {
       const networkInfo: NetworkInfoResponse = await getNetworkInfo(
         this.config
@@ -1432,7 +1455,6 @@ export default class AdaApi {
         },
       };
     } catch (error) {
-      Logger.error('AdaApi::getNetworkInfo error', { error });
       if (!isIncentivizedTestnet) {
         const response = new Promise(resolve =>
           resolve({
@@ -1457,8 +1479,10 @@ export default class AdaApi {
             },
           })
         );
+        Logger.debug('AdaApi::getNetworkInfo (SET FAKED) success');
         return response;
       }
+      Logger.error('AdaApi::getNetworkInfo error', { error });
       if (error.code === TlsCertificateNotValidError.API_ERROR) {
         throw new TlsCertificateNotValidError();
       }
@@ -1618,7 +1642,7 @@ export default class AdaApi {
 
 const _createWalletFromServerData = action(
   'AdaApi::_createWalletFromServerData',
-  (data: AdaWallet) => {
+  (wallet: AdaWallet) => {
     const {
       id: rawWalletId,
       address_pool_gap: addressPoolGap,
@@ -1628,7 +1652,7 @@ const _createWalletFromServerData = action(
       passphrase,
       delegation,
       isLegacy = false,
-    } = data;
+    } = wallet;
 
     const id = isLegacy ? getLegacyWalletId(rawWalletId) : rawWalletId;
     const passphraseLastUpdatedAt = get(passphrase, 'last_updated_at', null);
