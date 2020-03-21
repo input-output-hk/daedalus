@@ -5315,13 +5315,13 @@
         "description": "Instructions for backing up wallet recovery phrase on dialog that displays wallet recovery phrase.",
         "end": {
           "column": 3,
-          "line": 21
+          "line": 24
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseDisplayDialog.js",
         "id": "wallet.backup.recovery.phrase.display.dialog.backup.instructions",
         "start": {
           "column": 22,
-          "line": 15
+          "line": 18
         }
       },
       {
@@ -5329,13 +5329,13 @@
         "description": "Label for button \"Yes, I’ve written it down\" on wallet backup dialog",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 31
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseDisplayDialog.js",
         "id": "wallet.backup.recovery.phrase.display.dialog.button.label.iHaveWrittenItDown",
         "start": {
           "column": 33,
-          "line": 22
+          "line": 25
         }
       }
     ],

@@ -630,7 +630,7 @@ export default class WalletsStore extends Store {
       amount: parseInt(amount, 10),
       passphrase,
       walletId: wallet.id,
-      isLegacy: wallet.isLegacy
+      isLegacy: wallet.isLegacy,
     });
     this.refreshWalletsData();
     this.actions.dialogs.closeActiveDialog.trigger();

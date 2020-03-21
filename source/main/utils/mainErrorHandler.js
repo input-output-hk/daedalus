@@ -8,7 +8,7 @@ export default (onError?: Function) => {
 
   process.on('uncaughtException', (error: any) => {
     const err = `${stringifyError(error)}`;
-    Logger.error('uncaughtException', { error });
+    // Logger.error('uncaughtException', { error });
     if (typeof onError === 'function') onError(err);
   });
 

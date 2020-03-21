@@ -48,14 +48,13 @@ export default class Sidebar extends Component<Props> {
   render() {
     const {
       menus,
+      categories,
       activeSidebarCategory,
       pathname,
       isShowingSubMenus,
       onAddWallet,
       isIncentivizedTestnet,
     } = this.props;
-
-    let { categories } = this.props;
 
     let subMenu = null;
 

@@ -110,7 +110,7 @@ export default class WalletNavigation extends Component<Props> {
               : intl.formatMessage(messages.more),
             icon: settingsIcon,
             hasNotification,
-            isLegacy,
+            isLegacy: isLegacy && isIncentivizedTestnet,
             options: [
               {
                 label: intl.formatMessage(messages.settings),

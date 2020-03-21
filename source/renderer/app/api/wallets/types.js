@@ -47,7 +47,6 @@ export type AdaWallet = {
     last_updated_at: string,
   },
   state: WalletSyncState,
-  createdAt: Date,
   isLegacy: boolean,
 };
 
@@ -56,6 +55,7 @@ export type LegacyAdaWallet = {
   balance: {
     available: WalletBalance,
     total: WalletBalance,
+    reward: WalletBalance, // Unused prop - hack to keep flow happy
   },
   name: string,
   passphrase?: {
