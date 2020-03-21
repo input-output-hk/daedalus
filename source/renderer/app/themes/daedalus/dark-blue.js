@@ -273,6 +273,7 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-input-placeholder-color': 'rgba(233, 244, 254, 0.5)',
     '--theme-input-remove-color-light': '#ea4c5b',
     '--theme-input-right-floating-text-color': 'rgba(233, 244, 254, 0.5)',
+    '--theme-input-right-floating-text-success-color': 'rgba(233, 244, 254, 1)',
     '--theme-input-text-color': '#e9f4fe',
   },
   link: {

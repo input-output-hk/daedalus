@@ -519,6 +519,9 @@ export const createDaedalusComponentsTheme = (
       '--theme-input-right-floating-text-color': `${chroma(text.primary).alpha(
         0.5
       )}`,
+      '--theme-input-right-floating-text-success-color': `${chroma(
+        text.primary
+      ).alpha(1)}`,
       '--theme-input-text-color': `${text.primary}`,
     },
     link: {

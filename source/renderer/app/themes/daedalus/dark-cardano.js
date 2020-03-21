@@ -257,6 +257,7 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--theme-input-placeholder-color': 'rgba(255, 255, 255, 0.5)',
     '--theme-input-remove-color-light': '#ea4c5b',
     '--theme-input-right-floating-text-color': 'rgba(255, 255, 255, 0.5)',
+    '--theme-input-right-floating-text-success-color': 'rgba(255, 255, 255, 1)',
     '--theme-input-text-color': '#ffffff',
   },
   link: {

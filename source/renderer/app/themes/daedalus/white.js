@@ -258,6 +258,7 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-input-placeholder-color': 'rgba(45, 45, 45, 0.5)',
     '--theme-input-remove-color-light': '#ea4c5b',
     '--theme-input-right-floating-text-color': 'rgba(45, 45, 45, 0.5)',
+    '--theme-input-right-floating-text-success-color': 'rgba(45, 45, 45, 1)',
     '--theme-input-text-color': '#2d2d2d',
   },
   link: {
