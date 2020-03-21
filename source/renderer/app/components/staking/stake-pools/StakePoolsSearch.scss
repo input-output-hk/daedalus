@@ -57,4 +57,15 @@
   svg {
     width: 10px;
   }
+
+  &:hover {
+    svg > g > g {
+      fill: white;
+    }
+
+    > div > div {
+      height: 30px;
+      line-height: 1.3;
+    }
+  }
 }

@@ -282,7 +282,7 @@
   "staking.delegationCenter.epoch": "エポック",
   "staking.delegationCenter.headingLeft": "Cardanoエポック{nextEpochNumber}開始まであと",
   "staking.delegationCenter.headingRight": "現在のCardanoエポック",
-  "staking.delegationCenter.loadingStakePoolsMessage": "ステークプールをロードしています",
+  "staking.delegationCenter.loadingStakePoolsMessage": "ウォレットのロード",
   "staking.delegationCenter.noWallets.createWalletButtonLabel": "ウォレットを作成する",
   "staking.delegationCenter.noWallets.headLine": "委任センターはウォレットがないと利用できません。",
   "staking.delegationCenter.noWallets.instructions": "ウォレットを作成（または既存のウォレットを復元）してから、改めてここでステークを委任してください。",

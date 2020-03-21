@@ -282,7 +282,7 @@
   "staking.delegationCenter.epoch": "Epoch",
   "staking.delegationCenter.headingLeft": "Cardano epoch {nextEpochNumber} starts in",
   "staking.delegationCenter.headingRight": "Current Cardano epoch",
-  "staking.delegationCenter.loadingStakePoolsMessage": "Loading stake pools",
+  "staking.delegationCenter.loadingStakePoolsMessage": "Loading wallets",
   "staking.delegationCenter.noWallets.createWalletButtonLabel": "Create a wallet",
   "staking.delegationCenter.noWallets.headLine": "The Delegation Center is not available because you don't have any wallets.",
   "staking.delegationCenter.noWallets.instructions": "Create a new wallet (or restore an existing one) then come back here to delegate your stake.",
