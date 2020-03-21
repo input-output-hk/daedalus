@@ -86,6 +86,8 @@ export const setupCardanoNodeMode = (
   launcherConfig: LauncherConfig,
   mainWindow: BrowserWindow
 ) => {
+  const { nodeImplementation } = launcherConfig;
+
   const cardanoNode = new CardanoNode(
     Logger,
     {
@@ -121,7 +123,8 @@ export const setupCardanoNodeMode = (
       },
       onError: () => {},
       onUnrecoverable: () => {},
-    }
+    },
+    nodeImplementation
   );
 
   startCardanoNode(cardanoNode, launcherConfig);

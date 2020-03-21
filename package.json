@@ -173,7 +173,6 @@
     "electron": "3.0.14",
     "electron-log-daedalus": "2.2.20",
     "electron-store": "2.0.0",
-    "electron-unhandled": "2.1.0",
     "es6-error": "4.1.1",
     "form-data": "3.0.0",
     "fs-extra": "8.1.0",
