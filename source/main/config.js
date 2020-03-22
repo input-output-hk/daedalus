@@ -35,8 +35,10 @@ export type NodeConfig = {
   kind: 'byron',
   network: {
     configFile: string,
+    delegationCertificate?: string,
     genesisFile: string,
     genesisHash: string,
+    signingKey?: string,
     topologyFile: string,
   },
 };
