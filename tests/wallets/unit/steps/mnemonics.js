@@ -15,7 +15,7 @@ Given('I generate {int} wallet recovery mnemonics', function(
   numberOfMnemonics
 ) {
   this.context.mnemonics = range(numberOfMnemonics).map(() =>
-    generateAccountMnemonics(12).join(' ')
+    generateAccountMnemonics(WALLET_RECOVERY_PHRASE_WORD_COUNT).join(' ')
   );
 });
 
@@ -39,7 +39,7 @@ Given(
     let numberOfTestsExecuted = 0;
     let generated = true;
     while (generated) {
-      const mnemonic = generateAccountMnemonics(12).join(' ');
+      const mnemonic = generateAccountMnemonics(WALLET_RECOVERY_PHRASE_WORD_COUNT).join(' ');
       if (!isValidWalletRecoveryPhrase(mnemonic)) {
         generated = false;
         throw new Error(`"${mnemonic}" is not valid`);

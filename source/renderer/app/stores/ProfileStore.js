@@ -126,7 +126,7 @@ export default class ProfileStore extends Store {
       this._updateBigNumberFormat,
       this._redirectToInitialSettingsIfNoLocaleSet,
       this._redirectToTermsOfUseScreenIfTermsNotAccepted,
-      this._redirectToDataLayerMigrationScreenIfMigrationHasNotAccepted,
+      // this._redirectToDataLayerMigrationScreenIfMigrationHasNotAccepted,
       this._redirectToMainUiAfterTermsAreAccepted,
       this._redirectToMainUiAfterDataLayerMigrationIsAccepted,
     ]);
