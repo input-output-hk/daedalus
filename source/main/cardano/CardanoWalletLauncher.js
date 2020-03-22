@@ -9,6 +9,7 @@ import {
   SELFNODE,
   QA,
   ITN_REWARDS_V1,
+  ITN_SELFNODE,
 } from '../../common/types/environment.types';
 import { Logger } from '../utils/logging';
 
@@ -64,9 +65,10 @@ export function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
       merge(launcherConfig, { nodeConfig });
       break;
     case 'jormungandr':
-      if (cluster === SELFNODE) {
+      if (cluster === ITN_SELFNODE) {
         merge(launcherConfig, {
           apiPort: 8088,
+          networkName: SELFNODE,
           nodeConfig: {
             restPort: 8888,
             network: {

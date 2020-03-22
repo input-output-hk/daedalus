@@ -353,6 +353,10 @@ let
         small = ./installers/icons/itn_rewards_v1/64x64.png;
         large = ./installers/icons/itn_rewards_v1/1024x1024.png;
       };
+      itn_selfnode = {
+        small = ./installers/icons/itn_selfnode/64x64.png;
+        large = ./installers/icons/itn_selfnode/1024x1024.png;
+      };
     };
     namespaceHelper = pkgs.writeScriptBin "namespaceHelper" ''
       #!/usr/bin/env bash

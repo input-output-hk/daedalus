@@ -179,7 +179,7 @@ let
     nodeBin = nodeBin.${os};
     nodeArgs = [];
     syncTolerance = if (environment == "itn_selfnode") then "600s" else jormungandrLib.environments.${environment}.syncTolerance;
-  }) // (lib.optionalAttrs (environment == "selfnode") {
+  }) // (lib.optionalAttrs (environment == "itn_selfnode") {
     block0Path = if ((os == "linux") || devShell) then selfnodeBlock0 else block0Bin.${os};
     block0Hash = builtins.replaceStrings ["\n"] [""] (builtins.readFile (runCommandNative "selfnode-block0.hash" { buildInputs = [ cardano-wallet-native.jormungandr-cli ]; } ''
       jcli genesis hash --input ${selfnodeBlock0} > $out

@@ -39,13 +39,19 @@ export type Environment = {
 export const PRODUCTION = 'production';
 export const DEVELOPMENT = 'development';
 export const TEST = 'test';
+
+// cardano-node networks
 export const MAINNET = 'mainnet';
-export const NIGHTLY = 'nightly';
-export const ITN_REWARDS_V1 = 'itn_rewards_v1';
-export const QA = 'qa';
 export const SELFNODE = 'selfnode';
 export const STAGING = 'staging';
 export const TESTNET = 'testnet';
+
+// jormungandr networks
+export const ITN_REWARDS_V1 = 'itn_rewards_v1';
+export const ITN_SELFNODE = 'itn_selfnode';
+export const QA = 'qa';
+export const NIGHTLY = 'nightly';
+
 export const MAC_OS = 'darwin';
 export const WINDOWS = 'win32';
 export const LINUX = 'linux';
