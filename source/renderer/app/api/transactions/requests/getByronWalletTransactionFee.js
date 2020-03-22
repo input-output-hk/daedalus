@@ -2,6 +2,7 @@
 import type { RequestConfig } from '../../common/types';
 import type { TransactionPaymentData, TransactionFee } from '../types';
 import { request } from '../../utils/request';
+import { getRawWalletId } from '../../utils';
 
 export type GetTransactionFeeParams = {
   walletId: string,
@@ -17,7 +18,7 @@ export const getByronWalletTransactionFee = (
   request(
     {
       method: 'POST',
-      path: `/v2/byron-wallets/${walletId}/payment-fees`,
+      path: `/v2/byron-wallets/${getRawWalletId(walletId)}/payment-fees`,
       ...config,
     },
     {},
