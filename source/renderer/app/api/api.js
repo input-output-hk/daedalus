@@ -1476,7 +1476,6 @@ export default class AdaApi {
 
   getNetworkInfo = async (): Promise<GetNetworkInfoResponse> => {
     Logger.debug('AdaApi::getNetworkInfo called');
-
     try {
       const networkInfo: NetworkInfoResponse = await getNetworkInfo(
         this.config
@@ -1541,6 +1540,7 @@ export default class AdaApi {
         return response;
       }
       Logger.error('AdaApi::getNetworkInfo error', { error });
+      // @API TODO - Inspect this implementation once TLS support is implemented on the BE
       if (error.code === TlsCertificateNotValidError.API_ERROR) {
         throw new TlsCertificateNotValidError();
       }
