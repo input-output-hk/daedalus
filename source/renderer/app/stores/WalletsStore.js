@@ -933,7 +933,11 @@ export default class WalletsStore extends Store {
     if (this.stores.networkStatus.isConnected) {
       const result = await this.walletsRequest.execute().promise;
       if (!result) return;
-      const walletIds = result.map((wallet: Wallet) => wallet.id);
+      const walletIds = result
+        .filter(
+          ({ syncState }: Wallet) => syncState.status !== 'not-responding'
+        )
+        .map((wallet: Wallet) => wallet.id);
       await this._setWalletsRecoveryPhraseVerificationData(walletIds);
       runInAction('refresh active wallet', () => {
         if (this.active) {
