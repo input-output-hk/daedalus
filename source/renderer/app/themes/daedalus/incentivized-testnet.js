@@ -629,6 +629,7 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
       'rgba(255, 255, 255, 0.3)',
     '--theme-sidebar-category-networkInfo-background-color': '#eb2256',
     '--theme-sidebar-category-networkInfo-text-color': '#121326',
+    '--theme-sidebar-menu-item-wallet-name-color-disabled': '#36374d',
   },
   splash: {
     '--theme-splash-network-background-color': '#121326',

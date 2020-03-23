@@ -33,6 +33,13 @@
   }
 }
 
+.notResponding {
+  .title,
+  .info {
+    color: var(--theme-sidebar-menu-item-wallet-name-color-disabled);
+  }
+}
+
 .active {
   background-color: var(--theme-sidebar-menu-item-background-color-active);
 

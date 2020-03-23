@@ -635,6 +635,7 @@ export const WHITE_THEME_OUTPUT = {
       'rgba(45, 45, 45, 0.3)',
     '--theme-sidebar-category-networkInfo-background-color': '#29b595',
     '--theme-sidebar-category-networkInfo-text-color': '#fff',
+    '--theme-sidebar-menu-item-wallet-name-color-disabled': '#ffffff',
   },
   splash: {
     '--theme-splash-network-background-color': 'rgba(255, 255, 255, 0.96)',
