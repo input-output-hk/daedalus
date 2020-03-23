@@ -891,6 +891,10 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-wallet-settings-resync-button-label-color':
       'rgba(233, 244, 254, 1)',
   },
+  walletNotRespondingOverlay: {
+    '--theme-wallet-not-responding-background-color': '#536370f5',
+    '--theme-wallet-not-responding-text-color': '#fafbfc',
+  },
 };
 
 const DARK_BLUE_THEME_PARAMS: CreateThemeParams = {

@@ -50,6 +50,7 @@ export default class Wallet extends Component<Props> {
 
   render() {
     const { wallets, app } = this.props.stores;
+    const { restartNode } = this.props.actions.networkStatus;
     const { active: activeWallet } = wallets;
 
     if (!activeWallet) {
@@ -68,10 +69,12 @@ export default class Wallet extends Component<Props> {
       recoveryPhraseVerificationStatus ===
         WalletRecoveryPhraseVerificationStatuses.NOTIFICATION &&
       !isIncentivizedTestnet;
+    const { isNotResponding, isRestoring } = activeWallet;
+    const activeItem = !isNotResponding ? app.currentPage : 'summary';
 
     return (
       <MainLayout>
-        {activeWallet.isRestoring ? (
+        {isRestoring ? (
           <RestoreNotification
             restoreProgress={activeWallet.restorationProgress}
           />
@@ -80,9 +83,11 @@ export default class Wallet extends Component<Props> {
         <WalletWithNavigation
           isActiveScreen={this.isActiveScreen}
           onWalletNavItemClick={this.handleWalletNavItemClick}
-          activeItem={app.currentPage}
+          activeItem={activeItem}
           isLegacy={activeWallet.isLegacy}
           hasNotification={hasNotification}
+          isNotResponding={isNotResponding}
+          onRestartNode={() => restartNode.trigger()}
         >
           {this.props.children}
         </WalletWithNavigation>

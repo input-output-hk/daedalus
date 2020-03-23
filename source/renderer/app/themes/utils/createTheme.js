@@ -1030,6 +1030,13 @@ export const createDaedalusComponentsTheme = (
       ).alpha(0.1)}`,
       '--theme-wallet-settings-resync-button-label-color': `${text.primary}`,
     },
+    walletNotRespondingOverlay: {
+      '--theme-wallet-not-responding-background-color': `${chroma(
+        background.secondary.regular
+      ).alpha(0.96)}`,
+      '--theme-wallet-not-responding-text-color': `${text.secondary}`,
+      '--theme-wallet-not-responding-description-background-color': `${background.secondary.dark}`,
+    },
   };
 };
 

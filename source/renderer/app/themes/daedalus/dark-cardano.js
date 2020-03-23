@@ -874,6 +874,10 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--theme-wallet-settings-resync-button-label-color':
       'rgba(255, 255, 255, 1)',
   },
+  walletNotRespondingOverlay: {
+    '--theme-wallet-not-responding-background-color': '#36374df5',
+    '--theme-wallet-not-responding-text-color': '#000000',
+  },
 };
 
 const DARK_CARDANO_THEME_PARAMS: CreateThemeParams = {

@@ -875,6 +875,10 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-wallet-settings-section-separator-color': 'rgba(45, 45, 45, 0.15)',
     '--theme-wallet-settings-resync-button-label-color': 'rgba(45, 45, 45, 1)',
   },
+  walletNotRespondingOverlay: {
+    '--theme-wallet-not-responding-background-color': '#fffffff5',
+    '--theme-wallet-not-responding-text-color': '#fafbfc',
+  },
 };
 
 const WHITE_THEME_PARAMS: CreateThemeParams = {

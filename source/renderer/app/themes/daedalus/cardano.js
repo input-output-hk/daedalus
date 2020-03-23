@@ -886,6 +886,10 @@ export const CARDANO_THEME_OUTPUT = {
       'rgba(94, 96, 102, 0.15)',
     '--theme-wallet-settings-resync-button-label-color': 'rgba(94, 96, 102, 1)',
   },
+  walletNotRespondingOverlay: {
+    '--theme-wallet-not-responding-background-color': '#2cbb69f5',
+    '--theme-wallet-not-responding-text-color': '#fafbfc',
+  },
 };
 
 const CARDANO_THEME_PARAMS: CreateThemeParams = {
