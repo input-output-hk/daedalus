@@ -54,7 +54,7 @@ export default class Navigation extends Component<Props> {
     return (
       <div className={styles.component}>
         {items.map(({ id, icon, label, isLegacy, hasNotification, ...item }) => {
-          if (includes(ITN_LEGACY_WALLET_EXCLUDED_NAV_ITEMS, id) && isLegacy) return;
+          if (includes(ITN_LEGACY_WALLET_EXCLUDED_NAV_ITEMS, id) && isLegacy) return null;
           return (
             item.type === 'dropdown'
               ? (!isLegacy && (

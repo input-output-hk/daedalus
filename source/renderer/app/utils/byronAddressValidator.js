@@ -1,9 +1,9 @@
-//@flow
+// @flow
 import * as bech32 from 'bech32';
 import { Address } from 'cardano-js';
 import { AddressGroup } from 'cardano-js/dist/Address/AddressGroup';
 
-const BYRON_BECH32_PUBKEY_LENGTH = 32 // in bytes
+// const BYRON_BECH32_PUBKEY_LENGTH = 32 // in bytes
 const BECH32_DECODE_LIMIT = 128;
 
 const ChainSettings = {
@@ -43,8 +43,9 @@ const introspectAddress = (address: string) => {
       return { ...byronBech32Address, kind: translateByronBech32AddressKind(byronBech32Address.kind) }
     }
   } catch (error) {
-    throw new Error(`${address} is not a valid Byron Address`)
+    throw error
   }
+  return new Error(`${address} is not a valid Byron Address`);
 }
 
 // @TODO - check needed
@@ -109,10 +110,7 @@ const decodeByronBech32Address = (bytes : Buffer) : (DecodeByronBech32AddressTyp
 export const isValidByronAddress = (address: string, expectedNetwork: ChainSettingsType) => {
   // Try to validate Byron "Bech32" address
   try {
-    const decodedAddress = bech32.decode(address, BECH32_DECODE_LIMIT);
-    const bytes = Buffer.from(bech32.fromWords(decodedAddress.words))
     const { kind, network } = introspectAddress(address);
-
     if (!Object.values(ByronBech32AddressName).includes(kind)) return false;
     return network === expectedNetwork;
   } catch (error) {
