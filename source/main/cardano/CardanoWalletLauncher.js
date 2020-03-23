@@ -11,6 +11,7 @@ import {
   ITN_REWARDS_V1,
   ITN_SELFNODE,
 } from '../../common/types/environment.types';
+import { writeGenesisFile } from './utils';
 import { Logger } from '../utils/logging';
 import type { CardanoNodeImplementation } from '../../common/types/cardano-node.types';
 
@@ -27,7 +28,7 @@ export type WalletOpts = {
   logFile: any,
 };
 
-export function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
+export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
   const {
     nodeImplementation,
     nodeConfig, // For cardano-node / byron only!
@@ -65,7 +66,7 @@ export function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
     case 'cardano':
       merge(launcherConfig, { nodeConfig });
       if (cluster === SELFNODE) {
-        // TODO: Inject start time
+        await writeGenesisFile(stateDir);
       }
       break;
     case 'jormungandr':

@@ -1,4 +1,7 @@
 // @flow
+import * as fs from 'fs-extra';
+import path from 'path';
+import { Logger } from '../utils/logging';
 import type {
   CardanoNodeStorageKeys,
   CardanoNodeImplementation,
@@ -77,3 +80,30 @@ export const deriveProcessNames = (
       ? 'cardano-wallet-jormungandr'
       : 'cardano-wallet-byron'),
 });
+
+export const writeGenesisFile = async (stateDir: string) => {
+  const installDir = process.env.DAEDALUS_INSTALL_DIRECTORY || '';
+  const genesisDefaultPath = 'utils/cardano/selfnode/genesis.json';
+  const genesisInstalledPath = path.join(installDir, 'genesis.json');
+
+  // dev path is ./
+  const genesisJsonPath =
+    installDir.length > 2 ? genesisInstalledPath : genesisDefaultPath;
+
+  Logger.info('Genesis file path', { genesisJsonPath });
+
+  const networkGenesisFileExists = await fs.pathExists(genesisJsonPath);
+  if (!networkGenesisFileExists) {
+    throw new Error(`No genesis file exists for testnet`);
+  }
+
+  const genesisFileRaw = await fs.readFile(genesisJsonPath);
+  const genesisFile = JSON.stringify({
+    ...JSON.parse(genesisFileRaw),
+    START_TIME: Date.now(),
+  });
+  const genesisPath = path.join(stateDir, 'genesis.json');
+
+  await fs.remove(genesisPath);
+  await fs.writeFile(genesisPath, genesisFile);
+};

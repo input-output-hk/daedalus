@@ -323,7 +323,7 @@ export class CardanoNode {
 
       this._cardanoLogFile = logFile;
 
-      const node = CardanoWalletLauncher({
+      const node = await CardanoWalletLauncher({
         nodeImplementation,
         nodeConfig,
         cluster,
@@ -373,12 +373,13 @@ export class CardanoNode {
           resolve();
         })
         .catch(exitStatus => {
-          const { code, signal } = exitStatus.wallet;
-          // this._handleCardanoNodeError(code, signal);
-          this._handleCardanoNodeExit(code, signal);
-          reject(
-            new Error('CardanoNode#start: Error while spawning cardano-node')
-          );
+          console.log('exitStatus -----', exitStatus);
+          // const { code, signal } = exitStatus.wallet;
+          // // this._handleCardanoNodeError(code, signal);
+          // this._handleCardanoNodeExit(code, signal);
+          // reject(
+          //   new Error('CardanoNode#start: Error while spawning cardano-node')
+          // );
         });
     });
   };
