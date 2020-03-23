@@ -1,6 +1,8 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
+import { includes } from 'lodash';
+import { ITN_LEGACY_WALLET_EXCLUDED_NAV_ITEMS } from '../../config/walletNavigationConfig';
 import styles from './Navigation.scss';
 import NavButton from './NavButton';
 import NavDropdown from './NavDropdown';
@@ -48,46 +50,50 @@ export default class Navigation extends Component<Props> {
       activeItem,
       items,
     } = this.props;
+
     return (
       <div className={styles.component}>
-        {items.map(({ id, icon, label, isLegacy, hasNotification, ...item }) =>
-          item.type === 'dropdown'
-            ? (!isLegacy && (
-                <NavDropdown
-                  key={id}
-                  label={label}
-                  icon={icon}
-                  isActive={isActiveNavItem(id, item)}
-                  onChange={i => onNavItemClick(i)}
-                  isLegacy={isLegacy}
-                  activeItem={activeItem}
-                  options={item.options}
-                  hasNotification={hasNotification}
-                />
-              )) ||
-              (isLegacy && (
-                <NavButton
-                  key={id}
-                  className={id}
-                  label={label}
-                  icon={icon}
-                  isActive={isActiveNavItem(id, item)}
-                  onClick={() => onNavItemClick(id)}
-                  hasNotification={hasNotification}
-                />
-              ))
-            : !isLegacy && (
-                <NavButton
-                  key={id}
-                  className={id}
-                  label={label}
-                  icon={icon}
-                  isActive={isActiveNavItem(id, item)}
-                  onClick={() => onNavItemClick(id)}
-                  hasNotification={hasNotification}
-                />
-              )
-        )}
+        {items.map(({ id, icon, label, isLegacy, hasNotification, ...item }) => {
+          if (includes(ITN_LEGACY_WALLET_EXCLUDED_NAV_ITEMS, id) && isLegacy) return;
+          return (
+            item.type === 'dropdown'
+              ? (!isLegacy && (
+                  <NavDropdown
+                    key={id}
+                    label={label}
+                    icon={icon}
+                    isActive={isActiveNavItem(id, item)}
+                    onChange={i => onNavItemClick(i)}
+                    isLegacy={isLegacy}
+                    activeItem={activeItem}
+                    options={item.options}
+                    hasNotification={hasNotification}
+                  />
+                )) ||
+                (isLegacy && (
+                  <NavButton
+                    key={id}
+                    className={id}
+                    label={label}
+                    icon={icon}
+                    isActive={isActiveNavItem(id, item)}
+                    onClick={() => onNavItemClick(id)}
+                    hasNotification={hasNotification}
+                  />
+                ))
+              : !isLegacy && (
+                  <NavButton
+                    key={id}
+                    className={id}
+                    label={label}
+                    icon={icon}
+                    isActive={isActiveNavItem(id, item)}
+                    onClick={() => onNavItemClick(id)}
+                    hasNotification={hasNotification}
+                  />
+                )
+          );
+        })}
       </div>
     );
   }

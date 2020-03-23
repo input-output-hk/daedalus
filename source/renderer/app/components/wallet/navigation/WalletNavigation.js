@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
+import { WALLET_NAV_IDS } from '../../../config/walletNavigationConfig';
 import Navigation from '../../navigation/Navigation';
 import summaryIcon from '../../../assets/images/wallet-nav/summary-ic.inline.svg';
 import sendIcon from '../../../assets/images/wallet-nav/send-ic.inline.svg';
@@ -81,30 +82,30 @@ export default class WalletNavigation extends Component<Props> {
         onNavItemClick={onNavItemClick}
         items={[
           {
-            id: 'summary',
+            id: WALLET_NAV_IDS.SUMMARY,
             label: intl.formatMessage(messages.summary),
             icon: summaryIcon,
           },
           {
-            id: 'send',
+            id: WALLET_NAV_IDS.SEND,
             label: intl.formatMessage(messages.send),
             icon: sendIcon,
             isLegacy: isLegacy && isIncentivizedTestnet,
           },
           {
-            id: 'receive',
+            id: WALLET_NAV_IDS.RECEIVE,
             label: intl.formatMessage(messages.receive),
             icon: receiveIcon,
             isLegacy: isLegacy && isIncentivizedTestnet,
           },
           {
-            id: 'transactions',
+            id: WALLET_NAV_IDS.TRANSACTIONS,
             label: intl.formatMessage(messages.transactions),
             icon: transactionsIcon,
           },
           {
+            id: WALLET_NAV_IDS.SETTINGS,
             type: 'dropdown',
-            id: 'settings',
             label:
               isLegacy && isIncentivizedTestnet
                 ? intl.formatMessage(messages.settings)
