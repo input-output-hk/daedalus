@@ -1,7 +1,11 @@
-{ runCommand, cardano-wallet, cardano-node, cardano-shell, export-wallets, db-converter }:
+{ target, pkgs, runCommand, cardano-wallet, cardano-node, cardano-shell, export-wallets, db-converter }:
 
-runCommand "daedalus-haskell-bridge" {
+let
+  commonLib = import ../lib.nix {};
+  pkgsCross = import cardano-wallet.pkgs.path { crossSystem = cardano-wallet.pkgs.lib.systems.examples.mingwW64; config = {}; overlays = []; };
+in runCommand "daedalus-haskell-bridge" {
   passthru = {
+    node-version = cardano-node.version;
     wallet-version = cardano-wallet.version;
   };
 } ''
@@ -13,4 +17,14 @@ runCommand "daedalus-haskell-bridge" {
   cp ${cardano-node}/bin/cardano-node* .
   cp ${export-wallets}/bin/export-wallets* .
   cp ${db-converter}/bin/db-converter* .
+  ${pkgs.lib.optionalString (target == "x86_64-windows") ''
+    echo ${cardano-wallet.jormungandr}
+    cp ${pkgsCross.libffi}/bin/libffi-6.dll .
+  ''}
+  ${pkgs.lib.optionalString (target == "x86_64-linux") ''
+    for bin in cardano-launcher cardano-wallet-byron cardano-node export-wallets db-converter; do
+      strip $bin
+      patchelf --shrink-rpath $bin
+    done
+  ''}
 ''
