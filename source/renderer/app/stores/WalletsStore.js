@@ -19,6 +19,7 @@ import { addressPDFGenerator } from '../utils/addressPDFGenerator';
 import { downloadRewardsCsv } from '../utils/rewardsCsvGenerator';
 import { buildRoute, matchRoute } from '../utils/routing';
 import { asyncForEach } from '../utils/asyncForEach';
+import { isValidByronAddress } from '../utils/byronAddressValidator';
 import { ROUTES } from '../routes-config';
 import { formattedWalletAmount } from '../utils/formatters';
 import {
@@ -909,6 +910,7 @@ export default class WalletsStore extends Store {
   isValidAddress = (address: string) => {
     const { app } = this.stores;
     const { isMainnet, isTest } = app.environment;
+
     const addressGroup =
       isIncentivizedTestnet || isTest
         ? AddressGroup.jormungandr
@@ -916,8 +918,9 @@ export default class WalletsStore extends Store {
     const chainSettings = isMainnet
       ? ChainSettings.mainnet
       : ChainSettings.testnet;
+
     try {
-      return Address.Util.isAddress(address, chainSettings, addressGroup);
+      return !isIncentivizedTestnet ? isValidByronAddress(address, chainSettings) : Address.Util.isAddress(address, chainSettings, addressGroup);
     } catch (error) {
       return false;
     }
