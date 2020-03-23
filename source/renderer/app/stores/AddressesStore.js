@@ -42,8 +42,8 @@ export default class AddressesStore extends Store {
 
   @action _refreshAddresses = () => {
     if (this.stores.networkStatus.isConnected) {
-      const { allWallets } = this.stores.wallets;
-      for (const wallet of allWallets) {
+      const { all } = this.stores.wallets;
+      for (const wallet of all) {
         const allRequest = this._getAddressesAllRequest(wallet.id);
         allRequest.invalidate({ immediately: false });
         allRequest.execute({ walletId: wallet.id, isLegacy: wallet.isLegacy });

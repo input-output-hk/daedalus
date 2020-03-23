@@ -86,7 +86,7 @@ const getMnemonicsIndex = async function() {
     value: String(newIndex),
   });
   return index;
-}
+};
 
 export const restoreLegacyWallet = async (
   client: Object,
@@ -100,7 +100,6 @@ export const restoreLegacyWallet = async (
     transferFunds?: boolean,
   }
 ) => {
-
   let recoveryPhrase;
   if (hasFunds) {
     const mnemonicsIndex = await getMnemonicsIndex.call(client);
@@ -129,7 +128,7 @@ export const restoreLegacyWallet = async (
       )
       .catch(error => done(error));
   }, walletName, recoveryPhrase, transferFunds, noWalletsErrorMessage);
-}
+};
 
 export const fillOutWalletSendForm = async function(values: Object) {
   const formSelector = '.WalletSendForm_component';

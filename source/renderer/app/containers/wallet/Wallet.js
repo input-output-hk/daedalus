@@ -49,8 +49,7 @@ export default class Wallet extends Component<Props> {
   };
 
   render() {
-    const { wallets, app, networkStatus } = this.props.stores;
-
+    const { wallets, app } = this.props.stores;
     const { active: activeWallet } = wallets;
 
     if (!activeWallet) {
@@ -64,7 +63,7 @@ export default class Wallet extends Component<Props> {
     const {
       recoveryPhraseVerificationStatus,
     } = wallets.getWalletRecoveryPhraseVerification(activeWallet.id);
-    const { isIncentivizedTestnet } = networkStatus;
+    const { isIncentivizedTestnet } = global;
     const hasNotification =
       recoveryPhraseVerificationStatus ===
         WalletRecoveryPhraseVerificationStatuses.NOTIFICATION &&

@@ -3772,12 +3772,10 @@ cardano-js@0.3.0:
     cbor "^4.3.0"
     ts-custom-error "^3.1.1"
 
-cardano-launcher@0.202003019.0:
-  version "0.202003019.0"
-  resolved "https://registry.yarnpkg.com/cardano-launcher/-/cardano-launcher-0.202003019.0.tgz#c8b1d4160a12714bfa0ef8eb213676f4d16578f5"
+cardano-launcher@0.20200320.0:
+  version "0.20200320.0"
+  resolved "https://registry.yarnpkg.com/cardano-launcher/-/cardano-launcher-0.20200320.0.tgz#8c6af1552591655f5d909e0f35003704b04d6d11"
   dependencies:
-    "@types/lodash" "^4.14.149"
-    "@types/node" "^13.1.8"
     get-port "^5.1.1"
     lodash "^4.17.15"
     mkdirp "^1.0.3"
@@ -5450,10 +5448,6 @@ electron-download@^4.1.0, electron-download@^4.1.1:
     semver "^5.4.1"
     sumchecker "^2.0.2"
 
-electron-is-dev@^1.0.1:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/electron-is-dev/-/electron-is-dev-1.1.0.tgz#b15a2a600bdc48a51a857d460e05f15b19a2522c"
-
 electron-log-daedalus@2.2.20:
   version "2.2.20"
   resolved "https://registry.yarnpkg.com/electron-log-daedalus/-/electron-log-daedalus-2.2.20.tgz#3b550c9d68393616d528cdcf76eeea1f2d53c30e"
@@ -5511,15 +5505,6 @@ electron-to-chromium@^1.3.122, electron-to-chromium@^1.3.191:
 electron-to-chromium@^1.3.349:
   version "1.3.360"
   resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.360.tgz#1db9cb8d43f4c772546d94ea9be8b677a8ecb483"
-
-electron-unhandled@2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/electron-unhandled/-/electron-unhandled-2.1.0.tgz#c72e59bbb481aecb53ab3f472a334ad1b48c90d2"
-  dependencies:
-    clean-stack "^2.0.0"
-    electron-is-dev "^1.0.1"
-    ensure-error "^1.0.0"
-    lodash.debounce "^4.0.8"
 
 electron@3.0.14:
   version "3.0.14"
@@ -5602,10 +5587,6 @@ enhanced-resolve@^4.1.0:
     graceful-fs "^4.1.2"
     memory-fs "^0.4.0"
     tapable "^1.0.0"
-
-ensure-error@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/ensure-error/-/ensure-error-1.0.0.tgz#c54c13329132cad06f847423b52c22fd88099d0d"
 
 entities@^1.1.1, entities@^1.1.2:
   version "1.1.2"

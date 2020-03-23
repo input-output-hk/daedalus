@@ -40,7 +40,7 @@ export default class SidebarWalletMenuItem extends Component<Props> {
     const componentStyles = classNames([
       styles.component,
       active ? styles.active : null,
-      isLegacy ? styles.legacyItem : null,
+      isLegacy && isIncentivizedTestnet ? styles.legacyItem : null,
       className,
       !isIncentivizedTestnet
         ? styles[
@@ -55,7 +55,9 @@ export default class SidebarWalletMenuItem extends Component<Props> {
           <div className={styles.title}>{title}</div>
           <div className={styles.info}>{info}</div>
           {isRestoreActive ? <ProgressBar progress={restoreProgress} /> : null}
-          {isLegacy && <LegacyBadge mode={LEGACY_BADGE_MODES.FLOATING} />}
+          {isLegacy && isIncentivizedTestnet && (
+            <LegacyBadge mode={LEGACY_BADGE_MODES.FLOATING} />
+          )}
         </div>
       </button>
     );

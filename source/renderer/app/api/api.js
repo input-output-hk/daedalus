@@ -30,9 +30,11 @@ import { getLatestAppVersion } from './nodes/requests/getLatestAppVersion';
 
 // Transactions requests
 import { getTransactionFee } from './transactions/requests/getTransactionFee';
+import { getByronWalletTransactionFee } from './transactions/requests/getByronWalletTransactionFee';
 import { getTransactionHistory } from './transactions/requests/getTransactionHistory';
 import { getLegacyWalletTransactionHistory } from './transactions/requests/getLegacyWalletTransactionHistory';
 import { createTransaction } from './transactions/requests/createTransaction';
+import { createByronWalletTransaction } from './transactions/requests/createByronWalletTransaction';
 import { deleteLegacyTransaction } from './transactions/requests/deleteLegacyTransaction';
 
 // Wallets requests
@@ -90,7 +92,11 @@ import { filterLogData } from '../../../common/utils/logging';
 
 // Config constants
 import { LOVELACES_PER_ADA } from '../config/numbersConfig';
-import { ADA_CERTIFICATE_MNEMONIC_LENGTH } from '../config/cryptoConfig';
+import {
+  ADA_CERTIFICATE_MNEMONIC_LENGTH,
+  WALLET_RECOVERY_PHRASE_WORD_COUNT,
+  LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT,
+} from '../config/cryptoConfig';
 import { FORCED_WALLET_RESYNC_WAIT } from '../config/timingConfig';
 
 // Addresses Types
@@ -200,6 +206,8 @@ import { getNewsHash } from './news/requests/getNewsHash';
 import { deleteTransaction } from './transactions/requests/deleteTransaction';
 import { WALLET_BYRON_KINDS } from '../config/walletRestoreConfig';
 
+const { isIncentivizedTestnet } = global;
+
 export default class AdaApi {
   config: RequestConfig;
 
@@ -215,7 +223,9 @@ export default class AdaApi {
   getWallets = async (): Promise<Array<Wallet>> => {
     Logger.debug('AdaApi::getWallets called');
     try {
-      const wallets: AdaWallets = await getWallets(this.config);
+      const wallets: AdaWallets = isIncentivizedTestnet
+        ? await getWallets(this.config)
+        : [];
       const legacyWallets: LegacyAdaWallets = await getLegacyWallets(
         this.config
       );
@@ -224,7 +234,11 @@ export default class AdaApi {
       map(legacyWallets, legacyAdaWallet => {
         const extraLegacyWalletProps = {
           address_pool_gap: 0, // Not needed for legacy wallets
-          delegation: WalletDelegationStatuses.NOT_DELEGATING,
+          delegation: {
+            active: {
+              status: WalletDelegationStatuses.NOT_DELEGATING,
+            },
+          },
           isLegacy: true,
         };
         wallets.push({
@@ -254,7 +268,11 @@ export default class AdaApi {
         );
         const extraLegacyWalletProps = {
           address_pool_gap: 0, // Not needed for legacy wallets
-          delegation: WalletDelegationStatuses.NOT_DELEGATING,
+          delegation: {
+            active: {
+              status: WalletDelegationStatuses.NOT_DELEGATING,
+            },
+          },
           isLegacy: true,
         };
         wallet = {
@@ -488,15 +506,38 @@ export default class AdaApi {
     });
     const { name, mnemonic, spendingPassword } = request;
     try {
+      let wallet: AdaWallet;
       const walletInitData = {
         name,
         mnemonic_sentence: split(mnemonic, ' '),
         passphrase: spendingPassword,
       };
-      const wallet: AdaWallet = await createWallet(this.config, {
-        walletInitData,
-      });
-      Logger.debug('AdaApi::createWallet success', { wallet });
+      if (isIncentivizedTestnet) {
+        wallet = await createWallet(this.config, {
+          walletInitData,
+        });
+        Logger.debug('AdaApi::createWallet (Shelley) success', { wallet });
+      } else {
+        const legacyWallet: LegacyAdaWallet = await restoreByronWallet(
+          this.config,
+          { walletInitData },
+          'random'
+        );
+        const extraLegacyWalletProps = {
+          address_pool_gap: 0, // Not needed for legacy wallets
+          delegation: {
+            active: {
+              status: WalletDelegationStatuses.NOT_DELEGATING,
+            },
+          },
+          isLegacy: true,
+        };
+        wallet = {
+          ...legacyWallet,
+          ...extraLegacyWalletProps,
+        };
+        Logger.debug('AdaApi::createWallet (Byron) success', { wallet });
+      }
       return _createWalletFromServerData(wallet);
     } catch (error) {
       Logger.error('AdaApi::createWallet error', { error });
@@ -530,7 +571,7 @@ export default class AdaApi {
     Logger.debug('AdaApi::createTransaction called', {
       parameters: filterLogData(request),
     });
-    const { walletId, address, amount, passphrase } = request;
+    const { walletId, address, amount, passphrase, isLegacy } = request;
 
     try {
       const data = {
@@ -546,10 +587,18 @@ export default class AdaApi {
         passphrase,
       };
 
-      const response: Transaction = await createTransaction(this.config, {
-        walletId,
-        data,
-      });
+      let response: Transaction;
+      if (isLegacy) {
+        response = await createByronWalletTransaction(this.config, {
+          walletId,
+          data,
+        });
+      } else {
+        response = await createTransaction(this.config, {
+          walletId,
+          data,
+        });
+      }
 
       Logger.debug('AdaApi::createTransaction success', {
         transaction: response,
@@ -593,6 +642,7 @@ export default class AdaApi {
       amount,
       walletBalance,
       availableBalance,
+      isLegacy,
     } = request;
 
     try {
@@ -608,10 +658,18 @@ export default class AdaApi {
         ],
       };
 
-      const response: TransactionFee = await getTransactionFee(this.config, {
-        walletId,
-        data,
-      });
+      let response: TransactionFee;
+      if (isLegacy) {
+        response = await getByronWalletTransactionFee(this.config, {
+          walletId,
+          data,
+        });
+      } else {
+        response = await getTransactionFee(this.config, {
+          walletId,
+          data,
+        });
+      }
 
       const formattedTxAmount = new BigNumber(amount).dividedBy(
         LOVELACES_PER_ADA
@@ -691,7 +749,13 @@ export default class AdaApi {
     Logger.debug('AdaApi::getWalletRecoveryPhrase called');
     try {
       const response: Promise<Array<string>> = new Promise(resolve =>
-        resolve(generateAccountMnemonics())
+        resolve(
+          generateAccountMnemonics(
+            isIncentivizedTestnet
+              ? WALLET_RECOVERY_PHRASE_WORD_COUNT
+              : LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT
+          )
+        )
       );
       Logger.debug('AdaApi::getWalletRecoveryPhrase success');
       return response;
@@ -808,7 +872,11 @@ export default class AdaApi {
       );
       const extraLegacyWalletProps = {
         address_pool_gap: 0, // Not needed for legacy wallets
-        delegation: WalletDelegationStatuses.NOT_DELEGATING,
+        delegation: {
+          active: {
+            status: WalletDelegationStatuses.NOT_DELEGATING,
+          },
+        },
         isLegacy: true,
       };
       const wallet = {
@@ -858,7 +926,11 @@ export default class AdaApi {
       );
       const extraLegacyWalletProps = {
         address_pool_gap: 0, // Not needed for legacy wallets
-        delegation: WalletDelegationStatuses.NOT_DELEGATING,
+        delegation: {
+          active: {
+            status: WalletDelegationStatuses.NOT_DELEGATING,
+          },
+        },
         isLegacy: true,
       };
       const wallet = {
@@ -908,7 +980,11 @@ export default class AdaApi {
       );
       const extraLegacyWalletProps = {
         address_pool_gap: 0, // Not needed for legacy wallets
-        delegation: WalletDelegationStatuses.NOT_DELEGATING,
+        delegation: {
+          active: {
+            status: WalletDelegationStatuses.NOT_DELEGATING,
+          },
+        },
         isLegacy: true,
       };
       const wallet = {
@@ -958,7 +1034,11 @@ export default class AdaApi {
       );
       const extraLegacyWalletProps = {
         address_pool_gap: 0, // Not needed for legacy wallets
-        delegation: WalletDelegationStatuses.NOT_DELEGATING,
+        delegation: {
+          active: {
+            status: WalletDelegationStatuses.NOT_DELEGATING,
+          },
+        },
         isLegacy: true,
       };
       const wallet = {
@@ -1008,7 +1088,11 @@ export default class AdaApi {
       );
       const extraLegacyWalletProps = {
         address_pool_gap: 0, // Not needed for legacy wallets
-        delegation: WalletDelegationStatuses.NOT_DELEGATING,
+        delegation: {
+          active: {
+            status: WalletDelegationStatuses.NOT_DELEGATING,
+          },
+        },
         isLegacy: true,
       };
       const wallet = {
@@ -1397,15 +1481,12 @@ export default class AdaApi {
         this.config
       );
       Logger.debug('AdaApi::getNetworkInfo success', { networkInfo });
-
       /* eslint-disable-next-line camelcase */
       const { sync_progress, node_tip, network_tip, next_epoch } = networkInfo;
-
       const syncProgress =
         get(sync_progress, 'status') === 'ready'
           ? 100
           : get(sync_progress, 'progress.quantity', 0);
-
       // extract relevant data before sending to NetworkStatusStore
       return {
         syncProgress,
@@ -1431,6 +1512,33 @@ export default class AdaApi {
         },
       };
     } catch (error) {
+      if (!isIncentivizedTestnet) {
+        const response = new Promise(resolve =>
+          resolve({
+            syncProgress: 100,
+            localTip: {
+              epoch: 123,
+              slot: 456,
+            },
+            networkTip: {
+              epoch: 123,
+              slot: 456,
+            },
+            nextEpoch: {
+              // N+1 epoch
+              epochNumber: 124,
+              epochStart: '',
+            },
+            futureEpoch: {
+              // N+2 epoch
+              epochNumber: 125,
+              epochStart: '',
+            },
+          })
+        );
+        Logger.debug('AdaApi::getNetworkInfo (SET FAKED) success');
+        return response;
+      }
       Logger.error('AdaApi::getNetworkInfo error', { error });
       // @API TODO - Inspect this implementation once TLS support is implemented on the BE
       if (error.code === TlsCertificateNotValidError.API_ERROR) {
@@ -1592,7 +1700,7 @@ export default class AdaApi {
 
 const _createWalletFromServerData = action(
   'AdaApi::_createWalletFromServerData',
-  (data: AdaWallet) => {
+  (wallet: AdaWallet) => {
     const {
       id: rawWalletId,
       address_pool_gap: addressPoolGap,
@@ -1602,7 +1710,7 @@ const _createWalletFromServerData = action(
       passphrase,
       delegation,
       isLegacy = false,
-    } = data;
+    } = wallet;
 
     const id = isLegacy ? getLegacyWalletId(rawWalletId) : rawWalletId;
     const passphraseLastUpdatedAt = get(passphrase, 'last_updated_at', null);

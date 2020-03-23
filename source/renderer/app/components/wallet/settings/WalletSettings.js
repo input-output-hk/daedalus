@@ -183,7 +183,7 @@ export default class WalletSettings extends Component<Props, State> {
       moment.locale('en-us');
     }
 
-    if (isLegacy) {
+    if (isLegacy && isIncentivizedTestnet) {
       const deleteWalletBoxStyles = classNames([
         styles.deleteWalletBox,
         styles.legacyWallet,

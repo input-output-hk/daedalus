@@ -7,7 +7,7 @@ export type TlsConfig = {
   key: Uint8Array,
 };
 
-export type CardanoNodeImplementation = 'jormungandr' | 'cardano-node';
+export type CardanoNodeImplementation = 'jormungandr' | 'cardano';
 
 export type NetworkNames =
   | 'mainnet'
@@ -65,6 +65,8 @@ export type CardanoNodeStorageKeys = {
 };
 
 export type CardanoNodeProcessNames =
+  | 'cardano-wallet-byron'
+  | 'cardano-wallet-byron.exe'
   | 'cardano-wallet-jormungandr'
   | 'cardano-wallet-jormungandr.exe';
 
@@ -73,13 +75,22 @@ export type ProcessNames = {
 };
 
 export const CardanoProcessNameOptions: {
-  win32: CardanoNodeProcessNames,
-  linux: CardanoNodeProcessNames,
-  darwin: CardanoNodeProcessNames,
+  [CardanoNodeImplementation]: {
+    win32: CardanoNodeProcessNames,
+    linux: CardanoNodeProcessNames,
+    darwin: CardanoNodeProcessNames,
+  },
 } = {
-  win32: 'cardano-wallet-jormungandr.exe',
-  linux: 'cardano-wallet-jormungandr',
-  darwin: 'cardano-wallet-jormungandr',
+  cardano: {
+    win32: 'cardano-wallet-byron.exe',
+    linux: 'cardano-wallet-byron',
+    darwin: 'cardano-wallet-byron',
+  },
+  jormungandr: {
+    win32: 'cardano-wallet-jormungandr.exe',
+    linux: 'cardano-wallet-jormungandr',
+    darwin: 'cardano-wallet-jormungandr',
+  },
 };
 
 /**

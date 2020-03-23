@@ -128,7 +128,7 @@ export default class WalletTransactionsPage extends Component<Props, State> {
         ? recentFiltered
         : allFiltered;
 
-    if (!hasAny) {
+    if (!hasAny && !activeWallet.isRestoring) {
       walletTransactions = <WalletNoTransactions label={noTransactionsLabel} />;
     } else if (numberOfFilterDimensionsApplied > 0 && !transactions.length) {
       walletTransactions = (

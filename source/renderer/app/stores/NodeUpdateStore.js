@@ -51,7 +51,7 @@ export default class NodeUpdateStore extends Store {
   refreshNextUpdate = async () => {
     // Since isIncentivizedTestnet flag is not set during NodeUpdate setup()
     // we need to check for it here and reset nextUpdate check poller
-    if (this.stores.networkStatus.isIncentivizedTestnet) {
+    if (global.isIncentivizedTestnet) {
       // Reset nextUpdateInterval when is available
       if (this.nextUpdateInterval) {
         clearInterval(this.nextUpdateInterval);
@@ -115,7 +115,7 @@ export default class NodeUpdateStore extends Store {
   };
 
   @action _getLatestAvailableAppVersion = async () => {
-    if (this.stores.networkStatus.isIncentivizedTestnet) {
+    if (global.isIncentivizedTestnet) {
       return;
     }
     const {
@@ -174,7 +174,7 @@ export default class NodeUpdateStore extends Store {
       this.isUpdateAvailable &&
       !this.isUpdatePostponed &&
       !this.isUpdateInstalled &&
-      !this.stores.networkStatus.isIncentivizedTestnet
+      !global.isIncentivizedTestnet
     );
   }
 
@@ -185,7 +185,7 @@ export default class NodeUpdateStore extends Store {
       !this.stores.networkStatus.isNodeStopped &&
       !this.isUpdatePostponed &&
       !this.isUpdateAvailable &&
-      !this.stores.networkStatus.isIncentivizedTestnet
+      !global.isIncentivizedTestnet
     );
   }
 }

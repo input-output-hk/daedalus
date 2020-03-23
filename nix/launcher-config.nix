@@ -159,6 +159,7 @@ let
         genesisHash = envCfg.genesisHash;
         topologyFile = "${environment}-topology.yaml";
       };
+      socketFile = "${dataDir.${os}}${dirSep}cardano-node.socket";
     };
     syncTolerance = "300s";
   }) // (lib.optionalAttrs (backend == "jormungandr") {

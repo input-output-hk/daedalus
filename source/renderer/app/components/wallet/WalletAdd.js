@@ -87,10 +87,7 @@ type Props = {
   onCreate: Function,
   onRestore: Function,
   onImportFile: Function,
-  isMainnet: boolean,
-  isTestnet: boolean,
   isMaxNumberOfWalletsReached: boolean,
-  isIncentivizedTestnet: boolean,
 };
 
 @observer
@@ -111,9 +108,6 @@ export default class WalletAdd extends Component<Props> {
       onRestore,
       onImportFile,
       isMaxNumberOfWalletsReached,
-      isMainnet,
-      isTestnet,
-      isIncentivizedTestnet,
     } = this.props;
 
     const componentClasses = classnames([styles.component, 'WalletAdd']);
@@ -160,12 +154,7 @@ export default class WalletAdd extends Component<Props> {
               icon={importIcon}
               label={intl.formatMessage(messages.importLabel)}
               description={intl.formatMessage(messages.importDescription)}
-              isDisabled={
-                isMaxNumberOfWalletsReached ||
-                isMainnet ||
-                isTestnet ||
-                isIncentivizedTestnet
-              }
+              isDisabled
             />
           </div>
           {activeNotification ? (

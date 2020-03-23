@@ -73,6 +73,7 @@ export default class WalletNavigation extends Component<Props> {
       hasNotification,
     } = this.props;
     const { intl } = this.context;
+    const { isIncentivizedTestnet } = global;
     return (
       <Navigation
         activeItem={activeItem}
@@ -88,13 +89,13 @@ export default class WalletNavigation extends Component<Props> {
             id: 'send',
             label: intl.formatMessage(messages.send),
             icon: sendIcon,
-            isLegacy,
+            isLegacy: isLegacy && isIncentivizedTestnet,
           },
           {
             id: 'receive',
             label: intl.formatMessage(messages.receive),
             icon: receiveIcon,
-            isLegacy,
+            isLegacy: isLegacy && isIncentivizedTestnet,
           },
           {
             id: 'transactions',
@@ -104,12 +105,13 @@ export default class WalletNavigation extends Component<Props> {
           {
             type: 'dropdown',
             id: 'settings',
-            label: isLegacy
-              ? intl.formatMessage(messages.settings)
-              : intl.formatMessage(messages.more),
+            label:
+              isLegacy && isIncentivizedTestnet
+                ? intl.formatMessage(messages.settings)
+                : intl.formatMessage(messages.more),
             icon: settingsIcon,
             hasNotification,
-            isLegacy,
+            isLegacy: isLegacy && isIncentivizedTestnet,
             options: [
               {
                 label: intl.formatMessage(messages.settings),
