@@ -1512,33 +1512,6 @@ export default class AdaApi {
         },
       };
     } catch (error) {
-      if (!isIncentivizedTestnet) {
-        const response = new Promise(resolve =>
-          resolve({
-            syncProgress: 100,
-            localTip: {
-              epoch: 123,
-              slot: 456,
-            },
-            networkTip: {
-              epoch: 123,
-              slot: 456,
-            },
-            nextEpoch: {
-              // N+1 epoch
-              epochNumber: 124,
-              epochStart: '',
-            },
-            futureEpoch: {
-              // N+2 epoch
-              epochNumber: 125,
-              epochStart: '',
-            },
-          })
-        );
-        Logger.debug('AdaApi::getNetworkInfo (SET FAKED) success');
-        return response;
-      }
       Logger.error('AdaApi::getNetworkInfo error', { error });
       // @API TODO - Inspect this implementation once TLS support is implemented on the BE
       if (error.code === TlsCertificateNotValidError.API_ERROR) {
