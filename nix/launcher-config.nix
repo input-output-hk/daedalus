@@ -166,7 +166,7 @@ let
         genesisHash = if (environment != "selfnode") then envCfg.genesisHash else "";
         topologyFile = "${environment}-topology.yaml";
       };
-      socketFile = if os != "windows" then "${dataDir.${os}}${dirSep}cardano-node.socket" else "\\.\\pipe\\cardano-${environment}";
+      socketFile = if os != "windows" then "${dataDir.${os}}${dirSep}cardano-node.socket" else "\\\\.\\pipe\\cardano-${environment}";
     } // lib.optionalAttrs (environment == "selfnode") {
       delegationCertificate = "${environment}.cert";
       signingKey = "${environment}.key";
