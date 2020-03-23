@@ -98,9 +98,10 @@ export const writeGenesisFile = async (stateDir: string) => {
   }
 
   const genesisFileRaw = await fs.readFile(genesisJsonPath);
+  const startTime = Date.now() + 30000;
   const genesisFile = JSON.stringify({
     ...JSON.parse(genesisFileRaw),
-    START_TIME: Date.now(),
+    startTime,
   });
   const genesisPath = path.join(stateDir, 'genesis.json');
 
