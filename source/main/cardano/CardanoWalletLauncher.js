@@ -63,6 +63,9 @@ export function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
   switch (nodeImplementation) {
     case 'cardano':
       merge(launcherConfig, { nodeConfig });
+      if (cluster === SELFNODE) {
+        // TODO: Inject start time
+      }
       break;
     case 'jormungandr':
       if (cluster === ITN_SELFNODE) {

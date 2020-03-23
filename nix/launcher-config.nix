@@ -165,10 +165,10 @@ let
         genesisFile = "${environment}-genesis.json";
         genesisHash = if (environment != "selfnode") then envCfg.genesisHash else "";
         topologyFile = "${environment}-topology.yaml";
-      } // lib.optionalAttrs (environment == "selfnode") {
-        delegationCertificate = "${environment}.cert";
-        signingKey = "${environment}.key";
       };
+    } // lib.optionalAttrs (environment == "selfnode") {
+      delegationCertificate = "${environment}.cert";
+      signingKey = "${environment}.key";
     };
     syncTolerance = "300s";
   }) // (lib.optionalAttrs (backend == "jormungandr") {

@@ -32,15 +32,15 @@ if (!isStartedByLauncher) {
 
 export type NodeConfig = {
   configurationDir: string,
+  delegationCertificate?: string,
   kind: 'byron',
   network: {
     configFile: string,
-    delegationCertificate?: string,
     genesisFile: string,
     genesisHash: string,
-    signingKey?: string,
     topologyFile: string,
   },
+  signingKey?: string,
 };
 
 /**
