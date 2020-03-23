@@ -163,7 +163,6 @@ let
       network = {
         configFile = "configuration-${environment}.yaml";
         genesisFile = "${environment}-genesis.json";
-        genesisHash = if (environment != "selfnode") then envCfg.genesisHash else "";
         topologyFile = "${environment}-topology.yaml";
       };
       socketFile = if os != "windows" then "${dataDir.${os}}${dirSep}cardano-node.socket" else "\\\\.\\pipe\\cardano-node-${environment}";
