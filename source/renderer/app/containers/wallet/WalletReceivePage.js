@@ -86,8 +86,7 @@ export default class WalletReceivePage extends Component<Props, State> {
 
   render() {
     const { actions, stores } = this.props;
-    const { uiDialogs, addresses, networkStatus } = stores;
-    const { isIncentivizedTestnet } = networkStatus.environment;
+    const { uiDialogs, addresses } = stores;
     const { addressToShare, activeWallet } = this.state;
     const { toggleSubMenus } = actions.sidebar;
 
@@ -105,7 +104,7 @@ export default class WalletReceivePage extends Component<Props, State> {
             isAddressValid={this.handleIsAddressValid}
             onShareAddress={this.handleShareAddress}
             onCopyAddress={this.handleCopyAddress}
-            isIncentivizedTestnet={isIncentivizedTestnet}
+            isIncentivizedTestnet={global.isIncentivizedTestnet}
             onToggleSubMenus={toggleSubMenus}
           />
         </VerticalFlexContainer>

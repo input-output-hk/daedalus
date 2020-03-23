@@ -45,11 +45,10 @@ export default class SidebarStore extends Store {
   }
 
   @action _configureCategories = () => {
-    const { networkStatus } = this.stores;
-    if (networkStatus.isIncentivizedTestnet) {
+    if (global.isIncentivizedTestnet) {
       this.CATEGORIES = sidebarConfig.CATEGORIES_WITHOUT_DELEGATION_COUNTDOWN;
     } else {
-      this.CATEGORIES = sidebarConfig.CATEGORIES_WITH_STAKING;
+      this.CATEGORIES = sidebarConfig.CATEGORIES;
     }
   };
 

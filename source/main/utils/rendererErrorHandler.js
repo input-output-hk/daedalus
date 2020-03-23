@@ -1,13 +1,6 @@
 // @flow
 import { BrowserWindow } from 'electron';
-import unhandled from 'electron-unhandled';
 import { Logger } from './logging';
-
-unhandled({
-  logger: (error: any) =>
-    Logger.error('unhandledException::renderer', { error }),
-  showDialog: false,
-});
 
 export default class RendererErrorHandler {
   count: number = 0;
@@ -18,6 +11,7 @@ export default class RendererErrorHandler {
   setup(window: BrowserWindow, createMainWindow: Function) {
     this.window = window;
     this.createMainWindow = createMainWindow;
+    Logger.info('Renderer Error Handler started');
   }
 
   onError(errorType: string, error: any) {

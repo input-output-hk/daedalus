@@ -12,9 +12,10 @@ import {
   ITN_SELFNODE,
 } from '../../common/types/environment.types';
 import { Logger } from '../utils/logging';
+import type { CardanoNodeImplementation } from '../../common/types/cardano-node.types';
 
 export type WalletOpts = {
-  nodeImplementation: 'jormungandr' | 'cardano-node',
+  nodeImplementation: CardanoNodeImplementation,
   nodeConfig: NodeConfig,
   cluster: string,
   stateDir: string,

@@ -1,6 +1,7 @@
 // @flow
 import type {
   CardanoNodeStorageKeys,
+  CardanoNodeImplementation,
   NetworkNames,
   PlatformNames,
   ProcessNames,
@@ -66,7 +67,13 @@ export const deriveStorageKeys = (
   PREVIOUS_CARDANO_PID: `${getNetworkName(network)}-PREVIOUS-CARDANO-PID`,
 });
 
-export const deriveProcessNames = (platform: PlatformNames): ProcessNames => ({
+export const deriveProcessNames = (
+  platform: PlatformNames,
+  nodeImplementation: CardanoNodeImplementation
+): ProcessNames => ({
   CARDANO_PROCESS_NAME:
-    CardanoProcessNameOptions[platform] || 'cardano-wallet-jormungandr',
+    CardanoProcessNameOptions[nodeImplementation][platform] ||
+    (nodeImplementation === 'jormungandr'
+      ? 'cardano-wallet-jormungandr'
+      : 'cardano-wallet-byron'),
 });

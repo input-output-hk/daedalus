@@ -3,6 +3,7 @@ import path from 'path';
 import { app, dialog } from 'electron';
 import { readLauncherConfig } from './utils/config';
 import { environment } from './environment';
+import type { CardanoNodeImplementation } from '../common/types/cardano-node.types';
 
 const { isTest, isProduction, isBlankScreenFixActive } = environment;
 
@@ -52,7 +53,7 @@ export type LauncherConfig = {
   walletBin: string,
   walletArgs: Array<string>,
   nodeBin: string,
-  nodeImplementation: 'jormungandr' | 'cardano-node',
+  nodeImplementation: CardanoNodeImplementation,
   nodeConfig: NodeConfig,
   nodeArgs: Array<string>,
   tlsPath: string,
@@ -114,9 +115,11 @@ export const launcherConfig: LauncherConfig = readLauncherConfig(
 export const appLogsFolderPath = launcherConfig.logsPrefix;
 export const pubLogsFolderPath = path.join(appLogsFolderPath, 'pub');
 export const appFolderPath = launcherConfig.workingDir;
-export const { nodeDbPath } = launcherConfig;
+export const { nodeDbPath, nodeImplementation, cluster } = launcherConfig;
 export const stateDirectoryPath = launcherConfig.stateDir;
 export const stateDrive = isWindows ? stateDirectoryPath.slice(0, 2) : '/';
+
+// Logging config
 export const ALLOWED_LOGS = [
   'Daedalus.json',
   'System-info.json',

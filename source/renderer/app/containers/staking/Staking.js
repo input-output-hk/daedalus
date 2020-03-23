@@ -74,7 +74,7 @@ export default class Staking extends Component<Props> {
 
   render() {
     const {
-      stores: { app, staking, networkStatus },
+      stores: { app, staking },
       children,
     } = this.props;
     const { isStakingExperimentRead, isStakingDelegationCountdown } = staking;
@@ -93,7 +93,7 @@ export default class Staking extends Component<Props> {
             isActiveNavItem={this.isActiveNavItem}
             onNavItemClick={this.handleNavItemClick}
             activeItem={app.currentPage}
-            isIncentivizedTestnet={networkStatus.isIncentivizedTestnet}
+            isIncentivizedTestnet={global.isIncentivizedTestnet}
           >
             {children}
           </StakingWithNavigation>

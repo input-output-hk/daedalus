@@ -48,6 +48,7 @@ export default class Sidebar extends Component<Props> {
   render() {
     const {
       menus,
+      categories,
       activeSidebarCategory,
       pathname,
       isShowingSubMenus,
@@ -55,21 +56,11 @@ export default class Sidebar extends Component<Props> {
       isIncentivizedTestnet,
     } = this.props;
 
-    let { categories } = this.props;
-
     let subMenu = null;
 
     const walletsCategory = find(categories, {
       name: CATEGORIES_BY_NAME.WALLETS.name,
     }).route;
-
-    if (isIncentivizedTestnet) {
-      categories = categories.filter(
-        category =>
-          category.name !==
-          CATEGORIES_BY_NAME.PAPER_WALLET_CREATE_CERTIFICATE.name
-      );
-    }
 
     if (menus && activeSidebarCategory === walletsCategory) {
       subMenu = (

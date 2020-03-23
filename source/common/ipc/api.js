@@ -9,7 +9,6 @@ import type { GenerateAddressPDFParams } from '../types/address-pdf-request.type
 import type { GenerateRewardsCsvParams } from '../types/rewards-csv-request.types';
 import type {
   CardanoNodeState,
-  CardanoNodeImplementation,
   CardanoStatus,
   FaultInjectionIpcRequest,
   TlsConfig,
@@ -171,14 +170,6 @@ export type CardanoAwaitUpdateMainResponse = void;
 export const CARDANO_STATE_CHANNEL = 'CARDANO_STATE_CHANNEL';
 export type CardanoStateRendererRequest = void;
 export type CardanoStateRendererResponse = CardanoNodeState;
-
-/**
- * Channel where main process tells the renderer about the specific cardano node implementation
- */
-export const CARDANO_NODE_IMPLEMENTATION_CHANNEL =
-  'CARDANO_NODE_IMPLEMENTATION_CHANNEL';
-export type CardanoNodeImplementationRendererRequest = void;
-export type CardanoNodeImplementationRendererResponse = CardanoNodeImplementation;
 
 /**
  * Channel to exchange tls config between main and renderer process
