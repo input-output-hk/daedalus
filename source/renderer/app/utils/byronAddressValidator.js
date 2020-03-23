@@ -8,16 +8,16 @@ const BECH32_DECODE_LIMIT = 128;
 
 const ChainSettings = {
   mainnet: 'mainnet',
-  testnet: 'testnet'
+  testnet: 'testnet',
 };
 
-const ByronBech32AddressKind = {
-  spendingAddress: 0,
-  scriptAddress: 1,
-  redeemAddress: 2,
-  stakingAddress: 3,
-  groupedAddress: 4, // @TODO - check needed
-}
+// const ByronBech32AddressKind = {
+//   spendingAddress: 0,
+//   scriptAddress: 1,
+//   redeemAddress: 2,
+//   stakingAddress: 3,
+//   groupedAddress: 4, // @TODO - check needed
+// }
 
 const ByronBech32AddressName = {
   spending: 'spending',
@@ -25,7 +25,7 @@ const ByronBech32AddressName = {
   redeem: 'redeem',
   staking: 'staking',
   grouped: 'grouped', // @TODO - check needed
-}
+};
 
 type ChainSettingsType = 'mainnet' | 'testnet';
 type DecodeByronBech32AddressType = {
@@ -36,39 +36,45 @@ type DecodeByronBech32AddressType = {
 const introspectAddress = (address: string) => {
   try {
     const decodedAddress = bech32.decode(address, BECH32_DECODE_LIMIT);
-    const bytes = Buffer.from(bech32.fromWords(decodedAddress.words))
+    const bytes = Buffer.from(bech32.fromWords(decodedAddress.words));
     const byronBech32Address = decodeByronBech32Address(bytes);
 
     if (byronBech32Address) {
-      return { ...byronBech32Address, kind: translateByronBech32AddressKind(byronBech32Address.kind) }
+      return {
+        ...byronBech32Address,
+        kind: translateByronBech32AddressKind(byronBech32Address.kind),
+      };
     }
   } catch (error) {
-    throw error
+    throw error;
   }
-  return new Error(`${address} is not a valid Byron Address`);
-}
+  throw new Error(`${address} is not a valid Byron Address`);
+};
 
 // @TODO - check needed
-const translateByronBech32AddressKind = (kind: ByronBech32AddressKind) => {
+const translateByronBech32AddressKind = (kind: number) => {
   switch (kind) {
-    case 0 :
-      return ByronBech32AddressName.spending
-    case 1 :
-      return ByronBech32AddressName.script
-    case 2 :
-      return ByronBech32AddressName.redeem
-    case 3 :
-      return ByronBech32AddressName.staking
-    case 4 :
-      return ByronBech32AddressName.grouped
-    default :
-      throw new Error('Unrecognised ByronBech32AddressKind')
+    case 0:
+      return ByronBech32AddressName.spending;
+    case 1:
+      return ByronBech32AddressName.script;
+    case 2:
+      return ByronBech32AddressName.redeem;
+    case 3:
+      return ByronBech32AddressName.staking;
+    case 4:
+      return ByronBech32AddressName.grouped;
+    default:
+      throw new Error('Unrecognised ByronBech32AddressKind');
   }
-}
+};
 
-const decodeByronBech32Address = (bytes : Buffer) : (DecodeByronBech32AddressType | null) => {
+const decodeByronBech32Address = (
+  bytes: Buffer
+): DecodeByronBech32AddressType | null => {
   const kind = bytes[0] & 0b01111111;
-  const network = (bytes[0] & 0b10000000) ? ChainSettings.testnet : ChainSettings.mainnet;
+  const network =
+    bytes[0] & 0b10000000 ? ChainSettings.testnet : ChainSettings.mainnet;
   // TODO - check needed
   // switch (kind) {
   //   case ByronBech32AddressKind.spending:
@@ -105,16 +111,19 @@ const decodeByronBech32Address = (bytes : Buffer) : (DecodeByronBech32AddressTyp
   //     return null
   // }
   return { kind, network };
-}
+};
 
-export const isValidByronAddress = (address: string, expectedNetwork: ChainSettingsType) => {
+export const isValidByronAddress = (
+  address: string,
+  expectedNetwork: ChainSettingsType
+) => {
   // Try to validate Byron "Bech32" address
   try {
     const { kind, network } = introspectAddress(address);
     if (!Object.values(ByronBech32AddressName).includes(kind)) return false;
     return network === expectedNetwork;
   } catch (error) {
-    if (error.message.substring(0, 17) !== 'Mixed-case string') throw error
+    if (error.message.substring(0, 17) !== 'Mixed-case string') throw error;
   }
 
   // Try to validate Byron "Base58" address
@@ -123,4 +132,4 @@ export const isValidByronAddress = (address: string, expectedNetwork: ChainSetti
   } catch (error) {
     return error;
   }
-}
+};

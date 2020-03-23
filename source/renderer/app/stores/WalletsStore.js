@@ -920,7 +920,9 @@ export default class WalletsStore extends Store {
       : ChainSettings.testnet;
 
     try {
-      return !isIncentivizedTestnet ? isValidByronAddress(address, chainSettings) : Address.Util.isAddress(address, chainSettings, addressGroup);
+      return !isIncentivizedTestnet
+        ? isValidByronAddress(address, chainSettings)
+        : Address.Util.isAddress(address, chainSettings, addressGroup);
     } catch (error) {
       return false;
     }

@@ -53,10 +53,11 @@ export default class Navigation extends Component<Props> {
 
     return (
       <div className={styles.component}>
-        {items.map(({ id, icon, label, isLegacy, hasNotification, ...item }) => {
-          if (includes(ITN_LEGACY_WALLET_EXCLUDED_NAV_ITEMS, id) && isLegacy) return null;
-          return (
-            item.type === 'dropdown'
+        {items.map(
+          ({ id, icon, label, isLegacy, hasNotification, ...item }) => {
+            if (includes(ITN_LEGACY_WALLET_EXCLUDED_NAV_ITEMS, id) && isLegacy)
+              return null;
+            return item.type === 'dropdown'
               ? (!isLegacy && (
                   <NavDropdown
                     key={id}
@@ -70,17 +71,17 @@ export default class Navigation extends Component<Props> {
                     hasNotification={hasNotification}
                   />
                 )) ||
-                (isLegacy && (
-                  <NavButton
-                    key={id}
-                    className={id}
-                    label={label}
-                    icon={icon}
-                    isActive={isActiveNavItem(id, item)}
-                    onClick={() => onNavItemClick(id)}
-                    hasNotification={hasNotification}
-                  />
-                ))
+                  (isLegacy && (
+                    <NavButton
+                      key={id}
+                      className={id}
+                      label={label}
+                      icon={icon}
+                      isActive={isActiveNavItem(id, item)}
+                      onClick={() => onNavItemClick(id)}
+                      hasNotification={hasNotification}
+                    />
+                  ))
               : !isLegacy && (
                   <NavButton
                     key={id}
@@ -91,9 +92,9 @@ export default class Navigation extends Component<Props> {
                     onClick={() => onNavItemClick(id)}
                     hasNotification={hasNotification}
                   />
-                )
-          );
-        })}
+                );
+          }
+        )}
       </div>
     );
   }
