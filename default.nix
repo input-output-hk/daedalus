@@ -167,7 +167,7 @@ let
       cp $launcherConfigPath $out/launcher-config.yaml
       ${optionalString (self.launcherConfigs.installerConfig.hasBlock0 or false) "cp ${self.launcherConfigs.installerConfig.block0} $out/block-0.bin"}
       ${if (nodeImplementation == "jormungandr") then ''
-        ${if (cluster == "selfnode") then ''
+        ${if (cluster == "itn_selfnode") then ''
           cp ${self.launcherConfigs.cfg-files}/config.yaml $out/
           cp ${self.launcherConfigs.cfg-files}/secret.yaml $out/
           cp ${self.launcherConfigs.cfg-files}/genesis.yaml $out/
@@ -205,6 +205,7 @@ let
         itn_rewards_v1 = "Daedalus - Rewards v1";
         qa = "Daedalus QA";
         selfnode = "Daedalus SelfNode";
+        itn_selfnode = "Daedalus SelfNode - ITN";
       };
       installDir = mapping.${cluster};
     in pkgs.runCommand "win64-installer-${cluster}" {
