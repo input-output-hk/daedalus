@@ -33,11 +33,9 @@ let
   # TODO, nsis cant cross-compile with the nixpkgs daedalus currently uses
   nsisNixPkgs = import localLib.sources.nixpkgs-nsis {};
   installPath = ".daedalus";
-  cardanoSL = localLib.cardanoSL { inherit target; };
   needSignedBinaries = (signingKeys != null) || (HSMServer != null);
   buildNumSuffix = if buildNum == null then "" else ("-${builtins.toString buildNum}");
   throwSystem = throw "Unsupported system: ${pkgs.stdenv.hostPlatform.system}";
-  ghcWithCardano = cardanoSL.haskellPackages.ghcWithPackages (ps: [ ps.cardano-sl ps.cardano-sl-x509 ]);
   ostable.x86_64-windows = "windows";
   ostable.x86_64-linux = "linux";
   ostable.x86_64-darwin = "macos64";
@@ -46,7 +44,7 @@ let
     jormungandrLib = localLib.iohkNix.jormungandrLib;
     cardanoLib = localLib.iohkNix.cardanoLib;
     daedalus-bridge = self.bridgeTable.${nodeImplementation};
-    export-wallets = cardanoSL.nix-tools.cexes.cardano-wallet.export-wallets;
+    export-wallets = self.cardano-sl.nix-tools.cexes.cardano-wallet.export-wallets;
     db-converter = self.cardano-wallet.db-converter;
 
     sources = localLib.sources;
@@ -58,6 +56,7 @@ let
     cardano-wallet-native = import self.sources.cardano-wallet { inherit system; gitrev = self.sources.cardano-wallet.rev; };
     cardano-shell = import self.sources.cardano-shell { inherit system; crossSystem = crossSystem shellPkgs.lib; };
     cardano-node = self.cardano-wallet.cardano-node;
+    cardano-sl = import self.sources.cardano-sl { inherit target; gitrev = self.sources.cardano-sl.rev; };
 
     # a cross-compiled fastlist for the ps-list package
     fastlist = pkgs.pkgsCross.mingwW64.callPackage ./nix/fastlist.nix {};
@@ -211,7 +210,7 @@ let
     in pkgs.runCommand "win64-installer-${cluster}" {
       buildInputs = [
         self.daedalus-installer self.nsis pkgs.unzip pkgs.jq self.yaml2json
-      ] ++ optional (fudgeConfig != null) self.configMutator;
+      ];
     } ''
       echo '~~~   Preparing files for installer'
       mkdir home
@@ -274,15 +273,10 @@ let
     };
     daedalus-installer = pkgs.haskell.lib.justStaticExecutables self.hsDaedalusPkgs.daedalus-installer;
     daedalus = self.callPackage ./installers/nix/linux.nix {};
-    configMutator = pkgs.runCommand "configMutator" { buildInputs = [ ghcWithCardano ]; } ''
-      cp ${./ConfigMutator.hs} ConfigMutator.hs
-      mkdir -p $out/bin/
-      ghc ConfigMutator.hs -o $out/bin/config-mutator
-    '';
     rawapp = self.callPackage ./yarn2nix.nix {
       inherit buildNum;
       api = "ada";
-      apiVersion = cardanoSL.daedalus-bridge.version;
+      apiVersion = self.cardano-sl.daedalus-bridge.version;
     };
     rawapp-win64 = self.rawapp.override { win64 = true; };
     source = builtins.filterSource localLib.cleanSourceFilter ./.;
