@@ -3,7 +3,7 @@
 let
   commonLib = import ../lib.nix {};
   pkgsCross = import cardano-wallet.pkgs.path { crossSystem = cardano-wallet.pkgs.lib.systems.examples.mingwW64; config = {}; overlays = []; };
-in runCommand "daedalus-haskell-bridge" {
+in runCommand "daedalus-cardano-bridge" {
   passthru = {
     node-version = cardano-node.version;
     wallet-version = cardano-wallet.version;
@@ -21,10 +21,10 @@ in runCommand "daedalus-haskell-bridge" {
     echo ${cardano-wallet.jormungandr}
     cp ${pkgsCross.libffi}/bin/libffi-6.dll .
   ''}
-  ${pkgs.lib.optionalString (target == "x86_64-linux") ''
-    for bin in cardano-launcher cardano-wallet-byron cardano-node export-wallets db-converter; do
-      strip $bin
-      patchelf --shrink-rpath $bin
-    done
-  ''}
 ''
+  #${pkgs.lib.optionalString (target == "x86_64-linux") ''
+  #  for bin in cardano-launcher cardano-wallet-byron cardano-node export-wallets db-converter; do
+  #    ${pkgs.binutils-unwrapped}/bin/strip $bin
+  #    ${pkgs.patchelf}/bin/patchelf --shrink-rpath $bin
+  #  done
+  #''}
