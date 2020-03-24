@@ -270,8 +270,12 @@ makeComponentRoot Options{oBackend,oCluster} appRoot darwinConfig@DarwinConfig{d
         cp (bridge </> "bin" </> f) (dir </> f)
 
       -- Config files (from daedalus-bridge)
-      when (oCluster /= Selfnode) $
+      when (oCluster /= ITN_Selfnode) $
         cp "jormungandr-config.yaml" (dataDir </> "jormungandr-config.yaml")
+
+      when (oCluster /= Selfnode) $ do
+        cp "signing.key" (dataDir </> "signing.key")
+        cp "delegation.cert" (dataDir </> "delegation.cert")
 
       when hasBlock0 $
         cp "block-0.bin" (dataDir </> "block-0.bin")
