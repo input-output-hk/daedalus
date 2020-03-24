@@ -118,7 +118,10 @@ export const createSelfnodeGenesisFile = async (
     '--genesis-json',
     genesisPath,
   ]);
-  const genesisHash = genesisHashBuffer.toString().replace('\r\n', '');
+  const genesisHash = genesisHashBuffer
+    .toString()
+    .replace('\r', '')
+    .replace('\n', '');
   logger.info('Generated selfnode genesis hash', { genesisHash });
 
   return { genesisPath, genesisHash };
