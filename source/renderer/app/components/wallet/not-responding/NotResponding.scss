@@ -46,6 +46,7 @@
       border-radius: 4px;
       margin-bottom: 30px;
       padding: 12px 24px;
+      text-align: left;
       p {
         color: var(--theme-wallet-not-responding-title-text-color);
         font-family: var(--font-regular);
@@ -53,6 +54,9 @@
         line-height: 1.43;
         margin-bottom: 10px;
         opacity: 0.7;
+        &:last-child {
+          margin-bottom: 0;
+        }
       }
     }
     .restartNodeButton {

@@ -650,7 +650,6 @@ export const DARK_BLUE_THEME_OUTPUT = {
       'rgba(255, 255, 255, 0.3)',
     '--theme-sidebar-category-networkInfo-background-color': '#536370',
     '--theme-sidebar-category-networkInfo-text-color': '#e9f4fe',
-    '--theme-sidebar-menu-item-wallet-name-color-disabled': '#536370',
   },
   splash: {
     '--theme-splash-network-background-color': 'rgba(38, 51, 69, 0.96)',
@@ -898,7 +897,7 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-wallet-not-responding-button-background-color-hover': '#fafbfc',
     '--theme-wallet-not-responding-button-border-color': '#e9f4fe',
     '--theme-wallet-not-responding-button-text-color': '#e9f4fe',
-    '--theme-wallet-not-responding-button-text-color-hover': '#3a454e',
+    '--theme-wallet-not-responding-button-text-color-hover': '#263345',
     '--theme-wallet-not-responding-description-background-color':
       'rgba(0, 0, 0, .1)',
     '--theme-wallet-not-responding-description-text-color':

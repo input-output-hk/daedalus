@@ -754,7 +754,6 @@ export const createDaedalusComponentsTheme = (
       '--theme-sidebar-menu-item-background-color-hover': `${background.secondary.darkest}`,
       '--theme-sidebar-menu-item-background-color-active': `${background.secondary.darkest}`, // rename to active wallet?
       '--theme-sidebar-menu-item-wallet-name-color': `${text.secondary}`,
-      '--theme-sidebar-menu-item-wallet-name-color-disabled': `${background.secondary.regular}`,
       '--theme-sidebar-menu-item-wallet-info-color': `${text.secondary}`,
       '--theme-sidebar-menu-add-button-background-color': `${background.secondary.darkest}`,
       '--theme-sidebar-menu-add-button-background-color-active': `${chroma(

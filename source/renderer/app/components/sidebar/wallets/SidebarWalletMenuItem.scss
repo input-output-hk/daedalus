@@ -34,9 +34,8 @@
 }
 
 .notResponding {
-  .title,
-  .info {
-    color: var(--theme-sidebar-menu-item-wallet-name-color-disabled);
+  .meta {
+    opacity: 0.5;
   }
 }
 

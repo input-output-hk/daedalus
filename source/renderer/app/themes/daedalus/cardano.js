@@ -646,7 +646,6 @@ export const CARDANO_THEME_OUTPUT = {
       'rgba(255, 255, 255, 0.3)',
     '--theme-sidebar-category-networkInfo-background-color': '#2cbb69',
     '--theme-sidebar-category-networkInfo-text-color': '#fff',
-    '--theme-sidebar-menu-item-wallet-name-color-disabled': '#2cbb69',
   },
   splash: {
     '--theme-splash-network-background-color': 'rgba(32, 34, 37, 0.96)',
@@ -893,7 +892,7 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-wallet-not-responding-button-background-color-hover': '#ffffff',
     '--theme-wallet-not-responding-button-border-color': '#ffffff',
     '--theme-wallet-not-responding-button-text-color': '#ffffff',
-    '--theme-wallet-not-responding-button-text-color-hover': '#28a85f',
+    '--theme-wallet-not-responding-button-text-color-hover': '#202225',
     '--theme-wallet-not-responding-description-background-color':
       'rgba(32, 34, 37, 0.96)',
     '--theme-wallet-not-responding-description-text-color':
