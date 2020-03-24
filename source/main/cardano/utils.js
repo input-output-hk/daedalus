@@ -135,7 +135,6 @@ export const createSelfnodeConfig = async (
   const configFile = JSON.stringify({
     ...JSON.parse(configFileContent),
     GenesisFile: genesisPath,
-    GenesisHash: genesisHash,
   });
   const configPath = path.join(stateDir, 'config.yaml');
 
