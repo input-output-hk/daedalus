@@ -1036,6 +1036,12 @@ export const createDaedalusComponentsTheme = (
       ).alpha(0.96)}`,
       '--theme-wallet-not-responding-text-color': `${text.secondary}`,
       '--theme-wallet-not-responding-description-background-color': `${background.secondary.dark}`,
+      '--theme-wallet-not-responding-button-background-color': `${background.secondary.dark}`,
+      '--theme-wallet-not-responding-button-border-color': `${text.secondary}`,
+      '--theme-wallet-not-responding-button-text-color': `${text.secondary}`,
+      '--theme-wallet-not-responding-button-background-color-hover': `${text.secondary}`,
+      '--theme-wallet-not-responding-button-text-color-hover': `${background.secondary.darkest}`,
+      '--theme-wallet-not-responding-link-text-color': `${text.secondary}`,
     },
   };
 };

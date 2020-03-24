@@ -88,6 +88,9 @@ export default class Wallet extends Component<Props> {
           hasNotification={hasNotification}
           isNotResponding={isNotResponding}
           onRestartNode={() => restartNode.trigger()}
+          onOpenExternalLink={(url: string) =>
+            this.props.stores.app.openExternalLink(url)
+          }
         >
           {this.props.children}
         </WalletWithNavigation>

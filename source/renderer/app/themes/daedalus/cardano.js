@@ -889,6 +889,13 @@ export const CARDANO_THEME_OUTPUT = {
   walletNotRespondingOverlay: {
     '--theme-wallet-not-responding-background-color': '#2cbb69f5',
     '--theme-wallet-not-responding-text-color': '#fafbfc',
+    '--theme-wallet-not-responding-description-background-color': '#28a85f',
+    '--theme-wallet-not-responding-button-background-color': '#28a85f',
+    '--theme-wallet-not-responding-button-border-color': '#fafbfc',
+    '--theme-wallet-not-responding-button-text-color': '#fafbfc',
+    '--theme-wallet-not-responding-button-background-color-hover': '#fafbfc',
+    '--theme-wallet-not-responding-button-text-color-hover': '#1f834a',
+    '--theme-wallet-not-responding-link-text-color': '#fafbfc',
   },
 };
 

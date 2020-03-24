@@ -894,6 +894,13 @@ export const DARK_BLUE_THEME_OUTPUT = {
   walletNotRespondingOverlay: {
     '--theme-wallet-not-responding-background-color': '#536370f5',
     '--theme-wallet-not-responding-text-color': '#fafbfc',
+    '--theme-wallet-not-responding-description-background-color': '#4b5965',
+    '--theme-wallet-not-responding-button-background-color': '#4b5965',
+    '--theme-wallet-not-responding-button-border-color': '#fafbfc',
+    '--theme-wallet-not-responding-button-text-color': '#fafbfc',
+    '--theme-wallet-not-responding-button-background-color-hover': '#fafbfc',
+    '--theme-wallet-not-responding-button-text-color-hover': '#3a454e',
+    '--theme-wallet-not-responding-link-text-color': '#fafbfc',
   },
 };
 

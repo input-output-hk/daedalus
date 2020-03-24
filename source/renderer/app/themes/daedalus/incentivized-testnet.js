@@ -880,6 +880,13 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
   walletNotRespondingOverlay: {
     '--theme-wallet-not-responding-background-color': '#36374df5',
     '--theme-wallet-not-responding-text-color': '#000000',
+    '--theme-wallet-not-responding-description-background-color': '#313245',
+    '--theme-wallet-not-responding-button-background-color': '#313245',
+    '--theme-wallet-not-responding-button-border-color': '#000000',
+    '--theme-wallet-not-responding-button-text-color': '#000000',
+    '--theme-wallet-not-responding-button-background-color-hover': '#000000',
+    '--theme-wallet-not-responding-button-text-color-hover': '#262736',
+    '--theme-wallet-not-responding-link-text-color': '#000000',
   },
 };
 

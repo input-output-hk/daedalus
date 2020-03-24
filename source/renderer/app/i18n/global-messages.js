@@ -171,6 +171,7 @@ export default defineMessages({
     description:
       'URL for the "Known Issues" link in the "Help and support" section on the support settings page',
   },
+
   currency: {
     id: 'environment.currency.ada',
     defaultMessage: '!!!ADA',

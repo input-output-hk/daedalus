@@ -13,6 +13,7 @@ type Props = {
   isLegacy: boolean,
   onWalletNavItemClick: Function,
   onRestartNode: Function,
+  onOpenExternalLink: Function,
   hasNotification?: boolean,
   isNotResponding: boolean,
 };
@@ -29,10 +30,16 @@ export default class WalletWithNavigation extends Component<Props> {
       hasNotification,
       isNotResponding,
       onRestartNode,
+      onOpenExternalLink,
     } = this.props;
     return (
       <div className={styles.component}>
-        {isNotResponding && <NotResponding onRestartNode={onRestartNode} />}
+        {isNotResponding && (
+          <NotResponding
+            onRestartNode={onRestartNode}
+            onOpenExternalLink={onOpenExternalLink}
+          />
+        )}
         <div className={styles.navigation}>
           <WalletNavigation
             isActiveNavItem={isActiveScreen}

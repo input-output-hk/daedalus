@@ -1,3 +1,5 @@
+@import '../../../themes/mixins/link';
+
 .component {
   background: var(--theme-wallet-not-responding-background-color);
   display: flex;
@@ -7,57 +9,72 @@
   position: absolute;
   width: 100%;
   z-index: 9;
-}
-.content {
-  display: flex;
-  flex-direction: column;
-  margin: 0 auto;
-  text-align: center;
-  width: 618px;
-}
-.icon {
-  margin-bottom: 36px;
-  svg {
-    height: 73px;
-    width: 82px;
-  }
-}
-.title {
-  color: var(--theme-wallet-not-responding-text-color);
-  font-family: var(--font-regular);
-  font-size: 20px;
-  line-height: 1.2;
-  margin-bottom: 16px;
-  text-align: center;
-}
-.description {
-  background-color: var(
-    --theme-wallet-not-responding-description-background-color
-  );
-  border-radius: 4px;
-  margin-bottom: 30px;
-  padding: 12px 24px;
-  p {
-    color: var(--theme-wallet-not-responding-text-color);
-    font-family: var(--font-regular);
-    font-size: 14px;
-    line-height: 1.43;
-    opacity: 0.7;
-  }
-}
-.button {
-  background-color: var(--theme-splash-network-overlay-button-background-color);
-  border: solid 1px var(--theme-splash-network-overlay-button-border-color);
-  color: var(--theme-splash-network-overlay-button-text-color);
-  font-weight: 500;
-  line-height: 1.36;
-  margin: 0 auto;
 
-  &:hover {
-    background-color: var(
-      --theme-splash-network-overlay-button-background-color-hover
-    );
-    border: none;
-    color: var(--theme-splash-network-overlay-button-text-color-hover);
+  .content {
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+    text-align: center;
+    width: 618px;
+
+    .icon {
+      margin-bottom: 36px;
+      svg {
+        height: 73px;
+        width: 82px;
+      }
+    }
+    .title {
+      color: var(--theme-wallet-not-responding-text-color);
+      font-family: var(--font-regular);
+      font-size: 20px;
+      line-height: 1.2;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+    .description {
+      background-color: var(
+        --theme-wallet-not-responding-description-background-color
+      );
+      border-radius: 4px;
+      margin-bottom: 30px;
+      padding: 12px 24px;
+      p {
+        color: var(--theme-wallet-not-responding-text-color);
+        font-family: var(--font-regular);
+        font-size: 14px;
+        line-height: 1.43;
+        margin-bottom: 10px;
+        opacity: 0.7;
+      }
+    }
+    .restartNodeButton {
+      background-color: var(
+        --theme-wallet-not-responding-button-background-color
+      );
+      border: solid 1px var(--theme-wallet-not-responding-button-border-color);
+      color: var(--theme-wallet-not-responding-button-text-color);
+      font-weight: 500;
+      line-height: 1.36;
+      margin: 0 auto 20px;
+
+      &:hover {
+        background-color: var(
+          --theme-wallet-not-responding-button-background-color-hover
+        );
+        border: none;
+        color: var(--theme-wallet-not-responding-button-text-color-hover);
+      }
+    }
+    .submitSupportButton {
+      border-bottom: 1px solid
+        var(--theme-wallet-not-responding-link-text-color);
+      color: var(--theme-wallet-not-responding-link-text-color);
+      margin: 0 auto;
+      opacity: 0.8;
+      &:after {
+        background-color: var(--theme-wallet-not-responding-link-text-color);
+      }
+    }
   }
 }
