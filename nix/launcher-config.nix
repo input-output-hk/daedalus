@@ -107,7 +107,7 @@ let
 
   byronConfigDir = {
     linux = tier2-cfg-files;
-    macos64 = "\${DAEDALUS_INSTALL_DIRECTORY}/../Resources";
+    macos64 = if devShell then tier2-cfg-files else "\${DAEDALUS_INSTALL_DIRECTORY}/../Resources";
     windows = "\${DAEDALUS_INSTALL_DIRECTORY}";
   };
 
