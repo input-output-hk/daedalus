@@ -188,13 +188,22 @@ writeInstallerNSIS outName (Version fullVersion') InstallerConfig{hasBlock0,inst
                   Jormungandr _ -> do
                     file [] "jormungandr.exe"
                     file [] "cardano-wallet-jormungandr.exe"
-                    file [] "libffi-6.dll"
                     when (clusterName /= ITN_Selfnode) $
                       file [] "jormungandr-config.yaml"
                   Cardano _ -> do
                     file [] "cardano-node.exe"
                     file [] "cardano-wallet-byron.exe"
+                    file [] "export-wallets.exe"
+                    file [] "db-converter.exe"
+                    file [] "cardano-cli.exe"
+                    file [] "config.yaml"
+                    file [] "topology.yaml"
+                    file [] "genesis.json"
+                    when (clusterName == Selfnode) $ do
+                      file [] "signing.key"
+                      file [] "delegation.cert"
                 file [] "cardano-launcher.exe"
+                file [] "libffi-6.dll"
                 --file [] "cardano-x509-certificates.exe"
                 --file [] "log-config-prod.yaml"
                 --file [] "wallet-topology.yaml"

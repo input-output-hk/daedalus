@@ -168,14 +168,22 @@ let
       mkdir $out
       cp daedalus.nsi uninstaller.nsi $out/
       cp $launcherConfigPath $out/launcher-config.yaml
-      ${optionalString (self.launcherConfigs.installerConfig.hasBlock0 or false) "cp ${self.launcherConfigs.installerConfig.block0} $out/block-0.bin"}
-      ${if (nodeImplementation == "jormungandr") then ''
+      ${optionalString (nodeImplementation == "jormungandr") ''
+        ${optionalString (self.launcherConfigs.installerConfig.hasBlock0 or false) "cp ${self.launcherConfigs.installerConfig.block0} $out/block-0.bin"}
         ${if (cluster == "itn_selfnode") then ''
           cp ${self.launcherConfigs.cfg-files}/config.yaml $out/
           cp ${self.launcherConfigs.cfg-files}/secret.yaml $out/
           cp ${self.launcherConfigs.cfg-files}/genesis.yaml $out/
         '' else "cp ${self.launcherConfigs.jormungandr-config} $out/jormungandr-config.yaml"}
-      '' else ''
+      ''}
+      ${optionalString (nodeImplementation == "cardano") ''
+          cp ${self.launcherConfigs.tier2-cfg-files}/config.yaml $out/config.yaml
+          cp ${self.launcherConfigs.tier2-cfg-files}/genesis.json $out/genesis.json
+          cp ${self.launcherConfigs.tier2-cfg-files}/topology.yaml $out/topology.yaml
+        ${optionalString (cluster == "selfnode") ''
+          cp ${self.launcherConfigs.tier2-cfg-files}/signing.key $out/signing.key
+          cp ${self.launcherConfigs.tier2-cfg-files}/delegation.cert $out/delegation.cert
+        ''}
       ''}
       ls -lR $out
     '';

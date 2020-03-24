@@ -92,17 +92,18 @@ let
     passAsFile = [ "nodeConfig" ];
   } ''
     mkdir $out
-    cp ${genesisFile} $out/${environment}-genesis.json
-    cp $nodeConfigPath $out/configuration-${environment}.yaml
-    cp $topologyFile $out/${environment}-topology.yaml
+    cp ${genesisFile} $out/genesis.json
+    cp $nodeConfigPath $out/config.yaml
+    cp $topologyFile $out/topology.yaml
     ${lib.optionalString (environment == "selfnode") ''
-      cp ${envCfg.delegationCertificate} $out/${environment}.cert
-      cp ${envCfg.signingKey} $out/${environment}.key
+      cp ${envCfg.delegationCertificate} $out/delegation.cert
+      cp ${envCfg.signingKey} $out/signing.key
     ''}
   '';
 
   finalGenesisLocation.linux = envCfg.genesisFile;
   finalGenesisLocation.macos64 = envCfg.genesisFile;
+  finalGenesisLocation.windows = envCfg.genesisFile;
 
   byronConfigDir = {
     linux = tier2-cfg-files;
@@ -161,10 +162,10 @@ let
       kind = "byron";
       configurationDir = "";
       network = {
-        configFile = "${byronConfigDir.${os}}${dirSep}configuration-${environment}.yaml";
-        genesisFile = "${byronConfigDir.${os}}${dirSep}${environment}-genesis.json";
+        configFile = "${byronConfigDir.${os}}${dirSep}config.yaml";
+        genesisFile = "${byronConfigDir.${os}}${dirSep}genesis.json";
         genesisHash = if (environment != "selfnode") then envCfg.genesisHash else "";
-        topologyFile = "${byronConfigDir.${os}}${dirSep}${environment}-topology.yaml";
+        topologyFile = "${byronConfigDir.${os}}${dirSep}topology.yaml";
       };
       socketFile = if os != "windows" then "${dataDir.${os}}${dirSep}cardano-node.socket" else "\\\\.\\pipe\\cardano-node-${environment}";
     } // lib.optionalAttrs (environment == "selfnode") {
@@ -232,4 +233,4 @@ in {
     cp $installerConfigPath installer-config.json
     cp $launcherConfigPath launcher-config.yaml
   '';
-}
+} // { inherit tier2-cfg-files; }
