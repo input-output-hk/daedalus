@@ -46,7 +46,7 @@ let
   daedalusBin.macos64 = "\${DAEDALUS_INSTALL_DIRECTORY}/Frontend";
   cliBin.linux = if backend == "jormungandr" then "jcli" else "cardano-cli";
   cliBin.windows = if backend == "jormungandr" then "\${DAEDALUS_INSTALL_DIRECTORY}\\jcli.exe" else "\${DAEDALUS_INSTALL_DIRECTORY}\\cardano-cli.exe";
-  cliBin.macos64 = if backend == "jormungandr" then "\${DAEDALUS_INSTALL_DIRECTORY}/jcli" else "\${DAEDALUS_INSTALL_DIRECTORY}/cardano-cli";
+  cliBin.macos64 = if backend == "jormungandr" then "\${DAEDALUS_INSTALL_DIRECTORY}/jcli" else (if devShell then "cardano-cli" else "\${DAEDALUS_INSTALL_DIRECTORY}/cardano-cli");
   launcherLogsPrefix.linux = "${dataDir.${os}}/Logs/";
   launcherLogsPrefix.windows = "Logs\\pub";
   launcherLogsPrefix.macos64 = "${dataDir.${os}}/Logs/pub";
