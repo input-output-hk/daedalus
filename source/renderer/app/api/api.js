@@ -38,7 +38,8 @@ import { createByronWalletTransaction } from './transactions/requests/createByro
 import { deleteLegacyTransaction } from './transactions/requests/deleteLegacyTransaction';
 
 // Wallets requests
-import { changeSpendingPassword } from './wallets/requests/changeSpendingPassword';
+import { updateSpendingPassword } from './wallets/requests/updateSpendingPassword';
+// import { updateByronSpendingPassword } from './wallets/requests/updateByronSpendingPassword';
 import { deleteWallet } from './wallets/requests/deleteWallet';
 import { deleteLegacyWallet } from './wallets/requests/deleteLegacyWallet';
 import { exportWalletAsJSON } from './wallets/requests/exportWalletAsJSON';
@@ -51,9 +52,11 @@ import { restoreWallet } from './wallets/requests/restoreWallet';
 import { restoreLegacyWallet } from './wallets/requests/restoreLegacyWallet';
 import { restoreByronWallet } from './wallets/requests/restoreByronWallet';
 import { updateWallet } from './wallets/requests/updateWallet';
+// import { updateByronWallet } from './wallets/requests/updateByronWallet';
 import { forceWalletResync } from './wallets/requests/forceWalletResync';
 import { forceLegacyWalletResync } from './wallets/requests/forceLegacyWalletResync';
 import { getWalletUtxos } from './wallets/requests/getWalletUtxos';
+// import { getByronWalletUtxos } from './wallets/requests/getByronWalletUtxos';
 import { getWallet } from './wallets/requests/getWallet';
 import { getLegacyWallet } from './wallets/requests/getLegacyWallet';
 import { getWalletIdAndBalance } from './wallets/requests/getWalletIdAndBalance';
@@ -1225,12 +1228,16 @@ export default class AdaApi {
     Logger.debug('AdaApi::updateWallet called', {
       parameters: filterLogData(request),
     });
-    const { walletId, name } = request;
+    const { walletId, name, isLegacy } = request;
     try {
-      const wallet: AdaWallet = await updateWallet(this.config, {
-        walletId,
-        name,
-      });
+      let wallet: AdaWallet;
+      if (isLegacy) {
+        // @TODO - response is faked to enable UI. Uncomment once endpoint is available
+        // wallet = await updateByronWallet(this.config, { walletId, name });
+        wallet = await updateWallet(this.config, { walletId, name });
+      } else {
+        wallet = await updateWallet(this.config, { walletId, name });
+      }
       Logger.debug('AdaApi::updateWallet success', { wallet });
       return _createWalletFromServerData(wallet);
     } catch (error) {
@@ -1245,13 +1252,27 @@ export default class AdaApi {
     Logger.debug('AdaApi::updateSpendingPassword called', {
       parameters: filterLogData(request),
     });
-    const { walletId, oldPassword, newPassword } = request;
+    const { walletId, oldPassword, newPassword, isLegacy } = request;
     try {
-      await changeSpendingPassword(this.config, {
-        walletId,
-        oldPassword,
-        newPassword,
-      });
+      if (isLegacy) {
+        // @TODO - response is faked to enable UI. Uncomment once endpoint is available
+        // await updateByronSpendingPassword(this.config, {
+        //   walletId,
+        //   oldPassword,
+        //   newPassword,
+        // });
+        await updateSpendingPassword(this.config, {
+          walletId,
+          oldPassword,
+          newPassword,
+        });
+      } else {
+        await updateSpendingPassword(this.config, {
+          walletId,
+          oldPassword,
+          newPassword,
+        });
+      }
       Logger.debug('AdaApi::updateSpendingPassword success');
       return true;
     } catch (error) {
@@ -1319,14 +1340,19 @@ export default class AdaApi {
   getWalletUtxos = async (
     request: GetWalletUtxosRequest
   ): Promise<WalletUtxos> => {
-    const { walletId } = request;
+    const { walletId, isLegacy } = request;
     Logger.debug('AdaApi::getWalletUtxos called', {
       parameters: filterLogData(request),
     });
     try {
-      const response: Promise<WalletUtxos> = await getWalletUtxos(this.config, {
-        walletId,
-      });
+      let response: WalletUtxos;
+      if (isLegacy) {
+        // @TODO - response is faked to enable UI. Uncomment once endpoint is available
+        // response = await getByronWalletUtxos(this.config, { walletId });
+        response = await getWalletUtxos(this.config, { walletId });
+      } else {
+        response = await getWalletUtxos(this.config, { walletId });
+      }
       Logger.debug('AdaApi::getWalletUtxos success', { response });
       return response;
     } catch (error) {
