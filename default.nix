@@ -246,7 +246,7 @@ let
       ${if dummyInstaller then "touch foo" else "unzip ${self.dlls}"}
       popd
       cp -v ${self.unpackedCardano}/bin/* .
-      cp -v ${self.nsisFiles}/{*.yaml,daedalus.nsi} .
+      cp -v ${self.nsisFiles}/{*.yaml,*.json,daedalus.nsi,*.key,*.cert} .
       cp ${self.uninstaller}/uninstall.exe ../uninstall.exe
       if [ -f ${self.nsisFiles}/block-0.bin ]; then
         cp -v ${self.nsisFiles}/block-0.bin .
