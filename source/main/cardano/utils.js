@@ -130,21 +130,21 @@ export const createSelfnodeGenesisFile = async (
       stderrData += data;
     });
 
-    genesisHashGenerator.on('exit', (exitCode, signal) => {
+    genesisHashGenerator.on('close', (code, signal) => {
       logger.info('Generating selfnode genesis SUCCESS', {
-        exitCode,
+        code,
         signal,
         data: stdoutData,
       });
       resolve(stdoutData);
     });
 
-    genesisHashGenerator.on('error', error => {
+    genesisHashGenerator.on('error', err => {
       logger.error('Generating selfnode genesis ERROR', {
-        error,
+        error: err,
         data: stderrData,
       });
-      reject(new Error(error));
+      reject(new Error(err));
     });
   });
   logger.info('Generated selfnode genesis hash', { genesisHash });
