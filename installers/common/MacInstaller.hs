@@ -260,6 +260,11 @@ makeComponentRoot Options{oBackend,oCluster} appRoot darwinConfig@DarwinConfig{d
         cp (bridge </> "bin" </> f) (dir </> f)
       forM_ ["config.yaml", "genesis.json", "topology.yaml" ] $ \f ->
         cp f (dataDir </> f)
+
+      when (oCluster /= Selfnode) $ do
+        cp "signing.key" (dataDir </> "signing.key")
+        cp "delegation.cert" (dataDir </> "delegation.cert")
+
       procs "chmod" ["-R", "+w", tt dir] empty
       -- Rewrite libs paths and bundle them
       void $ chain (encodeString dir) $ fmap tt [dir </> "cardano-launcher", dir </> "cardano-wallet-byron", dir </> "cardano-node", dir </> "cardano-cli", dir </> "export-wallets", dir </> "db-converter" ]
@@ -272,10 +277,6 @@ makeComponentRoot Options{oBackend,oCluster} appRoot darwinConfig@DarwinConfig{d
       -- Config files (from daedalus-bridge)
       when (oCluster /= ITN_Selfnode) $
         cp "jormungandr-config.yaml" (dataDir </> "jormungandr-config.yaml")
-
-      when (oCluster /= Selfnode) $ do
-        cp "signing.key" (dataDir </> "signing.key")
-        cp "delegation.cert" (dataDir </> "delegation.cert")
 
       when hasBlock0 $
         cp "block-0.bin" (dataDir </> "block-0.bin")
