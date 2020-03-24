@@ -59,6 +59,7 @@ export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
     },
     syncToleranceSeconds,
     childProcessLogWriteStream: logFile,
+    installSignalHandlers: false,
   };
 
   // This switch statement handles any node specifc
