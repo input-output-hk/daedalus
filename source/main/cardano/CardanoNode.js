@@ -323,7 +323,7 @@ export class CardanoNode {
 
       this._cardanoLogFile = logFile;
 
-      const node = CardanoWalletLauncher({
+      const node = await CardanoWalletLauncher({
         nodeImplementation,
         nodeConfig,
         cluster,
@@ -373,8 +373,8 @@ export class CardanoNode {
           resolve();
         })
         .catch(exitStatus => {
-          const { code, signal } = exitStatus.wallet;
-          // this._handleCardanoNodeError(code, signal);
+          const { code, signal } = exitStatus.wallet || {};
+          // this._handleCardanoNodeError(code, signal); // TODO: see if this function can be removed
           this._handleCardanoNodeExit(code, signal);
           reject(
             new Error('CardanoNode#start: Error while spawning cardano-node')

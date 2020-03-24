@@ -5,12 +5,15 @@ import type { Launcher } from 'cardano-launcher';
 import type { NodeConfig } from '../config';
 import { STAKE_POOL_REGISTRY_URL } from '../config';
 import {
-  NIGHTLY,
+  MAINNET,
   SELFNODE,
-  QA,
+  TESTNET,
   ITN_REWARDS_V1,
   ITN_SELFNODE,
+  NIGHTLY,
+  QA,
 } from '../../common/types/environment.types';
+import { createSelfnodeGenesisFile } from './utils';
 import { Logger } from '../utils/logging';
 import type { CardanoNodeImplementation } from '../../common/types/cardano-node.types';
 
@@ -27,7 +30,7 @@ export type WalletOpts = {
   logFile: any,
 };
 
-export function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
+export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
   const {
     nodeImplementation,
     nodeConfig, // For cardano-node / byron only!
@@ -63,10 +66,19 @@ export function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
   Logger.info('Node implementation', { nodeImplementation });
   switch (nodeImplementation) {
     case 'cardano':
-      merge(launcherConfig, { nodeConfig });
       if (cluster === SELFNODE) {
-        // TODO: Inject start time
+        const { genesisFile } = nodeConfig.network;
+        const genesisFileWithStartTime = await createSelfnodeGenesisFile(
+          genesisFile,
+          stateDir
+        );
+        nodeConfig.network.genesisFile = genesisFileWithStartTime;
       }
+      if (cluster !== MAINNET) {
+        // All clusters except for Mainnet are treated as "Testnets"
+        launcherConfig.networkName = TESTNET;
+      }
+      merge(launcherConfig, { nodeConfig });
       break;
     case 'jormungandr':
       if (cluster === ITN_SELFNODE) {

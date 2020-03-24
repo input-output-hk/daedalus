@@ -1,4 +1,7 @@
 // @flow
+import * as fs from 'fs-extra';
+import path from 'path';
+import { Logger } from '../utils/logging';
 import type {
   CardanoNodeStorageKeys,
   CardanoNodeImplementation,
@@ -77,3 +80,32 @@ export const deriveProcessNames = (
       ? 'cardano-wallet-jormungandr'
       : 'cardano-wallet-byron'),
 });
+
+export const createSelfnodeGenesisFile = async (
+  genesisFilePath: string,
+  stateDir: string
+): Promise<string> => {
+  const genesisFileExists = await fs.pathExists(genesisFilePath);
+  if (!genesisFileExists) {
+    throw new Error('No genesis file found');
+  }
+
+  const genesisFileContent = await fs.readFile(genesisFilePath);
+  const startTime = Date.now() + 30000;
+  const genesisFile = JSON.stringify({
+    ...JSON.parse(genesisFileContent),
+    startTime,
+  });
+  const genesisPath = path.join(stateDir, 'genesis.json');
+
+  Logger.info('Creating selfnode genesis file...', {
+    inputPath: genesisFilePath,
+    outputPath: genesisPath,
+    startTime,
+  });
+
+  await fs.remove(genesisPath);
+  await fs.writeFile(genesisPath, genesisFile);
+
+  return genesisPath;
+};
