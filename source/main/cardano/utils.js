@@ -98,7 +98,7 @@ export const createSelfnodeConfig = async (
   }
 
   const genesisFileContent = await fs.readFile(genesisFilePath);
-  const startTime = Date.now() - 30000;
+  const startTime = Date.now() + 30000;
   const genesisFile = JSON.stringify({
     ...JSON.parse(genesisFileContent),
     startTime,
