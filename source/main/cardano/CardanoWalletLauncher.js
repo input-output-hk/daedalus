@@ -107,7 +107,7 @@ export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
               secretFile: [secretPath],
             },
           },
-          stakePoolRegistryUrl: STAKE_POOL_REGISTRY_URL[SELFNODE],
+          stakePoolRegistryUrl: STAKE_POOL_REGISTRY_URL[ITN_SELFNODE],
         });
       }
       if (cluster === NIGHTLY) {

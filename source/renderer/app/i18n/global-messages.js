@@ -206,9 +206,14 @@ export default defineMessages({
     defaultMessage: '!!!Incentivized Testnet v1 - Rewards',
     description: '"itn_rewards_v1" Cardano network',
   },
+  network_itn_selfnode: {
+    id: 'environment.network.itn_selfnode',
+    defaultMessage: '!!!ITN Selfnode',
+    description: '"itn_selfnode" Cardano network',
+  },
   network_selfnode: {
     id: 'environment.network.selfnode',
-    defaultMessage: '!!!SelfNode',
+    defaultMessage: '!!!Selfnode',
     description: '"selfnode" Cardano network',
   },
   network_qa: {

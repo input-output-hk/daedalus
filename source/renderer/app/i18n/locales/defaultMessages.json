@@ -2011,17 +2011,31 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Staging vx",
-        "description": "Label for staging network with version.",
+        "defaultMessage": "!!!Mainnet vx",
+        "description": "Label for mainnet network with version.",
         "end": {
           "column": 3,
           "line": 12
         },
         "file": "source/renderer/app/components/sidebar/SidebarCategoryNetworkInfo.js",
-        "id": "test.environment.stagingLabel",
+        "id": "test.environment.mainnetLabel",
         "start": {
           "column": 11,
           "line": 8
+        }
+      },
+      {
+        "defaultMessage": "!!!Staging vx",
+        "description": "Label for staging network with version.",
+        "end": {
+          "column": 3,
+          "line": 17
+        },
+        "file": "source/renderer/app/components/sidebar/SidebarCategoryNetworkInfo.js",
+        "id": "test.environment.stagingLabel",
+        "start": {
+          "column": 11,
+          "line": 13
         }
       },
       {
@@ -2029,26 +2043,12 @@
         "description": "Label for testnet with version.",
         "end": {
           "column": 3,
-          "line": 17
+          "line": 22
         },
         "file": "source/renderer/app/components/sidebar/SidebarCategoryNetworkInfo.js",
         "id": "test.environment.testnetLabel",
         "start": {
           "column": 11,
-          "line": 13
-        }
-      },
-      {
-        "defaultMessage": "!!!Development vx",
-        "description": "Label for development with version.",
-        "end": {
-          "column": 3,
-          "line": 22
-        },
-        "file": "source/renderer/app/components/sidebar/SidebarCategoryNetworkInfo.js",
-        "id": "test.environment.developmentLabel",
-        "start": {
-          "column": 15,
           "line": 18
         }
       },
@@ -2060,10 +2060,80 @@
           "line": 27
         },
         "file": "source/renderer/app/components/sidebar/SidebarCategoryNetworkInfo.js",
+        "id": "test.environment.developmentLabel",
+        "start": {
+          "column": 15,
+          "line": 23
+        }
+      },
+      {
+        "defaultMessage": "!!!Nightly vx",
+        "description": "Label for nightly with version.",
+        "end": {
+          "column": 3,
+          "line": 32
+        },
+        "file": "source/renderer/app/components/sidebar/SidebarCategoryNetworkInfo.js",
+        "id": "test.environment.nightlyLabel",
+        "start": {
+          "column": 11,
+          "line": 28
+        }
+      },
+      {
+        "defaultMessage": "!!!QA vx",
+        "description": "Label for qa with version.",
+        "end": {
+          "column": 3,
+          "line": 37
+        },
+        "file": "source/renderer/app/components/sidebar/SidebarCategoryNetworkInfo.js",
+        "id": "test.environment.qaLabel",
+        "start": {
+          "column": 6,
+          "line": 33
+        }
+      },
+      {
+        "defaultMessage": "!!!Selfnode vx",
+        "description": "Label for selfnode with version.",
+        "end": {
+          "column": 3,
+          "line": 42
+        },
+        "file": "source/renderer/app/components/sidebar/SidebarCategoryNetworkInfo.js",
+        "id": "test.environment.selfnodeLabel",
+        "start": {
+          "column": 12,
+          "line": 38
+        }
+      },
+      {
+        "defaultMessage": "!!!Selfnode vx",
+        "description": "Label for ITN selfnode with version.",
+        "end": {
+          "column": 3,
+          "line": 47
+        },
+        "file": "source/renderer/app/components/sidebar/SidebarCategoryNetworkInfo.js",
+        "id": "test.environment.itnSelfnodeLabel",
+        "start": {
+          "column": 16,
+          "line": 43
+        }
+      },
+      {
+        "defaultMessage": "!!!Development vx",
+        "description": "Label for ITN Rewards V1 with version.",
+        "end": {
+          "column": 3,
+          "line": 52
+        },
+        "file": "source/renderer/app/components/sidebar/SidebarCategoryNetworkInfo.js",
         "id": "test.environment.itnRewardsV1Label",
         "start": {
           "column": 18,
-          "line": 23
+          "line": 48
         }
       }
     ],
@@ -10454,7 +10524,7 @@
       },
       {
         "defaultMessage": "!!!Selfnode vx",
-        "description": "Label for Selfnode with version.",
+        "description": "Label for selfnode with version.",
         "end": {
           "column": 3,
           "line": 37
@@ -10467,17 +10537,31 @@
         }
       },
       {
-        "defaultMessage": "!!!Development vx",
-        "description": "Label for development with version.",
+        "defaultMessage": "!!!Selfnode vx",
+        "description": "Label for ITN selfnode with version.",
         "end": {
           "column": 3,
           "line": 42
         },
         "file": "source/renderer/app/components/widgets/WalletTestEnvironmentLabel.js",
+        "id": "test.environment.itnSelfnodeLabel",
+        "start": {
+          "column": 16,
+          "line": 38
+        }
+      },
+      {
+        "defaultMessage": "!!!Development vx",
+        "description": "Label for ITN Rewards V1 with version.",
+        "end": {
+          "column": 3,
+          "line": 47
+        },
+        "file": "source/renderer/app/components/widgets/WalletTestEnvironmentLabel.js",
         "id": "test.environment.itnRewardsV1Label",
         "start": {
           "column": 18,
-          "line": 38
+          "line": 43
         }
       }
     ],
@@ -11259,17 +11343,31 @@
         }
       },
       {
-        "defaultMessage": "!!!SelfNode",
-        "description": "\"selfnode\" Cardano network",
+        "defaultMessage": "!!!ITN Selfnode",
+        "description": "\"itn_selfnode\" Cardano network",
         "end": {
           "column": 3,
           "line": 213
         },
         "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "environment.network.itn_selfnode",
+        "start": {
+          "column": 24,
+          "line": 209
+        }
+      },
+      {
+        "defaultMessage": "!!!Selfnode",
+        "description": "\"selfnode\" Cardano network",
+        "end": {
+          "column": 3,
+          "line": 218
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.selfnode",
         "start": {
           "column": 20,
-          "line": 209
+          "line": 214
         }
       },
       {
@@ -11277,13 +11375,13 @@
         "description": "\"qa\" Cardano network",
         "end": {
           "column": 3,
-          "line": 218
+          "line": 223
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.qa",
         "start": {
           "column": 14,
-          "line": 214
+          "line": 219
         }
       },
       {
@@ -11291,13 +11389,13 @@
         "description": "\"nightly\" Cardano network",
         "end": {
           "column": 3,
-          "line": 223
+          "line": 228
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.nightly",
         "start": {
           "column": 19,
-          "line": 219
+          "line": 224
         }
       },
       {
@@ -11305,13 +11403,13 @@
         "description": "Label for years value in duration.",
         "end": {
           "column": 3,
-          "line": 228
+          "line": 233
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.duration.years",
         "start": {
           "column": 9,
-          "line": 224
+          "line": 229
         }
       },
       {
@@ -11319,13 +11417,13 @@
         "description": "Label for months value in duration.",
         "end": {
           "column": 3,
-          "line": 233
+          "line": 238
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.duration.months",
         "start": {
           "column": 10,
-          "line": 229
+          "line": 234
         }
       },
       {
@@ -11333,13 +11431,13 @@
         "description": "Label for days value in duration.",
         "end": {
           "column": 3,
-          "line": 238
+          "line": 243
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.duration.days",
         "start": {
           "column": 8,
-          "line": 234
+          "line": 239
         }
       },
       {
@@ -11347,13 +11445,13 @@
         "description": "Label for hours value in duration.",
         "end": {
           "column": 3,
-          "line": 243
+          "line": 248
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.duration.hours",
         "start": {
           "column": 9,
-          "line": 239
+          "line": 244
         }
       },
       {
@@ -11361,13 +11459,13 @@
         "description": "Label for minutes value in duration.",
         "end": {
           "column": 3,
-          "line": 248
+          "line": 253
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.duration.minutes",
         "start": {
           "column": 11,
-          "line": 244
+          "line": 249
         }
       },
       {
@@ -11375,13 +11473,13 @@
         "description": "Label for seconds value in duration.",
         "end": {
           "column": 3,
-          "line": 253
+          "line": 258
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.duration.seconds",
         "start": {
           "column": 11,
-          "line": 249
+          "line": 254
         }
       },
       {
@@ -11389,13 +11487,13 @@
         "description": "From label of range.",
         "end": {
           "column": 3,
-          "line": 258
+          "line": 263
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.range.from",
         "start": {
           "column": 13,
-          "line": 254
+          "line": 259
         }
       },
       {
@@ -11403,13 +11501,13 @@
         "description": "To label of range.",
         "end": {
           "column": 3,
-          "line": 263
+          "line": 268
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.range.to",
         "start": {
           "column": 11,
-          "line": 259
+          "line": 264
         }
       },
       {
@@ -11417,13 +11515,13 @@
         "description": "Filter label.",
         "end": {
           "column": 3,
-          "line": 268
+          "line": 273
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.filter",
         "start": {
           "column": 10,
-          "line": 264
+          "line": 269
         }
       },
       {
@@ -11431,13 +11529,13 @@
         "description": "All label.",
         "end": {
           "column": 3,
-          "line": 273
+          "line": 278
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.all",
         "start": {
           "column": 7,
-          "line": 269
+          "line": 274
         }
       },
       {
@@ -11445,13 +11543,13 @@
         "description": "Reset label.",
         "end": {
           "column": 3,
-          "line": 278
+          "line": 283
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.reset",
         "start": {
           "column": 9,
-          "line": 274
+          "line": 279
         }
       }
     ],

@@ -33,12 +33,17 @@ const messages = defineMessages({
   selfnode: {
     id: 'test.environment.selfnodeLabel',
     defaultMessage: '!!!Selfnode vx',
-    description: 'Label for Selfnode with version.',
+    description: 'Label for selfnode with version.',
+  },
+  itn_selfnode: {
+    id: 'test.environment.itnSelfnodeLabel',
+    defaultMessage: '!!!Selfnode vx',
+    description: 'Label for ITN selfnode with version.',
   },
   itn_rewards_v1: {
     id: 'test.environment.itnRewardsV1Label',
     defaultMessage: '!!!Development vx',
-    description: 'Label for development with version.',
+    description: 'Label for ITN Rewards V1 with version.',
   },
 });
 

@@ -13,7 +13,7 @@ import {
   ITN_REWARDS_V1,
   QA,
   NIGHTLY,
-  SELFNODE,
+  ITN_SELFNODE,
   networkPrettyNames,
 } from '../types/environment.types';
 
@@ -23,7 +23,7 @@ import {
 
 export const evaluateNetwork = (network: ?string) => {
   let currentNetwork = network || DEVELOPMENT;
-  if (network === QA || network === NIGHTLY || network === SELFNODE) {
+  if (network === QA || network === NIGHTLY || network === ITN_SELFNODE) {
     currentNetwork = ITN_REWARDS_V1;
   }
   return currentNetwork;
@@ -59,7 +59,7 @@ export const checkIsIncentivizedTestnetQA = (rawNetwork: string) =>
 export const checkIsIncentivizedTestnetNightly = (rawNetwork: string) =>
   rawNetwork === NIGHTLY;
 export const checkIsIncentivizedTestnetSelfNode = (rawNetwork: string) =>
-  rawNetwork === SELFNODE;
+  rawNetwork === ITN_SELFNODE;
 export const checkIsDevelopment = (network: string) => network === DEVELOPMENT;
 export const checkIsMacOS = (platform: string) => platform === MAC_OS;
 export const checkIsWindows = (platform: string) => platform === WINDOWS;

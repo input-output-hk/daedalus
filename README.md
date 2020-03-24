@@ -58,7 +58,7 @@ API docs for pinned cardano-wallet version: https://input-output-hk.github.io/ca
 ### ITN Selfnode
 
 1. Run `yarn nix:itn_selfnode` from `daedalus`.
-2. Run `yarn dev:itn` from the subsequent `nix-shell`
+2. Run `yarn dev` from the subsequent `nix-shell`
 3. Once Daedalus has started, and has gotten past the loading screen, run `yarn v2:shelley:wallet:importer` from a new terminal window. This is only required if you wish to import some funded wallets. It is also possible to import funded legacy wallets by running `yarn v2:byron:wallet:importer` script.
 
 ### QA testnet
