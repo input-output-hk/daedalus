@@ -19,7 +19,6 @@ import { addressPDFGenerator } from '../utils/addressPDFGenerator';
 import { downloadRewardsCsv } from '../utils/rewardsCsvGenerator';
 import { buildRoute, matchRoute } from '../utils/routing';
 import { asyncForEach } from '../utils/asyncForEach';
-import { isValidByronAddress } from '../utils/byronAddressValidator';
 import { ROUTES } from '../routes-config';
 import { formattedWalletAmount } from '../utils/formatters';
 import {
@@ -920,9 +919,7 @@ export default class WalletsStore extends Store {
       : ChainSettings.testnet;
 
     try {
-      return !isIncentivizedTestnet
-        ? isValidByronAddress(address, chainSettings)
-        : Address.Util.isAddress(address, chainSettings, addressGroup);
+      return Address.Util.isAddress(address, chainSettings, addressGroup);
     } catch (error) {
       return false;
     }
