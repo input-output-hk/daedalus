@@ -27,6 +27,8 @@ let
   pkgsNative = localLib.iohkNix.getPkgsDefault {};
   sources = localLib.sources;
   walletPkgs = import "${sources.cardano-wallet}/nix" {};
+  # only used for CLI, to be removed when upgraded to next node version
+  nodePkgs = import "${sources.cardano-node}/nix" {};
   shellPkgs = (import "${sources.cardano-shell}/nix/iohk-common.nix").getPkgs {};
   inherit (pkgs.lib) optionalString optional;
   crossSystem = lib: (crossSystemTable lib).${target} or null;
@@ -55,6 +57,7 @@ let
     cardano-wallet = import self.sources.cardano-wallet { inherit system; gitrev = self.sources.cardano-wallet.rev; crossSystem = crossSystem walletPkgs.lib; };
     cardano-wallet-native = import self.sources.cardano-wallet { inherit system; gitrev = self.sources.cardano-wallet.rev; };
     cardano-shell = import self.sources.cardano-shell { inherit system; crossSystem = crossSystem shellPkgs.lib; };
+    cardano-cli = import self.sources.cardano-node { inherit system; crossSystem = crossSystem nodePkgs.lib; };
     cardano-node = self.cardano-wallet.cardano-node;
     cardano-sl = import self.sources.cardano-sl { inherit target; gitrev = self.sources.cardano-sl.rev; };
 

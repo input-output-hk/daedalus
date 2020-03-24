@@ -1,4 +1,4 @@
-{ target, pkgs, runCommand, cardano-wallet, cardano-node, cardano-shell, export-wallets, db-converter }:
+{ target, pkgs, runCommand, cardano-wallet, cardano-node, cardano-shell, export-wallets, db-converter, cardano-cli }:
 
 let
   commonLib = import ../lib.nix {};
@@ -17,8 +17,8 @@ in runCommand "daedalus-cardano-bridge" {
   cp ${cardano-node}/bin/cardano-node* .
   cp ${export-wallets}/bin/export-wallets* .
   cp ${db-converter}/bin/db-converter* .
+  cp ${cardano-cli}/bin/cardano-cli* .
   ${pkgs.lib.optionalString (target == "x86_64-windows") ''
-    echo ${cardano-wallet.jormungandr}
     cp ${pkgsCross.libffi}/bin/libffi-6.dll .
   ''}
 ''

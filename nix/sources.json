@@ -1,4 +1,16 @@
 {
+    "cardano-node": {
+        "branch": "tags/1.8.0",
+        "description": null,
+        "homepage": null,
+        "owner": "input-output-hk",
+        "repo": "cardano-node",
+        "rev": "64c2778c61245dcda13eaf16a2e0738dfacb7a16",
+        "sha256": "1aybhbip4j9275npvrk4w0bch5bl7fbq8faj1qj8h51f1g0ja74l",
+        "type": "tarball",
+        "url": "https://github.com/input-output-hk/cardano-node/archive/64c2778c61245dcda13eaf16a2e0738dfacb7a16.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
     "cardano-shell": {
         "branch": "master",
         "description": "Node shell, a thin layer for running the node and it's modules.",
