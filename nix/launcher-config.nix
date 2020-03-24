@@ -169,8 +169,8 @@ let
       };
       socketFile = if os != "windows" then "${dataDir.${os}}${dirSep}cardano-node.socket" else "\\\\.\\pipe\\cardano-node-${environment}";
     } // lib.optionalAttrs (environment == "selfnode") {
-      delegationCertificate = "${byronConfigDir.${os}}${dirSep}${environment}.cert";
-      signingKey = "${byronConfigDir.${os}}${dirSep}${environment}.key";
+      delegationCertificate = "${byronConfigDir.${os}}${dirSep}delegation.cert";
+      signingKey = "${byronConfigDir.${os}}${dirSep}signing.key";
     };
     syncTolerance = "300s";
   }) // (lib.optionalAttrs (backend == "jormungandr") {
