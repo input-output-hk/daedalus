@@ -23,7 +23,7 @@ import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
 import { VirtualAddressesList } from './VirtualAddressesList';
 import styles from './WalletReceive.scss';
-import { Address } from './Address';
+import Address from './Address';
 
 const messages = defineMessages({
   walletAddressLabel: {

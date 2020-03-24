@@ -7,11 +7,7 @@ import WalletAddress from '../domains/WalletAddress';
 import Request from './lib/LocalizedRequest';
 import LocalizableError from '../i18n/LocalizableError';
 import { GenericApiError } from '../api/common/errors';
-import type {
-  Address,
-  Addresses,
-  GetAddressesResponse,
-} from '../api/addresses/types';
+import type { Address } from '../api/addresses/types';
 
 export default class AddressesStore extends Store {
   @observable lastGeneratedAddress: ?Address = null;
