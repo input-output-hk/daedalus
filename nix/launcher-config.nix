@@ -143,7 +143,7 @@ let
     workingDir = dataDir.${os};
     frontendOnlyMode = true;
     nodeLogPath = null;
-    logsPrefix = logsPrefix.${os};
+    logsPrefix = if backend == "cardano" then "${logsPrefix.${os}}ByronReboot" else logsPrefix.${os};
     nodeImplementation = backend;
     nodeLogConfig = null;
     nodeTimeoutSec = 60;
