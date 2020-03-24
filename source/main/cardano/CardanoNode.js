@@ -374,6 +374,7 @@ export class CardanoNode {
         })
         .catch(exitStatus => {
           const { code, signal } = exitStatus.wallet || {};
+          // this._handleCardanoNodeError(code, signal); // TODO: see if this function can be removed
           this._handleCardanoNodeExit(code, signal);
           reject(
             new Error('CardanoNode#start: Error while spawning cardano-node')

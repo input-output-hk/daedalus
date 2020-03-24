@@ -81,30 +81,31 @@ export const deriveProcessNames = (
       : 'cardano-wallet-byron'),
 });
 
-export const writeGenesisFile = async (stateDir: string) => {
-  const installDir = process.env.DAEDALUS_INSTALL_DIRECTORY || '';
-  const genesisDefaultPath = 'utils/cardano/selfnode/genesis.json';
-  const genesisInstalledPath = path.join(installDir, 'genesis.json');
-
-  // dev path is ./
-  const genesisJsonPath =
-    installDir.length > 2 ? genesisInstalledPath : genesisDefaultPath;
-
-  Logger.info('Genesis file path', { genesisJsonPath });
-
-  const networkGenesisFileExists = await fs.pathExists(genesisJsonPath);
-  if (!networkGenesisFileExists) {
-    throw new Error(`No genesis file exists for testnet`);
+export const createSelfnodeGenesisFile = async (
+  genesisFilePath: string,
+  stateDir: string
+): Promise<string> => {
+  const genesisFileExists = await fs.pathExists(genesisFilePath);
+  if (!genesisFileExists) {
+    throw new Error('No genesis file found');
   }
 
-  const genesisFileRaw = await fs.readFile(genesisJsonPath);
+  const genesisFileContent = await fs.readFile(genesisFilePath);
   const startTime = Date.now() + 30000;
   const genesisFile = JSON.stringify({
-    ...JSON.parse(genesisFileRaw),
+    ...JSON.parse(genesisFileContent),
     startTime,
   });
   const genesisPath = path.join(stateDir, 'genesis.json');
 
+  Logger.info('Creating selfnode genesis file...', {
+    inputPath: genesisFilePath,
+    outputPath: genesisPath,
+    startTime,
+  });
+
   await fs.remove(genesisPath);
   await fs.writeFile(genesisPath, genesisFile);
+
+  return genesisPath;
 };

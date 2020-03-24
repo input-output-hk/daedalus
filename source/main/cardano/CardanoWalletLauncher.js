@@ -5,13 +5,15 @@ import type { Launcher } from 'cardano-launcher';
 import type { NodeConfig } from '../config';
 import { STAKE_POOL_REGISTRY_URL } from '../config';
 import {
-  NIGHTLY,
+  MAINNET,
   SELFNODE,
-  QA,
+  TESTNET,
   ITN_REWARDS_V1,
   ITN_SELFNODE,
+  NIGHTLY,
+  QA,
 } from '../../common/types/environment.types';
-import { writeGenesisFile } from './utils';
+import { createSelfnodeGenesisFile } from './utils';
 import { Logger } from '../utils/logging';
 import type { CardanoNodeImplementation } from '../../common/types/cardano-node.types';
 
@@ -64,10 +66,19 @@ export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
   Logger.info('Node implementation', { nodeImplementation });
   switch (nodeImplementation) {
     case 'cardano':
-      merge(launcherConfig, { nodeConfig });
       if (cluster === SELFNODE) {
-        await writeGenesisFile(stateDir);
+        const { genesisFile } = nodeConfig.network;
+        const genesisFileWithStartTime = await createSelfnodeGenesisFile(
+          genesisFile,
+          stateDir
+        );
+        nodeConfig.network.genesisFile = genesisFileWithStartTime;
       }
+      if (cluster !== MAINNET) {
+        // All clusters except for Mainnet are treated as "Testnets"
+        launcherConfig.networkName = TESTNET;
+      }
+      merge(launcherConfig, { nodeConfig });
       break;
     case 'jormungandr':
       if (cluster === ITN_SELFNODE) {

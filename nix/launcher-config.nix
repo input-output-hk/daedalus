@@ -159,17 +159,17 @@ let
     networkName = environment;
     nodeConfig = {
       kind = "byron";
-      configurationDir = byronConfigDir.${os};
+      configurationDir = "";
       network = {
-        configFile = "configuration-${environment}.yaml";
-        genesisFile = "${environment}-genesis.json";
+        configFile = "${byronConfigDir.${os}}${dirSep}configuration-${environment}.yaml";
+        genesisFile = "${byronConfigDir.${os}}${dirSep}${environment}-genesis.json";
         genesisHash = if (environment != "selfnode") then envCfg.genesisHash else "";
-        topologyFile = "${environment}-topology.yaml";
+        topologyFile = "${byronConfigDir.${os}}${dirSep}${environment}-topology.yaml";
       };
       socketFile = if os != "windows" then "${dataDir.${os}}${dirSep}cardano-node.socket" else "\\\\.\\pipe\\cardano-node-${environment}";
     } // lib.optionalAttrs (environment == "selfnode") {
-      delegationCertificate = "${environment}.cert";
-      signingKey = "${environment}.key";
+      delegationCertificate = "${byronConfigDir.${os}}${dirSep}${environment}.cert";
+      signingKey = "${byronConfigDir.${os}}${dirSep}${environment}.key";
     };
     syncTolerance = "300s";
   }) // (lib.optionalAttrs (backend == "jormungandr") {
