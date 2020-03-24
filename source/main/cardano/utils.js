@@ -1,7 +1,7 @@
 // @flow
 import * as fs from 'fs-extra';
 import path from 'path';
-import { spawn } from 'child_process';
+import { spawnSync } from 'child_process';
 import { logger } from '../utils/logging';
 import type {
   CardanoNodeStorageKeys,
@@ -113,40 +113,12 @@ export const createSelfnodeGenesisFile = async (
   await fs.writeFile(genesisPath, genesisFile);
 
   logger.info('Generating selfnode genesis hash...', { cliBin, genesisPath });
-  const genesisHash = await new Promise((resolve, reject) => {
-    const genesisHashGenerator = spawn(cliBin, [
-      'print-genesis-hash',
-      '--genesis-json',
-      genesisPath,
-    ]);
-
-    let stdoutData = '';
-    genesisHashGenerator.stdout.on('data', data => {
-      stdoutData += data;
-    });
-
-    let stderrData = '';
-    genesisHashGenerator.stderr.on('data', data => {
-      stderrData += data;
-    });
-
-    genesisHashGenerator.on('close', (code, signal) => {
-      logger.info('Generating selfnode genesis SUCCESS', {
-        code,
-        signal,
-        data: stdoutData,
-      });
-      resolve(stdoutData);
-    });
-
-    genesisHashGenerator.on('error', err => {
-      logger.error('Generating selfnode genesis ERROR', {
-        error: err,
-        data: stderrData,
-      });
-      reject(new Error(err));
-    });
-  });
+  const { stdout: genesisHashBuffer } = spawnSync(cliBin, [
+    'print-genesis-hash',
+    '--genesis-json',
+    genesisPath,
+  ]);
+  const genesisHash = genesisHashBuffer.toString();
   logger.info('Generated selfnode genesis hash', { genesisHash });
 
   return { genesisPath, genesisHash };
