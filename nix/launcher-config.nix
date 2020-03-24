@@ -107,8 +107,8 @@ let
 
   byronConfigDir = {
     linux = tier2-cfg-files;
-    macos64 = tier2-cfg-files;
-    windows = "\${DAEDALUS_INSTALL_DIRECTORY}";
+    macos64 = "\${DAEDALUS_INSTALL_DIRECTORY}";
+    windows = "\${DAEDALUS_INSTALL_DIRECTORY}/../Resources";
   };
 
   walletArgs = [
