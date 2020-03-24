@@ -299,9 +299,13 @@ export default class AdaApi {
     const { walletId, queryParams, isLegacy } = request;
     try {
       let response = [];
-      if (!isLegacy) {
-        response = await getAddresses(this.config, walletId, queryParams);
+      if (isLegacy) {
+        // @TODO - response is faked to enable UI. Comment out once endpoint is available
+        // response = await getByronWalletAddresses(this.config, walletId, queryParams);
+        return response;
       }
+      response = await getAddresses(this.config, walletId, queryParams);
+
       Logger.debug('AdaApi::getAddresses success', { addresses: response });
       return response.map(_createAddressFromServerData);
     } catch (error) {
