@@ -996,6 +996,16 @@ export default class WalletsStore extends Store {
     if (this.hasAnyWallets) {
       const activeWalletId = this.active ? this.active.id : null;
       const newActiveWallet = this.all.find(wallet => wallet.id === walletId);
+      if (
+        (!this.active || !this.active.isNotResponding) &&
+        newActiveWallet &&
+        newActiveWallet.isNotResponding
+      ) {
+        this.actions.router.goToRoute.trigger({
+          route: ROUTES.WALLETS.PAGE,
+          params: { id: newActiveWallet.id, page: 'summary' },
+        });
+      }
       const hasActiveWalletBeenChanged = activeWalletId !== walletId;
       const hasActiveWalletBeenUpdated = !isEqual(this.active, newActiveWallet);
       if (hasActiveWalletBeenChanged) {

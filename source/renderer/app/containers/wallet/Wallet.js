@@ -70,7 +70,6 @@ export default class Wallet extends Component<Props> {
         WalletRecoveryPhraseVerificationStatuses.NOTIFICATION &&
       !isIncentivizedTestnet;
     const { isNotResponding, isRestoring } = activeWallet;
-    const activeItem = !isNotResponding ? app.currentPage : 'summary';
 
     return (
       <MainLayout>
@@ -83,7 +82,7 @@ export default class Wallet extends Component<Props> {
         <WalletWithNavigation
           isActiveScreen={this.isActiveScreen}
           onWalletNavItemClick={this.handleWalletNavItemClick}
-          activeItem={activeItem}
+          activeItem={app.currentPage}
           isLegacy={activeWallet.isLegacy}
           hasNotification={hasNotification}
           isNotResponding={isNotResponding}
