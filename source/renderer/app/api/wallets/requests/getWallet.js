@@ -1,11 +1,11 @@
 // @flow
 import type { RequestConfig } from '../../common/types';
-import type { GetWalletRequest, AdaWallet } from '../types';
+import type { AdaWallet } from '../types';
 import { request } from '../../utils/request';
 
 export const getWallet = (
   config: RequestConfig,
-  { walletId }: GetWalletRequest
+  { walletId }: { walletId: string }
 ): Promise<AdaWallet> =>
   request({
     method: 'GET',

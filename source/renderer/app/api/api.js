@@ -39,7 +39,7 @@ import { deleteLegacyTransaction } from './transactions/requests/deleteLegacyTra
 
 // Wallets requests
 import { updateSpendingPassword } from './wallets/requests/updateSpendingPassword';
-// import { updateByronSpendingPassword } from './wallets/requests/updateByronSpendingPassword';
+import { updateByronSpendingPassword } from './wallets/requests/updateByronSpendingPassword';
 import { deleteWallet } from './wallets/requests/deleteWallet';
 import { deleteLegacyWallet } from './wallets/requests/deleteLegacyWallet';
 import { exportWalletAsJSON } from './wallets/requests/exportWalletAsJSON';
@@ -52,7 +52,7 @@ import { restoreWallet } from './wallets/requests/restoreWallet';
 import { restoreLegacyWallet } from './wallets/requests/restoreLegacyWallet';
 import { restoreByronWallet } from './wallets/requests/restoreByronWallet';
 import { updateWallet } from './wallets/requests/updateWallet';
-// import { updateByronWallet } from './wallets/requests/updateByronWallet';
+import { updateByronWallet } from './wallets/requests/updateByronWallet';
 import { forceWalletResync } from './wallets/requests/forceWalletResync';
 import { forceLegacyWalletResync } from './wallets/requests/forceLegacyWalletResync';
 import { getWalletUtxos } from './wallets/requests/getWalletUtxos';
@@ -1232,9 +1232,7 @@ export default class AdaApi {
     try {
       let wallet: AdaWallet;
       if (isLegacy) {
-        // @TODO - response is faked to enable UI. Uncomment once endpoint is available
-        // wallet = await updateByronWallet(this.config, { walletId, name });
-        wallet = await updateWallet(this.config, { walletId, name });
+        wallet = await updateByronWallet(this.config, { walletId, name });
       } else {
         wallet = await updateWallet(this.config, { walletId, name });
       }
@@ -1255,13 +1253,7 @@ export default class AdaApi {
     const { walletId, oldPassword, newPassword, isLegacy } = request;
     try {
       if (isLegacy) {
-        // @TODO - response is faked to enable UI. Uncomment once endpoint is available
-        // await updateByronSpendingPassword(this.config, {
-        //   walletId,
-        //   oldPassword,
-        //   newPassword,
-        // });
-        await updateSpendingPassword(this.config, {
+        await updateByronSpendingPassword(this.config, {
           walletId,
           oldPassword,
           newPassword,
@@ -1349,7 +1341,11 @@ export default class AdaApi {
       if (isLegacy) {
         // @TODO - response is faked to enable UI. Uncomment once endpoint is available
         // response = await getByronWalletUtxos(this.config, { walletId });
-        response = await getWalletUtxos(this.config, { walletId });
+        response = {
+          total: { quantity: 100, unit: 'lovelace' },
+          scale: 'log10',
+          distribution: { fake: 1 },
+        };
       } else {
         response = await getWalletUtxos(this.config, { walletId });
       }

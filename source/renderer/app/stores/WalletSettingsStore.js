@@ -107,13 +107,14 @@ export default class WalletSettingsStore extends Store {
     const activeWallet = this.stores.wallets.active;
     if (!activeWallet) return;
 
-    const { id: walletId, name } = activeWallet;
-    const walletData = { walletId, name };
+    const { id: walletId, name, isLegacy } = activeWallet;
+    const walletData = { walletId, name, isLegacy };
     walletData[field] = value;
 
     const wallet = await this.updateWalletRequest.execute({
       walletId: walletData.walletId,
       name: walletData.name,
+      isLegacy: walletData.isLegacy,
     }).promise;
 
     if (!wallet) return;
@@ -153,8 +154,11 @@ export default class WalletSettingsStore extends Store {
   @action _getWalletUtxoApiData = async () => {
     const activeWallet = this.stores.wallets.active;
     if (!activeWallet || this.isForcedWalletResyncStarting) return;
-    const { id: walletId } = activeWallet;
-    const walletUtxos = await this.getWalletUtxosRequest.execute({ walletId });
+    const { id: walletId, isLegacy } = activeWallet;
+    const walletUtxos = await this.getWalletUtxosRequest.execute({
+      walletId,
+      isLegacy,
+    });
     this._updateWalletUtxos(walletUtxos);
   };
 
