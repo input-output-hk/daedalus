@@ -935,7 +935,7 @@ export default class WalletsStore extends Store {
       if (!result) return;
       const walletIds = result
         .filter(
-          ({ syncState }: Wallet) => syncState.status !== 'not-responding'
+          ({ syncState }: Wallet) => syncState.status !== 'not_responding'
         )
         .map((wallet: Wallet) => wallet.id);
       await this._setWalletsRecoveryPhraseVerificationData(walletIds);

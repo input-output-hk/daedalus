@@ -96,7 +96,7 @@ export const WALLETS = [
     amount: new BigNumber(66.998),
     hasPassword: false,
     passwordUpdateDate: new Date(),
-    syncState: { data: null, tag: 'not-responding' },
+    syncState: { data: null, tag: 'not_responding' },
     isLegacy: false,
     recoveryPhraseVerificationDate: new Date(),
     delegatedStakePoolId: 'kfhdsdkhfskdjfhskdhf',

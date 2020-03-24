@@ -75,7 +75,7 @@ export type SyncStateStatus =
   | 'ready'
   | 'restoring'
   | 'syncing'
-  | 'not-responding';
+  | 'not_responding';
 
 export type DelegationStatus = 'delegating' | 'not_delegating';
 

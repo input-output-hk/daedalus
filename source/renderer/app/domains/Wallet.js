@@ -19,7 +19,7 @@ export const WalletSyncStateStatuses: {
   RESTORING: 'syncing', // @API TODO - calculate if the wallet is restoring!
   SYNCING: 'syncing',
   READY: 'ready',
-  NOT_RESPONDING: 'not-responding',
+  NOT_RESPONDING: 'not_responding',
 };
 
 export const WalletDelegationStatuses: {
