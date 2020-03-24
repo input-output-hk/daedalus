@@ -113,19 +113,38 @@ export const createSelfnodeGenesisFile = async (
   await fs.writeFile(genesisPath, genesisFile);
 
   logger.info('Generating selfnode genesis hash...', { cliBin, genesisPath });
-  const genesisHash = await new Promise(resolve => {
+  const genesisHash = await new Promise((resolve, reject) => {
     const genesisHashGenerator = spawn(cliBin, [
       'print-genesis-hash',
       '--genesis-json',
       genesisPath,
     ]);
 
+    let stdoutData = '';
     genesisHashGenerator.stdout.on('data', data => {
-      resolve(data);
+      stdoutData += data;
     });
 
-    genesisHashGenerator.stderr.on('data', () => {
-      throw new Error('Failed to generate genesis hash');
+    let stderrData = '';
+    genesisHashGenerator.stderr.on('data', data => {
+      stderrData += data;
+    });
+
+    genesisHashGenerator.on('exit', (exitCode, signal) => {
+      logger.info('Generating selfnode genesis SUCCESS', {
+        exitCode,
+        signal,
+        result: stdoutData,
+      });
+      resolve(stdoutData);
+    });
+
+    genesisHashGenerator.on('error', error => {
+      logger.error('Generating selfnode genesis ERROR', {
+        error,
+        data: stderrData,
+      });
+      reject(new Error(error));
     });
   });
   logger.info('Generated selfnode genesis hash', { genesisHash });
