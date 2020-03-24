@@ -1,7 +1,7 @@
 // @flow
 import { action, computed, observable } from 'mobx';
-import Store from './lib/Store';
 import { reject } from 'lodash';
+import Store from './lib/Store';
 import { sidebarConfig } from '../config/sidebarConfig';
 import { formattedWalletAmount } from '../utils/formatters';
 import type { SidebarWalletType } from '../types/sidebarTypes';

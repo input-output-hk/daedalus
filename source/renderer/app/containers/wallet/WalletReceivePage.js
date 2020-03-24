@@ -2,6 +2,7 @@
 import React, { Component, Fragment } from 'react';
 import { observer, inject } from 'mobx-react';
 import WalletReceive from '../../components/wallet/receive/WalletReceive';
+import WalletReceiveItn from '../../components/wallet/receive/WalletReceiveItn';
 import WalletReceiveDialog from '../../components/wallet/receive/WalletReceiveDialog';
 import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer';
 import type { InjectedProps } from '../../types/injectedPropsType';
@@ -84,29 +85,58 @@ export default class WalletReceivePage extends Component<Props, State> {
     });
   };
 
+  handleGenerateAddress = (spendingPassword: ?string) => {
+    const { activeWallet } = this.state;
+
+    if (activeWallet) {
+      this.props.actions.addresses.createByronWalletAddress.trigger({
+        walletId: activeWallet.id,
+        spendingPassword,
+      });
+    }
+  };
+
   render() {
     const { actions, stores } = this.props;
-    const { uiDialogs, addresses } = stores;
+    const { uiDialogs, addresses, sidebar } = stores;
     const { addressToShare, activeWallet } = this.state;
     const { toggleSubMenus } = actions.sidebar;
-
+    const { isIncentivizedTestnet } = global;
     // Guard against potential null values
     if (!activeWallet)
       throw new Error('Active wallet required for WalletReceivePage.');
 
     const walletAddresses = addresses.all.slice().reverse();
+    const byronWalletAddress = addresses.active ? addresses.active.id : '';
+    const isByronWalletAddressUsed = addresses.active
+      ? addresses.active.used
+      : false;
 
     return (
       <Fragment>
         <VerticalFlexContainer>
-          <WalletReceive
-            walletAddresses={walletAddresses}
-            isAddressValid={this.handleIsAddressValid}
-            onShareAddress={this.handleShareAddress}
-            onCopyAddress={this.handleCopyAddress}
-            isIncentivizedTestnet={global.isIncentivizedTestnet}
-            onToggleSubMenus={toggleSubMenus}
-          />
+          {!isIncentivizedTestnet ? (
+            <WalletReceive
+              walletAddress={byronWalletAddress}
+              isWalletAddressUsed={isByronWalletAddressUsed}
+              walletAddresses={walletAddresses}
+              onGenerateAddress={this.handleGenerateAddress}
+              onCopyAddress={address => this.handleCopyAddress(address)}
+              isSidebarExpanded={sidebar.isShowingSubMenus}
+              walletHasPassword={activeWallet.passwordUpdateDate}
+              isSubmitting={addresses.createByronWalletAddressRequest.isExecuting}
+              error={addresses.error}
+            />
+          ) : (
+            <WalletReceiveItn
+              walletAddresses={walletAddresses}
+              isAddressValid={this.handleIsAddressValid}
+              onShareAddress={this.handleShareAddress}
+              onCopyAddress={this.handleCopyAddress}
+              isIncentivizedTestnet={isIncentivizedTestnet}
+              onToggleSubMenus={toggleSubMenus}
+            />
+          )}
         </VerticalFlexContainer>
 
         {uiDialogs.isOpen(WalletReceiveDialog) && addressToShare && (
