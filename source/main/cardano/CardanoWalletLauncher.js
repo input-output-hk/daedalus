@@ -13,7 +13,7 @@ import {
   NIGHTLY,
   QA,
 } from '../../common/types/environment.types';
-import { createSelfnodeGenesisFile } from './utils';
+import { createSelfnodeConfig } from './utils';
 import { logger } from '../utils/logging';
 import type { CardanoNodeImplementation } from '../../common/types/cardano-node.types';
 
@@ -70,14 +70,20 @@ export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
   switch (nodeImplementation) {
     case 'cardano':
       if (cluster === SELFNODE) {
-        const { genesisFile } = nodeConfig.network;
-        const { genesisPath, genesisHash } = await createSelfnodeGenesisFile(
+        const { configFile, genesisFile } = nodeConfig.network;
+        const {
+          configPath: selfnodeConfigPath,
+          genesisPath: selfnodeGenesisPath,
+          genesisHash: selfnodeGenesisHash,
+        } = await createSelfnodeConfig(
+          configFile,
           genesisFile,
           stateDir,
           cliBin
         );
-        nodeConfig.network.genesisFile = genesisPath;
-        nodeConfig.network.genesisHash = genesisHash;
+        nodeConfig.network.configFile = selfnodeConfigPath;
+        nodeConfig.network.genesisFile = selfnodeGenesisPath;
+        nodeConfig.network.genesisHash = selfnodeGenesisHash;
       }
       if (cluster !== MAINNET) {
         // All clusters except for Mainnet are treated as "Testnets"

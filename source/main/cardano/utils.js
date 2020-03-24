@@ -82,11 +82,13 @@ export const deriveProcessNames = (
       : 'cardano-wallet-byron'),
 });
 
-export const createSelfnodeGenesisFile = async (
+export const createSelfnodeConfig = async (
+  configFilePath: string,
   genesisFilePath: string,
   stateDir: string,
   cliBin: string
 ): Promise<{
+  configPath: string,
   genesisPath: string,
   genesisHash: string,
 }> => {
@@ -96,7 +98,7 @@ export const createSelfnodeGenesisFile = async (
   }
 
   const genesisFileContent = await fs.readFile(genesisFilePath);
-  const startTime = Date.now() + 30000;
+  const startTime = Date.now() - 30000;
   const genesisFile = JSON.stringify({
     ...JSON.parse(genesisFileContent),
     startTime,
@@ -124,5 +126,26 @@ export const createSelfnodeGenesisFile = async (
     .replace('\n', '');
   logger.info('Generated selfnode genesis hash', { genesisHash });
 
-  return { genesisPath, genesisHash };
+  const configFileExists = await fs.pathExists(configFilePath);
+  if (!configFileExists) {
+    throw new Error('No config file found');
+  }
+
+  const configFileContent = await fs.readFile(configFilePath);
+  const configFile = JSON.stringify({
+    ...JSON.parse(configFileContent),
+    GenesisFile: genesisPath,
+  });
+  const configPath = path.join(stateDir, 'config.yaml');
+
+  logger.info('Creating selfnode config file...', {
+    inputPath: configFilePath,
+    outputPath: configPath,
+    genesisPath,
+  });
+
+  await fs.remove(configPath);
+  await fs.writeFile(configPath, configFile);
+
+  return { configPath, genesisPath, genesisHash };
 };
