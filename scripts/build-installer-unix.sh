@@ -167,8 +167,11 @@ pushd installers
           if [ -f cfg-files/jormungandr-config.yaml ]; then
             cp -v cfg-files/jormungandr-config.yaml .
           fi
-          nix-build .. -A launcherConfigs.tier2-cfg-files --argstr os macos64 --argstr cluster "${cluster}" -o tier2-cfg-files --argstr nodeImplementation "${BACKEND}"
-          cp -v tier2-cfg-files/* .
+          if [[ "${BACKEND}" == "cardano" ]]
+          then
+            nix-build .. -A launcherConfigs.tier2-cfg-files --argstr os macos64 --argstr cluster "${cluster}" -o tier2-cfg-files --argstr nodeImplementation "${BACKEND}"
+            cp -v tier2-cfg-files/* .
+          fi
           chmod -R +w .
           echo '~~~   Running make-installer in nix-shell'
           $nix_shell ../shell.nix -A buildShell --run "${INSTALLER_CMD[*]}"
