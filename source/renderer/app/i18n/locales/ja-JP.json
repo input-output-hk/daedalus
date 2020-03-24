@@ -532,7 +532,7 @@
   "wallet.navigation.summary": "概要",
   "wallet.navigation.transactions": "トランザクション",
   "wallet.navigation.utxo": "ウォレットのUTXOディストリビューション",
-  "wallet.notResponding.description": "<p>「{walletName}}」ウォレットは応答していません。これは既知の稀に生じる不具合によるものであり、この不具合は現在修正されました。</p><p>下のボタンをクリックしてCardanoノードを再起動すると、問題は解消されます。</p><p>問題が解消しない場合、または再び発生した場合は、サポートリクエストを送信してください。</p>",
+  "wallet.notResponding.description": "<p>「{walletName}」ウォレットは応答していません。これは既知の稀に生じる不具合によるものであり、この不具合は現在修正されました。</p><p>下のボタンをクリックしてCardanoノードを再起動すると、問題は解消されます。</p><p>問題が解消しない場合、または再び発生した場合は、サポートリクエストを送信してください。</p>",
   "wallet.notResponding.restartNodeButtonLabel": "Cardanoノードを再起動する",
   "wallet.notResponding.submitSupportRequestLabel": "サポートリクエストを送信する",
   "wallet.notResponding.submitSupportRequestUrl": "https://iohk.zendesk.com/hc/ja/requests/new/",
