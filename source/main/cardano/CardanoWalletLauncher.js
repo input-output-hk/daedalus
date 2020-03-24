@@ -28,6 +28,7 @@ export type WalletOpts = {
   configPath: string,
   syncTolerance: string,
   logFile: any,
+  cliBin: string,
 };
 
 export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
@@ -42,6 +43,7 @@ export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
     configPath,
     syncTolerance,
     logFile,
+    cliBin,
   } = walletOpts;
   // TODO: Update launcher config to pass number
   const syncToleranceSeconds = parseInt(syncTolerance.replace('s', ''), 10);
@@ -69,11 +71,13 @@ export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
     case 'cardano':
       if (cluster === SELFNODE) {
         const { genesisFile } = nodeConfig.network;
-        const genesisFileWithStartTime = await createSelfnodeGenesisFile(
+        const { genesisPath, genesisHash } = await createSelfnodeGenesisFile(
           genesisFile,
-          stateDir
+          stateDir,
+          cliBin
         );
-        nodeConfig.network.genesisFile = genesisFileWithStartTime;
+        nodeConfig.network.genesisFile = genesisPath;
+        nodeConfig.network.genesisHash = genesisHash;
       }
       if (cluster !== MAINNET) {
         // All clusters except for Mainnet are treated as "Testnets"

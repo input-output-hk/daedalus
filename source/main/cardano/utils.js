@@ -1,6 +1,7 @@
 // @flow
 import * as fs from 'fs-extra';
 import path from 'path';
+import { spawn } from 'child_process';
 import { logger } from '../utils/logging';
 import type {
   CardanoNodeStorageKeys,
@@ -83,8 +84,12 @@ export const deriveProcessNames = (
 
 export const createSelfnodeGenesisFile = async (
   genesisFilePath: string,
-  stateDir: string
-): Promise<string> => {
+  stateDir: string,
+  cliBin: string
+): Promise<{
+  genesisPath: string,
+  genesisHash: string,
+}> => {
   const genesisFileExists = await fs.pathExists(genesisFilePath);
   if (!genesisFileExists) {
     throw new Error('No genesis file found');
@@ -107,5 +112,23 @@ export const createSelfnodeGenesisFile = async (
   await fs.remove(genesisPath);
   await fs.writeFile(genesisPath, genesisFile);
 
-  return genesisPath;
+  logger.info('Generating selfnode genesis hash...', { cliBin, genesisPath });
+  const genesisHash = await new Promise(resolve => {
+    const genesisHashGenerator = spawn(cliBin, [
+      'print-genesis-hash',
+      '--genesis-json',
+      genesisPath,
+    ]);
+
+    genesisHashGenerator.stdout.on('data', data => {
+      resolve(data);
+    });
+
+    genesisHashGenerator.stderr.on('data', () => {
+      throw new Error('Failed to generate genesis hash');
+    });
+  });
+  logger.info('Generated selfnode genesis hash', { genesisHash });
+
+  return { genesisPath, genesisHash };
 };

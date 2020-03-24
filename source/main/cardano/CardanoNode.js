@@ -80,6 +80,7 @@ export type CardanoNodeConfig = {
   secretPath: string,
   configPath: string,
   syncTolerance: string,
+  cliBin: string, // Path to cardano-cli executable
 };
 
 const CARDANO_UPDATE_EXIT_CODE = 20;
@@ -278,6 +279,7 @@ export class CardanoNode {
       secretPath,
       configPath,
       syncTolerance,
+      cliBin,
     } = config;
 
     this._config = config;
@@ -317,6 +319,7 @@ export class CardanoNode {
         configPath,
         syncTolerance,
         logFile,
+        cliBin,
       });
 
       this._node = node;

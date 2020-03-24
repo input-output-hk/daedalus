@@ -168,11 +168,13 @@ let
         topologyFile = "${byronConfigDir.${os}}${dirSep}topology.yaml";
       };
       socketFile = if os != "windows" then "${dataDir.${os}}${dirSep}cardano-node.socket" else "\\\\.\\pipe\\cardano-node-${environment}";
-    } // lib.optionalAttrs (environment == "selfnode") {
+    } // (lib.optionalAttrs (environment == "selfnode") {
       delegationCertificate = "${byronConfigDir.${os}}${dirSep}delegation.cert";
       signingKey = "${byronConfigDir.${os}}${dirSep}signing.key";
-    };
+    });
     syncTolerance = "300s";
+  }) // (lib.optionalAttrs (environment == "selfnode") {
+    cliBin = cliBin.${os};
   }) // (lib.optionalAttrs (backend == "jormungandr") {
     block0Path = if (envCfg ? block0bin) then block0Bin.${os} else "";
     block0Hash = jormungandrLib.environments.${environment}.genesisHash;

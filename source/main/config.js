@@ -74,6 +74,7 @@ export type LauncherConfig = {
   secretPath: string,
   configPath: string,
   syncTolerance: string,
+  cliBin: string,
 };
 
 type WindowOptionsType = {
