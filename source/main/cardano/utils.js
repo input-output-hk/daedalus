@@ -134,7 +134,7 @@ export const createSelfnodeGenesisFile = async (
       logger.info('Generating selfnode genesis SUCCESS', {
         exitCode,
         signal,
-        result: stdoutData,
+        data: stdoutData,
       });
       resolve(stdoutData);
     });
