@@ -22,10 +22,17 @@
       svg {
         height: 73px;
         width: 82px;
+        path,
+        circle {
+          stroke: var(--theme-wallet-not-responding-icon-color);
+        }
+        path:nth-child(4) {
+          fill: var(--theme-wallet-not-responding-icon-color);
+        }
       }
     }
     .title {
-      color: var(--theme-wallet-not-responding-text-color);
+      color: var(--theme-wallet-not-responding-title-text-color);
       font-family: var(--font-regular);
       font-size: 20px;
       line-height: 1.2;
@@ -40,7 +47,7 @@
       margin-bottom: 30px;
       padding: 12px 24px;
       p {
-        color: var(--theme-wallet-not-responding-text-color);
+        color: var(--theme-wallet-not-responding-title-text-color);
         font-family: var(--font-regular);
         font-size: 14px;
         line-height: 1.43;
@@ -66,7 +73,7 @@
         color: var(--theme-wallet-not-responding-button-text-color-hover);
       }
     }
-    .submitSupportButton {
+    .submitSupportLink {
       border-bottom: 1px solid
         var(--theme-wallet-not-responding-link-text-color);
       color: var(--theme-wallet-not-responding-link-text-color);

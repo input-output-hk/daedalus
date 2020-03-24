@@ -7,7 +7,6 @@ import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import icon from '../../../assets/images/not-responding.inline.svg';
-import externalLinkIcon from '../../../assets/images/link-ic.inline.svg';
 import styles from './NotResponding.scss';
 
 type Props = {
@@ -75,7 +74,7 @@ export default class NotResponding extends Component<Props> {
             skin={ButtonSkin}
           />
           <Link
-            className={styles.submitSupportButton}
+            className={styles.submitSupportLink}
             onClick={() =>
               onOpenExternalLink(
                 intl.formatMessage(messages.submitSupportRequestUrl)

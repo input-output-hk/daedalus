@@ -884,16 +884,18 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-wallet-settings-resync-button-label-color': 'rgba(94, 96, 102, 1)',
   },
   walletNotRespondingOverlay: {
-    '--theme-wallet-not-responding-background-color': '#2f496ef5',
-    '--theme-wallet-not-responding-text-color': '#fafbfc',
-    '--theme-wallet-not-responding-description-background-color':
-      'rgba(0, 0, 0, 0.2)',
+    '--theme-wallet-not-responding-background-color': 'rgba(36, 62, 98, 0.96)',
     '--theme-wallet-not-responding-button-background-color': '#2a4263',
+    '--theme-wallet-not-responding-button-background-color-hover': '#fafbfc',
     '--theme-wallet-not-responding-button-border-color': '#fafbfc',
     '--theme-wallet-not-responding-button-text-color': '#fafbfc',
-    '--theme-wallet-not-responding-button-background-color-hover': '#fafbfc',
     '--theme-wallet-not-responding-button-text-color-hover': '#21334d',
+    '--theme-wallet-not-responding-description-background-color':
+      'rgba(0, 0, 0, 0.1)',
+    '--theme-wallet-not-responding-description-text-color': '#fafbfc',
+    '--theme-wallet-not-responding-icon-color': '#fafbfc',
     '--theme-wallet-not-responding-link-text-color': '#fafbfc',
+    '--theme-wallet-not-responding-title-text-color': '#fafbfc',
   },
 };
 

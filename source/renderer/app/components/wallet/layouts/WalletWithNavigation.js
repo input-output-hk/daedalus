@@ -36,6 +36,7 @@ export default class WalletWithNavigation extends Component<Props> {
       <div className={styles.component}>
         {isNotResponding && (
           <NotResponding
+            walletName={activeItem}
             onRestartNode={onRestartNode}
             onOpenExternalLink={onOpenExternalLink}
           />

@@ -887,15 +887,20 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-wallet-settings-resync-button-label-color': 'rgba(94, 96, 102, 1)',
   },
   walletNotRespondingOverlay: {
-    '--theme-wallet-not-responding-background-color': '#2cbb69f5',
-    '--theme-wallet-not-responding-text-color': '#fafbfc',
-    '--theme-wallet-not-responding-description-background-color': '#28a85f',
-    '--theme-wallet-not-responding-button-background-color': '#28a85f',
-    '--theme-wallet-not-responding-button-border-color': '#fafbfc',
-    '--theme-wallet-not-responding-button-text-color': '#fafbfc',
-    '--theme-wallet-not-responding-button-background-color-hover': '#fafbfc',
-    '--theme-wallet-not-responding-button-text-color-hover': '#1f834a',
+    '--theme-wallet-not-responding-background-color': 'rgba(32, 34, 37, 0.96)',
+    '--theme-wallet-not-responding-button-background-color':
+      'rgba(0, 0, 0, 0.1)',
+    '--theme-wallet-not-responding-button-background-color-hover': '#ffffff',
+    '--theme-wallet-not-responding-button-border-color': '#ffffff',
+    '--theme-wallet-not-responding-button-text-color': '#ffffff',
+    '--theme-wallet-not-responding-button-text-color-hover': '#28a85f',
+    '--theme-wallet-not-responding-description-background-color':
+      'rgba(32, 34, 37, 0.96)',
+    '--theme-wallet-not-responding-description-text-color':
+      'rgba(255, 255, 255, 0.7)',
+    '--theme-wallet-not-responding-icon-color': '#fafbfc',
     '--theme-wallet-not-responding-link-text-color': '#fafbfc',
+    '--theme-wallet-not-responding-title-text-color': '#ffffff',
   },
 };
 

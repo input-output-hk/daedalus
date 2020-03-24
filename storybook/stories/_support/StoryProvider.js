@@ -90,6 +90,17 @@ export const WALLETS = [
       .subtract(400, 'days')
       .toDate(),
   },
+  {
+    id: '5',
+    name: 'Not responding',
+    amount: new BigNumber(66.998),
+    hasPassword: false,
+    passwordUpdateDate: new Date(),
+    syncState: { data: null, tag: 'not-responding' },
+    isLegacy: false,
+    recoveryPhraseVerificationDate: new Date(),
+    delegatedStakePoolId: 'kfhdsdkhfskdjfhskdhf',
+  },
 ];
 
 export const WALLETS_V2 = [
