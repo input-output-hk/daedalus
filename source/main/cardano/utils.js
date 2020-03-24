@@ -148,5 +148,17 @@ export const createSelfnodeConfig = async (
   await fs.remove(configPath);
   await fs.writeFile(configPath, configFile);
 
+  const chainDir = path.join(stateDir, 'chain');
+  logger.info('Removing selfnode chain folder...', {
+    chainDir,
+  });
+  await fs.remove(chainDir);
+
+  const walletsDir = path.join(stateDir, 'wallets');
+  logger.info('Removing selfnode wallets folder...', {
+    walletsDir,
+  });
+  await fs.remove(walletsDir);
+
   return { configPath, genesisPath, genesisHash };
 };

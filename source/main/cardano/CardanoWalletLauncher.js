@@ -84,6 +84,7 @@ export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
         nodeConfig.network.configFile = selfnodeConfigPath;
         nodeConfig.network.genesisFile = selfnodeGenesisPath;
         nodeConfig.network.genesisHash = selfnodeGenesisHash;
+        merge(launcherConfig, { apiPort: 8088 });
       }
       if (cluster !== MAINNET) {
         // All clusters except for Mainnet are treated as "Testnets"
