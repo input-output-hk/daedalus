@@ -9,8 +9,10 @@ import { environment } from './environment';
 import { nodeImplementation } from './config';
 
 const _process = process;
-const _electronStore = new ElectronStore();
-const isIncentivizedTestnet = nodeImplementation === 'jormungandr';
+const _isIncentivizedTestnet = nodeImplementation === 'jormungandr';
+const _electronStore = new ElectronStore({
+  name: _isIncentivizedTestnet ? 'config' : 'config-byron-reboot',
+});
 
 process.once('loaded', () => {
   Object.assign(global, {
@@ -49,7 +51,7 @@ process.once('loaded', () => {
     os: {
       platform: os.platform(),
     },
-    isIncentivizedTestnet,
+    isIncentivizedTestnet: _isIncentivizedTestnet,
   });
   // Expose require for Spectron!
   if (_process.env.NODE_ENV === 'test') {

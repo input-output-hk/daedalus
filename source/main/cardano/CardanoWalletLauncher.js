@@ -14,7 +14,7 @@ import {
   QA,
 } from '../../common/types/environment.types';
 import { createSelfnodeGenesisFile } from './utils';
-import { Logger } from '../utils/logging';
+import { logger } from '../utils/logging';
 import type { CardanoNodeImplementation } from '../../common/types/cardano-node.types';
 
 export type WalletOpts = {
@@ -63,7 +63,7 @@ export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
 
   // This switch statement handles any node specifc
   // configuration, prior to spawning the child process
-  Logger.info('Node implementation', { nodeImplementation });
+  logger.info('Node implementation', { nodeImplementation });
   switch (nodeImplementation) {
     case 'cardano':
       if (cluster === SELFNODE) {
@@ -139,10 +139,10 @@ export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
       break;
   }
 
-  Logger.info('Setting up CardanoLauncher now...', {
+  logger.info('Setting up CardanoLauncher now...', {
     walletOpts,
     launcherConfig,
   });
 
-  return new cardanoLauncher.Launcher(launcherConfig, Logger);
+  return new cardanoLauncher.Launcher(launcherConfig, logger);
 }

@@ -1,7 +1,7 @@
 // @flow
 import * as fs from 'fs-extra';
 import path from 'path';
-import { Logger } from '../utils/logging';
+import { logger } from '../utils/logging';
 import type {
   CardanoNodeStorageKeys,
   CardanoNodeImplementation,
@@ -98,7 +98,7 @@ export const createSelfnodeGenesisFile = async (
   });
   const genesisPath = path.join(stateDir, 'genesis.json');
 
-  Logger.info('Creating selfnode genesis file...', {
+  logger.info('Creating selfnode genesis file...', {
     inputPath: genesisFilePath,
     outputPath: genesisPath,
     startTime,
