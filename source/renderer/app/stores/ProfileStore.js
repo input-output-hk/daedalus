@@ -10,7 +10,7 @@ import LocalizableError from '../i18n/LocalizableError';
 import { WalletSupportRequestLogsCompressError } from '../i18n/errors';
 import { generateFileNameWithTimestamp } from '../../../common/utils/files';
 import { formattedBytesToSize } from '../utils/formatters';
-import { Logger } from '../utils/logging';
+import { logger } from '../utils/logging';
 import { setStateSnapshotLogChannel } from '../ipc/setStateSnapshotLogChannel';
 import { LOCALES } from '../../../common/types/locales.types';
 import {
@@ -458,7 +458,7 @@ export default class ProfileStore extends Store {
   // Collect all relevant state snapshot params and send them for log file creation
   _setStateSnapshotLog = async () => {
     try {
-      Logger.info('ProfileStore: Requesting state snapshot log file creation');
+      logger.info('ProfileStore: Requesting state snapshot log file creation');
       const { isIncentivizedTestnet } = global;
       const { networkStatus } = this.stores;
       const {
@@ -537,7 +537,7 @@ export default class ProfileStore extends Store {
 
       await setStateSnapshotLogChannel.send(stateSnapshotData);
     } catch (error) {
-      Logger.error('ProfileStore: State snapshot log file creation failed', {
+      logger.error('ProfileStore: State snapshot log file creation failed', {
         error,
       });
     }

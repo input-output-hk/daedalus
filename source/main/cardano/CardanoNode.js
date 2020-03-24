@@ -27,7 +27,7 @@ import { CardanoNodeStates } from '../../common/types/cardano-node.types';
 import { CardanoWalletLauncher } from './CardanoWalletLauncher';
 import { launcherConfig } from '../config';
 import type { NodeConfig } from '../config';
-import type { Logger } from '../utils/logging';
+import type { Logger } from '../../common/types/logging.types';
 
 /* eslint-disable consistent-return */
 

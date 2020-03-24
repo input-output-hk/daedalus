@@ -4,7 +4,7 @@ import * as fs from 'fs-extra';
 import { readFileSync } from 'fs';
 import yamljs from 'yamljs';
 import type { LauncherConfig } from '../config';
-import type { Logger } from './logging';
+import type { Logger } from '../../common/types/logging.types';
 
 function recurseReplace(obj) {
   if (Array.isArray(obj)) {

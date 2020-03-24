@@ -2,14 +2,10 @@
 import log from 'electron-log-daedalus';
 import { environment } from '../environment';
 import { formatContext } from '../../common/utils/logging';
-import type { FormatMessageContextParams } from '../../common/types/logging.types';
-
-export type Logger = {
-  debug: (string, ?Object) => void,
-  info: (string, ?Object) => void,
-  error: (string, ?Object) => void,
-  warn: (string, ?Object) => void,
-};
+import type {
+  FormatMessageContextParams,
+  Logger,
+} from '../../common/types/logging.types';
 
 const appName = 'daedalus';
 const electronProcess = 'ipcMain';
