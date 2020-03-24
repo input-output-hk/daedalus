@@ -162,7 +162,7 @@ export type UpdateSpendingPasswordRequest = {
   walletId: string,
   oldPassword: string,
   newPassword: string,
-  isLegacy: boolean,
+  isLegacy?: boolean,
 };
 
 export type DeleteWalletRequest = {
@@ -172,7 +172,7 @@ export type DeleteWalletRequest = {
 
 export type GetWalletUtxosRequest = {
   walletId: string,
-  isLegacy: boolean,
+  isLegacy?: boolean,
 };
 
 export type GetWalletIdAndBalanceRequest = {
@@ -200,7 +200,7 @@ export type RestoreLegacyWalletRequest = {
 export type UpdateWalletRequest = {
   walletId: string,
   name: string,
-  isLegacy: boolean,
+  isLegacy?: boolean,
 };
 
 export type ForceWalletResyncRequest = {
