@@ -3,6 +3,7 @@ import { action, computed, observable } from 'mobx';
 import Store from './lib/Store';
 import { sidebarConfig } from '../config/sidebarConfig';
 import { formattedWalletAmount } from '../utils/formatters';
+import { reject } from 'lodash';
 import type { SidebarWalletType } from '../types/sidebarTypes';
 
 export default class SidebarStore extends Store {
@@ -45,11 +46,18 @@ export default class SidebarStore extends Store {
   }
 
   @action _configureCategories = () => {
-    if (global.isIncentivizedTestnet) {
-      this.CATEGORIES = sidebarConfig.CATEGORIES_WITHOUT_DELEGATION_COUNTDOWN;
+    const { isIncentivizedTestnet, environment } = global;
+    let categories = [];
+    if (isIncentivizedTestnet) {
+      categories = sidebarConfig.CATEGORIES_WITHOUT_DELEGATION_COUNTDOWN;
     } else {
-      this.CATEGORIES = sidebarConfig.CATEGORIES;
+      categories = sidebarConfig.CATEGORIES;
     }
+    // Disable Network info label inside mainnet
+    if (environment.isMainnet) {
+      categories = reject(categories, ['name', sidebarConfig.CATEGORIES_BY_NAME.NETWORK_INFO.name]);
+    }
+    this.CATEGORIES = categories;
   };
 
   @action _onActivateSidebarCategory = (params: {
