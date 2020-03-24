@@ -183,7 +183,7 @@ export default defineMessages({
   },
   network_mainnet: {
     id: 'environment.network.mainnet',
-    defaultMessage: '!!!mainnet',
+    defaultMessage: '!!!Mainnet',
     description: '"mainnet" Cardano network',
   },
   network_staging: {

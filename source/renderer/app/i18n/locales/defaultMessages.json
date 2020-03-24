@@ -11273,7 +11273,7 @@
         }
       },
       {
-        "defaultMessage": "!!!mainnet",
+        "defaultMessage": "!!!Mainnet",
         "description": "\"mainnet\" Cardano network",
         "end": {
           "column": 3,

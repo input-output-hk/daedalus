@@ -99,7 +99,7 @@
   "environment.network.development": "Development",
   "environment.network.itn_rewards_v1": "Incentivized Testnet v1 - Rewards",
   "environment.network.itn_selfnode": "ITN Selfnode",
-  "environment.network.mainnet": "mainnet",
+  "environment.network.mainnet": "Mainnet",
   "environment.network.nightly": "Nightly",
   "environment.network.qa": "QA",
   "environment.network.selfnode": "Selfnode",
