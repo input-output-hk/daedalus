@@ -26,6 +26,7 @@ const sidebarMenus = observable({
         id: '1',
         title: 'First',
         info: '100 ADA',
+        isNotResponding: false,
         isConnected: true,
         isLegacy: false,
         recoveryPhraseVerificationStatus:
@@ -35,6 +36,7 @@ const sidebarMenus = observable({
         id: '2',
         title: 'Second',
         info: '200 ADA',
+        isNotResponding: false,
         isConnected: true,
         isLegacy: false,
         recoveryPhraseVerificationStatus:
@@ -44,6 +46,7 @@ const sidebarMenus = observable({
         id: '3',
         title: 'Third',
         info: '300 ADA',
+        isNotResponding: false,
         isConnected: true,
         isLegacy: false,
         recoveryPhraseVerificationStatus:

@@ -8,7 +8,7 @@ import { AddressGroup } from 'cardano-js/dist/Address/AddressGroup';
 import { ChainSettings } from 'cardano-js/dist/ChainSettings';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
-import Wallet from '../domains/Wallet';
+import Wallet, { WalletSyncStateStatuses } from '../domains/Wallet';
 import WalletAddress from '../domains/WalletAddress';
 import { WalletTransaction } from '../domains/WalletTransaction';
 import { MAX_ADA_WALLETS_COUNT } from '../config/numbersConfig';
@@ -933,7 +933,12 @@ export default class WalletsStore extends Store {
     if (this.stores.networkStatus.isConnected) {
       const result = await this.walletsRequest.execute().promise;
       if (!result) return;
-      const walletIds = result.map((wallet: Wallet) => wallet.id);
+      const walletIds = result
+        .filter(
+          ({ syncState }: Wallet) =>
+            syncState.status !== WalletSyncStateStatuses.NOT_RESPONDING
+        )
+        .map((wallet: Wallet) => wallet.id);
       await this._setWalletsRecoveryPhraseVerificationData(walletIds);
       runInAction('refresh active wallet', () => {
         if (this.active) {
@@ -992,6 +997,16 @@ export default class WalletsStore extends Store {
     if (this.hasAnyWallets) {
       const activeWalletId = this.active ? this.active.id : null;
       const newActiveWallet = this.all.find(wallet => wallet.id === walletId);
+      if (
+        (!this.active || !this.active.isNotResponding) &&
+        newActiveWallet &&
+        newActiveWallet.isNotResponding
+      ) {
+        this.actions.router.goToRoute.trigger({
+          route: ROUTES.WALLETS.PAGE,
+          params: { id: newActiveWallet.id, page: 'summary' },
+        });
+      }
       const hasActiveWalletBeenChanged = activeWalletId !== walletId;
       const hasActiveWalletBeenUpdated = !isEqual(this.active, newActiveWallet);
       if (hasActiveWalletBeenChanged) {

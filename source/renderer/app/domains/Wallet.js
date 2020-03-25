@@ -14,10 +14,12 @@ export const WalletSyncStateStatuses: {
   RESTORING: SyncStateStatus,
   SYNCING: SyncStateStatus,
   READY: SyncStateStatus,
+  NOT_RESPONDING: SyncStateStatus,
 } = {
   RESTORING: 'syncing', // @API TODO - calculate if the wallet is restoring!
   SYNCING: 'syncing',
   READY: 'ready',
+  NOT_RESPONDING: 'not_responding',
 };
 
 export const WalletDelegationStatuses: {
@@ -101,6 +103,12 @@ export default class Wallet {
 
   @computed get isRestoring(): boolean {
     return get(this, 'syncState.status') === WalletSyncStateStatuses.RESTORING;
+  }
+
+  @computed get isNotResponding(): boolean {
+    return (
+      get(this, 'syncState.status') === WalletSyncStateStatuses.NOT_RESPONDING
+    );
   }
 
   @computed get restorationProgress(): number {

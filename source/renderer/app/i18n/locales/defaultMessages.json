@@ -5737,6 +5737,81 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!The wallet is not responding.",
+        "description": "Title on the NotResponding dialog.",
+        "end": {
+          "column": 3,
+          "line": 23
+        },
+        "file": "source/renderer/app/components/wallet/not-responding/NotResponding.js",
+        "id": "wallet.notResponding.title",
+        "start": {
+          "column": 9,
+          "line": 19
+        }
+      },
+      {
+        "defaultMessage": "!!!The {walletName} wallet is not responding. This is caused by a known but rare issue, which is currently being fixed. Please restart the Cardano node by clicking the button below, which should resolve the issue. If the issue persists, or if it happens again, please submit a support request.",
+        "description": "Description on the NotResponding dialog.",
+        "end": {
+          "column": 3,
+          "line": 29
+        },
+        "file": "source/renderer/app/components/wallet/not-responding/NotResponding.js",
+        "id": "wallet.notResponding.description",
+        "start": {
+          "column": 15,
+          "line": 24
+        }
+      },
+      {
+        "defaultMessage": "!!!Restart Cardano Node",
+        "description": "Restart Node Button Label on the NotResponding dialog.",
+        "end": {
+          "column": 3,
+          "line": 34
+        },
+        "file": "source/renderer/app/components/wallet/not-responding/NotResponding.js",
+        "id": "wallet.notResponding.restartNodeButtonLabel",
+        "start": {
+          "column": 26,
+          "line": 30
+        }
+      },
+      {
+        "defaultMessage": "!!!Submit a support request",
+        "description": "Submit Support Request Label on the NotResponding dialog",
+        "end": {
+          "column": 3,
+          "line": 39
+        },
+        "file": "source/renderer/app/components/wallet/not-responding/NotResponding.js",
+        "id": "wallet.notResponding.submitSupportRequestLabel",
+        "start": {
+          "column": 29,
+          "line": 35
+        }
+      },
+      {
+        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/requests/new/",
+        "description": "Submit Support Request Url on the NotResponding dialog",
+        "end": {
+          "column": 3,
+          "line": 44
+        },
+        "file": "source/renderer/app/components/wallet/not-responding/NotResponding.js",
+        "id": "wallet.notResponding.submitSupportRequestUrl",
+        "start": {
+          "column": 27,
+          "line": 40
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/not-responding/NotResponding.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Paper wallet certificate",
         "description": "Headline for the \"Paper wallet create certificate completion dialog\" headline.",
         "end": {

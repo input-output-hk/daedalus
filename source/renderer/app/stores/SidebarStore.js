@@ -38,6 +38,7 @@ export default class SidebarStore extends Store {
         isConnected: networkStatus.isConnected,
         isRestoreActive: wallet.isRestoring,
         restoreProgress: wallet.restorationProgress,
+        isNotResponding: wallet.isNotResponding,
         isLegacy: wallet.isLegacy,
         recoveryPhraseVerificationStatus,
       };
