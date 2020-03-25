@@ -1,6 +1,5 @@
 // @flow
 import { action, computed, observable } from 'mobx';
-import { reject } from 'lodash';
 import Store from './lib/Store';
 import { sidebarConfig } from '../config/sidebarConfig';
 import { formattedWalletAmount } from '../utils/formatters';
@@ -46,21 +45,12 @@ export default class SidebarStore extends Store {
   }
 
   @action _configureCategories = () => {
-    const { isIncentivizedTestnet, environment } = global;
-    let categories = [];
+    const { isIncentivizedTestnet } = global;
     if (isIncentivizedTestnet) {
-      categories = sidebarConfig.CATEGORIES_WITHOUT_DELEGATION_COUNTDOWN;
+      this.CATEGORIES = sidebarConfig.CATEGORIES_WITHOUT_DELEGATION_COUNTDOWN;
     } else {
-      categories = sidebarConfig.CATEGORIES;
+      this.CATEGORIES = sidebarConfig.CATEGORIES;
     }
-    // Disable Network info label inside mainnet
-    if (environment.isMainnet) {
-      categories = reject(categories, [
-        'name',
-        sidebarConfig.CATEGORIES_BY_NAME.NETWORK_INFO.name,
-      ]);
-    }
-    this.CATEGORIES = categories;
   };
 
   @action _onActivateSidebarCategory = (params: {
