@@ -1453,12 +1453,14 @@ export default class AdaApi {
   testReset = async (): Promise<void> => {
     logger.debug('AdaApi::testReset called');
     try {
-      const wallets: AdaWallets = await getWallets(this.config);
-      Promise.all(
-        wallets.map(wallet =>
-          deleteWallet(this.config, { walletId: wallet.id })
-        )
-      );
+      if (isIncentivizedTestnet) {
+        const wallets: AdaWallets = await getWallets(this.config);
+        Promise.all(
+          wallets.map(wallet =>
+            deleteWallet(this.config, { walletId: wallet.id })
+          )
+        );
+      }
       const legacyWallets: LegacyAdaWallets = await getLegacyWallets(
         this.config
       );
