@@ -7,7 +7,6 @@ import WalletReceiveDialog from '../../components/wallet/receive/WalletReceiveDi
 import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import WalletAddress from '../../domains/WalletAddress';
-import Wallet from '../../domains/Wallet';
 import { generateFileNameWithTimestamp } from '../../../../common/utils/files';
 import { ellipsis } from '../../utils/strings';
 
@@ -15,7 +14,6 @@ type Props = InjectedProps;
 
 type State = {
   addressToShare?: ?WalletAddress,
-  activeWallet: ?Wallet,
 };
 
 @inject('stores', 'actions')
@@ -25,8 +23,11 @@ export default class WalletReceivePage extends Component<Props, State> {
 
   state = {
     addressToShare: null,
-    activeWallet: this.props.stores.wallets.active,
   };
+
+  get activeWallet() {
+    return this.props.stores.wallets.active;
+  }
 
   componentWillUnmount() {
     this.props.actions.notifications.closeNotification.trigger({
@@ -86,8 +87,7 @@ export default class WalletReceivePage extends Component<Props, State> {
   };
 
   handleGenerateAddress = (passphrase: string) => {
-    const { activeWallet } = this.state;
-
+    const { activeWallet } = this;
     if (activeWallet) {
       this.props.actions.addresses.createByronWalletAddress.trigger({
         walletId: activeWallet.id,
@@ -99,7 +99,8 @@ export default class WalletReceivePage extends Component<Props, State> {
   render() {
     const { actions, stores } = this.props;
     const { uiDialogs, addresses, sidebar } = stores;
-    const { addressToShare, activeWallet } = this.state;
+    const { activeWallet } = this;
+    const { addressToShare } = this.state;
     const { toggleSubMenus } = actions.sidebar;
     const { isIncentivizedTestnet } = global;
     // Guard against potential null values
