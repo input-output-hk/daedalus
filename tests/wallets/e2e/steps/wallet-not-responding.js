@@ -6,7 +6,7 @@ import { WalletSyncStateStatuses } from '../../../../source/renderer/app/domains
 declare var daedalus: Daedalus;
 
 When(/^the "([^"]*)" wallet is not responding$/, async function(walletName) {
-  await this.client.execute((walletName) => {
+  await this.client.execute((walletName, status) => {
     const walletIndex: number = daedalus.stores.wallets.all.findIndex(wallet => wallet.name === walletName);
     const modifiedWallet: {
       name: string,
@@ -14,16 +14,16 @@ When(/^the "([^"]*)" wallet is not responding$/, async function(walletName) {
     } = {
       name: `Test wallet - not working`,
       syncState: {
-        status: WalletSyncStateStatuses.NOT_RESPONDING,
+        status,
       },
     };
     daedalus.api.ada.setTestingWallet(modifiedWallet, walletIndex);
-  }, walletName);
+  }, walletName, WalletSyncStateStatuses.NOT_RESPONDING);
 });
 
-
-Then(/^I should see the "Not Responding" Overlay/, async function() {
-  await this.client.waitForVisible('.NotResponding_component');
+Then(/^the "Not Responding" Overlay should be (hidden|visible)/, async function(state) {
+  const shouldBeHidden = state === 'hidden';
+  await this.client.waitForVisible('.NotResponding_component', null, shouldBeHidden);
 });
 
 Then(/^the wallet navigation should switch to the "summary" tab/, async function() {
