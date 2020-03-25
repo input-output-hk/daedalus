@@ -84,7 +84,7 @@ import {
   cardanoFaultInjectionChannel,
 } from '../ipc/cardano.ipc';
 import patchAdaApi from './utils/patchAdaApi';
-import { getLegacyWalletId, utcStringToDate, encryptPassphrase } from './utils';
+import { getLegacyWalletId, utcStringToDate } from './utils';
 import { logger } from '../utils/logging';
 import {
   unscrambleMnemonics,
@@ -739,9 +739,7 @@ export default class AdaApi {
       walletId,
       spendingPassword: passwordString,
     } = request;
-    const spendingPassword = passwordString
-      ? encryptPassphrase(passwordString)
-      : '';
+    const spendingPassword = passwordString || '';
     try {
       const address: ByronWalletAddress = await createByronWalletAddress(
         this.config,

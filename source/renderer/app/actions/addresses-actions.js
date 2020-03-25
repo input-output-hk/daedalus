@@ -6,7 +6,6 @@ import Action from './lib/Action';
 export default class AddressesActions {
   createByronWalletAddress: Action<{
     walletId: string,
-    isLegacy: boolean,
     spendingPassword: ?string,
   }> = new Action();
   resetErrors: Action<any> = new Action();
