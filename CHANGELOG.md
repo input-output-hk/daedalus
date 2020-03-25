@@ -9,6 +9,9 @@ Changelog
 - Added support for `cardano-node` "Selfnode" network ([PR 1897](https://github.com/input-output-hk/daedalus/pull/1897))
 - Enabled Byron wallet creation for Haskell node builds ([PR 1895](https://github.com/input-output-hk/daedalus/pull/1895))
 - Enabled all Mainnet Daedalus features for Byron wallets for Haskell node builds ([PR 1895](https://github.com/input-output-hk/daedalus/pull/1895))
+- Enabled changing spending password in "Wallet settings" for Haskell node builds ([PR 1902](https://github.com/input-output-hk/daedalus/pull/1902))
+- Enabled "Send" feature for Haskell node builds ([PR 1902](https://github.com/input-output-hk/daedalus/pull/1902))
+- Disabled transfer funds notification for Haskell node builds ([PR 1902](https://github.com/input-output-hk/daedalus/pull/1902))
 - Disabled Shelley wallets and delegation features for Haskell node builds ([PR 1895](https://github.com/input-output-hk/daedalus/pull/1895))
 - Disabled "Data layer migration" notification for Haskell node builds ([PR 1895](https://github.com/input-output-hk/daedalus/pull/1895))
 - Disabled "Paper wallet certificate" creation for Haskell node builds ([PR 1895](https://github.com/input-output-hk/daedalus/pull/1895))
@@ -23,9 +26,6 @@ Changelog
 ### Chores
 
 - Updated Byron Haskell address validation ([PR 1902](https://github.com/input-output-hk/daedalus/pull/1902))
-- Enabled changing spending password in "Wallet settings" ([PR 1902](https://github.com/input-output-hk/daedalus/pull/1902))
-- Enabled "Send" feature ([PR 1902](https://github.com/input-output-hk/daedalus/pull/1902))
-- Disabled transfer funds norification ([PR 1902](https://github.com/input-output-hk/daedalus/pull/1902))
 - Updated test configuration to cover Byron features only ([PR 1895](https://github.com/input-output-hk/daedalus/pull/1895))
 - Optimized e2e tests ([PR 1874](https://github.com/input-output-hk/daedalus/pull/1874))
 - Updated `react-polymorph` dependency ([PR 1882](https://github.com/input-output-hk/daedalus/pull/1882))
