@@ -18,6 +18,7 @@ type Props = {
   isIncentivizedTestnet: boolean,
   restoreProgress?: number,
   isLegacy: boolean,
+  isNotResponding: boolean,
   recoveryPhraseVerificationStatus: string,
 };
 
@@ -34,6 +35,7 @@ export default class SidebarWalletMenuItem extends Component<Props> {
       isIncentivizedTestnet,
       restoreProgress,
       isLegacy,
+      isNotResponding,
       recoveryPhraseVerificationStatus,
     } = this.props;
 
@@ -47,6 +49,7 @@ export default class SidebarWalletMenuItem extends Component<Props> {
             `recoveryPhraseVerificationStatus-${recoveryPhraseVerificationStatus}`
           ]
         : null,
+      isNotResponding ? styles.notResponding : null,
     ]);
 
     return (

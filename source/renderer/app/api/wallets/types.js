@@ -71,7 +71,11 @@ export type WalletUnit = WalletUnits.LOVELACE | WalletUnits.ADA;
 
 export type AdaWallets = Array<AdaWallet>;
 
-export type SyncStateStatus = 'ready' | 'restoring' | 'syncing';
+export type SyncStateStatus =
+  | 'ready'
+  | 'restoring'
+  | 'syncing'
+  | 'not_responding';
 
 export type DelegationStatus = 'delegating' | 'not_delegating';
 
