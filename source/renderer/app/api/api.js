@@ -18,6 +18,7 @@ import WalletAddress from '../domains/WalletAddress';
 
 // Addresses requests
 import { getAddresses } from './addresses/requests/getAddresses';
+import { createByronWalletAddress } from './addresses/requests/createByronWalletAddress';
 
 // Network requests
 import { getNetworkInfo } from './network/requests/getNetworkInfo';
@@ -100,7 +101,11 @@ import {
 import { FORCED_WALLET_RESYNC_WAIT } from '../config/timingConfig';
 
 // Addresses Types
-import type { Address, GetAddressesRequest } from './addresses/types';
+import type {
+  Address,
+  GetAddressesRequest,
+  CreateAddressRequest,
+} from './addresses/types';
 
 // Common Types
 import type { RequestConfig } from './common/types';
@@ -712,6 +717,35 @@ export default class AdaApi {
       } else {
         throw new GenericApiError();
       }
+    }
+  };
+
+  createAddress = async (request: CreateAddressRequest): Promise<Address> => {
+    Logger.debug('AdaApi::createAddress called', {
+      parameters: filterLogData(request),
+    });
+    const {
+      accountIndex,
+      walletId,
+      spendingPassword: passwordString,
+    } = request;
+    const spendingPassword = passwordString
+      ? encryptPassphrase(passwordString)
+      : '';
+    try {
+      const address: Address = await createAddress(this.config, {
+        spendingPassword,
+        accountIndex,
+        walletId,
+      });
+      Logger.debug('AdaApi::createAddress success', { address });
+      return _createAddressFromServerData(address);
+    } catch (error) {
+      Logger.error('AdaApi::createAddress error', { error });
+      if (error.message === 'CannotCreateAddress') {
+        throw new IncorrectSpendingPasswordError();
+      }
+      throw new GenericApiError();
     }
   };
 

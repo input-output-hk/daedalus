@@ -105,7 +105,7 @@ export default class AddressesStore extends Store {
   };
 
   getAccountIndexByWalletId = async (walletId: string): Promise<?number> => {
-    const result = await this.api.ada.getByronWalletAddresses({ walletId });
+    const result = await this.api.ada.getAddresses({ walletId });
     return result ? result.accountIndex : null;
   };
 
