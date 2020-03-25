@@ -314,7 +314,7 @@ export default class AdaApi {
       }
       response = await getAddresses(this.config, walletId, queryParams);
 
-      Logger.debug('AdaApi::getAddresses success', { addresses: response });
+      logger.debug('AdaApi::getAddresses success', { addresses: response });
       return response.map(_createAddressFromServerData);
     } catch (error) {
       logger.error('AdaApi::getAddresses error', { error });
@@ -1270,7 +1270,7 @@ export default class AdaApi {
       } else {
         wallet = await updateWallet(this.config, { walletId, name });
       }
-      Logger.debug('AdaApi::updateWallet success', { wallet });
+      logger.debug('AdaApi::updateWallet success', { wallet });
       return _createWalletFromServerData(wallet);
     } catch (error) {
       logger.error('AdaApi::updateWallet error', { error });
@@ -1299,7 +1299,7 @@ export default class AdaApi {
           newPassword,
         });
       }
-      Logger.debug('AdaApi::updateSpendingPassword success');
+      logger.debug('AdaApi::updateSpendingPassword success');
       return true;
     } catch (error) {
       logger.error('AdaApi::updateSpendingPassword error', { error });
@@ -1367,7 +1367,7 @@ export default class AdaApi {
     request: GetWalletUtxosRequest
   ): Promise<WalletUtxos> => {
     const { walletId, isLegacy } = request;
-    Logger.debug('AdaApi::getWalletUtxos called', {
+    logger.debug('AdaApi::getWalletUtxos called', {
       parameters: filterLogData(request),
     });
     try {
@@ -1383,7 +1383,7 @@ export default class AdaApi {
       } else {
         response = await getWalletUtxos(this.config, { walletId });
       }
-      Logger.debug('AdaApi::getWalletUtxos success', { response });
+      logger.debug('AdaApi::getWalletUtxos success', { response });
       return response;
     } catch (error) {
       logger.error('AdaApi::getWalletUtxos error', { error });
