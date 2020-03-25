@@ -33,16 +33,16 @@ export default class AddressesStore extends Store {
 
   _createByronWalletAddress = async (params: {
     walletId: string,
-    spendingPassword: ?string,
+    passphrase: string,
   }) => {
     try {
-      const { walletId, spendingPassword } = params;
+      const { walletId, passphrase } = params;
       const accountIndex = await this.getAccountIndexByWalletId(walletId);
 
       const address: ?Address = await this.createByronWalletAddressRequest.execute(
         {
-          accountIndex,
-          spendingPassword,
+          addressIndex: accountIndex,
+          passphrase,
           walletId,
         }
       ).promise;
@@ -108,7 +108,10 @@ export default class AddressesStore extends Store {
 
   getAccountIndexByWalletId = async (walletId: string): Promise<?number> => {
     // $FlowFixMe
-    const result = await this.api.ada.getAddresses({ walletId });
+    const result = await this.api.ada.getAddresses({
+      walletId,
+      isLegacy: true,
+    });
     return result ? result.accountIndex : null;
   };
 

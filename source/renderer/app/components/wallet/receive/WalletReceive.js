@@ -159,10 +159,8 @@ export default class WalletReceive extends Component<Props, State> {
   submit = () => {
     this.form.submit({
       onSuccess: form => {
-        const { walletHasPassword } = this.props;
         const { spendingPassword } = form.values();
-        const password = walletHasPassword ? spendingPassword : null;
-        this.props.onGenerateAddress(password);
+        this.props.onGenerateAddress(spendingPassword || '');
         form.clear();
       },
       onError: () => {},

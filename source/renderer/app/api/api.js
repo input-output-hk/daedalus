@@ -108,7 +108,6 @@ import type {
   Address,
   GetAddressesRequest,
   CreateByronWalletAddressRequest,
-  ByronWalletAddress,
 } from './addresses/types';
 
 // Common Types
@@ -730,25 +729,18 @@ export default class AdaApi {
 
   createAddress = async (
     request: CreateByronWalletAddressRequest
-  ): Promise<Address> => {
+  ): Promise<WalletAddress> => {
     logger.debug('AdaApi::createAddress called', {
       parameters: filterLogData(request),
     });
-    const {
-      accountIndex,
-      walletId,
-      spendingPassword: passwordString,
-    } = request;
-    const spendingPassword = passwordString || '';
+    const { addressIndex, walletId, passphrase: passwordString } = request;
+    const passphrase = passwordString || '';
     try {
-      const address: ByronWalletAddress = await createByronWalletAddress(
-        this.config,
-        {
-          spendingPassword,
-          accountIndex,
-          walletId,
-        }
-      );
+      const address: Address = await createByronWalletAddress(this.config, {
+        passphrase,
+        walletId,
+        addressIndex,
+      });
       logger.debug('AdaApi::createAddress success', { address });
       return _createAddressFromServerData(address);
     } catch (error) {
@@ -1805,11 +1797,10 @@ const _createWalletFromServerData = action(
 const _createAddressFromServerData = action(
   'AdaApi::_createAddressFromServerData',
   (address: Address) => {
-    const { id, state, accountIndex } = address;
+    const { id, state } = address;
     return new WalletAddress({
       id,
       used: state === 'used',
-      accountIndex,
     });
   }
 );

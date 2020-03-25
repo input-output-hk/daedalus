@@ -85,14 +85,13 @@ export default class WalletReceivePage extends Component<Props, State> {
     });
   };
 
-  handleGenerateAddress = (spendingPassword: ?string) => {
+  handleGenerateAddress = (passphrase: string) => {
     const { activeWallet } = this.state;
 
     if (activeWallet) {
       this.props.actions.addresses.createByronWalletAddress.trigger({
         walletId: activeWallet.id,
-        spendingPassword,
-        isLegacy: activeWallet.isLegacy,
+        passphrase,
       });
     }
   };

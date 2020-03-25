@@ -1,29 +1,28 @@
 // @flow
 import type { RequestConfig } from '../../common/types';
-import type { ByronWalletAddress } from '../types';
+import type { Address } from '../types';
 import { request } from '../../utils/request';
 import { getRawWalletId } from '../../utils';
 
 export type CreateAddressParams = {
-  spendingPassword?: string,
-  accountIndex: number,
   walletId: string,
+  passphrase: string,
+  addressIndex?: number,
 };
 
 export const createByronWalletAddress = (
   config: RequestConfig,
-  { spendingPassword, accountIndex, walletId }: CreateAddressParams
-): Promise<ByronWalletAddress> =>
-  request(
+  { passphrase, addressIndex, walletId }: CreateAddressParams
+): Promise<Address> => {
+  let data = { passphrase };
+  data = addressIndex ? { ...data, address_index: addressIndex } : data;
+  return request(
     {
       method: 'POST',
-      path: '/v2/byron-wallets/addresses',
+      path: `/v2/byron-wallets/${getRawWalletId(walletId)}/addresses`,
       ...config,
     },
     {},
-    {
-      spendingPassword,
-      accountIndex,
-      walletId: getRawWalletId(walletId),
-    }
+    data
   );
+};
