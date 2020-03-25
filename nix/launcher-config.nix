@@ -47,6 +47,12 @@ let
   cliBin.linux = if backend == "jormungandr" then "jcli" else "cardano-cli";
   cliBin.windows = if backend == "jormungandr" then "\${DAEDALUS_INSTALL_DIRECTORY}\\jcli.exe" else "\${DAEDALUS_INSTALL_DIRECTORY}\\cardano-cli.exe";
   cliBin.macos64 = if backend == "jormungandr" then "\${DAEDALUS_INSTALL_DIRECTORY}/jcli" else (if devShell then "cardano-cli" else "\${DAEDALUS_INSTALL_DIRECTORY}/cardano-cli");
+  exportWalletsBin.linux = "export-wallets";
+  exportWalletsBin.windows = "\${DAEDALUS_INSTALL_DIRECTORY}\\export-wallets.exe";
+  exportWalletsBin.macos64 = "\${DAEDALUS_INSTALL_DIRECTORY}/export-wallets";
+  dbConverterBin.linux = "db-converter";
+  dbConverterBin.windows = "\${DAEDALUS_INSTALL_DIRECTORY}\\db-converter.exe";
+  dbConverterBin.macos64 = "\${DAEDALUS_INSTALL_DIRECTORY}/db-converter";
   launcherLogsPrefix.linux = "${dataDir.${os}}/Logs/";
   launcherLogsPrefix.windows = "Logs\\pub";
   launcherLogsPrefix.macos64 = "${dataDir.${os}}/Logs/pub";
@@ -173,6 +179,8 @@ let
       signingKey = "${byronConfigDir.${os}}${dirSep}signing.key";
     });
     syncTolerance = "300s";
+    exportWalletsBin = exportWalletsBin.${os};
+    dbConvertertBin = dbConverterBin.${os};
   }) // (lib.optionalAttrs (environment == "selfnode") {
     cliBin = cliBin.${os};
   }) // (lib.optionalAttrs (backend == "jormungandr") {
