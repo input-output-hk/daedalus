@@ -22,6 +22,10 @@ Changelog
 
 ### Chores
 
+- Updated Byron Haskell address validation ([PR 1902](https://github.com/input-output-hk/daedalus/pull/1902))
+- Enabled changing spending password in "Wallet settings" ([PR 1902](https://github.com/input-output-hk/daedalus/pull/1902))
+- Enabled "Send" feature ([PR 1902](https://github.com/input-output-hk/daedalus/pull/1902))
+- Disabled transfer funds norification ([PR 1902](https://github.com/input-output-hk/daedalus/pull/1902))
 - Updated test configuration to cover Byron features only ([PR 1895](https://github.com/input-output-hk/daedalus/pull/1895))
 - Optimized e2e tests ([PR 1874](https://github.com/input-output-hk/daedalus/pull/1874))
 - Updated `react-polymorph` dependency ([PR 1882](https://github.com/input-output-hk/daedalus/pull/1882))
