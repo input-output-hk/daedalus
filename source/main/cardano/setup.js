@@ -1,7 +1,8 @@
 // @flow
+import path from 'path';
 import { BrowserWindow } from 'electron';
 import { createWriteStream, readFileSync } from 'fs';
-import { exec, spawn } from 'child_process';
+import { exec, spawn, spawnSync } from 'child_process';
 import { CardanoNode } from './CardanoNode';
 import {
   NODE_KILL_TIMEOUT,
@@ -25,6 +26,7 @@ import {
   getCachedCardanoStatusChannel,
   cardanoTlsConfigChannel,
   setCachedCardanoStatusChannel,
+  exportWalletsChannel,
 } from '../ipc/cardano.ipc';
 import { safeExitWithCode } from '../utils/safeExitWithCode';
 
@@ -179,6 +181,37 @@ export const setupCardanoNode = (
       { fault }
     );
     return cardanoNode.setFault(fault);
+  });
+
+  exportWalletsChannel.onRequest(() => {
+    logger.info('ipcMain: Received request from renderer to export wallets');
+    const { exportWalletsBin, stateDir } = launcherConfig;
+    const keyFilePath = path
+      .join(stateDir, 'Secrets-1.0', 'secret.key')
+      .replace(' Selfnode', ''); // TODO: Remove after feature development is completed
+    const walletDbPath = path
+      .join(stateDir, 'Wallet-1.0')
+      .replace(' Selfnode', ''); // TODO: Remove after feature development is completed
+    logger.info('ipcMain: Exporting wallets...', {
+      exportWalletsBin,
+      stateDir,
+      keyFilePath,
+      walletDbPath,
+    });
+    const { stdout, stderr } = spawnSync(exportWalletsBin, [
+      '--mainnet',
+      '--keyfile',
+      keyFilePath,
+      '--wallet-db-path',
+      walletDbPath,
+    ]);
+    const data = JSON.parse(stdout.toString());
+    const errors = stderr.toString();
+    logger.info('ipcMain: Export wallets SUCCESS', {
+      exportedWalletsCount: data.length,
+      errors,
+    });
+    return Promise.resolve({ data, errors });
   });
 
   return cardanoNode;

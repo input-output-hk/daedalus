@@ -27,11 +27,11 @@ let
     testnet = "Testnet";
   };
 
-  spacedName = if environment == "mainnet" then "Daedalus RC1" else "Daedalus ${installDirectorySuffix.${environment}}";
+  spacedName = if environment == "mainnet" then "Daedalus" else "Daedalus ${installDirectorySuffix.${environment}}";
 
   dataDir.linux = "\${XDG_DATA_HOME}/Daedalus/${environment}";
-  dataDir.macos64 = if environment == "mainnet" then "\${HOME}/Library/Application Support/Daedalus" else "\${HOME}/Library/Application Support/${spacedName}";
-  dataDir.windows = if environment == "mainnet" then "\${APPDATA}\\Daedalus" else "\${APPDATA}\\${spacedName}";
+  dataDir.macos64 = "\${HOME}/Library/Application Support/${spacedName}";
+  dataDir.windows = "\${APPDATA}\\${spacedName}";
 
   # TODO, use backend
   nodeBin.linux = "jormungandr";
@@ -49,10 +49,10 @@ let
   cliBin.macos64 = if backend == "jormungandr" then "\${DAEDALUS_INSTALL_DIRECTORY}/jcli" else (if devShell then "cardano-cli" else "\${DAEDALUS_INSTALL_DIRECTORY}/cardano-cli");
   exportWalletsBin.linux = "export-wallets";
   exportWalletsBin.windows = "\${DAEDALUS_INSTALL_DIRECTORY}\\export-wallets.exe";
-  exportWalletsBin.macos64 = "\${DAEDALUS_INSTALL_DIRECTORY}/export-wallets";
+  exportWalletsBin.macos64 = if devShell then "export-wallets" else "\${DAEDALUS_INSTALL_DIRECTORY}/export-wallets";
   dbConverterBin.linux = "db-converter";
   dbConverterBin.windows = "\${DAEDALUS_INSTALL_DIRECTORY}\\db-converter.exe";
-  dbConverterBin.macos64 = "\${DAEDALUS_INSTALL_DIRECTORY}/db-converter";
+  dbConverterBin.macos64 = if devShell then "db-converter" else "\${DAEDALUS_INSTALL_DIRECTORY}/db-converter";
   launcherLogsPrefix.linux = "${dataDir.${os}}/Logs/";
   launcherLogsPrefix.windows = "Logs\\pub";
   launcherLogsPrefix.macos64 = "${dataDir.${os}}/Logs/pub";

@@ -194,7 +194,7 @@ export type CardanoFaultInjectionRendererRequest = FaultInjectionIpcRequest;
 export type CardanoFaultInjectionMainResponse = void;
 
 /**
- * Channel where renderer can ask for the last cached cardano-node status.
+ * Channel where renderer can ask for the last cached cardano-node status
  */
 export const GET_CACHED_CARDANO_STATUS_CHANNEL =
   'GET_CACHED_CARDANO_STATUS_CHANNEL';
@@ -202,7 +202,7 @@ export type GetCachedCardanoStatusRendererRequest = void;
 export type GetCachedCardanoStatusMainResponse = ?CardanoStatus;
 
 /**
- * Channel where renderer and main process can exchange cardano-node status info.
+ * Channel where renderer and main process can exchange cardano-node status info
  */
 export const SET_CACHED_CARDANO_STATUS_CHANNEL =
   'SET_CACHED_CARDANO_STATUS_CHANNEL';
@@ -215,3 +215,17 @@ export type SetCachedCardanoStatusMainResponse = void;
 export const DETECT_SYSTEM_LOCALE_CHANNEL = 'DETECT_SYSTEM_LOCALE_CHANNEL';
 export type DetectSystemLocaleRendererRequest = void;
 export type DetectSystemLocaleMainResponse = string;
+
+/**
+ * Channel where renderer can ask main process to export wallets
+ */
+export const EXPORT_WALLETS_CHANNEL = 'EXPORT_WALLETS_CHANNEL';
+export type ExportWalletsRendererRequest = void;
+export type ExportWalletsMainResponse = {
+  data: Array<{
+    encrypted_root_private_key: string,
+    name: string,
+    passphrase_hash: ?string,
+  }>,
+  errors: string,
+};
