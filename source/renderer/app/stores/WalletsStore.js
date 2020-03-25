@@ -8,7 +8,7 @@ import { AddressGroup } from 'cardano-js/dist/Address/AddressGroup';
 import { ChainSettings } from 'cardano-js/dist/ChainSettings';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
-import Wallet from '../domains/Wallet';
+import Wallet, { WalletSyncStateStatuses } from '../domains/Wallet';
 import WalletAddress from '../domains/WalletAddress';
 import { WalletTransaction } from '../domains/WalletTransaction';
 import { MAX_ADA_WALLETS_COUNT } from '../config/numbersConfig';
@@ -934,7 +934,8 @@ export default class WalletsStore extends Store {
       if (!result) return;
       const walletIds = result
         .filter(
-          ({ syncState }: Wallet) => syncState.status !== 'not_responding'
+          ({ syncState }: Wallet) =>
+            syncState.status !== WalletSyncStateStatuses.NOT_RESPONDING
         )
         .map((wallet: Wallet) => wallet.id);
       await this._setWalletsRecoveryPhraseVerificationData(walletIds);

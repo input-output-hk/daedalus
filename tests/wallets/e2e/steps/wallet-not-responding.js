@@ -1,6 +1,7 @@
 // @flow
 import { When, Then } from 'cucumber';
 import type { Daedalus } from '../../../types';
+import { WalletSyncStateStatuses } from '../../../../source/renderer/app/domains/Wallet.js';
 
 declare var daedalus: Daedalus;
 
@@ -13,7 +14,7 @@ When(/^the "([^"]*)" wallet is not responding$/, async function(walletName) {
     } = {
       name: `Test wallet - not working`,
       syncState: {
-        status: 'not_responding'
+        status: WalletSyncStateStatuses.NOT_RESPONDING,
       },
     };
     daedalus.api.ada.setTestingWallet(modifiedWallet, walletIndex);
