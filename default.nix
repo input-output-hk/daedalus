@@ -215,8 +215,8 @@ let
         nightly = "Daedalus Nightly";
         itn_rewards_v1 = "Daedalus - Rewards v1";
         qa = "Daedalus QA";
-        selfnode = "Daedalus SelfNode";
-        itn_selfnode = "Daedalus SelfNode - ITN";
+        selfnode = "Daedalus Selfnode";
+        itn_selfnode = "Daedalus Selfnode - ITN";
       };
       installDir = mapping.${cluster};
     in pkgs.runCommand "win64-installer-${cluster}" {

@@ -19,8 +19,8 @@ let
 
   installDirectorySuffix = {
     qa = "QA";
-    selfnode = "SelfNode";
-    itn_selfnode = "SelfNode - ITN";
+    selfnode = "Selfnode";
+    itn_selfnode = "Selfnode - ITN";
     nightly = "Nightly";
     itn_rewards_v1 = "- Rewards v1";
     staging = "Staging";

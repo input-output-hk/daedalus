@@ -14,7 +14,7 @@ export type Environment = {
   isIncentivizedTestnet: boolean,
   isIncentivizedTestnetQA: boolean,
   isIncentivizedTestnetNightly: boolean,
-  isIncentivizedTestnetSelfNode: boolean,
+  isIncentivizedTestnetSelfnode: boolean,
   isDevelopment: boolean,
   isWatchMode: boolean,
   build: string,
@@ -63,6 +63,7 @@ export const OS_NAMES = {
 
 export type Network =
   | 'mainnet'
+  | 'selfnode'
   | 'staging'
   | 'testnet'
   | 'development'
@@ -78,6 +79,7 @@ export type Network =
 
 export const networkPrettyNames = {
   mainnet: 'Mainnet',
+  selfnode: 'Selfnode',
   staging: 'Staging',
   testnet: 'Testnet',
   development: 'Development',

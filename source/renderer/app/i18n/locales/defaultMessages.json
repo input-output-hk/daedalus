@@ -8899,8 +8899,8 @@
         }
       },
       {
-        "defaultMessage": "!!!If your restored Balance wallet is empty, but you were expecting it to have funds, please check that you used the correct wallet recovery phrase during the restoration process. <strong>The format of recovery phrases for paper wallets cannot be validated</strong>, so any combination of words is accepted as a potentially valid recovery phrase. Please take extra care when entering a paper wallet recovery phrase.",
-        "description": "Description \"line 4\" on the wallet restore \"success\" step dialog.",
+        "defaultMessage": "!!!To participate in the Incentivized Testnet, the mainnet wallet you are restoring must have had funds at the time of the balance snapshot at 12.00 UTC, November 29, 2019. If you are sure that you used the correct wallet recovery phrase, then please check that you had funds in your mainnet wallet at this time.",
+        "description": "Description \"line 5\" on the wallet restore \"success\" step dialog.",
         "end": {
           "column": 3,
           "line": 52
@@ -8910,20 +8910,6 @@
         "start": {
           "column": 20,
           "line": 46
-        }
-      },
-      {
-        "defaultMessage": "!!!To participate in the Incentivized Testnet, the mainnet wallet you are restoring must have had funds at the time of the balance snapshot at 12.00 UTC, November 29, 2019. If you are sure that you used the correct wallet recovery phrase, then please check that you had funds in your mainnet wallet at this time.",
-        "description": "Description \"line 5\" on the wallet restore \"success\" step dialog.",
-        "end": {
-          "column": 3,
-          "line": 59
-        },
-        "file": "source/renderer/app/components/wallet/wallet-restore/SuccessDialog.js",
-        "id": "wallet.restore.dialog.step.success.dialog.description.line5",
-        "start": {
-          "column": 20,
-          "line": 53
         }
       }
     ],
