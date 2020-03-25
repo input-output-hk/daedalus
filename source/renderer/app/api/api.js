@@ -107,7 +107,8 @@ import { FORCED_WALLET_RESYNC_WAIT } from '../config/timingConfig';
 import type {
   Address,
   GetAddressesRequest,
-  CreateAddressRequest,
+  CreateByronWalletAddressRequest,
+  ByronWalletAddress,
 } from './addresses/types';
 
 // Common Types
@@ -727,7 +728,9 @@ export default class AdaApi {
     }
   };
 
-  createAddress = async (request: CreateAddressRequest): Promise<Address> => {
+  createAddress = async (
+    request: CreateByronWalletAddressRequest
+  ): Promise<Address> => {
     logger.debug('AdaApi::createAddress called', {
       parameters: filterLogData(request),
     });
@@ -740,11 +743,14 @@ export default class AdaApi {
       ? encryptPassphrase(passwordString)
       : '';
     try {
-      const address: Address = await createByronWalletAddress(this.config, {
-        spendingPassword,
-        accountIndex,
-        walletId,
-      });
+      const address: ByronWalletAddress = await createByronWalletAddress(
+        this.config,
+        {
+          spendingPassword,
+          accountIndex,
+          walletId,
+        }
+      );
       logger.debug('AdaApi::createAddress success', { address });
       return _createAddressFromServerData(address);
     } catch (error) {
@@ -1787,6 +1793,7 @@ const _createWalletFromServerData = action(
       reward: walletRewardAmount,
       passwordUpdateDate:
         passphraseLastUpdatedAt && new Date(passphraseLastUpdatedAt),
+      hasPassword: passphraseLastUpdatedAt !== null,
       syncState: state,
       isLegacy,
       delegatedStakePoolId,
@@ -1800,10 +1807,11 @@ const _createWalletFromServerData = action(
 const _createAddressFromServerData = action(
   'AdaApi::_createAddressFromServerData',
   (address: Address) => {
-    const { id, state } = address;
+    const { id, state, accountIndex } = address;
     return new WalletAddress({
       id,
       used: state === 'used',
+      accountIndex,
     });
   }
 );

@@ -22,9 +22,9 @@ const onToggleSubMenus = {
 storiesOf('Wallets|Receive', module)
   .addDecorator(WalletsWrapper)
   .add('Receive', () => {
-    const isSidebarExpanded = boolean('isSidebarExpanded', false)
-    const walletHasPassword = boolean('walletHasPassword', false)
-    const isSubmitting = boolean('isSubmitting', false)
+    const isSidebarExpanded = boolean('isSidebarExpanded', false);
+    const walletHasPassword = boolean('walletHasPassword', false);
+    const isSubmitting = boolean('isSubmitting', false);
 
     const walletAddress = generateAddress();
     return (

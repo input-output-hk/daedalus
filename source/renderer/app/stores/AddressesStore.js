@@ -21,7 +21,7 @@ export default class AddressesStore extends Store {
   // REQUESTS
   /* eslint-disable max-len */
   @observable createByronWalletAddressRequest: Request<Address> = new Request(
-    this.api.ada.createByronWalletAddress
+    this.api.ada.createAddress
   );
   /* eslint-disable max-len */
 
@@ -34,16 +34,22 @@ export default class AddressesStore extends Store {
   _createByronWalletAddress = async (params: {
     walletId: string,
     spendingPassword: ?string,
+    isLegacy: boolean,
   }) => {
     try {
-      const { walletId, spendingPassword } = params;
-      const accountIndex = await this.getAccountIndexByWalletId(walletId);
-
-      const address: ?Address = await this.createByronWalletAddressRequest.execute({
-        accountIndex,
-        spendingPassword,
+      const { walletId, spendingPassword, isLegacy } = params;
+      const accountIndex = await this.getAccountIndexByWalletId(
         walletId,
-      }).promise;
+        isLegacy
+      );
+
+      const address: ?Address = await this.createByronWalletAddressRequest.execute(
+        {
+          accountIndex,
+          spendingPassword,
+          walletId,
+        }
+      ).promise;
 
       if (address != null) {
         this._refreshAddresses();
@@ -104,9 +110,13 @@ export default class AddressesStore extends Store {
     this.error = null;
   };
 
-  getAccountIndexByWalletId = async (walletId: string): Promise<?number> => {
-    const result = await this.api.ada.getAddresses({ walletId });
-    return result ? result.accountIndex : null;
+  getAccountIndexByWalletId = async (
+    walletId: string,
+    isLegacy: boolean
+  ): Promise<?number> => {
+    // $FlowFixMe
+    const result = await this.api.ada.getAddresses({ walletId, isLegacy });
+    return result && isLegacy ? result.accountIndex : null;
   };
 
   getAddressesByWalletId = async (

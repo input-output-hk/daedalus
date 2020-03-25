@@ -9,7 +9,7 @@ import WalletAddress from '../../../domains/WalletAddress';
 import globalMessages from '../../../i18n/global-messages';
 import { VirtualAddressesList } from './VirtualAddressesList';
 import styles from './WalletReceiveItn.scss';
-import Address from './Address';
+import AddressItn from './AddressItn';
 
 const messages = defineMessages({
   instructionsTitle: {
@@ -144,7 +144,7 @@ export default class WalletReceiveItn extends Component<Props, State> {
     const { addressSlice } = this.state;
     const { intl } = this.context;
     return (
-      <Address
+      <AddressItn
         address={address}
         onShareAddress={onShareAddress}
         onCopyAddress={onCopyAddress}

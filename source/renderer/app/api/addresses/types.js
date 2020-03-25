@@ -8,6 +8,7 @@ export type GetAddressesRequestQueryParams = {
 export type Address = {
   id: string,
   state: AddressState,
+  accountIndex: number,
 };
 
 export type Addresses = Array<Address>;
@@ -25,7 +26,7 @@ export type ByronWalletAddress = {
   changeAddress: boolean,
 };
 
-export type ByronWalletAddresses = Array<AddreByronWalletAddressss>;
+export type ByronWalletAddresses = Array<ByronWalletAddress>;
 
 export type CreateByronWalletAddressRequest = {
   spendingPassword: ?string,

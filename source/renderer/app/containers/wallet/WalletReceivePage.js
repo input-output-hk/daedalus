@@ -92,6 +92,7 @@ export default class WalletReceivePage extends Component<Props, State> {
       this.props.actions.addresses.createByronWalletAddress.trigger({
         walletId: activeWallet.id,
         spendingPassword,
+        isLegacy: activeWallet.isLegacy,
       });
     }
   };
@@ -123,8 +124,10 @@ export default class WalletReceivePage extends Component<Props, State> {
               onGenerateAddress={this.handleGenerateAddress}
               onCopyAddress={address => this.handleCopyAddress(address)}
               isSidebarExpanded={sidebar.isShowingSubMenus}
-              walletHasPassword={activeWallet.passwordUpdateDate}
-              isSubmitting={addresses.createByronWalletAddressRequest.isExecuting}
+              walletHasPassword={activeWallet.hasPassword}
+              isSubmitting={
+                addresses.createByronWalletAddressRequest.isExecuting
+              }
               error={addresses.error}
             />
           ) : (
