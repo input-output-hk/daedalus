@@ -2,11 +2,11 @@
 import React, { Component, Fragment } from 'react';
 import { observer, inject } from 'mobx-react';
 import WalletReceive from '../../components/wallet/receive/WalletReceive';
+import WalletReceiveItn from '../../components/wallet/receive/WalletReceiveItn';
 import WalletReceiveDialog from '../../components/wallet/receive/WalletReceiveDialog';
 import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import WalletAddress from '../../domains/WalletAddress';
-import Wallet from '../../domains/Wallet';
 import { generateFileNameWithTimestamp } from '../../../../common/utils/files';
 import { ellipsis } from '../../utils/strings';
 
@@ -14,7 +14,6 @@ type Props = InjectedProps;
 
 type State = {
   addressToShare?: ?WalletAddress,
-  activeWallet: ?Wallet,
 };
 
 @inject('stores', 'actions')
@@ -24,8 +23,11 @@ export default class WalletReceivePage extends Component<Props, State> {
 
   state = {
     addressToShare: null,
-    activeWallet: this.props.stores.wallets.active,
   };
+
+  get activeWallet() {
+    return this.props.stores.wallets.active;
+  }
 
   componentWillUnmount() {
     this.props.actions.notifications.closeNotification.trigger({
@@ -84,29 +86,60 @@ export default class WalletReceivePage extends Component<Props, State> {
     });
   };
 
+  handleGenerateAddress = (passphrase: string) => {
+    const { activeWallet } = this;
+    if (activeWallet) {
+      this.props.actions.addresses.createByronWalletAddress.trigger({
+        walletId: activeWallet.id,
+        passphrase,
+      });
+    }
+  };
+
   render() {
     const { actions, stores } = this.props;
-    const { uiDialogs, addresses } = stores;
-    const { addressToShare, activeWallet } = this.state;
+    const { uiDialogs, addresses, sidebar } = stores;
+    const { activeWallet } = this;
+    const { addressToShare } = this.state;
     const { toggleSubMenus } = actions.sidebar;
-
+    const { isIncentivizedTestnet } = global;
     // Guard against potential null values
     if (!activeWallet)
       throw new Error('Active wallet required for WalletReceivePage.');
 
     const walletAddresses = addresses.all.slice().reverse();
+    const byronWalletAddress = addresses.active ? addresses.active.id : '';
+    const isByronWalletAddressUsed = addresses.active
+      ? addresses.active.used
+      : false;
 
     return (
       <Fragment>
         <VerticalFlexContainer>
-          <WalletReceive
-            walletAddresses={walletAddresses}
-            isAddressValid={this.handleIsAddressValid}
-            onShareAddress={this.handleShareAddress}
-            onCopyAddress={this.handleCopyAddress}
-            isIncentivizedTestnet={global.isIncentivizedTestnet}
-            onToggleSubMenus={toggleSubMenus}
-          />
+          {!isIncentivizedTestnet ? (
+            <WalletReceive
+              walletAddress={byronWalletAddress}
+              isWalletAddressUsed={isByronWalletAddressUsed}
+              walletAddresses={walletAddresses}
+              onGenerateAddress={this.handleGenerateAddress}
+              onCopyAddress={address => this.handleCopyAddress(address)}
+              isSidebarExpanded={sidebar.isShowingSubMenus}
+              walletHasPassword={activeWallet.hasPassword}
+              isSubmitting={
+                addresses.createByronWalletAddressRequest.isExecuting
+              }
+              error={addresses.error}
+            />
+          ) : (
+            <WalletReceiveItn
+              walletAddresses={walletAddresses}
+              isAddressValid={this.handleIsAddressValid}
+              onShareAddress={this.handleShareAddress}
+              onCopyAddress={this.handleCopyAddress}
+              isIncentivizedTestnet={isIncentivizedTestnet}
+              onToggleSubMenus={toggleSubMenus}
+            />
+          )}
         </VerticalFlexContainer>
 
         {uiDialogs.isOpen(WalletReceiveDialog) && addressToShare && (

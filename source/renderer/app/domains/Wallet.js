@@ -52,6 +52,7 @@ export type WalletProps = {
   delegationStakePoolStatus?: ?string,
   lastDelegationStakePoolId?: ?string,
   pendingDelegations?: WalletPendingDelegations,
+  hasPassword: boolean,
 };
 
 export default class Wallet {
@@ -68,6 +69,7 @@ export default class Wallet {
   @observable delegationStakePoolStatus: ?string;
   @observable lastDelegationStakePoolId: ?string;
   @observable pendingDelegations: WalletPendingDelegations;
+  @observable hasPassword: boolean;
 
   constructor(data: WalletProps) {
     Object.assign(this, data);
@@ -90,6 +92,7 @@ export default class Wallet {
         'delegationStakePoolStatus',
         'lastDelegationStakePoolId',
         'pendingDelegations',
+        'hasPassword',
       ])
     );
   }
