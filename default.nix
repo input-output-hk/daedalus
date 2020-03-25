@@ -431,5 +431,14 @@ let
       installedPackages = [ daedalus' self.postInstall self.namespaceHelper daedalus'.cfg self.daedalus-bridge daedalus'.daedalus-frontend self.xdg-open ];
       nix-bundle = self.nix-bundle;
     }).installerBundle;
-  };
+    wrappedBundle = let
+      version = (builtins.fromJSON (builtins.readFile ./package.json)).version;
+      backend = "cardano-wallet-${nodeImplementation}";
+      suffix = if buildNum == null then "" else "-${toString buildNum}";
+      fn = "daedalus-${version}-${backend}-${cluster}-${target}${suffix}.bin";
+    in pkgs.runCommand fn {} ''
+      mkdir -p $out
+      cp ${self.newBundle} $out/${fn}
+    '';
+    };
 in pkgs.lib.makeScope pkgs.newScope packages
