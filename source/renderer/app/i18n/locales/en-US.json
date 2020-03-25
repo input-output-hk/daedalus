@@ -675,6 +675,7 @@
   "wallet.settings.name.label": "Name",
   "wallet.settings.password": "Password",
   "wallet.settings.passwordLastUpdated": "Last updated {lastUpdated}",
+  "wallet.settings.passwordNotSet": "You still don't have password",
   "wallet.settings.recoveryPhraseInputHint": "Enter recovery phrase",
   "wallet.settings.recoveryPhraseInputNoResults": "No results",
   "wallet.settings.recoveryPhraseStep1Button": "Continue",

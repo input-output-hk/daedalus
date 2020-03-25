@@ -675,6 +675,7 @@
   "wallet.settings.name.label": "ウォレット名",
   "wallet.settings.password": "パスワード",
   "wallet.settings.passwordLastUpdated": "最終更新 {lastUpdated}",
+  "wallet.settings.passwordNotSet": "パスワードが設定されていません",
   "wallet.settings.recoveryPhraseInputHint": "復元フレーズを入力してください",
   "wallet.settings.recoveryPhraseInputNoResults": "該当するフレーズは見つかりませんでした",
   "wallet.settings.recoveryPhraseStep1Button": "続ける",
