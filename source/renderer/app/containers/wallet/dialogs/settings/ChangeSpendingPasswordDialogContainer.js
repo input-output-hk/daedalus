@@ -24,6 +24,7 @@ export default class ChangeSpendingPasswordDialogContainer extends Component<Inj
 
     return (
       <ChangeSpendingPasswordDialog
+        isSpendingPasswordSet={activeWallet.hasPassword}
         currentPasswordValue={dialogData.currentPasswordValue}
         newPasswordValue={dialogData.newPasswordValue}
         repeatedPasswordValue={dialogData.repeatedPasswordValue}

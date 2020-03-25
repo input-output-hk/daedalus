@@ -1,16 +1,67 @@
 // @flow
 import { find, last } from 'lodash';
-import { observable, computed, action } from 'mobx';
+import { observable, computed, action, runInAction } from 'mobx';
 import Store from './lib/Store';
 import CachedRequest from './lib/LocalizedCachedRequest';
 import WalletAddress from '../domains/WalletAddress';
+import Request from './lib/LocalizedRequest';
+import LocalizableError from '../i18n/LocalizableError';
+import { GenericApiError } from '../api/common/errors';
+import type { Address } from '../api/addresses/types';
 
 export default class AddressesStore extends Store {
+  @observable lastGeneratedAddress: ?Address = null;
   @observable addressesRequests: Array<{
     walletId: string,
     isLegacy: boolean,
     allRequest: CachedRequest<Array<WalletAddress>>,
   }> = [];
+  @observable error: ?LocalizableError = null;
+
+  // REQUESTS
+  /* eslint-disable max-len */
+  @observable createByronWalletAddressRequest: Request<Address> = new Request(
+    this.api.ada.createAddress
+  );
+  /* eslint-disable max-len */
+
+  setup() {
+    const actions = this.actions.addresses;
+    actions.createByronWalletAddress.listen(this._createByronWalletAddress);
+    actions.resetErrors.listen(this._resetErrors);
+  }
+
+  _createByronWalletAddress = async (params: {
+    walletId: string,
+    passphrase: string,
+  }) => {
+    try {
+      const { walletId, passphrase } = params;
+      const accountIndex = await this.getAccountIndexByWalletId(walletId);
+
+      const address: ?Address = await this.createByronWalletAddressRequest.execute(
+        {
+          addressIndex: accountIndex,
+          passphrase,
+          walletId,
+        }
+      ).promise;
+
+      if (address != null) {
+        this._refreshAddresses();
+        runInAction('set last generated address and reset error', () => {
+          this.lastGeneratedAddress = address;
+          this.error = null;
+        });
+      }
+    } catch (error) {
+      runInAction('set error', () => {
+        // @TODO - Pass real error from api response once api endpoint is integrated
+        // this.error = error;
+        this.error = new GenericApiError();
+      });
+    }
+  };
 
   @computed get all(): Array<WalletAddress> {
     const wallet = this.stores.wallets.active;
@@ -49,6 +100,19 @@ export default class AddressesStore extends Store {
         allRequest.execute({ walletId: wallet.id, isLegacy: wallet.isLegacy });
       }
     }
+  };
+
+  @action _resetErrors = () => {
+    this.error = null;
+  };
+
+  getAccountIndexByWalletId = async (walletId: string): Promise<?number> => {
+    // $FlowFixMe
+    const result = await this.api.ada.getAddresses({
+      walletId,
+      isLegacy: true,
+    });
+    return result ? result.accountIndex : null;
   };
 
   getAddressesByWalletId = async (

@@ -68,6 +68,7 @@ export default class WalletSettingsPage extends Component<Props> {
       <WalletSettings
         error={updateWalletRequest.error}
         openDialogAction={actions.dialogs.open.trigger}
+        isSpendingPasswordSet={activeWallet.hasPassword}
         spendingPasswordUpdateDate={activeWallet.passwordUpdateDate}
         recoveryPhraseVerificationDate={recoveryPhraseVerificationDate}
         recoveryPhraseVerificationStatus={recoveryPhraseVerificationStatus}
