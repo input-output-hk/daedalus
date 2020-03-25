@@ -81,7 +81,7 @@ import {
   cardanoFaultInjectionChannel,
 } from '../ipc/cardano.ipc';
 import patchAdaApi from './utils/patchAdaApi';
-import { getLegacyWalletId, utcStringToDate } from './utils';
+import { getLegacyWalletId, utcStringToDate, encryptPassphrase } from './utils';
 import { logger } from '../utils/logging';
 import {
   unscrambleMnemonics,
@@ -721,7 +721,7 @@ export default class AdaApi {
   };
 
   createAddress = async (request: CreateAddressRequest): Promise<Address> => {
-    Logger.debug('AdaApi::createAddress called', {
+    logger.debug('AdaApi::createAddress called', {
       parameters: filterLogData(request),
     });
     const {
@@ -733,15 +733,15 @@ export default class AdaApi {
       ? encryptPassphrase(passwordString)
       : '';
     try {
-      const address: Address = await createAddress(this.config, {
+      const address: Address = await createByronWalletAddress(this.config, {
         spendingPassword,
         accountIndex,
         walletId,
       });
-      Logger.debug('AdaApi::createAddress success', { address });
+      logger.debug('AdaApi::createAddress success', { address });
       return _createAddressFromServerData(address);
     } catch (error) {
-      Logger.error('AdaApi::createAddress error', { error });
+      logger.error('AdaApi::createAddress error', { error });
       if (error.message === 'CannotCreateAddress') {
         throw new IncorrectSpendingPasswordError();
       }
