@@ -16,13 +16,12 @@ import { installChromeExtensions } from './utils/installChromeExtensions';
 import { environment } from './environment';
 import mainErrorHandler from './utils/mainErrorHandler';
 import {
-  launcherConfig,
-  frontendOnlyMode,
-  pubLogsFolderPath,
   APP_NAME,
+  launcherConfig,
+  pubLogsFolderPath,
   stateDirectoryPath,
 } from './config';
-import { setupCardano } from './cardano/setup';
+import { setupCardanoNode } from './cardano/setup';
 import { CardanoNode } from './cardano/CardanoNode';
 import { safeExitWithCode } from './utils/safeExitWithCode';
 import { buildAppMenus } from './utils/buildAppMenus';
@@ -128,10 +127,6 @@ const onAppReady = async () => {
   const onCheckDiskSpace = ({
     isNotEnoughDiskSpace,
   }: CheckDiskSpaceResponse) => {
-    // Daedalus is not managing cardano-node in `frontendOnlyMode`
-    // so we don't have a way to stop it in case there is not enough disk space
-    if (frontendOnlyMode) return;
-
     if (cardanoNode) {
       if (isNotEnoughDiskSpace) {
         if (
@@ -160,7 +155,7 @@ const onAppReady = async () => {
   mainErrorHandler(onMainError);
   await handleCheckDiskSpace();
 
-  cardanoNode = setupCardano(launcherConfig, mainWindow);
+  cardanoNode = setupCardanoNode(launcherConfig, mainWindow);
 
   if (isWatchMode) {
     // Connect to electron-connect server which restarts / reloads windows on file changes

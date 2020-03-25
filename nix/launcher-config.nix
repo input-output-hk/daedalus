@@ -27,11 +27,11 @@ let
     testnet = "Testnet";
   };
 
-  spacedName = if environment == "mainnet" then "Daedalus" else "Daedalus ${installDirectorySuffix.${environment}}";
+  spacedName = if environment == "mainnet" then "Daedalus RC1" else "Daedalus ${installDirectorySuffix.${environment}}";
 
   dataDir.linux = "\${XDG_DATA_HOME}/Daedalus/${environment}";
-  dataDir.macos64 = "\${HOME}/Library/Application Support/${spacedName}";
-  dataDir.windows = "\${APPDATA}\\${spacedName}";
+  dataDir.macos64 = if environment == "mainnet" then "\${HOME}/Library/Application Support/Daedalus" else "\${HOME}/Library/Application Support/${spacedName}";
+  dataDir.windows = if environment == "mainnet" then "\${APPDATA}\\Daedalus" else "\${APPDATA}\\${spacedName}";
 
   # TODO, use backend
   nodeBin.linux = "jormungandr";
@@ -144,20 +144,19 @@ let
 
   launcherConfig = {
     daedalusBin = daedalusBin.${os};
-    walletLogging = true;
-    stateDir = dataDir.${os};
-    launcherLogsPrefix = launcherLogsPrefix.${os};
-    workingDir = dataDir.${os};
+    cluster = environment;
     frontendOnlyMode = true;
-    nodeLogPath = null;
+    launcherLogsPrefix = launcherLogsPrefix.${os};
     logsPrefix = if backend == "cardano" then "${logsPrefix.${os}}ByronReboot" else logsPrefix.${os};
-    nodeImplementation = backend;
+    nodeLogPath = null;
     nodeLogConfig = null;
     nodeTimeoutSec = 60;
+    nodeImplementation = backend;
+    stateDir = dataDir.${os};
+    workingDir = dataDir.${os};
+    walletLogging = true;
     tlsPath = null;
     x509ToolPath = null;
-    cluster = environment;
-
     updateWindowsRunner = if os == "windows" then "Installer.bat" else "";
     updaterPath = "/foo";
     updaterArgs = [];
