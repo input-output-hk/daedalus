@@ -106,7 +106,7 @@ clusterNetwork :: Cluster -> Text
 clusterNetwork Nightly = "nightly"
 clusterNetwork ITN_Rewards_v1 = "itn_rewards_v1"
 clusterNetwork QA = "qa"
-clusterNetwork ITN_Selfnode = "selfnode_itn"
+clusterNetwork ITN_Selfnode = "itn_selfnode"
 clusterNetwork Selfnode = "selfnode"
 clusterNetwork Mainnet = "mainnet"
 clusterNetwork Staging = "staging"
