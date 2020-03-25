@@ -1726,7 +1726,7 @@ export default class AdaApi {
   setTestingNewsFeed: (testingNewsFeedData: GetNewsResponse) => void;
   setTestingStakePools: (testingStakePoolsData: Array<StakePoolProps>) => void;
   setTestingWallets: (testingWalletsData: Array<WalletProps>) => void;
-  setTestingWallet: (testingWalletData: Object, walletIndex?: 0) => void;
+  setTestingWallet: (testingWalletData: Object, walletIndex?: number) => void;
 
   // Stake pools testing utility
   setFakeStakePoolsJsonForTesting: (
@@ -1745,9 +1745,9 @@ const _createWalletFromServerData = action(
       address_pool_gap: addressPoolGap,
       balance,
       name,
-      state,
       passphrase,
       delegation,
+      state: syncState,
       isLegacy = false,
     } = wallet;
 
@@ -1792,7 +1792,7 @@ const _createWalletFromServerData = action(
       passwordUpdateDate:
         passphraseLastUpdatedAt && new Date(passphraseLastUpdatedAt),
       hasPassword: passphraseLastUpdatedAt !== null,
-      syncState: state,
+      syncState,
       isLegacy,
       delegatedStakePoolId,
       delegationStakePoolStatus,

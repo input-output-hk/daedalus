@@ -54,7 +54,7 @@ const createWalletsSequentially = async (wallets: Array<any>, context: Object) =
       daedalus.api.ada
         .createWallet({
           name: wallet.name,
-          mnemonic: daedalus.utils.crypto.generateMnemonic(),
+          mnemonic: daedalus.utils.crypto.generateMnemonic(12),
           spendingPassword: wallet.password || 'Secret1234',
         })
         .then(() =>
@@ -279,7 +279,7 @@ const createWalletsAsync = async (table, context: Object, isLegacy?: boolean) =>
     const apiEndpoint = isLegacyWallet ? restoreLegacyWallet : createWallet;
     window.Promise.all(
       wallets.map(wallet => {
-        const mnemonic = daedalus.utils.crypto.generateMnemonic();
+        const mnemonic = daedalus.utils.crypto.generateMnemonic(12);
         const recoveryPhrase = mnemonic;
         mnemonics[wallet.name] = mnemonic.split(' ');
         return apiEndpoint({
