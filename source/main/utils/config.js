@@ -1,7 +1,10 @@
 // @flow
+import path from 'path';
+import * as fs from 'fs-extra';
 import { readFileSync } from 'fs';
 import yamljs from 'yamljs';
 import type { LauncherConfig } from '../config';
+import type { Logger } from '../../common/types/logging.types';
 
 function recurseReplace(obj) {
   if (Array.isArray(obj)) {
@@ -54,4 +57,29 @@ export const readLauncherConfig = (configPath: ?string): LauncherConfig => {
   }
   // $FlowFixMe
   return finalYaml;
+};
+
+export const initByronRebootConfig = async (
+  log: Logger,
+  stateDir: string
+): Promise<void> => {
+  const byronRebootConfigFilePath = path.join(
+    stateDir,
+    'config-byron-reboot.json'
+  );
+  const byronRebootConfigFileExists = await fs.pathExists(
+    byronRebootConfigFilePath
+  );
+  if (!byronRebootConfigFileExists) {
+    const configFilePath = path.join(stateDir, 'config.json');
+    const configFileExists = await fs.pathExists(configFilePath);
+    if (configFileExists) {
+      const configFileContent = await fs.readFile(configFilePath);
+      log.info('Creating Byron Reboot config file...', {
+        inputPath: configFilePath,
+        outputPath: byronRebootConfigFilePath,
+      });
+      await fs.writeFile(byronRebootConfigFilePath, configFileContent);
+    }
+  }
 };

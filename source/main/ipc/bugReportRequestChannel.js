@@ -9,7 +9,7 @@ import type {
   SubmitBugReportRequestMainResponse,
   SubmitBugReportRendererRequest,
 } from '../../common/ipc/api';
-import { Logger } from '../utils/logging';
+import { logger } from '../utils/logging';
 
 /* eslint-disable consistent-return */
 
@@ -23,7 +23,7 @@ export const handleBugReportRequests = () => {
   bugReportRequestChannel.onReceive(
     (request: SubmitBugReportRendererRequest) =>
       new Promise((resolve, reject) => {
-        Logger.info('bugReportRequestChannel::onReceive', { request });
+        logger.info('bugReportRequestChannel::onReceive', { request });
         const { httpOptions, requestPayload } = request;
         const options = Object.assign({}, httpOptions);
         const payload = Object.assign({}, requestPayload);
@@ -42,7 +42,7 @@ export const handleBugReportRequests = () => {
 
         options.headers = formData.getHeaders();
 
-        Logger.info('Sending bug report request with options', { options });
+        logger.info('Sending bug report request with options', { options });
         const httpRequest = http.request(options);
         httpRequest.on('response', response => {
           if (response.statusCode !== 200) {

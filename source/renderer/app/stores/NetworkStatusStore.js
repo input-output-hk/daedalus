@@ -4,7 +4,7 @@ import { isEqual, includes } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import { NETWORK_STATUS_POLL_INTERVAL } from '../config/timingConfig';
-import { Logger } from '../utils/logging';
+import { logger } from '../utils/logging';
 import {
   cardanoStateChangeChannel,
   cardanoTlsConfigChannel,
@@ -139,10 +139,10 @@ export default class NetworkStatusStore extends Store {
 
   _restartNode = async () => {
     try {
-      Logger.info('NetworkStatusStore: Requesting a restart of cardano-node');
+      logger.info('NetworkStatusStore: Requesting a restart of cardano-node');
       await restartCardanoNodeChannel.send();
     } catch (error) {
-      Logger.error('NetworkStatusStore: Restart of cardano-node failed', {
+      logger.error('NetworkStatusStore: Restart of cardano-node failed', {
         error,
       });
     }
@@ -165,7 +165,7 @@ export default class NetworkStatusStore extends Store {
 
   _updateNetworkStatusWhenConnected = () => {
     if (this.isConnected) {
-      Logger.info('NetworkStatusStore: Connected');
+      logger.info('NetworkStatusStore: Connected');
       this._updateNetworkStatus();
     }
   };
@@ -173,10 +173,10 @@ export default class NetworkStatusStore extends Store {
   _updateNodeStatus = async () => {
     if (this.environment.isTest && !this.isConnected) return;
     try {
-      Logger.info('NetworkStatusStore: Updating node status');
+      logger.info('NetworkStatusStore: Updating node status');
       await setCachedCardanoStatusChannel.send(this._extractNodeStatus(this));
     } catch (error) {
-      Logger.error('NetworkStatusStore: Error while updating node status', {
+      logger.error('NetworkStatusStore: Error while updating node status', {
         error,
       });
     }
@@ -199,9 +199,9 @@ export default class NetworkStatusStore extends Store {
   };
 
   _requestCardanoState = async () => {
-    Logger.info('NetworkStatusStore: requesting node state');
+    logger.info('NetworkStatusStore: requesting node state');
     const state = await cardanoStateChangeChannel.request();
-    Logger.info(`NetworkStatusStore: handling node state <${state}>`, {
+    logger.info(`NetworkStatusStore: handling node state <${state}>`, {
       state,
     });
     await this._handleCardanoNodeStateChange(state);
@@ -209,15 +209,15 @@ export default class NetworkStatusStore extends Store {
 
   _requestCardanoStatus = async () => {
     try {
-      Logger.info('NetworkStatusStore: requesting node status');
+      logger.info('NetworkStatusStore: requesting node status');
       const status = await getCachedCardanoStatusChannel.request();
-      Logger.info('NetworkStatusStore: received cached node status', {
+      logger.info('NetworkStatusStore: received cached node status', {
         status,
       });
       if (status)
         runInAction('assigning node status', () => Object.assign(this, status));
     } catch (error) {
-      Logger.error('NetworkStatusStore: error while requesting node state', {
+      logger.error('NetworkStatusStore: error while requesting node state', {
         error,
       });
     }
@@ -225,13 +225,13 @@ export default class NetworkStatusStore extends Store {
 
   _requestTlsConfig = async () => {
     try {
-      Logger.info(
+      logger.info(
         'NetworkStatusStore: requesting tls config from main process'
       );
       const tlsConfig = await cardanoTlsConfigChannel.request();
       await this._updateTlsConfig(tlsConfig);
     } catch (error) {
-      Logger.error('NetworkStatusStore: error while requesting tls config', {
+      logger.error('NetworkStatusStore: error while requesting tls config', {
         error,
       });
     }
@@ -241,7 +241,7 @@ export default class NetworkStatusStore extends Store {
   _updateTlsConfig = (config: ?TlsConfig): Promise<void> => {
     if (config == null || isEqual(config, this.tlsConfig))
       return Promise.resolve();
-    Logger.info('NetworkStatusStore: received tls config from main process');
+    logger.info('NetworkStatusStore: received tls config from main process');
     this.api.ada.setRequestConfig(config);
     runInAction('updating tlsConfig', () => {
       this.tlsConfig = config;
@@ -252,7 +252,7 @@ export default class NetworkStatusStore extends Store {
 
   _handleCardanoNodeStateChange = async (state: CardanoNodeState) => {
     if (state === this.cardanoNodeState) return Promise.resolve();
-    Logger.info(`NetworkStatusStore: handling cardano-node state <${state}>`, {
+    logger.info(`NetworkStatusStore: handling cardano-node state <${state}>`, {
       state,
     });
     const wasConnected = this.isConnected;
@@ -318,7 +318,7 @@ export default class NetworkStatusStore extends Store {
       // In case we no longer have TLS config we ignore all API call responses
       // as this means we are in the Cardano shutdown (stopping|exiting|updating) sequence
       if (!this.tlsConfig) {
-        Logger.debug(
+        logger.debug(
           'NetworkStatusStore: Ignoring NetworkStatusRequest result during Cardano shutdown sequence...'
         );
         return;
@@ -351,7 +351,7 @@ export default class NetworkStatusStore extends Store {
         // We are connected for the first time, move on to syncing stage
         this._networkStatus = NETWORK_STATUS.SYNCING;
         const connectingTimeDelta = this._getStartupTimeDelta();
-        Logger.info(`Connected after ${connectingTimeDelta} milliseconds`, {
+        logger.info(`Connected after ${connectingTimeDelta} milliseconds`, {
           connectingTimeDelta,
         });
       }
@@ -374,7 +374,7 @@ export default class NetworkStatusStore extends Store {
         this._networkStatus = NETWORK_STATUS.RUNNING;
         this.actions.networkStatus.isSyncedAndReady.trigger();
         const syncingTimeDelta = this._getStartupTimeDelta();
-        Logger.info(`Synced after ${syncingTimeDelta} milliseconds`, {
+        logger.info(`Synced after ${syncingTimeDelta} milliseconds`, {
           syncingTimeDelta,
         });
       }
@@ -386,17 +386,22 @@ export default class NetworkStatusStore extends Store {
               this.hasBeenConnected = true;
             });
           }
-          Logger.debug('NetworkStatusStore: Connection Lost. Reconnecting...');
+          logger.debug('NetworkStatusStore: Connection Lost. Reconnecting...');
         } else if (this.hasBeenConnected) {
           // Make sure all wallets data is fully reloaded after the connection is re-established
           this.stores.wallets.resetWalletsData();
-          Logger.debug('NetworkStatusStore: Connection Restored');
+          logger.debug('NetworkStatusStore: Connection Restored');
         }
         if (this.isTlsCertInvalid) {
           runInAction('set isTlsCertInvalid = false', () => {
             this.isTlsCertInvalid = false;
           });
         }
+      }
+
+      // Reset request errors since we've received a valid response
+      if (this.getNetworkInfoRequest.error !== null) {
+        this.getNetworkInfoRequest.reset();
       }
     } catch (error) {
       // Node is not responding, switch to disconnected state
@@ -419,7 +424,7 @@ export default class NetworkStatusStore extends Store {
           this.hasBeenConnected = true;
         });
       }
-      Logger.debug('NetworkStatusStore: Connection Lost. Reconnecting...');
+      logger.debug('NetworkStatusStore: Connection Lost. Reconnecting...');
     }
   };
 

@@ -33,6 +33,7 @@ if (!isStartedByLauncher) {
 
 export type NodeConfig = {
   configurationDir: string,
+  delegationCertificate?: string,
   kind: 'byron',
   network: {
     configFile: string,
@@ -40,6 +41,7 @@ export type NodeConfig = {
     genesisHash: string,
     topologyFile: string,
   },
+  signingKey?: string,
 };
 
 /**
@@ -72,6 +74,7 @@ export type LauncherConfig = {
   secretPath: string,
   configPath: string,
   syncTolerance: string,
+  cliBin: string,
 };
 
 type WindowOptionsType = {
@@ -152,7 +155,7 @@ export const DISK_SPACE_RECOMMENDED_PERCENTAGE = 15; // 15% of the total disk sp
 
 // CardanoWallet config
 export const STAKE_POOL_REGISTRY_URL = {
-  selfnode:
+  itn_selfnode:
     'https://github.com/input-output-hk/daedalus/raw/selfnode/test-integration-registry.zip',
   nightly:
     'https://github.com/piotr-iohk/incentivized-testnet-stakepool-registry/archive/master.zip',

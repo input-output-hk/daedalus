@@ -56,6 +56,7 @@ const startApp = async () => {
     env: Object.assign({}, process.env, {
       NODE_ENV: TEST,
     }),
+    startTimeout: DEFAULT_TIMEOUT,
     waitTimeout: DEFAULT_TIMEOUT,
     chromeDriverLogPath: path.join(
       __dirname,

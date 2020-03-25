@@ -247,7 +247,7 @@ makeComponentRoot Options{oBackend,oCluster} appRoot darwinConfig@DarwinConfig{d
     common :: FilePath -> IO ()
     common bridge = do
       -- Executables (from daedalus-bridge)
-      forM ["cardano-launcher" ] $ \f ->
+      forM_ ["cardano-launcher" ] $ \f ->
         cp (bridge </> "bin" </> f) (dir </> f)
 
       -- Config yaml
@@ -256,19 +256,26 @@ makeComponentRoot Options{oBackend,oCluster} appRoot darwinConfig@DarwinConfig{d
     Cardano bridge -> do
       common bridge
       -- Executables (from daedalus-bridge)
-      forM ["cardano-wallet-byron", "cardano-node" ] $ \f ->
+      forM_ ["cardano-wallet-byron", "cardano-node", "cardano-cli", "export-wallets", "db-converter" ] $ \f ->
         cp (bridge </> "bin" </> f) (dir </> f)
+      forM_ ["config.yaml", "genesis.json", "topology.yaml" ] $ \f ->
+        cp f (dataDir </> f)
+
+      when (oCluster == Selfnode) $ do
+        cp "signing.key" (dataDir </> "signing.key")
+        cp "delegation.cert" (dataDir </> "delegation.cert")
+
       procs "chmod" ["-R", "+w", tt dir] empty
       -- Rewrite libs paths and bundle them
-      void $ chain (encodeString dir) $ fmap tt [dir </> "cardano-launcher", dir </> "cardano-wallet-byron", dir </> "cardano-node" ]
+      void $ chain (encodeString dir) $ fmap tt [dir </> "cardano-launcher", dir </> "cardano-wallet-byron", dir </> "cardano-node", dir </> "cardano-cli", dir </> "export-wallets", dir </> "db-converter" ]
     Jormungandr bridge -> do
       common bridge
       -- Executables (from daedalus-bridge)
-      forM ["cardano-wallet-jormungandr", "jormungandr" ] $ \f ->
+      forM_ ["cardano-wallet-jormungandr", "jormungandr" ] $ \f ->
         cp (bridge </> "bin" </> f) (dir </> f)
 
       -- Config files (from daedalus-bridge)
-      when (oCluster /= Selfnode) $
+      when (oCluster /= ITN_Selfnode) $
         cp "jormungandr-config.yaml" (dataDir </> "jormungandr-config.yaml")
 
       when hasBlock0 $
