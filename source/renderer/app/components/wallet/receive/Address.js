@@ -4,7 +4,7 @@ import { observer } from 'mobx-react';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import classnames from 'classnames';
 import SVGInline from 'react-svg-inline';
-import styles from './AddressItn.scss';
+import styles from './Address.scss';
 import iconQR from '../../../assets/images/qr-code.inline.svg';
 import iconCopy from '../../../assets/images/clipboard-ic.inline.svg';
 import WalletAddress from '../../../domains/WalletAddress';
@@ -22,7 +22,7 @@ type Props = {
 };
 
 @observer
-export default class AddressItn extends Component<Props> {
+export default class Address extends Component<Props> {
   addressElement: ?HTMLElement;
   addressContainerElement: ?HTMLElement;
 
@@ -86,7 +86,7 @@ export default class AddressItn extends Component<Props> {
           )}
         </div>
         <div className={styles.addressActions}>
-          {!isIncentivizedTestnet ? (
+          {isIncentivizedTestnet ? (
             <button
               className={styles.shareAddressButton}
               onClick={() => onShareAddress(address)}
