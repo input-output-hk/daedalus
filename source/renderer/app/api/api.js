@@ -38,7 +38,8 @@ import { createByronWalletTransaction } from './transactions/requests/createByro
 import { deleteLegacyTransaction } from './transactions/requests/deleteLegacyTransaction';
 
 // Wallets requests
-import { changeSpendingPassword } from './wallets/requests/changeSpendingPassword';
+import { updateSpendingPassword } from './wallets/requests/updateSpendingPassword';
+import { updateByronSpendingPassword } from './wallets/requests/updateByronSpendingPassword';
 import { deleteWallet } from './wallets/requests/deleteWallet';
 import { deleteLegacyWallet } from './wallets/requests/deleteLegacyWallet';
 import { exportWalletAsJSON } from './wallets/requests/exportWalletAsJSON';
@@ -51,9 +52,11 @@ import { restoreWallet } from './wallets/requests/restoreWallet';
 import { restoreLegacyWallet } from './wallets/requests/restoreLegacyWallet';
 import { restoreByronWallet } from './wallets/requests/restoreByronWallet';
 import { updateWallet } from './wallets/requests/updateWallet';
+import { updateByronWallet } from './wallets/requests/updateByronWallet';
 import { forceWalletResync } from './wallets/requests/forceWalletResync';
 import { forceLegacyWalletResync } from './wallets/requests/forceLegacyWalletResync';
 import { getWalletUtxos } from './wallets/requests/getWalletUtxos';
+// import { getByronWalletUtxos } from './wallets/requests/getByronWalletUtxos';
 import { getWallet } from './wallets/requests/getWallet';
 import { getLegacyWallet } from './wallets/requests/getLegacyWallet';
 import { getWalletIdAndBalance } from './wallets/requests/getWalletIdAndBalance';
@@ -299,10 +302,14 @@ export default class AdaApi {
     const { walletId, queryParams, isLegacy } = request;
     try {
       let response = [];
-      if (!isLegacy) {
-        response = await getAddresses(this.config, walletId, queryParams);
+      if (isLegacy) {
+        // @TODO - response is faked to enable UI. Comment out once endpoint is available
+        // response = await getByronWalletAddresses(this.config, walletId, queryParams);
+        return response;
       }
-      logger.debug('AdaApi::getAddresses success', { addresses: response });
+      response = await getAddresses(this.config, walletId, queryParams);
+
+      Logger.debug('AdaApi::getAddresses success', { addresses: response });
       return response.map(_createAddressFromServerData);
     } catch (error) {
       logger.error('AdaApi::getAddresses error', { error });
@@ -1221,13 +1228,15 @@ export default class AdaApi {
     logger.debug('AdaApi::updateWallet called', {
       parameters: filterLogData(request),
     });
-    const { walletId, name } = request;
+    const { walletId, name, isLegacy } = request;
     try {
-      const wallet: AdaWallet = await updateWallet(this.config, {
-        walletId,
-        name,
-      });
-      logger.debug('AdaApi::updateWallet success', { wallet });
+      let wallet: AdaWallet;
+      if (isLegacy) {
+        wallet = await updateByronWallet(this.config, { walletId, name });
+      } else {
+        wallet = await updateWallet(this.config, { walletId, name });
+      }
+      Logger.debug('AdaApi::updateWallet success', { wallet });
       return _createWalletFromServerData(wallet);
     } catch (error) {
       logger.error('AdaApi::updateWallet error', { error });
@@ -1241,14 +1250,22 @@ export default class AdaApi {
     logger.debug('AdaApi::updateSpendingPassword called', {
       parameters: filterLogData(request),
     });
-    const { walletId, oldPassword, newPassword } = request;
+    const { walletId, oldPassword, newPassword, isLegacy } = request;
     try {
-      await changeSpendingPassword(this.config, {
-        walletId,
-        oldPassword,
-        newPassword,
-      });
-      logger.debug('AdaApi::updateSpendingPassword success');
+      if (isLegacy) {
+        await updateByronSpendingPassword(this.config, {
+          walletId,
+          oldPassword,
+          newPassword,
+        });
+      } else {
+        await updateSpendingPassword(this.config, {
+          walletId,
+          oldPassword,
+          newPassword,
+        });
+      }
+      Logger.debug('AdaApi::updateSpendingPassword success');
       return true;
     } catch (error) {
       logger.error('AdaApi::updateSpendingPassword error', { error });
@@ -1315,15 +1332,24 @@ export default class AdaApi {
   getWalletUtxos = async (
     request: GetWalletUtxosRequest
   ): Promise<WalletUtxos> => {
-    const { walletId } = request;
-    logger.debug('AdaApi::getWalletUtxos called', {
+    const { walletId, isLegacy } = request;
+    Logger.debug('AdaApi::getWalletUtxos called', {
       parameters: filterLogData(request),
     });
     try {
-      const response: Promise<WalletUtxos> = await getWalletUtxos(this.config, {
-        walletId,
-      });
-      logger.debug('AdaApi::getWalletUtxos success', { response });
+      let response: WalletUtxos;
+      if (isLegacy) {
+        // @TODO - response is faked to enable UI. Uncomment once endpoint is available
+        // response = await getByronWalletUtxos(this.config, { walletId });
+        response = {
+          total: { quantity: 100, unit: 'lovelace' },
+          scale: 'log10',
+          distribution: { fake: 1 },
+        };
+      } else {
+        response = await getWalletUtxos(this.config, { walletId });
+      }
+      Logger.debug('AdaApi::getWalletUtxos success', { response });
       return response;
     } catch (error) {
       logger.error('AdaApi::getWalletUtxos error', { error });
