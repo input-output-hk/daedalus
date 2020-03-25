@@ -12,7 +12,7 @@ When(/^the "([^"]*)" wallet is not responding$/, async function(walletName) {
       name: string,
       syncState: Object;
     } = {
-      name: `Test wallet - not working`,
+      name: 'Test wallet - not responding',
       syncState: {
         status,
       },
@@ -29,8 +29,3 @@ Then(/^the "Not Responding" Overlay should be (hidden|visible)/, async function(
 Then(/^the wallet navigation should switch to the "summary" tab/, async function() {
   await this.client.waitForVisible('.WalletSummary_component');
 });
-
-
-
-
-
