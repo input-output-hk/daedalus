@@ -3,6 +3,13 @@ import type { CardanoNodeState } from './cardano-node.types';
 import type { SystemInfo } from '../../renderer/app/types/systemInfoTypes';
 import type { CoreSystemInfo } from '../../renderer/app/types/coreSystemInfoTypes';
 
+export type Logger = {
+  debug: (string, ?Object) => void,
+  info: (string, ?Object) => void,
+  error: (string, ?Object) => void,
+  warn: (string, ?Object) => void,
+};
+
 export type FormatMessageContextParams = {
   appName: string,
   electronProcess: string,

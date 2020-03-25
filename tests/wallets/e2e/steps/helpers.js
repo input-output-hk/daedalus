@@ -24,7 +24,7 @@ export const addOrSetWalletsForScenario = function(wallet: Object) {
 
 let rewardsMnemonicsIndex = 0;
 export const noWalletsErrorMessage = `The balance wallet for funds transfering was already used and has no longer funds.
-    Remove the "Daedalus SelfNode" directory and run \`nix:dev\` again.`;
+    Remove the "Daedalus Selfnode" directory and run \`nix:dev\` again.`;
 
 export const restoreWalletWithFunds = async (client: Object, { walletName }: { walletName: string }) => {
   const recoveryPhrase = rewardsMnemonics[rewardsMnemonicsIndex++];

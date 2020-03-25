@@ -129,7 +129,7 @@ CARDANO_BRIDGE=$(nix-build --no-out-link -A daedalus-bridge --argstr nodeImpleme
 echo '~~~ Prebuilding jormungandr bridge'
 JORMUNGANDR_BRIDGE=$(nix-build --no-out-link -A daedalus-bridge --argstr nodeImplementation jormungandr)
 
-cardanoClusters=" mainnet staging testnet "
+cardanoClusters=" mainnet staging testnet selfnode "
 
 pushd installers
     echo '~~~ Prebuilding dependencies for cardano-installer, quietly..'
@@ -166,6 +166,11 @@ pushd installers
           fi
           if [ -f cfg-files/jormungandr-config.yaml ]; then
             cp -v cfg-files/jormungandr-config.yaml .
+          fi
+          if [[ "${BACKEND}" == "cardano" ]]
+          then
+            nix-build .. -A launcherConfigs.tier2-cfg-files --argstr os macos64 --argstr cluster "${cluster}" -o tier2-cfg-files --argstr nodeImplementation "${BACKEND}"
+            cp -v tier2-cfg-files/* .
           fi
           chmod -R +w .
           echo '~~~   Running make-installer in nix-shell'

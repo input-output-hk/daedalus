@@ -20,6 +20,7 @@ let
     itn_rewards_v1 = "Daedalus - Rewards v1";
     qa = "Daedalus QA";
     selfnode = "Daedalus Selfnode";
+    itn_selfnode = "Daedalus Selfnode - ITN";
   };
   newPackage = (origPackage // {
     productName = nameTable.${if cluster == null then "testnet" else cluster};
