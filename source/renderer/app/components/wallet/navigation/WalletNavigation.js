@@ -125,11 +125,14 @@ export default class WalletNavigation extends Component<Props> {
           },
         ],
       },
-    ].filter(item => {
-      return (
-        !includes(ITN_LEGACY_WALLET_EXCLUDED_NAV_ITEMS, item.id) || !isLegacy
-      );
-    });
+    ].filter(
+      item =>
+        !(
+          isIncentivizedTestnet &&
+          isLegacy &&
+          includes(ITN_LEGACY_WALLET_EXCLUDED_NAV_ITEMS, item.id)
+        )
+    );
     return (
       <Navigation
         activeItem={activeItem}

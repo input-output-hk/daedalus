@@ -49,11 +49,12 @@ export default class Navigation extends Component<Props> {
       items,
       isLegacy,
     } = this.props;
+    const { isIncentivizedTestnet } = global;
 
     return (
       <div className={styles.component}>
         {items.map(({ id, icon, label, hasNotification, ...item }) =>
-          item.type === 'dropdown' && !isLegacy ? (
+          item.type === 'dropdown' && !(isIncentivizedTestnet && isLegacy) ? (
             <NavDropdown
               key={id}
               label={label}
