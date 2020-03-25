@@ -3,7 +3,8 @@ import os from 'os';
 import path from 'path';
 import { app, BrowserWindow, shell } from 'electron';
 import { client } from 'electron-connect';
-import { Logger } from './utils/logging';
+import { initByronRebootConfig } from './utils/config';
+import { logger } from './utils/logging';
 import {
   setupLogging,
   logSystemInfo,
@@ -54,20 +55,20 @@ const {
 
 const safeExit = async () => {
   if (!cardanoNode || cardanoNode.state === CardanoNodeStates.STOPPED) {
-    Logger.info('Daedalus:safeExit: exiting Daedalus with code 0', { code: 0 });
+    logger.info('Daedalus:safeExit: exiting Daedalus with code 0', { code: 0 });
     return safeExitWithCode(0);
   }
   if (cardanoNode.state === CardanoNodeStates.STOPPING) return;
   try {
     const pid = cardanoNode.pid || 'null';
-    Logger.info(`Daedalus:safeExit: stopping cardano-node with PID: ${pid}`, {
+    logger.info(`Daedalus:safeExit: stopping cardano-node with PID: ${pid}`, {
       pid,
     });
     await cardanoNode.stop();
-    Logger.info('Daedalus:safeExit: exiting Daedalus with code 0', { code: 0 });
+    logger.info('Daedalus:safeExit: exiting Daedalus with code 0', { code: 0 });
     safeExitWithCode(0);
   } catch (error) {
-    Logger.error('Daedalus:safeExit: cardano-node did not exit correctly', {
+    logger.error('Daedalus:safeExit: cardano-node did not exit correctly', {
       error,
     });
     safeExitWithCode(0);
@@ -100,9 +101,9 @@ const onAppReady = async () => {
     startTime,
   });
 
-  Logger.info(`Daedalus is starting at ${startTime}`, { startTime });
+  logger.info(`Daedalus is starting at ${startTime}`, { startTime });
 
-  Logger.info('Updating System-info.json file', { ...systemInfo.data });
+  logger.info('Updating System-info.json file', { ...systemInfo.data });
 
   // We need DAEDALUS_INSTALL_DIRECTORY in PATH
   // in order for the cardano-launcher to find wallet and node bins
@@ -116,6 +117,11 @@ const onAppReady = async () => {
 
   // Detect locale
   let locale = getLocale(network);
+
+  // Init Byron Reboot config
+  const { nodeImplementation, stateDir } = launcherConfig;
+  const isByronReboot = nodeImplementation === 'cardano';
+  if (isByronReboot) await initByronRebootConfig(logger, stateDir);
 
   mainWindow = createMainWindow(locale);
 
@@ -172,7 +178,7 @@ const onAppReady = async () => {
   );
 
   mainWindow.on('close', async event => {
-    Logger.info(
+    logger.info(
       'mainWindow received <close> event. Safe exiting Daedalus now.'
     );
     event.preventDefault();
@@ -199,7 +205,7 @@ const onAppReady = async () => {
     contents.on('new-window', (event, url) => {
       // Prevent creation of new BrowserWindows via links / window.open
       event.preventDefault();
-      Logger.info('Prevented creation of new browser window', { url });
+      logger.info('Prevented creation of new browser window', { url });
       // Open these links with the default browser
       shell.openExternal(url);
     });
@@ -207,7 +213,7 @@ const onAppReady = async () => {
 
   // Wait for controlled cardano-node shutdown before quitting the app
   app.on('before-quit', async event => {
-    Logger.info('app received <before-quit> event. Safe exiting Daedalus now.');
+    logger.info('app received <before-quit> event. Safe exiting Daedalus now.');
     event.preventDefault(); // prevent Daedalus from quitting immediately
     await safeExit();
   });

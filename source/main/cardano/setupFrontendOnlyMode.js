@@ -10,7 +10,7 @@ import {
   cardanoTlsConfigChannel,
   setCachedCardanoStatusChannel,
 } from '../ipc/cardano.ipc';
-import { Logger } from '../utils/logging';
+import { logger } from '../utils/logging';
 import { CardanoNodeStates } from '../../common/types/cardano-node.types';
 import type { CardanoStatus } from '../../common/types/cardano-node.types';
 import { safeExitWithCode } from '../utils/safeExitWithCode';
@@ -34,12 +34,12 @@ export const setupFrontendOnlyMode = (mainWindow: BrowserWindow) => {
   };
 
   getCachedCardanoStatusChannel.onRequest(() => {
-    Logger.info('ipcMain: Received request from renderer for cardano status');
+    logger.info('ipcMain: Received request from renderer for cardano status');
     return Promise.resolve(null);
   });
 
   setCachedCardanoStatusChannel.onReceive((status: ?CardanoStatus) => {
-    Logger.info(
+    logger.info(
       'ipcMain: Received request from renderer to cache cardano status',
       { status }
     );
@@ -47,25 +47,25 @@ export const setupFrontendOnlyMode = (mainWindow: BrowserWindow) => {
   });
 
   cardanoStateChangeChannel.onRequest(() => {
-    Logger.info('ipcMain: Received request from renderer for node state', {
+    logger.info('ipcMain: Received request from renderer for node state', {
       state: CardanoNodeStates.RUNNING,
     });
     return Promise.resolve(CardanoNodeStates.RUNNING);
   });
 
   cardanoTlsConfigChannel.onRequest(() => {
-    Logger.info('ipcMain: Received request from renderer for tls config');
+    logger.info('ipcMain: Received request from renderer for tls config');
     return Promise.resolve(tlsConfig);
   });
 
   cardanoAwaitUpdateChannel.onReceive(() => {
-    Logger.info('ipcMain: Received request from renderer to await update');
+    logger.info('ipcMain: Received request from renderer to await update');
     safeExitWithCode(20);
     return Promise.resolve();
   });
 
   cardanoRestartChannel.onReceive(() => {
-    Logger.info('ipcMain: Received request from renderer to restart node');
+    logger.info('ipcMain: Received request from renderer to restart node');
     cardanoStateChangeChannel.send(CardanoNodeStates.STARTING, mainWindow);
     setTimeout(() => {
       if (!mainWindow.isDestroyed()) {
@@ -76,7 +76,7 @@ export const setupFrontendOnlyMode = (mainWindow: BrowserWindow) => {
   });
 
   cardanoFaultInjectionChannel.onReceive(fault => {
-    Logger.info(
+    logger.info(
       'ipcMain: Received request to inject a fault into cardano node',
       { fault }
     );

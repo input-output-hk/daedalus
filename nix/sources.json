@@ -1,4 +1,16 @@
 {
+    "cardano-node": {
+        "branch": "tags/1.8.0",
+        "description": null,
+        "homepage": null,
+        "owner": "input-output-hk",
+        "repo": "cardano-node",
+        "rev": "64c2778c61245dcda13eaf16a2e0738dfacb7a16",
+        "sha256": "1aybhbip4j9275npvrk4w0bch5bl7fbq8faj1qj8h51f1g0ja74l",
+        "type": "tarball",
+        "url": "https://github.com/input-output-hk/cardano-node/archive/64c2778c61245dcda13eaf16a2e0738dfacb7a16.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
     "cardano-shell": {
         "branch": "master",
         "description": "Node shell, a thin layer for running the node and it's modules.",
@@ -61,15 +73,15 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "iohk-nix": {
-        "branch": "master",
+        "branch": "selfnode",
         "description": "nix scripts shared across projects",
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "iohk-nix",
-        "rev": "b34f11f205afbd11a69cab45d57cd8ebb2746713",
-        "sha256": "14cnfw479gha7ljifai9zchmpsq4652f3q2vvsibslfd6sgnl4js",
+        "rev": "9a7800792697ca7b0683af57e8ea770fbc111a8e",
+        "sha256": "0iakmzcfbfbi4w5lp63qfn25iq9ndrjs27z5rq0bd9104alza171",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/iohk-nix/archive/b34f11f205afbd11a69cab45d57cd8ebb2746713.tar.gz",
+        "url": "https://github.com/input-output-hk/iohk-nix/archive/9a7800792697ca7b0683af57e8ea770fbc111a8e.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "js-chain-libs": {

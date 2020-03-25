@@ -3,7 +3,7 @@ import { BrowserWindow } from 'electron';
 import checkDiskSpace from 'check-disk-space';
 import prettysize from 'prettysize';
 import { getDiskSpaceStatusChannel } from '../ipc/get-disk-space-status';
-import { Logger } from './logging';
+import { logger } from './logging';
 import {
   DISK_SPACE_REQUIRED,
   DISK_SPACE_REQUIRED_MARGIN_PERCENTAGE,
@@ -73,7 +73,7 @@ export const handleDiskSpace = (
         diskSpaceAvailable: prettysize(diskSpaceAvailable),
       };
       if (isNotEnoughDiskSpace)
-        Logger.info('Not enough disk space', { response });
+        logger.info('Not enough disk space', { response });
       if (typeof onCheckDiskSpace === 'function') onCheckDiskSpace(response);
       getDiskSpaceStatusChannel.send(response, mainWindow.webContents);
       return response;

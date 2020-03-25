@@ -1793,10 +1793,6 @@
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@types/is-function/-/is-function-1.0.0.tgz#1b0b819b1636c7baf0d6785d030d12edf70c3e83"
 
-"@types/lodash@^4.14.149":
-  version "4.14.149"
-  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.149.tgz#1342d63d948c6062838fbf961012f74d4e638440"
-
 "@types/minimatch@*", "@types/minimatch@^3.0.3":
   version "3.0.3"
   resolved "https://registry.yarnpkg.com/@types/minimatch/-/minimatch-3.0.3.tgz#3dca0e3f33b200fc7d1139c0cd96c1268cadfd9d"
@@ -1808,10 +1804,6 @@
 "@types/node@^12.7.2":
   version "12.12.30"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-12.12.30.tgz#3501e6f09b954de9c404671cefdbcc5d9d7c45f6"
-
-"@types/node@^13.1.8":
-  version "13.9.1"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-13.9.1.tgz#96f606f8cd67fb018847d9b61e93997dabdefc72"
 
 "@types/node@^8.0.24":
   version "8.10.51"
@@ -3772,9 +3764,9 @@ cardano-js@0.3.0:
     cbor "^4.3.0"
     ts-custom-error "^3.1.1"
 
-cardano-launcher@0.20200320.0:
-  version "0.20200320.0"
-  resolved "https://registry.yarnpkg.com/cardano-launcher/-/cardano-launcher-0.20200320.0.tgz#8c6af1552591655f5d909e0f35003704b04d6d11"
+cardano-launcher@0.20200325.2:
+  version "0.20200325.2"
+  resolved "https://registry.yarnpkg.com/cardano-launcher/-/cardano-launcher-0.20200325.2.tgz#53d12e2b6d78331eb8f849a97ea1a8a07f0dc701"
   dependencies:
     get-port "^5.1.1"
     lodash "^4.17.15"
