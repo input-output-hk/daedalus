@@ -76,7 +76,7 @@ let
     launcherConfigs = self.callPackage ./nix/launcher-config.nix {
       inherit (self) jormungandrLib;
       inherit devShell;
-      environment = cluster;
+      network = cluster;
       os = ostable.${target};
       backend = nodeImplementation;
       runCommandNative = pkgsNative.runCommand;
@@ -151,9 +151,6 @@ let
 
     nsisFiles = pkgs.runCommand "nsis-files" {
       buildInputs = [ self.daedalus-installer pkgs.glibcLocales ];
-      installerConfig = builtins.toJSON self.launcherConfigs.installerConfig;
-      launcherConfig = builtins.toJSON self.launcherConfigs.launcherConfig;
-      passAsFile = [ "installerConfig" "launcherConfig" ];
     } ''
       mkdir installers
       cp -vir ${./package.json} package.json
@@ -161,30 +158,13 @@ let
 
       echo ${self.daedalus-bridge.wallet-version} > version
 
-      cp $installerConfigPath installer-config.json
       export LANG=en_US.UTF-8
+      cp -v ${self.launcherConfigs.configFiles}/* .
       make-installer --${nodeImplementation} dummy --os win64 -o $out --cluster ${cluster} ${optionalString (buildNum != null) "--build-job ${buildNum}"} buildkite-cross
 
       mkdir $out
-      cp daedalus.nsi uninstaller.nsi $out/
-      cp $launcherConfigPath $out/launcher-config.yaml
-      ${optionalString (nodeImplementation == "jormungandr") ''
-        ${optionalString (self.launcherConfigs.installerConfig.hasBlock0 or false) "cp ${self.launcherConfigs.installerConfig.block0} $out/block-0.bin"}
-        ${if (cluster == "itn_selfnode") then ''
-          cp ${self.launcherConfigs.cfg-files}/config.yaml $out/
-          cp ${self.launcherConfigs.cfg-files}/secret.yaml $out/
-          cp ${self.launcherConfigs.cfg-files}/genesis.yaml $out/
-        '' else "cp ${self.launcherConfigs.jormungandr-config} $out/jormungandr-config.yaml"}
-      ''}
-      ${optionalString (nodeImplementation == "cardano") ''
-          cp ${self.launcherConfigs.tier2-cfg-files}/config.yaml $out/config.yaml
-          cp ${self.launcherConfigs.tier2-cfg-files}/genesis.json $out/genesis.json
-          cp ${self.launcherConfigs.tier2-cfg-files}/topology.yaml $out/topology.yaml
-        ${optionalString (cluster == "selfnode") ''
-          cp ${self.launcherConfigs.tier2-cfg-files}/signing.key $out/signing.key
-          cp ${self.launcherConfigs.tier2-cfg-files}/delegation.cert $out/delegation.cert
-        ''}
-      ''}
+      cp -v daedalus.nsi uninstaller.nsi $out/
+      cp -v ${self.launcherConfigs.configFiles}/* $out/
       ls -lR $out
     '';
 
