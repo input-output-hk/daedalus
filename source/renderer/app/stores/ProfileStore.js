@@ -162,7 +162,7 @@ export default class ProfileStore extends Store {
       systemValue = THEMES.INCENTIVIZED_TESTNET;
     } else {
       systemValue = this.environment.isMainnet
-        ? THEMES.DARK_BLUE
+        ? THEMES.FLIGHT_CANDIDATE
         : THEMES.LIGHT_BLUE;
     }
     return requestGetter(this.getThemeRequest, systemValue);

@@ -1692,13 +1692,13 @@
         "description": "Label for the \"Theme\" selection on the display settings page.",
         "end": {
           "column": 3,
-          "line": 22
+          "line": 23
         },
         "file": "source/renderer/app/components/settings/categories/DisplaySettings.js",
         "id": "settings.display.themeLabel",
         "start": {
           "column": 14,
-          "line": 17
+          "line": 18
         }
       },
       {
@@ -1706,13 +1706,13 @@
         "description": "Name of the \"Incentivized Testnet\" theme on the display settings page.",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 29
         },
         "file": "source/renderer/app/components/settings/categories/DisplaySettings.js",
         "id": "settings.display.themeNames.incentivizedTestnet",
         "start": {
           "column": 28,
-          "line": 23
+          "line": 24
         }
       },
       {
@@ -1720,13 +1720,13 @@
         "description": "Name of the \"Light blue\" theme on the display settings page.",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 34
         },
         "file": "source/renderer/app/components/settings/categories/DisplaySettings.js",
         "id": "settings.display.themeNames.lightBlue",
         "start": {
           "column": 18,
-          "line": 29
+          "line": 30
         }
       },
       {
@@ -1734,13 +1734,13 @@
         "description": "Name of the \"Cardano\" theme on the display settings page.",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 39
         },
         "file": "source/renderer/app/components/settings/categories/DisplaySettings.js",
         "id": "settings.display.themeNames.cardano",
         "start": {
           "column": 16,
-          "line": 34
+          "line": 35
         }
       },
       {
@@ -1748,13 +1748,13 @@
         "description": "Name of the \"Dark blue\" theme on the display settings page.",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 44
         },
         "file": "source/renderer/app/components/settings/categories/DisplaySettings.js",
         "id": "settings.display.themeNames.darkBlue",
         "start": {
           "column": 17,
-          "line": 39
+          "line": 40
         }
       },
       {
@@ -1762,13 +1762,27 @@
         "description": "Name of the \"Dark cardano\" theme on the display settings page.",
         "end": {
           "column": 3,
-          "line": 49
+          "line": 50
         },
         "file": "source/renderer/app/components/settings/categories/DisplaySettings.js",
         "id": "settings.display.themeNames.darkCardano",
         "start": {
           "column": 20,
-          "line": 44
+          "line": 45
+        }
+      },
+      {
+        "defaultMessage": "!!!Flight Candidate",
+        "description": "Name of the \"Flight Candidate\" theme on the display settings page.",
+        "end": {
+          "column": 3,
+          "line": 56
+        },
+        "file": "source/renderer/app/components/settings/categories/DisplaySettings.js",
+        "id": "settings.display.themeNames.flightCandidate",
+        "start": {
+          "column": 24,
+          "line": 51
         }
       },
       {
@@ -1776,13 +1790,13 @@
         "description": "Name of the \"Yellow\" theme on the display settings page.",
         "end": {
           "column": 3,
-          "line": 54
+          "line": 61
         },
         "file": "source/renderer/app/components/settings/categories/DisplaySettings.js",
         "id": "settings.display.themeNames.yellow",
         "start": {
           "column": 15,
-          "line": 50
+          "line": 57
         }
       },
       {
@@ -1790,13 +1804,13 @@
         "description": "Name of the \"White\" theme on the display settings page.",
         "end": {
           "column": 3,
-          "line": 59
+          "line": 66
         },
         "file": "source/renderer/app/components/settings/categories/DisplaySettings.js",
         "id": "settings.display.themeNames.white",
         "start": {
           "column": 14,
-          "line": 55
+          "line": 62
         }
       }
     ],

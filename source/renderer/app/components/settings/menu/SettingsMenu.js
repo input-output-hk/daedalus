@@ -30,6 +30,7 @@ const messages = defineMessages({
 });
 
 type Props = {
+  isMainnet: boolean,
   isActiveItem: Function,
   onItemClick: Function,
 };
@@ -42,7 +43,8 @@ export default class SettingsMenu extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { onItemClick, isActiveItem } = this.props;
+    const { onItemClick, isActiveItem, isMainnet } = this.props;
+
     return (
       <div>
         <div className={styles.component}>
@@ -52,14 +54,14 @@ export default class SettingsMenu extends Component<Props> {
             active={isActiveItem(ROUTES.SETTINGS.GENERAL)}
             className="general"
           />
-
-          <SettingsMenuItem
-            label={intl.formatMessage(messages.display)}
-            onClick={() => onItemClick(ROUTES.SETTINGS.DISPLAY)}
-            active={isActiveItem(ROUTES.SETTINGS.DISPLAY)}
-            className="display"
-          />
-
+          {!isMainnet && (
+            <SettingsMenuItem
+              label={intl.formatMessage(messages.display)}
+              onClick={() => onItemClick(ROUTES.SETTINGS.DISPLAY)}
+              active={isActiveItem(ROUTES.SETTINGS.DISPLAY)}
+              className="display"
+            />
+          )}
           <SettingsMenuItem
             label={intl.formatMessage(messages.termsOfUse)}
             onClick={() => onItemClick(ROUTES.SETTINGS.TERMS_OF_USE)}
