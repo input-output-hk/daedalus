@@ -15,10 +15,10 @@ const DEFAULT_LANGUAGE = 'en-US';
 
 export const addOrSetWalletsForScenario = function(wallet: Object) {
   this.wallet = wallet;
-  if (this.wallets != null) {
-    this.wallets.push(this.wallet);
+  if (this.context.wallets != null) {
+    this.context.wallets.push(this.wallet);
   } else {
-    this.wallets = [this.wallet];
+    this.context.wallets = [this.wallet];
   }
 };
 
@@ -47,10 +47,10 @@ export const restoreWalletWithFunds = async (client: Object, { walletName }: { w
   }, walletName, recoveryPhrase);
 };
 
-const createWalletsSequentially = async (wallets: Array<any>, context: Object) => {
-  context.wallets = [];
+const createWalletsSequentially = async function(wallets: Array<any>) {
+  this.wallets = [];
   for (const walletData of wallets) {
-    const result = await context.client.executeAsync((wallet, done) => {
+    const result = await this.client.executeAsync((wallet, done) => {
       daedalus.api.ada
         .createWallet({
           name: wallet.name,
@@ -70,7 +70,7 @@ const createWalletsSequentially = async (wallets: Array<any>, context: Object) =
         )
         .catch(error => done(error.stack));
     }, walletData);
-    context.wallets = result.value;
+    this.wallets = result.value;
   }
 };
 
@@ -146,7 +146,7 @@ export const fillOutWalletSendForm = async function(values: Object) {
       values.spendingPassword
     );
   }
-  this.walletSendFormValues = values;
+  this.context.walletsendFormValues = values;
 };
 
 export const getNameOfActiveWalletInSidebar = async function() {
@@ -156,7 +156,7 @@ export const getNameOfActiveWalletInSidebar = async function() {
 };
 
 export const getWalletByName = function(walletName: string) {
-  return this.wallets.find(w => w.name === walletName);
+  return this.context.wallets.find(w => w.name === walletName);
 };
 
 /**
@@ -270,68 +270,66 @@ export const expectActiveWallet = async function(walletName: string) {
   );
 };
 
-const createWalletsAsync = async (table, context: Object, isLegacy?: boolean) => {
-  const result = await context.client.executeAsync((wallets, isLegacyWallet, done) => {
+const createWalletsAsync = async function(table, context: Object, isLegacy?: boolean) {
+  const result = await this.client.executeAsync((wallets, isLegacyWallet, done) => {
     const mnemonics = {};
     const { restoreLegacyRequest, walletsRequest } = daedalus.stores.wallets;
     const { restoreLegacyWallet, createWallet } = daedalus.api.ada;
     const request = isLegacyWallet ? restoreLegacyRequest : walletsRequest;
     const apiEndpoint = isLegacyWallet ? restoreLegacyWallet : createWallet;
-    done(apiEndpoint)
     window.Promise.all(
       wallets.map(wallet => {
         const mnemonic = daedalus.utils.crypto.generateMnemonic(12);
         const recoveryPhrase = mnemonic;
         mnemonics[wallet.name] = mnemonic.split(' ');
         return apiEndpoint({
-          name: 'BLEH',
-          walletName: 'IAAIAIAIAIA',
+          name: wallet.name,
+          walletName: wallet.name,
           mnemonic,
           recoveryPhrase,
           spendingPassword: wallet.password || 'Secret1234',
         });
       })
     )
-    //   .then(() =>
-    //     request
-    //       .execute()
-    //       .then(storeWallets =>
-    //         daedalus.stores.wallets
-    //           .refreshWalletsData()
-    //           .then(() => done({ storeWallets, mnemonics }))
-    //           .catch(error => done(error))
-    //       )
-    //       .catch(error => done(error))
-    //   )
-    //   .catch(error => done(error.stack));
+      .then(() =>
+        request
+          .execute()
+          .then(storeWallets =>
+            daedalus.stores.wallets
+              .refreshWalletsData()
+              .then(() => done({ storeWallets, mnemonics }))
+              .catch(error => done(error))
+          )
+          .catch(error => done(error))
+      )
+      .catch(error => done(error.stack));
   }, table, isLegacy);
-  console.log('FOI');
-
   // Add or set the wallets for this scenario
-  // if (context.wallets != null) {
-  //   context.wallets.push(...result.value.storeWallets);
-  // } else {
-  //   context.wallets = result.value.storeWallets;
-  // }
-  // if (context.mnemonics != null) {
-  //   context.mnemonics.push(...result.value.mnemonics);
-  // } else {
-  //   context.mnemonics = result.value.mnemonics;
-  // }
+  if (this.wallets != null) {
+    this.wallets.push(...result.value.storeWallets);
+  } else {
+    this.wallets = result.value.storeWallets;
+  }
+  if (this.mnemonics != null) {
+    this.mnemonics.push(...result.value.mnemonics);
+  } else {
+    this.mnemonics = result.value.mnemonics;
+  }
 };
 
-export const createWallets = async (
+export const createWallets = async function(
   wallets: Array<any>,
-  context: Object,
   options: {
     sequentially?: boolean,
     isLegacy?: boolean,
   } = {}
-) => {
+) {
+  console.log('wallets', wallets);
+  console.log('options', options);
   if (options.sequentially === true) {
-    await createWalletsSequentially(wallets, context);
+    await createWalletsSequentially.call(this, wallets);
   } else {
-    await createWalletsAsync(wallets, context, options.isLegacy);
+    await createWalletsAsync.call(this, wallets, options.isLegacy);
   }
 };
 
@@ -426,3 +424,13 @@ export const i18n = {
 
 export const waitForActiveRestoreNotification = (client: Object, { isHidden }: { isHidden?: boolean } = {}) =>
   client.waitForVisible('.ActiveRestoreNotification', null, isHidden);
+
+export const getWalletType = async function(_type?: string = '') {
+  let type = _type ? _type.trim() : null;
+  if (type === 'balance') return 'byron';
+  if (!type) {
+    const isIncentivizedTestnetRequest = await this.client.execute(() => daedalus.environment.isIncentivizedTestnet);
+    type = isIncentivizedTestnetRequest.value ? 'shelley' : 'byron';
+  }
+  return type;
+}

@@ -3,7 +3,7 @@ Feature: Send Money to Receiver
 
   Background:
     Given I have completed the basic setup
-    And I have the following "Rewards" wallets:
+    And I have the following wallets:
       | name   |
       | first  |
 

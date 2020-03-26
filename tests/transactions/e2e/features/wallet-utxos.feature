@@ -14,7 +14,7 @@ Feature: Wallet - UTXOs
     And the UTXOs chart is visible
 
   Scenario: The wallet does not contain any UTxOs
-    Given I have the following "Rewards" wallets:
+    Given I have the following wallets:
       | name      |
       | NewWallet |
     When I am on the "NewWallet" wallet "utxo" screen

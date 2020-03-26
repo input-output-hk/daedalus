@@ -3,11 +3,11 @@ Feature: Delete a wallet
 
   Background:
     Given I have completed the basic setup
-    And I have the following "Rewards" wallets:
+    And I have the following wallets:
       | name           |
       | Rewards Wallet |
     And I have a "Balance Wallet" balance wallet
-  
+
   Scenario: Successfully deleting "Daedalus Balance" wallet from settings screen
     And I am on the "Balance Wallet" wallet "settings" screen
     When I click on delete wallet button
