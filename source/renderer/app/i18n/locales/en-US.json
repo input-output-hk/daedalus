@@ -644,6 +644,8 @@
   "wallet.send.confirmationDialog.amountLabel": "Amount",
   "wallet.send.confirmationDialog.back": "Back",
   "wallet.send.confirmationDialog.feesLabel": "Fees",
+  "wallet.send.confirmationDialog.flightCandidateCheckboxLabel": "I understand that real ada will be moved as part of this transaction and that this action is irreversible.",
+  "wallet.send.confirmationDialog.flightCandidateWarning": "<b>Warning:</b> flight candidate versions of Daedalus are connected to the Cardano mainnet. If you confirm this transaction, real ada will be transferred out of this wallet.",
   "wallet.send.confirmationDialog.passphraseFieldPlaceholder": "Type your spending password",
   "wallet.send.confirmationDialog.passphraseLabel": "Spending password",
   "wallet.send.confirmationDialog.passwordError": "Incorrect spending password",
