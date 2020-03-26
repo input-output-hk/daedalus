@@ -277,44 +277,47 @@ const createWalletsAsync = async (table, context: Object, isLegacy?: boolean) =>
     const { restoreLegacyWallet, createWallet } = daedalus.api.ada;
     const request = isLegacyWallet ? restoreLegacyRequest : walletsRequest;
     const apiEndpoint = isLegacyWallet ? restoreLegacyWallet : createWallet;
+    done(apiEndpoint)
     window.Promise.all(
       wallets.map(wallet => {
         const mnemonic = daedalus.utils.crypto.generateMnemonic(12);
         const recoveryPhrase = mnemonic;
         mnemonics[wallet.name] = mnemonic.split(' ');
         return apiEndpoint({
-          name: wallet.name,
-          walletName: wallet.name,
+          name: 'BLEH',
+          walletName: 'IAAIAIAIAIA',
           mnemonic,
           recoveryPhrase,
           spendingPassword: wallet.password || 'Secret1234',
         });
       })
     )
-      .then(() =>
-        request
-          .execute()
-          .then(storeWallets =>
-            daedalus.stores.wallets
-              .refreshWalletsData()
-              .then(() => done({ storeWallets, mnemonics }))
-              .catch(error => done(error))
-          )
-          .catch(error => done(error))
-      )
-      .catch(error => done(error.stack));
+    //   .then(() =>
+    //     request
+    //       .execute()
+    //       .then(storeWallets =>
+    //         daedalus.stores.wallets
+    //           .refreshWalletsData()
+    //           .then(() => done({ storeWallets, mnemonics }))
+    //           .catch(error => done(error))
+    //       )
+    //       .catch(error => done(error))
+    //   )
+    //   .catch(error => done(error.stack));
   }, table, isLegacy);
+  console.log('FOI');
+
   // Add or set the wallets for this scenario
-  if (context.wallets != null) {
-    context.wallets.push(...result.value.storeWallets);
-  } else {
-    context.wallets = result.value.storeWallets;
-  }
-  if (context.mnemonics != null) {
-    context.mnemonics.push(...result.value.mnemonics);
-  } else {
-    context.mnemonics = result.value.mnemonics;
-  }
+  // if (context.wallets != null) {
+  //   context.wallets.push(...result.value.storeWallets);
+  // } else {
+  //   context.wallets = result.value.storeWallets;
+  // }
+  // if (context.mnemonics != null) {
+  //   context.mnemonics.push(...result.value.mnemonics);
+  // } else {
+  //   context.mnemonics = result.value.mnemonics;
+  // }
 };
 
 export const createWallets = async (
