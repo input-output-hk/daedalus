@@ -140,7 +140,7 @@ export default class WalletMigrationStore extends Store {
             WalletMigrationStatuses.COMPLETED
           );
         } else {
-          logger.error('WalletMigrationStore: Wallet migration failed', {
+          logger.debug('WalletMigrationStore: Wallet migration failed', {
             exportErrors,
             restorationErrors: this._restorationErrors,
           });
