@@ -18,16 +18,22 @@ const SELECTORS = {
 
 Given('I generate {int} addresses', async function(numberOfAddresses) {
   for (let i = 0; i < numberOfAddresses; i++) {
-    await waitAndClick(
-      this.client,
-      SELECTORS.GENERATE_ADDRESS_BTN
-    );
+    await this.waitAndClick(SELECTORS.GENERATE_ADDRESS_BTN);
   }
 });
 
 When('I click the ShowUsed switch', async function() {
   await this.waitAndClick(SELECTORS.SHOW_USED_SWITCH);
 });
+
+When(
+  /^I enter wallet password in generate address input field "([^"]*)"$/,
+  async function(password) {
+    const selector = '.WalletReceive_spendingPassword .SimpleFormField_inputWrapper input';
+    await this.client.waitForExist(selector);
+    return this.client.setValue(selector, password);
+  }
+);
 
 Then('I should see {int} used addresses', { timeout: 60000 }, async function(
   numberOfAddresses
@@ -103,4 +109,14 @@ Then('I should see the following addresses:', async function(table) {
       expect(address).to.include(expectedAdresses[index].ClassName)
     );
   }
+});
+
+Then('The active address should be the newest one', async function() {
+  const {
+    value: { id: lastGeneratedAddress },
+  } = await this.client.execute(
+    () => daedalus.stores.addresses.lastGeneratedAddress
+  );
+  const activeAddress = await this.client.getText('.WalletReceive_hash');
+  expect(lastGeneratedAddress).to.equal(activeAddress);
 });
