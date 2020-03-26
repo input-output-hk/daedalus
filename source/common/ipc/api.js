@@ -16,7 +16,10 @@ import type {
 import type { CheckDiskSpaceResponse } from '../types/no-disk-space.types';
 import type { LogFiles } from '../../renderer/app/types/LogTypes';
 import type { GpuStatus } from '../../renderer/app/types/gpuStatus';
-import type { StateSnapshotLogParams } from '../types/logging.types';
+import type {
+  StateSnapshotLogParams,
+  WalletMigrationReportData,
+} from '../types/logging.types';
 
 /**
  * ======================= IPC CHANNELS API =========================
@@ -222,10 +225,18 @@ export type DetectSystemLocaleMainResponse = string;
 export const EXPORT_WALLETS_CHANNEL = 'EXPORT_WALLETS_CHANNEL';
 export type ExportWalletsRendererRequest = void;
 export type ExportWalletsMainResponse = {
-  data: Array<{
+  wallets: Array<{
     encrypted_root_private_key: string,
     name: string,
     passphrase_hash: ?string,
   }>,
   errors: string,
 };
+
+/**
+ * Channel for generating wallet migration report
+ */
+export const GENERATE_WALLET_MIGRATION_REPORT_CHANNEL =
+  'GENERATE_WALLET_MIGRATION_REPORT_CHANNEL';
+export type GenerateWalletMigrationReportRendererRequest = WalletMigrationReportData;
+export type GenerateWalletMigrationReportMainResponse = void;

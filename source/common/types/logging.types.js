@@ -2,6 +2,7 @@
 import type { CardanoNodeState } from './cardano-node.types';
 import type { SystemInfo } from '../../renderer/app/types/systemInfoTypes';
 import type { CoreSystemInfo } from '../../renderer/app/types/coreSystemInfoTypes';
+import type { WalletMigrationStatus } from '../../renderer/app/stores/WalletMigrationStore';
 
 export type Logger = {
   debug: (string, ?Object) => void,
@@ -77,4 +78,16 @@ export type StateSnapshotLogParams = {
   syncPercentage: string,
   localTip: ?Object,
   networkTip: ?Object,
+};
+
+export type WalletMigrationReportData = {
+  exportedWalletsData: Array<{
+    name: string,
+    hasPassword: boolean,
+  }>,
+  exportedWalletsCount: number,
+  exportErrors: string,
+  restoredWalletsCount: number,
+  restorationErrors: Array<string>,
+  finalMigrationStatus: WalletMigrationStatus,
 };

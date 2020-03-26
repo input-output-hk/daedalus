@@ -9,6 +9,7 @@ import {
   setupLogging,
   logSystemInfo,
   logStateSnapshot,
+  generateWalletMigrationReport,
 } from './utils/setupLogging';
 import { handleDiskSpace } from './utils/handleDiskSpace';
 import { createMainWindow } from './windows/main';
@@ -35,6 +36,7 @@ import { CardanoNodeStates } from '../common/types/cardano-node.types';
 import type { CheckDiskSpaceResponse } from '../common/types/no-disk-space.types';
 import { logUsedVersion } from './utils/logUsedVersion';
 import { setStateSnapshotLogChannel } from './ipc/set-log-state-snapshot';
+import { generateWalletMigrationReportChannel } from './ipc/generateWalletMigrationReportChannel';
 
 /* eslint-disable consistent-return */
 
@@ -166,6 +168,10 @@ const onAppReady = async () => {
 
   setStateSnapshotLogChannel.onReceive(data => {
     return Promise.resolve(logStateSnapshot(data));
+  });
+
+  generateWalletMigrationReportChannel.onReceive(data => {
+    return Promise.resolve(generateWalletMigrationReport(data));
   });
 
   getStateDirectoryPathChannel.onRequest(() =>

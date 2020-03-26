@@ -111,6 +111,7 @@ export const ALLOWED_LOGS = [
   'System-info.json',
   'Daedalus-versions.json',
   'State-snapshot.json',
+  'Wallet-migration-report.json',
   'node.log',
 ];
 export const ALLOWED_NODE_LOGS = new RegExp(/(node.log-)(\d{14}$)/);

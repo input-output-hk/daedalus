@@ -205,13 +205,16 @@ export const setupCardanoNode = (
       '--wallet-db-path',
       walletDbPath,
     ]);
-    const data = JSON.parse(stdout.toString());
+    const wallets = JSON.parse(stdout.toString());
     const errors = stderr.toString();
-    logger.info('ipcMain: Export wallets SUCCESS', {
-      exportedWalletsCount: data.length,
+    logger.info(`ipcMain: Exported ${wallets.length} wallets`, {
+      walletsData: wallets.map(w => ({
+        name: w.name,
+        hasPassword: w.passphrase_hash !== null,
+      })),
       errors,
     });
-    return Promise.resolve({ data, errors });
+    return Promise.resolve({ wallets, errors });
   });
 
   return cardanoNode;
