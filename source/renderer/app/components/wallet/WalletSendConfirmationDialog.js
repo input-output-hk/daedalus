@@ -103,6 +103,7 @@ type Props = {
   onCancel: Function,
   onExternalLinkClick: Function,
   isSubmitting: boolean,
+  isMainnet: boolean,
   error: ?LocalizableError,
   currencyUnit: string,
 };
@@ -182,6 +183,7 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
       totalAmount,
       transactionFee,
       isSubmitting,
+      isMainnet,
       error,
       currencyUnit,
       onExternalLinkClick,
@@ -203,7 +205,8 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
         primary: true,
         className: confirmButtonClasses,
         disabled:
-          !passphraseField.isValid || !flightCandidateCheckboxField.value,
+          !passphraseField.isValid ||
+          (!flightCandidateCheckboxField.value && isMainnet),
       },
     ];
 
@@ -287,17 +290,19 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
           />
         </div>
 
-        <div className={styles.flightCandidateWarning}>
-          <FormattedHTMLMessage
-            {...messages.flightCandidateWarning}
-            tagName="p"
-          />
-          <Checkbox
-            {...flightCandidateCheckboxField.bind()}
-            error={flightCandidateCheckboxField.error}
-            skin={CheckboxSkin}
-          />
-        </div>
+        {isMainnet && (
+          <div className={styles.flightCandidateWarning}>
+            <FormattedHTMLMessage
+              {...messages.flightCandidateWarning}
+              tagName="p"
+            />
+            <Checkbox
+              {...flightCandidateCheckboxField.bind()}
+              error={flightCandidateCheckboxField.error}
+              skin={CheckboxSkin}
+            />
+          </div>
+        )}
 
         {errorElement ? <p className={styles.error}>{errorElement}</p> : null}
       </Dialog>
