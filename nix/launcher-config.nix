@@ -25,7 +25,8 @@ let
     windows = "\${DAEDALUS_INSTALL_DIRECTORY}";
   };
 
-  spacedName = if network == "mainnet" then "Daedalus" else "Daedalus ${installDirectorySuffix.${network}}";
+  baseName = if network == "mainnet" then "Daedalus" else "Daedalus ${installDirectorySuffix.${network}}";
+  spacedName = if backend == "cardano" then "${baseName} Flight" else baseName;
 
   frontendBinPath = let
     frontendBin.linux = "daedalus-frontend";
@@ -60,8 +61,8 @@ let
 
   dataDir = let
     path.linux = "\${XDG_DATA_HOME}/Daedalus/${network}";
-    path.macos64 = "\${HOME}/Library/Application Support/${spacedName}";
-    path.windows = "\${APPDATA}\\${spacedName}";
+    path.macos64 = "\${HOME}/Library/Application Support/${baseName}";
+    path.windows = "\${APPDATA}\\${baseName}";
   in path.${os};
 
   logsPrefix = let
