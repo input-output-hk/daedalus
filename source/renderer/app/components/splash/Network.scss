@@ -16,23 +16,6 @@
     top: 0;
     width: 100%;
     z-index: 1000;
-
-    .backgroundImage {
-      display: block;
-      height: 100%;
-      opacity: 0.1;
-      position: relative;
-      width: 100%;
-
-      & > svg {
-        display: block;
-        left: 50%;
-        position: absolute;
-        top: 50%;
-        transform: translate(-50%, -50%);
-        width: 1186px;
-      }
-    }
   }
 
   .content {

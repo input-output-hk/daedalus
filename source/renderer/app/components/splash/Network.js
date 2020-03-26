@@ -6,7 +6,6 @@ import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
-import backgroundImage from '../../assets/images/circle-bg-faded.inline.svg';
 import daedalusIcon from '../../assets/images/daedalus-logo-loading-grey.inline.svg';
 import styles from './Network.scss';
 
@@ -69,16 +68,7 @@ export default class SplashNetwork extends Component<Props> {
 
     return (
       <div className={styles.component}>
-        <div className={styles.backgroundContainer}>
-          {isIncentivizedTestnet && (
-            <>
-              <SVGInline
-                svg={backgroundImage}
-                className={styles.backgroundImage}
-              />
-            </>
-          )}
-        </div>
+        <div className={styles.backgroundContainer} />
         <div className={styles.content}>
           <SVGInline svg={daedalusIcon} className={styles.daedalusIcon} />
           {isIncentivizedTestnet && (
