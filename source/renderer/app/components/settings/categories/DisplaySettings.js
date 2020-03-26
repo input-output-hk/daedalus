@@ -205,21 +205,7 @@ export default class DisplaySettings extends Component<Props> {
         </div>
 
         <div className={styles.themesRowWrapper}>
-          <button
-            className={themeFlightCandidateClasses}
-            onClick={selectTheme.bind(this, { theme: THEMES.FLIGHT_CANDIDATE })}
-          >
-            <img
-              src={themeFlightCandidatePreview}
-              role="presentation"
-              draggable="false"
-            />
-            <span>{intl.formatMessage(messages.themeFlightCandidate)}</span>
-          </button>
-        </div>
-
-        {isIncentivizedTestnet && (
-          <div className={styles.themesRowWrapper}>
+          {isIncentivizedTestnet ? (
             <button
               className={themeIncentivizedTestnetClasses}
               onClick={selectTheme.bind(this, {
@@ -235,8 +221,22 @@ export default class DisplaySettings extends Component<Props> {
                 {intl.formatMessage(messages.themeIncentivizedTestnet)}
               </span>
             </button>
-          </div>
-        )}
+          ) : (
+            <button
+              className={themeFlightCandidateClasses}
+              onClick={selectTheme.bind(this, {
+                theme: THEMES.FLIGHT_CANDIDATE,
+              })}
+            >
+              <img
+                src={themeFlightCandidatePreview}
+                role="presentation"
+                draggable="false"
+              />
+              <span>{intl.formatMessage(messages.themeFlightCandidate)}</span>
+            </button>
+          )}
+        </div>
       </div>
     );
   }
