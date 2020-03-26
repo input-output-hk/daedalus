@@ -8,6 +8,7 @@ import themeIncentivizedTestnetPreview from '../../../assets/images/themes/incen
 import themeCardanoPreview from '../../../assets/images/themes/cardano.png';
 import themeDarkBluePreview from '../../../assets/images/themes/dark-blue.png';
 import themeDarkCardanoPreview from '../../../assets/images/themes/dark-cardano.png';
+import themeFlightCandidatePreview from '../../../assets/images/themes/flight-candidate.png';
 import themeLightBluePreview from '../../../assets/images/themes/light-blue.png';
 import themeYellowPreview from '../../../assets/images/themes/yellow.png';
 import themeWhitePreview from '../../../assets/images/themes/white.png';
@@ -46,6 +47,12 @@ const messages = defineMessages({
     defaultMessage: '!!!Dark Cardano',
     description:
       'Name of the "Dark cardano" theme on the display settings page.',
+  },
+  themeFlightCandidate: {
+    id: 'settings.display.themeNames.flightCandidate',
+    defaultMessage: '!!!Flight Candidate',
+    description:
+      'Name of the "Flight Candidate" theme on the display settings page.',
   },
   themeYellow: {
     id: 'settings.display.themeNames.yellow',
@@ -97,6 +104,11 @@ export default class DisplaySettings extends Component<Props> {
 
     const themeDarkCardanoClasses = classnames([
       theme === THEMES.DARK_CARDANO ? styles.active : styles.inactive,
+      styles.themeImageWrapper,
+    ]);
+
+    const themeFlightCandidateClasses = classnames([
+      theme === THEMES.FLIGHT_CANDIDATE ? styles.active : styles.inactive,
       styles.themeImageWrapper,
     ]);
 
@@ -177,6 +189,18 @@ export default class DisplaySettings extends Component<Props> {
               draggable="false"
             />
             <span>{intl.formatMessage(messages.themeDarkCardano)}</span>
+          </button>
+
+          <button
+            className={themeFlightCandidateClasses}
+            onClick={selectTheme.bind(this, { theme: THEMES.FLIGHT_CANDIDATE })}
+          >
+            <img
+              src={themeFlightCandidatePreview}
+              role="presentation"
+              draggable="false"
+            />
+            <span>{intl.formatMessage(messages.themeFlightCandidate)}</span>
           </button>
 
           <button
