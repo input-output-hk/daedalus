@@ -29,6 +29,8 @@ import {
 } from '../ipc/cardano.ipc';
 import { safeExitWithCode } from '../utils/safeExitWithCode';
 
+const TESTNET_MAGIC = 1097911063;
+
 const startCardanoNode = (
   node: CardanoNode,
   launcherConfig: LauncherConfig
@@ -196,8 +198,14 @@ export const setupCardanoNode = (
       legacyWalletDB,
       cluster,
     });
+    const clusterFlags = [];
+    if (cluster === 'testnet') {
+      clusterFlags.push('--testnet', TESTNET_MAGIC);
+    } else {
+      clusterFlags.push('--mainnet');
+    }
     const { stdout, stderr } = spawnSync(exportWalletsBin, [
-      `--${cluster}`,
+      ...clusterFlags,
       '--keyfile',
       legacySecretKey,
       '--wallet-db-path',
