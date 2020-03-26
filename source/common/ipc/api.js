@@ -16,7 +16,11 @@ import type {
 import type { CheckDiskSpaceResponse } from '../types/no-disk-space.types';
 import type { LogFiles } from '../../renderer/app/types/LogTypes';
 import type { GpuStatus } from '../../renderer/app/types/gpuStatus';
-import type { StateSnapshotLogParams } from '../types/logging.types';
+import type { ExportedByronWallet } from '../../renderer/app/types/walletExportTypes';
+import type {
+  StateSnapshotLogParams,
+  WalletMigrationReportData,
+} from '../types/logging.types';
 
 /**
  * ======================= IPC CHANNELS API =========================
@@ -194,7 +198,7 @@ export type CardanoFaultInjectionRendererRequest = FaultInjectionIpcRequest;
 export type CardanoFaultInjectionMainResponse = void;
 
 /**
- * Channel where renderer can ask for the last cached cardano-node status.
+ * Channel where renderer can ask for the last cached cardano-node status
  */
 export const GET_CACHED_CARDANO_STATUS_CHANNEL =
   'GET_CACHED_CARDANO_STATUS_CHANNEL';
@@ -202,7 +206,7 @@ export type GetCachedCardanoStatusRendererRequest = void;
 export type GetCachedCardanoStatusMainResponse = ?CardanoStatus;
 
 /**
- * Channel where renderer and main process can exchange cardano-node status info.
+ * Channel where renderer and main process can exchange cardano-node status info
  */
 export const SET_CACHED_CARDANO_STATUS_CHANNEL =
   'SET_CACHED_CARDANO_STATUS_CHANNEL';
@@ -215,3 +219,21 @@ export type SetCachedCardanoStatusMainResponse = void;
 export const DETECT_SYSTEM_LOCALE_CHANNEL = 'DETECT_SYSTEM_LOCALE_CHANNEL';
 export type DetectSystemLocaleRendererRequest = void;
 export type DetectSystemLocaleMainResponse = string;
+
+/**
+ * Channel where renderer can ask main process to export wallets
+ */
+export const EXPORT_WALLETS_CHANNEL = 'EXPORT_WALLETS_CHANNEL';
+export type ExportWalletsRendererRequest = void;
+export type ExportWalletsMainResponse = {
+  wallets: Array<ExportedByronWallet>,
+  errors: string,
+};
+
+/**
+ * Channel for generating wallet migration report
+ */
+export const GENERATE_WALLET_MIGRATION_REPORT_CHANNEL =
+  'GENERATE_WALLET_MIGRATION_REPORT_CHANNEL';
+export type GenerateWalletMigrationReportRendererRequest = WalletMigrationReportData;
+export type GenerateWalletMigrationReportMainResponse = void;

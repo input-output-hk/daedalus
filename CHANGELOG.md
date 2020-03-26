@@ -27,6 +27,7 @@ Changelog
 
 ### Chores
 
+- Updated UI copy ([PR 1907](https://github.com/input-output-hk/daedalus/pull/1907))
 - Updated Byron Haskell address validation ([PR 1902](https://github.com/input-output-hk/daedalus/pull/1902))
 - Updated test configuration to cover Byron features only ([PR 1895](https://github.com/input-output-hk/daedalus/pull/1895))
 - Optimized e2e tests ([PR 1874](https://github.com/input-output-hk/daedalus/pull/1874))
