@@ -1300,7 +1300,20 @@ export default class AdaApi {
     try {
       let wallet: AdaWallet;
       if (isLegacy) {
-        wallet = await updateByronWallet(this.config, { walletId, name });
+        const response = await updateByronWallet(this.config, {
+          walletId,
+          name,
+        });
+        wallet = {
+          ...response,
+          address_pool_gap: 0, // Not needed for legacy wallets
+          delegation: {
+            active: {
+              status: WalletDelegationStatuses.NOT_DELEGATING,
+            },
+          },
+          isLegacy: true,
+        };
       } else {
         wallet = await updateWallet(this.config, { walletId, name });
       }
