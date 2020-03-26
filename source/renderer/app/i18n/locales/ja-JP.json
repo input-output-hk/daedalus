@@ -638,6 +638,8 @@
   "wallet.send.confirmationDialog.amountLabel": "金額",
   "wallet.send.confirmationDialog.back": "戻る",
   "wallet.send.confirmationDialog.feesLabel": "手数料",
+  "wallet.send.confirmationDialog.flightCandidateCheckboxLabel": "このトランザクションの一環として実際のADAが送金されること、またこのアクションは取消しできないことを理解します。",
+  "wallet.send.confirmationDialog.flightCandidateWarning": "<b>警告：</b>Daedalusフライト候補版はCardanoメインネットに接続されています。このトランザクションを確認すると、実際のADAがこのウォレットから送金されます。",
   "wallet.send.confirmationDialog.passphraseFieldPlaceholder": "送金時のパスワードを入力して下さい",
   "wallet.send.confirmationDialog.passphraseLabel": "送金時のパスワード",
   "wallet.send.confirmationDialog.passwordError": "間違った支出パスワード",
