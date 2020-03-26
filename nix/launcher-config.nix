@@ -143,9 +143,9 @@ let
       path.windows = "${dataDir}${dirSep}Wallet-1.0";
     in path.${os};
     legacySecretKey = let
-      path.linux = "${dataDir}${dirSep}Secret${dirSep}secret.key";
-      path.macos64 = "${dataDir}${dirSep}Secret-1.0${dirSep}secret.key";
-      path.windows = "${dataDir}${dirSep}Secret-1.0${dirSep}secret.key";
+      path.linux = "${dataDir}${dirSep}Secrets${dirSep}secret.key";
+      path.macos64 = "${dataDir}${dirSep}Secrets-1.0${dirSep}secret.key";
+      path.windows = "${dataDir}${dirSep}Secrets-1.0${dirSep}secret.key";
     in path.${os};
     launcherConfig = defaultLauncherConfig // {
       inherit

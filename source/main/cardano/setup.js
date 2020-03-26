@@ -1,5 +1,4 @@
 // @flow
-import path from 'path';
 import { BrowserWindow } from 'electron';
 import { createWriteStream, readFileSync } from 'fs';
 import { exec, spawn, spawnSync } from 'child_process';
@@ -185,27 +184,24 @@ export const setupCardanoNode = (
 
   exportWalletsChannel.onRequest(() => {
     logger.info('ipcMain: Received request from renderer to export wallets');
-    const { exportWalletsBin, stateDir } = launcherConfig;
-    const keyFilePath = path
-      .join(stateDir, 'Secrets-1.0', 'secret.key')
-      .replace(' Selfnode', ''); // TODO: Remove after feature development is completed
-    const walletDbPath = path
-      .join(stateDir, 'Wallet-1.0')
-      .replace(' Selfnode', ''); // TODO: Remove after feature development is completed
+    const {
+      exportWalletsBin,
+      legacySecretKey,
+      legacyWalletDB,
+    } = launcherConfig;
     logger.info('ipcMain: Exporting wallets...', {
       exportWalletsBin,
-      stateDir,
-      keyFilePath,
-      walletDbPath,
+      legacySecretKey,
+      legacyWalletDB,
     });
     const { stdout, stderr } = spawnSync(exportWalletsBin, [
       '--mainnet',
       '--keyfile',
-      keyFilePath,
+      legacySecretKey,
       '--wallet-db-path',
-      walletDbPath,
+      legacyWalletDB,
     ]);
-    const wallets = JSON.parse(stdout.toString());
+    const wallets = JSON.parse(stdout.toString() || '[]');
     const errors = stderr.toString();
     logger.info(`ipcMain: Exported ${wallets.length} wallets`, {
       walletsData: wallets.map(w => ({

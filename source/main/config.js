@@ -61,6 +61,8 @@ export type LauncherConfig = {
   syncTolerance: string,
   cliBin: string,
   exportWalletsBin: string,
+  legacySecretKey: string,
+  legacyWalletDB: string,
 };
 
 type WindowOptionsType = {

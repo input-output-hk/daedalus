@@ -73,8 +73,8 @@ export default class WalletMigrationStore extends Store {
   };
 
   @action startMigration = async () => {
-    const { isIncentivizedTestnet } = global;
-    if (!isIncentivizedTestnet) {
+    const { isMainnet, isTest, isDev } = this.environment;
+    if (isMainnet || isTest || isDev) {
       // Reset store values
       this._restoredWallets = [];
       this._restorationErrors = [];
@@ -131,7 +131,11 @@ export default class WalletMigrationStore extends Store {
           );
         }
 
-        if (this._restoredWalletsCount === exportedWalletsCount) {
+        if (
+          exportedWalletsCount
+            ? exportedWalletsCount === this._restoredWalletsCount
+            : exportErrors === ''
+        ) {
           await this.setWalletMigrationStatusRequest.execute(
             WalletMigrationStatuses.COMPLETED
           );
