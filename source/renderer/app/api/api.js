@@ -58,7 +58,7 @@ import { updateByronWallet } from './wallets/requests/updateByronWallet';
 import { forceWalletResync } from './wallets/requests/forceWalletResync';
 import { forceLegacyWalletResync } from './wallets/requests/forceLegacyWalletResync';
 import { getWalletUtxos } from './wallets/requests/getWalletUtxos';
-// import { getByronWalletUtxos } from './wallets/requests/getByronWalletUtxos';
+import { getByronWalletUtxos } from './wallets/requests/getByronWalletUtxos';
 import { getWallet } from './wallets/requests/getWallet';
 import { getLegacyWallet } from './wallets/requests/getLegacyWallet';
 import { getWalletIdAndBalance } from './wallets/requests/getWalletIdAndBalance';
@@ -1300,7 +1300,20 @@ export default class AdaApi {
     try {
       let wallet: AdaWallet;
       if (isLegacy) {
-        wallet = await updateByronWallet(this.config, { walletId, name });
+        const response = await updateByronWallet(this.config, {
+          walletId,
+          name,
+        });
+        wallet = {
+          ...response,
+          address_pool_gap: 0, // Not needed for legacy wallets
+          delegation: {
+            active: {
+              status: WalletDelegationStatuses.NOT_DELEGATING,
+            },
+          },
+          isLegacy: true,
+        };
       } else {
         wallet = await updateWallet(this.config, { walletId, name });
       }
@@ -1407,13 +1420,7 @@ export default class AdaApi {
     try {
       let response: WalletUtxos;
       if (isLegacy) {
-        // @TODO - response is faked to enable UI. Uncomment once endpoint is available
-        // response = await getByronWalletUtxos(this.config, { walletId });
-        response = {
-          total: { quantity: 100, unit: 'lovelace' },
-          scale: 'log10',
-          distribution: { fake: 1 },
-        };
+        response = await getByronWalletUtxos(this.config, { walletId });
       } else {
         response = await getWalletUtxos(this.config, { walletId });
       }

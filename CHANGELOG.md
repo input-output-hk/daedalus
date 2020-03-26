@@ -28,6 +28,8 @@ Changelog
 
 ### Chores
 
+- Enabled "Wallet UTXO distribution" feature for Byron wallets([PR 1913](https://github.com/input-output-hk/daedalus/pull/1913))
+- Enabled Byron wallet name editing ([PR 1911](https://github.com/input-output-hk/daedalus/pull/1911))
 - Updated UI copy ([PR 1907](https://github.com/input-output-hk/daedalus/pull/1907))
 - Updated Byron Haskell address validation ([PR 1902](https://github.com/input-output-hk/daedalus/pull/1902))
 - Updated test configuration to cover Byron features only ([PR 1895](https://github.com/input-output-hk/daedalus/pull/1895))
