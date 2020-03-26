@@ -292,7 +292,6 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
             {...messages.flightCandidateWarning}
             tagName="p"
           />
-          {/* <p>{intl.formatMessage(messages.flightCandidateWarning)}</p> */}
           <Checkbox
             {...flightCandidateCheckboxField.bind()}
             error={flightCandidateCheckboxField.error}

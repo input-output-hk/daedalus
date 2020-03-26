@@ -103,7 +103,6 @@
       font-family: var(--font-light);
     }
     > div {
-      // margin-bottom: 20px;
       :global {
         .SimpleCheckbox_check {
           border-color: var(--theme-send-confirmation-dialog-send-values-color);
@@ -114,9 +113,6 @@
           );
         }
       }
-      // &:last-child {
-      //   margin-bottom: 0;
-      // }
     }
   }
 }
