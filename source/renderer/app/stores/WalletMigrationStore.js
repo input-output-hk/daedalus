@@ -1,7 +1,8 @@
 // @flow
-import { action, observable } from 'mobx';
+import { action, observable, runInAction } from 'mobx';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
+import Wallet from '../domains/Wallet';
 import { exportWalletsChannel } from '../ipc/cardano.ipc';
 import { generateWalletMigrationReportChannel } from '../ipc/generateWalletMigrationReportChannel';
 import { logger } from '../utils/logging';
@@ -27,6 +28,9 @@ export const WalletMigrationStatuses: {
 };
 
 export default class WalletMigrationStore extends Store {
+  @observable restoredWallets: Array<Wallet> = [];
+  @observable restorationErrors: Array<any> = [];
+
   @observable
   getWalletMigrationStatusRequest: Request<WalletMigrationStatus> = new Request(
     this.api.localStorage.getWalletMigrationStatus
@@ -37,10 +41,35 @@ export default class WalletMigrationStore extends Store {
     this.api.localStorage.setWalletMigrationStatus
   );
 
+  @observable restoreExportedWalletRequest: Request<Wallet> = new Request(
+    this.api.ada.restoreExportedLegacyWallet
+  );
+
   setup() {
     // TODO: Remove after feature development is completed
     this.api.localStorage.unsetWalletMigrationStatus();
   }
+
+  _restoreExportedWallet = async exportedWallet => {
+    // Reset restore requests to clear previous errors
+    this.restoreExportedWalletRequest.reset();
+
+    try {
+      const restoredWallet = await this.restoreExportedWalletRequest.execute(
+        exportedWallet
+      ).promise;
+      if (!restoredWallet)
+        throw new Error('Restored wallet was not received correctly');
+
+      runInAction('update restoredWallets', () => {
+        this.restoredWallets.push(restoredWallet);
+      });
+    } catch (error) {
+      const { name, passphrase_hash: passphraseHash } = exportedWallet;
+      const hasPassword = passphraseHash !== null;
+      this.restorationErrors.push({ error, wallet: { name, hasPassword } });
+    }
+  };
 
   @action initMigration = async () => {
     const { isIncentivizedTestnet } = global;
@@ -95,6 +124,7 @@ export default class WalletMigrationStore extends Store {
                   hasPassword: passphrase_hash !== null, // eslint-disable-line
                 }
               );
+
               restoredWalletsCount++;
             });
 

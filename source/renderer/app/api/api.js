@@ -1158,6 +1158,10 @@ export default class AdaApi {
     }
   };
 
+  restoreExportedLegacyWallet = async (): Promise<?Wallet> => {
+    return new Promise(resolve => resolve(null));
+  };
+
   importWalletFromKey = async (
     request: ImportWalletFromKeyRequest
   ): Promise<Wallet> => {
