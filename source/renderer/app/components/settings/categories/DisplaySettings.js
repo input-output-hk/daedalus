@@ -192,18 +192,6 @@ export default class DisplaySettings extends Component<Props> {
           </button>
 
           <button
-            className={themeFlightCandidateClasses}
-            onClick={selectTheme.bind(this, { theme: THEMES.FLIGHT_CANDIDATE })}
-          >
-            <img
-              src={themeFlightCandidatePreview}
-              role="presentation"
-              draggable="false"
-            />
-            <span>{intl.formatMessage(messages.themeFlightCandidate)}</span>
-          </button>
-
-          <button
             className={themeYellowClasses}
             onClick={selectTheme.bind(this, { theme: THEMES.YELLOW })}
           >
@@ -213,6 +201,20 @@ export default class DisplaySettings extends Component<Props> {
               draggable="false"
             />
             <span>{intl.formatMessage(messages.themeYellow)}</span>
+          </button>
+        </div>
+
+        <div className={styles.themesRowWrapper}>
+          <button
+            className={themeFlightCandidateClasses}
+            onClick={selectTheme.bind(this, { theme: THEMES.FLIGHT_CANDIDATE })}
+          >
+            <img
+              src={themeFlightCandidatePreview}
+              role="presentation"
+              draggable="false"
+            />
+            <span>{intl.formatMessage(messages.themeFlightCandidate)}</span>
           </button>
         </div>
 
