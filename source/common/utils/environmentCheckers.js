@@ -36,9 +36,9 @@ export const getBuildLabel = (
   version: string
 ) => {
   const networkLabel = checkIsMainnet(network)
-    ? ''
-    : ` ${networkPrettyNames[network]}`;
-  let buildLabel = `Daedalus${networkLabel} (${version}#${buildNumber})`;
+    ? 'Flight'
+    : networkPrettyNames[network];
+  let buildLabel = `Daedalus ${networkLabel} (${version}#${buildNumber})`;
   if (!checkIsProduction(currentNodeEnv))
     buildLabel += ` ${upperFirst(currentNodeEnv)}`;
   return buildLabel;
