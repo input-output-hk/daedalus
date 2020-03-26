@@ -72,7 +72,6 @@ export default class SplashNetwork extends Component<Props> {
         <div className={styles.backgroundContainer}>
           {isIncentivizedTestnet && (
             <>
-              <div className={styles.backgroundOverlay} />
               <SVGInline
                 svg={backgroundImage}
                 className={styles.backgroundImage}
