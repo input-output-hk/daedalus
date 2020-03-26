@@ -874,6 +874,20 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--theme-wallet-settings-resync-button-label-color':
       'rgba(255, 255, 255, 1)',
   },
+  walletNotRespondingOverlay: {
+    '--theme-wallet-not-responding-background-color': '#36374df5',
+    '--theme-wallet-not-responding-button-background-color': '#313245',
+    '--theme-wallet-not-responding-button-background-color-hover': '#ffffff',
+    '--theme-wallet-not-responding-button-border-color': '#ffffff',
+    '--theme-wallet-not-responding-button-text-color': '#ffffff',
+    '--theme-wallet-not-responding-button-text-color-hover': '#2a2b3c',
+    '--theme-wallet-not-responding-description-background-color': '#313245',
+    '--theme-wallet-not-responding-description-text-color':
+      'rgba(255, 255, 255, 0.7)',
+    '--theme-wallet-not-responding-icon-color': '#ffffff',
+    '--theme-wallet-not-responding-link-text-color': '#ffffff',
+    '--theme-wallet-not-responding-title-text-color': '#ffffff',
+  },
 };
 
 const DARK_CARDANO_THEME_PARAMS: CreateThemeParams = {

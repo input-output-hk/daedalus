@@ -15,26 +15,21 @@ import {
 } from './utils';
 import { getProcess } from '../utils/processes';
 import type {
+  CardanoNodeImplementation,
   CardanoNodeState,
   CardanoStatus,
   FaultInjection,
   FaultInjectionIpcRequest,
   FaultInjectionIpcResponse,
   TlsConfig,
-  CardanoNodeImplementation,
 } from '../../common/types/cardano-node.types';
 import { CardanoNodeStates } from '../../common/types/cardano-node.types';
 import { CardanoWalletLauncher } from './CardanoWalletLauncher';
 import { launcherConfig } from '../config';
 import type { NodeConfig } from '../config';
+import type { Logger } from '../../common/types/logging.types';
 
 /* eslint-disable consistent-return */
-
-type Logger = {
-  debug: (string, ?Object) => void,
-  info: (string, ?Object) => void,
-  error: (string, ?Object) => void,
-};
 
 type Actions = {
   spawn: typeof spawn,
@@ -85,18 +80,25 @@ export type CardanoNodeConfig = {
   secretPath: string,
   configPath: string,
   syncTolerance: string,
+  cliBin: string, // Path to cardano-cli executable
 };
 
 const CARDANO_UPDATE_EXIT_CODE = 20;
 // grab the current network on which Daedalus is running
 const network = String(environment.network);
 const platform = String(environment.platform);
+const { nodeImplementation } = launcherConfig;
 // derive storage keys based on current network
 const { PREVIOUS_CARDANO_PID } = deriveStorageKeys(network);
-// derive Cardano process name based on current platform
-const { CARDANO_PROCESS_NAME } = deriveProcessNames(platform);
+// derive Cardano process name based on current platform and node implementation
+const { CARDANO_PROCESS_NAME } = deriveProcessNames(
+  platform,
+  nodeImplementation
+);
 // create store for persisting CardanoNode and Daedalus PID's in fs
-const store = new Store();
+const store = new Store({
+  name: nodeImplementation === 'jormungandr' ? 'config' : 'config-byron-reboot',
+});
 
 export class CardanoNode {
   /**
@@ -104,6 +106,7 @@ export class CardanoNode {
    * @private
    */
   _config: CardanoNodeConfig;
+
   /**
    * The managed cardano-node child process
    * @private
@@ -123,7 +126,7 @@ export class CardanoNode {
   _transitionListeners: StateTransitions;
 
   /**
-   * Logger instance to print debug messages to
+   * logger instance to print debug messages to
    * @private
    */
   _log: Logger;
@@ -268,7 +271,6 @@ export class CardanoNode {
       // nodeBin,
       // startupTimeout,
       // walletArgs,
-      nodeImplementation,
       nodeConfig,
       workingDir,
       cluster,
@@ -277,6 +279,7 @@ export class CardanoNode {
       secretPath,
       configPath,
       syncTolerance,
+      cliBin,
     } = config;
 
     this._config = config;
@@ -305,7 +308,7 @@ export class CardanoNode {
 
       this._cardanoLogFile = logFile;
 
-      const node = CardanoWalletLauncher({
+      const node = await CardanoWalletLauncher({
         nodeImplementation,
         nodeConfig,
         cluster,
@@ -316,6 +319,7 @@ export class CardanoNode {
         configPath,
         syncTolerance,
         logFile,
+        cliBin,
       });
 
       this._node = node;
@@ -355,8 +359,8 @@ export class CardanoNode {
           resolve();
         })
         .catch(exitStatus => {
-          const { code, signal } = exitStatus.wallet;
-          // this._handleCardanoNodeError(code, signal);
+          const { code, signal } = exitStatus.wallet || {};
+          // this._handleCardanoNodeError(code, signal); // TODO: see if this function can be removed
           this._handleCardanoNodeExit(code, signal);
           reject(
             new Error('CardanoNode#start: Error while spawning cardano-node')
@@ -554,8 +558,7 @@ export class CardanoNode {
     const { _actions } = this;
     const { tlsPath } = this._config;
     this._tlsConfig =
-      launcherConfig.nodeImplementation === 'jormungandr' ||
-      launcherConfig.nodeImplementation === 'cardano'
+      nodeImplementation === 'jormungandr' || nodeImplementation === 'cardano'
         ? {
             ca: ('': any),
             key: ('': any),

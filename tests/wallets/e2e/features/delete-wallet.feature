@@ -7,7 +7,7 @@ Feature: Delete a wallet
       | name           |
       | Rewards Wallet |
     And I have a "Balance Wallet" balance wallet
-
+  
   Scenario: Successfully deleting "Daedalus Balance" wallet from settings screen
     And I am on the "Balance Wallet" wallet "settings" screen
     When I click on delete wallet button
@@ -17,6 +17,7 @@ Feature: Delete a wallet
     And I submit the delete wallet dialog
     Then I should not see the delete wallet dialog anymore
 
+  @shelley
   Scenario: Successfully deleting "Daedalus Rewards" wallet from settings screen
     Given I am on the "Rewards Wallet" wallet "settings" screen
     When I click on delete wallet button

@@ -55,7 +55,8 @@ in {
   ifd-pins = mkPins {
     inherit (sources) iohk-nix cardano-wallet cardano-shell;
   };
-} // (builtins.listToAttrs (map (x: { name = x; value = makeJobs x; }) clusters))
+  # below line blows up hydra with 300 GB derivations on every commit
+} #// (builtins.listToAttrs (map (x: { name = x; value = makeJobs x; }) clusters))
 // (mapOverArches {
   daedalus-installer = [ "x86_64-linux" "x86_64-darwin" ];
   yaml2json = [ "x86_64-linux" "x86_64-darwin" ];

@@ -5,15 +5,20 @@ import type { Launcher } from 'cardano-launcher';
 import type { NodeConfig } from '../config';
 import { STAKE_POOL_REGISTRY_URL } from '../config';
 import {
-  NIGHTLY,
+  MAINNET,
   SELFNODE,
-  QA,
+  TESTNET,
   ITN_REWARDS_V1,
+  ITN_SELFNODE,
+  NIGHTLY,
+  QA,
 } from '../../common/types/environment.types';
-import { Logger } from '../utils/logging';
+import { createSelfnodeConfig } from './utils';
+import { logger } from '../utils/logging';
+import type { CardanoNodeImplementation } from '../../common/types/cardano-node.types';
 
 export type WalletOpts = {
-  nodeImplementation: 'jormungandr' | 'cardano-node',
+  nodeImplementation: CardanoNodeImplementation,
   nodeConfig: NodeConfig,
   cluster: string,
   stateDir: string,
@@ -23,9 +28,10 @@ export type WalletOpts = {
   configPath: string,
   syncTolerance: string,
   logFile: any,
+  cliBin: string,
 };
 
-export function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
+export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
   const {
     nodeImplementation,
     nodeConfig, // For cardano-node / byron only!
@@ -37,6 +43,7 @@ export function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
     configPath,
     syncTolerance,
     logFile,
+    cliBin,
   } = walletOpts;
   // TODO: Update launcher config to pass number
   const syncToleranceSeconds = parseInt(syncTolerance.replace('s', ''), 10);
@@ -54,19 +61,42 @@ export function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
     },
     syncToleranceSeconds,
     childProcessLogWriteStream: logFile,
+    installSignalHandlers: false,
   };
 
   // This switch statement handles any node specifc
   // configuration, prior to spawning the child process
-  Logger.info('Node implementation', { nodeImplementation });
+  logger.info('Node implementation', { nodeImplementation });
   switch (nodeImplementation) {
     case 'cardano':
+      if (cluster === SELFNODE) {
+        const { configFile, genesisFile } = nodeConfig.network;
+        const {
+          configPath: selfnodeConfigPath,
+          genesisPath: selfnodeGenesisPath,
+          genesisHash: selfnodeGenesisHash,
+        } = await createSelfnodeConfig(
+          configFile,
+          genesisFile,
+          stateDir,
+          cliBin
+        );
+        nodeConfig.network.configFile = selfnodeConfigPath;
+        nodeConfig.network.genesisFile = selfnodeGenesisPath;
+        nodeConfig.network.genesisHash = selfnodeGenesisHash;
+        merge(launcherConfig, { apiPort: 8088 });
+      }
+      if (cluster !== MAINNET) {
+        // All clusters except for Mainnet are treated as "Testnets"
+        launcherConfig.networkName = TESTNET;
+      }
       merge(launcherConfig, { nodeConfig });
       break;
     case 'jormungandr':
-      if (cluster === SELFNODE) {
+      if (cluster === ITN_SELFNODE) {
         merge(launcherConfig, {
           apiPort: 8088,
+          networkName: SELFNODE,
           nodeConfig: {
             restPort: 8888,
             network: {
@@ -77,7 +107,7 @@ export function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
               secretFile: [secretPath],
             },
           },
-          stakePoolRegistryUrl: STAKE_POOL_REGISTRY_URL[SELFNODE],
+          stakePoolRegistryUrl: STAKE_POOL_REGISTRY_URL[ITN_SELFNODE],
         });
       }
       if (cluster === NIGHTLY) {
@@ -121,10 +151,10 @@ export function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
       break;
   }
 
-  Logger.info('Setting up CardanoLauncher now...', {
+  logger.info('Setting up CardanoLauncher now...', {
     walletOpts,
     launcherConfig,
   });
 
-  return new cardanoLauncher.Launcher(launcherConfig, Logger);
+  return new cardanoLauncher.Launcher(launcherConfig, logger);
 }

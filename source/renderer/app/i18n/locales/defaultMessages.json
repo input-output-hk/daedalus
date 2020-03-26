@@ -2011,17 +2011,31 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Staging vx",
-        "description": "Label for staging network with version.",
+        "defaultMessage": "!!!Mainnet vx",
+        "description": "Label for mainnet network with version.",
         "end": {
           "column": 3,
           "line": 12
         },
         "file": "source/renderer/app/components/sidebar/SidebarCategoryNetworkInfo.js",
-        "id": "test.environment.stagingLabel",
+        "id": "test.environment.mainnetLabel",
         "start": {
           "column": 11,
           "line": 8
+        }
+      },
+      {
+        "defaultMessage": "!!!Staging vx",
+        "description": "Label for staging network with version.",
+        "end": {
+          "column": 3,
+          "line": 17
+        },
+        "file": "source/renderer/app/components/sidebar/SidebarCategoryNetworkInfo.js",
+        "id": "test.environment.stagingLabel",
+        "start": {
+          "column": 11,
+          "line": 13
         }
       },
       {
@@ -2029,26 +2043,12 @@
         "description": "Label for testnet with version.",
         "end": {
           "column": 3,
-          "line": 17
+          "line": 22
         },
         "file": "source/renderer/app/components/sidebar/SidebarCategoryNetworkInfo.js",
         "id": "test.environment.testnetLabel",
         "start": {
           "column": 11,
-          "line": 13
-        }
-      },
-      {
-        "defaultMessage": "!!!Development vx",
-        "description": "Label for development with version.",
-        "end": {
-          "column": 3,
-          "line": 22
-        },
-        "file": "source/renderer/app/components/sidebar/SidebarCategoryNetworkInfo.js",
-        "id": "test.environment.developmentLabel",
-        "start": {
-          "column": 15,
           "line": 18
         }
       },
@@ -2060,10 +2060,80 @@
           "line": 27
         },
         "file": "source/renderer/app/components/sidebar/SidebarCategoryNetworkInfo.js",
+        "id": "test.environment.developmentLabel",
+        "start": {
+          "column": 15,
+          "line": 23
+        }
+      },
+      {
+        "defaultMessage": "!!!Nightly vx",
+        "description": "Label for nightly with version.",
+        "end": {
+          "column": 3,
+          "line": 32
+        },
+        "file": "source/renderer/app/components/sidebar/SidebarCategoryNetworkInfo.js",
+        "id": "test.environment.nightlyLabel",
+        "start": {
+          "column": 11,
+          "line": 28
+        }
+      },
+      {
+        "defaultMessage": "!!!QA vx",
+        "description": "Label for qa with version.",
+        "end": {
+          "column": 3,
+          "line": 37
+        },
+        "file": "source/renderer/app/components/sidebar/SidebarCategoryNetworkInfo.js",
+        "id": "test.environment.qaLabel",
+        "start": {
+          "column": 6,
+          "line": 33
+        }
+      },
+      {
+        "defaultMessage": "!!!Selfnode vx",
+        "description": "Label for selfnode with version.",
+        "end": {
+          "column": 3,
+          "line": 42
+        },
+        "file": "source/renderer/app/components/sidebar/SidebarCategoryNetworkInfo.js",
+        "id": "test.environment.selfnodeLabel",
+        "start": {
+          "column": 12,
+          "line": 38
+        }
+      },
+      {
+        "defaultMessage": "!!!Selfnode vx",
+        "description": "Label for ITN selfnode with version.",
+        "end": {
+          "column": 3,
+          "line": 47
+        },
+        "file": "source/renderer/app/components/sidebar/SidebarCategoryNetworkInfo.js",
+        "id": "test.environment.itnSelfnodeLabel",
+        "start": {
+          "column": 16,
+          "line": 43
+        }
+      },
+      {
+        "defaultMessage": "!!!Development vx",
+        "description": "Label for ITN Rewards V1 with version.",
+        "end": {
+          "column": 3,
+          "line": 52
+        },
+        "file": "source/renderer/app/components/sidebar/SidebarCategoryNetworkInfo.js",
         "id": "test.environment.itnRewardsV1Label",
         "start": {
           "column": 18,
-          "line": 23
+          "line": 48
         }
       }
     ],
@@ -5315,13 +5385,13 @@
         "description": "Instructions for backing up wallet recovery phrase on dialog that displays wallet recovery phrase.",
         "end": {
           "column": 3,
-          "line": 21
+          "line": 24
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseDisplayDialog.js",
         "id": "wallet.backup.recovery.phrase.display.dialog.backup.instructions",
         "start": {
           "column": 22,
-          "line": 15
+          "line": 18
         }
       },
       {
@@ -5329,13 +5399,13 @@
         "description": "Label for button \"Yes, I’ve written it down\" on wallet backup dialog",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 31
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseDisplayDialog.js",
         "id": "wallet.backup.recovery.phrase.display.dialog.button.label.iHaveWrittenItDown",
         "start": {
           "column": 33,
-          "line": 22
+          "line": 25
         }
       }
     ],
@@ -5568,13 +5638,13 @@
         "description": "Label for the \"Summary\" nav button in the wallet navigation.",
         "end": {
           "column": 3,
-          "line": 17
+          "line": 18
         },
         "file": "source/renderer/app/components/wallet/navigation/WalletNavigation.js",
         "id": "wallet.navigation.summary",
         "start": {
           "column": 11,
-          "line": 13
+          "line": 14
         }
       },
       {
@@ -5582,13 +5652,13 @@
         "description": "Label for the \"Send\" nav button in the wallet navigation.",
         "end": {
           "column": 3,
-          "line": 22
+          "line": 23
         },
         "file": "source/renderer/app/components/wallet/navigation/WalletNavigation.js",
         "id": "wallet.navigation.send",
         "start": {
           "column": 8,
-          "line": 18
+          "line": 19
         }
       },
       {
@@ -5596,13 +5666,13 @@
         "description": "Label for the \"Receive\" nav button in the wallet navigation.",
         "end": {
           "column": 3,
-          "line": 27
+          "line": 28
         },
         "file": "source/renderer/app/components/wallet/navigation/WalletNavigation.js",
         "id": "wallet.navigation.receive",
         "start": {
           "column": 11,
-          "line": 23
+          "line": 24
         }
       },
       {
@@ -5610,13 +5680,13 @@
         "description": "Label for the \"Transactions\" nav button in the wallet navigation.",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 34
         },
         "file": "source/renderer/app/components/wallet/navigation/WalletNavigation.js",
         "id": "wallet.navigation.transactions",
         "start": {
           "column": 16,
-          "line": 28
+          "line": 29
         }
       },
       {
@@ -5624,13 +5694,13 @@
         "description": "Label for the \"Settings\" nav button in the wallet navigation.",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 40
         },
         "file": "source/renderer/app/components/wallet/navigation/WalletNavigation.js",
         "id": "wallet.navigation.settings",
         "start": {
           "column": 12,
-          "line": 34
+          "line": 35
         }
       },
       {
@@ -5638,13 +5708,13 @@
         "description": "Label for the \"Wallet UTXO distribution\" nav button in the wallet navigation.",
         "end": {
           "column": 3,
-          "line": 45
+          "line": 46
         },
         "file": "source/renderer/app/components/wallet/navigation/WalletNavigation.js",
         "id": "wallet.navigation.utxo",
         "start": {
           "column": 8,
-          "line": 40
+          "line": 41
         }
       },
       {
@@ -5652,17 +5722,92 @@
         "description": "Label for the \"More\" nav button in the wallet navigation.",
         "end": {
           "column": 3,
-          "line": 50
+          "line": 51
         },
         "file": "source/renderer/app/components/wallet/navigation/WalletNavigation.js",
         "id": "wallet.navigation.more",
         "start": {
           "column": 8,
-          "line": 46
+          "line": 47
         }
       }
     ],
     "path": "source/renderer/app/components/wallet/navigation/WalletNavigation.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!The wallet is not responding.",
+        "description": "Title on the NotResponding dialog.",
+        "end": {
+          "column": 3,
+          "line": 23
+        },
+        "file": "source/renderer/app/components/wallet/not-responding/NotResponding.js",
+        "id": "wallet.notResponding.title",
+        "start": {
+          "column": 9,
+          "line": 19
+        }
+      },
+      {
+        "defaultMessage": "!!!The {walletName} wallet is not responding. This is caused by a known but rare issue, which is currently being fixed. Please restart the Cardano node by clicking the button below, which should resolve the issue. If the issue persists, or if it happens again, please submit a support request.",
+        "description": "Description on the NotResponding dialog.",
+        "end": {
+          "column": 3,
+          "line": 29
+        },
+        "file": "source/renderer/app/components/wallet/not-responding/NotResponding.js",
+        "id": "wallet.notResponding.description",
+        "start": {
+          "column": 15,
+          "line": 24
+        }
+      },
+      {
+        "defaultMessage": "!!!Restart Cardano Node",
+        "description": "Restart Node Button Label on the NotResponding dialog.",
+        "end": {
+          "column": 3,
+          "line": 34
+        },
+        "file": "source/renderer/app/components/wallet/not-responding/NotResponding.js",
+        "id": "wallet.notResponding.restartNodeButtonLabel",
+        "start": {
+          "column": 26,
+          "line": 30
+        }
+      },
+      {
+        "defaultMessage": "!!!Submit a support request",
+        "description": "Submit Support Request Label on the NotResponding dialog",
+        "end": {
+          "column": 3,
+          "line": 39
+        },
+        "file": "source/renderer/app/components/wallet/not-responding/NotResponding.js",
+        "id": "wallet.notResponding.submitSupportRequestLabel",
+        "start": {
+          "column": 29,
+          "line": 35
+        }
+      },
+      {
+        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/requests/new/",
+        "description": "Submit Support Request Url on the NotResponding dialog",
+        "end": {
+          "column": 3,
+          "line": 44
+        },
+        "file": "source/renderer/app/components/wallet/not-responding/NotResponding.js",
+        "id": "wallet.notResponding.submitSupportRequestUrl",
+        "start": {
+          "column": 27,
+          "line": 40
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/not-responding/NotResponding.json"
   },
   {
     "descriptors": [
@@ -6313,45 +6458,59 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Your wallet addresses",
-        "description": "Instructions Title on the wallet \"Receive page\"",
-        "end": {
-          "column": 3,
-          "line": 19
-        },
-        "file": "source/renderer/app/components/wallet/receive/WalletReceive.js",
-        "id": "wallet.receive.page.instructions.instructionsTitle",
-        "start": {
-          "column": 21,
-          "line": 15
-        }
-      },
-      {
-        "defaultMessage": "!!!Share this wallet address to receive payments. To protect your privacy, new addresses are generated automatically once you use them.",
-        "description": "Instructions Description on the wallet \"Receive page\"",
-        "end": {
-          "column": 3,
-          "line": 25
-        },
-        "file": "source/renderer/app/components/wallet/receive/WalletReceive.js",
-        "id": "wallet.receive.page.instructions.instructionsDescription",
-        "start": {
-          "column": 27,
-          "line": 20
-        }
-      },
-      {
-        "defaultMessage": "!!!Addresses",
-        "description": "Addresses Title on the wallet \"Receive page\"",
+        "defaultMessage": "!!!Your wallet address",
+        "description": "Label for wallet address on the wallet \"Receive page\"",
         "end": {
           "column": 3,
           "line": 30
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceive.js",
-        "id": "wallet.receive.page.addresses.addressesTitle",
+        "id": "wallet.receive.page.walletAddressLabel",
         "start": {
-          "column": 18,
+          "column": 22,
           "line": 26
+        }
+      },
+      {
+        "defaultMessage": "!!!Share this wallet address to receive payments. To protect your privacy generate new addresses for receiving payments instead of reusing existing ones.",
+        "description": "Wallet receive payments instructions on the wallet \"Receive page\"",
+        "end": {
+          "column": 3,
+          "line": 37
+        },
+        "file": "source/renderer/app/components/wallet/receive/WalletReceive.js",
+        "id": "wallet.receive.page.walletReceiveInstructions",
+        "start": {
+          "column": 29,
+          "line": 31
+        }
+      },
+      {
+        "defaultMessage": "!!!Generate new address",
+        "description": "Label for \"Generate new address\" button on the wallet \"Receive page\"",
+        "end": {
+          "column": 3,
+          "line": 43
+        },
+        "file": "source/renderer/app/components/wallet/receive/WalletReceive.js",
+        "id": "wallet.receive.page.generateNewAddressButtonLabel",
+        "start": {
+          "column": 33,
+          "line": 38
+        }
+      },
+      {
+        "defaultMessage": "!!!Generated addresses",
+        "description": "\"Generated addresses\" section title on the wallet \"Receive page\"",
+        "end": {
+          "column": 3,
+          "line": 49
+        },
+        "file": "source/renderer/app/components/wallet/receive/WalletReceive.js",
+        "id": "wallet.receive.page.generatedAddressesSectionTitle",
+        "start": {
+          "column": 34,
+          "line": 44
         }
       },
       {
@@ -6359,27 +6518,27 @@
         "description": "Label for \"show used\" wallet addresses link on the wallet \"Receive page\"",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 55
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceive.js",
         "id": "wallet.receive.page.showUsedLabel",
         "start": {
           "column": 17,
-          "line": 31
+          "line": 50
         }
       },
       {
-        "defaultMessage": "!!!Share",
-        "description": "Label for \"Share\" link on the wallet \"Receive page\"",
+        "defaultMessage": "!!!Password",
+        "description": "Placeholder for \"spending password\" on the wallet \"Receive page\"",
         "end": {
           "column": 3,
-          "line": 41
+          "line": 61
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceive.js",
-        "id": "wallet.receive.page.shareAddressLabel",
+        "id": "wallet.receive.page.spendingPasswordPlaceholder",
         "start": {
-          "column": 21,
-          "line": 37
+          "column": 31,
+          "line": 56
         }
       },
       {
@@ -6387,13 +6546,13 @@
         "description": "Label for \"Copy address\" link on the wallet \"Receive page\"",
         "end": {
           "column": 3,
-          "line": 46
+          "line": 66
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceive.js",
         "id": "wallet.receive.page.copyAddressLabel",
         "start": {
           "column": 20,
-          "line": 42
+          "line": 62
         }
       }
     ],
@@ -6473,6 +6632,95 @@
       }
     ],
     "path": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Your wallet addresses",
+        "description": "Instructions Title on the wallet \"Receive page\"",
+        "end": {
+          "column": 3,
+          "line": 19
+        },
+        "file": "source/renderer/app/components/wallet/receive/WalletReceiveItn.js",
+        "id": "wallet.receive.page.instructions.instructionsTitle",
+        "start": {
+          "column": 21,
+          "line": 15
+        }
+      },
+      {
+        "defaultMessage": "!!!Share this wallet address to receive payments. To protect your privacy, new addresses are generated automatically once you use them.",
+        "description": "Instructions Description on the wallet \"Receive page\"",
+        "end": {
+          "column": 3,
+          "line": 25
+        },
+        "file": "source/renderer/app/components/wallet/receive/WalletReceiveItn.js",
+        "id": "wallet.receive.page.instructions.instructionsDescription",
+        "start": {
+          "column": 27,
+          "line": 20
+        }
+      },
+      {
+        "defaultMessage": "!!!Addresses",
+        "description": "Addresses Title on the wallet \"Receive page\"",
+        "end": {
+          "column": 3,
+          "line": 30
+        },
+        "file": "source/renderer/app/components/wallet/receive/WalletReceiveItn.js",
+        "id": "wallet.receive.page.addresses.addressesTitle",
+        "start": {
+          "column": 18,
+          "line": 26
+        }
+      },
+      {
+        "defaultMessage": "!!!show used",
+        "description": "Label for \"show used\" wallet addresses link on the wallet \"Receive page\"",
+        "end": {
+          "column": 3,
+          "line": 36
+        },
+        "file": "source/renderer/app/components/wallet/receive/WalletReceiveItn.js",
+        "id": "wallet.receive.page.showUsedLabel",
+        "start": {
+          "column": 17,
+          "line": 31
+        }
+      },
+      {
+        "defaultMessage": "!!!Share",
+        "description": "Label for \"Share\" link on the wallet \"Receive page\"",
+        "end": {
+          "column": 3,
+          "line": 41
+        },
+        "file": "source/renderer/app/components/wallet/receive/WalletReceiveItn.js",
+        "id": "wallet.receive.page.shareAddressLabel",
+        "start": {
+          "column": 21,
+          "line": 37
+        }
+      },
+      {
+        "defaultMessage": "!!!Copy address",
+        "description": "Label for \"Copy address\" link on the wallet \"Receive page\"",
+        "end": {
+          "column": 3,
+          "line": 46
+        },
+        "file": "source/renderer/app/components/wallet/receive/WalletReceiveItn.js",
+        "id": "wallet.receive.page.copyAddressLabel",
+        "start": {
+          "column": 20,
+          "line": 42
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/receive/WalletReceiveItn.json"
   },
   {
     "descriptors": [
@@ -7369,6 +7617,20 @@
         "start": {
           "column": 23,
           "line": 65
+        }
+      },
+      {
+        "defaultMessage": "!!!You still don't have password",
+        "description": "You still don't have password set message.",
+        "end": {
+          "column": 3,
+          "line": 74
+        },
+        "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
+        "id": "wallet.settings.passwordNotSet",
+        "start": {
+          "column": 18,
+          "line": 70
         }
       }
     ],
@@ -8829,8 +9091,8 @@
         }
       },
       {
-        "defaultMessage": "!!!If your restored Balance wallet is empty, but you were expecting it to have funds, please check that you used the correct wallet recovery phrase during the restoration process. <strong>The format of recovery phrases for paper wallets cannot be validated</strong>, so any combination of words is accepted as a potentially valid recovery phrase. Please take extra care when entering a paper wallet recovery phrase.",
-        "description": "Description \"line 4\" on the wallet restore \"success\" step dialog.",
+        "defaultMessage": "!!!To participate in the Incentivized Testnet, the mainnet wallet you are restoring must have had funds at the time of the balance snapshot at 12.00 UTC, November 29, 2019. If you are sure that you used the correct wallet recovery phrase, then please check that you had funds in your mainnet wallet at this time.",
+        "description": "Description \"line 5\" on the wallet restore \"success\" step dialog.",
         "end": {
           "column": 3,
           "line": 52
@@ -8840,20 +9102,6 @@
         "start": {
           "column": 20,
           "line": 46
-        }
-      },
-      {
-        "defaultMessage": "!!!To participate in the Incentivized Testnet, the mainnet wallet you are restoring must have had funds at the time of the balance snapshot at 12.00 UTC, November 29, 2019. If you are sure that you used the correct wallet recovery phrase, then please check that you had funds in your mainnet wallet at this time.",
-        "description": "Description \"line 5\" on the wallet restore \"success\" step dialog.",
-        "end": {
-          "column": 3,
-          "line": 59
-        },
-        "file": "source/renderer/app/components/wallet/wallet-restore/SuccessDialog.js",
-        "id": "wallet.restore.dialog.step.success.dialog.description.line5",
-        "start": {
-          "column": 20,
-          "line": 53
         }
       }
     ],
@@ -10454,7 +10702,7 @@
       },
       {
         "defaultMessage": "!!!Selfnode vx",
-        "description": "Label for Selfnode with version.",
+        "description": "Label for selfnode with version.",
         "end": {
           "column": 3,
           "line": 37
@@ -10467,17 +10715,31 @@
         }
       },
       {
-        "defaultMessage": "!!!Development vx",
-        "description": "Label for development with version.",
+        "defaultMessage": "!!!Selfnode vx",
+        "description": "Label for ITN selfnode with version.",
         "end": {
           "column": 3,
           "line": 42
         },
         "file": "source/renderer/app/components/widgets/WalletTestEnvironmentLabel.js",
+        "id": "test.environment.itnSelfnodeLabel",
+        "start": {
+          "column": 16,
+          "line": 38
+        }
+      },
+      {
+        "defaultMessage": "!!!Development vx",
+        "description": "Label for ITN Rewards V1 with version.",
+        "end": {
+          "column": 3,
+          "line": 47
+        },
+        "file": "source/renderer/app/components/widgets/WalletTestEnvironmentLabel.js",
         "id": "test.environment.itnRewardsV1Label",
         "start": {
           "column": 18,
-          "line": 38
+          "line": 43
         }
       }
     ],
@@ -11189,7 +11451,7 @@
         }
       },
       {
-        "defaultMessage": "!!!mainnet",
+        "defaultMessage": "!!!Mainnet",
         "description": "\"mainnet\" Cardano network",
         "end": {
           "column": 3,
@@ -11259,17 +11521,31 @@
         }
       },
       {
-        "defaultMessage": "!!!SelfNode",
-        "description": "\"selfnode\" Cardano network",
+        "defaultMessage": "!!!ITN Selfnode",
+        "description": "\"itn_selfnode\" Cardano network",
         "end": {
           "column": 3,
           "line": 213
         },
         "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "environment.network.itn_selfnode",
+        "start": {
+          "column": 24,
+          "line": 209
+        }
+      },
+      {
+        "defaultMessage": "!!!Selfnode",
+        "description": "\"selfnode\" Cardano network",
+        "end": {
+          "column": 3,
+          "line": 218
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.selfnode",
         "start": {
           "column": 20,
-          "line": 209
+          "line": 214
         }
       },
       {
@@ -11277,13 +11553,13 @@
         "description": "\"qa\" Cardano network",
         "end": {
           "column": 3,
-          "line": 218
+          "line": 223
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.qa",
         "start": {
           "column": 14,
-          "line": 214
+          "line": 219
         }
       },
       {
@@ -11291,13 +11567,13 @@
         "description": "\"nightly\" Cardano network",
         "end": {
           "column": 3,
-          "line": 223
+          "line": 228
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.nightly",
         "start": {
           "column": 19,
-          "line": 219
+          "line": 224
         }
       },
       {
@@ -11305,13 +11581,13 @@
         "description": "Label for years value in duration.",
         "end": {
           "column": 3,
-          "line": 228
+          "line": 233
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.duration.years",
         "start": {
           "column": 9,
-          "line": 224
+          "line": 229
         }
       },
       {
@@ -11319,13 +11595,13 @@
         "description": "Label for months value in duration.",
         "end": {
           "column": 3,
-          "line": 233
+          "line": 238
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.duration.months",
         "start": {
           "column": 10,
-          "line": 229
+          "line": 234
         }
       },
       {
@@ -11333,13 +11609,13 @@
         "description": "Label for days value in duration.",
         "end": {
           "column": 3,
-          "line": 238
+          "line": 243
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.duration.days",
         "start": {
           "column": 8,
-          "line": 234
+          "line": 239
         }
       },
       {
@@ -11347,13 +11623,13 @@
         "description": "Label for hours value in duration.",
         "end": {
           "column": 3,
-          "line": 243
+          "line": 248
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.duration.hours",
         "start": {
           "column": 9,
-          "line": 239
+          "line": 244
         }
       },
       {
@@ -11361,13 +11637,13 @@
         "description": "Label for minutes value in duration.",
         "end": {
           "column": 3,
-          "line": 248
+          "line": 253
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.duration.minutes",
         "start": {
           "column": 11,
-          "line": 244
+          "line": 249
         }
       },
       {
@@ -11375,13 +11651,13 @@
         "description": "Label for seconds value in duration.",
         "end": {
           "column": 3,
-          "line": 253
+          "line": 258
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.duration.seconds",
         "start": {
           "column": 11,
-          "line": 249
+          "line": 254
         }
       },
       {
@@ -11389,13 +11665,13 @@
         "description": "From label of range.",
         "end": {
           "column": 3,
-          "line": 258
+          "line": 263
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.range.from",
         "start": {
           "column": 13,
-          "line": 254
+          "line": 259
         }
       },
       {
@@ -11403,13 +11679,13 @@
         "description": "To label of range.",
         "end": {
           "column": 3,
-          "line": 263
+          "line": 268
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.range.to",
         "start": {
           "column": 11,
-          "line": 259
+          "line": 264
         }
       },
       {
@@ -11417,13 +11693,13 @@
         "description": "Filter label.",
         "end": {
           "column": 3,
-          "line": 268
+          "line": 273
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.filter",
         "start": {
           "column": 10,
-          "line": 264
+          "line": 269
         }
       },
       {
@@ -11431,13 +11707,13 @@
         "description": "All label.",
         "end": {
           "column": 3,
-          "line": 273
+          "line": 278
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.all",
         "start": {
           "column": 7,
-          "line": 269
+          "line": 274
         }
       },
       {
@@ -11445,13 +11721,13 @@
         "description": "Reset label.",
         "end": {
           "column": 3,
-          "line": 278
+          "line": 283
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.reset",
         "start": {
           "column": 9,
-          "line": 274
+          "line": 279
         }
       }
     ],

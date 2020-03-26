@@ -74,6 +74,7 @@ export default class SidebarWalletsMenu extends Component<Props> {
                 isRestoreActive={wallet.isRestoreActive}
                 isIncentivizedTestnet={isIncentivizedTestnet}
                 restoreProgress={wallet.restoreProgress}
+                isNotResponding={wallet.isNotResponding}
                 isLegacy={wallet.isLegacy}
                 recoveryPhraseVerificationStatus={
                   wallet.recoveryPhraseVerificationStatus

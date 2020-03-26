@@ -7,7 +7,7 @@ import AdaApi from '../api';
 import { getNetworkInfo } from '../network/requests/getNetworkInfo';
 import { getLatestAppVersion } from '../nodes/requests/getLatestAppVersion';
 import { GenericApiError } from '../common/errors';
-import { Logger } from '../../utils/logging';
+import { logger } from '../../utils/logging';
 import packageJson from '../../../../../package.json';
 
 // domains
@@ -34,10 +34,10 @@ let TESTING_WALLETS_DATA: Object = {};
 
 export default (api: AdaApi) => {
   api.getNetworkInfo = async (): Promise<GetNetworkInfoResponse> => {
-    Logger.debug('AdaApi::getNetworkInfo (PATCHED) called');
+    logger.debug('AdaApi::getNetworkInfo (PATCHED) called');
     try {
       const networkInfo: NetworkInfoResponse = await getNetworkInfo(api.config);
-      Logger.debug('AdaApi::getNetworkInfo (PATCHED) success', { networkInfo });
+      logger.debug('AdaApi::getNetworkInfo (PATCHED) success', { networkInfo });
 
       const {
         sync_progress, // eslint-disable-line camelcase
@@ -74,7 +74,7 @@ export default (api: AdaApi) => {
         },
       };
     } catch (error) {
-      Logger.error('AdaApi::getNetworkInfo (PATCHED) error', { error });
+      logger.error('AdaApi::getNetworkInfo (PATCHED) error', { error });
       throw new GenericApiError();
     }
   };
@@ -92,7 +92,7 @@ export default (api: AdaApi) => {
       };
     }
 
-    Logger.debug('AdaApi::nextUpdate success', { nodeUpdate });
+    logger.debug('AdaApi::nextUpdate success', { nodeUpdate });
     return Promise.resolve(nodeUpdate);
   };
 
@@ -101,7 +101,7 @@ export default (api: AdaApi) => {
   };
 
   api.getLatestAppVersion = async (): Promise<GetLatestAppVersionResponse> => {
-    Logger.debug('AdaApi::getLatestAppVersion (PATCHED) called');
+    logger.debug('AdaApi::getLatestAppVersion (PATCHED) called');
     try {
       const { isWindows, platform } = global.environment;
       const latestAppVersionInfo: LatestAppVersionInfoResponse = await getLatestAppVersion();
@@ -125,7 +125,7 @@ export default (api: AdaApi) => {
         null
       );
 
-      Logger.debug('AdaApi::getLatestAppVersion success', {
+      logger.debug('AdaApi::getLatestAppVersion success', {
         latestAppVersion,
         latestAppVersionInfo,
         applicationVersion,
@@ -136,7 +136,7 @@ export default (api: AdaApi) => {
         applicationVersion: APPLICATION_VERSION || applicationVersion,
       };
     } catch (error) {
-      Logger.error('AdaApi::getLatestAppVersion (PATCHED) error', { error });
+      logger.error('AdaApi::getLatestAppVersion (PATCHED) error', { error });
       throw new GenericApiError();
     }
   };

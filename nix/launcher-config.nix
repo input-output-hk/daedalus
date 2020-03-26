@@ -1,4 +1,4 @@
-{ backend ? "jormungandr"
+{ backend ? "cardano"
 , environment ? "staging"
 , os ? "linux"
 , jormungandrLib ? (import ../. {}).jormungandrLib
@@ -19,7 +19,8 @@ let
 
   installDirectorySuffix = {
     qa = "QA";
-    selfnode = "SelfNode";
+    selfnode = "Selfnode";
+    itn_selfnode = "Selfnode - ITN";
     nightly = "Nightly";
     itn_rewards_v1 = "- Rewards v1";
     staging = "Staging";
@@ -43,9 +44,15 @@ let
   daedalusBin.linux = "daedalus-frontend";
   daedalusBin.windows = "\${DAEDALUS_INSTALL_DIRECTORY}\\${spacedName}.exe";
   daedalusBin.macos64 = "\${DAEDALUS_INSTALL_DIRECTORY}/Frontend";
-  cliBin.linux = "jcli";
-  cliBin.windows = "\${DAEDALUS_INSTALL_DIRECTORY}\\jcli.exe";
-  cliBin.macos64 = "\${DAEDALUS_INSTALL_DIRECTORY}/jcli";
+  cliBin.linux = if backend == "jormungandr" then "jcli" else "cardano-cli";
+  cliBin.windows = if backend == "jormungandr" then "\${DAEDALUS_INSTALL_DIRECTORY}\\jcli.exe" else "\${DAEDALUS_INSTALL_DIRECTORY}\\cardano-cli.exe";
+  cliBin.macos64 = if backend == "jormungandr" then "\${DAEDALUS_INSTALL_DIRECTORY}/jcli" else (if devShell then "cardano-cli" else "\${DAEDALUS_INSTALL_DIRECTORY}/cardano-cli");
+  exportWalletsBin.linux = "export-wallets";
+  exportWalletsBin.windows = "\${DAEDALUS_INSTALL_DIRECTORY}\\export-wallets.exe";
+  exportWalletsBin.macos64 = "\${DAEDALUS_INSTALL_DIRECTORY}/export-wallets";
+  dbConverterBin.linux = "db-converter";
+  dbConverterBin.windows = "\${DAEDALUS_INSTALL_DIRECTORY}\\db-converter.exe";
+  dbConverterBin.macos64 = "\${DAEDALUS_INSTALL_DIRECTORY}/db-converter";
   launcherLogsPrefix.linux = "${dataDir.${os}}/Logs/";
   launcherLogsPrefix.windows = "Logs\\pub";
   launcherLogsPrefix.macos64 = "${dataDir.${os}}/Logs/pub";
@@ -80,26 +87,33 @@ let
   };
   finalJormungandrCfgPath = if devShell then jormungandrConfigForCluster else cfgPathForOs.${os};
 
-  tier2-cfg-files = runCommand "tier2-cfg-files" {
+  tier2-cfg-files = let
+    genesisFile = if (environment == "selfnode") then ../utils/cardano/selfnode/genesis.json else envCfg.genesisFile;
+  in runCommand "tier2-cfg-files" {
     nodeConfig = builtins.toJSON (envCfg.nodeConfig // { GenesisFile = finalGenesisLocation.${os}; });
-    topologyFile = cardanoLib.mkEdgeTopology {
+    topologyFile = if environment == "selfnode" then envCfg.topology else cardanoLib.mkEdgeTopology {
       inherit (envCfg) edgePort;
       edgeNodes = [ envCfg.relaysNew ];
     };
     passAsFile = [ "nodeConfig" ];
   } ''
     mkdir $out
-    cp ${envCfg.genesisFile} $out/${environment}-genesis.json
-    cp $nodeConfigPath $out/configuration-${environment}.yaml
-    cp $topologyFile $out/${environment}-topology.yaml
+    cp ${genesisFile} $out/genesis.json
+    cp $nodeConfigPath $out/config.yaml
+    cp $topologyFile $out/topology.yaml
+    ${lib.optionalString (environment == "selfnode") ''
+      cp ${envCfg.delegationCertificate} $out/delegation.cert
+      cp ${envCfg.signingKey} $out/signing.key
+    ''}
   '';
 
   finalGenesisLocation.linux = envCfg.genesisFile;
   finalGenesisLocation.macos64 = envCfg.genesisFile;
+  finalGenesisLocation.windows = envCfg.genesisFile;
 
   byronConfigDir = {
     linux = tier2-cfg-files;
-    macos64 = tier2-cfg-files;
+    macos64 = if devShell then tier2-cfg-files else "\${DAEDALUS_INSTALL_DIRECTORY}/../Resources";
     windows = "\${DAEDALUS_INSTALL_DIRECTORY}";
   };
 
@@ -136,7 +150,7 @@ let
     workingDir = dataDir.${os};
     frontendOnlyMode = true;
     nodeLogPath = null;
-    logsPrefix = logsPrefix.${os};
+    logsPrefix = if backend == "cardano" then "${logsPrefix.${os}}ByronReboot" else logsPrefix.${os};
     nodeImplementation = backend;
     nodeLogConfig = null;
     nodeTimeoutSec = 60;
@@ -152,25 +166,33 @@ let
     networkName = environment;
     nodeConfig = {
       kind = "byron";
-      configurationDir = byronConfigDir.${os};
+      configurationDir = "";
       network = {
-        configFile = "configuration-${environment}.yaml";
-        genesisFile = "${environment}-genesis.json";
-        genesisHash = envCfg.genesisHash;
-        topologyFile = "${environment}-topology.yaml";
+        configFile = "${byronConfigDir.${os}}${dirSep}config.yaml";
+        genesisFile = "${byronConfigDir.${os}}${dirSep}genesis.json";
+        genesisHash = if (environment != "selfnode") then envCfg.genesisHash else "";
+        topologyFile = "${byronConfigDir.${os}}${dirSep}topology.yaml";
       };
-    };
+      socketFile = if os != "windows" then "${dataDir.${os}}${dirSep}cardano-node.socket" else "\\\\.\\pipe\\cardano-node-${environment}";
+    } // (lib.optionalAttrs (environment == "selfnode") {
+      delegationCertificate = "${byronConfigDir.${os}}${dirSep}delegation.cert";
+      signingKey = "${byronConfigDir.${os}}${dirSep}signing.key";
+    });
     syncTolerance = "300s";
+    exportWalletsBin = exportWalletsBin.${os};
+    dbConvertertBin = dbConverterBin.${os};
+  }) // (lib.optionalAttrs (environment == "selfnode") {
+    cliBin = cliBin.${os};
   }) // (lib.optionalAttrs (backend == "jormungandr") {
     block0Path = if (envCfg ? block0bin) then block0Bin.${os} else "";
     block0Hash = jormungandrLib.environments.${environment}.genesisHash;
     configPath = finalJormungandrCfgPath;
     walletBin = walletBin.${os};
-    walletArgs = if environment == "selfnode" then walletArgsSelfnode else walletArgs;
+    walletArgs = if environment == "itn_selfnode" then walletArgsSelfnode else walletArgs;
     nodeBin = nodeBin.${os};
     nodeArgs = [];
-    syncTolerance = if (environment == "selfnode") then "600s" else jormungandrLib.environments.${environment}.syncTolerance;
-  }) // (lib.optionalAttrs (environment == "selfnode") {
+    syncTolerance = if (environment == "itn_selfnode") then "600s" else jormungandrLib.environments.${environment}.syncTolerance;
+  }) // (lib.optionalAttrs (environment == "itn_selfnode") {
     block0Path = if ((os == "linux") || devShell) then selfnodeBlock0 else block0Bin.${os};
     block0Hash = builtins.replaceStrings ["\n"] [""] (builtins.readFile (runCommandNative "selfnode-block0.hash" { buildInputs = [ cardano-wallet-native.jormungandr-cli ]; } ''
       jcli genesis hash --input ${selfnodeBlock0} > $out
@@ -179,7 +201,7 @@ let
     configPath = if devShell then configPath.linux else configPath.${os};
   });
 
-  hasBlock0 = (environment != "selfnode") && envCfg ? block0bin;
+  hasBlock0 = (environment != "itn_selfnode") && envCfg ? block0bin;
 
   installerConfig = {
     installDirectory = if os == "linux" then "Daedalus/${environment}" else spacedName;
@@ -191,7 +213,7 @@ let
     inherit hasBlock0;
   }) // (lib.optionalAttrs ((backend == "jormungandr") && hasBlock0) {
     block0 = envCfg.block0bin;
-  }) // (lib.optionalAttrs (environment == "selfnode") {
+  }) // (lib.optionalAttrs (environment == "itn_selfnode") {
     genesisPath = genesisPath.linux;
     secretPath = secretPath.linux;
     configPath = configPath.linux;
@@ -210,7 +232,7 @@ in {
     cd $out
     ${if (backend == "jormungandr") then ''
       ${lib.optionalString (installerConfig.hasBlock0) "cp ${installerConfig.block0} block-0.bin"}
-      ${if (environment == "selfnode") then ''
+      ${if (environment == "itn_selfnode") then ''
         cp ${../utils/jormungandr/selfnode/config.yaml} config.yaml
         cp ${../utils/jormungandr/selfnode/genesis.yaml} genesis.yaml
         cp ${../utils/jormungandr/selfnode/secret.yaml} secret.yaml
@@ -221,4 +243,4 @@ in {
     cp $installerConfigPath installer-config.json
     cp $launcherConfigPath launcher-config.yaml
   '';
-}
+} // { inherit tier2-cfg-files; }

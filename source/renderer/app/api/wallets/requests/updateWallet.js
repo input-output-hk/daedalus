@@ -3,14 +3,9 @@ import type { RequestConfig } from '../../common/types';
 import type { AdaWallet } from '../types';
 import { request } from '../../utils/request';
 
-export type UpdateWalletParams = {
-  walletId: string,
-  name: string,
-};
-
 export const updateWallet = (
   config: RequestConfig,
-  { walletId, name }: UpdateWalletParams
+  { walletId, name }: { walletId: string, name: string }
 ): Promise<AdaWallet> =>
   request(
     {

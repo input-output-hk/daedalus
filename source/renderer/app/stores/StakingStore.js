@@ -37,19 +37,21 @@ export default class StakingStore extends Store {
   percentage: number = 14;
 
   setup() {
-    // Set initial fetch interval to 1 second
-    this.refreshPooling = setInterval(
-      this.getStakePoolsData,
-      STAKE_POOLS_FAST_INTERVAL
-    );
-    const { staking } = this.actions;
-    staking.goToStakingInfoPage.listen(this._goToStakingInfoPage);
-    staking.goToStakingDelegationCenterPage.listen(
-      this._goToStakingDelegationCenterPage
-    );
-    staking.joinStakePool.listen(this._joinStakePool);
-    staking.quitStakePool.listen(this._quitStakePool);
-    staking.fakeStakePoolsLoading.listen(this._setFakePoller);
+    if (global.isIncentivizedTestnet) {
+      // Set initial fetch interval to 1 second
+      this.refreshPooling = setInterval(
+        this.getStakePoolsData,
+        STAKE_POOLS_FAST_INTERVAL
+      );
+      const { staking } = this.actions;
+      staking.goToStakingInfoPage.listen(this._goToStakingInfoPage);
+      staking.goToStakingDelegationCenterPage.listen(
+        this._goToStakingDelegationCenterPage
+      );
+      staking.joinStakePool.listen(this._joinStakePool);
+      staking.quitStakePool.listen(this._quitStakePool);
+      staking.fakeStakePoolsLoading.listen(this._setFakePoller);
+    }
   }
 
   // REQUESTS

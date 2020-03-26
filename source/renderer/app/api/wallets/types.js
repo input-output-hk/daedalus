@@ -47,7 +47,6 @@ export type AdaWallet = {
     last_updated_at: string,
   },
   state: WalletSyncState,
-  createdAt: Date,
   isLegacy: boolean,
 };
 
@@ -56,6 +55,7 @@ export type LegacyAdaWallet = {
   balance: {
     available: WalletBalance,
     total: WalletBalance,
+    reward: WalletBalance, // Unused prop - hack to keep flow happy
   },
   name: string,
   passphrase?: {
@@ -71,7 +71,11 @@ export type WalletUnit = WalletUnits.LOVELACE | WalletUnits.ADA;
 
 export type AdaWallets = Array<AdaWallet>;
 
-export type SyncStateStatus = 'ready' | 'restoring' | 'syncing';
+export type SyncStateStatus =
+  | 'ready'
+  | 'restoring'
+  | 'syncing'
+  | 'not_responding';
 
 export type DelegationStatus = 'delegating' | 'not_delegating';
 
@@ -162,6 +166,7 @@ export type UpdateSpendingPasswordRequest = {
   walletId: string,
   oldPassword: string,
   newPassword: string,
+  isLegacy: boolean,
 };
 
 export type DeleteWalletRequest = {
@@ -171,6 +176,7 @@ export type DeleteWalletRequest = {
 
 export type GetWalletUtxosRequest = {
   walletId: string,
+  isLegacy: boolean,
 };
 
 export type GetWalletIdAndBalanceRequest = {
@@ -198,6 +204,7 @@ export type RestoreLegacyWalletRequest = {
 export type UpdateWalletRequest = {
   walletId: string,
   name: string,
+  isLegacy: boolean,
 };
 
 export type ForceWalletResyncRequest = {
@@ -234,7 +241,7 @@ export type GetWalletRecoveryPhraseFromCertificateRequest = {
 
 export type GetWalletRequest = {
   walletId: string,
-  isLegacy?: boolean,
+  isLegacy: boolean,
 };
 
 export type TransferFundsCalculateFeeRequest = {

@@ -1,5 +1,5 @@
 let
-  getDefaultBackend = cluster: if (builtins.elem cluster [ "mainnet" "staging" "testnet" ]) then "cardano" else "jormungandr";
+  getDefaultBackend = cluster: if (builtins.elem cluster [ "mainnet" "staging" "testnet" "selfnode" ]) then "cardano" else "jormungandr";
 in
 { target ? builtins.currentSystem
 , nodeImplementation ? (getDefaultBackend cluster)
@@ -27,17 +27,17 @@ let
   pkgsNative = localLib.iohkNix.getPkgsDefault {};
   sources = localLib.sources;
   walletPkgs = import "${sources.cardano-wallet}/nix" {};
+  # only used for CLI, to be removed when upgraded to next node version
+  nodePkgs = import "${sources.cardano-node}/nix" {};
   shellPkgs = (import "${sources.cardano-shell}/nix/iohk-common.nix").getPkgs {};
   inherit (pkgs.lib) optionalString optional;
   crossSystem = lib: (crossSystemTable lib).${target} or null;
   # TODO, nsis cant cross-compile with the nixpkgs daedalus currently uses
   nsisNixPkgs = import localLib.sources.nixpkgs-nsis {};
   installPath = ".daedalus";
-  cardanoSL = localLib.cardanoSL { inherit target; };
   needSignedBinaries = (signingKeys != null) || (HSMServer != null);
   buildNumSuffix = if buildNum == null then "" else ("-${builtins.toString buildNum}");
   throwSystem = throw "Unsupported system: ${pkgs.stdenv.hostPlatform.system}";
-  ghcWithCardano = cardanoSL.haskellPackages.ghcWithPackages (ps: [ ps.cardano-sl ps.cardano-sl-x509 ]);
   ostable.x86_64-windows = "windows";
   ostable.x86_64-linux = "linux";
   ostable.x86_64-darwin = "macos64";
@@ -46,7 +46,7 @@ let
     jormungandrLib = localLib.iohkNix.jormungandrLib;
     cardanoLib = localLib.iohkNix.cardanoLib;
     daedalus-bridge = self.bridgeTable.${nodeImplementation};
-    export-wallets = cardanoSL.nix-tools.cexes.cardano-wallet.export-wallets;
+    export-wallets = self.cardano-sl.nix-tools.cexes.cardano-wallet.export-wallets;
     db-converter = self.cardano-wallet.db-converter;
 
     sources = localLib.sources;
@@ -57,7 +57,9 @@ let
     cardano-wallet = import self.sources.cardano-wallet { inherit system; gitrev = self.sources.cardano-wallet.rev; crossSystem = crossSystem walletPkgs.lib; };
     cardano-wallet-native = import self.sources.cardano-wallet { inherit system; gitrev = self.sources.cardano-wallet.rev; };
     cardano-shell = import self.sources.cardano-shell { inherit system; crossSystem = crossSystem shellPkgs.lib; };
+    cardano-cli = (import self.sources.cardano-node { inherit system; crossSystem = crossSystem nodePkgs.lib; }).haskellPackages.cardano-node.components.exes.cardano-cli;
     cardano-node = self.cardano-wallet.cardano-node;
+    cardano-sl = import self.sources.cardano-sl { inherit target; gitrev = self.sources.cardano-sl.rev; };
 
     # a cross-compiled fastlist for the ps-list package
     fastlist = pkgs.pkgsCross.mingwW64.callPackage ./nix/fastlist.nix {};
@@ -166,14 +168,22 @@ let
       mkdir $out
       cp daedalus.nsi uninstaller.nsi $out/
       cp $launcherConfigPath $out/launcher-config.yaml
-      ${optionalString (self.launcherConfigs.installerConfig.hasBlock0 or false) "cp ${self.launcherConfigs.installerConfig.block0} $out/block-0.bin"}
-      ${if (nodeImplementation == "jormungandr") then ''
-        ${if (cluster == "selfnode") then ''
+      ${optionalString (nodeImplementation == "jormungandr") ''
+        ${optionalString (self.launcherConfigs.installerConfig.hasBlock0 or false) "cp ${self.launcherConfigs.installerConfig.block0} $out/block-0.bin"}
+        ${if (cluster == "itn_selfnode") then ''
           cp ${self.launcherConfigs.cfg-files}/config.yaml $out/
           cp ${self.launcherConfigs.cfg-files}/secret.yaml $out/
           cp ${self.launcherConfigs.cfg-files}/genesis.yaml $out/
         '' else "cp ${self.launcherConfigs.jormungandr-config} $out/jormungandr-config.yaml"}
-      '' else ''
+      ''}
+      ${optionalString (nodeImplementation == "cardano") ''
+          cp ${self.launcherConfigs.tier2-cfg-files}/config.yaml $out/config.yaml
+          cp ${self.launcherConfigs.tier2-cfg-files}/genesis.json $out/genesis.json
+          cp ${self.launcherConfigs.tier2-cfg-files}/topology.yaml $out/topology.yaml
+        ${optionalString (cluster == "selfnode") ''
+          cp ${self.launcherConfigs.tier2-cfg-files}/signing.key $out/signing.key
+          cp ${self.launcherConfigs.tier2-cfg-files}/delegation.cert $out/delegation.cert
+        ''}
       ''}
       ls -lR $out
     '';
@@ -205,13 +215,14 @@ let
         nightly = "Daedalus Nightly";
         itn_rewards_v1 = "Daedalus - Rewards v1";
         qa = "Daedalus QA";
-        selfnode = "Daedalus SelfNode";
+        selfnode = "Daedalus Selfnode";
+        itn_selfnode = "Daedalus Selfnode - ITN";
       };
       installDir = mapping.${cluster};
     in pkgs.runCommand "win64-installer-${cluster}" {
       buildInputs = [
         self.daedalus-installer self.nsis pkgs.unzip pkgs.jq self.yaml2json
-      ] ++ optional (fudgeConfig != null) self.configMutator;
+      ];
     } ''
       echo '~~~   Preparing files for installer'
       mkdir home
@@ -235,7 +246,7 @@ let
       ${if dummyInstaller then "touch foo" else "unzip ${self.dlls}"}
       popd
       cp -v ${self.unpackedCardano}/bin/* .
-      cp -v ${self.nsisFiles}/{*.yaml,daedalus.nsi} .
+      cp -v ${self.nsisFiles}/{*.yaml,*.json,daedalus.nsi,*.key,*.cert} .
       cp ${self.uninstaller}/uninstall.exe ../uninstall.exe
       if [ -f ${self.nsisFiles}/block-0.bin ]; then
         cp -v ${self.nsisFiles}/block-0.bin .
@@ -274,15 +285,10 @@ let
     };
     daedalus-installer = pkgs.haskell.lib.justStaticExecutables self.hsDaedalusPkgs.daedalus-installer;
     daedalus = self.callPackage ./installers/nix/linux.nix {};
-    configMutator = pkgs.runCommand "configMutator" { buildInputs = [ ghcWithCardano ]; } ''
-      cp ${./ConfigMutator.hs} ConfigMutator.hs
-      mkdir -p $out/bin/
-      ghc ConfigMutator.hs -o $out/bin/config-mutator
-    '';
     rawapp = self.callPackage ./yarn2nix.nix {
       inherit buildNum;
       api = "ada";
-      apiVersion = cardanoSL.daedalus-bridge.version;
+      apiVersion = self.cardano-sl.daedalus-bridge.version;
     };
     rawapp-win64 = self.rawapp.override { win64 = true; };
     source = builtins.filterSource localLib.cleanSourceFilter ./.;
@@ -353,6 +359,10 @@ let
         small = ./installers/icons/itn_rewards_v1/64x64.png;
         large = ./installers/icons/itn_rewards_v1/1024x1024.png;
       };
+      itn_selfnode = {
+        small = ./installers/icons/itn_selfnode/64x64.png;
+        large = ./installers/icons/itn_selfnode/1024x1024.png;
+      };
     };
     namespaceHelper = pkgs.writeScriptBin "namespaceHelper" ''
       #!/usr/bin/env bash
@@ -421,5 +431,14 @@ let
       installedPackages = [ daedalus' self.postInstall self.namespaceHelper daedalus'.cfg self.daedalus-bridge daedalus'.daedalus-frontend self.xdg-open ];
       nix-bundle = self.nix-bundle;
     }).installerBundle;
-  };
+    wrappedBundle = let
+      version = (builtins.fromJSON (builtins.readFile ./package.json)).version;
+      backend = "cardano-wallet-${nodeImplementation}";
+      suffix = if buildNum == null then "" else "-${toString buildNum}";
+      fn = "daedalus-${version}-${backend}-${cluster}-${target}${suffix}.bin";
+    in pkgs.runCommand fn {} ''
+      mkdir -p $out
+      cp ${self.newBundle} $out/${fn}
+    '';
+    };
 in pkgs.lib.makeScope pkgs.newScope packages

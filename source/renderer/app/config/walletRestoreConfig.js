@@ -1,5 +1,4 @@
 // @flow
-
 import type {
   RestoreWalletStep,
   WalletKind,
@@ -9,6 +8,8 @@ import type {
   WalletByronKind,
 } from '../types/walletRestoreTypes';
 
+const { isIncentivizedTestnet } = global;
+
 export const RESTORE_WALLET_STEPS: Array<RestoreWalletStep> = [
   'type',
   'mnemonics',
@@ -16,17 +17,30 @@ export const RESTORE_WALLET_STEPS: Array<RestoreWalletStep> = [
   'success',
 ];
 
-export const WALLET_KINDS: EnumMap<string, WalletKind> = {
-  DAEDALUS: 'Daedalus',
-  YOROI: 'Yoroi',
-  HARDWARE: 'Hardware',
-};
+export const WALLET_KINDS: EnumMap<string, WalletKind> = isIncentivizedTestnet
+  ? {
+      DAEDALUS: 'Daedalus',
+      YOROI: 'Yoroi',
+      HARDWARE: 'Hardware',
+    }
+  : {
+      DAEDALUS: 'Daedalus',
+      YOROI: 'Yoroi',
+    };
 
-export const WALLET_DAEDALUS_KINDS: EnumMap<string, WalletDaedalusKind> = {
-  BALANCE_12_WORD: 'Balance12Word',
-  REWARD_15_WORD: 'Reward15Word',
-  BALANCE_27_WORD: 'Balance27Word',
-};
+export const WALLET_DAEDALUS_KINDS: EnumMap<
+  string,
+  WalletDaedalusKind
+> = isIncentivizedTestnet
+  ? {
+      BALANCE_12_WORD: 'Balance12Word',
+      REWARD_15_WORD: 'Reward15Word',
+      BALANCE_27_WORD: 'Balance27Word',
+    }
+  : {
+      BALANCE_12_WORD: 'Balance12Word',
+      BALANCE_27_WORD: 'Balance27Word',
+    };
 
 export const WALLET_YOROI_KINDS: EnumMap<string, WalletYoroiKind> = {
   BALANCE_15_WORD: 'Balance15Word',

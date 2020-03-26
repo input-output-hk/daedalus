@@ -9,7 +9,10 @@ import Dialog from '../../widgets/Dialog';
 import WalletRecoveryInstructions from './WalletRecoveryInstructions';
 import globalMessages from '../../../i18n/global-messages';
 import styles from './WalletRecoveryPhraseDisplayDialog.scss';
-import { WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../../../config/cryptoConfig';
+import {
+  WALLET_RECOVERY_PHRASE_WORD_COUNT,
+  LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT,
+} from '../../../config/cryptoConfig';
 
 const messages = defineMessages({
   backupInstructions: {
@@ -42,6 +45,7 @@ export default class WalletRecoveryPhraseDisplayDialog extends Component<Props> 
 
   render() {
     const { intl } = this.context;
+    const { isIncentivizedTestnet } = global;
     const { recoveryPhrase, onStartWalletBackup, onCancelBackup } = this.props;
     const dialogClasses = classnames([
       styles.component,
@@ -70,7 +74,9 @@ export default class WalletRecoveryPhraseDisplayDialog extends Component<Props> 
             <FormattedHTMLMessage
               {...messages.backupInstructions}
               values={{
-                walletRecoveryPhraseWordCount: WALLET_RECOVERY_PHRASE_WORD_COUNT,
+                walletRecoveryPhraseWordCount: isIncentivizedTestnet
+                  ? WALLET_RECOVERY_PHRASE_WORD_COUNT
+                  : LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT,
               }}
             />
           }

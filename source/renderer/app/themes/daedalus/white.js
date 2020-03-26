@@ -875,6 +875,22 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-wallet-settings-section-separator-color': 'rgba(45, 45, 45, 0.15)',
     '--theme-wallet-settings-resync-button-label-color': 'rgba(45, 45, 45, 1)',
   },
+  walletNotRespondingOverlay: {
+    '--theme-wallet-not-responding-background-color': '#fffffff5',
+    '--theme-wallet-not-responding-button-background-color':
+      'rgba(41, 181, 149, 0.1)',
+    '--theme-wallet-not-responding-button-background-color-hover': '#29b595',
+    '--theme-wallet-not-responding-button-border-color': '#29b595',
+    '--theme-wallet-not-responding-button-text-color': '#29b595',
+    '--theme-wallet-not-responding-button-text-color-hover': '#ffffff',
+    '--theme-wallet-not-responding-description-background-color':
+      'rgba(41, 181, 149, 0.1)',
+    '--theme-wallet-not-responding-description-text-color':
+      'rgba(45, 45, 45, 0.7)',
+    '--theme-wallet-not-responding-icon-color': '#29b595',
+    '--theme-wallet-not-responding-link-text-color': '#2d2d2d',
+    '--theme-wallet-not-responding-title-text-color': '#2d2d2d',
+  },
 };
 
 const WHITE_THEME_PARAMS: CreateThemeParams = {

@@ -52,9 +52,10 @@ data OS
 
 data Cluster
   = Nightly
-  | ITn_Rewards_v1
+  | ITN_Rewards_v1
   | QA
   | Selfnode
+  | ITN_Selfnode
   | Mainnet
   | Staging
   | Testnet
@@ -103,8 +104,9 @@ tt = format fp
 -- See also: the cluster argument in default.nix.
 clusterNetwork :: Cluster -> Text
 clusterNetwork Nightly = "nightly"
-clusterNetwork ITn_Rewards_v1 = "itn_rewards_v1"
+clusterNetwork ITN_Rewards_v1 = "itn_rewards_v1"
 clusterNetwork QA = "qa"
+clusterNetwork ITN_Selfnode = "itn_selfnode"
 clusterNetwork Selfnode = "selfnode"
 clusterNetwork Mainnet = "mainnet"
 clusterNetwork Staging = "staging"

@@ -26,8 +26,8 @@ in pkgs.runCommandCC "daedalus-bridge" {
   ''}
   ${pkgs.lib.optionalString (target == "x86_64-linux") ''
     for bin in cardano-launcher cardano-wallet-jormungandr; do
-      strip $bin
-      patchelf --shrink-rpath $bin
+      ${pkgs.binutils-unwrapped}/bin/strip $bin
+      ${pkgs.patchelf}/bin/patchelf --shrink-rpath $bin
     done
   ''}
 ''

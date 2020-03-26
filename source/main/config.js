@@ -3,6 +3,7 @@ import path from 'path';
 import { app, dialog } from 'electron';
 import { readLauncherConfig } from './utils/config';
 import { environment } from './environment';
+import type { CardanoNodeImplementation } from '../common/types/cardano-node.types';
 
 const { isTest, isProduction, isBlankScreenFixActive } = environment;
 
@@ -32,6 +33,7 @@ if (!isStartedByLauncher) {
 
 export type NodeConfig = {
   configurationDir: string,
+  delegationCertificate?: string,
   kind: 'byron',
   network: {
     configFile: string,
@@ -39,6 +41,7 @@ export type NodeConfig = {
     genesisHash: string,
     topologyFile: string,
   },
+  signingKey?: string,
 };
 
 /**
@@ -50,7 +53,7 @@ export type LauncherConfig = {
   walletBin: string,
   walletArgs: Array<string>,
   nodeBin: string,
-  nodeImplementation: 'jormungandr' | 'cardano-node',
+  nodeImplementation: CardanoNodeImplementation,
   nodeConfig: NodeConfig,
   nodeArgs: Array<string>,
   tlsPath: string,
@@ -71,6 +74,7 @@ export type LauncherConfig = {
   secretPath: string,
   configPath: string,
   syncTolerance: string,
+  cliBin: string,
 };
 
 type WindowOptionsType = {
@@ -112,9 +116,11 @@ export const launcherConfig: LauncherConfig = readLauncherConfig(
 export const appLogsFolderPath = launcherConfig.logsPrefix;
 export const pubLogsFolderPath = path.join(appLogsFolderPath, 'pub');
 export const appFolderPath = launcherConfig.workingDir;
-export const { nodeDbPath } = launcherConfig;
+export const { nodeDbPath, nodeImplementation, cluster } = launcherConfig;
 export const stateDirectoryPath = launcherConfig.stateDir;
 export const stateDrive = isWindows ? stateDirectoryPath.slice(0, 2) : '/';
+
+// Logging config
 export const ALLOWED_LOGS = [
   'Daedalus.json',
   'System-info.json',
@@ -149,7 +155,7 @@ export const DISK_SPACE_RECOMMENDED_PERCENTAGE = 15; // 15% of the total disk sp
 
 // CardanoWallet config
 export const STAKE_POOL_REGISTRY_URL = {
-  selfnode:
+  itn_selfnode:
     'https://github.com/input-output-hk/daedalus/raw/selfnode/test-integration-registry.zip',
   nightly:
     'https://github.com/piotr-iohk/incentivized-testnet-stakepool-registry/archive/master.zip',

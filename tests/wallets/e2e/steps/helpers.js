@@ -24,7 +24,7 @@ export const addOrSetWalletsForScenario = function(wallet: Object) {
 
 let rewardsMnemonicsIndex = 0;
 export const noWalletsErrorMessage = `The balance wallet for funds transfering was already used and has no longer funds.
-    Remove the "Daedalus SelfNode" directory and run \`nix:dev\` again.`;
+    Remove the "Daedalus Selfnode" directory and run \`nix:dev\` again.`;
 
 export const restoreWalletWithFunds = async (client: Object, { walletName }: { walletName: string }) => {
   const recoveryPhrase = rewardsMnemonics[rewardsMnemonicsIndex++];
@@ -54,7 +54,7 @@ const createWalletsSequentially = async (wallets: Array<any>, context: Object) =
       daedalus.api.ada
         .createWallet({
           name: wallet.name,
-          mnemonic: daedalus.utils.crypto.generateMnemonic(),
+          mnemonic: daedalus.utils.crypto.generateMnemonic(12),
           spendingPassword: wallet.password || 'Secret1234',
         })
         .then(() =>
@@ -86,7 +86,7 @@ const getMnemonicsIndex = async function() {
     value: String(newIndex),
   });
   return index;
-}
+};
 
 export const restoreLegacyWallet = async (
   client: Object,
@@ -100,7 +100,6 @@ export const restoreLegacyWallet = async (
     transferFunds?: boolean,
   }
 ) => {
-
   let recoveryPhrase;
   if (hasFunds) {
     const mnemonicsIndex = await getMnemonicsIndex.call(client);
@@ -129,7 +128,7 @@ export const restoreLegacyWallet = async (
       )
       .catch(error => done(error));
   }, walletName, recoveryPhrase, transferFunds, noWalletsErrorMessage);
-}
+};
 
 export const fillOutWalletSendForm = async function(values: Object) {
   const formSelector = '.WalletSendForm_component';
@@ -280,7 +279,7 @@ const createWalletsAsync = async (table, context: Object, isLegacy?: boolean) =>
     const apiEndpoint = isLegacyWallet ? restoreLegacyWallet : createWallet;
     window.Promise.all(
       wallets.map(wallet => {
-        const mnemonic = daedalus.utils.crypto.generateMnemonic();
+        const mnemonic = daedalus.utils.crypto.generateMnemonic(12);
         const recoveryPhrase = mnemonic;
         mnemonics[wallet.name] = mnemonic.split(' ');
         return apiEndpoint({
