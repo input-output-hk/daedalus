@@ -188,14 +188,16 @@ export const setupCardanoNode = (
       exportWalletsBin,
       legacySecretKey,
       legacyWalletDB,
+      cluster,
     } = launcherConfig;
     logger.info('ipcMain: Exporting wallets...', {
       exportWalletsBin,
       legacySecretKey,
       legacyWalletDB,
+      cluster,
     });
     const { stdout, stderr } = spawnSync(exportWalletsBin, [
-      '--mainnet',
+      `--${cluster}`,
       '--keyfile',
       legacySecretKey,
       '--wallet-db-path',

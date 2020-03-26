@@ -73,8 +73,8 @@ export default class WalletMigrationStore extends Store {
   };
 
   @action startMigration = async () => {
-    const { isMainnet, isTest, isDev } = this.environment;
-    if (isMainnet || isTest || isDev) {
+    const { isMainnet, isTestnet } = this.environment;
+    if (isMainnet || isTestnet) {
       // Reset store values
       this._restoredWallets = [];
       this._restorationErrors = [];
