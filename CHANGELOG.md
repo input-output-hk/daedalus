@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## vNext
+
+### Features
+
+- Implemented new theme - flight candidate ([PR 1914](https://github.com/input-output-hk/daedalus/pull/1914))
+
 ## 1.0.0
 
 ### Features
