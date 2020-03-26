@@ -2,8 +2,10 @@
 , postInstall ? null, nix-bundle, preInstall ? null
 , cluster
 , rawapp
+, nodeImplementation
 , pkgs }:
 let
+  cluster' = "${cluster}${pkgs.lib.optionalString (nodeImplementation == "cardano") "-flight"}";
   installerBundle = nix-bundle.nix-bootstrap {
     target = "${installer}";
     run = "/bin/installer";
@@ -43,7 +45,7 @@ let
     nix copy --no-check-sigs --from local?root=$UNPACK2 $(readlink $UNPACK2/firstGeneration)
     export NIX_PROFILE=/nix/var/nix/profiles/profile
     nix-env --set $(readlink $UNPACK2/firstGeneration)
-    nix-env -p /nix/var/nix/profiles/profile-${cluster} --set $(readlink $UNPACK2/firstGeneration)
+    nix-env -p /nix/var/nix/profiles/profile-${cluster'} --set $(readlink $UNPACK2/firstGeneration)
     rmrf $UNPACK2
 
     post-install || true
@@ -74,9 +76,9 @@ let
 
     set -e
 
-    export PATH=/nix/var/nix/profiles/profile-${cluster}/bin
+    export PATH=/nix/var/nix/profiles/profile-${cluster'}/bin
     export PS1='\[\033]2;\h:\u:\w\007\]\n\[\033[1;32m\][\u@\h:\w] (namespaced) \$\[\033[0m\] '
-    ln -svf /nix/var/nix/profiles/profile-${cluster}/bin/ /bin
+    ln -svf /nix/var/nix/profiles/profile-${cluster'}/bin/ /bin
     export PATH=/bin
     ln -svf ${pkgs.iana-etc}/etc/protocols /etc/protocols
     ln -svf ${pkgs.iana-etc}/etc/services /etc/services
@@ -142,7 +144,7 @@ let
     unset UNPACK
     export NIX_PROFILE=$DIR/nix/var/nix/profiles/profile
     nix-env --set ${builtins.unsafeDiscardStringContext firstGeneration}
-    nix-env -p $DIR/nix/var/nix/profiles/profile-${cluster} --set ${builtins.unsafeDiscardStringContext firstGeneration}
+    nix-env -p $DIR/nix/var/nix/profiles/profile-${cluster'} --set ${builtins.unsafeDiscardStringContext firstGeneration}
 
     ${if postInstall == null then "" else ''
     exec ${postInstall}/bin/post-install
