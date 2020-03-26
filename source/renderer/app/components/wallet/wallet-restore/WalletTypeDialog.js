@@ -50,10 +50,17 @@ const messages = defineMessages({
       '!!!What kind of Daedalus wallet would you like to restore?',
     description: 'Label for the "labelDaedalusWalletKind" checkbox.',
   },
+  labelDaedalusWalletKindBalance12WordItn: {
+    id:
+      'wallet.restore.dialog.step.walletKind.label.daedalusWalletKindBalance12Word.itn',
+    defaultMessage: '!!!12 words <em>(Balance wallet)</em>',
+    description:
+      'Label for the "labelDaedalusWalletKindBalance12Word" ITN checkbox.',
+  },
   labelDaedalusWalletKindBalance12Word: {
     id:
       'wallet.restore.dialog.step.walletKind.label.daedalusWalletKindBalance12Word',
-    defaultMessage: '!!!12 words <em>(Balance wallet)</em>',
+    defaultMessage: '!!!12 words',
     description:
       'Label for the "labelDaedalusWalletKindBalance12Word" checkbox.',
   },
@@ -64,10 +71,17 @@ const messages = defineMessages({
     description:
       'Label for the "labelDaedalusWalletKindReward15Word" checkbox.',
   },
+  labelDaedalusWalletKindBalance27WordItn: {
+    id:
+      'wallet.restore.dialog.step.walletKind.label.daedalusWalletKindBalance27Word.itn',
+    defaultMessage: '!!!27 words - paper wallet <em>(Balance wallet)</em>',
+    description:
+      'Label for the "labelDaedalusWalletKindBalance27Word" ITN checkbox.',
+  },
   labelDaedalusWalletKindBalance27Word: {
     id:
       'wallet.restore.dialog.step.walletKind.label.daedalusWalletKindBalance27Word',
-    defaultMessage: '!!!27 words <em>(Balance wallet)</em>',
+    defaultMessage: '!!!27 words - paper wallet</em>',
     description:
       'Label for the "labelDaedalusWalletKindBalance27Word" checkbox.',
   },
@@ -171,11 +185,14 @@ export default class WalletTypeDialog extends Component<Props, State> {
       label={this.context.intl.formatMessage(message)}
       items={Object.keys(kinds).map((key: string) => {
         const kind: WalletKinds = kinds[key];
+        const kindLabelSufix = isIncentivizedTestnet ? `${kind}Itn` : kind;
         return {
           key: kind,
           label: (
             <FormattedHTMLMessage
-              {...messages[`label${kindParam || ''}WalletKind${kind}`]}
+              {...messages[
+                `label${kindParam || ''}WalletKind${kindLabelSufix}`
+              ]}
             />
           ),
           selected: value === kind,

@@ -22,29 +22,40 @@ import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
 import { submitOnEnter } from '../../utils/form';
 
 const messages = defineMessages({
-  dialogTitle: {
-    id: 'wallet.create.dialog.title',
+  dialogTitleItn: {
+    id: 'wallet.create.dialog.title.itn',
     defaultMessage: '!!!Create a new Rewards wallet',
     description:
       'Title "Create a new Rewards wallet" in the wallet create form.',
   },
+  dialogTitle: {
+    id: 'wallet.create.dialog.title',
+    defaultMessage: '!!!Create a wallet',
+    description: 'Title "Create a wallet" in the wallet create form.',
+  },
   walletName: {
     id: 'wallet.create.dialog.name.label',
-    defaultMessage: '!!!Wallet Name',
+    defaultMessage: '!!!Wallet name',
     description:
       'Label for the "Wallet Name" text input in the wallet create form.',
   },
   walletNameHint: {
     id: 'wallet.create.dialog.walletNameHint',
-    defaultMessage: '!!!e.g: Shopping Wallet',
+    defaultMessage: '!!!Enter wallet name',
     description:
       'Hint for the "Wallet Name" text input in the wallet create form.',
   },
-  createPersonalWallet: {
-    id: 'wallet.create.dialog.create.personal.wallet.button.label',
+  createPersonalWalletItn: {
+    id: 'wallet.create.dialog.create.personal.wallet.button.label.itn',
     defaultMessage: '!!!Create Rewards wallet',
     description:
       'Label for the "Create Rewards wallet" button on create wallet dialog.',
+  },
+  createPersonalWallet: {
+    id: 'wallet.create.dialog.create.personal.wallet.button.label',
+    defaultMessage: '!!!Create wallet',
+    description:
+      'Label for the "Create wallet" button on create wallet dialog.',
   },
   passwordSectionLabel: {
     id: 'wallet.create.dialog.passwordSectionLabel',
@@ -53,8 +64,7 @@ const messages = defineMessages({
   },
   passwordSectionDescription: {
     id: 'wallet.create.dialog.passwordSectionDescription',
-    defaultMessage:
-      '!!!Keep your private keys safely encrypted by setting the spending password',
+    defaultMessage: '!!!Keep your wallet secure by setting a spending password',
     description: 'Password creation description.',
   },
   spendingPasswordLabel: {
@@ -76,6 +86,8 @@ const messages = defineMessages({
       'Placeholder for the "Password" inputs in the create wallet dialog.',
   },
 });
+
+const { isIncentivizedTestnet } = global;
 
 type Props = {
   onSubmit: Function,
@@ -202,7 +214,11 @@ export default class WalletCreateDialog extends Component<Props, State> {
     const actions = [
       {
         className: isSubmitting ? styles.isSubmitting : null,
-        label: this.context.intl.formatMessage(messages.createPersonalWallet),
+        label: this.context.intl.formatMessage(
+          isIncentivizedTestnet
+            ? messages.createPersonalWalletItn
+            : messages.createPersonalWallet
+        ),
         primary: true,
         onClick: this.submit,
       },
@@ -215,7 +231,9 @@ export default class WalletCreateDialog extends Component<Props, State> {
     return (
       <Dialog
         className={dialogClasses}
-        title={intl.formatMessage(messages.dialogTitle)}
+        title={intl.formatMessage(
+          isIncentivizedTestnet ? messages.dialogTitleItn : messages.dialogTitle
+        )}
         actions={actions}
         closeOnOverlayClick
         onClose={!isSubmitting ? onCancel : () => {}}
