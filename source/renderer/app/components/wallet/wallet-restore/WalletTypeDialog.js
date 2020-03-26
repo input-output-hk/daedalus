@@ -185,7 +185,14 @@ export default class WalletTypeDialog extends Component<Props, State> {
       label={this.context.intl.formatMessage(message)}
       items={Object.keys(kinds).map((key: string) => {
         const kind: WalletKinds = kinds[key];
-        const kindLabelSufix = isIncentivizedTestnet ? `${kind}Itn` : kind;
+
+        let kindLabelSufix = kind;
+        if (
+          isIncentivizedTestnet &&
+          (kind === 'Balance12Word' || kind === 'Balance27Word')
+        ) {
+          kindLabelSufix = `${kind}Itn`;
+        }
         return {
           key: kind,
           label: (
