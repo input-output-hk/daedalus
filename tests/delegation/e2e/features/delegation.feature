@@ -14,7 +14,7 @@ Feature: Wallet Delegation
     And the current and next epoch countdown have correct data
 
   Scenario: "Delegation center" displays screen until the Stake Pools are loaded
-    Given I have a "Wallet Sender" rewards wallet with funds
+    Given I have a "Wallet Sender" wallet with funds
     And I am on the Delegation "delegation-center" screen
     And I mark experimental feature as read
     Then I should see a "Loading stake pools" message until the Stake Pools are loaded
@@ -38,8 +38,8 @@ Feature: Wallet Delegation
     Then I should only see Reward wallets listed
 
   Scenario: "Delegation center" correctly displays undelegated and delegated information and options
-    And I have a "First Wallet" rewards wallet with funds
-    And I have a "Second Wallet" rewards wallet with funds
+    And I have a "First Wallet" wallet with funds
+    And I have a "Second Wallet" wallet with funds
     Given I am on the Delegation "delegation-center" screen
     And I mark experimental feature as read
     Given the "First Wallet" wallet was delegated to the first Stake Pool
@@ -63,7 +63,7 @@ Feature: Wallet Delegation
     And I start the wallet delegation process for the "Wallet Receiver" wallet
     Then I should see a "Delegation not available" message
     Then I close the wizard
-    Given I have a "Wallet Sender" rewards wallet with funds
+    Given I have a "Wallet Sender" wallet with funds
     And I send 9 ADA from the "Wallet Sender" wallet to the "Wallet Receiver" wallet
     And I start the wallet delegation process for the "Wallet Receiver" wallet
     Then I should see a "This wallet does not contain the minimum amount of 10 ADA which is required for delegation to be available. Please select a wallet with " message
@@ -75,7 +75,7 @@ Feature: Wallet Delegation
     Given I have the following "Rewards" wallets:
       | name            |
       | Wallet Receiver |
-    And I have a "Wallet Sender" rewards wallet with funds
+    And I have a "Wallet Sender" wallet with funds
     And I am on the Delegation "delegation-center" screen
     And I mark experimental feature as read
     And I start the wallet delegation process for the "Wallet Receiver" wallet
@@ -88,7 +88,7 @@ Feature: Wallet Delegation
   # We are currently not displaying stake pools with no metadata
   # And have no Unknown state for delegated wallets
   Scenario: "Unknown" stake pool is shown for the wallets being delegated to stake pools for which we don't have metadata
-    And I have a "Wallet - No Metadata" rewards wallet with funds
+    And I have a "Wallet - No Metadata" wallet with funds
     And the "Wallet - No Metadata" wallet was delegated to a Stake Pool with no metadata
     And I am on the Delegation "delegation-center" screen
     And I mark experimental feature as read

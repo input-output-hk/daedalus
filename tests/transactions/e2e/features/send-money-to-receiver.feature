@@ -8,7 +8,7 @@ Feature: Send Money to Receiver
       | first  |
 
   Scenario: User Sends Money to Receiver
-    Given I have a "Test Wallet" rewards wallet with funds
+    Given I have a "Test Wallet" wallet with funds
     And I am on the "Test Wallet" wallet "send" screen
     And I can see the send form
     When I fill out the send form with a transaction to "first" wallet:

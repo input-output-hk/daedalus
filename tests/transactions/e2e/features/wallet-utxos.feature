@@ -5,7 +5,7 @@ Feature: Wallet - UTXOs
     Given I have completed the basic setup
 
   Scenario: Chart visible. Page title and description
-    Given I have a "Test Wallet" rewards wallet with funds
+    Given I have a "Test Wallet" wallet with funds
     When I am on the "Test Wallet" wallet "utxo" screen
     Then the "title" element renders the following text:
       | message                     |

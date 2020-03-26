@@ -1,9 +1,9 @@
-@e2e
+@e2e @skip
 Feature: Receive money
 
   Background:
     Given I have completed the basic setup
-    And I have a "Test Wallet" rewards wallet with funds
+    And I have a "Test Wallet" wallet with funds
     And I have the following "Rewards" wallets:
       | name          |
       | Target Wallet |

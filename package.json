@@ -20,7 +20,7 @@
     "test:e2e:rerun": "yarn cucumber:rerun --require 'tests/setup-e2e.js' --require 'tests/**/e2e/**/*.js' --tags '@e2e and not @skip and not @wip'",
     "test:e2e:rerun:fail-fast": "yarn cucumber:rerun --require 'tests/setup-e2e.js' --require 'tests/**/e2e/**/*.js' --tags '@e2e and not @skip and not @wip'",
     "test:e2e:watch": "gulp test:e2e:watch",
-    "test:e2e:byron": "yarn test:e2e --tags '@e2e and not @shelley and not @skip'",
+    "test:e2e:byron": "yarn test:e2e:watch --tags '@e2e and not @shelley and not @skip'",
     "test:e2e:byron:once": "KEEP_APP_AFTER_TESTS=true yarn test:e2e --tags '@e2e and @watch and not @shelley and not @skip'",
     "cucumber": "cross-env NODE_ENV=test cucumber-js --require 'tests/setup-common.js' --require-module @babel/register -f json:tests-report/report-data.json -f summary:tests-report/summary.log -f node_modules/cucumber-pretty:tests-report/results.log --format-options '{\"snippetInterface\": \"async-await\"}' -f node_modules/cucumber-pretty --format-options '{\"snippetInterface\": \"async-await\"}' -f rerun:tests/@rerun.txt",
     "cucumber:run": "yarn cucumber tests",

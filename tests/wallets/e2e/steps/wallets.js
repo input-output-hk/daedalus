@@ -26,8 +26,18 @@ Given(/^I have created the following "Rewards" wallets:$/, async function(table)
   await createWallets(table.hashes(), this, { sequentially: true });
 });
 
-Given(/^I have a "([^"]*)" rewards wallet with funds$/, async function(walletName) {
-  await restoreWalletWithFunds(this.client, { walletName });
+Given(/^I have a "([^"]*)" (\w+? )?wallet with funds$/, async function(walletName, _type) {
+  let type = _type;
+  if (!type) {
+    const isIncentivizedTestnetRequest = await this.client.execute(() => daedalus.environment.isIncentivizedTestnet);
+    type = isIncentivizedTestnetRequest.value ? 'shelley' : 'byron';
+  }
+  if (type === 'shelley') {
+    await restoreWalletWithFunds(this.client, { walletName });
+  } else {
+    await restoreLegacyWallet(this.client, { walletName, hasFunds: true });
+  }
+  console.log('type', type);
   const wallet = await waitUntilWalletIsLoaded.call(this, walletName);
   addOrSetWalletsForScenario.call(this, wallet);
 });
@@ -35,12 +45,6 @@ Given(/^I have a "([^"]*)" rewards wallet with funds$/, async function(walletNam
 // Create "Balance" wallets
 Given(/^I have a "([^"]*)" balance wallet$/, async function(walletName) {
   await restoreLegacyWallet(this.client, { walletName, hasFunds: false });
-  const wallet = await waitUntilWalletIsLoaded.call(this, walletName);
-  addOrSetWalletsForScenario.call(this, wallet);
-});
-
-Given(/^I have a "([^"]*)" balance wallet with funds$/, async function(walletName) {
-  await restoreLegacyWallet(this.client, { walletName, hasFunds: true });
   const wallet = await waitUntilWalletIsLoaded.call(this, walletName);
   addOrSetWalletsForScenario.call(this, wallet);
 });
