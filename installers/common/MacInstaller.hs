@@ -237,7 +237,7 @@ getBackendVersion (Cardano     bridge) = readCardanoVersionFile bridge
 getBackendVersion (Jormungandr bridge) = readCardanoVersionFile bridge
 
 makeComponentRoot :: Options -> FilePath -> DarwinConfig -> InstallerConfig -> IO ()
-makeComponentRoot Options{oBackend,oCluster} appRoot darwinConfig@DarwinConfig{dcAppName} InstallerConfig{hasBlock0,genesisPath,secretPath,configPath} = do
+makeComponentRoot Options{oBackend,oCluster} appRoot darwinConfig@DarwinConfig{dcAppName} InstallerConfig{hasBlock0,genesisPath,secretPath} = do
   let dir     = appRoot </> "Contents/MacOS"
       dataDir = appRoot </> "Contents/Resources"
       maybeCopyToResources (maybePath,name) = maybe (pure ()) (\path -> cp (fromText path) (dir </> "../Resources/" <> name)) maybePath
@@ -274,14 +274,13 @@ makeComponentRoot Options{oBackend,oCluster} appRoot darwinConfig@DarwinConfig{d
       forM_ ["cardano-wallet-jormungandr", "jormungandr" ] $ \f ->
         cp (bridge </> "bin" </> f) (dir </> f)
 
-      -- Config files (from daedalus-bridge)
-      when (oCluster /= ITN_Selfnode) $
-        cp "jormungandr-config.yaml" (dataDir </> "jormungandr-config.yaml")
+      -- Config files (from launcherConfig.configFiles)
+      cp "config.yaml" (dataDir </> "config.yaml")
 
       when hasBlock0 $
         cp "block-0.bin" (dataDir </> "block-0.bin")
 
-      mapM_ maybeCopyToResources [ (genesisPath,"genesis.yaml"), (secretPath,"secret.yaml"), (configPath,"config.yaml") ]
+      mapM_ maybeCopyToResources [ (genesisPath,"genesis.yaml"), (secretPath,"secret.yaml") ]
 
       -- Genesis (from daedalus-bridge)
       --genesisFiles <- glob . encodeString $ bridge </> "config" </> "*genesis*.json"
