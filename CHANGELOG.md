@@ -1,16 +1,11 @@
 Changelog
 =========
 
-## vNext
-
-### Features
-
-- Implemented new theme - flight candidate ([PR 1914](https://github.com/input-output-hk/daedalus/pull/1914))
-
 ## 1.0.0
 
 ### Features
 
+- Implemented new "Flight candidate" theme ([PR 1914](https://github.com/input-output-hk/daedalus/pull/1914))
 - Implemented non-responding wallets handling ([PR 1901](https://github.com/input-output-hk/daedalus/pull/1901))
 - Added support for building both `cardano-node` and `jormungandr` installers ([PR 1894](https://github.com/input-output-hk/daedalus/pull/1894))
 - Added support for `cardano-node` "Selfnode" network ([PR 1897](https://github.com/input-output-hk/daedalus/pull/1897))
