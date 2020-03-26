@@ -16,6 +16,7 @@ import type {
 import type { CheckDiskSpaceResponse } from '../types/no-disk-space.types';
 import type { LogFiles } from '../../renderer/app/types/LogTypes';
 import type { GpuStatus } from '../../renderer/app/types/gpuStatus';
+import type { ExportedByronWallet } from '../../renderer/app/types/walletExportTypes';
 import type {
   StateSnapshotLogParams,
   WalletMigrationReportData,
@@ -225,11 +226,7 @@ export type DetectSystemLocaleMainResponse = string;
 export const EXPORT_WALLETS_CHANNEL = 'EXPORT_WALLETS_CHANNEL';
 export type ExportWalletsRendererRequest = void;
 export type ExportWalletsMainResponse = {
-  wallets: Array<{
-    encrypted_root_private_key: string,
-    name: string,
-    passphrase_hash: ?string,
-  }>,
+  wallets: Array<ExportedByronWallet>,
   errors: string,
 };
 

@@ -167,7 +167,7 @@ export default class NetworkStatusStore extends Store {
     if (this.isConnected) {
       logger.info('NetworkStatusStore: Connected');
       this._updateNetworkStatus();
-      this.stores.walletMigration.initMigration();
+      this.stores.walletMigration.startMigration();
     }
   };
 
@@ -319,7 +319,7 @@ export default class NetworkStatusStore extends Store {
       // In case we no longer have TLS config we ignore all API call responses
       // as this means we are in the Cardano shutdown (stopping|exiting|updating) sequence
       if (!this.tlsConfig) {
-        logger.info(
+        logger.debug(
           'NetworkStatusStore: Ignoring NetworkStatusRequest result during Cardano shutdown sequence...'
         );
         return;

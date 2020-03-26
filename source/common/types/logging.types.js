@@ -3,6 +3,7 @@ import type { CardanoNodeState } from './cardano-node.types';
 import type { SystemInfo } from '../../renderer/app/types/systemInfoTypes';
 import type { CoreSystemInfo } from '../../renderer/app/types/coreSystemInfoTypes';
 import type { WalletMigrationStatus } from '../../renderer/app/stores/WalletMigrationStore';
+import LocalizableError from '../../renderer/app/i18n/LocalizableError';
 
 export type Logger = {
   debug: (string, ?Object) => void,
@@ -87,7 +88,15 @@ export type WalletMigrationReportData = {
   }>,
   exportedWalletsCount: number,
   exportErrors: string,
+  restoredWalletsData: Array<{
+    id: string,
+    name: string,
+    hasPassword: boolean,
+  }>,
   restoredWalletsCount: number,
-  restorationErrors: Array<string>,
+  restorationErrors: Array<{
+    error: LocalizableError,
+    wallet: { name: string, hasPassword: boolean },
+  }>,
   finalMigrationStatus: WalletMigrationStatus,
 };
