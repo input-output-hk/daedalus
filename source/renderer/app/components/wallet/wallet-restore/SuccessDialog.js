@@ -39,7 +39,7 @@ const messages = defineMessages({
   descriptionLine3: {
     id: 'wallet.restore.dialog.step.success.dialog.description.line3',
     defaultMessage:
-      '!!!<strong>If your restored Balance wallet is empty, but you were expecting it to have funds</strong>, please check that you used the correct wallet recovery phrase during the restoration process.',
+      '!!!<strong>If your restored wallet is empty, but you were expecting it to have funds</strong>, please check that you used the correct wallet recovery phrase during the restoration process.',
     description:
       'Description "line 3" on the wallet restore "success" step dialog.',
   },

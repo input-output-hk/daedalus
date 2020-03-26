@@ -24,6 +24,12 @@
   }
 }
 
+.isBold {
+  label {
+    font-family: var(--font-medium);
+  }
+}
+
 .isSubmitting {
   box-shadow: none !important;
   @include loading-spinner('../../../assets/images/spinner-light.svg');

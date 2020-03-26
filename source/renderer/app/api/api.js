@@ -52,12 +52,13 @@ import { createWallet } from './wallets/requests/createWallet';
 import { restoreWallet } from './wallets/requests/restoreWallet';
 import { restoreLegacyWallet } from './wallets/requests/restoreLegacyWallet';
 import { restoreByronWallet } from './wallets/requests/restoreByronWallet';
+import { restoreExportedByronWallet } from './wallets/requests/restoreExportedByronWallet';
 import { updateWallet } from './wallets/requests/updateWallet';
 import { updateByronWallet } from './wallets/requests/updateByronWallet';
 import { forceWalletResync } from './wallets/requests/forceWalletResync';
 import { forceLegacyWalletResync } from './wallets/requests/forceLegacyWalletResync';
 import { getWalletUtxos } from './wallets/requests/getWalletUtxos';
-// import { getByronWalletUtxos } from './wallets/requests/getByronWalletUtxos';
+import { getByronWalletUtxos } from './wallets/requests/getByronWalletUtxos';
 import { getWallet } from './wallets/requests/getWallet';
 import { getLegacyWallet } from './wallets/requests/getLegacyWallet';
 import { getWalletIdAndBalance } from './wallets/requests/getWalletIdAndBalance';
@@ -149,6 +150,7 @@ import type {
   DeleteWalletRequest,
   RestoreWalletRequest,
   RestoreLegacyWalletRequest,
+  RestoreExportedByronWalletRequest,
   UpdateSpendingPasswordRequest,
   ExportWalletToFileRequest,
   GetWalletCertificateRecoveryPhraseRequest,
@@ -258,7 +260,7 @@ export default class AdaApi {
       return wallets.map(_createWalletFromServerData);
     } catch (error) {
       logger.error('AdaApi::getWallets error', { error });
-      throw new GenericApiError();
+      throw new GenericApiError(error);
     }
   };
 
@@ -294,7 +296,7 @@ export default class AdaApi {
       return _createWalletFromServerData(wallet);
     } catch (error) {
       logger.error('AdaApi::getWallet error', { error });
-      throw new GenericApiError();
+      throw new GenericApiError(error);
     }
   };
 
@@ -318,7 +320,7 @@ export default class AdaApi {
       return response.map(_createAddressFromServerData);
     } catch (error) {
       logger.error('AdaApi::getAddresses error', { error });
-      throw new GenericApiError();
+      throw new GenericApiError(error);
     }
   };
 
@@ -358,7 +360,7 @@ export default class AdaApi {
       );
     } catch (error) {
       logger.error('AdaApi::searchHistory error', { error });
-      throw new GenericApiError();
+      throw new GenericApiError(error);
     }
 
     // @API TODO - Filter / Search fine tunning "pending" for V2
@@ -508,7 +510,7 @@ export default class AdaApi {
     //   return new Promise(resolve => resolve({ transactions, total }));
     // } catch (error) {
     //   logger.error('AdaApi::searchHistory error', { error });
-    //   throw new GenericApiError();
+    //   throw new GenericApiError(error);
     // }
   };
 
@@ -553,7 +555,7 @@ export default class AdaApi {
       return _createWalletFromServerData(wallet);
     } catch (error) {
       logger.error('AdaApi::createWallet error', { error });
-      throw new GenericApiError();
+      throw new GenericApiError(error);
     }
   };
 
@@ -573,7 +575,7 @@ export default class AdaApi {
       return true;
     } catch (error) {
       logger.error('AdaApi::deleteWallet error', { error });
-      throw new GenericApiError();
+      throw new GenericApiError(error);
     }
   };
 
@@ -638,7 +640,7 @@ export default class AdaApi {
       if (error.code === 'too_big_transaction') {
         throw new TooBigTransactionError();
       }
-      throw new GenericApiError();
+      throw new GenericApiError(error);
     }
   };
 
@@ -722,7 +724,7 @@ export default class AdaApi {
       ) {
         throw new InvalidAddressError();
       } else {
-        throw new GenericApiError();
+        throw new GenericApiError(error);
       }
     }
   };
@@ -748,7 +750,7 @@ export default class AdaApi {
       if (error.message === 'CannotCreateAddress') {
         throw new IncorrectSpendingPasswordError();
       }
-      throw new GenericApiError();
+      throw new GenericApiError(error);
     }
   };
 
@@ -798,7 +800,7 @@ export default class AdaApi {
       return response;
     } catch (error) {
       logger.error('AdaApi::getWalletRecoveryPhrase error', { error });
-      throw new GenericApiError();
+      throw new GenericApiError(error);
     }
   }
 
@@ -814,7 +816,7 @@ export default class AdaApi {
       logger.error('AdaApi::getWalletCertificateAdditionalMnemonics error', {
         error,
       });
-      throw new GenericApiError();
+      throw new GenericApiError(error);
     }
   }
 
@@ -833,7 +835,7 @@ export default class AdaApi {
       logger.error('AdaApi::getWalletCertificateRecoveryPhrase error', {
         error,
       });
-      throw new GenericApiError();
+      throw new GenericApiError(error);
     }
   }
 
@@ -886,7 +888,7 @@ export default class AdaApi {
           throw new ForbiddenMnemonicError();
         }
       }
-      throw new GenericApiError();
+      throw new GenericApiError(error);
     }
   };
 
@@ -938,7 +940,7 @@ export default class AdaApi {
           throw new ForbiddenMnemonicError();
         }
       }
-      throw new GenericApiError();
+      throw new GenericApiError(error);
     }
   };
 
@@ -992,7 +994,7 @@ export default class AdaApi {
           throw new ForbiddenMnemonicError();
         }
       }
-      throw new GenericApiError();
+      throw new GenericApiError(error);
     }
   };
 
@@ -1046,7 +1048,7 @@ export default class AdaApi {
           throw new ForbiddenMnemonicError();
         }
       }
-      throw new GenericApiError();
+      throw new GenericApiError(error);
     }
   };
 
@@ -1100,7 +1102,7 @@ export default class AdaApi {
           throw new ForbiddenMnemonicError();
         }
       }
-      throw new GenericApiError();
+      throw new GenericApiError(error);
     }
   };
 
@@ -1154,7 +1156,43 @@ export default class AdaApi {
           throw new ForbiddenMnemonicError();
         }
       }
-      throw new GenericApiError();
+      throw new GenericApiError(error);
+    }
+  };
+
+  restoreExportedByronWallet = async (
+    request: RestoreExportedByronWalletRequest
+  ): Promise<Wallet> => {
+    logger.debug('AdaApi::restoreExportedByronWallet called', {
+      name: request.name,
+      hasPassword: request.passphrase_hash !== null,
+    });
+    try {
+      const legacyWallet: LegacyAdaWallet = await restoreExportedByronWallet(
+        this.config,
+        { walletInitData: request }
+      );
+      const extraLegacyWalletProps = {
+        address_pool_gap: 0, // Not needed for legacy wallets
+        delegation: {
+          active: {
+            status: WalletDelegationStatuses.NOT_DELEGATING,
+          },
+        },
+        isLegacy: true,
+      };
+      const wallet = {
+        ...legacyWallet,
+        ...extraLegacyWalletProps,
+      };
+      logger.debug('AdaApi::restoreExportedByronWallet success', { wallet });
+      return _createWalletFromServerData(wallet);
+    } catch (error) {
+      logger.error('AdaApi::restoreExportedByronWallet error', { error });
+      if (error.code === 'wallet_already_exists') {
+        throw new WalletAlreadyRestoredError();
+      }
+      throw new GenericApiError(error);
     }
   };
 
@@ -1224,7 +1262,7 @@ export default class AdaApi {
       logger.debug('AdaApi::nextUpdate success: No Update Available');
     } catch (error) {
       logger.error('AdaApi::nextUpdate error', { error });
-      throw new GenericApiError();
+      throw new GenericApiError(error);
     }
     */
 
@@ -1238,7 +1276,7 @@ export default class AdaApi {
       logger.debug('AdaApi::postponeUpdate success', { response });
     } catch (error) {
       logger.error('AdaApi::postponeUpdate error', { error });
-      throw new GenericApiError();
+      throw new GenericApiError(error);
     }
   };
 
@@ -1250,7 +1288,7 @@ export default class AdaApi {
       logger.debug('AdaApi::applyUpdate success', { response });
     } catch (error) {
       logger.error('AdaApi::applyUpdate error', { error });
-      throw new GenericApiError();
+      throw new GenericApiError(error);
     }
   };
 
@@ -1262,7 +1300,20 @@ export default class AdaApi {
     try {
       let wallet: AdaWallet;
       if (isLegacy) {
-        wallet = await updateByronWallet(this.config, { walletId, name });
+        const response = await updateByronWallet(this.config, {
+          walletId,
+          name,
+        });
+        wallet = {
+          ...response,
+          address_pool_gap: 0, // Not needed for legacy wallets
+          delegation: {
+            active: {
+              status: WalletDelegationStatuses.NOT_DELEGATING,
+            },
+          },
+          isLegacy: true,
+        };
       } else {
         wallet = await updateWallet(this.config, { walletId, name });
       }
@@ -1270,7 +1321,7 @@ export default class AdaApi {
       return _createWalletFromServerData(wallet);
     } catch (error) {
       logger.error('AdaApi::updateWallet error', { error });
-      throw new GenericApiError();
+      throw new GenericApiError(error);
     }
   };
 
@@ -1307,7 +1358,7 @@ export default class AdaApi {
       ) {
         throw new IncorrectSpendingPasswordError();
       }
-      throw new GenericApiError();
+      throw new GenericApiError(error);
     }
   };
 
@@ -1335,7 +1386,7 @@ export default class AdaApi {
       ) {
         throw new IncorrectSpendingPasswordError();
       }
-      throw new GenericApiError();
+      throw new GenericApiError(error);
     }
   };
 
@@ -1355,7 +1406,7 @@ export default class AdaApi {
       return response;
     } catch (error) {
       logger.error('AdaApi::exportWalletToFile error', { error });
-      throw new GenericApiError();
+      throw new GenericApiError(error);
     }
   };
 
@@ -1369,13 +1420,7 @@ export default class AdaApi {
     try {
       let response: WalletUtxos;
       if (isLegacy) {
-        // @TODO - response is faked to enable UI. Uncomment once endpoint is available
-        // response = await getByronWalletUtxos(this.config, { walletId });
-        response = {
-          total: { quantity: 100, unit: 'lovelace' },
-          scale: 'log10',
-          distribution: { fake: 1 },
-        };
+        response = await getByronWalletUtxos(this.config, { walletId });
       } else {
         response = await getWalletUtxos(this.config, { walletId });
       }
@@ -1383,7 +1428,7 @@ export default class AdaApi {
       return response;
     } catch (error) {
       logger.error('AdaApi::getWalletUtxos error', { error });
-      throw new GenericApiError();
+      throw new GenericApiError(error);
     }
   };
 
@@ -1413,7 +1458,7 @@ export default class AdaApi {
       };
     } catch (error) {
       logger.error('AdaApi::getWalletIdAndBalance error', { error });
-      throw new GenericApiError();
+      throw new GenericApiError(error);
     }
   };
 
@@ -1433,7 +1478,7 @@ export default class AdaApi {
       logger.debug('AdaApi::forceWalletResync success', { response });
     } catch (error) {
       logger.error('AdaApi::forceWalletResync error', { error });
-      throw new GenericApiError();
+      throw new GenericApiError(error);
     }
   };
 
@@ -1455,7 +1500,7 @@ export default class AdaApi {
       return _createMigrationFeeFromServerData(response);
     } catch (error) {
       logger.error('AdaApi::transferFundsCalculateFee error', { error });
-      throw new GenericApiError();
+      throw new GenericApiError(error);
     }
   };
 
@@ -1484,7 +1529,7 @@ export default class AdaApi {
       ) {
         throw new IncorrectSpendingPasswordError();
       }
-      throw new GenericApiError();
+      throw new GenericApiError(error);
     }
   };
 
@@ -1502,7 +1547,7 @@ export default class AdaApi {
       return stakePools;
     } catch (error) {
       logger.error('AdaApi::getStakePools error', { error });
-      throw new GenericApiError();
+      throw new GenericApiError(error);
     }
   };
 
@@ -1511,7 +1556,7 @@ export default class AdaApi {
     try {
       if (isIncentivizedTestnet) {
         const wallets: AdaWallets = await getWallets(this.config);
-        Promise.all(
+        await Promise.all(
           wallets.map(wallet =>
             deleteWallet(this.config, { walletId: wallet.id })
           )
@@ -1520,7 +1565,7 @@ export default class AdaApi {
       const legacyWallets: LegacyAdaWallets = await getLegacyWallets(
         this.config
       );
-      Promise.all(
+      await Promise.all(
         legacyWallets.map(wallet =>
           deleteLegacyWallet(this.config, { walletId: wallet.id })
         )
@@ -1528,7 +1573,7 @@ export default class AdaApi {
       logger.debug('AdaApi::testReset success');
     } catch (error) {
       logger.error('AdaApi::testReset error', { error });
-      throw new GenericApiError();
+      throw new GenericApiError(error);
     }
   };
 
@@ -1612,7 +1657,7 @@ export default class AdaApi {
       return { latestAppVersion, applicationVersion };
     } catch (error) {
       logger.error('AdaApi::getLatestAppVersion error', { error });
-      throw new GenericApiError();
+      throw new GenericApiError(error);
     }
   };
 
@@ -1667,7 +1712,7 @@ export default class AdaApi {
       return delegationFee;
     } catch (error) {
       logger.error('AdaApi::calculateDelegationFee error', { error });
-      throw new GenericApiError();
+      throw new GenericApiError(error);
     }
   };
 
@@ -1697,7 +1742,7 @@ export default class AdaApi {
       ) {
         throw new IncorrectSpendingPasswordError();
       }
-      throw new GenericApiError();
+      throw new GenericApiError(error);
     }
   };
 
