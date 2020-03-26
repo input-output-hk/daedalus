@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## 1.0.0
+## 1.0.0-FC1
 
 ### Features
 
@@ -28,6 +28,7 @@ Changelog
 
 ### Chores
 
+- Updated Daedalus name and version for the Daedalus Flight 1.0.0-FC1 release ([PR 1910](https://github.com/input-output-hk/daedalus/pull/1910))
 - Updated UI copy ([PR 1907](https://github.com/input-output-hk/daedalus/pull/1907))
 - Updated Byron Haskell address validation ([PR 1902](https://github.com/input-output-hk/daedalus/pull/1902))
 - Updated test configuration to cover Byron features only ([PR 1895](https://github.com/input-output-hk/daedalus/pull/1895))
