@@ -15,6 +15,7 @@ import type {
   MessageBody,
   LogSystemInfoParams,
   StateSnapshotLogParams,
+  WalletMigrationReportData,
 } from '../../common/types/logging.types';
 
 const isTest = process.env.NODE_ENV === 'test';
@@ -153,4 +154,18 @@ export const logStateSnapshot = (
   );
   fs.writeFileSync(stateSnapshotFilePath, JSON.stringify(messageBody));
   return messageBody;
+};
+
+export const generateWalletMigrationReport = (
+  data: WalletMigrationReportData
+) => {
+  const walletMigrationrReportFilePath = path.join(
+    pubLogsFolderPath,
+    'Wallet-migration-report.json'
+  );
+  const generatedAt = new Date().toISOString();
+  fs.writeFileSync(
+    walletMigrationrReportFilePath,
+    JSON.stringify({ ...data, generatedAt })
+  );
 };

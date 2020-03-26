@@ -43,7 +43,7 @@ import type {
   WalletHardwareKind,
 } from '../types/walletRestoreTypes';
 import type { CsvRecord } from '../../../common/types/rewards-csv-request.types';
-import type { walletExportTypeChoices } from '../types/walletExportTypes';
+import type { WalletExportTypeChoices } from '../types/walletExportTypes';
 import type { WalletImportFromFileParams } from '../actions/wallets-actions';
 import type LocalizableError from '../i18n/LocalizableError';
 import type {
@@ -199,7 +199,7 @@ export default class WalletsStore extends Store {
   @observable restoredWallet: ?Wallet = null;
 
   /* ----------  Export Wallet  ---------- */
-  @observable walletExportType: walletExportTypeChoices = 'paperWallet';
+  @observable walletExportType: WalletExportTypeChoices = 'paperWallet';
   @observable walletExportMnemonic =
     'marine joke dry silk ticket thing sugar stereo aim';
 
@@ -1037,7 +1037,7 @@ export default class WalletsStore extends Store {
   };
 
   @action _chooseWalletExportType = (params: {
-    walletExportType: walletExportTypeChoices,
+    walletExportType: WalletExportTypeChoices,
   }) => {
     if (this.walletExportType !== params.walletExportType) {
       this.walletExportType = params.walletExportType;

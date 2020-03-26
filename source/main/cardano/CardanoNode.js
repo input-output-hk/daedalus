@@ -58,17 +58,12 @@ type CardanoNodeIpcMessage = {
   FInjects?: FaultInjectionIpcResponse,
 };
 
-type NodeArgs = Array<string>;
-
 export type CardanoNodeConfig = {
-  workingDir: string, // Path to the state directory
-  walletBin: string, // Path to jormungandr or cardano-node executable
-  nodeBin: string,
+  stateDir: string, // Path to the state directory
   nodeImplementation: CardanoNodeImplementation,
   nodeConfig: NodeConfig,
   logFilePath: string, // Log file path for cardano-sl
   tlsPath: string, // Path to cardano-node TLS folder
-  walletArgs: NodeArgs, // Arguments that are used to spwan cardano-node
   startupTimeout: number, // Milliseconds to wait for cardano-node to startup
   startupMaxRetries: number, // Maximum number of retries for re-starting then ode
   shutdownTimeout: number, // Milliseconds to wait for cardano-node to gracefully shutdown
@@ -267,12 +262,9 @@ export class CardanoNode {
     // Setup
     const { _log } = this;
     const {
-      // walletBin,
-      // nodeBin,
       // startupTimeout,
-      // walletArgs,
       nodeConfig,
-      workingDir,
+      stateDir,
       cluster,
       block0Path,
       block0Hash,
@@ -312,7 +304,7 @@ export class CardanoNode {
         nodeImplementation,
         nodeConfig,
         cluster,
-        stateDir: workingDir,
+        stateDir,
         block0Path,
         block0Hash,
         secretPath,
