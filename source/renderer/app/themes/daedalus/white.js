@@ -655,6 +655,10 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-splash-network-overlay-button-text-color': '#29b595',
     '--theme-splash-network-overlay-button-text-color-hover': '#fff',
     '--theme-splash-network-title-color': '#2d2d2d',
+    '--theme-splash-network-scrollbar-thumb-background':
+      'rgba(45, 45, 45, 0.3)',
+    '--theme-splash-network-scrollbar-thumb-background-hover':
+      'rgba(45, 45, 45, 0.5)',
     '--theme-splash-network-subTitle1-color': 'rgba(45, 45, 45, 0.5)',
     '--theme-splash-network-subTitle2-color': 'rgba(45, 45, 45, 0.5)',
     '--theme-splash-network-description-background-color':

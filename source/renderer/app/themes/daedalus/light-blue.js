@@ -663,6 +663,10 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-splash-network-overlay-button-text-color': '#fafbfc',
     '--theme-splash-network-overlay-button-text-color-hover': '#243e62',
     '--theme-splash-network-title-color': '#fafbfc',
+    '--theme-splash-network-scrollbar-thumb-background':
+      'rgba(250, 251, 252, 0.3)',
+    '--theme-splash-network-scrollbar-thumb-background-hover':
+      'rgba(250, 251, 252, 0.5)',
     '--theme-splash-network-subTitle1-color': 'rgba(250, 251, 252, 0.5)',
     '--theme-splash-network-subTitle2-color': 'rgba(250, 251, 252, 0.5)',
     '--theme-splash-network-description-background-color': 'rgba(0, 0, 0, 0.1)',

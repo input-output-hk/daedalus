@@ -787,6 +787,12 @@ export const createDaedalusComponentsTheme = (
       '--theme-splash-network-title-color': '#fafbfc',
       '--theme-splash-network-subTitle1-color': `${background.secondary}`,
       '--theme-splash-network-subTitle2-color': `${background.secondary}`,
+      '--theme-splash-network-scrollbar-thumb-background': `${chroma(
+        text.secondary
+      ).alpha(0.3)}`,
+      '--theme-splash-network-scrollbar-thumb-background-hover': `${chroma(
+        text.secondary
+      ).alpha(0.5)}`,
       '--theme-splash-network-description-background-color':
         'rgba(255, 255, 255, 0.1)',
       '--theme-splash-network-description-color': `${text.primary}`,

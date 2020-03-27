@@ -666,6 +666,10 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-splash-network-overlay-button-text-color': '#fff',
     '--theme-splash-network-overlay-button-text-color-hover': '#202225',
     '--theme-splash-network-title-color': '#fff',
+    '--theme-splash-network-scrollbar-thumb-background':
+      'rgba(255, 255, 255, 0.3)',
+    '--theme-splash-network-scrollbar-thumb-background-hover':
+      'rgba(255, 255, 255, 0.5)',
     '--theme-splash-network-subTitle1-color': 'rgba(255, 255, 255, 0.5)',
     '--theme-splash-network-subTitle2-color': 'rgba(255, 255, 255, 0.5)',
     '--theme-splash-network-description-background-color': 'rgba(0, 0, 0, 0.1)',

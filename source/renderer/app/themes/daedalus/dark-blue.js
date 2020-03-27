@@ -670,6 +670,10 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-splash-network-overlay-button-text-color': '#e9f4fe',
     '--theme-splash-network-overlay-button-text-color-hover': '#263345',
     '--theme-splash-network-title-color': '#e9f4fe',
+    '--theme-splash-network-scrollbar-thumb-background':
+      'rgba(255, 255, 255, 0.3)',
+    '--theme-splash-network-scrollbar-thumb-background-hover':
+      'rgba(255, 255, 255, 0.5)',
     '--theme-splash-network-subTitle1-color': 'rgba(233, 244, 254, 0.5)',
     '--theme-splash-network-subTitle2-color': 'rgba(233, 244, 254, 0.5)',
     '--theme-splash-network-description-background-color': 'rgba(0, 0, 0, 0.1)',
