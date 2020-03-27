@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import SplashNetworkITN from '../../components/splash/SplashNetworkITN';
-import SplashNetworkByronReboot from '../../components/splash/SplashNetworkByronReboot';
+import SplashNetworkFlight from '../../components/splash/SplashNetworkFlight';
 
 type Props = InjectedProps;
 
@@ -26,7 +26,7 @@ export default class SplashNetworkPage extends Component<Props> {
     }
     if (isFlight) {
       return (
-        <SplashNetworkByronReboot
+        <SplashNetworkFlight
           onClose={() => networkStatusActions.toggleSplash.trigger()}
           openExternalLink={openExternalLink}
         />

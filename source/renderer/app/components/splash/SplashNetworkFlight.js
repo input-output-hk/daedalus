@@ -71,7 +71,7 @@ type Props = {
   openExternalLink: Function,
 };
 
-export default class SplashNetworkByronReboot extends Component<Props> {
+export default class SplashNetworkFlight extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
