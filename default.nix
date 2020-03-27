@@ -189,18 +189,7 @@ let
     uninstaller = if needSignedBinaries then self.signedUninstaller else self.unsignedUninstaller;
 
     unsigned-windows-installer = let
-      mapping = { # TODO, get from launcher-config.nix
-        mainnet = "Daedalus";
-        mainnet_flight = "Daedalus Flight";
-        staging = "Daedalus Staging";
-        testnet = "Daedalus Testnet";
-        nightly = "Daedalus Nightly";
-        itn_rewards_v1 = "Daedalus - Rewards v1";
-        qa = "Daedalus QA";
-        selfnode = "Daedalus Selfnode";
-        itn_selfnode = "Daedalus Selfnode - ITN";
-      };
-      installDir = mapping.${cluster};
+      installDir = self.launcherConfigs.installerConfig.spacedName;
     in pkgs.runCommand "win64-installer-${cluster}" {
       buildInputs = [
         self.daedalus-installer self.nsis pkgs.unzip pkgs.jq self.yaml2json
@@ -307,49 +296,7 @@ let
       categories = "Application;Network;";
       icon = "INSERT_ICON_PATH_HERE";
     };
-    iconPath = {
-      # the target of these paths must not be a symlink
-      demo    = {
-        small = ./installers/icons/mainnet/64x64.png;
-        large = ./installers/icons/mainnet/1024x1024.png;
-      };
-      mainnet = {
-        small = ./installers/icons/mainnet/64x64.png;
-        large = ./installers/icons/mainnet/1024x1024.png;
-      };
-      mainnet_flight = {
-        small = ./installers/icons/mainnet_flight/64x64.png;
-        large = ./installers/icons/mainnet_flight/1024x1024.png;
-      };
-      staging = {
-        small = ./installers/icons/staging/64x64.png;
-        large = ./installers/icons/staging/1024x1024.png;
-      };
-      testnet = {
-        small = ./installers/icons/testnet/64x64.png;
-        large = ./installers/icons/testnet/1024x1024.png;
-      };
-      selfnode = {
-        small = ./installers/icons/selfnode/64x64.png;
-        large = ./installers/icons/selfnode/1024x1024.png;
-      };
-      qa = {
-        small = ./installers/icons/qa/64x64.png;
-        large = ./installers/icons/qa/1024x1024.png;
-      };
-      nightly = {
-        small = ./installers/icons/nightly/64x64.png;
-        large = ./installers/icons/nightly/1024x1024.png;
-      };
-      itn_rewards_v1 = {
-        small = ./installers/icons/itn_rewards_v1/64x64.png;
-        large = ./installers/icons/itn_rewards_v1/1024x1024.png;
-      };
-      itn_selfnode = {
-        small = ./installers/icons/itn_selfnode/64x64.png;
-        large = ./installers/icons/itn_selfnode/1024x1024.png;
-      };
-    };
+    iconPath = self.launcherConfigs.installerConfig.iconPath;
     namespaceHelper = pkgs.writeScriptBin "namespaceHelper" ''
       #!/usr/bin/env bash
 
@@ -383,8 +330,8 @@ let
 
       echo "in post-install hook"
 
-      cp -f ${self.iconPath.${cluster}.large} $DAEDALUS_DIR/icon_large.png
-      cp -f ${self.iconPath.${cluster}.small} $DAEDALUS_DIR/icon.png
+      cp -f ${self.iconPath.large} $DAEDALUS_DIR/icon_large.png
+      cp -f ${self.iconPath.small} $DAEDALUS_DIR/icon.png
       cp -Lf ${self.namespaceHelper}/bin/namespaceHelper $DAEDALUS_DIR/namespaceHelper
       mkdir -pv ~/.local/bin ''${XDG_DATA_HOME}/applications
       ${pkgs.lib.optionalString (cluster == "mainnet") "cp -Lf ${self.namespaceHelper}/bin/namespaceHelper ~/.local/bin/daedalus"}

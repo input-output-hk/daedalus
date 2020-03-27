@@ -25,7 +25,7 @@ let
     windows = "\${DAEDALUS_INSTALL_DIRECTORY}";
   };
 
-  mkSpacedName = network: if network == "mainnet" then "Daedalus" else "Daedalus ${installDirectorySuffix.${network}}";
+  mkSpacedName = network: if network == "mainnet" then "Daedalus" else "Daedalus ${installDirectorySuffix}";
   spacedName = mkSpacedName network;
 
   frontendBinPath = let
@@ -53,17 +53,28 @@ let
     jormungandrEnv = jormungandrLib.environments.${network};
   in if (backend == "cardano") then cardanoEnv else jormungandrEnv;
 
-  installDirectorySuffix = {
-    mainnet_flight = "Flight";
-    qa = "QA";
-    selfnode = "Selfnode";
-    itn_selfnode = "Selfnode - ITN";
-    nightly = "Nightly";
-    itn_rewards_v1 = "- Rewards v1";
-    staging = "Staging";
-    testnet = "Testnet";
-  };
+  installDirectorySuffix = let
+    supportedNetworks = {
+      mainnet_flight = "Flight";
+      qa = "QA";
+      selfnode = "Selfnode";
+      itn_selfnode = "Selfnode - ITN";
+      nightly = "Nightly";
+      itn_rewards_v1 = "- Rewards v1";
+      staging = "Staging";
+      testnet = "Testnet";
+    };
+    unsupported = "Unsupported";
+    networkSupported = __hasAttr network supportedNetworks;
+  in if networkSupported then supportedNetworks.${network} else unsupported;
 
+  iconPath = let
+    networkIconExists = __pathExists (../. + "/installers/icons/${network}");
+    network' = if networkIconExists then network else "mainnet";
+  in {
+    small = ../installers/icons + "/${network'}/64x64.png";
+    large = ../installers/icons + "/${network'}/1024x1024.png";
+  };
 
   dataDir = let
     path.linux = "\${XDG_DATA_HOME}/Daedalus/${network}";
@@ -200,7 +211,7 @@ let
 
     installerConfig = {
       installDirectory = if os == "linux" then "Daedalus/${network}" else spacedName;
-      inherit spacedName;
+      inherit spacedName iconPath;
       macPackageName = "Daedalus${network}";
       dataDir = dataDir;
       hasBlock0 = false;
@@ -262,10 +273,8 @@ let
     };
     installerConfig = {
       installDirectory = if os == "linux" then "Daedalus/${network}" else spacedName;
-      inherit spacedName;
+      inherit spacedName iconPath dataDir hasBlock0;
       macPackageName = "Daedalus${network}";
-      inherit dataDir;
-      inherit hasBlock0;
       configPath = "${nodeConfigFiles}/config.yaml";
     } // (lib.optionalAttrs hasBlock0 {
       block0 = "${nodeConfigFiles}/block-0.bin";
