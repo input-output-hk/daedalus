@@ -4,7 +4,7 @@ import type { NetworkParametersResponse } from '../types';
 import { request } from '../../utils/request';
 
 export const getNetworkParameters = (
-  epochId: string,
+  epochId: number,
   config: RequestConfig
 ): Promise<NetworkParametersResponse> =>
   request({

@@ -1628,7 +1628,7 @@ export default class AdaApi {
   };
 
   getNetworkParameters = async (
-    epochId: string
+    epochId: number
   ): Promise<GetNetworkParametersResponse> => {
     logger.debug('AdaApi::getNetworkParameters called');
     try {
@@ -1660,7 +1660,6 @@ export default class AdaApi {
       };
     } catch (error) {
       logger.error('AdaApi::getNetworkParameters error', { error });
-      // @API TODO - Inspect this implementation once TLS support is implemented on the BE
       if (error.code === TlsCertificateNotValidError.API_ERROR) {
         throw new TlsCertificateNotValidError();
       }

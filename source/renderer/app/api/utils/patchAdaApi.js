@@ -82,43 +82,6 @@ export default (api: AdaApi) => {
     }
   };
 
-  api.getNetworkParameters = async (
-    epochId: string
-  ): Promise<GetNetworkParametersResponse> => {
-    logger.debug('AdaApi::getNetworkParameters (PATCHED) called');
-    try {
-      const networkParameters: NetworkParametersResponse = await getNetworkParameters(
-        epochId,
-        api.config
-      );
-      logger.debug('AdaApi::getNetworkParameters (PATCHED) success', {
-        networkParameters,
-      });
-
-      const {
-        genesis_block_hash: genesisBlockHash,
-        blockchain_start_time, // eslint-disable-line
-        slot_length: slotLength,
-        epoch_length: epochLength,
-        epoch_stability: epochStability,
-        active_slot_coefficient: activeSlotCoefficient,
-      } = networkParameters;
-      const blockchainStartTime = moment(blockchain_start_time).valueOf();
-
-      return {
-        genesisBlockHash,
-        blockchainStartTime,
-        slotLength,
-        epochLength,
-        epochStability,
-        activeSlotCoefficient,
-      };
-    } catch (error) {
-      logger.error('AdaApi::getNetworkParameters (PATCHED) error', { error });
-      throw new GenericApiError();
-    }
-  };
-
   api.setSyncProgress = async syncProgress => {
     SYNC_PROGRESS = syncProgress;
   };
