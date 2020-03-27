@@ -78,18 +78,21 @@ export const restoreLegacyWallet = async (
     const mnemonicsIndex = await getMnemonicsIndex.call(client);
     recoveryPhrase = balanceMnemonics[mnemonicsIndex]
   } else {
-    recoveryPhrase = balanceMnemonicsWithNoFunds;
+    recoveryPhrase = null;
   }
   await client.executeAsync((name, recoveryPhrase, transferFunds, noWalletsErrorMessage, done) => {
+    let mnemonics = recoveryPhrase || daedalus.utils.crypto.generateMnemonic(12);
+    mnemonics = typeof mnemonics === 'string' ? mnemonics.split(' ') : mnemonics;
+
     done({
       walletName: name,
-      recoveryPhrase,
+      recoveryPhrase: mnemonics,
       spendingPassword: 'Secret1234',
     })
     daedalus.api.ada
       .restoreByronRandomWallet({
         walletName: name,
-        recoveryPhrase,
+        recoveryPhrase: mnemonics,
         spendingPassword: 'Secret1234',
       })
       .then(() =>
