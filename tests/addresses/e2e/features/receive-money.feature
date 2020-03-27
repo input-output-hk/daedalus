@@ -9,7 +9,7 @@ Feature: Receive money
       | Target Wallet |
 
   @shelley
-  Scenario: Hide/show used addresses
+  Scenario: Hide/show "Shelley" wallet used addresses
     Given I am on the "Target Wallet" wallet "receive" screen
     And I have made the following transactions:
       | source          | destination    | amount |
@@ -18,8 +18,8 @@ Feature: Receive money
     When I click the ShowUsed switch
     Then I should not see any used addresses
 
-  @api-wip
-  Scenario: Hide/show used addresses
+  @byron @api-wip
+  Scenario: Hide/show "Byron" wallet used addresses
     Given I am on the "Target Wallet" wallet "receive" screen
     And I enter wallet password in generate address input field "Secret1234"
     And I generate 1 addresses
@@ -31,8 +31,8 @@ Feature: Receive money
     When I click the ShowUsed switch
     Then I should see 1 addresses
 
-  @api-wip
-  Scenario: Addresses ordering
+  @byron @api-wip
+  Scenario: Byron Wallet addresses ordering
     Given I am on the "Test Wallet" wallet "receive" screen
     And I enter wallet password in generate address input field "Secret1234"
     And I generate 2 addresses

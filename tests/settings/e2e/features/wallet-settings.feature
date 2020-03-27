@@ -78,20 +78,8 @@ Feature: Wallet Settings
     And I click outside "name" input field
     Then I should see new wallet name "キュビズム"
 
-  @shelley
-  Scenario: User force Rewards Wallet resync
+  Scenario: User force Wallet resync
     Given I am on the "first" wallet "settings" screen
-    When I click "Resync wallet" button
-    And I see "Resync wallet" button spinner
-    Then I should see the restore status notification while restore is running
-    And I should not see the restore status notification once restore is finished
-    And I should not see "Resync wallet" button spinner anymore
-
-  Scenario: User force Balance Wallet resync
-    Given I have a "Balance Wallet" balance wallet
-    Then I freeze
-    And I am on the "Balance Wallet" wallet "settings" screen
-    And I should not see the restore status notification once restore is finished
     When I click "Resync wallet" button
     And I see "Resync wallet" button spinner
     Then I should see the restore status notification while restore is running

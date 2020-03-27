@@ -11,6 +11,7 @@ import {
 } from 'cucumber';
 import electronPath from 'electron';
 import fakeDialog from 'spectron-fake-dialog';
+import { includes } from 'lodash';
 import {
   generateScreenshotFilePath,
   getTestNameFromTestFile,
@@ -88,9 +89,30 @@ BeforeAll({ timeout: 5 * 60 * 1000 }, async () => {
   context.app = await startApp();
 });
 
+// Skip / Execute testt depending on node integration
+Before(async function(testCase) {
+  const tags = getTagNames(testCase);
+  const isIncentivizedTestnetRequest = await context.app.client.execute(() => {
+    return daedalus.environment.isIncentivizedTestnet
+  });
+
+  if (isIncentivizedTestnetRequest.value) {
+    // Skip all Byron related tests
+    if (includes(tags, '@byron') && !includes(tags, '@shelley')) {
+      return 'skipped';
+    }
+  } else {
+    // Skip all Shelley related tests
+    if (includes(tags, '@shelley') && !includes(tags, '@byron')) {
+      return 'skipped';
+    }
+  }
+});
+
 // Make the electron app accessible in each scenario context
 Before({ tags: '@e2e', timeout: DEFAULT_TIMEOUT * 2 }, async function(testCase) {
   const tags = getTagNames(testCase);
+
   this.app = context.app;
   this.client = context.app.client;
   this.browserWindow = context.app.browserWindow;
@@ -147,28 +169,6 @@ Before({ tags: '@newsfeed' }, function() {
   resetTestNews(this.client);
 });
 
-Before({ tags: '@e2e' }, async function() {
-  await this.client.execute(() => {
-    // Reset incentivized testnet flag
-    const isIncentivizedTestnet = daedalus.environment.isIncentivizedTestnet;
-    if (isIncentivizedTestnet) {
-      daedalus.stores.app._setIncentivizedTestnet(false);
-      daedalus.actions.profile.updateTheme.trigger({ theme: 'light-blue' });
-    }
-  });
-});
-
-Before({ tags: '@shelley' }, async function() {
-  await this.client.execute(() => {
-    // Set incentivized testnet flag
-    const isIncentivizedTestnet = daedalus.environment.isIncentivizedTestnet;
-    if (!isIncentivizedTestnet) {
-      daedalus.stores.app._setIncentivizedTestnet(true);
-      daedalus.actions.profile.updateTheme.trigger({ theme: 'incentivized-testnet' });
-    }
-  });
-});
-
 // adds waitAndClick method to webdriver
 Before(function(testCase) {
   const { name } = testCase.pickle;
@@ -200,7 +200,6 @@ Before({ tags: '@e2e' }, function() {
     return translation.value;
   };
 });
-
 
 // this ensures that the spectron instance of the app restarts
 // after the node update acceptance test shuts it down via 'kill-process'

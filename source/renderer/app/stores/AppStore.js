@@ -183,9 +183,4 @@ export default class AppStore extends Store {
   @action _setIsDownloadingLogs = (isDownloadNotificationVisible: boolean) => {
     this.isDownloadNotificationVisible = isDownloadNotificationVisible;
   };
-
-  _setIncentivizedTestnet = isIncentivizedTestnet => {
-    global.isIncentivizedTestnet = isIncentivizedTestnet;
-    global.environment.isIncentivizedTestnet = isIncentivizedTestnet;
-  };
 }
