@@ -31,7 +31,7 @@ Feature: Custom number, date and time formats
       | time   | hh:mm:ss A |
 
   Scenario: Transactions list displays the correct user date preference format
-    Given I have a "Test Wallet" rewards wallet with funds
+    Given I have a "Test Wallet" wallet with funds
     And I have the following wallets:
       | name          |
       | Target Wallet |
@@ -56,7 +56,7 @@ Feature: Custom number, date and time formats
       | time   | hh:mm:ss A |
 
   Scenario: Transactions list displays the correct user date preference format
-    Given I have a "Test Wallet" rewards wallet with funds
+    Given I have a "Test Wallet" wallet with funds
     And I have the following wallets:
       | name          |
       | Target Wallet |
@@ -105,7 +105,7 @@ Feature: Custom number, date and time formats
       | date  | DD/MM/YYYY |
 
   Scenario: Sidebar wallets display the correct user number preference format
-    Given I have a "Test Wallet" rewards wallet with funds
+    Given I have a "Test Wallet" wallet with funds
     And I have the following wallets:
       | name          |
       | Target Wallet |
@@ -117,7 +117,7 @@ Feature: Custom number, date and time formats
     Then the "Target Wallet" should display the "number" of value "123,4K ADA"
 
   Scenario: Users can create transactions regardless of their number format preference
-    Given I have a "Test Wallet" rewards wallet with funds
+    Given I have a "Test Wallet" wallet with funds
     And I have the following wallets:
       | name          |
       | Target Wallet |

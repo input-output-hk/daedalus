@@ -1,9 +1,7 @@
-@e2e
 Feature: TEST
   Background:
     Given I have completed the basic setup
 
-  @watch
   Scenario: Testing
     And I have the following wallets:
       | name   |
@@ -16,3 +14,4 @@ Feature: TEST
       | BYRON MULTIPLE 3  |
     And I have a "BYRON SINGLE" balance wallet
   Then I freeze
+ 

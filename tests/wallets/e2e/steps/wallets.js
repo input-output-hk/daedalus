@@ -21,7 +21,7 @@ Given(/^I have (created )?the following (balance )?wallets:$/, async function(mo
   const type = await getWalletType.call(this, _type);
   const isLegacy = type === 'byron';
   const sequentially = mode === 'created ';
-  await createWallets.call(this, table.hashes(), { sequentially, isLegacy });
+  await createWallets.call(this, table.hashes(), { sequentially: true, isLegacy });
 });
 
 // Create a single wallet with funds
@@ -40,6 +40,7 @@ Given(/^I have a "([^"]*)" (balance )?wallet with funds$/, async function(wallet
 Given(/^I have a "([^"]*)" (balance )?wallet$/, async function(walletName, _type) {
   const type = await getWalletType.call(this, _type);
   const isLegacy = type === 'byron';
+
   if (!isLegacy) {
     await createWallets.call(this, [{ name: walletName }], {});
   } else {
