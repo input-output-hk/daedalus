@@ -145,10 +145,8 @@ pushd installers
 
           if [[ "$itnClusters" == "$cluster" ]]; then
             BRIDGE_FLAG="--jormungandr ${JORMUNGANDR_BRIDGE}"
-            BACKEND=jormungandr
           else
             BRIDGE_FLAG="--cardano ${CARDANO_BRIDGE}"
-            BACKEND=cardano
           fi
 
           INSTALLER_CMD=("make-installer"
