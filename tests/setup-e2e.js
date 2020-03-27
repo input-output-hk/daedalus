@@ -147,6 +147,27 @@ Before({ tags: '@newsfeed' }, function() {
   resetTestNews(this.client);
 });
 
+Before({ tags: '@e2e' }, async function() {
+  await this.client.execute(() => {
+    // Reset incentivized testnet flag
+    const isIncentivizedTestnet = daedalus.environment.isIncentivizedTestnet;
+    if (isIncentivizedTestnet) {
+      daedalus.stores.app._setIncentivizedTestnet(false);
+      daedalus.actions.profile.updateTheme.trigger({ theme: 'light-blue' });
+    }
+  });
+});
+
+Before({ tags: '@shelley' }, async function() {
+  await this.client.execute(() => {
+    // Set incentivized testnet flag
+    const isIncentivizedTestnet = daedalus.environment.isIncentivizedTestnet;
+    if (!isIncentivizedTestnet) {
+      daedalus.stores.app._setIncentivizedTestnet(true);
+      daedalus.actions.profile.updateTheme.trigger({ theme: 'incentivized-testnet' });
+    }
+  });
+});
 
 // adds waitAndClick method to webdriver
 Before(function(testCase) {

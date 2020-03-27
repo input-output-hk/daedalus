@@ -272,12 +272,15 @@ const createWalletsSequentially = async function(wallets: Array<any>) {
   });
   const isIncentivizedTestnet = isIncentivizedTestnetRequest.value;
 
+
+
   for (const walletData of wallets) {
     const result = await this.client.executeAsync((wallet, isIncentivizedTestnet, done) => {
+      const mnemonic = daedalus.utils.crypto.generateMnemonic(isIncentivizedTestnet ? 15 : 12);
       daedalus.api.ada
         .createWallet({
           name: wallet.name,
-          mnemonic: daedalus.utils.crypto.generateMnemonic(isIncentivizedTestnet ? 15 : 12),
+          mnemonic,
           spendingPassword: wallet.password || 'Secret1234',
         })
         .then(() =>
@@ -440,18 +443,11 @@ export const getWalletType = async function(_type?: string = '') {
   let type = _type ? _type.trim() : null;
   if (type === 'balance') return 'byron';
 
-
-  console.debug('>>> TEST: ', type);
-
   if (!type) {
     const isIncentivizedTestnetRequest = await this.client.execute(() => {
-      // console.debug('DAEDALUS: ', daedalus);
-      // console.debug('DAEDALUS - ENV: ', daedalus.environment);
       return daedalus.environment.isIncentivizedTestnet
     });
-    console.debug('>>> isIncentivizedTestnetRequest: ', isIncentivizedTestnetRequest.value);
     type = isIncentivizedTestnetRequest.value ? 'shelley' : 'byron';
-    console.debug('----- TYPE -----', type);
   }
   return type;
 }

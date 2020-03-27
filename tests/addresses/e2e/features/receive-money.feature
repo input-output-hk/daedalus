@@ -17,7 +17,7 @@ Feature: Receive money
     And I should see 1 used addresses
     When I click the ShowUsed switch
     Then I should not see any used addresses
- 
+
   @api-wip
   Scenario: Hide/show used addresses
     Given I am on the "Target Wallet" wallet "receive" screen
