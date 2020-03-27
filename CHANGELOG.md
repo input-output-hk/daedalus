@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 
+- Implements the Flight release information window ([PR 1917](https://github.com/input-output-hk/daedalus/pull/1917))
 - Added new icon for Daedalus Flight ([PR 1909](https://github.com/input-output-hk/daedalus/pull/1909))
 - Integrated network parameters api endpoint ([PR 1915](https://github.com/input-output-hk/daedalus/pull/1915))
 - Implemented flight candidates changes ([PR 1908](https://github.com/input-output-hk/daedalus/pull/1908))
