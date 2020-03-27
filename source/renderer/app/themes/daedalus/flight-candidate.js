@@ -646,10 +646,10 @@ export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
     '--theme-splash-network-overlay-button-text-color': '#fff',
     '--theme-splash-network-overlay-button-text-color-hover': '#2a2b3c',
     '--theme-splash-network-title-color': '#fff',
-    '--theme-splash-network-subTitle1-color': 'rgba(255, 255, 255, 0.5)',
-    '--theme-splash-network-subTitle2-color': 'rgba(255, 255, 255, 0.5)',
+    '--theme-splash-network-subTitle1-color': '#ffb923',
+    '--theme-splash-network-subTitle2-color': '#ffb923',
     '--theme-splash-network-description-background-color': 'rgba(0, 0, 0, 0.1)',
-    '--theme-splash-network-description-color': 'rgba(255, 255, 255, 0.7)',
+    '--theme-splash-network-description-color': 'rgba(250, 251, 252, 0.7)',
     '--theme-splash-network-description-bold-color': '#fff',
     '--theme-splash-network-learn-more-color': '#fff',
   },
@@ -825,8 +825,7 @@ export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
       'rgba(255, 255, 255, 0.14)',
     '--theme-transactions-date-picker-button-background-color-hover':
       'rgba(255, 255, 255, 0.07)',
-    '--theme-transactions-date-picker-button-color':
-      '#ffffff',
+    '--theme-transactions-date-picker-button-color': '#ffffff',
     '--theme-transactions-filter-modal-bg-color': '#3f404f',
     '--theme-transactions-filter-date-picker-shadow':
       '0 0 20px 0 rgba(0, 0, 0, 0.4)',
