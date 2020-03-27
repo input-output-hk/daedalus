@@ -15,6 +15,7 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
   render() {
     const { isIncentivizedTestnet } = global;
     const { stores } = this.props;
+    const { isFlight } = stores.app.environment;
     const {
       cardanoNodeState,
       isNodeResponding,
@@ -42,6 +43,7 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
       <SyncingConnecting
         cardanoNodeState={cardanoNodeState}
         hasBeenConnected={hasBeenConnected}
+        isFlight={isFlight}
         isConnected={isConnected}
         isSynced={isSynced}
         isConnecting={!isConnected}
