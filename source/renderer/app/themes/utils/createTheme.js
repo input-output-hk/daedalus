@@ -987,6 +987,7 @@ export const createDaedalusComponentsTheme = (
       ).alpha(0.18)}`,
       '--theme-transactions-date-picker-button-background-color': `${background.primary.lightest}`,
       '--theme-transactions-date-picker-button-background-color-hover': `${background.primary.regular}`,
+      '--theme-transactions-date-picker-button-color': `${text.primary}`,
       '--theme-transactions-filter-modal-bg-color': `${background.primary.lightest}`,
       '--theme-transactions-filter-date-picker-shadow':
         '0 5px 20px 0 rgba(0, 0, 0, 0.25)',

@@ -834,6 +834,8 @@ export const WHITE_THEME_OUTPUT = {
       'rgba(41, 181, 149, 0.14)',
     '--theme-transactions-date-picker-button-background-color-hover':
       'rgba(41, 181, 149, 0.07)',
+    '--theme-transactions-date-picker-button-color':
+      '#000000',
     '--theme-transactions-filter-modal-bg-color': '#fff',
     '--theme-transactions-filter-date-picker-shadow':
       '0 5px 20px 0 rgba(0, 0, 0, 0.25)',
