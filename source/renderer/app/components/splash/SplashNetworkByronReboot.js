@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import { defineMessages, intlShape } from 'react-intl';
+import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import Splash from '../widgets/splash/Splash';
 
 const messages = defineMessages({
@@ -82,23 +82,15 @@ export default class SplashNetworkByronReboot extends Component<Props> {
     const title = intl.formatMessage(messages.title);
     const subTitle1 = intl.formatMessage(messages.versionName);
     const subTitle2 = intl.formatMessage(messages.networkName);
-    const description = [
-      <p key="flightDescription1">
-        {intl.formatMessage(messages.flightDescription1)}
-      </p>,
-      <p key="flightDescription2">
-        {intl.formatMessage(messages.flightDescription2)}
-      </p>,
-      <p key="flightDescription3">
-        {intl.formatMessage(messages.flightDescription3)}
-      </p>,
-      <p key="flightDescription4">
-        {intl.formatMessage(messages.flightDescription4)}
-      </p>,
-      <p key="flightDescription5">
-        {intl.formatMessage(messages.flightDescription5)}
-      </p>,
-    ];
+    const description = (
+      <>
+        <p>{intl.formatMessage(messages.flightDescription1)}</p>
+        <FormattedHTMLMessage tagName="p" {...messages.flightDescription2} />
+        <p>{intl.formatMessage(messages.flightDescription3)}</p>
+        <p>{intl.formatMessage(messages.flightDescription4)}</p>
+        <p>{intl.formatMessage(messages.flightDescription5)}</p>
+      </>
+    );
     const buttonLabel = intl.formatMessage(messages.buttonLabel);
     const linkLabel = intl.formatMessage(messages.linkLabel);
     const onLinkClick = () =>
