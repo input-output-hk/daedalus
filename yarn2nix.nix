@@ -1,4 +1,4 @@
-{ lib, pkgs, nodejs-12_x, python, api, apiVersion, cluster, buildNum, nukeReferences, fetchzip, daedalus, stdenv, win64 ? false, wine, runCommand, fetchurl }:
+{ lib, pkgs, nodejs-12_x, python, api, apiVersion, cluster, buildNum, nukeReferences, fetchzip, daedalus, stdenv, win64 ? false, wine, runCommand, fetchurl, spacedName, iconPath }:
 let
   nodejs = nodejs-12_x;
   yarn2nix = import (fetchzip {
@@ -12,18 +12,8 @@ let
   isNix2 = 0 <= builtins.compareVersions builtins.nixVersion "1.12";
   canUseFetchGit = dotGitExists && isNix2;
   origPackage = builtins.fromJSON (builtins.readFile ./package.json);
-  nameTable = {
-    mainnet = "Daedalus";
-    staging = "Daedalus Staging";
-    testnet = "Daedalus Testnet";
-    nightly = "Daedalus Nightly";
-    itn_rewards_v1 = "Daedalus - Rewards v1";
-    qa = "Daedalus QA";
-    selfnode = "Daedalus Selfnode";
-    itn_selfnode = "Daedalus Selfnode - ITN";
-  };
   newPackage = (origPackage // {
-    productName = nameTable.${if cluster == null then "testnet" else cluster};
+    productName = spacedName;
   }) // lib.optionalAttrs (win64 == false) {
     main = "main/index.js";
   };
@@ -81,7 +71,7 @@ yarn2nix.mkYarnPackage {
     mkdir home
     export HOME=$(realpath home)
     cp ${newPackagePath} package.json
-    yarn --offline package --win64 --icon installers/icons/${cluster}/${cluster}
+    yarn --offline package --win64 --icon ${iconPath.base}
     ls -ltrh release/win32-x64/Daedalus*-win32-x64/
     cp -r release/win32-x64/Daedalus*-win32-x64 $out
     pushd $out/resources/app/dist

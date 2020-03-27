@@ -266,6 +266,8 @@ let
       inherit buildNum;
       api = "ada";
       apiVersion = self.cardano-sl.daedalus-bridge.version;
+      inherit (self.launcherConfigs.installerConfig) spacedName;
+      inherit cluster;
     };
     rawapp-win64 = self.rawapp.override { win64 = true; };
     source = builtins.filterSource localLib.cleanSourceFilter ./.;
