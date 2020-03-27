@@ -91,9 +91,7 @@ const { CARDANO_PROCESS_NAME } = deriveProcessNames(
   nodeImplementation
 );
 // create store for persisting CardanoNode and Daedalus PID's in fs
-const store = new Store({
-  name: nodeImplementation === 'jormungandr' ? 'config' : 'config-byron-reboot',
-});
+const store = new Store({ name: 'config' });
 
 export class CardanoNode {
   /**

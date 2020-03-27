@@ -16,7 +16,6 @@
 # * nodeConfigFiles
 # * configFiles (launcher config + installer config)
 
-
 let
   dirSep = if os == "windows" then "\\" else "/";
   configDir = configFilesSource: {
@@ -24,6 +23,9 @@ let
     macos64 = if devShell then configFilesSource else "\${DAEDALUS_INSTALL_DIRECTORY}/../Resources";
     windows = "\${DAEDALUS_INSTALL_DIRECTORY}";
   };
+
+  # Add proper logic for Daedalus Flight build here:
+  isFlight = network == "mainnet";
 
   baseName = if network == "mainnet" then "Daedalus" else "Daedalus ${installDirectorySuffix.${network}}";
   spacedName = if backend == "cardano" then "${baseName} Flight" else baseName;
@@ -33,7 +35,6 @@ let
     frontendBin.windows = "${spacedName}";
     frontendBin.macos64 = "Frontend";
   in frontendBin.${os};
-
 
   # Helper function to make a path to a binary
   mkBinPath = binary: let
@@ -58,19 +59,23 @@ let
     testnet = "Testnet";
   };
 
-
   dataDir = let
     path.linux = "\${XDG_DATA_HOME}/Daedalus/${network}";
     path.macos64 = "\${HOME}/Library/Application Support/${baseName}";
     path.windows = "\${APPDATA}\\${baseName}";
   in path.${os};
 
+  mainnetDataDir = let
+    path.linux = "\${XDG_DATA_HOME}/Daedalus/mainnet";
+    path.macos64 = "\${HOME}/Library/Application Support/Daedalus";
+    path.windows = "\${APPDATA}\\Daedalus";
+  in path.${os};
+
   logsPrefix = let
-    suffix = if backend == "cardano" then "ByronReboot" else "";
     path.linux = "${dataDir}/Logs";
     path.windows = "Logs";
     path.macos64 = "${dataDir}/Logs";
-  in "${path.${os}}${suffix}";
+  in path.${os};
 
   launcherLogsPrefix = "${logsPrefix}${dirSep}pub";
 
@@ -139,14 +144,14 @@ let
       ''}
     '';
     legacyWalletDB = let
-      path.linux = "${dataDir}${dirSep}Wallet";
-      path.macos64 = "${dataDir}${dirSep}Wallet-1.0";
-      path.windows = "${dataDir}${dirSep}Wallet-1.0";
+      path.linux = if isFlight then "${mainnetDataDir}${dirSep}Wallet" else "${dataDir}${dirSep}Wallet";
+      path.macos64 = if isFlight then "${mainnetDataDir}${dirSep}Wallet-1.0" else "${dataDir}${dirSep}Wallet-1.0";
+      path.windows = if isFlight then "${mainnetDataDir}${dirSep}Wallet-1.0" else "${dataDir}${dirSep}Wallet-1.0";
     in path.${os};
     legacySecretKey = let
-      path.linux = "${dataDir}${dirSep}Secrets${dirSep}secret.key";
-      path.macos64 = "${dataDir}${dirSep}Secrets-1.0${dirSep}secret.key";
-      path.windows = "${dataDir}${dirSep}Secrets-1.0${dirSep}secret.key";
+      path.linux = if isFlight then "${mainnetDataDir}${dirSep}Secrets${dirSep}secret.key" else "${dataDir}${dirSep}Secrets${dirSep}secret.key";
+      path.macos64 = if isFlight then "${mainnetDataDir}${dirSep}Secrets-1.0${dirSep}secret.key" else "${dataDir}${dirSep}Secrets-1.0${dirSep}secret.key";
+      path.windows = if isFlight then "${mainnetDataDir}${dirSep}Secrets-1.0${dirSep}secret.key" else "${dataDir}${dirSep}Secrets-1.0${dirSep}secret.key";
     in path.${os};
     launcherConfig = defaultLauncherConfig // {
       inherit

@@ -5,7 +5,7 @@ import { readLauncherConfig } from './utils/config';
 import { environment } from './environment';
 import type { CardanoNodeImplementation } from '../common/types/cardano-node.types';
 
-const { isTest, isProduction, isBlankScreenFixActive } = environment;
+const { isFlight, isTest, isProduction, isBlankScreenFixActive } = environment;
 
 // Make sure Daedalus is started with required configuration
 const { LAUNCHER_CONFIG } = process.env;
@@ -63,6 +63,7 @@ export type LauncherConfig = {
   exportWalletsBin: string,
   legacySecretKey: string,
   legacyWalletDB: string,
+  isDaedalusFlight: boolean,
 };
 
 type WindowOptionsType = {
@@ -97,13 +98,14 @@ export const windowOptions: WindowOptionsType = {
   useContentSize: true,
 };
 
-export const APP_NAME = 'Daedalus';
 export const launcherConfig: LauncherConfig = readLauncherConfig(
   LAUNCHER_CONFIG
 );
+export const { nodeImplementation, cluster } = launcherConfig;
+
+export const APP_NAME = isFlight ? 'Daedalus Flight' : 'Daedalus';
 export const appLogsFolderPath = launcherConfig.logsPrefix;
 export const pubLogsFolderPath = path.join(appLogsFolderPath, 'pub');
-export const { nodeImplementation, cluster } = launcherConfig;
 export const stateDirectoryPath = launcherConfig.stateDir;
 export const stateDrive = isWindows ? stateDirectoryPath.slice(0, 2) : '/';
 

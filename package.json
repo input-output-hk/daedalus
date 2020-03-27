@@ -50,6 +50,7 @@
     "nix:nightly": "NETWORK=nightly nix-shell --argstr nodeImplementation jormungandr --argstr cluster nightly",
     "nix:qa": "NETWORK=qa nix-shell --argstr nodeImplementation jormungandr --argstr cluster qa",
     "nix:mainnet": "NETWORK=mainnet nix-shell --argstr nodeImplementation cardano --argstr cluster mainnet",
+    "nix:flight": "NETWORK=mainnet FLIGHT=true nix-shell --argstr nodeImplementation cardano --argstr cluster mainnet --argstr flight true",
     "nix:selfnode": "NETWORK=selfnode nix-shell --argstr nodeImplementation cardano --argstr cluster selfnode",
     "nix:staging": "NETWORK=staging nix-shell --argstr nodeImplementation cardano --argstr cluster staging",
     "nix:testnet": "NETWORK=testnet nix-shell --argstr nodeImplementation cardano --argstr cluster testnet",

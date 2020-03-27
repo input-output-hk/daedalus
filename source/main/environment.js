@@ -31,6 +31,7 @@ import {
 const CURRENT_NODE_ENV = process.env.NODE_ENV || DEVELOPMENT;
 const RAW_NETWORK = process.env.NETWORK || '';
 const NETWORK = evaluateNetwork(process.env.NETWORK);
+const isFlight = process.env.FLIGHT === 'true';
 const isDev = checkIsDev(CURRENT_NODE_ENV);
 const isTest = checkIsTest(CURRENT_NODE_ENV);
 const isProduction = checkIsProduction(CURRENT_NODE_ENV);
@@ -62,6 +63,7 @@ const BUILD_LABEL = getBuildLabel(
   BUILD_NUMBER,
   NETWORK,
   CURRENT_NODE_ENV,
+  isFlight,
   version
 );
 const INSTALLER_VERSION = uniq([API_VERSION, BUILD]).join('.');
@@ -84,6 +86,7 @@ export const environment: Environment = Object.assign(
     current: CURRENT_NODE_ENV,
     isDev,
     isTest,
+    isFlight,
     isProduction,
     isMainnet,
     isStaging,

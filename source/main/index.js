@@ -3,7 +3,6 @@ import os from 'os';
 import path from 'path';
 import { app, BrowserWindow, shell } from 'electron';
 import { client } from 'electron-connect';
-import { initByronRebootConfig } from './utils/config';
 import { logger } from './utils/logging';
 import {
   setupLogging,
@@ -118,11 +117,6 @@ const onAppReady = async () => {
 
   // Detect locale
   let locale = getLocale(network);
-
-  // Init Byron Reboot config
-  const { nodeImplementation, stateDir } = launcherConfig;
-  const isByronReboot = nodeImplementation === 'cardano';
-  if (isByronReboot) await initByronRebootConfig(logger, stateDir);
 
   mainWindow = createMainWindow(locale);
 

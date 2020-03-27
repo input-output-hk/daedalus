@@ -10,9 +10,7 @@ import { nodeImplementation } from './config';
 
 const _process = process;
 const _isIncentivizedTestnet = nodeImplementation === 'jormungandr';
-const _electronStore = new ElectronStore({
-  name: _isIncentivizedTestnet ? 'config' : 'config-byron-reboot',
-});
+const _electronStore = new ElectronStore({ name: 'config' });
 
 process.once('loaded', () => {
   Object.assign(global, {
