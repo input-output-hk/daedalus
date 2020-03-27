@@ -90,11 +90,10 @@ let
   in path.${os};
 
   logsPrefix = let
-    suffix = if backend == "cardano" then "ByronReboot" else "";
     path.linux = "${dataDir}/Logs";
     path.windows = "Logs";
     path.macos64 = "${dataDir}/Logs";
-  in "${path.${os}}${suffix}";
+  in path.${os};
 
   launcherLogsPrefix = "${logsPrefix}${dirSep}pub";
 
