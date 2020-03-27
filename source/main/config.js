@@ -63,7 +63,7 @@ export type LauncherConfig = {
   exportWalletsBin: string,
   legacySecretKey: string,
   legacyWalletDB: string,
-  isDaedalusFlight: boolean,
+  isFlight: boolean,
 };
 
 type WindowOptionsType = {
@@ -106,6 +106,7 @@ export const {
   nodeImplementation,
   stateDir,
   logsPrefix,
+  isFlight,
 } = launcherConfig;
 export const appLogsFolderPath = logsPrefix;
 export const pubLogsFolderPath = path.join(appLogsFolderPath, 'pub');

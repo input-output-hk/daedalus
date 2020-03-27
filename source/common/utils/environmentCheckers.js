@@ -33,10 +33,9 @@ export const getBuildLabel = (
   buildNumber: string,
   network: string,
   currentNodeEnv: string,
-  isFlight: boolean,
   version: string
 ) => {
-  const flightLabel = isFlight ? ' Flight' : '';
+  const flightLabel = ' Flight' || '';
   const networkLabel = checkIsMainnet(network)
     ? ''
     : ` ${networkPrettyNames[network]}`;
