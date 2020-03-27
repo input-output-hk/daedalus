@@ -5,6 +5,7 @@ import { action } from 'mobx';
 import BigNumber from 'bignumber.js/bignumber';
 import AdaApi from '../api';
 import { getNetworkInfo } from '../network/requests/getNetworkInfo';
+import { getNetworkParameters } from '../network/requests/getNetworkParameters';
 import { getLatestAppVersion } from '../nodes/requests/getLatestAppVersion';
 import { GenericApiError } from '../common/errors';
 import { logger } from '../../utils/logging';
@@ -17,6 +18,8 @@ import StakePool from '../../domains/StakePool';
 import type {
   GetNetworkInfoResponse,
   NetworkInfoResponse,
+  GetNetworkParametersResponse,
+  NetworkParametersResponse,
 } from '../network/types';
 import type {
   LatestAppVersionInfoResponse,
@@ -75,6 +78,43 @@ export default (api: AdaApi) => {
       };
     } catch (error) {
       logger.error('AdaApi::getNetworkInfo (PATCHED) error', { error });
+      throw new GenericApiError();
+    }
+  };
+
+  api.getNetworkParameters = async (
+    epochId: string
+  ): Promise<GetNetworkParametersResponse> => {
+    logger.debug('AdaApi::getNetworkParameters (PATCHED) called');
+    try {
+      const networkParameters: NetworkParametersResponse = await getNetworkParameters(
+        epochId,
+        api.config
+      );
+      logger.debug('AdaApi::getNetworkParameters (PATCHED) success', {
+        networkParameters,
+      });
+
+      const {
+        genesis_block_hash: genesisBlockHash,
+        blockchain_start_time, // eslint-disable-line
+        slot_length: slotLength,
+        epoch_length: epochLength,
+        epoch_stability: epochStability,
+        active_slot_coefficient: activeSlotCoefficient,
+      } = networkParameters;
+      const blockchainStartTime = moment(blockchain_start_time).valueOf();
+
+      return {
+        genesisBlockHash,
+        blockchainStartTime,
+        slotLength,
+        epochLength,
+        epochStability,
+        activeSlotCoefficient,
+      };
+    } catch (error) {
+      logger.error('AdaApi::getNetworkParameters (PATCHED) error', { error });
       throw new GenericApiError();
     }
   };
