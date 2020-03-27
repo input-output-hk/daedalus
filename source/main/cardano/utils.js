@@ -4,6 +4,8 @@ import path from 'path';
 import { spawnSync } from 'child_process';
 import { logger } from '../utils/logging';
 import { TESTNET_MAGIC } from '../config';
+import { environment } from '../environment';
+import ensureDirectoryExists from '../utils/ensureDirectoryExists';
 import type { LauncherConfig } from '../config';
 import type { ExportWalletsMainResponse } from '../../common/ipc/api';
 import type {
@@ -169,10 +171,12 @@ export const createSelfnodeConfig = async (
 export const exportWallets = async (
   launcherConfig: LauncherConfig
 ): Promise<ExportWalletsMainResponse> => {
+  const { isFlight } = environment;
   const {
     exportWalletsBin,
     legacySecretKey,
     legacyWalletDB,
+    stateDir,
     cluster,
   } = launcherConfig;
 
@@ -180,8 +184,67 @@ export const exportWallets = async (
     exportWalletsBin,
     legacySecretKey,
     legacyWalletDB,
+    stateDir,
     cluster,
+    isFlight,
   });
+
+  let legacySecretKeyPath = legacySecretKey;
+  let legacyWalletDBPath = legacyWalletDB;
+
+  // In case of Daedalus Flight build we need to copy over
+  // legacySecretKey and legacyWalletDB from Mainnet state dir
+  // into Daedalus Flight state dir before extracting the wallets
+  if (isFlight) {
+    try {
+      // Remove migration data dir if it exists
+      const migrationDataDirPath = path.join(stateDir, 'migration-data');
+      await fs.remove(migrationDataDirPath);
+      ensureDirectoryExists(migrationDataDirPath);
+      logger.info('ipcMain: Preparing Daedalus Flight migration data...', {
+        migrationDataDirPath,
+      });
+
+      const legacySecretKeyExists = await fs.pathExists(legacySecretKey);
+      if (legacySecretKeyExists) {
+        logger.info('ipcMain: Copying secret key file...', {
+          legacySecretKey,
+        });
+        legacySecretKeyPath = path.join(stateDir, 'migration-data/secret.key');
+        await fs.copy(legacySecretKey, legacySecretKeyPath);
+        logger.info('ipcMain: Copied secret key file', {
+          legacySecretKeyPath,
+        });
+      } else {
+        logger.info('ipcMain: Secret key file not found');
+      }
+
+      const legacyWalletDBFullPath = `${legacyWalletDB}-acid`;
+      const legacyWalletDBPathExists = await fs.pathExists(
+        legacyWalletDBFullPath
+      );
+      if (legacyWalletDBPathExists) {
+        logger.info('ipcMain: Copying wallet db directory...', {
+          legacyWalletDBFullPath,
+        });
+        legacyWalletDBPath = path.join(
+          stateDir,
+          'migration-data/wallet-db-acid'
+        );
+        await fs.copy(legacyWalletDBFullPath, legacyWalletDBPath);
+        legacyWalletDBPath = legacyWalletDBPath.replace('-acid', '');
+        logger.info('ipcMain: Copied wallet db directory', {
+          legacyWalletDBPath,
+        });
+      } else {
+        logger.info('ipcMain: Wallet db directory not found');
+      }
+    } catch (error) {
+      logger.info('ipcMain: Preparing Daedalus Flight migration data failed', {
+        error,
+      });
+    }
+  }
 
   const clusterFlags = [];
   if (cluster === 'testnet') {
@@ -189,13 +252,15 @@ export const exportWallets = async (
   } else {
     clusterFlags.push('--mainnet');
   }
+
   const { stdout, stderr } = spawnSync(exportWalletsBin, [
     ...clusterFlags,
     '--keyfile',
-    legacySecretKey,
+    legacySecretKeyPath,
     '--wallet-db-path',
-    legacyWalletDB,
+    legacyWalletDBPath,
   ]);
+
   const wallets = JSON.parse(stdout.toString() || '[]');
   const errors = stderr.toString();
 
