@@ -16,7 +16,7 @@ export type FutureEpoch = {
 
 export type ClockOffset = {
   quantity: number,
-  unit: string,
+  unit: 'microsecond',
 };
 
 export type SlotLength = {
@@ -74,7 +74,7 @@ export type NetworkInfoResponse = {
 };
 
 export type NetworkClockResponse = {
-  status: 'available' | 'unavailable',
+  status: 'available' | 'unavailable' | 'pending',
   offset?: ClockOffset,
 };
 
