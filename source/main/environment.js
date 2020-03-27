@@ -1,6 +1,7 @@
 // @flow
 import os from 'os';
 import { uniq, get, includes } from 'lodash';
+import { isFlight } from './config';
 import { version } from '../../package.json';
 import type { Environment } from '../common/types/environment.types';
 import { DEVELOPMENT, OS_NAMES } from '../common/types/environment.types';
@@ -62,6 +63,7 @@ const BUILD_LABEL = getBuildLabel(
   BUILD_NUMBER,
   NETWORK,
   CURRENT_NODE_ENV,
+  isFlight,
   version
 );
 const INSTALLER_VERSION = uniq([API_VERSION, BUILD]).join('.');
