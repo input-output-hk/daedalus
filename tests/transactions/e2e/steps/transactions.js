@@ -52,7 +52,7 @@ When(/^I click on the show more transactions button$/, async function() {
 });
 
 When(/^I can see the send form$/, function() {
-  return this.client.waitForVisible('.WalletSendForm');
+  return this.client.waitForVisible('.WalletSendForm_receiverInput');
 });
 
 When(/^I fill out the wallet send form with:$/, function(table) {

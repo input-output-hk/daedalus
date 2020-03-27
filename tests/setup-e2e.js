@@ -112,7 +112,6 @@ Before(async function(testCase) {
 // Make the electron app accessible in each scenario context
 Before({ tags: '@e2e', timeout: DEFAULT_TIMEOUT * 2 }, async function(testCase) {
   const tags = getTagNames(testCase);
-
   this.app = context.app;
   this.client = context.app.client;
   this.browserWindow = context.app.browserWindow;

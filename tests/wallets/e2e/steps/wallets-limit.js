@@ -15,7 +15,7 @@ Given(
       name: `Wallet ${i + 1}`,
       password: 'Secret1234',
     }));
-    await createWallets.call(this, wallets);
+    await createWallets.call(this, wallets, { sequentially: true });
   }
 );
 

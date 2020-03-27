@@ -23,7 +23,7 @@ Feature: Wallet Delegation
     Given I am on the Delegation "delegation-center" screen
     And I mark experimental feature as read
     Then I should see a "Create rewards wallet" notification
-
+  
   Scenario: Only Rewards wallets are listed on the "Delegation center" screen
     Given I have the following balance wallets:
       | name            |

@@ -216,6 +216,8 @@ import { getNewsHash } from './news/requests/getNewsHash';
 import { deleteTransaction } from './transactions/requests/deleteTransaction';
 import { WALLET_BYRON_KINDS } from '../config/walletRestoreConfig';
 
+const { isIncentivizedTestnet } = global;
+
 export default class AdaApi {
   config: RequestConfig;
 
@@ -230,7 +232,6 @@ export default class AdaApi {
 
   getWallets = async (): Promise<Array<Wallet>> => {
     logger.debug('AdaApi::getWallets called');
-    const { isIncentivizedTestnet } = global;
     try {
       const wallets: AdaWallets = isIncentivizedTestnet
         ? await getWallets(this.config)
@@ -514,7 +515,6 @@ export default class AdaApi {
   };
 
   createWallet = async (request: CreateWalletRequest): Promise<Wallet> => {
-    const { isIncentivizedTestnet } = global;
     logger.debug('AdaApi::createWallet called', {
       parameters: filterLogData(request),
     });
@@ -786,7 +786,6 @@ export default class AdaApi {
     mnemonic.split(' ').length === ADA_CERTIFICATE_MNEMONIC_LENGTH;
 
   getWalletRecoveryPhrase(): Promise<Array<string>> {
-    const { isIncentivizedTestnet } = global;
     logger.debug('AdaApi::getWalletRecoveryPhrase called');
     try {
       const response: Promise<Array<string>> = new Promise(resolve =>
@@ -1555,7 +1554,6 @@ export default class AdaApi {
   };
 
   testReset = async (): Promise<void> => {
-    const { isIncentivizedTestnet } = global;
     logger.debug('AdaApi::testReset called');
     try {
       if (isIncentivizedTestnet) {

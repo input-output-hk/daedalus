@@ -136,7 +136,7 @@ export const getNameOfActiveWalletInSidebar = async function() {
 };
 
 export const getWalletByName = function(walletName: string) {
-  return this.wallets.find(w => w.name === walletName);
+  return this.context.wallets.find(w => w.name === walletName);
 };
 
 /**
@@ -266,13 +266,10 @@ export const createWallets = async function(
 
 const createWalletsSequentially = async function(wallets: Array<any>) {
   this.wallets = [];
-
   const isIncentivizedTestnetRequest = await this.client.execute(() => {
     return daedalus.environment.isIncentivizedTestnet
   });
   const isIncentivizedTestnet = isIncentivizedTestnetRequest.value;
-
-
 
   for (const walletData of wallets) {
     const result = await this.client.executeAsync((wallet, isIncentivizedTestnet, done) => {
@@ -296,6 +293,8 @@ const createWalletsSequentially = async function(wallets: Array<any>) {
         )
         .catch(error => done(error.stack));
     }, walletData, isIncentivizedTestnet);
+    const wallet = await waitUntilWalletIsLoaded.call(this, walletData.name);
+    addOrSetWalletsForScenario.call(this, wallet);
     this.wallets = result.value;
   }
 };
@@ -324,20 +323,21 @@ const createWalletsAsync = async function(table, isLegacy?: boolean) {
         });
       })
     )
-      .then(() => {
-        const { all: storeWallets } = daedalus.stores.wallets;
-        done({ storeWallets, mnemonics })
-      })
+      .then(storeWallets =>
+        daedalus.stores.wallets
+          .refreshWalletsData()
+          .then(() => done({ storeWallets, mnemonics }))
+          .catch(error => done(error))
+      )
       .catch(error => done('error.stack'));
   }, table, isLegacy);
 
   const { storeWallets, mnemonics, BLAH } = result.value;
 
-  // Add or set the wallets for this scenario
-  if (this.wallets != null) {
-    this.wallets.push(...result.value.storeWallets);
+  if (this.context.wallets != null) {
+    this.context.wallets.push(...result.value.storeWallets);
   } else {
-    this.wallets = result.value.storeWallets;
+    this.context.wallets = result.value.storeWallets;
   }
   this.mnemonics = Object.assign(
     {},
