@@ -1,5 +1,6 @@
-{ lib, pkgs, nodejs-12_x, python, api, apiVersion, cluster, buildNum, nukeReferences, fetchzip, daedalus, stdenv, win64 ? false, wine, runCommand, fetchurl, spacedName, iconPath }:
+{ lib, pkgs, nodejs-12_x, python, api, apiVersion, cluster, buildNum, nukeReferences, fetchzip, daedalus, stdenv, win64 ? false, wine, runCommand, fetchurl, spacedName, iconPath, launcherConfig }:
 let
+  cluster' = launcherConfig.networkName;
   nodejs = nodejs-12_x;
   yarn2nix = import (fetchzip {
     url = "https://github.com/moretea/yarn2nix/archive/v1.0.0.tar.gz";
@@ -53,7 +54,7 @@ yarn2nix.mkYarnPackage {
   API = api;
   API_VERSION = apiVersion;
   CI = "nix";
-  NETWORK = cluster;
+  NETWORK = cluster';
   BUILD_NUMBER = "${toString buildNum}";
   NODE_ENV = "production";
   extraBuildInputs = if win64 then [ wine nukeReferences ] else [ nukeReferences ];

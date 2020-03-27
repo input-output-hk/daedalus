@@ -116,6 +116,7 @@ let
     frontendOnlyMode = true;
     tlsPath = null;
     cluster = if network == "mainnet_flight" then "mainnet" else network;
+    networkName = if network == "mainnet_flight" then "mainnet" else network;
     isFlight = network == "mainnet_flight";
     nodeImplementation = backend;
   };
@@ -191,7 +192,6 @@ let
         dbConverterBin
         legacyWalletDB
         legacySecretKey;
-      networkName = network;
       syncTolerance = "300s";
       nodeConfig = {
         kind = "byron";
