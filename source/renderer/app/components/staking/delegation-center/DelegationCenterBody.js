@@ -16,7 +16,7 @@ const messages = defineMessages({
   },
   loadingStakePoolsMessage: {
     id: 'staking.delegationCenter.loadingStakePoolsMessage',
-    defaultMessage: '!!!Loading wallets',
+    defaultMessage: '!!!Loading stake pools',
     description:
       'Loading stake pool message for the Delegation center body section.',
   },
