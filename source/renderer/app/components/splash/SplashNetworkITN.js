@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
+import { inject } from "mobx-react";
 import backgroundImage from '../../assets/images/circle-bg-faded.inline.svg';
 import Splash from '../widgets/splash/Splash';
 
@@ -47,8 +48,10 @@ const messages = defineMessages({
 type Props = {
   onClose: Function,
   openExternalLink: Function,
+  currentTheme: string,
 };
 
+@inject('stores')
 export default class SplashNetworkITN extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -56,7 +59,7 @@ export default class SplashNetworkITN extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { onClose, openExternalLink } = this.props;
+    const { onClose, openExternalLink, currentTheme } = this.props;
     const title = intl.formatMessage(messages.title);
     const subTitle1 = intl.formatMessage(messages.versionName);
     const subTitle2 = intl.formatMessage(messages.networkName);
@@ -76,6 +79,7 @@ export default class SplashNetworkITN extends Component<Props> {
         description={description}
         buttonLabel={buttonLabel}
         linkLabel={linkLabel}
+        currentTheme={currentTheme}
         backgroundImage={backgroundImage}
       />
     );
