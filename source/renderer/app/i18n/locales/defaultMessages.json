@@ -2181,7 +2181,7 @@
           "column": 3,
           "line": 11
         },
-        "file": "source/renderer/app/components/splash/SplashNetworkByronReboot.js",
+        "file": "source/renderer/app/components/splash/SplashNetworkFlight.js",
         "id": "static.splash.network.title",
         "start": {
           "column": 9,
@@ -2195,7 +2195,7 @@
           "column": 3,
           "line": 16
         },
-        "file": "source/renderer/app/components/splash/SplashNetworkByronReboot.js",
+        "file": "source/renderer/app/components/splash/SplashNetworkFlight.js",
         "id": "static.splash.network.flightVersionName",
         "start": {
           "column": 15,
@@ -2209,7 +2209,7 @@
           "column": 3,
           "line": 21
         },
-        "file": "source/renderer/app/components/splash/SplashNetworkByronReboot.js",
+        "file": "source/renderer/app/components/splash/SplashNetworkFlight.js",
         "id": "static.splash.network.flightNetworkName",
         "start": {
           "column": 15,
@@ -2223,7 +2223,7 @@
           "column": 3,
           "line": 27
         },
-        "file": "source/renderer/app/components/splash/SplashNetworkByronReboot.js",
+        "file": "source/renderer/app/components/splash/SplashNetworkFlight.js",
         "id": "static.splash.network.flightDescription1",
         "start": {
           "column": 22,
@@ -2237,7 +2237,7 @@
           "column": 3,
           "line": 33
         },
-        "file": "source/renderer/app/components/splash/SplashNetworkByronReboot.js",
+        "file": "source/renderer/app/components/splash/SplashNetworkFlight.js",
         "id": "static.splash.network.flightDescription2",
         "start": {
           "column": 22,
@@ -2251,7 +2251,7 @@
           "column": 3,
           "line": 39
         },
-        "file": "source/renderer/app/components/splash/SplashNetworkByronReboot.js",
+        "file": "source/renderer/app/components/splash/SplashNetworkFlight.js",
         "id": "static.splash.network.flightDescription3",
         "start": {
           "column": 22,
@@ -2265,7 +2265,7 @@
           "column": 3,
           "line": 45
         },
-        "file": "source/renderer/app/components/splash/SplashNetworkByronReboot.js",
+        "file": "source/renderer/app/components/splash/SplashNetworkFlight.js",
         "id": "static.splash.network.flightDescription4",
         "start": {
           "column": 22,
@@ -2279,7 +2279,7 @@
           "column": 3,
           "line": 51
         },
-        "file": "source/renderer/app/components/splash/SplashNetworkByronReboot.js",
+        "file": "source/renderer/app/components/splash/SplashNetworkFlight.js",
         "id": "static.splash.network.flightDescription5",
         "start": {
           "column": 22,
@@ -2293,7 +2293,7 @@
           "column": 3,
           "line": 56
         },
-        "file": "source/renderer/app/components/splash/SplashNetworkByronReboot.js",
+        "file": "source/renderer/app/components/splash/SplashNetworkFlight.js",
         "id": "static.splash.network.buttonLabel",
         "start": {
           "column": 15,
@@ -2307,7 +2307,7 @@
           "column": 3,
           "line": 61
         },
-        "file": "source/renderer/app/components/splash/SplashNetworkByronReboot.js",
+        "file": "source/renderer/app/components/splash/SplashNetworkFlight.js",
         "id": "static.splash.network.linkLabel",
         "start": {
           "column": 13,
@@ -2321,7 +2321,7 @@
           "column": 3,
           "line": 66
         },
-        "file": "source/renderer/app/components/splash/SplashNetworkByronReboot.js",
+        "file": "source/renderer/app/components/splash/SplashNetworkFlight.js",
         "id": "static.splash.network.flightLinkUrl",
         "start": {
           "column": 11,
@@ -2329,7 +2329,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/splash/SplashNetworkByronReboot.json"
+    "path": "source/renderer/app/components/splash/SplashNetworkFlight.json"
   },
   {
     "descriptors": [
