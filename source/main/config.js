@@ -1,11 +1,19 @@
 // @flow
 import path from 'path';
+import { includes } from 'lodash';
 import { app, dialog } from 'electron';
 import { readLauncherConfig } from './utils/config';
-import { environment } from './environment';
+import {
+  checkIsTest,
+  checkIsProduction,
+} from '../common/utils/environmentCheckers';
 import type { CardanoNodeImplementation } from '../common/types/cardano-node.types';
+import { DEVELOPMENT } from '../common/types/environment.types';
 
-const { isTest, isProduction, isBlankScreenFixActive } = environment;
+const CURRENT_NODE_ENV = process.env.NODE_ENV || DEVELOPMENT;
+const isTest = checkIsTest(CURRENT_NODE_ENV);
+const isProduction = checkIsProduction(CURRENT_NODE_ENV);
+const isBlankScreenFixActive = includes(process.argv.slice(1), '--safe-mode');
 
 // Make sure Daedalus is started with required configuration
 const { LAUNCHER_CONFIG } = process.env;
