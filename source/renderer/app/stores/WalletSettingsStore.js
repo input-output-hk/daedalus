@@ -82,15 +82,18 @@ export default class WalletSettingsStore extends Store {
     walletId,
     oldPassword,
     newPassword,
+    isLegacy,
   }: {
     walletId: string,
     oldPassword: string,
     newPassword: string,
+    isLegacy: boolean,
   }) => {
     await this.updateSpendingPasswordRequest.execute({
       walletId,
       oldPassword,
       newPassword,
+      isLegacy,
     });
     this.actions.dialogs.closeActiveDialog.trigger();
     this.updateSpendingPasswordRequest.reset();

@@ -18,6 +18,7 @@ export default class WalletSettingsActions {
     walletId: string,
     oldPassword: string,
     newPassword: string,
+    isLegacy: boolean,
   }> = new Action();
   exportToFile: Action<WalletExportToFileParams> = new Action();
   startWalletUtxoPolling: Action<any> = new Action();
