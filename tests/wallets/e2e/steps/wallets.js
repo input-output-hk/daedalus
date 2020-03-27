@@ -16,7 +16,7 @@ import type { Daedalus } from '../../../types';
 
 declare var daedalus: Daedalus;
 
-// Create "Rewards" or "Balance" wallets
+// Create shelley or byron wallets
 Given(/^I have (created )?the following (balance )?wallets:$/, async function(mode, _type, table) {
   const type = await getWalletType.call(this, _type);
   const isLegacy = type === 'byron';
@@ -24,6 +24,7 @@ Given(/^I have (created )?the following (balance )?wallets:$/, async function(mo
   await createWallets.call(this, table.hashes(), { sequentially, isLegacy });
 });
 
+// Create a single wallet with funds
 Given(/^I have a "([^"]*)" (balance )?wallet with funds$/, async function(walletName, _type) {
   const type = await getWalletType.call(this, _type);
   if (type === 'shelley') {
@@ -35,11 +36,15 @@ Given(/^I have a "([^"]*)" (balance )?wallet with funds$/, async function(wallet
   addOrSetWalletsForScenario.call(this, wallet);
 });
 
-// Create a single wallet
-Given(/^I have a "([^"]*)" (balance )?wallet$/, async function(_type, walletName) {
+// Create a single wallet with no funds
+Given(/^I have a "([^"]*)" (balance )?wallet$/, async function(walletName, _type) {
   const type = await getWalletType.call(this, _type);
   const isLegacy = type === 'byron';
-  await createWallets.call(this, [{ name: walletName }], { isLegacy });
+  if (!isLegacy) {
+    await createWallets.call(this, [{ name: walletName }], {});
+  } else {
+    await restoreLegacyWallet(this.client, { walletName, hasFunds: false });
+  }
   const wallet = await waitUntilWalletIsLoaded.call(this, walletName);
   addOrSetWalletsForScenario.call(this, wallet);
 });

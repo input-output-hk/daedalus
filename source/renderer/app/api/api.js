@@ -900,6 +900,7 @@ export default class AdaApi {
     });
     const { recoveryPhrase, walletName, spendingPassword } = request;
     const walletInitData = {
+      style: 'random',
       name: walletName,
       mnemonic_sentence: recoveryPhrase,
       passphrase: spendingPassword,
