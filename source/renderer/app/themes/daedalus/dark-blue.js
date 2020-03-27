@@ -848,8 +848,7 @@ export const DARK_BLUE_THEME_OUTPUT = {
       'rgba(233, 244, 254, 0.14)',
     '--theme-transactions-date-picker-button-background-color-hover':
       'rgba(233, 244, 254, 0.07)',
-    '--theme-transactions-date-picker-button-color':
-      '#ffffff',
+    '--theme-transactions-date-picker-button-color': '#ffffff',
     '--theme-transactions-filter-modal-bg-color': '#314259',
     '--theme-transactions-filter-date-picker-shadow':
       '0 0 20px 0 rgba(0, 0, 0, 0.4)',

@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
-import { inject } from "mobx-react";
+import { inject } from 'mobx-react';
 import backgroundImage from '../../assets/images/circle-bg-faded.inline.svg';
 import Splash from '../widgets/splash/Splash';
 
