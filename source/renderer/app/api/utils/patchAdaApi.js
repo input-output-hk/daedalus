@@ -5,7 +5,6 @@ import { action } from 'mobx';
 import BigNumber from 'bignumber.js/bignumber';
 import AdaApi from '../api';
 import { getNetworkInfo } from '../network/requests/getNetworkInfo';
-import { getNetworkParameters } from '../network/requests/getNetworkParameters';
 import { getLatestAppVersion } from '../nodes/requests/getLatestAppVersion';
 import { GenericApiError } from '../common/errors';
 import { logger } from '../../utils/logging';
@@ -18,8 +17,6 @@ import StakePool from '../../domains/StakePool';
 import type {
   GetNetworkInfoResponse,
   NetworkInfoResponse,
-  GetNetworkParametersResponse,
-  NetworkParametersResponse,
 } from '../network/types';
 import type {
   LatestAppVersionInfoResponse,
