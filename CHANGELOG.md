@@ -6,6 +6,7 @@ Changelog
 ### Features
 
 - Added new icon for Daedalus Flight ([PR 1909](https://github.com/input-output-hk/daedalus/pull/1909))
+- Integrated network parameters api endpoint ([PR 1915](https://github.com/input-output-hk/daedalus/pull/1915))
 - Implemented flight candidates changes ([PR 1908](https://github.com/input-output-hk/daedalus/pull/1908))
 - Implemented new "Flight candidate" theme ([PR 1914](https://github.com/input-output-hk/daedalus/pull/1914))
 - Implemented non-responding wallets handling ([PR 1901](https://github.com/input-output-hk/daedalus/pull/1901))
