@@ -5,7 +5,7 @@ import { readLauncherConfig } from './utils/config';
 import { environment } from './environment';
 import type { CardanoNodeImplementation } from '../common/types/cardano-node.types';
 
-const { isFlight, isTest, isProduction, isBlankScreenFixActive } = environment;
+const { isTest, isProduction, isBlankScreenFixActive } = environment;
 
 // Make sure Daedalus is started with required configuration
 const { LAUNCHER_CONFIG } = process.env;
@@ -101,12 +101,15 @@ export const windowOptions: WindowOptionsType = {
 export const launcherConfig: LauncherConfig = readLauncherConfig(
   LAUNCHER_CONFIG
 );
-export const { nodeImplementation, cluster } = launcherConfig;
-
-export const APP_NAME = isFlight ? 'Daedalus Flight' : 'Daedalus';
-export const appLogsFolderPath = launcherConfig.logsPrefix;
+export const {
+  cluster,
+  nodeImplementation,
+  stateDir,
+  logsPrefix,
+} = launcherConfig;
+export const appLogsFolderPath = logsPrefix;
 export const pubLogsFolderPath = path.join(appLogsFolderPath, 'pub');
-export const stateDirectoryPath = launcherConfig.stateDir;
+export const stateDirectoryPath = stateDir;
 export const stateDrive = isWindows ? stateDirectoryPath.slice(0, 2) : '/';
 
 // Logging config
@@ -146,3 +149,6 @@ export const STAKE_POOL_REGISTRY_URL = {
   qa:
     'https://explorer.qa.jormungandr-testnet.iohkdev.io/stakepool-registry/registry.zip',
 };
+
+// Cardano Byron Testnet network magic
+export const TESTNET_MAGIC = 1097911063;

@@ -1,8 +1,9 @@
 // @flow
 import { BrowserWindow } from 'electron';
 import { createWriteStream, readFileSync } from 'fs';
-import { exec, spawn, spawnSync } from 'child_process';
+import { exec, spawn } from 'child_process';
 import { CardanoNode } from './CardanoNode';
+import { exportWallets } from './utils';
 import {
   NODE_KILL_TIMEOUT,
   NODE_SHUTDOWN_TIMEOUT,
@@ -28,8 +29,6 @@ import {
   exportWalletsChannel,
 } from '../ipc/cardano.ipc';
 import { safeExitWithCode } from '../utils/safeExitWithCode';
-
-const TESTNET_MAGIC = 1097911063;
 
 const startCardanoNode = (
   node: CardanoNode,
@@ -119,7 +118,7 @@ export const setupCardanoNode = (
       onCrashed: code => {
         const restartTimeout = cardanoNode.startupTries > 0 ? 30000 : 0;
         logger.info(
-          `CardanoNode crashed with code ${code}. Restarting in ${restartTimeout}ms …`,
+          `CardanoNode crashed with code ${code}. Restarting in ${restartTimeout}ms...`,
           { code, restartTimeout }
         );
         setTimeout(() => restartCardanoNode(cardanoNode), restartTimeout);
@@ -186,41 +185,7 @@ export const setupCardanoNode = (
 
   exportWalletsChannel.onRequest(() => {
     logger.info('ipcMain: Received request from renderer to export wallets');
-    const {
-      exportWalletsBin,
-      legacySecretKey,
-      legacyWalletDB,
-      cluster,
-    } = launcherConfig;
-    logger.info('ipcMain: Exporting wallets...', {
-      exportWalletsBin,
-      legacySecretKey,
-      legacyWalletDB,
-      cluster,
-    });
-    const clusterFlags = [];
-    if (cluster === 'testnet') {
-      clusterFlags.push('--testnet', TESTNET_MAGIC);
-    } else {
-      clusterFlags.push('--mainnet');
-    }
-    const { stdout, stderr } = spawnSync(exportWalletsBin, [
-      ...clusterFlags,
-      '--keyfile',
-      legacySecretKey,
-      '--wallet-db-path',
-      legacyWalletDB,
-    ]);
-    const wallets = JSON.parse(stdout.toString() || '[]');
-    const errors = stderr.toString();
-    logger.info(`ipcMain: Exported ${wallets.length} wallets`, {
-      walletsData: wallets.map(w => ({
-        name: w.name,
-        hasPassword: w.passphrase_hash !== null,
-      })),
-      errors,
-    });
-    return Promise.resolve({ wallets, errors });
+    return Promise.resolve(exportWallets(launcherConfig));
   });
 
   return cardanoNode;

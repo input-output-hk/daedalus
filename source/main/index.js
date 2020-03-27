@@ -16,7 +16,6 @@ import { installChromeExtensions } from './utils/installChromeExtensions';
 import { environment } from './environment';
 import mainErrorHandler from './utils/mainErrorHandler';
 import {
-  APP_NAME,
   launcherConfig,
   pubLogsFolderPath,
   stateDirectoryPath,
@@ -79,7 +78,7 @@ const onAppReady = async () => {
   setupLogging();
   logUsedVersion(
     environment.version,
-    path.join(pubLogsFolderPath, `${APP_NAME}-versions.json`)
+    path.join(pubLogsFolderPath, 'Daedalus-versions.json')
   );
 
   const cpu = os.cpus();

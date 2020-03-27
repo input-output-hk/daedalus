@@ -3,6 +3,9 @@ import * as fs from 'fs-extra';
 import path from 'path';
 import { spawnSync } from 'child_process';
 import { logger } from '../utils/logging';
+import { TESTNET_MAGIC } from '../config';
+import type { LauncherConfig } from '../config';
+import type { ExportWalletsMainResponse } from '../../common/ipc/api';
 import type {
   CardanoNodeStorageKeys,
   CardanoNodeImplementation,
@@ -161,4 +164,48 @@ export const createSelfnodeConfig = async (
   await fs.remove(walletsDir);
 
   return { configPath, genesisPath, genesisHash };
+};
+
+export const exportWallets = async (
+  launcherConfig: LauncherConfig
+): Promise<ExportWalletsMainResponse> => {
+  const {
+    exportWalletsBin,
+    legacySecretKey,
+    legacyWalletDB,
+    cluster,
+  } = launcherConfig;
+
+  logger.info('ipcMain: Exporting wallets...', {
+    exportWalletsBin,
+    legacySecretKey,
+    legacyWalletDB,
+    cluster,
+  });
+
+  const clusterFlags = [];
+  if (cluster === 'testnet') {
+    clusterFlags.push('--testnet', TESTNET_MAGIC);
+  } else {
+    clusterFlags.push('--mainnet');
+  }
+  const { stdout, stderr } = spawnSync(exportWalletsBin, [
+    ...clusterFlags,
+    '--keyfile',
+    legacySecretKey,
+    '--wallet-db-path',
+    legacyWalletDB,
+  ]);
+  const wallets = JSON.parse(stdout.toString() || '[]');
+  const errors = stderr.toString();
+
+  logger.info(`ipcMain: Exported ${wallets.length} wallets`, {
+    walletsData: wallets.map(w => ({
+      name: w.name,
+      hasPassword: w.passphrase_hash !== null,
+    })),
+    errors,
+  });
+
+  return Promise.resolve({ wallets, errors });
 };
