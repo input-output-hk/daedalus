@@ -129,7 +129,7 @@ CARDANO_BRIDGE=$(nix-build --no-out-link -A daedalus-bridge --argstr nodeImpleme
 echo '~~~ Prebuilding jormungandr bridge'
 JORMUNGANDR_BRIDGE=$(nix-build --no-out-link -A daedalus-bridge --argstr nodeImplementation jormungandr)
 
-cardanoClusters=" mainnet staging testnet selfnode "
+itnClusters="$(< $(nix-build --no-out-link -A itnClustersFile))"
 
 pushd installers
     echo '~~~ Prebuilding dependencies for cardano-installer, quietly..'
@@ -143,12 +143,12 @@ pushd installers
           APP_NAME="csl-daedalus"
           rm -rf "${APP_NAME}"
 
-          if [[ "$cardanoClusters" =~ $cluster ]]; then
-            BRIDGE_FLAG="--cardano ${CARDANO_BRIDGE}"
-            BACKEND=cardano
-          else
+          if [[ "$itnClusters" =~ $cluster ]]; then
             BRIDGE_FLAG="--jormungandr ${JORMUNGANDR_BRIDGE}"
             BACKEND=jormungandr
+          else
+            BRIDGE_FLAG="--cardano ${CARDANO_BRIDGE}"
+            BACKEND=cardano
           fi
 
           INSTALLER_CMD=("make-installer"

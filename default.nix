@@ -31,7 +31,8 @@ let
   # only used for CLI, to be removed when upgraded to next node version
   nodePkgs = import "${sources.cardano-node}/nix" {};
   shellPkgs = (import "${sources.cardano-shell}/nix/iohk-common.nix").getPkgs {};
-  inherit (pkgs.lib) optionalString optional;
+  inherit (pkgs.lib) optionalString optional concatStringsSep;
+  inherit (pkgs) writeTextFile;
   crossSystem = lib: (crossSystemTable lib).${target} or null;
   # TODO, nsis cant cross-compile with the nixpkgs daedalus currently uses
   nsisNixPkgs = import localLib.sources.nixpkgs-nsis {};
@@ -81,6 +82,11 @@ let
       os = ostable.${target};
       backend = nodeImplementation;
       runCommandNative = pkgsNative.runCommand;
+    };
+
+    itnClustersFile = writeTextFile {
+      name = "itn-clusters";
+      text = concatStringsSep " " itn_clusters;
     };
 
     unsignedUnpackedCardano = self.daedalus-bridge; # TODO
