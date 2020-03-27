@@ -71,8 +71,8 @@ yarn2nix.mkYarnPackage {
     mkdir home
     export HOME=$(realpath home)
     cp ${newPackagePath} package.json
-    mkdir -p installers/icons/${cluster}
-    cp -a ${iconPath} installers/icons/${cluster}/${cluster}
+    mkdir -p installers/icons/${cluster}/${cluster}
+    cp ${iconPath.base}/* installers/icons/${cluster}/${cluster}/
     yarn --offline package --win64 --icon installers/icons/${cluster}/${cluster}
     ls -ltrh release/win32-x64/Daedalus*-win32-x64/
     cp -r release/win32-x64/Daedalus*-win32-x64 $out
