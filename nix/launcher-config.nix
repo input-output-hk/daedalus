@@ -16,6 +16,7 @@
 # * nodeConfigFiles
 # * configFiles (launcher config + installer config)
 
+
 let
   dirSep = if os == "windows" then "\\" else "/";
   configDir = configFilesSource: {
@@ -24,17 +25,15 @@ let
     windows = "\${DAEDALUS_INSTALL_DIRECTORY}";
   };
 
-  # Add proper logic for Daedalus Flight build here:
-  isFlight = network == "mainnet";
-
-  baseName = if network == "mainnet" then "Daedalus" else "Daedalus ${installDirectorySuffix.${network}}";
-  spacedName = if backend == "cardano" then "${baseName} Flight" else baseName;
+  mkSpacedName = network: if network == "mainnet" then "Daedalus" else "Daedalus ${installDirectorySuffix.${network}}";
+  spacedName = mkSpacedName network;
 
   frontendBinPath = let
     frontendBin.linux = "daedalus-frontend";
     frontendBin.windows = "${spacedName}";
     frontendBin.macos64 = "Frontend";
   in frontendBin.${os};
+
 
   # Helper function to make a path to a binary
   mkBinPath = binary: let
@@ -47,9 +46,15 @@ let
   # Helper function to make a path to a config file
   mkConfigPath = configSrc: configPath: "${(configDir configSrc).${os}}${dirSep}${configPath}";
 
-  envCfg = (if (backend == "cardano") then cardanoLib else jormungandrLib).environments.${network};
+  envCfg = let
+    cardanoEnv = if network == "mainnet_flight"
+                 then cardanoLib.environments.mainnet
+                 else cardanoLib.environments.${network};
+    jormungandrEnv = jormungandrLib.environments.${network};
+  in if (backend == "cardano") then cardanoEnv else jormungandrEnv;
 
   installDirectorySuffix = {
+    mainnet_flight = "Flight";
     qa = "QA";
     selfnode = "Selfnode";
     itn_selfnode = "Selfnode - ITN";
@@ -59,23 +64,26 @@ let
     testnet = "Testnet";
   };
 
+
   dataDir = let
     path.linux = "\${XDG_DATA_HOME}/Daedalus/${network}";
-    path.macos64 = "\${HOME}/Library/Application Support/${baseName}";
-    path.windows = "\${APPDATA}\\${baseName}";
+    path.macos64 = "\${HOME}/Library/Application Support/${spacedName}";
+    path.windows = "\${APPDATA}\\${spacedName}";
   in path.${os};
 
+  # Used for flight builds to find legacy paths for migration
   mainnetDataDir = let
     path.linux = "\${XDG_DATA_HOME}/Daedalus/mainnet";
-    path.macos64 = "\${HOME}/Library/Application Support/Daedalus";
-    path.windows = "\${APPDATA}\\Daedalus";
+    path.macos64 = "\${HOME}/Library/Application Support/${mkSpacedName "mainnet"}";
+    path.windows = "\${APPDATA}\\${mkSpacedName "mainnet"}";
   in path.${os};
 
   logsPrefix = let
+    suffix = if backend == "cardano" then "ByronReboot" else "";
     path.linux = "${dataDir}/Logs";
     path.windows = "Logs";
     path.macos64 = "${dataDir}/Logs";
-  in path.${os};
+  in "${path.${os}}${suffix}";
 
   launcherLogsPrefix = "${logsPrefix}${dirSep}pub";
 
@@ -96,7 +104,8 @@ let
     x509ToolPath = null;
     frontendOnlyMode = true;
     tlsPath = null;
-    cluster = network;
+    cluster = if network == "mainnet_flight" then "mainnet" else network;
+    isFlight = network == "mainnet_flight";
     nodeImplementation = backend;
   };
 
@@ -143,16 +152,25 @@ let
         cp ${envCfg.signingKey} $out/signing.key
       ''}
     '';
+
     legacyWalletDB = let
-      path.linux = if isFlight then "${mainnetDataDir}${dirSep}Wallet" else "${dataDir}${dirSep}Wallet";
-      path.macos64 = if isFlight then "${mainnetDataDir}${dirSep}Wallet-1.0" else "${dataDir}${dirSep}Wallet-1.0";
-      path.windows = if isFlight then "${mainnetDataDir}${dirSep}Wallet-1.0" else "${dataDir}${dirSep}Wallet-1.0";
+      prefix = if network == "mainnet_flight"
+               then ${mainnetDataDir}${dirSep}
+               else "${dataDir}${dirSep}";
+      path.linux = "${dataDir}${dirSep}Wallet";
+      path.macos64 = "${prefix}Wallet-1.0";
+      path.windows = "${prefix}Wallet-1.0";
     in path.${os};
+
     legacySecretKey = let
-      path.linux = if isFlight then "${mainnetDataDir}${dirSep}Secrets${dirSep}secret.key" else "${dataDir}${dirSep}Secrets${dirSep}secret.key";
-      path.macos64 = if isFlight then "${mainnetDataDir}${dirSep}Secrets-1.0${dirSep}secret.key" else "${dataDir}${dirSep}Secrets-1.0${dirSep}secret.key";
-      path.windows = if isFlight then "${mainnetDataDir}${dirSep}Secrets-1.0${dirSep}secret.key" else "${dataDir}${dirSep}Secrets-1.0${dirSep}secret.key";
+      prefix = if network == "mainnet_flight"
+               then ${mainnetDataDir}${dirSep}
+               else "${dataDir}${dirSep}";
+      path.linux = "${prefix}Secrets${dirSep}secret.key";
+      path.macos64 = "${prefix}Secrets-1.0${dirSep}secret.key";
+      path.windows = "${prefix}Secrets-1.0${dirSep}secret.key";
     in path.${os};
+
     launcherConfig = defaultLauncherConfig // {
       inherit
         nodeBin
