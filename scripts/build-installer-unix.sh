@@ -129,7 +129,7 @@ CARDANO_BRIDGE=$(nix-build --no-out-link -A daedalus-bridge --argstr nodeImpleme
 echo '~~~ Prebuilding jormungandr bridge'
 JORMUNGANDR_BRIDGE=$(nix-build --no-out-link -A daedalus-bridge --argstr nodeImplementation jormungandr)
 
-itnClusters="$(< $(nix-build --no-out-link -A itnClustersFile))"
+itnClusters="$(< "$(nix-build --no-out-link -A itnClustersFile)")"
 
 pushd installers
     echo '~~~ Prebuilding dependencies for cardano-installer, quietly..'
