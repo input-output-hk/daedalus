@@ -43,8 +43,7 @@ export default class NodeUpdateStore extends Store {
       this._getLatestAvailableAppVersion
     );
 
-    const { isFlight } = this.environment;
-    const { isIncentivizedTestnet } = global;
+    const { isIncentivizedTestnet, isFlight } = global;
     if (!isFlight && !isIncentivizedTestnet) {
       this.nextUpdateInterval = setInterval(
         this.refreshNextUpdate,
@@ -111,8 +110,7 @@ export default class NodeUpdateStore extends Store {
 
   @action _getLatestAvailableAppVersion = async () => {
     // Manual update notification is not available for Daedalus Flight and ITN builds
-    const { isFlight } = this.environment;
-    const { isIncentivizedTestnet } = global;
+    const { isIncentivizedTestnet, isFlight } = global;
     if (isFlight || isIncentivizedTestnet) {
       return;
     }
