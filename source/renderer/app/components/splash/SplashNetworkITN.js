@@ -51,7 +51,6 @@ type Props = {
   currentTheme?: string,
 };
 
-@inject('stores')
 export default class SplashNetworkITN extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
