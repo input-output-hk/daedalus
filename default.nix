@@ -199,7 +199,7 @@ let
         selfnode = "Daedalus Selfnode";
         itn_selfnode = "Daedalus Selfnode - ITN";
       };
-      installDir = mapping.${cluster};
+      installDir = "${mapping.${cluster}}${optionalString (nodeImplementation == "cardano") " Flight"}";
     in pkgs.runCommand "win64-installer-${cluster}" {
       buildInputs = [
         self.daedalus-installer self.nsis pkgs.unzip pkgs.jq self.yaml2json
