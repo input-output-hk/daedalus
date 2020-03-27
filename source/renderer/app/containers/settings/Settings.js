@@ -26,9 +26,13 @@ export default class Settings extends Component<InjectedContainerProps> {
   };
 
   render() {
-    const { actions, children } = this.props;
+    const { actions, stores, children } = this.props;
+    const {
+      app: { environment },
+    } = stores;
     const menu = (
       <SettingsMenu
+        isMainnet={environment.isMainnet}
         onItemClick={route => actions.router.goToRoute.trigger({ route })}
         isActiveItem={this.isActivePage}
       />
