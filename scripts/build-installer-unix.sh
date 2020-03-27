@@ -143,12 +143,10 @@ pushd installers
           APP_NAME="csl-daedalus"
           rm -rf "${APP_NAME}"
 
-          if [[ "$itnClusters" == $cluster ]]; then
-            echo "${cluster} is ITN"
+          if [[ "$itnClusters" == "$cluster" ]]; then
             BRIDGE_FLAG="--jormungandr ${JORMUNGANDR_BRIDGE}"
             BACKEND=jormungandr
           else
-            echo "${cluster} is cardano"
             BRIDGE_FLAG="--cardano ${CARDANO_BRIDGE}"
             BACKEND=cardano
           fi
@@ -161,7 +159,7 @@ pushd installers
                          "  --build-job        ${build_id}"
                          "  --cluster          ${cluster}"
                          "  --out-dir          ${APP_NAME}")
-          nix-build .. -A launcherConfigs.configFiles --argstr os macos64 --argstr cluster "${cluster}" -o cfg-files"
+          nix-build .. -A launcherConfigs.configFiles --argstr os macos64 --argstr cluster "${cluster}" -o cfg-files
           cp -v cfg-files/* .
           chmod -R +w .
           echo '~~~   Running make-installer in nix-shell'
