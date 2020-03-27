@@ -23,6 +23,7 @@ import { createByronWalletAddress } from './addresses/requests/createByronWallet
 // Network requests
 import { getNetworkInfo } from './network/requests/getNetworkInfo';
 import { getNetworkClock } from './network/requests/getNetworkClock';
+import { getNetworkParameters } from './network/requests/getNetworkParameters';
 
 // Nodes requests
 import { applyNodeUpdate } from './nodes/requests/applyNodeUpdate';
@@ -121,6 +122,8 @@ import type {
   NetworkInfoResponse,
   GetNetworkClockResponse,
   NetworkClockResponse,
+  GetNetworkParametersResponse,
+  NetworkParametersResponse,
 } from './network/types';
 
 // Nodes Types
@@ -1644,6 +1647,43 @@ export default class AdaApi {
       return networkClock;
     } catch (error) {
       logger.error('AdaApi::getNetworkClock error', { error });
+      throw new GenericApiError(error);
+    }
+  };
+
+  getNetworkParameters = async (
+    epochId: number
+  ): Promise<GetNetworkParametersResponse> => {
+    logger.debug('AdaApi::getNetworkParameters called');
+    try {
+      const networkParameters: NetworkParametersResponse = await getNetworkParameters(
+        epochId,
+        this.config
+      );
+      logger.debug('AdaApi::getNetworkParameters success', {
+        networkParameters,
+      });
+
+      const {
+        genesis_block_hash: genesisBlockHash,
+        blockchain_start_time, // eslint-disable-line
+        slot_length: slotLength,
+        epoch_length: epochLength,
+        epoch_stability: epochStability,
+        active_slot_coefficient: activeSlotCoefficient,
+      } = networkParameters;
+      const blockchainStartTime = moment(blockchain_start_time).valueOf();
+
+      return {
+        genesisBlockHash,
+        blockchainStartTime,
+        slotLength,
+        epochLength,
+        epochStability,
+        activeSlotCoefficient,
+      };
+    } catch (error) {
+      logger.error('AdaApi::getNetworkParameters error', { error });
       throw new GenericApiError(error);
     }
   };
