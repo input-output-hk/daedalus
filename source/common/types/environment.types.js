@@ -7,7 +7,6 @@ export type Environment = {
   current: string,
   isDev: boolean,
   isTest: boolean,
-  isFlight: boolean,
   isProduction: boolean,
   isMainnet: boolean,
   isStaging: boolean,

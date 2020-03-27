@@ -97,7 +97,6 @@ module.exports = {
           'process.env.NETWORK': JSON.stringify(
             process.env.NETWORK || 'development'
           ),
-          'process.env.FLIGHT': JSON.stringify(process.env.FLIGHT || 'false'),
           'process.env.MOBX_DEV_TOOLS': process.env.MOBX_DEV_TOOLS || 0,
           'process.env.BUILD_NUMBER': JSON.stringify(
             process.env.BUILD_NUMBER || 'dev'

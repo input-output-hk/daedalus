@@ -4,7 +4,6 @@ import path from 'path';
 import { spawnSync } from 'child_process';
 import { logger } from '../utils/logging';
 import { TESTNET_MAGIC } from '../config';
-import { environment } from '../environment';
 import ensureDirectoryExists from '../utils/ensureDirectoryExists';
 import type { LauncherConfig } from '../config';
 import type { ExportWalletsMainResponse } from '../../common/ipc/api';
@@ -171,13 +170,13 @@ export const createSelfnodeConfig = async (
 export const exportWallets = async (
   launcherConfig: LauncherConfig
 ): Promise<ExportWalletsMainResponse> => {
-  const { isFlight } = environment;
   const {
     exportWalletsBin,
     legacySecretKey,
     legacyWalletDB,
     stateDir,
     cluster,
+    isFlight,
   } = launcherConfig;
 
   logger.info('ipcMain: Exporting wallets...', {
