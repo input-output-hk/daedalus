@@ -143,10 +143,12 @@ pushd installers
           APP_NAME="csl-daedalus"
           rm -rf "${APP_NAME}"
 
-          if [[ "$itnClusters" =~ $cluster ]]; then
+          if [[ "$itnClusters" == $cluster ]]; then
+            echo "${cluster} is ITN"
             BRIDGE_FLAG="--jormungandr ${JORMUNGANDR_BRIDGE}"
             BACKEND=jormungandr
           else
+            echo "${cluster} is cardano"
             BRIDGE_FLAG="--cardano ${CARDANO_BRIDGE}"
             BACKEND=cardano
           fi
