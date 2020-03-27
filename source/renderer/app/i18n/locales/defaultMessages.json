@@ -2179,55 +2179,111 @@
         "description": "Daedalus",
         "end": {
           "column": 3,
-          "line": 18
+          "line": 11
         },
-        "file": "source/renderer/app/components/splash/Network.js",
+        "file": "source/renderer/app/components/splash/SplashNetworkByronReboot.js",
         "id": "static.splash.network.title",
         "start": {
           "column": 9,
-          "line": 14
+          "line": 7
         }
       },
       {
-        "defaultMessage": "!!!INCENTIVIZED TESTNET v1",
-        "description": "INCENTIVIZED TESTNET v1",
+        "defaultMessage": "!!!FLIGHT",
+        "description": "FLIGHT",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 16
         },
-        "file": "source/renderer/app/components/splash/Network.js",
-        "id": "static.splash.network.incentivizedTestnet",
+        "file": "source/renderer/app/components/splash/SplashNetworkByronReboot.js",
+        "id": "static.splash.network.flightVersionName",
         "start": {
-          "column": 23,
-          "line": 19
+          "column": 15,
+          "line": 12
         }
       },
       {
-        "defaultMessage": "!!!Rewards",
+        "defaultMessage": "!!!CARDANO MAINNET",
         "description": "Rewards",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 21
         },
-        "file": "source/renderer/app/components/splash/Network.js",
-        "id": "static.splash.network.rewards",
+        "file": "source/renderer/app/components/splash/SplashNetworkByronReboot.js",
+        "id": "static.splash.network.flightNetworkName",
         "start": {
-          "column": 16,
-          "line": 24
+          "column": 15,
+          "line": 17
         }
       },
       {
-        "defaultMessage": "!!!This version of Daedalus has been created specifically for use with the Incentivized Testnet. It is not compatible with the Cardano mainnet. If you had ada in a mainnet Daedalus or Yoroi wallet at the time of the balance snapshot (12.00 UTC, November 29) you can use this version of Daedalus to restore those funds as testnet ada, for use exclusively on the Incentivized Testnet. The rewards earned for delegating stake and running stake pools on the Incentivized Testnet will be paid out in real ada at the end of the Incentivized Testnet program. Important: Please keep your Rewards wallet recovery phrase safe. You will need it to receive your ada rewards on the mainnet.",
-        "description": "This version of Daedalus has been created specifically for the balance check, the first stage in the roll-out of the Incentivized Testnet. It is not compatible with the Cardano mainnet. The balance check is a practice run for the official balance snapshot that is currently planned for later in November. This initial test will allow us to test core functionality, while enabling users to validate that the value of their mainnet ada balances is accurately captured ahead of the Incentivized Testnet.",
+        "defaultMessage": "!!!Thank you for downloading the Daedalus Flight wallet! This version of Daedalus is specially created so users can test new features and we can squash usability bugs before pushing releases to the mainnet production version of the Daedalus wallet.",
+        "description": "flightDescription1 on network splash screen",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 27
         },
-        "file": "source/renderer/app/components/splash/Network.js",
-        "id": "static.splash.network.incentivizedTestnetDescription",
+        "file": "source/renderer/app/components/splash/SplashNetworkByronReboot.js",
+        "id": "static.splash.network.flightDescription1",
         "start": {
-          "column": 34,
-          "line": 29
+          "column": 22,
+          "line": 22
+        }
+      },
+      {
+        "defaultMessage": "!!!Although Flight candidates are designed to test functionality, this is on the mainnet and will be using mainnet ada. Transactions made using Flight candidates will be real ada payments. If you are not a power user, we recommend you stick to using our stable, fully-tested production Daedalus wallet client. It is very important to note that transactions performed in Daedalus Flight are real and your funds will be transferred because the Cardano blockchain will be validating all transactions on mainnet.",
+        "description": "flightDescription2 on network splash screen",
+        "end": {
+          "column": 3,
+          "line": 33
+        },
+        "file": "source/renderer/app/components/splash/SplashNetworkByronReboot.js",
+        "id": "static.splash.network.flightDescription2",
+        "start": {
+          "column": 22,
+          "line": 28
+        }
+      },
+      {
+        "defaultMessage": "!!!This is a separate and secure installation, but you will be able to run both Flight and production versions of Daedalus at the same time. To help you differentiate between the two wallets, Daedalus Flight will have a different, dark-blue-and-yellow user interface theme.",
+        "description": "flightDescription3 on network splash screen",
+        "end": {
+          "column": 3,
+          "line": 39
+        },
+        "file": "source/renderer/app/components/splash/SplashNetworkByronReboot.js",
+        "id": "static.splash.network.flightDescription3",
+        "start": {
+          "column": 22,
+          "line": 34
+        }
+      },
+      {
+        "defaultMessage": "!!!If you already have a production version of Daedalus installed on your computer, your wallets should be visible in this Flight version as well, and you should have access to your ada in both versions of Daedalus.",
+        "description": "flightDescription4 on network splash screen",
+        "end": {
+          "column": 3,
+          "line": 45
+        },
+        "file": "source/renderer/app/components/splash/SplashNetworkByronReboot.js",
+        "id": "static.splash.network.flightDescription4",
+        "start": {
+          "column": 22,
+          "line": 40
+        }
+      },
+      {
+        "defaultMessage": "!!!If you do spot any bugs or inconsistencies in balances and transaction history when using Flight candidates, or want to suggest improvements, feed them directly back to the IOHK development team by submitting a support ticket from the wallet. Wherever relevant, please include your wallet logs so the team can properly assess any issues.",
+        "description": "flightDescription5 on network splash screen",
+        "end": {
+          "column": 3,
+          "line": 51
+        },
+        "file": "source/renderer/app/components/splash/SplashNetworkByronReboot.js",
+        "id": "static.splash.network.flightDescription5",
+        "start": {
+          "column": 22,
+          "line": 46
         }
       },
       {
@@ -2235,13 +2291,13 @@
         "description": "I understand",
         "end": {
           "column": 3,
-          "line": 40
+          "line": 56
         },
-        "file": "source/renderer/app/components/splash/Network.js",
-        "id": "static.splash.network.actionLabel",
+        "file": "source/renderer/app/components/splash/SplashNetworkByronReboot.js",
+        "id": "static.splash.network.buttonLabel",
         "start": {
           "column": 15,
-          "line": 36
+          "line": 52
         }
       },
       {
@@ -2249,17 +2305,134 @@
         "description": "Learn more",
         "end": {
           "column": 3,
-          "line": 45
+          "line": 61
         },
-        "file": "source/renderer/app/components/splash/Network.js",
-        "id": "static.splash.network.learnMore",
+        "file": "source/renderer/app/components/splash/SplashNetworkByronReboot.js",
+        "id": "static.splash.network.linkLabel",
         "start": {
           "column": 13,
-          "line": 41
+          "line": 57
+        }
+      },
+      {
+        "defaultMessage": "!!!https://daedaluswallet.io/flight",
+        "description": "\"Learn more\" link URL on the network splash screen",
+        "end": {
+          "column": 3,
+          "line": 66
+        },
+        "file": "source/renderer/app/components/splash/SplashNetworkByronReboot.js",
+        "id": "static.splash.network.flightLinkUrl",
+        "start": {
+          "column": 11,
+          "line": 62
         }
       }
     ],
-    "path": "source/renderer/app/components/splash/Network.json"
+    "path": "source/renderer/app/components/splash/SplashNetworkByronReboot.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Daedalus",
+        "description": "Daedalus",
+        "end": {
+          "column": 3,
+          "line": 12
+        },
+        "file": "source/renderer/app/components/splash/SplashNetworkITN.js",
+        "id": "static.splash.network.title",
+        "start": {
+          "column": 9,
+          "line": 8
+        }
+      },
+      {
+        "defaultMessage": "!!!INCENTIVIZED TESTNET v1",
+        "description": "INCENTIVIZED TESTNET v1",
+        "end": {
+          "column": 3,
+          "line": 17
+        },
+        "file": "source/renderer/app/components/splash/SplashNetworkITN.js",
+        "id": "static.splash.network.itnVersionName",
+        "start": {
+          "column": 15,
+          "line": 13
+        }
+      },
+      {
+        "defaultMessage": "!!!Rewards",
+        "description": "Rewards",
+        "end": {
+          "column": 3,
+          "line": 22
+        },
+        "file": "source/renderer/app/components/splash/SplashNetworkITN.js",
+        "id": "static.splash.network.itnNetworkName",
+        "start": {
+          "column": 15,
+          "line": 18
+        }
+      },
+      {
+        "defaultMessage": "!!!This version of Daedalus has been created specifically for use with the Incentivized Testnet. It is not compatible with the Cardano mainnet. If you had ada in a mainnet Daedalus or Yoroi wallet at the time of the balance snapshot (12.00 UTC, November 29) you can use this version of Daedalus to restore those funds as testnet ada, for use exclusively on the Incentivized Testnet. The rewards earned for delegating stake and running stake pools on the Incentivized Testnet will be paid out in real ada at the end of the Incentivized Testnet program. Important: Please keep your Rewards wallet recovery phrase safe. You will need it to receive your ada rewards on the mainnet.",
+        "description": "This version of Daedalus has been created specifically for the balance check, the first stage in the roll-out of the Incentivized Testnet. It is not compatible with the Cardano mainnet. The balance check is a practice run for the official balance snapshot that is currently planned for later in November. This initial test will allow us to test core functionality, while enabling users to validate that the value of their mainnet ada balances is accurately captured ahead of the Incentivized Testnet.",
+        "end": {
+          "column": 3,
+          "line": 29
+        },
+        "file": "source/renderer/app/components/splash/SplashNetworkITN.js",
+        "id": "static.splash.network.itnDescription",
+        "start": {
+          "column": 18,
+          "line": 23
+        }
+      },
+      {
+        "defaultMessage": "!!!I understand",
+        "description": "I understand",
+        "end": {
+          "column": 3,
+          "line": 34
+        },
+        "file": "source/renderer/app/components/splash/SplashNetworkITN.js",
+        "id": "static.splash.network.buttonLabel",
+        "start": {
+          "column": 15,
+          "line": 30
+        }
+      },
+      {
+        "defaultMessage": "!!!Learn more",
+        "description": "Learn more",
+        "end": {
+          "column": 3,
+          "line": 39
+        },
+        "file": "source/renderer/app/components/splash/SplashNetworkITN.js",
+        "id": "static.splash.network.linkLabel",
+        "start": {
+          "column": 13,
+          "line": 35
+        }
+      },
+      {
+        "defaultMessage": "!!!http://staking.cardano.org/",
+        "description": "\"Learn more\" link URL on the network splash screen",
+        "end": {
+          "column": 3,
+          "line": 44
+        },
+        "file": "source/renderer/app/components/splash/SplashNetworkITN.js",
+        "id": "static.splash.network.itnLinkUrl",
+        "start": {
+          "column": 11,
+          "line": 40
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/splash/SplashNetworkITN.json"
   },
   {
     "descriptors": [
@@ -10950,25 +11123,6 @@
       }
     ],
     "path": "source/renderer/app/containers/settings/categories/SupportSettingsPage.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!http://staking.cardano.org/",
-        "description": "\"Learn more\" link URL on the network splash screen",
-        "end": {
-          "column": 3,
-          "line": 13
-        },
-        "file": "source/renderer/app/containers/splash/NetworkPage.js",
-        "id": "static.splash.network.learnMore.linkUrl",
-        "start": {
-          "column": 20,
-          "line": 9
-        }
-      }
-    ],
-    "path": "source/renderer/app/containers/splash/NetworkPage.json"
   },
   {
     "descriptors": [
