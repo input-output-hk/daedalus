@@ -360,7 +360,7 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--theme-node-update-background-color': '#121326',
     '--theme-node-update-title-color': '#ffffff',
     '--theme-node-update-message-color': '#ffffff',
-    '--theme-node-sync-info-message-background-color': '#3f404f',
+    '--theme-node-sync-info-message-background-color': '#56576b',
     '--theme-node-sync-info-message-text-color': '#ffffff',
     '--theme-node-sync-icon-color': '#fff',
     '--theme-node-update-accept-button-background-color': '#36374d',
@@ -577,7 +577,7 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--rp-textarea-text-color': '#ffffff',
   },
   rpTooltip: {
-    '--rp-tooltip-bg-color': '#ffffff',
+    '--rp-tooltip-bg-color': '#56576b',
     '--rp-tooltip-text-color': '#ffffff',
   },
   scrollbar: {

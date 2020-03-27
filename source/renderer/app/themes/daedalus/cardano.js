@@ -380,7 +380,7 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-node-update-title-color': '#5e6066',
     '--theme-node-update-message-color': '#5e6066',
     '--theme-node-sync-icon-color': '#fff',
-    '--theme-node-sync-info-message-background-color': '#202225',
+    '--theme-node-sync-info-message-background-color': '#5e6066',
     '--theme-node-sync-info-message-text-color': '#ffffff',
     '--theme-node-update-accept-button-background-color': '#56c887',
     '--theme-node-update-accept-button-background-color-hover': '#2cbb69',

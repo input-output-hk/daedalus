@@ -377,7 +377,7 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-node-update-background-color': '#ebeff2',
     '--theme-node-update-title-color': '#5e6066',
     '--theme-node-update-message-color': '#5e6066',
-    '--theme-node-sync-info-message-background-color': '#5e6066',
+    '--theme-node-sync-info-message-background-color': '#062148',
     '--theme-node-sync-info-message-text-color': '#fafbfc',
     '--theme-node-sync-icon-color': '#fff',
     '--theme-node-update-accept-button-background-color': '#445b7c',
@@ -594,7 +594,7 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--rp-textarea-text-color': '#5e6066',
   },
   rpTooltip: {
-    '--rp-tooltip-bg-color': '#5e6066',
+    '--rp-tooltip-bg-color': '#062148',
     '--rp-tooltip-text-color': '#fafbfc',
   },
   scrollbar: {
