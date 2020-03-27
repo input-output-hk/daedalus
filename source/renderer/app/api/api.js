@@ -1171,7 +1171,6 @@ export default class AdaApi {
   ): Promise<Wallet> => {
     logger.debug('AdaApi::restoreExportedByronWallet called', {
       name: request.name,
-      hasPassword: request.passphrase_hash !== null,
     });
     try {
       const legacyWallet: LegacyAdaWallet = await restoreExportedByronWallet(

@@ -82,10 +82,7 @@ export type StateSnapshotLogParams = {
 };
 
 export type WalletMigrationReportData = {
-  exportedWalletsData: Array<{
-    name: string,
-    hasPassword: boolean,
-  }>,
+  exportedWalletsData: Array<{ name: string }>,
   exportedWalletsCount: number,
   exportErrors: string,
   restoredWalletsData: Array<{
@@ -96,7 +93,7 @@ export type WalletMigrationReportData = {
   restoredWalletsCount: number,
   restorationErrors: Array<{
     error: LocalizableError,
-    wallet: { name: string, hasPassword: boolean },
+    wallet: { name: string },
   }>,
   finalMigrationStatus: WalletMigrationStatus,
 };
