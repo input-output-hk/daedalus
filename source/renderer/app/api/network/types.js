@@ -14,6 +14,11 @@ export type FutureEpoch = {
   epochStart: string,
 };
 
+export type ClockOffset = {
+  quantity: number,
+  unit: 'microsecond',
+};
+
 export type SlotLength = {
   quantity: number,
   unit: string,
@@ -67,6 +72,13 @@ export type NetworkInfoResponse = {
     epoch_start_time: string,
   },
 };
+
+export type NetworkClockResponse = {
+  status: 'available' | 'unavailable' | 'pending',
+  offset?: ClockOffset,
+};
+
+export type GetNetworkClockResponse = NetworkClockResponse;
 
 export type GetNetworkParametersResponse = {
   genesisBlockHash: string,
