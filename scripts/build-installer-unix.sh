@@ -159,7 +159,7 @@ pushd installers
                          "  --build-job        ${build_id}"
                          "  --cluster          ${cluster}"
                          "  --out-dir          ${APP_NAME}")
-          nix-build .. -A launcherConfigs.configFiles --argstr os macos64 --argstr cluster "${cluster}" -o cfg-files --argstr nodeImplementation "${BACKEND}"
+          nix-build .. -A launcherConfigs.configFiles --argstr os macos64 --argstr cluster "${cluster}" -o cfg-files"
           cp -v cfg-files/* .
           chmod -R +w .
           echo '~~~   Running make-installer in nix-shell'
