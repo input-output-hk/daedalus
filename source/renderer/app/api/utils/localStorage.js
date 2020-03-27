@@ -4,6 +4,8 @@
 
 import { includes } from 'lodash';
 import type { NewsTimestamp } from '../news/types';
+import type { WalletMigrationStatus } from '../../stores/WalletMigrationStore';
+import { WalletMigrationStatuses } from '../../stores/WalletMigrationStore';
 
 const store = global.electronStore;
 
@@ -70,6 +72,7 @@ export default class LocalStorageApi {
       'DATA_LAYER_MIGRATION_ACCEPTANCE',
       'READ_NEWS',
       'WALLETS',
+      'WALLET_MIGRATION_STATUS',
     ];
     this.storageKeys = {};
     storageKeysRaw.forEach(key => {
@@ -227,6 +230,21 @@ export default class LocalStorageApi {
   unsetReadNews = (): Promise<void> =>
     new LocalStorageApi.Unsetter(this.storageKeys.READ_NEWS);
 
+  getWalletMigrationStatus = (): Promise<WalletMigrationStatus> =>
+    new LocalStorageApi.Getter(
+      this.storageKeys.WALLET_MIGRATION_STATUS,
+      WalletMigrationStatuses.UNSTARTED
+    );
+
+  setWalletMigrationStatus = (status: WalletMigrationStatus): Promise<void> =>
+    new LocalStorageApi.Setter(
+      this.storageKeys.WALLET_MIGRATION_STATUS,
+      status
+    );
+
+  unsetWalletMigrationStatus = (): Promise<void> =>
+    new LocalStorageApi.Unsetter(this.storageKeys.WALLET_MIGRATION_STATUS);
+
   reset = async () => {
     await this.unsetUserLocale();
     await this.unsetUserNumberFormat();
@@ -237,5 +255,6 @@ export default class LocalStorageApi {
     await this.unsetUserTheme();
     await this.unsetDataLayerMigrationAcceptance();
     await this.unsetReadNews();
+    await this.unsetWalletMigrationStatus();
   };
 }

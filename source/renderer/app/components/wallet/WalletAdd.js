@@ -22,11 +22,17 @@ const messages = defineMessages({
     defaultMessage: '!!!Create',
     description: 'Label for the "Create" button on the wallet add dialog.',
   },
-  createDescription: {
-    id: 'wallet.add.dialog.create.description',
+  createDescriptionItn: {
+    id: 'wallet.add.dialog.create.description.itn',
     defaultMessage: '!!!Create a new Rewards wallet',
     description:
       'Description for the "Create a new Rewards wallet" button on the wallet add dialog.',
+  },
+  createDescription: {
+    id: 'wallet.add.dialog.create.description',
+    defaultMessage: '!!!Create a new wallet',
+    description:
+      'Description for the "Create a new wallet" button on the wallet add dialog.',
   },
   joinLabel: {
     id: 'wallet.add.dialog.join.label',
@@ -83,6 +89,8 @@ const messages = defineMessages({
   },
 });
 
+const { isIncentivizedTestnet } = global;
+
 type Props = {
   onCreate: Function,
   onRestore: Function,
@@ -126,7 +134,11 @@ export default class WalletAdd extends Component<Props> {
               onClick={onCreate}
               icon={createIcon}
               label={intl.formatMessage(messages.createLabel)}
-              description={intl.formatMessage(messages.createDescription)}
+              description={
+                isIncentivizedTestnet
+                  ? intl.formatMessage(messages.createDescriptionItn)
+                  : intl.formatMessage(messages.createDescription)
+              }
               isDisabled={isMaxNumberOfWalletsReached}
             />
             <BigButtonForDialogs

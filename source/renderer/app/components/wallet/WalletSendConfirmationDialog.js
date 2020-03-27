@@ -4,7 +4,9 @@ import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
-import { defineMessages, intlShape } from 'react-intl';
+import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
+import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
+import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
 import Dialog from '../widgets/Dialog';
 import DialogCloseButton from '../widgets/DialogCloseButton';
@@ -55,6 +57,20 @@ export const messages = defineMessages({
     description:
       'Placeholder for the "Spending password" inputs in the wallet send confirmation dialog.',
   },
+  flightCandidateWarning: {
+    id: 'wallet.send.confirmationDialog.flightCandidateWarning',
+    defaultMessage:
+      '!!!{Warning}, flight candidate versions of Daedalus are connected to Cardano mainnet. If you confirm this transaction, your ada will be sent for real.',
+    description:
+      'Text for the "Flight candidate" warning in the wallet send confirmation dialog.',
+  },
+  flightCandidateCheckboxLabel: {
+    id: 'wallet.send.confirmationDialog.flightCandidateCheckboxLabel',
+    defaultMessage:
+      '!!!I understand that real ada will be moved as part of this transaction and that this action is irreversible.',
+    description:
+      'Label for the "Flight candidate" warning checkbox in the wallet send confirmation dialog.',
+  },
   sendButtonLabel: {
     id: 'wallet.send.confirmationDialog.submit',
     defaultMessage: '!!!Send',
@@ -87,6 +103,7 @@ type Props = {
   onCancel: Function,
   onExternalLinkClick: Function,
   isSubmitting: boolean,
+  isMainnet: boolean,
   error: ?LocalizableError,
   currencyUnit: string,
 };
@@ -118,6 +135,12 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
               return [true];
             },
           ],
+        },
+        flightCandidateCheckbox: {
+          type: 'checkbox',
+          label: this.context.intl.formatMessage(
+            messages.flightCandidateCheckboxLabel
+          ),
         },
       },
     },
@@ -152,6 +175,7 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
     const { form } = this;
     const { intl } = this.context;
     const passphraseField = form.$('passphrase');
+    const flightCandidateCheckboxField = form.$('flightCandidateCheckbox');
     const {
       onCancel,
       amount,
@@ -159,6 +183,7 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
       totalAmount,
       transactionFee,
       isSubmitting,
+      isMainnet,
       error,
       currencyUnit,
       onExternalLinkClick,
@@ -179,7 +204,9 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
         onClick: this.submit,
         primary: true,
         className: confirmButtonClasses,
-        disabled: !passphraseField.isValid,
+        disabled:
+          !passphraseField.isValid ||
+          (!flightCandidateCheckboxField.value && isMainnet),
       },
     ];
 
@@ -192,7 +219,7 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
           onExternalLinkClick={onExternalLinkClick}
         />
       ) : (
-        this.context.intl.formatMessage(error)
+        intl.formatMessage(error)
       );
     }
 
@@ -262,6 +289,20 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
             autoFocus
           />
         </div>
+
+        {isMainnet && (
+          <div className={styles.flightCandidateWarning}>
+            <FormattedHTMLMessage
+              {...messages.flightCandidateWarning}
+              tagName="p"
+            />
+            <Checkbox
+              {...flightCandidateCheckboxField.bind()}
+              error={flightCandidateCheckboxField.error}
+              skin={CheckboxSkin}
+            />
+          </div>
+        )}
 
         {errorElement ? <p className={styles.error}>{errorElement}</p> : null}
       </Dialog>

@@ -159,19 +159,8 @@ pushd installers
                          "  --build-job        ${build_id}"
                          "  --cluster          ${cluster}"
                          "  --out-dir          ${APP_NAME}")
-          nix-build .. -A launcherConfigs.cfg-files --argstr os macos64 --argstr cluster "${cluster}" -o cfg-files --argstr nodeImplementation "${BACKEND}"
-          cp -v cfg-files/{installer-config.json,launcher-config.yaml} .
-          if [ -f cfg-files/block-0.bin ]; then
-            cp -v cfg-files/block-0.bin .
-          fi
-          if [ -f cfg-files/jormungandr-config.yaml ]; then
-            cp -v cfg-files/jormungandr-config.yaml .
-          fi
-          if [[ "${BACKEND}" == "cardano" ]]
-          then
-            nix-build .. -A launcherConfigs.tier2-cfg-files --argstr os macos64 --argstr cluster "${cluster}" -o tier2-cfg-files --argstr nodeImplementation "${BACKEND}"
-            cp -v tier2-cfg-files/* .
-          fi
+          nix-build .. -A launcherConfigs.configFiles --argstr os macos64 --argstr cluster "${cluster}" -o cfg-files --argstr nodeImplementation "${BACKEND}"
+          cp -v cfg-files/* .
           chmod -R +w .
           echo '~~~   Running make-installer in nix-shell'
           $nix_shell ../shell.nix -A buildShell --run "${INSTALLER_CMD[*]}"

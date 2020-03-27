@@ -25,9 +25,9 @@ const messages = defineMessages({
   buttonLabelIHaveWrittenItDown: {
     id:
       'wallet.backup.recovery.phrase.display.dialog.button.label.iHaveWrittenItDown',
-    defaultMessage: '!!!Yes, I’ve written it down',
+    defaultMessage: '!!!Yes, I have written down my wallet recovery phrase.',
     description:
-      'Label for button "Yes, I’ve written it down" on wallet backup dialog',
+      'Label for button "Yes, I have written down my wallet recovery phrase." on wallet backup dialog',
   },
 });
 

@@ -2,6 +2,7 @@
 import BigNumber from 'bignumber.js';
 
 import { WalletUnits } from '../../domains/Wallet';
+import type { ExportedByronWallet } from '../../types/walletExportTypes';
 
 export type Block = {
   slot_number: number,
@@ -200,6 +201,8 @@ export type RestoreLegacyWalletRequest = {
   walletName: string,
   spendingPassword: string,
 };
+
+export type RestoreExportedByronWalletRequest = ExportedByronWallet;
 
 export type UpdateWalletRequest = {
   walletId: string,

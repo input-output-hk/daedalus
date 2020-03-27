@@ -22,6 +22,7 @@ export default class WalletBackupDialogContainer extends Component<Props> {
   };
 
   render() {
+    const { isIncentivizedTestnet } = global;
     const { actions, stores } = this.props;
     const {
       recoveryPhraseWords,
@@ -48,6 +49,15 @@ export default class WalletBackupDialogContainer extends Component<Props> {
       continueToRecoveryPhraseForWalletBackup,
     } = actions.walletBackup;
     const { createWalletRequest } = stores.wallets;
+
+    const canFinishBackup = isIncentivizedTestnet
+      ? isRecoveryPhraseValid &&
+        isTermOfflineAccepted &&
+        isTermRecoveryAccepted &&
+        isTermRewardsAccepted
+      : isRecoveryPhraseValid &&
+        isTermOfflineAccepted &&
+        isTermRecoveryAccepted;
     return (
       <WalletBackupDialog
         // Global props for all dialogs
@@ -68,12 +78,7 @@ export default class WalletBackupDialogContainer extends Component<Props> {
         // Props for WalletRecoveryPhraseEntryDialog
         isTermOfflineAccepted={isTermOfflineAccepted}
         enteredPhrase={enteredPhrase}
-        canFinishBackup={
-          isRecoveryPhraseValid &&
-          isTermOfflineAccepted &&
-          isTermRecoveryAccepted &&
-          isTermRewardsAccepted
-        }
+        canFinishBackup={canFinishBackup}
         isTermRecoveryAccepted={isTermRecoveryAccepted}
         isTermRewardsAccepted={isTermRewardsAccepted}
         isValid={isRecoveryPhraseValid}

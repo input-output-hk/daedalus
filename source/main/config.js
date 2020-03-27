@@ -48,33 +48,21 @@ export type NodeConfig = {
  * The shape of the config params, usually provided to the cadano-node launcher
  */
 export type LauncherConfig = {
-  frontendOnlyMode: boolean,
   stateDir: string,
-  walletBin: string,
-  walletArgs: Array<string>,
-  nodeBin: string,
   nodeImplementation: CardanoNodeImplementation,
   nodeConfig: NodeConfig,
-  nodeArgs: Array<string>,
   tlsPath: string,
-  nodeDbPath: string,
-  workingDir: string,
   logsPrefix: string,
-  nodeLogConfig: string,
-  nodeTimeoutSec: number,
   cluster: string,
-  configuration: {
-    filePath: string,
-    key: string,
-    systemStart: string,
-    seed: string,
-  },
   block0Path: string,
   block0Hash: string,
   secretPath: string,
   configPath: string,
   syncTolerance: string,
   cliBin: string,
+  exportWalletsBin: string,
+  legacySecretKey: string,
+  legacyWalletDB: string,
 };
 
 type WindowOptionsType = {
@@ -115,8 +103,7 @@ export const launcherConfig: LauncherConfig = readLauncherConfig(
 );
 export const appLogsFolderPath = launcherConfig.logsPrefix;
 export const pubLogsFolderPath = path.join(appLogsFolderPath, 'pub');
-export const appFolderPath = launcherConfig.workingDir;
-export const { nodeDbPath, nodeImplementation, cluster } = launcherConfig;
+export const { nodeImplementation, cluster } = launcherConfig;
 export const stateDirectoryPath = launcherConfig.stateDir;
 export const stateDrive = isWindows ? stateDirectoryPath.slice(0, 2) : '/';
 
@@ -126,18 +113,13 @@ export const ALLOWED_LOGS = [
   'System-info.json',
   'Daedalus-versions.json',
   'State-snapshot.json',
+  'Wallet-migration-report.json',
   'node.log',
 ];
 export const ALLOWED_NODE_LOGS = new RegExp(/(node.log-)(\d{14}$)/);
 export const ALLOWED_LAUNCHER_LOGS = new RegExp(/(launcher-)(\d{14}$)/);
 export const MAX_NODE_LOGS_ALLOWED = 3;
 export const MAX_LAUNCHER_LOGS_ALLOWED = 3;
-
-// We need to invert 'frontendOnlyMode' value received from the launcherConfig
-// as this variable has an opposite meaning from the launcher's perspective.
-// Launcher treats the 'frontendOnlyMode' set to 'true' as the case where Daedalus
-// takes the responsiblity for launching and managing the cardano-node.
-export const frontendOnlyMode = !launcherConfig.frontendOnlyMode;
 
 // CardanoNode config
 export const NODE_STARTUP_TIMEOUT = 5000;
