@@ -48,7 +48,7 @@ const messages = defineMessages({
 type Props = {
   onClose: Function,
   openExternalLink: Function,
-  currentTheme: string,
+  currentTheme?: string,
 };
 
 @inject('stores')
