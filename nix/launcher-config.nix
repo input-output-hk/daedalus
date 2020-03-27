@@ -155,7 +155,7 @@ let
 
     legacyWalletDB = let
       prefix = if network == "mainnet_flight"
-               then ${mainnetDataDir}${dirSep}
+               then "${mainnetDataDir}${dirSep}"
                else "${dataDir}${dirSep}";
       path.linux = "${dataDir}${dirSep}Wallet";
       path.macos64 = "${prefix}Wallet-1.0";
@@ -164,7 +164,7 @@ let
 
     legacySecretKey = let
       prefix = if network == "mainnet_flight"
-               then ${mainnetDataDir}${dirSep}
+               then "${mainnetDataDir}${dirSep}"
                else "${dataDir}${dirSep}";
       path.linux = "${prefix}Secrets${dirSep}secret.key";
       path.macos64 = "${prefix}Secrets-1.0${dirSep}secret.key";

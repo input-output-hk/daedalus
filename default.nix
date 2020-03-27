@@ -1,5 +1,6 @@
 let
-  getDefaultBackend = cluster: if (builtins.elem cluster [ "mainnet" "staging" "testnet" "selfnode" ]) then "cardano" else "jormungandr";
+  itn_clusters = [ "itn_rewards_v1"  "qa" "nightly" "itn_selfnode" ];
+  getDefaultBackend = cluster: if (builtins.elem cluster itn_clusters) then "jormungandr" else "cardano";
 in
 { target ? builtins.currentSystem
 , nodeImplementation ? (getDefaultBackend cluster)
@@ -190,6 +191,7 @@ let
     unsigned-windows-installer = let
       mapping = { # TODO, get from launcher-config.nix
         mainnet = "Daedalus";
+        mainnet_flight = "Daedalus Flight";
         staging = "Daedalus Staging";
         testnet = "Daedalus Testnet";
         nightly = "Daedalus Nightly";
@@ -314,6 +316,10 @@ let
       mainnet = {
         small = ./installers/icons/mainnet/64x64.png;
         large = ./installers/icons/mainnet/1024x1024.png;
+      };
+      mainnet_flight = {
+        small = ./installers/icons/mainnet_flight/64x64.png;
+        large = ./installers/icons/mainnet_flight/1024x1024.png;
       };
       staging = {
         small = ./installers/icons/staging/64x64.png;
