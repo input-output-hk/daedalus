@@ -1660,9 +1660,6 @@ export default class AdaApi {
       };
     } catch (error) {
       logger.error('AdaApi::getNetworkParameters error', { error });
-      if (error.code === TlsCertificateNotValidError.API_ERROR) {
-        throw new TlsCertificateNotValidError();
-      }
       throw new GenericApiError(error);
     }
   };
