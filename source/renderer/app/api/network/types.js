@@ -14,6 +14,11 @@ export type FutureEpoch = {
   epochStart: string,
 };
 
+export type ClockOffset = {
+  quantity: number,
+  unit: string,
+};
+
 export type GetNetworkInfoResponse = {
   syncProgress: number,
   localTip: TipInfo,
@@ -47,3 +52,10 @@ export type NetworkInfoResponse = {
     epoch_start_time: string,
   },
 };
+
+export type NetworkClockResponse = {
+  status: 'available' | 'unavailable',
+  offset?: ClockOffset,
+};
+
+export type GetNetworkClockResponse = NetworkClockResponse;
