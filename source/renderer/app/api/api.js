@@ -22,6 +22,7 @@ import { createByronWalletAddress } from './addresses/requests/createByronWallet
 
 // Network requests
 import { getNetworkInfo } from './network/requests/getNetworkInfo';
+import { getNetworkClock } from './network/requests/getNetworkClock';
 import { getNetworkParameters } from './network/requests/getNetworkParameters';
 
 // Nodes requests
@@ -119,6 +120,8 @@ import type { RequestConfig } from './common/types';
 import type {
   GetNetworkInfoResponse,
   NetworkInfoResponse,
+  GetNetworkClockResponse,
+  NetworkClockResponse,
   GetNetworkParametersResponse,
   NetworkParametersResponse,
 } from './network/types';
@@ -1623,6 +1626,27 @@ export default class AdaApi {
       if (error.code === TlsCertificateNotValidError.API_ERROR) {
         throw new TlsCertificateNotValidError();
       }
+      throw new GenericApiError(error);
+    }
+  };
+
+  getNetworkClock = async (): Promise<GetNetworkClockResponse> => {
+    logger.debug('AdaApi::getNetworkClock called');
+    try {
+      // @API TODO - Once api works on windows environment also, this should be removed
+      const { isWindows } = global.environment;
+      if (isWindows || isIncentivizedTestnet) {
+        return { status: 'unavailable' };
+      }
+
+      const networkClock: NetworkClockResponse = await getNetworkClock(
+        this.config
+      );
+      logger.debug('AdaApi::getNetworkClock success', { networkClock });
+
+      return networkClock;
+    } catch (error) {
+      logger.error('AdaApi::getNetworkClock error', { error });
       throw new GenericApiError(error);
     }
   };
