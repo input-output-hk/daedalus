@@ -847,11 +847,11 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
       '0 5px 20px 0 rgba(0, 0, 0, 0.25)',
     '--theme-transactions-filter-title-button-text-color': '#243e62',
     '--theme-transactions-filter-title-button-background-color':
-      'rgba(250, 251, 252, 0.4)',
+      'rgba(94, 96, 102, 0.1)',
     '--theme-transactions-filter-title-button-background-color-hover':
-      'rgba(250, 251, 252, 0.6)',
+      'rgba(94, 96, 102, 0.3)',
     '--theme-transactions-filter-title-button-background-color-active':
-      'rgba(250, 251, 252, 0.8)',
+      'rgba(94, 96, 102, 0.5)',
   },
   uploader: {
     '--theme-uploader-text-color': '#5e6066',

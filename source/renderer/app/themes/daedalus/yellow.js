@@ -843,11 +843,11 @@ export const YELLOW_THEME_OUTPUT = {
       '0 5px 20px 0 rgba(0, 0, 0, 0.25)',
     '--theme-transactions-filter-title-button-text-color': '#ffffff',
     '--theme-transactions-filter-title-button-background-color':
-      'rgba(45, 45, 45, 0.4)',
+      'rgba(45, 45, 45, 0.1)',
     '--theme-transactions-filter-title-button-background-color-hover':
-      'rgba(45, 45, 45, 0.6)',
+      'rgba(45, 45, 45, 0.3)',
     '--theme-transactions-filter-title-button-background-color-active':
-      'rgba(45, 45, 45, 0.8)',
+      'rgba(45, 45, 45, 0.5)',
   },
   uploader: {
     '--theme-uploader-text-color': '#2d2d2d',
