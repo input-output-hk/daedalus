@@ -1,11 +1,19 @@
 // @flow
 import path from 'path';
+import { includes } from 'lodash';
 import { app, dialog } from 'electron';
 import { readLauncherConfig } from './utils/config';
-import { environment } from './environment';
+import {
+  checkIsTest,
+  checkIsProduction,
+} from '../common/utils/environmentCheckers';
 import type { CardanoNodeImplementation } from '../common/types/cardano-node.types';
+import { DEVELOPMENT } from '../common/types/environment.types';
 
-const { isTest, isProduction, isBlankScreenFixActive } = environment;
+const CURRENT_NODE_ENV = process.env.NODE_ENV || DEVELOPMENT;
+const isTest = checkIsTest(CURRENT_NODE_ENV);
+const isProduction = checkIsProduction(CURRENT_NODE_ENV);
+const isBlankScreenFixActive = includes(process.argv.slice(1), '--safe-mode');
 
 // Make sure Daedalus is started with required configuration
 const { LAUNCHER_CONFIG } = process.env;
@@ -63,6 +71,7 @@ export type LauncherConfig = {
   exportWalletsBin: string,
   legacySecretKey: string,
   legacyWalletDB: string,
+  isFlight: boolean,
 };
 
 type WindowOptionsType = {
@@ -97,14 +106,19 @@ export const windowOptions: WindowOptionsType = {
   useContentSize: true,
 };
 
-export const APP_NAME = 'Daedalus';
 export const launcherConfig: LauncherConfig = readLauncherConfig(
   LAUNCHER_CONFIG
 );
-export const appLogsFolderPath = launcherConfig.logsPrefix;
+export const {
+  cluster,
+  nodeImplementation,
+  stateDir,
+  logsPrefix,
+  isFlight,
+} = launcherConfig;
+export const appLogsFolderPath = logsPrefix;
 export const pubLogsFolderPath = path.join(appLogsFolderPath, 'pub');
-export const { nodeImplementation, cluster } = launcherConfig;
-export const stateDirectoryPath = launcherConfig.stateDir;
+export const stateDirectoryPath = stateDir;
 export const stateDrive = isWindows ? stateDirectoryPath.slice(0, 2) : '/';
 
 // Logging config
@@ -144,3 +158,6 @@ export const STAKE_POOL_REGISTRY_URL = {
   qa:
     'https://explorer.qa.jormungandr-testnet.iohkdev.io/stakepool-registry/registry.zip',
 };
+
+// Cardano Byron Testnet network magic
+export const TESTNET_MAGIC = 1097911063;

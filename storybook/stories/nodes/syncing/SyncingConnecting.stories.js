@@ -22,6 +22,7 @@ export const DefaultSyncingConnectingStory = (props: {
       CardanoNodeStates.STARTING
     )}
     hasBeenConnected={boolean('hasBeenConnected', false)}
+    isFlight={false}
     isConnected={boolean('isConnected', false)}
     isSynced={boolean('isSynced', false)}
     isConnecting={boolean('isConnecting', true)}
@@ -63,6 +64,7 @@ export const ConnectivityIssuesSyncingConnectingStory = (props: {
     isConnected={false}
     cardanoNodeState={CardanoNodeStates.RUNNING}
     hasBeenConnected
+    isFlight={false}
     isSynced={false}
     isConnecting
     isSyncing={false}
@@ -102,6 +104,7 @@ export const SyncIssuesSyncingConnectingStory = (props: {
     forceSyncIssue
     cardanoNodeState={CardanoNodeStates.RUNNING}
     hasBeenConnected
+    isFlight={false}
     isConnected
     isSynced={false}
     isConnecting={false}

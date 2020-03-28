@@ -467,6 +467,7 @@
   "systemTime.error.overlayTitle": "Unable to sync - incorrect time",
   "systemTime.error.supportPortalLink": "Support Portal",
   "systemTime.error.supportPortalLinkUrl": "https://daedaluswallet.io/clock-sync/",
+  "test.environment.daedalusFlightLabel": "Cardano mainnet - Daedalus Flight",
   "test.environment.developmentLabel": "Development",
   "test.environment.itnRewardsV1Label": "Incentivized Testnet v1 - Rewards",
   "test.environment.itnSelfnodeLabel": "ITN Selfnode",

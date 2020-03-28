@@ -5,6 +5,7 @@ import {
   LINUX,
   MAC_OS,
   MAINNET,
+  MAINNET_FLIGHT,
   PRODUCTION,
   STAGING,
   TEST,
@@ -26,6 +27,9 @@ export const evaluateNetwork = (network: ?string) => {
   if (network === QA || network === NIGHTLY || network === ITN_SELFNODE) {
     currentNetwork = ITN_REWARDS_V1;
   }
+  if (network === MAINNET_FLIGHT) {
+    currentNetwork = MAINNET;
+  }
   return currentNetwork;
 };
 
@@ -33,12 +37,14 @@ export const getBuildLabel = (
   buildNumber: string,
   network: string,
   currentNodeEnv: string,
+  isFlight: boolean,
   version: string
 ) => {
+  const flightLabel = isFlight ? ' Flight' : '';
   const networkLabel = checkIsMainnet(network)
     ? ''
     : ` ${networkPrettyNames[network]}`;
-  let buildLabel = `Daedalus${networkLabel} (${version}#${buildNumber})`;
+  let buildLabel = `Daedalus${flightLabel}${networkLabel} (${version}#${buildNumber})`;
   if (!checkIsProduction(currentNodeEnv))
     buildLabel += ` ${upperFirst(currentNodeEnv)}`;
   return buildLabel;

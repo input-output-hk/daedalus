@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import log from 'electron-log-daedalus';
 import ensureDirectoryExists from './ensureDirectoryExists';
-import { pubLogsFolderPath, appLogsFolderPath, APP_NAME } from '../config';
+import { pubLogsFolderPath, appLogsFolderPath } from '../config';
 import {
   constructMessageBody,
   formatMessage,
@@ -22,7 +22,7 @@ const isTest = process.env.NODE_ENV === 'test';
 const isDev = process.env.NODE_ENV === 'development';
 
 export const setupLogging = () => {
-  const logFilePath = path.join(pubLogsFolderPath, `${APP_NAME}.json`);
+  const logFilePath = path.join(pubLogsFolderPath, 'Daedalus.json');
   ensureDirectoryExists(pubLogsFolderPath);
   log.transports.console.level = isTest ? 'error' : 'info';
   log.transports.rendererConsole.level = isDev ? 'info' : 'error';

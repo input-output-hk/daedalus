@@ -80,7 +80,7 @@ export default class DisplaySettings extends Component<Props> {
   render() {
     const { theme, selectTheme } = this.props;
     const { intl } = this.context;
-    const { isIncentivizedTestnet } = global;
+    const { isIncentivizedTestnet, isFlight } = global;
 
     const themeIncentivizedTestnetClasses = classnames([
       theme === THEMES.INCENTIVIZED_TESTNET ? styles.active : styles.inactive,
@@ -205,7 +205,7 @@ export default class DisplaySettings extends Component<Props> {
         </div>
 
         <div className={styles.themesRowWrapper}>
-          {isIncentivizedTestnet ? (
+          {isIncentivizedTestnet && (
             <button
               className={themeIncentivizedTestnetClasses}
               onClick={selectTheme.bind(this, {
@@ -221,7 +221,9 @@ export default class DisplaySettings extends Component<Props> {
                 {intl.formatMessage(messages.themeIncentivizedTestnet)}
               </span>
             </button>
-          ) : (
+          )}
+
+          {isFlight && (
             <button
               className={themeFlightCandidateClasses}
               onClick={selectTheme.bind(this, {

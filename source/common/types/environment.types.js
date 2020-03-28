@@ -42,6 +42,7 @@ export const TEST = 'test';
 
 // cardano-node networks
 export const MAINNET = 'mainnet';
+export const MAINNET_FLIGHT = 'mainnet_flight';
 export const SELFNODE = 'selfnode';
 export const STAGING = 'staging';
 export const TESTNET = 'testnet';
@@ -63,6 +64,7 @@ export const OS_NAMES = {
 
 export type Network =
   | 'mainnet'
+  | 'mainnet_flight'
   | 'selfnode'
   | 'staging'
   | 'testnet'
