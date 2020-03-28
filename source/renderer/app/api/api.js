@@ -18,6 +18,7 @@ import WalletAddress from '../domains/WalletAddress';
 
 // Addresses requests
 import { getAddresses } from './addresses/requests/getAddresses';
+import { getByronWalletAddresses } from './addresses/requests/getByronWalletAddresses';
 import { createByronWalletAddress } from './addresses/requests/createByronWalletAddress';
 
 // Network requests
@@ -315,13 +316,15 @@ export default class AdaApi {
     const { walletId, queryParams, isLegacy } = request;
     try {
       let response = [];
-      if (isLegacy) {
-        // @TODO - response is faked to enable UI. Comment out once endpoint is available
-        // response = await getByronWalletAddresses(this.config, walletId, queryParams);
-        return response;
+      if (isLegacy && !isIncentivizedTestnet) {
+        response = await getByronWalletAddresses(
+          this.config,
+          walletId,
+          queryParams
+        );
+      } else {
+        response = await getAddresses(this.config, walletId, queryParams);
       }
-      response = await getAddresses(this.config, walletId, queryParams);
-
       logger.debug('AdaApi::getAddresses success', { addresses: response });
       return response.map(_createAddressFromServerData);
     } catch (error) {
