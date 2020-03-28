@@ -11,5 +11,9 @@ storiesOf('Nodes|Splash Network Info', module)
     <SplashNetworkFlight onClose={() => null} openExternalLink={() => null} />
   ))
   .add('Incentivized Testnet', () => (
-    <SplashNetworkITN onClose={() => null} openExternalLink={() => null} isIncentivizedTestnetTheme />
+    <SplashNetworkITN
+      onClose={() => null}
+      openExternalLink={() => null}
+      isIncentivizedTestnetTheme
+    />
   ));
