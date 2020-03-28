@@ -1,5 +1,6 @@
 let
-  getDefaultBackend = cluster: if (builtins.elem cluster [ "mainnet" "staging" "testnet" "selfnode" ]) then "cardano" else "jormungandr";
+  itn_clusters = [ "itn_rewards_v1"  "qa" "nightly" "itn_selfnode" ];
+  getDefaultBackend = cluster: if (builtins.elem cluster itn_clusters) then "jormungandr" else "cardano";
 in
 { target ? builtins.currentSystem
 , nodeImplementation ? (getDefaultBackend cluster)
@@ -30,7 +31,8 @@ let
   # only used for CLI, to be removed when upgraded to next node version
   nodePkgs = import "${sources.cardano-node}/nix" {};
   shellPkgs = (import "${sources.cardano-shell}/nix/iohk-common.nix").getPkgs {};
-  inherit (pkgs.lib) optionalString optional;
+  inherit (pkgs.lib) optionalString optional concatStringsSep;
+  inherit (pkgs) writeTextFile;
   crossSystem = lib: (crossSystemTable lib).${target} or null;
   # TODO, nsis cant cross-compile with the nixpkgs daedalus currently uses
   nsisNixPkgs = import localLib.sources.nixpkgs-nsis {};
@@ -80,6 +82,11 @@ let
       os = ostable.${target};
       backend = nodeImplementation;
       runCommandNative = pkgsNative.runCommand;
+    };
+
+    itnClustersFile = writeTextFile {
+      name = "itn-clusters";
+      text = concatStringsSep " " itn_clusters;
     };
 
     unsignedUnpackedCardano = self.daedalus-bridge; # TODO
@@ -188,17 +195,7 @@ let
     uninstaller = if needSignedBinaries then self.signedUninstaller else self.unsignedUninstaller;
 
     unsigned-windows-installer = let
-      mapping = { # TODO, get from launcher-config.nix
-        mainnet = "Daedalus";
-        staging = "Daedalus Staging";
-        testnet = "Daedalus Testnet";
-        nightly = "Daedalus Nightly";
-        itn_rewards_v1 = "Daedalus - Rewards v1";
-        qa = "Daedalus QA";
-        selfnode = "Daedalus Selfnode";
-        itn_selfnode = "Daedalus Selfnode - ITN";
-      };
-      installDir = mapping.${cluster};
+      installDir = self.launcherConfigs.installerConfig.spacedName;
     in pkgs.runCommand "win64-installer-${cluster}" {
       buildInputs = [
         self.daedalus-installer self.nsis pkgs.unzip pkgs.jq self.yaml2json
@@ -269,6 +266,9 @@ let
       inherit buildNum;
       api = "ada";
       apiVersion = self.cardano-sl.daedalus-bridge.version;
+      inherit (self.launcherConfigs.installerConfig) spacedName;
+      inherit (self.launcherConfigs) launcherConfig;
+      inherit cluster;
     };
     rawapp-win64 = self.rawapp.override { win64 = true; };
     source = builtins.filterSource localLib.cleanSourceFilter ./.;
@@ -297,53 +297,9 @@ let
       rev = "7f12322399fd87d937355d0fc263d37d798496fc";
       sha256 = "07wnmdadchf73p03wk51abzgd3zm2xz5khwadz1ypbvv3cqlzp5m";
     }) { nixpkgs = pkgs; };
-    desktopItem = pkgs.makeDesktopItem {
-      name = "Daedalus${if cluster != "mainnet" then "-${cluster}" else ""}";
-      exec = "INSERT_PATH_HERE";
-      desktopName = "Daedalus${if cluster != "mainnet" then " ${cluster}" else ""}";
-      genericName = "Crypto-Currency Wallet";
-      categories = "Application;Network;";
-      icon = "INSERT_ICON_PATH_HERE";
-    };
-    iconPath = {
-      # the target of these paths must not be a symlink
-      demo    = {
-        small = ./installers/icons/mainnet/64x64.png;
-        large = ./installers/icons/mainnet/1024x1024.png;
-      };
-      mainnet = {
-        small = ./installers/icons/mainnet/64x64.png;
-        large = ./installers/icons/mainnet/1024x1024.png;
-      };
-      staging = {
-        small = ./installers/icons/staging/64x64.png;
-        large = ./installers/icons/staging/1024x1024.png;
-      };
-      testnet = {
-        small = ./installers/icons/testnet/64x64.png;
-        large = ./installers/icons/testnet/1024x1024.png;
-      };
-      selfnode = {
-        small = ./installers/icons/selfnode/64x64.png;
-        large = ./installers/icons/selfnode/1024x1024.png;
-      };
-      qa = {
-        small = ./installers/icons/qa/64x64.png;
-        large = ./installers/icons/qa/1024x1024.png;
-      };
-      nightly = {
-        small = ./installers/icons/nightly/64x64.png;
-        large = ./installers/icons/nightly/1024x1024.png;
-      };
-      itn_rewards_v1 = {
-        small = ./installers/icons/itn_rewards_v1/64x64.png;
-        large = ./installers/icons/itn_rewards_v1/1024x1024.png;
-      };
-      itn_selfnode = {
-        small = ./installers/icons/itn_selfnode/64x64.png;
-        large = ./installers/icons/itn_selfnode/1024x1024.png;
-      };
-    };
+    iconPath = self.launcherConfigs.installerConfig.iconPath;
+    # used for name of profile, binary and the desktop shortcut
+    linuxClusterBinName = __replaceStrings ["_"] ["-"] cluster;
     namespaceHelper = pkgs.writeScriptBin "namespaceHelper" ''
       #!/usr/bin/env bash
 
@@ -358,11 +314,19 @@ let
       cat /etc/resolv.conf > etc/resolv.conf
 
       if [ "x$DEBUG_SHELL" == x ]; then
-        exec .${self.nix-bundle.nix-user-chroot}/bin/nix-user-chroot -n ./nix -c -e -m /home:/home -m /etc:/host-etc -m etc:/etc -p DISPLAY -p HOME -p XAUTHORITY -p LANG -p LANGUAGE -p LC_ALL -p LC_MESSAGES -- /nix/var/nix/profiles/profile-${cluster}/bin/enter-phase2 daedalus
+        exec .${self.nix-bundle.nix-user-chroot}/bin/nix-user-chroot -n ./nix -c -e -m /home:/home -m /etc:/host-etc -m etc:/etc -p DISPLAY -p HOME -p XAUTHORITY -p LANG -p LANGUAGE -p LC_ALL -p LC_MESSAGES -- /nix/var/nix/profiles/profile-${self.linuxClusterBinName}/bin/enter-phase2 daedalus
       else
-        exec .${self.nix-bundle.nix-user-chroot}/bin/nix-user-chroot -n ./nix -c -e -m /home:/home -m /etc:/host-etc -m etc:/etc -p DISPLAY -p HOME -p XAUTHORITY -p LANG -p LANGUAGE -p LC_ALL -p LC_MESSAGES -- /nix/var/nix/profiles/profile-${cluster}/bin/enter-phase2 bash
+        exec .${self.nix-bundle.nix-user-chroot}/bin/nix-user-chroot -n ./nix -c -e -m /home:/home -m /etc:/host-etc -m etc:/etc -p DISPLAY -p HOME -p XAUTHORITY -p LANG -p LANGUAGE -p LC_ALL -p LC_MESSAGES -- /nix/var/nix/profiles/profile-${self.linuxClusterBinName}/bin/enter-phase2 bash
       fi
     '';
+    desktopItem = pkgs.makeDesktopItem {
+      name = "Daedalus${if cluster != "mainnet" then "-${self.linuxClusterBinName}" else ""}";
+      exec = "INSERT_PATH_HERE";
+      desktopName = "Daedalus${if cluster != "mainnet" then " ${self.linuxClusterBinName}" else ""}";
+      genericName = "Crypto-Currency Wallet";
+      categories = "Application;Network;";
+      icon = "INSERT_ICON_PATH_HERE";
+    };
     postInstall = pkgs.writeScriptBin "post-install" ''
       #!${pkgs.stdenv.shell}
 
@@ -377,17 +341,17 @@ let
 
       echo "in post-install hook"
 
-      cp -f ${self.iconPath.${cluster}.large} $DAEDALUS_DIR/icon_large.png
-      cp -f ${self.iconPath.${cluster}.small} $DAEDALUS_DIR/icon.png
+      cp -f ${self.iconPath.large} $DAEDALUS_DIR/icon_large.png
+      cp -f ${self.iconPath.small} $DAEDALUS_DIR/icon.png
       cp -Lf ${self.namespaceHelper}/bin/namespaceHelper $DAEDALUS_DIR/namespaceHelper
       mkdir -pv ~/.local/bin ''${XDG_DATA_HOME}/applications
       ${pkgs.lib.optionalString (cluster == "mainnet") "cp -Lf ${self.namespaceHelper}/bin/namespaceHelper ~/.local/bin/daedalus"}
-      cp -Lf ${self.namespaceHelper}/bin/namespaceHelper ~/.local/bin/daedalus-${cluster}
+      cp -Lf ${self.namespaceHelper}/bin/namespaceHelper ~/.local/bin/daedalus-${self.linuxClusterBinName}
 
       cat ${self.desktopItem}/share/applications/Daedalus*.desktop | sed \
         -e "s+INSERT_PATH_HERE+''${DAEDALUS_DIR}/namespaceHelper+g" \
         -e "s+INSERT_ICON_PATH_HERE+''${DAEDALUS_DIR}/icon_large.png+g" \
-        > "''${XDG_DATA_HOME}/applications/Daedalus${if cluster != "mainnet" then "-${cluster}" else ""}.desktop"
+        > "''${XDG_DATA_HOME}/applications/Daedalus${if cluster != "mainnet" then "-${self.linuxClusterBinName}" else ""}.desktop"
     '';
     xdg-open = pkgs.writeScriptBin "xdg-open" ''
       #!${pkgs.stdenv.shell}
@@ -405,7 +369,7 @@ let
     newBundle = let
       daedalus' = self.daedalus.override { sandboxed = true; };
     in (import ./installers/nix/nix-installer.nix {
-      inherit (self) postInstall preInstall cluster rawapp;
+      inherit (self) postInstall preInstall linuxClusterBinName rawapp;
       inherit pkgs;
       installationSlug = installPath;
       installedPackages = [ daedalus' self.postInstall self.namespaceHelper daedalus'.cfg self.daedalus-bridge daedalus'.daedalus-frontend self.xdg-open ];
@@ -415,7 +379,7 @@ let
       version = (builtins.fromJSON (builtins.readFile ./package.json)).version;
       backend = "cardano-wallet-${nodeImplementation}";
       suffix = if buildNum == null then "" else "-${toString buildNum}";
-      fn = "daedalus-${version}-${backend}-${cluster}-${target}${suffix}.bin";
+      fn = "daedalus-${version}-${backend}-${self.linuxClusterBinName}-${target}${suffix}.bin";
     in pkgs.runCommand fn {} ''
       mkdir -p $out
       cp ${self.newBundle} $out/${fn}

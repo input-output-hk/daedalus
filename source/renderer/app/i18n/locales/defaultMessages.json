@@ -2149,6 +2149,20 @@
           "column": 18,
           "line": 48
         }
+      },
+      {
+        "defaultMessage": "!!!Cardano mainnet - Daedalus Flight",
+        "description": "Label for Daedalus Flight with version.",
+        "end": {
+          "column": 3,
+          "line": 57
+        },
+        "file": "source/renderer/app/components/sidebar/SidebarCategoryNetworkInfo.js",
+        "id": "test.environment.daedalusFlightLabel",
+        "start": {
+          "column": 10,
+          "line": 53
+        }
       }
     ],
     "path": "source/renderer/app/components/sidebar/SidebarCategoryNetworkInfo.json"
@@ -11039,6 +11053,20 @@
         "start": {
           "column": 18,
           "line": 43
+        }
+      },
+      {
+        "defaultMessage": "!!!Cardano mainnet - Daedalus Flight",
+        "description": "Label for Daedalus Flight with version.",
+        "end": {
+          "column": 3,
+          "line": 52
+        },
+        "file": "source/renderer/app/components/widgets/WalletTestEnvironmentLabel.js",
+        "id": "test.environment.daedalusFlightLabel",
+        "start": {
+          "column": 10,
+          "line": 48
         }
       }
     ],

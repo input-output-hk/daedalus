@@ -57,6 +57,7 @@ data Cluster
   | Selfnode
   | ITN_Selfnode
   | Mainnet
+  | Mainnet_Flight
   | Staging
   | Testnet
   deriving (Bounded, Enum, Eq, Read, Show)
@@ -109,6 +110,7 @@ clusterNetwork QA = "qa"
 clusterNetwork ITN_Selfnode = "itn_selfnode"
 clusterNetwork Selfnode = "selfnode"
 clusterNetwork Mainnet = "mainnet"
+clusterNetwork Mainnet_Flight = "mainnet"
 clusterNetwork Staging = "staging"
 clusterNetwork Testnet = "testnet"
 
