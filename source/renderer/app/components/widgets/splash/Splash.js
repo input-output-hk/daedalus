@@ -8,7 +8,6 @@ import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import daedalusIcon from '../../../assets/images/daedalus-logo-loading-grey.inline.svg';
 import styles from './Splash.scss';
-import { THEMES } from '../../../themes';
 
 type Props = {
   onButtonClick: Function,
@@ -19,7 +18,7 @@ type Props = {
   description: Node,
   buttonLabel: string,
   linkLabel: string,
-  currentTheme?: string,
+  isIncentivizedTestnetTheme?: boolean,
   backgroundImage?: string,
 };
 
@@ -34,14 +33,14 @@ export default class SplashNetwork extends Component<Props> {
       description,
       buttonLabel,
       linkLabel,
-      currentTheme,
+      isIncentivizedTestnetTheme,
       backgroundImage,
     } = this.props;
 
     return (
       <div className={styles.component}>
         <div className={styles.backgroundContainer}>
-          {currentTheme === THEMES.INCENTIVIZED_TESTNET && backgroundImage && (
+          {isIncentivizedTestnetTheme && backgroundImage && (
             <>
               <div className={styles.backgroundOverlay} />
               <SVGInline

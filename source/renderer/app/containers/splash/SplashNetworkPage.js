@@ -15,14 +15,14 @@ export default class SplashNetworkPage extends Component<Props> {
   render() {
     const { networkStatus: networkStatusActions } = this.props.actions;
     const { openExternalLink } = this.props.stores.app;
-    const { currentTheme } = this.props.stores.profile;
+    const { isIncentivizedTestnetTheme } = this.props.stores.profile;
     const { isIncentivizedTestnet, isFlight } = global;
     if (isIncentivizedTestnet) {
       return (
         <SplashNetworkITN
           onClose={() => networkStatusActions.toggleSplash.trigger()}
           openExternalLink={openExternalLink}
-          currentTheme={currentTheme}
+          isIncentivizedTestnetTheme={isIncentivizedTestnetTheme}
         />
       );
     }
