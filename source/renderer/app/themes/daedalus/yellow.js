@@ -844,9 +844,9 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-transactions-filter-title-button-background-color':
       'rgba(45, 45, 45, 0.1)',
     '--theme-transactions-filter-title-button-background-color-hover':
-      'rgba(45, 45, 45, 0.3)',
+      'rgba(45, 45, 45, 0.05)',
     '--theme-transactions-filter-title-button-background-color-active':
-      'rgba(45, 45, 45, 0.5)',
+      'rgba(45, 45, 45, 0.12)',
   },
   uploader: {
     '--theme-uploader-text-color': '#2d2d2d',

@@ -852,12 +852,13 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-transactions-filter-modal-bg-color': '#314259',
     '--theme-transactions-filter-date-picker-shadow':
       '0 0 20px 0 rgba(0, 0, 0, 0.4)',
-    '--theme-transactions-filter-title-button-text-color': '#282c31',
-    '--theme-transactions-filter-title-button-background-color': '#afafb866',
+    '--theme-transactions-filter-title-button-text-color': '#ffffff',
+    '--theme-transactions-filter-title-button-background-color':
+      'rgba(233, 244, 254, 0.1)',
     '--theme-transactions-filter-title-button-background-color-hover':
-      '#afafb899',
+      'rgba(233, 244, 254, 0.05)',
     '--theme-transactions-filter-title-button-background-color-active':
-      '#afafb8cc',
+      'rgba(233, 244, 254, 0.12)',
   },
   uploader: {
     '--theme-uploader-text-color': '#e9f4fe',

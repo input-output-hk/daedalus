@@ -844,13 +844,13 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-transactions-filter-modal-bg-color': '#fafbfc',
     '--theme-transactions-filter-date-picker-shadow':
       '0 5px 20px 0 rgba(0, 0, 0, 0.25)',
-    '--theme-transactions-filter-title-button-text-color': '#243e62',
+    '--theme-transactions-filter-title-button-text-color': '#2d2d2d',
     '--theme-transactions-filter-title-button-background-color':
-      'rgba(94, 96, 102, 0.1)',
+      'rgba(68, 91, 124, 0.1)',
     '--theme-transactions-filter-title-button-background-color-hover':
-      'rgba(94, 96, 102, 0.3)',
+      'rgba(68, 91, 124, 0.05)',
     '--theme-transactions-filter-title-button-background-color-active':
-      'rgba(94, 96, 102, 0.5)',
+      'rgba(68, 91, 124, 0.12)',
   },
   uploader: {
     '--theme-uploader-text-color': '#5e6066',
