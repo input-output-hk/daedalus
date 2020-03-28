@@ -812,7 +812,7 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--theme-transactions-state-ok-background-color': '#2cbb69',
     '--theme-transactions-state-pending-background-color':
       'rgba(255, 255, 255, 0.5)',
-    '--theme-transactions-state-text-color': '#fafbfc',
+    '--theme-transactions-state-text-color': '#121326',
     '--theme-transactions-search-background-color': '#121326',
     '--theme-transactions-icon-type-expend-background-color': '#709cf0',
     '--theme-transactions-icon-type-income-background-color': '#2cbb69',

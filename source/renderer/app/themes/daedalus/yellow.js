@@ -840,7 +840,7 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-transactions-filter-modal-bg-color': '#ffffff',
     '--theme-transactions-filter-date-picker-shadow':
       '0 5px 20px 0 rgba(0, 0, 0, 0.25)',
-    '--theme-transactions-filter-title-button-text-color': '#ffffff',
+    '--theme-transactions-filter-title-button-text-color': '#2d2d2d',
     '--theme-transactions-filter-title-button-background-color':
       'rgba(45, 45, 45, 0.1)',
     '--theme-transactions-filter-title-button-background-color-hover':
