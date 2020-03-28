@@ -766,7 +766,7 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
   },
   support: {
     '--theme-support-settings-item-color': '#ffffff',
-    '--theme-support-settings-link-color': '#36374d',
+    '--theme-support-settings-link-color': 'rgb(246, 154, 178)',
     '--theme-support-settings-text-color': '#ffffff',
   },
   syncing: {
