@@ -190,7 +190,7 @@ let
       prefix = if network == "mainnet_flight"
                then "${mainnetDataDir}${dirSep}"
                else "${dataDir}${dirSep}";
-      path.linux = "${dataDir}${dirSep}Wallet";
+      path.linux = "${prefix}Wallet";
       path.macos64 = "${prefix}Wallet-1.0";
       path.windows = "${prefix}Wallet-1.0";
     in path.${os};
