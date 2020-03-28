@@ -52,6 +52,12 @@
     cursor: pointer;
     height: 28px;
     width: 28px;
+
+    &:hover {
+      background-color: var(
+          --theme-staking-stake-pools-search-clear-button-hover-background-color
+      );
+    }
   }
 
   svg {
@@ -59,10 +65,6 @@
   }
 
   &:hover {
-    svg > g > g {
-      fill: white;
-    }
-
     > div > div {
       height: 30px;
       line-height: 1.3;
