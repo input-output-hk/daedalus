@@ -12,15 +12,15 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "cardano-shell": {
-        "branch": "master",
+        "branch": "tls-launcher-config",
         "description": "Node shell, a thin layer for running the node and it's modules.",
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "cardano-shell",
-        "rev": "604bc748a668da45fe6812ae57b01937de545beb",
-        "sha256": "08x4v9ak978b1fbqhykhzvpvzdii3c1h9r74qy0agfi7h2fv0l0d",
+        "rev": "fd5260764666165f988d4e755cd6d1ccc3ccc4be",
+        "sha256": "03lx1x4djyasb1rfhi1xq7b0bhxmd68hsl6av7bl571fp48bzw7p",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-shell/archive/604bc748a668da45fe6812ae57b01937de545beb.tar.gz",
+        "url": "https://github.com/input-output-hk/cardano-shell/archive/fd5260764666165f988d4e755cd6d1ccc3ccc4be.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "cardano-sl": {

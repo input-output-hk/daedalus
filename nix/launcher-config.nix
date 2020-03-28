@@ -96,25 +96,46 @@ let
     path.macos64 = "${dataDir}/Logs";
   in path.${os};
 
+  tlsConfig = {
+    ca = {
+      organization = "Daedalus";
+      commonName = "Daedalus Self-Signed Root CA";
+      expiryDays = 3650;
+    };
+    server = {
+      organization = "Daedalus";
+      commonName = "Daedalus Wallet Backend";
+      expiryDays = 365;
+      altDNS = [
+        "localhost"
+        "localhost.localdomain"
+        "127.0.0.1"
+        "::1"
+      ];
+    };
+    clients = [ {
+      organization = "Daedalus";
+      commonName = "Daedalus Frontend";
+      expiryDays = 365;
+    } ];
+  };
+
   launcherLogsPrefix = "${logsPrefix}${dirSep}pub";
 
   # Default configs for launcher from cardano-shell. Most of these do nothing.
   # TODO: get rid of anything we don't need from cardano-shell
   defaultLauncherConfig = {
-    inherit logsPrefix launcherLogsPrefix;
+    inherit logsPrefix launcherLogsPrefix tlsConfig;
     walletLogging = false;
-    nodeArgs = [];
     daedalusBin = mkBinPath "frontend";
-    nodeLogPath = null;
+    # TODO: set when update system is complete
     updaterArgs = [];
     updaterPath = "";
     updateArchive = "";
     updateWindowsRunner = "";
     workingDir = dataDir;
     stateDir = dataDir;
-    x509ToolPath = null;
-    frontendOnlyMode = true;
-    tlsPath = null;
+    tlsPath = "${dataDir}${dirSep}tls";
     cluster = if network == "mainnet_flight" then "mainnet" else network;
     networkName = if network == "mainnet_flight" then "mainnet" else network;
     isFlight = network == "mainnet_flight";
