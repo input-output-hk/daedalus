@@ -3,6 +3,7 @@ $width: 24px !important;
 
 .component {
   flex-direction: row;
+  left: -2.5px;
 
   :global {
     .SimpleSwitch_switch {
