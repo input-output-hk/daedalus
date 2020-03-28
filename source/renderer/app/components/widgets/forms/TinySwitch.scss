@@ -6,7 +6,7 @@ $width: 24px !important;
 
   :global {
     .SimpleSwitch_switch {
-      border-radius: var(--rp-switch-normal-border-radius);
+      border-radius: var(--rp-switch-normal-border-radius) !important;
       margin-left: 6px;
 
       &:not(.SimpleSwitch_checked) {
