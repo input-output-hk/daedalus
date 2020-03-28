@@ -715,6 +715,7 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-staking-stake-pools-search-icon-color': 'rgba(94, 96, 102, 1)',
     '--theme-staking-stake-pools-search-clear-button-background-color':
       'rgba(68, 91, 124, 0.1)',
+    '--theme-staking-stake-pools-search-clear-button-color': '#5e6066',
     '--theme-staking-stake-pools-search-clear-button-hover-background-color':
       'rgba(68, 91, 124, 0.05)',
     '--theme-staking-stake-pools-title-color': '#5e6066',

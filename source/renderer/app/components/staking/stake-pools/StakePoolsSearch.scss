@@ -61,7 +61,13 @@
   }
 
   svg {
+    position: relative;
+    top: 1px;
     width: 10px;
+
+    > g > g {
+      fill: var(--theme-staking-stake-pools-search-clear-button-color);
+    }
   }
 
   &:hover {
