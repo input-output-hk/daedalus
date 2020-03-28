@@ -852,7 +852,7 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-transactions-filter-modal-bg-color': '#314259',
     '--theme-transactions-filter-date-picker-shadow':
       '0 0 20px 0 rgba(0, 0, 0, 0.4)',
-    '--theme-transactions-filter-title-button-text-color': '#ffffff',
+    '--theme-transactions-filter-title-button-text-color': '#282c31',
     '--theme-transactions-filter-title-button-background-color': '#afafb866',
     '--theme-transactions-filter-title-button-background-color-hover':
       '#afafb899',
