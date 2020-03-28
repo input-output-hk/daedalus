@@ -14,8 +14,6 @@ Feature: Restore Yoroi wallet
     And I click on the restore wallet button on the add wallet page
     And I see the restore wallet dialog
     Then I click on option "Yoroi wallet"
-    Then I should see section "What kind of Yoroi wallet would you like to restore?"
-    Then I click on option "(Balance wallet)"
     And I click continue
     And I enter recovery phrase in restore wallet dialog:
       | recoveryPhrase                                                                                                                                                                   |
@@ -31,8 +29,6 @@ Feature: Restore Yoroi wallet
     Then I should not see the restore wallet dialog anymore
     And I should have newly created "Yoroi Balance wallet" wallet loaded
     And "Yoroi Balance wallet" wallet should have "legacy_aab5517861cca76a53d83e24c84542ecac6c0a3d" as id
-    And "Balance" wallet badge should be visible in the wallet sidebar
-    And "Balance" wallet "Move testnet ada" action should be visible in the top bar notification
 
   @shelley
   Scenario: Successfully restoring "Yoroi Rewards" paper wallet

@@ -489,7 +489,7 @@ export default class WalletsStore extends Store {
     }
   };
 
-  _deleteWallet = async (params: { walletId: string, isLegacy?: boolean }) => {
+  _deleteWallet = async (params: { walletId: string, isLegacy: boolean }) => {
     // Pause polling in order to avoid fetching data for wallet we are about to delete
     this._pausePolling();
 

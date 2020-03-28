@@ -32,8 +32,8 @@ When(
 When('I delete the last wallet', async function() {
   const wallet = getWalletByName.call(this, 'Wallet 20');
   await this.client.execute(
-    walletId => daedalus.actions.wallets.deleteWallet.trigger({ walletId }),
-    wallet.id
+    (walletId, isLegacy) => daedalus.actions.wallets.deleteWallet.trigger({ walletId, isLegacy }),
+    wallet.id, wallet.isLegacy
   );
   await this.client.waitUntil(async () => {
     const wallets = await this.client.elements(

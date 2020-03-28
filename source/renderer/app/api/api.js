@@ -567,7 +567,7 @@ export default class AdaApi {
     try {
       const { walletId, isLegacy } = request;
       let response;
-      if (isLegacy) {
+      if (isLegacy && !isIncentivizedTestnet) {
         response = await deleteLegacyWallet(this.config, { walletId });
       } else {
         response = await deleteWallet(this.config, { walletId });

@@ -97,13 +97,13 @@ Before(async function(testCase) {
   });
 
   if (isIncentivizedTestnetRequest.value) {
-    // Skip all Byron related tests
-    if (includes(tags, '@byron') && !includes(tags, '@shelley')) {
+    // Skip all Byron related tests or Shelley WIP
+    if ((includes(tags, '@byron') && !includes(tags, '@shelley')) || includes(tags, '@api-wip-shelley')) {
       return 'skipped';
     }
   } else {
-    // Skip all Shelley related tests
-    if (includes(tags, '@shelley') && !includes(tags, '@byron')) {
+    // Skip all Shelley related tests or Byron WIP
+    if ((includes(tags, '@shelley') && !includes(tags, '@byron')) || includes(tags, '@api-wip-byron')) {
       return 'skipped';
     }
   }

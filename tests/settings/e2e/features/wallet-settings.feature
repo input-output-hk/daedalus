@@ -8,6 +8,7 @@ Feature: Wallet Settings
       | first  |
       | second |
 
+  @api-wip-byron
   Scenario: User changes Wallet password
     Given I am on the "second" wallet "settings" screen
     And I click on the "change" password label
@@ -40,6 +41,7 @@ Feature: Wallet Settings
       | message                               |
       | global.errors.invalidSpendingPassword |
 
+  @api-wip-byron
   Scenario: User changes wallet password to one which contains only cyrillic characters and numbers
     Given I am on the "second" wallet "settings" screen
     And I click on the "change" password label
@@ -50,6 +52,7 @@ Feature: Wallet Settings
     And I submit the wallet password dialog
     Then I should not see the change password dialog anymore
 
+  @api-wip-byron
   Scenario: User changes wallet password to one which contains only japanese characters and numbers
     Given I am on the "second" wallet "settings" screen
     And I click on the "change" password label
