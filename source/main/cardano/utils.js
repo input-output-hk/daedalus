@@ -200,56 +200,19 @@ export const exportWallets = async (
   // into Daedalus Flight state dir before extracting the wallets
   if (isFlight) {
     try {
-      // Remove migration data dir if it exists
-      const migrationDataDirPath = path.join(stateDir, 'migration-data');
-      await fs.remove(migrationDataDirPath);
-      ensureDirectoryExists(migrationDataDirPath);
-      logger.info('ipcMain: Preparing Daedalus Flight migration data...', {
-        migrationDataDirPath,
+      const response = await prepareMigrationData({
+        mainWindow,
+        stateDir,
+        legacySecretKey,
+        legacyWalletDB,
+        locale,
       });
-
-      const legacySecretKeyExists = await fs.pathExists(legacySecretKey);
-      if (legacySecretKeyExists) {
-        logger.info('ipcMain: Copying secret key file...', {
-          legacySecretKey,
-        });
-        legacySecretKeyPath = path.join(stateDir, 'migration-data/secret.key');
-        await fs.copy(legacySecretKey, legacySecretKeyPath);
-        logger.info('ipcMain: Copied secret key file', {
-          legacySecretKeyPath,
-        });
-      } else {
-        logger.info('ipcMain: Secret key file not found');
-      }
-
-      const legacyWalletDBFullPath = `${legacyWalletDB}-acid`;
-      const legacyWalletDBPathExists = await fs.pathExists(
-        legacyWalletDBFullPath
-      );
-      if (legacyWalletDBPathExists) {
-        logger.info('ipcMain: Copying wallet db directory...', {
-          legacyWalletDBFullPath,
-        });
-        legacyWalletDBPath = path.join(
-          stateDir,
-          'migration-data/wallet-db-acid'
-        );
-        await fs.copy(legacyWalletDBFullPath, legacyWalletDBPath);
-        legacyWalletDBPath = legacyWalletDBPath.replace('-acid', '');
-        logger.info('ipcMain: Copied wallet db directory', {
-          legacyWalletDBPath,
-        });
-      } else {
-        logger.info('ipcMain: Wallet db directory not found');
-      }
+      legacySecretKeyPath = response.legacySecretKeyPath;
+      legacyWalletDBPath = response.legacyWalletDBPath;
     } catch (error) {
-      logger.info('ipcMain: Preparing Daedalus Flight migration data failed', {
+      logger.error('ERROR', {
         error,
       });
-      const { code } = error || {};
-      if (code === 'EBUSY') {
-        showExportWalletsWarning(mainWindow, locale);
-      }
     }
   }
 
@@ -279,29 +242,132 @@ export const exportWallets = async (
   return Promise.resolve({ wallets, errors });
 };
 
+type PrepareMigrationDataParams = {
+  mainWindow: BrowserWindow,
+  stateDir: string,
+  legacySecretKey: string,
+  legacyWalletDB: string,
+  locale: string,
+};
+
+type PrepareMigrationDataResponse = {
+  legacySecretKeyPath: string,
+  legacyWalletDBPath: string,
+};
+
+const prepareMigrationData = async (
+  params: PrepareMigrationDataParams
+): Promise<PrepareMigrationDataResponse> => {
+  const {
+    mainWindow,
+    stateDir,
+    legacySecretKey,
+    legacyWalletDB,
+    locale,
+  } = params;
+  return new Promise(async (resolve, reject) => {
+    let legacySecretKeyPath = '';
+    let legacyWalletDBPath = '';
+    try {
+      // Remove migration data dir if it exists
+      const migrationDataDirPath = path.join(stateDir, 'migration-data');
+      await fs.remove(migrationDataDirPath);
+      ensureDirectoryExists(migrationDataDirPath);
+      logger.info('ipcMain: Preparing Daedalus Flight migration data...', {
+        migrationDataDirPath,
+      });
+
+      const legacySecretKeyExists = await fs.pathExists(legacySecretKey);
+      if (legacySecretKeyExists) {
+        logger.info('ipcMain: Copying secret key file...', {
+          legacySecretKey,
+        });
+        legacySecretKeyPath = path.join(stateDir, 'migration-data/secret.key');
+        await fs.copy(legacySecretKey + '123', legacySecretKeyPath);
+        logger.info('ipcMain: Copied secret key file', {
+          legacySecretKeyPath,
+        });
+      } else {
+        logger.info('ipcMain: Secret key file not found');
+      }
+
+      const legacyWalletDBFullPath = `${legacyWalletDB}-acid`;
+      const legacyWalletDBPathExists = await fs.pathExists(
+        legacyWalletDBFullPath
+      );
+      if (legacyWalletDBPathExists) {
+        logger.info('ipcMain: Copying wallet db directory...', {
+          legacyWalletDBFullPath,
+        });
+        legacyWalletDBPath = path.join(
+          stateDir,
+          'migration-data/wallet-db-acid'
+        );
+        await fs.copy(legacyWalletDBFullPath, legacyWalletDBPath);
+        legacyWalletDBPath = legacyWalletDBPath.replace('-acid', '');
+        logger.info('ipcMain: Copied wallet db directory', {
+          legacyWalletDBPath,
+        });
+      } else {
+        logger.info('ipcMain: Wallet db directory not found');
+      }
+      resolve({ legacySecretKeyPath, legacyWalletDBPath });
+    } catch (error) {
+      logger.info('ipcMain: Preparing Daedalus Flight migration data failed', {
+        error,
+      });
+      const { code } = error || {};
+      if (code === 'ENOENT' || code === 'EBUSY') {
+        await showExportWalletsWarning(
+          mainWindow,
+          locale,
+          prepareMigrationData,
+          {
+            mainWindow,
+            stateDir,
+            legacySecretKey,
+            legacyWalletDB,
+            locale,
+          }
+        );
+        logger.info('POST');
+        reject(error);
+      } else {
+        reject(error);
+      }
+    }
+  });
+};
+
 const showExportWalletsWarning = (
   mainWindow: BrowserWindow,
-  locale: string
-) => {
-  const translations = require(`../locales/${locale}`);
-  const translation = getTranslation(translations, 'dialog');
-  const exportWalletsDialogOptions = {
-    buttons: [
-      translation('exportWalletsWarning.confirm'),
-      translation('exportWalletsWarning.cancel'),
-    ],
-    type: 'warning',
-    title: translation('exportWalletsWarning.title'),
-    message: translation('exportWalletsWarning.message'),
-    defaultId: 1,
-    cancelId: 1,
-    noLink: true,
-  };
-  dialog.showMessageBox(mainWindow, exportWalletsDialogOptions, buttonId => {
-    if (buttonId === 0) {
-      logger.info('CONFIRM');
-    } else {
-      logger.info('CANCEL');
-    }
+  locale: string,
+  confirmFunction: Function,
+  confirmData: PrepareMigrationDataParams
+): Promise<any> => {
+  return new Promise(resolve => {
+    const translations = require(`../locales/${locale}`);
+    const translation = getTranslation(translations, 'dialog');
+    const exportWalletsDialogOptions = {
+      buttons: [
+        translation('exportWalletsWarning.confirm'),
+        translation('exportWalletsWarning.cancel'),
+      ],
+      type: 'warning',
+      title: translation('exportWalletsWarning.title'),
+      message: translation('exportWalletsWarning.message'),
+      defaultId: 1,
+      cancelId: 1,
+      noLink: true,
+    };
+    dialog.showMessageBox(mainWindow, exportWalletsDialogOptions, buttonId => {
+      if (buttonId === 0) {
+        logger.info('CONFIRM');
+        resolve(confirmFunction(confirmData));
+      } else {
+        logger.info('CANCEL');
+        resolve();
+      }
+    });
   });
 };
