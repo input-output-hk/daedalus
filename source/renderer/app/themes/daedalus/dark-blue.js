@@ -721,7 +721,9 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-staking-stake-pools-search-button-color': '#e9f4fe',
     '--theme-staking-stake-pools-search-icon-color': '#8793a1',
     '--theme-staking-stake-pools-search-clear-button-background-color':
-      'rgba(68, 91, 124, 0.05)',
+      'rgba(233, 244, 254, 0.1)',
+    '--theme-staking-stake-pools-search-clear-button-hover-background-color':
+      'rgba(233, 244, 254, 0.05)',
     '--theme-staking-stake-pools-title-color': '#e9f4fe',
     '--theme-staking-stake-pool-tooltip-experimental-icon-background-color':
       'rgba(83, 99, 112, 0.98)',

@@ -717,7 +717,9 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-staking-stake-pools-search-button-color': '#5e6066',
     '--theme-staking-stake-pools-search-icon-color': 'rgba(94, 96, 102, 1)',
     '--theme-staking-stake-pools-search-clear-button-background-color':
-      'rgba(68, 91, 124, 0.05)',
+      'rgba(32, 34, 37, 0.1)',
+    '--theme-staking-stake-pools-search-clear-button-hover-background-color':
+      'rgba(32, 34, 37, 0.05)',
     '--theme-staking-stake-pools-title-color': '#5e6066',
     '--theme-staking-stake-pool-tooltip-experimental-icon-background-color':
       'rgba(255, 255, 255, 0.97)',
