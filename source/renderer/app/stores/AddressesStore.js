@@ -19,11 +19,9 @@ export default class AddressesStore extends Store {
   @observable error: ?LocalizableError = null;
 
   // REQUESTS
-  /* eslint-disable max-len */
   @observable createByronWalletAddressRequest: Request<Address> = new Request(
     this.api.ada.createAddress
   );
-  /* eslint-disable max-len */
 
   setup() {
     const actions = this.actions.addresses;
