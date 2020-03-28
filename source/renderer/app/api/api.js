@@ -18,10 +18,13 @@ import WalletAddress from '../domains/WalletAddress';
 
 // Addresses requests
 import { getAddresses } from './addresses/requests/getAddresses';
+import { getByronWalletAddresses } from './addresses/requests/getByronWalletAddresses';
 import { createByronWalletAddress } from './addresses/requests/createByronWalletAddress';
 
 // Network requests
 import { getNetworkInfo } from './network/requests/getNetworkInfo';
+import { getNetworkClock } from './network/requests/getNetworkClock';
+import { getNetworkParameters } from './network/requests/getNetworkParameters';
 
 // Nodes requests
 import { applyNodeUpdate } from './nodes/requests/applyNodeUpdate';
@@ -118,6 +121,10 @@ import type { RequestConfig } from './common/types';
 import type {
   GetNetworkInfoResponse,
   NetworkInfoResponse,
+  GetNetworkClockResponse,
+  NetworkClockResponse,
+  GetNetworkParametersResponse,
+  NetworkParametersResponse,
 } from './network/types';
 
 // Nodes Types
@@ -309,13 +316,15 @@ export default class AdaApi {
     const { walletId, queryParams, isLegacy } = request;
     try {
       let response = [];
-      if (isLegacy) {
-        // @TODO - response is faked to enable UI. Comment out once endpoint is available
-        // response = await getByronWalletAddresses(this.config, walletId, queryParams);
-        return response;
+      if (isLegacy && !isIncentivizedTestnet) {
+        response = await getByronWalletAddresses(
+          this.config,
+          walletId,
+          queryParams
+        );
+      } else {
+        response = await getAddresses(this.config, walletId, queryParams);
       }
-      response = await getAddresses(this.config, walletId, queryParams);
-
       logger.debug('AdaApi::getAddresses success', { addresses: response });
       return response.map(_createAddressFromServerData);
     } catch (error) {
@@ -1167,7 +1176,6 @@ export default class AdaApi {
   ): Promise<Wallet> => {
     logger.debug('AdaApi::restoreExportedByronWallet called', {
       name: request.name,
-      hasPassword: request.passphrase_hash !== null,
     });
     try {
       const legacyWallet: LegacyAdaWallet = await restoreExportedByronWallet(
@@ -1622,6 +1630,64 @@ export default class AdaApi {
       if (error.code === TlsCertificateNotValidError.API_ERROR) {
         throw new TlsCertificateNotValidError();
       }
+      throw new GenericApiError(error);
+    }
+  };
+
+  getNetworkClock = async (): Promise<GetNetworkClockResponse> => {
+    logger.debug('AdaApi::getNetworkClock called');
+    try {
+      // @API TODO - Once api works on windows environment also, this should be removed
+      const { isWindows } = global.environment;
+      if (isWindows || isIncentivizedTestnet) {
+        return { status: 'unavailable' };
+      }
+
+      const networkClock: NetworkClockResponse = await getNetworkClock(
+        this.config
+      );
+      logger.debug('AdaApi::getNetworkClock success', { networkClock });
+
+      return networkClock;
+    } catch (error) {
+      logger.error('AdaApi::getNetworkClock error', { error });
+      throw new GenericApiError(error);
+    }
+  };
+
+  getNetworkParameters = async (
+    epochId: number
+  ): Promise<GetNetworkParametersResponse> => {
+    logger.debug('AdaApi::getNetworkParameters called');
+    try {
+      const networkParameters: NetworkParametersResponse = await getNetworkParameters(
+        epochId,
+        this.config
+      );
+      logger.debug('AdaApi::getNetworkParameters success', {
+        networkParameters,
+      });
+
+      const {
+        genesis_block_hash: genesisBlockHash,
+        blockchain_start_time, // eslint-disable-line
+        slot_length: slotLength,
+        epoch_length: epochLength,
+        epoch_stability: epochStability,
+        active_slot_coefficient: activeSlotCoefficient,
+      } = networkParameters;
+      const blockchainStartTime = moment(blockchain_start_time).valueOf();
+
+      return {
+        genesisBlockHash,
+        blockchainStartTime,
+        slotLength,
+        epochLength,
+        epochStability,
+        activeSlotCoefficient,
+      };
+    } catch (error) {
+      logger.error('AdaApi::getNetworkParameters error', { error });
       throw new GenericApiError(error);
     }
   };

@@ -3,7 +3,6 @@ import os from 'os';
 import path from 'path';
 import { app, BrowserWindow, shell } from 'electron';
 import { client } from 'electron-connect';
-import { initByronRebootConfig } from './utils/config';
 import { logger } from './utils/logging';
 import {
   setupLogging,
@@ -17,7 +16,6 @@ import { installChromeExtensions } from './utils/installChromeExtensions';
 import { environment } from './environment';
 import mainErrorHandler from './utils/mainErrorHandler';
 import {
-  APP_NAME,
   launcherConfig,
   pubLogsFolderPath,
   stateDirectoryPath,
@@ -80,7 +78,7 @@ const onAppReady = async () => {
   setupLogging();
   logUsedVersion(
     environment.version,
-    path.join(pubLogsFolderPath, `${APP_NAME}-versions.json`)
+    path.join(pubLogsFolderPath, 'Daedalus-versions.json')
   );
 
   const cpu = os.cpus();
@@ -118,11 +116,6 @@ const onAppReady = async () => {
 
   // Detect locale
   let locale = getLocale(network);
-
-  // Init Byron Reboot config
-  const { nodeImplementation, stateDir } = launcherConfig;
-  const isByronReboot = nodeImplementation === 'cardano';
-  if (isByronReboot) await initByronRebootConfig(logger, stateDir);
 
   mainWindow = createMainWindow(locale);
 

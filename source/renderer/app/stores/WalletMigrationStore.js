@@ -34,7 +34,7 @@ export default class WalletMigrationStore extends Store {
   _restoredWallets: Array<Wallet> = [];
   _restorationErrors: Array<{
     error: LocalizableError,
-    wallet: { name: string, hasPassword: boolean },
+    wallet: { name: string },
   }> = [];
 
   @observable
@@ -66,9 +66,8 @@ export default class WalletMigrationStore extends Store {
         this._restoredWallets.push(restoredWallet);
       });
     } catch (error) {
-      const { name, passphrase_hash: passphraseHash } = exportedWallet;
-      const hasPassword = passphraseHash !== null;
-      this._restorationErrors.push({ error, wallet: { name, hasPassword } });
+      const { name } = exportedWallet;
+      this._restorationErrors.push({ error, wallet: { name } });
     }
   };
 
@@ -95,7 +94,6 @@ export default class WalletMigrationStore extends Store {
         }: ExportWalletsMainResponse = await exportWalletsChannel.request();
         const exportedWalletsData = exportedWallets.map(w => ({
           name: w.name,
-          hasPassword: w.passphrase_hash !== null,
         }));
         const exportedWalletsCount = exportedWallets.length;
 
@@ -119,7 +117,6 @@ export default class WalletMigrationStore extends Store {
                 `WalletMigrationStore: Restoring ${index + 1}. wallet...`,
                 {
                   name: wallet.name,
-                  hasPassword: wallet.passphrase_hash !== null, // eslint-disable-line
                 }
               );
               return this._restoreExportedWallet(wallet);
@@ -140,7 +137,7 @@ export default class WalletMigrationStore extends Store {
             WalletMigrationStatuses.COMPLETED
           );
         } else {
-          logger.error('WalletMigrationStore: Wallet migration failed', {
+          logger.debug('WalletMigrationStore: Wallet migration failed', {
             exportErrors,
             restorationErrors: this._restorationErrors,
           });
