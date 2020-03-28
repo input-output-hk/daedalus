@@ -1,9 +1,11 @@
 // @flow
 import * as fs from 'fs-extra';
 import path from 'path';
+import { BrowserWindow, dialog } from 'electron';
 import { spawnSync } from 'child_process';
 import { logger } from '../utils/logging';
 import { TESTNET_MAGIC } from '../config';
+import { getTranslation } from '../utils/getTranslation';
 import ensureDirectoryExists from '../utils/ensureDirectoryExists';
 import type { LauncherConfig } from '../config';
 import type { ExportWalletsMainResponse } from '../../common/ipc/api';
@@ -168,7 +170,9 @@ export const createSelfnodeConfig = async (
 };
 
 export const exportWallets = async (
-  launcherConfig: LauncherConfig
+  launcherConfig: LauncherConfig,
+  mainWindow: BrowserWindow,
+  locale: string
 ): Promise<ExportWalletsMainResponse> => {
   const {
     exportWalletsBin,
@@ -242,6 +246,10 @@ export const exportWallets = async (
       logger.info('ipcMain: Preparing Daedalus Flight migration data failed', {
         error,
       });
+      const { code } = error || {};
+      if (code === 'EBUSY') {
+        showExportWalletsWarning(mainWindow, locale);
+      }
     }
   }
 
@@ -269,4 +277,31 @@ export const exportWallets = async (
   });
 
   return Promise.resolve({ wallets, errors });
+};
+
+const showExportWalletsWarning = (
+  mainWindow: BrowserWindow,
+  locale: string
+) => {
+  const translations = require(`../locales/${locale}`);
+  const translation = getTranslation(translations, 'dialog');
+  const exportWalletsDialogOptions = {
+    buttons: [
+      translation('exportWalletsWarning.confirm'),
+      translation('exportWalletsWarning.cancel'),
+    ],
+    type: 'warning',
+    title: translation('exportWalletsWarning.title'),
+    message: translation('exportWalletsWarning.message'),
+    defaultId: 1,
+    cancelId: 1,
+    noLink: true,
+  };
+  dialog.showMessageBox(mainWindow, exportWalletsDialogOptions, buttonId => {
+    if (buttonId === 0) {
+      logger.info('CONFIRM');
+    } else {
+      logger.info('CANCEL');
+    }
+  });
 };
