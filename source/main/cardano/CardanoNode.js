@@ -545,10 +545,11 @@ export class CardanoNode {
    * @private
    */
   _handleCardanoReplyPortMessage = (port: number) => {
+    const { isProduction } = environment;
     const { _actions } = this;
     const { tlsPath } = this._config;
     this._tlsConfig =
-      nodeImplementation === 'jormungandr' || nodeImplementation === 'cardano'
+      nodeImplementation === 'jormungandr' || !isProduction
         ? {
             ca: ('': any),
             key: ('': any),
