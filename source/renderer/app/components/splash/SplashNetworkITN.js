@@ -58,7 +58,11 @@ export default class SplashNetworkITN extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { onClose, openExternalLink, isIncentivizedTestnetTheme } = this.props;
+    const {
+      onClose,
+      openExternalLink,
+      isIncentivizedTestnetTheme,
+    } = this.props;
     const title = intl.formatMessage(messages.title);
     const subTitle1 = intl.formatMessage(messages.versionName);
     const subTitle2 = intl.formatMessage(messages.networkName);
