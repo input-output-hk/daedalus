@@ -2512,7 +2512,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Loading wallets",
+        "defaultMessage": "!!!Loading stake pools",
         "description": "Loading stake pool message for the Delegation center body section.",
         "end": {
           "column": 3,
