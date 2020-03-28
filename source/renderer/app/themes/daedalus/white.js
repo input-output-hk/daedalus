@@ -767,7 +767,7 @@ export const WHITE_THEME_OUTPUT = {
   },
   support: {
     '--theme-support-settings-item-color': '#2d2d2d',
-    '--theme-support-settings-link-color': '#ffffff',
+    '--theme-support-settings-link-color': '#29b595',
     '--theme-support-settings-text-color': '#2d2d2d',
   },
   syncing: {
@@ -834,7 +834,7 @@ export const WHITE_THEME_OUTPUT = {
       'rgba(41, 181, 149, 0.14)',
     '--theme-transactions-date-picker-button-background-color-hover':
       'rgba(41, 181, 149, 0.07)',
-    '--theme-transactions-date-picker-button-color': '#000000',
+    '--theme-transactions-date-picker-button-color': '#2d2d2d',
     '--theme-transactions-filter-modal-bg-color': '#fff',
     '--theme-transactions-filter-date-picker-shadow':
       '0 5px 20px 0 rgba(0, 0, 0, 0.25)',

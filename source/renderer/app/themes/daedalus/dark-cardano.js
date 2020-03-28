@@ -762,7 +762,7 @@ export const DARK_CARDANO_THEME_OUTPUT = {
   },
   support: {
     '--theme-support-settings-item-color': '#ffffff',
-    '--theme-support-settings-link-color': '#36374d',
+    '--theme-support-settings-link-color': '#1fc1c3',
     '--theme-support-settings-text-color': '#ffffff',
   },
   syncing: {

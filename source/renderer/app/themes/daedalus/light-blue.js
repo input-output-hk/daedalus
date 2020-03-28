@@ -840,7 +840,7 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
       'rgba(68, 91, 124, 0.14)',
     '--theme-transactions-date-picker-button-background-color-hover':
       'rgba(68, 91, 124, 0.07)',
-    '--theme-transactions-date-picker-button-color': '#000000',
+    '--theme-transactions-date-picker-button-color': '#5e6066',
     '--theme-transactions-filter-modal-bg-color': '#fafbfc',
     '--theme-transactions-filter-date-picker-shadow':
       '0 5px 20px 0 rgba(0, 0, 0, 0.25)',
