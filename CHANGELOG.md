@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## 1.0.0
+## 1.0.0-FC1
 
 ### Features
 
@@ -33,6 +33,7 @@ Changelog
 
 ### Chores
 
+- Updated Daedalus name and version for the Daedalus Flight 1.0.0-FC1 release ([PR 1910](https://github.com/input-output-hk/daedalus/pull/1910))
 - Enabled "Wallet UTXO distribution" feature for Byron wallets([PR 1913](https://github.com/input-output-hk/daedalus/pull/1913))
 - Enabled Byron wallet name editing ([PR 1911](https://github.com/input-output-hk/daedalus/pull/1911))
 - Updated UI copy ([PR 1907](https://github.com/input-output-hk/daedalus/pull/1907))

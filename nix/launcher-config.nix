@@ -25,7 +25,8 @@ let
     windows = "\${DAEDALUS_INSTALL_DIRECTORY}";
   };
 
-  spacedName = if network == "mainnet" then "Daedalus" else "Daedalus ${installDirectorySuffix.${network}}";
+  mkSpacedName = network: if network == "mainnet" then "Daedalus" else "Daedalus ${installDirectorySuffix}";
+  spacedName = mkSpacedName network;
 
   frontendBinPath = let
     frontendBin.linux = "daedalus-frontend";
@@ -45,18 +46,36 @@ let
   # Helper function to make a path to a config file
   mkConfigPath = configSrc: configPath: "${(configDir configSrc).${os}}${dirSep}${configPath}";
 
-  envCfg = (if (backend == "cardano") then cardanoLib else jormungandrLib).environments.${network};
+  envCfg = let
+    cardanoEnv = if network == "mainnet_flight"
+                 then cardanoLib.environments.mainnet
+                 else cardanoLib.environments.${network};
+    jormungandrEnv = jormungandrLib.environments.${network};
+  in if (backend == "cardano") then cardanoEnv else jormungandrEnv;
 
-  installDirectorySuffix = {
-    qa = "QA";
-    selfnode = "Selfnode";
-    itn_selfnode = "Selfnode - ITN";
-    nightly = "Nightly";
-    itn_rewards_v1 = "- Rewards v1";
-    staging = "Staging";
-    testnet = "Testnet";
+  installDirectorySuffix = let
+    supportedNetworks = {
+      mainnet_flight = "Flight";
+      qa = "QA";
+      selfnode = "Selfnode";
+      itn_selfnode = "Selfnode - ITN";
+      nightly = "Nightly";
+      itn_rewards_v1 = "- Rewards v1";
+      staging = "Staging";
+      testnet = "Testnet";
+    };
+    unsupported = "Unsupported";
+    networkSupported = __hasAttr network supportedNetworks;
+  in if networkSupported then supportedNetworks.${network} else unsupported;
+
+  iconPath = let
+    networkIconExists = __pathExists (../. + "/installers/icons/${network}");
+    network' = if networkIconExists then network else "mainnet";
+  in {
+    small = ../installers/icons + "/${network'}/64x64.png";
+    large = ../installers/icons + "/${network'}/1024x1024.png";
+    base = ../installers/icons + "/${network'}";
   };
-
 
   dataDir = let
     path.linux = "\${XDG_DATA_HOME}/Daedalus/${network}";
@@ -64,12 +83,18 @@ let
     path.windows = "\${APPDATA}\\${spacedName}";
   in path.${os};
 
+  # Used for flight builds to find legacy paths for migration
+  mainnetDataDir = let
+    path.linux = "\${XDG_DATA_HOME}/Daedalus/mainnet";
+    path.macos64 = "\${HOME}/Library/Application Support/${mkSpacedName "mainnet"}";
+    path.windows = "\${APPDATA}\\${mkSpacedName "mainnet"}";
+  in path.${os};
+
   logsPrefix = let
-    suffix = if backend == "cardano" then "ByronReboot" else "";
     path.linux = "${dataDir}/Logs";
     path.windows = "Logs";
     path.macos64 = "${dataDir}/Logs";
-  in "${path.${os}}${suffix}";
+  in path.${os};
 
   launcherLogsPrefix = "${logsPrefix}${dirSep}pub";
 
@@ -90,7 +115,9 @@ let
     x509ToolPath = null;
     frontendOnlyMode = true;
     tlsPath = null;
-    cluster = network;
+    cluster = if network == "mainnet_flight" then "mainnet" else network;
+    networkName = if network == "mainnet_flight" then "mainnet" else network;
+    isFlight = network == "mainnet_flight";
     nodeImplementation = backend;
   };
 
@@ -137,16 +164,25 @@ let
         cp ${envCfg.signingKey} $out/signing.key
       ''}
     '';
+
     legacyWalletDB = let
+      prefix = if network == "mainnet_flight"
+               then "${mainnetDataDir}${dirSep}"
+               else "${dataDir}${dirSep}";
       path.linux = "${dataDir}${dirSep}Wallet";
-      path.macos64 = "${dataDir}${dirSep}Wallet-1.0";
-      path.windows = "${dataDir}${dirSep}Wallet-1.0";
+      path.macos64 = "${prefix}Wallet-1.0";
+      path.windows = "${prefix}Wallet-1.0";
     in path.${os};
+
     legacySecretKey = let
-      path.linux = "${dataDir}${dirSep}Secrets${dirSep}secret.key";
-      path.macos64 = "${dataDir}${dirSep}Secrets-1.0${dirSep}secret.key";
-      path.windows = "${dataDir}${dirSep}Secrets-1.0${dirSep}secret.key";
+      prefix = if network == "mainnet_flight"
+               then "${mainnetDataDir}${dirSep}"
+               else "${dataDir}${dirSep}";
+      path.linux = "${prefix}Secrets${dirSep}secret.key";
+      path.macos64 = "${prefix}Secrets-1.0${dirSep}secret.key";
+      path.windows = "${prefix}Secrets-1.0${dirSep}secret.key";
     in path.${os};
+
     launcherConfig = defaultLauncherConfig // {
       inherit
         nodeBin
@@ -156,7 +192,6 @@ let
         dbConverterBin
         legacyWalletDB
         legacySecretKey;
-      networkName = network;
       syncTolerance = "300s";
       nodeConfig = {
         kind = "byron";
@@ -176,7 +211,7 @@ let
 
     installerConfig = {
       installDirectory = if os == "linux" then "Daedalus/${network}" else spacedName;
-      inherit spacedName;
+      inherit spacedName iconPath;
       macPackageName = "Daedalus${network}";
       dataDir = dataDir;
       hasBlock0 = false;
@@ -238,10 +273,8 @@ let
     };
     installerConfig = {
       installDirectory = if os == "linux" then "Daedalus/${network}" else spacedName;
-      inherit spacedName;
+      inherit spacedName iconPath dataDir hasBlock0;
       macPackageName = "Daedalus${network}";
-      inherit dataDir;
-      inherit hasBlock0;
       configPath = "${nodeConfigFiles}/config.yaml";
     } // (lib.optionalAttrs hasBlock0 {
       block0 = "${nodeConfigFiles}/block-0.bin";

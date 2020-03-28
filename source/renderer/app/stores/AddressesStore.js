@@ -19,11 +19,9 @@ export default class AddressesStore extends Store {
   @observable error: ?LocalizableError = null;
 
   // REQUESTS
-  /* eslint-disable max-len */
   @observable createByronWalletAddressRequest: Request<Address> = new Request(
     this.api.ada.createAddress
   );
-  /* eslint-disable max-len */
 
   setup() {
     const actions = this.actions.addresses;
@@ -95,9 +93,10 @@ export default class AddressesStore extends Store {
     if (this.stores.networkStatus.isConnected) {
       const { all } = this.stores.wallets;
       for (const wallet of all) {
-        const allRequest = this._getAddressesAllRequest(wallet.id);
+        const { id: walletId, isLegacy } = wallet;
+        const allRequest = this._getAddressesAllRequest(walletId);
         allRequest.invalidate({ immediately: false });
-        allRequest.execute({ walletId: wallet.id, isLegacy: wallet.isLegacy });
+        allRequest.execute({ walletId, isLegacy });
       }
     }
   };

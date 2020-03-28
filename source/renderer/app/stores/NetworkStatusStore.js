@@ -52,6 +52,8 @@ const NODE_STOPPED_STATES = [
 ];
 // END CONSTANTS ----------------------------
 
+const { isIncentivizedTestnet, isFlight } = global;
+
 export default class NetworkStatusStore extends Store {
   // Initialize store properties
   _startTime = Date.now();
@@ -69,7 +71,7 @@ export default class NetworkStatusStore extends Store {
   @observable isNodeInSync = false; // 'true' if syncing & local/network blocks diff within limit
   @observable isNodeStopping = false; // 'true' if node is in `NODE_STOPPING_STATES` states
   @observable isNodeStopped = false; // 'true' if node is in `NODE_STOPPED_STATES` states
-  @observable isSplashShown = true; // Visibility of splash screen
+  @observable isSplashShown = isIncentivizedTestnet || isFlight; // Visibility of splash screen
 
   @observable hasBeenConnected = false;
   @observable syncProgress = null;

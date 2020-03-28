@@ -28,6 +28,7 @@ type Props = {
   hasBeenConnected: boolean,
   forceConnectivityIssue?: boolean,
   forceSyncIssue?: boolean,
+  isFlight: boolean,
   isConnected: boolean,
   isSynced: boolean,
   isConnecting: boolean,
@@ -80,6 +81,7 @@ export default class SyncingConnecting extends Component<Props, State> {
       isNewAppVersionLoading,
       isNewAppVersionLoaded,
       isIncentivizedTestnet,
+      isFlight,
     } = this.props;
     const canResetSyncing = this._syncingTimerShouldStop(isSynced);
     const canResetConnecting = this._connectingTimerShouldStop(isConnected);
@@ -97,7 +99,8 @@ export default class SyncingConnecting extends Component<Props, State> {
       isAppLoadingStuck &&
       !isNewAppVersionLoaded &&
       !isNewAppVersionLoading &&
-      !isIncentivizedTestnet
+      !isIncentivizedTestnet &&
+      !isFlight
     ) {
       onGetAvailableVersions();
     }
@@ -170,6 +173,7 @@ export default class SyncingConnecting extends Component<Props, State> {
 
   get showReportIssue() {
     const {
+      isFlight,
       isConnected,
       isSynced,
       cardanoNodeState,
@@ -189,7 +193,7 @@ export default class SyncingConnecting extends Component<Props, State> {
       forceSyncIssue ||
       (isConnected && !isSynced && syncingTime >= REPORT_ISSUE_TIME_TRIGGER);
 
-    if (isIncentivizedTestnet) {
+    if (isFlight || isIncentivizedTestnet) {
       return canReportConnectingIssue || canReportSyncingIssue;
     }
 
