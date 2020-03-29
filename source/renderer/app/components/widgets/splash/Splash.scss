@@ -172,4 +172,13 @@
       }
     }
   }
+
+  *::-webkit-scrollbar-thumb {
+    background-color: var(--theme-splash-network-scrollbar-thumb-background);
+    &:hover {
+      background-color: var(
+        --theme-splash-network-scrollbar-thumb-background-hover
+      );
+    }
+  }
 }

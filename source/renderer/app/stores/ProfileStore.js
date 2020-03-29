@@ -154,6 +154,10 @@ export default class ProfileStore extends Store {
     return isRequestSet(this.getProfileLocaleRequest);
   }
 
+  @computed get isIncentivizedTestnetTheme(): boolean {
+    return this.currentTheme === THEMES.INCENTIVIZED_TESTNET;
+  }
+
   @computed get currentTheme(): string {
     // Default theme handling
     let systemValue;
