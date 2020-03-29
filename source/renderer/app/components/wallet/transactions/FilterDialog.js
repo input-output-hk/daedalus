@@ -128,7 +128,7 @@ const applyDialogStyles = () => {
       40
     )}px`;
   } else {
-    dialogElement.style.right = '10px';
+    dialogElement.style.right = '20px';
     dialogElement.style.top = `${filterDialogOffsetTop}px`;
   }
   if (

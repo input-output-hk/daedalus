@@ -1,6 +1,6 @@
 { system ? builtins.currentSystem
 , config ? {}
-, nodeImplementation ? "jormungandr"
+, nodeImplementation ? "cardano"
 , localLib ? import ./lib.nix { inherit nodeImplementation; }
 , pkgs ? localLib.iohkNix.getPkgs { inherit system config; }
 , cluster ? "selfnode"
@@ -65,7 +65,7 @@ let
     buildInputs = daedalusShellBuildInputs;
   };
   debug.node = pkgs.writeShellScriptBin "debug-node" (with daedalusPkgs.launcherConfigs.launcherConfig; ''
-    cardano-node run --topology ${nodeConfig.configurationDir}/${nodeConfig.network.topologyFile} --config ${nodeConfig.configurationDir}/${nodeConfig.network.configFile} --database-path ${stateDir}/chain --genesis-hash ${nodeConfig.network.genesisHash} --port 3001 --genesis-file ${nodeConfig.configurationDir}/${nodeConfig.network.genesisFile} --socket-path ${stateDir}/socket
+    cardano-node run --topology ${nodeConfig.network.topologyFile} --config ${nodeConfig.network.configFile} --database-path ${stateDir}/chain --port 3001 --genesis-file ${nodeConfig.network.genesisFile} --genesis-hash ${nodeConfig.network.genesisHash} --socket-path ${stateDir}/cardano-node.socket
   '');
   daedalusShell = pkgs.stdenv.mkDerivation (rec {
     buildInputs = daedalusShellBuildInputs;
@@ -88,7 +88,7 @@ let
 
       ${localLib.optionalString pkgs.stdenv.isLinux "export XDG_DATA_HOME=$HOME/.local/share"}
 
-      cp -f ${daedalusPkgs.iconPath.${cluster}.small} $DAEDALUS_INSTALL_DIRECTORY/icon.png
+      cp -f ${daedalusPkgs.iconPath.small} $DAEDALUS_INSTALL_DIRECTORY/icon.png
 
       # These links will only occur to binaries that exist for the
       # specific build config

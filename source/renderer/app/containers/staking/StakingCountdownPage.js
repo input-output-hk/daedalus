@@ -26,13 +26,12 @@ export default class StakingCountdownPage extends Component<Props> {
 
   componentDidMount() {
     const {
-      stores: { networkStatus },
       actions: {
         staking: { goToStakingDelegationCenterPage },
       },
     } = this.props;
 
-    if (networkStatus.isIncentivizedTestnet) {
+    if (global.isIncentivizedTestnet) {
       goToStakingDelegationCenterPage.trigger();
     }
   }

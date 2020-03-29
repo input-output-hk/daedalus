@@ -5,6 +5,11 @@ import styles from './SidebarCategoryNetworkInfo.scss';
 import type { networkType } from '../../types/networkTypes';
 
 const messages = defineMessages({
+  mainnet: {
+    id: 'test.environment.mainnetLabel',
+    defaultMessage: '!!!Mainnet vx',
+    description: 'Label for mainnet network with version.',
+  },
   staging: {
     id: 'test.environment.stagingLabel',
     defaultMessage: '!!!Staging vx',
@@ -20,10 +25,35 @@ const messages = defineMessages({
     defaultMessage: '!!!Development vx',
     description: 'Label for development with version.',
   },
+  nightly: {
+    id: 'test.environment.nightlyLabel',
+    defaultMessage: '!!!Nightly vx',
+    description: 'Label for nightly with version.',
+  },
+  qa: {
+    id: 'test.environment.qaLabel',
+    defaultMessage: '!!!QA vx',
+    description: 'Label for qa with version.',
+  },
+  selfnode: {
+    id: 'test.environment.selfnodeLabel',
+    defaultMessage: '!!!Selfnode vx',
+    description: 'Label for selfnode with version.',
+  },
+  itn_selfnode: {
+    id: 'test.environment.itnSelfnodeLabel',
+    defaultMessage: '!!!Selfnode vx',
+    description: 'Label for ITN selfnode with version.',
+  },
   itn_rewards_v1: {
     id: 'test.environment.itnRewardsV1Label',
     defaultMessage: '!!!Development vx',
-    description: 'Label for development with version.',
+    description: 'Label for ITN Rewards V1 with version.',
+  },
+  flight: {
+    id: 'test.environment.daedalusFlightLabel',
+    defaultMessage: '!!!Cardano mainnet - Daedalus Flight',
+    description: 'Label for Daedalus Flight with version.',
   },
 });
 
@@ -37,9 +67,10 @@ export default class SidebarCategoryNetworkInfo extends Component<Props> {
   };
 
   render() {
+    const { isFlight } = global;
     const { network } = this.props;
     const { intl } = this.context;
-    const label = messages[network];
+    const label = messages[isFlight ? 'flight' : network];
     return <div className={styles.component}>{intl.formatMessage(label)}</div>;
   }
 }

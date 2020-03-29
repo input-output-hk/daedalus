@@ -5,9 +5,11 @@
 , nodeImplementation
 , jormungandrLib
 , launcherConfigs
+, linuxClusterBinName
 }:
 
 let
+  cluster' = launcherConfigs.launcherConfig.networkName;
   daedalus-config = runCommand "daedalus-config" {} ''
     mkdir -pv $out
     cd $out
@@ -36,15 +38,15 @@ let
     ''}
 
     test -z "$XDG_DATA_HOME" && { XDG_DATA_HOME="''${HOME}/.local/share"; }
-    export           CLUSTER=${cluster}
+    export           CLUSTER=${cluster'}
     export      DAEDALUS_DIR="''${XDG_DATA_HOME}/Daedalus"
-    export   DAEDALUS_CONFIG=${if sandboxed then "/nix/var/nix/profiles/profile-${cluster}/etc" else daedalus-config}
+    export   DAEDALUS_CONFIG=${if sandboxed then "/nix/var/nix/profiles/profile-${linuxClusterBinName}/etc" else daedalus-config}
 
     mkdir -p "''${DAEDALUS_DIR}/${cluster}/"{Logs/pub,Secrets}
     cd "''${DAEDALUS_DIR}/${cluster}/"
 
     exec ${daedalus-bridge}/bin/cardano-launcher \
-      --config ${if sandboxed then "/nix/var/nix/profiles/profile-${cluster}/etc/launcher-config.yaml" else "${daedalus-config}/launcher-config.yaml"}
+      --config ${if sandboxed then "/nix/var/nix/profiles/profile-${linuxClusterBinName}/etc/launcher-config.yaml" else "${daedalus-config}/launcher-config.yaml"}
   '';
   wrappedConfig = runCommand "launcher-config" {} ''
     mkdir -pv $out/etc/

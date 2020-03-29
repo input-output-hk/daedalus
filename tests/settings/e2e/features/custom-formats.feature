@@ -1,4 +1,4 @@
-@e2e
+@e2e @shelley
 Feature: Custom number, date and time formats
 
   Background:
@@ -77,7 +77,6 @@ Feature: Custom number, date and time formats
       | param      | value        |
       | fromAmount | 12,340000    |
       | toAmount   | 1.234,000000 |
-
 
   Scenario: Newsfeed alert displays the correct user date preference format
     Given there is 1 unread alert

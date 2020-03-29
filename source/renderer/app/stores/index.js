@@ -13,8 +13,9 @@ import TransactionsStore from './TransactionsStore';
 import UiDialogsStore from './UiDialogsStore';
 import UiNotificationsStore from './UiNotificationsStore';
 import WalletsStore from './WalletsStore';
-import WalletSettingsStore from './WalletSettingsStore';
 import WalletBackupStore from './WalletBackupStore';
+import WalletMigrationStore from './WalletMigrationStore';
+import WalletSettingsStore from './WalletSettingsStore';
 import WindowStore from './WindowStore';
 
 export const storeClasses = {
@@ -30,8 +31,9 @@ export const storeClasses = {
   uiDialogs: UiDialogsStore,
   uiNotifications: UiNotificationsStore,
   wallets: WalletsStore,
-  walletSettings: WalletSettingsStore,
   walletBackup: WalletBackupStore,
+  walletMigration: WalletMigrationStore,
+  walletSettings: WalletSettingsStore,
   window: WindowStore,
 };
 
@@ -49,8 +51,9 @@ export type StoresMap = {
   uiDialogs: UiDialogsStore,
   uiNotifications: UiNotificationsStore,
   wallets: WalletsStore,
-  walletSettings: WalletSettingsStore,
   walletBackup: WalletBackupStore,
+  walletMigration: WalletMigrationStore,
+  walletSettings: WalletSettingsStore,
   window: WindowStore,
 };
 
@@ -89,6 +92,7 @@ export default action((api, actions, router): StoresMap => {
     uiDialogs: createStoreInstanceOf(UiDialogsStore),
     wallets: createStoreInstanceOf(WalletsStore),
     walletBackup: createStoreInstanceOf(WalletBackupStore),
+    walletMigration: createStoreInstanceOf(WalletMigrationStore),
     walletSettings: createStoreInstanceOf(WalletSettingsStore),
     window: createStoreInstanceOf(WindowStore),
   });

@@ -58,7 +58,7 @@
 
   .experimentalTooltip {
     height: 14.5px;
-    padding: 0px;
+    padding: 0;
     position: absolute;
     right: -5px;
     top: -6px;
@@ -109,9 +109,9 @@
 .arrow {
   border-color: transparent;
   border-style: solid;
-  height: 0px;
+  height: 0;
   position: absolute;
-  width: 0px;
+  width: 0;
 
   &:before {
     border-color: transparent;
@@ -130,7 +130,7 @@
       border-top-color: var(
         --theme-staking-stake-pool-tooltip-background-color
       );
-      border-width: 10px 10px 0px 10px;
+      border-width: 10px 10px 0 10px;
       left: -10px;
       top: -11px;
     }
@@ -142,7 +142,7 @@
       border-right-color: var(
         --theme-staking-stake-pool-tooltip-background-color
       );
-      border-width: 10px 10px 10px 0px;
+      border-width: 10px 10px 10px 0;
       right: -11px;
       top: -10px;
     }
@@ -152,7 +152,7 @@
     border-width: 0 11px 11px 11px;
     &:before {
       border-bottom-color: transparent;
-      border-width: 0px 10px 10px 10px;
+      border-width: 0 10px 10px 10px;
       left: -10px;
       top: -11px;
     }
@@ -164,7 +164,7 @@
       border-left-color: var(
         --theme-staking-stake-pool-tooltip-background-color
       );
-      border-width: 10px 0px 10px 10px;
+      border-width: 10px 0 10px 10px;
       left: -11px;
       top: -10px;
     }

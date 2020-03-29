@@ -25,8 +25,7 @@ export default defineMessages({
   },
   invalidWalletName: {
     id: 'global.errors.invalidWalletName',
-    defaultMessage:
-      '!!!Wallet name requires at least 3 and at most 40 letters.',
+    defaultMessage: '!!!Wallet name requires at least 3 and at most 40 letters',
     description:
       'Error message shown when invalid wallet name was entered in create wallet dialog.',
   },
@@ -183,7 +182,7 @@ export default defineMessages({
   },
   network_mainnet: {
     id: 'environment.network.mainnet',
-    defaultMessage: '!!!mainnet',
+    defaultMessage: '!!!Mainnet',
     description: '"mainnet" Cardano network',
   },
   network_staging: {
@@ -206,9 +205,14 @@ export default defineMessages({
     defaultMessage: '!!!Incentivized Testnet v1 - Rewards',
     description: '"itn_rewards_v1" Cardano network',
   },
+  network_itn_selfnode: {
+    id: 'environment.network.itn_selfnode',
+    defaultMessage: '!!!ITN Selfnode',
+    description: '"itn_selfnode" Cardano network',
+  },
   network_selfnode: {
     id: 'environment.network.selfnode',
-    defaultMessage: '!!!SelfNode',
+    defaultMessage: '!!!Selfnode',
     description: '"selfnode" Cardano network',
   },
   network_qa: {

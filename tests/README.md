@@ -49,7 +49,7 @@ running (the number of executions is updated in the terminal)
 ### Run end-to-end tests with Jörmungandr self-node
 
 1. Make sure Daedalus is properly installed (see above).
-2. Make sure your state directory is clean (`rm -rf ~/Library/Application\ Support/Daedalus\ SelfNode/`)
+2. Make sure your state directory is clean (`rm -rf ~/Library/Application\ Support/Daedalus\ Selfnode/`)
 3. Run Daedalus frontend tests:
 
 ```bash
@@ -69,7 +69,7 @@ still broken.
 ### Running tests for development
 1. Mark the test or scenario you are working with @watch annotation
 2. Make sure you are in the nix console (`yarn nix:dev`)
-3. Make sure your state is clean (`rm -rf ~/Library/Application\ Support/Daedalus\ SelfNode/`)
+3. Make sure your state is clean (`rm -rf ~/Library/Application\ Support/Daedalus\ Selfnode/`)
 4. Run tests with `yarn test:e2e:watch:once`
 
 ### Run all tests
@@ -78,7 +78,18 @@ still broken.
 $ yarn test
 ```
 
+### Running Byron specific tests
+1. Make sure you are in the nix console (`yarn nix:dev`)
+2. Make sure your state is clean (`rm -rf ~/Library/Application\ Support/Daedalus\ Selfnode/`)
+3. Run tests with `yarn test:e2e:byron`
+
 Once tests are complete you will get a summary of passed/failed tests in the Terminal window.
+
+### Run all tests
+
+```bash
+$ yarn test
+```
 
 ### Keeping Daedalus alive after end-to-end tests
 

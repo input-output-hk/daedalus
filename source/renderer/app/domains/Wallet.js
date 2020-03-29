@@ -14,10 +14,12 @@ export const WalletSyncStateStatuses: {
   RESTORING: SyncStateStatus,
   SYNCING: SyncStateStatus,
   READY: SyncStateStatus,
+  NOT_RESPONDING: SyncStateStatus,
 } = {
   RESTORING: 'syncing', // @API TODO - calculate if the wallet is restoring!
   SYNCING: 'syncing',
   READY: 'ready',
+  NOT_RESPONDING: 'not_responding',
 };
 
 export const WalletDelegationStatuses: {
@@ -50,6 +52,7 @@ export type WalletProps = {
   delegationStakePoolStatus?: ?string,
   lastDelegationStakePoolId?: ?string,
   pendingDelegations?: WalletPendingDelegations,
+  hasPassword: boolean,
 };
 
 export default class Wallet {
@@ -66,6 +69,7 @@ export default class Wallet {
   @observable delegationStakePoolStatus: ?string;
   @observable lastDelegationStakePoolId: ?string;
   @observable pendingDelegations: WalletPendingDelegations;
+  @observable hasPassword: boolean;
 
   constructor(data: WalletProps) {
     Object.assign(this, data);
@@ -88,6 +92,7 @@ export default class Wallet {
         'delegationStakePoolStatus',
         'lastDelegationStakePoolId',
         'pendingDelegations',
+        'hasPassword',
       ])
     );
   }
@@ -98,6 +103,12 @@ export default class Wallet {
 
   @computed get isRestoring(): boolean {
     return get(this, 'syncState.status') === WalletSyncStateStatuses.RESTORING;
+  }
+
+  @computed get isNotResponding(): boolean {
+    return (
+      get(this, 'syncState.status') === WalletSyncStateStatuses.NOT_RESPONDING
+    );
   }
 
   @computed get restorationProgress(): number {

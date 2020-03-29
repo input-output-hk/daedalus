@@ -8,7 +8,7 @@ import { AddressGroup } from 'cardano-js/dist/Address/AddressGroup';
 import { ChainSettings } from 'cardano-js/dist/ChainSettings';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
-import Wallet from '../domains/Wallet';
+import Wallet, { WalletSyncStateStatuses } from '../domains/Wallet';
 import WalletAddress from '../domains/WalletAddress';
 import { WalletTransaction } from '../domains/WalletTransaction';
 import { MAX_ADA_WALLETS_COUNT } from '../config/numbersConfig';
@@ -43,7 +43,7 @@ import type {
   WalletHardwareKind,
 } from '../types/walletRestoreTypes';
 import type { CsvRecord } from '../../../common/types/rewards-csv-request.types';
-import type { walletExportTypeChoices } from '../types/walletExportTypes';
+import type { WalletExportTypeChoices } from '../types/walletExportTypes';
 import type { WalletImportFromFileParams } from '../actions/wallets-actions';
 import type LocalizableError from '../i18n/LocalizableError';
 import type {
@@ -81,6 +81,8 @@ type RecoveryPhraseVerificationData = {
 /**
  * The base wallet store that contains logic for dealing with wallets
  */
+
+const { isIncentivizedTestnet } = global;
 
 export default class WalletsStore extends Store {
   WALLET_REFRESH_INTERVAL = 5000;
@@ -182,7 +184,9 @@ export default class WalletsStore extends Store {
   // STEP: WALLET TYPE
   @observable walletKind: ?WalletKind = null;
   @observable walletKindDaedalus: ?WalletDaedalusKind = null;
-  @observable walletKindYoroi: ?WalletYoroiKind = null;
+  @observable walletKindYoroi: ?WalletYoroiKind = isIncentivizedTestnet
+    ? null
+    : WALLET_YOROI_KINDS.BALANCE_15_WORD;
   @observable walletKindHardware: ?WalletHardwareKind = null;
   // STEP: RECOVERY PHRASE
   @observable mnemonics: Array<string> = [];
@@ -195,7 +199,7 @@ export default class WalletsStore extends Store {
   @observable restoredWallet: ?Wallet = null;
 
   /* ----------  Export Wallet  ---------- */
-  @observable walletExportType: walletExportTypeChoices = 'paperWallet';
+  @observable walletExportType: WalletExportTypeChoices = 'paperWallet';
   @observable walletExportMnemonic =
     'marine joke dry silk ticket thing sugar stereo aim';
 
@@ -425,7 +429,9 @@ export default class WalletsStore extends Store {
     this.restoredWallet = null;
     this.walletKind = null;
     this.walletKindDaedalus = null;
-    this.walletKindYoroi = null;
+    this.walletKindYoroi = isIncentivizedTestnet
+      ? null
+      : WALLET_YOROI_KINDS.BALANCE_15_WORD;
     this.walletKindHardware = null;
     this.mnemonics = [];
     this.walletName = '';
@@ -624,6 +630,7 @@ export default class WalletsStore extends Store {
       amount: parseInt(amount, 10),
       passphrase,
       walletId: wallet.id,
+      isLegacy: wallet.isLegacy,
     });
     this.refreshWalletsData();
     this.actions.dialogs.closeActiveDialog.trigger();
@@ -900,15 +907,15 @@ export default class WalletsStore extends Store {
   };
 
   isValidAddress = (address: string) => {
-    const { app, networkStatus } = this.stores;
-    const { isMainnet, isTest } = app.environment;
-    const addressGroup =
-      networkStatus.isIncentivizedTestnet || isTest
-        ? AddressGroup.jormungandr
-        : AddressGroup.byron;
-    const chainSettings = isMainnet
-      ? ChainSettings.mainnet
-      : ChainSettings.testnet;
+    const { app } = this.stores;
+    const { isTestnet } = app.environment;
+    const addressGroup = isIncentivizedTestnet
+      ? AddressGroup.jormungandr
+      : AddressGroup.byron;
+    const chainSettings = isTestnet
+      ? ChainSettings.testnet
+      : ChainSettings.mainnet;
+
     try {
       return Address.Util.isAddress(address, chainSettings, addressGroup);
     } catch (error) {
@@ -926,7 +933,12 @@ export default class WalletsStore extends Store {
     if (this.stores.networkStatus.isConnected) {
       const result = await this.walletsRequest.execute().promise;
       if (!result) return;
-      const walletIds = result.map((wallet: Wallet) => wallet.id);
+      const walletIds = result
+        .filter(
+          ({ syncState }: Wallet) =>
+            syncState.status !== WalletSyncStateStatuses.NOT_RESPONDING
+        )
+        .map((wallet: Wallet) => wallet.id);
       await this._setWalletsRecoveryPhraseVerificationData(walletIds);
       runInAction('refresh active wallet', () => {
         if (this.active) {
@@ -985,6 +997,16 @@ export default class WalletsStore extends Store {
     if (this.hasAnyWallets) {
       const activeWalletId = this.active ? this.active.id : null;
       const newActiveWallet = this.all.find(wallet => wallet.id === walletId);
+      if (
+        (!this.active || !this.active.isNotResponding) &&
+        newActiveWallet &&
+        newActiveWallet.isNotResponding
+      ) {
+        this.actions.router.goToRoute.trigger({
+          route: ROUTES.WALLETS.PAGE,
+          params: { id: newActiveWallet.id, page: 'summary' },
+        });
+      }
       const hasActiveWalletBeenChanged = activeWalletId !== walletId;
       const hasActiveWalletBeenUpdated = !isEqual(this.active, newActiveWallet);
       if (hasActiveWalletBeenChanged) {
@@ -1015,7 +1037,7 @@ export default class WalletsStore extends Store {
   };
 
   @action _chooseWalletExportType = (params: {
-    walletExportType: walletExportTypeChoices,
+    walletExportType: WalletExportTypeChoices,
   }) => {
     if (this.walletExportType !== params.walletExportType) {
       this.walletExportType = params.walletExportType;

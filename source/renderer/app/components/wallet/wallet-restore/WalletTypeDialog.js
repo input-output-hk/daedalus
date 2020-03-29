@@ -50,10 +50,17 @@ const messages = defineMessages({
       '!!!What kind of Daedalus wallet would you like to restore?',
     description: 'Label for the "labelDaedalusWalletKind" checkbox.',
   },
+  labelDaedalusWalletKindBalance12WordItn: {
+    id:
+      'wallet.restore.dialog.step.walletKind.label.daedalusWalletKindBalance12Word.itn',
+    defaultMessage: '!!!12 words <em>(Balance wallet)</em>',
+    description:
+      'Label for the "labelDaedalusWalletKindBalance12Word" ITN checkbox.',
+  },
   labelDaedalusWalletKindBalance12Word: {
     id:
       'wallet.restore.dialog.step.walletKind.label.daedalusWalletKindBalance12Word',
-    defaultMessage: '!!!12 words <em>(Balance wallet)</em>',
+    defaultMessage: '!!!12 words',
     description:
       'Label for the "labelDaedalusWalletKindBalance12Word" checkbox.',
   },
@@ -64,10 +71,17 @@ const messages = defineMessages({
     description:
       'Label for the "labelDaedalusWalletKindReward15Word" checkbox.',
   },
+  labelDaedalusWalletKindBalance27WordItn: {
+    id:
+      'wallet.restore.dialog.step.walletKind.label.daedalusWalletKindBalance27Word.itn',
+    defaultMessage: '!!!27 words - paper wallet <em>(Balance wallet)</em>',
+    description:
+      'Label for the "labelDaedalusWalletKindBalance27Word" ITN checkbox.',
+  },
   labelDaedalusWalletKindBalance27Word: {
     id:
       'wallet.restore.dialog.step.walletKind.label.daedalusWalletKindBalance27Word',
-    defaultMessage: '!!!27 words <em>(Balance wallet)</em>',
+    defaultMessage: '!!!27 words - paper wallet</em>',
     description:
       'Label for the "labelDaedalusWalletKindBalance27Word" checkbox.',
   },
@@ -146,6 +160,8 @@ type State = {
   [key: HardwareWalletAcceptance]: boolean,
 };
 
+const { isIncentivizedTestnet } = global;
+
 export default class WalletTypeDialog extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -169,11 +185,21 @@ export default class WalletTypeDialog extends Component<Props, State> {
       label={this.context.intl.formatMessage(message)}
       items={Object.keys(kinds).map((key: string) => {
         const kind: WalletKinds = kinds[key];
+
+        let kindLabelSufix = kind;
+        if (
+          isIncentivizedTestnet &&
+          (kind === 'Balance12Word' || kind === 'Balance27Word')
+        ) {
+          kindLabelSufix = `${kind}Itn`;
+        }
         return {
           key: kind,
           label: (
             <FormattedHTMLMessage
-              {...messages[`label${kindParam || ''}WalletKind${kind}`]}
+              {...messages[
+                `label${kindParam || ''}WalletKind${kindLabelSufix}`
+              ]}
             />
           ),
           selected: value === kind,
@@ -193,9 +219,18 @@ export default class WalletTypeDialog extends Component<Props, State> {
     } = this.props;
     const { hardwareWalletAcceptance1, hardwareWalletAcceptance2 } = this.state;
     if (!walletKind) return true;
-    if (walletKind === WALLET_KINDS.DAEDALUS && !walletKindDaedalus)
+    if (
+      walletKind === WALLET_KINDS.DAEDALUS &&
+      !walletKindDaedalus &&
+      isIncentivizedTestnet
+    )
       return true;
-    if (walletKind === WALLET_KINDS.YOROI && !walletKindYoroi) return true;
+    if (
+      walletKind === WALLET_KINDS.YOROI &&
+      !walletKindYoroi &&
+      isIncentivizedTestnet
+    )
+      return true;
     if (
       walletKind === WALLET_KINDS.HARDWARE &&
       (!walletKindHardware ||
@@ -246,14 +281,15 @@ export default class WalletTypeDialog extends Component<Props, State> {
               walletKindDaedalus,
               WALLET_KINDS.DAEDALUS
             )}
-          {walletKind === WALLET_KINDS.YOROI &&
+          {isIncentivizedTestnet &&
+            walletKind === WALLET_KINDS.YOROI &&
             this.getWalletKind(
               WALLET_YOROI_KINDS,
               messages.labelYoroiWalletKind,
               walletKindYoroi,
               WALLET_KINDS.YOROI
             )}
-          {walletKind === WALLET_KINDS.HARDWARE && (
+          {isIncentivizedTestnet && walletKind === WALLET_KINDS.HARDWARE && (
             <Fragment>
               {this.getWalletKind(
                 WALLET_HARDWARE_KINDS,

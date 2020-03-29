@@ -12,7 +12,9 @@ import { isIncentivizedTestnetTheme } from './utils';
 import { CATEGORIES_BY_NAME } from '../../../source/renderer/app/config/sidebarConfig';
 import { formattedWalletAmount } from '../../../source/renderer/app/utils/formatters';
 import NodeSyncStatusIcon from '../../../source/renderer/app/components/widgets/NodeSyncStatusIcon';
-import Wallet from '../../../source/renderer/app/domains/Wallet.js';
+import Wallet, {
+  WalletSyncStateStatuses,
+} from '../../../source/renderer/app/domains/Wallet.js';
 import NewsFeedIcon from '../../../source/renderer/app/components/widgets/NewsFeedIcon';
 import type { SidebarMenus } from '../../../source/renderer/app/components/sidebar/Sidebar';
 import type { SidebarWalletType } from '../../../source/renderer/app/types/sidebarTypes';
@@ -114,6 +116,9 @@ export default class StoryLayout extends Component<Props> {
       title: wallet.name,
       info: `${wallet.amount} ADA`,
       isConnected: true,
+      isNotResponding:
+        get(wallet, 'syncState.tag', 'synced') ===
+        WalletSyncStateStatuses.NOT_RESPONDING,
       isRestoreActive: get(wallet, 'syncState.tag', 'synced') === 'restoring',
       restoreProgress: get(wallet, 'syncState.data.percentage.quantity', 0),
       isLegacy: wallet.isLegacy,

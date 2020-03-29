@@ -132,8 +132,8 @@ parseVersion ver =
         v@[_, _, _, _] -> map toString v
         _              -> ["0", "0", "0", "0"]
 
-writeInstallerNSIS :: FilePath -> Version -> InstallerConfig -> Cluster -> IO ()
-writeInstallerNSIS outName (Version fullVersion') InstallerConfig{hasBlock0,installDirectory,spacedName} clusterName = do
+writeInstallerNSIS :: FilePath -> Version -> InstallerConfig -> Options -> Cluster -> IO ()
+writeInstallerNSIS outName (Version fullVersion') InstallerConfig{hasBlock0,installDirectory,spacedName} Options{oBackend} clusterName = do
     tempDir <- getTempDir
     let fullVersion = unpack fullVersion'
         viProductVersion = L.intercalate "." $ parseVersion fullVersion'
@@ -184,8 +184,23 @@ writeInstallerNSIS outName (Version fullVersion') InstallerConfig{hasBlock0,inst
                     unsafeInject $ unpack $ "Abort \" " <> installDirectory <> "$(AlreadyRunning)\""
                 iff_ (fileExists "$APPDATA\\$InstallDir\\Wallet-1.0\\open\\*.*") $
                     rmdir [] "$APPDATA\\$InstallDir\\Wallet-1.0\\open"
-                file [] "jormungandr.exe"
-                file [] "cardano-wallet-jormungandr.exe"
+                case oBackend of
+                  Jormungandr _ -> do
+                    file [] "jormungandr.exe"
+                    file [] "cardano-wallet-jormungandr.exe"
+                    file [] "config.yaml"
+                  Cardano _ -> do
+                    file [] "cardano-node.exe"
+                    file [] "cardano-wallet-byron.exe"
+                    file [] "export-wallets.exe"
+                    file [] "db-converter.exe"
+                    file [] "cardano-cli.exe"
+                    file [] "config.yaml"
+                    file [] "topology.yaml"
+                    file [] "genesis.json"
+                    when (clusterName == Selfnode) $ do
+                      file [] "signing.key"
+                      file [] "delegation.cert"
                 file [] "cardano-launcher.exe"
                 file [] "libffi-6.dll"
                 --file [] "cardano-x509-certificates.exe"
@@ -196,10 +211,7 @@ writeInstallerNSIS outName (Version fullVersion') InstallerConfig{hasBlock0,inst
                 file [] "launcher-config.yaml"
                 when hasBlock0 $
                   file [] "block-0.bin"
-                when (clusterName /= Selfnode) $
-                  file [] "jormungandr-config.yaml"
-                when (clusterName == Selfnode) $ do
-                  file [] "config.yaml"
+                when (clusterName == ITN_Selfnode) $ do
                   file [] "genesis.yaml"
                   file [] "secret.yaml"
                 file [Recursive] "dlls\\"
@@ -287,7 +299,7 @@ main opts@Options{..}  = do
     signUninstaller opts
 
     echo "Writing daedalus.nsi"
-    writeInstallerNSIS fullName fullVersion installerConfig oCluster
+    writeInstallerNSIS fullName fullVersion installerConfig opts oCluster
 
     rawnsi <- readFile "daedalus.nsi"
     putStr rawnsi

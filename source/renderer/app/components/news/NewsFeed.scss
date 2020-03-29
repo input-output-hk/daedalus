@@ -20,7 +20,7 @@
   .newsFeedHeader {
     align-items: center;
     background: var(--theme-news-feed-header-background-color);
-    box-shadow: 0px 0px 0px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0.2);
     display: flex;
     flex-shrink: 0;
     height: 84px;
@@ -32,7 +32,7 @@
     z-index: 1;
 
     &.hasShadow {
-      box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
     }
 
     .newsFeedTitle {
