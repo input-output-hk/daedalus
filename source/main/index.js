@@ -150,7 +150,7 @@ const onAppReady = async () => {
   mainErrorHandler(onMainError);
   await handleCheckDiskSpace();
 
-  cardanoNode = setupCardanoNode(launcherConfig, mainWindow);
+  cardanoNode = setupCardanoNode(launcherConfig, mainWindow, locale);
 
   if (isWatchMode) {
     // Connect to electron-connect server which restarts / reloads windows on file changes
