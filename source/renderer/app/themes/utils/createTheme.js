@@ -519,6 +519,9 @@ export const createDaedalusComponentsTheme = (
       '--theme-input-right-floating-text-color': `${chroma(text.primary).alpha(
         0.5
       )}`,
+      '--theme-input-right-floating-text-success-color': `${chroma(
+        text.primary
+      ).alpha(1)}`,
       '--theme-input-text-color': `${text.primary}`,
     },
     link: {
@@ -784,6 +787,12 @@ export const createDaedalusComponentsTheme = (
       '--theme-splash-network-title-color': '#fafbfc',
       '--theme-splash-network-subTitle1-color': `${background.secondary}`,
       '--theme-splash-network-subTitle2-color': `${background.secondary}`,
+      '--theme-splash-network-scrollbar-thumb-background': `${chroma(
+        text.secondary
+      ).alpha(0.3)}`,
+      '--theme-splash-network-scrollbar-thumb-background-hover': `${chroma(
+        text.secondary
+      ).alpha(0.5)}`,
       '--theme-splash-network-description-background-color':
         'rgba(255, 255, 255, 0.1)',
       '--theme-splash-network-description-color': `${text.primary}`,
@@ -978,6 +987,7 @@ export const createDaedalusComponentsTheme = (
       ).alpha(0.18)}`,
       '--theme-transactions-date-picker-button-background-color': `${background.primary.lightest}`,
       '--theme-transactions-date-picker-button-background-color-hover': `${background.primary.regular}`,
+      '--theme-transactions-date-picker-button-color': `${text.primary}`,
       '--theme-transactions-filter-modal-bg-color': `${background.primary.lightest}`,
       '--theme-transactions-filter-date-picker-shadow':
         '0 5px 20px 0 rgba(0, 0, 0, 0.25)',
