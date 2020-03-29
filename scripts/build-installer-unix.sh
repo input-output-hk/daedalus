@@ -124,7 +124,12 @@ upload_artifacts_public() {
 }
 
 # Build/get cardano bridge which is used by make-installer
-DAEDALUS_BRIDGE=$(nix-build --no-out-link -A daedalus-bridge --argstr nodeImplementation jormungandr)
+echo '~~~ Prebuilding cardano bridge'
+CARDANO_BRIDGE=$(nix-build --no-out-link -A daedalus-bridge --argstr nodeImplementation cardano)
+echo '~~~ Prebuilding jormungandr bridge'
+JORMUNGANDR_BRIDGE=$(nix-build --no-out-link -A daedalus-bridge --argstr nodeImplementation jormungandr)
+
+itnClusters="$(< "$(nix-build --no-out-link -A itnClustersFile)")"
 
 pushd installers
     echo '~~~ Prebuilding dependencies for cardano-installer, quietly..'
@@ -138,22 +143,22 @@ pushd installers
           APP_NAME="csl-daedalus"
           rm -rf "${APP_NAME}"
 
+          if [[ "$itnClusters" == "$cluster" ]]; then
+            BRIDGE_FLAG="--jormungandr ${JORMUNGANDR_BRIDGE}"
+          else
+            BRIDGE_FLAG="--cardano ${CARDANO_BRIDGE}"
+          fi
+
           INSTALLER_CMD=("make-installer"
                          "${test_installer}"
                          "${code_signing_config}"
                          "${signing_config}"
-                         "  --cardano          ${DAEDALUS_BRIDGE}"
+                         "${BRIDGE_FLAG}"
                          "  --build-job        ${build_id}"
                          "  --cluster          ${cluster}"
                          "  --out-dir          ${APP_NAME}")
-          nix-build .. -A launcherConfigs.cfg-files --argstr os macos64 --argstr cluster "${cluster}" -o cfg-files --argstr nodeImplementation jormungandr
-          cp -v cfg-files/{installer-config.json,launcher-config.yaml} .
-          if [ -f cfg-files/block-0.bin ]; then
-            cp -v cfg-files/block-0.bin .
-          fi
-          if [ "${cluster}" != selfnode ]; then
-            cp -v cfg-files/jormungandr-config.yaml .
-          fi
+          nix-build .. -A launcherConfigs.configFiles --argstr os macos64 --argstr cluster "${cluster}" -o cfg-files
+          cp -v cfg-files/* .
           chmod -R +w .
           echo '~~~   Running make-installer in nix-shell'
           $nix_shell ../shell.nix -A buildShell --run "${INSTALLER_CMD[*]}"

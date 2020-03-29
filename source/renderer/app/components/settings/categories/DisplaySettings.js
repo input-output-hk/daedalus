@@ -8,6 +8,7 @@ import themeIncentivizedTestnetPreview from '../../../assets/images/themes/incen
 import themeCardanoPreview from '../../../assets/images/themes/cardano.png';
 import themeDarkBluePreview from '../../../assets/images/themes/dark-blue.png';
 import themeDarkCardanoPreview from '../../../assets/images/themes/dark-cardano.png';
+import themeFlightCandidatePreview from '../../../assets/images/themes/flight-candidate.png';
 import themeLightBluePreview from '../../../assets/images/themes/light-blue.png';
 import themeYellowPreview from '../../../assets/images/themes/yellow.png';
 import themeWhitePreview from '../../../assets/images/themes/white.png';
@@ -47,6 +48,12 @@ const messages = defineMessages({
     description:
       'Name of the "Dark cardano" theme on the display settings page.',
   },
+  themeFlightCandidate: {
+    id: 'settings.display.themeNames.flightCandidate',
+    defaultMessage: '!!!Flight Candidate',
+    description:
+      'Name of the "Flight Candidate" theme on the display settings page.',
+  },
   themeYellow: {
     id: 'settings.display.themeNames.yellow',
     defaultMessage: '!!!Yellow',
@@ -73,6 +80,7 @@ export default class DisplaySettings extends Component<Props> {
   render() {
     const { theme, selectTheme } = this.props;
     const { intl } = this.context;
+    const { isIncentivizedTestnet, isFlight } = global;
 
     const themeIncentivizedTestnetClasses = classnames([
       theme === THEMES.INCENTIVIZED_TESTNET ? styles.active : styles.inactive,
@@ -96,6 +104,11 @@ export default class DisplaySettings extends Component<Props> {
 
     const themeDarkCardanoClasses = classnames([
       theme === THEMES.DARK_CARDANO ? styles.active : styles.inactive,
+      styles.themeImageWrapper,
+    ]);
+
+    const themeFlightCandidateClasses = classnames([
+      theme === THEMES.FLIGHT_CANDIDATE ? styles.active : styles.inactive,
       styles.themeImageWrapper,
     ]);
 
@@ -192,19 +205,39 @@ export default class DisplaySettings extends Component<Props> {
         </div>
 
         <div className={styles.themesRowWrapper}>
-          <button
-            className={themeIncentivizedTestnetClasses}
-            onClick={selectTheme.bind(this, {
-              theme: THEMES.INCENTIVIZED_TESTNET,
-            })}
-          >
-            <img
-              src={themeIncentivizedTestnetPreview}
-              role="presentation"
-              draggable="false"
-            />
-            <span>{intl.formatMessage(messages.themeIncentivizedTestnet)}</span>
-          </button>
+          {isIncentivizedTestnet && (
+            <button
+              className={themeIncentivizedTestnetClasses}
+              onClick={selectTheme.bind(this, {
+                theme: THEMES.INCENTIVIZED_TESTNET,
+              })}
+            >
+              <img
+                src={themeIncentivizedTestnetPreview}
+                role="presentation"
+                draggable="false"
+              />
+              <span>
+                {intl.formatMessage(messages.themeIncentivizedTestnet)}
+              </span>
+            </button>
+          )}
+
+          {isFlight && (
+            <button
+              className={themeFlightCandidateClasses}
+              onClick={selectTheme.bind(this, {
+                theme: THEMES.FLIGHT_CANDIDATE,
+              })}
+            >
+              <img
+                src={themeFlightCandidatePreview}
+                role="presentation"
+                draggable="false"
+              />
+              <span>{intl.formatMessage(messages.themeFlightCandidate)}</span>
+            </button>
+          )}
         </div>
       </div>
     );

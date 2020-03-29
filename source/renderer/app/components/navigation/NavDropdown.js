@@ -14,7 +14,6 @@ type Props = {
   options: Array<{
     value: number | string,
     label: string,
-    isLegacy?: boolean,
   }>,
   onChange: Function,
   hasNotification?: boolean,
@@ -32,10 +31,6 @@ export default class NavDropdown extends Component<Props> {
       activeItem,
       hasNotification,
     } = this.props;
-    let filteredOptions = options;
-    if (options) {
-      filteredOptions = options.filter(option => !option.isLegacy);
-    }
     const componentStyles = classnames([
       styles.component,
       hasNotification ? styles.hasNotification : null,
@@ -58,7 +53,7 @@ export default class NavDropdown extends Component<Props> {
           optionRenderer={o => (
             <div className={styles.optionLabel}>{o.label}</div>
           )}
-          items={filteredOptions}
+          items={options}
           activeItem={options.find(o => o.value === activeItem)}
           noArrow
           optionHeight={32}

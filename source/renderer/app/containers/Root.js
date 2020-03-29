@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import WalletAddPage from './wallet/WalletAddPage';
 import LoadingPage from './loading/LoadingPage';
-import SplashNetworkPage from './splash/NetworkPage';
+import SplashNetworkPage from './splash/SplashNetworkPage';
 import type { InjectedContainerProps } from '../types/injectedPropsType';
 
 type Props = InjectedContainerProps;

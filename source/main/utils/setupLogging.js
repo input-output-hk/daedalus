@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import log from 'electron-log-daedalus';
 import ensureDirectoryExists from './ensureDirectoryExists';
-import { pubLogsFolderPath, appLogsFolderPath, APP_NAME } from '../config';
+import { pubLogsFolderPath, appLogsFolderPath } from '../config';
 import {
   constructMessageBody,
   formatMessage,
@@ -15,13 +15,14 @@ import type {
   MessageBody,
   LogSystemInfoParams,
   StateSnapshotLogParams,
+  WalletMigrationReportData,
 } from '../../common/types/logging.types';
 
 const isTest = process.env.NODE_ENV === 'test';
 const isDev = process.env.NODE_ENV === 'development';
 
 export const setupLogging = () => {
-  const logFilePath = path.join(pubLogsFolderPath, `${APP_NAME}.json`);
+  const logFilePath = path.join(pubLogsFolderPath, 'Daedalus.json');
   ensureDirectoryExists(pubLogsFolderPath);
   log.transports.console.level = isTest ? 'error' : 'info';
   log.transports.rendererConsole.level = isDev ? 'info' : 'error';
@@ -153,4 +154,18 @@ export const logStateSnapshot = (
   );
   fs.writeFileSync(stateSnapshotFilePath, JSON.stringify(messageBody));
   return messageBody;
+};
+
+export const generateWalletMigrationReport = (
+  data: WalletMigrationReportData
+) => {
+  const walletMigrationrReportFilePath = path.join(
+    pubLogsFolderPath,
+    'Wallet-migration-report.json'
+  );
+  const generatedAt = new Date().toISOString();
+  fs.writeFileSync(
+    walletMigrationrReportFilePath,
+    JSON.stringify({ ...data, generatedAt })
+  );
 };

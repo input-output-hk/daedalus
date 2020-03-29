@@ -86,6 +86,35 @@
     margin-top: 27px;
     text-align: center;
   }
+
+  .flightCandidateWarning {
+    margin-top: 20px;
+    p {
+      color: var(--theme-send-confirmation-dialog-send-values-color);
+      font-family: var(--font-regular);
+      line-height: 1.23;
+      margin-bottom: 20px;
+      b {
+        font-family: var(--font-bold);
+      }
+    }
+    em {
+      color: var(--theme-send-confirmation-dialog-send-values-color);
+      font-family: var(--font-light);
+    }
+    > div {
+      :global {
+        .SimpleCheckbox_check {
+          border-color: var(--theme-send-confirmation-dialog-send-values-color);
+        }
+        .SimpleCheckbox_checked {
+          background-color: var(
+            --theme-send-confirmation-dialog-send-values-color
+          );
+        }
+      }
+    }
+  }
 }
 
 .submitButtonSpinning {

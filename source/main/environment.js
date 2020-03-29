@@ -1,6 +1,7 @@
 // @flow
 import os from 'os';
 import { uniq, get, includes } from 'lodash';
+import { isFlight } from './config';
 import { version } from '../../package.json';
 import type { Environment } from '../common/types/environment.types';
 import { DEVELOPMENT, OS_NAMES } from '../common/types/environment.types';
@@ -16,7 +17,7 @@ import {
   checkIsIncentivizedTestnet,
   checkIsIncentivizedTestnetQA,
   checkIsIncentivizedTestnetNightly,
-  checkIsIncentivizedTestnetSelfNode,
+  checkIsIncentivizedTestnetSelfnode,
   getBuildLabel,
   checkIsMacOS,
   checkIsWindows,
@@ -42,7 +43,7 @@ const isIncentivizedTestnetQA = checkIsIncentivizedTestnetQA(RAW_NETWORK);
 const isIncentivizedTestnetNightly = checkIsIncentivizedTestnetNightly(
   RAW_NETWORK
 );
-const isIncentivizedTestnetSelfNode = checkIsIncentivizedTestnetSelfNode(
+const isIncentivizedTestnetSelfnode = checkIsIncentivizedTestnetSelfnode(
   RAW_NETWORK
 );
 const isDevelopment = checkIsDevelopment(NETWORK);
@@ -62,6 +63,7 @@ const BUILD_LABEL = getBuildLabel(
   BUILD_NUMBER,
   NETWORK,
   CURRENT_NODE_ENV,
+  isFlight,
   version
 );
 const INSTALLER_VERSION = uniq([API_VERSION, BUILD]).join('.');
@@ -91,7 +93,7 @@ export const environment: Environment = Object.assign(
     isIncentivizedTestnet,
     isIncentivizedTestnetQA,
     isIncentivizedTestnetNightly,
-    isIncentivizedTestnetSelfNode,
+    isIncentivizedTestnetSelfnode,
     isDevelopment,
     isWatchMode,
     build: BUILD,

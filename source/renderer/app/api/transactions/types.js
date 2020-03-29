@@ -85,6 +85,7 @@ export type GetTransactionFeeRequest = {
   amount: number,
   walletBalance: BigNumber,
   availableBalance: BigNumber,
+  isLegacy: boolean,
 };
 
 export type CreateTransactionRequest = {
@@ -92,6 +93,7 @@ export type CreateTransactionRequest = {
   address: string,
   amount: number,
   passphrase: string,
+  isLegacy: boolean,
 };
 
 export type DeleteTransactionRequest = {

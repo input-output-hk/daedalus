@@ -1,4 +1,5 @@
 // @flow
+import AddressesActions from './addresses-actions';
 import AppActions from './app-actions';
 import DialogsActions from './dialogs-actions';
 import NetworkStatusActions from './network-status-actions';
@@ -15,6 +16,7 @@ import WalletSettingsActions from './wallet-settings-actions';
 import WindowActions from './window-actions';
 
 export type ActionsMap = {
+  addresses: AddressesActions,
   app: AppActions,
   dialogs: DialogsActions,
   networkStatus: NetworkStatusActions,
@@ -32,6 +34,7 @@ export type ActionsMap = {
 };
 
 const actionsMap: ActionsMap = {
+  addresses: new AddressesActions(),
   app: new AppActions(),
   dialogs: new DialogsActions(),
   networkStatus: new NetworkStatusActions(),

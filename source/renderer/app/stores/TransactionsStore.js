@@ -246,6 +246,7 @@ export default class TransactionsStore extends Store {
       ...transactionFeeRequest,
       walletBalance: wallet.amount,
       availableBalance: wallet.availableAmount,
+      isLegacy: wallet.isLegacy,
     });
   };
 
