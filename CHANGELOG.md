@@ -42,7 +42,7 @@ Changelog
 - Updated test configuration to cover Byron features only ([PR 1895](https://github.com/input-output-hk/daedalus/pull/1895))
 - Optimized e2e tests ([PR 1874](https://github.com/input-output-hk/daedalus/pull/1874))
 - Updated `react-polymorph` dependency ([PR 1882](https://github.com/input-output-hk/daedalus/pull/1882))
-- Updated small 3rd party dependencies ([PR 1877](https://github.com/input-output-hk/daedalus/pull/1877))
+- Updated small 3rd party dependencies ([PR 1877](https://github.com/input-output-hk/daedalus/pull/1877), [PR 1924](https://github.com/input-output-hk/daedalus/pull/1924))
 - Updated React dependencies ([PR 1873](https://github.com/input-output-hk/daedalus/pull/1873))
 - Updated Storybook dependencies ([PR 1873](https://github.com/input-output-hk/daedalus/pull/1873))
 - Updated node and yarn dependencies ([PR 1883](https://github.com/input-output-hk/daedalus/pull/1883))
