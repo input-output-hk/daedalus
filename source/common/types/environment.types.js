@@ -14,7 +14,7 @@ export type Environment = {
   isIncentivizedTestnet: boolean,
   isIncentivizedTestnetQA: boolean,
   isIncentivizedTestnetNightly: boolean,
-  isIncentivizedTestnetSelfNode: boolean,
+  isIncentivizedTestnetSelfnode: boolean,
   isDevelopment: boolean,
   isWatchMode: boolean,
   build: string,
@@ -39,13 +39,20 @@ export type Environment = {
 export const PRODUCTION = 'production';
 export const DEVELOPMENT = 'development';
 export const TEST = 'test';
+
+// cardano-node networks
 export const MAINNET = 'mainnet';
-export const NIGHTLY = 'nightly';
-export const ITN_REWARDS_V1 = 'itn_rewards_v1';
-export const QA = 'qa';
+export const MAINNET_FLIGHT = 'mainnet_flight';
 export const SELFNODE = 'selfnode';
 export const STAGING = 'staging';
 export const TESTNET = 'testnet';
+
+// jormungandr networks
+export const ITN_REWARDS_V1 = 'itn_rewards_v1';
+export const ITN_SELFNODE = 'itn_selfnode';
+export const QA = 'qa';
+export const NIGHTLY = 'nightly';
+
 export const MAC_OS = 'darwin';
 export const WINDOWS = 'win32';
 export const LINUX = 'linux';
@@ -57,6 +64,8 @@ export const OS_NAMES = {
 
 export type Network =
   | 'mainnet'
+  | 'mainnet_flight'
+  | 'selfnode'
   | 'staging'
   | 'testnet'
   | 'development'
@@ -72,6 +81,7 @@ export type Network =
 
 export const networkPrettyNames = {
   mainnet: 'Mainnet',
+  selfnode: 'Selfnode',
   staging: 'Staging',
   testnet: 'Testnet',
   development: 'Development',

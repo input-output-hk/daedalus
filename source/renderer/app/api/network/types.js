@@ -14,6 +14,31 @@ export type FutureEpoch = {
   epochStart: string,
 };
 
+export type ClockOffset = {
+  quantity: number,
+  unit: 'microsecond',
+};
+
+export type SlotLength = {
+  quantity: number,
+  unit: string,
+};
+
+export type EpochLength = {
+  quantity: number,
+  unit: string,
+};
+
+export type EpochStability = {
+  quantity: number,
+  unit: string,
+};
+
+export type ActiveSlotCoefficient = {
+  quantity: number,
+  unit: string,
+};
+
 export type GetNetworkInfoResponse = {
   syncProgress: number,
   localTip: TipInfo,
@@ -46,4 +71,29 @@ export type NetworkInfoResponse = {
     epoch_number: number,
     epoch_start_time: string,
   },
+};
+
+export type NetworkClockResponse = {
+  status: 'available' | 'unavailable' | 'pending',
+  offset?: ClockOffset,
+};
+
+export type GetNetworkClockResponse = NetworkClockResponse;
+
+export type GetNetworkParametersResponse = {
+  genesisBlockHash: string,
+  blockchainStartTime: number,
+  slotLength: SlotLength,
+  epochLength: EpochLength,
+  epochStability: EpochStability,
+  activeSlotCoefficient: ActiveSlotCoefficient,
+};
+
+export type NetworkParametersResponse = {
+  genesis_block_hash: string,
+  blockchain_start_time: string,
+  slot_length: SlotLength,
+  epoch_length: EpochLength,
+  epoch_stability: EpochStability,
+  active_slot_coefficient: ActiveSlotCoefficient,
 };

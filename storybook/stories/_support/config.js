@@ -3,6 +3,7 @@ import cardano from '../../../source/renderer/app/themes/daedalus/cardano.js';
 import darkBlue from '../../../source/renderer/app/themes/daedalus/dark-blue.js';
 import lightBlue from '../../../source/renderer/app/themes/daedalus/light-blue.js';
 import darkCardano from '../../../source/renderer/app/themes/daedalus/dark-cardano.js';
+import flightCandidate from '../../../source/renderer/app/themes/daedalus/flight-candidate.js';
 import white from '../../../source/renderer/app/themes/daedalus/white.js';
 import yellow from '../../../source/renderer/app/themes/daedalus/yellow.js';
 import incentivizedTestnet from '../../../source/renderer/app/themes/daedalus/incentivized-testnet.js';
@@ -12,6 +13,7 @@ export const themes = {
   DarkBlue: darkBlue,
   LightBlue: lightBlue,
   DarkCardano: darkCardano,
+  FlightCandidate: flightCandidate,
   Yellow: yellow,
   White: white,
   IncentivizedTestnet: incentivizedTestnet,
@@ -22,6 +24,7 @@ export const themesIds = {
   DarkBlue: 'dark-blue',
   LightBlue: 'light-blue',
   DarkCardano: 'dark-cardano',
+  FlightCandidate: 'flight-candidate',
   Yellow: 'yellow',
   White: 'white',
   IncentivizedTestnet: 'incentivized-testnet',

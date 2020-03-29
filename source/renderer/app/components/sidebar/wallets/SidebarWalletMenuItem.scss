@@ -33,6 +33,12 @@
   }
 }
 
+.notResponding {
+  .meta {
+    opacity: 0.5;
+  }
+}
+
 .active {
   background-color: var(--theme-sidebar-menu-item-background-color-active);
 

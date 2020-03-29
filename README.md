@@ -14,7 +14,7 @@ Daedalus - cryptocurrency wallet
 ### Nix
 [Nix](https://nixos.org/nix/) is needed to run the Selfnode for Daedalus.
 
-**Note:** There are special instructions for 
+**Note:** There are special instructions for
 [installing Nix on Catalina](https://github.com/NixOS/nix/issues/2925#issuecomment-564149154).
 
 ### Yarn
@@ -53,13 +53,13 @@ The result can be found at `./result/daedalus-*.bin`.
 
 ## V2 API Integration Guide [Jormungandr]
 
-API docs for pinned cardano-wallet version: https://input-output-hk.github.io/cardano-wallet/api/v2019-10-16/
+API docs for pinned cardano-wallet version: https://input-output-hk.github.io/cardano-wallet/api/edge/
 
-### Selfnode
+### ITN Selfnode
 
-1. Run `yarn nix:dev` from `daedalus`.
-2. Run `yarn dev:itn` from the subsequent `nix-shell`
-3. Once Daedalus has started, and has gotten past the loading screen, run `yarn v2:wallet:importer` from a new terminal window. This is only required if you wish to import some funded wallets. It is also possible to import funded legacy wallets by running `yarn v2:legacy:wallet:importer` script.
+1. Run `yarn nix:itn_selfnode` from `daedalus`.
+2. Run `yarn dev` from the subsequent `nix-shell`
+3. Once Daedalus has started, and has gotten past the loading screen, run `yarn v2:shelley:wallet:importer` from a new terminal window. This is only required if you wish to import some funded wallets. It is also possible to import funded legacy wallets by running `yarn v2:byron:wallet:importer` script.
 
 ### QA testnet
 

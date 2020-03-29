@@ -17,7 +17,6 @@ module Config
   , diagReadCaseInsensitive
   ) where
 
-import           Data.Bool                           (bool)
 import qualified Data.Map                         as Map
 import           Data.Maybe
 import           Data.Optional                       (Optional)
@@ -98,11 +97,11 @@ optionsParser detectedOS = Options
   <*> (optional $ optPath       "signing-config"      'k' "the path to the json file describing the product signing config")
 
 backendOptionParser :: Parser Backend
-backendOptionParser = cardano <|> bool (Cardano "") Mantis <$> enableMantis
+backendOptionParser = enableJormungandr <|> cardano
   where
     cardano = Cardano <$> optPath "cardano" 'C'
       "Use Cardano backend with given Daedalus bridge path"
-    enableMantis = switch "mantis" 'M' "Use Mantis (ETC) backend"
+    enableJormungandr = Jormungandr <$> optPath  "jormungandr" 'j' "use Jormungandr backend"
 
 -- | Render a FilePath with POSIX-style forward slashes, which is the
 -- Dhall syntax.

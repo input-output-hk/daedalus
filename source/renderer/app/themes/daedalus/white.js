@@ -258,6 +258,7 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-input-placeholder-color': 'rgba(45, 45, 45, 0.5)',
     '--theme-input-remove-color-light': '#ea4c5b',
     '--theme-input-right-floating-text-color': 'rgba(45, 45, 45, 0.5)',
+    '--theme-input-right-floating-text-success-color': 'rgba(45, 45, 45, 1)',
     '--theme-input-text-color': '#2d2d2d',
   },
   link: {
@@ -654,6 +655,10 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-splash-network-overlay-button-text-color': '#29b595',
     '--theme-splash-network-overlay-button-text-color-hover': '#fff',
     '--theme-splash-network-title-color': '#2d2d2d',
+    '--theme-splash-network-scrollbar-thumb-background':
+      'rgba(45, 45, 45, 0.3)',
+    '--theme-splash-network-scrollbar-thumb-background-hover':
+      'rgba(45, 45, 45, 0.5)',
     '--theme-splash-network-subTitle1-color': 'rgba(45, 45, 45, 0.5)',
     '--theme-splash-network-subTitle2-color': 'rgba(45, 45, 45, 0.5)',
     '--theme-splash-network-description-background-color':
@@ -702,7 +707,10 @@ export const WHITE_THEME_OUTPUT = {
       'transparent',
     '--theme-staking-progress-label-light': '#fafbfc',
     '--theme-staking-stake-pools-search-clear-button-background-color':
-      'rgba(68, 91, 124, 0.05)',
+      'rgba(41, 181, 149, 0.1)',
+    '--theme-staking-stake-pools-search-clear-button-color': '#2d2d2d',
+    '--theme-staking-stake-pools-search-clear-button-hover-background-color':
+      'rgba(41, 181, 149, 0.05)',
     '--theme-staking-stake-pool-tooltip-experimental-icon-background-color':
       '#fff',
     '--theme-staking-stake-pool-tooltip-experimental-icon-lines-color':
@@ -762,7 +770,7 @@ export const WHITE_THEME_OUTPUT = {
   },
   support: {
     '--theme-support-settings-item-color': '#2d2d2d',
-    '--theme-support-settings-link-color': '#ffffff',
+    '--theme-support-settings-link-color': '#29b595',
     '--theme-support-settings-text-color': '#2d2d2d',
   },
   syncing: {
@@ -829,16 +837,17 @@ export const WHITE_THEME_OUTPUT = {
       'rgba(41, 181, 149, 0.14)',
     '--theme-transactions-date-picker-button-background-color-hover':
       'rgba(41, 181, 149, 0.07)',
+    '--theme-transactions-date-picker-button-color': '#2d2d2d',
     '--theme-transactions-filter-modal-bg-color': '#fff',
     '--theme-transactions-filter-date-picker-shadow':
       '0 5px 20px 0 rgba(0, 0, 0, 0.25)',
-    '--theme-transactions-filter-title-button-text-color': '#fafbfc',
+    '--theme-transactions-filter-title-button-text-color': '#2d2d2d',
     '--theme-transactions-filter-title-button-background-color':
-      'rgba(94, 96, 102, 0.4)',
+      'rgba(41, 181, 149, 0.1)',
     '--theme-transactions-filter-title-button-background-color-hover':
-      'rgba(94, 96, 102, 0.6)',
+      'rgba(41, 181, 149, 0.05)',
     '--theme-transactions-filter-title-button-background-color-active':
-      'rgba(94, 96, 102, 0.8)',
+      'rgba(41, 181, 149, 0.12)',
   },
   uploader: {
     '--theme-uploader-text-color': '#2d2d2d',
@@ -873,6 +882,22 @@ export const WHITE_THEME_OUTPUT = {
   walletSettings: {
     '--theme-wallet-settings-section-separator-color': 'rgba(45, 45, 45, 0.15)',
     '--theme-wallet-settings-resync-button-label-color': 'rgba(45, 45, 45, 1)',
+  },
+  walletNotRespondingOverlay: {
+    '--theme-wallet-not-responding-background-color': '#fffffff5',
+    '--theme-wallet-not-responding-button-background-color':
+      'rgba(41, 181, 149, 0.1)',
+    '--theme-wallet-not-responding-button-background-color-hover': '#29b595',
+    '--theme-wallet-not-responding-button-border-color': '#29b595',
+    '--theme-wallet-not-responding-button-text-color': '#29b595',
+    '--theme-wallet-not-responding-button-text-color-hover': '#ffffff',
+    '--theme-wallet-not-responding-description-background-color':
+      'rgba(41, 181, 149, 0.1)',
+    '--theme-wallet-not-responding-description-text-color':
+      'rgba(45, 45, 45, 0.7)',
+    '--theme-wallet-not-responding-icon-color': '#29b595',
+    '--theme-wallet-not-responding-link-text-color': '#2d2d2d',
+    '--theme-wallet-not-responding-title-text-color': '#2d2d2d',
   },
 };
 

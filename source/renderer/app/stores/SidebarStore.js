@@ -38,6 +38,7 @@ export default class SidebarStore extends Store {
         isConnected: networkStatus.isConnected,
         isRestoreActive: wallet.isRestoring,
         restoreProgress: wallet.restorationProgress,
+        isNotResponding: wallet.isNotResponding,
         isLegacy: wallet.isLegacy,
         recoveryPhraseVerificationStatus,
       };
@@ -45,11 +46,13 @@ export default class SidebarStore extends Store {
   }
 
   @action _configureCategories = () => {
-    const { networkStatus } = this.stores;
-    if (networkStatus.isIncentivizedTestnet) {
+    const { isIncentivizedTestnet, isFlight } = global;
+    if (isIncentivizedTestnet) {
       this.CATEGORIES = sidebarConfig.CATEGORIES_WITHOUT_DELEGATION_COUNTDOWN;
+    } else if (isFlight) {
+      this.CATEGORIES = sidebarConfig.CATEGORIES;
     } else {
-      this.CATEGORIES = sidebarConfig.CATEGORIES_WITH_STAKING;
+      this.CATEGORIES = sidebarConfig.CATEGORIES_WITHOUT_NETWORK_INFO;
     }
   };
 

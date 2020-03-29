@@ -1,19 +1,44 @@
 Changelog
 =========
 
-## vNext
+## 1.0.0-FC1
 
 ### Features
 
+- Integrated network clock api endpoint ([PR 1918](https://github.com/input-output-hk/daedalus/pull/1918))
+- Implements the Flight release information window ([PR 1917](https://github.com/input-output-hk/daedalus/pull/1917))
+- Added new icon for Daedalus Flight ([PR 1909](https://github.com/input-output-hk/daedalus/pull/1909))
+- Integrated network parameters api endpoint ([PR 1915](https://github.com/input-output-hk/daedalus/pull/1915))
+- Implemented flight candidates changes ([PR 1908](https://github.com/input-output-hk/daedalus/pull/1908))
+- Implemented new "Flight candidate" theme ([PR 1914](https://github.com/input-output-hk/daedalus/pull/1914))
+- Implemented non-responding wallets handling ([PR 1901](https://github.com/input-output-hk/daedalus/pull/1901))
+- Added support for building both `cardano-node` and `jormungandr` installers ([PR 1894](https://github.com/input-output-hk/daedalus/pull/1894))
+- Added support for `cardano-node` "Selfnode" network ([PR 1897](https://github.com/input-output-hk/daedalus/pull/1897))
+- Enabled Byron wallet creation for Haskell node builds ([PR 1895](https://github.com/input-output-hk/daedalus/pull/1895))
+- Enabled all Mainnet Daedalus features for Byron wallets for Haskell node builds ([PR 1895](https://github.com/input-output-hk/daedalus/pull/1895))
+- Enabled changing spending password in "Wallet settings" for Haskell node builds ([PR 1902](https://github.com/input-output-hk/daedalus/pull/1902))
+- Enabled "Send" feature for Haskell node builds ([PR 1902](https://github.com/input-output-hk/daedalus/pull/1902))
+- Disabled transfer funds notification for Haskell node builds ([PR 1902](https://github.com/input-output-hk/daedalus/pull/1902))
+- Disabled Shelley wallets and delegation features for Haskell node builds ([PR 1895](https://github.com/input-output-hk/daedalus/pull/1895))
+- Disabled "Data layer migration" notification for Haskell node builds ([PR 1895](https://github.com/input-output-hk/daedalus/pull/1895))
+- Disabled "Paper wallet certificate" creation for Haskell node builds ([PR 1895](https://github.com/input-output-hk/daedalus/pull/1895))
+- Removed hardware and Shelley wallet restoration options for Haskel node builds ([PR 1895](https://github.com/input-output-hk/daedalus/pull/1895))
 - Integrated new `cardano-launcher` ([PR 1886](https://github.com/input-output-hk/daedalus/pull/1886))
 
 ### Fixes
 
+- Fixed UI issues across all themes ([PR 1916](https://github.com/input-output-hk/daedalus/pull/1916))
 - Removed the click and mark from spinner component ([PR 1885](https://github.com/input-output-hk/daedalus/pull/1885))
 - Removed locale specific rules from the CSS files ([PR 1871](https://github.com/input-output-hk/daedalus/pull/1871))
 
 ### Chores
 
+- Updated Daedalus name and version for the Daedalus Flight 1.0.0-FC1 release ([PR 1910](https://github.com/input-output-hk/daedalus/pull/1910))
+- Enabled "Wallet UTXO distribution" feature for Byron wallets([PR 1913](https://github.com/input-output-hk/daedalus/pull/1913))
+- Enabled Byron wallet name editing ([PR 1911](https://github.com/input-output-hk/daedalus/pull/1911))
+- Updated UI copy ([PR 1907](https://github.com/input-output-hk/daedalus/pull/1907))
+- Updated Byron Haskell address validation ([PR 1902](https://github.com/input-output-hk/daedalus/pull/1902))
+- Updated test configuration to cover Byron features only ([PR 1895](https://github.com/input-output-hk/daedalus/pull/1895))
 - Optimized e2e tests ([PR 1874](https://github.com/input-output-hk/daedalus/pull/1874))
 - Updated `react-polymorph` dependency ([PR 1882](https://github.com/input-output-hk/daedalus/pull/1882))
 - Updated small 3rd party dependencies ([PR 1877](https://github.com/input-output-hk/daedalus/pull/1877))

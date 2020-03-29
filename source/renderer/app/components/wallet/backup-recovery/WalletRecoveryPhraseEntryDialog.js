@@ -19,7 +19,7 @@ const messages = defineMessages({
   verificationInstructions: {
     id: 'wallet.backup.recovery.phrase.entry.dialog.verification.instructions',
     defaultMessage:
-      '!!!Click each word in the correct order to verify your recovery phrase',
+      '!!!Verify your wallet recovery phrase by clicking words in the exact order you wrote them down.',
     description:
       'Instructions for verifying wallet recovery phrase on dialog for entering wallet recovery phrase.',
   },
@@ -56,6 +56,8 @@ const messages = defineMessages({
       'Term and condition on wallet backup dialog describing that wallet can only be recovered with a security phrase',
   },
 });
+
+const { isIncentivizedTestnet } = global;
 
 type Props = {
   recoveryPhraseShuffled: Array<RecoveryPhraseWord>,
@@ -183,20 +185,23 @@ export default class WalletRecoveryPhraseEntryDialog extends Component<Props> {
             </div>
             <div className={styles.checkbox}>
               <Checkbox
+                className={!isIncentivizedTestnet ? styles.isBold : ''}
                 label={intl.formatMessage(messages.termRecovery)}
                 onChange={onAcceptTermRecovery}
                 checked={isTermRecoveryAccepted}
                 skin={CheckboxSkin}
               />
             </div>
-            <div className={styles.checkbox}>
-              <Checkbox
-                label={<FormattedHTMLMessage {...messages.termRewards} />}
-                onChange={onAcceptTermRewards}
-                checked={isTermRewardsAccepted}
-                skin={CheckboxSkin}
-              />
-            </div>
+            {isIncentivizedTestnet && (
+              <div className={styles.checkbox}>
+                <Checkbox
+                  label={<FormattedHTMLMessage {...messages.termRewards} />}
+                  onChange={onAcceptTermRewards}
+                  checked={isTermRewardsAccepted}
+                  skin={CheckboxSkin}
+                />
+              </div>
+            )}
           </div>
         )}
       </Dialog>

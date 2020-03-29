@@ -52,9 +52,28 @@
     cursor: pointer;
     height: 28px;
     width: 28px;
+
+    &:hover {
+      background-color: var(
+          --theme-staking-stake-pools-search-clear-button-hover-background-color
+      );
+    }
   }
 
   svg {
+    position: relative;
+    top: 1px;
     width: 10px;
+
+    > g > g {
+      fill: var(--theme-staking-stake-pools-search-clear-button-color);
+    }
+  }
+
+  &:hover {
+    > div > div {
+      height: 30px;
+      line-height: 1.3;
+    }
   }
 }
