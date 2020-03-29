@@ -318,19 +318,23 @@ const prepareMigrationData = async (
       });
       const { code } = error || {};
       if (code === 'ENOENT' || code === 'EBUSY') {
-        await showExportWalletsWarning(
-          mainWindow,
-          locale,
-          prepareMigrationData,
-          {
+        try {
+          await showExportWalletsWarning(
             mainWindow,
-            stateDir,
-            legacySecretKey,
-            legacyWalletDB,
             locale,
-          }
-        );
-        logger.info('POST');
+            prepareMigrationData,
+            {
+              mainWindow,
+              stateDir,
+              legacySecretKey,
+              legacyWalletDB,
+              locale,
+            }
+          );
+          logger.info('POST1');
+        } catch (e) {
+          logger.info('POST2', { e });
+        }
         reject(error);
       } else {
         reject(error);

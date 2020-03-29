@@ -80,7 +80,7 @@ export default class WalletMigrationStore extends Store {
 
       const walletMigrationStatus = await this.getWalletMigrationStatusRequest.execute()
         .promise;
-      if (walletMigrationStatus === WalletMigrationStatuses.UNSTARTED) {
+      if (true || walletMigrationStatus === WalletMigrationStatuses.UNSTARTED) {
         logger.debug('WalletMigrationStore: Starting wallet migration...');
         await this.setWalletMigrationStatusRequest.execute(
           WalletMigrationStatuses.RUNNING
