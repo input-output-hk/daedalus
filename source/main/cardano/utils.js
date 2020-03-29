@@ -210,9 +210,13 @@ export const exportWallets = async (
       legacySecretKeyPath = response.legacySecretKeyPath;
       legacyWalletDBPath = response.legacyWalletDBPath;
     } catch (error) {
-      logger.error('ERROR', {
-        error,
-      });
+      const { code } = error || {};
+      if (code === 'EBUSY') {
+        logger.info('ipcMain: Exporting wallets failed', {
+          errors: error,
+        });
+        return Promise.resolve({ wallets: [], errors: error });
+      }
     }
   }
 
@@ -283,7 +287,7 @@ const prepareMigrationData = async (
           legacySecretKey,
         });
         legacySecretKeyPath = path.join(stateDir, 'migration-data/secret.key');
-        await fs.copy(legacySecretKey + '123', legacySecretKeyPath);
+        await fs.copy(legacySecretKey, legacySecretKeyPath);
         logger.info('ipcMain: Copied secret key file', {
           legacySecretKeyPath,
         });
@@ -318,24 +322,25 @@ const prepareMigrationData = async (
       });
       const { code } = error || {};
       if (code === 'ENOENT' || code === 'EBUSY') {
-        try {
-          await showExportWalletsWarning(
-            mainWindow,
-            locale,
-            prepareMigrationData,
-            {
+        logger.info('ipcMain: Showing "Automatic wallet migration" warning...');
+        const response = await showExportWalletsWarning(mainWindow, locale);
+        if (response === 0) {
+          // User confirmed migration retry
+          logger.info('ipcMain: User confirmed wallet migration retry');
+          resolve(
+            prepareMigrationData({
               mainWindow,
               stateDir,
               legacySecretKey,
               legacyWalletDB,
               locale,
-            }
+            })
           );
-          logger.info('POST1');
-        } catch (e) {
-          logger.info('POST2', { e });
+        } else {
+          // User canceled migration
+          logger.info('ipcMain: User canceled wallet migration');
+          reject(error);
         }
-        reject(error);
       } else {
         reject(error);
       }
@@ -345,33 +350,21 @@ const prepareMigrationData = async (
 
 const showExportWalletsWarning = (
   mainWindow: BrowserWindow,
-  locale: string,
-  confirmFunction: Function,
-  confirmData: PrepareMigrationDataParams
-): Promise<any> => {
-  return new Promise(resolve => {
-    const translations = require(`../locales/${locale}`);
-    const translation = getTranslation(translations, 'dialog');
-    const exportWalletsDialogOptions = {
-      buttons: [
-        translation('exportWalletsWarning.confirm'),
-        translation('exportWalletsWarning.cancel'),
-      ],
-      type: 'warning',
-      title: translation('exportWalletsWarning.title'),
-      message: translation('exportWalletsWarning.message'),
-      defaultId: 1,
-      cancelId: 1,
-      noLink: true,
-    };
-    dialog.showMessageBox(mainWindow, exportWalletsDialogOptions, buttonId => {
-      if (buttonId === 0) {
-        logger.info('CONFIRM');
-        resolve(confirmFunction(confirmData));
-      } else {
-        logger.info('CANCEL');
-        resolve();
-      }
-    });
-  });
+  locale: string
+) => {
+  const translations = require(`../locales/${locale}`);
+  const translation = getTranslation(translations, 'dialog');
+  const exportWalletsDialogOptions = {
+    buttons: [
+      translation('exportWalletsWarning.confirm'),
+      translation('exportWalletsWarning.cancel'),
+    ],
+    type: 'warning',
+    title: translation('exportWalletsWarning.title'),
+    message: translation('exportWalletsWarning.message'),
+    defaultId: 0,
+    cancelId: 1,
+    noLink: true,
+  };
+  return dialog.showMessageBox(mainWindow, exportWalletsDialogOptions);
 };
