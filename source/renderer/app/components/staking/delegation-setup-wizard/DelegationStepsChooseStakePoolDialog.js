@@ -368,9 +368,11 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
           </div>
 
           <div className={styles.recentStakePoolsWrapper}>
-            <p className={styles.recentStakePoolsLabel}>
-              <FormattedMessage {...messages.recentPoolsLabel} values={{}} />
-            </p>
+            {recentStakePools.length > 0 && (
+              <p className={styles.recentStakePoolsLabel}>
+                <FormattedMessage {...messages.recentPoolsLabel} values={{}} />
+              </p>
+            )}
             <StakePoolsList
               listName="recentStakePools"
               stakePoolsList={recentStakePools}

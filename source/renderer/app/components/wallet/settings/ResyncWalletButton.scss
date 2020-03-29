@@ -10,6 +10,7 @@
   width: 160px !important;
   &.isSubmitting {
     box-shadow: none !important;
+    opacity: 1 !important;
     @include loading-spinner('../../../assets/images/spinner-light.svg');
 
     &::after {

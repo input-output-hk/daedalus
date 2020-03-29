@@ -84,7 +84,6 @@ export default class NotificationsContainer extends Component<InjectedProps> {
       icon: 'spinner',
       hasEllipsis: true,
       clickToClose: false,
-      hasCloseButton: false,
     },
   };
 
