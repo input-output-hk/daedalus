@@ -7,8 +7,22 @@
   overflow: visible;
   padding: 20px 0;
 
+  :global {
+    .SimpleBubble_root {
+      .SimpleBubble_bubble {
+        margin-left: 0;
+      }
+    }
+  }
+
   &:last-child {
     border-bottom: 0;
+  }
+
+  &:hover {
+    .undelegateActions {
+      opacity: 1 !important;
+    }
   }
 
   .left {
@@ -34,83 +48,160 @@
 
     .status {
       @extend %regularText;
-
       align-items: center;
       display: flex;
       justify-content: flex-end;
-      margin-bottom: 3px;
-
-      .normalOption {
-        @extend %regularText;
-        font-size: 13px;
-      }
-      .removeOption {
-        @extend %regularText;
-        color: var(--theme-input-remove-color-light);
-        font-size: 13px;
-      }
-      li:hover {
-        .normalOption {
-          color: var(--theme-staking-dropdown-item-text-color-hover);
-        }
-      }
-
-      .gearIcon {
-        cursor: pointer;
-
-        svg {
-          height: 12px;
-          width: 12px;
-
-          path {
-            fill: var(--theme-staking-delegation-center-gear-icon-fill-color);
-          }
-        }
-      }
+      margin-bottom: 7px;
 
       :global {
-        .SimpleSelect_isOpen {
-          .WalletRow_gearIcon {
-            svg {
-              path {
-                fill: var(
-                  --theme-staking-delegation-center-gear-icon-fill-color-active
+        .SimpleTooltip_root {
+          margin-right: 0;
+        }
+      }
+
+      .ticker {
+        background-color: var(
+          --theme-staking-wallet-row-ticker-background-color
+        );
+        border-radius: 2px;
+        color: var(--theme-staking-wallet-row-ticker-text-color);
+        font-family: var(--font-semibold);
+        font-size: 11px;
+        line-height: 14px;
+        padding: 3px 8px;
+        position: relative;
+        text-transform: uppercase;
+
+        .activeAdaSymbol {
+          svg {
+            height: 10px;
+            margin-bottom: -1.5px;
+            margin-right: 8px;
+            width: 9px;
+
+            & > g {
+              & > g {
+                stroke: var(
+                  --theme-staking-wallet-row-ticker-ada-icon-fill-color
                 );
               }
             }
           }
         }
+      }
 
-        .SimpleSelect_select {
-          &:hover {
-            .WalletRow_gearIcon {
-              svg {
-                path {
-                  fill: var(
-                    --theme-staking-delegation-center-gear-icon-fill-color-active
-                  );
-                }
-              }
+      .tooltipLabelWrapper {
+        font-family: var(--font-regular);
+        font-size: 13px;
+        text-transform: initial;
+      }
+    }
+
+    .status,
+    .action {
+      .unknown {
+        font-family: var(--font-bold);
+        text-transform: initial;
+      }
+    }
+
+    .action {
+      @extend %regularText;
+      font-size: 14px;
+      text-align: right;
+
+      > span {
+        display: initial !important;
+        margin-right: 0 !important;
+
+        > div {
+          bottom: calc(73% + var(--rp-bubble-distance, 14px));
+
+          > div {
+            font-size: 13px;
+            left: -30px !important;
+            min-width: 200px !important;
+            padding: 4px 12px;
+            text-align: right !important;
+            white-space: normal !important;
+
+            > span:after {
+              left: calc(
+                100% -
+                  calc(
+                    var(
+                        --rp-bubble-arrow-width,
+                        calc(2 * var(--rp-bubble-arrow-size, 10px))
+                      ) - 2px
+                  ) / 2 - 1px
+              ) !important;
             }
           }
         }
       }
     }
-    .action {
-      @extend %regularText;
-      font-size: 14px;
+
+    .undelegateActions {
+      opacity: 0;
+      transition: opacity 0.15s ease-in;
     }
+
     .stakePoolRankingIndicator {
       border-radius: 2px;
       height: 100%;
       transform: translate(20px);
       width: 4px;
     }
+
+    .sandClockIcon {
+      svg {
+        height: 12px;
+        margin-bottom: -1px;
+        margin-right: 4px;
+        width: 12px;
+
+        path {
+          fill: var(
+            --theme-staking-delegation-center-gear-icon-fill-color-active
+          );
+        }
+      }
+    }
   }
 
-  b,
-  .actionLink {
-    color: var(--theme-staking-link-color);
+  b {
+    color: var(--theme-link-main-color);
     cursor: pointer;
+  }
+
+  .actionDelegate {
+    color: var(--theme-staking-wallet-row-action-delegate-text-color);
+    cursor: pointer;
+  }
+
+  .actionUndelegate {
+    color: var(--theme-staking-wallet-row-action-undelegate-text-color);
+    cursor: pointer;
+  }
+
+  :global {
+    .LoadingSpinner_component.LoadingSpinner_medium {
+      margin-top: 10px;
+    }
+  }
+
+  .arrow {
+    height: 7px;
+    margin: -2px 6px 0;
+    opacity: 0.3;
+    position: relative;
+    width: 3.5px;
+    > svg {
+      height: 3.5px;
+      transform: rotate(90deg) translate(-11px, 2px);
+      path {
+        stroke: var(--theme-staking-font-color-regular);
+      }
+    }
   }
 }

@@ -1,17 +1,270 @@
 Changelog
 =========
 
-## vNext
+## 1.0.0-FC1
 
 ### Features
 
-- Added new Mainnet and Testnet icons ([PR 1717](https://github.com/input-output-hk/daedalus/pull/1717))
+- Implemented automated wallet migration ([PR 1905](https://github.com/input-output-hk/daedalus/pull/1905), [PR 1922](https://github.com/input-output-hk/daedalus/pull/1922))
+- Integrated network clock api endpoint ([PR 1918](https://github.com/input-output-hk/daedalus/pull/1918))
+- Implements the Flight release information window ([PR 1917](https://github.com/input-output-hk/daedalus/pull/1917))
+- Added new icon for Daedalus Flight ([PR 1909](https://github.com/input-output-hk/daedalus/pull/1909))
+- Integrated network parameters api endpoint ([PR 1915](https://github.com/input-output-hk/daedalus/pull/1915))
+- Implemented flight candidates changes ([PR 1908](https://github.com/input-output-hk/daedalus/pull/1908))
+- Implemented new "Flight candidate" theme ([PR 1914](https://github.com/input-output-hk/daedalus/pull/1914))
+- Implemented non-responding wallets handling ([PR 1901](https://github.com/input-output-hk/daedalus/pull/1901))
+- Added support for building both `cardano-node` and `jormungandr` installers ([PR 1894](https://github.com/input-output-hk/daedalus/pull/1894))
+- Added support for `cardano-node` "Selfnode" network ([PR 1897](https://github.com/input-output-hk/daedalus/pull/1897))
+- Enabled Byron wallet creation for Haskell node builds ([PR 1895](https://github.com/input-output-hk/daedalus/pull/1895))
+- Enabled all Mainnet Daedalus features for Byron wallets for Haskell node builds ([PR 1895](https://github.com/input-output-hk/daedalus/pull/1895))
+- Enabled changing spending password in "Wallet settings" for Haskell node builds ([PR 1902](https://github.com/input-output-hk/daedalus/pull/1902))
+- Enabled "Send" feature for Haskell node builds ([PR 1902](https://github.com/input-output-hk/daedalus/pull/1902))
+- Disabled transfer funds notification for Haskell node builds ([PR 1902](https://github.com/input-output-hk/daedalus/pull/1902))
+- Disabled Shelley wallets and delegation features for Haskell node builds ([PR 1895](https://github.com/input-output-hk/daedalus/pull/1895))
+- Disabled "Data layer migration" notification for Haskell node builds ([PR 1895](https://github.com/input-output-hk/daedalus/pull/1895))
+- Disabled "Paper wallet certificate" creation for Haskell node builds ([PR 1895](https://github.com/input-output-hk/daedalus/pull/1895))
+- Removed hardware and Shelley wallet restoration options for Haskel node builds ([PR 1895](https://github.com/input-output-hk/daedalus/pull/1895))
+- Integrated new `cardano-launcher` ([PR 1886](https://github.com/input-output-hk/daedalus/pull/1886))
+
+### Fixes
+
+- Fixed UI issues across all themes ([PR 1916](https://github.com/input-output-hk/daedalus/pull/1916))
+- Removed the click and mark from spinner component ([PR 1885](https://github.com/input-output-hk/daedalus/pull/1885))
+- Removed locale specific rules from the CSS files ([PR 1871](https://github.com/input-output-hk/daedalus/pull/1871))
+
+### Chores
+
+- Updated Daedalus name and version for the Daedalus Flight 1.0.0-FC1 release ([PR 1910](https://github.com/input-output-hk/daedalus/pull/1910))
+- Enabled "Wallet UTXO distribution" feature for Byron wallets([PR 1913](https://github.com/input-output-hk/daedalus/pull/1913))
+- Enabled Byron wallet name editing ([PR 1911](https://github.com/input-output-hk/daedalus/pull/1911))
+- Updated UI copy ([PR 1907](https://github.com/input-output-hk/daedalus/pull/1907))
+- Updated Byron Haskell address validation ([PR 1902](https://github.com/input-output-hk/daedalus/pull/1902))
+- Updated test configuration to cover Byron features only ([PR 1895](https://github.com/input-output-hk/daedalus/pull/1895))
+- Optimized e2e tests ([PR 1874](https://github.com/input-output-hk/daedalus/pull/1874))
+- Updated `react-polymorph` dependency ([PR 1882](https://github.com/input-output-hk/daedalus/pull/1882))
+- Updated small 3rd party dependencies ([PR 1877](https://github.com/input-output-hk/daedalus/pull/1877))
+- Updated React dependencies ([PR 1873](https://github.com/input-output-hk/daedalus/pull/1873))
+- Updated Storybook dependencies ([PR 1873](https://github.com/input-output-hk/daedalus/pull/1873))
+- Updated node and yarn dependencies ([PR 1883](https://github.com/input-output-hk/daedalus/pull/1883))
+- Re-enabled theme selection on the "Settings" screen ([PR 1872](https://github.com/input-output-hk/daedalus/pull/1872))
+- Implemented acceptance tests for custom number, date and time formats ([PR 1868](https://github.com/input-output-hk/daedalus/pull/1868))
+
+## 2.3.1-ITN1
+
+### Fixes
+
+- Fixed stake pool rank coloring within the stake pool tooltip ([PR 1891](https://github.com/input-output-hk/daedalus/pull/1891))
+- Fixed missing notarization on macOS installers ([PR 1890](https://github.com/input-output-hk/daedalus/pull/1890))
+- Fixed issues with loading stake pools on the "Stake pools" screen ([PR 1888](https://github.com/input-output-hk/daedalus/pull/1888))
+
+### Chores
+
+- Updated `cardano-wallet` to version `2020-03-16` which includes Jormungandr 0.8.14 ([PR 1888](https://github.com/input-output-hk/daedalus/pull/1888))
+
+## 2.3.0-ITN1
+
+### Fixes
+
+- Fixed "Decentralization countdown" Storybook story ([PR 1863](https://github.com/input-output-hk/daedalus/pull/1863))
+
+### Chores
+
+- Implemented acceptance tests for "Rewards" screen ([PR 1861](https://github.com/input-output-hk/daedalus/pull/1861))
+- Updated test environment dependencies ([PR 1867](https://github.com/input-output-hk/daedalus/pull/1867))
+- Updated `Flow` and `ESLint` dependencies ([PR 1866](https://github.com/input-output-hk/daedalus/pull/1866))
+- Updated `husky` dependency ([PR 1865](https://github.com/input-output-hk/daedalus/pull/1865))
+- Updated `stylelint` and `stylelint-order` dependencies ([PR 1864](https://github.com/input-output-hk/daedalus/pull/1864))
+- Updated `cardano-wallet` to version `2020-03-03` which includes Jormungandr 0.8.13 ([PR 1870](https://github.com/input-output-hk/daedalus/pull/1870))
+
+## 2.2.0-ITN1
+
+### Features
+
+- Added "block-0" to the installers in order to speed up the initial bootstrap phase ([PR 1857](https://github.com/input-output-hk/daedalus/pull/1857))
+- Implemented transactions filtering dialog on wallet "Transactions" screen ([PR 1815](https://github.com/input-output-hk/daedalus/pull/1815))
+
+### Fixes
+
+- Fixed pending delegation preferences handling ([PR 1856](https://github.com/input-output-hk/daedalus/pull/1856))
+
+### Chores
+
+- Implemented unit tests for scrambling and unscrambling mnemonics ([PR 1849](https://github.com/input-output-hk/daedalus/pull/1849))
+- Implemented acceptance tests for wallet delegation ([PR 1814](https://github.com/input-output-hk/daedalus/pull/1814))
+- Improved loading state of the "Stake pools" screen ([PR 1814](https://github.com/input-output-hk/daedalus/pull/1814))
+- Updated `cardano-wallet` to version `2020-02-17` ([PR 1856](https://github.com/input-output-hk/daedalus/pull/1856))
+- Updated `cardano-wallet` to revision `573a7038` ([PR 1862](https://github.com/input-output-hk/daedalus/pull/1862))
+
+## 2.1.0-ITN1
+
+### Features
+
+- Added stake pools saturation info and ordering based on desirability ([PR 1826](https://github.com/input-output-hk/daedalus/pull/1826))
+- Implemented "Resync wallet" feature ([PR 1822](https://github.com/input-output-hk/daedalus/pull/1822))
+- Implemented "Hardware wallets" restoration ([PR 1801](https://github.com/input-output-hk/daedalus/pull/1801))
+- Implemented "Yoroi wallets" restoration ([PR 1740](https://github.com/input-output-hk/daedalus/pull/1740))
+- Implemented new menu shortcuts ([PR 1780](https://github.com/input-output-hk/daedalus/pull/1780))
+- Implemented React-Polymorph "Link" component ([PR 1799](https://github.com/input-output-hk/daedalus/pull/1799))
+- Implemented a spinner on Wallet delegation screens for wallets in the restoration process ([PR 1847](https://github.com/input-output-hk/daedalus/pull/1847))
+- Implemented experimental data UI ([PR 1845](https://github.com/input-output-hk/daedalus/pull/1845), [PR 1850](https://github.com/input-output-hk/daedalus/pull/1850))
+- Implemented pending delegation preferences ([PR 1842](https://github.com/input-output-hk/daedalus/pull/1842))
+- Renamed "Profit margin" into "Pool margin" on the stake pool tooltip ([PR 1841](https://github.com/input-output-hk/daedalus/pull/1841))
+
+### Fixes
+
+- Fixed a routing issue after wallet deletion ([PR 1823](https://github.com/input-output-hk/daedalus/pull/1823))
+- Fixed a typo on the "Staking pools" screen ([PR 1785](https://github.com/input-output-hk/daedalus/pull/1785))
+- Fixed a typo in the Daedalus ITN "Terms of Service" ([PR 1809](https://github.com/input-output-hk/daedalus/pull/1809))
+- Fixed handling of duplicated wallet IDs when restoring Yoroi Balance and Rewards wallets from the same wallet recovery phrase ([PR 1805](https://github.com/input-output-hk/daedalus/pull/1805))
+- Fixed stake pool descriptions text clipping on stake pool tooltip ([PR 1832](https://github.com/input-output-hk/daedalus/pull/1832))
+- Fixed "Low disk space" notification not being shown for Incentivized testnet ([PR 1833](https://github.com/input-output-hk/daedalus/pull/1833))
+- Fixed download logs link underline color ([PR 1831](https://github.com/input-output-hk/daedalus/pull/1831))
+
+### Chores
+
+- Improved notification display ([PR 1748](https://github.com/input-output-hk/daedalus/pull/1748))
+- Improved delete wallet text copy ([PR 1819](https://github.com/input-output-hk/daedalus/pull/1819))
+- Improved the paper wallet recovery phrase validation ([PR 1818](https://github.com/input-output-hk/daedalus/pull/1818))
+- Improved network screen with responsive main copy box ([PR 1797](https://github.com/input-output-hk/daedalus/pull/1797))
+- Updated checkboxes, radio buttons and switchers sizes and borders ([PR 1793](https://github.com/input-output-hk/daedalus/pull/1793))
+- Updated `cardano-wallet` to revision `b89cfa19` which includes Jormungandr 0.8.9 ([PR 1834](https://github.com/input-output-hk/daedalus/pull/1834))
+- Updated `cardano-wallet` to revision `23e12d1a` which includes Jormungandr 0.8.7 ([PR 1828](https://github.com/input-output-hk/daedalus/pull/1828))
+- Updated `cardano-wallet` to revision `d188a5fc` ([PR 1825](https://github.com/input-output-hk/daedalus/pull/1825))
+- Updated `cardano-wallet` to revision `e6316404` ([PR 1826](https://github.com/input-output-hk/daedalus/pull/1826))
+- Updated `cardano-wallet` to revision `254575e4` which includes Jormungandr 0.8.6 ([PR 1821](https://github.com/input-output-hk/daedalus/pull/1821))
+- Updated `cardano-wallet` to revision `132a5faf` ([PR 1740](https://github.com/input-output-hk/daedalus/pull/1740))
+- Improved GitHub pull request template ([PR 1843](https://github.com/input-output-hk/daedalus/pull/1843))
+- Removed unused locales and translation files ([PR 1840](https://github.com/input-output-hk/daedalus/pull/1840))
+- Improved acceptance tests setup with "rerun" feature ([PR 1835](https://github.com/input-output-hk/daedalus/pull/1835)
+- Implemented acceptance tests for Daedalus Balance wallets ([PR 1816](https://github.com/input-output-hk/daedalus/pull/1816), [PR 1828](https://github.com/input-output-hk/daedalus/pull/1828))
+- Implemented acceptance tests for stake pools loading ([PR 1820](https://github.com/input-output-hk/daedalus/pull/1820))
+- Bumped cardano-wallet dependecy to 4ea622c694768bf61bd5c9d04a6e59fe1de3fd53 ([PR 1851](https://github.com/input-output-hk/daedalus/pull/1851))
+
+## 2.0.0-ITN1
+
+### Features
+
+- Added stake pool metadata registry for "SelfNode" network ([PR 1771](https://github.com/input-output-hk/daedalus/pull/1771/))
+- Added list stake pools API endpoint errors handlers ([PR 1765](https://github.com/input-output-hk/daedalus/pull/1765))
+- Added "Terms of use" for the Incentivized Testnet v1 - Rewards network ([PR 1741](https://github.com/input-output-hk/daedalus/pull/1741))
+- Updated stake pool ranking logic to use `apparent_performance` from the Api response ([PR 1757](https://github.com/input-output-hk/daedalus/pull/1757))
+- Integrated V2 API endpoint for join/quit fee estimation ([PR 1752](https://github.com/input-output-hk/daedalus/pull/1752))
+- Integrated stake pool join V2 API endpoint and "Delegation" wizard updated ([PR 1744](https://github.com/input-output-hk/daedalus/pull/1744))
+- Integrated the V2 API endpoint for fetching stake pool data ([PR 1733](https://github.com/input-output-hk/daedalus/pull/1733))
+- Integrated stake pool Quit V2 API endpoint and added "Undelegate" dialog ([PR 1737](https://github.com/input-output-hk/daedalus/pull/1737))
+- Added support for new number formats to the React-Polymorph "Numeric input" on the "Send" screen ([PR 1735](https://github.com/input-output-hk/daedalus/pull/1735))
+- Added script which checks for "integrity" lines in yarn.lock file ([PR 1715](https://github.com/input-output-hk/daedalus/pull/1715))
+- Added new Mainnet and Testnet icons ([PR 1716](https://github.com/input-output-hk/daedalus/pull/1716))
+- Added number of pending transactions to “Wallet Summary” screen ([PR 1705](https://github.com/input-output-hk/daedalus/pull/1705))
+
+### Fixes
+
+- Fixed undelegation issue ([PR 1774](https://github.com/input-output-hk/daedalus/pull/1774))
+- Fixed the display of headlines on the "Network" splash screen ([PR 1770](https://github.com/input-output-hk/daedalus/pull/1770))
+- Fixed spending password error handling ([PR 1767](https://github.com/input-output-hk/daedalus/pull/1767))
+- Fixed an issue where "Balance" wallet notification wasn't offering an option to create a "Rewards" wallet in case none are available ([PR 1761](https://github.com/input-output-hk/daedalus/pull/1761))
+- Fixed the middle ellipsis for different addresses lengths ([PR 1736](https://github.com/input-output-hk/daedalus/pull/1736))
+- Fixed missing "hamburger" icon on wallet menu while there are only legacy wallets in the UI ([PR 1730](https://github.com/input-output-hk/daedalus/pull/1730))
+- Fixed issues with wrong transaction amounts when new number formats are used ([PR 1726](https://github.com/input-output-hk/daedalus/pull/1726))
+- Fixed naming of labels on "Daedalus Diagnostics" screen and status icons on "Loading" screen from "Node..." to "Cardano node..." ([PR 1723](https://github.com/input-output-hk/daedalus/pull/1723))
+- Adjusted the Stake pool logic for ranking color to account for the total number of stake pools ([PR 1719](https://github.com/input-output-hk/daedalus/pull/1719))
+- Fixed styling issues on the "Network info" overlay on all the themes ([PR 1708](https://github.com/input-output-hk/daedalus/pull/1708))
+- Fixed read newsfeed items ID duplication in local storage ([PR 1710](https://github.com/input-output-hk/daedalus/pull/1710))
+- Fixed the `themes:check:createTheme` script and updated the `createTheme` object ([PR 1709](https://github.com/input-output-hk/daedalus/pull/1709))
+- Fixed disabled button background color on all of the themes ([PR 1707](https://github.com/input-output-hk/daedalus/pull/1707))
+- Fixed select language e2e tests ([PR 1702](https://github.com/input-output-hk/daedalus/pull/1702))
+- Fixed yellow frame around the "Diagnostics" dialog ([PR 1699](https://github.com/input-output-hk/daedalus/pull/1699))
+- Fixed the Japanese translation for `timeAgo` in "Wallet settings" stories ([PR 1701](https://github.com/input-output-hk/daedalus/pull/1701))
+
+### Chores
+
+- Updated newsfeed ([PR 1786](https://github.com/input-output-hk/daedalus/pull/1786))
+- Changed Incentivized TestNet "Having trouble syncing" URL to point to one specific to TestNet ([PR 1795](https://github.com/input-output-hk/daedalus/pull/1795))
+- Updated `cardano-wallet` to revision `d3d93ba3` ([PR 1784](https://github.com/input-output-hk/daedalus/pull/1784))
+- Updated `cardano-wallet` to revision `e341d288` ([PR 1779](https://github.com/input-output-hk/daedalus/pull/1779))
+- Reduced stake pools fetching interval to 1 minute ([PR 1779](https://github.com/input-output-hk/daedalus/pull/1779))
+- Updated `cardano-wallet` to version `2019.12.13` ([PR 1775](https://github.com/input-output-hk/daedalus/pull/1775))
+- Updated stake pool details tooltip with profit margin & cost ([PR 1773](https://github.com/input-output-hk/daedalus/pull/1773), [PR 1779](https://github.com/input-output-hk/daedalus/pull/1779))
+- Updated `react-polymorph` to version `0.9.0-rc.26` ([PR 1772](https://github.com/input-output-hk/daedalus/pull/1772))
+- Updated wallet delegation / undelegation ([PR 1766](https://github.com/input-output-hk/daedalus/pull/1766))
+- Updated `webpack` package to version `4.39.1` ([PR 1769](https://github.com/input-output-hk/daedalus/pull/1769))
+- Improved "Delegration Center" epoch countdown to use epoch info from the Api ([PR 1751](https://github.com/input-output-hk/daedalus/pull/1751))
+- Updated `cardano-wallet` to revision `555b5e82` ([PR 1764](https://github.com/input-output-hk/daedalus/pull/1764))
+- Updated rewards screen note and learn more button style ([PR 1760](https://github.com/input-output-hk/daedalus/pull/1760))
+- Updated message for current stake pool being selected ([PR 1758](https://github.com/input-output-hk/daedalus/pull/1758))
+- Updated "Delegation" UI Support portal article URLs ([PR 1759](https://github.com/input-output-hk/daedalus/pull/1759))
+- Updated `serialize-javascript` package dependency ([PR 1756](https://github.com/input-output-hk/daedalus/pull/1756))
+- Updated minimum amount of ada for delegation to be available ([PR 1753](https://github.com/input-output-hk/daedalus/pull/1753))
+- Enabled "Delegation" UI in Daedalus builds ([PR 1750](https://github.com/input-output-hk/daedalus/pull/1750))
+- Updated `cardano-wallet` to revision `d4571952` which includes Jormungandr 0.8.0-rc8 ([PR 1749](https://github.com/input-output-hk/daedalus/pull/1749))
+- Improved the unit and e2e test setup ([PR 1743](https://github.com/input-output-hk/daedalus/pull/1743))
+- Updated to react-polymorph@0.9.0-rc.25 which includes a theme var for checkbox icon color (([PR 1742](https://github.com/input-output-hk/daedalus/pull/1742)))
+- Updated `cardano-wallet` to revision `833f9d4e` which includes Jormungandr 0.8.0-rc7 ([PR 1739](https://github.com/input-output-hk/daedalus/pull/1739))
+- Updated stake header info component and adds new information with the countdown timer for next epoch ([PR 1729](https://github.com/input-output-hk/daedalus/pull/1729))
+- Removed "StakePool" from Wallet domain ([PR 1738](https://github.com/input-output-hk/daedalus/pull/1738))
+- Refactored wallet navigation to use new React-Polymorph Dropdown component ([PR 1593](https://github.com/input-output-hk/daedalus/pull/1593))
+- Improved error messages on the "Send" screen ([PR 1724](https://github.com/input-output-hk/daedalus/pull/1724))
+- Improved menu items while adding external link icon on menu items which open external links ([PR 1727](https://github.com/input-output-hk/daedalus/pull/1727), [PR 1728](https://github.com/input-output-hk/daedalus/pull/1728))
+- Updated `cardano-js` package to version 0.2.2 and improved address validation ([PR 1712](https://github.com/input-output-hk/daedalus/pull/1712))
+- Removed unused dependencies ([PR 1706](https://github.com/input-output-hk/daedalus/pull/1706))
+- Improved the error message shown on the "Change password" dialog when too short current password is submitted ([PR 1703](https://github.com/input-output-hk/daedalus/pull/1703))
+
+## 1.1.0-ITN0
+
+### Features
+
+- Implemented the new Wallet Receive screen ([PR 1700](https://github.com/input-output-hk/daedalus/pull/1700))
+- Added Japanese "Terms of use" text ([PR 1691](https://github.com/input-output-hk/daedalus/pull/1691))
+
+### Fixes
+
+- Fixed Wallet name length UI issues on smaller screen sizes ([PR 1689](https://github.com/input-output-hk/daedalus/pull/1689))
+- Fixed "Number of words in your recovery phrase" default state on "Restore a wallet" dialog ([PR 1692](https://github.com/input-output-hk/daedalus/pull/1692))
+- Fixed "Verify wallet recovery phrase" button text vertical centering ([PR 1693](https://github.com/input-output-hk/daedalus/pull/1693))
+- Disabled "Latest version check" call and fixed "Legacy" wallet ordering after wallet restoration ([PR 1690](https://github.com/input-output-hk/daedalus/pull/1690))
+- Increased Sync and Report sync-issue threshold to 10 mins ([PR 1697](https://github.com/input-output-hk/daedalus/pull/1697))
+
+### Chores
+
+- Bumped Daedalus version to "1.1.0-ITN0" ([PR 1695](https://github.com/input-output-hk/daedalus/pull/1695))
+
+## 1.0.0-ITN0
+
+### Features
+
+- Added the Cardano Explorer URL's for ITN ([PR 1674](https://github.com/input-output-hk/daedalus/pull/1674))
+- Hide legacy wallet notification during wallet restoration / syncing ([PR 1667](https://github.com/input-output-hk/daedalus/pull/1667))
+- Implemented the necessary UI changes for the Incentivized Testnet network ([PR 1657](https://github.com/input-output-hk/daedalus/pull/1657))
+- Implemented syncing and connecting screens for the Incentivized Testnet network ([PR 1673](https://github.com/input-output-hk/daedalus/pull/1673))
+- Implemented cancel pending transaction V2 API endpoint and UI for legacy wallets ([PR 1651](https://github.com/input-output-hk/daedalus/pull/1651))
+- Implemented cancel pending transaction V2 API endpoint and UI ([PR 1633](https://github.com/input-output-hk/daedalus/pull/1633))
+- Implemented "Transfer funds" wizard for Incentivized Testnet version of Daedalus ([PR 1634](https://github.com/input-output-hk/daedalus/pull/1634), [PR 1659](https://github.com/input-output-hk/daedalus/pull/1659), [PR 1660](https://github.com/input-output-hk/daedalus/pull/1660))
+- Implemented "Network info" overlay ([PR 1655](https://github.com/input-output-hk/daedalus/pull/1655), [PR 1676](https://github.com/input-output-hk/daedalus/pull/1676))
+- Disable "Manual update" notification for Incentivized Testnet version of Daedalus ([PR 1652](https://github.com/input-output-hk/daedalus/pull/1652))
+- Update rewards screen for incentivized testnet ([PR 1643](https://github.com/input-output-hk/daedalus/pull/1643))
+- Implement restoration of both 12 and 15 mnemonic words phrases in Wallet Restore dialog ([PR 1629](https://github.com/input-output-hk/daedalus/pull/1629))
+- Replace sidebar "Bug-report" icon with a "Network" badge ([PR 1622](https://github.com/input-output-hk/daedalus/pull/1622))
+- Implemented "Spending password" as required parameter for Cardano V2 API ([PR 1631](https://github.com/input-output-hk/daedalus/pull/1631))
+- Implemented "Incentivized Testnet" theme for Incentivized Testnet version of Daedalus ([PR 1620](https://github.com/input-output-hk/daedalus/pull/1620))
+- Removed "Decentralization countdown", "Decentralization info", and "Staking epochs" screens for Incentivized Testnet Daedalus version ([PR 1625](https://github.com/input-output-hk/daedalus/pull/1625))
+- Implemented address validator ([PR 1609](https://github.com/input-output-hk/daedalus/pull/1609), [PR 1618](https://github.com/input-output-hk/daedalus/pull/1618))
+- Add "frontend-only" mode utility that has no dependency on nix ([PR 1583](https://github.com/input-output-hk/daedalus/pull/1583))
+- Added Jormungandr support for Cardano V2 API ([PR 1567](https://github.com/input-output-hk/daedalus/pull/1567)
+- Integrated Cardano V2 API endpoints ([PR 1548](https://github.com/input-output-hk/daedalus/pull/1548), [PR 1551](https://github.com/input-output-hk/daedalus/pull/1551), [PR 1552](https://github.com/input-output-hk/daedalus/pull/1552), [PR 1553](https://github.com/input-output-hk/daedalus/pull/1553), [PR 1555](https://github.com/input-output-hk/daedalus/pull/1555), [PR 1556](https://github.com/input-output-hk/daedalus/pull/1556), [PR 1557](https://github.com/input-output-hk/daedalus/pull/1557), [PR 1558](https://github.com/input-output-hk/daedalus/pull/1558), [PR 1559](https://github.com/input-output-hk/daedalus/pull/1559), [PR 1560](https://github.com/input-output-hk/daedalus/pull/1560), [PR 1575](https://github.com/input-output-hk/daedalus/pull/1575), [PR 1577](https://github.com/input-output-hk/daedalus/pull/1577), [PR 1579](https://github.com/input-output-hk/daedalus/pull/1579), [PR 1604](https://github.com/input-output-hk/daedalus/pull/1604), [PR 1613](https://github.com/input-output-hk/daedalus/pull/1613), [PR 1637](https://github.com/input-output-hk/daedalus/pull/1637), [PR 1639](https://github.com/input-output-hk/daedalus/pull/1639), [PR 1641](https://github.com/input-output-hk/daedalus/pull/1641))
 - Add internal link support in newsfeed items and verification hash generator script ([PR 1617](https://github.com/input-output-hk/daedalus/pull/1617))
 - Implemented date, time and number format user options ([PR 1611](https://github.com/input-output-hk/daedalus/pull/1611))
 
 ### Chores
 
-- Refactor wallet nav to use new react-polymorph Dropdown ([PR 1593](https://github.com/input-output-hk/daedalus/pull/1593))
+- Daedalus copy updates for Incentivized Testnet - Balance check ([PR 1680](https://github.com/input-output-hk/daedalus/pull/1680))
+- Added "Terms of use" for Incentivized Testnet version of Daedalus ([PR 1664](https://github.com/input-output-hk/daedalus/pull/1664))
+- Added Legacy Wallet UI changes ([PR 1647](https://github.com/input-output-hk/daedalus/pull/1647))
+- Removed wallet recovery phrase verification feature for Incentivized Testnet version of Daedalus ([PR 1645](https://github.com/input-output-hk/daedalus/pull/1645))
+- Changed wallet restoration notification message ([PR 1644](https://github.com/input-output-hk/daedalus/pull/1644))
+- Removed parallel wallet restoration limitation ([PR 1638](https://github.com/input-output-hk/daedalus/pull/1638))
+- Disabled create a paper wallet certificate feature ([PR 1640](https://github.com/input-output-hk/daedalus/pull/1640))
+- Removed all notions of account indexes from the codebase ([PR 1614](https://github.com/input-output-hk/daedalus/pull/1614))
+- Removed "Block consolidation status" dialog ([PR 1610](https://github.com/input-output-hk/daedalus/pull/1610))
 - Fixed build mode of webpack auto dll plugin ([PR 1606](https://github.com/input-output-hk/daedalus/pull/1606))
 - Changed delete wallet button layout for emphasized location/importance and removed export wallet feature ([PR 1612](https://github.com/input-output-hk/daedalus/pull/1612), [PR 1619](https://github.com/input-output-hk/daedalus/pull/1619))
 - Speedup storybook builds in development ([PR 1607](https://github.com/input-output-hk/daedalus/pull/1607))
@@ -22,6 +275,9 @@ Changelog
 
 ### Fixes
 
+- Fixed incentivized testnet theme ([PR 1677](https://github.com/input-output-hk/daedalus/pull/1677), [PR 1684](https://github.com/input-output-hk/daedalus/pull/1684))
+- Fixed wrong "Jormugandr" process name ([PR 1669](https://github.com/input-output-hk/daedalus/pull/1669))
+- Fixed paper wallet certificate restoration ([PR 1055](https://github.com/input-output-hk/daedalus/pull/1055))
 - Reduce layout re-renderings ([PR 1595](https://github.com/input-output-hk/daedalus/pull/1595))
 - Fixed green Cardano theme white color and borders color ([PR 1584](https://github.com/input-output-hk/daedalus/pull/1584))
 - Fixed flat button color  ([PR 1586](https://github.com/input-output-hk/daedalus/pull/1586))
@@ -36,8 +292,8 @@ Changelog
 
 ### Features
 
-- Implemented "Newsfeed" feature ([PR 1570](https://github.com/input-output-hk/daedalus/pull/1570), [PR 1578](https://github.com/input-output-hk/daedalus/pull/1578), [PR 1580](https://github.com/input-output-hk/daedalus/pull/1580))
-- Implemented "Wallet recovery phrase verification" feature ([PR 1565](https://github.com/input-output-hk/daedalus/pull/1565), [PR 1623](https://github.com/input-output-hk/daedalus/pull/1623))
+- Implemented "Newsfeed" feature ([PR 1570](https://github.com/input-output-hk/daedalus/pull/1570))
+- Implemented "Wallet recovery phrase verification" feature ([PR 1565](https://github.com/input-output-hk/daedalus/pull/1565))
 - Implemented new "Automated update" notification design ([PR 1491](https://github.com/input-output-hk/daedalus/pull/1491))
 - Improved "Wallets" list scrollbar UX ([PR 1475](https://github.com/input-output-hk/daedalus/pull/1475))
 - Removed "Ada Redemption" feature ([PR 1510](https://github.com/input-output-hk/daedalus/pull/1510))

@@ -6,10 +6,10 @@ import classnames from 'classnames';
 import SVGInline from 'react-svg-inline';
 import styles from './Address.scss';
 import iconCopy from '../../../assets/images/clipboard-ic.inline.svg';
-import type { Address as AddressType } from '../../../api/addresses/types';
+import WalletAddress from '../../../domains/WalletAddress';
 
 type Props = {
-  address: AddressType,
+  address: WalletAddress,
   onCopyAddress: Function,
   copyAddressLabel: Function,
   index: number,

@@ -1,28 +1,20 @@
-{ lib, pkgs, nodejs-8_x, python, api, apiVersion, cluster, buildNum, nukeReferences, fetchzip, daedalus, stdenv, win64 ? false, wine, runCommand, fetchurl }:
+{ lib, pkgs, nodejs-12_x, python, api, apiVersion, cluster, buildNum, nukeReferences, fetchzip, daedalus, stdenv, win64 ? false, wine, runCommand, fetchurl, spacedName, iconPath, launcherConfig }:
 let
-  nodejs = nodejs-8_x;
+  cluster' = launcherConfig.networkName;
+  nodejs = nodejs-12_x;
   yarn2nix = import (fetchzip {
     url = "https://github.com/moretea/yarn2nix/archive/v1.0.0.tar.gz";
     sha256 = "02bzr9j83i1064r1r34cn74z7ccb84qb5iaivwdplaykyyydl1k8";
-  }) { inherit pkgs nodejs; };
-  # TODO: these hard-coded values will go away when wallet port
-  # selection happens at runtime.
-  walletPortMap = {
-    mainnet = 8090;
-    staging = 8092;
-    testnet = 8094;
+  }) {
+    inherit pkgs nodejs;
+    yarn = pkgs.yarn.override { inherit nodejs; };
   };
   dotGitExists = builtins.pathExists ./.git;
   isNix2 = 0 <= builtins.compareVersions builtins.nixVersion "1.12";
   canUseFetchGit = dotGitExists && isNix2;
   origPackage = builtins.fromJSON (builtins.readFile ./package.json);
-  nameTable = {
-    mainnet = "Daedalus";
-    staging = "Daedalus Staging";
-    testnet = "Daedalus Testnet";
-  };
   newPackage = (origPackage // {
-    productName = nameTable.${if cluster == null then "testnet" else cluster};
+    productName = spacedName;
   }) // lib.optionalAttrs (win64 == false) {
     main = "main/index.js";
   };
@@ -62,8 +54,7 @@ yarn2nix.mkYarnPackage {
   API = api;
   API_VERSION = apiVersion;
   CI = "nix";
-  NETWORK = cluster;
-  WALLET_PORT = walletPortMap.${cluster};
+  NETWORK = cluster';
   BUILD_NUMBER = "${toString buildNum}";
   NODE_ENV = "production";
   extraBuildInputs = if win64 then [ wine nukeReferences ] else [ nukeReferences ];
@@ -77,11 +68,12 @@ yarn2nix.mkYarnPackage {
       done
     '';
   in if win64 then ''
-    cp ${daedalus.cfg}/etc/launcher-config.yaml ./launcher-config.yaml
     export ELECTRON_CACHE=${electron-cache}
     mkdir home
     export HOME=$(realpath home)
     cp ${newPackagePath} package.json
+    mkdir -p installers/icons/${cluster}/${cluster}
+    cp ${iconPath.base}/* installers/icons/${cluster}/${cluster}/
     yarn --offline package --win64 --icon installers/icons/${cluster}/${cluster}
     ls -ltrh release/win32-x64/Daedalus*-win32-x64/
     cp -r release/win32-x64/Daedalus*-win32-x64 $out
@@ -90,7 +82,6 @@ yarn2nix.mkYarnPackage {
     popd
     rm -rf $out/resources/app/{installers,launcher-config.yaml,gulpfile.js,home}
   '' else ''
-    cp -v ${daedalus.cfg}/etc/launcher-config.yaml ./launcher-config.yaml
     yarn --offline run build
     mkdir -p $out/bin $out/share/daedalus
     cp -R dist/* $out/share/daedalus

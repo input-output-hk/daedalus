@@ -55,6 +55,7 @@ fast_impure=
 verbose=true
 build_id=0
 test_installer=
+code_signing_config=
 signing_config=
 
 # Parallel build options for Buildkite agents only
@@ -95,6 +96,10 @@ if test -n "${verbose}"
 then set -x
 fi
 
+if [ -f /var/lib/buildkite-agent/code-signing-config.json ]; then
+  code_signing_config="--code-signing-config /var/lib/buildkite-agent/code-signing-config.json"
+fi
+
 if [ -f /var/lib/buildkite-agent/signing-config.json ]; then
   signing_config="--signing-config /var/lib/buildkite-agent/signing-config.json"
 fi
@@ -119,13 +124,17 @@ upload_artifacts_public() {
 }
 
 # Build/get cardano bridge which is used by make-installer
-DAEDALUS_BRIDGE=$(nix-build --no-out-link -A daedalus-bridge)
+echo '~~~ Prebuilding cardano bridge'
+CARDANO_BRIDGE=$(nix-build --no-out-link -A daedalus-bridge --argstr nodeImplementation cardano)
+echo '~~~ Prebuilding jormungandr bridge'
+JORMUNGANDR_BRIDGE=$(nix-build --no-out-link -A daedalus-bridge --argstr nodeImplementation jormungandr)
+
+itnClusters="$(< "$(nix-build --no-out-link -A itnClustersFile)")"
 
 pushd installers
     echo '~~~ Prebuilding dependencies for cardano-installer, quietly..'
     $nix_shell ../default.nix -A daedalus-installer --run true || echo "Prebuild failed!"
     echo '~~~ Building the cardano installer generator..'
-    INSTALLER=$(nix-build -j 2 --no-out-link ../ -A daedalus-installer)
 
     for cluster in ${CLUSTERS}
     do
@@ -134,25 +143,34 @@ pushd installers
           APP_NAME="csl-daedalus"
           rm -rf "${APP_NAME}"
 
-          INSTALLER_CMD=("$INSTALLER/bin/make-installer"
+          if [[ "$itnClusters" == "$cluster" ]]; then
+            BRIDGE_FLAG="--jormungandr ${JORMUNGANDR_BRIDGE}"
+          else
+            BRIDGE_FLAG="--cardano ${CARDANO_BRIDGE}"
+          fi
+
+          INSTALLER_CMD=("make-installer"
                          "${test_installer}"
+                         "${code_signing_config}"
                          "${signing_config}"
-                         "  --cardano          ${DAEDALUS_BRIDGE}"
+                         "${BRIDGE_FLAG}"
                          "  --build-job        ${build_id}"
                          "  --cluster          ${cluster}"
                          "  --out-dir          ${APP_NAME}")
+          nix-build .. -A launcherConfigs.configFiles --argstr os macos64 --argstr cluster "${cluster}" -o cfg-files
+          cp -v cfg-files/* .
+          chmod -R +w .
+          echo '~~~   Running make-installer in nix-shell'
           $nix_shell ../shell.nix -A buildShell --run "${INSTALLER_CMD[*]}"
 
           if [ -d ${APP_NAME} ]; then
                   if [ -n "${BUILDKITE_JOB_ID:-}" ]
                   then
-                          echo "~~~ Uploading the installer package.."
+                          echo "~~~   Uploading the installer package.."
                           export PATH=${BUILDKITE_BIN_PATH:-}:$PATH
                           upload_artifacts_public "${APP_NAME}/*"
                           mv "launcher-config.yaml" "launcher-config-${cluster}.macos64.yaml"
-                          mv "wallet-topology.yaml" "wallet-topology-${cluster}.macos64.yaml"
                           upload_artifacts "launcher-config-${cluster}.macos64.yaml"
-                          upload_artifacts "wallet-topology-${cluster}.macos64.yaml"
                           rm -rf "${APP_NAME}"
                   fi
           else

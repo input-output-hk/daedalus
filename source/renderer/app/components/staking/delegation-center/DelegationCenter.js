@@ -1,27 +1,60 @@
 // @flow
 import React, { Component, Fragment } from 'react';
 import { observer } from 'mobx-react';
-import BigNumber from 'bignumber.js';
 import DelegationCenterHeader from './DelegationCenterHeader';
 import DelegationCenterBody from './DelegationCenterBody';
 import Wallet from '../../../domains/Wallet';
+import type {
+  NextEpoch,
+  TipInfo,
+  FutureEpoch,
+} from '../../../api/network/types';
 
 type Props = {
-  adaValue: BigNumber,
-  percentage: number,
   wallets: Array<Wallet>,
+  numberOfStakePools: number,
   onDelegate: Function,
+  onUndelegate: Function,
+  networkTip: ?TipInfo,
+  nextEpoch: ?NextEpoch,
+  futureEpoch: ?FutureEpoch,
+  getStakePoolById: Function,
+  isLoading: boolean,
+  currentLocale: string,
 };
 
 @observer
 export default class DelegationCenter extends Component<Props> {
   render() {
-    const { adaValue, percentage, wallets, onDelegate } = this.props;
+    const {
+      wallets,
+      numberOfStakePools,
+      onDelegate,
+      onUndelegate,
+      networkTip,
+      nextEpoch,
+      futureEpoch,
+      getStakePoolById,
+      isLoading,
+      currentLocale,
+    } = this.props;
 
     return (
       <Fragment>
-        <DelegationCenterHeader adaValue={adaValue} percentage={percentage} />
-        <DelegationCenterBody wallets={wallets} onDelegate={onDelegate} />
+        <DelegationCenterHeader
+          networkTip={networkTip}
+          nextEpoch={nextEpoch}
+          futureEpoch={futureEpoch}
+          currentLocale={currentLocale}
+        />
+        <DelegationCenterBody
+          wallets={wallets}
+          numberOfStakePools={numberOfStakePools}
+          onDelegate={onDelegate}
+          onUndelegate={onUndelegate}
+          getStakePoolById={getStakePoolById}
+          isLoading={isLoading}
+        />
       </Fragment>
     );
   }

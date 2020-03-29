@@ -29,19 +29,17 @@ export default class ChangeSpendingPasswordDialogContainer extends Component<Inj
         newPasswordValue={dialogData.newPasswordValue}
         repeatedPasswordValue={dialogData.repeatedPasswordValue}
         onSave={(values: { oldPassword: string, newPassword: string }) => {
-          const walletId = activeWallet.id;
+          const { id: walletId, isLegacy } = activeWallet;
           const { oldPassword, newPassword } = values;
           actions.walletSettings.updateSpendingPassword.trigger({
             walletId,
             oldPassword,
             newPassword,
+            isLegacy,
           });
         }}
         onCancel={() => {
           actions.dialogs.closeActiveDialog.trigger();
-          updateSpendingPasswordRequest.reset();
-        }}
-        onPasswordSwitchToggle={() => {
           updateSpendingPasswordRequest.reset();
         }}
         onDataChange={data => {

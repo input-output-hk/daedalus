@@ -9,6 +9,7 @@ import { buildRoute } from '../../utils/routing';
 import { ROUTES } from '../../routes-config';
 import type { InjectedContainerProps } from '../../types/injectedPropsType';
 import type { NavDropdownProps } from '../../components/navigation/Navigation';
+import { WalletRecoveryPhraseVerificationStatuses } from '../../stores/WalletsStore';
 
 type Props = InjectedContainerProps;
 
@@ -48,10 +49,11 @@ export default class Wallet extends Component<Props> {
   };
 
   render() {
-    const { wallets, profile, app } = this.props.stores;
-    const { currentLocale } = profile;
+    const { wallets, app } = this.props.stores;
+    const { restartNode } = this.props.actions.networkStatus;
+    const { active: activeWallet } = wallets;
 
-    if (!wallets.active) {
+    if (!activeWallet) {
       return (
         <MainLayout>
           <LoadingSpinner />
@@ -60,19 +62,20 @@ export default class Wallet extends Component<Props> {
     }
 
     const {
-      hasActiveWalletNotification,
-      isActiveWalletRestoring,
-      restoreETA,
-      restoreProgress,
-    } = wallets;
+      recoveryPhraseVerificationStatus,
+    } = wallets.getWalletRecoveryPhraseVerification(activeWallet.id);
+    const { isIncentivizedTestnet } = global;
+    const hasNotification =
+      recoveryPhraseVerificationStatus ===
+        WalletRecoveryPhraseVerificationStatuses.NOTIFICATION &&
+      !isIncentivizedTestnet;
+    const { isNotResponding, isRestoring } = activeWallet;
 
     return (
       <MainLayout>
-        {isActiveWalletRestoring ? (
+        {isRestoring ? (
           <RestoreNotification
-            currentLocale={currentLocale}
-            restoreProgress={restoreProgress}
-            restoreETA={restoreETA}
+            restoreProgress={activeWallet.restorationProgress}
           />
         ) : null}
 
@@ -80,7 +83,13 @@ export default class Wallet extends Component<Props> {
           isActiveScreen={this.isActiveScreen}
           onWalletNavItemClick={this.handleWalletNavItemClick}
           activeItem={app.currentPage}
-          hasNotification={hasActiveWalletNotification}
+          isLegacy={activeWallet.isLegacy}
+          hasNotification={hasNotification}
+          isNotResponding={isNotResponding}
+          onRestartNode={() => restartNode.trigger()}
+          onOpenExternalLink={(url: string) =>
+            this.props.stores.app.openExternalLink(url)
+          }
         >
           {this.props.children}
         </WalletWithNavigation>

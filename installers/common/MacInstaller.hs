@@ -2,10 +2,14 @@
 {-# LANGUAGE LambdaCase        #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE NamedFieldPuns   #-}
-{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE NamedFieldPuns    #-}
+{-# LANGUAGE DeriveGeneric     #-}
+{-# LANGUAGE QuasiQuotes       #-}
 
-module MacInstaller (main) where
+module MacInstaller
+  ( main
+  , readCardanoVersionFile
+  ) where
 
 ---
 --- An overview of Mac .pkg internals:    http://www.peachpit.com/articles/article.aspx?p=605381&seqNum=2
@@ -17,17 +21,20 @@ import           Control.Exception         (handle)
 import           Control.Monad             (unless)
 import           Data.Text                 (Text)
 import qualified Data.Text                 as T
-import           Data.Aeson                (FromJSON(parseJSON), decodeFileStrict', genericParseJSON, defaultOptions)
+import           Data.Aeson                (FromJSON(parseJSON), genericParseJSON, defaultOptions, decodeFileStrict')
+import           Data.Yaml                 (decodeFileThrow)
+import           Text.RawString.QQ
 import           Filesystem.Path           (FilePath, dropExtension, (<.>),
                                             (</>))
 import           Filesystem.Path.CurrentOS (encodeString)
-import           System.FilePath.Glob      (glob)
 import           System.IO                 (BufferMode (NoBuffering),
                                             hSetBuffering)
 import           System.IO.Error           (IOError, isDoesNotExistError)
 import           System.Environment        (getEnv)
+import           System.Posix.Files
 import           Turtle                    hiding (e, prefix, stdout)
 import           Turtle.Line               (unsafeTextToLine)
+
 
 import           Config
 import           RewriteLibs               (chain)
@@ -38,42 +45,54 @@ data DarwinConfig = DarwinConfig {
     dcAppNameApp :: Text -- ^ Daedalus.app for example
   , dcAppName :: Text -- ^ the Daedalus from Daedalus.app
   , dcPkgName :: Text -- ^ org.daedalus.pkg for example
+  , dcDataDir :: Text -- ^ ${HOME}/Library/Application Support/Daedalus/qa
   } deriving (Show)
 
 -- | The contract of `main` is not to produce unsigned installer binaries.
 main :: Options -> IO ()
-main opts@Options{oSigningConfigPath,oCluster,oBackend,oBuildJob,oOutputDir,oTestInstaller} = do
+main opts@Options{oCodeSigningConfigPath,oSigningConfigPath,oCluster,oBackend,oBuildJob,oOutputDir,oTestInstaller} = do
+
+  installerConfig <- decodeFileThrow "installer-config.json"
+
   hSetBuffering stdout NoBuffering
 
-  mSigningConfig <- case oSigningConfigPath of
+  mCodeSigningConfig <- case oCodeSigningConfigPath of
     Just path -> do
       decodeFileStrict' $ encodeString path
     Nothing -> do
       pure Nothing
 
-  generateOSClusterConfigs "./dhall" "." opts
-  cp "launcher-config.yaml" "../launcher-config.yaml"
-
-  installerConfig <- getInstallerConfig "./dhall" Macos64 oCluster
+  mSigningConfig <- case oSigningConfigPath of
+    Just path -> do
+      decodeFileStrict' $ encodeString path
+    Nothing -> pure Nothing
 
   let
     darwinConfig = DarwinConfig {
-        dcAppNameApp = (installDirectory installerConfig) <> ".app"
-      , dcAppName = installDirectory installerConfig
+        dcAppNameApp = (spacedName installerConfig) <> ".app"
+      , dcAppName = spacedName installerConfig
       , dcPkgName = "org." <> (macPackageName installerConfig) <> ".pkg"
+      , dcDataDir = dataDir installerConfig
       }
   print darwinConfig
 
   ver <- getBackendVersion oBackend
-  exportBuildVars opts installerConfig ver
+  exportBuildVars opts ver
 
   buildIcons oCluster
   appRoot <- buildElectronApp darwinConfig installerConfig
-  makeComponentRoot opts appRoot darwinConfig
+  makeComponentRoot opts appRoot darwinConfig installerConfig
   daedalusVer <- getDaedalusVersion "../package.json"
 
   let pkg = packageFileName Macos64 oCluster daedalusVer oBackend ver oBuildJob
       opkg = oOutputDir </> pkg
+
+  print "appRoot:"
+  print (tt appRoot)
+
+  case mCodeSigningConfig of
+    Just codeSigningConfig -> codeSignComponent codeSigningConfig appRoot
+    Nothing -> pure ()
 
   tempInstaller <- makeInstaller opts darwinConfig appRoot pkg
 
@@ -96,6 +115,55 @@ main opts@Options{oSigningConfigPath,oCluster,oBackend,oBuildJob,oOutputDir,oTes
         NotSigned -> rm opkg
     Nothing -> pure ()
 
+-- | Define the code signing script to be used for code signing
+codeSignScriptContents :: String
+codeSignScriptContents = [r|#!/run/current-system/sw/bin/bash
+set -x
+SIGN_ID="$1"
+KEYCHAIN="$2"
+REL_PATH="$3"
+XML_PATH="$4"
+ABS_PATH="$(pwd)/$REL_PATH"
+SIGN_CMD="codesign --verbose=4 --deep --strict --timestamp --options=runtime --entitlements $XML_PATH --sign \"$SIGN_ID\""
+VERIFY_CMD="codesign --verbose=4 --verify --deep --strict"
+ENTITLEMENT_CMD="codesign -d --entitlements :-"
+TS="$(date +%Y-%m-%d_%H-%M-%S)"
+LOG="2>&1 | tee -a /tmp/codesign-output-${TS}.txt"
+
+# Remove symlinks pointing outside of the project build folder:
+rm -f "$ABS_PATH/Contents/Resources/app/result"
+
+# Ensure the code signing identity is found and set the keychain search path:
+eval "security show-keychain-info \"$KEYCHAIN\" $LOG"
+eval "security find-identity -v -p codesigning \"$KEYCHAIN\" $LOG"
+eval "security list-keychains -d user -s \"$KEYCHAIN\" $LOG"
+
+# Sign framework executables not signed by the deep sign command:
+eval "$SIGN_CMD \"$ABS_PATH/Contents/Frameworks/Squirrel.framework/Versions/A/Resources/ShipIt\" $LOG"
+eval "$SIGN_CMD \"$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Versions/Current/Resources/crashpad_handler\" $LOG"
+eval "$SIGN_CMD \"$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Versions/Current/Libraries/libnode.dylib\" $LOG"
+eval "$SIGN_CMD \"$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Versions/Current/Libraries/libffmpeg.dylib\" $LOG"
+
+# Sign the whole component deeply
+eval "$SIGN_CMD \"$ABS_PATH\" $LOG"
+
+# Verify the signing
+eval "$VERIFY_CMD \"$ABS_PATH\" $LOG"
+eval "$VERIFY_CMD --display -r- \"$ABS_PATH\"" "$LOG"
+eval "$ENTITLEMENT_CMD \"$ABS_PATH\"" "$LOG"
+set +x|]
+
+-- | Define the code signing entitlements to be used for code signing
+codeSignEntitlements :: String
+codeSignEntitlements = [r|<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <key>com.apple.security.cs.allow-unsigned-executable-memory</key>
+    <true/>
+  </dict>
+</plist>|]
+
 makePostInstall :: Format a (Text -> a)
 makePostInstall = "#!/usr/bin/env bash\n" %
                   "#\n" %
@@ -106,15 +174,30 @@ makePostInstall = "#!/usr/bin/env bash\n" %
 
 makeScriptsDir :: Options -> DarwinConfig -> Managed T.Text
 makeScriptsDir Options{oBackend} DarwinConfig{dcAppNameApp} = case oBackend of
-  Cardano _ -> do
+    Cardano     _ -> common
+    Jormungandr _ -> common
+  where
+    common = do
+      tmp <- fromString <$> (liftIO $ getEnv "TMP")
+      tempdir <- mktempdir tmp "scripts"
+      liftIO $ do
+        cp "data/scripts/dockutil" (tempdir </> "dockutil")
+        writeTextFile (tempdir </> "postinstall") (format makePostInstall dcAppNameApp)
+        chmod executable (tempdir </> "postinstall")
+      pure $ tt tempdir
+
+makeSigningDir :: Managed (T.Text, T.Text)
+makeSigningDir = do
     tmp <- fromString <$> (liftIO $ getEnv "TMP")
-    tempdir <- mktempdir tmp "scripts"
+    tempdir <- mktempdir tmp "codeScripts"
+    let
+      codesignScriptPath = tempdir </> "codesignFnGen.sh"
+      entitlementsPath = tempdir </> "entitlements.xml"
     liftIO $ do
-      cp "data/scripts/dockutil" (tempdir </> "dockutil")
-      writeTextFile (tempdir </> "postinstall") (format makePostInstall dcAppNameApp)
-      run "chmod" ["+x", tt (tempdir </> "postinstall")]
-    pure $ tt tempdir
-  Mantis    -> pure "[DEVOPS-533]"
+      writeTextFile codesignScriptPath $ T.pack codeSignScriptContents
+      chmod executable codesignScriptPath
+      writeTextFile entitlementsPath $ T.pack codeSignEntitlements
+    pure $ (tt codesignScriptPath, tt entitlementsPath)
 
 buildIcons :: Cluster -> IO ()
 buildIcons cluster = do
@@ -128,72 +211,110 @@ buildIcons cluster = do
 -- NB: If webpack scripts are changed then this function may need to
 -- be updated.
 buildElectronApp :: DarwinConfig -> InstallerConfig -> IO FilePath
-buildElectronApp darwinConfig@DarwinConfig{dcAppNameApp,dcAppName} installerConfig = do
+buildElectronApp darwinConfig@DarwinConfig{dcAppName, dcAppNameApp} installerConfig = do
   withDir ".." . sh $ npmPackage darwinConfig
 
   let
     formatter :: Format r (Text -> Text -> r)
     formatter = "../release/darwin-x64/" % s % "-darwin-x64/" % s
     pathtoapp = format formatter dcAppName dcAppNameApp
-  rewritePackageJson (T.unpack $ pathtoapp <> "/Contents/Resources/app/package.json") (installDirectory installerConfig)
+  rewritePackageJson (T.unpack $ pathtoapp <> "/Contents/Resources/app/package.json") (spacedName installerConfig)
   pure $ fromString $ T.unpack $ pathtoapp
 
 npmPackage :: DarwinConfig -> Shell ()
 npmPackage DarwinConfig{dcAppName} = do
   mktree "release"
-  echo "~~~ Installing nodejs dependencies..."
+  echo "~~~     Installing nodejs dependencies..."
   procs "yarn" ["install"] empty
-  echo "~~~ Running electron packager script..."
+  echo "~~~     Running electron packager script..."
   export "NODE_ENV" "production"
   procs "yarn" ["run", "package", "--", "--name", dcAppName ] empty
   size <- inproc "du" ["-sh", "release"] empty
   printf ("Size of Electron app is " % l % "\n") size
 
 getBackendVersion :: Backend -> IO Text
-getBackendVersion (Cardano bridge) = readCardanoVersionFile bridge
-getBackendVersion Mantis = pure "DEVOPS-533"
+getBackendVersion (Cardano     bridge) = readCardanoVersionFile bridge
+getBackendVersion (Jormungandr bridge) = readCardanoVersionFile bridge
 
-makeComponentRoot :: Options -> FilePath -> DarwinConfig -> IO ()
-makeComponentRoot Options{oBackend} appRoot darwinConfig@DarwinConfig{dcAppName} = do
+makeComponentRoot :: Options -> FilePath -> DarwinConfig -> InstallerConfig -> IO ()
+makeComponentRoot Options{oBackend,oCluster} appRoot darwinConfig@DarwinConfig{dcAppName} InstallerConfig{hasBlock0,genesisPath,secretPath} = do
   let dir     = appRoot </> "Contents/MacOS"
+      dataDir = appRoot </> "Contents/Resources"
+      maybeCopyToResources (maybePath,name) = maybe (pure ()) (\path -> cp (fromText path) (dir </> "../Resources/" <> name)) maybePath
 
-  echo "~~~ Preparing files ..."
-  case oBackend of
-    Cardano bridge -> do
+  echo "~~~     Preparing files ..."
+  let
+    common :: FilePath -> IO ()
+    common bridge = do
       -- Executables (from daedalus-bridge)
-      forM ["cardano-launcher", "cardano-node", "cardano-x509-certificates"] $ \f ->
+      forM_ ["cardano-launcher" ] $ \f ->
         cp (bridge </> "bin" </> f) (dir </> f)
 
-      -- Config files (from daedalus-bridge)
-      cp (bridge </> "config/configuration.yaml") (dir </> "configuration.yaml")
-      cp (bridge </> "config/log-config-prod.yaml") (dir </> "log-config-prod.yaml")
+      -- Config yaml
+      cp "launcher-config.yaml" (dataDir </> "launcher-config.yaml")
+  case oBackend of
+    Cardano bridge -> do
+      common bridge
+      -- Executables (from daedalus-bridge)
+      forM_ ["cardano-wallet-byron", "cardano-node", "cardano-cli", "export-wallets", "db-converter" ] $ \f ->
+        cp (bridge </> "bin" </> f) (dir </> f)
+      forM_ ["config.yaml", "genesis.json", "topology.yaml" ] $ \f ->
+        cp f (dataDir </> f)
+
+      when (oCluster == Selfnode) $ do
+        cp "signing.key" (dataDir </> "signing.key")
+        cp "delegation.cert" (dataDir </> "delegation.cert")
+
+      procs "chmod" ["-R", "+w", tt dir] empty
+      -- Rewrite libs paths and bundle them
+      void $ chain (encodeString dir) $ fmap tt [dir </> "cardano-launcher", dir </> "cardano-wallet-byron", dir </> "cardano-node", dir </> "cardano-cli", dir </> "export-wallets", dir </> "db-converter" ]
+    Jormungandr bridge -> do
+      common bridge
+      -- Executables (from daedalus-bridge)
+      forM_ ["cardano-wallet-jormungandr", "jormungandr" ] $ \f ->
+        cp (bridge </> "bin" </> f) (dir </> f)
+
+      -- Config files (from launcherConfig.configFiles)
+      cp "config.yaml" (dataDir </> "config.yaml")
+
+      when hasBlock0 $
+        cp "block-0.bin" (dataDir </> "block-0.bin")
+
+      mapM_ maybeCopyToResources [ (genesisPath,"genesis.yaml"), (secretPath,"secret.yaml") ]
 
       -- Genesis (from daedalus-bridge)
-      genesisFiles <- glob . encodeString $ bridge </> "config" </> "*genesis*.json"
-      when (null genesisFiles) $
-        error "Cardano package carries no genesis files."
-      procs "cp" (map T.pack genesisFiles ++ [tt dir]) mempty
-
-      -- Config yaml (generated from dhall files)
-      cp "launcher-config.yaml" (dir </> "launcher-config.yaml")
-      cp "wallet-topology.yaml" (dir </> "wallet-topology.yaml")
+      --genesisFiles <- glob . encodeString $ bridge </> "config" </> "*genesis*.json"
+      --when (null genesisFiles) $
+      --  error "Cardano package carries no genesis files."
+      --procs "cp" (map T.pack genesisFiles ++ [tt dir]) mempty
 
       procs "chmod" ["-R", "+w", tt dir] empty
 
-      -- Rewrite libs paths and bundle them
-      void $ chain (encodeString dir) $ fmap tt [dir </> "cardano-launcher", dir </> "cardano-node", dir </> "cardano-x509-certificates"]
+      rmtree $ dataDir </> "app/installers"
 
-    Mantis -> pure () -- DEVOPS-533
+      -- Rewrite libs paths and bundle them
+      void $ chain (encodeString dir) $ fmap tt [dir </> "cardano-launcher", dir </> "cardano-wallet-jormungandr", dir </> "jormungandr" ]
 
   -- Prepare launcher
   de <- testdir (dir </> "Frontend")
   unless de $ mv (dir </> (fromString $ T.unpack $ dcAppName)) (dir </> "Frontend")
-  run "chmod" ["+x", tt (dir </> "Frontend")]
-  void $ writeLauncherFile dir darwinConfig
-
+  chmod executable (dir </> "Frontend")
+  void $ writeLauncherFile dataDir darwinConfig
+  maybeDarwinLauncher <- which "darwin-launcher"
+  case maybeDarwinLauncher of
+    Just darwinLauncher -> do
+      let
+        dest = dir </> (fromString $ T.unpack $ dcAppName)
+      cp darwinLauncher dest
+      chmod writable dest
+      void $ chain (encodeString dir) [ tt dest ]
+    Nothing -> do
+      print "darwin-launcher was not found in $PATH"
+      exit $ ExitFailure 1
 
 makeInstaller :: Options -> DarwinConfig -> FilePath -> FilePath -> IO FilePath
 makeInstaller opts@Options{oOutputDir} darwinConfig@DarwinConfig{dcPkgName} componentRoot pkg = do
+  echo "~~~     Making installer ..."
   let tempPkg1 = format fp (oOutputDir </> pkg)
       tempPkg2 = oOutputDir </> (dropExtension pkg <.> "unsigned" <.> "pkg")
 
@@ -233,31 +354,49 @@ readCardanoVersionFile bridge = prefix <$> handle handler (readTextFile verFile)
               | otherwise = throwM e
 
 writeLauncherFile :: FilePath -> DarwinConfig -> IO FilePath
-writeLauncherFile dir DarwinConfig{dcAppName} = do
+writeLauncherFile dir DarwinConfig{dcDataDir} = do
   writeTextFile path $ T.unlines contents
-  run "chmod" ["+x", tt path]
+  chmod executable path
+  setFileMode (encodeString path) anyReadExecute
   pure path
   where
-    path = dir </> (fromString $ T.unpack dcAppName)
-    dataDir = "$HOME/Library/Application Support/" <> (dcAppName)
+    anyReadExecute = foldl unionFileModes nullFileMode [ ownerExecuteMode, ownerReadMode, groupExecuteMode, groupReadMode, otherExecuteMode, otherReadMode ]
+    path = dir </> "helper"
     contents =
       [ "#!/usr/bin/env bash"
-      , "mkdir -p \"" <> dataDir <> "/Secrets-1.0\""
-      , "mkdir -p \"" <> dataDir <> "/Logs/pub\""
-      , "\"$(dirname \"$0\")/cardano-launcher\""
+      , "mkdir -p \"" <> dcDataDir <> "/Secrets-1.0\""
+      , "mkdir -p \"" <> dcDataDir <> "/Logs/pub\""
       ]
+
+data CodeSigningConfig = CodeSigningConfig
+  { codeSigningIdentity     :: T.Text
+  , codeSigningKeyChain     :: T.Text
+  } deriving (Show, Eq, Generic)
 
 data SigningConfig = SigningConfig
   { signingIdentity         :: T.Text
   , signingKeyChain         :: Maybe T.Text
+  , signingKeyChainPassword :: Maybe T.Text
   } deriving (Show, Eq, Generic)
+
+instance FromJSON CodeSigningConfig where
+  parseJSON = genericParseJSON defaultOptions
 
 instance FromJSON SigningConfig where
   parseJSON = genericParseJSON defaultOptions
 
+-- | Code sign a component.
+codeSignComponent :: CodeSigningConfig -> FilePath -> IO ()
+codeSignComponent CodeSigningConfig{codeSigningIdentity,codeSigningKeyChain} component = do
+  with makeSigningDir $ \(codesignScriptPath, entitlementsPath) -> do
+    run codesignScriptPath [ codeSigningIdentity
+                           , codeSigningKeyChain
+                           , (tt component)
+                           , entitlementsPath ]
+
 -- | Creates a new installer package with signature added.
 signInstaller :: SigningConfig -> FilePath -> FilePath -> IO ()
-signInstaller SigningConfig{signingIdentity,signingKeyChain} src dst =
+signInstaller SigningConfig{signingKeyChain, signingIdentity} src dst =
   run "productsign" $ sign ++ keychain ++ map tt [src, dst]
   where
     sign = [ "--sign", signingIdentity ]

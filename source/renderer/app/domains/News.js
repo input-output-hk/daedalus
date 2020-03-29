@@ -31,6 +31,7 @@ export type NewsTypesStateType = {
 const { version, platform } = global.environment;
 
 class News {
+  @observable id: number;
   @observable title: string;
   @observable content: string;
   @observable target: NewsTarget;
@@ -40,6 +41,7 @@ class News {
   @observable read: boolean;
 
   constructor(data: {
+    id: number,
     title: string,
     content: string,
     target: NewsTarget,
@@ -61,17 +63,26 @@ class NewsCollection {
       const availableTargetVersionRange = get(
         newsItem,
         ['target', 'daedalusVersion'],
-        null
+        ''
       );
       const targetPlatforms = get(newsItem, ['target', 'platforms']);
       return (
         (!availableTargetVersionRange ||
           (availableTargetVersionRange &&
-            semver.satisfies(version, availableTargetVersionRange))) &&
-        (platform === 'browser' || includes(targetPlatforms, platform))
+            semver.satisfies(version, availableTargetVersionRange, {
+              includePrerelease: true,
+            }))) &&
+        (platform === 'browser' || includes(targetPlatforms, platform)) &&
+        newsItem.id &&
+        newsItem.title &&
+        newsItem.content &&
+        newsItem.action.label &&
+        newsItem.date
       );
     });
+
     const orderedNews = orderBy(filteredNews, 'date', 'desc');
+
     runInAction(() => {
       this.all = orderedNews;
     });

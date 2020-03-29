@@ -1,0 +1,16 @@
+.root {
+  .circle {
+    border: var(--rp-radio-border);
+    height: var(--rp-radio-size);
+    width: var(--rp-radio-size);
+  }
+
+  &.selected {
+    .circle:after {
+      height: 8px;
+      left: 5px;
+      top: 5px;
+      width: 8px;
+    }
+  }
+}

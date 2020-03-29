@@ -1,11 +1,12 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
+import classnames from 'classnames';
 import { defineMessages, intlShape } from 'react-intl';
-import { rangeMap } from '../../../utils/rangeMap';
 import Wallet from '../../../domains/Wallet';
 import WalletRow from './WalletRow';
 import styles from './DelegationCenterBody.scss';
+import LoadingSpinner from '../../widgets/LoadingSpinner';
 
 const messages = defineMessages({
   bodyTitle: {
@@ -13,64 +14,87 @@ const messages = defineMessages({
     defaultMessage: '!!!Wallets',
     description: 'Title for the Delegation center body section.',
   },
+  loadingStakePoolsMessage: {
+    id: 'staking.delegationCenter.loadingStakePoolsMessage',
+    defaultMessage: '!!!Loading stake pools',
+    description:
+      'Loading stake pool message for the Delegation center body section.',
+  },
 });
 
 type Props = {
   wallets: Array<Wallet>,
+  numberOfStakePools: number,
   onDelegate: Function,
+  onUndelegate: Function,
+  getStakePoolById: Function,
+  isLoading: boolean,
 };
 
 @observer
 export default class DelegationCenterBody extends Component<Props> {
+  loadingSpinner: ?LoadingSpinner;
+
   static contextTypes = {
     intl: intlShape.isRequired,
   };
 
-  getIndex = (ranking: number) => {
-    const { wallets } = this.props;
-
-    return rangeMap(
-      ranking,
-      1,
-      wallets.filter(wallet => wallet.isDelegated).length,
-      0,
-      99
-    );
-  };
-
   render() {
     const { intl } = this.context;
-    const { wallets, onDelegate } = this.props;
+    const {
+      wallets,
+      numberOfStakePools,
+      onDelegate,
+      onUndelegate,
+      getStakePoolById,
+      isLoading,
+    } = this.props;
 
     const title = intl.formatMessage(messages.bodyTitle);
 
+    const loadingSpinner = (
+      <LoadingSpinner
+        big
+        ref={component => {
+          this.loadingSpinner = component;
+        }}
+      />
+    );
+
+    const componentClasses = classnames([
+      styles.component,
+      isLoading ? styles.isLoading : null,
+    ]);
+
     return (
-      <div className={styles.component}>
-        <div className={styles.bodyTitle}>
-          <span>{title}</span>
-        </div>
-        <div className={styles.mainContent}>
-          {wallets.map(wallet => {
-            if (wallet.isDelegated && wallet.delegatedStakePool) {
-              const index = this.getIndex(wallet.delegatedStakePool.ranking);
-              return (
+      <div className={componentClasses}>
+        {isLoading ? (
+          <div className={styles.loadinBlockWrapper}>
+            <p>{intl.formatMessage(messages.loadingStakePoolsMessage)}</p>
+            {loadingSpinner}
+          </div>
+        ) : (
+          <div>
+            <div className={styles.bodyTitle}>
+              <span>{title}</span>
+            </div>
+            <div className={styles.mainContent}>
+              {wallets.map((wallet: Wallet) => (
                 <WalletRow
                   key={wallet.id}
                   wallet={wallet}
-                  index={index}
-                  onDelegate={onDelegate}
+                  numberOfStakePools={numberOfStakePools}
+                  onDelegate={() => onDelegate(wallet.id)}
+                  onUndelegate={() => onUndelegate(wallet.id)}
+                  delegatedStakePool={getStakePoolById(
+                    wallet.delegatedStakePoolId
+                  )}
+                  getStakePoolById={getStakePoolById}
                 />
-              );
-            }
-            return (
-              <WalletRow
-                key={wallet.id}
-                wallet={wallet}
-                onDelegate={onDelegate}
-              />
-            );
-          })}
-        </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     );
   }

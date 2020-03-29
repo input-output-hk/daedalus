@@ -13,10 +13,13 @@ import {
   CARDANO_TLS_CONFIG_CHANNEL,
   CARDANO_AWAIT_UPDATE_CHANNEL,
   SET_CACHED_CARDANO_STATUS_CHANNEL,
+  EXPORT_WALLETS_CHANNEL,
 } from '../../../common/ipc/api';
 import type {
   CardanoTlsConfigMainResponse,
   CardanoTlsConfigRendererRequest,
+  ExportWalletsMainResponse,
+  ExportWalletsRendererRequest,
 } from '../../../common/ipc/api';
 
 // IpcChannel<Incoming, Outgoing>
@@ -55,3 +58,8 @@ export const setCachedCardanoStatusChannel: RendererIpcChannel<
   ?CardanoStatus,
   ?CardanoStatus
 > = new RendererIpcChannel(SET_CACHED_CARDANO_STATUS_CHANNEL);
+
+export const exportWalletsChannel: RendererIpcChannel<
+  ExportWalletsMainResponse,
+  ExportWalletsRendererRequest
+> = new RendererIpcChannel(EXPORT_WALLETS_CHANNEL);

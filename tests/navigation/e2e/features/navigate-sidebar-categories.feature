@@ -3,9 +3,9 @@ Feature: Navigate Sidebar Categories
 
   Background:
     Given I have completed the basic setup
-    And I have the following wallets:
+    And I have the following "Rewards" wallets:
       | name        |
-      | Test wallet |
+      | Test Wallet |
 
   Scenario Outline: Navigate Between Sidebar Categories
     Given The sidebar shows the "<FROM>" category
@@ -18,7 +18,7 @@ Feature: Navigate Sidebar Categories
     | settings       | wallets        |
 
   Scenario: Navigate from a Wallet to Settings screen
-    Given I am on the "Test wallet" wallet "summary" screen
+    Given I am on the "Test Wallet" wallet "summary" screen
     And The sidebar shows the "wallets" category
     When I click on the "settings" category in the sidebar
     Then I should be on the "settings/general" screen
@@ -28,4 +28,4 @@ Feature: Navigate Sidebar Categories
     And The sidebar shows the "settings" category
     When I click on the "wallets" category in the sidebar
     Then The "wallets" category should be active
-    But I should be on the "Test wallet" wallet "summary" screen
+    But I should be on the "Test Wallet" wallet "summary" screen

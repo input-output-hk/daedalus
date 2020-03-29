@@ -45,7 +45,7 @@ type State = {
 };
 
 @observer
-export default class WalletRecoveryPhraseStep1 extends Component<Props, State> {
+export default class WalletRecoveryPhraseStep3 extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };

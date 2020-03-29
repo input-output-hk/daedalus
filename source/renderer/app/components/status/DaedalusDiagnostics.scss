@@ -1,5 +1,29 @@
 @import '../../themes/mixins/link';
 
+/*======================================
+=            GENERIC STYLES            =
+======================================*/
+
+:global {
+  .DaedalusDiagnosticsDialog_overlay,
+  .DaedalusDiagnosticsDialog_dialog {
+    &:focus {
+      outline: none;
+    }
+  }
+
+  .DaedalusDiagnostics_component {
+    .SimpleLink_withIconAfter {
+      border-color: var(--theme-network-window-white-color);
+      color: var(--theme-network-window-white-color);
+      line-height: 1.5;
+      &:after {
+        background-color: var(--theme-network-window-white-color);
+      }
+    }
+  }
+}
+
 .component {
   align-items: center;
   background: var(--theme-network-window-background-color);
@@ -38,28 +62,43 @@
 
 .table {
   width: calc(50% - 15px);
+  @media (max-width: 1000px) {
+    width: 100%;
 
-  tr {
-    display: flex;
-    justify-content: space-between;
-
-    &.platformVersion {
-      span {
-        div > div {
-          left: 100px;
-          text-align: center;
-          white-space: initial;
-        }
-      }
-
-      @media (max-width: 1000px) {
-        display: flex;
-        justify-content: space-between;
-      }
+    &:first-child .layoutRow {
+      max-width: inherit;
     }
   }
 
-  tbody > tr:first-child > th {
+  @media (max-height: 800px) {
+    &:nth-child(2) {
+      margin-bottom: 70px;
+    }
+  }
+
+  .layoutRow {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .layoutHeader,
+  .layoutData {
+    color: var(--theme-network-window-text-color);
+    font-family: var(--font-regular);
+    font-size: 14px;
+    font-stretch: normal;
+    font-style: normal;
+    font-weight: normal;
+    letter-spacing: normal;
+    line-height: 2;
+  }
+
+  .layoutHeader {
+    opacity: 0.7;
+    white-space: nowrap;
+  }
+
+  .sectionTitle {
     color: var(--theme-network-window-text-color);
     display: inline-block;
     font-family: var(--font-medium);
@@ -69,182 +108,31 @@
     font-weight: 500;
     letter-spacing: 1px;
     line-height: normal;
+    opacity: 1;
     padding-top: 30px;
     text-align: left;
     white-space: nowrap;
     width: 100%;
+
     span {
       opacity: 1;
     }
-  }
 
-  th,
-  td {
-    color: var(--theme-network-window-text-color);
-    font-family: var(--font-regular);
-    font-size: 14px;
-    font-stretch: normal;
-    font-style: normal;
-    font-weight: normal;
-    letter-spacing: normal;
-    line-height: 2;
-
-    .blankScreenFix {
-      max-width: 100px;
+    *:not(button) {
+      opacity: 0.7;
     }
   }
 
-  th {
-    opacity: 0.7;
-    white-space: nowrap;
-
-    &.sectionTitle {
-      opacity: 1;
-
-      *:not(button) {
-        opacity: 0.7;
-      }
-    }
-  }
-
-  td {
+  .layoutData {
     font-weight: 500;
     text-align: right;
     user-select: text;
-
-    &.topPadding {
-      padding-top: 10px;
+    &.red {
+      color: var(--theme-network-window-red-color);
     }
-
-    &.platform {
-      max-width: 435px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      width: 100%;
-
-      @media (max-width: 1400px) {
-        max-width: 300px;
-      }
-
-      @media (max-width: 1200px) {
-        max-width: 230px;
-      }
-
-      @media (max-width: 1000px) {
-        max-width: 565px;
-      }
+    &.green {
+      color: var(--theme-network-window-green-color);
     }
-
-    &.stateDirectory {
-      user-select: none;
-    }
-
-    .stateDirectoryPath {
-      cursor: pointer;
-      display: inline-block;
-      position: relative;
-
-      .tooltipLabelWrapper {
-        text-align: center;
-      }
-
-      p {
-        display: inline-block;
-        font-size: 14px;
-        margin: 0 6px 0 0;
-        max-width: 400px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        width: 100%;
-      }
-
-      &.locale-en-US {
-        p {
-          @media (max-width: 1490px) {
-            max-width: 285px;
-          }
-          @media (max-width: 1300px) {
-            max-width: 189px;
-          }
-          @media (max-width: 1100px) {
-            max-width: 135px;
-          }
-          @media (max-width: 1000px) {
-            max-width: 100%;
-          }
-        }
-      }
-
-      &.locale-ja-JP {
-        p {
-          @media (max-width: 1585px) {
-            max-width: 285px;
-          }
-          @media (max-width: 1370px) {
-            max-width: 189px;
-          }
-          @media (max-width: 1180px) {
-            max-width: 135px;
-          }
-          @media (max-width: 1070px) {
-            max-width: 115px;
-          }
-          @media (max-width: 1000px) {
-            max-width: 100%;
-          }
-        }
-      }
-
-      svg {
-        height: 14px;
-        opacity: 0.7;
-        stroke: var(--theme-network-window-white-color);
-        transition: 0.15s opacity;
-        width: 11px;
-      }
-
-      &:hover {
-        p {
-          &:after {
-            border-top: 1px solid var(--theme-network-window-white-color);
-            bottom: 6px;
-            content: '';
-            left: 0;
-            position: absolute;
-            right: 1px;
-          }
-        }
-        svg {
-          opacity: 1;
-        }
-      }
-    }
-
-    &.localTimeDifferenceItem {
-      align-items: center;
-      display: flex;
-
-      button {
-        padding-top: 0;
-      }
-    }
-  }
-
-  span {
-    td {
-      opacity: 1;
-      text-align: right;
-    }
-  }
-
-  .red {
-    color: var(--theme-network-window-red-color);
-  }
-
-  .green {
-    color: var(--theme-network-window-green-color);
   }
 
   button {
@@ -258,7 +146,6 @@
     line-height: 1.5;
     margin-right: 10px;
     padding: 0 8px;
-    padding-top: 2px;
     position: relative;
     text-transform: uppercase;
     user-select: none;
@@ -267,7 +154,7 @@
       cursor: default;
       opacity: 0.5;
 
-      &::after {
+      &:after {
         display: none;
       }
     }
@@ -283,72 +170,21 @@
     &:active {
       background: var(--theme-network-window-button-background-color-active);
     }
-
-    &.statusBtn {
-      float: right;
-      margin-right: 0;
-      margin-top: -3px;
-      padding-top: 0;
-    }
-
-    &.realTimeStatusBtn,
-    &.unknownDiskSpaceBtn {
-      @include link(--theme-network-window-white-color);
-      background: transparent !important;
-      border-bottom: none;
-      border-radius: initial;
-      font-size: 14px;
-      font-weight: initial;
-      height: initial;
-      line-height: 1.5;
-      margin-right: initial;
-      padding: initial;
-      position: relative;
-      text-transform: initial;
-      width: initial;
-
-      &::after {
-        border-top: 1px solid var(--theme-network-window-white-color);
-        bottom: 1px;
-        content: '';
-        left: 0;
-        position: absolute;
-        right: 1px;
-      }
-    }
-
-    &.stateDirectoryOpenBtn {
-      margin-right: 16px;
-    }
   }
 
   hr {
     border: 0;
     border-top: 1px solid var(--theme-network-window-border-color);
   }
+}
 
-  .error {
-    color: var(--theme-network-window-red-color);
-    font-size: 12px;
-    font-style: italic;
-    line-height: 1.36;
-    padding: 2px 0;
-    text-align: left;
-  }
-
-  @media (max-width: 1000px) {
-    width: 100%;
-
-    &:first-child tr {
-      max-width: inherit;
-    }
-  }
-
-  @media (max-height: 800px) {
-    &:nth-child(2) {
-      margin-bottom: 70px;
-    }
-  }
+.error {
+  color: var(--theme-network-window-red-color);
+  font-size: 12px;
+  font-style: italic;
+  line-height: 1.36;
+  padding: 2px 0;
+  text-align: left;
 }
 
 .closeButton {
@@ -382,4 +218,155 @@
       stroke: var(--theme-network-window-white-color);
     }
   }
+}
+
+/*=======================================
+=            SPECIFIC STYLES            =
+=======================================*/
+
+.layoutHeader.stateDirectoryPath {
+  width: 244px;
+}
+
+.layoutData.platformVersion {
+  max-width: 435px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100%;
+
+  @media (max-width: 1400px) {
+    max-width: 300px;
+  }
+
+  @media (max-width: 1200px) {
+    max-width: 230px;
+  }
+
+  @media (max-width: 1000px) {
+    max-width: 565px;
+  }
+}
+
+.layoutData.stateDirectoryPath {
+  align-items: center;
+  display: flex;
+  user-select: none;
+
+  .stateDirectoryPath {
+    > span {
+      align-items: center;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+    }
+
+    &:hover {
+      .daedalusStateDirectoryPath {
+        &:after {
+          border-top: 1px solid var(--theme-network-window-white-color);
+          bottom: 6px;
+          content: '';
+          left: 0;
+          position: absolute;
+          right: 1px;
+        }
+      }
+      svg {
+        opacity: 1;
+      }
+    }
+  }
+
+  .tooltipLabelWrapper {
+    text-align: center;
+  }
+
+  .daedalusStateDirectoryPath {
+    font-size: 14px;
+    margin: 0 6px 0 0;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    user-select: none;
+    white-space: nowrap;
+  }
+
+  svg {
+    height: 14px;
+    opacity: 0.7;
+    stroke: var(--theme-network-window-white-color);
+    transition: 0.15s opacity;
+    width: 11px;
+  }
+
+  @media (min-width: 1001px) and (max-width: 1595px) {
+    max-width: calc(100% - 244px);
+
+    .stateDirectoryPath {
+      width: calc(100% - 71px);
+    }
+  }
+}
+
+.layoutData.localTimeDifferenceItem {
+  align-items: center;
+  display: flex;
+
+  button {
+    padding-top: 0;
+  }
+}
+
+.layoutData.lastNetworkBlock,
+.layoutData.lastSynchronizedBlock {
+  span {
+    opacity: 0.7;
+
+    & + span {
+      border-left: 1px solid var(--theme-network-window-border-color);
+      margin-left: 6px;
+      padding-left: 6px;
+    }
+  }
+}
+
+button.cardanoNodeStatusBtn {
+  float: right;
+  margin-right: 0;
+  margin-top: -3px;
+  padding-top: 0;
+}
+
+button.realTimeStatusBtn {
+  @include link(--theme-network-window-white-color);
+  background: transparent !important;
+  border-bottom: none;
+  border-radius: initial;
+  font-size: 14px;
+  font-weight: initial;
+  height: initial;
+  line-height: 1.5;
+  margin-right: initial;
+  padding: initial;
+  position: relative;
+  text-transform: initial;
+  width: initial;
+
+  &:after {
+    border-top: 1px solid var(--theme-network-window-white-color);
+    bottom: 1px;
+    content: '';
+    left: 0;
+    position: absolute;
+    right: 1px;
+  }
+}
+
+button.stateDirectoryOpenBtn {
+  margin-left: 18px;
+  margin-right: 16px;
+  padding: 0;
+  width: 36px;
 }

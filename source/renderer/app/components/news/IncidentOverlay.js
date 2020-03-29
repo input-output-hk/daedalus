@@ -4,9 +4,9 @@ import moment from 'moment';
 import { observer } from 'mobx-react';
 import { get } from 'lodash';
 import ReactMarkdown from 'react-markdown';
-import SVGInline from 'react-svg-inline';
+import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import News from '../../domains/News';
-import externalLinkIcon from '../../assets/images/link-ic.inline.svg';
+import ButtonLink from '../widgets/ButtonLink';
 import styles from './IncidentOverlay.scss';
 
 type Props = {
@@ -18,6 +18,12 @@ type Props = {
 
 @observer
 export default class IncidentOverlay extends Component<Props> {
+  localizedDateFormat: 'MM/DD/YYYY';
+
+  componentWillMount() {
+    this.localizedDateFormat = moment.localeData().longDateFormat('L');
+  }
+
   contentClickHandler(event: SyntheticMouseEvent<HTMLElement>) {
     const linkUrl = get(event, ['target', 'href']);
     if (linkUrl) {
@@ -34,10 +40,17 @@ export default class IncidentOverlay extends Component<Props> {
   renderAction = (action: Object) => {
     if (action && (action.url || action.event)) {
       return (
-        <button className={styles.actionBtn} onClick={this.onProceedNewsAction}>
-          {action.label}
-          {action.url && <SVGInline svg={externalLinkIcon} />}
-        </button>
+        <ButtonLink
+          className={styles.actionBtn}
+          onClick={this.onProceedNewsAction}
+          skin={ButtonSkin}
+          label={action.label}
+          linkProps={{
+            className: styles.externalLink,
+            hasIconBefore: false,
+            hasIconAfter: action.url && true,
+          }}
+        />
       );
     }
     return null;

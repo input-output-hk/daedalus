@@ -1,71 +1,75 @@
 // @flow
-import { pick } from 'lodash';
+import { get, pick } from 'lodash';
 import { observable, computed, action } from 'mobx';
 import BigNumber from 'bignumber.js';
 import type {
-  WalletAssuranceLevel,
-  WalletAssuranceMode,
   WalletSyncState,
-  SyncStateTag,
+  SyncStateStatus,
+  DelegationStatus,
+  WalletUnit,
+  WalletPendingDelegations,
 } from '../api/wallets/types';
-import type { StakePool } from '../api/staking/types';
 
-export const WalletAssuranceModeOptions: {
-  NORMAL: WalletAssuranceLevel,
-  STRICT: WalletAssuranceLevel,
+export const WalletSyncStateStatuses: {
+  RESTORING: SyncStateStatus,
+  SYNCING: SyncStateStatus,
+  READY: SyncStateStatus,
+  NOT_RESPONDING: SyncStateStatus,
 } = {
-  NORMAL: 'normal',
-  STRICT: 'strict',
+  RESTORING: 'syncing', // @API TODO - calculate if the wallet is restoring!
+  SYNCING: 'syncing',
+  READY: 'ready',
+  NOT_RESPONDING: 'not_responding',
 };
 
-export const WalletSyncStateTags: {
-  RESTORING: SyncStateTag,
-  SYNCED: SyncStateTag,
+export const WalletDelegationStatuses: {
+  DELEGATING: DelegationStatus,
+  NOT_DELEGATING: DelegationStatus,
 } = {
-  RESTORING: 'restoring',
-  SYNCED: 'synced',
+  DELEGATING: 'delegating',
+  NOT_DELEGATING: 'not_delegating',
 };
 
-const WalletAssuranceModes: {
-  NORMAL: WalletAssuranceMode,
-  STRICT: WalletAssuranceMode,
+export const WalletUnits: {
+  ADA: WalletUnit,
+  LOVELACE: WalletUnit,
 } = {
-  NORMAL: {
-    low: 3,
-    medium: 9,
-  },
-  STRICT: {
-    low: 5,
-    medium: 15,
-  },
+  ADA: 'ada',
+  LOVELACE: 'lovelace',
 };
 
 export type WalletProps = {
   id: string,
+  addressPoolGap: number,
   name: string,
   amount: BigNumber,
-  assurance: WalletAssuranceLevel,
-  hasPassword: boolean,
+  availableAmount: BigNumber,
+  reward: BigNumber,
   passwordUpdateDate: ?Date,
-  syncState?: WalletSyncState,
+  syncState: WalletSyncState,
   isLegacy: boolean,
-  inactiveStakePercentage?: number,
-  isDelegated?: boolean,
-  delegatedStakePool?: StakePool,
+  delegatedStakePoolId?: ?string,
+  delegationStakePoolStatus?: ?string,
+  lastDelegationStakePoolId?: ?string,
+  pendingDelegations?: WalletPendingDelegations,
+  hasPassword: boolean,
 };
 
 export default class Wallet {
   id: string = '';
+  @observable addressPoolGap: number;
   @observable name: string = '';
   @observable amount: BigNumber;
-  @observable assurance: WalletAssuranceLevel;
-  @observable hasPassword: boolean;
+  @observable availableAmount: BigNumber;
+  @observable reward: BigNumber;
   @observable passwordUpdateDate: ?Date;
-  @observable syncState: ?WalletSyncState;
+  @observable syncState: WalletSyncState;
   @observable isLegacy: boolean;
-  @observable inactiveStakePercentage: ?number;
-  @observable isDelegated: ?boolean;
-  @observable delegatedStakePool: ?StakePool;
+  @observable delegatedStakePoolId: ?string;
+  @observable delegationStakePoolStatus: ?string;
+  @observable lastDelegationStakePoolId: ?string;
+  @observable pendingDelegations: WalletPendingDelegations;
+  @observable hasPassword: boolean;
 
   constructor(data: WalletProps) {
     Object.assign(this, data);
@@ -76,32 +80,38 @@ export default class Wallet {
       this,
       pick(other, [
         'id',
+        'addressPoolGap',
         'name',
         'amount',
-        'assurance',
-        'hasPassword',
+        'availableAmount',
+        'reward',
         'passwordUpdateDate',
         'syncState',
         'isLegacy',
-        'inactiveStakePercentage',
-        'isDelegated',
-        'delegatedStakePool',
+        'delegatedStakePoolId',
+        'delegationStakePoolStatus',
+        'lastDelegationStakePoolId',
+        'pendingDelegations',
+        'hasPassword',
       ])
     );
   }
 
   @computed get hasFunds(): boolean {
-    return this.amount > 0;
+    return this.amount.gt(0);
   }
 
-  @computed get assuranceMode(): WalletAssuranceMode {
-    switch (this.assurance) {
-      case WalletAssuranceModeOptions.NORMAL:
-        return WalletAssuranceModes.NORMAL;
-      case WalletAssuranceModeOptions.STRICT:
-        return WalletAssuranceModes.STRICT;
-      default:
-        return WalletAssuranceModes.NORMAL;
-    }
+  @computed get isRestoring(): boolean {
+    return get(this, 'syncState.status') === WalletSyncStateStatuses.RESTORING;
+  }
+
+  @computed get isNotResponding(): boolean {
+    return (
+      get(this, 'syncState.status') === WalletSyncStateStatuses.NOT_RESPONDING
+    );
+  }
+
+  @computed get restorationProgress(): number {
+    return get(this, 'syncState.progress.quantity', 0);
   }
 }

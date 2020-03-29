@@ -2,12 +2,15 @@
 import { Given, When, Then } from 'cucumber';
 import { expect } from 'chai';
 import BigNumber from 'bignumber.js/bignumber';
+import { DECIMAL_PLACES_IN_ADA, LOVELACES_PER_ADA } from '../../../../source/renderer/app/config/numbersConfig';
 import {
-  DECIMAL_PLACES_IN_ADA,
-  LOVELACES_PER_ADA,
-} from '../../../../source/renderer/app/config/numbersConfig';
-import { getVisibleTextsForSelector } from '../../../common/e2e/steps/helpers';
-import { getWalletByName } from '../../../wallets/e2e/steps/helpers';
+  getVisibleTextsForSelector,
+  clickInputByLabel,
+  clickOptionByValue,
+  clickOptionByIndex,
+  getInputValueByLabel,
+} from '../../../common/e2e/steps/helpers';
+import { getWalletByName, fillOutWalletSendForm } from '../../../wallets/e2e/steps/helpers';
 import type { Daedalus } from '../../../types';
 
 declare var daedalus: Daedalus;
@@ -22,39 +25,164 @@ Given(
       walletId: getWalletByName.call(this, t.source).id,
       destinationWalletId: getWalletByName.call(this, t.destination).id,
       amount: parseInt(new BigNumber(t.amount).times(LOVELACES_PER_ADA), 10),
-      spendingPassword: t.password || null,
+      passphrase: 'Secret1234',
     }));
     this.transactions = [];
     // Sequentially (and async) create transactions with for loop
     for (const tx of txData) {
-      const txResponse = await this.client.executeAsync(
-        (transaction, done) =>
-          new window.Promise(resolve =>
-            // Need to fetch the wallets data async and wait for all results
-            window.Promise.all([
-              daedalus.stores.addresses.getAccountIndexByWalletId(
-                transaction.walletId
-              ),
-              daedalus.stores.addresses.getAddressesByWalletId(
-                transaction.destinationWalletId
-              ),
-            ]).then(results =>
-              daedalus.api.ada
-                .createTransaction(
-                  window.Object.assign(transaction, {
-                    accountIndex: results[0], // Account index of sender wallet
-                    address: results[1][0].id, // First address of receiving wallet
-                  })
-                )
-                .then(resolve)
+      const txResponse = await this.client.executeAsync((transaction, done) => {
+        daedalus.stores.addresses
+          .getAddressesByWalletId(transaction.destinationWalletId)
+          .then(addresses =>
+            daedalus.api.ada.createTransaction(
+              window.Object.assign(transaction, {
+                address: addresses[0].id, // First address of receiving wallet
+              })
             )
-          ).then(done),
-        tx
-      );
+          )
+          .then(done);
+      }, tx);
       this.transactions.push(txResponse);
     }
   }
 );
+
+When(/^I click on the show more transactions button$/, async function() {
+  await this.waitAndClick('.WalletTransactionsList_showMoreTransactionsButton');
+});
+
+When(/^I can see the send form$/, function() {
+  return this.client.waitForVisible('.WalletSendForm');
+});
+
+When(/^I fill out the wallet send form with:$/, function(table) {
+  return fillOutWalletSendForm.call(this, table.hashes()[0]);
+});
+
+When(
+  /^I fill out the send form with a transaction to "([^"]*)" wallet:$/,
+  async function(walletName, table) {
+    const values = table.hashes()[0];
+    const walletId = getWalletByName.call(this, walletName).id;
+    const walletAddress = await this.client.executeAsync((id, done) => {
+      daedalus.api.ada
+        .getAddresses({ walletId: id, isLegacy: false })
+        .then(response => done(response[0].id))
+        .catch(error => done(error));
+    }, walletId);
+    values.address = walletAddress.value;
+    return fillOutWalletSendForm.call(this, values);
+  }
+);
+
+When(/^the transaction fees are calculated$/, async function() {
+  this.fees = await this.client.waitUntil(async () => {
+    // Expected transactionFeeText format "+ 0.000001 of fees"
+    const transactionFeeText = await this.waitAndGetText(
+      '.AmountInputSkin_fees'
+    );
+    const transactionFeeAmount = new BigNumber(transactionFeeText.substr(2, 8));
+    return transactionFeeAmount.greaterThan(0) ? transactionFeeAmount : false;
+  });
+});
+
+When(/^I click on the next button in the wallet send form$/, async function() {
+  const submitButton = '.WalletSendForm_nextButton';
+  await this.client.waitForVisible(submitButton);
+  return this.client.click(submitButton);
+});
+
+When(/^I see send money confirmation dialog$/, function() {
+  return this.client.waitForVisible('.WalletSendConfirmationDialog_dialog');
+});
+
+When(
+  /^I enter wallet spending password in confirmation dialog "([^"]*)"$/,
+  async function(password) {
+    await this.client.setValue(
+      '.WalletSendConfirmationDialog_passphrase input',
+      password
+    );
+  }
+);
+
+When(/^I submit the wallet send form$/, async function() {
+  await this.client.waitForEnabled(
+    '.WalletSendConfirmationDialog_dialog .confirmButton'
+  );
+  return this.client.click(
+    '.WalletSendConfirmationDialog_dialog .confirmButton'
+  );
+});
+
+When(/^I open the transactions filter$/, async function() {
+  return this.waitAndClick('.FilterButton_actionButton');
+});
+
+When(/^I choose the first time filter option$/, async function() {
+  await clickInputByLabel.call(this, 'Time');
+  await clickOptionByIndex.call(this, 0);
+});
+
+const screenElementSelectors = {
+  fromAmount: 'input[name="fromAmount"]',
+  toAmount: 'input[name="toAmount"]',
+};
+
+When(/^I enter the following filter values:$/, async function(filterTable) {
+  const filterValues = filterTable.hashes();
+  for (let i = 0; i < filterValues.length; i++) {
+    const { param: filterParam, value: filterValue } = filterValues[i];
+    const selector = screenElementSelectors[filterParam];
+    await this.client.setValue(selector, filterValue);
+  }
+});
+
+Then(/^I should see the following filter values:$/, async function(filterTable) {
+  const filterValues = filterTable.hashes();
+  for (let i = 0; i < filterValues.length; i++) {
+    const { param: filterParam, value: expectedValue } = filterValues[i];
+    const selector = screenElementSelectors[filterParam];
+    let currentValue = await this.client.getValue(selector);
+    if (Array.isArray(currentValue)) currentValue = currentValue[0];
+    expect(currentValue).to.equal(expectedValue);
+  }
+});
+
+Then(
+  /^I should see the following error messages on the wallet send form:$/,
+  async function(data) {
+    const errorSelector = '.WalletSendForm_component .SimpleFormField_error';
+    let errorsOnScreen = await this.waitAndGetText(errorSelector);
+    if (typeof errorsOnScreen === 'string') errorsOnScreen = [errorsOnScreen];
+    const errors = data.hashes();
+    for (let i = 0; i < errors.length; i++) {
+      const expectedError = await this.intl(errors[i].message);
+      expect(errorsOnScreen[i]).to.equal(expectedError);
+    }
+  }
+);
+
+// TODO: refactor this to a less hackish solution (fees cannot easily be calculated atm)
+Then(/^the latest transaction should show:$/, async function(table) {
+  const expectedData = table.hashes()[0];
+  let transactionTitles = await this.waitAndGetText('.Transaction_title');
+  transactionTitles = [].concat(transactionTitles);
+  const expectedTransactionTitle = await this.intl(expectedData.title, {
+    currency: 'Ada',
+  });
+  expect(expectedTransactionTitle).to.equal(transactionTitles[0]);
+  let transactionAmounts = await this.waitAndGetText('.Transaction_amount');
+  transactionAmounts = [].concat(transactionAmounts);
+  // Transaction amount includes transaction fees so we need to
+  // substract them in order to get a match with expectedData.amountWithoutFees.
+  // NOTE: we use "add()" as this is outgoing transaction and amount is a negative value!
+  const transactionAmount = new BigNumber(transactionAmounts[0]);
+  const transactionAmountWithoutFees = transactionAmount
+    .add(this.fees)
+    .toFormat(DECIMAL_PLACES_IN_ADA);
+  expect(expectedData.amountWithoutFees).to.equal(transactionAmountWithoutFees);
+});
 
 Then(/^I should not see any transactions$/, async function() {
   await this.client.waitForVisible('.Transaction_component', null, true);
@@ -80,7 +208,7 @@ Then(/^I should see the following transactions:$/, async function(table) {
           throw new Error('unknown transaction type');
       }
       return {
-        title: await this.intl(title, { currency: 'ADA' }),
+        title: await this.intl(title, { currency: 'Ada' }),
         amount: new BigNumber(tx.amount).toFormat(DECIMAL_PLACES_IN_ADA),
       };
     })
@@ -101,8 +229,4 @@ Then(/^I should see the following transactions:$/, async function(table) {
   }));
 
   expect(expectedTxs).to.deep.equal(visibleTxs);
-});
-
-When(/^I click on the show more transactions button$/, async function() {
-  await this.waitAndClick('.WalletTransactionsList_showMoreTransactionsButton');
 });

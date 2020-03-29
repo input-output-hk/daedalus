@@ -4,13 +4,18 @@ import type { Node } from 'react';
 import { observer } from 'mobx-react';
 import WalletNavigation from '../navigation/WalletNavigation';
 import styles from './WalletWithNavigation.scss';
+import NotResponding from '../not-responding/NotResponding';
 
 type Props = {
   children?: Node,
   activeItem: string,
   isActiveScreen: Function,
+  isLegacy: boolean,
   onWalletNavItemClick: Function,
+  onRestartNode: Function,
+  onOpenExternalLink: Function,
   hasNotification?: boolean,
+  isNotResponding: boolean,
 };
 
 @observer
@@ -19,15 +24,27 @@ export default class WalletWithNavigation extends Component<Props> {
     const {
       children,
       isActiveScreen,
+      isLegacy,
       onWalletNavItemClick,
       activeItem,
       hasNotification,
+      isNotResponding,
+      onRestartNode,
+      onOpenExternalLink,
     } = this.props;
     return (
       <div className={styles.component}>
+        {isNotResponding && (
+          <NotResponding
+            walletName={activeItem}
+            onRestartNode={onRestartNode}
+            onOpenExternalLink={onOpenExternalLink}
+          />
+        )}
         <div className={styles.navigation}>
           <WalletNavigation
             isActiveNavItem={isActiveScreen}
+            isLegacy={isLegacy}
             onNavItemClick={onWalletNavItemClick}
             activeItem={activeItem}
             hasNotification={hasNotification}

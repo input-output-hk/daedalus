@@ -22,6 +22,7 @@ export default class WalletBackupDialogContainer extends Component<Props> {
   };
 
   render() {
+    const { isIncentivizedTestnet } = global;
     const { actions, stores } = this.props;
     const {
       recoveryPhraseWords,
@@ -29,8 +30,9 @@ export default class WalletBackupDialogContainer extends Component<Props> {
       isRecoveryPhraseValid,
       countdownRemaining,
       recoveryPhraseShuffled,
-      isTermDeviceAccepted,
+      isTermOfflineAccepted,
       isTermRecoveryAccepted,
+      isTermRewardsAccepted,
       isPrivacyNoticeAccepted,
       currentStep,
     } = stores.walletBackup;
@@ -38,14 +40,24 @@ export default class WalletBackupDialogContainer extends Component<Props> {
       startWalletBackup,
       addWordToWalletBackupVerification,
       clearEnteredRecoveryPhrase,
-      acceptWalletBackupTermDevice,
+      acceptWalletBackupTermOffline,
       acceptWalletBackupTermRecovery,
+      acceptWalletBackupTermRewards,
       restartWalletBackup,
       finishWalletBackup,
       acceptPrivacyNoticeForWalletBackup,
       continueToRecoveryPhraseForWalletBackup,
     } = actions.walletBackup;
     const { createWalletRequest } = stores.wallets;
+
+    const canFinishBackup = isIncentivizedTestnet
+      ? isRecoveryPhraseValid &&
+        isTermOfflineAccepted &&
+        isTermRecoveryAccepted &&
+        isTermRewardsAccepted
+      : isRecoveryPhraseValid &&
+        isTermOfflineAccepted &&
+        isTermRecoveryAccepted;
     return (
       <WalletBackupDialog
         // Global props for all dialogs
@@ -64,18 +76,16 @@ export default class WalletBackupDialogContainer extends Component<Props> {
         )}
         onStartWalletBackup={startWalletBackup.trigger}
         // Props for WalletRecoveryPhraseEntryDialog
-        isTermDeviceAccepted={isTermDeviceAccepted}
+        isTermOfflineAccepted={isTermOfflineAccepted}
         enteredPhrase={enteredPhrase}
-        canFinishBackup={
-          isRecoveryPhraseValid &&
-          isTermDeviceAccepted &&
-          isTermRecoveryAccepted
-        }
+        canFinishBackup={canFinishBackup}
         isTermRecoveryAccepted={isTermRecoveryAccepted}
+        isTermRewardsAccepted={isTermRewardsAccepted}
         isValid={isRecoveryPhraseValid}
         isSubmitting={createWalletRequest.isExecuting}
-        onAcceptTermDevice={acceptWalletBackupTermDevice.trigger}
+        onAcceptTermOffline={acceptWalletBackupTermOffline.trigger}
         onAcceptTermRecovery={acceptWalletBackupTermRecovery.trigger}
+        onAcceptTermRewards={acceptWalletBackupTermRewards.trigger}
         onAddWord={addWordToWalletBackupVerification.trigger}
         onClear={clearEnteredRecoveryPhrase.trigger}
         onFinishBackup={() => {

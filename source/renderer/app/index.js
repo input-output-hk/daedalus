@@ -13,7 +13,7 @@ import actions from './actions';
 import utils from './utils';
 import Action from './actions/lib/Action';
 import translations from './i18n/translations';
-import './themes/index.global.scss';
+import '!style-loader!css-loader!sass-loader!./themes/index.global.scss'; // eslint-disable-line
 import { setupApi } from './api/index';
 
 // run MobX in strict mode

@@ -14,7 +14,7 @@ const systemInfo = {
   platformVersion: '17.7.0',
   cpu: 'Intel(R) Core(TM) i5-3210M CPU @ 2.50GHz',
   ram: '32.0 GB',
-  availableDiskSpace: '500GB',
+  availableDiskSpace: '500 GB',
 };
 
 const coreInfo = {
@@ -41,7 +41,6 @@ storiesOf('Nodes|Status', module)
       systemInfo={systemInfo}
       coreInfo={coreInfo}
       cardanoNodeState="running"
-      currentLocale="en-US"
       isDev={false}
       isMainnet
       isStaging={false}
@@ -65,6 +64,8 @@ storiesOf('Nodes|Status', module)
         280719
       )}
       nodeConnectionError={null}
+      localTip={{ epoch: 123, slot: 13400 }}
+      networkTip={{ epoch: 123, slot: 13400 }}
       localBlockHeight={number('localBlockHeight', 280719)}
       networkBlockHeight={number('networkBlockHeight', 42539)}
       onForceCheckLocalTimeDifference={() => null}

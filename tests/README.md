@@ -46,18 +46,31 @@ Example:
 generates and validates mnemonics as long as you keep it 
 running (the number of executions is updated in the terminal)
 
-### Run end-to-end tests
+### Run end-to-end tests with Jörmungandr self-node
 
 1. Make sure Daedalus is properly installed (see above).
-2. Build and run the backend (Cardano SL) following the instructions from [Daedalus](https://github.com/input-output-hk/daedalus/blob/master/README.md#development---with-cardano-wallet) README file.
+2. Make sure your state directory is clean (`rm -rf ~/Library/Application\ Support/Daedalus\ Selfnode/`)
 3. Run Daedalus frontend tests:
 
 ```bash
 $ cd daedalus/
-$ yarn nix:dev XXX # XXX = cardano system startup time
+$ yarn nix:dev
 $ yarn build
 $ yarn test:e2e
 ```
+
+#### Re-running in case of failing test cases
+
+If one test case fails, it + all remaining test cases are immediately skipped and saved into `tests/@rerun.txt`. 
+This list can then be re-run with `yarn test:unit:rerun` or `yarn test:e2e:rerun` depending on what kind of test 
+failed. This way you don't have to re-run all the passing tests again just to see if the one that failed is 
+still broken.
+
+### Running tests for development
+1. Mark the test or scenario you are working with @watch annotation
+2. Make sure you are in the nix console (`yarn nix:dev`)
+3. Make sure your state is clean (`rm -rf ~/Library/Application\ Support/Daedalus\ Selfnode/`)
+4. Run tests with `yarn test:e2e:watch:once`
 
 ### Run all tests
 
@@ -65,7 +78,18 @@ $ yarn test:e2e
 $ yarn test
 ```
 
+### Running Byron specific tests
+1. Make sure you are in the nix console (`yarn nix:dev`)
+2. Make sure your state is clean (`rm -rf ~/Library/Application\ Support/Daedalus\ Selfnode/`)
+3. Run tests with `yarn test:e2e:byron`
+
 Once tests are complete you will get a summary of passed/failed tests in the Terminal window.
+
+### Run all tests
+
+```bash
+$ yarn test
+```
 
 ### Keeping Daedalus alive after end-to-end tests
 

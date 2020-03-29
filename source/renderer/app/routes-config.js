@@ -2,6 +2,7 @@
 export const ROUTES = {
   ROOT: '/',
   PAPER_WALLET_CREATE_CERTIFICATE: '/paper-wallet/create-certificate',
+  NETWORK_INFO: '/network-info',
   STAKING: {
     ROOT: '/staking',
     COUNTDOWN: '/staking/countdown',
@@ -14,7 +15,7 @@ export const ROUTES = {
   },
   PROFILE: {
     INITIAL_SETTINGS: '/profile/initial-settings',
-    TERMS_OF_USE: '/profile/terms-of-use',
+    TERMS_OF_USE: '/profile/terms-of-service',
     DATA_LAYER_MIGRATION: '/profile/data-layer-migration',
   },
   WALLETS: {
@@ -31,7 +32,7 @@ export const ROUTES = {
   SETTINGS: {
     ROOT: '/settings',
     GENERAL: '/settings/general',
-    TERMS_OF_USE: '/settings/terms-of-use',
+    TERMS_OF_USE: '/settings/terms-of-service',
     SUPPORT: '/settings/support',
     DISPLAY: '/settings/display',
   },

@@ -3,10 +3,10 @@ import { app, globalShortcut, Menu, BrowserWindow, dialog } from 'electron';
 import { environment } from '../environment';
 import { winLinuxMenu } from '../menus/win-linux';
 import { osxMenu } from '../menus/osx';
-import { Logger } from './logging';
+import { logger } from './logging';
 import { safeExitWithCode } from './safeExitWithCode';
 import { CardanoNode } from '../cardano/CardanoNode';
-import { DIALOGS } from '../../common/ipc/constants';
+import { DIALOGS, PAGES } from '../../common/ipc/constants';
 import { showUiPartChannel } from '../ipc/control-ui-parts';
 import { getTranslation } from './getTranslation';
 
@@ -18,7 +18,8 @@ export const buildAppMenus = async (
     isUpdateAvailable: boolean,
   }
 ) => {
-  const { ABOUT, BLOCK_CONSOLIDATION, DAEDALUS_DIAGNOSTICS } = DIALOGS;
+  const { ABOUT, DAEDALUS_DIAGNOSTICS } = DIALOGS;
+  const { SETTINGS, WALLET_SETTINGS } = PAGES;
   const { isUpdateAvailable } = data;
 
   const { isMacOS, isBlankScreenFixActive } = environment;
@@ -28,25 +29,29 @@ export const buildAppMenus = async (
     if (mainWindow) showUiPartChannel.send(ABOUT, mainWindow);
   };
 
-  const openBlockConsolidationStatusDialog = () => {
-    if (mainWindow) showUiPartChannel.send(BLOCK_CONSOLIDATION, mainWindow);
-  };
-
   const openDaedalusDiagnosticsDialog = () => {
     if (mainWindow) showUiPartChannel.send(DAEDALUS_DIAGNOSTICS, mainWindow);
   };
 
+  const openSettingsPage = () => {
+    if (mainWindow) showUiPartChannel.send(SETTINGS, mainWindow);
+  };
+
+  const openWalletSettingsPage = () => {
+    if (mainWindow) showUiPartChannel.send(WALLET_SETTINGS, mainWindow);
+  };
+
   const restartWithBlankScreenFix = async () => {
-    Logger.info('Restarting in BlankScreenFix...');
+    logger.info('Restarting in BlankScreenFix...');
     if (cardanoNode) await cardanoNode.stop();
-    Logger.info('Exiting Daedalus with code 21', { code: 21 });
+    logger.info('Exiting Daedalus with code 21', { code: 21 });
     safeExitWithCode(21);
   };
 
   const restartWithoutBlankScreenFix = async () => {
-    Logger.info('Restarting without BlankScreenFix...');
+    logger.info('Restarting without BlankScreenFix...');
     if (cardanoNode) await cardanoNode.stop();
-    Logger.info('Exiting Daedalus with code 22', { code: 22 });
+    logger.info('Exiting Daedalus with code 22', { code: 22 });
     safeExitWithCode(22);
   };
 
@@ -83,7 +88,8 @@ export const buildAppMenus = async (
   const menuActions = {
     openAboutDialog,
     openDaedalusDiagnosticsDialog,
-    openBlockConsolidationStatusDialog,
+    openSettingsPage,
+    openWalletSettingsPage,
     toggleBlankScreenFix,
   };
 

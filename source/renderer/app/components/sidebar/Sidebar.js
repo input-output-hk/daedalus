@@ -1,29 +1,31 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { find, kebabCase } from 'lodash';
+import { find } from 'lodash';
 import classNames from 'classnames';
 import styles from './Sidebar.scss';
 import SidebarCategory from './SidebarCategory';
+import SidebarCategoryNetworkInfo from './SidebarCategoryNetworkInfo';
 import SidebarWalletsMenu from './wallets/SidebarWalletsMenu';
 import InstructionsDialog from '../wallet/paper-wallet-certificate/InstructionsDialog';
-import supportIconLight from '../../assets/images/sidebar/bug-report-ic.inline.svg';
-import supportIconDark from '../../assets/images/sidebar/bug-report-ic-dark.inline.svg';
-import type { SidebarWalletType } from '../../types/sidebarTypes';
-import { ROUTES } from '../../routes-config';
 import { CATEGORIES_BY_NAME } from '../../config/sidebarConfig.js';
+import { ROUTES } from '../../routes-config';
+import type { SidebarWalletType } from '../../types/sidebarTypes';
+import type { networkType } from '../../types/networkTypes';
+import type { SidebarCategoryInfo } from '../../config/sidebarConfig';
 
 type Props = {
   menus: SidebarMenus,
-  categories: SidebarCategories,
+  categories: Array<SidebarCategoryInfo>,
   activeSidebarCategory: string,
-  currentTheme: string,
-  onCategoryClicked: Function,
   isShowingSubMenus: boolean,
-  openDialogAction: Function,
-  onAddWallet: Function,
-  onSubmitSupportRequest: Function,
   pathname: string,
+  network: networkType,
+  onActivateCategory: Function,
+  onOpenDialog: Function,
+  onAddWallet: Function,
+  onOpenSplashNetwork?: Function,
+  isIncentivizedTestnet: boolean,
 };
 
 export type SidebarMenus = ?{
@@ -36,24 +38,12 @@ export type SidebarMenus = ?{
   },
 };
 
-export type SidebarCategories = Array<{
-  name: string,
-  route: string,
-  icon: string,
-}>;
-
 @observer
 export default class Sidebar extends Component<Props> {
   static defaultProps = {
     isShowingSubMenus: false,
+    onOpenSplashNetwork: () => null,
   };
-
-  get supportIcon() {
-    const { currentTheme } = this.props;
-    return currentTheme === 'yellow' || currentTheme === 'white'
-      ? supportIconDark
-      : supportIconLight;
-  }
 
   render() {
     const {
@@ -63,8 +53,9 @@ export default class Sidebar extends Component<Props> {
       pathname,
       isShowingSubMenus,
       onAddWallet,
-      onSubmitSupportRequest,
+      isIncentivizedTestnet,
     } = this.props;
+
     let subMenu = null;
 
     const walletsCategory = find(categories, {
@@ -79,6 +70,7 @@ export default class Sidebar extends Component<Props> {
           onWalletItemClick={menus.wallets.actions.onWalletItemClick}
           isActiveWallet={id => id === menus.wallets.activeWalletId}
           isAddWalletButtonActive={pathname === '/wallets/add'}
+          isIncentivizedTestnet={isIncentivizedTestnet}
           visible={isShowingSubMenus}
         />
       );
@@ -92,39 +84,46 @@ export default class Sidebar extends Component<Props> {
     return (
       <div className={sidebarStyles}>
         <div className={styles.minimized}>
-          {categories.map((category, index) => {
-            const categoryClassName = kebabCase(category.name);
+          {categories.map((category: SidebarCategoryInfo) => {
+            const content = this.getCategoryContent(category.name);
+            const isActive = activeSidebarCategory === category.route;
             return (
               <SidebarCategory
-                // eslint-disable-next-line react/no-array-index-key
-                key={index}
-                className={categoryClassName}
-                icon={category.icon}
-                active={activeSidebarCategory === category.route}
-                onClick={() => this.handleClick(category.route)}
+                key={category.name}
+                category={category}
+                isActive={isActive}
+                onClick={this.handleClick}
+                content={content}
               />
             );
           })}
-
-          <SidebarCategory
-            className="supportRequest"
-            icon={this.supportIcon}
-            active={false}
-            onClick={onSubmitSupportRequest}
-          />
         </div>
         {subMenu}
       </div>
     );
   }
 
+  getCategoryContent = (categoryName: string) => {
+    if (categoryName === 'NETWORK_INFO') {
+      return <SidebarCategoryNetworkInfo network={this.props.network} />;
+    }
+    return null;
+  };
+
   handleClick = (categoryRoute: string) => {
+    const {
+      onActivateCategory,
+      onOpenDialog,
+      onOpenSplashNetwork,
+    } = this.props;
     if (categoryRoute === ROUTES.PAPER_WALLET_CREATE_CERTIFICATE) {
-      this.props.openDialogAction({
-        dialog: InstructionsDialog,
-      });
+      onOpenDialog(InstructionsDialog);
+    } else if (categoryRoute === ROUTES.NETWORK_INFO) {
+      if (onOpenSplashNetwork) {
+        onOpenSplashNetwork();
+      }
     } else {
-      this.props.onCategoryClicked(categoryRoute);
+      onActivateCategory(categoryRoute);
     }
   };
 }

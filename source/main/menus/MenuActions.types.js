@@ -2,6 +2,7 @@
 export type MenuActions = {
   toggleBlankScreenFix: Function,
   openAboutDialog: Function,
-  openBlockConsolidationStatusDialog: Function,
   openDaedalusDiagnosticsDialog: Function,
+  openSettingsPage: Function,
+  openWalletSettingsPage: Function,
 };

@@ -10,6 +10,7 @@ import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { defineMessages, intlShape } from 'react-intl';
 import BigNumber from 'bignumber.js';
+import { get } from 'lodash';
 import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
 import { submitOnEnter } from '../../utils/form';
 import AmountInputSkin from './skins/AmountInputSkin';
@@ -25,7 +26,8 @@ import {
 } from '../../utils/formatters';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
 import { FormattedHTMLMessageWithLink } from '../widgets/FormattedHTMLMessageWithLink';
-
+import { InvalidAddressError } from '../../api/transactions/errors';
+import { NUMBER_FORMATS } from '../../../../common/types/number.types';
 /* eslint-disable consistent-return */
 
 export const messages = defineMessages({
@@ -72,11 +74,6 @@ export const messages = defineMessages({
     defaultMessage: '!!!Next',
     description: 'Label for the next button on the wallet send form.',
   },
-  invalidAddress: {
-    id: 'wallet.send.form.errors.invalidAddress',
-    defaultMessage: '!!!Please enter a valid address.',
-    description: 'Error message shown when invalid address was entered.',
-  },
   invalidAmount: {
     id: 'wallet.send.form.errors.invalidAmount',
     defaultMessage: '!!!Please enter a valid amount.',
@@ -108,6 +105,8 @@ type Props = {
     address: string,
     amount: number
   ) => Promise<BigNumber>,
+  currentNumberFormat: string,
+  walletAmount: BigNumber,
   addressValidator: Function,
   openDialogAction: Function,
   isDialogOpen: Function,
@@ -185,10 +184,11 @@ export default class WalletSendForm extends Component<Props, State> {
                   this.context.intl.formatMessage(messages.fieldIsRequired),
                 ];
               }
-              const isValidAddress = await this.props.addressValidator(value);
               const amountField = form.$('amount');
-              const amountValue = amountField.value;
+              const amountValue = amountField.value.toString();
               const isAmountValid = amountField.isValid;
+              const isValidAddress = this.props.addressValidator(value);
+
               if (isValidAddress && isAmountValid) {
                 await this._calculateTransactionFee(value, amountValue);
               } else {
@@ -196,16 +196,16 @@ export default class WalletSendForm extends Component<Props, State> {
               }
               return [
                 isValidAddress,
-                this.context.intl.formatMessage(messages.invalidAddress),
+                this.context.intl.formatMessage(new InvalidAddressError()),
               ];
             },
           ],
         },
         amount: {
           label: this.context.intl.formatMessage(messages.amountLabel),
-          placeholder: `0.${'0'.repeat(
-            this.props.currencyMaxFractionalDigits
-          )}`,
+          placeholder: `0${
+            this._getCurrentNumberFormat().decimalSeparator
+          }${'0'.repeat(this.props.currencyMaxFractionalDigits)}`,
           value: null,
           validators: [
             async ({ field, form }) => {
@@ -309,6 +309,7 @@ export default class WalletSendForm extends Component<Props, State> {
                   {...amountFieldProps}
                   className="amount"
                   label={intl.formatMessage(messages.amountLabel)}
+                  numberFormat={this._getCurrentNumberFormat()}
                   numberLocaleOptions={{
                     minimumFractionDigits: currencyMaxFractionalDigits,
                   }}
@@ -365,6 +366,7 @@ export default class WalletSendForm extends Component<Props, State> {
 
   async _calculateTransactionFee(address: string, amountValue: string) {
     const amount = formattedAmountToLovelace(amountValue);
+
     try {
       const fee = await this.props.calculateTransactionFee(address, amount);
       if (this._isMounted) {
@@ -376,7 +378,7 @@ export default class WalletSendForm extends Component<Props, State> {
         });
       }
     } catch (error) {
-      const errorHasLink = !!error.values.linkLabel;
+      const errorHasLink = !!get(error, ['values', 'linkLabel']);
       const transactionFeeError = errorHasLink ? (
         <FormattedHTMLMessageWithLink
           message={error}
@@ -394,5 +396,9 @@ export default class WalletSendForm extends Component<Props, State> {
         });
       }
     }
+  }
+
+  _getCurrentNumberFormat() {
+    return NUMBER_FORMATS[this.props.currentNumberFormat];
   }
 }

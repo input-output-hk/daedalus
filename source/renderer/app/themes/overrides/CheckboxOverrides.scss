@@ -1,0 +1,10 @@
+.root {
+  .check {
+    height: var(--rp-checkbox-size);
+    width: var(--rp-checkbox-size);
+  }
+
+  strong {
+    font-weight: normal;
+  }
+}

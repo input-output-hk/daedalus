@@ -1,24 +1,27 @@
 // @flow
+export type AddressState = 'used' | 'unused';
+
+export type GetAddressesRequestQueryParams = {
+  state: AddressState,
+};
+
 export type Address = {
   id: string,
-  used: boolean,
-  changeAddress: boolean,
+  state: AddressState,
 };
 
 export type Addresses = Array<Address>;
 
-// req/res Address types
-export type GetAddressesResponse = {
-  accountIndex: ?number,
-  addresses: Addresses,
-};
-
 export type GetAddressesRequest = {
   walletId: string,
+  isLegacy: boolean,
+  queryParams?: GetAddressesRequestQueryParams,
 };
 
-export type CreateAddressRequest = {
-  spendingPassword: ?string,
-  accountIndex: number,
+// Byron related types
+
+export type CreateByronWalletAddressRequest = {
   walletId: string,
+  passphrase: string,
+  addressIndex?: number,
 };

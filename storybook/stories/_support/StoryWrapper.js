@@ -5,7 +5,13 @@ import { IntlProvider, addLocaleData } from 'react-intl';
 import en from 'react-intl/locale-data/en';
 import ja from 'react-intl/locale-data/ja';
 import { onReceiveParam, setInitialState } from '../../addons/DaedalusMenu';
-import { getInitialState, themes, locales, osMinWindowHeights } from './config';
+import {
+  getInitialState,
+  themes,
+  themesIds,
+  locales,
+  osMinWindowHeights,
+} from './config';
 
 import translations from '../../../source/renderer/app/i18n/translations';
 import ThemeManager from '../../../source/renderer/app/ThemeManager';
@@ -50,6 +56,7 @@ export default class StoryWrapper extends Component<Props, State> {
     const { themeName, localeName, osName } = this.state;
     if (!themeName || !localeName || !osName) return <div>LOADING</div>;
     const theme = themes[themeName];
+    const themeId = themesIds[themeName];
     const locale = locales[localeName];
     const minScreenHeight = osMinWindowHeights[osName];
 
@@ -60,7 +67,11 @@ export default class StoryWrapper extends Component<Props, State> {
         <IntlProvider
           {...{ locale, key: locale, messages: translations[locale] }}
         >
-          <Story osName={this.state.osName} locale={locale} />
+          <Story
+            osName={this.state.osName}
+            locale={locale}
+            currentTheme={themeId}
+          />
         </IntlProvider>
       </Fragment>
     );

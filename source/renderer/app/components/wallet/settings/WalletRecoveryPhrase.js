@@ -137,6 +137,7 @@ export default class WalletRecoveryPhrase extends Component<Props> {
   }
 
   get recoveryPhraseStatus() {
+    const { locale } = this.context.intl;
     const {
       creationDate,
       recoveryPhraseVerificationDate,
@@ -151,7 +152,9 @@ export default class WalletRecoveryPhrase extends Component<Props> {
       RECOVERY_PHRASE_VERIFICATION_WARNING,
       'days'
     );
-    const timeUntilWarning = moment().to(timeFromCreationToWarning, true);
+    const timeUntilWarning = moment()
+      .locale(locale)
+      .to(timeFromCreationToWarning, true);
     return {
       icon,
       message,

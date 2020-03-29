@@ -5,6 +5,8 @@ import type {
 } from '../types/bug-report-request.types';
 import type { GenerateFileMetaParams } from '../types/file-meta-request.types';
 import type { GeneratePaperWalletParams } from '../types/paper-wallet-request.types';
+import type { GenerateAddressPDFParams } from '../types/address-pdf-request.types';
+import type { GenerateRewardsCsvParams } from '../types/rewards-csv-request.types';
 import type {
   CardanoNodeState,
   CardanoStatus,
@@ -14,7 +16,11 @@ import type {
 import type { CheckDiskSpaceResponse } from '../types/no-disk-space.types';
 import type { LogFiles } from '../../renderer/app/types/LogTypes';
 import type { GpuStatus } from '../../renderer/app/types/gpuStatus';
-import type { StateSnapshotLogParams } from '../types/logging.types';
+import type { ExportedByronWallet } from '../../renderer/app/types/walletExportTypes';
+import type {
+  StateSnapshotLogParams,
+  WalletMigrationReportData,
+} from '../types/logging.types';
 
 /**
  * ======================= IPC CHANNELS API =========================
@@ -121,14 +127,6 @@ export type RebuildAppMenuRendererRequest = { isUpdateAvailable: boolean };
 export type RebuildAppMenuMainResponse = void;
 
 /**
- * Channel to get the number of epochs consolidated
- */
-export const GET_CONSOLIDATED_EPOCHS_COUNT_CHANNEL =
-  'GET_CONSOLIDATED_EPOCHS_COUNT_CHANNEL';
-export type GetConsolidatedEpochsCountRendererRequest = void;
-export type GetConsolidatedEpochsCountMainResponse = number;
-
-/**
  * Channel to generate file blob
  */
 export const GENERATE_FILE_META_CHANNEL = 'GENERATE_FILE_META_CHANNEL';
@@ -141,6 +139,20 @@ export type GenerateFileMetaMainResponse = any;
 export const GENERATE_PAPER_WALLET_CHANNEL = 'GENERATE_PAPER_WALLET_CHANNEL';
 export type GeneratePaperWalletRendererRequest = GeneratePaperWalletParams;
 export type GeneratePaperWalletMainResponse = void;
+
+/**
+ * Channel to generate and save a share address PDF
+ */
+export const GENERATE_ADDRESS_PDF_CHANNEL = 'GENERATE_ADDRESS_PDF_CHANNEL';
+export type GenerateAddressPDFRendererRequest = GenerateAddressPDFParams;
+export type GenerateAddressPDFMainResponse = void;
+
+/**
+ * Channel to generate and save a rewards csv
+ */
+export const GENERATE_REWARDS_CSV_CHANNEL = 'GENERATE_REWARDS_CSV_CHANNEL';
+export type GenerateRewardsCsvRendererRequest = GenerateRewardsCsvParams;
+export type GenerateRewardsCsvMainResponse = void;
 
 /**
  * ====================== CARDANO IPC CHANNELS ======================
@@ -186,7 +198,7 @@ export type CardanoFaultInjectionRendererRequest = FaultInjectionIpcRequest;
 export type CardanoFaultInjectionMainResponse = void;
 
 /**
- * Channel where renderer can ask for the last cached cardano-node status.
+ * Channel where renderer can ask for the last cached cardano-node status
  */
 export const GET_CACHED_CARDANO_STATUS_CHANNEL =
   'GET_CACHED_CARDANO_STATUS_CHANNEL';
@@ -194,7 +206,7 @@ export type GetCachedCardanoStatusRendererRequest = void;
 export type GetCachedCardanoStatusMainResponse = ?CardanoStatus;
 
 /**
- * Channel where renderer and main process can exchange cardano-node status info.
+ * Channel where renderer and main process can exchange cardano-node status info
  */
 export const SET_CACHED_CARDANO_STATUS_CHANNEL =
   'SET_CACHED_CARDANO_STATUS_CHANNEL';
@@ -207,3 +219,21 @@ export type SetCachedCardanoStatusMainResponse = void;
 export const DETECT_SYSTEM_LOCALE_CHANNEL = 'DETECT_SYSTEM_LOCALE_CHANNEL';
 export type DetectSystemLocaleRendererRequest = void;
 export type DetectSystemLocaleMainResponse = string;
+
+/**
+ * Channel where renderer can ask main process to export wallets
+ */
+export const EXPORT_WALLETS_CHANNEL = 'EXPORT_WALLETS_CHANNEL';
+export type ExportWalletsRendererRequest = void;
+export type ExportWalletsMainResponse = {
+  wallets: Array<ExportedByronWallet>,
+  errors: string,
+};
+
+/**
+ * Channel for generating wallet migration report
+ */
+export const GENERATE_WALLET_MIGRATION_REPORT_CHANNEL =
+  'GENERATE_WALLET_MIGRATION_REPORT_CHANNEL';
+export type GenerateWalletMigrationReportRendererRequest = WalletMigrationReportData;
+export type GenerateWalletMigrationReportMainResponse = void;

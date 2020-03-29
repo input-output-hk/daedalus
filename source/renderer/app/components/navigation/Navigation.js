@@ -24,6 +24,7 @@ type Props = {
   activeItem: string,
   isActiveNavItem?: Function,
   onNavItemClick: Function,
+  isLegacy?: boolean,
   items: Array<NavButtonProps | NavDropdownProps>,
 };
 
@@ -46,11 +47,14 @@ export default class Navigation extends Component<Props> {
       onNavItemClick,
       activeItem,
       items,
+      isLegacy,
     } = this.props;
+    const { isIncentivizedTestnet } = global;
+
     return (
       <div className={styles.component}>
         {items.map(({ id, icon, label, hasNotification, ...item }) =>
-          item.type === 'dropdown' ? (
+          item.type === 'dropdown' && !(isIncentivizedTestnet && isLegacy) ? (
             <NavDropdown
               key={id}
               label={label}

@@ -1,38 +1,79 @@
 // @flow
 import React from 'react';
 import { action } from '@storybook/addon-actions';
+import { find } from 'lodash';
 import BigNumber from 'bignumber.js';
-import { number } from '@storybook/addon-knobs';
 import DelegationCenter from '../../../source/renderer/app/components/staking/delegation-center/DelegationCenter';
 import STAKE_POOLS from '../../../source/renderer/app/config/stakingStakePools.dummy.json';
-import Wallet from '../../../source/renderer/app/domains/Wallet';
+import Wallet, {
+  WalletDelegationStatuses,
+} from '../../../source/renderer/app/domains/Wallet';
 import {
   WalletRecoveryPhraseVerificationStatuses,
   WalletRecoveryPhraseVerificationTypes,
 } from '../../../source/renderer/app/stores/WalletsStore';
+import type {
+  NextEpoch,
+  TipInfo,
+} from '../../../source/renderer/app/api/network/types';
 
-const defaultAdaValue = 82650.15;
-const defaultPercentage = 33.123456;
+const walletSyncedStateReady = { status: 'ready' };
 
-const adaValueKnob = (name, defaultValue) => {
-  const value = number(name, defaultValue);
+const walletSyncedStateRestoring = {
+  status: 'restoring',
+  progress: {
+    quantity: 25,
+    unit: 'percentage',
+  },
+};
 
-  return new BigNumber(value);
+const networkTip: TipInfo = {
+  epoch: 1232,
+  slot: 123,
+};
+
+const nextEpochDate = new Date();
+nextEpochDate.setDate(nextEpochDate.getDate() + 1);
+
+const futureEpochDate = new Date();
+futureEpochDate.setDate(futureEpochDate.getDate() + 2);
+
+const nextEpoch: NextEpoch = {
+  epochNumber: 1233,
+  epochStart: nextEpochDate.toUTCString(),
+};
+
+const futureEpoch: NextEpoch = {
+  epochNumber: 1234,
+  epochStart: futureEpochDate.toUTCString(),
 };
 
 // Dummy data initialization
 const wallets = [
   new Wallet({
     id: 'wallet1',
+    addressPoolGap: 20,
     name: 'Main wallet',
     amount: new BigNumber(100100),
-    assurance: 'normal',
+    availableAmount: new BigNumber(100100),
+    reward: new BigNumber(100),
     hasPassword: true,
     passwordUpdateDate: new Date(),
     isLegacy: false,
     inactiveStakePercentage: 24,
-    isDelegated: true,
-    delegatedStakePool: STAKE_POOLS[0],
+    syncState: walletSyncedStateReady,
+    delegatedStakePoolId: null,
+    lastDelegationStakePoolId: STAKE_POOLS[250].id,
+    pendingDelegations: [
+      {
+        status: 'delegating',
+        target: STAKE_POOLS[250].id,
+        changes_at: {
+          epoch_number: nextEpoch.epochNumber,
+          epoch_start_time: nextEpoch.epochStart,
+        },
+      },
+    ],
     createdAt: new Date(),
     recoveryPhraseVerificationDate: new Date(),
     recoveryPhraseVerificationStatus:
@@ -42,15 +83,28 @@ const wallets = [
   }),
   new Wallet({
     id: 'wallet2',
+    addressPoolGap: 20,
     name: 'Spending money',
-    amount: new BigNumber(10100.2),
-    assurance: 'normal',
+    amount: new BigNumber(100100),
+    availableAmount: new BigNumber(100100),
+    reward: new BigNumber(100),
     hasPassword: true,
     passwordUpdateDate: new Date(),
     isLegacy: false,
-    inactiveStakePercentage: 35,
-    isDelegated: true,
-    delegatedStakePool: STAKE_POOLS[1],
+    inactiveStakePercentage: 24,
+    syncState: walletSyncedStateReady,
+    delegatedStakePoolId: STAKE_POOLS[250].id,
+    lastDelegationStakePoolId: STAKE_POOLS[0].id,
+    pendingDelegations: [
+      {
+        target: STAKE_POOLS[0].id,
+        status: 'delegating',
+        changes_at: {
+          epoch_number: nextEpoch.epochNumber,
+          epoch_start_time: nextEpoch.epochStart,
+        },
+      },
+    ],
     createdAt: new Date(),
     recoveryPhraseVerificationDate: new Date(),
     recoveryPhraseVerificationStatus:
@@ -60,14 +114,100 @@ const wallets = [
   }),
   new Wallet({
     id: 'wallet3',
+    addressPoolGap: 20,
+    name: 'Spending money 2',
+    amount: new BigNumber(10100.2),
+    availableAmount: new BigNumber(10100.2),
+    reward: new BigNumber(50),
+    hasPassword: true,
+    passwordUpdateDate: new Date(),
+    isLegacy: false,
+    inactiveStakePercentage: 35,
+    syncState: walletSyncedStateReady,
+    delegatedStakePoolId: STAKE_POOLS[0].id,
+    lastDelegationStakePoolId: null,
+    pendingDelegations: [
+      {
+        status: WalletDelegationStatuses.NOT_DELEGATING,
+        changes_at: {
+          epoch_number: nextEpoch.epochNumber,
+          epoch_start_time: nextEpoch.epochStart,
+        },
+      },
+    ],
+    createdAt: new Date(),
+    recoveryPhraseVerificationDate: new Date(),
+    recoveryPhraseVerificationStatus:
+      WalletRecoveryPhraseVerificationStatuses.OK,
+    recoveryPhraseVerificationStatusType:
+      WalletRecoveryPhraseVerificationTypes.NEVER_CHECKED,
+  }),
+  new Wallet({
+    id: 'wallet4',
+    addressPoolGap: 20,
     name: 'Savings',
     amount: new BigNumber(5001000),
-    assurance: 'normal',
+    availableAmount: new BigNumber(5001000),
+    reward: new BigNumber(30),
     hasPassword: true,
     passwordUpdateDate: new Date(),
     isLegacy: false,
     inactiveStakePercentage: 0,
-    isDelegated: false,
+    syncState: walletSyncedStateRestoring,
+    delegationStakePoolStatus: WalletDelegationStatuses.NOT_DELEGATING,
+    delegatedStakePoolId: null,
+    createdAt: new Date(),
+    recoveryPhraseVerificationDate: new Date(),
+    recoveryPhraseVerificationStatus:
+      WalletRecoveryPhraseVerificationStatuses.OK,
+    recoveryPhraseVerificationStatusType:
+      WalletRecoveryPhraseVerificationTypes.NEVER_CHECKED,
+  }),
+  new Wallet({
+    id: 'wallet5',
+    addressPoolGap: 20,
+    name: 'Savings 2',
+    amount: new BigNumber(5001000),
+    availableAmount: new BigNumber(5001000),
+    reward: new BigNumber(30),
+    hasPassword: true,
+    passwordUpdateDate: new Date(),
+    isLegacy: false,
+    inactiveStakePercentage: 0,
+    syncState: walletSyncedStateRestoring,
+    delegationStakePoolStatus: WalletDelegationStatuses.DELEGATING,
+    delegatedStakePoolId: '90000',
+    createdAt: new Date(),
+    recoveryPhraseVerificationDate: new Date(),
+    recoveryPhraseVerificationStatus:
+      WalletRecoveryPhraseVerificationStatuses.OK,
+    recoveryPhraseVerificationStatusType:
+      WalletRecoveryPhraseVerificationTypes.NEVER_CHECKED,
+  }),
+  new Wallet({
+    id: 'wallet6',
+    addressPoolGap: 20,
+    name: 'Spending money 3',
+    amount: new BigNumber(10100.2),
+    availableAmount: new BigNumber(10100.2),
+    reward: new BigNumber(50),
+    hasPassword: true,
+    passwordUpdateDate: new Date(),
+    isLegacy: false,
+    inactiveStakePercentage: 35,
+    syncState: walletSyncedStateReady,
+    delegatedStakePoolId: STAKE_POOLS[0].id,
+    lastDelegationStakePoolId: '90000',
+    pendingDelegations: [
+      {
+        target: '90000',
+        status: WalletDelegationStatuses.DELEGATING,
+        changes_at: {
+          epoch_number: nextEpoch.epochNumber,
+          epoch_start_time: nextEpoch.epochStart,
+        },
+      },
+    ],
     createdAt: new Date(),
     recoveryPhraseVerificationDate: new Date(),
     recoveryPhraseVerificationStatus:
@@ -77,16 +217,26 @@ const wallets = [
   }),
 ];
 
-export const StakingDelegationCenterStory = () => (
+export const StakingDelegationCenterStory = ({
+  locale,
+  isLoading,
+}: {
+  locale: string,
+  isLoading: boolean,
+}) => (
   <DelegationCenter
-    adaValue={adaValueKnob('ADA Value', defaultAdaValue)}
-    percentage={number('Percentage', defaultPercentage, {
-      min: 0,
-      max: 100,
-      step: 1,
-      range: true,
-    })}
     wallets={wallets}
     onDelegate={action('onDelegate')}
+    onUndelegate={action('onUndelegate')}
+    getStakePoolById={poolId =>
+      find(STAKE_POOLS, stakePool => stakePool.id === poolId)
+    }
+    numberOfStakePools={STAKE_POOLS.length}
+    networkTip={networkTip}
+    nextEpoch={nextEpoch}
+    fetchingStakePoolsFailed={isLoading}
+    futureEpoch={futureEpoch}
+    currentLocale={locale}
+    isLoading={false}
   />
 );

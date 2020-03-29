@@ -1,116 +1,89 @@
 // @flow
-import { get } from 'lodash';
+import { get, map } from 'lodash';
+import moment from 'moment';
+import { action } from 'mobx';
+import BigNumber from 'bignumber.js/bignumber';
 import AdaApi from '../api';
-import { getNodeInfo } from '../nodes/requests/getNodeInfo';
-import { getNodeSettings } from '../nodes/requests/getNodeSettings';
+import { getNetworkInfo } from '../network/requests/getNetworkInfo';
 import { getLatestAppVersion } from '../nodes/requests/getLatestAppVersion';
 import { GenericApiError } from '../common/errors';
-import { Logger } from '../../utils/logging';
-import type { NodeInfoQueryParams } from '../nodes/requests/getNodeInfo';
+import { logger } from '../../utils/logging';
+import packageJson from '../../../../../package.json';
+
+// domains
+import Wallet from '../../domains/Wallet';
+import StakePool from '../../domains/StakePool';
+
+import type {
+  GetNetworkInfoResponse,
+  NetworkInfoResponse,
+} from '../network/types';
 import type {
   LatestAppVersionInfoResponse,
-  NodeInfoResponse,
-  GetNetworkStatusResponse,
-  NodeSettingsResponse,
-  GetNodeSettingsResponse,
   GetLatestAppVersionResponse,
 } from '../nodes/types';
 import type { GetNewsResponse } from '../news/types';
+import { EPOCH_LENGTH_ITN } from '../../config/epochsConfig';
 
 let LATEST_APP_VERSION = null;
-let LOCAL_TIME_DIFFERENCE = 0;
-let LOCAL_BLOCK_HEIGHT = null;
-let NETWORK_BLOCK_HEIGHT = null;
+let SYNC_PROGRESS = null;
 let NEXT_ADA_UPDATE = null;
-let SUBSCRIPTION_STATUS = null;
 let APPLICATION_VERSION = null;
-let FAKE_NEWSFEED_JSON: ?GetNewsResponse;
+let TESTING_NEWSFEED_JSON: ?GetNewsResponse;
+let TESTING_WALLETS_DATA: Object = {};
 
 export default (api: AdaApi) => {
-  api.getLocalTimeDifference = async () =>
-    Promise.resolve(LOCAL_TIME_DIFFERENCE);
-
-  api.getNetworkStatus = async (
-    queryInfoParams?: NodeInfoQueryParams
-  ): Promise<GetNetworkStatusResponse> => {
-    Logger.debug('AdaApi::getNetworkStatus (PATCHED) called');
+  api.getNetworkInfo = async (): Promise<GetNetworkInfoResponse> => {
+    logger.debug('AdaApi::getNetworkInfo (PATCHED) called');
     try {
-      const nodeInfo: NodeInfoResponse = await getNodeInfo(
-        api.config,
-        queryInfoParams
-      );
-      Logger.debug('AdaApi::getNetworkStatus (PATCHED) success', {
-        nodeInfo,
-      });
+      const networkInfo: NetworkInfoResponse = await getNetworkInfo(api.config);
+      logger.debug('AdaApi::getNetworkInfo (PATCHED) success', { networkInfo });
 
       const {
-        blockchainHeight,
-        subscriptionStatus,
-        syncProgress,
-        localBlockchainHeight,
-      } = nodeInfo;
+        sync_progress, // eslint-disable-line camelcase
+        node_tip, // eslint-disable-line camelcase
+        network_tip, // eslint-disable-line camelcase
+        next_epoch, // eslint-disable-line camelcase
+      } = networkInfo;
+      const syncProgress =
+        get(sync_progress, 'status') === 'ready'
+          ? 100
+          : get(sync_progress, 'quantity', 0);
 
       // extract relevant data before sending to NetworkStatusStore
-      const response = {
-        subscriptionStatus: SUBSCRIPTION_STATUS || subscriptionStatus,
-        syncProgress: syncProgress.quantity,
-        blockchainHeight:
-          NETWORK_BLOCK_HEIGHT || get(blockchainHeight, 'quantity', 0),
-        localBlockchainHeight:
-          LOCAL_BLOCK_HEIGHT || localBlockchainHeight.quantity,
-        localTimeInformation: {
-          status: 'available',
-          difference: LOCAL_TIME_DIFFERENCE,
+      return {
+        syncProgress: SYNC_PROGRESS || syncProgress,
+        localTip: {
+          epoch: get(node_tip, 'epoch_number', 0),
+          slot: get(node_tip, 'slot_number', 0),
+        },
+        networkTip: {
+          epoch: get(network_tip, 'epoch_number', 0),
+          slot: get(network_tip, 'slot_number', 0),
+        },
+        nextEpoch: {
+          epochNumber: get(next_epoch, 'epoch_number', 0),
+          epochStart: get(next_epoch, 'epoch_start_time', ''),
+        },
+        futureEpoch: {
+          epochNumber: get(next_epoch, 'epoch_number', 0) + 1,
+          epochStart: moment(get(next_epoch, 'epoch_start', '')).add(
+            EPOCH_LENGTH_ITN,
+            'seconds'
+          ),
         },
       };
-
-      // Since in test environment we run multiple NTP force-checks
-      // we need to protect ourselves from getting punished by the NTP
-      // service which results in 30 second delay in NTP check response.
-      // In order to simulate NTP force-check we use 250ms timeout.
-      const isForcedTimeDifferenceCheck = !!queryInfoParams;
-      return isForcedTimeDifferenceCheck
-        ? new Promise(resolve => {
-            setTimeout(() => resolve(response), 250);
-          })
-        : response;
     } catch (error) {
-      Logger.error('AdaApi::getNetworkStatus (PATCHED) error', { error });
+      logger.error('AdaApi::getNetworkInfo (PATCHED) error', { error });
       throw new GenericApiError();
     }
   };
 
-  api.getNodeSettings = async (): Promise<GetNodeSettingsResponse> => {
-    Logger.debug('AdaApi::getNodeSettings (PATCHED) called');
-    try {
-      const nodeSettings: NodeSettingsResponse = await getNodeSettings(
-        api.config
-      );
-      if (api.setFaultyNodeSettingsApi) {
-        const error = new Error('getNodeSettings forced error');
-        Logger.error('AdaApi::getNodeSettings (PATCHED) forced error', {
-          error,
-        });
-        throw new GenericApiError(error);
-      }
-      Logger.debug('AdaApi::getNodeSettings (PATCHED) success', {
-        nodeSettings,
-      });
-      const { slotId } = nodeSettings;
-      return { slotId };
-    } catch (error) {
-      Logger.error('AdaApi::getNodeSettings (PATCHED) error', { error });
-      throw new GenericApiError(error);
-    }
+  api.setSyncProgress = async syncProgress => {
+    SYNC_PROGRESS = syncProgress;
   };
 
-  api.setFaultyNodeSettingsApi = false;
-
-  api.setLocalTimeDifference = async timeDifference => {
-    LOCAL_TIME_DIFFERENCE = timeDifference;
-  };
-
-  api.nextUpdate = async () => {
+  api.nextUpdate = async (): Promise<Object> => {
     let nodeUpdate = null;
 
     if (NEXT_ADA_UPDATE) {
@@ -119,7 +92,7 @@ export default (api: AdaApi) => {
       };
     }
 
-    Logger.debug('AdaApi::nextUpdate success', { nodeUpdate });
+    logger.debug('AdaApi::nextUpdate success', { nodeUpdate });
     return Promise.resolve(nodeUpdate);
   };
 
@@ -128,7 +101,7 @@ export default (api: AdaApi) => {
   };
 
   api.getLatestAppVersion = async (): Promise<GetLatestAppVersionResponse> => {
-    Logger.debug('AdaApi::getLatestAppVersion (PATCHED) called');
+    logger.debug('AdaApi::getLatestAppVersion (PATCHED) called');
     try {
       const { isWindows, platform } = global.environment;
       const latestAppVersionInfo: LatestAppVersionInfoResponse = await getLatestAppVersion();
@@ -152,7 +125,7 @@ export default (api: AdaApi) => {
         null
       );
 
-      Logger.debug('AdaApi::getLatestAppVersion success', {
+      logger.debug('AdaApi::getLatestAppVersion success', {
         latestAppVersion,
         latestAppVersionInfo,
         applicationVersion,
@@ -163,7 +136,7 @@ export default (api: AdaApi) => {
         applicationVersion: APPLICATION_VERSION || applicationVersion,
       };
     } catch (error) {
-      Logger.error('AdaApi::getLatestAppVersion (PATCHED) error', { error });
+      logger.error('AdaApi::getLatestAppVersion (PATCHED) error', { error });
       throw new GenericApiError();
     }
   };
@@ -176,39 +149,92 @@ export default (api: AdaApi) => {
     APPLICATION_VERSION = applicationVersion;
   };
 
-  api.setSubscriptionStatus = async (subscriptionStatus: ?Object) => {
-    SUBSCRIPTION_STATUS = subscriptionStatus;
-  };
+  api.setTestingNewsFeed = (testingNewsFeedData: ?GetNewsResponse) => {
+    const { version: packageJsonVersion } = packageJson;
+    if (!testingNewsFeedData) {
+      TESTING_NEWSFEED_JSON = null;
+      return;
+    }
+    // Always mutate newsfeed target version to current app version
+    const newsFeedItems = map(testingNewsFeedData.items, item => {
+      return {
+        ...item,
+        target: {
+          ...item.target,
+          daedalusVersion: item.target.daedalusVersion
+            ? packageJsonVersion
+            : '',
+        },
+      };
+    });
 
-  api.setLocalBlockHeight = async (height: number) => {
-    LOCAL_BLOCK_HEIGHT = height;
-  };
-
-  api.setNetworkBlockHeight = async (height: number) => {
-    NETWORK_BLOCK_HEIGHT = height;
-  };
-
-  api.setFakeNewsFeedJsonForTesting = (fakeNewsfeedJson: ?GetNewsResponse) => {
-    FAKE_NEWSFEED_JSON = fakeNewsfeedJson;
+    TESTING_NEWSFEED_JSON = {
+      ...testingNewsFeedData,
+      items: newsFeedItems,
+    };
   };
 
   api.getNews = (): Promise<GetNewsResponse> => {
     return new Promise((resolve, reject) => {
-      if (!FAKE_NEWSFEED_JSON) {
+      if (!TESTING_NEWSFEED_JSON) {
         reject(new Error('Unable to fetch news'));
       } else {
-        resolve(FAKE_NEWSFEED_JSON);
+        resolve(TESTING_NEWSFEED_JSON);
       }
     });
   };
 
+  api.setTestingWallet = (
+    testingWalletData: Object,
+    walletIndex?: number = 0
+  ): void => {
+    TESTING_WALLETS_DATA[walletIndex] = testingWalletData;
+  };
+
+  api.setTestingWallets = (testingWalletsData: Array<Object>): void => {
+    TESTING_WALLETS_DATA = testingWalletsData;
+  };
+
+  const originalGetWallets: Function = api.getWallets;
+
+  const getModifiedWallet = action((wallet: Object) => {
+    let { amount = 100000, availableAmount = 100000 } = wallet;
+    if (typeof amount !== 'object') amount = new BigNumber(amount);
+    if (typeof availableAmount !== 'object')
+      availableAmount = new BigNumber(availableAmount);
+    return new Wallet({
+      ...wallet,
+      amount,
+      availableAmount,
+    });
+  });
+
+  api.getWallets = async (): Promise<Array<Wallet>> => {
+    const originalWallets = await originalGetWallets();
+    const modifiedWallets = originalWallets.map(
+      (originalWallet: Wallet, index: number) => {
+        const testingWallet = TESTING_WALLETS_DATA[index] || {};
+        const modifiedWallet = {
+          ...originalWallet,
+          ...testingWallet,
+        };
+        return getModifiedWallet(modifiedWallet);
+      }
+    );
+    return Promise.resolve(modifiedWallets);
+  };
+
+  api.setTestingStakePools = (testingStakePoolsData: Array<Object>): void => {
+    api.getStakePools = (): Array<StakePool> =>
+      testingStakePoolsData.map(
+        (stakePool: Object) => new StakePool(stakePool)
+      );
+  };
+
   api.resetTestOverrides = () => {
+    TESTING_WALLETS_DATA = {};
     LATEST_APP_VERSION = null;
-    LOCAL_TIME_DIFFERENCE = 0;
-    LOCAL_BLOCK_HEIGHT = null;
-    NETWORK_BLOCK_HEIGHT = null;
     NEXT_ADA_UPDATE = null;
-    SUBSCRIPTION_STATUS = null;
     APPLICATION_VERSION = null;
   };
 };

@@ -15,6 +15,7 @@ import           Data.Maybe                          (fromJust)
 import           System.Directory
 import qualified Data.Text.IO as T
 import qualified Data.Text as T
+import           Data.Yaml                 (decodeFileThrow)
 
 import           Types
 import           Config
@@ -33,20 +34,15 @@ main = do
     (,) <$> optionsParser os <*> commandParser
 
   case command of
-    GenConfig{..}    ->
-      generateOSClusterConfigs cfDhallRoot cfOutdir options'
-    CheckConfigs{..} ->
-      checkAllConfigs          cfDhallRoot
     GenInstaller -> do
         genSignedInstaller (oOS options') options'
     BuildkiteCrossWin -> do
       fullVersion <- getDaedalusVersion "../package.json"
-      ver <- T.strip <$> T.readFile "version"
+      ver <- T.strip <$> T.readFile "version" -- TODO
       let fullName = packageFileName Win64 (oCluster options') fullVersion (oBackend options') ver (oBuildJob options')
-      installerConfig <- getInstallerConfig "./dhall" Win64 (oCluster options')
-      WindowsInstaller.writeInstallerNSIS fullName fullVersion installerConfig (oCluster options')
+      installerConfig <- decodeFileThrow "installer-config.json"
+      WindowsInstaller.writeInstallerNSIS fullName fullVersion installerConfig options' (oCluster options')
       WindowsInstaller.writeUninstallerNSIS fullVersion installerConfig
-      generateOSClusterConfigs "./dhall" "." options'
     Appveyor -> do
         buildNumber <- getEnv "APPVEYOR_BUILD_NUMBER"
         let
@@ -56,9 +52,10 @@ main = do
             go :: String -> IO ()
             go cluster' = do
                 let
-                    getAppName Mainnet = "Daedalus"
-                    getAppName Staging = "DaedalusStaging"
-                    getAppName Testnet = "DaedalusTestnet"
+                    getAppName ITN_Rewards_v1 = "DaedalusRewardsV1"
+                    getAppName Nightly = "DaedalusNightly"
+                    getAppName QA = "DaedalusQA";
+                    getAppName Selfnode = "DaedalusSelfnode"
                     cluster = fromJust $ diagReadCaseInsensitive cluster'
                     opts'' = opts' {
                           oCluster = cluster
@@ -73,7 +70,6 @@ main = do
                 putStr banner
                 genSignedInstaller os opts''
                 copyFile "launcher-config.yaml" ("launcher-config-" <> cluster' <> ".win64.yaml")
-                copyFile "wallet-topology.yaml" ("wallet-topology-" <> cluster' <> ".win64.yaml")
         clusters' <- getEnv "CLUSTERS"
         let clusters = splitOn " " clusters'
         print clusters

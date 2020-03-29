@@ -25,11 +25,18 @@ export type InjectedDialogContainerProps = {
   onClose: Function,
 };
 
+export type InjectedDialogContainerFilterProps = {
+  stores: any | StoresMap,
+  actions: any | ActionsMap,
+  children: Node,
+  onFilter: Function,
+};
+
 export type InjectedDialogContainerStepProps = {
   stores: any | StoresMap,
   actions: any | ActionsMap,
   children: Node,
-  isVideoWatched: boolean,
+  isVideoWatched?: boolean,
   onClose: Function,
   onContinue: Function,
   onBack: Function,

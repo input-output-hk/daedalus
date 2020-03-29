@@ -115,26 +115,19 @@
     background-color: var(--theme-news-item-action-button-background-color);
     border: solid 1px var(--theme-news-item-action-button-border-color);
     border-radius: 2px;
-    color: var(--theme-news-item-action-button-color);
     cursor: pointer;
-    font-family: var(--font-regular);
-    font-size: 14px;
-    font-weight: 500;
+    height: 32px;
     line-height: 20px;
     margin: 20px 0 0 0;
     padding: 5px 10px;
     text-align: center;
     width: 100%;
 
-    svg {
-      height: 13px;
-      margin: -1px 5px;
-      width: 13px;
-
-      g {
-        path {
-          stroke: var(--theme-news-item-action-button-color);
-        }
+    .externalLink {
+      color: var(--theme-news-item-action-button-color);
+      font-family: var(--font-medium);
+      &:after {
+        background-color: var(--theme-news-item-action-button-color);
       }
     }
 
@@ -142,13 +135,10 @@
       background-color: var(
         --theme-news-item-action-button-background-color-hover
       );
-      color: var(--theme-news-item-action-button-color-hover);
-
-      svg {
-        g {
-          path {
-            stroke: var(--theme-news-item-action-button-color-hover);
-          }
+      .externalLink {
+        color: var(--theme-news-item-action-button-color-hover);
+        &:after {
+          background-color: var(--theme-news-item-action-button-color-hover);
         }
       }
     }

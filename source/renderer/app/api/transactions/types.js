@@ -1,66 +1,122 @@
 // @flow
 import BigNumber from 'bignumber.js';
 import { WalletTransaction } from '../../domains/WalletTransaction';
-import type { ResponseBase } from '../common/types';
+import { WalletUnits } from '../../domains/Wallet';
 
-export type Transactions = ResponseBase & {
-  data: Array<Transaction>,
+export type TransactionAmount = {
+  quantity: number,
+  unit: WalletUnits.LOVELACE,
+};
+
+export type TransactionDepth = {
+  quantity: number,
+  unit: 'block',
+};
+
+export type TransactionInsertionBlock = {
+  slot_number: number,
+  epoch_number: number,
 };
 
 export type Transaction = {
-  amount: number,
-  confirmations: number,
-  creationTime: string,
-  direction: 'outgoing' | 'incoming',
   id: string,
-  type: 'local' | 'foreign',
-  inputs: Array<PaymentDistribution>,
-  outputs: Array<PaymentDistribution>,
-  status: {
-    tag: 'applying' | 'inNewestBlocks' | 'persisted' | 'wontApply' | 'creating',
-    data: {},
+  amount: TransactionAmount,
+  inserted_at?: {
+    time: Date,
+    block: TransactionInsertionBlock,
   },
-  currentTimeFormat: string,
+  pending_since?: {
+    time: Date,
+    block: {
+      ...TransactionInsertionBlock,
+      height: {
+        quantity: number,
+        unit: string,
+      },
+    },
+  },
+  depth: TransactionDepth,
+  direction: 'outgoing' | 'incoming',
+  inputs: Array<TransactionInputs>,
+  outputs: Array<TransactionOutputs>,
+  status: TransactionState,
 };
 
-export type PaymentDistribution = {
+export type Transactions = Array<Transaction>;
+
+export type TransactionInputs = {
   address: string,
-  amount: number,
+  amount?: TransactionAmount,
+  id: string,
+  index: number,
 };
 
-export type TxnAssuranceLevel = 'low' | 'medium' | 'high';
-
-export type TransactionState = 'pending' | 'failed' | 'ok';
-
-export type TransactionFee = ResponseBase & {
-  estimatedAmount: number,
+export type TransactionOutputs = {
+  address: string,
+  amount: TransactionAmount,
 };
 
-export type TrasactionAddresses = { from: Array<string>, to: Array<string> };
+export type TransactionState = 'pending' | 'in_ledger';
+
+export type TrasactionAddresses = { from: Array<?string>, to: Array<string> };
+
 export type TransactionType = 'card' | 'expend' | 'income' | 'exchange';
 
-// req/res Transaction Types
+// Req / Res Transaction Types
 export type GetTransactionsRequest = {
   walletId: string,
-  searchTerm: string,
-  skip: number,
-  limit: number,
-  isFirstLoad: boolean,
-  isRestoreActive: boolean,
-  isRestoreCompleted: boolean,
-  cachedTransactions: Array<WalletTransaction>,
+  order?: 'ascending' | 'descending',
+  fromDate: ?string,
+  toDate: ?string,
+  isLegacy: boolean,
+  // @API TODO - Params "pending" for V2
+  // searchTerm: string,
+  // skip: number,
+  // limit: number,
+  // isFirstLoad: boolean,
+  // isRestoreActive: boolean,
+  // isRestoreCompleted: boolean,
+  // cachedTransactions: Array<WalletTransaction>,
 };
 
-export type TransactionRequest = {
-  accountIndex: number,
+export type GetTransactionFeeRequest = {
   walletId: string,
-  walletBalance: BigNumber,
   address: string,
   amount: number,
-  spendingPassword?: ?string,
+  walletBalance: BigNumber,
+  availableBalance: BigNumber,
+  isLegacy: boolean,
+};
+
+export type CreateTransactionRequest = {
+  walletId: string,
+  address: string,
+  amount: number,
+  passphrase: string,
+  isLegacy: boolean,
+};
+
+export type DeleteTransactionRequest = {
+  walletId: string,
+  transactionId: string,
+  isLegacy: boolean,
 };
 
 export type GetTransactionsResponse = {
   transactions: Array<WalletTransaction>,
   total: number,
+};
+
+export type TransactionFeeAmount = {
+  quantity: number,
+  unit: WalletUnits.LOVELACE,
+};
+
+export type TransactionPaymentData = {
+  address: string,
+  amount: TransactionFeeAmount,
+};
+
+export type TransactionFee = {
+  amount: TransactionFeeAmount,
 };

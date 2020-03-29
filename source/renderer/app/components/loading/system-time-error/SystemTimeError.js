@@ -1,12 +1,14 @@
 // @flow
 import React, { Component } from 'react';
-import humanizeDuration from 'humanize-duration';
 import SVGInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
+import classNames from 'classnames';
+import { Link } from 'react-polymorph/lib/components/Link';
+import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import attentionIcon from '../../../assets/images/attention-big-light.inline.svg';
-import externalLinkIcon from '../../../assets/images/link-ic.inline.svg';
 import { ALLOWED_TIME_DIFFERENCE } from '../../../config/timingConfig';
+import humanizeDurationByLocale from '../../../utils/humanizeDurationByLocale';
 import styles from './SystemTimeError.scss';
 
 const messages = defineMessages({
@@ -93,42 +95,23 @@ export default class SystemTimeError extends Component<Props> {
     const supportPortalLinkUrl = intl.formatMessage(
       messages.supportPortalLinkUrl
     );
-    const supportPortalLink = (
-      <a
-        className={styles.supportPortalLinkUrl}
-        href={supportPortalLinkUrl}
-        onClick={event => onExternalLinkClick(supportPortalLinkUrl, event)}
-      >
-        {intl.formatMessage(messages.supportPortalLink)}
-        <SVGInline svg={externalLinkIcon} />
-      </a>
-    );
 
-    let humanizedDurationLanguage;
-    switch (currentLocale) {
-      case 'ja-JP':
-        humanizedDurationLanguage = 'ja';
-        break;
-      case 'zh-CN':
-        humanizedDurationLanguage = 'zh_CN';
-        break;
-      case 'ko-KR':
-        humanizedDurationLanguage = 'ko';
-        break;
-      case 'de-DE':
-        humanizedDurationLanguage = 'de';
-        break;
-      default:
-        humanizedDurationLanguage = 'en';
-    }
+    const supportPortalLink = (
+      <Link
+        className={styles.supportPortalLink}
+        onClick={event => onExternalLinkClick(supportPortalLinkUrl, event)}
+        label={intl.formatMessage(messages.supportPortalLink)}
+        skin={LinkSkin}
+      />
+    );
 
     const isNTPServiceReachable = !!localTimeDifference;
     const allowedTimeDifferenceInSeconds = ALLOWED_TIME_DIFFERENCE / 1000000;
-
-    const timeOffset = humanizeDuration((localTimeDifference || 0) / 1000, {
-      round: true, // round seconds to prevent e.g. 1 day 3 hours *11,56 seconds*
-      language: humanizedDurationLanguage,
-    }).replace(/,/g, ''); // replace 1 day, 3 hours, 12 seconds* to clean period without comma
+    const rawTimeOffset = (localTimeDifference || 0) / 1000;
+    const timeOffset = humanizeDurationByLocale(rawTimeOffset, currentLocale, {
+      delimiter: ' ',
+      units: ['y', 'mo', 'w', 'd', 'h', 'm', 's', 'ms'],
+    });
 
     return (
       <div className={styles.component}>
@@ -152,13 +135,16 @@ export default class SystemTimeError extends Component<Props> {
               />
             </p>
 
-            <button
-              className={styles.checkLink}
+            <Link
+              className={classNames([
+                styles.checkLink,
+                isCheckingSystemTime ? styles.disabled : null,
+              ])}
               onClick={() => onCheckTheTimeAgain()}
-              disabled={isCheckingSystemTime}
-            >
-              {intl.formatMessage(messages.onCheckTheTimeAgainLink)}
-            </button>
+              label={intl.formatMessage(messages.onCheckTheTimeAgainLink)}
+              hasIconAfter={false}
+              skin={LinkSkin}
+            />
           </div>
         ) : (
           <div>
@@ -176,12 +162,15 @@ export default class SystemTimeError extends Component<Props> {
               />
             </p>
 
-            <button
+            <Link
               className={styles.checkLink}
               onClick={() => onContinueWithoutClockSyncCheck()}
-            >
-              {intl.formatMessage(messages.onContinueWithoutClockSyncCheckLink)}
-            </button>
+              label={intl.formatMessage(
+                messages.onContinueWithoutClockSyncCheckLink
+              )}
+              hasIconAfter={false}
+              skin={LinkSkin}
+            />
           </div>
         )}
       </div>

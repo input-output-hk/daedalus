@@ -4,7 +4,7 @@ import Store from './lib/Store';
 import LocalizableError from '../i18n/LocalizableError';
 import { buildRoute } from '../utils/routing';
 import { ROUTES } from '../routes-config';
-import { DIALOGS, NOTIFICATIONS } from '../../../common/ipc/constants';
+import { DIALOGS, PAGES, NOTIFICATIONS } from '../../../common/ipc/constants';
 import { openExternalUrlChannel } from '../ipc/open-external-url';
 import {
   toggleUiPartChannel,
@@ -19,7 +19,6 @@ export default class AppStore extends Store {
   @observable error: ?LocalizableError = null;
   @observable isDownloadNotificationVisible = false;
   @observable gpuStatus: ?GpuStatus = null;
-  @observable numberOfEpochsConsolidated: number = 0;
   @observable previousRoute: string = ROUTES.ROOT;
   @observable activeDialog: ApplicationDialog = null;
   @observable newsFeedIsOpen: boolean = false;
@@ -36,14 +35,6 @@ export default class AppStore extends Store {
       this._updateActiveDialog(DIALOGS.ABOUT);
     });
 
-    // Block Consolidation dialog actions
-    this.actions.app.closeBlockConsolidationStatusDialog.listen(() => {
-      this._closeActiveDialog();
-    });
-    this.actions.app.openBlockConsolidationStatusDialog.listen(() => {
-      this._updateActiveDialog(DIALOGS.BLOCK_CONSOLIDATION);
-    });
-
     // Daedalus Diagnostics dialog actions
     this.actions.app.closeDaedalusDiagnosticsDialog.listen(() => {
       this._closeActiveDialog();
@@ -53,9 +44,7 @@ export default class AppStore extends Store {
     });
 
     this.actions.app.downloadLogs.listen(this._downloadLogs);
-    this.actions.app.setNotificationVisibility.listen(
-      this._setDownloadNotification
-    );
+    this.actions.app.setIsDownloadingLogs.listen(this._setIsDownloadingLogs);
 
     this.actions.app.toggleNewsFeed.listen(this._toggleNewsFeed);
     this.actions.app.closeNewsFeed.listen(this._closeNewsFeed);
@@ -103,18 +92,27 @@ export default class AppStore extends Store {
    * Shows the screen specified by the constant string identifier.
    */
   showUiPart = (uiPart: string) => {
+    const { wallets } = this.stores;
     switch (uiPart) {
       case DIALOGS.ABOUT:
         this._updateActiveDialog(DIALOGS.ABOUT);
-        break;
-      case DIALOGS.BLOCK_CONSOLIDATION:
-        this._updateActiveDialog(DIALOGS.BLOCK_CONSOLIDATION);
         break;
       case DIALOGS.DAEDALUS_DIAGNOSTICS:
         this._updateActiveDialog(DIALOGS.DAEDALUS_DIAGNOSTICS);
         break;
       case NOTIFICATIONS.DOWNLOAD_LOGS:
         this._downloadLogs();
+        break;
+      case PAGES.SETTINGS:
+        this.actions.router.goToRoute.trigger({ route: PAGES.SETTINGS });
+        break;
+      case PAGES.WALLET_SETTINGS:
+        if (wallets.active && wallets.active.id) {
+          this.actions.router.goToRoute.trigger({
+            route: ROUTES.WALLETS.PAGE,
+            params: { id: wallets.active.id, page: 'settings' },
+          });
+        }
         break;
       default:
     }
@@ -173,7 +171,7 @@ export default class AppStore extends Store {
             fresh: true,
           });
         } else {
-          this.actions.app.setNotificationVisibility.trigger(
+          this.actions.app.setIsDownloadingLogs.trigger(
             !this.isDownloadNotificationVisible
           );
         }
@@ -182,9 +180,7 @@ export default class AppStore extends Store {
     this.isDownloadNotificationVisible = true;
   };
 
-  @action _setDownloadNotification = (
-    isDownloadNotificationVisible: boolean
-  ) => {
+  @action _setIsDownloadingLogs = (isDownloadNotificationVisible: boolean) => {
     this.isDownloadNotificationVisible = isDownloadNotificationVisible;
   };
 }

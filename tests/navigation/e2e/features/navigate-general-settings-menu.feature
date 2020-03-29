@@ -3,9 +3,9 @@ Feature: General Settings
 
   Background:
     Given I have completed the basic setup
-    And I have the following wallets:
+    And I have the following "Rewards" wallets:
       | name        |
-      | Test wallet |
+      | Test Wallet |
 
   Scenario Outline: Navigating through General Settings secondary menu
     Given I am on the General Settings "<FROM>" screen
@@ -13,21 +13,20 @@ Feature: General Settings
     Then I should see General Settings "<TO>" screen
 
     Examples:
-    | FROM         | TO           |
-    | general      | display      |
-    | general      | terms-of-use |
-    | general      | support      |
-    | display      | general      |
-    | display      | terms-of-use |
-    | display      | support      |
-    | terms-of-use | general      |
-    | terms-of-use | display      |
-    | terms-of-use | support      |
-    | support      | general      |
-    | support      | display      |
-    | support      | terms-of-use |
+    | FROM             | TO               |
+    | general          | display          |
+    | general          | terms-of-service |
+    | general          | support          |
+    | display          | general          |
+    | display          | terms-of-service |
+    | display          | support          |
+    | terms-of-service | general          |
+    | terms-of-service | display          |
+    | terms-of-service | support          |
+    | support          | general          |
+    | support          | display          |
+    | support          | terms-of-service |
 
-  @skip
   Scenario: Change language in General Settings
     Given I am on the General Settings "general" screen
     And I open General Settings language selection dropdown

@@ -7,10 +7,10 @@ declare var daedalus: Daedalus;
 
 const ACTIVE_RESTORE_NOTIFICATION = '.ActiveRestoreNotification';
 
-export const getCardanoNodeState = async (client: WebdriverClient) =>
+export const getCardanoNodeState = async (client: Object) =>
   (await client.execute(() => daedalus.stores.networkStatus.cardanoNodeState)).value;
 
-export const refreshClient = async (client: WebdriverClient) => {
+export const refreshClient = async (client: Object) => {
   await client.url(`file://${__dirname}/../../../../dist/renderer/index.html`);
 };
 
@@ -21,7 +21,7 @@ When(/^I freeze$/, { timeout: oneHour }, callback => {
 });
 
 export const waitForActiveRestoreNotification = (
-  client: WebdriverClient,
+  client: Object,
   { isHidden } : { isHidden: boolean } = {}
 ) =>
   client.waitForVisible(
@@ -30,14 +30,14 @@ export const waitForActiveRestoreNotification = (
     isHidden
   );
 
-export const waitForCardanoNodeToExit = async (client: WebdriverClient) =>
+export const waitForCardanoNodeToExit = async (client: Object) =>
   client.waitUntil(
     async () => (await getProcessesByName('cardano-node')).length === 0,
     61000
   );
 
 export const waitForDaedalusToExit = async (
-  client: WebdriverClient,
+  client: Object,
   timeout: number = 61000
 ) => {
   const daedalusProcessName =

@@ -41,9 +41,8 @@ import           Filesystem.Path
 import           Filesystem.Path.CurrentOS           (fromText, encodeString)
 import           Turtle                              (pwd, cd)
 import           Turtle.Format                       (format, fp)
-import           Data.Aeson                          (FromJSON(..), withObject, eitherDecode, (.:))
+import           Data.Aeson                          (FromJSON(..), withObject, eitherDecode, (.:), genericParseJSON, defaultOptions)
 import qualified Data.ByteString.Lazy.Char8       as L8
-import qualified Dhall as Dhall
 
 data OS
   = Linux64
@@ -52,16 +51,21 @@ data OS
   deriving (Bounded, Enum, Eq, Read, Show)
 
 data Cluster
-  = Mainnet
+  = Nightly
+  | ITN_Rewards_v1
+  | QA
+  | Selfnode
+  | ITN_Selfnode
+  | Mainnet
+  | Mainnet_Flight
   | Staging
   | Testnet
-  | Demo
   deriving (Bounded, Enum, Eq, Read, Show)
 
 -- | The wallet backend to include in the installer.
 data Backend
   = Cardano FilePath -- ^ Cardano SL with the given daedalus-bridge.
-  | Mantis           -- ^ Mantis, to be implemented in DEVOPS-533.
+  | Jormungandr FilePath -- ^ Rust node with haskell wallet
   deriving (Eq, Show)
 
 data SigningResult
@@ -71,12 +75,10 @@ data SigningResult
 
 data Config
   = Launcher
-  | Topology
   deriving (Bounded, Enum, Eq, Show)
 
 configFilename :: Config -> FilePath
 configFilename Launcher = "launcher-config.yaml"
-configFilename Topology = "wallet-topology.yaml"
 
 -- | What runtime config file to generate.
 data ConfigRequest = ConfigRequest
@@ -102,10 +104,15 @@ tt = format fp
 -- | Value of the NETWORK variable used by the npm build.
 -- See also: the cluster argument in default.nix.
 clusterNetwork :: Cluster -> Text
+clusterNetwork Nightly = "nightly"
+clusterNetwork ITN_Rewards_v1 = "itn_rewards_v1"
+clusterNetwork QA = "qa"
+clusterNetwork ITN_Selfnode = "itn_selfnode"
+clusterNetwork Selfnode = "selfnode"
 clusterNetwork Mainnet = "mainnet"
+clusterNetwork Mainnet_Flight = "mainnet"
 clusterNetwork Staging = "staging"
 clusterNetwork Testnet = "testnet"
-clusterNetwork Demo = "demo"
 
 packageFileName :: OS -> Cluster -> Version -> Backend -> Text -> Maybe BuildJob -> FilePath
 packageFileName os cluster ver backend backendVer build = fromText name <.> ext
@@ -113,8 +120,8 @@ packageFileName os cluster ver backend backendVer build = fromText name <.> ext
     name = T.intercalate "-" parts
     parts = ["daedalus", fromVer ver, backend', backendVer, lshowText cluster, os'] ++ build'
     backend' = case backend of
-                 Cardano _ -> "cardano-sl"
-                 Mantis    -> "mantis"
+                 Cardano _ -> "cardano-wallet"
+                 Jormungandr _ -> "jormungandr-wallet"
     ext = case os of
             Win64   -> "exe"
             Macos64 -> "pkg"
@@ -142,8 +149,14 @@ withDir path = bracket (pwd >>= \old -> (cd path >> pure old)) cd . const
 
 data InstallerConfig = InstallerConfig {
       installDirectory :: Text
+    , spacedName :: Text
     , macPackageName :: Text
-    , walletPort :: Integer
+    , dataDir :: Text
+    , hasBlock0 :: Bool
+    , genesisPath :: Maybe Text
+    , secretPath :: Maybe Text
+    , configPath :: Maybe Text
     } deriving (Generic, Show)
 
-instance Dhall.Interpret InstallerConfig
+instance FromJSON InstallerConfig where
+  parseJSON = genericParseJSON defaultOptions

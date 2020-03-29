@@ -3,11 +3,14 @@ import React from 'react';
 import { number, boolean, radios } from '@storybook/addon-knobs';
 import { linkTo } from '@storybook/addon-links';
 import { action } from '@storybook/addon-actions';
+import { isIncentivizedTestnetTheme } from '../../_support/utils';
 
 import SyncingConnecting from '../../../../source/renderer/app/components/loading/syncing-connecting/SyncingConnecting';
 import { CardanoNodeStates } from '../../../../source/common/types/cardano-node.types';
 
-export const DefaultSyncingConnectingStory = () => (
+export const DefaultSyncingConnectingStory = (props: {
+  currentTheme: string,
+}) => (
   <SyncingConnecting
     hasUnreadAlerts={false}
     hasUnreadAnnouncements={false}
@@ -19,6 +22,7 @@ export const DefaultSyncingConnectingStory = () => (
       CardanoNodeStates.STARTING
     )}
     hasBeenConnected={boolean('hasBeenConnected', false)}
+    isFlight={false}
     isConnected={boolean('isConnected', false)}
     isSynced={boolean('isSynced', false)}
     isConnecting={boolean('isConnecting', true)}
@@ -38,15 +42,19 @@ export const DefaultSyncingConnectingStory = () => (
     isNewAppVersionLoading={boolean('isNewAppVersionLoading', false)}
     isNewAppVersionLoaded={boolean('isNewAppVersionLoaded', false)}
     onIssueClick={action('onIssueClick')}
+    onOpenExternalLink={action('onOpenExternalLink')}
     onDownloadLogs={action('onDownloadLogs')}
     onGetAvailableVersions={action('onGetAvailableVersions')}
     onStatusIconClick={linkTo('Diagnostics', () => 'default')}
     disableDownloadLogs={boolean('disableDownloadLogs', true)}
     showNewsFeedIcon
+    isIncentivizedTestnet={isIncentivizedTestnetTheme(props.currentTheme)}
   />
 );
 
-export const ConnectivityIssuesSyncingConnectingStory = () => (
+export const ConnectivityIssuesSyncingConnectingStory = (props: {
+  currentTheme: string,
+}) => (
   <SyncingConnecting
     hasUnreadAlerts={false}
     hasUnreadAnnouncements={false}
@@ -56,6 +64,7 @@ export const ConnectivityIssuesSyncingConnectingStory = () => (
     isConnected={false}
     cardanoNodeState={CardanoNodeStates.RUNNING}
     hasBeenConnected
+    isFlight={false}
     isSynced={false}
     isConnecting
     isSyncing={false}
@@ -74,15 +83,19 @@ export const ConnectivityIssuesSyncingConnectingStory = () => (
     isNewAppVersionLoading={false}
     isNewAppVersionLoaded
     onIssueClick={action('onIssueClick')}
+    onOpenExternalLink={action('onOpenExternalLink')}
     onDownloadLogs={action('onDownloadLogs')}
     onGetAvailableVersions={action('onGetAvailableVersions')}
     onStatusIconClick={linkTo('Diagnostics', () => 'default')}
     disableDownloadLogs={boolean('disableDownloadLogs', false)}
     showNewsFeedIcon
+    isIncentivizedTestnet={isIncentivizedTestnetTheme(props.currentTheme)}
   />
 );
 
-export const SyncIssuesSyncingConnectingStory = () => (
+export const SyncIssuesSyncingConnectingStory = (props: {
+  currentTheme: string,
+}) => (
   <SyncingConnecting
     hasUnreadAlerts={false}
     hasUnreadAnnouncements={false}
@@ -91,6 +104,7 @@ export const SyncIssuesSyncingConnectingStory = () => (
     forceSyncIssue
     cardanoNodeState={CardanoNodeStates.RUNNING}
     hasBeenConnected
+    isFlight={false}
     isConnected
     isSynced={false}
     isConnecting={false}
@@ -110,10 +124,12 @@ export const SyncIssuesSyncingConnectingStory = () => (
     isNewAppVersionLoading={false}
     isNewAppVersionLoaded
     onIssueClick={action('onIssueClick')}
+    onOpenExternalLink={action('onOpenExternalLink')}
     onDownloadLogs={action('onDownloadLogs')}
     onGetAvailableVersions={action('onGetAvailableVersions')}
     onStatusIconClick={linkTo('Diagnostics', () => 'default')}
     disableDownloadLogs={boolean('disableDownloadLogs', false)}
     showNewsFeedIcon
+    isIncentivizedTestnet={isIncentivizedTestnetTheme(props.currentTheme)}
   />
 );

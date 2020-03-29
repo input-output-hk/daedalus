@@ -8,30 +8,31 @@ Feature: Display wallet transactions
 
   Background:
     Given I have completed the basic setup
-    And I have a "Imported Wallet" with funds
-    And I have the following wallets:
-      | name         |
-      | TargetWallet |
+    And I have a "Test Wallet" rewards wallet with funds
+    And I have the following "Rewards" wallets:
+      | name          |
+      | Target Wallet |
 
   Scenario: No recent transactions
-    When I am on the "TargetWallet" wallet "summary" screen
+    When I am on the "Target Wallet" wallet "summary" screen
     Then I should not see any transactions
     And I should see the no recent transactions message
-    When I am on the "TargetWallet" wallet "transactions" screen
+    When I am on the "Target Wallet" wallet "transactions" screen
     Then I should not see any transactions
     And I should see the no recent transactions message
 
   @skip
+  # @API TODO - all transactions get included in the same block and have the same timestamp
   Scenario: More than five transactions
     Given I have made the following transactions:
-      | source          | destination   | amount |
-      | Imported Wallet | TargetWallet  | 1      |
-      | Imported Wallet | TargetWallet  | 2      |
-      | Imported Wallet | TargetWallet  | 3      |
-      | Imported Wallet | TargetWallet  | 4      |
-      | Imported Wallet | TargetWallet  | 5      |
-      | Imported Wallet | TargetWallet  | 6      |
-    When I am on the "TargetWallet" wallet "summary" screen
+      | source      | destination    | amount |
+      | Test Wallet | Target Wallet  | 1      |
+      | Test Wallet | Target Wallet  | 2      |
+      | Test Wallet | Target Wallet  | 3      |
+      | Test Wallet | Target Wallet  | 4      |
+      | Test Wallet | Target Wallet  | 5      |
+      | Test Wallet | Target Wallet  | 6      |
+    When I am on the "Target Wallet" wallet "summary" screen
     Then I should see the following transactions:
       | type   | amount |
       | income | 6      |
@@ -40,7 +41,7 @@ Feature: Display wallet transactions
       | income | 3      |
       | income | 2      |
     When I click on the show more transactions button
-    Then I should be on the "TargetWallet" wallet "transactions" screen
+    Then I should be on the "Target Wallet" wallet "transactions" screen
     Then I should see the following transactions:
       | type   | amount |
       | income | 6      |

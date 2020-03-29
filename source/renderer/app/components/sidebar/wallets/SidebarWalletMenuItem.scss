@@ -20,7 +20,23 @@
 }
 
 .legacyItem {
-  padding-right: 58.5px;
+  .title {
+    padding-right: 50px;
+  }
+
+  .meta {
+    :global {
+      .ProgressBar_component {
+        width: 156px;
+      }
+    }
+  }
+}
+
+.notResponding {
+  .meta {
+    opacity: 0.5;
+  }
 }
 
 .active {

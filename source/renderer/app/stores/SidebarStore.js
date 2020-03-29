@@ -1,9 +1,7 @@
 // @flow
 import { action, computed, observable } from 'mobx';
-import { get } from 'lodash';
 import Store from './lib/Store';
 import { sidebarConfig } from '../config/sidebarConfig';
-import { WalletSyncStateTags } from '../domains/Wallet';
 import { formattedWalletAmount } from '../utils/formatters';
 import type { SidebarWalletType } from '../types/sidebarTypes';
 
@@ -14,17 +12,16 @@ export default class SidebarStore extends Store {
 
   setup() {
     const { sidebar: sidebarActions } = this.actions;
-
     sidebarActions.showSubMenus.listen(this._showSubMenus);
     sidebarActions.toggleSubMenus.listen(this._toggleSubMenus);
     sidebarActions.activateSidebarCategory.listen(
       this._onActivateSidebarCategory
     );
     sidebarActions.walletSelected.listen(this._onWalletSelected);
-
     this.registerReactions([this._syncSidebarRouteWithRouter]);
     this._configureCategories();
   }
+
   // We need to use computed.struct for computed objects (so they are structurally compared
   // for equality instead of idendity (which would always invalidate)
   // https://alexhisen.gitbooks.io/mobx-recipes/content/use-computedstruct-for-computed-objects.html
@@ -37,11 +34,11 @@ export default class SidebarStore extends Store {
       return {
         id: wallet.id,
         title: wallet.name,
-        info: formattedWalletAmount(wallet.amount),
+        info: formattedWalletAmount(wallet.amount, true, false),
         isConnected: networkStatus.isConnected,
-        isRestoreActive:
-          get(wallet, 'syncState.tag') === WalletSyncStateTags.RESTORING,
-        restoreProgress: get(wallet, 'syncState.data.percentage.quantity', 0),
+        isRestoreActive: wallet.isRestoring,
+        restoreProgress: wallet.restorationProgress,
+        isNotResponding: wallet.isNotResponding,
         isLegacy: wallet.isLegacy,
         recoveryPhraseVerificationStatus,
       };
@@ -49,8 +46,13 @@ export default class SidebarStore extends Store {
   }
 
   @action _configureCategories = () => {
-    if (this.stores.networkStatus.environment.isDev) {
-      this.CATEGORIES = sidebarConfig.CATEGORIES_WITH_STAKING;
+    const { isIncentivizedTestnet, isFlight } = global;
+    if (isIncentivizedTestnet) {
+      this.CATEGORIES = sidebarConfig.CATEGORIES_WITHOUT_DELEGATION_COUNTDOWN;
+    } else if (isFlight) {
+      this.CATEGORIES = sidebarConfig.CATEGORIES;
+    } else {
+      this.CATEGORIES = sidebarConfig.CATEGORIES_WITHOUT_NETWORK_INFO;
     }
   };
 

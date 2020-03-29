@@ -16,17 +16,44 @@ type Props = {
   leftIcon?: ?string,
   children?: ?Node,
   activeWallet?: ?Wallet,
+  onTransferFunds?: Function,
+  onWalletAdd?: Function,
+  hasRewardsWallets?: boolean,
+  onLearnMore?: Function,
 };
 
 @observer
 export default class TopBar extends Component<Props> {
   render() {
-    const { onLeftIconClick, leftIcon, activeWallet, children } = this.props;
+    const {
+      onLeftIconClick,
+      leftIcon,
+      activeWallet,
+      children,
+      hasRewardsWallets,
+      onTransferFunds,
+      onWalletAdd,
+      onLearnMore,
+    } = this.props;
+    const { isIncentivizedTestnet } = global;
 
     const topBarStyles = classNames([
       styles.topBar,
       activeWallet ? styles.withWallet : styles.withoutWallet,
     ]);
+
+    const hasLegacyNotification =
+      activeWallet &&
+      activeWallet.isLegacy &&
+      isIncentivizedTestnet &&
+      activeWallet.amount.gt(0) &&
+      !activeWallet.isRestoring &&
+      ((hasRewardsWallets && onTransferFunds) || onWalletAdd);
+
+    const onTransferFundsFn =
+      onTransferFunds && activeWallet
+        ? () => onTransferFunds(activeWallet.id)
+        : () => {};
 
     const topBarTitle = activeWallet ? (
       <span className={styles.walletInfo}>
@@ -38,7 +65,7 @@ export default class TopBar extends Component<Props> {
         </span>
         <span className={styles.walletAmount}>
           {// show currency and use long format
-          formattedWalletAmount(activeWallet.amount, true)}
+          formattedWalletAmount(activeWallet.amount)}
         </span>
       </span>
     ) : null;
@@ -62,8 +89,14 @@ export default class TopBar extends Component<Props> {
           )}
           {children}
         </div>
-        {activeWallet && activeWallet.isLegacy && (
-          <LegacyNotification onLearnMore={() => null} onMove={() => null} />
+        {hasLegacyNotification && activeWallet && (
+          <LegacyNotification
+            activeWallet={activeWallet}
+            onLearnMore={onLearnMore}
+            onTransferFunds={onTransferFundsFn}
+            hasRewardsWallets={hasRewardsWallets}
+            onWalletAdd={onWalletAdd}
+          />
         )}
       </header>
     );

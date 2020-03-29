@@ -5,12 +5,12 @@ module Util where
 import Control.Monad (mapM_)
 import Data.Text (Text)
 import System.Directory (listDirectory, withCurrentDirectory, removeDirectory, removeFile, doesDirectoryExist)
-import Turtle (export, format, d)
-import Data.Aeson (Value, Value(Object, String), decodeFileStrict', encodeFile)
+import Turtle (export)
+import Data.Aeson (Value, Value(Object, String), encodeFile, decodeFileStrict')
 import qualified Data.HashMap.Strict as HM
 
 import Config (Options(..), Backend(..))
-import Types (InstallerConfig(walletPort), fromBuildJob, clusterNetwork)
+import Types (fromBuildJob, clusterNetwork)
 
 windowsRemoveDirectoryRecursive :: FilePath -> IO ()
 windowsRemoveDirectoryRecursive path = do
@@ -27,18 +27,17 @@ windowsRemoveDirectoryRecursive path = do
 -- "yarn package" build.
 -- When updating this, check that all variables are baked in with both
 -- webpack.config.js files.
-exportBuildVars :: Options -> InstallerConfig -> Text -> IO ()
-exportBuildVars Options{oBackend, oBuildJob, oCluster} cfg backendVersion = do
+exportBuildVars :: Options -> Text -> IO ()
+exportBuildVars Options{oBackend, oBuildJob, oCluster} backendVersion = do
     mapM_ (uncurry export)
         [ ("API", apiName oBackend)
         , ("API_VERSION", backendVersion)
         , ("BUILD_NUMBER", maybe "" fromBuildJob oBuildJob)
         , ("NETWORK", clusterNetwork oCluster)
-        , ("WALLET_PORT", format d (walletPort cfg))
         ]
     where
         apiName (Cardano _) = "ada"
-        apiName Mantis      = "etc"
+        apiName (Jormungandr _) = "ada"
 
 rewritePackageJson :: FilePath -> Text -> IO ()
 rewritePackageJson path name = do

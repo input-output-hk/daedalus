@@ -19,7 +19,6 @@ export default class NodeUpdateStore extends Store {
   @observable applicationVersion: ?number = null;
 
   // REQUESTS
-  /* eslint-disable max-len */
   @observable nextUpdateRequest: Request<NodeSoftware> = new Request(
     this.api.ada.nextUpdate
   );
@@ -33,7 +32,8 @@ export default class NodeUpdateStore extends Store {
   getLatestAppVersionRequest: Request<GetLatestAppVersionResponse> = new Request(
     this.api.ada.getLatestAppVersion
   );
-  /* eslint-disable max-len */
+
+  nextUpdateInterval: ?IntervalID = null;
 
   setup() {
     const actions = this.actions.nodeUpdate;
@@ -42,7 +42,14 @@ export default class NodeUpdateStore extends Store {
     actions.getLatestAvailableAppVersion.listen(
       this._getLatestAvailableAppVersion
     );
-    setInterval(this.refreshNextUpdate, NODE_UPDATE_POLL_INTERVAL);
+
+    const { isIncentivizedTestnet, isFlight } = global;
+    if (!isFlight && !isIncentivizedTestnet) {
+      this.nextUpdateInterval = setInterval(
+        this.refreshNextUpdate,
+        NODE_UPDATE_POLL_INTERVAL
+      );
+    }
   }
 
   refreshNextUpdate = async () => {
@@ -65,7 +72,8 @@ export default class NodeUpdateStore extends Store {
       !this.isUpdateInstalled
     ) {
       this.isUpdateAvailable = true;
-      // If next update version matches applicationVersion (fetched from latestAppVersion json) then set next update version to latest availableAppVersion
+      // If next update version matches applicationVersion (fetched from latestAppVersion json)
+      // then set next update version to latest availableAppVersion
       this.nextUpdateVersion =
         nextUpdateVersion === this.applicationVersion
           ? this.availableAppVersion
@@ -80,20 +88,6 @@ export default class NodeUpdateStore extends Store {
         isUpdateAvailable: this.isUpdateAvailable,
       });
     }
-  };
-
-  /** Automatic update overlay faker
-    - example with "newer version" label: _setNextUpdateVersion(11, 10, '0.16.0')
-    - example with "v 0.16.0" label: _setNextUpdateVersion(10, 10, '0.16.0')
-    */
-  @action _setNextUpdateVersion = async (
-    nextUpdateVersion,
-    applicationVersion,
-    availableAppVersion
-  ) => {
-    this.applicationVersion = applicationVersion;
-    this.availableAppVersion = availableAppVersion;
-    this._activateAutomaticUpdate(nextUpdateVersion);
   };
 
   @action _postponeNodeUpdate = async () => {
@@ -115,6 +109,12 @@ export default class NodeUpdateStore extends Store {
   };
 
   @action _getLatestAvailableAppVersion = async () => {
+    // Manual update notification is not available for Daedalus Flight and ITN builds
+    const { isIncentivizedTestnet, isFlight } = global;
+    if (isFlight || isIncentivizedTestnet) {
+      return;
+    }
+
     const {
       latestAppVersion,
       applicationVersion,
@@ -170,7 +170,19 @@ export default class NodeUpdateStore extends Store {
     return (
       this.isUpdateAvailable &&
       !this.isUpdatePostponed &&
-      !this.isUpdateInstalled
+      !this.isUpdateInstalled &&
+      !global.isIncentivizedTestnet
+    );
+  }
+
+  @computed get showManualUpdate(): boolean {
+    return (
+      this.isNewAppVersionAvailable &&
+      !this.stores.networkStatus.isNodeStopping &&
+      !this.stores.networkStatus.isNodeStopped &&
+      !this.isUpdatePostponed &&
+      !this.isUpdateAvailable &&
+      !global.isIncentivizedTestnet
     );
   }
 }

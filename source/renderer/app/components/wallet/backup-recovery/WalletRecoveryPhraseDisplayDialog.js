@@ -9,21 +9,25 @@ import Dialog from '../../widgets/Dialog';
 import WalletRecoveryInstructions from './WalletRecoveryInstructions';
 import globalMessages from '../../../i18n/global-messages';
 import styles from './WalletRecoveryPhraseDisplayDialog.scss';
+import {
+  WALLET_RECOVERY_PHRASE_WORD_COUNT,
+  LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT,
+} from '../../../config/cryptoConfig';
 
 const messages = defineMessages({
   backupInstructions: {
     id: 'wallet.backup.recovery.phrase.display.dialog.backup.instructions',
-    defaultMessage: `!!!Please, make sure you have carefully written down your recovery phrase somewhere safe.
-    You will need this phrase later for next use and recover. Phrase is case sensitive.`,
+    defaultMessage:
+      '!!!Please make sure you write down the {walletRecoveryPhraseWordCount} words of your wallet recovery phrase <strong>on a piece of paper in the exact order shown here</strong>.',
     description:
       'Instructions for backing up wallet recovery phrase on dialog that displays wallet recovery phrase.',
   },
   buttonLabelIHaveWrittenItDown: {
     id:
       'wallet.backup.recovery.phrase.display.dialog.button.label.iHaveWrittenItDown',
-    defaultMessage: '!!!Yes, I’ve written it down',
+    defaultMessage: '!!!Yes, I have written down my wallet recovery phrase.',
     description:
-      'Label for button "Yes, I’ve written it down" on wallet backup dialog',
+      'Label for button "Yes, I have written down my wallet recovery phrase." on wallet backup dialog',
   },
 });
 
@@ -41,6 +45,7 @@ export default class WalletRecoveryPhraseDisplayDialog extends Component<Props> 
 
   render() {
     const { intl } = this.context;
+    const { isIncentivizedTestnet } = global;
     const { recoveryPhrase, onStartWalletBackup, onCancelBackup } = this.props;
     const dialogClasses = classnames([
       styles.component,
@@ -66,7 +71,14 @@ export default class WalletRecoveryPhraseDisplayDialog extends Component<Props> 
       >
         <WalletRecoveryInstructions
           instructionsText={
-            <FormattedHTMLMessage {...messages.backupInstructions} />
+            <FormattedHTMLMessage
+              {...messages.backupInstructions}
+              values={{
+                walletRecoveryPhraseWordCount: isIncentivizedTestnet
+                  ? WALLET_RECOVERY_PHRASE_WORD_COUNT
+                  : LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT,
+              }}
+            />
           }
         />
         <WalletRecoveryPhraseMnemonic phrase={recoveryPhrase} />

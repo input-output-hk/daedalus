@@ -11,7 +11,7 @@ import SettingsMenu from '../../../../source/renderer/app/components/settings/me
 const pageNames = {
   '/settings/index': 'General',
   '/settings/display': 'Themes',
-  '/settings/terms-of-use': 'Terms of use',
+  '/settings/terms-of-service': 'Terms of service',
   '/settings/support': 'Support',
 };
 
@@ -21,6 +21,7 @@ export default (story: Object, context: Object) => {
 
   const menu = (
     <SettingsMenu
+      isFlight={false}
       onItemClick={linkTo(context.kind, item => pageNames[item])}
       isActiveItem={item => {
         const itemName = context.story
@@ -36,10 +37,7 @@ export default (story: Object, context: Object) => {
   return (
     <StoryDecorator>
       <StoryProvider>
-        <StoryLayout
-          activeSidebarCategory="/settings"
-          storyName={context.story}
-        >
+        <StoryLayout activeSidebarCategory="/settings" {...context}>
           <SettingsLayout menu={menu}>{storyWithKnobs}</SettingsLayout>
         </StoryLayout>
       </StoryProvider>

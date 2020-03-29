@@ -12,13 +12,24 @@
     .SimpleFormField_label {
       color: var(--theme-input-label-color);
     }
+
+    .walletName {
+      .SimpleInput_input {
+        padding-right: 120px;
+      }
+    }
+  }
+
+  .deleteWalletLabel {
+    color: var(--theme-input-label-color);
+    font-size: 16px;
+    font-weight: 500;
+    padding-bottom: 14px;
   }
 
   .deleteWalletBox {
     margin-bottom: 37px;
     margin-top: 20px;
-    padding-bottom: 30px;
-    padding-top: 30px;
 
     span {
       color: var(--theme-input-label-color);
@@ -36,7 +47,17 @@
       justify-content: space-between;
       line-height: 1.38;
       padding-top: 14px;
+
+      p:first-child {
+        margin-bottom: 15px;
+      }
     }
+  }
+
+  .resyncWalletBox {
+    border-top: 1px solid var(--theme-wallet-settings-section-separator-color);
+    margin-top: 20px;
+    padding-top: 20px;
   }
 }
 

@@ -1,3 +1,5 @@
+@import '../../themes/mixins/link';
+
 %actionButton {
   border-radius: 2px;
   box-sizing: border-box;
@@ -26,7 +28,6 @@
     background-color: var(
       --theme-legacy-notification-learn-more-button-background-color
     );
-    color: var(--theme-legacy-notification-learn-more-button-text-color);
     padding: 0 42px;
 
     &:hover {
@@ -38,6 +39,20 @@
       background-color: var(
         --theme-legacy-notification-learn-more-button-background-color-active
       ) !important;
+    }
+
+    .externalLink {
+      color: var(--theme-legacy-notification-learn-more-button-text-color);
+      &:after {
+        background-color: var(
+          --theme-legacy-notification-learn-more-button-text-color
+        );
+        height: 14px;
+        -webkit-mask-size: 14px, 14px;
+        mask-size: 14px, 14px;
+        vertical-align: sub;
+        width: 14px;
+      }
     }
   }
 
@@ -60,29 +75,38 @@
       ) !important;
     }
   }
-}
+  .title {
+    color: var(--theme-legacy-notification-title-color);
+    flex-grow: 1;
+    font-family: var(--font-medium);
+    font-size: 16px;
+    font-weight: 500;
+    height: 22px;
+    line-height: 1.38;
+  }
 
-.title {
-  color: var(--theme-legacy-notification-title-color);
-  flex-grow: 1;
-  font-family: var(--font-medium);
-  font-size: 16px;
-  font-weight: 500;
-  height: 22px;
-  line-height: 1.38;
-}
+  .description {
+    color: var(--theme-legacy-notification-description-color);
+    font-family: var(--font-light);
+    font-size: 14px;
+    letter-spacing: 0.5px;
+    line-height: 1.36;
+    margin-top: 10px;
+  }
 
-.description {
-  color: var(--theme-legacy-notification-description-color);
-  font-family: var(--font-light);
-  font-size: 14px;
-  letter-spacing: 0.5px;
-  line-height: 1.36;
-  margin-top: 10px;
-}
+  .actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 22px;
+  }
 
-.actions {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 22px;
+  q {
+    quotes: '"' '"';
+    &:before {
+      content: open-quote;
+    }
+    &:after {
+      content: close-quote;
+    }
+  }
 }

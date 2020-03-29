@@ -21,12 +21,12 @@ export default class TopBarContainer extends Component<Props> {
   render() {
     const { actions, stores } = this.props;
     const { sidebar, app, networkStatus, wallets, newsFeed } = stores;
-    const { active, isWalletRoute, hasAnyWallets } = wallets;
+    const { active, isWalletRoute, hasAnyWallets, hasRewardsWallets } = wallets;
     const {
       currentRoute,
       environment: { isMainnet, network },
+      openExternalLink,
     } = app;
-
     const walletRoutesMatch = matchRoute(
       `${ROUTES.WALLETS.ROOT}/:id(*page)`,
       currentRoute
@@ -41,6 +41,17 @@ export default class TopBarContainer extends Component<Props> {
       <WalletTestEnvironmentLabel network={network} />
     ) : null;
 
+    const onWalletAdd = () => {
+      actions.router.goToRoute.trigger({
+        route: ROUTES.WALLETS.ADD,
+      });
+    };
+
+    const onTransferFunds = (sourceWalletId: string) =>
+      actions.wallets.transferFundsSetSourceWalletId.trigger({
+        sourceWalletId,
+      });
+
     const { unread } = newsFeed.newsFeedData;
     const hasUnreadNews = unread.length > 0;
 
@@ -49,6 +60,10 @@ export default class TopBarContainer extends Component<Props> {
         leftIcon={leftIcon}
         onLeftIconClick={actions.sidebar.toggleSubMenus.trigger}
         activeWallet={activeWallet}
+        onTransferFunds={onTransferFunds}
+        hasRewardsWallets={hasRewardsWallets}
+        onWalletAdd={onWalletAdd}
+        onLearnMore={openExternalLink}
       >
         {testnetLabel}
         <NodeSyncStatusIcon networkStatus={networkStatus} />

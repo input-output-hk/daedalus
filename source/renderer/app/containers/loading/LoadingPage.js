@@ -14,8 +14,9 @@ export default class LoadingPage extends Component<InjectedProps> {
   static defaultProps = { stores: null, actions: null };
 
   get activeOverlay() {
+    const { showManualUpdate } = this.props.stores.nodeUpdate;
     if (this.isNotEnoughDiskSpace) return <NoDiskSpaceErrorPage />;
-    if (this.isManualUpdate) return <ManualUpdatePage />;
+    if (showManualUpdate) return <ManualUpdatePage />;
     if (this.isSystemTimeError) return <SystemTimeErrorPage />;
     return null;
   }
@@ -25,28 +26,13 @@ export default class LoadingPage extends Component<InjectedProps> {
   }
 
   get isSystemTimeError() {
-    const {
-      isSystemTimeCorrect,
-      isNodeStopping,
-      isNodeStopped,
-    } = this.networkStatus;
-    return !isSystemTimeCorrect && !isNodeStopping && !isNodeStopped;
-  }
-
-  get isManualUpdate() {
-    const { isNodeStopping, isNodeStopped } = this.networkStatus;
-    const {
-      isNewAppVersionAvailable,
-      isUpdatePostponed,
-      isUpdateAvailable,
-    } = this.props.stores.nodeUpdate;
-    return (
-      isNewAppVersionAvailable &&
-      !isNodeStopping &&
-      !isNodeStopped &&
-      !isUpdatePostponed &&
-      !isUpdateAvailable
-    );
+    return false;
+    // const {
+    //   isSystemTimeCorrect,
+    //   isNodeStopping,
+    //   isNodeStopped,
+    // } = this.networkStatus;
+    // return !isSystemTimeCorrect && !isNodeStopping && !isNodeStopped;
   }
 
   get networkStatus() {
@@ -56,8 +42,8 @@ export default class LoadingPage extends Component<InjectedProps> {
   render() {
     return (
       <CenteredLayout>
-        {this.activeOverlay}
         <SyncingConnectingPage />
+        {this.activeOverlay}
       </CenteredLayout>
     );
   }

@@ -1,9 +1,10 @@
 // @flow
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { observer, inject } from 'mobx-react';
 import StakePools from '../../components/staking/stake-pools/StakePools';
 import DelegationSetupWizardDialogContainer from './dialogs/DelegationSetupWizardDialogContainer';
 import DelegationSetupWizardDialog from '../../components/staking/delegation-setup-wizard/DelegationSetupWizardDialog';
+import { getNetworkExplorerUrlByType } from '../../utils/network';
 import type { InjectedProps } from '../../types/injectedPropsType';
 
 type Props = InjectedProps;
@@ -24,22 +25,33 @@ export default class StakePoolsListPage extends Component<Props> {
 
   render() {
     const { uiDialogs, staking, app, profile } = this.props.stores;
-    const { currentTheme } = profile;
-    const { stakePools, delegatingStakePools } = staking;
+    const { currentTheme, currentLocale, environment } = profile;
+    const { stakePools, fetchingStakePoolsFailed, recentStakePools } = staking;
+    const { network, rawNetwork } = environment;
+    const getPledgeAddressUrl = (pledgeAddres: string) =>
+      getNetworkExplorerUrlByType(
+        'address',
+        pledgeAddres,
+        network,
+        rawNetwork,
+        currentLocale
+      );
 
     return (
-      <div>
+      <Fragment>
         <StakePools
           stakePoolsList={stakePools}
-          stakePoolsDelegatingList={delegatingStakePools}
+          stakePoolsDelegatingList={recentStakePools}
           onOpenExternalLink={app.openExternalLink}
+          getPledgeAddressUrl={getPledgeAddressUrl}
           currentTheme={currentTheme}
           onDelegate={this.handleDelegate}
+          isLoading={fetchingStakePoolsFailed || !stakePools.length}
         />
         {uiDialogs.isOpen(DelegationSetupWizardDialog) ? (
           <DelegationSetupWizardDialogContainer />
         ) : null}
-      </div>
+      </Fragment>
     );
   }
 }

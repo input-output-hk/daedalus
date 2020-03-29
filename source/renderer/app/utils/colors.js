@@ -7,7 +7,7 @@ import isNil from 'lodash/isNil';
 
 type RangeOptions = {
   colors?: Array<any>,
-  domain?: Array<number>,
+  numberOfItems?: number,
   darken?: number,
   brighten?: number,
   alpha?: number,
@@ -16,19 +16,32 @@ type RangeOptions = {
 
 const defaultRangeOptions = {
   colors: ['#1cca5b', '#fc602c'],
-  domain: [0, 99],
+  numberOfItems: 99,
   darken: 0,
   brighten: 0,
   alpha: 1,
   reverse: false,
 };
 
-export const getColorFromRange = (index: ?number, options?: RangeOptions) => {
-  const { colors, domain: originalDomain, darken, brighten, alpha, reverse } = {
+export const getColorFromRange = (
+  index: ?number,
+  optionsOrNumberOfItems?: RangeOptions | number
+) => {
+  let options = {};
+  let { numberOfItems } = defaultRangeOptions;
+
+  if (typeof optionsOrNumberOfItems === 'object') {
+    options = optionsOrNumberOfItems;
+    numberOfItems = options.numberOfItems || numberOfItems;
+  } else if (typeof optionsOrNumberOfItems === 'number') {
+    numberOfItems = optionsOrNumberOfItems;
+  }
+
+  const { colors, darken, brighten, alpha, reverse } = {
     ...defaultRangeOptions,
     ...options,
   };
-  const domain = originalDomain.slice();
+  const domain = [0, numberOfItems];
   if (reverse) domain.reverse();
   const scale = chroma.scale(colors).domain(domain);
 
@@ -41,4 +54,18 @@ export const getColorFromRange = (index: ?number, options?: RangeOptions) => {
     .brighten(brighten)
     .alpha(alpha)
     .hex();
+};
+
+export const getSaturationColor = (saturation: number): string => {
+  let color;
+  if (saturation >= 100) {
+    color = 'red';
+  } else if (saturation >= 90) {
+    color = 'orange';
+  } else if (saturation >= 80) {
+    color = 'yellow';
+  } else {
+    color = 'green';
+  }
+  return color;
 };

@@ -9,6 +9,17 @@
 
 Daedalus - cryptocurrency wallet
 
+## Installation
+
+### Nix
+[Nix](https://nixos.org/nix/) is needed to run the Selfnode for Daedalus.
+
+**Note:** There are special instructions for
+[installing Nix on Catalina](https://github.com/NixOS/nix/issues/2925#issuecomment-564149154).
+
+### Yarn
+[Yarn](https://yarnpkg.com/lang/en/docs/install) is required to install NPM dependencies to build Daedalus.
+
 ## Automated build
 
 ### CI/dev build scripts
@@ -38,8 +49,39 @@ The result can be found at `./result/daedalus-*.bin`.
 
 # Development
 
-`shell.nix` provides a way to load a shell with all the correct versions of all the
-required dependencies for development.
+`shell.nix` provides a way to load a shell with all the correct versions of all the required dependencies for development.
+
+## V2 API Integration Guide [Jormungandr]
+
+API docs for pinned cardano-wallet version: https://input-output-hk.github.io/cardano-wallet/api/edge/
+
+### ITN Selfnode
+
+1. Run `yarn nix:itn_selfnode` from `daedalus`.
+2. Run `yarn dev` from the subsequent `nix-shell`
+3. Once Daedalus has started, and has gotten past the loading screen, run `yarn v2:shelley:wallet:importer` from a new terminal window. This is only required if you wish to import some funded wallets. It is also possible to import funded legacy wallets by running `yarn v2:byron:wallet:importer` script.
+
+### QA testnet
+
+1. Run `yarn nix:qa` from `daedalus`.
+2. Run `yarn dev:itn` from the subsequent `nix-shell`
+
+### Nightly testnet
+
+1. Run `yarn nix:nightly` from `daedalus`.
+2. Run `yarn dev:itn` from the subsequent `nix-shell`
+
+### V2 Known Issues
+- As network-info is stubbed, the NTP check will throw. Just disregard this for now.
+- Lots of things have been temporarily commented out or mocked to get the integration started.
+- TLS is not yet supported, so `request.js` has been overwritten to use the HTTP module for the time being.
+
+### Updating Upstream Dependencies (cardano-wallet & Jormungandr)
+Niv is used to manage the version of upstream dependencies. The versions of these dependencies can be seen in `nix/sources.json`.
+
+Dependencies are updated with the follow nix command:
+- Update to the latest master: `nix-shell -A devops --run "niv update cardano-wallet"`
+- Update to a specific revision: `nix-shell -A devops --run "niv update cardano-wallet -a rev=1988f22895c45e12506ec83da0496ebdcdd17719"`
 
 ## Connect to staging cluster:
 
@@ -58,10 +100,7 @@ required dependencies for development.
    ```
    and then add the following lines:
    ```
-   sandbox = true
-   extra-sandbox-paths = /System/Library/Frameworks
    substituters = https://hydra.iohk.io https://cache.nixos.org/
-   trusted-substituters =
    trusted-public-keys = hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ= cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=
    max-jobs = 2  # run at most two builds at once
    cores = 0     # the builder will use all available CPU cores
@@ -82,6 +121,7 @@ different each time you restart the cardano-sl demo cluster)
 The `frontendOnlyMode` makes it possible to connect to manually started instances of cardano-node for advanced debugging purposes.
 
 ### How to connect:
+#### Nix
 1. Within the [cardano-sl repository](https://github.com/input-output-hk/cardano-sl), build a script for a certain network. E.g. for testnet: `nix-build -A connectScripts.testnet.wallet -o launch_testnet`
 2. Launch this cluster + node with `./launch_testnet`
 3. You should now have a `state-wallet-testnet` folder inside the cardano-sl repo. Copy the full path to the sub folder `tls` in there.
@@ -89,7 +129,7 @@ The `frontendOnlyMode` makes it possible to connect to manually started instance
 
 Now you should have a pre-configured nix-shell session where you can `yarn dev` as usual and Daedalus connects itself to the manually started cardano node.
 
-### Parameters:
+##### Parameters:
 
 | Param              | Mandatory | Default     |
 |--------------------|-----------|-------------|
@@ -99,6 +139,12 @@ Now you should have a pre-configured nix-shell session where you can `yarn dev` 
 
 So if you just start the default cardano node (which runs on localhost:8090) you can also start nix-shell with `CARDANO_TLS_PATH=/path/to/tls nix-shell`
 
+#### Without Nix
+1. If you have previously used `nix-shell`, run `rm -rf node_modules` as it is likely some of the bindings won't match your local nodejs version
+2. `yarn install`
+3. `WALLET_HOST=xxx WALLET_PORT=xxx yarn js-launcher`
+
+This mode currently mocks TLS certificates as this is not being used for V2 integrations.
 
 ## Notes:
 

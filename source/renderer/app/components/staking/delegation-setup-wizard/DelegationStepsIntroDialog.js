@@ -2,30 +2,30 @@
 import React, { Component } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
 import classNames from 'classnames';
-import SVGInline from 'react-svg-inline';
+// import SVGInline from 'react-svg-inline';
 import commonStyles from './DelegationSteps.scss';
 import styles from './DelegationStepsIntroDialog.scss';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
-import externalLinkIcon from '../../../assets/images/link-ic.inline.svg';
+// import externalLinkIcon from '../../../assets/images/link-ic.inline.svg';
 
 type Props = {
   onClose: Function,
   onContinue: Function,
-  onLearnMoreClick: Function,
+  // onLearnMoreClick: Function,
 };
 
 const messages = defineMessages({
   title: {
     id: 'staking.delegationSetup.intro.step.dialog.title',
-    defaultMessage: '!!!Delegation Setup',
+    defaultMessage: '!!!Delegate wallet',
     description:
       'Title "Delegation Setup" on the delegation setup "intro" dialog.',
   },
   description: {
     id: 'staking.delegationSetup.intro.step.dialog.description',
     defaultMessage:
-      '!!!Follow next sequence of screens to configure delegation for your wallet. During this process, you will need to deposit and pay transaction fees.',
+      '!!!Follow these steps to configure delegation preferences for your wallet. Please be aware that the last step of delegation confirmation will incur transaction fees.',
     description: 'Description on the delegation setup "intro" dialog.',
   },
   learnMoreButtonLabel: {
@@ -34,42 +34,23 @@ const messages = defineMessages({
     description:
       '"Learn more" button label on the delegation setup "intro" dialog.',
   },
-  stepsExplanationLabel: {
-    id: 'staking.delegationSetup.intro.step.dialog.stepsExplanationLabel',
-    defaultMessage: '!!!You will need to complete the following steps:',
-    description:
-      'Steps explanation label on the delegation setup "intro" dialog.',
-  },
   stepsExplanationLabel1: {
     id: 'staking.delegationSetup.intro.step.dialog.stepsExplanation.step1',
-    defaultMessage: '!!!Choose a wallet',
+    defaultMessage: '!!!Wallet selection',
     description:
       'Steps explanation list item 1 label on the delegation setup "intro" dialog.',
   },
   stepsExplanationLabel2: {
     id: 'staking.delegationSetup.intro.step.dialog.stepsExplanation.step2',
-    defaultMessage: '!!!Choose a stake pool',
+    defaultMessage: '!!!Stake pool selection',
     description:
       'Steps explanation list item 2 label on the delegation setup "intro" dialog.',
   },
   stepsExplanationLabel3: {
     id: 'staking.delegationSetup.intro.step.dialog.stepsExplanation.step3',
-    defaultMessage: '!!!Confirm delegation',
+    defaultMessage: '!!!Delegation confirmation',
     description:
       'Steps explanation list item 3 label on the delegation setup "intro" dialog.',
-  },
-  stepsExplanationLabel4: {
-    id: 'staking.delegationSetup.intro.step.dialog.stepsExplanation.step4',
-    defaultMessage: '!!!Move all of the ada to a new address',
-    description:
-      'Steps explanation list item 4 label on the delegation setup "intro" dialog.',
-  },
-  stepsExplanationOptionalLabel: {
-    id:
-      'staking.delegationSetup.intro.step.dialog.stepsExplanation.optionalLabel',
-    defaultMessage: '!!!(optional)',
-    description:
-      'Steps explanation list item 4 "Optional" label on the delegation setup "intro" dialog.',
   },
   cancelButtonLabel: {
     id: 'staking.delegationSetup.intro.step.dialog.cancelButtonLabel',
@@ -92,7 +73,11 @@ export default class DelegationStepsIntroDialog extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { onClose, onContinue, onLearnMoreClick } = this.props;
+    const {
+      onClose,
+      onContinue,
+      // onLearnMoreClick,
+    } = this.props;
 
     const actions = [
       {
@@ -127,14 +112,13 @@ export default class DelegationStepsIntroDialog extends Component<Props> {
           <p className={styles.description}>
             {intl.formatMessage(messages.description)}
           </p>
-          <button className={styles.link} onClick={onLearnMoreClick}>
-            {intl.formatMessage(messages.learnMoreButtonLabel)}
-            <SVGInline svg={externalLinkIcon} />
-          </button>
+          {/*
+            <button className={styles.link} onClick={onLearnMoreClick}>
+              {intl.formatMessage(messages.learnMoreButtonLabel)}
+              <SVGInline svg={externalLinkIcon} />
+            </button>
+          */}
           <div className={styles.stepsExplanation}>
-            <p className={styles.label}>
-              {intl.formatMessage(messages.stepsExplanationLabel)}
-            </p>
             <ol>
               <li>
                 <span>1.</span>{' '}
@@ -147,15 +131,6 @@ export default class DelegationStepsIntroDialog extends Component<Props> {
               <li>
                 <span>3.</span>{' '}
                 {intl.formatMessage(messages.stepsExplanationLabel3)}
-              </li>
-              <li>
-                <p>
-                  <span>4. </span>
-                  {intl.formatMessage(messages.stepsExplanationLabel4)}{' '}
-                  <span className={styles.optionalLabel}>
-                    {intl.formatMessage(messages.stepsExplanationOptionalLabel)}
-                  </span>
-                </p>
               </li>
             </ol>
           </div>
