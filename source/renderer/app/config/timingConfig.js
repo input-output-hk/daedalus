@@ -10,6 +10,7 @@ export const FORM_VALIDATION_DEBOUNCE_WAIT = 250; // unit: milliseconds
 export const NODE_UPDATE_POLL_INTERVAL = 5000; // unit: milliseconds
 export const ALLOWED_TIME_DIFFERENCE = 15 * 1000000; // 15 seconds | unit: microseconds
 export const NETWORK_STATUS_POLL_INTERVAL = 2000; // 2 seconds | unit: milliseconds
+export const NETWORK_CLOCK_POLL_INTERVAL = 1000; // 1 second | unit: milliseconds
 export const WALLET_UTXO_API_REQUEST_INTERVAL = 5 * 1000; // 5 seconds | unit: milliseconds
 export const STAKE_POOL_TOOLTIP_HOVER_WAIT = 700; // 700 milliseconds | unit: milliseconds
 export const COPY_STATE_DIRECTORY_PATH_NOTIFICATION_DURATION = 10; // unit: seconds
