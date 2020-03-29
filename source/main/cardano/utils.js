@@ -200,13 +200,13 @@ export const exportWallets = async (
   // into Daedalus Flight state dir before extracting the wallets
   if (isFlight) {
     try {
-      const response = await prepareMigrationData({
+      const response = await prepareMigrationData(
         mainWindow,
         stateDir,
         legacySecretKey,
         legacyWalletDB,
-        locale,
-      });
+        locale
+      );
       legacySecretKeyPath = response.legacySecretKeyPath;
       legacyWalletDBPath = response.legacyWalletDBPath;
     } catch (error) {
@@ -246,30 +246,17 @@ export const exportWallets = async (
   return Promise.resolve({ wallets, errors });
 };
 
-type PrepareMigrationDataParams = {
+const prepareMigrationData = async (
   mainWindow: BrowserWindow,
   stateDir: string,
   legacySecretKey: string,
   legacyWalletDB: string,
-  locale: string,
-};
-
-type PrepareMigrationDataResponse = {
+  locale: string
+): Promise<{
   legacySecretKeyPath: string,
   legacyWalletDBPath: string,
-};
-
-const prepareMigrationData = async (
-  params: PrepareMigrationDataParams
-): Promise<PrepareMigrationDataResponse> => {
-  const {
-    mainWindow,
-    stateDir,
-    legacySecretKey,
-    legacyWalletDB,
-    locale,
-  } = params;
-  return new Promise(async (resolve, reject) => {
+}> =>
+  new Promise(async (resolve, reject) => {
     let legacySecretKeyPath = '';
     let legacyWalletDBPath = '';
     try {
@@ -328,13 +315,13 @@ const prepareMigrationData = async (
           // User confirmed migration retry
           logger.info('ipcMain: User confirmed wallet migration retry');
           resolve(
-            prepareMigrationData({
+            prepareMigrationData(
               mainWindow,
               stateDir,
               legacySecretKey,
               legacyWalletDB,
-              locale,
-            })
+              locale
+            )
           );
         } else {
           // User canceled migration
@@ -346,12 +333,11 @@ const prepareMigrationData = async (
       }
     }
   });
-};
 
 const showExportWalletsWarning = (
   mainWindow: BrowserWindow,
   locale: string
-) => {
+): Promise<number> => {
   const translations = require(`../locales/${locale}`);
   const translation = getTranslation(translations, 'dialog');
   const exportWalletsDialogOptions = {
