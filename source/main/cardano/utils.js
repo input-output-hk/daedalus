@@ -308,7 +308,9 @@ const prepareMigrationData = async (
         error,
       });
       const { code } = error || {};
-      if (code === 'ENOENT' || code === 'EBUSY') {
+      if (code === 'EBUSY') {
+        // "EBUSY" error happens on Windows when Daedalus mainnet is running during preparation
+        // of Daedalus Flight wallet migration data as this prevents the files from being copied.
         logger.info('ipcMain: Showing "Automatic wallet migration" warning...');
         const response = await showExportWalletsWarning(mainWindow, locale);
         if (response === 0) {
