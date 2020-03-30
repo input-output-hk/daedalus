@@ -49,6 +49,7 @@ const isIncentivizedTestnetSelfnode = checkIsIncentivizedTestnetSelfnode(
 const isDevelopment = checkIsDevelopment(NETWORK);
 const isWatchMode = process.env.IS_WATCH_MODE;
 const API_VERSION = process.env.API_VERSION || 'dev';
+const NODE_VERSION = '1.9.1';
 const mainProcessID = get(process, 'ppid', '-');
 const rendererProcessID = process.pid;
 const PLATFORM = os.platform();
@@ -82,6 +83,7 @@ export const environment: Environment = Object.assign(
     network: NETWORK,
     rawNetwork: RAW_NETWORK,
     apiVersion: API_VERSION,
+    nodeVersion: NODE_VERSION,
     mobxDevTools: MOBX_DEV_TOOLS,
     current: CURRENT_NODE_ENV,
     isDev,
