@@ -1147,7 +1147,8 @@ export default class WalletsStore extends Store {
   ) => {
     const locale = this.stores.profile.currentLocale;
     const intl = i18nContext(locale);
-    const { isMainnet, buildLabel } = this.environment;
+    const { isMainnet } = this.environment;
+    const { buildLabel } = global;
     try {
       await paperWalletPdfGenerator({
         address,
