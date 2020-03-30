@@ -322,7 +322,7 @@ export default class AdaApi {
           walletId,
           queryParams
         );
-      } else {
+      } else if (!isLegacy) {
         response = await getAddresses(this.config, walletId, queryParams);
       }
       logger.debug('AdaApi::getAddresses success', { addresses: response });
