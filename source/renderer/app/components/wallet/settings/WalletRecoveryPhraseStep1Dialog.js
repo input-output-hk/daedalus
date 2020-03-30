@@ -86,7 +86,7 @@ export default class WalletRecoveryPhraseStep1 extends Component<Props, State> {
         closeButton={<DialogCloseButton />}
       >
         <p>{intl.formatMessage(messages.recoveryPhraseStep1Paragraph1)}</p>
-        <p className={styles.checkboxContainer}>
+        <div className={styles.checkboxContainer}>
           <Checkbox
             onChange={this.onToggleSafetyAgreement}
             checked={safetyAgreement}
@@ -94,7 +94,7 @@ export default class WalletRecoveryPhraseStep1 extends Component<Props, State> {
             className={styles.checkbox}
             label={intl.formatMessage(messages.recoveryPhraseStep1Paragraph2)}
           />
-        </p>
+        </div>
       </Dialog>
     );
   }

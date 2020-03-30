@@ -1,6 +1,21 @@
 // @flow
+/**
+ *
+ * @verify-recovery-phrase TODO
+ *
+ * 👉 If `cardano-js/hd` works on node:
+ * ------------------------------------------------------
+ * Delete the lines 17 and 147-154
+ *
+ * 👉 If `cardano-js/hd` works on web:
+ * ------------------------------------------------------
+ * Delete the `verifyRecoveryPhraseChannel` IPC implementation
+ * Uncomment the lines 17 and 147-154
+ *
+ */
 import { observable, action, computed, runInAction } from 'mobx';
-import { Byron, Icarus, newPublicId } from 'cardano-js/dist/hd';
+// import { Byron, Icarus, newPublicId } from 'cardano-js/dist/hd';
+import { verifyRecoveryPhraseChannel } from '../ipc/verifyRecoveryPhraseChannel';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import WalletBackupDialog from '../components/wallet/WalletBackupDialog';
@@ -129,19 +144,23 @@ export default class WalletBackupStore extends Store {
     recoveryPhrase: Array<string>,
   }) => {
     const { recoveryPhrase } = params;
-    let xprv;
-    let cc;
-    if (recoveryPhrase.length === 12) {
-      [xprv, cc] = Byron.generateMasterKey(recoveryPhrase);
-    } else {
-      [xprv, cc] = Icarus.generateMasterKey(recoveryPhrase);
-    }
+    // let xprv;
+    // let cc;
+    // if (recoveryPhrase.length === 12) {
+    //   [xprv, cc] = Byron.generateMasterKey(recoveryPhrase);
+    // } else {
+    //   [xprv, cc] = Icarus.generateMasterKey(recoveryPhrase);
+    // }
+    // const walletId = newPublicId(xprv.to_public(), cc);
+    const walletId = await verifyRecoveryPhraseChannel.request({
+      recoveryPhrase,
+    });
+
     const activeWallet = this.stores.wallets.active;
     if (!activeWallet)
       throw new Error(
         'Active wallet required before checking recovery phrase.'
       );
-    const walletId = newPublicId(xprv.to_public(), cc);
     runInAction('AdaWalletBackupStore::_checkRecoveryPhrase', () => {
       this.isRecoveryPhraseMatching = walletId === activeWallet.id;
     });
