@@ -1,5 +1,5 @@
 // @flow
-import { size, omit, includes } from 'lodash';
+import { size, includes } from 'lodash';
 import querystring from 'querystring';
 import { getContentLength } from '.';
 
@@ -48,12 +48,7 @@ function typedRequest<Response>(
       };
     }
 
-    // @API TODO: Uncomment / switch once HTTPS is supported by the new API
-    // const httpsRequest = global.https.request(options);
-
-    // @API TODO:  Delete once HTTPS is supported by the new API
-    const httpOnlyOptions = omit(options, ['ca', 'cert', 'key']);
-    const httpsRequest = global.http.request(httpOnlyOptions);
+    const httpsRequest = global.https.request(options);
 
     if (hasRequestBody) {
       httpsRequest.write(requestBody);
