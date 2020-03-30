@@ -1801,6 +1801,10 @@
   version "13.7.4"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-13.7.4.tgz#76c3cb3a12909510f52e5dc04a6298cdf9504ffd"
 
+"@types/node@11.11.6":
+  version "11.11.6"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-11.11.6.tgz#df929d1bb2eee5afdda598a41930fe50b43eaa6a"
+
 "@types/node@^12.7.2":
   version "12.12.30"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-12.12.30.tgz#3501e6f09b954de9c404671cefdbcc5d9d7c45f6"
@@ -3295,6 +3299,15 @@ bip39@2.3.0:
     randombytes "^2.0.1"
     unorm "^1.3.3"
 
+bip39@^3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/bip39/-/bip39-3.0.2.tgz#2baf42ff3071fc9ddd5103de92e8f80d9257ee32"
+  dependencies:
+    "@types/node" "11.11.6"
+    create-hash "^1.1.0"
+    pbkdf2 "^3.0.9"
+    randombytes "^2.0.1"
+
 bl@^1.0.0:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/bl/-/bl-1.2.2.tgz#a160911717103c07410cef63ef51b397c025af9c"
@@ -3308,7 +3321,7 @@ bl@^4.0.1:
   dependencies:
     readable-stream "^3.4.0"
 
-blakejs@1.1.0:
+blakejs@1.1.0, blakejs@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/blakejs/-/blakejs-1.1.0.tgz#69df92ef953aa88ca51a32df6ab1c54a155fc7a5"
 
@@ -3754,12 +3767,14 @@ capture-stack-trace@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/capture-stack-trace/-/capture-stack-trace-1.0.1.tgz#a6c0bbe1f38f3aa0b92238ecb6ff42c344d4135d"
 
-cardano-js@0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/cardano-js/-/cardano-js-0.3.0.tgz#8e3bf5f2a018b1c48719b89ee6540aae2979438f"
+cardano-js@0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/cardano-js/-/cardano-js-0.4.1.tgz#4f9073874fb11f0bc723e320bfe8b1f83c854fec"
   dependencies:
     bech32 "^1.1.3"
     bignumber.js "^9.0.0"
+    bip39 "^3.0.2"
+    blakejs "^1.1.0"
     bs58 "^4.0.1"
     cbor "^4.3.0"
     ts-custom-error "^3.1.1"
