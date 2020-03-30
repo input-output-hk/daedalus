@@ -20,7 +20,6 @@ export type Environment = {
   isWatchMode: boolean,
   build: string,
   buildNumber: string,
-  buildLabel: string,
   platform: string,
   platformVersion: string,
   mainProcessID: string,
