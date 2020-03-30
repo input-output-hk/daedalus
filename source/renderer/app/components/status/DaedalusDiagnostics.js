@@ -583,12 +583,15 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
       cardanoNetworkValue += ` (${cardanoRawNetworkValue})`;
     }
 
-    const localTimeDifferenceClasses = classNames([
-      (!isNTPServiceReachable && !isCheckingSystemTime) ||
-      (localTimeDifference && localTimeDifference > ALLOWED_TIME_DIFFERENCE)
-        ? styles.red
-        : styles.green,
-    ]);
+    const localTimeDifferenceClasses = isCheckingSystemTime
+      ? styles.layoutData
+      : classNames([
+          styles.layoutData,
+          !isNTPServiceReachable ||
+          (localTimeDifference && localTimeDifference > ALLOWED_TIME_DIFFERENCE)
+            ? styles.red
+            : styles.green,
+        ]);
 
     const { getSectionRow, getRow } = this;
 
