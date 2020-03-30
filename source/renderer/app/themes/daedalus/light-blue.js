@@ -276,7 +276,7 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-link-main-color': 'rgb(41, 111, 208)',
   },
   loading: {
-    '--theme-loading-background-color': '#1c3e65',
+    '--theme-loading-background-color': '#fafbfc',
     '--theme-loading-no-disk-space-background-color': 'rgba(171, 23, 0, 0.94)',
     '--theme-loading-no-disk-space-text-color': '#ffffff',
     '--theme-loading-no-disk-space-attention-icon-color': '#ffffff',
