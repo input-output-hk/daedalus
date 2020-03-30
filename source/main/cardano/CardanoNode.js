@@ -264,6 +264,7 @@ export class CardanoNode {
       nodeConfig,
       stateDir,
       cluster,
+      tlsPath,
       block0Path,
       block0Hash,
       secretPath,
@@ -303,6 +304,7 @@ export class CardanoNode {
         nodeConfig,
         cluster,
         stateDir,
+        tlsPath,
         block0Path,
         block0Hash,
         secretPath,
@@ -548,7 +550,7 @@ export class CardanoNode {
     const { _actions } = this;
     const { tlsPath } = this._config;
     this._tlsConfig =
-      nodeImplementation === 'jormungandr' || nodeImplementation === 'cardano'
+      nodeImplementation === 'jormungandr'
         ? {
             ca: ('': any),
             key: ('': any),

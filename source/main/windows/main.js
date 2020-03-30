@@ -6,17 +6,11 @@ import ipcApi from '../ipc';
 import RendererErrorHandler from '../utils/rendererErrorHandler';
 import { getTranslation } from '../utils/getTranslation';
 import { getContentMinimumSize } from '../utils/getContentMinimumSize';
-import { launcherConfig } from '../config';
+import { buildLabel, launcherConfig } from '../config';
 
 const rendererErrorHandler = new RendererErrorHandler();
 
-const {
-  isDev,
-  isTest,
-  buildLabel,
-  isLinux,
-  isBlankScreenFixActive,
-} = environment;
+const { isDev, isTest, isLinux, isBlankScreenFixActive } = environment;
 
 const id = 'window';
 

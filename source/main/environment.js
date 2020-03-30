@@ -1,7 +1,6 @@
 // @flow
 import os from 'os';
 import { uniq, get, includes } from 'lodash';
-import { isFlight } from './config';
 import { version } from '../../package.json';
 import type { Environment } from '../common/types/environment.types';
 import { DEVELOPMENT, OS_NAMES } from '../common/types/environment.types';
@@ -18,7 +17,6 @@ import {
   checkIsIncentivizedTestnetQA,
   checkIsIncentivizedTestnetNightly,
   checkIsIncentivizedTestnetSelfnode,
-  getBuildLabel,
   checkIsMacOS,
   checkIsWindows,
   checkIsLinux,
@@ -49,6 +47,7 @@ const isIncentivizedTestnetSelfnode = checkIsIncentivizedTestnetSelfnode(
 const isDevelopment = checkIsDevelopment(NETWORK);
 const isWatchMode = process.env.IS_WATCH_MODE;
 const API_VERSION = process.env.API_VERSION || 'dev';
+const NODE_VERSION = '1.9.1'; // TODO: pick up this value from process.env
 const mainProcessID = get(process, 'ppid', '-');
 const rendererProcessID = process.pid;
 const PLATFORM = os.platform();
@@ -59,13 +58,6 @@ const ram = os.totalmem();
 const isBlankScreenFixActive = includes(process.argv.slice(1), '--safe-mode');
 const BUILD = process.env.BUILD_NUMBER || 'dev';
 const BUILD_NUMBER = uniq([API_VERSION, BUILD]).join('.');
-const BUILD_LABEL = getBuildLabel(
-  BUILD_NUMBER,
-  NETWORK,
-  CURRENT_NODE_ENV,
-  isFlight,
-  version
-);
 const INSTALLER_VERSION = uniq([API_VERSION, BUILD]).join('.');
 const MOBX_DEV_TOOLS = process.env.MOBX_DEV_TOOLS || false;
 const isMacOS = checkIsMacOS(PLATFORM);
@@ -82,6 +74,7 @@ export const environment: Environment = Object.assign(
     network: NETWORK,
     rawNetwork: RAW_NETWORK,
     apiVersion: API_VERSION,
+    nodeVersion: NODE_VERSION,
     mobxDevTools: MOBX_DEV_TOOLS,
     current: CURRENT_NODE_ENV,
     isDev,
@@ -98,7 +91,6 @@ export const environment: Environment = Object.assign(
     isWatchMode,
     build: BUILD,
     buildNumber: BUILD_NUMBER,
-    buildLabel: BUILD_LABEL,
     platform: PLATFORM,
     platformVersion: PLATFORM_VERSION,
     mainProcessID,
