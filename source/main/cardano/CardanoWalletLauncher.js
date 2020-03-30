@@ -3,6 +3,7 @@ import { merge } from 'lodash';
 import * as fs from 'fs-extra';
 import * as cardanoLauncher from 'cardano-launcher';
 import type { Launcher } from 'cardano-launcher';
+import { app, dialog } from 'electron';
 import type { NodeConfig } from '../config';
 import { environment } from '../environment';
 import { STAKE_POOL_REGISTRY_URL } from '../config';
@@ -70,27 +71,26 @@ export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
 
   // Prepare development TLS files
   const { isProduction } = environment;
-  if (!isProduction) {
-    const devTlsPath = process.env.DEV_TLS_PATH || '';
-    try {
-      if (!devTlsPath) {
-        throw new Error(
-          'Daedalus improperly started!\n\nPlease provide DEV_TLS_PATH ENV variable.\n'
-        );
-      }
 
-      logger.info('Preparing Daedalus development TLS files...');
+  if (!isProduction) {
+    const devTlsPath = process.env.DEV_TLS_PATH;
+    try {
+      // Check if development TLS folder exist
+      if (!fs.existsSync(devTlsPath)) {
+        throw new Error('Please provide DEV_TLS_PATH ENV variable');
+      }
+      // Write folder to state directory TLS path
       await fs.copy(devTlsPath, tlsPath);
-      logger.info('Prepared Daedalus development TLS files', {
-        devTlsPath,
-        tlsPath,
-      });
     } catch (error) {
-      logger.error('Preparing Daedalus development TLS files failed', {
-        devTlsPath,
-        tlsPath,
-        error,
-      });
+      const dialogTitle = 'Daedalus improperly started!';
+      const dialogMessage = error.message;
+      try {
+        // App may not be available at this moment so we need to use try-catch
+        dialog.showErrorBox(dialogTitle, dialogMessage);
+        app.exit(1);
+      } catch (e) {
+        throw new Error(`${dialogTitle}\n\n${dialogMessage}\n`);
+      }
     }
   }
 

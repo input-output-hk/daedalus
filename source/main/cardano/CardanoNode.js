@@ -553,16 +553,16 @@ export class CardanoNode {
     this._tlsConfig =
       nodeImplementation === 'jormungandr' || !isProduction
         ? {
-            ca: ('': any),
-            key: ('': any),
-            cert: ('': any),
+            ca: _actions.readFileSync(`${tlsPath}/client/ca.crt`),
+            key: _actions.readFileSync(`${tlsPath}/client/client.key`),
+            cert: _actions.readFileSync(`${tlsPath}/client/client.pem`),
             hostname: 'localhost',
             port,
           }
         : {
-            ca: _actions.readFileSync(`${tlsPath}/client/ca.crt`),
-            key: _actions.readFileSync(`${tlsPath}/client/client.key`),
-            cert: _actions.readFileSync(`${tlsPath}/client/client.pem`),
+            ca: _actions.readFileSync(`${tlsPath}/server/ca.crt`),
+            key: _actions.readFileSync(`${tlsPath}/server/server.key`),
+            cert: _actions.readFileSync(`${tlsPath}/server/server.pem`),
             hostname: 'localhost',
             port,
           };

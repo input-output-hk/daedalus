@@ -82,7 +82,7 @@ module.exports = {
           : {
               // Only bake in DEV_TLS_PATH value for non production builds.
               'process.env.DEV_TLS_PATH': JSON.stringify(
-                process.env.DEV_TLS_PATH || ''
+                process.env.DEV_TLS_PATH || 'tls'
               ),
             }
       )
