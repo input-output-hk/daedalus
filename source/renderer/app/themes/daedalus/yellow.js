@@ -100,7 +100,7 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-button-primary-outline-color': 'rgba(255, 255, 255, 0.3)',
   },
   connecting: {
-    '--theme-connecting-background-color': 'rgba(255, 185, 35, 0.96)',
+    '--theme-connecting-background-color': '#ffb923',
     '--theme-connecting-background-color1': 'rgba(255, 185, 35, 1)',
     '--theme-connecting-background-color2': 'rgba(255, 185, 35, 0.91)',
     '--theme-connecting-background-color3': 'rgba(255, 185, 35, 0.31)',
@@ -267,7 +267,7 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-link-main-color': '#d6902f',
   },
   loading: {
-    '--theme-loading-background-color': 'rgba(255, 185, 35, 0.96)',
+    '--theme-loading-background-color': '#ffb923',
     '--theme-loading-no-disk-space-background-color': 'rgba(171, 23, 0, 0.94)',
     '--theme-loading-no-disk-space-text-color': '#ffffff',
     '--theme-loading-no-disk-space-attention-icon-color': '#ffffff',
@@ -776,7 +776,7 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-support-settings-text-color': '#2d2d2d',
   },
   syncing: {
-    '--theme-syncing-background-color': 'rgba(255, 185, 35, 0.96)',
+    '--theme-syncing-background-color': '#ffffff',
     '--theme-syncing-background-color1': 'rgba(255, 255, 255, 1)',
     '--theme-syncing-background-color2': 'rgba(255, 255, 255, 0.91)',
     '--theme-syncing-background-color3': 'rgba(255, 255, 255, 0.31)',

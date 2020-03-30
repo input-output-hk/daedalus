@@ -95,7 +95,7 @@ export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
     '--theme-button-primary-outline-color': 'rgba(255, 255, 255, 0.5)',
   },
   connecting: {
-    '--theme-connecting-background-color': '#36374d',
+    '--theme-connecting-background-color': '#2a2b3c',
     '--theme-connecting-background-color1': 'rgba(54, 55, 77, 1)',
     '--theme-connecting-background-color2': 'rgba(54, 55, 77, 0.91)',
     '--theme-connecting-background-color3': 'rgba(54, 55, 77, 0.31)',
@@ -263,7 +263,7 @@ export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
     '--theme-link-main-color': '#ffb923',
   },
   loading: {
-    '--theme-loading-background-color': '#121326',
+    '--theme-loading-background-color': '#2a2b3c',
     '--theme-loading-no-disk-space-background-color': 'rgba(171, 23, 0, 0.94)',
     '--theme-loading-no-disk-space-text-color': '#ffffff',
     '--theme-loading-no-disk-space-attention-icon-color': '#ffffff',

@@ -277,7 +277,7 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-link-main-color': '#26AB5F',
   },
   loading: {
-    '--theme-loading-background-color': 'rgba(32, 34, 37, 0.96)',
+    '--theme-loading-background-color': '#202225',
     '--theme-loading-no-disk-space-background-color': 'rgba(171, 23, 0, 0.94)',
     '--theme-loading-no-disk-space-text-color': '#ffffff',
     '--theme-loading-no-disk-space-attention-icon-color': '#ffffff',
@@ -783,7 +783,7 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-support-settings-text-color': '#5e6066',
   },
   syncing: {
-    '--theme-syncing-background-color': 'rgba(32, 34, 37, 0.96)',
+    '--theme-syncing-background-color': '#ffffff',
     '--theme-syncing-background-color1': 'rgba(250, 251, 252, 1)',
     '--theme-syncing-background-color2': 'rgba(250, 251, 252, 0.91)',
     '--theme-syncing-background-color3': 'rgba(250, 251, 252, 0.31)',
