@@ -25,6 +25,8 @@ let
     windows = "\${DAEDALUS_INSTALL_DIRECTORY}";
   };
 
+  isDevOrLinux = devShell || os == "linux";
+
   mkSpacedName = network: if network == "mainnet" then "Daedalus" else "Daedalus ${installDirectorySuffix}";
   spacedName = mkSpacedName network;
 
@@ -42,7 +44,7 @@ let
       windows = "\${DAEDALUS_INSTALL_DIRECTORY}";
     };
     binary' = if binary == "frontend" then frontendBinPath else binary;
-  in if (devShell || os == "linux") then binary' else "${binDir.${os}}${dirSep}${binary'}${lib.optionalString (os == "windows") ".exe"}";
+  in if isDevOrLinux then binary' else "${binDir.${os}}${dirSep}${binary'}${lib.optionalString (os == "windows") ".exe"}";
   # Helper function to make a path to a config file
   mkConfigPath = configSrc: configPath: "${(configDir configSrc).${os}}${dirSep}${configPath}";
 
@@ -160,8 +162,7 @@ let
     walletBin = mkBinPath "cardano-wallet-byron";
     nodeBin = mkBinPath "cardano-node";
     cliBin = mkBinPath "cardano-cli";
-    # if we don't have nix, we need to rewrite the genesis path in config.yaml
-    nodeConfig = builtins.toJSON (envCfg.nodeConfig // (lib.optionalAttrs (os == "macos64" || os == "windows") {
+    nodeConfig = builtins.toJSON (envCfg.nodeConfig // (lib.optionalAttrs (!isDevOrLinux) {
       GenesisFile = mkConfigPath nodeConfigFiles "genesis.json";
     }));
     genesisFile = if (network == "selfnode") then ../utils/cardano/selfnode/genesis.json else envCfg.genesisFile;
