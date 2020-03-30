@@ -163,7 +163,7 @@ let
     nodeBin = mkBinPath "cardano-node";
     cliBin = mkBinPath "cardano-cli";
     nodeConfig = builtins.toJSON (envCfg.nodeConfig // (lib.optionalAttrs (!isDevOrLinux) {
-      GenesisFile = mkConfigPath nodeConfigFiles "genesis.json";
+      GenesisFile = "genesis.json";
     }));
     genesisFile = if (network == "selfnode") then ../utils/cardano/selfnode/genesis.json else envCfg.genesisFile;
     topologyFile = if network == "selfnode" then envCfg.topology else cardanoLib.mkEdgeTopology {
