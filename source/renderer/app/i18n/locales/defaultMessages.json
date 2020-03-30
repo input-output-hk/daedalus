@@ -4613,6 +4613,20 @@
           "column": 18,
           "line": 52
         }
+      },
+      {
+        "defaultMessage": "!!!MacOS build 3769, with Cardano 1.0.4",
+        "description": "About page build information for ITN",
+        "end": {
+          "column": 3,
+          "line": 61
+        },
+        "file": "source/renderer/app/components/static/About.js",
+        "id": "static.about.buildInfoForITN",
+        "start": {
+          "column": 24,
+          "line": 57
+        }
       }
     ],
     "path": "source/renderer/app/components/static/About.json"
