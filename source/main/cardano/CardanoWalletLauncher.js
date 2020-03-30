@@ -1,8 +1,11 @@
 // @flow
 import { merge } from 'lodash';
+import path from 'path';
+import * as fs from 'fs-extra';
 import * as cardanoLauncher from 'cardano-launcher';
 import type { Launcher } from 'cardano-launcher';
 import type { NodeConfig } from '../config';
+import { environment } from '../environment';
 import { STAKE_POOL_REGISTRY_URL } from '../config';
 import {
   MAINNET,
@@ -22,6 +25,7 @@ export type WalletOpts = {
   nodeConfig: NodeConfig,
   cluster: string,
   stateDir: string,
+  tlsPath: string,
   block0Path: string,
   block0Hash: string,
   secretPath: string,
@@ -37,6 +41,7 @@ export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
     nodeConfig, // For cardano-node / byron only!
     cluster,
     stateDir,
+    tlsPath,
     block0Path,
     block0Hash,
     secretPath,
@@ -64,6 +69,19 @@ export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
     installSignalHandlers: false,
   };
 
+  // TLS configuration used only for cardano-node
+  const tlsConfiguration = {
+    caCert: path.join(tlsPath, 'server/ca.crt'),
+    svCert: path.join(tlsPath, 'server/server.crt'),
+    svKey: path.join(tlsPath, 'server/server.key'),
+  };
+
+  // Prepare development TLS files
+  const { isProduction } = environment;
+  if (!isProduction && nodeImplementation === 'cardano') {
+    await fs.copy('tls', tlsPath);
+  }
+
   // This switch statement handles any node specifc
   // configuration, prior to spawning the child process
   logger.info('Node implementation', { nodeImplementation });
@@ -85,12 +103,18 @@ export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
         nodeConfig.network.genesisFile = selfnodeGenesisPath;
         nodeConfig.network.genesisHash = selfnodeGenesisHash;
         merge(launcherConfig, { apiPort: 8088 });
+      } else {
+        const configFilePath = path.join(stateDir, 'config.yaml');
+        await fs.copy(nodeConfig.network.configFile, configFilePath);
+        const genesisFilePath = path.join(stateDir, 'genesis.json');
+        await fs.copy(nodeConfig.network.genesisFile, genesisFilePath);
+        nodeConfig.network.configFile = configFilePath;
       }
       if (cluster !== MAINNET) {
         // All clusters except for Mainnet are treated as "Testnets"
         launcherConfig.networkName = TESTNET;
       }
-      merge(launcherConfig, { nodeConfig });
+      merge(launcherConfig, { nodeConfig, tlsConfiguration });
       break;
     case 'jormungandr':
       if (cluster === ITN_SELFNODE) {

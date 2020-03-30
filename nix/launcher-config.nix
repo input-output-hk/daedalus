@@ -25,6 +25,8 @@ let
     windows = "\${DAEDALUS_INSTALL_DIRECTORY}";
   };
 
+  isDevOrLinux = devShell || os == "linux";
+
   mkSpacedName = network: if network == "mainnet" then "Daedalus" else "Daedalus ${installDirectorySuffix}";
   spacedName = mkSpacedName network;
 
@@ -42,7 +44,7 @@ let
       windows = "\${DAEDALUS_INSTALL_DIRECTORY}";
     };
     binary' = if binary == "frontend" then frontendBinPath else binary;
-  in if (devShell || os == "linux") then binary' else "${binDir.${os}}${dirSep}${binary'}${lib.optionalString (os == "windows") ".exe"}";
+  in if isDevOrLinux then binary' else "${binDir.${os}}${dirSep}${binary'}${lib.optionalString (os == "windows") ".exe"}";
   # Helper function to make a path to a config file
   mkConfigPath = configSrc: configPath: "${(configDir configSrc).${os}}${dirSep}${configPath}";
 
@@ -96,25 +98,46 @@ let
     path.macos64 = "${dataDir}/Logs";
   in path.${os};
 
+  tlsConfig = {
+    ca = {
+      organization = "Daedalus";
+      commonName = "Daedalus Self-Signed Root CA";
+      expiryDays = 3650;
+    };
+    server = {
+      organization = "Daedalus";
+      commonName = "Daedalus Wallet Backend";
+      expiryDays = 365;
+      altDNS = [
+        "localhost"
+        "localhost.localdomain"
+        "127.0.0.1"
+        "::1"
+      ];
+    };
+    clients = [ {
+      organization = "Daedalus";
+      commonName = "Daedalus Frontend";
+      expiryDays = 365;
+    } ];
+  };
+
   launcherLogsPrefix = "${logsPrefix}${dirSep}pub";
 
   # Default configs for launcher from cardano-shell. Most of these do nothing.
   # TODO: get rid of anything we don't need from cardano-shell
   defaultLauncherConfig = {
-    inherit logsPrefix launcherLogsPrefix;
+    inherit logsPrefix launcherLogsPrefix tlsConfig;
     walletLogging = false;
-    nodeArgs = [];
     daedalusBin = mkBinPath "frontend";
-    nodeLogPath = null;
+    # TODO: set when update system is complete
     updaterArgs = [];
     updaterPath = "";
     updateArchive = "";
     updateWindowsRunner = "";
     workingDir = dataDir;
     stateDir = dataDir;
-    x509ToolPath = null;
-    frontendOnlyMode = true;
-    tlsPath = null;
+    tlsPath = "${dataDir}${dirSep}tls";
     cluster = if network == "mainnet_flight" then "mainnet" else network;
     networkName = if network == "mainnet_flight" then "mainnet" else network;
     isFlight = network == "mainnet_flight";
@@ -139,7 +162,9 @@ let
     walletBin = mkBinPath "cardano-wallet-byron";
     nodeBin = mkBinPath "cardano-node";
     cliBin = mkBinPath "cardano-cli";
-    nodeConfig = builtins.toJSON envCfg.nodeConfig;
+    nodeConfig = builtins.toJSON (envCfg.nodeConfig // (lib.optionalAttrs (!isDevOrLinux) {
+      GenesisFile = "genesis.json";
+    }));
     genesisFile = if (network == "selfnode") then ../utils/cardano/selfnode/genesis.json else envCfg.genesisFile;
     topologyFile = if network == "selfnode" then envCfg.topology else cardanoLib.mkEdgeTopology {
       inherit (envCfg) edgePort;

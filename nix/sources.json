@@ -12,15 +12,15 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "cardano-shell": {
-        "branch": "master",
+        "branch": "tls-launcher-config",
         "description": "Node shell, a thin layer for running the node and it's modules.",
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "cardano-shell",
-        "rev": "604bc748a668da45fe6812ae57b01937de545beb",
-        "sha256": "08x4v9ak978b1fbqhykhzvpvzdii3c1h9r74qy0agfi7h2fv0l0d",
+        "rev": "a45c6d2310a371416981df0d273ee62c597dfe5f",
+        "sha256": "0rd5phx1ii4hkjralnhp37qhn5axxdsb216szfq2ns3fyhjic693",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-shell/archive/604bc748a668da45fe6812ae57b01937de545beb.tar.gz",
+        "url": "https://github.com/input-output-hk/cardano-shell/archive/a45c6d2310a371416981df0d273ee62c597dfe5f.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "cardano-sl": {
@@ -36,15 +36,15 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "cardano-wallet": {
-        "branch": "master",
+        "branch": "node-1.9.1",
         "description": "Official Wallet Backend & API for Cardano decentralized",
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "cardano-wallet",
-        "rev": "ef60817d389475608055b8b1ed59e9b8214837a6",
-        "sha256": "0i0x8zkn86knxw7v9g4xixp13qg6mxwmgjm1v0pkxjw5cxz488g8",
+        "rev": "9266d4cf69a0c8369041cfd83ce87e02b7f48d90",
+        "sha256": "16d084pv0df0zd3rgnpl21c1s1hx2pdahmyz291cryqf589ijw7b",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-wallet/archive/ef60817d389475608055b8b1ed59e9b8214837a6.tar.gz",
+        "url": "https://github.com/input-output-hk/cardano-wallet/archive/9266d4cf69a0c8369041cfd83ce87e02b7f48d90.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz",
         "version": "v2020-03-16"
     },
