@@ -125,7 +125,8 @@ export default class WalletRecoveryPhraseStep2 extends Component<Props> {
         label: intl.formatMessage(messages.recoveryPhraseStep2Button),
         primary: true,
         onClick: () => onVerify(recoveryPhraseField.value),
-        disabled: !canSubmit,
+        disabled: false,
+        // disabled: !canSubmit,
       },
     ];
 
