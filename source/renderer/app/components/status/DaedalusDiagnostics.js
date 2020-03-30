@@ -520,6 +520,8 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
       daedalusStateDirectoryPath,
     } = coreInfo;
 
+    console.debug('>>> localTimeDifference: ', localTimeDifference);
+
     const { isNodeRestarting } = this.state;
     const isNTPServiceReachable = localTimeDifference != null;
     const connectionError = get(nodeConnectionError, 'values', '{}');

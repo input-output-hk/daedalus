@@ -115,7 +115,7 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
           localTimeDifference={
             localTimeDifference
               ? new BigNumber(localTimeDifference).toFormat()
-              : null
+              : localTimeDifference
           }
           isSystemTimeCorrect={isSystemTimeCorrect}
           isSystemTimeIgnored={isSystemTimeIgnored}
