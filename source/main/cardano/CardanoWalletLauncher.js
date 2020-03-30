@@ -103,6 +103,10 @@ export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
         nodeConfig.network.genesisFile = selfnodeGenesisPath;
         nodeConfig.network.genesisHash = selfnodeGenesisHash;
         merge(launcherConfig, { apiPort: 8088 });
+      } else {
+        const configFilePath = path.join(stateDir, 'config.yaml');
+        await fs.copy(nodeConfig.network.configFile, configFilePath);
+        nodeConfig.network.configFile = configFilePath;
       }
       if (cluster !== MAINNET) {
         // All clusters except for Mainnet are treated as "Testnets"
