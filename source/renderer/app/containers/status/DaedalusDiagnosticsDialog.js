@@ -2,9 +2,11 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import ReactModal from 'react-modal';
+import BigNumber from 'bignumber.js';
 import DaedalusDiagnostics from '../../components/status/DaedalusDiagnostics';
 import styles from './DaedalusDiagnosticsDialog.scss';
 import { formattedBytesToSize } from '../../utils/formatters';
+import { NUMBER_FORMATS } from '../../../../common/types/number.types';
 import type { InjectedDialogContainerProps } from '../../types/injectedPropsType';
 
 type Props = InjectedDialogContainerProps;
@@ -26,8 +28,9 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
     const { actions, stores } = this.props;
     const { closeDaedalusDiagnosticsDialog } = actions.app;
     const { restartNode } = actions.networkStatus;
-    const { app, networkStatus } = stores;
+    const { app, networkStatus, profile } = stores;
     const { openExternalLink } = app;
+    const { currentNumberFormat } = profile;
     const {
       // Node state
       cardanoNodeState,
@@ -86,6 +89,16 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
       cardanoRawNetwork: rawNetwork,
     };
 
+    let formattedLocalTimeDifference;
+    if (localTimeDifference) {
+      formattedLocalTimeDifference = new BigNumber(
+        localTimeDifference
+      ).toFormat(0, 0, {
+        decimalSeparator: NUMBER_FORMATS[currentNumberFormat].decimalSeparator,
+        groupSeparator: NUMBER_FORMATS[currentNumberFormat].groupSeparator,
+      });
+    }
+
     return (
       <ReactModal
         isOpen
@@ -111,7 +124,9 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
           isSynced={isSynced}
           syncPercentage={syncPercentage}
           hasBeenConnected={hasBeenConnected}
-          localTimeDifference={localTimeDifference}
+          localTimeDifference={
+            formattedLocalTimeDifference || localTimeDifference
+          }
           isSystemTimeCorrect={isSystemTimeCorrect}
           isSystemTimeIgnored={isSystemTimeIgnored}
           nodeConnectionError={getNetworkInfoRequest.error}
