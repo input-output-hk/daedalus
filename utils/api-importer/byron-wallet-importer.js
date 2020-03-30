@@ -21,12 +21,21 @@ const walletNames = [
 
 const API_PORT = process.env.API_PORT || 8088
 
+const options = {
+  url: `https://localhost:${API_PORT}/v2/byron-wallets`,
+  method: 'POST',
+  ca: `${__dirname}/../../tls/client/ca.cert`,
+  key: `${__dirname}/../../tls/client/client.key`,
+  cert: `${__dirname}/../../tls/client/client.pem`,
+  agent: false,
+}
+
 async function main() {
   try {
     await Promise.all(mnemonics.map((mnemonic, index) => {
       const name = walletNames[index]
-      const payload = generateImportPayload(mnemonic, name)
-      return axios.post(`https://localhost:${API_PORT}/v2/byron-wallets`, payload)
+      const data = generateImportPayload(mnemonic, name)
+      return axios({...options, data})
     }))
   } catch (e) {
     console.log(e)
