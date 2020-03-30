@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
+import { join } from 'lodash';
 import { defineMessages, intlShape } from 'react-intl';
 import { Autocomplete } from 'react-polymorph/lib/components/Autocomplete';
 import { AutocompleteSkin } from 'react-polymorph/lib/skins/simple/AutocompleteSkin';
@@ -74,30 +75,30 @@ export default class WalletRecoveryPhraseStep2 extends Component<Props> {
       fields: {
         recoveryPhrase: {
           value: [],
-          // validators: ({ field }) => {
-          //   const { intl } = this.context;
-          //   const enteredWords = field.value;
-          //   const wordCount = enteredWords.length;
-          //   const value = join(enteredWords, ' ');
+          validators: ({ field }) => {
+            const { intl } = this.context;
+            const enteredWords = field.value;
+            const wordCount = enteredWords.length;
+            const value = join(enteredWords, ' ');
 
-          //   // Check if recovery phrase contains 12 words
-          //   const isPhraseComplete =
-          //     wordCount === LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT;
-          //   if (!isPhraseComplete) {
-          //     return [
-          //       false,
-          //       intl.formatMessage(globalMessages.incompleteMnemonic, {
-          //         expected: LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT,
-          //       }),
-          //     ];
-          //   }
-          //   return [
-          //     this.props.mnemonicValidator(value),
-          //     this.context.intl.formatMessage(
-          //       messages.recoveryPhraseStep2InvalidMnemonics
-          //     ),
-          //   ];
-          // },
+            // Check if recovery phrase contains 12 words
+            const isPhraseComplete =
+              wordCount === LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT;
+            if (!isPhraseComplete) {
+              return [
+                false,
+                intl.formatMessage(globalMessages.incompleteMnemonic, {
+                  expected: LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT,
+                }),
+              ];
+            }
+            return [
+              this.props.mnemonicValidator(value),
+              this.context.intl.formatMessage(
+                messages.recoveryPhraseStep2InvalidMnemonics
+              ),
+            ];
+          },
         },
       },
     },
@@ -125,8 +126,7 @@ export default class WalletRecoveryPhraseStep2 extends Component<Props> {
         label: intl.formatMessage(messages.recoveryPhraseStep2Button),
         primary: true,
         onClick: () => onVerify(recoveryPhraseField.value),
-        disabled: false,
-        // disabled: !canSubmit,
+        disabled: !canSubmit,
       },
     ];
 
