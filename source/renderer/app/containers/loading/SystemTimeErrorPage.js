@@ -1,24 +1,23 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
-import type { InjectedStoresProps } from '../../types/injectedPropsType';
 import SystemTimeError from '../../components/loading/system-time-error/SystemTimeError';
+import type { InjectedProps } from '../../types/injectedPropsType';
 
-type Props = InjectedStoresProps;
+type Props = InjectedProps;
 
-@inject('stores')
+@inject('stores', 'actions')
 @observer
 export default class SystemTimeErrorPage extends Component<Props> {
-  static defaultProps = { stores: null };
+  static defaultProps = { stores: null, actions: null };
 
   render() {
-    const { stores } = this.props;
+    const { stores, actions } = this.props;
     const {
       localTimeDifference,
-      // forceCheckTimeDifferenceRequest,
-      // forceCheckLocalTimeDifference,
       ignoreSystemTimeChecks,
     } = stores.networkStatus;
+    const { restartNode } = actions.networkStatus;
 
     const { currentLocale } = stores.profile;
 
@@ -29,7 +28,7 @@ export default class SystemTimeErrorPage extends Component<Props> {
         localTimeDifference={localTimeDifference}
         currentLocale={currentLocale}
         onExternalLinkClick={openExternalLink}
-        onCheckTheTimeAgain={() => {}}
+        onCheckTheTimeAgain={() => restartNode.trigger()}
         onContinueWithoutClockSyncCheck={ignoreSystemTimeChecks}
         isCheckingSystemTime={false}
       />

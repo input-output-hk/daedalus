@@ -145,6 +145,7 @@ export default class NetworkStatusStore extends Store {
   }
 
   _restartNode = async () => {
+    this._resetSystemTime();
     try {
       logger.info('NetworkStatusStore: Requesting a restart of cardano-node');
       await restartCardanoNodeChannel.send();
@@ -349,7 +350,7 @@ export default class NetworkStatusStore extends Store {
 
   @action _updateNetworkClock = async () => {
     // Skip checking network clock if we are not connected
-    if (!this.isConnected) return;
+    if (!this.isConnected || this.isSystemTimeIgnored) return;
     logger.info('NetworkStatusStore: Checking network clock...');
     try {
       const networkClock: GetNetworkClockResponse = await this.getNetworkClockRequest.execute()
@@ -362,10 +363,7 @@ export default class NetworkStatusStore extends Store {
           this.isNodeTimeCorrect =
             this.localTimeDifference != null && // If we receive 'null' it means NTP check failed
             Math.abs(this.localTimeDifference) <= ALLOWED_TIME_DIFFERENCE;
-
-          if (this.localTimeDifference != null) {
-            this._clearNetworkClockPollingInterval();
-          }
+          this._clearNetworkClockPollingInterval();
         }
       });
       logger.info('NetworkStatusStore: Network clock response received', {
@@ -490,8 +488,7 @@ export default class NetworkStatusStore extends Store {
     this.isNodeResponding = false;
     this.isNodeSyncing = false;
     this.isNodeInSync = false;
-    this.localTimeDifference = null;
-    this.getNetworkClockRequest.reset();
+    this._resetSystemTime();
     if (wasConnected) {
       if (!this.hasBeenConnected) {
         runInAction('update hasBeenConnected', () => {
@@ -539,6 +536,15 @@ export default class NetworkStatusStore extends Store {
   @action _toggleSplash = () => {
     runInAction('Toggle splash visibility', () => {
       this.isSplashShown = !this.isSplashShown;
+    });
+  };
+
+  _resetSystemTime = () => {
+    runInAction('Reset system time', () => {
+      this.getNetworkClockRequest.reset();
+      this.localTimeDifference = null;
+      this.isNodeTimeCorrect = true;
+      this.isSystemTimeIgnored = false;
     });
   };
 

@@ -11,7 +11,7 @@ import WalletRecoveryInstructions from './WalletRecoveryInstructions';
 import globalMessages from '../../../i18n/global-messages';
 import {
   LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT,
-  WALLET_RECOVERY_PHRASE_WORD_COUNT
+  WALLET_RECOVERY_PHRASE_WORD_COUNT,
 } from '../../../config/cryptoConfig';
 import styles from './WalletBackupPrivacyWarningDialog.scss';
 
@@ -115,7 +115,9 @@ export default class WalletBackupPrivacyWarningDialog extends Component<Props> {
           instructionsText={intl.formatMessage(
             messages.recoveryPhraseInstructions1,
             {
-              walletRecoveryPhraseWordCount: isIncentivizedTestnet ? WALLET_RECOVERY_PHRASE_WORD_COUNT : LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT,
+              walletRecoveryPhraseWordCount: isIncentivizedTestnet
+                ? WALLET_RECOVERY_PHRASE_WORD_COUNT
+                : LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT,
             }
           )}
         />

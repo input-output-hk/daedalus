@@ -445,9 +445,10 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
       content = value
         ? intl.formatMessage(messages.statusOn)
         : intl.formatMessage(messages.statusOff);
-      className = value
-        ? classNames([className, styles.green])
-        : classNames([className, styles.red]);
+      className =
+        value || (!value && messageId === 'systemTimeIgnored')
+          ? classNames([className, styles.green])
+          : classNames([className, styles.red]);
     }
     return (
       <div className={styles.layoutRow}>
