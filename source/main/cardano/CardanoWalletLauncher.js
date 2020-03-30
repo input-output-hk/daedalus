@@ -1,8 +1,10 @@
 // @flow
 import { merge } from 'lodash';
+import * as fs from 'fs-extra';
 import * as cardanoLauncher from 'cardano-launcher';
 import type { Launcher } from 'cardano-launcher';
 import type { NodeConfig } from '../config';
+import { environment } from '../environment';
 import { STAKE_POOL_REGISTRY_URL } from '../config';
 import {
   MAINNET,
@@ -22,6 +24,7 @@ export type WalletOpts = {
   nodeConfig: NodeConfig,
   cluster: string,
   stateDir: string,
+  tlsPath: string,
   block0Path: string,
   block0Hash: string,
   secretPath: string,
@@ -37,6 +40,7 @@ export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
     nodeConfig, // For cardano-node / byron only!
     cluster,
     stateDir,
+    tlsPath,
     block0Path,
     block0Hash,
     secretPath,
@@ -63,6 +67,32 @@ export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
     childProcessLogWriteStream: logFile,
     installSignalHandlers: false,
   };
+
+  // Prepare development TLS files
+  const { isProduction } = environment;
+  if (!isProduction) {
+    const devTlsPath = process.env.DEV_TLS_PATH || '';
+    try {
+      if (!devTlsPath) {
+        throw new Error(
+          'Daedalus improperly started!\n\nPlease provide DEV_TLS_PATH ENV variable.\n'
+        );
+      }
+
+      logger.info('Preparing Daedalus development TLS files...');
+      await fs.copy(devTlsPath, tlsPath);
+      logger.info('Prepared Daedalus development TLS files', {
+        devTlsPath,
+        tlsPath,
+      });
+    } catch (error) {
+      logger.error('Preparing Daedalus development TLS files failed', {
+        devTlsPath,
+        tlsPath,
+        error,
+      });
+    }
+  }
 
   // This switch statement handles any node specifc
   // configuration, prior to spawning the child process
