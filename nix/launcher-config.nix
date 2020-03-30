@@ -160,7 +160,9 @@ let
     walletBin = mkBinPath "cardano-wallet-byron";
     nodeBin = mkBinPath "cardano-node";
     cliBin = mkBinPath "cardano-cli";
-    nodeConfig = builtins.toJSON envCfg.nodeConfig;
+    nodeConfig = builtins.toJSON (envCfg.nodeConfig // {
+      GenesisFile = mkConfigPath nodeConfigFiles "genesis.json";
+    });
     genesisFile = if (network == "selfnode") then ../utils/cardano/selfnode/genesis.json else envCfg.genesisFile;
     topologyFile = if network == "selfnode" then envCfg.topology else cardanoLib.mkEdgeTopology {
       inherit (envCfg) edgePort;
