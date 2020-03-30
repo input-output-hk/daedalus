@@ -6,7 +6,7 @@ import { ipcRenderer as _ipcRenderer, remote as _remote } from 'electron';
 import _electronLog from 'electron-log-daedalus';
 import ElectronStore from 'electron-store';
 import { environment } from './environment';
-import { nodeImplementation, isFlight } from './config';
+import { buildLabel, nodeImplementation, isFlight } from './config';
 
 const _process = process;
 const _isIncentivizedTestnet = nodeImplementation === 'jormungandr';
@@ -33,6 +33,7 @@ process.once('loaded', () => {
       delete: (...args) => _electronStore.delete(...args),
     },
     environment,
+    buildLabel,
     https: {
       request: (...args) => _https.request(...args),
     },

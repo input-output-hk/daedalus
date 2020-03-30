@@ -34,6 +34,7 @@ Changelog
 
 ### Chores
 
+- Updated About screen ([PR 1928](https://github.com/input-output-hk/daedalus/pull/1928))
 - Configured Daedalus Flight to use it's own newsfeed ([PR 1927](https://github.com/input-output-hk/daedalus/pull/1927))
 - Reduced "connection timeout limit" for Byron Reboot builds to 5 minutes ([PR 1926](https://github.com/input-output-hk/daedalus/pull/1926))
 - Updated Daedalus name and version for the Daedalus Flight 1.0.0-FC1 release ([PR 1910](https://github.com/input-output-hk/daedalus/pull/1910))

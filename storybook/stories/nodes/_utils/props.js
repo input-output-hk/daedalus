@@ -11,10 +11,11 @@ export const aboutDialogProps = {
     app: {
       openExternalLink: action('onOpenExternalLink'),
       environment: {
-        apiVersion: 'dev',
+        apiVersion: '2020.3.30',
+        nodeVersion: '1.9.1',
         build: 'dev',
         os: 'macOS',
-        version: '0.15.0',
+        version: '1.0.0',
       },
     },
   },
