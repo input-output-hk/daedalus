@@ -1,19 +1,20 @@
 // @flow
 import path from 'path';
-import { includes } from 'lodash';
 import { app, dialog } from 'electron';
+import { environment } from './environment';
 import { readLauncherConfig } from './utils/config';
-import {
-  checkIsTest,
-  checkIsProduction,
-} from '../common/utils/environmentCheckers';
+import { getBuildLabel } from '../common/utils/environmentCheckers';
 import type { CardanoNodeImplementation } from '../common/types/cardano-node.types';
-import { DEVELOPMENT } from '../common/types/environment.types';
 
-const CURRENT_NODE_ENV = process.env.NODE_ENV || DEVELOPMENT;
-const isTest = checkIsTest(CURRENT_NODE_ENV);
-const isProduction = checkIsProduction(CURRENT_NODE_ENV);
-const isBlankScreenFixActive = includes(process.argv.slice(1), '--safe-mode');
+const {
+  isTest,
+  isProduction,
+  isBlankScreenFixActive,
+  current,
+  buildNumber,
+  network,
+  version,
+} = environment;
 
 // Make sure Daedalus is started with required configuration
 const { LAUNCHER_CONFIG } = process.env;
@@ -120,6 +121,13 @@ export const appLogsFolderPath = logsPrefix;
 export const pubLogsFolderPath = path.join(appLogsFolderPath, 'pub');
 export const stateDirectoryPath = stateDir;
 export const stateDrive = isWindows ? stateDirectoryPath.slice(0, 2) : '/';
+export const buildLabel = getBuildLabel(
+  buildNumber,
+  network,
+  current,
+  isFlight,
+  version
+);
 
 // Logging config
 export const ALLOWED_LOGS = [
