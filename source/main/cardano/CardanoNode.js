@@ -555,7 +555,7 @@ export class CardanoNode {
       cert: _actions.readFileSync(`${tlsPath}/client/client.pem`),
       hostname: 'localhost',
       port,
-    }
+    };
     if (this._state === CardanoNodeStates.STARTING) {
       this._changeToState(CardanoNodeStates.RUNNING);
       this.broadcastTlsConfig();
