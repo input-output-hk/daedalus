@@ -73,24 +73,14 @@ export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
   const { isProduction } = environment;
 
   if (!isProduction) {
-    const devTlsPath = process.env.DEV_TLS_PATH;
     try {
-      // Check if development TLS folder exist
-      if (!fs.existsSync(devTlsPath)) {
-        throw new Error('Please provide DEV_TLS_PATH ENV variable');
-      }
       // Write folder to state directory TLS path
-      await fs.copy(devTlsPath, tlsPath);
+      await fs.copy('tls', tlsPath);
     } catch (error) {
       const dialogTitle = 'Daedalus improperly started!';
       const dialogMessage = error.message;
-      try {
-        // App may not be available at this moment so we need to use try-catch
-        dialog.showErrorBox(dialogTitle, dialogMessage);
-        app.exit(1);
-      } catch (e) {
-        throw new Error(`${dialogTitle}\n\n${dialogMessage}\n`);
-      }
+      dialog.showErrorBox(dialogTitle, dialogMessage);
+      app.exit(1);
     }
   }
 
