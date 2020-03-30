@@ -52,6 +52,7 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
       tlsConfig,
       cardanoNodeID,
       stateDirectoryPath,
+      getNetworkClockRequest,
     } = networkStatus;
 
     const systemInfo = {
@@ -116,6 +117,9 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
           nodeConnectionError={getNetworkInfoRequest.error}
           localTip={localTip}
           networkTip={networkTip}
+          isCheckingSystemTime={
+            !getNetworkClockRequest.result || getNetworkClockRequest.isExecuting
+          }
           onOpenStateDirectory={openStateDirectory}
           onOpenExternalLink={openExternalLink}
           onRestartNode={restartNode}

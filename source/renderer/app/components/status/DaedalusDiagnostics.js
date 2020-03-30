@@ -376,6 +376,7 @@ type Props = {
   onRestartNode: Function,
   onClose: Function,
   onCopyStateDirectoryPath: Function,
+  isCheckingSystemTime: boolean,
 };
 
 type State = {
@@ -495,6 +496,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
       // isTestnet,
       // isStaging,
       // isMainnet,
+      isCheckingSystemTime,
     } = this.props;
 
     const {
@@ -582,7 +584,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
     }
 
     const localTimeDifferenceClasses = classNames([
-      !isNTPServiceReachable ||
+      (!isNTPServiceReachable && !isCheckingSystemTime) ||
       (localTimeDifference && localTimeDifference > ALLOWED_TIME_DIFFERENCE)
         ? styles.red
         : styles.green,
@@ -759,11 +761,15 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                           )}
                     </button>
                   */}
-                  <span className={localTimeDifferenceClasses}>
-                    {isNTPServiceReachable
-                      ? `${localTimeDifference || 0} μs`
-                      : intl.formatMessage(messages.serviceUnreachable)}
-                  </span>
+                  {isCheckingSystemTime ? (
+                    <span className={localTimeDifferenceClasses}>-</span>
+                  ) : (
+                    <span className={localTimeDifferenceClasses}>
+                      {isNTPServiceReachable
+                        ? `${localTimeDifference || 0} μs`
+                        : intl.formatMessage(messages.serviceUnreachable)}
+                    </span>
+                  )}
                 </div>
               </div>
               {getRow('systemTimeCorrect', isSystemTimeCorrect)}
