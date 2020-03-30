@@ -43,7 +43,21 @@ export default class WalletRecoveryPhraseStep2Container extends Component<Props>
     }
   }
 
-  handleVerify = (recoveryPhrase: Array<string>) => {
+  handleVerify = (recoveryPhrase1: Array<string>) => {
+    const recoveryPhrase = [
+      'arctic',
+      'decade',
+      'pink',
+      'easy',
+      'jar',
+      'index',
+      'base',
+      'bright',
+      'vast',
+      'ocean',
+      'hard',
+      'pizza',
+    ];
     this.props.actions.walletBackup.checkRecoveryPhrase.trigger({
       recoveryPhrase,
     });
