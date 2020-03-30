@@ -1,8 +1,8 @@
 {
-  "dialog.exportWalletsWarning.cancel": "!!!Cancel",
-  "dialog.exportWalletsWarning.confirm": "!!!Confirm",
-  "dialog.exportWalletsWarning.message": "!!!In order for automatic wallet migration from Daedalus mainnet to Daedalus Flight to work you first must exit Daedalus mainnet. \n \nPlease exit Daedalus mainnet and click ‘Confirm’ to migrate your existing wallets or click ‘Cancel’ to abort wallet migration.",
-  "dialog.exportWalletsWarning.title": "!!!Automatic wallet migration",
+  "dialog.exportWalletsWarning.cancel": "キャンセル",
+  "dialog.exportWalletsWarning.confirm": "Daedalusは閉じている、ウォレットをインポートする",
+  "dialog.exportWalletsWarning.message": "Daedalus FlightはDaedalus製品バージョンからウォレットをインポートしようとしています。\n\nインポート中はDaedalus製品バージョンを実行しないでください。Daedalusアプリケーションが開いている場合は、直ちに終了してください。",
+  "dialog.exportWalletsWarning.title": "ウォレットをインポートする",
   "menu.daedalus": "Daedalus",
   "menu.daedalus.about": "このDaedalusについて",
   "menu.daedalus.settings": "設定",
