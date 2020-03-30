@@ -67,7 +67,7 @@ export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
     syncToleranceSeconds,
     childProcessLogWriteStream: logFile,
     installSignalHandlers: false,
-    serverTlsPath: {
+    tlsConfiguration: {
       caCert: path.join(tlsPath, 'server/ca.crt'),
       svCert: path.join(tlsPath, 'server/server.crt'),
       svKey: path.join(tlsPath, 'server/server.key'),
