@@ -1,5 +1,5 @@
 // @flow
-import { size, includes } from 'lodash';
+import { includes, omit, size } from 'lodash';
 import querystring from 'querystring';
 import { getContentLength } from '.';
 
@@ -20,6 +20,8 @@ export type RequestOptions = {
 const ALLOWED_ERROR_EXCEPTION_PATHS = [
   '/api/internal/next-update', // when nextAdaUpdate receives a 404, it isn't an error
 ];
+
+const { isIncentivizedTestnet } = global.environment;
 
 function typedRequest<Response>(
   httpOptions: RequestOptions,
@@ -48,7 +50,10 @@ function typedRequest<Response>(
       };
     }
 
-    const httpsRequest = global.https.request(options);
+    const httpOnlyOptions = omit(options, ['ca', 'cert', 'key']);
+    const httpsRequest = isIncentivizedTestnet
+      ? global.http.request(httpOnlyOptions)
+      : global.https.request(options);
 
     if (hasRequestBody) {
       httpsRequest.write(requestBody);

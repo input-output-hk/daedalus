@@ -67,16 +67,18 @@ export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
     syncToleranceSeconds,
     childProcessLogWriteStream: logFile,
     installSignalHandlers: false,
-    tlsConfiguration: {
-      caCert: path.join(tlsPath, 'server/ca.crt'),
-      svCert: path.join(tlsPath, 'server/server.crt'),
-      svKey: path.join(tlsPath, 'server/server.key'),
-    },
+  };
+
+  // TLS configuration used only for cardano-node
+  const tlsConfiguration = {
+    caCert: path.join(tlsPath, 'server/ca.crt'),
+    svCert: path.join(tlsPath, 'server/server.crt'),
+    svKey: path.join(tlsPath, 'server/server.key'),
   };
 
   // Prepare development TLS files
   const { isProduction } = environment;
-  if (!isProduction) {
+  if (!isProduction && nodeImplementation === 'cardano') {
     await fs.copy('tls', tlsPath);
   }
 
@@ -106,7 +108,7 @@ export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
         // All clusters except for Mainnet are treated as "Testnets"
         launcherConfig.networkName = TESTNET;
       }
-      merge(launcherConfig, { nodeConfig });
+      merge(launcherConfig, { nodeConfig, tlsConfiguration });
       break;
     case 'jormungandr':
       if (cluster === ITN_SELFNODE) {
