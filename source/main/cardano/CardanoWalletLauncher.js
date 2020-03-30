@@ -1,5 +1,6 @@
 // @flow
 import { merge } from 'lodash';
+import path from 'path';
 import * as fs from 'fs-extra';
 import * as cardanoLauncher from 'cardano-launcher';
 import type { Launcher } from 'cardano-launcher';
@@ -67,6 +68,11 @@ export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
     syncToleranceSeconds,
     childProcessLogWriteStream: logFile,
     installSignalHandlers: false,
+    serverTlsPath: {
+      caCert: path.join(tlsPath, 'server/ca.crt'),
+      svCert: path.join(tlsPath, 'server/server.crt'),
+      svKey: path.join(tlsPath, 'server/server.key'),
+    },
   };
 
   // Prepare development TLS files
