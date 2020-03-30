@@ -265,7 +265,7 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--theme-link-main-color': 'rgb(246, 154, 178)',
   },
   loading: {
-    '--theme-loading-background-color': '#2a2b3c',
+    '--theme-loading-background-color': '#121326',
     '--theme-loading-no-disk-space-background-color': 'rgba(171, 23, 0, 0.94)',
     '--theme-loading-no-disk-space-text-color': '#ffffff',
     '--theme-loading-no-disk-space-attention-icon-color': '#ffffff',

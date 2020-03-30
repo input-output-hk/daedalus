@@ -280,7 +280,7 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-link-main-color': 'rgb(32, 181, 107)',
   },
   loading: {
-    '--theme-loading-background-color': '#263345',
+    '--theme-loading-background-color': '#0b1926',
     '--theme-loading-no-disk-space-background-color': 'rgba(171, 23, 0, 0.94)',
     '--theme-loading-no-disk-space-text-color': '#fafbfc',
     '--theme-loading-no-disk-space-attention-icon-color': '#fafbfc',
@@ -789,7 +789,7 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-support-settings-text-color': '#e9f4fe',
   },
   syncing: {
-    '--theme-syncing-background-color': '#263345',
+    '--theme-syncing-background-color': '#0b1926',
     '--theme-syncing-background-color1': 'rgba(11, 25, 38, 1)',
     '--theme-syncing-background-color2': 'rgba(11, 25, 38, 0.91)',
     '--theme-syncing-background-color3': 'rgba(11, 25, 38, 0.31)',
