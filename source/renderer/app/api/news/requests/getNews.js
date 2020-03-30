@@ -2,10 +2,13 @@
 import { externalRequest } from '../../utils/externalRequest';
 import { getNewsURL } from '../../../utils/network';
 
-const { network } = global.environment;
+const { isFlight, environment } = global;
+const { network } = environment;
 const hostname = getNewsURL(network);
 const path = '/newsfeed';
-const filename = `newsfeed_${network}.json`;
+const filename = isFlight
+  ? 'newsfeed_mainnet_flight.json'
+  : `newsfeed_${network}.json`;
 
 export const getNews = (): Promise<string> =>
   externalRequest(
