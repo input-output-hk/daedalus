@@ -106,6 +106,8 @@ export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
       } else {
         const configFilePath = path.join(stateDir, 'config.yaml');
         await fs.copy(nodeConfig.network.configFile, configFilePath);
+        const genesisFilePath = path.join(stateDir, 'genesis.json');
+        await fs.copy(nodeConfig.network.genesisFile, genesisFilePath);
         nodeConfig.network.configFile = configFilePath;
       }
       if (cluster !== MAINNET) {
