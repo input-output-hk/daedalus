@@ -1,8 +1,8 @@
 {
   "dialog.exportWalletsWarning.cancel": "Cancel",
-  "dialog.exportWalletsWarning.confirm": "Confirm",
-  "dialog.exportWalletsWarning.message": "In order for automatic wallet migration from Daedalus mainnet to Daedalus Flight to work you first must exit Daedalus mainnet. \n \nPlease exit Daedalus mainnet and click ‘Confirm’ to migrate your existing wallets or click ‘Cancel’ to abort wallet migration.",
-  "dialog.exportWalletsWarning.title": "Automatic wallet migration",
+  "dialog.exportWalletsWarning.confirm": "Daedalus is closed, import wallets",
+  "dialog.exportWalletsWarning.message": "Daedalus Flight is about to import wallets from the production version of Daedalus.\n\nThe production version of Daedalus must not be running during the import process. If you have not already done so, please close the production Daedalus application now.",
+  "dialog.exportWalletsWarning.title": "Import wallets",
   "menu.daedalus": "Daedalus",
   "menu.daedalus.about": "About Daedalus",
   "menu.daedalus.settings": "Settings",
