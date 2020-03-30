@@ -5525,13 +5525,13 @@
         "description": "Instructions for backing up wallet recovery phrase on dialog that displays wallet recovery phrase.",
         "end": {
           "column": 3,
-          "line": 22
+          "line": 25
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletBackupPrivacyWarningDialog.js",
         "id": "wallet.backup.privacy.warning.dialog.recoveryPhraseInstructions1",
         "start": {
           "column": 31,
-          "line": 16
+          "line": 19
         }
       },
       {
@@ -5539,13 +5539,13 @@
         "description": "Instructions for backing up wallet recovery phrase on dialog that displays wallet recovery phrase.",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 32
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletBackupPrivacyWarningDialog.js",
         "id": "wallet.backup.privacy.warning.dialog.recoveryPhraseInstructions2",
         "start": {
           "column": 31,
-          "line": 23
+          "line": 26
         }
       },
       {
@@ -5553,13 +5553,13 @@
         "description": "Instructions for backing up wallet recovery phrase on dialog that displays wallet recovery phrase.",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 39
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletBackupPrivacyWarningDialog.js",
         "id": "wallet.backup.privacy.warning.dialog.recoveryPhraseInstructions3.itn",
         "start": {
           "column": 34,
-          "line": 30
+          "line": 33
         }
       },
       {
@@ -5567,13 +5567,13 @@
         "description": "Instructions for backing up wallet recovery phrase on dialog that displays wallet recovery phrase on ITN.",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 46
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletBackupPrivacyWarningDialog.js",
         "id": "wallet.backup.privacy.warning.dialog.recoveryPhraseInstructions3",
         "start": {
           "column": 31,
-          "line": 37
+          "line": 40
         }
       },
       {
@@ -5581,13 +5581,13 @@
         "description": "Label for button \"Continue\" on wallet backup dialog",
         "end": {
           "column": 3,
-          "line": 48
+          "line": 51
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletBackupPrivacyWarningDialog.js",
         "id": "wallet.backup.privacy.warning.dialog..button.labelContinue",
         "start": {
           "column": 23,
-          "line": 44
+          "line": 47
         }
       },
       {
@@ -5595,13 +5595,13 @@
         "description": "Label for the checkbox on wallet backup dialog describing that nobody should be watching when recovery phrase is shown",
         "end": {
           "column": 3,
-          "line": 55
+          "line": 58
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletBackupPrivacyWarningDialog.js",
         "id": "wallet.backup.privacy.warning.dialog.checkbox.label.nobodyWatching",
         "start": {
           "column": 22,
-          "line": 49
+          "line": 52
         }
       }
     ],

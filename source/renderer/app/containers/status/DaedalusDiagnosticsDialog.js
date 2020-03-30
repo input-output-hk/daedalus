@@ -2,7 +2,6 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import ReactModal from 'react-modal';
-import BigNumber from 'bignumber.js';
 import DaedalusDiagnostics from '../../components/status/DaedalusDiagnostics';
 import styles from './DaedalusDiagnosticsDialog.scss';
 import { formattedBytesToSize } from '../../utils/formatters';
@@ -112,11 +111,7 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
           isSynced={isSynced}
           syncPercentage={syncPercentage}
           hasBeenConnected={hasBeenConnected}
-          localTimeDifference={
-            localTimeDifference
-              ? new BigNumber(localTimeDifference).toFormat()
-              : localTimeDifference
-          }
+          localTimeDifference={localTimeDifference}
           isSystemTimeCorrect={isSystemTimeCorrect}
           isSystemTimeIgnored={isSystemTimeIgnored}
           nodeConnectionError={getNetworkInfoRequest.error}
