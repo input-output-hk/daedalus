@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import { number, withKnobs } from '@storybook/addon-knobs';
+import { number, withKnobs, boolean } from '@storybook/addon-knobs';
 
 // Assets and helpers
 import StoryDecorator from '../../_support/StoryDecorator';
@@ -68,6 +68,7 @@ storiesOf('Nodes|Status', module)
       networkTip={{ epoch: 123, slot: 13400 }}
       localBlockHeight={number('localBlockHeight', 280719)}
       networkBlockHeight={number('networkBlockHeight', 42539)}
+      isCheckingSystemTime={boolean('isCheckingSystemTime', true)}
       onForceCheckLocalTimeDifference={() => null}
       onCopyStateDirectoryPath={() => null}
       onOpenStateDirectory={() => null}
