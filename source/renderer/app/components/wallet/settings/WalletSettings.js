@@ -91,6 +91,7 @@ type Props = {
   isSubmitting: boolean,
   isForcedWalletResyncStarting: boolean,
   isIncentivizedTestnet: boolean,
+  isWalletRecoveryPhraseDisabled?: boolean,
   isInvalid: boolean,
   isLegacy: boolean,
   lastUpdatedField: ?string,
@@ -166,6 +167,7 @@ export default class WalletSettings extends Component<Props, State> {
       isSubmitting,
       isForcedWalletResyncStarting,
       isIncentivizedTestnet,
+      isWalletRecoveryPhraseDisabled,
       isInvalid,
       isLegacy,
       lastUpdatedField,
@@ -271,7 +273,7 @@ export default class WalletSettings extends Component<Props, State> {
             }}
           />
 
-          {!isIncentivizedTestnet && (
+          {!isIncentivizedTestnet && !isWalletRecoveryPhraseDisabled && (
             <WalletRecoveryPhrase
               recoveryPhraseVerificationDate={recoveryPhraseVerificationDate}
               recoveryPhraseVerificationStatus={
