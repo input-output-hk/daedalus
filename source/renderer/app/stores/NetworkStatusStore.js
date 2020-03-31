@@ -3,7 +3,11 @@ import { observable, action, computed, runInAction } from 'mobx';
 import { isEqual, includes } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
-import { NETWORK_STATUS_POLL_INTERVAL } from '../config/timingConfig';
+import {
+  ALLOWED_TIME_DIFFERENCE,
+  NETWORK_STATUS_POLL_INTERVAL,
+  NETWORK_CLOCK_POLL_INTERVAL,
+} from '../config/timingConfig';
 import { logger } from '../utils/logging';
 import {
   cardanoStateChangeChannel,
@@ -17,6 +21,7 @@ import { getDiskSpaceStatusChannel } from '../ipc/getDiskSpaceChannel.js';
 import { getStateDirectoryPathChannel } from '../ipc/getStateDirectoryPathChannel';
 import type {
   GetNetworkInfoResponse,
+  GetNetworkClockResponse,
   NextEpoch,
   FutureEpoch,
   TipInfo,
@@ -59,6 +64,7 @@ export default class NetworkStatusStore extends Store {
   _startTime = Date.now();
   _networkStatus = NETWORK_STATUS.CONNECTING;
   _networkStatusPollingInterval: ?IntervalID = null;
+  _networkClockPollingInterval: ?IntervalID = null;
 
   // Initialize store observables
 
@@ -71,6 +77,8 @@ export default class NetworkStatusStore extends Store {
   @observable isNodeInSync = false; // 'true' if syncing & local/network blocks diff within limit
   @observable isNodeStopping = false; // 'true' if node is in `NODE_STOPPING_STATES` states
   @observable isNodeStopped = false; // 'true' if node is in `NODE_STOPPED_STATES` states
+  @observable isNodeTimeCorrect = true; // Is 'true' in case local and global time are in sync
+  @observable isSystemTimeIgnored = false; // Tracks if NTP time checks are ignored
   @observable isSplashShown = isIncentivizedTestnet || isFlight; // Visibility of splash screen
 
   @observable hasBeenConnected = false;
@@ -79,9 +87,14 @@ export default class NetworkStatusStore extends Store {
   @observable networkTip: ?TipInfo = null;
   @observable nextEpoch: ?NextEpoch = null;
   @observable futureEpoch: ?FutureEpoch = null;
+  @observable localTimeDifference: ?number = 0; // microseconds
   @observable
   getNetworkInfoRequest: Request<GetNetworkInfoResponse> = new Request(
     this.api.ada.getNetworkInfo
+  );
+  @observable
+  getNetworkClockRequest: Request<GetNetworkClockResponse> = new Request(
+    this.api.ada.getNetworkClock
   );
 
   @observable isNotEnoughDiskSpace: boolean = false;
@@ -123,6 +136,7 @@ export default class NetworkStatusStore extends Store {
 
     // Setup polling interval
     this._setNetworkStatusPollingInterval();
+    this._setNetworkClockPollingInterval();
 
     // Setup disk space checks
     getDiskSpaceStatusChannel.onReceive(this._onCheckDiskSpace);
@@ -131,15 +145,8 @@ export default class NetworkStatusStore extends Store {
     this._getStateDirectoryPath();
   }
 
-  // Setup network status polling interval
-  _setNetworkStatusPollingInterval = () => {
-    this._networkStatusPollingInterval = setInterval(
-      this._updateNetworkStatus,
-      NETWORK_STATUS_POLL_INTERVAL
-    );
-  };
-
   _restartNode = async () => {
+    this._resetSystemTime();
     try {
       logger.info('NetworkStatusStore: Requesting a restart of cardano-node');
       await restartCardanoNodeChannel.send();
@@ -154,15 +161,19 @@ export default class NetworkStatusStore extends Store {
     super.teardown();
 
     // Teardown polling intervals
-    if (this._networkStatusPollingInterval) {
-      clearInterval(this._networkStatusPollingInterval);
-    }
+    this._clearNetworkStatusPollingInterval();
+    this._clearNetworkClockPollingInterval();
   }
 
   // ================= REACTIONS ==================
 
   _updateNetworkStatusWhenDisconnected = () => {
-    if (!this.isConnected) this._updateNetworkStatus();
+    if (!this.isConnected) {
+      this._updateNetworkStatus();
+      if (!this._networkClockPollingInterval) {
+        this._setNetworkClockPollingInterval();
+      }
+    }
   };
 
   _updateNetworkStatusWhenConnected = () => {
@@ -307,6 +318,64 @@ export default class NetworkStatusStore extends Store {
 
   // DEFINE ACTIONS
 
+  @action _setNetworkStatusPollingInterval = () => {
+    this._networkStatusPollingInterval = setInterval(
+      this._updateNetworkStatus,
+      NETWORK_STATUS_POLL_INTERVAL
+    );
+  };
+
+  @action _setNetworkClockPollingInterval = () => {
+    this._networkClockPollingInterval = setInterval(
+      this._updateNetworkClock,
+      NETWORK_CLOCK_POLL_INTERVAL
+    );
+  };
+
+  @action _clearNetworkStatusPollingInterval = () => {
+    if (this._networkStatusPollingInterval) {
+      clearInterval(this._networkStatusPollingInterval);
+      this._networkStatusPollingInterval = null;
+    }
+  };
+
+  @action _clearNetworkClockPollingInterval = () => {
+    if (this._networkClockPollingInterval) {
+      clearInterval(this._networkClockPollingInterval);
+      this._networkClockPollingInterval = null;
+    }
+  };
+
+  @action ignoreSystemTimeChecks = (flag: boolean = true) => {
+    this.isSystemTimeIgnored = flag;
+  };
+
+  @action _updateNetworkClock = async () => {
+    // Skip checking network clock if we are not connected
+    if (!this.isNodeResponding || this.isSystemTimeIgnored) return;
+    logger.info('NetworkStatusStore: Checking network clock...');
+    try {
+      const networkClock: GetNetworkClockResponse = await this.getNetworkClockRequest.execute()
+        .promise;
+      // System time is correct if local time difference is below allowed threshold
+      runInAction('update localTimeDifference and isNodeTimeCorrect', () => {
+        // Update localTimeDifference only in case NTP check status is not still pending
+        if (networkClock.status !== 'pending') {
+          this.localTimeDifference = networkClock.offset;
+          this.isNodeTimeCorrect =
+            this.localTimeDifference != null && // If we receive 'null' it means NTP check failed
+            Math.abs(this.localTimeDifference) <= ALLOWED_TIME_DIFFERENCE;
+          this._clearNetworkClockPollingInterval();
+        }
+      });
+      logger.info('NetworkStatusStore: Network clock response received', {
+        localTimeDifference: this.localTimeDifference,
+        isNodeTimeCorrect: this.isNodeTimeCorrect,
+        allowedDifference: ALLOWED_TIME_DIFFERENCE,
+      });
+    } catch (error) {} // eslint-disable-line
+  };
+
   @action _updateNetworkStatus = async () => {
     // In case we haven't received TLS config we shouldn't trigger any API calls
     if (!this.tlsConfig) return;
@@ -421,6 +490,7 @@ export default class NetworkStatusStore extends Store {
     this.isNodeResponding = false;
     this.isNodeSyncing = false;
     this.isNodeInSync = false;
+    this._resetSystemTime();
     if (wasConnected) {
       if (!this.hasBeenConnected) {
         runInAction('update hasBeenConnected', () => {
@@ -429,15 +499,6 @@ export default class NetworkStatusStore extends Store {
       }
       logger.debug('NetworkStatusStore: Connection Lost. Reconnecting...');
     }
-  };
-
-  @action _setSyncing = () => {
-    clearInterval(this._networkStatusPollingInterval);
-    this._updateNetworkStatus = () => {};
-    this.isNodeSyncing = true;
-    this.isNodeInSync = false;
-    this.syncProgress = 0;
-    this.teardown();
   };
 
   openStateDirectory(path: string, event?: MouseEvent): void {
@@ -480,12 +541,25 @@ export default class NetworkStatusStore extends Store {
     });
   };
 
+  _resetSystemTime = () => {
+    runInAction('Reset system time', () => {
+      this.getNetworkClockRequest.reset();
+      this.localTimeDifference = null;
+      this.isNodeTimeCorrect = true;
+      this.isSystemTimeIgnored = false;
+    });
+  };
+
   @computed get isConnected(): boolean {
     return this.isNodeResponding && this.isNodeSyncing;
   }
 
+  @computed get isSystemTimeCorrect(): boolean {
+    return this.isNodeTimeCorrect || this.isSystemTimeIgnored;
+  }
+
   @computed get isSynced(): boolean {
-    return this.isConnected && this.isNodeInSync;
+    return this.isConnected && this.isNodeInSync && this.isSystemTimeCorrect;
   }
 
   @computed get syncPercentage(): number {
