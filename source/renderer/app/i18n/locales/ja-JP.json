@@ -683,7 +683,7 @@
   "wallet.settings.changePassword.dialog.repeatPasswordLabel": "パスワードを再度入力してください",
   "wallet.settings.changePassword.dialog.spendingPasswordLabel": "送金時のパスワード",
   "wallet.settings.changePassword.dialog.title.changePassword": "パスワード変更",
-  "wallet.settings.changePassword.dialog.title.setPassword": "パスワード",
+  "wallet.settings.changePassword.dialog.title.setPassword": "{walletName}ウォレットにパスワードを設定する",
   "wallet.settings.delete.dialog.confirmBackupNotice": "削除したウォレットに再びアクセスする唯一の方法は、ウォレット復元フレーズを使用して復元することであると理解しました。",
   "wallet.settings.delete.dialog.confirmButtonLabel": "削除",
   "wallet.settings.delete.dialog.enterRecoveryWordLabel": "ウォレット名を入力して削除を確認してください:",

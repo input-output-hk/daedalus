@@ -265,7 +265,7 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-link-main-color': '#29b595',
   },
   loading: {
-    '--theme-loading-background-color': '#f9f9f9',
+    '--theme-loading-background-color': '#ffffff',
     '--theme-loading-no-disk-space-background-color': 'rgba(171, 23, 0, 0.94)',
     '--theme-loading-no-disk-space-text-color': '#fafbfc',
     '--theme-loading-no-disk-space-attention-icon-color': '#fafbfc',

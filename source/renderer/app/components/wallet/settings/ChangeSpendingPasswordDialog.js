@@ -21,7 +21,7 @@ import { submitOnEnter } from '../../../utils/form';
 const messages = defineMessages({
   dialogTitleSetPassword: {
     id: 'wallet.settings.changePassword.dialog.title.setPassword',
-    defaultMessage: '!!!Password',
+    defaultMessage: '!!!Set a password for {walletName} wallet',
     description:
       'Title for the "Change wallet password" dialog when there is no password set.',
   },
@@ -85,6 +85,8 @@ type Props = {
   isSubmitting: boolean,
   error: ?LocalizableError,
   isSpendingPasswordSet: boolean,
+  forceSetPassword: boolean,
+  walletName: string,
 };
 
 @observer
@@ -199,6 +201,8 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
       isSubmitting,
       error,
       isSpendingPasswordSet,
+      forceSetPassword,
+      walletName,
     } = this.props;
     const dialogClasses = classnames([
       styles.dialog,
@@ -232,13 +236,16 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
             !isSpendingPasswordSet
               ? 'dialogTitleSetPassword'
               : 'dialogTitleChangePassword'
-          ]
+          ],
+          { walletName }
         )}
         actions={actions}
-        closeOnOverlayClick
-        onClose={!isSubmitting ? onCancel : () => {}}
+        closeOnOverlayClick={!forceSetPassword}
+        onClose={!isSubmitting && !forceSetPassword ? onCancel : () => {}}
         className={dialogClasses}
-        closeButton={<DialogCloseButton onClose={onCancel} />}
+        closeButton={
+          !forceSetPassword ? <DialogCloseButton onClose={onCancel} /> : null
+        }
       >
         <div className={styles.spendingPasswordFields}>
           {isSpendingPasswordSet && (
