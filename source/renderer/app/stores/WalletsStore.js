@@ -844,6 +844,8 @@ export default class WalletsStore extends Store {
       this.actions.dialogs.open.trigger({
         dialog: ChangeSpendingPasswordDialog,
       });
+    } else if (this.stores.uiDialogs.isOpen(ChangeSpendingPasswordDialog)) {
+      this.actions.dialogs.closeActiveDialog.trigger();
     }
   }
 
