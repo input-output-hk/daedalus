@@ -5,7 +5,7 @@ let
   pkgsCross = import cardano-wallet.pkgs.path { crossSystem = cardano-wallet.pkgs.lib.systems.examples.mingwW64; config = {}; overlays = []; };
 in runCommand "daedalus-cardano-bridge" {
   passthru = {
-    node-version = cardano-node.version;
+    node-version = cardano-node.passthru.identifier.version;
     wallet-version = cardano-wallet.version;
   };
 } ''
