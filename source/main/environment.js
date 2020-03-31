@@ -3,7 +3,12 @@ import os from 'os';
 import { uniq, get, includes } from 'lodash';
 import { version } from '../../package.json';
 import type { Environment } from '../common/types/environment.types';
-import { DEVELOPMENT, OS_NAMES } from '../common/types/environment.types';
+import {
+  DEVELOPMENT,
+  OS_NAMES,
+  MAINNET,
+  MAINNET_FLIGHT,
+} from '../common/types/environment.types';
 import {
   evaluateNetwork,
   checkIsDev,
@@ -28,7 +33,8 @@ import {
 
 // environment variables
 const CURRENT_NODE_ENV = process.env.NODE_ENV || DEVELOPMENT;
-const RAW_NETWORK = process.env.NETWORK || '';
+const RAW_NETWORK =
+  process.env.NETWORK === MAINNET_FLIGHT ? MAINNET : process.env.NETWORK || '';
 const NETWORK = evaluateNetwork(process.env.NETWORK);
 const isDev = checkIsDev(CURRENT_NODE_ENV);
 const isTest = checkIsTest(CURRENT_NODE_ENV);
