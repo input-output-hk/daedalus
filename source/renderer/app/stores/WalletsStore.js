@@ -835,18 +835,16 @@ export default class WalletsStore extends Store {
   // ACTIONS
 
   goToWalletRoute(walletId: string) {
-    const route = this.getWalletRoute(walletId);
-    this.actions.router.goToRoute.trigger({ route });
-
     // Force setting spending password if wallet doesn't have one set
     const wallet = this.getWalletById(walletId);
     if (wallet && !wallet.hasPassword) {
       this.actions.dialogs.open.trigger({
         dialog: ChangeSpendingPasswordDialog,
       });
-    } else if (this.stores.uiDialogs.isOpen(ChangeSpendingPasswordDialog)) {
-      this.actions.dialogs.closeActiveDialog.trigger();
     }
+
+    const route = this.getWalletRoute(walletId);
+    this.actions.router.goToRoute.trigger({ route });
   }
 
   // =================== PRIVATE API ==================== //
