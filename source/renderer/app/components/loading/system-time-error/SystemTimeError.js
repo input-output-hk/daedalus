@@ -111,6 +111,13 @@ export default class SystemTimeError extends Component<Props> {
     const timeOffset = humanizeDurationByLocale(rawTimeOffset, currentLocale, {
       delimiter: ' ',
       units: ['y', 'mo', 'w', 'd', 'h', 'm', 's', 'ms'],
+      localeConfig: {
+        'ja-JP': {
+          spacer: '',
+          delimiter: '',
+          serialComma: false,
+        },
+      },
     });
 
     return (

@@ -78,7 +78,10 @@ export type NetworkClockResponse = {
   offset?: ClockOffset,
 };
 
-export type GetNetworkClockResponse = NetworkClockResponse;
+export type GetNetworkClockResponse = {
+  status: 'available' | 'unavailable' | 'pending',
+  offset: ?number,
+};
 
 export type GetNetworkParametersResponse = {
   genesisBlockHash: string,
