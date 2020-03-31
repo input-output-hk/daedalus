@@ -756,7 +756,12 @@ export default class AdaApi {
       return _createAddressFromServerData(address);
     } catch (error) {
       logger.error('AdaApi::createAddress error', { error });
-      if (error.message === 'CannotCreateAddress') {
+      const errorCode = get(error, 'code', '');
+      if (
+        errorCode === 'wrong_encryption_passphrase' ||
+        (errorCode === 'bad_request' &&
+          error.message.includes('passphrase is too short'))
+      ) {
         throw new IncorrectSpendingPasswordError();
       }
       throw new GenericApiError(error);
