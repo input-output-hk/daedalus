@@ -61,6 +61,8 @@ export const defaultProps = {
     .toDate(),
   changeSpendingPasswordDialog: (
     <ChangeSpendingPasswordDialog
+      walletName={text('Wallet Name', 'Wallet Name')}
+      forceSetPassword={false}
       currentPasswordValue="current"
       newPasswordValue="new"
       repeatedPasswordValue="new"

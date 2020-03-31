@@ -1,5 +1,7 @@
 /* eslint-disable no-console */
 const axios = require('axios')
+const https = require('https');
+const fs = require('fs');
 
 const mnemonics = [
   ['arctic', 'decade', 'pink', 'easy', 'jar', 'index', 'base', 'bright', 'vast', 'ocean', 'hard', 'pizza'],
@@ -22,11 +24,17 @@ const walletNames = [
 const API_PORT = process.env.API_PORT || 8088
 
 async function main() {
+  const httpsAgent = new https.Agent({
+    cert: fs.readFileSync('tls/client/client.pem'),
+    key: fs.readFileSync('tls/client/client.key'),
+    ca: fs.readFileSync('tls/client/ca.crt'),
+  });
+  const request = axios.create({ httpsAgent })
   try {
     await Promise.all(mnemonics.map((mnemonic, index) => {
       const name = walletNames[index]
-      const payload = generateImportPayload(mnemonic, name)
-      return axios.post(`https://localhost:${API_PORT}/v2/byron-wallets`, payload)
+      const data = generateImportPayload(mnemonic, name)
+      return request.post(`https://localhost:${API_PORT}/v2/byron-wallets`, data)
     }))
   } catch (e) {
     console.log(e)
