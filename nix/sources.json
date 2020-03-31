@@ -36,15 +36,15 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "cardano-wallet": {
-        "branch": "node-1.9.1",
+        "branch": "master",
         "description": "Official Wallet Backend & API for Cardano decentralized",
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "cardano-wallet",
-        "rev": "ab239d96d13968d1177abf55a2e5bee9174a27e9",
-        "sha256": "0zcc6dx821jq5183w59l7yk8j54ld43mbp9djynf201f0x3jx8va",
+        "rev": "da6f3041872827d5a35389dbe655770229330958",
+        "sha256": "08shbyzpfc5g09mlksdzkic3lvgw0f2fqwpjbd1hcqx5j9lpgzqk",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-wallet/archive/ab239d96d13968d1177abf55a2e5bee9174a27e9.tar.gz",
+        "url": "https://github.com/input-output-hk/cardano-wallet/archive/da6f3041872827d5a35389dbe655770229330958.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz",
         "version": "v2020-03-16"
     },
