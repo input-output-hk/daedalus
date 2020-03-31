@@ -683,7 +683,7 @@
   "wallet.settings.changePassword.dialog.repeatPasswordLabel": "Repeat password",
   "wallet.settings.changePassword.dialog.spendingPasswordLabel": "Spending password",
   "wallet.settings.changePassword.dialog.title.changePassword": "Change password",
-  "wallet.settings.changePassword.dialog.title.setPassword": "Password",
+  "wallet.settings.changePassword.dialog.title.setPassword": "Set a password for {walletName} wallet",
   "wallet.settings.delete.dialog.confirmBackupNotice": "I understand that the only way to regain access to this wallet is by restoring it with a wallet recovery phrase.",
   "wallet.settings.delete.dialog.confirmButtonLabel": "Delete",
   "wallet.settings.delete.dialog.enterRecoveryWordLabel": "Enter the name of the wallet to confirm deletion:",
