@@ -300,7 +300,7 @@ let
     }) { nixpkgs = pkgs; };
     iconPath = self.launcherConfigs.installerConfig.iconPath;
     # used for name of profile, binary and the desktop shortcut
-    linuxClusterBinName = __replaceStrings ["_"] ["-"] cluster;
+    linuxClusterBinName = cluster;
     namespaceHelper = pkgs.writeScriptBin "namespaceHelper" ''
       #!/usr/bin/env bash
 
