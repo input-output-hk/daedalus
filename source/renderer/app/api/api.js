@@ -646,12 +646,7 @@ export default class AdaApi {
       ) {
         throw new IncorrectSpendingPasswordError();
       }
-      if (
-        error.code === 'bad_request' &&
-        error.message.includes(
-          'invalid coin value: value has to be lower than or equal to 45000000000000000 lovelace'
-        )
-      ) {
+      if (error.code === 'too_big_transaction') {
         throw new TooBigTransactionError();
       }
       throw new GenericApiError(error);
