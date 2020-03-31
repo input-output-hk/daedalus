@@ -110,7 +110,7 @@ clusterNetwork QA = "qa"
 clusterNetwork ITN_Selfnode = "itn_selfnode"
 clusterNetwork Selfnode = "selfnode"
 clusterNetwork Mainnet = "mainnet"
-clusterNetwork Mainnet_Flight = "mainnet"
+clusterNetwork Mainnet_Flight = "mainnet_flight"
 clusterNetwork Staging = "staging"
 clusterNetwork Testnet = "testnet"
 
