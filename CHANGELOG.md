@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 
+- Implemented NTP checks ([PR 1925](https://github.com/input-output-hk/daedalus/pull/1925))
 - Disabled "Recovery phrase verification" feature ([PR 1931](https://github.com/input-output-hk/daedalus/pull/1931))
 - Implemented automated wallet migration ([PR 1905](https://github.com/input-output-hk/daedalus/pull/1905), [PR 1922](https://github.com/input-output-hk/daedalus/pull/1922), [PR 1930](https://github.com/input-output-hk/daedalus/pull/1930), [PR 1935](https://github.com/input-output-hk/daedalus/pull/1935))
 - Integrated network clock api endpoint ([PR 1918](https://github.com/input-output-hk/daedalus/pull/1918))
