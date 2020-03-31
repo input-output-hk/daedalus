@@ -241,6 +241,7 @@ let
       macPackageName = "Daedalus${network}";
       dataDir = dataDir;
       hasBlock0 = false;
+      installerWinBinaries = [ "cardano-launcher.exe" "cardano-node.exe" "cardano-wallet-byron.exe" "export-wallets.exe" "db-converter.exe" "cardano-cli.exe" ];
     };
 
   in {
@@ -300,6 +301,7 @@ let
     installerConfig = {
       installDirectory = if os == "linux" then "Daedalus/${network}" else spacedName;
       inherit spacedName iconPath dataDir hasBlock0;
+      installerWinBinaries = [ "cardano-launcher.exe" "jormungandr.exe" "cardano-wallet-jormungandr.exe" ];
       macPackageName = "Daedalus${network}";
       configPath = "${nodeConfigFiles}/config.yaml";
     } // (lib.optionalAttrs hasBlock0 {
