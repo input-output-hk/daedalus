@@ -81,6 +81,7 @@ export default class WalletSettingsPage extends Component<Props> {
         walletName={activeWallet.name}
         creationDate={creationDate}
         isIncentivizedTestnet={global.isIncentivizedTestnet}
+        isWalletRecoveryPhraseDisabled
         isSubmitting={updateWalletRequest.isExecuting}
         isForcedWalletResyncStarting={isForcedWalletResyncStarting}
         isInvalid={
