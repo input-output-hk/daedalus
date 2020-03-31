@@ -14,6 +14,7 @@ in
 , HSMServer ? null
 , fudgeConfig ? null
 , devShell ? false
+, useLocalNode ? false
 }:
 
 let
@@ -60,7 +61,9 @@ let
     cardano-wallet-native = import self.sources.cardano-wallet { inherit system; gitrev = self.sources.cardano-wallet.rev; };
     cardano-shell = import self.sources.cardano-shell { inherit system; crossSystem = crossSystem shellPkgs.lib; };
     cardano-cli = (import self.sources.cardano-node { inherit system; crossSystem = crossSystem nodePkgs.lib; }).haskellPackages.cardano-node.components.exes.cardano-cli;
-    cardano-node = self.cardano-wallet.cardano-node;
+    cardano-node = if useLocalNode
+                   then (import self.sources.cardano-node { inherit system; crossSystem = crossSystem nodePkgs.lib; }).haskellPackages.cardano-node.components.exes.cardano-node
+                   else self.cardano-wallet.cardano-node;
     cardano-sl = import self.sources.cardano-sl { inherit target; gitrev = self.sources.cardano-sl.rev; };
 
     # a cross-compiled fastlist for the ps-list package

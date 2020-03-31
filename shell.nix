@@ -65,7 +65,7 @@ let
     buildInputs = daedalusShellBuildInputs;
   };
   debug.node = pkgs.writeShellScriptBin "debug-node" (with daedalusPkgs.launcherConfigs.launcherConfig; ''
-    cardano-node run --topology ${nodeConfig.network.topologyFile} --config ${nodeConfig.network.configFile} --database-path ${stateDir}/chain --port 3001 --genesis-file ${nodeConfig.network.genesisFile} --genesis-hash ${nodeConfig.network.genesisHash} --socket-path ${stateDir}/cardano-node.socket
+    cardano-node run --topology ${nodeConfig.network.topologyFile} --config ${nodeConfig.network.configFile} --database-path ${stateDir}/chain --port 3001 --socket-path ${stateDir}/cardano-node.socket
   '');
   daedalusShell = pkgs.stdenv.mkDerivation (rec {
     buildInputs = daedalusShellBuildInputs;
