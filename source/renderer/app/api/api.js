@@ -1624,8 +1624,10 @@ export default class AdaApi {
       };
     } catch (error) {
       logger.error('AdaApi::getNetworkInfo error', { error });
-      // @API TODO - Inspect this implementation once TLS support is implemented on the BE
-      if (error.code === TlsCertificateNotValidError.API_ERROR) {
+      if (
+        error.code === TlsCertificateNotValidError.API_ERROR ||
+        error.code === 'EPROTO'
+      ) {
         throw new TlsCertificateNotValidError();
       }
       throw new GenericApiError(error);

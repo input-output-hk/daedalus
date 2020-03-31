@@ -136,6 +136,7 @@ export default class NetworkStatusStore extends Store {
 
     // Setup polling interval
     this._setNetworkStatusPollingInterval();
+    this._setNetworkClockPollingInterval();
 
     // Setup disk space checks
     getDiskSpaceStatusChannel.onReceive(this._onCheckDiskSpace);
@@ -169,7 +170,9 @@ export default class NetworkStatusStore extends Store {
   _updateNetworkStatusWhenDisconnected = () => {
     if (!this.isConnected) {
       this._updateNetworkStatus();
-      this._clearNetworkClockPollingInterval();
+      if (!this._networkClockPollingInterval) {
+        this._setNetworkClockPollingInterval();
+      }
     }
   };
 
@@ -177,7 +180,6 @@ export default class NetworkStatusStore extends Store {
     if (this.isConnected) {
       logger.info('NetworkStatusStore: Connected');
       this._updateNetworkStatus();
-      this._setNetworkClockPollingInterval();
       this.stores.walletMigration.startMigration();
     }
   };
@@ -350,7 +352,7 @@ export default class NetworkStatusStore extends Store {
 
   @action _updateNetworkClock = async () => {
     // Skip checking network clock if we are not connected
-    if (!this.isConnected || this.isSystemTimeIgnored) return;
+    if (!this.isNodeResponding || this.isSystemTimeIgnored) return;
     logger.info('NetworkStatusStore: Checking network clock...');
     try {
       const networkClock: GetNetworkClockResponse = await this.getNetworkClockRequest.execute()
