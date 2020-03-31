@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 
+- Disabled "Recovery phrase verification" feature ([PR 1931](https://github.com/input-output-hk/daedalus/pull/1931))
 - Implemented automated wallet migration ([PR 1905](https://github.com/input-output-hk/daedalus/pull/1905), [PR 1922](https://github.com/input-output-hk/daedalus/pull/1922), [PR 1930](https://github.com/input-output-hk/daedalus/pull/1930))
 - Integrated network clock api endpoint ([PR 1918](https://github.com/input-output-hk/daedalus/pull/1918))
 - Implements the Flight release information window ([PR 1917](https://github.com/input-output-hk/daedalus/pull/1917))
