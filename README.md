@@ -51,7 +51,7 @@ The result can be found at `./result/daedalus-*.bin`.
 
 `shell.nix` provides a way to load a shell with all the correct versions of all the required dependencies for development.
 
-## V2 API Integration Guide [Jormungandr]
+## V2 API Integration Guide
 
 API docs for pinned cardano-wallet version: https://input-output-hk.github.io/cardano-wallet/api/edge/
 
