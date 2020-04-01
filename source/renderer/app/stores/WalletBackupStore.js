@@ -5,6 +5,8 @@ import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import WalletBackupDialog from '../components/wallet/WalletBackupDialog';
 import { WALLET_BACKUP_STEPS } from '../types/walletBackupTypes';
+import { getRawWalletId } from '../api/utils';
+
 import type {
   RecoveryPhraseWord,
   walletBackupStep,
@@ -142,8 +144,9 @@ export default class WalletBackupStore extends Store {
       throw new Error(
         'Active wallet required before checking recovery phrase.'
       );
+    const activeWalletId = getRawWalletId(activeWallet.id);
     runInAction('AdaWalletBackupStore::_checkRecoveryPhrase', () => {
-      this.isRecoveryPhraseMatching = walletId === activeWallet.id;
+      this.isRecoveryPhraseMatching = walletId === activeWalletId;
     });
   };
 

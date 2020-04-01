@@ -9,7 +9,10 @@ import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
 import styles from './WalletRecoveryPhraseStepDialogs.scss';
-import { LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../../../config/cryptoConfig';
+import {
+  LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT,
+  WALLET_RECOVERY_PHRASE_WORD_COUNT,
+} from '../../../config/cryptoConfig';
 import globalMessages from '../../../i18n/global-messages';
 
 export const messages = defineMessages({
@@ -57,7 +60,7 @@ export const messages = defineMessages({
 });
 
 type Props = {
-  mnemonicValidator: Function,
+  // mnemonicValidator: Function,
   suggestedMnemonics: Array<string>,
   isVerifying: boolean,
   onVerify: Function,
@@ -79,25 +82,27 @@ export default class WalletRecoveryPhraseStep2 extends Component<Props> {
             const { intl } = this.context;
             const enteredWords = field.value;
             const wordCount = enteredWords.length;
-            const value = join(enteredWords, ' ');
+            // const value = join(enteredWords, ' ');
 
             // Check if recovery phrase contains 12 words
             const isPhraseComplete =
-              wordCount === LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT;
+              wordCount === LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT ||
+              wordCount === WALLET_RECOVERY_PHRASE_WORD_COUNT;
             if (!isPhraseComplete) {
               return [
                 false,
                 intl.formatMessage(globalMessages.incompleteMnemonic, {
-                  expected: LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT,
+                  expected: `${LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT} or ${WALLET_RECOVERY_PHRASE_WORD_COUNT}`,
                 }),
               ];
             }
-            return [
-              this.props.mnemonicValidator(value),
-              this.context.intl.formatMessage(
-                messages.recoveryPhraseStep2InvalidMnemonics
-              ),
-            ];
+            return true;
+            // return [
+            //   this.props.mnemonicValidator(value),
+            //   this.context.intl.formatMessage(
+            //     messages.recoveryPhraseStep2InvalidMnemonics
+            //   ),
+            // ];
           },
         },
       },
