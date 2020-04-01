@@ -30,6 +30,7 @@ Changelog
 
 ### Fixes
 
+- Fixed Cardano Node version shown on the About screen ([PR 1941](https://github.com/input-output-hk/daedalus/pull/1941))
 - Fixed UI issues across all themes ([PR 1916](https://github.com/input-output-hk/daedalus/pull/1916))
 - Removed the click and mark from spinner component ([PR 1885](https://github.com/input-output-hk/daedalus/pull/1885))
 - Removed locale specific rules from the CSS files ([PR 1871](https://github.com/input-output-hk/daedalus/pull/1871))
