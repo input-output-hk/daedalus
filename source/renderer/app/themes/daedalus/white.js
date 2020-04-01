@@ -534,9 +534,9 @@ export const WHITE_THEME_OUTPUT = {
     '--rp-radio-size': '22px',
   },
   rpScrollBar: {
-    '--rp-scrollbar-thumb-bg-color:': 'rgba(45, 45, 45, 0.1)',
-    '--rp-scrollbar-thumb-bg-color-active': 'rgba(45, 45, 45, 0.3)',
-    '--rp-scrollbar-thumb-bg-color-hover': 'rgba(45, 45, 45, 0.3)',
+    '--rp-scrollbar-thumb-bg-color:': 'rgba(45, 45, 45, 0.3)',
+    '--rp-scrollbar-thumb-bg-color-active': 'rgba(45, 45, 45, 0.5)',
+    '--rp-scrollbar-thumb-bg-color-hover': 'rgba(45, 45, 45, 0.5)',
   },
   rpSelect: {
     '--rp-select-arrow-bg-color': 'rgba(45, 45, 45, 0.3)',
@@ -593,7 +593,6 @@ export const WHITE_THEME_OUTPUT = {
   },
   scrollbar: {
     '--theme-scrollbar-thumb-background': 'rgba(45, 45, 45, 0.3)',
-    '--theme-scrollbar-thumb-background-hover': 'rgba(45, 45, 45, 0.5)',
   },
   sendConfirmation: {
     '--theme-send-confirmation-dialog-send-values-color': '#ea4c5b',

@@ -528,9 +528,9 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--rp-radio-size': '22px',
   },
   rpScrollBar: {
-    '--rp-scrollbar-thumb-bg-color:': 'rgba(255, 255, 255, 0.1)',
-    '--rp-scrollbar-thumb-bg-color-active': 'rgba(255, 255, 255, 0.3)',
-    '--rp-scrollbar-thumb-bg-color-hover': 'rgba(255, 255, 255, 0.3)',
+    '--rp-scrollbar-thumb-bg-color:': 'rgba(255, 255, 255, 0.3)',
+    '--rp-scrollbar-thumb-bg-color-active': 'rgba(255, 255, 255, 0.5)',
+    '--rp-scrollbar-thumb-bg-color-hover': 'rgba(255, 255, 255, 0.5)',
   },
   rpSelect: {
     '--rp-select-arrow-bg-color': 'rgba(255, 255, 255, 0.3)',
@@ -586,8 +586,7 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--rp-tooltip-text-color': '#ffffff',
   },
   scrollbar: {
-    '--theme-scrollbar-thumb-background': 'rgba(255, 255, 255, 0.1)',
-    '--theme-scrollbar-thumb-background-hover': 'rgba(255, 255, 255, 0.3)',
+    '--theme-scrollbar-thumb-background': 'rgba(255, 255, 255, 0.3)',
   },
   sendConfirmation: {
     '--theme-send-confirmation-dialog-send-values-color': '#ea4c5b',

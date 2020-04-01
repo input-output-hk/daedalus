@@ -271,14 +271,14 @@ body,
   &::-webkit-scrollbar-thumb {
     background-clip: content-box;
     background-color: var(--theme-scrollbar-thumb-background);
-    border: 7px solid transparent;
-    border-radius: 12px;
+    border: 8px solid transparent;
+    border-radius: 10px;
     &:vertical {
       // This ensures that the scroll bar never shrinks too much
       min-height: 30px;
     }
     &:hover {
-      background-color: var(--theme-scrollbar-thumb-background-hover);
+      background-color: var(--rp-scrollbar-thumb-bg-color-hover);
     }
   }
 }
