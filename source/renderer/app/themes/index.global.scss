@@ -274,7 +274,6 @@ body,
     border: 8px solid transparent;
     border-radius: 10px;
     &:vertical {
-      // This ensures that the scroll bar never shrinks too much
       min-height: 30px;
     }
     &:hover {
