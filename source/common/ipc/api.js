@@ -237,12 +237,3 @@ export const GENERATE_WALLET_MIGRATION_REPORT_CHANNEL =
   'GENERATE_WALLET_MIGRATION_REPORT_CHANNEL';
 export type GenerateWalletMigrationReportRendererRequest = WalletMigrationReportData;
 export type GenerateWalletMigrationReportMainResponse = void;
-
-/**
- * Channel for verifying a wallet's recovery phrase
- */
-export const VERIFY_RECOVERY_PHRASE_CHANNEL = 'VERIFY_RECOVERY_PHRASE_CHANNEL';
-export type VerifyRecoveryPhraseRendererRequest = {
-  recoveryPhrase: Array<string>,
-};
-export type VerifyRecoveryPhraseMainResponse = string;
