@@ -3,6 +3,10 @@ Changelog
 
 ## vNext
 
+### Fixes
+
+- Fixed the `EPERM` errors thrown in the console upon changing wallet name on the "Wallet Settings" screen ([PR 1944](https://github.com/input-output-hk/daedalus/pull/1944))
+
 ### Chores
 
 - Implemented generation of an Byron wallet address after creating a Byron wallet ([PR 1943](https://github.com/input-output-hk/daedalus/pull/1943))
