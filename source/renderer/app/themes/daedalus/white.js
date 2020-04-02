@@ -633,11 +633,11 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-sidebar-menu-add-button-background-color-hover': '#eeeeee',
     '--theme-sidebar-menu-add-button-text-color': '#2d2d2d',
     '--theme-sidebar-wallets-scrollbar-background-color':
-      'rgba(45, 45, 45, 0.1)',
+      'rgba(45, 45, 45, 0.3)',
     '--theme-sidebar-wallets-scrollbar-background-color-active':
-      'rgba(45, 45, 45, 0.3)',
+      'rgba(45, 45, 45, 0.5)',
     '--theme-sidebar-wallets-scrollbar-background-color-hover':
-      'rgba(45, 45, 45, 0.3)',
+      'rgba(45, 45, 45, 0.5)',
     '--theme-sidebar-category-networkInfo-background-color': '#29b595',
     '--theme-sidebar-category-networkInfo-text-color': '#fff',
   },

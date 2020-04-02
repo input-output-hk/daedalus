@@ -45,9 +45,9 @@
   }
 
   .savingResultLabel {
-    animation: animateSavingResultLabel 3s;
+    animation: animateSavingResultLabel 6s;
     color: var(--theme-input-right-floating-text-success-color);
-    font-family: var(--font-light);
+    font-family: var(--font-regular);
     font-size: 14px;
     opacity: 0;
     position: absolute;

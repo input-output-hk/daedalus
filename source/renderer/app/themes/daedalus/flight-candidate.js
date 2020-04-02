@@ -257,8 +257,8 @@ export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
     '--theme-input-placeholder-color': 'rgba(255, 255, 255, 0.5)',
     '--theme-input-remove-color-light': '#ea4c5b',
     '--theme-input-right-floating-text-color': 'rgba(255, 255, 255, 0.5)',
+    '--theme-input-right-floating-text-success-color': 'rgba(255, 255, 255, 1)',
     '--theme-input-text-color': '#ffffff',
-    '--theme-input-right-floating-text-success-color': '#ffffff',
   },
   link: {
     '--theme-link-main-color': '#ffb923',
@@ -625,11 +625,11 @@ export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
     '--theme-sidebar-menu-add-button-background-color-hover': '#20212ea8',
     '--theme-sidebar-menu-add-button-text-color': '#ffffff',
     '--theme-sidebar-wallets-scrollbar-background-color':
-      'rgba(255, 255, 255, 0.1)',
+      'rgba(255, 255, 255, 0.3)',
     '--theme-sidebar-wallets-scrollbar-background-color-active':
-      'rgba(255, 255, 255, 0.3)',
+      'rgba(255, 255, 255, 0.5)',
     '--theme-sidebar-wallets-scrollbar-background-color-hover':
-      'rgba(255, 255, 255, 0.3)',
+      'rgba(255, 255, 255, 0.5)',
     '--theme-sidebar-category-networkInfo-background-color': '#ffb923',
     '--theme-sidebar-category-networkInfo-text-color': '#121326',
   },

@@ -641,11 +641,11 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-sidebar-menu-add-button-background-color-hover': '#1f324d',
     '--theme-sidebar-menu-add-button-text-color': '#fafbfc',
     '--theme-sidebar-wallets-scrollbar-background-color':
-      'rgba(255, 255, 255, 0.1)',
+      'rgba(255, 255, 255, 0.3)',
     '--theme-sidebar-wallets-scrollbar-background-color-active':
-      'rgba(255, 255, 255, 0.3)',
+      'rgba(255, 255, 255, 0.5)',
     '--theme-sidebar-wallets-scrollbar-background-color-hover':
-      'rgba(255, 255, 255, 0.3)',
+      'rgba(255, 255, 255, 0.5)',
     '--theme-sidebar-category-networkInfo-background-color': '#fafbfc',
     '--theme-sidebar-category-networkInfo-text-color': '#5e6066',
   },

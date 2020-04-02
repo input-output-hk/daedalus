@@ -644,11 +644,11 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-sidebar-menu-add-button-background-color-hover': '#272a2e',
     '--theme-sidebar-menu-add-button-text-color': '#ffffff',
     '--theme-sidebar-wallets-scrollbar-background-color':
-      'rgba(255, 255, 255, 0.1)',
+      'rgba(94, 96, 102, 0.3)',
     '--theme-sidebar-wallets-scrollbar-background-color-active':
-      'rgba(255, 255, 255, 0.3)',
+      'rgba(94, 96, 102, 0.5)',
     '--theme-sidebar-wallets-scrollbar-background-color-hover':
-      'rgba(255, 255, 255, 0.3)',
+      'rgba(94, 96, 102, 0.5)',
     '--theme-sidebar-category-networkInfo-background-color': '#2cbb69',
     '--theme-sidebar-category-networkInfo-text-color': '#fff',
   },
@@ -671,9 +671,9 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-splash-network-overlay-button-text-color-hover': '#202225',
     '--theme-splash-network-title-color': '#fff',
     '--theme-splash-network-scrollbar-thumb-background':
-      'rgba(255, 255, 255, 0.3)',
+      'rgba(94, 96, 102, 0.3)',
     '--theme-splash-network-scrollbar-thumb-background-hover':
-      'rgba(255, 255, 255, 0.5)',
+      'rgba(94, 96, 102, 0.5)',
     '--theme-splash-network-subTitle1-color': 'rgba(255, 255, 255, 0.5)',
     '--theme-splash-network-subTitle2-color': 'rgba(255, 255, 255, 0.5)',
     '--theme-splash-network-description-background-color': 'rgba(0, 0, 0, 0.1)',
