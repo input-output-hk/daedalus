@@ -6,6 +6,7 @@ Changelog
 ### Chores
 
 - Integrated react-polymorph ScrollBar CSS vars into each theme ([PR 1827](https://github.com/input-output-hk/daedalus/pull/1827))
+- Implemented generation of an Byron wallet address after creating a Byron wallet ([PR 1943](https://github.com/input-output-hk/daedalus/pull/1943))
 
 ## 1.0.0-FC1
 
