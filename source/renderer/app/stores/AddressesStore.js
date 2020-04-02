@@ -114,6 +114,10 @@ export default class AddressesStore extends Store {
   getAddressesByWalletId = async (
     walletId: string
   ): Promise<Array<WalletAddress>> => {
+    if (!global.isIncentivizedTestnet) {
+      // Wait for address to be generated
+      await this.createByronWalletAddressRequest.result;
+    }
     const addresses = await this._getAddressesAllRequest(walletId);
     return addresses || [];
   };

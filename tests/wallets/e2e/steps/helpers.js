@@ -307,6 +307,7 @@ const createWalletsAsync = async function(table, isLegacy?: boolean) {
     const request = isLegacyWallet ? restoreLegacyRequest : walletsRequest;
     const apiEndpoint = isLegacyWallet ? restoreLegacyWallet : createWallet;
     const mnemonicsLength = isLegacyWallet ? 12 : 15;
+
     window.Promise.all(
       wallets.map((wallet, index) => {
         const mnemonic = daedalus.utils.crypto.generateMnemonic(mnemonicsLength);

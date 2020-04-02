@@ -13,12 +13,30 @@ const SELECTORS = {
   ADDRESS_COMPONENT: '.Address_component',
   ADDRESS_USED: '.AddressItn_usedWalletAddress',
   GENERATE_ADDRESS_BTN: '.generateAddressButton:not(.WalletReceive_spinning)',
+  GENERATE_ADDRESS_PASSWORD_INPUT: '.WalletReceive_spendingPassword .SimpleFormField_inputWrapper input',
   SHOW_USED_SWITCH: '.SimpleSwitch_switch',
 };
 
-Given('I generate {int} addresses', async function(numberOfAddresses) {
+Given('I create {int} addresses', async function(numberOfAddresses) {
   for (let i = 0; i < numberOfAddresses; i++) {
+    await this.client.waitForExist(SELECTORS.GENERATE_ADDRESS_PASSWORD_INPUT);
+    await this.client.setValue(SELECTORS.GENERATE_ADDRESS_PASSWORD_INPUT, 'Secret1234');
     await this.waitAndClick(SELECTORS.GENERATE_ADDRESS_BTN);
+  }
+});
+
+Given('I have {int} generated wallet addresses', async function(numberOfAddresses) {
+  for (let i = 0; i < numberOfAddresses; i++) {
+    await this.client.executeAsync(
+      (done) => {
+        const { active } = daedalus.stores.wallets;
+        daedalus.stores.addresses._createByronWalletAddress({
+          walletId: active ? active.id : null,
+          passphrase: 'Secret1234',
+        })
+        .then(done)
+      }
+    );
   }
 });
 
@@ -31,7 +49,7 @@ When(
   async function(password) {
     const selector = '.WalletReceive_spendingPassword .SimpleFormField_inputWrapper input';
     await this.client.waitForExist(selector);
-    return this.client.setValue(selector, password);
+    await this.client.setValue(selector, password);
   }
 );
 

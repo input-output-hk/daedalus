@@ -23,7 +23,7 @@ Feature: Wallets ordering
       | Wallet 5       |
       | Balance Wallet |
 
-  @byron
+  @byron @watch
   Scenario: "Daedalus Balance" wallet is shown on the bottom of the list below "Daedalus Rewards" wallet in order of creation
     And I have created the following wallets:
       | name     |

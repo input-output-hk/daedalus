@@ -22,7 +22,7 @@ Feature: Receive money
   Scenario: Hide/show "Byron" wallet used addresses
     Given I am on the "Target Wallet" wallet "receive" screen
     And I enter wallet password in generate address input field "Secret1234"
-    And I generate 1 addresses
+    And I have 1 generated wallet addresses
     And I have made the following transactions:
       | source          | destination   | amount |
       | Test Wallet     | Target Wallet  | 1     |
@@ -33,9 +33,9 @@ Feature: Receive money
 
   @byron @api-wip-byron
   Scenario: Byron Wallet addresses ordering
-    Given I am on the "Test Wallet" wallet "receive" screen
+    Given I am on the "Target Wallet" wallet "receive" screen
     And I enter wallet password in generate address input field "Secret1234"
-    And I generate 2 addresses
+    And I create 2 addresses
     Then I should see the following addresses:
       | ClassName          |
       | generatedAddress-1 |
