@@ -10,7 +10,7 @@ import { buildLabel, nodeImplementation, isFlight } from './config';
 
 const _process = process;
 const _isIncentivizedTestnet = nodeImplementation === 'jormungandr';
-const _electronStore = new ElectronStore({ name: 'config' });
+const _electronStore = new ElectronStore();
 
 process.once('loaded', () => {
   Object.assign(global, {
