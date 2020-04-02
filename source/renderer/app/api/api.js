@@ -546,6 +546,24 @@ export default class AdaApi {
           { walletInitData },
           'random'
         );
+
+        if (legacyWallet) {
+          const { id } = legacyWallet;
+          const account = await this.getAddresses({
+            walletId: id,
+            isLegacy: true,
+          });
+          const { accountIndex } = account;
+          const { passphrase } = walletInitData;
+          const address: Address = await createByronWalletAddress(this.config, {
+            passphrase,
+            walletId: id,
+            addressIndex: accountIndex,
+          });
+          logger.debug('AdaApi::createAddress (Byron) success', { address });
+          _createAddressFromServerData(address);
+        }
+
         const extraLegacyWalletProps = {
           address_pool_gap: 0, // Not needed for legacy wallets
           delegation: {
