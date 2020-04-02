@@ -547,24 +547,13 @@ export default class AdaApi {
           'random'
         );
 
-        if (legacyWallet) {
-          const { id } = legacyWallet;
-          // $FlowFixMe
-          const account = await this.getAddresses({
-            walletId: id,
-            isLegacy: true,
-          });
-          const { passphrase } = walletInitData;
-          const { addressIndex } = account;
-          let data = {
-            passphrase,
-            walletId: id,
-          };
-          data = addressIndex ? { ...data, addressIndex } : data;
-          const address: Address = await createByronWalletAddress(this.config, data);
-          logger.debug('AdaApi::createAddress (Byron) success', { address });
-          _createAddressFromServerData(address);
-        }
+        // Genearte address for the newly created Byron wallet
+        const { id: walletId } = legacyWallet;
+        const address: Address = await createByronWalletAddress(this.config, {
+          passphrase: spendingPassword,
+          walletId,
+        });
+        logger.debug('AdaApi::createAddress (Byron) success', { address });
 
         const extraLegacyWalletProps = {
           address_pool_gap: 0, // Not needed for legacy wallets
