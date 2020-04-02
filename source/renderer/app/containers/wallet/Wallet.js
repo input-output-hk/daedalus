@@ -49,8 +49,9 @@ export default class Wallet extends Component<Props> {
   };
 
   render() {
-    const { wallets, app } = this.props.stores;
-    const { restartNode } = this.props.actions.networkStatus;
+    const { actions, stores } = this.props;
+    const { app, wallets } = stores;
+    const { restartNode } = actions.networkStatus;
     const { active: activeWallet } = wallets;
 
     if (!activeWallet) {

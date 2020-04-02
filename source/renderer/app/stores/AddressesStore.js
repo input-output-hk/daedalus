@@ -6,7 +6,6 @@ import CachedRequest from './lib/LocalizedCachedRequest';
 import WalletAddress from '../domains/WalletAddress';
 import Request from './lib/LocalizedRequest';
 import LocalizableError from '../i18n/LocalizableError';
-import { GenericApiError } from '../api/common/errors';
 import type { Address } from '../api/addresses/types';
 
 export default class AddressesStore extends Store {
@@ -54,9 +53,7 @@ export default class AddressesStore extends Store {
       }
     } catch (error) {
       runInAction('set error', () => {
-        // @TODO - Pass real error from api response once api endpoint is integrated
-        // this.error = error;
-        this.error = new GenericApiError();
+        this.error = error;
       });
     }
   };

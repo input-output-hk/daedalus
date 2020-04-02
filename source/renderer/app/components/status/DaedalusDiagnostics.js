@@ -12,6 +12,7 @@ import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import SVGInline from 'react-svg-inline';
 import { BigNumber } from 'bignumber.js';
+import { ALLOWED_TIME_DIFFERENCE } from '../../config/timingConfig';
 import globalMessages from '../../i18n/global-messages';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
@@ -354,14 +355,14 @@ type Props = {
   // isNodeSubscribed: boolean,
   isNodeSyncing: boolean,
   isNodeInSync: boolean,
-  // isNodeTimeCorrect: boolean,
+  isNodeTimeCorrect: boolean,
   nodeConnectionError: ?LocalizableError,
   isConnected: boolean,
   isSynced: boolean,
   syncPercentage: number,
-  // localTimeDifference: ?number,
-  // isSystemTimeIgnored: boolean,
-  // isSystemTimeCorrect: boolean,
+  localTimeDifference: ?number,
+  isSystemTimeCorrect: boolean,
+  isSystemTimeIgnored: boolean,
   // isForceCheckingNodeTime: boolean,
   // latestLocalBlockTimestamp: number,
   // latestNetworkBlockTimestamp: number,
@@ -375,6 +376,7 @@ type Props = {
   onRestartNode: Function,
   onClose: Function,
   onCopyStateDirectoryPath: Function,
+  isCheckingSystemTime: boolean,
 };
 
 type State = {
@@ -444,9 +446,10 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
       content = value
         ? intl.formatMessage(messages.statusOn)
         : intl.formatMessage(messages.statusOff);
-      className = value
-        ? classNames([className, styles.green])
-        : classNames([className, styles.red]);
+      className =
+        value || (!value && messageId === 'systemTimeIgnored')
+          ? classNames([className, styles.green])
+          : classNames([className, styles.red]);
     }
     return (
       <div className={styles.layoutRow}>
@@ -470,12 +473,13 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
       // isNodeSubscribed,
       isNodeSyncing,
       isNodeInSync,
-      // isNodeTimeCorrect,
+      isNodeTimeCorrect,
       isConnected,
       isSynced,
       syncPercentage,
-      // localTimeDifference,
-      // isSystemTimeCorrect,
+      localTimeDifference,
+      isSystemTimeCorrect,
+      isSystemTimeIgnored,
       // isForceCheckingNodeTime,
       localTip,
       networkTip,
@@ -487,12 +491,12 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
       onClose,
       onCopyStateDirectoryPath,
       nodeConnectionError,
-      // isSystemTimeIgnored,
       onOpenExternalLink,
       // isDev,
       // isTestnet,
       // isStaging,
       // isMainnet,
+      isCheckingSystemTime,
     } = this.props;
 
     const {
@@ -517,16 +521,9 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
     } = coreInfo;
 
     const { isNodeRestarting } = this.state;
-    // const isNTPServiceReachable = localTimeDifference != null;
+    const isNTPServiceReachable = localTimeDifference != null;
     const connectionError = get(nodeConnectionError, 'values', '{}');
     const { message, code } = connectionError;
-
-    // const localTimeDifferenceClasses = classNames([
-    //   !isNTPServiceReachable ||
-    //   (localTimeDifference && localTimeDifference > ALLOWED_TIME_DIFFERENCE)
-    //     ? styles.red
-    //     : styles.green,
-    // ]);
 
     // const remainingUnsyncedBlocks = networkBlockHeight - localBlockHeight;
     // const remainingUnsyncedBlocksClasses = classNames([
@@ -586,9 +583,15 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
       cardanoNetworkValue += ` (${cardanoRawNetworkValue})`;
     }
 
-    // const localTimeDifferenceClasses = classNames([styles.layoutData, styles.localTimeDifferenceItem]);
-    // const isSystemTimeCorrectClasses = classNames([styles.layoutData, this.getClassName(isSystemTimeCorrect)]);
-    // const isSystemTimeIgnoredClasses = classNames([styles.layoutData, this.getClassName(!isSystemTimeIgnored)]);
+    const localTimeDifferenceClasses = isCheckingSystemTime
+      ? styles.layoutData
+      : classNames([
+          styles.layoutData,
+          !isNTPServiceReachable ||
+          (localTimeDifference && localTimeDifference > ALLOWED_TIME_DIFFERENCE)
+            ? styles.red
+            : styles.green,
+        ]);
 
     const { getSectionRow, getRow } = this;
 
@@ -743,9 +746,13 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                       : '-'}
                   </div>
                 </div>
-                <div className={styles.layoutRow}>
-                  <div className={styles.layoutHeader}>{intl.formatMessage(messages.localTimeDifference)}:</div>
-                  <div className={localTimeDifferenceClasses}>
+              */}
+              <div className={styles.layoutRow}>
+                <div className={styles.layoutHeader}>
+                  {intl.formatMessage(messages.localTimeDifference)}:
+                </div>
+                <div className={localTimeDifferenceClasses}>
+                  {/*
                     <button
                       onClick={() => this.checkTime()}
                       disabled={isForceCheckingNodeTime || !isConnected}
@@ -756,29 +763,23 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                             messages.localTimeDifferenceCheckTime
                           )}
                     </button>
+                  */}
+                  {isCheckingSystemTime ? (
+                    <span className={localTimeDifferenceClasses}>-</span>
+                  ) : (
                     <span className={localTimeDifferenceClasses}>
                       {isNTPServiceReachable
-                        ? `${localTimeDifference || 0} μs`
+                        ? `${new BigNumber(
+                            localTimeDifference || 0
+                          ).toFormat()} μs`
                         : intl.formatMessage(messages.serviceUnreachable)}
                     </span>
-                  </div>
+                  )}
                 </div>
-                <div className={styles.layoutRow}>
-                  <div className={styles.layoutHeader}>{intl.formatMessage(messages.systemTimeCorrect)}:</div>
-                  <div className={isSystemTimeCorrectClasses}>
-                    {isSystemTimeCorrect
-                      ? intl.formatMessage(messages.statusOn)
-                      : intl.formatMessage(messages.statusOff)}
-                  </div>
-                </div>
-                <div className={styles.layoutRow}>
-                  <div className={styles.layoutHeader}>{intl.formatMessage(messages.systemTimeIgnored)}:</div>
-                  <div className={isSystemTimeIgnoredClasses}>
-                    {isSystemTimeIgnored
-                      ? intl.formatMessage(messages.statusOn)
-                      : intl.formatMessage(messages.statusOff)}
-                  </div>
-                </div>
+              </div>
+              {getRow('systemTimeCorrect', isSystemTimeCorrect)}
+              {getRow('systemTimeIgnored', isSystemTimeIgnored)}
+              {/*
                 <div className={styles.layoutRow}>
                   <div className={styles.layoutHeader}>{intl.formatMessage(messages.checkingNodeTime)}:</div>
                   <div className={styles.layoutData}>
@@ -834,10 +835,8 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                 )
               )}
               {getRow('cardanoNodeResponding', isNodeResponding)}
-              {/*
-                {getRow('cardanoNodeSubscribed', isNodeSubscribed)}
-                {getRow('cardanoNodeTimeCorrect', isNodeTimeCorrect)}
-              */}
+              {/* getRow('cardanoNodeSubscribed', isNodeSubscribed) */}
+              {getRow('cardanoNodeTimeCorrect', isNodeTimeCorrect)}
               {getRow('cardanoNodeSyncing', isNodeSyncing)}
               {getRow('cardanoNodeInSync', isNodeInSync)}
             </div>
