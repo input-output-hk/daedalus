@@ -52,7 +52,7 @@ retry() {
 ### Argument processing
 ###
 fast_impure=
-verbose=true
+verbose=
 build_id=0
 test_installer=
 code_signing_config=
@@ -92,6 +92,7 @@ do case "$1" in
    shift; done
 
 set -e
+echo "${verbose}"
 if test -n "${verbose}"
 then set -x
 fi
@@ -123,6 +124,16 @@ upload_artifacts_public() {
     buildkite-agent artifact upload "$@" "${ARTIFACT_BUCKET:-}" --job "$BUILDKITE_JOB_ID"
 }
 
+function checkItnCluster() {
+  for c in $2
+  do
+    if [[ "${c}" == "${1}" ]]
+    then
+      echo 1
+    fi
+  done
+}
+
 # Build/get cardano bridge which is used by make-installer
 echo '~~~ Prebuilding cardano bridge'
 CARDANO_BRIDGE=$(nix-build --no-out-link -A daedalus-bridge --argstr nodeImplementation cardano)
@@ -143,9 +154,11 @@ pushd installers
           APP_NAME="csl-daedalus"
           rm -rf "${APP_NAME}"
 
-          if [[ "$itnClusters" == "$cluster" ]]; then
+          if [ "$(checkItnCluster "${cluster}" "${itnClusters}")" == "1" ]; then
+            echo "Cluster type: jormungandr"
             BRIDGE_FLAG="--jormungandr ${JORMUNGANDR_BRIDGE}"
           else
+            echo "Cluster type: cardano"
             BRIDGE_FLAG="--cardano ${CARDANO_BRIDGE}"
           fi
 
@@ -160,13 +173,13 @@ pushd installers
           nix-build .. -A launcherConfigs.configFiles --argstr os macos64 --argstr cluster "${cluster}" -o cfg-files
           cp -v cfg-files/* .
           chmod -R +w .
-          echo '~~~   Running make-installer in nix-shell'
+          echo '~~~~   Running make-installer in nix-shell'
           $nix_shell ../shell.nix -A buildShell --run "${INSTALLER_CMD[*]}"
 
           if [ -d ${APP_NAME} ]; then
                   if [ -n "${BUILDKITE_JOB_ID:-}" ]
                   then
-                          echo "~~~   Uploading the installer package.."
+                          echo "~~~~   Uploading the installer package.."
                           export PATH=${BUILDKITE_BIN_PATH:-}:$PATH
                           upload_artifacts_public "${APP_NAME}/*"
                           mv "launcher-config.yaml" "launcher-config-${cluster}.macos64.yaml"
