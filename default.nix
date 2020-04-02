@@ -52,6 +52,21 @@ let
     export-wallets = self.cardano-sl.nix-tools.cexes.cardano-wallet.export-wallets;
     db-converter = self.cardano-wallet.db-converter;
 
+    nodejs = pkgs.nodejs-12_x;
+    yarnInfo = {
+      version = "1.22.4";
+      hash = "1l3sv30g61dcn7ls213prcja2y3dqdi5apq9r7yyick295w25npq";
+    };
+    yarn = (pkgs.yarn.override { inherit (self) nodejs; }).overrideAttrs (old: {
+      version = self.yarnInfo.version;
+      src = pkgs.fetchFromGitHub {
+        owner = "yarnpkg";
+        repo = "yarn";
+        rev = "v${self.yarnInfo.version}";
+        sha256 = self.yarnInfo.hash;
+      };
+    });
+
     sources = localLib.sources;
     bridgeTable = {
       jormungandr = self.callPackage ./nix/jormungandr-bridge.nix {};

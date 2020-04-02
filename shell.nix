@@ -14,13 +14,11 @@
 let
   daedalusPkgs = import ./. { inherit nodeImplementation cluster; target = system; devShell = true; };
   hostPkgs = import pkgs.path { config = {}; overlays = []; };
-  nodejs = pkgs.nodejs-12_x;
-  yarn = pkgs.yarn.override { inherit nodejs; };
   fullExtraArgs = walletExtraArgs ++ pkgs.lib.optional allowFaultInjection "--allow-fault-injection";
   launcherConfig' = "${daedalusPkgs.daedalus.cfg}/etc/launcher-config.yaml";
   fixYarnLock = pkgs.stdenv.mkDerivation {
     name = "fix-yarn-lock";
-    buildInputs = [ nodejs yarn pkgs.git ];
+    buildInputs = [ daedalusPkgs.nodejs daedalusPkgs.yarn pkgs.git ];
     shellHook = ''
       git diff > pre-yarn.diff
       yarn
@@ -39,7 +37,8 @@ let
   # This has all the dependencies of daedalusShell, but no shellHook allowing hydra
   # to evaluate it.
   daedalusShellBuildInputs = [
-      nodejs yarn
+      daedalusPkgs.nodejs
+      daedalusPkgs.yarn
       daedalusPkgs.daedalus-bridge
       daedalusPkgs.daedalus-installer
     ] ++ (with pkgs; [
@@ -99,7 +98,7 @@ let
         source <(cardano-node --bash-completion-script `type -p cardano-node`)
       ''}
 
-      export NIX_CFLAGS_COMPILE="$NIX_CFLAGS_COMPILE -I${nodejs}/include/node"
+      export NIX_CFLAGS_COMPILE="$NIX_CFLAGS_COMPILE -I${daedalusPkgs.nodejs}/include/node"
       ${localLib.optionalString purgeNpmCache ''
         warn "purging all NPM/Yarn caches"
         rm -rf node_modules
