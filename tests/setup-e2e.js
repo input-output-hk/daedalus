@@ -101,9 +101,9 @@ Before(async function(testCase) {
   // Check if ITN set globally
   const isIncentivizedTestnet = await context.app.client.execute(() => global.isIncentivizedTestnet);
   // Skip all Byron related tests or Shelley WIP
-  if (isIncentivizedTestnet.value && (isByronTest && !isShelleyTest) || isShelleyTestWip) return 'skipped';
+  if (isIncentivizedTestnet.value && ((isByronTest && !isShelleyTest) || isShelleyTestWip)) return 'skipped';
   // Skip all Shelley related tests or Byron WIP
-  if (!isIncentivizedTestnet.value && (isShelleyTest && !isByronTest) || isByronTestWip) return 'skipped';
+  if (!isIncentivizedTestnet.value && ((isShelleyTest && !isByronTest) || isByronTestWip)) return 'skipped';
   if (isGlobalWip) return 'skipped';
 });
 
@@ -128,7 +128,6 @@ Before({ tags: '@e2e', timeout: DEFAULT_TIMEOUT * 2 }, async function(testCase) 
     const resetBackend = () => {
       if (daedalus.stores.networkStatus.isConnected) {
         daedalus.api.ada.resetTestOverrides();
-        daedalus.stores.wallets.refreshWalletsData()
         daedalus.api.ada
           .testReset()
           .then(daedalus.api.localStorage.reset)

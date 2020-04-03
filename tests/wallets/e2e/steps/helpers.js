@@ -345,7 +345,6 @@ const createWalletsAsync = async function(table, isLegacy?: boolean) {
     result.value.mnemonics,
     this.mnemonics,
   );
-
 };
 
 export const getCurrentAppRoute = async function() {

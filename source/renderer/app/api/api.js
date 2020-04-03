@@ -576,7 +576,7 @@ export default class AdaApi {
     try {
       const { walletId, isLegacy } = request;
       let response;
-      if (isLegacy && !isIncentivizedTestnet) {
+      if (isLegacy) {
         response = await deleteLegacyWallet(this.config, { walletId });
       } else {
         response = await deleteWallet(this.config, { walletId });
@@ -1569,20 +1569,13 @@ export default class AdaApi {
   testReset = async (): Promise<void> => {
     logger.debug('AdaApi::testReset called');
     try {
-      if (isIncentivizedTestnet) {
-        const wallets: AdaWallets = await getWallets(this.config);
-        await Promise.all(
-          wallets.map(wallet =>
-            deleteWallet(this.config, { walletId: wallet.id })
-          )
-        );
-      }
-      const legacyWallets: LegacyAdaWallets = await getLegacyWallets(
-        this.config
-      );
+      const wallets = await this.getWallets();
       await Promise.all(
-        legacyWallets.map(wallet =>
-          deleteLegacyWallet(this.config, { walletId: wallet.id })
+        wallets.map(wallet =>
+          this.deleteWallet({
+            walletId: wallet.id,
+            isLegacy: wallet.isLegacy,
+          })
         )
       );
       logger.debug('AdaApi::testReset success');
