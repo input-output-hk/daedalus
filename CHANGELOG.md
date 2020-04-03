@@ -9,6 +9,7 @@ Changelog
 
 ### Chores
 
+- Removed counter from Alert dialog if we have only one newsfeed alert to show ([PR 1949](https://github.com/input-output-hk/daedalus/pull/1949))
 - Integrated react-polymorph ScrollBar CSS vars into each theme ([PR 1827](https://github.com/input-output-hk/daedalus/pull/1827))
 - Implemented generation of an Byron wallet address after creating a Byron wallet ([PR 1943](https://github.com/input-output-hk/daedalus/pull/1943))
 - Disabled "Force resync" feature for Byron wallets ([PR 1946](https://github.com/input-output-hk/daedalus/pull/1946))
