@@ -140,10 +140,10 @@ export default class InlineEditingInput extends Component<Props, State> {
       className,
       inputFieldLabel,
       isActive,
-      successfullyUpdated,
       inputBlocked,
       maxLength,
     } = this.props;
+    let { successfullyUpdated } = this.props;
     const { intl } = this.context;
     const inputField = validator.$('inputField');
     const componentStyles = classnames([
@@ -155,6 +155,10 @@ export default class InlineEditingInput extends Component<Props, State> {
       successfullyUpdated ? 'input_animateSuccess' : null,
       isActive ? null : 'input_cursorPointer',
     ]);
+
+    if (isActive || inputBlocked) {
+      successfullyUpdated = false;
+    }
 
     return (
       <div
