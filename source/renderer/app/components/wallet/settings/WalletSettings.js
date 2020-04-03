@@ -300,12 +300,14 @@ export default class WalletSettings extends Component<Props, State> {
             />
           )}
 
-          <div className={styles.resyncWalletBox}>
-            <ResyncWallet
-              isForcedWalletResyncStarting={isForcedWalletResyncStarting}
-              onResyncWallet={onResyncWallet}
-            />
-          </div>
+          {isIncentivizedTestnet && (
+            <div className={styles.resyncWalletBox}>
+              <ResyncWallet
+                isForcedWalletResyncStarting={isForcedWalletResyncStarting}
+                onResyncWallet={onResyncWallet}
+              />
+            </div>
+          )}
 
           {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
         </BorderedBox>

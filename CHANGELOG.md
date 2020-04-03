@@ -3,10 +3,15 @@ Changelog
 
 ## vNext
 
+### Fixes
+
+- Fixed the `EPERM` errors thrown in the console upon changing wallet name on the "Wallet Settings" screen ([PR 1944](https://github.com/input-output-hk/daedalus/pull/1944))
+
 ### Chores
 
 - Integrated react-polymorph ScrollBar CSS vars into each theme ([PR 1827](https://github.com/input-output-hk/daedalus/pull/1827))
 - Implemented generation of an Byron wallet address after creating a Byron wallet ([PR 1943](https://github.com/input-output-hk/daedalus/pull/1943))
+- Disabled "Force resync" feature for Byron wallets ([PR 1946](https://github.com/input-output-hk/daedalus/pull/1946))
 
 ## 1.0.0-FC1
 
