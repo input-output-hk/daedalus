@@ -173,13 +173,13 @@ pushd installers
           nix-build .. -A launcherConfigs.configFiles --argstr os macos64 --argstr cluster "${cluster}" -o cfg-files
           cp -v cfg-files/* .
           chmod -R +w .
-          echo '~~~~   Running make-installer in nix-shell'
+          echo 'Running make-installer in nix-shell'
           $nix_shell ../shell.nix -A buildShell --run "${INSTALLER_CMD[*]}"
 
           if [ -d ${APP_NAME} ]; then
                   if [ -n "${BUILDKITE_JOB_ID:-}" ]
                   then
-                          echo "~~~~   Uploading the installer package.."
+                          echo "Uploading the installer package.."
                           export PATH=${BUILDKITE_BIN_PATH:-}:$PATH
                           upload_artifacts_public "${APP_NAME}/*"
                           mv "launcher-config.yaml" "launcher-config-${cluster}.macos64.yaml"

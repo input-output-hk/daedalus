@@ -224,9 +224,9 @@ buildElectronApp darwinConfig@DarwinConfig{dcAppName, dcAppNameApp} installerCon
 npmPackage :: DarwinConfig -> Shell ()
 npmPackage DarwinConfig{dcAppName} = do
   mktree "release"
-  echo "~~~~~     Installing nodejs dependencies..."
+  echo "Installing nodejs dependencies..."
   procs "yarn" ["install"] empty
-  echo "~~~~~     Running electron packager script..."
+  echo "Running electron packager script..."
   export "NODE_ENV" "production"
   procs "yarn" ["run", "package", "--", "--name", dcAppName ] empty
   size <- inproc "du" ["-sh", "release"] empty
@@ -242,7 +242,7 @@ makeComponentRoot Options{oBackend,oCluster} appRoot darwinConfig@DarwinConfig{d
       dataDir = appRoot </> "Contents/Resources"
       maybeCopyToResources (maybePath,name) = maybe (pure ()) (\path -> cp (fromText path) (dataDir </> name)) maybePath
 
-  echo "~~~~~     Preparing files ..."
+  echo "Preparing files ..."
   let
     common :: FilePath -> IO ()
     common bridge = do
@@ -317,7 +317,7 @@ makeComponentRoot Options{oBackend,oCluster} appRoot darwinConfig@DarwinConfig{d
 
 makeInstaller :: Options -> DarwinConfig -> FilePath -> FilePath -> IO FilePath
 makeInstaller opts@Options{oOutputDir} darwinConfig@DarwinConfig{dcPkgName} componentRoot pkg = do
-  echo "~~~~~     Making installer ..."
+  echo "Making installer ..."
   let tempPkg1 = format fp (oOutputDir </> pkg)
       tempPkg2 = oOutputDir </> (dropExtension pkg <.> "unsigned" <.> "pkg")
 
