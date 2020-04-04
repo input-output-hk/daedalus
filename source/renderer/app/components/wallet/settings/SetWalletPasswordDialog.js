@@ -7,15 +7,16 @@ import insecureWalletIcon from '../../../assets/images/insecure-wallet.png';
 import styles from './SetWalletPasswordDialog.scss';
 
 const messages = defineMessages({
-  setPasswordButtonLabel: {
-    id: 'wallet.settings.setWalletPassword.dialog.setPassword',
+  setPasswordButton: {
+    id: 'wallet.settings.setWalletPassword.dialog.setPasswordButton',
     defaultMessage: '!!!Set a password',
     description:
       'Label for the "Set a password" button in the set wallet password dialog.',
   },
   setPasswordMessage: {
     id: 'wallet.settings.setWalletPassword.dialog.setPasswordMessage',
-    defaultMessage: '!!!Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+    defaultMessage:
+      '!!!Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
     description:
       'Message for the "Set a password" button in the set wallet password dialog.',
   },
@@ -42,7 +43,7 @@ export default class SetWalletPasswordDialog extends Component<Props> {
 
     const actions = [
       {
-        label: intl.formatMessage(messages.setPasswordButtonLabel),
+        label: intl.formatMessage(messages.setPasswordButton),
         onClick: this.props.onConfirm(),
         primary: true,
         className: styles.setPasswordButton,
@@ -50,10 +51,7 @@ export default class SetWalletPasswordDialog extends Component<Props> {
     ];
 
     return (
-      <Dialog
-        actions={actions}
-        className={styles.setPasswordDialog}
-      >
+      <Dialog actions={actions} className={styles.setPasswordDialog}>
         <div className={styles.setPasswordWrapper}>
           <img
             src={insecureWalletIcon}

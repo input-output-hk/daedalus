@@ -4,7 +4,7 @@ import { inject, observer } from 'mobx-react';
 import SetWalletPasswordDialog from '../../../../components/wallet/settings/SetWalletPasswordDialog';
 import type { StoresMap } from '../../../../stores/index';
 import type { ActionsMap } from '../../../../actions/index';
-import ChangeSpendingPasswordDialog from "../../../../components/wallet/settings/ChangeSpendingPasswordDialog";
+import ChangeSpendingPasswordDialog from '../../../../components/wallet/settings/ChangeSpendingPasswordDialog';
 
 type Props = {
   stores: any | StoresMap,
@@ -35,7 +35,7 @@ export default class SetWalletPasswordDialogContainer extends Component<Props> {
           actions.dialogs.closeActiveDialog.trigger();
           actions.dialogs.open.trigger({
             dialog: ChangeSpendingPasswordDialog,
-          })
+          });
         }}
       />
     );
