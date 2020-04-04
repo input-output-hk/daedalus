@@ -36,6 +36,8 @@ import { logUsedVersion } from './utils/logUsedVersion';
 import { setStateSnapshotLogChannel } from './ipc/set-log-state-snapshot';
 import { generateWalletMigrationReportChannel } from './ipc/generateWalletMigrationReportChannel';
 
+import './preload-electron-resources';
+
 /* eslint-disable consistent-return */
 
 // Global references to windows to prevent them from being garbage collected
