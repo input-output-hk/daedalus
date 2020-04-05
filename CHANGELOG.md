@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## vNext
+
+### Chores
+
+- Refactored and improved automated tests setup ([PR 1912](https://github.com/input-output-hk/daedalus/pull/1912))
+
 ## 1.0.0-FC2
 
 ### Fixes
