@@ -1,5 +1,6 @@
 // @flow
 import { observable, action, computed, runInAction } from 'mobx';
+import moment from 'moment';
 import { isEqual, includes } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
@@ -7,6 +8,7 @@ import {
   ALLOWED_TIME_DIFFERENCE,
   NETWORK_STATUS_POLL_INTERVAL,
   NETWORK_CLOCK_POLL_INTERVAL,
+  MAX_ALLOWED_STALL_DURATION,
 } from '../config/timingConfig';
 import { logger } from '../utils/logging';
 import {
@@ -74,12 +76,13 @@ export default class NetworkStatusStore extends Store {
   @observable cardanoNodeID: number = 0;
   @observable isNodeResponding = false; // Is 'true' as long we are receiving node Api responses
   @observable isNodeSyncing = false; // Is 'true' in case we are receiving blocks and not stalling
-  @observable isNodeInSync = false; // 'true' if syncing & local/network blocks diff within limit
-  @observable isNodeStopping = false; // 'true' if node is in `NODE_STOPPING_STATES` states
-  @observable isNodeStopped = false; // 'true' if node is in `NODE_STOPPED_STATES` states
+  @observable isNodeInSync = false; // Is 'true' if syncing & local/network blocks diff within limit
+  @observable isNodeStopping = false; // Is 'true' if node is in `NODE_STOPPING_STATES` states
+  @observable isNodeStopped = false; // Is 'true' if node is in `NODE_STOPPED_STATES` states
   @observable isNodeTimeCorrect = true; // Is 'true' in case local and global time are in sync
   @observable isSystemTimeIgnored = false; // Tracks if NTP time checks are ignored
   @observable isSplashShown = isIncentivizedTestnet || isFlight; // Visibility of splash screen
+  @observable isSyncProgressStalling = false; // Is 'true' in case sync progress doesn't change within limit
 
   @observable hasBeenConnected = false;
   @observable syncProgress = null;
@@ -87,6 +90,7 @@ export default class NetworkStatusStore extends Store {
   @observable networkTip: ?TipInfo = null;
   @observable nextEpoch: ?NextEpoch = null;
   @observable futureEpoch: ?FutureEpoch = null;
+  @observable lastSyncProgressChangeTimestamp = 0; // milliseconds
   @observable localTimeDifference: ?number = 0; // microseconds
   @observable
   getNetworkInfoRequest: Request<GetNetworkInfoResponse> = new Request(
@@ -352,7 +356,12 @@ export default class NetworkStatusStore extends Store {
 
   @action _updateNetworkClock = async () => {
     // Skip checking network clock if we are not connected
-    if (!this.isNodeResponding || this.isSystemTimeIgnored) return;
+    if (
+      !this.isNodeResponding ||
+      this.isSystemTimeIgnored ||
+      this.getNetworkClockRequest.isExecuting
+    )
+      return;
     logger.info('NetworkStatusStore: Checking network clock...');
     try {
       const networkClock: GetNetworkClockResponse = await this.getNetworkClockRequest.execute()
@@ -429,16 +438,35 @@ export default class NetworkStatusStore extends Store {
       }
 
       // Update sync progress
+      const lastSyncProgress = this.syncProgress;
       runInAction('update syncProgress', () => {
         this.syncProgress = syncProgress;
       });
 
-      runInAction('update isNodeSyncing', () => {
-        this.isNodeSyncing = true;
-      });
-
       runInAction('update isNodeInSync', () => {
         this.isNodeInSync = this.syncProgress === 100;
+      });
+
+      runInAction('update isSyncProgressStalling', () => {
+        // Check if sync progress is stalling
+        const hasSyncProgressChanged = this.syncProgress !== lastSyncProgress;
+        if (
+          this.isNodeInSync || // Update last sync progress change timestamp if node is in sync
+          hasSyncProgressChanged || // Sync progress change detected
+          this.lastSyncProgressChangeTimestamp > Date.now() || // Guard against future timestamps / incorrect system time
+          (!this.isNodeTimeCorrect && !this.isSystemTimeIgnored)
+        ) {
+          this.lastSyncProgressChangeTimestamp = Date.now(); // Record last sync progress change timestamp
+        }
+        const lastSyncProgressChangeStall = moment(Date.now()).diff(
+          moment(this.lastSyncProgressChangeTimestamp)
+        );
+        this.isSyncProgressStalling =
+          lastSyncProgressChangeStall > MAX_ALLOWED_STALL_DURATION;
+      });
+
+      runInAction('update isNodeSyncing', () => {
+        this.isNodeSyncing = !this.isSyncProgressStalling;
       });
 
       if (this._networkStatus === NETWORK_STATUS.SYNCING && this.isNodeInSync) {

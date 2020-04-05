@@ -2,6 +2,9 @@
 const { isTest, isIncentivizedTestnet } = global.environment;
 
 // All configuration values for timeouts / intervals should go here
+export const MAX_ALLOWED_STALL_DURATION = isTest
+  ? 12 * 1000 // 12 seconds (isTest = true) | unit: milliseconds
+  : (isIncentivizedTestnet ? 10 : 5) * 60 * 1000; // 5 minutes / 10 minutes (isIncentivizedTestnet = true) | unit: milliseconds
 export const REPORT_ISSUE_TIME_TRIGGER = isTest
   ? 12 // 12 seconds (isTest = true) | unit: seconds
   : (isIncentivizedTestnet ? 10 : 5) * 60; // 5 minutes / 10 minutes (isIncentivizedTestnet = true) | unit: seconds

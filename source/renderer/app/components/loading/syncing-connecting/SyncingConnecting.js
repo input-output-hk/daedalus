@@ -33,6 +33,7 @@ type Props = {
   isSynced: boolean,
   isConnecting: boolean,
   isSyncing: boolean,
+  isSyncProgressStalling: boolean,
   isLoadingWallets: boolean,
   isNodeStopping: boolean,
   isNodeStopped: boolean,
@@ -80,6 +81,7 @@ export default class SyncingConnecting extends Component<Props, State> {
     const {
       isConnected,
       isSynced,
+      isSyncProgressStalling,
       onGetAvailableVersions,
       isNewAppVersionLoading,
       isNewAppVersionLoaded,
@@ -95,6 +97,7 @@ export default class SyncingConnecting extends Component<Props, State> {
       this._resetConnectingTime();
     }
     const isAppLoadingStuck =
+      isSyncProgressStalling ||
       (!isConnected && connectingTime >= REPORT_ISSUE_TIME_TRIGGER) ||
       (isConnected && !isSynced && syncingTime >= REPORT_ISSUE_TIME_TRIGGER);
     // If app loading is stuck, check if a newer version is available and set flag (state)
@@ -179,6 +182,7 @@ export default class SyncingConnecting extends Component<Props, State> {
       isFlight,
       isConnected,
       isSynced,
+      isSyncProgressStalling,
       cardanoNodeState,
       isNewAppVersionLoaded,
       isNewAppVersionAvailable,
@@ -188,6 +192,7 @@ export default class SyncingConnecting extends Component<Props, State> {
     } = this.props;
     const { connectingTime, syncingTime } = this.state;
     const canReportConnectingIssue =
+      isSyncProgressStalling ||
       forceConnectivityIssue ||
       (!isConnected &&
         (connectingTime >= REPORT_ISSUE_TIME_TRIGGER ||
