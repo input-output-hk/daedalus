@@ -5,6 +5,7 @@ Changelog
 
 ### Fixes
 
+- Updated `cardano-wallet` to revision which includes a fix for hardened indexes in addresses ([PR 1948](https://github.com/input-output-hk/daedalus/pull/1948))
 - Fixed the `EPERM` errors thrown in the console upon changing wallet name on the "Wallet Settings" screen ([PR 1944](https://github.com/input-output-hk/daedalus/pull/1944))
 
 ### Chores
