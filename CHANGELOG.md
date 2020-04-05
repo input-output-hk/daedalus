@@ -7,6 +7,10 @@ Changelog
 
 - Integrated the recovery phrase verification and re-enabled "Recovery phrase verification" feature ([PR 1929](https://github.com/input-output-hk/daedalus/pull/1929))
 
+### Fixes
+
+- Fixed "Restoration" dialog validation ([PR 1951](https://github.com/input-output-hk/daedalus/pull/1951))
+
 ## 1.0.0-FC2
 
 ### Fixes
