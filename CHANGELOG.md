@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## vNext
+## 1.0.0-FC2
 
 ### Fixes
 
