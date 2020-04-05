@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## vNext
+
+### Chores
+
+- Implemented Storybook improvements ([PR 1783](https://github.com/input-output-hk/daedalus/pull/1783))
+
 ## 1.0.0-FC2
 
 ### Fixes
