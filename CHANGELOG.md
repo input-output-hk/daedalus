@@ -3,6 +3,10 @@ Changelog
 
 ## vNext
 
+### Fixes
+
+- Fixed "Restoration" dialog validation ([PR 1951](https://github.com/input-output-hk/daedalus/pull/1951))
+
 ## Chores
 
 - Updated `Electron` and it's related dependencies ([PR 1887](https://github.com/input-output-hk/daedalus/pull/1887))
