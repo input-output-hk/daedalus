@@ -1,5 +1,6 @@
 // @flow
 import humanizeDuration from 'humanize-duration';
+import { get } from 'lodash';
 import { humanizedDurationLanguages } from '../../../common/types/locales.types';
 
 const generalConfig = {
@@ -31,7 +32,11 @@ export default (
   currentLocale: string,
   configOverride?: Object = {}
 ) => {
-  const localeConfig = localeConfigs[currentLocale];
+  const customLocaleConfig = get(configOverride, [
+    'localeConfig',
+    currentLocale,
+  ]);
+  const localeConfig = customLocaleConfig || localeConfigs[currentLocale];
   const language = humanizedDurationLanguages[currentLocale];
   const config = {
     ...generalConfig,

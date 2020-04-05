@@ -8,6 +8,7 @@ import { AddressGroup } from 'cardano-js/dist/Address/AddressGroup';
 import { ChainSettings } from 'cardano-js/dist/ChainSettings';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
+import ChangeSpendingPasswordDialog from '../components/wallet/settings/ChangeSpendingPasswordDialog';
 import Wallet, { WalletSyncStateStatuses } from '../domains/Wallet';
 import WalletAddress from '../domains/WalletAddress';
 import { WalletTransaction } from '../domains/WalletTransaction';
@@ -486,6 +487,7 @@ export default class WalletsStore extends Store {
       await this._patchWalletRequestWithNewWallet(wallet);
       this.actions.dialogs.closeActiveDialog.trigger();
       this.goToWalletRoute(wallet.id);
+      this.refreshWalletsData();
     }
   };
 
@@ -834,6 +836,14 @@ export default class WalletsStore extends Store {
   // ACTIONS
 
   goToWalletRoute(walletId: string) {
+    // Force setting spending password if wallet doesn't have one set
+    const wallet = this.getWalletById(walletId);
+    if (wallet && !wallet.hasPassword) {
+      this.actions.dialogs.open.trigger({
+        dialog: ChangeSpendingPasswordDialog,
+      });
+    }
+
     const route = this.getWalletRoute(walletId);
     this.actions.router.goToRoute.trigger({ route });
   }

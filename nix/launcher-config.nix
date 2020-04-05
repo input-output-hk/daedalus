@@ -157,14 +157,15 @@ let
     '';
 
   mkConfigByron = let
+    filterMonitoring = config: if devShell then config else builtins.removeAttrs config [ "hasPrometheus" "hasEKG" ];
     exportWalletsBin = mkBinPath "export-wallets";
     dbConverterBin = mkBinPath "db-converter";
     walletBin = mkBinPath "cardano-wallet-byron";
     nodeBin = mkBinPath "cardano-node";
     cliBin = mkBinPath "cardano-cli";
-    nodeConfig = builtins.toJSON (envCfg.nodeConfig // (lib.optionalAttrs (!isDevOrLinux) {
+    nodeConfig = builtins.toJSON (filterMonitoring (envCfg.nodeConfig // (lib.optionalAttrs (!isDevOrLinux) {
       GenesisFile = "genesis.json";
-    }));
+    })));
     genesisFile = if (network == "selfnode") then ../utils/cardano/selfnode/genesis.json else envCfg.genesisFile;
     topologyFile = if network == "selfnode" then envCfg.topology else cardanoLib.mkEdgeTopology {
       inherit (envCfg) edgePort;
@@ -240,6 +241,7 @@ let
       macPackageName = "Daedalus${network}";
       dataDir = dataDir;
       hasBlock0 = false;
+      installerWinBinaries = [ "cardano-launcher.exe" "cardano-node.exe" "cardano-wallet-byron.exe" "export-wallets.exe" "db-converter.exe" "cardano-cli.exe" ];
     };
 
   in {
@@ -299,6 +301,7 @@ let
     installerConfig = {
       installDirectory = if os == "linux" then "Daedalus/${network}" else spacedName;
       inherit spacedName iconPath dataDir hasBlock0;
+      installerWinBinaries = [ "cardano-launcher.exe" "jormungandr.exe" "cardano-wallet-jormungandr.exe" ];
       macPackageName = "Daedalus${network}";
       configPath = "${nodeConfigFiles}/config.yaml";
     } // (lib.optionalAttrs hasBlock0 {

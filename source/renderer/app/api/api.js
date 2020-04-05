@@ -546,6 +546,15 @@ export default class AdaApi {
           { walletInitData },
           'random'
         );
+
+        // Genearte address for the newly created Byron wallet
+        const { id: walletId } = legacyWallet;
+        const address: Address = await createByronWalletAddress(this.config, {
+          passphrase: spendingPassword,
+          walletId,
+        });
+        logger.debug('AdaApi::createAddress (Byron) success', { address });
+
         const extraLegacyWalletProps = {
           address_pool_gap: 0, // Not needed for legacy wallets
           delegation: {
@@ -756,7 +765,12 @@ export default class AdaApi {
       return _createAddressFromServerData(address);
     } catch (error) {
       logger.error('AdaApi::createAddress error', { error });
-      if (error.message === 'CannotCreateAddress') {
+      const errorCode = get(error, 'code', '');
+      if (
+        errorCode === 'wrong_encryption_passphrase' ||
+        (errorCode === 'bad_request' &&
+          error.message.includes('passphrase is too short'))
+      ) {
         throw new IncorrectSpendingPasswordError();
       }
       throw new GenericApiError(error);
@@ -1624,8 +1638,10 @@ export default class AdaApi {
       };
     } catch (error) {
       logger.error('AdaApi::getNetworkInfo error', { error });
-      // @API TODO - Inspect this implementation once TLS support is implemented on the BE
-      if (error.code === TlsCertificateNotValidError.API_ERROR) {
+      if (
+        error.code === TlsCertificateNotValidError.API_ERROR ||
+        error.code === 'EPROTO'
+      ) {
         throw new TlsCertificateNotValidError();
       }
       throw new GenericApiError(error);
@@ -1635,18 +1651,14 @@ export default class AdaApi {
   getNetworkClock = async (): Promise<GetNetworkClockResponse> => {
     logger.debug('AdaApi::getNetworkClock called');
     try {
-      // @API TODO - Once api works on windows environment also, this should be removed
-      const { isWindows } = global.environment;
-      if (isWindows || isIncentivizedTestnet) {
-        return { status: 'unavailable' };
-      }
-
       const networkClock: NetworkClockResponse = await getNetworkClock(
         this.config
       );
       logger.debug('AdaApi::getNetworkClock success', { networkClock });
-
-      return networkClock;
+      return {
+        status: networkClock.status,
+        offset: get(networkClock, 'offset.quantity', null),
+      };
     } catch (error) {
       logger.error('AdaApi::getNetworkClock error', { error });
       throw new GenericApiError(error);
