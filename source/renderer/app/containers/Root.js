@@ -18,7 +18,7 @@ export default class Root extends Component<Props> {
     const { isProfilePage, isSettingsPage } = profile;
     const { hasLoadedWallets } = wallets;
     const {
-      isSynced,
+      isConnected,
       isNodeStopping,
       isNodeStopped,
       isNotEnoughDiskSpace,
@@ -27,7 +27,7 @@ export default class Root extends Component<Props> {
     const { isCurrentLocaleSet, areTermsOfUseAccepted } = profile;
 
     const isPageThatDoesntNeedWallets =
-      (isStakingPage || isSettingsPage) && hasLoadedWallets && isSynced;
+      (isStakingPage || isSettingsPage) && hasLoadedWallets && isConnected;
 
     // In case node is in stopping sequence we must show the "Connecting" screen
     // with the "Stopping Cardano node..." and "Cardano node stopped" messages
@@ -51,7 +51,7 @@ export default class Root extends Component<Props> {
       return React.Children.only(children);
     }
 
-    if (!isSynced || !hasLoadedWallets || isNotEnoughDiskSpace) {
+    if (!isConnected || !hasLoadedWallets || isNotEnoughDiskSpace) {
       return <LoadingPage stores={stores} actions={actions} />;
     }
 

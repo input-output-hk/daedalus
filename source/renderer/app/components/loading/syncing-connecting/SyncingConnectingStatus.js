@@ -79,6 +79,7 @@ type Props = {
   isTlsCertInvalid: boolean,
   isConnected: boolean,
   isSynced: boolean,
+  isLoadingWallets: boolean,
   isNodeStopping: boolean,
   isNodeStopped: boolean,
   syncPercentage: number,
@@ -96,9 +97,10 @@ export default class SyncingConnectingStatus extends Component<Props> {
       isTlsCertInvalid,
       isConnected,
       isSynced,
+      isLoadingWallets,
     } = this.props;
     if (isConnected) {
-      if (isSynced) return messages.loadingWalletData;
+      if (isLoadingWallets || isSynced) return messages.loadingWalletData;
       return messages.syncing;
     }
     let connectingMessage;
@@ -147,6 +149,7 @@ export default class SyncingConnectingStatus extends Component<Props> {
     const {
       isConnected,
       isSynced,
+      isLoadingWallets,
       isNodeStopping,
       isNodeStopped,
       isTlsCertInvalid,
@@ -170,7 +173,9 @@ export default class SyncingConnectingStatus extends Component<Props> {
     ]);
 
     const syncPercentageDisplay =
-      isConnected && !isSynced ? `${syncPercentage.toFixed(2)}%` : null;
+      isConnected && !isSynced && !isLoadingWallets
+        ? `${syncPercentage.toFixed(2)}%`
+        : null;
 
     return (
       <div className={componentStyles}>

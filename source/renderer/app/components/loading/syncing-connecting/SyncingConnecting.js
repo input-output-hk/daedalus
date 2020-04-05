@@ -33,6 +33,7 @@ type Props = {
   isSynced: boolean,
   isConnecting: boolean,
   isSyncing: boolean,
+  isLoadingWallets: boolean,
   isNodeStopping: boolean,
   isNodeStopped: boolean,
   isTlsCertInvalid: boolean,
@@ -213,6 +214,7 @@ export default class SyncingConnecting extends Component<Props, State> {
       isSynced,
       isConnecting,
       isSyncing,
+      isLoadingWallets,
       hasLoadedCurrentLocale,
       hasLoadedCurrentTheme,
       hasUnreadNews,
@@ -278,6 +280,7 @@ export default class SyncingConnecting extends Component<Props, State> {
           isTlsCertInvalid={isTlsCertInvalid}
           isConnected={isConnected}
           isSynced={isSynced}
+          isLoadingWallets={isLoadingWallets}
           isNodeStopping={isNodeStopping}
           isNodeStopped={isNodeStopped}
           syncPercentage={syncPercentage}

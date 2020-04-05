@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## vNext
+
+### Features
+
+- Removed "Syncing" screen ([PR 1952](https://github.com/input-output-hk/daedalus/pull/1952))
+
 ## 1.0.0-FC2
 
 ### Fixes
