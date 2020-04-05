@@ -108,13 +108,13 @@ export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
           const configFileDestPath = path.join(stateDir, 'config.yaml');
           const configFileSourcePath = nodeConfig.network.configFile;
           if (configFileDestPath !== configFileSourcePath) {
-            logger.error(`Copying ${cluster} config file...`, {
+            logger.info(`Copying ${cluster} config file...`, {
               configFileSourcePath,
               configFileDestPath,
             });
             await fs.copy(configFileSourcePath, configFileDestPath);
             nodeConfig.network.configFile = configFileDestPath;
-            logger.error(`Copied ${cluster} config file`, {
+            logger.info(`Copied ${cluster} config file`, {
               configFileDestPath,
             });
           }
@@ -125,13 +125,13 @@ export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
           const genesisFileDestPath = path.join(stateDir, 'genesis.json');
           const genesisFileSourcePath = nodeConfig.network.genesisFile;
           if (genesisFileDestPath !== genesisFileSourcePath) {
-            logger.error(`Copying ${cluster} genesis file...`, {
+            logger.info(`Copying ${cluster} genesis file...`, {
               genesisFileSourcePath,
               genesisFileDestPath,
             });
             await fs.copy(genesisFileSourcePath, genesisFileDestPath);
             nodeConfig.network.genesisFile = genesisFileDestPath;
-            logger.error(`Copied ${cluster} genesis file`, {
+            logger.info(`Copied ${cluster} genesis file`, {
               genesisFileDestPath,
             });
           }
