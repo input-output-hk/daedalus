@@ -86,7 +86,7 @@ export default class AlertsOverlay extends Component<Props, State> {
 
   renderCounter = (alerts: Array<News.News>) => {
     const { allAlertsCount, hideCounter } = this.props;
-    if (!hideCounter) {
+    if (!hideCounter && allAlertsCount > 1) {
       return (
         <span className={styles.counter}>
           {allAlertsCount - alerts.length + 1} / {allAlertsCount}

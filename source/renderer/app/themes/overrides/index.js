@@ -5,6 +5,7 @@ import CheckboxOverrides from './CheckboxOverrides.scss';
 import LinkOverrides from './LinkOverrides.scss';
 import ModalOverrides from './ModalOverrides.scss';
 import RadioOverrides from './RadioOverrides.scss';
+import ScrollbarOverrides from './ScrollbarOverrides.scss';
 import StepperOverrides from './StepperOverrides.scss';
 import SwitchOverrides from './SwitchOverrides.scss';
 import SelectOverrides from './SelectOverrides.scss';
@@ -21,6 +22,7 @@ const {
   SELECT,
   OPTIONS,
   RADIO,
+  SCROLLBAR,
   STEPPER,
   TOOLTIP,
 } = IDENTIFIERS;
@@ -32,6 +34,7 @@ export const themeOverrides = {
   [LINK]: LinkOverrides,
   [MODAL]: ModalOverrides,
   [RADIO]: RadioOverrides,
+  [SCROLLBAR]: ScrollbarOverrides,
   [STEPPER]: StepperOverrides,
   [SWITCH]: SwitchOverrides,
   [SELECT]: SelectOverrides,
