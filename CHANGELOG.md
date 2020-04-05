@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## vNext
+
+### Features
+
+- Integrated the recovery phrase verification and re-enabled "Recovery phrase verification" feature ([PR 1929](https://github.com/input-output-hk/daedalus/pull/1929))
+
 ## 1.0.0-FC2
 
 ### Fixes
@@ -18,7 +24,6 @@ Changelog
 
 ### Features
 
-- Integrated the recovery phrase verification ([PR 1929](https://github.com/input-output-hk/daedalus/pull/1929))
 - Implemented NTP checks ([PR 1925](https://github.com/input-output-hk/daedalus/pull/1925))
 - Disabled "Recovery phrase verification" feature ([PR 1931](https://github.com/input-output-hk/daedalus/pull/1931))
 - Implemented automated wallet migration ([PR 1905](https://github.com/input-output-hk/daedalus/pull/1905), [PR 1922](https://github.com/input-output-hk/daedalus/pull/1922), [PR 1930](https://github.com/input-output-hk/daedalus/pull/1930), [PR 1935](https://github.com/input-output-hk/daedalus/pull/1935), ([PR 1936](https://github.com/input-output-hk/daedalus/pull/1936))
