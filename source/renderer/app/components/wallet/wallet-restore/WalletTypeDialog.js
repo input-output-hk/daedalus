@@ -219,11 +219,7 @@ export default class WalletTypeDialog extends Component<Props, State> {
     } = this.props;
     const { hardwareWalletAcceptance1, hardwareWalletAcceptance2 } = this.state;
     if (!walletKind) return true;
-    if (
-      walletKind === WALLET_KINDS.DAEDALUS &&
-      !walletKindDaedalus &&
-      isIncentivizedTestnet
-    )
+    if (walletKind === WALLET_KINDS.DAEDALUS && !walletKindDaedalus)
       return true;
     if (
       walletKind === WALLET_KINDS.YOROI &&
