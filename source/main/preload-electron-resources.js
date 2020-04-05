@@ -2,7 +2,7 @@ import { dialog as _dialog, BrowserWindow as _browserWindow } from 'electron';
 import _electronLog from 'electron-log-daedalus';
 import ElectronStore from 'electron-store';
 
-const _electronStore = new ElectronStore({ name: 'config' });
+const _electronStore = new ElectronStore();
 
 process.once('loaded', () => {
   Object.assign(global, {

@@ -267,7 +267,7 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-link-main-color': '#d6902f',
   },
   loading: {
-    '--theme-loading-background-color': 'rgba(255, 185, 35, 0.96)',
+    '--theme-loading-background-color': '#ffffff',
     '--theme-loading-no-disk-space-background-color': 'rgba(171, 23, 0, 0.94)',
     '--theme-loading-no-disk-space-text-color': '#ffffff',
     '--theme-loading-no-disk-space-attention-icon-color': '#ffffff',
@@ -533,6 +533,11 @@ export const YELLOW_THEME_OUTPUT = {
     '--rp-radio-label-text-color': '#2d2d2d',
     '--rp-radio-size': '22px',
   },
+  rpScrollBar: {
+    '--rp-scrollbar-thumb-bg-color:': 'rgba(45, 45, 45, 0.3)',
+    '--rp-scrollbar-thumb-bg-color-active': 'rgba(45, 45, 45, 0.5)',
+    '--rp-scrollbar-thumb-bg-color-hover': 'rgba(45, 45, 45, 0.5)',
+  },
   rpSelect: {
     '--rp-select-arrow-bg-color': 'rgba(45, 45, 45, 0.2)',
     '--rp-select-arrow-bg-color-open': '#2d2d2d',
@@ -588,7 +593,6 @@ export const YELLOW_THEME_OUTPUT = {
   },
   scrollbar: {
     '--theme-scrollbar-thumb-background': 'rgba(45, 45, 45, 0.3)',
-    '--theme-scrollbar-thumb-background-hover': 'rgba(45, 45, 45, 0.5)',
   },
   sendConfirmation: {
     '--theme-send-confirmation-dialog-send-values-color': '#ea4c5b',
@@ -632,11 +636,11 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-sidebar-menu-add-button-background-color-hover': '#eea70ea8',
     '--theme-sidebar-menu-add-button-text-color': '#2d2d2d',
     '--theme-sidebar-wallets-scrollbar-background-color':
-      'rgba(255, 255, 255, 0.1)',
+      'rgba(45, 45, 45, 0.3)',
     '--theme-sidebar-wallets-scrollbar-background-color-active':
-      'rgba(255, 255, 255, 0.3)',
+      'rgba(45, 45, 45, 0.5)',
     '--theme-sidebar-wallets-scrollbar-background-color-hover':
-      'rgba(255, 255, 255, 0.3)',
+      'rgba(45, 45, 45, 0.5)',
     '--theme-sidebar-category-networkInfo-background-color': '#2d2d2d',
     '--theme-sidebar-category-networkInfo-text-color': '#fff',
   },
@@ -776,7 +780,7 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-support-settings-text-color': '#2d2d2d',
   },
   syncing: {
-    '--theme-syncing-background-color': 'rgba(255, 185, 35, 0.96)',
+    '--theme-syncing-background-color': '#ffffff',
     '--theme-syncing-background-color1': 'rgba(255, 255, 255, 1)',
     '--theme-syncing-background-color2': 'rgba(255, 255, 255, 0.91)',
     '--theme-syncing-background-color3': 'rgba(255, 255, 255, 0.31)',

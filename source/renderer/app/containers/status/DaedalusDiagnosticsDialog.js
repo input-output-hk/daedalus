@@ -34,11 +34,15 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
       isNodeResponding,
       isNodeSyncing,
       isNodeInSync,
+      isNodeTimeCorrect,
       // Application state
       isConnected,
       isSynced,
       syncPercentage,
       hasBeenConnected,
+      localTimeDifference,
+      isSystemTimeCorrect,
+      isSystemTimeIgnored,
       openStateDirectory,
       getNetworkInfoRequest,
       networkTip,
@@ -48,6 +52,7 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
       tlsConfig,
       cardanoNodeID,
       stateDirectoryPath,
+      getNetworkClockRequest,
     } = networkStatus;
 
     const systemInfo = {
@@ -101,13 +106,20 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
           isNodeResponding={isNodeResponding}
           isNodeSyncing={isNodeSyncing}
           isNodeInSync={isNodeInSync}
+          isNodeTimeCorrect={isNodeTimeCorrect}
           isConnected={isConnected}
           isSynced={isSynced}
           syncPercentage={syncPercentage}
           hasBeenConnected={hasBeenConnected}
+          localTimeDifference={localTimeDifference}
+          isSystemTimeCorrect={isSystemTimeCorrect}
+          isSystemTimeIgnored={isSystemTimeIgnored}
           nodeConnectionError={getNetworkInfoRequest.error}
           localTip={localTip}
           networkTip={networkTip}
+          isCheckingSystemTime={
+            !getNetworkClockRequest.result || getNetworkClockRequest.isExecuting
+          }
           onOpenStateDirectory={openStateDirectory}
           onOpenExternalLink={openExternalLink}
           onRestartNode={restartNode}

@@ -265,7 +265,7 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-link-main-color': '#29b595',
   },
   loading: {
-    '--theme-loading-background-color': '#f9f9f9',
+    '--theme-loading-background-color': '#ffffff',
     '--theme-loading-no-disk-space-background-color': 'rgba(171, 23, 0, 0.94)',
     '--theme-loading-no-disk-space-text-color': '#fafbfc',
     '--theme-loading-no-disk-space-attention-icon-color': '#fafbfc',
@@ -533,6 +533,11 @@ export const WHITE_THEME_OUTPUT = {
     '--rp-radio-label-text-color': '#2d2d2d',
     '--rp-radio-size': '22px',
   },
+  rpScrollBar: {
+    '--rp-scrollbar-thumb-bg-color:': 'rgba(45, 45, 45, 0.3)',
+    '--rp-scrollbar-thumb-bg-color-active': 'rgba(45, 45, 45, 0.5)',
+    '--rp-scrollbar-thumb-bg-color-hover': 'rgba(45, 45, 45, 0.5)',
+  },
   rpSelect: {
     '--rp-select-arrow-bg-color': 'rgba(45, 45, 45, 0.3)',
     '--rp-select-arrow-bg-color-open': 'rgba(45, 45, 45, 0.7)',
@@ -588,7 +593,6 @@ export const WHITE_THEME_OUTPUT = {
   },
   scrollbar: {
     '--theme-scrollbar-thumb-background': 'rgba(45, 45, 45, 0.3)',
-    '--theme-scrollbar-thumb-background-hover': 'rgba(45, 45, 45, 0.5)',
   },
   sendConfirmation: {
     '--theme-send-confirmation-dialog-send-values-color': '#ea4c5b',
@@ -629,11 +633,11 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-sidebar-menu-add-button-background-color-hover': '#eeeeee',
     '--theme-sidebar-menu-add-button-text-color': '#2d2d2d',
     '--theme-sidebar-wallets-scrollbar-background-color':
-      'rgba(45, 45, 45, 0.1)',
+      'rgba(45, 45, 45, 0.3)',
     '--theme-sidebar-wallets-scrollbar-background-color-active':
-      'rgba(45, 45, 45, 0.3)',
+      'rgba(45, 45, 45, 0.5)',
     '--theme-sidebar-wallets-scrollbar-background-color-hover':
-      'rgba(45, 45, 45, 0.3)',
+      'rgba(45, 45, 45, 0.5)',
     '--theme-sidebar-category-networkInfo-background-color': '#29b595',
     '--theme-sidebar-category-networkInfo-text-color': '#fff',
   },

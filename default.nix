@@ -159,15 +159,18 @@ let
       # requires --allow-unsafe-native-code-during-evaluation
       res = builtins.exec [ signingScript ];
     in res;
-    signedCardano = pkgs.runCommand "signed-daedalus-bridge" {} ''
+    signedCardano = let
+      copySignedBinaries = let
+        signAndCopy = bin: ''
+          cp ${self.signFile "${self.unsignedUnpackedCardano}/bin/${bin}"} bin/${bin}
+        '';
+      in __concatStringsSep "\n" (map signAndCopy self.launcherConfigs.installerConfig.installerWinBinaries);
+    in pkgs.runCommand "signed-daedalus-bridge" {} ''
       cp -r ${self.unsignedUnpackedCardano} $out
       chmod -R +w $out
       cd $out
       rm bin/*.exe
-      cp ${self.signFile "${self.unsignedUnpackedCardano}/bin/cardano-launcher.exe"} bin/cardano-launcher.exe
-      cp ${self.signFile "${self.unsignedUnpackedCardano}/bin/jormungandr.exe"} bin/jormungandr.exe
-      cp ${self.signFile "${self.unsignedUnpackedCardano}/bin/cardano-wallet-jormungandr.exe"} bin/cardano-wallet-jormungandr.exe
-      cp ${self.signFile "${self.unsignedUnpackedCardano}/bin/jcli.exe"} bin/jcli.exe
+      ${copySignedBinaries}
     '';
     dummyUnpacked = pkgs.runCommand "dummy-unpacked-cardano" {} ''
       mkdir $out

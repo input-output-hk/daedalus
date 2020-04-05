@@ -1,12 +1,32 @@
 Changelog
 =========
 
+## vNext
+
+## Chores
+
+- Updated `Electron` and it's related dependencies ([PR 1887](https://github.com/input-output-hk/daedalus/pull/1887))
+- Removed counter from Alert dialog if we have only one newsfeed alert to show ([PR 1949](https://github.com/input-output-hk/daedalus/pull/1949))
+
+## 1.0.0-FC2
+
+### Fixes
+
+- Fixed the `EPERM` errors thrown in the console upon changing wallet name on the "Wallet Settings" screen ([PR 1944](https://github.com/input-output-hk/daedalus/pull/1944))
+
+### Chores
+
+- Integrated react-polymorph ScrollBar CSS vars into each theme ([PR 1827](https://github.com/input-output-hk/daedalus/pull/1827))
+- Implemented generation of an Byron wallet address after creating a Byron wallet ([PR 1943](https://github.com/input-output-hk/daedalus/pull/1943))
+- Disabled "Force resync" feature for Byron wallets ([PR 1946](https://github.com/input-output-hk/daedalus/pull/1946))
+
 ## 1.0.0-FC1
 
 ### Features
 
+- Implemented NTP checks ([PR 1925](https://github.com/input-output-hk/daedalus/pull/1925))
 - Disabled "Recovery phrase verification" feature ([PR 1931](https://github.com/input-output-hk/daedalus/pull/1931))
-- Implemented automated wallet migration ([PR 1905](https://github.com/input-output-hk/daedalus/pull/1905), [PR 1922](https://github.com/input-output-hk/daedalus/pull/1922), [PR 1930](https://github.com/input-output-hk/daedalus/pull/1930))
+- Implemented automated wallet migration ([PR 1905](https://github.com/input-output-hk/daedalus/pull/1905), [PR 1922](https://github.com/input-output-hk/daedalus/pull/1922), [PR 1930](https://github.com/input-output-hk/daedalus/pull/1930), [PR 1935](https://github.com/input-output-hk/daedalus/pull/1935), ([PR 1936](https://github.com/input-output-hk/daedalus/pull/1936))
 - Integrated network clock api endpoint ([PR 1918](https://github.com/input-output-hk/daedalus/pull/1918))
 - Implements the Flight release information window ([PR 1917](https://github.com/input-output-hk/daedalus/pull/1917))
 - Added new icon for Daedalus Flight ([PR 1909](https://github.com/input-output-hk/daedalus/pull/1909))
@@ -29,13 +49,14 @@ Changelog
 
 ### Fixes
 
+- Fixed Cardano Node version shown on the About screen ([PR 1941](https://github.com/input-output-hk/daedalus/pull/1941))
 - Fixed UI issues across all themes ([PR 1916](https://github.com/input-output-hk/daedalus/pull/1916))
 - Removed the click and mark from spinner component ([PR 1885](https://github.com/input-output-hk/daedalus/pull/1885))
 - Removed locale specific rules from the CSS files ([PR 1871](https://github.com/input-output-hk/daedalus/pull/1871))
 
 ### Chores
 
-- Updated `Electron` and it's related dependencies ([PR 1887](https://github.com/input-output-hk/daedalus/pull/1887))
+- Added new "Terms of use" ([PR 1934](https://github.com/input-output-hk/daedalus/pull/1934))
 - Updated About screen ([PR 1928](https://github.com/input-output-hk/daedalus/pull/1928))
 - Configured Daedalus Flight to use it's own newsfeed ([PR 1927](https://github.com/input-output-hk/daedalus/pull/1927))
 - Reduced "connection timeout limit" for Byron Reboot builds to 5 minutes ([PR 1926](https://github.com/input-output-hk/daedalus/pull/1926))

@@ -8,6 +8,8 @@ import WalletTransactionsList from '../../components/wallet/transactions/WalletT
 import WalletSummary from '../../components/wallet/summary/WalletSummary';
 import WalletNoTransactions from '../../components/wallet/transactions/WalletNoTransactions';
 import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer';
+import ChangeSpendingPasswordDialog from '../../components/wallet/settings/ChangeSpendingPasswordDialog';
+import ChangeSpendingPasswordDialogContainer from './dialogs/settings/ChangeSpendingPasswordDialogContainer';
 import { ROUTES } from '../../routes-config';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import { formattedWalletAmount } from '../../utils/formatters';
@@ -42,7 +44,8 @@ export default class WalletSummaryPage extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { app, wallets, transactions, profile } = this.props.stores;
+    const { stores } = this.props;
+    const { app, wallets, transactions, profile, uiDialogs } = stores;
     const {
       openExternalLink,
       environment: { network, rawNetwork },
@@ -56,6 +59,7 @@ export default class WalletSummaryPage extends Component<Props> {
       deleteTransactionRequest,
       pendingTransactionsCount,
     } = transactions;
+    const { isOpen: isDialogOpen } = uiDialogs;
     const wallet = wallets.active;
     const { currentTimeFormat, currentDateFormat, currentLocale } = profile;
     // Guard against potential null values
@@ -115,6 +119,11 @@ export default class WalletSummaryPage extends Component<Props> {
           isLoadingTransactions={recentTransactionsRequest.isExecutingFirstTime}
         />
         {walletTransactions}
+        {isDialogOpen(ChangeSpendingPasswordDialog) ? (
+          <ChangeSpendingPasswordDialogContainer forceSetPassword />
+        ) : (
+          false
+        )}
       </VerticalFlexContainer>
     );
   }

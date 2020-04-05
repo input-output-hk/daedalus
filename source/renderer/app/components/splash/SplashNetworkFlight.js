@@ -87,7 +87,7 @@ export default class SplashNetworkFlight extends Component<Props> {
         <p>{intl.formatMessage(messages.flightDescription1)}</p>
         <FormattedHTMLMessage tagName="p" {...messages.flightDescription2} />
         <p>{intl.formatMessage(messages.flightDescription3)}</p>
-        <p>{intl.formatMessage(messages.flightDescription4)}</p>
+        {/* <p>{intl.formatMessage(messages.flightDescription4)}</p> */}
         <p>{intl.formatMessage(messages.flightDescription5)}</p>
       </>
     );

@@ -56,7 +56,7 @@
   }
 
   .supportPortalLink {
-    border-bottom: 1px solid var(--theme-system-error-overlay-text-color);
+    border-bottom: 1px solid var(--theme-system-error-overlay-text-color) !important;
     color: var(--theme-system-error-overlay-text-color);
     font-size: 16px;
     line-height: 1.38;
@@ -64,12 +64,12 @@
     &:after {
       background-color: var(
         --theme-system-error-overlay-support-link-icon-color
-      );
+      ) !important;
     }
   }
 
   .checkLink {
-    border-bottom: 1px solid var(--theme-system-error-overlay-text-color);
+    border-bottom: 1px solid var(--theme-system-error-overlay-text-color) !important;
     color: var(--theme-system-error-overlay-text-color);
     cursor: pointer;
     display: inline-block;

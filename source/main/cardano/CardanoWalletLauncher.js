@@ -104,11 +104,40 @@ export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
         nodeConfig.network.genesisHash = selfnodeGenesisHash;
         merge(launcherConfig, { apiPort: 8088 });
       } else {
-        const configFilePath = path.join(stateDir, 'config.yaml');
-        await fs.copy(nodeConfig.network.configFile, configFilePath);
-        const genesisFilePath = path.join(stateDir, 'genesis.json');
-        await fs.copy(nodeConfig.network.genesisFile, genesisFilePath);
-        nodeConfig.network.configFile = configFilePath;
+        try {
+          const configFileDestPath = path.join(stateDir, 'config.yaml');
+          const configFileSourcePath = nodeConfig.network.configFile;
+          if (configFileDestPath !== configFileSourcePath) {
+            logger.info(`Copying ${cluster} config file...`, {
+              configFileSourcePath,
+              configFileDestPath,
+            });
+            await fs.copy(configFileSourcePath, configFileDestPath);
+            nodeConfig.network.configFile = configFileDestPath;
+            logger.info(`Copied ${cluster} config file`, {
+              configFileDestPath,
+            });
+          }
+        } catch (error) {
+          logger.error(`Copying ${cluster} config file failed`, { error });
+        }
+        try {
+          const genesisFileDestPath = path.join(stateDir, 'genesis.json');
+          const genesisFileSourcePath = nodeConfig.network.genesisFile;
+          if (genesisFileDestPath !== genesisFileSourcePath) {
+            logger.info(`Copying ${cluster} genesis file...`, {
+              genesisFileSourcePath,
+              genesisFileDestPath,
+            });
+            await fs.copy(genesisFileSourcePath, genesisFileDestPath);
+            nodeConfig.network.genesisFile = genesisFileDestPath;
+            logger.info(`Copied ${cluster} genesis file`, {
+              genesisFileDestPath,
+            });
+          }
+        } catch (error) {
+          logger.error(`Copying ${cluster} genesis file failed`, { error });
+        }
       }
       if (cluster !== MAINNET) {
         // All clusters except for Mainnet are treated as "Testnets"

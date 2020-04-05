@@ -2,15 +2,26 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import ChangeSpendingPasswordDialog from '../../../../components/wallet/settings/ChangeSpendingPasswordDialog';
-import type { InjectedProps } from '../../../../types/injectedPropsType';
+import type { StoresMap } from '../../../../stores/index';
+import type { ActionsMap } from '../../../../actions/index';
+
+type Props = {
+  stores: any | StoresMap,
+  actions: any | ActionsMap,
+  forceSetPassword?: boolean,
+};
 
 @inject('actions', 'stores')
 @observer
-export default class ChangeSpendingPasswordDialogContainer extends Component<InjectedProps> {
-  static defaultProps = { actions: null, stores: null };
+export default class ChangeSpendingPasswordDialogContainer extends Component<Props> {
+  static defaultProps = {
+    actions: null,
+    stores: null,
+    forceSetPassword: false,
+  };
 
   render() {
-    const { actions } = this.props;
+    const { actions, forceSetPassword } = this.props;
     const { uiDialogs, wallets, walletSettings } = this.props.stores;
     const dialogData = uiDialogs.dataForActiveDialog;
     const { updateDataForActiveDialog } = actions.dialogs;
@@ -47,6 +58,8 @@ export default class ChangeSpendingPasswordDialogContainer extends Component<Inj
         }}
         isSubmitting={updateSpendingPasswordRequest.isExecuting}
         error={updateSpendingPasswordRequest.error}
+        forceSetPassword={forceSetPassword || false}
+        walletName={activeWallet.name}
       />
     );
   }
