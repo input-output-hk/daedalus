@@ -453,8 +453,9 @@ export default class NetworkStatusStore extends Store {
         if (
           this.isNodeInSync || // Update last sync progress change timestamp if node is in sync
           hasSyncProgressChanged || // Sync progress change detected
-          this.lastSyncProgressChangeTimestamp > Date.now() || // Guard against future timestamps / incorrect system time
-          (!this.isNodeTimeCorrect && !this.isSystemTimeIgnored)
+          (!this.isSyncProgressStalling && // Guard against future timestamps / incorrect system time
+            (this.lastSyncProgressChangeTimestamp > Date.now() ||
+              (!this.isNodeTimeCorrect && !this.isSystemTimeIgnored)))
         ) {
           this.lastSyncProgressChangeTimestamp = Date.now(); // Record last sync progress change timestamp
         }
