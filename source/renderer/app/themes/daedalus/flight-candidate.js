@@ -763,7 +763,7 @@ export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
   },
   support: {
     '--theme-support-settings-item-color': '#ffffff',
-    '--theme-support-settings-link-color': '#36374d',
+    '--theme-support-settings-link-color': '#ffb923',
     '--theme-support-settings-text-color': '#ffffff',
   },
   syncing: {
