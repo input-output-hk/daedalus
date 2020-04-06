@@ -441,12 +441,6 @@ export const DARK_BLUE_THEME_OUTPUT = {
       'rgba(250, 251, 252, 0.05)',
     '--theme-report-issue-connecting-text-color': '#e9f4fe',
     '--theme-report-issue-icon-color': '#e9f4fe',
-    '--theme-report-issue-syncing-background-color':
-      'rgba(250, 251, 252, 0.05)',
-    '--theme-report-issue-syncing-text-color': '#e9f4fe',
-    '--theme-report-issue-syncing-download-logs-text-color': '#e9f4fe',
-    '--theme-report-issue-syncing-download-logs-text-color-connecting':
-      '#e9f4fe',
   },
   rpAutocomplete: {
     '--rp-autocomplete-bg-color': '#263345',

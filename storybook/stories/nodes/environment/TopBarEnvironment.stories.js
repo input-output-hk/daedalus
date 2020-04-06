@@ -20,10 +20,8 @@ const topBarTestEnv = (
   >
     <WalletTestEnvironmentLabel network="testnet" />
     <NodeSyncStatusIcon
-      networkStatus={{
-        isSynced: true,
-        syncPercentage: 100,
-      }}
+      isSynced
+      syncPercentage={100}
       isProduction={false}
       isMainnet={false}
     />
@@ -43,10 +41,8 @@ const topBarItnEnv = (
   >
     <WalletTestEnvironmentLabel network="itn_rewards_v1" />
     <NodeSyncStatusIcon
-      networkStatus={{
-        isSynced: true,
-        syncPercentage: 100,
-      }}
+      isSynced
+      syncPercentage={100}
       isProduction={false}
       isMainnet={false}
     />
@@ -64,14 +60,7 @@ const topBarProductionEnv = (
     showSubMenuToggle={false}
     leftIcon={menuIconClosed}
   >
-    <NodeSyncStatusIcon
-      networkStatus={{
-        isSynced: true,
-        syncPercentage: 100,
-      }}
-      isProduction
-      isMainnet
-    />
+    <NodeSyncStatusIcon isSynced syncPercentage={100} isProduction isMainnet />
     <NewsFeedIcon
       onNewsFeedIconClick={action('onNewsFeedIconClick')}
       showDot={false}
