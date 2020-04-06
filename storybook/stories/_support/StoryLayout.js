@@ -197,10 +197,8 @@ export default class StoryLayout extends Component<Props> {
       hasRewardsWallets={boolean('hasRewardsWallets', true)}
     >
       <NodeSyncStatusIcon
-        networkStatus={{
-          isSynced: true,
-          syncPercentage: 100,
-        }}
+        isSynced
+        syncPercentage={100}
         isProduction
         isMainnet
       />

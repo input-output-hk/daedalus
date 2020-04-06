@@ -7,14 +7,15 @@ Changelog
 
 - Integrated the recovery phrase verification and re-enabled "Recovery phrase verification" feature ([PR 1929](https://github.com/input-output-hk/daedalus/pull/1929))
 
+## 1.0.0-FC2
+
+### Features
+
+- Removed "Syncing" screen ([PR 1952](https://github.com/input-output-hk/daedalus/pull/1952))
+
 ### Fixes
 
 - Fixed "Restoration" dialog validation ([PR 1951](https://github.com/input-output-hk/daedalus/pull/1951))
-
-## 1.0.0-FC2
-
-### Fixes
-
 - Fixed the `EPERM` errors thrown in the console upon changing wallet name on the "Wallet Settings" screen ([PR 1944](https://github.com/input-output-hk/daedalus/pull/1944))
 
 ### Chores

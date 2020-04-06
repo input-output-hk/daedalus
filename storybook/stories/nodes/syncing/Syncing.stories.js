@@ -9,15 +9,15 @@ import StoryDecorator from '../../_support/StoryDecorator';
 // Stories
 import {
   DefaultSyncingConnectingStory,
+  LoadingWalletDataSyncingConnectingStory,
   ConnectivityIssuesSyncingConnectingStory,
-  SyncIssuesSyncingConnectingStory,
 } from './SyncingConnecting.stories';
 
-storiesOf('Nodes|Syncing and Connecting', module)
+storiesOf('Nodes|Connecting and Loading', module)
   .addDecorator((story, context) => (
     <StoryDecorator>{withKnobs(story, context)}</StoryDecorator>
   ))
   // ====== Stories ======
-  .add('Default', DefaultSyncingConnectingStory)
+  .add('Connecting', DefaultSyncingConnectingStory)
   .add('Trouble Connecting', ConnectivityIssuesSyncingConnectingStory)
-  .add('Trouble Syncing', SyncIssuesSyncingConnectingStory);
+  .add('Loading Wallet Data', LoadingWalletDataSyncingConnectingStory);

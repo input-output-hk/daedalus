@@ -22,7 +22,7 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
       isNodeTimeCorrect,
       isConnected,
       isSynced,
-      syncPercentage,
+      isSyncProgressStalling,
       hasBeenConnected,
       getNetworkClockRequest,
       isNodeStopping,
@@ -49,11 +49,11 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
         isSynced={isSynced}
         isConnecting={!isConnected}
         isSyncing={isConnected && !isSynced}
+        isSyncProgressStalling={isSyncProgressStalling}
         isNodeStopping={isNodeStopping}
         isNodeStopped={isNodeStopped}
         isNotEnoughDiskSpace={isNotEnoughDiskSpace}
         isTlsCertInvalid={isTlsCertInvalid}
-        syncPercentage={syncPercentage}
         hasUnreadNews={hasUnreadNews}
         hasLoadedCurrentLocale={hasLoadedCurrentLocale}
         hasLoadedCurrentTheme={hasLoadedCurrentTheme}
