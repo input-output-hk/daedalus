@@ -37,7 +37,6 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
       isNewAppVersionLoaded,
     } = stores.nodeUpdate;
     const { hasLoadedCurrentLocale, hasLoadedCurrentTheme } = stores.profile;
-    const { isLoadingWallets } = stores.wallets;
     const { toggleNewsFeed } = this.props.actions.app;
     const { unread } = stores.newsFeed.newsFeedData;
     const hasUnreadNews = unread.length > 0;
@@ -52,7 +51,6 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
         isConnecting={!isConnected}
         isSyncing={isConnected && !isSynced}
         isSyncProgressStalling={isSyncProgressStalling}
-        isLoadingWallets={isLoadingWallets}
         isNodeStopping={isNodeStopping}
         isNodeStopped={isNodeStopped}
         isNotEnoughDiskSpace={isNotEnoughDiskSpace}

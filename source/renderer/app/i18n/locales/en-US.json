@@ -167,7 +167,6 @@
   "loading.screen.startingCardanoMessage": "Starting Cardano node",
   "loading.screen.stoppedCardanoMessage": "Cardano node stopped",
   "loading.screen.stoppingCardanoMessage": "Stopping Cardano node",
-  "loading.screen.syncingBlocksMessage": "Syncing blocks",
   "loading.screen.syncingConnectingIncentivizedTestnet": "INCENTIVIZED TESTNET v1",
   "loading.screen.syncingConnectingRewards": "Rewards",
   "loading.screen.syncingConnectingTitle": "Daedalus",

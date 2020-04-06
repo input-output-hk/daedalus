@@ -28,7 +28,6 @@ export const DefaultSyncingConnectingStory = (props: {
     isConnecting={boolean('isConnecting', true)}
     isSyncing={boolean('isSyncing', false)}
     isSyncProgressStalling={boolean('isSyncProgressStalling', false)}
-    isLoadingWallets={boolean('isLoadingWallets', false)}
     isNodeStopping={boolean('isNodeStopping', false)}
     isNodeStopped={boolean('isNodeStopped', false)}
     isTlsCertInvalid={boolean('isTlsCertInvalid', false)}
@@ -71,7 +70,6 @@ export const ConnectivityIssuesSyncingConnectingStory = (props: {
     isConnecting
     isSyncing={false}
     isSyncProgressStalling={false}
-    isLoadingWallets={false}
     isNodeStopping={false}
     isNodeStopped={false}
     isTlsCertInvalid={false}
@@ -114,7 +112,6 @@ export const SyncIssuesSyncingConnectingStory = (props: {
     isConnecting={false}
     isSyncing
     isSyncProgressStalling={false}
-    isLoadingWallets={false}
     isNodeStopping={false}
     isNodeStopped={false}
     isTlsCertInvalid={false}

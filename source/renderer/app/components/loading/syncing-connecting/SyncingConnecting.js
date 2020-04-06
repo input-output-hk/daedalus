@@ -34,7 +34,6 @@ type Props = {
   isConnecting: boolean,
   isSyncing: boolean,
   isSyncProgressStalling: boolean,
-  isLoadingWallets: boolean,
   isNodeStopping: boolean,
   isNodeStopped: boolean,
   isTlsCertInvalid: boolean,
@@ -219,7 +218,6 @@ export default class SyncingConnecting extends Component<Props, State> {
       isSynced,
       isConnecting,
       isSyncing,
-      isLoadingWallets,
       hasLoadedCurrentLocale,
       hasLoadedCurrentTheme,
       hasUnreadNews,
@@ -236,7 +234,6 @@ export default class SyncingConnecting extends Component<Props, State> {
       isTlsCertInvalid,
       isNodeStopping,
       isNodeStopped,
-      syncPercentage,
       onStatusIconClick,
       onToggleNewsFeedIconClick,
       showNewsFeedIcon,
@@ -284,11 +281,8 @@ export default class SyncingConnecting extends Component<Props, State> {
           hasBeenConnected={hasBeenConnected}
           isTlsCertInvalid={isTlsCertInvalid}
           isConnected={isConnected}
-          isSynced={isSynced}
-          isLoadingWallets={isLoadingWallets}
           isNodeStopping={isNodeStopping}
           isNodeStopped={isNodeStopped}
-          syncPercentage={syncPercentage}
         />
         <StatusIcons
           onIconClick={onStatusIconClick}

@@ -738,12 +738,6 @@ export default class WalletsStore extends Store {
     return !!this.active;
   }
 
-  @computed get isLoadingWallets(): boolean {
-    return (
-      this.walletsRequest.result === null && this.walletsRequest.isExecuting
-    );
-  }
-
   @computed get hasLoadedWallets(): boolean {
     return this.walletsRequest.wasExecuted;
   }

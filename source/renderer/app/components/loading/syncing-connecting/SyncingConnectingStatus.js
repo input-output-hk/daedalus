@@ -55,11 +55,6 @@ const messages = defineMessages({
     description:
       'Message "Network connection lost - reconnecting" on the loading screen.',
   },
-  syncing: {
-    id: 'loading.screen.syncingBlocksMessage',
-    defaultMessage: '!!!Syncing blocks',
-    description: 'Message "Syncing blocks" on the loading screen.',
-  },
   loadingWalletData: {
     id: 'loading.screen.loadingWalletData',
     defaultMessage: '!!!Loading wallet data',
@@ -78,11 +73,8 @@ type Props = {
   hasBeenConnected: boolean,
   isTlsCertInvalid: boolean,
   isConnected: boolean,
-  isSynced: boolean,
-  isLoadingWallets: boolean,
   isNodeStopping: boolean,
   isNodeStopped: boolean,
-  syncPercentage: number,
 };
 
 export default class SyncingConnectingStatus extends Component<Props> {
@@ -96,13 +88,8 @@ export default class SyncingConnectingStatus extends Component<Props> {
       hasBeenConnected,
       isTlsCertInvalid,
       isConnected,
-      isSynced,
-      isLoadingWallets,
     } = this.props;
-    if (isConnected) {
-      if (isLoadingWallets || isSynced) return messages.loadingWalletData;
-      return messages.syncing;
-    }
+    if (isConnected) return messages.loadingWalletData;
     let connectingMessage;
     switch (cardanoNodeState) {
       case null:
@@ -148,12 +135,9 @@ export default class SyncingConnectingStatus extends Component<Props> {
     const { intl } = this.context;
     const {
       isConnected,
-      isSynced,
-      isLoadingWallets,
       isNodeStopping,
       isNodeStopped,
       isTlsCertInvalid,
-      syncPercentage,
       hasLoadedCurrentLocale,
     } = this.props;
 
@@ -172,16 +156,10 @@ export default class SyncingConnectingStatus extends Component<Props> {
       showEllipsis ? styles.withoutAnimation : null,
     ]);
 
-    const syncPercentageDisplay =
-      isConnected && !isSynced && !isLoadingWallets
-        ? `${syncPercentage.toFixed(2)}%`
-        : null;
-
     return (
       <div className={componentStyles}>
         <h1 className={headlineStyles}>
-          {intl.formatMessage(this._getConnectingMessage())}{' '}
-          {syncPercentageDisplay}
+          {intl.formatMessage(this._getConnectingMessage())}
         </h1>
       </div>
     );

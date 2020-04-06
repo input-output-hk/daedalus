@@ -975,31 +975,17 @@
         }
       },
       {
-        "defaultMessage": "!!!Syncing blocks",
-        "description": "Message \"Syncing blocks\" on the loading screen.",
+        "defaultMessage": "!!!Loading wallet data",
+        "description": "Message \"Loading wallet data\" on the loading screen.",
         "end": {
           "column": 3,
           "line": 62
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.js",
-        "id": "loading.screen.syncingBlocksMessage",
-        "start": {
-          "column": 11,
-          "line": 58
-        }
-      },
-      {
-        "defaultMessage": "!!!Loading wallet data",
-        "description": "Message \"Loading wallet data\" on the loading screen.",
-        "end": {
-          "column": 3,
-          "line": 67
-        },
-        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.js",
         "id": "loading.screen.loadingWalletData",
         "start": {
           "column": 21,
-          "line": 63
+          "line": 58
         }
       },
       {
@@ -1007,13 +993,13 @@
         "description": "The TLS cert is not valid and Daedalus should be restarted",
         "end": {
           "column": 3,
-          "line": 72
+          "line": 67
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.js",
         "id": "loading.screen.errors.tlsCertificateNotValidPleaseRestartError",
         "start": {
           "column": 31,
-          "line": 68
+          "line": 63
         }
       }
     ],

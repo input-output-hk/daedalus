@@ -167,7 +167,6 @@
   "loading.screen.startingCardanoMessage": "カルダノ・ノードを起動中",
   "loading.screen.stoppedCardanoMessage": "カルダノ・ノードが停止しました",
   "loading.screen.stoppingCardanoMessage": "カルダノ・ノードを停止させます",
-  "loading.screen.syncingBlocksMessage": "ブロック同期中",
   "loading.screen.syncingConnectingIncentivizedTestnet": "インセンティブ付きテストネット v1",
   "loading.screen.syncingConnectingRewards": "模擬スナップショット",
   "loading.screen.syncingConnectingTitle": "Daedalus",
