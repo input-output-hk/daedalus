@@ -21,6 +21,7 @@ export default class TopBarContainer extends Component<Props> {
   render() {
     const { actions, stores } = this.props;
     const { sidebar, app, networkStatus, wallets, newsFeed } = stores;
+    const { isSynced, syncPercentage } = networkStatus;
     const { active, isWalletRoute, hasAnyWallets, hasRewardsWallets } = wallets;
     const {
       currentRoute,
@@ -66,7 +67,10 @@ export default class TopBarContainer extends Component<Props> {
         onLearnMore={openExternalLink}
       >
         {testnetLabel}
-        <NodeSyncStatusIcon networkStatus={networkStatus} />
+        <NodeSyncStatusIcon
+          isSynced={isSynced}
+          syncPercentage={syncPercentage}
+        />
         <NewsFeedIcon
           onNewsFeedIconClick={actions.app.toggleNewsFeed.trigger}
           showDot={hasUnreadNews}

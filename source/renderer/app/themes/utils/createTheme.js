@@ -717,12 +717,8 @@ export const createDaedalusComponentsTheme = (
       '--theme-report-issue-button-background-color-hover': `${background.secondary.light}`,
       '--theme-report-issue-button-background-color-active': `${background.secondary.darkest}`,
       '--theme-report-issue-connecting-background-color': `${background.primary.regular}`,
-      '--theme-report-issue-icon-color': `${background.primary.regular}`,
       '--theme-report-issue-connecting-text-color': `${text.primary}`,
-      '--theme-report-issue-syncing-background-color': `${background.primary.regular}`,
-      '--theme-report-issue-syncing-text-color': `${text.primary}`,
-      '--theme-report-issue-syncing-download-logs-text-color': `${text.primary}`,
-      '--theme-report-issue-syncing-download-logs-text-color-connecting': `${text.primary}`,
+      '--theme-report-issue-icon-color': `${background.primary.regular}`,
     },
     scrollbar: {
       '--theme-scrollbar-thumb-background': `${background.primary.ultralight}`,

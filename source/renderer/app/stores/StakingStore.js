@@ -246,8 +246,8 @@ export default class StakingStore extends Store {
   }
 
   @action getStakePoolsData = async () => {
-    const { isSynced } = this.stores.networkStatus;
-    if (!isSynced) return;
+    const { isConnected } = this.stores.networkStatus;
+    if (!isConnected) return;
     try {
       await this.stakePoolsRequest.execute().promise;
       if (this.refreshPolling) this._resetPolling(false);
@@ -284,7 +284,7 @@ export default class StakingStore extends Store {
   @action _setFakePoller = forceLoading => {
     const { stores, environment } = this;
     const { networkStatus, wallets } = stores;
-    const { isSynced, isConnected } = networkStatus;
+    const { isConnected } = networkStatus;
     const { _pollingBlocked } = wallets;
 
     // Enable faker only for development node (NODE_ENV = 'development')
@@ -304,10 +304,7 @@ export default class StakingStore extends Store {
       }
 
       // Regular fetching way with faked response that throws error.
-      if (
-        (_pollingBlocked || !isSynced || !isConnected) &&
-        !this.refreshPolling
-      ) {
+      if ((_pollingBlocked || !isConnected) && !this.refreshPolling) {
         this._resetPolling(true);
         return;
       }

@@ -417,14 +417,8 @@ export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
     '--theme-report-issue-button-background-color-active': '#e6a009',
     '--theme-report-issue-connecting-background-color':
       'rgba(255, 255, 255, 0.05)',
-    '--theme-report-issue-icon-color': '#121326',
     '--theme-report-issue-connecting-text-color': '#ffffff',
-    '--theme-report-issue-syncing-background-color':
-      'rgba(255, 255, 255, 0.05)',
-    '--theme-report-issue-syncing-text-color': '#ffffff',
-    '--theme-report-issue-syncing-download-logs-text-color': '#ffffff',
-    '--theme-report-issue-syncing-download-logs-text-color-connecting':
-      '#ffffff',
+    '--theme-report-issue-icon-color': '#121326',
   },
   rpAutocomplete: {
     '--rp-autocomplete-bg-color': '#1e1f31',
@@ -769,7 +763,7 @@ export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
   },
   support: {
     '--theme-support-settings-item-color': '#ffffff',
-    '--theme-support-settings-link-color': '#36374d',
+    '--theme-support-settings-link-color': '#ffb923',
     '--theme-support-settings-text-color': '#ffffff',
   },
   syncing: {
