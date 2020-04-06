@@ -7,90 +7,20 @@
 [![Windows build status](https://ci.appveyor.com/api/projects/status/github/input-output-hk/daedalus?branch=master&svg=true)](https://ci.appveyor.com/project/input-output/daedalus)
 [![Release](https://img.shields.io/github/release/input-output-hk/daedalus.svg)](https://github.com/input-output-hk/daedalus/releases)
 
-Daedalus - cryptocurrency wallet
+Daedalus - Cryptocurrency Wallet
 
 ## Installation
 
+### Yarn
+
+[Yarn](https://yarnpkg.com/lang/en/docs/install) is required to install `npm` dependencies to build Daedalus.
+
 ### Nix
-[Nix](https://nixos.org/nix/) is needed to run the Selfnode for Daedalus.
+
+[Nix](https://nixos.org/nix/) is needed to run Daedalus in `nix-shell`.
 
 **Note:** There are special instructions for
-[installing Nix on Catalina](https://github.com/NixOS/nix/issues/2925#issuecomment-564149154).
-
-### Yarn
-[Yarn](https://yarnpkg.com/lang/en/docs/install) is required to install NPM dependencies to build Daedalus.
-
-## Automated build
-
-### CI/dev build scripts
-
-Platform-specific build scripts facilitate building Daedalus the way it is built
-by the IOHK CI:
-
-#### Linux/macOS
-
-This script requires [Nix](https://nixos.org/nix/), (optionally)
-configured with the [IOHK binary cache][cache].
-
-    scripts/build-installer-unix.sh [OPTIONS..]
-
-The result can be found at `installers/csl-daedalus/daedalus-*.pkg`.
-
-[cache]: https://github.com/input-output-hk/cardano-sl/blob/3dbe220ae108fa707b55c47e689ed794edf5f4d4/docs/how-to/build-cardano-sl-and-daedalus-from-source-code.md#nix-build-mode-recommended
-
-#### Pure Nix installer build
-
-This will use nix to build a Linux installer. Using the [IOHK binary
-cache][cache] will speed things up.
-
-    nix build -f ./release.nix mainnet.installer
-
-The result can be found at `./result/daedalus-*.bin`.
-
-# Development
-
-`shell.nix` provides a way to load a shell with all the correct versions of all the required dependencies for development.
-
-## V2 API Integration Guide
-
-API docs for pinned cardano-wallet version: https://input-output-hk.github.io/cardano-wallet/api/edge/
-
-### ITN Selfnode
-
-1. Run `yarn nix:itn_selfnode` from `daedalus`.
-2. Run `yarn dev` from the subsequent `nix-shell`
-3. Once Daedalus has started, and has gotten past the loading screen, run `yarn itn:shelley:wallet:importer` from a new terminal window. This is only required if you wish to import some funded wallets. It is also possible to import funded legacy wallets by running `yarn itn:byron:wallet:importer` script.
-
-### QA testnet
-
-1. Run `yarn nix:qa` from `daedalus`.
-2. Run `yarn dev:itn` from the subsequent `nix-shell`
-
-### Nightly testnet
-
-1. Run `yarn nix:nightly` from `daedalus`.
-2. Run `yarn dev:itn` from the subsequent `nix-shell`
-
-### V2 Known Issues
-- As network-info is stubbed, the NTP check will throw. Just disregard this for now.
-- Lots of things have been temporarily commented out or mocked to get the integration started.
-- TLS is not yet supported, so `request.js` has been overwritten to use the HTTP module for the time being.
-
-### Updating Upstream Dependencies (cardano-wallet & Jormungandr)
-Niv is used to manage the version of upstream dependencies. The versions of these dependencies can be seen in `nix/sources.json`.
-
-Dependencies are updated with the follow nix command:
-- Update to the latest master: `nix-shell -A devops --run "niv update cardano-wallet"`
-- Update to a specific revision: `nix-shell -A devops --run "niv update cardano-wallet -a rev=1988f22895c45e12506ec83da0496ebdcdd17719"`
-
-## Connect to staging cluster:
-
-1. Start the nix-shell with staging environment `yarn nix:staging`
-2. Within the nix-shell run any command like `yarn dev`
-
-## Connect to Local Demo Cluster:
-
-### Build and Run cardano-sl Demo Cluster
+[installing Nix on macOS Catalina](https://github.com/NixOS/nix/issues/2925#issuecomment-564149154).
 
 1. Install nix: `curl https://nixos.org/nix/install | sh`
 2. Employ the signed IOHK binary cache:
@@ -101,97 +31,86 @@ Dependencies are updated with the follow nix command:
    and then add the following lines:
    ```
    substituters = https://hydra.iohk.io https://cache.nixos.org/
+   trusted-substituters =
    trusted-public-keys = hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ= cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=
    max-jobs = 2  # run at most two builds at once
    cores = 0     # the builder will use all available CPU cores
+   extra-sandbox-paths = /System/Library/Frameworks
    ```
-3. Build and run demo cluster: `scripts/launch/demo-nix.sh`
+3. Run `nix-shell` with correct list of arguments or by using existing `package.json` scripts to load a shell with all the correct versions of all the required dependencies for development.
 
-### Start Daedalus Using Demo Cluster
+## Development
 
-1. Start local cardano-sl demo cluster (`./scripts/launch/demo-nix.sh`)
-2. Inspect the terminal output of cardano-sl and copy the timestamp from the message
-   `system start:  1537184804`
-3. Start the nix-shell with development environment `yarn nix:dev 1537184804` (timestamp is
-different each time you restart the cardano-sl demo cluster)
-4. Within the nix-shell run any command like `yarn dev`
+### Running Daedalus with Cardano Node
 
-## "Frontend only" mode
+#### Selfnode
 
-The `frontendOnlyMode` makes it possible to connect to manually started instances of cardano-node for advanced debugging purposes.
+1. Run `yarn nix:selfnode` from `daedalus`.
+2. Run `yarn dev` from the subsequent `nix-shell`
+3. Once Daedalus has started, and has gotten past the loading screen, run `yarn byron:wallet:importer` from a new terminal window. This is only required if you wish to import some funded wallets.
 
-### How to connect:
-#### Nix
-1. Within the [cardano-sl repository](https://github.com/input-output-hk/cardano-sl), build a script for a certain network. E.g. for testnet: `nix-build -A connectScripts.testnet.wallet -o launch_testnet`
-2. Launch this cluster + node with `./launch_testnet`
-3. You should now have a `state-wallet-testnet` folder inside the cardano-sl repo. Copy the full path to the sub folder `tls` in there.
-4. Within the Daedalus repo checkout this branch and run: `CARDANO_TLS_PATH=/path/to/tls CARDANO_HOST=localhost CARDANO_PORT=8090 nix-shell`
+#### Mainnet
 
-Now you should have a pre-configured nix-shell session where you can `yarn dev` as usual and Daedalus connects itself to the manually started cardano node.
+1. Run `yarn nix:mainnet` from `daedalus`.
+2. Run `yarn dev` from the subsequent `nix-shell`
 
-##### Parameters:
+#### Flight
 
-| Param              | Mandatory | Default     |
-|--------------------|-----------|-------------|
-| `CARDANO_TLS_PATH` | Yes       |             |
-| `CARDANO_HOST`     | No        | `localhost` |
-| `CARDANO_PORT`     | No        | `8090`      |
+1. Run `yarn nix:flight` from `daedalus`.
+2. Run `yarn dev` from the subsequent `nix-shell`
 
-So if you just start the default cardano node (which runs on localhost:8090) you can also start nix-shell with `CARDANO_TLS_PATH=/path/to/tls nix-shell`
+#### Testnet
 
-#### Without Nix
-1. If you have previously used `nix-shell`, run `rm -rf node_modules` as it is likely some of the bindings won't match your local nodejs version
-2. `yarn install`
-3. `WALLET_HOST=xxx WALLET_PORT=xxx yarn js-launcher`
+1. Run `yarn nix:testnet` from `daedalus`.
+2. Run `yarn dev` from the subsequent `nix-shell`
 
-This mode currently mocks TLS certificates as this is not being used for V2 integrations.
+#### Staging
 
-## Notes:
+1. Run `yarn nix:staging` from `daedalus`.
+2. Run `yarn dev` from the subsequent `nix-shell`
 
-`shell.nix` also provides a script for updating yarn.lock. Run `nix-shell -A fixYarnLock`
-to update `yarn.lock` file.
+### Running Daedalus with Jormungandr
 
-### Configuring the Network
+#### ITN Selfnode
 
-There are three different network options you can run Daedalus in: `mainnet`, `testnet` and `development` (default).
-To set desired network option use `NETWORK` environment variable:
+1. Run `yarn nix:itn_selfnode` from `daedalus`.
+2. Run `yarn dev` from the subsequent `nix-shell`
+3. Once Daedalus has started, and has gotten past the loading screen, run `yarn itn:shelley:wallet:importer` from a new terminal window. This is only required if you wish to import some funded wallets. It is also possible to import funded legacy wallets by running `yarn itn:byron:wallet:importer` script.
 
-```bash
-$ export NETWORK=testnet
-$ yarn dev
-```
+#### ITN Rewards V1
 
-### Cardano Wallet API documentation
+1. Run `yarn nix:itn` from `daedalus`.
+2. Run `yarn dev` from the subsequent `nix-shell`
 
-While running Daedalus in development mode you can access Cardano Wallet API documentation on the following URL: https://localhost:8091/docs/v1/index/.
+#### QA Testnet
 
-# Testing
+1. Run `yarn nix:qa` from `daedalus`.
+2. Run `yarn dev` from the subsequent `nix-shell`
 
-You can find more details regarding tests setup within
-[Running Daedalus acceptance tests](https://github.com/input-output-hk/daedalus/blob/master/features/README.md) README file.
+#### Nightly Testnet
 
-**Notes:** Be aware that only a single Daedalus instance can run per state directory.
-So you have to exit any development instances before running tests!
+1. Run `yarn nix:nightly` from `daedalus`.
+2. Run `yarn dev` from the subsequent `nix-shell`
 
-## Wallet fault injection
+### Updating upstream dependencies (cardano-wallet, cardano-node & Jormungandr)
 
-General information about wallet fault injection can be found in the [Cardano's wallet-new README file](https://github.com/input-output-hk/cardano-sl/tree/develop/wallet-new#fault-injection).
+`Niv` is used to manage the version of upstream dependencies. The versions of these dependencies can be seen in `nix/sources.json`.
 
-`shell.nix` has support for passing the necessary flags:
+Dependencies are updated with the follow nix commands:
+- Update to the latest master: `nix-shell -A devops --run "niv update cardano-wallet"`
+- Update to a specific revision: `nix-shell -A devops --run "niv update cardano-wallet -a rev=1988f22895c45e12506ec83da0496ebdcdd17719"`
 
-- `--arg allowFaultInjection true` is necessary to enable any processing of faults, and
-- `--arg walletExtraArgs '[ "--somefault" ]'` can be used for enabling certain fault types at startup.
+#### Notes
 
-# Windows
+`nix-shell` also provides a script for updating `yarn.lock` file:
 
-This batch file requires [Node.js](https://nodejs.org/en/download/) and
-[7zip](https://www.7-zip.org/download.html).
+    nix-shell -A fixYarnLock
 
-    scripts/build-installer-win64.bat
+### Cardano Wallet Api documentation
 
-The result will can be found at `.\daedalus-*.exe`.
+Api documentation for edge `cardano-wallet` version: https://input-output-hk.github.io/cardano-wallet/api/edge/
 
-### CSS Modules
+### CSS modules
 
 This boilerplate out of the box is configured to use [css-modules](https://github.com/css-modules/css-modules).
 
@@ -223,6 +142,14 @@ Make sure to list bootstrap in externals in `webpack.config.base.js` or the app 
 externals: ['bootstrap']
 ```
 
+## Testing
+
+You can find more details regarding tests setup within
+[Running Daedalus acceptance tests](https://github.com/input-output-hk/daedalus/blob/master/features/README.md) README file.
+
+**Notes:** Be aware that only a single Daedalus instance can run per state directory.
+So you have to exit any development instances before running tests!
+
 ## Packaging
 
 ```bash
@@ -243,10 +170,44 @@ $ yarn run package -- --[option]
 
 ### Options
 
-- --name, -n: Application name (default: ElectronReact)
+- --name, -n: Application name (default: Electron)
 - --version, -v: Electron version (default: latest version)
 - --asar, -a: [asar](https://github.com/atom/asar) support (default: false)
 - --icon, -i: Application icon
 - --all: pack for all platforms
 
-Use `electron-packager` to pack your app with `--all` options for darwin (osx), linux and win32 (windows) platform. After build, you will find them in `release` folder. Otherwise, you will only find one for your os.
+Use `electron-packager` to pack your app with `--all` options for macOS, Linux and Windows platform. After build, you will find them in `release` folder. Otherwise, you will only find one for your OS.
+
+## Automated builds
+
+### CI/dev build scripts
+
+Platform-specific build scripts facilitate building Daedalus the way it is built by the IOHK CI:
+
+#### Linux/macOS
+
+This script requires [Nix](https://nixos.org/nix/), (optionally) configured with the [IOHK binary cache][cache].
+
+    scripts/build-installer-unix.sh [OPTIONS..]
+
+The result can be found at `installers/csl-daedalus/daedalus-*.pkg`.
+
+[cache]: https://github.com/input-output-hk/cardano-sl/blob/3dbe220ae108fa707b55c47e689ed794edf5f4d4/docs/how-to/build-cardano-sl-and-daedalus-from-source-code.md#nix-build-mode-recommended
+
+#### Windows
+
+This batch file requires [Node.js](https://nodejs.org/en/download/) and
+[7zip](https://www.7-zip.org/download.html).
+
+    scripts/build-installer-win64.bat
+
+The result will can be found at `.\daedalus-*.exe`.
+
+#### Pure Nix installer build
+
+This will use nix to build a Linux installer. Using the [IOHK binary
+cache][cache] will speed things up.
+
+    nix build -f ./release.nix mainnet.installer
+
+The result can be found at `./result/daedalus-*.bin`.
