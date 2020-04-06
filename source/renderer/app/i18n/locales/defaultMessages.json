@@ -405,31 +405,17 @@
         }
       },
       {
-        "defaultMessage": "!!!Having trouble syncing?",
-        "description": "Report syncing issue text on the loading screen.",
+        "defaultMessage": "!!!Open support ticket",
+        "description": "Open support ticket button label on the loading.",
         "end": {
           "column": 3,
           "line": 23
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/ReportIssue.js",
-        "id": "loading.screen.reportIssue.syncing.text",
-        "start": {
-          "column": 26,
-          "line": 19
-        }
-      },
-      {
-        "defaultMessage": "!!!Open support ticket",
-        "description": "Open support ticket button label on the loading.",
-        "end": {
-          "column": 3,
-          "line": 28
-        },
-        "file": "source/renderer/app/components/loading/syncing-connecting/ReportIssue.js",
         "id": "loading.screen.reportIssue.buttonLabel",
         "start": {
           "column": 26,
-          "line": 24
+          "line": 19
         }
       },
       {
@@ -437,13 +423,13 @@
         "description": "Read the article button label on the loading.",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 28
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/ReportIssue.js",
         "id": "loading.screen.readArticle.buttonLabel",
         "start": {
           "column": 26,
-          "line": 29
+          "line": 24
         }
       },
       {
@@ -451,13 +437,13 @@
         "description": "Download logs button label on the loading.",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 33
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/ReportIssue.js",
         "id": "loading.screen.reportIssue.downloadLogsLinkLabel",
         "start": {
           "column": 36,
-          "line": 34
+          "line": 29
         }
       },
       {
@@ -465,41 +451,13 @@
         "description": "Link to Open Support page",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 38
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/ReportIssue.js",
         "id": "loading.screen.reportIssue.reportIssueButtonUrl",
         "start": {
           "column": 24,
-          "line": 39
-        }
-      },
-      {
-        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/articles/360011536933",
-        "description": "Link to sync issue article page",
-        "end": {
-          "column": 3,
-          "line": 49
-        },
-        "file": "source/renderer/app/components/loading/syncing-connecting/ReportIssue.js",
-        "id": "loading.screen.readIssueArticle.syncIssueArticleUrl",
-        "start": {
-          "column": 23,
-          "line": 44
-        }
-      },
-      {
-        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/articles/900000048566",
-        "description": "Link to sync issue article page for Incentivized TestNet",
-        "end": {
-          "column": 3,
-          "line": 55
-        },
-        "file": "source/renderer/app/components/loading/syncing-connecting/ReportIssue.js",
-        "id": "loading.screen.readIssueArticle.syncIssueArticleUrl.itn",
-        "start": {
-          "column": 29,
-          "line": 50
+          "line": 34
         }
       },
       {
@@ -507,13 +465,13 @@
         "description": "Link to connectivity issue article page",
         "end": {
           "column": 3,
-          "line": 61
+          "line": 44
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/ReportIssue.js",
         "id": "loading.screen.readIssueArticle.connectivityIssueArticleUrl",
         "start": {
           "column": 31,
-          "line": 56
+          "line": 39
         }
       }
     ],

@@ -1,6 +1,6 @@
 // @flow
 import React from 'react';
-import { number, boolean, radios } from '@storybook/addon-knobs';
+import { boolean, radios } from '@storybook/addon-knobs';
 import { linkTo } from '@storybook/addon-links';
 import { action } from '@storybook/addon-actions';
 import { isIncentivizedTestnetTheme } from '../../_support/utils';
@@ -31,7 +31,6 @@ export const DefaultSyncingConnectingStory = (props: {
     isNodeStopping={boolean('isNodeStopping', false)}
     isNodeStopped={boolean('isNodeStopped', false)}
     isTlsCertInvalid={boolean('isTlsCertInvalid', false)}
-    syncPercentage={number('syncPercentage', 0)}
     hasLoadedCurrentLocale={boolean('hasLoadedCurrentLocale', true)}
     hasLoadedCurrentTheme={boolean('hasLoadedCurrentTheme', true)}
     isCheckingSystemTime={boolean('isCheckingSystemTime', false)}
@@ -73,7 +72,6 @@ export const ConnectivityIssuesSyncingConnectingStory = (props: {
     isNodeStopping={false}
     isNodeStopped={false}
     isTlsCertInvalid={false}
-    syncPercentage={0}
     hasLoadedCurrentLocale
     hasLoadedCurrentTheme
     isCheckingSystemTime={false}
@@ -95,7 +93,7 @@ export const ConnectivityIssuesSyncingConnectingStory = (props: {
   />
 );
 
-export const SyncIssuesSyncingConnectingStory = (props: {
+export const LoadingWalletDataSyncingConnectingStory = (props: {
   currentTheme: string,
 }) => (
   <SyncingConnecting
@@ -103,11 +101,10 @@ export const SyncIssuesSyncingConnectingStory = (props: {
     hasUnreadAnnouncements={false}
     hasUnreadNews={false}
     onToggleNewsFeedIconClick={action('onToggleNewsFeedIconClick')}
-    forceSyncIssue
+    isConnected
     cardanoNodeState={CardanoNodeStates.RUNNING}
     hasBeenConnected
     isFlight={false}
-    isConnected
     isSynced={false}
     isConnecting={false}
     isSyncing
@@ -115,7 +112,6 @@ export const SyncIssuesSyncingConnectingStory = (props: {
     isNodeStopping={false}
     isNodeStopped={false}
     isTlsCertInvalid={false}
-    syncPercentage={50}
     hasLoadedCurrentLocale
     hasLoadedCurrentTheme
     isCheckingSystemTime={false}
@@ -131,7 +127,7 @@ export const SyncIssuesSyncingConnectingStory = (props: {
     onDownloadLogs={action('onDownloadLogs')}
     onGetAvailableVersions={action('onGetAvailableVersions')}
     onStatusIconClick={linkTo('Diagnostics', () => 'default')}
-    disableDownloadLogs={boolean('disableDownloadLogs', false)}
+    disableDownloadLogs={false}
     showNewsFeedIcon
     isIncentivizedTestnet={isIncentivizedTestnetTheme(props.currentTheme)}
   />
