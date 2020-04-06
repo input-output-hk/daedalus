@@ -110,18 +110,9 @@ Dependencies are updated with the follow nix commands:
 
 Api documentation for edge `cardano-wallet` version: https://input-output-hk.github.io/cardano-wallet/api/edge/
 
-### CSS modules
-
-This boilerplate out of the box is configured to use [css-modules](https://github.com/css-modules/css-modules).
-
-All `.css` file extensions will use css-modules unless it has `.global.css`.
-
-If you need global styles, stylesheets with `.global.css` will not go through the
-css-modules loader. e.g. `app.global.css`
-
 ### Externals
 
-If you use any 3rd party libraries which can't or won't be built with webpack, you must list them in your `webpack.config.base.js`：
+If you use any 3rd party libraries which can't or won't be built with webpack, you must list them in your `source/main/webpack.config.js` and/or `source/renderer/webpack.config.js`：
 
 ```javascript
 externals: [
