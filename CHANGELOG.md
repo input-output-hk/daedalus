@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## vNext
+
+### Chores
+
+- Updated README ([PR 1953](https://github.com/input-output-hk/daedalus/pull/1953))
+
 ## 1.0.0-FC2
 
 ### Features
