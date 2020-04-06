@@ -52,7 +52,7 @@
 
 .downloadLogsButton {
   border-color: var(--theme-report-issue-connecting-text-color) !important;
-  color: var(--theme-report-issue-connecting-text-color);
+  color: var(--theme-report-issue-connecting-text-color) !important;
   display: inline-block;
   font-family: var(--font-regular);
   margin-bottom: 20px;
