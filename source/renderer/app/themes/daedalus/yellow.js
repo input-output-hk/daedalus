@@ -424,13 +424,8 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-report-issue-button-background-color-hover': '#424242',
     '--theme-report-issue-button-background-color-active': '#222222',
     '--theme-report-issue-connecting-background-color': '#fdcd68',
-    '--theme-report-issue-icon-color': '#f8f3ed',
     '--theme-report-issue-connecting-text-color': '#2d2d2d',
-    '--theme-report-issue-syncing-background-color': 'rgba(94, 96, 102, 0.05)',
-    '--theme-report-issue-syncing-text-color': '#2d2d2d',
-    '--theme-report-issue-syncing-download-logs-text-color': '#d6902f',
-    '--theme-report-issue-syncing-download-logs-text-color-connecting':
-      '#2d2d2d',
+    '--theme-report-issue-icon-color': '#f8f3ed',
   },
   rpAutocomplete: {
     '--rp-autocomplete-bg-color': '#fff',
