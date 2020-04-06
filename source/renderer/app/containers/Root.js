@@ -13,21 +13,30 @@ type Props = InjectedContainerProps;
 export default class Root extends Component<Props> {
   render() {
     const { stores, actions, children } = this.props;
-    const { app, networkStatus, profile, wallets, staking } = stores;
+    const {
+      app,
+      networkStatus,
+      nodeUpdate,
+      profile,
+      staking,
+      wallets,
+    } = stores;
     const { isStakingPage } = staking;
     const { isProfilePage, isSettingsPage } = profile;
+    const { showManualUpdate } = nodeUpdate;
     const { hasLoadedWallets } = wallets;
     const {
-      isSynced,
+      isConnected,
       isNodeStopping,
       isNodeStopped,
       isNotEnoughDiskSpace,
       isSplashShown,
+      isSystemTimeCorrect,
     } = networkStatus;
     const { isCurrentLocaleSet, areTermsOfUseAccepted } = profile;
 
     const isPageThatDoesntNeedWallets =
-      (isStakingPage || isSettingsPage) && hasLoadedWallets && isSynced;
+      (isStakingPage || isSettingsPage) && hasLoadedWallets && isConnected;
 
     // In case node is in stopping sequence we must show the "Connecting" screen
     // with the "Stopping Cardano node..." and "Cardano node stopped" messages
@@ -51,7 +60,13 @@ export default class Root extends Component<Props> {
       return React.Children.only(children);
     }
 
-    if (!isSynced || !hasLoadedWallets || isNotEnoughDiskSpace) {
+    if (
+      !isConnected ||
+      !hasLoadedWallets ||
+      isNotEnoughDiskSpace ||
+      !isSystemTimeCorrect ||
+      showManualUpdate
+    ) {
       return <LoadingPage stores={stores} actions={actions} />;
     }
 

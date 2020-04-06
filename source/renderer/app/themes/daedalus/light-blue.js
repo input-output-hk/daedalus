@@ -437,11 +437,6 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
       'rgba(250, 251, 252, 0.05)',
     '--theme-report-issue-connecting-text-color': '#fafbfc',
     '--theme-report-issue-icon-color': '#fafbfc',
-    '--theme-report-issue-syncing-background-color': 'rgba(94, 96, 102, 0.05)',
-    '--theme-report-issue-syncing-text-color': '#5e6066',
-    '--theme-report-issue-syncing-download-logs-text-color': '#5e6066',
-    '--theme-report-issue-syncing-download-logs-text-color-connecting':
-      '#fafbfc',
   },
   rpAutocomplete: {
     '--rp-autocomplete-bg-color': '#fafbfc',
