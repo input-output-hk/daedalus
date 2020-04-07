@@ -3792,9 +3792,9 @@ capture-stack-trace@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/capture-stack-trace/-/capture-stack-trace-1.0.1.tgz#a6c0bbe1f38f3aa0b92238ecb6ff42c344d4135d"
 
-"cardano-js@https://github.com/input-output-hk/cardano-js.git#1bb623667088a48ad103ff957b6dacc6dbbdadf2":
+"cardano-js@https://github.com/input-output-hk/cardano-js.git#wasm-buffer":
   version "0.4.1"
-  resolved "https://github.com/input-output-hk/cardano-js.git#1bb623667088a48ad103ff957b6dacc6dbbdadf2"
+  resolved "https://github.com/input-output-hk/cardano-js.git#9433f48754749e7949e6be7e120112fc9312db97"
   dependencies:
     bech32 "^1.1.3"
     bignumber.js "^9.0.0"
