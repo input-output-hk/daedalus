@@ -16,11 +16,6 @@ const messages = defineMessages({
     defaultMessage: '!!!Having trouble connecting to network?',
     description: 'Report connecting issue text on the loading screen.',
   },
-  reportSyncingIssueText: {
-    id: 'loading.screen.reportIssue.syncing.text',
-    defaultMessage: '!!!Having trouble syncing?',
-    description: 'Report syncing issue text on the loading screen.',
-  },
   reportIssueButtonLabel: {
     id: 'loading.screen.reportIssue.buttonLabel',
     defaultMessage: '!!!Open support ticket',
@@ -41,18 +36,6 @@ const messages = defineMessages({
     defaultMessage: '!!!https://iohk.zendesk.com/hc/en-us/requests/new/',
     description: 'Link to Open Support page',
   },
-  syncIssueArticleUrl: {
-    id: 'loading.screen.readIssueArticle.syncIssueArticleUrl',
-    defaultMessage:
-      '!!!https://iohk.zendesk.com/hc/en-us/articles/360011536933',
-    description: 'Link to sync issue article page',
-  },
-  syncIssueArticleUrlForITN: {
-    id: 'loading.screen.readIssueArticle.syncIssueArticleUrl.itn',
-    defaultMessage:
-      '!!!https://iohk.zendesk.com/hc/en-us/articles/900000048566',
-    description: 'Link to sync issue article page for Incentivized TestNet',
-  },
   connectivityIssueArticleUrl: {
     id: 'loading.screen.readIssueArticle.connectivityIssueArticleUrl',
     defaultMessage:
@@ -62,14 +45,10 @@ const messages = defineMessages({
 });
 
 type Props = {
-  isConnected: boolean,
   onIssueClick: Function,
   onOpenExternalLink: Function,
   onDownloadLogs: Function,
   disableDownloadLogs: boolean,
-  isConnecting: boolean,
-  isSyncing: boolean,
-  isIncentivizedTestnet: boolean,
 };
 
 export default class ReportIssue extends Component<Props> {
@@ -80,21 +59,11 @@ export default class ReportIssue extends Component<Props> {
   render() {
     const { intl } = this.context;
     const {
-      isConnected,
       onIssueClick,
       onOpenExternalLink,
       onDownloadLogs,
       disableDownloadLogs,
-      isConnecting,
-      isSyncing,
-      isIncentivizedTestnet,
     } = this.props;
-
-    const componentStyles = classNames([
-      styles.component,
-      isConnecting ? styles['is-connecting'] : null,
-      isSyncing ? styles['is-syncing'] : null,
-    ]);
 
     const reportIssueButtonClasses = classNames([
       'primary',
@@ -108,23 +77,15 @@ export default class ReportIssue extends Component<Props> {
     ]);
     const downloadLogsButtonClasses = classNames([
       styles.downloadLogsButton,
-      !isConnected ? styles.downloadLogsButtonConnecting : null,
       disableDownloadLogs ? styles.disabled : null,
     ]);
 
-    const syncIssueArticleUrl = isIncentivizedTestnet
-      ? messages.syncIssueArticleUrlForITN
-      : messages.syncIssueArticleUrl;
-    const readArticleButtonUrl = isConnected
-      ? syncIssueArticleUrl
-      : messages.connectivityIssueArticleUrl;
+    const readArticleButtonUrl = messages.connectivityIssueArticleUrl;
 
     return (
-      <div className={componentStyles}>
+      <div className={styles.component}>
         <h1 className={styles.reportIssueText}>
-          {!isConnected
-            ? intl.formatMessage(messages.reportConnectingIssueText)
-            : intl.formatMessage(messages.reportSyncingIssueText)}
+          {intl.formatMessage(messages.reportConnectingIssueText)}
         </h1>
         <Button
           className={readArticleButtonClasses}
@@ -159,7 +120,6 @@ export default class ReportIssue extends Component<Props> {
           skin={ButtonSkin}
         />
         <br />
-
         <Link
           className={downloadLogsButtonClasses}
           onClick={!disableDownloadLogs ? onDownloadLogs : null}
