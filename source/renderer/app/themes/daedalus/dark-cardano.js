@@ -417,14 +417,8 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--theme-report-issue-button-background-color-active': '#1cabad',
     '--theme-report-issue-connecting-background-color':
       'rgba(255, 255, 255, 0.05)',
-    '--theme-report-issue-icon-color': '#121326',
     '--theme-report-issue-connecting-text-color': '#ffffff',
-    '--theme-report-issue-syncing-background-color':
-      'rgba(255, 255, 255, 0.05)',
-    '--theme-report-issue-syncing-text-color': '#ffffff',
-    '--theme-report-issue-syncing-download-logs-text-color': '#ffffff',
-    '--theme-report-issue-syncing-download-logs-text-color-connecting':
-      '#ffffff',
+    '--theme-report-issue-icon-color': '#121326',
   },
   rpAutocomplete: {
     '--rp-autocomplete-bg-color': '#1e1f31',

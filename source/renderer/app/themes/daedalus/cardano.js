@@ -439,11 +439,6 @@ export const CARDANO_THEME_OUTPUT = {
       'rgba(255, 255, 255, 0.05)',
     '--theme-report-issue-connecting-text-color': '#ffffff',
     '--theme-report-issue-icon-color': '#ffffff',
-    '--theme-report-issue-syncing-background-color': 'rgba(94, 96, 102, 0.05)',
-    '--theme-report-issue-syncing-text-color': '#5e6066',
-    '--theme-report-issue-syncing-download-logs-text-color': '#5e6066',
-    '--theme-report-issue-syncing-download-logs-text-color-connecting':
-      '#ffffff',
   },
   rpAutocomplete: {
     '--rp-autocomplete-bg-color': '#fff',

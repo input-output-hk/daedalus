@@ -3,18 +3,20 @@ Changelog
 
 ## vNext
 
-### Fixes
-
-- Fixed "Restoration" dialog validation ([PR 1951](https://github.com/input-output-hk/daedalus/pull/1951))
-
 ### Chores
 
 - Refactored and improved automated tests setup ([PR 1912](https://github.com/input-output-hk/daedalus/pull/1912))
+- Updated README ([PR 1953](https://github.com/input-output-hk/daedalus/pull/1953))
 
 ## 1.0.0-FC2
 
+### Features
+
+- Removed "Syncing" screen ([PR 1952](https://github.com/input-output-hk/daedalus/pull/1952))
+
 ### Fixes
 
+- Fixed "Restoration" dialog validation ([PR 1951](https://github.com/input-output-hk/daedalus/pull/1951))
 - Fixed the `EPERM` errors thrown in the console upon changing wallet name on the "Wallet Settings" screen ([PR 1944](https://github.com/input-output-hk/daedalus/pull/1944))
 
 ### Chores
