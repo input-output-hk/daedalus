@@ -3,6 +3,10 @@ Changelog
 
 ## vNext
 
+### Features
+
+- Implemented "Wallet Import" feature ([PR 1956](https://github.com/input-output-hk/daedalus/pull/1956))
+
 ### Chores
 
 - Updated README ([PR 1953](https://github.com/input-output-hk/daedalus/pull/1953))
