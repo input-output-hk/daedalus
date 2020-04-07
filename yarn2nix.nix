@@ -1,10 +1,9 @@
 { lib, yarn, nodejs, python, api, apiVersion
 , cluster, buildNum, nukeReferences, fetchzip
 , daedalus, stdenv, win64 ? false, wine64, runCommand
-, fetchurl, unzip, spacedName, iconPath, launcherConfig }:
+, fetchurl, unzip, spacedName, iconPath, launcherConfig, pkgs }:
 let
   cluster' = launcherConfig.networkName;
-  nodejs = nodejs-12_x;
   yarn2nix = import (fetchzip {
     url = "https://github.com/moretea/yarn2nix/archive/v1.0.0.tar.gz";
     sha256 = "02bzr9j83i1064r1r34cn74z7ccb84qb5iaivwdplaykyyydl1k8";
