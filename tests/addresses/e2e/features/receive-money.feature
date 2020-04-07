@@ -18,7 +18,6 @@ Feature: Receive money
     When I click the ShowUsed switch
     Then I should not see any used addresses
 
-  @byron @api-wip-byron
   Scenario: Hide/show "Byron" wallet used addresses
     Given I am on the "Target Wallet" wallet "receive" screen
     And I enter wallet password in generate address input field "Secret1234"

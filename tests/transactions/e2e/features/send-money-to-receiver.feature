@@ -7,7 +7,6 @@ Feature: Send Money to Receiver
       | name   |
       | first  |
 
-  @api-wip-byron
   Scenario: User Sends Money to Receiver
     Given I have a "Test Wallet" wallet with funds
     And I am on the "Test Wallet" wallet "send" screen
@@ -28,6 +27,7 @@ Feature: Send Money to Receiver
       | balance |
       | 0.00001 |
 
+  @api-wip-byron
   Scenario: User Enters Wrong Receiver Address
     Given I am on the "first" wallet "send" screen
     And I can see the send form
@@ -38,7 +38,6 @@ Feature: Send Money to Receiver
       | message                   |
       | api.errors.invalidAddress |
 
-  @api-wip-byron
   Scenario Outline: User Enters Wrong Amount
     Given I am on the "first" wallet "send" screen
     And I can see the send form

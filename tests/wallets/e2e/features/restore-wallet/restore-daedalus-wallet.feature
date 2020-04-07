@@ -78,8 +78,8 @@ Feature: Restore Daedalus wallet
     Then I click on option "12 words"
     And I click continue
     And I enter recovery phrase in restore wallet dialog:
-      | recoveryPhrase                                                                  |
-      | prison census discover give sound behave hundred cave someone orchard just wild |
+      | recoveryPhrase                                                             |
+      | tuna only march magic high twice flavor borrow hurt bullet awkward similar |
     And I click Check recovery phrase button
     And I enter wallet name "Daedalus Balance wallet" in restore wallet dialog
     And I enter wallet password in restore wallet dialog:
@@ -90,7 +90,7 @@ Feature: Restore Daedalus wallet
     And I click close
     Then I should not see the restore wallet dialog anymore
     And I should have newly created "Daedalus Balance wallet" wallet loaded
-    And "Daedalus Balance wallet" wallet should have "legacy_6eb9a6862e5656b4a52fa6fae8eb3a3e8f7c2bd6" as id
+    And "Daedalus Balance wallet" wallet should have "legacy_8325d53f736d08a92ecb67e762c63a0318143986" as id
     And I should be on the "Daedalus Balance wallet" wallet "summary" screen
     And I should see the restore status notification while restore is running
     And I should not see the restore status notification once restore is finished

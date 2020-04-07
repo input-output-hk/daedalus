@@ -11,7 +11,8 @@ declare var daedalus: Daedalus;
 const SELECTORS = {
   ADDRESS_ACTIVE: '.WalletReceive_hash',
   ADDRESS_COMPONENT: '.Address_component',
-  ADDRESS_USED: '.AddressItn_usedWalletAddress',
+  ADDRESS_USED_ITN: '.AddressItn_usedWalletAddress',
+  ADDRESS_USED: '.Address_usedWalletAddress',
   GENERATE_ADDRESS_BTN: '.generateAddressButton:not(.WalletReceive_spinning)',
   GENERATE_ADDRESS_PASSWORD_INPUT: '.WalletReceive_spendingPassword .SimpleFormField_inputWrapper input',
   SHOW_USED_SWITCH: '.SimpleSwitch_switch',
@@ -56,26 +57,31 @@ When(
 Then('I should see {int} used addresses', { timeout: 60000 }, async function(
   numberOfAddresses
 ) {
-  await this.client.waitForVisible('.VirtualAddressesList_list');
+  let addressSelector = SELECTORS.ADDRESS_USED;
+  const isIncentivizedTestnet = await this.client.execute(() => global.isIncentivizedTestnet);
+  if (isIncentivizedTestnet.value) {
+    addressSelector = SELECTORS.ADDRESS_USED_ITN;
+    await this.client.waitForVisible('.VirtualAddressesList_list');
 
-  await this.client.execute(() => {
-    const scrollableListContainer = window.document.getElementsByClassName(
-      'ReactVirtualized__Grid__innerScrollContainer'
-    );
-    const scrollableList = window.document.getElementsByClassName(
-      'VirtualAddressesList_list'
-    );
-    const listHeight = scrollableListContainer[0].getBoundingClientRect()
-      .height;
+    await this.client.execute(() => {
+      const scrollableListContainer = window.document.getElementsByClassName(
+        'ReactVirtualized__Grid__innerScrollContainer'
+      );
+      const scrollableList = window.document.getElementsByClassName(
+        'VirtualAddressesList_list'
+      );
+      const listHeight = scrollableListContainer[0].getBoundingClientRect()
+        .height;
 
-    // Scroll to bottom
-    scrollableList[0].scroll(0, listHeight);
-  });
+      // Scroll to bottom
+      scrollableList[0].scroll(0, listHeight);
+    });
+  }
 
   const addressesFound = await getVisibleElementsCountForSelector(
     this.client,
-    SELECTORS.ADDRESS_USED,
-    SELECTORS.ADDRESS_USED,
+    addressSelector,
+    addressSelector,
     60000
   );
   expect(addressesFound).to.equal(numberOfAddresses);
@@ -97,15 +103,18 @@ Then('I should not see any used addresses', { timeout: 60000 }, async function()
     // Scroll to bottom
     scrollableList[0].scroll(0, listHeight);
   });
-
-  await this.client.waitForVisible(SELECTORS.ADDRESS_USED, null, true);
+  const isIncentivizedTestnet = await this.client.execute(() => global.isIncentivizedTestnet);
+  await this.client.waitForVisible(isIncentivizedTestnet.value ? SELECTORS.ADDRESS_USED_ITN : SELECTORS.ADDRESS_USED, null, true);
 });
 
 Then('I should see {int} addresses', async function(numberOfAddresses) {
-  const addresses = await this.client.getAttribute(
+  let addresses = await this.client.getAttribute(
     '.Address_component',
     'class'
   );
+  if (!Array.isArray(addresses)) {
+    addresses = [addresses];
+  };
   const lastAddressClass = addresses[addresses.length - 1];
   const lastGeneratedAddressClasses = lastAddressClass.split(' ');
   const lastGeneratedAddressNumber = lastGeneratedAddressClasses[0].split(
