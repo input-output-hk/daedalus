@@ -241,8 +241,6 @@ export type GenerateWalletMigrationReportMainResponse = void;
 /**
  * Channel for verifying a wallet's recovery phrase
  */
-export const VERIFY_RECOVERY_PHRASE_CHANNEL = 'VERIFY_RECOVERY_PHRASE_CHANNEL';
-export type VerifyRecoveryPhraseRendererRequest = {
-  recoveryPhrase: Array<string>,
-};
-export type VerifyRecoveryPhraseMainResponse = string;
+export const GET_WASM_BINARY_CHANNEL = 'GET_WASM_BINARY_CHANNEL';
+export type getWasmBynaryRendererRequest = void;
+export type getWasmBynaryMainResponse = Uint8Array;
