@@ -78,8 +78,8 @@ Feature: Wallet Settings
     And I click outside "name" input field
     Then I should see new wallet name "キュビズム"
 
-  @skip
-  Scenario: User force Wallet resync
+  @shelley
+  Scenario: User force wallet resync
     Given I am on the "first" wallet "settings" screen
     When I click "Resync wallet" button
     And I see "Resync wallet" button spinner

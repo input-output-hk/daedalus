@@ -265,12 +265,7 @@ export const createWallets = async function(
 };
 
 const createWalletsSequentially = async function(wallets: Array<any>) {
-  this.wallets = [];
-  const isIncentivizedTestnetRequest = await this.client.execute(() => {
-    return daedalus.environment.isIncentivizedTestnet
-  });
-  const isIncentivizedTestnet = isIncentivizedTestnetRequest.value;
-
+  const isIncentivizedTestnetRequest = await this.client.execute(() => global.isIncentivizedTestnet);
   for (const walletData of wallets) {
     const result = await this.client.executeAsync((wallet, isIncentivizedTestnet, done) => {
       const mnemonic = daedalus.utils.crypto.generateMnemonic(isIncentivizedTestnet ? 15 : 12);
@@ -292,10 +287,9 @@ const createWalletsSequentially = async function(wallets: Array<any>) {
             .catch(error => done(error))
         )
         .catch(error => done(error.stack));
-    }, walletData, isIncentivizedTestnet);
+    }, walletData, isIncentivizedTestnetRequest.value);
     const wallet = await waitUntilWalletIsLoaded.call(this, walletData.name);
     addOrSetWalletsForScenario.call(this, wallet);
-    this.wallets = result.value;
   }
 };
 
@@ -303,9 +297,9 @@ const createWalletsAsync = async function(table, isLegacy?: boolean) {
   const result = await this.client.executeAsync((wallets, isLegacyWallet, done) => {
     const mnemonics = {};
     const { restoreLegacyRequest, walletsRequest } = daedalus.stores.wallets;
-    const { restoreLegacyWallet, createWallet } = daedalus.api.ada;
+    const { restoreByronRandomWallet, createWallet } = daedalus.api.ada;
     const request = isLegacyWallet ? restoreLegacyRequest : walletsRequest;
-    const apiEndpoint = isLegacyWallet ? restoreLegacyWallet : createWallet;
+    const apiEndpoint = isLegacyWallet ? restoreByronRandomWallet : createWallet;
     const mnemonicsLength = isLegacyWallet ? 12 : 15;
 
     window.Promise.all(

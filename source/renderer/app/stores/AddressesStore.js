@@ -1,5 +1,5 @@
 // @flow
-import { find, last } from 'lodash';
+import { find, last, filter } from 'lodash';
 import { observable, computed, action, runInAction } from 'mobx';
 import Store from './lib/Store';
 import CachedRequest from './lib/LocalizedCachedRequest';
@@ -9,7 +9,7 @@ import LocalizableError from '../i18n/LocalizableError';
 import type { Address } from '../api/addresses/types';
 
 export default class AddressesStore extends Store {
-  @observable lastGeneratedAddress: ?Address = null;
+  @observable lastGeneratedAddress: ?WalletAddress = null;
   @observable addressesRequests: Array<{
     walletId: string,
     isLegacy: boolean,
@@ -47,7 +47,10 @@ export default class AddressesStore extends Store {
       if (address != null) {
         this._refreshAddresses();
         runInAction('set last generated address and reset error', () => {
-          this.lastGeneratedAddress = address;
+          this.lastGeneratedAddress = new WalletAddress({
+            id: address.id,
+            used: address.state === 'used',
+          });
           this.error = null;
         });
       }
@@ -75,8 +78,21 @@ export default class AddressesStore extends Store {
   @computed get active(): ?WalletAddress {
     const wallet = this.stores.wallets.active;
     if (!wallet) return null;
+
+    // If address generated and not used, set as active address
+    if (this.lastGeneratedAddress && !this.lastGeneratedAddress.used)
+      return this.lastGeneratedAddress;
+
+    // Check if wallet has addresses
     const addresses = this._getAddressesAllRequest(wallet.id).result;
-    return addresses ? last(addresses) : null;
+    if (!addresses) return null;
+
+    // Check if there is any unused address and se last as active
+    const unusedAddresses = filter(addresses, address => !address.used);
+    if (unusedAddresses.length) return last(unusedAddresses);
+
+    // Set last used address as active
+    return last(addresses);
   }
 
   @computed get totalAvailable(): number {
@@ -114,10 +130,6 @@ export default class AddressesStore extends Store {
   getAddressesByWalletId = async (
     walletId: string
   ): Promise<Array<WalletAddress>> => {
-    if (!global.isIncentivizedTestnet) {
-      // Wait for address to be generated
-      await this.createByronWalletAddressRequest.result;
-    }
     const addresses = await this._getAddressesAllRequest(walletId);
     return addresses || [];
   };

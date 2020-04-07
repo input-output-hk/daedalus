@@ -35,13 +35,12 @@ Given(
       const txResponse = await this.client.executeAsync((transaction, done) => {
         daedalus.stores.addresses
           .getAddressesByWalletId(transaction.destinationWalletId)
-          .then(addresses => {
-            return daedalus.api.ada.createTransaction(
+          .then(addresses =>
+            daedalus.api.ada.createTransaction(
               window.Object.assign(transaction, {
                 address: addresses[0].id, // First address of receiving wallet
               })
             )
-            }
           )
           .then(done);
       }, tx);
@@ -69,18 +68,6 @@ When(
     const wallet = getWalletByName.call(this, walletName);
     const walletId = getRawWalletId(wallet.id);
     const isLegacy = wallet.isLegacy;
-    const isIncentivizedTestnet = await this.client.execute(() => global.isIncentivizedTestnet);
-
-    // Generate address for Byron wallet
-    if (!isIncentivizedTestnet.value) {
-      await this.client.executeAsync((walletId, done) => {
-        daedalus.stores.addresses._createByronWalletAddress({
-          walletId,
-          passphrase: 'Secret1234',
-        })
-        .then(done)
-      }, walletId);
-    }
 
     // Get Destination wallet address
     const walletAddress = await this.client.executeAsync((walletId, isLegacy, done) => {

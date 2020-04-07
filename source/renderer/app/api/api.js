@@ -988,6 +988,23 @@ export default class AdaApi {
         { walletInitData },
         type
       );
+
+      // Genearte address for restored Byron wallet without addresses
+      if (!isIncentivizedTestnet) {
+        const { id: walletId } = legacyWallet;
+        const walletAddresses = await getByronWalletAddresses(
+          this.config,
+          walletId
+        );
+        if (!walletAddresses || (walletAddresses && !walletAddresses.length)) {
+          const address: Address = await createByronWalletAddress(this.config, {
+            passphrase: spendingPassword,
+            walletId,
+          });
+          logger.debug('AdaApi::createAddress (Byron) success', { address });
+        }
+      }
+
       const extraLegacyWalletProps = {
         address_pool_gap: 0, // Not needed for legacy wallets
         delegation: {
@@ -1042,6 +1059,23 @@ export default class AdaApi {
         { walletInitData },
         type
       );
+
+      // Genearte address for restored Byron wallet without addresses
+      if (!isIncentivizedTestnet) {
+        const { id: walletId } = legacyWallet;
+        const walletAddresses = await getByronWalletAddresses(
+          this.config,
+          walletId
+        );
+        if (!walletAddresses || (walletAddresses && !walletAddresses.length)) {
+          const address: Address = await createByronWalletAddress(this.config, {
+            passphrase: spendingPassword,
+            walletId,
+          });
+          logger.debug('AdaApi::createAddress (Byron) success', { address });
+        }
+      }
+
       const extraLegacyWalletProps = {
         address_pool_gap: 0, // Not needed for legacy wallets
         delegation: {

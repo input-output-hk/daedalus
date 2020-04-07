@@ -133,9 +133,7 @@ Before({ tags: '@e2e', timeout: DEFAULT_TIMEOUT * 2 }, async function(testCase) 
           .then(daedalus.api.localStorage.reset)
           .then(daedalus.stores.wallets.refreshWalletsData())
           .then(done)
-          .catch(error => {
-            throw error;
-          });
+          .catch(error => done(error));
       } else {
         setTimeout(resetBackend, 50);
       }

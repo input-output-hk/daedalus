@@ -31,7 +31,7 @@ Feature: Receive money
     When I click the ShowUsed switch
     Then I should see 1 addresses
 
-  @byron @api-wip-byron
+  @byron
   Scenario: Byron Wallet addresses ordering
     Given I am on the "Target Wallet" wallet "receive" screen
     And I enter wallet password in generate address input field "Secret1234"
