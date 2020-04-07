@@ -38,7 +38,9 @@ export default class WalletAddPage extends Component<Props> {
       createWalletUseNewProcess,
       restoreWalletStep,
       restoreWalletUseNewProcess,
+      environment,
     } = wallets;
+    const { isMainnet, isTestnet } = environment;
 
     const onCreateWallet = createWalletUseNewProcess
       ? () => actions.wallets.createWalletBegin.trigger()
@@ -75,6 +77,8 @@ export default class WalletAddPage extends Component<Props> {
             actions.dialogs.open.trigger({ dialog: WalletFileImportDialog })
           }
           isMaxNumberOfWalletsReached={wallets.hasMaxWallets}
+          isMainnet={isMainnet}
+          isTestnet={isTestnet}
         />
       );
     }
