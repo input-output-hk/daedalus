@@ -1,0 +1,12 @@
+.modal {
+  background-color: rgba(36, 62, 98, 0.96) !important;
+  border-radius: 0 !important;
+  bottom: 0;
+  box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.25) !important;
+  height: calc(100% - 85px);
+  max-height: 100% !important;
+  max-width: 100% !important;
+  position: absolute;
+  right: 0;
+  width: calc(100% - 85px);
+}

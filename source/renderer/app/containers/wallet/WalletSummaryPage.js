@@ -121,12 +121,16 @@ export default class WalletSummaryPage extends Component<Props> {
           isLoadingTransactions={recentTransactionsRequest.isExecutingFirstTime}
         />
         {walletTransactions}
-        {isDialogOpen(ChangeSpendingPasswordDialog) ? (
-          <ChangeSpendingPasswordDialogContainer forceSetPassword />
-        ) : false}
         {isDialogOpen(SetWalletPasswordDialog) ? (
           <SetWalletPasswordDialogContainer />
-        ) : false}
+        ) : (
+          false
+        )}
+        {isDialogOpen(ChangeSpendingPasswordDialog) ? (
+          <ChangeSpendingPasswordDialogContainer forceSetPassword />
+        ) : (
+          false
+        )}
       </VerticalFlexContainer>
     );
   }

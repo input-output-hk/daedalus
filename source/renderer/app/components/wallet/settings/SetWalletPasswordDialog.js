@@ -51,7 +51,11 @@ export default class SetWalletPasswordDialog extends Component<Props> {
     ];
 
     return (
-      <Dialog actions={actions} className={styles.setPasswordDialog}>
+      <Dialog
+        actions={actions}
+        className={styles.setPasswordDialog}
+        isSetWalletPasswordDialog
+      >
         <div className={styles.setPasswordWrapper}>
           <img
             src={insecureWalletIcon}
