@@ -437,11 +437,6 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
       'rgba(250, 251, 252, 0.05)',
     '--theme-report-issue-connecting-text-color': '#fafbfc',
     '--theme-report-issue-icon-color': '#fafbfc',
-    '--theme-report-issue-syncing-background-color': 'rgba(94, 96, 102, 0.05)',
-    '--theme-report-issue-syncing-text-color': '#5e6066',
-    '--theme-report-issue-syncing-download-logs-text-color': '#5e6066',
-    '--theme-report-issue-syncing-download-logs-text-color-connecting':
-      '#fafbfc',
   },
   rpAutocomplete: {
     '--rp-autocomplete-bg-color': '#fafbfc',
@@ -544,6 +539,11 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--rp-radio-label-text-color': '#5e6066',
     '--rp-radio-size': '22px',
   },
+  rpScrollBar: {
+    '--rp-scrollbar-thumb-bg-color:': 'rgba(94, 96, 102, 0.3)',
+    '--rp-scrollbar-thumb-bg-color-active': 'rgba(94, 96, 102, 0.5)',
+    '--rp-scrollbar-thumb-bg-color-hover': 'rgba(94, 96, 102, 0.5)',
+  },
   rpSelect: {
     '--rp-select-arrow-bg-color': 'rgba(94, 96, 102, 0.3)',
     '--rp-select-arrow-bg-color-open': 'rgba(94, 96, 102, 0.7)',
@@ -599,7 +599,6 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
   },
   scrollbar: {
     '--theme-scrollbar-thumb-background': 'rgba(94, 96, 102, 0.3)',
-    '--theme-scrollbar-thumb-background-hover': 'rgba(94, 96, 102, 0.5)',
   },
   sendConfirmation: {
     '--theme-send-confirmation-dialog-send-values-color': '#ea4c5b',
@@ -637,11 +636,11 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-sidebar-menu-add-button-background-color-hover': '#1f324d',
     '--theme-sidebar-menu-add-button-text-color': '#fafbfc',
     '--theme-sidebar-wallets-scrollbar-background-color':
-      'rgba(255, 255, 255, 0.1)',
+      'rgba(255, 255, 255, 0.3)',
     '--theme-sidebar-wallets-scrollbar-background-color-active':
-      'rgba(255, 255, 255, 0.3)',
+      'rgba(255, 255, 255, 0.5)',
     '--theme-sidebar-wallets-scrollbar-background-color-hover':
-      'rgba(255, 255, 255, 0.3)',
+      'rgba(255, 255, 255, 0.5)',
     '--theme-sidebar-category-networkInfo-background-color': '#fafbfc',
     '--theme-sidebar-category-networkInfo-text-color': '#5e6066',
   },

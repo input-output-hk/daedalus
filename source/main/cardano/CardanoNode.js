@@ -91,7 +91,7 @@ const { CARDANO_PROCESS_NAME } = deriveProcessNames(
   nodeImplementation
 );
 // create store for persisting CardanoNode and Daedalus PID's in fs
-const store = new Store({ name: 'config' });
+const store = new Store();
 
 export class CardanoNode {
   /**

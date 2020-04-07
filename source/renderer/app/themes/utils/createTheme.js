@@ -160,6 +160,11 @@ export const createReactPolymorphTheme = (
       '--rp-radio-label-text-color': `${text.primary}`,
       '--rp-radio-size': '22px',
     },
+    rpScrollBar: {
+      '--rp-scrollbar-thumb-bg-color:': 'rgba(255, 255, 255, 0.3)',
+      '--rp-scrollbar-thumb-bg-color-active': 'rgba(255, 255, 255, 0.5)',
+      '--rp-scrollbar-thumb-bg-color-hover': 'rgba(255, 255, 255, 0.5)',
+    },
     rpSelect: {
       '--rp-select-arrow-bg-color': `${border}`,
       '--rp-select-arrow-bg-color-open': `${focus}`,
@@ -712,16 +717,11 @@ export const createDaedalusComponentsTheme = (
       '--theme-report-issue-button-background-color-hover': `${background.secondary.light}`,
       '--theme-report-issue-button-background-color-active': `${background.secondary.darkest}`,
       '--theme-report-issue-connecting-background-color': `${background.primary.regular}`,
-      '--theme-report-issue-icon-color': `${background.primary.regular}`,
       '--theme-report-issue-connecting-text-color': `${text.primary}`,
-      '--theme-report-issue-syncing-background-color': `${background.primary.regular}`,
-      '--theme-report-issue-syncing-text-color': `${text.primary}`,
-      '--theme-report-issue-syncing-download-logs-text-color': `${text.primary}`,
-      '--theme-report-issue-syncing-download-logs-text-color-connecting': `${text.primary}`,
+      '--theme-report-issue-icon-color': `${background.primary.regular}`,
     },
     scrollbar: {
       '--theme-scrollbar-thumb-background': `${background.primary.ultralight}`,
-      '--theme-scrollbar-thumb-background-hover': `${background.primary.ultralighter}`,
     },
     sendConfirmation: {
       '--theme-send-confirmation-dialog-send-values-color': `${error.regular}`,

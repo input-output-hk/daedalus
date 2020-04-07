@@ -487,6 +487,7 @@ export default class WalletsStore extends Store {
       await this._patchWalletRequestWithNewWallet(wallet);
       this.actions.dialogs.closeActiveDialog.trigger();
       this.goToWalletRoute(wallet.id);
+      this.refreshWalletsData();
     }
   };
 
@@ -876,8 +877,8 @@ export default class WalletsStore extends Store {
   };
 
   _pollRefresh = async () => {
-    const { isSynced } = this.stores.networkStatus;
-    return isSynced && this.refreshWalletsData();
+    const { isConnected } = this.stores.networkStatus;
+    return isConnected && this.refreshWalletsData();
   };
 
   _updateActiveWalletOnRouteChanges = () => {

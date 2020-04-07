@@ -257,6 +257,7 @@ export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
     '--theme-input-placeholder-color': 'rgba(255, 255, 255, 0.5)',
     '--theme-input-remove-color-light': '#ea4c5b',
     '--theme-input-right-floating-text-color': 'rgba(255, 255, 255, 0.5)',
+    '--theme-input-right-floating-text-success-color': 'rgba(255, 255, 255, 1)',
     '--theme-input-text-color': '#ffffff',
   },
   link: {
@@ -416,14 +417,8 @@ export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
     '--theme-report-issue-button-background-color-active': '#e6a009',
     '--theme-report-issue-connecting-background-color':
       'rgba(255, 255, 255, 0.05)',
-    '--theme-report-issue-icon-color': '#121326',
     '--theme-report-issue-connecting-text-color': '#ffffff',
-    '--theme-report-issue-syncing-background-color':
-      'rgba(255, 255, 255, 0.05)',
-    '--theme-report-issue-syncing-text-color': '#ffffff',
-    '--theme-report-issue-syncing-download-logs-text-color': '#ffffff',
-    '--theme-report-issue-syncing-download-logs-text-color-connecting':
-      '#ffffff',
+    '--theme-report-issue-icon-color': '#121326',
   },
   rpAutocomplete: {
     '--rp-autocomplete-bg-color': '#1e1f31',
@@ -526,6 +521,11 @@ export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
     '--rp-radio-label-text-color': '#ffffff',
     '--rp-radio-size': '22px',
   },
+  rpScrollBar: {
+    '--rp-scrollbar-thumb-bg-color:': 'rgba(255, 255, 255, 0.3)',
+    '--rp-scrollbar-thumb-bg-color-active': 'rgba(255, 255, 255, 0.5)',
+    '--rp-scrollbar-thumb-bg-color-hover': 'rgba(255, 255, 255, 0.5)',
+  },
   rpSelect: {
     '--rp-select-arrow-bg-color': 'rgba(255, 255, 255, 0.3)',
     '--rp-select-arrow-bg-color-open': 'rgba(255, 255, 255, 0.7)',
@@ -580,8 +580,7 @@ export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
     '--rp-tooltip-text-color': '#ffffff',
   },
   scrollbar: {
-    '--theme-scrollbar-thumb-background': 'rgba(255, 255, 255, 0.1)',
-    '--theme-scrollbar-thumb-background-hover': 'rgba(255, 255, 255, 0.3)',
+    '--theme-scrollbar-thumb-background': 'rgba(255, 255, 255, 0.3)',
   },
   sendConfirmation: {
     '--theme-send-confirmation-dialog-send-values-color': '#ea4c5b',
@@ -620,11 +619,11 @@ export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
     '--theme-sidebar-menu-add-button-background-color-hover': '#20212ea8',
     '--theme-sidebar-menu-add-button-text-color': '#ffffff',
     '--theme-sidebar-wallets-scrollbar-background-color':
-      'rgba(255, 255, 255, 0.1)',
+      'rgba(255, 255, 255, 0.3)',
     '--theme-sidebar-wallets-scrollbar-background-color-active':
-      'rgba(255, 255, 255, 0.3)',
+      'rgba(255, 255, 255, 0.5)',
     '--theme-sidebar-wallets-scrollbar-background-color-hover':
-      'rgba(255, 255, 255, 0.3)',
+      'rgba(255, 255, 255, 0.5)',
     '--theme-sidebar-category-networkInfo-background-color': '#ffb923',
     '--theme-sidebar-category-networkInfo-text-color': '#121326',
   },
@@ -764,7 +763,7 @@ export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
   },
   support: {
     '--theme-support-settings-item-color': '#ffffff',
-    '--theme-support-settings-link-color': '#36374d',
+    '--theme-support-settings-link-color': '#ffb923',
     '--theme-support-settings-text-color': '#ffffff',
   },
   syncing: {

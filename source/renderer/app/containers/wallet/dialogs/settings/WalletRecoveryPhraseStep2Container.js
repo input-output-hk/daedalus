@@ -29,7 +29,7 @@ export default class WalletRecoveryPhraseStep2Container extends Component<Props>
     } = walletBackup;
 
     let dialog;
-    if (getWalletIdAndBalanceRequestNext.wasExecuted) {
+    if (nextRecoveryPhraseMatching !== null) {
       if (nextRecoveryPhraseMatching) {
         dialog = WalletRecoveryPhraseStep3Dialog;
         actions.wallets.updateRecoveryPhraseVerificationDate.trigger();

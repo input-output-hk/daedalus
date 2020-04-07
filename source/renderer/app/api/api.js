@@ -336,7 +336,7 @@ export default class AdaApi {
   getTransactions = async (
     request: GetTransactionsRequest
   ): Promise<GetTransactionsResponse> => {
-    logger.debug('AdaApi::searchHistory called', { parameters: request });
+    logger.debug('AdaApi::getTransactions called', { parameters: request });
     const { walletId, order, fromDate, toDate, isLegacy } = request;
 
     const params = Object.assign(
@@ -361,6 +361,9 @@ export default class AdaApi {
       } else {
         response = await getTransactionHistory(this.config, walletId, params);
       }
+      logger.debug('AdaApi::getTransactions success', {
+        transactions: response,
+      });
       const transactions = response.map(tx =>
         _createTransactionFromServerData(tx)
       );
@@ -368,7 +371,7 @@ export default class AdaApi {
         resolve({ transactions, total: response.length })
       );
     } catch (error) {
-      logger.error('AdaApi::searchHistory error', { error });
+      logger.error('AdaApi::getTransactions error', { error });
       throw new GenericApiError(error);
     }
 
@@ -546,6 +549,15 @@ export default class AdaApi {
           { walletInitData },
           'random'
         );
+
+        // Genearte address for the newly created Byron wallet
+        const { id: walletId } = legacyWallet;
+        const address: Address = await createByronWalletAddress(this.config, {
+          passphrase: spendingPassword,
+          walletId,
+        });
+        logger.debug('AdaApi::createAddress (Byron) success', { address });
+
         const extraLegacyWalletProps = {
           address_pool_gap: 0, // Not needed for legacy wallets
           delegation: {

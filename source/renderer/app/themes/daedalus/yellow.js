@@ -424,13 +424,8 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-report-issue-button-background-color-hover': '#424242',
     '--theme-report-issue-button-background-color-active': '#222222',
     '--theme-report-issue-connecting-background-color': '#fdcd68',
-    '--theme-report-issue-icon-color': '#f8f3ed',
     '--theme-report-issue-connecting-text-color': '#2d2d2d',
-    '--theme-report-issue-syncing-background-color': 'rgba(94, 96, 102, 0.05)',
-    '--theme-report-issue-syncing-text-color': '#2d2d2d',
-    '--theme-report-issue-syncing-download-logs-text-color': '#d6902f',
-    '--theme-report-issue-syncing-download-logs-text-color-connecting':
-      '#2d2d2d',
+    '--theme-report-issue-icon-color': '#f8f3ed',
   },
   rpAutocomplete: {
     '--rp-autocomplete-bg-color': '#fff',
@@ -533,6 +528,11 @@ export const YELLOW_THEME_OUTPUT = {
     '--rp-radio-label-text-color': '#2d2d2d',
     '--rp-radio-size': '22px',
   },
+  rpScrollBar: {
+    '--rp-scrollbar-thumb-bg-color:': 'rgba(45, 45, 45, 0.3)',
+    '--rp-scrollbar-thumb-bg-color-active': 'rgba(45, 45, 45, 0.5)',
+    '--rp-scrollbar-thumb-bg-color-hover': 'rgba(45, 45, 45, 0.5)',
+  },
   rpSelect: {
     '--rp-select-arrow-bg-color': 'rgba(45, 45, 45, 0.2)',
     '--rp-select-arrow-bg-color-open': '#2d2d2d',
@@ -588,7 +588,6 @@ export const YELLOW_THEME_OUTPUT = {
   },
   scrollbar: {
     '--theme-scrollbar-thumb-background': 'rgba(45, 45, 45, 0.3)',
-    '--theme-scrollbar-thumb-background-hover': 'rgba(45, 45, 45, 0.5)',
   },
   sendConfirmation: {
     '--theme-send-confirmation-dialog-send-values-color': '#ea4c5b',
@@ -632,11 +631,11 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-sidebar-menu-add-button-background-color-hover': '#eea70ea8',
     '--theme-sidebar-menu-add-button-text-color': '#2d2d2d',
     '--theme-sidebar-wallets-scrollbar-background-color':
-      'rgba(255, 255, 255, 0.1)',
+      'rgba(45, 45, 45, 0.3)',
     '--theme-sidebar-wallets-scrollbar-background-color-active':
-      'rgba(255, 255, 255, 0.3)',
+      'rgba(45, 45, 45, 0.5)',
     '--theme-sidebar-wallets-scrollbar-background-color-hover':
-      'rgba(255, 255, 255, 0.3)',
+      'rgba(45, 45, 45, 0.5)',
     '--theme-sidebar-category-networkInfo-background-color': '#2d2d2d',
     '--theme-sidebar-category-networkInfo-text-color': '#fff',
   },
