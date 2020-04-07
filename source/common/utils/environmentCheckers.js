@@ -7,6 +7,7 @@ import {
   MAINNET,
   MAINNET_FLIGHT,
   PRODUCTION,
+  SELFNODE,
   STAGING,
   TEST,
   TESTNET,
@@ -58,6 +59,7 @@ export const checkIsProduction = (currentNodeEnv: string) =>
 export const checkIsMainnet = (network: string) => network === MAINNET;
 export const checkIsStaging = (network: string) => network === STAGING;
 export const checkIsTestnet = (network: string) => network === TESTNET;
+export const checkIsSelfnode = (network: string) => network === SELFNODE;
 export const checkIsIncentivizedTestnet = (network: string) =>
   network === ITN_REWARDS_V1;
 export const checkIsIncentivizedTestnetQA = (rawNetwork: string) =>

@@ -918,17 +918,16 @@ export default class WalletsStore extends Store {
 
   isValidAddress = (address: string) => {
     const { app } = this.stores;
-    const { isTestnet, isStaging, isTest } = app.environment;
+    const { isMainnet, isStaging, isSelfnode } = app.environment;
     const addressGroup = isIncentivizedTestnet
       ? AddressGroup.jormungandr
       : AddressGroup.byron;
     const chainSettings =
-      isTestnet || (!isIncentivizedTestnet && isStaging) || isTest
-        ? ChainSettings.testnet
-        : ChainSettings.mainnet;
-
+      isMainnet || isStaging ? ChainSettings.mainnet : ChainSettings.testnet;
     try {
-      return Address.Util.isAddress(address, chainSettings, addressGroup);
+      return isSelfnode
+        ? true // Selfnode address validation is missing in cardano-js
+        : Address.Util.isAddress(address, chainSettings, addressGroup);
     } catch (error) {
       return false;
     }
