@@ -6,6 +6,7 @@ Changelog
 ### Chores
 
 - Refactored and improved automated tests setup ([PR 1912](https://github.com/input-output-hk/daedalus/pull/1912))
+- Updated README ([PR 1953](https://github.com/input-output-hk/daedalus/pull/1953))
 
 ## 1.0.0-FC2
 
