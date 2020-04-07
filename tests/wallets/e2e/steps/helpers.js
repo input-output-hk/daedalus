@@ -2,7 +2,7 @@
 import { expect } from 'chai';
 import BigNumber from 'bignumber.js/bignumber';
 import { expectTextInSelector, waitAndClick } from '../../../common/e2e/steps/helpers';
-import { rewardsMnemonics, balanceMnemonics, balanceMnemonicsWithNoFunds, testStorageKeys } from '../../../common/e2e/steps/config';
+import { rewardsMnemonics, balanceMnemonics, balanceItnMnemonics, testStorageKeys } from '../../../common/e2e/steps/config';
 import { WalletSyncStateStatuses } from '../../../../source/renderer/app/domains/Wallet';
 import type { Daedalus } from '../../../types';
 
@@ -48,10 +48,12 @@ export const restoreWalletWithFunds = async (client: Object, { walletName }: { w
 };
 
 const getMnemonicsIndex = async function() {
+  const isIncentivizedTestnetRequest = await this.execute(() => global.isIncentivizedTestnet);
+  const mnemonics = isIncentivizedTestnetRequest.value ? balanceItnMnemonics : balanceMnemonics;
   let index = await this.localStorage('GET', testStorageKeys.BALANCE_MNEMONICS_INDEX) || 0;
   index = index.value;
   index = (!isNaN(index)) ? parseInt(index, 10) : 0;
-  const newIndex = (index < balanceMnemonics.length - 1)
+  const newIndex = (index < mnemonics.length - 1)
     ? index + 1
     : 0;
   await this.localStorage('POST', {
@@ -75,8 +77,10 @@ export const restoreLegacyWallet = async (
 ) => {
   let recoveryPhrase;
   if (hasFunds) {
+    const isIncentivizedTestnetRequest = await client.execute(() => global.isIncentivizedTestnet);
+    const mnemonics = isIncentivizedTestnetRequest.value ? balanceItnMnemonics : balanceMnemonics;
     const mnemonicsIndex = await getMnemonicsIndex.call(client);
-    recoveryPhrase = balanceMnemonics[mnemonicsIndex]
+    recoveryPhrase = mnemonics[mnemonicsIndex]
   } else {
     recoveryPhrase = null;
   }
