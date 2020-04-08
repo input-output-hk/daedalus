@@ -6,8 +6,6 @@ import WalletNavigation from '../navigation/WalletNavigation';
 import styles from './WalletWithNavigation.scss';
 import NotResponding from '../not-responding/NotResponding';
 import ChangeSpendingPasswordDialog from '../settings/ChangeSpendingPasswordDialog';
-import ChangeSpendingPasswordDialogContainer
-  from '../../../containers/wallet/dialogs/settings/ChangeSpendingPasswordDialogContainer';
 import Wallet from '../../../domains/Wallet';
 import SetWalletPassword from '../settings/SetWalletPassword';
 import DialogsActions from '../../../actions/dialogs-actions';
@@ -21,9 +19,10 @@ type Props = {
   onRestartNode: Function,
   onOpenExternalLink: Function,
   hasNotification?: boolean,
-  isDialogOpen: boolean,
+  isDialogOpen: Function,
   activeWallet: Wallet,
   dialogs: DialogsActions,
+  isNotResponding: boolean,
 };
 
 @observer
@@ -41,11 +40,12 @@ export default class WalletWithNavigation extends Component<Props> {
       isDialogOpen,
       activeWallet,
       dialogs,
+      isNotResponding,
     } = this.props;
 
     return (
       <div className={styles.component}>
-        {activeWallet.isNotResponding && (
+        {isNotResponding && (
           <NotResponding
             walletName={activeItem}
             onRestartNode={onRestartNode}
@@ -60,12 +60,8 @@ export default class WalletWithNavigation extends Component<Props> {
                 dialog: ChangeSpendingPasswordDialog,
               });
             }}
+            isDialogOpen={isDialogOpen}
           />
-        )}
-        {isDialogOpen(ChangeSpendingPasswordDialog) ? (
-          <ChangeSpendingPasswordDialogContainer forceSetPassword />
-        ) : (
-          false
         )}
         <div className={styles.navigation}>
           <WalletNavigation

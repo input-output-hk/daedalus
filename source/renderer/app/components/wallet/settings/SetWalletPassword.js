@@ -2,9 +2,11 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
-import Dialog from '../../widgets/Dialog';
 import insecureWalletIcon from '../../../assets/images/insecure-wallet.png';
 import styles from './SetWalletPassword.scss';
+import ChangeSpendingPasswordDialog from "./ChangeSpendingPasswordDialog";
+import ChangeSpendingPasswordDialogContainer
+  from "../../../containers/wallet/dialogs/settings/ChangeSpendingPasswordDialogContainer";
 
 const messages = defineMessages({
   setPasswordButton: {
@@ -30,6 +32,7 @@ const messages = defineMessages({
 
 type Props = {
   onConfirm: Function,
+  isDialogOpen: Function,
 };
 
 @observer
@@ -41,36 +44,41 @@ export default class SetWalletPassword extends Component<Props> {
   render() {
     const { intl } = this.context;
 
+    const { isDialogOpen, onConfirm } = this.props;
+
     const actions = [
       {
         label: intl.formatMessage(messages.setPasswordButton),
-        onClick: this.props.onConfirm(),
+        onClick: onConfirm(),
         primary: true,
         className: styles.setPasswordButton,
       },
     ];
 
     return (
-      <Dialog
-        actions={actions}
-        className={styles.setPasswordDialog}
-        isSetWalletPasswordDialog
-      >
-        <div className={styles.setPasswordWrapper}>
-          <img
-            src={insecureWalletIcon}
-            className={styles.insecureWalletIcon}
-            role="presentation"
-            draggable="false"
-          />
-          <h2 className={styles.setPasswordTitle}>
-            {intl.formatMessage(messages.setPasswordTitle)}
-          </h2>
-          <p className={styles.setPasswordMessage}>
-            {intl.formatMessage(messages.setPasswordMessage)}
-          </p>
+      <>
+        {isDialogOpen(ChangeSpendingPasswordDialog) ? (
+          <ChangeSpendingPasswordDialogContainer forceSetPassword />
+        ) : (
+          false
+        )}
+        <div className={styles.setPasswordDialog}>
+          <div className={styles.setPasswordWrapper}>
+            <img
+              src={insecureWalletIcon}
+              className={styles.insecureWalletIcon}
+              role="presentation"
+              draggable="false"
+            />
+            <h2 className={styles.setPasswordTitle}>
+              {intl.formatMessage(messages.setPasswordTitle)}
+            </h2>
+            <p className={styles.setPasswordMessage}>
+              {intl.formatMessage(messages.setPasswordMessage)}
+            </p>
+          </div>
         </div>
-      </Dialog>
+      </>
     );
   }
 }
