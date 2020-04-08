@@ -43,7 +43,7 @@ export default class WalletSummaryPage extends Component<Props> {
   render() {
     const { intl } = this.context;
     const { stores } = this.props;
-    const { app, wallets, transactions, profile, uiDialogs } = stores;
+    const { app, wallets, transactions, profile } = stores;
     const {
       openExternalLink,
       environment: { network, rawNetwork },
@@ -57,7 +57,6 @@ export default class WalletSummaryPage extends Component<Props> {
       deleteTransactionRequest,
       pendingTransactionsCount,
     } = transactions;
-    const { isOpen: isDialogOpen } = uiDialogs;
     const wallet = wallets.active;
     const { currentTimeFormat, currentDateFormat, currentLocale } = profile;
     // Guard against potential null values

@@ -4,7 +4,7 @@ import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import Dialog from '../../widgets/Dialog';
 import insecureWalletIcon from '../../../assets/images/insecure-wallet.png';
-import styles from './SetWalletPasswordDialog.scss';
+import styles from './SetWalletPassword.scss';
 
 const messages = defineMessages({
   setPasswordButton: {
@@ -33,7 +33,7 @@ type Props = {
 };
 
 @observer
-export default class SetWalletPasswordDialog extends Component<Props> {
+export default class SetWalletPassword extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };

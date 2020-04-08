@@ -8,19 +8,22 @@ import NotResponding from '../not-responding/NotResponding';
 import ChangeSpendingPasswordDialog from '../settings/ChangeSpendingPasswordDialog';
 import ChangeSpendingPasswordDialogContainer
   from '../../../containers/wallet/dialogs/settings/ChangeSpendingPasswordDialogContainer';
+import Wallet from '../../../domains/Wallet';
+import SetWalletPassword from '../settings/SetWalletPassword';
+import DialogsActions from '../../../actions/dialogs-actions';
 
 type Props = {
   children?: Node,
   activeItem: string,
   isActiveScreen: Function,
-  isLegacy: boolean,
   onWalletNavItemClick: Function,
   hasPassword: boolean,
   onRestartNode: Function,
   onOpenExternalLink: Function,
   hasNotification?: boolean,
-  isNotResponding: boolean,
   isDialogOpen: boolean,
+  activeWallet: Wallet,
+  dialogs: DialogsActions,
 };
 
 @observer
@@ -29,20 +32,20 @@ export default class WalletWithNavigation extends Component<Props> {
     const {
       children,
       isActiveScreen,
-      isLegacy,
       onWalletNavItemClick,
       activeItem,
       hasNotification,
-      isNotResponding,
       hasPassword,
       onRestartNode,
       onOpenExternalLink,
       isDialogOpen,
+      activeWallet,
+      dialogs,
     } = this.props;
 
     return (
       <div className={styles.component}>
-        {isNotResponding && (
+        {activeWallet.isNotResponding && (
           <NotResponding
             walletName={activeItem}
             onRestartNode={onRestartNode}
@@ -51,9 +54,12 @@ export default class WalletWithNavigation extends Component<Props> {
         )}
         {!hasPassword && (
           <SetWalletPassword
-            walletName={activeItem}
-            onRestartNode={onRestartNode}
-            onOpenExternalLink={onOpenExternalLink}
+            onConfirm={() => {
+              dialogs.closeActiveDialog.trigger();
+              dialogs.open.trigger({
+                dialog: ChangeSpendingPasswordDialog,
+              });
+            }}
           />
         )}
         {isDialogOpen(ChangeSpendingPasswordDialog) ? (
@@ -64,7 +70,7 @@ export default class WalletWithNavigation extends Component<Props> {
         <div className={styles.navigation}>
           <WalletNavigation
             isActiveNavItem={isActiveScreen}
-            isLegacy={isLegacy}
+            isLegacy={activeWallet.isLegacy}
             onNavItemClick={onWalletNavItemClick}
             activeItem={activeItem}
             hasNotification={hasNotification}

@@ -85,11 +85,11 @@ export default class Wallet extends Component<Props> {
           isActiveScreen={this.isActiveScreen}
           onWalletNavItemClick={this.handleWalletNavItemClick}
           activeItem={app.currentPage}
-          isLegacy={activeWallet.isLegacy}
+          activeWallet={activeWallet}
           hasNotification={hasNotification}
-          hasPassword={activeWallet.hasPassword}
           isNotResponding={isNotResponding}
           isDialogOpen={isDialogOpen}
+          dialogs={actions.dialogs}
           onRestartNode={() => restartNode.trigger()}
           onOpenExternalLink={(url: string) =>
             this.props.stores.app.openExternalLink(url)
