@@ -8,7 +8,6 @@ import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { ModalSkin } from 'react-polymorph/lib/skins/simple/ModalSkin';
 import styles from './Dialog.scss';
-import dialogOverrides from './DialogOverrides.scss';
 
 export type DialogAction = {
   className?: ?string,
@@ -30,7 +29,6 @@ type Props = {
   onClose?: Function,
   closeOnOverlayClick?: boolean,
   primaryButtonAutoFocus?: boolean,
-  isSetWalletPasswordDialog?: boolean,
 };
 
 export default class Dialog extends Component<Props> {
@@ -46,7 +44,6 @@ export default class Dialog extends Component<Props> {
       closeButton,
       backButton,
       primaryButtonAutoFocus,
-      isSetWalletPasswordDialog,
     } = this.props;
 
     return (
@@ -55,7 +52,6 @@ export default class Dialog extends Component<Props> {
         triggerCloseOnOverlayClick={closeOnOverlayClick}
         onClose={onClose}
         skin={ModalSkin}
-        themeOverrides={isSetWalletPasswordDialog ? dialogOverrides : null}
       >
         <div className={classnames([styles.dialogWrapper, className])}>
           {title && (

@@ -62,20 +62,22 @@ export default class SetWalletPassword extends Component<Props> {
         ) : (
           false
         )}
-        <div className={styles.setPasswordDialog}>
-          <div className={styles.setPasswordWrapper}>
-            <img
-              src={insecureWalletIcon}
-              className={styles.insecureWalletIcon}
-              role="presentation"
-              draggable="false"
-            />
-            <h2 className={styles.setPasswordTitle}>
-              {intl.formatMessage(messages.setPasswordTitle)}
-            </h2>
-            <p className={styles.setPasswordMessage}>
-              {intl.formatMessage(messages.setPasswordMessage)}
-            </p>
+        <div className={styles.setPasswordOverlayContainer}>
+          <div className={styles.setPasswordDialog}>
+            <div className={styles.setPasswordWrapper}>
+              <img
+                src={insecureWalletIcon}
+                className={styles.insecureWalletIcon}
+                role="presentation"
+                draggable="false"
+              />
+              <h2 className={styles.setPasswordTitle}>
+                {intl.formatMessage(messages.setPasswordTitle)}
+              </h2>
+              <p className={styles.setPasswordMessage}>
+                {intl.formatMessage(messages.setPasswordMessage)}
+              </p>
+            </div>
           </div>
         </div>
       </>
