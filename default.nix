@@ -53,19 +53,19 @@ let
     db-converter = self.cardano-wallet.db-converter;
 
     nodejs = pkgs.nodejs-12_x;
-        yarnInfo = {
-          version = "1.22.4";
-          hash = "1l3sv30g61dcn7ls213prcja2y3dqdi5apq9r7yyick295w25npq";
-        };
-        yarn = (pkgs.yarn.override { inherit (self) nodejs; }) /*.overrideAttrs (old: {
-          version = self.yarnInfo.version;
-          src = pkgs.fetchFromGitHub {
-            owner = "yarnpkg";
-            repo = "yarn";
-            rev = "v${self.yarnInfo.version}";
-            sha256 = self.yarnInfo.hash;
-          };
-        })*/;
+    yarnInfo = {
+      version = "1.22.4";
+      hash = "1l3sv30g61dcn7ls213prcja2y3dqdi5apq9r7yyick295w25npq";
+    };
+    yarn = (pkgs.yarn.override { inherit (self) nodejs; }) /*.overrideAttrs (old: {
+      version = self.yarnInfo.version;
+      src = pkgs.fetchFromGitHub {
+        owner = "yarnpkg";
+        repo = "yarn";
+        rev = "v${self.yarnInfo.version}";
+        sha256 = self.yarnInfo.hash;
+      };
+    })*/;
 
     sources = localLib.sources;
     bridgeTable = {
@@ -303,7 +303,7 @@ let
       src = {
         x86_64-linux = pkgs.fetchurl {
           url = "https://github.com/electron/electron/releases/download/v${version}/electron-v${version}-linux-x64.zip";
-          sha256 = "0fyqxi5m7vakahq3wls1f8wwx97cpknldd1s06viak2kiv9yk02i";
+          sha256 = "18m56jmzdd2ajnkigjzqs5d7lp7afbfijgnfyzq2cflqk3p9yjxv";
         };
       }.${pkgs.stdenv.hostPlatform.system} or throwSystem;
     });
