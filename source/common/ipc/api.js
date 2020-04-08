@@ -5,6 +5,11 @@ import type {
 } from '../types/bug-report-request.types';
 import type { GenerateFileMetaParams } from '../types/file-meta-request.types';
 import type { GeneratePaperWalletParams } from '../types/paper-wallet-request.types';
+import type {
+  FileDialogRequestParams,
+  OpenFileDialogResponseParams,
+  SaveFileDialogResponseParams,
+} from '../types/file-dialog.types';
 import type { GenerateAddressPDFParams } from '../types/address-pdf-request.types';
 import type { GenerateRewardsCsvParams } from '../types/rewards-csv-request.types';
 import type {
@@ -237,3 +242,32 @@ export const GENERATE_WALLET_MIGRATION_REPORT_CHANNEL =
   'GENERATE_WALLET_MIGRATION_REPORT_CHANNEL';
 export type GenerateWalletMigrationReportRendererRequest = WalletMigrationReportData;
 export type GenerateWalletMigrationReportMainResponse = void;
+
+/**
+ * Channel for showing open dialog
+ */
+export const SHOW_OPEN_DIALOG_CHANNEL = 'SHOW_OPEN_DIALOG_CHANNEL';
+export type ShowOpenDialogRendererRequest = FileDialogRequestParams;
+export type ShowOpenDialogMainResponse = Promise<OpenFileDialogResponseParams>;
+
+/**
+ * Channel for showing save dialog
+ */
+export const SHOW_SAVE_DIALOG_CHANNEL = 'SHOW_SAVE_DIALOG_CHANNEL';
+export type ShowSaveDialogRendererRequest = FileDialogRequestParams;
+export type ShowSaveDialogMainResponse = Promise<SaveFileDialogResponseParams>;
+
+/**
+ * Channels for electron logging
+ */
+export const ELECTRON_LOG_DEBUG = 'ELECTRON_LOG_DEBUG';
+export const ELECTRON_LOG_INFO = 'ELECTRON_LOG_INFO';
+export const ELECTRON_LOG_ERROR = 'ELECTRON_LOG_ERROR';
+export const ELECTRON_LOG_WARN = 'ELECTRON_LOG_WARN';
+
+/**
+ * Channels for electron store
+ */
+export const ELECTRON_STORE_GET = 'ELECTRON_STORE_GET';
+export const ELECTRON_STORE_SET = 'ELECTRON_STORE_SET';
+export const ELECTRON_STORE_DELETE = 'ELECTRON_STORE_DELETE';
