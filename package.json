@@ -6,6 +6,7 @@
   "main": "./dist/main/index.js",
   "scripts": {
     "build": "gulp build",
+    "check:all": "yarn prettier:check && yarn lint && yarn flow:test && yarn stylelint && yarn lockfile:check && yarn manage:translations",
     "start": "gulp start",
     "start:dev": "NODE_ENV=development gulp start",
     "dev": "IS_WATCH_MODE=true gulp dev",
@@ -226,7 +227,7 @@
   "husky": {
     "hooks": {
       "pre-commit": "pretty-quick --staged",
-      "pre-push": "yarn prettier:check && yarn lint && yarn flow:test && yarn stylelint && yarn lockfile:check && yarn manage:translations"
+      "pre-push": "yarn check:all"
     }
   },
   "resolutions": {
@@ -237,6 +238,7 @@
     "**/**/unicode-properties": "1.1.0",
     "**/**/handlebars": "4.5.3",
     "@storybook/core/**/terser-webpack-plugin": "^2.1.2",
+    "browserslist": "4.8.3",
     "webpack/**/terser-webpack-plugin": "1.4.1"
   }
 }

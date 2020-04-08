@@ -4,17 +4,14 @@ import _https from 'https';
 import _http from 'http';
 import { ipcRenderer as _ipcRenderer, remote as _remote } from 'electron';
 import _electronLog from 'electron-log-daedalus';
-import ElectronStore from 'electron-store';
 import { environment } from './environment';
 import { buildLabel, nodeImplementation, isFlight } from './config';
 
 const _process = process;
 const _isIncentivizedTestnet = nodeImplementation === 'jormungandr';
-const _electronStore = new ElectronStore();
 
 process.once('loaded', () => {
   Object.assign(global, {
-    Buffer,
     dialog: {
       showOpenDialog: (...args) =>
         _remote.dialog.showOpenDialog(_remote.getCurrentWindow(), ...args),
@@ -26,11 +23,6 @@ process.once('loaded', () => {
       info: (...args) => _electronLog.info(...args),
       error: (...args) => _electronLog.error(...args),
       warn: (...args) => _electronLog.warn(...args),
-    },
-    electronStore: {
-      get: (...args) => _electronStore.get(...args),
-      set: (...args) => _electronStore.set(...args),
-      delete: (...args) => _electronStore.delete(...args),
     },
     environment,
     buildLabel,

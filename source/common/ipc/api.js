@@ -237,3 +237,13 @@ export const GENERATE_WALLET_MIGRATION_REPORT_CHANNEL =
   'GENERATE_WALLET_MIGRATION_REPORT_CHANNEL';
 export type GenerateWalletMigrationReportRendererRequest = WalletMigrationReportData;
 export type GenerateWalletMigrationReportMainResponse = void;
+
+/**
+ * Channel for electron-store
+ */
+export const ELECTRON_STORE_CHANNEL = 'ELECTRON_STORE_CHANNEL';
+export type ElectronStoreMessage = {
+  type: 'get' | 'set' | 'delete',
+  key: string,
+  data?: any,
+};
