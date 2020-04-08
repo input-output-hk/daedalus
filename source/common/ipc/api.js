@@ -248,14 +248,14 @@ export type GenerateWalletMigrationReportMainResponse = void;
  */
 export const SHOW_OPEN_DIALOG_CHANNEL = 'SHOW_OPEN_DIALOG_CHANNEL';
 export type ShowOpenDialogRendererRequest = FileDialogRequestParams;
-export type ShowOpenDialogMainResponse = Promise<OpenFileDialogResponseParams>;
+export type ShowOpenDialogMainResponse = OpenFileDialogResponseParams;
 
 /**
  * Channel for showing save dialog
  */
 export const SHOW_SAVE_DIALOG_CHANNEL = 'SHOW_SAVE_DIALOG_CHANNEL';
 export type ShowSaveDialogRendererRequest = FileDialogRequestParams;
-export type ShowSaveDialogMainResponse = Promise<SaveFileDialogResponseParams>;
+export type ShowSaveDialogMainResponse = SaveFileDialogResponseParams;
 
 /**
  * Channels for electron logging
