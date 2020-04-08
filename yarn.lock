@@ -1489,6 +1489,7 @@
   dependencies:
     "@storybook/client-logger" "5.3.14"
     "@storybook/theming" "5.3.14"
+    "@types/react-syntax-highlighter" "11.0.2"
     "@types/react-textarea-autosize" "^4.3.3"
     core-js "^3.0.1"
     global "^4.3.2"
@@ -1602,6 +1603,7 @@
   version "5.3.14"
   resolved "https://registry.yarnpkg.com/@storybook/node-logger/-/node-logger-5.3.14.tgz#5e4e02585b37754bbebb8810ffb17c8ce706a1f8"
   dependencies:
+    "@types/npmlog" "^4.1.2"
     chalk "^3.0.0"
     core-js "^3.0.1"
     npmlog "^4.1.2"
@@ -1803,10 +1805,15 @@
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@types/color-name/-/color-name-1.1.1.tgz#1c1261bbeaa10a8055bbc5d8ab84b7b2afc846a0"
 
+"@types/events@*":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@types/events/-/events-3.0.0.tgz#2862f3f58a9a7f7c3e78d79f130dd4d71c25c2a7"
+
 "@types/glob@^7.1.1":
   version "7.1.1"
   resolved "https://registry.yarnpkg.com/@types/glob/-/glob-7.1.1.tgz#aa59a1c6e3fbc421e07ccd31a944c30eba521575"
   dependencies:
+    "@types/events" "*"
     "@types/minimatch" "*"
     "@types/node" "*"
 
@@ -1822,17 +1829,33 @@
   version "3.0.3"
   resolved "https://registry.yarnpkg.com/@types/minimatch/-/minimatch-3.0.3.tgz#3dca0e3f33b200fc7d1139c0cd96c1268cadfd9d"
 
+"@types/minimist@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@types/minimist/-/minimist-1.2.0.tgz#69a23a3ad29caf0097f06eda59b361ee2f0639f6"
+
 "@types/node@*":
   version "13.7.4"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-13.7.4.tgz#76c3cb3a12909510f52e5dc04a6298cdf9504ffd"
 
-"@types/node@^12.0.12", "@types/node@^12.7.2":
+"@types/node@^12.0.12":
+  version "12.12.34"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-12.12.34.tgz#0a5d6ae5d22612f0cf5f10320e1fc5d2a745dcb8"
+
+"@types/node@^12.7.2":
   version "12.12.30"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-12.12.30.tgz#3501e6f09b954de9c404671cefdbcc5d9d7c45f6"
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/@types/normalize-package-data/-/normalize-package-data-2.4.0.tgz#e486d0d97396d79beedd0a6e33f4534ff6b4973e"
+
+"@types/npmlog@^4.1.2":
+  version "4.1.2"
+  resolved "https://registry.yarnpkg.com/@types/npmlog/-/npmlog-4.1.2.tgz#d070fe6a6b78755d1092a3dc492d34c3d8f871c4"
+
+"@types/parse-json@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@types/parse-json/-/parse-json-4.0.0.tgz#2f8bb441434d163b35fb8ffdccd7138927ffb8c0"
 
 "@types/prop-types@*":
   version "15.7.3"
@@ -1852,6 +1875,12 @@
 "@types/react-color@^3.0.1":
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/@types/react-color/-/react-color-3.0.1.tgz#5433e2f503ea0e0831cbc6fd0c20f8157d93add0"
+  dependencies:
+    "@types/react" "*"
+
+"@types/react-syntax-highlighter@11.0.2":
+  version "11.0.2"
+  resolved "https://registry.yarnpkg.com/@types/react-syntax-highlighter/-/react-syntax-highlighter-11.0.2.tgz#a2e3ff657d7c47813f80ca930f3d959c31ec51e3"
   dependencies:
     "@types/react" "*"
 
@@ -3485,29 +3514,13 @@ browserify-zlib@^0.2.0:
   dependencies:
     pako "~1.0.5"
 
-browserslist@4.5.4:
-  version "4.5.4"
-  resolved "https://registry.yarnpkg.com/browserslist/-/browserslist-4.5.4.tgz#166c4ecef3b51737a42436ea8002aeea466ea2c7"
+browserslist@4.5.4, browserslist@4.8.3, browserslist@^4.3.4, browserslist@^4.6.0, browserslist@^4.6.2, browserslist@^4.8.3:
+  version "4.8.3"
+  resolved "https://registry.yarnpkg.com/browserslist/-/browserslist-4.8.3.tgz#65802fcd77177c878e015f0e3189f2c4f627ba44"
   dependencies:
-    caniuse-lite "^1.0.30000955"
-    electron-to-chromium "^1.3.122"
-    node-releases "^1.1.13"
-
-browserslist@^4.3.4, browserslist@^4.6.0, browserslist@^4.6.2:
-  version "4.6.6"
-  resolved "https://registry.yarnpkg.com/browserslist/-/browserslist-4.6.6.tgz#6e4bf467cde520bc9dbdf3747dafa03531cec453"
-  dependencies:
-    caniuse-lite "^1.0.30000984"
-    electron-to-chromium "^1.3.191"
-    node-releases "^1.1.25"
-
-browserslist@^4.8.3:
-  version "4.8.7"
-  resolved "https://registry.yarnpkg.com/browserslist/-/browserslist-4.8.7.tgz#ec8301ff415e6a42c949d0e66b405eb539c532d0"
-  dependencies:
-    caniuse-lite "^1.0.30001027"
-    electron-to-chromium "^1.3.349"
-    node-releases "^1.1.49"
+    caniuse-lite "^1.0.30001017"
+    electron-to-chromium "^1.3.322"
+    node-releases "^1.1.44"
 
 bs58@4.0.1, bs58@^4.0.1:
   version "4.0.1"
@@ -3745,11 +3758,11 @@ can-use-dom@^0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/can-use-dom/-/can-use-dom-0.1.0.tgz#22cc4a34a0abc43950f42c6411024a3f6366b45a"
 
-caniuse-lite@^1.0.30000955, caniuse-lite@^1.0.30000984:
-  version "1.0.30000989"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30000989.tgz#b9193e293ccf7e4426c5245134b8f2a56c0ac4b9"
+caniuse-lite@^1.0.30001017:
+  version "1.0.30001039"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001039.tgz#b3814a1c38ffeb23567f8323500c09526a577bbe"
 
-caniuse-lite@^1.0.30001020, caniuse-lite@^1.0.30001027:
+caniuse-lite@^1.0.30001020:
   version "1.0.30001030"
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001030.tgz#78076c4c6d67d3e41d6eb9399853fb27fe6e44ee"
 
@@ -4282,8 +4295,8 @@ concurrently@5.1.0:
     yargs "^13.3.0"
 
 conf@^6.2.1:
-  version "6.2.1"
-  resolved "https://registry.yarnpkg.com/conf/-/conf-6.2.1.tgz#b87ebc901945d43d32cd6855ba60d4ce66a5676d"
+  version "6.2.3"
+  resolved "https://registry.yarnpkg.com/conf/-/conf-6.2.3.tgz#0c0611f0fca25174d72c7b633ff6af9173a55f62"
   dependencies:
     ajv "^6.10.2"
     debounce-fn "^3.0.1"
@@ -4458,6 +4471,7 @@ cosmiconfig@^6.0.0:
   version "6.0.0"
   resolved "https://registry.yarnpkg.com/cosmiconfig/-/cosmiconfig-6.0.0.tgz#da4fee853c52f6b1e6935f41c1a2fc50bd4a9982"
   dependencies:
+    "@types/parse-json" "^4.0.0"
     import-fresh "^3.1.0"
     parse-json "^5.0.0"
     path-type "^4.0.0"
@@ -5526,13 +5540,9 @@ electron-store@5.1.1:
     conf "^6.2.1"
     type-fest "^0.7.1"
 
-electron-to-chromium@^1.3.122, electron-to-chromium@^1.3.191:
-  version "1.3.217"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.217.tgz#a13a91f8f7cd3a52f0bb6957cbced8628bfcdbbd"
-
-electron-to-chromium@^1.3.349:
-  version "1.3.360"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.360.tgz#1db9cb8d43f4c772546d94ea9be8b677a8ecb483"
+electron-to-chromium@^1.3.322:
+  version "1.3.398"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.398.tgz#4c01e29091bf39e578ac3f66c1f157d92fa5725d"
 
 electron@8.1.1:
   version "8.1.1"
@@ -9612,6 +9622,7 @@ meow@^6.0.0:
   version "6.0.1"
   resolved "https://registry.yarnpkg.com/meow/-/meow-6.0.1.tgz#f9b3f912c9aa039142cebcf74315129f4cd1ce1c"
   dependencies:
+    "@types/minimist" "^1.2.0"
     camelcase-keys "^6.1.1"
     decamelize-keys "^1.1.0"
     hard-rejection "^2.0.0"
@@ -10159,17 +10170,9 @@ node-pre-gyp@^0.12.0:
     semver "^5.3.0"
     tar "^4"
 
-node-releases@^1.1.13, node-releases@^1.1.25:
-  version "1.1.26"
-  resolved "https://registry.yarnpkg.com/node-releases/-/node-releases-1.1.26.tgz#f30563edc5c7dc20cf524cc8652ffa7be0762937"
-  dependencies:
-    semver "^5.3.0"
-
-node-releases@^1.1.49:
-  version "1.1.50"
-  resolved "https://registry.yarnpkg.com/node-releases/-/node-releases-1.1.50.tgz#803c40d2c45db172d0410e4efec83aa8c6ad0592"
-  dependencies:
-    semver "^6.3.0"
+node-releases@^1.1.44:
+  version "1.1.53"
+  resolved "https://registry.yarnpkg.com/node-releases/-/node-releases-1.1.53.tgz#2d821bfa499ed7c5dffc5e2f28c88e78a08ee3f4"
 
 node-sass@4.13.1:
   version "4.13.1"
@@ -12791,8 +12794,8 @@ ripemd160@^2.0.0, ripemd160@^2.0.1:
     inherits "^2.0.1"
 
 roarr@^2.15.2:
-  version "2.15.2"
-  resolved "https://registry.yarnpkg.com/roarr/-/roarr-2.15.2.tgz#34f6229ae3c8c12167c4ae60f58fe75e79a1e394"
+  version "2.15.3"
+  resolved "https://registry.yarnpkg.com/roarr/-/roarr-2.15.3.tgz#65248a291a15af3ebfd767cbf7e44cb402d1d836"
   dependencies:
     boolean "^3.0.0"
     detect-node "^2.0.4"
@@ -12991,7 +12994,7 @@ semver-regex@^2.0.0:
   version "5.7.0"
   resolved "https://registry.yarnpkg.com/semver/-/semver-5.7.0.tgz#790a7cf6fea5459bac96110b29b60412dc8ff96b"
 
-semver@7.1.3, semver@^7.1.2:
+semver@7.1.3:
   version "7.1.3"
   resolved "https://registry.yarnpkg.com/semver/-/semver-7.1.3.tgz#e4345ce73071c53f336445cfc19efb1c311df2a6"
 
@@ -13003,9 +13006,13 @@ semver@^5.7.1:
   version "5.7.1"
   resolved "https://registry.yarnpkg.com/semver/-/semver-5.7.1.tgz#a954f931aeba508d307bbf069eff0c01c96116f7"
 
-semver@^6.0.0, semver@^6.1.1, semver@^6.1.2, semver@^6.2.0, semver@^6.3.0:
+semver@^6.0.0, semver@^6.1.1, semver@^6.1.2, semver@^6.2.0:
   version "6.3.0"
   resolved "https://registry.yarnpkg.com/semver/-/semver-6.3.0.tgz#ee0a64c8af5e8ceea67687b133761e1becbd1d3d"
+
+semver@^7.1.2:
+  version "7.2.1"
+  resolved "https://registry.yarnpkg.com/semver/-/semver-7.2.1.tgz#d997aa36bdbb00b501ae4ac4c7d17e9f7a587ae5"
 
 semver@~5.3.0:
   version "5.3.0"

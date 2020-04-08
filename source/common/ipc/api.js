@@ -265,3 +265,13 @@ export type ShowSaveDialogMainResponse = SaveFileDialogResponseParams;
 export const ELECTRON_LOG_CHANNEL = 'ELECTRON_LOG_CHANNEL';
 export type ElectronLogRenderRequest = LoggerRequestParams;
 export type ElectronLogMainResponse = LoggerResponseParams;
+
+/**
+ * Channel for electron-store
+ */
+export const ELECTRON_STORE_CHANNEL = 'ELECTRON_STORE_CHANNEL';
+export type ElectronStoreMessage = {
+  type: 'get' | 'set' | 'delete',
+  key: string,
+  data?: any,
+};

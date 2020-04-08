@@ -21,7 +21,6 @@ const logFunc = async (type: LoggingType, ...args) => {
 
 process.once('loaded', () => {
   Object.assign(global, {
-    Buffer,
     environment,
     buildLabel,
     https: {
