@@ -453,6 +453,18 @@ export const createDaedalusComponentsTheme = (
       '--theme-dialog-big-button-border-color': `${border}`,
       '--theme-dialog-big-button-label-color': `${text.primary}`,
       '--theme-dialog-big-button-description-color': `${text.primary}`,
+      '--theme-dialog-set-wallet-password-background-color': `${chroma(
+        background.primary
+      ).alpha(0.96)}`,
+      '--theme-dialog-set-wallet-password-box-shadow': `${chroma(
+        background.primary
+      ).alpha(0.25)}`,
+      '--theme-dialog-set-wallet-password-message-color': `${text.primary}`,
+      '--theme-dialog-set-wallet-password-title-color': `${text.primary}`,
+      '--theme-dialog-set-wallet-password-button-background-color': `${chroma(
+        background.primary
+      ).alpha(0.15)}`,
+      '--theme-dialog-set-wallet-password-button-border-color': `${text.primary}`,
       '--theme-dialog-title-color': `${text.primary}`,
       '--theme-dialog-text-color': `${text.primary}`,
       '--theme-dialog-border-color': `${border}`,
