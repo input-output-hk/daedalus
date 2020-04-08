@@ -152,11 +152,7 @@ export const createSelfnodeConfig = async (
   });
 
   await fs.remove(configPath);
-  await fs.writeFile(
-    configPath,
-    configFile.replace('RequiresNoMagic', 'RequiresMagic')
-  );
-
+  await fs.writeFile(configPath, configFile);
   const chainDir = path.join(stateDir, 'chain');
   logger.info('Removing selfnode chain folder...', {
     chainDir,
