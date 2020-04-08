@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
-// import { remote } from 'electron';
+import { showSaveDialogChannel } from '../../../../ipc/show-file-dialog-channels';
 import ExportWalletToFileDialog from '../../../../components/wallet/settings/ExportWalletToFileDialog';
 import type { OnSubmitParams } from '../../../../components/wallet/settings/ExportWalletToFileDialog';
 import type { InjectedDialogContainerProps } from '../../../../types/injectedPropsType';
@@ -18,9 +18,8 @@ export default class ExportWalletToFileDialogContainer extends Component<Props> 
     onClose: () => {},
   };
 
-  onSubmit = (params: OnSubmitParams) => {
-    // TODO: refactor this direct access to the dialog api
-    const filePath = global.dialog.showSaveDialog({
+  onSubmit = async (params: OnSubmitParams) => {
+    const params = {
       defaultPath: 'wallet-export.json',
       filters: [
         {
@@ -28,7 +27,8 @@ export default class ExportWalletToFileDialogContainer extends Component<Props> 
           extensions: ['json'],
         },
       ],
-    });
+    };
+    const { filePath } = await showSaveDialogChannel.send(params);
     const { stores, actions } = this.props;
     const activeWallet = stores.wallets.active;
     if (!filePath || !activeWallet) return;

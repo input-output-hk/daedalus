@@ -1,5 +1,6 @@
 // @flow
 import { dialog } from 'electron';
+import type { BrowserWindow } from 'electron';
 import { MainIpcChannel } from './lib/MainIpcChannel';
 import {
   SHOW_OPEN_DIALOG_CHANNEL,
@@ -24,11 +25,11 @@ MainIpcChannel<
   ShowSaveDialogMainResponse
 > = new MainIpcChannel(SHOW_SAVE_DIALOG_CHANNEL);
 
-export const handleFileDialogRequests = () => {
+export const handleFileDialogRequests = (window: BrowserWindow) => {
   showOpenDialogChannel.onReceive((request: ShowOpenDialogRendererRequest) =>
-    dialog.showOpenDialog(request.browserWindow, request.options)
+    dialog.showOpenDialog(window, request)
   );
   showSaveDialogChannel.onReceive((request: ShowSaveDialogRendererRequest) =>
-    dialog.showSaveDialog(request.browserWindow, request.options)
+    dialog.showSaveDialog(window, request)
   );
 };

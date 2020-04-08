@@ -27,7 +27,7 @@ export default (window: BrowserWindow) => {
   handlePaperWalletRequests();
   handleAddressPDFRequests();
   handleRewardsCsvRequests();
-  handleFileDialogRequests();
+  handleFileDialogRequests(window);
   // eslint-disable-next-line no-unused-expressions
   openExternalUrlChannel;
   // eslint-disable-next-line no-unused-expressions

@@ -1,6 +1,7 @@
 // @flow
 import React, { Component, Fragment } from 'react';
 import { observer, inject } from 'mobx-react';
+import { showSaveDialogChannel } from '../../ipc/show-file-dialog-channels';
 import WalletReceive from '../../components/wallet/receive/WalletReceive';
 import WalletReceiveItn from '../../components/wallet/receive/WalletReceiveItn';
 import WalletReceiveDialog from '../../components/wallet/receive/WalletReceiveDialog';
@@ -54,7 +55,7 @@ export default class WalletReceivePage extends Component<Props, State> {
     this.props.actions.dialogs.closeActiveDialog.trigger();
   };
 
-  handleDownloadPDF = (note: string) => {
+  handleDownloadPDF = async (note: string) => {
     const { addressToShare } = this.state;
 
     const name = generateFileNameWithTimestamp({
@@ -63,8 +64,7 @@ export default class WalletReceivePage extends Component<Props, State> {
       isUTC: false,
     });
 
-    // TODO: refactor this direct access to the dialog api
-    const filePath = global.dialog.showSaveDialog({
+    const params = {
       defaultPath: `${name}.pdf`,
       filters: [
         {
@@ -72,7 +72,8 @@ export default class WalletReceivePage extends Component<Props, State> {
           extensions: ['pdf'],
         },
       ],
-    });
+    };
+    const { filePath } = await showSaveDialogChannel.send(params);
 
     // if cancel button is clicked or path is empty
     if (!filePath || !addressToShare) return;

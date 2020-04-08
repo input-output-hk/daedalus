@@ -1,17 +1,14 @@
 // @flow
 export type FileDialogRequestParams = {
-  browserWindow?: any,
-  options: {
-    title?: string,
-    defaultPath?: string,
-    buttonLabel?: string,
-    filters?: Array<any>,
-    properties?: Array<string>,
-    message?: string,
-    nameFieldLabel?: string,
-    showsTagField?: boolean,
-    securityScopedBookmarks?: boolean,
-  },
+  title?: string,
+  defaultPath?: string,
+  buttonLabel?: string,
+  filters?: Array<any>,
+  properties?: Array<string>,
+  message?: string,
+  nameFieldLabel?: string,
+  showsTagField?: boolean,
+  securityScopedBookmarks?: boolean,
 };
 
 export type OpenFileDialogResponseParams = {
