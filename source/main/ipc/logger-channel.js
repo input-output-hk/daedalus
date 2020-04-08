@@ -24,14 +24,9 @@ export const handleElectronLogRequests = () => {
   electronLogChannel.onReceive(
     (request: ElectronLogRenderRequest) =>
       new Promise(resolve => {
-        const { type, message, options } = request;
-        const args = [message];
+        const { level, args } = request;
 
-        if (options) {
-          args.push(options);
-        }
-
-        funcMap[type](...args);
+        funcMap[level](...args);
         resolve();
       })
   );

@@ -5,12 +5,11 @@ import type { CoreSystemInfo } from '../../renderer/app/types/coreSystemInfoType
 import type { WalletMigrationStatus } from '../../renderer/app/stores/WalletMigrationStore';
 import LocalizableError from '../../renderer/app/i18n/LocalizableError';
 
-export type LoggingType = 'debug' | 'info' | 'error' | 'warn';
+export type LoggingLevel = 'debug' | 'info' | 'error' | 'warn';
 
 export type LoggerRequestParams = {
-  type: LoggingType,
-  message: string,
-  options?: Object,
+  level: LoggingLevel,
+  args: Array<any>,
 };
 
 export type LoggerResponseParams = void;
