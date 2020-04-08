@@ -19,7 +19,7 @@ export default class ExportWalletToFileDialogContainer extends Component<Props> 
   };
 
   onSubmit = async (params: OnSubmitParams) => {
-    const params = {
+    const fileParams = {
       defaultPath: 'wallet-export.json',
       filters: [
         {
@@ -28,7 +28,7 @@ export default class ExportWalletToFileDialogContainer extends Component<Props> 
         },
       ],
     };
-    const { filePath } = await showSaveDialogChannel.send(params);
+    const { filePath } = await showSaveDialogChannel.send(fileParams);
     const { stores, actions } = this.props;
     const activeWallet = stores.wallets.active;
     if (!filePath || !activeWallet) return;
