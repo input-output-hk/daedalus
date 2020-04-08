@@ -25,6 +25,8 @@ import type { ExportedByronWallet } from '../../renderer/app/types/walletExportT
 import type {
   StateSnapshotLogParams,
   WalletMigrationReportData,
+  LoggerRequestParams,
+  LoggerResponseParams,
 } from '../types/logging.types';
 
 /**
@@ -258,16 +260,8 @@ export type ShowSaveDialogRendererRequest = FileDialogRequestParams;
 export type ShowSaveDialogMainResponse = SaveFileDialogResponseParams;
 
 /**
- * Channels for electron logging
+ * Channel for electron logging
  */
-export const ELECTRON_LOG_DEBUG = 'ELECTRON_LOG_DEBUG';
-export const ELECTRON_LOG_INFO = 'ELECTRON_LOG_INFO';
-export const ELECTRON_LOG_ERROR = 'ELECTRON_LOG_ERROR';
-export const ELECTRON_LOG_WARN = 'ELECTRON_LOG_WARN';
-
-/**
- * Channels for electron store
- */
-export const ELECTRON_STORE_GET = 'ELECTRON_STORE_GET';
-export const ELECTRON_STORE_SET = 'ELECTRON_STORE_SET';
-export const ELECTRON_STORE_DELETE = 'ELECTRON_STORE_DELETE';
+export const ELECTRON_LOG_CHANNEL = 'ELECTRON_LOG_CHANNEL';
+export type ElectronLogRenderRequest = LoggerRequestParams;
+export type ElectronLogMainResponse = LoggerResponseParams;

@@ -3,11 +3,21 @@ import os from 'os';
 import _https from 'https';
 import _http from 'http';
 import { ipcRenderer as _ipcRenderer } from 'electron';
+import type { LoggingType } from '../common/types/logging.types';
+import { electronLogChannel } from '../renderer/app/ipc/logger-channel';
 import { environment } from './environment';
 import { buildLabel, nodeImplementation, isFlight } from './config';
 
 const _process = process;
 const _isIncentivizedTestnet = nodeImplementation === 'jormungandr';
+
+const logFunc = async (type: LoggingType, ...args) => {
+  if (!args.length) return;
+  const message = args[0];
+  const options = args.length > 1 ? args[1] : null;
+
+  await electronLogChannel.send({ type, message, options });
+};
 
 process.once('loaded', () => {
   Object.assign(global, {
@@ -29,6 +39,12 @@ process.once('loaded', () => {
       send: (...args) => _ipcRenderer.send(...args),
       removeListener: (...args) => _ipcRenderer.removeListener(...args),
       removeAllListeners: (...args) => _ipcRenderer.removeAllListeners(...args),
+    },
+    electronLog: {
+      debug: (...args) => logFunc('debug', ...args),
+      info: (...args) => logFunc('info', ...args),
+      error: (...args) => logFunc('error', ...args),
+      warn: (...args) => logFunc('warn', ...args),
     },
     isIncentivizedTestnet: _isIncentivizedTestnet,
     isFlight,
