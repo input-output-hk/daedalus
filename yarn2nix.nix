@@ -2,7 +2,6 @@
 , cluster, buildNum, nukeReferences, fetchzip
 , daedalus, stdenv, win64 ? false, wine64, runCommand
 , fetchurl, unzip, spacedName, iconPath, launcherConfig, pkgs }:
-
 let
   cluster' = launcherConfig.networkName;
   yarn2nix = import (fetchzip {
@@ -24,22 +23,18 @@ let
   windowsElectronVersion = "8.1.1";
   windowsElectron = fetchurl {
     url = "https://github.com/electron/electron/releases/download/v${windowsElectronVersion}/electron-v${windowsElectronVersion}-win32-x64.zip";
-    sha256 = "0839v28cf7vjmwp89dygiz3val9nfpiz7yavvsdz03bnfa8h8v1d";
+    sha256 = "01j1bvq5ynbjsg3ii22j0srwq14bjbcnq9r65iqr0g8yz3bw51l0";
   };
   checksums = fetchurl {
     url = "https://github.com/electron/electron/releases/download/v${windowsElectronVersion}/SHASUMS256.txt";
-    sha256 = "1kdfq7v7zjl8f81ayj4l7yv8s6n5xb82z7wr90dnnklgljac6cwl";
+    sha256 = "13hyf7vgg8vnfih85xvkqsnfa6pzq7hyjm768zy1xpqvypl3n3qz";
   };
   electron-cache = runCommand "electron-cache" {} ''
     mkdir $out
-    # old style
-    ln -s ${windowsElectron} $out/electron-v${windowsElectronVersion}-win32-x64.zip
-    ln -s ${checksums} $out/SHASUMS256.txt-${windowsElectronVersion}
-    # new style
-    mkdir $out/httpsgithub.comelectronelectronreleasesdownloadv${windowsElectronVersion}SHASUMS256.txt
-    mkdir $out/httpsgithub.comelectronelectronreleasesdownloadv${windowsElectronVersion}electron-v${windowsElectronVersion}-win32-x64.zip
-    ln -s ${windowsElectron} $out/httpsgithub.comelectronelectronreleasesdownloadv${windowsElectronVersion}electron-v${windowsElectronVersion}-win32-x64.zip/electron-v${windowsElectronVersion}-win32-x64.zip
-    ln -s ${checksums} $out/httpsgithub.comelectronelectronreleasesdownloadv${windowsElectronVersion}SHASUMS256.txt/SHASUMS256.txt
+    mkdir $out/httpsgithub.comelectronelectronreleasesdownloadv8.1.1SHASUMS256.txt
+    mkdir $out/httpsgithub.comelectronelectronreleasesdownloadv8.1.1electron-v8.1.1-win32-x64.zip
+    ln -s ${windowsElectron} $out/httpsgithub.comelectronelectronreleasesdownloadv8.1.1electron-v8.1.1-win32-x64.zip/electron-v8.1.1-win32-x64.zip
+    ln -s ${checksums} $out/httpsgithub.comelectronelectronreleasesdownloadv8.1.1SHASUMS256.txt/SHASUMS256.txt
   '';
   filter = name: type: let
     baseName = baseNameOf (toString name);
@@ -76,13 +71,10 @@ yarn2nix.mkYarnPackage {
       done
     '';
   in if win64 then ''
-    # old style
-    export ELECTRON_CACHE=${electron-cache}
-    # new style
     mkdir -pv home/.cache/
     export HOME=$(realpath home)
     ln -sv ${electron-cache} $HOME/.cache/electron
-
+    export DEBUG='@electron/get:*'
     cp ${newPackagePath} package.json
     mkdir -p installers/icons/${cluster}/${cluster}
     cp ${iconPath.base}/* installers/icons/${cluster}/${cluster}/
