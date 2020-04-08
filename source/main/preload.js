@@ -3,11 +3,6 @@ import os from 'os';
 import _https from 'https';
 import _http from 'http';
 import { ipcRenderer as _ipcRenderer } from 'electron';
-import type { FileDialogRequestParams } from '../common/types/file-dialog.types';
-import {
-  SHOW_OPEN_DIALOG_CHANNEL,
-  SHOW_SAVE_DIALOG_CHANNEL,
-} from '../common/ipc/api';
 import { environment } from './environment';
 import { buildLabel, nodeImplementation, isFlight } from './config';
 
