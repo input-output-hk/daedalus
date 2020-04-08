@@ -50,7 +50,8 @@ export default class Wallet extends Component<Props> {
 
   render() {
     const { actions, stores } = this.props;
-    const { app, wallets } = stores;
+    const { app, wallets, uiDialogs } = stores;
+    const { isOpen: isDialogOpen } = uiDialogs;
     const { restartNode } = actions.networkStatus;
     const { active: activeWallet } = wallets;
 
@@ -86,7 +87,9 @@ export default class Wallet extends Component<Props> {
           activeItem={app.currentPage}
           isLegacy={activeWallet.isLegacy}
           hasNotification={hasNotification}
+          hasPassword={activeWallet.hasPassword}
           isNotResponding={isNotResponding}
+          isDialogOpen={isDialogOpen}
           onRestartNode={() => restartNode.trigger()}
           onOpenExternalLink={(url: string) =>
             this.props.stores.app.openExternalLink(url)

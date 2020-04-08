@@ -8,14 +8,10 @@ import WalletTransactionsList from '../../components/wallet/transactions/WalletT
 import WalletSummary from '../../components/wallet/summary/WalletSummary';
 import WalletNoTransactions from '../../components/wallet/transactions/WalletNoTransactions';
 import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer';
-import ChangeSpendingPasswordDialog from '../../components/wallet/settings/ChangeSpendingPasswordDialog';
-import ChangeSpendingPasswordDialogContainer from './dialogs/settings/ChangeSpendingPasswordDialogContainer';
 import { ROUTES } from '../../routes-config';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import { formattedWalletAmount } from '../../utils/formatters';
 import { getNetworkExplorerUrlByType } from '../../utils/network';
-import SetWalletPasswordDialogContainer from './dialogs/settings/SetWalletPasswordDialogContainer';
-import SetWalletPasswordDialog from '../../components/wallet/settings/SetWalletPasswordDialog';
 
 export const messages = defineMessages({
   noTransactions: {
@@ -121,16 +117,6 @@ export default class WalletSummaryPage extends Component<Props> {
           isLoadingTransactions={recentTransactionsRequest.isExecutingFirstTime}
         />
         {walletTransactions}
-        {isDialogOpen(SetWalletPasswordDialog) ? (
-          <SetWalletPasswordDialogContainer />
-        ) : (
-          false
-        )}
-        {isDialogOpen(ChangeSpendingPasswordDialog) ? (
-          <ChangeSpendingPasswordDialogContainer forceSetPassword />
-        ) : (
-          false
-        )}
       </VerticalFlexContainer>
     );
   }

@@ -5,6 +5,9 @@ import { observer } from 'mobx-react';
 import WalletNavigation from '../navigation/WalletNavigation';
 import styles from './WalletWithNavigation.scss';
 import NotResponding from '../not-responding/NotResponding';
+import ChangeSpendingPasswordDialog from '../settings/ChangeSpendingPasswordDialog';
+import ChangeSpendingPasswordDialogContainer
+  from '../../../containers/wallet/dialogs/settings/ChangeSpendingPasswordDialogContainer';
 
 type Props = {
   children?: Node,
@@ -12,10 +15,12 @@ type Props = {
   isActiveScreen: Function,
   isLegacy: boolean,
   onWalletNavItemClick: Function,
+  hasPassword: boolean,
   onRestartNode: Function,
   onOpenExternalLink: Function,
   hasNotification?: boolean,
   isNotResponding: boolean,
+  isDialogOpen: boolean,
 };
 
 @observer
@@ -29,9 +34,12 @@ export default class WalletWithNavigation extends Component<Props> {
       activeItem,
       hasNotification,
       isNotResponding,
+      hasPassword,
       onRestartNode,
       onOpenExternalLink,
+      isDialogOpen,
     } = this.props;
+
     return (
       <div className={styles.component}>
         {isNotResponding && (
@@ -40,6 +48,18 @@ export default class WalletWithNavigation extends Component<Props> {
             onRestartNode={onRestartNode}
             onOpenExternalLink={onOpenExternalLink}
           />
+        )}
+        {!hasPassword && (
+          <SetWalletPassword
+            walletName={activeItem}
+            onRestartNode={onRestartNode}
+            onOpenExternalLink={onOpenExternalLink}
+          />
+        )}
+        {isDialogOpen(ChangeSpendingPasswordDialog) ? (
+          <ChangeSpendingPasswordDialogContainer forceSetPassword />
+        ) : (
+          false
         )}
         <div className={styles.navigation}>
           <WalletNavigation
