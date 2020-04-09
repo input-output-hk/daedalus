@@ -58,20 +58,16 @@ export default class WalletWithNavigation extends Component<Props> {
             isDialogOpen={isDialogOpen}
           />
         )}
-        {!activeWallet.isNotResponding && activeWallet.hasPassword && (
-          <Fragment>
-            <div className={styles.navigation}>
-              <WalletNavigation
-                isActiveNavItem={isActiveScreen}
-                isLegacy={activeWallet.isLegacy}
-                onNavItemClick={onWalletNavItemClick}
-                activeItem={activeItem}
-                hasNotification={hasNotification}
-              />
-            </div>
-            <div className={styles.page}>{children}</div>
-          </Fragment>
-        )}
+        <div className={styles.navigation}>
+          <WalletNavigation
+            isActiveNavItem={isActiveScreen}
+            isLegacy={activeWallet.isLegacy}
+            onNavItemClick={onWalletNavItemClick}
+            activeItem={activeItem}
+            hasNotification={hasNotification}
+          />
+        </div>
+        <div className={styles.page}>{children}</div>
       </div>
     );
   }
