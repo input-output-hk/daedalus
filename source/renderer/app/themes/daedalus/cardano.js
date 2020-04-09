@@ -203,11 +203,13 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-dialog-big-button-border-color': '#d2d3d3',
     '--theme-dialog-big-button-label-color': '#5e6066',
     '--theme-dialog-big-button-description-color': '#5e6066',
-    '--theme-dialog-set-wallet-password-background-color': 'rgba(32, 34, 37, 0.96)',
+    '--theme-dialog-set-wallet-password-background-color':
+      'rgba(32, 34, 37, 0.96)',
     '--theme-dialog-set-wallet-password-box-shadow': 'rgba(0, 0, 0, 0.25)',
     '--theme-dialog-set-wallet-password-message-color': '#fff',
     '--theme-dialog-set-wallet-password-title-color': '#fafbfc',
-    '--theme-dialog-set-wallet-password-button-background-color': 'rgba(0, 0, 0, 0.1)',
+    '--theme-dialog-set-wallet-password-button-background-color':
+      'rgba(0, 0, 0, 0.1)',
     '--theme-dialog-set-wallet-password-button-background-color-hover': '#fff',
     '--theme-dialog-set-wallet-password-button-border-color': '#fafbfc',
     '--theme-dialog-set-wallet-password-button-color': '#fff',

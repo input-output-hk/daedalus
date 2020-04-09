@@ -192,12 +192,15 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-dialog-big-button-border-color': '#e1dac6',
     '--theme-dialog-big-button-label-color': '#2d2d2d',
     '--theme-dialog-big-button-description-color': '#2d2d2d',
-    '--theme-dialog-set-wallet-password-background-color': 'rgba(255, 185, 35, 0.96)',
+    '--theme-dialog-set-wallet-password-background-color':
+      'rgba(255, 185, 35, 0.96)',
     '--theme-dialog-set-wallet-password-box-shadow': 'rgba(0, 0, 0, 0.25)',
     '--theme-dialog-set-wallet-password-message-color': 'rgba(45, 45, 45, 0.7)',
     '--theme-dialog-set-wallet-password-title-color': '#2d2d2d',
-    '--theme-dialog-set-wallet-password-button-background-color': 'rgba(0, 0, 0, 0.1)',
-    '--theme-dialog-set-wallet-password-button-background-color-hover': '#2d2d2d',
+    '--theme-dialog-set-wallet-password-button-background-color':
+      'rgba(0, 0, 0, 0.1)',
+    '--theme-dialog-set-wallet-password-button-background-color-hover':
+      '#2d2d2d',
     '--theme-dialog-set-wallet-password-button-border-color': '#2d2d2d',
     '--theme-dialog-set-wallet-password-button-color': '#2d2d2d',
     '--theme-dialog-set-wallet-password-button-color-hover': '#fff',
