@@ -465,6 +465,7 @@ export const createDaedalusComponentsTheme = (
         background.primary
       ).alpha(0.15)}`,
       '--theme-dialog-set-wallet-password-button-border-color': `${text.primary}`,
+      '--theme-dialog-set-wallet-password-button-color': `${text.primary}`,
       '--theme-dialog-title-color': `${text.primary}`,
       '--theme-dialog-text-color': `${text.primary}`,
       '--theme-dialog-border-color': `${border}`,

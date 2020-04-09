@@ -43,17 +43,7 @@ export default class SetWalletPassword extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-
     const { isDialogOpen, onConfirm } = this.props;
-
-    const actions = [
-      {
-        label: intl.formatMessage(messages.setPasswordButton),
-        onClick: onConfirm(),
-        primary: true,
-        className: styles.setPasswordButton,
-      },
-    ];
 
     return (
       <>
@@ -62,7 +52,7 @@ export default class SetWalletPassword extends Component<Props> {
         ) : (
           false
         )}
-        <div className={styles.setPasswordOverlayContainer}>
+        <div className={styles.component}>
           <div className={styles.setPasswordDialog}>
             <div className={styles.setPasswordWrapper}>
               <img
@@ -77,6 +67,9 @@ export default class SetWalletPassword extends Component<Props> {
               <p className={styles.setPasswordMessage}>
                 {intl.formatMessage(messages.setPasswordMessage)}
               </p>
+              <button className={styles.setPasswordButton} onClick={onConfirm}>
+                {intl.formatMessage(messages.setPasswordButton)}
+              </button>
             </div>
           </div>
         </div>

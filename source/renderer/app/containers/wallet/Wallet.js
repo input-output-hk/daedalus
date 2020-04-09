@@ -87,7 +87,6 @@ export default class Wallet extends Component<Props> {
           activeItem={app.currentPage}
           activeWallet={activeWallet}
           hasNotification={hasNotification}
-          isNotResponding={isNotResponding}
           isDialogOpen={isDialogOpen}
           dialogs={actions.dialogs}
           onRestartNode={() => restartNode.trigger()}
