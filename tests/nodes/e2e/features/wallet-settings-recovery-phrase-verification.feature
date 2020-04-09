@@ -4,7 +4,7 @@ Feature: Wallet Settings - Recovery Phrase Verification
 
   Background:
     Given I have completed the basic setup
-    And I have the following "Rewards" wallets:
+    And I have the following wallets:
       | name    |
       | Wallet  |
 

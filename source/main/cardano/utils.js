@@ -103,10 +103,10 @@ export const createSelfnodeConfig = async (
     throw new Error('No genesis file found');
   }
 
-  const genesisFileContent = await fs.readFile(genesisFilePath);
+  const genesisFileContent = await fs.readJson(genesisFilePath);
   const startTime = Math.floor((Date.now() + 3000) / 1000);
   const genesisFile = JSON.stringify({
-    ...JSON.parse(genesisFileContent),
+    ...genesisFileContent,
     startTime,
   });
   const genesisPath = path.join(stateDir, 'genesis.json');
@@ -153,7 +153,6 @@ export const createSelfnodeConfig = async (
 
   await fs.remove(configPath);
   await fs.writeFile(configPath, configFile);
-
   const chainDir = path.join(stateDir, 'chain');
   logger.info('Removing selfnode chain folder...', {
     chainDir,
