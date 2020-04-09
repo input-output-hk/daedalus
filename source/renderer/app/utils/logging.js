@@ -5,9 +5,8 @@ import type {
   Logger,
   LoggingLevel,
 } from '../../../common/types/logging.types';
-import { electronLogChannel } from '../ipc/logger-channel';
 
-const { environment } = global;
+const { environment, electronLog } = global;
 const appName = 'daedalus';
 const electronProcess = 'ipcRenderer';
 const { network, os, platformVersion, version } = environment;
@@ -38,7 +37,7 @@ const logToLevel = (level: LoggingLevel) => (
       environmentData,
     },
   ];
-  electronLogChannel.send({ level, args });
+  electronLog[level](...args);
 };
 
 export const logger: Logger = {
