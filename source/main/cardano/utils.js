@@ -103,10 +103,10 @@ export const createSelfnodeConfig = async (
     throw new Error('No genesis file found');
   }
 
-  const genesisFileContent = await fs.readFile(genesisFilePath);
+  const genesisFileContent = await fs.readJson(genesisFilePath);
   const startTime = Math.floor((Date.now() + 3000) / 1000);
   const genesisFile = JSON.stringify({
-    ...JSON.parse(genesisFileContent),
+    ...genesisFileContent,
     startTime,
   });
   const genesisPath = path.join(stateDir, 'genesis.json');
@@ -153,7 +153,6 @@ export const createSelfnodeConfig = async (
 
   await fs.remove(configPath);
   await fs.writeFile(configPath, configFile);
-
   const chainDir = path.join(stateDir, 'chain');
   logger.info('Removing selfnode chain folder...', {
     chainDir,
@@ -312,7 +311,7 @@ const prepareMigrationData = async (
         // "EBUSY" error happens on Windows when Daedalus mainnet is running during preparation
         // of Daedalus Flight wallet migration data as this prevents the files from being copied.
         logger.info('ipcMain: Showing "Automatic wallet migration" warning...');
-        const response = await showExportWalletsWarning(mainWindow, locale);
+        const { response } = await showExportWalletsWarning(mainWindow, locale);
         if (response === 0) {
           // User confirmed migration retry
           logger.info('ipcMain: User confirmed wallet migration retry');
@@ -339,7 +338,7 @@ const prepareMigrationData = async (
 const showExportWalletsWarning = (
   mainWindow: BrowserWindow,
   locale: string
-): Promise<number> => {
+): Promise<{ response: number }> => {
   const translations = require(`../locales/${locale}`);
   const translation = getTranslation(translations, 'dialog');
   const exportWalletsDialogOptions = {

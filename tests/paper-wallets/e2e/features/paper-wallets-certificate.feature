@@ -4,7 +4,7 @@ Feature: Paper Wallets Certificate generation
 
   Background:
     Given I have completed the basic setup
-    And I have a "Test wallet" rewards wallet with funds
+    And I have a "Test wallet" wallet with funds
 
   Scenario: Paper wallets certificate success generation
     Given The sidebar shows the "wallets" category

@@ -5,7 +5,7 @@ Feature: "Daedalus Balance" wallet top bar notification
     Given I have completed the basic setup
 
   Scenario: Balance wallet "Create a Rewards wallet" / "Move ada" notification is NOT shown when "Balance" wallet is empty
-    Given I have the following "Rewards" wallets:
+    Given I have the following wallets:
       | name           |
       | Rewards Wallet |
     And I have a "Balance Wallet" balance wallet
@@ -28,7 +28,7 @@ Feature: "Daedalus Balance" wallet top bar notification
     Then I should be on the "wallets/add" screen
 
   Scenario: Balance wallet "Move testnet ada" notification is shown when "Balance" wallet is NOT empty and I have a Rewards wallet in the UI
-    Given I have the following "Rewards" wallets:
+    Given I have the following wallets:
       | name           |
       | Rewards Wallet |
     And I have a "Balance Wallet" balance wallet with funds

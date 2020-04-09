@@ -5,7 +5,7 @@ Feature: Navigate Wallet Tabs
     Given I have completed the basic setup
 
   Scenario Outline: Switching Between Wallet Tabs
-    Given I have the following "Rewards" wallets:
+    Given I have the following wallets:
       | name        |
       | Test wallet |
     And I am on the "Test wallet" wallet "<FROM>" screen

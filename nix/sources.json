@@ -12,15 +12,15 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "cardano-shell": {
-        "branch": "tls-launcher-config",
+        "branch": "trim-safemode",
         "description": "Node shell, a thin layer for running the node and it's modules.",
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "cardano-shell",
-        "rev": "a45c6d2310a371416981df0d273ee62c597dfe5f",
-        "sha256": "0rd5phx1ii4hkjralnhp37qhn5axxdsb216szfq2ns3fyhjic693",
+        "rev": "06f48d5fd8e916306fdc724ceca56a0a457e6747",
+        "sha256": "035smmhb0xmxpr41ss3x86j5a78vy2zscxmd3wk73ps6hm6q4p0k",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-shell/archive/a45c6d2310a371416981df0d273ee62c597dfe5f.tar.gz",
+        "url": "https://github.com/input-output-hk/cardano-shell/archive/06f48d5fd8e916306fdc724ceca56a0a457e6747.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "cardano-sl": {
@@ -73,15 +73,15 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "iohk-nix": {
-        "branch": "selfnode",
+        "branch": "master",
         "description": "nix scripts shared across projects",
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "iohk-nix",
-        "rev": "9a7800792697ca7b0683af57e8ea770fbc111a8e",
-        "sha256": "0iakmzcfbfbi4w5lp63qfn25iq9ndrjs27z5rq0bd9104alza171",
+        "rev": "2744051c403165303628c61c8fbb973fa67ab76f",
+        "sha256": "0gxaq42dcyb621av1jy099mjn0ajwng1wwwdkx5mllmbrvl4hfqw",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/iohk-nix/archive/9a7800792697ca7b0683af57e8ea770fbc111a8e.tar.gz",
+        "url": "https://github.com/input-output-hk/iohk-nix/archive/2744051c403165303628c61c8fbb973fa67ab76f.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "js-chain-libs": {

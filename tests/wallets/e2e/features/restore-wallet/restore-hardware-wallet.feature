@@ -3,10 +3,10 @@ Feature: Restore Hardware wallet
 
   Background:
     Given I have completed the basic setup
-    And I have the following "Rewards" wallets:
+    And I have the following wallets:
       | name        |
       | Test Wallet |
-  
+
   Scenario: Successfully restoring 12-word Ledger wallet
     Given The sidebar shows the "wallets" category
     When I click on the add wallet button in the sidebar
@@ -19,7 +19,7 @@ Feature: Restore Hardware wallet
     Then I confirm "I understand and accept responsibility for the security concerns"
     Then I confirm "I understand that I should delete the Balance wallet"
     And I click continue
-    And I enter recovery phrase in restore wallet dialog: 
+    And I enter recovery phrase in restore wallet dialog:
       | recoveryPhrase                                                                                                                                                                   |
       | struggle section scissors siren garbage yellow maximum finger duty require mule earn |
     And I click Check recovery phrase button
@@ -180,4 +180,3 @@ Feature: Restore Hardware wallet
     And "24-word Trezor wallet" wallet should have "legacy_75ca580977d98216b0d2c96992250d3fa812f842" as id
     And "Balance" wallet badge should be visible in the wallet sidebar
     And "Balance" wallet "Move testnet ada" action should be visible in the top bar notification
-    
