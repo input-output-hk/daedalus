@@ -89,7 +89,7 @@ BeforeAll({ timeout: 5 * 60 * 1000 }, async () => {
   context.app = await startApp();
 });
 
-// Skip / Execute testt depending on node integration
+// Skip / Execute test depending on node integration
 Before(async function(testCase) {
   const tags = getTagNames(testCase);
   const isByronTest = includes(tags, '@byron');

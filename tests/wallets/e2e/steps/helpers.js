@@ -47,13 +47,11 @@ export const restoreWalletWithFunds = async (client: Object, { walletName }: { w
   }, walletName, recoveryPhrase);
 };
 
-const getMnemonicsIndex = async function() {
-  const isIncentivizedTestnetRequest = await this.execute(() => global.isIncentivizedTestnet);
-  const mnemonics = isIncentivizedTestnetRequest.value ? balanceItnMnemonics : balanceMnemonics;
-  let index = await this.localStorage('GET', testStorageKeys.BALANCE_MNEMONICS_INDEX) || 0;
-  index = index.value;
-  index = (!isNaN(index)) ? parseInt(index, 10) : 0;
-  const newIndex = (index < mnemonics.length - 1)
+const getMnemonicsIndex = async function(maxIndex: number) {
+  let index = await this.localStorage('GET', testStorageKeys.BALANCE_MNEMONICS_INDEX) || { value: 0 };
+  index = parseInt(index.value, 10);
+  if (isNaN(index)) index = 0;
+  const newIndex = (index < maxIndex)
     ? index + 1
     : 0;
   await this.localStorage('POST', {
@@ -79,8 +77,8 @@ export const restoreLegacyWallet = async (
   if (hasFunds) {
     const isIncentivizedTestnetRequest = await client.execute(() => global.isIncentivizedTestnet);
     const mnemonics = isIncentivizedTestnetRequest.value ? balanceItnMnemonics : balanceMnemonics;
-    const mnemonicsIndex = await getMnemonicsIndex.call(client);
-    recoveryPhrase = mnemonics[mnemonicsIndex]
+    const mnemonicsIndex = await getMnemonicsIndex.call(client, (mnemonics.length - 1));
+    recoveryPhrase = mnemonics[mnemonicsIndex];
   } else {
     recoveryPhrase = null;
   }
