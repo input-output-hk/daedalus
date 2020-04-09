@@ -7,10 +7,10 @@ import StoryLayout from '../../_support/StoryLayout';
 import StoryProvider from '../../_support/StoryProvider';
 import StoryDecorator from '../../_support/StoryDecorator';
 import WalletWithNavigation from '../../../../source/renderer/app/components/wallet/layouts/WalletWithNavigation';
-import DialogsActions from "../../../../source/renderer/app/actions/dialogs-actions";
-import { generateWallet } from "../../_support/utils";
-import STAKE_POOLS from "../../../../source/renderer/app/config/stakingStakePools.dummy";
-import Wallet from "../../../../source/renderer/app/domains/Wallet";
+import DialogsActions from '../../../../source/renderer/app/actions/dialogs-actions';
+import { generateWallet } from '../../_support/utils';
+import STAKE_POOLS from '../../../../source/renderer/app/config/stakingStakePools.dummy';
+import Wallet from '../../../../source/renderer/app/domains/Wallet';
 
 const WALLETS = [
   generateWallet('First Wallet', '1000000000', 0, STAKE_POOLS[0]),
