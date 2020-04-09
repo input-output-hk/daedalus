@@ -65,9 +65,9 @@ Feature: Wallet Settings
     And I click on "name" input field
     And I enter new wallet name:
       | name         |
-      | first Edited |
+      | Edited       |
     And I click outside "name" input field
-    Then I should see new wallet name "first Edited"
+    Then I should see new wallet name "Edited first"
 
   Scenario: User renames Wallet to a name which includes non-latin characters
     Given I am on the "first" wallet "settings" screen
@@ -76,7 +76,7 @@ Feature: Wallet Settings
       | name     |
       | キュビズム |
     And I click outside "name" input field
-    Then I should see new wallet name "キュビズム"
+    Then I should see new wallet name "キュビズム first"
 
   @shelley
   Scenario: User force wallet resync
