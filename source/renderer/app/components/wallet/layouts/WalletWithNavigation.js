@@ -1,5 +1,5 @@
 // @flow
-import React, { Component } from 'react';
+import React, {Component, Fragment} from 'react';
 import type { Node } from 'react';
 import { observer } from 'mobx-react';
 import WalletNavigation from '../navigation/WalletNavigation';
@@ -22,7 +22,6 @@ type Props = {
   isDialogOpen: Function,
   activeWallet: Wallet,
   dialogs: DialogsActions,
-  isNotResponding: boolean,
 };
 
 @observer
@@ -39,12 +38,11 @@ export default class WalletWithNavigation extends Component<Props> {
       isDialogOpen,
       activeWallet,
       dialogs,
-      isNotResponding,
     } = this.props;
 
     return (
       <div className={styles.component}>
-        {isNotResponding && (
+        {activeWallet.isNotResponding && (
           <NotResponding
             walletName={activeItem}
             onRestartNode={onRestartNode}
@@ -54,7 +52,6 @@ export default class WalletWithNavigation extends Component<Props> {
         {!activeWallet.hasPassword && (
           <SetWalletPassword
             onConfirm={() => {
-              dialogs.closeActiveDialog.trigger();
               dialogs.open.trigger({
                 dialog: ChangeSpendingPasswordDialog,
               });
@@ -62,16 +59,20 @@ export default class WalletWithNavigation extends Component<Props> {
             isDialogOpen={isDialogOpen}
           />
         )}
-        <div className={styles.navigation}>
-          <WalletNavigation
-            isActiveNavItem={isActiveScreen}
-            isLegacy={activeWallet.isLegacy}
-            onNavItemClick={onWalletNavItemClick}
-            activeItem={activeItem}
-            hasNotification={hasNotification}
-          />
-        </div>
-        <div className={styles.page}>{children}</div>
+        {!activeWallet.isNotResponding && !activeWallet.hasPassword && (
+          <Fragment>
+            <div className={styles.navigation}>
+            <WalletNavigation
+              isActiveNavItem={isActiveScreen}
+              isLegacy={activeWallet.isLegacy}
+              onNavItemClick={onWalletNavItemClick}
+              activeItem={activeItem}
+              hasNotification={hasNotification}
+            />
+            </div>
+            <div className={styles.page}>{children}</div>
+          </Fragment>
+        )}
       </div>
     );
   }
