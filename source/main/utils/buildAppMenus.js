@@ -55,7 +55,7 @@ export const buildAppMenus = async (
     safeExitWithCode(22);
   };
 
-  const toggleBlankScreenFix = item => {
+  const toggleBlankScreenFix = async item => {
     const translation = getTranslation(translations, 'menu');
     const blankScreenFixDialogOptions = {
       buttons: [
@@ -73,16 +73,19 @@ export const buildAppMenus = async (
       cancelId: 1,
       noLink: true,
     };
-    dialog.showMessageBox(mainWindow, blankScreenFixDialogOptions, buttonId => {
-      if (buttonId === 0) {
-        if (isBlankScreenFixActive) {
-          restartWithoutBlankScreenFix();
-        } else {
-          restartWithBlankScreenFix();
-        }
+
+    const { response } = await dialog.showMessageBox(
+      mainWindow,
+      blankScreenFixDialogOptions
+    );
+    if (response === 0) {
+      if (isBlankScreenFixActive) {
+        restartWithoutBlankScreenFix();
+      } else {
+        restartWithBlankScreenFix();
       }
-      item.checked = isBlankScreenFixActive;
-    });
+    }
+    item.checked = isBlankScreenFixActive;
   };
 
   const menuActions = {

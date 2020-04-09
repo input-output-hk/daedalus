@@ -7,13 +7,6 @@ import LocalizableError from '../../renderer/app/i18n/LocalizableError';
 
 export type LoggingLevel = 'debug' | 'info' | 'error' | 'warn';
 
-export type LoggerRequestParams = {
-  level: LoggingLevel,
-  args: Array<any>,
-};
-
-export type LoggerResponseParams = void;
-
 export type Logger = {
   debug: (string, ?Object) => void,
   info: (string, ?Object) => void,

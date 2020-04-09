@@ -2,7 +2,8 @@
 import os from 'os';
 import _https from 'https';
 import _http from 'http';
-import { ipcRenderer as _ipcRenderer } from 'electron';
+import { ipcRenderer } from 'electron';
+import electronLog from 'electron-log-daedalus';
 import { environment } from './environment';
 import { buildLabel, nodeImplementation, isFlight } from './config';
 
@@ -23,11 +24,17 @@ process.once('loaded', () => {
       platform: os.platform(),
     },
     ipcRenderer: {
-      on: (...args) => _ipcRenderer.on(...args),
-      once: (...args) => _ipcRenderer.once(...args),
-      send: (...args) => _ipcRenderer.send(...args),
-      removeListener: (...args) => _ipcRenderer.removeListener(...args),
-      removeAllListeners: (...args) => _ipcRenderer.removeAllListeners(...args),
+      on: (...args) => ipcRenderer.on(...args),
+      once: (...args) => ipcRenderer.once(...args),
+      send: (...args) => ipcRenderer.send(...args),
+      removeListener: (...args) => ipcRenderer.removeListener(...args),
+      removeAllListeners: (...args) => ipcRenderer.removeAllListeners(...args),
+    },
+    electronLog: {
+      debug: (...args) => electronLog.debug(...args),
+      info: (...args) => electronLog.info(...args),
+      error: (...args) => electronLog.error(...args),
+      warn: (...args) => electronLog.warn(...args),
     },
     isIncentivizedTestnet: _isIncentivizedTestnet,
     isFlight,
