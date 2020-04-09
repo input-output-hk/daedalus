@@ -4,12 +4,12 @@ const https = require('https');
 const fs = require('fs');
 
 const mnemonics = [
-  ['arctic', 'decade', 'pink', 'easy', 'jar', 'index', 'base', 'bright', 'vast', 'ocean', 'hard', 'pizza'],
-  ['finish', 'evoke', 'alone', 'town', 'express', 'wide', 'pair', 'story', 'west', 'safe', 'news', 'wrap'],
-  ['fox', 'now', 'hello', 'inmate', 'era', 'jealous', 'cruel', 'wreck', 'dash', 'supply', 'book', 'attend'],
-  ['must', 'lock', 'cereal', 'water', 'silver', 'cake', 'circle', 'express', 'sock', 'arm', 'chapter', 'avoid'],
-  ['give', 'verb', 'balcony', 'hurdle', 'pistol', 'flee', 'manage', 'barely', 'pulse', 'episode', 'speak', 'school'],
-  ['divert', 'entire', 'urge', 'banner', 'repair', 'mechanic', 'muffin', 'illness', 'genre', 'intact', 'coin', 'boss'],
+  ['surface', 'light', 'ridge', 'alter', 'reflect', 'digital', 'field', 'sibling', 'moon', 'giant', 'target', 'bleak'],
+  ['firm', 'scare', 'trap', 'reopen', 'window', 'govern', 'truck', 'negative', 'fragile', 'share', 'setup', 'coral'],
+  ['zero', 'heart', 'develop', 'wolf', 'salute', 'parade', 'supreme', 'pigeon', 'fragile', 'glue', 'manual', 'cloth'],
+  ['mobile', 'phone', 'apple', 'reduce', 'organ', 'since', 'grace', 'song', 'pole', 'heavy', 'speak', 'danger'],
+  ['vibrant', 'verb', 'entry', 'record', 'sketch', 'aspect', 'ensure', 'true', 'caution', 'long', 'suggest', 'draft'],
+  ['diary', 'setup', 'wire', 'claim', 'tattoo', 'street', 'slice', 'skin', 'neck', 'sunset', 'frame', 'tip'],
 ]
 
 const walletNames = [

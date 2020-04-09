@@ -67,13 +67,20 @@ export const getVisibleTextsForSelector = async (
 export const saveScreenshot = async (
   context: Object,
   file: any
-) => await context.browserWindow
-      .capturePage()
-      .then(imageBuffer => fs.writeFile(file, imageBuffer))
-      .catch(err => {
-        // eslint-disable-next-line no-console
+) =>
+await context.browserWindow
+  .capturePage()
+  .then(imageBuffer =>
+    fs.writeFile(file, imageBuffer, (err) => {
+      if (err) {
         console.log(err);
-      });
+      }
+    })
+  )
+  .catch(err => {
+    // eslint-disable-next-line no-console
+    console.log(err);
+  });
 
 export const waitAndClick = async function(
   selector: string,

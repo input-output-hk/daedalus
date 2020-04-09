@@ -30,7 +30,9 @@ export default class WalletReceivePage extends Component<Props, State> {
   }
 
   componentWillUnmount() {
-    this.props.actions.notifications.closeNotification.trigger({
+    const { actions } = this.props;
+    actions.addresses.resetErrors.trigger();
+    actions.notifications.closeNotification.trigger({
       id: 'copyAddress',
     });
   }
