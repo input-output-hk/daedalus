@@ -15,7 +15,6 @@ type Props = {
   activeItem: string,
   isActiveScreen: Function,
   onWalletNavItemClick: Function,
-  hasPassword: boolean,
   onRestartNode: Function,
   onOpenExternalLink: Function,
   hasNotification?: boolean,
