@@ -144,7 +144,7 @@
     "resolve-url": "0.2.1",
     "sass-loader": "7.1.0",
     "spawn-sync": "2.0.0",
-    "spectron": "5.0.0",
+    "spectron": "10.0.1",
     "style-loader": "0.23.1",
     "stylelint": "13.2.0",
     "stylelint-order": "4.0.0",
