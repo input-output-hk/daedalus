@@ -36,7 +36,7 @@ export default class AddressesStore extends Store {
       const { walletId, passphrase } = params;
       const accountIndex = await this.getAccountIndexByWalletId(walletId);
 
-      const address: ?Address = await this.createByronWalletAddressRequest.execute(
+      const address: WalletAddress = await this.createByronWalletAddressRequest.execute(
         {
           addressIndex: accountIndex,
           passphrase,
@@ -47,10 +47,7 @@ export default class AddressesStore extends Store {
       if (address != null) {
         this._refreshAddresses();
         runInAction('set last generated address and reset error', () => {
-          this.lastGeneratedAddress = new WalletAddress({
-            id: address.id,
-            used: address.state === 'used',
-          });
+          this.lastGeneratedAddress = address;
           this.error = null;
         });
       }
