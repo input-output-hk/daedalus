@@ -3,7 +3,7 @@ Feature: Wallet Settings
 
   Background:
     Given I have completed the basic setup
-    And I have the following "Rewards" wallets:
+    And I have the following wallets:
       | name   |
       | first  |
       | second |
@@ -79,19 +79,8 @@ Feature: Wallet Settings
     Then I should see new wallet name "キュビズム"
 
   @shelley
-  Scenario: User force Rewards Wallet resync
+  Scenario: User force wallet resync
     Given I am on the "first" wallet "settings" screen
-    When I click "Resync wallet" button
-    And I see "Resync wallet" button spinner
-    Then I should see the restore status notification while restore is running
-    And I should not see the restore status notification once restore is finished
-    And I should not see "Resync wallet" button spinner anymore
-
-  @shelley
-  Scenario: User force Balance Wallet resync
-    Given I have a "Balance Wallet" balance wallet
-    And I am on the "Balance Wallet" wallet "settings" screen
-    And I should not see the restore status notification once restore is finished
     When I click "Resync wallet" button
     And I see "Resync wallet" button spinner
     Then I should see the restore status notification while restore is running
