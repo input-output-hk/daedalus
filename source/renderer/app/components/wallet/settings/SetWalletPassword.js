@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import SVGInline from 'react-svg-inline';
-import insecureWalletIcon from '../../../assets/images/insecure-wallet.svg';
+import insecureWalletIcon from '../../../assets/images/insecure-wallet.inline.svg';
 import styles from './SetWalletPassword.scss';
 import ChangeSpendingPasswordDialog from "./ChangeSpendingPasswordDialog";
 import ChangeSpendingPasswordDialogContainer
