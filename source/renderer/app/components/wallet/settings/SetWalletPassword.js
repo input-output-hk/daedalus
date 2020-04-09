@@ -2,7 +2,8 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
-import insecureWalletIcon from '../../../assets/images/insecure-wallet.png';
+import SVGInline from 'react-svg-inline';
+import insecureWalletIcon from '../../../assets/images/insecure-wallet.svg';
 import styles from './SetWalletPassword.scss';
 import ChangeSpendingPasswordDialog from "./ChangeSpendingPasswordDialog";
 import ChangeSpendingPasswordDialogContainer
@@ -55,11 +56,9 @@ export default class SetWalletPassword extends Component<Props> {
         <div className={styles.component}>
           <div className={styles.setPasswordDialog}>
             <div className={styles.setPasswordWrapper}>
-              <img
-                src={insecureWalletIcon}
+              <SVGInline
+                svg={insecureWalletIcon}
                 className={styles.insecureWalletIcon}
-                role="presentation"
-                draggable="false"
               />
               <h2 className={styles.setPasswordTitle}>
                 {intl.formatMessage(messages.setPasswordTitle)}
