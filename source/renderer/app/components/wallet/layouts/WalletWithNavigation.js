@@ -1,5 +1,5 @@
 // @flow
-import React, {Component, Fragment} from 'react';
+import React, { Component, Fragment } from 'react';
 import type { Node } from 'react';
 import { observer } from 'mobx-react';
 import WalletNavigation from '../navigation/WalletNavigation';
@@ -59,16 +59,16 @@ export default class WalletWithNavigation extends Component<Props> {
             isDialogOpen={isDialogOpen}
           />
         )}
-        {!activeWallet.isNotResponding && !activeWallet.hasPassword && (
+        {!activeWallet.isNotResponding && activeWallet.hasPassword && (
           <Fragment>
             <div className={styles.navigation}>
-            <WalletNavigation
-              isActiveNavItem={isActiveScreen}
-              isLegacy={activeWallet.isLegacy}
-              onNavItemClick={onWalletNavItemClick}
-              activeItem={activeItem}
-              hasNotification={hasNotification}
-            />
+              <WalletNavigation
+                isActiveNavItem={isActiveScreen}
+                isLegacy={activeWallet.isLegacy}
+                onNavItemClick={onWalletNavItemClick}
+                activeItem={activeItem}
+                hasNotification={hasNotification}
+              />
             </div>
             <div className={styles.page}>{children}</div>
           </Fragment>

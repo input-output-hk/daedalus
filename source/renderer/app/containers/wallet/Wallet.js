@@ -71,7 +71,7 @@ export default class Wallet extends Component<Props> {
       recoveryPhraseVerificationStatus ===
         WalletRecoveryPhraseVerificationStatuses.NOTIFICATION &&
       !isIncentivizedTestnet;
-    const { isNotResponding, isRestoring } = activeWallet;
+    const { isRestoring } = activeWallet;
 
     return (
       <MainLayout>
