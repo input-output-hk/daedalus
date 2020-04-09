@@ -48,7 +48,7 @@ export default class SetWalletPassword extends Component<Props> {
     return (
       <>
         {isDialogOpen(ChangeSpendingPasswordDialog) ? (
-          <ChangeSpendingPasswordDialogContainer forceSetPassword />
+          <ChangeSpendingPasswordDialogContainer />
         ) : (
           false
         )}
