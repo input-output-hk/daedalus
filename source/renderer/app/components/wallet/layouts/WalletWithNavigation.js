@@ -34,7 +34,6 @@ export default class WalletWithNavigation extends Component<Props> {
       onWalletNavItemClick,
       activeItem,
       hasNotification,
-      hasPassword,
       onRestartNode,
       onOpenExternalLink,
       isDialogOpen,
@@ -52,7 +51,7 @@ export default class WalletWithNavigation extends Component<Props> {
             onOpenExternalLink={onOpenExternalLink}
           />
         )}
-        {!hasPassword && (
+        {!activeWallet.hasPassword && (
           <SetWalletPassword
             onConfirm={() => {
               dialogs.closeActiveDialog.trigger();
