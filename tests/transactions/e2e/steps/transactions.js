@@ -11,6 +11,7 @@ import {
   getInputValueByLabel,
 } from '../../../common/e2e/steps/helpers';
 import { getWalletByName, fillOutWalletSendForm } from '../../../wallets/e2e/steps/helpers';
+import { getRawWalletId } from '../../../../source/renderer/app/api/utils';
 import type { Daedalus } from '../../../types';
 
 declare var daedalus: Daedalus;
@@ -26,6 +27,7 @@ Given(
       destinationWalletId: getWalletByName.call(this, t.destination).id,
       amount: parseInt(new BigNumber(t.amount).times(LOVELACES_PER_ADA), 10),
       passphrase: 'Secret1234',
+      isLegacy: getWalletByName.call(this, t.source).isLegacy,
     }));
     this.transactions = [];
     // Sequentially (and async) create transactions with for loop
@@ -52,7 +54,7 @@ When(/^I click on the show more transactions button$/, async function() {
 });
 
 When(/^I can see the send form$/, function() {
-  return this.client.waitForVisible('.WalletSendForm');
+  return this.client.waitForVisible('.WalletSendForm_receiverInput');
 });
 
 When(/^I fill out the wallet send form with:$/, function(table) {
@@ -63,13 +65,18 @@ When(
   /^I fill out the send form with a transaction to "([^"]*)" wallet:$/,
   async function(walletName, table) {
     const values = table.hashes()[0];
-    const walletId = getWalletByName.call(this, walletName).id;
-    const walletAddress = await this.client.executeAsync((id, done) => {
+    const wallet = getWalletByName.call(this, walletName);
+    const walletId = getRawWalletId(wallet.id);
+    const isLegacy = wallet.isLegacy;
+
+    // Get Destination wallet address
+    const walletAddress = await this.client.executeAsync((walletId, isLegacy, done) => {
       daedalus.api.ada
-        .getAddresses({ walletId: id, isLegacy: false })
+        .getAddresses({ walletId, isLegacy })
         .then(response => done(response[0].id))
         .catch(error => done(error));
-    }, walletId);
+    }, walletId, isLegacy);
+
     values.address = walletAddress.value;
     return fillOutWalletSendForm.call(this, values);
   }

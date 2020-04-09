@@ -12,6 +12,7 @@ export type Environment = {
   isMainnet: boolean,
   isStaging: boolean,
   isTestnet: boolean,
+  isSelfnode: boolean,
   isIncentivizedTestnet: boolean,
   isIncentivizedTestnetQA: boolean,
   isIncentivizedTestnetNightly: boolean,

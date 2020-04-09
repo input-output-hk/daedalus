@@ -39,7 +39,7 @@ export default class WalletsActions {
 
   restoreWallet: Action<any> = new Action();
   importWalletFromFile: Action<WalletImportFromFileParams> = new Action();
-  deleteWallet: Action<{ walletId: string, isLegacy?: boolean }> = new Action();
+  deleteWallet: Action<{ walletId: string, isLegacy: boolean }> = new Action();
   undelegateWallet: Action<{
     walletId: string,
     stakePoolId: string,
