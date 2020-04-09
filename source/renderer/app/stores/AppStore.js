@@ -163,18 +163,15 @@ export default class AppStore extends Store {
     const params = { defaultPath: fileName };
     const { filePath } = await showSaveDialogChannel.send(params);
     if (filePath) {
+      this.actions.app.setIsDownloadingLogs.trigger(true);
       this.actions.profile.downloadLogs.trigger({
         fileName,
         destination: filePath,
         fresh: true,
       });
     } else {
-      this.actions.app.setIsDownloadingLogs.trigger(
-        !this.isDownloadNotificationVisible
-      );
+      this.actions.app.setIsDownloadingLogs.trigger(false);
     }
-
-    this.isDownloadNotificationVisible = true;
   };
 
   @action _setIsDownloadingLogs = (isDownloadNotificationVisible: boolean) => {
