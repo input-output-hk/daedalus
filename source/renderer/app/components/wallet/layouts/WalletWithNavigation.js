@@ -1,5 +1,5 @@
 // @flow
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import type { Node } from 'react';
 import { observer } from 'mobx-react';
 import WalletNavigation from '../navigation/WalletNavigation';
