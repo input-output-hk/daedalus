@@ -7,7 +7,6 @@ import StoryLayout from '../../_support/StoryLayout';
 import StoryProvider from '../../_support/StoryProvider';
 import StoryDecorator from '../../_support/StoryDecorator';
 import WalletWithNavigation from '../../../../source/renderer/app/components/wallet/layouts/WalletWithNavigation';
-import DialogsActions from '../../../../source/renderer/app/actions/dialogs-actions';
 import { generateWallet } from '../../_support/utils';
 import STAKE_POOLS from '../../../../source/renderer/app/config/stakingStakePools.dummy';
 import Wallet from '../../../../source/renderer/app/domains/Wallet';
@@ -30,8 +29,7 @@ export default (story: any, context: any) => {
       .toLocaleLowerCase();
 
   const activeWallet: Wallet = WALLETS[0];
-
-  const dialogs = new DialogsActions();
+  const { hasPassword, isLegacy, isNotResponding } = activeWallet;
 
   return (
     <StoryDecorator>
@@ -39,17 +37,19 @@ export default (story: any, context: any) => {
         <StoryLayout activeSidebarCategory="/wallets" {...context}>
           {context.story !== 'Empty' && context.story !== 'Wallet Add' ? (
             <WalletWithNavigation
-              dialogs={dialogs}
-              onOpenExternalLink={() => {}}
-              isDialogOpen={() => {}}
-              onRestartNode={() => {}}
+              activeItem={getItemFromContext()}
+              hasPassword={hasPassword}
               isActiveScreen={item => item === getItemFromContext()}
-              activeWallet={activeWallet}
+              isLegacy={isLegacy}
+              isNotResponding={isNotResponding}
+              isSetWalletPasswordDialogOpen={false}
               onWalletNavItemClick={linkTo(context.kind, item => {
                 if (item === 'utxo') return 'Wallet UTXO distribution';
                 return startCase(item);
               })}
-              activeItem={getItemFromContext()}
+              onSetWalletPassword={() => {}}
+              onOpenExternalLink={() => {}}
+              onRestartNode={() => {}}
             >
               {storyWithKnobs}
             </WalletWithNavigation>

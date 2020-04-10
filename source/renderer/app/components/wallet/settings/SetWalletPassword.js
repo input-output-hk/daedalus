@@ -5,7 +5,6 @@ import { defineMessages, intlShape } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import insecureWalletIcon from '../../../assets/images/insecure-wallet.inline.svg';
 import styles from './SetWalletPassword.scss';
-import ChangeSpendingPasswordDialog from './ChangeSpendingPasswordDialog';
 import ChangeSpendingPasswordDialogContainer from '../../../containers/wallet/dialogs/settings/ChangeSpendingPasswordDialogContainer';
 
 const messages = defineMessages({
@@ -31,8 +30,8 @@ const messages = defineMessages({
 });
 
 type Props = {
-  onConfirm: Function,
-  isDialogOpen: Function,
+  isSetWalletPasswordDialogOpen: boolean,
+  onSetWalletPassword: Function,
 };
 
 @observer
@@ -43,15 +42,10 @@ export default class SetWalletPassword extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { isDialogOpen, onConfirm } = this.props;
+    const { isSetWalletPasswordDialogOpen, onSetWalletPassword } = this.props;
 
     return (
       <>
-        {isDialogOpen(ChangeSpendingPasswordDialog) ? (
-          <ChangeSpendingPasswordDialogContainer />
-        ) : (
-          false
-        )}
         <div className={styles.component}>
           <div className={styles.setPasswordDialog}>
             <div className={styles.setPasswordWrapper}>
@@ -65,12 +59,19 @@ export default class SetWalletPassword extends Component<Props> {
               <p className={styles.setPasswordMessage}>
                 {intl.formatMessage(messages.setPasswordMessage)}
               </p>
-              <button className={styles.setPasswordButton} onClick={onConfirm}>
+              <button
+                className={styles.setPasswordButton}
+                onClick={onSetWalletPassword}
+              >
                 {intl.formatMessage(messages.setPasswordButton)}
               </button>
             </div>
           </div>
         </div>
+
+        {isSetWalletPasswordDialogOpen && (
+          <ChangeSpendingPasswordDialogContainer />
+        )}
       </>
     );
   }
