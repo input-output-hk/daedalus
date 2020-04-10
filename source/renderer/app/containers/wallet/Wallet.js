@@ -5,6 +5,7 @@ import MainLayout from '../MainLayout';
 import WalletWithNavigation from '../../components/wallet/layouts/WalletWithNavigation';
 import LoadingSpinner from '../../components/widgets/LoadingSpinner';
 import RestoreNotification from '../../components/notifications/RestoreNotification';
+import ChangeSpendingPasswordDialog from '../../components/wallet/settings/ChangeSpendingPasswordDialog';
 import { buildRoute } from '../../utils/routing';
 import { ROUTES } from '../../routes-config';
 import type { InjectedContainerProps } from '../../types/injectedPropsType';
@@ -71,7 +72,12 @@ export default class Wallet extends Component<Props> {
       recoveryPhraseVerificationStatus ===
         WalletRecoveryPhraseVerificationStatuses.NOTIFICATION &&
       !isIncentivizedTestnet;
-    const { isRestoring } = activeWallet;
+    const {
+      isRestoring,
+      isLegacy,
+      isNotResponding,
+      hasPassword,
+    } = activeWallet;
 
     return (
       <MainLayout>
@@ -82,17 +88,23 @@ export default class Wallet extends Component<Props> {
         ) : null}
 
         <WalletWithNavigation
-          isActiveScreen={this.isActiveScreen}
-          onWalletNavItemClick={this.handleWalletNavItemClick}
           activeItem={app.currentPage}
-          activeWallet={activeWallet}
           hasNotification={hasNotification}
-          isDialogOpen={isDialogOpen}
-          dialogs={actions.dialogs}
+          hasPassword={hasPassword}
+          isActiveScreen={this.isActiveScreen}
+          isLegacy={isLegacy}
+          isNotResponding={isNotResponding}
+          isSetWalletPasswordDialogOpen={isDialogOpen(
+            ChangeSpendingPasswordDialog
+          )}
+          onOpenExternalLink={(url: string) => stores.app.openExternalLink(url)}
           onRestartNode={() => restartNode.trigger()}
-          onOpenExternalLink={(url: string) =>
-            this.props.stores.app.openExternalLink(url)
-          }
+          onSetWalletPassword={() => {
+            actions.dialogs.open.trigger({
+              dialog: ChangeSpendingPasswordDialog,
+            });
+          }}
+          onWalletNavItemClick={this.handleWalletNavItemClick}
         >
           {this.props.children}
         </WalletWithNavigation>

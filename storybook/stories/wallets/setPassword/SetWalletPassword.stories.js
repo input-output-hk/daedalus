@@ -9,5 +9,8 @@ import StoryDecorator from '../../_support/StoryDecorator';
 storiesOf('Wallets|Set Password', module)
   .addDecorator(story => <StoryDecorator>{story()}</StoryDecorator>)
   .add('Send', () => (
-    <SetWalletPassword onConfirm={() => {}} isDialogOpen={() => {}} />
+    <SetWalletPassword
+      isSetWalletPasswordDialogOpen={false}
+      onSetWalletPassword={() => {}}
+    />
   ));

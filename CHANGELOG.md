@@ -3,6 +3,10 @@ Changelog
 
 ## vNext
 
+### Features
+
+- Force setting spending password on passwordless wallets ([PR 1957](https://github.com/input-output-hk/daedalus/pull/1957))
+
 ### Chores
 
 - Refactored and improved automated tests setup ([PR 1912](https://github.com/input-output-hk/daedalus/pull/1912))
