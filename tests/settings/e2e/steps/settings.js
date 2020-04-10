@@ -69,7 +69,7 @@ When(/^I enter new wallet name:$/, async function(table) {
   const fields = table.hashes()[0];
   await this.client.addValue(
     '.WalletSettings_component .walletName input',
-    `${fields.name}${" "}`
+    `${" "}${fields.name}`
   );
 });
 
