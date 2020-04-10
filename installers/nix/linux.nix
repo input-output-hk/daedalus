@@ -25,7 +25,7 @@ let
 
     cd "''${DAEDALUS_DIR}/${cluster}/"
 
-    exec ${electron8}/bin/electron ${rawapp}/share/daedalus "$@"
+    exec ${electron8}/bin/electron --disable-setuid-sandbox --no-sandbox ${rawapp}/share/daedalus "$@"
   '';
   daedalus = writeScriptBin "daedalus" ''
     #!${stdenv.shell}
