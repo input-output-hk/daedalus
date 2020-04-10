@@ -1,7 +1,4 @@
-{ lib, yarn, nodejs, python, api, apiVersion
-, cluster, buildNum, nukeReferences, fetchzip
-, daedalus, stdenv, win64 ? false, wine64, runCommand
-, fetchurl, unzip, spacedName, iconPath, launcherConfig, pkgs }:
+{ lib, yarn, nodejs, python, api, apiVersion, cluster, buildNum, nukeReferences, fetchzip, daedalus, stdenv, win64 ? false, wine64, runCommand, fetchurl, unzip, spacedName, iconPath, launcherConfig, pkgs }:
 let
   cluster' = launcherConfig.networkName;
   yarn2nix = import (fetchzip {
@@ -31,10 +28,14 @@ let
   };
   electron-cache = runCommand "electron-cache" {} ''
     mkdir $out
-    mkdir $out/httpsgithub.comelectronelectronreleasesdownloadv8.1.1SHASUMS256.txt
-    mkdir $out/httpsgithub.comelectronelectronreleasesdownloadv8.1.1electron-v8.1.1-win32-x64.zip
-    ln -s ${windowsElectron} $out/httpsgithub.comelectronelectronreleasesdownloadv8.1.1electron-v8.1.1-win32-x64.zip/electron-v8.1.1-win32-x64.zip
-    ln -s ${checksums} $out/httpsgithub.comelectronelectronreleasesdownloadv8.1.1SHASUMS256.txt/SHASUMS256.txt
+    # old style
+    ln -s ${windowsElectron} $out/electron-v${windowsElectronVersion}-win32-x64.zip
+    ln -s ${checksums} $out/SHASUMS256.txt-${windowsElectronVersion}
+    # new style
+    mkdir $out/httpsgithub.comelectronelectronreleasesdownloadv${windowsElectronVersion}SHASUMS256.txt
+    mkdir $out/httpsgithub.comelectronelectronreleasesdownloadv${windowsElectronVersion}electron-v${windowsElectronVersion}-win32-x64.zip
+    ln -s ${windowsElectron} $out/httpsgithub.comelectronelectronreleasesdownloadv${windowsElectronVersion}electron-v${windowsElectronVersion}-win32-x64.zip/electron-v${windowsElectronVersion}-win32-x64.zip
+    ln -s ${checksums} $out/httpsgithub.comelectronelectronreleasesdownloadv${windowsElectronVersion}SHASUMS256.txt/SHASUMS256.txt
   '';
   filter = name: type: let
     baseName = baseNameOf (toString name);
@@ -71,10 +72,13 @@ yarn2nix.mkYarnPackage {
       done
     '';
   in if win64 then ''
+    # old style
+    export ELECTRON_CACHE=${electron-cache}
+    # new style
     mkdir -pv home/.cache/
     export HOME=$(realpath home)
     ln -sv ${electron-cache} $HOME/.cache/electron
-    export DEBUG='@electron/get:*'
+
     cp ${newPackagePath} package.json
     mkdir -p installers/icons/${cluster}/${cluster}
     cp ${iconPath.base}/* installers/icons/${cluster}/${cluster}/
