@@ -18,7 +18,7 @@ const messages = defineMessages({
   setPasswordMessage: {
     id: 'wallet.settings.setWalletPassword.dialog.setPasswordMessage',
     defaultMessage:
-      '!!!Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+      '!!!To keep your wallet secure and start using it in Daedalus, you need to set a spending password.',
     description:
       'Message for the "Set a password" button in the set wallet password dialog.',
   },
