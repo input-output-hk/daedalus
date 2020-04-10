@@ -11,6 +11,7 @@ import {
 } from 'cucumber';
 import electronPath from 'electron';
 import fakeDialog from 'spectron-fake-dialog';
+import { includes } from 'lodash';
 import {
   generateScreenshotFilePath,
   getTestNameFromTestFile,
@@ -88,6 +89,24 @@ BeforeAll({ timeout: 5 * 60 * 1000 }, async () => {
   context.app = await startApp();
 });
 
+// Skip / Execute test depending on node integration
+Before(async function(testCase) {
+  const tags = getTagNames(testCase);
+  const isByronTest = includes(tags, '@byron');
+  const isShelleyTest = includes(tags, '@shelley');
+  const isByronTestWip = includes(tags, '@api-wip-byron');
+  const isShelleyTestWip = includes(tags, '@api-wip-shelley');
+  const isGlobalWip = includes(tags, '@wip');
+
+  // Check if ITN set globally
+  const isIncentivizedTestnet = await context.app.client.execute(() => global.isIncentivizedTestnet);
+  // Skip all Byron related tests or Shelley WIP
+  if (isIncentivizedTestnet.value && ((isByronTest && !isShelleyTest) || isShelleyTestWip)) return 'skipped';
+  // Skip all Shelley related tests or Byron WIP
+  if (!isIncentivizedTestnet.value && ((isShelleyTest && !isByronTest) || isByronTestWip)) return 'skipped';
+  if (isGlobalWip) return 'skipped';
+});
+
 // Make the electron app accessible in each scenario context
 Before({ tags: '@e2e', timeout: DEFAULT_TIMEOUT * 2 }, async function(testCase) {
   const tags = getTagNames(testCase);
@@ -114,9 +133,7 @@ Before({ tags: '@e2e', timeout: DEFAULT_TIMEOUT * 2 }, async function(testCase) 
           .then(daedalus.api.localStorage.reset)
           .then(daedalus.stores.wallets.refreshWalletsData())
           .then(done)
-          .catch(error => {
-            throw error;
-          });
+          .catch(error => done(error));
       } else {
         setTimeout(resetBackend, 50);
       }
@@ -146,7 +163,6 @@ Before({ tags: '@newsfeed' }, function() {
   setNewsFeedIsOpen(this.client, false);
   resetTestNews(this.client);
 });
-
 
 // adds waitAndClick method to webdriver
 Before(function(testCase) {
@@ -179,7 +195,6 @@ Before({ tags: '@e2e' }, function() {
     return translation.value;
   };
 });
-
 
 // this ensures that the spectron instance of the app restarts
 // after the node update acceptance test shuts it down via 'kill-process'

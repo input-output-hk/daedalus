@@ -10,37 +10,41 @@ import {
   restoreLegacyWallet,
   waitUntilUrlEquals,
   navigateTo,
+  getWalletType,
 } from './helpers';
 import type { Daedalus } from '../../../types';
 
 declare var daedalus: Daedalus;
 
-// Create "Rewards" or "Balance" wallets
-Given(/^I have the following "([^"]*)" wallets:$/, async function(type, table) {
-  const isLegacy = type === 'Balance';
-  await createWallets(table.hashes(), this, { isLegacy });
+// Create shelley or byron wallets
+Given(/^I have (created )?the following (balance )?wallets:$/, async function(mode, _type, table) {
+  const type = await getWalletType.call(this, _type);
+  const isLegacy = type === 'byron';
+  const sequentially = mode === 'created ';
+  await createWallets.call(this, table.hashes(), { sequentially, isLegacy });
 });
 
-// Creates them sequentially
-Given(/^I have created the following "Rewards" wallets:$/, async function(table) {
-  await createWallets(table.hashes(), this, { sequentially: true });
-});
-
-Given(/^I have a "([^"]*)" rewards wallet with funds$/, async function(walletName) {
-  await restoreWalletWithFunds(this.client, { walletName });
+// Create a single wallet with funds
+Given(/^I have a "([^"]*)" (balance )?wallet with funds$/, async function(walletName, _type) {
+  const type = await getWalletType.call(this, _type);
+  if (type === 'shelley') {
+    await restoreWalletWithFunds(this.client, { walletName });
+  } else {
+    await restoreLegacyWallet(this.client, { walletName, hasFunds: true });
+  }
   const wallet = await waitUntilWalletIsLoaded.call(this, walletName);
   addOrSetWalletsForScenario.call(this, wallet);
 });
 
-// Create "Balance" wallets
-Given(/^I have a "([^"]*)" balance wallet$/, async function(walletName) {
-  await restoreLegacyWallet(this.client, { walletName, hasFunds: false });
-  const wallet = await waitUntilWalletIsLoaded.call(this, walletName);
-  addOrSetWalletsForScenario.call(this, wallet);
-});
-
-Given(/^I have a "([^"]*)" balance wallet with funds$/, async function(walletName) {
-  await restoreLegacyWallet(this.client, { walletName, hasFunds: true });
+// Create a single wallet with no funds
+Given(/^I have a "([^"]*)" (balance )?wallet$/, async function(walletName, _type) {
+  const type = await getWalletType.call(this, _type);
+  const isLegacy = type === 'byron';
+  if (!isLegacy) {
+    await createWallets.call(this, [{ name: walletName }], {});
+  } else {
+    await restoreLegacyWallet(this.client, { walletName, hasFunds: false });
+  }
   const wallet = await waitUntilWalletIsLoaded.call(this, walletName);
   addOrSetWalletsForScenario.call(this, wallet);
 });
@@ -106,11 +110,12 @@ Then(/^I should have newly created "([^"]*)" wallet loaded$/, async function(
       .then(done)
       .catch(error => done(error));
   });
+
   // Add or set the wallets for this scenario
-  if (this.wallets != null) {
-    this.wallets.push(...result.value);
+  if (this.context.wallets != null) {
+    this.context.wallets.push(...result.value);
   } else {
-    this.wallets = result.value;
+    this.context.wallets = result.value;
   }
   const wallet = getWalletByName.call(this, walletName);
   expect(wallet).to.be.an('object');
