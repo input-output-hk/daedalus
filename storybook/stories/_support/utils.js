@@ -45,7 +45,7 @@ export const generateWallet = (
     reward: new BigNumber(reward).dividedBy(LOVELACES_PER_ADA),
     createdAt: new Date(),
     name,
-    hasPassword,
+    hasPassword: hasPassword || true,
     passwordUpdateDate: new Date(),
     syncState: { status: 'ready' },
     isLegacy: false,

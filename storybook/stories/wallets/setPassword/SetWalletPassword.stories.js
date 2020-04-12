@@ -41,7 +41,7 @@ storiesOf('Wallets|Set Password', module)
           onCancel={() => {}}
           onDataChange={() => {}}
           isSubmitting={false}
-          error={false}
+          error={undefined}
           walletName={activeWallet.name}
         />
       )}
