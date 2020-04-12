@@ -28,7 +28,11 @@ export default (story: any, context: any) => {
       .replace('Wallet Summary', 'summary')
       .toLocaleLowerCase();
 
-  const activeWallet: Wallet = WALLETS[0];
+  const getActiveWalletFromContext = () => {
+    return WALLETS[1];
+  };
+
+  const activeWallet: Wallet = getActiveWalletFromContext();
   const { hasPassword, isLegacy, isNotResponding } = activeWallet;
 
   return (
