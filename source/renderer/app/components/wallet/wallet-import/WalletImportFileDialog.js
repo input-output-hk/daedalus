@@ -1,10 +1,10 @@
 // @flow
 import React, { Component } from 'react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
-import {Button} from 'react-polymorph/lib/components/Button';
-import {ButtonSkin} from 'react-polymorph/lib/skins/simple/ButtonSkin';
-import {Link} from 'react-polymorph/lib/components/Link';
-import {LinkSkin} from 'react-polymorph/lib/skins/simple/LinkSkin';
+import { Button } from 'react-polymorph/lib/components/Button';
+import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
+import { Link } from 'react-polymorph/lib/components/Link';
+import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import ReactModal from 'react-modal';
 import styles from './WalletImportFileDialog.scss';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
@@ -67,11 +67,7 @@ export default class WalletImportFileDialog extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const {
-      onConfirm,
-      onClose,
-      openExternalLink,
-    } = this.props;
+    const { onConfirm, onClose, openExternalLink } = this.props;
     const title = intl.formatMessage(messages.title);
     const subTitle1 = intl.formatMessage(messages.versionName);
     const subTitle2 = intl.formatMessage(messages.networkName);
@@ -90,14 +86,14 @@ export default class WalletImportFileDialog extends Component<Props> {
         overlayClassName={styles.overlay}
         ariaHideApp={false}
       >
-       <div className={styles.component}>
-         <DialogCloseButton
-             className={styles.closeButton}
-             icon={closeCrossThin}
-             onClose={onClose}
-         />
-         <div className={styles.backgroundContainer} />
-         <div className={styles.content}>
+        <div className={styles.component}>
+          <DialogCloseButton
+            className={styles.closeButton}
+            icon={closeCrossThin}
+            onClose={onClose}
+          />
+          <div className={styles.backgroundContainer} />
+          <div className={styles.content}>
             <div className={styles.title}>{title}</div>
             <div className={styles.subTitle1}>{subTitle1}</div>
             <div className={styles.subTitle2}>{subTitle2}</div>

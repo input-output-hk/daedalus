@@ -72,7 +72,7 @@ export default class WalletAddPage extends Component<Props> {
     } else if (uiDialogs.isOpen(WalletImportFileDialog)) {
       content = <WalletImportFileDialogContainer />;
     } else if (uiDialogs.isOpen(WalletSelectImportDialog)) {
-      content = <WalletSelectImportDialogContainer />
+      content = <WalletSelectImportDialogContainer />;
     } else {
       content = (
         <WalletAdd

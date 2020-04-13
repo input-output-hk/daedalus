@@ -21,10 +21,7 @@ export default class WalletSelectImportDialog extends Component<Props> {
   };
 
   render() {
-    const {
-      onConfirm,
-      onClose,
-    } = this.props;
+    const { onConfirm, onClose } = this.props;
 
     return (
       <ReactModal
@@ -42,9 +39,7 @@ export default class WalletSelectImportDialog extends Component<Props> {
             onClose={onClose}
           />
           <div className={styles.backgroundContainer} />
-          <div className={styles.content}>
-            Dialog 2
-          </div>
+          <div className={styles.content}>Dialog 2</div>
         </div>
       </ReactModal>
     );

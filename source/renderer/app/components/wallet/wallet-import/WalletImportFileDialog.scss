@@ -63,7 +63,6 @@
     }
   }
 
-
   .backgroundContainer {
     background-color: var(--theme-splash-network-background-color);
     height: 100%;
@@ -77,15 +76,15 @@
 
     .backgroundOverlay {
       background-image: linear-gradient(
-          0deg,
-          var(--theme-splash-network-background-color1) 0%,
-          var(--theme-splash-network-background-color2) 10%,
-          var(--theme-splash-network-background-color3) 16%,
-          var(--theme-splash-network-background-color4) 20%,
-          var(--theme-splash-network-background-color5) 80%,
-          var(--theme-splash-network-background-color6) 84%,
-          var(--theme-splash-network-background-color7) 90%,
-          var(--theme-splash-network-background-color8) 100%
+        0deg,
+        var(--theme-splash-network-background-color1) 0%,
+        var(--theme-splash-network-background-color2) 10%,
+        var(--theme-splash-network-background-color3) 16%,
+        var(--theme-splash-network-background-color4) 20%,
+        var(--theme-splash-network-background-color5) 80%,
+        var(--theme-splash-network-background-color6) 84%,
+        var(--theme-splash-network-background-color7) 90%,
+        var(--theme-splash-network-background-color8) 100%
       );
       height: 100%;
       position: absolute;
@@ -152,7 +151,7 @@
 
     .description {
       background-color: var(
-          --theme-splash-network-description-background-color
+        --theme-splash-network-description-background-color
       );
       border-radius: 4px;
       font-size: 14px;
@@ -184,10 +183,10 @@
     .action {
       .actionButton {
         background-color: var(
-            --theme-splash-network-overlay-button-background-color
+          --theme-splash-network-overlay-button-background-color
         );
         border: solid 1px
-        var(--theme-splash-network-overlay-button-border-color);
+          var(--theme-splash-network-overlay-button-border-color);
         color: var(--theme-splash-network-overlay-button-text-color);
         font-weight: 500;
         line-height: 1.36;
@@ -195,7 +194,7 @@
 
         &:hover {
           background-color: var(
-              --theme-splash-network-overlay-button-background-color-hover
+            --theme-splash-network-overlay-button-background-color-hover
           );
           border: none;
           color: var(--theme-splash-network-overlay-button-text-color-hover);
@@ -218,7 +217,7 @@
     background-color: var(--theme-splash-network-scrollbar-thumb-background);
     &:hover {
       background-color: var(
-          --theme-splash-network-scrollbar-thumb-background-hover
+        --theme-splash-network-scrollbar-thumb-background-hover
       );
     }
   }
