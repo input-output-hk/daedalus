@@ -472,7 +472,7 @@
   "wallet.add.dialog.create.description": "Create a new wallet",
   "wallet.add.dialog.create.description.itn": "Create a new Rewards wallet",
   "wallet.add.dialog.create.label": "Create",
-  "wallet.add.dialog.import.description": "Import a wallet from a file",
+  "wallet.add.dialog.import.description": "Import wallets from an earlier version of Daedalus or the Daedalus state directory",
   "wallet.add.dialog.import.label": "Import",
   "wallet.add.dialog.join.description": "Join a shared wallet",
   "wallet.add.dialog.join.label": "Join",

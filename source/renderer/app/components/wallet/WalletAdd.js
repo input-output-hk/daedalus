@@ -69,7 +69,7 @@ const messages = defineMessages({
   },
   importDescription: {
     id: 'wallet.add.dialog.import.description',
-    defaultMessage: '!!!Import a wallet from a file',
+    defaultMessage: '!!!Import wallets from an earlier version of Daedalus or the Daedalus state directory',
     description:
       'Description for the "Import" button on the wallet add dialog.',
   },

@@ -472,7 +472,7 @@
   "wallet.add.dialog.create.description": "ウォレットを新規作成する",
   "wallet.add.dialog.create.description.itn": "報酬ウォレットを作成",
   "wallet.add.dialog.create.label": "作成",
-  "wallet.add.dialog.import.description": "ファイルからウォレットをインポート",
+  "wallet.add.dialog.import.description": "Daedalusの前バージョンまたはDaedalusステータスディレクトリーからウォレットをインポート",
   "wallet.add.dialog.import.label": "インポート",
   "wallet.add.dialog.join.description": "共有ウォレットに参加",
   "wallet.add.dialog.join.label": "参加",
