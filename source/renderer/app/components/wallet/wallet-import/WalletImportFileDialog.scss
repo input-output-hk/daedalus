@@ -112,7 +112,7 @@
       font-family: var(--font-regular);
       font-size: 20px;
       line-height: 1.2;
-      margin-bottom: 5px;
+      margin-bottom: 11px;
       text-align: center;
     }
 
@@ -120,14 +120,14 @@
       font-family: var(--font-regular);
       font-size: 16px;
       line-height: 1.38;
-      margin-bottom: 30px;
-      max-width: 608px;
+      margin-bottom: 20px;
+      max-width: 560px;
       opacity: 0.7;
-      padding: 12px 24px;
 
       p {
         color: var(--theme-wallet-import-description-color);
         margin-bottom: 12px;
+        text-align: center;
 
         &:last-child {
           margin-bottom: 0;
