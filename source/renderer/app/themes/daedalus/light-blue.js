@@ -880,6 +880,7 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
   },
   walletImportDialog: {
     '--theme-wallet-import-title-color': '#fff',
+    '--theme-wallet-import-description-color': '#fff',
   },
   walletRestoreDialog: {
     '--theme-wallet-restore-dialog-new-label-background-color':

@@ -16,37 +16,27 @@ const messages = defineMessages({
     defaultMessage: '!!!Import wallets',
     description: 'Import wallets dialog title',
   },
-  versionName: {
-    id: 'static.splash.network.itnVersionName',
-    defaultMessage: '!!!INCENTIVIZED TESTNET v1',
-    description: 'INCENTIVIZED TESTNET v1',
-  },
-  networkName: {
-    id: 'static.splash.network.itnNetworkName',
-    defaultMessage: '!!!Rewards',
-    description: 'Rewards',
-  },
-  itnDescription: {
-    id: 'static.splash.network.itnDescription',
+  description: {
+    id: 'wallet.import.file.dialog.description',
     defaultMessage:
-      '!!!This version of Daedalus has been created specifically for use with the Incentivized Testnet. It is not compatible with the Cardano mainnet. If you had ada in a mainnet Daedalus or Yoroi wallet at the time of the balance snapshot (12.00 UTC, November 29) you can use this version of Daedalus to restore those funds as testnet ada, for use exclusively on the Incentivized Testnet. The rewards earned for delegating stake and running stake pools on the Incentivized Testnet will be paid out in real ada at the end of the Incentivized Testnet program. Important: Please keep your Rewards wallet recovery phrase safe. You will need it to receive your ada rewards on the mainnet.',
+      '!!!<p>This feature enables you to import wallets from the production version of Daedalus, or from the Daedalus state directory. </p> <p>If you don’t have the complete state directory, then you will need either the ‘Secrets’ or ‘Secrets-1.0’ folder containing the ‘secret.key’ file to be able to import a wallet, although without the complete state directory Daedalus won’t be able to detect your wallet names. </p> <p>If you don’t have either the ‘Secrets’ or the ‘Secrets-1.0’ folder containing the ‘secret.key’ file, then you cannot import wallets using this feature.</p>',
     description:
-      'This version of Daedalus has been created specifically for the balance check, the first stage in the roll-out of the Incentivized Testnet. It is not compatible with the Cardano mainnet. The balance check is a practice run for the official balance snapshot that is currently planned for later in November. This initial test will allow us to test core functionality, while enabling users to validate that the value of their mainnet ada balances is accurately captured ahead of the Incentivized Testnet.',
+      '<p>This feature enables you to import wallets from the production version of Daedalus, or from the Daedalus state directory. </p> <p>If you don’t have the complete state directory, then you will need either the ‘Secrets’ or ‘Secrets-1.0’ folder containing the ‘secret.key’ file to be able to import a wallet, although without the complete state directory Daedalus won’t be able to detect your wallet names. </p> <p>If you don’t have either the ‘Secrets’ or the ‘Secrets-1.0’ folder containing the ‘secret.key’ file, then you cannot import wallets using this feature.</p>',
   },
   buttonLabel: {
-    id: 'static.splash.network.buttonLabel',
-    defaultMessage: '!!!I understand',
-    description: 'I understand',
+    id: 'wallet.import.file.dialog.buttonLabel',
+    defaultMessage: '!!!Import wallets',
+    description: 'Import wallets',
   },
   linkLabel: {
-    id: 'static.splash.network.linkLabel',
+    id: 'wallet.import.file.dialog.linkLabel',
     defaultMessage: '!!!Learn more',
     description: 'Learn more',
   },
   linkUrl: {
-    id: 'static.splash.network.itnLinkUrl',
-    defaultMessage: '!!!http://staking.cardano.org/',
-    description: '"Learn more" link URL on the network splash screen',
+    id: 'wallet.import.file.dialog.linkUrl',
+    defaultMessage: '!!!http://cardano.org/',
+    description: '"Learn more" link URL on the wallet import file dialog',
   },
 });
 
@@ -69,7 +59,7 @@ export default class WalletImportFileDialog extends Component<Props> {
     const { intl } = this.context;
     const { onConfirm, onClose, openExternalLink } = this.props;
     const title = intl.formatMessage(messages.title);
-    const description = <FormattedHTMLMessage {...messages.itnDescription} />;
+    const description = <FormattedHTMLMessage {...messages.description} />;
     const buttonLabel = intl.formatMessage(messages.buttonLabel);
     const linkLabel = intl.formatMessage(messages.linkLabel);
     const onLinkClick = () =>
