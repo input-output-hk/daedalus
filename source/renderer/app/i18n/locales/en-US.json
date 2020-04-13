@@ -522,7 +522,7 @@
   "wallet.file.import.dialog.wallet.name.input.hint": "e.g: Shopping Wallet",
   "wallet.file.import.dialog.wallet.name.input.label": "Wallet name",
   "wallet.file.import.dialog.walletFileHint": "Click to choose file",
-  "wallet.file.import.dialog.walletFileLabel": "Import file",
+  "wallet.import.file.dialog.title": "Import wallets",
   "wallet.legacy.badge.label": "Balance",
   "wallet.legacy.notification.actionLearnMore": "Learn more",
   "wallet.legacy.notification.actionMove": "Move testnet ada",

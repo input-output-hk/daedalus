@@ -873,6 +873,9 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-recovery-phrase-attention-background-color':
       'rgba(234, 76, 91, .1)',
   },
+  walletImportDialog: {
+    '--theme-wallet-import-title-color': '#fff',
+  },
   walletRestoreDialog: {
     '--theme-wallet-restore-dialog-new-label-background-color':
       'rgba(45, 45, 45, 0.1)',

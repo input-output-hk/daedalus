@@ -12,9 +12,9 @@ import closeCrossThin from '../../../assets/images/close-cross-thin.inline.svg';
 
 const messages = defineMessages({
   title: {
-    id: 'static.splash.network.title',
-    defaultMessage: '!!!Daedalus',
-    description: 'Daedalus',
+    id: 'wallet.import.file.dialog.title',
+    defaultMessage: '!!!Import wallets',
+    description: 'Import wallets dialog title',
   },
   versionName: {
     id: 'static.splash.network.itnVersionName',
@@ -69,8 +69,6 @@ export default class WalletImportFileDialog extends Component<Props> {
     const { intl } = this.context;
     const { onConfirm, onClose, openExternalLink } = this.props;
     const title = intl.formatMessage(messages.title);
-    const subTitle1 = intl.formatMessage(messages.versionName);
-    const subTitle2 = intl.formatMessage(messages.networkName);
     const description = <FormattedHTMLMessage {...messages.itnDescription} />;
     const buttonLabel = intl.formatMessage(messages.buttonLabel);
     const linkLabel = intl.formatMessage(messages.linkLabel);
@@ -95,8 +93,6 @@ export default class WalletImportFileDialog extends Component<Props> {
           <div className={styles.backgroundContainer} />
           <div className={styles.content}>
             <div className={styles.title}>{title}</div>
-            <div className={styles.subTitle1}>{subTitle1}</div>
-            <div className={styles.subTitle2}>{subTitle2}</div>
             <div className={styles.description}>{description}</div>
             <div className={styles.action}>
               <Button

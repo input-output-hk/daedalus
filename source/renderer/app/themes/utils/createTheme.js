@@ -712,6 +712,9 @@ export const createDaedalusComponentsTheme = (
         'rgba(68, 91, 124, 0.05)',
       '--theme-recovery-phrase-attention-background-color': `${background.primary.light}`,
     },
+    walletImportDialog: {
+      '--theme-wallet-import-title-color': `${text.primary}`,
+    },
     reportIssue: {
       '--theme-report-issue-button-background-color': `${background.secondary.regular}`,
       '--theme-report-issue-button-background-color-hover': `${background.secondary.light}`,

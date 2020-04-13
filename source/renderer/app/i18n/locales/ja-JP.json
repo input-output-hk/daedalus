@@ -523,6 +523,7 @@
   "wallet.file.import.dialog.wallet.name.input.label": "ウォレット名",
   "wallet.file.import.dialog.walletFileHint": "クリックしてファイルを選択してください",
   "wallet.file.import.dialog.walletFileLabel": "ファイルをインポート",
+  "wallet.import.file.dialog.title": "ウォレットをインポートする",
   "wallet.legacy.badge.label": "残高",
   "wallet.legacy.notification.actionLearnMore": "もっと知る",
   "wallet.legacy.notification.actionMove": "テストネット用ADAを移動",

@@ -868,6 +868,9 @@ export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
     '--theme-recovery-phrase-attention-background-color':
       'rgba(234, 76, 91, .2)',
   },
+  walletImportDialog: {
+    '--theme-wallet-import-title-color': '#fff',
+  },
   walletRestoreDialog: {
     '--theme-wallet-restore-dialog-new-label-background-color':
       'rgba(255, 255, 255, 0.1)',
