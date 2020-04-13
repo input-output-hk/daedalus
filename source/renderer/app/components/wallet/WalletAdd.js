@@ -170,7 +170,7 @@ export default class WalletAdd extends Component<Props> {
               icon={importIcon}
               label={intl.formatMessage(messages.importLabel)}
               description={intl.formatMessage(messages.importDescription)}
-              isDisabled={!isMainnet && !isTestnet}
+              // isDisabled={!isMainnet && !isTestnet}
             />
           </div>
           {activeNotification ? (
