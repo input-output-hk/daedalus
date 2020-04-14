@@ -664,7 +664,6 @@ export const createDaedalusComponentsTheme = (
       '--theme-notification-message-text-color': `${text.secondary}`,
       '--theme-notification-message-checkmark-icon-color': `${text.secondary}`,
       '--theme-notification-message-close-icon-color': `${text.secondary}`,
-
       '--theme-legacy-badge-background-color': `${error.dark}`,
       '--theme-legacy-notification-background-color': '#ab2712',
       '--theme-legacy-notification-learn-more-button-text-color': `${text.secondary}`,
@@ -713,8 +712,12 @@ export const createDaedalusComponentsTheme = (
       '--theme-recovery-phrase-attention-background-color': `${background.primary.light}`,
     },
     walletImportDialog: {
-      '--theme-wallet-import-title-color': `${text.primary}`,
       '--theme-wallet-import-description-color': `${text.primary}`,
+      '--theme-wallet-import-title-color': `${text.primary}`,
+      '--theme-wallet-import-stateFolder-border-color': `${chroma(
+        text.primary
+      ).alpha(0.5)}`,
+      '--theme-wallet-import-stateFolder-label-color': `${text.primary}`,
     },
     reportIssue: {
       '--theme-report-issue-button-background-color': `${background.secondary.regular}`,

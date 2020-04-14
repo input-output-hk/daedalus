@@ -30,13 +30,15 @@ export default class WalletImportFileDialogContainer extends Component<Props> {
   };
 
   render() {
-    const { app } = this.props.stores;
+    const { app, networkStatus } = this.props.stores;
+    const { stateDirectoryPath } = networkStatus;
     const { openExternalLink } = app;
 
     return (
       <WalletImportFileDialog
         onConfirm={this.onConfirm}
         onClose={this.onCancel}
+        stateDirectoryPath={stateDirectoryPath}
         openExternalLink={openExternalLink}
       />
     );

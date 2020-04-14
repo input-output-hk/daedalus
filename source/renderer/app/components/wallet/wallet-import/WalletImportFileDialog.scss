@@ -73,24 +73,6 @@
     top: 0;
     width: 100%;
     z-index: 1000;
-
-    .backgroundOverlay {
-      background-image: linear-gradient(
-        0deg,
-        var(--theme-splash-network-background-color1) 0%,
-        var(--theme-splash-network-background-color2) 10%,
-        var(--theme-splash-network-background-color3) 16%,
-        var(--theme-splash-network-background-color4) 20%,
-        var(--theme-splash-network-background-color5) 80%,
-        var(--theme-splash-network-background-color6) 84%,
-        var(--theme-splash-network-background-color7) 90%,
-        var(--theme-splash-network-background-color8) 100%
-      );
-      height: 100%;
-      position: absolute;
-      width: 100%;
-      z-index: 1500;
-    }
   }
 
   .content {
@@ -140,6 +122,54 @@
       }
     }
 
+    .stateFolderContainer {
+      padding-bottom: 30px;
+
+      .stateFolderLabel {
+        color: var(--theme-wallet-import-stateFolder-label-color);
+        font-family: var(--font-semibold);
+        font-size: 16px;
+        line-height: 1.38;
+        margin-bottom: 11.5px;
+        text-align: center;
+      }
+
+      .stateFolderInputWrapper {
+        align-items: center;
+        display: flex;
+
+        .stateFolderInput {
+          height: 50px;
+          width: 540px;
+
+          input {
+            background-color: var(--theme-automatic-update-overlay-button-background-color);
+            border: solid 1px var(--theme-wallet-import-stateFolder-border-color);
+            border-radius: 2px;
+            color: var(--theme-wallet-import-stateFolder-label-color);
+            font-size: 16px;
+            line-height: 1.38;
+          }
+        }
+
+        .selectStateDirectoryButton {
+          background-color: rgba(255, 255, 255, 0.1);
+          border-radius: 3px;
+          height: 28px;
+          left: -35px;
+          position: relative;
+          width: 28px;
+
+          .penIcon {
+            svg {
+              height: 12px;
+              width: 12px;
+            }
+          }
+        }
+      }
+    }
+
     .action {
       .actionButton {
         background-color: var(
@@ -170,15 +200,6 @@
       &:after {
         background-color: var(--theme-splash-network-learn-more-color);
       }
-    }
-  }
-
-  *::-webkit-scrollbar-thumb {
-    background-color: var(--theme-splash-network-scrollbar-thumb-background);
-    &:hover {
-      background-color: var(
-        --theme-splash-network-scrollbar-thumb-background-hover
-      );
     }
   }
 }
