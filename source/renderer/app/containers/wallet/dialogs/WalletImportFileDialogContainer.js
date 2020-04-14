@@ -41,7 +41,7 @@ export default class WalletImportFileDialogContainer extends Component<Props> {
         onConfirm={this.onConfirm}
         onClose={this.onCancel}
         stateDirectoryPath={stateDirectoryPath}
-        openExternalLink={openExternalLink}
+        onOpenExternalLink={openExternalLink}
         onSelectStateDirectory={onSelectStateDirectory}
       />
     );

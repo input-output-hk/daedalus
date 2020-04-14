@@ -52,7 +52,7 @@ const messages = defineMessages({
 type Props = {
   onConfirm: Function,
   onClose: Function,
-  openExternalLink: Function,
+  onOpenExternalLink: Function,
   onSelectStateDirectory: Function,
   stateDirectoryPath: string,
 };
@@ -74,7 +74,7 @@ export default class WalletImportFileDialog extends Component<Props> {
     const {
       onConfirm,
       onClose,
-      openExternalLink,
+      onOpenExternalLink,
       onSelectStateDirectory,
       stateDirectoryPath,
     } = this.props;
@@ -85,7 +85,7 @@ export default class WalletImportFileDialog extends Component<Props> {
     const buttonLabel = intl.formatMessage(messages.buttonLabel);
     const linkLabel = intl.formatMessage(messages.linkLabel);
     const onLinkClick = () =>
-      openExternalLink(intl.formatMessage(messages.linkUrl));
+      onOpenExternalLink(intl.formatMessage(messages.linkUrl));
 
     return (
       <ReactModal

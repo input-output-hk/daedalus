@@ -47,7 +47,9 @@
       width: 44px;
 
       &:hover {
-        background-color: var(--theme-about-window-icon-close-hover-background);
+        background-color: var(
+          --theme-wallet-import-description-close-hover-background
+        );
         border-radius: 50%;
       }
     }
