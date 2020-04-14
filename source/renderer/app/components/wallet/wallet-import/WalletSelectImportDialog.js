@@ -16,8 +16,10 @@ const messages = defineMessages({
   },
   description: {
     id: 'wallet.select.import.dialog.description',
-    defaultMessage: '!!!These wallets were found in your Daedalus state directory. Please select the wallets you want to import.',
-    description: 'These wallets were found in your Daedalus state directory. Please select the wallets you want to import.',
+    defaultMessage:
+      '!!!These wallets were found in your Daedalus state directory. Please select the wallets you want to import.',
+    description:
+      'These wallets were found in your Daedalus state directory. Please select the wallets you want to import.',
   },
   passwordProtected: {
     id: 'wallet.select.import.dialog.passwordProtected',
@@ -102,6 +104,13 @@ export default class WalletSelectImportDialog extends Component<Props> {
           <div className={styles.content}>
             <div className={styles.title}>{title}</div>
             <div className={styles.description}>{description}</div>
+            <hr className={styles.separator} />
+            <div className={styles.walletsContainer}>
+              <div className={styles.walletsCounter}></div>
+              <div className={styles.walletsInputField}></div>
+              <div className={styles.walletsStatus}></div>
+              <div className={styles.walletsCheckmarks}></div>
+            </div>
             <hr className={styles.separator} />
             <div className={styles.action}>
               <Button

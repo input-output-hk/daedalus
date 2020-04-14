@@ -48,7 +48,7 @@
 
       &:hover {
         background-color: var(
-            --theme-wallet-import-description-close-hover-background
+          --theme-wallet-import-description-close-hover-background
         );
         border-radius: 50%;
       }
@@ -120,68 +120,16 @@
       width: 100%;
     }
 
-    .stateFolderContainer {
-      padding-bottom: 30px;
-
-      .stateFolderLabel {
-        color: var(--theme-wallet-import-stateFolder-label-color);
-        font-family: var(--font-semibold);
-        font-size: 16px;
-        line-height: 1.38;
-        margin-bottom: 11.5px;
-        text-align: center;
-      }
-
-      .stateFolderInputWrapper {
-        align-items: center;
-        display: flex;
-
-        .stateFolderInput {
-          height: 50px;
-          margin-left: 30px;
-          width: 540px;
-
-          input {
-            background-color: var(
-                --theme-automatic-update-overlay-button-background-color
-            );
-            border: solid 1px
-            var(--theme-wallet-import-stateFolder-border-color);
-            border-radius: 2px;
-            color: var(--theme-wallet-import-stateFolder-label-color);
-            font-size: 16px;
-            line-height: 1.38;
-          }
-        }
-
-        .selectStateDirectoryButton {
-          background-color: var(
-              --theme-wallet-import-stateFolder-button-background-color
-          );
-          border-radius: 3px;
-          height: 28px;
-          left: -35px;
-          position: relative;
-          width: 28px;
-
-          .penIcon {
-            svg {
-              cursor: pointer;
-              height: 12px;
-              width: 12px;
-            }
-          }
-        }
-      }
+    .walletsContainer {
     }
 
     .action {
       .actionButton {
         background-color: var(
-            --theme-splash-network-overlay-button-background-color
+          --theme-splash-network-overlay-button-background-color
         );
         border: solid 1px
-        var(--theme-splash-network-overlay-button-border-color);
+          var(--theme-splash-network-overlay-button-border-color);
         color: var(--theme-splash-network-overlay-button-text-color);
         font-weight: 500;
         line-height: 1.36;
@@ -189,7 +137,7 @@
 
         &:hover {
           background-color: var(
-              --theme-splash-network-overlay-button-background-color-hover
+            --theme-splash-network-overlay-button-background-color-hover
           );
           border: none;
           color: var(--theme-splash-network-overlay-button-text-color-hover);
