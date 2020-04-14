@@ -6,7 +6,10 @@ Changelog
 ### Chores
 
 - Implemented Storybook improvements ([PR 1783](https://github.com/input-output-hk/daedalus/pull/1783))
+- Separated handling of `cardano-wallet` and `cardano-node` logs ([PR 1960](https://github.com/input-output-hk/daedalus/pull/1960))
+- Refactored and improved automated tests setup ([PR 1912](https://github.com/input-output-hk/daedalus/pull/1912))
 - Updated README ([PR 1953](https://github.com/input-output-hk/daedalus/pull/1953))
+- Updated `cardano-wallet` to revision `7140ff08` which includes `cardano-node` 1.10.1 ([PR 1960](https://github.com/input-output-hk/daedalus/pull/1960))
 
 ## 1.0.0-FC2
 
