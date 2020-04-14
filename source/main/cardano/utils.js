@@ -182,7 +182,7 @@ export const exportWallets = async (
     isFlight,
   } = launcherConfig;
 
-  logger.info('ipcMain: Exporting wallets...', {
+  logger.info('ipcMain: Starting wallets export...', {
     exportWalletsBin,
     legacySecretKey,
     legacyWalletDB,
@@ -226,6 +226,12 @@ export const exportWallets = async (
     clusterFlags.push('--mainnet');
   }
 
+  logger.info('ipcMain: Exporting wallets...', {
+    clusterFlags,
+    legacySecretKeyPath,
+    legacyWalletDBPath,
+  });
+
   const { stdout, stderr } = spawnSync(exportWalletsBin, [
     ...clusterFlags,
     '--keyfile',
@@ -238,7 +244,7 @@ export const exportWallets = async (
   const errors = stderr.toString();
 
   logger.info(`ipcMain: Exported ${wallets.length} wallets`, {
-    walletsData: wallets.map(w => ({ name: w.name })),
+    walletsData: wallets.map(w => ({ name: w.name, id: w.id })),
     errors,
   });
 
