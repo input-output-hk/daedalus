@@ -15,11 +15,15 @@ export default class ApiError {
   @observable clause: boolean;
   @observable isFinalError: boolean = false;
   @observable forceSet: boolean = false;
+  id: string;
+  defaultMessage: string;
+  values: Object;
 
   constructor(error: Object = {}, logging?: LoggingType) {
     // Construct Localizable Error
     const errorCode = error.code ? camelCase(error.code) : null;
     const localizableError = get(messages, errorCode);
+
     let humanizedError;
     if (localizableError) {
       this.isFinalError = true;
@@ -28,12 +32,18 @@ export default class ApiError {
         defaultMessage: localizableError.defaultMessage,
         values: error,
       };
+    } else {
+      const genericApiError = new GenericApiError(error);
+      humanizedError = {
+        id: genericApiError.id,
+        defaultMessage: genericApiError.defaultMessage,
+        values: genericApiError.values,
+      };
     }
-    humanizedError = new GenericApiError(error);
     Object.assign(this, humanizedError);
 
     // Set logging
-    this._logError(logging)
+    this._logError(logging);
   }
 
   @action set(predefinedError: string, force?: boolean = false) {
@@ -68,7 +78,7 @@ export default class ApiError {
     return this;
   }
 
-  @action result(fallbackError: string) {
+  @action result(fallbackError?: string) {
     if (this.isFinalError && !this.forceSet) return this;
     if (this.tempError && messages[this.tempError]) {
       Object.assign(this, {
@@ -92,7 +102,7 @@ export default class ApiError {
   _logError(logging?: LoggingType) {
     if (logging && logging.msg) {
       const { logError, msg } = logging;
-      logger.error(msg, { error: logError ? this.values : null })
-    };
+      logger.error(msg, { error: logError ? this.values : null });
+    }
   }
 }

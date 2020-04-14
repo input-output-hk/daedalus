@@ -39,7 +39,6 @@ const messages = defineMessages({
     description: '"Transaction too big due to too many inputs." error message.',
   },
 
-
   // Additional
   notEnoughFundsForTransaction: {
     id: 'api.errors.NotEnoughFundsForTransactionError',

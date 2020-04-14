@@ -517,8 +517,8 @@ export default class AdaApi {
       let wallet: AdaWallet;
       const walletInitData = {
         name,
-        mnemonic_sentence22: split(mnemonic, ' '),
-        passphrase22: spendingPassword,
+        mnemonic_sentence: split(mnemonic, ' '),
+        passphrase: spendingPassword,
       };
 
       if (isIncentivizedTestnet) {
@@ -629,7 +629,7 @@ export default class AdaApi {
         .set('wrongEncryptionPassphrase')
         .where('code', 'bad_request')
         .inc('message', 'passphrase is too short')
-        .result()
+        .result();
     }
   };
 
@@ -699,11 +699,16 @@ export default class AdaApi {
       // - error.diagnostic.details.msg === 'Not enough available coins to proceed.'
       // - total walletBalance === error.diagnostic.details.availableBalance
       // = show "Not enough Ada. Try sending a smaller amount."
-      const notEnoughMoneyError = walletBalance.gt(availableBalance) ? 'canNotCalculateTransactionFees' : 'notEnoughFundsForTransaction';
+      const notEnoughMoneyError = walletBalance.gt(availableBalance)
+        ? 'canNotCalculateTransactionFees'
+        : 'notEnoughFundsForTransaction';
 
       // @TODO - SHOWCASE
       // logger.error('AdaApi::calculateTransactionFee error', { error });
-      throw new ApiError(error, { logError: true, msg: 'AdaApi::calculateTransactionFee error' })
+      throw new ApiError(error, {
+        logError: true,
+        msg: 'AdaApi::calculateTransactionFee error',
+      })
         // @TODO - CHECK cover fee
         // .set('cannotCoverFee')
         // .where('code', 'cannot_cover_fee')
@@ -712,7 +717,7 @@ export default class AdaApi {
         .set('invalidAddress')
         .where('code', 'bad_request')
         .inc('message', 'Unable to decode Address')
-        .result()
+        .result();
     }
   };
 
@@ -739,7 +744,7 @@ export default class AdaApi {
         .set('wrongEncryptionPassphrase')
         .where('code', 'bad_request')
         .inc('message', 'passphrase is too short')
-        .result()
+        .result();
     }
   };
 
@@ -867,10 +872,13 @@ export default class AdaApi {
       throw new ApiError(error)
         .set('forbiddenMnemonic')
         .where('message', 'JSONValidationFailed')
-        .inc('diagnostic.validationError', 'Forbidden Mnemonic: an example Mnemonic has been submitted')
+        .inc(
+          'diagnostic.validationError',
+          'Forbidden Mnemonic: an example Mnemonic has been submitted'
+        )
         .set('forbiddenMnemonic') // @TODO - check
         .where('code', 'invalid_restoration_parameters')
-        .result()
+        .result();
     }
   };
 
@@ -912,10 +920,13 @@ export default class AdaApi {
       throw new ApiError(error)
         .set('forbiddenMnemonic')
         .where('message', 'JSONValidationFailed')
-        .inc('diagnostic.validationError', 'Forbidden Mnemonic: an example Mnemonic has been submitted')
+        .inc(
+          'diagnostic.validationError',
+          'Forbidden Mnemonic: an example Mnemonic has been submitted'
+        )
         .set('forbiddenMnemonic') // @TODO - check
         .where('code', 'invalid_restoration_parameters')
-        .result()
+        .result();
     }
   };
 
@@ -975,10 +986,13 @@ export default class AdaApi {
       throw new ApiError(error)
         .set('forbiddenMnemonic')
         .where('message', 'JSONValidationFailed')
-        .inc('diagnostic.validationError', 'Forbidden Mnemonic: an example Mnemonic has been submitted')
+        .inc(
+          'diagnostic.validationError',
+          'Forbidden Mnemonic: an example Mnemonic has been submitted'
+        )
         .set('forbiddenMnemonic') // @TODO - check
         .where('code', 'invalid_restoration_parameters')
-        .result()
+        .result();
     }
   };
 
@@ -1038,10 +1052,13 @@ export default class AdaApi {
       throw new ApiError(error)
         .set('forbiddenMnemonic')
         .where('message', 'JSONValidationFailed')
-        .inc('diagnostic.validationError', 'Forbidden Mnemonic: an example Mnemonic has been submitted')
+        .inc(
+          'diagnostic.validationError',
+          'Forbidden Mnemonic: an example Mnemonic has been submitted'
+        )
         .set('forbiddenMnemonic') // @TODO - check
         .where('code', 'invalid_restoration_parameters')
-        .result()
+        .result();
     }
   };
 
@@ -1084,10 +1101,13 @@ export default class AdaApi {
       throw new ApiError(error)
         .set('forbiddenMnemonic')
         .where('message', 'JSONValidationFailed')
-        .inc('diagnostic.validationError', 'Forbidden Mnemonic: an example Mnemonic has been submitted')
+        .inc(
+          'diagnostic.validationError',
+          'Forbidden Mnemonic: an example Mnemonic has been submitted'
+        )
         .set('forbiddenMnemonic') // @TODO - check
         .where('code', 'invalid_restoration_parameters')
-        .result()
+        .result();
     }
   };
 
@@ -1130,10 +1150,13 @@ export default class AdaApi {
       throw new ApiError(error)
         .set('forbiddenMnemonic')
         .where('message', 'JSONValidationFailed')
-        .inc('diagnostic.validationError', 'Forbidden Mnemonic: an example Mnemonic has been submitted')
+        .inc(
+          'diagnostic.validationError',
+          'Forbidden Mnemonic: an example Mnemonic has been submitted'
+        )
         .set('forbiddenMnemonic') // @TODO - check
         .where('code', 'invalid_restoration_parameters')
-        .result()
+        .result();
     }
   };
 
@@ -1188,7 +1211,7 @@ export default class AdaApi {
       throw new ApiError(error)
         .set('walletAlreadyImported', true)
         .where('code', 'wallet_already_exists')
-        .result('walletFileImportError')
+        .result('walletFileImportError');
     }
   };
 
@@ -1218,7 +1241,7 @@ export default class AdaApi {
       throw new ApiError(error)
         .set('walletAlreadyImported', true)
         .where('code', 'wallet_already_exists')
-        .result('walletFileImportError')
+        .result('walletFileImportError');
     }
   };
 
@@ -1327,7 +1350,7 @@ export default class AdaApi {
         .set('wrongEncryptionPassphrase')
         .where('code', 'bad_request')
         .inc('message', 'passphrase is too short')
-        .result()
+        .result();
     }
   };
 
@@ -1351,7 +1374,7 @@ export default class AdaApi {
         .set('wrongEncryptionPassphrase')
         .where('code', 'bad_request')
         .inc('message', 'passphrase is too short')
-        .result()
+        .result();
     }
   };
 
@@ -1491,7 +1514,7 @@ export default class AdaApi {
         .set('wrongEncryptionPassphrase')
         .where('code', 'bad_request')
         .inc('message', 'passphrase is too short')
-        .result()
+        .result();
     }
   };
 
@@ -1578,7 +1601,7 @@ export default class AdaApi {
       ) {
         throw new TlsCertificateNotValidError();
       }
-      throw new ApiError(error)
+      throw new ApiError(error);
     }
   };
 
@@ -1752,7 +1775,7 @@ export default class AdaApi {
         .set('wrongEncryptionPassphrase')
         .where('code', 'bad_request')
         .inc('message', 'passphrase is too short')
-        .result()
+        .result();
     }
   };
 
