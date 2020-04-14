@@ -8,8 +8,8 @@ import TinySwitch from '../../widgets/forms/TinySwitch';
 import WalletAddress from '../../../domains/WalletAddress';
 import globalMessages from '../../../i18n/global-messages';
 import { VirtualAddressesList } from './VirtualAddressesList';
-import styles from './WalletReceiveItn.scss';
-import AddressItn from './AddressItn';
+import styles from './WalletReceiveSequential.scss';
+import AddressSequential from './AddressSequential';
 
 const messages = defineMessages({
   instructionsTitle: {
@@ -64,7 +64,7 @@ type State = {
 };
 
 @observer
-export default class WalletReceiveItn extends Component<Props, State> {
+export default class WalletReceiveSequential extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -144,7 +144,7 @@ export default class WalletReceiveItn extends Component<Props, State> {
     const { addressSlice } = this.state;
     const { intl } = this.context;
     return (
-      <AddressItn
+      <AddressSequential
         address={address}
         onShareAddress={onShareAddress}
         onCopyAddress={onCopyAddress}

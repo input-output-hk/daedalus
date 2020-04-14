@@ -9,8 +9,8 @@ import WalletsWrapper from '../_utils/WalletsWrapper';
 import { generateAddress } from '../../_support/utils';
 
 // Screens
-import WalletReceiveItn from '../../../../source/renderer/app/components/wallet/receive/WalletReceiveItn';
-import WalletReceive from '../../../../source/renderer/app/components/wallet/receive/WalletReceive';
+import WalletReceiveSequential from '../../../../source/renderer/app/components/wallet/receive/WalletReceiveSequential';
+import WalletReceiveRandom from '../../../../source/renderer/app/components/wallet/receive/WalletReceiveRandom';
 import WalletReceiveDialog from '../../../../source/renderer/app/components/wallet/receive/WalletReceiveDialog';
 import VerticalFlexContainer from '../../../../source/renderer/app/components/layout/VerticalFlexContainer';
 
@@ -21,7 +21,7 @@ const onToggleSubMenus = {
 
 storiesOf('Wallets|Receive', module)
   .addDecorator(WalletsWrapper)
-  .add('Receive', () => {
+  .add('Receive - random', () => {
     const isSidebarExpanded = boolean('isSidebarExpanded', false);
     const walletHasPassword = boolean('walletHasPassword', false);
     const isSubmitting = boolean('isSubmitting', false);
@@ -29,7 +29,7 @@ storiesOf('Wallets|Receive', module)
     const walletAddress = generateAddress();
     return (
       <VerticalFlexContainer>
-        <WalletReceive
+        <WalletReceiveRandom
           walletAddress={walletAddress.id}
           isWalletAddressUsed={walletAddress.used}
           walletAddresses={[
@@ -49,13 +49,13 @@ storiesOf('Wallets|Receive', module)
       </VerticalFlexContainer>
     );
   })
-  .add('Receive ITN', ({ locale }: { locale: string }) => {
+  .add('Receive - sequential', ({ locale }: { locale: string }) => {
     const isIncentivizedTestnet = boolean('isIncentivizedTestnet', true);
     const showDialog = boolean('showDialog', false);
 
     return (
       <VerticalFlexContainer>
-        <WalletReceiveItn
+        <WalletReceiveSequential
           walletAddresses={[
             ...Array.from(Array(number('Addresses', 10))).map(() =>
               generateAddress()

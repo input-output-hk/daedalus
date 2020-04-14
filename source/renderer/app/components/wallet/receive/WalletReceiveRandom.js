@@ -18,8 +18,8 @@ import iconCopy from '../../../assets/images/clipboard-ic.inline.svg';
 import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
 import { VirtualAddressesList } from './VirtualAddressesList';
-import styles from './WalletReceive.scss';
-import { Address } from './Address';
+import styles from './WalletReceiveRandom.scss';
+import AddressRandom from './AddressRandom';
 import WalletAddress from '../../../domains/WalletAddress';
 
 const messages = defineMessages({
@@ -85,7 +85,7 @@ type State = {
 };
 
 @observer
-export default class WalletReceive extends Component<Props, State> {
+export default class WalletReceiveRandom extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -135,7 +135,7 @@ export default class WalletReceive extends Component<Props, State> {
   );
 
   renderRow = (address: WalletAddress, index: number) => (
-    <Address
+    <AddressRandom
       index={index}
       address={address}
       onCopyAddress={this.props.onCopyAddress}
@@ -143,17 +143,6 @@ export default class WalletReceive extends Component<Props, State> {
         messages.copyAddressLabel
       )}
     />
-    // <Address
-    //   address={address}
-    //   onCopyAddress={this.props.onCopyAddress}
-    //   copyAddressLabel={this.context.intl.formatMessage(
-    //     messages.copyAddressLabel
-    //   )}
-    //   isIncentivizedTestnet={false}
-    //   shouldRegisterAddressElement={index === 0}
-    //   onRegisterHTMLElements={this.handleRegisterHTMLElements}
-    //   addressSlice={addressSlice}
-    // />
   );
 
   submit = () => {

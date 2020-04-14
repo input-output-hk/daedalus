@@ -4,7 +4,7 @@ import { observer } from 'mobx-react';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import classnames from 'classnames';
 import SVGInline from 'react-svg-inline';
-import styles from './Address.scss';
+import styles from './AddressRandom.scss';
 import iconCopy from '../../../assets/images/clipboard-ic.inline.svg';
 import WalletAddress from '../../../domains/WalletAddress';
 
@@ -16,7 +16,7 @@ type Props = {
 };
 
 @observer
-export class Address extends Component<Props> {
+export default class AddressRandom extends Component<Props> {
   render() {
     const { address, onCopyAddress, copyAddressLabel, index } = this.props;
     const addressClasses = classnames([

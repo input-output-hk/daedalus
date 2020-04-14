@@ -1,10 +1,10 @@
 // @flow
 import React, { Component, Fragment } from 'react';
 import { observer, inject } from 'mobx-react';
-import WalletReceive from '../../components/wallet/receive/WalletReceive';
-import WalletReceiveItn from '../../components/wallet/receive/WalletReceiveItn';
-import WalletReceiveDialog from '../../components/wallet/receive/WalletReceiveDialog';
+import WalletReceiveRandom from '../../components/wallet/receive/WalletReceiveRandom';
+import WalletReceiveSequential from '../../components/wallet/receive/WalletReceiveSequential';
 import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer';
+import WalletReceiveDialog from '../../components/wallet/receive/WalletReceiveDialog';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import WalletAddress from '../../domains/WalletAddress';
 import { generateFileNameWithTimestamp } from '../../../../common/utils/files';
@@ -109,6 +109,7 @@ export default class WalletReceivePage extends Component<Props, State> {
     if (!activeWallet)
       throw new Error('Active wallet required for WalletReceivePage.');
 
+    const { discovery, hasPassword } = activeWallet;
     const walletAddresses = addresses.all.slice().reverse();
     const byronWalletAddress = addresses.active ? addresses.active.id : '';
     const isByronWalletAddressUsed = addresses.active
@@ -118,22 +119,22 @@ export default class WalletReceivePage extends Component<Props, State> {
     return (
       <Fragment>
         <VerticalFlexContainer>
-          {!isIncentivizedTestnet ? (
-            <WalletReceive
+          {discovery === 'random' ? (
+            <WalletReceiveRandom
               walletAddress={byronWalletAddress}
               isWalletAddressUsed={isByronWalletAddressUsed}
               walletAddresses={walletAddresses}
               onGenerateAddress={this.handleGenerateAddress}
               onCopyAddress={address => this.handleCopyAddress(address)}
               isSidebarExpanded={sidebar.isShowingSubMenus}
-              walletHasPassword={activeWallet.hasPassword}
+              walletHasPassword={hasPassword}
               isSubmitting={
                 addresses.createByronWalletAddressRequest.isExecuting
               }
               error={addresses.error}
             />
           ) : (
-            <WalletReceiveItn
+            <WalletReceiveSequential
               walletAddresses={walletAddresses}
               isAddressValid={this.handleIsAddressValid}
               onShareAddress={this.handleShareAddress}

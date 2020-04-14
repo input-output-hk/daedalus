@@ -8,6 +8,7 @@ import type {
   DelegationStatus,
   WalletUnit,
   WalletPendingDelegations,
+  Discovery,
 } from '../api/wallets/types';
 
 export const WalletSyncStateStatuses: {
@@ -52,6 +53,7 @@ export type WalletProps = {
   delegationStakePoolStatus?: ?string,
   lastDelegationStakePoolId?: ?string,
   pendingDelegations?: WalletPendingDelegations,
+  discovery: Discovery,
   hasPassword: boolean,
 };
 
@@ -69,6 +71,7 @@ export default class Wallet {
   @observable delegationStakePoolStatus: ?string;
   @observable lastDelegationStakePoolId: ?string;
   @observable pendingDelegations: WalletPendingDelegations;
+  @observable discovery: Discovery;
   @observable hasPassword: boolean;
 
   constructor(data: WalletProps) {
@@ -92,6 +95,7 @@ export default class Wallet {
         'delegationStakePoolStatus',
         'lastDelegationStakePoolId',
         'pendingDelegations',
+        'discovery',
         'hasPassword',
       ])
     );

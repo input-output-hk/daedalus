@@ -48,6 +48,7 @@ export const generateWallet = (
     passwordUpdateDate: new Date(),
     syncState: { status: 'ready' },
     isLegacy: false,
+    discovery: 'random',
     recoveryPhraseVerificationDate: new Date(),
     recoveryPhraseVerificationStatus:
       WalletRecoveryPhraseVerificationStatuses.OK,
