@@ -99,6 +99,7 @@ type Props = {
   isMaxNumberOfWalletsReached: boolean,
   isMainnet: boolean,
   isTestnet: boolean,
+  isProduction: boolean,
 };
 
 @observer
@@ -121,6 +122,7 @@ export default class WalletAdd extends Component<Props> {
       isMaxNumberOfWalletsReached,
       isMainnet,
       isTestnet,
+      isProduction,
     } = this.props;
 
     const componentClasses = classnames([styles.component, 'WalletAdd']);
@@ -171,7 +173,7 @@ export default class WalletAdd extends Component<Props> {
               icon={importIcon}
               label={intl.formatMessage(messages.importLabel)}
               description={intl.formatMessage(messages.importDescription)}
-              // isDisabled={!isMainnet && !isTestnet}
+              isDisabled={isProduction && !isMainnet && !isTestnet}
             />
           </div>
           {activeNotification ? (
