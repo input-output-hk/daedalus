@@ -1,7 +1,7 @@
 @import '../../../themes/mixins/link';
 
 .overlay {
-  background-color: var(--theme-about-window-background-color);
+  background-color: var(--theme-wallet-import-background-color);
   bottom: 0;
   display: flex;
   justify-content: center;
@@ -47,7 +47,9 @@
       width: 44px;
 
       &:hover {
-        background-color: var(--theme-about-window-icon-close-hover-background);
+        background-color: var(
+            --theme-wallet-import-description-close-hover-background
+        );
         border-radius: 50%;
       }
     }
@@ -73,24 +75,6 @@
     top: 0;
     width: 100%;
     z-index: 1000;
-
-    .backgroundOverlay {
-      background-image: linear-gradient(
-        0deg,
-        var(--theme-splash-network-background-color1) 0%,
-        var(--theme-splash-network-background-color2) 10%,
-        var(--theme-splash-network-background-color3) 16%,
-        var(--theme-splash-network-background-color4) 20%,
-        var(--theme-splash-network-background-color5) 80%,
-        var(--theme-splash-network-background-color6) 84%,
-        var(--theme-splash-network-background-color7) 90%,
-        var(--theme-splash-network-background-color8) 100%
-      );
-      height: 100%;
-      position: absolute;
-      width: 100%;
-      z-index: 1500;
-    }
   }
 
   .content {
@@ -106,5 +90,125 @@
     top: 0;
     width: 100%;
     z-index: 2000;
+
+    .title {
+      color: var(--theme-wallet-import-title-color);
+      font-family: var(--font-regular);
+      font-size: 20px;
+      line-height: 1.2;
+      margin-bottom: 11px;
+      text-align: center;
+    }
+
+    .description {
+      font-family: var(--font-regular);
+      font-size: 16px;
+      line-height: 1.38;
+      margin-bottom: 20px;
+      max-width: 560px;
+      opacity: 0.7;
+
+      p {
+        color: var(--theme-wallet-import-description-color);
+        margin-bottom: 12px;
+        text-align: center;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+
+      b {
+        color: var(--theme-splash-network-description-bold-color);
+        font-family: var(--font-medium);
+      }
+    }
+
+    .stateFolderContainer {
+      padding-bottom: 30px;
+
+      .stateFolderLabel {
+        color: var(--theme-wallet-import-stateFolder-label-color);
+        font-family: var(--font-semibold);
+        font-size: 16px;
+        line-height: 1.38;
+        margin-bottom: 11.5px;
+        text-align: center;
+      }
+
+      .stateFolderInputWrapper {
+        align-items: center;
+        display: flex;
+
+        .stateFolderInput {
+          height: 50px;
+          margin-left: 30px;
+          width: 540px;
+
+          input {
+            background-color: var(
+                --theme-automatic-update-overlay-button-background-color
+            );
+            border: solid 1px
+            var(--theme-wallet-import-stateFolder-border-color);
+            border-radius: 2px;
+            color: var(--theme-wallet-import-stateFolder-label-color);
+            font-size: 16px;
+            line-height: 1.38;
+          }
+        }
+
+        .selectStateDirectoryButton {
+          background-color: var(
+              --theme-wallet-import-stateFolder-button-background-color
+          );
+          border-radius: 3px;
+          height: 28px;
+          left: -35px;
+          position: relative;
+          width: 28px;
+
+          .penIcon {
+            svg {
+              cursor: pointer;
+              height: 12px;
+              width: 12px;
+            }
+          }
+        }
+      }
+    }
+
+    .action {
+      .actionButton {
+        background-color: var(
+            --theme-splash-network-overlay-button-background-color
+        );
+        border: solid 1px
+        var(--theme-splash-network-overlay-button-border-color);
+        color: var(--theme-splash-network-overlay-button-text-color);
+        font-weight: 500;
+        line-height: 1.36;
+        margin: 0 auto;
+
+        &:hover {
+          background-color: var(
+              --theme-splash-network-overlay-button-background-color-hover
+          );
+          border: none;
+          color: var(--theme-splash-network-overlay-button-text-color-hover);
+        }
+      }
+    }
+
+    .learnMoreLink {
+      border-bottom: 1px solid var(--theme-splash-network-learn-more-color);
+      color: var(--theme-splash-network-learn-more-color);
+      margin-top: 20px;
+      opacity: 0.8;
+      &:after {
+        background-color: var(--theme-splash-network-learn-more-color);
+      }
+    }
   }
 }
