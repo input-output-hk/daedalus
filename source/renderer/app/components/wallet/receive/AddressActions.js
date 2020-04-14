@@ -55,7 +55,7 @@ type Props = {
 @observer
 export default class AddressActions extends Component<Props> {
   static defaultProps = {
-    type: 'copy;',
+    type: 'copy',
   };
   static contextTypes = {
     intl: intlShape.isRequired,
