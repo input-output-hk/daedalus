@@ -143,8 +143,11 @@
           width: 540px;
 
           input {
-            background-color: var(--theme-automatic-update-overlay-button-background-color);
-            border: solid 1px var(--theme-wallet-import-stateFolder-border-color);
+            background-color: var(
+              --theme-automatic-update-overlay-button-background-color
+            );
+            border: solid 1px
+              var(--theme-wallet-import-stateFolder-border-color);
             border-radius: 2px;
             color: var(--theme-wallet-import-stateFolder-label-color);
             font-size: 16px;
@@ -153,7 +156,9 @@
         }
 
         .selectStateDirectoryButton {
-          background-color: var(--theme-wallet-import-stateFolder-button-background-color);
+          background-color: var(
+            --theme-wallet-import-stateFolder-button-background-color
+          );
           border-radius: 3px;
           height: 28px;
           left: -35px;

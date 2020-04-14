@@ -871,8 +871,10 @@ export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
   walletImportDialog: {
     '--theme-wallet-import-title-color': '#fff',
     '--theme-wallet-import-description-color': '#fff',
-    '--theme-wallet-import-stateFolder-border-color': 'rgba(255, 255, 255, 0.5)',
-    '--theme-wallet-import-stateFolder-button-background-color': 'rgba(255, 255, 255, 0.1)',
+    '--theme-wallet-import-stateFolder-border-color':
+      'rgba(255, 255, 255, 0.5)',
+    '--theme-wallet-import-stateFolder-button-background-color':
+      'rgba(255, 255, 255, 0.1)',
     '--theme-wallet-import-stateFolder-label-color': '#fff',
   },
   walletRestoreDialog: {

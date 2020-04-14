@@ -71,7 +71,13 @@ export default class WalletImportFileDialog extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { onConfirm, onClose, openExternalLink, onSelectStateDirectory, stateDirectoryPath } = this.props;
+    const {
+      onConfirm,
+      onClose,
+      openExternalLink,
+      onSelectStateDirectory,
+      stateDirectoryPath,
+    } = this.props;
     this.search = stateDirectoryPath;
     const title = intl.formatMessage(messages.title);
     const description = <FormattedHTMLMessage {...messages.description} />;
@@ -101,9 +107,7 @@ export default class WalletImportFileDialog extends Component<Props> {
             <div className={styles.title}>{title}</div>
             <div className={styles.description}>{description}</div>
             <div className={styles.stateFolderContainer}>
-              <p className={styles.stateFolderLabel}>
-                {stateFolderLabel}
-              </p>
+              <p className={styles.stateFolderLabel}>{stateFolderLabel}</p>
               <div className={styles.stateFolderInputWrapper}>
                 <Input
                   type="text"
