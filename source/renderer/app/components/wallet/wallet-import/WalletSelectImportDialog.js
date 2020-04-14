@@ -79,6 +79,8 @@ export default class WalletSelectImportDialog extends Component<Props> {
     const { intl } = this.context;
     const { onConfirm, onClose } = this.props;
 
+    const title = intl.formatMessage(messages.title);
+    const description = intl.formatMessage(messages.description);
     const buttonLabel = intl.formatMessage(messages.buttonLabel);
 
     return (
@@ -98,6 +100,9 @@ export default class WalletSelectImportDialog extends Component<Props> {
           />
           <div className={styles.backgroundContainer} />
           <div className={styles.content}>
+            <div className={styles.title}>{title}</div>
+            <div className={styles.description}>{description}</div>
+            <hr className={styles.separator} />
             <div className={styles.action}>
               <Button
                 className={styles.actionButton}

@@ -101,27 +101,23 @@
     }
 
     .description {
+      color: var(--theme-wallet-import-description-color);
       font-family: var(--font-regular);
       font-size: 16px;
       line-height: 1.38;
       margin-bottom: 20px;
       max-width: 560px;
       opacity: 0.7;
+      text-align: center;
+    }
 
-      p {
-        color: var(--theme-wallet-import-description-color);
-        margin-bottom: 12px;
-        text-align: center;
-
-        &:last-child {
-          margin-bottom: 0;
-        }
-      }
-
-      b {
-        color: var(--theme-splash-network-description-bold-color);
-        font-family: var(--font-medium);
-      }
+    .separator {
+      background-color: #ffffff;
+      height: 1px;
+      margin-bottom: 20px;
+      max-width: 670px;
+      opacity: 0.2;
+      width: 100%;
     }
 
     .stateFolderContainer {
