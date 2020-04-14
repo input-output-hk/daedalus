@@ -174,7 +174,7 @@
     "classnames": "2.2.6",
     "csv-stringify": "5.3.6",
     "cucumber-html-reporter": "5.1.0",
-    "electron": "8.1.1",
+    "electron": "8.2.2",
     "electron-log-daedalus": "2.2.20",
     "electron-store": "5.1.1",
     "es6-error": "4.1.1",
