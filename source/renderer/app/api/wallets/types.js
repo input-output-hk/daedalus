@@ -64,6 +64,7 @@ export type LegacyAdaWallet = {
     last_updated_at: string,
   },
   state: WalletSyncState,
+  discovery: Discovery,
   tip: Block,
 };
 

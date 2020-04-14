@@ -567,7 +567,6 @@ export default class AdaApi {
             },
           },
           isLegacy: true,
-          discovery: 'random',
         };
         wallet = {
           ...legacyWallet,
@@ -1887,7 +1886,7 @@ export default class AdaApi {
 
 const _createWalletFromServerData = action(
   'AdaApi::_createWalletFromServerData',
-  (wallet: AdaWallet, index: number) => {
+  (wallet: AdaWallet) => {
     const {
       id: rawWalletId,
       address_pool_gap: addressPoolGap,
@@ -1897,10 +1896,8 @@ const _createWalletFromServerData = action(
       delegation,
       state: syncState,
       isLegacy = false,
-      // discovery,
+      discovery,
     } = wallet;
-
-    const discovery = index === 1 ? 'sequential' : 'random';
 
     const id = isLegacy ? getLegacyWalletId(rawWalletId) : rawWalletId;
     const passphraseLastUpdatedAt = get(passphrase, 'last_updated_at', null);
