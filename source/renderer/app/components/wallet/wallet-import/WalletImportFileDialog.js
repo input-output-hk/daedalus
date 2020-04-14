@@ -9,6 +9,7 @@ import ReactModal from 'react-modal';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import SVGInline from 'react-svg-inline';
+import classNames from 'classnames';
 import styles from './WalletImportFileDialog.scss';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import closeCrossThin from '../../../assets/images/close-cross-thin.inline.svg';
@@ -89,8 +90,16 @@ export default class WalletImportFileDialog extends Component<Props> {
     const stateFolderLabel = intl.formatMessage(messages.stateFolderLabel);
     const buttonLabel = intl.formatMessage(messages.buttonLabel);
     const linkLabel = intl.formatMessage(messages.linkLabel);
+    const noWalletError = intl.formatMessage(messages.noWallets);
     const onLinkClick = () =>
       onOpenExternalLink(intl.formatMessage(messages.linkUrl));
+
+    const error = true;
+
+    const inputClasses = classNames([
+      styles.stateFolderInput,
+      error ? styles.error : null,
+    ]);
 
     return (
       <ReactModal
@@ -116,7 +125,7 @@ export default class WalletImportFileDialog extends Component<Props> {
               <div className={styles.stateFolderInputWrapper}>
                 <Input
                   type="text"
-                  className={styles.stateFolderInput}
+                  className={inputClasses}
                   ref={input => {
                     this.stateFolderInput = input;
                   }}
@@ -130,6 +139,7 @@ export default class WalletImportFileDialog extends Component<Props> {
                   <SVGInline svg={penIcon} className={styles.penIcon} />
                 </button>
               </div>
+              {error && <p className={styles.noWalletError}>{noWalletError}</p>}
             </div>
             <div className={styles.action}>
               <Button

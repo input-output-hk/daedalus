@@ -1,4 +1,5 @@
 @import '../../../themes/mixins/link';
+@import '../../../themes/mixins/error-message';
 
 .overlay {
   background-color: var(--theme-wallet-import-background-color);
@@ -156,6 +157,12 @@
             font-size: 16px;
             line-height: 1.38;
           }
+
+          &.error {
+            input {
+              border: solid 1px var(--theme-color-error);
+            }
+          }
         }
 
         .selectStateDirectoryButton {
@@ -163,19 +170,29 @@
             --theme-wallet-import-stateFolder-button-background-color
           );
           border-radius: 3px;
+          cursor: pointer;
           height: 28px;
           left: -35px;
           position: relative;
+          top: -1px;
           width: 28px;
 
           .penIcon {
             svg {
-              cursor: pointer;
               height: 12px;
+              position: relative;
+              top: 1px;
               width: 12px;
             }
           }
         }
+      }
+
+      .noWalletError {
+        @include error-message;
+        max-width: 602px;
+        padding-top: 20px;
+        text-align: center;
       }
     }
 
