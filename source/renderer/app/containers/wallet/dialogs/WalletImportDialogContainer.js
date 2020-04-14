@@ -1,15 +1,21 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
-import type { InjectedDialogContainerProps } from '../../../types/injectedPropsType';
 import WalletImportFileDialog from '../../../components/wallet/wallet-import/WalletImportFileDialog';
 import WalletSelectImportDialog from '../../../components/wallet/wallet-import/WalletSelectImportDialog';
+import type { StoresMap } from '../../../stores';
+import type { ActionsMap } from '../../../actions';
 
-type Props = InjectedDialogContainerProps;
+type Props = {
+  stores: any | StoresMap,
+  actions: any | ActionsMap,
+  isWalletFileImportDialog: boolean,
+  isWalletSelectImportDialog: boolean,
+};
 
 @inject('stores', 'actions')
 @observer
-export default class WalletImportFileDialogContainer extends Component<Props> {
+export default class WalletImportDialogContainer extends Component<Props> {
   static defaultProps = {
     actions: null,
     stores: null,
@@ -30,6 +36,7 @@ export default class WalletImportFileDialogContainer extends Component<Props> {
   };
 
   render() {
+    const { isWalletFileImportDialog, isWalletSelectImportDialog } = this.props;
     const { app, networkStatus } = this.props.stores;
     const { stateDirectoryPath } = networkStatus;
     const { openExternalLink } = app;
@@ -37,13 +44,23 @@ export default class WalletImportFileDialogContainer extends Component<Props> {
     const onSelectStateDirectory = () => {};
 
     return (
-      <WalletImportFileDialog
-        onConfirm={this.onConfirm}
-        onClose={this.onCancel}
-        stateDirectoryPath={stateDirectoryPath}
-        onOpenExternalLink={openExternalLink}
-        onSelectStateDirectory={onSelectStateDirectory}
-      />
+      <>
+        {isWalletFileImportDialog && (
+          <WalletImportFileDialog
+            onConfirm={this.onConfirm}
+            onClose={this.onCancel}
+            stateDirectoryPath={stateDirectoryPath}
+            onOpenExternalLink={openExternalLink}
+            onSelectStateDirectory={onSelectStateDirectory}
+          />
+        )}
+        {isWalletSelectImportDialog && (
+          <WalletSelectImportDialog
+            onConfirm={this.onConfirm}
+            onClose={this.onCancel}
+          />
+        )}
+      </>
     );
   }
 }
