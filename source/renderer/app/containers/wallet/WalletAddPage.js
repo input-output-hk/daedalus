@@ -42,7 +42,7 @@ export default class WalletAddPage extends Component<Props> {
       environment,
     } = wallets;
 
-    const { isMainnet, isTestnet } = environment;
+    const { isMainnet, isTestnet, isProduction } = environment;
 
     const onCreateWallet = createWalletUseNewProcess
       ? () => actions.wallets.createWalletBegin.trigger()
@@ -91,6 +91,7 @@ export default class WalletAddPage extends Component<Props> {
           isMaxNumberOfWalletsReached={wallets.hasMaxWallets}
           isMainnet={isMainnet}
           isTestnet={isTestnet}
+          isProduction={isProduction}
         />
       );
     }
