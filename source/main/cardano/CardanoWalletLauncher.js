@@ -2,6 +2,7 @@
 import { merge } from 'lodash';
 import path from 'path';
 import * as fs from 'fs-extra';
+import type { WriteStream } from 'fs';
 import * as cardanoLauncher from 'cardano-launcher';
 import type { Launcher } from 'cardano-launcher';
 import type { NodeConfig } from '../config';
@@ -31,7 +32,8 @@ export type WalletOpts = {
   secretPath: string,
   configPath: string,
   syncTolerance: string,
-  logFile: any,
+  nodeLogFile: WriteStream,
+  walletLogFile: WriteStream,
   cliBin: string,
 };
 
@@ -47,7 +49,8 @@ export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
     secretPath,
     configPath,
     syncTolerance,
-    logFile,
+    nodeLogFile,
+    walletLogFile,
     cliBin,
   } = walletOpts;
   // TODO: Update launcher config to pass number
@@ -65,7 +68,10 @@ export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
       },
     },
     syncToleranceSeconds,
-    childProcessLogWriteStream: logFile,
+    childProcessLogWriteStreams: {
+      node: nodeLogFile,
+      wallet: walletLogFile,
+    },
     installSignalHandlers: false,
   };
 
