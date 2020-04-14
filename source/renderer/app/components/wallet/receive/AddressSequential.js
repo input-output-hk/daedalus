@@ -1,21 +1,15 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import CopyToClipboard from 'react-copy-to-clipboard';
 import classnames from 'classnames';
-import SVGInline from 'react-svg-inline';
+import AddressActions from './AddressActions';
 import styles from './AddressSequential.scss';
-import iconQR from '../../../assets/images/qr-code.inline.svg';
-import iconCopy from '../../../assets/images/clipboard-ic.inline.svg';
 import WalletAddress from '../../../domains/WalletAddress';
 
 type Props = {
   address: WalletAddress,
   onShareAddress: Function,
   onCopyAddress: Function,
-  shareAddressLabel: string,
-  copyAddressLabel: string,
-  isIncentivizedTestnet: boolean,
   shouldRegisterAddressElement: boolean,
   onRegisterHTMLElements: Function,
   addressSlice: number,
@@ -52,9 +46,6 @@ export default class AddressSequential extends Component<Props> {
       address,
       onShareAddress,
       onCopyAddress,
-      shareAddressLabel,
-      copyAddressLabel,
-      isIncentivizedTestnet,
       shouldRegisterAddressElement,
     } = this.props;
     const { renderAddress, rawAddress } = this;
@@ -85,31 +76,11 @@ export default class AddressSequential extends Component<Props> {
             </span>
           )}
         </div>
-        <div className={styles.addressActions}>
-          {!isIncentivizedTestnet ? (
-            <button
-              className={styles.shareAddressButton}
-              onClick={() => onShareAddress(address)}
-            >
-              <SVGInline svg={iconQR} className={styles.shareIcon} />
-              <span className={styles.shareAddressLabel}>
-                {shareAddressLabel}
-              </span>
-            </button>
-          ) : (
-            <CopyToClipboard
-              text={rawAddress}
-              onCopy={() => onCopyAddress(rawAddress)}
-            >
-              <span className={styles.copyAddress}>
-                <SVGInline svg={iconCopy} className={styles.copyIcon} />
-                <span className={styles.copyAddressLabel}>
-                  {copyAddressLabel}
-                </span>
-              </span>
-            </CopyToClipboard>
-          )}
-        </div>
+        <AddressActions
+          address={address}
+          onShareAddress={onShareAddress}
+          onCopyAddress={onCopyAddress}
+        />
       </div>
     );
   }

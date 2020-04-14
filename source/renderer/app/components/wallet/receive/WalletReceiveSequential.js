@@ -34,16 +34,6 @@ const messages = defineMessages({
     description:
       'Label for "show used" wallet addresses link on the wallet "Receive page"',
   },
-  shareAddressLabel: {
-    id: 'wallet.receive.page.shareAddressLabel',
-    defaultMessage: '!!!Share',
-    description: 'Label for "Share" link on the wallet "Receive page"',
-  },
-  copyAddressLabel: {
-    id: 'wallet.receive.page.copyAddressLabel',
-    defaultMessage: '!!!Copy address',
-    description: 'Label for "Copy address" link on the wallet "Receive page"',
-  },
 });
 
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
@@ -53,7 +43,6 @@ type Props = {
   onShareAddress: Function,
   onCopyAddress: Function,
   onToggleSubMenus: Object,
-  isIncentivizedTestnet: boolean,
 };
 
 type State = {
@@ -140,17 +129,13 @@ export default class WalletReceiveSequential extends Component<Props, State> {
   };
 
   renderRow = (address: WalletAddress, index: number) => {
-    const { onShareAddress, onCopyAddress, isIncentivizedTestnet } = this.props;
+    const { onShareAddress, onCopyAddress } = this.props;
     const { addressSlice } = this.state;
-    const { intl } = this.context;
     return (
       <AddressSequential
         address={address}
         onShareAddress={onShareAddress}
         onCopyAddress={onCopyAddress}
-        shareAddressLabel={intl.formatMessage(messages.shareAddressLabel)}
-        copyAddressLabel={intl.formatMessage(messages.copyAddressLabel)}
-        isIncentivizedTestnet={isIncentivizedTestnet}
         shouldRegisterAddressElement={index === 0}
         onRegisterHTMLElements={this.handleRegisterHTMLElements}
         addressSlice={addressSlice}

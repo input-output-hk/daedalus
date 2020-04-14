@@ -11,43 +11,10 @@
     margin-right: 32.5px;
     user-select: text;
   }
-
-  .addressActions {
-    .copyAddress {
-      cursor: pointer;
-      display: flex;
-      white-space: nowrap;
-
-      .copyAddressLabel {
-        color: var(--theme-label-button-color);
-        font-size: 14px;
-        margin-left: 6px;
-        opacity: 0.5;
-      }
-    }
-  }
 }
 
 .usedWalletAddress {
-  .addressId,
-  .addressActions .copyAddress .copyIcon {
+  .addressId {
     opacity: 0.4;
-  }
-
-  .addressActions .copyAddress .copyAddressLabel {
-    opacity: 0.2;
-  }
-}
-
-.copyIcon {
-  cursor: pointer;
-  margin-left: 4px;
-  object-fit: contain;
-  & > svg {
-    height: 12px;
-    width: 10px;
-    path {
-      fill: var(--theme-icon-copy-address-color);
-    }
   }
 }

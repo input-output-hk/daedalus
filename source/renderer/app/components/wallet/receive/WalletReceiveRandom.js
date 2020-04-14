@@ -73,6 +73,7 @@ type Props = {
   isWalletAddressUsed: boolean,
   walletAddresses: Array<WalletAddress>,
   onGenerateAddress: Function,
+  onShareAddress: Function,
   onCopyAddress: Function,
   isSidebarExpanded: boolean,
   walletHasPassword: boolean,
@@ -139,9 +140,7 @@ export default class WalletReceiveRandom extends Component<Props, State> {
       index={index}
       address={address}
       onCopyAddress={this.props.onCopyAddress}
-      copyAddressLabel={this.context.intl.formatMessage(
-        messages.copyAddressLabel
-      )}
+      onShareAddress={this.props.onShareAddress}
     />
   );
 

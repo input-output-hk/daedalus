@@ -125,7 +125,8 @@ export default class WalletReceivePage extends Component<Props, State> {
               isWalletAddressUsed={isByronWalletAddressUsed}
               walletAddresses={walletAddresses}
               onGenerateAddress={this.handleGenerateAddress}
-              onCopyAddress={address => this.handleCopyAddress(address)}
+              onShareAddress={this.handleShareAddress}
+              onCopyAddress={this.handleCopyAddress}
               isSidebarExpanded={sidebar.isShowingSubMenus}
               walletHasPassword={hasPassword}
               isSubmitting={

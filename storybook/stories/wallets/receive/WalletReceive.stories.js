@@ -42,6 +42,7 @@ storiesOf('Wallets|Receive', module)
           ]}
           onGenerateAddress={action('onGenerateAddress')}
           onCopyAddress={action('onCopyAddress')}
+          onShareAddress={action('onShareAddress')}
           isSidebarExpanded={isSidebarExpanded}
           walletHasPassword={walletHasPassword}
           isSubmitting={isSubmitting}
