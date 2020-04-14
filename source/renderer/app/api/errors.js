@@ -1,6 +1,6 @@
 import { defineMessages } from 'react-intl';
 
-const messages = defineMessages({
+export const messages = defineMessages({
   // wallets
   walletAlreadyExists: {
     id: 'api.errors.WalletAlreadyRestoredError',
@@ -72,5 +72,3 @@ const messages = defineMessages({
       '"Wallet could not be imported, please make sure you are providing a correct file." error message.',
   },
 });
-
-export default messages;

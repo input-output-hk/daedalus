@@ -1,8 +1,8 @@
 // @flow
 import { observable, action } from 'mobx';
-import { includes, camelCase, get } from 'lodash';
-import { GenericApiError } from '../api/common/errors';
-import messages from '../api/errors';
+import { includes, camelCase, get, snakeCase } from 'lodash';
+import { GenericApiError, messages as commonMessages } from '../api/common/errors';
+import { messages } from '../api/errors';
 import { logger } from '../utils/logging';
 
 type LoggingType = {
@@ -13,17 +13,17 @@ type LoggingType = {
 export default class ApiError {
   @observable tempError: string = '';
   @observable clause: boolean;
-  @observable isFinalError: boolean = false;
   @observable forceSet: boolean = false;
+  isFinalError: boolean = false;
   id: string;
   defaultMessage: string;
   values: Object;
+  code: string;
 
   constructor(error: Object = {}, logging?: LoggingType) {
     // Construct Localizable Error
     const errorCode = error.code ? camelCase(error.code) : null;
     const localizableError = get(messages, errorCode);
-
     let humanizedError;
     if (localizableError) {
       this.isFinalError = true;
@@ -40,14 +40,17 @@ export default class ApiError {
         values: genericApiError.values,
       };
     }
-    Object.assign(this, humanizedError);
+    Object.assign(this, {
+      ...humanizedError,
+      code: error.code,
+    });
 
     // Set logging
     this._logError(logging);
   }
 
   @action set(predefinedError: string, force?: boolean = false) {
-    if (!this.clause && (!this.isFinalError || (this.isFinalError && force))) {
+    if (predefinedError && !this.clause && (!this.isFinalError || (this.isFinalError && force))) {
       this.tempError = predefinedError;
       this.clause = true;
       this.forceSet = force;
@@ -85,6 +88,7 @@ export default class ApiError {
         id: messages[this.tempError].id,
         defaultMessage: messages[this.tempError].defaultMessage,
         values: this.values,
+        code: this.values.code,
       });
       return this;
     }
@@ -93,6 +97,7 @@ export default class ApiError {
         id: messages[fallbackError].id,
         defaultMessage: messages[fallbackError].defaultMessage,
         values: this.values,
+        code: snakeCase(fallbackError),
       });
       return this;
     }
@@ -104,5 +109,14 @@ export default class ApiError {
       const { logError, msg } = logging;
       logger.error(msg, { error: logError ? this.values : null });
     }
+  }
+
+  _getGenericApiError() {
+    Object.assign(this, {
+      id: commonMessages.genericApiError.id,
+      defaultMessage: commonMessages.genericApiError.defaultMessage,
+      values: this.values,
+    });
+    return this;
   }
 }

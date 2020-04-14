@@ -195,9 +195,6 @@ import type { FaultInjectionIpcRequest } from '../../../common/types/cardano-nod
 // Common errors
 import { InvalidMnemonicError } from './common/errors';
 
-// Transactions errors
-import { NotEnoughFundsForTransactionFeesError } from './transactions/errors';
-
 import { TlsCertificateNotValidError } from './nodes/errors';
 import { getSHA256HexForString } from './utils/hashing';
 import { getNewsHash } from './news/requests/getNewsHash';
@@ -682,10 +679,8 @@ export default class AdaApi {
       if (amountWithFee.gt(walletBalance)) {
         // Amount + fees exceeds walletBalance:
         // = show "Not enough Ada for fees. Try sending a smaller amount."
-        // @TODO
-        throw new NotEnoughFundsForTransactionFeesError();
+        throw new ApiError().result('cannotCoverFee');
       }
-
       logger.debug('AdaApi::calculateTransactionFee success', {
         transactionFee: response,
       });

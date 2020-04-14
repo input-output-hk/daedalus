@@ -26,9 +26,9 @@ import {
 } from '../../utils/formatters';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
 import { FormattedHTMLMessageWithLink } from '../widgets/FormattedHTMLMessageWithLink';
-import { InvalidAddressError } from '../../api/transactions/errors';
 import { NUMBER_FORMATS } from '../../../../common/types/number.types';
 /* eslint-disable consistent-return */
+import { messages as apiErrorMessages } from '../../api/errors';
 
 export const messages = defineMessages({
   titleLabel: {
@@ -188,7 +188,6 @@ export default class WalletSendForm extends Component<Props, State> {
               const amountValue = amountField.value.toString();
               const isAmountValid = amountField.isValid;
               const isValidAddress = this.props.addressValidator(value);
-
               if (isValidAddress && isAmountValid) {
                 await this._calculateTransactionFee(value, amountValue);
               } else {
@@ -196,7 +195,7 @@ export default class WalletSendForm extends Component<Props, State> {
               }
               return [
                 isValidAddress,
-                this.context.intl.formatMessage(new InvalidAddressError()),
+                this.context.intl.formatMessage(apiErrorMessages.invalidAddress),
               ];
             },
           ],
