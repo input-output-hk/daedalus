@@ -34,12 +34,15 @@ export default class WalletImportFileDialogContainer extends Component<Props> {
     const { stateDirectoryPath } = networkStatus;
     const { openExternalLink } = app;
 
+    const onSelectStateDirectory = () => {};
+
     return (
       <WalletImportFileDialog
         onConfirm={this.onConfirm}
         onClose={this.onCancel}
         stateDirectoryPath={stateDirectoryPath}
         openExternalLink={openExternalLink}
+        onSelectStateDirectory={onSelectStateDirectory}
       />
     );
   }

@@ -869,6 +869,7 @@ export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
       'rgba(234, 76, 91, .2)',
   },
   walletImportDialog: {
+    '--theme-wallet-import-background-color': '#36374df5',
     '--theme-wallet-import-title-color': '#fff',
     '--theme-wallet-import-description-color': '#fff',
     '--theme-wallet-import-stateFolder-border-color':

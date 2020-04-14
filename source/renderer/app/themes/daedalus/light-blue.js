@@ -879,6 +879,7 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
       'rgba(234, 76, 91, .1)',
   },
   walletImportDialog: {
+    '--theme-wallet-import-background-color': 'rgba(36, 62, 98, 0.96)',
     '--theme-wallet-import-description-color': '#fff',
     '--theme-wallet-import-title-color': '#fff',
     '--theme-wallet-import-stateFolder-border-color':
