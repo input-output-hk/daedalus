@@ -40,8 +40,10 @@ const messages = defineMessages({
   },
   noWallets: {
     id: 'wallet.import.file.dialog.noWallets',
-    defaultMessage: '!!!No wallets found. Make sure you have selected a Daedalus state directory which contains the ‘Secrets’ or `Secrets-1.0` folder with a `secret.key` file inside.',
-    description: 'No wallets found. Make sure you have selected a Daedalus state directory which contains the ‘Secrets’ or `Secrets-1.0` folder with a `secret.key` file inside.',
+    defaultMessage:
+      '!!!No wallets found. Make sure you have selected a Daedalus state directory which contains the ‘Secrets’ or `Secrets-1.0` folder with a `secret.key` file inside.',
+    description:
+      'No wallets found. Make sure you have selected a Daedalus state directory which contains the ‘Secrets’ or `Secrets-1.0` folder with a `secret.key` file inside.',
   },
   linkLabel: {
     id: 'wallet.import.file.dialog.linkLabel',

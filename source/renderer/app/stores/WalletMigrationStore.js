@@ -34,7 +34,7 @@ export default class WalletMigrationStore extends Store {
   _restoredWallets: Array<Wallet> = [];
   _restorationErrors: Array<{
     error: LocalizableError,
-    wallet: { name: string },
+    wallet: { name: ?string, id: string },
   }> = [];
 
   @observable
@@ -66,8 +66,8 @@ export default class WalletMigrationStore extends Store {
         this._restoredWallets.push(restoredWallet);
       });
     } catch (error) {
-      const { name } = exportedWallet;
-      this._restorationErrors.push({ error, wallet: { name } });
+      const { name, id } = exportedWallet;
+      this._restorationErrors.push({ error, wallet: { name, id } });
     }
   };
 
@@ -94,6 +94,7 @@ export default class WalletMigrationStore extends Store {
         }: ExportWalletsMainResponse = await exportWalletsChannel.request();
         const exportedWalletsData = exportedWallets.map(w => ({
           name: w.name,
+          id: w.id,
         }));
         const exportedWalletsCount = exportedWallets.length;
 
@@ -117,6 +118,7 @@ export default class WalletMigrationStore extends Store {
                 `WalletMigrationStore: Restoring ${index + 1}. wallet...`,
                 {
                   name: wallet.name,
+                  id: wallet.id,
                 }
               );
               return this._restoreExportedWallet(wallet);

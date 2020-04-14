@@ -48,7 +48,7 @@
 
       &:hover {
         background-color: var(
-            --theme-wallet-import-description-close-hover-background
+          --theme-wallet-import-description-close-hover-background
         );
         border-radius: 50%;
       }
@@ -147,10 +147,10 @@
 
           input {
             background-color: var(
-                --theme-automatic-update-overlay-button-background-color
+              --theme-automatic-update-overlay-button-background-color
             );
             border: solid 1px
-            var(--theme-wallet-import-stateFolder-border-color);
+              var(--theme-wallet-import-stateFolder-border-color);
             border-radius: 2px;
             color: var(--theme-wallet-import-stateFolder-label-color);
             font-size: 16px;
@@ -160,7 +160,7 @@
 
         .selectStateDirectoryButton {
           background-color: var(
-              --theme-wallet-import-stateFolder-button-background-color
+            --theme-wallet-import-stateFolder-button-background-color
           );
           border-radius: 3px;
           height: 28px;
@@ -182,10 +182,10 @@
     .action {
       .actionButton {
         background-color: var(
-            --theme-splash-network-overlay-button-background-color
+          --theme-splash-network-overlay-button-background-color
         );
         border: solid 1px
-        var(--theme-splash-network-overlay-button-border-color);
+          var(--theme-splash-network-overlay-button-border-color);
         color: var(--theme-splash-network-overlay-button-text-color);
         font-weight: 500;
         line-height: 1.36;
@@ -193,7 +193,7 @@
 
         &:hover {
           background-color: var(
-              --theme-splash-network-overlay-button-background-color-hover
+            --theme-splash-network-overlay-button-background-color-hover
           );
           border: none;
           color: var(--theme-splash-network-overlay-button-text-color-hover);
