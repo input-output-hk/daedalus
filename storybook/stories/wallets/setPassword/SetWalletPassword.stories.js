@@ -33,7 +33,7 @@ storiesOf('Wallets|Set Password', module)
       />
       {boolean('isSetWalletPasswordDialogOpen', false) && (
         <ChangeSpendingPasswordDialog
-          isSpendingPasswordSet={activeWallet.hasPassword}
+          isSpendingPasswordSet={false}
           currentPasswordValue={''}
           newPasswordValue={''}
           repeatedPasswordValue={''}
