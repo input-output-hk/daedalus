@@ -36,7 +36,7 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "cardano-wallet": {
-        "branch": "rvl/bump-cardano-node",
+        "branch": "master",
         "description": "Official Wallet Backend & API for Cardano decentralized",
         "homepage": null,
         "owner": "input-output-hk",
@@ -46,7 +46,7 @@
         "type": "tarball",
         "url": "https://github.com/input-output-hk/cardano-wallet/archive/b97553a2b734a0fa25e0ef27f9fe15e46175f406.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz",
-        "version": "v2020-03-16"
+        "version": "v2020-04-07"
     },
     "gitignore": {
         "branch": "master",
