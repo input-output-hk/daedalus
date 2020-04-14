@@ -3804,9 +3804,9 @@ capture-stack-trace@^1.0.0:
     cbor "^4.3.0"
     ts-custom-error "^3.1.1"
 
-cardano-launcher@0.20200331.1:
-  version "0.20200331.1"
-  resolved "https://registry.yarnpkg.com/cardano-launcher/-/cardano-launcher-0.20200331.1.tgz#7592d411f33d45be6ce0d12b02186cddeaadb934"
+cardano-launcher@0.20200414.1:
+  version "0.20200414.1"
+  resolved "https://registry.yarnpkg.com/cardano-launcher/-/cardano-launcher-0.20200414.1.tgz#f51916cbdddce8d20a8c58b8194b39dda2aa09b5"
   dependencies:
     get-port "^5.1.1"
     lodash "^4.17.15"

@@ -491,7 +491,7 @@ export default class WalletsStore extends Store {
     }
   };
 
-  _deleteWallet = async (params: { walletId: string, isLegacy?: boolean }) => {
+  _deleteWallet = async (params: { walletId: string, isLegacy: boolean }) => {
     // Pause polling in order to avoid fetching data for wallet we are about to delete
     this._pausePolling();
 
@@ -918,16 +918,16 @@ export default class WalletsStore extends Store {
 
   isValidAddress = (address: string) => {
     const { app } = this.stores;
-    const { isTestnet } = app.environment;
+    const { isMainnet, isStaging, isSelfnode } = app.environment;
     const addressGroup = isIncentivizedTestnet
       ? AddressGroup.jormungandr
       : AddressGroup.byron;
-    const chainSettings = isTestnet
-      ? ChainSettings.testnet
-      : ChainSettings.mainnet;
-
+    const chainSettings =
+      isMainnet || isStaging ? ChainSettings.mainnet : ChainSettings.testnet;
     try {
-      return Address.Util.isAddress(address, chainSettings, addressGroup);
+      return isSelfnode
+        ? true // Selfnode address validation is missing in cardano-js
+        : Address.Util.isAddress(address, chainSettings, addressGroup);
     } catch (error) {
       return false;
     }
