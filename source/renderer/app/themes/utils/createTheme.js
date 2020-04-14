@@ -717,6 +717,9 @@ export const createDaedalusComponentsTheme = (
       '--theme-wallet-import-stateFolder-border-color': `${chroma(
         text.primary
       ).alpha(0.5)}`,
+      '--theme-wallet-import-stateFolder-button-background-color': `${chroma(
+        text.primary
+      ).alpha(0.1)}`,
       '--theme-wallet-import-stateFolder-label-color': `${text.primary}`,
     },
     reportIssue: {

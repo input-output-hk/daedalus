@@ -114,12 +114,12 @@ export default class WalletImportFileDialog extends Component<Props> {
                   skin={InputSkin}
                   value={this.search}
                 />
-                <Button
+                <button
                   className={styles.selectStateDirectoryButton}
                   onClick={onSelectStateDirectory}
                 >
                   <SVGInline svg={penIcon} className={styles.penIcon} />
-                </Button>
+                </button>
               </div>
             </div>
             <div className={styles.action}>

@@ -153,7 +153,7 @@
         }
 
         .selectStateDirectoryButton {
-          background-color: rgba(255, 255, 255, 0.1);
+          background-color: var(--theme-wallet-import-stateFolder-button-background-color);
           border-radius: 3px;
           height: 28px;
           left: -35px;
@@ -162,6 +162,7 @@
 
           .penIcon {
             svg {
+              cursor: pointer;
               height: 12px;
               width: 12px;
             }
