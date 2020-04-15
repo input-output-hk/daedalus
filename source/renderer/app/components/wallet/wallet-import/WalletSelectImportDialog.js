@@ -1,10 +1,13 @@
 // @flow
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
 import ReactModal from 'react-modal';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { Button } from 'react-polymorph/lib/components/Button';
 import classNames from 'classnames';
+import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
+import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
+import SVGInline from 'react-svg-inline';
 import styles from './WalletSelectImportDialog.scss';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import closeCrossThin from '../../../assets/images/close-cross-thin.inline.svg';
@@ -12,6 +15,7 @@ import globalMessages from '../../../i18n/global-messages';
 import { WalletImportStatuses } from '../../../types/walletExportTypes';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import InlineEditingSmallInput from '../../widgets/forms/InlineEditingSmallInput';
+import checkmarkImage from '../../../assets/images/check-w.inline.svg';
 import type { ExportedByronWallet } from '../../../types/walletExportTypes';
 
 const messages = defineMessages({
@@ -192,7 +196,30 @@ export default class WalletSelectImportDialog extends Component<Props> {
                       {wallet.is_passphrase_empty && noPasswordStatus}
                       {!wallet.is_passphrase_empty && hasPasswordStatus}
                     </div>
-                    <div className={styles.walletsStatusIcon} />
+                    {(wallet.is_passphrase_empty ||
+                      !wallet.is_passphrase_empty) && (
+                      <div className={styles.walletsStatusIcon}>
+                        <Checkbox
+                          onChange={onToggleWalletImportSelection}
+                          checked={false}
+                          skin={CheckboxSkin}
+                        />
+                      </div>
+                    )}
+                    {wallet.import.status === WalletImportStatuses.RUNNING && (
+                      <div className={styles.walletsStatusIcon}>
+                        <LoadingSpinner medium />
+                      </div>
+                    )}
+                    {wallet.import.status ===
+                      WalletImportStatuses.COMPLETED && (
+                      <div className={styles.walletsStatusIcon}>
+                        <SVGInline
+                          svg={checkmarkImage}
+                          className={styles.walletsStatusIconCheckmark}
+                        />
+                      </div>
+                    )}
                   </div>
                 );
               })}

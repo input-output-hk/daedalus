@@ -216,9 +216,37 @@
           font-size: 16px;
           letter-spacing: 0.5px;
           line-height: 1.38;
+          max-width: 162.5px;
+          width: 100%;
         }
 
         .walletsStatusIcon {
+          padding-left: 72.5px;
+          position: relative;
+          top: 3px;
+
+          :global {
+            .SimpleCheckbox_check {
+              border: 1px solid #fff;
+              height: 23px;
+              width: 23px;
+            }
+
+            .LoadingSpinner_component {
+              position: relative;
+              top: 3px;
+            }
+          }
+
+          .walletsStatusIconCheckmark {
+            position: relative;
+            top: -5px;
+
+            svg {
+              height: 8px;
+              width: 12px;
+            }
+          }
         }
       }
     }
