@@ -13,6 +13,8 @@ import DialogCloseButton from '../../widgets/DialogCloseButton';
 import closeCrossThin from '../../../assets/images/close-cross-thin.inline.svg';
 import penIcon from '../../../assets/images/pen.inline.svg';
 import crossIcon from '../../../assets/images/close-cross.inline.svg';
+import { WalletImportStatuses } from '../../../types/walletExportTypes';
+import type { ExportedByronWallet } from '../../../types/walletExportTypes';
 
 const messages = defineMessages({
   title: {
@@ -70,6 +72,8 @@ const messages = defineMessages({
 });
 
 type Props = {
+  isSubmitting: boolean,
+  exportedWallets: Array<ExportedByronWallet>,
   onConfirm: Function,
   onSelectStateDirectory: Function,
   onClose: Function,
@@ -80,36 +84,15 @@ export default class WalletSelectImportDialog extends Component<Props> {
     intl: intlShape.isRequired,
   };
 
-  confirm = () => {
-    this.props.onConfirm();
-  };
-
   render() {
     const { intl } = this.context;
-    const { onConfirm, onClose, onSelectStateDirectory } = this.props;
-
-    const wallets = [
-      {
-        id: 1,
-        name: 'Alex Wallet',
-        status: 'importing',
-      },
-      {
-        id: 2,
-        name: 'Nikola Wallet',
-        status: 'alreadyExists',
-      },
-      {
-        id: 3,
-        name: 'Sasha Wallet',
-        status: 'noPassword',
-      },
-      {
-        id: 4,
-        name: 'Yakov Wallet',
-        status: 'hasPassword',
-      },
-    ];
+    const {
+      isSubmitting,
+      exportedWallets,
+      onConfirm,
+      onClose,
+      onSelectStateDirectory,
+    } = this.props;
 
     const title = intl.formatMessage(messages.title);
     const description = intl.formatMessage(messages.description);
@@ -142,31 +125,30 @@ export default class WalletSelectImportDialog extends Component<Props> {
             <div className={styles.description}>{description}</div>
             <hr className={styles.separator} />
             <div className={styles.walletsContainer}>
-              {wallets.map(wallet => (
+              {exportedWallets.map((wallet, index) => (
                 <>
-                  {wallet.status === 'noPassword' && (
-                    <hr className={styles.separator} />
-                  )}
+                  {!wallet.name && <hr className={styles.separator} />}
                   <div className={styles.walletsRow} key={wallet.id}>
-                    <div
-                      className={styles.walletsCounter}
-                    >{`${wallet.id}.`}</div>
+                    <div className={styles.walletsCounter}>{`${index +
+                      1}.`}</div>
                     <div className={styles.walletsInputField}>
                       <Input
                         type="text"
                         className={classNames([
                           styles.walletsInput,
-                          wallet.status === 'alreadyExists' ||
-                          wallet.status === 'importing'
+                          wallet.import.status ===
+                            WalletImportStatuses.COMPLETED ||
+                          wallet.import.status === WalletImportStatuses.RUNNING
                             ? styles.walletUnavailable
                             : null,
-                          wallet.status === 'noPassword'
+                          wallet.is_passphrase_empty
                             ? styles.walletNoPassword
                             : null,
                         ])}
+                        value={wallet.name || ''}
                         skin={InputSkin}
                       />
-                      {wallet.status === 'noPassword' && (
+                      {!wallet.is_passphrase_empty && (
                         <button
                           className={styles.selectStateDirectoryButton}
                           onClick={onSelectStateDirectory}
@@ -174,7 +156,7 @@ export default class WalletSelectImportDialog extends Component<Props> {
                           <SVGInline svg={penIcon} className={styles.penIcon} />
                         </button>
                       )}
-                      {wallet.status === 'hasPassword' && (
+                      {wallet.is_passphrase_empty && (
                         <button
                           className={styles.selectStateDirectoryButton}
                           onClick={onSelectStateDirectory}
@@ -187,10 +169,12 @@ export default class WalletSelectImportDialog extends Component<Props> {
                       )}
                     </div>
                     <div className={styles.walletsStatus}>
-                      {wallet.status === 'importing' && importingStatus}
-                      {wallet.status === 'alreadyExists' && alreadyExistsStatus}
-                      {wallet.status === 'noPassword' && noPasswordStatus}
-                      {wallet.status === 'hasPassword' && hasPasswordStatus}
+                      {wallet.import.status === WalletImportStatuses.RUNNING &&
+                        importingStatus}
+                      {wallet.import.status ===
+                        WalletImportStatuses.COMPLETED && alreadyExistsStatus}
+                      {wallet.is_passphrase_empty && noPasswordStatus}
+                      {!wallet.is_passphrase_empty && hasPasswordStatus}
                     </div>
                     <div className={styles.walletsStatusIcon} />
                   </div>
@@ -200,6 +184,7 @@ export default class WalletSelectImportDialog extends Component<Props> {
             <div className={styles.action}>
               <Button
                 className={styles.actionButton}
+                disabled={isSubmitting}
                 label={buttonLabel}
                 onClick={onConfirm}
                 skin={ButtonSkin}

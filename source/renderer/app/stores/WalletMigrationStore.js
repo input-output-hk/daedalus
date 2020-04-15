@@ -8,6 +8,7 @@ import { exportWalletsChannel } from '../ipc/cardano.ipc';
 import { generateWalletMigrationReportChannel } from '../ipc/generateWalletMigrationReportChannel';
 import { logger } from '../utils/logging';
 import { getRawWalletId } from '../api/utils';
+import WalletImportFileDialog from '../components/wallet/wallet-import/WalletImportFileDialog';
 import type { ExportWalletsMainResponse } from '../../../common/ipc/api';
 import type {
   WalletMigrationReportData,
@@ -42,8 +43,13 @@ export const WalletMigrationStatuses: {
 };
 
 export default class WalletMigrationStore extends Store {
+  @observable walletMigrationStep = 1;
+
+  @observable isExportRunning = false;
   @observable exportedWallets: Array<ExportedByronWallet> = [];
   @observable exportErrors: string = '';
+
+  @observable isRestorationRunning = false;
   @observable restoredWallets: Array<Wallet> = [];
   @observable restorationErrors: Array<{
     error: LocalizableError,
@@ -64,15 +70,44 @@ export default class WalletMigrationStore extends Store {
     this.api.ada.restoreExportedByronWallet
   );
 
+  setup() {
+    const { walletMigration } = this.actions;
+    walletMigration.startMigration.listen(this._startMigration);
+    walletMigration.finishMigration.listen(this._finishMigration);
+    walletMigration.toggleWalletImportSelection.listen(
+      this._toggleWalletImportSelection
+    );
+    walletMigration.updateWalletName.listen(this._updateWalletName);
+    walletMigration.nextStep.listen(this._nextStep);
+    walletMigration.prevStep.listen(this._prevStep);
+  }
+
+  @action _nextStep = async () => {
+    if (this.walletMigrationStep === 1) {
+      await this._exportWallets();
+      if (this.exportedWalletsCount) {
+        runInAction('update walletMigrationStep', () => {
+          this.walletMigrationStep = 2;
+        });
+      }
+    } else {
+      this._restoreWallets();
+    }
+  };
+
+  @action _prevStep = () => {
+    this.walletMigrationStep = 1;
+  };
+
   getExportedWalletById = (id: string): ?ExportedByronWallet =>
     this.exportedWallets.find(w => w.id === id);
 
-  @action toggleWalletImportSelection = (id: string) => {
+  @action _toggleWalletImportSelection = (id: string) => {
     const wallet = this.getExportedWalletById(id);
     if (wallet) {
       const { status } = wallet.import;
       const isPending = status === WalletImportStatuses.PENDING;
-      this.updateWalletImportStatus(
+      this._updateWalletImportStatus(
         id,
         isPending
           ? WalletImportStatuses.UNSTARTED
@@ -81,7 +116,7 @@ export default class WalletMigrationStore extends Store {
     }
   };
 
-  @action updateWalletImportStatus = (
+  @action _updateWalletImportStatus = (
     id: string,
     status: WalletImportStatus,
     error?: LocalizableError
@@ -93,8 +128,20 @@ export default class WalletMigrationStore extends Store {
     }
   };
 
-  @action exportWallets = async () => {
+  @action _updateWalletName = ({ id, name }: { id: string, name: string }) => {
+    const wallet = this.getExportedWalletById(id);
+    if (wallet) {
+      wallet.name = name;
+    }
+  };
+
+  @action _exportWallets = async () => {
+    // Reset export data
+    this._resetExportData();
+
     logger.debug('WalletMigrationStore: Starting wallet export...');
+    this.isExportRunning = true;
+
     const {
       wallets,
       errors,
@@ -109,8 +156,10 @@ export default class WalletMigrationStore extends Store {
           : WalletImportStatuses.UNSTARTED;
         return { ...wallet, import: { status, error: null } };
       });
-      this.exportErrors = errors;
+      this.exportErrors =
+        errors || !this.exportedWalletsCount ? 'No wallets found' : '';
     });
+
     logger.debug(
       `WalletMigrationStore: Exported ${this.exportedWalletsCount} wallets`,
       {
@@ -118,14 +167,22 @@ export default class WalletMigrationStore extends Store {
         exportErrors: this.exportErrors,
       }
     );
+    runInAction('update isExportRunning', () => {
+      this.isExportRunning = false;
+    });
   };
 
-  @action restoreWallets = async () => {
+  @action _restoreWallets = async () => {
+    // Reset restoration data
+    this._resetRestorationData();
+
     logger.debug(
-      `WalletMigrationStore: Restoring ${this.exportedWalletsCount} exported wallets...`
+      `WalletMigrationStore: Restoring ${this.pendingImportWalletsCount} selected wallets...`
     );
+    this.isRestorationRunning = true;
+
     await Promise.all(
-      this.exportedWallets.map((wallet, index) => {
+      this.pendingImportWallets.map((wallet, index) => {
         logger.debug(
           `WalletMigrationStore: Restoring ${index + 1}. wallet...`,
           {
@@ -137,17 +194,21 @@ export default class WalletMigrationStore extends Store {
         return this._restoreWallet(wallet);
       })
     );
+
     logger.debug(
-      `WalletMigrationStore: Restored ${this.restoredWalletsCount} of ${this.exportedWalletsCount} exported wallets`
+      `WalletMigrationStore: Restored ${this.restoredWalletsCount} of ${this.pendingImportWalletsCount} selected wallets`
     );
+    runInAction('update isRestorationRunning', () => {
+      this.isRestorationRunning = false;
+    });
   };
 
-  _restoreWallet = async (exportedWallet: ExportedByronWallet) => {
+  @action _restoreWallet = async (exportedWallet: ExportedByronWallet) => {
     // Reset restore requests to clear previous errors
     this.restoreExportedWalletRequest.reset();
 
     const { id } = exportedWallet;
-    this.updateWalletImportStatus(id, WalletImportStatuses.RUNNING);
+    this._updateWalletImportStatus(id, WalletImportStatuses.RUNNING);
     try {
       const restoredWallet = await this.restoreExportedWalletRequest.execute(
         exportedWallet
@@ -156,13 +217,13 @@ export default class WalletMigrationStore extends Store {
         throw new Error('Restored wallet was not received correctly');
 
       runInAction('update restoredWallets', () => {
-        this.updateWalletImportStatus(id, WalletImportStatuses.COMPLETED);
+        this._updateWalletImportStatus(id, WalletImportStatuses.COMPLETED);
         this.restoredWallets.push(restoredWallet);
       });
     } catch (error) {
       runInAction('update restorationErrors', () => {
         const { name, is_passphrase_empty: hasPassword } = exportedWallet;
-        this.updateWalletImportStatus(id, WalletImportStatuses.ERRORED, error);
+        this._updateWalletImportStatus(id, WalletImportStatuses.ERRORED, error);
         this.restorationErrors.push({
           error,
           wallet: { id, name, hasPassword },
@@ -171,7 +232,7 @@ export default class WalletMigrationStore extends Store {
     }
   };
 
-  @action generateMigrationReport = async () => {
+  @action _generateMigrationReport = async () => {
     const finalMigrationStatus = await this.getWalletMigrationStatusRequest.execute()
       .promise;
     const walletMigrationReportData: WalletMigrationReportData = {
@@ -204,18 +265,18 @@ export default class WalletMigrationStore extends Store {
     }
   };
 
-  @action startMigration = async () => {
-    const { isMainnet, isTestnet, isDev } = this.environment;
+  @action _startMigration = async () => {
+    const { isMainnet, isTestnet } = this.environment;
     if (isMainnet || isTestnet) {
-      // Reset store values
-      this.resetMigration();
+      // Reset migration data
+      this._resetMigration();
 
       const walletMigrationStatus = await this.getWalletMigrationStatusRequest.execute()
         .promise;
-      if (
-        walletMigrationStatus === WalletMigrationStatuses.UNSTARTED ||
-        isDev // TODO: remove "isDev"
-      ) {
+      if (walletMigrationStatus === WalletMigrationStatuses.UNSTARTED) {
+        // Wait for wallets to load as we need to match existing and exported wallets
+        await this.stores.wallets.refreshWalletsData();
+
         // Update migration status to "RUNNING"
         logger.debug('WalletMigrationStore: Starting wallet migration...');
         await this.setWalletMigrationStatusRequest.execute(
@@ -223,36 +284,20 @@ export default class WalletMigrationStore extends Store {
         );
 
         // Trigger wallet export
-        await this.exportWallets();
+        await this._exportWallets();
 
-        // Trigger wallet restoration
         if (this.exportedWalletsCount) {
-          // TODO: replace restoreWallets call with opening "Wallet Import" overlay
-          await this.restoreWallets();
-        }
-
-        // Update migration status
-        if (
-          this.exportedWalletsCount
-            ? this.exportedWalletsCount === this.restoredWalletsCount
-            : this.exportErrors === ''
-        ) {
-          logger.debug('WalletMigrationStore: Wallet migration succeeded');
-          await this.setWalletMigrationStatusRequest.execute(
-            WalletMigrationStatuses.COMPLETED
-          );
-        } else {
-          logger.debug('WalletMigrationStore: Wallet migration failed', {
-            exportErrors: this.exportErrors,
-            restorationErrors: this.restorationErrors,
+          // Wallets successfully exported - ask the user to select the ones to import
+          runInAction('update walletMigrationStep', () => {
+            this.walletMigrationStep = 2;
           });
-          await this.setWalletMigrationStatusRequest.execute(
-            WalletMigrationStatuses.ERRORED
-          );
+          this.actions.dialogs.open.trigger({
+            dialog: WalletImportFileDialog,
+          });
+        } else {
+          // No wallets have been exported - finish migration
+          this._finishMigration();
         }
-
-        // Generate and store migration report
-        await this.generateMigrationReport();
       } else {
         logger.debug('WalletMigrationStore: Skipping wallet migration...', {
           walletMigrationStatus,
@@ -266,11 +311,51 @@ export default class WalletMigrationStore extends Store {
     }
   };
 
-  @action resetMigration = () => {
+  @action _resetExportData = () => {
+    this.isExportRunning = false;
     this.exportedWallets = [];
     this.exportErrors = '';
+  };
+
+  @action _resetRestorationData = () => {
+    this.isRestorationRunning = false;
     this.restoredWallets = [];
     this.restorationErrors = [];
+  };
+
+  _resetMigration = () => {
+    this._resetExportData();
+    this._resetRestorationData();
+  };
+
+  @action _finishMigration = async () => {
+    this.actions.dialogs.closeActiveDialog.trigger();
+    this.walletMigrationStep = 1;
+
+    const walletMigrationStatus = await this.getWalletMigrationStatusRequest.execute()
+      .promise;
+    if (walletMigrationStatus === WalletMigrationStatuses.RUNNING) {
+      // Update migration status
+      if (this.exportErrors === '' && !this.restorationErrors.length) {
+        logger.debug('WalletMigrationStore: Wallet migration succeeded');
+        await this.setWalletMigrationStatusRequest.execute(
+          WalletMigrationStatuses.COMPLETED
+        );
+      } else {
+        logger.debug('WalletMigrationStore: Wallet migration failed', {
+          exportErrors: this.exportErrors,
+          restorationErrors: this.restorationErrors,
+        });
+        await this.setWalletMigrationStatusRequest.execute(
+          WalletMigrationStatuses.ERRORED
+        );
+      }
+
+      // Generate and store migration report
+      await this._generateMigrationReport();
+    }
+
+    this._resetMigration();
   };
 
   @computed get pendingImportWallets(): Array<ExportedByronWallet> {

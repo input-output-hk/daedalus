@@ -58,6 +58,8 @@ const messages = defineMessages({
 });
 
 type Props = {
+  exportErrors: string,
+  isSubmitting: boolean,
   onConfirm: Function,
   onClose: Function,
   onOpenExternalLink: Function,
@@ -73,13 +75,11 @@ export default class WalletImportFileDialog extends Component<Props> {
   stateFolderInput: Input;
   search: string;
 
-  confirm = () => {
-    this.props.onConfirm();
-  };
-
   render() {
     const { intl } = this.context;
     const {
+      exportErrors,
+      isSubmitting,
       onConfirm,
       onClose,
       onOpenExternalLink,
@@ -96,7 +96,7 @@ export default class WalletImportFileDialog extends Component<Props> {
     const onLinkClick = () =>
       onOpenExternalLink(intl.formatMessage(messages.linkUrl));
 
-    const error = true;
+    const error = exportErrors !== '';
 
     const inputClasses = classNames([
       styles.stateFolderInput,
@@ -146,6 +146,7 @@ export default class WalletImportFileDialog extends Component<Props> {
             <div className={styles.action}>
               <Button
                 className={styles.actionButton}
+                disabled={isSubmitting}
                 label={buttonLabel}
                 onClick={onConfirm}
                 skin={ButtonSkin}
@@ -153,6 +154,7 @@ export default class WalletImportFileDialog extends Component<Props> {
             </div>
             <Link
               className={styles.learnMoreLink}
+              disabled={isSubmitting}
               onClick={onLinkClick}
               label={linkLabel}
               skin={LinkSkin}

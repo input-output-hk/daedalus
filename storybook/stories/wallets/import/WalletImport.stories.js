@@ -14,6 +14,8 @@ storiesOf('Wallets|Import File', module)
     return (
       <VerticalFlexContainer>
         <WalletImportFileDialog
+          isSubmitting={false}
+          exportErrors=""
           onConfirm={action('onConfirm')}
           onClose={action('onClose')}
           stateDirectoryPath={stateDirectoryPath}

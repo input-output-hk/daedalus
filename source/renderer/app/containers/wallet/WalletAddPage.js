@@ -17,7 +17,6 @@ import WalletCreateDialog from '../../components/wallet/WalletCreateDialog';
 import WalletRestoreDialogContainerOld from './dialogs/WalletRestoreDialogContainerOld';
 import WalletRestoreDialog from '../../components/wallet/WalletRestoreDialog';
 import WalletImportFileDialog from '../../components/wallet/wallet-import/WalletImportFileDialog';
-import WalletSelectImportDialog from '../../components/wallet/wallet-import/WalletSelectImportDialog';
 import WalletImportDialogContainer from './dialogs/WalletImportDialogContainer';
 
 type Props = InjectedProps;
@@ -68,18 +67,8 @@ export default class WalletAddPage extends Component<Props> {
       content = <WalletRestoreDialogContainerOld onClose={this.onClose} />;
     } else if (restoreWalletStep !== null) {
       content = <WalletRestoreDialogContainer onClose={this.onClose} />;
-    } else if (
-      uiDialogs.isOpen(WalletImportFileDialog) ||
-      uiDialogs.isOpen(WalletSelectImportDialog)
-    ) {
-      content = (
-        <WalletImportDialogContainer
-          isWalletFileImportDialog={uiDialogs.isOpen(WalletImportFileDialog)}
-          isWalletSelectImportDialog={uiDialogs.isOpen(
-            WalletSelectImportDialog
-          )}
-        />
-      );
+    } else if (uiDialogs.isOpen(WalletImportFileDialog)) {
+      content = <WalletImportDialogContainer />;
     } else {
       content = (
         <WalletAdd
