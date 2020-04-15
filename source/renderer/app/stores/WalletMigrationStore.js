@@ -67,7 +67,7 @@ export default class WalletMigrationStore extends Store {
   getExportedWalletById = (id: string): ?ExportedByronWallet =>
     this.exportedWallets.find(w => w.id === id);
 
-  @action toggleWalletImportPendingState = (id: string) => {
+  @action toggleWalletImportSelection = (id: string) => {
     const wallet = this.getExportedWalletById(id);
     if (wallet) {
       const { status } = wallet.import;
@@ -214,9 +214,8 @@ export default class WalletMigrationStore extends Store {
         .promise;
       if (
         walletMigrationStatus === WalletMigrationStatuses.UNSTARTED ||
-        isDev
+        isDev // TODO: remove "isDev"
       ) {
-        // TODO: remove "isDev"
         // Update migration status to "RUNNING"
         logger.debug('WalletMigrationStore: Starting wallet migration...');
         await this.setWalletMigrationStatusRequest.execute(
@@ -228,6 +227,7 @@ export default class WalletMigrationStore extends Store {
 
         // Trigger wallet restoration
         if (this.exportedWalletsCount) {
+          // TODO: replace restoreWallets call with opening "Wallet Import" overlay
           await this.restoreWallets();
         }
 
@@ -272,6 +272,17 @@ export default class WalletMigrationStore extends Store {
     this.restoredWallets = [];
     this.restorationErrors = [];
   };
+
+  @computed get pendingImportWallets(): Array<ExportedByronWallet> {
+    return this.exportedWallets.filter(
+      ({ import: { status } }: ExportedByronWallet) =>
+        status === WalletImportStatuses.PENDING
+    );
+  }
+
+  @computed get pendingImportWalletsCount(): number {
+    return this.pendingImportWallets.length;
+  }
 
   @computed get exportedWalletsData(): Array<ExportedWalletData> {
     return this.exportedWallets.map(wallet => ({
