@@ -13,10 +13,24 @@
       padding-right: 50px;
     }
   }
-
-  &.inactive {
+  &.isActive {
+    .rightButton {
+      @extend .activeButton;
+    }
+    :global {
+      .SimpleInput_input {
+        padding-right: 86px;
+      }
+    }
+  }
+  &:not(.isActive) {
     &:hover {
-      input {
+      .rightButton {
+        @extend .activeButton;
+      }
+    }
+    :global {
+      .SimpleInput_input {
         cursor: pointer;
       }
     }
@@ -54,16 +68,44 @@
         width: 12px;
       }
     }
-
     .crossIcon {
       svg {
         height: 8px;
         width: 8px;
-
         g {
           fill: #fff;
         }
       }
+    }
+    .arrowIcon {
+      svg {
+        height: 9px;
+        path {
+          stroke: #fff;
+        }
+      }
+    }
+  }
+
+  .activeButton {
+    background-color: var(--rp-button-bg-color-hover, #2f496e);
+    svg {
+      path {
+        stroke: var(--theme-input-background-color);
+      }
+    }
+  }
+
+  .rightButton {
+    @extend .button;
+  }
+  .leftButton {
+    @extend .button;
+    right: 48px;
+    &:hover {
+      background-color: var(
+        --theme-wallet-import-stateFolder-button-background-color
+      ) !important;
     }
   }
 }
