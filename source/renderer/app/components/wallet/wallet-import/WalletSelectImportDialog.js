@@ -75,7 +75,8 @@ type Props = {
   isSubmitting: boolean,
   exportedWallets: Array<ExportedByronWallet>,
   onConfirm: Function,
-  onSelectStateDirectory: Function,
+  onWalletNameChange: Function,
+  onToggleWalletImportSelection: Function,
   onClose: Function,
 };
 

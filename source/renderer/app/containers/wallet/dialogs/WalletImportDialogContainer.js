@@ -24,6 +24,14 @@ export default class WalletImportDialogContainer extends Component<Props> {
     this.props.actions.walletMigration.finishMigration.trigger();
   };
 
+  onWalletNameChange = (params: { id: string, name: string }) => {
+    this.props.actions.walletMigration.updateWalletName.trigger(params);
+  };
+
+  onToggleWalletImportSelection = (id: string) => {
+    this.props.actions.walletMigration.toggleWalletImportSelection.trigger(id);
+  };
+
   render() {
     const { app, networkStatus, walletMigration } = this.props.stores;
     const {
@@ -56,7 +64,8 @@ export default class WalletImportDialogContainer extends Component<Props> {
             exportedWallets={exportedWallets}
             isSubmitting={isRestorationRunning}
             onConfirm={this.onConfirm}
-            onSelectStateDirectory={onSelectStateDirectory}
+            onWalletNameChange={this.onWalletNameChange}
+            onToggleWalletImportSelection={this.onToggleWalletImportSelection}
             onClose={this.onCancel}
           />
         )}
