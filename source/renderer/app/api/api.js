@@ -192,9 +192,6 @@ import type {
 import type { StakePoolProps } from '../domains/StakePool';
 import type { FaultInjectionIpcRequest } from '../../../common/types/cardano-node.types';
 
-// Common errors
-import { InvalidMnemonicError } from './common/errors';
-
 import { TlsCertificateNotValidError } from './nodes/errors';
 import { getSHA256HexForString } from './utils/hashing';
 import { getNewsHash } from './news/requests/getNewsHash';
@@ -698,15 +695,11 @@ export default class AdaApi {
         ? 'canNotCalculateTransactionFees'
         : 'notEnoughFundsForTransaction';
 
-      // @TODO - SHOWCASE
-      // logger.error('AdaApi::calculateTransactionFee error', { error });
+      // ApiError with logging showcase
       throw new ApiError(error, {
         logError: true,
         msg: 'AdaApi::calculateTransactionFee error',
       })
-        // @TODO - CHECK cover fee
-        // .set('cannotCoverFee')
-        // .where('code', 'cannot_cover_fee')
         .set(notEnoughMoneyError)
         .where('code', 'not_enough_money')
         .set('invalidAddress')
@@ -841,7 +834,10 @@ export default class AdaApi {
       logger.error('AdaApi::getWalletRecoveryPhraseFromCertificate error', {
         error,
       });
-      return Promise.reject(new InvalidMnemonicError());
+      const errorRejection = new ApiError(error)
+        .set('invalidMnemonic', true)
+        .result();
+      return Promise.reject(errorRejection);
     }
   }
 
@@ -871,7 +867,7 @@ export default class AdaApi {
           'diagnostic.validationError',
           'Forbidden Mnemonic: an example Mnemonic has been submitted'
         )
-        .set('forbiddenMnemonic') // @TODO - check
+        .set('forbiddenMnemonic')
         .where('code', 'invalid_restoration_parameters')
         .result();
     }
@@ -919,7 +915,7 @@ export default class AdaApi {
           'diagnostic.validationError',
           'Forbidden Mnemonic: an example Mnemonic has been submitted'
         )
-        .set('forbiddenMnemonic') // @TODO - check
+        .set('forbiddenMnemonic')
         .where('code', 'invalid_restoration_parameters')
         .result();
     }
@@ -985,7 +981,7 @@ export default class AdaApi {
           'diagnostic.validationError',
           'Forbidden Mnemonic: an example Mnemonic has been submitted'
         )
-        .set('forbiddenMnemonic') // @TODO - check
+        .set('forbiddenMnemonic')
         .where('code', 'invalid_restoration_parameters')
         .result();
     }
@@ -1051,7 +1047,7 @@ export default class AdaApi {
           'diagnostic.validationError',
           'Forbidden Mnemonic: an example Mnemonic has been submitted'
         )
-        .set('forbiddenMnemonic') // @TODO - check
+        .set('forbiddenMnemonic')
         .where('code', 'invalid_restoration_parameters')
         .result();
     }
@@ -1100,7 +1096,7 @@ export default class AdaApi {
           'diagnostic.validationError',
           'Forbidden Mnemonic: an example Mnemonic has been submitted'
         )
-        .set('forbiddenMnemonic') // @TODO - check
+        .set('forbiddenMnemonic')
         .where('code', 'invalid_restoration_parameters')
         .result();
     }
@@ -1149,7 +1145,7 @@ export default class AdaApi {
           'diagnostic.validationError',
           'Forbidden Mnemonic: an example Mnemonic has been submitted'
         )
-        .set('forbiddenMnemonic') // @TODO - check
+        .set('forbiddenMnemonic')
         .where('code', 'invalid_restoration_parameters')
         .result();
     }
@@ -1691,7 +1687,6 @@ export default class AdaApi {
     }
   };
 
-  // @TODO - define Japanese errors - throw new Error(...);
   getNews = async (): Promise<GetNewsResponse> => {
     logger.debug('AdaApi::getNews called');
 

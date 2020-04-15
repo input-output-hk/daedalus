@@ -1,7 +1,6 @@
 // @flow
 import { defineMessages } from 'react-intl';
 import LocalizableError from '../../i18n/LocalizableError';
-import globalMessages from '../../i18n/global-messages';
 
 export const messages = defineMessages({
   genericApiError: {
@@ -22,16 +21,6 @@ export class GenericApiError extends LocalizableError {
       id: messages.genericApiError.id,
       defaultMessage: messages.genericApiError.defaultMessage,
       values,
-    });
-  }
-}
-
-
-export class InvalidMnemonicError extends LocalizableError {
-  constructor() {
-    super({
-      id: globalMessages.invalidMnemonic.id,
-      defaultMessage: globalMessages.invalidMnemonic.defaultMessage,
     });
   }
 }

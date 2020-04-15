@@ -71,4 +71,9 @@ export const messages = defineMessages({
     description:
       '"Wallet could not be imported, please make sure you are providing a correct file." error message.',
   },
+  invalidMnemonic: {
+    id: 'global.errors.invalidMnemonic',
+    defaultMessage: '!!!Invalid phrase entered, please check.',
+    description: 'Error message shown when invalid bip39 mnemonic was entered.',
+  },
 });

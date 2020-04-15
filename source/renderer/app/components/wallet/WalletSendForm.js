@@ -195,7 +195,9 @@ export default class WalletSendForm extends Component<Props, State> {
               }
               return [
                 isValidAddress,
-                this.context.intl.formatMessage(apiErrorMessages.invalidAddress),
+                this.context.intl.formatMessage(
+                  apiErrorMessages.invalidAddress
+                ),
               ];
             },
           ],

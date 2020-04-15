@@ -1,7 +1,10 @@
 // @flow
 import { observable, action } from 'mobx';
 import { includes, camelCase, get, snakeCase } from 'lodash';
-import { GenericApiError, messages as commonMessages } from '../api/common/errors';
+import {
+  GenericApiError,
+  messages as commonMessages,
+} from '../api/common/errors';
 import { messages } from '../api/errors';
 import { logger } from '../utils/logging';
 
@@ -50,7 +53,11 @@ export default class ApiError {
   }
 
   @action set(predefinedError: string, force?: boolean = false) {
-    if (predefinedError && !this.clause && (!this.isFinalError || (this.isFinalError && force))) {
+    if (
+      predefinedError &&
+      !this.clause &&
+      (!this.isFinalError || (this.isFinalError && force))
+    ) {
       this.tempError = predefinedError;
       this.clause = true;
       this.forceSet = force;
