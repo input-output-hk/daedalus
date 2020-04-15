@@ -191,6 +191,18 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-dialog-big-button-border-color': 'none',
     '--theme-dialog-big-button-label-color': '#2d2d2d',
     '--theme-dialog-big-button-description-color': 'rgba(45, 45, 45, 0.6)',
+    '--theme-dialog-set-wallet-password-background-color':
+      'rgba(255, 255, 255, 0.96)',
+    '--theme-dialog-set-wallet-password-box-shadow': 'rgba(0, 0, 0, 0.25)',
+    '--theme-dialog-set-wallet-password-message-color': 'rgba(45, 45, 45, 0.7)',
+    '--theme-dialog-set-wallet-password-title-color': '#2d2d2d',
+    '--theme-dialog-set-wallet-password-button-background-color':
+      'rgba(41, 181, 149, 0.1)',
+    '--theme-dialog-set-wallet-password-button-background-color-hover':
+      '#29b595',
+    '--theme-dialog-set-wallet-password-button-border-color': '#29b595',
+    '--theme-dialog-set-wallet-password-button-color': '#29b595',
+    '--theme-dialog-set-wallet-password-button-color-hover': '#fff',
     '--theme-dialog-title-color': '#2d2d2d',
     '--theme-dialog-text-color': '#2d2d2d',
     '--theme-dialog-border-color': 'rgba(45, 45, 45, 0.1)',

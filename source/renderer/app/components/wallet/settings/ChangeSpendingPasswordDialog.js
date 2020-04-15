@@ -85,7 +85,6 @@ type Props = {
   isSubmitting: boolean,
   error: ?LocalizableError,
   isSpendingPasswordSet: boolean,
-  forceSetPassword: boolean,
   walletName: string,
 };
 
@@ -201,7 +200,6 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
       isSubmitting,
       error,
       isSpendingPasswordSet,
-      forceSetPassword,
       walletName,
     } = this.props;
     const dialogClasses = classnames([
@@ -240,12 +238,10 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
           { walletName }
         )}
         actions={actions}
-        closeOnOverlayClick={!forceSetPassword}
-        onClose={!isSubmitting && !forceSetPassword ? onCancel : () => {}}
+        closeOnOverlayClick
+        onClose={!isSubmitting ? onCancel : () => {}}
         className={dialogClasses}
-        closeButton={
-          !forceSetPassword ? <DialogCloseButton onClose={onCancel} /> : null
-        }
+        closeButton={<DialogCloseButton onClose={onCancel} />}
       >
         <div className={styles.spendingPasswordFields}>
           {isSpendingPasswordSet && (
