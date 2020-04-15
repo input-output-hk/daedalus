@@ -207,14 +207,15 @@ export default class WalletMigrationStore extends Store {
         // Generate and store migration report
         await this.generateMigrationReport();
       } else {
-        // Update migration status to "SKIPPED"
-        await this.setWalletMigrationStatusRequest.execute(
-          WalletMigrationStatuses.SKIPPED
-        );
         logger.debug('WalletMigrationStore: Skipping wallet migration...', {
           walletMigrationStatus,
         });
       }
+    } else {
+      // Update migration status to "SKIPPED"
+      await this.setWalletMigrationStatusRequest.execute(
+        WalletMigrationStatuses.SKIPPED
+      );
     }
   };
 
