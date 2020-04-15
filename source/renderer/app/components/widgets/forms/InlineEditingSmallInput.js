@@ -216,13 +216,11 @@ export default class InlineEditingSmallInput extends Component<Props, State> {
           </button>
         )}
 
-        {
-          /*successfullyUpdated && wasEdited &&*/ <div
-            className={styles.savingResultLabel}
-          >
+        {successfullyUpdated && wasEdited && (
+          <div className={styles.savingResultLabel}>
             {intl.formatMessage(messages.changesSaved)}
           </div>
-        }
+        )}
       </div>
     );
   }
