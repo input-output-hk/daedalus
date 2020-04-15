@@ -191,6 +191,8 @@ let
       ''}
     '';
 
+    legacyStateDir = mainnetDataDir;
+
     legacyWalletDB = let
       prefix = if network == "mainnet_flight"
                then "${mainnetDataDir}${dirSep}"
@@ -216,6 +218,7 @@ let
         walletBin
         exportWalletsBin
         dbConverterBin
+        legacyStateDir
         legacyWalletDB
         legacySecretKey;
       syncTolerance = "300s";

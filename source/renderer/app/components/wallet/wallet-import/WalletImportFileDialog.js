@@ -65,7 +65,7 @@ type Props = {
   onClose: Function,
   onOpenExternalLink: Function,
   onSelectStateDirectory: Function,
-  stateDirectoryPath: string,
+  exportSourcePath: string,
 };
 
 export default class WalletImportFileDialog extends Component<Props> {
@@ -85,10 +85,8 @@ export default class WalletImportFileDialog extends Component<Props> {
       onClose,
       onOpenExternalLink,
       onSelectStateDirectory,
-      stateDirectoryPath,
+      exportSourcePath,
     } = this.props;
-
-    this.search = stateDirectoryPath;
     const title = intl.formatMessage(messages.title);
     const description = <FormattedHTMLMessage {...messages.description} />;
     const stateFolderLabel = intl.formatMessage(messages.stateFolderLabel);
@@ -142,7 +140,7 @@ export default class WalletImportFileDialog extends Component<Props> {
                     this.stateFolderInput = input;
                   }}
                   skin={InputSkin}
-                  value={this.search}
+                  value={exportSourcePath}
                 />
                 <button
                   className={styles.selectStateDirectoryButton}

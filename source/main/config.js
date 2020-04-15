@@ -70,6 +70,7 @@ export type LauncherConfig = {
   syncTolerance: string,
   cliBin: string,
   exportWalletsBin: string,
+  legacyStateDir: string,
   legacySecretKey: string,
   legacyWalletDB: string,
   isFlight: boolean,
@@ -114,6 +115,7 @@ export const {
   cluster,
   nodeImplementation,
   stateDir,
+  legacyStateDir,
   logsPrefix,
   isFlight,
 } = launcherConfig;

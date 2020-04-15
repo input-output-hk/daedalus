@@ -8,20 +8,16 @@ import WalletImportFileDialog from '../../../../source/renderer/app/components/w
 
 storiesOf('Wallets|Import File', module)
   .addDecorator(WalletsWrapper)
-  .add('Wallets Import File Dialog', () => {
-    const stateDirectoryPath =
-      '/Users/daedalus/Library/Application Support/Daedalus Demo';
-    return (
-      <VerticalFlexContainer>
-        <WalletImportFileDialog
-          isSubmitting={false}
-          exportErrors=""
-          onConfirm={action('onConfirm')}
-          onClose={action('onClose')}
-          stateDirectoryPath={stateDirectoryPath}
-          onOpenExternalLink={action('onOpenExternalLink')}
-          onSelectStateDirectory={action('onSelectStateDirectory')}
-        />
-      </VerticalFlexContainer>
-    );
-  });
+  .add('Wallets Import File Dialog', () => (
+    <VerticalFlexContainer>
+      <WalletImportFileDialog
+        isSubmitting={false}
+        exportErrors=""
+        onConfirm={action('onConfirm')}
+        onClose={action('onClose')}
+        exportSourcePath="/Users/daedalus/Library/Application Support/Daedalus"
+        onOpenExternalLink={action('onOpenExternalLink')}
+        onSelectStateDirectory={action('onSelectStateDirectory')}
+      />
+    </VerticalFlexContainer>
+  ));

@@ -48,6 +48,7 @@ export default class WalletMigrationStore extends Store {
   @observable isExportRunning = false;
   @observable exportedWallets: Array<ExportedByronWallet> = [];
   @observable exportErrors: string = '';
+  @observable exportSourcePath: string = global.legacyStateDir || '';
 
   @observable isRestorationRunning = false;
   @observable restoredWallets: Array<Wallet> = [];
@@ -79,7 +80,6 @@ export default class WalletMigrationStore extends Store {
     );
     walletMigration.updateWalletName.listen(this._updateWalletName);
     walletMigration.nextStep.listen(this._nextStep);
-    walletMigration.prevStep.listen(this._prevStep);
   }
 
   @action _nextStep = async () => {
@@ -93,10 +93,6 @@ export default class WalletMigrationStore extends Store {
     } else {
       this._restoreWallets();
     }
-  };
-
-  @action _prevStep = () => {
-    this.walletMigrationStep = 1;
   };
 
   getExportedWalletById = (id: string): ?ExportedByronWallet =>
