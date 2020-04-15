@@ -88,19 +88,24 @@ export default class WalletSelectImportDialog extends Component<Props> {
     const { intl } = this.context;
     const { onConfirm, onClose, onSelectStateDirectory } = this.props;
 
-    const wallets = [{
-      name: 'Alex Wallet',
-      status: 'importing',
-    }, {
-      name: 'Nikola Wallet',
-      status: 'alreadyExists',
-    }, {
-      name: 'Sasha Wallet',
-      status: 'noPassword',
-    }, {
-      name: 'Yakov Wallet',
-      status: 'hasPassword',
-    }];
+    const wallets = [
+      {
+        name: 'Alex Wallet',
+        status: 'importing',
+      },
+      {
+        name: 'Nikola Wallet',
+        status: 'alreadyExists',
+      },
+      {
+        name: 'Sasha Wallet',
+        status: 'noPassword',
+      },
+      {
+        name: 'Yakov Wallet',
+        status: 'hasPassword',
+      },
+    ];
 
     const title = intl.formatMessage(messages.title);
     const description = intl.formatMessage(messages.description);
@@ -138,18 +143,20 @@ export default class WalletSelectImportDialog extends Component<Props> {
                   {wallet.status === 'noPassword' && (
                     <hr className={styles.separator} />
                   )}
-                  <div className={styles.walletsRow} key={id+1}>
-                    <div className={styles.walletsCounter}>
-                    {id + 1 + '.'}
-                    </div>
+                  <div className={styles.walletsRow} key={id + 1}>
+                    <div className={styles.walletsCounter}>{id + 1 + '.'}</div>
                     <div className={styles.walletsInputField}>
                       <Input
                         type="text"
-                        className={
-                          classNames([
+                        className={classNames([
                           styles.walletsInput,
-                          (wallet.status === 'alreadyExists' || wallet.status === 'importing') ? styles.walletUnavailable : null,
-                           wallet.status === 'noPassword' ? styles.walletNoPassword : null,
+                          wallet.status === 'alreadyExists' ||
+                          wallet.status === 'importing'
+                            ? styles.walletUnavailable
+                            : null,
+                          wallet.status === 'noPassword'
+                            ? styles.walletNoPassword
+                            : null,
                         ])}
                         skin={InputSkin}
                         value={this.search}
@@ -167,7 +174,10 @@ export default class WalletSelectImportDialog extends Component<Props> {
                           className={styles.selectStateDirectoryButton}
                           onClick={onSelectStateDirectory}
                         >
-                          <SVGInline svg={crossIcon} className={styles.crossIcon} />
+                          <SVGInline
+                            svg={crossIcon}
+                            className={styles.crossIcon}
+                          />
                         </button>
                       )}
                     </div>
@@ -177,7 +187,7 @@ export default class WalletSelectImportDialog extends Component<Props> {
                       {wallet.status === 'noPassword' && noPasswordStatus}
                       {wallet.status === 'hasPassword' && hasPasswordStatus}
                     </div>
-                    <div className={styles.walletsStatusIcon}/>
+                    <div className={styles.walletsStatusIcon} />
                   </div>
                 </>
               ))}
