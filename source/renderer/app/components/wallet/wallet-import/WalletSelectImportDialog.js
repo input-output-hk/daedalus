@@ -14,6 +14,7 @@ import closeCrossThin from '../../../assets/images/close-cross-thin.inline.svg';
 import penIcon from '../../../assets/images/pen.inline.svg';
 import crossIcon from '../../../assets/images/close-cross.inline.svg';
 import { WalletImportStatuses } from '../../../types/walletExportTypes';
+import LoadingSpinner from '../../widgets/LoadingSpinner';
 import type { ExportedByronWallet } from '../../../types/walletExportTypes';
 
 const messages = defineMessages({
@@ -96,13 +97,21 @@ export default class WalletSelectImportDialog extends Component<Props> {
 
     const title = intl.formatMessage(messages.title);
     const description = intl.formatMessage(messages.description);
-    const buttonLabel = intl.formatMessage(messages.buttonLabel);
+    const buttonLabel = !isSubmitting ? (
+      intl.formatMessage(messages.buttonLabel)
+    ) : (
+      <LoadingSpinner />
+    );
     const importingStatus = intl.formatMessage(messages.importingWallet);
     const noPasswordStatus = intl.formatMessage(messages.noPassword);
     const hasPasswordStatus = intl.formatMessage(messages.passwordProtected);
     const alreadyExistsStatus = intl.formatMessage(messages.walletExists);
     // const walletImportedStatus = intl.formatMessage(messages.walletImported);
     // const walletNotFoundStatus = intl.formatMessage(messages.notFound);
+
+    const buttonClasses = classNames(styles.actionButton, [
+      isSubmitting ? styles.disabled : null,
+    ]);
 
     return (
       <ReactModal
@@ -127,7 +136,12 @@ export default class WalletSelectImportDialog extends Component<Props> {
             <div className={styles.walletsContainer}>
               {exportedWallets.map((wallet, index) => (
                 <>
-                  {!wallet.name && <hr className={styles.separator} />}
+                  {!wallet.name && (
+                    <hr
+                      className={styles.separator}
+                      key={`separator-${wallet.id}`}
+                    />
+                  )}
                   <div className={styles.walletsRow} key={wallet.id}>
                     <div className={styles.walletsCounter}>{`${index +
                       1}.`}</div>
@@ -183,7 +197,7 @@ export default class WalletSelectImportDialog extends Component<Props> {
             </div>
             <div className={styles.action}>
               <Button
-                className={styles.actionButton}
+                className={buttonClasses}
                 disabled={isSubmitting}
                 label={buttonLabel}
                 onClick={onConfirm}

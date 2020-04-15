@@ -234,6 +234,22 @@
           border: none;
           color: var(--theme-splash-network-overlay-button-text-color-hover);
         }
+
+        &.disabled {
+          :global {
+            .LoadingSpinner_component {
+              margin-top: 9px;
+            }
+          }
+          &:hover {
+            background-color: var(
+              --theme-splash-network-overlay-button-background-color
+            );
+            border: solid 1px
+              var(--theme-splash-network-overlay-button-border-color);
+            color: var(--theme-splash-network-overlay-button-text-color);
+          }
+        }
       }
     }
 
