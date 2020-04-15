@@ -35,7 +35,7 @@ export const generateWallet = (
   amount: string,
   reward?: number = 0,
   delegatedStakePool?: StakePool,
-  hasPassword?: boolean,
+  hasPassword?: boolean
 ) =>
   new Wallet({
     id: generateHash(),
