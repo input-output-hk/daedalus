@@ -7213,6 +7213,53 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Set a password",
+        "description": "Label for the \"Set a password\" button in the set wallet password dialog.",
+        "end": {
+          "column": 3,
+          "line": 16
+        },
+        "file": "source/renderer/app/components/wallet/settings/SetWalletPassword.js",
+        "id": "wallet.settings.setWalletPassword.dialog.setPasswordButton",
+        "start": {
+          "column": 21,
+          "line": 11
+        }
+      },
+      {
+        "defaultMessage": "!!!Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        "description": "Message for the \"Set a password\" button in the set wallet password dialog.",
+        "end": {
+          "column": 3,
+          "line": 23
+        },
+        "file": "source/renderer/app/components/wallet/settings/SetWalletPassword.js",
+        "id": "wallet.settings.setWalletPassword.dialog.setPasswordMessage",
+        "start": {
+          "column": 22,
+          "line": 17
+        }
+      },
+      {
+        "defaultMessage": "!!!Your wallet is not protected with a password",
+        "description": "Title for the \"Set wallet password\" dialog when there is not password set.",
+        "end": {
+          "column": 3,
+          "line": 29
+        },
+        "file": "source/renderer/app/components/wallet/settings/SetWalletPassword.js",
+        "id": "wallet.settings.setWalletPassword.dialog.setPasswordTitle",
+        "start": {
+          "column": 20,
+          "line": 24
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/settings/SetWalletPassword.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Do you have your wallet recovery phrase?",
         "description": "Label for the recoveryPhraseVerificationTitle on wallet settings.",
         "end": {
@@ -11226,13 +11273,13 @@
         "description": "Message shown when wallet has no transactions on wallet summary page.",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 22
         },
         "file": "source/renderer/app/containers/wallet/WalletSummaryPage.js",
         "id": "wallet.summary.no.transactions",
         "start": {
           "column": 18,
-          "line": 19
+          "line": 17
         }
       }
     ],

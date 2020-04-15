@@ -158,7 +158,6 @@ export default (props: { currentTheme: string, locale: string }) => {
       changeSpendingPasswordDialog={
         <ChangeSpendingPasswordDialog
           walletName={text('Wallet Name', 'Wallet Name')}
-          forceSetPassword={false}
           currentPasswordValue="current"
           newPasswordValue="new"
           repeatedPasswordValue="new"

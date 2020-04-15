@@ -191,6 +191,17 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--theme-dialog-big-button-border-color': 'none',
     '--theme-dialog-big-button-label-color': 'rgba(255, 255, 255, 1)',
     '--theme-dialog-big-button-description-color': 'rgba(255, 255, 255, 0.6)',
+    '--theme-dialog-set-wallet-password-background-color':
+      'rgba(42, 43, 60, 0.96)',
+    '--theme-dialog-set-wallet-password-box-shadow': 'rgba(0, 0, 0, 0.25)',
+    '--theme-dialog-set-wallet-password-message-color': '#fff',
+    '--theme-dialog-set-wallet-password-title-color': '#fafbfc',
+    '--theme-dialog-set-wallet-password-button-background-color':
+      'rgba(0, 0, 0, 0.1)',
+    '--theme-dialog-set-wallet-password-button-background-color-hover': '#fff',
+    '--theme-dialog-set-wallet-password-button-border-color': '#fafbfc',
+    '--theme-dialog-set-wallet-password-button-color': '#fff',
+    '--theme-dialog-set-wallet-password-button-color-hover': '#2a2b3c',
     '--theme-dialog-title-color': '#ffffff',
     '--theme-dialog-text-color': '#ffffff',
     '--theme-dialog-border-color': 'rgba(255, 255, 255, 0.2)',

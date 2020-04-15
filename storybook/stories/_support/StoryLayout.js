@@ -18,7 +18,6 @@ import Wallet, {
 import NewsFeedIcon from '../../../source/renderer/app/components/widgets/NewsFeedIcon';
 import type { SidebarMenus } from '../../../source/renderer/app/components/sidebar/Sidebar';
 import type { SidebarWalletType } from '../../../source/renderer/app/types/sidebarTypes';
-// import type { Wallet } from '../../../source/renderer/app/domains/WalletTransaction';
 
 // Empty screen elements
 import TopBar from '../../../source/renderer/app/components/layout/TopBar';
@@ -100,7 +99,7 @@ export default class StoryLayout extends Component<Props> {
           )}
         >
           {Children.map(children, child =>
-            React.cloneElement(child, { stores })
+            React.cloneElement(child, { stores, storiesProps })
           )}
         </SidebarLayout>
       </div>
@@ -116,11 +115,14 @@ export default class StoryLayout extends Component<Props> {
       title: wallet.name,
       info: `${wallet.amount} ADA`,
       isConnected: true,
+      hasPassword: wallet.hasPassword,
       isNotResponding:
-        get(wallet, 'syncState.tag', 'synced') ===
+        get(wallet, 'syncState.status', WalletSyncStateStatuses.READY) ===
         WalletSyncStateStatuses.NOT_RESPONDING,
-      isRestoreActive: get(wallet, 'syncState.tag', 'synced') === 'restoring',
-      restoreProgress: get(wallet, 'syncState.data.percentage.quantity', 0),
+      isRestoreActive:
+        get(wallet, 'syncState.status', WalletSyncStateStatuses.READY) ===
+        WalletSyncStateStatuses.RESTORING,
+      restoreProgress: get(wallet, 'syncState.progress.quantity', 0),
       isLegacy: wallet.isLegacy,
       recoveryPhraseVerificationStatus:
         WalletRecoveryPhraseVerificationStatuses.OK,

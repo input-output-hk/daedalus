@@ -3,6 +3,10 @@ Changelog
 
 ## vNext
 
+### Features
+
+- Force setting spending password on passwordless wallets ([PR 1957](https://github.com/input-output-hk/daedalus/pull/1957))
+
 ### Chores
 
 - Separated handling of `cardano-wallet` and `cardano-node` logs ([PR 1960](https://github.com/input-output-hk/daedalus/pull/1960))
