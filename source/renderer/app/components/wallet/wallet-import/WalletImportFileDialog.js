@@ -14,6 +14,7 @@ import styles from './WalletImportFileDialog.scss';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import closeCrossThin from '../../../assets/images/close-cross-thin.inline.svg';
 import penIcon from '../../../assets/images/pen.inline.svg';
+import LoadingSpinner from '../../widgets/LoadingSpinner';
 
 const messages = defineMessages({
   title: {
@@ -89,7 +90,11 @@ export default class WalletImportFileDialog extends Component<Props> {
     const title = intl.formatMessage(messages.title);
     const description = <FormattedHTMLMessage {...messages.description} />;
     const stateFolderLabel = intl.formatMessage(messages.stateFolderLabel);
-    const buttonLabel = intl.formatMessage(messages.buttonLabel);
+    const buttonLabel = !isSubmitting ? (
+      intl.formatMessage(messages.buttonLabel)
+    ) : (
+      <LoadingSpinner />
+    );
     const linkLabel = intl.formatMessage(messages.linkLabel);
     const noWalletError = intl.formatMessage(messages.noWallets);
     const onLinkClick = () =>
@@ -100,6 +105,10 @@ export default class WalletImportFileDialog extends Component<Props> {
     const inputClasses = classNames([
       styles.stateFolderInput,
       error ? styles.error : null,
+    ]);
+
+    const buttonClasses = classNames(styles.actionButton, [
+      isSubmitting ? styles.disabled : null,
     ]);
 
     return (
@@ -146,7 +155,7 @@ export default class WalletImportFileDialog extends Component<Props> {
             </div>
             <div className={styles.action}>
               <Button
-                className={styles.actionButton}
+                className={buttonClasses}
                 disabled={isSubmitting}
                 label={buttonLabel}
                 onClick={onConfirm}
