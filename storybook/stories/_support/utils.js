@@ -35,7 +35,7 @@ export const generateWallet = (
   amount: string,
   reward?: number = 0,
   delegatedStakePool?: StakePool,
-  hasPassword?: boolean
+  hasPassword?: boolean,
 ) =>
   new Wallet({
     id: generateHash(),
@@ -45,7 +45,7 @@ export const generateWallet = (
     reward: new BigNumber(reward).dividedBy(LOVELACES_PER_ADA),
     createdAt: new Date(),
     name,
-    hasPassword,
+    hasPassword: hasPassword || false,
     passwordUpdateDate: new Date(),
     syncState: { status: 'ready' },
     isLegacy: false,
