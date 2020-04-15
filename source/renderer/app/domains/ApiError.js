@@ -1,16 +1,59 @@
 // @flow
 import { observable, action } from 'mobx';
 import { includes, camelCase, get, snakeCase } from 'lodash';
-import {
-  GenericApiError,
-  messages as commonMessages,
-} from '../api/common/errors';
+import { GenericApiError } from '../api/common/errors';
 import { messages } from '../api/errors';
 import { logger } from '../utils/logging';
+
+type KnownErrorType =
+  | 'invalid_wallet_type'
+  | 'no_such_wallet'
+  | 'no_such_transaction'
+  | 'transaction_not_pending'
+  | 'wallet_already_exists'
+  | 'no_root_key'
+  | 'wrong_encryption_passphrase'
+  | 'malformed_tx_payload'
+  | 'key_not_found_for_address'
+  | 'not_enough_money'
+  | 'utxo_not_enough_fragmented'
+  | 'transaction_is_too_big'
+  | 'inputs_depleted'
+  | 'cannot_cover_fee'
+  | 'invalid_coin_selection'
+  | 'network_unreachable'
+  | 'network_misconfigured'
+  | 'network_tip_not_found'
+  | 'created_invalid_transaction'
+  | 'rejected_by_core_node'
+  | 'bad_request'
+  | 'not_found'
+  | 'method_not_allowed'
+  | 'not_acceptable'
+  | 'start_time_later_than_end_time'
+  | 'unsupported_media_type'
+  | 'unexpected_error'
+  | 'not_synced'
+  | 'nothing_to_migrate'
+  | 'no_such_pool'
+  | 'pool_already_joined'
+  | 'not_delegating_to'
+  | 'invalid_restoration_parameters'
+  | 'rejected_tip'
+  | 'no_such_epoch_no'
+  | 'invalid_delegation_discovery'
+  | 'not_implemented'
+  | 'wallet_not_responding'
+  | 'address_already_exists';
 
 type LoggingType = {
   msg?: string,
   logError?: Object,
+};
+
+type ErrorType = {
+  code?: KnownErrorType,
+  message?: string,
 };
 
 export default class ApiError {
@@ -23,7 +66,7 @@ export default class ApiError {
   values: Object;
   code: string;
 
-  constructor(error: Object = {}, logging?: LoggingType) {
+  constructor(error: ErrorType = {}, logging?: LoggingType) {
     // Construct Localizable Error
     const errorCode = error.code ? camelCase(error.code) : null;
     const localizableError = get(messages, errorCode);
@@ -116,14 +159,5 @@ export default class ApiError {
       const { logError, msg } = logging;
       logger.error(msg, { error: logError ? this.values : null });
     }
-  }
-
-  _getGenericApiError() {
-    Object.assign(this, {
-      id: commonMessages.genericApiError.id,
-      defaultMessage: commonMessages.genericApiError.defaultMessage,
-      values: this.values,
-    });
-    return this;
   }
 }
