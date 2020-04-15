@@ -18,6 +18,7 @@ export default class AddressRandom extends Component<Props> {
   render() {
     const { address, onCopyAddress, onShareAddress, index } = this.props;
     const addressClasses = classnames([
+      'Address',
       `generatedAddress-${index + 1}`,
       styles.component,
       address.used ? styles.usedWalletAddress : null,

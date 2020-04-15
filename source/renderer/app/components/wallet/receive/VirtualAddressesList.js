@@ -6,15 +6,9 @@ import { AutoSizer, List } from 'react-virtualized';
 import WalletAddress from '../../../domains/WalletAddress';
 import styles from './VirtualAddressesList.scss';
 
-/* eslint-disable react/no-unused-prop-types */
-
 type Props = {
   rows: Array<WalletAddress>,
   renderRow: Function,
-};
-
-type State = {
-  height: number,
 };
 
 /**
@@ -30,10 +24,10 @@ const BREAKPOINT_2_LINES = 635;
 
 const ADDRESS_LINE_HEIGHT = 22;
 const ADDRESS_LINE_PADDING = 21;
-const ADDRESS_SELECTOR = '.Address_component';
+const ADDRESS_SELECTOR = '.Address';
 
 @observer
-export class VirtualAddressesList extends Component<Props, State> {
+export class VirtualAddressesList extends Component<Props> {
   list: List;
   listWidth: number = 0;
   addressHeight: number = 0;
@@ -56,13 +50,21 @@ export class VirtualAddressesList extends Component<Props, State> {
   /**
    * Virtual row heights only once per tick (debounced)
    */
-  updateRowHeights = (): void => {
+  updateRowHeights = () => {
     const { list, addressHeight } = this;
+    // console.log('addressHeight 1', addressHeight);
     if (!list) return;
     const firstAddress = document.querySelector(ADDRESS_SELECTOR);
+    // console.log('firstAddress', firstAddress);
+    // console.log('ADDRESS_SELECTOR', ADDRESS_SELECTOR);
+    // console.log('firstAddress.offsetHeight', firstAddress.offsetHeight);
     if (firstAddress instanceof HTMLElement) {
+      // console.log('CASE 1');
       this.addressHeight = firstAddress.offsetHeight;
+      // console.log('firstAddress', firstAddress);
+      // console.log('firstAddress.offsetHeight', firstAddress.offsetHeight);
     } else {
+      // console.log('CASE 2');
       // DOM is not ready yet, so use an estimated height
       this.addressHeight = this.estimateAddressHeight(
         this.getLinesFromWidth(this.listWidth)
@@ -71,9 +73,11 @@ export class VirtualAddressesList extends Component<Props, State> {
       // the update and hope that DOM is rendered then (for exact measurements)
       setTimeout(this.updateRowHeights, 100);
     }
+    // console.log('addressHeight 2', addressHeight);
     if (addressHeight !== this.addressHeight) {
       list.recomputeRowHeights(0);
     }
+    // console.log('addressHeight 3', addressHeight);
   };
 
   /**

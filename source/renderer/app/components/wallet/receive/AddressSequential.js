@@ -50,6 +50,7 @@ export default class AddressSequential extends Component<Props> {
     } = this.props;
     const { renderAddress, rawAddress } = this;
     const addressClasses = classnames([
+      'Address',
       `receiveAddress-${rawAddress}`,
       styles.component,
       address.used ? styles.usedWalletAddress : null,
