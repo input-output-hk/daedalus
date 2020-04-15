@@ -92,7 +92,8 @@ export default class WalletSelectImportDialog extends Component<Props> {
       exportedWallets,
       onConfirm,
       onClose,
-      onSelectStateDirectory,
+      onWalletNameChange,
+      onToggleWalletImportSelection,
     } = this.props;
 
     const title = intl.formatMessage(messages.title);
@@ -152,7 +153,7 @@ export default class WalletSelectImportDialog extends Component<Props> {
                       {!wallet.is_passphrase_empty && (
                         <button
                           className={styles.selectStateDirectoryButton}
-                          onClick={onSelectStateDirectory}
+                          onClick={() => {}}
                         >
                           <SVGInline svg={penIcon} className={styles.penIcon} />
                         </button>
@@ -160,7 +161,7 @@ export default class WalletSelectImportDialog extends Component<Props> {
                       {wallet.is_passphrase_empty && (
                         <button
                           className={styles.selectStateDirectoryButton}
-                          onClick={onSelectStateDirectory}
+                          onClick={() => {}}
                         >
                           <SVGInline
                             svg={crossIcon}

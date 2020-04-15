@@ -79,7 +79,6 @@ export default class WalletMigrationStore extends Store {
     );
     walletMigration.updateWalletName.listen(this._updateWalletName);
     walletMigration.nextStep.listen(this._nextStep);
-    walletMigration.prevStep.listen(this._prevStep);
   }
 
   @action _nextStep = async () => {
@@ -93,10 +92,6 @@ export default class WalletMigrationStore extends Store {
     } else {
       this._restoreWallets();
     }
-  };
-
-  @action _prevStep = () => {
-    this.walletMigrationStep = 1;
   };
 
   getExportedWalletById = (id: string): ?ExportedByronWallet =>

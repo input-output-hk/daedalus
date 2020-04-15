@@ -16,10 +16,6 @@ export default class WalletImportDialogContainer extends Component<Props> {
     this.props.actions.walletMigration.nextStep.trigger();
   };
 
-  onBack = () => {
-    this.props.actions.walletMigration.prevStep.trigger();
-  };
-
   onCancel = () => {
     this.props.actions.walletMigration.finishMigration.trigger();
   };
