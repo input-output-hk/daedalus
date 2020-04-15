@@ -117,10 +117,12 @@ export default class StoryLayout extends Component<Props> {
       isConnected: true,
       hasPassword: wallet.hasPassword,
       isNotResponding:
-        get(wallet, 'syncState.tag', 'synced') ===
+        get(wallet, 'syncState.status', WalletSyncStateStatuses.READY) ===
         WalletSyncStateStatuses.NOT_RESPONDING,
-      isRestoreActive: get(wallet, 'syncState.tag', 'synced') === 'restoring',
-      restoreProgress: get(wallet, 'syncState.data.percentage.quantity', 0),
+      isRestoreActive:
+        get(wallet, 'syncState.status', WalletSyncStateStatuses.READY) ===
+        WalletSyncStateStatuses.RESTORING,
+      restoreProgress: get(wallet, 'syncState.progress.quantity', 0),
       isLegacy: wallet.isLegacy,
       recoveryPhraseVerificationStatus:
         WalletRecoveryPhraseVerificationStatuses.OK,

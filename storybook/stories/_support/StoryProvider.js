@@ -7,6 +7,7 @@ import { observable, computed, runInAction } from 'mobx';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
 import actions from '../../../source/renderer/app/actions';
+import { WalletSyncStateStatuses } from '../../../source/renderer/app/domains/Wallet.js';
 
 type Props = {
   children: Node,
@@ -21,7 +22,9 @@ export const WALLETS = [
     passwordUpdateDate: moment()
       .subtract(1, 'month')
       .toDate(),
-    syncState: { data: null, tag: 'synced' },
+    syncState: { status: WalletSyncStateStatuses.READY },
+    isNotResponding: false,
+    isRestoring: false,
     isLegacy: false,
     recoveryPhraseVerificationDate: new Date(),
     delegatedStakePoolId: 'kfhdsdkhfskdjfhskdhf',
@@ -32,7 +35,9 @@ export const WALLETS = [
     amount: new BigNumber(66.998),
     hasPassword: false,
     passwordUpdateDate: new Date(),
-    syncState: { data: null, tag: 'synced' },
+    syncState: { status: WalletSyncStateStatuses.READY },
+    isNotResponding: false,
+    isRestoring: false,
     isLegacy: false,
     recoveryPhraseVerificationDate: new Date(),
     delegatedStakePoolId: 'kfhdsdkhfskdjfhskdhf',
@@ -45,7 +50,9 @@ export const WALLETS = [
     passwordUpdateDate: moment()
       .subtract(1, 'month')
       .toDate(),
-    syncState: { data: null, tag: 'synced' },
+    syncState: { status: WalletSyncStateStatuses.READY },
+    isNotResponding: false,
+    isRestoring: false,
     isLegacy: true,
     recoveryPhraseVerificationDate: moment()
       .subtract(200, 'days')
@@ -60,7 +67,9 @@ export const WALLETS = [
     passwordUpdateDate: moment()
       .subtract(1, 'month')
       .toDate(),
-    syncState: { data: null, tag: 'synced' },
+    syncState: { status: WalletSyncStateStatuses.READY },
+    isNotResponding: false,
+    isRestoring: false,
     isLegacy: true,
     recoveryPhraseVerificationDate: moment()
       .subtract(200, 'days')
@@ -75,22 +84,14 @@ export const WALLETS = [
       .subtract(1, 'month')
       .toDate(),
     syncState: {
-      data: {
-        estimatedCompletionTime: {
-          quantity: 123456789,
-          unit: 'milliseconds',
-        },
-        percentage: {
-          quantity: 50,
-          unit: 'percent',
-        },
-        throughput: {
-          quantity: 500,
-          unit: 'blocksPerSecond',
-        },
+      progress: {
+        quantity: 50,
+        unit: 'percent',
       },
-      tag: 'restoring',
+      status: WalletSyncStateStatuses.RESTORING,
     },
+    isNotResponding: false,
+    isRestoring: true,
     isLegacy: false,
     recoveryPhraseVerificationDate: moment()
       .subtract(400, 'days')
@@ -104,7 +105,9 @@ export const WALLETS = [
     passwordUpdateDate: moment()
       .subtract(1, 'month')
       .toDate(),
-    syncState: { data: null, tag: 'not_responding' },
+    syncState: { status: WalletSyncStateStatuses.NOT_RESPONDING },
+    isNotResponding: true,
+    isRestoring: false,
     isLegacy: false,
     recoveryPhraseVerificationDate: new Date(),
     delegatedStakePoolId: 'kfhdsdkhfskdjfhskdhf',
