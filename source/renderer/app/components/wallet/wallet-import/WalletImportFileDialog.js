@@ -64,7 +64,7 @@ type Props = {
   onConfirm: Function,
   onClose: Function,
   onOpenExternalLink: Function,
-  onSelectStateDirectory: Function,
+  onSelectExportSourcePath: Function,
   exportSourcePath: string,
 };
 
@@ -84,7 +84,7 @@ export default class WalletImportFileDialog extends Component<Props> {
       onConfirm,
       onClose,
       onOpenExternalLink,
-      onSelectStateDirectory,
+      onSelectExportSourcePath,
       exportSourcePath,
     } = this.props;
     const title = intl.formatMessage(messages.title);
@@ -144,7 +144,9 @@ export default class WalletImportFileDialog extends Component<Props> {
                 />
                 <button
                   className={styles.selectStateDirectoryButton}
-                  onClick={onSelectStateDirectory}
+                  onClick={() => {
+                    onSelectExportSourcePath();
+                  }}
                 >
                   <SVGInline svg={penIcon} className={styles.penIcon} />
                 </button>

@@ -12,12 +12,12 @@ storiesOf('Wallets|Import File', module)
     <VerticalFlexContainer>
       <WalletImportFileDialog
         isSubmitting={false}
+        exportSourcePath="/Users/daedalus/Library/Application Support/Daedalus"
         exportErrors=""
         onConfirm={action('onConfirm')}
         onClose={action('onClose')}
-        exportSourcePath="/Users/daedalus/Library/Application Support/Daedalus"
         onOpenExternalLink={action('onOpenExternalLink')}
-        onSelectStateDirectory={action('onSelectStateDirectory')}
+        onSelectExportSourcePath={action('onSelectExportSourcePath')}
       />
     </VerticalFlexContainer>
   ));

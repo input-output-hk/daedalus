@@ -80,7 +80,24 @@ export default class WalletMigrationStore extends Store {
     );
     walletMigration.updateWalletName.listen(this._updateWalletName);
     walletMigration.nextStep.listen(this._nextStep);
+    walletMigration.selectExportSourcePath.listen(this._selectExportSourcePath);
   }
+
+  @action _selectExportSourcePath = () => {
+    global.dialog.showOpenDialog(
+      {
+        defaultPath: global.legacyStateDir || '',
+        properties: ['openDirectory'],
+      },
+      filePaths => {
+        if (!filePaths) return;
+        const filePath = filePaths[0];
+        runInAction('update exportSourcePath', () => {
+          this.exportSourcePath = filePath;
+        });
+      }
+    );
+  };
 
   @action _nextStep = async () => {
     if (this.walletMigrationStep === 1) {
@@ -141,7 +158,9 @@ export default class WalletMigrationStore extends Store {
     const {
       wallets,
       errors,
-    }: ExportWalletsMainResponse = await exportWalletsChannel.request();
+    }: ExportWalletsMainResponse = await exportWalletsChannel.request({
+      exportSourcePath: this.exportSourcePath,
+    });
     runInAction('update exportedWallets and exportErrors', () => {
       this.exportedWallets = wallets.map(wallet => {
         const isImported =

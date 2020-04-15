@@ -212,11 +212,14 @@
         }
 
         &.disabled {
+          opacity: 0.7;
+
           :global {
             .LoadingSpinner_component {
               margin-top: 9px;
             }
           }
+
           &:hover {
             background-color: var(
               --theme-splash-network-overlay-button-background-color

@@ -77,6 +77,7 @@ const messages = defineMessages({
 type Props = {
   isSubmitting: boolean,
   exportedWallets: Array<ExportedByronWallet>,
+  pendingImportWalletsCount: number,
   onConfirm: Function,
   onWalletNameChange: Function,
   onToggleWalletImportSelection: Function,
@@ -94,6 +95,7 @@ export default class WalletSelectImportDialog extends Component<Props> {
     const {
       isSubmitting,
       exportedWallets,
+      pendingImportWalletsCount,
       onConfirm,
       onClose,
       onWalletNameChange,
@@ -115,8 +117,9 @@ export default class WalletSelectImportDialog extends Component<Props> {
     // const walletImportedStatus = intl.formatMessage(messages.walletImported);
     // const walletNotFoundStatus = intl.formatMessage(messages.notFound);
 
+    const isDisabled = isSubmitting || !pendingImportWalletsCount;
     const buttonClasses = classNames(styles.actionButton, [
-      isSubmitting ? styles.disabled : null,
+      isDisabled ? styles.disabled : null,
     ]);
 
     return (
@@ -196,7 +199,7 @@ export default class WalletSelectImportDialog extends Component<Props> {
             <div className={styles.action}>
               <Button
                 className={buttonClasses}
-                disabled={isSubmitting}
+                disabled={isDisabled}
                 label={buttonLabel}
                 onClick={onConfirm}
                 skin={ButtonSkin}
