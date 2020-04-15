@@ -1,5 +1,5 @@
 // @flow
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
 import ReactModal from 'react-modal';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
@@ -140,14 +140,9 @@ export default class WalletSelectImportDialog extends Component<Props> {
             <hr className={styles.separator} />
             <div className={styles.walletsContainer}>
               {exportedWallets.map((wallet, index) => (
-                <>
-                  {!wallet.name && (
-                    <hr
-                      className={styles.separator}
-                      key={`separator-${wallet.id}`}
-                    />
-                  )}
-                  <div className={styles.walletsRow} key={wallet.id}>
+                <Fragment key={wallet.id}>
+                  {!wallet.name && <hr className={styles.separator} />}
+                  <div className={styles.walletsRow}>
                     <div className={styles.walletsCounter}>{`${index +
                       1}.`}</div>
                     <div className={styles.walletsInputField}>
@@ -174,7 +169,6 @@ export default class WalletSelectImportDialog extends Component<Props> {
                         onCancelEditing={() =>
                           onToggleWalletImportSelection(wallet.id)
                         }
-                        maxLength={40}
                         successfullyUpdated
                       />
                     </div>
@@ -188,7 +182,7 @@ export default class WalletSelectImportDialog extends Component<Props> {
                     </div>
                     <div className={styles.walletsStatusIcon} />
                   </div>
-                </>
+                </Fragment>
               ))}
             </div>
             <div className={styles.action}>

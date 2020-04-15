@@ -159,28 +159,6 @@
             }
           }
         }
-
-        .selectStateDirectoryButton {
-          background-color: var(
-            --theme-wallet-import-stateFolder-button-background-color
-          );
-          border-radius: 3px;
-          cursor: pointer;
-          height: 28px;
-          left: -35px;
-          position: relative;
-          top: -1px;
-          width: 28px;
-
-          .penIcon {
-            svg {
-              height: 12px;
-              position: relative;
-              top: 1px;
-              width: 12px;
-            }
-          }
-        }
       }
 
       .noWalletError {
@@ -239,6 +217,28 @@
       opacity: 0.8;
       &:after {
         background-color: var(--theme-splash-network-learn-more-color);
+      }
+    }
+  }
+
+  .selectStateDirectoryButton {
+    background-color: var(
+      --theme-wallet-import-stateFolder-button-background-color
+    );
+    border-radius: 3px;
+    cursor: pointer;
+    height: 28px;
+    left: -35px;
+    position: relative;
+    top: -1px;
+    width: 28px;
+
+    .penIcon {
+      svg {
+        height: 12px;
+        position: relative;
+        top: 1px;
+        width: 12px;
       }
     }
   }

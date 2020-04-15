@@ -142,14 +142,12 @@ export default class WalletImportFileDialog extends Component<Props> {
                   skin={InputSkin}
                   value={exportSourcePath}
                 />
-                <button
+                <Button
                   className={styles.selectStateDirectoryButton}
-                  onClick={() => {
-                    onSelectExportSourcePath();
-                  }}
-                >
-                  <SVGInline svg={penIcon} className={styles.penIcon} />
-                </button>
+                  onClick={onSelectExportSourcePath}
+                  label={<SVGInline svg={penIcon} className={styles.penIcon} />}
+                  skin={ButtonSkin}
+                />
               </div>
               {error && <p className={styles.noWalletError}>{noWalletError}</p>}
             </div>
