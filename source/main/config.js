@@ -169,4 +169,4 @@ export const STAKE_POOL_REGISTRY_URL = {
 };
 
 // Cardano Byron Testnet network magic
-export const TESTNET_MAGIC = 1097911063;
+export const TESTNET_MAGIC = '1097911063';

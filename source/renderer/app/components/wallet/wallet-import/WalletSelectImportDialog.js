@@ -148,7 +148,9 @@ export default class WalletSelectImportDialog extends Component<Props> {
                     <hr className={styles.separator} />
                   )}
                   <div className={styles.walletsRow} key={wallet.id}>
-                    <div className={styles.walletsCounter}>{`${wallet.id  }.`}</div>
+                    <div
+                      className={styles.walletsCounter}
+                    >{`${wallet.id}.`}</div>
                     <div className={styles.walletsInputField}>
                       <Input
                         type="text"

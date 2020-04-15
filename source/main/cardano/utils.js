@@ -219,27 +219,33 @@ export const exportWallets = async (
     }
   }
 
-  const clusterFlags = [];
+  // Export tool flags
+  const exportWalletsBinFlags = [];
+
+  // Cluster flags
   if (cluster === 'testnet') {
-    clusterFlags.push('--testnet', TESTNET_MAGIC);
+    exportWalletsBinFlags.push('--testnet', TESTNET_MAGIC);
   } else {
-    clusterFlags.push('--mainnet');
+    exportWalletsBinFlags.push('--mainnet');
+  }
+
+  // Secret key flags
+  exportWalletsBinFlags.push('--keyfile', legacySecretKeyPath);
+
+  // Wallet DB flags
+  const legacyWalletDBPathExists = await fs.pathExists(
+    `${legacyWalletDBPath}-acid`
+  );
+  if (legacyWalletDBPathExists) {
+    exportWalletsBinFlags.push('--wallet-db-path', legacyWalletDBPath);
   }
 
   logger.info('ipcMain: Exporting wallets...', {
-    clusterFlags,
-    legacySecretKeyPath,
-    legacyWalletDBPath,
+    exportWalletsBin,
+    exportWalletsBinFlags,
   });
 
-  const { stdout, stderr } = spawnSync(exportWalletsBin, [
-    ...clusterFlags,
-    '--keyfile',
-    legacySecretKeyPath,
-    '--wallet-db-path',
-    legacyWalletDBPath,
-  ]);
-
+  const { stdout, stderr } = spawnSync(exportWalletsBin, exportWalletsBinFlags);
   const wallets = JSON.parse(stdout.toString() || '[]');
   const errors = stderr.toString();
 
