@@ -270,7 +270,30 @@ export default class WalletSelectImportDialog extends Component<Props> {
                       {wallet.is_passphrase_empty && noPasswordStatus}
                       {!wallet.is_passphrase_empty && hasPasswordStatus}
                     </div>
-                    <div className={styles.walletsStatusIcon} />
+                    {(wallet.is_passphrase_empty ||
+                      !wallet.is_passphrase_empty) && (
+                      <div className={styles.walletsStatusIcon}>
+                        <Checkbox
+                          onChange={onToggleWalletImportSelection}
+                          checked={false}
+                          skin={CheckboxSkin}
+                        />
+                      </div>
+                    )}
+                    {wallet.import.status === WalletImportStatuses.RUNNING && (
+                      <div className={styles.walletsStatusIcon}>
+                        <LoadingSpinner medium />
+                      </div>
+                    )}
+                    {wallet.import.status ===
+                    WalletImportStatuses.COMPLETED && (
+                      <div className={styles.walletsStatusIcon}>
+                        <SVGInline
+                          svg={checkmarkImage}
+                          className={styles.walletsStatusIconCheckmark}
+                        />
+                      </div>
+                    )}
                   </div>
                 );
               })}
