@@ -5,6 +5,7 @@ Changelog
 
 ### Chores
 
+- Implemented smart error handler ([PR 1962](https://github.com/input-output-hk/daedalus/pull/1962))
 - Refactored and improved automated tests setup ([PR 1912](https://github.com/input-output-hk/daedalus/pull/1912))
 - Updated README ([PR 1953](https://github.com/input-output-hk/daedalus/pull/1953))
 
