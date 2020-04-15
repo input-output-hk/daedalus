@@ -99,7 +99,7 @@ export default class StoryLayout extends Component<Props> {
           )}
         >
           {Children.map(children, child =>
-            React.cloneElement(child, { stores })
+            React.cloneElement(child, { stores, storiesProps })
           )}
         </SidebarLayout>
       </div>

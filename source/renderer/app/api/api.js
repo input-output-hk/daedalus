@@ -1400,6 +1400,21 @@ export default class AdaApi {
           oldPassword,
           newPassword,
         });
+        const walletAddresses = await getByronWalletAddresses(
+          this.config,
+          walletId
+        );
+        if (
+          !isIncentivizedTestnet &&
+          (!walletAddresses || (walletAddresses && !walletAddresses.length))
+        ) {
+          // Genearte address for old Byron wallet
+          const address: Address = await createByronWalletAddress(this.config, {
+            passphrase: newPassword,
+            walletId,
+          });
+          logger.debug('AdaApi::createAddress (Byron) success', { address });
+        }
       } else {
         await updateSpendingPassword(this.config, {
           walletId,

@@ -15,17 +15,6 @@ type Props = {
 export const WALLETS = [
   {
     id: '0',
-    name: 'No Password',
-    amount: new BigNumber(66.998),
-    hasPassword: false,
-    passwordUpdateDate: new Date(),
-    syncState: { data: null, tag: 'synced' },
-    isLegacy: false,
-    recoveryPhraseVerificationDate: new Date(),
-    delegatedStakePoolId: 'kfhdsdkhfskdjfhskdhf',
-  },
-  {
-    id: '1',
     name: 'With Password',
     amount: new BigNumber(0),
     hasPassword: true,
@@ -38,11 +27,24 @@ export const WALLETS = [
     delegatedStakePoolId: 'kfhdsdkhfskdjfhskdhf',
   },
   {
+    id: '1',
+    name: 'No Password',
+    amount: new BigNumber(66.998),
+    hasPassword: false,
+    passwordUpdateDate: new Date(),
+    syncState: { data: null, tag: 'synced' },
+    isLegacy: false,
+    recoveryPhraseVerificationDate: new Date(),
+    delegatedStakePoolId: 'kfhdsdkhfskdjfhskdhf',
+  },
+  {
     id: '2',
     name: 'Legacy with funds',
     amount: new BigNumber(55.555),
-    hasPassword: false,
-    passwordUpdateDate: new Date(),
+    hasPassword: true,
+    passwordUpdateDate: moment()
+      .subtract(1, 'month')
+      .toDate(),
     syncState: { data: null, tag: 'synced' },
     isLegacy: true,
     recoveryPhraseVerificationDate: moment()
@@ -54,8 +56,10 @@ export const WALLETS = [
     id: '3',
     name: 'Legacy with no funds',
     amount: new BigNumber(0),
-    hasPassword: false,
-    passwordUpdateDate: new Date(),
+    hasPassword: true,
+    passwordUpdateDate: moment()
+      .subtract(1, 'month')
+      .toDate(),
     syncState: { data: null, tag: 'synced' },
     isLegacy: true,
     recoveryPhraseVerificationDate: moment()
@@ -66,8 +70,10 @@ export const WALLETS = [
     id: '4',
     name: 'Restoring',
     amount: new BigNumber(12.345),
-    hasPassword: false,
-    passwordUpdateDate: new Date(),
+    hasPassword: true,
+    passwordUpdateDate: moment()
+      .subtract(1, 'month')
+      .toDate(),
     syncState: {
       data: {
         estimatedCompletionTime: {
@@ -94,8 +100,10 @@ export const WALLETS = [
     id: '5',
     name: 'Not responding',
     amount: new BigNumber(66.998),
-    hasPassword: false,
-    passwordUpdateDate: new Date(),
+    hasPassword: true,
+    passwordUpdateDate: moment()
+      .subtract(1, 'month')
+      .toDate(),
     syncState: { data: null, tag: 'not_responding' },
     isLegacy: false,
     recoveryPhraseVerificationDate: new Date(),
