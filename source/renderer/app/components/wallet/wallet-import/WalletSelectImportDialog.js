@@ -196,12 +196,18 @@ export default class WalletSelectImportDialog extends Component<Props> {
                       {wallet.is_passphrase_empty && noPasswordStatus}
                       {!wallet.is_passphrase_empty && hasPasswordStatus}
                     </div>
-                    {(wallet.is_passphrase_empty ||
-                      !wallet.is_passphrase_empty) && (
+                    {(wallet.import.status === WalletImportStatuses.UNSTARTED ||
+                      wallet.import.status ===
+                        WalletImportStatuses.PENDING) && (
                       <div className={styles.walletsStatusIcon}>
                         <Checkbox
-                          onChange={onToggleWalletImportSelection}
-                          checked={false}
+                          onChange={() => {
+                            onToggleWalletImportSelection(wallet.id);
+                          }}
+                          checked={
+                            wallet.import.status ===
+                            WalletImportStatuses.PENDING
+                          }
                           skin={CheckboxSkin}
                         />
                       </div>
@@ -270,12 +276,18 @@ export default class WalletSelectImportDialog extends Component<Props> {
                       {wallet.is_passphrase_empty && noPasswordStatus}
                       {!wallet.is_passphrase_empty && hasPasswordStatus}
                     </div>
-                    {(wallet.is_passphrase_empty ||
-                      !wallet.is_passphrase_empty) && (
+                    {(wallet.import.status === WalletImportStatuses.UNSTARTED ||
+                      wallet.import.status ===
+                        WalletImportStatuses.PENDING) && (
                       <div className={styles.walletsStatusIcon}>
                         <Checkbox
-                          onChange={onToggleWalletImportSelection}
-                          checked={false}
+                          onChange={() => {
+                            onToggleWalletImportSelection(wallet.id);
+                          }}
+                          checked={
+                            wallet.import.status ===
+                            WalletImportStatuses.PENDING
+                          }
                           skin={CheckboxSkin}
                         />
                       </div>
@@ -286,7 +298,7 @@ export default class WalletSelectImportDialog extends Component<Props> {
                       </div>
                     )}
                     {wallet.import.status ===
-                    WalletImportStatuses.COMPLETED && (
+                      WalletImportStatuses.COMPLETED && (
                       <div className={styles.walletsStatusIcon}>
                         <SVGInline
                           svg={checkmarkImage}
