@@ -4,32 +4,14 @@ import { observer } from 'mobx-react';
 import SVGInline from 'react-svg-inline';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { Input } from 'react-polymorph/lib/components/Input';
-import { defineMessages, intlShape } from 'react-intl';
+import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
+import { Button } from 'react-polymorph/lib/components/Button';
 import classnames from 'classnames';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import styles from './InlineEditingSmallInput.scss';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 import penIcon from '../../../assets/images/pen.inline.svg';
 import crossIcon from '../../../assets/images/close-cross.inline.svg';
-
-const messages = defineMessages({
-  change: {
-    id: 'inline.editing.input.change.label',
-    defaultMessage: '!!!change',
-    description: 'Label "change" on inline editing inputs in inactive state.',
-  },
-  cancel: {
-    id: 'inline.editing.input.cancel.label',
-    defaultMessage: '!!!cancel',
-    description: 'Label "cancel" on inline editing inputs in inactive state.',
-  },
-  changesSaved: {
-    id: 'inline.editing.input.changesSaved',
-    defaultMessage: '!!!Your changes have been saved',
-    description:
-      'Message "Your changes have been saved" for inline editing (eg. on Profile Settings page).',
-  },
-});
 
 type Props = {
   className?: string,
@@ -49,18 +31,12 @@ type Props = {
 
 type State = {
   isActive: boolean,
-  wasEdited: boolean,
 };
 
 @observer
 export default class InlineEditingSmallInput extends Component<Props, State> {
   state = {
     isActive: false,
-    wasEdited: false,
-  };
-
-  static contextTypes = {
-    intl: intlShape.isRequired,
   };
 
   static defaultProps = {
@@ -95,7 +71,7 @@ export default class InlineEditingSmallInput extends Component<Props, State> {
     this.validator.submit({
       onSuccess: form => {
         const { inputField } = form.values();
-        this.setState({ isActive: false, wasEdited: true });
+        this.setState({ isActive: false });
         if (inputField !== this.props.inputFieldValue) {
           this.props.onStopEditing();
           this.props.onSubmit(inputField);
@@ -154,9 +130,8 @@ export default class InlineEditingSmallInput extends Component<Props, State> {
       inputBlocked,
       maxLength,
     } = this.props;
-    const { isActive, wasEdited } = this.state;
+    const { isActive } = this.state;
     let { successfullyUpdated } = this.props;
-    const { intl } = this.context;
     const inputField = validator.$('inputField');
     const componentStyles = classnames([
       className,
@@ -171,6 +146,20 @@ export default class InlineEditingSmallInput extends Component<Props, State> {
     if (isActive || inputBlocked) {
       successfullyUpdated = false;
     }
+
+    const buttonIcon = !isActive ? penIcon : crossIcon;
+    const buttonAction = !isActive
+      ? () => {
+          console.log('NOT ACTIVE 🌳');
+          if (this.inputField) {
+            console.log('this.inputField.focus', this.inputField.focus);
+            this.inputField.focus();
+          }
+        }
+      : () => {
+          console.log('ACTIVE 🤷🏻‍♂️');
+        };
+    // const buttonAction = !isActive ? this.submit : this.onCancel;
 
     return (
       <div
@@ -198,29 +187,18 @@ export default class InlineEditingSmallInput extends Component<Props, State> {
           }}
           skin={InputSkin}
         />
-
-        {!isActive && (
-          <button
-            className={styles.selectStateDirectoryButton}
-            onClick={this.submit}
-          >
-            <SVGInline svg={penIcon} className={styles.penIcon} />
-          </button>
-        )}
-        {isActive && (
-          <button
-            className={styles.selectStateDirectoryButton}
-            onClick={this.onCancel}
-          >
-            <SVGInline svg={crossIcon} className={styles.crossIcon} />
-          </button>
-        )}
-
-        {successfullyUpdated && wasEdited && (
-          <div className={styles.savingResultLabel}>
-            {intl.formatMessage(messages.changesSaved)}
-          </div>
-        )}
+        <Button
+          className={styles.button}
+          label={
+            <SVGInline
+              svg={buttonIcon}
+              className={styles.penIcon}
+              style={{ pointerEvents: 'none' }}
+            />
+          }
+          onClick={buttonAction}
+          skin={ButtonSkin}
+        />
       </div>
     );
   }
