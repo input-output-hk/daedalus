@@ -10916,53 +10916,6 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!change",
-        "description": "Label \"change\" on inline editing inputs in inactive state.",
-        "end": {
-          "column": 3,
-          "line": 20
-        },
-        "file": "source/renderer/app/components/widgets/forms/InlineEditingSmallInput.js",
-        "id": "inline.editing.input.change.label",
-        "start": {
-          "column": 10,
-          "line": 16
-        }
-      },
-      {
-        "defaultMessage": "!!!cancel",
-        "description": "Label \"cancel\" on inline editing inputs in inactive state.",
-        "end": {
-          "column": 3,
-          "line": 25
-        },
-        "file": "source/renderer/app/components/widgets/forms/InlineEditingSmallInput.js",
-        "id": "inline.editing.input.cancel.label",
-        "start": {
-          "column": 10,
-          "line": 21
-        }
-      },
-      {
-        "defaultMessage": "!!!Your changes have been saved",
-        "description": "Message \"Your changes have been saved\" for inline editing (eg. on Profile Settings page).",
-        "end": {
-          "column": 3,
-          "line": 31
-        },
-        "file": "source/renderer/app/components/widgets/forms/InlineEditingSmallInput.js",
-        "id": "inline.editing.input.changesSaved",
-        "start": {
-          "column": 16,
-          "line": 26
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/widgets/forms/InlineEditingSmallInput.json"
-  },
-  {
-    "descriptors": [
-      {
         "defaultMessage": "!!!Language",
         "description": "Label for the language select.",
         "end": {
