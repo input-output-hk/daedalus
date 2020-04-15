@@ -8,7 +8,16 @@ import type {
   DelegationStatus,
   WalletUnit,
   WalletPendingDelegations,
+  Discovery,
 } from '../api/wallets/types';
+
+export const WalletDiscovery: {
+  RANDOM: Discovery,
+  SEQUENTIAL: Discovery,
+} = {
+  RANDOM: 'random',
+  SEQUENTIAL: 'sequential',
+};
 
 export const WalletSyncStateStatuses: {
   RESTORING: SyncStateStatus,
@@ -52,6 +61,7 @@ export type WalletProps = {
   delegationStakePoolStatus?: ?string,
   lastDelegationStakePoolId?: ?string,
   pendingDelegations?: WalletPendingDelegations,
+  discovery: Discovery,
   hasPassword: boolean,
 };
 
@@ -69,6 +79,7 @@ export default class Wallet {
   @observable delegationStakePoolStatus: ?string;
   @observable lastDelegationStakePoolId: ?string;
   @observable pendingDelegations: WalletPendingDelegations;
+  @observable discovery: Discovery;
   @observable hasPassword: boolean;
 
   constructor(data: WalletProps) {
@@ -92,6 +103,7 @@ export default class Wallet {
         'delegationStakePoolStatus',
         'lastDelegationStakePoolId',
         'pendingDelegations',
+        'discovery',
         'hasPassword',
       ])
     );
@@ -109,6 +121,14 @@ export default class Wallet {
     return (
       get(this, 'syncState.status') === WalletSyncStateStatuses.NOT_RESPONDING
     );
+  }
+
+  @computed get isRandom(): boolean {
+    return this.discovery === WalletDiscovery.RANDOM;
+  }
+
+  @computed get isSequential(): boolean {
+    return this.discovery === WalletDiscovery.SEQUENTIAL;
   }
 
   @computed get restorationProgress(): number {
