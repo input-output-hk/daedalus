@@ -117,6 +117,14 @@ export default class WalletSelectImportDialog extends Component<Props> {
       isDisabled ? styles.disabled : null,
     ]);
 
+    const walletsWithNames = exportedWallets.filter(
+      ({ name }: ExportedByronWallet) => name !== null
+    );
+    const walletsWithoutNames = exportedWallets.filter(
+      ({ name }: ExportedByronWallet) => name === null
+    );
+    let walletIndex = 0;
+
     return (
       <ReactModal
         isOpen
@@ -139,21 +147,19 @@ export default class WalletSelectImportDialog extends Component<Props> {
             <div className={styles.description}>{description}</div>
             <hr className={styles.separator} />
             <div className={styles.walletsContainer}>
-              {exportedWallets.map((wallet, index) => (
-                <>
-                  {!wallet.name && (
-                    <hr
-                      className={styles.separator}
-                      key={`separator-${wallet.id}`}
-                    />
-                  )}
+              {walletsWithNames.map(wallet => {
+                walletIndex++;
+                return (
                   <div className={styles.walletsRow} key={wallet.id}>
-                    <div className={styles.walletsCounter}>{`${index +
-                      1}.`}</div>
+                    <div
+                      className={styles.walletsCounter}
+                    >{`${walletIndex}.`}</div>
                     <div className={styles.walletsInputField}>
                       <InlineEditingSmallInput
                         isActive
-                        inputFieldValue={wallet.name || ''}
+                        inputFieldValue={
+                          wallet.name || intl.formatMessage(messages.notFound)
+                        }
                         isValid={nameValidator}
                         validationErrorMessage={intl.formatMessage(
                           globalMessages.invalidWalletName
@@ -188,8 +194,60 @@ export default class WalletSelectImportDialog extends Component<Props> {
                     </div>
                     <div className={styles.walletsStatusIcon} />
                   </div>
-                </>
-              ))}
+                );
+              })}
+              {walletsWithNames.length && walletsWithoutNames.length ? (
+                <hr className={styles.separator} />
+              ) : null}
+              {walletsWithoutNames.map(wallet => {
+                walletIndex++;
+                return (
+                  <div className={styles.walletsRow} key={wallet.id}>
+                    <div
+                      className={styles.walletsCounter}
+                    >{`${walletIndex}.`}</div>
+                    <div className={styles.walletsInputField}>
+                      <InlineEditingSmallInput
+                        isActive
+                        inputFieldValue={
+                          wallet.name || intl.formatMessage(messages.notFound)
+                        }
+                        isValid={nameValidator}
+                        validationErrorMessage={intl.formatMessage(
+                          globalMessages.invalidWalletName
+                        )}
+                        onSubmit={(name: string) =>
+                          onWalletNameChange({
+                            id: wallet.id,
+                            name,
+                          })
+                        }
+                        onToggleWalletImportSelection
+                        onStartEditing={() =>
+                          onToggleWalletImportSelection(wallet.id)
+                        }
+                        onStopEditing={() =>
+                          onToggleWalletImportSelection(wallet.id)
+                        }
+                        onCancelEditing={() =>
+                          onToggleWalletImportSelection(wallet.id)
+                        }
+                        maxLength={40}
+                        successfullyUpdated
+                      />
+                    </div>
+                    <div className={styles.walletsStatus}>
+                      {wallet.import.status === WalletImportStatuses.RUNNING &&
+                        importingStatus}
+                      {wallet.import.status ===
+                        WalletImportStatuses.COMPLETED && alreadyExistsStatus}
+                      {wallet.is_passphrase_empty && noPasswordStatus}
+                      {!wallet.is_passphrase_empty && hasPasswordStatus}
+                    </div>
+                    <div className={styles.walletsStatusIcon} />
+                  </div>
+                );
+              })}
             </div>
             <div className={styles.action}>
               <Button
