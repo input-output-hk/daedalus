@@ -29,15 +29,15 @@ export default class WalletImportDialogContainer extends Component<Props> {
   };
 
   render() {
-    const { app, networkStatus, walletMigration } = this.props.stores;
+    const { app, walletMigration } = this.props.stores;
     const {
       isExportRunning,
       exportedWallets,
       exportErrors,
+      exportSourcePath,
       isRestorationRunning,
       walletMigrationStep,
     } = walletMigration;
-    const { stateDirectoryPath } = networkStatus;
     const { openExternalLink } = app;
 
     const onSelectStateDirectory = () => {};
@@ -50,7 +50,7 @@ export default class WalletImportDialogContainer extends Component<Props> {
             exportErrors={exportErrors}
             onConfirm={this.onConfirm}
             onClose={this.onCancel}
-            stateDirectoryPath={stateDirectoryPath}
+            exportSourcePath={exportSourcePath}
             onOpenExternalLink={openExternalLink}
             onSelectStateDirectory={onSelectStateDirectory}
           />

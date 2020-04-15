@@ -48,6 +48,7 @@ export default class WalletMigrationStore extends Store {
   @observable isExportRunning = false;
   @observable exportedWallets: Array<ExportedByronWallet> = [];
   @observable exportErrors: string = '';
+  @observable exportSourcePath: string = global.legacyStateDir || '';
 
   @observable isRestorationRunning = false;
   @observable restoredWallets: Array<Wallet> = [];
