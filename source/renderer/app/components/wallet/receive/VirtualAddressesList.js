@@ -52,20 +52,11 @@ export class VirtualAddressesList extends Component<Props> {
    */
   updateRowHeights = () => {
     const { list, addressHeight } = this;
-    // console.log('addressHeight 1', addressHeight);
     if (!list) return;
     const firstAddress = document.querySelector(ADDRESS_SELECTOR);
-    // console.log('firstAddress', firstAddress);
-    // console.log('ADDRESS_SELECTOR', ADDRESS_SELECTOR);
-    // console.log('firstAddress.offsetHeight', firstAddress.offsetHeight);
     if (firstAddress instanceof HTMLElement) {
-      // console.log('CASE 1');
       this.addressHeight = firstAddress.offsetHeight;
-      // console.log('firstAddress', firstAddress);
-      // console.log('firstAddress.offsetHeight', firstAddress.offsetHeight);
     } else {
-      // console.log('CASE 2');
-      // DOM is not ready yet, so use an estimated height
       this.addressHeight = this.estimateAddressHeight(
         this.getLinesFromWidth(this.listWidth)
       );
@@ -73,11 +64,9 @@ export class VirtualAddressesList extends Component<Props> {
       // the update and hope that DOM is rendered then (for exact measurements)
       setTimeout(this.updateRowHeights, 100);
     }
-    // console.log('addressHeight 2', addressHeight);
     if (addressHeight !== this.addressHeight) {
       list.recomputeRowHeights(0);
     }
-    // console.log('addressHeight 3', addressHeight);
   };
 
   /**
