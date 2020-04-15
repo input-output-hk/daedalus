@@ -70,7 +70,7 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
       rendererProcessID,
       mainProcessID,
       isBlankScreenFixActive,
-      buildNumber,
+      nodeVersion,
     } = environment;
 
     const coreInfo = {
@@ -79,7 +79,7 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
       daedalusMainProcessID: mainProcessID,
       daedalusStateDirectoryPath: stateDirectoryPath,
       isBlankScreenFixActive,
-      cardanoVersion: buildNumber,
+      cardanoVersion: nodeVersion,
       cardanoProcessID: cardanoNodeID,
       cardanoAPIPort: tlsConfig ? tlsConfig.port : 0,
       cardanoNetwork: network,
