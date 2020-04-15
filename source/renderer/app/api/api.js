@@ -1896,6 +1896,7 @@ const _createWalletFromServerData = action(
       delegation,
       state: syncState,
       isLegacy = false,
+      discovery,
     } = wallet;
 
     const id = isLegacy ? getLegacyWalletId(rawWalletId) : rawWalletId;
@@ -1945,6 +1946,7 @@ const _createWalletFromServerData = action(
       delegationStakePoolStatus,
       lastDelegationStakePoolId,
       pendingDelegations: next,
+      discovery,
     });
   }
 );
