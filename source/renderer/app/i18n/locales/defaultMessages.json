@@ -8969,13 +8969,13 @@
         "description": "Select import wallets dialog title",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 22
         },
         "file": "source/renderer/app/components/wallet/wallet-import/WalletSelectImportDialog.js",
         "id": "wallet.select.import.dialog.title",
         "start": {
           "column": 9,
-          "line": 21
+          "line": 18
         }
       },
       {
@@ -8983,13 +8983,13 @@
         "description": "These wallets were found in your Daedalus state directory. Please select the wallets you want to import.",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 29
         },
         "file": "source/renderer/app/components/wallet/wallet-import/WalletSelectImportDialog.js",
         "id": "wallet.select.import.dialog.description",
         "start": {
           "column": 15,
-          "line": 26
+          "line": 23
         }
       },
       {
@@ -8997,13 +8997,13 @@
         "description": "Password protected",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 34
         },
         "file": "source/renderer/app/components/wallet/wallet-import/WalletSelectImportDialog.js",
         "id": "wallet.select.import.dialog.passwordProtected",
         "start": {
           "column": 21,
-          "line": 33
+          "line": 30
         }
       },
       {
@@ -9011,13 +9011,13 @@
         "description": "Wallet already exists",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 39
         },
         "file": "source/renderer/app/components/wallet/wallet-import/WalletSelectImportDialog.js",
         "id": "wallet.select.import.dialog.walletExists",
         "start": {
           "column": 16,
-          "line": 38
+          "line": 35
         }
       },
       {
@@ -9025,13 +9025,13 @@
         "description": "No password",
         "end": {
           "column": 3,
-          "line": 47
+          "line": 44
         },
         "file": "source/renderer/app/components/wallet/wallet-import/WalletSelectImportDialog.js",
         "id": "wallet.select.import.dialog.noPassword",
         "start": {
           "column": 14,
-          "line": 43
+          "line": 40
         }
       },
       {
@@ -9039,13 +9039,13 @@
         "description": "Importing wallet...",
         "end": {
           "column": 3,
-          "line": 52
+          "line": 49
         },
         "file": "source/renderer/app/components/wallet/wallet-import/WalletSelectImportDialog.js",
         "id": "wallet.select.import.dialog.importingWallet",
         "start": {
           "column": 19,
-          "line": 48
+          "line": 45
         }
       },
       {
@@ -9053,13 +9053,13 @@
         "description": "Enter wallet name",
         "end": {
           "column": 3,
-          "line": 57
+          "line": 54
         },
         "file": "source/renderer/app/components/wallet/wallet-import/WalletSelectImportDialog.js",
         "id": "wallet.select.import.dialog.walletName",
         "start": {
           "column": 14,
-          "line": 53
+          "line": 50
         }
       },
       {
@@ -9067,13 +9067,13 @@
         "description": "Name not found",
         "end": {
           "column": 3,
-          "line": 62
+          "line": 59
         },
         "file": "source/renderer/app/components/wallet/wallet-import/WalletSelectImportDialog.js",
         "id": "wallet.select.import.dialog.notFound",
         "start": {
           "column": 12,
-          "line": 58
+          "line": 55
         }
       },
       {
@@ -9081,13 +9081,13 @@
         "description": "Wallet imported",
         "end": {
           "column": 3,
-          "line": 67
+          "line": 64
         },
         "file": "source/renderer/app/components/wallet/wallet-import/WalletSelectImportDialog.js",
         "id": "wallet.select.import.dialog.walletImported",
         "start": {
           "column": 18,
-          "line": 63
+          "line": 60
         }
       },
       {
@@ -9095,13 +9095,13 @@
         "description": "Import selected wallets",
         "end": {
           "column": 3,
-          "line": 72
+          "line": 69
         },
         "file": "source/renderer/app/components/wallet/wallet-import/WalletSelectImportDialog.js",
         "id": "wallet.select.import.dialog.buttonLabel",
         "start": {
           "column": 15,
-          "line": 68
+          "line": 65
         }
       }
     ],
@@ -10912,6 +10912,53 @@
       }
     ],
     "path": "source/renderer/app/components/widgets/forms/InlineEditingInput.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!change",
+        "description": "Label \"change\" on inline editing inputs in inactive state.",
+        "end": {
+          "column": 3,
+          "line": 20
+        },
+        "file": "source/renderer/app/components/widgets/forms/InlineEditingSmallInput.js",
+        "id": "inline.editing.input.change.label",
+        "start": {
+          "column": 10,
+          "line": 16
+        }
+      },
+      {
+        "defaultMessage": "!!!cancel",
+        "description": "Label \"cancel\" on inline editing inputs in inactive state.",
+        "end": {
+          "column": 3,
+          "line": 25
+        },
+        "file": "source/renderer/app/components/widgets/forms/InlineEditingSmallInput.js",
+        "id": "inline.editing.input.cancel.label",
+        "start": {
+          "column": 10,
+          "line": 21
+        }
+      },
+      {
+        "defaultMessage": "!!!Your changes have been saved",
+        "description": "Message \"Your changes have been saved\" for inline editing (eg. on Profile Settings page).",
+        "end": {
+          "column": 3,
+          "line": 31
+        },
+        "file": "source/renderer/app/components/widgets/forms/InlineEditingSmallInput.js",
+        "id": "inline.editing.input.changesSaved",
+        "start": {
+          "column": 16,
+          "line": 26
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/widgets/forms/InlineEditingSmallInput.json"
   },
   {
     "descriptors": [

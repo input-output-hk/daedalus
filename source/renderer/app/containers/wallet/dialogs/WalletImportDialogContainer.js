@@ -53,6 +53,7 @@ export default class WalletImportDialogContainer extends Component<Props> {
             isSubmitting={isExportRunning}
             exportSourcePath={exportSourcePath}
             exportErrors={exportErrors}
+            pendingImportWalletsCount={pendingImportWalletsCount}
             onConfirm={this.onConfirm}
             onClose={this.onCancel}
             onOpenExternalLink={openExternalLink}
