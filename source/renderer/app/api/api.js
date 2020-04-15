@@ -623,6 +623,11 @@ export default class AdaApi {
         .set('wrongEncryptionPassphrase')
         .where('code', 'bad_request')
         .inc('message', 'passphrase is too short')
+        .set('transactionIsTooBig', true, {
+          linkLabel: 'tooBigTransactionErrorLinkLabel',
+          linkURL: 'tooBigTransactionErrorLinkURL',
+        })
+        .where('code', 'transaction_is_too_big')
         .result();
     }
   };

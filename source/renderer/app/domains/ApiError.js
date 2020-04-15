@@ -1,6 +1,6 @@
 // @flow
 import { observable, action } from 'mobx';
-import { includes, camelCase, get, snakeCase } from 'lodash';
+import { includes, camelCase, get, snakeCase, map } from 'lodash';
 import { GenericApiError } from '../api/common/errors';
 import { messages } from '../api/errors';
 import { logger } from '../utils/logging';
@@ -95,7 +95,11 @@ export default class ApiError {
     this._logError(logging);
   }
 
-  @action set(predefinedError: string, force?: boolean = false) {
+  @action set(
+    predefinedError: string,
+    force?: boolean = false,
+    values?: Object
+  ) {
     if (
       predefinedError &&
       !this.clause &&
@@ -106,6 +110,21 @@ export default class ApiError {
       this.forceSet = force;
     } else {
       this.clause = false;
+    }
+
+    if (values) {
+      const transformedValues = {};
+      map(values, (val, key) => {
+        const translated = get(messages, val);
+        if (translated) {
+          transformedValues[key] = translated;
+        } else {
+          transformedValues[key] = val;
+        }
+      });
+      Object.assign(this, {
+        values: transformedValues,
+      });
     }
     return this;
   }

@@ -201,6 +201,34 @@
           "column": 18,
           "line": 72
         }
+      },
+      {
+        "defaultMessage": "!!!Learn more.",
+        "description": "\"Transaction too big due to too many inputs.\" error link label.",
+        "end": {
+          "column": 3,
+          "line": 82
+        },
+        "file": "source/renderer/app/api/errors.js",
+        "id": "api.errors.TooBigTransactionErrorLinkLabel",
+        "start": {
+          "column": 35,
+          "line": 77
+        }
+      },
+      {
+        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/articles/360017733353",
+        "description": "\"Transaction too big due to too many inputs.\" error link URL.",
+        "end": {
+          "column": 3,
+          "line": 89
+        },
+        "file": "source/renderer/app/api/errors.js",
+        "id": "api.errors.TooBigTransactionErrorLinkURL",
+        "start": {
+          "column": 33,
+          "line": 83
+        }
       }
     ],
     "path": "source/renderer/app/api/errors.json"

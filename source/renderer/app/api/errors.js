@@ -74,4 +74,17 @@ export const messages = defineMessages({
     defaultMessage: '!!!Please enter a valid address.',
     description: 'Error message shown when invalid address was entered.',
   },
+  tooBigTransactionErrorLinkLabel: {
+    id: 'api.errors.TooBigTransactionErrorLinkLabel',
+    defaultMessage: '!!!Learn more.',
+    description:
+      '"Transaction too big due to too many inputs." error link label.',
+  },
+  tooBigTransactionErrorLinkURL: {
+    id: 'api.errors.TooBigTransactionErrorLinkURL',
+    defaultMessage:
+      '!!!https://iohk.zendesk.com/hc/en-us/articles/360017733353',
+    description:
+      '"Transaction too big due to too many inputs." error link URL.',
+  },
 });

@@ -8,6 +8,8 @@
   "api.errors.NotEnoughFundsForTransactionFeesError": "Not enough ada for fees. Try sending a smaller amount.",
   "api.errors.NotEnoughMoneyToSendError": "Not enough money to make this transaction.",
   "api.errors.TooBigTransactionError": "Transaction too big due to too many inputs.",
+  "api.errors.TooBigTransactionErrorLinkLabel": "Learn more.",
+  "api.errors.TooBigTransactionErrorLinkURL": "https://iohk.zendesk.com/hc/en-us/articles/360017733353",
   "api.errors.WalletAlreadyImportedError": "Wallet you are trying to import already exists.",
   "api.errors.WalletAlreadyRestoredError": "Wallet you are trying to restore already exists.",
   "api.errors.WalletFileImportError": "Wallet could not be imported, please make sure you are providing a correct file.",
