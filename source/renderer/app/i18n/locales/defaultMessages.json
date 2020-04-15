@@ -6561,6 +6561,95 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Your wallet addresses",
+        "description": "Instructions Title on the wallet \"Receive page\"",
+        "end": {
+          "column": 3,
+          "line": 18
+        },
+        "file": "source/renderer/app/components/wallet/receive/AddressActions.js",
+        "id": "wallet.receive.page.instructions.instructionsTitle",
+        "start": {
+          "column": 21,
+          "line": 14
+        }
+      },
+      {
+        "defaultMessage": "!!!Share this wallet address to receive payments. To protect your privacy, new addresses are generated automatically once you use them.",
+        "description": "Instructions Description on the wallet \"Receive page\"",
+        "end": {
+          "column": 3,
+          "line": 24
+        },
+        "file": "source/renderer/app/components/wallet/receive/AddressActions.js",
+        "id": "wallet.receive.page.instructions.instructionsDescription",
+        "start": {
+          "column": 27,
+          "line": 19
+        }
+      },
+      {
+        "defaultMessage": "!!!Addresses",
+        "description": "Addresses Title on the wallet \"Receive page\"",
+        "end": {
+          "column": 3,
+          "line": 29
+        },
+        "file": "source/renderer/app/components/wallet/receive/AddressActions.js",
+        "id": "wallet.receive.page.addresses.addressesTitle",
+        "start": {
+          "column": 18,
+          "line": 25
+        }
+      },
+      {
+        "defaultMessage": "!!!show used",
+        "description": "Label for \"show used\" wallet addresses link on the wallet \"Receive page\"",
+        "end": {
+          "column": 3,
+          "line": 35
+        },
+        "file": "source/renderer/app/components/wallet/receive/AddressActions.js",
+        "id": "wallet.receive.page.showUsedLabel",
+        "start": {
+          "column": 17,
+          "line": 30
+        }
+      },
+      {
+        "defaultMessage": "!!!Share",
+        "description": "Label for \"Share\" link on the wallet \"Receive page\"",
+        "end": {
+          "column": 3,
+          "line": 40
+        },
+        "file": "source/renderer/app/components/wallet/receive/AddressActions.js",
+        "id": "wallet.receive.page.shareAddressLabel",
+        "start": {
+          "column": 21,
+          "line": 36
+        }
+      },
+      {
+        "defaultMessage": "!!!Copy address",
+        "description": "Label for \"Copy address\" link on the wallet \"Receive page\"",
+        "end": {
+          "column": 3,
+          "line": 45
+        },
+        "file": "source/renderer/app/components/wallet/receive/AddressActions.js",
+        "id": "wallet.receive.page.copyAddressLabel",
+        "start": {
+          "column": 20,
+          "line": 41
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/receive/AddressActions.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!PDF note",
         "description": "placeholder on the wallet \"Share Address\" dialog",
         "end": {
@@ -6792,34 +6881,6 @@
         "start": {
           "column": 17,
           "line": 31
-        }
-      },
-      {
-        "defaultMessage": "!!!Share",
-        "description": "Label for \"Share\" link on the wallet \"Receive page\"",
-        "end": {
-          "column": 3,
-          "line": 41
-        },
-        "file": "source/renderer/app/components/wallet/receive/WalletReceiveSequential.js",
-        "id": "wallet.receive.page.shareAddressLabel",
-        "start": {
-          "column": 21,
-          "line": 37
-        }
-      },
-      {
-        "defaultMessage": "!!!Copy address",
-        "description": "Label for \"Copy address\" link on the wallet \"Receive page\"",
-        "end": {
-          "column": 3,
-          "line": 46
-        },
-        "file": "source/renderer/app/components/wallet/receive/WalletReceiveSequential.js",
-        "id": "wallet.receive.page.copyAddressLabel",
-        "start": {
-          "column": 20,
-          "line": 42
         }
       }
     ],

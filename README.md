@@ -47,7 +47,7 @@ Daedalus - Cryptocurrency Wallet
 
 1. Run `yarn nix:selfnode` from `daedalus`.
 2. Run `yarn dev` from the subsequent `nix-shell`
-3. Once Daedalus has started, and has gotten past the loading screen, run `yarn byron:wallet:importer` from a new terminal window. This is only required if you wish to import some funded wallets.
+3. Once Daedalus has started, and has gotten past the loading screen, run `yarn byron:wallet:importer` from a new terminal window. This is only required if you wish to import some funded wallets. It is also possible to import funded Yoroi wallets by running yarn yoroi:wallet:importer script.
 
 #### Mainnet
 

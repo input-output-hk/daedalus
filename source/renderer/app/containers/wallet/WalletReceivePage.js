@@ -109,7 +109,7 @@ export default class WalletReceivePage extends Component<Props, State> {
     if (!activeWallet)
       throw new Error('Active wallet required for WalletReceivePage.');
 
-    const { discovery, hasPassword } = activeWallet;
+    const { hasPassword, isRandom } = activeWallet;
     const walletAddresses = addresses.all.slice().reverse();
     const byronWalletAddress = addresses.active ? addresses.active.id : '';
     const isByronWalletAddressUsed = addresses.active
@@ -119,7 +119,7 @@ export default class WalletReceivePage extends Component<Props, State> {
     return (
       <Fragment>
         <VerticalFlexContainer>
-          {discovery === 'random' ? (
+          {isRandom ? (
             <WalletReceiveRandom
               walletAddress={byronWalletAddress}
               isWalletAddressUsed={isByronWalletAddressUsed}

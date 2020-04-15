@@ -11,6 +11,14 @@ import type {
   Discovery,
 } from '../api/wallets/types';
 
+export const WalletDiscovery: {
+  RANDOM: Discovery,
+  SEQUENTIAL: Discovery,
+} = {
+  RANDOM: 'random',
+  SEQUENTIAL: 'sequential',
+};
+
 export const WalletSyncStateStatuses: {
   RESTORING: SyncStateStatus,
   SYNCING: SyncStateStatus,
@@ -113,6 +121,14 @@ export default class Wallet {
     return (
       get(this, 'syncState.status') === WalletSyncStateStatuses.NOT_RESPONDING
     );
+  }
+
+  @computed get isRandom(): boolean {
+    return this.discovery === WalletDiscovery.RANDOM;
+  }
+
+  @computed get isSequential(): boolean {
+    return this.discovery === WalletDiscovery.SEQUENTIAL;
   }
 
   @computed get restorationProgress(): number {
