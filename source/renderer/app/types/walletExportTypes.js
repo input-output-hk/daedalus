@@ -6,4 +6,5 @@ export type ExportedByronWallet = {
   name: ?string,
   id: string,
   passphrase_hash: string,
+  has_passphrase: boolean,
 };

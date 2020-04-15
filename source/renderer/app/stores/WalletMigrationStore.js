@@ -9,32 +9,41 @@ import { generateWalletMigrationReportChannel } from '../ipc/generateWalletMigra
 import { logger } from '../utils/logging';
 import { getRawWalletId } from '../api/utils';
 import type { ExportWalletsMainResponse } from '../../../common/ipc/api';
-import type { WalletMigrationReportData } from '../../../common/types/logging.types';
+import type {
+  WalletMigrationReportData,
+  ExportedWalletData,
+  RestoredWalletData,
+} from '../../../common/types/logging.types';
 import type { ExportedByronWallet } from '../types/walletExportTypes';
 
 export type WalletMigrationStatus =
   | 'unstarted'
   | 'running'
   | 'completed'
+  | 'skipped'
   | 'errored';
 
 export const WalletMigrationStatuses: {
   UNSTARTED: WalletMigrationStatus,
   RUNNING: WalletMigrationStatus,
   COMPLETED: WalletMigrationStatus,
+  SKIPPED: WalletMigrationStatus,
   ERRORED: WalletMigrationStatus,
 } = {
   UNSTARTED: 'unstarted',
   RUNNING: 'running',
   COMPLETED: 'completed',
+  SKIPPED: 'skipped',
   ERRORED: 'errored',
 };
 
 export default class WalletMigrationStore extends Store {
-  _restoredWallets: Array<Wallet> = [];
-  _restorationErrors: Array<{
+  @observable exportedWallets: Array<ExportedByronWallet> = [];
+  @observable exportErrors: string = '';
+  @observable restoredWallets: Array<Wallet> = [];
+  @observable restorationErrors: Array<{
     error: LocalizableError,
-    wallet: { name: ?string, id: string },
+    wallet: ExportedWalletData,
   }> = [];
 
   @observable
@@ -63,11 +72,92 @@ export default class WalletMigrationStore extends Store {
         throw new Error('Restored wallet was not received correctly');
 
       runInAction('update restoredWallets', () => {
-        this._restoredWallets.push(restoredWallet);
+        this.restoredWallets.push(restoredWallet);
       });
     } catch (error) {
-      const { name, id } = exportedWallet;
-      this._restorationErrors.push({ error, wallet: { name, id } });
+      runInAction('update restorationErrors', () => {
+        const { id, name, has_passphrase: hasPassword } = exportedWallet;
+        this.restorationErrors.push({
+          error,
+          wallet: { id, name, hasPassword },
+        });
+      });
+    }
+  };
+
+  @action exportWallets = async () => {
+    logger.debug('WalletMigrationStore: Starting wallet export...');
+    const {
+      wallets,
+      errors,
+    }: ExportWalletsMainResponse = await exportWalletsChannel.request();
+    runInAction('update exportedWallets and exportErrors', () => {
+      this.exportedWallets = wallets;
+      this.exportErrors = errors;
+    });
+    logger.debug(
+      `WalletMigrationStore: Exported ${this.exportedWalletsCount} wallets`,
+      {
+        exportedWalletsData: this.exportedWalletsData,
+        exportErrors: this.exportErrors,
+      }
+    );
+  };
+
+  @action restoreWallets = async (
+    exportedWallets: Array<ExportedByronWallet>
+  ) => {
+    logger.debug(
+      `WalletMigrationStore: Restoring ${exportedWallets.length} exported wallets...`
+    );
+    await Promise.all(
+      exportedWallets.map((wallet, index) => {
+        logger.debug(
+          `WalletMigrationStore: Restoring ${index + 1}. wallet...`,
+          {
+            id: wallet.id,
+            name: wallet.name,
+            hasPassword: wallet.has_passphrase,
+          }
+        );
+        return this._restoreExportedWallet(wallet);
+      })
+    );
+    logger.debug(
+      `WalletMigrationStore: Restored ${this.restoredWalletsCount} of ${exportedWallets.length} exported wallets`
+    );
+  };
+
+  @action generateMigrationReport = async () => {
+    const finalMigrationStatus = await this.getWalletMigrationStatusRequest.execute()
+      .promise;
+    const walletMigrationReportData: WalletMigrationReportData = {
+      exportedWalletsData: this.exportedWalletsData,
+      exportedWalletsCount: this.exportedWalletsCount,
+      exportErrors: this.exportErrors,
+      restoredWalletsData: this.restoredWalletsData,
+      restoredWalletsCount: this.restoredWalletsCount,
+      restorationErrors: this.restorationErrors,
+      finalMigrationStatus,
+    };
+    logger.debug(
+      'WalletMigrationStore: Generating wallet migration report...',
+      {
+        walletMigrationReportData,
+      }
+    );
+    try {
+      await generateWalletMigrationReportChannel.send(
+        walletMigrationReportData
+      );
+      logger.debug('WalletMigrationStore: Generated wallet migration report');
+    } catch (error) {
+      logger.error(
+        'WalletMigrationStore: Wallet migration report generation failed',
+        {
+          error,
+        }
+      );
     }
   };
 
@@ -75,73 +165,39 @@ export default class WalletMigrationStore extends Store {
     const { isMainnet, isTestnet } = this.environment;
     if (isMainnet || isTestnet) {
       // Reset store values
-      this._restoredWallets = [];
-      this._restorationErrors = [];
+      this.resetMigration();
 
       const walletMigrationStatus = await this.getWalletMigrationStatusRequest.execute()
         .promise;
       if (walletMigrationStatus === WalletMigrationStatuses.UNSTARTED) {
+        // Update migration status to "RUNNING"
         logger.debug('WalletMigrationStore: Starting wallet migration...');
         await this.setWalletMigrationStatusRequest.execute(
           WalletMigrationStatuses.RUNNING
         );
 
         // Trigger wallet export
-        logger.debug('WalletMigrationStore: Starting wallet export...');
-        const {
-          wallets: exportedWallets,
-          errors: exportErrors,
-        }: ExportWalletsMainResponse = await exportWalletsChannel.request();
-        const exportedWalletsData = exportedWallets.map(w => ({
-          name: w.name,
-          id: w.id,
-        }));
-        const exportedWalletsCount = exportedWallets.length;
-
-        logger.debug(
-          `WalletMigrationStore: Exported ${exportedWalletsCount} wallets`,
-          {
-            exportedWalletsData,
-            exportErrors,
-          }
-        );
+        await this.exportWallets();
 
         // Trigger wallet restoration
-        if (exportedWalletsCount) {
-          logger.debug(
-            `WalletMigrationStore: Restoring ${exportedWalletsCount} exported wallets...`
-          );
-
-          await Promise.all(
-            exportedWallets.map((wallet, index) => {
-              logger.debug(
-                `WalletMigrationStore: Restoring ${index + 1}. wallet...`,
-                {
-                  name: wallet.name,
-                  id: wallet.id,
-                }
-              );
-              return this._restoreExportedWallet(wallet);
-            })
-          );
-
-          logger.debug(
-            `WalletMigrationStore: Restored ${this._restoredWalletsCount} of ${exportedWalletsCount} exported wallets`
-          );
+        if (this.exportedWalletsCount) {
+          await this.restoreWallets(this.exportedWallets);
         }
 
+        // Update migration status
         if (
-          exportedWalletsCount
-            ? exportedWalletsCount === this._restoredWalletsCount
-            : exportErrors === ''
+          this.exportedWalletsCount
+            ? this.exportedWalletsCount === this.restoredWalletsCount
+            : this.exportErrors === ''
         ) {
+          logger.debug('WalletMigrationStore: Wallet migration succeeded');
           await this.setWalletMigrationStatusRequest.execute(
             WalletMigrationStatuses.COMPLETED
           );
         } else {
           logger.debug('WalletMigrationStore: Wallet migration failed', {
-            exportErrors,
-            restorationErrors: this._restorationErrors,
+            exportErrors: this.exportErrors,
+            restorationErrors: this.restorationErrors,
           });
           await this.setWalletMigrationStatusRequest.execute(
             WalletMigrationStatuses.ERRORED
@@ -149,50 +205,48 @@ export default class WalletMigrationStore extends Store {
         }
 
         // Generate and store migration report
-        const finalMigrationStatus = await this.getWalletMigrationStatusRequest.execute()
-          .promise;
-        const walletMigrationReportData: WalletMigrationReportData = {
-          exportedWalletsData,
-          exportedWalletsCount,
-          exportErrors,
-          restoredWalletsData: this._restoredWallets.map(wallet => {
-            const { id, name, hasPassword } = wallet;
-            return { id: getRawWalletId(id), name, hasPassword };
-          }),
-          restoredWalletsCount: this._restoredWalletsCount,
-          restorationErrors: this._restorationErrors,
-          finalMigrationStatus,
-        };
-        logger.debug(
-          'WalletMigrationStore: Generating wallet migration report...',
-          {
-            walletMigrationReportData,
-          }
-        );
-        try {
-          await generateWalletMigrationReportChannel.send(
-            walletMigrationReportData
-          );
-          logger.debug(
-            'WalletMigrationStore: Generated wallet migration report'
-          );
-        } catch (error) {
-          logger.error(
-            'WalletMigrationStore: Wallet migration report generation failed',
-            {
-              error,
-            }
-          );
-        }
+        await this.generateMigrationReport();
       } else {
         logger.debug('WalletMigrationStore: Skipping wallet migration...', {
           walletMigrationStatus,
         });
       }
+    } else {
+      // Update migration status to "SKIPPED"
+      await this.setWalletMigrationStatusRequest.execute(
+        WalletMigrationStatuses.SKIPPED
+      );
     }
   };
 
-  @computed get _restoredWalletsCount(): number {
-    return this._restoredWallets.length;
+  @action resetMigration = () => {
+    this.exportedWallets = [];
+    this.exportErrors = '';
+    this.restoredWallets = [];
+    this.restorationErrors = [];
+  };
+
+  @computed get exportedWalletsData(): Array<ExportedWalletData> {
+    return this.exportedWallets.map(w => ({
+      id: w.id,
+      name: w.name,
+      hasPassword: w.has_passphrase,
+    }));
+  }
+
+  @computed get exportedWalletsCount(): number {
+    return this.exportedWallets.length;
+  }
+
+  @computed get restoredWalletsData(): Array<RestoredWalletData> {
+    return this.restoredWallets.map(w => ({
+      id: getRawWalletId(w.id),
+      name: w.name,
+      hasPassword: w.hasPassword,
+    }));
+  }
+
+  @computed get restoredWalletsCount(): number {
+    return this.restoredWallets.length;
   }
 }
