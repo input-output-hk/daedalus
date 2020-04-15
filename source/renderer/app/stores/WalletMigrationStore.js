@@ -125,6 +125,39 @@ export default class WalletMigrationStore extends Store {
     );
   };
 
+  @action generateMigrationReport = async () => {
+    const finalMigrationStatus = await this.getWalletMigrationStatusRequest.execute()
+      .promise;
+    const walletMigrationReportData: WalletMigrationReportData = {
+      exportedWalletsData: this.exportedWalletsData,
+      exportedWalletsCount: this.exportedWalletsCount,
+      exportErrors: this.exportErrors,
+      restoredWalletsData: this.restoredWalletsData,
+      restoredWalletsCount: this.restoredWalletsCount,
+      restorationErrors: this.restorationErrors,
+      finalMigrationStatus,
+    };
+    logger.debug(
+      'WalletMigrationStore: Generating wallet migration report...',
+      {
+        walletMigrationReportData,
+      }
+    );
+    try {
+      await generateWalletMigrationReportChannel.send(
+        walletMigrationReportData
+      );
+      logger.debug('WalletMigrationStore: Generated wallet migration report');
+    } catch (error) {
+      logger.error(
+        'WalletMigrationStore: Wallet migration report generation failed',
+        {
+          error,
+        }
+      );
+    }
+  };
+
   @action startMigration = async () => {
     const { isMainnet, isTestnet, isDev } = this.environment;
     if (isMainnet || isTestnet || isDev) {
@@ -187,39 +220,6 @@ export default class WalletMigrationStore extends Store {
     this.exportErrors = '';
     this.restoredWallets = [];
     this.restorationErrors = [];
-  };
-
-  @action generateMigrationReport = async () => {
-    const finalMigrationStatus = await this.getWalletMigrationStatusRequest.execute()
-      .promise;
-    const walletMigrationReportData: WalletMigrationReportData = {
-      exportedWalletsData: this.exportedWalletsData,
-      exportedWalletsCount: this.exportedWalletsCount,
-      exportErrors: this.exportErrors,
-      restoredWalletsData: this.restoredWalletsData,
-      restoredWalletsCount: this.restoredWalletsCount,
-      restorationErrors: this.restorationErrors,
-      finalMigrationStatus,
-    };
-    logger.debug(
-      'WalletMigrationStore: Generating wallet migration report...',
-      {
-        walletMigrationReportData,
-      }
-    );
-    try {
-      await generateWalletMigrationReportChannel.send(
-        walletMigrationReportData
-      );
-      logger.debug('WalletMigrationStore: Generated wallet migration report');
-    } catch (error) {
-      logger.error(
-        'WalletMigrationStore: Wallet migration report generation failed',
-        {
-          error,
-        }
-      );
-    }
   };
 
   @computed get exportedWalletsData(): Array<ExportedWalletData> {
