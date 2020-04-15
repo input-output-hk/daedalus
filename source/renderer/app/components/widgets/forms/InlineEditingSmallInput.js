@@ -12,6 +12,7 @@ import styles from './InlineEditingSmallInput.scss';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 import penIcon from '../../../assets/images/pen.inline.svg';
 import crossIcon from '../../../assets/images/close-cross.inline.svg';
+import arrowIcon from '../../../assets/images/arrow-right.inline.svg';
 
 type Props = {
   className?: string,
@@ -136,7 +137,7 @@ export default class InlineEditingSmallInput extends Component<Props, State> {
     const componentStyles = classnames([
       className,
       styles.component,
-      isActive ? null : styles.inactive,
+      isActive ? styles.isActive : null,
     ]);
     const inputStyles = classnames([
       successfullyUpdated ? 'input_animateSuccess' : null,
@@ -146,20 +147,6 @@ export default class InlineEditingSmallInput extends Component<Props, State> {
     if (isActive || inputBlocked) {
       successfullyUpdated = false;
     }
-
-    const buttonIcon = !isActive ? penIcon : crossIcon;
-    const buttonAction = !isActive
-      ? () => {
-          console.log('NOT ACTIVE 🌳');
-          if (this.inputField) {
-            console.log('this.inputField.focus', this.inputField.focus);
-            this.inputField.focus();
-          }
-        }
-      : () => {
-          console.log('ACTIVE 🤷🏻‍♂️');
-        };
-    // const buttonAction = !isActive ? this.submit : this.onCancel;
 
     return (
       <div
@@ -187,18 +174,47 @@ export default class InlineEditingSmallInput extends Component<Props, State> {
           }}
           skin={InputSkin}
         />
-        <Button
-          className={styles.button}
-          label={
-            <SVGInline
-              svg={buttonIcon}
-              className={styles.penIcon}
-              style={{ pointerEvents: 'none' }}
+        {!isActive ? (
+          <Button
+            className={styles.rightButton}
+            label={
+              <SVGInline
+                svg={penIcon}
+                className={styles.penIcon}
+                style={{ pointerEvents: 'none' }}
+              />
+            }
+            onClick={() => this.inputField.focus()}
+            skin={ButtonSkin}
+          />
+        ) : (
+          <>
+            <Button
+              className={styles.leftButton}
+              label={
+                <SVGInline
+                  svg={crossIcon}
+                  className={styles.crossIcon}
+                  style={{ pointerEvents: 'none' }}
+                />
+              }
+              onClick={() => {}}
+              skin={ButtonSkin}
             />
-          }
-          onClick={buttonAction}
-          skin={ButtonSkin}
-        />
+            <Button
+              className={styles.rightButton}
+              label={
+                <SVGInline
+                  svg={arrowIcon}
+                  className={styles.arrowIcon}
+                  style={{ pointerEvents: 'none' }}
+                />
+              }
+              onClick={this.submit}
+              skin={ButtonSkin}
+            />
+          </>
+        )}
       </div>
     );
   }
