@@ -1,15 +1,15 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { defineMessages, intlShape } from 'react-intl';
+import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import { debounce } from 'lodash';
 import BorderedBox from '../../widgets/BorderedBox';
 import TinySwitch from '../../widgets/forms/TinySwitch';
 import WalletAddress from '../../../domains/WalletAddress';
 import globalMessages from '../../../i18n/global-messages';
 import { VirtualAddressesList } from './VirtualAddressesList';
-import styles from './WalletReceiveItn.scss';
-import AddressItn from './AddressItn';
+import styles from './WalletReceiveSequential.scss';
+import AddressSequential from './AddressSequential';
 
 const messages = defineMessages({
   instructionsTitle: {
@@ -20,12 +20,12 @@ const messages = defineMessages({
   instructionsDescription: {
     id: 'wallet.receive.page.instructions.instructionsDescription',
     defaultMessage:
-      '!!!Share this wallet address to receive payments. To protect your privacy, new addresses are generated automatically once you use them.',
+      '!!!Share any of these wallet addresses to receive payments. To protect your privacy, always use a new address when requesting funds. New addresses will be automatically generated after you receive funds to the addresses listed here.',
     description: 'Instructions Description on the wallet "Receive page"',
   },
   addressesTitle: {
     id: 'wallet.receive.page.addresses.addressesTitle',
-    defaultMessage: '!!!Addresses',
+    defaultMessage: '!!!Receiving addresses',
     description: 'Addresses Title on the wallet "Receive page"',
   },
   showUsedLabel: {
@@ -33,16 +33,6 @@ const messages = defineMessages({
     defaultMessage: '!!!show used',
     description:
       'Label for "show used" wallet addresses link on the wallet "Receive page"',
-  },
-  shareAddressLabel: {
-    id: 'wallet.receive.page.shareAddressLabel',
-    defaultMessage: '!!!Share',
-    description: 'Label for "Share" link on the wallet "Receive page"',
-  },
-  copyAddressLabel: {
-    id: 'wallet.receive.page.copyAddressLabel',
-    defaultMessage: '!!!Copy address',
-    description: 'Label for "Copy address" link on the wallet "Receive page"',
   },
 });
 
@@ -53,7 +43,6 @@ type Props = {
   onShareAddress: Function,
   onCopyAddress: Function,
   onToggleSubMenus: Object,
-  isIncentivizedTestnet: boolean,
 };
 
 type State = {
@@ -64,7 +53,7 @@ type State = {
 };
 
 @observer
-export default class WalletReceiveItn extends Component<Props, State> {
+export default class WalletReceiveSequential extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -140,17 +129,13 @@ export default class WalletReceiveItn extends Component<Props, State> {
   };
 
   renderRow = (address: WalletAddress, index: number) => {
-    const { onShareAddress, onCopyAddress, isIncentivizedTestnet } = this.props;
+    const { onShareAddress, onCopyAddress } = this.props;
     const { addressSlice } = this.state;
-    const { intl } = this.context;
     return (
-      <AddressItn
+      <AddressSequential
         address={address}
         onShareAddress={onShareAddress}
         onCopyAddress={onCopyAddress}
-        shareAddressLabel={intl.formatMessage(messages.shareAddressLabel)}
-        copyAddressLabel={intl.formatMessage(messages.copyAddressLabel)}
-        isIncentivizedTestnet={isIncentivizedTestnet}
         shouldRegisterAddressElement={index === 0}
         onRegisterHTMLElements={this.handleRegisterHTMLElements}
         addressSlice={addressSlice}
@@ -179,7 +164,7 @@ export default class WalletReceiveItn extends Component<Props, State> {
                 {intl.formatMessage(messages.instructionsTitle)}
               </h2>
               <p className={styles.instructionsDescription}>
-                {intl.formatMessage(messages.instructionsDescription)}
+                <FormattedHTMLMessage {...messages.instructionsDescription} />
               </p>
             </div>
             <div className={styles.addresses}>
