@@ -35,10 +35,11 @@ export default class WalletImportDialogContainer extends Component<Props> {
   render() {
     const { app, walletMigration } = this.props.stores;
     const {
-      isExportRunning,
       exportedWallets,
       exportErrors,
       exportSourcePath,
+      pendingImportWalletsCount,
+      isExportRunning,
       isRestorationRunning,
       walletMigrationStep,
     } = walletMigration;
@@ -59,8 +60,9 @@ export default class WalletImportDialogContainer extends Component<Props> {
         )}
         {walletMigrationStep === 2 && (
           <WalletSelectImportDialog
-            exportedWallets={exportedWallets}
             isSubmitting={isRestorationRunning}
+            exportedWallets={exportedWallets}
+            pendingImportWalletsCount={pendingImportWalletsCount}
             onConfirm={this.onConfirm}
             onWalletNameChange={this.onWalletNameChange}
             onToggleWalletImportSelection={this.onToggleWalletImportSelection}
