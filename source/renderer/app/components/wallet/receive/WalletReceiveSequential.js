@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { defineMessages, intlShape } from 'react-intl';
+import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import { debounce } from 'lodash';
 import BorderedBox from '../../widgets/BorderedBox';
 import TinySwitch from '../../widgets/forms/TinySwitch';
@@ -20,12 +20,12 @@ const messages = defineMessages({
   instructionsDescription: {
     id: 'wallet.receive.page.instructions.instructionsDescription',
     defaultMessage:
-      '!!!Share this wallet address to receive payments. To protect your privacy, new addresses are generated automatically once you use them.',
+      '!!!Share any of these wallet addresses to receive payments. To protect your privacy, always use a new address when requesting funds. New addresses will be automatically generated after you receive funds to the addresses listed here.',
     description: 'Instructions Description on the wallet "Receive page"',
   },
   addressesTitle: {
     id: 'wallet.receive.page.addresses.addressesTitle',
-    defaultMessage: '!!!Addresses',
+    defaultMessage: '!!!Receiving addresses',
     description: 'Addresses Title on the wallet "Receive page"',
   },
   showUsedLabel: {
@@ -164,7 +164,7 @@ export default class WalletReceiveSequential extends Component<Props, State> {
                 {intl.formatMessage(messages.instructionsTitle)}
               </h2>
               <p className={styles.instructionsDescription}>
-                {intl.formatMessage(messages.instructionsDescription)}
+                <FormattedHTMLMessage {...messages.instructionsDescription} />
               </p>
             </div>
             <div className={styles.addresses}>

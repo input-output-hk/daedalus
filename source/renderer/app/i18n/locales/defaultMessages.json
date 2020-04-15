@@ -6739,7 +6739,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Share this wallet address to receive payments. To protect your privacy generate new addresses for receiving payments instead of reusing existing ones.",
+        "defaultMessage": "!!!Share this wallet address to receive payments. To protect your privacy, always use a new address when requesting funds. To generate a new address please enter your spending password and press the ‘Generate a new address’ button.",
         "description": "Wallet receive payments instructions on the wallet \"Receive page\"",
         "end": {
           "column": 3,
@@ -6753,7 +6753,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Generate new address",
+        "defaultMessage": "!!!Generate a new address",
         "description": "Label for \"Generate new address\" button on the wallet \"Receive page\"",
         "end": {
           "column": 3,
@@ -6767,14 +6767,14 @@
         }
       },
       {
-        "defaultMessage": "!!!Generated addresses",
+        "defaultMessage": "!!!Receiving addresses",
         "description": "\"Generated addresses\" section title on the wallet \"Receive page\"",
         "end": {
           "column": 3,
           "line": 49
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveRandom.js",
-        "id": "wallet.receive.page.generatedAddressesSectionTitle",
+        "id": "wallet.receive.page.receivingAddressesSectionTitle",
         "start": {
           "column": 34,
           "line": 44
@@ -6842,7 +6842,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Share this wallet address to receive payments. To protect your privacy, new addresses are generated automatically once you use them.",
+        "defaultMessage": "!!!Share any of these wallet addresses to receive payments. To protect your privacy, always use a new address when requesting funds. New addresses will be automatically generated after you receive funds to the addresses listed here.",
         "description": "Instructions Description on the wallet \"Receive page\"",
         "end": {
           "column": 3,
@@ -6856,7 +6856,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Addresses",
+        "defaultMessage": "!!!Receiving addresses",
         "description": "Addresses Title on the wallet \"Receive page\"",
         "end": {
           "column": 3,

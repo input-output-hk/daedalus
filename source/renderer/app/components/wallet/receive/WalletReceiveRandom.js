@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { defineMessages, intlShape } from 'react-intl';
+import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
 import CopyToClipboard from 'react-copy-to-clipboard';
@@ -31,19 +31,19 @@ const messages = defineMessages({
   walletReceiveInstructions: {
     id: 'wallet.receive.page.walletReceiveInstructions',
     defaultMessage:
-      '!!!Share this wallet address to receive payments. To protect your privacy generate new addresses for receiving payments instead of reusing existing ones.',
+      '!!!Share this wallet address to receive payments. To protect your privacy, always use a new address when requesting funds. To generate a new address please enter your spending password and press the ‘Generate a new address’ button.',
     description:
       'Wallet receive payments instructions on the wallet "Receive page"',
   },
   generateNewAddressButtonLabel: {
     id: 'wallet.receive.page.generateNewAddressButtonLabel',
-    defaultMessage: '!!!Generate new address',
+    defaultMessage: '!!!Generate a new address',
     description:
       'Label for "Generate new address" button on the wallet "Receive page"',
   },
   generatedAddressesSectionTitle: {
-    id: 'wallet.receive.page.generatedAddressesSectionTitle',
-    defaultMessage: '!!!Generated addresses',
+    id: 'wallet.receive.page.receivingAddressesSectionTitle',
+    defaultMessage: '!!!Receiving addresses',
     description:
       '"Generated addresses" section title on the wallet "Receive page"',
   },
@@ -267,7 +267,9 @@ export default class WalletReceiveRandom extends Component<Props, State> {
                 </div>
 
                 <div className={styles.instructionsText}>
-                  {intl.formatMessage(messages.walletReceiveInstructions)}
+                  <FormattedHTMLMessage
+                    {...messages.walletReceiveInstructions}
+                  />
                 </div>
 
                 {error ? (
