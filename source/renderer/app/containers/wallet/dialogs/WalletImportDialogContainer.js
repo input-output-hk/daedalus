@@ -28,6 +28,10 @@ export default class WalletImportDialogContainer extends Component<Props> {
     this.props.actions.walletMigration.toggleWalletImportSelection.trigger(id);
   };
 
+  onSelectExportSourcePath = () => {
+    this.props.actions.walletMigration.selectExportSourcePath.trigger();
+  };
+
   render() {
     const { app, walletMigration } = this.props.stores;
     const {
@@ -40,19 +44,17 @@ export default class WalletImportDialogContainer extends Component<Props> {
     } = walletMigration;
     const { openExternalLink } = app;
 
-    const onSelectStateDirectory = () => {};
-
     return (
       <>
         {walletMigrationStep === 1 && (
           <WalletImportFileDialog
             isSubmitting={isExportRunning}
+            exportSourcePath={exportSourcePath}
             exportErrors={exportErrors}
             onConfirm={this.onConfirm}
             onClose={this.onCancel}
-            exportSourcePath={exportSourcePath}
             onOpenExternalLink={openExternalLink}
-            onSelectStateDirectory={onSelectStateDirectory}
+            onSelectExportSourcePath={this.onSelectExportSourcePath}
           />
         )}
         {walletMigrationStep === 2 && (

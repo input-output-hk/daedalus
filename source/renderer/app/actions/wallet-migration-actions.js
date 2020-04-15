@@ -7,4 +7,5 @@ export default class WalletMigrationActions {
   toggleWalletImportSelection: Action<string> = new Action();
   updateWalletName: Action<{ id: string, name: string }> = new Action();
   nextStep: Action<any> = new Action();
+  selectExportSourcePath: Action<any> = new Action();
 }

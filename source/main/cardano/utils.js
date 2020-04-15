@@ -169,6 +169,7 @@ export const createSelfnodeConfig = async (
 };
 
 export const exportWallets = async (
+  exportSourcePath: string,
   launcherConfig: LauncherConfig,
   mainWindow: BrowserWindow,
   locale: string
@@ -183,6 +184,7 @@ export const exportWallets = async (
   } = launcherConfig;
 
   logger.info('ipcMain: Starting wallets export...', {
+    exportSourcePath,
     exportWalletsBin,
     legacySecretKey,
     legacyWalletDB,
@@ -191,19 +193,19 @@ export const exportWallets = async (
     isFlight,
   });
 
-  let legacySecretKeyPath = legacySecretKey;
-  let legacyWalletDBPath = legacyWalletDB;
+  let legacySecretKeyPath = path.join(exportSourcePath, legacySecretKey);
+  let legacyWalletDBPath = path.join(exportSourcePath, legacyWalletDB);
 
   // In case of Daedalus Flight build we need to copy over
-  // legacySecretKey and legacyWalletDB from Mainnet state dir
+  // legacySecretKey and legacyWalletDB from mainnet state dir
   // into Daedalus Flight state dir before extracting the wallets
   if (isFlight) {
     try {
       const response = await prepareMigrationData(
         mainWindow,
         stateDir,
-        legacySecretKey,
-        legacyWalletDB,
+        legacySecretKeyPath,
+        legacyWalletDBPath,
         locale
       );
       legacySecretKeyPath = response.legacySecretKeyPath;

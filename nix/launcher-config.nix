@@ -191,24 +191,18 @@ let
       ''}
     '';
 
-    legacyStateDir = mainnetDataDir;
+    legacyStateDir = if network == "mainnet_flight" then mainnetDataDir else dataDir;
 
     legacyWalletDB = let
-      prefix = if network == "mainnet_flight"
-               then "${mainnetDataDir}${dirSep}"
-               else "${dataDir}${dirSep}";
-      path.linux = "${prefix}Wallet";
-      path.macos64 = "${prefix}Wallet-1.0";
-      path.windows = "${prefix}Wallet-1.0";
+      path.linux = "Wallet";
+      path.macos64 = "Wallet-1.0";
+      path.windows = "Wallet-1.0";
     in path.${os};
 
     legacySecretKey = let
-      prefix = if network == "mainnet_flight"
-               then "${mainnetDataDir}${dirSep}"
-               else "${dataDir}${dirSep}";
-      path.linux = "${prefix}Secrets${dirSep}secret.key";
-      path.macos64 = "${prefix}Secrets-1.0${dirSep}secret.key";
-      path.windows = "${prefix}Secrets-1.0${dirSep}secret.key";
+      path.linux = "Secrets${dirSep}secret.key";
+      path.macos64 = "Secrets-1.0${dirSep}secret.key";
+      path.windows = "Secrets-1.0${dirSep}secret.key";
     in path.${os};
 
     launcherConfig = defaultLauncherConfig // {
