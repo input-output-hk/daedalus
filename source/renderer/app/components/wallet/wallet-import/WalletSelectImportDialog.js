@@ -5,14 +5,9 @@ import ReactModal from 'react-modal';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { Button } from 'react-polymorph/lib/components/Button';
 import classNames from 'classnames';
-// import SVGInline from 'react-svg-inline';
-// import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
-// import { Input } from 'react-polymorph/lib/components/Input';
 import styles from './WalletSelectImportDialog.scss';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import closeCrossThin from '../../../assets/images/close-cross-thin.inline.svg';
-// import penIcon from '../../../assets/images/pen.inline.svg';
-// import crossIcon from '../../../assets/images/close-cross.inline.svg';
 import globalMessages from '../../../i18n/global-messages';
 import { WalletImportStatuses } from '../../../types/walletExportTypes';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
@@ -77,7 +72,6 @@ const messages = defineMessages({
 type Props = {
   isSubmitting: boolean,
   exportedWallets: Array<ExportedByronWallet>,
-  pendingImportWalletsCount: number,
   onConfirm: Function,
   onWalletNameChange: Function,
   onToggleWalletImportSelection: Function,
@@ -95,7 +89,6 @@ export default class WalletSelectImportDialog extends Component<Props> {
     const {
       isSubmitting,
       exportedWallets,
-      pendingImportWalletsCount,
       onConfirm,
       onClose,
       onWalletNameChange,
@@ -117,9 +110,8 @@ export default class WalletSelectImportDialog extends Component<Props> {
     // const walletImportedStatus = intl.formatMessage(messages.walletImported);
     // const walletNotFoundStatus = intl.formatMessage(messages.notFound);
 
-    const isDisabled = isSubmitting || !pendingImportWalletsCount;
     const buttonClasses = classNames(styles.actionButton, [
-      isDisabled ? styles.disabled : null,
+      isSubmitting ? styles.disabled : null,
     ]);
 
     return (
@@ -199,7 +191,7 @@ export default class WalletSelectImportDialog extends Component<Props> {
             <div className={styles.action}>
               <Button
                 className={buttonClasses}
-                disabled={isDisabled}
+                disabled={isSubmitting}
                 label={buttonLabel}
                 onClick={onConfirm}
                 skin={ButtonSkin}
