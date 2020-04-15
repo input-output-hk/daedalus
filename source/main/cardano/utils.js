@@ -247,7 +247,7 @@ export const exportWallets = async (
     walletsData: wallets.map(w => ({
       name: w.name,
       id: w.id,
-      hasPassword: w.has_passphrase,
+      hasPassword: w.is_passphrase_empty,
     })),
     errors,
   });

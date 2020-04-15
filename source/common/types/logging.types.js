@@ -2,6 +2,7 @@
 import type { CardanoNodeState } from './cardano-node.types';
 import type { SystemInfo } from '../../renderer/app/types/systemInfoTypes';
 import type { CoreSystemInfo } from '../../renderer/app/types/coreSystemInfoTypes';
+import type { WalletImportStatus } from '../../renderer/app/types/walletExportTypes';
 import type { WalletMigrationStatus } from '../../renderer/app/stores/WalletMigrationStore';
 import LocalizableError from '../../renderer/app/i18n/LocalizableError';
 
@@ -85,6 +86,10 @@ export type ExportedWalletData = {
   id: string,
   name: ?string,
   hasPassword: boolean,
+  import?: {
+    status: WalletImportStatus,
+    error: ?LocalizableError,
+  },
 };
 
 export type RestoredWalletData = {
