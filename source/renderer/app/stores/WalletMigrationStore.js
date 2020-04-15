@@ -20,17 +20,20 @@ export type WalletMigrationStatus =
   | 'unstarted'
   | 'running'
   | 'completed'
+  | 'skipped'
   | 'errored';
 
 export const WalletMigrationStatuses: {
   UNSTARTED: WalletMigrationStatus,
   RUNNING: WalletMigrationStatus,
   COMPLETED: WalletMigrationStatus,
+  SKIPPED: WalletMigrationStatus,
   ERRORED: WalletMigrationStatus,
 } = {
   UNSTARTED: 'unstarted',
   RUNNING: 'running',
   COMPLETED: 'completed',
+  SKIPPED: 'skipped',
   ERRORED: 'errored',
 };
 
@@ -159,18 +162,14 @@ export default class WalletMigrationStore extends Store {
   };
 
   @action startMigration = async () => {
-    const { isMainnet, isTestnet, isDev } = this.environment;
-    if (isMainnet || isTestnet || isDev) {
-      // TODO: remove "isDev"
+    const { isMainnet, isTestnet } = this.environment;
+    if (isMainnet || isTestnet) {
       // Reset store values
       this.resetMigration();
 
       const walletMigrationStatus = await this.getWalletMigrationStatusRequest.execute()
         .promise;
-      if (
-        walletMigrationStatus === WalletMigrationStatuses.UNSTARTED ||
-        isDev // TODO: remove "isDev"
-      ) {
+      if (walletMigrationStatus === WalletMigrationStatuses.UNSTARTED) {
         // Update migration status to "RUNNING"
         logger.debug('WalletMigrationStore: Starting wallet migration...');
         await this.setWalletMigrationStatusRequest.execute(
@@ -208,6 +207,10 @@ export default class WalletMigrationStore extends Store {
         // Generate and store migration report
         await this.generateMigrationReport();
       } else {
+        // Update migration status to "SKIPPED"
+        await this.setWalletMigrationStatusRequest.execute(
+          WalletMigrationStatuses.SKIPPED
+        );
         logger.debug('WalletMigrationStore: Skipping wallet migration...', {
           walletMigrationStatus,
         });
