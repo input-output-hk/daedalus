@@ -121,6 +121,99 @@
     }
 
     .walletsContainer {
+      .walletsRow {
+        align-items: baseline;
+        display: flex;
+        padding-bottom: 20px;
+
+        .walletsCounter {
+          color: #ffffff;
+          font-family: var(--font-bold);
+          font-size: 16px;
+          letter-spacing: 0.5px;
+          line-height: 1.38;
+          padding-right: 20px;
+        }
+
+        .walletsInputField {
+          align-items: center;
+          display: flex;
+          width: 303px;
+
+          .walletsInput {
+            height: 50px;
+            width: 100%;
+
+            input {
+              background-color: #243e62;
+              border: solid 1px #ffffff;
+              border-radius: 2px;
+              color: #ffffff;
+              font-family: var(--font-semibold);
+              font-size: 16px;
+              line-height: 1.38;
+              letter-spacing: 0.5px;
+              width: 275px;
+            }
+
+            &.walletUnavailable {
+              input {
+                background-color: #ffffff !important;
+                opacity: 0.05 !important;
+              }
+            }
+
+            &.walletNoPassword {
+              opacity: 0.5 !important;
+            }
+          }
+
+          .selectStateDirectoryButton {
+            background-color: var(
+                --theme-wallet-import-stateFolder-button-background-color
+            );
+            border-radius: 3px;
+            cursor: pointer;
+            height: 28px;
+            left: -40px;
+            position: relative;
+            top: -1px;
+            width: 28px;
+
+            .penIcon {
+              svg {
+                height: 12px;
+                position: relative;
+                top: 1px;
+                width: 12px;
+              }
+            }
+
+            .crossIcon {
+              svg {
+                height: 8px;
+                width: 8px;
+
+                g {
+                  fill: #fff;
+                }
+              }
+            }
+          }
+        }
+
+        .walletsStatus {
+          color: #ffffff;
+          font-family: var(--font-regular);
+          font-size: 16px;
+          line-height: 1.38;
+          letter-spacing: 0.5px;
+        }
+
+        .walletsStatusIcon {
+
+        }
+      }
     }
 
     .action {

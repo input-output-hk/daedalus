@@ -4,9 +4,15 @@ import { defineMessages, intlShape } from 'react-intl';
 import ReactModal from 'react-modal';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { Button } from 'react-polymorph/lib/components/Button';
+import classNames from 'classnames';
+import SVGInline from 'react-svg-inline';
+import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
+import { Input } from 'react-polymorph/lib/components/Input';
 import styles from './WalletSelectImportDialog.scss';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import closeCrossThin from '../../../assets/images/close-cross-thin.inline.svg';
+import penIcon from '../../../assets/images/pen.inline.svg';
+import crossIcon from '../../../assets/images/close-cross.inline.svg';
 
 const messages = defineMessages({
   title: {
@@ -65,6 +71,7 @@ const messages = defineMessages({
 
 type Props = {
   onConfirm: Function,
+  onSelectStateDirectory: Function,
   onClose: Function,
 };
 
@@ -79,11 +86,31 @@ export default class WalletSelectImportDialog extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { onConfirm, onClose } = this.props;
+    const { onConfirm, onClose, onSelectStateDirectory } = this.props;
+
+    const wallets = [{
+      name: 'Alex Wallet',
+      status: 'importing',
+    }, {
+      name: 'Nikola Wallet',
+      status: 'alreadyExists',
+    }, {
+      name: 'Sasha Wallet',
+      status: 'noPassword',
+    }, {
+      name: 'Yakov Wallet',
+      status: 'hasPassword',
+    }];
 
     const title = intl.formatMessage(messages.title);
     const description = intl.formatMessage(messages.description);
     const buttonLabel = intl.formatMessage(messages.buttonLabel);
+    const importingStatus = intl.formatMessage(messages.importingWallet);
+    const noPasswordStatus = intl.formatMessage(messages.noPassword);
+    const hasPasswordStatus = intl.formatMessage(messages.passwordProtected);
+    const alreadyExistsStatus = intl.formatMessage(messages.walletExists);
+    // const walletImportedStatus = intl.formatMessage(messages.walletImported);
+    // const walletNotFoundStatus = intl.formatMessage(messages.notFound);
 
     return (
       <ReactModal
@@ -106,12 +133,55 @@ export default class WalletSelectImportDialog extends Component<Props> {
             <div className={styles.description}>{description}</div>
             <hr className={styles.separator} />
             <div className={styles.walletsContainer}>
-              <div className={styles.walletsCounter}></div>
-              <div className={styles.walletsInputField}></div>
-              <div className={styles.walletsStatus}></div>
-              <div className={styles.walletsCheckmarks}></div>
+              {wallets.map((wallet, id) => (
+                <>
+                  {wallet.status === 'noPassword' && (
+                    <hr className={styles.separator} />
+                  )}
+                  <div className={styles.walletsRow} key={id+1}>
+                    <div className={styles.walletsCounter}>
+                    {id + 1 + '.'}
+                    </div>
+                    <div className={styles.walletsInputField}>
+                      <Input
+                        type="text"
+                        className={
+                          classNames([
+                          styles.walletsInput,
+                          (wallet.status === 'alreadyExists' || wallet.status === 'importing') ? styles.walletUnavailable : null,
+                           wallet.status === 'noPassword' ? styles.walletNoPassword : null,
+                        ])}
+                        skin={InputSkin}
+                        value={this.search}
+                      />
+                      {wallet.status === 'noPassword' && (
+                        <button
+                          className={styles.selectStateDirectoryButton}
+                          onClick={onSelectStateDirectory}
+                        >
+                          <SVGInline svg={penIcon} className={styles.penIcon} />
+                        </button>
+                      )}
+                      {wallet.status === 'hasPassword' && (
+                        <button
+                          className={styles.selectStateDirectoryButton}
+                          onClick={onSelectStateDirectory}
+                        >
+                          <SVGInline svg={crossIcon} className={styles.crossIcon} />
+                        </button>
+                      )}
+                    </div>
+                    <div className={styles.walletsStatus}>
+                      {wallet.status === 'importing' && importingStatus}
+                      {wallet.status === 'alreadyExists' && alreadyExistsStatus}
+                      {wallet.status === 'noPassword' && noPasswordStatus}
+                      {wallet.status === 'hasPassword' && hasPasswordStatus}
+                    </div>
+                    <div className={styles.walletsStatusIcon}/>
+                  </div>
+                </>
+              ))}
             </div>
-            <hr className={styles.separator} />
             <div className={styles.action}>
               <Button
                 className={styles.actionButton}
