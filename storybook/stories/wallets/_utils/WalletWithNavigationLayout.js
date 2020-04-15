@@ -51,12 +51,12 @@ export default class WalletWithNavigationLayout extends Component<Props> {
         onOpenExternalLink={() => {}}
         onRestartNode={() => {}}
       >
-        {Children.map(children, child => {
-          return React.cloneElement(child, {
+        {Children.map(children, child =>
+          React.cloneElement(child, {
             stores,
             wallet: activeWallet || child.props.wallet,
-          });
-        })}
+          })
+        )}
       </WalletWithNavigation>
     );
   }
