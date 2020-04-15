@@ -5,16 +5,18 @@ import ReactModal from 'react-modal';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { Button } from 'react-polymorph/lib/components/Button';
 import classNames from 'classnames';
-import SVGInline from 'react-svg-inline';
-import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
-import { Input } from 'react-polymorph/lib/components/Input';
+// import SVGInline from 'react-svg-inline';
+// import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
+// import { Input } from 'react-polymorph/lib/components/Input';
 import styles from './WalletSelectImportDialog.scss';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import closeCrossThin from '../../../assets/images/close-cross-thin.inline.svg';
-import penIcon from '../../../assets/images/pen.inline.svg';
-import crossIcon from '../../../assets/images/close-cross.inline.svg';
+// import penIcon from '../../../assets/images/pen.inline.svg';
+// import crossIcon from '../../../assets/images/close-cross.inline.svg';
+import globalMessages from '../../../i18n/global-messages';
 import { WalletImportStatuses } from '../../../types/walletExportTypes';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
+import InlineEditingSmallInput from '../../widgets/forms/InlineEditingSmallInput';
 import type { ExportedByronWallet } from '../../../types/walletExportTypes';
 
 const messages = defineMessages({
@@ -80,6 +82,7 @@ type Props = {
   onWalletNameChange: Function,
   onToggleWalletImportSelection: Function,
   onClose: Function,
+  nameValidator: Function,
 };
 
 export default class WalletSelectImportDialog extends Component<Props> {
@@ -97,6 +100,7 @@ export default class WalletSelectImportDialog extends Component<Props> {
       onClose,
       onWalletNameChange,
       onToggleWalletImportSelection,
+      nameValidator,
     } = this.props;
 
     const title = intl.formatMessage(messages.title);
@@ -123,6 +127,7 @@ export default class WalletSelectImportDialog extends Component<Props> {
         isOpen
         onRequestClose={onClose}
         shouldCloseOnOverlayClick={false}
+        shouldCloseOnEsc={false}
         className={styles.dialog}
         overlayClassName={styles.overlay}
         ariaHideApp={false}
@@ -151,41 +156,32 @@ export default class WalletSelectImportDialog extends Component<Props> {
                     <div className={styles.walletsCounter}>{`${index +
                       1}.`}</div>
                     <div className={styles.walletsInputField}>
-                      <Input
-                        type="text"
-                        className={classNames([
-                          styles.walletsInput,
-                          wallet.import.status ===
-                            WalletImportStatuses.COMPLETED ||
-                          wallet.import.status === WalletImportStatuses.RUNNING
-                            ? styles.walletUnavailable
-                            : null,
-                          wallet.is_passphrase_empty
-                            ? styles.walletNoPassword
-                            : null,
-                        ])}
-                        value={wallet.name || ''}
-                        skin={InputSkin}
+                      <InlineEditingSmallInput
+                        isActive
+                        inputFieldValue={wallet.name || ''}
+                        isValid={nameValidator}
+                        validationErrorMessage={intl.formatMessage(
+                          globalMessages.invalidWalletName
+                        )}
+                        onSubmit={(name: string) =>
+                          onWalletNameChange({
+                            id: wallet.id,
+                            name,
+                          })
+                        }
+                        onToggleWalletImportSelection
+                        onStartEditing={() =>
+                          onToggleWalletImportSelection(wallet.id)
+                        }
+                        onStopEditing={() =>
+                          onToggleWalletImportSelection(wallet.id)
+                        }
+                        onCancelEditing={() =>
+                          onToggleWalletImportSelection(wallet.id)
+                        }
+                        maxLength={40}
+                        successfullyUpdated
                       />
-                      {!wallet.is_passphrase_empty && (
-                        <button
-                          className={styles.selectStateDirectoryButton}
-                          onClick={() => {}}
-                        >
-                          <SVGInline svg={penIcon} className={styles.penIcon} />
-                        </button>
-                      )}
-                      {wallet.is_passphrase_empty && (
-                        <button
-                          className={styles.selectStateDirectoryButton}
-                          onClick={() => {}}
-                        >
-                          <SVGInline
-                            svg={crossIcon}
-                            className={styles.crossIcon}
-                          />
-                        </button>
-                      )}
                     </div>
                     <div className={styles.walletsStatus}>
                       {wallet.import.status === WalletImportStatuses.RUNNING &&

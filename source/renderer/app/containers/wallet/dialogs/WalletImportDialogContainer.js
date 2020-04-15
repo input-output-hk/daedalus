@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import WalletImportFileDialog from '../../../components/wallet/wallet-import/WalletImportFileDialog';
 import WalletSelectImportDialog from '../../../components/wallet/wallet-import/WalletSelectImportDialog';
+import { isValidWalletName } from '../../../utils/validations';
 import type { InjectedProps } from '../../../types/injectedPropsType';
 
 type Props = InjectedProps;
@@ -61,6 +62,7 @@ export default class WalletImportDialogContainer extends Component<Props> {
         {walletMigrationStep === 2 && (
           <WalletSelectImportDialog
             isSubmitting={isRestorationRunning}
+            nameValidator={name => isValidWalletName(name)}
             exportedWallets={exportedWallets}
             pendingImportWalletsCount={pendingImportWalletsCount}
             onConfirm={this.onConfirm}
