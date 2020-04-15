@@ -57,6 +57,7 @@ export default class WalletImportDialogContainer extends Component<Props> {
         {isWalletSelectImportDialog && (
           <WalletSelectImportDialog
             onConfirm={this.onConfirm}
+            onSelectStateDirectory={onSelectStateDirectory}
             onClose={this.onCancel}
           />
         )}

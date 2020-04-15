@@ -90,18 +90,22 @@ export default class WalletSelectImportDialog extends Component<Props> {
 
     const wallets = [
       {
+        id: 1,
         name: 'Alex Wallet',
         status: 'importing',
       },
       {
+        id: 2,
         name: 'Nikola Wallet',
         status: 'alreadyExists',
       },
       {
+        id: 3,
         name: 'Sasha Wallet',
         status: 'noPassword',
       },
       {
+        id: 4,
         name: 'Yakov Wallet',
         status: 'hasPassword',
       },
@@ -138,13 +142,13 @@ export default class WalletSelectImportDialog extends Component<Props> {
             <div className={styles.description}>{description}</div>
             <hr className={styles.separator} />
             <div className={styles.walletsContainer}>
-              {wallets.map((wallet, id) => (
+              {wallets.map(wallet => (
                 <>
                   {wallet.status === 'noPassword' && (
                     <hr className={styles.separator} />
                   )}
-                  <div className={styles.walletsRow} key={id + 1}>
-                    <div className={styles.walletsCounter}>{id + 1 + '.'}</div>
+                  <div className={styles.walletsRow} key={wallet.id}>
+                    <div className={styles.walletsCounter}>{`${wallet.id  }.`}</div>
                     <div className={styles.walletsInputField}>
                       <Input
                         type="text"
@@ -159,7 +163,6 @@ export default class WalletSelectImportDialog extends Component<Props> {
                             : null,
                         ])}
                         skin={InputSkin}
-                        value={this.search}
                       />
                       {wallet.status === 'noPassword' && (
                         <button
