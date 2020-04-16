@@ -169,6 +169,7 @@ export const createSelfnodeConfig = async (
 };
 
 export const exportWallets = async (
+  exportSourcePath: string,
   launcherConfig: LauncherConfig,
   mainWindow: BrowserWindow,
   locale: string
@@ -182,7 +183,8 @@ export const exportWallets = async (
     isFlight,
   } = launcherConfig;
 
-  logger.info('ipcMain: Exporting wallets...', {
+  logger.info('ipcMain: Starting wallets export...', {
+    exportSourcePath,
     exportWalletsBin,
     legacySecretKey,
     legacyWalletDB,
@@ -191,19 +193,19 @@ export const exportWallets = async (
     isFlight,
   });
 
-  let legacySecretKeyPath = legacySecretKey;
-  let legacyWalletDBPath = legacyWalletDB;
+  let legacySecretKeyPath = path.join(exportSourcePath, legacySecretKey);
+  let legacyWalletDBPath = path.join(exportSourcePath, legacyWalletDB);
 
   // In case of Daedalus Flight build we need to copy over
-  // legacySecretKey and legacyWalletDB from Mainnet state dir
+  // legacySecretKey and legacyWalletDB from mainnet state dir
   // into Daedalus Flight state dir before extracting the wallets
   if (isFlight) {
     try {
       const response = await prepareMigrationData(
         mainWindow,
         stateDir,
-        legacySecretKey,
-        legacyWalletDB,
+        legacySecretKeyPath,
+        legacyWalletDBPath,
         locale
       );
       legacySecretKeyPath = response.legacySecretKeyPath;
@@ -219,26 +221,42 @@ export const exportWallets = async (
     }
   }
 
-  const clusterFlags = [];
+  // Export tool flags
+  const exportWalletsBinFlags = [];
+
+  // Cluster flags
   if (cluster === 'testnet') {
-    clusterFlags.push('--testnet', TESTNET_MAGIC);
+    exportWalletsBinFlags.push('--testnet', TESTNET_MAGIC);
   } else {
-    clusterFlags.push('--mainnet');
+    exportWalletsBinFlags.push('--mainnet');
   }
 
-  const { stdout, stderr } = spawnSync(exportWalletsBin, [
-    ...clusterFlags,
-    '--keyfile',
-    legacySecretKeyPath,
-    '--wallet-db-path',
-    legacyWalletDBPath,
-  ]);
+  // Secret key flags
+  exportWalletsBinFlags.push('--keyfile', legacySecretKeyPath);
 
+  // Wallet DB flags
+  const legacyWalletDBPathExists = await fs.pathExists(
+    `${legacyWalletDBPath}-acid`
+  );
+  if (legacyWalletDBPathExists) {
+    exportWalletsBinFlags.push('--wallet-db-path', legacyWalletDBPath);
+  }
+
+  logger.info('ipcMain: Exporting wallets...', {
+    exportWalletsBin,
+    exportWalletsBinFlags,
+  });
+
+  const { stdout, stderr } = spawnSync(exportWalletsBin, exportWalletsBinFlags);
   const wallets = JSON.parse(stdout.toString() || '[]');
   const errors = stderr.toString();
 
   logger.info(`ipcMain: Exported ${wallets.length} wallets`, {
-    walletsData: wallets.map(w => ({ name: w.name })),
+    walletsData: wallets.map(w => ({
+      name: w.name,
+      id: w.id,
+      hasPassword: w.is_passphrase_empty,
+    })),
     errors,
   });
 

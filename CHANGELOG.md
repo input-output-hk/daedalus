@@ -1,10 +1,11 @@
 Changelog
 =========
 
-## vNext
+## 1.0.0-FC3
 
 ### Features
 
+- Implemented "Wallet Import" feature ([PR 1956](https://github.com/input-output-hk/daedalus/pull/1956))
 - Force setting spending password on passwordless wallets ([PR 1957](https://github.com/input-output-hk/daedalus/pull/1957))
 
 ### Chores

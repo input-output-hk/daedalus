@@ -4,12 +4,12 @@ const https = require('https');
 const fs = require('fs');
 
 const mnemonics = [
-  ['surface', 'light', 'ridge', 'alter', 'reflect', 'digital', 'field', 'sibling', 'moon', 'giant', 'target', 'bleak'],
-  ['firm', 'scare', 'trap', 'reopen', 'window', 'govern', 'truck', 'negative', 'fragile', 'share', 'setup', 'coral'],
-  ['zero', 'heart', 'develop', 'wolf', 'salute', 'parade', 'supreme', 'pigeon', 'fragile', 'glue', 'manual', 'cloth'],
-  ['mobile', 'phone', 'apple', 'reduce', 'organ', 'since', 'grace', 'song', 'pole', 'heavy', 'speak', 'danger'],
-  ['vibrant', 'verb', 'entry', 'record', 'sketch', 'aspect', 'ensure', 'true', 'caution', 'long', 'suggest', 'draft'],
-  ['diary', 'setup', 'wire', 'claim', 'tattoo', 'street', 'slice', 'skin', 'neck', 'sunset', 'frame', 'tip'],
+  ['craft', 'blade', 'oil', 'fork', 'able', 'math', 'cat', 'kidney', 'clutch', 'menu', 'remind', 'clap'],
+  ['kitten', 'lesson', 'gravity', 'hurry', 'total', 'today', 'accuse', 'lottery', 'meadow', 'grab', 'shiver', 'elder'],
+  ['flash', 'nothing', 'foam', 'hint', 'vague', 'estate', 'innocent', 'lobster', 'brush', 'can', 'spray', 'radio'],
+  ['humor', 'meadow', 'now', 'mimic', 'amazing', 'increase', 'wire', 'aerobic', 'jeans', 'sleep', 'step', 'change'],
+  ['lady', 'lucky', 'charge', 'peasant', 'start', 'cheese', 'fitness', 'differ', 'city', 'amused', 'multiply', 'west'],
+  ['wash', 'truly', 'birth', 'stairs', 'quarter', 'ethics', 'afraid', 'unfold', 'medal', 'park', 'quick', 'short'],
 ];
 
 const walletNames = [

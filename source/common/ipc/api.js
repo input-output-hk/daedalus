@@ -224,7 +224,9 @@ export type DetectSystemLocaleMainResponse = string;
  * Channel where renderer can ask main process to export wallets
  */
 export const EXPORT_WALLETS_CHANNEL = 'EXPORT_WALLETS_CHANNEL';
-export type ExportWalletsRendererRequest = void;
+export type ExportWalletsRendererRequest = {
+  exportSourcePath: string,
+};
 export type ExportWalletsMainResponse = {
   wallets: Array<ExportedByronWallet>,
   errors: string,

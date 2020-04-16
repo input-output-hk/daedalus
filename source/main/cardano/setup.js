@@ -18,6 +18,7 @@ import type {
   CardanoStatus,
   TlsConfig,
 } from '../../common/types/cardano-node.types';
+import type { ExportWalletsRendererRequest } from '../../common/ipc/api';
 import {
   cardanoAwaitUpdateChannel,
   cardanoFaultInjectionChannel,
@@ -184,10 +185,16 @@ export const setupCardanoNode = (
     return cardanoNode.setFault(fault);
   });
 
-  exportWalletsChannel.onRequest(() => {
-    logger.info('ipcMain: Received request from renderer to export wallets');
-    return Promise.resolve(exportWallets(launcherConfig, mainWindow, locale));
-  });
+  exportWalletsChannel.onRequest(
+    ({ exportSourcePath }: ExportWalletsRendererRequest) => {
+      logger.info('ipcMain: Received request from renderer to export wallets', {
+        exportSourcePath,
+      });
+      return Promise.resolve(
+        exportWallets(exportSourcePath, launcherConfig, mainWindow, locale)
+      );
+    }
+  );
 
   return cardanoNode;
 };
