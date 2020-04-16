@@ -10,11 +10,11 @@ import type { Daedalus } from '../../../types';
 declare var daedalus: Daedalus;
 const SELECTORS = {
   ADDRESS_ACTIVE: '.WalletReceive_hash',
-  ADDRESS_COMPONENT: '.Address_component',
+  ADDRESS_COMPONENT: '.Address',
   ADDRESS_USED_ITN: '.AddressItn_usedWalletAddress',
   ADDRESS_USED: '.Address_usedWalletAddress',
   GENERATE_ADDRESS_BTN: '.generateAddressButton:not(.WalletReceive_spinning)',
-  GENERATE_ADDRESS_PASSWORD_INPUT: '.WalletReceive_spendingPassword .SimpleFormField_inputWrapper input',
+  GENERATE_ADDRESS_PASSWORD_INPUT: '.WalletReceiveRandom_spendingPassword .SimpleFormField_inputWrapper input',
   SHOW_USED_SWITCH: '.SimpleSwitch_switch',
 };
 
@@ -48,7 +48,7 @@ When('I click the ShowUsed switch', async function() {
 When(
   /^I enter wallet password in generate address input field "([^"]*)"$/,
   async function(password) {
-    const selector = '.WalletReceive_spendingPassword .SimpleFormField_inputWrapper input';
+    const selector = '.WalletReceiveRandom_spendingPassword .SimpleFormField_inputWrapper input';
     await this.client.waitForExist(selector);
     await this.client.setValue(selector, password);
   }
@@ -109,7 +109,7 @@ Then('I should not see any used addresses', { timeout: 60000 }, async function()
 
 Then('I should see {int} addresses', async function(numberOfAddresses) {
   let addresses = await this.client.getAttribute(
-    '.Address_component',
+    '.Address',
     'class'
   );
   if (!Array.isArray(addresses)) {

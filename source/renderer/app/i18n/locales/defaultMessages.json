@@ -6,41 +6,13 @@
         "description": "Generic error message.",
         "end": {
           "column": 3,
-          "line": 11
+          "line": 10
         },
         "file": "source/renderer/app/api/common/errors.js",
         "id": "api.errors.GenericApiError",
         "start": {
           "column": 19,
-          "line": 7
-        }
-      },
-      {
-        "defaultMessage": "!!!Incorrect wallet password.",
-        "description": "\"Incorrect wallet password.\" error message.",
-        "end": {
-          "column": 3,
-          "line": 16
-        },
-        "file": "source/renderer/app/api/common/errors.js",
-        "id": "api.errors.IncorrectPasswordError",
-        "start": {
-          "column": 34,
-          "line": 12
-        }
-      },
-      {
-        "defaultMessage": "!!!There was a problem sending the support request.",
-        "description": "\"There was a problem sending the support request.\" error message",
-        "end": {
-          "column": 3,
-          "line": 22
-        },
-        "file": "source/renderer/app/api/common/errors.js",
-        "id": "api.errors.ReportRequestError",
-        "start": {
-          "column": 22,
-          "line": 17
+          "line": 6
         }
       },
       {
@@ -48,27 +20,13 @@
         "description": "\"This API method is not yet implemented.\" error message.",
         "end": {
           "column": 3,
-          "line": 27
+          "line": 15
         },
         "file": "source/renderer/app/api/common/errors.js",
         "id": "api.errors.ApiMethodNotYetImplementedError",
         "start": {
           "column": 35,
-          "line": 23
-        }
-      },
-      {
-        "defaultMessage": "!!!Invalid recovery phrase. Submitted recovery phrase is one of the example recovery phrases from the documentation and should not be used for wallets holding funds.",
-        "description": "\"Forbidden Mnemonic: an example Mnemonic has been submitted.\" error message",
-        "end": {
-          "column": 3,
-          "line": 34
-        },
-        "file": "source/renderer/app/api/common/errors.js",
-        "id": "api.errors.ForbiddenMnemonicError",
-        "start": {
-          "column": 26,
-          "line": 28
+          "line": 11
         }
       }
     ],
@@ -77,176 +35,45 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!It's not allowed to send money to the same address you are sending from. Make sure you have enough addresses with money in this account or send to a different address.",
-        "description": "\"It's not allowed to send money to the same address you are sending from.\" error message.",
+        "defaultMessage": "!!!Incorrect wallet password.",
+        "description": "\"Incorrect wallet password.\" error message.",
         "end": {
           "column": 3,
-          "line": 11
+          "line": 9
         },
-        "file": "source/renderer/app/api/transactions/errors.js",
-        "id": "api.errors.NotAllowedToSendMoneyToSameAddressError",
+        "file": "source/renderer/app/api/errors.js",
+        "id": "api.errors.IncorrectPasswordError",
         "start": {
-          "column": 43,
+          "column": 29,
           "line": 5
         }
       },
-      {
-        "defaultMessage": "!!!It is not allowed to send money to ada redemption address.",
-        "description": "\"It is not allowed to send money to ada redemption address.\" error message.",
-        "end": {
-          "column": 3,
-          "line": 18
-        },
-        "file": "source/renderer/app/api/transactions/errors.js",
-        "id": "api.errors.NotAllowedToSendMoneyToRedeemAddressError",
-        "start": {
-          "column": 45,
-          "line": 12
-        }
-      },
-      {
-        "defaultMessage": "!!!Not enough money to make this transaction.",
-        "description": "\"Not enough money to make this transaction.\" error message.",
-        "end": {
-          "column": 3,
-          "line": 23
-        },
-        "file": "source/renderer/app/api/transactions/errors.js",
-        "id": "api.errors.NotEnoughMoneyToSendError",
-        "start": {
-          "column": 29,
-          "line": 19
-        }
-      },
-      {
-        "defaultMessage": "!!!All your funds are already at the address you are trying send money to.",
-        "description": "\"All your funds are already at the address you are trying send money to.\" error message.",
-        "end": {
-          "column": 3,
-          "line": 30
-        },
-        "file": "source/renderer/app/api/transactions/errors.js",
-        "id": "api.errors.AllFundsAlreadyAtReceiverAddressError",
-        "start": {
-          "column": 41,
-          "line": 24
-        }
-      },
-      {
-        "defaultMessage": "!!!Not enough ada for fees. Try sending a smaller amount.",
-        "description": "\"Not enough ada for fees. Try sending a smaller amount.\" error message",
-        "end": {
-          "column": 3,
-          "line": 36
-        },
-        "file": "source/renderer/app/api/transactions/errors.js",
-        "id": "api.errors.NotEnoughFundsForTransactionFeesError",
-        "start": {
-          "column": 41,
-          "line": 31
-        }
-      },
-      {
-        "defaultMessage": "!!!Not enough ada . Try sending a smaller amount.",
-        "description": "\"Not enough ada . Try sending a smaller amount.\" error message",
-        "end": {
-          "column": 3,
-          "line": 42
-        },
-        "file": "source/renderer/app/api/transactions/errors.js",
-        "id": "api.errors.NotEnoughFundsForTransactionError",
-        "start": {
-          "column": 37,
-          "line": 37
-        }
-      },
-      {
-        "defaultMessage": "!!!Cannot calculate fees while there are pending transactions.",
-        "description": "\"Cannot calculate fees while there are pending transactions.\" error message",
-        "end": {
-          "column": 3,
-          "line": 49
-        },
-        "file": "source/renderer/app/api/transactions/errors.js",
-        "id": "api.errors.CanNotCalculateTransactionFeesError",
-        "start": {
-          "column": 39,
-          "line": 43
-        }
-      },
-      {
-        "defaultMessage": "!!!Transaction too big due to too many inputs.",
-        "description": "\"Transaction too big due to too many inputs.\" error message.",
-        "end": {
-          "column": 3,
-          "line": 54
-        },
-        "file": "source/renderer/app/api/transactions/errors.js",
-        "id": "api.errors.TooBigTransactionError",
-        "start": {
-          "column": 26,
-          "line": 50
-        }
-      },
-      {
-        "defaultMessage": "!!!Learn more.",
-        "description": "\"Transaction too big due to too many inputs.\" error link label.",
-        "end": {
-          "column": 3,
-          "line": 60
-        },
-        "file": "source/renderer/app/api/transactions/errors.js",
-        "id": "api.errors.TooBigTransactionErrorLinkLabel",
-        "start": {
-          "column": 35,
-          "line": 55
-        }
-      },
-      {
-        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/articles/360017733353",
-        "description": "\"Transaction too big due to too many inputs.\" error link URL.",
-        "end": {
-          "column": 3,
-          "line": 67
-        },
-        "file": "source/renderer/app/api/transactions/errors.js",
-        "id": "api.errors.TooBigTransactionErrorLinkURL",
-        "start": {
-          "column": 33,
-          "line": 61
-        }
-      },
-      {
-        "defaultMessage": "!!!Please enter a valid address.",
-        "description": "Error message shown when invalid address was entered.",
-        "end": {
-          "column": 3,
-          "line": 72
-        },
-        "file": "source/renderer/app/api/transactions/errors.js",
-        "id": "api.errors.invalidAddress",
-        "start": {
-          "column": 23,
-          "line": 68
-        }
-      }
-    ],
-    "path": "source/renderer/app/api/transactions/errors.json"
-  },
-  {
-    "descriptors": [
       {
         "defaultMessage": "!!!Wallet you are trying to restore already exists.",
         "description": "\"Wallet you are trying to restore already exists.\" error message.",
         "end": {
           "column": 3,
-          "line": 10
+          "line": 16
         },
-        "file": "source/renderer/app/api/wallets/errors.js",
+        "file": "source/renderer/app/api/errors.js",
         "id": "api.errors.WalletAlreadyRestoredError",
         "start": {
-          "column": 30,
-          "line": 5
+          "column": 23,
+          "line": 11
+        }
+      },
+      {
+        "defaultMessage": "!!!Invalid recovery phrase. Submitted recovery phrase is one of the example recovery phrases from the documentation and should not be used for wallets holding funds.",
+        "description": "\"Forbidden Mnemonic: an example Mnemonic has been submitted.\" error message",
+        "end": {
+          "column": 3,
+          "line": 23
+        },
+        "file": "source/renderer/app/api/errors.js",
+        "id": "api.errors.ForbiddenMnemonicError",
+        "start": {
+          "column": 21,
+          "line": 17
         }
       },
       {
@@ -254,13 +81,13 @@
         "description": "\"Wallet you are trying to import already exists.\" error message.",
         "end": {
           "column": 3,
-          "line": 16
+          "line": 29
         },
-        "file": "source/renderer/app/api/wallets/errors.js",
+        "file": "source/renderer/app/api/errors.js",
         "id": "api.errors.WalletAlreadyImportedError",
         "start": {
-          "column": 30,
-          "line": 11
+          "column": 25,
+          "line": 24
         }
       },
       {
@@ -268,17 +95,143 @@
         "description": "\"Wallet could not be imported, please make sure you are providing a correct file.\" error message.",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 36
         },
-        "file": "source/renderer/app/api/wallets/errors.js",
+        "file": "source/renderer/app/api/errors.js",
         "id": "api.errors.WalletFileImportError",
         "start": {
           "column": 25,
-          "line": 17
+          "line": 30
+        }
+      },
+      {
+        "defaultMessage": "!!!Invalid phrase entered, please check.",
+        "description": "Error message shown when invalid bip39 mnemonic was entered.",
+        "end": {
+          "column": 3,
+          "line": 41
+        },
+        "file": "source/renderer/app/api/errors.js",
+        "id": "global.errors.invalidMnemonic",
+        "start": {
+          "column": 19,
+          "line": 37
+        }
+      },
+      {
+        "defaultMessage": "!!!Not enough money to make this transaction.",
+        "description": "\"Not enough money to make this transaction.\" error message.",
+        "end": {
+          "column": 3,
+          "line": 47
+        },
+        "file": "source/renderer/app/api/errors.js",
+        "id": "api.errors.NotEnoughMoneyToSendError",
+        "start": {
+          "column": 18,
+          "line": 43
+        }
+      },
+      {
+        "defaultMessage": "!!!Cannot calculate fees while there are pending transactions.",
+        "description": "\"Cannot calculate fees while there are pending transactions.\" error message",
+        "end": {
+          "column": 3,
+          "line": 54
+        },
+        "file": "source/renderer/app/api/errors.js",
+        "id": "api.errors.CanNotCalculateTransactionFeesError",
+        "start": {
+          "column": 34,
+          "line": 48
+        }
+      },
+      {
+        "defaultMessage": "!!!Not enough ada for fees. Try sending a smaller amount.",
+        "description": "\"Not enough ada for fees. Try sending a smaller amount.\" error message",
+        "end": {
+          "column": 3,
+          "line": 60
+        },
+        "file": "source/renderer/app/api/errors.js",
+        "id": "api.errors.NotEnoughFundsForTransactionFeesError",
+        "start": {
+          "column": 18,
+          "line": 55
+        }
+      },
+      {
+        "defaultMessage": "!!!Transaction too big due to too many inputs.",
+        "description": "\"Transaction too big due to too many inputs.\" error message.",
+        "end": {
+          "column": 3,
+          "line": 65
+        },
+        "file": "source/renderer/app/api/errors.js",
+        "id": "api.errors.TooBigTransactionError",
+        "start": {
+          "column": 23,
+          "line": 61
+        }
+      },
+      {
+        "defaultMessage": "!!!Not enough ada . Try sending a smaller amount.",
+        "description": "\"Not enough ada . Try sending a smaller amount.\" error message",
+        "end": {
+          "column": 3,
+          "line": 71
+        },
+        "file": "source/renderer/app/api/errors.js",
+        "id": "api.errors.NotEnoughFundsForTransactionError",
+        "start": {
+          "column": 32,
+          "line": 66
+        }
+      },
+      {
+        "defaultMessage": "!!!Please enter a valid address.",
+        "description": "Error message shown when invalid address was entered.",
+        "end": {
+          "column": 3,
+          "line": 76
+        },
+        "file": "source/renderer/app/api/errors.js",
+        "id": "api.errors.invalidAddress",
+        "start": {
+          "column": 18,
+          "line": 72
+        }
+      },
+      {
+        "defaultMessage": "!!!Learn more.",
+        "description": "\"Transaction too big due to too many inputs.\" error link label.",
+        "end": {
+          "column": 3,
+          "line": 82
+        },
+        "file": "source/renderer/app/api/errors.js",
+        "id": "api.errors.TooBigTransactionErrorLinkLabel",
+        "start": {
+          "column": 35,
+          "line": 77
+        }
+      },
+      {
+        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/articles/360017733353",
+        "description": "\"Transaction too big due to too many inputs.\" error link URL.",
+        "end": {
+          "column": 3,
+          "line": 89
+        },
+        "file": "source/renderer/app/api/errors.js",
+        "id": "api.errors.TooBigTransactionErrorLinkURL",
+        "start": {
+          "column": 33,
+          "line": 83
         }
       }
     ],
-    "path": "source/renderer/app/api/wallets/errors.json"
+    "path": "source/renderer/app/api/errors.json"
   },
   {
     "descriptors": [
@@ -8998,7 +8951,7 @@
         }
       },
       {
-        "defaultMessage": "!!!These wallets were found in your Daedalus state directory. Please select the wallets you want to import.",
+        "defaultMessage": "!!!These wallets were found in your Daedalus state directory.<pPlease select the wallets you want to import.</p>",
         "description": "These wallets were found in your Daedalus state directory. Please select the wallets you want to import.",
         "end": {
           "column": 3,
@@ -11480,31 +11433,17 @@
         }
       },
       {
-        "defaultMessage": "!!!Invalid phrase entered, please check.",
-        "description": "Error message shown when invalid bip39 mnemonic was entered.",
+        "defaultMessage": "!!!Invalid email entered, please check.",
+        "description": "Error message shown when invalid email was entered.",
         "end": {
           "column": 3,
           "line": 20
         },
         "file": "source/renderer/app/i18n/global-messages.js",
-        "id": "global.errors.invalidMnemonic",
-        "start": {
-          "column": 19,
-          "line": 16
-        }
-      },
-      {
-        "defaultMessage": "!!!Invalid email entered, please check.",
-        "description": "Error message shown when invalid email was entered.",
-        "end": {
-          "column": 3,
-          "line": 25
-        },
-        "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.errors.invalidEmail",
         "start": {
           "column": 16,
-          "line": 21
+          "line": 16
         }
       },
       {
@@ -11512,13 +11451,13 @@
         "description": "Error message shown when invalid wallet name was entered in create wallet dialog.",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 26
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.errors.invalidWalletName",
         "start": {
           "column": 21,
-          "line": 26
+          "line": 21
         }
       },
       {
@@ -11526,13 +11465,13 @@
         "description": "Error message shown when invalid wallet password was entered in create wallet dialog.",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 32
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.errors.invalidSpendingPassword",
         "start": {
           "column": 27,
-          "line": 32
+          "line": 27
         }
       },
       {
@@ -11540,13 +11479,13 @@
         "description": "Error message shown when wallet password and repeat passwords don't match in create wallet dialog.",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 38
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.errors.invalidRepeatPassword",
         "start": {
           "column": 25,
-          "line": 38
+          "line": 33
         }
       },
       {
@@ -11554,13 +11493,13 @@
         "description": "Error message shown when the file the user tries to replace is open.",
         "end": {
           "column": 3,
-          "line": 50
+          "line": 45
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.errors.paperWalletOpenPdfError",
         "start": {
           "column": 27,
-          "line": 44
+          "line": 39
         }
       },
       {
@@ -11568,13 +11507,13 @@
         "description": "Error message shown when the file the user tries to replace is open.",
         "end": {
           "column": 3,
-          "line": 57
+          "line": 52
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.errors.rewardsOpenCsvError",
         "start": {
           "column": 23,
-          "line": 51
+          "line": 46
         }
       },
       {
@@ -11582,13 +11521,13 @@
         "description": "Password instructions note.",
         "end": {
           "column": 3,
-          "line": 63
+          "line": 58
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.passwordInstructions",
         "start": {
           "column": 24,
-          "line": 58
+          "line": 53
         }
       },
       {
@@ -11596,13 +11535,13 @@
         "description": "The word \"cancel\" reused at several places (like cancel buttons)",
         "end": {
           "column": 3,
-          "line": 69
+          "line": 64
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.cancel",
         "start": {
           "column": 10,
-          "line": 64
+          "line": 59
         }
       },
       {
@@ -11610,13 +11549,13 @@
         "description": "The word \"close\" reused at several places (like cancel buttons)",
         "end": {
           "column": 3,
-          "line": 75
+          "line": 70
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.close",
         "start": {
           "column": 9,
-          "line": 70
+          "line": 65
         }
       },
       {
@@ -11624,13 +11563,13 @@
         "description": "The word \"change\" reused at several places (like change buttons)",
         "end": {
           "column": 3,
-          "line": 81
+          "line": 76
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.change",
         "start": {
           "column": 10,
-          "line": 76
+          "line": 71
         }
       },
       {
@@ -11638,13 +11577,13 @@
         "description": "The word \"create\" reused at several places (like create buttons)",
         "end": {
           "column": 3,
-          "line": 87
+          "line": 82
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.create",
         "start": {
           "column": 10,
-          "line": 82
+          "line": 77
         }
       },
       {
@@ -11652,13 +11591,13 @@
         "description": "The word \"remove\" reused at several places (like remove buttons)",
         "end": {
           "column": 3,
-          "line": 93
+          "line": 88
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.remove",
         "start": {
           "column": 10,
-          "line": 88
+          "line": 83
         }
       },
       {
@@ -11666,13 +11605,13 @@
         "description": "The word \"save\" reused at several places (like save buttons)",
         "end": {
           "column": 3,
-          "line": 98
+          "line": 93
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.save",
         "start": {
           "column": 8,
-          "line": 94
+          "line": 89
         }
       },
       {
@@ -11680,13 +11619,13 @@
         "description": "Language name for \"English\" language.",
         "end": {
           "column": 3,
-          "line": 103
+          "line": 98
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.language.english",
         "start": {
           "column": 19,
-          "line": 99
+          "line": 94
         }
       },
       {
@@ -11694,13 +11633,13 @@
         "description": "Language name for \"Japanese\" language.",
         "end": {
           "column": 3,
-          "line": 108
+          "line": 103
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.language.japanese",
         "start": {
           "column": 20,
-          "line": 104
+          "line": 99
         }
       },
       {
@@ -11708,13 +11647,13 @@
         "description": "Language name for \"Chinese\" language.",
         "end": {
           "column": 3,
-          "line": 113
+          "line": 108
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.language.chinese",
         "start": {
           "column": 19,
-          "line": 109
+          "line": 104
         }
       },
       {
@@ -11722,13 +11661,13 @@
         "description": "Language name for \"Korean\" language.",
         "end": {
           "column": 3,
-          "line": 118
+          "line": 113
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.language.korean",
         "start": {
           "column": 18,
-          "line": 114
+          "line": 109
         }
       },
       {
@@ -11736,13 +11675,13 @@
         "description": "Language name for \"German\" language.",
         "end": {
           "column": 3,
-          "line": 123
+          "line": 118
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.language.german",
         "start": {
           "column": 18,
-          "line": 119
+          "line": 114
         }
       },
       {
@@ -11750,13 +11689,13 @@
         "description": "Language name for \"Croatian\" language.",
         "end": {
           "column": 3,
-          "line": 128
+          "line": 123
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.language.croatian",
         "start": {
           "column": 20,
-          "line": 124
+          "line": 119
         }
       },
       {
@@ -11764,13 +11703,13 @@
         "description": "Colon punctuation.",
         "end": {
           "column": 3,
-          "line": 133
+          "line": 128
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.punctuation.colon",
         "start": {
           "column": 20,
-          "line": 129
+          "line": 124
         }
       },
       {
@@ -11778,13 +11717,13 @@
         "description": "Final dot punctuation.",
         "end": {
           "column": 3,
-          "line": 138
+          "line": 133
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.punctuation.dot",
         "start": {
           "column": 18,
-          "line": 134
+          "line": 129
         }
       },
       {
@@ -11792,13 +11731,13 @@
         "description": "Name for \"ADA\" unit.",
         "end": {
           "column": 3,
-          "line": 143
+          "line": 138
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.unit.ada",
         "start": {
           "column": 11,
-          "line": 139
+          "line": 134
         }
       },
       {
@@ -11806,13 +11745,13 @@
         "description": "Title for the \"Recovery Phrase\" dialog.",
         "end": {
           "column": 3,
-          "line": 148
+          "line": 143
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "wallet.backup.recovery.phrase.dialog.title",
         "start": {
           "column": 29,
-          "line": 144
+          "line": 139
         }
       },
       {
@@ -11820,13 +11759,13 @@
         "description": "Label for the \"Wallet password\" input in the create wallet dialog.",
         "end": {
           "column": 3,
-          "line": 154
+          "line": 149
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.spendingPasswordLabel",
         "start": {
           "column": 25,
-          "line": 149
+          "line": 144
         }
       },
       {
@@ -11834,13 +11773,13 @@
         "description": "Placeholder for the \"Password\" inputs in the create wallet dialog.",
         "end": {
           "column": 3,
-          "line": 160
+          "line": 155
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.spendingPasswordPlaceholder",
         "start": {
           "column": 31,
-          "line": 155
+          "line": 150
         }
       },
       {
@@ -11848,13 +11787,13 @@
         "description": "Label \"Continue\" in dialogs.",
         "end": {
           "column": 3,
-          "line": 165
+          "line": 160
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.dialog.button.continue",
         "start": {
           "column": 29,
-          "line": 161
+          "line": 156
         }
       },
       {
@@ -11862,13 +11801,13 @@
         "description": "URL for the \"Known Issues\" link in the \"Help and support\" section on the support settings page",
         "end": {
           "column": 3,
-          "line": 172
+          "line": 167
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "settings.support.faq.faqLinkURL",
         "start": {
           "column": 14,
-          "line": 166
+          "line": 161
         }
       },
       {
@@ -11876,13 +11815,13 @@
         "description": "Name for \"Ada\" unit.",
         "end": {
           "column": 3,
-          "line": 177
+          "line": 172
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.currency.ada",
         "start": {
           "column": 12,
-          "line": 173
+          "line": 168
         }
       },
       {
@@ -11890,13 +11829,13 @@
         "description": "Name for \"Cardano\" client.",
         "end": {
           "column": 3,
-          "line": 182
+          "line": 177
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.apiName.cardano",
         "start": {
           "column": 11,
-          "line": 178
+          "line": 173
         }
       },
       {
@@ -11904,13 +11843,13 @@
         "description": "\"mainnet\" Cardano network",
         "end": {
           "column": 3,
-          "line": 187
+          "line": 182
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.mainnet",
         "start": {
           "column": 19,
-          "line": 183
+          "line": 178
         }
       },
       {
@@ -11918,13 +11857,13 @@
         "description": "\"staging\" Cardano network",
         "end": {
           "column": 3,
-          "line": 192
+          "line": 187
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.staging",
         "start": {
           "column": 19,
-          "line": 188
+          "line": 183
         }
       },
       {
@@ -11932,13 +11871,13 @@
         "description": "\"testnet\" Cardano network",
         "end": {
           "column": 3,
-          "line": 197
+          "line": 192
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.testnet",
         "start": {
           "column": 19,
-          "line": 193
+          "line": 188
         }
       },
       {
@@ -11946,13 +11885,13 @@
         "description": "\"development\" Cardano network",
         "end": {
           "column": 3,
-          "line": 202
+          "line": 197
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.development",
         "start": {
           "column": 23,
-          "line": 198
+          "line": 193
         }
       },
       {
@@ -11960,13 +11899,13 @@
         "description": "\"itn_rewards_v1\" Cardano network",
         "end": {
           "column": 3,
-          "line": 207
+          "line": 202
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.itn_rewards_v1",
         "start": {
           "column": 26,
-          "line": 203
+          "line": 198
         }
       },
       {
@@ -11974,13 +11913,13 @@
         "description": "\"itn_selfnode\" Cardano network",
         "end": {
           "column": 3,
-          "line": 212
+          "line": 207
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.itn_selfnode",
         "start": {
           "column": 24,
-          "line": 208
+          "line": 203
         }
       },
       {
@@ -11988,13 +11927,13 @@
         "description": "\"selfnode\" Cardano network",
         "end": {
           "column": 3,
-          "line": 217
+          "line": 212
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.selfnode",
         "start": {
           "column": 20,
-          "line": 213
+          "line": 208
         }
       },
       {
@@ -12002,13 +11941,13 @@
         "description": "\"qa\" Cardano network",
         "end": {
           "column": 3,
-          "line": 222
+          "line": 217
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.qa",
         "start": {
           "column": 14,
-          "line": 218
+          "line": 213
         }
       },
       {
@@ -12016,13 +11955,13 @@
         "description": "\"nightly\" Cardano network",
         "end": {
           "column": 3,
-          "line": 227
+          "line": 222
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.nightly",
         "start": {
           "column": 19,
-          "line": 223
+          "line": 218
         }
       },
       {
@@ -12030,13 +11969,13 @@
         "description": "Label for years value in duration.",
         "end": {
           "column": 3,
-          "line": 232
+          "line": 227
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.duration.years",
         "start": {
           "column": 9,
-          "line": 228
+          "line": 223
         }
       },
       {
@@ -12044,13 +11983,13 @@
         "description": "Label for months value in duration.",
         "end": {
           "column": 3,
-          "line": 237
+          "line": 232
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.duration.months",
         "start": {
           "column": 10,
-          "line": 233
+          "line": 228
         }
       },
       {
@@ -12058,13 +11997,13 @@
         "description": "Label for days value in duration.",
         "end": {
           "column": 3,
-          "line": 242
+          "line": 237
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.duration.days",
         "start": {
           "column": 8,
-          "line": 238
+          "line": 233
         }
       },
       {
@@ -12072,13 +12011,13 @@
         "description": "Label for hours value in duration.",
         "end": {
           "column": 3,
-          "line": 247
+          "line": 242
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.duration.hours",
         "start": {
           "column": 9,
-          "line": 243
+          "line": 238
         }
       },
       {
@@ -12086,13 +12025,13 @@
         "description": "Label for minutes value in duration.",
         "end": {
           "column": 3,
-          "line": 252
+          "line": 247
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.duration.minutes",
         "start": {
           "column": 11,
-          "line": 248
+          "line": 243
         }
       },
       {
@@ -12100,13 +12039,13 @@
         "description": "Label for seconds value in duration.",
         "end": {
           "column": 3,
-          "line": 257
+          "line": 252
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.duration.seconds",
         "start": {
           "column": 11,
-          "line": 253
+          "line": 248
         }
       },
       {
@@ -12114,13 +12053,13 @@
         "description": "From label of range.",
         "end": {
           "column": 3,
-          "line": 262
+          "line": 257
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.range.from",
         "start": {
           "column": 13,
-          "line": 258
+          "line": 253
         }
       },
       {
@@ -12128,13 +12067,13 @@
         "description": "To label of range.",
         "end": {
           "column": 3,
-          "line": 267
+          "line": 262
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.range.to",
         "start": {
           "column": 11,
-          "line": 263
+          "line": 258
         }
       },
       {
@@ -12142,13 +12081,13 @@
         "description": "Filter label.",
         "end": {
           "column": 3,
-          "line": 272
+          "line": 267
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.filter",
         "start": {
           "column": 10,
-          "line": 268
+          "line": 263
         }
       },
       {
@@ -12156,13 +12095,13 @@
         "description": "All label.",
         "end": {
           "column": 3,
-          "line": 277
+          "line": 272
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.all",
         "start": {
           "column": 7,
-          "line": 273
+          "line": 268
         }
       },
       {
@@ -12170,13 +12109,13 @@
         "description": "Reset label.",
         "end": {
           "column": 3,
-          "line": 282
+          "line": 277
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.reset",
         "start": {
           "column": 9,
-          "line": 278
+          "line": 273
         }
       }
     ],

@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import { defineMessages, intlShape } from 'react-intl';
+import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import ReactModal from 'react-modal';
 import { observer } from 'mobx-react';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
@@ -33,7 +33,7 @@ const messages = defineMessages({
   description: {
     id: 'wallet.select.import.dialog.description',
     defaultMessage:
-      '!!!These wallets were found in your Daedalus state directory. Please select the wallets you want to import.',
+      '!!!These wallets were found in your Daedalus state directory.<pPlease select the wallets you want to import.</p>',
     description:
       'These wallets were found in your Daedalus state directory. Please select the wallets you want to import.',
   },
@@ -202,7 +202,6 @@ export default class WalletSelectImportDialog extends Component<Props> {
     } = this.props;
 
     const title = intl.formatMessage(messages.title);
-    const description = intl.formatMessage(messages.description);
     const buttonLabel = !isSubmitting ? (
       intl.formatMessage(messages.buttonLabel)
     ) : (
@@ -241,7 +240,9 @@ export default class WalletSelectImportDialog extends Component<Props> {
           <div className={styles.backgroundContainer} />
           <div className={styles.content}>
             <div className={styles.title}>{title}</div>
-            <div className={styles.description}>{description}</div>
+            <div className={styles.description}>
+              <FormattedHTMLMessage {...messages.description} />
+            </div>
             <hr className={styles.separatorTop} />
             <div className={styles.walletsContainer}>
               {walletsWithNames.map(wallet => {
@@ -287,24 +288,25 @@ export default class WalletSelectImportDialog extends Component<Props> {
                 );
               })}
 
-              {walletsWithNames.length && walletsWithoutNames.length ? (
-                <hr className={styles.separatorMiddle} />
-              ) : null}
-
-              <div className={styles.unamedWalletsTitle}>
-                <p>{intl.formatMessage(messages.unamedWalletsTitle)}</p>
-                <Tooltip
-                  className={styles.unamedWalletsTooltip}
-                  skin={TooltipSkin}
-                  tip={intl.formatMessage(messages.unamedWalletsTooltip)}
-                  arrowRelativeToTip
-                >
-                  <SVGInline
-                    svg={infoIcon}
-                    className={styles.walletsStatusIconCheckmark}
-                  />
-                </Tooltip>
-              </div>
+              {!!walletsWithoutNames.length && (
+                <div className={styles.unamedWalletsTitle}>
+                  {!!walletsWithNames.length && (
+                    <hr className={styles.separatorMiddle} />
+                  )}
+                  <p>{intl.formatMessage(messages.unamedWalletsTitle)}</p>
+                  <Tooltip
+                    className={styles.unamedWalletsTooltip}
+                    skin={TooltipSkin}
+                    tip={intl.formatMessage(messages.unamedWalletsTooltip)}
+                    arrowRelativeToTip
+                  >
+                    <SVGInline
+                      svg={infoIcon}
+                      className={styles.walletsStatusIconCheckmark}
+                    />
+                  </Tooltip>
+                </div>
+              )}
 
               {walletsWithoutNames.map(wallet => {
                 walletIndex++;

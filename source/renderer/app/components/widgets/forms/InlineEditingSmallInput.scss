@@ -7,6 +7,7 @@
   width: 275px;
 
   &.isActive {
+    border: 1px solid var(--theme-input-focus-border-color);
     padding-right: 86px;
   }
 
@@ -64,7 +65,7 @@
     height: 28px;
     position: absolute;
     right: 10px;
-    top: 10px;
+    top: 9px;
     width: 28px;
 
     .penIcon {
