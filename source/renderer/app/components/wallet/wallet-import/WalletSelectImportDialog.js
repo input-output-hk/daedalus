@@ -9,6 +9,8 @@ import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
 import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
 import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
 import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
+import { Link } from 'react-polymorph/lib/components/Link';
+import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import classNames from 'classnames';
 import SVGInline from 'react-svg-inline';
 import styles from './WalletSelectImportDialog.scss';
@@ -85,6 +87,11 @@ const messages = defineMessages({
     id: 'wallet.select.import.dialog.buttonLabel',
     defaultMessage: '!!!Import selected wallets',
     description: 'Import selected wallets',
+  },
+  closeWindow: {
+    id: 'wallet.select.import.dialog.closeWindow',
+    defaultMessage: '!!!Close window',
+    description: 'Close window',
   },
 });
 
@@ -328,6 +335,13 @@ export default class WalletSelectImportDialog extends Component<Props> {
                 label={buttonLabel}
                 onClick={onConfirm}
                 skin={ButtonSkin}
+              />
+              <Link
+                className={styles.closeWindowLink}
+                onClick={onClose}
+                label={intl.formatMessage(messages.closeWindow)}
+                skin={LinkSkin}
+                hasIconAfter={false}
               />
             </div>
           </div>
