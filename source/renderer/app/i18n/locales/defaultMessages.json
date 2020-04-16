@@ -9152,17 +9152,31 @@
         }
       },
       {
-        "defaultMessage": "!!!Wallet imported",
-        "description": "Wallet imported",
+        "defaultMessage": "!!!Enter a wallet name first",
+        "description": "Enter a wallet name first",
         "end": {
           "column": 3,
           "line": 85
         },
         "file": "source/renderer/app/components/wallet/wallet-import/WalletSelectImportDialog.js",
+        "id": "wallet.select.import.dialog.enterWalletNameTooltip",
+        "start": {
+          "column": 26,
+          "line": 81
+        }
+      },
+      {
+        "defaultMessage": "!!!Wallet imported",
+        "description": "Wallet imported",
+        "end": {
+          "column": 3,
+          "line": 90
+        },
+        "file": "source/renderer/app/components/wallet/wallet-import/WalletSelectImportDialog.js",
         "id": "wallet.select.import.dialog.walletImported",
         "start": {
           "column": 18,
-          "line": 81
+          "line": 86
         }
       },
       {
@@ -9170,13 +9184,13 @@
         "description": "Import selected wallets",
         "end": {
           "column": 3,
-          "line": 90
+          "line": 95
         },
         "file": "source/renderer/app/components/wallet/wallet-import/WalletSelectImportDialog.js",
         "id": "wallet.select.import.dialog.buttonLabel",
         "start": {
           "column": 15,
-          "line": 86
+          "line": 91
         }
       },
       {
@@ -9184,13 +9198,13 @@
         "description": "Close window",
         "end": {
           "column": 3,
-          "line": 95
+          "line": 100
         },
         "file": "source/renderer/app/components/wallet/wallet-import/WalletSelectImportDialog.js",
         "id": "wallet.select.import.dialog.closeWindow",
         "start": {
           "column": 15,
-          "line": 91
+          "line": 96
         }
       }
     ],

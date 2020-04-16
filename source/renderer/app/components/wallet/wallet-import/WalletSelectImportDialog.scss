@@ -137,7 +137,17 @@
       }
     }
 
+    .tooltip {
+      :global {
+        .SimpleBubble_bubble {
+          background: #5e6066;
+          white-space: normal;
+        }
+      }
+    }
+
     .unamedWalletsTooltip {
+      @extend .tooltip;
       display: inline-block;
       margin-left: 5px;
 
@@ -146,9 +156,23 @@
           margin: 0 0 -7px -14px;
           width: 330px;
         }
-        .SimpleBubble_bubble {
-          background: #5e6066;
-          white-space: normal;
+      }
+    }
+    .enterWalletNameTooltip {
+      @extend .tooltip;
+      display: block;
+      :global {
+        .SimpleTooltip_bubble {
+          margin: 0 0 0 -84px;
+          .SimpleBubble_bubble {
+            white-space: nowrap;
+          }
+          span {
+            &:before,
+            &:after {
+              margin-left: 78px;
+            }
+          }
         }
       }
     }
@@ -291,10 +315,9 @@
     }
 
     .action {
-      align-items: center;
-      display: flex;
-      flex-direction: column;
-
+      margin-bottom: 20px;
+      padding: 10px 0;
+      text-align: center;
       .actionButton {
         background-color: var(
           --theme-splash-network-overlay-button-background-color
@@ -302,9 +325,11 @@
         border: solid 1px
           var(--theme-splash-network-overlay-button-border-color);
         color: var(--theme-splash-network-overlay-button-text-color);
+        display: block;
         font-weight: 500;
         line-height: 1.36;
         margin: 0 auto 20px;
+        min-height: 50px;
 
         &:hover {
           background-color: var(
