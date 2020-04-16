@@ -8,7 +8,7 @@
 
   &.hasError {
     border-color: var(--rp-textarea-border-color-errored) !important;
-    margin-bottom: 19px;
+    margin-bottom: 24px;
   }
 
   &.isActive {
@@ -42,7 +42,8 @@
   :global {
     .SimpleFormField_root {
       .SimpleFormField_error {
-        top: 47px;
+        top: 52px;
+        font-family: var(--font-medium);
       }
     }
     .SimpleInput_input {
