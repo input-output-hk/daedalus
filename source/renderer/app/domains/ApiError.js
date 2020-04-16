@@ -113,7 +113,7 @@ export default class ApiError {
       this.clause = false;
     }
 
-    if (values) {
+    if (values && this.clause) {
       const transformedValues = {};
       map(values, (val, key) => {
         const translated = get(messages, val);
