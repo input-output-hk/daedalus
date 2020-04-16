@@ -705,7 +705,7 @@ export default class AdaApi {
         logError: true,
         msg: 'AdaApi::calculateTransactionFee error',
       })
-        .set(notEnoughMoneyError)
+        .set(notEnoughMoneyError, true)
         .where('code', 'not_enough_money')
         .set('invalidAddress')
         .where('code', 'bad_request')

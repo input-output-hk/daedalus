@@ -1,6 +1,6 @@
 // @flow
 import { observable, action } from 'mobx';
-import { includes, camelCase, get, snakeCase, map } from 'lodash';
+import { includes, camelCase, get, snakeCase, map, keys, omit } from 'lodash';
 import { GenericApiError } from '../api/common/errors';
 import { messages } from '../api/errors';
 import { logger } from '../utils/logging';
@@ -60,6 +60,7 @@ export default class ApiError {
   @observable tempError: string = '';
   @observable clause: boolean;
   @observable forceSet: boolean = false;
+  @observable additionalValues: Object = {};
   isFinalError: boolean = false;
   id: string;
   defaultMessage: string;
@@ -122,18 +123,33 @@ export default class ApiError {
           transformedValues[key] = val;
         }
       });
+      this.additionalValues = transformedValues;
       Object.assign(this, {
-        values: transformedValues,
+        values: {
+          ...this.values,
+          ...transformedValues,
+        },
       });
     }
     return this;
   }
 
   @action where(type: string, declaration: string) {
-    if (this.clause && !this.isFinalError) {
+    if (
+      this.clause &&
+      (!this.isFinalError || (this.isFinalError && this.forceSet))
+    ) {
       this.clause = this.values[type] === declaration;
       if (!this.clause) {
         this.tempError = '';
+        if (this.additionalValues) {
+          const additionalValuesKeys = keys(this.additionalValues);
+          this.values = omit(this.values, additionalValuesKeys);
+        }
+        if (this.forceSet) {
+          this.clause = false;
+          this.forceSet = false;
+        }
       }
     }
     return this;
