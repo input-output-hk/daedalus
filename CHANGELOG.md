@@ -9,7 +9,7 @@ Changelog
 
 ### Chores
 
-- Updated `cardano-wallet` to revision `7194126ca7933e08a9cd2528c94ef689623cb0f6` ([PR 1963](https://github.com/input-output-hk/daedalus/pull/1963))
+- Updated `cardano-wallet` to revision `7194126c` ([PR 1963](https://github.com/input-output-hk/daedalus/pull/1963))
 - Implemented smart error handler ([PR 1962](https://github.com/input-output-hk/daedalus/pull/1962))
 - Separated handling of `cardano-wallet` and `cardano-node` logs ([PR 1960](https://github.com/input-output-hk/daedalus/pull/1960))
 - Refactored and improved automated tests setup ([PR 1912](https://github.com/input-output-hk/daedalus/pull/1912))
