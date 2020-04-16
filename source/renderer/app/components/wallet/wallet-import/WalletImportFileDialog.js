@@ -102,7 +102,8 @@ export default class WalletImportFileDialog extends Component<Props> {
     const onLinkClick = () =>
       onOpenExternalLink(intl.formatMessage(messages.linkUrl));
 
-    const error = exportErrors !== '';
+    const resetErrorCheck = this.stateFolderInput && this.stateFolderInput.inputElement.current.value !== exportSourcePath;
+    const error = !resetErrorCheck && exportErrors !== '';
 
     const inputClasses = classNames([
       styles.stateFolderInput,
@@ -110,7 +111,7 @@ export default class WalletImportFileDialog extends Component<Props> {
     ]);
 
     const buttonClasses = classNames(styles.actionButton, [
-      isSubmitting ? styles.disabled : null,
+      isSubmitting || error ? styles.disabled : null,
     ]);
 
     return (
