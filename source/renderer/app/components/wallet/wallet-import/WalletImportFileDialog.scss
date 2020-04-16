@@ -146,6 +146,7 @@
             color: var(--theme-wallet-import-stateFolder-label-color);
             font-size: 16px;
             line-height: 1.38;
+            padding-right: 48px;
           }
 
           &.error {
@@ -223,7 +224,7 @@
     border-radius: 3px;
     cursor: pointer;
     height: 28px;
-    left: -35px;
+    left: -38px;
     position: relative;
     top: -1px;
     width: 28px;
