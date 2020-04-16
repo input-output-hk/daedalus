@@ -18,6 +18,8 @@ import arrowIcon from '../../../assets/images/arrow-right.inline.svg';
 type Props = {
   className?: string,
   isActive: boolean,
+  isDisabled: boolean,
+  placeholder?: string,
   inputFieldLabel?: string,
   inputFieldValue: string,
   onStartEditing?: Function,
@@ -136,9 +138,10 @@ export default class InlineEditingSmallInput extends Component<Props, State> {
     const {
       className,
       inputFieldLabel,
-      // isActive,
+      isDisabled,
       inputBlocked,
       maxLength,
+      placeholder,
     } = this.props;
     const { isActive } = this.state;
     let { successfullyUpdated } = this.props;
@@ -147,6 +150,7 @@ export default class InlineEditingSmallInput extends Component<Props, State> {
       className,
       styles.component,
       isActive ? styles.isActive : null,
+      isDisabled ? styles.disabled : null,
     ]);
     const inputStyles = classnames([
       successfullyUpdated ? 'input_animateSuccess' : null,
@@ -177,69 +181,74 @@ export default class InlineEditingSmallInput extends Component<Props, State> {
           onBlur={inputField.onBlur}
           onKeyDown={event => this.handleInputKeyDown(event)}
           error={isActive || inputBlocked ? inputField.error : null}
-          disabled={!isActive}
+          disabled={isDisabled}
+          placeholder={placeholder || ''}
           ref={input => {
             this.inputField = input;
           }}
           skin={InputSkin}
         />
-        {!isActive ? (
-          <Button
-            className={styles.rightButton}
-            label={
-              <SVGInline
-                svg={penIcon}
-                className={styles.penIcon}
-                style={{ pointerEvents: 'none' }}
-              />
-            }
-            onMouseUp={() => this.input.focus()}
-            onMouseDown={(event: SyntheticMouseEvent<HTMLElement>) => {
-              event.persist();
-              event.preventDefault();
-              event.stopPropagation();
-            }}
-            skin={ButtonSkin}
-          />
-        ) : (
+        {!isDisabled && (
           <>
-            <Button
-              className={styles.leftButton}
-              label={
-                <SVGInline
-                  svg={crossIcon}
-                  className={styles.crossIcon}
-                  style={{ pointerEvents: 'none' }}
+            {!isActive ? (
+              <Button
+                className={styles.rightButton}
+                label={
+                  <SVGInline
+                    svg={penIcon}
+                    className={styles.penIcon}
+                    style={{ pointerEvents: 'none' }}
+                  />
+                }
+                onMouseUp={() => this.input.focus()}
+                onMouseDown={(event: SyntheticMouseEvent<HTMLElement>) => {
+                  event.persist();
+                  event.preventDefault();
+                  event.stopPropagation();
+                }}
+                skin={ButtonSkin}
+              />
+            ) : (
+              <>
+                <Button
+                  className={styles.leftButton}
+                  label={
+                    <SVGInline
+                      svg={crossIcon}
+                      className={styles.crossIcon}
+                      style={{ pointerEvents: 'none' }}
+                    />
+                  }
+                  onMouseUp={() => {
+                    this.onCancel();
+                    this.input.blur();
+                  }}
+                  onMouseDown={(event: SyntheticMouseEvent<HTMLElement>) => {
+                    event.persist();
+                    event.preventDefault();
+                    event.stopPropagation();
+                  }}
+                  skin={ButtonSkin}
                 />
-              }
-              onMouseUp={() => {
-                this.onCancel();
-                this.input.blur();
-              }}
-              onMouseDown={(event: SyntheticMouseEvent<HTMLElement>) => {
-                event.persist();
-                event.preventDefault();
-                event.stopPropagation();
-              }}
-              skin={ButtonSkin}
-            />
-            <Button
-              className={styles.rightButton}
-              label={
-                <SVGInline
-                  svg={arrowIcon}
-                  className={styles.arrowIcon}
-                  style={{ pointerEvents: 'none' }}
+                <Button
+                  className={styles.rightButton}
+                  label={
+                    <SVGInline
+                      svg={arrowIcon}
+                      className={styles.arrowIcon}
+                      style={{ pointerEvents: 'none' }}
+                    />
+                  }
+                  onMouseUp={() => this.input.blur()}
+                  onMouseDown={(event: SyntheticMouseEvent<HTMLElement>) => {
+                    event.persist();
+                    event.preventDefault();
+                    event.stopPropagation();
+                  }}
+                  skin={ButtonSkin}
                 />
-              }
-              onMouseUp={() => this.input.blur()}
-              onMouseDown={(event: SyntheticMouseEvent<HTMLElement>) => {
-                event.persist();
-                event.preventDefault();
-                event.stopPropagation();
-              }}
-              skin={ButtonSkin}
-            />
+              </>
+            )}
           </>
         )}
       </div>

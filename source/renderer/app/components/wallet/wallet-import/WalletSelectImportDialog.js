@@ -114,11 +114,12 @@ export default class WalletSelectImportDialog extends Component<Props> {
   };
 
   getWalletStatusIcon = (wallet: ExportedByronWallet) => {
-    const { onToggleWalletImportSelection } = this.props;
+    const { nameValidator, onToggleWalletImportSelection } = this.props;
     let statusIcon;
     if (
       wallet.import.status === WalletImportStatuses.UNSTARTED ||
-      wallet.import.status === WalletImportStatuses.PENDING
+      wallet.import.status === WalletImportStatuses.PENDING ||
+      wallet.import.status === WalletImportStatuses.ERRORED
     ) {
       statusIcon = (
         <Checkbox
@@ -126,6 +127,7 @@ export default class WalletSelectImportDialog extends Component<Props> {
             onToggleWalletImportSelection(wallet.id);
           }}
           checked={wallet.import.status === WalletImportStatuses.PENDING}
+          disabled={wallet.name === null || !nameValidator(wallet.name)}
           skin={CheckboxSkin}
         />
       );
@@ -206,10 +208,14 @@ export default class WalletSelectImportDialog extends Component<Props> {
                     >{`${walletIndex}.`}</div>
                     <div className={styles.walletsInputField}>
                       <InlineEditingSmallInput
-                        isActive
-                        inputFieldValue={
-                          wallet.name || intl.formatMessage(messages.notFound)
+                        isActive={false}
+                        isDisabled={
+                          wallet.import.status ===
+                            WalletImportStatuses.COMPLETED ||
+                          wallet.import.status === WalletImportStatuses.RUNNING
                         }
+                        inputFieldValue={wallet.name || ''}
+                        placeholder={intl.formatMessage(messages.walletName)}
                         isValid={nameValidator}
                         validationErrorMessage={intl.formatMessage(
                           globalMessages.invalidWalletName
@@ -245,10 +251,14 @@ export default class WalletSelectImportDialog extends Component<Props> {
                     >{`${walletIndex}.`}</div>
                     <div className={styles.walletsInputField}>
                       <InlineEditingSmallInput
-                        isActive
-                        inputFieldValue={
-                          wallet.name || intl.formatMessage(messages.notFound)
+                        isActive={false}
+                        isDisabled={
+                          wallet.import.status ===
+                            WalletImportStatuses.COMPLETED ||
+                          wallet.import.status === WalletImportStatuses.RUNNING
                         }
+                        inputFieldValue={wallet.name || ''}
+                        placeholder={intl.formatMessage(messages.notFound)}
                         isValid={nameValidator}
                         validationErrorMessage={intl.formatMessage(
                           globalMessages.invalidWalletName

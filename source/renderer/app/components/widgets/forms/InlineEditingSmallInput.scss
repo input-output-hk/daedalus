@@ -12,6 +12,7 @@
       @extend .activeButton;
     }
   }
+
   &:not(.isActive) {
     cursor: pointer;
     &:hover {
@@ -25,6 +26,13 @@
       }
     }
   }
+
+  &.disabled {
+    cursor: text !important;
+    padding-right: 0;
+    pointer-events: none;
+  }
+
   :global {
     .SimpleInput_input {
       background: transparent !important;
