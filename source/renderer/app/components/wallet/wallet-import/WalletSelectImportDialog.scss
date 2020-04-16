@@ -225,7 +225,14 @@
             .SimpleCheckbox_check {
               border: 1px solid #fff;
               height: 23px;
+              position: relative;
+              top: 2px;
               width: 23px;
+            }
+
+            .SimpleCheckbox_checked {
+              position: relative;
+              top: -3px;
             }
 
             .LoadingSpinner_component {
