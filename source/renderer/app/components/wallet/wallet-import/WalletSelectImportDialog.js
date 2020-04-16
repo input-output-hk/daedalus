@@ -5,9 +5,13 @@ import ReactModal from 'react-modal';
 import { observer } from 'mobx-react';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { Button } from 'react-polymorph/lib/components/Button';
-import classNames from 'classnames';
+import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
+import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
 import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
 import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
+import { Link } from 'react-polymorph/lib/components/Link';
+import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
+import classNames from 'classnames';
 import SVGInline from 'react-svg-inline';
 import styles from './WalletSelectImportDialog.scss';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
@@ -17,6 +21,7 @@ import { WalletImportStatuses } from '../../../types/walletExportTypes';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import InlineEditingSmallInput from '../../widgets/forms/InlineEditingSmallInput';
 import checkmarkImage from '../../../assets/images/check-w.inline.svg';
+import infoIcon from '../../../assets/images/info-icon.inline.svg';
 import type { ExportedByronWallet } from '../../../types/walletExportTypes';
 
 const messages = defineMessages({
@@ -31,6 +36,17 @@ const messages = defineMessages({
       '!!!These wallets were found in your Daedalus state directory. Please select the wallets you want to import.',
     description:
       'These wallets were found in your Daedalus state directory. Please select the wallets you want to import.',
+  },
+  unamedWalletsTitle: {
+    id: 'wallet.select.import.dialog.unamedWalletsTitle',
+    defaultMessage: '!!!Unnamed wallets',
+    description: 'unamedWalletsTitle',
+  },
+  unamedWalletsTooltip: {
+    id: 'wallet.select.import.dialog.unamedWalletsTooltip',
+    defaultMessage:
+      '!!!The following wallets were found in your secret keys file, but matching entries were not found in your wallet database. They are probably wallets you have previously deleted, or are not in your wallet database because of data corruption or a similar issue. You can ignore them, or you can try importing them if wallets are missing from the list of found walle',
+    description: 'unamedWalletsTooltip',
   },
   passwordProtected: {
     id: 'wallet.select.import.dialog.passwordProtected',
@@ -71,6 +87,11 @@ const messages = defineMessages({
     id: 'wallet.select.import.dialog.buttonLabel',
     defaultMessage: '!!!Import selected wallets',
     description: 'Import selected wallets',
+  },
+  closeWindow: {
+    id: 'wallet.select.import.dialog.closeWindow',
+    defaultMessage: '!!!Close window',
+    description: 'Close window',
   },
 });
 
@@ -245,9 +266,26 @@ export default class WalletSelectImportDialog extends Component<Props> {
                   </div>
                 );
               })}
+
               {walletsWithNames.length && walletsWithoutNames.length ? (
                 <hr className={styles.separator} />
               ) : null}
+
+              <div className={styles.unamedWalletsTitle}>
+                <p>{intl.formatMessage(messages.unamedWalletsTitle)}</p>
+                <Tooltip
+                  className={styles.unamedWalletsTooltip}
+                  skin={TooltipSkin}
+                  tip={intl.formatMessage(messages.unamedWalletsTooltip)}
+                  arrowRelativeToTip
+                >
+                  <SVGInline
+                    svg={infoIcon}
+                    className={styles.walletsStatusIconCheckmark}
+                  />
+                </Tooltip>
+              </div>
+
               {walletsWithoutNames.map(wallet => {
                 walletIndex++;
                 return (
@@ -297,6 +335,13 @@ export default class WalletSelectImportDialog extends Component<Props> {
                 label={buttonLabel}
                 onClick={onConfirm}
                 skin={ButtonSkin}
+              />
+              <Link
+                className={styles.closeWindowLink}
+                onClick={onClose}
+                label={intl.formatMessage(messages.closeWindow)}
+                skin={LinkSkin}
+                hasIconAfter={false}
               />
             </div>
           </div>

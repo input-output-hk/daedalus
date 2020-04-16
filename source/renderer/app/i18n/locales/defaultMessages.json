@@ -9016,13 +9016,13 @@
         "description": "Select import wallets dialog title",
         "end": {
           "column": 3,
-          "line": 27
+          "line": 32
         },
         "file": "source/renderer/app/components/wallet/wallet-import/WalletSelectImportDialog.js",
         "id": "wallet.select.import.dialog.title",
         "start": {
           "column": 9,
-          "line": 23
+          "line": 28
         }
       },
       {
@@ -9030,13 +9030,41 @@
         "description": "These wallets were found in your Daedalus state directory. Please select the wallets you want to import.",
         "end": {
           "column": 3,
-          "line": 34
+          "line": 39
         },
         "file": "source/renderer/app/components/wallet/wallet-import/WalletSelectImportDialog.js",
         "id": "wallet.select.import.dialog.description",
         "start": {
           "column": 15,
-          "line": 28
+          "line": 33
+        }
+      },
+      {
+        "defaultMessage": "!!!Unnamed wallets",
+        "description": "unamedWalletsTitle",
+        "end": {
+          "column": 3,
+          "line": 44
+        },
+        "file": "source/renderer/app/components/wallet/wallet-import/WalletSelectImportDialog.js",
+        "id": "wallet.select.import.dialog.unamedWalletsTitle",
+        "start": {
+          "column": 22,
+          "line": 40
+        }
+      },
+      {
+        "defaultMessage": "!!!The following wallets were found in your secret keys file, but matching entries were not found in your wallet database. They are probably wallets you have previously deleted, or are not in your wallet database because of data corruption or a similar issue. You can ignore them, or you can try importing them if wallets are missing from the list of found walle",
+        "description": "unamedWalletsTooltip",
+        "end": {
+          "column": 3,
+          "line": 50
+        },
+        "file": "source/renderer/app/components/wallet/wallet-import/WalletSelectImportDialog.js",
+        "id": "wallet.select.import.dialog.unamedWalletsTooltip",
+        "start": {
+          "column": 24,
+          "line": 45
         }
       },
       {
@@ -9044,13 +9072,13 @@
         "description": "Password protected",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 55
         },
         "file": "source/renderer/app/components/wallet/wallet-import/WalletSelectImportDialog.js",
         "id": "wallet.select.import.dialog.passwordProtected",
         "start": {
           "column": 21,
-          "line": 35
+          "line": 51
         }
       },
       {
@@ -9058,13 +9086,13 @@
         "description": "Wallet already exists",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 60
         },
         "file": "source/renderer/app/components/wallet/wallet-import/WalletSelectImportDialog.js",
         "id": "wallet.select.import.dialog.walletExists",
         "start": {
           "column": 16,
-          "line": 40
+          "line": 56
         }
       },
       {
@@ -9072,13 +9100,13 @@
         "description": "No password",
         "end": {
           "column": 3,
-          "line": 49
+          "line": 65
         },
         "file": "source/renderer/app/components/wallet/wallet-import/WalletSelectImportDialog.js",
         "id": "wallet.select.import.dialog.noPassword",
         "start": {
           "column": 14,
-          "line": 45
+          "line": 61
         }
       },
       {
@@ -9086,13 +9114,13 @@
         "description": "Importing wallet...",
         "end": {
           "column": 3,
-          "line": 54
+          "line": 70
         },
         "file": "source/renderer/app/components/wallet/wallet-import/WalletSelectImportDialog.js",
         "id": "wallet.select.import.dialog.importingWallet",
         "start": {
           "column": 19,
-          "line": 50
+          "line": 66
         }
       },
       {
@@ -9100,13 +9128,13 @@
         "description": "Enter wallet name",
         "end": {
           "column": 3,
-          "line": 59
+          "line": 75
         },
         "file": "source/renderer/app/components/wallet/wallet-import/WalletSelectImportDialog.js",
         "id": "wallet.select.import.dialog.walletName",
         "start": {
           "column": 14,
-          "line": 55
+          "line": 71
         }
       },
       {
@@ -9114,13 +9142,13 @@
         "description": "Name not found",
         "end": {
           "column": 3,
-          "line": 64
+          "line": 80
         },
         "file": "source/renderer/app/components/wallet/wallet-import/WalletSelectImportDialog.js",
         "id": "wallet.select.import.dialog.notFound",
         "start": {
           "column": 12,
-          "line": 60
+          "line": 76
         }
       },
       {
@@ -9128,13 +9156,13 @@
         "description": "Wallet imported",
         "end": {
           "column": 3,
-          "line": 69
+          "line": 85
         },
         "file": "source/renderer/app/components/wallet/wallet-import/WalletSelectImportDialog.js",
         "id": "wallet.select.import.dialog.walletImported",
         "start": {
           "column": 18,
-          "line": 65
+          "line": 81
         }
       },
       {
@@ -9142,13 +9170,27 @@
         "description": "Import selected wallets",
         "end": {
           "column": 3,
-          "line": 74
+          "line": 90
         },
         "file": "source/renderer/app/components/wallet/wallet-import/WalletSelectImportDialog.js",
         "id": "wallet.select.import.dialog.buttonLabel",
         "start": {
           "column": 15,
-          "line": 70
+          "line": 86
+        }
+      },
+      {
+        "defaultMessage": "!!!Close window",
+        "description": "Close window",
+        "end": {
+          "column": 3,
+          "line": 95
+        },
+        "file": "source/renderer/app/components/wallet/wallet-import/WalletSelectImportDialog.js",
+        "id": "wallet.select.import.dialog.closeWindow",
+        "start": {
+          "column": 15,
+          "line": 91
         }
       }
     ],
