@@ -156,7 +156,7 @@ export default class WalletImportFileDialog extends Component<Props> {
             <div className={styles.action}>
               <Button
                 className={buttonClasses}
-                disabled={isSubmitting}
+                disabled={isSubmitting || error}
                 label={buttonLabel}
                 onClick={onConfirm}
                 skin={ButtonSkin}

@@ -282,15 +282,13 @@
           }
         }
       }
-
-      @media (max-height: 680px) {
-        max-height: 400px;
-        overflow-y: overlay;
-        padding: 0 30px;
-      }
     }
 
     .action {
+      align-items: center;
+      display: flex;
+      flex-direction: column;
+
       .actionButton {
         background-color: var(
           --theme-splash-network-overlay-button-background-color
@@ -300,7 +298,7 @@
         color: var(--theme-splash-network-overlay-button-text-color);
         font-weight: 500;
         line-height: 1.36;
-        margin: 0 auto;
+        margin: 0 auto 20px;
 
         &:hover {
           background-color: var(
@@ -329,16 +327,17 @@
           }
         }
       }
+      .closeWindowLink {
+        border-bottom: 1px solid var(--theme-wallet-import-description-color);
+        color: var(--theme-wallet-import-description-color);
+        opacity: 0.8;
+      }
     }
 
-    .learnMoreLink {
-      border-bottom: 1px solid var(--theme-splash-network-learn-more-color);
-      color: var(--theme-splash-network-learn-more-color);
-      margin-top: 20px;
-      opacity: 0.8;
-      &:after {
-        background-color: var(--theme-splash-network-learn-more-color);
-      }
+    @media (max-height: 680px) {
+      justify-content: initial;
+      max-height: 680px;
+      overflow-y: overlay;
     }
   }
 }
