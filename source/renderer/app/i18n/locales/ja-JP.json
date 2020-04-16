@@ -647,6 +647,8 @@
   "wallet.select.import.dialog.notFound": "ウォレット名不明",
   "wallet.select.import.dialog.passwordProtected": "パスワード設定済み",
   "wallet.select.import.dialog.title": "既存のウォレット",
+  "wallet.select.import.dialog.unamedWalletsTitle": "名称不明のウォレット",
+  "wallet.select.import.dialog.unamedWalletsTooltip": "secret.keyファイルに次のウォレットが見つかりましたが、ウォレットデータベースに対応するウォレットが見つかりません。これらは以前に削除されたウォレットか、データの損傷または類似する不具合によりデータベースに含まれていない可能性があります。これらは無視しても構いません。また、上記の検知されたウォレットリストに含まれていないウォレットである場合はインポートを試みることもできます。",
   "wallet.select.import.dialog.walletExists": "既存のウォレット",
   "wallet.select.import.dialog.walletImported": "ウォレットをインポート済み",
   "wallet.select.import.dialog.walletName": "ウォレット名を入力してください",

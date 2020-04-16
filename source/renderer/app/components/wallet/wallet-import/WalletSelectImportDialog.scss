@@ -124,6 +124,35 @@
       width: 100%;
     }
 
+    .unamedWalletsTitle {
+      @extend .description;
+      opacity: 1;
+      p {
+        display: inline;
+        opacity: 0.7;
+      }
+      svg {
+        height: 12px;
+        margin-left: 5px;
+      }
+    }
+
+    .unamedWalletsTooltip {
+      display: inline-block;
+      margin-left: 5px;
+
+      :global {
+        .SimpleTooltip_bubble {
+          margin: 0 0 -7px -14px;
+          width: 330px;
+        }
+        .SimpleBubble_bubble {
+          background: #5e6066;
+          white-space: normal;
+        }
+      }
+    }
+
     .walletsContainer {
       .walletsRow {
         align-items: baseline;

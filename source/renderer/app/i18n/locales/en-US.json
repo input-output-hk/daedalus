@@ -647,6 +647,8 @@
   "wallet.select.import.dialog.notFound": "Name not found",
   "wallet.select.import.dialog.passwordProtected": "Password protected",
   "wallet.select.import.dialog.title": "Found wallets",
+  "wallet.select.import.dialog.unamedWalletsTitle": "Unnamed wallets",
+  "wallet.select.import.dialog.unamedWalletsTooltip": "The following wallets were found in your secret keys file, but matching entries were not found in your wallet database. They are probably wallets you have previously deleted, or are not in your wallet database because of data corruption or a similar issue. You can ignore them, or you can try importing them if wallets are missing from the list of found wallets above.",
   "wallet.select.import.dialog.walletExists": "Wallet already exists",
   "wallet.select.import.dialog.walletImported": "Wallet imported",
   "wallet.select.import.dialog.walletName": "Enter wallet name",
