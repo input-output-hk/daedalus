@@ -239,11 +239,13 @@ export default class WalletSelectImportDialog extends Component<Props> {
           />
           <div className={styles.backgroundContainer} />
           <div className={styles.content}>
-            <div className={styles.title}>{title}</div>
-            <div className={styles.description}>
-              <FormattedHTMLMessage {...messages.description} />
+            <div className={styles.topWrapper}>
+              <div className={styles.title}>{title}</div>
+              <div className={styles.description}>
+                <FormattedHTMLMessage {...messages.description} />
+              </div>
+              <hr className={styles.separatorTop} />
             </div>
-            <hr className={styles.separatorTop} />
             <div className={styles.walletsContainer}>
               {walletsWithNames.map(wallet => {
                 walletIndex++;
