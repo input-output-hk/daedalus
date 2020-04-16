@@ -11,7 +11,7 @@ declare var daedalus: Daedalus;
 const SELECTORS = {
   ADDRESS_ACTIVE: '.WalletReceive_hash',
   ADDRESS_COMPONENT: '.Address',
-  ADDRESS_USED_ITN: '.AddressItn_usedWalletAddress',
+  ADDRESS_USED_ITN: '.AddressSequential_usedWalletAddress',
   ADDRESS_USED: '.AddressRandom_usedWalletAddress',
   GENERATE_ADDRESS_BTN: '.generateAddressButton:not(.WalletReceive_spinning)',
   GENERATE_ADDRESS_PASSWORD_INPUT: '.WalletReceiveRandom_spendingPassword .SimpleFormField_inputWrapper input',
