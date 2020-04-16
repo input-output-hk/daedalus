@@ -164,9 +164,11 @@ export default class WalletMigrationStore extends Store {
     runInAction('update exportedWallets and exportErrors', () => {
       this.exportedWallets = wallets.map(wallet => {
         const hasName = wallet.name !== null;
-        const isImported =
-          typeof this.stores.wallets.getWalletById(`legacy_${wallet.id}`) !==
-          'undefined';
+        const importedWallet = this.stores.wallets.getWalletById(
+          `legacy_${wallet.id}`
+        );
+        const isImported = typeof importedWallet !== 'undefined';
+        if (isImported && importedWallet) wallet.name = importedWallet.name;
         const status = isImported
           ? WalletImportStatuses.COMPLETED
           : WalletImportStatuses.UNSTARTED;
@@ -372,6 +374,7 @@ export default class WalletMigrationStore extends Store {
     }
 
     this._resetMigration();
+    this.stores.wallets.refreshWalletsData();
   };
 
   @computed get pendingImportWallets(): Array<ExportedByronWallet> {
