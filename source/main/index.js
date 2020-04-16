@@ -54,17 +54,7 @@ const {
 
 if (isBlankScreenFixActive) {
   // Run "location.assign('chrome://gpu')" in JavaScript console to see if the flag is active
-  try {
-    app.commandLine.appendSwitch('disable-gpu');
-    app.disableHardwareAcceleration();
-  } catch (error) {
-    logger.error(
-      'Daedalus:blankScreenFix: disabling hardware acceleration failed',
-      {
-        error,
-      }
-    );
-  }
+  app.disableHardwareAcceleration();
 }
 
 const safeExit = async () => {
