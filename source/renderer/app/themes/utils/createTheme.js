@@ -737,6 +737,12 @@ export const createDaedalusComponentsTheme = (
       '--theme-wallet-import-stateFolder-button-background-color': `${chroma(
         text.primary
       ).alpha(0.1)}`,
+      '--theme-wallet-import-stateFolder-button-background-color-hover': `${chroma(
+        text.primary
+      ).alpha(0.05)}`,
+      '--theme-wallet-import-stateFolder-button-background-color-active': `${chroma(
+        text.primary
+      ).alpha(0.12)}`,
       '--theme-wallet-import-stateFolder-label-color': `${text.primary}`,
     },
     reportIssue: {

@@ -306,12 +306,6 @@
           }
         }
       }
-
-      @media (max-height: 680px) {
-        max-height: 400px;
-        overflow-y: overlay;
-        padding: 0 30px;
-      }
     }
 
     .action {
@@ -363,6 +357,12 @@
         color: var(--theme-wallet-import-description-color);
         opacity: 0.8;
       }
+    }
+
+    @media (max-height: 680px) {
+      justify-content: initial;
+      max-height: 680px;
+      overflow-y: overlay;
     }
   }
 }

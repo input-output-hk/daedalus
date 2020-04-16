@@ -900,6 +900,10 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
       'rgba(255, 255, 255, 0.5)',
     '--theme-wallet-import-stateFolder-button-background-color':
       'rgba(255, 255, 255, 0.1)',
+    '--theme-wallet-import-stateFolder-button-background-color-hover':
+      'rgba(255, 255, 255, 0.05)',
+    '--theme-wallet-import-stateFolder-button-background-color-active':
+      'rgba(255, 255, 255, 0.12)',
     '--theme-wallet-import-stateFolder-label-color': '#fff',
   },
   walletRestoreDialog: {

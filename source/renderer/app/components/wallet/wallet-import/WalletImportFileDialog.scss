@@ -217,9 +217,7 @@
   }
 
   .selectStateDirectoryButton {
-    background-color: var(
-      --theme-wallet-import-stateFolder-button-background-color
-    );
+    background-color: var(--theme-button-flat-background-color);
     border-radius: 3px;
     cursor: pointer;
     height: 28px;
@@ -234,6 +232,19 @@
         position: relative;
         top: 1px;
         width: 12px;
+      }
+    }
+  }
+
+  :global {
+    .WalletImportFileDialog_selectStateDirectoryButton {
+      &.SimpleButton_root:not(.SimpleButton_disabled) {
+        &:hover {
+          background-color: var(--theme-button-flat-background-color-hover);
+        }
+        &:active {
+          background-color: var(--theme-button-flat-background-color-active);
+        }
       }
     }
   }
