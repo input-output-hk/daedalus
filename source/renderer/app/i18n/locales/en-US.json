@@ -643,6 +643,7 @@
   "wallet.select.import.dialog.buttonLabel": "Import selected wallets",
   "wallet.select.import.dialog.closeWindow": "Close window",
   "wallet.select.import.dialog.description": "These wallets were found in your Daedalus state directory. Please select the wallets you want to import.",
+  "wallet.select.import.dialog.enterWalletNameTooltip": "Enter a wallet name first",
   "wallet.select.import.dialog.importingWallet": "Importing wallet...",
   "wallet.select.import.dialog.noPassword": "No password",
   "wallet.select.import.dialog.notFound": "Name not found",

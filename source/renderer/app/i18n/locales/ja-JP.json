@@ -643,6 +643,7 @@
   "wallet.select.import.dialog.buttonLabel": "選択したウォレットをインポート",
   "wallet.select.import.dialog.closeWindow": "ウィンドウを閉じる",
   "wallet.select.import.dialog.description": "Daedalusステータスディレクトリーに以下のウォレットが見つかりました。インポートするウォレットを選択してください。",
+  "wallet.select.import.dialog.enterWalletNameTooltip": "先にウォレット名を入力してください",
   "wallet.select.import.dialog.importingWallet": "ウォレットをインポート中…",
   "wallet.select.import.dialog.noPassword": "パスワードなし",
   "wallet.select.import.dialog.notFound": "ウォレット名不明",

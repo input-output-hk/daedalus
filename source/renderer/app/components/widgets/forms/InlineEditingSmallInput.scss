@@ -1,5 +1,5 @@
 .component {
-  background-color: var(--theme-input-background-color);
+  background-color: transparent;
   border: 1px solid var(--theme-input-border-color);
   border-radius: 2px;
   padding-right: 50px;
@@ -8,18 +8,10 @@
 
   &.isActive {
     padding-right: 86px;
-    .rightButton {
-      @extend .activeButton;
-    }
   }
 
   &:not(.isActive) {
     cursor: pointer;
-    &:hover {
-      .rightButton {
-        @extend .activeButton;
-      }
-    }
     :global {
       .SimpleInput_input {
         cursor: pointer;
@@ -56,10 +48,9 @@
     }
   }
 
-  .button {
-    background-color: var(
-      --theme-wallet-import-stateFolder-button-background-color
-    );
+  .leftButton,
+  .rightButton {
+    background-color: var(--theme-button-flat-background-color);
     border-radius: 3px;
     cursor: pointer;
     height: 28px;
@@ -95,25 +86,21 @@
     }
   }
 
-  .activeButton {
-    background-color: var(--rp-button-bg-color-hover, #2f496e);
-    svg {
-      path {
-        stroke: var(--theme-input-background-color);
+  :global {
+    .InlineEditingSmallInput_leftButton,
+    .InlineEditingSmallInput_rightButton {
+      &.SimpleButton_root:not(.SimpleButton_disabled) {
+        &:hover {
+          background-color: var(--theme-button-flat-background-color-hover);
+        }
+        &:active {
+          background-color: var(--theme-button-flat-background-color-active);
+        }
       }
     }
   }
 
-  .rightButton {
-    @extend .button;
-  }
   .leftButton {
-    @extend .button;
     right: 48px;
-    &:hover {
-      background-color: var(
-        --theme-wallet-import-stateFolder-button-background-color
-      ) !important;
-    }
   }
 }
