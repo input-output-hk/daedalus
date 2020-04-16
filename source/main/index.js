@@ -56,13 +56,6 @@ if (isBlankScreenFixActive) {
   // Run "location.assign('chrome://gpu')" in JavaScript console to see if the flag is active
   try {
     app.commandLine.appendSwitch('disable-gpu');
-  } catch (error) {
-    logger.error('Daedalus:blankScreenFix: adding disable-gpu switch failed', {
-      error,
-    });
-  }
-
-  try {
     app.disableHardwareAcceleration();
   } catch (error) {
     logger.error(
