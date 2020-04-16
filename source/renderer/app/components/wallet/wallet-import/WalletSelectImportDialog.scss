@@ -289,15 +289,17 @@
               top: 2px;
               width: 23px;
             }
+            .SimpleCheckbox_check.SimpleCheckbox_checked {
+              background-color: var(
+                --theme-wallet-import-checkbox-check-bg-color
+              ) !important;
+            }
 
             .SimpleCheckbox_checked {
               border-color: var(
                 --theme-wallet-import-checkbox-border-color,
                 #2f496e
               );
-              background-color: var(
-                --theme-wallet-import-checkbox-check-bg-color
-              ) !important;
               position: relative;
               top: -3px;
             }
