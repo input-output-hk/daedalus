@@ -7096,7 +7096,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        "defaultMessage": "!!!To keep your wallet secure and start using it in Daedalus, you need to set a spending password.",
         "description": "Message for the \"Set a password\" button in the set wallet password dialog.",
         "end": {
           "column": 3,
@@ -9016,13 +9016,13 @@
         "description": "Select import wallets dialog title",
         "end": {
           "column": 3,
-          "line": 22
+          "line": 26
         },
         "file": "source/renderer/app/components/wallet/wallet-import/WalletSelectImportDialog.js",
         "id": "wallet.select.import.dialog.title",
         "start": {
           "column": 9,
-          "line": 18
+          "line": 22
         }
       },
       {
@@ -9030,13 +9030,13 @@
         "description": "These wallets were found in your Daedalus state directory. Please select the wallets you want to import.",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 33
         },
         "file": "source/renderer/app/components/wallet/wallet-import/WalletSelectImportDialog.js",
         "id": "wallet.select.import.dialog.description",
         "start": {
           "column": 15,
-          "line": 23
+          "line": 27
         }
       },
       {
@@ -9044,13 +9044,13 @@
         "description": "Password protected",
         "end": {
           "column": 3,
-          "line": 34
+          "line": 38
         },
         "file": "source/renderer/app/components/wallet/wallet-import/WalletSelectImportDialog.js",
         "id": "wallet.select.import.dialog.passwordProtected",
         "start": {
           "column": 21,
-          "line": 30
+          "line": 34
         }
       },
       {
@@ -9058,13 +9058,13 @@
         "description": "Wallet already exists",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 43
         },
         "file": "source/renderer/app/components/wallet/wallet-import/WalletSelectImportDialog.js",
         "id": "wallet.select.import.dialog.walletExists",
         "start": {
           "column": 16,
-          "line": 35
+          "line": 39
         }
       },
       {
@@ -9072,13 +9072,13 @@
         "description": "No password",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 48
         },
         "file": "source/renderer/app/components/wallet/wallet-import/WalletSelectImportDialog.js",
         "id": "wallet.select.import.dialog.noPassword",
         "start": {
           "column": 14,
-          "line": 40
+          "line": 44
         }
       },
       {
@@ -9086,13 +9086,13 @@
         "description": "Importing wallet...",
         "end": {
           "column": 3,
-          "line": 49
+          "line": 53
         },
         "file": "source/renderer/app/components/wallet/wallet-import/WalletSelectImportDialog.js",
         "id": "wallet.select.import.dialog.importingWallet",
         "start": {
           "column": 19,
-          "line": 45
+          "line": 49
         }
       },
       {
@@ -9100,13 +9100,13 @@
         "description": "Enter wallet name",
         "end": {
           "column": 3,
-          "line": 54
+          "line": 58
         },
         "file": "source/renderer/app/components/wallet/wallet-import/WalletSelectImportDialog.js",
         "id": "wallet.select.import.dialog.walletName",
         "start": {
           "column": 14,
-          "line": 50
+          "line": 54
         }
       },
       {
@@ -9114,13 +9114,13 @@
         "description": "Name not found",
         "end": {
           "column": 3,
-          "line": 59
+          "line": 63
         },
         "file": "source/renderer/app/components/wallet/wallet-import/WalletSelectImportDialog.js",
         "id": "wallet.select.import.dialog.notFound",
         "start": {
           "column": 12,
-          "line": 55
+          "line": 59
         }
       },
       {
@@ -9128,13 +9128,13 @@
         "description": "Wallet imported",
         "end": {
           "column": 3,
-          "line": 64
+          "line": 68
         },
         "file": "source/renderer/app/components/wallet/wallet-import/WalletSelectImportDialog.js",
         "id": "wallet.select.import.dialog.walletImported",
         "start": {
           "column": 18,
-          "line": 60
+          "line": 64
         }
       },
       {
@@ -9142,13 +9142,13 @@
         "description": "Import selected wallets",
         "end": {
           "column": 3,
-          "line": 69
+          "line": 73
         },
         "file": "source/renderer/app/components/wallet/wallet-import/WalletSelectImportDialog.js",
         "id": "wallet.select.import.dialog.buttonLabel",
         "start": {
           "column": 15,
-          "line": 65
+          "line": 69
         }
       }
     ],
