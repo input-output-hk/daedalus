@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { defineMessages, intlShape } from 'react-intl';
+import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
 import CopyToClipboard from 'react-copy-to-clipboard';
@@ -18,8 +18,8 @@ import iconCopy from '../../../assets/images/clipboard-ic.inline.svg';
 import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
 import { VirtualAddressesList } from './VirtualAddressesList';
-import styles from './WalletReceive.scss';
-import { Address } from './Address';
+import styles from './WalletReceiveRandom.scss';
+import AddressRandom from './AddressRandom';
 import WalletAddress from '../../../domains/WalletAddress';
 
 const messages = defineMessages({
@@ -31,19 +31,19 @@ const messages = defineMessages({
   walletReceiveInstructions: {
     id: 'wallet.receive.page.walletReceiveInstructions',
     defaultMessage:
-      '!!!Share this wallet address to receive payments. To protect your privacy generate new addresses for receiving payments instead of reusing existing ones.',
+      '!!!Share this wallet address to receive payments. To protect your privacy, always use a new address when requesting funds. To generate a new address please enter your spending password and press the ‘Generate a new address’ button.',
     description:
       'Wallet receive payments instructions on the wallet "Receive page"',
   },
   generateNewAddressButtonLabel: {
     id: 'wallet.receive.page.generateNewAddressButtonLabel',
-    defaultMessage: '!!!Generate new address',
+    defaultMessage: '!!!Generate a new address',
     description:
       'Label for "Generate new address" button on the wallet "Receive page"',
   },
   generatedAddressesSectionTitle: {
-    id: 'wallet.receive.page.generatedAddressesSectionTitle',
-    defaultMessage: '!!!Generated addresses',
+    id: 'wallet.receive.page.receivingAddressesSectionTitle',
+    defaultMessage: '!!!Receiving addresses',
     description:
       '"Generated addresses" section title on the wallet "Receive page"',
   },
@@ -73,6 +73,7 @@ type Props = {
   isWalletAddressUsed: boolean,
   walletAddresses: Array<WalletAddress>,
   onGenerateAddress: Function,
+  onShareAddress: Function,
   onCopyAddress: Function,
   isSidebarExpanded: boolean,
   walletHasPassword: boolean,
@@ -85,7 +86,7 @@ type State = {
 };
 
 @observer
-export default class WalletReceive extends Component<Props, State> {
+export default class WalletReceiveRandom extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -135,25 +136,12 @@ export default class WalletReceive extends Component<Props, State> {
   );
 
   renderRow = (address: WalletAddress, index: number) => (
-    <Address
+    <AddressRandom
       index={index}
       address={address}
       onCopyAddress={this.props.onCopyAddress}
-      copyAddressLabel={this.context.intl.formatMessage(
-        messages.copyAddressLabel
-      )}
+      onShareAddress={this.props.onShareAddress}
     />
-    // <Address
-    //   address={address}
-    //   onCopyAddress={this.props.onCopyAddress}
-    //   copyAddressLabel={this.context.intl.formatMessage(
-    //     messages.copyAddressLabel
-    //   )}
-    //   isIncentivizedTestnet={false}
-    //   shouldRegisterAddressElement={index === 0}
-    //   onRegisterHTMLElements={this.handleRegisterHTMLElements}
-    //   addressSlice={addressSlice}
-    // />
   );
 
   submit = () => {
@@ -279,7 +267,9 @@ export default class WalletReceive extends Component<Props, State> {
                 </div>
 
                 <div className={styles.instructionsText}>
-                  {intl.formatMessage(messages.walletReceiveInstructions)}
+                  <FormattedHTMLMessage
+                    {...messages.walletReceiveInstructions}
+                  />
                 </div>
 
                 {error ? (

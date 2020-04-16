@@ -3,6 +3,10 @@ Changelog
 
 ## vNext
 
+### Features
+
+- Force setting spending password on passwordless wallets ([PR 1957](https://github.com/input-output-hk/daedalus/pull/1957))
+
 ### Chores
 
 - Updated `Electron` and it's related dependencies ([PR 1887](https://github.com/input-output-hk/daedalus/pull/1887))
@@ -19,6 +23,7 @@ Changelog
 
 ### Fixes
 
+- Disabled address generation for Yoroi wallets ([PR 1961](https://github.com/input-output-hk/daedalus/pull/1961))
 - Fixed "Restoration" dialog validation ([PR 1951](https://github.com/input-output-hk/daedalus/pull/1951))
 - Fixed the `EPERM` errors thrown in the console upon changing wallet name on the "Wallet Settings" screen ([PR 1944](https://github.com/input-output-hk/daedalus/pull/1944))
 
