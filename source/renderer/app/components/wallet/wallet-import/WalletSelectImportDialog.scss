@@ -252,6 +252,12 @@
           }
         }
       }
+
+      @media (max-height: 680px) {
+        max-height: 400px;
+        overflow-y: overlay;
+        padding: 0 30px;
+      }
     }
 
     .action {
