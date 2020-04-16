@@ -6,9 +6,9 @@ import BigNumber from 'bignumber.js/bignumber';
 import AdaApi from '../api';
 import { getNetworkInfo } from '../network/requests/getNetworkInfo';
 import { getLatestAppVersion } from '../nodes/requests/getLatestAppVersion';
-import { GenericApiError } from '../common/errors';
 import { logger } from '../../utils/logging';
 import packageJson from '../../../../../package.json';
+import ApiError from '../../domains/ApiError';
 
 // domains
 import Wallet from '../../domains/Wallet';
@@ -75,7 +75,7 @@ export default (api: AdaApi) => {
       };
     } catch (error) {
       logger.error('AdaApi::getNetworkInfo (PATCHED) error', { error });
-      throw new GenericApiError();
+      throw new ApiError();
     }
   };
 
@@ -137,7 +137,7 @@ export default (api: AdaApi) => {
       };
     } catch (error) {
       logger.error('AdaApi::getLatestAppVersion (PATCHED) error', { error });
-      throw new GenericApiError();
+      throw new ApiError();
     }
   };
 
