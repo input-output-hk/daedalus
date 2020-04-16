@@ -91,6 +91,57 @@ export default class WalletSelectImportDialog extends Component<Props> {
     intl: intlShape.isRequired,
   };
 
+  getWalletStatus = (wallet: ExportedByronWallet) => {
+    const { intl } = this.context;
+    const importingStatus = intl.formatMessage(messages.importingWallet);
+    const noPasswordStatus = intl.formatMessage(messages.noPassword);
+    const hasPasswordStatus = intl.formatMessage(messages.passwordProtected);
+    const alreadyExistsStatus = intl.formatMessage(messages.walletExists);
+    // const walletImportedStatus = intl.formatMessage(messages.walletImported);
+    // const walletNotFoundStatus = intl.formatMessage(messages.notFound);
+
+    let walletStatus;
+    if (wallet.import.status === WalletImportStatuses.RUNNING) {
+      walletStatus = importingStatus;
+    } else if (wallet.import.status === WalletImportStatuses.COMPLETED) {
+      walletStatus = alreadyExistsStatus;
+    } else if (wallet.is_passphrase_empty) {
+      walletStatus = noPasswordStatus;
+    } else {
+      walletStatus = hasPasswordStatus;
+    }
+    return walletStatus;
+  };
+
+  getWalletStatusIcon = (wallet: ExportedByronWallet) => {
+    const { onToggleWalletImportSelection } = this.props;
+    let statusIcon;
+    if (
+      wallet.import.status === WalletImportStatuses.UNSTARTED ||
+      wallet.import.status === WalletImportStatuses.PENDING
+    ) {
+      statusIcon = (
+        <Checkbox
+          onChange={() => {
+            onToggleWalletImportSelection(wallet.id);
+          }}
+          checked={wallet.import.status === WalletImportStatuses.PENDING}
+          skin={CheckboxSkin}
+        />
+      );
+    } else if (wallet.import.status === WalletImportStatuses.RUNNING) {
+      statusIcon = <LoadingSpinner medium />;
+    } else if (wallet.import.status === WalletImportStatuses.COMPLETED) {
+      statusIcon = (
+        <SVGInline
+          svg={checkmarkImage}
+          className={styles.walletsStatusIconCheckmark}
+        />
+      );
+    }
+    return statusIcon;
+  };
+
   render() {
     const { intl } = this.context;
     const {
@@ -100,7 +151,6 @@ export default class WalletSelectImportDialog extends Component<Props> {
       onConfirm,
       onClose,
       onWalletNameChange,
-      onToggleWalletImportSelection,
       nameValidator,
     } = this.props;
 
@@ -111,12 +161,6 @@ export default class WalletSelectImportDialog extends Component<Props> {
     ) : (
       <LoadingSpinner />
     );
-    const importingStatus = intl.formatMessage(messages.importingWallet);
-    const noPasswordStatus = intl.formatMessage(messages.noPassword);
-    const hasPasswordStatus = intl.formatMessage(messages.passwordProtected);
-    const alreadyExistsStatus = intl.formatMessage(messages.walletExists);
-    // const walletImportedStatus = intl.formatMessage(messages.walletImported);
-    // const walletNotFoundStatus = intl.formatMessage(messages.notFound);
 
     const isDisabled = isSubmitting || !pendingImportWalletsCount;
     const buttonClasses = classNames(styles.actionButton, [
@@ -181,43 +225,11 @@ export default class WalletSelectImportDialog extends Component<Props> {
                       />
                     </div>
                     <div className={styles.walletsStatus}>
-                      {wallet.import.status === WalletImportStatuses.RUNNING &&
-                        importingStatus}
-                      {wallet.import.status ===
-                        WalletImportStatuses.COMPLETED && alreadyExistsStatus}
-                      {wallet.is_passphrase_empty && noPasswordStatus}
-                      {!wallet.is_passphrase_empty && hasPasswordStatus}
+                      {this.getWalletStatus(wallet)}
                     </div>
-                    {(wallet.import.status === WalletImportStatuses.UNSTARTED ||
-                      wallet.import.status ===
-                        WalletImportStatuses.PENDING) && (
-                      <div className={styles.walletsStatusIcon}>
-                        <Checkbox
-                          onChange={() => {
-                            onToggleWalletImportSelection(wallet.id);
-                          }}
-                          checked={
-                            wallet.import.status ===
-                            WalletImportStatuses.PENDING
-                          }
-                          skin={CheckboxSkin}
-                        />
-                      </div>
-                    )}
-                    {wallet.import.status === WalletImportStatuses.RUNNING && (
-                      <div className={styles.walletsStatusIcon}>
-                        <LoadingSpinner medium />
-                      </div>
-                    )}
-                    {wallet.import.status ===
-                      WalletImportStatuses.COMPLETED && (
-                      <div className={styles.walletsStatusIcon}>
-                        <SVGInline
-                          svg={checkmarkImage}
-                          className={styles.walletsStatusIconCheckmark}
-                        />
-                      </div>
-                    )}
+                    <div className={styles.walletsStatusIcon}>
+                      {this.getWalletStatusIcon(wallet)}
+                    </div>
                   </div>
                 );
               })}
@@ -251,43 +263,11 @@ export default class WalletSelectImportDialog extends Component<Props> {
                       />
                     </div>
                     <div className={styles.walletsStatus}>
-                      {wallet.import.status === WalletImportStatuses.RUNNING &&
-                        importingStatus}
-                      {wallet.import.status ===
-                        WalletImportStatuses.COMPLETED && alreadyExistsStatus}
-                      {wallet.is_passphrase_empty && noPasswordStatus}
-                      {!wallet.is_passphrase_empty && hasPasswordStatus}
+                      {this.getWalletStatus(wallet)}
                     </div>
-                    {(wallet.import.status === WalletImportStatuses.UNSTARTED ||
-                      wallet.import.status ===
-                        WalletImportStatuses.PENDING) && (
-                      <div className={styles.walletsStatusIcon}>
-                        <Checkbox
-                          onChange={() => {
-                            onToggleWalletImportSelection(wallet.id);
-                          }}
-                          checked={
-                            wallet.import.status ===
-                            WalletImportStatuses.PENDING
-                          }
-                          skin={CheckboxSkin}
-                        />
-                      </div>
-                    )}
-                    {wallet.import.status === WalletImportStatuses.RUNNING && (
-                      <div className={styles.walletsStatusIcon}>
-                        <LoadingSpinner medium />
-                      </div>
-                    )}
-                    {wallet.import.status ===
-                      WalletImportStatuses.COMPLETED && (
-                      <div className={styles.walletsStatusIcon}>
-                        <SVGInline
-                          svg={checkmarkImage}
-                          className={styles.walletsStatusIconCheckmark}
-                        />
-                      </div>
-                    )}
+                    <div className={styles.walletsStatusIcon}>
+                      {this.getWalletStatusIcon(wallet)}
+                    </div>
                   </div>
                 );
               })}
