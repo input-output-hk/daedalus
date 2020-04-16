@@ -287,24 +287,25 @@ export default class WalletSelectImportDialog extends Component<Props> {
                 );
               })}
 
-              {walletsWithNames.length && walletsWithoutNames.length ? (
-                <hr className={styles.separator} />
-              ) : null}
-
-              <div className={styles.unamedWalletsTitle}>
-                <p>{intl.formatMessage(messages.unamedWalletsTitle)}</p>
-                <Tooltip
-                  className={styles.unamedWalletsTooltip}
-                  skin={TooltipSkin}
-                  tip={intl.formatMessage(messages.unamedWalletsTooltip)}
-                  arrowRelativeToTip
-                >
-                  <SVGInline
-                    svg={infoIcon}
-                    className={styles.walletsStatusIconCheckmark}
-                  />
-                </Tooltip>
-              </div>
+              {!!walletsWithoutNames.length && (
+                <div className={styles.unamedWalletsTitle}>
+                  {!!walletsWithNames.length && (
+                    <hr className={styles.separator} />
+                  )}
+                  <p>{intl.formatMessage(messages.unamedWalletsTitle)}</p>
+                  <Tooltip
+                    className={styles.unamedWalletsTooltip}
+                    skin={TooltipSkin}
+                    tip={intl.formatMessage(messages.unamedWalletsTooltip)}
+                    arrowRelativeToTip
+                  >
+                    <SVGInline
+                      svg={infoIcon}
+                      className={styles.walletsStatusIconCheckmark}
+                    />
+                  </Tooltip>
+                </div>
+              )}
 
               {walletsWithoutNames.map(wallet => {
                 walletIndex++;
