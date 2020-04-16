@@ -166,7 +166,10 @@ export default class InlineEditingSmallInput extends Component<Props, State> {
       <div
         className={componentStyles}
         onBlur={this.onBlur}
-        onMouseUp={this.onFocus}
+        onMouseUp={() => {
+          this.input.focus();
+          this.onFocus();
+        }}
         role="presentation"
         aria-hidden
       >
