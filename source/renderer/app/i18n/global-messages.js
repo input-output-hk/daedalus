@@ -13,11 +13,6 @@ export default defineMessages({
     description:
       'Error message shown when incomplete bip39 mnemonic was entered.',
   },
-  invalidMnemonic: {
-    id: 'global.errors.invalidMnemonic',
-    defaultMessage: '!!!Invalid phrase entered, please check.',
-    description: 'Error message shown when invalid bip39 mnemonic was entered.',
-  },
   invalidEmail: {
     id: 'global.errors.invalidEmail',
     defaultMessage: '!!!Invalid email entered, please check.',

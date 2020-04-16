@@ -285,15 +285,23 @@
 
           :global {
             .SimpleCheckbox_check {
-              border: 1px solid #fff;
+              border: 1px solid var(--theme-wallet-import-checkbox-border-color) !important;
               height: 23px;
               position: relative;
               top: 2px;
               width: 23px;
             }
+            .SimpleCheckbox_check.SimpleCheckbox_checked {
+              background-color: var(
+                --theme-wallet-import-checkbox-check-bg-color
+              ) !important;
+            }
 
             .SimpleCheckbox_checked {
-              border-color: var(--rp-checkbox-check-bg-color, #2f496e);
+              border-color: var(
+                --theme-wallet-import-checkbox-border-color,
+                #2f496e
+              );
               position: relative;
               top: -3px;
             }

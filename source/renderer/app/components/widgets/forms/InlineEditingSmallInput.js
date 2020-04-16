@@ -151,6 +151,7 @@ export default class InlineEditingSmallInput extends Component<Props, State> {
       styles.component,
       isActive ? styles.isActive : null,
       isDisabled ? styles.disabled : null,
+      inputField.error ? styles.hasError : null,
     ]);
     const inputStyles = classnames([
       successfullyUpdated ? 'input_animateSuccess' : null,

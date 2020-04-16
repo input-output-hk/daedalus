@@ -6,7 +6,13 @@
   position: relative;
   width: 275px;
 
+  &.hasError {
+    border-color: var(--rp-textarea-border-color-errored) !important;
+    margin-bottom: 19px;
+  }
+
   &.isActive {
+    border-color: var(--theme-input-focus-border-color);
     padding-right: 86px;
   }
 
@@ -34,6 +40,11 @@
   }
 
   :global {
+    .SimpleFormField_root {
+      .SimpleFormField_error {
+        top: 47px;
+      }
+    }
     .SimpleInput_input {
       background: transparent !important;
       border: 0 none;
