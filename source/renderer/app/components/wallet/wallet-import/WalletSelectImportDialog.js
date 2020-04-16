@@ -78,6 +78,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Name not found',
     description: 'Name not found',
   },
+  enterWalletNameTooltip: {
+    id: 'wallet.select.import.dialog.enterWalletNameTooltip',
+    defaultMessage: '!!!Enter a wallet name first',
+    description: 'Enter a wallet name first',
+  },
   walletImported: {
     id: 'wallet.select.import.dialog.walletImported',
     defaultMessage: '!!!Wallet imported',
@@ -143,16 +148,31 @@ export default class WalletSelectImportDialog extends Component<Props> {
       wallet.import.status === WalletImportStatuses.PENDING ||
       wallet.import.status === WalletImportStatuses.ERRORED
     ) {
+      const disabled = wallet.name === null || !nameValidator(wallet.name);
       statusIcon = (
         <Checkbox
           onChange={() => {
             onToggleWalletImportSelection(wallet.id);
           }}
           checked={wallet.import.status === WalletImportStatuses.PENDING}
-          disabled={wallet.name === null || !nameValidator(wallet.name)}
+          disabled={disabled}
           skin={CheckboxSkin}
         />
       );
+      if (disabled) {
+        statusIcon = (
+          <Tooltip
+            className={styles.enterWalletNameTooltip}
+            skin={TooltipSkin}
+            tip={this.context.intl.formatMessage(
+              messages.enterWalletNameTooltip
+            )}
+            arrowRelativeToTip
+          >
+            {statusIcon}
+          </Tooltip>
+        );
+      }
     } else if (wallet.import.status === WalletImportStatuses.RUNNING) {
       statusIcon = <LoadingSpinner medium />;
     } else if (
