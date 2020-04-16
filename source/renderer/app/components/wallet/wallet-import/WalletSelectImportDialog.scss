@@ -231,6 +231,7 @@
             }
 
             .SimpleCheckbox_checked {
+              border-color: var(--rp-checkbox-check-bg-color, #2f496e);
               position: relative;
               top: -3px;
             }
