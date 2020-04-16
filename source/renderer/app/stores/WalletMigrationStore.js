@@ -83,6 +83,9 @@ export default class WalletMigrationStore extends Store {
     walletMigration.selectExportSourcePath.listen(this._selectExportSourcePath);
   }
 
+  getExportedWalletById = (id: string): ?ExportedByronWallet =>
+    this.exportedWallets.find(w => w.id === id);
+
   @action _selectExportSourcePath = () => {
     global.dialog.showOpenDialog(
       {
@@ -111,9 +114,6 @@ export default class WalletMigrationStore extends Store {
       this._restoreWallets();
     }
   };
-
-  getExportedWalletById = (id: string): ?ExportedByronWallet =>
-    this.exportedWallets.find(w => w.id === id);
 
   @action _toggleWalletImportSelection = (id: string) => {
     const wallet = this.getExportedWalletById(id);
@@ -163,13 +163,14 @@ export default class WalletMigrationStore extends Store {
     });
     runInAction('update exportedWallets and exportErrors', () => {
       this.exportedWallets = wallets.map(wallet => {
+        const hasName = wallet.name !== null;
         const isImported =
           typeof this.stores.wallets.getWalletById(`legacy_${wallet.id}`) !==
           'undefined';
         const status = isImported
           ? WalletImportStatuses.COMPLETED
           : WalletImportStatuses.UNSTARTED;
-        return { ...wallet, import: { status, error: null } };
+        return { ...wallet, hasName, import: { status, error: null } };
       });
       this.exportErrors =
         errors || !this.exportedWalletsCount ? 'No wallets found' : '';

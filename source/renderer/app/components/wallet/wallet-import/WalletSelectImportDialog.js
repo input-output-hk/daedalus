@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
 import ReactModal from 'react-modal';
+import { observer } from 'mobx-react';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { Button } from 'react-polymorph/lib/components/Button';
 import classNames from 'classnames';
@@ -84,6 +85,7 @@ type Props = {
   nameValidator: Function,
 };
 
+@observer
 export default class WalletSelectImportDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -122,10 +124,10 @@ export default class WalletSelectImportDialog extends Component<Props> {
     ]);
 
     const walletsWithNames = exportedWallets.filter(
-      ({ name }: ExportedByronWallet) => name !== null
+      ({ hasName }: ExportedByronWallet) => hasName
     );
     const walletsWithoutNames = exportedWallets.filter(
-      ({ name }: ExportedByronWallet) => name === null
+      ({ hasName }: ExportedByronWallet) => !hasName
     );
     let walletIndex = 0;
 
@@ -173,16 +175,6 @@ export default class WalletSelectImportDialog extends Component<Props> {
                             id: wallet.id,
                             name,
                           })
-                        }
-                        onToggleWalletImportSelection
-                        onStartEditing={() =>
-                          onToggleWalletImportSelection(wallet.id)
-                        }
-                        onStopEditing={() =>
-                          onToggleWalletImportSelection(wallet.id)
-                        }
-                        onCancelEditing={() =>
-                          onToggleWalletImportSelection(wallet.id)
                         }
                         maxLength={40}
                         successfullyUpdated
@@ -254,16 +246,6 @@ export default class WalletSelectImportDialog extends Component<Props> {
                             id: wallet.id,
                             name,
                           })
-                        }
-                        onToggleWalletImportSelection
-                        onStartEditing={() =>
-                          onToggleWalletImportSelection(wallet.id)
-                        }
-                        onStopEditing={() =>
-                          onToggleWalletImportSelection(wallet.id)
-                        }
-                        onCancelEditing={() =>
-                          onToggleWalletImportSelection(wallet.id)
                         }
                         successfullyUpdated
                       />

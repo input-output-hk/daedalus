@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
+import { observer } from 'mobx-react';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { Link } from 'react-polymorph/lib/components/Link';
@@ -68,6 +69,7 @@ type Props = {
   exportSourcePath: string,
 };
 
+@observer
 export default class WalletImportFileDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
