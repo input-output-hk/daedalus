@@ -18,6 +18,10 @@
       white-space: nowrap;
       width: 100%;
     }
+
+    .SimpleCheckbox_disabled {
+      opacity: 0.3;
+    }
   }
 }
 
@@ -115,17 +119,24 @@
       text-align: center;
     }
 
-    .separator {
+    .separatorTop,
+    .separatorMiddle {
       background-color: #ffffff;
       height: 1px;
       margin-bottom: 20px;
+      margin-top: 0;
       max-width: 670px;
       opacity: 0.2;
       width: 100%;
     }
 
+    .separatorMiddle {
+      margin-bottom: 15px;
+    }
+
     .unamedWalletsTitle {
       @extend .description;
+      margin-bottom: 15px;
       opacity: 1;
       p {
         display: inline;
@@ -300,8 +311,8 @@
             top: -5px;
 
             svg {
-              height: 8px;
-              width: 12px;
+              height: 16px;
+              width: 16px;
             }
           }
         }

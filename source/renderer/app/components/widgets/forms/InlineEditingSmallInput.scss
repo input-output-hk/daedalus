@@ -20,9 +20,17 @@
   }
 
   &.disabled {
+    background-color: var(--rp-input-bg-color-disabled);
+    border-color: var(--rp-input-border-color-disabled);
     cursor: text !important;
     padding-right: 0;
     pointer-events: none;
+
+    :global {
+      .SimpleInput_input {
+        color: var(--rp-input-text-color-disabled);
+      }
+    }
   }
 
   :global {
@@ -56,7 +64,7 @@
     height: 28px;
     position: absolute;
     right: 10px;
-    top: 10px;
+    top: 9px;
     width: 28px;
 
     .penIcon {
