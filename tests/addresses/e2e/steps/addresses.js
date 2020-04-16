@@ -12,7 +12,7 @@ const SELECTORS = {
   ADDRESS_ACTIVE: '.WalletReceive_hash',
   ADDRESS_COMPONENT: '.Address',
   ADDRESS_USED_ITN: '.AddressItn_usedWalletAddress',
-  ADDRESS_USED: '.Address_usedWalletAddress',
+  ADDRESS_USED: '.AddressRandom_usedWalletAddress',
   GENERATE_ADDRESS_BTN: '.generateAddressButton:not(.WalletReceive_spinning)',
   GENERATE_ADDRESS_PASSWORD_INPUT: '.WalletReceiveRandom_spendingPassword .SimpleFormField_inputWrapper input',
   SHOW_USED_SWITCH: '.SimpleSwitch_switch',
@@ -115,13 +115,7 @@ Then('I should see {int} addresses', async function(numberOfAddresses) {
   if (!Array.isArray(addresses)) {
     addresses = [addresses];
   };
-  const lastAddressClass = addresses[addresses.length - 1];
-  const lastGeneratedAddressClasses = lastAddressClass.split(' ');
-  const lastGeneratedAddressNumber = lastGeneratedAddressClasses[0].split(
-    '-'
-  )[1];
-
-  expect(parseInt(lastGeneratedAddressNumber, 10)).to.equal(numberOfAddresses);
+  expect(addresses.length).to.equal(numberOfAddresses);
 });
 
 Then('I should see the following addresses:', async function(table) {
@@ -144,6 +138,6 @@ Then('The active address should be the newest one', async function() {
   } = await this.client.execute(
     () => daedalus.stores.addresses.lastGeneratedAddress
   );
-  const activeAddress = await this.client.getText('.WalletReceive_hash');
+  const activeAddress = await this.client.getText('.WalletReceiveRandom_hash');
   expect(lastGeneratedAddress).to.equal(activeAddress);
 });
