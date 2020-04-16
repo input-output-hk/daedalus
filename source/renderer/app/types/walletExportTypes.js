@@ -8,6 +8,7 @@ export type WalletImportStatus =
   | 'pending'
   | 'running'
   | 'completed'
+  | 'exists'
   | 'errored';
 
 export const WalletImportStatuses: {
@@ -15,12 +16,14 @@ export const WalletImportStatuses: {
   PENDING: WalletImportStatus,
   RUNNING: WalletImportStatus,
   COMPLETED: WalletImportStatus,
+  EXISTS: WalletImportStatus,
   ERRORED: WalletImportStatus,
 } = {
   UNSTARTED: 'unstarted',
   PENDING: 'pending',
   RUNNING: 'running',
   COMPLETED: 'completed',
+  EXISTS: 'exists',
   ERRORED: 'errored',
 };
 

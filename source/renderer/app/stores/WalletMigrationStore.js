@@ -170,7 +170,7 @@ export default class WalletMigrationStore extends Store {
         const isImported = typeof importedWallet !== 'undefined';
         if (isImported && importedWallet) wallet.name = importedWallet.name;
         const status = isImported
-          ? WalletImportStatuses.COMPLETED
+          ? WalletImportStatuses.EXISTS
           : WalletImportStatuses.UNSTARTED;
         return { ...wallet, hasName, import: { status, error: null } };
       });

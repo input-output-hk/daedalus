@@ -97,14 +97,15 @@ export default class WalletSelectImportDialog extends Component<Props> {
     const noPasswordStatus = intl.formatMessage(messages.noPassword);
     const hasPasswordStatus = intl.formatMessage(messages.passwordProtected);
     const alreadyExistsStatus = intl.formatMessage(messages.walletExists);
-    // const walletImportedStatus = intl.formatMessage(messages.walletImported);
-    // const walletNotFoundStatus = intl.formatMessage(messages.notFound);
+    const walletImportedStatus = intl.formatMessage(messages.walletImported);
 
     let walletStatus;
     if (wallet.import.status === WalletImportStatuses.RUNNING) {
       walletStatus = importingStatus;
-    } else if (wallet.import.status === WalletImportStatuses.COMPLETED) {
+    } else if (wallet.import.status === WalletImportStatuses.EXISTS) {
       walletStatus = alreadyExistsStatus;
+    } else if (wallet.import.status === WalletImportStatuses.COMPLETED) {
+      walletStatus = walletImportedStatus;
     } else if (wallet.is_passphrase_empty) {
       walletStatus = noPasswordStatus;
     } else {
@@ -133,7 +134,10 @@ export default class WalletSelectImportDialog extends Component<Props> {
       );
     } else if (wallet.import.status === WalletImportStatuses.RUNNING) {
       statusIcon = <LoadingSpinner medium />;
-    } else if (wallet.import.status === WalletImportStatuses.COMPLETED) {
+    } else if (
+      wallet.import.status === WalletImportStatuses.COMPLETED ||
+      wallet.import.status === WalletImportStatuses.EXISTS
+    ) {
       statusIcon = (
         <SVGInline
           svg={checkmarkImage}
@@ -212,6 +216,8 @@ export default class WalletSelectImportDialog extends Component<Props> {
                         isDisabled={
                           wallet.import.status ===
                             WalletImportStatuses.COMPLETED ||
+                          wallet.import.status ===
+                            WalletImportStatuses.EXISTS ||
                           wallet.import.status === WalletImportStatuses.RUNNING
                         }
                         inputFieldValue={wallet.name || ''}
@@ -255,6 +261,8 @@ export default class WalletSelectImportDialog extends Component<Props> {
                         isDisabled={
                           wallet.import.status ===
                             WalletImportStatuses.COMPLETED ||
+                          wallet.import.status ===
+                            WalletImportStatuses.EXISTS ||
                           wallet.import.status === WalletImportStatuses.RUNNING
                         }
                         inputFieldValue={wallet.name || ''}
