@@ -10,3 +10,4 @@ import './addWallet/AddWallet.stories';
 import './exportToFile/ExportToFile.stories';
 import './transferFunds/TransferFunds.stories';
 import './paperWallets/PaperWallets.stories';
+import './setPassword/SetWalletPassword.stories';
