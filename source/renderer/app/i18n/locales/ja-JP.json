@@ -516,8 +516,6 @@
   "wallet.create.dialog.walletNameHint": "ウォレット名を入力してください",
   "wallet.import.file.dialog.buttonLabel": "ウォレットをインポートする",
   "wallet.import.file.dialog.description": "<p>この機能により、Daedalus製品バージョンまたはDaedalusステータスディレクトリーからウォレットをインポートすることができます。</p> <p> 完全なステータスディレクトリーがなくても、secret.keyファイルが保存されたSecretsフォルダーまたはSecrets-1.0フォルダーのいずれかがあればウォレットをインポートすることはできます。ただし完全なステータスディレクトリーがない場合、Daedalusはウォレット名を検知することができません。</p> <p>secret.keyファイルが保存されたSecretsフォルダーまたはSecrets-1.0フォルダーのいずれもない場合は、本機能を使用してウォレットをインポートすることはできません。</p>",
-  "wallet.import.file.dialog.linkLabel": "もっと知る",
-  "wallet.import.file.dialog.linkUrl": "http://cardano.org/",
   "wallet.import.file.dialog.noWallets": "ウォレットが見つかりません。選択したDaedalusステータスディレクトリーに、secret.keyファイルが保存されたSecretsフォルダーまたはSecrets-1.0フォルダーのいずれかが含まれていることを確認してください。",
   "wallet.import.file.dialog.stateFolderLabel": "Daedalusステータスフォルダーを選択：",
   "wallet.import.file.dialog.title": "ウォレットをインポートする",

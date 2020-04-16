@@ -242,7 +242,7 @@ export default class WalletSelectImportDialog extends Component<Props> {
           <div className={styles.content}>
             <div className={styles.title}>{title}</div>
             <div className={styles.description}>{description}</div>
-            <hr className={styles.separator} />
+            <hr className={styles.separatorTop} />
             <div className={styles.walletsContainer}>
               {walletsWithNames.map(wallet => {
                 walletIndex++;
@@ -288,7 +288,7 @@ export default class WalletSelectImportDialog extends Component<Props> {
               })}
 
               {walletsWithNames.length && walletsWithoutNames.length ? (
-                <hr className={styles.separator} />
+                <hr className={styles.separatorMiddle} />
               ) : null}
 
               <div className={styles.unamedWalletsTitle}>
