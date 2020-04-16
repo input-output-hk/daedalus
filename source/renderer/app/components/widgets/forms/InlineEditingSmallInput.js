@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
+import { get } from 'lodash';
 import SVGInline from 'react-svg-inline';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { Input } from 'react-polymorph/lib/components/Input';
@@ -120,6 +121,14 @@ export default class InlineEditingSmallInput extends Component<Props, State> {
     }
   }
 
+  get input() {
+    const fallbackInput = {
+      blur: () => {},
+      focus: () => {},
+    };
+    return get(this, 'inputField.inputElement.current', fallbackInput);
+  }
+
   inputField: Input;
 
   render() {
@@ -184,7 +193,12 @@ export default class InlineEditingSmallInput extends Component<Props, State> {
                 style={{ pointerEvents: 'none' }}
               />
             }
-            onClick={() => this.inputField.focus()}
+            onMouseUp={() => this.input.focus()}
+            onMouseDown={(event: SyntheticMouseEvent<HTMLElement>) => {
+              event.persist();
+              event.preventDefault();
+              event.stopPropagation();
+            }}
             skin={ButtonSkin}
           />
         ) : (
@@ -198,7 +212,15 @@ export default class InlineEditingSmallInput extends Component<Props, State> {
                   style={{ pointerEvents: 'none' }}
                 />
               }
-              onClick={() => {}}
+              onMouseUp={() => {
+                this.onCancel();
+                this.input.blur();
+              }}
+              onMouseDown={(event: SyntheticMouseEvent<HTMLElement>) => {
+                event.persist();
+                event.preventDefault();
+                event.stopPropagation();
+              }}
               skin={ButtonSkin}
             />
             <Button
@@ -210,7 +232,12 @@ export default class InlineEditingSmallInput extends Component<Props, State> {
                   style={{ pointerEvents: 'none' }}
                 />
               }
-              onClick={this.submit}
+              onMouseUp={() => this.input.blur()}
+              onMouseDown={(event: SyntheticMouseEvent<HTMLElement>) => {
+                event.persist();
+                event.preventDefault();
+                event.stopPropagation();
+              }}
               skin={ButtonSkin}
             />
           </>

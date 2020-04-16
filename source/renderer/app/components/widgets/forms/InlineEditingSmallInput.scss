@@ -1,29 +1,19 @@
 .component {
+  background-color: var(--theme-input-background-color);
+  border: 1px solid var(--theme-input-border-color);
+  border-radius: 2px;
+  padding-right: 50px;
   position: relative;
   width: 275px;
 
-  .disabled {
-    background-color: var(--theme-input-background-color);
-    border-color: var(--theme-input-border-color);
-    color: var(--theme-input-text-color);
-  }
-
-  :global {
-    .SimpleInput_input {
-      padding-right: 50px;
-    }
-  }
   &.isActive {
+    padding-right: 86px;
     .rightButton {
       @extend .activeButton;
     }
-    :global {
-      .SimpleInput_input {
-        padding-right: 86px;
-      }
-    }
   }
   &:not(.isActive) {
+    cursor: pointer;
     &:hover {
       .rightButton {
         @extend .activeButton;
@@ -32,6 +22,16 @@
     :global {
       .SimpleInput_input {
         cursor: pointer;
+      }
+    }
+  }
+  :global {
+    .SimpleInput_input {
+      background: transparent !important;
+      border: 0 none;
+      border-radius: 0;
+      &:focus {
+        border: 0 none;
       }
     }
   }
