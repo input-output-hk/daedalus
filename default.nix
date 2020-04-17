@@ -52,6 +52,21 @@ let
     export-wallets = self.cardano-sl.nix-tools.cexes.cardano-wallet.export-wallets;
     db-converter = self.cardano-wallet.db-converter;
 
+    nodejs = pkgs.nodejs-12_x;
+    yarnInfo = {
+      version = "1.22.4";
+      hash = "1l3sv30g61dcn7ls213prcja2y3dqdi5apq9r7yyick295w25npq";
+    };
+    yarn = (pkgs.yarn.override { inherit (self) nodejs; }) /*.overrideAttrs (old: {
+      version = self.yarnInfo.version;
+      src = pkgs.fetchFromGitHub {
+        owner = "yarnpkg";
+        repo = "yarn";
+        rev = "v${self.yarnInfo.version}";
+        sha256 = self.yarnInfo.hash;
+      };
+    })*/;
+
     sources = localLib.sources;
     bridgeTable = {
       jormungandr = self.callPackage ./nix/jormungandr-bridge.nix {};
@@ -69,6 +84,7 @@ let
     # a cross-compiled fastlist for the ps-list package
     fastlist = pkgs.pkgsCross.mingwW64.callPackage ./nix/fastlist.nix {};
     wine = pkgs.wine.override { wineBuild = "wine32"; };
+    wine64 = pkgs.wine.override { wineBuild = "wineWow"; };
 
     dlls = pkgs.fetchurl {
       url = "https://s3.eu-central-1.amazonaws.com/daedalus-ci-binaries/DLLs.zip";
@@ -281,13 +297,13 @@ let
     yaml2json = pkgs.haskell.lib.disableCabalFlag pkgs.haskellPackages.yaml "no-exe";
 
     electron4 = pkgs.callPackage ./installers/nix/electron.nix {};
-    electron3 = self.electron4.overrideAttrs (old: rec {
+    electron8 = self.electron4.overrideAttrs (old: rec {
       name = "electron-${version}";
-      version = "3.0.14";
+      version = "8.2.2";
       src = {
         x86_64-linux = pkgs.fetchurl {
           url = "https://github.com/electron/electron/releases/download/v${version}/electron-v${version}-linux-x64.zip";
-          sha256 = "0wha13dbb8553h9c7kvpnrjj5c6wizr441s81ynmkfbfybg697p7";
+          sha256 = "0sk63i72kg7xixqgdkq4z80ia3ya9cyc15pak8shg4qi605jdnr7";
         };
       }.${pkgs.stdenv.hostPlatform.system} or throwSystem;
     });

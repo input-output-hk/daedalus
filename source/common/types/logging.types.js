@@ -6,6 +6,8 @@ import type { WalletImportStatus } from '../../renderer/app/types/walletExportTy
 import type { WalletMigrationStatus } from '../../renderer/app/stores/WalletMigrationStore';
 import LocalizableError from '../../renderer/app/i18n/LocalizableError';
 
+export type LoggingLevel = 'debug' | 'info' | 'error' | 'warn';
+
 export type Logger = {
   debug: (string, ?Object) => void,
   info: (string, ?Object) => void,

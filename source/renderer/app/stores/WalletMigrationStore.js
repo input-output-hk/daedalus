@@ -5,6 +5,7 @@ import Request from './lib/LocalizedRequest';
 import Wallet from '../domains/Wallet';
 import LocalizableError from '../i18n/LocalizableError';
 import { exportWalletsChannel } from '../ipc/cardano.ipc';
+import { showOpenDialogChannel } from '../ipc/show-file-dialog-channels';
 import { generateWalletMigrationReportChannel } from '../ipc/generateWalletMigrationReportChannel';
 import { logger } from '../utils/logging';
 import { getRawWalletId } from '../api/utils';
@@ -86,20 +87,19 @@ export default class WalletMigrationStore extends Store {
   getExportedWalletById = (id: string): ?ExportedByronWallet =>
     this.exportedWallets.find(w => w.id === id);
 
-  @action _selectExportSourcePath = () => {
-    global.dialog.showOpenDialog(
-      {
-        defaultPath: global.legacyStateDir || '',
-        properties: ['openDirectory'],
-      },
-      filePaths => {
-        if (!filePaths) return;
-        const filePath = filePaths[0];
-        runInAction('update exportSourcePath', () => {
-          this.exportSourcePath = filePath;
-        });
-      }
-    );
+  @action _selectExportSourcePath = async () => {
+    const params = {
+      defaultPath: global.legacyStateDir || '',
+      properties: ['openDirectory'],
+    };
+    const { filePaths } = await showOpenDialogChannel.send(params);
+    if (!filePaths || filePaths.length === 0) {
+      return;
+    }
+    const filePath = filePaths[0];
+    runInAction('update exportSourcePath', () => {
+      this.exportSourcePath = filePath;
+    });
   };
 
   @action _nextStep = async () => {

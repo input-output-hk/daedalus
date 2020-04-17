@@ -6,6 +6,7 @@ import { buildRoute } from '../utils/routing';
 import { ROUTES } from '../routes-config';
 import { DIALOGS, PAGES, NOTIFICATIONS } from '../../../common/ipc/constants';
 import { openExternalUrlChannel } from '../ipc/open-external-url';
+import { showSaveDialogChannel } from '../ipc/show-file-dialog-channels';
 import {
   toggleUiPartChannel,
   showUiPartChannel,
@@ -154,30 +155,23 @@ export default class AppStore extends Store {
     if (this.activeDialog !== null) this.activeDialog = null;
   };
 
-  @action _downloadLogs = () => {
+  @action _downloadLogs = async () => {
     if (this.isDownloadNotificationVisible) {
       return;
     }
     const fileName = generateFileNameWithTimestamp();
-    global.dialog.showSaveDialog(
-      {
-        defaultPath: fileName,
-      },
-      destination => {
-        if (destination) {
-          this.actions.profile.downloadLogs.trigger({
-            fileName,
-            destination,
-            fresh: true,
-          });
-        } else {
-          this.actions.app.setIsDownloadingLogs.trigger(
-            !this.isDownloadNotificationVisible
-          );
-        }
-      }
-    );
-    this.isDownloadNotificationVisible = true;
+    const params = { defaultPath: fileName };
+    const { filePath } = await showSaveDialogChannel.send(params);
+    if (filePath) {
+      this.actions.app.setIsDownloadingLogs.trigger(true);
+      this.actions.profile.downloadLogs.trigger({
+        fileName,
+        destination: filePath,
+        fresh: true,
+      });
+    } else {
+      this.actions.app.setIsDownloadingLogs.trigger(false);
+    }
   };
 
   @action _setIsDownloadingLogs = (isDownloadNotificationVisible: boolean) => {
