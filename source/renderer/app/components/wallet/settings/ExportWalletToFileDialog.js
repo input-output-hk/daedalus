@@ -60,7 +60,7 @@ export type OnSubmitParams = $Exact<{
 type Props = {
   walletName: string,
   isSubmitting: boolean,
-  onSubmit: OnSubmitParams => void,
+  onSubmit: OnSubmitParams => Promise<void>,
   onClose: () => void,
   error?: ?LocalizableError,
 };
@@ -124,13 +124,13 @@ export default class ExportWalletToFileDialog extends Component<Props, State> {
 
   submit = () => {
     this.form.submit({
-      onSuccess: form => {
+      onSuccess: async form => {
         const { spendingPassword } = form.values();
         const formData = {
           exportType: this.state.exportType,
           password: spendingPassword || null,
         };
-        this.props.onSubmit(formData);
+        await this.props.onSubmit(formData);
       },
     });
   };

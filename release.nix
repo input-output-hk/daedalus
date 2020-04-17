@@ -50,7 +50,8 @@ let
 in {
   inherit shellEnvs;
   inherit ((daedalusPkgs {}).pkgs) mono;
-  wine = (daedalusPkgs {}).pkgs.wine.override { wineBuild = "wine32"; };
+  wine = (daedalusPkgs {}).wine;
+  wine64 = (daedalusPkgs {}).wine64;
   tests = (daedalusPkgs {}).tests;
   ifd-pins = mkPins {
     inherit (sources) iohk-nix cardano-wallet cardano-shell;

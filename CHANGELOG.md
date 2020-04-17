@@ -6,6 +6,7 @@ Changelog
 ### Chores
 
 - Implemented Storybook improvements ([PR 1783](https://github.com/input-output-hk/daedalus/pull/1783))
+- Updated `Electron` and it's related dependencies ([PR 1887](https://github.com/input-output-hk/daedalus/pull/1887))
 
 ## 1.0.0-FC3
 
