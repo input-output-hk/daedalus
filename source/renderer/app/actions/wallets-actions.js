@@ -1,6 +1,6 @@
 // @flow
 import Action from './lib/Action';
-import type { walletExportTypeChoices } from '../types/walletExportTypes';
+import type { WalletExportTypeChoices } from '../types/walletExportTypes';
 import type { CsvRecord } from '../../../common/types/rewards-csv-request.types';
 
 export type WalletImportFromFileParams = {
@@ -39,7 +39,7 @@ export default class WalletsActions {
 
   restoreWallet: Action<any> = new Action();
   importWalletFromFile: Action<WalletImportFromFileParams> = new Action();
-  deleteWallet: Action<{ walletId: string, isLegacy?: boolean }> = new Action();
+  deleteWallet: Action<{ walletId: string, isLegacy: boolean }> = new Action();
   undelegateWallet: Action<{
     walletId: string,
     stakePoolId: string,
@@ -54,7 +54,7 @@ export default class WalletsActions {
     passphrase: string,
   }> = new Action();
   chooseWalletExportType: Action<{
-    walletExportType: walletExportTypeChoices,
+    walletExportType: WalletExportTypeChoices,
   }> = new Action();
   generateCertificate: Action<{ filePath: string }> = new Action();
   generateRewardsCsv: Action<{

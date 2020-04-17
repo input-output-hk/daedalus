@@ -41,5 +41,5 @@ export const sidebarHelpers =  {
     return client.waitForVisible(`${SELECTORS.ACTIVE_CATEGORY}.${category}`);
   },
   clickAddWalletButton: (client: Object) =>
-    waitAndClick(client, SELECTORS.ADD_WALLET_BTN),
+    waitAndClick.call({ client }, SELECTORS.ADD_WALLET_BTN),
 };

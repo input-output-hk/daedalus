@@ -1,4 +1,4 @@
-@e2e
+@e2e @shelley
 Feature: Custom number, date and time formats
 
   Background:
@@ -31,8 +31,8 @@ Feature: Custom number, date and time formats
       | time   | hh:mm:ss A |
 
   Scenario: Transactions list displays the correct user date preference format
-    Given I have a "Test Wallet" rewards wallet with funds
-    And I have the following "Rewards" wallets:
+    Given I have a "Test Wallet" wallet with funds
+    And I have the following wallets:
       | name          |
       | Target Wallet |
     And I am on the "Test Wallet" wallet "transactions" screen
@@ -56,8 +56,8 @@ Feature: Custom number, date and time formats
       | time   | hh:mm:ss A |
 
   Scenario: Transactions list displays the correct user date preference format
-    Given I have a "Test Wallet" rewards wallet with funds
-    And I have the following "Rewards" wallets:
+    Given I have a "Test Wallet" wallet with funds
+    And I have the following wallets:
       | name          |
       | Target Wallet |
     And I am on the "Test Wallet" wallet "transactions" screen
@@ -77,7 +77,6 @@ Feature: Custom number, date and time formats
       | param      | value        |
       | fromAmount | 12,340000    |
       | toAmount   | 1.234,000000 |
-
 
   Scenario: Newsfeed alert displays the correct user date preference format
     Given there is 1 unread alert
@@ -106,8 +105,8 @@ Feature: Custom number, date and time formats
       | date  | DD/MM/YYYY |
 
   Scenario: Sidebar wallets display the correct user number preference format
-    Given I have a "Test Wallet" rewards wallet with funds
-    And I have the following "Rewards" wallets:
+    Given I have a "Test Wallet" wallet with funds
+    And I have the following wallets:
       | name          |
       | Target Wallet |
     And I am on the "Target Wallet" wallet "transactions" screen
@@ -118,8 +117,8 @@ Feature: Custom number, date and time formats
     Then the "Target Wallet" should display the "number" of value "123,4K ADA"
 
   Scenario: Users can create transactions regardless of their number format preference
-    Given I have a "Test Wallet" rewards wallet with funds
-    And I have the following "Rewards" wallets:
+    Given I have a "Test Wallet" wallet with funds
+    And I have the following wallets:
       | name          |
       | Target Wallet |
     And I am on the "Test Wallet" wallet "send" screen
@@ -154,4 +153,3 @@ Feature: Custom number, date and time formats
     And the "send form" should display the following custom formats:
       | param  | value            |
       | number | . |
-

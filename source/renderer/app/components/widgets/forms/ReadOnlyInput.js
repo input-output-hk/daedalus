@@ -12,6 +12,7 @@ type Props = {
   label: string,
   value: string,
   onClick: Function,
+  isSet: boolean,
 };
 
 @observer
@@ -21,10 +22,17 @@ export default class ReadOnlyInput extends Component<Props> {
   };
 
   render() {
-    const { label, value, onClick } = this.props;
+    const { label, value, onClick, isSet } = this.props;
     const { intl } = this.context;
 
-    const mainClasses = classnames([styles.component, 'changeLabel']);
+    const buttonLabel = intl.formatMessage(
+      globalMessages[isSet ? 'change' : 'create']
+    );
+
+    const mainClasses = classnames([
+      styles.component,
+      isSet ? 'changeLabel' : 'createLabel',
+    ]);
 
     return (
       <div className={mainClasses}>
@@ -38,7 +46,7 @@ export default class ReadOnlyInput extends Component<Props> {
         />
 
         <button className={styles.button} onClick={onClick}>
-          {intl.formatMessage(globalMessages.change)}
+          {buttonLabel}
         </button>
       </div>
     );

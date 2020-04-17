@@ -13,20 +13,22 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
   static defaultProps = { stores: null, actions: null };
 
   render() {
+    const { isIncentivizedTestnet, isFlight } = global;
     const { stores } = this.props;
     const {
       cardanoNodeState,
       isNodeResponding,
       isNodeSyncing,
+      isNodeTimeCorrect,
       isConnected,
       isSynced,
-      syncPercentage,
+      isSyncProgressStalling,
       hasBeenConnected,
+      getNetworkClockRequest,
       isNodeStopping,
       isNodeStopped,
       isNotEnoughDiskSpace,
       isTlsCertInvalid,
-      isIncentivizedTestnet,
     } = stores.networkStatus;
     const {
       isNewAppVersionAvailable,
@@ -42,20 +44,25 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
       <SyncingConnecting
         cardanoNodeState={cardanoNodeState}
         hasBeenConnected={hasBeenConnected}
+        isFlight={isFlight}
         isConnected={isConnected}
         isSynced={isSynced}
         isConnecting={!isConnected}
         isSyncing={isConnected && !isSynced}
+        isSyncProgressStalling={isSyncProgressStalling}
         isNodeStopping={isNodeStopping}
         isNodeStopped={isNodeStopped}
         isNotEnoughDiskSpace={isNotEnoughDiskSpace}
         isTlsCertInvalid={isTlsCertInvalid}
-        syncPercentage={syncPercentage}
         hasUnreadNews={hasUnreadNews}
         hasLoadedCurrentLocale={hasLoadedCurrentLocale}
         hasLoadedCurrentTheme={hasLoadedCurrentTheme}
+        isCheckingSystemTime={
+          !getNetworkClockRequest.result || getNetworkClockRequest.isExecuting
+        }
         isNodeResponding={isNodeResponding}
         isNodeSyncing={isNodeSyncing}
+        isNodeTimeCorrect={isNodeTimeCorrect}
         isNewAppVersionAvailable={isNewAppVersionAvailable}
         isNewAppVersionLoading={isNewAppVersionLoading}
         isNewAppVersionLoaded={isNewAppVersionLoaded}

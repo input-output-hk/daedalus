@@ -2,6 +2,7 @@
 import BigNumber from 'bignumber.js';
 
 import { WalletUnits } from '../../domains/Wallet';
+import type { ExportedByronWallet } from '../../types/walletExportTypes';
 
 export type Block = {
   slot_number: number,
@@ -47,7 +48,7 @@ export type AdaWallet = {
     last_updated_at: string,
   },
   state: WalletSyncState,
-  createdAt: Date,
+  discovery: Discovery,
   isLegacy: boolean,
 };
 
@@ -56,12 +57,14 @@ export type LegacyAdaWallet = {
   balance: {
     available: WalletBalance,
     total: WalletBalance,
+    reward: WalletBalance, // Unused prop - hack to keep flow happy
   },
   name: string,
   passphrase?: {
     last_updated_at: string,
   },
   state: WalletSyncState,
+  discovery: Discovery,
   tip: Block,
 };
 
@@ -71,7 +74,13 @@ export type WalletUnit = WalletUnits.LOVELACE | WalletUnits.ADA;
 
 export type AdaWallets = Array<AdaWallet>;
 
-export type SyncStateStatus = 'ready' | 'restoring' | 'syncing';
+export type SyncStateStatus =
+  | 'ready'
+  | 'restoring'
+  | 'syncing'
+  | 'not_responding';
+
+export type Discovery = 'random' | 'sequential';
 
 export type DelegationStatus = 'delegating' | 'not_delegating';
 
@@ -162,6 +171,7 @@ export type UpdateSpendingPasswordRequest = {
   walletId: string,
   oldPassword: string,
   newPassword: string,
+  isLegacy: boolean,
 };
 
 export type DeleteWalletRequest = {
@@ -171,6 +181,7 @@ export type DeleteWalletRequest = {
 
 export type GetWalletUtxosRequest = {
   walletId: string,
+  isLegacy: boolean,
 };
 
 export type GetWalletIdAndBalanceRequest = {
@@ -195,9 +206,12 @@ export type RestoreLegacyWalletRequest = {
   spendingPassword: string,
 };
 
+export type RestoreExportedByronWalletRequest = ExportedByronWallet;
+
 export type UpdateWalletRequest = {
   walletId: string,
   name: string,
+  isLegacy: boolean,
 };
 
 export type ForceWalletResyncRequest = {
@@ -234,7 +248,7 @@ export type GetWalletRecoveryPhraseFromCertificateRequest = {
 
 export type GetWalletRequest = {
   walletId: string,
-  isLegacy?: boolean,
+  isLegacy: boolean,
 };
 
 export type TransferFundsCalculateFeeRequest = {

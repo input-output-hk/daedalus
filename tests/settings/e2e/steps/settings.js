@@ -61,15 +61,15 @@ When(/^I enter current wallet password:$/, async function(table) {
 
 When(/^I click on "name" input field$/, function() {
   return this.client.click(
-    '.WalletSettings_component .InlineEditingInput_component'
+    '.WalletSettings_component .walletName'
   );
 });
 
 When(/^I enter new wallet name:$/, async function(table) {
   const fields = table.hashes()[0];
-  await this.client.setValue(
+  await this.client.addValue(
     '.WalletSettings_component .walletName input',
-    fields.name
+    `${" "}${fields.name}`
   );
 });
 
@@ -90,8 +90,7 @@ Then(/^I should see the following error messages:$/, async function(data) {
   const error = data.hashes()[0];
   const errorSelector =
     '.ChangeSpendingPasswordDialog_newPassword .SimpleFormField_error';
-  await this.client.waitForText(errorSelector);
-  const errorsOnScreen = await this.client.getText(errorSelector);
+  const errorsOnScreen = await this.waitAndGetText(errorSelector);
   const expectedError = await this.intl(error.message);
   expect(errorsOnScreen).to.equal(expectedError);
 });

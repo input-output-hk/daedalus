@@ -10,7 +10,7 @@ import LocalizableError from '../i18n/LocalizableError';
 import { WalletSupportRequestLogsCompressError } from '../i18n/errors';
 import { generateFileNameWithTimestamp } from '../../../common/utils/files';
 import { formattedBytesToSize } from '../utils/formatters';
-import { Logger } from '../utils/logging';
+import { logger } from '../utils/logging';
 import { setStateSnapshotLogChannel } from '../ipc/setStateSnapshotLogChannel';
 import { LOCALES } from '../../../common/types/locales.types';
 import {
@@ -126,7 +126,7 @@ export default class ProfileStore extends Store {
       this._updateBigNumberFormat,
       this._redirectToInitialSettingsIfNoLocaleSet,
       this._redirectToTermsOfUseScreenIfTermsNotAccepted,
-      this._redirectToDataLayerMigrationScreenIfMigrationHasNotAccepted,
+      // this._redirectToDataLayerMigrationScreenIfMigrationHasNotAccepted,
       this._redirectToMainUiAfterTermsAreAccepted,
       this._redirectToMainUiAfterDataLayerMigrationIsAccepted,
     ]);
@@ -154,16 +154,19 @@ export default class ProfileStore extends Store {
     return isRequestSet(this.getProfileLocaleRequest);
   }
 
+  @computed get isIncentivizedTestnetTheme(): boolean {
+    return this.currentTheme === THEMES.INCENTIVIZED_TESTNET;
+  }
+
   @computed get currentTheme(): string {
-    const { isIncentivizedTestnet } = this.stores.networkStatus;
     // Default theme handling
     let systemValue;
-    if (isIncentivizedTestnet) {
+    if (global.isIncentivizedTestnet) {
       // Force "Incentivized Testnet" as default theme for the Incentivized Testnet Daedalus version
       systemValue = THEMES.INCENTIVIZED_TESTNET;
     } else {
       systemValue = this.environment.isMainnet
-        ? THEMES.DARK_BLUE
+        ? THEMES.FLIGHT_CANDIDATE
         : THEMES.LIGHT_BLUE;
     }
     return requestGetter(this.getThemeRequest, systemValue);
@@ -216,11 +219,7 @@ export default class ProfileStore extends Store {
   }
 
   @computed get termsOfUse(): string {
-    const { isIncentivizedTestnet } = this.stores.networkStatus;
-    if (isIncentivizedTestnet)
-      return require(`../i18n/locales/terms-of-use/itn-rewards-v1/${this.currentLocale}.md`);
-    const network = this.environment.isMainnet ? 'mainnet' : 'other';
-    return require(`../i18n/locales/terms-of-use/${network}/${this.currentLocale}.md`);
+    return require(`../i18n/locales/terms-of-use/${this.currentLocale}.md`);
   }
 
   @computed get hasLoadedTermsOfUseAcceptance(): boolean {
@@ -351,10 +350,7 @@ export default class ProfileStore extends Store {
       this.stores.wallets.hasLoadedWallets &&
       dataLayerMigrationNotAccepted
     ) {
-      if (
-        !this.stores.wallets.hasAnyWallets ||
-        this.stores.networkStatus.isIncentivizedTestnet
-      ) {
+      if (!this.stores.wallets.hasAnyWallets || global.isIncentivizedTestnet) {
         // There are no wallets to migrate or it's Incentivized Testnet:
         // set the data layer migration acceptance to true
         // in order to prevent future data migration checks
@@ -463,10 +459,9 @@ export default class ProfileStore extends Store {
   // Collect all relevant state snapshot params and send them for log file creation
   _setStateSnapshotLog = async () => {
     try {
-      Logger.info('ProfileStore: Requesting state snapshot log file creation');
-
+      logger.info('ProfileStore: Requesting state snapshot log file creation');
+      const { isIncentivizedTestnet } = global;
       const { networkStatus } = this.stores;
-
       const {
         cardanoNodeID,
         tlsConfig,
@@ -481,7 +476,6 @@ export default class ProfileStore extends Store {
         syncPercentage,
         localTip,
         networkTip,
-        isIncentivizedTestnet,
       } = networkStatus;
 
       const {
@@ -544,7 +538,7 @@ export default class ProfileStore extends Store {
 
       await setStateSnapshotLogChannel.send(stateSnapshotData);
     } catch (error) {
-      Logger.error('ProfileStore: State snapshot log file creation failed', {
+      logger.error('ProfileStore: State snapshot log file creation failed', {
         error,
       });
     }

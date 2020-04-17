@@ -1,50 +1,41 @@
-{ lib, pkgs, nodejs-12_x, python, api, apiVersion
-, cluster, buildNum, nukeReferences, fetchzip
-, daedalus, stdenv, win64 ? false, wine64, runCommand
-, fetchurl, unzip }:
+{ lib, yarn, nodejs, python, api, apiVersion, cluster, buildNum, nukeReferences, fetchzip, daedalus, stdenv, win64 ? false, wine64, runCommand, fetchurl, unzip, spacedName, iconPath, launcherConfig, pkgs }:
 let
-  nodejs = nodejs-12_x;
+  cluster' = launcherConfig.networkName;
   yarn2nix = import (fetchzip {
     url = "https://github.com/moretea/yarn2nix/archive/v1.0.0.tar.gz";
     sha256 = "02bzr9j83i1064r1r34cn74z7ccb84qb5iaivwdplaykyyydl1k8";
   }) {
-    inherit pkgs nodejs;
-    yarn = pkgs.yarn.override { inherit nodejs; };
+    inherit pkgs nodejs yarn;
   };
   dotGitExists = builtins.pathExists ./.git;
   isNix2 = 0 <= builtins.compareVersions builtins.nixVersion "1.12";
   canUseFetchGit = dotGitExists && isNix2;
   origPackage = builtins.fromJSON (builtins.readFile ./package.json);
-  nameTable = {
-    mainnet = "Daedalus";
-    staging = "Daedalus Staging";
-    testnet = "Daedalus Testnet";
-    nightly = "Daedalus Nightly";
-    itn_rewards_v1 = "Daedalus - Rewards v1";
-    qa = "Daedalus QA";
-    selfnode = "Daedalus Selfnode";
-  };
   newPackage = (origPackage // {
-    productName = nameTable.${if cluster == null then "testnet" else cluster};
+    productName = spacedName;
   }) // lib.optionalAttrs (win64 == false) {
     main = "main/index.js";
   };
   newPackagePath = builtins.toFile "package.json" (builtins.toJSON newPackage);
-  windowsElectronVersion = "8.1.1";
+  windowsElectronVersion = "8.2.2";
   windowsElectron = fetchurl {
     url = "https://github.com/electron/electron/releases/download/v${windowsElectronVersion}/electron-v${windowsElectronVersion}-win32-x64.zip";
-    sha256 = "01j1bvq5ynbjsg3ii22j0srwq14bjbcnq9r65iqr0g8yz3bw51l0";
+    sha256 = "0v9y8qih494k4a5q9s3jgvkdi0nbp60hr0v0w5cxlki79z8gk5ax";
   };
   checksums = fetchurl {
     url = "https://github.com/electron/electron/releases/download/v${windowsElectronVersion}/SHASUMS256.txt";
-    sha256 = "13hyf7vgg8vnfih85xvkqsnfa6pzq7hyjm768zy1xpqvypl3n3qz";
+    sha256 = "1z9wcgqjjany2ny4k771835m190vyp8h5gjbh898mf81mk7h3805";
   };
   electron-cache = runCommand "electron-cache" {} ''
     mkdir $out
-    mkdir $out/httpsgithub.comelectronelectronreleasesdownloadv8.1.1SHASUMS256.txt
-    mkdir $out/httpsgithub.comelectronelectronreleasesdownloadv8.1.1electron-v8.1.1-win32-x64.zip
-    ln -s ${windowsElectron} $out/httpsgithub.comelectronelectronreleasesdownloadv8.1.1electron-v8.1.1-win32-x64.zip/electron-v8.1.1-win32-x64.zip
-    ln -s ${checksums} $out/httpsgithub.comelectronelectronreleasesdownloadv8.1.1SHASUMS256.txt/SHASUMS256.txt
+    # old style
+    ln -s ${windowsElectron} $out/electron-v${windowsElectronVersion}-win32-x64.zip
+    ln -s ${checksums} $out/SHASUMS256.txt-${windowsElectronVersion}
+    # new style
+    mkdir $out/httpsgithub.comelectronelectronreleasesdownloadv${windowsElectronVersion}SHASUMS256.txt
+    mkdir $out/httpsgithub.comelectronelectronreleasesdownloadv${windowsElectronVersion}electron-v${windowsElectronVersion}-win32-x64.zip
+    ln -s ${windowsElectron} $out/httpsgithub.comelectronelectronreleasesdownloadv${windowsElectronVersion}electron-v${windowsElectronVersion}-win32-x64.zip/electron-v${windowsElectronVersion}-win32-x64.zip
+    ln -s ${checksums} $out/httpsgithub.comelectronelectronreleasesdownloadv${windowsElectronVersion}SHASUMS256.txt/SHASUMS256.txt
   '';
   filter = name: type: let
     baseName = baseNameOf (toString name);
@@ -67,7 +58,7 @@ yarn2nix.mkYarnPackage {
   API = api;
   API_VERSION = apiVersion;
   CI = "nix";
-  NETWORK = cluster;
+  NETWORK = cluster';
   BUILD_NUMBER = "${toString buildNum}";
   NODE_ENV = "production";
   extraBuildInputs = if win64 then [ unzip wine64 nukeReferences ] else [ nukeReferences ];
@@ -81,11 +72,16 @@ yarn2nix.mkYarnPackage {
       done
     '';
   in if win64 then ''
+    # old style
+    export ELECTRON_CACHE=${electron-cache}
+    # new style
     mkdir -pv home/.cache/
     export HOME=$(realpath home)
     ln -sv ${electron-cache} $HOME/.cache/electron
-    export DEBUG='@electron/get:*'
+
     cp ${newPackagePath} package.json
+    mkdir -p installers/icons/${cluster}/${cluster}
+    cp ${iconPath.base}/* installers/icons/${cluster}/${cluster}/
     yarn --offline package --win64 --icon installers/icons/${cluster}/${cluster}
     ls -ltrh release/win32-x64/Daedalus*-win32-x64/
     cp -r release/win32-x64/Daedalus*-win32-x64 $out

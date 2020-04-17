@@ -138,6 +138,7 @@ gulp.task('prepare:themes:daedalus', () =>
       'source/renderer/app/themes/daedalus/cardano.js',
       'source/renderer/app/themes/daedalus/dark-blue.js',
       'source/renderer/app/themes/daedalus/dark-cardano.js',
+      'source/renderer/app/themes/daedalus/flight-candidate.js',
       'source/renderer/app/themes/daedalus/incentivized-testnet.js',
       'source/renderer/app/themes/daedalus/index.js',
       'source/renderer/app/themes/daedalus/light-blue.js',

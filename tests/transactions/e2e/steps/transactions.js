@@ -11,6 +11,7 @@ import {
   getInputValueByLabel,
 } from '../../../common/e2e/steps/helpers';
 import { getWalletByName, fillOutWalletSendForm } from '../../../wallets/e2e/steps/helpers';
+import { getRawWalletId } from '../../../../source/renderer/app/api/utils';
 import type { Daedalus } from '../../../types';
 
 declare var daedalus: Daedalus;
@@ -26,6 +27,7 @@ Given(
       destinationWalletId: getWalletByName.call(this, t.destination).id,
       amount: parseInt(new BigNumber(t.amount).times(LOVELACES_PER_ADA), 10),
       passphrase: 'Secret1234',
+      isLegacy: getWalletByName.call(this, t.source).isLegacy,
     }));
     this.transactions = [];
     // Sequentially (and async) create transactions with for loop
@@ -52,7 +54,7 @@ When(/^I click on the show more transactions button$/, async function() {
 });
 
 When(/^I can see the send form$/, function() {
-  return this.client.waitForVisible('.WalletSendForm');
+  return this.client.waitForVisible('.WalletSendForm_receiverInput');
 });
 
 When(/^I fill out the wallet send form with:$/, function(table) {
@@ -63,13 +65,18 @@ When(
   /^I fill out the send form with a transaction to "([^"]*)" wallet:$/,
   async function(walletName, table) {
     const values = table.hashes()[0];
-    const walletId = getWalletByName.call(this, walletName).id;
-    const walletAddress = await this.client.executeAsync((id, done) => {
+    const wallet = getWalletByName.call(this, walletName);
+    const walletId = getRawWalletId(wallet.id);
+    const isLegacy = wallet.isLegacy;
+
+    // Get Destination wallet address
+    const walletAddress = await this.client.executeAsync((walletId, isLegacy, done) => {
       daedalus.api.ada
-        .getAddresses({ walletId: id, isLegacy: false })
+        .getAddresses({ walletId, isLegacy })
         .then(response => done(response[0].id))
         .catch(error => done(error));
-    }, walletId);
+    }, walletId, isLegacy);
+
     values.address = walletAddress.value;
     return fillOutWalletSendForm.call(this, values);
   }
@@ -78,7 +85,7 @@ When(
 When(/^the transaction fees are calculated$/, async function() {
   this.fees = await this.client.waitUntil(async () => {
     // Expected transactionFeeText format "+ 0.000001 of fees"
-    const transactionFeeText = await this.client.getText(
+    const transactionFeeText = await this.waitAndGetText(
       '.AmountInputSkin_fees'
     );
     const transactionFeeAmount = new BigNumber(transactionFeeText.substr(2, 8));
@@ -153,8 +160,7 @@ Then(
   /^I should see the following error messages on the wallet send form:$/,
   async function(data) {
     const errorSelector = '.WalletSendForm_component .SimpleFormField_error';
-    await this.client.waitForText(errorSelector);
-    let errorsOnScreen = await this.client.getText(errorSelector);
+    let errorsOnScreen = await this.waitAndGetText(errorSelector);
     if (typeof errorsOnScreen === 'string') errorsOnScreen = [errorsOnScreen];
     const errors = data.hashes();
     for (let i = 0; i < errors.length; i++) {
@@ -167,14 +173,13 @@ Then(
 // TODO: refactor this to a less hackish solution (fees cannot easily be calculated atm)
 Then(/^the latest transaction should show:$/, async function(table) {
   const expectedData = table.hashes()[0];
-  await this.client.waitForVisible('.Transaction_title');
-  let transactionTitles = await this.client.getText('.Transaction_title');
+  let transactionTitles = await this.waitAndGetText('.Transaction_title');
   transactionTitles = [].concat(transactionTitles);
   const expectedTransactionTitle = await this.intl(expectedData.title, {
     currency: 'Ada',
   });
   expect(expectedTransactionTitle).to.equal(transactionTitles[0]);
-  let transactionAmounts = await this.client.getText('.Transaction_amount');
+  let transactionAmounts = await this.waitAndGetText('.Transaction_amount');
   transactionAmounts = [].concat(transactionAmounts);
   // Transaction amount includes transaction fees so we need to
   // substract them in order to get a match with expectedData.amountWithoutFees.

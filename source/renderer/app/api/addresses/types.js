@@ -17,3 +17,11 @@ export type GetAddressesRequest = {
   isLegacy: boolean,
   queryParams?: GetAddressesRequestQueryParams,
 };
+
+// Byron related types
+
+export type CreateByronWalletAddressRequest = {
+  walletId: string,
+  passphrase: string,
+  addressIndex?: number,
+};

@@ -67,6 +67,11 @@ export const messages = defineMessages({
     defaultMessage: '!!!Last updated',
     description: 'Last updated X time ago message.',
   },
+  passwordNotSet: {
+    id: 'wallet.settings.passwordNotSet',
+    defaultMessage: "!!!You still don't have password",
+    description: "You still don't have password set message.",
+  },
 });
 
 type Props = {
@@ -86,6 +91,7 @@ type Props = {
   isSubmitting: boolean,
   isForcedWalletResyncStarting: boolean,
   isIncentivizedTestnet: boolean,
+  isWalletRecoveryPhraseDisabled?: boolean,
   isInvalid: boolean,
   isLegacy: boolean,
   lastUpdatedField: ?string,
@@ -99,6 +105,7 @@ type Props = {
   recoveryPhraseVerificationStatus: string,
   recoveryPhraseVerificationStatusType: string,
   locale: string,
+  isSpendingPasswordSet: boolean,
 };
 
 type State = {
@@ -160,6 +167,7 @@ export default class WalletSettings extends Component<Props, State> {
       isSubmitting,
       isForcedWalletResyncStarting,
       isIncentivizedTestnet,
+      isWalletRecoveryPhraseDisabled,
       isInvalid,
       isLegacy,
       lastUpdatedField,
@@ -173,6 +181,7 @@ export default class WalletSettings extends Component<Props, State> {
       recoveryPhraseVerificationStatus,
       recoveryPhraseVerificationStatusType,
       locale,
+      isSpendingPasswordSet,
     } = this.props;
     const { isFormBlocked } = this.state;
 
@@ -183,7 +192,7 @@ export default class WalletSettings extends Component<Props, State> {
       moment.locale('en-us');
     }
 
-    if (isLegacy) {
+    if (isLegacy && isIncentivizedTestnet) {
       const deleteWalletBoxStyles = classNames([
         styles.deleteWalletBox,
         styles.legacyWallet,
@@ -221,6 +230,14 @@ export default class WalletSettings extends Component<Props, State> {
       );
     }
 
+    const passwordMessage = isSpendingPasswordSet
+      ? intl.formatMessage(messages.passwordLastUpdated, {
+          lastUpdated: moment(spendingPasswordUpdateDate)
+            .locale(this.context.intl.locale)
+            .fromNow(),
+        })
+      : intl.formatMessage(messages.passwordNotSet);
+
     return (
       <div className={styles.component}>
         <BorderedBox>
@@ -246,11 +263,8 @@ export default class WalletSettings extends Component<Props, State> {
 
           <ReadOnlyInput
             label={intl.formatMessage(messages.passwordLabel)}
-            value={intl.formatMessage(messages.passwordLastUpdated, {
-              lastUpdated: moment(spendingPasswordUpdateDate)
-                .locale(this.context.intl.locale)
-                .fromNow(),
-            })}
+            value={passwordMessage}
+            isSet={isSpendingPasswordSet}
             onClick={() => {
               this.onBlockForm();
               openDialogAction({
@@ -259,7 +273,7 @@ export default class WalletSettings extends Component<Props, State> {
             }}
           />
 
-          {!isIncentivizedTestnet && (
+          {!isIncentivizedTestnet && !isWalletRecoveryPhraseDisabled && (
             <WalletRecoveryPhrase
               recoveryPhraseVerificationDate={recoveryPhraseVerificationDate}
               recoveryPhraseVerificationStatus={
@@ -286,12 +300,14 @@ export default class WalletSettings extends Component<Props, State> {
             />
           )}
 
-          <div className={styles.resyncWalletBox}>
-            <ResyncWallet
-              isForcedWalletResyncStarting={isForcedWalletResyncStarting}
-              onResyncWallet={onResyncWallet}
-            />
-          </div>
+          {isIncentivizedTestnet && (
+            <div className={styles.resyncWalletBox}>
+              <ResyncWallet
+                isForcedWalletResyncStarting={isForcedWalletResyncStarting}
+                onResyncWallet={onResyncWallet}
+              />
+            </div>
+          )}
 
           {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
         </BorderedBox>

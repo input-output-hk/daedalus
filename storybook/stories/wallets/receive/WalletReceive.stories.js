@@ -9,7 +9,8 @@ import WalletsWrapper from '../_utils/WalletsWrapper';
 import { generateAddress } from '../../_support/utils';
 
 // Screens
-import WalletReceive from '../../../../source/renderer/app/components/wallet/receive/WalletReceive';
+import WalletReceiveSequential from '../../../../source/renderer/app/components/wallet/receive/WalletReceiveSequential';
+import WalletReceiveRandom from '../../../../source/renderer/app/components/wallet/receive/WalletReceiveRandom';
 import WalletReceiveDialog from '../../../../source/renderer/app/components/wallet/receive/WalletReceiveDialog';
 import VerticalFlexContainer from '../../../../source/renderer/app/components/layout/VerticalFlexContainer';
 
@@ -20,12 +21,42 @@ const onToggleSubMenus = {
 
 storiesOf('Wallets|Receive', module)
   .addDecorator(WalletsWrapper)
-  .add('Receive', ({ locale }: { locale: string }) => {
-    const isIncentivizedTestnet = boolean('isIncentivizedTestnet', false);
-    const showDialog = boolean('showDialog', false);
+  .add('Receive - random', () => {
+    const isSidebarExpanded = boolean('isSidebarExpanded', false);
+    const walletHasPassword = boolean('walletHasPassword', false);
+    const isSubmitting = boolean('isSubmitting', false);
+
+    const walletAddress = generateAddress();
     return (
       <VerticalFlexContainer>
-        <WalletReceive
+        <WalletReceiveRandom
+          walletAddress={walletAddress.id}
+          isWalletAddressUsed={walletAddress.used}
+          walletAddresses={[
+            ...Array.from(Array(number('Addresses', 5))).map(() =>
+              generateAddress()
+            ),
+            ...Array.from(Array(number('Addresses (used)', 5))).map(() =>
+              generateAddress(true)
+            ),
+          ]}
+          onGenerateAddress={action('onGenerateAddress')}
+          onCopyAddress={action('onCopyAddress')}
+          onShareAddress={action('onShareAddress')}
+          isSidebarExpanded={isSidebarExpanded}
+          walletHasPassword={walletHasPassword}
+          isSubmitting={isSubmitting}
+        />
+      </VerticalFlexContainer>
+    );
+  })
+  .add('Receive - sequential', ({ locale }: { locale: string }) => {
+    const isIncentivizedTestnet = boolean('isIncentivizedTestnet', true);
+    const showDialog = boolean('showDialog', false);
+
+    return (
+      <VerticalFlexContainer>
+        <WalletReceiveSequential
           walletAddresses={[
             ...Array.from(Array(number('Addresses', 10))).map(() =>
               generateAddress()

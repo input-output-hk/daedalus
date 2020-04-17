@@ -1,4 +1,4 @@
-@e2e
+@e2e @skip
 Feature: Data Layer Migration
 
   Background:
@@ -10,7 +10,7 @@ Feature: Data Layer Migration
     Then I should not see the Data Layer Migration screen
 
   Scenario: I do have wallets
-    Given I have the following "Rewards" wallets:
+    Given I have the following wallets:
     | name   |
     | Wallet |
     And I have selected English language

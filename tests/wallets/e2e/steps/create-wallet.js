@@ -63,7 +63,7 @@ When(/^I see the create wallet recovery phrase display dialog$/, function() {
 });
 
 When(/^I note down the recovery phrase$/, async function() {
-  const recoveryPhrase = await this.client.getText(
+  const recoveryPhrase = await this.waitAndGetText(
     '.WalletRecoveryPhraseMnemonic_component'
   );
   this.recoveryPhrase = recoveryPhrase.split(' ');

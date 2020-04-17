@@ -1,4 +1,8 @@
 {
+  "dialog.exportWalletsWarning.cancel": "キャンセル",
+  "dialog.exportWalletsWarning.confirm": "Daedalusは閉じている、ウォレットをインポートする",
+  "dialog.exportWalletsWarning.message": "Daedalus FlightはDaedalus製品バージョンからウォレットをインポートしようとしています。\n\nインポート中はDaedalus製品バージョンを実行しないでください。Daedalusアプリケーションが開いている場合は、直ちに終了してください。",
+  "dialog.exportWalletsWarning.title": "ウォレットをインポートする",
   "menu.daedalus": "Daedalus",
   "menu.daedalus.about": "このDaedalusについて",
   "menu.daedalus.settings": "設定",

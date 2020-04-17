@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import moment from 'moment';
+import { showSaveDialogChannel } from '../../../../ipc/show-file-dialog-channels';
 import InstructionsDialog from '../../../../components/wallet/paper-wallet-certificate/InstructionsDialog';
 import type { InjectedDialogContainerProps } from '../../../../types/injectedPropsType';
 import { generateFileNameWithTimestamp } from '../../../../../../common/utils/files';
@@ -18,7 +19,7 @@ export default class InstructionsDialogContainer extends Component<Props> {
     onClose: () => {},
   };
 
-  onPrint = () => {
+  onPrint = async () => {
     const {
       currentDateFormat,
       currentTimeFormatShort,
@@ -34,9 +35,7 @@ export default class InstructionsDialogContainer extends Component<Props> {
       extension: '',
       isUTC: false,
     });
-
-    // TODO: refactor this direct access to the dialog api
-    const filePath = global.dialog.showSaveDialog({
+    const params = {
       defaultPath: `${name}.pdf`,
       filters: [
         {
@@ -44,7 +43,9 @@ export default class InstructionsDialogContainer extends Component<Props> {
           extensions: ['pdf'],
         },
       ],
-    });
+    };
+
+    const { filePath } = await showSaveDialogChannel.send(params);
 
     // if cancel button is clicked or path is empty
     if (!filePath) return;

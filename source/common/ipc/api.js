@@ -5,11 +5,15 @@ import type {
 } from '../types/bug-report-request.types';
 import type { GenerateFileMetaParams } from '../types/file-meta-request.types';
 import type { GeneratePaperWalletParams } from '../types/paper-wallet-request.types';
+import type {
+  FileDialogRequestParams,
+  OpenFileDialogResponseParams,
+  SaveFileDialogResponseParams,
+} from '../types/file-dialog.types';
 import type { GenerateAddressPDFParams } from '../types/address-pdf-request.types';
 import type { GenerateRewardsCsvParams } from '../types/rewards-csv-request.types';
 import type {
   CardanoNodeState,
-  CardanoNodeImplementation,
   CardanoStatus,
   FaultInjectionIpcRequest,
   TlsConfig,
@@ -17,7 +21,11 @@ import type {
 import type { CheckDiskSpaceResponse } from '../types/no-disk-space.types';
 import type { LogFiles } from '../../renderer/app/types/LogTypes';
 import type { GpuStatus } from '../../renderer/app/types/gpuStatus';
-import type { StateSnapshotLogParams } from '../types/logging.types';
+import type { ExportedByronWallet } from '../../renderer/app/types/walletExportTypes';
+import type {
+  StateSnapshotLogParams,
+  WalletMigrationReportData,
+} from '../types/logging.types';
 
 /**
  * ======================= IPC CHANNELS API =========================
@@ -173,14 +181,6 @@ export type CardanoStateRendererRequest = void;
 export type CardanoStateRendererResponse = CardanoNodeState;
 
 /**
- * Channel where main process tells the renderer about the specific cardano node implementation
- */
-export const CARDANO_NODE_IMPLEMENTATION_CHANNEL =
-  'CARDANO_NODE_IMPLEMENTATION_CHANNEL';
-export type CardanoNodeImplementationRendererRequest = void;
-export type CardanoNodeImplementationRendererResponse = CardanoNodeImplementation;
-
-/**
  * Channel to exchange tls config between main and renderer process
  */
 export const CARDANO_TLS_CONFIG_CHANNEL = 'CARDANO_TLS_CONFIG_CHANNEL';
@@ -203,7 +203,7 @@ export type CardanoFaultInjectionRendererRequest = FaultInjectionIpcRequest;
 export type CardanoFaultInjectionMainResponse = void;
 
 /**
- * Channel where renderer can ask for the last cached cardano-node status.
+ * Channel where renderer can ask for the last cached cardano-node status
  */
 export const GET_CACHED_CARDANO_STATUS_CHANNEL =
   'GET_CACHED_CARDANO_STATUS_CHANNEL';
@@ -211,7 +211,7 @@ export type GetCachedCardanoStatusRendererRequest = void;
 export type GetCachedCardanoStatusMainResponse = ?CardanoStatus;
 
 /**
- * Channel where renderer and main process can exchange cardano-node status info.
+ * Channel where renderer and main process can exchange cardano-node status info
  */
 export const SET_CACHED_CARDANO_STATUS_CHANNEL =
   'SET_CACHED_CARDANO_STATUS_CHANNEL';
@@ -224,3 +224,47 @@ export type SetCachedCardanoStatusMainResponse = void;
 export const DETECT_SYSTEM_LOCALE_CHANNEL = 'DETECT_SYSTEM_LOCALE_CHANNEL';
 export type DetectSystemLocaleRendererRequest = void;
 export type DetectSystemLocaleMainResponse = string;
+
+/**
+ * Channel where renderer can ask main process to export wallets
+ */
+export const EXPORT_WALLETS_CHANNEL = 'EXPORT_WALLETS_CHANNEL';
+export type ExportWalletsRendererRequest = {
+  exportSourcePath: string,
+};
+export type ExportWalletsMainResponse = {
+  wallets: Array<ExportedByronWallet>,
+  errors: string,
+};
+
+/**
+ * Channel for generating wallet migration report
+ */
+export const GENERATE_WALLET_MIGRATION_REPORT_CHANNEL =
+  'GENERATE_WALLET_MIGRATION_REPORT_CHANNEL';
+export type GenerateWalletMigrationReportRendererRequest = WalletMigrationReportData;
+export type GenerateWalletMigrationReportMainResponse = void;
+
+/**
+ * Channel for showing open dialog
+ */
+export const SHOW_OPEN_DIALOG_CHANNEL = 'SHOW_OPEN_DIALOG_CHANNEL';
+export type ShowOpenDialogRendererRequest = FileDialogRequestParams;
+export type ShowOpenDialogMainResponse = OpenFileDialogResponseParams;
+
+/**
+ * Channel for showing save dialog
+ */
+export const SHOW_SAVE_DIALOG_CHANNEL = 'SHOW_SAVE_DIALOG_CHANNEL';
+export type ShowSaveDialogRendererRequest = FileDialogRequestParams;
+export type ShowSaveDialogMainResponse = SaveFileDialogResponseParams;
+
+/**
+ * Channel for electron-store
+ */
+export const ELECTRON_STORE_CHANNEL = 'ELECTRON_STORE_CHANNEL';
+export type ElectronStoreMessage = {
+  type: 'get' | 'set' | 'delete',
+  key: string,
+  data?: any,
+};

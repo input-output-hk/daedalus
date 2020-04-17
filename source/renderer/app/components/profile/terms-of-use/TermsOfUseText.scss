@@ -4,7 +4,10 @@
   user-select: text;
 
   a {
-    color: var(--theme-support-settings-text-color);
+    border-bottom: 1px solid var(--theme-support-settings-link-color);
+    color: var(--theme-support-settings-link-color);
+    cursor: pointer;
+    text-decoration: none;
   }
 
   hr {

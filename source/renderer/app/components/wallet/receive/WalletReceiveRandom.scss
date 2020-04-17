@@ -1,0 +1,199 @@
+@import '../../../themes/mixins/loading-spinner';
+@import '../../../themes/mixins/error-message';
+
+.component {
+  flex: 1;
+  min-height: 500px;
+  overflow-x: hidden;
+  overflow-y: overlay;
+  padding: 20px;
+  &::-webkit-scrollbar-button {
+    display: block;
+    height: 7px;
+  }
+  @media (max-width: 1000px) {
+    min-height: 600px;
+  }
+}
+
+.copyIconBig {
+  cursor: pointer;
+  margin-left: 6px;
+  object-fit: contain;
+  & > svg {
+    height: 14.5px;
+    width: 11.5px;
+    path {
+      fill: var(--theme-icon-copy-address-color);
+    }
+  }
+}
+
+.qrCodeAndInstructions {
+  display: flex;
+  flex-direction: row;
+  margin: 10px 0 24px;
+  position: relative;
+  width: 100%;
+
+  .qrCode {
+    align-items: flex-start;
+    display: flex;
+    margin-right: 20px;
+
+    canvas {
+      border: 4px solid var(--theme-receive-qr-code-background-color);
+      box-sizing: content-box;
+      margin-bottom: 1.5rem;
+    }
+  }
+
+  .instructions {
+    color: var(--theme-bordered-box-text-color);
+    font-family: var(--font-regular);
+    font-size: 14px;
+    line-height: 19px;
+
+    .hash {
+      font-family: var(--font-mono);
+      font-size: 19px;
+      line-height: 23px;
+      margin-bottom: 6px;
+      user-select: text;
+      word-break: break-all;
+    }
+
+    .usedHash {
+      opacity: 0.4;
+    }
+
+    .hashLabel {
+      margin-bottom: 6px;
+      opacity: 0.5;
+    }
+
+    .instructionsText {
+      font-size: 16px;
+      line-height: 22px;
+      margin-bottom: 12px;
+      word-break: break-word;
+    }
+
+    .submitButton {
+      display: block !important;
+      max-width: 360px;
+      white-space: nowrap;
+      width: 100%;
+      &.spinning {
+        @include loading-spinner('../../../assets/images/spinner-light.svg');
+      }
+    }
+
+    .submitWithPasswordButton {
+      max-width: 310px;
+      width: calc(50% - 10px);
+      &.spinning {
+        @include loading-spinner('../../../assets/images/spinner-light.svg');
+      }
+    }
+
+    .spendingPassword {
+      display: inline-block !important;
+      margin-right: 20px;
+      max-width: 310px;
+      padding: 0 0 1.5rem;
+      width: calc(50% - 10px);
+
+      input {
+        border-radius: 2px;
+        height: 50px;
+        margin: 0 !important;
+      }
+
+      :global {
+        .SimpleFormField_label {
+          display: none;
+        }
+
+        .SimpleFormField_error {
+          bottom: -8px;
+          position: absolute;
+          right: 0;
+        }
+      }
+    }
+
+    .error {
+      text-align: left;
+    }
+
+    .generateAddressWrapper {
+      display: flex;
+
+      @media (max-width: 950px) {
+        display: block;
+
+        &.fullWidthOnSmallScreen {
+          .spendingPassword,
+          .submitWithPasswordButton {
+            max-width: 360px;
+            width: 100%;
+          }
+
+          .spendingPassword {
+            margin: 0 0 2px;
+          }
+        }
+      }
+    }
+  }
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.generatedAddresses {
+  color: var(--theme-bordered-box-text-color);
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  font-family: var(--font-regular);
+  font-size: 16px;
+  line-height: 22px;
+  width: 100%;
+
+  h2 {
+    font-family: var(--font-medium);
+    padding-bottom: 10px;
+
+    button {
+      color: var(--theme-label-button-color);
+      cursor: pointer;
+      font-family: var(--font-regular);
+      font-size: 16px;
+      line-height: 22px;
+      margin-left: 12px;
+      opacity: 0.55;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    .hideUsed {
+      float: right;
+      height: 20px;
+      text-align: right;
+    }
+  }
+}
+
+.error {
+  @include error-message;
+  font-size: 16px;
+  margin-bottom: 1rem;
+  text-align: center;
+}

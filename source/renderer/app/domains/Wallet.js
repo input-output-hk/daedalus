@@ -8,16 +8,27 @@ import type {
   DelegationStatus,
   WalletUnit,
   WalletPendingDelegations,
+  Discovery,
 } from '../api/wallets/types';
+
+export const WalletDiscovery: {
+  RANDOM: Discovery,
+  SEQUENTIAL: Discovery,
+} = {
+  RANDOM: 'random',
+  SEQUENTIAL: 'sequential',
+};
 
 export const WalletSyncStateStatuses: {
   RESTORING: SyncStateStatus,
   SYNCING: SyncStateStatus,
   READY: SyncStateStatus,
+  NOT_RESPONDING: SyncStateStatus,
 } = {
   RESTORING: 'syncing', // @API TODO - calculate if the wallet is restoring!
   SYNCING: 'syncing',
   READY: 'ready',
+  NOT_RESPONDING: 'not_responding',
 };
 
 export const WalletDelegationStatuses: {
@@ -50,6 +61,8 @@ export type WalletProps = {
   delegationStakePoolStatus?: ?string,
   lastDelegationStakePoolId?: ?string,
   pendingDelegations?: WalletPendingDelegations,
+  discovery: Discovery,
+  hasPassword: boolean,
 };
 
 export default class Wallet {
@@ -66,6 +79,8 @@ export default class Wallet {
   @observable delegationStakePoolStatus: ?string;
   @observable lastDelegationStakePoolId: ?string;
   @observable pendingDelegations: WalletPendingDelegations;
+  @observable discovery: Discovery;
+  @observable hasPassword: boolean;
 
   constructor(data: WalletProps) {
     Object.assign(this, data);
@@ -88,6 +103,8 @@ export default class Wallet {
         'delegationStakePoolStatus',
         'lastDelegationStakePoolId',
         'pendingDelegations',
+        'discovery',
+        'hasPassword',
       ])
     );
   }
@@ -98,6 +115,20 @@ export default class Wallet {
 
   @computed get isRestoring(): boolean {
     return get(this, 'syncState.status') === WalletSyncStateStatuses.RESTORING;
+  }
+
+  @computed get isNotResponding(): boolean {
+    return (
+      get(this, 'syncState.status') === WalletSyncStateStatuses.NOT_RESPONDING
+    );
+  }
+
+  @computed get isRandom(): boolean {
+    return this.discovery === WalletDiscovery.RANDOM;
+  }
+
+  @computed get isSequential(): boolean {
+    return this.discovery === WalletDiscovery.SEQUENTIAL;
   }
 
   @computed get restorationProgress(): number {

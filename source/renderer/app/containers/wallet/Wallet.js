@@ -5,6 +5,7 @@ import MainLayout from '../MainLayout';
 import WalletWithNavigation from '../../components/wallet/layouts/WalletWithNavigation';
 import LoadingSpinner from '../../components/widgets/LoadingSpinner';
 import RestoreNotification from '../../components/notifications/RestoreNotification';
+import ChangeSpendingPasswordDialog from '../../components/wallet/settings/ChangeSpendingPasswordDialog';
 import { buildRoute } from '../../utils/routing';
 import { ROUTES } from '../../routes-config';
 import type { InjectedContainerProps } from '../../types/injectedPropsType';
@@ -49,8 +50,10 @@ export default class Wallet extends Component<Props> {
   };
 
   render() {
-    const { wallets, app, networkStatus } = this.props.stores;
-
+    const { actions, stores } = this.props;
+    const { app, wallets, uiDialogs } = stores;
+    const { isOpen: isDialogOpen } = uiDialogs;
+    const { restartNode } = actions.networkStatus;
     const { active: activeWallet } = wallets;
 
     if (!activeWallet) {
@@ -64,26 +67,44 @@ export default class Wallet extends Component<Props> {
     const {
       recoveryPhraseVerificationStatus,
     } = wallets.getWalletRecoveryPhraseVerification(activeWallet.id);
-    const { isIncentivizedTestnet } = networkStatus;
+    const { isIncentivizedTestnet } = global;
     const hasNotification =
       recoveryPhraseVerificationStatus ===
         WalletRecoveryPhraseVerificationStatuses.NOTIFICATION &&
       !isIncentivizedTestnet;
+    const {
+      isRestoring,
+      isLegacy,
+      isNotResponding,
+      hasPassword,
+    } = activeWallet;
 
     return (
       <MainLayout>
-        {activeWallet.isRestoring ? (
+        {isRestoring ? (
           <RestoreNotification
             restoreProgress={activeWallet.restorationProgress}
           />
         ) : null}
 
         <WalletWithNavigation
-          isActiveScreen={this.isActiveScreen}
-          onWalletNavItemClick={this.handleWalletNavItemClick}
           activeItem={app.currentPage}
-          isLegacy={activeWallet.isLegacy}
           hasNotification={hasNotification}
+          hasPassword={hasPassword}
+          isActiveScreen={this.isActiveScreen}
+          isLegacy={isLegacy}
+          isNotResponding={isNotResponding}
+          isSetWalletPasswordDialogOpen={isDialogOpen(
+            ChangeSpendingPasswordDialog
+          )}
+          onOpenExternalLink={(url: string) => stores.app.openExternalLink(url)}
+          onRestartNode={() => restartNode.trigger()}
+          onSetWalletPassword={() => {
+            actions.dialogs.open.trigger({
+              dialog: ChangeSpendingPasswordDialog,
+            });
+          }}
+          onWalletNavItemClick={this.handleWalletNavItemClick}
         >
           {this.props.children}
         </WalletWithNavigation>

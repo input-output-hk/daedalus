@@ -1,10 +1,20 @@
 // @flow
 import path from 'path';
 import { app, dialog } from 'electron';
-import { readLauncherConfig } from './utils/config';
 import { environment } from './environment';
+import { readLauncherConfig } from './utils/config';
+import { getBuildLabel } from '../common/utils/environmentCheckers';
+import type { CardanoNodeImplementation } from '../common/types/cardano-node.types';
 
-const { isTest, isProduction, isBlankScreenFixActive } = environment;
+const {
+  isTest,
+  isProduction,
+  isBlankScreenFixActive,
+  current,
+  buildNumber,
+  network,
+  version,
+} = environment;
 
 // Make sure Daedalus is started with required configuration
 const { LAUNCHER_CONFIG } = process.env;
@@ -30,30 +40,40 @@ if (!isStartedByLauncher) {
   }
 }
 
+export type NodeConfig = {
+  configurationDir: string,
+  delegationCertificate?: string,
+  kind: 'byron',
+  network: {
+    configFile: string,
+    genesisFile: string,
+    genesisHash: string,
+    topologyFile: string,
+  },
+  signingKey?: string,
+};
+
 /**
  * The shape of the config params, usually provided to the cadano-node launcher
  */
 export type LauncherConfig = {
-  frontendOnlyMode: boolean,
   stateDir: string,
-  walletBin: string,
-  walletArgs: Array<string>,
-  nodeBin: string,
-  nodeImplementation: 'jormungandr' | 'cardano-node',
-  nodeArgs: Array<string>,
+  nodeImplementation: CardanoNodeImplementation,
+  nodeConfig: NodeConfig,
   tlsPath: string,
-  nodeDbPath: string,
-  workingDir: string,
   logsPrefix: string,
-  nodeLogConfig: string,
-  nodeTimeoutSec: number,
   cluster: string,
-  configuration: {
-    filePath: string,
-    key: string,
-    systemStart: string,
-    seed: string,
-  },
+  block0Path: string,
+  block0Hash: string,
+  secretPath: string,
+  configPath: string,
+  syncTolerance: string,
+  cliBin: string,
+  exportWalletsBin: string,
+  legacyStateDir: string,
+  legacySecretKey: string,
+  legacyWalletDB: string,
+  isFlight: boolean,
 };
 
 type WindowOptionsType = {
@@ -88,33 +108,43 @@ export const windowOptions: WindowOptionsType = {
   useContentSize: true,
 };
 
-export const APP_NAME = 'Daedalus';
 export const launcherConfig: LauncherConfig = readLauncherConfig(
   LAUNCHER_CONFIG
 );
-export const appLogsFolderPath = launcherConfig.logsPrefix;
+export const {
+  cluster,
+  nodeImplementation,
+  stateDir,
+  legacyStateDir,
+  logsPrefix,
+  isFlight,
+} = launcherConfig;
+export const appLogsFolderPath = logsPrefix;
 export const pubLogsFolderPath = path.join(appLogsFolderPath, 'pub');
-export const appFolderPath = launcherConfig.workingDir;
-export const { nodeDbPath } = launcherConfig;
-export const stateDirectoryPath = launcherConfig.stateDir;
+export const stateDirectoryPath = stateDir;
 export const stateDrive = isWindows ? stateDirectoryPath.slice(0, 2) : '/';
+export const buildLabel = getBuildLabel(
+  buildNumber,
+  network,
+  current,
+  isFlight,
+  version
+);
+
+// Logging config
 export const ALLOWED_LOGS = [
   'Daedalus.json',
   'System-info.json',
   'Daedalus-versions.json',
   'State-snapshot.json',
+  'Wallet-migration-report.json',
+  'cardano-wallet.log',
   'node.log',
 ];
 export const ALLOWED_NODE_LOGS = new RegExp(/(node.log-)(\d{14}$)/);
 export const ALLOWED_LAUNCHER_LOGS = new RegExp(/(launcher-)(\d{14}$)/);
 export const MAX_NODE_LOGS_ALLOWED = 3;
 export const MAX_LAUNCHER_LOGS_ALLOWED = 3;
-
-// We need to invert 'frontendOnlyMode' value received from the launcherConfig
-// as this variable has an opposite meaning from the launcher's perspective.
-// Launcher treats the 'frontendOnlyMode' set to 'true' as the case where Daedalus
-// takes the responsiblity for launching and managing the cardano-node.
-export const frontendOnlyMode = !launcherConfig.frontendOnlyMode;
 
 // CardanoNode config
 export const NODE_STARTUP_TIMEOUT = 5000;
@@ -132,10 +162,13 @@ export const DISK_SPACE_RECOMMENDED_PERCENTAGE = 15; // 15% of the total disk sp
 
 // CardanoWallet config
 export const STAKE_POOL_REGISTRY_URL = {
-  selfnode:
+  itn_selfnode:
     'https://github.com/input-output-hk/daedalus/raw/selfnode/test-integration-registry.zip',
   nightly:
     'https://github.com/piotr-iohk/incentivized-testnet-stakepool-registry/archive/master.zip',
   qa:
     'https://explorer.qa.jormungandr-testnet.iohkdev.io/stakepool-registry/registry.zip',
 };
+
+// Cardano Byron Testnet network magic
+export const TESTNET_MAGIC = '1097911063';

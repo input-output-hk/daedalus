@@ -15,7 +15,8 @@ Given(
       name: `Wallet ${i + 1}`,
       password: 'Secret1234',
     }));
-    await createWallets(wallets, this);
+    const isIncentivizedTestnet = await this.client.execute(() => global.isIncentivizedTestnet);
+    await createWallets.call(this, wallets, { isLegacy: !isIncentivizedTestnet.value });
   }
 );
 
@@ -32,8 +33,8 @@ When(
 When('I delete the last wallet', async function() {
   const wallet = getWalletByName.call(this, 'Wallet 20');
   await this.client.execute(
-    walletId => daedalus.actions.wallets.deleteWallet.trigger({ walletId }),
-    wallet.id
+    (walletId, isLegacy) => daedalus.actions.wallets.deleteWallet.trigger({ walletId, isLegacy }),
+    wallet.id, wallet.isLegacy
   );
   await this.client.waitUntil(async () => {
     const wallets = await this.client.elements(
@@ -72,7 +73,7 @@ Then(
 Then(
   'I should see a disclaimer saying I have reached the maximum number of wallets',
   async function() {
-    const disclaimer = await this.client.getText('.WalletAdd_notification');
+    const disclaimer = await this.waitAndGetText('.WalletAdd_notification');
     expect(disclaimer.replace(/\n/, ' ')).to.equal(
       `You have reached the maximum of ${MAX_ADA_WALLETS_COUNT} wallets. No more wallets can be added.`
     );

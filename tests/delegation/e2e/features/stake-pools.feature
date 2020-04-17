@@ -1,9 +1,9 @@
-@e2e
+@e2e shelley
 Feature: Stake Pools Loading
 
   Background:
     Given I have completed the basic setup
-    And I have a "Test Wallet" rewards wallet with funds
+    And I have a "Test Wallet" wallet with funds
     And I am on the Delegation Center screen
     And I mark experimental feature as read
 

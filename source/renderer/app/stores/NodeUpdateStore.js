@@ -42,23 +42,17 @@ export default class NodeUpdateStore extends Store {
     actions.getLatestAvailableAppVersion.listen(
       this._getLatestAvailableAppVersion
     );
-    this.nextUpdateInterval = setInterval(
-      this.refreshNextUpdate,
-      NODE_UPDATE_POLL_INTERVAL
-    );
+
+    const { isIncentivizedTestnet, isFlight } = global;
+    if (!isFlight && !isIncentivizedTestnet) {
+      this.nextUpdateInterval = setInterval(
+        this.refreshNextUpdate,
+        NODE_UPDATE_POLL_INTERVAL
+      );
+    }
   }
 
   refreshNextUpdate = async () => {
-    // Since isIncentivizedTestnet flag is not set during NodeUpdate setup()
-    // we need to check for it here and reset nextUpdate check poller
-    if (this.stores.networkStatus.isIncentivizedTestnet) {
-      // Reset nextUpdateInterval when is available
-      if (this.nextUpdateInterval) {
-        clearInterval(this.nextUpdateInterval);
-      }
-      return;
-    }
-
     if (this.stores.networkStatus.isSynced) {
       await this.nextUpdateRequest.execute();
       const { result } = this.nextUpdateRequest;
@@ -115,9 +109,12 @@ export default class NodeUpdateStore extends Store {
   };
 
   @action _getLatestAvailableAppVersion = async () => {
-    if (this.stores.networkStatus.isIncentivizedTestnet) {
+    // Manual update notification is not available for Daedalus Flight and ITN builds
+    const { isIncentivizedTestnet, isFlight } = global;
+    if (isFlight || isIncentivizedTestnet) {
       return;
     }
+
     const {
       latestAppVersion,
       applicationVersion,
@@ -174,7 +171,7 @@ export default class NodeUpdateStore extends Store {
       this.isUpdateAvailable &&
       !this.isUpdatePostponed &&
       !this.isUpdateInstalled &&
-      !this.stores.networkStatus.isIncentivizedTestnet
+      !global.isIncentivizedTestnet
     );
   }
 
@@ -185,7 +182,7 @@ export default class NodeUpdateStore extends Store {
       !this.stores.networkStatus.isNodeStopped &&
       !this.isUpdatePostponed &&
       !this.isUpdateAvailable &&
-      !this.stores.networkStatus.isIncentivizedTestnet
+      !global.isIncentivizedTestnet
     );
   }
 }

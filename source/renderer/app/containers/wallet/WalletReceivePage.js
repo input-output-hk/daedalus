@@ -1,12 +1,13 @@
 // @flow
 import React, { Component, Fragment } from 'react';
 import { observer, inject } from 'mobx-react';
-import WalletReceive from '../../components/wallet/receive/WalletReceive';
-import WalletReceiveDialog from '../../components/wallet/receive/WalletReceiveDialog';
+import { showSaveDialogChannel } from '../../ipc/show-file-dialog-channels';
+import WalletReceiveRandom from '../../components/wallet/receive/WalletReceiveRandom';
+import WalletReceiveSequential from '../../components/wallet/receive/WalletReceiveSequential';
 import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer';
+import WalletReceiveDialog from '../../components/wallet/receive/WalletReceiveDialog';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import WalletAddress from '../../domains/WalletAddress';
-import Wallet from '../../domains/Wallet';
 import { generateFileNameWithTimestamp } from '../../../../common/utils/files';
 import { ellipsis } from '../../utils/strings';
 
@@ -14,7 +15,6 @@ type Props = InjectedProps;
 
 type State = {
   addressToShare?: ?WalletAddress,
-  activeWallet: ?Wallet,
 };
 
 @inject('stores', 'actions')
@@ -24,11 +24,16 @@ export default class WalletReceivePage extends Component<Props, State> {
 
   state = {
     addressToShare: null,
-    activeWallet: this.props.stores.wallets.active,
   };
 
+  get activeWallet() {
+    return this.props.stores.wallets.active;
+  }
+
   componentWillUnmount() {
-    this.props.actions.notifications.closeNotification.trigger({
+    const { actions } = this.props;
+    actions.addresses.resetErrors.trigger();
+    actions.notifications.closeNotification.trigger({
       id: 'copyAddress',
     });
   }
@@ -52,7 +57,7 @@ export default class WalletReceivePage extends Component<Props, State> {
     this.props.actions.dialogs.closeActiveDialog.trigger();
   };
 
-  handleDownloadPDF = (note: string) => {
+  handleDownloadPDF = async (note: string) => {
     const { addressToShare } = this.state;
 
     const name = generateFileNameWithTimestamp({
@@ -61,8 +66,7 @@ export default class WalletReceivePage extends Component<Props, State> {
       isUTC: false,
     });
 
-    // TODO: refactor this direct access to the dialog api
-    const filePath = global.dialog.showSaveDialog({
+    const params = {
       defaultPath: `${name}.pdf`,
       filters: [
         {
@@ -70,7 +74,8 @@ export default class WalletReceivePage extends Component<Props, State> {
           extensions: ['pdf'],
         },
       ],
-    });
+    };
+    const { filePath } = await showSaveDialogChannel.send(params);
 
     // if cancel button is clicked or path is empty
     if (!filePath || !addressToShare) return;
@@ -84,30 +89,62 @@ export default class WalletReceivePage extends Component<Props, State> {
     });
   };
 
+  handleGenerateAddress = (passphrase: string) => {
+    const { activeWallet } = this;
+    if (activeWallet) {
+      this.props.actions.addresses.createByronWalletAddress.trigger({
+        walletId: activeWallet.id,
+        passphrase,
+      });
+    }
+  };
+
   render() {
     const { actions, stores } = this.props;
-    const { uiDialogs, addresses, networkStatus } = stores;
-    const { isIncentivizedTestnet } = networkStatus.environment;
-    const { addressToShare, activeWallet } = this.state;
+    const { uiDialogs, addresses, sidebar } = stores;
+    const { activeWallet } = this;
+    const { addressToShare } = this.state;
     const { toggleSubMenus } = actions.sidebar;
-
+    const { isIncentivizedTestnet } = global;
     // Guard against potential null values
     if (!activeWallet)
       throw new Error('Active wallet required for WalletReceivePage.');
 
+    const { hasPassword, isRandom } = activeWallet;
     const walletAddresses = addresses.all.slice().reverse();
+    const byronWalletAddress = addresses.active ? addresses.active.id : '';
+    const isByronWalletAddressUsed = addresses.active
+      ? addresses.active.used
+      : false;
 
     return (
       <Fragment>
         <VerticalFlexContainer>
-          <WalletReceive
-            walletAddresses={walletAddresses}
-            isAddressValid={this.handleIsAddressValid}
-            onShareAddress={this.handleShareAddress}
-            onCopyAddress={this.handleCopyAddress}
-            isIncentivizedTestnet={isIncentivizedTestnet}
-            onToggleSubMenus={toggleSubMenus}
-          />
+          {isRandom ? (
+            <WalletReceiveRandom
+              walletAddress={byronWalletAddress}
+              isWalletAddressUsed={isByronWalletAddressUsed}
+              walletAddresses={walletAddresses}
+              onGenerateAddress={this.handleGenerateAddress}
+              onShareAddress={this.handleShareAddress}
+              onCopyAddress={this.handleCopyAddress}
+              isSidebarExpanded={sidebar.isShowingSubMenus}
+              walletHasPassword={hasPassword}
+              isSubmitting={
+                addresses.createByronWalletAddressRequest.isExecuting
+              }
+              error={addresses.error}
+            />
+          ) : (
+            <WalletReceiveSequential
+              walletAddresses={walletAddresses}
+              isAddressValid={this.handleIsAddressValid}
+              onShareAddress={this.handleShareAddress}
+              onCopyAddress={this.handleCopyAddress}
+              isIncentivizedTestnet={isIncentivizedTestnet}
+              onToggleSubMenus={toggleSubMenus}
+            />
+          )}
         </VerticalFlexContainer>
 
         {uiDialogs.isOpen(WalletReceiveDialog) && addressToShare && (

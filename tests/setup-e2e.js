@@ -11,11 +11,17 @@ import {
 } from 'cucumber';
 import electronPath from 'electron';
 import fakeDialog from 'spectron-fake-dialog';
+import { includes } from 'lodash';
 import {
   generateScreenshotFilePath,
   getTestNameFromTestFile,
   saveScreenshot,
+  waitAndClick,
+  waitAndGetText,
+  waitAndSetValue,
+  skippablePromise,
 } from './common/e2e/steps/helpers';
+import { DEFAULT_TIMEOUT } from './common/e2e/steps/config';
 import { setNewsFeedIsOpen, resetTestNews } from './news/e2e/steps/newsfeed-steps';
 import { refreshClient } from './nodes/e2e/steps/helpers';
 import { TEST } from '../source/common/types/environment.types';
@@ -25,7 +31,6 @@ import type { Daedalus } from './types';
 
 declare var daedalus: Daedalus;
 const context = {};
-const DEFAULT_TIMEOUT = 20000;
 let scenariosCount = 0;
 
 const printMainProcessLogs = () =>
@@ -52,6 +57,7 @@ const startApp = async () => {
     env: Object.assign({}, process.env, {
       NODE_ENV: TEST,
     }),
+    startTimeout: DEFAULT_TIMEOUT,
     waitTimeout: DEFAULT_TIMEOUT,
     chromeDriverLogPath: path.join(
       __dirname,
@@ -83,6 +89,24 @@ BeforeAll({ timeout: 5 * 60 * 1000 }, async () => {
   context.app = await startApp();
 });
 
+// Skip / Execute test depending on node integration
+Before(async function(testCase) {
+  const tags = getTagNames(testCase);
+  const isByronTest = includes(tags, '@byron');
+  const isShelleyTest = includes(tags, '@shelley');
+  const isByronTestWip = includes(tags, '@api-wip-byron');
+  const isShelleyTestWip = includes(tags, '@api-wip-shelley');
+  const isGlobalWip = includes(tags, '@wip');
+
+  // Check if ITN set globally
+  const isIncentivizedTestnet = await context.app.client.execute(() => global.isIncentivizedTestnet);
+  // Skip all Byron related tests or Shelley WIP
+  if (isIncentivizedTestnet.value && ((isByronTest && !isShelleyTest) || isShelleyTestWip)) return 'skipped';
+  // Skip all Shelley related tests or Byron WIP
+  if (!isIncentivizedTestnet.value && ((isShelleyTest && !isByronTest) || isByronTestWip)) return 'skipped';
+  if (isGlobalWip) return 'skipped';
+});
+
 // Make the electron app accessible in each scenario context
 Before({ tags: '@e2e', timeout: DEFAULT_TIMEOUT * 2 }, async function(testCase) {
   const tags = getTagNames(testCase);
@@ -103,13 +127,13 @@ Before({ tags: '@e2e', timeout: DEFAULT_TIMEOUT * 2 }, async function(testCase) 
   await this.client.executeAsync(done => {
     const resetBackend = () => {
       if (daedalus.stores.networkStatus.isConnected) {
+        daedalus.api.ada.resetTestOverrides();
         daedalus.api.ada
           .testReset()
           .then(daedalus.api.localStorage.reset)
+          .then(daedalus.stores.wallets.refreshWalletsData())
           .then(done)
-          .catch(error => {
-            throw error;
-          });
+          .catch(error => done(error));
       } else {
         setTimeout(resetBackend, 50);
       }
@@ -141,11 +165,12 @@ Before({ tags: '@newsfeed' }, function() {
 });
 
 // adds waitAndClick method to webdriver
-Before(function() {
-  this.waitAndClick = async (selector, ...waitArgs) => {
-    await this.client.waitForVisible(selector, ...waitArgs);
-    return this.client.click(selector);
-  };
+Before(function(testCase) {
+  const { name } = testCase.pickle;
+  this.skippablePromise = skippablePromise.bind(this, name);
+  this.waitAndClick = waitAndClick.bind(this);
+  this.waitAndGetText = waitAndGetText.bind(this);
+  this.waitAndSetValue = waitAndSetValue.bind(this);
 });
 
 // ads intl method to webdriver
@@ -170,7 +195,6 @@ Before({ tags: '@e2e' }, function() {
     return translation.value;
   };
 });
-
 
 // this ensures that the spectron instance of the app restarts
 // after the node update acceptance test shuts it down via 'kill-process'

@@ -3,9 +3,10 @@
 /* eslint-disable consistent-return */
 
 import { includes } from 'lodash';
+import { electronStoreConversation } from '../../ipc/electronStoreConversation';
 import type { NewsTimestamp } from '../news/types';
-
-const store = global.electronStore;
+import type { WalletMigrationStatus } from '../../stores/WalletMigrationStore';
+import { WalletMigrationStatuses } from '../../stores/WalletMigrationStore';
 
 export type WalletLocalData = {
   id: string,
@@ -27,34 +28,29 @@ type StorageKeys = {
  */
 
 export default class LocalStorageApi {
-  static Getter = (key: string, fallbackValue: any): Promise<any> =>
-    new Promise((resolve, reject) => {
-      try {
-        const value = store.get(key);
-        if (!value) return resolve(fallbackValue);
-        resolve(value);
-      } catch (error) {
-        return reject(error);
-      }
+  static get = async (key: string, fallbackValue: any): Promise<any> => {
+    const value = await electronStoreConversation.request({
+      type: 'get',
+      key,
     });
+    if (!value) return fallbackValue;
+    return value;
+  };
 
-  static Setter = (key: string, value: any): Promise<void> =>
-    new Promise((resolve, reject) => {
-      try {
-        store.set(key, value);
-        resolve();
-      } catch (error) {
-        return reject(error);
-      }
+  static set = async (key: string, value: any): Promise<void> => {
+    await electronStoreConversation.request({
+      type: 'set',
+      key,
+      data: value,
     });
+  };
 
-  static Unsetter = (key: string): Promise<void> =>
-    new Promise(resolve => {
-      try {
-        store.delete(key);
-        resolve();
-      } catch (error) {} // eslint-disable-line
+  static unset = async (key: string): Promise<void> => {
+    await electronStoreConversation.request({
+      type: 'delete',
+      key,
     });
+  };
 
   storageKeys: StorageKeys;
 
@@ -70,6 +66,7 @@ export default class LocalStorageApi {
       'DATA_LAYER_MIGRATION_ACCEPTANCE',
       'READ_NEWS',
       'WALLETS',
+      'WALLET_MIGRATION_STATUS',
     ];
     this.storageKeys = {};
     storageKeysRaw.forEach(key => {
@@ -79,153 +76,141 @@ export default class LocalStorageApi {
   }
 
   getUserLocale = (): Promise<string> =>
-    new LocalStorageApi.Getter(this.storageKeys.USER_LOCALE, '');
+    LocalStorageApi.get(this.storageKeys.USER_LOCALE, '');
 
   setUserLocale = (locale: string): Promise<void> =>
-    new LocalStorageApi.Setter(this.storageKeys.USER_LOCALE, locale);
+    LocalStorageApi.set(this.storageKeys.USER_LOCALE, locale);
 
   unsetUserLocale = (): Promise<void> =>
-    new LocalStorageApi.Unsetter(this.storageKeys.USER_LOCALE);
+    LocalStorageApi.unset(this.storageKeys.USER_LOCALE);
 
   getUserNumberFormat = (): Promise<string> =>
-    new LocalStorageApi.Getter(this.storageKeys.USER_NUMBER_FORMAT, '');
+    LocalStorageApi.get(this.storageKeys.USER_NUMBER_FORMAT, '');
 
   setUserNumberFormat = (numberFormat: string): Promise<void> =>
-    new LocalStorageApi.Setter(
-      this.storageKeys.USER_NUMBER_FORMAT,
-      numberFormat
-    );
+    LocalStorageApi.set(this.storageKeys.USER_NUMBER_FORMAT, numberFormat);
 
   unsetUserNumberFormat = (): Promise<void> =>
-    new LocalStorageApi.Unsetter(this.storageKeys.USER_NUMBER_FORMAT);
+    LocalStorageApi.unset(this.storageKeys.USER_NUMBER_FORMAT);
 
   getUserDateFormatEnglish = (): Promise<string> =>
-    new LocalStorageApi.Getter(this.storageKeys.USER_DATE_FORMAT_ENGLISH, '');
+    LocalStorageApi.get(this.storageKeys.USER_DATE_FORMAT_ENGLISH, '');
 
   setUserDateFormatEnglish = (dateFormat: string): Promise<void> =>
-    new LocalStorageApi.Setter(
-      this.storageKeys.USER_DATE_FORMAT_ENGLISH,
-      dateFormat
-    );
+    LocalStorageApi.set(this.storageKeys.USER_DATE_FORMAT_ENGLISH, dateFormat);
 
   unsetUserDateFormatEnglish = (): Promise<void> =>
-    new LocalStorageApi.Unsetter(this.storageKeys.USER_DATE_FORMAT_ENGLISH);
+    LocalStorageApi.unset(this.storageKeys.USER_DATE_FORMAT_ENGLISH);
 
   getUserDateFormatJapanese = (): Promise<string> =>
-    new LocalStorageApi.Getter(this.storageKeys.USER_DATE_FORMAT_JAPANESE, '');
+    LocalStorageApi.get(this.storageKeys.USER_DATE_FORMAT_JAPANESE, '');
 
   setUserDateFormatJapanese = (dateFormat: string): Promise<void> =>
-    new LocalStorageApi.Setter(
-      this.storageKeys.USER_DATE_FORMAT_JAPANESE,
-      dateFormat
-    );
+    LocalStorageApi.set(this.storageKeys.USER_DATE_FORMAT_JAPANESE, dateFormat);
 
   unsetUserDateFormatJapanese = (): Promise<void> =>
-    new LocalStorageApi.Unsetter(this.storageKeys.USER_DATE_FORMAT_JAPANESE);
+    LocalStorageApi.unset(this.storageKeys.USER_DATE_FORMAT_JAPANESE);
 
   getUserTimeFormat = (): Promise<string> =>
-    new LocalStorageApi.Getter(this.storageKeys.USER_TIME_FORMAT, '');
+    LocalStorageApi.get(this.storageKeys.USER_TIME_FORMAT, '');
 
   setUserTimeFormat = (timeFormat: string): Promise<void> =>
-    new LocalStorageApi.Setter(this.storageKeys.USER_TIME_FORMAT, timeFormat);
+    LocalStorageApi.set(this.storageKeys.USER_TIME_FORMAT, timeFormat);
 
   unsetUserTimeFormat = (): Promise<void> =>
-    new LocalStorageApi.Unsetter(this.storageKeys.USER_TIME_FORMAT);
+    LocalStorageApi.unset(this.storageKeys.USER_TIME_FORMAT);
 
   getTermsOfUseAcceptance = (): Promise<boolean> =>
-    new LocalStorageApi.Getter(this.storageKeys.TERMS_OF_USE_ACCEPTANCE, false);
+    LocalStorageApi.get(this.storageKeys.TERMS_OF_USE_ACCEPTANCE, false);
 
   setTermsOfUseAcceptance = (): Promise<void> =>
-    new LocalStorageApi.Setter(this.storageKeys.TERMS_OF_USE_ACCEPTANCE, true);
+    LocalStorageApi.set(this.storageKeys.TERMS_OF_USE_ACCEPTANCE, true);
 
   unsetTermsOfUseAcceptance = (): Promise<void> =>
-    new LocalStorageApi.Unsetter(this.storageKeys.TERMS_OF_USE_ACCEPTANCE);
+    LocalStorageApi.unset(this.storageKeys.TERMS_OF_USE_ACCEPTANCE);
 
   getUserTheme = (): Promise<string> =>
-    new LocalStorageApi.Getter(this.storageKeys.THEME, '');
+    LocalStorageApi.get(this.storageKeys.THEME, '');
 
   setUserTheme = (theme: string): Promise<void> =>
-    new LocalStorageApi.Setter(this.storageKeys.THEME, theme);
+    LocalStorageApi.set(this.storageKeys.THEME, theme);
 
   unsetUserTheme = (): Promise<void> =>
-    new LocalStorageApi.Unsetter(this.storageKeys.THEME);
+    LocalStorageApi.unset(this.storageKeys.THEME);
 
   getDataLayerMigrationAcceptance = (): Promise<boolean> =>
-    new LocalStorageApi.Getter(
+    LocalStorageApi.get(
       this.storageKeys.DATA_LAYER_MIGRATION_ACCEPTANCE,
       false
     );
 
   setDataLayerMigrationAcceptance = (): Promise<void> =>
-    new LocalStorageApi.Setter(
-      this.storageKeys.DATA_LAYER_MIGRATION_ACCEPTANCE,
-      true
-    );
+    LocalStorageApi.set(this.storageKeys.DATA_LAYER_MIGRATION_ACCEPTANCE, true);
 
   unsetDataLayerMigrationAcceptance = (): Promise<void> =>
-    new LocalStorageApi.Unsetter(
-      this.storageKeys.DATA_LAYER_MIGRATION_ACCEPTANCE
-    );
+    LocalStorageApi.unset(this.storageKeys.DATA_LAYER_MIGRATION_ACCEPTANCE);
 
   getWalletsLocalData = (): Promise<Object> =>
-    new LocalStorageApi.Getter(this.storageKeys.THEME, {});
+    LocalStorageApi.get(this.storageKeys.THEME, {});
 
   getWalletLocalData = (walletId: string): Promise<WalletLocalData> =>
-    new LocalStorageApi.Getter(`${this.storageKeys.WALLETS}.${walletId}`, {
+    LocalStorageApi.get(`${this.storageKeys.WALLETS}.${walletId}`, {
       id: walletId,
     });
 
   setWalletLocalData = (walletData: WalletLocalData): Promise<void> =>
-    new LocalStorageApi.Setter(
+    LocalStorageApi.set(
       `${this.storageKeys.WALLETS}.${walletData.id}`,
       walletData
     );
 
-  updateWalletLocalData = (updatedWalletData: Object): Promise<Object> =>
-    new Promise(async (resolve, reject) => {
-      const walletId = updatedWalletData.id;
-      const currentWalletData = await this.getWalletLocalData(walletId);
-      const walletData = Object.assign(
-        {},
-        currentWalletData,
-        updatedWalletData
-      );
-      try {
-        store.set(`${this.storageKeys.WALLETS}.${walletId}`, walletData);
-        return resolve(walletData);
-      } catch (error) {
-        return reject(error);
-      }
-    });
+  updateWalletLocalData = async (
+    updatedWalletData: Object
+  ): Promise<Object> => {
+    const walletId = updatedWalletData.id;
+    const currentWalletData = await this.getWalletLocalData(walletId);
+    const walletData = Object.assign({}, currentWalletData, updatedWalletData);
+    await LocalStorageApi.set(
+      `${this.storageKeys.WALLETS}.${walletId}`,
+      walletData
+    );
+    return walletData;
+  };
 
   unsetWalletLocalData = (walletId: string): Promise<void> =>
-    new LocalStorageApi.Unsetter(`${this.storageKeys.WALLETS}.${walletId}`);
+    LocalStorageApi.unset(`${this.storageKeys.WALLETS}.${walletId}`);
 
   getReadNews = (): Promise<NewsTimestamp[]> =>
-    new LocalStorageApi.Getter(this.storageKeys.READ_NEWS, []);
+    LocalStorageApi.get(this.storageKeys.READ_NEWS, []);
 
-  markNewsAsRead = (
+  markNewsAsRead = async (
     newsTimestamps: NewsTimestamp[]
-  ): Promise<NewsTimestamp[]> =>
-    new Promise((resolve, reject) => {
-      try {
-        const readNews = store.get(this.storageKeys.READ_NEWS) || [];
-
-        if (!includes(readNews, newsTimestamps[0])) {
-          store.set(
-            this.storageKeys.READ_NEWS,
-            readNews.concat(newsTimestamps)
-          );
-        }
-
-        resolve(readNews);
-      } catch (error) {
-        return reject(error);
-      }
-    });
+  ): Promise<NewsTimestamp[]> => {
+    const readNews =
+      (await LocalStorageApi.get(this.storageKeys.READ_NEWS)) || [];
+    if (!includes(readNews, newsTimestamps[0])) {
+      await LocalStorageApi.set(
+        this.storageKeys.READ_NEWS,
+        readNews.concat(newsTimestamps)
+      );
+    }
+    return readNews;
+  };
 
   unsetReadNews = (): Promise<void> =>
-    new LocalStorageApi.Unsetter(this.storageKeys.READ_NEWS);
+    LocalStorageApi.unset(this.storageKeys.READ_NEWS);
+
+  getWalletMigrationStatus = (): Promise<WalletMigrationStatus> =>
+    LocalStorageApi.get(
+      this.storageKeys.WALLET_MIGRATION_STATUS,
+      WalletMigrationStatuses.UNSTARTED
+    );
+
+  setWalletMigrationStatus = (status: WalletMigrationStatus): Promise<void> =>
+    LocalStorageApi.set(this.storageKeys.WALLET_MIGRATION_STATUS, status);
+
+  unsetWalletMigrationStatus = (): Promise<void> =>
+    LocalStorageApi.unset(this.storageKeys.WALLET_MIGRATION_STATUS);
 
   reset = async () => {
     await this.unsetUserLocale();
@@ -237,5 +222,6 @@ export default class LocalStorageApi {
     await this.unsetUserTheme();
     await this.unsetDataLayerMigrationAcceptance();
     await this.unsetReadNews();
+    await this.unsetWalletMigrationStatus();
   };
 }

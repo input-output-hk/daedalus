@@ -1,4 +1,4 @@
-@e2e
+@e2e shelley
 Feature: Rewards
 
   Background:
@@ -7,7 +7,7 @@ Feature: Rewards
     And I mark experimental feature as read
 
   Scenario: Rewards are correctly loaded
-    Given I have a "Test Wallet" rewards wallet with funds
+    Given I have a "Test Wallet" wallet with funds
     When I click on rewards tab button
     And I am on the rewards screen
     Then I should see rewards listed
@@ -19,7 +19,7 @@ Feature: Rewards
 
   @rewardsCsv
   Scenario: Export to CSV feature is working
-    Given I have a "Test Wallet" rewards wallet with funds
+    Given I have a "Test Wallet" wallet with funds
     When I click on rewards tab button
     And I am on the rewards screen
     And I click on the Export to CSV button

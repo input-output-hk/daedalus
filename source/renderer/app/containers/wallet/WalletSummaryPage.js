@@ -42,7 +42,8 @@ export default class WalletSummaryPage extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { app, wallets, transactions, profile } = this.props.stores;
+    const { stores } = this.props;
+    const { app, wallets, transactions, profile } = stores;
     const {
       openExternalLink,
       environment: { network, rawNetwork },

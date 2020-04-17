@@ -28,7 +28,7 @@ export default class StakingStore extends Store {
   @observable fetchingStakePoolsFailed = false;
 
   pollingStakePoolsInterval: ?IntervalID = null;
-  refreshPooling: ?IntervalID = null;
+  refreshPolling: ?IntervalID = null;
   delegationCheckTimeInterval: ?IntervalID = null;
 
   startDateTime: string = '2019-12-09T00:00:00.161Z';
@@ -37,19 +37,21 @@ export default class StakingStore extends Store {
   percentage: number = 14;
 
   setup() {
-    // Set initial fetch interval to 1 second
-    this.refreshPooling = setInterval(
-      this.getStakePoolsData,
-      STAKE_POOLS_FAST_INTERVAL
-    );
-    const { staking } = this.actions;
-    staking.goToStakingInfoPage.listen(this._goToStakingInfoPage);
-    staking.goToStakingDelegationCenterPage.listen(
-      this._goToStakingDelegationCenterPage
-    );
-    staking.joinStakePool.listen(this._joinStakePool);
-    staking.quitStakePool.listen(this._quitStakePool);
-    staking.fakeStakePoolsLoading.listen(this._setFakePoller);
+    if (global.isIncentivizedTestnet) {
+      // Set initial fetch interval to 1 second
+      this.refreshPolling = setInterval(
+        this.getStakePoolsData,
+        STAKE_POOLS_FAST_INTERVAL
+      );
+      const { staking } = this.actions;
+      staking.goToStakingInfoPage.listen(this._goToStakingInfoPage);
+      staking.goToStakingDelegationCenterPage.listen(
+        this._goToStakingDelegationCenterPage
+      );
+      staking.joinStakePool.listen(this._joinStakePool);
+      staking.quitStakePool.listen(this._quitStakePool);
+      staking.fakeStakePoolsLoading.listen(this._setFakePoller);
+    }
   }
 
   // REQUESTS
@@ -244,13 +246,13 @@ export default class StakingStore extends Store {
   }
 
   @action getStakePoolsData = async () => {
-    const { isSynced } = this.stores.networkStatus;
-    if (!isSynced) return;
+    const { isConnected } = this.stores.networkStatus;
+    if (!isConnected) return;
     try {
       await this.stakePoolsRequest.execute().promise;
-      if (this.refreshPooling) this._resetPolling(false);
+      if (this.refreshPolling) this._resetPolling(false);
     } catch (error) {
-      if (!this.refreshPooling) {
+      if (!this.refreshPolling) {
         this._resetPolling(true);
       }
     }
@@ -261,14 +263,14 @@ export default class StakingStore extends Store {
       this.fetchingStakePoolsFailed = true;
       clearInterval(this.pollingStakePoolsInterval);
       this.pollingStakePoolsInterval = null;
-      this.refreshPooling = setInterval(
+      this.refreshPolling = setInterval(
         this.getStakePoolsData,
         STAKE_POOLS_FAST_INTERVAL
       );
     } else {
       this.fetchingStakePoolsFailed = false;
-      clearInterval(this.refreshPooling);
-      this.refreshPooling = null;
+      clearInterval(this.refreshPolling);
+      this.refreshPolling = null;
       if (!this.pollingStakePoolsInterval) {
         this.pollingStakePoolsInterval = setInterval(
           this.getStakePoolsData,
@@ -282,16 +284,16 @@ export default class StakingStore extends Store {
   @action _setFakePoller = forceLoading => {
     const { stores, environment } = this;
     const { networkStatus, wallets } = stores;
-    const { isSynced, isConnected } = networkStatus;
+    const { isConnected } = networkStatus;
     const { _pollingBlocked } = wallets;
 
     // Enable faker only for development node (NODE_ENV = 'development')
     if (environment.isDev || environment.isTest) {
       if (forceLoading) {
         // Reset all staking pollers
-        if (this.refreshPooling) {
-          clearInterval(this.refreshPooling);
-          this.refreshPooling = null;
+        if (this.refreshPolling) {
+          clearInterval(this.refreshPolling);
+          this.refreshPolling = null;
         }
         if (this.pollingStakePoolsInterval) {
           clearInterval(this.pollingStakePoolsInterval);
@@ -302,10 +304,7 @@ export default class StakingStore extends Store {
       }
 
       // Regular fetching way with faked response that throws error.
-      if (
-        (_pollingBlocked || !isSynced || !isConnected) &&
-        !this.refreshPooling
-      ) {
+      if ((_pollingBlocked || !isConnected) && !this.refreshPolling) {
         this._resetPolling(true);
         return;
       }
@@ -313,7 +312,7 @@ export default class StakingStore extends Store {
       try {
         throw new Error('Faked "Stake pools" fetch error');
       } catch (error) {
-        if (!this.refreshPooling) {
+        if (!this.refreshPolling) {
           this._resetPolling(true);
         }
       }
@@ -323,9 +322,9 @@ export default class StakingStore extends Store {
   // For testing only
   @action _setFakedStakePools = () => {
     if (this.environment.isDev) {
-      if (this.refreshPooling) {
-        clearInterval(this.refreshPooling);
-        this.refreshPooling = null;
+      if (this.refreshPolling) {
+        clearInterval(this.refreshPolling);
+        this.refreshPolling = null;
       }
       if (this.pollingStakePoolsInterval) {
         clearInterval(this.pollingStakePoolsInterval);

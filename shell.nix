@@ -1,6 +1,6 @@
 { system ? builtins.currentSystem
 , config ? {}
-, nodeImplementation ? "jormungandr"
+, nodeImplementation ? "cardano"
 , localLib ? import ./lib.nix { inherit nodeImplementation; }
 , pkgs ? localLib.iohkNix.getPkgs { inherit system config; }
 , cluster ? "selfnode"
@@ -12,15 +12,13 @@
 }:
 
 let
-  daedalusPkgs = import ./. { inherit cluster; target = system; devShell = true; };
+  daedalusPkgs = import ./. { inherit nodeImplementation cluster; target = system; devShell = true; };
   hostPkgs = import pkgs.path { config = {}; overlays = []; };
-  nodejs = pkgs.nodejs-12_x;
-  yarn = pkgs.yarn.override { inherit nodejs; };
   fullExtraArgs = walletExtraArgs ++ pkgs.lib.optional allowFaultInjection "--allow-fault-injection";
   launcherConfig' = "${daedalusPkgs.daedalus.cfg}/etc/launcher-config.yaml";
   fixYarnLock = pkgs.stdenv.mkDerivation {
     name = "fix-yarn-lock";
-    buildInputs = [ nodejs yarn pkgs.git ];
+    buildInputs = [ daedalusPkgs.nodejs daedalusPkgs.yarn pkgs.git ];
     shellHook = ''
       git diff > pre-yarn.diff
       yarn
@@ -39,8 +37,10 @@ let
   # This has all the dependencies of daedalusShell, but no shellHook allowing hydra
   # to evaluate it.
   daedalusShellBuildInputs = [
-      nodejs yarn
+      daedalusPkgs.nodejs
+      daedalusPkgs.yarn
       daedalusPkgs.daedalus-bridge
+      daedalusPkgs.daedalus-installer
     ] ++ (with pkgs; [
       nix bash binutils coreutils curl gnutar
       git python27 curl jq
@@ -49,15 +49,23 @@ let
       chromedriver
     ] ++ (localLib.optionals autoStartBackend [
       daedalusPkgs.daedalus-bridge
-    ]) ++ (localLib.optionals (pkgs.stdenv.hostPlatform.system != "x86_64-darwin") [
+    ]) ++ (if (pkgs.stdenv.hostPlatform.system == "x86_64-darwin") then [
+      darwin.apple_sdk.frameworks.CoreServices
+    ] else [
       daedalusPkgs.electron8
       winePackages.minimal
     ])
+    ) ++ (pkgs.lib.optionals (nodeImplementation == "cardano") [
+      debug.node
+    ]
     );
   buildShell = pkgs.stdenv.mkDerivation {
     name = "daedalus-build";
     buildInputs = daedalusShellBuildInputs;
   };
+  debug.node = pkgs.writeShellScriptBin "debug-node" (with daedalusPkgs.launcherConfigs.launcherConfig; ''
+    cardano-node run --topology ${nodeConfig.network.topologyFile} --config ${nodeConfig.network.configFile} --database-path ${stateDir}/chain --port 3001 --socket-path ${stateDir}/cardano-node.socket
+  '');
   daedalusShell = pkgs.stdenv.mkDerivation (rec {
     buildInputs = daedalusShellBuildInputs;
     name = "daedalus";
@@ -79,15 +87,18 @@ let
 
       ${localLib.optionalString pkgs.stdenv.isLinux "export XDG_DATA_HOME=$HOME/.local/share"}
 
-      cp -f ${daedalusPkgs.iconPath.${cluster}.small} $DAEDALUS_INSTALL_DIRECTORY/icon.png
+      cp -f ${daedalusPkgs.iconPath.small} $DAEDALUS_INSTALL_DIRECTORY/icon.png
 
       # These links will only occur to binaries that exist for the
       # specific build config
       ln -svf $(type -P jormungandr)
       ln -svf $(type -P cardano-wallet-jormungandr)
       ln -svf $(type -P jcli)
+      ${pkgs.lib.optionalString (nodeImplementation == "cardano") ''
+        source <(cardano-node --bash-completion-script `type -p cardano-node`)
+      ''}
 
-      export NIX_CFLAGS_COMPILE="$NIX_CFLAGS_COMPILE -I${nodejs}/include/node"
+      export NIX_CFLAGS_COMPILE="$NIX_CFLAGS_COMPILE -I${daedalusPkgs.nodejs}/include/node"
       ${localLib.optionalString purgeNpmCache ''
         warn "purging all NPM/Yarn caches"
         rm -rf node_modules
@@ -100,6 +111,8 @@ let
         ln -svf ${daedalusPkgs.electron8}/bin/electron ./node_modules/electron/dist/electron
         ln -svf ${pkgs.chromedriver}/bin/chromedriver ./node_modules/electron-chromedriver/bin/chromedriver
       ''}
+      echo 'jq < $LAUNCHER_CONFIG'
+      echo debug the node by running debug-node
     '';
   });
   daedalus = daedalusShell.overrideAttrs (oldAttrs: {

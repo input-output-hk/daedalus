@@ -583,6 +583,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
             messages.recoveryPhraseNoResults
           )}
           skin={AutocompleteSkin}
+          optionHeight={50}
         />
 
         <div className={styles.spendingPasswordWrapper}>

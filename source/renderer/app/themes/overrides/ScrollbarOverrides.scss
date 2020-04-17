@@ -1,0 +1,25 @@
+.root {
+  :global {
+    .ScrollbarsCustom-Track {
+      background: transparent;
+    }
+
+    .ScrollbarsCustom-Thumb {
+      background-color: var(--theme-scrollbar-thumb-background);
+      border-radius: 2px;
+      width: 4px;
+
+      &:vertical {
+        min-height: 30px;
+      }
+
+      &:active {
+        background-color: var(--rp-scrollbar-thumb-bg-color-active);
+      }
+
+      &:hover {
+        background-color: var(--rp-scrollbar-thumb-bg-color-hover);
+      }
+    }
+  }
+}

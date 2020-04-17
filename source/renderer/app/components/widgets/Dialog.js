@@ -23,7 +23,7 @@ type Props = {
   subtitle?: string | Node,
   children?: Node,
   actions?: Array<DialogAction>,
-  closeButton?: Element<any>,
+  closeButton?: ?Element<any>,
   backButton?: Node,
   className?: string,
   onClose?: Function,

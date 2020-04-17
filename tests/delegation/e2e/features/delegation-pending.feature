@@ -1,4 +1,4 @@
-@e2e
+@e2e @shelley
 Feature: Wallet Pending Delegations
 
   Scenario: Pending delegations
@@ -6,7 +6,7 @@ Feature: Wallet Pending Delegations
     # The wallets don't need to be sequentially created,
     # as their data is changed by the patched api
     # so it doesn't matter their original names & data
-    And I have the following "Rewards" wallets:
+    And I have the following wallets:
       | name           |
       | Test Wallet 1  |
       | Test Wallet 2  |

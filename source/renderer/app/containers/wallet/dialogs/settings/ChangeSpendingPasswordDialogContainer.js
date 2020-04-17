@@ -2,12 +2,21 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import ChangeSpendingPasswordDialog from '../../../../components/wallet/settings/ChangeSpendingPasswordDialog';
-import type { InjectedProps } from '../../../../types/injectedPropsType';
+import type { StoresMap } from '../../../../stores/index';
+import type { ActionsMap } from '../../../../actions/index';
+
+type Props = {
+  stores: any | StoresMap,
+  actions: any | ActionsMap,
+};
 
 @inject('actions', 'stores')
 @observer
-export default class ChangeSpendingPasswordDialogContainer extends Component<InjectedProps> {
-  static defaultProps = { actions: null, stores: null };
+export default class ChangeSpendingPasswordDialogContainer extends Component<Props> {
+  static defaultProps = {
+    actions: null,
+    stores: null,
+  };
 
   render() {
     const { actions } = this.props;
@@ -24,16 +33,18 @@ export default class ChangeSpendingPasswordDialogContainer extends Component<Inj
 
     return (
       <ChangeSpendingPasswordDialog
+        isSpendingPasswordSet={activeWallet.hasPassword}
         currentPasswordValue={dialogData.currentPasswordValue}
         newPasswordValue={dialogData.newPasswordValue}
         repeatedPasswordValue={dialogData.repeatedPasswordValue}
         onSave={(values: { oldPassword: string, newPassword: string }) => {
-          const walletId = activeWallet.id;
+          const { id: walletId, isLegacy } = activeWallet;
           const { oldPassword, newPassword } = values;
           actions.walletSettings.updateSpendingPassword.trigger({
             walletId,
             oldPassword,
             newPassword,
+            isLegacy,
           });
         }}
         onCancel={() => {
@@ -45,6 +56,7 @@ export default class ChangeSpendingPasswordDialogContainer extends Component<Inj
         }}
         isSubmitting={updateSpendingPasswordRequest.isExecuting}
         error={updateSpendingPasswordRequest.error}
+        walletName={activeWallet.name}
       />
     );
   }

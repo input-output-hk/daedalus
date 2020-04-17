@@ -12,11 +12,12 @@ import { isIncentivizedTestnetTheme } from './utils';
 import { CATEGORIES_BY_NAME } from '../../../source/renderer/app/config/sidebarConfig';
 import { formattedWalletAmount } from '../../../source/renderer/app/utils/formatters';
 import NodeSyncStatusIcon from '../../../source/renderer/app/components/widgets/NodeSyncStatusIcon';
-import Wallet from '../../../source/renderer/app/domains/Wallet.js';
+import Wallet, {
+  WalletSyncStateStatuses,
+} from '../../../source/renderer/app/domains/Wallet.js';
 import NewsFeedIcon from '../../../source/renderer/app/components/widgets/NewsFeedIcon';
 import type { SidebarMenus } from '../../../source/renderer/app/components/sidebar/Sidebar';
 import type { SidebarWalletType } from '../../../source/renderer/app/types/sidebarTypes';
-// import type { Wallet } from '../../../source/renderer/app/domains/WalletTransaction';
 
 // Empty screen elements
 import TopBar from '../../../source/renderer/app/components/layout/TopBar';
@@ -98,7 +99,7 @@ export default class StoryLayout extends Component<Props> {
           )}
         >
           {Children.map(children, child =>
-            React.cloneElement(child, { stores })
+            React.cloneElement(child, { stores, storiesProps })
           )}
         </SidebarLayout>
       </div>
@@ -114,8 +115,14 @@ export default class StoryLayout extends Component<Props> {
       title: wallet.name,
       info: `${wallet.amount} ADA`,
       isConnected: true,
-      isRestoreActive: get(wallet, 'syncState.tag', 'synced') === 'restoring',
-      restoreProgress: get(wallet, 'syncState.data.percentage.quantity', 0),
+      hasPassword: wallet.hasPassword,
+      isNotResponding:
+        get(wallet, 'syncState.status', WalletSyncStateStatuses.READY) ===
+        WalletSyncStateStatuses.NOT_RESPONDING,
+      isRestoreActive:
+        get(wallet, 'syncState.status', WalletSyncStateStatuses.READY) ===
+        WalletSyncStateStatuses.RESTORING,
+      restoreProgress: get(wallet, 'syncState.progress.quantity', 0),
       isLegacy: wallet.isLegacy,
       recoveryPhraseVerificationStatus:
         WalletRecoveryPhraseVerificationStatuses.OK,
@@ -192,10 +199,8 @@ export default class StoryLayout extends Component<Props> {
       hasRewardsWallets={boolean('hasRewardsWallets', true)}
     >
       <NodeSyncStatusIcon
-        networkStatus={{
-          isSynced: true,
-          syncPercentage: 100,
-        }}
+        isSynced
+        syncPercentage={100}
         isProduction
         isMainnet
       />
