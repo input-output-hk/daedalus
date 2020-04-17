@@ -704,7 +704,7 @@
   "wallet.settings.recoveryPhraseStep1Paragraph2": "Are you being watched? Please make sure that nobody can see your screen while you are entering your wallet recovery phrase.",
   "wallet.settings.recoveryPhraseStep1Title": "Wallet recovery phrase verification",
   "wallet.settings.recoveryPhraseStep2Button": "Verify",
-  "wallet.settings.recoveryPhraseStep2Description": "Please enter your 12-word wallet recovery phrase. Make sure you enter the words in the correct order.",
+  "wallet.settings.recoveryPhraseStep2Description": "Please enter your 12-word or 15-word wallet recovery phrase. Make sure you enter the words in the correct order.",
   "wallet.settings.recoveryPhraseStep2InvalidMnemonics": "Invalid recovery phrase",
   "wallet.settings.recoveryPhraseStep2Subtitle": "Recovery phrase",
   "wallet.settings.recoveryPhraseStep2Title": "Wallet recovery phrase verification",

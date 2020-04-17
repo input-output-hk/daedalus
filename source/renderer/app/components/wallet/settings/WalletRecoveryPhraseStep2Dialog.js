@@ -24,7 +24,7 @@ export const messages = defineMessages({
   recoveryPhraseStep2Description: {
     id: 'wallet.settings.recoveryPhraseStep2Description',
     defaultMessage:
-      '!!!Please enter your 12-word wallet recovery phrase. Make sure you enter the words in the correct order.',
+      '!!!Please enter your 12-word or 15-word wallet recovery phrase. Make sure you enter the words in the correct order.',
     description:
       'Label for the recoveryPhraseStep2Description on wallet settings.',
   },
