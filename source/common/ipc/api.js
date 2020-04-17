@@ -86,6 +86,14 @@ export type GetStateDirectoryPathRendererRequest = string | any;
 export type GetStateDirectoryPathMainResponse = any;
 
 /**
+ * Channel for checking the desktop directory path
+ */
+export const GET_DESKTOP_DIRECTORY_PATH_CHANNEL =
+  'GetDesktopDirectoryPathChannel';
+export type GetDesktopDirectoryPathRendererRequest = string | any;
+export type GetDesktopDirectoryPathMainResponse = any;
+
+/**
  * Channel for setting log state snapshot
  */
 export const SET_STATE_SNAPSHOT_LOG_CHANNEL = 'SetStateSnapshotLogChannel';
