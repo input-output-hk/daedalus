@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## 1.0.1-FC3
+
+### Fixes
+
+- Fixed active address handling ([PR 1969](https://github.com/input-output-hk/daedalus/pull/1969))
+
 ## 1.0.0-FC3
 
 ### Features
