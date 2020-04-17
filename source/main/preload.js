@@ -2,9 +2,8 @@
 import os from 'os';
 import _https from 'https';
 import _http from 'http';
-import { ipcRenderer as _ipcRenderer, remote as _remote } from 'electron';
-import _electronLog from 'electron-log-daedalus';
-import ElectronStore from 'electron-store';
+import { ipcRenderer } from 'electron';
+import electronLog from 'electron-log-daedalus';
 import { environment } from './environment';
 import {
   buildLabel,
@@ -15,28 +14,9 @@ import {
 
 const _process = process;
 const _isIncentivizedTestnet = nodeImplementation === 'jormungandr';
-const _electronStore = new ElectronStore();
 
 process.once('loaded', () => {
   Object.assign(global, {
-    Buffer,
-    dialog: {
-      showOpenDialog: (...args) =>
-        _remote.dialog.showOpenDialog(_remote.getCurrentWindow(), ...args),
-      showSaveDialog: (...args) =>
-        _remote.dialog.showSaveDialog(_remote.getCurrentWindow(), ...args),
-    },
-    electronLog: {
-      debug: (...args) => _electronLog.debug(...args),
-      info: (...args) => _electronLog.info(...args),
-      error: (...args) => _electronLog.error(...args),
-      warn: (...args) => _electronLog.warn(...args),
-    },
-    electronStore: {
-      get: (...args) => _electronStore.get(...args),
-      set: (...args) => _electronStore.set(...args),
-      delete: (...args) => _electronStore.delete(...args),
-    },
     environment,
     buildLabel,
     https: {
@@ -45,15 +25,21 @@ process.once('loaded', () => {
     http: {
       request: (...args) => _http.request(...args),
     },
-    ipcRenderer: {
-      on: (...args) => _ipcRenderer.on(...args),
-      once: (...args) => _ipcRenderer.once(...args),
-      send: (...args) => _ipcRenderer.send(...args),
-      removeListener: (...args) => _ipcRenderer.removeListener(...args),
-      removeAllListeners: (...args) => _ipcRenderer.removeAllListeners(...args),
-    },
     os: {
       platform: os.platform(),
+    },
+    ipcRenderer: {
+      on: (...args) => ipcRenderer.on(...args),
+      once: (...args) => ipcRenderer.once(...args),
+      send: (...args) => ipcRenderer.send(...args),
+      removeListener: (...args) => ipcRenderer.removeListener(...args),
+      removeAllListeners: (...args) => ipcRenderer.removeAllListeners(...args),
+    },
+    electronLog: {
+      debug: (...args) => electronLog.debug(...args),
+      info: (...args) => electronLog.info(...args),
+      error: (...args) => electronLog.error(...args),
+      warn: (...args) => electronLog.warn(...args),
     },
     isIncentivizedTestnet: _isIncentivizedTestnet,
     isFlight,

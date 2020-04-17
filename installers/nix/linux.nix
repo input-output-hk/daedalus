@@ -1,4 +1,4 @@
-{ stdenv, runCommand, writeText, writeScriptBin, electron3
+{ stdenv, runCommand, writeText, writeScriptBin, electron8
 , coreutils, utillinux, procps, cluster
 , rawapp, daedalus-bridge, daedalus-installer
 , sandboxed ? false
@@ -25,7 +25,7 @@ let
 
     cd "''${DAEDALUS_DIR}/${cluster}/"
 
-    exec ${electron3}/bin/electron ${rawapp}/share/daedalus "$@"
+    exec ${electron8}/bin/electron --disable-setuid-sandbox --no-sandbox ${rawapp}/share/daedalus "$@"
   '';
   daedalus = writeScriptBin "daedalus" ''
     #!${stdenv.shell}

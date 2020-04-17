@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
+import { showSaveDialogChannel } from '../../ipc/show-file-dialog-channels';
 import { generateFileNameWithTimestamp } from '../../../../common/utils/files';
 import StakingRewards from '../../components/staking/rewards/StakingRewards';
 import StakingRewardsForIncentivizedTestnet from '../../components/staking/rewards/StakingRewardsForIncentivizedTestnet';
@@ -34,11 +35,11 @@ export default class StakingRewardsPage extends Component<Props> {
     this.props.stores.app.openExternalLink(learnMoreLinkUrl);
   };
 
-  onExportCsv = (rewards: Array<CsvRecord>) => {
+  onExportCsv = async (rewards: Array<CsvRecord>) => {
     const {
       actions: { wallets },
     } = this.props;
-    const filePath = global.dialog.showSaveDialog({
+    const params = {
       defaultPath: generateFileNameWithTimestamp({
         prefix: 'rewards',
         extension: 'csv',
@@ -49,7 +50,8 @@ export default class StakingRewardsPage extends Component<Props> {
           extensions: ['csv'],
         },
       ],
-    });
+    };
+    const { filePath } = await showSaveDialogChannel.send(params);
 
     // if cancel button is clicked or path is empty
     if (!filePath) return;
