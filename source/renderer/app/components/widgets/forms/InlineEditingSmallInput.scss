@@ -1,0 +1,126 @@
+.component {
+  background-color: transparent;
+  border: 1px solid var(--theme-input-border-color);
+  border-radius: 2px;
+  padding-right: 50px;
+  position: relative;
+  width: 275px;
+
+  &.hasError {
+    border-color: var(--rp-textarea-border-color-errored) !important;
+    margin-bottom: 24px;
+  }
+
+  &.isActive {
+    border-color: var(--theme-input-focus-border-color);
+    padding-right: 86px;
+  }
+
+  &:not(.isActive) {
+    cursor: pointer;
+    :global {
+      .SimpleInput_input {
+        cursor: pointer;
+      }
+    }
+  }
+
+  &.disabled {
+    background-color: var(--rp-input-bg-color-disabled);
+    border-color: var(--rp-input-border-color-disabled);
+    cursor: text !important;
+    padding-right: 0;
+    pointer-events: none;
+
+    :global {
+      .SimpleInput_input {
+        color: var(--rp-input-text-color-disabled);
+      }
+    }
+  }
+
+  :global {
+    .SimpleFormField_root {
+      .SimpleFormField_error {
+        top: 52px;
+        font-family: var(--font-medium);
+      }
+    }
+    .SimpleInput_input {
+      background: transparent !important;
+      border: 0 none;
+      border-radius: 0;
+      &:focus {
+        border: 0 none;
+      }
+    }
+  }
+
+  @keyframes animateSavingResultLabel {
+    0% {
+      opacity: 0.5;
+    }
+    50% {
+      opacity: 0.5;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+
+  .leftButton,
+  .rightButton {
+    background-color: var(--theme-button-flat-background-color);
+    border-radius: 3px;
+    cursor: pointer;
+    height: 28px;
+    position: absolute;
+    right: 10px;
+    top: 9px;
+    width: 28px;
+
+    .penIcon {
+      svg {
+        height: 12px;
+        position: relative;
+        top: 1px;
+        width: 12px;
+      }
+    }
+    .crossIcon {
+      svg {
+        height: 8px;
+        width: 8px;
+        g {
+          fill: #fff;
+        }
+      }
+    }
+    .arrowIcon {
+      svg {
+        height: 9px;
+        path {
+          stroke: #fff;
+        }
+      }
+    }
+  }
+
+  :global {
+    .InlineEditingSmallInput_leftButton,
+    .InlineEditingSmallInput_rightButton {
+      &.SimpleButton_root:not(.SimpleButton_disabled) {
+        &:hover {
+          background-color: var(--theme-button-flat-background-color-hover);
+        }
+        &:active {
+          background-color: var(--theme-button-flat-background-color-active);
+        }
+      }
+    }
+  }
+
+  .leftButton {
+    right: 48px;
+  }
+}

@@ -184,7 +184,7 @@ export default class NetworkStatusStore extends Store {
     if (this.isConnected) {
       logger.info('NetworkStatusStore: Connected');
       this._updateNetworkStatus();
-      // this.stores.walletMigration.startMigration();
+      this.actions.walletMigration.startMigration.trigger();
     }
   };
 

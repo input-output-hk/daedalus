@@ -4,6 +4,7 @@ import { inject, observer } from 'mobx-react';
 import WalletAddPage from './wallet/WalletAddPage';
 import LoadingPage from './loading/LoadingPage';
 import SplashNetworkPage from './splash/SplashNetworkPage';
+import WalletImportFileDialog from '../components/wallet/wallet-import/WalletImportFileDialog';
 import type { InjectedContainerProps } from '../types/injectedPropsType';
 
 type Props = InjectedContainerProps;
@@ -19,6 +20,7 @@ export default class Root extends Component<Props> {
       nodeUpdate,
       profile,
       staking,
+      uiDialogs,
       wallets,
     } = stores;
     const { isStakingPage } = staking;
@@ -34,7 +36,7 @@ export default class Root extends Component<Props> {
       isSystemTimeCorrect,
     } = networkStatus;
     const { isCurrentLocaleSet, areTermsOfUseAccepted } = profile;
-
+    const isWalletImportDialogOpen = uiDialogs.isOpen(WalletImportFileDialog);
     const isPageThatDoesntNeedWallets =
       (isStakingPage || isSettingsPage) && hasLoadedWallets && isConnected;
 
@@ -70,7 +72,7 @@ export default class Root extends Component<Props> {
       return <LoadingPage stores={stores} actions={actions} />;
     }
 
-    if (!wallets.hasAnyWallets) {
+    if (!wallets.hasAnyWallets || isWalletImportDialogOpen) {
       return <WalletAddPage />;
     }
 

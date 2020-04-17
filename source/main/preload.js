@@ -5,7 +5,12 @@ import _http from 'http';
 import { ipcRenderer } from 'electron';
 import electronLog from 'electron-log-daedalus';
 import { environment } from './environment';
-import { buildLabel, nodeImplementation, isFlight } from './config';
+import {
+  buildLabel,
+  legacyStateDir,
+  nodeImplementation,
+  isFlight,
+} from './config';
 
 const _process = process;
 const _isIncentivizedTestnet = nodeImplementation === 'jormungandr';
@@ -38,6 +43,7 @@ process.once('loaded', () => {
     },
     isIncentivizedTestnet: _isIncentivizedTestnet,
     isFlight,
+    legacyStateDir,
   });
   // Expose require for Spectron!
   if (_process.env.NODE_ENV === 'test') {
