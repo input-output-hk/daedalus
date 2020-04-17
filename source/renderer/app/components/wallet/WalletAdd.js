@@ -69,7 +69,8 @@ const messages = defineMessages({
   },
   importDescription: {
     id: 'wallet.add.dialog.import.description',
-    defaultMessage: '!!!Import a wallet from a file',
+    defaultMessage:
+      '!!!Import wallets from an earlier version of Daedalus or the Daedalus state directory',
     description:
       'Description for the "Import" button on the wallet add dialog.',
   },
@@ -96,6 +97,9 @@ type Props = {
   onRestore: Function,
   onImportFile: Function,
   isMaxNumberOfWalletsReached: boolean,
+  isMainnet: boolean,
+  isTestnet: boolean,
+  isProduction: boolean,
 };
 
 @observer
@@ -116,6 +120,9 @@ export default class WalletAdd extends Component<Props> {
       onRestore,
       onImportFile,
       isMaxNumberOfWalletsReached,
+      isMainnet,
+      isTestnet,
+      isProduction,
     } = this.props;
 
     const componentClasses = classnames([styles.component, 'WalletAdd']);
@@ -166,7 +173,7 @@ export default class WalletAdd extends Component<Props> {
               icon={importIcon}
               label={intl.formatMessage(messages.importLabel)}
               description={intl.formatMessage(messages.importDescription)}
-              isDisabled
+              isDisabled={isProduction && !isMainnet && !isTestnet}
             />
           </div>
           {activeNotification ? (

@@ -6,10 +6,22 @@ Changelog
 ### Chores
 
 - Implemented Storybook improvements ([PR 1783](https://github.com/input-output-hk/daedalus/pull/1783))
+
+## 1.0.0-FC3
+
+### Features
+
+- Implemented "Wallet Import" feature ([PR 1956](https://github.com/input-output-hk/daedalus/pull/1956))
+- Force setting spending password on passwordless wallets ([PR 1957](https://github.com/input-output-hk/daedalus/pull/1957))
+
+### Chores
+
+- Implemented smart error handler ([PR 1962](https://github.com/input-output-hk/daedalus/pull/1962))
 - Separated handling of `cardano-wallet` and `cardano-node` logs ([PR 1960](https://github.com/input-output-hk/daedalus/pull/1960))
 - Refactored and improved automated tests setup ([PR 1912](https://github.com/input-output-hk/daedalus/pull/1912))
 - Updated README ([PR 1953](https://github.com/input-output-hk/daedalus/pull/1953))
 - Updated `cardano-wallet` to revision `7140ff08` which includes `cardano-node` 1.10.1 ([PR 1960](https://github.com/input-output-hk/daedalus/pull/1960))
+- Updated `cardano-wallet` to revision `745aaad67004855a84c51e400c6fa1d10aedb910` with fee estimation fix ([PR 1964](https://github.com/input-output-hk/daedalus/pull/1964))
 
 ## 1.0.0-FC2
 
@@ -19,6 +31,7 @@ Changelog
 
 ### Fixes
 
+- Disabled address generation for Yoroi wallets ([PR 1961](https://github.com/input-output-hk/daedalus/pull/1961))
 - Fixed "Restoration" dialog validation ([PR 1951](https://github.com/input-output-hk/daedalus/pull/1951))
 - Fixed the `EPERM` errors thrown in the console upon changing wallet name on the "Wallet Settings" screen ([PR 1944](https://github.com/input-output-hk/daedalus/pull/1944))
 

@@ -69,7 +69,7 @@ When(/^I have one wallet address$/, function() {
 
 When(/^I enter spending password "([^"]*)"$/, function(password) {
   return this.client.setValue(
-    '.WalletReceive_spendingPassword input',
+    '.WalletReceiveRandom_spendingPassword input',
     password
   );
 });

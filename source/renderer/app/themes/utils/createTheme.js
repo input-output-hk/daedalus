@@ -453,6 +453,19 @@ export const createDaedalusComponentsTheme = (
       '--theme-dialog-big-button-border-color': `${border}`,
       '--theme-dialog-big-button-label-color': `${text.primary}`,
       '--theme-dialog-big-button-description-color': `${text.primary}`,
+      '--theme-dialog-set-wallet-password-background-color': `${chroma(
+        background.primary
+      ).alpha(0.96)}`,
+      '--theme-dialog-set-wallet-password-box-shadow': `${chroma(
+        background.primary
+      ).alpha(0.25)}`,
+      '--theme-dialog-set-wallet-password-message-color': `${text.primary}`,
+      '--theme-dialog-set-wallet-password-title-color': `${text.primary}`,
+      '--theme-dialog-set-wallet-password-button-background-color': `${chroma(
+        background.primary
+      ).alpha(0.15)}`,
+      '--theme-dialog-set-wallet-password-button-border-color': `${text.primary}`,
+      '--theme-dialog-set-wallet-password-button-color': `${text.primary}`,
       '--theme-dialog-title-color': `${text.primary}`,
       '--theme-dialog-text-color': `${text.primary}`,
       '--theme-dialog-border-color': `${border}`,
@@ -664,7 +677,6 @@ export const createDaedalusComponentsTheme = (
       '--theme-notification-message-text-color': `${text.secondary}`,
       '--theme-notification-message-checkmark-icon-color': `${text.secondary}`,
       '--theme-notification-message-close-icon-color': `${text.secondary}`,
-
       '--theme-legacy-badge-background-color': `${error.dark}`,
       '--theme-legacy-notification-background-color': '#ab2712',
       '--theme-legacy-notification-learn-more-button-text-color': `${text.secondary}`,
@@ -711,6 +723,31 @@ export const createDaedalusComponentsTheme = (
       '--theme-recovery-phrase-warning-background-color':
         'rgba(68, 91, 124, 0.05)',
       '--theme-recovery-phrase-attention-background-color': `${background.primary.light}`,
+    },
+    walletImportDialog: {
+      '--theme-wallet-import-background-color': `${background.secondary.regular}`,
+      '--theme-wallet-import-description-close-hover-background': `${chroma(
+        background.secondary.regular
+      ).alpha(0.16)}`,
+      '--theme-wallet-import-description-color': `${text.primary}`,
+      '--theme-wallet-import-title-color': `${text.primary}`,
+      '--theme-wallet-import-stateFolder-border-color': `${chroma(
+        text.primary
+      ).alpha(0.5)}`,
+      '--theme-wallet-import-stateFolder-button-background-color': `${chroma(
+        text.primary
+      ).alpha(0.1)}`,
+      '--theme-wallet-import-stateFolder-button-background-color-hover': `${chroma(
+        text.primary
+      ).alpha(0.05)}`,
+      '--theme-wallet-import-stateFolder-button-background-color-active': `${chroma(
+        text.primary
+      ).alpha(0.12)}`,
+      '--theme-wallet-import-checkbox-border': '2px solid #ffffff',
+      '--theme-wallet-import-checkbox-border-color': 'rgba(255, 255, 255, 1)',
+      '--theme-wallet-import-checkbox-border-color-disabled': '#ffffff',
+      '--theme-wallet-import-checkbox-check-bg-color': '#ffffff',
+      '--theme-wallet-import-stateFolder-label-color': `${text.primary}`,
     },
     reportIssue: {
       '--theme-report-issue-button-background-color': `${background.secondary.regular}`,

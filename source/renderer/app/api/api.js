@@ -1,5 +1,5 @@
 // @flow
-import { split, get, includes, map, last } from 'lodash';
+import { split, get, map, last } from 'lodash';
 import { action } from 'mobx';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
@@ -190,38 +190,14 @@ import type {
   QuitStakePoolRequest,
 } from './staking/types';
 import type { StakePoolProps } from '../domains/StakePool';
-
-// Common errors
-import {
-  GenericApiError,
-  IncorrectSpendingPasswordError,
-  InvalidMnemonicError,
-  ForbiddenMnemonicError,
-} from './common/errors';
-
-// Wallets errors
-import {
-  WalletAlreadyRestoredError,
-  WalletAlreadyImportedError,
-  WalletFileImportError,
-} from './wallets/errors';
-
-// Transactions errors
-import {
-  NotAllowedToSendMoneyToRedeemAddressError,
-  NotEnoughFundsForTransactionError,
-  CanNotCalculateTransactionFeesError,
-  NotEnoughFundsForTransactionFeesError,
-  NotEnoughMoneyToSendError,
-  TooBigTransactionError,
-  InvalidAddressError,
-} from './transactions/errors';
 import type { FaultInjectionIpcRequest } from '../../../common/types/cardano-node.types';
+
 import { TlsCertificateNotValidError } from './nodes/errors';
 import { getSHA256HexForString } from './utils/hashing';
 import { getNewsHash } from './news/requests/getNewsHash';
 import { deleteTransaction } from './transactions/requests/deleteTransaction';
 import { WALLET_BYRON_KINDS } from '../config/walletRestoreConfig';
+import ApiError from '../domains/ApiError';
 
 const { isIncentivizedTestnet } = global;
 
@@ -267,7 +243,7 @@ export default class AdaApi {
       return wallets.map(_createWalletFromServerData);
     } catch (error) {
       logger.error('AdaApi::getWallets error', { error });
-      throw new GenericApiError(error);
+      throw new ApiError(error);
     }
   };
 
@@ -303,7 +279,7 @@ export default class AdaApi {
       return _createWalletFromServerData(wallet);
     } catch (error) {
       logger.error('AdaApi::getWallet error', { error });
-      throw new GenericApiError(error);
+      throw new ApiError(error);
     }
   };
 
@@ -329,7 +305,7 @@ export default class AdaApi {
       return response.map(_createAddressFromServerData);
     } catch (error) {
       logger.error('AdaApi::getAddresses error', { error });
-      throw new GenericApiError(error);
+      throw new ApiError(error);
     }
   };
 
@@ -372,7 +348,7 @@ export default class AdaApi {
       );
     } catch (error) {
       logger.error('AdaApi::getTransactions error', { error });
-      throw new GenericApiError(error);
+      throw new ApiError(error);
     }
 
     // @API TODO - Filter / Search fine tunning "pending" for V2
@@ -551,7 +527,7 @@ export default class AdaApi {
           'random'
         );
 
-        // Genearte address for the newly created Byron wallet
+        // Generate address for the newly created Byron wallet
         const { id: walletId } = legacyWallet;
         const address: Address = await createByronWalletAddress(this.config, {
           passphrase: spendingPassword,
@@ -577,7 +553,7 @@ export default class AdaApi {
       return _createWalletFromServerData(wallet);
     } catch (error) {
       logger.error('AdaApi::createWallet error', { error });
-      throw new GenericApiError(error);
+      throw new ApiError(error);
     }
   };
 
@@ -597,7 +573,7 @@ export default class AdaApi {
       return true;
     } catch (error) {
       logger.error('AdaApi::deleteWallet error', { error });
-      throw new GenericApiError(error);
+      throw new ApiError(error);
     }
   };
 
@@ -643,26 +619,16 @@ export default class AdaApi {
       return _createTransactionFromServerData(response);
     } catch (error) {
       logger.error('AdaApi::createTransaction error', { error });
-      if (error.code === 'output_is_redeem') {
-        throw new NotAllowedToSendMoneyToRedeemAddressError();
-      }
-      if (error.code === 'cannot_cover_fee') {
-        throw new NotEnoughFundsForTransactionFeesError();
-      }
-      if (error.code === 'not_enough_money') {
-        throw new NotEnoughMoneyToSendError();
-      }
-      if (
-        error.code === 'wrong_encryption_passphrase' ||
-        (error.code === 'bad_request' &&
-          error.message.includes('passphrase is too short'))
-      ) {
-        throw new IncorrectSpendingPasswordError();
-      }
-      if (error.code === 'too_big_transaction') {
-        throw new TooBigTransactionError();
-      }
-      throw new GenericApiError(error);
+      throw new ApiError(error)
+        .set('wrongEncryptionPassphrase')
+        .where('code', 'bad_request')
+        .inc('message', 'passphrase is too short')
+        .set('transactionIsTooBig', true, {
+          linkLabel: 'tooBigTransactionErrorLinkLabel',
+          linkURL: 'tooBigTransactionErrorLinkURL',
+        })
+        .where('code', 'transaction_is_too_big')
+        .result();
     }
   };
 
@@ -715,39 +681,36 @@ export default class AdaApi {
       if (amountWithFee.gt(walletBalance)) {
         // Amount + fees exceeds walletBalance:
         // = show "Not enough Ada for fees. Try sending a smaller amount."
-        throw new NotEnoughFundsForTransactionFeesError();
+        throw new ApiError().result('cannotCoverFee');
       }
-
       logger.debug('AdaApi::calculateTransactionFee success', {
         transactionFee: response,
       });
       return fee;
     } catch (error) {
-      logger.error('AdaApi::calculateTransactionFee error', { error });
-      if (error.name === 'NotEnoughFundsForTransactionFeesError') {
-        throw error;
-      } else if (error.code === 'not_enough_money') {
-        if (walletBalance.gt(availableBalance)) {
-          // Amount exceeds availableBalance due to pending transactions:
-          // - error.diagnostic.details.msg === 'Not enough available coins to proceed.'
-          // - total walletBalance > error.diagnostic.details.availableBalance
-          // = show "Cannot calculate fees while there are pending transactions."
-          throw new CanNotCalculateTransactionFeesError();
-        } else {
-          // Amount exceeds walletBalance:
-          // - error.diagnostic.details.msg === 'Not enough available coins to proceed.'
-          // - total walletBalance === error.diagnostic.details.availableBalance
-          // = show "Not enough Ada. Try sending a smaller amount."
-          throw new NotEnoughFundsForTransactionError();
-        }
-      } else if (
-        error.code === 'bad_request' &&
-        includes(error.message, 'Unable to decode Address')
-      ) {
-        throw new InvalidAddressError();
-      } else {
-        throw new GenericApiError(error);
-      }
+      // 1. Amount exceeds availableBalance due to pending transactions:
+      // - error.diagnostic.details.msg === 'Not enough available coins to proceed.'
+      // - total walletBalance > error.diagnostic.details.availableBalance
+      // = show "Cannot calculate fees while there are pending transactions."
+      // 2. Amount exceeds walletBalance:
+      // - error.diagnostic.details.msg === 'Not enough available coins to proceed.'
+      // - total walletBalance === error.diagnostic.details.availableBalance
+      // = show "Not enough Ada. Try sending a smaller amount."
+      const notEnoughMoneyError = walletBalance.gt(availableBalance)
+        ? 'canNotCalculateTransactionFees'
+        : 'notEnoughFundsForTransaction';
+
+      // ApiError with logging showcase
+      throw new ApiError(error, {
+        logError: true,
+        msg: 'AdaApi::calculateTransactionFee error',
+      })
+        .set(notEnoughMoneyError, true)
+        .where('code', 'not_enough_money')
+        .set('invalidAddress')
+        .where('code', 'bad_request')
+        .inc('message', 'Unable to decode Address')
+        .result();
     }
   };
 
@@ -769,15 +732,12 @@ export default class AdaApi {
       return _createAddressFromServerData(address);
     } catch (error) {
       logger.error('AdaApi::createAddress error', { error });
-      const errorCode = get(error, 'code', '');
-      if (
-        errorCode === 'wrong_encryption_passphrase' ||
-        (errorCode === 'bad_request' &&
-          error.message.includes('passphrase is too short'))
-      ) {
-        throw new IncorrectSpendingPasswordError();
-      }
-      throw new GenericApiError(error);
+
+      throw new ApiError(error)
+        .set('wrongEncryptionPassphrase')
+        .where('code', 'bad_request')
+        .inc('message', 'passphrase is too short')
+        .result();
     }
   };
 
@@ -827,7 +787,7 @@ export default class AdaApi {
       return response;
     } catch (error) {
       logger.error('AdaApi::getWalletRecoveryPhrase error', { error });
-      throw new GenericApiError(error);
+      throw new ApiError(error);
     }
   }
 
@@ -843,7 +803,7 @@ export default class AdaApi {
       logger.error('AdaApi::getWalletCertificateAdditionalMnemonics error', {
         error,
       });
-      throw new GenericApiError(error);
+      throw new ApiError(error);
     }
   }
 
@@ -862,7 +822,7 @@ export default class AdaApi {
       logger.error('AdaApi::getWalletCertificateRecoveryPhrase error', {
         error,
       });
-      throw new GenericApiError(error);
+      throw new ApiError(error);
     }
   }
 
@@ -879,7 +839,10 @@ export default class AdaApi {
       logger.error('AdaApi::getWalletRecoveryPhraseFromCertificate error', {
         error,
       });
-      return Promise.reject(new InvalidMnemonicError());
+      const errorRejection = new ApiError(error)
+        .set('invalidMnemonic', true)
+        .result();
+      return Promise.reject(errorRejection);
     }
   }
 
@@ -901,21 +864,17 @@ export default class AdaApi {
       return _createWalletFromServerData(wallet);
     } catch (error) {
       logger.error('AdaApi::restoreWallet error', { error });
-      if (error.code === 'wallet_already_exists') {
-        throw new WalletAlreadyRestoredError();
-      }
-      // @API TODO - improve once error is handled by v2 API (REPORT to BE team)
-      if (error.message === 'JSONValidationFailed') {
-        const validationError = get(error, 'diagnostic.validationError', '');
-        if (
-          validationError.includes(
-            'Forbidden Mnemonic: an example Mnemonic has been submitted'
-          )
-        ) {
-          throw new ForbiddenMnemonicError();
-        }
-      }
-      throw new GenericApiError(error);
+
+      throw new ApiError(error)
+        .set('forbiddenMnemonic')
+        .where('message', 'JSONValidationFailed')
+        .inc(
+          'diagnostic.validationError',
+          'Forbidden Mnemonic: an example Mnemonic has been submitted'
+        )
+        .set('forbiddenMnemonic')
+        .where('code', 'invalid_restoration_parameters')
+        .result();
     }
   };
 
@@ -954,21 +913,16 @@ export default class AdaApi {
       return _createWalletFromServerData(wallet);
     } catch (error) {
       logger.error('AdaApi::restoreLegacyWallet error', { error });
-      if (error.code === 'wallet_already_exists') {
-        throw new WalletAlreadyRestoredError();
-      }
-      // @API TODO - improve once error is handled by v2 API (REPORT to BE team)
-      if (error.message === 'JSONValidationFailed') {
-        const validationError = get(error, 'diagnostic.validationError', '');
-        if (
-          validationError.includes(
-            'Forbidden Mnemonic: an example Mnemonic has been submitted'
-          )
-        ) {
-          throw new ForbiddenMnemonicError();
-        }
-      }
-      throw new GenericApiError(error);
+      throw new ApiError(error)
+        .set('forbiddenMnemonic')
+        .where('message', 'JSONValidationFailed')
+        .inc(
+          'diagnostic.validationError',
+          'Forbidden Mnemonic: an example Mnemonic has been submitted'
+        )
+        .set('forbiddenMnemonic')
+        .where('code', 'invalid_restoration_parameters')
+        .result();
     }
   };
 
@@ -992,20 +946,14 @@ export default class AdaApi {
         type
       );
 
-      // Genearte address for restored Byron wallet without addresses
       if (!isIncentivizedTestnet) {
+        // Generate address for the newly restored Byron wallet
         const { id: walletId } = legacyWallet;
-        const walletAddresses = await getByronWalletAddresses(
-          this.config,
-          walletId
-        );
-        if (!walletAddresses || (walletAddresses && !walletAddresses.length)) {
-          const address: Address = await createByronWalletAddress(this.config, {
-            passphrase: spendingPassword,
-            walletId,
-          });
-          logger.debug('AdaApi::createAddress (Byron) success', { address });
-        }
+        const address: Address = await createByronWalletAddress(this.config, {
+          passphrase: spendingPassword,
+          walletId,
+        });
+        logger.debug('AdaApi::createAddress (Byron) success', { address });
       }
 
       const extraLegacyWalletProps = {
@@ -1025,21 +973,16 @@ export default class AdaApi {
       return _createWalletFromServerData(wallet);
     } catch (error) {
       logger.error('AdaApi::restoreByronRandomWallet error', { error });
-      if (error.code === 'wallet_already_exists') {
-        throw new WalletAlreadyRestoredError();
-      }
-      // @API TODO - improve once error is handled by v2 API (REPORT to BE team)
-      if (error.message === 'JSONValidationFailed') {
-        const validationError = get(error, 'diagnostic.validationError', '');
-        if (
-          validationError.includes(
-            'Forbidden Mnemonic: an example Mnemonic has been submitted'
-          )
-        ) {
-          throw new ForbiddenMnemonicError();
-        }
-      }
-      throw new GenericApiError(error);
+      throw new ApiError(error)
+        .set('forbiddenMnemonic')
+        .where('message', 'JSONValidationFailed')
+        .inc(
+          'diagnostic.validationError',
+          'Forbidden Mnemonic: an example Mnemonic has been submitted'
+        )
+        .set('forbiddenMnemonic')
+        .where('code', 'invalid_restoration_parameters')
+        .result();
     }
   };
 
@@ -1062,23 +1005,6 @@ export default class AdaApi {
         { walletInitData },
         type
       );
-
-      // Genearte address for restored Byron wallet without addresses
-      if (!isIncentivizedTestnet) {
-        const { id: walletId } = legacyWallet;
-        const walletAddresses = await getByronWalletAddresses(
-          this.config,
-          walletId
-        );
-        if (!walletAddresses || (walletAddresses && !walletAddresses.length)) {
-          const address: Address = await createByronWalletAddress(this.config, {
-            passphrase: spendingPassword,
-            walletId,
-          });
-          logger.debug('AdaApi::createAddress (Byron) success', { address });
-        }
-      }
-
       const extraLegacyWalletProps = {
         address_pool_gap: 0, // Not needed for legacy wallets
         delegation: {
@@ -1096,21 +1022,16 @@ export default class AdaApi {
       return _createWalletFromServerData(wallet);
     } catch (error) {
       logger.error('AdaApi::restoreByronIcarusWallet error', { error });
-      if (error.code === 'wallet_already_exists') {
-        throw new WalletAlreadyRestoredError();
-      }
-      // @API TODO - improve once error is handled by v2 API (REPORT to BE team)
-      if (error.message === 'JSONValidationFailed') {
-        const validationError = get(error, 'diagnostic.validationError', '');
-        if (
-          validationError.includes(
-            'Forbidden Mnemonic: an example Mnemonic has been submitted'
-          )
-        ) {
-          throw new ForbiddenMnemonicError();
-        }
-      }
-      throw new GenericApiError(error);
+      throw new ApiError(error)
+        .set('forbiddenMnemonic')
+        .where('message', 'JSONValidationFailed')
+        .inc(
+          'diagnostic.validationError',
+          'Forbidden Mnemonic: an example Mnemonic has been submitted'
+        )
+        .set('forbiddenMnemonic')
+        .where('code', 'invalid_restoration_parameters')
+        .result();
     }
   };
 
@@ -1150,21 +1071,16 @@ export default class AdaApi {
       return _createWalletFromServerData(wallet);
     } catch (error) {
       logger.error('AdaApi::restoreByronTrezorWallet error', { error });
-      if (error.code === 'wallet_already_exists') {
-        throw new WalletAlreadyRestoredError();
-      }
-      // @API TODO - improve once error is handled by v2 API (REPORT to BE team)
-      if (error.message === 'JSONValidationFailed') {
-        const validationError = get(error, 'diagnostic.validationError', '');
-        if (
-          validationError.includes(
-            'Forbidden Mnemonic: an example Mnemonic has been submitted'
-          )
-        ) {
-          throw new ForbiddenMnemonicError();
-        }
-      }
-      throw new GenericApiError(error);
+      throw new ApiError(error)
+        .set('forbiddenMnemonic')
+        .where('message', 'JSONValidationFailed')
+        .inc(
+          'diagnostic.validationError',
+          'Forbidden Mnemonic: an example Mnemonic has been submitted'
+        )
+        .set('forbiddenMnemonic')
+        .where('code', 'invalid_restoration_parameters')
+        .result();
     }
   };
 
@@ -1204,21 +1120,16 @@ export default class AdaApi {
       return _createWalletFromServerData(wallet);
     } catch (error) {
       logger.error('AdaApi::restoreByronLedgerWallet error', { error });
-      if (error.code === 'wallet_already_exists') {
-        throw new WalletAlreadyRestoredError();
-      }
-      // @API TODO - improve once error is handled by v2 API (REPORT to BE team)
-      if (error.message === 'JSONValidationFailed') {
-        const validationError = get(error, 'diagnostic.validationError', '');
-        if (
-          validationError.includes(
-            'Forbidden Mnemonic: an example Mnemonic has been submitted'
-          )
-        ) {
-          throw new ForbiddenMnemonicError();
-        }
-      }
-      throw new GenericApiError(error);
+      throw new ApiError(error)
+        .set('forbiddenMnemonic')
+        .where('message', 'JSONValidationFailed')
+        .inc(
+          'diagnostic.validationError',
+          'Forbidden Mnemonic: an example Mnemonic has been submitted'
+        )
+        .set('forbiddenMnemonic')
+        .where('code', 'invalid_restoration_parameters')
+        .result();
     }
   };
 
@@ -1250,10 +1161,7 @@ export default class AdaApi {
       return _createWalletFromServerData(wallet);
     } catch (error) {
       logger.error('AdaApi::restoreExportedByronWallet error', { error });
-      if (error.code === 'wallet_already_exists') {
-        throw new WalletAlreadyRestoredError();
-      }
-      throw new GenericApiError(error);
+      throw new ApiError(error);
     }
   };
 
@@ -1273,10 +1181,10 @@ export default class AdaApi {
       return _createWalletFromServerData(importedWallet);
     } catch (error) {
       logger.error('AdaApi::importWalletFromKey error', { error });
-      if (error.message === 'WalletAlreadyExists') {
-        throw new WalletAlreadyImportedError();
-      }
-      throw new WalletFileImportError();
+      throw new ApiError(error)
+        .set('walletAlreadyImported', true)
+        .where('code', 'wallet_already_exists')
+        .result('walletFileImportError');
     }
   };
 
@@ -1303,10 +1211,10 @@ export default class AdaApi {
       return _createWalletFromServerData(importedWallet);
     } catch (error) {
       logger.error('AdaApi::importWalletFromFile error', { error });
-      if (error.message === 'WalletAlreadyExists') {
-        throw new WalletAlreadyImportedError();
-      }
-      throw new WalletFileImportError();
+      throw new ApiError(error)
+        .set('walletAlreadyImported', true)
+        .where('code', 'wallet_already_exists')
+        .result('walletFileImportError');
     }
   };
 
@@ -1337,7 +1245,7 @@ export default class AdaApi {
       logger.debug('AdaApi::postponeUpdate success', { response });
     } catch (error) {
       logger.error('AdaApi::postponeUpdate error', { error });
-      throw new GenericApiError(error);
+      throw new ApiError(error);
     }
   };
 
@@ -1349,7 +1257,7 @@ export default class AdaApi {
       logger.debug('AdaApi::applyUpdate success', { response });
     } catch (error) {
       logger.error('AdaApi::applyUpdate error', { error });
-      throw new GenericApiError(error);
+      throw new ApiError(error);
     }
   };
 
@@ -1382,7 +1290,7 @@ export default class AdaApi {
       return _createWalletFromServerData(wallet);
     } catch (error) {
       logger.error('AdaApi::updateWallet error', { error });
-      throw new GenericApiError(error);
+      throw new ApiError(error);
     }
   };
 
@@ -1400,6 +1308,15 @@ export default class AdaApi {
           oldPassword,
           newPassword,
         });
+
+        if (!isIncentivizedTestnet && !oldPassword) {
+          // Generate address for the Byron wallet for which password was set for the 1st time
+          const address: Address = await createByronWalletAddress(this.config, {
+            passphrase: newPassword,
+            walletId,
+          });
+          logger.debug('AdaApi::createAddress (Byron) success', { address });
+        }
       } else {
         await updateSpendingPassword(this.config, {
           walletId,
@@ -1411,15 +1328,11 @@ export default class AdaApi {
       return true;
     } catch (error) {
       logger.error('AdaApi::updateSpendingPassword error', { error });
-      const errorCode = get(error, 'code', '');
-      if (
-        errorCode === 'wrong_encryption_passphrase' ||
-        (errorCode === 'bad_request' &&
-          error.message.includes('passphrase is too short'))
-      ) {
-        throw new IncorrectSpendingPasswordError();
-      }
-      throw new GenericApiError(error);
+      throw new ApiError(error)
+        .set('wrongEncryptionPassphrase')
+        .where('code', 'bad_request')
+        .inc('message', 'passphrase is too short')
+        .result();
     }
   };
 
@@ -1439,15 +1352,11 @@ export default class AdaApi {
       return result;
     } catch (error) {
       logger.error('AdaApi::quitStakePool error', { error });
-      const errorCode = get(error, 'code', '');
-      if (
-        errorCode === 'wrong_encryption_passphrase' ||
-        (errorCode === 'bad_request' &&
-          error.message.includes('passphrase is too short'))
-      ) {
-        throw new IncorrectSpendingPasswordError();
-      }
-      throw new GenericApiError(error);
+      throw new ApiError(error)
+        .set('wrongEncryptionPassphrase')
+        .where('code', 'bad_request')
+        .inc('message', 'passphrase is too short')
+        .result();
     }
   };
 
@@ -1467,7 +1376,7 @@ export default class AdaApi {
       return response;
     } catch (error) {
       logger.error('AdaApi::exportWalletToFile error', { error });
-      throw new GenericApiError(error);
+      throw new ApiError(error);
     }
   };
 
@@ -1489,7 +1398,7 @@ export default class AdaApi {
       return response;
     } catch (error) {
       logger.error('AdaApi::getWalletUtxos error', { error });
-      throw new GenericApiError(error);
+      throw new ApiError(error);
     }
   };
 
@@ -1519,7 +1428,7 @@ export default class AdaApi {
       };
     } catch (error) {
       logger.error('AdaApi::getWalletIdAndBalance error', { error });
-      throw new GenericApiError(error);
+      throw new ApiError(error);
     }
   };
 
@@ -1539,7 +1448,7 @@ export default class AdaApi {
       logger.debug('AdaApi::forceWalletResync success', { response });
     } catch (error) {
       logger.error('AdaApi::forceWalletResync error', { error });
-      throw new GenericApiError(error);
+      throw new ApiError(error);
     }
   };
 
@@ -1561,7 +1470,7 @@ export default class AdaApi {
       return _createMigrationFeeFromServerData(response);
     } catch (error) {
       logger.error('AdaApi::transferFundsCalculateFee error', { error });
-      throw new GenericApiError(error);
+      throw new ApiError(error);
     }
   };
 
@@ -1583,14 +1492,11 @@ export default class AdaApi {
       return response;
     } catch (error) {
       logger.error('AdaApi::transferFunds error', { error });
-      if (
-        error.code === 'wrong_encryption_passphrase' ||
-        (error.code === 'bad_request' &&
-          error.message.includes('passphrase is too short'))
-      ) {
-        throw new IncorrectSpendingPasswordError();
-      }
-      throw new GenericApiError(error);
+      throw new ApiError(error)
+        .set('wrongEncryptionPassphrase')
+        .where('code', 'bad_request')
+        .inc('message', 'passphrase is too short')
+        .result();
     }
   };
 
@@ -1608,7 +1514,7 @@ export default class AdaApi {
       return stakePools;
     } catch (error) {
       logger.error('AdaApi::getStakePools error', { error });
-      throw new GenericApiError(error);
+      throw new ApiError(error);
     }
   };
 
@@ -1627,7 +1533,7 @@ export default class AdaApi {
       logger.debug('AdaApi::testReset success');
     } catch (error) {
       logger.error('AdaApi::testReset error', { error });
-      throw new GenericApiError(error);
+      throw new ApiError(error);
     }
   };
 
@@ -1670,13 +1576,14 @@ export default class AdaApi {
       };
     } catch (error) {
       logger.error('AdaApi::getNetworkInfo error', { error });
+      // Special Error case
       if (
         error.code === TlsCertificateNotValidError.API_ERROR ||
         error.code === 'EPROTO'
       ) {
         throw new TlsCertificateNotValidError();
       }
-      throw new GenericApiError(error);
+      throw new ApiError(error);
     }
   };
 
@@ -1693,7 +1600,7 @@ export default class AdaApi {
       };
     } catch (error) {
       logger.error('AdaApi::getNetworkClock error', { error });
-      throw new GenericApiError(error);
+      throw new ApiError(error);
     }
   };
 
@@ -1730,7 +1637,7 @@ export default class AdaApi {
       };
     } catch (error) {
       logger.error('AdaApi::getNetworkParameters error', { error });
-      throw new GenericApiError(error);
+      throw new ApiError(error);
     }
   };
 
@@ -1767,7 +1674,7 @@ export default class AdaApi {
       return { latestAppVersion, applicationVersion };
     } catch (error) {
       logger.error('AdaApi::getLatestAppVersion error', { error });
-      throw new GenericApiError(error);
+      throw new ApiError(error);
     }
   };
 
@@ -1822,7 +1729,7 @@ export default class AdaApi {
       return delegationFee;
     } catch (error) {
       logger.error('AdaApi::calculateDelegationFee error', { error });
-      throw new GenericApiError(error);
+      throw new ApiError(error);
     }
   };
 
@@ -1845,14 +1752,11 @@ export default class AdaApi {
       return response;
     } catch (error) {
       logger.error('AdaApi::joinStakePool error', { error });
-      if (
-        error.code === 'wrong_encryption_passphrase' ||
-        (error.code === 'bad_request' &&
-          error.message.includes('passphrase is too short'))
-      ) {
-        throw new IncorrectSpendingPasswordError();
-      }
-      throw new GenericApiError(error);
+      throw new ApiError(error)
+        .set('wrongEncryptionPassphrase')
+        .where('code', 'bad_request')
+        .inc('message', 'passphrase is too short')
+        .result();
     }
   };
 
@@ -1896,6 +1800,7 @@ const _createWalletFromServerData = action(
       delegation,
       state: syncState,
       isLegacy = false,
+      discovery,
     } = wallet;
 
     const id = isLegacy ? getLegacyWalletId(rawWalletId) : rawWalletId;
@@ -1945,6 +1850,7 @@ const _createWalletFromServerData = action(
       delegationStakePoolStatus,
       lastDelegationStakePoolId,
       pendingDelegations: next,
+      discovery,
     });
   }
 );

@@ -6,15 +6,9 @@ import { AutoSizer, List } from 'react-virtualized';
 import WalletAddress from '../../../domains/WalletAddress';
 import styles from './VirtualAddressesList.scss';
 
-/* eslint-disable react/no-unused-prop-types */
-
 type Props = {
   rows: Array<WalletAddress>,
   renderRow: Function,
-};
-
-type State = {
-  height: number,
 };
 
 /**
@@ -30,10 +24,10 @@ const BREAKPOINT_2_LINES = 635;
 
 const ADDRESS_LINE_HEIGHT = 22;
 const ADDRESS_LINE_PADDING = 21;
-const ADDRESS_SELECTOR = '.Address_component';
+const ADDRESS_SELECTOR = '.Address';
 
 @observer
-export class VirtualAddressesList extends Component<Props, State> {
+export class VirtualAddressesList extends Component<Props> {
   list: List;
   listWidth: number = 0;
   addressHeight: number = 0;
@@ -56,14 +50,13 @@ export class VirtualAddressesList extends Component<Props, State> {
   /**
    * Virtual row heights only once per tick (debounced)
    */
-  updateRowHeights = (): void => {
+  updateRowHeights = () => {
     const { list, addressHeight } = this;
     if (!list) return;
     const firstAddress = document.querySelector(ADDRESS_SELECTOR);
     if (firstAddress instanceof HTMLElement) {
       this.addressHeight = firstAddress.offsetHeight;
     } else {
-      // DOM is not ready yet, so use an estimated height
       this.addressHeight = this.estimateAddressHeight(
         this.getLinesFromWidth(this.listWidth)
       );

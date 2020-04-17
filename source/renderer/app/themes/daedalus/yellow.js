@@ -192,6 +192,18 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-dialog-big-button-border-color': '#e1dac6',
     '--theme-dialog-big-button-label-color': '#2d2d2d',
     '--theme-dialog-big-button-description-color': '#2d2d2d',
+    '--theme-dialog-set-wallet-password-background-color':
+      'rgba(255, 185, 35, 0.96)',
+    '--theme-dialog-set-wallet-password-box-shadow': 'rgba(0, 0, 0, 0.25)',
+    '--theme-dialog-set-wallet-password-message-color': 'rgba(45, 45, 45, 0.7)',
+    '--theme-dialog-set-wallet-password-title-color': '#2d2d2d',
+    '--theme-dialog-set-wallet-password-button-background-color':
+      'rgba(0, 0, 0, 0.1)',
+    '--theme-dialog-set-wallet-password-button-background-color-hover':
+      '#2d2d2d',
+    '--theme-dialog-set-wallet-password-button-border-color': '#2d2d2d',
+    '--theme-dialog-set-wallet-password-button-color': '#2d2d2d',
+    '--theme-dialog-set-wallet-password-button-color-hover': '#fff',
     '--theme-dialog-title-color': '#2d2d2d',
     '--theme-dialog-text-color': '#2d2d2d',
     '--theme-dialog-border-color': 'rgba(45, 45, 45, 0.2)',
@@ -872,6 +884,26 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-recovery-phrase-warning-background-color': 'rgba(45, 45, 45, .1)',
     '--theme-recovery-phrase-attention-background-color':
       'rgba(234, 76, 91, .1)',
+  },
+  walletImportDialog: {
+    '--theme-wallet-import-background-color': '#fdcd68f5',
+    '--theme-wallet-import-description-close-hover-background':
+      'rgba(0, 0, 0, 0.1)',
+    '--theme-wallet-import-description-color': '#fff',
+    '--theme-wallet-import-title-color': '#fff',
+    '--theme-wallet-import-stateFolder-border-color':
+      'rgba(255, 255, 255, 0.5)',
+    '--theme-wallet-import-stateFolder-button-background-color':
+      'rgba(255, 255, 255, 0.1)',
+    '--theme-wallet-import-stateFolder-button-background-color-hover':
+      'rgba(255, 255, 255, 0.05)',
+    '--theme-wallet-import-stateFolder-button-background-color-active':
+      'rgba(255, 255, 255, 0.12)',
+    '--theme-wallet-import-checkbox-border': '2px solid #ffffff',
+    '--theme-wallet-import-checkbox-border-color': 'rgba(255, 255, 255, 1)',
+    '--theme-wallet-import-checkbox-border-color-disabled': '#ffffff',
+    '--theme-wallet-import-checkbox-check-bg-color': '#ffffff',
+    '--theme-wallet-import-stateFolder-label-color': '#fff',
   },
   walletRestoreDialog: {
     '--theme-wallet-restore-dialog-new-label-background-color':
