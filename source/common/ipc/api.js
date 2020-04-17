@@ -249,8 +249,8 @@ export type GenerateWalletMigrationReportMainResponse = void;
  * Channel for generating wallet migration report
  */
 export const GET_WASM_BINARY_CHANNEL = 'GET_WASM_BINARY_CHANNEL';
-export type getWasmBynaryRendererRequest = void;
-export type getWasmBynaryMainResponse = Uint8Array;
+export type getRecoveryWalletIdRendererRequest = Array<string>;
+export type getRecoveryWalletIdMainResponse = Uint8Array;
 
 /**
  * Channel for showing open dialog

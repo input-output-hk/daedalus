@@ -1,7 +1,6 @@
 // @flow
 import { observable, action, computed, runInAction } from 'mobx';
-import { Byron, Icarus, newPublicId } from 'cardano-js/dist/hd';
-import { getWasmBynaryChannel } from '../ipc/getWasmBynaryChannel';
+import { getRecoveryWalletIdChannel } from '../ipc/getRecoveryWalletIdChannel';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import WalletBackupDialog from '../components/wallet/WalletBackupDialog';
@@ -128,19 +127,12 @@ export default class WalletBackupStore extends Store {
     );
   };
 
-  @action _checkRecoveryPhrase = async (params: {
+  @action _checkRecoveryPhrase = async ({
+    recoveryPhrase,
+  }: {
     recoveryPhrase: Array<string>,
   }) => {
-    const wasmBynary = await getWasmBynaryChannel.request();
-    const { recoveryPhrase } = params;
-    let xprv;
-    let cc;
-    if (recoveryPhrase.length === 12) {
-      [xprv, cc] = await Byron.generateMasterKey(recoveryPhrase, wasmBynary);
-    } else {
-      [xprv, cc] = await Icarus.generateMasterKey(recoveryPhrase, wasmBynary);
-    }
-    const walletId = newPublicId(xprv.to_public(), cc);
+    const walletId = await getRecoveryWalletIdChannel.request(recoveryPhrase);
     const activeWallet = this.stores.wallets.active;
     if (!activeWallet)
       throw new Error(
