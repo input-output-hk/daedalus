@@ -75,6 +75,7 @@ const wallets = [
       },
     ],
     createdAt: new Date(),
+    discovery: 'random',
     recoveryPhraseVerificationDate: new Date(),
     recoveryPhraseVerificationStatus:
       WalletRecoveryPhraseVerificationStatuses.OK,
@@ -106,6 +107,7 @@ const wallets = [
       },
     ],
     createdAt: new Date(),
+    discovery: 'random',
     recoveryPhraseVerificationDate: new Date(),
     recoveryPhraseVerificationStatus:
       WalletRecoveryPhraseVerificationStatuses.OK,
@@ -136,6 +138,7 @@ const wallets = [
       },
     ],
     createdAt: new Date(),
+    discovery: 'random',
     recoveryPhraseVerificationDate: new Date(),
     recoveryPhraseVerificationStatus:
       WalletRecoveryPhraseVerificationStatuses.OK,
@@ -157,6 +160,7 @@ const wallets = [
     delegationStakePoolStatus: WalletDelegationStatuses.NOT_DELEGATING,
     delegatedStakePoolId: null,
     createdAt: new Date(),
+    discovery: 'random',
     recoveryPhraseVerificationDate: new Date(),
     recoveryPhraseVerificationStatus:
       WalletRecoveryPhraseVerificationStatuses.OK,
@@ -178,6 +182,7 @@ const wallets = [
     delegationStakePoolStatus: WalletDelegationStatuses.DELEGATING,
     delegatedStakePoolId: '90000',
     createdAt: new Date(),
+    discovery: 'random',
     recoveryPhraseVerificationDate: new Date(),
     recoveryPhraseVerificationStatus:
       WalletRecoveryPhraseVerificationStatuses.OK,
@@ -209,6 +214,7 @@ const wallets = [
       },
     ],
     createdAt: new Date(),
+    discovery: 'random',
     recoveryPhraseVerificationDate: new Date(),
     recoveryPhraseVerificationStatus:
       WalletRecoveryPhraseVerificationStatuses.OK,

@@ -1,7 +1,7 @@
 {
   "name": "daedalus",
   "productName": "Daedalus",
-  "version": "1.0.0-FC2",
+  "version": "1.0.0-FC3",
   "description": "Cryptocurrency Wallet",
   "main": "./dist/main/index.js",
   "scripts": {
@@ -55,6 +55,7 @@
     "byron:wallet:importer": "node utils/api-importer/byron-wallet-importer.js",
     "itn:byron:wallet:importer": "node utils/api-importer/itn-byron-wallet-importer.js",
     "itn:shelley:wallet:importer": "node utils/api-importer/itn-shelley-wallet-importer.js",
+    "yoroi:wallet:importer": "node utils/api-importer/yoroi-wallet-importer.js",
     "js-launcher": "node utils/js-launcher/index.js",
     "create-news-verification-hashes": "node utils/create-news-verification-hashes/index.js",
     "lockfile:check": "node utils/lockfile-checker/index.js --check",

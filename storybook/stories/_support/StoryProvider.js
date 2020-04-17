@@ -7,6 +7,7 @@ import { observable, computed, runInAction } from 'mobx';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
 import actions from '../../../source/renderer/app/actions';
+import { WalletSyncStateStatuses } from '../../../source/renderer/app/domains/Wallet.js';
 
 type Props = {
   children: Node,
@@ -15,24 +16,28 @@ type Props = {
 export const WALLETS = [
   {
     id: '0',
-    name: 'No Password',
-    amount: new BigNumber(66.998),
-    hasPassword: false,
-    passwordUpdateDate: new Date(),
-    syncState: { data: null, tag: 'synced' },
-    isLegacy: false,
-    recoveryPhraseVerificationDate: new Date(),
-    delegatedStakePoolId: 'kfhdsdkhfskdjfhskdhf',
-  },
-  {
-    id: '1',
     name: 'With Password',
     amount: new BigNumber(0),
     hasPassword: true,
     passwordUpdateDate: moment()
       .subtract(1, 'month')
       .toDate(),
-    syncState: { data: null, tag: 'synced' },
+    syncState: { status: WalletSyncStateStatuses.READY },
+    isNotResponding: false,
+    isRestoring: false,
+    isLegacy: false,
+    recoveryPhraseVerificationDate: new Date(),
+    delegatedStakePoolId: 'kfhdsdkhfskdjfhskdhf',
+  },
+  {
+    id: '1',
+    name: 'No Password',
+    amount: new BigNumber(66.998),
+    hasPassword: false,
+    passwordUpdateDate: new Date(),
+    syncState: { status: WalletSyncStateStatuses.READY },
+    isNotResponding: false,
+    isRestoring: false,
     isLegacy: false,
     recoveryPhraseVerificationDate: new Date(),
     delegatedStakePoolId: 'kfhdsdkhfskdjfhskdhf',
@@ -41,9 +46,13 @@ export const WALLETS = [
     id: '2',
     name: 'Legacy with funds',
     amount: new BigNumber(55.555),
-    hasPassword: false,
-    passwordUpdateDate: new Date(),
-    syncState: { data: null, tag: 'synced' },
+    hasPassword: true,
+    passwordUpdateDate: moment()
+      .subtract(1, 'month')
+      .toDate(),
+    syncState: { status: WalletSyncStateStatuses.READY },
+    isNotResponding: false,
+    isRestoring: false,
     isLegacy: true,
     recoveryPhraseVerificationDate: moment()
       .subtract(200, 'days')
@@ -54,9 +63,13 @@ export const WALLETS = [
     id: '3',
     name: 'Legacy with no funds',
     amount: new BigNumber(0),
-    hasPassword: false,
-    passwordUpdateDate: new Date(),
-    syncState: { data: null, tag: 'synced' },
+    hasPassword: true,
+    passwordUpdateDate: moment()
+      .subtract(1, 'month')
+      .toDate(),
+    syncState: { status: WalletSyncStateStatuses.READY },
+    isNotResponding: false,
+    isRestoring: false,
     isLegacy: true,
     recoveryPhraseVerificationDate: moment()
       .subtract(200, 'days')
@@ -66,25 +79,19 @@ export const WALLETS = [
     id: '4',
     name: 'Restoring',
     amount: new BigNumber(12.345),
-    hasPassword: false,
-    passwordUpdateDate: new Date(),
+    hasPassword: true,
+    passwordUpdateDate: moment()
+      .subtract(1, 'month')
+      .toDate(),
     syncState: {
-      data: {
-        estimatedCompletionTime: {
-          quantity: 123456789,
-          unit: 'milliseconds',
-        },
-        percentage: {
-          quantity: 50,
-          unit: 'percent',
-        },
-        throughput: {
-          quantity: 500,
-          unit: 'blocksPerSecond',
-        },
+      progress: {
+        quantity: 50,
+        unit: 'percent',
       },
-      tag: 'restoring',
+      status: WalletSyncStateStatuses.RESTORING,
     },
+    isNotResponding: false,
+    isRestoring: true,
     isLegacy: false,
     recoveryPhraseVerificationDate: moment()
       .subtract(400, 'days')
@@ -94,9 +101,13 @@ export const WALLETS = [
     id: '5',
     name: 'Not responding',
     amount: new BigNumber(66.998),
-    hasPassword: false,
-    passwordUpdateDate: new Date(),
-    syncState: { data: null, tag: 'not_responding' },
+    hasPassword: true,
+    passwordUpdateDate: moment()
+      .subtract(1, 'month')
+      .toDate(),
+    syncState: { status: WalletSyncStateStatuses.NOT_RESPONDING },
+    isNotResponding: true,
+    isRestoring: false,
     isLegacy: false,
     recoveryPhraseVerificationDate: new Date(),
     delegatedStakePoolId: 'kfhdsdkhfskdjfhskdhf',
