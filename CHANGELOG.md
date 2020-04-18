@@ -3,6 +3,10 @@ Changelog
 
 ## vNext
 
+### Fixes
+
+- Track `cardano-node` / `jormungandr` PID and use it for safe shutdowns ([PR 1972](https://github.com/input-output-hk/daedalus/pull/1972))
+
 ### Chores
 
 - Restore the paragraph about "Automatic wallet migration" on the Daedalus Flight "Splash" screen ([PR 1967](https://github.com/input-output-hk/daedalus/pull/1967))
