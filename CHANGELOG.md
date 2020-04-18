@@ -8,6 +8,12 @@ Changelog
 - Restore the paragraph about "Automatic wallet migration" on the Daedalus Flight "Splash" screen ([PR 1967](https://github.com/input-output-hk/daedalus/pull/1967))
 - Updated `Electron` and it's related dependencies ([PR 1887](https://github.com/input-output-hk/daedalus/pull/1887))
 
+## 1.0.0-FC4
+
+### Fixes
+
+- Fixed active address handling ([PR 1969](https://github.com/input-output-hk/daedalus/pull/1969))
+
 ## 1.0.0-FC3
 
 ### Features
