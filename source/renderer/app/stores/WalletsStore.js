@@ -1013,6 +1013,7 @@ export default class WalletsStore extends Store {
       if (hasActiveWalletBeenChanged) {
         // Active wallet has been replaced or removed
         this.active = newActiveWallet || null;
+        this.stores.addresses.lastGeneratedAddress = null;
         if (this.active) {
           this.activeValue = formattedWalletAmount(this.active.amount);
         }
@@ -1026,6 +1027,7 @@ export default class WalletsStore extends Store {
   @action _unsetActiveWallet = () => {
     this.active = null;
     this.activeValue = null;
+    this.stores.addresses.lastGeneratedAddress = null;
   };
 
   @action _onRouteChange = (options: { route: string, params: ?Object }) => {
