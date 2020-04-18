@@ -358,7 +358,7 @@ export class CardanoNode {
             this._handleCardanoNodeExit(code, signal);
           });
 
-          node.pid = processes.wallet.pid; // TODO: expose node pid too
+          node.pid = processes.node.pid; // TODO: expose wallet pid too
           node.connected = true; // TODO: use processes.wallet.connected here
           _log.info(
             `CardanoNode#start: cardano-node child process spawned with PID ${processes.node.pid}`,
