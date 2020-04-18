@@ -406,6 +406,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
       styles[messageId],
       styles.layoutHeader,
     ]);
+    const classNameRow = classNames([styles.layoutRow, messageId]);
     if (typeof value === 'boolean') {
       content = value
         ? intl.formatMessage(messages.statusOn)
@@ -417,7 +418,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
           : classNames([className, styles.red]);
     }
     return (
-      <div className={styles.layoutRow}>
+      <div className={classNameRow}>
         <div className={classNameHeader}>
           {key}
           {colon}
