@@ -1,13 +1,11 @@
-{ lib, pkgs, nodejs-12_x, python, api, apiVersion, cluster, buildNum, nukeReferences, fetchzip, daedalus, stdenv, win64 ? false, wine, runCommand, fetchurl, spacedName, iconPath, launcherConfig }:
+{ lib, yarn, nodejs, python, api, apiVersion, cluster, buildNum, nukeReferences, fetchzip, daedalus, stdenv, win64 ? false, wine64, runCommand, fetchurl, unzip, spacedName, iconPath, launcherConfig, pkgs }:
 let
   cluster' = launcherConfig.networkName;
-  nodejs = nodejs-12_x;
   yarn2nix = import (fetchzip {
     url = "https://github.com/moretea/yarn2nix/archive/v1.0.0.tar.gz";
     sha256 = "02bzr9j83i1064r1r34cn74z7ccb84qb5iaivwdplaykyyydl1k8";
   }) {
-    inherit pkgs nodejs;
-    yarn = pkgs.yarn.override { inherit nodejs; };
+    inherit pkgs nodejs yarn;
   };
   dotGitExists = builtins.pathExists ./.git;
   isNix2 = 0 <= builtins.compareVersions builtins.nixVersion "1.12";
@@ -19,19 +17,25 @@ let
     main = "main/index.js";
   };
   newPackagePath = builtins.toFile "package.json" (builtins.toJSON newPackage);
-  windowsElectronVersion = "3.0.14";
+  windowsElectronVersion = "8.2.2";
   windowsElectron = fetchurl {
     url = "https://github.com/electron/electron/releases/download/v${windowsElectronVersion}/electron-v${windowsElectronVersion}-win32-x64.zip";
-    sha256 = "0cqwjmv1ymwa309v025szs6681f891s6ks653jd5mh55hp1vpn0b";
+    sha256 = "0v9y8qih494k4a5q9s3jgvkdi0nbp60hr0v0w5cxlki79z8gk5ax";
   };
   checksums = fetchurl {
     url = "https://github.com/electron/electron/releases/download/v${windowsElectronVersion}/SHASUMS256.txt";
-    sha256 = "103m5kxgb64clx68qqfvxdz2pah249lk344mjxqj94i83v9bxd2j";
+    sha256 = "1z9wcgqjjany2ny4k771835m190vyp8h5gjbh898mf81mk7h3805";
   };
   electron-cache = runCommand "electron-cache" {} ''
     mkdir $out
-    ln -s ${windowsElectron} $out/electron-v3.0.14-win32-x64.zip
-    ln -s ${checksums} $out/SHASUMS256.txt-3.0.14
+    # old style
+    ln -s ${windowsElectron} $out/electron-v${windowsElectronVersion}-win32-x64.zip
+    ln -s ${checksums} $out/SHASUMS256.txt-${windowsElectronVersion}
+    # new style
+    mkdir $out/httpsgithub.comelectronelectronreleasesdownloadv${windowsElectronVersion}SHASUMS256.txt
+    mkdir $out/httpsgithub.comelectronelectronreleasesdownloadv${windowsElectronVersion}electron-v${windowsElectronVersion}-win32-x64.zip
+    ln -s ${windowsElectron} $out/httpsgithub.comelectronelectronreleasesdownloadv${windowsElectronVersion}electron-v${windowsElectronVersion}-win32-x64.zip/electron-v${windowsElectronVersion}-win32-x64.zip
+    ln -s ${checksums} $out/httpsgithub.comelectronelectronreleasesdownloadv${windowsElectronVersion}SHASUMS256.txt/SHASUMS256.txt
   '';
   filter = name: type: let
     baseName = baseNameOf (toString name);
@@ -57,7 +61,7 @@ yarn2nix.mkYarnPackage {
   NETWORK = cluster';
   BUILD_NUMBER = "${toString buildNum}";
   NODE_ENV = "production";
-  extraBuildInputs = if win64 then [ wine nukeReferences ] else [ nukeReferences ];
+  extraBuildInputs = if win64 then [ unzip wine64 nukeReferences ] else [ nukeReferences ];
   installPhase = let
     nukeAllRefs = ''
       # the webpack utils embed the original source paths into map files, so backtraces from the 1 massive index.js can be converted back to multiple files
@@ -68,9 +72,13 @@ yarn2nix.mkYarnPackage {
       done
     '';
   in if win64 then ''
+    # old style
     export ELECTRON_CACHE=${electron-cache}
-    mkdir home
+    # new style
+    mkdir -pv home/.cache/
     export HOME=$(realpath home)
+    ln -sv ${electron-cache} $HOME/.cache/electron
+
     cp ${newPackagePath} package.json
     mkdir -p installers/icons/${cluster}/${cluster}
     cp ${iconPath.base}/* installers/icons/${cluster}/${cluster}/

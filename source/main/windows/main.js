@@ -63,7 +63,7 @@ export const createMainWindow = (locale: string) => {
   window.setMinimumSize(minWindowsWidth, minWindowsHeight);
 
   // Initialize our ipc api methods that can be called by the render processes
-  ipcApi({ window });
+  ipcApi(window);
 
   // Provide render process with an api to resize the main window
   ipcMain.on('resize-window', (event, { width, height, animate }) => {

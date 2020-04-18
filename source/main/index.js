@@ -52,6 +52,11 @@ const {
   buildNumber: cardanoVersion,
 } = environment;
 
+if (isBlankScreenFixActive) {
+  // Run "location.assign('chrome://gpu')" in JavaScript console to see if the flag is active
+  app.disableHardwareAcceleration();
+}
+
 const safeExit = async () => {
   if (!cardanoNode || cardanoNode.state === CardanoNodeStates.STOPPED) {
     logger.info('Daedalus:safeExit: exiting Daedalus with code 0', { code: 0 });

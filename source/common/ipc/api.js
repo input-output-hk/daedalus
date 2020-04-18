@@ -5,6 +5,11 @@ import type {
 } from '../types/bug-report-request.types';
 import type { GenerateFileMetaParams } from '../types/file-meta-request.types';
 import type { GeneratePaperWalletParams } from '../types/paper-wallet-request.types';
+import type {
+  FileDialogRequestParams,
+  OpenFileDialogResponseParams,
+  SaveFileDialogResponseParams,
+} from '../types/file-dialog.types';
 import type { GenerateAddressPDFParams } from '../types/address-pdf-request.types';
 import type { GenerateRewardsCsvParams } from '../types/rewards-csv-request.types';
 import type {
@@ -239,3 +244,27 @@ export const GENERATE_WALLET_MIGRATION_REPORT_CHANNEL =
   'GENERATE_WALLET_MIGRATION_REPORT_CHANNEL';
 export type GenerateWalletMigrationReportRendererRequest = WalletMigrationReportData;
 export type GenerateWalletMigrationReportMainResponse = void;
+
+/**
+ * Channel for showing open dialog
+ */
+export const SHOW_OPEN_DIALOG_CHANNEL = 'SHOW_OPEN_DIALOG_CHANNEL';
+export type ShowOpenDialogRendererRequest = FileDialogRequestParams;
+export type ShowOpenDialogMainResponse = OpenFileDialogResponseParams;
+
+/**
+ * Channel for showing save dialog
+ */
+export const SHOW_SAVE_DIALOG_CHANNEL = 'SHOW_SAVE_DIALOG_CHANNEL';
+export type ShowSaveDialogRendererRequest = FileDialogRequestParams;
+export type ShowSaveDialogMainResponse = SaveFileDialogResponseParams;
+
+/**
+ * Channel for electron-store
+ */
+export const ELECTRON_STORE_CHANNEL = 'ELECTRON_STORE_CHANNEL';
+export type ElectronStoreMessage = {
+  type: 'get' | 'set' | 'delete',
+  key: string,
+  data?: any,
+};

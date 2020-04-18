@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## vNext
+
+### Chores
+
+- Restore the paragraph about "Automatic wallet migration" on the Daedalus Flight "Splash" screen ([PR 1967](https://github.com/input-output-hk/daedalus/pull/1967))
+- Updated `Electron` and it's related dependencies ([PR 1887](https://github.com/input-output-hk/daedalus/pull/1887))
+
 ## 1.0.0-FC4
 
 ### Fixes
@@ -22,7 +29,6 @@ Changelog
 - Updated README ([PR 1953](https://github.com/input-output-hk/daedalus/pull/1953))
 - Updated `cardano-wallet` to revision `7140ff08` which includes `cardano-node` 1.10.1 ([PR 1960](https://github.com/input-output-hk/daedalus/pull/1960))
 - Updated `cardano-wallet` to revision `745aaad67004855a84c51e400c6fa1d10aedb910` with fee estimation fix ([PR 1964](https://github.com/input-output-hk/daedalus/pull/1964))
-
 
 ## 1.0.0-FC2
 
