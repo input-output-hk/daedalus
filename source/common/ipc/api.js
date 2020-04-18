@@ -239,6 +239,7 @@ export type DetectSystemLocaleMainResponse = string;
 export const EXPORT_WALLETS_CHANNEL = 'EXPORT_WALLETS_CHANNEL';
 export type ExportWalletsRendererRequest = {
   exportSourcePath: string,
+  locale: string,
 };
 export type ExportWalletsMainResponse = {
   wallets: Array<ExportedByronWallet>,

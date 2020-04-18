@@ -161,6 +161,7 @@ export default class WalletMigrationStore extends Store {
       errors,
     }: ExportWalletsMainResponse = await exportWalletsChannel.request({
       exportSourcePath: this.exportSourcePath,
+      locale: this.stores.profile.currentLocale,
     });
     runInAction('update exportedWallets and exportErrors', () => {
       this.exportedWallets = wallets.map(wallet => {
