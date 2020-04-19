@@ -23,7 +23,3 @@ Then(/^I should see the Cardano Node state is "([^"]*)"$/, async function(
 When(/^I click on the "Restart Cardano Node" button$/, function() {
   return this.client.click('.DaedalusDiagnostics_cardanoNodeStatusBtn');
 });
-
-Then(/^I should not see the "Diagnostic" screen anymore$/, function() {
-  return this.client.waitForVisible('.DaedalusDiagnostics_component', null, true);
-});

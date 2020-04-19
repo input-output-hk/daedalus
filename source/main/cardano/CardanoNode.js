@@ -397,8 +397,8 @@ export class CardanoNode {
     }
     _log.info('CardanoNode#stop: stopping cardano-node process');
     try {
-      if (_node) _node.stop(_config.shutdownTimeout);
       this._changeToState(CardanoNodeStates.STOPPING);
+      if (_node) await _node.stop(_config.shutdownTimeout / 1000);
       await this._waitForNodeProcessToExit(_config.shutdownTimeout);
       await this._storeProcessStates();
       this._reset();
@@ -456,7 +456,7 @@ export class CardanoNode {
     const { _log, _config } = this;
     try {
       // Stop cardano nicely if it is still awake
-      if (await this._isConnected()) {
+      if (this._isConnected()) {
         _log.info('CardanoNode#restart: stopping current node');
         await this.stop();
       }
@@ -656,6 +656,7 @@ export class CardanoNode {
     } else {
       this._changeToState(CardanoNodeStates.CRASHED, code, signal);
     }
+    await this._storeProcessStates();
     this._reset();
   };
 
