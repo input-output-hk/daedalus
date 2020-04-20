@@ -89,8 +89,7 @@ const restartCardanoNode = async (node: CardanoNode) => {
  */
 export const setupCardanoNode = (
   launcherConfig: LauncherConfig,
-  mainWindow: BrowserWindow,
-  locale: string
+  mainWindow: BrowserWindow
 ): CardanoNode => {
   const cardanoNode = new CardanoNode(
     logger,
@@ -186,7 +185,7 @@ export const setupCardanoNode = (
   });
 
   exportWalletsChannel.onRequest(
-    ({ exportSourcePath }: ExportWalletsRendererRequest) => {
+    ({ exportSourcePath, locale }: ExportWalletsRendererRequest) => {
       logger.info('ipcMain: Received request from renderer to export wallets', {
         exportSourcePath,
       });

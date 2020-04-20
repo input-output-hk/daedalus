@@ -5,7 +5,8 @@ Changelog
 
 ### Fixes
 
-- Track `cardano-node` / `jormungandr` PID and use it for safe shutdowns ([PR 1972](https://github.com/input-output-hk/daedalus/pull/1972))
+- Track `cardano-node` / `jormungandr` PID and use it for safe shutdowns and improve cardano-launcher error handling ([PR 1972](https://github.com/input-output-hk/daedalus/pull/1972))
+- Fixed "Wallet import" UI/UX issues ([PR 1968](https://github.com/input-output-hk/daedalus/pull/1968))
 
 ### Chores
 

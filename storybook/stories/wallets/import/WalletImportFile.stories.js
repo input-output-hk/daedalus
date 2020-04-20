@@ -32,6 +32,7 @@ storiesOf('Wallets|Import File', module)
         isSubmitting={false}
         exportSourcePath="/Users/daedalus/Library/Application Support/Daedalus"
         exportErrors=""
+        onOpen={action('onOpen')}
         onConfirm={action('onConfirm')}
         onClose={action('onClose')}
         onOpenExternalLink={action('onOpenExternalLink')}
