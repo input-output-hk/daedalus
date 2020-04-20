@@ -95,3 +95,13 @@ Feature: Send Money to Receiver
     Then I should see the following error messages on the wallet send confirmation dialog:
       | message                           |
       | api.errors.IncorrectPasswordError |
+
+  Scenario: User Enters Wrong Receiver Address  
+    Given I am on the "first" wallet "send" screen  
+    And I can see the send form 
+    When I fill out the wallet send form with:  
+      | address | amount    | 
+      | invalid | 0.000010  | 
+    Then I should see the following error messages on the wallet send form: 
+      | message                   | 
+      | api.errors.invalidAddress | 
