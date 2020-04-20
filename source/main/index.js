@@ -30,6 +30,7 @@ import { ensureXDGDataIsSet } from './cardano/config';
 import { rebuildApplicationMenu } from './ipc/rebuild-application-menu';
 import { detectSystemLocaleChannel } from './ipc/detect-system-locale';
 import { getStateDirectoryPathChannel } from './ipc/getStateDirectoryPathChannel';
+import { getDesktopDirectoryPathChannel } from './ipc/getDesktopDirectoryPathChannel';
 import { CardanoNodeStates } from '../common/types/cardano-node.types';
 import type { CheckDiskSpaceResponse } from '../common/types/no-disk-space.types';
 import { logUsedVersion } from './utils/logUsedVersion';
@@ -155,7 +156,7 @@ const onAppReady = async () => {
   mainErrorHandler(onMainError);
   await handleCheckDiskSpace();
 
-  cardanoNode = setupCardanoNode(launcherConfig, mainWindow, locale);
+  cardanoNode = setupCardanoNode(launcherConfig, mainWindow);
 
   if (isWatchMode) {
     // Connect to electron-connect server which restarts / reloads windows on file changes
@@ -174,6 +175,10 @@ const onAppReady = async () => {
 
   getStateDirectoryPathChannel.onRequest(() =>
     Promise.resolve(stateDirectoryPath)
+  );
+
+  getDesktopDirectoryPathChannel.onRequest(() =>
+    Promise.resolve(app.getPath('desktop'))
   );
 
   mainWindow.on('close', async event => {
