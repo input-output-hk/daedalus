@@ -196,6 +196,7 @@ writeInstallerNSIS outName (Version fullVersion') InstallerConfig{hasBlock0,inst
                     unsafeInject $ unpack $ "Abort \" " <> installDirectory <> "$(AlreadyRunning)\""
                 iff_ (fileExists "$APPDATA\\$InstallDir\\Wallet-1.0\\open\\*.*") $
                     rmdir [] "$APPDATA\\$InstallDir\\Wallet-1.0\\open"
+                file [] "cardano-launcher.exe"
                 case oBackend of
                   Jormungandr _ -> do
                     file [] "jormungandr.exe"
@@ -213,7 +214,6 @@ writeInstallerNSIS outName (Version fullVersion') InstallerConfig{hasBlock0,inst
                     when (clusterName == Selfnode) $ do
                       file [] "signing.key"
                       file [] "delegation.cert"
-                file [] "cardano-launcher.exe"
                 file [] "libffi-6.dll"
                 --file [] "cardano-x509-certificates.exe"
                 --file [] "log-config-prod.yaml"
