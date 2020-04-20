@@ -83,9 +83,7 @@ export const deriveProcessNames = (
 ): ProcessNames => ({
   CARDANO_PROCESS_NAME:
     CardanoProcessNameOptions[nodeImplementation][platform] ||
-    (nodeImplementation === 'jormungandr'
-      ? 'cardano-wallet-jormungandr'
-      : 'cardano-wallet-byron'),
+    (nodeImplementation === 'jormungandr' ? 'jormungandr' : 'cardano-node'),
 });
 
 export const createSelfnodeConfig = async (

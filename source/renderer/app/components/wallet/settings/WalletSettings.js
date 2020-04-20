@@ -256,7 +256,7 @@ export default class WalletSettings extends Component<Props, State> {
               globalMessages.invalidWalletName
             )}
             successfullyUpdated={
-              !isSubmitting && lastUpdatedField === 'name' && !isInvalid
+              !isSubmitting && !isInvalid && lastUpdatedField === 'name'
             }
             inputBlocked={isFormBlocked}
           />

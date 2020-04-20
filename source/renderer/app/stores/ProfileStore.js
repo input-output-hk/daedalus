@@ -12,6 +12,7 @@ import { generateFileNameWithTimestamp } from '../../../common/utils/files';
 import { formattedBytesToSize } from '../utils/formatters';
 import { logger } from '../utils/logging';
 import { setStateSnapshotLogChannel } from '../ipc/setStateSnapshotLogChannel';
+import { getDesktopDirectoryPathChannel } from '../ipc/getDesktopDirectoryPathChannel';
 import { LOCALES } from '../../../common/types/locales.types';
 import {
   compressLogsChannel,
@@ -101,6 +102,7 @@ export default class ProfileStore extends Store {
   @observable logFiles: LogFiles = {};
   @observable compressedLogsFilePath: ?string = null;
   @observable compressedLogsStatus: CompressedLogStatus = {};
+  @observable desktopDirectoryPath: string = '';
   @observable isSubmittingBugReport: boolean = false;
   @observable isInitialScreen: boolean = false;
   /* eslint-enable max-len */
@@ -132,6 +134,7 @@ export default class ProfileStore extends Store {
     ]);
     this._getTermsOfUseAcceptance();
     this._getDataLayerMigrationAcceptance();
+    this._getDesktopDirectoryPath();
   }
 
   _updateBigNumberFormat = () => {
@@ -305,6 +308,12 @@ export default class ProfileStore extends Store {
 
   _getDataLayerMigrationAcceptance = () => {
     this.getDataLayerMigrationAcceptanceRequest.execute();
+  };
+
+  _getDesktopDirectoryPath = async () => {
+    this._onReceiveDesktopDirectoryPath(
+      await getDesktopDirectoryPathChannel.request()
+    );
   };
 
   _redirectToInitialSettingsIfNoLocaleSet = () => {
@@ -554,6 +563,10 @@ export default class ProfileStore extends Store {
 
   @action _onReceiveSystemLocale = (systemLocale: string) => {
     this.systemLocale = systemLocale;
+  };
+
+  @action _onReceiveDesktopDirectoryPath = (desktopDirectoryPath: string) => {
+    this.desktopDirectoryPath = desktopDirectoryPath;
   };
 
   @action _reset = () => {

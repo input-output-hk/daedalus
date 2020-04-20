@@ -1,5 +1,6 @@
 // @flow
 import React, { Component, Fragment } from 'react';
+import path from 'path';
 import { observer, inject } from 'mobx-react';
 import { showSaveDialogChannel } from '../../ipc/show-file-dialog-channels';
 import WalletReceiveRandom from '../../components/wallet/receive/WalletReceiveRandom';
@@ -65,9 +66,10 @@ export default class WalletReceivePage extends Component<Props, State> {
       extension: '',
       isUTC: false,
     });
-
+    const { desktopDirectoryPath } = this.props.stores.profile;
+    const defaultPath = path.join(desktopDirectoryPath, `${name}.pdf`);
     const params = {
-      defaultPath: `${name}.pdf`,
+      defaultPath,
       filters: [
         {
           name,
