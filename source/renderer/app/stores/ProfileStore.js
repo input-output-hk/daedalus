@@ -472,7 +472,8 @@ export default class ProfileStore extends Store {
       const { isIncentivizedTestnet } = global;
       const { networkStatus } = this.stores;
       const {
-        cardanoNodeID,
+        cardanoNodePID,
+        cardanoWalletPID,
         tlsConfig,
         stateDirectoryPath,
         diskSpaceAvailable,
@@ -489,7 +490,8 @@ export default class ProfileStore extends Store {
 
       const {
         network,
-        buildNumber,
+        apiVersion,
+        nodeVersion,
         cpu,
         version,
         mainProcessID,
@@ -517,9 +519,11 @@ export default class ProfileStore extends Store {
         daedalusProcessID: rendererProcessID,
         daedalusMainProcessID: mainProcessID,
         isBlankScreenFixActive,
-        cardanoVersion: buildNumber,
-        cardanoProcessID: cardanoNodeID,
-        cardanoAPIPort: tlsConfig ? tlsConfig.port : 0,
+        cardanoNodeVersion: nodeVersion,
+        cardanoNodePID,
+        cardanoWalletVersion: apiVersion,
+        cardanoWalletPID,
+        cardanoWalletApiPort: tlsConfig ? tlsConfig.port : 0,
         cardanoNetwork: network,
         daedalusStateDirectoryPath: stateDirectoryPath,
       };

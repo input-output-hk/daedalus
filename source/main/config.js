@@ -11,7 +11,7 @@ const {
   isProduction,
   isBlankScreenFixActive,
   current,
-  buildNumber,
+  build,
   network,
   version,
 } = environment;
@@ -124,7 +124,7 @@ export const pubLogsFolderPath = path.join(appLogsFolderPath, 'pub');
 export const stateDirectoryPath = stateDir;
 export const stateDrive = isWindows ? stateDirectoryPath.slice(0, 2) : '/';
 export const buildLabel = getBuildLabel(
-  buildNumber,
+  build,
   network,
   current,
   isFlight,

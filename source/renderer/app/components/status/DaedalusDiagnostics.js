@@ -91,20 +91,35 @@ const messages = defineMessages({
     defaultMessage: "!!!Daedalus 'Blank Screen Fix' active",
     description: "Daedalus 'Blank Screen Fix' active",
   },
-  cardanoVersion: {
-    id: 'daedalus.diagnostics.dialog.cardanoVersion',
+  cardanoNodeVersion: {
+    id: 'daedalus.diagnostics.dialog.cardanoNodeVersion',
     defaultMessage: '!!!Cardano node version',
     description: 'Cardano node version',
   },
-  cardanoProcessID: {
-    id: 'daedalus.diagnostics.dialog.cardanoProcessID',
+  cardanoNodePID: {
+    id: 'daedalus.diagnostics.dialog.cardanoNodePID',
     defaultMessage: '!!!Cardano node process ID',
     description: 'Cardano node process ID',
   },
-  cardanoApiPort: {
-    id: 'daedalus.diagnostics.dialog.cardanoApiPort',
-    defaultMessage: '!!!Cardano node API port',
-    description: 'Cardano node API port',
+  cardanoNodeApiPort: {
+    id: 'daedalus.diagnostics.dialog.cardanoNodeApiPort',
+    defaultMessage: '!!!Cardano node port',
+    description: 'Cardano node port',
+  },
+  cardanoWalletPID: {
+    id: 'daedalus.diagnostics.dialog.cardanoWalletPID',
+    defaultMessage: '!!!Cardano wallet process ID',
+    description: 'Cardano wallet process ID',
+  },
+  cardanoWalletVersion: {
+    id: 'daedalus.diagnostics.dialog.cardanoWalletVersion',
+    defaultMessage: '!!!Cardano wallet version',
+    description: 'Cardano wallet version',
+  },
+  cardanoWalletApiPort: {
+    id: 'daedalus.diagnostics.dialog.cardanoWalletApiPort',
+    defaultMessage: '!!!Cardano wallet port',
+    description: 'Cardano wallet port',
   },
   cardanoNetwork: {
     id: 'daedalus.diagnostics.dialog.cardanoNetwork',
@@ -457,9 +472,11 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
       daedalusProcessID,
       daedalusMainProcessID,
       isBlankScreenFixActive,
-      cardanoVersion,
-      cardanoProcessID,
-      cardanoAPIPort,
+      cardanoNodeVersion,
+      cardanoNodePID,
+      cardanoWalletVersion,
+      cardanoWalletPID,
+      cardanoWalletApiPort,
       cardanoRawNetwork,
       cardanoNetwork,
       daedalusStateDirectoryPath,
@@ -575,10 +592,12 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                   </CopyToClipboard>
                 </Fragment>
               )}
-              {getRow('cardanoVersion', cardanoVersion)}
-              {getRow('cardanoProcessID', cardanoProcessID || '-')}
-              {getRow('cardanoApiPort', cardanoAPIPort || '-')}
-              {getRow('cardanoNetwork', cardanoNetworkValue)}
+              {getRow('cardanoNodeVersion', cardanoNodeVersion)}
+              {getRow('cardanoNodePID', cardanoNodePID || '-')}
+              {/* getRow('cardanoNodeApiPort', '-') */}
+              {getRow('cardanoWalletVersion', cardanoWalletVersion)}
+              {getRow('cardanoWalletPID', cardanoWalletPID || '-')}
+              {getRow('cardanoWalletApiPort', cardanoWalletApiPort || '-')}
             </div>
             {isConnected && nodeConnectionError ? (
               <div>
@@ -599,6 +618,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
           <div className={styles.table}>
             <div>
               {getSectionRow('daedalusStatus')}
+              {getRow('cardanoNetwork', cardanoNetworkValue)}
               {getRow('connected', isConnected)}
               {getRow('synced', isSynced)}
               {getRow(

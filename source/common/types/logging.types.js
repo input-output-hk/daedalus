@@ -53,7 +53,7 @@ export type ElectronLoggerMessage = {
 };
 
 export type LogSystemInfoParams = {
-  cardanoVersion: string,
+  cardanoNodeVersion: string,
   cpu: Array<Object>,
   daedalusVersion: string,
   isBlankScreenFixActive: boolean,

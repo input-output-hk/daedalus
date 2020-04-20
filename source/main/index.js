@@ -50,7 +50,8 @@ const {
   network,
   os: osName,
   version: daedalusVersion,
-  buildNumber: cardanoVersion,
+  nodeVersion: cardanoNodeVersion,
+  apiVersion: cardanoWalletVersion,
 } = environment;
 
 if (isBlankScreenFixActive) {
@@ -99,7 +100,8 @@ const onAppReady = async () => {
   const systemLocale = detectSystemLocale();
 
   const systemInfo = logSystemInfo({
-    cardanoVersion,
+    cardanoNodeVersion,
+    cardanoWalletVersion,
     cpu,
     daedalusVersion,
     isBlankScreenFixActive,
