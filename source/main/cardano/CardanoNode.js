@@ -14,6 +14,7 @@ import {
   promisedCondition,
 } from './utils';
 import { getProcess } from '../utils/processes';
+import { safeExitWithCode } from '../utils/safeExitWithCode';
 import type {
   CardanoNodeImplementation,
   CardanoNodeState,
@@ -165,6 +166,11 @@ export class CardanoNode {
    * Number of retries to startup the node (without ever reaching running state)
    */
   _startupTries: number = 0;
+
+  /**
+   * Flag which makes cardano node to exit Daedalus after stopping
+   */
+  _exitOnStop: boolean = false;
 
   /**
    * All faults that have been injected and confirmed by cardano-node.
@@ -487,7 +493,14 @@ export class CardanoNode {
         isForced,
       });
       await this._waitForCardanoToExitOrKillIt();
-      await this.start(_config, isForced);
+      if (this._exitOnStop) {
+        _log.info('Daedalus:safeExit: exiting Daedalus with code 0', {
+          code: 0,
+        });
+        safeExitWithCode(0);
+      } else {
+        await this.start(_config, isForced);
+      }
     } catch (error) {
       _log.error('CardanoNode#restart: Could not restart cardano-node', {
         error,
@@ -559,6 +572,13 @@ export class CardanoNode {
   saveStatus(status: ?CardanoStatus) {
     this._status = status;
   }
+
+  /**
+   * Signals the cardano-node to exit Daedalus on stop
+   */
+  exitOnStop = () => {
+    this._exitOnStop = true;
+  };
 
   // ================================= PRIVATE ===================================
   /**
