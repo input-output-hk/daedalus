@@ -22,7 +22,7 @@ Feature: Newsfeed
     Then i should see the newsfeed icon
 
   Scenario: Newsfeed icon is visible in the main ui
-    Given I should see the main ui
+    Given I should see the main UI
     Then i should see the newsfeed icon
 
   Scenario: Newsfeed icon is highlighted when there are unread infos
