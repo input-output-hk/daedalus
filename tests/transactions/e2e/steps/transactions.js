@@ -170,6 +170,20 @@ Then(
   }
 );
 
+Then(
+  /^I should see the following error messages on the wallet send confirmation dialog:$/,
+  async function(data) {
+    const errorSelector = '.WalletSendConfirmationDialog_dialog .WalletSendConfirmationDialog_error';
+    let errorsOnScreen = await this.waitAndGetText(errorSelector);
+    if (typeof errorsOnScreen === 'string') errorsOnScreen = [errorsOnScreen];
+    const errors = data.hashes();
+    for (let i = 0; i < errors.length; i++) {
+      const expectedError = await this.intl(errors[i].message);
+      expect(errorsOnScreen[i]).to.equal(expectedError);
+    }
+  }
+);
+
 // TODO: refactor this to a less hackish solution (fees cannot easily be calculated atm)
 Then(/^the latest transaction should show:$/, async function(table) {
   const expectedData = table.hashes()[0];
