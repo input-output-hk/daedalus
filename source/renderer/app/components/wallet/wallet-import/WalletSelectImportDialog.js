@@ -257,6 +257,7 @@ export default class WalletSelectImportDialog extends Component<Props> {
                     <div className={styles.walletsInputField}>
                       <InlineEditingSmallInput
                         isActive={false}
+                        className={styles.walletsInputFieldInner}
                         isDisabled={
                           wallet.import.status ===
                             WalletImportStatuses.COMPLETED ||
@@ -318,29 +319,37 @@ export default class WalletSelectImportDialog extends Component<Props> {
                       className={styles.walletsCounter}
                     >{`${walletIndex}.`}</div>
                     <div className={styles.walletsInputField}>
-                      <InlineEditingSmallInput
-                        isActive={false}
-                        isDisabled={
-                          wallet.import.status ===
+                      <Tooltip
+                        className={styles.unamedWalletsInputTooltip}
+                        skin={TooltipSkin}
+                        tip={intl.formatMessage(messages.enterWalletNameTooltip)}
+                        arrowRelativeToTip
+                      >
+                        <InlineEditingSmallInput
+                          className={styles.walletsInputFieldInner}
+                          isActive={false}
+                          isDisabled={
+                            wallet.import.status ===
                             WalletImportStatuses.COMPLETED ||
-                          wallet.import.status ===
+                            wallet.import.status ===
                             WalletImportStatuses.EXISTS ||
-                          wallet.import.status === WalletImportStatuses.RUNNING
-                        }
-                        inputFieldValue={wallet.name || ''}
-                        placeholder={intl.formatMessage(messages.notFound)}
-                        isValid={nameValidator}
-                        validationErrorMessage={intl.formatMessage(
-                          globalMessages.invalidWalletName
-                        )}
-                        onSubmit={(name: string) =>
-                          onWalletNameChange({
-                            id: wallet.id,
-                            name,
-                          })
-                        }
-                        successfullyUpdated
-                      />
+                            wallet.import.status === WalletImportStatuses.RUNNING
+                          }
+                          inputFieldValue={wallet.name || ''}
+                          placeholder={intl.formatMessage(messages.notFound)}
+                          isValid={nameValidator}
+                          validationErrorMessage={intl.formatMessage(
+                            globalMessages.invalidWalletName
+                          )}
+                          onSubmit={(name: string) =>
+                            onWalletNameChange({
+                              id: wallet.id,
+                              name,
+                            })
+                          }
+                          successfullyUpdated
+                        />
+                      </Tooltip>
                     </div>
                     <div className={styles.walletsStatus}>
                       {this.getWalletStatus(wallet)}

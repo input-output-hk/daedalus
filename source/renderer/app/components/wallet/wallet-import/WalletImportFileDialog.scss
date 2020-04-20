@@ -217,25 +217,19 @@
     top: -1px;
     width: 28px;
 
+    &:hover {
+      background-color: var(--theme-button-flat-background-color-hover) !important;
+    }
+    &:active {
+      background-color: var(--theme-button-flat-background-color-active) !important;
+    }
+
     .penIcon {
       svg {
         height: 12px;
         position: relative;
         top: 1px;
         width: 12px;
-      }
-    }
-  }
-
-  :global {
-    .WalletImportFileDialog_selectStateDirectoryButton {
-      &.SimpleButton_root:not(.SimpleButton_disabled) {
-        &:hover {
-          background-color: var(--theme-button-flat-background-color-hover);
-        }
-        &:active {
-          background-color: var(--theme-button-flat-background-color-active);
-        }
       }
     }
   }

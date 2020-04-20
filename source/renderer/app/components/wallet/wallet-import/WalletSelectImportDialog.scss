@@ -54,7 +54,7 @@
 
       &:hover {
         background-color: var(
-          --theme-wallet-import-description-close-hover-background
+            --theme-wallet-import-description-close-hover-background
         );
         border-radius: 50%;
       }
@@ -135,10 +135,12 @@
       @extend .description;
       margin-bottom: 15px;
       opacity: 1;
+
       p {
         display: inline;
         opacity: 0.7;
       }
+
       svg {
         height: 12px;
         margin-left: 5px;
@@ -167,15 +169,31 @@
       }
     }
 
+    .unamedWalletsInputTooltip {
+      @extend .tooltip;
+      display: inline-block;
+      margin-left: 5px;
+
+      :global {
+        .SimpleTooltip_bubble {
+          margin: 0 0 -7px 70px;
+          width: 330px;
+        }
+      }
+    }
+
     .enterWalletNameTooltip {
       @extend .tooltip;
       display: block;
+
       :global {
         .SimpleTooltip_bubble {
           margin: 0 0 0 -84px;
+
           .SimpleBubble_bubble {
             white-space: nowrap;
           }
+
           span {
             &:before,
             &:after {
@@ -212,63 +230,31 @@
           display: flex;
           padding-right: 20px;
 
-          .walletsInput {
-            height: 50px;
-            width: 100%;
-
+          .walletsInputFieldInner {
             input {
-              background-color: #243e62;
-              border: solid 1px #ffffff;
-              border-radius: 2px;
-              color: #ffffff;
-              font-family: var(--font-semibold);
+              font-family: var(--font-medium);
               font-size: 16px;
               letter-spacing: 0.5px;
               line-height: 1.38;
-              width: 275px;
-            }
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
 
-            &.walletUnavailable {
-              input {
-                background-color: #ffffff !important;
-                opacity: 0.05 !important;
+              &::-webkit-input-placeholder {
+                font-size: 16px;
+                letter-spacing: 0.5px;
+                line-height: 1.38;
+                font-family: var(--font-medium);
               }
             }
 
-            &.walletNoPassword {
-              opacity: 0.5 !important;
-            }
-          }
-
-          .selectStateDirectoryButton {
-            background-color: var(
-              --theme-wallet-import-stateFolder-button-background-color
-            );
-            border-radius: 3px;
-            cursor: pointer;
-            height: 28px;
-            left: -40px;
-            position: relative;
-            top: -1px;
-            width: 28px;
-
-            .penIcon {
-              svg {
-                height: 12px;
-                position: relative;
-                top: 1px;
-                width: 12px;
+            button {
+              &:hover {
+                background-color: var(--theme-button-flat-background-color-hover);
               }
-            }
 
-            .crossIcon {
-              svg {
-                height: 8px;
-                width: 8px;
-
-                g {
-                  fill: #fff;
-                }
+              &:active {
+                background-color: var(--theme-button-flat-background-color-active);
               }
             }
           }
@@ -296,16 +282,17 @@
               top: 2px;
               width: 23px;
             }
+
             .SimpleCheckbox_check.SimpleCheckbox_checked {
               background-color: var(
-                --theme-wallet-import-checkbox-check-bg-color
+                  --theme-wallet-import-checkbox-check-bg-color
               ) !important;
             }
 
             .SimpleCheckbox_checked {
               border-color: var(
-                --theme-wallet-import-checkbox-border-color,
-                #2f496e
+                  --theme-wallet-import-checkbox-border-color,
+                  #2f496e
               );
               position: relative;
               top: -3px;
@@ -318,8 +305,8 @@
           }
 
           .walletsStatusIconCheckmark {
+            left: -3px;
             position: relative;
-            top: -5px;
 
             svg {
               height: 16px;
@@ -341,10 +328,9 @@
 
       .actionButton {
         background-color: var(
-          --theme-splash-network-overlay-button-background-color
+            --theme-splash-network-overlay-button-background-color
         );
-        border: solid 1px
-          var(--theme-splash-network-overlay-button-border-color);
+        border: solid 1px var(--theme-splash-network-overlay-button-border-color);
         color: var(--theme-splash-network-overlay-button-text-color);
         display: block;
         font-weight: 500;
@@ -354,7 +340,7 @@
 
         &:hover {
           background-color: var(
-            --theme-splash-network-overlay-button-background-color-hover
+              --theme-splash-network-overlay-button-background-color-hover
           );
           border: none;
           color: var(--theme-splash-network-overlay-button-text-color-hover);
@@ -371,10 +357,9 @@
 
           &:hover {
             background-color: var(
-              --theme-splash-network-overlay-button-background-color
+                --theme-splash-network-overlay-button-background-color
             );
-            border: solid 1px
-              var(--theme-splash-network-overlay-button-border-color);
+            border: solid 1px var(--theme-splash-network-overlay-button-border-color);
             color: var(--theme-splash-network-overlay-button-text-color);
           }
         }

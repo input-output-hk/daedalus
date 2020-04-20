@@ -104,6 +104,7 @@ export default class InlineEditingSmallInput extends Component<Props, State> {
 
   onBlur = () => {
     if (this.state.isActive) {
+      this.setState({ isActive: false });
       this.submit();
     }
   };
@@ -151,7 +152,7 @@ export default class InlineEditingSmallInput extends Component<Props, State> {
       styles.component,
       isActive ? styles.isActive : null,
       isDisabled ? styles.disabled : null,
-      inputField.error ? styles.hasError : null,
+      inputField.error && isActive ? styles.hasError : null,
     ]);
     const inputStyles = classnames([
       successfullyUpdated ? 'input_animateSuccess' : null,
