@@ -168,7 +168,7 @@
     "bip39": "2.3.0",
     "blakejs": "1.1.0",
     "bs58": "4.0.1",
-    "cardano-js": "^0.4.5",
+    "cardano-js": "https://github.com/input-output-hk/cardano-js.git#embedded-wasm",
     "cardano-launcher": "0.20200414.1",
     "check-disk-space": "2.1.0",
     "chroma-js": "2.1.0",
