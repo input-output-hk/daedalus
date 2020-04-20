@@ -54,7 +54,7 @@
 
       &:hover {
         background-color: var(
-            --theme-wallet-import-description-close-hover-background
+          --theme-wallet-import-description-close-hover-background
         );
         border-radius: 50%;
       }
@@ -254,11 +254,15 @@
 
             button {
               &:hover {
-                background-color: var(--theme-button-flat-background-color-hover);
+                background-color: var(
+                  --theme-button-flat-background-color-hover
+                );
               }
 
               &:active {
-                background-color: var(--theme-button-flat-background-color-active);
+                background-color: var(
+                  --theme-button-flat-background-color-active
+                );
               }
             }
           }
@@ -289,14 +293,14 @@
 
             .SimpleCheckbox_check.SimpleCheckbox_checked {
               background-color: var(
-                  --theme-wallet-import-checkbox-check-bg-color
+                --theme-wallet-import-checkbox-check-bg-color
               ) !important;
             }
 
             .SimpleCheckbox_checked {
               border-color: var(
-                  --theme-wallet-import-checkbox-border-color,
-                  #2f496e
+                --theme-wallet-import-checkbox-border-color,
+                #2f496e
               );
               position: relative;
               top: -3px;
@@ -332,9 +336,10 @@
 
       .actionButton {
         background-color: var(
-            --theme-splash-network-overlay-button-background-color
+          --theme-splash-network-overlay-button-background-color
         );
-        border: solid 1px var(--theme-splash-network-overlay-button-border-color);
+        border: solid 1px
+          var(--theme-splash-network-overlay-button-border-color);
         color: var(--theme-splash-network-overlay-button-text-color);
         display: block;
         font-weight: 500;
@@ -344,7 +349,7 @@
 
         &:hover {
           background-color: var(
-              --theme-splash-network-overlay-button-background-color-hover
+            --theme-splash-network-overlay-button-background-color-hover
           );
           border: none;
           color: var(--theme-splash-network-overlay-button-text-color-hover);
@@ -361,9 +366,10 @@
 
           &:hover {
             background-color: var(
-                --theme-splash-network-overlay-button-background-color
+              --theme-splash-network-overlay-button-background-color
             );
-            border: solid 1px var(--theme-splash-network-overlay-button-border-color);
+            border: solid 1px
+              var(--theme-splash-network-overlay-button-border-color);
             color: var(--theme-splash-network-overlay-button-text-color);
           }
         }

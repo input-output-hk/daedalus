@@ -322,7 +322,9 @@ export default class WalletSelectImportDialog extends Component<Props> {
                       <Tooltip
                         className={styles.unamedWalletsInputTooltip}
                         skin={TooltipSkin}
-                        tip={intl.formatMessage(messages.enterWalletNameTooltip)}
+                        tip={intl.formatMessage(
+                          messages.enterWalletNameTooltip
+                        )}
                         arrowRelativeToTip
                       >
                         <InlineEditingSmallInput
@@ -330,10 +332,11 @@ export default class WalletSelectImportDialog extends Component<Props> {
                           isActive={false}
                           isDisabled={
                             wallet.import.status ===
-                            WalletImportStatuses.COMPLETED ||
+                              WalletImportStatuses.COMPLETED ||
                             wallet.import.status ===
-                            WalletImportStatuses.EXISTS ||
-                            wallet.import.status === WalletImportStatuses.RUNNING
+                              WalletImportStatuses.EXISTS ||
+                            wallet.import.status ===
+                              WalletImportStatuses.RUNNING
                           }
                           inputFieldValue={wallet.name || ''}
                           placeholder={intl.formatMessage(messages.notFound)}

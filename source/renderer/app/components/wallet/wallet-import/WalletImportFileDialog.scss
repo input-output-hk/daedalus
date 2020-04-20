@@ -218,10 +218,14 @@
     width: 28px;
 
     &:hover {
-      background-color: var(--theme-button-flat-background-color-hover) !important;
+      background-color: var(
+        --theme-button-flat-background-color-hover
+      ) !important;
     }
     &:active {
-      background-color: var(--theme-button-flat-background-color-active) !important;
+      background-color: var(
+        --theme-button-flat-background-color-active
+      ) !important;
     }
 
     .penIcon {
