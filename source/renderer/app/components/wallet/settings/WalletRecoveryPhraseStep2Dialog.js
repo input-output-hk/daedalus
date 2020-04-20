@@ -60,7 +60,7 @@ export const messages = defineMessages({
 });
 
 type Props = {
-  // mnemonicValidator: Function,
+  mnemonicValidator: Function,
   suggestedMnemonics: Array<string>,
   isVerifying: boolean,
   onVerify: Function,
@@ -73,6 +73,10 @@ export default class WalletRecoveryPhraseStep2 extends Component<Props> {
     intl: intlShape.isRequired,
   };
 
+  isPhraseComplete = (wordCount: number) =>
+    wordCount === LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT ||
+    wordCount === WALLET_RECOVERY_PHRASE_WORD_COUNT;
+
   form = new ReactToolboxMobxForm(
     {
       fields: {
@@ -82,13 +86,10 @@ export default class WalletRecoveryPhraseStep2 extends Component<Props> {
             const { intl } = this.context;
             const enteredWords = field.value;
             const wordCount = enteredWords.length;
-            // const value = join(enteredWords, ' ');
+            const value = join(enteredWords, ' ');
 
             // Check if recovery phrase contains 12 words
-            const isPhraseComplete =
-              wordCount === LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT ||
-              wordCount === WALLET_RECOVERY_PHRASE_WORD_COUNT;
-            if (!isPhraseComplete) {
+            if (!this.isPhraseComplete(wordCount)) {
               return [
                 false,
                 intl.formatMessage(globalMessages.incompleteMnemonic, {
@@ -96,13 +97,12 @@ export default class WalletRecoveryPhraseStep2 extends Component<Props> {
                 }),
               ];
             }
-            return true;
-            // return [
-            //   this.props.mnemonicValidator(value),
-            //   this.context.intl.formatMessage(
-            //     messages.recoveryPhraseStep2InvalidMnemonics
-            //   ),
-            // ];
+            return [
+              this.props.mnemonicValidator(value, 0),
+              this.context.intl.formatMessage(
+                messages.recoveryPhraseStep2InvalidMnemonics
+              ),
+            ];
           },
         },
       },
@@ -118,13 +118,11 @@ export default class WalletRecoveryPhraseStep2 extends Component<Props> {
     const { form } = this;
     const { intl } = this.context;
     const { onClose, onVerify, suggestedMnemonics, isVerifying } = this.props;
-
     const recoveryPhraseField = form.$('recoveryPhrase');
     const canSubmit =
       !recoveryPhraseField.error &&
       !isVerifying &&
-      recoveryPhraseField.value.length ===
-        LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT;
+      this.isPhraseComplete(recoveryPhraseField.value.length);
     const actions = [
       {
         className: isVerifying ? styles.isVerifying : null,
@@ -153,7 +151,7 @@ export default class WalletRecoveryPhraseStep2 extends Component<Props> {
           label={intl.formatMessage(messages.recoveryPhraseStep2Subtitle)}
           placeholder={intl.formatMessage(messages.recoveryPhraseInputHint)}
           options={suggestedMnemonics}
-          maxSelections={LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT}
+          maxSelections={WALLET_RECOVERY_PHRASE_WORD_COUNT}
           error={recoveryPhraseField.error}
           maxVisibleOptions={5}
           noResultsMessage={intl.formatMessage(

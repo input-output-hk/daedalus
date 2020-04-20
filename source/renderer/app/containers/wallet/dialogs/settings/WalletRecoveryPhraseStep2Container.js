@@ -6,6 +6,7 @@ import WalletRecoveryPhraseStep3Dialog from '../../../../components/wallet/setti
 import WalletRecoveryPhraseStep4Dialog from '../../../../components/wallet/settings/WalletRecoveryPhraseStep4Dialog';
 import validWords from '../../../../../../common/crypto/valid-words.en';
 import { isValidMnemonic } from '../../../../../../common/crypto/decrypt';
+import { WalletRecoveryPhraseStatuses } from '../../../../config/walletRecoveryPhraseConfig';
 import type { InjectedDialogContainerProps } from '../../../../types/injectedPropsType';
 
 type Props = InjectedDialogContainerProps;
@@ -20,22 +21,23 @@ export default class WalletRecoveryPhraseStep2Container extends Component<Props>
     onClose: () => {},
   };
 
+  componentWillMount() {
+    this.props.actions.walletBackup.resetRecoveryPhraseCheck.trigger();
+  }
+
   componentWillReceiveProps(nextProps: Props) {
     const { walletBackup } = nextProps.stores;
     const { actions } = this.props;
-    const {
-      isRecoveryPhraseMatching: nextRecoveryPhraseMatching,
-      getWalletIdAndBalanceRequest: getWalletIdAndBalanceRequestNext,
-    } = walletBackup;
-
+    const { recoveryPhraseStatus } = walletBackup;
+    const { CORRECT, INCORRECT } = WalletRecoveryPhraseStatuses;
     let dialog;
-    if (nextRecoveryPhraseMatching !== null) {
-      if (nextRecoveryPhraseMatching) {
-        dialog = WalletRecoveryPhraseStep3Dialog;
-        actions.wallets.updateRecoveryPhraseVerificationDate.trigger();
-      } else {
-        dialog = WalletRecoveryPhraseStep4Dialog;
-      }
+    if (recoveryPhraseStatus === CORRECT) {
+      dialog = WalletRecoveryPhraseStep3Dialog;
+      actions.wallets.updateRecoveryPhraseVerificationDate.trigger();
+    } else if (recoveryPhraseStatus === INCORRECT) {
+      dialog = WalletRecoveryPhraseStep4Dialog;
+    }
+    if (dialog) {
       actions.dialogs.open.trigger({
         dialog,
       });
@@ -52,12 +54,10 @@ export default class WalletRecoveryPhraseStep2Container extends Component<Props>
   render() {
     const { stores } = this.props;
     const { walletBackup } = stores;
-    const { getWalletIdAndBalanceRequest } = walletBackup;
+    const { CHECKING } = WalletRecoveryPhraseStatuses;
+    const { recoveryPhraseStatus } = walletBackup;
     const { closeActiveDialog } = this.props.actions.dialogs;
-
-    const isVerifying =
-      getWalletIdAndBalanceRequest.isExecuting ||
-      getWalletIdAndBalanceRequest.wasExecuted;
+    const isVerifying = recoveryPhraseStatus === CHECKING;
 
     return (
       <WalletRecoveryPhraseStep2Dialog

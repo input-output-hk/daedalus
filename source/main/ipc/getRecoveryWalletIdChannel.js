@@ -15,15 +15,19 @@ const getRecoveryWalletIdChannel: MainIpcChannel<
 export default () => {
   getRecoveryWalletIdChannel.onRequest(
     async (recoveryPhrase: Array<string>) => {
-      let xprv;
-      let cc;
-      if (recoveryPhrase.length === 12) {
-        [xprv, cc] = await Byron.generateMasterKey(recoveryPhrase);
-      } else {
-        [xprv, cc] = await Icarus.generateMasterKey(recoveryPhrase);
+      try {
+        let xprv;
+        let cc;
+        if (recoveryPhrase.length === 12) {
+          [xprv, cc] = await Byron.generateMasterKey(recoveryPhrase);
+        } else {
+          [xprv, cc] = await Icarus.generateMasterKey(recoveryPhrase);
+        }
+        const walletId: string = newPublicId(xprv.to_public(), cc);
+        return Promise.resolve(walletId);
+      } catch (err) {
+        return Promise.resolve('');
       }
-      const walletId = newPublicId(xprv.to_public(), cc);
-      return Promise.resolve(walletId);
     }
   );
 };

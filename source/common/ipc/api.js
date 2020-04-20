@@ -250,7 +250,7 @@ export type GenerateWalletMigrationReportMainResponse = void;
  */
 export const GET_WASM_BINARY_CHANNEL = 'GET_WASM_BINARY_CHANNEL';
 export type getRecoveryWalletIdRendererRequest = Array<string>;
-export type getRecoveryWalletIdMainResponse = Uint8Array;
+export type getRecoveryWalletIdMainResponse = string;
 
 /**
  * Channel for showing open dialog

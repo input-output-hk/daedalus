@@ -55,7 +55,7 @@ const fromMnemonic = words =>
   hexToBytes(bip39.mnemonicToEntropy(words, validWords));
 
 export const isValidMnemonic = (phrase, numberOfWords = 9) =>
-  phrase.split(' ').length === numberOfWords &&
+  (phrase.split(' ').length === numberOfWords || numberOfWords === 0) &&
   bip39.validateMnemonic(phrase, validWords);
 
 const hashData = data => {
