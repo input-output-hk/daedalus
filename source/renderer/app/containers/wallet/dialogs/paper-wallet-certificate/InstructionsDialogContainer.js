@@ -1,5 +1,6 @@
 // @flow
 import React, { Component } from 'react';
+import path from 'path';
 import { observer, inject } from 'mobx-react';
 import moment from 'moment';
 import { showSaveDialogChannel } from '../../../../ipc/show-file-dialog-channels';
@@ -35,8 +36,10 @@ export default class InstructionsDialogContainer extends Component<Props> {
       extension: '',
       isUTC: false,
     });
+    const { desktopDirectoryPath } = this.props.stores.profile;
+    const defaultPath = path.join(desktopDirectoryPath, `${name}.pdf`);
     const params = {
-      defaultPath: `${name}.pdf`,
+      defaultPath,
       filters: [
         {
           name,

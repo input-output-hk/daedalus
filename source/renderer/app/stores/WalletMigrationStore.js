@@ -49,7 +49,7 @@ export default class WalletMigrationStore extends Store {
   @observable isExportRunning = false;
   @observable exportedWallets: Array<ExportedByronWallet> = [];
   @observable exportErrors: string = '';
-  @observable exportSourcePath: string = global.legacyStateDir || '';
+  @observable exportSourcePath: string = global.legacyStateDir;
 
   @observable isRestorationRunning = false;
   @observable restoredWallets: Array<Wallet> = [];
@@ -76,6 +76,7 @@ export default class WalletMigrationStore extends Store {
     const { walletMigration } = this.actions;
     walletMigration.startMigration.listen(this._startMigration);
     walletMigration.finishMigration.listen(this._finishMigration);
+    walletMigration.resetMigration.listen(this._resetMigration);
     walletMigration.toggleWalletImportSelection.listen(
       this._toggleWalletImportSelection
     );
@@ -89,7 +90,7 @@ export default class WalletMigrationStore extends Store {
 
   @action _selectExportSourcePath = async () => {
     const params = {
-      defaultPath: global.legacyStateDir || '',
+      defaultPath: global.legacyStateDir,
       properties: ['openDirectory'],
     };
     const { filePaths } = await showOpenDialogChannel.send(params);
@@ -160,6 +161,7 @@ export default class WalletMigrationStore extends Store {
       errors,
     }: ExportWalletsMainResponse = await exportWalletsChannel.request({
       exportSourcePath: this.exportSourcePath,
+      locale: this.stores.profile.currentLocale,
     });
     runInAction('update exportedWallets and exportErrors', () => {
       this.exportedWallets = wallets.map(wallet => {
@@ -341,9 +343,10 @@ export default class WalletMigrationStore extends Store {
     this.restorationErrors = [];
   };
 
-  _resetMigration = () => {
+  @action _resetMigration = () => {
     this._resetExportData();
     this._resetRestorationData();
+    this.exportSourcePath = global.legacyStateDir || '';
   };
 
   @action _finishMigration = async () => {

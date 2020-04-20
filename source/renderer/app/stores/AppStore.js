@@ -1,5 +1,6 @@
 // @flow
 import { observable, computed, action, runInAction } from 'mobx';
+import path from 'path';
 import Store from './lib/Store';
 import LocalizableError from '../i18n/LocalizableError';
 import { buildRoute } from '../utils/routing';
@@ -106,6 +107,7 @@ export default class AppStore extends Store {
         break;
       case PAGES.SETTINGS:
         this.actions.router.goToRoute.trigger({ route: PAGES.SETTINGS });
+        this.actions.dialogs.closeActiveDialog.trigger();
         break;
       case PAGES.WALLET_SETTINGS:
         if (wallets.active && wallets.active.id) {
@@ -113,6 +115,7 @@ export default class AppStore extends Store {
             route: ROUTES.WALLETS.PAGE,
             params: { id: wallets.active.id, page: 'settings' },
           });
+          this.actions.dialogs.closeActiveDialog.trigger();
         }
         break;
       default:
@@ -160,7 +163,9 @@ export default class AppStore extends Store {
       return;
     }
     const fileName = generateFileNameWithTimestamp();
-    const params = { defaultPath: fileName };
+    const { desktopDirectoryPath } = this.stores.profile;
+    const defaultPath = path.join(desktopDirectoryPath, fileName);
+    const params = { defaultPath };
     const { filePath } = await showSaveDialogChannel.send(params);
     if (filePath) {
       this.actions.app.setIsDownloadingLogs.trigger(true);

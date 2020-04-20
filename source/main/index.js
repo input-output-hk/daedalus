@@ -30,6 +30,7 @@ import { ensureXDGDataIsSet } from './cardano/config';
 import { rebuildApplicationMenu } from './ipc/rebuild-application-menu';
 import { detectSystemLocaleChannel } from './ipc/detect-system-locale';
 import { getStateDirectoryPathChannel } from './ipc/getStateDirectoryPathChannel';
+import { getDesktopDirectoryPathChannel } from './ipc/getDesktopDirectoryPathChannel';
 import { CardanoNodeStates } from '../common/types/cardano-node.types';
 import type { CheckDiskSpaceResponse } from '../common/types/no-disk-space.types';
 import { logUsedVersion } from './utils/logUsedVersion';
@@ -62,7 +63,11 @@ const safeExit = async () => {
     logger.info('Daedalus:safeExit: exiting Daedalus with code 0', { code: 0 });
     return safeExitWithCode(0);
   }
-  if (cardanoNode.state === CardanoNodeStates.STOPPING) return;
+  if (cardanoNode.state === CardanoNodeStates.STOPPING) {
+    logger.info('Daedalus:safeExit: waiting for cardano-node to stop...');
+    cardanoNode.exitOnStop();
+    return;
+  }
   try {
     const pid = cardanoNode.pid || 'null';
     logger.info(`Daedalus:safeExit: stopping cardano-node with PID: ${pid}`, {
@@ -155,7 +160,7 @@ const onAppReady = async () => {
   mainErrorHandler(onMainError);
   await handleCheckDiskSpace();
 
-  cardanoNode = setupCardanoNode(launcherConfig, mainWindow, locale);
+  cardanoNode = setupCardanoNode(launcherConfig, mainWindow);
 
   if (isWatchMode) {
     // Connect to electron-connect server which restarts / reloads windows on file changes
@@ -174,6 +179,10 @@ const onAppReady = async () => {
 
   getStateDirectoryPathChannel.onRequest(() =>
     Promise.resolve(stateDirectoryPath)
+  );
+
+  getDesktopDirectoryPathChannel.onRequest(() =>
+    Promise.resolve(app.getPath('desktop'))
   );
 
   mainWindow.on('close', async event => {
