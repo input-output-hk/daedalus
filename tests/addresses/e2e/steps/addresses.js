@@ -1,10 +1,12 @@
 // @flow
 import { Given, Then, When } from 'cucumber';
 import { expect } from 'chai';
+import { find } from 'lodash';
 import {
   getVisibleElementsCountForSelector,
   waitAndClick,
 } from '../../../common/e2e/steps/helpers';
+import { getWalletByName } from '../../../wallets/e2e/steps/helpers';
 import type { Daedalus } from '../../../types';
 
 declare var daedalus: Daedalus;
@@ -156,5 +158,21 @@ Then(
       const expectedError = await this.intl(errors[i].message);
       expect(errorsOnScreen[i]).to.equal(expectedError);
     }
+  }
+);
+
+ Then(
+  /^The active address belongs to "([^"]*)" wallet$/, async function(walletName) {
+    const { id: walletId, isLegacy } = getWalletByName.call(this, walletName);
+    const walletAddresses = await this.client.executeAsync((walletId, isLegacy, done) => {
+      daedalus.api.ada
+        .getAddresses({ walletId, isLegacy })
+        .then(response => done(response))
+        .catch(error => done(error));
+    }, walletId, isLegacy);
+
+    const activeAddress = await this.client.getText('.WalletReceiveRandom_hash');
+    const walletAddress = find(walletAddresses.value, address => address.id === activeAddress);
+    expect(walletAddress.id).to.equal(activeAddress);
   }
 );

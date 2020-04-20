@@ -32,6 +32,19 @@ Feature: Receive money
     Then I should see 1 addresses
 
   @byron
+  Scenario: Check if wallet address belong to active wallet
+    Given I am on the "Target Wallet" wallet "receive" screen
+    And I enter wallet password in generate address input field "Secret1234"
+    And I create 1 addresses
+    Then I should see the following addresses:
+      | ClassName          |
+      | generatedAddress-1 |
+      | generatedAddress-2 |
+    Then The active address should be the newest one
+    And I am on the "Test Wallet" wallet "receive" screen
+    Then The active address belongs to "Test Wallet" wallet
+
+  @byron
   Scenario: Byron Wallet addresses ordering
     Given I am on the "Target Wallet" wallet "receive" screen
     And I enter wallet password in generate address input field "Secret1234"
