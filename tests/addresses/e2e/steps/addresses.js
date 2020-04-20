@@ -54,6 +54,10 @@ When(
   }
 );
 
+When('I click "Generate a new address" button', async function() {
+  await this.waitAndClick('.generateAddressButton');
+});
+
 Then('I should see {int} used addresses', { timeout: 60000 }, async function(
   numberOfAddresses
 ) {
@@ -141,3 +145,16 @@ Then('The active address should be the newest one', async function() {
   const activeAddress = await this.client.getText('.WalletReceiveRandom_hash');
   expect(lastGeneratedAddress).to.equal(activeAddress);
 });
+
+Then(
+  /^I should see the following error messages on the wallet receive screen:$/,
+  async function(data) {
+    let errorsOnScreen = await this.waitAndGetText('.WalletReceiveRandom_error');
+    if (typeof errorsOnScreen === 'string') errorsOnScreen = [errorsOnScreen];
+    const errors = data.hashes();
+    for (let i = 0; i < errors.length; i++) {
+      const expectedError = await this.intl(errors[i].message);
+      expect(errorsOnScreen[i]).to.equal(expectedError);
+    }
+  }
+);

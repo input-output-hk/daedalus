@@ -42,3 +42,21 @@ Feature: Receive money
       | generatedAddress-2 |
       | generatedAddress-3 |
     And The active address should be the newest one
+
+  @byron
+  Scenario: Generate "Byron" wallet address with wrong passphrase
+    Given I am on the "Target Wallet" wallet "receive" screen
+    And I enter wallet password in generate address input field "wrong1234"
+    And I click "Generate a new address" button
+    Then I should see the following error messages on the wallet receive screen:
+      | message                           |
+      | api.errors.IncorrectPasswordError |
+
+  @byron
+  Scenario: Generate "Byron" wallet address with too short passphrase
+    Given I am on the "Target Wallet" wallet "receive" screen
+    And I enter wallet password in generate address input field "wrong"
+    And I click "Generate a new address" button
+    Then I should see the following error messages on the wallet receive screen:
+      | message                           |
+      | api.errors.IncorrectPasswordError |

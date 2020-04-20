@@ -162,3 +162,16 @@ Then(
     return this.client.waitForVisible('.SidebarWalletMenuItem_active .LegacyBadge_component');
   }
 );
+
+Then(
+  /^I should see the following error messages on the wallet restore dialog:$/,
+  async function(data) {
+    let errorsOnScreen = await this.waitAndGetText('.ConfigurationDialog_error');
+    if (typeof errorsOnScreen === 'string') errorsOnScreen = [errorsOnScreen];
+    const errors = data.hashes();
+    for (let i = 0; i < errors.length; i++) {
+      const expectedError = await this.intl(errors[i].message);
+      expect(errorsOnScreen[i]).to.equal(expectedError);
+    }
+  }
+);

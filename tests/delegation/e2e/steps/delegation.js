@@ -256,3 +256,16 @@ Then(/^I should see a "Loading stake pools" message until the Stake Pools are lo
     await this.client.waitForVisible('.DelegationCenterBody_isLoading');
   }
 });
+
+Then(
+  /^I should see the following error messages on the delegation process dialog:$/,
+  async function(data) {
+    let errorsOnScreen = await this.waitAndGetText('.DelegationStepsConfirmationDialog_error');
+    if (typeof errorsOnScreen === 'string') errorsOnScreen = [errorsOnScreen];
+    const errors = data.hashes();
+    for (let i = 0; i < errors.length; i++) {
+      const expectedError = await this.intl(errors[i].message);
+      expect(errorsOnScreen[i]).to.equal(expectedError);
+    }
+  }
+);

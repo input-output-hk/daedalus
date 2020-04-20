@@ -25,7 +25,21 @@ Feature: Wallet Settings
       | currentPassword  | password      | repeatedPassword |
       | Secret1234Wrong  | newSecret1234 | newSecret1234    |
     And I submit the wallet password dialog
-    Then I should see error message that old password is not correct
+    Then I should see the following error messages on the change password dialog:
+      | message                               |
+      | api.errors.IncorrectPasswordError     |
+
+  Scenario: User tries to change Wallet password with too short old password
+    Given I am on the "Test Wallet" wallet "settings" screen
+    And I click on the "change" password label
+    And I should see the "change" wallet password dialog
+    And I change wallet password:
+      | currentPassword  | password      | repeatedPassword |
+      | wrong            | newSecret1234 | newSecret1234    |
+    And I submit the wallet password dialog
+    Then I should see the following error messages on the change password dialog:
+      | message                               |
+      | api.errors.IncorrectPasswordError     |
 
   Scenario: User tries to change Wallet password with invalid password format
     Given I am on the "Test Wallet" wallet "settings" screen
