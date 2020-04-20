@@ -122,5 +122,9 @@
 
   .leftButton {
     right: 48px;
+
+    &.withoutRightButton {
+      right: 0;
+    }
   }
 }

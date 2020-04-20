@@ -163,6 +163,13 @@ export default class InlineEditingSmallInput extends Component<Props, State> {
       successfullyUpdated = false;
     }
 
+    const arrowIconIsVisible = inputField.value !== this.props.inputFieldValue;
+
+    const leftButtonStyles = classnames([
+      styles.leftButton,
+      arrowIconIsVisible ? 'withoutRightButton' : null,
+    ]);
+
     return (
       <div
         className={componentStyles}
@@ -216,7 +223,7 @@ export default class InlineEditingSmallInput extends Component<Props, State> {
             ) : (
               <>
                 <Button
-                  className={styles.leftButton}
+                  className={leftButtonStyles}
                   label={
                     <SVGInline
                       svg={crossIcon}
@@ -235,23 +242,25 @@ export default class InlineEditingSmallInput extends Component<Props, State> {
                   }}
                   skin={ButtonSkin}
                 />
-                <Button
-                  className={styles.rightButton}
-                  label={
-                    <SVGInline
-                      svg={arrowIcon}
-                      className={styles.arrowIcon}
-                      style={{ pointerEvents: 'none' }}
-                    />
-                  }
-                  onMouseUp={() => this.input.blur()}
-                  onMouseDown={(event: SyntheticMouseEvent<HTMLElement>) => {
-                    event.persist();
-                    event.preventDefault();
-                    event.stopPropagation();
-                  }}
-                  skin={ButtonSkin}
-                />
+                {arrowIconIsVisible && (
+                  <Button
+                    className={styles.rightButton}
+                    label={
+                      <SVGInline
+                        svg={arrowIcon}
+                        className={styles.arrowIcon}
+                        style={{ pointerEvents: 'none' }}
+                      />
+                    }
+                    onMouseUp={() => this.input.blur()}
+                    onMouseDown={(event: SyntheticMouseEvent<HTMLElement>) => {
+                      event.persist();
+                      event.preventDefault();
+                      event.stopPropagation();
+                    }}
+                    skin={ButtonSkin}
+                  />
+                )}
               </>
             )}
           </>
