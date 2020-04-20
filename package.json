@@ -1,7 +1,7 @@
 {
   "name": "daedalus",
   "productName": "Daedalus",
-  "version": "1.0.0-FC3",
+  "version": "1.0.0-FC4",
   "description": "Cryptocurrency Wallet",
   "main": "./dist/main/index.js",
   "scripts": {
@@ -168,7 +168,7 @@
     "bip39": "2.3.0",
     "blakejs": "1.1.0",
     "bs58": "4.0.1",
-    "cardano-js": "https://github.com/input-output-hk/cardano-js.git#wasm-buffer",
+    "cardano-js": "^0.4.5",
     "cardano-launcher": "0.20200414.1",
     "check-disk-space": "2.1.0",
     "chroma-js": "2.1.0",
