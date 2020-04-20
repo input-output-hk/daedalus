@@ -287,7 +287,7 @@ let
     rawapp = self.callPackage ./yarn2nix.nix {
       inherit buildNum;
       api = "ada";
-      apiVersion = self.cardano-sl.daedalus-bridge.version;
+      apiVersion = self.daedalus-bridge.wallet-version;
       inherit (self.launcherConfigs.installerConfig) spacedName;
       inherit (self.launcherConfigs) launcherConfig;
       inherit cluster;
