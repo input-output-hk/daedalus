@@ -1,5 +1,6 @@
 // @flow
 import React, { Component } from 'react';
+import path from 'path';
 import { observer, inject } from 'mobx-react';
 import { showSaveDialogChannel } from '../../../../ipc/show-file-dialog-channels';
 import ExportWalletToFileDialog from '../../../../components/wallet/settings/ExportWalletToFileDialog';
@@ -19,11 +20,14 @@ export default class ExportWalletToFileDialogContainer extends Component<Props> 
   };
 
   onSubmit = async (params: OnSubmitParams) => {
+    const name = 'wallet-export';
+    const { desktopDirectoryPath } = this.props.stores.profile;
+    const defaultPath = path.join(desktopDirectoryPath, `${name}.json`);
     const fileParams = {
-      defaultPath: 'wallet-export.json',
+      defaultPath,
       filters: [
         {
-          name: 'wallet-export',
+          name,
           extensions: ['json'],
         },
       ],

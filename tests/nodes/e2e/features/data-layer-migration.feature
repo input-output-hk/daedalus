@@ -17,6 +17,6 @@ Feature: Data Layer Migration
     And I have accepted "Terms of use"
     Then I should see the Data Layer Migration screen
     When I click the migration button
-    Then I should see the main ui
+    Then I should see the main UI
     When I refresh the main window
     Then I should not see the Data Layer Migration screen
