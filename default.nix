@@ -25,8 +25,14 @@ let
     x86_64-windows = lib.systems.examples.mingwW64;
   };
   system = systemTable.${target} or target;
+  nsisNixPkgs = import localLib.sources.nixpkgs-nsis {};
   pkgs = localLib.iohkNix.getPkgsDefault { inherit system config; };
   pkgsNative = localLib.iohkNix.getPkgsDefault {};
+
+  crossPkgs = import nsisNixPkgs.path {
+    crossSystem = nsisNixPkgs.lib.systems.examples.mingw32;
+    localSystem.system = nsisNixPkgs.system;
+  };
   sources = localLib.sources;
   walletPkgs = import "${sources.cardano-wallet}/nix" {};
   # only used for CLI, to be removed when upgraded to next node version
@@ -36,7 +42,6 @@ let
   inherit (pkgs) writeTextFile;
   crossSystem = lib: (crossSystemTable lib).${target} or null;
   # TODO, nsis cant cross-compile with the nixpkgs daedalus currently uses
-  nsisNixPkgs = import localLib.sources.nixpkgs-nsis {};
   installPath = ".daedalus";
   needSignedBinaries = (signingKeys != null) || (HSMServer != null);
   buildNumSuffix = if buildNum == null then "" else ("-${builtins.toString buildNum}");
@@ -93,6 +98,7 @@ let
 
     # the native makensis binary, with cross-compiled windows stubs
     nsis = nsisNixPkgs.callPackage ./nix/nsis.nix {};
+    nsis-flock = crossPkgs.callPackage ./installers/nsis_plugins/flock {};
 
     launcherConfigs = self.callPackage ./nix/launcher-config.nix {
       inherit (self) jormungandrLib;
@@ -173,9 +179,9 @@ let
       ${copySignedBinaries}
     '';
     dummyUnpacked = pkgs.runCommand "dummy-unpacked-cardano" {} ''
-      mkdir $out
-      cd $out
-      touch cardano-launcher.exe cardano-node.exe cardano-x509-certificates.exe log-config-prod.yaml configuration.yaml mainnet-genesis.json
+      mkdir -p $out/bin
+      cd $out/bin
+      touch cardano-launcher.exe cardano-node.exe cardano-x509-certificates.exe log-config-prod.yaml configuration.yaml mainnet-genesis.json cardano-wallet-byron.exe export-wallets.exe db-converter.exe cardano-cli.exe libffi-6.dll
     '';
 
     nsisFiles = pkgs.runCommand "nsis-files" {
@@ -201,7 +207,8 @@ let
       mkdir home
       export HOME=$(realpath home)
 
-      ln -sv ${./installers/nsis_plugins} nsis_plugins
+      mkdir nsis_plugins
+      ln -sv ${./installers/nsis_plugins/liteFirewall/bin}/*.dll nsis_plugins/
       cp ${self.nsisFiles}/uninstaller.nsi .
 
       makensis uninstaller.nsi -V4
@@ -238,7 +245,9 @@ let
       ${if dummyInstaller then ''mkdir -pv "../release/win32-x64/${installDir}-win32-x64/resources/app/dist/main/"'' else ''cp -rv ${self.rawapp-win64} "../release/win32-x64/${installDir}-win32-x64"''}
       chmod -R +w "../release/win32-x64/${installDir}-win32-x64"
       cp -v ${self.fastlist}/bin/fastlist.exe "../release/win32-x64/${installDir}-win32-x64/resources/app/dist/main/fastlist.exe"
-      ln -s ${./installers/nsis_plugins} nsis_plugins
+      mkdir nsis_plugins
+      ln -sv ${./installers/nsis_plugins/liteFirewall/bin}/*.dll nsis_plugins/
+      ln -sv ${self.nsis-flock}/lib/flock.dll nsis_plugins/
 
       mkdir dlls
       pushd dlls

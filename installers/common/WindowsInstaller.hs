@@ -20,9 +20,9 @@ import           Development.NSIS (Attrib (IconFile, IconIndex, RebootOK, Recurs
                                    constant, constantStr, createDirectory, createShortcut, delete,
                                    deleteRegKey, file, iff_, installDir, installDirRegKey,
                                    name, nsis, onPagePre, onError, outFile, page, readRegStr,
-                                   requestExecutionLevel, rmdir, section, setOutPath, str,
+                                   requestExecutionLevel, rmdir, section, setOutPath, str, Exp,
                                    strLength, uninstall, unsafeInject, unsafeInjectGlobal,
-                                   loadLanguage,
+                                   loadLanguage, addPluginDir, detailPrint, pop, plugin,
                                    writeRegDWORD, writeRegStr, (%/=), fileExists)
 import           Prelude ((!!))
 import qualified System.IO as IO
@@ -70,7 +70,7 @@ writeUninstallerNSIS (Version fullVersion) installerConfig = do
         -- name "$InstallDir $(UninstallName) $Version"
         --unsafeInjectGlobal $ unpack ( "Name \"" <> (installDirectory installerConfig) <> " $(UninstallName) " <> (fullVersion) <> "\"")
         outFile . str . encodeString $ tempDir </> "tempinstaller.exe"
-        unsafeInjectGlobal "!addplugindir \"nsis_plugins\\liteFirewall\\bin\""
+        addPluginDir "nsis_plugins"
         unsafeInjectGlobal "SetCompress off"
 
         _ <- section "" [Required] $ do
@@ -133,7 +133,7 @@ parseVersion ver =
         _              -> ["0", "0", "0", "0"]
 
 writeInstallerNSIS :: FilePath -> Version -> InstallerConfig -> Options -> Cluster -> IO ()
-writeInstallerNSIS outName (Version fullVersion') InstallerConfig{hasBlock0,installDirectory,spacedName} Options{oBackend} clusterName = do
+writeInstallerNSIS outName (Version fullVersion') InstallerConfig{hasBlock0,installDirectory,spacedName,dataDir} Options{oBackend} clusterName = do
     tempDir <- getTempDir
     let fullVersion = unpack fullVersion'
         viProductVersion = L.intercalate "." $ parseVersion fullVersion'
@@ -144,6 +144,7 @@ writeInstallerNSIS outName (Version fullVersion') InstallerConfig{hasBlock0,inst
         _ <- constantStr "Cluster" (str $ lshow clusterName)
         _ <- constantStr "InstallDir" (str $ unpack installDirectory)
         _ <- constantStr "SpacedName" (str $ unpack spacedName)
+        _ <- constantStr "StateDir" (str $ unpack dataDir)
         name "$SpacedName ($Version)"                  -- The name of the installer
         outFile $ str $ encodeString outName        -- Where to produce the installer
         unsafeInjectGlobal $ "!define MUI_ICON \"icons\\" ++ lshow clusterName ++ "\\" ++ lshow clusterName ++ ".ico\""
@@ -154,7 +155,7 @@ writeInstallerNSIS outName (Version fullVersion') InstallerConfig{hasBlock0,inst
         unsafeInjectGlobal $ "VIAddVersionKey \"ProductVersion\" " <> fullVersion
         unsafeInjectGlobal "Unicode true"
         requestExecutionLevel Highest
-        unsafeInjectGlobal "!addplugindir \"nsis_plugins\\liteFirewall\\bin\""
+        addPluginDir "nsis_plugins"
 
         installDir "$PROGRAMFILES64\\$SpacedName"                   -- Default installation directory...
         installDirRegKey HKLM "Software/$SpacedName" "Install_Dir"  -- ...except when already installed.
@@ -175,6 +176,17 @@ writeInstallerNSIS outName (Version fullVersion') InstallerConfig{hasBlock0,inst
         _ <- section "" [Required] $ do
                 setOutPath "$INSTDIR"        -- Where to install files in this section
                 unsafeInject "AllowSkipFiles off"
+
+                let
+                  lockFile :: String
+                  lockFile = "$StateDir\\daedalus_lockfile"
+                  lockFileExp :: Exp String
+                  lockFileExp = fromString lockFile
+
+                plugin "flock" "flock" [ lockFileExp ]
+                result <- pop
+                detailPrint $ pure result
+
                 writeRegStr HKLM "Software/$SpacedName" "Install_Dir" "$INSTDIR" -- Used by launcher batch script
                 createDirectory "$APPDATA\\$InstallDir\\Secrets-1.0"
                 createDirectory "$APPDATA\\$InstallDir\\Logs"
