@@ -350,6 +350,14 @@ type State = {
   isNodeRestarting: boolean,
 };
 
+const FINAL_CARDANO_NODE_STATES = [
+  CardanoNodeStates.RUNNING,
+  CardanoNodeStates.UPDATED,
+  CardanoNodeStates.CRASHED,
+  CardanoNodeStates.ERRORED,
+  CardanoNodeStates.UNRECOVERABLE,
+];
+
 @observer
 export default class DaedalusDiagnostics extends Component<Props, State> {
   static contextTypes = {
@@ -361,27 +369,6 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
     this.state = {
       isNodeRestarting: false,
     };
-  }
-
-  componentWillReceiveProps(nextProps: Props) {
-    const { cardanoNodeState } = this.props;
-    const { cardanoNodeState: nextCardanoNodeState } = nextProps;
-    const { isNodeRestarting } = this.state;
-    const finalCardanoNodeStates = [
-      CardanoNodeStates.RUNNING,
-      CardanoNodeStates.STOPPED,
-      CardanoNodeStates.UPDATED,
-      CardanoNodeStates.CRASHED,
-      CardanoNodeStates.ERRORED,
-      CardanoNodeStates.UNRECOVERABLE,
-    ];
-    if (
-      isNodeRestarting &&
-      cardanoNodeState === CardanoNodeStates.STARTING &&
-      includes(finalCardanoNodeStates, nextCardanoNodeState)
-    ) {
-      this.setState({ isNodeRestarting: false });
-    }
   }
 
   getSectionRow = (messageId: string, content?: Node) => {
@@ -589,7 +576,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                 </Fragment>
               )}
               {getRow('cardanoVersion', cardanoVersion)}
-              {getRow('cardanoProcessID', cardanoProcessID)}
+              {getRow('cardanoProcessID', cardanoProcessID || '-')}
               {getRow('cardanoApiPort', cardanoAPIPort || '-')}
               {getRow('cardanoNetwork', cardanoNetworkValue)}
             </div>
@@ -687,7 +674,9 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                 <button
                   className={styles.cardanoNodeStatusBtn}
                   onClick={() => this.restartNode()}
-                  disabled={isNodeRestarting}
+                  disabled={
+                    !includes(FINAL_CARDANO_NODE_STATES, cardanoNodeState)
+                  }
                 >
                   {isNodeRestarting
                     ? intl.formatMessage(messages.cardanoNodeStatusRestarting)
