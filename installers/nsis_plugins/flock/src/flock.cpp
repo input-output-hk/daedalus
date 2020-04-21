@@ -1,3 +1,5 @@
+#define UNICODE
+
 #include <windows.h>
 #include "exdll.h"
 #include <stdio.h>
@@ -18,7 +20,7 @@ extern "C" void __declspec(dllexport) flock(HWND hwndParent
 
   if (fh == INVALID_HANDLE_VALUE) {
     printf("CreateFile failed (%d)\n", GetLastError());
-    pushstring(_T("failure"));
+    pushstring(L"failure");
   }
 
   memset(&overlapped, 0, sizeof(OVERLAPPED));
@@ -30,8 +32,8 @@ extern "C" void __declspec(dllexport) flock(HWND hwndParent
       , &overlapped);
 
   if (result) {
-    pushstring(_T("true"));
+    pushstring(L"true");
   } else {
-    pushstring(_T("false"));
+    pushstring(L"false");
   }
 }
