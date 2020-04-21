@@ -886,11 +886,12 @@ export const YELLOW_THEME_OUTPUT = {
       'rgba(234, 76, 91, .1)',
   },
   walletImportDialog: {
-    '--theme-wallet-import-background-color': '#fdcd68f5',
+    '--theme-wallet-import-background-color': 'rgba(255, 185, 35, 0.96)',
     '--theme-wallet-import-description-close-color': '#2d2d2d',
     '--theme-wallet-import-description-close-hover-background':
       'rgba(0, 0, 0, 0.1)',
     '--theme-wallet-import-description-color': '#fff',
+    '--theme-wallet-import-input-background-color': 'rgba(0, 0, 0, 0.1)',
     '--theme-wallet-import-title-color': '#fff',
     '--theme-wallet-import-stateFolder-border-color':
       'rgba(255, 255, 255, 0.5)',

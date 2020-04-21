@@ -883,11 +883,12 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
       'rgba(235, 74, 34, 0.2)',
   },
   walletImportDialog: {
-    '--theme-wallet-import-background-color': '#36374df5',
+    '--theme-wallet-import-background-color': 'rgba(42, 43, 60, 0.96)',
     '--theme-wallet-import-description-close-color': '#fafbfc',
     '--theme-wallet-import-description-close-hover-background':
       'rgba(0, 0, 0, 0.16)',
     '--theme-wallet-import-description-color': '#fff',
+    '--theme-wallet-import-input-background-color': '#313245',
     '--theme-wallet-import-title-color': '#fff',
     '--theme-wallet-import-stateFolder-border-color':
       'rgba(255, 255, 255, 0.5)',
