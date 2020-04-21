@@ -31,7 +31,9 @@
   }
 
   &.disabled {
-    background-color: var(--theme-wallet-import-input-background-color-disabled);
+    background-color: var(
+      --theme-wallet-import-input-background-color-disabled
+    );
     border-color: var(--theme-wallet-import-input-background-color-disabled);
     cursor: text !important;
     padding-right: 0;
