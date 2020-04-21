@@ -4,7 +4,7 @@ import { spawn, exec } from 'child_process';
 import type { ChildProcess } from 'child_process';
 import type { WriteStream } from 'fs';
 import type { Launcher } from 'cardano-launcher';
-import { toInteger } from 'lodash';
+import { get, toInteger } from 'lodash';
 import moment from 'moment';
 import rfs from 'rotating-file-stream';
 import { environment } from '../environment';
@@ -203,7 +203,7 @@ export class CardanoNode {
    * @returns {TlsConfig} // I think this returns a number...
    */
   get pid(): ?number {
-    return this._node ? this._node.pid : null;
+    return get(this, '_node.pid', null);
   }
 
   /**
@@ -220,7 +220,8 @@ export class CardanoNode {
    */
   get status(): ?CardanoStatus {
     return Object.assign({}, this._status, {
-      cardanoNodeID: this._node ? this._node.pid : 0,
+      cardanoNodePID: get(this, '_node.pid', 0),
+      cardanoWalletPID: get(this, '_node.wpid', 0),
     });
   }
 
@@ -373,7 +374,8 @@ export class CardanoNode {
               this._handleCardanoNodeExit(code, signal);
             });
 
-            node.pid = processes.node.pid; // TODO: expose wallet pid too
+            node.pid = processes.node.pid;
+            node.wpid = processes.wallet.pid;
             node.connected = true; // TODO: use processes.wallet.connected here
             _log.info(
               `CardanoNode#start: cardano-node child process spawned with PID ${processes.node.pid}`,
