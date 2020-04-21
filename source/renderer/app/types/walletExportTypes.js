@@ -41,4 +41,5 @@ export type ExportedByronWallet = {
     status: WalletImportStatus,
     error: ?LocalizableError,
   },
+  index: number,
 };

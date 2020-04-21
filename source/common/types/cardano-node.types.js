@@ -123,5 +123,6 @@ export type CardanoStatus = {
   isNodeSyncing: boolean,
   isNodeInSync: boolean,
   hasBeenConnected: boolean,
-  cardanoNodeID: number,
+  cardanoNodePID: number,
+  cardanoWalletPID: number,
 };
