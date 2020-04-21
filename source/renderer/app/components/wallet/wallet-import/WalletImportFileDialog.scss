@@ -210,7 +210,7 @@
   }
 
   .selectStateDirectoryButton {
-    background-color: var(--theme-button-flat-background-color);
+    background-color: var(--theme-wallet-import-stateFolder-button-background-color);
     border-radius: 3px;
     cursor: pointer;
     height: 28px;
@@ -221,13 +221,13 @@
 
     &:hover {
       background-color: var(
-        --theme-button-flat-background-color-hover
+          --theme-wallet-import-stateFolder-button-background-color-hover
       ) !important;
     }
 
     &:active {
       background-color: var(
-        --theme-button-flat-background-color-active
+          --theme-wallet-import-stateFolder-button-background-color-active
       ) !important;
     }
 
@@ -237,6 +237,10 @@
         position: relative;
         top: 1px;
         width: 12px;
+
+        path {
+          stroke: var(--theme-wallet-import-button-text-color);
+        }
       }
     }
   }

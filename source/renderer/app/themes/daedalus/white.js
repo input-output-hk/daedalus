@@ -885,29 +885,29 @@ export const WHITE_THEME_OUTPUT = {
   },
   walletImportDialog: {
     '--theme-wallet-import-background-color': 'rgba(255, 255, 255, 0.96)',
-    '--theme-wallet-import-button-background-color': 'rgba(41, 181, 149, 0.1)',
-    '--theme-wallet-import-button-border-color': '#29b595',
-    '--theme-wallet-import-button-text-color': '#29b595',
+    '--theme-wallet-import-button-background-color': 'rgba(0, 0, 0, 0.1)',
+    '--theme-wallet-import-button-border-color': '#2d2d2d',
+    '--theme-wallet-import-button-text-color': '#2d2d2d',
     '--theme-wallet-import-button-text-color-hover': '#fff',
     '--theme-wallet-import-description-close-color': '#2d2d2d',
     '--theme-wallet-import-description-close-hover-background':
-      'rgba(41, 181, 149, 0.1)',
-    '--theme-wallet-import-description-color': '#fff',
-    '--theme-wallet-import-input-background-color': '#fff',
-    '--theme-wallet-import-title-color': '#fff',
+      'rgba(0, 0, 0, 0.1)',
+    '--theme-wallet-import-description-color': '#2d2d2d',
+    '--theme-wallet-import-input-background-color': 'rgba(255, 255, 255, 0.96)',
+    '--theme-wallet-import-title-color': '#2d2d2d',
     '--theme-wallet-import-stateFolder-border-color':
-      'rgba(255, 255, 255, 0.5)',
+      'rgba(45, 45, 45, 0.3)',
     '--theme-wallet-import-stateFolder-button-background-color':
-      'rgba(255, 255, 255, 0.1)',
+      'rgba(45, 45, 45, 0.1)',
     '--theme-wallet-import-stateFolder-button-background-color-hover':
-      'rgba(255, 255, 255, 0.05)',
+      'rgba(45, 45, 45, 0.05)',
     '--theme-wallet-import-stateFolder-button-background-color-active':
-      'rgba(255, 255, 255, 0.12)',
+      'rgba(45, 45, 45, 0.12)',
     '--theme-wallet-import-checkbox-border': '2px solid #ffffff',
     '--theme-wallet-import-checkbox-border-color': 'rgba(255, 255, 255, 1)',
     '--theme-wallet-import-checkbox-border-color-disabled': '#ffffff',
     '--theme-wallet-import-checkbox-check-bg-color': '#ffffff',
-    '--theme-wallet-import-stateFolder-label-color': '#fff',
+    '--theme-wallet-import-stateFolder-label-color': '#2d2d2d',
   },
   walletRestoreDialog: {
     '--theme-wallet-restore-dialog-new-label-background-color':
