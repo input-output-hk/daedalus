@@ -51,6 +51,7 @@
   "daedalus.diagnostics.dialog.connectionError": "CONNECTION ERROR",
   "daedalus.diagnostics.dialog.coreInfo": "CORE INFO",
   "daedalus.diagnostics.dialog.cpu": "CPU",
+  "daedalus.diagnostics.dialog.daedalusBuildNumber": "Daedalus build number",
   "daedalus.diagnostics.dialog.daedalusMainProcessID": "Daedalus main process ID",
   "daedalus.diagnostics.dialog.daedalusProcessID": "Daedalus renderer process ID",
   "daedalus.diagnostics.dialog.daedalusStatus": "DAEDALUS STATUS",

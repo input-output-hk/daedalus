@@ -51,6 +51,7 @@
   "daedalus.diagnostics.dialog.connectionError": "接続エラー",
   "daedalus.diagnostics.dialog.coreInfo": "主要情報",
   "daedalus.diagnostics.dialog.cpu": "CPU",
+  "daedalus.diagnostics.dialog.daedalusBuildNumber": "Daedalusビルド番号",
   "daedalus.diagnostics.dialog.daedalusMainProcessID": "DaedalusメインプロセスID",
   "daedalus.diagnostics.dialog.daedalusProcessID": "DaedalusレンダラプロセスID",
   "daedalus.diagnostics.dialog.daedalusStatus": "DAEDALUSステータス",

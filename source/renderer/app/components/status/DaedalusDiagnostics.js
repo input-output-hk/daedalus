@@ -76,6 +76,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Daedalus version',
     description: 'Daedalus version',
   },
+  daedalusBuildNumber: {
+    id: 'daedalus.diagnostics.dialog.daedalusBuildNumber',
+    defaultMessage: '!!!Daedalus build number',
+    description: 'Daedalus build number',
+  },
   daedalusMainProcessID: {
     id: 'daedalus.diagnostics.dialog.daedalusMainProcessID',
     defaultMessage: '!!!Daedalus main process ID',
@@ -469,6 +474,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
 
     const {
       daedalusVersion,
+      daedalusBuildNumber,
       daedalusProcessID,
       daedalusMainProcessID,
       isBlankScreenFixActive,
@@ -551,6 +557,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
             <div>
               {getSectionRow('coreInfo')}
               {getRow('daedalusVersion', daedalusVersion)}
+              {getRow('daedalusBuildNumber', daedalusBuildNumber)}
               {getRow('daedalusMainProcessID', daedalusMainProcessID)}
               {getRow('daedalusProcessID', daedalusProcessID)}
               {getRow(

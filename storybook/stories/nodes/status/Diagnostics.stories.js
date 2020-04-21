@@ -19,6 +19,7 @@ const systemInfo = {
 
 const coreInfo = {
   daedalusVersion: '0.14.0',
+  daedalusBuildNumber: '12500',
   daedalusProcessID: '98954',
   daedalusMainProcessID: '82734',
   isBlankScreenFixActive: false,

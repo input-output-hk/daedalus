@@ -73,10 +73,12 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
       isBlankScreenFixActive,
       nodeVersion,
       apiVersion,
+      build,
     } = environment;
 
     const coreInfo = {
       daedalusVersion: version,
+      daedalusBuildNumber: build,
       daedalusProcessID: rendererProcessID,
       daedalusMainProcessID: mainProcessID,
       daedalusStateDirectoryPath: stateDirectoryPath,

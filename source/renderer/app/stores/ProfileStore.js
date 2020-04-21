@@ -489,6 +489,7 @@ export default class ProfileStore extends Store {
       } = networkStatus;
 
       const {
+        build,
         network,
         apiVersion,
         nodeVersion,
@@ -516,6 +517,7 @@ export default class ProfileStore extends Store {
 
       const coreInfo = {
         daedalusVersion: version,
+        daedalusBuildNumber: build,
         daedalusProcessID: rendererProcessID,
         daedalusMainProcessID: mainProcessID,
         isBlankScreenFixActive,
