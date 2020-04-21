@@ -146,6 +146,10 @@
         margin-left: 5px;
         opacity: 0.3;
 
+        path {
+          fill: var(--theme-wallet-import-description-color);
+        }
+
         &:hover {
           opacity: 0.5;
         }
