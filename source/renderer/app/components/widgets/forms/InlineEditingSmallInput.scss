@@ -31,8 +31,8 @@
   }
 
   &.disabled {
-    background-color: var(--rp-input-bg-color-disabled);
-    border-color: var(--rp-input-border-color-disabled);
+    background-color: var(--theme-wallet-import-input-background-color-disabled);
+    border-color: var(--theme-wallet-import-input-background-color-disabled);
     cursor: text !important;
     padding-right: 0;
     pointer-events: none;
@@ -41,6 +41,10 @@
       .SimpleInput_input {
         color: var(--rp-input-text-color-disabled);
       }
+    }
+
+    input {
+      color: var(--theme-wallet-import-stateFolder-border-color) !important;
     }
   }
 

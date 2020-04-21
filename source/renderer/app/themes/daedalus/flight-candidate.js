@@ -890,6 +890,8 @@ export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
       'rgba(0, 0, 0, 0.16)',
     '--theme-wallet-import-description-color': '#fff',
     '--theme-wallet-import-input-background-color': '#313245',
+    '--theme-wallet-import-input-background-color-disabled':
+      'rgba(255, 255, 255, 0.05)',
     '--theme-wallet-import-title-color': '#fff',
     '--theme-wallet-import-stateFolder-border-color':
       'rgba(255, 255, 255, 0.5)',
@@ -901,8 +903,8 @@ export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
       'rgba(255, 255, 255, 0.12)',
     '--theme-wallet-import-checkbox-border': '2px solid #ffffff',
     '--theme-wallet-import-checkbox-border-color': 'rgba(255, 255, 255, 1)',
-    '--theme-wallet-import-checkbox-border-color-disabled': '#ffffff',
-    '--theme-wallet-import-checkbox-check-bg-color': '#ffffff',
+    '--theme-wallet-import-checkbox-border-color-disabled': '#fff',
+    '--theme-wallet-import-checkbox-check-bg-color': '#fff',
     '--theme-wallet-import-stateFolder-label-color': '#fff',
   },
   walletRestoreDialog: {

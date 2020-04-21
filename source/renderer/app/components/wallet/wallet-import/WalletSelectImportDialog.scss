@@ -315,9 +315,14 @@
             }
 
             .SimpleCheckbox_checked {
+              background-color: var(--theme-wallet-import-checkbox-check-bg-color);
               border-color: var(--theme-wallet-import-checkbox-border-color);
               position: relative;
               top: -2.5px;
+
+              &:after {
+                border-color: var(--theme-wallet-import-background-color) !important;
+              }
             }
 
             .LoadingSpinner_component {

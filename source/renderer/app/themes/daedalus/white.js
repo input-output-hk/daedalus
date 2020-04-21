@@ -894,6 +894,8 @@ export const WHITE_THEME_OUTPUT = {
       'rgba(0, 0, 0, 0.1)',
     '--theme-wallet-import-description-color': '#2d2d2d',
     '--theme-wallet-import-input-background-color': 'rgba(255, 255, 255, 0.96)',
+    '--theme-wallet-import-input-background-color-disabled':
+      'rgba(45, 45, 45, 0.05)',
     '--theme-wallet-import-title-color': '#2d2d2d',
     '--theme-wallet-import-stateFolder-border-color': 'rgba(45, 45, 45, 0.3)',
     '--theme-wallet-import-stateFolder-button-background-color':
@@ -904,8 +906,8 @@ export const WHITE_THEME_OUTPUT = {
       'rgba(45, 45, 45, 0.12)',
     '--theme-wallet-import-checkbox-border': '2px solid #2d2d2d',
     '--theme-wallet-import-checkbox-border-color': '#2d2d2d',
-    '--theme-wallet-import-checkbox-border-color-disabled': '#ffffff',
-    '--theme-wallet-import-checkbox-check-bg-color': '#ffffff',
+    '--theme-wallet-import-checkbox-border-color-disabled': '#fff',
+    '--theme-wallet-import-checkbox-check-bg-color': '#2d2d2d',
     '--theme-wallet-import-stateFolder-label-color': '#2d2d2d',
   },
   walletRestoreDialog: {
