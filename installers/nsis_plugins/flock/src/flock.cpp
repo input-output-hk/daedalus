@@ -21,6 +21,7 @@ extern "C" void __declspec(dllexport) flock(HWND hwndParent
   if (fh == INVALID_HANDLE_VALUE) {
     printf("CreateFile failed (%d)\n", GetLastError());
     pushstring(L"failure");
+    return;
   }
 
   memset(&overlapped, 0, sizeof(OVERLAPPED));
