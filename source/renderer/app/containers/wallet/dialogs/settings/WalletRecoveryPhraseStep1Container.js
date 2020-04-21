@@ -24,11 +24,16 @@ export default class WalletRecoveryPhraseStep1Container extends Component<Props>
   };
 
   render() {
-    const { closeActiveDialog } = this.props.actions.dialogs;
+    const { stores, actions } = this.props;
+    const { closeActiveDialog } = actions.dialogs;
+    const { active: activeWallet } = stores.wallets;
+    if (!activeWallet) throw new Error('Active wallet required.');
+    const wordCount = activeWallet.discovery === 'random' ? 12 : 15;
     return (
       <WalletRecoveryPhraseStep1Dialog
         onContinue={this.handleContinue}
         onClose={closeActiveDialog.trigger}
+        wordCount={wordCount}
       />
     );
   }

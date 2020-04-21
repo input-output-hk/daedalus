@@ -23,6 +23,7 @@ export const defaultProps = {
     <WalletRecoveryPhraseStep1Dialog
       onClose={action('onClose')}
       onContinue={action('onContinue')}
+      wordCount={number('wordCount', 12)}
     />
   ),
   walletRecoveryPhraseStep2Container: (
@@ -32,6 +33,7 @@ export const defaultProps = {
       isVerifying={false}
       onClose={action('onClose')}
       onVerify={action('onVerify')}
+      wordCount={number('wordCount', 12)}
     />
   ),
   walletRecoveryPhraseStep3Container: (

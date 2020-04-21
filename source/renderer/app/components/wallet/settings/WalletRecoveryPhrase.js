@@ -30,7 +30,7 @@ export const messages = defineMessages({
   recoveryPhraseVerificationDescription: {
     id: 'wallet.settings.recoveryPhraseVerificationDescription',
     defaultMessage:
-      '!!!Funds in this wallet can only be recovered using the correct wallet recovery phrase, which is a unique 12-word string you were shown and asked to write down when creating this wallet. You can re-enter your wallet recovery phrase to verify that you have the correct recovery phrase for this wallet.',
+      '!!!Funds in this wallet can only be recovered using the correct wallet recovery phrase, which is a unique {wordCount}-word string you were shown and asked to write down when creating this wallet. You can re-enter your wallet recovery phrase to verify that you have the correct recovery phrase for this wallet.',
     description:
       'Label for the recoveryPhraseVerificationDescription on wallet settings.',
   },
@@ -95,6 +95,7 @@ type Props = {
   recoveryPhraseVerificationDate: ?Date,
   recoveryPhraseVerificationStatus: string,
   recoveryPhraseVerificationStatusType: string,
+  wordCount: number,
 };
 
 @observer
@@ -173,6 +174,7 @@ export default class WalletRecoveryPhrase extends Component<Props> {
       walletRecoveryPhraseStep3Container,
       walletRecoveryPhraseStep4Container,
       recoveryPhraseVerificationStatus,
+      wordCount,
     } = this.props;
     const {
       icon,
@@ -207,7 +209,9 @@ export default class WalletRecoveryPhrase extends Component<Props> {
       <div className={styles.component}>
         <h2>{intl.formatMessage(messages.recoveryPhraseVerificationTitle)}</h2>
         <div className={styles.description}>
-          {intl.formatMessage(messages.recoveryPhraseVerificationDescription)}
+          {intl.formatMessage(messages.recoveryPhraseVerificationDescription, {
+            wordCount,
+          })}
         </div>
         <br />
         <div className={validationStatusStyles}>

@@ -52,13 +52,15 @@ export default class WalletRecoveryPhraseStep2Container extends Component<Props>
   };
 
   render() {
-    const { stores } = this.props;
+    const { stores, actions } = this.props;
     const { walletBackup } = stores;
     const { CHECKING } = WALLET_RECOVERY_PHRASE_STATUSES;
     const { recoveryPhraseStatus } = walletBackup;
-    const { closeActiveDialog } = this.props.actions.dialogs;
+    const { closeActiveDialog } = actions.dialogs;
     const isVerifying = recoveryPhraseStatus === CHECKING;
-
+    const { active: activeWallet } = stores.wallets;
+    if (!activeWallet) throw new Error('Active wallet required.');
+    const wordCount = activeWallet.discovery === 'random' ? 12 : 15;
     return (
       <WalletRecoveryPhraseStep2Dialog
         mnemonicValidator={isValidMnemonic}
@@ -66,6 +68,7 @@ export default class WalletRecoveryPhraseStep2Container extends Component<Props>
         isVerifying={isVerifying}
         onVerify={this.handleVerify}
         onClose={closeActiveDialog.trigger}
+        wordCount={wordCount}
       />
     );
   }

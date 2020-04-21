@@ -1,6 +1,4 @@
 // @flow
-import BigNumber from 'bignumber.js';
-
 import { WalletUnits } from '../../domains/Wallet';
 import type { ExportedByronWallet } from '../../types/walletExportTypes';
 

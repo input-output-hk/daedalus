@@ -62,6 +62,8 @@ export default class WalletSettingsPage extends Component<Props> {
       recoveryPhraseVerificationStatusType,
     } = getWalletRecoveryPhraseVerification(activeWallet.id);
 
+    const wordCount = activeWallet.discovery === 'random' ? 12 : 15;
+
     const locale = profile.currentLocale;
 
     return (
@@ -119,6 +121,7 @@ export default class WalletSettingsPage extends Component<Props> {
           <WalletRecoveryPhraseStep4Container />
         }
         locale={locale}
+        wordCount={wordCount}
       />
     );
   }

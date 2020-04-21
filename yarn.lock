@@ -3643,7 +3643,7 @@ capture-stack-trace@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/capture-stack-trace/-/capture-stack-trace-1.0.1.tgz#a6c0bbe1f38f3aa0b92238ecb6ff42c344d4135d"
 
-cardano-js@^0.4.5:
+cardano-js@0.4.5:
   version "0.4.5"
   resolved "https://registry.yarnpkg.com/cardano-js/-/cardano-js-0.4.5.tgz#05ec21a5ac4a1e8898ee6080c2d65a656b59d4dd"
   dependencies:

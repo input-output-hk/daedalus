@@ -9,10 +9,6 @@ import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
 import styles from './WalletRecoveryPhraseStepDialogs.scss';
-import {
-  LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT,
-  WALLET_RECOVERY_PHRASE_WORD_COUNT,
-} from '../../../config/cryptoConfig';
 import globalMessages from '../../../i18n/global-messages';
 
 export const messages = defineMessages({
@@ -24,7 +20,7 @@ export const messages = defineMessages({
   recoveryPhraseStep2Description: {
     id: 'wallet.settings.recoveryPhraseStep2Description',
     defaultMessage:
-      '!!!Please enter your 12-word or 15-word wallet recovery phrase. Make sure you enter the words in the correct order.',
+      '!!!Please enter your {wordCount}-word wallet recovery phrase. Make sure you enter the words in the correct order.',
     description:
       'Label for the recoveryPhraseStep2Description on wallet settings.',
   },
@@ -65,6 +61,7 @@ type Props = {
   isVerifying: boolean,
   onVerify: Function,
   onClose: Function,
+  wordCount: number,
 };
 
 @observer
@@ -72,10 +69,6 @@ export default class WalletRecoveryPhraseStep2 extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
-  isPhraseComplete = (wordCount: number) =>
-    wordCount === LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT ||
-    wordCount === WALLET_RECOVERY_PHRASE_WORD_COUNT;
 
   form = new ReactToolboxMobxForm(
     {
@@ -87,18 +80,19 @@ export default class WalletRecoveryPhraseStep2 extends Component<Props> {
             const enteredWords = field.value;
             const wordCount = enteredWords.length;
             const value = join(enteredWords, ' ');
+            const { wordCount: expectedWordCount } = this.props;
 
-            // Check if recovery phrase contains 12 words
-            if (!this.isPhraseComplete(wordCount)) {
+            // Check if recovery phrase contains the expected words
+            if (wordCount !== expectedWordCount) {
               return [
                 false,
                 intl.formatMessage(globalMessages.incompleteMnemonic, {
-                  expected: `${LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT} or ${WALLET_RECOVERY_PHRASE_WORD_COUNT}`,
+                  expected: expectedWordCount,
                 }),
               ];
             }
             return [
-              this.props.mnemonicValidator(value, 0),
+              this.props.mnemonicValidator(value, wordCount),
               this.context.intl.formatMessage(
                 messages.recoveryPhraseStep2InvalidMnemonics
               ),
@@ -117,12 +111,18 @@ export default class WalletRecoveryPhraseStep2 extends Component<Props> {
   render() {
     const { form } = this;
     const { intl } = this.context;
-    const { onClose, onVerify, suggestedMnemonics, isVerifying } = this.props;
+    const {
+      onClose,
+      onVerify,
+      suggestedMnemonics,
+      isVerifying,
+      wordCount,
+    } = this.props;
     const recoveryPhraseField = form.$('recoveryPhrase');
     const canSubmit =
       !recoveryPhraseField.error &&
       !isVerifying &&
-      this.isPhraseComplete(recoveryPhraseField.value.length);
+      recoveryPhraseField.value.length === wordCount;
     const actions = [
       {
         className: isVerifying ? styles.isVerifying : null,
@@ -143,7 +143,11 @@ export default class WalletRecoveryPhraseStep2 extends Component<Props> {
         closeButton={<DialogCloseButton />}
       >
         <div className={styles.subtitle}>
-          <p>{intl.formatMessage(messages.recoveryPhraseStep2Description)}</p>
+          <p>
+            {intl.formatMessage(messages.recoveryPhraseStep2Description, {
+              wordCount,
+            })}
+          </p>
         </div>
 
         <Autocomplete
@@ -151,7 +155,7 @@ export default class WalletRecoveryPhraseStep2 extends Component<Props> {
           label={intl.formatMessage(messages.recoveryPhraseStep2Subtitle)}
           placeholder={intl.formatMessage(messages.recoveryPhraseInputHint)}
           options={suggestedMnemonics}
-          maxSelections={WALLET_RECOVERY_PHRASE_WORD_COUNT}
+          maxSelections={wordCount}
           error={recoveryPhraseField.error}
           maxVisibleOptions={5}
           noResultsMessage={intl.formatMessage(

@@ -218,6 +218,7 @@ export default (props: { currentTheme: string, locale: string }) => {
         <WalletRecoveryPhraseStep1Dialog
           onClose={action('onClose')}
           onContinue={action('onContinue')}
+          wordCount={number('wordCount', 12)}
         />
       }
       walletRecoveryPhraseStep2Container={
@@ -227,6 +228,7 @@ export default (props: { currentTheme: string, locale: string }) => {
           isVerifying={false}
           onClose={action('onClose')}
           onVerify={action('onVerify')}
+          wordCount={number('wordCount', 12)}
         />
       }
       walletRecoveryPhraseStep3Container={
@@ -250,6 +252,7 @@ export default (props: { currentTheme: string, locale: string }) => {
       locale={locale}
       isForcedWalletResyncStarting={false}
       onResyncWallet={action('onResyncWallet')}
+      wordCount={number('wordCount', 12)}
     />
   );
 };

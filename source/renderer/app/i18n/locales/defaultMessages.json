@@ -7152,7 +7152,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Funds in this wallet can only be recovered using the correct wallet recovery phrase, which is a unique 12-word string you were shown and asked to write down when creating this wallet. You can re-enter your wallet recovery phrase to verify that you have the correct recovery phrase for this wallet.",
+        "defaultMessage": "!!!Funds in this wallet can only be recovered using the correct wallet recovery phrase, which is a unique {wordCount}-word string you were shown and asked to write down when creating this wallet. You can re-enter your wallet recovery phrase to verify that you have the correct recovery phrase for this wallet.",
         "description": "Label for the recoveryPhraseVerificationDescription on wallet settings.",
         "end": {
           "column": 3,
@@ -7283,7 +7283,7 @@
         }
       },
       {
-        "defaultMessage": "!!!To verify that you have the correct recovery phrase for this wallet, you can enter it on the following screen. This wallet uses a 12-word recovery phrase.",
+        "defaultMessage": "!!!To verify that you have the correct recovery phrase for this wallet, you can enter it on the following screen. This wallet uses a {wordCount}-word recovery phrase.",
         "description": "Label for the recoveryPhraseStep1Paragraph1 on wallet settings.",
         "end": {
           "column": 3,
@@ -7334,27 +7334,27 @@
         "description": "Label for the recoveryPhraseStep2Title on wallet settings.",
         "end": {
           "column": 3,
-          "line": 20
+          "line": 19
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep2Dialog.js",
         "id": "wallet.settings.recoveryPhraseStep2Title",
         "start": {
           "column": 28,
-          "line": 16
+          "line": 15
         }
       },
       {
-        "defaultMessage": "!!!Please enter your 12-word wallet recovery phrase. Make sure you enter the words in the correct order.",
+        "defaultMessage": "!!!Please enter your {wordCount}-word wallet recovery phrase. Make sure you enter the words in the correct order.",
         "description": "Label for the recoveryPhraseStep2Description on wallet settings.",
         "end": {
           "column": 3,
-          "line": 27
+          "line": 26
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep2Dialog.js",
         "id": "wallet.settings.recoveryPhraseStep2Description",
         "start": {
           "column": 34,
-          "line": 21
+          "line": 20
         }
       },
       {
@@ -7362,13 +7362,13 @@
         "description": "Label for the recoveryPhraseStep2Subtitle on wallet settings.",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 32
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep2Dialog.js",
         "id": "wallet.settings.recoveryPhraseStep2Subtitle",
         "start": {
           "column": 31,
-          "line": 28
+          "line": 27
         }
       },
       {
@@ -7376,13 +7376,13 @@
         "description": "Label for the recoveryPhraseStep2Button on wallet settings.",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 37
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep2Dialog.js",
         "id": "wallet.settings.recoveryPhraseStep2Button",
         "start": {
           "column": 29,
-          "line": 34
+          "line": 33
         }
       },
       {
@@ -7390,13 +7390,13 @@
         "description": "Hint \"Enter recovery phrase\" for the recovery phrase input on the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 43
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep2Dialog.js",
         "id": "wallet.settings.recoveryPhraseInputHint",
         "start": {
           "column": 27,
-          "line": 39
+          "line": 38
         }
       },
       {
@@ -7404,13 +7404,13 @@
         "description": "\"No results\" message for the recovery phrase input search results.",
         "end": {
           "column": 3,
-          "line": 50
+          "line": 49
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep2Dialog.js",
         "id": "wallet.settings.recoveryPhraseInputNoResults",
         "start": {
           "column": 27,
-          "line": 45
+          "line": 44
         }
       },
       {
@@ -7418,13 +7418,13 @@
         "description": "Error message shown when invalid recovery phrase was entered.",
         "end": {
           "column": 3,
-          "line": 56
+          "line": 55
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep2Dialog.js",
         "id": "wallet.settings.recoveryPhraseStep2InvalidMnemonics",
         "start": {
           "column": 39,
-          "line": 51
+          "line": 50
         }
       }
     ],
