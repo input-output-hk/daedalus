@@ -25,12 +25,14 @@ export default class WalletImportDialogContainer extends Component<Props> {
     this.props.actions.walletMigration.finishMigration.trigger();
   };
 
-  onWalletNameChange = (params: { id: string, name: string }) => {
+  onWalletNameChange = (params: { index: number, name: string }) => {
     this.props.actions.walletMigration.updateWalletName.trigger(params);
   };
 
-  onToggleWalletImportSelection = (id: string) => {
-    this.props.actions.walletMigration.toggleWalletImportSelection.trigger(id);
+  onToggleWalletImportSelection = (params: { index: number }) => {
+    this.props.actions.walletMigration.toggleWalletImportSelection.trigger(
+      params
+    );
   };
 
   onSelectExportSourcePath = () => {
