@@ -5,7 +5,7 @@ import Store from './lib/Store';
 import WalletBackupDialog from '../components/wallet/WalletBackupDialog';
 import { WALLET_BACKUP_STEPS } from '../types/walletBackupTypes';
 import { getRawWalletId } from '../api/utils';
-import { WalletRecoveryPhraseStatuses } from '../config/walletRecoveryPhraseConfig';
+import { WALLET_RECOVERY_PHRASE_STATUSES } from '../config/walletRecoveryPhraseConfig';
 
 import type {
   RecoveryPhraseWord,
@@ -28,7 +28,7 @@ export default class WalletBackupStore extends Store {
   @observable isTermRewardsAccepted = false;
   @observable countdownRemaining = 0;
   @observable recoveryPhraseStatus: WalletRecoveryPhraseStatus =
-    WalletRecoveryPhraseStatuses.NOT_CHECKED;
+    WALLET_RECOVERY_PHRASE_STATUSES.NOT_CHECKED;
 
   countdownTimerInterval: ?IntervalID = null;
 
@@ -127,7 +127,7 @@ export default class WalletBackupStore extends Store {
   }: {
     recoveryPhrase: Array<string>,
   }) => {
-    this.recoveryPhraseStatus = WalletRecoveryPhraseStatuses.CHECKING;
+    this.recoveryPhraseStatus = WALLET_RECOVERY_PHRASE_STATUSES.CHECKING;
     const walletId = await getRecoveryWalletIdChannel.request(recoveryPhrase);
     const activeWallet = this.stores.wallets.active;
     if (!activeWallet)
@@ -137,15 +137,15 @@ export default class WalletBackupStore extends Store {
     const activeWalletId = getRawWalletId(activeWallet.id);
     const recoveryPhraseStatus =
       walletId === activeWalletId
-        ? WalletRecoveryPhraseStatuses.CORRECT
-        : WalletRecoveryPhraseStatuses.INCORRECT;
+        ? WALLET_RECOVERY_PHRASE_STATUSES.CORRECT
+        : WALLET_RECOVERY_PHRASE_STATUSES.INCORRECT;
     runInAction('AdaWalletBackupStore::_checkRecoveryPhrase', () => {
       this.recoveryPhraseStatus = recoveryPhraseStatus;
     });
   };
 
   @action _resetRecoveryPhraseCheck = () => {
-    this.recoveryPhraseStatus = WalletRecoveryPhraseStatuses.NOT_CHECKED;
+    this.recoveryPhraseStatus = WALLET_RECOVERY_PHRASE_STATUSES.NOT_CHECKED;
   };
 
   @computed get isRecoveryPhraseValid(): boolean {

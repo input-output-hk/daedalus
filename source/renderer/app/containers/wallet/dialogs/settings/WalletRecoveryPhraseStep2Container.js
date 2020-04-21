@@ -6,7 +6,7 @@ import WalletRecoveryPhraseStep3Dialog from '../../../../components/wallet/setti
 import WalletRecoveryPhraseStep4Dialog from '../../../../components/wallet/settings/WalletRecoveryPhraseStep4Dialog';
 import validWords from '../../../../../../common/crypto/valid-words.en';
 import { isValidMnemonic } from '../../../../../../common/crypto/decrypt';
-import { WalletRecoveryPhraseStatuses } from '../../../../config/walletRecoveryPhraseConfig';
+import { WALLET_RECOVERY_PHRASE_STATUSES } from '../../../../config/walletRecoveryPhraseConfig';
 import type { InjectedDialogContainerProps } from '../../../../types/injectedPropsType';
 
 type Props = InjectedDialogContainerProps;
@@ -29,7 +29,7 @@ export default class WalletRecoveryPhraseStep2Container extends Component<Props>
     const { walletBackup } = nextProps.stores;
     const { actions } = this.props;
     const { recoveryPhraseStatus } = walletBackup;
-    const { CORRECT, INCORRECT } = WalletRecoveryPhraseStatuses;
+    const { CORRECT, INCORRECT } = WALLET_RECOVERY_PHRASE_STATUSES;
     let dialog;
     if (recoveryPhraseStatus === CORRECT) {
       dialog = WalletRecoveryPhraseStep3Dialog;
@@ -54,7 +54,7 @@ export default class WalletRecoveryPhraseStep2Container extends Component<Props>
   render() {
     const { stores } = this.props;
     const { walletBackup } = stores;
-    const { CHECKING } = WalletRecoveryPhraseStatuses;
+    const { CHECKING } = WALLET_RECOVERY_PHRASE_STATUSES;
     const { recoveryPhraseStatus } = walletBackup;
     const { closeActiveDialog } = this.props.actions.dialogs;
     const isVerifying = recoveryPhraseStatus === CHECKING;

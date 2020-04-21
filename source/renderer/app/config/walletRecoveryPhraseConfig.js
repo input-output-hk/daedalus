@@ -2,7 +2,7 @@
 
 import type { WalletRecoveryPhraseStatus } from '../types/walletRecoveryPhraseStatusTypes';
 
-export const WalletRecoveryPhraseStatuses: {
+export const WALLET_RECOVERY_PHRASE_STATUSES: {
   NOT_CHECKED: WalletRecoveryPhraseStatus,
   CHECKING: WalletRecoveryPhraseStatus,
   CORRECT: WalletRecoveryPhraseStatus,
