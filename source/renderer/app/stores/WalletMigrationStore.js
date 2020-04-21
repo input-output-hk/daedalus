@@ -89,6 +89,12 @@ export default class WalletMigrationStore extends Store {
   getExportedWalletById = (id: string): ?ExportedByronWallet =>
     this.exportedWallets.find(w => w.id === id);
 
+  getExportedWalletDuplicatesById = (
+    id: string,
+    index: number
+  ): Array<ExportedByronWallet> =>
+    this.exportedWallets.filter(w => w.id === id && w.index !== index);
+
   getExportedWalletByIndex = (index: number): ?ExportedByronWallet =>
     this.exportedWallets.find(w => w.index === index);
 
@@ -131,6 +137,18 @@ export default class WalletMigrationStore extends Store {
           ? WalletImportStatuses.UNSTARTED
           : WalletImportStatuses.PENDING
       );
+
+      const walletDuplicates = this.getExportedWalletDuplicatesById(
+        wallet.id,
+        index
+      );
+      if (walletDuplicates.length) {
+        walletDuplicates.forEach(w => {
+          if (w.import.status === WalletImportStatuses.PENDING) {
+            w.import.status = WalletImportStatuses.UNSTARTED;
+          }
+        });
+      }
     }
   };
 
@@ -258,6 +276,19 @@ export default class WalletMigrationStore extends Store {
 
       runInAction('update restoredWallets', () => {
         this._updateWalletImportStatus(index, WalletImportStatuses.COMPLETED);
+
+        const walletDuplicates = this.getExportedWalletDuplicatesById(
+          id,
+          index
+        );
+        if (walletDuplicates.length) {
+          walletDuplicates.forEach(w => {
+            if (w.import.status !== WalletImportStatuses.COMPLETED) {
+              w.import.status = WalletImportStatuses.COMPLETED;
+            }
+          });
+        }
+
         this.restoredWallets.push(restoredWallet);
       });
     } catch (error) {

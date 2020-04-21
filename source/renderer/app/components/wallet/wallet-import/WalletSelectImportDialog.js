@@ -220,6 +220,10 @@ export default class WalletSelectImportDialog extends Component<Props> {
       ({ hasName }: ExportedByronWallet) => !hasName
     );
 
+    // We use previous wallet id to detect wallet duplicates
+    let previousWalletId = '';
+    let rowNumber = 1;
+
     return (
       <ReactModal
         isOpen
@@ -246,47 +250,56 @@ export default class WalletSelectImportDialog extends Component<Props> {
               <hr className={styles.separatorTop} />
             </div>
             <div className={styles.walletsContainer}>
-              {walletsWithNames.map(wallet => (
-                <div
-                  className={styles.walletsRow}
-                  key={`${wallet.id}-${wallet.index}`}
-                >
+              {walletsWithNames.map(wallet => {
+                const isDuplicate = previousWalletId === wallet.id;
+                const walletRow = (
                   <div
-                    className={styles.walletsCounter}
-                  >{`${wallet.index}.`}</div>
-                  <div className={styles.walletsInputField}>
-                    <InlineEditingSmallInput
-                      isActive={false}
-                      isDisabled={
-                        wallet.import.status ===
-                          WalletImportStatuses.COMPLETED ||
-                        wallet.import.status === WalletImportStatuses.EXISTS ||
-                        wallet.import.status === WalletImportStatuses.RUNNING
-                      }
-                      inputFieldValue={wallet.name || ''}
-                      placeholder={intl.formatMessage(messages.walletName)}
-                      isValid={nameValidator}
-                      validationErrorMessage={intl.formatMessage(
-                        globalMessages.invalidWalletName
-                      )}
-                      onSubmit={(name: string) =>
-                        onWalletNameChange({
-                          index: wallet.index,
-                          name,
-                        })
-                      }
-                      maxLength={40}
-                      successfullyUpdated
-                    />
+                    className={styles.walletsRow}
+                    key={`${wallet.id}-${wallet.index}`}
+                  >
+                    <div className={styles.walletsCounter}>
+                      {!isDuplicate && `${rowNumber}.`}
+                    </div>
+                    <div className={styles.walletsInputField}>
+                      <InlineEditingSmallInput
+                        isActive={false}
+                        isDisabled={
+                          wallet.import.status ===
+                            WalletImportStatuses.COMPLETED ||
+                          wallet.import.status ===
+                            WalletImportStatuses.EXISTS ||
+                          wallet.import.status === WalletImportStatuses.RUNNING
+                        }
+                        inputFieldValue={wallet.name || ''}
+                        placeholder={intl.formatMessage(messages.walletName)}
+                        isValid={nameValidator}
+                        validationErrorMessage={intl.formatMessage(
+                          globalMessages.invalidWalletName
+                        )}
+                        onSubmit={(name: string) =>
+                          onWalletNameChange({
+                            index: wallet.index,
+                            name,
+                          })
+                        }
+                        maxLength={40}
+                        successfullyUpdated
+                      />
+                    </div>
+                    <div className={styles.walletsStatus}>
+                      {this.getWalletStatus(wallet)}
+                    </div>
+                    <div className={styles.walletsStatusIcon}>
+                      {this.getWalletStatusIcon(wallet)}
+                    </div>
                   </div>
-                  <div className={styles.walletsStatus}>
-                    {this.getWalletStatus(wallet)}
-                  </div>
-                  <div className={styles.walletsStatusIcon}>
-                    {this.getWalletStatusIcon(wallet)}
-                  </div>
-                </div>
-              ))}
+                );
+                if (!isDuplicate) {
+                  previousWalletId = wallet.id;
+                  rowNumber++;
+                }
+                return walletRow;
+              })}
 
               {!!walletsWithoutNames.length && (
                 <div className={styles.unamedWalletsTitle}>
@@ -308,46 +321,55 @@ export default class WalletSelectImportDialog extends Component<Props> {
                 </div>
               )}
 
-              {walletsWithoutNames.map(wallet => (
-                <div
-                  className={styles.walletsRow}
-                  key={`${wallet.id}-${wallet.index}`}
-                >
+              {walletsWithoutNames.map(wallet => {
+                const isDuplicate = previousWalletId === wallet.id;
+                const walletRow = (
                   <div
-                    className={styles.walletsCounter}
-                  >{`${wallet.index}.`}</div>
-                  <div className={styles.walletsInputField}>
-                    <InlineEditingSmallInput
-                      isActive={false}
-                      isDisabled={
-                        wallet.import.status ===
-                          WalletImportStatuses.COMPLETED ||
-                        wallet.import.status === WalletImportStatuses.EXISTS ||
-                        wallet.import.status === WalletImportStatuses.RUNNING
-                      }
-                      inputFieldValue={wallet.name || ''}
-                      placeholder={intl.formatMessage(messages.notFound)}
-                      isValid={nameValidator}
-                      validationErrorMessage={intl.formatMessage(
-                        globalMessages.invalidWalletName
-                      )}
-                      onSubmit={(name: string) =>
-                        onWalletNameChange({
-                          index: wallet.index,
-                          name,
-                        })
-                      }
-                      successfullyUpdated
-                    />
+                    className={styles.walletsRow}
+                    key={`${wallet.id}-${wallet.index}`}
+                  >
+                    <div className={styles.walletsCounter}>
+                      {!isDuplicate && `${rowNumber}.`}
+                    </div>
+                    <div className={styles.walletsInputField}>
+                      <InlineEditingSmallInput
+                        isActive={false}
+                        isDisabled={
+                          wallet.import.status ===
+                            WalletImportStatuses.COMPLETED ||
+                          wallet.import.status ===
+                            WalletImportStatuses.EXISTS ||
+                          wallet.import.status === WalletImportStatuses.RUNNING
+                        }
+                        inputFieldValue={wallet.name || ''}
+                        placeholder={intl.formatMessage(messages.notFound)}
+                        isValid={nameValidator}
+                        validationErrorMessage={intl.formatMessage(
+                          globalMessages.invalidWalletName
+                        )}
+                        onSubmit={(name: string) =>
+                          onWalletNameChange({
+                            index: wallet.index,
+                            name,
+                          })
+                        }
+                        successfullyUpdated
+                      />
+                    </div>
+                    <div className={styles.walletsStatus}>
+                      {this.getWalletStatus(wallet)}
+                    </div>
+                    <div className={styles.walletsStatusIcon}>
+                      {this.getWalletStatusIcon(wallet)}
+                    </div>
                   </div>
-                  <div className={styles.walletsStatus}>
-                    {this.getWalletStatus(wallet)}
-                  </div>
-                  <div className={styles.walletsStatusIcon}>
-                    {this.getWalletStatusIcon(wallet)}
-                  </div>
-                </div>
-              ))}
+                );
+                if (!isDuplicate) {
+                  previousWalletId = wallet.id;
+                  rowNumber++;
+                }
+                return walletRow;
+              })}
             </div>
             <div className={styles.action}>
               <Button
