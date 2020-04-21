@@ -881,6 +881,10 @@ export const DARK_CARDANO_THEME_OUTPUT = {
   },
   walletImportDialog: {
     '--theme-wallet-import-background-color': 'rgba(42, 43, 60, 0.96)',
+    '--theme-wallet-import-button-background-color': 'rgba(0, 0, 0, 0.1)',
+    '--theme-wallet-import-button-border-color': '#fff',
+    '--theme-wallet-import-button-text-color': '#fff',
+    '--theme-wallet-import-button-text-color-hover': '#2a2b3c',
     '--theme-wallet-import-description-close-color': '#fafbfc',
     '--theme-wallet-import-description-close-hover-background':
       'rgba(0, 0, 0, 0.16)',

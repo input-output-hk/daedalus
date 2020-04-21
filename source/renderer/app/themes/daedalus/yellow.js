@@ -887,6 +887,10 @@ export const YELLOW_THEME_OUTPUT = {
   },
   walletImportDialog: {
     '--theme-wallet-import-background-color': 'rgba(255, 185, 35, 0.96)',
+    '--theme-wallet-import-button-background-color': 'rgba(0, 0, 0, 0.1)',
+    '--theme-wallet-import-button-border-color': '#2d2d2d',
+    '--theme-wallet-import-button-text-color': '#2d2d2d',
+    '--theme-wallet-import-button-text-color-hover': '#fff',
     '--theme-wallet-import-description-close-color': '#2d2d2d',
     '--theme-wallet-import-description-close-hover-background':
       'rgba(0, 0, 0, 0.1)',

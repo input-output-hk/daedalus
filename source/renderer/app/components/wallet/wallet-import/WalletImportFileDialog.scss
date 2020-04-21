@@ -44,7 +44,7 @@
 
       &:hover {
         background-color: var(
-            --theme-wallet-import-description-close-hover-background
+          --theme-wallet-import-description-close-hover-background
         );
         border-radius: 50%;
       }
@@ -137,10 +137,9 @@
           width: 540px;
 
           input {
-            background-color: var(
-                --theme-wallet-import-input-background-color
-            );
-            border: solid 1px var(--theme-wallet-import-stateFolder-border-color);
+            background-color: var(--theme-wallet-import-input-background-color);
+            border: solid 1px
+              var(--theme-wallet-import-stateFolder-border-color);
             border-radius: 2px;
             color: var(--theme-wallet-import-stateFolder-label-color);
             font-size: 16px;
@@ -166,21 +165,17 @@
 
     .action {
       .actionButton {
-        background-color: var(
-            --theme-splash-network-overlay-button-background-color
-        );
-        border: solid 1px var(--theme-splash-network-overlay-button-border-color);
-        color: var(--theme-splash-network-overlay-button-text-color);
+        background-color: var(--theme-wallet-import-button-background-color);
+        border: solid 1px var(--theme-wallet-import-button-border-color);
+        color: var(--theme-wallet-import-button-text-color);
         font-weight: 500;
         line-height: 1.36;
         margin: 0 auto;
 
         &:hover {
-          background-color: var(
-              --theme-splash-network-overlay-button-background-color-hover
-          );
+          background-color: var(--theme-wallet-import-button-border-color);
           border: none;
-          color: var(--theme-splash-network-overlay-button-text-color-hover);
+          color: var(--theme-wallet-import-button-text-color-hover);
         }
 
         &.disabled {
@@ -194,10 +189,10 @@
 
           &:hover {
             background-color: var(
-                --theme-splash-network-overlay-button-background-color
+              --theme-wallet-import-button-background-color
             );
-            border: solid 1px var(--theme-splash-network-overlay-button-border-color);
-            color: var(--theme-splash-network-overlay-button-text-color);
+            border: solid 1px var(--theme-wallet-import-button-border-color);
+            color: var(--theme-wallet-import-button-text-color);
           }
         }
       }
@@ -216,13 +211,13 @@
 
     &:hover {
       background-color: var(
-          --theme-button-flat-background-color-hover
+        --theme-button-flat-background-color-hover
       ) !important;
     }
 
     &:active {
       background-color: var(
-          --theme-button-flat-background-color-active
+        --theme-button-flat-background-color-active
       ) !important;
     }
 

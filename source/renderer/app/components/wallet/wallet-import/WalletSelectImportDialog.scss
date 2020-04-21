@@ -66,7 +66,7 @@
       width: 12px;
 
       g {
-        stroke: var(--theme-about-window-icon-close-button-color);
+        stroke: var(--theme-wallet-import-description-close-color);
       }
     }
   }
@@ -119,7 +119,7 @@
 
     .separatorTop,
     .separatorMiddle {
-      background-color: #ffffff;
+      background-color: var(--theme-wallet-import-button-border-color);
       height: 1px;
       margin-bottom: 20px;
       margin-top: 0;
@@ -155,7 +155,7 @@
     .tooltip {
       :global {
         .SimpleBubble_bubble {
-          background: #5e6066;
+          background: var(--theme-utxo-tooltip-background-color);
           white-space: normal;
         }
       }
@@ -221,7 +221,7 @@
         padding: 0 40px 20px;
 
         .walletsCounter {
-          color: #ffffff;
+          color: var(--theme-wallet-import-button-text-color);
           font-family: var(--font-bold);
           font-size: 16px;
           letter-spacing: 0.5px;
@@ -269,7 +269,7 @@
         }
 
         .walletsStatus {
-          color: #ffffff;
+          color: var(--theme-wallet-import-button-text-color);
           font-family: var(--font-regular);
           font-size: 16px;
           letter-spacing: 0.5px;
@@ -335,12 +335,9 @@
       width: 100%;
 
       .actionButton {
-        background-color: var(
-          --theme-splash-network-overlay-button-background-color
-        );
-        border: solid 1px
-          var(--theme-splash-network-overlay-button-border-color);
-        color: var(--theme-splash-network-overlay-button-text-color);
+        background-color: var(--theme-wallet-import-button-background-color);
+        border: solid 1px var(--theme-wallet-import-button-border-color);
+        color: var(--theme-wallet-import-button-text-color);
         display: block;
         font-weight: 500;
         line-height: 1.36;
@@ -348,11 +345,9 @@
         min-height: 50px;
 
         &:hover {
-          background-color: var(
-            --theme-splash-network-overlay-button-background-color-hover
-          );
+          background-color: var(--theme-wallet-import-button-border-color);
           border: none;
-          color: var(--theme-splash-network-overlay-button-text-color-hover);
+          color: var(--theme-wallet-import-button-text-color-hover);
         }
 
         &.disabled {
@@ -366,11 +361,10 @@
 
           &:hover {
             background-color: var(
-              --theme-splash-network-overlay-button-background-color
+                --theme-wallet-import-button-background-color
             );
-            border: solid 1px
-              var(--theme-splash-network-overlay-button-border-color);
-            color: var(--theme-splash-network-overlay-button-text-color);
+            border: solid 1px var(--theme-wallet-import-button-border-color);
+            color: var(--theme-wallet-import-button-text-color);
           }
         }
       }

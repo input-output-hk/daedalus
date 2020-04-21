@@ -894,6 +894,10 @@ export const CARDANO_THEME_OUTPUT = {
   },
   walletImportDialog: {
     '--theme-wallet-import-background-color': 'rgba(32, 34, 37, 0.96)',
+    '--theme-wallet-import-button-background-color': 'rgba(0, 0, 0, 0.1)',
+    '--theme-wallet-import-button-border-color': '#fff',
+    '--theme-wallet-import-button-text-color': '#fff',
+    '--theme-wallet-import-button-text-color-hover': '#202225',
     '--theme-wallet-import-description-close-color': '#fff',
     '--theme-wallet-import-description-close-hover-background':
       'rgba(0, 0, 0, 0.2)',

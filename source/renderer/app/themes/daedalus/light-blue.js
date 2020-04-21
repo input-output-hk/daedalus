@@ -892,6 +892,10 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
   },
   walletImportDialog: {
     '--theme-wallet-import-background-color': 'rgba(36, 62, 98, 0.96)',
+    '--theme-wallet-import-button-background-color': 'rgba(0, 0, 0, 0.1)',
+    '--theme-wallet-import-button-border-color': '#fafbfc',
+    '--theme-wallet-import-button-text-color': '#fafbfc',
+    '--theme-wallet-import-button-text-color-hover': '#243e62',
     '--theme-wallet-import-description-close-color': '#fff',
     '--theme-wallet-import-description-close-hover-background':
       'rgba(0, 0, 0, 0.2)',

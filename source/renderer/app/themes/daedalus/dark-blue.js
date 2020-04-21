@@ -899,6 +899,10 @@ export const DARK_BLUE_THEME_OUTPUT = {
   },
   walletImportDialog: {
     '--theme-wallet-import-background-color': 'rgba(38, 51, 69, 0.96)',
+    '--theme-wallet-import-button-background-color': 'rgba(0, 0, 0, 0.1)',
+    '--theme-wallet-import-button-border-color': '#e9f4fe',
+    '--theme-wallet-import-button-text-color': '#e9f4fe',
+    '--theme-wallet-import-button-text-color-hover': '#263345',
     '--theme-wallet-import-description-close-color': '#fff',
     '--theme-wallet-import-description-color': '#fff',
     '--theme-wallet-import-input-background-color': 'rgba(0, 0, 0, 0.1)',
