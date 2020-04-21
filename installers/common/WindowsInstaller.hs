@@ -133,7 +133,7 @@ parseVersion ver =
         _              -> ["0", "0", "0", "0"]
 
 writeInstallerNSIS :: FilePath -> Version -> InstallerConfig -> Options -> Cluster -> IO ()
-writeInstallerNSIS outName (Version fullVersion') InstallerConfig{hasBlock0,installDirectory,spacedName,dataDir} Options{oBackend} clusterName = do
+writeInstallerNSIS outName (Version fullVersion') InstallerConfig{hasBlock0,installDirectory,spacedName} Options{oBackend} clusterName = do
     tempDir <- getTempDir
     let fullVersion = unpack fullVersion'
         viProductVersion = L.intercalate "." $ parseVersion fullVersion'
@@ -144,7 +144,6 @@ writeInstallerNSIS outName (Version fullVersion') InstallerConfig{hasBlock0,inst
         _ <- constantStr "Cluster" (str $ lshow clusterName)
         _ <- constantStr "InstallDir" (str $ unpack installDirectory)
         _ <- constantStr "SpacedName" (str $ unpack spacedName)
-        _ <- constantStr "StateDir" (str $ unpack dataDir)
         name "$SpacedName ($Version)"                  -- The name of the installer
         outFile $ str $ encodeString outName        -- Where to produce the installer
         unsafeInjectGlobal $ "!define MUI_ICON \"icons\\" ++ lshow clusterName ++ "\\" ++ lshow clusterName ++ ".ico\""
@@ -179,7 +178,7 @@ writeInstallerNSIS outName (Version fullVersion') InstallerConfig{hasBlock0,inst
 
                 let
                   lockFile :: String
-                  lockFile = "$StateDir\\daedalus_lockfile"
+                  lockFile = "$APPDATA\\$InstallDir\\daedalus_lockfile"
                   lockFileExp :: Exp String
                   lockFileExp = fromString lockFile
 
