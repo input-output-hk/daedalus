@@ -156,9 +156,7 @@ export default class InlineEditingInput extends Component<Props, State> {
       isActive ? null : 'input_cursorPointer',
     ]);
 
-    if (isActive || inputBlocked) {
-      successfullyUpdated = false;
-    }
+    if (isActive) successfullyUpdated = false;
 
     return (
       <div

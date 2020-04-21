@@ -1,5 +1,6 @@
 // @flow
 import React, { Component } from 'react';
+import path from 'path';
 import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import { showSaveDialogChannel } from '../../ipc/show-file-dialog-channels';
@@ -39,12 +40,15 @@ export default class StakingRewardsPage extends Component<Props> {
     const {
       actions: { wallets },
     } = this.props;
+    const fileName = generateFileNameWithTimestamp({
+      prefix: 'rewards',
+      extension: 'csv',
+      isUTC: true,
+    });
+    const { desktopDirectoryPath } = this.props.stores.profile;
+    const defaultPath = path.join(desktopDirectoryPath, fileName);
     const params = {
-      defaultPath: generateFileNameWithTimestamp({
-        prefix: 'rewards',
-        extension: 'csv',
-        isUTC: true,
-      }),
+      defaultPath,
       filters: [
         {
           extensions: ['csv'],
