@@ -74,7 +74,7 @@
   .leftButton,
   .rightButton {
     background-color: var(
-        --theme-wallet-import-stateFolder-button-background-color
+      --theme-wallet-import-stateFolder-button-background-color
     );
     border-radius: 3px;
     cursor: pointer;
@@ -103,7 +103,7 @@
         width: 8px;
 
         g {
-          stroke: var(--theme-wallet-import-button-text-color);
+          fill: var(--theme-wallet-import-button-text-color);
         }
       }
     }
@@ -125,13 +125,13 @@
       &.SimpleButton_root:not(.SimpleButton_disabled) {
         &:hover {
           background-color: var(
-              --theme-wallet-import-stateFolder-button-background-color-hover
+            --theme-wallet-import-stateFolder-button-background-color-hover
           ) !important;
         }
 
         &:active {
           background-color: var(
-              --theme-wallet-import-stateFolder-button-background-color-active
+            --theme-wallet-import-stateFolder-button-background-color-active
           ) !important;
         }
       }
@@ -142,7 +142,7 @@
     right: 48px;
 
     &.withoutRightButton {
-      right: 0;
+      right: 10px !important;
     }
   }
 }

@@ -167,7 +167,7 @@ export default class InlineEditingSmallInput extends Component<Props, State> {
 
     const leftButtonStyles = classnames([
       styles.leftButton,
-      arrowIconIsVisible ? 'withoutRightButton' : null,
+      !arrowIconIsVisible ? styles.withoutRightButton : null,
     ]);
 
     return (
