@@ -63,9 +63,7 @@ export default class App extends Component<{
               {...{ locale, key: locale, messages: translations[locale] }}
             >
               <Fragment>
-                <Router history={history}>
-                  <Routes />
-                </Router>
+                <Router history={history}>{Routes}</Router>
                 {mobxDevTools}
                 {showNextUpdate ? (
                   <AutomaticUpdateNotificationDialog />
