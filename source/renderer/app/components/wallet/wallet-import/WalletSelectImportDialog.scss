@@ -236,6 +236,7 @@
 
           .walletsInputFieldInner {
             input {
+              color: var(--theme-wallet-import-button-text-color);
               font-family: var(--font-medium);
               font-size: 16px;
               letter-spacing: 0.5px;
@@ -245,10 +246,10 @@
               white-space: nowrap;
 
               &::-webkit-input-placeholder {
+                font-family: var(--font-medium);
                 font-size: 16px;
                 letter-spacing: 0.5px;
                 line-height: 1.38;
-                font-family: var(--font-medium);
               }
             }
 
@@ -289,12 +290,6 @@
               position: relative;
               top: 2px;
               width: 23px;
-            }
-
-            .SimpleCheckbox_check.SimpleCheckbox_checked {
-              background-color: var(
-                --theme-wallet-import-checkbox-check-bg-color
-              ) !important;
             }
 
             .SimpleCheckbox_checked {

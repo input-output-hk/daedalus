@@ -18,6 +18,7 @@
 
   &:not(.isActive) {
     cursor: pointer;
+
     :global {
       .SimpleInput_input {
         cursor: pointer;
@@ -46,10 +47,12 @@
         font-family: var(--font-medium);
       }
     }
+
     .SimpleInput_input {
       background: transparent !important;
       border: 0 none;
       border-radius: 0;
+
       &:focus {
         border: 0 none;
       }
@@ -70,7 +73,9 @@
 
   .leftButton,
   .rightButton {
-    background-color: var(--theme-button-flat-background-color);
+    background-color: var(
+        --theme-wallet-import-stateFolder-button-background-color
+    );
     border-radius: 3px;
     cursor: pointer;
     height: 28px;
@@ -85,22 +90,30 @@
         position: relative;
         top: 1px;
         width: 12px;
+
+        g {
+          stroke: var(--theme-wallet-import-button-text-color);
+        }
       }
     }
+
     .crossIcon {
       svg {
         height: 8px;
         width: 8px;
+
         g {
-          fill: #fff;
+          stroke: var(--theme-wallet-import-button-text-color);
         }
       }
     }
+
     .arrowIcon {
       svg {
         height: 9px;
+
         path {
-          stroke: #fff;
+          stroke: var(--theme-wallet-import-button-text-color);
         }
       }
     }
@@ -111,10 +124,15 @@
     .InlineEditingSmallInput_rightButton {
       &.SimpleButton_root:not(.SimpleButton_disabled) {
         &:hover {
-          background-color: var(--theme-button-flat-background-color-hover);
+          background-color: var(
+              --theme-wallet-import-stateFolder-button-background-color-hover
+          ) !important;
         }
+
         &:active {
-          background-color: var(--theme-button-flat-background-color-active);
+          background-color: var(
+              --theme-wallet-import-stateFolder-button-background-color-active
+          ) !important;
         }
       }
     }

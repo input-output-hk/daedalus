@@ -905,11 +905,11 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-wallet-import-stateFolder-border-color':
       'rgba(255, 255, 255, 0.5)',
     '--theme-wallet-import-stateFolder-button-background-color':
-      'rgba(255, 255, 255, 0.1)',
+      'rgba(250, 251, 252, 0.1)',
     '--theme-wallet-import-stateFolder-button-background-color-hover':
-      'rgba(255, 255, 255, 0.05)',
+      'rgba(250, 251, 252, 0.05)',
     '--theme-wallet-import-stateFolder-button-background-color-active':
-      'rgba(255, 255, 255, 0.12)',
+      'rgba(250, 251, 252, 0.12)',
     '--theme-wallet-import-checkbox-border': '2px solid #ffffff',
     '--theme-wallet-import-checkbox-border-color': 'rgba(255, 255, 255, 1)',
     '--theme-wallet-import-checkbox-border-color-disabled': '#ffffff',

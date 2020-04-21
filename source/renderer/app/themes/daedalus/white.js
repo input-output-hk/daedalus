@@ -895,8 +895,7 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-wallet-import-description-color': '#2d2d2d',
     '--theme-wallet-import-input-background-color': 'rgba(255, 255, 255, 0.96)',
     '--theme-wallet-import-title-color': '#2d2d2d',
-    '--theme-wallet-import-stateFolder-border-color':
-      'rgba(45, 45, 45, 0.3)',
+    '--theme-wallet-import-stateFolder-border-color': 'rgba(45, 45, 45, 0.3)',
     '--theme-wallet-import-stateFolder-button-background-color':
       'rgba(45, 45, 45, 0.1)',
     '--theme-wallet-import-stateFolder-button-background-color-hover':
