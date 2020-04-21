@@ -5,6 +5,7 @@ Changelog
 
 ### Fixes
 
+- Fixed `cardano-node` / `jormungandr` and `cardano-wallet` info on the "Diagnostics" screen ([PR 1980](https://github.com/input-output-hk/daedalus/pull/1980))
 - Persist "Blank screen fix" / "--safe-mode" flag between Daedalus restarts ([PR 1979](https://github.com/input-output-hk/daedalus/pull/1979))
 - Track `cardano-node` / `jormungandr` PID and use it for safe shutdowns and improve cardano-launcher error handling ([PR 1972](https://github.com/input-output-hk/daedalus/pull/1972))
 - Fixed "Wallet import" UI/UX issues ([PR 1968](https://github.com/input-output-hk/daedalus/pull/1968))
