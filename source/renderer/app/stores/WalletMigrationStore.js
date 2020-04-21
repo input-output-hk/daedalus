@@ -1,5 +1,6 @@
 // @flow
 import { action, computed, observable, runInAction } from 'mobx';
+import { orderBy } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import Wallet from '../domains/Wallet';
@@ -88,6 +89,9 @@ export default class WalletMigrationStore extends Store {
   getExportedWalletById = (id: string): ?ExportedByronWallet =>
     this.exportedWallets.find(w => w.id === id);
 
+  getExportedWalletByIndex = (index: number): ?ExportedByronWallet =>
+    this.exportedWallets.find(w => w.index === index);
+
   @action _selectExportSourcePath = async () => {
     const params = {
       defaultPath: global.legacyStateDir,
@@ -116,13 +120,13 @@ export default class WalletMigrationStore extends Store {
     }
   };
 
-  @action _toggleWalletImportSelection = (id: string) => {
-    const wallet = this.getExportedWalletById(id);
+  @action _toggleWalletImportSelection = ({ index }: { index: number }) => {
+    const wallet = this.getExportedWalletByIndex(index);
     if (wallet) {
       const { status } = wallet.import;
       const isPending = status === WalletImportStatuses.PENDING;
       this._updateWalletImportStatus(
-        id,
+        index,
         isPending
           ? WalletImportStatuses.UNSTARTED
           : WalletImportStatuses.PENDING
@@ -131,19 +135,25 @@ export default class WalletMigrationStore extends Store {
   };
 
   @action _updateWalletImportStatus = (
-    id: string,
+    index: number,
     status: WalletImportStatus,
     error?: LocalizableError
   ) => {
-    const wallet = this.getExportedWalletById(id);
+    const wallet = this.getExportedWalletByIndex(index);
     if (wallet) {
       wallet.import.status = status;
       wallet.import.error = error || null;
     }
   };
 
-  @action _updateWalletName = ({ id, name }: { id: string, name: string }) => {
-    const wallet = this.getExportedWalletById(id);
+  @action _updateWalletName = ({
+    index,
+    name,
+  }: {
+    index: number,
+    name: string,
+  }) => {
+    const wallet = this.getExportedWalletByIndex(index);
     if (wallet) {
       wallet.name = name;
     }
@@ -164,18 +174,28 @@ export default class WalletMigrationStore extends Store {
       locale: this.stores.profile.currentLocale,
     });
     runInAction('update exportedWallets and exportErrors', () => {
-      this.exportedWallets = wallets.map(wallet => {
-        const hasName = wallet.name !== null;
-        const importedWallet = this.stores.wallets.getWalletById(
-          `legacy_${wallet.id}`
-        );
-        const isImported = typeof importedWallet !== 'undefined';
-        if (isImported && importedWallet) wallet.name = importedWallet.name;
-        const status = isImported
-          ? WalletImportStatuses.EXISTS
-          : WalletImportStatuses.UNSTARTED;
-        return { ...wallet, hasName, import: { status, error: null } };
+      this.exportedWallets = orderBy(
+        wallets.map(wallet => {
+          const hasName = wallet.name !== null;
+          const importedWallet = this.stores.wallets.getWalletById(
+            `legacy_${wallet.id}`
+          );
+          const isImported = typeof importedWallet !== 'undefined';
+          if (isImported && importedWallet) wallet.name = importedWallet.name;
+          const status = isImported
+            ? WalletImportStatuses.EXISTS
+            : WalletImportStatuses.UNSTARTED;
+          return { ...wallet, hasName, import: { status, error: null } };
+        }),
+        ['hasName', 'name', 'id', 'is_passphrase_empty'],
+        ['desc', 'asc', 'asc', 'asc']
+      );
+
+      // Guard against duplicated wallet ids
+      this.exportedWallets.forEach((wallet, index) => {
+        wallet.index = index + 1;
       });
+
       this.exportErrors =
         errors || !this.exportedWalletsCount ? 'No wallets found' : '';
     });
@@ -227,8 +247,8 @@ export default class WalletMigrationStore extends Store {
     // Reset restore requests to clear previous errors
     this.restoreExportedWalletRequest.reset();
 
-    const { id } = exportedWallet;
-    this._updateWalletImportStatus(id, WalletImportStatuses.RUNNING);
+    const { id, index } = exportedWallet;
+    this._updateWalletImportStatus(index, WalletImportStatuses.RUNNING);
     try {
       const restoredWallet = await this.restoreExportedWalletRequest.execute(
         exportedWallet
@@ -237,13 +257,17 @@ export default class WalletMigrationStore extends Store {
         throw new Error('Restored wallet was not received correctly');
 
       runInAction('update restoredWallets', () => {
-        this._updateWalletImportStatus(id, WalletImportStatuses.COMPLETED);
+        this._updateWalletImportStatus(index, WalletImportStatuses.COMPLETED);
         this.restoredWallets.push(restoredWallet);
       });
     } catch (error) {
       runInAction('update restorationErrors', () => {
         const { name, is_passphrase_empty: hasPassword } = exportedWallet;
-        this._updateWalletImportStatus(id, WalletImportStatuses.ERRORED, error);
+        this._updateWalletImportStatus(
+          index,
+          WalletImportStatuses.ERRORED,
+          error
+        );
         this.restorationErrors.push({
           error,
           wallet: { id, name, hasPassword },
