@@ -263,14 +263,14 @@ let
       makensis daedalus.nsi -V4
 
       echo '~~~   Copying to $out'
-      cp daedalus-*-*-wallet-*-windows*.exe $out/
+      cp daedalus-*-*.exe $out/
       cp *.yaml $out/cfg-files/
       echo file installer $out/*.exe > $out/nix-support/hydra-build-products
     '';
     signed-windows-installer = let
       backend_version = self.daedalus-bridge.wallet-version;
       frontend_version = (builtins.fromJSON (builtins.readFile ./package.json)).version;
-      fullName = "daedalus-${frontend_version}-cardano-wallet-${backend_version}-${cluster}-windows${buildNumSuffix}.exe"; # must match to packageFileName in make-installer
+      fullName = "daedalus-${frontend_version}-${cluster}${buildNumSuffix}.exe"; # must match to packageFileName in make-installer
     in pkgs.runCommand "signed-windows-installer-${cluster}" {} ''
       mkdir $out
       cp -v ${self.signFile "${self.unsigned-windows-installer}/${fullName}"} $out/${fullName}
@@ -287,7 +287,7 @@ let
     rawapp = self.callPackage ./yarn2nix.nix {
       inherit buildNum;
       api = "ada";
-      apiVersion = self.cardano-sl.daedalus-bridge.version;
+      apiVersion = self.daedalus-bridge.wallet-version;
       inherit (self.launcherConfigs.installerConfig) spacedName;
       inherit (self.launcherConfigs) launcherConfig;
       inherit cluster;
@@ -401,7 +401,7 @@ let
       version = (builtins.fromJSON (builtins.readFile ./package.json)).version;
       backend = "cardano-wallet-${nodeImplementation}";
       suffix = if buildNum == null then "" else "-${toString buildNum}";
-      fn = "daedalus-${version}-${backend}-${self.linuxClusterBinName}-${target}${suffix}.bin";
+      fn = "daedalus-${version}-${self.linuxClusterBinName}${suffix}.bin";
     in pkgs.runCommand fn {} ''
       mkdir -p $out
       cp ${self.newBundle} $out/${fn}
