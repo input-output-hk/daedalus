@@ -58,16 +58,26 @@ export const messages = defineMessages({
 type Props = {
   mnemonicValidator: Function,
   suggestedMnemonics: Array<string>,
-  isVerifying: boolean,
   onVerify: Function,
   onClose: Function,
   wordCount: number,
 };
 
+type State = {
+  isVerifying: boolean,
+};
+
 @observer
-export default class WalletRecoveryPhraseStep2 extends Component<Props> {
+export default class WalletRecoveryPhraseStep2Dialog extends Component<
+  Props,
+  State
+> {
   static contextTypes = {
     intl: intlShape.isRequired,
+  };
+
+  state = {
+    isVerifying: false,
   };
 
   form = new ReactToolboxMobxForm(
@@ -111,13 +121,8 @@ export default class WalletRecoveryPhraseStep2 extends Component<Props> {
   render() {
     const { form } = this;
     const { intl } = this.context;
-    const {
-      onClose,
-      onVerify,
-      suggestedMnemonics,
-      isVerifying,
-      wordCount,
-    } = this.props;
+    const { onClose, onVerify, suggestedMnemonics, wordCount } = this.props;
+    const { isVerifying } = this.state;
     const recoveryPhraseField = form.$('recoveryPhrase');
     const canSubmit =
       !recoveryPhraseField.error &&
@@ -128,7 +133,10 @@ export default class WalletRecoveryPhraseStep2 extends Component<Props> {
         className: isVerifying ? styles.isVerifying : null,
         label: intl.formatMessage(messages.recoveryPhraseStep2Button),
         primary: true,
-        onClick: () => onVerify(recoveryPhraseField.value),
+        onClick: () => {
+          this.setState({ isVerifying: true });
+          onVerify(recoveryPhraseField.value);
+        },
         disabled: !canSubmit,
       },
     ];
@@ -155,6 +163,20 @@ export default class WalletRecoveryPhraseStep2 extends Component<Props> {
           label={intl.formatMessage(messages.recoveryPhraseStep2Subtitle)}
           placeholder={intl.formatMessage(messages.recoveryPhraseInputHint)}
           options={suggestedMnemonics}
+          preselectedOptions={[
+            'craft',
+            'blade',
+            'oil',
+            'fork',
+            'able',
+            'math',
+            'cat',
+            'kidney',
+            'clutch',
+            'menu',
+            'remind',
+            'clap',
+          ]}
           maxSelections={wordCount}
           error={recoveryPhraseField.error}
           maxVisibleOptions={5}
