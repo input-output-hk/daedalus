@@ -714,7 +714,7 @@
   "wallet.settings.recoveryPhraseStep2InvalidMnemonics": "Invalid recovery phrase",
   "wallet.settings.recoveryPhraseStep2Subtitle": "Recovery phrase",
   "wallet.settings.recoveryPhraseStep2Title": "Wallet recovery phrase verification",
-  "wallet.settings.recoveryPhraseStep3Button": "Continue",
+  "wallet.settings.recoveryPhraseStep3Button": "Finish",
   "wallet.settings.recoveryPhraseStep3Paragraph1": "You have verified the recovery phrase for this wallet. You can use it at any time to recover the funds in this wallet on another computer, even if using a different version of Daedalus.",
   "wallet.settings.recoveryPhraseStep3Paragraph2": "Please make sure to return your wallet recovery phrase to a secure place for safekeeping. Anyone with access to your wallet recovery phrase can take control of your funds.",
   "wallet.settings.recoveryPhraseStep3Title": "verification successful",

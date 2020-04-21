@@ -7344,7 +7344,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Continue",
+        "defaultMessage": "!!!Finish",
         "description": "Label for the recoveryPhraseStep3Button on wallet settings.",
         "end": {
           "column": 3,

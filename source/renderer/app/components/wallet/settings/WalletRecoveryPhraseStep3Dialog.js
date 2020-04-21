@@ -31,7 +31,7 @@ export const messages = defineMessages({
   },
   recoveryPhraseStep3Button: {
     id: 'wallet.settings.recoveryPhraseStep3Button',
-    defaultMessage: '!!!Continue',
+    defaultMessage: '!!!Finish',
     description: 'Label for the recoveryPhraseStep3Button on wallet settings.',
   },
 });

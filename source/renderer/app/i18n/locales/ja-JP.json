@@ -714,7 +714,7 @@
   "wallet.settings.recoveryPhraseStep2InvalidMnemonics": "無効な復元フレーズ",
   "wallet.settings.recoveryPhraseStep2Subtitle": "ウォレット復元フレーズ",
   "wallet.settings.recoveryPhraseStep2Title": "ウォレット復元フレーズ検証",
-  "wallet.settings.recoveryPhraseStep3Button": "続ける",
+  "wallet.settings.recoveryPhraseStep3Button": "完了",
   "wallet.settings.recoveryPhraseStep3Paragraph1": "このウォレットの復元フレーズは正しいことが確認されました。このフレーズを使用して、このウォレットの資金を別のコンピューターで復元することができます。バージョンの異なるDaedalusにも使用できます。",
   "wallet.settings.recoveryPhraseStep3Paragraph2": "ウォレット復元フレーズは必ず安全な保管場所に戻してください。ウォレット復元フレーズが手に入れば、誰でも資金を自由にすることができます。",
   "wallet.settings.recoveryPhraseStep3Title": "一致",
