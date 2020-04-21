@@ -726,6 +726,7 @@ export const createDaedalusComponentsTheme = (
     },
     walletImportDialog: {
       '--theme-wallet-import-background-color': `${background.secondary.regular}`,
+      '--theme-wallet-import-description-close-color': `${text.primary}`,
       '--theme-wallet-import-description-close-hover-background': `${chroma(
         background.secondary.regular
       ).alpha(0.16)}`,

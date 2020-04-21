@@ -884,6 +884,7 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
   },
   walletImportDialog: {
     '--theme-wallet-import-background-color': '#36374df5',
+    '--theme-wallet-import-description-close-color': '#fafbfc',
     '--theme-wallet-import-description-close-hover-background':
       'rgba(0, 0, 0, 0.16)',
     '--theme-wallet-import-description-color': '#fff',

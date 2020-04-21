@@ -899,6 +899,7 @@ export const DARK_BLUE_THEME_OUTPUT = {
   },
   walletImportDialog: {
     '--theme-wallet-import-background-color': 'rgba(38, 51, 69, 0.96)',
+    '--theme-wallet-import-description-close-color': '#fff',
     '--theme-wallet-import-description-color': '#fff',
     '--theme-wallet-import-title-color': '#fff',
     '--theme-wallet-import-stateFolder-border-color':
