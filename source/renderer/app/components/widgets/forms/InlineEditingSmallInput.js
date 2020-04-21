@@ -82,6 +82,7 @@ export default class InlineEditingSmallInput extends Component<Props, State> {
         } else {
           this.props.onCancelEditing();
         }
+        this.input.blur();
       },
     });
   };
