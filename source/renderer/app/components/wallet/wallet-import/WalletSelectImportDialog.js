@@ -152,7 +152,7 @@ export default class WalletSelectImportDialog extends Component<Props> {
       statusIcon = (
         <Checkbox
           onChange={() => {
-            onToggleWalletImportSelection(wallet.id);
+            onToggleWalletImportSelection({ index: wallet.index });
           }}
           checked={wallet.import.status === WalletImportStatuses.PENDING}
           disabled={disabled}
@@ -219,7 +219,10 @@ export default class WalletSelectImportDialog extends Component<Props> {
     const walletsWithoutNames = exportedWallets.filter(
       ({ hasName }: ExportedByronWallet) => !hasName
     );
-    let walletIndex = 0;
+
+    // We use previous wallet id to detect wallet duplicates
+    let previousWalletId = '';
+    let rowNumber = 1;
 
     return (
       <ReactModal
@@ -248,12 +251,15 @@ export default class WalletSelectImportDialog extends Component<Props> {
             </div>
             <div className={styles.walletsContainer}>
               {walletsWithNames.map(wallet => {
-                walletIndex++;
-                return (
-                  <div className={styles.walletsRow} key={wallet.id}>
-                    <div
-                      className={styles.walletsCounter}
-                    >{`${walletIndex}.`}</div>
+                const isDuplicate = previousWalletId === wallet.id;
+                const walletRow = (
+                  <div
+                    className={styles.walletsRow}
+                    key={`${wallet.id}-${wallet.index}`}
+                  >
+                    <div className={styles.walletsCounter}>
+                      {!isDuplicate && `${rowNumber}.`}
+                    </div>
                     <div className={styles.walletsInputField}>
                       <InlineEditingSmallInput
                         isActive={false}
@@ -272,7 +278,7 @@ export default class WalletSelectImportDialog extends Component<Props> {
                         )}
                         onSubmit={(name: string) =>
                           onWalletNameChange({
-                            id: wallet.id,
+                            index: wallet.index,
                             name,
                           })
                         }
@@ -288,6 +294,11 @@ export default class WalletSelectImportDialog extends Component<Props> {
                     </div>
                   </div>
                 );
+                if (!isDuplicate) {
+                  previousWalletId = wallet.id;
+                  rowNumber++;
+                }
+                return walletRow;
               })}
 
               {!!walletsWithoutNames.length && (
@@ -311,12 +322,15 @@ export default class WalletSelectImportDialog extends Component<Props> {
               )}
 
               {walletsWithoutNames.map(wallet => {
-                walletIndex++;
-                return (
-                  <div className={styles.walletsRow} key={wallet.id}>
-                    <div
-                      className={styles.walletsCounter}
-                    >{`${walletIndex}.`}</div>
+                const isDuplicate = previousWalletId === wallet.id;
+                const walletRow = (
+                  <div
+                    className={styles.walletsRow}
+                    key={`${wallet.id}-${wallet.index}`}
+                  >
+                    <div className={styles.walletsCounter}>
+                      {!isDuplicate && `${rowNumber}.`}
+                    </div>
                     <div className={styles.walletsInputField}>
                       <InlineEditingSmallInput
                         isActive={false}
@@ -335,7 +349,7 @@ export default class WalletSelectImportDialog extends Component<Props> {
                         )}
                         onSubmit={(name: string) =>
                           onWalletNameChange({
-                            id: wallet.id,
+                            index: wallet.index,
                             name,
                           })
                         }
@@ -350,6 +364,11 @@ export default class WalletSelectImportDialog extends Component<Props> {
                     </div>
                   </div>
                 );
+                if (!isDuplicate) {
+                  previousWalletId = wallet.id;
+                  rowNumber++;
+                }
+                return walletRow;
               })}
             </div>
             <div className={styles.action}>
