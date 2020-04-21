@@ -27,7 +27,7 @@ let
 
   isDevOrLinux = devShell || os == "linux";
 
-  mkSpacedName = network: if network == "mainnet" then "Daedalus" else "Daedalus ${installDirectorySuffix}";
+  mkSpacedName = network: "Daedalus ${installDirectorySuffix}";
   spacedName = mkSpacedName network;
 
   frontendBinPath = let
@@ -57,6 +57,7 @@ let
 
   installDirectorySuffix = let
     supportedNetworks = {
+      mainnet = "Mainnet";
       mainnet_flight = "Flight";
       qa = "QA";
       selfnode = "Selfnode";
