@@ -5,6 +5,7 @@ Changelog
 
 ### Fixes
 
+- Handle duplicate wallets in import process ([PR 1985](https://github.com/input-output-hk/daedalus/pull/1985))
 - Treat wallets with 100% syncing progress as synced wallets ([PR 1984](https://github.com/input-output-hk/daedalus/pull/1984))
 - Fixed `cardano-node` / `jormungandr` and `cardano-wallet` info on the "Diagnostics" screen ([PR 1980](https://github.com/input-output-hk/daedalus/pull/1980))
 - Persist "Blank screen fix" / "--safe-mode" flag between Daedalus restarts ([PR 1979](https://github.com/input-output-hk/daedalus/pull/1979))

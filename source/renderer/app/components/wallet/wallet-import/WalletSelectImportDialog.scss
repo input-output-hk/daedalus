@@ -98,7 +98,7 @@
       background-color: var(--theme-splash-network-scrollbar-thumb-background);
       &:hover {
         background-color: var(
-            --theme-splash-network-scrollbar-thumb-background-hover
+          --theme-splash-network-scrollbar-thumb-background-hover
         );
       }
     }
@@ -247,6 +247,7 @@
           font-size: 16px;
           letter-spacing: 0.5px;
           line-height: 1.38;
+          min-width: 35px;
           padding-right: 20px;
         }
 
@@ -334,7 +335,7 @@
               width: 16px;
 
               path {
-                stroke : var(--theme-wallet-import-description-color);
+                stroke: var(--theme-wallet-import-description-color);
               }
             }
           }
