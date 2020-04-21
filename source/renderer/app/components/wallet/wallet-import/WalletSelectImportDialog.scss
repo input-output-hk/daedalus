@@ -323,6 +323,10 @@
             svg {
               height: 16px;
               width: 16px;
+
+              path {
+                stroke : var(--theme-wallet-import-description-color);
+              }
             }
           }
         }
