@@ -31,6 +31,9 @@ module.exports = {
     __dirname: false,
     __filename: false,
   },
+  externals: {
+    'js-chain-libs-node': 'commonjs2 js-chain-libs-node',
+  },
   module: {
     rules: [
       {
