@@ -114,6 +114,7 @@ export default class InlineEditingSmallInput extends Component<Props, State> {
     inputField.value = this.props.inputFieldValue;
     this.setState({ isActive: false });
     if (this.props.onCancelEditing) this.props.onCancelEditing();
+    this.input.blur();
   };
 
   componentDidUpdate() {
@@ -147,23 +148,24 @@ export default class InlineEditingSmallInput extends Component<Props, State> {
     const { isActive } = this.state;
     let { successfullyUpdated } = this.props;
     const inputField = validator.$('inputField');
+    const arrowIconIsVisible = inputField.value !== this.props.inputFieldValue;
     const componentStyles = classnames([
       className,
       styles.component,
       isActive ? styles.isActive : null,
       isDisabled ? styles.disabled : null,
       inputField.error && isActive ? styles.hasError : null,
-    ]);
-    const inputStyles = classnames([
-      successfullyUpdated ? 'input_animateSuccess' : null,
-      isActive ? null : 'input_cursorPointer',
+      !arrowIconIsVisible ? styles.withoutRightButton : null,
     ]);
 
     if (isActive || inputBlocked) {
       successfullyUpdated = false;
     }
 
-    const arrowIconIsVisible = inputField.value !== this.props.inputFieldValue;
+    const inputStyles = classnames([
+      successfullyUpdated ? 'input_animateSuccess' : null,
+      isActive ? null : 'input_cursorPointer',
+    ]);
 
     const leftButtonStyles = classnames([
       styles.leftButton,

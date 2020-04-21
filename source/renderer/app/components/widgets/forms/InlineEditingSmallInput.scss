@@ -2,7 +2,7 @@
   background-color: transparent;
   border: 1px solid var(--theme-input-border-color);
   border-radius: 2px;
-  padding-right: 50px;
+  padding-right: 30px;
   position: relative;
   width: 275px;
 
@@ -14,6 +14,10 @@
   &.isActive {
     border-color: var(--theme-input-focus-border-color);
     padding-right: 86px;
+
+    &.withoutRightButton {
+      padding-right: 30px !important;
+    }
   }
 
   &:not(.isActive) {
