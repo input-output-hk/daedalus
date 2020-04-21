@@ -73,7 +73,8 @@ export default class NetworkStatusStore extends Store {
   // Internal Node states
   @observable tlsConfig: ?TlsConfig = null;
   @observable cardanoNodeState: ?CardanoNodeState = null;
-  @observable cardanoNodeID: number = 0;
+  @observable cardanoNodePID: number = 0;
+  @observable cardanoWalletPID: number = 0;
   @observable isNodeResponding = false; // Is 'true' as long we are receiving node Api responses
   @observable isNodeSyncing = false; // Is 'true' in case we are receiving blocks and not stalling
   @observable isNodeInSync = false; // Is 'true' if syncing & local/network blocks diff within limit
@@ -308,7 +309,8 @@ export default class NetworkStatusStore extends Store {
       isNodeSyncing,
       isNodeInSync,
       hasBeenConnected,
-      cardanoNodeID,
+      cardanoNodePID,
+      cardanoWalletPID,
     } = from;
 
     return {
@@ -316,7 +318,8 @@ export default class NetworkStatusStore extends Store {
       isNodeSyncing,
       isNodeInSync,
       hasBeenConnected,
-      cardanoNodeID,
+      cardanoNodePID,
+      cardanoWalletPID,
     };
   };
 
