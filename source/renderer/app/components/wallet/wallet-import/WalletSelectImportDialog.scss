@@ -162,6 +162,14 @@
           background: var(--theme-utxo-tooltip-background-color);
           white-space: normal;
         }
+
+        .SimpleBubble_root.SimpleBubble_transparent.SimpleBubble_openUpward
+          [data-bubble-arrow]:before,
+        .SimpleBubble_root.SimpleBubble_transparent.SimpleBubble_openUpward
+          [data-bubble-arrow]:after {
+          border-color: var(--theme-utxo-tooltip-background-color) transparent
+            transparent transparent !important;
+        }
       }
     }
 
