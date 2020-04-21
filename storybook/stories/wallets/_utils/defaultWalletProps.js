@@ -3,7 +3,6 @@ import React from 'react';
 import { text, boolean, number } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
 import moment from 'moment';
-import wordlist from 'bip39/wordlists/english';
 
 // Screens
 import ChangeSpendingPasswordDialog from '../../../../source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog';
@@ -28,11 +27,8 @@ export const defaultProps = {
   ),
   walletRecoveryPhraseStep2Container: (
     <WalletRecoveryPhraseStep2Dialog
-      suggestedMnemonics={wordlist}
-      mnemonicValidator={() => {}}
-      isVerifying={false}
       onClose={action('onClose')}
-      onVerify={action('onVerify')}
+      onContinue={action('onContinue')}
       wordCount={number('wordCount', 12)}
     />
   ),
@@ -42,7 +38,7 @@ export const defaultProps = {
   walletRecoveryPhraseStep4Container: (
     <WalletRecoveryPhraseStep4Dialog
       onClose={action('onClose')}
-      onVerifyAgain={action('onVerifyAgain')}
+      onContinue={action('onContinue')}
       openExternalLink={action('openExternalLink')}
     />
   ),

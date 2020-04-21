@@ -5,6 +5,8 @@ import { join } from 'lodash';
 import { defineMessages, intlShape } from 'react-intl';
 import { Autocomplete } from 'react-polymorph/lib/components/Autocomplete';
 import { AutocompleteSkin } from 'react-polymorph/lib/skins/simple/AutocompleteSkin';
+import suggestedMnemonics from '../../../../../common/crypto/valid-words.en';
+import { isValidMnemonic } from '../../../../../common/crypto/decrypt';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
@@ -56,9 +58,7 @@ export const messages = defineMessages({
 });
 
 type Props = {
-  mnemonicValidator: Function,
-  suggestedMnemonics: Array<string>,
-  onVerify: Function,
+  onContinue: Function,
   onClose: Function,
   wordCount: number,
 };
@@ -102,7 +102,7 @@ export default class WalletRecoveryPhraseStep2Dialog extends Component<
               ];
             }
             return [
-              this.props.mnemonicValidator(value, wordCount),
+              isValidMnemonic(value, wordCount),
               this.context.intl.formatMessage(
                 messages.recoveryPhraseStep2InvalidMnemonics
               ),
@@ -121,13 +121,14 @@ export default class WalletRecoveryPhraseStep2Dialog extends Component<
   render() {
     const { form } = this;
     const { intl } = this.context;
-    const { onClose, onVerify, suggestedMnemonics, wordCount } = this.props;
+    const { onClose, onContinue, wordCount } = this.props;
     const { isVerifying } = this.state;
     const recoveryPhraseField = form.$('recoveryPhrase');
     const canSubmit =
       !recoveryPhraseField.error &&
       !isVerifying &&
       recoveryPhraseField.value.length === wordCount;
+    const recoveryPhrase = recoveryPhraseField.value;
     const actions = [
       {
         className: isVerifying ? styles.isVerifying : null,
@@ -135,7 +136,7 @@ export default class WalletRecoveryPhraseStep2Dialog extends Component<
         primary: true,
         onClick: () => {
           this.setState({ isVerifying: true });
-          onVerify(recoveryPhraseField.value);
+          onContinue({ recoveryPhrase });
         },
         disabled: !canSubmit,
       },

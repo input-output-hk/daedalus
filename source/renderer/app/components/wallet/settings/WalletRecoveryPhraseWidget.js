@@ -1,6 +1,5 @@
 // @flow
 import React, { Component } from 'react';
-import type { Node } from 'react';
 import { observer } from 'mobx-react';
 import { capitalize } from 'lodash';
 import classnames from 'classnames';
@@ -12,13 +11,9 @@ import SVGInline from 'react-svg-inline';
 import iconRecoveryPhraseOk from '../../../assets/images/recovery-phrase-verification-ok.inline.svg';
 import iconRecoveryPhraseWarning from '../../../assets/images/recovery-phrase-verification-warning.inline.svg';
 import iconRecoveryPhraseNotification from '../../../assets/images/recovery-phrase-verification-notification.inline.svg';
-import styles from './WalletRecoveryPhrase.scss';
+import styles from './WalletRecoveryPhraseWidget.scss';
 import { WalletRecoveryPhraseVerificationStatuses } from '../../../stores/WalletsStore';
 import { RECOVERY_PHRASE_VERIFICATION_WARNING } from '../../../config/walletsConfig';
-import WalletRecoveryPhraseStep1Dialog from './WalletRecoveryPhraseStep1Dialog';
-import WalletRecoveryPhraseStep2Dialog from './WalletRecoveryPhraseStep2Dialog';
-import WalletRecoveryPhraseStep3Dialog from './WalletRecoveryPhraseStep3Dialog';
-import WalletRecoveryPhraseStep4Dialog from './WalletRecoveryPhraseStep4Dialog';
 
 export const messages = defineMessages({
   recoveryPhraseVerificationTitle: {
@@ -86,12 +81,7 @@ export const messages = defineMessages({
 
 type Props = {
   creationDate: Date,
-  openDialogAction: Function,
-  isDialogOpen: Function,
-  walletRecoveryPhraseStep1Container: Node,
-  walletRecoveryPhraseStep2Container: Node,
-  walletRecoveryPhraseStep3Container: Node,
-  walletRecoveryPhraseStep4Container: Node,
+  onVerify: Function,
   recoveryPhraseVerificationDate: ?Date,
   recoveryPhraseVerificationStatus: string,
   recoveryPhraseVerificationStatusType: string,
@@ -167,12 +157,7 @@ export default class WalletRecoveryPhrase extends Component<Props> {
   render() {
     const { intl } = this.context;
     const {
-      openDialogAction,
-      isDialogOpen,
-      walletRecoveryPhraseStep1Container,
-      walletRecoveryPhraseStep2Container,
-      walletRecoveryPhraseStep3Container,
-      walletRecoveryPhraseStep4Container,
+      onVerify,
       recoveryPhraseVerificationStatus,
       wordCount,
     } = this.props;
@@ -230,30 +215,10 @@ export default class WalletRecoveryPhrase extends Component<Props> {
             label={intl.formatMessage(
               messages.recoveryPhraseVerificationButton
             )}
-            onClick={() => {
-              openDialogAction({
-                dialog: WalletRecoveryPhraseStep1Dialog,
-              });
-            }}
+            onClick={onVerify}
             skin={ButtonSkin}
           />
         </div>
-
-        {isDialogOpen(WalletRecoveryPhraseStep1Dialog)
-          ? walletRecoveryPhraseStep1Container
-          : false}
-
-        {isDialogOpen(WalletRecoveryPhraseStep2Dialog)
-          ? walletRecoveryPhraseStep2Container
-          : false}
-
-        {isDialogOpen(WalletRecoveryPhraseStep3Dialog)
-          ? walletRecoveryPhraseStep3Container
-          : false}
-
-        {isDialogOpen(WalletRecoveryPhraseStep4Dialog)
-          ? walletRecoveryPhraseStep4Container
-          : false}
       </div>
     );
   }

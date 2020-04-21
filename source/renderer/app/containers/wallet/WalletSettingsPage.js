@@ -5,12 +5,9 @@ import WalletSettings from '../../components/wallet/settings/WalletSettings';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import { isValidWalletName } from '../../utils/validations';
 import ChangeSpendingPasswordDialogContainer from './dialogs/settings/ChangeSpendingPasswordDialogContainer';
+import WalletRecoveryPhraseContainer from './dialogs/settings/WalletRecoveryPhraseContainer';
 import DeleteWalletDialogContainer from './dialogs/settings/DeleteWalletDialogContainer';
 import ExportWalletToFileDialogContainer from './dialogs/settings/ExportWalletToFileDialogContainer';
-import WalletRecoveryPhraseStep1Container from './dialogs/settings/WalletRecoveryPhraseStep1Container';
-import WalletRecoveryPhraseStep2Container from './dialogs/settings/WalletRecoveryPhraseStep2Container';
-import WalletRecoveryPhraseStep3Container from './dialogs/settings/WalletRecoveryPhraseStep3Container';
-import WalletRecoveryPhraseStep4Container from './dialogs/settings/WalletRecoveryPhraseStep4Container';
 
 type Props = InjectedProps;
 
@@ -54,6 +51,7 @@ export default class WalletSettingsPage extends Component<Props> {
       updateWalletField,
       forceWalletResync,
     } = actions.walletSettings;
+    const { recoveryPhraseContinue } = actions.walletBackup;
     const { getWalletRecoveryPhraseVerification } = wallets;
     const {
       creationDate,
@@ -65,64 +63,59 @@ export default class WalletSettingsPage extends Component<Props> {
     const wordCount = activeWallet.discovery === 'random' ? 12 : 15;
 
     const locale = profile.currentLocale;
+    const { isIncentivizedTestnet } = global;
 
     return (
-      <WalletSettings
-        error={updateWalletRequest.error}
-        openDialogAction={actions.dialogs.open.trigger}
-        isSpendingPasswordSet={activeWallet.hasPassword}
-        spendingPasswordUpdateDate={activeWallet.passwordUpdateDate}
-        recoveryPhraseVerificationDate={recoveryPhraseVerificationDate}
-        recoveryPhraseVerificationStatus={recoveryPhraseVerificationStatus}
-        recoveryPhraseVerificationStatusType={
-          recoveryPhraseVerificationStatusType
-        }
-        isDialogOpen={uiDialogs.isOpen}
-        isLegacy={isLegacyWallet}
-        walletId={activeWallet.id}
-        walletName={activeWallet.name}
-        creationDate={creationDate}
-        isIncentivizedTestnet={global.isIncentivizedTestnet}
-        isSubmitting={updateWalletRequest.isExecuting}
-        isForcedWalletResyncStarting={isForcedWalletResyncStarting}
-        isInvalid={
-          updateWalletRequest.wasExecuted &&
-          updateWalletRequest.result === false
-        }
-        showExportLink={!isProduction}
-        lastUpdatedField={lastUpdatedWalletField}
-        onFieldValueChange={(field, value) =>
-          updateWalletField.trigger({ field, value })
-        }
-        onStartEditing={field => startEditingWalletField.trigger({ field })}
-        onStopEditing={stopEditingWalletField.trigger}
-        onCancelEditing={cancelEditingWalletField.trigger}
-        onResyncWallet={() =>
-          forceWalletResync.trigger({
-            walletId: activeWallet.id,
-            isLegacy: activeWallet.isLegacy,
-          })
-        }
-        activeField={walletFieldBeingEdited}
-        nameValidator={name => isValidWalletName(name)}
-        changeSpendingPasswordDialog={<ChangeSpendingPasswordDialogContainer />}
-        deleteWalletDialogContainer={<DeleteWalletDialogContainer />}
-        exportWalletDialogContainer={<ExportWalletToFileDialogContainer />}
-        walletRecoveryPhraseStep1Container={
-          <WalletRecoveryPhraseStep1Container />
-        }
-        walletRecoveryPhraseStep2Container={
-          <WalletRecoveryPhraseStep2Container />
-        }
-        walletRecoveryPhraseStep3Container={
-          <WalletRecoveryPhraseStep3Container />
-        }
-        walletRecoveryPhraseStep4Container={
-          <WalletRecoveryPhraseStep4Container />
-        }
-        locale={locale}
-        wordCount={wordCount}
-      />
+      <>
+        <WalletSettings
+          error={updateWalletRequest.error}
+          openDialogAction={actions.dialogs.open.trigger}
+          isSpendingPasswordSet={activeWallet.hasPassword}
+          spendingPasswordUpdateDate={activeWallet.passwordUpdateDate}
+          recoveryPhraseVerificationDate={recoveryPhraseVerificationDate}
+          recoveryPhraseVerificationStatus={recoveryPhraseVerificationStatus}
+          recoveryPhraseVerificationStatusType={
+            recoveryPhraseVerificationStatusType
+          }
+          isDialogOpen={uiDialogs.isOpen}
+          isLegacy={isLegacyWallet}
+          walletId={activeWallet.id}
+          walletName={activeWallet.name}
+          creationDate={creationDate}
+          isIncentivizedTestnet={isIncentivizedTestnet}
+          isSubmitting={updateWalletRequest.isExecuting}
+          isForcedWalletResyncStarting={isForcedWalletResyncStarting}
+          isInvalid={
+            updateWalletRequest.wasExecuted &&
+            updateWalletRequest.result === false
+          }
+          showExportLink={!isProduction}
+          lastUpdatedField={lastUpdatedWalletField}
+          onFieldValueChange={(field, value) =>
+            updateWalletField.trigger({ field, value })
+          }
+          onStartEditing={field => startEditingWalletField.trigger({ field })}
+          onStopEditing={stopEditingWalletField.trigger}
+          onCancelEditing={cancelEditingWalletField.trigger}
+          onResyncWallet={() =>
+            forceWalletResync.trigger({
+              walletId: activeWallet.id,
+              isLegacy: activeWallet.isLegacy,
+            })
+          }
+          onRecoveryPhraseVerify={recoveryPhraseContinue.trigger}
+          activeField={walletFieldBeingEdited}
+          nameValidator={name => isValidWalletName(name)}
+          changeSpendingPasswordDialog={
+            <ChangeSpendingPasswordDialogContainer />
+          }
+          deleteWalletDialogContainer={<DeleteWalletDialogContainer />}
+          exportWalletDialogContainer={<ExportWalletToFileDialogContainer />}
+          locale={locale}
+          wordCount={wordCount}
+        />
+        {!isIncentivizedTestnet && <WalletRecoveryPhraseContainer />}
+      </>
     );
   }
 }

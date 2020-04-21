@@ -51,7 +51,7 @@ export const messages = defineMessages({
 
 type Props = {
   onClose: Function,
-  onVerifyAgain: Function,
+  onContinue: Function,
   openExternalLink: Function,
 };
 
@@ -62,12 +62,12 @@ export default class WalletRecoveryPhraseStep4Dialog extends Component<Props> {
   };
   render() {
     const { intl } = this.context;
-    const { onClose, onVerifyAgain, openExternalLink } = this.props;
+    const { onClose, onContinue, openExternalLink } = this.props;
 
     const actions = [
       {
         label: intl.formatMessage(messages.recoveryPhraseStep4Button),
-        onClick: onVerifyAgain,
+        onClick: onContinue,
         className: 'attention',
       },
     ];

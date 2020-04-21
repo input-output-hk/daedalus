@@ -3,7 +3,6 @@ import React from 'react';
 import { text, boolean, number, select } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
 import moment from 'moment';
-import wordlist from 'bip39/wordlists/english';
 import { isIncentivizedTestnetTheme } from '../../_support/utils';
 
 // Screens
@@ -214,33 +213,7 @@ export default (props: { currentTheme: string, locale: string }) => {
           )}
         />
       }
-      walletRecoveryPhraseStep1Container={
-        <WalletRecoveryPhraseStep1Dialog
-          onClose={action('onClose')}
-          onContinue={action('onContinue')}
-          wordCount={number('wordCount', 12)}
-        />
-      }
-      walletRecoveryPhraseStep2Container={
-        <WalletRecoveryPhraseStep2Dialog
-          suggestedMnemonics={wordlist}
-          mnemonicValidator={() => {}}
-          isVerifying={false}
-          onClose={action('onClose')}
-          onVerify={action('onVerify')}
-          wordCount={number('wordCount', 12)}
-        />
-      }
-      walletRecoveryPhraseStep3Container={
-        <WalletRecoveryPhraseStep3Dialog onClose={action('onClose')} />
-      }
-      walletRecoveryPhraseStep4Container={
-        <WalletRecoveryPhraseStep4Dialog
-          onClose={action('onClose')}
-          onVerifyAgain={action('onVerifyAgain')}
-          openExternalLink={action('openExternalLink')}
-        />
-      }
+      onRecoveryPhraseVerify={action('onRecoveryPhraseVerify')}
       creationDate={creationDate}
       recoveryPhraseVerificationDate={recoveryPhraseVerificationDate}
       recoveryPhraseVerificationStatus={

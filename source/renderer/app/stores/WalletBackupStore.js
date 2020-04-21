@@ -5,13 +5,11 @@ import Store from './lib/Store';
 import WalletBackupDialog from '../components/wallet/WalletBackupDialog';
 import { WALLET_BACKUP_STEPS } from '../types/walletBackupTypes';
 import { getRawWalletId } from '../api/utils';
-import { WALLET_RECOVERY_PHRASE_STATUSES } from '../config/walletRecoveryPhraseConfig';
 
 import type {
   RecoveryPhraseWord,
   walletBackupStep,
 } from '../types/walletBackupTypes';
-import type { WalletRecoveryPhraseStatus } from '../types/walletRecoveryPhraseStatusTypes';
 
 export default class WalletBackupStore extends Store {
   @observable inProgress = false;
@@ -27,8 +25,7 @@ export default class WalletBackupStore extends Store {
   @observable isTermRecoveryAccepted = false;
   @observable isTermRewardsAccepted = false;
   @observable countdownRemaining = 0;
-  @observable recoveryPhraseStatus: WalletRecoveryPhraseStatus =
-    WALLET_RECOVERY_PHRASE_STATUSES.NOT_CHECKED;
+  @observable recoveryPhraseStep = 0;
 
   countdownTimerInterval: ?IntervalID = null;
 
@@ -55,9 +52,9 @@ export default class WalletBackupStore extends Store {
     a.cancelWalletBackup.listen(this._cancelWalletBackup);
     a.finishWalletBackup.listen(this._finishWalletBackup);
     this.actions.app.initAppEnvironment.listen(() => {});
-    // Recovery phrase confirmation dialog actions
-    a.checkRecoveryPhrase.listen(this._checkRecoveryPhrase);
-    a.resetRecoveryPhraseCheck.listen(this._resetRecoveryPhraseCheck);
+    a.recoveryPhraseContinue.listen(this._recoveryPhraseContinue);
+    a.recoveryPhraseCheck.listen(this._recoveryPhraseCheck);
+    a.recoveryPhraseClose.listen(this._recoveryPhraseClose);
   }
 
   @action _initiateWalletBackup = (params: {
@@ -122,12 +119,21 @@ export default class WalletBackupStore extends Store {
     );
   };
 
-  @action _checkRecoveryPhrase = async ({
+  @action _recoveryPhraseContinue = async () => {
+    const step = this.recoveryPhraseStep;
+    if (step === 4) this.recoveryPhraseStep = 1;
+    else this.recoveryPhraseStep = step + 1;
+  };
+
+  @action _recoveryPhraseClose = async () => {
+    this.recoveryPhraseStep = 0;
+  };
+
+  @action _recoveryPhraseCheck = async ({
     recoveryPhrase,
   }: {
     recoveryPhrase: Array<string>,
   }) => {
-    this.recoveryPhraseStatus = WALLET_RECOVERY_PHRASE_STATUSES.CHECKING;
     const walletId = await getRecoveryWalletIdChannel.request(recoveryPhrase);
     const activeWallet = this.stores.wallets.active;
     if (!activeWallet)
@@ -135,17 +141,10 @@ export default class WalletBackupStore extends Store {
         'Active wallet required before checking recovery phrase.'
       );
     const activeWalletId = getRawWalletId(activeWallet.id);
-    const recoveryPhraseStatus =
-      walletId === activeWalletId
-        ? WALLET_RECOVERY_PHRASE_STATUSES.CORRECT
-        : WALLET_RECOVERY_PHRASE_STATUSES.INCORRECT;
+    const nextStep = walletId === activeWalletId ? 3 : 4;
     runInAction('AdaWalletBackupStore::_checkRecoveryPhrase', () => {
-      this.recoveryPhraseStatus = recoveryPhraseStatus;
+      this.recoveryPhraseStep = nextStep;
     });
-  };
-
-  @action _resetRecoveryPhraseCheck = () => {
-    this.recoveryPhraseStatus = WALLET_RECOVERY_PHRASE_STATUSES.NOT_CHECKED;
   };
 
   @computed get isRecoveryPhraseValid(): boolean {
