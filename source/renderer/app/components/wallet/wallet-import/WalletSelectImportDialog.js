@@ -319,14 +319,42 @@ export default class WalletSelectImportDialog extends Component<Props> {
                       className={styles.walletsCounter}
                     >{`${walletIndex}.`}</div>
                     <div className={styles.walletsInputField}>
-                      <Tooltip
-                        className={styles.unamedWalletsInputTooltip}
-                        skin={TooltipSkin}
-                        tip={intl.formatMessage(
-                          messages.enterWalletNameTooltip
-                        )}
-                        arrowRelativeToTip
-                      >
+                      {!wallet.name ? (
+                        <Tooltip
+                          className={styles.unamedWalletsInputTooltip}
+                          skin={TooltipSkin}
+                          tip={intl.formatMessage(
+                            messages.enterWalletNameTooltip
+                          )}
+                          arrowRelativeToTip
+                        >
+                          <InlineEditingSmallInput
+                            className={styles.walletsInputFieldInner}
+                            isActive={false}
+                            isDisabled={
+                              wallet.import.status ===
+                                WalletImportStatuses.COMPLETED ||
+                              wallet.import.status ===
+                                WalletImportStatuses.EXISTS ||
+                              wallet.import.status ===
+                                WalletImportStatuses.RUNNING
+                            }
+                            inputFieldValue={wallet.name || ''}
+                            placeholder={intl.formatMessage(messages.notFound)}
+                            isValid={nameValidator}
+                            validationErrorMessage={intl.formatMessage(
+                              globalMessages.invalidWalletName
+                            )}
+                            onSubmit={(name: string) =>
+                              onWalletNameChange({
+                                id: wallet.id,
+                                name,
+                              })
+                            }
+                            successfullyUpdated
+                          />
+                        </Tooltip>
+                      ) : (
                         <InlineEditingSmallInput
                           className={styles.walletsInputFieldInner}
                           isActive={false}
@@ -352,7 +380,7 @@ export default class WalletSelectImportDialog extends Component<Props> {
                           }
                           successfullyUpdated
                         />
-                      </Tooltip>
+                      )}
                     </div>
                     <div className={styles.walletsStatus}>
                       {this.getWalletStatus(wallet)}

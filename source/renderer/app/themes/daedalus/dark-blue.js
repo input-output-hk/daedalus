@@ -904,9 +904,9 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-wallet-import-button-text-color': '#e9f4fe',
     '--theme-wallet-import-button-text-color-hover': '#263345',
     '--theme-wallet-import-description-close-color': '#fff',
-    '--theme-wallet-import-description-color': '#fff',
+    '--theme-wallet-import-description-color': '#e9f4fe',
     '--theme-wallet-import-input-background-color': 'rgba(0, 0, 0, 0.1)',
-    '--theme-wallet-import-title-color': '#fff',
+    '--theme-wallet-import-title-color': '#e9f4fe',
     '--theme-wallet-import-stateFolder-border-color':
       'rgba(255, 255, 255, 0.5)',
     '--theme-wallet-import-stateFolder-button-background-color':

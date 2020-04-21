@@ -293,9 +293,7 @@
             }
 
             .SimpleCheckbox_checked {
-              border-color: var(
-                --theme-wallet-import-checkbox-border-color
-              );
+              border-color: var(--theme-wallet-import-checkbox-border-color);
               position: relative;
               top: -2.5px;
             }
