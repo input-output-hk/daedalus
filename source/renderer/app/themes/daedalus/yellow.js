@@ -905,7 +905,7 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-wallet-import-stateFolder-button-background-color-active':
       'rgba(45, 45, 45, 0.12)',
     '--theme-wallet-import-checkbox-border': '2px solid #ffffff',
-    '--theme-wallet-import-checkbox-border-color': 'rgba(255, 255, 255, 1)',
+    '--theme-wallet-import-checkbox-border-color': '#2d2d2d',
     '--theme-wallet-import-checkbox-border-color-disabled': '#ffffff',
     '--theme-wallet-import-checkbox-check-bg-color': '#ffffff',
     '--theme-wallet-import-stateFolder-label-color': '#2d2d2d',

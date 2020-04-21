@@ -294,11 +294,10 @@
 
             .SimpleCheckbox_checked {
               border-color: var(
-                --theme-wallet-import-checkbox-border-color,
-                #2f496e
+                --theme-wallet-import-checkbox-border-color
               );
               position: relative;
-              top: -3px;
+              top: -2.5px;
             }
 
             .LoadingSpinner_component {
