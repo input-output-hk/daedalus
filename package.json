@@ -183,6 +183,7 @@
     "fs-extra": "8.1.0",
     "graceful-fs": "4.2.3",
     "gulp": "4.0.0",
+    "history": "4.10.1",
     "humanize-duration": "3.22.0",
     "lodash": "4.17.15",
     "lodash-es": "4.17.15",

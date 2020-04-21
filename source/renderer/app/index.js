@@ -5,8 +5,8 @@ import { render } from 'react-dom';
 import { addLocaleData } from 'react-intl';
 import en from 'react-intl/locale-data/en';
 import ja from 'react-intl/locale-data/ja';
+import { createBrowserHistory } from 'history';
 import { RouterStore, syncHistoryWithStore } from 'mobx-react-router';
-import { hashHistory } from 'react-router';
 import App from './App';
 import setupStores from './stores';
 import actions from './actions';
@@ -29,9 +29,10 @@ const { isTest, network } = environment;
 
 const initializeDaedalus = () => {
   const api = setupApi(isTest, String(network));
-  const router = new RouterStore();
-  const history = syncHistoryWithStore(hashHistory, router);
-  const stores = setupStores(api, actions, router);
+  const browserHistory = createBrowserHistory();
+  const routingStore = new RouterStore();
+  const stores = setupStores(api, actions, routingStore);
+  const history = syncHistoryWithStore(browserHistory, routingStore);
 
   window.daedalus = {
     api,
@@ -42,7 +43,7 @@ const initializeDaedalus = () => {
     translations,
     reset: action(() => {
       Action.resetAllActions();
-      setupStores(api, actions, router);
+      setupStores(api, actions, routingStore);
     }),
   };
 
