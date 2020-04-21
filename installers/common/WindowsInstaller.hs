@@ -190,7 +190,7 @@ writeInstallerNSIS outName (Version fullVersion') InstallerConfig{hasBlock0,inst
                 createDirectory "$APPDATA\\$InstallDir\\Secrets-1.0"
                 createDirectory "$APPDATA\\$InstallDir\\Logs"
                 createDirectory "$APPDATA\\$InstallDir\\Logs\\pub"
-                onError (delete [] "$APPDATA\\$InstallDir\\launcher.lock") $
+                onError (delete [] "$APPDATA\\$InstallDir\\daedalus_lockfile") $
                     --abort "$SpacedName $(AlreadyRunning)"
                     unsafeInject $ unpack $ "Abort \" " <> installDirectory <> "$(AlreadyRunning)\""
                 iff_ (fileExists "$APPDATA\\$InstallDir\\Wallet-1.0\\open\\*.*") $
