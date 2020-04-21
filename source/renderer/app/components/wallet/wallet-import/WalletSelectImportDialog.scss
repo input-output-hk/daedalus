@@ -94,6 +94,15 @@
     position: relative;
     width: 670px;
 
+    &::-webkit-scrollbar-thumb {
+      background-color: var(--theme-splash-network-scrollbar-thumb-background);
+      &:hover {
+        background-color: var(
+            --theme-splash-network-scrollbar-thumb-background-hover
+        );
+      }
+    }
+
     .topWrapper {
       width: 100%;
     }
@@ -119,7 +128,7 @@
 
     .separatorTop,
     .separatorMiddle {
-      background-color: var(--theme-wallet-import-button-border-color);
+      border-bottom: 1px solid var(--theme-wallet-import-button-border-color);
       height: 1px;
       margin-bottom: 20px;
       margin-top: 0;
