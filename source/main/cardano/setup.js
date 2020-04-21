@@ -89,8 +89,7 @@ const restartCardanoNode = async (node: CardanoNode) => {
  */
 export const setupCardanoNode = (
   launcherConfig: LauncherConfig,
-  mainWindow: BrowserWindow,
-  locale: string
+  mainWindow: BrowserWindow
 ): CardanoNode => {
   const cardanoNode = new CardanoNode(
     logger,
@@ -118,7 +117,7 @@ export const setupCardanoNode = (
       onUpdating: () => {},
       onUpdated: () => {},
       onCrashed: code => {
-        const restartTimeout = cardanoNode.startupTries > 0 ? 30000 : 0;
+        const restartTimeout = cardanoNode.startupTries > 0 ? 30000 : 1000;
         logger.info(
           `CardanoNode crashed with code ${code}. Restarting in ${restartTimeout}ms...`,
           { code, restartTimeout }
@@ -186,7 +185,7 @@ export const setupCardanoNode = (
   });
 
   exportWalletsChannel.onRequest(
-    ({ exportSourcePath }: ExportWalletsRendererRequest) => {
+    ({ exportSourcePath, locale }: ExportWalletsRendererRequest) => {
       logger.info('ipcMain: Received request from renderer to export wallets', {
         exportSourcePath,
       });

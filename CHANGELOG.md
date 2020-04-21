@@ -3,9 +3,22 @@ Changelog
 
 ## vNext
 
+### Fixes
+
+- Persist "Blank screen fix" / "--safe-mode" flag between Daedalus restarts ([PR 1979](https://github.com/input-output-hk/daedalus/pull/1979))
+- Track `cardano-node` / `jormungandr` PID and use it for safe shutdowns and improve cardano-launcher error handling ([PR 1972](https://github.com/input-output-hk/daedalus/pull/1972))
+- Fixed "Wallet import" UI/UX issues ([PR 1968](https://github.com/input-output-hk/daedalus/pull/1968))
+
 ### Chores
 
+- Restore the paragraph about "Automatic wallet migration" on the Daedalus Flight "Splash" screen ([PR 1967](https://github.com/input-output-hk/daedalus/pull/1967))
 - Updated `Electron` and it's related dependencies ([PR 1887](https://github.com/input-output-hk/daedalus/pull/1887))
+
+## 1.0.0-FC4
+
+### Fixes
+
+- Fixed active address handling ([PR 1969](https://github.com/input-output-hk/daedalus/pull/1969))
 
 ## 1.0.0-FC3
 

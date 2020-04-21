@@ -6,7 +6,7 @@ import { refreshClient, waitForCardanoNodeToExit, waitForDaedalusToExit } from '
 import type { Daedalus } from '../../../types';
 
 declare var daedalus: Daedalus;
-const CONNECTING_TITLE = '.SyncingConnectingTitle_connecting h1';
+const CONNECTING_TITLE = '.SyncingConnectingStatus_headline';
 
 Given(/^Daedalus is running$/, function() {
   expect(this.app.isRunning()).to.equal(true);
@@ -57,6 +57,6 @@ Then(/^I should see the loading screen with "([^"]*)"$/, async function(
   });
 });
 
-Then(/^I should see the main ui/, function() {
+Then(/^I should see the main UI/, function() {
   return this.client.waitForVisible('.SidebarLayout_component');
 });
