@@ -1,4 +1,4 @@
-{ target, pkgs, runCommand, cardano-wallet, cardano-node, cardano-shell, export-wallets, db-converter, cardano-cli }:
+{ target, pkgs, runCommand, cardano-wallet, cardano-node, cardano-shell, export-wallets, cardano-cli }:
 
 let
   commonLib = import ../lib.nix {};
@@ -16,15 +16,8 @@ in runCommand "daedalus-cardano-bridge" {
   cp ${cardano-shell.nix-tools.cexes.cardano-launcher.cardano-launcher}/bin/cardano-launcher* .
   cp ${cardano-node}/bin/cardano-node* .
   cp ${export-wallets}/bin/export-wallets* .
-  cp ${db-converter}/bin/db-converter* .
   cp ${cardano-cli}/bin/cardano-cli* .
   ${pkgs.lib.optionalString (target == "x86_64-windows") ''
     cp ${pkgsCross.libffi}/bin/libffi-6.dll .
   ''}
 ''
-  #${pkgs.lib.optionalString (target == "x86_64-linux") ''
-  #  for bin in cardano-launcher cardano-wallet-byron cardano-node export-wallets db-converter; do
-  #    ${pkgs.binutils-unwrapped}/bin/strip $bin
-  #    ${pkgs.patchelf}/bin/patchelf --shrink-rpath $bin
-  #  done
-  #''}

@@ -202,28 +202,24 @@ export const exportWallets = async (
     legacyWalletDBPath = path.join(exportSourcePath, legacyWalletDB);
   }
 
-  // In case of Daedalus Flight build we need to copy over
-  // legacySecretKey and legacyWalletDB from mainnet state dir
-  // into Daedalus Flight state dir before extracting the wallets
-  if (isFlight) {
-    try {
-      const response = await prepareMigrationData(
-        mainWindow,
-        stateDir,
-        legacySecretKeyPath,
-        legacyWalletDBPath,
-        locale
-      );
-      legacySecretKeyPath = response.legacySecretKeyPath;
-      legacyWalletDBPath = response.legacyWalletDBPath;
-    } catch (error) {
-      const { code } = error || {};
-      if (code === 'EBUSY') {
-        logger.info('ipcMain: Exporting wallets failed', {
-          errors: error,
-        });
-        return Promise.resolve({ wallets: [], errors: error });
-      }
+  // Prepare Daedalus migration data
+  try {
+    const response = await prepareMigrationData(
+      mainWindow,
+      stateDir,
+      legacySecretKeyPath,
+      legacyWalletDBPath,
+      locale
+    );
+    legacySecretKeyPath = response.legacySecretKeyPath;
+    legacyWalletDBPath = response.legacyWalletDBPath;
+  } catch (error) {
+    const { code } = error || {};
+    if (code === 'EBUSY') {
+      logger.info('ipcMain: Exporting wallets failed', {
+        errors: error,
+      });
+      return Promise.resolve({ wallets: [], errors: error });
     }
   }
 
@@ -266,10 +262,8 @@ export const exportWallets = async (
     errors,
   });
 
-  // Remove Daedalus Flight migration data
-  if (isFlight) {
-    await removeMigrationData(stateDir);
-  }
+  // Remove Daedalus migration data
+  await removeMigrationData(stateDir);
 
   return Promise.resolve({ wallets, errors });
 };
