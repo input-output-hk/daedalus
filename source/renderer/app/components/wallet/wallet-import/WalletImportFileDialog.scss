@@ -173,6 +173,7 @@
 
       .noWalletError {
         @include error-message;
+        color: var(--theme-wallet-import-error-color) !important;
         max-width: 602px;
         padding-top: 20px;
         text-align: center;
