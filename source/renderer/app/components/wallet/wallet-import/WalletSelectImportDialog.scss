@@ -188,8 +188,12 @@
 
       :global {
         .SimpleTooltip_bubble {
-          margin: 0 0 -7px 70px;
+          margin: 0 0 0 70px;
           width: 330px;
+
+          > div {
+            left: 47px;
+          }
         }
       }
     }
