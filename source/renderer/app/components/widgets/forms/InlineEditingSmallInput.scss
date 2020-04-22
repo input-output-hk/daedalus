@@ -7,7 +7,7 @@
   width: 275px;
 
   &.hasError {
-    border-color: var(--rp-textarea-border-color-errored) !important;
+    border-color: var(--theme-wallet-import-error-color) !important;
     margin-bottom: 24px;
   }
 
@@ -53,8 +53,10 @@
   :global {
     .SimpleFormField_root {
       .SimpleFormField_error {
-        top: 52px;
+        color: var(--theme-wallet-import-error-color) !important;
         font-family: var(--font-medium);
+        opacity: 1;
+        top: 52px;
       }
     }
 
