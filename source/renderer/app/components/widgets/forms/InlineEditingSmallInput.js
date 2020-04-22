@@ -155,7 +155,7 @@ export default class InlineEditingSmallInput extends Component<Props, State> {
       styles.component,
       isActive ? styles.isActive : null,
       isDisabled ? styles.disabled : null,
-      inputField.error && isActive ? styles.hasError : null,
+      inputField.error ? styles.hasError : null,
       !arrowIconIsVisible ? styles.withoutRightButton : null,
     ]);
 
