@@ -160,10 +160,7 @@ export default class WalletImportFileDialog extends Component<Props, State> {
     const onLinkClick = () =>
       onOpenExternalLink(intl.formatMessage(messages.linkUrl));
 
-    const resetErrorCheck =
-      this.importPathInput &&
-      this.importPathInput.inputElement.current.value !== exportSourcePath;
-    const error = !resetErrorCheck && exportErrors !== '';
+    const error = exportErrors !== '';
 
     const inputClasses = classNames([
       styles.stateFolderInput,
