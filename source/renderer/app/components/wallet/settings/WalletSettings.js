@@ -14,7 +14,7 @@ import DeleteWalletConfirmationDialog from './DeleteWalletConfirmationDialog';
 import ChangeSpendingPasswordDialog from './ChangeSpendingPasswordDialog';
 import globalMessages from '../../../i18n/global-messages';
 import styles from './WalletSettings.scss';
-import WalletRecoveryPhraseWidget from './WalletRecoveryPhraseWidget';
+import WalletRecoveryPhraseVerificationWidget from './WalletRecoveryPhraseVerificationWidget';
 import ResyncWallet from './ResyncWallet';
 
 export const messages = defineMessages({
@@ -92,7 +92,7 @@ type Props = {
   isSubmitting: boolean,
   isForcedWalletResyncStarting: boolean,
   isIncentivizedTestnet: boolean,
-  isWalletRecoveryPhraseWidgetDisabled?: boolean,
+  isWalletRecoveryPhraseVerificationWidgetDisabled?: boolean,
   isInvalid: boolean,
   isLegacy: boolean,
   lastUpdatedField: ?string,
@@ -166,7 +166,7 @@ export default class WalletSettings extends Component<Props, State> {
       isSubmitting,
       isForcedWalletResyncStarting,
       isIncentivizedTestnet,
-      isWalletRecoveryPhraseWidgetDisabled,
+      isWalletRecoveryPhraseVerificationWidgetDisabled,
       isInvalid,
       isLegacy,
       lastUpdatedField,
@@ -269,20 +269,21 @@ export default class WalletSettings extends Component<Props, State> {
             }}
           />
 
-          {!isIncentivizedTestnet && !isWalletRecoveryPhraseWidgetDisabled && (
-            <WalletRecoveryPhraseWidget
-              onVerify={onRecoveryPhraseVerify}
-              recoveryPhraseVerificationDate={recoveryPhraseVerificationDate}
-              recoveryPhraseVerificationStatus={
-                recoveryPhraseVerificationStatus
-              }
-              recoveryPhraseVerificationStatusType={
-                recoveryPhraseVerificationStatusType
-              }
-              creationDate={creationDate}
-              wordCount={wordCount}
-            />
-          )}
+          {!isIncentivizedTestnet &&
+            !isWalletRecoveryPhraseVerificationWidgetDisabled && (
+              <WalletRecoveryPhraseVerificationWidget
+                onVerify={onRecoveryPhraseVerify}
+                recoveryPhraseVerificationDate={recoveryPhraseVerificationDate}
+                recoveryPhraseVerificationStatus={
+                  recoveryPhraseVerificationStatus
+                }
+                recoveryPhraseVerificationStatusType={
+                  recoveryPhraseVerificationStatusType
+                }
+                creationDate={creationDate}
+                wordCount={wordCount}
+              />
+            )}
 
           {isIncentivizedTestnet && (
             <div className={styles.resyncWalletBox}>

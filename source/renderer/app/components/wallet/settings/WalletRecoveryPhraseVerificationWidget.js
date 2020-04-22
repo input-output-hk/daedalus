@@ -11,7 +11,7 @@ import SVGInline from 'react-svg-inline';
 import iconRecoveryPhraseOk from '../../../assets/images/recovery-phrase-verification-ok.inline.svg';
 import iconRecoveryPhraseWarning from '../../../assets/images/recovery-phrase-verification-warning.inline.svg';
 import iconRecoveryPhraseNotification from '../../../assets/images/recovery-phrase-verification-notification.inline.svg';
-import styles from './WalletRecoveryPhraseWidget.scss';
+import styles from './WalletRecoveryPhraseVerificationWidget.scss';
 import {
   RECOVERY_PHRASE_VERIFICATION_STATUSES,
   RECOVERY_PHRASE_VERIFICATION_WARNING,
@@ -91,7 +91,7 @@ type Props = {
 };
 
 @observer
-export default class WalletRecoveryPhraseWidget extends Component<Props> {
+export default class WalletRecoveryPhraseVerificationWidget extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };

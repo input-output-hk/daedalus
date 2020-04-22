@@ -2,7 +2,6 @@
   color: var(--theme-bordered-box-text-color);
   font-family: var(--font-light);
   line-height: 1.38;
-  margin-bottom: 14px;
 
   h2 {
     color: var(--theme-input-label-color);
@@ -22,7 +21,6 @@
     display: flex;
     font-style: italic;
     justify-content: space-between;
-    margin-bottom: 20px;
     padding: 10px;
   }
   .validationStatusIcon {
