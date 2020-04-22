@@ -43,3 +43,13 @@ export type ExportedByronWallet = {
   },
   index: number,
 };
+
+export type ImportFromOption = 'stateDir' | 'secretFile';
+
+export const ImportFromOptions: {
+  STATE_DIR: ImportFromOption,
+  SECRET_FILE: ImportFromOption,
+} = {
+  STATE_DIR: 'stateDir',
+  SECRET_FILE: 'secretFile',
+};

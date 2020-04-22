@@ -5,6 +5,7 @@ import WalletImportFileDialog from '../../../components/wallet/wallet-import/Wal
 import WalletSelectImportDialog from '../../../components/wallet/wallet-import/WalletSelectImportDialog';
 import { isValidWalletName } from '../../../utils/validations';
 import type { InjectedProps } from '../../../types/injectedPropsType';
+import type { ImportFromOption } from '../../../types/walletExportTypes';
 
 type Props = InjectedProps;
 
@@ -35,8 +36,12 @@ export default class WalletImportDialogContainer extends Component<Props> {
     );
   };
 
-  onSelectExportSourcePath = () => {
-    this.props.actions.walletMigration.selectExportSourcePath.trigger();
+  onSelectExportSourcePath = (params: { importFrom: ImportFromOption }) => {
+    this.props.actions.walletMigration.selectExportSourcePath.trigger(params);
+  };
+
+  onResetExportSourcePath = () => {
+    this.props.actions.walletMigration.resetExportSourcePath.trigger();
   };
 
   render() {
@@ -45,6 +50,7 @@ export default class WalletImportDialogContainer extends Component<Props> {
       exportedWallets,
       exportErrors,
       exportSourcePath,
+      defaultExportSourcePath,
       pendingImportWalletsCount,
       isExportRunning,
       isRestorationRunning,
@@ -58,6 +64,7 @@ export default class WalletImportDialogContainer extends Component<Props> {
           <WalletImportFileDialog
             isSubmitting={isExportRunning}
             exportSourcePath={exportSourcePath}
+            defaultExportSourcePath={defaultExportSourcePath}
             exportErrors={exportErrors}
             pendingImportWalletsCount={pendingImportWalletsCount}
             onOpen={this.onOpen}
@@ -65,6 +72,7 @@ export default class WalletImportDialogContainer extends Component<Props> {
             onClose={this.onCancel}
             onOpenExternalLink={openExternalLink}
             onSelectExportSourcePath={this.onSelectExportSourcePath}
+            onResetExportSourcePath={this.onResetExportSourcePath}
           />
         )}
         {walletMigrationStep === 2 && (
@@ -74,6 +82,7 @@ export default class WalletImportDialogContainer extends Component<Props> {
             exportedWallets={exportedWallets}
             pendingImportWalletsCount={pendingImportWalletsCount}
             onConfirm={this.onConfirm}
+            onOpenExternalLink={openExternalLink}
             onWalletNameChange={this.onWalletNameChange}
             onToggleWalletImportSelection={this.onToggleWalletImportSelection}
             onClose={this.onCancel}
