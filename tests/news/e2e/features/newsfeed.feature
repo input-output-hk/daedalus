@@ -14,8 +14,8 @@ Feature: Newsfeed
     Given I am on the connecting screen
     Then I should see the newsfeed icon
 
-  Scenario: Newsfeed icon is visible in the main ui
-    Given I should see the main ui
+  Scenario: Newsfeed icon is visible in the main UI
+    Given I should see the main UI
     Then I should see the newsfeed icon
 
   Scenario: Newsfeed icon is highlighted when there are unread infos

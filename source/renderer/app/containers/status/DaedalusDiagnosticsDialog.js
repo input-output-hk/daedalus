@@ -50,7 +50,8 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
       environment,
       diskSpaceAvailable,
       tlsConfig,
-      cardanoNodeID,
+      cardanoNodePID,
+      cardanoWalletPID,
       stateDirectoryPath,
       getNetworkClockRequest,
     } = networkStatus;
@@ -71,17 +72,22 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
       mainProcessID,
       isBlankScreenFixActive,
       nodeVersion,
+      apiVersion,
+      build,
     } = environment;
 
     const coreInfo = {
       daedalusVersion: version,
+      daedalusBuildNumber: build,
       daedalusProcessID: rendererProcessID,
       daedalusMainProcessID: mainProcessID,
       daedalusStateDirectoryPath: stateDirectoryPath,
       isBlankScreenFixActive,
-      cardanoVersion: nodeVersion,
-      cardanoProcessID: cardanoNodeID,
-      cardanoAPIPort: tlsConfig ? tlsConfig.port : 0,
+      cardanoNodeVersion: nodeVersion,
+      cardanoNodePID,
+      cardanoWalletVersion: apiVersion,
+      cardanoWalletPID,
+      cardanoWalletApiPort: tlsConfig ? tlsConfig.port : 0,
       cardanoNetwork: network,
       cardanoRawNetwork: rawNetwork,
     };

@@ -47,7 +47,7 @@ Then(/^I should see the loading screen with "([^"]*)"$/, async function(
   });
 });
 
-Then(/^I should see the main ui/, function() {
+Then(/^I should see the main UI/, function() {
   return this.client.waitForVisible('.SidebarLayout_component');
 });
 

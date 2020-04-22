@@ -128,12 +128,10 @@ export const getNameOfActiveWalletInSidebar = async function() {
   );
 };
 
-export const getWalletByName = function(walletName: string) {
-  console.debug('>>> getWalletByName: ', walletName);
-  const wallet = this.client.execute(walletName => (
-    daedalus.stores.wallets.getWalletByName(walletName);
+export const getWalletByName = async function(walletName: string) {
+  const wallet = await this.client.execute(walletName => (
+    daedalus.stores.wallets.getWalletByName(walletName)
   ), walletName);
-  console.debug('>>> RESULT: ', wallet);
   return wallet.value;
 };
 

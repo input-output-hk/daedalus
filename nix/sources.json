@@ -12,15 +12,15 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "cardano-shell": {
-        "branch": "master",
+        "branch": "persist-safemode",
         "description": "Node shell, a thin layer for running the node and it's modules.",
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "cardano-shell",
-        "rev": "a85014d780cf3fa0ba5fabc3309c31e7ea6a3cfa",
-        "sha256": "035smmhb0xmxpr41ss3x86j5a78vy2zscxmd3wk73ps6hm6q4p0k",
+        "rev": "c6e46875900a44cbe4c2e738913af4f0436179c1",
+        "sha256": "0jharg7xxsfxqvay6r44frknwr6w8mq2llkacx00arjqsjf1n2h7",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-shell/archive/a85014d780cf3fa0ba5fabc3309c31e7ea6a3cfa.tar.gz",
+        "url": "https://github.com/input-output-hk/cardano-shell/archive/c6e46875900a44cbe4c2e738913af4f0436179c1.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "cardano-sl": {
@@ -41,10 +41,10 @@
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "cardano-wallet",
-        "rev": "745aaad67004855a84c51e400c6fa1d10aedb910",
-        "sha256": "03y85ipp283bwn5jk1dg4cc3304dak2szs31qhys9facjyygdf81",
+        "rev": "b8ae9821f27eb24a119aa06532519cce2ab11cbc",
+        "sha256": "1j5wv2mjbpqbjl9r9647gxq7jsv14xghizslrhcahrvkv1f5p8m4",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-wallet/archive/745aaad67004855a84c51e400c6fa1d10aedb910.tar.gz",
+        "url": "https://github.com/input-output-hk/cardano-wallet/archive/b8ae9821f27eb24a119aa06532519cce2ab11cbc.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz",
         "version": "v2020-04-07"
     },

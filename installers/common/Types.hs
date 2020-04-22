@@ -115,18 +115,18 @@ clusterNetwork Staging = "staging"
 clusterNetwork Testnet = "testnet"
 
 packageFileName :: OS -> Cluster -> Version -> Backend -> Text -> Maybe BuildJob -> FilePath
-packageFileName os cluster ver backend backendVer build = fromText name <.> ext
+packageFileName _os cluster ver backend _backendVer build = fromText name <.> ext
   where
     name = T.intercalate "-" parts
-    parts = ["daedalus", fromVer ver, backend', backendVer, lshowText cluster, os'] ++ build'
-    backend' = case backend of
+    parts = ["daedalus", fromVer ver, lshowText cluster] ++ build'
+    _backend' = case backend of
                  Cardano _ -> "cardano-wallet"
                  Jormungandr _ -> "jormungandr-wallet"
-    ext = case os of
+    ext = case _os of
             Win64   -> "exe"
             Macos64 -> "pkg"
             Linux64 -> "bin"
-    os' = case os of
+    _os' = case _os of
             Win64   -> "windows"
             Macos64 -> "macos"
             Linux64 -> "linux"

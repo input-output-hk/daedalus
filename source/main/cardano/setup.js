@@ -117,7 +117,7 @@ export const setupCardanoNode = (
       onUpdating: () => {},
       onUpdated: () => {},
       onCrashed: code => {
-        const restartTimeout = cardanoNode.startupTries > 0 ? 30000 : 0;
+        const restartTimeout = cardanoNode.startupTries > 0 ? 30000 : 1000;
         logger.info(
           `CardanoNode crashed with code ${code}. Restarting in ${restartTimeout}ms...`,
           { code, restartTimeout }

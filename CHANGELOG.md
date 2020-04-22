@@ -5,11 +5,17 @@ Changelog
 
 ### Fixes
 
+- Handle duplicate wallets in import process ([PR 1985](https://github.com/input-output-hk/daedalus/pull/1985))
+- Treat wallets with 100% syncing progress as synced wallets ([PR 1984](https://github.com/input-output-hk/daedalus/pull/1984))
+- Fixed `cardano-node` / `jormungandr` and `cardano-wallet` info on the "Diagnostics" screen ([PR 1980](https://github.com/input-output-hk/daedalus/pull/1980))
+- Persist "Blank screen fix" / "--safe-mode" flag between Daedalus restarts ([PR 1979](https://github.com/input-output-hk/daedalus/pull/1979))
+- Track `cardano-node` / `jormungandr` PID and use it for safe shutdowns and improve cardano-launcher error handling ([PR 1972](https://github.com/input-output-hk/daedalus/pull/1972))
 - Fixed "Wallet import" UI/UX issues ([PR 1968](https://github.com/input-output-hk/daedalus/pull/1968))
 
 ### Chores
 
 - All smart error handlers covered with automated E2E tests([PR 1973](https://github.com/input-output-hk/daedalus/pull/1973))
+- Updated Daedalus installer file names to contain only Daedalus version, cluster name and build number ([PR 1971](https://github.com/input-output-hk/daedalus/pull/1971))
 - Restore the paragraph about "Automatic wallet migration" on the Daedalus Flight "Splash" screen ([PR 1967](https://github.com/input-output-hk/daedalus/pull/1967))
 - Updated `Electron` and it's related dependencies ([PR 1887](https://github.com/input-output-hk/daedalus/pull/1887))
 

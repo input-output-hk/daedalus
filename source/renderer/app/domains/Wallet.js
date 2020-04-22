@@ -114,7 +114,10 @@ export default class Wallet {
   }
 
   @computed get isRestoring(): boolean {
-    return get(this, 'syncState.status') === WalletSyncStateStatuses.RESTORING;
+    return (
+      get(this, 'syncState.status') === WalletSyncStateStatuses.RESTORING &&
+      this.restorationProgress < 100
+    );
   }
 
   @computed get isNotResponding(): boolean {
