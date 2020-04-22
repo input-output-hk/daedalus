@@ -8,6 +8,10 @@ import ChangeSpendingPasswordDialogContainer from './dialogs/settings/ChangeSpen
 import WalletRecoveryPhraseContainer from './dialogs/settings/WalletRecoveryPhraseContainer';
 import DeleteWalletDialogContainer from './dialogs/settings/DeleteWalletDialogContainer';
 import ExportWalletToFileDialogContainer from './dialogs/settings/ExportWalletToFileDialogContainer';
+import {
+  LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT,
+  WALLET_RECOVERY_PHRASE_WORD_COUNT,
+} from '../../config/cryptoConfig';
 
 type Props = InjectedProps;
 
@@ -60,7 +64,10 @@ export default class WalletSettingsPage extends Component<Props> {
       recoveryPhraseVerificationStatusType,
     } = getWalletRecoveryPhraseVerification(activeWallet.id);
 
-    const wordCount = activeWallet.discovery === 'random' ? 12 : 15;
+    const wordCount =
+      activeWallet.discovery === 'random'
+        ? LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT
+        : WALLET_RECOVERY_PHRASE_WORD_COUNT;
 
     const locale = profile.currentLocale;
     const { isIncentivizedTestnet } = global;
