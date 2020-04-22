@@ -87,10 +87,10 @@ let
   in path.${os};
 
   # Used for flight builds to find legacy paths for migration
-  mainnetDataDir = let
+  legacyDataDir = let
     path.linux = "\${XDG_DATA_HOME}/Daedalus/mainnet";
-    path.macos64 = "\${HOME}/Library/Application Support/${mkSpacedName "mainnet"}";
-    path.windows = "\${APPDATA}\\${mkSpacedName "mainnet"}";
+    path.macos64 = "\${HOME}/Library/Application Support/Daedalus";
+    path.windows = "\${APPDATA}\\Daedalus";
   in path.${os};
 
   logsPrefix = let
@@ -192,7 +192,7 @@ let
       ''}
     '';
 
-    legacyStateDir = if network == "mainnet_flight" then mainnetDataDir else dataDir;
+    legacyStateDir = if (network == "mainnet_flight") || (network == "mainnet") then legacyDataDir else dataDir;
 
     legacyWalletDB = let
       path.linux = "Wallet";
