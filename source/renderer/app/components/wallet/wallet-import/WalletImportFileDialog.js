@@ -19,6 +19,7 @@ import penIcon from '../../../assets/images/pen.inline.svg';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import { ImportFromOptions } from '../../../types/walletExportTypes';
 import type { ImportFromOption } from '../../../types/walletExportTypes';
+import {get} from "lodash";
 
 const messages = defineMessages({
   title: {
@@ -124,6 +125,14 @@ export default class WalletImportFileDialog extends Component<Props, State> {
       this.setState({ importFrom });
     }
   };
+
+  get input() {
+    const fallbackInput = {
+      blur: () => {},
+      focus: () => {},
+    };
+    return get(this, 'importPathInput.inputElement.current', fallbackInput);
+  }
 
   isImportFromStateDir = (importFrom: ImportFromOption) =>
     importFrom === ImportFromOptions.STATE_DIR;
@@ -235,6 +244,7 @@ export default class WalletImportFileDialog extends Component<Props, State> {
                       ? defaultExportSourcePath
                       : '')
                   }
+                  onFocus={() => this.input.blur()}
                   placeholder={
                     this.isImportFromStateDir(importFrom)
                       ? defaultExportSourcePath
