@@ -56,7 +56,8 @@ export default class AppStore extends Store {
   }
 
   @computed get currentRoute(): string {
-    return this.stores.router.location.pathname;
+    const { location } = this.stores.router;
+    return location ? location.pathname : '';
   }
 
   @computed get currentPage(): string {

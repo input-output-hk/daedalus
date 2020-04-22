@@ -59,7 +59,7 @@ export default class Root extends Component<Props> {
       (isPageThatDoesntNeedWallets && !isNodeInStoppingSequence) ||
       (isProfilePage && (isNotEnoughDiskSpace || !isNodeInStoppingSequence))
     ) {
-      return React.Children.only(children);
+      return <>{children}</>;
     }
 
     if (
@@ -76,6 +76,6 @@ export default class Root extends Component<Props> {
       return <WalletAddPage />;
     }
 
-    return React.Children.only(children);
+    return <>{children}</>;
   }
 }
