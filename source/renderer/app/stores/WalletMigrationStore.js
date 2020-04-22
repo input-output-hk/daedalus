@@ -21,8 +21,12 @@ import type {
 import type {
   ExportedByronWallet,
   WalletImportStatus,
+  ImportFromOption,
 } from '../types/walletExportTypes';
-import { WalletImportStatuses } from '../types/walletExportTypes';
+import {
+  WalletImportStatuses,
+  ImportFromOptions,
+} from '../types/walletExportTypes';
 
 export type WalletMigrationStatus =
   | 'unstarted'
@@ -51,7 +55,8 @@ export default class WalletMigrationStore extends Store {
   @observable isExportRunning = false;
   @observable exportedWallets: Array<ExportedByronWallet> = [];
   @observable exportErrors: string = '';
-  @observable exportSourcePath: string = global.legacyStateDir;
+  @observable exportSourcePath: string = '';
+  @observable defaultExportSourcePath: string = global.legacyStateDir;
 
   @observable isRestorationRunning = false;
   @observable restoredWallets: Array<Wallet> = [];
@@ -85,6 +90,7 @@ export default class WalletMigrationStore extends Store {
     walletMigration.updateWalletName.listen(this._updateWalletName);
     walletMigration.nextStep.listen(this._nextStep);
     walletMigration.selectExportSourcePath.listen(this._selectExportSourcePath);
+    walletMigration.resetExportSourcePath.listen(this._resetExportSourcePath);
   }
 
   getExportedWalletById = (id: string): ?ExportedByronWallet =>
@@ -102,12 +108,12 @@ export default class WalletMigrationStore extends Store {
   @action _selectExportSourcePath = async ({
     importFrom,
   }: {
-    importFrom: string,
+    importFrom: ImportFromOption,
   }) => {
     const params =
-      importFrom === 'stateDir'
+      importFrom === ImportFromOptions.STATE_DIR
         ? {
-            defaultPath: global.legacyStateDir,
+            defaultPath: this.defaultExportSourcePath,
             properties: ['openDirectory'],
           }
         : {
@@ -131,6 +137,11 @@ export default class WalletMigrationStore extends Store {
     runInAction('update exportSourcePath', () => {
       this.exportSourcePath = filePath;
     });
+  };
+
+  @action _resetExportSourcePath = () => {
+    this.exportSourcePath = '';
+    this.exportErrors = '';
   };
 
   @action _nextStep = async () => {
@@ -208,7 +219,7 @@ export default class WalletMigrationStore extends Store {
       wallets,
       errors,
     }: ExportWalletsMainResponse = await exportWalletsChannel.request({
-      exportSourcePath: this.exportSourcePath,
+      exportSourcePath: this.exportSourcePath || this.defaultExportSourcePath,
       locale: this.stores.profile.currentLocale,
     });
     runInAction('update exportedWallets and exportErrors', () => {
@@ -421,7 +432,7 @@ export default class WalletMigrationStore extends Store {
   @action _resetMigration = () => {
     this._resetExportData();
     this._resetRestorationData();
-    this.exportSourcePath = global.legacyStateDir || '';
+    this.exportSourcePath = '';
   };
 
   @action _finishMigration = async () => {

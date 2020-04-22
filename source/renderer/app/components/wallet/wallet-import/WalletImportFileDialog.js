@@ -17,6 +17,8 @@ import DialogCloseButton from '../../widgets/DialogCloseButton';
 import closeCrossThin from '../../../assets/images/close-cross-thin.inline.svg';
 import penIcon from '../../../assets/images/pen.inline.svg';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
+import { ImportFromOptions } from '../../../types/walletExportTypes';
+import type { ImportFromOption } from '../../../types/walletExportTypes';
 
 const messages = defineMessages({
   title: {
@@ -46,12 +48,19 @@ const messages = defineMessages({
     defaultMessage: '!!!Import wallets',
     description: 'Import wallets',
   },
-  noWallets: {
-    id: 'wallet.import.file.dialog.noWallets',
+  stateDirNoWallets: {
+    id: 'wallet.import.file.dialog.stateDirNoWallets',
     defaultMessage:
       '!!!No wallets found. Make sure you have selected a Daedalus state directory which contains the ‘Secrets’ or `Secrets-1.0` folder with a `secret.key` file inside.',
     description:
       'No wallets found. Make sure you have selected a Daedalus state directory which contains the ‘Secrets’ or `Secrets-1.0` folder with a `secret.key` file inside.',
+  },
+  secretFileNoWallets: {
+    id: 'wallet.import.file.dialog.secretFileNoWallets',
+    defaultMessage:
+      '!!!No wallets found. Make sure you have selected a valid `secret.key` file.',
+    description:
+      'No wallets found. Make sure you have selected a valid `secret.key` file.',
   },
   linkLabel: {
     id: 'wallet.import.file.dialog.linkLabel',
@@ -81,16 +90,6 @@ const messages = defineMessages({
   },
 });
 
-type ImportFromOption = 'stateDir' | 'secretFile';
-
-const ImportFromOptions: {
-  STATE_DIR: ImportFromOption,
-  SECRET_FILE: ImportFromOption,
-} = {
-  STATE_DIR: 'stateDir',
-  SECRET_FILE: 'secretFile',
-};
-
 type Props = {
   exportErrors: string,
   isSubmitting: boolean,
@@ -99,11 +98,13 @@ type Props = {
   onClose: Function,
   onOpenExternalLink: Function,
   onSelectExportSourcePath: Function,
+  onResetExportSourcePath: Function,
   exportSourcePath: string,
+  defaultExportSourcePath: string,
 };
 
 type State = {
-  importFrom: ?ImportFromOption,
+  importFrom: ImportFromOption,
 };
 
 @observer
@@ -113,10 +114,10 @@ export default class WalletImportFileDialog extends Component<Props, State> {
   };
 
   state = {
-    importFrom: null,
+    importFrom: ImportFromOptions.STATE_DIR,
   };
 
-  stateFolderInput: Input;
+  importPathInput: Input;
 
   componentWillMount() {
     // Reset migration data
@@ -124,8 +125,17 @@ export default class WalletImportFileDialog extends Component<Props, State> {
   }
 
   onSetImportFromOption = (importFrom: ImportFromOption) => {
-    this.setState({ importFrom });
+    if (this.state.importFrom !== importFrom) {
+      this.props.onResetExportSourcePath();
+      this.setState({ importFrom });
+    }
   };
+
+  isImportFromStateDir = (importFrom: ImportFromOption) =>
+    importFrom === ImportFromOptions.STATE_DIR;
+
+  isImportFromSecretFile = (importFrom: ImportFromOption) =>
+    importFrom === ImportFromOptions.SECRET_FILE;
 
   render() {
     const { intl } = this.context;
@@ -138,6 +148,7 @@ export default class WalletImportFileDialog extends Component<Props, State> {
       onOpenExternalLink,
       onSelectExportSourcePath,
       exportSourcePath,
+      defaultExportSourcePath,
     } = this.props;
     const title = intl.formatMessage(messages.title);
     const description = <FormattedHTMLMessage {...messages.description} />;
@@ -149,13 +160,15 @@ export default class WalletImportFileDialog extends Component<Props, State> {
       <LoadingSpinner />
     );
     const linkLabel = intl.formatMessage(messages.linkLabel);
-    const noWalletError = intl.formatMessage(messages.noWallets);
+    const noWalletError = intl.formatMessage(
+      messages[`${importFrom}NoWallets`]
+    );
     const onLinkClick = () =>
       onOpenExternalLink(intl.formatMessage(messages.linkUrl));
 
     const resetErrorCheck =
-      this.stateFolderInput &&
-      this.stateFolderInput.inputElement.current.value !== exportSourcePath;
+      this.importPathInput &&
+      this.importPathInput.inputElement.current.value !== exportSourcePath;
     const error = !resetErrorCheck && exportErrors !== '';
 
     const inputClasses = classNames([
@@ -164,7 +177,11 @@ export default class WalletImportFileDialog extends Component<Props, State> {
     ]);
 
     const buttonClasses = classNames(styles.actionButton, [
-      isSubmitting || error ? styles.disabled : null,
+      isSubmitting ||
+      error ||
+      (this.isImportFromSecretFile(importFrom) && !exportSourcePath)
+        ? styles.disabled
+        : null,
     ]);
 
     return (
@@ -187,7 +204,7 @@ export default class WalletImportFileDialog extends Component<Props, State> {
             <div className={styles.title}>{title}</div>
             <div className={styles.description}>{description}</div>
 
-            <div>
+            <div className={styles.radioButtons}>
               <RadioSet
                 label={intl.formatMessage(messages.importFromLabel)}
                 items={Object.keys(ImportFromOptions).map((key: string) => {
@@ -207,62 +224,58 @@ export default class WalletImportFileDialog extends Component<Props, State> {
               />
             </div>
 
-            {importFrom && (
-              <>
-                <div className={styles.stateFolderContainer}>
-                  <p className={styles.stateFolderLabel}>
-                    {importFrom === ImportFromOptions.STATE_DIR
-                      ? stateFolderLabel
-                      : secretFileLabel}
-                  </p>
-                  <div className={styles.stateFolderInputWrapper}>
-                    <Input
-                      type="text"
-                      className={inputClasses}
-                      ref={input => {
-                        this.stateFolderInput = input;
-                      }}
-                      skin={InputSkin}
-                      value={
-                        importFrom === ImportFromOptions.STATE_DIR
-                          ? exportSourcePath
-                          : ''
-                      }
-                      placeholder={
-                        importFrom === ImportFromOptions.SECRET_FILE
-                          ? 'secret.key'
-                          : ''
-                      }
-                    />
-                    <Button
-                      className={styles.selectStateDirectoryButton}
-                      onClick={() => onSelectExportSourcePath({ importFrom })}
-                      label={
-                        <SVGInline svg={penIcon} className={styles.penIcon} />
-                      }
-                      skin={ButtonSkin}
-                    />
-                  </div>
-                  {error && (
-                    <p className={styles.noWalletError}>{noWalletError}</p>
-                  )}
-                </div>
+            <div className={styles.stateFolderContainer}>
+              <p className={styles.stateFolderLabel}>
+                {this.isImportFromStateDir(importFrom)
+                  ? stateFolderLabel
+                  : secretFileLabel}
+              </p>
+              <div className={styles.stateFolderInputWrapper}>
+                <Input
+                  type="text"
+                  className={inputClasses}
+                  ref={input => {
+                    this.importPathInput = input;
+                  }}
+                  skin={InputSkin}
+                  value={
+                    exportSourcePath ||
+                    (this.isImportFromStateDir(importFrom)
+                      ? defaultExportSourcePath
+                      : '')
+                  }
+                  placeholder={
+                    this.isImportFromStateDir(importFrom)
+                      ? defaultExportSourcePath
+                      : 'secret.key'
+                  }
+                />
+                <Button
+                  className={styles.selectStateDirectoryButton}
+                  onClick={() => onSelectExportSourcePath({ importFrom })}
+                  label={<SVGInline svg={penIcon} className={styles.penIcon} />}
+                  skin={ButtonSkin}
+                />
+              </div>
+              {error && <p className={styles.noWalletError}>{noWalletError}</p>}
+            </div>
 
-                <div className={styles.action}>
-                  <Button
-                    className={buttonClasses}
-                    disabled={isSubmitting || error}
-                    label={buttonLabel}
-                    onClick={onConfirm}
-                    skin={ButtonSkin}
-                  />
-                </div>
-              </>
-            )}
+            <div className={styles.action}>
+              <Button
+                className={buttonClasses}
+                disabled={
+                  isSubmitting ||
+                  error ||
+                  (this.isImportFromSecretFile(importFrom) && !exportSourcePath)
+                }
+                label={buttonLabel}
+                onClick={onConfirm}
+                skin={ButtonSkin}
+              />
+            </div>
 
             <Link
               className={styles.learnMoreLink}
-              disabled={isSubmitting}
               onClick={onLinkClick}
               label={linkLabel}
               skin={LinkSkin}

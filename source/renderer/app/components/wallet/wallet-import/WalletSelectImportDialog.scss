@@ -154,19 +154,6 @@
       }
     }
 
-    .unamedWalletsTooltip {
-      @extend .tooltip;
-      display: inline-block;
-      margin-left: 5px;
-
-      :global {
-        .SimpleTooltip_bubble {
-          margin: 0 0 -7px -14px;
-          width: 330px;
-        }
-      }
-    }
-
     .enterWalletNameTooltip {
       @extend .tooltip;
       display: block;
@@ -317,16 +304,6 @@
               top: 3px;
             }
           }
-
-          .walletsStatusIconCheckmark {
-            position: relative;
-            top: -5px;
-
-            svg {
-              height: 16px;
-              width: 16px;
-            }
-          }
         }
       }
     }
@@ -378,6 +355,17 @@
               var(--theme-splash-network-overlay-button-border-color);
             color: var(--theme-splash-network-overlay-button-text-color);
           }
+        }
+      }
+
+      .learnMoreLink {
+        border-bottom: 1px solid var(--theme-wallet-import-description-color);
+        color: var(--theme-wallet-import-description-color);
+        margin-right: 30px;
+        margin-top: 20px;
+        opacity: 0.8;
+        &:after {
+          background-color: var(--theme-wallet-import-description-color);
         }
       }
 
