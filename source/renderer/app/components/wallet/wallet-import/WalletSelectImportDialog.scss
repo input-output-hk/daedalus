@@ -304,6 +304,16 @@
               top: 3px;
             }
           }
+
+          .walletsStatusIconCheckmark {
+            position: relative;
+            top: -5px;
+
+            svg {
+              height: 16px;
+              width: 16px;
+            }
+          }
         }
       }
     }
