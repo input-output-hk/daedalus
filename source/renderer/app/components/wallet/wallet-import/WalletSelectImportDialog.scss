@@ -182,19 +182,6 @@
       }
     }
 
-    .unamedWalletsTooltip {
-      @extend .tooltip;
-      display: inline-block;
-      margin-left: 5px;
-
-      :global {
-        .SimpleTooltip_bubble {
-          margin: 0 0 -7px -14px;
-          width: 330px;
-        }
-      }
-    }
-
     .unamedWalletsInputTooltip {
       @extend .tooltip;
       display: inline-block;
@@ -393,6 +380,17 @@
             border: solid 1px var(--theme-wallet-import-button-border-color);
             color: var(--theme-wallet-import-button-text-color);
           }
+        }
+      }
+
+      .learnMoreLink {
+        border-bottom: 1px solid var(--theme-wallet-import-description-color);
+        color: var(--theme-wallet-import-description-color);
+        margin-right: 30px;
+        margin-top: 20px;
+        opacity: 0.8;
+        &:after {
+          background-color: var(--theme-wallet-import-description-color);
         }
       }
 

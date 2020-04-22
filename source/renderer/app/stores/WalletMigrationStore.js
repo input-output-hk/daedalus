@@ -1,5 +1,6 @@
 // @flow
 import { action, computed, observable, runInAction } from 'mobx';
+import path from 'path';
 import { orderBy } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
@@ -20,8 +21,12 @@ import type {
 import type {
   ExportedByronWallet,
   WalletImportStatus,
+  ImportFromOption,
 } from '../types/walletExportTypes';
-import { WalletImportStatuses } from '../types/walletExportTypes';
+import {
+  WalletImportStatuses,
+  ImportFromOptions,
+} from '../types/walletExportTypes';
 
 export type WalletMigrationStatus =
   | 'unstarted'
@@ -50,7 +55,8 @@ export default class WalletMigrationStore extends Store {
   @observable isExportRunning = false;
   @observable exportedWallets: Array<ExportedByronWallet> = [];
   @observable exportErrors: string = '';
-  @observable exportSourcePath: string = global.legacyStateDir;
+  @observable exportSourcePath: string = '';
+  @observable defaultExportSourcePath: string = global.legacyStateDir;
 
   @observable isRestorationRunning = false;
   @observable restoredWallets: Array<Wallet> = [];
@@ -84,6 +90,7 @@ export default class WalletMigrationStore extends Store {
     walletMigration.updateWalletName.listen(this._updateWalletName);
     walletMigration.nextStep.listen(this._nextStep);
     walletMigration.selectExportSourcePath.listen(this._selectExportSourcePath);
+    walletMigration.resetExportSourcePath.listen(this._resetExportSourcePath);
   }
 
   getExportedWalletById = (id: string): ?ExportedByronWallet =>
@@ -98,11 +105,30 @@ export default class WalletMigrationStore extends Store {
   getExportedWalletByIndex = (index: number): ?ExportedByronWallet =>
     this.exportedWallets.find(w => w.index === index);
 
-  @action _selectExportSourcePath = async () => {
-    const params = {
-      defaultPath: global.legacyStateDir,
-      properties: ['openDirectory'],
-    };
+  @action _selectExportSourcePath = async ({
+    importFrom,
+  }: {
+    importFrom: ImportFromOption,
+  }) => {
+    const params =
+      importFrom === ImportFromOptions.STATE_DIR
+        ? {
+            defaultPath: this.defaultExportSourcePath,
+            properties: ['openDirectory'],
+          }
+        : {
+            defaultPath: path.join(
+              this.stores.profile.desktopDirectoryPath,
+              'secret.key'
+            ),
+            properties: ['openFile'],
+            filters: [
+              {
+                name: 'secret',
+                extensions: ['key'],
+              },
+            ],
+          };
     const { filePaths } = await showOpenDialogChannel.send(params);
     if (!filePaths || filePaths.length === 0) {
       return;
@@ -111,6 +137,11 @@ export default class WalletMigrationStore extends Store {
     runInAction('update exportSourcePath', () => {
       this.exportSourcePath = filePath;
     });
+  };
+
+  @action _resetExportSourcePath = () => {
+    this.exportSourcePath = '';
+    this.exportErrors = '';
   };
 
   @action _nextStep = async () => {
@@ -188,7 +219,7 @@ export default class WalletMigrationStore extends Store {
       wallets,
       errors,
     }: ExportWalletsMainResponse = await exportWalletsChannel.request({
-      exportSourcePath: this.exportSourcePath,
+      exportSourcePath: this.exportSourcePath || this.defaultExportSourcePath,
       locale: this.stores.profile.currentLocale,
     });
     runInAction('update exportedWallets and exportErrors', () => {
@@ -205,7 +236,7 @@ export default class WalletMigrationStore extends Store {
             : WalletImportStatuses.UNSTARTED;
           return { ...wallet, hasName, import: { status, error: null } };
         }),
-        ['hasName', 'name', 'id', 'is_passphrase_empty'],
+        ['hasName', 'id', 'name', 'is_passphrase_empty'],
         ['desc', 'asc', 'asc', 'asc']
       );
 
@@ -401,7 +432,8 @@ export default class WalletMigrationStore extends Store {
   @action _resetMigration = () => {
     this._resetExportData();
     this._resetRestorationData();
-    this.exportSourcePath = global.legacyStateDir || '';
+    this.exportSourcePath = '';
+    this.walletMigrationStep = 1;
   };
 
   @action _finishMigration = async () => {

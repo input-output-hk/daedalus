@@ -31,12 +31,13 @@ storiesOf('Wallets|Import File', module)
       <WalletImportFileDialog
         isSubmitting={false}
         exportSourcePath="/Users/daedalus/Library/Application Support/Daedalus"
+        defaultExportSourcePath="/Users/daedalus/Library/Application Support/Daedalus"
         exportErrors=""
-        onOpen={action('onOpen')}
         onConfirm={action('onConfirm')}
         onClose={action('onClose')}
         onOpenExternalLink={action('onOpenExternalLink')}
         onSelectExportSourcePath={action('onSelectExportSourcePath')}
+        onResetExportSourcePath={action('onResetExportSourcePath')}
       />
     </VerticalFlexContainer>
   ))
@@ -61,6 +62,7 @@ storiesOf('Wallets|Import File', module)
           exportedWallets={[...namedWallets, ...unnamedWallets]}
           pendingImportWalletsCount={number('pendingImportWalletsCount', 0)}
           onConfirm={action('onConfirm')}
+          onOpenExternalLink={action('onOpenExternalLink')}
           onWalletNameChange={action('onWalletNameChange')}
           onToggleWalletImportSelection={action(
             'onToggleWalletImportSelection'

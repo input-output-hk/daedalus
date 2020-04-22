@@ -894,7 +894,8 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-wallet-import-description-close-color': '#2d2d2d',
     '--theme-wallet-import-description-close-hover-background':
       'rgba(0, 0, 0, 0.1)',
-    '--theme-wallet-import-description-color': '#2d2d2d',
+    '--theme-wallet-import-description-color': 'rgba(45, 45, 45, 0.7)',
+    '--theme-wallet-import-description-bold-color': '#2d2d2d',
     '--theme-wallet-import-input-background-color': 'rgba(0, 0, 0, 0.1)',
     '--theme-wallet-import-input-background-color-disabled':
       'rgba(250, 251, 252, 0.05)',
