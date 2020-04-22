@@ -250,7 +250,7 @@
           .walletsInputFieldInner {
             input {
               color: var(--theme-wallet-import-button-text-color);
-              font-family: var(--font-medium);
+              font-family: var(--font-regular);
               font-size: 16px;
               letter-spacing: 0.5px;
               line-height: 1.38;
@@ -259,7 +259,7 @@
               white-space: nowrap;
 
               &::-webkit-input-placeholder {
-                font-family: var(--font-medium);
+                font-family: var(--font-regular);
                 font-size: 16px;
                 letter-spacing: 0.5px;
                 line-height: 1.38;
