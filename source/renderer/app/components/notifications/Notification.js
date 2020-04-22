@@ -11,7 +11,7 @@ export type NotificationMessageProps = {
   clickToClose?: boolean,
   hasCloseButton?: boolean,
   hasEllipsis?: boolean,
-  themeOverride?: 'grey', // if left empty, the noticiation will have its normal colors
+  themeOverride?: 'grey', // if left empty, the notification will have its normal colors
   labelValues?: Object,
   hasSpinner?: boolean,
 };

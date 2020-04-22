@@ -169,7 +169,7 @@ let
     ] ++ installedPackages;
   };
   tarball = pkgs.callPackage (pkgs.path + "/nixos/lib/make-system-tarball.nix") {
-    fileName = "tarball"; # dont rename
+    fileName = "tarball"; # don't rename
     contents = [];
     storeContents = [
       {

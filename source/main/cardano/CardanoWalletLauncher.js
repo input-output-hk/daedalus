@@ -88,7 +88,7 @@ export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
     await fs.copy('tls', tlsPath);
   }
 
-  // This switch statement handles any node specifc
+  // This switch statement handles any node specific
   // configuration, prior to spawning the child process
   logger.info('Node implementation', { nodeImplementation });
   switch (nodeImplementation) {

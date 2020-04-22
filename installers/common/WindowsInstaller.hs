@@ -66,7 +66,7 @@ writeUninstallerNSIS (Version fullVersion) installerConfig = do
         --  ]
 
         name "$SpacedName Uninstaller $Version"
-        -- TODO, the nsis library doesnt support translation vars
+        -- TODO, the nsis library doesn't support translation vars
         -- name "$InstallDir $(UninstallName) $Version"
         --unsafeInjectGlobal $ unpack ( "Name \"" <> (installDirectory installerConfig) <> " $(UninstallName) " <> (fullVersion) <> "\"")
         outFile . str . encodeString $ tempDir </> "tempinstaller.exe"

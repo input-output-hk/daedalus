@@ -126,7 +126,7 @@ let
         chmod +w $FILE
 
         # if stdout is a tty, then mono 5.8 will barf over the terminfo files being too new
-        # mono 5.16 supports them, but isnt in our current nixpkgs
+        # mono 5.16 supports them, but isn't in our current nixpkgs
         # for more info, refer to `mcs/class/corlib/System/TermInfoReader.cs` and `ReadHeader`
         echo $PASS | signcode -spc ${toString signingKeys.spc} -v ${toString signingKeys.pvk} -a sha1 -$ commercial -n "TODO description" -i http://iohk.io -t http://timestamp.verisign.com/scripts/timstamp.dll -tr 10 $FILE | cat
         storePath=$(nix-store --add-fixed sha256 $FILE)

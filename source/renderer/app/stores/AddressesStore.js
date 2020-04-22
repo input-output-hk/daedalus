@@ -84,7 +84,7 @@ export default class AddressesStore extends Store {
     const addresses = this._getAddressesAllRequest(wallet.id).result;
     if (!addresses) return null;
 
-    // Check if there is any unused address and se last as active
+    // Check if there is any unused address and set last as active
     const unusedAddresses = filter(addresses, address => !address.used);
     if (unusedAddresses.length) return last(unusedAddresses);
 

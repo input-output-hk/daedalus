@@ -119,7 +119,7 @@ def verboseOutput(*args):
             pass
 
 def main():
-    """Parses options and arguments and performs fuctions"""
+    """Parses options and arguments and performs functions"""
     # setup our getoput opts and args
     try:
         (optargs, args) = getopt.getopt(sys.argv[1:], 'hv', ["help", "version",

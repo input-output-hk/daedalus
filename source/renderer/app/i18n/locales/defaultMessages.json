@@ -2649,13 +2649,13 @@
       },
       {
         "defaultMessage": "!!!I understand that I will not be eligible to earn rewards when my stake is undelegated.",
-        "description": "Label for the uneligible confirmation check in the \"Undelegate\" dialog.",
+        "description": "Label for the ineligible confirmation check in the \"Undelegate\" dialog.",
         "end": {
           "column": 3,
           "line": 62
         },
         "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
-        "id": "staking.delegationCenter.undelegate.dialog.confirmUneligibleCheck",
+        "id": "staking.delegationCenter.undelegate.dialog.confirmIneligibleCheck",
         "start": {
           "column": 26,
           "line": 56
@@ -3084,7 +3084,7 @@
       },
       {
         "defaultMessage": "!!!STEP {currentStep} OF {totalSteps}",
-        "description": "Step indicator labe on the delegation setup \"choose wallet\" step dialog.",
+        "description": "Step indicator label on the delegation setup \"choose wallet\" step dialog.",
         "end": {
           "column": 3,
           "line": 108
@@ -3159,7 +3159,7 @@
       },
       {
         "defaultMessage": "!!!STEP {currentStep} OF {totalSteps}",
-        "description": "Step indicator labe on the delegation setup \"choose wallet\" step dialog.",
+        "description": "Step indicator label on the delegation setup \"choose wallet\" step dialog.",
         "end": {
           "column": 3,
           "line": 53
@@ -3234,7 +3234,7 @@
       },
       {
         "defaultMessage": "!!!STEP {currentStep} OF {totalSteps}",
-        "description": "Step indicator labe on the delegation setup \"confirmation\" step dialog.",
+        "description": "Step indicator label on the delegation setup \"confirmation\" step dialog.",
         "end": {
           "column": 3,
           "line": 43
@@ -8816,7 +8816,7 @@
       },
       {
         "defaultMessage": "!!!Step {currentStep} of {totalSteps}",
-        "description": "Step couters in the wallet create dialog.",
+        "description": "Step counter in the wallet create dialog.",
         "end": {
           "column": 3,
           "line": 24
@@ -9967,7 +9967,7 @@
     "descriptors": [
       {
         "defaultMessage": "!!!Step {currentStep} of {totalSteps}",
-        "description": "Step couters in the wallet create dialog.",
+        "description": "Step counter in the wallet create dialog.",
         "end": {
           "column": 3,
           "line": 19
