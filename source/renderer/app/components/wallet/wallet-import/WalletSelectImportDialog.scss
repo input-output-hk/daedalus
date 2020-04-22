@@ -228,7 +228,7 @@
       width: 698px;
 
       .walletsRow {
-        align-items: center;
+        align-items: baseline;
         display: flex;
         padding: 0 40px 20px;
 
@@ -292,7 +292,14 @@
         }
 
         .walletsStatusIcon {
-          padding-left: 20px;
+          min-width: 44px;
+          position: relative;
+
+          & > * {
+            position: absolute;
+            right: 0;
+            top: -18px;
+          }
 
           :global {
             .SimpleCheckbox_check {
@@ -314,12 +321,14 @@
                 border-color: var(
                   --theme-wallet-import-background-color
                 ) !important;
+                margin-top: -3px;
               }
             }
           }
 
           .walletsStatusIconCheckmark {
-            margin-right: 4px;
+            right: 4px;
+            top: -14px;
 
             svg {
               height: 16px;
