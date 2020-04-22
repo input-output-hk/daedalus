@@ -27,7 +27,7 @@ export default class App extends Component<{
   actions: ActionsMap,
   history: Object,
 }> {
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     // Loads app's global environment variables into AppStore via ipc
     this.props.actions.app.initAppEnvironment.trigger();
   }

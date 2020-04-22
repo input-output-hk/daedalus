@@ -39,7 +39,7 @@ export default class NewsItem extends Component<Props, State> {
     newsItemCollapsible: true,
   };
 
-  componentWillReceiveProps(nextProps: Props) {
+  UNSAFE_componentWillReceiveProps(nextProps: Props) {
     const { newsItemExpanded } = this.state;
     if (
       this.props.isNewsFeedOpen &&

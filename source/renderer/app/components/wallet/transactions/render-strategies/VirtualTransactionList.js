@@ -39,7 +39,7 @@ export class VirtualTransactionList extends Component<Props> {
     isSyncingSpinnerShown: false,
   };
 
-  componentWillReceiveProps(nextProps: Props) {
+  UNSAFE_componentWillReceiveProps(nextProps: Props) {
     // Recompute all row heights in case the number of rows has changed
     const prevNumberOfRows = this.props.rows.length;
     const nextNumberOfRows = nextProps.rows.length;

@@ -91,7 +91,7 @@ export default class ConfigurationDialog extends Component<Props> {
     error: null,
   };
 
-  componentWillReceiveProps(nextProps: Props) {
+  UNSAFE_componentWillReceiveProps(nextProps: Props) {
     if (nextProps.error) {
       handleFormErrors('.ConfigurationDialog_error');
     }

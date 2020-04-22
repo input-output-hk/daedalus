@@ -210,7 +210,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
 
   recoveryPhraseAutocomplete: Autocomplete;
 
-  componentWillReceiveProps(newProps: Props) {
+  UNSAFE_componentWillReceiveProps(newProps: Props) {
     if (newProps.error) {
       handleFormErrors('.WalletRestoreDialog_error');
     }

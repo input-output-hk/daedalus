@@ -79,7 +79,7 @@ export default class WalletImportFileDialog extends Component<Props> {
 
   stateFolderInput: Input;
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     // Reset migration data
     this.props.onOpen();
   }

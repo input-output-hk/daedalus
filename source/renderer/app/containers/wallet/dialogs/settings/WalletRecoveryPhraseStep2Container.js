@@ -20,7 +20,7 @@ export default class WalletRecoveryPhraseStep2Container extends Component<Props>
     onClose: () => {},
   };
 
-  componentWillReceiveProps(nextProps: Props) {
+  UNSAFE_componentWillReceiveProps(nextProps: Props) {
     const { walletBackup } = nextProps.stores;
     const { actions } = this.props;
     const {

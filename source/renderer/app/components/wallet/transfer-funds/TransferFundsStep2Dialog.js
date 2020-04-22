@@ -100,7 +100,7 @@ export default class TransferFundsStep2Dialog extends Component<Props, State> {
     amount: null,
   };
 
-  componentWillReceiveProps(nextProps: Props) {
+  UNSAFE_componentWillReceiveProps(nextProps: Props) {
     const { transferFundsFee, sourceWallet } = nextProps;
     // "freezes" the current amounts in the component state
     if (transferFundsFee && !this.state.fees && !this.state.amount) {

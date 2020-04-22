@@ -16,7 +16,7 @@ type Props = InjectedProps;
 export default class WalletSettingsPage extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.props.actions.walletSettings.startWalletUtxoPolling.trigger();
   }
 
