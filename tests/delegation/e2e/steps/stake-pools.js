@@ -57,7 +57,7 @@ Given(/^I set stake pools fetch failed$/, async function () {
 });
 
 Given(/^I have a wallet "([^"]*)" delegated to stake pool with rank "([^"]*)"$/, async function(walletName, stakePoolRank) {
-  const wallet = getWalletByName.call(this, walletName);
+  const wallet = await getWalletByName.call(this, walletName);
   const stakePool = await getStakePoolByRanking(this.client, stakePoolRank);
   await this.client.execute((stakePoolId, walletId, passphrase) => {
     daedalus.actions.staking.joinStakePool.trigger({ stakePoolId, walletId, passphrase })

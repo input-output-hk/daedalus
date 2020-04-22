@@ -17,6 +17,7 @@ Given('I set the local time difference to be {int} seconds', async function(
     daedalus.api.ada
       .setLocalTimeDifference(timeDifference)
       .then(() => daedalus.stores.networkStatus._updateNetworkStatus())
+      .then(() => daedalus.stores.networkStatus._updateNetworkClock())
       .then(done)
       .catch(error => done(error));
   }, differenceTime);

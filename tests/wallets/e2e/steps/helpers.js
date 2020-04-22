@@ -13,15 +13,6 @@ const IMPORT_WALLET_BUTTON = '.importWalletButton';
 const IMPORT_WALLET_DIALOG = '.WalletFileImportDialog';
 const DEFAULT_LANGUAGE = 'en-US';
 
-export const addOrSetWalletsForScenario = function(wallet: Object) {
-  this.wallet = wallet;
-  if (this.context.wallets != null) {
-    this.context.wallets.push(this.wallet);
-  } else {
-    this.context.wallets = [this.wallet];
-  }
-};
-
 let rewardsMnemonicsIndex = 0;
 export const noWalletsErrorMessage = `The balance wallet for funds transfering was already used and has no longer funds.
     Remove the "Daedalus Selfnode" directory and run \`nix:dev\` again.`;
@@ -138,7 +129,12 @@ export const getNameOfActiveWalletInSidebar = async function() {
 };
 
 export const getWalletByName = function(walletName: string) {
-  return this.context.wallets.find(w => w.name === walletName);
+  console.debug('>>> getWalletByName: ', walletName);
+  const wallet = this.client.execute(walletName => (
+    daedalus.stores.wallets.getWalletByName(walletName);
+  ), walletName);
+  console.debug('>>> RESULT: ', wallet);
+  return wallet.value;
 };
 
 /**
@@ -291,7 +287,6 @@ const createWalletsSequentially = async function(wallets: Array<any>) {
         .catch(error => done(error.stack));
     }, walletData, isIncentivizedTestnetRequest.value);
     const wallet = await waitUntilWalletIsLoaded.call(this, walletData.name);
-    addOrSetWalletsForScenario.call(this, wallet);
   }
 };
 
@@ -329,13 +324,8 @@ const createWalletsAsync = async function(table, isLegacy?: boolean) {
       .catch(error => done('error.stack'));
   }, table, isLegacy);
 
-  const { storeWallets, mnemonics, BLAH } = result.value;
+  const { storeWallets, mnemonics } = result.value;
 
-  if (this.context.wallets != null) {
-    this.context.wallets.push(...result.value.storeWallets);
-  } else {
-    this.context.wallets = result.value.storeWallets;
-  }
   this.mnemonics = Object.assign(
     {},
     result.value.mnemonics,

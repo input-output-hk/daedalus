@@ -9,21 +9,14 @@ Feature: Newsfeed
   Background:
     Given I have completed the basic setup
 
-  @reconnectApp @skip
-  # @API TODO - We don't have network api endpoint
+  @reconnectApp
   Scenario: Newsfeed icon is visible on the connecting screen
-    Given im on the connecting screen
-    Then i should see the newsfeed icon
-
-  @reconnectApp @skip
-  # @API TODO - We don't have network api endpoint
-  Scenario: Newsfeed icon is visible on the syncing screen
-    Given im on the syncing screen
-    Then i should see the newsfeed icon
+    Given I am on the connecting screen
+    Then I should see the newsfeed icon
 
   Scenario: Newsfeed icon is visible in the main ui
     Given I should see the main ui
-    Then i should see the newsfeed icon
+    Then I should see the newsfeed icon
 
   Scenario: Newsfeed icon is highlighted when there are unread infos
     Given there are unread infos

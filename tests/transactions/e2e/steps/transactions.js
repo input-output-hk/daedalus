@@ -22,13 +22,20 @@ Given(
   /^I have made the following transactions:$/,
   { timeout: 40000 },
   async function(table) {
-    const txData = table.hashes().map(t => ({
-      walletId: getWalletByName.call(this, t.source).id,
-      destinationWalletId: getWalletByName.call(this, t.destination).id,
-      amount: parseInt(new BigNumber(t.amount).times(LOVELACES_PER_ADA), 10),
-      passphrase: 'Secret1234',
-      isLegacy: getWalletByName.call(this, t.source).isLegacy,
-    }));
+    const txData = await Promise.all(
+      table.hashes().map(async (t) => {
+        const sourceWallet = await getWalletByName.call(this, t.source);
+        const destinationWallet = await getWalletByName.call(this, t.destination);
+        return {
+          walletId: sourceWallet.id,
+          destinationWalletId: destinationWallet.id,
+          amount: parseInt(new BigNumber(t.amount).times(LOVELACES_PER_ADA), 10),
+          passphrase: 'Secret1234',
+          isLegacy: sourceWallet.isLegacy,
+        }
+      })
+    );
+
     this.transactions = [];
     // Sequentially (and async) create transactions with for loop
     for (const tx of txData) {
@@ -65,7 +72,7 @@ When(
   /^I fill out the send form with a transaction to "([^"]*)" wallet:$/,
   async function(walletName, table) {
     const values = table.hashes()[0];
-    const wallet = getWalletByName.call(this, walletName);
+    const wallet = await getWalletByName.call(this, walletName);
     const walletId = getRawWalletId(wallet.id);
     const isLegacy = wallet.isLegacy;
 

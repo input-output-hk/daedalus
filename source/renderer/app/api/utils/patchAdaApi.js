@@ -26,6 +26,7 @@ import type { GetNewsResponse } from '../news/types';
 import { EPOCH_LENGTH_ITN } from '../../config/epochsConfig';
 
 let LATEST_APP_VERSION = null;
+let LOCAL_TIME_DIFFERENCE = 0;
 let SYNC_PROGRESS = null;
 let NEXT_ADA_UPDATE = null;
 let APPLICATION_VERSION = null;
@@ -52,7 +53,7 @@ export default (api: AdaApi) => {
 
       // extract relevant data before sending to NetworkStatusStore
       return {
-        syncProgress: SYNC_PROGRESS || syncProgress,
+        syncProgress: SYNC_PROGRESS !== null ? SYNC_PROGRESS : syncProgress,
         localTip: {
           epoch: get(node_tip, 'epoch_number', 0),
           slot: get(node_tip, 'slot_number', 0),
@@ -231,10 +232,23 @@ export default (api: AdaApi) => {
       );
   };
 
+  api.setLocalTimeDifference = async timeDifference => {
+    LOCAL_TIME_DIFFERENCE = timeDifference;
+  };
+
+  api.getNetworkClock = async () => {
+    return {
+      status: 'available',
+      offset: LOCAL_TIME_DIFFERENCE,
+    };
+  }
+
   api.resetTestOverrides = () => {
     TESTING_WALLETS_DATA = {};
+    SYNC_PROGRESS = null;
     LATEST_APP_VERSION = null;
     NEXT_ADA_UPDATE = null;
     APPLICATION_VERSION = null;
+    LOCAL_TIME_DIFFERENCE = 0;
   };
 };

@@ -32,7 +32,7 @@ Feature: Receive money
     Then I should see 1 addresses
 
   @byron
-  Scenario: Check if wallet address belong to active wallet
+  Scenario: Check if wallet address belongs to active wallet
     Given I am on the "Target Wallet" wallet "receive" screen
     And I enter wallet password in generate address input field "Secret1234"
     And I create 1 addresses

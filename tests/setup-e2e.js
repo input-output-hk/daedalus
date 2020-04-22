@@ -130,7 +130,7 @@ Before({ tags: '@e2e', timeout: DEFAULT_TIMEOUT * 2 }, async function(testCase) 
         daedalus.api.ada.resetTestOverrides();
         daedalus.api.ada
           .testReset()
-          .then(daedalus.api.localStorage.reset)
+          .then(daedalus.api.localStorage.reset())
           .then(daedalus.stores.wallets.resetWalletsData())
           .then(done)
           .catch(error => done(error));

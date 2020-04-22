@@ -163,7 +163,7 @@ Then(
 
  Then(
   /^The active address belongs to "([^"]*)" wallet$/, async function(walletName) {
-    const { id: walletId, isLegacy } = getWalletByName.call(this, walletName);
+    const { id: walletId, isLegacy } = await getWalletByName.call(this, walletName);
     const walletAddresses = await this.client.executeAsync((walletId, isLegacy, done) => {
       daedalus.api.ada
         .getAddresses({ walletId, isLegacy })

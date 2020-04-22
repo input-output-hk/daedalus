@@ -5,7 +5,6 @@ import {
   createWallets,
   getWalletByName,
   waitUntilWalletIsLoaded,
-  addOrSetWalletsForScenario,
   restoreWalletWithFunds,
   restoreLegacyWallet,
   waitUntilUrlEquals,
@@ -33,7 +32,6 @@ Given(/^I have a "([^"]*)" (balance )?wallet with funds$/, async function(wallet
     await restoreLegacyWallet(this.client, { walletName, hasFunds: true });
   }
   const wallet = await waitUntilWalletIsLoaded.call(this, walletName);
-  addOrSetWalletsForScenario.call(this, wallet);
 });
 
 // Create a single wallet with no funds
@@ -46,20 +44,18 @@ Given(/^I have a "([^"]*)" (balance )?wallet$/, async function(walletName, _type
     await restoreLegacyWallet(this.client, { walletName, hasFunds: false });
   }
   const wallet = await waitUntilWalletIsLoaded.call(this, walletName);
-  addOrSetWalletsForScenario.call(this, wallet);
 });
 
 Given(/^I have a "([^"]*)" balance wallet for transfering funds$/, async function(walletName) {
   await restoreLegacyWallet(this.client, { walletName, hasFunds: true, transferFunds: true });
   const wallet = await waitUntilWalletIsLoaded.call(this, walletName);
-  addOrSetWalletsForScenario.call(this, wallet);
 });
 
 Given(/^I am on the "([^"]*)" wallet "([^"]*)" screen$/, async function(
   walletName,
   screen
 ) {
-  const wallet = getWalletByName.call(this, walletName);
+  const wallet = await getWalletByName.call(this, walletName);
   await navigateTo.call(this, `/wallets/${wallet.id}/${screen}`);
 });
 
@@ -110,14 +106,7 @@ Then(/^I should have newly created "([^"]*)" wallet loaded$/, async function(
       .then(done)
       .catch(error => done(error));
   });
-
-  // Add or set the wallets for this scenario
-  if (this.context.wallets != null) {
-    this.context.wallets.push(...result.value);
-  } else {
-    this.context.wallets = result.value;
-  }
-  const wallet = getWalletByName.call(this, walletName);
+  const wallet = await getWalletByName.call(this, walletName);
   expect(wallet).to.be.an('object');
 });
 
@@ -129,7 +118,7 @@ Then(/^I should be on the "([^"]*)" wallet "([^"]*)" screen$/, async function(
   walletName,
   screenName
 ) {
-  const wallet = getWalletByName.call(this, walletName);
+  const wallet = await getWalletByName.call(this, walletName);
   return waitUntilUrlEquals.call(this, `/wallets/${wallet.id}/${screenName}`);
 });
 
@@ -144,7 +133,7 @@ Then(
   { timeout: 60000 },
   async function(walletName, table) {
     const expectedData = table.hashes()[0];
-    const receiverWallet = getWalletByName.call(this, walletName);
+    const receiverWallet = await getWalletByName.call(this, walletName);
     return this.client.waitUntil(async () => {
       const receiverWalletBalance = await this.waitAndGetText(
         `.SidebarWalletsMenu_wallets .Wallet_${

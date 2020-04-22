@@ -141,7 +141,7 @@ Then(/^"([^"]*)" wallet should have "([^"]*)" as id$/, async function(
   walletName,
   walletId
 ) {
-  const wallet = getWalletByName.call(this, walletName);
+  const wallet = await getWalletByName.call(this, walletName);
   expect(wallet.id).to.equal(walletId);
 });
 

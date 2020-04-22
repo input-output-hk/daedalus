@@ -12,7 +12,7 @@ When(/^the "([^"]*)" wallet is not responding$/, async function(walletName) {
       name: string,
       syncState: Object;
     } = {
-      name: 'Test wallet - not responding',
+      name: walletName,
       syncState: {
         status,
       },

@@ -6,29 +6,19 @@ import { refreshClient, waitForCardanoNodeToExit, waitForDaedalusToExit } from '
 import type { Daedalus } from '../../../types';
 
 declare var daedalus: Daedalus;
-const CONNECTING_TITLE = '.SyncingConnectingTitle_connecting h1';
+const CONNECTING_TITLE = '.SyncingConnectingStatus_headline';
 
 Given(/^Daedalus is running$/, function() {
   expect(this.app.isRunning()).to.equal(true);
 });
 
-Given('im on the syncing screen', async function() {
-  this.client.executeAsync(done => {
-    // Simulate that syncing is necessary
-    daedalus.api.ada.setSyncProgress(10);
-    daedalus.stores.networkStatus._updateNetworkStatus().then(done);
-  });
-  await this.client.waitForVisible('.SyncingConnecting_is-syncing');
-});
-
-Given('im on the connecting screen', async function() {
+Given('I am on the connecting screen', async function() {
   this.client.executeAsync(done => {
     // Simulate that there is no connection to cardano node
-    // @API TODO - find a way to simulate lost connection
     daedalus.api.ada.setSyncProgress(0);
     daedalus.stores.networkStatus._updateNetworkStatus().then(done);
   });
-  await this.client.waitForVisible('.SyncingConnecting_is-connecting');
+  await this.client.waitForVisible('.SyncingConnectingStatus_connecting');
 });
 
 When(/^I refresh the main window$/, async function() {
@@ -59,4 +49,18 @@ Then(/^I should see the loading screen with "([^"]*)"$/, async function(
 
 Then(/^I should see the main ui/, function() {
   return this.client.waitForVisible('.SidebarLayout_component');
+});
+
+Given('I set the syncing progress to {int} percent', async function(percentage) {
+  this.client.executeAsync((percentage, done) => {
+    daedalus.api.ada.setSyncProgress(percentage);
+    daedalus.stores.networkStatus._updateNetworkStatus().then(done);
+  }, percentage);
+});
+
+When('I reset the syncing progress', async function() {
+  this.client.executeAsync(done => {
+    daedalus.api.ada.setSyncProgress(null);
+    daedalus.stores.networkStatus._updateNetworkStatus().then(done);
+  });
 });
