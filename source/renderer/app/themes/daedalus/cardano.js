@@ -907,6 +907,7 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-wallet-import-input-background-color': 'rgba(0, 0, 0, 0.1)',
     '--theme-wallet-import-input-background-color-disabled':
       'rgba(255, 255, 255, 0.05)',
+    '--theme-wallet-import-input-border-color': 'rgba(255, 255, 255, 0.3)',
     '--theme-wallet-import-title-color': '#fff',
     '--theme-wallet-import-stateFolder-border-color':
       'rgba(255, 255, 255, 0.5)',

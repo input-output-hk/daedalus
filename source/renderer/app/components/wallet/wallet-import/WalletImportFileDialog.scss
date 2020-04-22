@@ -161,6 +161,7 @@
             font-size: 16px;
             line-height: 1.38;
             padding-right: 48px;
+            user-select: text;
           }
 
           &.error {
@@ -173,6 +174,7 @@
 
       .noWalletError {
         @include error-message;
+        color: var(--theme-wallet-import-error-color) !important;
         max-width: 602px;
         padding-top: 20px;
         text-align: center;

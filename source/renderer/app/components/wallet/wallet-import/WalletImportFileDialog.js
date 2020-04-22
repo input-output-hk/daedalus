@@ -11,6 +11,7 @@ import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import SVGInline from 'react-svg-inline';
 import classNames from 'classnames';
+import { get } from 'lodash';
 import styles from './WalletImportFileDialog.scss';
 import RadioSet from '../../widgets/RadioSet';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
@@ -125,6 +126,14 @@ export default class WalletImportFileDialog extends Component<Props, State> {
     }
   };
 
+  get input() {
+    const fallbackInput = {
+      blur: () => {},
+      focus: () => {},
+    };
+    return get(this, 'importPathInput.inputElement.current', fallbackInput);
+  }
+
   isImportFromStateDir = (importFrom: ImportFromOption) =>
     importFrom === ImportFromOptions.STATE_DIR;
 
@@ -235,6 +244,7 @@ export default class WalletImportFileDialog extends Component<Props, State> {
                       ? defaultExportSourcePath
                       : '')
                   }
+                  onFocus={() => this.input.blur()}
                   placeholder={
                     this.isImportFromStateDir(importFrom)
                       ? defaultExportSourcePath
