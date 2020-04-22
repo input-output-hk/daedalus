@@ -13,9 +13,10 @@ type Props = InjectedProps;
 export default class WalletImportDialogContainer extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
-  onOpen = () => {
+  componentWillMount() {
+    // Reset migration data
     this.props.actions.walletMigration.resetMigration.trigger();
-  };
+  }
 
   onConfirm = () => {
     this.props.actions.walletMigration.nextStep.trigger();
@@ -60,7 +61,6 @@ export default class WalletImportDialogContainer extends Component<Props> {
             exportSourcePath={exportSourcePath}
             exportErrors={exportErrors}
             pendingImportWalletsCount={pendingImportWalletsCount}
-            onOpen={this.onOpen}
             onConfirm={this.onConfirm}
             onClose={this.onCancel}
             onOpenExternalLink={openExternalLink}

@@ -402,6 +402,7 @@ export default class WalletMigrationStore extends Store {
     this._resetExportData();
     this._resetRestorationData();
     this.exportSourcePath = global.legacyStateDir || '';
+    this.walletMigrationStep = 1;
   };
 
   @action _finishMigration = async () => {

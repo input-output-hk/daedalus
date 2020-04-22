@@ -63,7 +63,6 @@ const messages = defineMessages({
 type Props = {
   exportErrors: string,
   isSubmitting: boolean,
-  onOpen: Function,
   onConfirm: Function,
   onClose: Function,
   onOpenExternalLink: Function,
@@ -78,11 +77,6 @@ export default class WalletImportFileDialog extends Component<Props> {
   };
 
   stateFolderInput: Input;
-
-  componentWillMount() {
-    // Reset migration data
-    this.props.onOpen();
-  }
 
   render() {
     const { intl } = this.context;
