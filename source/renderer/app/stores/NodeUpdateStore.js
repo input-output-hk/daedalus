@@ -64,7 +64,7 @@ export default class NodeUpdateStore extends Store {
     }
   };
 
-  @action _activateAutomaticUpdate = async nextUpdateVersion => {
+  @action _activateAutomaticUpdate = async (nextUpdateVersion: ?number) => {
     if (
       nextUpdateVersion &&
       !this.isUpdateAvailable &&

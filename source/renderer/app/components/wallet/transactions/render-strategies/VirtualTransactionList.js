@@ -1,4 +1,5 @@
 // @flow
+/* eslint-disable camelcase */
 import React, { Component } from 'react';
 import type { Node } from 'react';
 import classNames from 'classnames';

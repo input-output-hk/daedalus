@@ -1,4 +1,5 @@
 // @flow
+/* eslint-disable camelcase */
 import React, { Component } from 'react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import { observer } from 'mobx-react';

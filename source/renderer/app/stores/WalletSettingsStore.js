@@ -165,7 +165,7 @@ export default class WalletSettingsStore extends Store {
     this._updateWalletUtxos(walletUtxos);
   };
 
-  @action _updateWalletUtxos = walletUtxos => {
+  @action _updateWalletUtxos = (walletUtxos: ?WalletUtxos) => {
     this.walletUtxos = walletUtxos;
   };
 

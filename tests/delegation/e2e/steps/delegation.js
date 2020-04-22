@@ -56,10 +56,10 @@ Given(/^the "([^"]*)" wallet was delegated to the first Stake Pool$/, async func
     return stakePoolsListIsLoaded;
   });
   const data = await this.client.executeAsync((walletName, passphrase, done) => {
-    const { id: walletId } = daedalus.stores.wallets.getWalletByName(walletName);
+    const { id: walletId } = daedalus.stores.wallets.getWalletByName(walletName) || {};
     const pool = daedalus.stores.staking.stakePools[0];
     const { id: stakePoolId } = pool;
-    daedalus.actions.staking.joinStakePool.trigger({ stakePoolId, walletId, passphrase });
+    daedalus.actions.staking.joinStakePool.trigger({ stakePoolId, walletId: walletId || '', passphrase });
     done(pool);
   }, walletName, 'Secret1234');
   pool = data.value;
@@ -115,10 +115,10 @@ Then(/^the "([^"]*)" wallet should display the delegated Stake Pool ticker$/, as
 
 Given(/^the "([^"]*)" wallet is undelegated$/, async function(wallet) {
   await this.client.executeAsync((walletName, passphrase, done) => {
-    const { id: walletId } = daedalus.stores.wallets.getWalletByName(walletName);
+    const { id: walletId } = daedalus.stores.wallets.getWalletByName(walletName) || {};
     const pool = daedalus.stores.staking.stakePools[0];
     const { id: stakePoolId } = pool;
-    daedalus.actions.staking.quitStakePool.trigger({ stakePoolId, walletId, passphrase });
+    daedalus.actions.staking.quitStakePool.trigger({ stakePoolId, walletId: walletId || '', passphrase });
     done(pool)
   }, wallet, 'Secret1234');
 });
@@ -212,16 +212,16 @@ Then(/^I close the wizard$/, async function() {
 
 Given('I send {int} ADA from the {string} wallet to the {string} wallet', async function(adaAmount, walletFrom, walletTo) {
   const DATA = await this.client.executeAsync((amount, senderName, receiverName, done) => {
-    const walletSender = daedalus.stores.wallets.getWalletByName(senderName);
-    const walletReceiver = daedalus.stores.wallets.getWalletByName(receiverName);
+    const walletSender = daedalus.stores.wallets.getWalletByName(senderName) || {};
+    const walletReceiver = daedalus.stores.wallets.getWalletByName(receiverName) || {};
     daedalus.stores.addresses
-      .getAddressesByWalletId(walletReceiver.id)
+      .getAddressesByWalletId(walletReceiver.id || '')
       .then(addresses => {
         daedalus.stores.wallets.sendMoneyRequest.execute({
           address: addresses[0].id,
           amount: amount * 1000000,
           passphrase: 'Secret1234',
-          walletId: walletSender.id,
+          walletId: walletSender.id || '',
         }).then(done)
       })
   }, adaAmount, walletFrom, walletTo);

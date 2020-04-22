@@ -9,6 +9,7 @@ export type NewsAction = {
   label: NewsTranslations,
   url?: NewsTranslations,
   route?: string,
+  event?: string,
 };
 
 export type NewsTarget = {

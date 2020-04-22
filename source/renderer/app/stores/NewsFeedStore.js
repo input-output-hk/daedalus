@@ -146,7 +146,7 @@ export default class NewsFeedStore extends Store {
     }
   };
 
-  @action markNewsAsRead = async newsId => {
+  @action markNewsAsRead = async (newsId: number) => {
     // Set news timestamp to LC
     await this.markNewsAsReadRequest.execute(newsId);
     // Get all read news to force @computed change
@@ -172,11 +172,11 @@ export default class NewsFeedStore extends Store {
     this.fetchingNewsFailed = fetchingNewsFailed;
   };
 
-  @action proceedNewsAction = (newsItem, e: MouseEvent) => {
+  @action proceedNewsAction = (newsItem: NewsItem, e: MouseEvent) => {
+    const { currentLocale } = this.stores.profile;
     const { url, route, event } = newsItem.action;
-
     if (url) {
-      this.stores.app.openExternalLink(url, e);
+      this.stores.app.openExternalLink(url[currentLocale], e);
     } else if (
       route &&
       newsItem.type !== NewsTypes.INCIDENT &&

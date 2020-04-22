@@ -79,7 +79,7 @@ export default class WalletSettingsPage extends Component<Props> {
         isLegacy={isLegacyWallet}
         walletId={activeWallet.id}
         walletName={activeWallet.name}
-        creationDate={creationDate}
+        creationDate={creationDate || new Date()}
         isIncentivizedTestnet={global.isIncentivizedTestnet}
         isWalletRecoveryPhraseDisabled
         isSubmitting={updateWalletRequest.isExecuting}

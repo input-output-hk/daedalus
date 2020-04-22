@@ -100,8 +100,9 @@ export const restoreLegacyWallet = async (
         daedalus.stores.wallets
           .refreshWalletsData()
           .then(() => {
-            const wallet = daedalus.stores.wallets.getWalletByName(name);
-            if (transferFunds && wallet.amount.isZero()) {
+            const wallet = daedalus.stores.wallets.getWalletByName(name) || {};
+            const walletAmount = wallet.amount || new BigNumber(0);
+            if (transferFunds && walletAmount.isZero()) {
               throw new Error(noWalletsErrorMessage);
             }
             done();
@@ -151,7 +152,7 @@ export const getFixedAmountByName = async function(walletName: string) {
   await this.client.waitUntil(async () => {
     const isRestoring = await this.client.execute(
       (walletName) => {
-        const { isRestoring } = daedalus.stores.wallets.getWalletByName(walletName);
+        const { isRestoring } = daedalus.stores.wallets.getWalletByName(walletName) || {};
         return isRestoring;
       },
       walletName,
@@ -161,7 +162,8 @@ export const getFixedAmountByName = async function(walletName: string) {
   const walletAmount =
     await this.client.execute(
       (walletName) => {
-        const { amount } = daedalus.stores.wallets.getWalletByName(walletName);
+        const foundWallet = daedalus.stores.wallets.getWalletByName(walletName) || {};
+        const amount = foundWallet.amount || new BigNumber(0);
         return amount.toFixed();
       },
       walletName,

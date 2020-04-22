@@ -1,4 +1,5 @@
 // @flow
+/* eslint-disable camelcase */
 import React, { Component, Fragment } from 'react';
 import { join } from 'lodash';
 import { observer } from 'mobx-react';

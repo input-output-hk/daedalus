@@ -1,4 +1,5 @@
 // @flow
+/* eslint-disable camelcase */
 import React, { Component } from 'react';
 import moment from 'moment';
 import { observer } from 'mobx-react';

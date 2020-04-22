@@ -1,4 +1,5 @@
 // @flow
+/* eslint-disable camelcase */
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import InstructionsDialog from '../../components/wallet/paper-wallet-certificate/InstructionsDialog';

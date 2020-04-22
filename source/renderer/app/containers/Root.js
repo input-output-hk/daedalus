@@ -12,6 +12,8 @@ type Props = InjectedContainerProps;
 @inject('stores', 'actions')
 @observer
 export default class Root extends Component<Props> {
+  static defaultProps = { actions: null, stores: null };
+
   render() {
     const { stores, actions, children } = this.props;
     const {

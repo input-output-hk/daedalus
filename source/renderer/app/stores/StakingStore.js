@@ -258,7 +258,7 @@ export default class StakingStore extends Store {
     }
   };
 
-  @action _resetPolling = fetchFailed => {
+  @action _resetPolling = (fetchFailed: boolean) => {
     if (fetchFailed) {
       this.fetchingStakePoolsFailed = true;
       clearInterval(this.pollingStakePoolsInterval);
@@ -281,7 +281,7 @@ export default class StakingStore extends Store {
   };
 
   // For testing only
-  @action _setFakePoller = forceLoading => {
+  @action _setFakePoller = (forceLoading: boolean) => {
     const { stores, environment } = this;
     const { networkStatus, wallets } = stores;
     const { isConnected } = networkStatus;
