@@ -205,7 +205,7 @@ export default class WalletMigrationStore extends Store {
             : WalletImportStatuses.UNSTARTED;
           return { ...wallet, hasName, import: { status, error: null } };
         }),
-        ['hasName', 'name', 'id', 'is_passphrase_empty'],
+        ['hasName', 'id', 'name', 'is_passphrase_empty'],
         ['desc', 'asc', 'asc', 'asc']
       );
 
