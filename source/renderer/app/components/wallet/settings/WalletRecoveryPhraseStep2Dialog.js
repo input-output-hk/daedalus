@@ -164,20 +164,6 @@ export default class WalletRecoveryPhraseStep2Dialog extends Component<
           label={intl.formatMessage(messages.recoveryPhraseStep2Subtitle)}
           placeholder={intl.formatMessage(messages.recoveryPhraseInputHint)}
           options={suggestedMnemonics}
-          preselectedOptions={[
-            'craft',
-            'blade',
-            'oil',
-            'fork',
-            'able',
-            'math',
-            'cat',
-            'kidney',
-            'clutch',
-            'menu',
-            'remind',
-            'clap',
-          ]}
           maxSelections={wordCount}
           error={recoveryPhraseField.error}
           maxVisibleOptions={5}
