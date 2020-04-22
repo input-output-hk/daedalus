@@ -4,7 +4,7 @@ import { Provider, observer } from 'mobx-react';
 import { ThemeProvider } from 'react-polymorph/lib/components/ThemeProvider';
 import { SimpleSkins } from 'react-polymorph/lib/skins/simple';
 import DevTools from 'mobx-react-devtools';
-import { Router } from 'react-router';
+import { HashRouter, withRouter } from 'react-router-dom';
 import { IntlProvider } from 'react-intl';
 import { Routes } from './Routes';
 import { daedalusTheme } from './themes/daedalus';
@@ -21,6 +21,7 @@ import type { StoresMap } from './stores/index';
 import type { ActionsMap } from './actions/index';
 import NewsFeedContainer from './containers/news/NewsFeedContainer';
 
+@withRouter
 @observer
 export default class App extends Component<{
   stores: StoresMap,
@@ -63,7 +64,7 @@ export default class App extends Component<{
               {...{ locale, key: locale, messages: translations[locale] }}
             >
               <Fragment>
-                <Router history={history}>{Routes}</Router>
+                <HashRouter history={history}>{Routes}</HashRouter>
                 {mobxDevTools}
                 {showNextUpdate ? (
                   <AutomaticUpdateNotificationDialog />
