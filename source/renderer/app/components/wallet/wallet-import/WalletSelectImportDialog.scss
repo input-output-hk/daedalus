@@ -228,7 +228,7 @@
       width: 698px;
 
       .walletsRow {
-        align-items: baseline;
+        align-items: center;
         display: flex;
         padding: 0 40px 20px;
 
@@ -293,15 +293,11 @@
 
         .walletsStatusIcon {
           padding-left: 20px;
-          position: relative;
-          top: 3px;
 
           :global {
             .SimpleCheckbox_check {
               border: 1px solid var(--theme-wallet-import-checkbox-border-color) !important;
               height: 23px;
-              position: relative;
-              top: 2px;
               width: 23px;
             }
 
@@ -313,8 +309,6 @@
 
             .SimpleCheckbox_checked {
               border-color: var(--theme-wallet-import-checkbox-border-color);
-              position: relative;
-              top: -2.5px;
 
               &:after {
                 border-color: var(
@@ -322,16 +316,10 @@
                 ) !important;
               }
             }
-
-            .LoadingSpinner_component {
-              position: relative;
-              top: 3px;
-            }
           }
 
           .walletsStatusIconCheckmark {
-            left: -3px;
-            position: relative;
+            margin-right: 4px;
 
             svg {
               height: 16px;
