@@ -301,17 +301,21 @@
               width: 23px;
             }
 
-            .SimpleCheckbox_checked {
+            .SimpleCheckbox_check.SimpleCheckbox_checked {
               background-color: var(
-                --theme-wallet-import-checkbox-check-bg-color
+                  --theme-wallet-import-checkbox-check-bg-color
               );
-              border-color: var(--theme-wallet-import-checkbox-border-color);
+            }
+
+            .SimpleCheckbox_checked {
+              border-color: var(
+                --theme-wallet-import-checkbox-border-color);
               position: relative;
               top: -2.5px;
 
               &:after {
                 border-color: var(
-                  --theme-wallet-import-background-color
+                    --theme-wallet-import-background-color
                 ) !important;
               }
             }
