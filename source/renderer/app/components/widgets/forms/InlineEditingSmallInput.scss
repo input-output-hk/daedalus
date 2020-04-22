@@ -1,6 +1,6 @@
 .component {
   background-color: transparent;
-  border: 1px solid var(--theme-wallet-import-input-border-color);
+  border: 1px solid var(--theme-input-focus-border-color);
   border-radius: 2px;
   padding-right: 30px;
   position: relative;
@@ -12,7 +12,7 @@
   }
 
   &.isActive {
-    border-color: var(--theme-input-focus-border-color);
+    border-color: var(--theme-wallet-import-input-border-color);
     padding-right: 70px;
 
     &.withoutRightButton {
