@@ -1,5 +1,6 @@
 // @flow
 import { action, computed, observable, runInAction } from 'mobx';
+import path from 'path';
 import { orderBy } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
@@ -98,11 +99,30 @@ export default class WalletMigrationStore extends Store {
   getExportedWalletByIndex = (index: number): ?ExportedByronWallet =>
     this.exportedWallets.find(w => w.index === index);
 
-  @action _selectExportSourcePath = async () => {
-    const params = {
-      defaultPath: global.legacyStateDir,
-      properties: ['openDirectory'],
-    };
+  @action _selectExportSourcePath = async ({
+    importFrom,
+  }: {
+    importFrom: string,
+  }) => {
+    const params =
+      importFrom === 'stateDir'
+        ? {
+            defaultPath: global.legacyStateDir,
+            properties: ['openDirectory'],
+          }
+        : {
+            defaultPath: path.join(
+              this.stores.profile.desktopDirectoryPath,
+              'secret.key'
+            ),
+            properties: ['openFile'],
+            filters: [
+              {
+                name: 'secret',
+                extensions: ['key'],
+              },
+            ],
+          };
     const { filePaths } = await showOpenDialogChannel.send(params);
     if (!filePaths || filePaths.length === 0) {
       return;

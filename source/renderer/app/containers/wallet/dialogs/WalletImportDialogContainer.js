@@ -35,8 +35,8 @@ export default class WalletImportDialogContainer extends Component<Props> {
     );
   };
 
-  onSelectExportSourcePath = () => {
-    this.props.actions.walletMigration.selectExportSourcePath.trigger();
+  onSelectExportSourcePath = (params: { importFrom: string }) => {
+    this.props.actions.walletMigration.selectExportSourcePath.trigger(params);
   };
 
   render() {
