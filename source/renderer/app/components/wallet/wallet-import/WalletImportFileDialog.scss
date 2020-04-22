@@ -138,7 +138,9 @@
           background-color: var(--theme-wallet-import-checkbox-check-bg-color);
 
           &:after {
-            background-color: var(--theme-wallet-import-background-color) !important;
+            background-color: var(
+              --theme-wallet-import-background-color
+            ) !important;
           }
         }
       }
