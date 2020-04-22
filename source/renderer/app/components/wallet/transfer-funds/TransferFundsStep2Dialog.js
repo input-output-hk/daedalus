@@ -4,6 +4,7 @@ import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import BigNumber from 'bignumber.js';
 import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
+import vjf from 'mobx-react-form/lib/validators/VJF';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
@@ -138,6 +139,7 @@ export default class TransferFundsStep2Dialog extends Component<Props, State> {
       },
     },
     {
+      plugins: { vjf: vjf() },
       options: {
         validateOnChange: true,
         validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,

@@ -8,6 +8,7 @@ import { Input } from 'react-polymorph/lib/components/Input';
 import { AutocompleteSkin } from 'react-polymorph/lib/skins/simple/AutocompleteSkin';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
+import vjf from 'mobx-react-form/lib/validators/VJF';
 import RadioSet from '../widgets/RadioSet';
 import ReactToolboxMobxForm, {
   handleFormErrors,
@@ -308,6 +309,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
       },
     },
     {
+      plugins: { vjf: vjf() },
       options: {
         validateOnChange: true,
         validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,

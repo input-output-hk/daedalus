@@ -6,6 +6,7 @@ import {
   FormattedMessage,
   FormattedHTMLMessage,
 } from 'react-intl';
+import vjf from 'mobx-react-form/lib/validators/VJF';
 import classNames from 'classnames';
 import { get } from 'lodash';
 import { observer } from 'mobx-react';
@@ -128,6 +129,7 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
       },
     },
     {
+      plugins: { vjf: vjf() },
       options: {
         validateOnChange: true,
         validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
