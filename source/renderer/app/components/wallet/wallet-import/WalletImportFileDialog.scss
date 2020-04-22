@@ -121,12 +121,24 @@
 
     .radioButtons {
       :global {
+        .RadioSet_label {
+          color: var(--theme-wallet-import-stateFolder-label-color);
+        }
+
+        .SimpleRadio_label {
+          color: var(--theme-wallet-import-description-color);
+        }
+
         .SimpleRadio_circle {
           border-color: var(--theme-wallet-import-checkbox-border-color);
         }
 
         .SimpleRadio_circle.SimpleRadio_selected {
           background-color: var(--theme-wallet-import-checkbox-check-bg-color);
+
+          &:after {
+            background-color: transparent !important;
+          }
         }
       }
     }

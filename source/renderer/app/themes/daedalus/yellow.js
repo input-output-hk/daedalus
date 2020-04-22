@@ -266,7 +266,7 @@ export const YELLOW_THEME_OUTPUT = {
   input: {
     '--theme-input-background-color': '#fff',
     '--theme-input-border-color': 'rgba(45, 45, 45, 0.3)',
-    '--theme-input-focus-border-color': 'rgba(45, 45, 45, 0.7)',
+    '--theme-input-focus-border-color': 'rgba(45, 45, 45, 0.3)',
     '--theme-input-hint-font': 'NotoSans-Regular, NotoSansCJKjp-Regular',
     '--theme-input-label-color': '#2d2d2d',
     '--theme-input-placeholder-color': 'rgba(45, 45, 45, 0.5)',
@@ -900,7 +900,7 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-wallet-import-input-background-color': 'rgba(0, 0, 0, 0.1)',
     '--theme-wallet-import-input-background-color-disabled':
       'rgba(45, 45, 45, 0.05)',
-    '--theme-wallet-import-input-border-color': 'rgba(45, 45, 45, 0.3)',
+    '--theme-wallet-import-input-border-color': 'rgba(45, 45, 45, 0.7)',
     '--theme-wallet-import-title-color': '#2d2d2d',
     '--theme-wallet-import-stateFolder-border-color': 'rgba(45, 45, 45, 0.3)',
     '--theme-wallet-import-stateFolder-button-background-color':
