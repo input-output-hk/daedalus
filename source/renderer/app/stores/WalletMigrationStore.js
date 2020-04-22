@@ -136,6 +136,7 @@ export default class WalletMigrationStore extends Store {
     const filePath = filePaths[0];
     runInAction('update exportSourcePath', () => {
       this.exportSourcePath = filePath;
+      this.exportErrors = '';
     });
   };
 
