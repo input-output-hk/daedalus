@@ -6,6 +6,11 @@ Changelog
 ### Features
 
 - Integrated the recovery phrase verification and re-enabled "Recovery phrase verification" feature ([PR 1929](https://github.com/input-output-hk/daedalus/pull/1929))
+## 1.0.0
+
+### Chores
+
+- Rename "Daedalus" to "Daedalus Mainnet" and update state directory path ([PR 1986](https://github.com/input-output-hk/daedalus/pull/1986))
 
 ## 1.0.0-FC5
 
