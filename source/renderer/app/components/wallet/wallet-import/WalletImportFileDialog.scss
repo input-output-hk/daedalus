@@ -102,7 +102,6 @@
       line-height: 1.38;
       margin-bottom: 20px;
       max-width: 560px;
-      opacity: 0.7;
 
       p {
         color: var(--theme-wallet-import-description-color);
@@ -111,6 +110,23 @@
 
         &:last-child {
           margin-bottom: 0;
+        }
+
+        strong {
+          color: var(--theme-wallet-import-description-bold-color);
+          font-family: var(--font-semibold);
+        }
+      }
+    }
+
+    .radioButtons {
+      :global {
+        .SimpleRadio_circle {
+          border-color: var(--theme-wallet-import-checkbox-border-color);
+        }
+
+        .SimpleRadio_circle.SimpleRadio_selected {
+          background-color: var(--theme-wallet-import-checkbox-check-bg-color);
         }
       }
     }
