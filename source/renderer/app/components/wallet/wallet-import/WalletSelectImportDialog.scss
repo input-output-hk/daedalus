@@ -169,7 +169,6 @@
       :global {
         .SimpleBubble_bubble {
           background: var(--theme-utxo-tooltip-background-color);
-          white-space: normal;
         }
 
         .SimpleBubble_root.SimpleBubble_transparent.SimpleBubble_openUpward
@@ -182,15 +181,13 @@
 
     .unamedWalletsInputTooltip {
       @extend .tooltip;
-      display: inline-block;
 
       :global {
         .SimpleTooltip_bubble {
-          margin: 0 0 0 70px;
-          width: 330px;
-
           > div {
-            left: 47px;
+            left: 50%;
+            margin: 0;
+            transform: translateX(-50%);
           }
         }
       }
@@ -198,20 +195,19 @@
 
     .enterWalletNameTooltip {
       @extend .tooltip;
-      display: block;
 
       :global {
         .SimpleTooltip_bubble {
-          margin: 0 0 0 -84px;
+          > div {
+            left: auto;
+            margin: 0;
+            right: -20px;
+            transform: translateX(0);
 
-          .SimpleBubble_bubble {
-            white-space: nowrap;
-          }
-
-          span {
-            &:before,
-            &:after {
-              margin-left: 78px;
+            [data-bubble-arrow]:before,
+            [data-bubble-arrow]:after {
+              left: auto;
+              right: 21px;
             }
           }
         }
