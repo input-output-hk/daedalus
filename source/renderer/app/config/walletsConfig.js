@@ -15,10 +15,6 @@ export const CREATE_WALLET_STEPS = [
   'config',
 ];
 
-// WALLET RECOVERY PHRASE CHECKING
-export const RECOVERY_PHRASE_VERIFICATION_WARNING = 183; // days
-export const RECOVERY_PHRASE_VERIFICATION_NOTIFICATION = 365; // days
-
 export const WALLET_RESTORE_TYPES = {
   REGULAR: 'regular', // Shelley wallet
   CERTIFICATE: 'certificate', // Paper wallet

@@ -20,7 +20,7 @@ export default class WalletRecoveryPhraseContainer extends Component<Props> {
   };
 
   get step() {
-    return this.props.stores.walletBackup.recoveryPhraseStep;
+    return this.props.stores.walletSettings.recoveryPhraseStep;
   }
 
   get recoveryPhraseComponent() {
@@ -37,16 +37,16 @@ export default class WalletRecoveryPhraseContainer extends Component<Props> {
     const { active: activeWallet } = stores.wallets;
     if (!activeWallet) throw new Error('Active wallet required.');
     const {
-      recoveryPhraseContinue,
-      recoveryPhraseCheck,
-      recoveryPhraseClose,
-    } = actions.walletBackup;
+      recoveryPhraseVerificationContinue,
+      recoveryPhraseVerificationCheck,
+      recoveryPhraseVerificationClose,
+    } = actions.walletSettings;
     const { openExternalLink } = stores.app;
     const onContinue =
       this.step === 2
-        ? recoveryPhraseCheck.trigger
-        : recoveryPhraseContinue.trigger;
-    const onClose = recoveryPhraseClose.trigger;
+        ? recoveryPhraseVerificationCheck.trigger
+        : recoveryPhraseVerificationContinue.trigger;
+    const onClose = recoveryPhraseVerificationClose.trigger;
 
     const wordCount =
       activeWallet.discovery === 'random'

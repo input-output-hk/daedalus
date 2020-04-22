@@ -19,11 +19,22 @@ export default class WalletSettingsActions {
     newPassword: string,
     isLegacy: boolean,
   }> = new Action();
-  exportToFile: Action<WalletExportToFileParams> = new Action();
-  startWalletUtxoPolling: Action<any> = new Action();
-  stopWalletUtxoPolling: Action<any> = new Action();
   forceWalletResync: Action<{
     walletId: string,
     isLegacy: boolean,
   }> = new Action();
+  exportToFile: Action<WalletExportToFileParams> = new Action();
+
+  /* ----------  UTXO  ---------- */
+  startWalletUtxoPolling: Action<any> = new Action();
+  stopWalletUtxoPolling: Action<any> = new Action();
+
+  /* ----------  Recovery Phrase Verification  ---------- */
+  updateWalletLocalData: Action<any> = new Action();
+  updateRecoveryPhraseVerificationDate: Action<any> = new Action();
+  recoveryPhraseVerificationContinue: Action<any> = new Action();
+  recoveryPhraseVerificationCheck: Action<{
+    recoveryPhrase: Array<string>,
+  }> = new Action();
+  recoveryPhraseVerificationClose: Action<any> = new Action();
 }

@@ -12,8 +12,10 @@ import iconRecoveryPhraseOk from '../../../assets/images/recovery-phrase-verific
 import iconRecoveryPhraseWarning from '../../../assets/images/recovery-phrase-verification-warning.inline.svg';
 import iconRecoveryPhraseNotification from '../../../assets/images/recovery-phrase-verification-notification.inline.svg';
 import styles from './WalletRecoveryPhraseWidget.scss';
-import { WalletRecoveryPhraseVerificationStatuses } from '../../../stores/WalletsStore';
-import { RECOVERY_PHRASE_VERIFICATION_WARNING } from '../../../config/walletsConfig';
+import {
+  RECOVERY_PHRASE_VERIFICATION_STATUSES,
+  RECOVERY_PHRASE_VERIFICATION_WARNING,
+} from '../../../config/walletRecoveryPhraseVerificationConfig';
 
 export const messages = defineMessages({
   recoveryPhraseVerificationTitle: {
@@ -89,7 +91,7 @@ type Props = {
 };
 
 @observer
-export default class WalletRecoveryPhrase extends Component<Props> {
+export default class WalletRecoveryPhraseWidget extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -176,12 +178,12 @@ export default class WalletRecoveryPhrase extends Component<Props> {
     let validationStatusButtonType = 'flat';
     if (
       recoveryPhraseVerificationStatus ===
-      WalletRecoveryPhraseVerificationStatuses.WARNING
+      RECOVERY_PHRASE_VERIFICATION_STATUSES.WARNING
     )
       validationStatusButtonType = 'primary';
     else if (
       recoveryPhraseVerificationStatus ===
-      WalletRecoveryPhraseVerificationStatuses.NOTIFICATION
+      RECOVERY_PHRASE_VERIFICATION_STATUSES.NOTIFICATION
     )
       validationStatusButtonType = 'attention';
 

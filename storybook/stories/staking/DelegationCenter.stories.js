@@ -9,9 +9,9 @@ import Wallet, {
   WalletDelegationStatuses,
 } from '../../../source/renderer/app/domains/Wallet';
 import {
-  WalletRecoveryPhraseVerificationStatuses,
-  WalletRecoveryPhraseVerificationTypes,
-} from '../../../source/renderer/app/stores/WalletsStore';
+  RECOVERY_PHRASE_VERIFICATION_STATUSES,
+  WALLET_RECOVERY_PHRASE_VERIFICATION_TYPES,
+} from '../../../source/renderer/app/config/walletRecoveryPhraseVerificationConfig';
 import type {
   NextEpoch,
   TipInfo,
@@ -77,10 +77,9 @@ const wallets = [
     createdAt: new Date(),
     discovery: 'random',
     recoveryPhraseVerificationDate: new Date(),
-    recoveryPhraseVerificationStatus:
-      WalletRecoveryPhraseVerificationStatuses.OK,
+    recoveryPhraseVerificationStatus: RECOVERY_PHRASE_VERIFICATION_STATUSES.OK,
     recoveryPhraseVerificationStatusType:
-      WalletRecoveryPhraseVerificationTypes.NEVER_CHECKED,
+      WALLET_RECOVERY_PHRASE_VERIFICATION_TYPES.NEVER_CHECKED,
   }),
   new Wallet({
     id: 'wallet2',
@@ -109,10 +108,9 @@ const wallets = [
     createdAt: new Date(),
     discovery: 'random',
     recoveryPhraseVerificationDate: new Date(),
-    recoveryPhraseVerificationStatus:
-      WalletRecoveryPhraseVerificationStatuses.OK,
+    recoveryPhraseVerificationStatus: RECOVERY_PHRASE_VERIFICATION_STATUSES.OK,
     recoveryPhraseVerificationStatusType:
-      WalletRecoveryPhraseVerificationTypes.NEVER_CHECKED,
+      WALLET_RECOVERY_PHRASE_VERIFICATION_TYPES.NEVER_CHECKED,
   }),
   new Wallet({
     id: 'wallet3',
@@ -140,10 +138,9 @@ const wallets = [
     createdAt: new Date(),
     discovery: 'random',
     recoveryPhraseVerificationDate: new Date(),
-    recoveryPhraseVerificationStatus:
-      WalletRecoveryPhraseVerificationStatuses.OK,
+    recoveryPhraseVerificationStatus: RECOVERY_PHRASE_VERIFICATION_STATUSES.OK,
     recoveryPhraseVerificationStatusType:
-      WalletRecoveryPhraseVerificationTypes.NEVER_CHECKED,
+      WALLET_RECOVERY_PHRASE_VERIFICATION_TYPES.NEVER_CHECKED,
   }),
   new Wallet({
     id: 'wallet4',
@@ -162,10 +159,9 @@ const wallets = [
     createdAt: new Date(),
     discovery: 'random',
     recoveryPhraseVerificationDate: new Date(),
-    recoveryPhraseVerificationStatus:
-      WalletRecoveryPhraseVerificationStatuses.OK,
+    recoveryPhraseVerificationStatus: RECOVERY_PHRASE_VERIFICATION_STATUSES.OK,
     recoveryPhraseVerificationStatusType:
-      WalletRecoveryPhraseVerificationTypes.NEVER_CHECKED,
+      WALLET_RECOVERY_PHRASE_VERIFICATION_TYPES.NEVER_CHECKED,
   }),
   new Wallet({
     id: 'wallet5',
@@ -184,10 +180,9 @@ const wallets = [
     createdAt: new Date(),
     discovery: 'random',
     recoveryPhraseVerificationDate: new Date(),
-    recoveryPhraseVerificationStatus:
-      WalletRecoveryPhraseVerificationStatuses.OK,
+    recoveryPhraseVerificationStatus: RECOVERY_PHRASE_VERIFICATION_STATUSES.OK,
     recoveryPhraseVerificationStatusType:
-      WalletRecoveryPhraseVerificationTypes.NEVER_CHECKED,
+      WALLET_RECOVERY_PHRASE_VERIFICATION_TYPES.NEVER_CHECKED,
   }),
   new Wallet({
     id: 'wallet6',
@@ -216,10 +211,9 @@ const wallets = [
     createdAt: new Date(),
     discovery: 'random',
     recoveryPhraseVerificationDate: new Date(),
-    recoveryPhraseVerificationStatus:
-      WalletRecoveryPhraseVerificationStatuses.OK,
+    recoveryPhraseVerificationStatus: RECOVERY_PHRASE_VERIFICATION_STATUSES.OK,
     recoveryPhraseVerificationStatusType:
-      WalletRecoveryPhraseVerificationTypes.NEVER_CHECKED,
+      WALLET_RECOVERY_PHRASE_VERIFICATION_TYPES.NEVER_CHECKED,
   }),
 ];
 

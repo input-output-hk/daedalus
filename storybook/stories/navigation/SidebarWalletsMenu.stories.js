@@ -7,9 +7,9 @@ import { isIncentivizedTestnetTheme } from '../_support/utils';
 import WalletsWrapper from '../wallets/_utils/WalletsWrapper';
 import SidebarWalletsMenu from '../../../source/renderer/app/components/sidebar/wallets/SidebarWalletsMenu';
 import {
-  WalletRecoveryPhraseVerificationStatuses,
-  WalletRecoveryPhraseVerificationTypes,
-} from '../../../source/renderer/app/stores/WalletsStore';
+  RECOVERY_PHRASE_VERIFICATION_STATUSES,
+  WALLET_RECOVERY_PHRASE_VERIFICATION_TYPES,
+} from '../../../source/renderer/app/config/walletRecoveryPhraseVerificationConfig';
 
 storiesOf('Navigation|Wallets Menu', module)
   .addDecorator(story => (
@@ -48,9 +48,9 @@ storiesOf('Navigation|Wallets Menu', module)
           createdAt: new Date(),
           recoveryPhraseVerificationDate: new Date(),
           recoveryPhraseVerificationStatus:
-            WalletRecoveryPhraseVerificationStatuses.OK,
+            RECOVERY_PHRASE_VERIFICATION_STATUSES.OK,
           recoveryPhraseVerificationStatusType:
-            WalletRecoveryPhraseVerificationTypes.NEVER_CHECKED,
+            WALLET_RECOVERY_PHRASE_VERIFICATION_TYPES.NEVER_CHECKED,
         },
         {
           id: '2',
@@ -64,9 +64,9 @@ storiesOf('Navigation|Wallets Menu', module)
           createdAt: new Date(),
           recoveryPhraseVerificationDate: new Date(),
           recoveryPhraseVerificationStatus:
-            WalletRecoveryPhraseVerificationStatuses.OK,
+            RECOVERY_PHRASE_VERIFICATION_STATUSES.OK,
           recoveryPhraseVerificationStatusType:
-            WalletRecoveryPhraseVerificationTypes.NEVER_CHECKED,
+            WALLET_RECOVERY_PHRASE_VERIFICATION_TYPES.NEVER_CHECKED,
         },
         {
           id: '3',
@@ -80,9 +80,9 @@ storiesOf('Navigation|Wallets Menu', module)
           createdAt: new Date(),
           recoveryPhraseVerificationDate: new Date(),
           recoveryPhraseVerificationStatus:
-            WalletRecoveryPhraseVerificationStatuses.OK,
+            RECOVERY_PHRASE_VERIFICATION_STATUSES.OK,
           recoveryPhraseVerificationStatusType:
-            WalletRecoveryPhraseVerificationTypes.NEVER_CHECKED,
+            WALLET_RECOVERY_PHRASE_VERIFICATION_TYPES.NEVER_CHECKED,
         },
         {
           id: '4',
@@ -96,9 +96,9 @@ storiesOf('Navigation|Wallets Menu', module)
           createdAt: new Date(),
           recoveryPhraseVerificationDate: new Date(),
           recoveryPhraseVerificationStatus:
-            WalletRecoveryPhraseVerificationStatuses.OK,
+            RECOVERY_PHRASE_VERIFICATION_STATUSES.OK,
           recoveryPhraseVerificationStatusType:
-            WalletRecoveryPhraseVerificationTypes.NEVER_CHECKED,
+            WALLET_RECOVERY_PHRASE_VERIFICATION_TYPES.NEVER_CHECKED,
         },
       ]}
       isActiveWallet={id => id === '2'}

@@ -25,7 +25,7 @@ import Sidebar from '../../../source/renderer/app/components/sidebar/Sidebar';
 import SidebarLayout from '../../../source/renderer/app/components/layout/SidebarLayout';
 import menuIconOpened from '../../../source/renderer/app/assets/images/menu-opened-ic.inline.svg';
 import menuIconClosed from '../../../source/renderer/app/assets/images/menu-ic.inline.svg';
-import { WalletRecoveryPhraseVerificationStatuses } from '../../../source/renderer/app/stores/WalletsStore';
+import { RECOVERY_PHRASE_VERIFICATION_STATUSES } from '../../../source/renderer/app/config/walletRecoveryPhraseVerificationConfig';
 
 export type StoriesProps = {
   wallets: Array<Wallet>,
@@ -125,7 +125,7 @@ export default class StoryLayout extends Component<Props> {
       restoreProgress: get(wallet, 'syncState.progress.quantity', 0),
       isLegacy: wallet.isLegacy,
       recoveryPhraseVerificationStatus:
-        WalletRecoveryPhraseVerificationStatuses.OK,
+        RECOVERY_PHRASE_VERIFICATION_STATUSES.OK,
     }));
 
   getSidebarMenus = (

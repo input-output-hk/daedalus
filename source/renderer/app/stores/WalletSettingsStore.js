@@ -1,12 +1,30 @@
 // @flow
 import { observable, action, runInAction } from 'mobx';
 import { findIndex } from 'lodash';
+import moment from 'moment';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import Wallet from '../domains/Wallet';
+import { asyncForEach } from '../utils/asyncForEach';
 import type { WalletExportToFileParams } from '../actions/wallet-settings-actions';
 import type { WalletUtxos } from '../api/wallets/types';
 import { WALLET_UTXO_API_REQUEST_INTERVAL } from '../config/timingConfig';
+import {
+  RECOVERY_PHRASE_VERIFICATION_NOTIFICATION,
+  RECOVERY_PHRASE_VERIFICATION_WARNING,
+  RECOVERY_PHRASE_VERIFICATION_STATUSES,
+  WALLET_RECOVERY_PHRASE_VERIFICATION_TYPES,
+} from '../config/walletRecoveryPhraseVerificationConfig';
+import type {
+  WalletLocalData,
+  WalletsLocalData,
+} from '../api/utils/localStorage';
+import { getRecoveryWalletIdChannel } from '../ipc/getRecoveryWalletIdChannel';
+import { getRawWalletId } from '../api/utils';
+import type {
+  WalletRecoveryPhraseVerificationData,
+  RecoveryPhraseVerificationData,
+} from '../types/walletRecoveryPhraseVerificationTypes';
 
 export default class WalletSettingsStore extends Store {
   @observable updateWalletRequest: Request<Wallet> = new Request(
@@ -24,11 +42,28 @@ export default class WalletSettingsStore extends Store {
   @observable forceWalletResyncRequest: Request<void> = new Request(
     this.api.ada.forceWalletResync
   );
+  @observable setWalletLocalDataRequest: Request<any> = new Request(
+    this.api.localStorage.setWalletLocalData
+  );
+  @observable updateWalletLocalDataRequest: Request<any> = new Request(
+    this.api.localStorage.updateWalletLocalData
+  );
+  @observable unsetWalletLocalDataRequest: Request<any> = new Request(
+    this.api.localStorage.unsetWalletLocalData
+  );
+  @observable
+  getWalletsLocalDataRequest: Request<WalletsLocalData> = new Request(
+    this.api.localStorage.getWalletsLocalData
+  );
 
   @observable walletFieldBeingEdited = null;
   @observable lastUpdatedWalletField = null;
   @observable walletUtxos: ?WalletUtxos = null;
   @observable isForcedWalletResyncStarting = false;
+
+  @observable
+  recoveryPhraseVerificationData: RecoveryPhraseVerificationData = {};
+  @observable recoveryPhraseStep = 0;
 
   pollingApiInterval: ?IntervalID = null;
 
@@ -58,6 +93,18 @@ export default class WalletSettingsStore extends Store {
       this._stopWalletUtxoPolling
     );
     walletSettingsActions.forceWalletResync.listen(this._forceWalletResync);
+    walletSettingsActions.updateRecoveryPhraseVerificationDate.listen(
+      this._updateRecoveryPhraseVerificationDate
+    );
+    walletSettingsActions.recoveryPhraseVerificationContinue.listen(
+      this._recoveryPhraseVerificationContinue
+    );
+    walletSettingsActions.recoveryPhraseVerificationCheck.listen(
+      this._recoveryPhraseVerificationCheck
+    );
+    walletSettingsActions.recoveryPhraseVerificationClose.listen(
+      this._recoveryPhraseVerificationClose
+    );
 
     sidebarActions.walletSelected.listen(this._onWalletSelected);
   }
@@ -165,7 +212,7 @@ export default class WalletSettingsStore extends Store {
     this._updateWalletUtxos(walletUtxos);
   };
 
-  @action _updateWalletUtxos = walletUtxos => {
+  @action _updateWalletUtxos = (walletUtxos: ?WalletUtxos) => {
     this.walletUtxos = walletUtxos;
   };
 
@@ -207,4 +254,175 @@ export default class WalletSettingsStore extends Store {
       });
     }
   };
+
+  /* ==========================================================
+=            Wallet Recovery Phrase Verification            =
+========================================================== */
+
+  _createWalletLocalData = async (id: string) => {
+    const walletLocalData = {
+      id,
+      creationDate: new Date(),
+    };
+    await this.stores.walletSettings.setWalletLocalDataRequest.execute(
+      walletLocalData
+    );
+  };
+
+  _getWalletsLocalData = async () => {
+    const walletsLocalData: WalletsLocalData = await this.getWalletsLocalDataRequest.execute();
+    return walletsLocalData;
+  };
+
+  /**
+   * - Receives a walet local data
+   * - Returns the wallet's recovery phrase verification status
+   */
+  _setWalletRecoveryPhraseVerificationData = ({
+    recoveryPhraseVerificationDate,
+    creationDate,
+  }: WalletLocalData) => {
+    const dateToCheck =
+      recoveryPhraseVerificationDate || creationDate || new Date();
+    const daysSinceDate = moment().diff(moment(dateToCheck), 'days');
+    let recoveryPhraseVerificationStatus =
+      RECOVERY_PHRASE_VERIFICATION_STATUSES.OK;
+    if (daysSinceDate > RECOVERY_PHRASE_VERIFICATION_NOTIFICATION)
+      recoveryPhraseVerificationStatus =
+        RECOVERY_PHRASE_VERIFICATION_STATUSES.NOTIFICATION;
+    else if (daysSinceDate > RECOVERY_PHRASE_VERIFICATION_WARNING)
+      recoveryPhraseVerificationStatus =
+        RECOVERY_PHRASE_VERIFICATION_STATUSES.WARNING;
+    const recoveryPhraseVerificationStatusType = recoveryPhraseVerificationDate
+      ? WALLET_RECOVERY_PHRASE_VERIFICATION_TYPES.ALREADY_CHECKED
+      : WALLET_RECOVERY_PHRASE_VERIFICATION_TYPES.NEVER_CHECKED;
+    return {
+      creationDate,
+      recoveryPhraseVerificationDate,
+      recoveryPhraseVerificationStatus,
+      recoveryPhraseVerificationStatusType,
+    };
+  };
+
+  /**
+   * - Receives a list of wallets Ids
+   * - Retrieves the wallets local data from localStorage
+   * - Populates `recoveryPhraseVerificationData` with
+   *   the wallets recovery phrase verification data
+   * - Updates localStorage in case of missing information
+   */
+  _setWalletsRecoveryPhraseVerificationData = async (
+    walletIds: Array<string>
+  ): RecoveryPhraseVerificationData => {
+    const walletsLocalData = await this._getWalletsLocalData();
+    const recoveryPhraseVerificationData = {};
+    await asyncForEach(walletIds, async id => {
+      let walletLocalData = walletsLocalData[id];
+      // In case a wallet is not in the localStorage yet, it adds it
+      if (!walletLocalData) {
+        walletLocalData = {
+          id,
+          creationDate: new Date(),
+        };
+        await this.setWalletLocalDataRequest.execute(walletLocalData);
+      }
+      // In case a wallet doesn't have creationDate in the localStorage yet, it adds it
+      if (!walletLocalData.creationDate) {
+        walletLocalData.creationDate = new Date();
+        await this._updateWalletLocalData({
+          id,
+          creationDate: walletLocalData.creationDate,
+        });
+      }
+      recoveryPhraseVerificationData[
+        id
+      ] = this._setWalletRecoveryPhraseVerificationData(walletLocalData);
+    });
+    runInAction('refresh recovery phrase verification data', async () => {
+      this.recoveryPhraseVerificationData = recoveryPhraseVerificationData;
+    });
+  };
+
+  getWalletRecoveryPhraseVerification = (
+    walletId: string
+  ): WalletRecoveryPhraseVerificationData => {
+    const {
+      creationDate,
+      recoveryPhraseVerificationDate,
+      recoveryPhraseVerificationStatus,
+      recoveryPhraseVerificationStatusType,
+    } = this.recoveryPhraseVerificationData[walletId] || {};
+
+    return {
+      creationDate: creationDate || new Date(),
+      recoveryPhraseVerificationDate,
+      recoveryPhraseVerificationStatus:
+        recoveryPhraseVerificationStatus ||
+        RECOVERY_PHRASE_VERIFICATION_STATUSES.OK,
+      recoveryPhraseVerificationStatusType:
+        recoveryPhraseVerificationStatusType ||
+        WALLET_RECOVERY_PHRASE_VERIFICATION_TYPES.NEVER_CHECKED,
+    };
+  };
+
+  _updateWalletLocalData = async (updatedWalletData: Object): Object => {
+    const { id } = updatedWalletData;
+    const walletLocalData = await this.updateWalletLocalDataRequest.execute(
+      updatedWalletData
+    );
+    runInAction('Update wallet verification date', () => {
+      this.recoveryPhraseVerificationData[
+        id
+      ] = this._setWalletRecoveryPhraseVerificationData(walletLocalData);
+    });
+  };
+
+  _updateRecoveryPhraseVerificationDate = async () => {
+    const { active: activeWallet } = this.stores.wallets;
+    if (!activeWallet) return;
+    const { id } = activeWallet;
+    const recoveryPhraseVerificationDate = new Date();
+    await this._updateWalletLocalData({
+      id,
+      recoveryPhraseVerificationDate,
+    });
+  };
+
+  _unsetWalletLocalData = async (walletId: string) => {
+    await this.unsetWalletLocalDataRequest.execute(walletId);
+  };
+
+  @action _recoveryPhraseVerificationContinue = async () => {
+    const step = this.recoveryPhraseStep;
+    if (step === 4) this.recoveryPhraseStep = 2;
+    else this.recoveryPhraseStep = step + 1;
+  };
+
+  @action _recoveryPhraseVerificationClose = async () => {
+    this.recoveryPhraseStep = 0;
+  };
+
+  @action _recoveryPhraseVerificationCheck = async ({
+    recoveryPhrase,
+  }: {
+    recoveryPhrase: Array<string>,
+  }) => {
+    const walletId = await getRecoveryWalletIdChannel.request(recoveryPhrase);
+    const activeWallet = this.stores.wallets.active;
+    if (!activeWallet)
+      throw new Error(
+        'Active wallet required before checking recovery phrase.'
+      );
+    const activeWalletId = getRawWalletId(activeWallet.id);
+    const isCorrect = walletId === activeWalletId;
+    const nextStep = isCorrect ? 3 : 4;
+    if (isCorrect) {
+      this._updateRecoveryPhraseVerificationDate();
+    }
+    runInAction('AdaWalletBackupStore::_checkRecoveryPhrase', () => {
+      this.recoveryPhraseStep = nextStep;
+    });
+  };
+
+  /* ====  End of Wallet Recovery Phrase Verification  ===== */
 }

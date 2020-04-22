@@ -47,6 +47,7 @@ export default class WalletSettingsPage extends Component<Props> {
       lastUpdatedWalletField,
       walletFieldBeingEdited,
       isForcedWalletResyncStarting,
+      getWalletRecoveryPhraseVerification,
     } = walletSettings;
     const {
       startEditingWalletField,
@@ -54,9 +55,8 @@ export default class WalletSettingsPage extends Component<Props> {
       cancelEditingWalletField,
       updateWalletField,
       forceWalletResync,
+      recoveryPhraseVerificationContinue,
     } = actions.walletSettings;
-    const { recoveryPhraseContinue } = actions.walletBackup;
-    const { getWalletRecoveryPhraseVerification } = wallets;
     const {
       creationDate,
       recoveryPhraseVerificationDate,
@@ -110,7 +110,7 @@ export default class WalletSettingsPage extends Component<Props> {
               isLegacy: activeWallet.isLegacy,
             })
           }
-          onRecoveryPhraseVerify={recoveryPhraseContinue.trigger}
+          onRecoveryPhraseVerify={recoveryPhraseVerificationContinue.trigger}
           activeField={walletFieldBeingEdited}
           nameValidator={name => isValidWalletName(name)}
           changeSpendingPasswordDialog={
