@@ -11,6 +11,7 @@ import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import SVGInline from 'react-svg-inline';
 import classNames from 'classnames';
+import { get } from 'lodash';
 import styles from './WalletImportFileDialog.scss';
 import RadioSet from '../../widgets/RadioSet';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
@@ -19,7 +20,6 @@ import penIcon from '../../../assets/images/pen.inline.svg';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import { ImportFromOptions } from '../../../types/walletExportTypes';
 import type { ImportFromOption } from '../../../types/walletExportTypes';
-import {get} from "lodash";
 
 const messages = defineMessages({
   title: {
