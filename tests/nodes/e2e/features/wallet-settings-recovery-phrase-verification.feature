@@ -1,5 +1,4 @@
-@e2e @skip
-# @API TODO - we don't have request for `getWalletIdAndBalance`
+@e2e @byron
 Feature: Wallet Settings - Recovery Phrase Verification
 
   Background:
