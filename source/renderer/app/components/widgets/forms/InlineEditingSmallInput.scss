@@ -34,7 +34,7 @@
     background-color: var(
       --theme-wallet-import-input-background-color-disabled
     );
-    border-color: var(--theme-wallet-import-input-background-color-disabled);
+    border-color: transparent;
     cursor: text !important;
     padding-right: 0;
     pointer-events: none;
