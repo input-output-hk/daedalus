@@ -211,7 +211,6 @@ let
         cliBin
         walletBin
         exportWalletsBin
-        dbConverterBin
         legacyStateDir
         legacyWalletDB
         legacySecretKey;
