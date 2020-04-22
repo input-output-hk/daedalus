@@ -230,7 +230,7 @@
       .walletsRow {
         align-items: baseline;
         display: flex;
-        padding: 0 40px 20px;
+        padding: 0 40px 20px 30px;
 
         .walletsCounter {
           color: var(--theme-wallet-import-button-text-color);
@@ -238,8 +238,9 @@
           font-size: 16px;
           letter-spacing: 0.5px;
           line-height: 1.38;
-          min-width: 35px;
+          min-width: 45px;
           padding-right: 20px;
+          text-align: right;
         }
 
         .walletsInputField {
