@@ -1,7 +1,7 @@
 {
   "name": "daedalus",
   "productName": "Daedalus",
-  "version": "1.0.0-FC4",
+  "version": "1.0.0-FC5",
   "description": "Cryptocurrency Wallet",
   "main": "./dist/main/index.js",
   "scripts": {
