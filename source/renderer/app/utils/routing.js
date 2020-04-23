@@ -58,7 +58,7 @@ export const buildRoute = (pattern, params) => {
           return `<${tokenName}>`;
         });
       } else {
-        // Rougly resolve all named placeholders.
+        // Roughly resolve all named placeholders.
         // Cases:
         // - '/path/:param'
         // - '/path/(:param)'

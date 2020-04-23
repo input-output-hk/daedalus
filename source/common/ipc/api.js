@@ -115,7 +115,7 @@ export type OpenExternalUrlRendererRequest = string;
 export type OpenExternalUrlMainResponse = void;
 
 /**
- * Channel for opening an local directory in the default desktop explorer
+ * Channel for opening a local directory in the default desktop explorer
  */
 export const OPEN_LOCAL_DIRECTORY_CHANNEL = 'OpenLocalDirectoryChannel';
 export type OpenLocalDirectoryRendererRequest = string;

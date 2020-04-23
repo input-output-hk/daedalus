@@ -55,7 +55,7 @@ export const getNetworkExplorerUri = (
   if (network === ITN_REWARDS_V1) {
     return ITN_EXPLORER_URL;
   }
-  return MAINNET_EXPLORER_URL; // sets default to mainnet incase env.NETWORK is undefined
+  return MAINNET_EXPLORER_URL; // sets default to mainnet in case env.NETWORK is undefined
 };
 
 export const getNetworkExplorerUrl = (

@@ -87,7 +87,7 @@ export default class StakingStore extends Store {
         { transactionId: joinTransaction.id, walletId }
       );
 
-      // Reset transtation state check interval after 30 seconds
+      // Reset transaction state check interval after 30 seconds
       setTimeout(() => {
         this.resetStakePoolTransactionChecker();
       }, STAKE_POOL_TRANSACTION_CHECKER_TIMEOUT);
@@ -115,7 +115,7 @@ export default class StakingStore extends Store {
         { transactionId: quitTransaction.id, walletId }
       );
 
-      // Reset transtation state check interval after 30 seconds
+      // Reset transaction state check interval after 30 seconds
       setTimeout(() => {
         this.resetStakePoolTransactionChecker();
       }, STAKE_POOL_TRANSACTION_CHECKER_TIMEOUT);

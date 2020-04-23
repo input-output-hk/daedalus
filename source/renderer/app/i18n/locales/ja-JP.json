@@ -289,7 +289,7 @@
   "staking.delegationCenter.totalSlots": "総スロット",
   "staking.delegationCenter.undelegate.dialog.adaLabel": "ADA",
   "staking.delegationCenter.undelegate.dialog.confirmButtonLabel": "委任を解除する",
-  "staking.delegationCenter.undelegate.dialog.confirmUneligibleCheck": "ステークを委任していないと、報酬を得られないことを理解します。",
+  "staking.delegationCenter.undelegate.dialog.confirmIneligibleCheck": "ステークを委任していないと、報酬を得られないことを理解します。",
   "staking.delegationCenter.undelegate.dialog.confirmUnsupportCheck": "ステークを委任していないと、Cardanoネットワークをサポートできないことを理解します。",
   "staking.delegationCenter.undelegate.dialog.descriptionWithTicker": "<p><strong>{walletName}</strong>ウォレットのステークは現在<strong>「{stakePoolTicker}」 {stakePoolName}</strong>ステークプールに委任されています。</p><p>ステークの委任を解除して報酬の獲得を停止しますか。</p>",
   "staking.delegationCenter.undelegate.dialog.descriptionWithUnknownTicker": "<p><strong>{walletName}</strong>ウォレットのステークは現在<strong>{stakePoolTicker}</strong>ステークプールに委任されています。</p><p>ステークの委任を解除して報酬の獲得を停止しますか。</p>",
