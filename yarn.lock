@@ -1251,6 +1251,7 @@
   dependencies:
     "@storybook/client-logger" "5.3.14"
     "@storybook/theming" "5.3.14"
+    "@types/react-syntax-highlighter" "11.0.2"
     "@types/react-textarea-autosize" "^4.3.3"
     core-js "^3.0.1"
     global "^4.3.2"
@@ -1364,6 +1365,7 @@
   version "5.3.14"
   resolved "https://registry.yarnpkg.com/@storybook/node-logger/-/node-logger-5.3.14.tgz#5e4e02585b37754bbebb8810ffb17c8ce706a1f8"
   dependencies:
+    "@types/npmlog" "^4.1.2"
     chalk "^3.0.0"
     core-js "^3.0.1"
     npmlog "^4.1.2"
@@ -4286,6 +4288,7 @@ cosmiconfig@^6.0.0:
   version "6.0.0"
   resolved "https://registry.yarnpkg.com/cosmiconfig/-/cosmiconfig-6.0.0.tgz#da4fee853c52f6b1e6935f41c1a2fc50bd4a9982"
   dependencies:
+    "@types/parse-json" "^4.0.0"
     import-fresh "^3.1.0"
     parse-json "^5.0.0"
     path-type "^4.0.0"
@@ -5262,9 +5265,9 @@ electron-download@^4.1.1:
     semver "^5.4.1"
     sumchecker "^2.0.2"
 
-electron-log-daedalus@2.2.21:
-  version "2.2.21"
-  resolved "https://registry.yarnpkg.com/electron-log-daedalus/-/electron-log-daedalus-2.2.21.tgz#7afc009036306d3466d68decd971d7e1a2f2a5b1"
+electron-log-daedalus@2.2.20:
+  version "2.2.20"
+  resolved "https://registry.yarnpkg.com/electron-log-daedalus/-/electron-log-daedalus-2.2.20.tgz#3b550c9d68393616d528cdcf76eeea1f2d53c30e"
 
 electron-notarize@^0.2.0:
   version "0.2.1"
@@ -6084,10 +6087,6 @@ fast-json-stable-stringify@^2.0.0:
 fast-levenshtein@~2.0.6:
   version "2.0.6"
   resolved "https://registry.yarnpkg.com/fast-levenshtein/-/fast-levenshtein-2.0.6.tgz#3d8a5c66883a16a30ca8643e851f19baa7797917"
-
-fast-password-entropy@1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/fast-password-entropy/-/fast-password-entropy-1.1.1.tgz#47ba9933095fd5a32fb184915fc8e76ee19cf429"
 
 fast-sass-loader@1.5.0:
   version "1.5.0"
@@ -11511,13 +11510,13 @@ react-onclickoutside@^6.5.0:
   version "6.9.0"
   resolved "https://registry.yarnpkg.com/react-onclickoutside/-/react-onclickoutside-6.9.0.tgz#a54bc317ae8cf6131a5d78acea55a11067f37a1f"
 
-react-polymorph@0.9.4-rc.7:
-  version "0.9.4-rc.7"
-  resolved "https://registry.yarnpkg.com/react-polymorph/-/react-polymorph-0.9.4-rc.7.tgz#5647acf0e434592c32ddccdc289e3abb88a89805"
+react-polymorph@0.9.3:
+  version "0.9.3"
+  resolved "https://registry.yarnpkg.com/react-polymorph/-/react-polymorph-0.9.3.tgz#34b6eb848298cc16853fc04aaff6a6748f9f6a52"
+  integrity sha512-daETMEv7/AvidLeBnnheP1anunrAVws11bwq0+beU7oa5igCADjx1+QPjFbXZAWm3aqlWSoIe3Y89QWdxUB/1Q==
   dependencies:
     create-react-context "0.2.2"
     create-react-ref "0.1.0"
-    fast-password-entropy "1.1.1"
     filter-react-dom-props "0.0.2"
     postinstall-build "5.0.1"
     react-modal "3.1.12"
