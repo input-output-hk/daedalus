@@ -1,14 +1,17 @@
 // @flow
-import { observable, action, runInAction } from 'mobx';
+import { observable, action, runInAction, computed } from 'mobx';
 import { findIndex } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import Wallet from '../domains/Wallet';
-import type { WalletExportToFileParams } from '../actions/wallet-settings-actions';
-import type { WalletUtxos } from '../api/wallets/types';
 import { WALLET_UTXO_API_REQUEST_INTERVAL } from '../config/timingConfig';
 import { getRecoveryWalletIdChannel } from '../ipc/getRecoveryWalletIdChannel';
+import { getStatusFromWalletData } from '../utils/walletRecoveryPhraseVerificationUtils';
 import { getRawWalletId } from '../api/utils';
+import type { WalletExportToFileParams } from '../actions/wallet-settings-actions';
+import type { WalletUtxos } from '../api/wallets/types';
+import type { WalletLocalData } from '../api/utils/localStorage';
+import { RECOVERY_PHRASE_VERIFICATION_STATUSES } from '../config/walletRecoveryPhraseVerificationConfig';
 
 export default class WalletSettingsStore extends Store {
   @observable updateWalletRequest: Request<Wallet> = new Request(
@@ -73,6 +76,46 @@ export default class WalletSettingsStore extends Store {
 
     sidebarActions.walletSelected.listen(this._onWalletSelected);
   }
+
+  // =================== PUBLIC API ==================== //
+
+  // GETTERS
+
+  @computed get walletsRecoveryPhraseVerificationData() {
+    const { all: walletsLocalData } = this.stores.walletsLocal;
+    const { isIncentivizedTestnet } = global;
+    // $FlowFixMe
+    return Object.values(walletsLocalData).reduce(
+      (
+        obj,
+        { id, recoveryPhraseVerificationDate, creationDate }: WalletLocalData
+      ) => {
+        const {
+          recoveryPhraseVerificationStatus,
+          recoveryPhraseVerificationStatusType,
+        } = getStatusFromWalletData({
+          creationDate,
+          recoveryPhraseVerificationDate,
+        });
+        const hasNotification =
+          recoveryPhraseVerificationStatus ===
+            RECOVERY_PHRASE_VERIFICATION_STATUSES.NOTIFICATION &&
+          !isIncentivizedTestnet;
+        obj[id] = {
+          id,
+          recoveryPhraseVerificationDate,
+          creationDate,
+          recoveryPhraseVerificationStatus,
+          recoveryPhraseVerificationStatusType,
+          hasNotification,
+        };
+        return obj;
+      },
+      {}
+    );
+  }
+
+  // =================== PRIVATE API ==================== //
 
   @action _startEditingWalletField = ({ field }: { field: string }) => {
     this.walletFieldBeingEdited = field;
@@ -251,7 +294,7 @@ export default class WalletSettingsStore extends Store {
     if (isCorrect) {
       const recoveryPhraseVerificationDate = new Date();
       await this.actions.walletsLocal.setWalletLocalData.trigger({
-        walletId,
+        walletId: activeWallet.id,
         updatedWalletData: { recoveryPhraseVerificationDate },
       });
     }

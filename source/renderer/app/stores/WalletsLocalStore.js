@@ -29,7 +29,7 @@ export default class WalletsLocalStore extends Store {
 
   // GETTERS
 
-  @computed get all() {
+  @computed get all(): WalletsLocalData {
     return this.localWalletsRequest.result
       ? this.localWalletsRequest.result
       : {};

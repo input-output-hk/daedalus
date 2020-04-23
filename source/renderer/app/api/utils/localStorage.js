@@ -11,7 +11,7 @@ import { WalletMigrationStatuses } from '../../stores/WalletMigrationStore';
 export type WalletLocalData = {
   id: string,
   recoveryPhraseVerificationDate?: ?Date,
-  creationDate?: ?Date,
+  creationDate: Date,
 };
 
 export type WalletsLocalData = {
