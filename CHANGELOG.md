@@ -3,6 +3,10 @@ Changelog
 
 ## 1.0.0
 
+### Features
+
+- Implemented NTP force check ([PR 1996](https://github.com/input-output-hk/daedalus/pull/1996))
+
 ### Fixes
 
 - Fixed UI issues on wallet import overlays ([PR 1983](https://github.com/input-output-hk/daedalus/pull/1983))

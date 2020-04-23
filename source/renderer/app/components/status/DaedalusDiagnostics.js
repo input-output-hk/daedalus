@@ -183,8 +183,8 @@ const messages = defineMessages({
   },
   checkingNodeTime: {
     id: 'daedalus.diagnostics.dialog.checkingNodeTime',
-    defaultMessage: '!!!Checking Cardano node time',
-    description: 'Checking Cardano node time',
+    defaultMessage: '!!!Checking system time',
+    description: 'Checking system time',
   },
   cardanoNodeStatus: {
     id: 'daedalus.diagnostics.dialog.cardanoNodeStatus',
@@ -354,16 +354,16 @@ type Props = {
   localTimeDifference: ?number,
   isSystemTimeCorrect: boolean,
   isSystemTimeIgnored: boolean,
-  // isForceCheckingNodeTime: boolean,
+  isCheckingSystemTime: boolean,
+  isForceCheckingSystemTime: boolean,
   localTip: ?TipInfo,
   networkTip: ?TipInfo,
-  // onForceCheckLocalTimeDifference: Function,
   onOpenStateDirectory: Function,
   onOpenExternalLink: Function,
   onRestartNode: Function,
   onClose: Function,
   onCopyStateDirectoryPath: Function,
-  isCheckingSystemTime: boolean,
+  onForceCheckNetworkClock: Function,
 };
 
 type State = {
@@ -453,7 +453,6 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
       localTimeDifference,
       isSystemTimeCorrect,
       isSystemTimeIgnored,
-      // isForceCheckingNodeTime,
       localTip,
       networkTip,
       onOpenStateDirectory,
@@ -462,6 +461,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
       nodeConnectionError,
       onOpenExternalLink,
       isCheckingSystemTime,
+      isForceCheckingSystemTime,
     } = this.props;
 
     const {
@@ -509,11 +509,13 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
     }
 
     const localTimeDifferenceClasses = isCheckingSystemTime
-      ? styles.layoutData
+      ? classNames([styles.layoutData, styles.localTimeDifference])
       : classNames([
           styles.layoutData,
+          styles.localTimeDifference,
           !isNTPServiceReachable ||
-          (localTimeDifference && localTimeDifference > ALLOWED_TIME_DIFFERENCE)
+          (localTimeDifference &&
+            Math.abs(localTimeDifference) > ALLOWED_TIME_DIFFERENCE)
             ? styles.red
             : styles.green,
         ]);
@@ -657,18 +659,20 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                   {intl.formatMessage(messages.localTimeDifference)}:
                 </div>
                 <div className={localTimeDifferenceClasses}>
-                  {/*
+                  {
                     <button
                       onClick={() => this.checkTime()}
-                      disabled={isForceCheckingNodeTime || !isConnected}
+                      disabled={isForceCheckingSystemTime || !isNodeResponding}
                     >
-                      {isForceCheckingNodeTime
-                        ? intl.formatMessage(messages.localTimeDifferenceChecking)
+                      {isForceCheckingSystemTime
+                        ? intl.formatMessage(
+                            messages.localTimeDifferenceChecking
+                          )
                         : intl.formatMessage(
                             messages.localTimeDifferenceCheckTime
                           )}
                     </button>
-                  */}
+                  }
                   {isCheckingSystemTime ? (
                     <span className={localTimeDifferenceClasses}>-</span>
                   ) : (
@@ -684,16 +688,18 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
               </div>
               {getRow('systemTimeCorrect', isSystemTimeCorrect)}
               {getRow('systemTimeIgnored', isSystemTimeIgnored)}
-              {/*
+              {
                 <div className={styles.layoutRow}>
-                  <div className={styles.layoutHeader}>{intl.formatMessage(messages.checkingNodeTime)}:</div>
+                  <div className={styles.layoutHeader}>
+                    {intl.formatMessage(messages.checkingNodeTime)}:
+                  </div>
                   <div className={styles.layoutData}>
-                    {isForceCheckingNodeTime
+                    {isCheckingSystemTime
                       ? intl.formatMessage(messages.statusOn)
                       : intl.formatMessage(messages.statusOff)}
                   </div>
                 </div>
-              */}
+              }
             </div>
             <div>
               {getSectionRow(
@@ -778,7 +784,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
   };
 
   checkTime = () => {
-    // this.props.onForceCheckLocalTimeDifference();
+    this.props.onForceCheckNetworkClock();
     this.restoreDialogCloseOnEscKey();
   };
 
