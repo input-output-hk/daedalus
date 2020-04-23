@@ -92,7 +92,6 @@ type Props = {
   isSubmitting: boolean,
   isForcedWalletResyncStarting: boolean,
   isIncentivizedTestnet: boolean,
-  isWalletRecoveryPhraseVerificationWidgetDisabled?: boolean,
   isInvalid: boolean,
   isLegacy: boolean,
   lastUpdatedField: ?string,
@@ -166,7 +165,6 @@ export default class WalletSettings extends Component<Props, State> {
       isSubmitting,
       isForcedWalletResyncStarting,
       isIncentivizedTestnet,
-      isWalletRecoveryPhraseVerificationWidgetDisabled,
       isInvalid,
       isLegacy,
       lastUpdatedField,
@@ -269,21 +267,20 @@ export default class WalletSettings extends Component<Props, State> {
             }}
           />
 
-          {!isIncentivizedTestnet &&
-            !isWalletRecoveryPhraseVerificationWidgetDisabled && (
-              <WalletRecoveryPhraseVerificationWidget
-                onVerify={onRecoveryPhraseVerify}
-                recoveryPhraseVerificationDate={recoveryPhraseVerificationDate}
-                recoveryPhraseVerificationStatus={
-                  recoveryPhraseVerificationStatus
-                }
-                recoveryPhraseVerificationStatusType={
-                  recoveryPhraseVerificationStatusType
-                }
-                creationDate={creationDate}
-                wordCount={wordCount}
-              />
-            )}
+          {!isIncentivizedTestnet && (
+            <WalletRecoveryPhraseVerificationWidget
+              onVerify={onRecoveryPhraseVerify}
+              recoveryPhraseVerificationDate={recoveryPhraseVerificationDate}
+              recoveryPhraseVerificationStatus={
+                recoveryPhraseVerificationStatus
+              }
+              recoveryPhraseVerificationStatusType={
+                recoveryPhraseVerificationStatusType
+              }
+              creationDate={creationDate}
+              wordCount={wordCount}
+            />
+          )}
 
           {isIncentivizedTestnet && (
             <div className={styles.resyncWalletBox}>
