@@ -6,7 +6,7 @@ export default class WalletSettingsActions {
   setWalletLocalData: Action<{
     walletId: string,
     updatedWalletData?: Object,
-    skipRefresh: boolean,
+    skipRefresh?: boolean,
   }> = new Action();
   unsetWalletLocalData: Action<{ walletId: string }> = new Action();
 }

@@ -10,7 +10,6 @@ import { buildRoute } from '../../utils/routing';
 import { ROUTES } from '../../routes-config';
 import type { InjectedContainerProps } from '../../types/injectedPropsType';
 import type { NavDropdownProps } from '../../components/navigation/Navigation';
-import { RECOVERY_PHRASE_VERIFICATION_STATUSES } from '../../config/walletRecoveryPhraseVerificationConfig';
 
 type Props = InjectedContainerProps;
 
