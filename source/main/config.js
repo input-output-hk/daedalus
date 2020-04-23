@@ -54,7 +54,7 @@ export type NodeConfig = {
 };
 
 /**
- * The shape of the config params, usually provided to the cadano-node launcher
+ * The shape of the config params, usually provided to the cardano-node launcher
  */
 export type LauncherConfig = {
   stateDir: string,

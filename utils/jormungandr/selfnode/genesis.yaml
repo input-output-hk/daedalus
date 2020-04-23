@@ -8,8 +8,8 @@ blockchain_configuration:
 
   block_content_max_size: 1024000
 
-  # This is the type of dicrimination of the blockchain
-  # of this blockchain is meant for production then
+  # This is the type of discrimination of the blockchain
+  # If this blockchain is meant for production then
   # use 'production' instead.
   #
   # otherwise leave as this
@@ -75,7 +75,7 @@ blockchain_configuration:
       constant: 100
 
       # In the halving formula, an effective value between 0.0 to 1.0 indicates a
-      # reducing contribution, whereas above 1.0 it indicate an acceleration of contribution.
+      # reducing contribution, whereas above 1.0 it indicates an acceleration of contribution.
       #
       # However in linear formula the meaning is just a scaling factor for the epoch zone
       # (current_epoch - start_epoch / epoch_rate). Further requirement is that this ratio
@@ -97,14 +97,14 @@ blockchain_configuration:
   # set the treasury parameters, this is the tax type, just as in stake pool
   # registration certificate parameters.
   #
-  # When distributing the rewards, the treasury will be first serve as per
+  # When distributing the rewards, the treasury will be first served as per
   # the incentive specification document
   #
   # if not set, the treasury will not grow
   treasury_parameters:
     # the fix value the treasury will take from the total reward pot of the epoch
     fixed: 0
-    # the extra percentage the the treasury will take from the reward pot of the epoch
+    # the extra percentage the treasury will take from the reward pot of the epoch
     ratio: "0/1"
     # It is possible to add a max bound to the total value the treasury takes
     # at each reward distribution. For example, one could cap the treasury tax
@@ -125,8 +125,8 @@ blockchain_configuration:
     # settings to incentivize the numbers of stake pool to be registered
     # on the blockchain.
     #
-    # These settings does not prevent more stake pool to be added. For example
-    # if there is already 1000 stake pools, someone can still register a new
+    # These settings do not prevent more stake pool to be added. For example
+    # if there are already 1000 stake pools, someone can still register a new
     # stake pool and affect the rewards of everyone else too.
     #
     # if the threshold is reached, the pool doesn't really have incentive to

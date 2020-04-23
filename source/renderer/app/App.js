@@ -46,7 +46,7 @@ export default class App extends Component<{
 
     const canShowNews =
       !isSetupPage && // Active page is not "Language Selection" or "Terms of Use"
-      !showNextUpdate && // Autmatic update not available
+      !showNextUpdate && // Automatic update not available
       !showManualUpdate && // Manual update not available
       !isNodeStopping && // Daedalus is not shutting down
       !isNodeStopped; // Daedalus is not shutting down

@@ -38,7 +38,7 @@ export const containsUpperCaseLetter = (s: string) =>
 export const containsUnicaseLetter = (s: string) => /\p{Other_Letter}/u.test(s);
 
 /**
- * Checks if a string doesn't change after uppper and lower casing it
+ * Checks if a string doesn't change after upper and lower casing it
  */
 export const isCaselessString = (s: string) =>
   s.toLowerCase() === s && s.toUpperCase() === s;
@@ -55,7 +55,7 @@ export const isUnicaseString = (password: string) =>
 /**
  * Unicode compatible validation rules for spending password.
  * Enforces case sensitive validation for languages that have that concept
- * but allows case-insensitiv validation for langs like Kanji
+ * but allows case-insensitive validation for langs like Kanji
  */
 export const isValidSpendingPassword = (password: string): boolean => {
   // Validation rules (uses unicode categories for checks):

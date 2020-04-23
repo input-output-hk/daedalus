@@ -876,7 +876,7 @@ export class CardanoNode {
       );
 
       this._log.info(
-        `CardanoNode: successfuly killed ${name} process (PID: ${pid})`,
+        `CardanoNode: successfully killed ${name} process (PID: ${pid})`,
         { name, pid }
       );
       return Promise.resolve();
@@ -904,7 +904,7 @@ export class CardanoNode {
       try {
         // saves current port/pid in file system
         store.set(identifier, data);
-        this._log.info(`CardanoNode: ${identifier} stored successfuly`);
+        this._log.info(`CardanoNode: ${identifier} stored successfully`);
         resolve();
       } catch (error) {
         this._log.error(`CardanoNode: failed to store ${identifier}`, {

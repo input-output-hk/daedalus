@@ -40,7 +40,7 @@ const messages = defineMessages({
     id: 'staking.delegationSetup.confirmation.step.dialog.stepIndicatorLabel',
     defaultMessage: '!!!STEP {currentStep} OF {totalSteps}',
     description:
-      'Step indicator labe on the delegation setup "confirmation" step dialog.',
+      'Step indicator label on the delegation setup "confirmation" step dialog.',
   },
   description: {
     id: 'staking.delegationSetup.confirmation.step.dialog.description',
