@@ -118,6 +118,9 @@ export default class NetworkStatusStore extends Store {
 
     networkStatusActions.restartNode.listen(this._restartNode);
     networkStatusActions.toggleSplash.listen(this._toggleSplash);
+    networkStatusActions.forceCheckNetworkClock.listen(
+      this._forceCheckNetworkClock
+    );
 
     // Request node state
     this._requestCardanoState();
@@ -357,18 +360,33 @@ export default class NetworkStatusStore extends Store {
     this.isSystemTimeIgnored = flag;
   };
 
-  @action _updateNetworkClock = async () => {
-    // Skip checking network clock if we are not connected
-    if (
-      !this.isNodeResponding ||
-      this.isSystemTimeIgnored ||
-      this.getNetworkClockRequest.isExecuting
-    )
+  @action _forceCheckNetworkClock = () => {
+    logger.info('NetworkStatusStore: Force checking network clock...');
+    this._updateNetworkClock(true);
+  };
+
+  @action _updateNetworkClock = async (isForceCheck: boolean = false) => {
+    // Skip checking network clock if we are not connected or system time is ignored
+    if (!this.isNodeResponding || (this.isSystemTimeIgnored && !isForceCheck))
       return;
-    logger.info('NetworkStatusStore: Checking network clock...');
+
+    // Cancel check if one is already running, unless we are trying to execute a force
+    // check in which case we need to wait for previous request to be executed
+    if (this.getNetworkClockRequest.isExecuting) {
+      if (isForceCheck) {
+        await this.getNetworkClockRequest;
+      } else {
+        return;
+      }
+    }
+
+    logger.info('NetworkStatusStore: Checking network clock...', {
+      isForceCheck,
+    });
     try {
-      const networkClock: GetNetworkClockResponse = await this.getNetworkClockRequest.execute()
-        .promise;
+      const networkClock: GetNetworkClockResponse = await this.getNetworkClockRequest.execute(
+        { isForceCheck }
+      ).promise;
       // System time is correct if local time difference is below allowed threshold
       runInAction('update localTimeDifference and isNodeTimeCorrect', () => {
         // Update localTimeDifference only in case NTP check status is not still pending
@@ -384,6 +402,7 @@ export default class NetworkStatusStore extends Store {
         localTimeDifference: this.localTimeDifference,
         isNodeTimeCorrect: this.isNodeTimeCorrect,
         allowedDifference: ALLOWED_TIME_DIFFERENCE,
+        isForceCheck,
       });
     } catch (error) {} // eslint-disable-line
   };

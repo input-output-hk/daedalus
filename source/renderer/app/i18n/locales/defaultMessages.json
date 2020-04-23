@@ -4965,8 +4965,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Checking Cardano node time",
-        "description": "Checking Cardano node time",
+        "defaultMessage": "!!!Checking system time",
+        "description": "Checking system time",
         "end": {
           "column": 3,
           "line": 188

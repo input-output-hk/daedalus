@@ -194,6 +194,38 @@ export default class WalletSelectImportDialog extends Component<Props> {
     return statusIcon;
   };
 
+  getInlineEditingSmallInput = (
+    wallet: ExportedByronWallet,
+    validationMessage: string,
+    placeholderMessage: string,
+    nameValidator: Function,
+    onWalletNameChange: Function
+  ) => {
+    return (
+      <InlineEditingSmallInput
+        isActive={false}
+        className={styles.walletsInputFieldInner}
+        isDisabled={
+          wallet.import.status === WalletImportStatuses.COMPLETED ||
+          wallet.import.status === WalletImportStatuses.EXISTS ||
+          wallet.import.status === WalletImportStatuses.RUNNING
+        }
+        inputFieldValue={wallet.name || ''}
+        placeholder={placeholderMessage}
+        isValid={nameValidator}
+        validationErrorMessage={validationMessage}
+        onSubmit={(name: string) =>
+          onWalletNameChange({
+            index: wallet.index,
+            name,
+          })
+        }
+        maxLength={40}
+        successfullyUpdated
+      />
+    );
+  };
+
   render() {
     const { intl } = this.context;
     const {
@@ -250,7 +282,6 @@ export default class WalletSelectImportDialog extends Component<Props> {
             icon={closeCrossThin}
             onClose={onClose}
           />
-          <div className={styles.backgroundContainer} />
           <div className={styles.content}>
             <div className={styles.topWrapper}>
               <div className={styles.title}>{title}</div>
@@ -271,30 +302,13 @@ export default class WalletSelectImportDialog extends Component<Props> {
                       {!isDuplicate && `${rowNumber}.`}
                     </div>
                     <div className={styles.walletsInputField}>
-                      <InlineEditingSmallInput
-                        isActive={false}
-                        isDisabled={
-                          wallet.import.status ===
-                            WalletImportStatuses.COMPLETED ||
-                          wallet.import.status ===
-                            WalletImportStatuses.EXISTS ||
-                          wallet.import.status === WalletImportStatuses.RUNNING
-                        }
-                        inputFieldValue={wallet.name || ''}
-                        placeholder={intl.formatMessage(messages.walletName)}
-                        isValid={nameValidator}
-                        validationErrorMessage={intl.formatMessage(
-                          globalMessages.invalidWalletName
-                        )}
-                        onSubmit={(name: string) =>
-                          onWalletNameChange({
-                            index: wallet.index,
-                            name,
-                          })
-                        }
-                        maxLength={40}
-                        successfullyUpdated
-                      />
+                      {this.getInlineEditingSmallInput(
+                        wallet,
+                        intl.formatMessage(globalMessages.invalidWalletName),
+                        intl.formatMessage(messages.walletName),
+                        nameValidator,
+                        onWalletNameChange
+                      )}
                     </div>
                     <div className={styles.walletsStatus}>
                       {this.getWalletStatus(wallet)}
@@ -331,29 +345,38 @@ export default class WalletSelectImportDialog extends Component<Props> {
                       {!isDuplicate && `${rowNumber}.`}
                     </div>
                     <div className={styles.walletsInputField}>
-                      <InlineEditingSmallInput
-                        isActive={false}
-                        isDisabled={
-                          wallet.import.status ===
-                            WalletImportStatuses.COMPLETED ||
-                          wallet.import.status ===
-                            WalletImportStatuses.EXISTS ||
-                          wallet.import.status === WalletImportStatuses.RUNNING
-                        }
-                        inputFieldValue={wallet.name || ''}
-                        placeholder={intl.formatMessage(messages.notFound)}
-                        isValid={nameValidator}
-                        validationErrorMessage={intl.formatMessage(
-                          globalMessages.invalidWalletName
-                        )}
-                        onSubmit={(name: string) =>
-                          onWalletNameChange({
-                            index: wallet.index,
-                            name,
-                          })
-                        }
-                        successfullyUpdated
-                      />
+                      {!wallet.name ? (
+                        <Tooltip
+                          className={styles.unamedWalletsInputTooltip}
+                          skin={TooltipSkin}
+                          tip={intl.formatMessage(
+                            messages.enterWalletNameTooltip
+                          )}
+                          arrowRelativeToTip
+                        >
+                          {this.getInlineEditingSmallInput(
+                            wallet,
+                            intl.formatMessage(
+                              globalMessages.invalidWalletName
+                            ),
+                            intl.formatMessage(messages.notFound),
+                            nameValidator,
+                            onWalletNameChange
+                          )}
+                        </Tooltip>
+                      ) : (
+                        <>
+                          {this.getInlineEditingSmallInput(
+                            wallet,
+                            intl.formatMessage(
+                              globalMessages.invalidWalletName
+                            ),
+                            intl.formatMessage(messages.notFound),
+                            nameValidator,
+                            onWalletNameChange
+                          )}
+                        </>
+                      )}
                     </div>
                     <div className={styles.walletsStatus}>
                       {this.getWalletStatus(wallet)}

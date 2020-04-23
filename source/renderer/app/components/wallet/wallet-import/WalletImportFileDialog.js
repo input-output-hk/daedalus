@@ -12,6 +12,7 @@ import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import SVGInline from 'react-svg-inline';
 import classNames from 'classnames';
+import { get } from 'lodash';
 import styles from './WalletImportFileDialog.scss';
 import RadioSet from '../../widgets/RadioSet';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
@@ -132,6 +133,14 @@ export default class WalletImportFileDialog extends Component<Props, State> {
     }
   };
 
+  get input() {
+    const fallbackInput = {
+      blur: () => {},
+      focus: () => {},
+    };
+    return get(this, 'importPathInput.inputElement.current', fallbackInput);
+  }
+
   isImportFromStateDir = (importFrom: ImportFromOption) =>
     importFrom === ImportFromOptions.STATE_DIR;
 
@@ -151,6 +160,7 @@ export default class WalletImportFileDialog extends Component<Props, State> {
       exportSourcePath,
       defaultExportSourcePath,
     } = this.props;
+
     const title = intl.formatMessage(messages.title);
     const description = <FormattedHTMLMessage {...messages.description} />;
     const stateFolderLabel = intl.formatMessage(messages.stateFolderLabel);
@@ -167,10 +177,7 @@ export default class WalletImportFileDialog extends Component<Props, State> {
     const onLinkClick = () =>
       onOpenExternalLink(intl.formatMessage(messages.linkUrl));
 
-    const resetErrorCheck =
-      this.importPathInput &&
-      this.importPathInput.inputElement.current.value !== exportSourcePath;
-    const error = !resetErrorCheck && exportErrors !== '';
+    const error = exportErrors !== '';
 
     const inputClasses = classNames([
       styles.stateFolderInput,
@@ -200,7 +207,6 @@ export default class WalletImportFileDialog extends Component<Props, State> {
             icon={closeCrossThin}
             onClose={onClose}
           />
-          <div className={styles.backgroundContainer} />
           <div className={styles.content}>
             <div className={styles.title}>{title}</div>
             <div className={styles.description}>{description}</div>
@@ -250,6 +256,7 @@ export default class WalletImportFileDialog extends Component<Props, State> {
                       ? defaultExportSourcePath
                       : 'secret.key'
                   }
+                  readOnly
                 />
                 <Button
                   className={styles.selectStateDirectoryButton}

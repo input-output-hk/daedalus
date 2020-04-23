@@ -104,7 +104,7 @@ type Props = {
   onCancel: Function,
   onExternalLinkClick: Function,
   isSubmitting: boolean,
-  isMainnet: boolean,
+  isFlight: boolean,
   error: ?LocalizableError,
   currencyUnit: string,
 };
@@ -185,7 +185,7 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
       totalAmount,
       transactionFee,
       isSubmitting,
-      isMainnet,
+      isFlight,
       error,
       currencyUnit,
       onExternalLinkClick,
@@ -208,7 +208,7 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
         className: confirmButtonClasses,
         disabled:
           !passphraseField.isValid ||
-          (!flightCandidateCheckboxField.value && isMainnet),
+          (!flightCandidateCheckboxField.value && isFlight),
       },
     ];
 
@@ -292,7 +292,7 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
           />
         </div>
 
-        {isMainnet && (
+        {isFlight && (
           <div className={styles.flightCandidateWarning}>
             <FormattedHTMLMessage
               {...messages.flightCandidateWarning}

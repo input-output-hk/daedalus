@@ -243,26 +243,33 @@ export default class WalletReceiveRandom extends Component<Props, State> {
         <BorderedBox fullHeight>
           <div className={styles.container}>
             <div className={styles.qrCodeAndInstructions}>
-              <div className={styles.qrCode}>
-                <QRCode
-                  value={walletAddress}
-                  bgColor={qrCodeBackgroundColor}
-                  fgColor={qrCodeForegroundColor}
-                  size={152}
-                />
-              </div>
+              {walletAddress && (
+                <div className={styles.qrCode}>
+                  <QRCode
+                    value={walletAddress}
+                    bgColor={qrCodeBackgroundColor}
+                    fgColor={qrCodeForegroundColor}
+                    size={152}
+                  />
+                </div>
+              )}
 
               <div className={styles.instructions}>
-                <div className={walletAddressClasses}>
-                  {walletAddress}
-                  <CopyToClipboard
-                    text={walletAddress}
-                    // eslint-disable-next-line react/jsx-no-bind
-                    onCopy={onCopyAddress.bind(this, walletAddress)}
-                  >
-                    <SVGInline svg={iconCopy} className={styles.copyIconBig} />
-                  </CopyToClipboard>
-                </div>
+                {walletAddress && (
+                  <div className={walletAddressClasses}>
+                    {walletAddress}
+                    <CopyToClipboard
+                      text={walletAddress}
+                      // eslint-disable-next-line react/jsx-no-bind
+                      onCopy={onCopyAddress.bind(this, walletAddress)}
+                    >
+                      <SVGInline
+                        svg={iconCopy}
+                        className={styles.copyIconBig}
+                      />
+                    </CopyToClipboard>
+                  </div>
+                )}
 
                 <div className={styles.hashLabel}>
                   {intl.formatMessage(messages.walletAddressLabel)}
@@ -282,23 +289,29 @@ export default class WalletReceiveRandom extends Component<Props, State> {
               </div>
             </div>
 
-            <div className={styles.generatedAddresses}>
-              <h2>
-                {intl.formatMessage(messages.generatedAddressesSectionTitle)}
-                <div className={styles.hideUsed}>
-                  <TinySwitch
-                    label={intl.formatMessage(messages.showUsedLabel)}
-                    onChange={this.toggleUsedAddresses}
-                    checked={showUsed}
+            {walletAddresses.length ? (
+              <>
+                <div className={styles.generatedAddresses}>
+                  <h2>
+                    {intl.formatMessage(
+                      messages.generatedAddressesSectionTitle
+                    )}
+                    <div className={styles.hideUsed}>
+                      <TinySwitch
+                        label={intl.formatMessage(messages.showUsedLabel)}
+                        onChange={this.toggleUsedAddresses}
+                        checked={showUsed}
+                      />
+                    </div>
+                  </h2>
+
+                  <VirtualAddressesList
+                    rows={this.getFilteredAddresses(walletAddresses)}
+                    renderRow={this.renderRow}
                   />
                 </div>
-              </h2>
-
-              <VirtualAddressesList
-                rows={this.getFilteredAddresses(walletAddresses)}
-                renderRow={this.renderRow}
-              />
-            </div>
+              </>
+            ) : null}
           </div>
         </BorderedBox>
       </div>
