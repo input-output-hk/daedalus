@@ -8816,7 +8816,7 @@
       },
       {
         "defaultMessage": "!!!Step {currentStep} of {totalSteps}",
-        "description": "Step counter in the wallet create dialog.",
+        "description": "Step couters in the wallet create dialog.",
         "end": {
           "column": 3,
           "line": 24
@@ -9967,7 +9967,7 @@
     "descriptors": [
       {
         "defaultMessage": "!!!Step {currentStep} of {totalSteps}",
-        "description": "Step counter in the wallet create dialog.",
+        "description": "Step couters in the wallet create dialog.",
         "end": {
           "column": 3,
           "line": 19
