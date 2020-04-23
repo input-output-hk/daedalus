@@ -211,9 +211,19 @@ export default class WalletCreateDialog extends Component<Props, State> {
     const { isSubmitting } = this.state;
     const dialogClasses = classnames([styles.component, 'WalletCreateDialog']);
 
+    const walletNameField = form.$('walletName');
+    const spendingPasswordField = form.$('spendingPassword');
+    const repeatedPasswordField = form.$('repeatPassword');
+
+    const formValuesNotSet =
+      !walletNameField.value ||
+      !spendingPasswordField.value ||
+      !repeatedPasswordField.value;
+
     const actions = [
       {
         className: isSubmitting ? styles.isSubmitting : null,
+        disabled: isSubmitting || formValuesNotSet,
         label: this.context.intl.formatMessage(
           isIncentivizedTestnet
             ? messages.createPersonalWalletItn
@@ -223,10 +233,6 @@ export default class WalletCreateDialog extends Component<Props, State> {
         onClick: this.submit,
       },
     ];
-
-    const walletNameField = form.$('walletName');
-    const spendingPasswordField = form.$('spendingPassword');
-    const repeatedPasswordField = form.$('repeatPassword');
 
     return (
       <Dialog

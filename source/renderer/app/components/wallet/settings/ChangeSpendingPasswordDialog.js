@@ -214,18 +214,25 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
 
     const newPasswordClasses = classnames(['newPassword', styles.newPassword]);
 
-    const actions = [
-      {
-        label: intl.formatMessage(globalMessages.save),
-        onClick: this.submit,
-        primary: true,
-        className: confirmButtonClasses,
-      },
-    ];
-
     const currentPasswordField = form.$('currentPassword');
     const newPasswordField = form.$('spendingPassword');
     const repeatedPasswordField = form.$('repeatPassword');
+
+    const formValuesNotSet = isSpendingPasswordSet
+      ? !currentPasswordField.value ||
+        !newPasswordField.value ||
+        !repeatedPasswordField.value
+      : !newPasswordField.value || !repeatedPasswordField.value;
+
+    const actions = [
+      {
+        className: confirmButtonClasses,
+        disabled: isSubmitting || formValuesNotSet,
+        label: intl.formatMessage(globalMessages.save),
+        onClick: this.submit,
+        primary: true,
+      },
+    ];
 
     return (
       <Dialog

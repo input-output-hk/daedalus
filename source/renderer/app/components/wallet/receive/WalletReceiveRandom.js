@@ -217,6 +217,7 @@ export default class WalletReceiveRandom extends Component<Props, State> {
 
         <Button
           className={generateAddressButtonClasses}
+          disabled={isSubmitting || !passwordField.value}
           label={intl.formatMessage(messages.generateNewAddressButtonLabel)}
           skin={ButtonSkin}
           onClick={this.submit}
