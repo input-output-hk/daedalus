@@ -7,5 +7,6 @@ export type SidebarWalletType = {
   isRestoreActive?: boolean,
   restoreProgress?: number,
   isLegacy: boolean,
+  isNotResponding: boolean,
   recoveryPhraseVerificationStatus: string,
 };

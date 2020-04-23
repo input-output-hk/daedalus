@@ -1,0 +1,205 @@
+@import '../../../themes/mixins/link';
+@import '../../../themes/mixins/loading-spinner';
+
+.component {
+  padding: 20px;
+
+  .headerWrapper {
+    align-items: flex-end;
+    display: flex;
+    line-height: 1.38;
+    margin: 0 20px 10px;
+
+    & > .title {
+      color: var(--theme-staking-font-color-lighter);
+      flex-grow: 1;
+      font-family: var(--font-regular);
+      font-size: 16px;
+    }
+
+    & > .actionButton {
+      box-shadow: 0 1.5px 5px 0 var(--theme-staking-export-button-shadow-color);
+      display: flex;
+      height: auto;
+      padding: 7px 12px;
+      position: fixed;
+      right: 20px;
+      top: 144px;
+      width: auto;
+
+      &:focus {
+        box-shadow: 0 1.5px 5px 0
+          var(--theme-staking-export-button-shadow-color) !important;
+      }
+
+      &.actionButtonFaded {
+        opacity: 0.5;
+
+        &:hover {
+          opacity: 1;
+        }
+      }
+
+      .actionLabel {
+        color: var(--theme-staking-learn-more-button-color);
+        font-family: var(--font-medium);
+        font-size: 14px;
+        letter-spacing: normal;
+        line-height: 1.36;
+        margin-right: 12px;
+      }
+
+      .downloadIcon {
+        height: 11px;
+        object-fit: contain;
+        width: 11px;
+
+        path {
+          fill: var(--theme-staking-learn-more-button-color);
+        }
+      }
+    }
+  }
+
+  .noRewardsLabel {
+    color: var(--theme-staking-font-color-lighter);
+    flex-grow: 1;
+    font-family: var(--font-regular);
+    font-size: 16px;
+    text-align: center;
+  }
+
+  .note {
+    align-items: flex-start;
+    color: var(--theme-staking-font-color-lighter);
+    display: flex;
+    flex-direction: column;
+    font-family: var(--font-regular);
+    font-size: 14px;
+    line-height: 1.43;
+    padding: 10px 20px;
+
+    p {
+      margin-bottom: 3px;
+    }
+
+    button {
+      @include link(--theme-staking-link-color-light);
+      font-size: 14px;
+      margin-top: 3px;
+
+      &:hover {
+        border-bottom: 1px solid var(--theme-staking-link-color);
+        color: var(--theme-staking-link-color);
+        svg {
+          g {
+            stroke: var(--theme-staking-link-color);
+          }
+        }
+      }
+    }
+  }
+
+  .loadingSpinnerWrapper {
+    margin: auto;
+  }
+
+  .exportingSpinnerWrapper {
+    :global {
+      .LoadingSpinner_component {
+        &.LoadingSpinner_small {
+          height: 19px;
+          margin: 0;
+          width: 19px;
+        }
+      }
+    }
+  }
+
+  table {
+    border-style: hidden;
+    user-select: text;
+    width: 100%;
+
+    thead {
+      background-color: var(--theme-staking-table-head-background-color);
+    }
+
+    tr,
+    td,
+    th {
+      border: 1px solid var(--theme-staking-table-border-color);
+    }
+
+    th {
+      color: var(--theme-staking-font-color-regular);
+      cursor: pointer;
+      font-family: var(--font-semibold);
+      font-size: 14px;
+      line-height: 1.14;
+      padding: 14px 20px;
+      text-align: left;
+
+      &:hover {
+        & > .sortIcon {
+          opacity: 0.5;
+          visibility: visible;
+        }
+      }
+
+      & > .sortIcon {
+        margin-left: 6px;
+        visibility: hidden;
+        & > svg {
+          height: 7.5px;
+          width: 7px;
+          & > path {
+            fill: var(--theme-staking-font-color-regular);
+          }
+        }
+        &.ascending {
+          & > svg {
+            transform: rotate(180deg);
+          }
+        }
+        &.sorted {
+          opacity: 1;
+          visibility: visible;
+        }
+      }
+    }
+
+    td {
+      color: var(--theme-staking-font-color-regular);
+      font-family: var(--font-light);
+      font-size: 14px;
+      line-height: 1.3;
+      padding: 14px 20px;
+      position: relative;
+      text-align: left;
+      -ms-user-select: none;
+      -webkit-user-select: none;
+      user-select: none;
+      width: 25%;
+
+      p {
+        -webkit-box-orient: vertical;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        word-break: break-all;
+
+        .stakePoolReference {
+          font-family: var(--font-medium);
+        }
+      }
+
+      .syncingProgress {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+      }
+    }
+  }
+}

@@ -11,7 +11,7 @@
   padding: 10px;
   position: absolute;
   user-select: text;
-  width: 240px;
+  width: 280px;
   z-index: 2;
 
   :global {
@@ -24,6 +24,7 @@
       border-radius: 2px;
       color: var(--theme-staking-stake-pool-tooltip-delegate-button-text-color);
       height: 33px;
+      margin-top: 14px;
       user-select: none;
       width: 100%;
 
@@ -47,6 +48,43 @@
         );
       }
     }
+
+    .SimpleBubble_root {
+      .SimpleBubble_bubble {
+        margin-left: -40px;
+      }
+    }
+  }
+
+  .experimentalTooltip {
+    height: 14.5px;
+    padding: 0;
+    position: absolute;
+    right: -5px;
+    top: -6px;
+    width: 10px;
+    .experimentalIcon {
+      padding: 0;
+      svg {
+        height: 14.5px;
+        width: 10px;
+        g {
+          path:nth-child(1) {
+            fill: var(
+              --theme-staking-stake-pool-tooltip-experimental-icon-background-color
+            );
+          }
+          path:nth-child(2) {
+            fill: var(
+              --theme-staking-stake-pool-tooltip-experimental-icon-lines-color
+            );
+          }
+        }
+      }
+    }
+    .iconButton {
+      cursor: pointer;
+    }
   }
 }
 
@@ -64,12 +102,16 @@
   width: 100%;
 }
 
+.homepage {
+  width: initial;
+}
+
 .arrow {
   border-color: transparent;
   border-style: solid;
-  height: 0px;
+  height: 0;
   position: absolute;
-  width: 0px;
+  width: 0;
 
   &:before {
     border-color: transparent;
@@ -88,7 +130,7 @@
       border-top-color: var(
         --theme-staking-stake-pool-tooltip-background-color
       );
-      border-width: 10px 10px 0px 10px;
+      border-width: 10px 10px 0 10px;
       left: -10px;
       top: -11px;
     }
@@ -100,7 +142,7 @@
       border-right-color: var(
         --theme-staking-stake-pool-tooltip-background-color
       );
-      border-width: 10px 10px 10px 0px;
+      border-width: 10px 10px 10px 0;
       right: -11px;
       top: -10px;
     }
@@ -110,7 +152,7 @@
     border-width: 0 11px 11px 11px;
     &:before {
       border-bottom-color: transparent;
-      border-width: 0px 10px 10px 10px;
+      border-width: 0 10px 10px 10px;
       left: -10px;
       top: -11px;
     }
@@ -122,7 +164,7 @@
       border-left-color: var(
         --theme-staking-stake-pool-tooltip-background-color
       );
-      border-width: 10px 0px 10px 10px;
+      border-width: 10px 0 10px 10px;
       left: -11px;
       top: -10px;
     }
@@ -162,7 +204,7 @@
   }
 }
 
-.slug {
+.ticker {
   color: var(--theme-staking-stake-pool-tooltip-text-color);
   display: inline-block;
   font-size: 14px;
@@ -191,38 +233,17 @@
   font-size: 14px;
   line-height: 1.36;
   margin-bottom: 4px;
-  max-height: 79px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.url {
-  @include link(--theme-staking-stake-pool-tooltip-link-color);
-  font-size: 14px;
-  line-height: 1.36;
-  margin-bottom: 18px;
-  max-width: 100%;
-
-  .urlContent {
-    display: inline-block;
-    max-width: calc(100% - 14px);
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  & > span {
-    vertical-align: text-top;
-    svg {
-      vertical-align: baseline;
-    }
-  }
+  margin-right: -5px;
+  max-height: 57px;
+  overflow-y: auto;
+  word-break: break-word;
 }
 
 .table {
   @extend %regularText;
   display: flex;
   flex-wrap: wrap;
-  margin-bottom: 14px;
+  margin: 18px 0 6px 0;
 
   dt,
   dd {
@@ -239,14 +260,14 @@
     font-size: 14px;
     line-height: 1.36;
     opacity: 0.8;
-    width: 60%;
+    width: 65%;
   }
 
   dd {
     line-height: 0;
     padding-top: 1px;
     text-align: right;
-    width: 40%;
+    width: 35%;
   }
 
   span {
@@ -258,5 +279,78 @@
     height: 16px;
     line-height: 16px;
     padding: 0 9px;
+  }
+
+  .ranking,
+  .profitMargin,
+  .cost,
+  .performance {
+    width: 35%;
+  }
+
+  .ranking,
+  .performance {
+    position: relative;
+  }
+}
+
+.defaultColor {
+  span {
+    background: var(
+      --theme-staking-stake-pool-tooltip-neutral-background-color
+    );
+    color: var(--theme-staking-stake-pool-tooltip-neutral-text-color);
+  }
+}
+
+.saturationLabel {
+  width: 50% !important;
+}
+
+.saturationValue {
+  width: 50% !important;
+
+  & > span {
+    background: var(
+      --theme-staking-stake-pool-tooltip-neutral-background-color
+    );
+    white-space: nowrap;
+  }
+
+  .saturationBar {
+    background: var(--theme-staking-stake-pool-saturation-background-color);
+    border-radius: 2px;
+    height: 5px;
+    margin: 0 6px 0 0;
+    overflow: hidden;
+    padding: 0;
+    position: relative;
+    width: 40px;
+
+    span {
+      border-radius: 2px;
+      bottom: 0;
+      height: inherit;
+      left: 0;
+      padding: 0;
+      position: absolute;
+      top: 0;
+    }
+
+    &.green span {
+      background: var(--theme-staking-stake-pool-saturation-green-color);
+    }
+
+    &.orange span {
+      background: var(--theme-staking-stake-pool-saturation-orange-color);
+    }
+
+    &.red span {
+      background: var(--theme-staking-stake-pool-saturation-red-color);
+    }
+
+    &.yellow span {
+      background: var(--theme-staking-stake-pool-saturation-yellow-color);
+    }
   }
 }

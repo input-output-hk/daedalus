@@ -49,6 +49,17 @@ export default class BackToTopButton extends Component<Props, State> {
     );
   }
 
+  componentWillUnmount() {
+    this.scrollableDomElement = document.querySelector(
+      `.${this.props.scrollableElementClassName}`
+    );
+    if (!this.scrollableDomElement) return false;
+    return this.scrollableDomElement.removeEventListener(
+      'scroll',
+      this.getIsBackToTopActive
+    );
+  }
+
   getIsBackToTopActive = () => {
     const { isActive } = this.state;
     const { scrollTopToActivate } = this.props;

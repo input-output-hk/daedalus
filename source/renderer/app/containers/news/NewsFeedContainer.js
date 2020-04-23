@@ -9,22 +9,19 @@ import type { InjectedProps } from '../../types/injectedPropsType';
 export default class NewsFeedContainer extends Component<InjectedProps> {
   static defaultProps = { actions: null, stores: null };
 
-  handleMarkNewsAsRead = (newsTimestamps: number) => {
+  handleMarkNewsAsRead = (newsId: number) => {
     const { stores } = this.props;
     const { markNewsAsRead } = stores.newsFeed;
-    markNewsAsRead([newsTimestamps]);
-  };
-
-  handleGoToRoute = (route: string) => {
-    const { actions } = this.props;
-    actions.router.goToRoute.trigger({ route });
+    markNewsAsRead([newsId]);
   };
 
   render() {
     const { stores, actions } = this.props;
-    const { newsFeedData, isLoadingNews } = stores.newsFeed;
+    const { app, profile } = stores;
+    const { newsFeedData, isLoadingNews, proceedNewsAction } = stores.newsFeed;
     const { toggleNewsFeed } = actions.app;
-    const { openExternalLink, newsFeedIsOpen } = stores.app;
+    const { openExternalLink, newsFeedIsOpen } = app;
+    const { currentDateFormat } = profile;
 
     return (
       <NewsFeed
@@ -33,10 +30,11 @@ export default class NewsFeedContainer extends Component<InjectedProps> {
         isLoadingNews={isLoadingNews}
         onClose={toggleNewsFeed.trigger}
         onOpenAlert={stores.newsFeed.openAlert}
-        onOpenExternalLink={openExternalLink}
         onMarkNewsAsRead={this.handleMarkNewsAsRead}
         openWithoutTransition={stores.networkStatus.environment.isTest}
-        onGoToRoute={this.handleGoToRoute}
+        onProceedNewsAction={proceedNewsAction}
+        onOpenExternalLink={openExternalLink}
+        currentDateFormat={currentDateFormat}
       />
     );
   }

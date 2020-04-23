@@ -1,0 +1,16 @@
+.root {
+  .check {
+    height: var(--rp-checkbox-size);
+    width: var(--rp-checkbox-size);
+
+    &::after {
+      height: calc(22 / 2 * 1px);
+      margin-left: 1px;
+      width: calc(22 / 5 * 1px);
+    }
+  }
+
+  strong {
+    font-weight: normal;
+  }
+}

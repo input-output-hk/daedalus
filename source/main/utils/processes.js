@@ -1,7 +1,7 @@
 // @flow
 import psList from 'ps-list';
 import { isObject } from 'lodash';
-import { Logger } from './logging';
+import { logger } from './logging';
 
 /* eslint-disable consistent-return */
 
@@ -55,7 +55,7 @@ export const getProcess = async (
       return previousProcess;
     }
   } catch (error) {
-    Logger.error('getProcess error', { error });
+    logger.error('getProcess error', { error });
     return null;
   }
 };

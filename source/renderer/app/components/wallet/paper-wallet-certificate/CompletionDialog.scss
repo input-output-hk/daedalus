@@ -38,9 +38,19 @@
     word-wrap: break-word;
 
     .link {
-      @include link(
+      border-color: var(
         --theme-paper-wallet-create-certificate-dialog-explorer-link-color
       );
+      color: var(
+        --theme-paper-wallet-create-certificate-dialog-explorer-link-color
+      );
+      font-family: var(--font-mono);
+      font-size: 16px;
+      &:after {
+        background-color: var(
+          --theme-paper-wallet-create-certificate-dialog-explorer-link-color
+        );
+      }
     }
   }
 

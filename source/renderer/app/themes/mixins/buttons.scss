@@ -14,6 +14,7 @@
     &[disabled] {
       background: var(--theme-button-#{$type}-background-color-disabled);
       color: var(--theme-button-#{$type}-text-color-disabled);
+      opacity: 0.3;
       &:hover,
       &:active {
         background: var(--theme-button-#{$type}-background-color-disabled);

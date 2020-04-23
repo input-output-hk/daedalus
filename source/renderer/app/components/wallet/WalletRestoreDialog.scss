@@ -15,41 +15,49 @@
     margin-bottom: 20px;
   }
 
-  .spendingPassword {
-    .spendingPasswordSwitch {
-      border-top: 1px solid var(--theme-dialog-border-color);
-      margin-top: 30px;
-      padding-top: 20px;
+  .newLabel {
+    background-color: var(
+      --theme-wallet-restore-dialog-new-label-background-color
+    );
+    border-radius: 3px;
+    color: var(--theme-wallet-restore-dialog-new-label-color);
+    font-family: var(--font-bold);
+    font-size: 8px;
+    font-weight: bold;
+    margin-left: 6px;
+    opacity: 1 !important;
+    padding: 2px 8px 3px 8px;
+    position: relative;
+    text-transform: uppercase;
+    top: -2px;
+  }
 
-      & > .passwordLabel {
-        color: var(--rp-switch-label-text-color);
-        font-family: var(--font-semibold);
-        font-size: 16px;
-        line-height: 1.38;
-        margin-bottom: 10px;
-      }
+  .spendingPasswordWrapper {
+    border-top: 1px solid var(--theme-dialog-border-color);
+    margin-top: 30px;
+    padding-top: 20px;
 
-      :global {
-        .SimpleSwitch_root {
-          margin-bottom: 0;
-        }
-      }
+    .passwordSectionLabel {
+      font-family: var(--font-medium);
+      font-size: 16px;
+      line-height: 1.38;
+      margin-bottom: 14px;
+    }
+
+    .passwordSectionDescription {
+      font-family: var(--font-light);
+      font-size: 16px;
+      line-height: 1.38;
     }
 
     .spendingPasswordFields {
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
-      max-height: 0;
-      opacity: 0;
-      overflow: hidden;
+      max-height: 250px;
+      opacity: 1;
+      overflow: visible;
       transition: all 400ms ease;
-
-      &.show {
-        max-height: 250px;
-        opacity: 1;
-        overflow: visible;
-      }
 
       & > div {
         margin-top: 20px;
@@ -62,7 +70,7 @@
         color: var(--theme-dialog-text-color);
         font-family: var(--font-light);
         line-height: 1.38;
-        margin-top: 16px;
+        margin-top: 10px;
       }
     }
   }
@@ -77,9 +85,9 @@
       cursor: pointer;
       flex: 1;
       font-family: var(--font-medium);
-      font-size: 16px;
+      font-size: 14px;
       opacity: 0.5;
-      padding: 20px;
+      padding: 20px 0;
       text-align: center;
     }
 

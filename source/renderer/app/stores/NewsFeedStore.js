@@ -13,11 +13,15 @@ import type {
   GetNewsResponse,
   GetReadNewsResponse,
   NewsItem,
-  NewsTimestamp,
   MarkNewsAsReadResponse,
 } from '../api/news/types';
 
-const { isTest } = global.environment;
+const { isTest, isDev } = global.environment;
+
+const AVAILABLE_NEWSFEED_EVENT_ACTIONS = [
+  'DOWNLOAD_LOGS',
+  'OPEN_DIAGNOSTIC_DIALOG',
+];
 
 export default class NewsFeedStore extends Store {
   @observable rawNews: ?Array<NewsItem> = null;
@@ -34,6 +38,7 @@ export default class NewsFeedStore extends Store {
     this.api.localStorage.markNewsAsRead
   );
   @observable openedAlert: ?News.News = null;
+  @observable fetchLocalNews: boolean = false;
 
   pollingNewsIntervalId: ?IntervalID = null;
   pollingNewsOnErrorIntervalId: ?IntervalID = null;
@@ -55,6 +60,7 @@ export default class NewsFeedStore extends Store {
     let rawNews;
     try {
       rawNews = await this.getNewsRequest.execute().promise;
+
       const hasIncident = find(
         rawNews.items,
         news => news.type === NewsTypes.INCIDENT
@@ -140,17 +146,17 @@ export default class NewsFeedStore extends Store {
     }
   };
 
-  @action markNewsAsRead = async newsTimestamps => {
+  @action markNewsAsRead = async newsId => {
     // Set news timestamp to LC
-    await this.markNewsAsReadRequest.execute(newsTimestamps);
+    await this.markNewsAsReadRequest.execute(newsId);
     // Get all read news to force @computed change
     await this.getReadNewsRequest.execute();
   };
 
-  @action openAlert = (newsTimestamp: NewsTimestamp) => {
+  @action openAlert = (newsId: number) => {
     if (this.getNewsRequest.wasExecuted) {
       const alertToOpen = this.newsFeedData.alerts.all.find(
-        newsItem => newsItem.date === newsTimestamp
+        newsItem => newsItem.id === newsId
       );
       if (alertToOpen) {
         this.openedAlert = alertToOpen;
@@ -166,24 +172,69 @@ export default class NewsFeedStore extends Store {
     this.fetchingNewsFailed = fetchingNewsFailed;
   };
 
+  @action proceedNewsAction = (newsItem, e: MouseEvent) => {
+    const { url, route, event } = newsItem.action;
+
+    if (url) {
+      this.stores.app.openExternalLink(url, e);
+    } else if (
+      route &&
+      newsItem.type !== NewsTypes.INCIDENT &&
+      newsItem.type !== NewsTypes.ALERT
+    ) {
+      this.actions.app.closeNewsFeed.trigger();
+      this.actions.router.goToRoute.trigger({ route });
+    } else if (event && AVAILABLE_NEWSFEED_EVENT_ACTIONS.includes(event)) {
+      switch (event) {
+        case 'OPEN_DIAGNOSTIC_DIALOG':
+          this.actions.app.openDaedalusDiagnosticsDialog.trigger();
+          break;
+        case 'DOWNLOAD_LOGS':
+          this.actions.app.downloadLogs.trigger();
+          break;
+        default:
+          break;
+      }
+    }
+  };
+
+  @action setFakedNewsfeed = () => {
+    if (isDev) {
+      if (this.pollingNewsIntervalId) {
+        clearInterval(this.pollingNewsIntervalId);
+        this.pollingNewsIntervalId = null;
+      }
+      const rawNews = require('../config/news.dummy.json');
+      this.rawNews = get(rawNews, 'items', []);
+      this.newsUpdatedAt = get(rawNews, 'updatedAt', null);
+    }
+  };
+
   @computed get newsFeedData(): News.NewsCollection {
     const { currentLocale } = this.stores.profile;
     const readNews = this.getReadNewsRequest.result;
     let news = [];
-    if (this.getNewsRequest.wasExecuted) {
-      news = map(this.rawNews, item => ({
-        ...item,
-        title: item.title[currentLocale],
-        content: item.content[currentLocale],
-        action: {
-          ...item.action,
-          label: item.action.label[currentLocale],
-          url: get(item, ['action', 'url', currentLocale]),
-        },
-        read: readNews.includes(item.date),
-      }));
-    }
 
+    if (this.getNewsRequest.wasExecuted) {
+      news = map(this.rawNews, item => {
+        // Match old and new newsfeed JSON format
+        const mainIdentificator = item.id || item.date;
+        return {
+          ...item,
+          id: mainIdentificator,
+          title: item.title[currentLocale],
+          content: item.content[currentLocale],
+          action: {
+            label: get(item, ['action', 'label', currentLocale]),
+            url: get(item, ['action', 'url', currentLocale]),
+            route: get(item, ['action', 'route', currentLocale]),
+            event: get(item, ['action', 'event', currentLocale]),
+          },
+          date: get(item, ['publishedAt', currentLocale], item.date),
+          read: readNews.includes(mainIdentificator),
+        };
+      });
+    }
     return new News.NewsCollection(news);
   }
 

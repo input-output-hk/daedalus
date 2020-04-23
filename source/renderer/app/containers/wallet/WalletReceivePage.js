@@ -1,28 +1,21 @@
 // @flow
 import React, { Component, Fragment } from 'react';
-import { defineMessages, FormattedHTMLMessage } from 'react-intl';
+import path from 'path';
 import { observer, inject } from 'mobx-react';
-import { ellipsis } from '../../utils/strings';
-import WalletReceive from '../../components/wallet/receive/WalletReceive';
+import { showSaveDialogChannel } from '../../ipc/show-file-dialog-channels';
+import WalletReceiveRandom from '../../components/wallet/receive/WalletReceiveRandom';
+import WalletReceiveSequential from '../../components/wallet/receive/WalletReceiveSequential';
 import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer';
-import NotificationMessage from '../../components/widgets/NotificationMessage';
-import successIcon from '../../assets/images/success-small.inline.svg';
+import WalletReceiveDialog from '../../components/wallet/receive/WalletReceiveDialog';
 import type { InjectedProps } from '../../types/injectedPropsType';
-import { ADDRESS_COPY_NOTIFICATION_DURATION } from '../../config/timingConfig';
-import { ADDRESS_COPY_NOTIFICATION_ELLIPSIS } from '../../config/formattingConfig';
-
-export const messages = defineMessages({
-  message: {
-    id: 'wallet.receive.page.addressCopyNotificationMessage',
-    defaultMessage: '!!!You have successfully copied wallet address',
-    description: 'Message for the wallet address copy success notification.',
-  },
-});
+import WalletAddress from '../../domains/WalletAddress';
+import { generateFileNameWithTimestamp } from '../../../../common/utils/files';
+import { ellipsis } from '../../utils/strings';
 
 type Props = InjectedProps;
 
 type State = {
-  copiedAddress: string,
+  addressToShare?: ?WalletAddress,
 };
 
 @inject('stores', 'actions')
@@ -31,109 +24,139 @@ export default class WalletReceivePage extends Component<Props, State> {
   static defaultProps = { actions: null, stores: null };
 
   state = {
-    copiedAddress: '',
+    addressToShare: null,
   };
 
-  componentWillUnmount() {
-    this.closeNotification();
-    this.resetErrors();
+  get activeWallet() {
+    return this.props.stores.wallets.active;
   }
 
-  handleGenerateAddress = (spendingPassword: ?string) => {
-    const { wallets } = this.props.stores;
-    const wallet = wallets.active;
+  componentWillUnmount() {
+    const { actions } = this.props;
+    actions.addresses.resetErrors.trigger();
+    actions.notifications.closeNotification.trigger({
+      id: 'copyAddress',
+    });
+  }
 
-    if (wallet) {
-      this.props.actions.addresses.createAddress.trigger({
-        walletId: wallet.id,
-        spendingPassword,
-      });
-    }
+  handleIsAddressValid = (index: number) => index < 3 || index > 7;
+
+  handleCopyAddress = (copiedAddress: string) => {
+    const address = ellipsis(copiedAddress, 15, 15);
+    this.props.actions.wallets.copyAddress.trigger({ address });
   };
 
-  resetErrors = () => {
-    this.props.actions.addresses.resetErrors.trigger();
+  handleShareAddress = (addressToShare: WalletAddress) => {
+    this.setState({
+      addressToShare,
+    });
+    const dialog = WalletReceiveDialog;
+    this.props.actions.dialogs.open.trigger({ dialog });
   };
 
-  closeNotification = () => {
-    const { wallets } = this.props.stores;
-    const wallet = wallets.active;
-    if (wallet) {
-      const notificationId = `${wallet.id}-copyNotification`;
-      this.props.actions.notifications.closeActiveNotification.trigger({
-        id: notificationId,
+  handleCloseShareAddress = () => {
+    this.props.actions.dialogs.closeActiveDialog.trigger();
+  };
+
+  handleDownloadPDF = async (note: string) => {
+    const { addressToShare } = this.state;
+
+    const name = generateFileNameWithTimestamp({
+      prefix: 'daedalus-cardano-ada-address',
+      extension: '',
+      isUTC: false,
+    });
+    const { desktopDirectoryPath } = this.props.stores.profile;
+    const defaultPath = path.join(desktopDirectoryPath, `${name}.pdf`);
+    const params = {
+      defaultPath,
+      filters: [
+        {
+          name,
+          extensions: ['pdf'],
+        },
+      ],
+    };
+    const { filePath } = await showSaveDialogChannel.send(params);
+
+    // if cancel button is clicked or path is empty
+    if (!filePath || !addressToShare) return;
+
+    const { id: address } = addressToShare;
+
+    this.props.actions.wallets.generateAddressPDF.trigger({
+      address,
+      note,
+      filePath,
+    });
+  };
+
+  handleGenerateAddress = (passphrase: string) => {
+    const { activeWallet } = this;
+    if (activeWallet) {
+      this.props.actions.addresses.createByronWalletAddress.trigger({
+        walletId: activeWallet.id,
+        passphrase,
       });
     }
   };
 
   render() {
-    const { copiedAddress } = this.state;
-    const { actions } = this.props;
-    const { sidebar, uiNotifications, wallets, addresses } = this.props.stores;
-    const wallet = wallets.active;
-
+    const { actions, stores } = this.props;
+    const { uiDialogs, addresses, sidebar } = stores;
+    const { activeWallet } = this;
+    const { addressToShare } = this.state;
+    const { toggleSubMenus } = actions.sidebar;
+    const { isIncentivizedTestnet } = global;
     // Guard against potential null values
-    if (!wallet)
+    if (!activeWallet)
       throw new Error('Active wallet required for WalletReceivePage.');
 
-    const walletAddress = addresses.active ? addresses.active.id : '';
-    const isWalletAddressUsed = addresses.active
+    const { hasPassword, isRandom } = activeWallet;
+    const walletAddresses = addresses.all.slice().reverse();
+    const byronWalletAddress = addresses.active ? addresses.active.id : '';
+    const isByronWalletAddressUsed = addresses.active
       ? addresses.active.used
       : false;
-    const walletAddresses = addresses.all.slice().reverse();
-
-    const notification = {
-      id: `${wallet.id}-copyNotification`,
-      duration: ADDRESS_COPY_NOTIFICATION_DURATION,
-      message: (
-        <FormattedHTMLMessage
-          {...messages.message}
-          values={{
-            walletAddress: ellipsis(
-              copiedAddress,
-              ADDRESS_COPY_NOTIFICATION_ELLIPSIS,
-              ADDRESS_COPY_NOTIFICATION_ELLIPSIS
-            ),
-          }}
-        />
-      ),
-    };
 
     return (
       <Fragment>
         <VerticalFlexContainer>
-          <WalletReceive
-            walletAddress={walletAddress}
-            isWalletAddressUsed={isWalletAddressUsed}
-            walletAddresses={walletAddresses}
-            onGenerateAddress={this.handleGenerateAddress}
-            onCopyAddress={address => {
-              this.setState({ copiedAddress: address });
-              actions.notifications.open.trigger({
-                id: notification.id,
-                duration: notification.duration,
-              });
-            }}
-            isSidebarExpanded={sidebar.isShowingSubMenus}
-            walletHasPassword={wallet.hasPassword}
-            isSubmitting={addresses.createAddressRequest.isExecuting}
-            error={addresses.error}
-          />
+          {isRandom ? (
+            <WalletReceiveRandom
+              walletAddress={byronWalletAddress}
+              isWalletAddressUsed={isByronWalletAddressUsed}
+              walletAddresses={walletAddresses}
+              onGenerateAddress={this.handleGenerateAddress}
+              onShareAddress={this.handleShareAddress}
+              onCopyAddress={this.handleCopyAddress}
+              isSidebarExpanded={sidebar.isShowingSubMenus}
+              walletHasPassword={hasPassword}
+              isSubmitting={
+                addresses.createByronWalletAddressRequest.isExecuting
+              }
+              error={addresses.error}
+            />
+          ) : (
+            <WalletReceiveSequential
+              walletAddresses={walletAddresses}
+              isAddressValid={this.handleIsAddressValid}
+              onShareAddress={this.handleShareAddress}
+              onCopyAddress={this.handleCopyAddress}
+              isIncentivizedTestnet={isIncentivizedTestnet}
+              onToggleSubMenus={toggleSubMenus}
+            />
+          )}
         </VerticalFlexContainer>
 
-        <NotificationMessage
-          icon={successIcon}
-          show={uiNotifications.isOpen(notification.id)}
-          onClose={() => {
-            actions.notifications.closeActiveNotification.trigger({
-              id: notification.id,
-            });
-          }}
-          clickToClose
-          hasCloseButton
-        >
-          {notification.message}
-        </NotificationMessage>
+        {uiDialogs.isOpen(WalletReceiveDialog) && addressToShare && (
+          <WalletReceiveDialog
+            address={addressToShare}
+            onCopyAddress={this.handleCopyAddress}
+            onDownloadPDF={this.handleDownloadPDF}
+            onClose={this.handleCloseShareAddress}
+          />
+        )}
       </Fragment>
     );
   }

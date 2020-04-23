@@ -1,6 +1,3 @@
-#!/usr/bin/env nix-shell
-#! nix-shell -j 4 -i runhaskell -p 'pkgs.haskellPackages.ghcWithPackages (hp: with hp; [ turtle megaparsec text directory universum ])'
-
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 
@@ -13,8 +10,8 @@ import           Universum hiding (isPrefixOf, last)
 import           Data.List (last)
 import           Data.Text (isPrefixOf, isSuffixOf, splitOn)
 import           System.Directory (copyFile, getPermissions, setOwnerWritable, setPermissions)
-import           Text.Megaparsec (Parsec, eof, manyTill, parse, someTill)
-import           Text.Megaparsec.Char (anyChar, eol, spaceChar)
+import           Text.Megaparsec (Parsec, anySingle, eof, manyTill, parse, someTill)
+import           Text.Megaparsec.Char (eol, spaceChar)
 import           Turtle (procStrict, procs)
 
 
@@ -78,12 +75,12 @@ type Parser = Parsec Void Text
 parseLibLine :: Parser Text
 parseLibLine = do
     _ <- many spaceChar
-    path <- someTill anyChar spaceChar
-    _ <- someTill anyChar eol
+    path <- someTill anySingle spaceChar
+    _ <- someTill anySingle eol
     return (toText path)
 
 
 parseOTool :: Parser [Text]
 parseOTool = do
-    _ <- manyTill anyChar eol
+    _ <- manyTill anySingle eol
     manyTill parseLibLine eof

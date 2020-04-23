@@ -4,11 +4,11 @@ import moment from 'moment';
 import { observer } from 'mobx-react';
 import { get } from 'lodash';
 import ReactMarkdown from 'react-markdown';
-import SVGInline from 'react-svg-inline';
+import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import News from '../../domains/News';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
-import externalLinkIcon from '../../assets/images/link-ic.inline.svg';
+import ButtonLink from '../widgets/ButtonLink';
 import styles from './AlertsOverlay.scss';
 
 type State = {
@@ -20,8 +20,10 @@ type Props = {
   onCloseOpenAlert: Function,
   onMarkNewsAsRead: Function,
   onOpenExternalLink: Function,
+  onProceedNewsAction: Function,
   allAlertsCount: number,
   hideCounter?: boolean,
+  currentDateFormat: string,
 };
 
 @observer
@@ -48,26 +50,35 @@ export default class AlertsOverlay extends Component<Props, State> {
   }
 
   onClose = () => {
-    const { alerts } = this.props;
+    const { alerts, onMarkNewsAsRead, onCloseOpenAlert } = this.props;
     if (alerts.length <= 1) {
-      this.props.onMarkNewsAsRead(alerts[0].date);
-      this.props.onCloseOpenAlert();
+      onMarkNewsAsRead([alerts[0].id]);
+      onCloseOpenAlert();
       this.setState({ showOverlay: false });
       return;
     }
-    this.props.onMarkNewsAsRead(alerts[0].date);
+    onMarkNewsAsRead([alerts[0].id]);
+  };
+
+  onProceedNewsAction = (event: SyntheticMouseEvent<HTMLElement>) => {
+    const { onProceedNewsAction, alerts } = this.props;
+    onProceedNewsAction(alerts[0], event);
   };
 
   renderAction = (action: Object) => {
-    if (action && action.url) {
+    if (action && (action.url || action.event)) {
       return (
-        <button
+        <ButtonLink
           className={styles.actionBtn}
-          onClick={() => this.props.onOpenExternalLink(action.url)}
-        >
-          {action.label}
-          <SVGInline svg={externalLinkIcon} />
-        </button>
+          onClick={this.onProceedNewsAction}
+          skin={ButtonSkin}
+          label={action.label}
+          linkProps={{
+            className: styles.externalLink,
+            hasIconBefore: false,
+            hasIconAfter: action.url && true,
+          }}
+        />
       );
     }
     return null;
@@ -75,7 +86,7 @@ export default class AlertsOverlay extends Component<Props, State> {
 
   renderCounter = (alerts: Array<News.News>) => {
     const { allAlertsCount, hideCounter } = this.props;
-    if (!hideCounter) {
+    if (!hideCounter && allAlertsCount > 1) {
       return (
         <span className={styles.counter}>
           {allAlertsCount - alerts.length + 1} / {allAlertsCount}
@@ -87,7 +98,7 @@ export default class AlertsOverlay extends Component<Props, State> {
 
   render() {
     const { showOverlay } = this.state;
-    const { alerts } = this.props;
+    const { alerts, currentDateFormat } = this.props;
     const [alert] = alerts;
     const { content, date, action, title } = alert;
     return (
@@ -101,7 +112,7 @@ export default class AlertsOverlay extends Component<Props, State> {
           {this.renderCounter(alerts)}
           <h1 className={styles.title}>{title}</h1>
           <span className={styles.date}>
-            {moment(date).format(this.localizedDateFormat)}
+            {moment(date).format(currentDateFormat)}
           </span>
           <div
             className={styles.content}
@@ -110,6 +121,7 @@ export default class AlertsOverlay extends Component<Props, State> {
           >
             <ReactMarkdown escapeHtml={false} source={content} />
           </div>
+
           {this.renderAction(action)}
         </div>
       )

@@ -17,10 +17,8 @@ const messages = defineMessages({
 });
 
 type Props = {
-  networkStatus: {
-    +isSynced: boolean,
-    +syncPercentage: number,
-  },
+  isSynced: boolean,
+  syncPercentage: number,
 };
 
 export default class NodeSyncStatusIcon extends Component<Props> {
@@ -29,21 +27,21 @@ export default class NodeSyncStatusIcon extends Component<Props> {
   };
 
   render() {
-    const { networkStatus } = this.props;
-    const { isSynced, syncPercentage } = networkStatus;
+    const { isSynced, syncPercentage } = this.props;
     const { intl } = this.context;
     const statusIcon = isSynced ? syncedIcon : spinnerIcon;
     const componentClasses = classNames([
       styles.component,
       isSynced ? styles.synced : styles.syncing,
     ]);
+    const percentage = syncPercentage.toFixed(syncPercentage === 100 ? 0 : 2);
 
     return (
       <div className={componentClasses}>
         <SVGInline className={styles.icon} svg={statusIcon} />
         <div className={styles.info}>
           {intl.formatMessage(messages.blocksSynced, {
-            percentage: syncPercentage.toFixed(0),
+            percentage,
           })}
         </div>
       </div>

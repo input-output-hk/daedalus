@@ -1,7 +1,6 @@
 // @flow
 import type { RequestConfig } from '../../common/types';
-import type { WalletInitData } from './createWallet';
-import type { AdaWallet } from '../types';
+import type { AdaWallet, WalletInitData } from '../types';
 import { request } from '../../utils/request';
 
 export const restoreWallet = (
@@ -11,7 +10,7 @@ export const restoreWallet = (
   request(
     {
       method: 'POST',
-      path: '/api/v1/wallets',
+      path: '/v2/wallets',
       ...config,
     },
     {},

@@ -10,27 +10,31 @@ import type { InjectedProps } from '../../../types/injectedPropsType';
 export default class GeneralSettingsPage extends Component<InjectedProps> {
   static defaultProps = { actions: null, stores: null };
 
-  onSelectLanguage = async (values: { locale: string }) => {
+  handleSelectItem = async (param: string, value: string) => {
     const { actions, stores } = this.props;
     const { isUpdateAvailable } = stores.nodeUpdate;
-    const { updateLocale } = actions.profile;
-    updateLocale.trigger(values);
-    await rebuildApplicationMenu.send({ isUpdateAvailable });
+    const { updateUserLocalSetting } = actions.profile;
+    updateUserLocalSetting.trigger({ param, value });
+    if (param === 'locale') {
+      await rebuildApplicationMenu.send({ isUpdateAvailable });
+    }
   };
 
   render() {
     const {
       setProfileLocaleRequest,
-      LANGUAGE_OPTIONS,
       currentLocale,
+      currentNumberFormat,
+      currentDateFormat,
+      currentTimeFormat,
     } = this.props.stores.profile;
-    const isSubmitting = setProfileLocaleRequest.isExecuting;
     return (
       <GeneralSettings
-        onSelectLanguage={this.onSelectLanguage}
-        isSubmitting={isSubmitting}
-        languages={LANGUAGE_OPTIONS}
+        onChangeItem={this.handleSelectItem}
         currentLocale={currentLocale}
+        currentNumberFormat={currentNumberFormat}
+        currentDateFormat={currentDateFormat}
+        currentTimeFormat={currentTimeFormat}
         error={setProfileLocaleRequest.error}
       />
     );

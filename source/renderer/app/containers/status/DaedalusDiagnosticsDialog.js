@@ -1,35 +1,17 @@
 // @flow
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
-import { defineMessages, intlShape } from 'react-intl';
 import ReactModal from 'react-modal';
 import DaedalusDiagnostics from '../../components/status/DaedalusDiagnostics';
 import styles from './DaedalusDiagnosticsDialog.scss';
-import GenericNotification from '../../components/notifications/GenericNotification';
-import { COPY_STATE_DIRECTORY_PATH_NOTIFICATION_DURATION } from '../../config/timingConfig';
 import { formattedBytesToSize } from '../../utils/formatters';
 import type { InjectedDialogContainerProps } from '../../types/injectedPropsType';
-
-export const messages = defineMessages({
-  stateDirectoryCopyNotificationMessage: {
-    id: 'daedalus.diagnostics.dialog.stateDirectoryCopyNotificationMessage',
-    defaultMessage: '!!!Directory State Directory copied to clipboard',
-    description: 'Message for the wallet address copy success notification.',
-  },
-});
-
-const COPY_STATE_DIRECTORY_PATH_NOTIFICATION_ID =
-  'copy-state-directory-path-notification-id';
 
 type Props = InjectedDialogContainerProps;
 
 @inject('stores', 'actions')
 @observer
 export default class DaedalusDiagnosticsDialog extends Component<Props> {
-  static contextTypes = {
-    intl: intlShape.isRequired,
-  };
-
   static defaultProps = {
     actions: null,
     stores: null,
@@ -37,19 +19,22 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
     onClose: () => {},
   };
 
+  handleForceCheckNetworkClock = () =>
+    this.props.actions.networkStatus.forceCheckNetworkClock.trigger();
+
+  handleCopyStateDirectoryPath = () =>
+    this.props.actions.networkStatus.copyStateDirectoryPath.trigger();
+
   render() {
-    const { intl } = this.context;
     const { actions, stores } = this.props;
     const { closeDaedalusDiagnosticsDialog } = actions.app;
     const { restartNode } = actions.networkStatus;
-    const { app, networkStatus, profile } = stores;
+    const { app, networkStatus } = stores;
     const { openExternalLink } = app;
-    const { currentLocale } = profile;
     const {
       // Node state
       cardanoNodeState,
       isNodeResponding,
-      isNodeSubscribed,
       isNodeSyncing,
       isNodeInSync,
       isNodeTimeCorrect,
@@ -60,20 +45,18 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
       hasBeenConnected,
       localTimeDifference,
       isSystemTimeCorrect,
-      forceCheckTimeDifferenceRequest,
-      forceCheckLocalTimeDifference,
-      openStateDirectory,
-      getNetworkStatusRequest,
-      localBlockHeight,
-      networkBlockHeight,
-      latestLocalBlockTimestamp,
-      latestNetworkBlockTimestamp,
       isSystemTimeIgnored,
+      openStateDirectory,
+      getNetworkInfoRequest,
+      networkTip,
+      localTip,
       environment,
       diskSpaceAvailable,
       tlsConfig,
-      cardanoNodeID,
+      cardanoNodePID,
+      cardanoWalletPID,
       stateDirectoryPath,
+      getNetworkClockRequest,
     } = networkStatus;
 
     const systemInfo = {
@@ -84,20 +67,33 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
       availableDiskSpace: diskSpaceAvailable,
     };
 
-    const coreInfo = {
-      daedalusVersion: environment.version,
-      daedalusProcessID: environment.rendererProcessID,
-      daedalusMainProcessID: environment.mainProcessID,
-      isBlankScreenFixActive: environment.isBlankScreenFixActive,
-      cardanoVersion: environment.buildNumber,
-      cardanoProcessID: cardanoNodeID,
-      cardanoAPIPort: tlsConfig ? tlsConfig.port : 0,
-      cardanoNetwork: environment.network,
-      daedalusStateDirectoryPath: stateDirectoryPath,
-    };
+    const {
+      network,
+      rawNetwork,
+      version,
+      rendererProcessID,
+      mainProcessID,
+      isBlankScreenFixActive,
+      nodeVersion,
+      apiVersion,
+      build,
+    } = environment;
 
-    // Copy-address notification component z-index
-    const notificationOrder = 99999;
+    const coreInfo = {
+      daedalusVersion: version,
+      daedalusBuildNumber: build,
+      daedalusProcessID: rendererProcessID,
+      daedalusMainProcessID: mainProcessID,
+      daedalusStateDirectoryPath: stateDirectoryPath,
+      isBlankScreenFixActive,
+      cardanoNodeVersion: nodeVersion,
+      cardanoNodePID,
+      cardanoWalletVersion: apiVersion,
+      cardanoWalletPID,
+      cardanoWalletApiPort: tlsConfig ? tlsConfig.port : 0,
+      cardanoNetwork: network,
+      cardanoRawNetwork: rawNetwork,
+    };
 
     return (
       <ReactModal
@@ -117,7 +113,6 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
           isStaging={environment.isStaging}
           isTestnet={environment.isTestnet}
           isNodeResponding={isNodeResponding}
-          isNodeSubscribed={isNodeSubscribed}
           isNodeSyncing={isNodeSyncing}
           isNodeInSync={isNodeInSync}
           isNodeTimeCorrect={isNodeTimeCorrect}
@@ -127,45 +122,24 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
           hasBeenConnected={hasBeenConnected}
           localTimeDifference={localTimeDifference}
           isSystemTimeCorrect={isSystemTimeCorrect}
-          isForceCheckingNodeTime={forceCheckTimeDifferenceRequest.isExecuting}
           isSystemTimeIgnored={isSystemTimeIgnored}
-          latestLocalBlockTimestamp={latestLocalBlockTimestamp}
-          latestNetworkBlockTimestamp={latestNetworkBlockTimestamp}
-          nodeConnectionError={
-            getNetworkStatusRequest.error ||
-            forceCheckTimeDifferenceRequest.error
+          nodeConnectionError={getNetworkInfoRequest.error}
+          localTip={localTip}
+          networkTip={networkTip}
+          isCheckingSystemTime={
+            !getNetworkClockRequest.result || getNetworkClockRequest.isExecuting
           }
-          localBlockHeight={localBlockHeight}
-          networkBlockHeight={networkBlockHeight}
-          onForceCheckLocalTimeDifference={forceCheckLocalTimeDifference}
+          isForceCheckingSystemTime={getNetworkClockRequest.isExecutingWithArgs(
+            { isForceCheck: true }
+          )}
           onOpenStateDirectory={openStateDirectory}
           onOpenExternalLink={openExternalLink}
           onRestartNode={restartNode}
           onClose={closeDaedalusDiagnosticsDialog.trigger}
           onCopyStateDirectoryPath={this.handleCopyStateDirectoryPath}
-          currentLocale={currentLocale}
+          onForceCheckNetworkClock={this.handleForceCheckNetworkClock}
         />
-        <GenericNotification
-          id={COPY_STATE_DIRECTORY_PATH_NOTIFICATION_ID}
-          show={stores.uiNotifications.isOpen(
-            COPY_STATE_DIRECTORY_PATH_NOTIFICATION_ID
-          )}
-          closeNotification={actions.notifications.closeActiveNotification}
-          icon="success"
-          hasCloseButton
-          order={notificationOrder}
-          themeOverride="grey"
-        >
-          {intl.formatMessage(messages.stateDirectoryCopyNotificationMessage)}
-        </GenericNotification>
       </ReactModal>
     );
   }
-
-  handleCopyStateDirectoryPath = () => {
-    this.props.actions.notifications.open.trigger({
-      id: COPY_STATE_DIRECTORY_PATH_NOTIFICATION_ID,
-      duration: COPY_STATE_DIRECTORY_PATH_NOTIFICATION_DURATION,
-    });
-  };
 }

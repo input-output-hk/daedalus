@@ -142,9 +142,10 @@
     }
 
     .link {
-      @include link(--theme-about-window-content-color);
-      color: var(--theme-about-window-content-color);
-      cursor: pointer;
+      border-color: var(--theme-about-window-content-color);
+      &:after {
+        background-color: var(--theme-about-window-content-color);
+      }
     }
 
     .copyright {

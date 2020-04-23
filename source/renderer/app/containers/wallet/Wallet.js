@@ -1,14 +1,13 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
-import { get } from 'lodash';
 import MainLayout from '../MainLayout';
 import WalletWithNavigation from '../../components/wallet/layouts/WalletWithNavigation';
 import LoadingSpinner from '../../components/widgets/LoadingSpinner';
 import RestoreNotification from '../../components/notifications/RestoreNotification';
+import ChangeSpendingPasswordDialog from '../../components/wallet/settings/ChangeSpendingPasswordDialog';
 import { buildRoute } from '../../utils/routing';
 import { ROUTES } from '../../routes-config';
-import { WalletSyncStateTags } from '../../domains/Wallet';
 import type { InjectedContainerProps } from '../../types/injectedPropsType';
 import type { NavDropdownProps } from '../../components/navigation/Navigation';
 import { WalletRecoveryPhraseVerificationStatuses } from '../../stores/WalletsStore';
@@ -51,53 +50,61 @@ export default class Wallet extends Component<Props> {
   };
 
   render() {
-    const { wallets, profile, app } = this.props.stores;
-    const { currentLocale } = profile;
-
+    const { actions, stores } = this.props;
+    const { app, wallets, uiDialogs } = stores;
+    const { isOpen: isDialogOpen } = uiDialogs;
+    const { restartNode } = actions.networkStatus;
     const { active: activeWallet } = wallets;
 
-    if (!activeWallet)
+    if (!activeWallet) {
       return (
         <MainLayout>
           <LoadingSpinner />
         </MainLayout>
       );
-
-    const isRestoreActive =
-      get(activeWallet, 'syncState.tag') === WalletSyncStateTags.RESTORING;
-    const restoreProgress = get(
-      activeWallet,
-      'syncState.data.percentage.quantity',
-      0
-    );
-    const restoreETA = get(
-      activeWallet,
-      'syncState.data.estimatedCompletionTime.quantity',
-      0
-    );
+    }
 
     const {
       recoveryPhraseVerificationStatus,
     } = wallets.getWalletRecoveryPhraseVerification(activeWallet.id);
+    const { isIncentivizedTestnet } = global;
     const hasNotification =
       recoveryPhraseVerificationStatus ===
-      WalletRecoveryPhraseVerificationStatuses.NOTIFICATION;
+        WalletRecoveryPhraseVerificationStatuses.NOTIFICATION &&
+      !isIncentivizedTestnet;
+    const {
+      isRestoring,
+      isLegacy,
+      isNotResponding,
+      hasPassword,
+    } = activeWallet;
 
     return (
       <MainLayout>
-        {isRestoreActive ? (
+        {isRestoring ? (
           <RestoreNotification
-            currentLocale={currentLocale}
-            restoreProgress={restoreProgress}
-            restoreETA={restoreETA}
+            restoreProgress={activeWallet.restorationProgress}
           />
         ) : null}
 
         <WalletWithNavigation
-          isActiveScreen={this.isActiveScreen}
-          onWalletNavItemClick={this.handleWalletNavItemClick}
           activeItem={app.currentPage}
           hasNotification={hasNotification}
+          hasPassword={hasPassword}
+          isActiveScreen={this.isActiveScreen}
+          isLegacy={isLegacy}
+          isNotResponding={isNotResponding}
+          isSetWalletPasswordDialogOpen={isDialogOpen(
+            ChangeSpendingPasswordDialog
+          )}
+          onOpenExternalLink={(url: string) => stores.app.openExternalLink(url)}
+          onRestartNode={() => restartNode.trigger()}
+          onSetWalletPassword={() => {
+            actions.dialogs.open.trigger({
+              dialog: ChangeSpendingPasswordDialog,
+            });
+          }}
+          onWalletNavItemClick={this.handleWalletNavItemClick}
         >
           {this.props.children}
         </WalletWithNavigation>

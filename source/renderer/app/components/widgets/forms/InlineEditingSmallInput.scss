@@ -1,0 +1,163 @@
+.component {
+  background-color: transparent;
+  border: 1px solid var(--theme-wallet-import-input-border-color);
+  border-radius: 2px;
+  padding-right: 30px;
+  position: relative;
+  width: 275px;
+
+  &.hasError {
+    border-color: var(--theme-wallet-import-error-color) !important;
+  }
+
+  &.isActive {
+    border-color: var(--theme-input-focus-border-color);
+    padding-right: 70px;
+
+    &.hasError {
+      margin-bottom: 24px;
+    }
+
+    &.withoutRightButton {
+      padding-right: 30px !important;
+    }
+  }
+
+  &:not(.isActive) {
+    cursor: pointer;
+
+    :global {
+      .SimpleInput_input {
+        cursor: pointer;
+      }
+    }
+  }
+
+  &.disabled {
+    background-color: var(
+      --theme-wallet-import-input-background-color-disabled
+    );
+    border-color: transparent;
+    cursor: text !important;
+    padding-right: 0;
+    pointer-events: none;
+
+    :global {
+      .SimpleInput_input {
+        color: var(--rp-input-text-color-disabled);
+      }
+    }
+
+    input {
+      color: var(--theme-wallet-import-stateFolder-border-color) !important;
+    }
+  }
+
+  :global {
+    .SimpleFormField_root {
+      .SimpleFormField_error {
+        color: var(--theme-wallet-import-error-color) !important;
+        font-family: var(--font-medium);
+        opacity: 1;
+        top: 52px;
+      }
+    }
+
+    .SimpleInput_input {
+      background: transparent !important;
+      border: 0 none;
+      border-radius: 0;
+
+      &:focus {
+        border: 0 none;
+      }
+    }
+  }
+
+  @keyframes animateSavingResultLabel {
+    0% {
+      opacity: 0.5;
+    }
+    50% {
+      opacity: 0.5;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+
+  .leftButton,
+  .rightButton {
+    background-color: var(
+      --theme-wallet-import-stateFolder-button-background-color
+    );
+    border-radius: 3px;
+    cursor: pointer;
+    height: 28px;
+    position: absolute;
+    right: 10px;
+    top: 9px;
+    width: 28px;
+
+    .penIcon {
+      svg {
+        height: 12px;
+        position: relative;
+        top: 1px;
+        width: 12px;
+
+        path {
+          stroke: var(--theme-wallet-import-button-text-color);
+        }
+      }
+    }
+
+    .crossIcon {
+      svg {
+        height: 8px;
+        width: 8px;
+
+        g {
+          fill: var(--theme-wallet-import-button-text-color);
+        }
+      }
+    }
+
+    .arrowIcon {
+      svg {
+        height: 9px;
+
+        path {
+          stroke: var(--theme-wallet-import-button-text-color);
+        }
+      }
+    }
+  }
+
+  :global {
+    .InlineEditingSmallInput_leftButton,
+    .InlineEditingSmallInput_rightButton {
+      &.SimpleButton_root:not(.SimpleButton_disabled) {
+        &:hover {
+          background-color: var(
+            --theme-wallet-import-stateFolder-button-background-color-hover
+          ) !important;
+        }
+
+        &:active {
+          background-color: var(
+            --theme-wallet-import-stateFolder-button-background-color-active
+          ) !important;
+        }
+      }
+    }
+  }
+
+  .leftButton {
+    right: 48px;
+
+    &.withoutRightButton {
+      right: 10px !important;
+    }
+  }
+}

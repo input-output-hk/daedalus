@@ -5,10 +5,10 @@ import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
 import clockIcon from '../../../assets/images/clock.inline.svg';
 import styles from './StakePoolThumbnail.scss';
-import { getColorFromRange } from '../../../utils/colors';
+import { getColorFromRange, getSaturationColor } from '../../../utils/colors';
 import StakePoolTooltip from './StakePoolTooltip';
 import checkmarkImage from '../../../assets/images/check-w.inline.svg';
-import type { StakePool } from '../../../api/staking/types';
+import StakePool from '../../../domains/StakePool';
 import { STAKE_POOL_TOOLTIP_HOVER_WAIT } from '../../../config/timingConfig';
 import { getRelativePosition } from '../../../utils/domManipulation';
 
@@ -19,12 +19,15 @@ type Props = {
   onClose: Function,
   onHover?: Function,
   onOpenExternalLink: Function,
+  getPledgeAddressUrl: Function,
   onSelect: Function,
   showWithSelectButton?: boolean,
   showSelected?: boolean,
   stakePool: StakePool,
   isSelected?: ?Function,
   containerClassName: string,
+  numberOfStakePools: number,
+  disabledStakePoolId: ?string,
 };
 
 type State = {
@@ -93,37 +96,53 @@ export class StakePoolThumbnail extends Component<Props, State> {
       onClose,
       onHover,
       onOpenExternalLink,
+      getPledgeAddressUrl,
       showWithSelectButton,
       showSelected,
       stakePool,
       containerClassName,
+      numberOfStakePools,
+      disabledStakePoolId,
     } = this.props;
     const { top, left } = this.state;
 
-    const { ranking, slug, retiring } = stakePool;
-    const color = getColorFromRange(ranking);
+    const { ranking, ticker, retiring, id, saturation } = stakePool;
+    const color = getColorFromRange(ranking, numberOfStakePools);
+    const isDisabled = disabledStakePoolId === id;
 
     const componentClassnames = classnames([
       styles.component,
+      isSelected && showSelected ? styles.isSelected : null,
+    ]);
+
+    const contentClassnames = classnames([
+      styles.content,
       isHighlighted ? styles.isHighlighted : null,
       onHover ? styles.isOnHover : null,
-      isSelected && showSelected ? styles.isSelected : null,
+      isDisabled ? styles.disabled : null,
+    ]);
+
+    const saturationClassnames = classnames([
+      styles.saturationBar,
+      styles[getSaturationColor(saturation)],
     ]);
 
     return (
       <div
         className={componentClassnames}
         onMouseLeave={onHover ? this.handleClose : null}
-        style={{
-          background: isSelected && showSelected && color,
-        }}
       >
         <button
           onMouseEnter={onHover ? this.handleOpen : null}
           onClick={!onHover ? this.handleOpen : this.handleSelect}
         />
-        <div className={styles.content}>
-          <div className={styles.slug}>{slug}</div>
+        <div
+          className={contentClassnames}
+          style={{
+            background: isSelected && showSelected && color,
+          }}
+        >
+          <div className={styles.ticker}>{ticker}</div>
 
           {isSelected && showSelected ? (
             <div className={styles.checkmarkWrapper}>
@@ -133,9 +152,18 @@ export class StakePoolThumbnail extends Component<Props, State> {
               />
             </div>
           ) : (
-            <div className={styles.ranking} style={{ color }}>
-              {ranking}
-            </div>
+            <>
+              <div className={styles.ranking} style={{ color }}>
+                {ranking}
+              </div>
+              <div className={saturationClassnames}>
+                <span
+                  style={{
+                    width: `${parseFloat(saturation.toFixed(2))}%`,
+                  }}
+                />
+              </div>
+            </>
           )}
 
           {retiring && (
@@ -158,12 +186,14 @@ export class StakePoolThumbnail extends Component<Props, State> {
             onClick={onClose}
             currentTheme={currentTheme}
             onOpenExternalLink={onOpenExternalLink}
+            getPledgeAddressUrl={getPledgeAddressUrl}
             top={top}
             left={left}
             color={color}
             onSelect={this.handleSelect}
             showWithSelectButton={showWithSelectButton}
             containerClassName={containerClassName}
+            numberOfStakePools={numberOfStakePools}
           />
         )}
       </div>

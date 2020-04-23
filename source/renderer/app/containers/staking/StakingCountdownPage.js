@@ -24,6 +24,18 @@ export default class StakingCountdownPage extends Component<Props> {
 
   static defaultProps = { actions: null, stores: {} };
 
+  componentDidMount() {
+    const {
+      actions: {
+        staking: { goToStakingDelegationCenterPage },
+      },
+    } = this.props;
+
+    if (global.isIncentivizedTestnet) {
+      goToStakingDelegationCenterPage.trigger();
+    }
+  }
+
   handleLearnMoreClick = (event: SyntheticEvent<HTMLButtonElement>) => {
     event.persist();
     const { intl } = this.context;
@@ -35,13 +47,13 @@ export default class StakingCountdownPage extends Component<Props> {
     const { stores, actions } = this.props;
     const { staking } = stores;
     const {
-      staking: { goToStakingPage },
+      staking: { goToStakingInfoPage },
     } = actions;
-    const redirectToStakingPage = goToStakingPage.trigger;
+    const redirectToStakingInfo = goToStakingInfoPage.trigger;
 
     return (
       <StakingCountdown
-        redirectToStakingPage={redirectToStakingPage}
+        redirectToStakingInfo={redirectToStakingInfo}
         startDateTime={staking.startDateTime}
         onLearnMoreClick={this.handleLearnMoreClick}
       />

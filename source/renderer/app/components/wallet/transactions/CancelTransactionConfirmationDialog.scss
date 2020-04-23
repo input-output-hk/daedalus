@@ -1,0 +1,24 @@
+@import '../../../themes/mixins/loading-spinner';
+
+.component {
+  color: var(--theme-dialog-text-color);
+  font-family: var(--font-light);
+  width: 680px;
+
+  p {
+    line-height: 1.38;
+
+    &:not(:last-child) {
+      padding-bottom: 10px;
+    }
+  }
+
+  button {
+    padding: 0 10px;
+  }
+
+  .isSubmitting {
+    box-shadow: none !important;
+    @include loading-spinner('../../../assets/images/spinner-light.svg');
+  }
+}

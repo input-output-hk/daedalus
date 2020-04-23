@@ -24,6 +24,8 @@ export const THEME_LOGGING_COLORS = {
   'cardano.js': '#2cbb69',
   'dark-blue.js': '#2874A6',
   'dark-cardano.js': '#1fc1c3',
+  'flight-candidate.js': '#ffb923',
+  'incentivized-testnet.js': '#f69ab2',
   'light-blue.js': '#33C4FF',
   'white.js': '#29b595',
   'yellow.js': '#fdcd68',
@@ -51,23 +53,6 @@ const CREATE_CARDANO_THEME_PARAMS: CreateThemeParams = {
     background: {
       primary: '#efefef',
       secondary: '#2cbb69',
-    },
-    border: '#c6cdd6',
-    error: '#ea4c5b',
-    focus: '#5e6066',
-    text: {
-      primary: '#5e6066',
-      secondary: '#fafbfc',
-    },
-  },
-  fonts: DEFAULT_FONTS,
-};
-
-const CREATE_LIGHT_BLUE_THEME_PARAMS: CreateThemeParams = {
-  colors: {
-    background: {
-      primary: '#ebeff2',
-      secondary: '#2f496e',
     },
     border: '#c6cdd6',
     error: '#ea4c5b',
@@ -114,6 +99,57 @@ const CREATE_DARK_CARDANO_THEME_PARAMS: CreateThemeParams = {
   fonts: DEFAULT_FONTS,
 };
 
+const CREATE_FLIGHT_CANDIDATE_THEME_PARAMS: CreateThemeParams = {
+  colors: {
+    background: {
+      primary: '#121326',
+      secondary: '#36374d',
+    },
+    border: 'rgba(255, 255, 255, 0.2)',
+    error: '#ea4c5b',
+    focus: 'rgba(255, 255, 255, 0.4)',
+    text: {
+      primary: '#ffffff',
+      secondary: '#000000',
+    },
+  },
+  fonts: DEFAULT_FONTS,
+};
+
+const CREATE_INCENTIVIZED_TESTNET_THEME_PARAMS: CreateThemeParams = {
+  colors: {
+    background: {
+      primary: '#121326',
+      secondary: '#36374d',
+    },
+    border: 'rgba(255, 255, 255, 0.2)',
+    error: '#eb4a22',
+    focus: 'rgba(255, 255, 255, 0.4)',
+    text: {
+      primary: '#ffffff',
+      secondary: '#000000',
+    },
+  },
+  fonts: DEFAULT_FONTS,
+};
+
+const CREATE_LIGHT_BLUE_THEME_PARAMS: CreateThemeParams = {
+  colors: {
+    background: {
+      primary: '#ebeff2',
+      secondary: '#2f496e',
+    },
+    border: '#c6cdd6',
+    error: '#ea4c5b',
+    focus: '#5e6066',
+    text: {
+      primary: '#5e6066',
+      secondary: '#fafbfc',
+    },
+  },
+  fonts: DEFAULT_FONTS,
+};
+
 const CREATE_WHITE_THEME_PARAMS: CreateThemeParams = {
   colors: {
     background: {
@@ -150,9 +186,11 @@ const CREATE_YELLOW_THEME_PARAMS: CreateThemeParams = {
 
 export const CREATE_THEME_PARAMS = [
   ['cardano.js', CREATE_CARDANO_THEME_PARAMS],
-  ['light-blue.js', CREATE_LIGHT_BLUE_THEME_PARAMS],
   ['dark-blue.js', CREATE_DARK_BLUE_THEME_PARAMS],
   ['dark-cardano.js', CREATE_DARK_CARDANO_THEME_PARAMS],
+  ['flight-candidate.js', CREATE_FLIGHT_CANDIDATE_THEME_PARAMS],
+  ['incentivized-testnet.js', CREATE_INCENTIVIZED_TESTNET_THEME_PARAMS],
+  ['light-blue.js', CREATE_LIGHT_BLUE_THEME_PARAMS],
   ['white.js', CREATE_WHITE_THEME_PARAMS],
   ['yellow.js', CREATE_YELLOW_THEME_PARAMS],
 ];

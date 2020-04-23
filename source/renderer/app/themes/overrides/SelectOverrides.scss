@@ -6,12 +6,11 @@
     }
   }
 
-  &::after {
-    bottom: 22.5px;
-    z-index: 1;
+  &:after {
+    bottom: 21.5px;
   }
 
-  &:hover::after {
+  &:hover:after {
     background-color: var(--rp-select-input-text-color);
   }
 
@@ -22,7 +21,7 @@
 }
 
 .isOpen {
-  .selectInput::after {
-    bottom: 22.5px;
+  .selectInput:after {
+    bottom: 21.5px;
   }
 }

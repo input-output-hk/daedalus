@@ -7,30 +7,78 @@ import {
 
 export const formattedWalletAmount = (
   amount: BigNumber,
-  withCurrency: boolean = true
+  withCurrency: boolean = true,
+  long: boolean = true
 ) => {
-  let formattedAmount = amount.toFormat(DECIMAL_PLACES_IN_ADA);
-
-  if (withCurrency) formattedAmount += ' ADA';
-
+  let formattedAmount = long
+    ? amount.toFormat(DECIMAL_PLACES_IN_ADA)
+    : shortNumber(amount);
+  const { decimalSeparator } = BigNumber.config().FORMAT;
+  if (!long && decimalSeparator !== '.') {
+    // Only BigNumber.toFormat() method is applying correct separators.
+    // Since this method is not used for condensed format (long = false)
+    // the correct number format has to be applied manually.
+    formattedAmount = formattedAmount.split('.').join(decimalSeparator);
+  }
+  if (withCurrency) {
+    formattedAmount = `${formattedAmount} ADA`;
+  }
   return formattedAmount.toString();
+};
+
+// Symbol   Name                Scientific Notation
+// K        Thousand            1.00E+03
+// M        Million             1.00E+06
+// B        Billion             1.00E+09
+// T        Trillion            1.00E+12
+// Q        Quadrillion         1.00E+15
+export const shortNumber = (value: number | BigNumber): string => {
+  const amount = new BigNumber(value);
+  let formattedAmount = '';
+  if (amount.isZero()) {
+    formattedAmount = '0';
+  } else if (amount.lessThan(1000)) {
+    formattedAmount = `${amount.round(
+      DECIMAL_PLACES_IN_ADA,
+      BigNumber.ROUND_DOWN
+    )}`;
+  } else if (amount.lessThan(1000000)) {
+    formattedAmount = `${amount
+      .dividedBy(1000)
+      .round(1, BigNumber.ROUND_DOWN)}K`;
+  } else if (amount.lessThan(1000000000)) {
+    formattedAmount = `${amount
+      .dividedBy(1000000)
+      .round(1, BigNumber.ROUND_DOWN)}M`;
+  } else if (amount.lessThan(1000000000000)) {
+    formattedAmount = `${amount
+      .dividedBy(1000000000)
+      .round(1, BigNumber.ROUND_DOWN)}B`;
+  } else if (amount.lessThan(1000000000000000)) {
+    formattedAmount = `${amount
+      .dividedBy(1000000000000)
+      .round(1, BigNumber.ROUND_DOWN)}T`;
+  } else {
+    formattedAmount = `${amount
+      .dividedBy(1000000000000000)
+      .round(1, BigNumber.ROUND_DOWN)}Q`;
+  }
+  return formattedAmount;
+};
+
+export const formattedAmountToNaturalUnits = (amount: string): string => {
+  const cleanedAmount = amount
+    .replace(/\./g, '') // removes all the dot separators
+    .replace(/,/g, '') // removes all the comma separators
+    .replace(/\s/g, '') // removes all the space separators
+    .replace(/^0+/, '');
+  return cleanedAmount === '' ? '0' : cleanedAmount;
 };
 
 export const formattedAmountToBigNumber = (amount: string) => {
   const cleanedAmount = amount.replace(/,/g, '');
   return new BigNumber(cleanedAmount !== '' ? cleanedAmount : 0);
 };
-
-export const formattedAmountToNaturalUnits = (amount: string): string => {
-  const cleanedAmount = amount
-    .replace('.', '')
-    .replace(/,/g, '')
-    .replace(/^0+/, '');
-  return cleanedAmount === '' ? '0' : cleanedAmount;
-};
-
-export const formattedAmountWithoutTrailingZeros = (amount: string): string =>
-  amount.replace(/0+$/, '').replace(/\.$/, '');
 
 export const formattedAmountToLovelace = (amount: string): number =>
   parseInt(formattedAmountToBigNumber(amount).times(LOVELACES_PER_ADA), 10);

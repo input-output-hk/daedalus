@@ -18,7 +18,7 @@ const messages = defineMessages({
   },
   delegatingListTitle: {
     id: 'staking.stakePools.search.delegatingListTitle',
-    defaultMessage: '!!!Stake pools you are currently delegating to',
+    defaultMessage: '!!!Staking pools you are delegating to',
     description: '"delegatingListTitlee" for the Stake Pools search.',
   },
   listTitle: {

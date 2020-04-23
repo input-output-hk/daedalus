@@ -57,41 +57,28 @@
         font-weight: 500;
         line-height: 1.36;
         margin: 0 auto;
-
-        .linkNewWindow {
-          @include link(--theme-manual-update-overlay-button-icon-color);
-          border-bottom: none;
-          margin-right: 12px;
-          svg {
-            margin-left: 0;
-            vertical-align: sub;
-            width: 15px;
-          }
-        }
-
         .btnLabel {
           color: var(--theme-manual-update-overlay-button-label-color);
+          &:before {
+            background-color: var(
+              --theme-manual-update-overlay-button-label-color
+            );
+          }
         }
 
         &:not(.disabled):hover {
           background-color: var(
             --theme-manual-update-overlay-button-background-color-hover
           );
-          border: none;
           color: var(--theme-manual-update-overlay-button-text-color-hover);
-
-          .linkNewWindow {
-            svg {
-              g {
-                stroke: var(
-                  --theme-manual-update-overlay-button-icon-color-hover
-                );
-              }
-            }
-          }
 
           .btnLabel {
             color: var(--theme-manual-update-overlay-button-label-color-hover);
+            &:before {
+              background-color: var(
+                --theme-manual-update-overlay-button-label-color-hover
+              );
+            }
           }
         }
       }

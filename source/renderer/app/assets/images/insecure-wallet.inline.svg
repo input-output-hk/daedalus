@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="190" height="216" viewBox="0 0 190 216">
+    <g fill="none" fill-rule="evenodd" transform="translate(4 4)">
+        <g>
+            <path stroke="#FAFBFC" stroke-width="4" d="M127.273 32.727L117.54 3.533c-.635-1.905-2.694-2.935-4.6-2.3l-.081.028-87.405 31.466h0" transform="translate(24 68)"/>
+            <path stroke="#FAFBFC" stroke-width="4" d="M0 21.818v105.455c0 8.033 6.512 14.545 14.545 14.545h130.91c8.033 0 14.545-6.512 14.545-14.545V43.636c0-6.025-4.884-10.909-10.91-10.909H90.91h0" transform="translate(24 68)"/>
+            <path stroke="#FAFBFC" stroke-width="4" d="M105.455 32.727H10.909C4.884 32.727 0 27.843 0 21.818S4.884 10.91 10.91 10.91h74.726M120 10.91h14.545c6.025 0 10.91 4.883 10.91 10.908v10.91h0M160 76.364h-18.182c-6.025 0-10.909 4.884-10.909 10.909s4.884 10.909 10.91 10.909H160" transform="translate(24 68)"/>
+            <path fill="#FAFBFC" d="M139.818 87.273c0 2.008 1.628 3.636 3.637 3.636 2.008 0 3.636-1.628 3.636-3.636 0-2.009-1.628-3.637-3.636-3.637-2.009 0-3.637 1.628-3.637 3.637z" transform="translate(24 68)"/>
+        </g>
+        <rect width="24" height="32" x="92" y="162" stroke="#FAFBFC" stroke-width="4" rx="12"/>
+        <circle cx="76" cy="138" r="12" stroke="#FAFBFC" stroke-width="4"/>
+        <circle cx="132" cy="138" r="12" stroke="#FAFBFC" stroke-width="4"/>
+        <path stroke="#FAFBFC" stroke-width="8" d="M0 48V32C0 14.327 14.327 0 32 0c17.673 0 32 14.327 32 32v48h0"/>
+    </g>
+</svg>

@@ -23,8 +23,9 @@ export const scrambleMnemonics = ({
 }: MnemonicsParams): Array<string> =>
   scramblePaperWalletMnemonic(passphrase, scrambledInput);
 
-export const generateAccountMnemonics = (): Array<string> =>
-  generateMnemonic().split(' ');
+export const generateAccountMnemonics = (
+  numberOfWords: number
+): Array<string> => generateMnemonic(numberOfWords).split(' ');
 
 // eslint-disable-next-line
 export const generateAdditionalMnemonics = (): Array<string> =>

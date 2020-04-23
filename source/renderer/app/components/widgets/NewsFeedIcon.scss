@@ -3,7 +3,7 @@
   right: 29px;
   top: 20px;
 
-  &.withDot::after {
+  &.withDot:after {
     background: var(--theme-news-feed-icon-dot-background-color);
     border-radius: 12.5px;
     content: '';

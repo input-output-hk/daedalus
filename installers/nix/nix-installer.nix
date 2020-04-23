@@ -1,6 +1,6 @@
 { installationSlug ? "nix-install", installedPackages
 , postInstall ? null, nix-bundle, preInstall ? null
-, cluster
+, linuxClusterBinName
 , rawapp
 , pkgs }:
 let
@@ -9,13 +9,6 @@ let
     run = "/bin/installer";
     nixUserChrootFlags = "-c -m /home:/home -p HOME";
   };
-  nixSrc = pkgs.fetchFromGitHub {
-    owner = "nixos";
-    repo = "nix";
-    rev = "16551f54c94f2b551ebaf00a7bd0245dc3b0b9e4";
-    sha256 = "0kd13v4xl4imwb3141pnn0lqx0xfcmgnwd026c10kmvjhm848pwx";
-  };
-  nixFix = pkgs.nixUnstable.overrideDerivation (drv: { src = nixSrc; });
   utils = pkgs.writeText "utils.sh" ''
     function rmrf {
       chmod -R +w "$*" || true
@@ -50,7 +43,7 @@ let
     nix copy --no-check-sigs --from local?root=$UNPACK2 $(readlink $UNPACK2/firstGeneration)
     export NIX_PROFILE=/nix/var/nix/profiles/profile
     nix-env --set $(readlink $UNPACK2/firstGeneration)
-    nix-env -p /nix/var/nix/profiles/profile-${cluster} --set $(readlink $UNPACK2/firstGeneration)
+    nix-env -p /nix/var/nix/profiles/profile-${linuxClusterBinName} --set $(readlink $UNPACK2/firstGeneration)
     rmrf $UNPACK2
 
     post-install || true
@@ -81,9 +74,9 @@ let
 
     set -e
 
-    export PATH=/nix/var/nix/profiles/profile-${cluster}/bin
+    export PATH=/nix/var/nix/profiles/profile-${linuxClusterBinName}/bin
     export PS1='\[\033]2;\h:\u:\w\007\]\n\[\033[1;32m\][\u@\h:\w] (namespaced) \$\[\033[0m\] '
-    ln -svf /nix/var/nix/profiles/profile-${cluster}/bin/ /bin
+    ln -svf /nix/var/nix/profiles/profile-${linuxClusterBinName}/bin/ /bin
     export PATH=/bin
     ln -svf ${pkgs.iana-etc}/etc/protocols /etc/protocols
     ln -svf ${pkgs.iana-etc}/etc/services /etc/services
@@ -121,7 +114,7 @@ let
 
     trap "exitHandler" EXIT
 
-    export PATH=${lib.makeBinPath [ coreutils pv xz gnutar nixFix gnused which gnugrep ]}
+    export PATH=${lib.makeBinPath [ coreutils pv xz gnutar nix gnused which gnugrep ]}
     export DIR=$HOME/${installationSlug}
 
     ${if preInstall == null then "" else ''
@@ -149,7 +142,7 @@ let
     unset UNPACK
     export NIX_PROFILE=$DIR/nix/var/nix/profiles/profile
     nix-env --set ${builtins.unsafeDiscardStringContext firstGeneration}
-    nix-env -p $DIR/nix/var/nix/profiles/profile-${cluster} --set ${builtins.unsafeDiscardStringContext firstGeneration}
+    nix-env -p $DIR/nix/var/nix/profiles/profile-${linuxClusterBinName} --set ${builtins.unsafeDiscardStringContext firstGeneration}
 
     ${if postInstall == null then "" else ''
     exec ${postInstall}/bin/post-install
@@ -159,7 +152,7 @@ let
   firstGeneration = with pkgs; buildEnv {
     name = "profile";
     paths = [
-      nixFix
+      nix
       bashInteractive
       enter
       coreutils

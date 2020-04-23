@@ -4,8 +4,8 @@ import type { Node } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
-import { Input } from 'react-polymorph/lib/components/Input';
-import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
+// import { Input } from 'react-polymorph/lib/components/Input';
+// import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import globalMessages from '../../../i18n/global-messages';
@@ -52,16 +52,15 @@ const EXPORT_TYPE = {
   READ_ONLY: 'readOnly',
 };
 
-export type OnSubmitParams = {
+export type OnSubmitParams = $Exact<{
   exportType: ExportType,
   password: ?string,
-};
+}>;
 
 type Props = {
   walletName: string,
-  hasSpendingPassword: boolean,
   isSubmitting: boolean,
-  onSubmit: OnSubmitParams => void,
+  onSubmit: OnSubmitParams => Promise<void>,
   onClose: () => void,
   error?: ?LocalizableError,
 };
@@ -100,15 +99,15 @@ export default class ExportWalletToFileDialog extends Component<Props, State> {
           ),
           value: '',
           validators: [
-            ({ field }) => {
-              if (this.props.hasSpendingPassword && field.value === '') {
-                return [
-                  false,
-                  this.context.intl.formatMessage(
-                    globalMessages.fieldIsRequired
-                  ),
-                ];
-              }
+            () => {
+              // if (field.value === '') {
+              //   return [
+              //     false,
+              //     this.context.intl.formatMessage(
+              //       globalMessages.fieldIsRequired
+              //     ),
+              //   ];
+              // }
               return [true];
             },
           ],
@@ -125,14 +124,13 @@ export default class ExportWalletToFileDialog extends Component<Props, State> {
 
   submit = () => {
     this.form.submit({
-      onSuccess: form => {
-        const { hasSpendingPassword } = this.props;
+      onSuccess: async form => {
         const { spendingPassword } = form.values();
         const formData = {
           exportType: this.state.exportType,
-          password: hasSpendingPassword ? spendingPassword : null,
+          password: spendingPassword || null,
         };
-        this.props.onSubmit(formData);
+        await this.props.onSubmit(formData);
       },
     });
   };
@@ -140,15 +138,9 @@ export default class ExportWalletToFileDialog extends Component<Props, State> {
   handleSubmitOnEnter = submitOnEnter.bind(this, this.submit);
 
   render() {
-    const { form } = this;
+    // const { form } = this;
     const { intl } = this.context;
-    const {
-      onClose,
-      walletName,
-      hasSpendingPassword,
-      isSubmitting,
-      error,
-    } = this.props;
+    const { onClose, walletName, isSubmitting, error } = this.props;
     // const { exportType } = this.state;
     const dialogClasses = classnames([styles.component, 'WalletExportDialog']);
 
@@ -161,7 +153,7 @@ export default class ExportWalletToFileDialog extends Component<Props, State> {
       },
     ];
 
-    const spendingPasswordField = form.$('spendingPassword');
+    // const spendingPasswordField = form.$('spendingPassword');
 
     return (
       <Dialog
@@ -199,7 +191,7 @@ export default class ExportWalletToFileDialog extends Component<Props, State> {
           />
         </div>
 
-        {hasSpendingPassword ? (
+        {/*
           <Input
             className={styles.spendingPassword}
             {...spendingPasswordField.bind()}
@@ -207,7 +199,7 @@ export default class ExportWalletToFileDialog extends Component<Props, State> {
             skin={InputSkin}
             onKeyPress={this.handleSubmitOnEnter}
           />
-        ) : null}
+        */}
 
         {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
       </Dialog>

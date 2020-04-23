@@ -13,13 +13,17 @@ export default class WalletSettingsActions {
   startEditingWalletField: Action<{ field: string }> = new Action();
   stopEditingWalletField: Action<any> = new Action();
   updateWalletField: Action<{ field: string, value: string }> = new Action();
-  // eslint-disable-next-line max-len
   updateSpendingPassword: Action<{
     walletId: string,
-    oldPassword: ?string,
-    newPassword: ?string,
+    oldPassword: string,
+    newPassword: string,
+    isLegacy: boolean,
   }> = new Action();
   exportToFile: Action<WalletExportToFileParams> = new Action();
   startWalletUtxoPolling: Action<any> = new Action();
   stopWalletUtxoPolling: Action<any> = new Action();
+  forceWalletResync: Action<{
+    walletId: string,
+    isLegacy: boolean,
+  }> = new Action();
 }

@@ -67,15 +67,6 @@ export const humanizeDurationToShort = (currentLocale, dateTime) => {
     case 'ja-JP':
       humanizedDurationLanguage = 'ja';
       break;
-    case 'zh-CN':
-      humanizedDurationLanguage = 'zh_CN';
-      break;
-    case 'ko-KR':
-      humanizedDurationLanguage = 'ko';
-      break;
-    case 'de-DE':
-      humanizedDurationLanguage = 'de';
-      break;
     default:
       humanizedDurationLanguage = 'en';
   }

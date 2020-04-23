@@ -2,6 +2,18 @@
 import type { CardanoNodeState } from './cardano-node.types';
 import type { SystemInfo } from '../../renderer/app/types/systemInfoTypes';
 import type { CoreSystemInfo } from '../../renderer/app/types/coreSystemInfoTypes';
+import type { WalletImportStatus } from '../../renderer/app/types/walletExportTypes';
+import type { WalletMigrationStatus } from '../../renderer/app/stores/WalletMigrationStore';
+import LocalizableError from '../../renderer/app/i18n/LocalizableError';
+
+export type LoggingLevel = 'debug' | 'info' | 'error' | 'warn';
+
+export type Logger = {
+  debug: (string, ?Object) => void,
+  info: (string, ?Object) => void,
+  error: (string, ?Object) => void,
+  warn: (string, ?Object) => void,
+};
 
 export type FormatMessageContextParams = {
   appName: string,
@@ -41,7 +53,8 @@ export type ElectronLoggerMessage = {
 };
 
 export type LogSystemInfoParams = {
-  cardanoVersion: string,
+  cardanoNodeVersion: string,
+  cardanoWalletVersion: string,
   cpu: Array<Object>,
   daedalusVersion: string,
   isBlankScreenFixActive: boolean,
@@ -59,22 +72,44 @@ export type StateSnapshotLogParams = {
   currentLocale: string,
   isConnected: boolean,
   isDev: boolean,
-  isForceCheckingNodeTime: boolean,
   isMainnet: boolean,
   isNodeInSync: boolean,
   isNodeResponding: boolean,
-  isNodeSubscribed: boolean,
   isNodeSyncing: boolean,
-  isNodeTimeCorrect: boolean,
   isStaging: boolean,
   isSynced: boolean,
-  isSystemTimeCorrect: boolean,
-  isSystemTimeIgnored: boolean,
   isTestnet: boolean,
-  latestLocalBlockTimestamp: number,
-  latestNetworkBlockTimestamp: number,
-  localBlockHeight: number,
-  localTimeDifference: ?number,
-  networkBlockHeight: number,
   currentTime: string,
+  syncPercentage: string,
+  localTip: ?Object,
+  networkTip: ?Object,
+};
+
+export type ExportedWalletData = {
+  id: string,
+  name: ?string,
+  hasPassword: boolean,
+  import?: {
+    status: WalletImportStatus,
+    error: ?LocalizableError,
+  },
+};
+
+export type RestoredWalletData = {
+  id: string,
+  name: string,
+  hasPassword: boolean,
+};
+
+export type WalletMigrationReportData = {
+  exportedWalletsData: Array<ExportedWalletData>,
+  exportedWalletsCount: number,
+  exportErrors: string,
+  restoredWalletsData: Array<RestoredWalletData>,
+  restoredWalletsCount: number,
+  restorationErrors: Array<{
+    error: LocalizableError,
+    wallet: ExportedWalletData,
+  }>,
+  finalMigrationStatus: WalletMigrationStatus,
 };

@@ -1,7 +1,8 @@
 // @flow
 import React, { Component } from 'react';
+import path from 'path';
 import { observer, inject } from 'mobx-react';
-// import { remote } from 'electron';
+import { showSaveDialogChannel } from '../../../../ipc/show-file-dialog-channels';
 import ExportWalletToFileDialog from '../../../../components/wallet/settings/ExportWalletToFileDialog';
 import type { OnSubmitParams } from '../../../../components/wallet/settings/ExportWalletToFileDialog';
 import type { InjectedDialogContainerProps } from '../../../../types/injectedPropsType';
@@ -18,17 +19,20 @@ export default class ExportWalletToFileDialogContainer extends Component<Props> 
     onClose: () => {},
   };
 
-  onSubmit = (params: OnSubmitParams) => {
-    // TODO: refactor this direct access to the dialog api
-    const filePath = global.dialog.showSaveDialog({
-      defaultPath: 'wallet-export.json',
+  onSubmit = async (params: OnSubmitParams) => {
+    const name = 'wallet-export';
+    const { desktopDirectoryPath } = this.props.stores.profile;
+    const defaultPath = path.join(desktopDirectoryPath, `${name}.json`);
+    const fileParams = {
+      defaultPath,
       filters: [
         {
-          name: 'wallet-export',
+          name,
           extensions: ['json'],
         },
       ],
-    });
+    };
+    const { filePath } = await showSaveDialogChannel.send(fileParams);
     const { stores, actions } = this.props;
     const activeWallet = stores.wallets.active;
     if (!filePath || !activeWallet) return;
@@ -55,9 +59,6 @@ export default class ExportWalletToFileDialogContainer extends Component<Props> 
     return (
       <ExportWalletToFileDialog
         walletName={activeWallet.name}
-        // TODO: re-enable when spending-password support is added to the API endpoint
-        // hasSpendingPassword={activeWallet.hasPassword}
-        hasSpendingPassword={false}
         isSubmitting={exportWalletToFileRequest.isExecuting}
         onSubmit={this.onSubmit}
         onClose={this.onCancel}

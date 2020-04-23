@@ -3,9 +3,10 @@
 /* eslint-disable consistent-return */
 
 import { includes } from 'lodash';
+import { electronStoreConversation } from '../../ipc/electronStoreConversation';
 import type { NewsTimestamp } from '../news/types';
-
-const store = global.electronStore;
+import type { WalletMigrationStatus } from '../../stores/WalletMigrationStore';
+import { WalletMigrationStatuses } from '../../stores/WalletMigrationStore';
 
 export type WalletLocalData = {
   id: string,
@@ -18,12 +19,7 @@ export type WalletsLocalData = {
 };
 
 type StorageKeys = {
-  USER_LOCALE: string,
-  TERMS_OF_USE_ACCEPTANCE: string,
-  THEME: string,
-  DATA_LAYER_MIGRATION_ACCEPTANCE: string,
-  READ_NEWS: string,
-  WALLETS: string,
+  [key: string]: string,
 };
 
 /**
@@ -32,245 +28,200 @@ type StorageKeys = {
  */
 
 export default class LocalStorageApi {
+  static get = async (key: string, fallbackValue: any): Promise<any> => {
+    const value = await electronStoreConversation.request({
+      type: 'get',
+      key,
+    });
+    if (!value) return fallbackValue;
+    return value;
+  };
+
+  static set = async (key: string, value: any): Promise<void> => {
+    await electronStoreConversation.request({
+      type: 'set',
+      key,
+      data: value,
+    });
+  };
+
+  static unset = async (key: string): Promise<void> => {
+    await electronStoreConversation.request({
+      type: 'delete',
+      key,
+    });
+  };
+
   storageKeys: StorageKeys;
 
   constructor(NETWORK: string) {
-    this.storageKeys = {
-      USER_LOCALE: `${NETWORK}-USER-LOCALE`,
-      TERMS_OF_USE_ACCEPTANCE: `${NETWORK}-TERMS-OF-USE-ACCEPTANCE`,
-      THEME: `${NETWORK}-THEME`,
-      DATA_LAYER_MIGRATION_ACCEPTANCE: `${NETWORK}-DATA-LAYER-MIGRATION-ACCEPTANCE`,
-      READ_NEWS: `${NETWORK}-READ_NEWS`,
-      WALLETS: `${NETWORK}-WALLETS`,
-    };
+    const storageKeysRaw = [
+      'USER_LOCALE',
+      'USER_NUMBER_FORMAT',
+      'USER_DATE_FORMAT_ENGLISH',
+      'USER_DATE_FORMAT_JAPANESE',
+      'USER_TIME_FORMAT',
+      'TERMS_OF_USE_ACCEPTANCE',
+      'THEME',
+      'DATA_LAYER_MIGRATION_ACCEPTANCE',
+      'READ_NEWS',
+      'WALLETS',
+      'WALLET_MIGRATION_STATUS',
+    ];
+    this.storageKeys = {};
+    storageKeysRaw.forEach(key => {
+      const keyStr = key.replace(new RegExp('_', 'g'), '-');
+      this.storageKeys[key] = `${NETWORK}-${keyStr}`;
+    });
   }
 
   getUserLocale = (): Promise<string> =>
-    new Promise((resolve, reject) => {
-      try {
-        const locale = store.get(this.storageKeys.USER_LOCALE);
-        if (!locale) return resolve('');
-        resolve(locale);
-      } catch (error) {
-        return reject(error);
-      }
-    });
+    LocalStorageApi.get(this.storageKeys.USER_LOCALE, '');
 
   setUserLocale = (locale: string): Promise<void> =>
-    new Promise((resolve, reject) => {
-      try {
-        store.set(this.storageKeys.USER_LOCALE, locale);
-        resolve();
-      } catch (error) {
-        return reject(error);
-      }
-    });
+    LocalStorageApi.set(this.storageKeys.USER_LOCALE, locale);
 
   unsetUserLocale = (): Promise<void> =>
-    new Promise(resolve => {
-      try {
-        store.delete(this.storageKeys.USER_LOCALE);
-        resolve();
-      } catch (error) {} // eslint-disable-line
-    });
+    LocalStorageApi.unset(this.storageKeys.USER_LOCALE);
+
+  getUserNumberFormat = (): Promise<string> =>
+    LocalStorageApi.get(this.storageKeys.USER_NUMBER_FORMAT, '');
+
+  setUserNumberFormat = (numberFormat: string): Promise<void> =>
+    LocalStorageApi.set(this.storageKeys.USER_NUMBER_FORMAT, numberFormat);
+
+  unsetUserNumberFormat = (): Promise<void> =>
+    LocalStorageApi.unset(this.storageKeys.USER_NUMBER_FORMAT);
+
+  getUserDateFormatEnglish = (): Promise<string> =>
+    LocalStorageApi.get(this.storageKeys.USER_DATE_FORMAT_ENGLISH, '');
+
+  setUserDateFormatEnglish = (dateFormat: string): Promise<void> =>
+    LocalStorageApi.set(this.storageKeys.USER_DATE_FORMAT_ENGLISH, dateFormat);
+
+  unsetUserDateFormatEnglish = (): Promise<void> =>
+    LocalStorageApi.unset(this.storageKeys.USER_DATE_FORMAT_ENGLISH);
+
+  getUserDateFormatJapanese = (): Promise<string> =>
+    LocalStorageApi.get(this.storageKeys.USER_DATE_FORMAT_JAPANESE, '');
+
+  setUserDateFormatJapanese = (dateFormat: string): Promise<void> =>
+    LocalStorageApi.set(this.storageKeys.USER_DATE_FORMAT_JAPANESE, dateFormat);
+
+  unsetUserDateFormatJapanese = (): Promise<void> =>
+    LocalStorageApi.unset(this.storageKeys.USER_DATE_FORMAT_JAPANESE);
+
+  getUserTimeFormat = (): Promise<string> =>
+    LocalStorageApi.get(this.storageKeys.USER_TIME_FORMAT, '');
+
+  setUserTimeFormat = (timeFormat: string): Promise<void> =>
+    LocalStorageApi.set(this.storageKeys.USER_TIME_FORMAT, timeFormat);
+
+  unsetUserTimeFormat = (): Promise<void> =>
+    LocalStorageApi.unset(this.storageKeys.USER_TIME_FORMAT);
 
   getTermsOfUseAcceptance = (): Promise<boolean> =>
-    new Promise((resolve, reject) => {
-      try {
-        const accepted = store.get(this.storageKeys.TERMS_OF_USE_ACCEPTANCE);
-        if (!accepted) return resolve(false);
-        resolve(accepted);
-      } catch (error) {
-        return reject(error);
-      }
-    });
+    LocalStorageApi.get(this.storageKeys.TERMS_OF_USE_ACCEPTANCE, false);
 
   setTermsOfUseAcceptance = (): Promise<void> =>
-    new Promise((resolve, reject) => {
-      try {
-        store.set(this.storageKeys.TERMS_OF_USE_ACCEPTANCE, true);
-        resolve();
-      } catch (error) {
-        return reject(error);
-      }
-    });
+    LocalStorageApi.set(this.storageKeys.TERMS_OF_USE_ACCEPTANCE, true);
 
   unsetTermsOfUseAcceptance = (): Promise<void> =>
-    new Promise(resolve => {
-      try {
-        store.delete(this.storageKeys.TERMS_OF_USE_ACCEPTANCE);
-        resolve();
-      } catch (error) {} // eslint-disable-line
-    });
+    LocalStorageApi.unset(this.storageKeys.TERMS_OF_USE_ACCEPTANCE);
 
   getUserTheme = (): Promise<string> =>
-    new Promise((resolve, reject) => {
-      try {
-        const theme = store.get(this.storageKeys.THEME);
-        if (!theme) return resolve('');
-        resolve(theme);
-      } catch (error) {
-        return reject(error);
-      }
-    });
+    LocalStorageApi.get(this.storageKeys.THEME, '');
 
   setUserTheme = (theme: string): Promise<void> =>
-    new Promise((resolve, reject) => {
-      try {
-        store.set(this.storageKeys.THEME, theme);
-        resolve();
-      } catch (error) {
-        return reject(error);
-      }
-    });
+    LocalStorageApi.set(this.storageKeys.THEME, theme);
 
   unsetUserTheme = (): Promise<void> =>
-    new Promise(resolve => {
-      try {
-        store.delete(this.storageKeys.THEME);
-        resolve();
-      } catch (error) {} // eslint-disable-line
-    });
+    LocalStorageApi.unset(this.storageKeys.THEME);
 
   getDataLayerMigrationAcceptance = (): Promise<boolean> =>
-    new Promise((resolve, reject) => {
-      try {
-        const accepted = store.get(
-          this.storageKeys.DATA_LAYER_MIGRATION_ACCEPTANCE
-        );
-        if (!accepted) return resolve(false);
-        resolve(true);
-      } catch (error) {
-        return reject(error);
-      }
-    });
+    LocalStorageApi.get(
+      this.storageKeys.DATA_LAYER_MIGRATION_ACCEPTANCE,
+      false
+    );
 
   setDataLayerMigrationAcceptance = (): Promise<void> =>
-    new Promise((resolve, reject) => {
-      try {
-        store.set(this.storageKeys.DATA_LAYER_MIGRATION_ACCEPTANCE, true);
-        resolve();
-      } catch (error) {
-        return reject(error);
-      }
-    });
+    LocalStorageApi.set(this.storageKeys.DATA_LAYER_MIGRATION_ACCEPTANCE, true);
 
   unsetDataLayerMigrationAcceptance = (): Promise<void> =>
-    new Promise(resolve => {
-      try {
-        store.delete(this.storageKeys.DATA_LAYER_MIGRATION_ACCEPTANCE);
-        resolve();
-      } catch (error) {} // eslint-disable-line
-    });
+    LocalStorageApi.unset(this.storageKeys.DATA_LAYER_MIGRATION_ACCEPTANCE);
 
   getWalletsLocalData = (): Promise<Object> =>
-    new Promise((resolve, reject) => {
-      try {
-        const walletsLocalData = store.get(this.storageKeys.WALLETS);
-        if (!walletsLocalData) return resolve({});
-        return resolve(walletsLocalData);
-      } catch (error) {
-        return reject(error);
-      }
-    });
+    LocalStorageApi.get(this.storageKeys.WALLETS, {});
 
   getWalletLocalData = (walletId: string): Promise<WalletLocalData> =>
-    new Promise((resolve, reject) => {
-      try {
-        const walletData = store.get(`${this.storageKeys.WALLETS}.${walletId}`);
-        if (!walletData) {
-          resolve({
-            id: walletId,
-          });
-        }
-        return resolve(walletData);
-      } catch (error) {
-        return reject(error);
-      }
+    LocalStorageApi.get(`${this.storageKeys.WALLETS}.${walletId}`, {
+      id: walletId,
     });
 
   setWalletLocalData = (walletData: WalletLocalData): Promise<void> =>
-    new Promise((resolve, reject) => {
-      try {
-        const walletId = walletData.id;
-        store.set(`${this.storageKeys.WALLETS}.${walletId}`, walletData);
-        return resolve();
-      } catch (error) {
-        return reject(error);
-      }
-    });
+    LocalStorageApi.set(
+      `${this.storageKeys.WALLETS}.${walletData.id}`,
+      walletData
+    );
 
-  updateWalletLocalData = (updatedWalletData: Object): Promise<Object> =>
-    new Promise(async (resolve, reject) => {
-      const walletId = updatedWalletData.id;
-      const currentWalletData = await this.getWalletLocalData(walletId);
-      const walletData = Object.assign(
-        {},
-        currentWalletData,
-        updatedWalletData
-      );
-      try {
-        store.set(`${this.storageKeys.WALLETS}.${walletId}`, walletData);
-        return resolve(walletData);
-      } catch (error) {
-        return reject(error);
-      }
-    });
+  updateWalletLocalData = async (
+    updatedWalletData: Object
+  ): Promise<Object> => {
+    const walletId = updatedWalletData.id;
+    const currentWalletData = await this.getWalletLocalData(walletId);
+    const walletData = Object.assign({}, currentWalletData, updatedWalletData);
+    await LocalStorageApi.set(
+      `${this.storageKeys.WALLETS}.${walletId}`,
+      walletData
+    );
+    return walletData;
+  };
 
   unsetWalletLocalData = (walletId: string): Promise<void> =>
-    new Promise((resolve, reject) => {
-      try {
-        store.delete(`${this.storageKeys.WALLETS}.${walletId}`);
-        return resolve();
-      } catch (error) {
-        return reject(error);
-      }
-    });
+    LocalStorageApi.unset(`${this.storageKeys.WALLETS}.${walletId}`);
 
   getReadNews = (): Promise<NewsTimestamp[]> =>
-    new Promise((resolve, reject) => {
-      try {
-        const readNews = store.get(this.storageKeys.READ_NEWS);
-        if (!readNews) return resolve([]);
-        resolve(readNews);
-      } catch (error) {
-        return reject(error);
-      }
-    });
+    LocalStorageApi.get(this.storageKeys.READ_NEWS, []);
 
-  markNewsAsRead = (
+  markNewsAsRead = async (
     newsTimestamps: NewsTimestamp[]
-  ): Promise<NewsTimestamp[]> =>
-    new Promise((resolve, reject) => {
-      try {
-        const readNews = store.get(this.storageKeys.READ_NEWS) || [];
-
-        if (!includes(readNews, newsTimestamps[0])) {
-          store.set(
-            this.storageKeys.READ_NEWS,
-            readNews.concat(newsTimestamps)
-          );
-        }
-
-        resolve(readNews);
-      } catch (error) {
-        return reject(error);
-      }
-    });
+  ): Promise<NewsTimestamp[]> => {
+    const readNews =
+      (await LocalStorageApi.get(this.storageKeys.READ_NEWS)) || [];
+    if (!includes(readNews, newsTimestamps[0])) {
+      await LocalStorageApi.set(
+        this.storageKeys.READ_NEWS,
+        readNews.concat(newsTimestamps)
+      );
+    }
+    return readNews;
+  };
 
   unsetReadNews = (): Promise<void> =>
-    new Promise(resolve => {
-      try {
-        store.delete(this.storageKeys.READ_NEWS);
-        resolve();
-      } catch (error) {} // eslint-disable-line
-    });
+    LocalStorageApi.unset(this.storageKeys.READ_NEWS);
+
+  getWalletMigrationStatus = (): Promise<WalletMigrationStatus> =>
+    LocalStorageApi.get(
+      this.storageKeys.WALLET_MIGRATION_STATUS,
+      WalletMigrationStatuses.UNSTARTED
+    );
+
+  setWalletMigrationStatus = (status: WalletMigrationStatus): Promise<void> =>
+    LocalStorageApi.set(this.storageKeys.WALLET_MIGRATION_STATUS, status);
+
+  unsetWalletMigrationStatus = (): Promise<void> =>
+    LocalStorageApi.unset(this.storageKeys.WALLET_MIGRATION_STATUS);
 
   reset = async () => {
     await this.unsetUserLocale();
+    await this.unsetUserNumberFormat();
+    await this.unsetUserDateFormatEnglish();
+    await this.unsetUserDateFormatJapanese();
+    await this.unsetUserTimeFormat();
     await this.unsetTermsOfUseAcceptance();
     await this.unsetUserTheme();
     await this.unsetDataLayerMigrationAcceptance();
     await this.unsetReadNews();
+    await this.unsetWalletMigrationStatus();
   };
 }

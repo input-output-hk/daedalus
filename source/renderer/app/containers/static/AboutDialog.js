@@ -23,7 +23,7 @@ export default class AboutDialog extends Component<Props> {
     const { openExternalLink, environment } = app;
     const { actions } = this.props;
     const { closeAboutDialog } = actions.app;
-    const { apiVersion, build, os, version } = environment;
+    const { apiVersion, nodeVersion, build, os, version } = environment;
 
     return (
       <ReactModal
@@ -36,6 +36,7 @@ export default class AboutDialog extends Component<Props> {
       >
         <About
           apiVersion={apiVersion}
+          nodeVersion={nodeVersion}
           build={build}
           onOpenExternalLink={openExternalLink}
           os={os}

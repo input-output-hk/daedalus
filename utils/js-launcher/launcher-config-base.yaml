@@ -1,0 +1,27 @@
+walletLogging: false
+nodeArgs:
+- NA
+statePath: ${STATE_DIR}
+walletPath: daedalus-frontend
+nodePath: NA
+launcherLogsPrefix: ${STATE_DIR}/Logs/
+walletArgs: []
+nodeDbPath: NA
+updaterPath: NA
+workingDir: ${STATE_DIR}
+frontendOnlyMode: false
+nodeLogPath: null
+updaterArgs: []
+logsPrefix: ${STATE_DIR}/Logs
+# This is related to the legacy node
+configuration:
+  seed: null
+  filePath: NA
+  key: NANA
+  systemStart: null
+updateArchive: NA
+nodeLogConfig: NA
+nodeTimeoutSec: 60
+updateWindowsRunner: null
+tlsPath: ${STATE_DIR}/tls
+x509ToolPath: NA

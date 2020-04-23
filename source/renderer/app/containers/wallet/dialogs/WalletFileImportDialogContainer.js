@@ -18,7 +18,7 @@ export default class WalletFileImportDialogContainer extends Component<Props> {
 
   onSubmit = (values: {
     filePath: string,
-    spendingPassword: ?string,
+    spendingPassword: string,
     walletName: ?string,
   }) => {
     this.props.actions.wallets.importWalletFromFile.trigger(values);

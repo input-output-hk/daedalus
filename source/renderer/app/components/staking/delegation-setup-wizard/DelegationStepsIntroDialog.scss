@@ -14,12 +14,7 @@
       border-top: 1px solid
         var(--theme-delegation-steps-intro-divider-border-color);
       margin-top: 20px;
-      padding-top: 20px;
-      .label {
-        color: var(--theme-delegation-steps-intro-list-label-color);
-        font-family: var(--font-medium);
-        font-weight: 500;
-      }
+      padding-top: 9px;
       ol {
         margin-left: 14px;
       }
@@ -29,11 +24,6 @@
         span {
           color: var(--theme-delegation-steps-intro-list-numbers-color);
           margin-right: 14px;
-          &.optionalLabel {
-            color: var(
-              --theme-delegation-steps-intro-list-optional-label-color
-            );
-          }
         }
       }
     }

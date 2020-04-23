@@ -20,8 +20,9 @@ export default class WalletBackupStore extends Store {
   @observable enteredPhrase = [];
   @observable isPrivacyNoticeAccepted = false;
   @observable isEntering = false;
-  @observable isTermDeviceAccepted = false;
+  @observable isTermOfflineAccepted = false;
   @observable isTermRecoveryAccepted = false;
+  @observable isTermRewardsAccepted = false;
   @observable countdownRemaining = 0;
 
   // Recovery phrase confirmation dialog observables ---
@@ -47,10 +48,11 @@ export default class WalletBackupStore extends Store {
       this._addWordToWalletBackupVerification
     );
     a.clearEnteredRecoveryPhrase.listen(this._clearEnteredRecoveryPhrase);
-    a.acceptWalletBackupTermDevice.listen(this._acceptWalletBackupTermDevice);
+    a.acceptWalletBackupTermOffline.listen(this._acceptWalletBackupTermOffline);
     a.acceptWalletBackupTermRecovery.listen(
       this._acceptWalletBackupTermRecovery
     );
+    a.acceptWalletBackupTermRewards.listen(this._acceptWalletBackupTermRewards);
     a.restartWalletBackup.listen(this._restartWalletBackup);
     a.cancelWalletBackup.listen(this._cancelWalletBackup);
     a.finishWalletBackup.listen(this._finishWalletBackup);
@@ -76,8 +78,9 @@ export default class WalletBackupStore extends Store {
     this.enteredPhrase = [];
     this.isPrivacyNoticeAccepted = false;
     this.isEntering = false;
-    this.isTermDeviceAccepted = false;
+    this.isTermOfflineAccepted = false;
     this.isTermRecoveryAccepted = false;
+    this.isTermRewardsAccepted = false;
     this.countdownRemaining = this.environment.isTest ? 0 : 10;
     if (this.countdownTimerInterval) clearInterval(this.countdownTimerInterval);
     this.countdownTimerInterval = setInterval(() => {
@@ -153,12 +156,16 @@ export default class WalletBackupStore extends Store {
     );
   }
 
-  @action _acceptWalletBackupTermDevice = () => {
-    this.isTermDeviceAccepted = true;
+  @action _acceptWalletBackupTermOffline = () => {
+    this.isTermOfflineAccepted = true;
   };
 
   @action _acceptWalletBackupTermRecovery = () => {
     this.isTermRecoveryAccepted = true;
+  };
+
+  @action _acceptWalletBackupTermRewards = () => {
+    this.isTermRewardsAccepted = true;
   };
 
   @action _restartWalletBackup = () => {

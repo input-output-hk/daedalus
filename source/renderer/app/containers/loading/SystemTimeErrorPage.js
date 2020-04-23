@@ -1,37 +1,37 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
-import type { InjectedStoresProps } from '../../types/injectedPropsType';
 import SystemTimeError from '../../components/loading/system-time-error/SystemTimeError';
+import type { InjectedProps } from '../../types/injectedPropsType';
 
-type Props = InjectedStoresProps;
+type Props = InjectedProps;
 
-@inject('stores')
+@inject('stores', 'actions')
 @observer
 export default class SystemTimeErrorPage extends Component<Props> {
-  static defaultProps = { stores: null };
+  static defaultProps = { stores: null, actions: null };
 
   render() {
-    const { stores } = this.props;
+    const { actions, stores } = this.props;
     const {
       localTimeDifference,
-      forceCheckTimeDifferenceRequest,
-      forceCheckLocalTimeDifference,
       ignoreSystemTimeChecks,
     } = stores.networkStatus;
-
-    const { currentLocale } = stores.profile;
-
-    const { openExternalLink } = stores.app;
-
+    const { forceCheckNetworkClock } = actions.networkStatus;
+    const { app, networkStatus, profile } = stores;
+    const { openExternalLink } = app;
+    const { currentLocale } = profile;
+    const { getNetworkClockRequest } = networkStatus;
     return (
       <SystemTimeError
         localTimeDifference={localTimeDifference}
         currentLocale={currentLocale}
         onExternalLinkClick={openExternalLink}
-        onCheckTheTimeAgain={forceCheckLocalTimeDifference}
+        onCheckTheTimeAgain={() => forceCheckNetworkClock.trigger()}
         onContinueWithoutClockSyncCheck={ignoreSystemTimeChecks}
-        isCheckingSystemTime={forceCheckTimeDifferenceRequest.isExecuting}
+        isCheckingSystemTime={getNetworkClockRequest.isExecutingWithArgs({
+          isForceCheck: true,
+        })}
       />
     );
   }

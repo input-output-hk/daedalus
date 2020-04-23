@@ -9,8 +9,8 @@
 }
 
 .list {
-  overflow-y: scroll;
-  padding-right: 15px;
+  overflow-x: hidden !important;
+  padding-right: 2px;
   will-change: none !important;
   &:focus {
     outline: 0;

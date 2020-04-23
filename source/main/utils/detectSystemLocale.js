@@ -1,11 +1,11 @@
 // @flow
 import { app } from 'electron';
-import { Logger } from './logging';
+import { logger } from './logging';
 import { LOCALES } from '../../common/types/locales.types.js';
 
 export const detectSystemLocale = (): string => {
   const systemLocale = app.getLocale();
-  Logger.info('Detected system locale', { systemLocale });
+  logger.info('Detected system locale', { systemLocale });
   if (systemLocale === 'ja') {
     return LOCALES.japanese;
   }

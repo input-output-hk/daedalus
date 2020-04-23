@@ -13,18 +13,18 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
   static defaultProps = { stores: null, actions: null };
 
   render() {
+    const { isIncentivizedTestnet, isFlight } = global;
     const { stores } = this.props;
     const {
       cardanoNodeState,
       isNodeResponding,
-      isNodeSubscribed,
       isNodeSyncing,
       isNodeTimeCorrect,
       isConnected,
       isSynced,
-      syncPercentage,
+      isSyncProgressStalling,
       hasBeenConnected,
-      forceCheckTimeDifferenceRequest,
+      getNetworkClockRequest,
       isNodeStopping,
       isNodeStopped,
       isNotEnoughDiskSpace,
@@ -44,27 +44,31 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
       <SyncingConnecting
         cardanoNodeState={cardanoNodeState}
         hasBeenConnected={hasBeenConnected}
+        isFlight={isFlight}
         isConnected={isConnected}
         isSynced={isSynced}
         isConnecting={!isConnected}
         isSyncing={isConnected && !isSynced}
+        isSyncProgressStalling={isSyncProgressStalling}
         isNodeStopping={isNodeStopping}
         isNodeStopped={isNodeStopped}
         isNotEnoughDiskSpace={isNotEnoughDiskSpace}
         isTlsCertInvalid={isTlsCertInvalid}
-        syncPercentage={syncPercentage}
         hasUnreadNews={hasUnreadNews}
         hasLoadedCurrentLocale={hasLoadedCurrentLocale}
         hasLoadedCurrentTheme={hasLoadedCurrentTheme}
-        isCheckingSystemTime={forceCheckTimeDifferenceRequest.isExecuting}
+        isCheckingSystemTime={
+          !getNetworkClockRequest.result || getNetworkClockRequest.isExecuting
+        }
         isNodeResponding={isNodeResponding}
-        isNodeSubscribed={isNodeSubscribed}
         isNodeSyncing={isNodeSyncing}
         isNodeTimeCorrect={isNodeTimeCorrect}
         isNewAppVersionAvailable={isNewAppVersionAvailable}
         isNewAppVersionLoading={isNewAppVersionLoading}
         isNewAppVersionLoaded={isNewAppVersionLoaded}
+        isIncentivizedTestnet={isIncentivizedTestnet}
         onIssueClick={this.handleIssueClick}
+        onOpenExternalLink={this.handleOpenExternalLink}
         onGetAvailableVersions={this.handleGetAvailableVersions}
         onStatusIconClick={this.openDaedalusDiagnosticsDialog}
         onDownloadLogs={this.handleDownloadLogs}
@@ -86,10 +90,14 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
     this.props.stores.app.openExternalLink(supportUrl);
   };
 
+  handleOpenExternalLink = (articleUrl: string) => {
+    this.props.stores.app.openExternalLink(articleUrl);
+  };
+
   handleDownloadLogs = () => {
     const { app } = this.props.actions;
     app.downloadLogs.trigger();
-    app.setNotificationVisibility.trigger(true);
+    app.setIsDownloadingLogs.trigger(true);
   };
 
   handleGetAvailableVersions = () => {

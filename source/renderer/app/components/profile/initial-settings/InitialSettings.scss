@@ -1,0 +1,17 @@
+@import '../../../themes/mixins/error-message';
+
+.component {
+  align-items: center;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+}
+
+.centeredBox {
+  background-color: var(--theme-bordered-box-background-color);
+  border: var(--theme-bordered-box-border);
+  border-radius: 4px;
+  overflow: visible;
+  padding: 30px 30px 20px;
+  width: 620px;
+}

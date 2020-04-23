@@ -22,11 +22,17 @@ const messages = defineMessages({
     defaultMessage: '!!!Create',
     description: 'Label for the "Create" button on the wallet add dialog.',
   },
+  createDescriptionItn: {
+    id: 'wallet.add.dialog.create.description.itn',
+    defaultMessage: '!!!Create a new Rewards wallet',
+    description:
+      'Description for the "Create a new Rewards wallet" button on the wallet add dialog.',
+  },
   createDescription: {
     id: 'wallet.add.dialog.create.description',
     defaultMessage: '!!!Create a new wallet',
     description:
-      'Description for the "Create" button on the wallet add dialog.',
+      'Description for the "Create a new wallet" button on the wallet add dialog.',
   },
   joinLabel: {
     id: 'wallet.add.dialog.join.label',
@@ -46,7 +52,7 @@ const messages = defineMessages({
   restoreWithCertificateDescription: {
     id: 'wallet.add.dialog.restore.withCertificate.description',
     defaultMessage:
-      '!!!Restore using backup-recovery phrase or paper wallet certificate.',
+      '!!!Restore a wallet or paper wallet using wallet recovery phrase',
     description:
       'Description for the "Restore" button with paper wallet certificate on the wallet add dialog.',
   },
@@ -63,7 +69,8 @@ const messages = defineMessages({
   },
   importDescription: {
     id: 'wallet.add.dialog.import.description',
-    defaultMessage: '!!!Import wallet from a file',
+    defaultMessage:
+      '!!!Import wallets from an earlier version of Daedalus or the Daedalus state directory',
     description:
       'Description for the "Import" button on the wallet add dialog.',
   },
@@ -83,14 +90,16 @@ const messages = defineMessages({
   },
 });
 
+const { isIncentivizedTestnet } = global;
+
 type Props = {
   onCreate: Function,
   onRestore: Function,
   onImportFile: Function,
-  isRestoreActive: boolean,
+  isMaxNumberOfWalletsReached: boolean,
   isMainnet: boolean,
   isTestnet: boolean,
-  isMaxNumberOfWalletsReached: boolean,
+  isProduction: boolean,
 };
 
 @observer
@@ -110,10 +119,10 @@ export default class WalletAdd extends Component<Props> {
       onCreate,
       onRestore,
       onImportFile,
-      isRestoreActive,
       isMaxNumberOfWalletsReached,
       isMainnet,
       isTestnet,
+      isProduction,
     } = this.props;
 
     const componentClasses = classnames([styles.component, 'WalletAdd']);
@@ -121,8 +130,6 @@ export default class WalletAdd extends Component<Props> {
     let activeNotification = null;
     if (isMaxNumberOfWalletsReached) {
       activeNotification = 'maxNumberOfWalletsNotificationMessage';
-    } else if (isRestoreActive) {
-      activeNotification = 'restoreNotificationMessage';
     }
 
     return (
@@ -134,7 +141,11 @@ export default class WalletAdd extends Component<Props> {
               onClick={onCreate}
               icon={createIcon}
               label={intl.formatMessage(messages.createLabel)}
-              description={intl.formatMessage(messages.createDescription)}
+              description={
+                isIncentivizedTestnet
+                  ? intl.formatMessage(messages.createDescriptionItn)
+                  : intl.formatMessage(messages.createDescription)
+              }
               isDisabled={isMaxNumberOfWalletsReached}
             />
             <BigButtonForDialogs
@@ -154,7 +165,7 @@ export default class WalletAdd extends Component<Props> {
               description={intl.formatMessage(
                 messages.restoreWithCertificateDescription
               )}
-              isDisabled={isMaxNumberOfWalletsReached || isRestoreActive}
+              isDisabled={isMaxNumberOfWalletsReached}
             />
             <BigButtonForDialogs
               className="importWalletButton"
@@ -164,9 +175,7 @@ export default class WalletAdd extends Component<Props> {
               description={intl.formatMessage(messages.importDescription)}
               isDisabled={
                 isMaxNumberOfWalletsReached ||
-                isRestoreActive ||
-                isMainnet ||
-                isTestnet
+                (isProduction && !isMainnet && !isTestnet)
               }
             />
           </div>

@@ -1,0 +1,64 @@
+.shareActions {
+  display: flex;
+  flex-direction: row;
+  flex-shrink: 0;
+  height: 18px;
+  justify-content: flex-end;
+}
+.copyActions {
+}
+.isUsed {
+  .copyAddress .copyIcon {
+    opacity: 0.4;
+  }
+  .copyAddress .copyAddressLabel {
+    opacity: 0.2;
+  }
+}
+
+/* COPY */
+.copyAddress {
+  cursor: pointer;
+  display: flex;
+  white-space: nowrap;
+}
+.copyAddressLabel {
+  color: var(--theme-label-button-color);
+  font-size: 14px;
+  margin-left: 6px;
+  opacity: 0.5;
+}
+.copyIcon {
+  cursor: pointer;
+  margin-left: 4px;
+  object-fit: contain;
+  & > svg {
+    height: 12px;
+    width: 10px;
+    path {
+      fill: var(--theme-icon-copy-address-color);
+    }
+  }
+}
+
+/* SHARE */
+.shareAddressButton {
+  cursor: pointer;
+  line-height: 1.36;
+  white-space: nowrap;
+}
+.shareIcon {
+  & > svg {
+    height: 12px;
+    width: 12px;
+    path {
+      fill: var(--theme-icon-copy-address-color);
+    }
+  }
+}
+.shareAddressLabel {
+  color: var(--theme-label-button-color);
+  font-size: 14px;
+  margin-left: 6px;
+  opacity: 0.5;
+}

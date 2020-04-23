@@ -1,13 +1,22 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
+import { includes } from 'lodash';
 import { defineMessages, intlShape } from 'react-intl';
+import {
+  WALLET_NAV_IDS,
+  ITN_LEGACY_WALLET_EXCLUDED_NAV_ITEMS,
+} from '../../../config/walletNavigationConfig';
 import Navigation from '../../navigation/Navigation';
 import summaryIcon from '../../../assets/images/wallet-nav/summary-ic.inline.svg';
 import sendIcon from '../../../assets/images/wallet-nav/send-ic.inline.svg';
 import receiveIcon from '../../../assets/images/wallet-nav/receive-ic.inline.svg';
 import transactionsIcon from '../../../assets/images/wallet-nav/transactions-ic.inline.svg';
 import settingsIcon from '../../../assets/images/wallet-nav/wallet-settings-2-ic.inline.svg';
+import type {
+  NavButtonProps,
+  NavDropdownProps,
+} from '../../navigation/Navigation';
 
 const messages = defineMessages({
   summary: {
@@ -53,6 +62,7 @@ const messages = defineMessages({
 type Props = {
   activeItem: string,
   isActiveNavItem: Function,
+  isLegacy: boolean,
   onNavItemClick: Function,
   hasNotification?: boolean,
 };
@@ -66,56 +76,70 @@ export default class WalletNavigation extends Component<Props> {
   render() {
     const {
       isActiveNavItem,
+      isLegacy,
       onNavItemClick,
       activeItem,
       hasNotification,
     } = this.props;
     const { intl } = this.context;
+    const { isIncentivizedTestnet } = global;
+    const items: Array<NavButtonProps | NavDropdownProps> = [
+      {
+        id: WALLET_NAV_IDS.SUMMARY,
+        label: intl.formatMessage(messages.summary),
+        icon: summaryIcon,
+      },
+      {
+        id: WALLET_NAV_IDS.SEND,
+        label: intl.formatMessage(messages.send),
+        icon: sendIcon,
+      },
+      {
+        id: WALLET_NAV_IDS.RECEIVE,
+        label: intl.formatMessage(messages.receive),
+        icon: receiveIcon,
+      },
+      {
+        id: WALLET_NAV_IDS.TRANSACTIONS,
+        label: intl.formatMessage(messages.transactions),
+        icon: transactionsIcon,
+      },
+      {
+        id: WALLET_NAV_IDS.SETTINGS,
+        type: 'dropdown',
+        label:
+          isLegacy && isIncentivizedTestnet
+            ? intl.formatMessage(messages.settings)
+            : intl.formatMessage(messages.more),
+        icon: settingsIcon,
+        hasNotification,
+        options: [
+          {
+            label: intl.formatMessage(messages.settings),
+            value: 'settings',
+            hasNotification,
+          },
+          {
+            label: intl.formatMessage(messages.utxo),
+            value: 'utxo',
+          },
+        ],
+      },
+    ].filter(
+      item =>
+        !(
+          isIncentivizedTestnet &&
+          isLegacy &&
+          includes(ITN_LEGACY_WALLET_EXCLUDED_NAV_ITEMS, item.id)
+        )
+    );
     return (
       <Navigation
         activeItem={activeItem}
         isActiveNavItem={isActiveNavItem}
         onNavItemClick={onNavItemClick}
-        items={[
-          {
-            id: 'summary',
-            label: intl.formatMessage(messages.summary),
-            icon: summaryIcon,
-          },
-          {
-            id: 'send',
-            label: intl.formatMessage(messages.send),
-            icon: sendIcon,
-          },
-          {
-            id: 'receive',
-            label: intl.formatMessage(messages.receive),
-            icon: receiveIcon,
-          },
-          {
-            id: 'transactions',
-            label: intl.formatMessage(messages.transactions),
-            icon: transactionsIcon,
-          },
-          {
-            type: 'dropdown',
-            id: 'settings',
-            label: intl.formatMessage(messages.more),
-            icon: settingsIcon,
-            hasNotification,
-            options: [
-              {
-                label: intl.formatMessage(messages.settings),
-                value: 'settings',
-                hasNotification,
-              },
-              {
-                label: intl.formatMessage(messages.utxo),
-                value: 'utxo',
-              },
-            ],
-          },
-        ]}
+        isLegacy={isLegacy}
+        items={items}
       />
     );
   }

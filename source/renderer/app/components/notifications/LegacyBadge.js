@@ -8,8 +8,8 @@ import styles from './LegacyBadge.scss';
 const messages = defineMessages({
   label: {
     id: 'wallet.legacy.badge.label',
-    defaultMessage: '!!!Legacy',
-    description: 'Label "Legacy" on the legacy badge.',
+    defaultMessage: '!!!Balance',
+    description: 'Label "Balance" on the legacy badge.',
   },
 });
 

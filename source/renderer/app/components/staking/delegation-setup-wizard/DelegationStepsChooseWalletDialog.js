@@ -6,10 +6,7 @@ import {
   FormattedHTMLMessage,
   FormattedMessage,
 } from 'react-intl';
-import { get } from 'lodash';
 import classNames from 'classnames';
-import { Select } from 'react-polymorph/lib/components/Select';
-import { SelectSkin } from 'react-polymorph/lib/skins/simple/SelectSkin';
 import { Stepper } from 'react-polymorph/lib/components/Stepper';
 import { StepperSkin } from 'react-polymorph/lib/skins/simple/StepperSkin';
 import commonStyles from './DelegationSteps.scss';
@@ -17,18 +14,20 @@ import styles from './DelegationStepsChooseWalletDialog.scss';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import DialogBackButton from '../../widgets/DialogBackButton';
 import Dialog from '../../widgets/Dialog';
+import WalletsDropdown from '../../widgets/forms/WalletsDropdown';
+import Wallet from '../../../domains/Wallet';
 
 const messages = defineMessages({
   title: {
     id: 'staking.delegationSetup.chooseWallet.step.dialog.title',
-    defaultMessage: '!!!Delegation Setup',
+    defaultMessage: '!!!Delegate wallet',
     description:
-      'Title "Delegation Setup" on the delegation setup "choose wallet" step dialog.',
+      'Title "Delegate wallet" on the delegation setup "choose wallet" step dialog.',
   },
   description: {
     id: 'staking.delegationSetup.chooseWallet.step.dialog.description',
     defaultMessage:
-      '!!!Choose a wallet with funds you would like to delegate to a stake pool. Selected wallet needs to have a minimum of <span>{minDelegationFunds} ada</span>.',
+      '!!!Choose a wallet with funds that you want to delegate. The selected wallet must contain a <span>minimum amount of {minDelegationFunds} ADA</span> for delegation to be available',
     description:
       'Description on the delegation setup "choose wallet" step dialog.',
   },
@@ -52,12 +51,20 @@ const messages = defineMessages({
     description:
       'Step indicator labe on the delegation setup "choose wallet" step dialog.',
   },
-  errorMessage: {
-    id: 'staking.delegationSetup.chooseWallet.step.dialog.errorMessage',
+  errorMinDelegationFunds: {
+    id:
+      'staking.delegationSetup.chooseWallet.step.dialog.errorMinDelegationFunds',
     defaultMessage:
-      '!!!This wallet does not have enough ada for delegation setup. Please choose a wallet with a minimum of <span>{minDelegationFunds} ada</span> and click continue.',
+      '!!!This wallet does not contain the minimum amount of {minDelegationFunds} ADA which is required for delegation to be available. Please select a wallet with <span>a minimum amount of {minDelegationFunds} ADA</span> and click continue.',
     description:
-      'Error Label on the delegation setup "choose wallet" step dialog.',
+      'MinDelegationFunds Error Label on the delegation setup "choose wallet" step dialog.',
+  },
+  errorRestoringWallet: {
+    id: 'staking.delegationSetup.chooseWallet.step.dialog.errorRestoringWallet',
+    defaultMessage:
+      '!!!This wallet can’t be used for delegation while it’s being synced.',
+    description:
+      'RestoringWallet Error Label on the delegation setup "choose wallet" step dialog.',
   },
   continueButtonLabel: {
     id: 'staking.delegationSetup.chooseWallet.step.dialog.continueButtonLabel',
@@ -67,26 +74,21 @@ const messages = defineMessages({
   },
 });
 
-type DelegationWalletData = {
-  id: string,
-  label: string,
-  value: string,
-  isAcceptableSetupWallet: boolean,
-  hasPassword: boolean,
-};
-
 type Props = {
+  numberOfStakePools: number,
   onClose: Function,
   onSelectWallet: Function,
   onBack: Function,
-  wallets: Array<DelegationWalletData>,
+  wallets: Array<Wallet>,
   stepsList: Array<string>,
   minDelegationFunds: number,
-  selectedWallet: ?Object,
+  selectedWalletId: ?string,
+  isWalletAcceptable: Function,
+  getStakePoolById: Function,
 };
 
 type State = {
-  selectedWallet: ?DelegationWalletData,
+  selectedWalletId: ?string,
 };
 
 export default class DelegationStepsChooseWalletDialog extends Component<
@@ -98,46 +100,38 @@ export default class DelegationStepsChooseWalletDialog extends Component<
   };
 
   state = {
-    selectedWallet: this.props.selectedWallet,
+    selectedWalletId: this.props.selectedWalletId,
   };
 
-  onWalletChange = (selectedWallet: DelegationWalletData) => {
-    this.setState({ selectedWallet });
+  onWalletChange = (selectedWalletId: string) => {
+    this.setState({ selectedWalletId });
   };
 
   onSelectWallet = () => {
-    const { selectedWallet } = this.state;
-    const selectedWalletId = get(selectedWallet, 'id');
+    const { selectedWalletId } = this.state;
     this.props.onSelectWallet(selectedWalletId);
   };
 
   render() {
     const { intl } = this.context;
-    const { selectedWallet } = this.state;
+    const { selectedWalletId } = this.state;
     const {
       wallets,
       stepsList,
       minDelegationFunds,
       onClose,
       onBack,
+      isWalletAcceptable,
+      numberOfStakePools,
+      getStakePoolById,
     } = this.props;
 
-    const selectedWalletValue = get(selectedWallet, 'value', '');
-    const isAcceptableSetupWallet = get(
-      selectedWallet,
-      'isAcceptableSetupWallet',
-      false
-    );
-
-    const actions = [
-      {
-        className: 'continueButton',
-        label: intl.formatMessage(messages.continueButtonLabel),
-        onClick: this.onSelectWallet.bind(this),
-        primary: true,
-        disabled: !selectedWalletValue || !isAcceptableSetupWallet,
-      },
-    ];
+    const selectedWallet: ?Wallet =
+      wallets.find(
+        (wallet: Wallet) => wallet && wallet.id === selectedWalletId
+      ) || null;
+    const amount = selectedWallet ? selectedWallet.amount : null;
+    const isAcceptableSetupWallet = amount && isWalletAcceptable(amount);
 
     const dialogClassName = classNames([
       commonStyles.delegationSteps,
@@ -145,10 +139,40 @@ export default class DelegationStepsChooseWalletDialog extends Component<
     ]);
     const contentClassName = classNames([commonStyles.content, styles.content]);
 
+    const errorMinDelegationFunds = selectedWalletId &&
+      !isAcceptableSetupWallet && (
+        <p className={styles.errorMessage}>
+          <FormattedHTMLMessage
+            {...messages.errorMinDelegationFunds}
+            values={{ minDelegationFunds }}
+          />
+        </p>
+      );
+
+    const errorRestoringWallet = selectedWallet &&
+      selectedWallet.isRestoring && (
+        <p className={styles.errorMessage}>
+          {intl.formatMessage(messages.errorRestoringWallet)}
+        </p>
+      );
+
     const walletSelectClasses = classNames([
       styles.walletSelect,
-      selectedWallet && !isAcceptableSetupWallet ? styles.error : null,
+      errorMinDelegationFunds || errorRestoringWallet ? styles.error : null,
     ]);
+
+    const actions = [
+      {
+        className: 'continueButton',
+        label: intl.formatMessage(messages.continueButtonLabel),
+        onClick: this.onSelectWallet.bind(this),
+        primary: true,
+        disabled:
+          !selectedWalletId ||
+          !!errorMinDelegationFunds ||
+          !!errorRestoringWallet,
+      },
+    ];
 
     const stepsIndicatorLabel = (
       <FormattedMessage
@@ -187,40 +211,20 @@ export default class DelegationStepsChooseWalletDialog extends Component<
               values={{ minDelegationFunds }}
             />
           </p>
-          <Select
+          <WalletsDropdown
             className={walletSelectClasses}
             label={intl.formatMessage(messages.selectWalletInputLabel)}
-            options={wallets}
-            optionRenderer={option => (
-              <div
-                className={styles.customOptionStyle}
-                role="presentation"
-                onClick={this.onWalletChange.bind(this, option)}
-              >
-                <div className={styles.optionLabel}>{option.label}</div>
-                <div className={styles.optionValue}>{option.value}</div>
-              </div>
-            )}
-            selectionRenderer={option => (
-              <div className={styles.customValueStyle}>
-                <div className={styles.label}>{option.label}</div>
-                <div className={styles.value}>{option.value}</div>
-              </div>
-            )}
+            numberOfStakePools={numberOfStakePools}
+            wallets={wallets}
+            onChange={(walletId: string) => this.onWalletChange(walletId)}
             placeholder={intl.formatMessage(
               messages.selectWalletInputPlaceholder
             )}
-            skin={SelectSkin}
-            value={selectedWalletValue}
+            value={selectedWalletId}
+            getStakePoolById={getStakePoolById}
           />
-          {selectedWallet && !isAcceptableSetupWallet && (
-            <p className={styles.errorMessage}>
-              <FormattedHTMLMessage
-                {...messages.errorMessage}
-                values={{ minDelegationFunds }}
-              />
-            </p>
-          )}
+          {errorMinDelegationFunds}
+          {errorRestoringWallet}
         </div>
       </Dialog>
     );

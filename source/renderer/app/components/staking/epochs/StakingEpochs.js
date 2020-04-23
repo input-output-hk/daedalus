@@ -115,6 +115,7 @@ export default class StakingEpochs extends Component<Props, State> {
               selectionRenderer={option => (
                 <div className={styles.customSelectValue}>{option.label}</div>
               )}
+              optionHeight={50}
             />
           </div>
           {selectedEpoch === CURRENT_EPOCH && (

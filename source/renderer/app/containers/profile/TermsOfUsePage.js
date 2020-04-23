@@ -20,11 +20,12 @@ export default class TermsOfUsePage extends Component<InjectedProps> {
       setTermsOfUseAcceptanceRequest,
       termsOfUse,
     } = this.props.stores.profile;
-    const { currentRoute } = this.props.stores.app;
+    const { currentRoute, openExternalLink } = this.props.stores.app;
     const isSubmitting = setTermsOfUseAcceptanceRequest.isExecuting;
     const topbar = (
       <TopBar currentRoute={currentRoute} showSubMenuToggle={false} />
     );
+
     return (
       <TopBarLayout topbar={topbar}>
         <TermsOfUseForm
@@ -32,6 +33,7 @@ export default class TermsOfUsePage extends Component<InjectedProps> {
           onSubmit={this.onSubmit}
           isSubmitting={isSubmitting}
           error={setTermsOfUseAcceptanceRequest.error}
+          onOpenExternalLink={openExternalLink}
         />
       </TopBarLayout>
     );

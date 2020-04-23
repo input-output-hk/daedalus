@@ -5,20 +5,21 @@ import classNames from 'classnames';
 import ReactMarkdown from 'react-markdown';
 import moment from 'moment';
 import { get } from 'lodash';
-import SVGInline from 'react-svg-inline';
 import AnimateHeight from 'react-animate-height';
+import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import News, { NewsTypes } from '../../domains/News';
-import externalLinkIcon from '../../assets/images/link-ic.inline.svg';
+import ButtonLink from '../widgets/ButtonLink';
 import styles from './NewsItem.scss';
 
 type Props = {
   newsItem: News.News,
   onMarkNewsAsRead: Function,
-  onOpenExternalLink: Function,
   onOpenAlert?: Function,
-  onGoToRoute: Function,
+  onOpenExternalLink: Function,
+  onProceedNewsAction: Function,
   expandWithoutTransition?: boolean,
   isNewsFeedOpen: boolean,
+  currentDateFormat: string,
 };
 
 type State = {
@@ -32,8 +33,6 @@ export default class NewsItem extends Component<Props, State> {
     onNewsItemActionClick: null,
     expandWithoutTransition: false,
   };
-
-  localizedDateFormat: 'MM/DD/YYYY';
 
   state = {
     newsItemExpanded: false,
@@ -51,17 +50,13 @@ export default class NewsItem extends Component<Props, State> {
     }
   }
 
-  componentWillMount() {
-    this.localizedDateFormat = moment.localeData().longDateFormat('L');
-  }
-
   newsItemClickHandler(event: SyntheticMouseEvent<HTMLElement>) {
     const linkUrl = get(event, ['target', 'href']);
     if (linkUrl) {
       event.preventDefault();
       this.props.onOpenExternalLink(linkUrl);
     } else {
-      const { type, date } = this.props.newsItem;
+      const { type, id } = this.props.newsItem;
       const { newsItemCollapsible } = this.state;
       if (type === NewsTypes.INFO || type === NewsTypes.ANNOUNCEMENT) {
         if (newsItemCollapsible) {
@@ -73,23 +68,15 @@ export default class NewsItem extends Component<Props, State> {
         }
       }
       if (NewsTypes.ALERT && this.props.onOpenAlert) {
-        this.props.onOpenAlert(date);
+        this.props.onOpenAlert(id);
       }
-      this.props.onMarkNewsAsRead(date);
+      this.props.onMarkNewsAsRead(id);
     }
   }
 
-  newsItemButtonClickHandler(event: SyntheticMouseEvent<HTMLElement>) {
-    event.preventDefault();
-    event.stopPropagation();
-    const { onOpenExternalLink, newsItem, onGoToRoute } = this.props;
-    const { url, route } = newsItem.action;
-
-    if (url) {
-      onOpenExternalLink(url, event);
-    } else if (route) {
-      onGoToRoute(route);
-    }
+  onProceedNewsAction(event: SyntheticMouseEvent<HTMLElement>) {
+    const { newsItem, onProceedNewsAction } = this.props;
+    onProceedNewsAction(newsItem, event);
   }
 
   generateTitleWithBadge = (title: string, isRead: boolean) => {
@@ -114,14 +101,14 @@ export default class NewsItem extends Component<Props, State> {
   };
 
   render() {
-    const { newsItem, expandWithoutTransition } = this.props;
+    const { newsItem, expandWithoutTransition, currentDateFormat } = this.props;
     const componentClasses = classNames([
       styles.component,
       newsItem.type ? styles[newsItem.type] : null,
       this.state.newsItemExpanded ? styles.expanded : null,
       newsItem.read ? styles.isRead : null,
     ]);
-    const { route } = newsItem.action;
+    const { url = '' } = newsItem.action;
     const title = this.generateTitleWithBadge(newsItem.title, newsItem.read);
 
     return (
@@ -132,7 +119,7 @@ export default class NewsItem extends Component<Props, State> {
       >
         {title}
         <div className={styles.newsItemDate}>
-          {moment(newsItem.date).format(this.localizedDateFormat)}
+          {moment(newsItem.date).format(currentDateFormat)}
         </div>
         <div className={styles.newsItemContentWrapper}>
           <AnimateHeight
@@ -152,17 +139,20 @@ export default class NewsItem extends Component<Props, State> {
                   'code',
                   'html',
                   'virtualHtml',
-                  'parsedHtml',
                 ]}
               />
             </div>
-            <button
+            <ButtonLink
               className={styles.newsItemActionBtn}
-              onClick={this.newsItemButtonClickHandler.bind(this)}
-            >
-              {newsItem.action.label}
-              {!route && <SVGInline svg={externalLinkIcon} />}
-            </button>
+              onClick={e => this.onProceedNewsAction(e)}
+              skin={ButtonSkin}
+              label={newsItem.action.label}
+              linkProps={{
+                className: styles.externalLink,
+                hasIconBefore: false,
+                hasIconAfter: url.length > 0,
+              }}
+            />
           </AnimateHeight>
         </div>
       </div>

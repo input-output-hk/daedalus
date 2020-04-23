@@ -138,6 +138,8 @@ gulp.task('prepare:themes:daedalus', () =>
       'source/renderer/app/themes/daedalus/cardano.js',
       'source/renderer/app/themes/daedalus/dark-blue.js',
       'source/renderer/app/themes/daedalus/dark-cardano.js',
+      'source/renderer/app/themes/daedalus/flight-candidate.js',
+      'source/renderer/app/themes/daedalus/incentivized-testnet.js',
       'source/renderer/app/themes/daedalus/index.js',
       'source/renderer/app/themes/daedalus/light-blue.js',
       'source/renderer/app/themes/daedalus/white.js',
@@ -182,7 +184,7 @@ gulp.task('build:themes', gulp.series('clean:dist', 'prepare:themes'));
 gulp.task(
   'test:e2e:nodemon',
   shell.task(
-    'nodemon --watch dist --watch features --exec "yarn test:e2e --tags \'@e2e and @watch\'"'
+    'nodemon --watch dist --watch tests --exec "yarn test:e2e --tags \'@e2e and @watch\'"'
   )
 );
 

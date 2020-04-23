@@ -7,10 +7,9 @@ import qualified Data.Text as T
 import Filesystem.Path (FilePath, (</>))
 import Filesystem.Path.CurrentOS (fromText, decodeString)
 import System.IO.Temp (getCanonicalTemporaryDirectory)
-import Turtle (mktempdir, inproc, strict, ls, fold, writeTextFile, mktree, mkdir, cptree, format)
+import Turtle (mktempdir, inproc, strict, ls, fold, writeTextFile, mktree, mkdir, cptree)
 import Control.Monad.Managed (MonadManaged, runManaged)
 import Data.Aeson.Types (Value)
-import Data.Aeson.Lens
 import qualified Control.Foldl as Fold
 import           System.Directory
 import qualified Data.ByteString.Lazy as BL
@@ -28,7 +27,6 @@ main :: IO ()
 main = hspec $ do
   describe "Utility functions" utilSpec
   describe "MacInstaller build" macBuildSpec
-  describe "Config generation" configSpec
   describe "recursive directory deletion" deleteSpec
   describe "Hydra downloads for AppVeyor" hydraSpec
 
@@ -44,10 +42,11 @@ macBuildSpec = do
                  { oOS = Win64
                  , oBackend = Cardano daedalusBridge
                  , oBuildJob = Just (BuildJob "test")
-                 , oCluster = Mainnet
+                 , oCluster = Nightly
                  , oAppName = "Daedalus"
                  , oOutputDir = out
                  , oTestInstaller = testInstaller False
+                 , oSigningConfigPath = Nothing
                  }
 
       liftIO $ do
@@ -87,21 +86,6 @@ makeTestInstallersDir = do
 getDaedalusBridge :: IO FilePath
 getDaedalusBridge = fromText . T.stripEnd <$> strict (inproc "daedalus-bridge" [] empty)
 
-configSpec :: Spec
-configSpec = do
-  describe "Config file generation" $ do
-    it "Generates something" $ do
-      dhallTest Win64 Staging Launcher "./dhall" $ \val -> do
-        val^.key "configuration".key "key"._String `shouldBe` "mainnet_dryrun_wallet_win64"
-  describe "installer config generation" $ do
-    it "gets the right mainnet port" $ do
-      mainnetCfg <- getInstallerConfig "./dhall" Macos64 Mainnet
-      walletPort mainnetCfg `shouldBe` 8090
-    it "gets the right testnet port" $ do
-      stagingCfg <- getInstallerConfig "./dhall" Win64 Testnet
-      walletPort stagingCfg `shouldBe` 8094
-
-
 deleteSpec :: Spec
 deleteSpec = do
   describe "deleting a path over 256 chars long" $ do
@@ -123,11 +107,6 @@ deleteSpec = do
 
 type Yuck = Value -> IO ()
 
-dhallTest :: OS -> Cluster -> Config -> FilePath -> Yuck -> IO ()
-dhallTest os cluster cfg root yuck =
-  forConfigValues (format dfp root) os cluster
-  (\cfg' val -> when (cfg == cfg') (yuck val))
-
 getTempDir :: MonadManaged io => Text -> io FilePath
 getTempDir template = do
   tmp <- liftIO . fmap decodeString $ getCanonicalTemporaryDirectory
@@ -146,8 +125,8 @@ utilSpec = do
 
   describe "Package filename generation" $ do
     it "generates a good filename for windows" $ do
-      let f = packageFileName Win64 Mainnet (Version "0.4.2") (Cardano "") "9.9" (Just "job.id")
-      f `shouldBe` (fromText "daedalus-0.4.2-cardano-sl-9.9-mainnet-windows-job.id.exe")
+      let f = packageFileName Win64 Nightly (Version "0.4.2") (Cardano "") "9.9" (Just "job.id")
+      f `shouldBe` (fromText "daedalus-0.4.2-cardano-sl-9.9-nightly-windows-job.id.exe")
 
 ----------------------------------------------------------------------------
 -- Tests for Hydra downloading (yes it's in the AppVeyor module)

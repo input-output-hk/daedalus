@@ -1,25 +1,15 @@
 @import '../../../themes/mixins/link';
 
 .component {
+  background-color: var(--theme-report-issue-connecting-background-color);
   position: fixed;
   text-align: center;
+  top: 0;
   width: 100%;
-
-  &.is-connecting {
-    background-color: var(--theme-report-issue-connecting-background-color);
-    .reportIssueText {
-      color: var(--theme-report-issue-connecting-text-color);
-    }
-  }
-  &.is-syncing {
-    background-color: var(--theme-report-issue-syncing-background-color);
-    .reportIssueText {
-      color: var(--theme-report-issue-syncing-text-color);
-    }
-  }
 }
 
 .reportIssueText {
+  color: var(--theme-report-issue-connecting-text-color);
   font-family: var(--font-regular);
   font-size: 18px;
   line-height: 1.22;
@@ -36,6 +26,7 @@
       --theme-report-issue-button-background-color-hover
     ) !important;
   }
+
   &:active {
     background-color: var(
       --theme-report-issue-button-background-color-active
@@ -60,24 +51,15 @@
 }
 
 .downloadLogsButton {
-  border-bottom: 1px solid
-    var(--theme-report-issue-syncing-download-logs-text-color);
-  color: var(--theme-report-issue-syncing-download-logs-text-color);
-  cursor: pointer;
+  border-color: var(--theme-report-issue-connecting-text-color) !important;
+  color: var(--theme-report-issue-connecting-text-color) !important;
+  display: inline-block;
   font-family: var(--font-regular);
-  font-size: 14px;
-  line-height: 1.36;
   margin-bottom: 20px;
   opacity: 0.8;
-  &:disabled {
-    border-bottom-color: transparent;
+  &.disabled {
+    border-color: transparent !important;
     cursor: default;
     text-decoration: none;
   }
-}
-
-.downloadLogsButtonConnecting {
-  border-bottom: 1px solid
-    var(--theme-report-issue-syncing-download-logs-text-color-connecting);
-  color: var(--theme-report-issue-syncing-download-logs-text-color-connecting);
 }

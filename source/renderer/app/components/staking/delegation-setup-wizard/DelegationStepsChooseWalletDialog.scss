@@ -52,45 +52,5 @@
         font-weight: 500;
       }
     }
-
-    .customOptionStyle {
-      color: var(
-        --theme-delegation-steps-choose-wallet-error-select-options-color
-      );
-
-      .optionLabel {
-        font-size: 14px;
-        line-height: 1.43;
-      }
-
-      .optionValue {
-        font-size: 12px;
-        line-height: 1.33;
-        opacity: 0.5;
-      }
-    }
-
-    .customValueStyle {
-      color: var(--theme-delegation-steps-choose-wallet-custom-value-color);
-      height: 100%;
-      padding: 8px 20px;
-
-      .label {
-        font-size: 14px;
-        line-height: 1.43;
-      }
-
-      .value {
-        font-size: 12px;
-        line-height: 1.33;
-        opacity: 0.5;
-      }
-    }
-
-    :global {
-      .SimpleOptions_option {
-        padding: 8px 20px;
-      }
-    }
   }
 }

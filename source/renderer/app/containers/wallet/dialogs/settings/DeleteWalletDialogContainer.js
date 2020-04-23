@@ -41,7 +41,10 @@ export default class DeleteWalletDialogContainer extends Component<Props> {
           })
         }
         onContinue={() => {
-          actions.wallets.deleteWallet.trigger({ walletId: activeWallet.id });
+          actions.wallets.deleteWallet.trigger({
+            walletId: activeWallet.id,
+            isLegacy: activeWallet.isLegacy,
+          });
         }}
         onCancel={() => {
           actions.dialogs.closeActiveDialog.trigger();

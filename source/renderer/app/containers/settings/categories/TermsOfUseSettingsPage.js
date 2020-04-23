@@ -11,6 +11,12 @@ export default class TermsOfUseSettingsPage extends Component<InjectedProps> {
 
   render() {
     const { termsOfUse } = this.props.stores.profile;
-    return <TermsOfUseSettings localizedTermsOfUse={termsOfUse} />;
+    const { openExternalLink } = this.props.stores.app;
+    return (
+      <TermsOfUseSettings
+        localizedTermsOfUse={termsOfUse}
+        onOpenExternalLink={openExternalLink}
+      />
+    );
   }
 }

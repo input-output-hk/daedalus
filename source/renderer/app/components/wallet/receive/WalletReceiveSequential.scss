@@ -1,0 +1,72 @@
+@import '../../../themes/mixins/loading-spinner';
+@import '../../../themes/mixins/error-message';
+
+.component {
+  color: var(--theme-bordered-box-text-color);
+  flex: 1;
+  font-family: var(--font-regular);
+  min-height: 500px;
+  overflow-x: hidden;
+  overflow-y: overlay;
+  padding: 20px;
+  &::-webkit-scrollbar-button {
+    display: block;
+    height: 7px;
+  }
+  @media (max-width: 1000px) {
+    min-height: 600px;
+  }
+}
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.instructionsTitle {
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.33;
+  margin-bottom: 11px;
+}
+.instructionsDescription {
+  border-bottom: 1px solid var(--theme-dialog-border-color);
+  font-size: 16px;
+  line-height: 1.38;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+}
+.addresses {
+  color: var(--theme-bordered-box-text-color);
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  font-family: var(--font-regular);
+  font-size: 16px;
+  line-height: 22px;
+  width: 100%;
+
+  .addressesTitle {
+    font-family: var(--font-medium);
+    padding-bottom: 10px;
+
+    button {
+      color: var(--theme-label-button-color);
+      cursor: pointer;
+      font-family: var(--font-regular);
+      font-size: 16px;
+      line-height: 22px;
+      margin-left: 12px;
+      opacity: 0.55;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    .hideUsed {
+      float: right;
+      height: 20px;
+      text-align: right;
+    }
+  }
+}

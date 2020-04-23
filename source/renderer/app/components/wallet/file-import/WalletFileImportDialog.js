@@ -4,18 +4,15 @@ import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { defineMessages, intlShape } from 'react-intl';
 // import { Input } from 'react-polymorph/lib/components/Input';
-// import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 // import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
-// import { SwitchSkin } from 'react-polymorph/lib/skins/simple/SwitchSkin';
-// import { IDENTIFIERS } from 'react-polymorph/lib/themes/API';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import FileUploadWidget from '../../widgets/forms/FileUploadWidget';
 import {
   isValidWalletName,
-  isValidSpendingPassword,
-  isValidRepeatPassword,
+  // isValidSpendingPassword,
+  // isValidRepeatPassword,
 } from '../../../utils/validations';
 import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
@@ -57,18 +54,6 @@ const messages = defineMessages({
     description:
       'Label "Import wallet" submit button on the dialog for importing a wallet from a file.',
   },
-  passwordSwitchPlaceholder: {
-    id: 'wallet.file.import.dialog.passwordSwitchPlaceholder',
-    defaultMessage: '!!!Activate to create password',
-    description:
-      'Text for the "Activate to create password" switch in the wallet file import dialog.',
-  },
-  passwordSwitchLabel: {
-    id: 'wallet.file.import.dialog.passwordSwitchLabel',
-    defaultMessage: '!!!Password',
-    description:
-      'Label for the "Activate to create password" switch in the wallet file import dialog.',
-  },
   spendingPasswordLabel: {
     id: 'wallet.file.import.dialog.spendingPasswordLabel',
     defaultMessage: '!!!Wallet password',
@@ -96,22 +81,10 @@ type Props = {
   error: ?LocalizableError,
 };
 
-type State = {
-  createPassword: boolean,
-};
-
 @observer
-export default class WalletFileImportDialog extends Component<Props, State> {
-  state = {
-    createPassword: false,
-  };
-
+export default class WalletFileImportDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
-  };
-
-  handlePasswordSwitchToggle = (value: boolean) => {
-    this.setState({ createPassword: value });
   };
 
   form = new ReactToolboxMobxForm(
@@ -150,18 +123,18 @@ export default class WalletFileImportDialog extends Component<Props, State> {
           ),
           value: '',
           validators: [
-            ({ field, form }) => {
-              if (!this.state.createPassword) return [true];
-              const repeatPasswordField = form.$('repeatPassword');
-              if (repeatPasswordField.value.length > 0) {
-                repeatPasswordField.validate({ showErrors: true });
-              }
-              return [
-                isValidSpendingPassword(field.value),
-                this.context.intl.formatMessage(
-                  globalMessages.invalidSpendingPassword
-                ),
-              ];
+            () => {
+              // const repeatPasswordField = form.$('repeatPassword');
+              // if (repeatPasswordField.value.length > 0) {
+              //   repeatPasswordField.validate({ showErrors: true });
+              // }
+              // return [
+              //   isValidSpendingPassword(field.value),
+              //   this.context.intl.formatMessage(
+              //     globalMessages.invalidSpendingPassword
+              //   ),
+              // ];
+              return [true]; // @API TODO - missing API v2 endpoint and password declaration
             },
           ],
         },
@@ -173,16 +146,16 @@ export default class WalletFileImportDialog extends Component<Props, State> {
           ),
           value: '',
           validators: [
-            ({ field, form }) => {
-              if (!this.state.createPassword) return [true];
-              const spendingPassword = form.$('spendingPassword').value;
-              if (spendingPassword.length === 0) return [true];
-              return [
-                isValidRepeatPassword(spendingPassword, field.value),
-                this.context.intl.formatMessage(
-                  globalMessages.invalidRepeatPassword
-                ),
-              ];
+            () => {
+              // const spendingPassword = form.$('spendingPassword').value;
+              // if (spendingPassword.length === 0) return [true];
+              // return [
+              //   isValidRepeatPassword(spendingPassword, field.value),
+              //   this.context.intl.formatMessage(
+              //     globalMessages.invalidRepeatPassword
+              //   ),
+              // ];
+              return [true]; // @API TODO - missing API v2 endpoint and password declaration
             },
           ],
         },
@@ -199,11 +172,10 @@ export default class WalletFileImportDialog extends Component<Props, State> {
   submit = () => {
     this.form.submit({
       onSuccess: form => {
-        const { createPassword } = this.state;
         const { walletFilePath, spendingPassword, walletName } = form.values();
         const walletData = {
           filePath: walletFilePath,
-          spendingPassword: createPassword ? spendingPassword : null,
+          spendingPassword,
           walletName: walletName.length > 0 ? walletName : null,
         };
         this.props.onSubmit(walletData);
@@ -221,11 +193,6 @@ export default class WalletFileImportDialog extends Component<Props, State> {
       styles.component,
       'WalletFileImportDialog',
     ]);
-
-    // const spendingPasswordFieldsClasses = classnames([
-    //   styles.spendingPasswordFields,
-    //   createPassword ? styles.show : null,
-    // ]);
 
     const actions = [
       {
@@ -263,7 +230,7 @@ export default class WalletFileImportDialog extends Component<Props, State> {
           />
         </div>
 
-        {/* TODO: re-enable when wallet-name and wallet-password
+        {/* TODO: re-enable when wallet-name
             support is added to the API endpoint
 
           <Input
@@ -274,20 +241,7 @@ export default class WalletFileImportDialog extends Component<Props, State> {
           />
 
           <div className={styles.spendingPassword}>
-            <div className={styles.spendingPasswordSwitch}>
-              <div className={styles.passwordLabel}>
-                {intl.formatMessage(messages.passwordSwitchLabel)}
-              </div>
-              <Checkbox
-                themeId={IDENTIFIERS.SWITCH}
-                onChange={this.handlePasswordSwitchToggle}
-                label={intl.formatMessage(messages.passwordSwitchPlaceholder)}
-                checked={createPassword}
-                skin={SwitchSkin}
-              />
-            </div>
-
-            <div className={spendingPasswordFieldsClasses}>
+            <div className={styles.spendingPasswordFields}>
               <Input
                 className="spendingPassword"
                 {...spendingPasswordField.bind()}

@@ -9,7 +9,7 @@
   font-size: 14px;
   position: absolute;
   right: 19px;
-  user-select: text;
+  user-select: none;
 }
 
 .total {
@@ -20,5 +20,5 @@
   position: absolute;
   right: 20px;
   text-transform: uppercase;
-  user-select: text;
+  user-select: none;
 }

@@ -1,58 +1,65 @@
 // @flow
 import { observable, action } from 'mobx';
-import { set, omit } from 'lodash';
+import { omit } from 'lodash';
 import Store from './lib/Store';
-import type { Notification } from '../types/notificationType';
+import { NOTIFICATION_DEFAULT_DURATION } from '../config/timingConfig';
+import type {
+  NotificationConfig,
+  NotificationId,
+} from '../types/notificationTypes';
 
 export default class UiNotificationsStore extends Store {
-  @observable activeNotifications: {} = {};
+  @observable activeNotifications: {
+    [key: NotificationId]: {
+      labelValues?: {},
+      index: number,
+    },
+  } = {};
+
+  activeNotificationsTimeouts: {
+    [key: NotificationId]: TimeoutID,
+  } = {};
 
   setup() {
-    this.actions.notifications.open.listen(this._onOpen);
-    this.actions.notifications.closeActiveNotification.listen(this._onClose);
+    this.actions.notifications.registerNotification.listen(
+      this._registerNotification
+    );
+    this.actions.notifications.closeNotification.listen(this._onClose);
   }
 
-  isOpen = (id: string): boolean => !!this.activeNotifications[id];
+  isOpen = (id: NotificationId): boolean => !!this.activeNotifications[id];
 
-  @action _onOpen = ({ id, duration }: { id: string, duration?: number }) => {
-    const notification = {
+  @action _registerNotification = (notificationConfig: NotificationConfig) => {
+    const {
       id,
-      duration: duration || null,
-      secondsTimerInterval: duration
-        ? setInterval(this._updateSeconds, 1000, id)
-        : null,
-    };
-
-    if (this.isOpen(id)) {
-      // if notification is currently active close and reopen it
-      this._onClose({ id });
-      setTimeout(() => this._set(notification), 200);
-    } else {
-      this._set(notification);
+      actionToListenAndOpen,
+      actionToListenAndClose,
+    } = notificationConfig;
+    actionToListenAndOpen.listen((labelValues?: Object) =>
+      this._openNotification(notificationConfig, labelValues)
+    );
+    if (actionToListenAndClose) {
+      actionToListenAndClose.listen(() => this._onClose({ id }));
     }
   };
 
-  @action _set = (notification: Notification) => {
-    this.activeNotifications = {
-      ...this.activeNotifications,
-      ...set({}, notification.id, notification),
-    };
+  @action _openNotification = (
+    notificationConfig: NotificationConfig,
+    labelValues?: Object
+  ) => {
+    const { id, duration = NOTIFICATION_DEFAULT_DURATION } = notificationConfig;
+    const index = Object.keys(this.activeNotifications).length + 1;
+    this.activeNotifications[id] = { labelValues, index };
+    clearTimeout(this.activeNotificationsTimeouts[id]);
+    this.activeNotificationsTimeouts[id] = setTimeout(
+      () => this._onClose({ id }),
+      duration
+    );
   };
 
-  @action _onClose = ({ id }: { id: string }) => {
-    const notification = this.activeNotifications[id];
-    if (notification) {
-      if (notification.secondsTimerInterval)
-        clearInterval(notification.secondsTimerInterval);
+  @action _onClose = ({ id }: { id: NotificationId }) => {
+    if (id in this.activeNotifications) {
       this.activeNotifications = omit(this.activeNotifications, id);
-    }
-  };
-
-  @action _updateSeconds = (id: string) => {
-    const notification = this.activeNotifications[id];
-    if (notification && notification.duration) {
-      notification.duration -= 1;
-      if (notification.duration === 0) this._onClose({ id });
     }
   };
 }

@@ -1,0 +1,42 @@
+@import '../../../themes/mixins/loading-spinner';
+@import '../../../themes/mixins/error-message';
+
+.component {
+  p {
+    font-family: var(--font-light);
+    font-size: 16px;
+    line-height: 1.38;
+    margin-bottom: 20px;
+    b {
+      font-family: var(--font-medium);
+    }
+  }
+}
+
+.input {
+  margin-bottom: 20px;
+}
+
+.spendingPasswordFields {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.spendingPasswordField {
+  flex: 1;
+  &:first-child {
+    margin-right: 10px;
+  }
+}
+
+.error {
+  @include error-message;
+  font-family: var(--font-regular) !important;
+  margin-top: 20px;
+  text-align: center;
+}
+
+.isSubmitting {
+  box-shadow: none !important;
+  @include loading-spinner('../../../assets/images/spinner-light.svg');
+}

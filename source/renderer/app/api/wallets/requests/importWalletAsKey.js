@@ -5,7 +5,7 @@ import { request } from '../../utils/request';
 
 export type ImportWalletAsKey = {
   filePath: string,
-  spendingPassword?: string,
+  spendingPassword: string,
 };
 
 export const importWalletAsKey = (

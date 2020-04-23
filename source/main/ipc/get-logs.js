@@ -85,14 +85,11 @@ export default () => {
 
     const logs: LogFiles = {
       path: pubLogsFolderPath,
-      files: sortBy(
-        logFiles,
-        (log: string): string => {
-          // custom file sorting which enforces correct ordering (like in ALLOWED_LOGS)
-          const nameSegments = log.split('.');
-          return nameSegments.shift() + nameSegments.join('').length;
-        }
-      ),
+      files: sortBy(logFiles, (log: string): string => {
+        // custom file sorting which enforces correct ordering (like in ALLOWED_LOGS)
+        const nameSegments = log.split('.');
+        return nameSegments.shift() + nameSegments.join('').length;
+      }),
     };
 
     return Promise.resolve(logs);

@@ -1,6 +1,5 @@
 {runCommand, rawapp, source }:
-runCommand "daedalus-flow-ci" { } ''
-  set -x
+runCommand "daedalus-flow-ci" { preferLocalBuild = true; } ''
   # flow command fails to ignore the files if node_modules is symlink
   # so we have to copy the whole directory to run the test
   cp -a ${source}/. .

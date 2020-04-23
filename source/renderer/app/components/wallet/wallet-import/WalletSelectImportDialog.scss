@@ -1,0 +1,390 @@
+@import '../../../themes/mixins/link';
+
+.overlay {
+  background-color: var(--theme-wallet-import-background-color);
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  left: 0;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 9999;
+
+  :global {
+    .SimpleFormField_error {
+      position: absolute;
+      top: -20px;
+      white-space: nowrap;
+      width: 100%;
+    }
+
+    .SimpleCheckbox_disabled {
+      opacity: 0.3;
+    }
+  }
+}
+
+.dialog {
+  height: 100%;
+  width: 100%;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.component {
+  height: 100%;
+  position: relative;
+  width: 100%;
+
+  .closeButton {
+    cursor: pointer;
+    display: flex;
+    justify-content: flex-end;
+    position: fixed;
+    right: 15px;
+    top: 15px;
+    z-index: 10000;
+
+    span {
+      height: 44px;
+      width: 44px;
+
+      &:hover {
+        background-color: var(
+          --theme-wallet-import-description-close-hover-background
+        );
+        border-radius: 50%;
+      }
+    }
+
+    svg {
+      height: 12px;
+      margin-top: 16px;
+      width: 12px;
+
+      g {
+        stroke: var(--theme-wallet-import-description-close-color);
+      }
+    }
+  }
+
+  .content {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    font-family: var(--font-regular);
+    height: 100%;
+    justify-content: center;
+    margin: 0 auto;
+    padding: 20px 0;
+    position: relative;
+    width: 670px;
+
+    &::-webkit-scrollbar-thumb {
+      background-color: var(--theme-splash-network-scrollbar-thumb-background);
+      &:hover {
+        background-color: var(
+          --theme-splash-network-scrollbar-thumb-background-hover
+        );
+      }
+    }
+
+    .topWrapper {
+      width: 100%;
+    }
+
+    .title {
+      color: var(--theme-wallet-import-title-color);
+      font-family: var(--font-regular);
+      font-size: 20px;
+      line-height: 1.2;
+      margin-bottom: 11px;
+      text-align: center;
+    }
+
+    .description {
+      color: var(--theme-wallet-import-description-color);
+      font-family: var(--font-regular);
+      font-size: 16px;
+      line-height: 1.38;
+      margin-bottom: 20px;
+      opacity: 0.7;
+      text-align: center;
+    }
+
+    .separatorTop,
+    .separatorMiddle {
+      border-bottom: 1px solid var(--theme-wallet-import-button-border-color);
+      height: 1px;
+      margin-bottom: 20px;
+      margin-top: 0;
+      opacity: 0.2;
+      width: 100%;
+    }
+
+    .separatorMiddle {
+      margin-bottom: 15px;
+    }
+
+    .unamedWalletsTitle {
+      @extend .description;
+      margin-bottom: 15px;
+      opacity: 1;
+
+      p {
+        display: inline;
+        opacity: 0.7;
+      }
+
+      svg {
+        height: 12px;
+        margin-left: 5px;
+        opacity: 0.3;
+
+        path {
+          fill: var(--theme-wallet-import-description-color);
+        }
+
+        &:hover {
+          opacity: 0.5;
+        }
+      }
+    }
+
+    .tooltip {
+      :global {
+        .SimpleBubble_bubble {
+          background: var(--theme-utxo-tooltip-background-color);
+        }
+
+        .SimpleBubble_root.SimpleBubble_transparent.SimpleBubble_openUpward
+          [data-bubble-arrow]:after {
+          border-color: var(--theme-utxo-tooltip-background-color) transparent
+            transparent transparent !important;
+        }
+      }
+    }
+
+    .unamedWalletsInputTooltip {
+      @extend .tooltip;
+
+      :global {
+        .SimpleTooltip_bubble {
+          > div {
+            left: 50%;
+            margin: 0;
+            transform: translateX(-50%);
+          }
+        }
+      }
+    }
+
+    .enterWalletNameTooltip {
+      @extend .tooltip;
+
+      :global {
+        .SimpleTooltip_bubble {
+          > div {
+            left: auto;
+            margin: 0;
+            right: -40px;
+            transform: translateX(0);
+
+            [data-bubble-arrow]:before,
+            [data-bubble-arrow]:after {
+              left: auto;
+              right: 43px;
+            }
+          }
+        }
+      }
+    }
+
+    .walletsContainer {
+      margin-right: -28px;
+      overflow-x: hidden;
+      overflow-y: overlay;
+      padding-right: 28px;
+      width: 698px;
+
+      .walletsRow {
+        align-items: baseline;
+        display: flex;
+        padding: 0 40px 20px 30px;
+
+        .walletsCounter {
+          color: var(--theme-wallet-import-button-text-color);
+          font-family: var(--font-bold);
+          font-size: 16px;
+          letter-spacing: 0.5px;
+          line-height: 1.38;
+          min-width: 45px;
+          padding-right: 20px;
+          text-align: right;
+        }
+
+        .walletsInputField {
+          align-items: center;
+          display: flex;
+          padding-right: 20px;
+
+          .walletsInputFieldInner {
+            input {
+              color: var(--theme-wallet-import-button-text-color);
+              font-family: var(--font-regular);
+              font-size: 16px;
+              letter-spacing: 0.5px;
+              line-height: 1.38;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+
+              &::-webkit-input-placeholder {
+                color: var(--theme-wallet-import-button-text-color);
+                opacity: 0.5;
+              }
+            }
+
+            button {
+              &:hover {
+                background-color: var(
+                  --theme-button-flat-background-color-hover
+                );
+              }
+
+              &:active {
+                background-color: var(
+                  --theme-button-flat-background-color-active
+                );
+              }
+            }
+          }
+        }
+
+        .walletsStatus {
+          color: var(--theme-wallet-import-button-text-color);
+          font-family: var(--font-regular);
+          font-size: 16px;
+          letter-spacing: 0.5px;
+          line-height: 1.38;
+          width: 100%;
+        }
+
+        .walletsStatusIcon {
+          min-width: 44px;
+          position: relative;
+
+          & > * {
+            position: absolute;
+            right: 0;
+            top: -18px;
+          }
+
+          :global {
+            .SimpleCheckbox_check {
+              border: 1px solid var(--theme-wallet-import-checkbox-border-color) !important;
+              margin-right: 1px;
+            }
+
+            .SimpleCheckbox_check.SimpleCheckbox_checked {
+              background-color: var(
+                --theme-wallet-import-checkbox-check-bg-color
+              );
+            }
+
+            .SimpleCheckbox_checked {
+              border-color: var(--theme-wallet-import-checkbox-border-color);
+
+              &:after {
+                border-color: var(
+                  --theme-wallet-import-checkbox-check-color
+                ) !important;
+                margin-top: -3px;
+              }
+            }
+          }
+
+          .walletsStatusIconCheckmark {
+            right: 4px;
+            top: -14px;
+
+            svg {
+              height: 16px;
+              width: 16px;
+
+              path {
+                stroke: var(--theme-wallet-import-description-color);
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .action {
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      margin-top: 12px;
+      padding: 10px 0;
+      text-align: center;
+      width: 100%;
+
+      .actionButton {
+        background-color: var(--theme-wallet-import-button-background-color);
+        border: solid 1px var(--theme-wallet-import-button-border-color);
+        color: var(--theme-wallet-import-button-text-color);
+        display: block;
+        font-weight: 500;
+        line-height: 1.36;
+        margin: 0 auto 20px;
+        min-height: 50px;
+
+        &:hover {
+          background-color: var(--theme-wallet-import-button-border-color);
+          border: none;
+          color: var(--theme-wallet-import-button-text-color-hover);
+        }
+
+        &.disabled {
+          opacity: 0.3;
+
+          :global {
+            .LoadingSpinner_component {
+              margin-top: 9px;
+            }
+          }
+
+          &:hover {
+            background-color: var(
+              --theme-wallet-import-button-background-color
+            );
+            border: solid 1px var(--theme-wallet-import-button-border-color);
+            color: var(--theme-wallet-import-button-text-color);
+          }
+        }
+      }
+
+      .learnMoreLink {
+        border-bottom: 1px solid var(--theme-wallet-import-description-color);
+        color: var(--theme-wallet-import-description-color);
+        margin-right: 30px;
+        margin-top: 20px;
+        opacity: 0.8;
+        &:after {
+          background-color: var(--theme-wallet-import-description-color);
+        }
+      }
+
+      .closeWindowLink {
+        border-bottom: 1px solid var(--theme-wallet-import-description-color);
+        color: var(--theme-wallet-import-description-color);
+        margin: 0 auto;
+        opacity: 0.8;
+      }
+    }
+  }
+}

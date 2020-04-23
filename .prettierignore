@@ -20,4 +20,6 @@
 
 # Ignore the following special folders and files
 source/renderer/app/i18n/locales/
-features/tests/e2e/documents/*
+source/renderer/app/config/newsfeed-files/
+tests/paper-wallets/e2e/documents/*
+tests/wallets/e2e/documents/*

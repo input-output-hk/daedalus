@@ -1,20 +1,18 @@
 // @flow
 import { action, observable, computed, toJS, runInAction } from 'mobx';
 import BigNumber from 'bignumber.js';
-import moment from 'moment/moment';
-import { includes } from 'lodash';
+import { includes, camelCase } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import { THEMES } from '../themes/index';
 import { ROUTES } from '../routes-config';
 import LocalizableError from '../i18n/LocalizableError';
-import globalMessages from '../i18n/global-messages';
 import { WalletSupportRequestLogsCompressError } from '../i18n/errors';
 import { generateFileNameWithTimestamp } from '../../../common/utils/files';
 import { formattedBytesToSize } from '../utils/formatters';
-import { Logger } from '../utils/logging';
+import { logger } from '../utils/logging';
 import { setStateSnapshotLogChannel } from '../ipc/setStateSnapshotLogChannel';
-import { detectSystemLocaleChannel } from '../ipc/detect-system-locale';
+import { getDesktopDirectoryPathChannel } from '../ipc/getDesktopDirectoryPathChannel';
 import { LOCALES } from '../../../common/types/locales.types';
 import {
   compressLogsChannel,
@@ -23,36 +21,62 @@ import {
 } from '../ipc/logs.ipc';
 import type { LogFiles, CompressedLogStatus } from '../types/LogTypes';
 import type { StateSnapshotLogParams } from '../../../common/types/logging.types';
-
-// TODO: refactor all parts that rely on this to ipc channels!
-const { ipcRenderer } = global;
+import {
+  DEFAULT_NUMBER_FORMAT,
+  NUMBER_FORMATS,
+} from '../../../common/types/number.types';
+import {
+  hasLoadedRequest,
+  isRequestSet,
+  requestGetter,
+  getRequestKeys,
+} from '../utils/storesUtils';
+import {
+  NUMBER_OPTIONS,
+  DATE_ENGLISH_OPTIONS,
+  DATE_JAPANESE_OPTIONS,
+  TIME_OPTIONS,
+  PROFILE_SETTINGS,
+} from '../config/profileConfig';
 
 export default class ProfileStore extends Store {
-  LANGUAGE_OPTIONS = [
-    { value: 'en-US', label: globalMessages.languageEnglish },
-    { value: 'ja-JP', label: globalMessages.languageJapanese },
-    // { value: 'zh-CN', label: globalMessages.languageChinese },
-    // { value: 'ko-KR', label: globalMessages.languageKorean },
-    // { value: 'de-DE', label: globalMessages.languageGerman },
-    // { value: 'hr-HR', label: globalMessages.languageCroatian },
-  ];
-
   @observable systemLocale: string = LOCALES.english;
-  @observable bigNumberDecimalFormat = {
-    decimalSeparator: '.',
-    groupSeparator: ',',
-    groupSize: 3,
-    secondaryGroupSize: 0,
-    fractionGroupSeparator: ' ',
-    fractionGroupSize: 0,
-  };
+  @observable systemNumberFormat: string = NUMBER_OPTIONS[0].value;
+  @observable systemDateFormatEnglish: string = DATE_ENGLISH_OPTIONS[0].value;
+  @observable systemDateFormatJapanese: string = DATE_JAPANESE_OPTIONS[0].value;
+  @observable systemTimeFormat: string = TIME_OPTIONS[0].value;
 
-  /* eslint-disable max-len */
   @observable getProfileLocaleRequest: Request<string> = new Request(
     this.api.localStorage.getUserLocale
   );
   @observable setProfileLocaleRequest: Request<string> = new Request(
     this.api.localStorage.setUserLocale
+  );
+  @observable getProfileNumberFormatRequest: Request<string> = new Request(
+    this.api.localStorage.getUserNumberFormat
+  );
+  @observable setProfileNumberFormatRequest: Request<string> = new Request(
+    this.api.localStorage.setUserNumberFormat
+  );
+  @observable getProfileDateFormatEnglishRequest: Request<string> = new Request(
+    this.api.localStorage.getUserDateFormatEnglish
+  );
+  @observable setProfileDateFormatEnglishRequest: Request<string> = new Request(
+    this.api.localStorage.setUserDateFormatEnglish
+  );
+  @observable
+  getProfileDateFormatJapaneseRequest: Request<string> = new Request(
+    this.api.localStorage.getUserDateFormatJapanese
+  );
+  @observable
+  setProfileDateFormatJapaneseRequest: Request<string> = new Request(
+    this.api.localStorage.setUserDateFormatJapanese
+  );
+  @observable getProfileTimeFormatRequest: Request<string> = new Request(
+    this.api.localStorage.getUserTimeFormat
+  );
+  @observable setProfileTimeFormatRequest: Request<string> = new Request(
+    this.api.localStorage.setUserTimeFormat
   );
   @observable getTermsOfUseAcceptanceRequest: Request<string> = new Request(
     this.api.localStorage.getTermsOfUseAcceptance
@@ -78,86 +102,129 @@ export default class ProfileStore extends Store {
   @observable logFiles: LogFiles = {};
   @observable compressedLogsFilePath: ?string = null;
   @observable compressedLogsStatus: CompressedLogStatus = {};
+  @observable desktopDirectoryPath: string = '';
   @observable isSubmittingBugReport: boolean = false;
+  @observable isInitialScreen: boolean = false;
   /* eslint-enable max-len */
 
   setup() {
-    this.actions.profile.updateLocale.listen(this._updateLocale);
-    this.actions.profile.acceptTermsOfUse.listen(this._acceptTermsOfUse);
-    this.actions.profile.acceptDataLayerMigration.listen(
+    const { profile: profileActions } = this.actions;
+    profileActions.finishInitialScreenSettings.listen(
+      this._finishInitialScreenSettings
+    );
+    profileActions.updateUserLocalSetting.listen(this._updateUserLocalSetting);
+    profileActions.acceptTermsOfUse.listen(this._acceptTermsOfUse);
+    profileActions.acceptDataLayerMigration.listen(
       this._acceptDataLayerMigration
     );
-    this.actions.profile.updateTheme.listen(this._updateTheme);
-    this.actions.profile.getLogs.listen(this._getLogs);
-    this.actions.profile.getLogsAndCompress.listen(this._getLogsAndCompress);
-    this.actions.profile.downloadLogs.listen(this._downloadLogs);
-    this.actions.profile.downloadLogsSuccess.listen(
-      this._toggleDisableDownloadLogs
-    );
+    profileActions.updateTheme.listen(this._updateTheme);
+    profileActions.getLogs.listen(this._getLogs);
+    profileActions.getLogsAndCompress.listen(this._getLogsAndCompress);
+    profileActions.downloadLogs.listen(this._downloadLogs);
+    profileActions.downloadLogsSuccess.listen(this._toggleDisableDownloadLogs);
     this.actions.app.initAppEnvironment.listen(() => {});
 
     this.registerReactions([
-      this._setBigNumberFormat,
-      this._updateMomentJsLocaleAfterLocaleChange,
-      this._reloadAboutWindowOnLocaleChange,
-      this._redirectToLanguageSelectionIfNoLocaleSet,
+      this._updateBigNumberFormat,
+      this._redirectToInitialSettingsIfNoLocaleSet,
       this._redirectToTermsOfUseScreenIfTermsNotAccepted,
-      this._redirectToDataLayerMigrationScreenIfMigrationHasNotAccepted,
+      // this._redirectToDataLayerMigrationScreenIfMigrationHasNotAccepted,
       this._redirectToMainUiAfterTermsAreAccepted,
       this._redirectToMainUiAfterDataLayerMigrationIsAccepted,
     ]);
-    this._getSystemLocale();
     this._getTermsOfUseAcceptance();
     this._getDataLayerMigrationAcceptance();
+    this._getDesktopDirectoryPath();
   }
 
-  _setBigNumberFormat = () => {
-    BigNumber.config({ FORMAT: this.bigNumberDecimalFormat });
+  _updateBigNumberFormat = () => {
+    const FORMAT = {
+      ...DEFAULT_NUMBER_FORMAT,
+      ...NUMBER_FORMATS[this.currentNumberFormat],
+    };
+    BigNumber.config({ FORMAT });
   };
 
   @computed get currentLocale(): string {
-    const { result } = this.getProfileLocaleRequest.execute();
-    if (this.isCurrentLocaleSet) return result;
-    return this.systemLocale;
+    return requestGetter(this.getProfileLocaleRequest, this.systemLocale);
   }
 
   @computed get hasLoadedCurrentLocale(): boolean {
-    return (
-      this.getProfileLocaleRequest.wasExecuted &&
-      this.getProfileLocaleRequest.result !== null
-    );
+    return hasLoadedRequest(this.getProfileLocaleRequest);
   }
 
   @computed get isCurrentLocaleSet(): boolean {
-    return (
-      this.getProfileLocaleRequest.result !== null &&
-      this.getProfileLocaleRequest.result !== ''
-    );
+    return isRequestSet(this.getProfileLocaleRequest);
+  }
+
+  @computed get isIncentivizedTestnetTheme(): boolean {
+    return this.currentTheme === THEMES.INCENTIVIZED_TESTNET;
   }
 
   @computed get currentTheme(): string {
-    const { result } = this.getThemeRequest.execute();
-    if (this.isCurrentThemeSet) return result;
-    return this.environment.isMainnet ? THEMES.DARK_BLUE : THEMES.LIGHT_BLUE; // defaults
+    // Default theme handling
+    let systemValue;
+    if (global.isIncentivizedTestnet) {
+      // Force "Incentivized Testnet" as default theme for the Incentivized Testnet Daedalus version
+      systemValue = THEMES.INCENTIVIZED_TESTNET;
+    } else if (global.isFlight) {
+      systemValue = THEMES.FLIGHT_CANDIDATE;
+    } else {
+      systemValue = this.environment.isMainnet
+        ? THEMES.DARK_CARDANO
+        : THEMES.LIGHT_BLUE;
+    }
+    return requestGetter(this.getThemeRequest, systemValue);
   }
 
   @computed get isCurrentThemeSet(): boolean {
-    return (
-      this.getThemeRequest.result !== null && this.getThemeRequest.result !== ''
-    );
+    return isRequestSet(this.getThemeRequest);
   }
 
   @computed get hasLoadedCurrentTheme(): boolean {
-    return (
-      this.getThemeRequest.wasExecuted && this.getThemeRequest.result !== null
+    return hasLoadedRequest(this.getThemeRequest);
+  }
+
+  @computed get currentNumberFormat(): string {
+    return requestGetter(
+      this.getProfileNumberFormatRequest,
+      this.systemNumberFormat
     );
   }
 
+  @computed get currentDateFormat(): string {
+    return this.currentLocale === 'en-US'
+      ? this.currentDateEnglishFormat
+      : this.currentDateJapaneseFormat;
+  }
+
+  @computed get currentDateEnglishFormat(): string {
+    return requestGetter(
+      this.getProfileDateFormatEnglishRequest,
+      this.systemDateFormatEnglish
+    );
+  }
+
+  @computed get currentDateJapaneseFormat(): string {
+    return requestGetter(
+      this.getProfileDateFormatJapaneseRequest,
+      this.systemDateFormatJapanese
+    );
+  }
+
+  @computed get currentTimeFormat(): string {
+    return requestGetter(
+      this.getProfileTimeFormatRequest,
+      this.systemTimeFormat
+    );
+  }
+
+  @computed get currentTimeFormatShort(): string {
+    return this.currentTimeFormat.replace(':ss', '');
+  }
+
   @computed get termsOfUse(): string {
-    const network = this.environment.isMainnet ? 'mainnet' : 'other';
-    return require(`../i18n/locales/terms-of-use/${network}/${
-      this.currentLocale
-    }.md`);
+    return require(`../i18n/locales/terms-of-use/${this.currentLocale}.md`);
   }
 
   @computed get hasLoadedTermsOfUseAcceptance(): boolean {
@@ -192,22 +259,39 @@ export default class ProfileStore extends Store {
     return includes(ROUTES.SETTINGS, currentRoute);
   }
 
-  _getSystemLocale = async () => {
-    this._onReceiveSystemLocale(await detectSystemLocaleChannel.request());
+  _finishInitialScreenSettings = action(() => {
+    this._consolidateUserSettings();
+    this.isInitialScreen = false;
+  });
+
+  _consolidateUserSettings = () => {
+    PROFILE_SETTINGS.forEach((param: string) => {
+      this._updateUserLocalSetting({ param });
+    });
   };
 
-  _updateLocale = async ({ locale }: { locale: string }) => {
-    await this.setProfileLocaleRequest.execute(locale);
-    await this.getProfileLocaleRequest.execute();
+  _updateUserLocalSetting = async ({
+    param,
+    value,
+  }: {
+    param: string,
+    value?: string,
+  }) => {
+    // In case `value` is missing, it consolidates in the localstorage the default value
+    const consolidatedValue =
+      value || (this: any)[camelCase(['current', param])];
+    const { set, get } = getRequestKeys(param, this.currentLocale);
+    await (this: any)[set].execute(consolidatedValue);
+    await (this: any)[get].execute();
+    if (param === 'numberFormat') {
+      // Force re-rendering of the sidebar in order to apply new number format
+      this.stores.wallets.refreshWalletsData();
+    }
   };
 
   _updateTheme = async ({ theme }: { theme: string }) => {
     await this.setThemeRequest.execute(theme);
     await this.getThemeRequest.execute();
-  };
-
-  _updateMomentJsLocaleAfterLocaleChange = () => {
-    moment.locale(this.currentLocale);
   };
 
   _acceptTermsOfUse = async () => {
@@ -228,10 +312,22 @@ export default class ProfileStore extends Store {
     this.getDataLayerMigrationAcceptanceRequest.execute();
   };
 
-  _redirectToLanguageSelectionIfNoLocaleSet = () => {
-    if (this.hasLoadedCurrentLocale && !this.isCurrentLocaleSet) {
+  _getDesktopDirectoryPath = async () => {
+    this._onReceiveDesktopDirectoryPath(
+      await getDesktopDirectoryPathChannel.request()
+    );
+  };
+
+  _redirectToInitialSettingsIfNoLocaleSet = () => {
+    if (
+      (this.hasLoadedCurrentLocale && !this.isCurrentLocaleSet) ||
+      this.isInitialScreen
+    ) {
+      runInAction('Set `isInitialScreen` true', () => {
+        this.isInitialScreen = true;
+      });
       this.actions.router.goToRoute.trigger({
-        route: ROUTES.PROFILE.LANGUAGE_SELECTION,
+        route: ROUTES.PROFILE.INITIAL_SETTINGS,
       });
     }
   };
@@ -239,7 +335,11 @@ export default class ProfileStore extends Store {
   _redirectToTermsOfUseScreenIfTermsNotAccepted = () => {
     const termsOfUseNotAccepted =
       this.hasLoadedTermsOfUseAcceptance && !this.areTermsOfUseAccepted;
-    if (this.isCurrentLocaleSet && termsOfUseNotAccepted) {
+    if (
+      !this.isInitialScreen &&
+      this.isCurrentLocaleSet &&
+      termsOfUseNotAccepted
+    ) {
       this.actions.router.goToRoute.trigger({
         route: ROUTES.PROFILE.TERMS_OF_USE,
       });
@@ -261,9 +361,9 @@ export default class ProfileStore extends Store {
       this.stores.wallets.hasLoadedWallets &&
       dataLayerMigrationNotAccepted
     ) {
-      if (!this.stores.wallets.hasAnyWallets) {
-        // There are no wallets to migrate so we just need
-        // to set the data layer migration acceptance to true
+      if (!this.stores.wallets.hasAnyWallets || global.isIncentivizedTestnet) {
+        // There are no wallets to migrate or it's Incentivized Testnet:
+        // set the data layer migration acceptance to true
         // in order to prevent future data migration checks
         this._acceptDataLayerMigration();
       } else {
@@ -294,13 +394,6 @@ export default class ProfileStore extends Store {
 
   _redirectToRoot = () => {
     this.actions.router.goToRoute.trigger({ route: ROUTES.ROOT });
-  };
-
-  _reloadAboutWindowOnLocaleChange = () => {
-    // register mobx observer for currentLocale in order to trigger reaction on change
-    this.currentLocale; // eslint-disable-line
-    // TODO: refactor to ipc channel
-    ipcRenderer.send('reload-about-window');
   };
 
   _setLogFiles = action((files: LogFiles) => {
@@ -377,37 +470,31 @@ export default class ProfileStore extends Store {
   // Collect all relevant state snapshot params and send them for log file creation
   _setStateSnapshotLog = async () => {
     try {
-      Logger.info('ProfileStore: Requesting state snapshot log file creation');
-
+      logger.info('ProfileStore: Requesting state snapshot log file creation');
+      const { isIncentivizedTestnet } = global;
       const { networkStatus } = this.stores;
-
       const {
-        cardanoNodeID,
+        cardanoNodePID,
+        cardanoWalletPID,
         tlsConfig,
         stateDirectoryPath,
         diskSpaceAvailable,
         cardanoNodeState,
         isConnected,
-        forceCheckTimeDifferenceRequest,
         isNodeInSync,
         isNodeResponding,
-        isNodeSubscribed,
         isNodeSyncing,
-        isNodeTimeCorrect,
         isSynced,
-        isSystemTimeCorrect,
-        isSystemTimeIgnored,
-        latestLocalBlockTimestamp,
-        latestNetworkBlockTimestamp,
-        localBlockHeight,
-        localTimeDifference,
-        networkBlockHeight,
         syncPercentage,
+        localTip,
+        networkTip,
       } = networkStatus;
 
       const {
+        build,
         network,
-        buildNumber,
+        apiVersion,
+        nodeVersion,
         cpu,
         version,
         mainProcessID,
@@ -432,12 +519,15 @@ export default class ProfileStore extends Store {
 
       const coreInfo = {
         daedalusVersion: version,
+        daedalusBuildNumber: build,
         daedalusProcessID: rendererProcessID,
         daedalusMainProcessID: mainProcessID,
         isBlankScreenFixActive,
-        cardanoVersion: buildNumber,
-        cardanoProcessID: cardanoNodeID,
-        cardanoAPIPort: tlsConfig ? tlsConfig.port : 0,
+        cardanoNodeVersion: nodeVersion,
+        cardanoNodePID,
+        cardanoWalletVersion: apiVersion,
+        cardanoWalletPID,
+        cardanoWalletApiPort: tlsConfig ? tlsConfig.port : 0,
         cardanoNetwork: network,
         daedalusStateDirectoryPath: stateDirectoryPath,
       };
@@ -449,34 +539,23 @@ export default class ProfileStore extends Store {
         currentLocale: this.currentLocale,
         isConnected,
         isDev,
-        isForceCheckingNodeTime: forceCheckTimeDifferenceRequest.isExecuting,
         isMainnet,
         isNodeInSync,
         isNodeResponding,
-        isNodeSubscribed,
         isNodeSyncing,
-        isNodeTimeCorrect,
         isStaging,
         isSynced,
-        isSystemTimeCorrect,
-        isSystemTimeIgnored,
         isTestnet,
-        latestLocalBlockTimestamp: moment(Date.now()).diff(
-          moment(latestLocalBlockTimestamp)
-        ),
-        latestNetworkBlockTimestamp: moment(Date.now()).diff(
-          moment(latestNetworkBlockTimestamp)
-        ),
-        localBlockHeight,
-        localTimeDifference,
-        networkBlockHeight,
+        isIncentivizedTestnet,
         currentTime: new Date().toISOString(),
         syncPercentage: syncPercentage.toFixed(2),
+        localTip,
+        networkTip,
       };
 
       await setStateSnapshotLogChannel.send(stateSnapshotData);
     } catch (error) {
-      Logger.error('ProfileStore: State snapshot log file creation failed', {
+      logger.error('ProfileStore: State snapshot log file creation failed', {
         error,
       });
     }
@@ -484,7 +563,7 @@ export default class ProfileStore extends Store {
 
   _toggleDisableDownloadLogs = action(
     async ({ isDownloadNotificationVisible }) => {
-      this.actions.app.setNotificationVisibility.trigger(
+      this.actions.app.setIsDownloadingLogs.trigger(
         isDownloadNotificationVisible
       );
     }
@@ -492,6 +571,10 @@ export default class ProfileStore extends Store {
 
   @action _onReceiveSystemLocale = (systemLocale: string) => {
     this.systemLocale = systemLocale;
+  };
+
+  @action _onReceiveDesktopDirectoryPath = (desktopDirectoryPath: string) => {
+    this.desktopDirectoryPath = desktopDirectoryPath;
   };
 
   @action _reset = () => {

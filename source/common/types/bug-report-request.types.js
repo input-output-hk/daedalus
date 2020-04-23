@@ -1,11 +1,11 @@
 // @flow
 export type BugReportRequestHttpOptions = {
-  hostname: ?string,
+  hostname?: string,
   method: string,
   path: string,
-  port: ?string,
+  port?: number,
   headers?: {
-    'Content-Type': string,
+    'Content-Type': mixed,
   },
 };
 

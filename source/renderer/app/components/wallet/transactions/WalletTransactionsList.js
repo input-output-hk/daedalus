@@ -12,12 +12,10 @@ import styles from './WalletTransactionsList.scss';
 import Transaction from './Transaction';
 import { WalletTransaction } from '../../../domains/WalletTransaction';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
-import { DEVELOPMENT } from '../../../../../common/types/environment.types';
 import { VirtualTransactionList } from './render-strategies/VirtualTransactionList';
-import { TransactionInfo, TransactionsGroup } from './types';
-import type { WalletAssuranceMode } from '../../../api/wallets/types';
-import type { Row } from './types';
 import { SimpleTransactionList } from './render-strategies/SimpleTransactionList';
+import { TransactionInfo, TransactionsGroup } from './types';
+import type { Row } from './types';
 
 const messages = defineMessages({
   today: {
@@ -44,19 +42,30 @@ const messages = defineMessages({
   },
 });
 
+export type ScrollContextType = {
+  setFilterButtonFaded: Function,
+};
+
+export const WalletTransactionsListScrollContext = React.createContext<ScrollContextType>(
+  { setFilterButtonFaded: () => null }
+);
+
 type Props = {
-  assuranceMode: WalletAssuranceMode,
+  deletePendingTransaction: Function,
   formattedWalletAmount: Function,
   hasMoreToLoad: boolean,
   isLoadingTransactions: boolean,
   isRestoreActive: boolean,
   isRenderingAsVirtualList: boolean,
-  network: string,
   onShowMoreTransactions?: Function,
-  onOpenExternalLink?: Function,
+  onOpenExternalLink: Function,
+  getUrlByType: Function,
   showMoreTransactionsButton?: boolean,
   transactions: Array<WalletTransaction>,
   walletId: string,
+  isDeletingTransaction: boolean,
+  currentDateFormat: string,
+  currentTimeFormat: string,
 };
 
 const DATE_FORMAT = 'YYYY-MM-DD';
@@ -69,7 +78,6 @@ export default class WalletTransactionsList extends Component<Props> {
 
   static defaultProps = {
     isRenderingAsVirtualList: false,
-    network: DEVELOPMENT,
     showMoreTransactionsButton: false,
     onShowMoreTransactions: () => {},
     onOpenExternalLink: () => {},
@@ -79,14 +87,6 @@ export default class WalletTransactionsList extends Component<Props> {
   virtualList: ?VirtualTransactionList;
   simpleList: ?SimpleTransactionList;
   loadingSpinner: ?LoadingSpinner;
-  localizedDateFormat: 'MM/DD/YYYY';
-
-  componentWillMount() {
-    this.localizedDateFormat = moment.localeData().longDateFormat('L');
-    // Localized dateFormat:
-    // English - MM/DD/YYYY
-    // Japanese - YYYY/MM/DD
-  }
 
   groupTransactionsByDay(
     transactions: Array<WalletTransaction>
@@ -123,6 +123,7 @@ export default class WalletTransactionsList extends Component<Props> {
 
   localizedDate(date: string) {
     const { intl } = this.context;
+    const { currentDateFormat } = this.props;
     // TODAY
     const today = moment().format(DATE_FORMAT);
     if (date === today) return intl.formatMessage(messages.today);
@@ -132,7 +133,7 @@ export default class WalletTransactionsList extends Component<Props> {
       .format(DATE_FORMAT);
     if (date === yesterday) return intl.formatMessage(messages.yesterday);
     // PAST DATE
-    return moment(date).format(this.localizedDateFormat);
+    return moment(date).format(currentDateFormat);
   }
 
   isTxExpanded = (tx: WalletTransaction) =>
@@ -180,11 +181,14 @@ export default class WalletTransactionsList extends Component<Props> {
 
   renderTransaction = (data: TransactionInfo): Node => {
     const {
-      assuranceMode,
+      deletePendingTransaction,
       formattedWalletAmount,
       isRestoreActive,
-      network,
       onOpenExternalLink,
+      getUrlByType,
+      walletId,
+      isDeletingTransaction,
+      currentTimeFormat,
     } = this.props;
     const { isFirstInGroup, isLastInGroup, tx } = data;
     const txClasses = classnames([
@@ -195,16 +199,19 @@ export default class WalletTransactionsList extends Component<Props> {
     return (
       <div id={`tx-${tx.id}`} className={txClasses}>
         <Transaction
-          assuranceLevel={tx.getAssuranceLevelForMode(assuranceMode)}
           data={tx}
+          deletePendingTransaction={deletePendingTransaction}
           formattedWalletAmount={formattedWalletAmount}
           isExpanded={this.isTxExpanded(tx)}
           isLastInList={isLastInGroup}
           isRestoreActive={isRestoreActive}
-          network={network}
           onDetailsToggled={() => this.toggleTransactionExpandedState(tx)}
           onOpenExternalLink={onOpenExternalLink}
+          getUrlByType={getUrlByType}
           state={tx.state}
+          walletId={walletId}
+          isDeletingTransaction={isDeletingTransaction}
+          currentTimeFormat={currentTimeFormat}
         />
       </div>
     );

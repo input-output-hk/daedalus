@@ -1,16 +1,16 @@
 .component {
   height: 100%;
-  transition: background-color 500ms;
+  position: relative;
   width: 100%;
+  z-index: 1;
 
-  &.is-loading-theme {
-    background-color: transparent !important;
-  }
-  &.is-connecting {
-    background-color: var(--theme-connecting-background-color);
-  }
-  &.is-syncing {
-    background-color: var(--theme-syncing-background-color);
+  .content {
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 2000;
   }
 }
 

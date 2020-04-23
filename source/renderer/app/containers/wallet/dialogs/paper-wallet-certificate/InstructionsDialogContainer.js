@@ -1,28 +1,18 @@
 // @flow
 import React, { Component } from 'react';
+import path from 'path';
 import { observer, inject } from 'mobx-react';
-import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
+import { showSaveDialogChannel } from '../../../../ipc/show-file-dialog-channels';
 import InstructionsDialog from '../../../../components/wallet/paper-wallet-certificate/InstructionsDialog';
 import type { InjectedDialogContainerProps } from '../../../../types/injectedPropsType';
 import { generateFileNameWithTimestamp } from '../../../../../../common/utils/files';
-
-const messages = defineMessages({
-  timestamp: {
-    id: 'paper.wallet.create.certificate.instructions.dialog.timestamp',
-    defaultMessage: '!!!MMMM D, YYYY - h:mm A',
-    description: 'Timestamp for the Paper Wallet PDF content.',
-  },
-});
 
 type Props = InjectedDialogContainerProps;
 
 @inject('stores', 'actions')
 @observer
 export default class InstructionsDialogContainer extends Component<Props> {
-  static contextTypes = {
-    intl: intlShape.isRequired,
-  };
   static defaultProps = {
     actions: null,
     stores: null,
@@ -30,11 +20,15 @@ export default class InstructionsDialogContainer extends Component<Props> {
     onClose: () => {},
   };
 
-  onPrint = () => {
-    const { intl } = this.context;
+  onPrint = async () => {
+    const {
+      currentDateFormat,
+      currentTimeFormatShort,
+    } = this.props.stores.profile;
     const date = moment();
-    const localizedTimestampFormat = intl.formatMessage(messages.timestamp);
-    const timestamp = moment(date).format(localizedTimestampFormat);
+    const formattedDate = date.format(currentDateFormat);
+    const formattedTime = date.format(currentTimeFormatShort);
+    const timestamp = `${formattedDate} - ${formattedTime}`;
 
     const name = generateFileNameWithTimestamp({
       prefix: 'paper-wallet-certificate',
@@ -42,17 +36,19 @@ export default class InstructionsDialogContainer extends Component<Props> {
       extension: '',
       isUTC: false,
     });
-
-    // TODO: refactor this direct access to the dialog api
-    const filePath = global.dialog.showSaveDialog({
-      defaultPath: `${name}.pdf`,
+    const { desktopDirectoryPath } = this.props.stores.profile;
+    const defaultPath = path.join(desktopDirectoryPath, `${name}.pdf`);
+    const params = {
+      defaultPath,
       filters: [
         {
           name,
           extensions: ['pdf'],
         },
       ],
-    });
+    };
+
+    const { filePath } = await showSaveDialogChannel.send(params);
 
     // if cancel button is clicked or path is empty
     if (!filePath) return;
@@ -63,20 +59,25 @@ export default class InstructionsDialogContainer extends Component<Props> {
     });
   };
 
+  handleOpenExternalLink = (url: string) => {
+    const { openExternalLink } = this.props.stores.app;
+    openExternalLink(url);
+  };
+
   render() {
     const { wallets, app } = this.props.stores;
     const {
-      openExternalLink,
-      environment: { network },
+      environment: { network, rawNetwork },
     } = app;
     return (
       <InstructionsDialog
         inProgress={wallets.generatingCertificateInProgress}
         error={wallets.generatingCertificateError}
         network={network}
+        rawNetwork={rawNetwork}
         onPrint={this.onPrint}
         onClose={this.props.onClose}
-        onOpenExternalLink={openExternalLink}
+        onOpenExternalLink={this.handleOpenExternalLink}
       />
     );
   }

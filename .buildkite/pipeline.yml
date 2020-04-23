@@ -8,10 +8,6 @@ steps:
     agents:
       queue: daedalus
       system: x86_64-darwin
-  - label: 'daedalus-x86_64-linux'
-    command: 'scripts/build-installer-unix.sh --build-id $BUILDKITE_BUILD_NUMBER'
-    agents:
-      system: x86_64-linux
   - label: 'daedalus-x86_64-linux-nix'
     command: 'scripts/build-installer-nix.sh $BUILDKITE_BUILD_NUMBER'
     agents:
@@ -21,7 +17,8 @@ steps:
     agents:
       system: x86_64-linux
 
-  - label: 'release.nix'
-    command: 'ci/check-hydra.sh'
-    agents:
-      system: x86_64-linux
+  # TODO: Re-enable once script is fixed
+  # - label: 'release.nix'
+  #   command: 'ci/check-hydra.sh'
+  #   agents:
+  #     system: x86_64-linux

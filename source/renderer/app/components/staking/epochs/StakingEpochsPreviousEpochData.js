@@ -118,7 +118,7 @@ export default class StakingEpochsPreviousEpochData extends Component<
     const tableBody = (
       <tbody>
         {map(sortedData, (row, key) => {
-          const poolSlug = get(row, ['pool', 'slug'], '');
+          const poolTicker = get(row, ['pool', 'ticker'], '');
           const poolName = get(row, ['pool', 'name'], '');
           const slotsElected = get(row, 'slotsElected', [0, 0]);
           const performance = get(row, 'performance', [0, 0, 0]);
@@ -129,7 +129,7 @@ export default class StakingEpochsPreviousEpochData extends Component<
               <td>
                 <p>
                   <span className={styles.stakePoolReference}>
-                    [{poolSlug}]
+                    [{poolTicker}]
                   </span>{' '}
                   {poolName}
                 </p>
@@ -139,17 +139,17 @@ export default class StakingEpochsPreviousEpochData extends Component<
                 <span>{` ${intl.formatMessage(
                   messages.tableBodySlots
                 )} - `}</span>
-                <span className={styles.mediumText}>{`${
-                  slotsElected[1]
-                }%`}</span>
+                <span
+                  className={styles.mediumText}
+                >{`${slotsElected[1]}%`}</span>
               </td>
               <td>
                 <span>{`${performance[0]} ${intl.formatMessage(
                   messages.tableBodyOf
                 )} ${performance[1]} - `}</span>
-                <span className={styles.mediumText}>{`${
-                  performance[2]
-                }%`}</span>
+                <span
+                  className={styles.mediumText}
+                >{`${performance[2]}%`}</span>
               </td>
               <td>
                 <span className={styles.mediumText}>{sharedRewards[0]}</span>

@@ -1,33 +1,61 @@
 // @flow
 import os from 'os';
-import { uniq, upperFirst, get, includes } from 'lodash';
+import { uniq, get, includes } from 'lodash';
 import { version } from '../../package.json';
 import type { Environment } from '../common/types/environment.types';
 import {
   DEVELOPMENT,
-  LINUX,
-  MAC_OS,
-  MAINNET,
   OS_NAMES,
-  PRODUCTION,
-  STAGING,
-  TEST,
-  TESTNET,
-  WINDOWS,
+  MAINNET,
+  MAINNET_FLIGHT,
 } from '../common/types/environment.types';
+import {
+  evaluateNetwork,
+  checkIsDev,
+  checkIsTest,
+  checkIsProduction,
+  checkIsMainnet,
+  checkIsStaging,
+  checkIsTestnet,
+  checkIsSelfnode,
+  checkIsDevelopment,
+  checkIsIncentivizedTestnet,
+  checkIsIncentivizedTestnetQA,
+  checkIsIncentivizedTestnetNightly,
+  checkIsIncentivizedTestnetSelfnode,
+  checkIsMacOS,
+  checkIsWindows,
+  checkIsLinux,
+} from '../common/utils/environmentCheckers';
+
+/* ==================================================================
+=                           Evaluations                             =
+================================================================== */
 
 // environment variables
 const CURRENT_NODE_ENV = process.env.NODE_ENV || DEVELOPMENT;
-const NETWORK = process.env.NETWORK || DEVELOPMENT;
-const isDev = CURRENT_NODE_ENV === DEVELOPMENT;
-const isTest = CURRENT_NODE_ENV === TEST;
-const isProduction = CURRENT_NODE_ENV === PRODUCTION;
-const isMainnet = NETWORK === MAINNET;
-const isStaging = NETWORK === STAGING;
-const isTestnet = NETWORK === TESTNET;
-const isDevelopment = NETWORK === DEVELOPMENT;
+const RAW_NETWORK =
+  process.env.NETWORK === MAINNET_FLIGHT ? MAINNET : process.env.NETWORK || '';
+const NETWORK = evaluateNetwork(process.env.NETWORK);
+const isDev = checkIsDev(CURRENT_NODE_ENV);
+const isTest = checkIsTest(CURRENT_NODE_ENV);
+const isProduction = checkIsProduction(CURRENT_NODE_ENV);
+const isMainnet = checkIsMainnet(NETWORK);
+const isStaging = checkIsStaging(NETWORK);
+const isTestnet = checkIsTestnet(NETWORK);
+const isSelfnode = checkIsSelfnode(NETWORK);
+const isIncentivizedTestnet = checkIsIncentivizedTestnet(NETWORK);
+const isIncentivizedTestnetQA = checkIsIncentivizedTestnetQA(RAW_NETWORK);
+const isIncentivizedTestnetNightly = checkIsIncentivizedTestnetNightly(
+  RAW_NETWORK
+);
+const isIncentivizedTestnetSelfnode = checkIsIncentivizedTestnetSelfnode(
+  RAW_NETWORK
+);
+const isDevelopment = checkIsDevelopment(NETWORK);
 const isWatchMode = process.env.IS_WATCH_MODE;
 const API_VERSION = process.env.API_VERSION || 'dev';
+const NODE_VERSION = '1.10.1'; // TODO: pick up this value from process.env
 const mainProcessID = get(process, 'ppid', '-');
 const rendererProcessID = process.pid;
 const PLATFORM = os.platform();
@@ -38,24 +66,23 @@ const ram = os.totalmem();
 const isBlankScreenFixActive = includes(process.argv.slice(1), '--safe-mode');
 const BUILD = process.env.BUILD_NUMBER || 'dev';
 const BUILD_NUMBER = uniq([API_VERSION, BUILD]).join('.');
-const BUILD_LABEL = (() => {
-  const networkLabel = !(isMainnet || isDev) ? ` ${upperFirst(NETWORK)}` : '';
-  let buildLabel = `Daedalus${networkLabel} (${version}#${BUILD_NUMBER})`;
-  if (!isProduction) buildLabel += ` ${CURRENT_NODE_ENV}`;
-  return buildLabel;
-})();
 const INSTALLER_VERSION = uniq([API_VERSION, BUILD]).join('.');
 const MOBX_DEV_TOOLS = process.env.MOBX_DEV_TOOLS || false;
-const isMacOS = PLATFORM === MAC_OS;
-const isWindows = PLATFORM === WINDOWS;
-const isLinux = PLATFORM === LINUX;
+const isMacOS = checkIsMacOS(PLATFORM);
+const isWindows = checkIsWindows(PLATFORM);
+const isLinux = checkIsLinux(PLATFORM);
 
-// compose environment
+/* ==================================================================
+=                       Compose environment                         =
+================================================================== */
+
 export const environment: Environment = Object.assign(
   {},
   {
     network: NETWORK,
+    rawNetwork: RAW_NETWORK,
     apiVersion: API_VERSION,
+    nodeVersion: NODE_VERSION,
     mobxDevTools: MOBX_DEV_TOOLS,
     current: CURRENT_NODE_ENV,
     isDev,
@@ -64,11 +91,15 @@ export const environment: Environment = Object.assign(
     isMainnet,
     isStaging,
     isTestnet,
+    isSelfnode,
+    isIncentivizedTestnet,
+    isIncentivizedTestnetQA,
+    isIncentivizedTestnetNightly,
+    isIncentivizedTestnetSelfnode,
     isDevelopment,
     isWatchMode,
     build: BUILD,
     buildNumber: BUILD_NUMBER,
-    buildLabel: BUILD_LABEL,
     platform: PLATFORM,
     platformVersion: PLATFORM_VERSION,
     mainProcessID,

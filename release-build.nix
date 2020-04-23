@@ -8,5 +8,5 @@ let
   pkgs = (import ./. {}).pkgs;
 in pkgs.runCommand "signed-release" {} ''
   mkdir $out
-  cp -v ${mkLinux "staging"}/*bin $out/
+  cp -v ${mkWindows "mainnet_flight"}/*exe $out/
 ''

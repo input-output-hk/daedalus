@@ -5,6 +5,7 @@ import LocalStorageApi from './utils/localStorage';
 export type Api = {
   ada: AdaApi,
   localStorage: LocalStorageApi,
+  setFaultyNodeSettingsApi?: boolean,
 };
 
 export const setupApi = (isTest: boolean, network: string): Api => ({

@@ -5,7 +5,7 @@ import { ROUTES } from './routes-config';
 
 // PAGES
 import Root from './containers/Root';
-import LanguageSelectionPage from './containers/profile/LanguageSelectionPage';
+import InitialSettingsPage from './containers/profile/InitialSettingsPage';
 import Settings from './containers/settings/Settings';
 import GeneralSettingsPage from './containers/settings/categories/GeneralSettingsPage';
 import SupportSettingsPage from './containers/settings/categories/SupportSettingsPage';
@@ -34,8 +34,8 @@ export const Routes = (
   <Route path={ROUTES.ROOT} component={Root}>
     <IndexRedirect to={ROUTES.WALLETS.ROOT} />
     <Route
-      path={ROUTES.PROFILE.LANGUAGE_SELECTION}
-      component={LanguageSelectionPage}
+      path={ROUTES.PROFILE.INITIAL_SETTINGS}
+      component={InitialSettingsPage}
     />
     <Route path={ROUTES.PROFILE.TERMS_OF_USE} component={TermsOfUsePage} />
     <Route

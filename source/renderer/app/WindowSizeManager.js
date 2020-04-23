@@ -1,8 +1,8 @@
+/* eslint-disable react/prop-types */
 import React, { Component, Fragment } from 'react';
 
 export default class WindowSizeManager extends Component {
   componentDidMount() {
-    // eslint-disable-next-line react/prop-types
     this.updateMinScreenHeight(this.props.minScreenHeight);
   }
 
@@ -20,7 +20,6 @@ export default class WindowSizeManager extends Component {
   }
 
   render() {
-    // eslint-disable-next-line react/prop-types
     return <Fragment>{this.props.children}</Fragment>;
   }
 }

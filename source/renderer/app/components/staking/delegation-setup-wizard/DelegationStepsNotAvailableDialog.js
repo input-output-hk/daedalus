@@ -17,19 +17,14 @@ type Props = {
 const messages = defineMessages({
   title: {
     id: 'staking.delegationSetup.notAvailable.dialog.title',
-    defaultMessage: '!!!Delegation Setup',
+    defaultMessage: '!!!Delegation not available',
     description:
       'Title "Delegation Setup" on the delegation setup not available dialog.',
-  },
-  subtitle: {
-    id: 'staking.delegationSetup.notAvailable.dialog.subtitle',
-    defaultMessage: '!!!Delegation not available',
-    description: 'Subtitle on the delegation setup not available dialog.',
   },
   description: {
     id: 'staking.delegationSetup.notAvailable.dialog.description',
     defaultMessage:
-      '!!!A wallet with at least <span>{minDelegationFunds} ada</span> is required for delegation setup. Please restore a wallet with ada, or create a new one and fund it with ada in order to access delegation features.',
+      '!!!None of your wallets have the <span>minimum amount of {minDelegationFunds} ada</span> required for delegation',
     description: 'Description on the delegation setup not available dialog.',
   },
   closeButtonLabel: {
@@ -75,9 +70,6 @@ export default class DelegationStepsNotAvailableDialog extends Component<Props> 
       >
         <div className={contentClassName}>
           <SVGInline svg={attentionImage} className={styles.icon} />
-          <p className={styles.subtitle}>
-            {intl.formatMessage(messages.subtitle)}
-          </p>
           <p className={styles.description}>
             <FormattedHTMLMessage
               {...messages.description}

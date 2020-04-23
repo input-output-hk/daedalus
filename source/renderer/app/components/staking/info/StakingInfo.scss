@@ -6,16 +6,11 @@
   text-align: center;
 
   .learnMoreButton {
-    color: var(--theme-staking-info-learn-more-button-text-color);
-
     .externalLinkIcon {
-      @include link(--theme-staking-info-learn-more-icon-color);
-      border-bottom: none;
-      margin-right: 12px;
-      svg {
-        margin-left: 0;
+      color: var(--theme-staking-info-learn-more-icon-color);
+      &:before {
+        background-color: var(--theme-staking-info-learn-more-icon-color);
         vertical-align: sub;
-        width: 15px;
       }
     }
   }

@@ -37,8 +37,9 @@ type Props = {
   onMarkNewsAsRead: Function,
   openWithoutTransition?: boolean,
   isLoadingNews: boolean,
+  currentDateFormat: string,
   onOpenExternalLink: Function,
-  onGoToRoute: Function,
+  onProceedNewsAction: Function,
 };
 
 type State = {
@@ -104,9 +105,10 @@ export default class NewsFeed extends Component<Props, State> {
       onClose,
       onOpenAlert,
       onMarkNewsAsRead,
-      onOpenExternalLink,
       openWithoutTransition,
-      onGoToRoute,
+      onProceedNewsAction,
+      onOpenExternalLink,
+      currentDateFormat,
     } = this.props;
     const { hasShadow } = this.state;
 
@@ -143,13 +145,14 @@ export default class NewsFeed extends Component<Props, State> {
             <div className={styles.newsFeedItemsContainer}>
               {news.all.map(newsItem => (
                 <NewsItem
-                  key={newsItem.date}
+                  key={newsItem.id}
                   newsItem={newsItem}
                   isNewsFeedOpen={isNewsFeedOpen}
                   onMarkNewsAsRead={onMarkNewsAsRead}
-                  onOpenExternalLink={onOpenExternalLink}
                   onOpenAlert={onOpenAlert}
-                  onGoToRoute={onGoToRoute}
+                  onProceedNewsAction={onProceedNewsAction}
+                  onOpenExternalLink={onOpenExternalLink}
+                  currentDateFormat={currentDateFormat}
                 />
               ))}
             </div>
