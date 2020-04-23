@@ -53,24 +53,26 @@ export default class WalletAddPage extends Component<Props> {
       : // TODO: Remove once the new wallet restoration process is ready
         () => actions.dialogs.open.trigger({ dialog: WalletRestoreDialog });
 
-    let content = null;
+    let activeDialog = null;
 
     // TODO: Remove once the new wallet creation process is ready
     if (uiDialogs.isOpen(WalletCreateDialog)) {
-      content = <WalletCreateDialogContainerOld onClose={this.onClose} />;
+      activeDialog = <WalletCreateDialogContainerOld onClose={this.onClose} />;
       // ----
     } else if (createWalletStep !== null) {
-      content = <WalletCreateDialogContainer onClose={this.onClose} />;
+      activeDialog = <WalletCreateDialogContainer onClose={this.onClose} />;
     } else if (uiDialogs.isOpen(WalletBackupDialog)) {
-      content = <WalletBackupDialogContainer onClose={this.onClose} />;
+      activeDialog = <WalletBackupDialogContainer onClose={this.onClose} />;
     } else if (uiDialogs.isOpen(WalletRestoreDialog)) {
-      content = <WalletRestoreDialogContainerOld onClose={this.onClose} />;
+      activeDialog = <WalletRestoreDialogContainerOld onClose={this.onClose} />;
     } else if (restoreWalletStep !== null) {
-      content = <WalletRestoreDialogContainer onClose={this.onClose} />;
+      activeDialog = <WalletRestoreDialogContainer onClose={this.onClose} />;
     } else if (uiDialogs.isOpen(WalletImportFileDialog)) {
-      content = <WalletImportDialogContainer />;
-    } else {
-      content = (
+      activeDialog = <WalletImportDialogContainer />;
+    }
+
+    return (
+      <Layout>
         <WalletAdd
           onCreate={onCreateWallet}
           onRestore={onRestoreWallet}
@@ -82,8 +84,8 @@ export default class WalletAddPage extends Component<Props> {
           isTestnet={isTestnet}
           isProduction={isProduction}
         />
-      );
-    }
-    return <Layout>{content}</Layout>;
+        {activeDialog}
+      </Layout>
+    );
   }
 }

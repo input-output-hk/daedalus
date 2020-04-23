@@ -82,6 +82,7 @@ export default class InlineEditingSmallInput extends Component<Props, State> {
         } else {
           this.props.onCancelEditing();
         }
+        this.input.blur();
       },
     });
   };
@@ -104,6 +105,7 @@ export default class InlineEditingSmallInput extends Component<Props, State> {
 
   onBlur = () => {
     if (this.state.isActive) {
+      this.setState({ isActive: false });
       this.submit();
     }
   };
@@ -113,6 +115,7 @@ export default class InlineEditingSmallInput extends Component<Props, State> {
     inputField.value = this.props.inputFieldValue;
     this.setState({ isActive: false });
     if (this.props.onCancelEditing) this.props.onCancelEditing();
+    this.input.blur();
   };
 
   componentDidUpdate() {
@@ -146,21 +149,29 @@ export default class InlineEditingSmallInput extends Component<Props, State> {
     const { isActive } = this.state;
     let { successfullyUpdated } = this.props;
     const inputField = validator.$('inputField');
+    const arrowIconIsVisible = inputField.value !== this.props.inputFieldValue;
     const componentStyles = classnames([
       className,
       styles.component,
       isActive ? styles.isActive : null,
       isDisabled ? styles.disabled : null,
       inputField.error ? styles.hasError : null,
-    ]);
-    const inputStyles = classnames([
-      successfullyUpdated ? 'input_animateSuccess' : null,
-      isActive ? null : 'input_cursorPointer',
+      !arrowIconIsVisible ? styles.withoutRightButton : null,
     ]);
 
     if (isActive || inputBlocked) {
       successfullyUpdated = false;
     }
+
+    const inputStyles = classnames([
+      successfullyUpdated ? 'input_animateSuccess' : null,
+      isActive ? null : 'input_cursorPointer',
+    ]);
+
+    const leftButtonStyles = classnames([
+      styles.leftButton,
+      !arrowIconIsVisible ? styles.withoutRightButton : null,
+    ]);
 
     return (
       <div
@@ -215,7 +226,7 @@ export default class InlineEditingSmallInput extends Component<Props, State> {
             ) : (
               <>
                 <Button
-                  className={styles.leftButton}
+                  className={leftButtonStyles}
                   label={
                     <SVGInline
                       svg={crossIcon}
@@ -234,23 +245,25 @@ export default class InlineEditingSmallInput extends Component<Props, State> {
                   }}
                   skin={ButtonSkin}
                 />
-                <Button
-                  className={styles.rightButton}
-                  label={
-                    <SVGInline
-                      svg={arrowIcon}
-                      className={styles.arrowIcon}
-                      style={{ pointerEvents: 'none' }}
-                    />
-                  }
-                  onMouseUp={() => this.input.blur()}
-                  onMouseDown={(event: SyntheticMouseEvent<HTMLElement>) => {
-                    event.persist();
-                    event.preventDefault();
-                    event.stopPropagation();
-                  }}
-                  skin={ButtonSkin}
-                />
+                {arrowIconIsVisible && (
+                  <Button
+                    className={styles.rightButton}
+                    label={
+                      <SVGInline
+                        svg={arrowIcon}
+                        className={styles.arrowIcon}
+                        style={{ pointerEvents: 'none' }}
+                      />
+                    }
+                    onMouseUp={() => this.input.blur()}
+                    onMouseDown={(event: SyntheticMouseEvent<HTMLElement>) => {
+                      event.persist();
+                      event.preventDefault();
+                      event.stopPropagation();
+                    }}
+                    skin={ButtonSkin}
+                  />
+                )}
               </>
             )}
           </>
