@@ -21,7 +21,6 @@ import { WalletImportStatuses } from '../../../types/walletExportTypes';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import InlineEditingSmallInput from '../../widgets/forms/InlineEditingSmallInput';
 import checkmarkImage from '../../../assets/images/check-w.inline.svg';
-import infoIcon from '../../../assets/images/info-icon.inline.svg';
 import type { ExportedByronWallet } from '../../../types/walletExportTypes';
 
 const messages = defineMessages({
@@ -41,12 +40,6 @@ const messages = defineMessages({
     id: 'wallet.select.import.dialog.unamedWalletsTitle',
     defaultMessage: '!!!Unnamed wallets',
     description: 'unamedWalletsTitle',
-  },
-  unamedWalletsTooltip: {
-    id: 'wallet.select.import.dialog.unamedWalletsTooltip',
-    defaultMessage:
-      '!!!The following wallets were found in your secret keys file, but matching entries were not found in your wallet database. They are probably wallets you have previously deleted, or are not in your wallet database because of data corruption or a similar issue. You can ignore them, or you can try importing them if wallets are missing from the list of found walle',
-    description: 'unamedWalletsTooltip',
   },
   passwordProtected: {
     id: 'wallet.select.import.dialog.passwordProtected',
@@ -93,6 +86,17 @@ const messages = defineMessages({
     defaultMessage: '!!!Import selected wallets',
     description: 'Import selected wallets',
   },
+  linkLabel: {
+    id: 'wallet.select.import.dialog.linkLabel',
+    defaultMessage: '!!!Learn more',
+    description: 'Learn more',
+  },
+  linkUrl: {
+    id: 'wallet.select.import.dialog.linkUrl',
+    defaultMessage:
+      '!!!https://iohk.zendesk.com/hc/en-us/articles/900000623463',
+    description: '"Learn more" link URL on the wallet import file dialog',
+  },
   closeWindow: {
     id: 'wallet.select.import.dialog.closeWindow',
     defaultMessage: '!!!Close window',
@@ -108,6 +112,7 @@ type Props = {
   onWalletNameChange: Function,
   onToggleWalletImportSelection: Function,
   onClose: Function,
+  onOpenExternalLink: Function,
   nameValidator: Function,
 };
 
@@ -189,6 +194,38 @@ export default class WalletSelectImportDialog extends Component<Props> {
     return statusIcon;
   };
 
+  getInlineEditingSmallInput = (
+    wallet: ExportedByronWallet,
+    validationMessage: string,
+    placeholderMessage: string,
+    nameValidator: Function,
+    onWalletNameChange: Function
+  ) => {
+    return (
+      <InlineEditingSmallInput
+        isActive={false}
+        className={styles.walletsInputFieldInner}
+        isDisabled={
+          wallet.import.status === WalletImportStatuses.COMPLETED ||
+          wallet.import.status === WalletImportStatuses.EXISTS ||
+          wallet.import.status === WalletImportStatuses.RUNNING
+        }
+        inputFieldValue={wallet.name || ''}
+        placeholder={placeholderMessage}
+        isValid={nameValidator}
+        validationErrorMessage={validationMessage}
+        onSubmit={(name: string) =>
+          onWalletNameChange({
+            index: wallet.index,
+            name,
+          })
+        }
+        maxLength={40}
+        successfullyUpdated
+      />
+    );
+  };
+
   render() {
     const { intl } = this.context;
     const {
@@ -197,6 +234,7 @@ export default class WalletSelectImportDialog extends Component<Props> {
       pendingImportWalletsCount,
       onConfirm,
       onClose,
+      onOpenExternalLink,
       onWalletNameChange,
       nameValidator,
     } = this.props;
@@ -207,6 +245,10 @@ export default class WalletSelectImportDialog extends Component<Props> {
     ) : (
       <LoadingSpinner />
     );
+
+    const linkLabel = intl.formatMessage(messages.linkLabel);
+    const onLinkClick = () =>
+      onOpenExternalLink(intl.formatMessage(messages.linkUrl));
 
     const isDisabled = isSubmitting || !pendingImportWalletsCount;
     const buttonClasses = classNames(styles.actionButton, [
@@ -240,7 +282,6 @@ export default class WalletSelectImportDialog extends Component<Props> {
             icon={closeCrossThin}
             onClose={onClose}
           />
-          <div className={styles.backgroundContainer} />
           <div className={styles.content}>
             <div className={styles.topWrapper}>
               <div className={styles.title}>{title}</div>
@@ -261,30 +302,13 @@ export default class WalletSelectImportDialog extends Component<Props> {
                       {!isDuplicate && `${rowNumber}.`}
                     </div>
                     <div className={styles.walletsInputField}>
-                      <InlineEditingSmallInput
-                        isActive={false}
-                        isDisabled={
-                          wallet.import.status ===
-                            WalletImportStatuses.COMPLETED ||
-                          wallet.import.status ===
-                            WalletImportStatuses.EXISTS ||
-                          wallet.import.status === WalletImportStatuses.RUNNING
-                        }
-                        inputFieldValue={wallet.name || ''}
-                        placeholder={intl.formatMessage(messages.walletName)}
-                        isValid={nameValidator}
-                        validationErrorMessage={intl.formatMessage(
-                          globalMessages.invalidWalletName
-                        )}
-                        onSubmit={(name: string) =>
-                          onWalletNameChange({
-                            index: wallet.index,
-                            name,
-                          })
-                        }
-                        maxLength={40}
-                        successfullyUpdated
-                      />
+                      {this.getInlineEditingSmallInput(
+                        wallet,
+                        intl.formatMessage(globalMessages.invalidWalletName),
+                        intl.formatMessage(messages.walletName),
+                        nameValidator,
+                        onWalletNameChange
+                      )}
                     </div>
                     <div className={styles.walletsStatus}>
                       {this.getWalletStatus(wallet)}
@@ -307,17 +331,6 @@ export default class WalletSelectImportDialog extends Component<Props> {
                     <hr className={styles.separatorMiddle} />
                   )}
                   <p>{intl.formatMessage(messages.unamedWalletsTitle)}</p>
-                  <Tooltip
-                    className={styles.unamedWalletsTooltip}
-                    skin={TooltipSkin}
-                    tip={intl.formatMessage(messages.unamedWalletsTooltip)}
-                    arrowRelativeToTip
-                  >
-                    <SVGInline
-                      svg={infoIcon}
-                      className={styles.walletsStatusIconCheckmark}
-                    />
-                  </Tooltip>
                 </div>
               )}
 
@@ -332,29 +345,38 @@ export default class WalletSelectImportDialog extends Component<Props> {
                       {!isDuplicate && `${rowNumber}.`}
                     </div>
                     <div className={styles.walletsInputField}>
-                      <InlineEditingSmallInput
-                        isActive={false}
-                        isDisabled={
-                          wallet.import.status ===
-                            WalletImportStatuses.COMPLETED ||
-                          wallet.import.status ===
-                            WalletImportStatuses.EXISTS ||
-                          wallet.import.status === WalletImportStatuses.RUNNING
-                        }
-                        inputFieldValue={wallet.name || ''}
-                        placeholder={intl.formatMessage(messages.notFound)}
-                        isValid={nameValidator}
-                        validationErrorMessage={intl.formatMessage(
-                          globalMessages.invalidWalletName
-                        )}
-                        onSubmit={(name: string) =>
-                          onWalletNameChange({
-                            index: wallet.index,
-                            name,
-                          })
-                        }
-                        successfullyUpdated
-                      />
+                      {!wallet.name ? (
+                        <Tooltip
+                          className={styles.unamedWalletsInputTooltip}
+                          skin={TooltipSkin}
+                          tip={intl.formatMessage(
+                            messages.enterWalletNameTooltip
+                          )}
+                          arrowRelativeToTip
+                        >
+                          {this.getInlineEditingSmallInput(
+                            wallet,
+                            intl.formatMessage(
+                              globalMessages.invalidWalletName
+                            ),
+                            intl.formatMessage(messages.notFound),
+                            nameValidator,
+                            onWalletNameChange
+                          )}
+                        </Tooltip>
+                      ) : (
+                        <>
+                          {this.getInlineEditingSmallInput(
+                            wallet,
+                            intl.formatMessage(
+                              globalMessages.invalidWalletName
+                            ),
+                            intl.formatMessage(messages.notFound),
+                            nameValidator,
+                            onWalletNameChange
+                          )}
+                        </>
+                      )}
                     </div>
                     <div className={styles.walletsStatus}>
                       {this.getWalletStatus(wallet)}
@@ -379,13 +401,22 @@ export default class WalletSelectImportDialog extends Component<Props> {
                 onClick={onConfirm}
                 skin={ButtonSkin}
               />
-              <Link
-                className={styles.closeWindowLink}
-                onClick={onClose}
-                label={intl.formatMessage(messages.closeWindow)}
-                skin={LinkSkin}
-                hasIconAfter={false}
-              />
+              <div>
+                <Link
+                  className={styles.learnMoreLink}
+                  onClick={onLinkClick}
+                  label={linkLabel}
+                  skin={LinkSkin}
+                />
+
+                <Link
+                  className={styles.closeWindowLink}
+                  onClick={onClose}
+                  label={intl.formatMessage(messages.closeWindow)}
+                  skin={LinkSkin}
+                  hasIconAfter={false}
+                />
+              </div>
             </div>
           </div>
         </div>

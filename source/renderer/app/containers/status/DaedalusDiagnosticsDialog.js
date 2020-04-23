@@ -19,6 +19,9 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
     onClose: () => {},
   };
 
+  handleForceCheckNetworkClock = () =>
+    this.props.actions.networkStatus.forceCheckNetworkClock.trigger();
+
   handleCopyStateDirectoryPath = () =>
     this.props.actions.networkStatus.copyStateDirectoryPath.trigger();
 
@@ -126,11 +129,15 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
           isCheckingSystemTime={
             !getNetworkClockRequest.result || getNetworkClockRequest.isExecuting
           }
+          isForceCheckingSystemTime={getNetworkClockRequest.isExecutingWithArgs(
+            { isForceCheck: true }
+          )}
           onOpenStateDirectory={openStateDirectory}
           onOpenExternalLink={openExternalLink}
           onRestartNode={restartNode}
           onClose={closeDaedalusDiagnosticsDialog.trigger}
           onCopyStateDirectoryPath={this.handleCopyStateDirectoryPath}
+          onForceCheckNetworkClock={this.handleForceCheckNetworkClock}
         />
       </ReactModal>
     );

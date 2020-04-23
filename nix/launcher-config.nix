@@ -27,7 +27,7 @@ let
 
   isDevOrLinux = devShell || os == "linux";
 
-  mkSpacedName = network: if network == "mainnet" then "Daedalus" else "Daedalus ${installDirectorySuffix}";
+  mkSpacedName = network: "Daedalus ${installDirectorySuffix}";
   spacedName = mkSpacedName network;
 
   frontendBinPath = let
@@ -57,6 +57,7 @@ let
 
   installDirectorySuffix = let
     supportedNetworks = {
+      mainnet = "Mainnet";
       mainnet_flight = "Flight";
       qa = "QA";
       selfnode = "Selfnode";
@@ -86,10 +87,10 @@ let
   in path.${os};
 
   # Used for flight builds to find legacy paths for migration
-  mainnetDataDir = let
+  legacyDataDir = let
     path.linux = "\${XDG_DATA_HOME}/Daedalus/mainnet";
-    path.macos64 = "\${HOME}/Library/Application Support/${mkSpacedName "mainnet"}";
-    path.windows = "\${APPDATA}\\${mkSpacedName "mainnet"}";
+    path.macos64 = "\${HOME}/Library/Application Support/Daedalus";
+    path.windows = "\${APPDATA}\\Daedalus";
   in path.${os};
 
   logsPrefix = let
@@ -159,7 +160,6 @@ let
   mkConfigByron = let
     filterMonitoring = config: if devShell then config else builtins.removeAttrs config [ "hasPrometheus" "hasEKG" ];
     exportWalletsBin = mkBinPath "export-wallets";
-    dbConverterBin = mkBinPath "db-converter";
     walletBin = mkBinPath "cardano-wallet-byron";
     nodeBin = mkBinPath "cardano-node";
     cliBin = mkBinPath "cardano-cli";
@@ -191,7 +191,7 @@ let
       ''}
     '';
 
-    legacyStateDir = if network == "mainnet_flight" then mainnetDataDir else dataDir;
+    legacyStateDir = if (network == "mainnet_flight") || (network == "mainnet") then legacyDataDir else dataDir;
 
     legacyWalletDB = let
       path.linux = "Wallet";
@@ -211,7 +211,6 @@ let
         cliBin
         walletBin
         exportWalletsBin
-        dbConverterBin
         legacyStateDir
         legacyWalletDB
         legacySecretKey;
@@ -238,7 +237,7 @@ let
       macPackageName = "Daedalus${network}";
       dataDir = dataDir;
       hasBlock0 = false;
-      installerWinBinaries = [ "cardano-launcher.exe" "cardano-node.exe" "cardano-wallet-byron.exe" "export-wallets.exe" "db-converter.exe" "cardano-cli.exe" ];
+      installerWinBinaries = [ "cardano-launcher.exe" "cardano-node.exe" "cardano-wallet-byron.exe" "export-wallets.exe" "cardano-cli.exe" ];
     };
 
   in {

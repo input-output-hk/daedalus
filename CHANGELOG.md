@@ -1,11 +1,25 @@
 Changelog
 =========
 
+## 1.0.0
+
+### Features
+
+- Implemented NTP force check ([PR 1996](https://github.com/input-output-hk/daedalus/pull/1996))
+
+### Fixes
+
+- Fixed UI issues on wallet import overlays ([PR 1983](https://github.com/input-output-hk/daedalus/pull/1983))
+
+### Chores
+
+- Rename "Daedalus" to "Daedalus Mainnet" and update state directory path ([PR 1986](https://github.com/input-output-hk/daedalus/pull/1986))
+
 ## 1.0.0-FC5
 
 ### Fixes
 
-- Handle duplicate wallets in import process ([PR 1985](https://github.com/input-output-hk/daedalus/pull/1985))
+- Handle duplicate wallets in import process ([PR 1985](https://github.com/input-output-hk/daedalus/pull/1985), [PR 1989](https://github.com/input-output-hk/daedalus/pull/1989), [PR 1991](https://github.com/input-output-hk/daedalus/pull/1991))
 - Treat wallets with 100% syncing progress as synced wallets ([PR 1984](https://github.com/input-output-hk/daedalus/pull/1984))
 - Fixed `cardano-node` / `jormungandr` and `cardano-wallet` info on the "Diagnostics" screen ([PR 1980](https://github.com/input-output-hk/daedalus/pull/1980))
 - Persist "Blank screen fix" / "--safe-mode" flag between Daedalus restarts ([PR 1979](https://github.com/input-output-hk/daedalus/pull/1979))

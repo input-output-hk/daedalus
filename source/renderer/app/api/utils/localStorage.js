@@ -151,7 +151,7 @@ export default class LocalStorageApi {
     LocalStorageApi.unset(this.storageKeys.DATA_LAYER_MIGRATION_ACCEPTANCE);
 
   getWalletsLocalData = (): Promise<Object> =>
-    LocalStorageApi.get(this.storageKeys.THEME, {});
+    LocalStorageApi.get(this.storageKeys.WALLETS, {});
 
   getWalletLocalData = (walletId: string): Promise<WalletLocalData> =>
     LocalStorageApi.get(`${this.storageKeys.WALLETS}.${walletId}`, {

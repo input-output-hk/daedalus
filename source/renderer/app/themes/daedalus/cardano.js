@@ -275,7 +275,7 @@ export const CARDANO_THEME_OUTPUT = {
   input: {
     '--theme-input-background-color': '#ffffff',
     '--theme-input-border-color': 'rgba(94, 96, 102, 0.3)',
-    '--theme-input-focus-border-color': 'rgba(94, 96, 102, 0.7)',
+    '--theme-input-focus-border-color': 'rgba(255, 255, 255, 0.7)',
     '--theme-input-hint-font': 'NotoSans-Regular, NotoSansCJKjp-Regular',
     '--theme-input-label-color': '#5e6066',
     '--theme-input-placeholder-color': 'rgba(94, 96, 102, 0.5)',
@@ -893,11 +893,26 @@ export const CARDANO_THEME_OUTPUT = {
       'rgba(234, 76, 91, .1)',
   },
   walletImportDialog: {
-    '--theme-wallet-import-background-color': 'rgba(32, 34, 37, 0.96)',
+    '--theme-wallet-import-background-color': 'rgba(32, 34, 37, 0.98)',
+    '--theme-wallet-import-button-background-color': 'rgba(0, 0, 0, 0.1)',
+    '--theme-wallet-import-button-border-color': '#fff',
+    '--theme-wallet-import-button-text-color': '#fff',
+    '--theme-wallet-import-button-text-color-hover': '#202225',
+    '--theme-wallet-import-checkbox-border': '2px solid #ffffff',
+    '--theme-wallet-import-checkbox-border-color': 'rgba(255, 255, 255, 1)',
+    '--theme-wallet-import-checkbox-border-color-disabled': '#fff',
+    '--theme-wallet-import-checkbox-check-bg-color': '#fff',
+    '--theme-wallet-import-checkbox-check-color': '#243e62',
+    '--theme-wallet-import-description-close-color': '#fff',
     '--theme-wallet-import-description-close-hover-background':
       'rgba(0, 0, 0, 0.2)',
-    '--theme-wallet-import-description-color': '#fff',
-    '--theme-wallet-import-title-color': '#fff',
+    '--theme-wallet-import-description-color': 'rgba(255, 255, 255, 0.7)',
+    '--theme-wallet-import-description-bold-color': '#fff',
+    '--theme-wallet-import-error-color': '#ea4c5b',
+    '--theme-wallet-import-input-background-color': 'rgba(0, 0, 0, 0.1)',
+    '--theme-wallet-import-input-background-color-disabled':
+      'rgba(255, 255, 255, 0.05)',
+    '--theme-wallet-import-input-border-color': 'rgba(255, 255, 255, 0.3)',
     '--theme-wallet-import-stateFolder-border-color':
       'rgba(255, 255, 255, 0.5)',
     '--theme-wallet-import-stateFolder-button-background-color':
@@ -906,11 +921,8 @@ export const CARDANO_THEME_OUTPUT = {
       'rgba(255, 255, 255, 0.05)',
     '--theme-wallet-import-stateFolder-button-background-color-active':
       'rgba(255, 255, 255, 0.12)',
-    '--theme-wallet-import-checkbox-border': '2px solid #ffffff',
-    '--theme-wallet-import-checkbox-border-color': 'rgba(255, 255, 255, 1)',
-    '--theme-wallet-import-checkbox-border-color-disabled': '#ffffff',
-    '--theme-wallet-import-checkbox-check-bg-color': '#ffffff',
     '--theme-wallet-import-stateFolder-label-color': '#fff',
+    '--theme-wallet-import-title-color': '#fff',
   },
   walletRestoreDialog: {
     '--theme-wallet-restore-dialog-new-label-background-color':
