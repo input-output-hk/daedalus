@@ -263,7 +263,7 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
   input: {
     '--theme-input-background-color': '#1e1f31',
     '--theme-input-border-color': 'rgba(255, 255, 255, 0.2)',
-    '--theme-input-focus-border-color': 'rgba(255, 255, 255, 0.4)',
+    '--theme-input-focus-border-color': 'rgba(255, 255, 255, 0.7)',
     '--theme-input-hint-font': 'NotoSans-Regular, NotoSansCJKjp-Regular',
     '--theme-input-label-color': '#ffffff',
     '--theme-input-placeholder-color': 'rgba(255, 255, 255, 0.5)',

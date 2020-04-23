@@ -275,7 +275,7 @@ export const CARDANO_THEME_OUTPUT = {
   input: {
     '--theme-input-background-color': '#ffffff',
     '--theme-input-border-color': 'rgba(94, 96, 102, 0.3)',
-    '--theme-input-focus-border-color': 'rgba(94, 96, 102, 0.7)',
+    '--theme-input-focus-border-color': 'rgba(255, 255, 255, 0.7)',
     '--theme-input-hint-font': 'NotoSans-Regular, NotoSansCJKjp-Regular',
     '--theme-input-label-color': '#5e6066',
     '--theme-input-placeholder-color': 'rgba(94, 96, 102, 0.5)',

@@ -275,7 +275,7 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
   input: {
     '--theme-input-background-color': '#fafbfc',
     '--theme-input-border-color': 'rgba(94, 96, 102, 0.3)',
-    '--theme-input-focus-border-color': 'rgba(94, 96, 102, 0.7)',
+    '--theme-input-focus-border-color': 'rgba(250, 251, 252, 0.7)',
     '--theme-input-hint-font': 'NotoSans-Regular, NotoSansCJKjp-Regular',
     '--theme-input-label-color': '#5e6066',
     '--theme-input-placeholder-color': 'rgba(94, 96, 102, 0.5)',

@@ -266,7 +266,7 @@ export const YELLOW_THEME_OUTPUT = {
   input: {
     '--theme-input-background-color': '#fff',
     '--theme-input-border-color': 'rgba(45, 45, 45, 0.3)',
-    '--theme-input-focus-border-color': 'rgba(45, 45, 45, 0.3)',
+    '--theme-input-focus-border-color': 'rgba(45, 45, 45, 0.7)',
     '--theme-input-hint-font': 'NotoSans-Regular, NotoSansCJKjp-Regular',
     '--theme-input-label-color': '#2d2d2d',
     '--theme-input-placeholder-color': 'rgba(45, 45, 45, 0.5)',
