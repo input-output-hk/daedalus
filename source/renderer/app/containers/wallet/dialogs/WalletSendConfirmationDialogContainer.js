@@ -39,7 +39,7 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
     } = this.props;
     const { stores } = this.props;
     const { sendMoneyRequest, active: activeWallet } = stores.wallets;
-    const { isMainnet } = stores.app.environment;
+    const { isFlight } = global;
 
     if (!activeWallet)
       throw new Error('Active wallet required for WalletSendPage.');
@@ -53,7 +53,7 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
         amountToNaturalUnits={amountToNaturalUnits}
         onSubmit={this.handleWalletSendFormSubmit}
         isSubmitting={sendMoneyRequest.isExecuting}
-        isMainnet={isMainnet}
+        isFlight={isFlight}
         onCancel={() => {
           actions.dialogs.closeActiveDialog.trigger();
           sendMoneyRequest.reset();
