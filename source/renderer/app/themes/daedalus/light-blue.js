@@ -896,6 +896,11 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-wallet-import-button-border-color': '#fafbfc',
     '--theme-wallet-import-button-text-color': '#fafbfc',
     '--theme-wallet-import-button-text-color-hover': '#243e62',
+    '--theme-wallet-import-checkbox-border': '2px solid #ffffff',
+    '--theme-wallet-import-checkbox-border-color': 'rgba(255, 255, 255, 1)',
+    '--theme-wallet-import-checkbox-border-color-disabled': '#fff',
+    '--theme-wallet-import-checkbox-check-bg-color': '#fafbfc',
+    '--theme-wallet-import-checkbox-check-color': '#243e62',
     '--theme-wallet-import-description-close-color': '#fff',
     '--theme-wallet-import-description-close-hover-background':
       'rgba(0, 0, 0, 0.2)',
@@ -906,7 +911,6 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-wallet-import-input-background-color-disabled':
       'rgba(250, 251, 252, 0.05)',
     '--theme-wallet-import-input-border-color': 'rgba(250, 251, 252, 0.3)',
-    '--theme-wallet-import-title-color': '#fff',
     '--theme-wallet-import-stateFolder-border-color':
       'rgba(255, 255, 255, 0.5)',
     '--theme-wallet-import-stateFolder-button-background-color':
@@ -915,12 +919,8 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
       'rgba(250, 251, 252, 0.05)',
     '--theme-wallet-import-stateFolder-button-background-color-active':
       'rgba(250, 251, 252, 0.12)',
-    '--theme-wallet-import-checkbox-border': '2px solid #ffffff',
-    '--theme-wallet-import-checkbox-border-color': 'rgba(255, 255, 255, 1)',
-    '--theme-wallet-import-checkbox-border-color-disabled': '#fff',
-    '--theme-wallet-import-checkbox-check-bg-color': '#fafbfc',
-    '--theme-wallet-import-checkbox-check-color': '#243e62',
     '--theme-wallet-import-stateFolder-label-color': '#fff',
+    '--theme-wallet-import-title-color': '#fff',
   },
   walletRestoreDialog: {
     '--theme-wallet-restore-dialog-new-label-background-color':
