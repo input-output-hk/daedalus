@@ -3,6 +3,10 @@ Changelog
 
 ## 1.0.0
 
+### Fixes
+
+- Fixed UI issues on wallet import overlays ([PR 1983](https://github.com/input-output-hk/daedalus/pull/1983))
+
 ### Chores
 
 - Rename "Daedalus" to "Daedalus Mainnet" and update state directory path ([PR 1986](https://github.com/input-output-hk/daedalus/pull/1986))
