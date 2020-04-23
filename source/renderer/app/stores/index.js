@@ -13,6 +13,7 @@ import TransactionsStore from './TransactionsStore';
 import UiDialogsStore from './UiDialogsStore';
 import UiNotificationsStore from './UiNotificationsStore';
 import WalletsStore from './WalletsStore';
+import WalletsLocalStore from './WalletsLocalStore';
 import WalletBackupStore from './WalletBackupStore';
 import WalletMigrationStore from './WalletMigrationStore';
 import WalletSettingsStore from './WalletSettingsStore';
@@ -31,6 +32,7 @@ export const storeClasses = {
   uiDialogs: UiDialogsStore,
   uiNotifications: UiNotificationsStore,
   wallets: WalletsStore,
+  walletsLocal: WalletsLocalStore,
   walletBackup: WalletBackupStore,
   walletMigration: WalletMigrationStore,
   walletSettings: WalletSettingsStore,
@@ -51,6 +53,7 @@ export type StoresMap = {
   uiDialogs: UiDialogsStore,
   uiNotifications: UiNotificationsStore,
   wallets: WalletsStore,
+  walletsLocal: WalletsLocalStore,
   walletBackup: WalletBackupStore,
   walletMigration: WalletMigrationStore,
   walletSettings: WalletSettingsStore,
@@ -91,6 +94,7 @@ export default action((api, actions, router): StoresMap => {
     transactions: createStoreInstanceOf(TransactionsStore),
     uiDialogs: createStoreInstanceOf(UiDialogsStore),
     wallets: createStoreInstanceOf(WalletsStore),
+    walletsLocal: createStoreInstanceOf(WalletsLocalStore),
     walletBackup: createStoreInstanceOf(WalletBackupStore),
     walletMigration: createStoreInstanceOf(WalletMigrationStore),
     walletSettings: createStoreInstanceOf(WalletSettingsStore),

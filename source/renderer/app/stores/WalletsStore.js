@@ -311,9 +311,6 @@ export default class WalletsStore extends Store {
     this._resumePolling();
     const { restoredWallet } = this;
     if (restoredWallet) {
-      await this.stores.walletSettings._createWalletLocalData(
-        restoredWallet.id
-      );
       await this._patchWalletRequestWithNewWallet(restoredWallet);
       this.goToWalletRoute(restoredWallet.id);
       this.refreshWalletsData();
@@ -423,7 +420,6 @@ export default class WalletsStore extends Store {
       this._newWalletDetails
     ).promise;
     if (wallet) {
-      await this.stores.walletSettings._createWalletLocalData(wallet.id);
       await this._patchWalletRequestWithNewWallet(wallet);
       this.actions.dialogs.closeActiveDialog.trigger();
       this.goToWalletRoute(wallet.id);
@@ -459,7 +455,9 @@ export default class WalletsStore extends Store {
       }
     });
     this.actions.dialogs.closeActiveDialog.trigger();
-    this.stores.walletSettings._unsetWalletLocalData(params.walletId);
+    this.actions.walletsLocal.unsetWalletLocalData.trigger({
+      walletId: params.walletId,
+    });
     this._resumePolling();
     this.deleteWalletRequest.reset();
     this.refreshWalletsData();
@@ -861,9 +859,9 @@ export default class WalletsStore extends Store {
             syncState.status !== WalletSyncStateStatuses.NOT_RESPONDING
         )
         .map((wallet: Wallet) => wallet.id);
-      await this.stores.walletSettings._setWalletsRecoveryPhraseVerificationData(
-        walletIds
-      );
+      await this.actions.walletsLocal.refreshWalletsLocalData.trigger({
+        walletIds,
+      });
       runInAction('refresh active wallet', () => {
         if (this.active) {
           this._setActiveWallet({ walletId: this.active.id });

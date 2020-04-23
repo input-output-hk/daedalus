@@ -6,6 +6,7 @@ import {
   RECOVERY_PHRASE_VERIFICATION_STATUSES,
   WALLET_RECOVERY_PHRASE_VERIFICATION_TYPES,
 } from '../config/walletRecoveryPhraseVerificationConfig';
+// import Wallet from '../domains/Wallet';
 
 export const getStatusFromWalletData = ({
   creationDate,

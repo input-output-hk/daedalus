@@ -51,7 +51,7 @@ export default class Wallet extends Component<Props> {
 
   render() {
     const { actions, stores } = this.props;
-    const { app, wallets, uiDialogs, walletSettings } = stores;
+    const { app, wallets, uiDialogs } = stores;
     const { isOpen: isDialogOpen } = uiDialogs;
     const { restartNode } = actions.networkStatus;
     const { active: activeWallet } = wallets;
@@ -63,10 +63,8 @@ export default class Wallet extends Component<Props> {
         </MainLayout>
       );
     }
-
-    const {
-      recoveryPhraseVerificationStatus,
-    } = walletSettings.getWalletRecoveryPhraseVerification(activeWallet.id);
+    // @WRPV TODO
+    const recoveryPhraseVerificationStatus = 'ok';
     const { isIncentivizedTestnet } = global;
     const hasNotification =
       recoveryPhraseVerificationStatus ===

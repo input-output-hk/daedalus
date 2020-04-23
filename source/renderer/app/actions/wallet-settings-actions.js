@@ -30,8 +30,6 @@ export default class WalletSettingsActions {
   stopWalletUtxoPolling: Action<any> = new Action();
 
   /* ----------  Recovery Phrase Verification  ---------- */
-  updateWalletLocalData: Action<any> = new Action();
-  updateRecoveryPhraseVerificationDate: Action<any> = new Action();
   recoveryPhraseVerificationContinue: Action<any> = new Action();
   recoveryPhraseVerificationCheck: Action<{
     recoveryPhrase: Array<string>,
