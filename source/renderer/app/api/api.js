@@ -1553,19 +1553,25 @@ export default class AdaApi {
     }
   };
 
-  getNetworkClock = async (): Promise<GetNetworkClockResponse> => {
-    logger.debug('AdaApi::getNetworkClock called');
+  getNetworkClock = async (
+    isForceCheck: boolean
+  ): Promise<GetNetworkClockResponse> => {
+    logger.debug('AdaApi::getNetworkClock called', { isForceCheck });
     try {
       const networkClock: NetworkClockResponse = await getNetworkClock(
-        this.config
+        this.config,
+        isForceCheck
       );
-      logger.debug('AdaApi::getNetworkClock success', { networkClock });
+      logger.debug('AdaApi::getNetworkClock success', {
+        networkClock,
+        isForceCheck,
+      });
       return {
         status: networkClock.status,
         offset: get(networkClock, 'offset.quantity', null),
       };
     } catch (error) {
-      logger.error('AdaApi::getNetworkClock error', { error });
+      logger.error('AdaApi::getNetworkClock error', { error, isForceCheck });
       throw new ApiError(error);
     }
   };

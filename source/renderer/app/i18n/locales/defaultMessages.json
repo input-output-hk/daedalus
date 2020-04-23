@@ -4965,8 +4965,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Checking Cardano node time",
-        "description": "Checking Cardano node time",
+        "defaultMessage": "!!!Checking system time",
+        "description": "Checking system time",
         "end": {
           "column": 3,
           "line": 188
@@ -8922,13 +8922,13 @@
         "description": "Import wallets dialog title",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 29
         },
         "file": "source/renderer/app/components/wallet/wallet-import/WalletImportFileDialog.js",
         "id": "wallet.import.file.dialog.title",
         "start": {
           "column": 9,
-          "line": 24
+          "line": 25
         }
       },
       {
@@ -8936,13 +8936,13 @@
         "description": "<p>This feature enables you to import wallets from the production version of Daedalus, or from the Daedalus state directory. </p> <p>If you don’t have the complete state directory, then you will need either the ‘Secrets’ or ‘Secrets-1.0’ folder containing the ‘secret.key’ file to be able to import a wallet, although without the complete state directory Daedalus won’t be able to detect your wallet names. </p> <p>If you don’t have either the ‘Secrets’ or the ‘Secrets-1.0’ folder containing the ‘secret.key’ file, then you cannot import wallets using this feature.</p>",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 36
         },
         "file": "source/renderer/app/components/wallet/wallet-import/WalletImportFileDialog.js",
         "id": "wallet.import.file.dialog.description",
         "start": {
           "column": 15,
-          "line": 29
+          "line": 30
         }
       },
       {
@@ -8950,13 +8950,13 @@
         "description": "Select Daedalus state folder:",
         "end": {
           "column": 3,
-          "line": 40
+          "line": 41
         },
         "file": "source/renderer/app/components/wallet/wallet-import/WalletImportFileDialog.js",
         "id": "wallet.import.file.dialog.stateFolderLabel",
         "start": {
           "column": 20,
-          "line": 36
+          "line": 37
         }
       },
       {
@@ -8964,13 +8964,13 @@
         "description": "Select Daedalus 'secret.key' file:",
         "end": {
           "column": 3,
-          "line": 45
+          "line": 46
         },
         "file": "source/renderer/app/components/wallet/wallet-import/WalletImportFileDialog.js",
         "id": "wallet.import.file.dialog.secretFileLabel",
         "start": {
           "column": 19,
-          "line": 41
+          "line": 42
         }
       },
       {
@@ -8978,13 +8978,13 @@
         "description": "Import wallets",
         "end": {
           "column": 3,
-          "line": 50
+          "line": 51
         },
         "file": "source/renderer/app/components/wallet/wallet-import/WalletImportFileDialog.js",
         "id": "wallet.import.file.dialog.buttonLabel",
         "start": {
           "column": 15,
-          "line": 46
+          "line": 47
         }
       },
       {
@@ -8992,13 +8992,13 @@
         "description": "No wallets found. Make sure you have selected a Daedalus state directory which contains the ‘Secrets’ or `Secrets-1.0` folder with a `secret.key` file inside.",
         "end": {
           "column": 3,
-          "line": 57
+          "line": 58
         },
         "file": "source/renderer/app/components/wallet/wallet-import/WalletImportFileDialog.js",
         "id": "wallet.import.file.dialog.stateDirNoWallets",
         "start": {
           "column": 21,
-          "line": 51
+          "line": 52
         }
       },
       {
@@ -9006,13 +9006,13 @@
         "description": "No wallets found. Make sure you have selected a valid `secret.key` file.",
         "end": {
           "column": 3,
-          "line": 64
+          "line": 65
         },
         "file": "source/renderer/app/components/wallet/wallet-import/WalletImportFileDialog.js",
         "id": "wallet.import.file.dialog.secretFileNoWallets",
         "start": {
           "column": 23,
-          "line": 58
+          "line": 59
         }
       },
       {
@@ -9020,13 +9020,13 @@
         "description": "Learn more",
         "end": {
           "column": 3,
-          "line": 69
+          "line": 70
         },
         "file": "source/renderer/app/components/wallet/wallet-import/WalletImportFileDialog.js",
         "id": "wallet.import.file.dialog.linkLabel",
         "start": {
           "column": 13,
-          "line": 65
+          "line": 66
         }
       },
       {
@@ -9034,13 +9034,13 @@
         "description": "\"Learn more\" link URL on the wallet import file dialog",
         "end": {
           "column": 3,
-          "line": 75
+          "line": 76
         },
         "file": "source/renderer/app/components/wallet/wallet-import/WalletImportFileDialog.js",
         "id": "wallet.import.file.dialog.linkUrl",
         "start": {
           "column": 11,
-          "line": 70
+          "line": 71
         }
       },
       {
@@ -9048,13 +9048,13 @@
         "description": "Import from:",
         "end": {
           "column": 3,
-          "line": 80
+          "line": 81
         },
         "file": "source/renderer/app/components/wallet/wallet-import/WalletImportFileDialog.js",
         "id": "wallet.import.file.dialog.importFromLabel",
         "start": {
           "column": 19,
-          "line": 76
+          "line": 77
         }
       },
       {
@@ -9062,13 +9062,13 @@
         "description": "Daedalus state directory",
         "end": {
           "column": 3,
-          "line": 85
+          "line": 86
         },
         "file": "source/renderer/app/components/wallet/wallet-import/WalletImportFileDialog.js",
         "id": "wallet.import.file.dialog.stateDirOptionLabel",
         "start": {
           "column": 23,
-          "line": 81
+          "line": 82
         }
       },
       {
@@ -9076,13 +9076,13 @@
         "description": "Daedalus 'secret.key' file",
         "end": {
           "column": 3,
-          "line": 90
+          "line": 91
         },
         "file": "source/renderer/app/components/wallet/wallet-import/WalletImportFileDialog.js",
         "id": "wallet.import.file.dialog.secretFileOptionLabel",
         "start": {
           "column": 25,
-          "line": 86
+          "line": 87
         }
       }
     ],

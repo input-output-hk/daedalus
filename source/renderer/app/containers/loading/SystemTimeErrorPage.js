@@ -12,25 +12,26 @@ export default class SystemTimeErrorPage extends Component<Props> {
   static defaultProps = { stores: null, actions: null };
 
   render() {
-    const { stores, actions } = this.props;
+    const { actions, stores } = this.props;
     const {
       localTimeDifference,
       ignoreSystemTimeChecks,
     } = stores.networkStatus;
-    const { restartNode } = actions.networkStatus;
-
-    const { currentLocale } = stores.profile;
-
-    const { openExternalLink } = stores.app;
-
+    const { forceCheckNetworkClock } = actions.networkStatus;
+    const { app, networkStatus, profile } = stores;
+    const { openExternalLink } = app;
+    const { currentLocale } = profile;
+    const { getNetworkClockRequest } = networkStatus;
     return (
       <SystemTimeError
         localTimeDifference={localTimeDifference}
         currentLocale={currentLocale}
         onExternalLinkClick={openExternalLink}
-        onCheckTheTimeAgain={() => restartNode.trigger()}
+        onCheckTheTimeAgain={() => forceCheckNetworkClock.trigger()}
         onContinueWithoutClockSyncCheck={ignoreSystemTimeChecks}
-        isCheckingSystemTime={false}
+        isCheckingSystemTime={getNetworkClockRequest.isExecutingWithArgs({
+          isForceCheck: true,
+        })}
       />
     );
   }

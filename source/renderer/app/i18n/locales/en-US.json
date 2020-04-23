@@ -45,7 +45,7 @@
   "daedalus.diagnostics.dialog.cardanoWalletApiPort": "Cardano wallet port",
   "daedalus.diagnostics.dialog.cardanoWalletPID": "Cardano wallet process ID",
   "daedalus.diagnostics.dialog.cardanoWalletVersion": "Cardano wallet version",
-  "daedalus.diagnostics.dialog.checkingNodeTime": "Checking Cardano node time",
+  "daedalus.diagnostics.dialog.checkingNodeTime": "Checking system time",
   "daedalus.diagnostics.dialog.code": "code",
   "daedalus.diagnostics.dialog.connected": "Connected",
   "daedalus.diagnostics.dialog.connectionError": "CONNECTION ERROR",
