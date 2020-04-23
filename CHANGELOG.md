@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## vNext
+
+### Chores
+
+- Implemented Storybook improvements ([PR 1783](https://github.com/input-output-hk/daedalus/pull/1783))
+
 ## 1.0.0
 
 ### Features
@@ -28,8 +34,6 @@ Changelog
 
 ### Chores
 
-- Implemented Storybook improvements ([PR 1783](https://github.com/input-output-hk/daedalus/pull/1783))
-- Restored the paragraph about "Automatic wallet migration" on the Daedalus Flight "Splash" screen ([PR 1967](https://github.com/input-output-hk/daedalus/pull/1967))
 - Updated Daedalus installer file names to contain only Daedalus version, cluster name and build number ([PR 1971](https://github.com/input-output-hk/daedalus/pull/1971))
 - Restore the paragraph about "Automatic wallet migration" on the Daedalus Flight "Splash" screen ([PR 1967](https://github.com/input-output-hk/daedalus/pull/1967))
 - Updated `Electron` and it's related dependencies ([PR 1887](https://github.com/input-output-hk/daedalus/pull/1887))
