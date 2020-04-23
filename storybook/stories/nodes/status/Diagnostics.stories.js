@@ -72,7 +72,8 @@ storiesOf('Nodes|Status', module)
       localBlockHeight={number('localBlockHeight', 280719)}
       networkBlockHeight={number('networkBlockHeight', 42539)}
       isCheckingSystemTime={boolean('isCheckingSystemTime', true)}
-      onForceCheckLocalTimeDifference={() => null}
+      isForceCheckingSystemTime={boolean('isForceCheckingSystemTime', false)}
+      onForceCheckNetworkClock={() => null}
       onCopyStateDirectoryPath={() => null}
       onOpenStateDirectory={() => null}
       onOpenExternalLink={() => null}

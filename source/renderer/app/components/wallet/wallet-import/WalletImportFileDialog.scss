@@ -56,21 +56,9 @@
       width: 12px;
 
       g {
-        stroke: var(--theme-about-window-icon-close-button-color);
+        stroke: var(--theme-wallet-import-description-close-color);
       }
     }
-  }
-
-  .backgroundContainer {
-    background-color: var(--theme-splash-network-background-color);
-    height: 100%;
-    left: 0;
-    object-fit: contain;
-    overflow: hidden;
-    position: absolute;
-    top: 0;
-    width: 100%;
-    z-index: 1000;
   }
 
   .content {
@@ -101,8 +89,7 @@
       font-size: 16px;
       line-height: 1.38;
       margin-bottom: 20px;
-      max-width: 560px;
-      opacity: 0.7;
+      max-width: 580px;
 
       p {
         color: var(--theme-wallet-import-description-color);
@@ -112,6 +99,42 @@
         &:last-child {
           margin-bottom: 0;
         }
+
+        strong {
+          color: var(--theme-wallet-import-description-bold-color);
+          font-family: var(--font-semibold);
+        }
+      }
+    }
+
+    .radioButtons {
+      :global {
+        .RadioSet_label {
+          color: var(--theme-wallet-import-stateFolder-label-color);
+        }
+
+        .RadioSet_component .RadioSet_radiosContainer > div {
+          margin-right: 0;
+        }
+
+        .SimpleRadio_label {
+          color: var(--theme-wallet-import-description-color);
+          font-family: var(--font-regular);
+        }
+
+        .SimpleRadio_circle {
+          border-color: var(--theme-wallet-import-checkbox-border-color);
+        }
+
+        .SimpleRadio_circle.SimpleRadio_selected {
+          background-color: var(--theme-wallet-import-checkbox-check-bg-color);
+
+          &:after {
+            background-color: var(
+              --theme-wallet-import-background-color
+            ) !important;
+          }
+        }
       }
     }
 
@@ -120,7 +143,7 @@
 
       .stateFolderLabel {
         color: var(--theme-wallet-import-stateFolder-label-color);
-        font-family: var(--font-semibold);
+        font-family: var(--font-medium);
         font-size: 16px;
         line-height: 1.38;
         margin-bottom: 11.5px;
@@ -137,9 +160,7 @@
           width: 540px;
 
           input {
-            background-color: var(
-              --theme-automatic-update-overlay-button-background-color
-            );
+            background-color: transparent;
             border: solid 1px
               var(--theme-wallet-import-stateFolder-border-color);
             border-radius: 2px;
@@ -147,11 +168,16 @@
             font-size: 16px;
             line-height: 1.38;
             padding-right: 48px;
+
+            &::-webkit-input-placeholder {
+              color: var(--theme-wallet-import-stateFolder-label-color);
+              opacity: 0.5;
+            }
           }
 
           &.error {
             input {
-              border: solid 1px var(--theme-color-error);
+              border: solid 1px var(--theme-wallet-import-error-color);
             }
           }
         }
@@ -159,6 +185,7 @@
 
       .noWalletError {
         @include error-message;
+        color: var(--theme-wallet-import-error-color) !important;
         max-width: 602px;
         padding-top: 20px;
         text-align: center;
@@ -167,22 +194,17 @@
 
     .action {
       .actionButton {
-        background-color: var(
-          --theme-splash-network-overlay-button-background-color
-        );
-        border: solid 1px
-          var(--theme-splash-network-overlay-button-border-color);
-        color: var(--theme-splash-network-overlay-button-text-color);
+        background-color: var(--theme-wallet-import-button-background-color);
+        border: solid 1px var(--theme-wallet-import-button-border-color);
+        color: var(--theme-wallet-import-button-text-color);
         font-weight: 500;
         line-height: 1.36;
         margin: 0 auto;
 
         &:hover {
-          background-color: var(
-            --theme-splash-network-overlay-button-background-color-hover
-          );
+          background-color: var(--theme-wallet-import-button-border-color);
           border: none;
-          color: var(--theme-splash-network-overlay-button-text-color-hover);
+          color: var(--theme-wallet-import-button-text-color-hover);
         }
 
         &.disabled {
@@ -191,16 +213,19 @@
           :global {
             .LoadingSpinner_component {
               margin-top: 9px;
+
+              .LoadingSpinner_icon svg path {
+                fill: var(--theme-wallet-import-button-text-color) !important;
+              }
             }
           }
 
           &:hover {
             background-color: var(
-              --theme-splash-network-overlay-button-background-color
+              --theme-wallet-import-button-background-color
             );
-            border: solid 1px
-              var(--theme-splash-network-overlay-button-border-color);
-            color: var(--theme-splash-network-overlay-button-text-color);
+            border: solid 1px var(--theme-wallet-import-button-border-color);
+            color: var(--theme-wallet-import-button-text-color);
           }
         }
       }
@@ -218,7 +243,9 @@
   }
 
   .selectStateDirectoryButton {
-    background-color: var(--theme-button-flat-background-color);
+    background-color: var(
+      --theme-wallet-import-stateFolder-button-background-color
+    );
     border-radius: 3px;
     cursor: pointer;
     height: 28px;
@@ -227,24 +254,27 @@
     top: -1px;
     width: 28px;
 
+    &:hover {
+      background-color: var(
+        --theme-wallet-import-stateFolder-button-background-color-hover
+      ) !important;
+    }
+
+    &:active {
+      background-color: var(
+        --theme-wallet-import-stateFolder-button-background-color-active
+      ) !important;
+    }
+
     .penIcon {
       svg {
         height: 12px;
         position: relative;
         top: 1px;
         width: 12px;
-      }
-    }
-  }
 
-  :global {
-    .WalletImportFileDialog_selectStateDirectoryButton {
-      &.SimpleButton_root:not(.SimpleButton_disabled) {
-        &:hover {
-          background-color: var(--theme-button-flat-background-color-hover);
-        }
-        &:active {
-          background-color: var(--theme-button-flat-background-color-active);
+        path {
+          stroke: var(--theme-wallet-import-button-text-color);
         }
       }
     }

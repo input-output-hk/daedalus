@@ -1,23 +1,31 @@
 .component {
   background-color: transparent;
-  border: 1px solid var(--theme-input-border-color);
+  border: 1px solid var(--theme-wallet-import-input-border-color);
   border-radius: 2px;
-  padding-right: 50px;
+  padding-right: 30px;
   position: relative;
   width: 275px;
 
   &.hasError {
-    border-color: var(--rp-textarea-border-color-errored) !important;
-    margin-bottom: 24px;
+    border-color: var(--theme-wallet-import-error-color) !important;
   }
 
   &.isActive {
     border-color: var(--theme-input-focus-border-color);
-    padding-right: 86px;
+    padding-right: 70px;
+
+    &.hasError {
+      margin-bottom: 24px;
+    }
+
+    &.withoutRightButton {
+      padding-right: 30px !important;
+    }
   }
 
   &:not(.isActive) {
     cursor: pointer;
+
     :global {
       .SimpleInput_input {
         cursor: pointer;
@@ -26,8 +34,10 @@
   }
 
   &.disabled {
-    background-color: var(--rp-input-bg-color-disabled);
-    border-color: var(--rp-input-border-color-disabled);
+    background-color: var(
+      --theme-wallet-import-input-background-color-disabled
+    );
+    border-color: transparent;
     cursor: text !important;
     padding-right: 0;
     pointer-events: none;
@@ -37,19 +47,27 @@
         color: var(--rp-input-text-color-disabled);
       }
     }
+
+    input {
+      color: var(--theme-wallet-import-stateFolder-border-color) !important;
+    }
   }
 
   :global {
     .SimpleFormField_root {
       .SimpleFormField_error {
-        top: 52px;
+        color: var(--theme-wallet-import-error-color) !important;
         font-family: var(--font-medium);
+        opacity: 1;
+        top: 52px;
       }
     }
+
     .SimpleInput_input {
       background: transparent !important;
       border: 0 none;
       border-radius: 0;
+
       &:focus {
         border: 0 none;
       }
@@ -70,7 +88,9 @@
 
   .leftButton,
   .rightButton {
-    background-color: var(--theme-button-flat-background-color);
+    background-color: var(
+      --theme-wallet-import-stateFolder-button-background-color
+    );
     border-radius: 3px;
     cursor: pointer;
     height: 28px;
@@ -85,22 +105,30 @@
         position: relative;
         top: 1px;
         width: 12px;
+
+        path {
+          stroke: var(--theme-wallet-import-button-text-color);
+        }
       }
     }
+
     .crossIcon {
       svg {
         height: 8px;
         width: 8px;
+
         g {
-          fill: #fff;
+          fill: var(--theme-wallet-import-button-text-color);
         }
       }
     }
+
     .arrowIcon {
       svg {
         height: 9px;
+
         path {
-          stroke: #fff;
+          stroke: var(--theme-wallet-import-button-text-color);
         }
       }
     }
@@ -111,10 +139,15 @@
     .InlineEditingSmallInput_rightButton {
       &.SimpleButton_root:not(.SimpleButton_disabled) {
         &:hover {
-          background-color: var(--theme-button-flat-background-color-hover);
+          background-color: var(
+            --theme-wallet-import-stateFolder-button-background-color-hover
+          ) !important;
         }
+
         &:active {
-          background-color: var(--theme-button-flat-background-color-active);
+          background-color: var(
+            --theme-wallet-import-stateFolder-button-background-color-active
+          ) !important;
         }
       }
     }
@@ -122,5 +155,9 @@
 
   .leftButton {
     right: 48px;
+
+    &.withoutRightButton {
+      right: 10px !important;
+    }
   }
 }

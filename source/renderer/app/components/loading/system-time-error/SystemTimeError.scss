@@ -80,8 +80,8 @@
     opacity: 0.8;
 
     &.disabled {
+      border-bottom-color: transparent !important;
       cursor: default;
-      text-decoration: none;
       @include animated-ellipsis($width: 16px);
     }
   }
