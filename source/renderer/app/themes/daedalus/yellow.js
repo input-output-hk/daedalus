@@ -913,6 +913,7 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-wallet-import-checkbox-border-color': '#2d2d2d',
     '--theme-wallet-import-checkbox-border-color-disabled': '#fff',
     '--theme-wallet-import-checkbox-check-bg-color': '#2d2d2d',
+    '--theme-wallet-import-checkbox-check-color': '#fff',
     '--theme-wallet-import-stateFolder-label-color': '#2d2d2d',
   },
   walletRestoreDialog: {

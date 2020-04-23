@@ -757,6 +757,7 @@ export const createDaedalusComponentsTheme = (
       '--theme-wallet-import-checkbox-border-color': `${text.primary}`,
       '--theme-wallet-import-checkbox-border-color-disabled': `${text.primary}`,
       '--theme-wallet-import-checkbox-check-bg-color': `${text.primary}`,
+      '--theme-wallet-import-checkbox-check-color': `${text.secondary}`,
       '--theme-wallet-import-stateFolder-label-color': `${text.primary}`,
     },
     reportIssue: {

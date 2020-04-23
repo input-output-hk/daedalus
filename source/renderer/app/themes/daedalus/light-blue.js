@@ -919,6 +919,7 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-wallet-import-checkbox-border-color': 'rgba(255, 255, 255, 1)',
     '--theme-wallet-import-checkbox-border-color-disabled': '#fff',
     '--theme-wallet-import-checkbox-check-bg-color': '#fafbfc',
+    '--theme-wallet-import-checkbox-check-color': '#243e62',
     '--theme-wallet-import-stateFolder-label-color': '#fff',
   },
   walletRestoreDialog: {

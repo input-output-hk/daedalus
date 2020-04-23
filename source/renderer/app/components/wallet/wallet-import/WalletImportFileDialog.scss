@@ -217,6 +217,10 @@
           :global {
             .LoadingSpinner_component {
               margin-top: 9px;
+
+              .icon svg path {
+                fill: var(--theme-wallet-import-button-text-color) !important;
+              }
             }
           }
 
