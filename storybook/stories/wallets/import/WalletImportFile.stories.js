@@ -33,6 +33,7 @@ storiesOf('Wallets|Import File', module)
         exportSourcePath="/Users/daedalus/Library/Application Support/Daedalus"
         defaultExportSourcePath="/Users/daedalus/Library/Application Support/Daedalus"
         exportErrors=""
+        onOpen={action('onOpen')}
         onConfirm={action('onConfirm')}
         onClose={action('onClose')}
         onOpenExternalLink={action('onOpenExternalLink')}

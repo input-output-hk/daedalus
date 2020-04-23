@@ -8,12 +8,15 @@
 
   &.hasError {
     border-color: var(--theme-wallet-import-error-color) !important;
-    margin-bottom: 24px;
   }
 
   &.isActive {
     border-color: var(--theme-input-focus-border-color);
     padding-right: 70px;
+
+    &.hasError {
+      margin-bottom: 24px;
+    }
 
     &.withoutRightButton {
       padding-right: 30px !important;

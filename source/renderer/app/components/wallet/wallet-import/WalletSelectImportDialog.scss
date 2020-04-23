@@ -71,17 +71,6 @@
     }
   }
 
-  .backgroundContainer {
-    background-color: var(--theme-wallet-import-background-color);
-    height: 100%;
-    left: 0;
-    object-fit: contain;
-    overflow: hidden;
-    position: absolute;
-    top: 0;
-    width: 100%;
-  }
-
   .content {
     align-items: center;
     display: flex;
@@ -201,13 +190,13 @@
           > div {
             left: auto;
             margin: 0;
-            right: -20px;
+            right: -40px;
             transform: translateX(0);
 
             [data-bubble-arrow]:before,
             [data-bubble-arrow]:after {
               left: auto;
-              right: 21px;
+              right: 43px;
             }
           }
         }
@@ -254,10 +243,8 @@
               white-space: nowrap;
 
               &::-webkit-input-placeholder {
-                font-family: var(--font-regular);
-                font-size: 16px;
-                letter-spacing: 0.5px;
-                line-height: 1.38;
+                color: var(--theme-wallet-import-button-text-color);
+                opacity: 0.5;
               }
             }
 
@@ -299,8 +286,7 @@
           :global {
             .SimpleCheckbox_check {
               border: 1px solid var(--theme-wallet-import-checkbox-border-color) !important;
-              height: 23px;
-              width: 23px;
+              margin-right: 1px;
             }
 
             .SimpleCheckbox_check.SimpleCheckbox_checked {

@@ -884,7 +884,7 @@ export const WHITE_THEME_OUTPUT = {
       'rgba(234, 76, 91, .1)',
   },
   walletImportDialog: {
-    '--theme-wallet-import-background-color': 'rgba(255, 255, 255, 0.96)',
+    '--theme-wallet-import-background-color': 'rgba(255, 255, 255, 0.98)',
     '--theme-wallet-import-button-background-color': 'rgba(0, 0, 0, 0.1)',
     '--theme-wallet-import-button-border-color': '#2d2d2d',
     '--theme-wallet-import-button-text-color': '#2d2d2d',

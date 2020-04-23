@@ -886,7 +886,7 @@ export const YELLOW_THEME_OUTPUT = {
       'rgba(234, 76, 91, .1)',
   },
   walletImportDialog: {
-    '--theme-wallet-import-background-color': 'rgba(255, 185, 35, 0.96)',
+    '--theme-wallet-import-background-color': 'rgba(255, 185, 35, 0.98)',
     '--theme-wallet-import-button-background-color': 'rgba(45, 45, 45, 0.1)',
     '--theme-wallet-import-button-border-color': '#2d2d2d',
     '--theme-wallet-import-button-text-color': '#2d2d2d',
@@ -895,7 +895,7 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-wallet-import-checkbox-border-color': '#2d2d2d',
     '--theme-wallet-import-checkbox-border-color-disabled': '#fff',
     '--theme-wallet-import-checkbox-check-bg-color': '#2d2d2d',
-    '--theme-wallet-import-checkbox-check-color': '#fff',
+    '--theme-wallet-import-checkbox-check-color': '#ffb923',
     '--theme-wallet-import-description-close-color': '#2d2d2d',
     '--theme-wallet-import-description-close-hover-background':
       'rgba(0, 0, 0, 0.1)',

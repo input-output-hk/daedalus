@@ -883,7 +883,7 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
       'rgba(235, 74, 34, 0.2)',
   },
   walletImportDialog: {
-    '--theme-wallet-import-background-color': 'rgba(42, 43, 60, 0.96)',
+    '--theme-wallet-import-background-color': 'rgba(42, 43, 60, 0.98)',
     '--theme-wallet-import-button-background-color': 'rgba(0, 0, 0, 0.1)',
     '--theme-wallet-import-button-border-color': '#fff',
     '--theme-wallet-import-button-text-color': '#fff',

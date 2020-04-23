@@ -61,18 +61,6 @@
     }
   }
 
-  .backgroundContainer {
-    background-color: var(--theme-wallet-import-background-color);
-    height: 100%;
-    left: 0;
-    object-fit: contain;
-    overflow: hidden;
-    position: absolute;
-    top: 0;
-    width: 100%;
-    z-index: 1000;
-  }
-
   .content {
     align-items: center;
     display: flex;
@@ -101,7 +89,7 @@
       font-size: 16px;
       line-height: 1.38;
       margin-bottom: 20px;
-      max-width: 560px;
+      max-width: 580px;
 
       p {
         color: var(--theme-wallet-import-description-color);
@@ -123,6 +111,10 @@
       :global {
         .RadioSet_label {
           color: var(--theme-wallet-import-stateFolder-label-color);
+        }
+
+        .RadioSet_component .RadioSet_radiosContainer > div {
+          margin-right: 0;
         }
 
         .SimpleRadio_label {
@@ -151,7 +143,7 @@
 
       .stateFolderLabel {
         color: var(--theme-wallet-import-stateFolder-label-color);
-        font-family: var(--font-semibold);
+        font-family: var(--font-medium);
         font-size: 16px;
         line-height: 1.38;
         margin-bottom: 11.5px;
@@ -176,7 +168,11 @@
             font-size: 16px;
             line-height: 1.38;
             padding-right: 48px;
-            user-select: text;
+
+            &::-webkit-input-placeholder {
+              color: var(--theme-wallet-import-stateFolder-label-color);
+              opacity: 0.5;
+            }
           }
 
           &.error {
@@ -218,7 +214,7 @@
             .LoadingSpinner_component {
               margin-top: 9px;
 
-              .icon svg path {
+              .LoadingSpinner_icon svg path {
                 fill: var(--theme-wallet-import-button-text-color) !important;
               }
             }

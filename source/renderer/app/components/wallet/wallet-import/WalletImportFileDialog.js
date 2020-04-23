@@ -94,6 +94,7 @@ const messages = defineMessages({
 type Props = {
   exportErrors: string,
   isSubmitting: boolean,
+  onOpen: Function,
   onConfirm: Function,
   onClose: Function,
   onOpenExternalLink: Function,
@@ -118,6 +119,11 @@ export default class WalletImportFileDialog extends Component<Props, State> {
   };
 
   importPathInput: Input;
+
+  componentWillMount() {
+    // Reset migration data
+    this.props.onOpen();
+  }
 
   onSetImportFromOption = (importFrom: ImportFromOption) => {
     if (this.state.importFrom !== importFrom) {
@@ -153,6 +159,7 @@ export default class WalletImportFileDialog extends Component<Props, State> {
       exportSourcePath,
       defaultExportSourcePath,
     } = this.props;
+
     const title = intl.formatMessage(messages.title);
     const description = <FormattedHTMLMessage {...messages.description} />;
     const stateFolderLabel = intl.formatMessage(messages.stateFolderLabel);
@@ -199,7 +206,6 @@ export default class WalletImportFileDialog extends Component<Props, State> {
             icon={closeCrossThin}
             onClose={onClose}
           />
-          <div className={styles.backgroundContainer} />
           <div className={styles.content}>
             <div className={styles.title}>{title}</div>
             <div className={styles.description}>{description}</div>
@@ -244,12 +250,12 @@ export default class WalletImportFileDialog extends Component<Props, State> {
                       ? defaultExportSourcePath
                       : '')
                   }
-                  onFocus={() => this.input.blur()}
                   placeholder={
                     this.isImportFromStateDir(importFrom)
                       ? defaultExportSourcePath
                       : 'secret.key'
                   }
+                  readOnly
                 />
                 <Button
                   className={styles.selectStateDirectoryButton}

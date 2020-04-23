@@ -282,7 +282,6 @@ export default class WalletSelectImportDialog extends Component<Props> {
             icon={closeCrossThin}
             onClose={onClose}
           />
-          <div className={styles.backgroundContainer} />
           <div className={styles.content}>
             <div className={styles.topWrapper}>
               <div className={styles.title}>{title}</div>

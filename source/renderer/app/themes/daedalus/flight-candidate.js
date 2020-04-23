@@ -880,7 +880,7 @@ export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
       'rgba(234, 76, 91, .2)',
   },
   walletImportDialog: {
-    '--theme-wallet-import-background-color': 'rgba(42, 43, 60, 0.96)',
+    '--theme-wallet-import-background-color': 'rgba(42, 43, 60, 0.98)',
     '--theme-wallet-import-button-background-color': 'rgba(0, 0, 0, 0.1)',
     '--theme-wallet-import-button-border-color': '#fff',
     '--theme-wallet-import-button-text-color': '#fff',

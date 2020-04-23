@@ -241,14 +241,16 @@ export default class WalletReceiveRandom extends Component<Props, State> {
         <BorderedBox fullHeight>
           <div className={styles.container}>
             <div className={styles.qrCodeAndInstructions}>
-              <div className={styles.qrCode}>
-                <QRCode
-                  value={walletAddress}
-                  bgColor={qrCodeBackgroundColor}
-                  fgColor={qrCodeForegroundColor}
-                  size={152}
-                />
-              </div>
+              {walletAddress && (
+                <div className={styles.qrCode}>
+                  <QRCode
+                    value={walletAddress}
+                    bgColor={qrCodeBackgroundColor}
+                    fgColor={qrCodeForegroundColor}
+                    size={152}
+                  />
+                </div>
+              )}
 
               <div className={styles.instructions}>
                 {walletAddress && (
