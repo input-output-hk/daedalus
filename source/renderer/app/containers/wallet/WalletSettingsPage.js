@@ -47,6 +47,7 @@ export default class WalletSettingsPage extends Component<Props> {
       lastUpdatedWalletField,
       walletFieldBeingEdited,
       isForcedWalletResyncStarting,
+      walletsRecoveryPhraseVerificationData,
     } = walletSettings;
     const {
       startEditingWalletField,
@@ -57,18 +58,12 @@ export default class WalletSettingsPage extends Component<Props> {
       recoveryPhraseVerificationContinue,
     } = actions.walletSettings;
 
-    // @WRPV TODO
     const {
       creationDate,
       recoveryPhraseVerificationDate,
       recoveryPhraseVerificationStatus,
       recoveryPhraseVerificationStatusType,
-    } = {
-      creationDate: new Date(),
-      recoveryPhraseVerificationDate: null,
-      recoveryPhraseVerificationStatus: 'ok',
-      recoveryPhraseVerificationStatusType: 'neverChecked',
-    };
+    } = walletsRecoveryPhraseVerificationData[activeWallet.id];
 
     const wordCount =
       activeWallet.discovery === 'random'

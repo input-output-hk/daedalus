@@ -26,10 +26,11 @@ export default class SidebarStore extends Store {
   // for equality instead of idendity (which would always invalidate)
   // https://alexhisen.gitbooks.io/mobx-recipes/content/use-computedstruct-for-computed-objects.html
   @computed.struct get wallets(): Array<SidebarWalletType> {
-    const { networkStatus, wallets } = this.stores;
+    const { networkStatus, wallets, walletSettings } = this.stores;
     return wallets.all.map(wallet => {
-      // @WRPV TODO
-      const recoveryPhraseVerificationStatus = 'ok';
+      const {
+        hasNotification,
+      } = walletSettings.walletsRecoveryPhraseVerificationData[wallet.id];
       return {
         id: wallet.id,
         title: wallet.name,
@@ -39,7 +40,7 @@ export default class SidebarStore extends Store {
         restoreProgress: wallet.restorationProgress,
         isNotResponding: wallet.isNotResponding,
         isLegacy: wallet.isLegacy,
-        recoveryPhraseVerificationStatus,
+        hasNotification,
       };
     });
   }

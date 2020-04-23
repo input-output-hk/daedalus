@@ -859,9 +859,7 @@ export default class WalletsStore extends Store {
             syncState.status !== WalletSyncStateStatuses.NOT_RESPONDING
         )
         .map((wallet: Wallet) => wallet.id);
-      await this.actions.walletsLocal.refreshWalletsLocalData.trigger({
-        walletIds,
-      });
+      await this.actions.walletsLocal.refreshWalletsLocalData.trigger();
       runInAction('refresh active wallet', () => {
         if (this.active) {
           this._setActiveWallet({ walletId: this.active.id });

@@ -37,17 +37,14 @@ export default class WalletsLocalStore extends Store {
 
   // =================== PRIVATE API ==================== //
 
-  _refreshWalletsLocalData = async ({
-    walletIds,
-  }: {
-    walletIds: Array<string>,
-  }) => {
+  _refreshWalletsLocalData = async () => {
     const currentLocalWallets: WalletsLocalData = this.all;
-    await asyncForEach(walletIds, async walletId => {
+    const { all: wallets } = this.stores.wallets;
+    await asyncForEach(wallets, async ({ id: walletId }) => {
       const walletLocalData = currentLocalWallets[walletId];
       // Adds missing wallets & data
       if (!walletLocalData || !walletLocalData.creationDate) {
-        await this._setWalletLocalData({ walletId });
+        await this._setWalletLocalData({ walletId, skipRefresh: true });
       }
     });
     await this.localWalletsRequest.execute();
@@ -56,22 +53,20 @@ export default class WalletsLocalStore extends Store {
   _setWalletLocalData = async ({
     walletId,
     updatedWalletData,
+    skipRefresh,
   }: {
     walletId: string,
     updatedWalletData?: Object,
+    skipRefresh?: boolean,
   }) => {
     await this.setWalletLocalDataRequest.execute(walletId, updatedWalletData);
+    if (!skipRefresh) {
+      this._refreshWalletsLocalData();
+    }
   };
 
   _unsetWalletLocalData = async ({ walletId }: { walletId: string }) => {
     await this.unsetWalletLocalDataRequest.execute(walletId);
-  };
-
-  createWalletLocalData = async ({ walletId }: { walletId: string }) => {
-    const walletLocalData = {
-      walletId,
-      creationDate: new Date(),
-    };
-    await this.setWalletLocalDataRequest.execute(walletLocalData);
+    this._refreshWalletsLocalData();
   };
 }

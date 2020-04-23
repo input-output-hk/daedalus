@@ -6,10 +6,6 @@ import StoryDecorator from '../_support/StoryDecorator';
 import { isIncentivizedTestnetTheme } from '../_support/utils';
 import WalletsWrapper from '../wallets/_utils/WalletsWrapper';
 import SidebarWalletsMenu from '../../../source/renderer/app/components/sidebar/wallets/SidebarWalletsMenu';
-import {
-  RECOVERY_PHRASE_VERIFICATION_STATUSES,
-  WALLET_RECOVERY_PHRASE_VERIFICATION_TYPES,
-} from '../../../source/renderer/app/config/walletRecoveryPhraseVerificationConfig';
 
 storiesOf('Navigation|Wallets Menu', module)
   .addDecorator(story => (
@@ -47,10 +43,7 @@ storiesOf('Navigation|Wallets Menu', module)
           isLegacy: false,
           createdAt: new Date(),
           recoveryPhraseVerificationDate: new Date(),
-          recoveryPhraseVerificationStatus:
-            RECOVERY_PHRASE_VERIFICATION_STATUSES.OK,
-          recoveryPhraseVerificationStatusType:
-            WALLET_RECOVERY_PHRASE_VERIFICATION_TYPES.NEVER_CHECKED,
+          hasNotification: false,
         },
         {
           id: '2',
@@ -63,10 +56,7 @@ storiesOf('Navigation|Wallets Menu', module)
           isLegacy: false,
           createdAt: new Date(),
           recoveryPhraseVerificationDate: new Date(),
-          recoveryPhraseVerificationStatus:
-            RECOVERY_PHRASE_VERIFICATION_STATUSES.OK,
-          recoveryPhraseVerificationStatusType:
-            WALLET_RECOVERY_PHRASE_VERIFICATION_TYPES.NEVER_CHECKED,
+          hasNotification: false,
         },
         {
           id: '3',
@@ -79,10 +69,7 @@ storiesOf('Navigation|Wallets Menu', module)
           isLegacy: false,
           createdAt: new Date(),
           recoveryPhraseVerificationDate: new Date(),
-          recoveryPhraseVerificationStatus:
-            RECOVERY_PHRASE_VERIFICATION_STATUSES.OK,
-          recoveryPhraseVerificationStatusType:
-            WALLET_RECOVERY_PHRASE_VERIFICATION_TYPES.NEVER_CHECKED,
+          hasNotification: false,
         },
         {
           id: '4',
@@ -95,10 +82,7 @@ storiesOf('Navigation|Wallets Menu', module)
           isLegacy: false,
           createdAt: new Date(),
           recoveryPhraseVerificationDate: new Date(),
-          recoveryPhraseVerificationStatus:
-            RECOVERY_PHRASE_VERIFICATION_STATUSES.OK,
-          recoveryPhraseVerificationStatusType:
-            WALLET_RECOVERY_PHRASE_VERIFICATION_TYPES.NEVER_CHECKED,
+          hasNotification: false,
         },
       ]}
       isActiveWallet={id => id === '2'}

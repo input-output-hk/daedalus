@@ -19,7 +19,7 @@ type Props = {
   restoreProgress?: number,
   isLegacy: boolean,
   isNotResponding: boolean,
-  recoveryPhraseVerificationStatus: string,
+  hasNotification: boolean,
 };
 
 @observer
@@ -36,7 +36,7 @@ export default class SidebarWalletMenuItem extends Component<Props> {
       restoreProgress,
       isLegacy,
       isNotResponding,
-      recoveryPhraseVerificationStatus,
+      hasNotification,
     } = this.props;
 
     const componentStyles = classNames([
@@ -44,11 +44,7 @@ export default class SidebarWalletMenuItem extends Component<Props> {
       active ? styles.active : null,
       isLegacy && isIncentivizedTestnet ? styles.legacyItem : null,
       className,
-      !isIncentivizedTestnet
-        ? styles[
-            `recoveryPhraseVerificationStatus-${recoveryPhraseVerificationStatus}`
-          ]
-        : null,
+      !isIncentivizedTestnet && hasNotification ? styles.notification : null,
       isNotResponding ? styles.notResponding : null,
     ]);
 
