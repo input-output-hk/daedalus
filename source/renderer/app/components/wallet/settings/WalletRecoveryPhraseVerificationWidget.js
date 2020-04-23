@@ -16,6 +16,7 @@ import {
   RECOVERY_PHRASE_VERIFICATION_STATUSES,
   RECOVERY_PHRASE_VERIFICATION_WARNING,
 } from '../../../config/walletRecoveryPhraseVerificationConfig';
+import { getStatusFromWalletData } from '../../../utils/walletRecoveryPhraseVerificationUtils';
 
 export const messages = defineMessages({
   recoveryPhraseVerificationTitle: {
@@ -81,12 +82,10 @@ export const messages = defineMessages({
   },
 });
 
-type Props = {
+export type Props = {
   creationDate: Date,
-  onVerify: Function,
   recoveryPhraseVerificationDate: ?Date,
-  recoveryPhraseVerificationStatus: string,
-  recoveryPhraseVerificationStatusType: string,
+  onVerify: Function,
   wordCount: number,
 };
 
@@ -94,6 +93,11 @@ type Props = {
 export default class WalletRecoveryPhraseVerificationWidget extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
+  };
+
+  test = (file: string): Date => {
+    if (file === 'blah') return this.props.creationDate;
+    return new Date();
   };
 
   get statuses() {
@@ -131,12 +135,14 @@ export default class WalletRecoveryPhraseVerificationWidget extends Component<Pr
 
   get recoveryPhraseStatus() {
     const { locale } = this.context.intl;
+    const { creationDate, recoveryPhraseVerificationDate } = this.props;
     const {
-      creationDate,
-      recoveryPhraseVerificationDate,
       recoveryPhraseVerificationStatus,
       recoveryPhraseVerificationStatusType,
-    } = this.props;
+    } = getStatusFromWalletData({
+      creationDate,
+      recoveryPhraseVerificationDate,
+    });
 
     const statuses = this.statuses[recoveryPhraseVerificationStatusType];
     const { icon, message } = statuses[recoveryPhraseVerificationStatus];
@@ -145,6 +151,7 @@ export default class WalletRecoveryPhraseVerificationWidget extends Component<Pr
       RECOVERY_PHRASE_VERIFICATION_WARNING,
       'days'
     );
+    // console.log('timeFromCreationToWarning', timeFromCreationToWarning);
     const timeUntilWarning = moment()
       .locale(locale)
       .to(timeFromCreationToWarning, true);
@@ -160,8 +167,9 @@ export default class WalletRecoveryPhraseVerificationWidget extends Component<Pr
     const { intl } = this.context;
     const {
       onVerify,
-      recoveryPhraseVerificationStatus,
       wordCount,
+      creationDate,
+      recoveryPhraseVerificationDate,
     } = this.props;
     const {
       icon,
@@ -169,6 +177,10 @@ export default class WalletRecoveryPhraseVerificationWidget extends Component<Pr
       timeAgo,
       timeUntilWarning,
     } = this.recoveryPhraseStatus;
+    const { recoveryPhraseVerificationStatus } = getStatusFromWalletData({
+      creationDate,
+      recoveryPhraseVerificationDate,
+    });
 
     const validationStatusStyles = classnames([
       styles.validationStatus,
