@@ -167,9 +167,11 @@ export default class ProfileStore extends Store {
     if (global.isIncentivizedTestnet) {
       // Force "Incentivized Testnet" as default theme for the Incentivized Testnet Daedalus version
       systemValue = THEMES.INCENTIVIZED_TESTNET;
+    } else if (global.isFlight) {
+      systemValue = THEMES.FLIGHT_CANDIDATE;
     } else {
       systemValue = this.environment.isMainnet
-        ? THEMES.FLIGHT_CANDIDATE
+        ? THEMES.DARK_CARDANO
         : THEMES.LIGHT_BLUE;
     }
     return requestGetter(this.getThemeRequest, systemValue);

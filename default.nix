@@ -55,7 +55,6 @@ let
     cardanoLib = localLib.iohkNix.cardanoLib;
     daedalus-bridge = self.bridgeTable.${nodeImplementation};
     export-wallets = self.cardano-sl.nix-tools.cexes.cardano-wallet.export-wallets;
-    db-converter = self.cardano-wallet.db-converter;
 
     nodejs = pkgs.nodejs-12_x;
     yarnInfo = {
@@ -351,9 +350,9 @@ let
       fi
     '';
     desktopItem = pkgs.makeDesktopItem {
-      name = "Daedalus${if cluster != "mainnet" then "-${self.linuxClusterBinName}" else ""}";
+      name = "Daedalus-${self.linuxClusterBinName}";
       exec = "INSERT_PATH_HERE";
-      desktopName = "Daedalus${if cluster != "mainnet" then " ${self.linuxClusterBinName}" else ""}";
+      desktopName = "Daedalus ${self.linuxClusterBinName}";
       genericName = "Crypto-Currency Wallet";
       categories = "Application;Network;";
       icon = "INSERT_ICON_PATH_HERE";
@@ -376,13 +375,12 @@ let
       cp -f ${self.iconPath.small} $DAEDALUS_DIR/icon.png
       cp -Lf ${self.namespaceHelper}/bin/namespaceHelper $DAEDALUS_DIR/namespaceHelper
       mkdir -pv ~/.local/bin ''${XDG_DATA_HOME}/applications
-      ${pkgs.lib.optionalString (cluster == "mainnet") "cp -Lf ${self.namespaceHelper}/bin/namespaceHelper ~/.local/bin/daedalus"}
       cp -Lf ${self.namespaceHelper}/bin/namespaceHelper ~/.local/bin/daedalus-${self.linuxClusterBinName}
 
       cat ${self.desktopItem}/share/applications/Daedalus*.desktop | sed \
         -e "s+INSERT_PATH_HERE+''${DAEDALUS_DIR}/namespaceHelper+g" \
         -e "s+INSERT_ICON_PATH_HERE+''${DAEDALUS_DIR}/icon_large.png+g" \
-        > "''${XDG_DATA_HOME}/applications/Daedalus${if cluster != "mainnet" then "-${self.linuxClusterBinName}" else ""}.desktop"
+        > "''${XDG_DATA_HOME}/applications/Daedalus-${self.linuxClusterBinName}.desktop"
     '';
     xdg-open = pkgs.writeScriptBin "xdg-open" ''
       #!${pkgs.stdenv.shell}

@@ -66,20 +66,9 @@
       width: 12px;
 
       g {
-        stroke: var(--theme-about-window-icon-close-button-color);
+        stroke: var(--theme-wallet-import-description-close-color);
       }
     }
-  }
-
-  .backgroundContainer {
-    background-color: var(--theme-splash-network-background-color);
-    height: 100%;
-    left: 0;
-    object-fit: contain;
-    overflow: hidden;
-    position: absolute;
-    top: 0;
-    width: 100%;
   }
 
   .content {
@@ -92,7 +81,16 @@
     margin: 0 auto;
     padding: 20px 0;
     position: relative;
-    width: 600px;
+    width: 670px;
+
+    &::-webkit-scrollbar-thumb {
+      background-color: var(--theme-splash-network-scrollbar-thumb-background);
+      &:hover {
+        background-color: var(
+          --theme-splash-network-scrollbar-thumb-background-hover
+        );
+      }
+    }
 
     .topWrapper {
       width: 100%;
@@ -119,7 +117,7 @@
 
     .separatorTop,
     .separatorMiddle {
-      background-color: #ffffff;
+      border-bottom: 1px solid var(--theme-wallet-import-button-border-color);
       height: 1px;
       margin-bottom: 20px;
       margin-top: 0;
@@ -135,51 +133,70 @@
       @extend .description;
       margin-bottom: 15px;
       opacity: 1;
+
       p {
         display: inline;
         opacity: 0.7;
       }
+
       svg {
         height: 12px;
         margin-left: 5px;
+        opacity: 0.3;
+
+        path {
+          fill: var(--theme-wallet-import-description-color);
+        }
+
+        &:hover {
+          opacity: 0.5;
+        }
       }
     }
 
     .tooltip {
       :global {
         .SimpleBubble_bubble {
-          background: #5e6066;
-          white-space: normal;
+          background: var(--theme-utxo-tooltip-background-color);
+        }
+
+        .SimpleBubble_root.SimpleBubble_transparent.SimpleBubble_openUpward
+          [data-bubble-arrow]:after {
+          border-color: var(--theme-utxo-tooltip-background-color) transparent
+            transparent transparent !important;
         }
       }
     }
 
-    .unamedWalletsTooltip {
+    .unamedWalletsInputTooltip {
       @extend .tooltip;
-      display: inline-block;
-      margin-left: 5px;
 
       :global {
         .SimpleTooltip_bubble {
-          margin: 0 0 -7px -14px;
-          width: 330px;
+          > div {
+            left: 50%;
+            margin: 0;
+            transform: translateX(-50%);
+          }
         }
       }
     }
 
     .enterWalletNameTooltip {
       @extend .tooltip;
-      display: block;
+
       :global {
         .SimpleTooltip_bubble {
-          margin: 0 0 0 -84px;
-          .SimpleBubble_bubble {
-            white-space: nowrap;
-          }
-          span {
-            &:before,
-            &:after {
-              margin-left: 78px;
+          > div {
+            left: auto;
+            margin: 0;
+            right: -40px;
+            transform: translateX(0);
+
+            [data-bubble-arrow]:before,
+            [data-bubble-arrow]:after {
+              left: auto;
+              right: 43px;
             }
           }
         }
@@ -191,21 +208,22 @@
       overflow-x: hidden;
       overflow-y: overlay;
       padding-right: 28px;
-      width: 628px;
+      width: 698px;
 
       .walletsRow {
         align-items: baseline;
         display: flex;
-        padding-bottom: 20px;
+        padding: 0 40px 20px 30px;
 
         .walletsCounter {
-          color: #ffffff;
+          color: var(--theme-wallet-import-button-text-color);
           font-family: var(--font-bold);
           font-size: 16px;
           letter-spacing: 0.5px;
           line-height: 1.38;
-          min-width: 35px;
+          min-width: 45px;
           padding-right: 20px;
+          text-align: right;
         }
 
         .walletsInputField {
@@ -213,70 +231,41 @@
           display: flex;
           padding-right: 20px;
 
-          .walletsInput {
-            height: 50px;
-            width: 100%;
-
+          .walletsInputFieldInner {
             input {
-              background-color: #243e62;
-              border: solid 1px #ffffff;
-              border-radius: 2px;
-              color: #ffffff;
-              font-family: var(--font-semibold);
+              color: var(--theme-wallet-import-button-text-color);
+              font-family: var(--font-regular);
               font-size: 16px;
               letter-spacing: 0.5px;
               line-height: 1.38;
-              width: 275px;
-            }
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
 
-            &.walletUnavailable {
-              input {
-                background-color: #ffffff !important;
-                opacity: 0.05 !important;
+              &::-webkit-input-placeholder {
+                color: var(--theme-wallet-import-button-text-color);
+                opacity: 0.5;
               }
             }
 
-            &.walletNoPassword {
-              opacity: 0.5 !important;
-            }
-          }
-
-          .selectStateDirectoryButton {
-            background-color: var(
-              --theme-wallet-import-stateFolder-button-background-color
-            );
-            border-radius: 3px;
-            cursor: pointer;
-            height: 28px;
-            left: -40px;
-            position: relative;
-            top: -1px;
-            width: 28px;
-
-            .penIcon {
-              svg {
-                height: 12px;
-                position: relative;
-                top: 1px;
-                width: 12px;
+            button {
+              &:hover {
+                background-color: var(
+                  --theme-button-flat-background-color-hover
+                );
               }
-            }
 
-            .crossIcon {
-              svg {
-                height: 8px;
-                width: 8px;
-
-                g {
-                  fill: #fff;
-                }
+              &:active {
+                background-color: var(
+                  --theme-button-flat-background-color-active
+                );
               }
             }
           }
         }
 
         .walletsStatus {
-          color: #ffffff;
+          color: var(--theme-wallet-import-button-text-color);
           font-family: var(--font-regular);
           font-size: 16px;
           letter-spacing: 0.5px;
@@ -285,46 +274,50 @@
         }
 
         .walletsStatusIcon {
-          padding-left: 72.5px;
+          min-width: 44px;
           position: relative;
-          top: 3px;
+
+          & > * {
+            position: absolute;
+            right: 0;
+            top: -18px;
+          }
 
           :global {
             .SimpleCheckbox_check {
               border: 1px solid var(--theme-wallet-import-checkbox-border-color) !important;
-              height: 23px;
-              position: relative;
-              top: 2px;
-              width: 23px;
+              margin-right: 1px;
             }
+
             .SimpleCheckbox_check.SimpleCheckbox_checked {
               background-color: var(
                 --theme-wallet-import-checkbox-check-bg-color
-              ) !important;
+              );
             }
 
             .SimpleCheckbox_checked {
-              border-color: var(
-                --theme-wallet-import-checkbox-border-color,
-                #2f496e
-              );
-              position: relative;
-              top: -3px;
-            }
+              border-color: var(--theme-wallet-import-checkbox-border-color);
 
-            .LoadingSpinner_component {
-              position: relative;
-              top: 3px;
+              &:after {
+                border-color: var(
+                  --theme-wallet-import-checkbox-check-color
+                ) !important;
+                margin-top: -3px;
+              }
             }
           }
 
           .walletsStatusIconCheckmark {
-            position: relative;
-            top: -5px;
+            right: 4px;
+            top: -14px;
 
             svg {
               height: 16px;
               width: 16px;
+
+              path {
+                stroke: var(--theme-wallet-import-description-color);
+              }
             }
           }
         }
@@ -333,20 +326,17 @@
 
     .action {
       display: flex;
-      flex-shrink: 0;
       flex-direction: column;
+      flex-shrink: 0;
       margin-top: 12px;
       padding: 10px 0;
       text-align: center;
       width: 100%;
 
       .actionButton {
-        background-color: var(
-          --theme-splash-network-overlay-button-background-color
-        );
-        border: solid 1px
-          var(--theme-splash-network-overlay-button-border-color);
-        color: var(--theme-splash-network-overlay-button-text-color);
+        background-color: var(--theme-wallet-import-button-background-color);
+        border: solid 1px var(--theme-wallet-import-button-border-color);
+        color: var(--theme-wallet-import-button-text-color);
         display: block;
         font-weight: 500;
         line-height: 1.36;
@@ -354,11 +344,9 @@
         min-height: 50px;
 
         &:hover {
-          background-color: var(
-            --theme-splash-network-overlay-button-background-color-hover
-          );
+          background-color: var(--theme-wallet-import-button-border-color);
           border: none;
-          color: var(--theme-splash-network-overlay-button-text-color-hover);
+          color: var(--theme-wallet-import-button-text-color-hover);
         }
 
         &.disabled {
@@ -372,12 +360,22 @@
 
           &:hover {
             background-color: var(
-              --theme-splash-network-overlay-button-background-color
+              --theme-wallet-import-button-background-color
             );
-            border: solid 1px
-              var(--theme-splash-network-overlay-button-border-color);
-            color: var(--theme-splash-network-overlay-button-text-color);
+            border: solid 1px var(--theme-wallet-import-button-border-color);
+            color: var(--theme-wallet-import-button-text-color);
           }
+        }
+      }
+
+      .learnMoreLink {
+        border-bottom: 1px solid var(--theme-wallet-import-description-color);
+        color: var(--theme-wallet-import-description-color);
+        margin-right: 30px;
+        margin-top: 20px;
+        opacity: 0.8;
+        &:after {
+          background-color: var(--theme-wallet-import-description-color);
         }
       }
 

@@ -726,10 +726,20 @@ export const createDaedalusComponentsTheme = (
     },
     walletImportDialog: {
       '--theme-wallet-import-background-color': `${background.secondary.regular}`,
+      '--theme-wallet-import-button-background-color': `${background.secondary.regular}`,
+      '--theme-wallet-import-description-close-color': `${text.primary}`,
       '--theme-wallet-import-description-close-hover-background': `${chroma(
         background.secondary.regular
       ).alpha(0.16)}`,
-      '--theme-wallet-import-description-color': `${text.primary}`,
+      '--theme-wallet-import-description-color': `${chroma(text.primary).alpha(
+        0.7
+      )}`,
+      '--theme-wallet-import-description-bold-color': `${text.primary}`,
+      '--theme-wallet-import-error-color': `${error.regular}`,
+      '--theme-wallet-import-input-background-color': `${background.secondary.dark}`,
+      '--theme-wallet-import-input-border-color': `${chroma(text.primary).alpha(
+        0.3
+      )}`,
       '--theme-wallet-import-title-color': `${text.primary}`,
       '--theme-wallet-import-stateFolder-border-color': `${chroma(
         text.primary
@@ -744,9 +754,10 @@ export const createDaedalusComponentsTheme = (
         text.primary
       ).alpha(0.12)}`,
       '--theme-wallet-import-checkbox-border': '2px solid #ffffff',
-      '--theme-wallet-import-checkbox-border-color': 'rgba(255, 255, 255, 1)',
-      '--theme-wallet-import-checkbox-border-color-disabled': '#ffffff',
-      '--theme-wallet-import-checkbox-check-bg-color': '#ffffff',
+      '--theme-wallet-import-checkbox-border-color': `${text.primary}`,
+      '--theme-wallet-import-checkbox-border-color-disabled': `${text.primary}`,
+      '--theme-wallet-import-checkbox-check-bg-color': `${text.primary}`,
+      '--theme-wallet-import-checkbox-check-color': `${text.secondary}`,
       '--theme-wallet-import-stateFolder-label-color': `${text.primary}`,
     },
     reportIssue: {
