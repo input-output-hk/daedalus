@@ -200,6 +200,9 @@ export default class WalletReceiveRandom extends Component<Props, State> {
     ]);
 
     const passwordField = form.$('spendingPassword');
+
+    const canSubmit = isSubmitting || !passwordField.value;
+
     const generateAddressForm = (
       <div className={generateAddressWrapperClasses}>
         {walletHasPassword && (
@@ -217,7 +220,7 @@ export default class WalletReceiveRandom extends Component<Props, State> {
 
         <Button
           className={generateAddressButtonClasses}
-          disabled={isSubmitting || !passwordField.value}
+          disabled={!canSubmit}
           label={intl.formatMessage(messages.generateNewAddressButtonLabel)}
           skin={ButtonSkin}
           onClick={this.submit}

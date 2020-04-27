@@ -218,16 +218,28 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
     const newPasswordField = form.$('spendingPassword');
     const repeatedPasswordField = form.$('repeatPassword');
 
-    const formValuesNotSet = isSpendingPasswordSet
-      ? !currentPasswordField.value ||
-        !newPasswordField.value ||
-        !repeatedPasswordField.value
-      : !newPasswordField.value || !repeatedPasswordField.value;
+    const isChangingPasswordValid =
+      !!currentPasswordField.value &&
+      !!newPasswordField.value &&
+      !!repeatedPasswordField.value &&
+      currentPasswordField.isValid &&
+      newPasswordField.isValid &&
+      repeatedPasswordField.isValid;
+
+    const isSetPasswordValid = !!newPasswordField.value &&
+      !!repeatedPasswordField.value &&
+      newPasswordField.isValid &&
+      repeatedPasswordField.isValid;
+
+    const canSubmit = !isSubmitting &&
+    isSpendingPasswordSet
+      ? isChangingPasswordValid
+      : isSetPasswordValid;
 
     const actions = [
       {
         className: confirmButtonClasses,
-        disabled: isSubmitting || formValuesNotSet,
+        disabled:  !canSubmit,
         label: intl.formatMessage(globalMessages.save),
         onClick: this.submit,
         primary: true,
