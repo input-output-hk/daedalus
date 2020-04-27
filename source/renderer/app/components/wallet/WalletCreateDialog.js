@@ -217,12 +217,12 @@ export default class WalletCreateDialog extends Component<Props, State> {
 
     const canSubmit =
       !isSubmitting &&
-      (walletNameField.isValid &&
+      walletNameField.isValid &&
         spendingPasswordField.isValid &&
-        repeatedPasswordField.isValid) &&
-      (!!walletNameField.value &&
+        repeatedPasswordField.isValid &&
+      !!walletNameField.value &&
         !!spendingPasswordField.value &&
-        !!repeatedPasswordField.value);
+        !!repeatedPasswordField.value;
 
     const actions = [
       {
