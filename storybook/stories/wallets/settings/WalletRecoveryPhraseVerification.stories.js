@@ -50,15 +50,12 @@ storiesOf('Wallets|Settings', module)
       '8 months ago': moment().subtract(8, 'months'),
       '1 year ago': moment().subtract(1, 'years'),
     };
-    const creationDate = select(
-      'Creation date',
-      timeOptions,
-      timeOptions.Now,
-      groupId
-    );
     const wasAlreadyChecked = boolean('Already checked?', false, groupId);
+    const creationDate = !wasAlreadyChecked
+      ? select('Wallet creation date', timeOptions, timeOptions.Now, groupId)
+      : timeOptions.Now;
     const recoveryPhraseVerificationDate = wasAlreadyChecked
-      ? select('Last check date', timeOptions, timeOptions.Now, groupId)
+      ? select('Last verification date', timeOptions, timeOptions.Now, groupId)
       : null;
     const containerStyle = object('Container Style', { padding: 20 });
     return (
