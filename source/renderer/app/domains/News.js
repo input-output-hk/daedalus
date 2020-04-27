@@ -58,7 +58,7 @@ class NewsCollection {
   @observable all: Array<News> = [];
 
   constructor(data: Array<News>) {
-    // Filter news by palatform and versions
+    // Filter news by platform and versions
     const filteredNews = filter(data, newsItem => {
       const availableTargetVersionRange = get(
         newsItem,

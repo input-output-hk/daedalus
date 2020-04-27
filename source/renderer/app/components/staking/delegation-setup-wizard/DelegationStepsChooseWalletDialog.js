@@ -49,7 +49,7 @@ const messages = defineMessages({
     id: 'staking.delegationSetup.chooseWallet.step.dialog.stepIndicatorLabel',
     defaultMessage: '!!!STEP {currentStep} OF {totalSteps}',
     description:
-      'Step indicator labe on the delegation setup "choose wallet" step dialog.',
+      'Step indicator label on the delegation setup "choose wallet" step dialog.',
   },
   errorMinDelegationFunds: {
     id:

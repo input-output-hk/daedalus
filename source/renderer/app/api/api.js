@@ -347,7 +347,7 @@ export default class AdaApi {
       throw new ApiError(error);
     }
 
-    // @API TODO - Filter / Search fine tunning "pending" for V2
+    // @API TODO - Filter / Search fine tuning "pending" for V2
 
     // const requestStats = Object.assign({}, request, {
     //   cachedTransactions: request.cachedTransactions.length,
@@ -445,7 +445,7 @@ export default class AdaApi {
     //         .utc(latestLoadedTransactionDate)
     //         .format('YYYY-MM-DDTHH:mm:ss');
     //       // During restoration we need to fetch only transactions older than the latest loaded one
-    //       // as this ensures that both totalPages and totalEntries remain unchanged throught out
+    //       // as this ensures that both totalPages and totalEntries remain unchanged throughout
     //       // subsequent page loads (as in the meantime new transactions can be discovered)
     //       Object.assign(params, {
     //         created_at: `LTE[${latestLoadedTransactionDateString}]`,
@@ -760,7 +760,7 @@ export default class AdaApi {
       logger.error('AdaApi::deleteTransaction error', { error });
       // In this particular call we don't need to handle the error in the UI
       // The only reason transaction canceling would fail is if the transaction
-      // is no longer pending - in which case there is nothign we can do.
+      // is no longer pending - in which case there is nothing we can do.
     }
   };
 

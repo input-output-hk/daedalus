@@ -81,7 +81,7 @@ export default class NewsFeedStore extends Store {
         }
       }
 
-      // If incident occured, reset regular interval and set faster incident interval
+      // If incident occurred, reset regular interval and set faster incident interval
       if (hasIncident && !this.pollingNewsOnIncidentIntervalId) {
         // Clear regular interval if set
         if (this.pollingNewsIntervalId) {
