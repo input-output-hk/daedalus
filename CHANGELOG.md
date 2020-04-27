@@ -5,7 +5,7 @@ Changelog
 
 ### Chores
 
-- Improved "Wallet import" state handling ([PR 2000](https://github.com/input-output-hk/daedalus/pull/2000))
+- Improved "Wallet import" state handling ([PR 2001](https://github.com/input-output-hk/daedalus/pull/2001))
 
 ## 1.0.0
 
