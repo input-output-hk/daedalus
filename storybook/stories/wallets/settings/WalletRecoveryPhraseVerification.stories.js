@@ -21,6 +21,8 @@ import StoryDecorator from '../../_support/StoryDecorator';
 // Screens
 import WalletRecoveryPhraseVerificationWidget from '../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseVerificationWidget';
 
+const now = moment();
+
 storiesOf('Wallets|Settings', module)
   .addDecorator((story, context) => (
     <StoryDecorator>{withKnobs(story, context)}</StoryDecorator>
@@ -40,7 +42,7 @@ storiesOf('Wallets|Settings', module)
       groupId
     );
     const timeOptions = {
-      Now: moment(),
+      Now: now,
       '1 day ago': moment().subtract(1, 'days'),
       '7 days ago': moment().subtract(7, 'days'),
       '1 month ago': moment().subtract(1, 'months'),
