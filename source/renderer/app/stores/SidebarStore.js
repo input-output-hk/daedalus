@@ -30,7 +30,7 @@ export default class SidebarStore extends Store {
     return wallets.all.map(wallet => {
       const {
         hasNotification,
-      } = walletSettings.walletsRecoveryPhraseVerificationData[wallet.id];
+      } = walletSettings.getWalletsRecoveryPhraseVerificationData(wallet.id);
       return {
         id: wallet.id,
         title: wallet.name,

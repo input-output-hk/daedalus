@@ -63,7 +63,7 @@ export default class WalletSettingsPage extends Component<Props> {
       recoveryPhraseVerificationDate,
       recoveryPhraseVerificationStatus,
       recoveryPhraseVerificationStatusType,
-    } = walletsRecoveryPhraseVerificationData[activeWallet.id];
+    } = getWalletsRecoveryPhraseVerificationData(activeWallet.id);
 
     const wordCount =
       activeWallet.discovery === 'random'

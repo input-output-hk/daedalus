@@ -81,6 +81,9 @@ export default class WalletSettingsStore extends Store {
 
   // GETTERS
 
+  getWalletsRecoveryPhraseVerificationData = (walletId: string) =>
+    this.walletsRecoveryPhraseVerificationData[walletId] || {};
+
   @computed get walletsRecoveryPhraseVerificationData() {
     const { all: walletsLocalData } = this.stores.walletsLocal;
     const { isIncentivizedTestnet } = global;

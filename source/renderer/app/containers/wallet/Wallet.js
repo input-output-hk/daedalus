@@ -63,7 +63,9 @@ export default class Wallet extends Component<Props> {
     }
     const {
       hasNotification,
-    } = walletSettings.walletsRecoveryPhraseVerificationData[activeWallet.id];
+    } = walletSettings.getWalletsRecoveryPhraseVerificationData(
+      activeWallet.id
+    );
     const {
       isRestoring,
       isLegacy,
