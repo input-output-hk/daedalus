@@ -15,15 +15,15 @@ Given(
   'the last recovery phrase veryfication was done {int} days ago',
   async function(daysAgo) {
     await this.client.executeAsync((days, done) => {
-      const { id } = daedalus.stores.wallets.active;
+      const { id: walletId } = daedalus.stores.wallets.active;
       const date = new Date();
       date.setDate(date.getDate() - days);
       const recoveryPhraseVerificationDate = date.toISOString();
-      const { updateRecoveryPhraseVerificationDate } = daedalus.actions.wallets;
-      updateRecoveryPhraseVerificationDate.once(done);
-      updateRecoveryPhraseVerificationDate.trigger({
-        id,
-        recoveryPhraseVerificationDate,
+      const { setWalletLocalData } = daedalus.actions.walletsLocal;
+      setWalletLocalData.once(done);
+      setWalletLocalData.trigger({
+        walletId,
+        updatedWalletData: { recoveryPhraseVerificationDate },
       });
     }, daysAgo);
   }
@@ -49,9 +49,9 @@ When(/^I click the checkbox and Continue button$/, function() {
 When(/^I enter the recovery phrase mnemonics correctly$/, async function() {
   const recoveryPhrase = this.mnemonics[walletName].slice();
   await this.client.executeAsync((phrase, done) => {
-    const { checkRecoveryPhrase } = daedalus.actions.walletBackup;
-    checkRecoveryPhrase.once(done);
-    checkRecoveryPhrase.trigger({
+    const { recoveryPhraseVerificationCheck } = daedalus.actions.walletSettings;
+    recoveryPhraseVerificationCheck.once(done);
+    recoveryPhraseVerificationCheck.trigger({
       recoveryPhrase: phrase,
     });
   }, recoveryPhrase);
@@ -61,9 +61,9 @@ When(/^I enter the recovery phrase mnemonics incorrectly$/, async function() {
   const incorrectRecoveryPhrase = [...this.mnemonics[walletName]];
   incorrectRecoveryPhrase[0] = 'wrong';
   await this.client.executeAsync((phrase, done) => {
-    const { checkRecoveryPhrase } = daedalus.actions.walletBackup;
-    checkRecoveryPhrase.once(done);
-    checkRecoveryPhrase.trigger({
+    const { recoveryPhraseVerificationCheck } = daedalus.actions.walletSettings;
+    recoveryPhraseVerificationCheck.once(done);
+    recoveryPhraseVerificationCheck.trigger({
       recoveryPhrase: phrase,
     });
   }, incorrectRecoveryPhrase);

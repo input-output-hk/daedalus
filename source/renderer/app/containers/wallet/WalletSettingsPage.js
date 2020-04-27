@@ -47,7 +47,7 @@ export default class WalletSettingsPage extends Component<Props> {
       lastUpdatedWalletField,
       walletFieldBeingEdited,
       isForcedWalletResyncStarting,
-      walletsRecoveryPhraseVerificationData,
+      getWalletsRecoveryPhraseVerificationData,
     } = walletSettings;
     const {
       startEditingWalletField,
