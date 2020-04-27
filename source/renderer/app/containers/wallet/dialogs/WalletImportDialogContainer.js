@@ -14,6 +14,10 @@ type Props = InjectedProps;
 export default class WalletImportDialogContainer extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
+  componentWillUnmount() {
+    this.props.actions.walletMigration.finishMigration.trigger();
+  }
+
   onOpen = () => {
     this.props.actions.walletMigration.resetMigration.trigger();
   };
@@ -23,7 +27,7 @@ export default class WalletImportDialogContainer extends Component<Props> {
   };
 
   onCancel = () => {
-    this.props.actions.walletMigration.finishMigration.trigger();
+    this.props.actions.dialogs.closeActiveDialog.trigger();
   };
 
   onWalletNameChange = (params: { index: number, name: string }) => {
