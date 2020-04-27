@@ -301,9 +301,12 @@ export default class WalletSettingsStore extends Store {
         updatedWalletData: { recoveryPhraseVerificationDate },
       });
     }
-    runInAction('AdaWalletBackupStore::_checkRecoveryPhrase', () => {
-      this.recoveryPhraseStep = nextStep;
-    });
+    runInAction(
+      'AdaWalletBackupStore::_recoveryPhraseVerificationCheck',
+      () => {
+        this.recoveryPhraseStep = nextStep;
+      }
+    );
   };
 
   /* ====  End of Wallet Recovery Phrase Verification  ===== */
