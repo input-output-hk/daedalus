@@ -218,24 +218,9 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
     const newPasswordField = form.$('spendingPassword');
     const repeatedPasswordField = form.$('repeatPassword');
 
-    const isChangingPasswordValid =
-      !!currentPasswordField.value &&
-      !!newPasswordField.value &&
-      !!repeatedPasswordField.value &&
-      currentPasswordField.isValid &&
-      newPasswordField.isValid &&
-      repeatedPasswordField.isValid;
+    const canSubmit = !isSubmitting && form.isValid;
 
-    const isSetPasswordValid =
-      !!newPasswordField.value &&
-      !!repeatedPasswordField.value &&
-      newPasswordField.isValid &&
-      repeatedPasswordField.isValid;
-
-    const canSubmit =
-      !isSubmitting && isSpendingPasswordSet
-        ? isChangingPasswordValid
-        : isSetPasswordValid;
+    debugger;
 
     const actions = [
       {

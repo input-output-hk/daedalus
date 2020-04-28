@@ -215,14 +215,7 @@ export default class WalletCreateDialog extends Component<Props, State> {
     const spendingPasswordField = form.$('spendingPassword');
     const repeatedPasswordField = form.$('repeatPassword');
 
-    const canSubmit =
-      !isSubmitting &&
-      walletNameField.isValid &&
-        spendingPasswordField.isValid &&
-        repeatedPasswordField.isValid &&
-      !!walletNameField.value &&
-        !!spendingPasswordField.value &&
-        !!repeatedPasswordField.value;
+    const canSubmit = !isSubmitting && form.isValid;
 
     const actions = [
       {
