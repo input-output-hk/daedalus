@@ -220,7 +220,8 @@ export default class DelegationSetupWizardDialogContainer extends Component<
       walletId: selectedWalletId,
     });
 
-    // Update state only if it is still active
+    // Update state only if DelegationSetupWizardDialog is still active
+    // and fee calculation was successful
     if (isOpen(DelegationSetupWizardDialog) && stakePoolJoinFee) {
       this.setState({ stakePoolJoinFee });
     }

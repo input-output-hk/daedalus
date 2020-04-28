@@ -43,7 +43,8 @@ export default class DelegationCenterPage extends Component<Props> {
     // Update dialog one more time when quit fee is calculated
     const stakePoolQuitFee = await calculateDelegationFee({ walletId });
 
-    // Update dialog data only if it is still active
+    // Update dialog data only if UndelegateConfirmationDialog is still active
+    // and fee calculation was successful
     if (isOpen(UndelegateConfirmationDialog) && stakePoolQuitFee) {
       updateDataForActiveDialog.trigger({
         data: {
