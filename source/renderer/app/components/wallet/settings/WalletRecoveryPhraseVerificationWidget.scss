@@ -15,7 +15,7 @@
     line-height: 1.38;
   }
 
-  .validationStatus {
+  .status {
     align-items: center;
     border-radius: 4px;
     display: flex;
@@ -23,7 +23,7 @@
     justify-content: space-between;
     padding: 10px;
   }
-  .validationStatusIcon {
+  .statusIcon {
     margin-right: 20px;
     svg {
       display: block;
@@ -34,7 +34,7 @@
   span:nth-child(2) {
     flex: 1;
   }
-  .validationStatusButton {
+  .statusButton {
     height: 36px;
     line-height: 36px;
     margin-left: 25px;
@@ -42,15 +42,19 @@
     white-space: nowrap;
     width: auto;
   }
-  .validationStatusOk {
+  .statusOk,
+  .statusOkTimeUntil,
+  .statusOkFewMonths,
+  .statusOkFewWeeks,
+  .statusOkFewDays {
     background-color: var(--theme-recovery-phrase-normal-background-color);
     border: 1px solid var(--theme-recovery-phrase-normal-border-color);
   }
-  .validationStatusWarning {
+  .statusWarning {
     background-color: var(--theme-recovery-phrase-warning-background-color);
     line-height: 1.38;
   }
-  .validationStatusNotification {
+  .statusNotification {
     background-color: var(--theme-recovery-phrase-attention-background-color);
   }
 }

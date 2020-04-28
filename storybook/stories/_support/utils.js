@@ -53,7 +53,7 @@ export const generateWallet = (
     recoveryPhraseVerificationDate: new Date(),
     recoveryPhraseVerificationStatus: RECOVERY_PHRASE_VERIFICATION_STATUSES.OK,
     recoveryPhraseVerificationStatusType:
-      RECOVERY_PHRASE_VERIFICATION_TYPES.NEVER_CHECKED,
+      RECOVERY_PHRASE_VERIFICATION_TYPES.NEVER_VERIFIED,
     delegatedStakePoolId: get(delegatedStakePool, 'id'),
   });
 

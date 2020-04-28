@@ -1,11 +1,11 @@
 // @flow
 import type {
-  WalletRecoveryPhraseVerificationStatusesType as VerificationStatus,
-  WalletRecoveryPhraseVerificationTypesType as VerificationType,
+  WalletRecoveryPhraseVerificationStatusesType as Status,
+  WalletRecoveryPhraseVerificationTypesType as Type,
 } from '../types/walletRecoveryPhraseVerificationTypes';
 
 export const RECOVERY_PHRASE_VERIFICATION_STATUSES: {
-  [key: string]: VerificationStatus,
+  [key: string]: Status,
 } = {
   OK: 'ok',
   OK_TIME_UNTIL: 'okTimeUntil',
@@ -17,14 +17,18 @@ export const RECOVERY_PHRASE_VERIFICATION_STATUSES: {
 };
 
 export const RECOVERY_PHRASE_VERIFICATION_TYPES: {
-  [key: string]: VerificationType,
+  [key: string]: Type,
 } = {
-  NEVER_CHECKED: 'neverChecked',
-  ALREADY_CHECKED: 'alreadyChecked',
+  NEVER_VERIFIED: 'neverVerified',
+  ALREADY_VERIFIED: 'alreadyVerified',
 };
 
-export const RECOVERY_PHRASE_VERIFICATION_OK_FEW_MONTHS: number = 91; // days
-export const RECOVERY_PHRASE_VERIFICATION_OK_FEW_WEEKS: number = 153; // days
-export const RECOVERY_PHRASE_VERIFICATION_OK_FEW_DAYS: number = 176; // days
-export const RECOVERY_PHRASE_VERIFICATION_WARNING: number = 183; // days
-export const RECOVERY_PHRASE_VERIFICATION_NOTIFICATION: number = 365; // days
+export const RECOVERY_PHRASE_VERIFICATION_TIMES: {
+  [key: string]: number,
+} = {
+  okFewMonths: 91,
+  okFewWeeks: 153,
+  okFewDays: 176,
+  warning: 183,
+  notification: 365,
+};

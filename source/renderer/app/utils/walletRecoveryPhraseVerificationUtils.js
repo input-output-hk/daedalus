@@ -1,71 +1,38 @@
 // @flow
 
-/* eslint-disable no-lonely-if */
-
 import moment from 'moment';
 import {
-  RECOVERY_PHRASE_VERIFICATION_NOTIFICATION,
-  RECOVERY_PHRASE_VERIFICATION_WARNING,
-  RECOVERY_PHRASE_VERIFICATION_OK_FEW_MONTHS,
-  RECOVERY_PHRASE_VERIFICATION_OK_FEW_WEEKS,
-  RECOVERY_PHRASE_VERIFICATION_OK_FEW_DAYS,
-  RECOVERY_PHRASE_VERIFICATION_STATUSES,
-  RECOVERY_PHRASE_VERIFICATION_TYPES,
+  RECOVERY_PHRASE_VERIFICATION_STATUSES as statuses,
+  RECOVERY_PHRASE_VERIFICATION_TYPES as types,
+  RECOVERY_PHRASE_VERIFICATION_TIMES as times,
 } from '../config/walletRecoveryPhraseVerificationConfig';
 
 export const getStatusFromWalletData = ({
-  creationDate,
-  recoveryPhraseVerificationDate,
+  creationDate: creation,
+  recoveryPhraseVerificationDate: verification,
 }: {
   creationDate: Date,
   recoveryPhraseVerificationDate: ?Date,
 }) => {
   // Data config
-  const dateToCheck =
-    recoveryPhraseVerificationDate || creationDate || new Date();
+  const dateToCheck = verification || creation || new Date();
   const daysSinceDate = moment().diff(moment(dateToCheck), 'days');
 
   // Status Type
-  const recoveryPhraseVerificationStatusType = recoveryPhraseVerificationDate
-    ? RECOVERY_PHRASE_VERIFICATION_TYPES.ALREADY_CHECKED
-    : RECOVERY_PHRASE_VERIFICATION_TYPES.NEVER_CHECKED;
-  let recoveryPhraseVerificationStatus;
+  const type = verification ? types.ALREADY_VERIFIED : types.NEVER_VERIFIED;
 
   // Status
-  if (daysSinceDate > RECOVERY_PHRASE_VERIFICATION_NOTIFICATION)
-    recoveryPhraseVerificationStatus =
-      RECOVERY_PHRASE_VERIFICATION_STATUSES.NOTIFICATION;
-  else if (daysSinceDate > RECOVERY_PHRASE_VERIFICATION_WARNING)
-    recoveryPhraseVerificationStatus =
-      RECOVERY_PHRASE_VERIFICATION_STATUSES.WARNING;
-  else {
-    if (
-      recoveryPhraseVerificationStatusType ===
-      RECOVERY_PHRASE_VERIFICATION_TYPES.ALREADY_CHECKED
-    ) {
-      recoveryPhraseVerificationStatus =
-        RECOVERY_PHRASE_VERIFICATION_STATUSES.OK;
-    } else if (daysSinceDate > RECOVERY_PHRASE_VERIFICATION_OK_FEW_DAYS) {
-      recoveryPhraseVerificationStatus =
-        RECOVERY_PHRASE_VERIFICATION_STATUSES.OK_FEW_DAYS;
-    } else if (daysSinceDate > RECOVERY_PHRASE_VERIFICATION_OK_FEW_WEEKS) {
-      recoveryPhraseVerificationStatus =
-        RECOVERY_PHRASE_VERIFICATION_STATUSES.OK_FEW_WEEKS;
-    } else if (daysSinceDate > RECOVERY_PHRASE_VERIFICATION_OK_FEW_MONTHS) {
-      recoveryPhraseVerificationStatus =
-        RECOVERY_PHRASE_VERIFICATION_STATUSES.OK_FEW_MONTHS;
-    } else {
-      recoveryPhraseVerificationStatus =
-        RECOVERY_PHRASE_VERIFICATION_STATUSES.OK_TIME_UNTIL;
-    }
-  }
+  let status;
+  if (daysSinceDate > times.notification) status = statuses.NOTIFICATION;
+  else if (daysSinceDate > times.warning) status = statuses.WARNING;
+  else if (type === types.ALREADY_VERIFIED) status = statuses.OK;
+  else if (daysSinceDate > times.okFewDays) status = statuses.OK_FEW_DAYS;
+  else if (daysSinceDate > times.okFewWeeks) status = statuses.OK_FEW_WEEKS;
+  else if (daysSinceDate > times.okFewMonths) status = statuses.OK_FEW_MONTHS;
+  else status = statuses.OK_TIME_UNTIL;
+
   return {
-    recoveryPhraseVerificationStatus,
-    recoveryPhraseVerificationStatusType,
+    recoveryPhraseVerificationStatus: status,
+    recoveryPhraseVerificationStatusType: type,
   };
 };
-
-export const getWalletType = (recoveryPhraseVerificationDate: ?Date) =>
-  recoveryPhraseVerificationDate
-    ? RECOVERY_PHRASE_VERIFICATION_TYPES.ALREADY_CHECKED
-    : RECOVERY_PHRASE_VERIFICATION_TYPES.NEVER_CHECKED;

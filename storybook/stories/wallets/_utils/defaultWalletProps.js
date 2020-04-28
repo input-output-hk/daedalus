@@ -17,7 +17,7 @@ export const defaultProps = {
   creationDate: new Date(),
   recoveryPhraseVerificationDate: new Date(),
   recoveryPhraseVerificationStatus: 'ok',
-  recoveryPhraseVerificationStatusType: 'alreadyChecked',
+  recoveryPhraseVerificationStatusType: 'alreadyVerified',
   walletRecoveryPhraseStep1Container: (
     <WalletRecoveryPhraseStep1Dialog
       onClose={action('onClose')}
