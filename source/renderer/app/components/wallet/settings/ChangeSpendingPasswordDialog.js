@@ -220,8 +220,6 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
 
     const canSubmit = !isSubmitting && form.isValid;
 
-    debugger;
-
     const actions = [
       {
         className: confirmButtonClasses,
