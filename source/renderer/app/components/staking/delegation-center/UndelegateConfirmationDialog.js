@@ -103,9 +103,8 @@ type Props = {
   onCancel: Function,
   onExternalLinkClick: Function,
   isSubmitting: boolean,
-  isCalculatingDelegationFee: boolean,
   error: ?LocalizableError,
-  fees: BigNumber,
+  fees: ?BigNumber,
 };
 
 @observer
@@ -186,7 +185,7 @@ export default class UndelegateConfirmationDialog extends Component<Props> {
 
   isConfirmDisabled = () => {
     const { form } = this;
-    const { isSubmitting, isCalculatingDelegationFee } = this.props;
+    const { fees, isSubmitting } = this.props;
     const { isValid: unsupportCheckboxIsValid } = form.$(
       'isConfirmUnsupportChecked'
     );
@@ -197,7 +196,7 @@ export default class UndelegateConfirmationDialog extends Component<Props> {
 
     return (
       isSubmitting ||
-      isCalculatingDelegationFee ||
+      !fees ||
       !unsupportCheckboxIsValid ||
       !ineligibleCheckboxIsValid ||
       !passphraseIsValid
@@ -254,7 +253,6 @@ export default class UndelegateConfirmationDialog extends Component<Props> {
       stakePoolTicker,
       onCancel,
       isSubmitting,
-      isCalculatingDelegationFee,
       fees,
     } = this.props;
     const isConfirmDisabled = this.isConfirmDisabled();
@@ -265,8 +263,7 @@ export default class UndelegateConfirmationDialog extends Component<Props> {
     const actions = [
       {
         label: intl.formatMessage(globalMessages.cancel),
-        onClick:
-          !isSubmitting && !isCalculatingDelegationFee ? onCancel : () => null,
+        onClick: !isSubmitting ? onCancel : () => null,
       },
       {
         className: buttonClasses,
@@ -283,9 +280,7 @@ export default class UndelegateConfirmationDialog extends Component<Props> {
         title={intl.formatMessage(messages.dialogTitle)}
         actions={actions}
         closeOnOverlayClick
-        onClose={
-          !isSubmitting && !isCalculatingDelegationFee ? onCancel : () => null
-        }
+        onClose={!isSubmitting ? onCancel : () => null}
         className={styles.dialog}
         closeButton={<DialogCloseButton />}
       >
@@ -323,7 +318,7 @@ export default class UndelegateConfirmationDialog extends Component<Props> {
             {intl.formatMessage(messages.feesLabel)}
           </label>
           <p className={styles.feesAmount}>
-            {isCalculatingDelegationFee ? (
+            {!fees ? (
               <span className={styles.calculatingFeesLabel}>
                 {intl.formatMessage(messages.calculatingFees)}
               </span>

@@ -36,6 +36,8 @@ export default class StakingStore extends Store {
   adaValue: BigNumber = new BigNumber(82650.15);
   percentage: number = 14;
 
+  _delegationFeeCalculationWalletId: ?string = null;
+
   setup() {
     if (global.isIncentivizedTestnet) {
       // Set initial fetch interval to 1 second
@@ -170,9 +172,10 @@ export default class StakingStore extends Store {
 
   calculateDelegationFee = async (
     delegationFeeRequest: GetDelegationFeeRequest
-  ) => {
+  ): ?BigNumber => {
     const { walletId } = delegationFeeRequest;
     const wallet = this.stores.wallets.getWalletById(walletId);
+    this._delegationFeeCalculationWalletId = walletId;
 
     if (!wallet) {
       throw new Error(
@@ -180,10 +183,19 @@ export default class StakingStore extends Store {
       );
     }
 
+    if (this.calculateDelegationFeeRequest.isExecuting) {
+      await this.calculateDelegationFeeRequest;
+    }
+
     try {
       const delegationFee: BigNumber = await this.calculateDelegationFeeRequest.execute(
         { ...delegationFeeRequest }
       ).promise;
+
+      if (this._delegationFeeCalculationWalletId !== walletId) {
+        return null;
+      }
+
       return delegationFee;
     } catch (error) {
       throw error;

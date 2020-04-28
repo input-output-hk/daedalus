@@ -91,12 +91,11 @@ type Props = {
   onBack: Function,
   onClose: Function,
   onConfirm: Function,
-  transactionFee: BigNumber,
+  transactionFee: ?BigNumber,
   selectedWallet: ?Wallet,
   selectedPool: ?StakePool,
   stepsList: Array<string>,
   isSubmitting: boolean,
-  isCalculatingDelegationFee: boolean,
   error: ?LocalizableError,
 };
 
@@ -165,7 +164,6 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
       selectedWallet,
       error,
       isSubmitting,
-      isCalculatingDelegationFee,
     } = this.props;
     const selectedWalletName = get(selectedWallet, 'name');
     const selectedPoolTicker = get(selectedPool, 'ticker');
@@ -187,7 +185,8 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
         label: intl.formatMessage(messages.confirmButtonLabel),
         onClick: this.submit,
         primary: true,
-        disabled: !spendingPasswordField.isValid || isSubmitting,
+        disabled:
+          !spendingPasswordField.isValid || isSubmitting || !transactionFee,
       },
     ];
 
@@ -243,7 +242,7 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
               {intl.formatMessage(messages.feesLabel)}
             </p>
             <p className={styles.feesAmount}>
-              {isCalculatingDelegationFee ? (
+              {!transactionFee ? (
                 <span className={styles.calculatingFeesLabel}>
                   {intl.formatMessage(messages.calculatingFees)}
                 </span>
