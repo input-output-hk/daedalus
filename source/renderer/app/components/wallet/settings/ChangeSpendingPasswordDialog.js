@@ -10,7 +10,7 @@ import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
 import {
   isValidSpendingPassword,
-  isValidRepeatPassword,
+  isValidRepeatPassword, isValidWalletName,
 } from '../../../utils/validations';
 import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
@@ -111,7 +111,7 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
           ),
           value: '',
           validators: [
-            ({ form }) => {
+            ({ field, form }) => {
               const currentPasswordField = form.$('currentPassword');
               if (
                 currentPasswordField.value.length === 0 &&
@@ -119,8 +119,9 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
               )
                 return [false];
               return [
+                isValidWalletName(field.value),
                 this.context.intl.formatMessage(
-                  globalMessages.invalidSpendingPassword
+                  globalMessages.invalidWalletName
                 ),
               ];
             },
