@@ -24,7 +24,7 @@ import { TransactionStates } from '../domains/WalletTransaction';
 import REWARDS from '../config/stakingRewards.dummy.json';
 
 export default class StakingStore extends Store {
-  @observable isDelegatioTransactionPending = false;
+  @observable isDelegationTransactionPending = false;
   @observable fetchingStakePoolsFailed = false;
 
   pollingStakePoolsInterval: ?IntervalID = null;
@@ -64,6 +64,9 @@ export default class StakingStore extends Store {
   @observable stakePoolsRequest: Request<Array<StakePool>> = new Request(
     this.api.ada.getStakePools
   );
+  @observable calculateDelegationFeeRequest: Request<BigNumber> = new Request(
+    this.api.ada.calculateDelegationFee
+  );
   @observable isStakingExperimentRead: boolean = false;
 
   // =================== PUBLIC API ==================== //
@@ -72,7 +75,7 @@ export default class StakingStore extends Store {
     const { walletId, stakePoolId, passphrase } = request;
 
     // Set join transaction in "PENDING" state
-    this.isDelegatioTransactionPending = true;
+    this.isDelegationTransactionPending = true;
 
     try {
       const joinTransaction = await this.joinStakePoolRequest.execute({
@@ -101,7 +104,7 @@ export default class StakingStore extends Store {
     const { walletId, passphrase } = request;
 
     // Set quit transaction in "PENDING" state
-    this.isDelegatioTransactionPending = true;
+    this.isDelegationTransactionPending = true;
 
     try {
       const quitTransaction = await this.quitStakePoolRequest.execute({
@@ -158,7 +161,7 @@ export default class StakingStore extends Store {
       this.delegationCheckTimeInterval = null;
     }
     this.stores.wallets.refreshWalletsData();
-    this.isDelegatioTransactionPending = false;
+    this.isDelegationTransactionPending = false;
   };
 
   @action markStakingExperimentAsRead = () => {
@@ -177,9 +180,14 @@ export default class StakingStore extends Store {
       );
     }
 
-    return this.api.ada.calculateDelegationFee({
-      ...delegationFeeRequest,
-    });
+    try {
+      const delegationFee: BigNumber = await this.calculateDelegationFeeRequest.execute(
+        { ...delegationFeeRequest }
+      ).promise;
+      return delegationFee;
+    } catch (error) {
+      throw error;
+    }
   };
 
   // GETTERS

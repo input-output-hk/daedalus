@@ -40,6 +40,7 @@ type Props = {
   futureEpochStartTime: string,
   currentLocale: string,
   getStakePoolById: Function,
+  isCalculatingDelegationFee: boolean,
 };
 
 @observer
@@ -84,6 +85,7 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
       isSubmitting,
       error,
       getStakePoolById,
+      isCalculatingDelegationFee,
     } = this.props;
 
     const selectedWalletId = get(selectedWallet, 'id', null);
@@ -129,6 +131,7 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
             onClose={onClose}
             onBack={onBack}
             onSelectPool={onSelectPool}
+            isCalculatingDelegationFee={isCalculatingDelegationFee}
           />
         );
         break;

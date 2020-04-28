@@ -207,7 +207,7 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
         title={intl.formatMessage(messages.title)}
         subtitle={stepsIndicatorLabel}
         actions={actions}
-        closeOnOverlayClick
+        closeOnOverlayClick={!isSubmitting}
         onClose={!isSubmitting ? onClose : () => {}}
         className={dialogClassName}
         closeButton={<DialogCloseButton onClose={onClose} />}
