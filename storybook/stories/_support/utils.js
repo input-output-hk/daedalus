@@ -15,7 +15,7 @@ import WalletAddress from '../../../source/renderer/app/domains/WalletAddress';
 import { LOVELACES_PER_ADA } from '../../../source/renderer/app/config/numbersConfig';
 import {
   RECOVERY_PHRASE_VERIFICATION_STATUSES,
-  WALLET_RECOVERY_PHRASE_VERIFICATION_TYPES,
+  RECOVERY_PHRASE_VERIFICATION_TYPES,
 } from '../../../source/renderer/app/config/walletRecoveryPhraseVerificationConfig';
 import type {
   TransactionType,
@@ -53,7 +53,7 @@ export const generateWallet = (
     recoveryPhraseVerificationDate: new Date(),
     recoveryPhraseVerificationStatus: RECOVERY_PHRASE_VERIFICATION_STATUSES.OK,
     recoveryPhraseVerificationStatusType:
-      WALLET_RECOVERY_PHRASE_VERIFICATION_TYPES.NEVER_CHECKED,
+      RECOVERY_PHRASE_VERIFICATION_TYPES.NEVER_CHECKED,
     delegatedStakePoolId: get(delegatedStakePool, 'id'),
   });
 

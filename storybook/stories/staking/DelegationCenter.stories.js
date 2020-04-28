@@ -10,7 +10,7 @@ import Wallet, {
 } from '../../../source/renderer/app/domains/Wallet';
 import {
   RECOVERY_PHRASE_VERIFICATION_STATUSES,
-  WALLET_RECOVERY_PHRASE_VERIFICATION_TYPES,
+  RECOVERY_PHRASE_VERIFICATION_TYPES,
 } from '../../../source/renderer/app/config/walletRecoveryPhraseVerificationConfig';
 import type {
   NextEpoch,
@@ -79,7 +79,7 @@ const wallets = [
     recoveryPhraseVerificationDate: new Date(),
     recoveryPhraseVerificationStatus: RECOVERY_PHRASE_VERIFICATION_STATUSES.OK,
     recoveryPhraseVerificationStatusType:
-      WALLET_RECOVERY_PHRASE_VERIFICATION_TYPES.NEVER_CHECKED,
+      RECOVERY_PHRASE_VERIFICATION_TYPES.NEVER_CHECKED,
   }),
   new Wallet({
     id: 'wallet2',
@@ -110,7 +110,7 @@ const wallets = [
     recoveryPhraseVerificationDate: new Date(),
     recoveryPhraseVerificationStatus: RECOVERY_PHRASE_VERIFICATION_STATUSES.OK,
     recoveryPhraseVerificationStatusType:
-      WALLET_RECOVERY_PHRASE_VERIFICATION_TYPES.NEVER_CHECKED,
+      RECOVERY_PHRASE_VERIFICATION_TYPES.NEVER_CHECKED,
   }),
   new Wallet({
     id: 'wallet3',
@@ -140,7 +140,7 @@ const wallets = [
     recoveryPhraseVerificationDate: new Date(),
     recoveryPhraseVerificationStatus: RECOVERY_PHRASE_VERIFICATION_STATUSES.OK,
     recoveryPhraseVerificationStatusType:
-      WALLET_RECOVERY_PHRASE_VERIFICATION_TYPES.NEVER_CHECKED,
+      RECOVERY_PHRASE_VERIFICATION_TYPES.NEVER_CHECKED,
   }),
   new Wallet({
     id: 'wallet4',
@@ -161,7 +161,7 @@ const wallets = [
     recoveryPhraseVerificationDate: new Date(),
     recoveryPhraseVerificationStatus: RECOVERY_PHRASE_VERIFICATION_STATUSES.OK,
     recoveryPhraseVerificationStatusType:
-      WALLET_RECOVERY_PHRASE_VERIFICATION_TYPES.NEVER_CHECKED,
+      RECOVERY_PHRASE_VERIFICATION_TYPES.NEVER_CHECKED,
   }),
   new Wallet({
     id: 'wallet5',
@@ -182,7 +182,7 @@ const wallets = [
     recoveryPhraseVerificationDate: new Date(),
     recoveryPhraseVerificationStatus: RECOVERY_PHRASE_VERIFICATION_STATUSES.OK,
     recoveryPhraseVerificationStatusType:
-      WALLET_RECOVERY_PHRASE_VERIFICATION_TYPES.NEVER_CHECKED,
+      RECOVERY_PHRASE_VERIFICATION_TYPES.NEVER_CHECKED,
   }),
   new Wallet({
     id: 'wallet6',
@@ -213,7 +213,7 @@ const wallets = [
     recoveryPhraseVerificationDate: new Date(),
     recoveryPhraseVerificationStatus: RECOVERY_PHRASE_VERIFICATION_STATUSES.OK,
     recoveryPhraseVerificationStatusType:
-      WALLET_RECOVERY_PHRASE_VERIFICATION_TYPES.NEVER_CHECKED,
+      RECOVERY_PHRASE_VERIFICATION_TYPES.NEVER_CHECKED,
   }),
 ];
 

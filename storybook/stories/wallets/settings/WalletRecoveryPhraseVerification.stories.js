@@ -46,6 +46,9 @@ storiesOf('Wallets|Settings', module)
       '1 day ago': moment().subtract(1, 'days'),
       '7 days ago': moment().subtract(7, 'days'),
       '1 month ago': moment().subtract(1, 'months'),
+      '5 months and 3 weeks ago': moment()
+        .subtract(5, 'months')
+        .subtract(3, 'weeks'),
       '6 months ago': moment().subtract(6, 'months'),
       '8 months ago': moment().subtract(8, 'months'),
       '1 year ago': moment().subtract(1, 'years'),

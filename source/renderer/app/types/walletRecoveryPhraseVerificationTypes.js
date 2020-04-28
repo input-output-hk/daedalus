@@ -2,6 +2,10 @@
 
 export type WalletRecoveryPhraseVerificationStatusesType =
   | 'ok'
+  | 'okTimeUntil'
+  | 'okFewMonths'
+  | 'okFewWeeks'
+  | 'okFewDays'
   | 'warning'
   | 'notification';
 

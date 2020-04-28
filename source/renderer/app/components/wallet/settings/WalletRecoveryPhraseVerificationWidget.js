@@ -32,10 +32,32 @@ export const messages = defineMessages({
     description:
       'Label for the recoveryPhraseVerificationDescription on wallet settings.',
   },
-  recoveryPhraseVerificationNeverOk: {
-    id: 'wallet.settings.recoveryPhraseVerificationNeverOk',
+
+  recoveryPhraseVerificationNeverOkTimeUntil: {
+    id: 'wallet.settings.recoveryPhraseVerificationNeverOkTimeUntil',
     defaultMessage:
       '!!!We recommend that you verify your wallet recovery phrase in <b>{timeUntilWarning}</b>.',
+    description:
+      'Label for the recoveryPhraseVerificationNeverOk on wallet settings.',
+  },
+  recoveryPhraseVerificationNeverOkFewMonths: {
+    id: 'wallet.settings.recoveryPhraseVerificationNeverOkFewMonths',
+    defaultMessage:
+      '!!!We recommend that you verify your wallet recovery phrase in a few months.',
+    description:
+      'Label for the recoveryPhraseVerificationNeverOk on wallet settings.',
+  },
+  recoveryPhraseVerificationNeverOkFewWeeks: {
+    id: 'wallet.settings.recoveryPhraseVerificationNeverOkFewWeeks',
+    defaultMessage:
+      '!!!We recommend that you verify your wallet recovery phrase in a few weeks.',
+    description:
+      'Label for the recoveryPhraseVerificationNeverOk on wallet settings.',
+  },
+  recoveryPhraseVerificationNeverOkFewDays: {
+    id: 'wallet.settings.recoveryPhraseVerificationNeverOkFewDays',
+    defaultMessage:
+      '!!!We recommend that you verify your wallet recovery phrase in in a few days.',
     description:
       'Label for the recoveryPhraseVerificationNeverOk on wallet settings.',
   },
@@ -103,9 +125,21 @@ export default class WalletRecoveryPhraseVerificationWidget extends Component<Pr
   get statuses() {
     return {
       neverChecked: {
-        ok: {
+        okTimeUntil: {
           icon: iconRecoveryPhraseOk,
-          message: messages.recoveryPhraseVerificationNeverOk,
+          message: messages.recoveryPhraseVerificationNeverOkTimeUntil,
+        },
+        okFewMonths: {
+          icon: iconRecoveryPhraseOk,
+          message: messages.recoveryPhraseVerificationNeverOkFewMonths,
+        },
+        okFewWeeks: {
+          icon: iconRecoveryPhraseOk,
+          message: messages.recoveryPhraseVerificationNeverOkFewWeeks,
+        },
+        okFewDays: {
+          icon: iconRecoveryPhraseOk,
+          message: messages.recoveryPhraseVerificationNeverOkFewDays,
         },
         warning: {
           icon: iconRecoveryPhraseWarning,
