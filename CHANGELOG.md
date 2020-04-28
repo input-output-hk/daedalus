@@ -7,6 +7,10 @@ Changelog
 
 - Disabled button on forms when there is nothing to submit ([PR 1998](https://github.com/input-output-hk/daedalus/pull/1998))
 
+### Chores
+
+- Improved "Wallet import" state handling ([PR 2001](https://github.com/input-output-hk/daedalus/pull/2001))
+
 ## 1.0.0
 
 ### Features
