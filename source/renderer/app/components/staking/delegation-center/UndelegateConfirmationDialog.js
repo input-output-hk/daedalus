@@ -65,11 +65,6 @@ const messages = defineMessages({
     defaultMessage: '!!!Fees',
     description: 'Fees label in the "Undelegate" dialog.',
   },
-  adaLabel: {
-    id: 'staking.delegationCenter.undelegate.dialog.adaLabel',
-    defaultMessage: '!!!ADA',
-    description: 'ADA label in the "Undelegate" dialog.',
-  },
   spendingPasswordLabel: {
     id: 'staking.delegationCenter.undelegate.dialog.spendingPasswordLabel',
     defaultMessage: '!!!Spending password',
@@ -91,6 +86,11 @@ const messages = defineMessages({
     defaultMessage: '!!!unknown',
     description: 'unknown stake pool label in the "Undelegate" dialog.',
   },
+  calculatingFees: {
+    id: 'staking.delegationCenter.undelegate.dialog.calculatingFees',
+    defaultMessage: '!!!Calculating fees',
+    description: '"Calculating fees" message in the "Undelegate" dialog.',
+  },
 });
 
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
@@ -103,6 +103,7 @@ type Props = {
   onCancel: Function,
   onExternalLinkClick: Function,
   isSubmitting: boolean,
+  isCalculatingDelegationFee: boolean,
   error: ?LocalizableError,
   fees: BigNumber,
 };
@@ -185,7 +186,7 @@ export default class UndelegateConfirmationDialog extends Component<Props> {
 
   isConfirmDisabled = () => {
     const { form } = this;
-    const { isSubmitting } = this.props;
+    const { isSubmitting, isCalculatingDelegationFee } = this.props;
     const { isValid: unsupportCheckboxIsValid } = form.$(
       'isConfirmUnsupportChecked'
     );
@@ -196,6 +197,7 @@ export default class UndelegateConfirmationDialog extends Component<Props> {
 
     return (
       isSubmitting ||
+      isCalculatingDelegationFee ||
       !unsupportCheckboxIsValid ||
       !ineligibleCheckboxIsValid ||
       !passphraseIsValid
@@ -252,6 +254,7 @@ export default class UndelegateConfirmationDialog extends Component<Props> {
       stakePoolTicker,
       onCancel,
       isSubmitting,
+      isCalculatingDelegationFee,
       fees,
     } = this.props;
     const isConfirmDisabled = this.isConfirmDisabled();
@@ -262,7 +265,8 @@ export default class UndelegateConfirmationDialog extends Component<Props> {
     const actions = [
       {
         label: intl.formatMessage(globalMessages.cancel),
-        onClick: !isSubmitting ? onCancel : () => null,
+        onClick:
+          !isSubmitting && !isCalculatingDelegationFee ? onCancel : () => null,
       },
       {
         className: buttonClasses,
@@ -279,7 +283,9 @@ export default class UndelegateConfirmationDialog extends Component<Props> {
         title={intl.formatMessage(messages.dialogTitle)}
         actions={actions}
         closeOnOverlayClick
-        onClose={!isSubmitting ? onCancel : () => null}
+        onClose={
+          !isSubmitting && !isCalculatingDelegationFee ? onCancel : () => null
+        }
         className={styles.dialog}
         closeButton={<DialogCloseButton />}
       >
@@ -317,10 +323,18 @@ export default class UndelegateConfirmationDialog extends Component<Props> {
             {intl.formatMessage(messages.feesLabel)}
           </label>
           <p className={styles.feesAmount}>
-            <span>{formattedWalletAmount(fees, false)}</span>
-            <span className={styles.feesAmountLabel}>
-              &nbsp;{intl.formatMessage(messages.adaLabel)}
-            </span>
+            {isCalculatingDelegationFee ? (
+              <span className={styles.calculatingFeesLabel}>
+                {intl.formatMessage(messages.calculatingFees)}
+              </span>
+            ) : (
+              <>
+                <span>{formattedWalletAmount(fees, false)}</span>
+                <span className={styles.feesAmountLabel}>
+                  &nbsp;{intl.formatMessage(globalMessages.unitAda)}
+                </span>
+              </>
+            )}
           </p>
         </div>
         <Input

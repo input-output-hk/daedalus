@@ -131,7 +131,6 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
             onClose={onClose}
             onBack={onBack}
             onSelectPool={onSelectPool}
-            isCalculatingDelegationFee={isCalculatingDelegationFee}
           />
         );
         break;
@@ -146,6 +145,7 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
             onConfirm={onConfirm}
             onBack={onBack}
             isSubmitting={isSubmitting}
+            isCalculatingDelegationFee={isCalculatingDelegationFee}
             error={error}
           />
         );

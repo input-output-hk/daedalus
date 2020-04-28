@@ -132,8 +132,8 @@ export default class DelegationSetupWizardDialogContainer extends Component<
     this.handleContinue();
   };
 
-  handleSelectPool = async (poolId: string) => {
-    await this._handleCalculateTransactionFee();
+  handleSelectPool = (poolId: string) => {
+    this._handleCalculateTransactionFee();
     this.setState({ selectedPoolId: poolId });
     this.handleContinue();
   };

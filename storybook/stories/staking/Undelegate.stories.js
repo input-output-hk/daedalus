@@ -21,6 +21,7 @@ export const StakingUndelegateConfirmationStory = (props: {
     )}
     onCancel={() => null}
     onExternalLinkClick={() => null}
+    isCalculatingDelegationFee={false}
     isSubmitting={false}
     error={null}
     fees={new BigNumber(33333.33)}

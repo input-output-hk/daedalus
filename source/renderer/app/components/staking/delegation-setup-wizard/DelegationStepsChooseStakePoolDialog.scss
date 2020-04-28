@@ -1,5 +1,3 @@
-@import '../../../themes/mixins/loading-spinner';
-
 .delegationStepsChooseStakePoolDialogWrapper {
   :global {
     .StakePoolThumbnail_content {
@@ -122,10 +120,5 @@
         margin-bottom: 10px;
       }
     }
-  }
-
-  .submitButtonSpinning {
-    box-shadow: none !important;
-    @include loading-spinner('../../../assets/images/spinner-light.svg');
   }
 }

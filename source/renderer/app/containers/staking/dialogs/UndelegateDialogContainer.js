@@ -29,6 +29,7 @@ export default class UndelegateDialogContainer extends Component<Props> {
       getStakePoolById,
       quitStakePoolRequest,
       isDelegationTransactionPending,
+      calculateDelegationFeeRequest,
     } = staking;
     const { getWalletById, undelegateWalletSubmissionSuccess } = wallets;
     const futureEpochStartTime = get(futureEpoch, 'epochStart', 0);
@@ -90,6 +91,7 @@ export default class UndelegateDialogContainer extends Component<Props> {
           });
         }}
         onExternalLinkClick={onExternalLinkClick}
+        isCalculatingDelegationFee={calculateDelegationFeeRequest.isExecuting}
         isSubmitting={
           quitStakePoolRequest.isExecuting || isDelegationTransactionPending
         }

@@ -1,3 +1,4 @@
+@import '../../../themes/mixins/animations';
 @import '../../../themes/mixins/loading-spinner';
 @import '../../../themes/mixins/error-message';
 
@@ -40,15 +41,21 @@
     line-height: 1.38;
     margin-bottom: 20px;
 
+    .calculatingFeesLabel {
+      @include animated-ellipsis($width: 20px);
+      -webkit-backface-visibility: hidden;
+    }
+
     .feesAmount {
       color: var(--theme-staking-delegation-center-fees-amount-color);
       user-select: text;
 
       .feesAmountLabel {
-        opacity: 0.5;
+        font-family: var(--font-light);
       }
     }
   }
+
   .error {
     @include error-message;
     margin-top: 27px;

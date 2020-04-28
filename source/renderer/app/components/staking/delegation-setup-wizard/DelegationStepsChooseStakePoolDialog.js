@@ -120,7 +120,6 @@ type Props = {
   onClose: Function,
   onBack: Function,
   onSelectPool: Function,
-  isCalculatingDelegationFee: boolean,
 };
 
 type State = {
@@ -171,7 +170,6 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
       selectedWallet,
       onClose,
       onBack,
-      isCalculatingDelegationFee,
     } = this.props;
     const { searchValue, selectedList, selectedPoolId } = this.state;
     const selectedWalletName = get(selectedWallet, 'name');
@@ -202,18 +200,13 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
     const canSubmit =
       !activeStakePoolId || activeStakePoolId !== selectedPoolId;
 
-    const confirmButtonClasses = classNames([
-      'continueButton',
-      isCalculatingDelegationFee ? styles.submitButtonSpinning : null,
-    ]);
-
     const actions = [
       {
-        className: confirmButtonClasses,
+        className: 'continueButton',
         label: intl.formatMessage(messages.continueButtonLabel),
         onClick: this.onAcceptPool,
         primary: true,
-        disabled: !selectedPoolId || !canSubmit || isCalculatingDelegationFee,
+        disabled: !selectedPoolId || !canSubmit,
       },
     ];
 
@@ -340,8 +333,8 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
         title={intl.formatMessage(messages.title)}
         subtitle={stepsIndicatorLabel}
         actions={actions}
-        closeOnOverlayClick={!isCalculatingDelegationFee}
-        onClose={!isCalculatingDelegationFee ? onClose : () => {}}
+        closeOnOverlayClick
+        onClose={onClose}
         className={dialogClassName}
         closeButton={<DialogCloseButton onClose={onClose} />}
         backButton={<DialogBackButton onBack={onBack} />}

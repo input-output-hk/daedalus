@@ -20,11 +20,11 @@ import DialogCloseButton from '../../widgets/DialogCloseButton';
 import DialogBackButton from '../../widgets/DialogBackButton';
 import Dialog from '../../widgets/Dialog';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
+import { formattedWalletAmount } from '../../../utils/formatters';
 import { submitOnEnter } from '../../../utils/form';
 import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
-import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import Wallet from '../../../domains/Wallet';
 import StakePool from '../../../domains/StakePool';
 
@@ -78,6 +78,11 @@ const messages = defineMessages({
     description:
       'Label for "Cancel" button on the delegation setup "confirmation" step dialog.',
   },
+  calculatingFees: {
+    id: 'staking.delegationSetup.confirmation.step.dialog.calculatingFees',
+    defaultMessage: '!!!Calculating fees',
+    description: '"Calculating fees" message in the "Undelegate" dialog.',
+  },
 });
 
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
@@ -91,6 +96,7 @@ type Props = {
   selectedPool: ?StakePool,
   stepsList: Array<string>,
   isSubmitting: boolean,
+  isCalculatingDelegationFee: boolean,
   error: ?LocalizableError,
 };
 
@@ -159,6 +165,7 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
       selectedWallet,
       error,
       isSubmitting,
+      isCalculatingDelegationFee,
     } = this.props;
     const selectedWalletName = get(selectedWallet, 'name');
     const selectedPoolTicker = get(selectedPool, 'ticker');
@@ -200,14 +207,12 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
       />
     );
 
-    const fees = transactionFee.toFormat(DECIMAL_PLACES_IN_ADA);
-
     return (
       <Dialog
         title={intl.formatMessage(messages.title)}
         subtitle={stepsIndicatorLabel}
         actions={actions}
-        closeOnOverlayClick={!isSubmitting}
+        closeOnOverlayClick
         onClose={!isSubmitting ? onClose : () => {}}
         className={dialogClassName}
         closeButton={<DialogCloseButton onClose={onClose} />}
@@ -238,8 +243,18 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
               {intl.formatMessage(messages.feesLabel)}
             </p>
             <p className={styles.feesAmount}>
-              {fees}
-              <span> ADA</span>
+              {isCalculatingDelegationFee ? (
+                <span className={styles.calculatingFeesLabel}>
+                  {intl.formatMessage(messages.calculatingFees)}
+                </span>
+              ) : (
+                <>
+                  <span>{formattedWalletAmount(transactionFee, false)}</span>
+                  <span className={styles.feesAmountLabel}>
+                    &nbsp;{intl.formatMessage(globalMessages.unitAda)}
+                  </span>
+                </>
+              )}
             </p>
           </div>
 
