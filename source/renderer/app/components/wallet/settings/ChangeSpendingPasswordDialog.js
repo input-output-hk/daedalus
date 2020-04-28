@@ -110,6 +110,21 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
             messages.currentPasswordFieldPlaceholder
           ),
           value: '',
+          validators: [
+            ({ form }) => {
+              const currentPasswordField = form.$('currentPassword');
+              if (
+                currentPasswordField.value.length === 0 &&
+                this.props.isSpendingPasswordSet
+              )
+                return [false];
+              return [
+                this.context.intl.formatMessage(
+                  globalMessages.invalidSpendingPassword
+                ),
+              ];
+            },
+          ],
         },
         spendingPassword: {
           type: 'password',
@@ -127,6 +142,7 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
           validators: [
             ({ field, form }) => {
               const repeatPasswordField = form.$('repeatPassword');
+              if (repeatPasswordField.length === 0) return [false];
               if (repeatPasswordField.value.length > 0) {
                 repeatPasswordField.validate({ showErrors: true });
               }
@@ -149,7 +165,7 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
           validators: [
             ({ field, form }) => {
               const spendingPassword = form.$('spendingPassword').value;
-              if (spendingPassword.length === 0) return [true];
+              if (spendingPassword.length === 0) return [false];
               return [
                 isValidRepeatPassword(spendingPassword, field.value),
                 this.context.intl.formatMessage(
