@@ -201,7 +201,7 @@ export default class WalletReceiveRandom extends Component<Props, State> {
 
     const passwordField = form.$('spendingPassword');
 
-    const canSubmit = !isSubmitting || !passwordField.value;
+    const canSubmit = !isSubmitting && passwordField.value;
 
     const generateAddressForm = (
       <div className={generateAddressWrapperClasses}>
