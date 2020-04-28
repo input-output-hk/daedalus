@@ -10,7 +10,8 @@ import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
 import {
   isValidSpendingPassword,
-  isValidRepeatPassword, isValidWalletName,
+  isValidRepeatPassword,
+  isValidWalletName,
 } from '../../../utils/validations';
 import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
