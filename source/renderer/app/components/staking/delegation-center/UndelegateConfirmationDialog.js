@@ -65,11 +65,6 @@ const messages = defineMessages({
     defaultMessage: '!!!Fees',
     description: 'Fees label in the "Undelegate" dialog.',
   },
-  adaLabel: {
-    id: 'staking.delegationCenter.undelegate.dialog.adaLabel',
-    defaultMessage: '!!!ADA',
-    description: 'ADA label in the "Undelegate" dialog.',
-  },
   spendingPasswordLabel: {
     id: 'staking.delegationCenter.undelegate.dialog.spendingPasswordLabel',
     defaultMessage: '!!!Spending password',
@@ -91,6 +86,11 @@ const messages = defineMessages({
     defaultMessage: '!!!unknown',
     description: 'unknown stake pool label in the "Undelegate" dialog.',
   },
+  calculatingFees: {
+    id: 'staking.delegationCenter.undelegate.dialog.calculatingFees',
+    defaultMessage: '!!!Calculating fees',
+    description: '"Calculating fees" message in the "Undelegate" dialog.',
+  },
 });
 
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
@@ -104,7 +104,7 @@ type Props = {
   onExternalLinkClick: Function,
   isSubmitting: boolean,
   error: ?LocalizableError,
-  fees: BigNumber,
+  fees: ?BigNumber,
 };
 
 @observer
@@ -185,7 +185,7 @@ export default class UndelegateConfirmationDialog extends Component<Props> {
 
   isConfirmDisabled = () => {
     const { form } = this;
-    const { isSubmitting } = this.props;
+    const { fees, isSubmitting } = this.props;
     const { isValid: unsupportCheckboxIsValid } = form.$(
       'isConfirmUnsupportChecked'
     );
@@ -196,6 +196,7 @@ export default class UndelegateConfirmationDialog extends Component<Props> {
 
     return (
       isSubmitting ||
+      !fees ||
       !unsupportCheckboxIsValid ||
       !ineligibleCheckboxIsValid ||
       !passphraseIsValid
@@ -317,10 +318,18 @@ export default class UndelegateConfirmationDialog extends Component<Props> {
             {intl.formatMessage(messages.feesLabel)}
           </label>
           <p className={styles.feesAmount}>
-            <span>{formattedWalletAmount(fees, false)}</span>
-            <span className={styles.feesAmountLabel}>
-              &nbsp;{intl.formatMessage(messages.adaLabel)}
-            </span>
+            {!fees ? (
+              <span className={styles.calculatingFeesLabel}>
+                {intl.formatMessage(messages.calculatingFees)}
+              </span>
+            ) : (
+              <>
+                <span>{formattedWalletAmount(fees, false)}</span>
+                <span className={styles.feesAmountLabel}>
+                  &nbsp;{intl.formatMessage(globalMessages.unitAda)}
+                </span>
+              </>
+            )}
           </p>
         </div>
         <Input
