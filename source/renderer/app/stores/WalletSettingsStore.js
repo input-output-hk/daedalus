@@ -286,6 +286,8 @@ export default class WalletSettingsStore extends Store {
     recoveryPhrase: Array<string>,
   }) => {
     const walletId = await getRecoveryWalletIdChannel.request(recoveryPhrase);
+    if (!walletId)
+      throw new Error('It was not possible to retrieve the walletId.');
     const activeWallet = this.stores.wallets.active;
     if (!activeWallet)
       throw new Error(
