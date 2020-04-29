@@ -1,6 +1,5 @@
 // @flow
 import { expect } from 'chai';
-import BigNumber from 'bignumber.js/bignumber';
 import { expectTextInSelector, waitAndClick } from '../../../common/e2e/steps/helpers';
 import { rewardsMnemonics, balanceMnemonics, balanceItnMnemonics, testStorageKeys } from '../../../common/e2e/steps/config';
 import { WalletSyncStateStatuses } from '../../../../source/renderer/app/domains/Wallet';
@@ -74,7 +73,7 @@ export const restoreLegacyWallet = async (
     recoveryPhrase = null;
   }
   await client.executeAsync((name, recoveryPhrase, transferFunds, noWalletsErrorMessage, done) => {
-    let mnemonics = recoveryPhrase || daedalus.utils.crypto.generateMnemonic(12);
+    const mnemonics = recoveryPhrase || daedalus.utils.crypto.generateMnemonic(12);
     const recoveryPhraseArray = typeof mnemonics === 'string' ? mnemonics.split(' ') : mnemonics;
     daedalus.api.ada
       .restoreByronRandomWallet({
@@ -258,7 +257,7 @@ export const createWallets = async function(
 const createWalletsSequentially = async function(wallets: Array<any>) {
   const isIncentivizedTestnetRequest = await this.client.execute(() => global.isIncentivizedTestnet);
   for (const walletData of wallets) {
-    const result = await this.client.executeAsync((wallet, isIncentivizedTestnet, done) => {
+    await this.client.executeAsync((wallet, isIncentivizedTestnet, done) => {
       const mnemonic = daedalus.utils.crypto.generateMnemonic(isIncentivizedTestnet ? 15 : 12);
       daedalus.api.ada
         .createWallet({
@@ -279,7 +278,7 @@ const createWalletsSequentially = async function(wallets: Array<any>) {
         )
         .catch(error => done(error.stack));
     }, walletData, isIncentivizedTestnetRequest.value);
-    const wallet = await waitUntilWalletIsLoaded.call(this, walletData.name);
+    await waitUntilWalletIsLoaded.call(this, walletData.name);
   }
 };
 
@@ -291,7 +290,7 @@ const createWalletsAsync = async function(table, isLegacy?: boolean) {
     const mnemonicsLength = isLegacyWallet ? 12 : 15;
 
     window.Promise.all(
-      wallets.map((wallet, index) => {
+      wallets.map(wallet => {
         const mnemonic = daedalus.utils.crypto.generateMnemonic(mnemonicsLength);
         const recoveryPhrase = !isLegacyWallet
           ? mnemonic
@@ -306,13 +305,13 @@ const createWalletsAsync = async function(table, isLegacy?: boolean) {
         });
       })
     )
-      .then(storeWallets =>
+      .then(() =>
         daedalus.stores.wallets
           .refreshWalletsData()
           .then(() => done({ mnemonics }))
           .catch(error => done(error))
       )
-      .catch(error => done('error.stack'));
+      .catch(error => done(error));
   }, table, isLegacy);
 
   this.mnemonics = Object.assign(

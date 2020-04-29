@@ -35,6 +35,8 @@ Then(/^the system time error overlay should be (hidden|visible)$/, function(
 });
 
 Then('the system time difference should be {string}', async function(text) {
-  let selector = SELECTORS.TIME_OFF;
-  await expectTextInSelector(this.client, { selector, text });
+  await expectTextInSelector(this.client, {
+    selector: SELECTORS.TIME_OFF,
+    text
+  });
 });

@@ -41,7 +41,6 @@ Then(/^the current and next epoch countdown have correct data$/, async function(
   return nextEpoch === currentEpoch + 1;
 });
 
-let wallet;
 let pool;
 
 Then(/^the "([^"]*)" wallet should display the "([^"]*)" option$/, async function(walletName, optionText) {
@@ -65,7 +64,7 @@ Given(/^the "([^"]*)" wallet was delegated to the first Stake Pool$/, async func
   pool = data.value;
 });
 
-Given(/^the "([^"]*)" wallet was delegated to a Stake Pool with no metadata$/, async function(walletName) {
+Given(/^the "([^"]*)" wallet was delegated to a Stake Pool with no metadata$/, async function() {
   const walletWithNoMetadata = {
     id: 'walletWithNoMetadata',
     addressPoolGap: 0,
@@ -211,7 +210,7 @@ Then(/^I close the wizard$/, async function() {
 });
 
 Given('I send {int} ADA from the {string} wallet to the {string} wallet', async function(adaAmount, walletFrom, walletTo) {
-  const DATA = await this.client.executeAsync((amount, senderName, receiverName, done) => {
+  await this.client.executeAsync((amount, senderName, receiverName, done) => {
     const walletSender = daedalus.stores.wallets.getWalletByName(senderName);
     const walletReceiver = daedalus.stores.wallets.getWalletByName(receiverName);
     daedalus.stores.addresses

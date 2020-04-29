@@ -91,7 +91,7 @@ Feature: Wallet Settings
     And I click outside "name" input field
     Then I should see new wallet name "Test Wallet キュビズム"
 
-  @shelley
+  @shelley @skip
   Scenario: User force wallet resync
     Given I am on the "Test Wallet" wallet "settings" screen
     When I click "Resync wallet" button

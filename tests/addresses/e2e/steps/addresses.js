@@ -2,10 +2,7 @@
 import { Given, Then, When } from 'cucumber';
 import { expect } from 'chai';
 import { find } from 'lodash';
-import {
-  getVisibleElementsCountForSelector,
-  waitAndClick,
-} from '../../../common/e2e/steps/helpers';
+import { getVisibleElementsCountForSelector } from '../../../common/e2e/steps/helpers';
 import { getWalletByName } from '../../../wallets/e2e/steps/helpers';
 import type { Daedalus } from '../../../types';
 

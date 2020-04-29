@@ -1,6 +1,6 @@
 // @flow
 import { waitAndClick } from '../../../common/e2e/steps/helpers';
-import type { Daedalus, WebdriverClient } from '../../../types';
+import type { Daedalus } from '../../../types';
 
 declare var daedalus: Daedalus;
 const SELECTORS = {

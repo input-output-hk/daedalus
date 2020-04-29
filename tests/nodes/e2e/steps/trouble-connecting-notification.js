@@ -1,5 +1,5 @@
 // @flow
-import { Then, When } from 'cucumber';
+import { Then } from 'cucumber';
 import { waitUntilTextInSelector } from '../../../common/e2e/steps/helpers';
 import type { Daedalus } from '../../../types';
 

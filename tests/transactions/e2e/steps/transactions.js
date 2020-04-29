@@ -6,9 +6,7 @@ import { DECIMAL_PLACES_IN_ADA, LOVELACES_PER_ADA } from '../../../../source/ren
 import {
   getVisibleTextsForSelector,
   clickInputByLabel,
-  clickOptionByValue,
   clickOptionByIndex,
-  getInputValueByLabel,
 } from '../../../common/e2e/steps/helpers';
 import { getWalletByName, fillOutWalletSendForm } from '../../../wallets/e2e/steps/helpers';
 import { getRawWalletId } from '../../../../source/renderer/app/api/utils';
@@ -74,7 +72,6 @@ When(
     const values = table.hashes()[0];
     const wallet = await getWalletByName.call(this, walletName);
     const walletId = getRawWalletId(wallet.id);
-    const isLegacy = wallet.isLegacy;
 
     // Get Destination wallet address
     const walletAddress = await this.client.executeAsync((walletId, isLegacy, done) => {
@@ -82,7 +79,7 @@ When(
         .getAddresses({ walletId, isLegacy })
         .then(response => done(response[0].id))
         .catch(error => done(error));
-    }, walletId, isLegacy);
+    }, walletId, wallet.isLegacy);
 
     values.address = walletAddress.value;
     return fillOutWalletSendForm.call(this, values);

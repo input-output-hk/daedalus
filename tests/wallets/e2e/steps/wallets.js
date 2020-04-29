@@ -114,7 +114,7 @@ When(/^I click close$/, function() {
 Then(/^I should have newly created "([^"]*)" wallet loaded$/, async function(
   walletName
 ) {
-  const result = await this.client.executeAsync(done => {
+  await this.client.executeAsync(done => {
     daedalus.stores.wallets.walletsRequest
       .execute()
       .then(done)
