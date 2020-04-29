@@ -493,7 +493,7 @@ export default class WalletsStore extends Store {
   _deleteWallet = async (params: { walletId: string, isLegacy: boolean }) => {
     // Pause polling in order to avoid fetching data for wallet we are about to delete
     if (this.walletsRequest.isExecuting) await this.walletsRequest;
-    this._pausePolling();
+    await this._pausePolling();
 
     const walletToDelete = this.getWalletById(params.walletId);
     if (!walletToDelete) return;
@@ -572,7 +572,7 @@ export default class WalletsStore extends Store {
   _restore = async () => {
     // Pause polling in order to avoid fetching data for wallet we are about to restore
     // so that we remain on the "Add wallet" screen until user closes the TADA screen
-    this._pausePolling();
+    await this._pausePolling();
 
     // Reset restore requests to clear previous errors
     this._restoreWalletResetRequests();
@@ -1048,9 +1048,12 @@ export default class WalletsStore extends Store {
     }
   };
 
-  @action _pausePolling = () => {
-    this._pollingBlocked = true;
-  };
+  @action _pausePolling = async () => {
+    if (this.walletsRequest.isExecuting) await this.walletsRequest;
+    runInAction('AdaWalletsStore::_pausePolling', () => {
+      this._pollingBlocked = true;
+    });
+  }
 
   @action _resumePolling = () => {
     this._pollingBlocked = false;
@@ -1070,7 +1073,7 @@ export default class WalletsStore extends Store {
   }): Generator<any, any, any> {
     try {
       // Pause polling in order not to show Paper wallet in the UI
-      this._pausePolling();
+      yield this._pausePolling();
 
       // Set inProgress state to show spinner if is needed
       this._updateCertificateCreationState(true);
@@ -1236,7 +1239,7 @@ export default class WalletsStore extends Store {
     filePath: string,
   }) {
     try {
-      this._pausePolling();
+      yield this._pausePolling();
 
       // Set inProgress state to show spinner if is needed
       this._updateRewardsCsvCreationState(true);

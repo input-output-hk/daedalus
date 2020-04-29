@@ -20,7 +20,14 @@ Given(/^I have (created )?the following (balance )?wallets:$/, async function(mo
   const type = await getWalletType.call(this, _type);
   const isLegacy = type === 'byron';
   const sequentially = mode === 'created ';
-  await createWallets.call(this, table.hashes(), { sequentially, isLegacy });
+  const wallets = table.hashes();
+  await createWallets.call(this, wallets, { sequentially, isLegacy });
+  // Ensure that ALL wallets are loaded
+  await Promise.all(
+    wallets.map(async wallet =>
+      await waitUntilWalletIsLoaded.call(this, wallet.name);
+    )
+  );
 });
 
 // Create a single wallet with funds
@@ -31,7 +38,7 @@ Given(/^I have a "([^"]*)" (balance )?wallet with funds$/, async function(wallet
   } else {
     await restoreLegacyWallet(this.client, { walletName, hasFunds: true });
   }
-  const wallet = await waitUntilWalletIsLoaded.call(this, walletName);
+  await waitUntilWalletIsLoaded.call(this, walletName);
 });
 
 // Create a single wallet with no funds
@@ -43,20 +50,27 @@ Given(/^I have a "([^"]*)" (balance )?wallet$/, async function(walletName, _type
   } else {
     await restoreLegacyWallet(this.client, { walletName, hasFunds: false });
   }
-  const wallet = await waitUntilWalletIsLoaded.call(this, walletName);
+  await waitUntilWalletIsLoaded.call(this, walletName);
 });
 
 Given(/^I have a "([^"]*)" balance wallet for transfering funds$/, async function(walletName) {
   await restoreLegacyWallet(this.client, { walletName, hasFunds: true, transferFunds: true });
-  const wallet = await waitUntilWalletIsLoaded.call(this, walletName);
+  await waitUntilWalletIsLoaded.call(this, walletName);
 });
 
 Given(/^I am on the "([^"]*)" wallet "([^"]*)" screen$/, async function(
   walletName,
   screen
 ) {
-  const wallet = await getWalletByName.call(this, walletName);
-  await navigateTo.call(this, `/wallets/${wallet.id}/${screen}`);
+  const proceedToScreen = async () => {
+    const wallet = await waitUntilWalletIsLoaded.call(this, walletName);
+    if (wallet) {
+      await navigateTo.call(this, `/wallets/${wallet.id}/${screen}`);
+    } else {
+      setTimeout(proceedToScreen, 500);
+    }
+  }
+  await proceedToScreen();
 });
 
 When(/^I have one wallet address$/, function() {

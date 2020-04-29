@@ -124,21 +124,72 @@ Before({ tags: '@e2e', timeout: DEFAULT_TIMEOUT * 2 }, async function(testCase) 
   // https://github.com/webdriverio/webdriverio/issues/974
 
   // Reset backend
+  // await this.client.executeAsync(done => {
+  //   const resetBackend = () => {
+  //     if (daedalus.stores.networkStatus.isConnected) {
+  //       daedalus.api.ada.resetTestOverrides();
+  //       daedalus.api.ada
+  //         .testReset()
+  //         .then(daedalus.api.localStorage.reset())
+  //         .then(daedalus.stores.wallets.resetWalletsData())
+  //         .then(done)
+  //         .catch(error => done(error));
+  //     } else {
+  //       setTimeout(resetBackend, 50);
+  //     }
+  //   };
+  //   resetBackend();
+  // });
+
   await this.client.executeAsync(done => {
+   // daedalus.stores.wallets.resetWalletsData()
+   console.debug('========= RESET E2E ===========');
+   // daedalus.stores.wallets._pausePolling()
+   // daedalus.api.ada.resetTestOverrides()
     const resetBackend = () => {
-      if (daedalus.stores.networkStatus.isConnected) {
-        daedalus.api.ada.resetTestOverrides();
-        daedalus.api.ada
-          .testReset()
-          .then(daedalus.api.localStorage.reset())
-          .then(daedalus.stores.wallets.resetWalletsData())
-          .then(done)
-          .catch(error => done(error));
-      } else {
-        setTimeout(resetBackend, 50);
-      }
+     if (daedalus.stores.networkStatus.isConnected) {
+       daedalus.stores.wallets
+         ._pausePolling()
+         .then(() => {
+           console.debug('>>> E2E::RESET Wallets Data')
+           return daedalus.stores.wallets.resetWalletsData()
+         })
+       /*daedalus.api.ada
+         .testReset()*/
+         .then(() => {
+           console.debug('>>> E2E::Delete Wallets')
+           return  daedalus.api.ada.testReset()
+         })
+         .then(() => {
+           console.debug('>>> E2E::RESET TEST Overrides')
+           return  daedalus.api.ada.resetTestOverrides()
+         })
+         /* .then(() => {
+           console.debug('>>> E2E::RESET Wallets Data')
+           daedalus.stores.wallets.resetWalletsData()
+         }) */
+         .then(() => {
+           console.debug('>>> E2E::Reset LC')
+           return daedalus.api.localStorage.reset()
+         })
+         .then(() => {
+           console.debug('>>>> RESUME POLLING <<<<<');
+           daedalus.stores.wallets._resumePolling()
+         })
+         .then(() => {
+           console.debug('>>> E2E::REFRESH')
+           return daedalus.stores.wallets.refreshWalletsData()
+         })
+         .then(done)
+         .catch(error => {
+           console.debug('>>> E2E::error: ', error);
+           return done(error)
+         });
+     } else {
+       setTimeout(resetBackend, 50);
+     }
     };
-    resetBackend();
+     resetBackend()
   });
 
   // Load fresh root url with test environment for each test case

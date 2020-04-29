@@ -76,11 +76,6 @@ export const restoreLegacyWallet = async (
   await client.executeAsync((name, recoveryPhrase, transferFunds, noWalletsErrorMessage, done) => {
     let mnemonics = recoveryPhrase || daedalus.utils.crypto.generateMnemonic(12);
     const recoveryPhraseArray = typeof mnemonics === 'string' ? mnemonics.split(' ') : mnemonics;
-    done({
-      walletName: name,
-      recoveryPhrase: recoveryPhraseArray,
-      spendingPassword: 'Secret1234',
-    })
     daedalus.api.ada
       .restoreByronRandomWallet({
         walletName: name,
@@ -291,9 +286,7 @@ const createWalletsSequentially = async function(wallets: Array<any>) {
 const createWalletsAsync = async function(table, isLegacy?: boolean) {
   const result = await this.client.executeAsync((wallets, isLegacyWallet, done) => {
     const mnemonics = {};
-    const { restoreLegacyRequest, walletsRequest } = daedalus.stores.wallets;
     const { restoreByronRandomWallet, createWallet } = daedalus.api.ada;
-    const request = isLegacyWallet ? restoreLegacyRequest : walletsRequest;
     const apiEndpoint = isLegacyWallet ? restoreByronRandomWallet : createWallet;
     const mnemonicsLength = isLegacyWallet ? 12 : 15;
 
@@ -316,13 +309,11 @@ const createWalletsAsync = async function(table, isLegacy?: boolean) {
       .then(storeWallets =>
         daedalus.stores.wallets
           .refreshWalletsData()
-          .then(() => done({ storeWallets, mnemonics }))
+          .then(() => done({ mnemonics }))
           .catch(error => done(error))
       )
       .catch(error => done('error.stack'));
   }, table, isLegacy);
-
-  const { storeWallets, mnemonics } = result.value;
 
   this.mnemonics = Object.assign(
     {},

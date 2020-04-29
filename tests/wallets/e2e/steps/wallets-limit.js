@@ -23,10 +23,10 @@ Given(
 When(
   'I should see maximum number of wallets in the wallets list',
   async function() {
-    const wallets = await this.client.elements(
+    const walletMenuItems = await this.client.elements(
       '.SidebarWalletMenuItem_component'
     );
-    expect(wallets.value.length).to.equal(MAX_ADA_WALLETS_COUNT);
+    expect(walletMenuItems.value.length).to.equal(MAX_ADA_WALLETS_COUNT);
   }
 );
 
