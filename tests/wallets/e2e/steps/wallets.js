@@ -25,7 +25,7 @@ Given(/^I have (created )?the following (balance )?wallets:$/, async function(mo
   // Ensure that ALL wallets are loaded
   await Promise.all(
     wallets.map(async wallet =>
-      await waitUntilWalletIsLoaded.call(this, wallet.name);
+      await waitUntilWalletIsLoaded.call(this, wallet.name)
     )
   );
 });
