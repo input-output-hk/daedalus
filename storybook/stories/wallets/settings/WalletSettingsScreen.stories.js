@@ -14,10 +14,9 @@ import WalletRecoveryPhraseStep2Dialog from '../../../../source/renderer/app/com
 import WalletRecoveryPhraseStep3Dialog from '../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep3Dialog';
 import WalletRecoveryPhraseStep4Dialog from '../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep4Dialog';
 import {
-  RECOVERY_PHRASE_VERIFICATION_WARNING,
-  RECOVERY_PHRASE_VERIFICATION_NOTIFICATION,
+  RECOVERY_PHRASE_VERIFICATION_TIMES,
   RECOVERY_PHRASE_VERIFICATION_STATUSES,
-  WALLET_RECOVERY_PHRASE_VERIFICATION_TYPES,
+  RECOVERY_PHRASE_VERIFICATION_TYPES,
 } from '../../../../source/renderer/app/config/walletRecoveryPhraseVerificationConfig';
 
 /* eslint-disable react/display-name  */
@@ -29,27 +28,27 @@ const recoveryPhraseId = 'Recovery Phrase';
 
 const recoveryPhraseVerificationDateOptions = {
   'Never Checked - Ok': {
-    type: WALLET_RECOVERY_PHRASE_VERIFICATION_TYPES.NEVER_CHECKED,
+    type: RECOVERY_PHRASE_VERIFICATION_TYPES.NEVER_VERIFIED,
     status: RECOVERY_PHRASE_VERIFICATION_STATUSES.OK,
   },
   'Never Checked - Warning': {
-    type: WALLET_RECOVERY_PHRASE_VERIFICATION_TYPES.NEVER_CHECKED,
+    type: RECOVERY_PHRASE_VERIFICATION_TYPES.NEVER_VERIFIED,
     status: RECOVERY_PHRASE_VERIFICATION_STATUSES.WARNING,
   },
   'Never Checked - Notification': {
-    type: WALLET_RECOVERY_PHRASE_VERIFICATION_TYPES.NEVER_CHECKED,
+    type: RECOVERY_PHRASE_VERIFICATION_TYPES.NEVER_VERIFIED,
     status: RECOVERY_PHRASE_VERIFICATION_STATUSES.NOTIFICATION,
   },
   'Already Checked - Ok': {
-    type: WALLET_RECOVERY_PHRASE_VERIFICATION_TYPES.ALREADY_CHECKED,
+    type: RECOVERY_PHRASE_VERIFICATION_TYPES.ALREADY_VERIFIED,
     status: RECOVERY_PHRASE_VERIFICATION_STATUSES.OK,
   },
   'Already Checked - Warning': {
-    type: WALLET_RECOVERY_PHRASE_VERIFICATION_TYPES.ALREADY_CHECKED,
+    type: RECOVERY_PHRASE_VERIFICATION_TYPES.ALREADY_VERIFIED,
     status: RECOVERY_PHRASE_VERIFICATION_STATUSES.WARNING,
   },
   'Already Checked - Notification': {
-    type: WALLET_RECOVERY_PHRASE_VERIFICATION_TYPES.ALREADY_CHECKED,
+    type: RECOVERY_PHRASE_VERIFICATION_TYPES.ALREADY_VERIFIED,
     status: RECOVERY_PHRASE_VERIFICATION_STATUSES.NOTIFICATION,
   },
 };
@@ -66,11 +65,11 @@ const getWalletDates = (type: string, status: string) => {
   let date = new Date();
   if (status === 'warning')
     date = moment()
-      .subtract(RECOVERY_PHRASE_VERIFICATION_WARNING + 10, 'days')
+      .subtract(RECOVERY_PHRASE_VERIFICATION_TIMES.warning + 10, 'days')
       .toDate();
   else if (status === 'notification')
     date = moment()
-      .subtract(RECOVERY_PHRASE_VERIFICATION_NOTIFICATION + 10, 'days')
+      .subtract(RECOVERY_PHRASE_VERIFICATION_TIMES.notification + 10, 'days')
       .toDate();
 
   const recoveryPhraseVerificationDate = date;
@@ -218,7 +217,7 @@ export default (props: { currentTheme: string, locale: string }) => {
         status || RECOVERY_PHRASE_VERIFICATION_STATUSES.OK
       }
       recoveryPhraseVerificationStatusType={
-        type || WALLET_RECOVERY_PHRASE_VERIFICATION_TYPES.NEVER_CHECKED
+        type || RECOVERY_PHRASE_VERIFICATION_TYPES.NEVER_VERIFIED
       }
       locale={locale}
       isForcedWalletResyncStarting={false}

@@ -1,36 +1,38 @@
 // @flow
+
 import moment from 'moment';
 import {
-  RECOVERY_PHRASE_VERIFICATION_NOTIFICATION,
-  RECOVERY_PHRASE_VERIFICATION_WARNING,
-  RECOVERY_PHRASE_VERIFICATION_STATUSES,
-  WALLET_RECOVERY_PHRASE_VERIFICATION_TYPES,
+  RECOVERY_PHRASE_VERIFICATION_STATUSES as statuses,
+  RECOVERY_PHRASE_VERIFICATION_TYPES as types,
+  RECOVERY_PHRASE_VERIFICATION_TIMES as times,
 } from '../config/walletRecoveryPhraseVerificationConfig';
-// import Wallet from '../domains/Wallet';
 
 export const getStatusFromWalletData = ({
-  creationDate,
-  recoveryPhraseVerificationDate,
+  creationDate: creation,
+  recoveryPhraseVerificationDate: verification,
 }: {
   creationDate: Date,
   recoveryPhraseVerificationDate: ?Date,
 }) => {
-  const dateToCheck =
-    recoveryPhraseVerificationDate || creationDate || new Date();
+  // Data config
+  const dateToCheck = verification || creation || new Date();
   const daysSinceDate = moment().diff(moment(dateToCheck), 'days');
-  let recoveryPhraseVerificationStatus =
-    RECOVERY_PHRASE_VERIFICATION_STATUSES.OK;
-  if (daysSinceDate > RECOVERY_PHRASE_VERIFICATION_NOTIFICATION)
-    recoveryPhraseVerificationStatus =
-      RECOVERY_PHRASE_VERIFICATION_STATUSES.NOTIFICATION;
-  else if (daysSinceDate > RECOVERY_PHRASE_VERIFICATION_WARNING)
-    recoveryPhraseVerificationStatus =
-      RECOVERY_PHRASE_VERIFICATION_STATUSES.WARNING;
-  const recoveryPhraseVerificationStatusType = recoveryPhraseVerificationDate
-    ? WALLET_RECOVERY_PHRASE_VERIFICATION_TYPES.ALREADY_CHECKED
-    : WALLET_RECOVERY_PHRASE_VERIFICATION_TYPES.NEVER_CHECKED;
+
+  // Status Type
+  const type = verification ? types.ALREADY_VERIFIED : types.NEVER_VERIFIED;
+
+  // Status
+  let status;
+  if (daysSinceDate > times.notification) status = statuses.NOTIFICATION;
+  else if (daysSinceDate > times.warning) status = statuses.WARNING;
+  else if (type === types.ALREADY_VERIFIED) status = statuses.OK;
+  else if (daysSinceDate > times.okFewDays) status = statuses.OK_FEW_DAYS;
+  else if (daysSinceDate > times.okFewWeeks) status = statuses.OK_FEW_WEEKS;
+  else if (daysSinceDate > times.okFewMonths) status = statuses.OK_FEW_MONTHS;
+  else status = statuses.OK_TIME_UNTIL;
+
   return {
-    recoveryPhraseVerificationStatus,
-    recoveryPhraseVerificationStatusType,
+    recoveryPhraseVerificationStatus: status,
+    recoveryPhraseVerificationStatusType: type,
   };
 };

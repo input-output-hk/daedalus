@@ -1,7 +1,7 @@
 import { Given, When, Then } from 'cucumber';
 
-const SETTINGS_PAGE_STATUS_SELECTOR = '.WalletRecoveryPhraseVerificationWidget_validationStatus';
-const SETTINGS_PAGE_BUTTON_SELECTOR = `${SETTINGS_PAGE_STATUS_SELECTOR} .WalletRecoveryPhraseVerificationWidget_validationStatusButton`;
+const SETTINGS_PAGE_STATUS_SELECTOR = '.WalletRecoveryPhraseVerificationWidget_status';
+const SETTINGS_PAGE_BUTTON_SELECTOR = `${SETTINGS_PAGE_STATUS_SELECTOR} .WalletRecoveryPhraseVerificationWidget_statusButton`;
 const DIALOG_SELECTOR = '.Dialog_dialogWrapper';
 const DIALOG_CHECKBOX_SELECTOR = `${DIALOG_SELECTOR} .SimpleCheckbox_check`;
 const DIALOG_CONTINUE_BUTTON_SELECTOR = `${DIALOG_SELECTOR} .SimpleButton_root`;
