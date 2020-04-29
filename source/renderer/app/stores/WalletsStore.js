@@ -492,6 +492,7 @@ export default class WalletsStore extends Store {
 
   _deleteWallet = async (params: { walletId: string, isLegacy: boolean }) => {
     // Pause polling in order to avoid fetching data for wallet we are about to delete
+    if (this.walletsRequest.isExecuting) await this.walletsRequest;
     this._pausePolling();
 
     const walletToDelete = this.getWalletById(params.walletId);
@@ -929,11 +930,11 @@ export default class WalletsStore extends Store {
 
   @action refreshWalletsData = async () => {
     // Prevent wallets data refresh if polling is blocked
-    if (this._pollingBlocked) return;
+    if (this._pollingBlocked || this.walletsRequest.isExecuting) return;
 
     if (this.stores.networkStatus.isConnected) {
       const result = await this.walletsRequest.execute().promise;
-      if (!result) return;
+      if (!result || this._pollingBlocked) return;
       const walletIds = result
         .filter(
           ({ syncState }: Wallet) =>
