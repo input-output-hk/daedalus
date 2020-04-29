@@ -2649,13 +2649,13 @@
       },
       {
         "defaultMessage": "!!!I understand that I will not be eligible to earn rewards when my stake is undelegated.",
-        "description": "Label for the uneligible confirmation check in the \"Undelegate\" dialog.",
+        "description": "Label for the ineligible confirmation check in the \"Undelegate\" dialog.",
         "end": {
           "column": 3,
           "line": 62
         },
         "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
-        "id": "staking.delegationCenter.undelegate.dialog.confirmUneligibleCheck",
+        "id": "staking.delegationCenter.undelegate.dialog.confirmIneligibleCheck",
         "start": {
           "column": 26,
           "line": 56
@@ -2676,31 +2676,17 @@
         }
       },
       {
-        "defaultMessage": "!!!ADA",
-        "description": "ADA label in the \"Undelegate\" dialog.",
+        "defaultMessage": "!!!Spending password",
+        "description": "Spending password label in the \"Undelegate\" dialog.",
         "end": {
           "column": 3,
           "line": 72
         },
         "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
-        "id": "staking.delegationCenter.undelegate.dialog.adaLabel",
-        "start": {
-          "column": 12,
-          "line": 68
-        }
-      },
-      {
-        "defaultMessage": "!!!Spending password",
-        "description": "Spending password label in the \"Undelegate\" dialog.",
-        "end": {
-          "column": 3,
-          "line": 77
-        },
-        "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
         "id": "staking.delegationCenter.undelegate.dialog.spendingPasswordLabel",
         "start": {
           "column": 25,
-          "line": 73
+          "line": 68
         }
       },
       {
@@ -2708,13 +2694,13 @@
         "description": "Spending password placeholder in the \"Undelegate\" dialog.",
         "end": {
           "column": 3,
-          "line": 83
+          "line": 78
         },
         "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
         "id": "staking.delegationCenter.undelegate.dialog.spendingPasswordPlaceholder",
         "start": {
           "column": 31,
-          "line": 78
+          "line": 73
         }
       },
       {
@@ -2722,13 +2708,13 @@
         "description": "Label for password error in the \"Undelegate\" dialog.",
         "end": {
           "column": 3,
-          "line": 88
+          "line": 83
         },
         "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
         "id": "staking.delegationCenter.undelegate.dialog.passwordError",
         "start": {
           "column": 24,
-          "line": 84
+          "line": 79
         }
       },
       {
@@ -2736,12 +2722,26 @@
         "description": "unknown stake pool label in the \"Undelegate\" dialog.",
         "end": {
           "column": 3,
-          "line": 93
+          "line": 88
         },
         "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
         "id": "staking.delegationCenter.undelegate.dialog.unknownStakePoolLabel",
         "start": {
           "column": 25,
+          "line": 84
+        }
+      },
+      {
+        "defaultMessage": "!!!Calculating fees",
+        "description": "\"Calculating fees\" message in the \"Undelegate\" dialog.",
+        "end": {
+          "column": 3,
+          "line": 93
+        },
+        "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
+        "id": "staking.delegationCenter.undelegate.dialog.calculatingFees",
+        "start": {
+          "column": 19,
           "line": 89
         }
       }
@@ -3084,7 +3084,7 @@
       },
       {
         "defaultMessage": "!!!STEP {currentStep} OF {totalSteps}",
-        "description": "Step indicator labe on the delegation setup \"choose wallet\" step dialog.",
+        "description": "Step indicator label on the delegation setup \"choose wallet\" step dialog.",
         "end": {
           "column": 3,
           "line": 108
@@ -3159,7 +3159,7 @@
       },
       {
         "defaultMessage": "!!!STEP {currentStep} OF {totalSteps}",
-        "description": "Step indicator labe on the delegation setup \"choose wallet\" step dialog.",
+        "description": "Step indicator label on the delegation setup \"choose wallet\" step dialog.",
         "end": {
           "column": 3,
           "line": 53
@@ -3234,7 +3234,7 @@
       },
       {
         "defaultMessage": "!!!STEP {currentStep} OF {totalSteps}",
-        "description": "Step indicator labe on the delegation setup \"confirmation\" step dialog.",
+        "description": "Step indicator label on the delegation setup \"confirmation\" step dialog.",
         "end": {
           "column": 3,
           "line": 43
@@ -3328,6 +3328,20 @@
         "start": {
           "column": 21,
           "line": 75
+        }
+      },
+      {
+        "defaultMessage": "!!!Calculating fees",
+        "description": "\"Calculating fees\" message in the \"Undelegate\" dialog.",
+        "end": {
+          "column": 3,
+          "line": 85
+        },
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
+        "id": "staking.delegationSetup.confirmation.step.dialog.calculatingFees",
+        "start": {
+          "column": 19,
+          "line": 81
         }
       }
     ],

@@ -24,7 +24,7 @@ import { TransactionStates } from '../domains/WalletTransaction';
 import REWARDS from '../config/stakingRewards.dummy.json';
 
 export default class StakingStore extends Store {
-  @observable isDelegatioTransactionPending = false;
+  @observable isDelegationTransactionPending = false;
   @observable fetchingStakePoolsFailed = false;
 
   pollingStakePoolsInterval: ?IntervalID = null;
@@ -35,6 +35,8 @@ export default class StakingStore extends Store {
   decentralizationProgress: number = 10;
   adaValue: BigNumber = new BigNumber(82650.15);
   percentage: number = 14;
+
+  _delegationFeeCalculationWalletId: ?string = null;
 
   setup() {
     if (global.isIncentivizedTestnet) {
@@ -64,6 +66,9 @@ export default class StakingStore extends Store {
   @observable stakePoolsRequest: Request<Array<StakePool>> = new Request(
     this.api.ada.getStakePools
   );
+  @observable calculateDelegationFeeRequest: Request<BigNumber> = new Request(
+    this.api.ada.calculateDelegationFee
+  );
   @observable isStakingExperimentRead: boolean = false;
 
   // =================== PUBLIC API ==================== //
@@ -72,7 +77,7 @@ export default class StakingStore extends Store {
     const { walletId, stakePoolId, passphrase } = request;
 
     // Set join transaction in "PENDING" state
-    this.isDelegatioTransactionPending = true;
+    this.isDelegationTransactionPending = true;
 
     try {
       const joinTransaction = await this.joinStakePoolRequest.execute({
@@ -87,7 +92,7 @@ export default class StakingStore extends Store {
         { transactionId: joinTransaction.id, walletId }
       );
 
-      // Reset transtation state check interval after 30 seconds
+      // Reset transaction state check interval after 30 seconds
       setTimeout(() => {
         this.resetStakePoolTransactionChecker();
       }, STAKE_POOL_TRANSACTION_CHECKER_TIMEOUT);
@@ -101,7 +106,7 @@ export default class StakingStore extends Store {
     const { walletId, passphrase } = request;
 
     // Set quit transaction in "PENDING" state
-    this.isDelegatioTransactionPending = true;
+    this.isDelegationTransactionPending = true;
 
     try {
       const quitTransaction = await this.quitStakePoolRequest.execute({
@@ -115,7 +120,7 @@ export default class StakingStore extends Store {
         { transactionId: quitTransaction.id, walletId }
       );
 
-      // Reset transtation state check interval after 30 seconds
+      // Reset transaction state check interval after 30 seconds
       setTimeout(() => {
         this.resetStakePoolTransactionChecker();
       }, STAKE_POOL_TRANSACTION_CHECKER_TIMEOUT);
@@ -158,7 +163,7 @@ export default class StakingStore extends Store {
       this.delegationCheckTimeInterval = null;
     }
     this.stores.wallets.refreshWalletsData();
-    this.isDelegatioTransactionPending = false;
+    this.isDelegationTransactionPending = false;
   };
 
   @action markStakingExperimentAsRead = () => {
@@ -167,9 +172,10 @@ export default class StakingStore extends Store {
 
   calculateDelegationFee = async (
     delegationFeeRequest: GetDelegationFeeRequest
-  ) => {
+  ): ?BigNumber => {
     const { walletId } = delegationFeeRequest;
     const wallet = this.stores.wallets.getWalletById(walletId);
+    this._delegationFeeCalculationWalletId = walletId;
 
     if (!wallet) {
       throw new Error(
@@ -177,9 +183,23 @@ export default class StakingStore extends Store {
       );
     }
 
-    return this.api.ada.calculateDelegationFee({
-      ...delegationFeeRequest,
-    });
+    if (this.calculateDelegationFeeRequest.isExecuting) {
+      await this.calculateDelegationFeeRequest;
+    }
+
+    try {
+      const delegationFee: BigNumber = await this.calculateDelegationFeeRequest.execute(
+        { ...delegationFeeRequest }
+      ).promise;
+
+      if (this._delegationFeeCalculationWalletId !== walletId) {
+        return null;
+      }
+
+      return delegationFee;
+    } catch (error) {
+      throw error;
+    }
   };
 
   // GETTERS

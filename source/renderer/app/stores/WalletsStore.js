@@ -885,7 +885,7 @@ export default class WalletsStore extends Store {
         currentRoute
       );
       if (match) {
-        // We have a route for a specific wallet -> lets try to find it
+        // We have a route for a specific wallet -> let's try to find it
         const walletForCurrentRoute = this.all.find(w => w.id === match.id);
         if (walletForCurrentRoute) {
           // The wallet exists, we are done
@@ -1283,7 +1283,7 @@ export default class WalletsStore extends Store {
   });
 
   /**
-   * - Receives a walet local data
+   * - Receives a wallet local data
    * - Returns the wallet's recovery phrase verification status
    */
   _setWalletRecoveryPhraseVerificationData = ({

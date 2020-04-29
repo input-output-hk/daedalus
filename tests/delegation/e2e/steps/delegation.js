@@ -239,7 +239,9 @@ Then(/^I choose the "([^"]*)" wallet$/, async function(walletName) {
 
 Then(/^I choose the first stake pool$/, async function() {
   await this.waitAndClick('.StakePoolThumbnail_component');
-  await this.waitAndClick('//button[text()="Continue"]');
+  const selector = '//button[text()="Continue"]';
+  await this.client.waitForEnabled(selector);
+  await this.waitAndClick(selector);
 });
 
 Then(/^I enter "([^"]*)" as the spending password$/, async function(spendingPassword) {

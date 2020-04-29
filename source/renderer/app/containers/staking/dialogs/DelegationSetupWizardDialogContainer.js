@@ -85,7 +85,7 @@ export default class DelegationSetupWizardDialogContainer extends Component<
     activeStep: 0,
     selectedWalletId: this.selectedWalletId,
     selectedPoolId: this.selectedPoolId,
-    stakePoolJoinFee: new BigNumber(0),
+    stakePoolJoinFee: null,
   };
 
   STEPS_LIST = [
@@ -153,7 +153,7 @@ export default class DelegationSetupWizardDialogContainer extends Component<
       recentStakePools,
       joinStakePoolRequest,
       getStakePoolById,
-      isDelegatioTransactionPending,
+      isDelegationTransactionPending,
     } = staking;
     const { network, rawNetwork } = environment;
     const futureEpochStartTime = get(futureEpoch, 'epochStart', 0);
@@ -204,7 +204,7 @@ export default class DelegationSetupWizardDialogContainer extends Component<
         onConfirm={this.handleConfirm}
         getStakePoolById={getStakePoolById}
         isSubmitting={
-          joinStakePoolRequest.isExecuting || isDelegatioTransactionPending
+          joinStakePoolRequest.isExecuting || isDelegationTransactionPending
         }
         error={joinStakePoolRequest.error}
       />
@@ -212,11 +212,18 @@ export default class DelegationSetupWizardDialogContainer extends Component<
   }
 
   async _handleCalculateTransactionFee() {
-    const { calculateDelegationFee } = this.props.stores.staking;
+    const { staking, uiDialogs } = this.props.stores;
+    const { isOpen } = uiDialogs;
+    const { calculateDelegationFee } = staking;
     const { selectedWalletId } = this.state;
     const stakePoolJoinFee = await calculateDelegationFee({
       walletId: selectedWalletId,
     });
-    this.setState({ stakePoolJoinFee });
+
+    // Update state only if DelegationSetupWizardDialog is still active
+    // and fee calculation was successful
+    if (isOpen(DelegationSetupWizardDialog) && stakePoolJoinFee) {
+      this.setState({ stakePoolJoinFee });
+    }
   }
 }
