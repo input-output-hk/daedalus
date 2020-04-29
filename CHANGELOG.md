@@ -3,6 +3,10 @@ Changelog
 
 ## vNext
 
+### Fixes
+
+- Fix `cardano-wallet` git revision ([PR 1999](https://github.com/input-output-hk/daedalus/pull/1999))
+
 ### Chores
 
 - Improved "Delegate/Undelegate" wizard delegation fee calculation logic ([PR 2002](https://github.com/input-output-hk/daedalus/pull/2002))
