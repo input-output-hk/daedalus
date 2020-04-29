@@ -79,7 +79,7 @@ lodash.map(filesToHash, file => {
         return;
       }
 
-      // Create varification hash
+      // Create verification hash
       const hash = crypto.createHash('sha256');
       const hashBuffer = hash.digest(hash.update(fileContent, 'utf8'));
       const hashArray = Array.from(new Uint8Array(hashBuffer))

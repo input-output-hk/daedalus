@@ -401,7 +401,7 @@ const isJedi = getProp('jedi');
 
 ## Comparison Operators & Equality
 
-Use `===` and `!==` over `==` and `!=` to avoid unintented coercions by the `ToBoolean` abstract method that evaluates expressions in JavaScript.
+Use `===` and `!==` over `==` and `!=` to avoid unintended coercions by the `ToBoolean` abstract method that evaluates expressions in JavaScript.
 
 - **Objects** evaluate to **true**
 - **Undefined** evaluates to **false**

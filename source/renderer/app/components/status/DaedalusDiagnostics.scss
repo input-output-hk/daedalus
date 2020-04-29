@@ -304,13 +304,9 @@
   }
 }
 
-.layoutData.localTimeDifferenceItem {
+.layoutData.localTimeDifference {
   align-items: center;
   display: flex;
-
-  button {
-    padding-top: 0;
-  }
 }
 
 .layoutData.lastNetworkBlock,

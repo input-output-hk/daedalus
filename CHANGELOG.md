@@ -1,7 +1,17 @@
 Changelog
 =========
 
+## vNext
+
+### Chores
+
+- Improved "Wallet import" state handling ([PR 2001](https://github.com/input-output-hk/daedalus/pull/2001))
+
 ## 1.0.0
+
+### Features
+
+- Implemented NTP force check ([PR 1996](https://github.com/input-output-hk/daedalus/pull/1996))
 
 ### Fixes
 

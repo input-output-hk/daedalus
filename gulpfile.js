@@ -47,7 +47,7 @@ const buildMainWatch = () => done =>
   mainInputSource()
     .pipe(
       webpackStream(mainWebpackWatchConfig, webpack, () => {
-        // Restart app everytime after main script has been re-compiled
+        // Restart app every time after main script has been re-compiled
         electronServer.restart();
         done();
       })
@@ -64,7 +64,7 @@ const buildRendererWatch = () => done =>
     .pipe(
       webpackStream(rendererWebpackWatchConfig, webpack, () => {
         if (electronServer) {
-          // Reload app everytime after renderer script has been re-compiled
+          // Reload app every time after renderer script has been re-compiled
           electronServer.reload();
         }
         done();

@@ -68,7 +68,7 @@ export class IpcChannel<Incoming, Outgoing> {
   /**
    * Sends a request over ipc to the receiver and waits for the next response on the
    * same channel. It returns a promise which is resolved or rejected with the response
-   * depending on the `isOk` flag set by the respondant.
+   * depending on the `isOk` flag set by the respondent.
    */
   async send(
     message: Outgoing,

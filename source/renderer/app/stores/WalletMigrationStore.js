@@ -438,8 +438,9 @@ export default class WalletMigrationStore extends Store {
   };
 
   @action _finishMigration = async () => {
-    this.actions.dialogs.closeActiveDialog.trigger();
-    this.walletMigrationStep = 1;
+    if (this.stores.uiDialogs.isOpen(WalletImportFileDialog)) {
+      this.actions.dialogs.closeActiveDialog.trigger();
+    }
 
     const walletMigrationStatus = await this.getWalletMigrationStatusRequest.execute()
       .promise;
