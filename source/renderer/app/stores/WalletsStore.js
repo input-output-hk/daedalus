@@ -1052,7 +1052,7 @@ export default class WalletsStore extends Store {
     runInAction('AdaWalletsStore::_pausePolling', () => {
       this._pollingBlocked = true;
     });
-  }
+  };
 
   @action _resumePolling = () => {
     this._pollingBlocked = false;

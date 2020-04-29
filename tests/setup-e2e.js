@@ -126,22 +126,22 @@ Before({ tags: '@e2e', timeout: DEFAULT_TIMEOUT * 2 }, async function(testCase) 
   // Reset backend
   await this.client.executeAsync(done => {
     const resetBackend = () => {
-     if (daedalus.stores.networkStatus.isConnected) {
-       daedalus.stores.wallets
-         ._pausePolling()
-         .then(daedalus.stores.wallets.resetWalletsData())
-         .then(daedalus.api.ada.testReset())
-         .then(daedalus.api.ada.resetTestOverrides())
-         .then(daedalus.api.localStorage.reset())
-         .then(daedalus.stores.wallets._resumePolling())
-         .then(daedalus.stores.wallets.refreshWalletsData())
-         .then(done)
-         .catch(error => done(error));
-     } else {
-       setTimeout(resetBackend, 50);
-     }
+      if (daedalus.stores.networkStatus.isConnected) {
+        daedalus.stores.wallets
+          ._pausePolling()
+          .then(() => daedalus.stores.wallets.resetWalletsData())
+          .then(() => daedalus.api.ada.testReset())
+          .then(() => daedalus.api.ada.resetTestOverrides())
+          .then(() => daedalus.api.localStorage.reset())
+          .then(() => daedalus.stores.wallets._resumePolling())
+          .then(() => daedalus.stores.wallets.refreshWalletsData())
+          .then(done)
+          .catch(error => done(error));
+      } else {
+        setTimeout(resetBackend, 50);
+      }
     };
-     resetBackend()
+    resetBackend();
   });
 
   // Load fresh root url with test environment for each test case

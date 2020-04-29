@@ -241,7 +241,7 @@ export default (api: AdaApi) => {
       status: 'available',
       offset: LOCAL_TIME_DIFFERENCE,
     };
-  }
+  };
 
   api.resetTestOverrides = () => {
     TESTING_WALLETS_DATA = {};
