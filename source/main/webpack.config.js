@@ -31,6 +31,9 @@ module.exports = {
     __dirname: false,
     __filename: false,
   },
+  externals: {
+    'js-chain-libs-node': 'commonjs2 js-chain-libs-node',
+  },
   module: {
     rules: [
       {
@@ -61,7 +64,7 @@ module.exports = {
         type: 'javascript/auto',
         use: [
           {
-            loader: 'file-loader',
+            loader: 'wasm-loader',
           },
         ],
       },
