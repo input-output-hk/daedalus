@@ -72,6 +72,7 @@ export default class SyncingConnecting extends Component<Props, State> {
     const { connectingTime } = this.state;
     const {
       isConnected,
+      cardanoNodeState,
       isSyncProgressStalling,
       onGetAvailableVersions,
       isNewAppVersionLoading,
@@ -85,7 +86,9 @@ export default class SyncingConnecting extends Component<Props, State> {
     }
     const isAppLoadingStuck =
       isSyncProgressStalling ||
-      (!isConnected && connectingTime >= REPORT_ISSUE_TIME_TRIGGER);
+      (!isConnected &&
+        (connectingTime >= REPORT_ISSUE_TIME_TRIGGER ||
+          cardanoNodeState === CardanoNodeStates.UNRECOVERABLE));
     // If app loading is stuck, check if a newer version is available and set flag (state)
     if (
       isAppLoadingStuck &&
