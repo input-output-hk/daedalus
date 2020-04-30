@@ -185,11 +185,11 @@ export default class WalletSettingsStore extends Store {
       _resumePolling,
       refreshWalletsData,
     } = this.stores.wallets;
-    await _pausePolling();
     runInAction('set isForcedWalletResyncStarting', () => {
       this.isForcedWalletResyncStarting = true;
-      this.forceWalletResyncRequest.reset();
     });
+    await _pausePolling();
+    this.forceWalletResyncRequest.reset();
     try {
       await this.forceWalletResyncRequest.execute({ walletId, isLegacy });
     } finally {

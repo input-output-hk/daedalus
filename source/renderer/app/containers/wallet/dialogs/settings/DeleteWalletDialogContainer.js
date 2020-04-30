@@ -17,7 +17,7 @@ export default class DeleteWalletDialogContainer extends Component<Props> {
     const dialogData = uiDialogs.dataForActiveDialog;
     const { updateDataForActiveDialog } = actions.dialogs;
     const activeWallet = wallets.active;
-    const { deleteWalletRequest } = wallets;
+    const { deleteWalletRequest, isDeleting } = wallets;
     const {
       environment: { isTest },
     } = app;
@@ -56,7 +56,7 @@ export default class DeleteWalletDialogContainer extends Component<Props> {
             data: { confirmationValue },
           })
         }
-        isSubmitting={deleteWalletRequest.isExecuting}
+        isSubmitting={isDeleting}
       />
     );
   }

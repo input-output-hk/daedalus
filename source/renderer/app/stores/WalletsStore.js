@@ -203,6 +203,9 @@ export default class WalletsStore extends Store {
   @observable walletExportMnemonic =
     'marine joke dry silk ticket thing sugar stereo aim';
 
+  /* ----------  Delete Wallet  ---------- */
+  @observable isDeleting: boolean = false;
+
   /* ----------  Paper Wallet  ---------- */
   @observable createPaperWalletCertificateStep = 0;
   @observable walletCertificatePassword = null;
@@ -492,10 +495,17 @@ export default class WalletsStore extends Store {
 
   _deleteWallet = async (params: { walletId: string, isLegacy: boolean }) => {
     // Pause polling in order to avoid fetching data for wallet we are about to delete
+    runInAction('AdaWalletsStore::isDeleting set', () => {
+      this.isDeleting = true;
+    });
     await this._pausePolling();
-
     const walletToDelete = this.getWalletById(params.walletId);
-    if (!walletToDelete) return;
+    if (!walletToDelete) {
+      runInAction('AdaWalletsStore::isDeleting reset', () => {
+        this.isDeleting = false;
+      });
+      return;
+    }
     const indexOfWalletToDelete = this.all.indexOf(walletToDelete);
     await this.deleteWalletRequest.execute({
       walletId: params.walletId,
@@ -505,6 +515,7 @@ export default class WalletsStore extends Store {
       result.splice(indexOfWalletToDelete, 1);
     });
     runInAction('AdaWalletsStore::_deleteWallet', () => {
+      this.isDeleting = false;
       if (this.hasAnyWallets) {
         const nextIndexInList = Math.max(indexOfWalletToDelete - 1, 0);
         const nextWalletInList = this.all[nextIndexInList];
