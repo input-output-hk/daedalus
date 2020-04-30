@@ -18,7 +18,6 @@ Feature: Send Money to Receiver
       | message                                          |
       | api.errors.NotEnoughFundsForTransactionError     |
 
-  @watch
   Scenario: User enters amount equals to wallet balance
     Given I have a "Test Wallet" wallet with funds
     And I am on the "Test Wallet" wallet "send" screen

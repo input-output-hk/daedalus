@@ -63,6 +63,20 @@ When(/^I fill out the send form with value equals to "([^"]*)" wallet amount$/, 
       .then(response => done(response[0].id))
       .catch(error => done(error));
   }, walletId, wallet.isLegacy);
+
+  // Check for pending transactions
+  await this.client.executeAsync((wallet, walletAddress, done) => {
+    const checkPendingTransactions = () => {
+      if (!daedalus.stores.transactions.pendingTransactionsCount) {
+        done()
+      } else {
+        setTimeout(checkPendingTransactions, 500);
+      }
+    };
+    checkPendingTransactions();
+  }, wallet, walletAddress);
+
+  // Fill form when there are no pending transactions
   const values = {
     amount: wallet.amount,
     address: walletAddress.value,
