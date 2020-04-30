@@ -171,18 +171,18 @@ export default class NodeUpdateStore extends Store {
       this.isUpdateAvailable &&
       !this.isUpdatePostponed &&
       !this.isUpdateInstalled &&
-      !global.isIncentivizedTestnet
+      !global.isIncentivizedTestnet &&
+      !global.isFlight
     );
   }
 
   @computed get showManualUpdate(): boolean {
     return (
       this.isNewAppVersionAvailable &&
-      !this.stores.networkStatus.isNodeStopping &&
-      !this.stores.networkStatus.isNodeStopped &&
       !this.isUpdatePostponed &&
       !this.isUpdateAvailable &&
-      !global.isIncentivizedTestnet
+      !global.isIncentivizedTestnet &&
+      !global.isFlight
     );
   }
 }

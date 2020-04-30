@@ -71,3 +71,11 @@ $adaLogoWidth: 43px;
     }
   }
 }
+
+.component,
+.connectingLogo,
+.syncingLogo,
+.daedalusLogo,
+.daedalusLogo > div {
+  --webkit-backface-visibility: hidden;
+}
