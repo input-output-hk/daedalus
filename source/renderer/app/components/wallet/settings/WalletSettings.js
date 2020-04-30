@@ -86,7 +86,7 @@ type Props = {
   onStopEditing: Function,
   onCancelEditing: Function,
   onResyncWallet: Function,
-  onRecoveryPhraseVerify: Function,
+  onVerifyRecoveryPhrase: Function,
   nameValidator: Function,
   activeField: ?string,
   isSubmitting: boolean,
@@ -159,7 +159,7 @@ export default class WalletSettings extends Component<Props, State> {
       onStopEditing,
       onCancelEditing,
       onResyncWallet,
-      onRecoveryPhraseVerify,
+      onVerifyRecoveryPhrase,
       nameValidator,
       activeField,
       isSubmitting,
@@ -269,7 +269,7 @@ export default class WalletSettings extends Component<Props, State> {
 
           {!isIncentivizedTestnet && (
             <WalletRecoveryPhraseVerificationWidget
-              onVerify={onRecoveryPhraseVerify}
+              onVerify={onVerifyRecoveryPhrase}
               recoveryPhraseVerificationDate={recoveryPhraseVerificationDate}
               recoveryPhraseVerificationStatus={
                 recoveryPhraseVerificationStatus

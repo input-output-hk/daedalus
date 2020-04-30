@@ -210,7 +210,7 @@ export default (props: { currentTheme: string, locale: string }) => {
           )}
         />
       }
-      onRecoveryPhraseVerify={action('onRecoveryPhraseVerify')}
+      onVerifyRecoveryPhrase={action('onVerifyRecoveryPhrase')}
       creationDate={creationDate}
       recoveryPhraseVerificationDate={recoveryPhraseVerificationDate}
       recoveryPhraseVerificationStatus={

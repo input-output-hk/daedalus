@@ -111,7 +111,7 @@ export default class WalletSettingsPage extends Component<Props> {
               isLegacy: activeWallet.isLegacy,
             })
           }
-          onRecoveryPhraseVerify={recoveryPhraseVerificationContinue.trigger}
+          onVerifyRecoveryPhrase={recoveryPhraseVerificationContinue.trigger}
           activeField={walletFieldBeingEdited}
           nameValidator={name => isValidWalletName(name)}
           changeSpendingPasswordDialog={
