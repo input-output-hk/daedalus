@@ -24,11 +24,11 @@
   padding: 20px 40px;
 
   .actionLearnMore {
-    @extend %actionButton;
     background-color: var(
       --theme-legacy-notification-learn-more-button-background-color
     );
     padding: 0 42px;
+    @extend %actionButton;
 
     &:hover {
       background-color: var(
@@ -57,12 +57,12 @@
   }
 
   .actionMove {
-    @extend %actionButton;
     background-color: var(
       --theme-legacy-notification-move-button-background-color
     );
     color: var(--theme-legacy-notification-move-button-text-color);
     padding: 0 20px;
+    @extend %actionButton;
 
     &:hover {
       background-color: var(
