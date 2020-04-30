@@ -90,17 +90,17 @@
   }
 
   .overlapProgressLabel {
-    @extend %progressLabelText;
     color: #fff;
     transform: translateX(calc(-100% - 8px));
     z-index: 98;
+    @extend %progressLabelText;
   }
 
   .progressLabel {
-    @extend %progressLabelText;
     color: var(--theme-staking-font-color-regular);
     right: 8px;
     z-index: 97;
+    @extend %progressLabelText;
   }
 
   table {
