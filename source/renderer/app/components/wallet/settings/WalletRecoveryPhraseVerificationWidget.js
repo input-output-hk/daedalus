@@ -6,6 +6,8 @@ import classnames from 'classnames';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
+import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
+import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
 import moment from 'moment';
 import SVGInline from 'react-svg-inline';
 import iconOk from '../../../assets/images/recovery-phrase-verification-ok.inline.svg';
@@ -94,6 +96,18 @@ export const messages = defineMessages({
       '!!!You verified the recovery phrase for this wallet <b>{timeAgo}</b>. We recommend that you verify your wallet recovery phrase again.',
     description:
       'Label for the recoveryPhraseVerificationCheckedNotification on wallet settings.',
+  },
+  paperWalletDescription: {
+    id: 'wallet.settings.recoveryPhraseVerification.paperWalletDescription',
+    defaultMessage:
+      '!!!If you have restored this wallet from a paper wallet certificate you cannot use this feature to verify your wallet recovery phrase. In the next version of Daedalus, a new tool will be provided for the conversion of 27-word paper wallet recovery phrases to 12-word recovery phrases.',
+    description:
+      'Description for the paperWallet instructions on wallet settings.',
+  },
+  paperWalletTitle: {
+    id: 'wallet.settings.recoveryPhraseVerification.paperWalletTitle',
+    defaultMessage: '!!!Paper wallet',
+    description: 'Title for the paperWallet instructions on wallet settings.',
   },
   button: {
     id: 'wallet.settings.recoveryPhraseVerification.button',
@@ -224,6 +238,13 @@ export default class WalletRecoveryPhraseVerificationWidget extends Component<Pr
           {intl.formatMessage(messages.description, {
             wordCount,
           })}
+          <Tooltip
+            className={styles.paperWallet}
+            skin={TooltipSkin}
+            tip={intl.formatMessage(messages.paperWalletDescription)}
+          >
+            {intl.formatMessage(messages.paperWalletTitle)}
+          </Tooltip>
         </div>
         <br />
         <div className={statusStyles}>

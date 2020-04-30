@@ -891,6 +891,12 @@ export const CARDANO_THEME_OUTPUT = {
       'rgba(32, 34, 37, 0.05)',
     '--theme-recovery-phrase-attention-background-color':
       'rgba(234, 76, 91, .1)',
+    '--theme-recovery-phrase-paper-wallet-background-color':
+      'rgba(32, 34, 37, 0.1)',
+    '--theme-recovery-phrase-paper-wallet-question-background-color':
+      'rgba(32, 34, 37, 0.3)',
+    '--theme-recovery-phrase-paper-wallet-question-text-color': '#5e6066',
+    '--theme-recovery-phrase-paper-wallet-text-color': '#5e6066',
   },
   walletImportDialog: {
     '--theme-wallet-import-background-color': 'rgba(32, 34, 37, 0.98)',

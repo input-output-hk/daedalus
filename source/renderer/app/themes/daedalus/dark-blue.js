@@ -896,6 +896,13 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-recovery-phrase-warning-background-color': 'rgba(83, 99, 112, .3)',
     '--theme-recovery-phrase-attention-background-color':
       'rgba(234, 76, 91, .2)',
+    '--theme-recovery-phrase-paper-wallet-background-color':
+      'rgba(233, 244, 254, 0.1)',
+    '--theme-recovery-phrase-paper-wallet-question-background-color':
+      'rgba(233, 244, 254, 0.7)',
+    '--theme-recovery-phrase-paper-wallet-question-text-color':
+      'rgba(233, 244, 254, 1)',
+    '--theme-recovery-phrase-paper-wallet-text-color': '#5e6066',
   },
   walletImportDialog: {
     '--theme-wallet-import-background-color': 'rgba(38, 51, 69, 0.98)',
@@ -926,6 +933,7 @@ export const DARK_BLUE_THEME_OUTPUT = {
       'rgba(255, 255, 255, 0.12)',
     '--theme-wallet-import-stateFolder-label-color': '#fff',
     '--theme-wallet-import-title-color': '#e9f4fe',
+    '--theme-wallet-import-description-close-hover-background': '#53637029',
   },
   walletRestoreDialog: {
     '--theme-wallet-restore-dialog-new-label-background-color':

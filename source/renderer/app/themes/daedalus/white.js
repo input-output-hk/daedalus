@@ -882,6 +882,12 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-recovery-phrase-warning-background-color': 'rgba(45, 45, 45, .1)',
     '--theme-recovery-phrase-attention-background-color':
       'rgba(234, 76, 91, .1)',
+    '--theme-recovery-phrase-paper-wallet-background-color':
+      'rgba(41, 181, 149, 0.1)',
+    '--theme-recovery-phrase-paper-wallet-question-background-color':
+      'rgba(41, 181, 149, 0.3)',
+    '--theme-recovery-phrase-paper-wallet-question-text-color': '#2d2d2d',
+    '--theme-recovery-phrase-paper-wallet-text-color': '#5e6066',
   },
   walletImportDialog: {
     '--theme-wallet-import-background-color': 'rgba(255, 255, 255, 0.98)',

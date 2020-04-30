@@ -7470,13 +7470,13 @@
         "description": "Label for the recoveryPhraseVerificationTitle on wallet settings.",
         "end": {
           "column": 3,
-          "line": 27
+          "line": 29
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseVerificationWidget.js",
         "id": "wallet.settings.recoveryPhraseVerification.title",
         "start": {
           "column": 9,
-          "line": 22
+          "line": 24
         }
       },
       {
@@ -7484,13 +7484,13 @@
         "description": "Label for the recoveryPhraseVerificationDescription on wallet settings.",
         "end": {
           "column": 3,
-          "line": 34
+          "line": 36
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseVerificationWidget.js",
         "id": "wallet.settings.recoveryPhraseVerification.description",
         "start": {
           "column": 15,
-          "line": 28
+          "line": 30
         }
       },
       {
@@ -7498,13 +7498,13 @@
         "description": "Label for the recoveryPhraseVerificationNeverOk on wallet settings.",
         "end": {
           "column": 3,
-          "line": 41
+          "line": 43
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseVerificationWidget.js",
         "id": "wallet.settings.recoveryPhraseVerification.neverOkTimeUntil",
         "start": {
           "column": 20,
-          "line": 35
+          "line": 37
         }
       },
       {
@@ -7512,13 +7512,13 @@
         "description": "Label for the recoveryPhraseVerificationNeverOk on wallet settings.",
         "end": {
           "column": 3,
-          "line": 48
+          "line": 50
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseVerificationWidget.js",
         "id": "wallet.settings.recoveryPhraseVerification.neverOkFewMonths",
         "start": {
           "column": 20,
-          "line": 42
+          "line": 44
         }
       },
       {
@@ -7526,13 +7526,13 @@
         "description": "Label for the recoveryPhraseVerificationNeverOk on wallet settings.",
         "end": {
           "column": 3,
-          "line": 55
+          "line": 57
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseVerificationWidget.js",
         "id": "wallet.settings.recoveryPhraseVerification.neverOkFewWeeks",
         "start": {
           "column": 19,
-          "line": 49
+          "line": 51
         }
       },
       {
@@ -7540,13 +7540,13 @@
         "description": "Label for the recoveryPhraseVerificationNeverOk on wallet settings.",
         "end": {
           "column": 3,
-          "line": 62
+          "line": 64
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseVerificationWidget.js",
         "id": "wallet.settings.recoveryPhraseVerification.neverOkFewDays",
         "start": {
           "column": 18,
-          "line": 56
+          "line": 58
         }
       },
       {
@@ -7554,13 +7554,13 @@
         "description": "Label for the recoveryPhraseVerificationNeverWarning on wallet settings.",
         "end": {
           "column": 3,
-          "line": 69
+          "line": 71
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseVerificationWidget.js",
         "id": "wallet.settings.recoveryPhraseVerification.neverWarning",
         "start": {
           "column": 16,
-          "line": 63
+          "line": 65
         }
       },
       {
@@ -7568,13 +7568,13 @@
         "description": "Label for the recoveryPhraseVerificationNeverNotification on wallet settings.",
         "end": {
           "column": 3,
-          "line": 76
+          "line": 78
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseVerificationWidget.js",
         "id": "wallet.settings.recoveryPhraseVerification.neverNotification",
         "start": {
           "column": 21,
-          "line": 70
+          "line": 72
         }
       },
       {
@@ -7582,13 +7582,13 @@
         "description": "Label for the recoveryPhraseVerificationCheckedOk on wallet settings.",
         "end": {
           "column": 3,
-          "line": 83
+          "line": 85
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseVerificationWidget.js",
         "id": "wallet.settings.recoveryPhraseVerification.checkedOk",
         "start": {
           "column": 13,
-          "line": 77
+          "line": 79
         }
       },
       {
@@ -7596,13 +7596,13 @@
         "description": "Label for the recoveryPhraseVerificationCheckedWarning on wallet settings.",
         "end": {
           "column": 3,
-          "line": 90
+          "line": 92
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseVerificationWidget.js",
         "id": "wallet.settings.recoveryPhraseVerification.checkedWarning",
         "start": {
           "column": 18,
-          "line": 84
+          "line": 86
         }
       },
       {
@@ -7610,13 +7610,41 @@
         "description": "Label for the recoveryPhraseVerificationCheckedNotification on wallet settings.",
         "end": {
           "column": 3,
-          "line": 97
+          "line": 99
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseVerificationWidget.js",
         "id": "wallet.settings.recoveryPhraseVerification.checkedNotification",
         "start": {
           "column": 23,
-          "line": 91
+          "line": 93
+        }
+      },
+      {
+        "defaultMessage": "!!!If you have restored this wallet from a paper wallet certificate you cannot use this feature to verify your wallet recovery phrase. In the next version of Daedalus, a new tool will be provided for the conversion of 27-word paper wallet recovery phrases to 12-word recovery phrases.",
+        "description": "Description for the paperWallet instructions on wallet settings.",
+        "end": {
+          "column": 3,
+          "line": 106
+        },
+        "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseVerificationWidget.js",
+        "id": "wallet.settings.recoveryPhraseVerification.paperWalletDescription",
+        "start": {
+          "column": 26,
+          "line": 100
+        }
+      },
+      {
+        "defaultMessage": "!!!Paper wallet",
+        "description": "Title for the paperWallet instructions on wallet settings.",
+        "end": {
+          "column": 3,
+          "line": 111
+        },
+        "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseVerificationWidget.js",
+        "id": "wallet.settings.recoveryPhraseVerification.paperWalletTitle",
+        "start": {
+          "column": 20,
+          "line": 107
         }
       },
       {
@@ -7624,13 +7652,13 @@
         "description": "Label for the recoveryPhraseVerificationButton on wallet settings.",
         "end": {
           "column": 3,
-          "line": 103
+          "line": 117
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseVerificationWidget.js",
         "id": "wallet.settings.recoveryPhraseVerification.button",
         "start": {
           "column": 10,
-          "line": 98
+          "line": 112
         }
       }
     ],
