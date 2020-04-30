@@ -54,6 +54,22 @@ Given(
   }
 );
 
+When(/^I fill out the send form with value equals to "([^"]*)" wallet amount$/, async function(walletName) {
+  const wallet = await getWalletByName.call(this, walletName);
+  const walletId = getRawWalletId(wallet.id);
+  const walletAddress = await this.client.executeAsync((walletId, isLegacy, done) => {
+    daedalus.api.ada
+      .getAddresses({ walletId, isLegacy })
+      .then(response => done(response[0].id))
+      .catch(error => done(error));
+  }, walletId, wallet.isLegacy);
+  const values = {
+    amount: wallet.amount,
+    address: walletAddress.value,
+  }
+  return fillOutWalletSendForm.call(this, values);
+});
+
 When(/^I click on the show more transactions button$/, async function() {
   await this.waitAndClick('.WalletTransactionsList_showMoreTransactionsButton');
 });

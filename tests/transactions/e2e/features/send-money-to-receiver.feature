@@ -18,14 +18,12 @@ Feature: Send Money to Receiver
       | message                                          |
       | api.errors.NotEnoughFundsForTransactionError     |
 
-  @skip
-  Scenario: User enters amount equal to wallet balance
+  @watch
+  Scenario: User enters amount equals to wallet balance
     Given I have a "Test Wallet" wallet with funds
     And I am on the "Test Wallet" wallet "send" screen
     And I can see the send form
-    When I fill out the send form with a transaction to "first" wallet:
-      | amount   |
-      | 1000000  |
+    When I fill out the send form with value equals to "Test Wallet" wallet amount
     Then I should see the following error messages on the wallet send form:
       | message                                          |
       | api.errors.NotEnoughFundsForTransactionFeesError |
