@@ -108,6 +108,7 @@ export type Props = {
   recoveryPhraseVerificationDate: ?Date,
   onVerify: Function,
   wordCount: number,
+  locale: string,
 };
 
 @observer
@@ -158,8 +159,7 @@ export default class WalletRecoveryPhraseVerificationWidget extends Component<Pr
   }
 
   get recoveryPhraseStatus() {
-    const { locale } = this.context.intl;
-    const { creationDate, recoveryPhraseVerificationDate } = this.props;
+    const { creationDate, recoveryPhraseVerificationDate, locale } = this.props;
     const {
       recoveryPhraseVerificationStatus: status,
       recoveryPhraseVerificationStatusType: type,
