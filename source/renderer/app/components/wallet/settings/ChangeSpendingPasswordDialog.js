@@ -121,7 +121,10 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
                     ),
                   ];
                 }
-                return [false];
+                return [
+                  false,
+                  this.context.intl.formatMessage(messages.fieldIsRequired),
+                ];
               }
               return [true];
             },
