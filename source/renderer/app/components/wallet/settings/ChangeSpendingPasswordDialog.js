@@ -111,7 +111,7 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
           ),
           value: '',
           validators: [
-            ({field}) => {
+            ({ field }) => {
               if (this.props.isSpendingPasswordSet) {
                 return [
                   isValidSpendingPassword(field.value),
@@ -163,7 +163,6 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
           validators: [
             ({ field, form }) => {
               const spendingPassword = form.$('spendingPassword').value;
-              if (spendingPassword.length === 0) return [false];
               return [
                 isValidRepeatPassword(spendingPassword, field.value),
                 this.context.intl.formatMessage(
