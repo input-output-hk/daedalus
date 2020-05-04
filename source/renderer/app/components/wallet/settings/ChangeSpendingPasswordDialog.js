@@ -185,7 +185,6 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
       options: {
         validateOnChange: true,
         validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
-        showErrorsOnClear: true,
       },
     }
   );
@@ -241,9 +240,6 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
 
     const canSubmit = !isSubmitting && form.isValid;
 
-    const currentPasswordError =
-      canSubmit && error && error.code === 'wrong_encryption_passphrase';
-
     const actions = [
       {
         className: confirmButtonClasses,
@@ -282,7 +278,7 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
                 this.handleDataChange('currentPasswordValue', value)
               }
               {...currentPasswordField.bind()}
-              error={currentPasswordField.error || currentPasswordError}
+              error={currentPasswordField.error}
               skin={InputSkin}
             />
           )}
