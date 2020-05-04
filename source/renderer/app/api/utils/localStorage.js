@@ -11,7 +11,7 @@ import { WalletMigrationStatuses } from '../../stores/WalletMigrationStore';
 export type WalletLocalData = {
   id: string,
   recoveryPhraseVerificationDate?: ?Date,
-  creationDate?: ?Date,
+  creationDate: Date,
 };
 
 export type WalletsLocalData = {
@@ -158,18 +158,20 @@ export default class LocalStorageApi {
       id: walletId,
     });
 
-  setWalletLocalData = (walletData: WalletLocalData): Promise<void> =>
-    LocalStorageApi.set(
-      `${this.storageKeys.WALLETS}.${walletData.id}`,
-      walletData
-    );
-
-  updateWalletLocalData = async (
-    updatedWalletData: Object
-  ): Promise<Object> => {
-    const walletId = updatedWalletData.id;
+  setWalletLocalData = async (
+    walletId: string,
+    updatedWalletData?: Object
+  ): Promise<WalletLocalData> => {
     const currentWalletData = await this.getWalletLocalData(walletId);
-    const walletData = Object.assign({}, currentWalletData, updatedWalletData);
+    const defaultData = { creationDate: new Date() };
+    const unmutableData = { id: walletId };
+    const walletData = Object.assign(
+      {},
+      defaultData,
+      currentWalletData,
+      updatedWalletData,
+      unmutableData
+    );
     await LocalStorageApi.set(
       `${this.storageKeys.WALLETS}.${walletId}`,
       walletData

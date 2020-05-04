@@ -881,6 +881,13 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
       'rgba(255, 255, 255, .1)',
     '--theme-recovery-phrase-attention-background-color':
       'rgba(235, 74, 34, 0.2)',
+    '--theme-recovery-phrase-paper-wallet-background-color':
+      'rgba(255, 255, 255, 0.1)',
+    '--theme-recovery-phrase-paper-wallet-question-background-color':
+      'rgba(255, 255, 255, 0.3)',
+    '--theme-recovery-phrase-paper-wallet-question-text-color': '#343546',
+    '--theme-recovery-phrase-paper-wallet-text-color':
+      'rgba(255, 255, 255, 0.8)',
   },
   walletImportDialog: {
     '--theme-wallet-import-background-color': 'rgba(42, 43, 60, 0.98)',

@@ -76,9 +76,7 @@ export default class SidebarWalletsMenu extends Component<Props> {
                 restoreProgress={wallet.restoreProgress}
                 isNotResponding={wallet.isNotResponding}
                 isLegacy={wallet.isLegacy}
-                recoveryPhraseVerificationStatus={
-                  wallet.recoveryPhraseVerificationStatus
-                }
+                hasNotification={wallet.hasNotification}
               />
             ))}
           </Scrollbars>

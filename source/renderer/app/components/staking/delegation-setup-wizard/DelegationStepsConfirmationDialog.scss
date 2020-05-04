@@ -28,7 +28,7 @@
 
       .calculatingFeesLabel {
         @include animated-ellipsis($width: 20px);
-        -webkit-backface-visibility: hidden;
+        --webkit-backface-visibility: hidden;
       }
 
       .feesAmount {

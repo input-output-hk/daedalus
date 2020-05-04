@@ -89,6 +89,9 @@ yarn2nix.mkYarnPackage {
     ${nukeAllRefs}
     popd
     rm -rf $out/resources/app/{installers,launcher-config.yaml,gulpfile.js,home}
+
+    mkdir -pv $out/resources/app/node_modules
+    cp -rv $node_modules/js-chain-libs-node $out/resources/app/node_modules/
   '' else ''
     yarn --offline run build
     mkdir -p $out/bin $out/share/daedalus
@@ -99,6 +102,8 @@ yarn2nix.mkYarnPackage {
     popd
     mkdir -p $out/share/fonts
     ln -sv $out/share/daedalus/renderer/assets $out/share/fonts/daedalus
+    mkdir -pv $out/share/daedalus/node_modules
+    cp -rv $node_modules/js-chain-libs-node $out/share/daedalus/node_modules/
   '';
   allowedReferences = [ "out" ];
   yarnPreBuild = ''

@@ -1,6 +1,4 @@
 // @flow
-import BigNumber from 'bignumber.js';
-
 import { WalletUnits } from '../../domains/Wallet';
 import type { ExportedByronWallet } from '../../types/walletExportTypes';
 
@@ -153,11 +151,6 @@ export type LegacyWalletInitData = {
   passphrase: string,
 };
 
-export type WalletIdAndBalance = {
-  walletId: string,
-  balance: ?BigNumber,
-};
-
 // req/res Wallet types
 export type CreateWalletRequest = {
   name: string,
@@ -182,16 +175,6 @@ export type DeleteWalletRequest = {
 export type GetWalletUtxosRequest = {
   walletId: string,
   isLegacy: boolean,
-};
-
-export type GetWalletIdAndBalanceRequest = {
-  recoveryPhrase: Array<string>,
-  getBalance: boolean,
-};
-
-export type GetWalletIdAndBalanceResponse = {
-  walletId: string,
-  balance: ?number,
 };
 
 export type RestoreWalletRequest = {

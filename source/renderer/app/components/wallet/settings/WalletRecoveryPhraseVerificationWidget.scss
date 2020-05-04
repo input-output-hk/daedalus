@@ -1,0 +1,102 @@
+.component {
+  color: var(--theme-bordered-box-text-color);
+  font-family: var(--font-light);
+  line-height: 1.38;
+
+  h2 {
+    color: var(--theme-input-label-color);
+    font-family: var(--font-medium);
+    line-height: 1.38;
+    margin-bottom: 14px;
+  }
+  b {
+    color: var(--theme-input-label-color);
+    font-family: var(--font-medium);
+    line-height: 1.38;
+  }
+
+  .status {
+    align-items: center;
+    border-radius: 4px;
+    display: flex;
+    font-style: italic;
+    justify-content: space-between;
+    padding: 10px;
+  }
+  .statusIcon {
+    margin-right: 20px;
+    svg {
+      display: block;
+      height: 28px;
+      width: 28px;
+    }
+  }
+  span:nth-child(2) {
+    flex: 1;
+  }
+  .statusButton {
+    height: 36px;
+    line-height: 36px;
+    margin-left: 25px;
+    padding: 0 27px;
+    white-space: nowrap;
+    width: auto;
+  }
+  .statusOk,
+  .statusOkTimeUntil,
+  .statusOkFewMonths,
+  .statusOkFewWeeks,
+  .statusOkFewDays {
+    background-color: var(--theme-recovery-phrase-normal-background-color);
+    border: 1px solid var(--theme-recovery-phrase-normal-border-color);
+  }
+  .statusWarning {
+    background-color: var(--theme-recovery-phrase-warning-background-color);
+    line-height: 1.38;
+  }
+  .statusNotification {
+    background-color: var(--theme-recovery-phrase-attention-background-color);
+  }
+
+  .paperWallet {
+    background-color: var(
+      --theme-recovery-phrase-paper-wallet-background-color
+    );
+    border-radius: 13px;
+    color: var(--theme-recovery-phrase-paper-wallet-text-color);
+    display: inline-block;
+    font-family: var(--font-medium);
+    font-size: 14px;
+    height: 22px;
+    line-height: 22px;
+    padding: 0 24px 0 8px;
+
+    &:after {
+      background-color: var(
+        --theme-recovery-phrase-paper-wallet-question-background-color
+      );
+      border-radius: 50%;
+      color: black;
+      color: var(--theme-recovery-phrase-paper-wallet-question-text-color);
+      content: '?';
+      display: inline-block;
+      font-family: var(--font-bold);
+      font-size: 12px;
+      height: 14px;
+      line-height: 14px;
+      margin-left: 2px;
+      position: absolute;
+      right: 6px;
+      text-align: center;
+      top: 4px;
+      width: 14px;
+    }
+
+    :global {
+      .SimpleBubble_bubble {
+        white-space: normal;
+        width: 344px;
+      }
+    }
+  }
+}
