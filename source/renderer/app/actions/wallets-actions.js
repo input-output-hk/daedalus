@@ -73,8 +73,6 @@ export default class WalletsActions {
   setCertificateTemplate: Action<{ selectedTemplate: string }> = new Action();
   finishCertificate: Action<any> = new Action();
   finishRewardsCsv: Action<any> = new Action();
-  updateWalletLocalData: Action<any> = new Action();
-  updateRecoveryPhraseVerificationDate: Action<any> = new Action();
 
   /* ----------  Transfer Funds  ---------- */
   transferFundsNextStep: Action<any> = new Action();

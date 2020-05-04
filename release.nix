@@ -30,8 +30,9 @@ let
   '';
   makeJobs = cluster: with daedalusPkgs { inherit cluster; }; {
     daedalus.x86_64-linux = daedalus;
-    installer.x86_64-linux = wrappedBundle newBundle pkgs cluster daedalus-bridge.wallet-version;
-    installer.x86_64-windows = (import ./. { inherit cluster; target = "x86_64-windows"; }).windows-installer;
+    # below line blows up hydra with 300 GB derivations on every commit
+    #installer.x86_64-linux = wrappedBundle newBundle pkgs cluster daedalus-bridge.wallet-version;
+    #installer.x86_64-windows = (import ./. { inherit cluster; target = "x86_64-windows"; }).windows-installer;
   };
   wrappedBundle = newBundle: pkgs: cluster: cardanoVersion: let
     backend = "cardano-wallet-${cardanoVersion}";
@@ -56,8 +57,7 @@ in {
   ifd-pins = mkPins {
     inherit (sources) iohk-nix cardano-wallet cardano-shell;
   };
-  # below line blows up hydra with 300 GB derivations on every commit
-} #// (builtins.listToAttrs (map (x: { name = x; value = makeJobs x; }) clusters))
+} // (builtins.listToAttrs (map (x: { name = x; value = makeJobs x; }) clusters))
 // (mapOverArches {
   daedalus-installer = [ "x86_64-linux" "x86_64-darwin" ];
   yaml2json = [ "x86_64-linux" "x86_64-darwin" ];

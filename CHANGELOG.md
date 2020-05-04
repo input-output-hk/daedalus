@@ -3,6 +3,9 @@ Changelog
 
 ## vNext
 
+### Features
+
+- Integrated the recovery phrase verification and re-enabled "Recovery phrase verification" feature ([PR 1929](https://github.com/input-output-hk/daedalus/pull/1929))
 ### Fixes
 
 - Fixed Daedalus logo animation display on macOS ([PR 2005](https://github.com/input-output-hk/daedalus/pull/2005))
