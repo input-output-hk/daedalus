@@ -122,7 +122,7 @@ export default class WalletSettingsPage extends Component<Props> {
           locale={locale}
           wordCount={wordCount}
         />
-        {!isIncentivizedTestnet && <WalletRecoveryPhraseContainer />}
+        <WalletRecoveryPhraseContainer />
       </>
     );
   }

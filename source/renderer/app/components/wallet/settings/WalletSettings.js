@@ -200,6 +200,18 @@ export default class WalletSettings extends Component<Props, State> {
             />
           </BorderedBox>
 
+          <WalletRecoveryPhraseVerificationWidget
+            onVerify={onVerifyRecoveryPhrase}
+            recoveryPhraseVerificationDate={recoveryPhraseVerificationDate}
+            recoveryPhraseVerificationStatus={recoveryPhraseVerificationStatus}
+            recoveryPhraseVerificationStatusType={
+              recoveryPhraseVerificationStatusType
+            }
+            creationDate={creationDate}
+            wordCount={wordCount}
+            locale={locale}
+          />
+
           <BorderedBox className={deleteWalletBoxStyles}>
             <span>{intl.formatMessage(messages.deleteWalletHeader)}</span>
             <div className={styles.contentBox}>
@@ -267,21 +279,17 @@ export default class WalletSettings extends Component<Props, State> {
             }}
           />
 
-          {!isIncentivizedTestnet && (
-            <WalletRecoveryPhraseVerificationWidget
-              onVerify={onVerifyRecoveryPhrase}
-              recoveryPhraseVerificationDate={recoveryPhraseVerificationDate}
-              recoveryPhraseVerificationStatus={
-                recoveryPhraseVerificationStatus
-              }
-              recoveryPhraseVerificationStatusType={
-                recoveryPhraseVerificationStatusType
-              }
-              creationDate={creationDate}
-              wordCount={wordCount}
-              locale={locale}
-            />
-          )}
+          <WalletRecoveryPhraseVerificationWidget
+            onVerify={onVerifyRecoveryPhrase}
+            recoveryPhraseVerificationDate={recoveryPhraseVerificationDate}
+            recoveryPhraseVerificationStatus={recoveryPhraseVerificationStatus}
+            recoveryPhraseVerificationStatusType={
+              recoveryPhraseVerificationStatusType
+            }
+            creationDate={creationDate}
+            wordCount={wordCount}
+            locale={locale}
+          />
 
           {isIncentivizedTestnet && (
             <div className={styles.resyncWalletBox}>
