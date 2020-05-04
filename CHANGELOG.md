@@ -1,18 +1,21 @@
 Changelog
 =========
 
-## vNext
+## 1.1.0-FC1
 
 ### Features
 
 - Integrated the recovery phrase verification and re-enabled "Recovery phrase verification" feature ([PR 1929](https://github.com/input-output-hk/daedalus/pull/1929))
+
 ### Fixes
 
 - Fixed Daedalus logo animation display on macOS ([PR 2005](https://github.com/input-output-hk/daedalus/pull/2005))
 - Fixed `cardano-wallet` git revision ([PR 1999](https://github.com/input-output-hk/daedalus/pull/1999))
+- Added a check which prevents installing Daedalus on unsupported Windows platform versions ([PR 1947](https://github.com/input-output-hk/daedalus/pull/1947))
 
 ### Chores
 
+- Bumped Daedalus version to 1.1.0-FC1 ([PR 2006](https://github.com/input-output-hk/daedalus/pull/2006))
 - All smart error handlers covered with automated E2E tests([PR 1973](https://github.com/input-output-hk/daedalus/pull/1973))
 - Updated `cardano-wallet` to version v2020-04-28 which includes `cardano-node` 1.11.0 ([PR 2004](https://github.com/input-output-hk/daedalus/pull/2004))
 - Improved "Delegate/Undelegate" wizard delegation fee calculation logic ([PR 2002](https://github.com/input-output-hk/daedalus/pull/2002))
@@ -82,7 +85,6 @@ Changelog
 - Disabled address generation for Yoroi wallets ([PR 1961](https://github.com/input-output-hk/daedalus/pull/1961))
 - Fixed "Restoration" dialog validation ([PR 1951](https://github.com/input-output-hk/daedalus/pull/1951))
 - Fixed the `EPERM` errors thrown in the console upon changing wallet name on the "Wallet Settings" screen ([PR 1944](https://github.com/input-output-hk/daedalus/pull/1944))
-- Added a check which prevents installing Daedalus on unsupported Windows platform versions ([PR 1947](https://github.com/input-output-hk/daedalus/pull/1947))
 
 ### Chores
 
