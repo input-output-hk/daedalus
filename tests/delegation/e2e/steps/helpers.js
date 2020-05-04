@@ -1,7 +1,6 @@
 // @flow
-import { waitAndClick } from '../../../common/e2e/steps/helpers';
-import type { Daedalus, WebdriverClient } from '../../../types';
 import BigNumber from 'bignumber.js';
+import type { Daedalus } from '../../../types';
 
 declare var daedalus: Daedalus;
 
@@ -25,8 +24,8 @@ export const delegationCentreStakingHelper = {
 
 export const getStakePoolByRanking = async (client: Object, ranking: number) => {
   const result = await client.execute(ranking => {
-    const stakePools = daedalus.stores.staking.stakePools;
-    return stakePools.find(stakePool => stakePool.ranking === parseInt(ranking))
+    const { stakePools } = daedalus.stores.staking;
+    return stakePools.find(stakePool => stakePool.ranking === parseInt(ranking, 10))
   }, ranking);
   return result.value;
 };
@@ -47,22 +46,4 @@ export const getNextEpoch = async function() {
   } catch(err) {
     return new Error(err);
   }
-};
-
-export const baseWalletData = {
-  id: 'modified-wallet-id',
-  addressPoolGap: 0,
-  name: 'Modified Wallet',
-  amount: new BigNumber(50000),
-  availableAmount: new BigNumber(50000),
-  reward: new BigNumber(50000),
-  passwordUpdateDate: new Date(),
-  syncState: {
-    status: {
-      quantity: 10,
-      unit: 'percentage',
-    },
-  },
-  isLegacy: false,
-  delegatedStakePoolId: null,
 };

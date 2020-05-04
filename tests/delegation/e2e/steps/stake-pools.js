@@ -6,7 +6,6 @@ import { delegationCentreStakingHelper, getStakePoolByRanking } from './helpers'
 import type { Daedalus } from '../../../types';
 import { getWalletByName } from '../../../wallets/e2e/steps/helpers';
 import { formattedWalletAmount } from '../../../../source/renderer/app/utils/formatters';
-import { navigateTo } from '../../../navigation/e2e/steps/helpers';
 
 declare var daedalus: Daedalus;
 
@@ -50,14 +49,14 @@ Given(/^I am on the Delegation Center screen/, async function () {
 });
 
 Given(/^I set stake pools fetch failed$/, async function () {
-  const stakePools = await this.client.executeAsync(done => {
+  await this.client.executeAsync(done => {
     daedalus.actions.staking.fakeStakePoolsLoading.trigger(true);
     done();
   });
 });
 
 Given(/^I have a wallet "([^"]*)" delegated to stake pool with rank "([^"]*)"$/, async function(walletName, stakePoolRank) {
-  const wallet = getWalletByName.call(this, walletName);
+  const wallet = await getWalletByName.call(this, walletName);
   const stakePool = await getStakePoolByRanking(this.client, stakePoolRank);
   await this.client.execute((stakePoolId, walletId, passphrase) => {
     daedalus.actions.staking.joinStakePool.trigger({ stakePoolId, walletId, passphrase })
@@ -144,7 +143,7 @@ Then(/^Stake pool with rank "([^"]*)" tooltip shows correct data$/, async functi
   expect(stakePool.description).to.equal(stakePoolDescription);
   expect(stakePool.name).to.equal(stakePoolName);
   expect(`${stakePool.profitMargin}%`).to.equal(stakePoolProfitMargin);
-  expect(stakePool.ranking).to.equal(parseInt(stakePoolRanking));
+  expect(stakePool.ranking).to.equal(parseInt(stakePoolRanking, 10));
 
 });
 
@@ -183,7 +182,6 @@ Then(/^I see delegation status message for stake pool with rank "([^"]*)"$/, asy
     done(wallet);
   }, this.walletName);
   const { pendingDelegations } = selectedWallet.value;
-  const hasPendingDelegations = pendingDelegations && pendingDelegations.length > 0;
   const messageWithPendingDelegation = `You are already pending delegation ${this.walletName} wallet to [${stakePool.ticker}] stake pool`
   const messageWithNoPendingDelegation = `You are already delegating ${this.walletName} wallet to [${stakePool.ticker}] stake pool`
   const selectedStakePoolLabel = await this.waitAndGetText(SELECTED_STAKE_POOLS_DELEGATION_WALLET_DIALOG_SELECTOR);
@@ -224,7 +222,7 @@ Then(/^I should see stake pools ordered by rank$/, async function () {
   });
 
   const result = stakePools && stakePools.value ? stakePools.value : [];
-  const orderCorrect = result.every(({ ranking }, i) => parseInt(ranking) === i + 1);
+  const orderCorrect = result.every(({ ranking }, i) => parseInt(ranking, 10) === i + 1);
   expect(orderCorrect).to.be.true;
 });
 
