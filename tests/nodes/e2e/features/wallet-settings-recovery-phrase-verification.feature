@@ -1,4 +1,4 @@
-@e2e @byron @watch
+@e2e @byron
 Feature: Wallet Settings - Recovery Phrase Verification
 
   Background:
