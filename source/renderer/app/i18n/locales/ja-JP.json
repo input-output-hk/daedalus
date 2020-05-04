@@ -742,7 +742,7 @@
   "wallet.settings.recoveryPhraseVerification.neverOkFewWeeks": "ウォレット復元フレーズを数週間以内に検証してください",
   "wallet.settings.recoveryPhraseVerification.neverOkTimeUntil": "ウォレット復元フレーズを<b>{timeUntilWarning}</b>以内に検証してください",
   "wallet.settings.recoveryPhraseVerification.neverWarning": "ウォレット復元フレーズを検証してください。",
-  "wallet.settings.recoveryPhraseVerification.paperWalletDescription": "!!!If you have restored this wallet from a paper wallet certificate you cannot use this feature to verify your wallet recovery phrase. In the next version of Daedalus, a new tool will be provided for the conversion of 27-word paper wallet recovery phrases to 12-word recovery phrases.",
+  "wallet.settings.recoveryPhraseVerification.paperWalletDescription": "ペーパーウォレット証明書から復元したウォレットの場合は、本機能を使用してウォレット復元フレーズを検証することはできません。ペーパーウォレット復元フレーズから通常のウォレット復元フレーズへの変換は、まもなくDaedalusで可能となります。",
   "wallet.settings.recoveryPhraseVerification.paperWalletTitle": "ペーパーウォレット",
   "wallet.settings.recoveryPhraseVerification.title": "ウォレット復元フレーズをお持ちですか。",
   "wallet.settings.resyncWallet.description": "ウォレットに不具合が生じている場合、または残高やトランザクション履歴が不正確であると思われる場合は、Daedalusに保存されたローカルデータを削除してブロックチェーンと再同期することができます。",

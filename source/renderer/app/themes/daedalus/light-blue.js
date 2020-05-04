@@ -893,8 +893,8 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
       'rgba(68, 91, 124, 0.1)',
     '--theme-recovery-phrase-paper-wallet-question-background-color':
       'rgba(68, 91, 124, 0.3)',
-    '--theme-recovery-phrase-paper-wallet-question-text-color': '#5e6066',
-    '--theme-recovery-phrase-paper-wallet-text-color': '#5e6066',
+    '--theme-recovery-phrase-paper-wallet-question-text-color': '#e7eaee',
+    '--theme-recovery-phrase-paper-wallet-text-color': 'rgba(94, 96, 102, 0.8)',
   },
   walletImportDialog: {
     '--theme-wallet-import-background-color': 'rgba(36, 62, 98, 0.98)',

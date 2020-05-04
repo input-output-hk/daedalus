@@ -899,10 +899,10 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-recovery-phrase-paper-wallet-background-color':
       'rgba(233, 244, 254, 0.1)',
     '--theme-recovery-phrase-paper-wallet-question-background-color':
-      'rgba(233, 244, 254, 0.7)',
-    '--theme-recovery-phrase-paper-wallet-question-text-color':
-      'rgba(233, 244, 254, 1)',
-    '--theme-recovery-phrase-paper-wallet-text-color': '#5e6066',
+      'rgba(233, 244, 254, 0.3)',
+    '--theme-recovery-phrase-paper-wallet-question-text-color': '#394556',
+    '--theme-recovery-phrase-paper-wallet-text-color':
+      'rgba(233, 244, 254, 0.8)',
   },
   walletImportDialog: {
     '--theme-wallet-import-background-color': 'rgba(38, 51, 69, 0.98)',

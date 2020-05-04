@@ -888,8 +888,8 @@ export const YELLOW_THEME_OUTPUT = {
       'rgba(45, 45, 45, 0.1)',
     '--theme-recovery-phrase-paper-wallet-question-background-color':
       'rgba(45, 45, 45, 0.3)',
-    '--theme-recovery-phrase-paper-wallet-question-text-color': '#2d2d2d',
-    '--theme-recovery-phrase-paper-wallet-text-color': '#5e6066',
+    '--theme-recovery-phrase-paper-wallet-question-text-color': '#eaeaea',
+    '--theme-recovery-phrase-paper-wallet-text-color': 'rgba(45, 45, 45, 0.8)',
   },
   walletImportDialog: {
     '--theme-wallet-import-background-color': 'rgba(255, 185, 35, 0.98)',

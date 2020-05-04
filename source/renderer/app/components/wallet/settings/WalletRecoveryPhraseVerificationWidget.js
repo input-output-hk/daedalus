@@ -100,7 +100,7 @@ export const messages = defineMessages({
   paperWalletDescription: {
     id: 'wallet.settings.recoveryPhraseVerification.paperWalletDescription',
     defaultMessage:
-      '!!!If you have restored this wallet from a paper wallet certificate you cannot use this feature to verify your wallet recovery phrase. In the next version of Daedalus, a new tool will be provided for the conversion of 27-word paper wallet recovery phrases to 12-word recovery phrases.',
+      '!!!If this wallet was restored from a paper wallet certificate, you cannot use this feature to verify your wallet recovery phrase. Paper wallet recovery phrase to regular wallet recovery phrase conversion will be available in Daedalus soon.',
     description:
       'Description for the paperWallet instructions on wallet settings.',
   },
@@ -237,7 +237,7 @@ export default class WalletRecoveryPhraseVerificationWidget extends Component<Pr
         <div className={styles.description}>
           {intl.formatMessage(messages.description, {
             wordCount,
-          })}
+          })}{' '}
           <Tooltip
             className={styles.paperWallet}
             skin={TooltipSkin}
