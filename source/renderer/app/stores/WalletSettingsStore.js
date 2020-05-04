@@ -243,15 +243,17 @@ export default class WalletSettingsStore extends Store {
       _resumePolling,
       refreshWalletsData,
     } = this.stores.wallets;
-    _pausePolling();
-    this.isForcedWalletResyncStarting = true;
+    runInAction('set isForcedWalletResyncStarting', () => {
+      this.isForcedWalletResyncStarting = true;
+    });
+    await _pausePolling();
     this.forceWalletResyncRequest.reset();
     try {
       await this.forceWalletResyncRequest.execute({ walletId, isLegacy });
     } finally {
       _resumePolling();
       await refreshWalletsData();
-      runInAction('set isForcedWalletResyncStarting', () => {
+      runInAction('reset isForcedWalletResyncStarting', () => {
         this.isForcedWalletResyncStarting = false;
         const activeWallet = this.stores.wallets.active;
         if (

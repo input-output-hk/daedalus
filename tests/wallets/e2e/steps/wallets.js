@@ -5,7 +5,6 @@ import {
   createWallets,
   getWalletByName,
   waitUntilWalletIsLoaded,
-  addOrSetWalletsForScenario,
   restoreWalletWithFunds,
   restoreLegacyWallet,
   waitUntilUrlEquals,
@@ -21,7 +20,14 @@ Given(/^I have (created )?the following (balance )?wallets:$/, async function(mo
   const type = await getWalletType.call(this, _type);
   const isLegacy = type === 'byron';
   const sequentially = mode === 'created ';
-  await createWallets.call(this, table.hashes(), { sequentially, isLegacy });
+  const wallets = table.hashes();
+  await createWallets.call(this, wallets, { sequentially, isLegacy });
+  // Ensure that ALL wallets are loaded
+  await Promise.all(
+    wallets.map(async wallet =>
+      await waitUntilWalletIsLoaded.call(this, wallet.name)
+    )
+  );
 });
 
 // Create a single wallet with funds
@@ -32,8 +38,7 @@ Given(/^I have a "([^"]*)" (balance )?wallet with funds$/, async function(wallet
   } else {
     await restoreLegacyWallet(this.client, { walletName, hasFunds: true });
   }
-  const wallet = await waitUntilWalletIsLoaded.call(this, walletName);
-  addOrSetWalletsForScenario.call(this, wallet);
+  await waitUntilWalletIsLoaded.call(this, walletName);
 });
 
 // Create a single wallet with no funds
@@ -45,22 +50,27 @@ Given(/^I have a "([^"]*)" (balance )?wallet$/, async function(walletName, _type
   } else {
     await restoreLegacyWallet(this.client, { walletName, hasFunds: false });
   }
-  const wallet = await waitUntilWalletIsLoaded.call(this, walletName);
-  addOrSetWalletsForScenario.call(this, wallet);
+  await waitUntilWalletIsLoaded.call(this, walletName);
 });
 
 Given(/^I have a "([^"]*)" balance wallet for transfering funds$/, async function(walletName) {
   await restoreLegacyWallet(this.client, { walletName, hasFunds: true, transferFunds: true });
-  const wallet = await waitUntilWalletIsLoaded.call(this, walletName);
-  addOrSetWalletsForScenario.call(this, wallet);
+  await waitUntilWalletIsLoaded.call(this, walletName);
 });
 
 Given(/^I am on the "([^"]*)" wallet "([^"]*)" screen$/, async function(
   walletName,
   screen
 ) {
-  const wallet = getWalletByName.call(this, walletName);
-  await navigateTo.call(this, `/wallets/${wallet.id}/${screen}`);
+  const proceedToScreen = async () => {
+    const wallet = await waitUntilWalletIsLoaded.call(this, walletName);
+    if (wallet) {
+      await navigateTo.call(this, `/wallets/${wallet.id}/${screen}`);
+    } else {
+      setTimeout(proceedToScreen, 500);
+    }
+  }
+  await proceedToScreen();
 });
 
 When(/^I have one wallet address$/, function() {
@@ -104,20 +114,13 @@ When(/^I click close$/, function() {
 Then(/^I should have newly created "([^"]*)" wallet loaded$/, async function(
   walletName
 ) {
-  const result = await this.client.executeAsync(done => {
+  await this.client.executeAsync(done => {
     daedalus.stores.wallets.walletsRequest
       .execute()
       .then(done)
       .catch(error => done(error));
   });
-
-  // Add or set the wallets for this scenario
-  if (this.context.wallets != null) {
-    this.context.wallets.push(...result.value);
-  } else {
-    this.context.wallets = result.value;
-  }
-  const wallet = getWalletByName.call(this, walletName);
+  const wallet = await getWalletByName.call(this, walletName);
   expect(wallet).to.be.an('object');
 });
 
@@ -129,7 +132,7 @@ Then(/^I should be on the "([^"]*)" wallet "([^"]*)" screen$/, async function(
   walletName,
   screenName
 ) {
-  const wallet = getWalletByName.call(this, walletName);
+  const wallet = await getWalletByName.call(this, walletName);
   return waitUntilUrlEquals.call(this, `/wallets/${wallet.id}/${screenName}`);
 });
 
@@ -144,7 +147,7 @@ Then(
   { timeout: 60000 },
   async function(walletName, table) {
     const expectedData = table.hashes()[0];
-    const receiverWallet = getWalletByName.call(this, walletName);
+    const receiverWallet = await getWalletByName.call(this, walletName);
     return this.client.waitUntil(async () => {
       const receiverWalletBalance = await this.waitAndGetText(
         `.SidebarWalletsMenu_wallets .Wallet_${
@@ -160,5 +163,18 @@ Then(
   /^"Balance" wallet badge should be visible in the wallet sidebar$/,
   async function() {
     return this.client.waitForVisible('.SidebarWalletMenuItem_active .LegacyBadge_component');
+  }
+);
+
+Then(
+  /^I should see the following error messages on the wallet restore dialog:$/,
+  async function(data) {
+    let errorsOnScreen = await this.waitAndGetText('.ConfigurationDialog_error');
+    if (typeof errorsOnScreen === 'string') errorsOnScreen = [errorsOnScreen];
+    const errors = data.hashes();
+    for (let i = 0; i < errors.length; i++) {
+      const expectedError = await this.intl(errors[i].message);
+      expect(errorsOnScreen[i]).to.equal(expectedError);
+    }
   }
 );

@@ -1,5 +1,5 @@
 // @flow
-import { Given, When, Then } from 'cucumber';
+import { When, Then } from 'cucumber';
 import {
   isActiveWalletBeingRestored,
   waitForActiveRestoreNotification,

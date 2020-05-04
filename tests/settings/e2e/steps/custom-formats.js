@@ -2,11 +2,9 @@
 import { Given, When, Then } from 'cucumber';
 import { expect } from 'chai';
 import {
-  termsOfUseHelpers,
   chooseCustomOptionsByValue,
   getSelectedCustomOptions,
   getValueFromSelector,
-  screenElementSelectors,
   doesMatchExpectedValue,
 } from './helpers';
 import type { Daedalus } from '../../../types';
