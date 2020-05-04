@@ -10,7 +10,6 @@ import { buildRoute } from '../../utils/routing';
 import { ROUTES } from '../../routes-config';
 import type { InjectedContainerProps } from '../../types/injectedPropsType';
 import type { NavDropdownProps } from '../../components/navigation/Navigation';
-import { WalletRecoveryPhraseVerificationStatuses } from '../../stores/WalletsStore';
 
 type Props = InjectedContainerProps;
 
@@ -51,11 +50,10 @@ export default class Wallet extends Component<Props> {
 
   render() {
     const { actions, stores } = this.props;
-    const { app, wallets, uiDialogs } = stores;
+    const { app, wallets, walletSettings, uiDialogs } = stores;
     const { isOpen: isDialogOpen } = uiDialogs;
     const { restartNode } = actions.networkStatus;
     const { active: activeWallet } = wallets;
-
     if (!activeWallet) {
       return (
         <MainLayout>
@@ -63,15 +61,11 @@ export default class Wallet extends Component<Props> {
         </MainLayout>
       );
     }
-
     const {
-      recoveryPhraseVerificationStatus,
-    } = wallets.getWalletRecoveryPhraseVerification(activeWallet.id);
-    const { isIncentivizedTestnet } = global;
-    const hasNotification =
-      recoveryPhraseVerificationStatus ===
-        WalletRecoveryPhraseVerificationStatuses.NOTIFICATION &&
-      !isIncentivizedTestnet;
+      hasNotification,
+    } = walletSettings.getWalletsRecoveryPhraseVerificationData(
+      activeWallet.id
+    );
     const {
       isRestoring,
       isLegacy,

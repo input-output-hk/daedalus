@@ -31,7 +31,7 @@ export const messages = defineMessages({
   },
   recoveryPhraseStep3Button: {
     id: 'wallet.settings.recoveryPhraseStep3Button',
-    defaultMessage: '!!!Continue',
+    defaultMessage: '!!!Finish',
     description: 'Label for the recoveryPhraseStep3Button on wallet settings.',
   },
 });
@@ -45,7 +45,10 @@ type State = {
 };
 
 @observer
-export default class WalletRecoveryPhraseStep3 extends Component<Props, State> {
+export default class WalletRecoveryPhraseStep3Dialog extends Component<
+  Props,
+  State
+> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -86,7 +89,7 @@ export default class WalletRecoveryPhraseStep3 extends Component<Props, State> {
         closeButton={<DialogCloseButton />}
       >
         <p>{intl.formatMessage(messages.recoveryPhraseStep3Paragraph1)}</p>
-        <p className={styles.checkboxContainer}>
+        <div className={styles.checkboxContainer}>
           <Checkbox
             onChange={this.onToggleSafetyAgreement}
             checked={safetyAgreement}
@@ -94,7 +97,7 @@ export default class WalletRecoveryPhraseStep3 extends Component<Props, State> {
             className={styles.checkbox}
             label={intl.formatMessage(messages.recoveryPhraseStep3Paragraph2)}
           />
-        </p>
+        </div>
       </Dialog>
     );
   }

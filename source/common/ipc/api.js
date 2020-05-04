@@ -255,6 +255,13 @@ export type GenerateWalletMigrationReportRendererRequest = WalletMigrationReport
 export type GenerateWalletMigrationReportMainResponse = void;
 
 /**
+ * Channel for generating wallet migration report
+ */
+export const GET_WASM_BINARY_CHANNEL = 'GET_WASM_BINARY_CHANNEL';
+export type getRecoveryWalletIdRendererRequest = Array<string>;
+export type getRecoveryWalletIdMainResponse = string;
+
+/**
  * Channel for showing open dialog
  */
 export const SHOW_OPEN_DIALOG_CHANNEL = 'SHOW_OPEN_DIALOG_CHANNEL';

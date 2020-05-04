@@ -14,9 +14,9 @@ import {
 import WalletAddress from '../../../source/renderer/app/domains/WalletAddress';
 import { LOVELACES_PER_ADA } from '../../../source/renderer/app/config/numbersConfig';
 import {
-  WalletRecoveryPhraseVerificationStatuses,
-  WalletRecoveryPhraseVerificationTypes,
-} from '../../../source/renderer/app/stores/WalletsStore';
+  RECOVERY_PHRASE_VERIFICATION_STATUSES,
+  RECOVERY_PHRASE_VERIFICATION_TYPES,
+} from '../../../source/renderer/app/config/walletRecoveryPhraseVerificationConfig';
 import type {
   TransactionType,
   TransactionState,
@@ -51,10 +51,9 @@ export const generateWallet = (
     isLegacy: false,
     discovery: 'random',
     recoveryPhraseVerificationDate: new Date(),
-    recoveryPhraseVerificationStatus:
-      WalletRecoveryPhraseVerificationStatuses.OK,
+    recoveryPhraseVerificationStatus: RECOVERY_PHRASE_VERIFICATION_STATUSES.OK,
     recoveryPhraseVerificationStatusType:
-      WalletRecoveryPhraseVerificationTypes.NEVER_CHECKED,
+      RECOVERY_PHRASE_VERIFICATION_TYPES.NEVER_VERIFIED,
     delegatedStakePoolId: get(delegatedStakePool, 'id'),
   });
 

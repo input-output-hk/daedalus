@@ -222,7 +222,9 @@ buildElectronApp darwinConfig@DarwinConfig{dcAppName, dcAppNameApp} installerCon
   let
     formatter :: Format r (Text -> Text -> r)
     formatter = "../release/darwin-x64/" % s % "-darwin-x64/" % s
+    pathtoapp :: Text
     pathtoapp = format formatter dcAppName dcAppNameApp
+  cptree "../node_modules/js-chain-libs-node" (fromText $ pathtoapp <> "/Contents/Resources/app/node_modules/js-chain-libs-node")
   rewritePackageJson (T.unpack $ pathtoapp <> "/Contents/Resources/app/package.json") (spacedName installerConfig)
   pure $ fromString $ T.unpack $ pathtoapp
 

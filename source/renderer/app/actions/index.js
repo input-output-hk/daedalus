@@ -11,6 +11,7 @@ import SidebarActions from './sidebar-actions';
 import StakingActions from './staking-actions';
 import TransactionsActions from './transactions-actions';
 import WalletsActions from './wallets-actions';
+import WalletsLocalAction from './wallets-local-actions';
 import WalletBackupActions from './wallet-backup-actions';
 import WalletMigrationActions from './wallet-migration-actions';
 import WalletSettingsActions from './wallet-settings-actions';
@@ -29,6 +30,7 @@ export type ActionsMap = {
   staking: StakingActions,
   transactions: TransactionsActions,
   wallets: WalletsActions,
+  walletsLocal: WalletsLocalAction,
   walletBackup: WalletBackupActions,
   walletMigration: WalletMigrationActions,
   walletSettings: WalletSettingsActions,
@@ -48,6 +50,7 @@ const actionsMap: ActionsMap = {
   staking: new StakingActions(),
   transactions: new TransactionsActions(),
   wallets: new WalletsActions(),
+  walletsLocal: new WalletsLocalAction(),
   walletBackup: new WalletBackupActions(),
   walletMigration: new WalletMigrationActions(),
   walletSettings: new WalletSettingsActions(),
