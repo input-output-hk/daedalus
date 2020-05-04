@@ -1,4 +1,4 @@
-@e2e @byron
+@e2e @byron @watch
 Feature: Wallet Settings - Recovery Phrase Verification
 
   Background:
@@ -14,6 +14,7 @@ Feature: Wallet Settings - Recovery Phrase Verification
     When I click the recovery phrase veryfication button
     And I click the checkbox and Continue button
     And I enter the recovery phrase mnemonics correctly
+    And I click the verify button
     Then I should see the confirmation dialog
     When I click the checkbox and Continue button
     Then I should not see any dialog
@@ -26,6 +27,7 @@ Feature: Wallet Settings - Recovery Phrase Verification
     When I click the recovery phrase veryfication button
     And I click the checkbox and Continue button
     And I enter the recovery phrase mnemonics incorrectly
+    And I click the verify button
     Then I should see the error dialog
     When I click the close button
     Then I should not see any dialog
