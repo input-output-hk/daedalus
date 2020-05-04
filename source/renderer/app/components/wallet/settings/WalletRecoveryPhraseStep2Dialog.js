@@ -12,6 +12,11 @@ import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
 import styles from './WalletRecoveryPhraseStepDialogs.scss';
 import globalMessages from '../../../i18n/global-messages';
+import {
+  SEQUENTIAL_WALLET_VALID_WORD_COUNTS,
+  RANDOM_WALLET_VALID_WORD_COUNTS,
+} from '../../../config/cryptoConfig';
+import { closestNumber } from '../../../utils/numbers';
 
 export const messages = defineMessages({
   recoveryPhraseStep2Title: {
@@ -60,7 +65,7 @@ export const messages = defineMessages({
 type Props = {
   onContinue: Function,
   onClose: Function,
-  wordCount: number,
+  validWordCounts: Array<number>,
 };
 
 type State = {
@@ -90,14 +95,15 @@ export default class WalletRecoveryPhraseStep2Dialog extends Component<
             const enteredWords = field.value;
             const wordCount = enteredWords.length;
             const value = join(enteredWords, ' ');
-            const { wordCount: expectedWordCount } = this.props;
+            const { validWordCounts } = this.props;
+            const expected = closestNumber(wordCount, validWordCounts);
 
             // Check if recovery phrase contains the expected words
-            if (wordCount !== expectedWordCount) {
+            if (!validWordCounts.includes(wordCount)) {
               return [
                 false,
                 intl.formatMessage(globalMessages.incompleteMnemonic, {
-                  expected: expectedWordCount,
+                  expected,
                 }),
               ];
             }
@@ -152,11 +158,7 @@ export default class WalletRecoveryPhraseStep2Dialog extends Component<
         closeButton={<DialogCloseButton />}
       >
         <div className={styles.subtitle}>
-          <p>
-            {intl.formatMessage(messages.recoveryPhraseStep2Description, {
-              wordCount,
-            })}
-          </p>
+          <p>{intl.formatMessage(messages.recoveryPhraseStep2Description)}</p>
         </div>
 
         <Autocomplete
