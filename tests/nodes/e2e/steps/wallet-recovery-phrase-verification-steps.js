@@ -64,7 +64,8 @@ When(/^I enter the recovery phrase mnemonics (correctly|incorrectly)$/, async fu
   }
 });
 
-When(/^I click the verify button$/, function() {
+When(/^I click the verify button$/, async function() {
+  await this.client.waitForEnabled(DIALOG_VERIFY_BUTTON_SELECTOR);
   return this.waitAndClick(DIALOG_VERIFY_BUTTON_SELECTOR);
 });
 
