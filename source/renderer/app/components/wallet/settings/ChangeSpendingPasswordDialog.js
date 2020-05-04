@@ -111,19 +111,13 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
           ),
           value: '',
           validators: [
-            ({ field }) => {
+            ({field}) => {
               if (this.props.isSpendingPasswordSet) {
-                if (field.value !== '') {
-                  return [
-                    isValidSpendingPassword(field.value),
-                    this.context.intl.formatMessage(
-                      globalMessages.invalidSpendingPassword
-                    ),
-                  ];
-                }
                 return [
-                  false,
-                  this.context.intl.formatMessage(messages.fieldIsRequired),
+                  isValidSpendingPassword(field.value),
+                  this.context.intl.formatMessage(
+                    globalMessages.invalidSpendingPassword
+                  ),
                 ];
               }
               return [true];
@@ -169,7 +163,7 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
           validators: [
             ({ field, form }) => {
               const spendingPassword = form.$('spendingPassword').value;
-              if (spendingPassword.length === 0) return [true];
+              if (spendingPassword.length === 0) return [false];
               return [
                 isValidRepeatPassword(spendingPassword, field.value),
                 this.context.intl.formatMessage(
@@ -185,6 +179,7 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
       options: {
         validateOnChange: true,
         validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
+        showErrorsOnClear: true,
       },
     }
   );
@@ -240,6 +235,9 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
 
     const canSubmit = !isSubmitting && form.isValid;
 
+    const currentPasswordError =
+      canSubmit && error && error.code === 'wrong_encryption_passphrase';
+
     const actions = [
       {
         className: confirmButtonClasses,
@@ -278,7 +276,7 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
                 this.handleDataChange('currentPasswordValue', value)
               }
               {...currentPasswordField.bind()}
-              error={currentPasswordField.error}
+              error={currentPasswordField.error || currentPasswordError}
               skin={InputSkin}
             />
           )}
