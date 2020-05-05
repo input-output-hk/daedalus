@@ -6,8 +6,6 @@ import classnames from 'classnames';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
-import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
-import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
 import moment from 'moment';
 import SVGInline from 'react-svg-inline';
 import iconOk from '../../../assets/images/recovery-phrase-verification-ok.inline.svg';
