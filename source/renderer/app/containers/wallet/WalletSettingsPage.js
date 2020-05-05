@@ -65,11 +65,6 @@ export default class WalletSettingsPage extends Component<Props> {
       recoveryPhraseVerificationStatusType,
     } = getWalletsRecoveryPhraseVerificationData(activeWallet.id);
 
-    const wordCount =
-      activeWallet.discovery === 'random'
-        ? LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT
-        : WALLET_RECOVERY_PHRASE_WORD_COUNT;
-
     const locale = profile.currentLocale;
     const { isIncentivizedTestnet } = global;
 
@@ -120,7 +115,6 @@ export default class WalletSettingsPage extends Component<Props> {
           deleteWalletDialogContainer={<DeleteWalletDialogContainer />}
           exportWalletDialogContainer={<ExportWalletToFileDialogContainer />}
           locale={locale}
-          wordCount={wordCount}
         />
         <WalletRecoveryPhraseContainer />
       </>

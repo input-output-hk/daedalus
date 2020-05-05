@@ -5,6 +5,7 @@ import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import Wallet from '../domains/Wallet';
 import { WALLET_UTXO_API_REQUEST_INTERVAL } from '../config/timingConfig';
+import { PAPER_WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../config/cryptoConfig';
 import { getRecoveryWalletIdChannel } from '../ipc/getRecoveryWalletIdChannel';
 import { getStatusFromWalletData } from '../utils/walletRecoveryPhraseVerificationUtils';
 import { getRawWalletId } from '../api/utils';
@@ -282,11 +283,15 @@ export default class WalletSettingsStore extends Store {
     this.recoveryPhraseStep = 0;
   };
 
-  @action _recoveryPhraseVerificationCheck = async ({
-    recoveryPhrase,
-  }: {
+  @action _recoveryPhraseVerificationCheck = async (data: {
     recoveryPhrase: Array<string>,
   }) => {
+    let { recoveryPhrase } = data;
+    if (recoveryPhrase.length === PAPER_WALLET_RECOVERY_PHRASE_WORD_COUNT) {
+      recoveryPhrase = await this.stores.wallets._getUnscrambledMnemonics(
+        recoveryPhrase
+      );
+    }
     const walletId = await getRecoveryWalletIdChannel.request(recoveryPhrase);
     if (!walletId)
       throw new Error('It was not possible to retrieve the walletId.');

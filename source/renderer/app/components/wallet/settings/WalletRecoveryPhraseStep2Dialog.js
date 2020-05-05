@@ -12,10 +12,6 @@ import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
 import styles from './WalletRecoveryPhraseStepDialogs.scss';
 import globalMessages from '../../../i18n/global-messages';
-import {
-  SEQUENTIAL_WALLET_VALID_WORD_COUNTS,
-  RANDOM_WALLET_VALID_WORD_COUNTS,
-} from '../../../config/cryptoConfig';
 import { closestNumber } from '../../../utils/numbers';
 
 export const messages = defineMessages({
@@ -85,6 +81,9 @@ export default class WalletRecoveryPhraseStep2Dialog extends Component<
     isVerifying: false,
   };
 
+  isValidWordCound = (wordCount: number): boolean =>
+    this.props.validWordCounts.includes(wordCount);
+
   form = new ReactToolboxMobxForm(
     {
       fields: {
@@ -99,7 +98,7 @@ export default class WalletRecoveryPhraseStep2Dialog extends Component<
             const expected = closestNumber(wordCount, validWordCounts);
 
             // Check if recovery phrase contains the expected words
-            if (!validWordCounts.includes(wordCount)) {
+            if (!this.isValidWordCound(wordCount)) {
               return [
                 false,
                 intl.formatMessage(globalMessages.incompleteMnemonic, {
@@ -127,14 +126,15 @@ export default class WalletRecoveryPhraseStep2Dialog extends Component<
   render() {
     const { form } = this;
     const { intl } = this.context;
-    const { onClose, onContinue, wordCount } = this.props;
+    const { onClose, onContinue, validWordCounts } = this.props;
     const { isVerifying } = this.state;
     const recoveryPhraseField = form.$('recoveryPhrase');
     const canSubmit =
       !recoveryPhraseField.error &&
       !isVerifying &&
-      recoveryPhraseField.value.length === wordCount;
+      this.isValidWordCound(recoveryPhraseField.value.length);
     const recoveryPhrase = recoveryPhraseField.value;
+    const maxSelections = Math.max(...validWordCounts);
     const actions = [
       {
         className: isVerifying ? styles.isVerifying : null,
@@ -166,7 +166,7 @@ export default class WalletRecoveryPhraseStep2Dialog extends Component<
           label={intl.formatMessage(messages.recoveryPhraseStep2Subtitle)}
           placeholder={intl.formatMessage(messages.recoveryPhraseInputHint)}
           options={suggestedMnemonics}
-          maxSelections={wordCount}
+          maxSelections={maxSelections}
           error={recoveryPhraseField.error}
           maxVisibleOptions={5}
           noResultsMessage={intl.formatMessage(

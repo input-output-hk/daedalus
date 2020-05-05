@@ -102,7 +102,6 @@ type Props = {
   recoveryPhraseVerificationStatusType: string,
   locale: string,
   isSpendingPasswordSet: boolean,
-  wordCount: number,
 };
 
 type State = {
@@ -175,7 +174,6 @@ export default class WalletSettings extends Component<Props, State> {
       recoveryPhraseVerificationStatusType,
       locale,
       isSpendingPasswordSet,
-      wordCount,
     } = this.props;
     const { isFormBlocked } = this.state;
 
@@ -208,7 +206,6 @@ export default class WalletSettings extends Component<Props, State> {
               recoveryPhraseVerificationStatusType
             }
             creationDate={creationDate}
-            wordCount={wordCount}
             locale={locale}
           />
 
@@ -287,7 +284,6 @@ export default class WalletSettings extends Component<Props, State> {
               recoveryPhraseVerificationStatusType
             }
             creationDate={creationDate}
-            wordCount={wordCount}
             locale={locale}
           />
 

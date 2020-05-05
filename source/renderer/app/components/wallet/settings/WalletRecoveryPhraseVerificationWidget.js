@@ -30,7 +30,7 @@ export const messages = defineMessages({
   description: {
     id: 'wallet.settings.recoveryPhraseVerification.description',
     defaultMessage:
-      '!!!Funds in this wallet can only be recovered using the correct wallet recovery phrase, which is a unique {wordCount}-word string you were shown and asked to write down when creating this wallet. You can re-enter your wallet recovery phrase to verify that you have the correct recovery phrase for this wallet.',
+      '!!!Funds in this wallet can only be recovered using the correct wallet recovery phrase, which is a unique string you were shown and asked to write down when creating this wallet. You can re-enter your wallet recovery phrase to verify that you have the correct recovery phrase for this wallet.',
     description:
       'Label for the recoveryPhraseVerificationDescription on wallet settings.',
   },
@@ -121,7 +121,6 @@ export type Props = {
   creationDate: Date,
   recoveryPhraseVerificationDate: ?Date,
   onVerify: Function,
-  wordCount: number,
   locale: string,
 };
 
@@ -202,7 +201,6 @@ export default class WalletRecoveryPhraseVerificationWidget extends Component<Pr
     const { intl } = this.context;
     const {
       onVerify,
-      wordCount,
       creationDate,
       recoveryPhraseVerificationDate,
     } = this.props;
@@ -235,16 +233,7 @@ export default class WalletRecoveryPhraseVerificationWidget extends Component<Pr
       <div className={styles.component}>
         <h2>{intl.formatMessage(messages.title)}</h2>
         <div className={styles.description}>
-          {intl.formatMessage(messages.description, {
-            wordCount,
-          })}{' '}
-          <Tooltip
-            className={styles.paperWallet}
-            skin={TooltipSkin}
-            tip={intl.formatMessage(messages.paperWalletDescription)}
-          >
-            {intl.formatMessage(messages.paperWalletTitle)}
-          </Tooltip>
+          {intl.formatMessage(messages.description)}
         </div>
         <br />
         <div className={statusStyles}>
