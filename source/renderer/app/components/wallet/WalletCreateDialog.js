@@ -143,12 +143,7 @@ export default class WalletCreateDialog extends Component<Props, State> {
             ({ field, form }) => {
               const repeatPasswordField = form.$('repeatPassword');
               if (repeatPasswordField.value.length === 0) {
-                return [
-                  isValidSpendingPassword(field.value),
-                  this.context.intl.formatMessage(
-                    globalMessages.invalidSpendingPassword
-                  ),
-                ];
+                repeatPasswordField.validate({ showErrors: false });
               }
               if (repeatPasswordField.value.length > 0) {
                 repeatPasswordField.validate({ showErrors: true });
