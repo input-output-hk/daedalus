@@ -128,8 +128,11 @@ export default class ConfigurationDialog extends Component<Props> {
           validators: [
             ({ field, form }) => {
               const repeatPasswordField = form.$('repeatPassword');
-              const isRepeatPasswordFieldSet = repeatPasswordField.value.length > 0;
-              repeatPasswordField.validate({ showErrors: isRepeatPasswordFieldSet });
+              const isRepeatPasswordFieldSet =
+                repeatPasswordField.value.length > 0;
+              repeatPasswordField.validate({
+                showErrors: isRepeatPasswordFieldSet,
+              });
               return [
                 isValidSpendingPassword(field.value),
                 this.context.intl.formatMessage(
