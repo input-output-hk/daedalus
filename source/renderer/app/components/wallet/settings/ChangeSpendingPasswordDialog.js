@@ -111,10 +111,11 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
           ),
           value: '',
           validators: [
-            ({ field }) => {
+            ({ form }) => {
               if (this.props.isSpendingPasswordSet) {
+                const currentPasswordField = form.$('currentPassword');
                 return [
-                  isValidSpendingPassword(field.value),
+                  currentPasswordField.value.length > 0,
                   this.context.intl.formatMessage(
                     globalMessages.invalidSpendingPassword
                   ),
