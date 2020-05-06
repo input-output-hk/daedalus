@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## vNext
+
+### Fixes
+
+- Disabled button on forms when there is nothing to submit ([PR 1998](https://github.com/input-output-hk/daedalus/pull/1998))
+
 ## 1.1.0-FC1
 
 ### Features
@@ -9,7 +15,6 @@ Changelog
 
 ### Fixes
 
-- Disabled button on forms when there is nothing to submit ([PR 1998](https://github.com/input-output-hk/daedalus/pull/1998))
 - Fixed Daedalus logo animation display on macOS ([PR 2005](https://github.com/input-output-hk/daedalus/pull/2005))
 - Fixed `cardano-wallet` git revision ([PR 1999](https://github.com/input-output-hk/daedalus/pull/1999))
 - Added a check which prevents installing Daedalus on unsupported Windows platform versions ([PR 1947](https://github.com/input-output-hk/daedalus/pull/1947))
