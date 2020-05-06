@@ -13,6 +13,7 @@ import { formattedBytesToSize } from '../utils/formatters';
 import { logger } from '../utils/logging';
 import { setStateSnapshotLogChannel } from '../ipc/setStateSnapshotLogChannel';
 import { getDesktopDirectoryPathChannel } from '../ipc/getDesktopDirectoryPathChannel';
+import { getSystemLocaleChannel } from '../ipc/getSystemLocaleChannel';
 import { LOCALES } from '../../../common/types/locales.types';
 import {
   compressLogsChannel,
@@ -21,6 +22,7 @@ import {
 } from '../ipc/logs.ipc';
 import type { LogFiles, CompressedLogStatus } from '../types/LogTypes';
 import type { StateSnapshotLogParams } from '../../../common/types/logging.types';
+import type { Locale } from '../../../common/types/locales.types';
 import {
   DEFAULT_NUMBER_FORMAT,
   NUMBER_FORMATS,
@@ -40,7 +42,7 @@ import {
 } from '../config/profileConfig';
 
 export default class ProfileStore extends Store {
-  @observable systemLocale: string = LOCALES.english;
+  @observable systemLocale: Locale = LOCALES.english;
   @observable systemNumberFormat: string = NUMBER_OPTIONS[0].value;
   @observable systemDateFormatEnglish: string = DATE_ENGLISH_OPTIONS[0].value;
   @observable systemDateFormatJapanese: string = DATE_JAPANESE_OPTIONS[0].value;
@@ -135,6 +137,7 @@ export default class ProfileStore extends Store {
     this._getTermsOfUseAcceptance();
     this._getDataLayerMigrationAcceptance();
     this._getDesktopDirectoryPath();
+    this._getSystemLocale();
   }
 
   _updateBigNumberFormat = () => {
@@ -316,6 +319,10 @@ export default class ProfileStore extends Store {
     this._onReceiveDesktopDirectoryPath(
       await getDesktopDirectoryPathChannel.request()
     );
+  };
+
+  _getSystemLocale = async () => {
+    this._onReceiveSystemLocale(await getSystemLocaleChannel.request());
   };
 
   _redirectToInitialSettingsIfNoLocaleSet = () => {
@@ -569,7 +576,7 @@ export default class ProfileStore extends Store {
     }
   );
 
-  @action _onReceiveSystemLocale = (systemLocale: string) => {
+  @action _onReceiveSystemLocale = (systemLocale: Locale) => {
     this.systemLocale = systemLocale;
   };
 

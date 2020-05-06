@@ -1,10 +1,10 @@
 // @flow
-export type Locales = {
-  english: string,
-  japanese: string,
-};
+export type Locale = 'en-US' | 'ja-JP';
 
-export const LOCALES = {
+export const LOCALES: {
+  english: Locale,
+  japanese: Locale,
+} = {
   english: 'en-US',
   japanese: 'ja-JP',
 };
