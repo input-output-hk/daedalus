@@ -140,12 +140,8 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
           validators: [
             ({ field, form }) => {
               const repeatPasswordField = form.$('repeatPassword');
-              if (repeatPasswordField.value.length === 0) {
-                repeatPasswordField.validate({ showErrors: false });
-              }
-              if (repeatPasswordField.value.length > 0) {
-                repeatPasswordField.validate({ showErrors: true });
-              }
+              const isRepeatPasswordFieldSet = repeatPasswordField.value.length > 0;
+              repeatPasswordField.validate({ showErrors: isRepeatPasswordFieldSet });
               return [
                 isValidSpendingPassword(field.value),
                 this.context.intl.formatMessage(
