@@ -68,7 +68,7 @@ export default class WalletAddPage extends Component<Props> {
     } else if (restoreWalletStep !== null) {
       activeDialog = <WalletRestoreDialogContainer onClose={this.onClose} />;
     } else if (uiDialogs.isOpen(WalletImportFileDialog)) {
-      activeDialog = <WalletImportDialogContainer />;
+      activeDialog = <WalletImportDialogContainer onClose={this.onClose} />;
     }
 
     return (
