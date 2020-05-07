@@ -6,6 +6,7 @@ import type {
   WalletYoroiKind,
   WalletHardwareKind,
   WalletByronKind,
+  ImportWalletStep,
 } from '../types/walletRestoreTypes';
 
 const { isIncentivizedTestnet } = global;
@@ -15,6 +16,11 @@ export const RESTORE_WALLET_STEPS: Array<RestoreWalletStep> = [
   'mnemonics',
   'configuration',
   'success',
+];
+
+export const IMPORT_WALLET_STEPS: Array<ImportWalletStep> = [
+  'walletImportFile',
+  'walletSelectImport',
 ];
 
 export const WALLET_KINDS: EnumMap<string, WalletKind> = isIncentivizedTestnet
