@@ -11,6 +11,7 @@ import WalletRecoveryPhraseStep1Dialog from '../../../../source/renderer/app/com
 import WalletRecoveryPhraseStep2Dialog from '../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep2Dialog';
 import WalletRecoveryPhraseStep3Dialog from '../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep3Dialog';
 import WalletRecoveryPhraseStep4Dialog from '../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep4Dialog';
+import { SEQUENTIAL_WALLET_VALID_WORD_COUNTS } from '../../../../source/renderer/app/config/cryptoConfig';
 
 export const defaultProps = {
   isDialogOpen: () => {},
@@ -22,14 +23,13 @@ export const defaultProps = {
     <WalletRecoveryPhraseStep1Dialog
       onClose={action('onClose')}
       onContinue={action('onContinue')}
-      wordCount={number('wordCount', 12)}
     />
   ),
   walletRecoveryPhraseStep2Container: (
     <WalletRecoveryPhraseStep2Dialog
       onClose={action('onClose')}
       onContinue={action('onContinue')}
-      wordCount={number('wordCount', 12)}
+      validWordCounts={SEQUENTIAL_WALLET_VALID_WORD_COUNTS}
     />
   ),
   walletRecoveryPhraseStep3Container: (
