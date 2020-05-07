@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## vNext
+
+### Fixes
+
+- Fixed system locale detection ([PR 2009](https://github.com/input-output-hk/daedalus/pull/2009))
+
 ## 1.1.0-FC1
 
 ### Features
