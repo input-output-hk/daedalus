@@ -51,6 +51,7 @@ export const WalletMigrationStatuses: {
 
 export default class WalletMigrationStore extends Store {
   @observable walletMigrationStep = 1;
+  @observable importWalletStep = null;
 
   @observable isExportRunning = false;
   @observable exportedWallets: Array<ExportedByronWallet> = [];
@@ -104,6 +105,21 @@ export default class WalletMigrationStore extends Store {
 
   getExportedWalletByIndex = (index: number): ?ExportedByronWallet =>
     this.exportedWallets.find(w => w.index === index);
+
+  @action _importWalletBegin = () => {
+    this.importWalletStep = 0;
+  };
+
+  @action _importWalletChangeStep = (isBack: boolean = false) => {
+    const currentImportWalletStep = this.importWalletStep || 0;
+    if(this.importWalletStep === null) {
+      this._resetMigration();
+    }
+    this.importWalletStep =
+      isBack === true
+        ? currentImportWalletStep - 1
+        : currentImportWalletStep + 1;
+  };
 
   @action _selectExportSourcePath = async ({
     importFrom,
