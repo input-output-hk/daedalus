@@ -4,6 +4,7 @@ import { observer, inject } from 'mobx-react';
 import WalletImportFileDialog from '../../../components/wallet/wallet-import/WalletImportFileDialog';
 import WalletSelectImportDialog from '../../../components/wallet/wallet-import/WalletSelectImportDialog';
 import { isValidWalletName } from '../../../utils/validations';
+import { IMPORT_WALLET_STEPS } from '../../../config/walletRestoreConfig';
 import type { InjectedProps } from '../../../types/injectedPropsType';
 import type { ImportFromOption } from '../../../types/walletExportTypes';
 
@@ -13,6 +14,13 @@ type Props = InjectedProps;
 @observer
 export default class WalletImportDialogContainer extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
+
+  get containers() {
+    return {
+      walletImportFile: WalletImportFileDialog,
+      walletSelectImport: WalletSelectImportDialog,
+    };
+  }
 
   componentWillUnmount() {
     this.props.actions.walletMigration.finishMigration.trigger();
@@ -49,7 +57,9 @@ export default class WalletImportDialogContainer extends Component<Props> {
   };
 
   render() {
-    const { app, walletMigration } = this.props.stores;
+    const { stores, actions } = this.props;
+    const { app, walletMigration } = stores;
+
     const {
       exportedWallets,
       exportErrors,
@@ -60,11 +70,29 @@ export default class WalletImportDialogContainer extends Component<Props> {
       isRestorationRunning,
       walletMigrationStep,
     } = walletMigration;
+
     const { openExternalLink } = app;
 
+    const {
+      importWalletStep,
+    } = stores.wallets;
+
+    const {
+      restoreWalletClose,
+      restoreWalletChangeStep,
+    } = actions.wallets;
+
+    const stepId = IMPORT_WALLET_STEPS[importWalletStep];
+
+    const CurrentContainer = this.containers[stepId];
+
     return (
-      <>
-        {walletMigrationStep === 1 && (
+        <CurrentContainer
+          onContinue={() => restoreWalletChangeStep.trigger()}
+          onBack={() => restoreWalletChangeStep.trigger(true)}
+          onClose={() => restoreWalletClose.trigger()}
+        />
+        /* {walletMigrationStep === 1 && (
           <WalletImportFileDialog
             isSubmitting={isExportRunning}
             exportSourcePath={exportSourcePath}
@@ -91,8 +119,7 @@ export default class WalletImportDialogContainer extends Component<Props> {
             onToggleWalletImportSelection={this.onToggleWalletImportSelection}
             onClose={this.onCancel}
           />
-        )}
-      </>
+        )} */
     );
   }
 }
