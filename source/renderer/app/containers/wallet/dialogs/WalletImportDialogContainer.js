@@ -6,6 +6,7 @@ import WalletSelectImportDialog from '../../../components/wallet/wallet-import/W
 import { isValidWalletName } from '../../../utils/validations';
 import type { InjectedProps } from '../../../types/injectedPropsType';
 import type { ImportFromOption } from '../../../types/walletExportTypes';
+import { MAX_ADA_WALLETS_COUNT } from '../../../config/numbersConfig';
 
 type Props = InjectedProps;
 
@@ -49,7 +50,7 @@ export default class WalletImportDialogContainer extends Component<Props> {
   };
 
   render() {
-    const { app, walletMigration } = this.props.stores;
+    const { app, walletMigration, wallets } = this.props.stores;
     const {
       exportedWallets,
       exportErrors,
@@ -61,6 +62,8 @@ export default class WalletImportDialogContainer extends Component<Props> {
       walletMigrationStep,
     } = walletMigration;
     const { openExternalLink } = app;
+    const isMaxNumberOfWalletsReached =
+      pendingImportWalletsCount + wallets.all.length === MAX_ADA_WALLETS_COUNT;
 
     return (
       <>
@@ -90,6 +93,7 @@ export default class WalletImportDialogContainer extends Component<Props> {
             onWalletNameChange={this.onWalletNameChange}
             onToggleWalletImportSelection={this.onToggleWalletImportSelection}
             onClose={this.onCancel}
+            isMaxNumberOfWalletsReached={isMaxNumberOfWalletsReached}
           />
         )}
       </>

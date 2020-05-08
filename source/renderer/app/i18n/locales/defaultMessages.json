@@ -9315,17 +9315,31 @@
         }
       },
       {
+        "defaultMessage": "!!!Daedalus supports up to 30 wallets. You will need to remove another wallet before you can import this one.",
+        "description": "Max number of wallets reached",
+        "end": {
+          "column": 3,
+          "line": 84
+        },
+        "file": "source/renderer/app/components/wallet/wallet-import/WalletSelectImportDialog.js",
+        "id": "wallet.select.import.dialog.maxWalletsReachedTooltip",
+        "start": {
+          "column": 28,
+          "line": 79
+        }
+      },
+      {
         "defaultMessage": "!!!Wallet imported",
         "description": "Wallet imported",
         "end": {
           "column": 3,
-          "line": 83
+          "line": 89
         },
         "file": "source/renderer/app/components/wallet/wallet-import/WalletSelectImportDialog.js",
         "id": "wallet.select.import.dialog.walletImported",
         "start": {
           "column": 18,
-          "line": 79
+          "line": 85
         }
       },
       {
@@ -9333,13 +9347,13 @@
         "description": "Import selected wallets",
         "end": {
           "column": 3,
-          "line": 88
+          "line": 94
         },
         "file": "source/renderer/app/components/wallet/wallet-import/WalletSelectImportDialog.js",
         "id": "wallet.select.import.dialog.buttonLabel",
         "start": {
           "column": 15,
-          "line": 84
+          "line": 90
         }
       },
       {
@@ -9347,13 +9361,13 @@
         "description": "Learn more",
         "end": {
           "column": 3,
-          "line": 93
+          "line": 99
         },
         "file": "source/renderer/app/components/wallet/wallet-import/WalletSelectImportDialog.js",
         "id": "wallet.select.import.dialog.linkLabel",
         "start": {
           "column": 13,
-          "line": 89
+          "line": 95
         }
       },
       {
@@ -9361,13 +9375,13 @@
         "description": "\"Learn more\" link URL on the wallet import file dialog",
         "end": {
           "column": 3,
-          "line": 99
+          "line": 105
         },
         "file": "source/renderer/app/components/wallet/wallet-import/WalletSelectImportDialog.js",
         "id": "wallet.select.import.dialog.linkUrl",
         "start": {
           "column": 11,
-          "line": 94
+          "line": 100
         }
       },
       {
@@ -9375,13 +9389,13 @@
         "description": "Close window",
         "end": {
           "column": 3,
-          "line": 104
+          "line": 110
         },
         "file": "source/renderer/app/components/wallet/wallet-import/WalletSelectImportDialog.js",
         "id": "wallet.select.import.dialog.closeWindow",
         "start": {
           "column": 15,
-          "line": 100
+          "line": 106
         }
       }
     ],
