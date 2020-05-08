@@ -10,6 +10,7 @@ import {
   waitUntilUrlEquals,
   navigateTo,
   getWalletType,
+  restoreWallets,
 } from './helpers';
 import type { Daedalus } from '../../../types';
 
@@ -28,6 +29,18 @@ Given(/^I have (created )?the following (balance )?wallets:$/, async function(mo
       await waitUntilWalletIsLoaded.call(this, wallet.name)
     )
   );
+});
+
+// Restore wallet of any kind
+Given(/^I have restored the following wallets:$/, async function(table) {
+  const wallets = table.hashes();
+  await restoreWallets.call(this, wallets);
+  // Ensure that ALL wallets are loaded
+  // await Promise.all(
+  //   wallets.map(async wallet =>
+  //     await waitUntilWalletIsLoaded.call(this, wallet.name)
+  //   )
+  // );
 });
 
 // Create a single wallet with funds
