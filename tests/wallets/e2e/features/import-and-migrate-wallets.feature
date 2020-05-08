@@ -211,5 +211,3 @@ Feature: Import wallets
     And I disconnect app
     And I should not see wallet select import dialog
     And I see the add wallet page
-
-  
