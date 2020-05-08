@@ -26,6 +26,7 @@ import type {
   StateSnapshotLogParams,
   WalletMigrationReportData,
 } from '../types/logging.types';
+import type { Locale } from '../types/locales.types';
 
 /**
  * ======================= IPC CHANNELS API =========================
@@ -90,8 +91,15 @@ export type GetStateDirectoryPathMainResponse = any;
  */
 export const GET_DESKTOP_DIRECTORY_PATH_CHANNEL =
   'GetDesktopDirectoryPathChannel';
-export type GetDesktopDirectoryPathRendererRequest = string | any;
-export type GetDesktopDirectoryPathMainResponse = any;
+export type GetDesktopDirectoryPathRendererRequest = void;
+export type GetDesktopDirectoryPathMainResponse = string;
+
+/**
+ * Channel for checking the system locale
+ */
+export const GET_SYSTEM_LOCALE_CHANNEL = 'GetSystemLocaleChannel';
+export type GetSystemLocaleRendererRequest = void;
+export type GetSystemLocaleMainResponse = Locale;
 
 /**
  * Channel for setting log state snapshot
@@ -225,13 +233,6 @@ export const SET_CACHED_CARDANO_STATUS_CHANNEL =
   'SET_CACHED_CARDANO_STATUS_CHANNEL';
 export type SetCachedCardanoStatusRendererRequest = ?CardanoStatus;
 export type SetCachedCardanoStatusMainResponse = void;
-
-/**
- * Channel where renderer can ask main process for the result of electron's app.getLocale()
- */
-export const DETECT_SYSTEM_LOCALE_CHANNEL = 'DETECT_SYSTEM_LOCALE_CHANNEL';
-export type DetectSystemLocaleRendererRequest = void;
-export type DetectSystemLocaleMainResponse = string;
 
 /**
  * Channel where renderer can ask main process to export wallets

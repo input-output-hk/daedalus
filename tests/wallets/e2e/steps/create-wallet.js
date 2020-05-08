@@ -37,7 +37,7 @@ When(
       '.WalletCreateDialog .repeatedPassword input',
       fields.repeatedPassword
     );
-    return this.client.click('.WalletCreateDialog .primary');
+    return this.waitAndClick('.WalletCreateDialog .primary');
   }
 );
 

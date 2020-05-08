@@ -110,6 +110,20 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
             messages.currentPasswordFieldPlaceholder
           ),
           value: '',
+          validators: [
+            ({ form }) => {
+              if (this.props.isSpendingPasswordSet) {
+                const currentPasswordField = form.$('currentPassword');
+                return [
+                  currentPasswordField.value.length > 0,
+                  this.context.intl.formatMessage(
+                    globalMessages.invalidSpendingPassword
+                  ),
+                ];
+              }
+              return [true];
+            },
+          ],
         },
         spendingPassword: {
           type: 'password',
@@ -127,9 +141,11 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
           validators: [
             ({ field, form }) => {
               const repeatPasswordField = form.$('repeatPassword');
-              if (repeatPasswordField.value.length > 0) {
-                repeatPasswordField.validate({ showErrors: true });
-              }
+              const isRepeatPasswordFieldSet =
+                repeatPasswordField.value.length > 0;
+              repeatPasswordField.validate({
+                showErrors: isRepeatPasswordFieldSet,
+              });
               return [
                 isValidSpendingPassword(field.value),
                 this.context.intl.formatMessage(
@@ -149,7 +165,6 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
           validators: [
             ({ field, form }) => {
               const spendingPassword = form.$('spendingPassword').value;
-              if (spendingPassword.length === 0) return [true];
               return [
                 isValidRepeatPassword(spendingPassword, field.value),
                 this.context.intl.formatMessage(
@@ -165,6 +180,7 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
       options: {
         validateOnChange: true,
         validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
+        showErrorsOnClear: true,
       },
     }
   );
@@ -214,18 +230,24 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
 
     const newPasswordClasses = classnames(['newPassword', styles.newPassword]);
 
-    const actions = [
-      {
-        label: intl.formatMessage(globalMessages.save),
-        onClick: this.submit,
-        primary: true,
-        className: confirmButtonClasses,
-      },
-    ];
-
     const currentPasswordField = form.$('currentPassword');
     const newPasswordField = form.$('spendingPassword');
     const repeatedPasswordField = form.$('repeatPassword');
+
+    const canSubmit = !isSubmitting && form.isValid;
+
+    const currentPasswordError =
+      canSubmit && error && error.code === 'wrong_encryption_passphrase';
+
+    const actions = [
+      {
+        className: confirmButtonClasses,
+        disabled: !canSubmit,
+        label: intl.formatMessage(globalMessages.save),
+        onClick: this.submit,
+        primary: true,
+      },
+    ];
 
     return (
       <Dialog
@@ -255,7 +277,7 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
                 this.handleDataChange('currentPasswordValue', value)
               }
               {...currentPasswordField.bind()}
-              error={currentPasswordField.error}
+              error={currentPasswordField.error || currentPasswordError}
               skin={InputSkin}
             />
           )}

@@ -48,7 +48,6 @@ Feature: Wallet Settings
     And I change wallet password:
       | currentPassword | password      | repeatedPassword |
       | Secret1234      | secret        | secret.          |
-    And I submit the wallet password dialog
     Then I should see the following error messages:
       | message                               |
       | global.errors.invalidSpendingPassword |
