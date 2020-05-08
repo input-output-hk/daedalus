@@ -738,27 +738,20 @@ export default class WalletsStore extends Store {
     switch (this.walletKind) {
       case WALLET_KINDS.DAEDALUS:
         if (this.walletKindDaedalus === WALLET_DAEDALUS_KINDS.REWARD_15_WORD) {
-          console.log('Request: Daedalus');
           return this.restoreDaedalusRequest;
         }
-        console.log('Request: ByronRandomWallet');
         return this.restoreByronRandomWalletRequest;
       case WALLET_KINDS.YOROI:
         if (this.walletKindYoroi === WALLET_YOROI_KINDS.BALANCE_15_WORD) {
-          console.log('Request: ByronIcarusWallet');
           return this.restoreByronIcarusWalletRequest;
         }
-        console.log('Request: Daedalus (Yoroi)');
         return this.restoreDaedalusRequest;
       case WALLET_KINDS.HARDWARE:
         if (this.walletKindHardware === WALLET_HARDWARE_KINDS.LEDGER) {
-          console.log('Request: ByronLedgerWallet');
           return this.restoreByronLedgerWalletRequest;
         }
-        console.log('Request: ByronTrezorWallet');
         return this.restoreByronTrezorWalletRequest;
       default:
-        console.log('Request: Daedalus');
         return this.restoreDaedalusRequest;
     }
   }

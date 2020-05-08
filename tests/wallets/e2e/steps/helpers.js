@@ -430,118 +430,43 @@ export const getWalletType = async function(_type?: string = '') {
   return type;
 }
 
-export const restoreWallets = async function(wallets: Array<Object>) {
+export const restoreWallet = async function(walletName: string, kind: string, subkind: string, recovery_phrase: string) {
   await this.client.executeAsync((done) => {
-    // daedalus.stores.wallets._pausePolling().then(done)
-    const p = daedalus.stores.wallets._pausePolling()
-    console.log('_pausePolling ----->', p.then);
-    done();
+    daedalus.stores.wallets._pausePolling().then(done);
   });
-
-  for (const wallet of wallets) {
-    let { recovery_phrase: recoveryPhrase } = wallet;
-    if (
-      kind === WALLET_KINDS.DAEDALUS &&
-      subkind === WALLET_DAEDALUS_KINDS.BALANCE_27_WORD
-    ) {
-      const unscrambledRecoveryPhrase = await this.client.executeAsync((done) => {
-        daedalus.stores.wallets
-          ._getUnscrambledMnemonics(recoveryPhrase)
-          .then(done);
-      }, recoveryPhrase);
-      recoveryPhrase = unscrambledRecoveryPhrase.value;
-    }
-    await this.client.executeAsync((wallet, recoveryPhrase, done) => {
-      const {
-        restoreWalletSetKind,
-        restoreWalletSetMnemonics,
-        restoreWalletSetConfig,
-      } = daedalus.actions.wallets;
-      const {
-        // restoreWallet,
-        restoreLegacyWallet,
-        restoreByronRandomWallet,
-        restoreByronIcarusWallet,
-        restoreByronTrezorWallet,
-        restoreByronLedgerWallet,
-        restoreExportedByronWallet,
-      } = daedalus.api.ada;
-
-      console.log('---------------');
-      const { name: walletName, kind, subkind } = wallet;
-      restoreWalletSetKind.trigger({ kind });
-      restoreWalletSetKind.trigger({ param: kind, kind: subkind });
-      const { restoreRequest } = daedalus.stores.wallets;
-      const spendingPassword = 'Secret1234';
-      console.log('WALLET:', {
-        walletName, kind, subkind, recoveryPhrase: recoveryPhrase.length,
-      });
-      const data = {
-        recoveryPhrase,
-        walletName,
-        spendingPassword,
-      };
-      restoreRequest.execute(data).promise;
-
-
-    }, wallet, recoveryPhrase);
+  let recoveryPhrase = recovery_phrase.split(' ');
+  if (
+    kind === WALLET_KINDS.DAEDALUS &&
+    subkind === WALLET_DAEDALUS_KINDS.BALANCE_27_WORD
+  ) {
+    const unscrambledRecoveryPhrase = await this.client.executeAsync((recoveryPhrase, done) => {
+      daedalus.stores.wallets
+        ._getUnscrambledMnemonics(recoveryPhrase)
+        .then(done);
+    }, recoveryPhrase);
+    recoveryPhrase = unscrambledRecoveryPhrase.value;
   }
-
-
-
-  await this.client.executeAsync((wallets, done) => {
+  await this.client.executeAsync((walletName, kind, subkind, recoveryPhrase, done) => {
     const {
       restoreWalletSetKind,
       restoreWalletSetMnemonics,
       restoreWalletSetConfig,
     } = daedalus.actions.wallets;
-    const {
-      // restoreWallet,
-      restoreLegacyWallet,
-      restoreByronRandomWallet,
-      restoreByronIcarusWallet,
-      restoreByronTrezorWallet,
-      restoreByronLedgerWallet,
-      restoreExportedByronWallet,
-    } = daedalus.api.ada;
-
-    const restoreWallets = async () => {
-      for (const wallet of wallets) {
-        console.log('---------------');
-        const { name: walletName, kind, subkind, recovery_phrase } = wallet;
-        restoreWalletSetKind.trigger({ kind });
-        restoreWalletSetKind.trigger({ param: kind, kind: subkind });
-        const { restoreRequest, _getUnscrambledMnemonics } = daedalus.stores.wallets;
-        let recoveryPhrase = recovery_phrase.split(' ');
-        if (
-          kind === WALLET_KINDS.DAEDALUS &&
-          subkind === WALLET_DAEDALUS_KINDS.BALANCE_27_WORD
-        ) {
-          recoveryPhrase = await _getUnscrambledMnemonics(recoveryPhrase);
-        }
-        const spendingPassword = 'Secret1234';
-        console.log('WALLET:', {
-          walletName, kind, subkind, recoveryPhrase: recoveryPhrase.length,
-        });
-        const data = {
-          recoveryPhrase,
-          walletName,
-          spendingPassword,
-        };
-        restoreRequest.execute(data).promise;
-      }
-    }
-
-    restoreWallets()
+    restoreWalletSetKind.trigger({ kind });
+    restoreWalletSetKind.trigger({ param: kind, kind: subkind });
+    const { restoreRequest } = daedalus.stores.wallets;
+    const spendingPassword = 'Secret1234';
+    const data = {
+      recoveryPhrase,
+      walletName,
+      spendingPassword,
+    };
+    restoreRequest.execute(data)
       .then(() => {
-        const resume = daedalus.stores.wallets
+        daedalus.stores.wallets
           ._resumePolling()
-        console.log('resume', resume.then);
-        done();
-          // .then(done)
-          // .catch(error => done(error))
+          .then(done)
       })
       .catch(error => done(error));
-
-  }, wallets);
+  }, walletName, kind, subkind, recoveryPhrase);
 };

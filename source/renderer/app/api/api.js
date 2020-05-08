@@ -852,7 +852,6 @@ export default class AdaApi {
       mnemonic_sentence: recoveryPhrase,
       passphrase: spendingPassword,
     };
-    console.log('API: restoreWallet', walletInitData);
     try {
       const wallet: AdaWallet = await restoreWallet(this.config, {
         walletInitData,
@@ -888,7 +887,6 @@ export default class AdaApi {
       mnemonic_sentence: recoveryPhrase,
       passphrase: spendingPassword,
     };
-    console.log('API: restoreLegacyWallet', walletInitData);
     try {
       const legacyWallet: LegacyAdaWallet = await restoreLegacyWallet(
         this.config,
@@ -936,7 +934,6 @@ export default class AdaApi {
       mnemonic_sentence: recoveryPhrase,
       passphrase: spendingPassword,
     };
-    console.log('API: restoreByronRandomWallet', walletInitData);
     const type = WALLET_BYRON_KINDS.RANDOM;
     try {
       const legacyWallet: LegacyAdaWallet = await restoreByronWallet(
@@ -997,7 +994,6 @@ export default class AdaApi {
       mnemonic_sentence: recoveryPhrase,
       passphrase: spendingPassword,
     };
-    console.log('API: restoreByronIcarusWallet', walletInitData);
     const type = WALLET_BYRON_KINDS.ICARUS;
     try {
       const legacyWallet: LegacyAdaWallet = await restoreByronWallet(
@@ -1047,7 +1043,6 @@ export default class AdaApi {
       mnemonic_sentence: recoveryPhrase,
       passphrase: spendingPassword,
     };
-    console.log('API: restoreByronTrezorWallet', walletInitData);
     const type = WALLET_BYRON_KINDS.TREZOR;
     try {
       const legacyWallet: LegacyAdaWallet = await restoreByronWallet(
@@ -1097,7 +1092,6 @@ export default class AdaApi {
       mnemonic_sentence: recoveryPhrase,
       passphrase: spendingPassword,
     };
-    console.log('API: restoreByronLedgerWallet', walletInitData);
     const type = WALLET_BYRON_KINDS.LEDGER;
     try {
       const legacyWallet: LegacyAdaWallet = await restoreByronWallet(
@@ -1141,7 +1135,6 @@ export default class AdaApi {
     logger.debug('AdaApi::restoreExportedByronWallet called', {
       name: request.name,
     });
-    console.log('API: restoreExportedByronWallet', request);
     try {
       const legacyWallet: LegacyAdaWallet = await restoreExportedByronWallet(
         this.config,

@@ -10,7 +10,7 @@ import {
   waitUntilUrlEquals,
   navigateTo,
   getWalletType,
-  restoreWallets,
+  restoreWallet,
 } from './helpers';
 import type { Daedalus } from '../../../types';
 
@@ -31,16 +31,11 @@ Given(/^I have (created )?the following (balance )?wallets:$/, async function(mo
   );
 });
 
-// Restore wallet of any kind
-Given(/^I have restored the following wallets:$/, async function(table) {
-  const wallets = table.hashes();
-  await restoreWallets.call(this, wallets);
-  // Ensure that ALL wallets are loaded
-  // await Promise.all(
-  //   wallets.map(async wallet =>
-  //     await waitUntilWalletIsLoaded.call(this, wallet.name)
-  //   )
-  // );
+// Restore a wallet of any kind
+Given(/^I have restored the "([^"]*)" wallet of "([^"]*)" kind, "([^"]*)" subkind and "([^"]*)" recovery phrase$/,
+  async function(walletName, kind, subkind, recovery_phrase ) {
+  await restoreWallet.call(this, walletName, kind, subkind, recovery_phrase);
+  await waitUntilWalletIsLoaded.call(this, walletName);
 });
 
 // Create a single wallet with funds

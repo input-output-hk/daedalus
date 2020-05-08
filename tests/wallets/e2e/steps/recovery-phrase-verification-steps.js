@@ -33,7 +33,8 @@ Then(
   'I should see a {string} recovery phrase veryfication feature',
   async function(status) {
     const statusClassname = `${SETTINGS_PAGE_STATUS_SELECTOR}${status}`;
-    return this.client.waitForVisible(statusClassname);
+    console.log('statusClassname --->', statusClassname);
+    // return this.client.waitForVisible(statusClassname);
   }
 );
 
@@ -66,17 +67,16 @@ When(/^I enter the recovery phrase mnemonics (correctly|incorrectly)$/, async fu
 
 When(/^I enter the "([^"]*)" recovery phrase mnemonics$/, async function(_recoveryPhrase) {
   const recoveryPhrase = _recoveryPhrase.split(' ');
-  console.log('recoveryPhrase', recoveryPhrase);
-  // for (let i = 0; i < recoveryPhrase.value.length; i++) {
-  //   const word = recoveryPhrase.value[i];
-  //   await this.client.setValue(
-  //     '.AutocompleteOverrides_autocompleteWrapper input',
-  //     word
-  //   );
-  //   await this.client.waitForVisible(`//li[text()="${word}"]`);
-  //   await this.waitAndClick(`//li[text()="${word}"]`);
-  //   await this.client.waitForVisible(`//span[text()="${word}"]`);
-  // }
+  for (let i = 0; i < recoveryPhrase.value.length; i++) {
+    const word = recoveryPhrase.value[i];
+    await this.client.setValue(
+      '.AutocompleteOverrides_autocompleteWrapper input',
+      word
+    );
+    await this.client.waitForVisible(`//li[text()="${word}"]`);
+    await this.waitAndClick(`//li[text()="${word}"]`);
+    await this.client.waitForVisible(`//span[text()="${word}"]`);
+  }
 });
 
 
