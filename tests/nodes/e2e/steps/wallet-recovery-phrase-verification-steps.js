@@ -1,7 +1,7 @@
 import { Given, When, Then } from 'cucumber';
 
-const SETTINGS_PAGE_STATUS_SELECTOR = '.WalletRecoveryPhrase_validationStatus';
-const SETTINGS_PAGE_BUTTON_SELECTOR = `${SETTINGS_PAGE_STATUS_SELECTOR} .WalletRecoveryPhrase_validationStatusButton`;
+const SETTINGS_PAGE_STATUS_SELECTOR = '.WalletRecoveryPhraseVerificationWidget_status';
+const SETTINGS_PAGE_BUTTON_SELECTOR = `${SETTINGS_PAGE_STATUS_SELECTOR} .WalletRecoveryPhraseVerificationWidget_statusButton`;
 const DIALOG_SELECTOR = '.Dialog_dialogWrapper';
 const DIALOG_CHECKBOX_SELECTOR = `${DIALOG_SELECTOR} .SimpleCheckbox_check`;
 const DIALOG_CONTINUE_BUTTON_SELECTOR = `${DIALOG_SELECTOR} .SimpleButton_root`;
@@ -9,21 +9,21 @@ const DIALOG_SUCCESSFUL_SELECTOR = '.verification-successful';
 const DIALOG_UNSUCCESSFUL_SELECTOR = '.verification-unsuccessful';
 const DIALOG_VERIFY_AGAIN_BUTTON_SELECTOR = `${DIALOG_SELECTOR} button.attention`;
 const DIALOG_CLOSE_BUTTON_SELECTOR = `${DIALOG_SELECTOR} .DialogCloseButton_component`;
-const walletName = 'Wallet';
+const DIALOG_VERIFY_BUTTON_SELECTOR = '.WalletRecoveryPhraseStepDialogs_dialog button';
 
 Given(
   'the last recovery phrase veryfication was done {int} days ago',
   async function(daysAgo) {
     await this.client.executeAsync((days, done) => {
-      const { id } = daedalus.stores.wallets.active;
+      const { id: walletId } = daedalus.stores.wallets.active;
       const date = new Date();
       date.setDate(date.getDate() - days);
       const recoveryPhraseVerificationDate = date.toISOString();
-      const { updateWalletLocalData } = daedalus.actions.wallets;
-      updateWalletLocalData.once(done);
-      updateWalletLocalData.trigger({
-        id,
-        recoveryPhraseVerificationDate,
+      const { setWalletLocalData } = daedalus.actions.walletsLocal;
+      setWalletLocalData.once(done);
+      setWalletLocalData.trigger({
+        walletId,
+        updatedWalletData: { recoveryPhraseVerificationDate },
       });
     }, daysAgo);
   }
@@ -46,27 +46,27 @@ When(/^I click the checkbox and Continue button$/, function() {
   return this.waitAndClick(DIALOG_CONTINUE_BUTTON_SELECTOR);
 });
 
-When(/^I enter the recovery phrase mnemonics correctly$/, async function() {
-  const recoveryPhrase = this.mnemonics[walletName].slice();
-  await this.client.executeAsync((phrase, done) => {
-    const { checkRecoveryPhrase } = daedalus.actions.walletBackup;
-    checkRecoveryPhrase.once(done);
-    checkRecoveryPhrase.trigger({
-      recoveryPhrase: phrase,
-    });
-  }, recoveryPhrase);
+When(/^I enter the recovery phrase mnemonics (correctly|incorrectly)$/, async function(_type) {
+  const recoveryPhrase = await this.client.execute((type, mnemonics) => {
+    const activeWallet = daedalus.stores.wallets.active;
+    return type === 'correctly' ? mnemonics[activeWallet.name] : daedalus.utils.crypto.generateMnemonic(12).split(' ');
+  }, _type, this.mnemonics);
+
+  for (let i = 0; i < recoveryPhrase.value.length; i++) {
+    const word = recoveryPhrase.value[i];
+    await this.client.setValue(
+      '.AutocompleteOverrides_autocompleteWrapper input',
+      word
+    );
+    await this.client.waitForVisible(`//li[text()="${word}"]`);
+    await this.waitAndClick(`//li[text()="${word}"]`);
+    await this.client.waitForVisible(`//span[text()="${word}"]`);
+  }
 });
 
-When(/^I enter the recovery phrase mnemonics incorrectly$/, async function() {
-  const incorrectRecoveryPhrase = [...this.mnemonics[walletName]];
-  incorrectRecoveryPhrase[0] = 'wrong';
-  await this.client.executeAsync((phrase, done) => {
-    const { checkRecoveryPhrase } = daedalus.actions.walletBackup;
-    checkRecoveryPhrase.once(done);
-    checkRecoveryPhrase.trigger({
-      recoveryPhrase: phrase,
-    });
-  }, incorrectRecoveryPhrase);
+When(/^I click the verify button$/, async function() {
+  await this.client.waitForEnabled(DIALOG_VERIFY_BUTTON_SELECTOR);
+  return this.waitAndClick(DIALOG_VERIFY_BUTTON_SELECTOR);
 });
 
 When(/^I should see the confirmation dialog$/, async function() {

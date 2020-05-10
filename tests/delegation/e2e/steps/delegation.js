@@ -41,7 +41,6 @@ Then(/^the current and next epoch countdown have correct data$/, async function(
   return nextEpoch === currentEpoch + 1;
 });
 
-let wallet;
 let pool;
 
 Then(/^the "([^"]*)" wallet should display the "([^"]*)" option$/, async function(walletName, optionText) {
@@ -65,7 +64,7 @@ Given(/^the "([^"]*)" wallet was delegated to the first Stake Pool$/, async func
   pool = data.value;
 });
 
-Given(/^the "([^"]*)" wallet was delegated to a Stake Pool with no metadata$/, async function(walletName) {
+Given(/^the "([^"]*)" wallet was delegated to a Stake Pool with no metadata$/, async function() {
   const walletWithNoMetadata = {
     id: 'walletWithNoMetadata',
     addressPoolGap: 0,
@@ -211,7 +210,7 @@ Then(/^I close the wizard$/, async function() {
 });
 
 Given('I send {int} ADA from the {string} wallet to the {string} wallet', async function(adaAmount, walletFrom, walletTo) {
-  const DATA = await this.client.executeAsync((amount, senderName, receiverName, done) => {
+  await this.client.executeAsync((amount, senderName, receiverName, done) => {
     const walletSender = daedalus.stores.wallets.getWalletByName(senderName);
     const walletReceiver = daedalus.stores.wallets.getWalletByName(receiverName);
     daedalus.stores.addresses
@@ -239,7 +238,9 @@ Then(/^I choose the "([^"]*)" wallet$/, async function(walletName) {
 
 Then(/^I choose the first stake pool$/, async function() {
   await this.waitAndClick('.StakePoolThumbnail_component');
-  await this.waitAndClick('//button[text()="Continue"]');
+  const selector = '//button[text()="Continue"]';
+  await this.client.waitForEnabled(selector);
+  await this.waitAndClick(selector);
 });
 
 Then(/^I enter "([^"]*)" as the spending password$/, async function(spendingPassword) {
@@ -256,3 +257,16 @@ Then(/^I should see a "Loading stake pools" message until the Stake Pools are lo
     await this.client.waitForVisible('.DelegationCenterBody_isLoading');
   }
 });
+
+Then(
+  /^I should see the following error messages on the delegation process dialog:$/,
+  async function(data) {
+    let errorsOnScreen = await this.waitAndGetText('.DelegationStepsConfirmationDialog_error');
+    if (typeof errorsOnScreen === 'string') errorsOnScreen = [errorsOnScreen];
+    const errors = data.hashes();
+    for (let i = 0; i < errors.length; i++) {
+      const expectedError = await this.intl(errors[i].message);
+      expect(errorsOnScreen[i]).to.equal(expectedError);
+    }
+  }
+);

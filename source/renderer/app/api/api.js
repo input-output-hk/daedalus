@@ -64,7 +64,6 @@ import { getWalletUtxos } from './wallets/requests/getWalletUtxos';
 import { getByronWalletUtxos } from './wallets/requests/getByronWalletUtxos';
 import { getWallet } from './wallets/requests/getWallet';
 import { getLegacyWallet } from './wallets/requests/getLegacyWallet';
-import { getWalletIdAndBalance } from './wallets/requests/getWalletIdAndBalance';
 import { transferFundsCalculateFee } from './wallets/requests/transferFundsCalculateFee';
 import { transferFunds } from './wallets/requests/transferFunds';
 
@@ -152,7 +151,6 @@ import type {
   LegacyAdaWallet,
   LegacyAdaWallets,
   WalletUtxos,
-  WalletIdAndBalance,
   CreateWalletRequest,
   DeleteWalletRequest,
   RestoreWalletRequest,
@@ -167,8 +165,6 @@ import type {
   ForceWalletResyncRequest,
   GetWalletUtxosRequest,
   GetWalletRequest,
-  GetWalletIdAndBalanceRequest,
-  GetWalletIdAndBalanceResponse,
   TransferFundsCalculateFeeRequest,
   TransferFundsCalculateFeeResponse,
   TransferFundsRequest,
@@ -1398,36 +1394,6 @@ export default class AdaApi {
       return response;
     } catch (error) {
       logger.error('AdaApi::getWalletUtxos error', { error });
-      throw new ApiError(error);
-    }
-  };
-
-  getWalletIdAndBalance = async (
-    request: GetWalletIdAndBalanceRequest
-  ): Promise<WalletIdAndBalance> => {
-    const { recoveryPhrase, getBalance } = request;
-    logger.debug('AdaApi::getWalletIdAndBalance called', {
-      parameters: { getBalance },
-    });
-    try {
-      const response: GetWalletIdAndBalanceResponse = await getWalletIdAndBalance(
-        this.config,
-        {
-          recoveryPhrase,
-          getBalance,
-        }
-      );
-      logger.debug('AdaApi::getWalletIdAndBalance success', { response });
-      const { walletId, balance } = response;
-      return {
-        walletId,
-        balance:
-          balance !== null // If balance is "null" it means we didn't fetch it - getBalance was false
-            ? new BigNumber(balance).dividedBy(LOVELACES_PER_ADA)
-            : null,
-      };
-    } catch (error) {
-      logger.error('AdaApi::getWalletIdAndBalance error', { error });
       throw new ApiError(error);
     }
   };

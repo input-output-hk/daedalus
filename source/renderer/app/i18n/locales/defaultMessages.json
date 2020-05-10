@@ -2676,31 +2676,17 @@
         }
       },
       {
-        "defaultMessage": "!!!ADA",
-        "description": "ADA label in the \"Undelegate\" dialog.",
+        "defaultMessage": "!!!Spending password",
+        "description": "Spending password label in the \"Undelegate\" dialog.",
         "end": {
           "column": 3,
           "line": 72
         },
         "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
-        "id": "staking.delegationCenter.undelegate.dialog.adaLabel",
-        "start": {
-          "column": 12,
-          "line": 68
-        }
-      },
-      {
-        "defaultMessage": "!!!Spending password",
-        "description": "Spending password label in the \"Undelegate\" dialog.",
-        "end": {
-          "column": 3,
-          "line": 77
-        },
-        "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
         "id": "staking.delegationCenter.undelegate.dialog.spendingPasswordLabel",
         "start": {
           "column": 25,
-          "line": 73
+          "line": 68
         }
       },
       {
@@ -2708,13 +2694,13 @@
         "description": "Spending password placeholder in the \"Undelegate\" dialog.",
         "end": {
           "column": 3,
-          "line": 83
+          "line": 78
         },
         "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
         "id": "staking.delegationCenter.undelegate.dialog.spendingPasswordPlaceholder",
         "start": {
           "column": 31,
-          "line": 78
+          "line": 73
         }
       },
       {
@@ -2722,13 +2708,13 @@
         "description": "Label for password error in the \"Undelegate\" dialog.",
         "end": {
           "column": 3,
-          "line": 88
+          "line": 83
         },
         "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
         "id": "staking.delegationCenter.undelegate.dialog.passwordError",
         "start": {
           "column": 24,
-          "line": 84
+          "line": 79
         }
       },
       {
@@ -2736,12 +2722,26 @@
         "description": "unknown stake pool label in the \"Undelegate\" dialog.",
         "end": {
           "column": 3,
-          "line": 93
+          "line": 88
         },
         "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
         "id": "staking.delegationCenter.undelegate.dialog.unknownStakePoolLabel",
         "start": {
           "column": 25,
+          "line": 84
+        }
+      },
+      {
+        "defaultMessage": "!!!Calculating fees",
+        "description": "\"Calculating fees\" message in the \"Undelegate\" dialog.",
+        "end": {
+          "column": 3,
+          "line": 93
+        },
+        "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
+        "id": "staking.delegationCenter.undelegate.dialog.calculatingFees",
+        "start": {
+          "column": 19,
           "line": 89
         }
       }
@@ -3328,6 +3328,20 @@
         "start": {
           "column": 21,
           "line": 75
+        }
+      },
+      {
+        "defaultMessage": "!!!Calculating fees",
+        "description": "\"Calculating fees\" message in the \"Undelegate\" dialog.",
+        "end": {
+          "column": 3,
+          "line": 85
+        },
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
+        "id": "staking.delegationSetup.confirmation.step.dialog.calculatingFees",
+        "start": {
+          "column": 19,
+          "line": 81
         }
       }
     ],
@@ -7138,137 +7152,6 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Do you have your wallet recovery phrase?",
-        "description": "Label for the recoveryPhraseVerificationTitle on wallet settings.",
-        "end": {
-          "column": 3,
-          "line": 29
-        },
-        "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhrase.js",
-        "id": "wallet.settings.recoveryPhraseVerificationTitle",
-        "start": {
-          "column": 35,
-          "line": 24
-        }
-      },
-      {
-        "defaultMessage": "!!!Funds in this wallet can only be recovered using the correct wallet recovery phrase, which is a unique 12-word string you were shown and asked to write down when creating this wallet. You can re-enter your wallet recovery phrase to verify that you have the correct recovery phrase for this wallet.",
-        "description": "Label for the recoveryPhraseVerificationDescription on wallet settings.",
-        "end": {
-          "column": 3,
-          "line": 36
-        },
-        "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhrase.js",
-        "id": "wallet.settings.recoveryPhraseVerificationDescription",
-        "start": {
-          "column": 41,
-          "line": 30
-        }
-      },
-      {
-        "defaultMessage": "!!!We recommend that you verify your wallet recovery phrase in <b>{timeUntilWarning}</b>.",
-        "description": "Label for the recoveryPhraseVerificationNeverOk on wallet settings.",
-        "end": {
-          "column": 3,
-          "line": 43
-        },
-        "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhrase.js",
-        "id": "wallet.settings.recoveryPhraseVerificationNeverOk",
-        "start": {
-          "column": 37,
-          "line": 37
-        }
-      },
-      {
-        "defaultMessage": "!!!We recommend that you verify your wallet recovery phrase.",
-        "description": "Label for the recoveryPhraseVerificationNeverWarning on wallet settings.",
-        "end": {
-          "column": 3,
-          "line": 50
-        },
-        "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhrase.js",
-        "id": "wallet.settings.recoveryPhraseVerificationNeverWarning",
-        "start": {
-          "column": 42,
-          "line": 44
-        }
-      },
-      {
-        "defaultMessage": "!!!We recommend that you verify your wallet recovery phrase.",
-        "description": "Label for the recoveryPhraseVerificationNeverNotification on wallet settings.",
-        "end": {
-          "column": 3,
-          "line": 57
-        },
-        "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhrase.js",
-        "id": "wallet.settings.recoveryPhraseVerificationNeverNotification",
-        "start": {
-          "column": 47,
-          "line": 51
-        }
-      },
-      {
-        "defaultMessage": "!!!You verified the recovery phrase for this wallet <b>{timeAgo}</b>.",
-        "description": "Label for the recoveryPhraseVerificationCheckedOk on wallet settings.",
-        "end": {
-          "column": 3,
-          "line": 64
-        },
-        "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhrase.js",
-        "id": "wallet.settings.recoveryPhraseVerificationCheckedOk",
-        "start": {
-          "column": 39,
-          "line": 58
-        }
-      },
-      {
-        "defaultMessage": "!!!You verified the recovery phrase for this wallet <b>{timeAgo}</b>.",
-        "description": "Label for the recoveryPhraseVerificationCheckedWarning on wallet settings.",
-        "end": {
-          "column": 3,
-          "line": 71
-        },
-        "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhrase.js",
-        "id": "wallet.settings.recoveryPhraseVerificationCheckedWarning",
-        "start": {
-          "column": 44,
-          "line": 65
-        }
-      },
-      {
-        "defaultMessage": "!!!You verified the recovery phrase for this wallet <b>{timeAgo}</b>. We recommend that you verify your wallet recovery phrase again.",
-        "description": "Label for the recoveryPhraseVerificationCheckedNotification on wallet settings.",
-        "end": {
-          "column": 3,
-          "line": 78
-        },
-        "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhrase.js",
-        "id": "wallet.settings.recoveryPhraseVerificationCheckedNotification",
-        "start": {
-          "column": 49,
-          "line": 72
-        }
-      },
-      {
-        "defaultMessage": "!!!Verify wallet recovery phrase",
-        "description": "Label for the recoveryPhraseVerificationButton on wallet settings.",
-        "end": {
-          "column": 3,
-          "line": 84
-        },
-        "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhrase.js",
-        "id": "wallet.settings.recoveryPhraseVerificationButton",
-        "start": {
-          "column": 36,
-          "line": 79
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/wallet/settings/WalletRecoveryPhrase.json"
-  },
-  {
-    "descriptors": [
-      {
         "defaultMessage": "!!!Wallet recovery phrase verification",
         "description": "Label for the recoveryPhraseStep1Title on wallet settings.",
         "end": {
@@ -7283,7 +7166,7 @@
         }
       },
       {
-        "defaultMessage": "!!!To verify that you have the correct recovery phrase for this wallet, you can enter it on the following screen. This wallet uses a 12-word recovery phrase.",
+        "defaultMessage": "!!!To verify that you have the correct recovery phrase for this wallet, you can enter it on the following screen. This wallet uses a {wordCount}-word recovery phrase.",
         "description": "Label for the recoveryPhraseStep1Paragraph1 on wallet settings.",
         "end": {
           "column": 3,
@@ -7334,27 +7217,27 @@
         "description": "Label for the recoveryPhraseStep2Title on wallet settings.",
         "end": {
           "column": 3,
-          "line": 20
+          "line": 21
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep2Dialog.js",
         "id": "wallet.settings.recoveryPhraseStep2Title",
         "start": {
           "column": 28,
-          "line": 16
+          "line": 17
         }
       },
       {
-        "defaultMessage": "!!!Please enter your 12-word wallet recovery phrase. Make sure you enter the words in the correct order.",
+        "defaultMessage": "!!!Please enter your {wordCount}-word wallet recovery phrase. Make sure you enter the words in the correct order.",
         "description": "Label for the recoveryPhraseStep2Description on wallet settings.",
         "end": {
           "column": 3,
-          "line": 27
+          "line": 28
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep2Dialog.js",
         "id": "wallet.settings.recoveryPhraseStep2Description",
         "start": {
           "column": 34,
-          "line": 21
+          "line": 22
         }
       },
       {
@@ -7362,13 +7245,13 @@
         "description": "Label for the recoveryPhraseStep2Subtitle on wallet settings.",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 34
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep2Dialog.js",
         "id": "wallet.settings.recoveryPhraseStep2Subtitle",
         "start": {
           "column": 31,
-          "line": 28
+          "line": 29
         }
       },
       {
@@ -7376,13 +7259,13 @@
         "description": "Label for the recoveryPhraseStep2Button on wallet settings.",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 39
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep2Dialog.js",
         "id": "wallet.settings.recoveryPhraseStep2Button",
         "start": {
           "column": 29,
-          "line": 34
+          "line": 35
         }
       },
       {
@@ -7390,13 +7273,13 @@
         "description": "Hint \"Enter recovery phrase\" for the recovery phrase input on the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 45
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep2Dialog.js",
         "id": "wallet.settings.recoveryPhraseInputHint",
         "start": {
           "column": 27,
-          "line": 39
+          "line": 40
         }
       },
       {
@@ -7404,13 +7287,13 @@
         "description": "\"No results\" message for the recovery phrase input search results.",
         "end": {
           "column": 3,
-          "line": 50
+          "line": 51
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep2Dialog.js",
         "id": "wallet.settings.recoveryPhraseInputNoResults",
         "start": {
           "column": 27,
-          "line": 45
+          "line": 46
         }
       },
       {
@@ -7418,13 +7301,13 @@
         "description": "Error message shown when invalid recovery phrase was entered.",
         "end": {
           "column": 3,
-          "line": 56
+          "line": 57
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep2Dialog.js",
         "id": "wallet.settings.recoveryPhraseStep2InvalidMnemonics",
         "start": {
           "column": 39,
-          "line": 51
+          "line": 52
         }
       }
     ],
@@ -7475,7 +7358,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Continue",
+        "defaultMessage": "!!!Finish",
         "description": "Label for the recoveryPhraseStep3Button on wallet settings.",
         "end": {
           "column": 3,
@@ -7579,6 +7462,207 @@
       }
     ],
     "path": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep4Dialog.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Do you have your wallet recovery phrase?",
+        "description": "Label for the recoveryPhraseVerificationTitle on wallet settings.",
+        "end": {
+          "column": 3,
+          "line": 29
+        },
+        "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseVerificationWidget.js",
+        "id": "wallet.settings.recoveryPhraseVerification.title",
+        "start": {
+          "column": 9,
+          "line": 24
+        }
+      },
+      {
+        "defaultMessage": "!!!Funds in this wallet can only be recovered using the correct wallet recovery phrase, which is a unique {wordCount}-word string you were shown and asked to write down when creating this wallet. You can re-enter your wallet recovery phrase to verify that you have the correct recovery phrase for this wallet.",
+        "description": "Label for the recoveryPhraseVerificationDescription on wallet settings.",
+        "end": {
+          "column": 3,
+          "line": 36
+        },
+        "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseVerificationWidget.js",
+        "id": "wallet.settings.recoveryPhraseVerification.description",
+        "start": {
+          "column": 15,
+          "line": 30
+        }
+      },
+      {
+        "defaultMessage": "!!!We recommend that you verify your wallet recovery phrase in <b>{timeUntilWarning}</b>.",
+        "description": "Label for the recoveryPhraseVerificationNeverOk on wallet settings.",
+        "end": {
+          "column": 3,
+          "line": 43
+        },
+        "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseVerificationWidget.js",
+        "id": "wallet.settings.recoveryPhraseVerification.neverOkTimeUntil",
+        "start": {
+          "column": 20,
+          "line": 37
+        }
+      },
+      {
+        "defaultMessage": "!!!We recommend that you verify your wallet recovery phrase in a few months.",
+        "description": "Label for the recoveryPhraseVerificationNeverOk on wallet settings.",
+        "end": {
+          "column": 3,
+          "line": 50
+        },
+        "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseVerificationWidget.js",
+        "id": "wallet.settings.recoveryPhraseVerification.neverOkFewMonths",
+        "start": {
+          "column": 20,
+          "line": 44
+        }
+      },
+      {
+        "defaultMessage": "!!!We recommend that you verify your wallet recovery phrase in a few weeks.",
+        "description": "Label for the recoveryPhraseVerificationNeverOk on wallet settings.",
+        "end": {
+          "column": 3,
+          "line": 57
+        },
+        "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseVerificationWidget.js",
+        "id": "wallet.settings.recoveryPhraseVerification.neverOkFewWeeks",
+        "start": {
+          "column": 19,
+          "line": 51
+        }
+      },
+      {
+        "defaultMessage": "!!!We recommend that you verify your wallet recovery phrase in a few days.",
+        "description": "Label for the recoveryPhraseVerificationNeverOk on wallet settings.",
+        "end": {
+          "column": 3,
+          "line": 64
+        },
+        "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseVerificationWidget.js",
+        "id": "wallet.settings.recoveryPhraseVerification.neverOkFewDays",
+        "start": {
+          "column": 18,
+          "line": 58
+        }
+      },
+      {
+        "defaultMessage": "!!!We recommend that you verify your wallet recovery phrase.",
+        "description": "Label for the recoveryPhraseVerificationNeverWarning on wallet settings.",
+        "end": {
+          "column": 3,
+          "line": 71
+        },
+        "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseVerificationWidget.js",
+        "id": "wallet.settings.recoveryPhraseVerification.neverWarning",
+        "start": {
+          "column": 16,
+          "line": 65
+        }
+      },
+      {
+        "defaultMessage": "!!!We recommend that you verify your wallet recovery phrase.",
+        "description": "Label for the recoveryPhraseVerificationNeverNotification on wallet settings.",
+        "end": {
+          "column": 3,
+          "line": 78
+        },
+        "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseVerificationWidget.js",
+        "id": "wallet.settings.recoveryPhraseVerification.neverNotification",
+        "start": {
+          "column": 21,
+          "line": 72
+        }
+      },
+      {
+        "defaultMessage": "!!!You verified the recovery phrase for this wallet <b>{timeAgo}</b>.",
+        "description": "Label for the recoveryPhraseVerificationCheckedOk on wallet settings.",
+        "end": {
+          "column": 3,
+          "line": 85
+        },
+        "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseVerificationWidget.js",
+        "id": "wallet.settings.recoveryPhraseVerification.checkedOk",
+        "start": {
+          "column": 13,
+          "line": 79
+        }
+      },
+      {
+        "defaultMessage": "!!!You verified the recovery phrase for this wallet <b>{timeAgo}</b>.",
+        "description": "Label for the recoveryPhraseVerificationCheckedWarning on wallet settings.",
+        "end": {
+          "column": 3,
+          "line": 92
+        },
+        "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseVerificationWidget.js",
+        "id": "wallet.settings.recoveryPhraseVerification.checkedWarning",
+        "start": {
+          "column": 18,
+          "line": 86
+        }
+      },
+      {
+        "defaultMessage": "!!!You verified the recovery phrase for this wallet <b>{timeAgo}</b>. We recommend that you verify your wallet recovery phrase again.",
+        "description": "Label for the recoveryPhraseVerificationCheckedNotification on wallet settings.",
+        "end": {
+          "column": 3,
+          "line": 99
+        },
+        "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseVerificationWidget.js",
+        "id": "wallet.settings.recoveryPhraseVerification.checkedNotification",
+        "start": {
+          "column": 23,
+          "line": 93
+        }
+      },
+      {
+        "defaultMessage": "!!!If this wallet was restored from a paper wallet certificate, you cannot use this feature to verify your wallet recovery phrase. Paper wallet recovery phrase to regular wallet recovery phrase conversion will be available in Daedalus soon.",
+        "description": "Description for the paperWallet instructions on wallet settings.",
+        "end": {
+          "column": 3,
+          "line": 106
+        },
+        "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseVerificationWidget.js",
+        "id": "wallet.settings.recoveryPhraseVerification.paperWalletDescription",
+        "start": {
+          "column": 26,
+          "line": 100
+        }
+      },
+      {
+        "defaultMessage": "!!!Paper wallet",
+        "description": "Title for the paperWallet instructions on wallet settings.",
+        "end": {
+          "column": 3,
+          "line": 111
+        },
+        "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseVerificationWidget.js",
+        "id": "wallet.settings.recoveryPhraseVerification.paperWalletTitle",
+        "start": {
+          "column": 20,
+          "line": 107
+        }
+      },
+      {
+        "defaultMessage": "!!!Verify wallet recovery phrase",
+        "description": "Label for the recoveryPhraseVerificationButton on wallet settings.",
+        "end": {
+          "column": 3,
+          "line": 117
+        },
+        "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseVerificationWidget.js",
+        "id": "wallet.settings.recoveryPhraseVerification.button",
+        "start": {
+          "column": 10,
+          "line": 112
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseVerificationWidget.json"
   },
   {
     "descriptors": [

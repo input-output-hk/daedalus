@@ -1,3 +1,4 @@
+// @flow
 import { When, Then } from 'cucumber';
 import { expect } from 'chai';
 import { environment } from '../../../../source/main/environment';
@@ -26,7 +27,7 @@ Then('I should see the node update notification overlay', async function() {
 When(/^I set next update version to "([^"]*)"$/, async function(applicationVersion) {
   await this.client.executeAsync((applicationVersion, done) => {
     daedalus.api.ada
-      .setNextUpdate(parseInt(applicationVersion))
+      .setNextUpdate(parseInt(applicationVersion, 10))
       .then(done)
       .catch(e => {
         throw e;

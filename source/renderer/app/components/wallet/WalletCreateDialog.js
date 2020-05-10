@@ -142,9 +142,11 @@ export default class WalletCreateDialog extends Component<Props, State> {
           validators: [
             ({ field, form }) => {
               const repeatPasswordField = form.$('repeatPassword');
-              if (repeatPasswordField.value.length > 0) {
-                repeatPasswordField.validate({ showErrors: true });
-              }
+              const isRepeatPasswordFieldSet =
+                repeatPasswordField.value.length > 0;
+              repeatPasswordField.validate({
+                showErrors: isRepeatPasswordFieldSet,
+              });
               return [
                 isValidSpendingPassword(field.value),
                 this.context.intl.formatMessage(
@@ -164,7 +166,6 @@ export default class WalletCreateDialog extends Component<Props, State> {
           validators: [
             ({ field, form }) => {
               const spendingPassword = form.$('spendingPassword').value;
-              if (spendingPassword.length === 0) return [true];
               return [
                 isValidRepeatPassword(spendingPassword, field.value),
                 this.context.intl.formatMessage(
@@ -211,9 +212,16 @@ export default class WalletCreateDialog extends Component<Props, State> {
     const { isSubmitting } = this.state;
     const dialogClasses = classnames([styles.component, 'WalletCreateDialog']);
 
+    const walletNameField = form.$('walletName');
+    const spendingPasswordField = form.$('spendingPassword');
+    const repeatedPasswordField = form.$('repeatPassword');
+
+    const canSubmit = !isSubmitting && form.isValid;
+
     const actions = [
       {
         className: isSubmitting ? styles.isSubmitting : null,
+        disabled: !canSubmit,
         label: this.context.intl.formatMessage(
           isIncentivizedTestnet
             ? messages.createPersonalWalletItn
@@ -223,10 +231,6 @@ export default class WalletCreateDialog extends Component<Props, State> {
         onClick: this.submit,
       },
     ];
-
-    const walletNameField = form.$('walletName');
-    const spendingPasswordField = form.$('spendingPassword');
-    const repeatedPasswordField = form.$('repeatPassword');
 
     return (
       <Dialog

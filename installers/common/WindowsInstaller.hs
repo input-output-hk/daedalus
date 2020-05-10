@@ -150,6 +150,7 @@ writeInstallerNSIS outName (Version fullVersion') InstallerConfig{hasBlock0,inst
         unsafeInjectGlobal $ "!define MUI_HEADERIMAGE"
         unsafeInjectGlobal $ "!define MUI_HEADERIMAGE_BITMAP \"icons\\installBanner.bmp\""
         unsafeInjectGlobal $ "!define MUI_HEADERIMAGE_RIGHT"
+        unsafeInjectGlobal $ "!include WinVer.nsh"
         unsafeInjectGlobal $ "VIProductVersion " <> viProductVersion
         unsafeInjectGlobal $ "VIAddVersionKey \"ProductVersion\" " <> fullVersion
         unsafeInjectGlobal "Unicode true"
@@ -159,18 +160,27 @@ writeInstallerNSIS outName (Version fullVersion') InstallerConfig{hasBlock0,inst
         installDir "$PROGRAMFILES64\\$SpacedName"                   -- Default installation directory...
         installDirRegKey HKLM "Software/$SpacedName" "Install_Dir"  -- ...except when already installed.
 
-        page Directory                   -- Pick where to install
-        _ <- constant "INSTALLEDAT" $ readRegStr HKLM "Software/$SpacedName" "Install_Dir"
-        onPagePre Directory (iff_ (strLength "$INSTALLEDAT" %/= 0) $ abort "")
-
-        page InstFiles                   -- Give a progress bar while installing
-
         loadLanguage "English"
         loadLanguage "Japanese"
         mapM_ unsafeInjectGlobal
           [ "LangString AlreadyRunning ${LANG_ENGLISH} \"is running. It needs to be fully shut down before running the installer!\""
           , "LangString AlreadyRunning ${LANG_JAPANESE} \"が起動中です。 インストーラーを実行する前に完全にシャットダウンする必要があります！\""
+          , "LangString TooOld ${LANG_ENGLISH} \"This version of Windows is not supported. Windows 8.1 or above required.\""
+          , "LangString TooOld ${LANG_JAPANESE} \"このWindowsバージョンはサポートされていません。Windows 8.1以降が必要です。\""
           ]
+
+        mapM_ unsafeInject [
+            "${IfNot} ${AtLeastWin8.1}"
+          , "  MessageBox MB_OK \"$(TooOld)\""
+          , "  Quit"
+          , "${EndIf}"
+          ]
+
+        page Directory                   -- Pick where to install
+        _ <- constant "INSTALLEDAT" $ readRegStr HKLM "Software/$SpacedName" "Install_Dir"
+        onPagePre Directory (iff_ (strLength "$INSTALLEDAT" %/= 0) $ abort "")
+
+        page InstFiles                   -- Give a progress bar while installing
 
         _ <- section "" [Required] $ do
                 setOutPath "$INSTDIR"        -- Where to install files in this section

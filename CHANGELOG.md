@@ -5,11 +5,31 @@ Changelog
 
 ### Fixes
 
-- Fix `cardano-wallet` git revision ([PR 1999](https://github.com/input-output-hk/daedalus/pull/1999))
+- Disabled button on forms when there is nothing to submit ([PR 1998](https://github.com/input-output-hk/daedalus/pull/1998), [PR 2010](https://github.com/input-output-hk/daedalus/pull/2010))
+- Fixed system locale detection ([PR 2009](https://github.com/input-output-hk/daedalus/pull/2009))
 
 ### Chores
 
 - Consolidated Japanese translations ([PR 2003](https://github.com/input-output-hk/daedalus/pull/2003))
+
+## 1.1.0-FC1
+
+### Features
+
+- Integrated the recovery phrase verification and re-enabled "Recovery phrase verification" feature ([PR 1929](https://github.com/input-output-hk/daedalus/pull/1929))
+
+### Fixes
+
+- Fixed Daedalus logo animation display on macOS ([PR 2005](https://github.com/input-output-hk/daedalus/pull/2005))
+- Fixed `cardano-wallet` git revision ([PR 1999](https://github.com/input-output-hk/daedalus/pull/1999))
+- Added a check which prevents installing Daedalus on unsupported Windows platform versions ([PR 1947](https://github.com/input-output-hk/daedalus/pull/1947))
+
+### Chores
+
+- Bumped Daedalus version to 1.1.0-FC1 ([PR 2006](https://github.com/input-output-hk/daedalus/pull/2006))
+- All smart error handlers covered with automated E2E tests([PR 1973](https://github.com/input-output-hk/daedalus/pull/1973))
+- Updated `cardano-wallet` to version v2020-04-28 which includes `cardano-node` 1.11.0 ([PR 2004](https://github.com/input-output-hk/daedalus/pull/2004))
+- Improved "Delegate/Undelegate" wizard delegation fee calculation logic ([PR 2002](https://github.com/input-output-hk/daedalus/pull/2002))
 - Improved "Wallet import" state handling ([PR 2001](https://github.com/input-output-hk/daedalus/pull/2001))
 
 ## 1.0.0

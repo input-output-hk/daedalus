@@ -1,7 +1,7 @@
 // @flow
 import { When } from 'cucumber';
 import { getProcessesByName } from '../../../../source/main/utils/processes';
-import type { Daedalus, WebdriverClient } from '../../../types';
+import type { Daedalus } from '../../../types';
 
 declare var daedalus: Daedalus;
 

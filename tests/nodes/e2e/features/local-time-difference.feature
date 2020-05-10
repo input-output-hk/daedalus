@@ -1,5 +1,4 @@
-@e2e @skip
-# @API TODO - We don't have API endpoint for NTP check
+@e2e
 Feature: Local Time Difference
 
   Scenario: Wrong local time

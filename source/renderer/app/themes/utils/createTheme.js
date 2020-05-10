@@ -454,15 +454,15 @@ export const createDaedalusComponentsTheme = (
       '--theme-dialog-big-button-label-color': `${text.primary}`,
       '--theme-dialog-big-button-description-color': `${text.primary}`,
       '--theme-dialog-set-wallet-password-background-color': `${chroma(
-        background.primary
+        background.primary.regular
       ).alpha(0.96)}`,
       '--theme-dialog-set-wallet-password-box-shadow': `${chroma(
-        background.primary
+        background.primary.regular
       ).alpha(0.25)}`,
       '--theme-dialog-set-wallet-password-message-color': `${text.primary}`,
       '--theme-dialog-set-wallet-password-title-color': `${text.primary}`,
       '--theme-dialog-set-wallet-password-button-background-color': `${chroma(
-        background.primary
+        background.primary.regular
       ).alpha(0.15)}`,
       '--theme-dialog-set-wallet-password-button-border-color': `${text.primary}`,
       '--theme-dialog-set-wallet-password-button-color': `${text.primary}`,
@@ -717,12 +717,14 @@ export const createDaedalusComponentsTheme = (
       '--theme-receive-qr-code-foreground-color': '#000',
     },
     recoveryPhrase: {
+      '--theme-recovery-phrase-attention-background-color': `${background.primary.light}`,
       '--theme-recovery-phrase-normal-background-color':
         'rgba(32, 34, 37, 0.05)',
       '--theme-recovery-phrase-normal-border-color': 'rgba(68, 91, 124, .07)',
+      '--theme-recovery-phrase-paper-wallet-background-color': `${background.primary.light}`,
+      '--theme-recovery-phrase-paper-wallet-text-color': `${text.primary}`,
       '--theme-recovery-phrase-warning-background-color':
         'rgba(68, 91, 124, 0.05)',
-      '--theme-recovery-phrase-attention-background-color': `${background.primary.light}`,
     },
     walletImportDialog: {
       '--theme-wallet-import-background-color': `${background.secondary.regular}`,

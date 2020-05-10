@@ -1,10 +1,8 @@
 // @flow
-import { expect } from 'chai';
 import {
   clickInputByLabel,
   clickOptionByValue,
   clickOptionByIndex,
-  getInputValueByLabel,
 } from '../../../common/e2e/steps/helpers';
 import type { Daedalus } from '../../../types';
 

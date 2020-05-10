@@ -2,10 +2,7 @@
 import { Given, When, Then } from 'cucumber';
 import { expect } from 'chai';
 import { navigateTo } from '../../../navigation/e2e/steps/helpers';
-import {
-  waitUntilWaletNamesEqual,
-  getNameOfActiveWalletInSidebar,
-} from '../../../wallets/e2e/steps/helpers';
+import { waitUntilWaletNamesEqual } from '../../../wallets/e2e/steps/helpers';
 import type { Daedalus } from '../../../types';
 
 declare var daedalus: Daedalus;
@@ -28,7 +25,7 @@ When(/^I click on the "([^"]*)" password label$/, function(label) {
 });
 
 When(/^I submit the wallet password dialog$/, function() {
-  return this.client.click('.confirmButton');
+  return this.waitAndClick('.confirmButton');
 });
 
 When(/^I change wallet password:$/, async function(table) {
@@ -45,10 +42,6 @@ When(/^I change wallet password:$/, async function(table) {
     '.ChangeSpendingPasswordDialog_repeatedPassword input',
     fields.repeatedPassword
   );
-});
-
-Then(/^I should not see the change password dialog anymore$/, function() {
-  return this.client.waitForVisible('.changePasswordDialog', null, true);
 });
 
 When(/^I enter current wallet password:$/, async function(table) {
@@ -77,6 +70,18 @@ When(/^I click outside "name" input field$/, function() {
   return this.client.click('.WalletSettings_component');
 });
 
+When(/^I click "Resync wallet" button$/, function() {
+  return this.client.click('.ResyncWalletButton_root');
+});
+
+When(/^I see "Resync wallet" button spinner$/, function() {
+  return this.client.waitForVisible('.ResyncWalletButton_isSubmitting');
+});
+
+When(/^I should not see "Resync wallet" button spinner anymore$/, function() {
+  return this.client.waitForVisible('.ResyncWalletButton_isSubmitting', null, true);
+});
+
 Then(/^I should see new wallet name "([^"]*)"$/, async function(walletName) {
   return waitUntilWaletNamesEqual.call(this, walletName);
 });
@@ -95,21 +100,19 @@ Then(/^I should see the following error messages:$/, async function(data) {
   expect(errorsOnScreen).to.equal(expectedError);
 });
 
+Then(/^I should not see the change password dialog anymore$/, function() {
+  return this.client.waitForVisible('.changePasswordDialog', null, true);
+});
+
 Then(
-  /^I should see error message that old password is not correct$/,
-  function() {
-    return this.client.waitForVisible('.ChangeSpendingPasswordDialog_error');
+  /^I should see the following error messages on the change password dialog:$/,
+  async function(data) {
+    let errorsOnScreen = await this.waitAndGetText('.ChangeSpendingPasswordDialog_error');
+    if (typeof errorsOnScreen === 'string') errorsOnScreen = [errorsOnScreen];
+    const errors = data.hashes();
+    for (let i = 0; i < errors.length; i++) {
+      const expectedError = await this.intl(errors[i].message);
+      expect(errorsOnScreen[i]).to.equal(expectedError);
+    }
   }
 );
-
-When(/^I click "Resync wallet" button$/, function() {
-  return this.client.click('.ResyncWalletButton_root');
-});
-
-When(/^I see "Resync wallet" button spinner$/, function() {
-  return this.client.waitForVisible('.ResyncWalletButton_isSubmitting');
-});
-
-When(/^I should not see "Resync wallet" button spinner anymore$/, function() {
-  return this.client.waitForVisible('.ResyncWalletButton_isSubmitting', null, true);
-});

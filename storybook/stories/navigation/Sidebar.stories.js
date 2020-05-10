@@ -13,7 +13,6 @@ import {
 import StoryDecorator from '../_support/StoryDecorator';
 import { isIncentivizedTestnetTheme } from '../_support/utils';
 import Sidebar from '../../../source/renderer/app/components/sidebar/Sidebar';
-import { WalletRecoveryPhraseVerificationStatuses } from '../../../source/renderer/app/stores/WalletsStore';
 import {
   CATEGORIES_WITH_DELEGATION_COUNTDOWN,
   CATEGORIES_WITHOUT_DELEGATION_COUNTDOWN,
@@ -29,8 +28,7 @@ const sidebarMenus = observable({
         isNotResponding: false,
         isConnected: true,
         isLegacy: false,
-        recoveryPhraseVerificationStatus:
-          WalletRecoveryPhraseVerificationStatuses.OK,
+        hasNotification: false,
       },
       {
         id: '2',
@@ -39,8 +37,7 @@ const sidebarMenus = observable({
         isNotResponding: false,
         isConnected: true,
         isLegacy: false,
-        recoveryPhraseVerificationStatus:
-          WalletRecoveryPhraseVerificationStatuses.OK,
+        hasNotification: false,
       },
       {
         id: '3',
@@ -49,8 +46,7 @@ const sidebarMenus = observable({
         isNotResponding: false,
         isConnected: true,
         isLegacy: false,
-        recoveryPhraseVerificationStatus:
-          WalletRecoveryPhraseVerificationStatuses.OK,
+        hasNotification: false,
       },
     ],
     activeWalletId: '1',
