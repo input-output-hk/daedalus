@@ -9,8 +9,8 @@ Changelog
 
 ### Chores
 
+- Consolidated Japanese translations ([PR 2003](https://github.com/input-output-hk/daedalus/pull/2003))
 - Improved "Wallet import" state handling ([PR 2001](https://github.com/input-output-hk/daedalus/pull/2001))
-- Consolidated Japanese translations 
 
 ## 1.0.0
 
