@@ -35,6 +35,11 @@ export default class NavDropdown extends Component<Props> {
       styles.component,
       hasNotification ? styles.hasNotification : null,
     ]);
+    const getOptionLabelStyles = (optionHasNotification: boolean) =>
+      classnames([
+        styles.optionLabel,
+        optionHasNotification ? styles.hasNotification : null,
+      ]);
     return (
       <div className={componentStyles}>
         <Dropdown
@@ -51,7 +56,9 @@ export default class NavDropdown extends Component<Props> {
             onChange(value);
           }}
           optionRenderer={o => (
-            <div className={styles.optionLabel}>{o.label}</div>
+            <div className={getOptionLabelStyles(o.hasNotification)}>
+              {o.label}
+            </div>
           )}
           items={options}
           activeItem={options.find(o => o.value === activeItem)}

@@ -81,8 +81,25 @@ Feature: Wallet Delegation
     And I start the wallet delegation process for the "Wallet Receiver" wallet
     And I choose the "Wallet Sender" wallet
     And I choose the first stake pool
-    And I enter "INCORRECT" as the spending password
-    Then I should see a "Incorrect wallet password." message
+    And I enter "Incorrect12345" as the spending password
+    Then I should see the following error messages on the delegation process dialog:
+      | message                               |
+      | api.errors.IncorrectPasswordError     |
+
+  Scenario: "Delegation" wizard is showing the correct error message if the user submits too short spending password
+    Given I have the following wallets:
+      | name            |
+      | Wallet Receiver |
+    And I have a "Wallet Sender" wallet with funds
+    And I am on the Delegation "delegation-center" screen
+    And I mark experimental feature as read
+    And I start the wallet delegation process for the "Wallet Receiver" wallet
+    And I choose the "Wallet Sender" wallet
+    And I choose the first stake pool
+    And I enter "wrong" as the spending password
+    Then I should see the following error messages on the delegation process dialog:
+      | message                               |
+      | api.errors.IncorrectPasswordError     |
 
   @skip
   # We are currently not displaying stake pools with no metadata

@@ -1,3 +1,4 @@
+@import '../../../themes/mixins/animations';
 @import '../../../themes/mixins/loading-spinner';
 @import '../../../themes/mixins/error-message';
 
@@ -16,19 +17,25 @@
 
     .feesWrapper {
       font-family: var(--font-medium);
-      font-size: 16px;
       font-weight: 500;
       line-height: 1.38;
       margin-bottom: 20px;
+
       .feesLabel {
         color: var(--theme-delegation-steps-confirmation-fees-label-color);
         margin-bottom: 6px;
       }
+
+      .calculatingFeesLabel {
+        @include animated-ellipsis($width: 20px);
+        --webkit-backface-visibility: hidden;
+      }
+
       .feesAmount {
         color: var(--theme-delegation-steps-confirmation-fees-amount-color);
-        font-family: var(--font-medium);
         user-select: text;
-        span {
+
+        .feesAmountLabel {
           font-family: var(--font-light);
         }
       }

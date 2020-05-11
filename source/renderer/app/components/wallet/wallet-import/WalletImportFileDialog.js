@@ -197,6 +197,7 @@ export default class WalletImportFileDialog extends Component<Props, State> {
         isOpen
         onRequestClose={onClose}
         shouldCloseOnOverlayClick={false}
+        shouldCloseOnEsc={false}
         className={styles.dialog}
         overlayClassName={styles.overlay}
         ariaHideApp={false}

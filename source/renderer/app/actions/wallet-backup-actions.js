@@ -21,7 +21,4 @@ export default class WalletBackupActions {
   restartWalletBackup: Action<any> = new Action();
   cancelWalletBackup: Action<any> = new Action();
   finishWalletBackup: Action<any> = new Action();
-  // Recovery phrase confirmation dialog actions
-  checkRecoveryPhrase: Action<{ recoveryPhrase: Array<string> }> = new Action();
-  resetRecoveryPhraseCheck: Action<any> = new Action();
 }

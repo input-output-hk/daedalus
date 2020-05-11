@@ -14,7 +14,7 @@ import DeleteWalletConfirmationDialog from './DeleteWalletConfirmationDialog';
 import ChangeSpendingPasswordDialog from './ChangeSpendingPasswordDialog';
 import globalMessages from '../../../i18n/global-messages';
 import styles from './WalletSettings.scss';
-import WalletRecoveryPhrase from './WalletRecoveryPhrase';
+import WalletRecoveryPhraseVerificationWidget from './WalletRecoveryPhraseVerificationWidget';
 import ResyncWallet from './ResyncWallet';
 
 export const messages = defineMessages({
@@ -86,26 +86,23 @@ type Props = {
   onStopEditing: Function,
   onCancelEditing: Function,
   onResyncWallet: Function,
+  onVerifyRecoveryPhrase: Function,
   nameValidator: Function,
   activeField: ?string,
   isSubmitting: boolean,
   isForcedWalletResyncStarting: boolean,
   isIncentivizedTestnet: boolean,
-  isWalletRecoveryPhraseDisabled?: boolean,
   isInvalid: boolean,
   isLegacy: boolean,
   lastUpdatedField: ?string,
   changeSpendingPasswordDialog: Node,
   deleteWalletDialogContainer: Node,
-  walletRecoveryPhraseStep1Container: Node,
-  walletRecoveryPhraseStep2Container: Node,
-  walletRecoveryPhraseStep3Container: Node,
-  walletRecoveryPhraseStep4Container: Node,
   recoveryPhraseVerificationDate: ?Date,
   recoveryPhraseVerificationStatus: string,
   recoveryPhraseVerificationStatusType: string,
   locale: string,
   isSpendingPasswordSet: boolean,
+  wordCount: number,
 };
 
 type State = {
@@ -162,26 +159,23 @@ export default class WalletSettings extends Component<Props, State> {
       onStopEditing,
       onCancelEditing,
       onResyncWallet,
+      onVerifyRecoveryPhrase,
       nameValidator,
       activeField,
       isSubmitting,
       isForcedWalletResyncStarting,
       isIncentivizedTestnet,
-      isWalletRecoveryPhraseDisabled,
       isInvalid,
       isLegacy,
       lastUpdatedField,
       changeSpendingPasswordDialog,
       deleteWalletDialogContainer,
-      walletRecoveryPhraseStep1Container,
-      walletRecoveryPhraseStep2Container,
-      walletRecoveryPhraseStep3Container,
-      walletRecoveryPhraseStep4Container,
       recoveryPhraseVerificationDate,
       recoveryPhraseVerificationStatus,
       recoveryPhraseVerificationStatusType,
       locale,
       isSpendingPasswordSet,
+      wordCount,
     } = this.props;
     const { isFormBlocked } = this.state;
 
@@ -273,8 +267,9 @@ export default class WalletSettings extends Component<Props, State> {
             }}
           />
 
-          {!isIncentivizedTestnet && !isWalletRecoveryPhraseDisabled && (
-            <WalletRecoveryPhrase
+          {!isIncentivizedTestnet && (
+            <WalletRecoveryPhraseVerificationWidget
+              onVerify={onVerifyRecoveryPhrase}
               recoveryPhraseVerificationDate={recoveryPhraseVerificationDate}
               recoveryPhraseVerificationStatus={
                 recoveryPhraseVerificationStatus
@@ -283,20 +278,8 @@ export default class WalletSettings extends Component<Props, State> {
                 recoveryPhraseVerificationStatusType
               }
               creationDate={creationDate}
-              openDialogAction={openDialogAction}
-              isDialogOpen={isDialogOpen}
-              walletRecoveryPhraseStep1Container={
-                walletRecoveryPhraseStep1Container
-              }
-              walletRecoveryPhraseStep2Container={
-                walletRecoveryPhraseStep2Container
-              }
-              walletRecoveryPhraseStep3Container={
-                walletRecoveryPhraseStep3Container
-              }
-              walletRecoveryPhraseStep4Container={
-                walletRecoveryPhraseStep4Container
-              }
+              wordCount={wordCount}
+              locale={locale}
             />
           )}
 
