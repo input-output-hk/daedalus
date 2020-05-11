@@ -8,6 +8,10 @@ Changelog
 - Disabled button on forms when there is nothing to submit ([PR 1998](https://github.com/input-output-hk/daedalus/pull/1998), [PR 2010](https://github.com/input-output-hk/daedalus/pull/2010))
 - Fixed system locale detection ([PR 2009](https://github.com/input-output-hk/daedalus/pull/2009))
 
+### Chores
+
+- Implemented automated tests for wallet migration and import features ([PR 2011](https://github.com/input-output-hk/daedalus/pull/2011))
+
 ## 1.1.0-FC1
 
 ### Features
