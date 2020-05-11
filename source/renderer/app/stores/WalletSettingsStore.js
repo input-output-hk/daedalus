@@ -286,23 +286,33 @@ export default class WalletSettingsStore extends Store {
   @action _recoveryPhraseVerificationCheck = async (data: {
     recoveryPhrase: Array<string>,
   }) => {
-    let { recoveryPhrase } = data;
-    if (recoveryPhrase.length === PAPER_WALLET_RECOVERY_PHRASE_WORD_COUNT) {
-      recoveryPhrase = await this.stores.wallets._getUnscrambledMnemonics(
-        recoveryPhrase
-      );
-    }
-    const walletId = await getRecoveryWalletIdChannel.request(recoveryPhrase);
-    if (!walletId)
-      throw new Error('It was not possible to retrieve the walletId.');
-    const activeWallet = this.stores.wallets.active;
+    const {
+      active: activeWallet,
+      _getUnscrambledMnemonics,
+    } = this.stores.wallets;
     if (!activeWallet)
       throw new Error(
         'Active wallet required before checking recovery phrase.'
       );
-    const activeWalletId = getRawWalletId(activeWallet.id);
+    const { id, isRandom } = activeWallet;
+    const activeWalletId = getRawWalletId(id);
+    let { recoveryPhrase } = data;
+    if (recoveryPhrase.length === PAPER_WALLET_RECOVERY_PHRASE_WORD_COUNT) {
+      recoveryPhrase = await _getUnscrambledMnemonics(recoveryPhrase);
+    }
+    const walletId = await getRecoveryWalletIdChannel.request({
+      recoveryPhrase,
+      isRandom,
+    });
+    if (!walletId)
+      throw new Error('It was not possible to retrieve the walletId.');
     const isCorrect = walletId === activeWalletId;
     const nextStep = isCorrect ? 3 : 4;
+    if (!isCorrect) {
+      console.log('isRandom', isRandom);
+      console.log('walletId', walletId);
+      console.log('activeWalletId', activeWalletId);
+    }
     if (isCorrect) {
       const recoveryPhraseVerificationDate = new Date();
       await this.actions.walletsLocal.setWalletLocalData.trigger({
