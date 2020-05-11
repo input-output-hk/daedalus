@@ -338,9 +338,13 @@ export default class WalletSelectImportDialog extends Component<Props> {
             <div className={styles.walletsContainer}>
               {walletsWithNames.map((wallet, index) => {
                 const isDuplicate = previousWalletId === wallet.id;
+                const rowClasses = classNames([
+                  styles.walletsRow,
+                  'namedWalletsRow',
+                ]);
                 const walletRow = (
                   <div
-                    className={styles.walletsRow}
+                    className={rowClasses}
                     key={`${wallet.id}-${wallet.index}`}
                   >
                     <div className={styles.walletsCounter}>
@@ -381,9 +385,13 @@ export default class WalletSelectImportDialog extends Component<Props> {
 
               {walletsWithoutNames.map((wallet, index) => {
                 const isDuplicate = previousWalletId === wallet.id;
+                const rowClasses = classNames([
+                  styles.walletsRow,
+                  'unnamedWalletsRow',
+                ]);
                 const walletRow = (
                   <div
-                    className={styles.walletsRow}
+                    className={rowClasses}
                     key={`${wallet.id}-${wallet.index}`}
                   >
                     <div className={styles.walletsCounter}>
