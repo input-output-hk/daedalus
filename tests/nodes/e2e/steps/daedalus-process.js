@@ -64,3 +64,9 @@ When('I reset the syncing progress', async function() {
     daedalus.stores.networkStatus._updateNetworkStatus().then(done);
   });
 });
+
+When(/^I disconnect app$/, function() {
+  this.client.execute(() => {
+    daedalus.stores.networkStatus._setDisconnected(true);
+  });
+});

@@ -25,7 +25,7 @@ When(/^I click on the "([^"]*)" password label$/, function(label) {
 });
 
 When(/^I submit the wallet password dialog$/, function() {
-  return this.client.click('.confirmButton');
+  return this.waitAndClick('.confirmButton');
 });
 
 When(/^I change wallet password:$/, async function(table) {
