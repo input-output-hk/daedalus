@@ -49,10 +49,9 @@ export default class WalletRecoveryPhraseContainer extends Component<Props> {
         : recoveryPhraseVerificationContinue.trigger;
     const onClose = recoveryPhraseVerificationClose.trigger;
 
-    const validWordCounts =
-      activeWallet.discovery === WalletDiscovery.SEQUENTIAL
-        ? SEQUENTIAL_WALLET_VALID_WORD_COUNTS
-        : RANDOM_WALLET_VALID_WORD_COUNTS;
+    const validWordCounts = activeWallet.isRandom
+      ? RANDOM_WALLET_VALID_WORD_COUNTS
+      : SEQUENTIAL_WALLET_VALID_WORD_COUNTS;
     const WalletRecoveryPhraseDialog = this.recoveryPhraseComponent;
     return (
       WalletRecoveryPhraseDialog && (

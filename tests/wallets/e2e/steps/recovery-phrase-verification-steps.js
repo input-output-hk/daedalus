@@ -9,7 +9,7 @@ const DIALOG_SUCCESSFUL_SELECTOR = '.verification-successful';
 const DIALOG_UNSUCCESSFUL_SELECTOR = '.verification-unsuccessful';
 const DIALOG_VERIFY_AGAIN_BUTTON_SELECTOR = `${DIALOG_SELECTOR} button.attention`;
 const DIALOG_CLOSE_BUTTON_SELECTOR = `${DIALOG_SELECTOR} .DialogCloseButton_component`;
-const DIALOG_VERIFY_BUTTON_SELECTOR = '.WalletRecoveryPhraseStepDialogs_dialog button';
+const DIALOG_VERIFY_BUTTON_SELECTOR = '.WalletRecoveryPhraseStepDialogs_dialog button.primary';
 
 Given(
   'the last recovery phrase veryfication was done {int} days ago',
@@ -33,8 +33,7 @@ Then(
   'I should see a {string} recovery phrase veryfication feature',
   async function(status) {
     const statusClassname = `${SETTINGS_PAGE_STATUS_SELECTOR}${status}`;
-    console.log('statusClassname --->', statusClassname);
-    // return this.client.waitForVisible(statusClassname);
+    return this.client.waitForVisible(statusClassname);
   }
 );
 
@@ -67,8 +66,8 @@ When(/^I enter the recovery phrase mnemonics (correctly|incorrectly)$/, async fu
 
 When(/^I enter the "([^"]*)" recovery phrase mnemonics$/, async function(_recoveryPhrase) {
   const recoveryPhrase = _recoveryPhrase.split(' ');
-  for (let i = 0; i < recoveryPhrase.value.length; i++) {
-    const word = recoveryPhrase.value[i];
+  for (let i = 0; i < recoveryPhrase.length; i++) {
+    const word = recoveryPhrase[i];
     await this.client.setValue(
       '.AutocompleteOverrides_autocompleteWrapper input',
       word

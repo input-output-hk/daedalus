@@ -33,6 +33,7 @@ Given(/^I have (created )?the following (balance )?wallets:$/, async function(mo
 
 // Restore a wallet of any kind
 Given(/^I have restored the "([^"]*)" wallet of "([^"]*)" kind, "([^"]*)" subkind and "([^"]*)" recovery phrase$/,
+  { timeout: 60000 },
   async function(walletName, kind, subkind, recovery_phrase ) {
   await restoreWallet.call(this, walletName, kind, subkind, recovery_phrase);
   await waitUntilWalletIsLoaded.call(this, walletName);

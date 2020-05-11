@@ -13,6 +13,7 @@ import Dialog from '../../widgets/Dialog';
 import styles from './WalletRecoveryPhraseStepDialogs.scss';
 import globalMessages from '../../../i18n/global-messages';
 import { closestNumber } from '../../../utils/numbers';
+import { PAPER_WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../../../config/cryptoConfig';
 
 export const messages = defineMessages({
   recoveryPhraseStep2Title: {
@@ -107,7 +108,8 @@ export default class WalletRecoveryPhraseStep2Dialog extends Component<
               ];
             }
             return [
-              isValidMnemonic(value, wordCount),
+              isValidMnemonic(value, wordCount) ||
+                wordCount === PAPER_WALLET_RECOVERY_PHRASE_WORD_COUNT,
               this.context.intl.formatMessage(
                 messages.recoveryPhraseStep2InvalidMnemonics
               ),

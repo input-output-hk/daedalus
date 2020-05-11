@@ -103,7 +103,7 @@ export const createMainWindow = (locale: string) => {
   });
 
   window.webContents.on('did-frame-finish-load', () => {
-    if (isDev || isTest) {
+    if (isDev) {
       window.webContents.openDevTools();
       // Focus the main window after dev tools opened
       window.webContents.on('devtools-opened', () => {

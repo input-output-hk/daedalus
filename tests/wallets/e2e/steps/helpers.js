@@ -463,8 +463,8 @@ export const restoreWallet = async function(walletName: string, kind: string, su
     };
     restoreRequest.execute(data)
       .then(() => {
-        daedalus.stores.wallets
-          ._resumePolling()
+        daedalus.stores.wallets._resumePolling();
+        daedalus.stores.wallets.refreshWalletsData()
           .then(done)
       })
       .catch(error => done(error));
