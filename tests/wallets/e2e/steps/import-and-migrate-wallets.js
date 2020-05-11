@@ -4,6 +4,8 @@ import path from 'path';
 import { When, Then, Given } from 'cucumber';
 import { expect } from 'chai';
 import { difference } from 'lodash';
+import { createWallets } from './helpers';
+import { MAX_ADA_WALLETS_COUNT } from '../../../../source/renderer/app/config/numbersConfig';
 import type { Daedalus } from '../../../types';
 
 declare var daedalus: Daedalus;
@@ -20,6 +22,7 @@ const IMPORT_CHOICE_SELECTOR = '.RadioSet_radiosContainer.RadioSet_verticallyAli
 const UNNAMED_WALLET_INPUTS_SELECTOR = '.unnamedWalletsRow .SimpleInput_input';
 const WALLET_CHECKBOXES_SELECTOR = '.WalletSelectImportDialog_walletsRow .SimpleCheckbox_check';
 const IS_CHECKBOX_CHECKDE_SELECTOR = 'SimpleCheckbox_checked';
+const IS_CHECKBOX_DISABLED_SELECTOR = 'SimpleCheckbox_disabled';
 const WALLET_SELECT_IMPORT_ACTION_BUTTON_SELECTOR = '.WalletSelectImportDialog_actionButton';
 const WALLET_SELECT_IMPORT_ACTION_BUTTON_DISABLED_SELECTOR = '.WalletSelectImportDialog_actionButton.WalletSelectImportDialog_disabled';
 const STATUS_ICON_CHECKMARK_SELECTOR = '.WalletSelectImportDialog_walletsStatusIconCheckmark';
@@ -27,6 +30,9 @@ const WALLET_STATUS_LABEL_SELECTOR = '.WalletSelectImportDialog_walletsStatus';
 const WALLET_SELECT_IMPORT_DIALOG_CLOSE_BUTTON_SELECTOR = '.WalletSelectImportDialog_closeButton'
 const WALLET_SELECT_IMPORT_DIALOG_CLOSE_LINK_SELECTOR = '.WalletSelectImportDialog_closeWindowLink';
 const SIDEBAR_WALLETS_TITLE_SELECTOR = '.SidebarWalletMenuItem_title';
+const NAMED_WALLET_ROW_SELECTOR = '.namedWalletsRow';
+const NAMED_WALLET_CHECKBOXES_SELECTOR = '.namedWalletsRow .SimpleCheckbox_root';
+const TOOLTIP_SELECTOR = '.WalletSelectImportDialog_maxWalletsReachedTooltip .SimpleBubble_root .SimpleBubble_bubble';
 
 Given(/^I have wallet migration enabled/, async function() {
   await this.client.execute(() =>
@@ -154,11 +160,11 @@ When(/^I should see that all wallets are available for import$/, async function(
 
 When(/^I select all (named|unnamed) wallets for import$/, async function(_type) {
   const selector = `.${_type}WalletsRow .SimpleCheckbox_root`
-  const namedWalletCheckboxes = await this.client.elements(selector);
+  const walletCheckboxes = await this.client.elements(selector);
   const selectedNamedWallets = this.exportedWallets.filter((wallet) => wallet.hasName);
-  for (let i = 0; i < namedWalletCheckboxes.value.length; i++) {
-    const namedWalletCheckbox = namedWalletCheckboxes.value[i].ELEMENT;
-    await this.client.elementIdClick(namedWalletCheckbox);
+  for (let i = 0; i < walletCheckboxes.value.length; i++) {
+    const walletCheckbox = walletCheckboxes.value[i].ELEMENT;
+    await this.client.elementIdClick(walletCheckbox);
   }
 
   const walletNames = []
@@ -177,6 +183,35 @@ When(/^I select all (named|unnamed) wallets for import$/, async function(_type) 
   }
 });
 
+When('I select wallet with index {int} for import', async function(walletIndex) {
+  const walletCheckboxes = await this.client.elements(NAMED_WALLET_CHECKBOXES_SELECTOR);
+  const walletCheckbox = walletCheckboxes.value[walletIndex].ELEMENT;
+  await this.client.elementIdClick(walletCheckbox);
+});
+
+When('I hover import selection checkbox for wallet with index {int}', async function(walletIndex) {
+  const walletCheckboxes = await this.client.elements(NAMED_WALLET_CHECKBOXES_SELECTOR);
+  const walletCheckbox = walletCheckboxes.value[walletIndex].ELEMENT;
+  await this.client.elementIdClick(walletCheckbox);
+});
+
+Then('Import selection checkbox for wallet with index {int} is disabled', async function (walletIndex) {
+  const walletCheckboxes = await this.client.elements(NAMED_WALLET_CHECKBOXES_SELECTOR);
+  const walletCheckbox = walletCheckboxes.value[walletIndex].ELEMENT;
+  const checkboxClasses = await this.client.elementIdAttribute(walletCheckbox, 'class');
+  const isDisabled = checkboxClasses.value.indexOf(IS_CHECKBOX_DISABLED_SELECTOR) >= 0;
+  expect(isDisabled).to.equal(true); // Checkbox presented and disabled
+});
+
+When('I should see maximum wallets reached tooltip for wallet with index {int}', async function(walletIndex) {
+  const walletRows = await this.client.elements(NAMED_WALLET_ROW_SELECTOR);
+  const walletRow = walletRows.value[walletIndex].ELEMENT;
+  const walletTooltip = await this.client.elementIdElement(walletRow, TOOLTIP_SELECTOR);
+  const tooltipText = await this.client.elementIdText(walletTooltip.value.ELEMENT);
+  const expectedTooltipText = await this.intl('wallet.select.import.dialog.maxWalletsReachedTooltip', { maxWalletsCount: MAX_ADA_WALLETS_COUNT });
+  expect(tooltipText.value).to.equal(expectedTooltipText); // Checkbox presented and disabled
+});
+
 When(/^"Import selected wallets" button is (enabled|disabled)$/, async function(state) {
   if (state === 'enabled') {
     await this.client.waitForEnabled(WALLET_SELECT_IMPORT_ACTION_BUTTON_SELECTOR);
@@ -193,7 +228,7 @@ When(/^I enter random names to all unnamed wallets$/, async function() {
     await this.client.elementIdClick(walletInputField);
     await this.client.elementIdValue(walletInputField, walletName);
   }
-  // Click outside to apply last entered values;
+  // Click outside to apply last entered values
   await this.waitAndClick('.WalletSelectImportDialog_title');
 })
 

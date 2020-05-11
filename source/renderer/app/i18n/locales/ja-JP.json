@@ -653,7 +653,7 @@
   "wallet.select.import.dialog.importingWallet": "ウォレットをインポート中…",
   "wallet.select.import.dialog.linkLabel": "もっと知る",
   "wallet.select.import.dialog.linkUrl": "https://iohk.zendesk.com/hc/ja/articles/900000623463",
-  "wallet.select.import.dialog.maxWalletsReachedTooltip": "Daedalusがサポートするウォレット数は最大30です。このウォレットをインポートする前に、いずれかのウォレットを削除してください。",
+  "wallet.select.import.dialog.maxWalletsReachedTooltip": "Daedalusがサポートするウォレット数は最大{maxWalletsCount}です。このウォレットをインポートする前に、いずれかのウォレットを削除してください。",
   "wallet.select.import.dialog.noPassword": "パスワードなし",
   "wallet.select.import.dialog.notFound": "ウォレット名不明",
   "wallet.select.import.dialog.passwordProtected": "パスワード設定済み",

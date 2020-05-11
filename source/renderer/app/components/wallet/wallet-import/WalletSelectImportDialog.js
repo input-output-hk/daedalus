@@ -1,6 +1,11 @@
 // @flow
 import React, { Component } from 'react';
-import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
+import {
+  defineMessages,
+  intlShape,
+  FormattedHTMLMessage,
+  FormattedMessage,
+} from 'react-intl';
 import ReactModal from 'react-modal';
 import { observer } from 'mobx-react';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
@@ -21,6 +26,7 @@ import { WalletImportStatuses } from '../../../types/walletExportTypes';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import InlineEditingSmallInput from '../../widgets/forms/InlineEditingSmallInput';
 import checkmarkImage from '../../../assets/images/check-w.inline.svg';
+import { MAX_ADA_WALLETS_COUNT } from '../../../config/numbersConfig';
 import type { ExportedByronWallet } from '../../../types/walletExportTypes';
 
 const messages = defineMessages({
@@ -79,7 +85,7 @@ const messages = defineMessages({
   maxWalletsReachedTooltip: {
     id: 'wallet.select.import.dialog.maxWalletsReachedTooltip',
     defaultMessage:
-      '!!!Daedalus supports up to 30 wallets. You will need to remove another wallet before you can import this one.',
+      '!!!Daedalus supports up to {maxWalletsCount} wallets. You will need to remove another wallet before you can import this one.',
     description: 'Max number of wallets reached',
   },
   walletImported: {
@@ -158,6 +164,7 @@ export default class WalletSelectImportDialog extends Component<Props> {
       onToggleWalletImportSelection,
       isMaxNumberOfWalletsReached,
     } = this.props;
+
     let statusIcon;
     if (
       wallet.import.status === WalletImportStatuses.UNSTARTED ||
@@ -175,19 +182,22 @@ export default class WalletSelectImportDialog extends Component<Props> {
       const checkboxes = document.getElementsByClassName(
         'SimpleCheckbox_check'
       );
-      const topWrapper = document.getElementsByClassName(
-        'WalletSelectImportDialog_topWrapper'
-      );
       if (checkboxes.length && wallet.hasName) {
-        const checkboxTopOffset = checkboxes[index].getBoundingClientRect().top;
-        const topWrapperTopOffset = topWrapper[0].getBoundingClientRect().top;
-        const topPart = topWrapperTopOffset + 121;
-        const spaceForTooltip = checkboxTopOffset - topPart;
-        if (
-          (walletNotSelectable && spaceForTooltip < 83) ||
-          (invalidWalletName && spaceForTooltip < 27)
-        ) {
-          isOpeningUpward = false;
+        const topWrapper = document.getElementsByClassName(
+          'WalletSelectImportDialog_topWrapper'
+        );
+        if (checkboxes[index] && topWrapper.length) {
+          const checkboxTopOffset = checkboxes[index].getBoundingClientRect()
+            .top;
+          const topWrapperTopOffset = topWrapper[0].getBoundingClientRect().top;
+          const topPart = topWrapperTopOffset + 121;
+          const spaceForTooltip = checkboxTopOffset - topPart;
+          if (
+            (walletNotSelectable && spaceForTooltip < 85) ||
+            (invalidWalletName && spaceForTooltip < 27)
+          ) {
+            isOpeningUpward = false;
+          }
         }
       }
 
@@ -210,11 +220,18 @@ export default class WalletSelectImportDialog extends Component<Props> {
                 : styles.enterWalletNameTooltip
             }
             skin={TooltipSkin}
-            tip={this.context.intl.formatMessage(
-              invalidWalletName
-                ? messages.enterWalletNameTooltip
-                : messages.maxWalletsReachedTooltip
-            )}
+            tip={
+              invalidWalletName ? (
+                this.context.intl.formatMessage(messages.enterWalletNameTooltip)
+              ) : (
+                <FormattedMessage
+                  {...messages.maxWalletsReachedTooltip}
+                  values={{
+                    maxWalletsCount: MAX_ADA_WALLETS_COUNT,
+                  }}
+                />
+              )
+            }
             isBounded={walletNotSelectable}
             isOpeningUpward={isOpeningUpward}
             arrowRelativeToTip

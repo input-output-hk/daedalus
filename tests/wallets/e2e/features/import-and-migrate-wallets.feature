@@ -211,3 +211,32 @@ Feature: Import wallets
     And I disconnect app
     And I should not see wallet select import dialog
     And I see the add wallet page
+
+  Scenario: Importing more than maximum number of wallets is prevented
+    Given I have 29 restored wallets
+    And I click on the add wallet button in the sidebar
+    And I see the add wallet page
+    And I click on the import wallet button on the add wallet page
+    And I see the import wallets overlay
+    And I should see import selection label:
+      | label                                      |
+      | wallet.import.file.dialog.stateFolderLabel |
+    And I should see Daedalus State directory as predefined import path
+    And I set import path
+    And I click "Import wallets" button
+    And I should see wallets properly listed
+    And I should see that all wallets are available for import
+    And "Import selected wallets" button is disabled
+    And I select wallet with index 0 for import
+    And "Import selected wallets" button is enabled
+    And I hover import selection checkbox for wallet with index 1
+    Then Import selection checkbox for wallet with index 1 is disabled
+    And I should see maximum wallets reached tooltip for wallet with index 1
+    And I click "Import selected wallets"
+    And "Import selected wallets" button is disabled
+    And I close import wallets dialog by clicking on "Close window" button
+    Then I should not see the import wallet dialog anymore
+    And The sidebar shows the "wallets" category
+    Then I should see maximum number of wallets in the wallets list
+    And the buttons in the Add Wallet screen should be disabled
+    And I should see a disclaimer saying I have reached the maximum number of wallets

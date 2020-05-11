@@ -1,19 +1,32 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
+import { map } from 'lodash';
 import WalletImportFileDialog from '../../../components/wallet/wallet-import/WalletImportFileDialog';
 import WalletSelectImportDialog from '../../../components/wallet/wallet-import/WalletSelectImportDialog';
 import { isValidWalletName } from '../../../utils/validations';
 import type { InjectedProps } from '../../../types/injectedPropsType';
 import type { ImportFromOption } from '../../../types/walletExportTypes';
 import { MAX_ADA_WALLETS_COUNT } from '../../../config/numbersConfig';
+import { WalletImportStatuses } from '../../../types/walletExportTypes';
 
 type Props = InjectedProps;
 
+type State = {
+  existingWalletsCount: number,
+};
+
 @inject('stores', 'actions')
 @observer
-export default class WalletImportDialogContainer extends Component<Props> {
+export default class WalletImportDialogContainer extends Component<
+  Props,
+  State
+> {
   static defaultProps = { actions: null, stores: null };
+
+  state = {
+    existingWalletsCount: this.props.stores.wallets.all.length,
+  };
 
   componentWillUnmount() {
     this.props.actions.walletMigration.finishMigration.trigger();
@@ -50,7 +63,7 @@ export default class WalletImportDialogContainer extends Component<Props> {
   };
 
   render() {
-    const { app, walletMigration, wallets } = this.props.stores;
+    const { app, walletMigration } = this.props.stores;
     const {
       exportedWallets,
       exportErrors,
@@ -62,8 +75,18 @@ export default class WalletImportDialogContainer extends Component<Props> {
       walletMigrationStep,
     } = walletMigration;
     const { openExternalLink } = app;
+    let walletsCount =
+      this.state.existingWalletsCount + pendingImportWalletsCount;
+    map(exportedWallets, wallet => {
+      if (
+        wallet.import.status === WalletImportStatuses.COMPLETED ||
+        wallet.import.status === WalletImportStatuses.RUNNING
+      ) {
+        walletsCount++;
+      }
+    });
     const isMaxNumberOfWalletsReached =
-      pendingImportWalletsCount + wallets.all.length === MAX_ADA_WALLETS_COUNT;
+      walletsCount >= MAX_ADA_WALLETS_COUNT;
 
     return (
       <>
