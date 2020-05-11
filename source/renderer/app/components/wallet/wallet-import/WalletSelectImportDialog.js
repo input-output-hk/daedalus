@@ -1,6 +1,11 @@
 // @flow
 import React, { Component } from 'react';
-import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
+import {
+  defineMessages,
+  intlShape,
+  FormattedHTMLMessage,
+  FormattedMessage,
+} from 'react-intl';
 import ReactModal from 'react-modal';
 import { observer } from 'mobx-react';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
@@ -21,6 +26,7 @@ import { WalletImportStatuses } from '../../../types/walletExportTypes';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import InlineEditingSmallInput from '../../widgets/forms/InlineEditingSmallInput';
 import checkmarkImage from '../../../assets/images/check-w.inline.svg';
+import { MAX_ADA_WALLETS_COUNT } from '../../../config/numbersConfig';
 import type { ExportedByronWallet } from '../../../types/walletExportTypes';
 
 const messages = defineMessages({
@@ -76,6 +82,12 @@ const messages = defineMessages({
     defaultMessage: '!!!Enter a wallet name first',
     description: 'Enter a wallet name first',
   },
+  maxWalletsReachedTooltip: {
+    id: 'wallet.select.import.dialog.maxWalletsReachedTooltip',
+    defaultMessage:
+      '!!!Daedalus supports up to {maxWalletsCount} wallets. You will need to remove another wallet before you can import this one.',
+    description: 'Max number of wallets reached',
+  },
   walletImported: {
     id: 'wallet.select.import.dialog.walletImported',
     defaultMessage: '!!!Wallet imported',
@@ -114,6 +126,7 @@ type Props = {
   onClose: Function,
   onOpenExternalLink: Function,
   nameValidator: Function,
+  isMaxNumberOfWalletsReached: boolean,
 };
 
 @observer
@@ -145,15 +158,49 @@ export default class WalletSelectImportDialog extends Component<Props> {
     return walletStatus;
   };
 
-  getWalletStatusIcon = (wallet: ExportedByronWallet) => {
-    const { nameValidator, onToggleWalletImportSelection } = this.props;
+  getWalletStatusIcon = (wallet: ExportedByronWallet, index: number) => {
+    const {
+      nameValidator,
+      onToggleWalletImportSelection,
+      isMaxNumberOfWalletsReached,
+    } = this.props;
+
     let statusIcon;
     if (
       wallet.import.status === WalletImportStatuses.UNSTARTED ||
       wallet.import.status === WalletImportStatuses.PENDING ||
       wallet.import.status === WalletImportStatuses.ERRORED
     ) {
-      const disabled = wallet.name === null || !nameValidator(wallet.name);
+      const invalidWalletName =
+        wallet.name === null || !nameValidator(wallet.name);
+      const walletNotSelectable =
+        isMaxNumberOfWalletsReached &&
+        wallet.import.status !== WalletImportStatuses.PENDING;
+      const disabled = invalidWalletName || walletNotSelectable;
+
+      let isOpeningUpward = true;
+      const checkboxes = document.getElementsByClassName(
+        'SimpleCheckbox_check'
+      );
+      if (checkboxes.length && wallet.hasName) {
+        const topWrapper = document.getElementsByClassName(
+          'WalletSelectImportDialog_topWrapper'
+        );
+        if (checkboxes[index] && topWrapper.length) {
+          const checkboxTopOffset = checkboxes[index].getBoundingClientRect()
+            .top;
+          const topWrapperTopOffset = topWrapper[0].getBoundingClientRect().top;
+          const topPart = topWrapperTopOffset + 121;
+          const spaceForTooltip = checkboxTopOffset - topPart;
+          if (
+            (walletNotSelectable && spaceForTooltip < 85) ||
+            (invalidWalletName && spaceForTooltip < 27)
+          ) {
+            isOpeningUpward = false;
+          }
+        }
+      }
+
       statusIcon = (
         <Checkbox
           onChange={() => {
@@ -167,11 +214,26 @@ export default class WalletSelectImportDialog extends Component<Props> {
       if (disabled) {
         statusIcon = (
           <Tooltip
-            className={styles.enterWalletNameTooltip}
+            className={
+              walletNotSelectable
+                ? styles.maxWalletsReachedTooltip
+                : styles.enterWalletNameTooltip
+            }
             skin={TooltipSkin}
-            tip={this.context.intl.formatMessage(
-              messages.enterWalletNameTooltip
-            )}
+            tip={
+              invalidWalletName ? (
+                this.context.intl.formatMessage(messages.enterWalletNameTooltip)
+              ) : (
+                <FormattedMessage
+                  {...messages.maxWalletsReachedTooltip}
+                  values={{
+                    maxWalletsCount: MAX_ADA_WALLETS_COUNT,
+                  }}
+                />
+              )
+            }
+            isBounded={walletNotSelectable}
+            isOpeningUpward={isOpeningUpward}
             arrowRelativeToTip
           >
             {statusIcon}
@@ -291,7 +353,7 @@ export default class WalletSelectImportDialog extends Component<Props> {
               <hr className={styles.separatorTop} />
             </div>
             <div className={styles.walletsContainer}>
-              {walletsWithNames.map(wallet => {
+              {walletsWithNames.map((wallet, index) => {
                 const isDuplicate = previousWalletId === wallet.id;
                 const rowClasses = classNames([
                   styles.walletsRow,
@@ -318,7 +380,7 @@ export default class WalletSelectImportDialog extends Component<Props> {
                       {this.getWalletStatus(wallet)}
                     </div>
                     <div className={styles.walletsStatusIcon}>
-                      {this.getWalletStatusIcon(wallet)}
+                      {this.getWalletStatusIcon(wallet, index)}
                     </div>
                   </div>
                 );
@@ -338,7 +400,7 @@ export default class WalletSelectImportDialog extends Component<Props> {
                 </div>
               )}
 
-              {walletsWithoutNames.map(wallet => {
+              {walletsWithoutNames.map((wallet, index) => {
                 const isDuplicate = previousWalletId === wallet.id;
                 const rowClasses = classNames([
                   styles.walletsRow,
@@ -390,7 +452,7 @@ export default class WalletSelectImportDialog extends Component<Props> {
                       {this.getWalletStatus(wallet)}
                     </div>
                     <div className={styles.walletsStatusIcon}>
-                      {this.getWalletStatusIcon(wallet)}
+                      {this.getWalletStatusIcon(wallet, index)}
                     </div>
                   </div>
                 );

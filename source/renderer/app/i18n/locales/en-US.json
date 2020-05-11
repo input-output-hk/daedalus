@@ -653,6 +653,7 @@
   "wallet.select.import.dialog.importingWallet": "Importing wallet...",
   "wallet.select.import.dialog.linkLabel": "Learn more",
   "wallet.select.import.dialog.linkUrl": "https://iohk.zendesk.com/hc/en-us/articles/900000623463",
+  "wallet.select.import.dialog.maxWalletsReachedTooltip": "Daedalus supports up to {maxWalletsCount} wallets. You will need to remove another wallet before you can import this one.",
   "wallet.select.import.dialog.noPassword": "No password",
   "wallet.select.import.dialog.notFound": "Name not found",
   "wallet.select.import.dialog.passwordProtected": "Password protected",
