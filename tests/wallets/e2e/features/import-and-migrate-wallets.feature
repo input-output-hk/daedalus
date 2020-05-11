@@ -132,7 +132,7 @@ Feature: Import wallets
       | message                                       |
       | wallet.import.file.dialog.secretFileNoWallets |
 
-  Scenario: Successfully importing edite wallet
+  Scenario: Successfully importing edited wallet
     And I see the add wallet page
     And I click on the import wallet button on the add wallet page
     And I see the import wallets overlay
