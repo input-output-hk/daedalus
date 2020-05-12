@@ -198,17 +198,6 @@ export default class WalletSettings extends Component<Props, State> {
             />
           </BorderedBox>
 
-          <WalletRecoveryPhraseVerificationWidget
-            onVerify={onVerifyRecoveryPhrase}
-            recoveryPhraseVerificationDate={recoveryPhraseVerificationDate}
-            recoveryPhraseVerificationStatus={recoveryPhraseVerificationStatus}
-            recoveryPhraseVerificationStatusType={
-              recoveryPhraseVerificationStatusType
-            }
-            creationDate={creationDate}
-            locale={locale}
-          />
-
           <BorderedBox className={deleteWalletBoxStyles}>
             <span>{intl.formatMessage(messages.deleteWalletHeader)}</span>
             <div className={styles.contentBox}>
