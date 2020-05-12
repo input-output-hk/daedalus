@@ -83,15 +83,6 @@
     position: relative;
     width: 670px;
 
-    &::-webkit-scrollbar-thumb {
-      background-color: var(--theme-splash-network-scrollbar-thumb-background);
-      &:hover {
-        background-color: var(
-          --theme-splash-network-scrollbar-thumb-background-hover
-        );
-      }
-    }
-
     .topWrapper {
       width: 100%;
     }
@@ -224,6 +215,15 @@
       overflow-y: overlay;
       padding-right: 28px;
       width: 698px;
+
+      &::-webkit-scrollbar-thumb {
+        background-color: var(--theme-splash-network-scrollbar-thumb-background);
+        &:hover {
+          background-color: var(
+              --theme-splash-network-scrollbar-thumb-background-hover
+          );
+        }
+      }
 
       .walletsRow {
         align-items: baseline;
