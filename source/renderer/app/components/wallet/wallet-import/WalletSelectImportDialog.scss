@@ -7,6 +7,18 @@
   &:focus {
     outline: none;
   }
+
+  > div {
+    &::-webkit-scrollbar-thumb {
+      background-color: var(--theme-splash-network-scrollbar-thumb-background);
+
+      &:hover {
+        background-color: var(
+            --theme-splash-network-scrollbar-thumb-background-hover
+        );
+      }
+    }
+  }
 }
 
 .component {
@@ -60,16 +72,11 @@
   }
 
   .content {
-    align-items: center;
-    display: flex;
-    flex-direction: column;
     font-family: var(--font-regular);
     height: 100%;
-    justify-content: center;
     margin: 0 auto;
     padding: 20px 0;
     position: relative;
-    width: 670px;
 
     .topWrapper {
       width: 100%;
@@ -198,24 +205,6 @@
     }
 
     .walletsContainer {
-      margin-right: -28px;
-      overflow-x: hidden;
-      overflow-y: overlay;
-      padding-right: 28px;
-      width: 698px;
-
-      &::-webkit-scrollbar-thumb {
-        background-color: var(
-          --theme-splash-network-scrollbar-thumb-background
-        );
-
-        &:hover {
-          background-color: var(
-            --theme-splash-network-scrollbar-thumb-background-hover
-          );
-        }
-      }
-
       .walletsRow {
         align-items: baseline;
         display: flex;
