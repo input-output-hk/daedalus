@@ -439,7 +439,7 @@ export default class WalletMigrationStore extends Store {
   };
 
   // For E2E test purpose
-  @action _setFakedImportPath = sourcePath => {
+  @action _setFakedImportPath = (sourcePath: string) => {
     if (this.environment.isTest) {
       this.exportSourcePath = sourcePath;
       this.defaultExportSourcePath = sourcePath;
