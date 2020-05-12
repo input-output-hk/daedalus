@@ -265,7 +265,7 @@ export default class WalletSettings extends Component<Props, State> {
             }}
           />
 
-          {isLegacy && (
+          {!isLegacy && (
             <WalletRecoveryPhraseVerificationWidget
               onVerify={onVerifyRecoveryPhrase}
               recoveryPhraseVerificationDate={recoveryPhraseVerificationDate}
