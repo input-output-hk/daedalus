@@ -53,12 +53,12 @@ export default class AlertsOverlay extends Component<Props, State> {
   onClose = () => {
     const { alerts, onMarkNewsAsRead, onCloseOpenAlert } = this.props;
     if (alerts.length <= 1) {
-      onMarkNewsAsRead(alerts[0].id);
+      onMarkNewsAsRead([alerts[0].id]);
       onCloseOpenAlert();
       this.setState({ showOverlay: false });
       return;
     }
-    onMarkNewsAsRead(alerts[0].id);
+    onMarkNewsAsRead([alerts[0].id]);
   };
 
   onProceedNewsAction = (event: SyntheticMouseEvent<HTMLElement>) => {

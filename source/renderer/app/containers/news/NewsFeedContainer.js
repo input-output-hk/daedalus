@@ -12,7 +12,7 @@ export default class NewsFeedContainer extends Component<InjectedProps> {
   handleMarkNewsAsRead = (newsId: number) => {
     const { stores } = this.props;
     const { markNewsAsRead } = stores.newsFeed;
-    markNewsAsRead(newsId);
+    markNewsAsRead([newsId]);
   };
 
   render() {
