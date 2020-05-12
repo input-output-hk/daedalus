@@ -13,19 +13,21 @@ const getRecoveryWalletIdChannel: MainIpcChannel<
 > = new MainIpcChannel(GET_WASM_BINARY_CHANNEL);
 
 export default () => {
-  getRecoveryWalletIdChannel.onRequest(async ({ recoveryPhrase, isRandom }) => {
-    try {
-      let xprv;
-      let cc;
-      if (isRandom) {
-        [xprv, cc] = await Byron.generateMasterKey(recoveryPhrase);
-      } else {
-        [xprv, cc] = await Icarus.generateMasterKey(recoveryPhrase);
+  getRecoveryWalletIdChannel.onRequest(
+    async (recoveryPhrase: Array<string>) => {
+      try {
+        let xprv;
+        let cc;
+        if (recoveryPhrase.length === 12) {
+          [xprv, cc] = await Byron.generateMasterKey(recoveryPhrase);
+        } else {
+          [xprv, cc] = await Icarus.generateMasterKey(recoveryPhrase);
+        }
+        const walletId: string = newPublicId(xprv.to_public(), cc);
+        return Promise.resolve(walletId);
+      } catch (err) {
+        return Promise.resolve('');
       }
-      const walletId: string = newPublicId(xprv.to_public(), cc);
-      return Promise.resolve(walletId);
-    } catch (err) {
-      return Promise.resolve('');
     }
-  });
+  );
 };

@@ -5,7 +5,6 @@ import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import Wallet from '../domains/Wallet';
 import { WALLET_UTXO_API_REQUEST_INTERVAL } from '../config/timingConfig';
-import { PAPER_WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../config/cryptoConfig';
 import { getRecoveryWalletIdChannel } from '../ipc/getRecoveryWalletIdChannel';
 import { getStatusFromWalletData } from '../utils/walletRecoveryPhraseVerificationUtils';
 import { getRawWalletId } from '../api/utils';
@@ -283,36 +282,22 @@ export default class WalletSettingsStore extends Store {
     this.recoveryPhraseStep = 0;
   };
 
-  @action _recoveryPhraseVerificationCheck = async (data: {
+  @action _recoveryPhraseVerificationCheck = async ({
+    recoveryPhrase,
+  }: {
     recoveryPhrase: Array<string>,
   }) => {
-    const {
-      active: activeWallet,
-      _getUnscrambledMnemonics,
-    } = this.stores.wallets;
+    const walletId = await getRecoveryWalletIdChannel.request(recoveryPhrase);
+    if (!walletId)
+      throw new Error('It was not possible to retrieve the walletId.');
+    const activeWallet = this.stores.wallets.active;
     if (!activeWallet)
       throw new Error(
         'Active wallet required before checking recovery phrase.'
       );
-    const { id, isRandom } = activeWallet;
-    const activeWalletId = getRawWalletId(id);
-    let { recoveryPhrase } = data;
-    if (recoveryPhrase.length === PAPER_WALLET_RECOVERY_PHRASE_WORD_COUNT) {
-      recoveryPhrase = await _getUnscrambledMnemonics(recoveryPhrase);
-    }
-    const walletId = await getRecoveryWalletIdChannel.request({
-      recoveryPhrase,
-      isRandom,
-    });
-    if (!walletId)
-      throw new Error('It was not possible to retrieve the walletId.');
+    const activeWalletId = getRawWalletId(activeWallet.id);
     const isCorrect = walletId === activeWalletId;
     const nextStep = isCorrect ? 3 : 4;
-    if (!isCorrect) {
-      console.log('isRandom', isRandom);
-      console.log('walletId', walletId);
-      console.log('activeWalletId', activeWalletId);
-    }
     if (isCorrect) {
       const recoveryPhraseVerificationDate = new Date();
       await this.actions.walletsLocal.setWalletLocalData.trigger({

@@ -1,19 +1,9 @@
 // @flow
 // Cryptographic constants go here
-
-// Daedalus Wallets
 export const LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT = 12;
 export const WALLET_RECOVERY_PHRASE_WORD_COUNT = 15;
-
-// Paper Wallet
 export const ADA_CERTIFICATE_MNEMONIC_LENGTH = 18;
 export const PAPER_WALLET_RECOVERY_PHRASE_WORD_COUNT = 27;
 export const PAPER_WALLET_PRINTED_WORDS_COUNT = 18;
 export const PAPER_WALLET_WRITTEN_WORDS_COUNT = 9;
-
-// Yoroi Wallet
 export const YOROI_WALLET_RECOVERY_PHRASE_WORD_COUNT = 15;
-
-export const SEQUENTIAL_WALLET_RECOVERY_PHRASE_MAX_WORD_COUNT = 24;
-export const SEQUENTIAL_WALLET_VALID_WORD_COUNTS = [12, 15, 18, 21, 24];
-export const RANDOM_WALLET_VALID_WORD_COUNTS = [12, 27];

@@ -12,8 +12,6 @@ import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
 import styles from './WalletRecoveryPhraseStepDialogs.scss';
 import globalMessages from '../../../i18n/global-messages';
-import { closestNumber } from '../../../utils/numbers';
-import { PAPER_WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../../../config/cryptoConfig';
 
 export const messages = defineMessages({
   recoveryPhraseStep2Title: {
@@ -62,7 +60,7 @@ export const messages = defineMessages({
 type Props = {
   onContinue: Function,
   onClose: Function,
-  validWordCounts: Array<number>,
+  wordCount?: number,
 };
 
 type State = {
@@ -78,12 +76,13 @@ export default class WalletRecoveryPhraseStep2Dialog extends Component<
     intl: intlShape.isRequired,
   };
 
+  static defaultProps = {
+    wordCount: 15,
+  };
+
   state = {
     isVerifying: false,
   };
-
-  isValidWordCound = (wordCount: number): boolean =>
-    this.props.validWordCounts.includes(wordCount);
 
   form = new ReactToolboxMobxForm(
     {
@@ -95,21 +94,19 @@ export default class WalletRecoveryPhraseStep2Dialog extends Component<
             const enteredWords = field.value;
             const wordCount = enteredWords.length;
             const value = join(enteredWords, ' ');
-            const { validWordCounts } = this.props;
-            const expected = closestNumber(wordCount, validWordCounts);
+            const { wordCount: expectedWordCount } = this.props;
 
             // Check if recovery phrase contains the expected words
-            if (!this.isValidWordCound(wordCount)) {
+            if (wordCount !== expectedWordCount) {
               return [
                 false,
                 intl.formatMessage(globalMessages.incompleteMnemonic, {
-                  expected,
+                  expected: expectedWordCount,
                 }),
               ];
             }
             return [
-              isValidMnemonic(value, wordCount) ||
-                wordCount === PAPER_WALLET_RECOVERY_PHRASE_WORD_COUNT,
+              isValidMnemonic(value, wordCount),
               this.context.intl.formatMessage(
                 messages.recoveryPhraseStep2InvalidMnemonics
               ),
@@ -128,15 +125,14 @@ export default class WalletRecoveryPhraseStep2Dialog extends Component<
   render() {
     const { form } = this;
     const { intl } = this.context;
-    const { onClose, onContinue, validWordCounts } = this.props;
+    const { onClose, onContinue, wordCount } = this.props;
     const { isVerifying } = this.state;
     const recoveryPhraseField = form.$('recoveryPhrase');
     const canSubmit =
       !recoveryPhraseField.error &&
       !isVerifying &&
-      this.isValidWordCound(recoveryPhraseField.value.length);
+      recoveryPhraseField.value.length === wordCount;
     const recoveryPhrase = recoveryPhraseField.value;
-    const maxSelections = Math.max(...validWordCounts);
     const actions = [
       {
         className: isVerifying ? styles.isVerifying : null,
@@ -160,7 +156,11 @@ export default class WalletRecoveryPhraseStep2Dialog extends Component<
         closeButton={<DialogCloseButton />}
       >
         <div className={styles.subtitle}>
-          <p>{intl.formatMessage(messages.recoveryPhraseStep2Description)}</p>
+          <p>
+            {intl.formatMessage(messages.recoveryPhraseStep2Description, {
+              wordCount,
+            })}
+          </p>
         </div>
 
         <Autocomplete
@@ -168,7 +168,7 @@ export default class WalletRecoveryPhraseStep2Dialog extends Component<
           label={intl.formatMessage(messages.recoveryPhraseStep2Subtitle)}
           placeholder={intl.formatMessage(messages.recoveryPhraseInputHint)}
           options={suggestedMnemonics}
-          maxSelections={maxSelections}
+          maxSelections={wordCount}
           error={recoveryPhraseField.error}
           maxVisibleOptions={5}
           noResultsMessage={intl.formatMessage(

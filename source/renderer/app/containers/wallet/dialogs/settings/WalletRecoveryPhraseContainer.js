@@ -5,11 +5,6 @@ import WalletRecoveryPhraseStep1Dialog from '../../../../components/wallet/setti
 import WalletRecoveryPhraseStep2Dialog from '../../../../components/wallet/settings/WalletRecoveryPhraseStep2Dialog';
 import WalletRecoveryPhraseStep3Dialog from '../../../../components/wallet/settings/WalletRecoveryPhraseStep3Dialog';
 import WalletRecoveryPhraseStep4Dialog from '../../../../components/wallet/settings/WalletRecoveryPhraseStep4Dialog';
-import {
-  SEQUENTIAL_WALLET_VALID_WORD_COUNTS,
-  RANDOM_WALLET_VALID_WORD_COUNTS,
-} from '../../../../config/cryptoConfig';
-import { WalletDiscovery } from '../../../../domains/Wallet';
 import type { InjectedProps as Props } from '../../../../types/injectedPropsType';
 
 @inject('stores', 'actions')
@@ -49,16 +44,12 @@ export default class WalletRecoveryPhraseContainer extends Component<Props> {
         : recoveryPhraseVerificationContinue.trigger;
     const onClose = recoveryPhraseVerificationClose.trigger;
 
-    const validWordCounts = activeWallet.isRandom
-      ? RANDOM_WALLET_VALID_WORD_COUNTS
-      : SEQUENTIAL_WALLET_VALID_WORD_COUNTS;
     const WalletRecoveryPhraseDialog = this.recoveryPhraseComponent;
     return (
       WalletRecoveryPhraseDialog && (
         <WalletRecoveryPhraseDialog
           onContinue={onContinue}
           onClose={onClose}
-          validWordCounts={validWordCounts}
           openExternalLink={openExternalLink}
         />
       )

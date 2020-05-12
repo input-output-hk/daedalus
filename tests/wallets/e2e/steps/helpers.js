@@ -3,10 +3,6 @@ import { expect } from 'chai';
 import { expectTextInSelector, waitAndClick } from '../../../common/e2e/steps/helpers';
 import { rewardsMnemonics, balanceMnemonics, balanceItnMnemonics, testStorageKeys } from '../../../common/e2e/steps/config';
 import { WalletSyncStateStatuses } from '../../../../source/renderer/app/domains/Wallet';
-import {
-  WALLET_KINDS,
-  WALLET_DAEDALUS_KINDS,
-} from '../../../../source/renderer/app/config/walletRestoreConfig';
 import type { Daedalus } from '../../../types';
 
 declare var daedalus: Daedalus;
@@ -435,17 +431,6 @@ export const restoreWallet = async function(walletName: string, kind: string, su
     daedalus.stores.wallets._pausePolling().then(done);
   });
   let recoveryPhrase = recovery_phrase.split(' ');
-  if (
-    kind === WALLET_KINDS.DAEDALUS &&
-    subkind === WALLET_DAEDALUS_KINDS.BALANCE_27_WORD
-  ) {
-    const unscrambledRecoveryPhrase = await this.client.executeAsync((recoveryPhrase, done) => {
-      daedalus.stores.wallets
-        ._getUnscrambledMnemonics(recoveryPhrase)
-        .then(done);
-    }, recoveryPhrase);
-    recoveryPhrase = unscrambledRecoveryPhrase.value;
-  }
   await this.client.executeAsync((walletName, kind, subkind, recoveryPhrase, done) => {
     const {
       restoreWalletSetKind,

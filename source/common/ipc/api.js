@@ -259,10 +259,7 @@ export type GenerateWalletMigrationReportMainResponse = void;
  * Channel for generating wallet migration report
  */
 export const GET_WASM_BINARY_CHANNEL = 'GET_WASM_BINARY_CHANNEL';
-export type getRecoveryWalletIdRendererRequest = {
-  recoveryPhrase: Array<string>,
-  isRandom: boolean,
-};
+export type getRecoveryWalletIdRendererRequest = Array<string>;
 export type getRecoveryWalletIdMainResponse = string;
 
 /**

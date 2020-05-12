@@ -28,7 +28,7 @@ export const messages = defineMessages({
   description: {
     id: 'wallet.settings.recoveryPhraseVerification.description',
     defaultMessage:
-      '!!!Funds in this wallet can only be recovered using the correct wallet recovery phrase, which is a unique string you were shown and asked to write down when creating this wallet. You can re-enter your wallet recovery phrase to verify that you have the correct recovery phrase for this wallet.',
+      '!!!Funds in this wallet can only be recovered using the correct wallet recovery phrase, which is a unique {wordCount}-word string you were shown and asked to write down when creating this wallet. You can re-enter your wallet recovery phrase to verify that you have the correct recovery phrase for this wallet.',
     description:
       'Label for the recoveryPhraseVerificationDescription on wallet settings.',
   },
@@ -119,6 +119,7 @@ export type Props = {
   creationDate: Date,
   recoveryPhraseVerificationDate: ?Date,
   onVerify: Function,
+  wordCount?: number,
   locale: string,
 };
 
@@ -126,6 +127,10 @@ export type Props = {
 export default class WalletRecoveryPhraseVerificationWidget extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
+  };
+
+  static defaultProps = {
+    wordCount: 15,
   };
 
   get statuses() {

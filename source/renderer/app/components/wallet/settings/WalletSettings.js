@@ -265,16 +265,20 @@ export default class WalletSettings extends Component<Props, State> {
             }}
           />
 
-          <WalletRecoveryPhraseVerificationWidget
-            onVerify={onVerifyRecoveryPhrase}
-            recoveryPhraseVerificationDate={recoveryPhraseVerificationDate}
-            recoveryPhraseVerificationStatus={recoveryPhraseVerificationStatus}
-            recoveryPhraseVerificationStatusType={
-              recoveryPhraseVerificationStatusType
-            }
-            creationDate={creationDate}
-            locale={locale}
-          />
+          {isLegacy && (
+            <WalletRecoveryPhraseVerificationWidget
+              onVerify={onVerifyRecoveryPhrase}
+              recoveryPhraseVerificationDate={recoveryPhraseVerificationDate}
+              recoveryPhraseVerificationStatus={
+                recoveryPhraseVerificationStatus
+              }
+              recoveryPhraseVerificationStatusType={
+                recoveryPhraseVerificationStatusType
+              }
+              creationDate={creationDate}
+              locale={locale}
+            />
+          )}
 
           {isIncentivizedTestnet && (
             <div className={styles.resyncWalletBox}>
