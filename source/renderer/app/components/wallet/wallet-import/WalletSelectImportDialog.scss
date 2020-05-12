@@ -9,12 +9,16 @@
   }
 
   > div {
+    @media (max-height: 820px) {
+      padding-top: 140px;
+    }
+
     &::-webkit-scrollbar-thumb {
       background-color: var(--theme-splash-network-scrollbar-thumb-background);
 
       &:hover {
         background-color: var(
-          --theme-splash-network-scrollbar-thumb-background-hover
+            --theme-splash-network-scrollbar-thumb-background-hover
         );
       }
     }
@@ -54,7 +58,7 @@
 
       &:hover {
         background-color: var(
-          --theme-wallet-import-description-close-hover-background
+            --theme-wallet-import-description-close-hover-background
         );
         border-radius: 50%;
       }
@@ -72,8 +76,11 @@
   }
 
   .content {
+    display: flex;
+    flex-direction: column;
     font-family: var(--font-regular);
     height: 100%;
+    justify-content: center;
     margin: 0 auto;
     padding: 20px 0;
     position: relative;
@@ -147,9 +154,8 @@
         }
 
         .SimpleBubble_root.SimpleBubble_transparent.SimpleBubble_openUpward
-          [data-bubble-arrow]:after {
-          border-color: var(--theme-utxo-tooltip-background-color) transparent
-            transparent transparent !important;
+        [data-bubble-arrow]:after {
+          border-color: var(--theme-utxo-tooltip-background-color) transparent transparent transparent !important;
         }
       }
     }
@@ -246,13 +252,13 @@
             button {
               &:hover {
                 background-color: var(
-                  --theme-button-flat-background-color-hover
+                    --theme-button-flat-background-color-hover
                 );
               }
 
               &:active {
                 background-color: var(
-                  --theme-button-flat-background-color-active
+                    --theme-button-flat-background-color-active
                 );
               }
             }
@@ -286,7 +292,7 @@
 
             .SimpleCheckbox_check.SimpleCheckbox_checked {
               background-color: var(
-                --theme-wallet-import-checkbox-check-bg-color
+                  --theme-wallet-import-checkbox-check-bg-color
               );
             }
 
@@ -295,7 +301,7 @@
 
               &:after {
                 border-color: var(
-                  --theme-wallet-import-checkbox-check-color
+                    --theme-wallet-import-checkbox-check-color
                 ) !important;
                 margin-top: -3px;
               }
@@ -355,7 +361,7 @@
 
           &:hover {
             background-color: var(
-              --theme-wallet-import-button-background-color
+                --theme-wallet-import-button-background-color
             );
             border: solid 1px var(--theme-wallet-import-button-border-color);
             color: var(--theme-wallet-import-button-text-color);
