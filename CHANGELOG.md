@@ -5,6 +5,7 @@ Changelog
 
 ### Fixes
 
+- Eenabled the Recovery Phrase Verification feature of Shelley wallets on ITN ([PR 2008](https://github.com/input-output-hk/daedalus/pull/2008))
 - Fixed system locale detection ([PR 2009](https://github.com/input-output-hk/daedalus/pull/2009))
 
 ## 1.1.0-FC1

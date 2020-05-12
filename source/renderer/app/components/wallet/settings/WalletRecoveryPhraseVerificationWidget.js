@@ -206,6 +206,7 @@ export default class WalletRecoveryPhraseVerificationWidget extends Component<Pr
       onVerify,
       creationDate,
       recoveryPhraseVerificationDate,
+      wordCount,
     } = this.props;
     const {
       icon,
@@ -236,7 +237,7 @@ export default class WalletRecoveryPhraseVerificationWidget extends Component<Pr
       <div className={styles.component}>
         <h2>{intl.formatMessage(messages.title)}</h2>
         <div className={styles.description}>
-          {intl.formatMessage(messages.description)}
+          {intl.formatMessage(messages.description, { wordCount })}
         </div>
         <br />
         <div className={statusStyles}>
