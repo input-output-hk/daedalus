@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## 1.1.0
+
+### Chores
+
+- Bump Daedalus version ([PR 2015](https://github.com/input-output-hk/daedalus/pull/2015))
+
 ## 1.1.0-FC1
 
 ### Features
