@@ -208,6 +208,7 @@
         background-color: var(
           --theme-splash-network-scrollbar-thumb-background
         );
+
         &:hover {
           background-color: var(
             --theme-splash-network-scrollbar-thumb-background-hover
@@ -379,6 +380,7 @@
         margin-right: 30px;
         margin-top: 20px;
         opacity: 0.8;
+
         &:after {
           background-color: var(--theme-wallet-import-description-color);
         }

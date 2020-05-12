@@ -11,7 +11,6 @@ import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import SVGInline from 'react-svg-inline';
 import classNames from 'classnames';
 import { get } from 'lodash';
-import type { ElementRef } from 'react';
 import styles from './WalletImportFileDialog.scss';
 import RadioSet from '../../widgets/RadioSet';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
@@ -125,24 +124,6 @@ export default class WalletImportFileDialog extends Component<Props, State> {
     this.props.onOpen();
   }
 
-  handleSelfRef = (ref: ?ElementRef<'div'>) => {
-    if (ref) {
-      this.applyDialogStyles();
-    }
-  };
-
-  applyDialogStyles = () => {
-    const dialogElement = window.document.querySelector('.ReactModal__Content');
-    const dialogOverlayElement = dialogElement.parentElement;
-    dialogOverlayElement.style.backgroundColor =
-      'var(--theme-wallet-import-background-color)';
-    dialogElement.style.backgroundColor = 'transparent';
-    dialogElement.style.border = 'none';
-    dialogElement.style.boxShadow = 'none';
-    dialogElement.style.height = '100%';
-    dialogElement.style.width = '100%';
-  };
-
   onSetImportFromOption = (importFrom: ImportFromOption) => {
     if (this.state.importFrom !== importFrom) {
       this.props.onResetExportSourcePath();
@@ -218,8 +199,9 @@ export default class WalletImportFileDialog extends Component<Props, State> {
         shouldCloseOnOverlayClick={false}
         shouldCloseOnEsc={false}
         ariaHideApp={false}
+        themeOverrides
       >
-        <div className={styles.component} ref={this.handleSelfRef}>
+        <div className={styles.component}>
           <DialogCloseButton
             className={styles.closeButton}
             icon={closeCrossThin}

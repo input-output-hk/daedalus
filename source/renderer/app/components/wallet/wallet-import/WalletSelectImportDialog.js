@@ -17,7 +17,6 @@ import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import classNames from 'classnames';
 import SVGInline from 'react-svg-inline';
-import type { ElementRef } from 'react';
 import styles from './WalletSelectImportDialog.scss';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import closeCrossThin from '../../../assets/images/close-cross-thin.inline.svg';
@@ -134,25 +133,6 @@ type Props = {
 export default class WalletSelectImportDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
-  };
-
-  handleSelfRef = (ref: ?ElementRef<'div'>) => {
-    if (ref) {
-      this.applyDialogStyles();
-    }
-  };
-
-  applyDialogStyles = () => {
-    const dialogElement = window.document.querySelector('.ReactModal__Content');
-    const dialogOverlayElement = dialogElement.parentElement;
-    dialogOverlayElement.style.backgroundColor =
-      'var(--theme-wallet-import-background-color)';
-    dialogElement.style.backgroundColor = 'transparent';
-    dialogElement.style.border = 'none';
-    dialogElement.style.boxShadow = 'none';
-    dialogElement.style.height = '100%';
-    dialogElement.style.width = '100%';
-    dialogElement.style.maxWidth = 'initial';
   };
 
   getWalletStatus = (wallet: ExportedByronWallet) => {
@@ -355,8 +335,9 @@ export default class WalletSelectImportDialog extends Component<Props> {
         onRequestClose={onClose}
         shouldCloseOnOverlayClick={false}
         shouldCloseOnEsc={false}
+        themeOverrides
       >
-        <div className={styles.component} ref={this.handleSelfRef}>
+        <div className={styles.component}>
           <DialogCloseButton
             className={styles.closeButton}
             icon={closeCrossThin}

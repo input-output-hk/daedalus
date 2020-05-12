@@ -8,6 +8,7 @@ import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { ModalSkin } from 'react-polymorph/lib/skins/simple/ModalSkin';
 import styles from './Dialog.scss';
+import dialogOverridesStyles from './DialogOverride.scss';
 
 export type DialogAction = {
   className?: ?string,
@@ -26,6 +27,7 @@ type Props = {
   closeButton?: ?Element<any>,
   backButton?: Node,
   className?: string,
+  themeOverrides?: boolean,
   onClose?: Function,
   closeOnOverlayClick?: boolean,
   primaryButtonAutoFocus?: boolean,
@@ -44,6 +46,7 @@ export default class Dialog extends Component<Props> {
       closeButton,
       backButton,
       primaryButtonAutoFocus,
+      themeOverrides,
     } = this.props;
 
     return (
@@ -52,6 +55,7 @@ export default class Dialog extends Component<Props> {
         triggerCloseOnOverlayClick={closeOnOverlayClick}
         onClose={onClose}
         skin={ModalSkin}
+        themeOverrides={themeOverrides ? dialogOverridesStyles : ''}
       >
         <div className={classnames([styles.dialogWrapper, className])}>
           {title && (

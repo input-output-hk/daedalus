@@ -37,10 +37,8 @@ export default class WalletImportDialogContainer extends Component<Props> {
     const { walletMigration } = stores;
     const { walletMigrationStep } = walletMigration;
     const { nextStep, resetMigration } = actions.walletMigration;
-    let migrationStep = null;
-    if (walletMigrationStep === 0) {
-      migrationStep = IMPORT_WALLET_STEPS.WALLET_IMPORT_FILE;
-    } else if (walletMigrationStep === 1) {
+    let migrationStep = IMPORT_WALLET_STEPS.WALLET_IMPORT_FILE;
+    if (walletMigrationStep === 1) {
       migrationStep = IMPORT_WALLET_STEPS.WALLET_SELECT_IMPORT;
     }
     const CurrentContainer = this.containers[migrationStep];
