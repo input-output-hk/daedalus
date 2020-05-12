@@ -11,7 +11,7 @@ const DefaultProps = InjectedDialogContainerStepDefaultProps;
 
 @inject('stores', 'actions')
 @observer
-export default class StepWalletFileImportContainer extends Component<Props> {
+export default class WalletFileImportStepContainer extends Component<Props> {
   static defaultProps = DefaultProps;
 
   onSelectExportSourcePath = (params: { importFrom: ImportFromOption }) => {
@@ -24,7 +24,7 @@ export default class StepWalletFileImportContainer extends Component<Props> {
 
   onOpen = () => {
     this.props.actions.walletMigration.resetMigration.trigger();
-    this.props.actions.walletMigration.beginMigration.trigger();
+    this.props.actions.walletMigration.initiateMigration.trigger();
   };
 
   render() {

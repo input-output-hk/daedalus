@@ -82,7 +82,7 @@ export default class WalletMigrationStore extends Store {
 
   setup() {
     const { walletMigration } = this.actions;
-    walletMigration.beginMigration.listen(this._beginMigration);
+    walletMigration.initiateMigration.listen(this._initiateMigration);
     walletMigration.startMigration.listen(this._startMigration);
     walletMigration.finishMigration.listen(this._finishMigration);
     walletMigration.resetMigration.listen(this._resetMigration);
@@ -107,7 +107,7 @@ export default class WalletMigrationStore extends Store {
   getExportedWalletByIndex = (index: number): ?ExportedByronWallet =>
     this.exportedWallets.find(w => w.index === index);
 
-  @action _beginMigration = () => {
+  @action _initiateMigration = () => {
     this.walletMigrationStep = 0;
   };
 

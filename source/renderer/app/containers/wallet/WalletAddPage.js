@@ -55,7 +55,7 @@ export default class WalletAddPage extends Component<Props> {
         () => actions.dialogs.open.trigger({ dialog: WalletRestoreDialog });
 
     const onImportWallet = () =>
-      actions.walletMigration.beginMigration.trigger();
+      actions.walletMigration.initiateMigration.trigger();
 
     let activeDialog = null;
 

@@ -3,8 +3,8 @@ import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import { IMPORT_WALLET_STEPS } from '../../../config/walletRestoreConfig';
 import type { InjectedProps } from '../../../types/injectedPropsType';
-import StepWalletFileImportContainer from './wallet-import/StepWalletFileImportContainer';
-import StepWalletSelectImportContainer from './wallet-import/StepWalletSelectImportContainer';
+import WalletFileImportStepContainer from './wallet-import/WalletFileImportStepContainer';
+import WalletSelectImportStepContainer from './wallet-import/WalletSelectImportStepContainer';
 
 type Props = InjectedProps;
 
@@ -15,8 +15,8 @@ export default class WalletImportDialogContainer extends Component<Props> {
 
   get containers() {
     return {
-      walletImportFile: StepWalletFileImportContainer,
-      walletSelectImport: StepWalletSelectImportContainer,
+      walletImportFile: WalletFileImportStepContainer,
+      walletSelectImport: WalletSelectImportStepContainer,
     };
   }
 
@@ -37,8 +37,8 @@ export default class WalletImportDialogContainer extends Component<Props> {
     const { walletMigration } = stores;
     const { walletMigrationStep } = walletMigration;
     const { nextStep, resetMigration } = actions.walletMigration;
-    const stepId = IMPORT_WALLET_STEPS[walletMigrationStep];
-    const CurrentContainer = this.containers[stepId];
+    const migrationStep = IMPORT_WALLET_STEPS[walletMigrationStep];
+    const CurrentContainer = this.containers[migrationStep];
 
     return (
       <CurrentContainer

@@ -3,7 +3,7 @@ import Action from './lib/Action';
 import type { ImportFromOption } from '../types/walletExportTypes';
 
 export default class WalletMigrationActions {
-  beginMigration: Action<any> = new Action();
+  initiateMigration: Action<any> = new Action();
   startMigration: Action<any> = new Action();
   finishMigration: Action<any> = new Action();
   resetMigration: Action<any> = new Action();
