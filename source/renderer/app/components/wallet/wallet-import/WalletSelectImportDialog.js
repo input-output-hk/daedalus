@@ -1,12 +1,11 @@
 // @flow
-import React, { Component } from 'react';
+import React, { Component, ElementRef } from 'react';
 import {
   defineMessages,
   intlShape,
   FormattedHTMLMessage,
   FormattedMessage,
 } from 'react-intl';
-import ReactModal from 'react-modal';
 import { observer } from 'mobx-react';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { Button } from 'react-polymorph/lib/components/Button';
@@ -28,6 +27,7 @@ import InlineEditingSmallInput from '../../widgets/forms/InlineEditingSmallInput
 import checkmarkImage from '../../../assets/images/check-w.inline.svg';
 import { MAX_ADA_WALLETS_COUNT } from '../../../config/numbersConfig';
 import type { ExportedByronWallet } from '../../../types/walletExportTypes';
+import Dialog from '../../widgets/Dialog';
 
 const messages = defineMessages({
   title: {
@@ -120,7 +120,7 @@ type Props = {
   isSubmitting: boolean,
   exportedWallets: Array<ExportedByronWallet>,
   pendingImportWalletsCount: number,
-  onConfirm: Function,
+  onContinue: Function,
   onWalletNameChange: Function,
   onToggleWalletImportSelection: Function,
   onClose: Function,
@@ -133,6 +133,25 @@ type Props = {
 export default class WalletSelectImportDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
+  };
+
+  handleSelfRef = (ref: ?ElementRef<'div'>) => {
+    if (ref) {
+      this.applyDialogStyles();
+    }
+  };
+
+  applyDialogStyles = () => {
+    const dialogElement = window.document.querySelector('.ReactModal__Content');
+    const dialogOverlayElement = dialogElement.parentElement;
+    dialogOverlayElement.style.backgroundColor =
+      'var(--theme-wallet-import-background-color)';
+    dialogElement.style.backgroundColor = 'transparent';
+    dialogElement.style.border = 'none';
+    dialogElement.style.boxShadow = 'none';
+    dialogElement.style.height = '100%';
+    dialogElement.style.width = '100%';
+    dialogElement.style.maxWidth = 'initial';
   };
 
   getWalletStatus = (wallet: ExportedByronWallet) => {
@@ -294,7 +313,7 @@ export default class WalletSelectImportDialog extends Component<Props> {
       isSubmitting,
       exportedWallets,
       pendingImportWalletsCount,
-      onConfirm,
+      onContinue,
       onClose,
       onOpenExternalLink,
       onWalletNameChange,
@@ -324,21 +343,19 @@ export default class WalletSelectImportDialog extends Component<Props> {
       ({ hasName }: ExportedByronWallet) => !hasName
     );
 
-    // We use previous wallet id to detect wallet duplicates
     let previousWalletId = '';
     let rowNumber = 1;
 
     return (
-      <ReactModal
-        isOpen
+      <Dialog
+        className={styles.dialog}
+        closeOnOverlayClick={false}
+        onClose={onClose}
         onRequestClose={onClose}
         shouldCloseOnOverlayClick={false}
         shouldCloseOnEsc={false}
-        className={styles.dialog}
-        overlayClassName={styles.overlay}
-        ariaHideApp={false}
       >
-        <div className={styles.component}>
+        <div className={styles.component} ref={this.handleSelfRef}>
           <DialogCloseButton
             className={styles.closeButton}
             icon={closeCrossThin}
@@ -468,7 +485,7 @@ export default class WalletSelectImportDialog extends Component<Props> {
                 className={buttonClasses}
                 disabled={isDisabled}
                 label={buttonLabel}
-                onClick={onConfirm}
+                onClick={onContinue}
                 skin={ButtonSkin}
               />
               <div>
@@ -490,7 +507,7 @@ export default class WalletSelectImportDialog extends Component<Props> {
             </div>
           </div>
         </div>
-      </ReactModal>
+      </Dialog>
     );
   }
 }

@@ -50,8 +50,7 @@ export const WalletMigrationStatuses: {
 };
 
 export default class WalletMigrationStore extends Store {
-  @observable walletMigrationStep = 1;
-  @observable importWalletStep = null;
+  @observable walletMigrationStep = null;
 
   @observable isExportRunning = false;
   @observable exportedWallets: Array<ExportedByronWallet> = [];
@@ -83,6 +82,7 @@ export default class WalletMigrationStore extends Store {
 
   setup() {
     const { walletMigration } = this.actions;
+    walletMigration.beginMigration.listen(this._beginMigration);
     walletMigration.startMigration.listen(this._startMigration);
     walletMigration.finishMigration.listen(this._finishMigration);
     walletMigration.resetMigration.listen(this._resetMigration);
@@ -107,16 +107,16 @@ export default class WalletMigrationStore extends Store {
   getExportedWalletByIndex = (index: number): ?ExportedByronWallet =>
     this.exportedWallets.find(w => w.index === index);
 
-  @action _importWalletBegin = () => {
-    this.importWalletStep = 0;
+  @action _beginMigration = () => {
+    this.walletMigrationStep = 0;
   };
 
   @action _importWalletChangeStep = (isBack: boolean = false) => {
-    const currentImportWalletStep = this.importWalletStep || 0;
-    if (this.importWalletStep === null) {
+    const currentImportWalletStep = this.walletMigrationStep || 0;
+    if (this.walletMigrationStep === null) {
       this._resetMigration();
     }
-    this.importWalletStep =
+    this.walletMigrationStep =
       isBack === true
         ? currentImportWalletStep - 1
         : currentImportWalletStep + 1;
@@ -163,11 +163,11 @@ export default class WalletMigrationStore extends Store {
   };
 
   @action _nextStep = async () => {
-    if (this.walletMigrationStep === 1) {
+    if (this.walletMigrationStep === 0) {
       await this._exportWallets();
       if (this.exportedWalletsCount) {
         runInAction('update walletMigrationStep', () => {
-          this.walletMigrationStep = 2;
+          this.walletMigrationStep = 1;
         });
       }
     } else {
@@ -413,7 +413,7 @@ export default class WalletMigrationStore extends Store {
         if (this.exportedWalletsCount) {
           // Wallets successfully exported - ask the user to select the ones to import
           runInAction('update walletMigrationStep', () => {
-            this.walletMigrationStep = 2;
+            this.walletMigrationStep = 1;
           });
           this.actions.dialogs.open.trigger({
             dialog: WalletImportFileDialog,
@@ -451,7 +451,7 @@ export default class WalletMigrationStore extends Store {
     this._resetExportData();
     this._resetRestorationData();
     this.exportSourcePath = '';
-    this.walletMigrationStep = 1;
+    this.walletMigrationStep = null;
   };
 
   // For E2E test purpose
