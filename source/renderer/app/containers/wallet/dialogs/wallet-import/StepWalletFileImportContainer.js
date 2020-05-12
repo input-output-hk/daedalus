@@ -28,7 +28,7 @@ export default class StepWalletFileImportContainer extends Component<Props> {
   };
 
   render() {
-    const { onClose, onContinue, onBack, stores } = this.props;
+    const { onClose, onContinue, stores } = this.props;
     const { walletMigration, app } = stores;
 
     const {
@@ -54,7 +54,6 @@ export default class StepWalletFileImportContainer extends Component<Props> {
         onResetExportSourcePath={this.onResetExportSourcePath}
         onClose={onClose}
         onContinue={onContinue}
-        onBack={onBack}
       />
     );
   }

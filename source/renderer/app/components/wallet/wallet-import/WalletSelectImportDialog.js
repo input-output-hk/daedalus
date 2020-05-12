@@ -1,5 +1,5 @@
 // @flow
-import React, { Component, ElementRef } from 'react';
+import React, { Component } from 'react';
 import {
   defineMessages,
   intlShape,
@@ -17,6 +17,7 @@ import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import classNames from 'classnames';
 import SVGInline from 'react-svg-inline';
+import type { ElementRef } from 'react';
 import styles from './WalletSelectImportDialog.scss';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import closeCrossThin from '../../../assets/images/close-cross-thin.inline.svg';
