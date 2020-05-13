@@ -172,11 +172,10 @@ export default class NewsFeedStore extends Store {
     this.fetchingNewsFailed = fetchingNewsFailed;
   };
 
-  @action proceedNewsAction = (newsItem: NewsItem, e: MouseEvent) => {
-    const { currentLocale } = this.stores.profile;
+  @action proceedNewsAction = (newsItem: News.News, e: MouseEvent) => {
     const { url, route, event } = newsItem.action;
     if (url) {
-      this.stores.app.openExternalLink(url[currentLocale], e);
+      this.stores.app.openExternalLink(url, e);
     } else if (
       route &&
       newsItem.type !== NewsTypes.INCIDENT &&

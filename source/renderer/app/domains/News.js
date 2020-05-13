@@ -8,6 +8,7 @@ export type NewsAction = {
   label: string,
   url?: string,
   route?: string,
+  event?: string,
 };
 
 export const NewsTypes: {
