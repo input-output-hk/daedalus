@@ -1,34 +1,15 @@
 @import '../../../themes/mixins/link';
 
-.dialog {
-  height: 100%;
-  width: 100%;
-
-  &:focus {
-    outline: none;
-  }
-
-  > div {
-    @media (max-height: 820px) {
-      padding-top: 140px;
-    }
-
-    &::-webkit-scrollbar-thumb {
-      background-color: var(--theme-splash-network-scrollbar-thumb-background);
-
-      &:hover {
-        background-color: var(
-          --theme-splash-network-scrollbar-thumb-background-hover
-        );
-      }
-    }
-  }
-}
-
-.component {
-  height: 100%;
-  position: relative;
-  width: 100%;
+.overlay {
+  background-color: var(--theme-wallet-import-background-color);
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  left: 0;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 9999;
 
   :global {
     .SimpleFormField_error {
@@ -42,6 +23,21 @@
       opacity: 0.3;
     }
   }
+}
+
+.dialog {
+  height: 100%;
+  width: 100%;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.component {
+  height: 100%;
+  position: relative;
+  width: 100%;
 
   .closeButton {
     cursor: pointer;
@@ -76,6 +72,7 @@
   }
 
   .content {
+    align-items: center;
     display: flex;
     flex-direction: column;
     font-family: var(--font-regular);
@@ -84,6 +81,7 @@
     margin: 0 auto;
     padding: 20px 0;
     position: relative;
+    width: 670px;
 
     .topWrapper {
       width: 100%;
@@ -212,6 +210,21 @@
     }
 
     .walletsContainer {
+      margin-right: -28px;
+      overflow-x: hidden;
+      overflow-y: overlay;
+      padding-right: 28px;
+      width: 698px;
+
+      &::-webkit-scrollbar-thumb {
+        background-color: var(--theme-splash-network-scrollbar-thumb-background);
+        &:hover {
+          background-color: var(
+              --theme-splash-network-scrollbar-thumb-background-hover
+          );
+        }
+      }
+
       .walletsRow {
         align-items: baseline;
         display: flex;
@@ -376,7 +389,6 @@
         margin-right: 30px;
         margin-top: 20px;
         opacity: 0.8;
-
         &:after {
           background-color: var(--theme-wallet-import-description-color);
         }
