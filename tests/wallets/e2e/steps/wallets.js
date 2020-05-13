@@ -82,6 +82,15 @@ Given(/^I am on the "([^"]*)" wallet "([^"]*)" screen$/, async function(
   await proceedToScreen();
 });
 
+Given('I have {int} restored wallets', async function(numberOfWallets) {
+  const wallets = [...Array(numberOfWallets)].map((x, i) => ({
+    name: `Wallet ${i + 1}`,
+    password: 'Secret1234',
+  }));
+  const isIncentivizedTestnet = await this.client.execute(() => global.isIncentivizedTestnet);
+  await createWallets.call(this, wallets, { isLegacy: !isIncentivizedTestnet.value });
+});
+
 When(/^I have one wallet address$/, function() {
   return this.client.waitForVisible('.receiveAddress-1');
 });
