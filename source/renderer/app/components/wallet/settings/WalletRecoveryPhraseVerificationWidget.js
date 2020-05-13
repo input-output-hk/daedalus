@@ -17,7 +17,6 @@ import {
   RECOVERY_PHRASE_VERIFICATION_TIMES as times,
 } from '../../../config/walletRecoveryPhraseVerificationConfig';
 import { getStatusFromWalletData } from '../../../utils/walletRecoveryPhraseVerificationUtils';
-import { WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../../../config/cryptoConfig';
 
 export const messages = defineMessages({
   title: {

@@ -12,7 +12,6 @@ import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
 import styles from './WalletRecoveryPhraseStepDialogs.scss';
 import globalMessages from '../../../i18n/global-messages';
-import { WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../../../config/cryptoConfig';
 
 export const messages = defineMessages({
   recoveryPhraseStep2Title: {

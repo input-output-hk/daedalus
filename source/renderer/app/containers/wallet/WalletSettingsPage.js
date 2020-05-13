@@ -72,10 +72,9 @@ export default class WalletSettingsPage extends Component<Props> {
       (!isIncentivizedTestnet && isLegacyWallet) ||
       (isIncentivizedTestnet && !isLegacyWallet);
 
-    const wordCount =
-      activeWallet.discovery === 'random'
-        ? LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT
-        : WALLET_RECOVERY_PHRASE_WORD_COUNT;
+    const wordCount = activeWallet.isRandom
+      ? LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT
+      : WALLET_RECOVERY_PHRASE_WORD_COUNT;
 
     return (
       <>
