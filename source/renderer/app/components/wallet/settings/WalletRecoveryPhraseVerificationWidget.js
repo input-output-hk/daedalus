@@ -17,6 +17,7 @@ import {
   RECOVERY_PHRASE_VERIFICATION_TIMES as times,
 } from '../../../config/walletRecoveryPhraseVerificationConfig';
 import { getStatusFromWalletData } from '../../../utils/walletRecoveryPhraseVerificationUtils';
+import { WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../../../config/cryptoConfig';
 
 export const messages = defineMessages({
   title: {
@@ -119,7 +120,7 @@ export type Props = {
   creationDate: Date,
   recoveryPhraseVerificationDate: ?Date,
   onVerify: Function,
-  wordCount?: number,
+  wordCount: number,
   locale: string,
 };
 
@@ -127,10 +128,6 @@ export type Props = {
 export default class WalletRecoveryPhraseVerificationWidget extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
-  };
-
-  static defaultProps = {
-    wordCount: 15,
   };
 
   get statuses() {

@@ -49,7 +49,12 @@ When(/^I click the checkbox and Continue button$/, function() {
 When(/^I enter the recovery phrase mnemonics (correctly|incorrectly)$/, async function(_type) {
   const recoveryPhrase = await this.client.execute((type, mnemonics) => {
     const activeWallet = daedalus.stores.wallets.active;
-    return type === 'correctly' ? mnemonics[activeWallet.name] : daedalus.utils.crypto.generateMnemonic(12).split(' ');
+    const correctMnemonics = mnemonics[activeWallet.name];
+    const incorrectMnemonics =
+      daedalus.utils.crypto.generateMnemonic(correctMnemonics.length).split(' ');
+    return type === 'correctly'
+      ? correctMnemonics
+      : incorrectMnemonics;
   }, _type, this.mnemonics);
 
   for (let i = 0; i < recoveryPhrase.value.length; i++) {

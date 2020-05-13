@@ -102,6 +102,7 @@ type Props = {
   recoveryPhraseVerificationStatusType: string,
   locale: string,
   isSpendingPasswordSet: boolean,
+  shouldDisplayRecoveryPhrase: boolean,
 };
 
 type State = {
@@ -174,6 +175,7 @@ export default class WalletSettings extends Component<Props, State> {
       recoveryPhraseVerificationStatusType,
       locale,
       isSpendingPasswordSet,
+      shouldDisplayRecoveryPhrase,
     } = this.props;
     const { isFormBlocked } = this.state;
 
@@ -265,7 +267,7 @@ export default class WalletSettings extends Component<Props, State> {
             }}
           />
 
-          {!isLegacy && (
+          {shouldDisplayRecoveryPhrase && (
             <WalletRecoveryPhraseVerificationWidget
               onVerify={onVerifyRecoveryPhrase}
               recoveryPhraseVerificationDate={recoveryPhraseVerificationDate}
