@@ -182,15 +182,20 @@
       }
     }
 
-    .enterWalletNameTooltip {
+    .enterWalletNameTooltip,
+    .maxWalletsReachedTooltip {
       @extend .tooltip;
 
       :global {
         .SimpleTooltip_bubble {
           > div {
+            font-family: var(--font-regular);
+            font-size: 12px;
             left: auto;
+            line-height: 1.17;
             margin: 0;
             right: -40px;
+            text-align: center;
             transform: translateX(0);
 
             [data-bubble-arrow]:before,
@@ -198,6 +203,16 @@
               left: auto;
               right: 43px;
             }
+          }
+        }
+      }
+    }
+
+    .maxWalletsReachedTooltip {
+      :global {
+        .SimpleTooltip_bubble {
+          > div {
+            width: 194px;
           }
         }
       }

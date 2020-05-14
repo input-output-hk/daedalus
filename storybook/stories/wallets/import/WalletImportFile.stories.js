@@ -68,6 +68,7 @@ storiesOf('Wallets|Import File', module)
           onToggleWalletImportSelection={action(
             'onToggleWalletImportSelection'
           )}
+          isMaxNumberOfWalletsReached={false}
           onClose={action('onClose')}
         />
       </VerticalFlexContainer>
