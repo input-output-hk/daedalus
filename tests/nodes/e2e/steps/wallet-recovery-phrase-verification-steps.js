@@ -9,7 +9,7 @@ const DIALOG_SUCCESSFUL_SELECTOR = '.verification-successful';
 const DIALOG_UNSUCCESSFUL_SELECTOR = '.verification-unsuccessful';
 const DIALOG_VERIFY_AGAIN_BUTTON_SELECTOR = `${DIALOG_SELECTOR} button.attention`;
 const DIALOG_CLOSE_BUTTON_SELECTOR = `${DIALOG_SELECTOR} .DialogCloseButton_component`;
-const DIALOG_VERIFY_BUTTON_SELECTOR = '.WalletRecoveryPhraseStepDialogs_dialog button';
+const DIALOG_VERIFY_BUTTON_SELECTOR = '.WalletRecoveryPhraseStepDialogs_dialog .SimpleButton_root.ButtonOverrides_root';
 
 Given(
   'the last recovery phrase veryfication was done {int} days ago',
