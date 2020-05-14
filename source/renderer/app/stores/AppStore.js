@@ -107,7 +107,7 @@ export default class AppStore extends Store {
         this._downloadLogs();
         break;
       case PAGES.SETTINGS:
-        this.actions.router.goToRoute.trigger({ route: PAGES.SETTINGS });
+        this.actions.router.goToRoute.trigger({ route: ROUTES.SETTINGS.ROOT });
         this.actions.dialogs.closeActiveDialog.trigger();
         break;
       case PAGES.WALLET_SETTINGS:
