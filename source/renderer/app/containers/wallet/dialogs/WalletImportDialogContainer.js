@@ -4,7 +4,6 @@ import { observer, inject } from 'mobx-react';
 import type { InjectedProps } from '../../../types/injectedPropsType';
 import WalletFileImportStepContainer from './wallet-import/WalletFileImportStepContainer';
 import WalletSelectImportStepContainer from './wallet-import/WalletSelectImportStepContainer';
-import { IMPORT_WALLET_STEPS } from '../../../config/walletRestoreConfig';
 
 type Props = InjectedProps;
 
