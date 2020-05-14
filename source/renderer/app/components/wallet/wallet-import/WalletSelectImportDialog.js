@@ -312,11 +312,6 @@ export default class WalletSelectImportDialog extends Component<Props> {
     const onLinkClick = () =>
       onOpenExternalLink(intl.formatMessage(messages.linkUrl));
 
-    const isDisabled = isSubmitting || !pendingImportWalletsCount;
-    const buttonClasses = classNames(styles.actionButton, [
-      isDisabled ? styles.disabled : null,
-    ]);
-
     const walletsWithNames = exportedWallets.filter(
       ({ hasName }: ExportedByronWallet) => hasName
     );
@@ -326,6 +321,17 @@ export default class WalletSelectImportDialog extends Component<Props> {
 
     let previousWalletId = '';
     let rowNumber = 1;
+
+    const anyWalletWithoutName = walletsWithoutNames.filter(
+      item => !item.name && item.import.status === WalletImportStatuses.PENDING
+    );
+
+    const isDisabled =
+      isSubmitting || anyWalletWithoutName.length || !pendingImportWalletsCount;
+
+    const buttonClasses = classNames(styles.actionButton, [
+      isDisabled ? styles.disabled : null,
+    ]);
 
     return (
       <Dialog
