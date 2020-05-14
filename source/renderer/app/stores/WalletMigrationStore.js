@@ -27,6 +27,7 @@ import {
   WalletImportStatuses,
   ImportFromOptions,
 } from '../types/walletExportTypes';
+import { IMPORT_WALLET_STEPS } from '../config/walletRestoreConfig';
 
 export type WalletMigrationStatus =
   | 'unstarted'
@@ -108,18 +109,7 @@ export default class WalletMigrationStore extends Store {
     this.exportedWallets.find(w => w.index === index);
 
   @action _initiateMigration = () => {
-    this.walletMigrationStep = 0;
-  };
-
-  @action _importWalletChangeStep = (isBack: boolean = false) => {
-    const currentImportWalletStep = this.walletMigrationStep || 0;
-    if (this.walletMigrationStep === null) {
-      this._resetMigration();
-    }
-    this.walletMigrationStep =
-      isBack === true
-        ? currentImportWalletStep - 1
-        : currentImportWalletStep + 1;
+    this.walletMigrationStep = IMPORT_WALLET_STEPS.WALLET_IMPORT_FILE;
   };
 
   @action _selectExportSourcePath = async ({
@@ -163,11 +153,11 @@ export default class WalletMigrationStore extends Store {
   };
 
   @action _nextStep = async () => {
-    if (this.walletMigrationStep === 0) {
+    if (this.walletMigrationStep === IMPORT_WALLET_STEPS.WALLET_IMPORT_FILE) {
       await this._exportWallets();
       if (this.exportedWalletsCount) {
         runInAction('update walletMigrationStep', () => {
-          this.walletMigrationStep = 1;
+          this.walletMigrationStep = IMPORT_WALLET_STEPS.WALLET_SELECT_IMPORT;
         });
       }
     } else {
@@ -413,7 +403,7 @@ export default class WalletMigrationStore extends Store {
         if (this.exportedWalletsCount) {
           // Wallets successfully exported - ask the user to select the ones to import
           runInAction('update walletMigrationStep', () => {
-            this.walletMigrationStep = 1;
+            this.walletMigrationStep = IMPORT_WALLET_STEPS.WALLET_SELECT_IMPORT;
           });
           this.actions.dialogs.open.trigger({
             dialog: WalletImportFileDialog,
