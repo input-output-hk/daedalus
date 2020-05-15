@@ -323,7 +323,9 @@ export default class WalletSelectImportDialog extends Component<Props> {
     let rowNumber = 1;
 
     const anyWalletWithoutName = walletsWithoutNames.filter(
-      item => !item.name && item.import.status === WalletImportStatuses.PENDING
+      item =>
+        (!item.name || item.name.length < 3) &&
+        item.import.status === WalletImportStatuses.PENDING
     );
 
     const isDisabled =

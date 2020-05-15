@@ -86,7 +86,7 @@ export default class InlineEditingSmallInput extends Component<Props, State> {
       },
       onError: form => {
         const { inputField } = form.values();
-        if (!inputField) {
+        if (!inputField || !form.isValid) {
           this.setState({ isActive: false });
           this.props.onSubmit(inputField);
         }
