@@ -88,7 +88,6 @@ storiesOf('Wallets|Settings', module)
             onVerify={action('onVerify')}
             recoveryPhraseVerificationDate={recoveryPhraseVerificationDate}
             wordCount={parseInt(wordCount, 10)}
-            å
             isIncentivizedTestnet={boolean('isIncentivizedTestnet', true)}
           />
         </div>

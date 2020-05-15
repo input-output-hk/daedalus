@@ -745,6 +745,7 @@
   "wallet.settings.recoveryPhraseVerification.neverWarning": "ウォレット復元フレーズを検証してください。",
   "wallet.settings.recoveryPhraseVerification.paperWalletDescription": "ペーパーウォレット証明書から復元したウォレットの場合は、本機能を使用してウォレット復元フレーズを検証することはできません。ペーパーウォレット復元フレーズから通常のウォレット復元フレーズへの変換は、まもなくDaedalusで可能となります。",
   "wallet.settings.recoveryPhraseVerification.paperWalletTitle": "ペーパーウォレット",
+  "wallet.settings.recoveryPhraseVerification.timeUntilWarningReplacement": "ヶ月,か月",
   "wallet.settings.recoveryPhraseVerification.title": "ウォレット復元フレーズをお持ちですか。",
   "wallet.settings.resyncWallet.description": "ウォレットに不具合が生じている場合、または残高やトランザクション履歴が不正確であると思われる場合は、Daedalusに保存されたローカルデータを削除してブロックチェーンと再同期することができます。",
   "wallet.settings.resyncWallet.header": "ウォレットとブロックチェーンの再同期",
