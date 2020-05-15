@@ -40,7 +40,7 @@
   "menu.view": "見る",
   "menu.view.reload": "リロード",
   "menu.view.toggleDeveloperTools": "開発者ツール切替え",
-  "menu.view.toggleFullScreen": "フルスクリーン切り替え",
+  "menu.view.toggleFullScreen": "フルスクリーン切替え",
   "menu.view.toggleMaximumWindowSize": "最大ウインドウサイズ切り切り替え",
   "window.title.blankScreenFix": "[「ブランク画面修正」有効 ]"
 }
