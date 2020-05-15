@@ -28,6 +28,7 @@ import {
   ImportFromOptions,
 } from '../types/walletExportTypes';
 import { IMPORT_WALLET_STEPS } from '../config/walletRestoreConfig';
+import type {ImportWalletStep} from "../types/walletRestoreTypes";
 
 export type WalletMigrationStatus =
   | 'unstarted'
@@ -51,7 +52,7 @@ export const WalletMigrationStatuses: {
 };
 
 export default class WalletMigrationStore extends Store {
-  @observable walletMigrationStep = null;
+  @observable walletMigrationStep: ?ImportWalletStep = null;
 
   @observable isExportRunning = false;
   @observable exportedWallets: Array<ExportedByronWallet> = [];
