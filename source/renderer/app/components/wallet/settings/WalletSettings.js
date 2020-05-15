@@ -282,6 +282,7 @@ export default class WalletSettings extends Component<Props, State> {
               creationDate={creationDate}
               locale={locale}
               wordCount={wordCount}
+              isIncentivizedTestnet={isIncentivizedTestnet}
             />
           )}
 
