@@ -667,7 +667,8 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
               )}
               <div className={styles.layoutRow}>
                 <div className={styles.layoutHeader}>
-                  {intl.formatMessage(messages.localTimeDifference)}:
+                  {intl.formatMessage(messages.localTimeDifference)}
+                  {intl.formatMessage(globalMessages.punctuationColon)}
                 </div>
                 <div className={localTimeDifferenceClasses}>
                   {
@@ -702,7 +703,8 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
               {
                 <div className={styles.layoutRow}>
                   <div className={styles.layoutHeader}>
-                    {intl.formatMessage(messages.checkingNodeTime)}:
+                    {intl.formatMessage(messages.checkingNodeTime)}
+                    {intl.formatMessage(globalMessages.punctuationColon)}
                   </div>
                   <div className={styles.layoutData}>
                     {isCheckingSystemTime
