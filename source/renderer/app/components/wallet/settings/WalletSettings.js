@@ -97,12 +97,13 @@ type Props = {
   lastUpdatedField: ?string,
   changeSpendingPasswordDialog: Node,
   deleteWalletDialogContainer: Node,
+  shouldDisplayRecoveryPhrase: boolean,
   recoveryPhraseVerificationDate: ?Date,
   recoveryPhraseVerificationStatus: string,
   recoveryPhraseVerificationStatusType: string,
+  wordCount: number,
   locale: string,
   isSpendingPasswordSet: boolean,
-  wordCount: number,
 };
 
 type State = {
@@ -175,6 +176,7 @@ export default class WalletSettings extends Component<Props, State> {
       recoveryPhraseVerificationStatusType,
       locale,
       isSpendingPasswordSet,
+      shouldDisplayRecoveryPhrase,
       wordCount,
     } = this.props;
     const { isFormBlocked } = this.state;
@@ -267,7 +269,7 @@ export default class WalletSettings extends Component<Props, State> {
             }}
           />
 
-          {!isIncentivizedTestnet && (
+          {shouldDisplayRecoveryPhrase && (
             <WalletRecoveryPhraseVerificationWidget
               onVerify={onVerifyRecoveryPhrase}
               recoveryPhraseVerificationDate={recoveryPhraseVerificationDate}
@@ -278,8 +280,9 @@ export default class WalletSettings extends Component<Props, State> {
                 recoveryPhraseVerificationStatusType
               }
               creationDate={creationDate}
-              wordCount={wordCount}
               locale={locale}
+              wordCount={wordCount}
+              isIncentivizedTestnet={isIncentivizedTestnet}
             />
           )}
 

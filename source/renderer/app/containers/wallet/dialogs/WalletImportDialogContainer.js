@@ -85,8 +85,7 @@ export default class WalletImportDialogContainer extends Component<
         walletsCount++;
       }
     });
-    const isMaxNumberOfWalletsReached =
-      walletsCount >= MAX_ADA_WALLETS_COUNT;
+    const isMaxNumberOfWalletsReached = walletsCount >= MAX_ADA_WALLETS_COUNT;
 
     return (
       <>
