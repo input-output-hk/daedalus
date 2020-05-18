@@ -1,5 +1,4 @@
 // @flow
-/* eslint-disable camelcase */
 import React, { Component } from 'react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import { observer } from 'mobx-react';
@@ -121,6 +120,7 @@ export default class WalletImportFileDialog extends Component<Props, State> {
 
   importPathInput: Input;
 
+  // eslint-disable-next-line
   UNSAFE_componentWillMount() {
     // Reset migration data
     this.props.onOpen();

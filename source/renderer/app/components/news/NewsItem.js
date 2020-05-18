@@ -1,5 +1,4 @@
 // @flow
-/* eslint-disable camelcase */
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classNames from 'classnames';
@@ -40,6 +39,7 @@ export default class NewsItem extends Component<Props, State> {
     newsItemCollapsible: true,
   };
 
+  // eslint-disable-next-line
   UNSAFE_componentWillReceiveProps(nextProps: Props) {
     const { newsItemExpanded } = this.state;
     if (

@@ -1,5 +1,4 @@
 // @flow
-/* eslint-disable camelcase */
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
@@ -137,6 +136,7 @@ export default class StakePoolTooltip extends Component<Props, State> {
     tooltipPosition: 'right',
   };
 
+  // eslint-disable-next-line
   UNSAFE_componentWillReceiveProps(nextProps: Props) {
     const { isVisible: nextVisibility, top, left } = nextProps;
     const { isVisible: currentVisibility } = this.props;
@@ -157,6 +157,7 @@ export default class StakePoolTooltip extends Component<Props, State> {
   containerWidth: number = 0;
   containerHeight: number = 0;
 
+  // eslint-disable-next-line
   UNSAFE_componentWillMount() {
     window.document.addEventListener('click', this.handleOutterClick);
     window.addEventListener('keydown', this.handleInputKeyDown);

@@ -1,5 +1,4 @@
 // @flow
-/* eslint-disable camelcase */
 import React, { Component, Fragment } from 'react';
 import { join } from 'lodash';
 import { observer } from 'mobx-react';
@@ -212,6 +211,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
 
   recoveryPhraseAutocomplete: Autocomplete;
 
+  // eslint-disable-next-line
   UNSAFE_componentWillReceiveProps(newProps: Props) {
     if (newProps.error) {
       handleFormErrors('.WalletRestoreDialog_error');

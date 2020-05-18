@@ -1,5 +1,4 @@
 // @flow
-/* eslint-disable camelcase */
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
@@ -102,6 +101,7 @@ export default class TransferFundsStep2Dialog extends Component<Props, State> {
     amount: null,
   };
 
+  // eslint-disable-next-line
   UNSAFE_componentWillReceiveProps(nextProps: Props) {
     const { transferFundsFee, sourceWallet } = nextProps;
     // "freezes" the current amounts in the component state

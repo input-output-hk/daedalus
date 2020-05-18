@@ -1,5 +1,4 @@
 // @flow
-/* eslint-disable camelcase */
 import React, { Component } from 'react';
 import moment from 'moment';
 import { observer } from 'mobx-react';
@@ -21,6 +20,7 @@ type Props = {
 export default class IncidentOverlay extends Component<Props> {
   localizedDateFormat: 'MM/DD/YYYY';
 
+  // eslint-disable-next-line
   UNSAFE_componentWillMount() {
     this.localizedDateFormat = moment.localeData().longDateFormat('L');
   }

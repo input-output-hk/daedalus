@@ -1,5 +1,4 @@
 // @flow
-/* eslint-disable camelcase */
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import { get } from 'lodash';
@@ -17,6 +16,7 @@ type Props = InjectedProps;
 export default class WalletSettingsPage extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
+  // eslint-disable-next-line
   UNSAFE_componentWillMount() {
     this.props.actions.walletSettings.startWalletUtxoPolling.trigger();
   }

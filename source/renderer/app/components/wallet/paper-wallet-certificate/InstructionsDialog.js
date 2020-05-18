@@ -1,5 +1,4 @@
 // @flow
-/* eslint-disable camelcase */
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
@@ -129,6 +128,7 @@ export default class InstructionsDialog extends Component<Props> {
     rawNetwork: DEVELOPMENT,
   };
 
+  // eslint-disable-next-line
   UNSAFE_componentWillReceiveProps(newProps: Props) {
     if (!this.props.error && newProps.error) {
       handleFormErrors('.InstructionsDialog_error', { focusElement: true });

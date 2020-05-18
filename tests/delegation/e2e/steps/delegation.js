@@ -3,7 +3,7 @@ import { Given, Then } from 'cucumber';
 import { expect } from 'chai';
 import BigNumber from 'bignumber.js';
 import { navigateTo } from '../../../navigation/e2e/steps/helpers';
-import { timeout } from '../../../common/e2e/steps/helpers';
+import { timeout, notFoundWalletsErrorMessage } from '../../../common/e2e/steps/helpers';
 import { getCurrentEpoch, getNextEpoch } from './helpers';
 import type { Daedalus } from '../../../types';
 
@@ -219,20 +219,21 @@ Given('I send {int} ADA from the {string} wallet to the {string} wallet', async 
   await this.client.executeAsync((amount, senderName, receiverName, done) => {
     const walletSender = daedalus.stores.wallets.getWalletByName(senderName);
     const walletReceiver = daedalus.stores.wallets.getWalletByName(receiverName);
-    if (walletSender && walletReceiver && walletSender.id && walletReceiver.id) {
-      daedalus.stores.addresses
-        .getAddressesByWalletId(walletReceiver.id)
-        .then(addresses => {
-          daedalus.stores.wallets.sendMoneyRequest.execute({
-            address: addresses[0].id,
-            amount: amount * 1000000,
-            passphrase: 'Secret1234',
-            walletId: walletSender.id,
-          }).then(done);
-        });
-    } else {
-      done();
+
+    if (!walletSender || !walletReceiver || !walletSender.id || !walletReceiver.id) {
+      return done(new Error(notFoundWalletsErrorMessage));
     }
+
+    return daedalus.stores.addresses
+      .getAddressesByWalletId(walletReceiver.id)
+      .then(addresses => {
+        daedalus.stores.wallets.sendMoneyRequest.execute({
+          address: addresses[0].id,
+          amount: amount * 1000000,
+          passphrase: 'Secret1234',
+          walletId: walletSender.id,
+        }).then(done);
+      });
   }, adaAmount, walletFrom, walletTo);
   await this.client.waitForVisible(`//div[@class="WalletRow_title" and text()="${walletTo}"]//following-sibling::div[@class="WalletRow_description"]//span`);
 });

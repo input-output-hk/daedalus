@@ -1,5 +1,4 @@
 // @flow
-/* eslint-disable camelcase */
 import React, { Component } from 'react';
 import type { Node } from 'react';
 import classNames from 'classnames';
@@ -40,6 +39,7 @@ export class VirtualTransactionList extends Component<Props> {
     isSyncingSpinnerShown: false,
   };
 
+  // eslint-disable-next-line
   UNSAFE_componentWillReceiveProps(nextProps: Props) {
     // Recompute all row heights in case the number of rows has changed
     const prevNumberOfRows = this.props.rows.length;

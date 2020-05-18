@@ -1,5 +1,4 @@
 // @flow
-/* eslint-disable camelcase */
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import InstructionsDialog from '../../components/wallet/paper-wallet-certificate/InstructionsDialog';
@@ -30,6 +29,7 @@ export default class PaperWalletCreateCertificatePage extends Component<
 > {
   static defaultProps = { actions: null, stores: null };
 
+  // eslint-disable-next-line
   UNSAFE_componentWillReceiveProps(nextProps: Props) {
     const stepChanged =
       nextProps.stores.wallets.certificateStep !== this.state.currentStep;

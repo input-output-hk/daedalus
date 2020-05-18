@@ -1,7 +1,7 @@
 // @flow
 import { expect } from 'chai';
 import BigNumber from 'bignumber.js';
-import { expectTextInSelector, waitAndClick } from '../../../common/e2e/steps/helpers';
+import { expectTextInSelector, waitAndClick, notFoundWalletsErrorMessage } from '../../../common/e2e/steps/helpers';
 import { rewardsMnemonics, balanceMnemonics, balanceItnMnemonics, testStorageKeys } from '../../../common/e2e/steps/config';
 import { WalletSyncStateStatuses } from '../../../../source/renderer/app/domains/Wallet';
 import type { Daedalus } from '../../../types';
@@ -87,13 +87,15 @@ export const restoreLegacyWallet = async (
           .refreshWalletsData()
           .then(() => {
             const wallet = daedalus.stores.wallets.getWalletByName(name);
-            if (wallet) {
-              const walletAmount = wallet.amount || new BigNumber(0);
-              if (transferFunds && walletAmount.isZero()) {
-                throw new Error(noWalletsErrorMessage);
-              }
+
+            if (!wallet) {
+              throw new Error(notFoundWalletsErrorMessage);
             }
-            done();
+
+            const walletAmount = wallet.amount || new BigNumber(0);
+            if (transferFunds && walletAmount.isZero()) {
+              throw new Error(noWalletsErrorMessage);
+            }
           })
           .catch(error => done(error))
       )
@@ -144,10 +146,12 @@ export const getFixedAmountByName = async function(walletName: string) {
     const isRestoring = await this.client.execute(
       (walletName) => {
         const wallet = daedalus.stores.wallets.getWalletByName(walletName);
-        if (wallet) {
-          return wallet.isRestoring;
+
+        if (!wallet) {
+          throw new Error(notFoundWalletsErrorMessage);
         }
-        return null;
+
+        return wallet.isRestoring;
       },
       walletName,
     );
@@ -157,11 +161,13 @@ export const getFixedAmountByName = async function(walletName: string) {
     await this.client.execute(
       (walletName) => {
         const wallet = daedalus.stores.wallets.getWalletByName(walletName);
-        if (wallet) {
-          const amount = wallet.amount || new BigNumber(0);
-          return amount.toFixed();
+
+        if (!wallet) {
+          throw new Error(notFoundWalletsErrorMessage);
         }
-        return new BigNumber(0);
+
+        const amount = wallet.amount || new BigNumber(0);
+        return amount.toFixed();
       },
       walletName,
     );

@@ -43,7 +43,7 @@ export default class UndelegateDialogContainer extends Component<Props> {
       delegatedStakePoolId,
     } = walletToBeUndelegated;
 
-    const stakePoolId = lastDelegationStakePoolId || delegatedStakePoolId;
+    const stakePoolId = lastDelegationStakePoolId || delegatedStakePoolId || '';
 
     if (
       (!stakePoolId || !isDelegationTransactionPending) &&
@@ -66,7 +66,7 @@ export default class UndelegateDialogContainer extends Component<Props> {
       );
     }
 
-    const delegatedStakePool = getStakePoolById(stakePoolId || '');
+    const delegatedStakePool = getStakePoolById(stakePoolId);
     const stakePoolName = get(delegatedStakePool, 'name', '');
     const stakePoolTicker = get(delegatedStakePool, 'ticker');
 
@@ -78,7 +78,7 @@ export default class UndelegateDialogContainer extends Component<Props> {
         onConfirm={passphrase => {
           actions.wallets.undelegateWallet.trigger({
             walletId,
-            stakePoolId: stakePoolId || '',
+            stakePoolId,
             passphrase,
           });
         }}

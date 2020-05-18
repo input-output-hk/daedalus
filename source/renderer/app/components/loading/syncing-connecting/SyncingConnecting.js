@@ -1,5 +1,4 @@
 // @flow
-/* eslint-disable camelcase */
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classNames from 'classnames';
@@ -65,6 +64,7 @@ export default class SyncingConnecting extends Component<Props, State> {
     this._defensivelyStartTimers(this.props.isConnected);
   }
 
+  // eslint-disable-next-line
   UNSAFE_componentWillReceiveProps(nextProps: Props) {
     this._defensivelyStartTimers(nextProps.isConnected);
   }

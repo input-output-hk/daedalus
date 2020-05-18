@@ -1,5 +1,4 @@
 // @flow
-/* eslint-disable camelcase */
 import React, { Component, Fragment } from 'react';
 import { Provider, observer } from 'mobx-react';
 import { ThemeProvider } from 'react-polymorph/lib/components/ThemeProvider';
@@ -28,6 +27,7 @@ export default class App extends Component<{
   actions: ActionsMap,
   history: Object,
 }> {
+  // eslint-disable-next-line
   UNSAFE_componentWillMount() {
     // Loads app's global environment variables into AppStore via ipc
     this.props.actions.app.initAppEnvironment.trigger();

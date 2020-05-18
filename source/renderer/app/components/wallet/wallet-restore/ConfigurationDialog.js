@@ -1,5 +1,4 @@
 // @flow
-/* eslint-disable camelcase */
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
@@ -93,6 +92,7 @@ export default class ConfigurationDialog extends Component<Props> {
     error: null,
   };
 
+  // eslint-disable-next-line
   UNSAFE_componentWillReceiveProps(nextProps: Props) {
     if (nextProps.error) {
       handleFormErrors('.ConfigurationDialog_error');
