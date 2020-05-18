@@ -500,9 +500,11 @@ export default class WalletsStore extends Store {
     );
   };
 
-  _unscrambleMnemonics = async (): Array<string> => {
+  _getUnscrambledMnemonics = async (
+    mnemonics: Array<string>
+  ): Array<string> => {
     // Split recovery phrase to 18 (scrambled mnemonics) + 9 (mnemonics seed) mnemonics
-    const { passphrase, scrambledInput } = getScrambledInput(this.mnemonics);
+    const { passphrase, scrambledInput } = getScrambledInput(mnemonics);
 
     // Unscramble 18-word wallet certificate mnemonic to 12-word mnemonic
     const unscrambledRecoveryPhrase: Array<string> = await this.getWalletRecoveryPhraseFromCertificateRequest.execute(
@@ -540,7 +542,7 @@ export default class WalletsStore extends Store {
     ) {
       // Reset getWalletRecoveryPhraseFromCertificateRequest to clear previous errors
       this.getWalletRecoveryPhraseFromCertificateRequest.reset();
-      data.recoveryPhrase = await this._unscrambleMnemonics();
+      data.recoveryPhrase = await this._getUnscrambledMnemonics(this.mnemonics);
     }
 
     try {

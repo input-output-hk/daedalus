@@ -131,7 +131,7 @@ export default class Wallet {
   }
 
   @computed get isSequential(): boolean {
-    return this.discovery === WalletDiscovery.SEQUENTIAL;
+    return this.discovery !== WalletDiscovery.RANDOM;
   }
 
   @computed get restorationProgress(): number {
